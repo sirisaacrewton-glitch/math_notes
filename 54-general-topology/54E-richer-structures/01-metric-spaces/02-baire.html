@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ベールのカテゴリー定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54E-richer-structures/01-metric-spaces/02-baire.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ベールのカテゴリー定理 {#top:page-baire keywords="nowhere dense set, meager set, first category, second category, residual set, Baire space, Baire category theorem, uniform boundedness, G-delta"}
+
+完備距離空間やコンパクトハウスドルフ空間は、「薄い」集合を可算個集めても覆い尽くせない。ここで「薄い」とは、閉包が内点をもたない（**疎**）ことを指し、疎集合の可算和を**第一類集合**という（\ref{top:first-category}）。**ベールのカテゴリー定理**は、完備距離空間と局所コンパクトハウスドルフ空間では、空でない開集合が第一類にならないことを主張する（\ref{top:baire-category}）。同じことを「可算個の稠密開集合の共通部分は稠密」とも言える。この定理は、存在を直接構成しにくい対象（連続だが至るところ微分不可能な関数など）の存在証明や、関数解析の一様有界性原理の土台になる。
+
+> 資料：内田伏一『集合と位相』§26。文章は本サイトで書き下ろした。集合論の系列のマーティンの公理（\ref{set:ma-baire}）は、本定理の一般化として読める。
+
+## 記法と定義の確認 {#top:sec-bai-notation}
+
+::: notation
+- 閉包 $\overline{A}$、内部 $\operatorname{int}A$、稠密は \ref{top:interior-closure}, \ref{top:separable-space} のとおり。$D$ が稠密 $\iff$ 空でないすべての開集合と交わる（\ref{top:dense-characterization}）。
+- 内部と閉包の双対性 $X\setminus\overline{A}=\operatorname{int}(X\setminus A)$ を使う（\ref{top:interior-closure-basic}）。
+- 完備性は \ref{top:complete-metric}、局所コンパクトハウスドルフ空間の近傍は \ref{top:lch-neighborhood-base} のとおり。
+- 可算個の開集合の共通部分を **$G_{\delta}$ 集合**、可算個の閉集合の和を **$F_{\sigma}$ 集合**という。
+- 議論は $\ZF$ で行い、選択公理（とくに従属選択公理 DC）を使う箇所は明記する。
+:::
+
+## 疎集合と第一類集合 {#top:sec-bai-meager}
+
+::: definition 疎集合・第一類集合 {#top:first-category keywords="nowhere dense set, meager set, first category, second category, residual (comeager) set" index="疎集合|そしゅうごう, 第一類集合|だいいちるいしゅうごう, やせた集合|やせたしゅうごう, 第二類集合|だいにるいしゅうごう, 剰余集合|じょうよしゅうごう"}
+位相空間 $X$ の部分集合について、
+1. $N$ が**疎**（nowhere dense）であるとは、$\operatorname{int}\overline{N}=\varnothing$ となることをいう。
+2. 可算個の疎集合の和として書ける集合を**第一類**（**やせた**、meager）という。第一類でない集合を**第二類**という。
+3. 補集合が第一類である集合を**剰余集合**（comeager）という。
+:::
+
+::: proposition 疎集合と第一類集合の基本性質 {#top:meager-basic keywords="nowhere dense iff complement of closure is dense open; meager sets form a sigma-ideal" index="第一類集合の性質|だいいちるいしゅうごうのせいしつ"}
+1. $N$ が疎 $\iff$ $X\setminus\overline{N}$ が稠密な開集合。閉集合 $F$ が疎 $\iff$ $\operatorname{int}F=\varnothing$。
+2. 疎集合の部分集合、有限個の疎集合の和は疎である。
+3. 第一類集合の部分集合、可算個の第一類集合の和は第一類である（後半は可算選択公理を使う）。
+:::
+
+::: proof
+**1.** 双対性から $X\setminus\overline{X\setminus\overline{N}}=\operatorname{int}\overline{N}$ なので、$X\setminus\overline{N}$（開）が稠密 $\iff\operatorname{int}\overline{N}=\varnothing$。閉集合なら $\overline{F}=F$。
+
+**2.** 部分集合 $M\subseteq N$ なら $\operatorname{int}\overline{M}\subseteq\operatorname{int}\overline{N}$。二つの場合：$N_{1},N_{2}$ を疎とし、$O_{i}\defeq X\setminus\overline{N_{i}}$ は稠密開。$O_{1}\cap O_{2}$ も稠密である：空でない開集合 $W$ は $O_{1}$ と交わり、$W\cap O_{1}$ は空でない開集合なので $O_{2}$ とも交わる。$X\setminus\overline{N_{1}\cup N_{2}}=O_{1}\cap O_{2}$（有限和の閉包は閉包の和）なので、1 から $N_{1}\cup N_{2}$ は疎。有限個は帰納法。
+
+**3.** 部分集合は、疎集合の可算和 $\bigcup N_{k}$ に含まれれば $\bigcup(N_{k}\cap M)$ で、2 から各項は疎。可算和：$M_{n}$ ごとに疎集合の列 $(N_{n,k})_{k}$ を選び（可算選択）、$\bigcup_{n,k}N_{n,k}$ は $\N\times\N$ で添字づけられた疎集合の可算和。
+:::
+
+::: definition ベール空間 {#top:baire-space keywords="Baire space" index="ベール空間|べーるくうかん"}
+位相空間 $X$ が**ベール空間**であるとは、可算個の稠密開集合の共通部分がつねに稠密であることをいう。
+:::
+
+::: proposition ベール空間の言い換え {#top:baire-space-equivalents keywords="Baire iff nonempty open sets are nonmeager iff countable unions of closed sets with empty interior have empty interior" index="ベール空間の言い換え|べーるくうかんのいいかえ"}
+位相空間 $X$ について次は同値である。
+1. $X$ はベール空間。
+2. 内部が空の閉集合の可算和は、内部が空である。
+3. 空でない開集合は第二類である（この 3 との同値には可算選択公理は要らない）。
+:::
+
+::: proof
+**1 ⇔ 2.** 閉集合 $F_{n}$ と開集合 $U_{n}\defeq X\setminus F_{n}$ を対応させる。$\operatorname{int}F_{n}=\varnothing\iff U_{n}$ が稠密（双対性）。また $\operatorname{int}\bigcup F_{n}=\varnothing\iff X\setminus\bigcup F_{n}=\bigcap U_{n}$ が稠密。
+
+**2 ⇒ 3.** 空でない開集合 $W$ が疎集合の和 $\bigcup N_{n}$ なら、$W\subseteq\bigcup\overline{N_{n}}$ で各 $\overline{N_{n}}$ は内部が空の閉集合。2 から $\operatorname{int}\bigcup\overline{N_{n}}=\varnothing$ だが、これは $W$ を含むので矛盾。
+
+**3 ⇒ 2.** 内部が空の閉集合 $F_{n}$ の和の内部 $W$ が空でなければ、$W=\bigcup(W\cap F_{n})$ は疎集合の可算和（\ref{top:meager-basic} の 2）で、3 に反する。
+:::
+
+## ベールのカテゴリー定理 {#top:sec-bai-theorem}
+
+::: theorem ベールのカテゴリー定理 {#top:baire-category keywords="Baire category theorem: complete metric spaces and locally compact Hausdorff spaces are Baire spaces" index="ベールのカテゴリー定理|べーるのかてごりーていり, ベールの範疇定理|べーるのはんちゅうていり"}
+次の空間はベール空間である（DC を使う）。
+1. 完備距離空間。
+2. 局所コンパクトなハウスドルフ空間（とくにコンパクトハウスドルフ空間）。
+:::
+
+::: proof
+稠密開集合の列 $(U_{n})_{n\ge1}$ と空でない開集合 $W$ をとり、$W\cap\bigcap_{n}U_{n}\neq\varnothing$ を示す（\ref{top:dense-characterization}）。
+
+**1.** 閉球を $\bar{B}(x,r)\defeq\{y:d(x,y)\le r\}$ と書く（閉集合で、$\overline{B(x,r)}\subseteq\bar{B}(x,r)$）。帰納的に点 $x_{n}$ と半径 $0<r_{n}<1/n$ を選び、
+$$
+\bar{B}(x_{1},r_{1})\subseteq W\cap U_{1},\qquad \bar{B}(x_{n+1},r_{n+1})\subseteq B(x_{n},r_{n})\cap U_{n+1}
+$$
+となるようにする。各段は可能である：$U_{1}$ は稠密なので空でない開集合 $W\cap U_{1}$ の点 $x_{1}$ があり、開集合なので十分小さい $r_{1}$ で閉球が中に入る（$r$ を半分にすれば閉球は開球 $B(x_{1},2r)$ に含まれる）。次の段も、空でない開集合 $B(x_{n},r_{n})\cap U_{n+1}$ について同様（$U_{n+1}$ の稠密性）。選択は前の段に依存するので DC を使う。
+
+$m>n$ なら $x_{m}\in B(x_{n},r_{n})$ なので $d(x_{m},x_{n})<r_{n}<1/n$。よって $(x_{n})$ はコーシー列で、完備性からある $x$ に収束する。$m\ge n+1$ の $x_{m}$ はすべて閉集合 $\bar{B}(x_{n+1},r_{n+1})$ に入るので、極限 $x$ も入る。$\bar{B}(x_{n+1},r_{n+1})\subseteq U_{n+1}$、また $\bar{B}(x_{n+1},r_{n+1})\subseteq B(x_{1},r_{1})\subseteq W\cap U_{1}$（帰納的に入れ子）なので、$x\in W\cap\bigcap_{n}U_{n}$。
+
+**2.** 帰納的に、閉包がコンパクトな空でない開集合 $V_{n}$ を、
+$$
+\overline{V_{1}}\subseteq W\cap U_{1},\qquad \overline{V_{n+1}}\subseteq V_{n}\cap U_{n+1}
+$$
+となるように選ぶ。各段は可能である：$V_{n}\cap U_{n+1}$ は空でない開集合（$U_{n+1}$ の稠密性）なので、その点 $y$ をとり、\ref{top:lch-neighborhood-base} から $y\in V\subseteq\overline{V}\subseteq V_{n}\cap U_{n+1}$ かつ $\overline{V}$ コンパクトとなる開集合 $V$ をとる（最初の段では $W\cap U_{1}$ について同様）。DC を使う。
+
+$(\overline{V_{n}})_{n}$ はコンパクト集合 $\overline{V_{1}}$ の中の空でない閉集合の減少列なので、有限交叉性（\ref{top:compact-equivalents}）から共通部分に点 $x$ がある。$x\in\overline{V_{n+1}}\subseteq U_{n+1}$ が各 $n$ で、$x\in\overline{V_{1}}\subseteq W\cap U_{1}$ なので、$x\in W\cap\bigcap_{n}U_{n}$。
+
+::: hypcheck
+- **完備性**（1）：中心の列の極限の存在に使った。$\mathbb{Q}$ は完備でなく、実際ベール空間でない（$\mathbb{Q}=\bigcup_{q}\{q\}$ で各一点は疎）。
+- **閉球の入れ子**（1）：極限が各 $U_{n}$ に入ることを保証するために、開球ではなく閉球を次の開集合の中に入れた。
+- **局所コンパクト・ハウスドルフ**（2）：閉包がコンパクトな開近傍が、任意の開集合の中にとれることに使った（\ref{top:lch-neighborhood-base}）。
+- **DC**：両方の場合で、前の段に依存した可算回の選択に使った。
+:::
+:::
+
+::: example
+1. $\R^{n}$、$[0,1]$、カントール集合、完備な関数空間 $C([0,1],\R)$（\ref{top:bounded-functions-complete}）はベール空間である。
+2. $\mathbb{Q}$ は $\R$ の $G_{\delta}$ 集合でない：$\mathbb{Q}=\bigcap_{n}U_{n}$（$U_{n}$ 開）なら、各 $U_{n}$ は $\mathbb{Q}$ を含むので稠密開。$\mathbb{Q}=\{q_{1},q_{2},\ldots\}$ と数え上げると、$\R\setminus\{q_{k}\}$ も稠密開で、$\bigcap_{n}U_{n}\cap\bigcap_{k}(\R\setminus\{q_{k}\})=\varnothing$ は、可算個の稠密開集合の共通部分が空であることを意味し、\ref{top:baire-category} に反する。
+:::
+
+## 応用 {#top:sec-bai-applications}
+
+::: corollary 孤立点のない完備距離空間は非可算 {#top:perfect-complete-uncountable keywords="a nonempty complete metric space without isolated points is uncountable; R is uncountable" index="完備距離空間の非可算性|かんびきょりくうかんのひかさんせい"}
+空でない完備距離空間 $X$ が孤立点（$\{x\}$ が開集合となる点 $x$）をもたなければ、$X$ は非可算である（DC を使う）。とくに $\R$ は非可算である。
+:::
+
+::: proof
+$X=\{x_{1},x_{2},\ldots\}$（有限の場合も含む）と数え上げられたとする。一点集合は閉（\ref{top:metric-normal}）で、孤立点がないので内部が空、すなわち疎である。すると $X$ は疎集合の可算和となり、$X$ 自身が空でない開集合なので \ref{top:baire-space-equivalents} の 3 と \ref{top:baire-category} に反する。
+:::
+
+::: theorem 一様有界性原理（オスグッドの定理） {#top:uniform-boundedness-baire keywords="a pointwise bounded family of continuous real functions on a complete metric space is uniformly bounded on some nonempty open set" index="一様有界性原理|いちようゆうかいせいげんり, オスグッドの定理|おすぐっどのていり"}
+$X$ を空でないベール空間（たとえば完備距離空間）とし、$\mathcal{F}$ を連続関数 $X\to\R$ の族で、各点 $x$ で $\sup_{f\in\mathcal{F}}\lvert f(x)\rvert<\infty$ となるものとする。このとき空でない開集合 $W$ と $M$ があって、すべての $f\in\mathcal{F}$, $x\in W$ で $\lvert f(x)\rvert\le M$ となる。
+:::
+
+::: proof
+$F_{n}\defeq\{x:\text{すべての }f\in\mathcal{F}\text{ で }\lvert f(x)\rvert\le n\}=\bigcap_{f\in\mathcal{F}}f^{-1}\bigl[[-n,n]\bigr]$ は閉集合の共通部分なので閉。各点で上限が有限なので $X=\bigcup_{n}F_{n}$。$X$ の内部は $X\neq\varnothing$ なので、\ref{top:baire-space-equivalents} の 2 から、ある $F_{n}$ の内部 $W$ は空でない。$M\defeq n$。
+
+::: hypcheck
+- **ベール性**：ある $F_{n}$ が内点をもつことに使った。$X$ が $\mathbb{Q}$ なら結論は成り立たないことがある。
+- **連続性**：$F_{n}$ が閉であることに使った。
+- **選択公理**：本定理の証明自体では使っていない（ベール性を仮定した形）。$X$ が完備距離空間であることからベール性を得る段階で DC を使う。
+:::
+:::
+
+::: supplement
+**前提を変えると.** ベール空間の開部分空間はベール空間であり、完備距離空間の $G_{\delta}$ 部分空間（完備距離化可能な空間。\nameref{top:page-completeness} の補足）もベール空間である。一方、ベール空間の直積はベール空間とは限らないことが知られている（J. C. Oxtoby の 1961 年の論文に始まる研究がある。ここでは扱わない）。
+
+**選択公理について.** $\ZF$ 上で、「完備距離空間はベール空間である」は DC と同値であることが知られている（C. E. Blair, 1977）。
+
+**類似の定理.** 関数解析では、本定理から**一様有界性原理**（バナッハ–シュタインハウスの定理）、**開写像定理**、**閉グラフ定理**が導かれる。また、$C([0,1],\R)$ の中で「どの点でも微分可能でない関数」全体は剰余集合であり、とくに空でない（バナッハ、マズルキェヴィチ、1931 年）。これは、具体的な例（ワイエルシュトラス関数）を作らずに存在を示す典型例である。
+
+**測度との比較.** 「小さい集合」の二つの概念、第一類（位相的）とルベーグ測度 $0$（測度論的）は一致しない。$\R$ は第一類集合と測度 $0$ の集合の和に分けられる（問題 \ref{top:prob-meager-null}）。
+:::
+
+::: intuition 高い視点から：ジェネリックな点
+ベールのカテゴリー定理の証明は、「可算個の要求（$U_{n}$ に入れ）を、一つずつ、小さな開集合に絞り込みながら満たしていく」という構成である。最後に残る点は、可算個の稠密な条件をすべて満たす「ジェネリック（一般的）な点」である。剰余集合に属する性質は「典型的な点はみなもっている性質」と考えられる。
+
+この見方は集合論の強制法（forcing）と同じ構造をもつ：マーティンの公理（\ref{set:ma-baire}）は「可算個」を「$\kappa$ 個」に拡げた主張であり、強制法のジェネリックフィルターは、ある半順序のすべての稠密集合と交わるフィルターである。比喩で言えば、床に可算本のひびが入っていても、床全体がひびで埋まることはない。どの小さな範囲を見ても、ひびのない場所が必ず残っている。
+:::
+
+## 問題 {#top:sec-bai-problems}
+
+::: problem {#top:prob-meager-null}
+$\R$ は、第一類集合 $A$ と、次の意味で測度 $0$ の集合 $N$ の和に分けられることを示せ：任意の $\varepsilon>0$ に対し、長さの総和が $\varepsilon$ 以下の可算個の開区間で $N$ を覆える。
+:::
+
+::: solution
+$\mathbb{Q}=\{q_{1},q_{2},\ldots\}$ と数え上げ、$k\ge1$ について
+$$
+U_{k}\defeq\bigcup_{n\ge1}\bigl(q_{n}-2^{-n-k},\ q_{n}+2^{-n-k}\bigr)
+$$
+とおく。$U_{k}$ は $\mathbb{Q}$ を含む開集合なので稠密開で、$\R\setminus U_{k}$ は疎な閉集合（\ref{top:meager-basic} の 1）。$N\defeq\bigcap_{k}U_{k}$, $A\defeq\R\setminus N=\bigcup_{k}(\R\setminus U_{k})$ とおけば $A$ は第一類。$N\subseteq U_{k}$ で、$U_{k}$ を作る区間の長さの総和は $\sum_{n}2\cdot2^{-n-k}=2^{1-k}$ なので、$k$ を大きくとれば $\varepsilon$ 以下になる。（区間の列は明示的に与えたので、選択公理は使っていない。）
+:::
+
+::: problem {#top:prob-countable-complete-isolated}
+空でない可算な完備距離空間は孤立点をもつことを示せ。さらに、孤立点全体の集合は稠密であることを示せ。
+:::
+
+::: solution
+前半は \ref{top:perfect-complete-uncountable} の対偶。後半：空でない開集合 $W$ をとり、$W$ の中に孤立点があることを示す。$X=\{x_{1},x_{2},\ldots\}$ とすると、$W=\bigcup_{n}(W\cap\{x_{n}\})$。$X$ はベール空間なので、\ref{top:baire-space-equivalents} の 3 から $W$ は第一類でなく、ある一点集合 $\{x_{n}\}\subseteq W$ は疎でない。一点集合は閉なので $\operatorname{int}\{x_{n}\}\neq\varnothing$、すなわち $\{x_{n}\}$ は開で、$x_{n}$ は $W$ の中の孤立点である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

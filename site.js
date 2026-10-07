@@ -155,13 +155,14 @@
         if (c.k === 'd' && !hasPages(c)) return;
         if (c.k === 'd' && c.s) { html += node(c, depth); return; }
         if (c.k === 'd') {
-          var here = PAGE.indexOf(c.path) === 0, empty = !hasPages(c), kids = (c.c || []).length > 0;
-          html += '<details class="mn-tree-dir' + (empty ? ' is-empty' : '') + '" data-depth="' + depth + '"' + (here ? ' open' : '') + '>' +
+          // c.x：別の場所にあるフォルダの写し（_meta.json の "also"）。開いた状態にはせず、印を付ける
+          var here = !c.x && PAGE.indexOf(c.path) === 0, empty = !hasPages(c), kids = (c.c || []).length > 0;
+          html += '<details class="mn-tree-dir' + (empty ? ' is-empty' : '') + (c.x ? ' is-also' : '') + '" data-depth="' + depth + '"' + (here ? ' open' : '') + '>' +
             '<summary tabindex="-1">' +
               (kids ? '<button type="button" class="mn-tree-toggle" aria-expanded="' + here + '" aria-label="' + esc(c.title) + ' を展開">' + CHEVRON + '</button>'
                     : '<span class="mn-tree-spacer" aria-hidden="true"></span>') +
               '<a class="mn-tree-link" href="' + ROOT + c.path + 'index.html"' + (PAGE === c.path + 'index.html' ? ' aria-current="page"' : '') +
-                (empty ? ' title="まだページがありません"' : '') + '>' + esc(c.title) + '</a></summary>' +
+                (empty ? ' title="まだページがありません"' : (c.x ? ' title="別の分野にある系列（関連として表示）"' : '')) + '>' + esc(c.title) + '</a></summary>' +
             '<div class="mn-tree-children">' + node(c, depth + 1) + '</div></details>';
         } else {
           var p = IDX.pages[c.i];

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>完備性と完備化 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54E-richer-structures/01-metric-spaces/01-completeness.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 完備性と完備化 {#top:page-completeness keywords="Cauchy sequence, complete metric space, Cantor intersection theorem, completeness of function spaces, uniformly continuous extension, completion, Banach fixed point theorem"}
+
+距離空間の点列が「互いに近づいていく」（コーシー列）のに収束先がない、ということが起こりうる。$\mathbb{Q}$ で $\sqrt{2}$ に近づく有理数列がその例である。コーシー列がすべて収束する空間を**完備**という（\ref{top:complete-metric}）。完備性は解析学の存在定理（縮小写像の不動点定理 \ref{top:banach-fixed-point}、ベールのカテゴリー定理など）の土台である。また、どの距離空間も、完備な空間の稠密な部分空間として「穴を埋める」ことができ、その埋め方は本質的に一意である（**完備化**、\ref{top:completion}）。
+
+> 資料：内田伏一『集合と位相』§26。完備化の構成は、コーシー列の同値類による方法ではなく、有界連続関数の空間への埋め込み（クラトフスキー埋め込み）を用いた。文章は本サイトで書き下ろした。
+
+## 記法と定義の確認 {#top:sec-cpl-notation}
+
+::: notation
+- 距離空間 $(X,d)$ と距離位相、開球 $B(x,\varepsilon)$ は \ref{top:metric-topology} のとおり。点列 $(x_{n})$ が $x$ に収束する（$x_{n}\to x$）ことは、$d(x_{n},x)\to0$ と同値である（開球が基本近傍系をなすため）。
+- 距離空間は第一可算なので、閉包や連続性は点列で判定できる（\ref{top:sequences-first-countable}。可算選択公理を使う）。
+- 部分集合 $A$ の**直径**を $\operatorname{diam}A\defeq\sup\{d(x,y):x,y\in A\}$（$A=\varnothing$ なら $0$）とし、$\operatorname{diam}A<\infty$ のとき $A$ は**有界**という。
+- 写像 $f\colon(X,d)\to(Y,e)$ が**一様連続**であるとは、任意の $\varepsilon>0$ に対し $\delta>0$ があって、$d(x,y)<\delta\Rightarrow e(f(x),f(y))<\varepsilon$ がすべての $x,y$ で成り立つことをいう。$e(f(x),f(y))=d(x,y)$ がつねに成り立つとき、$f$ を**等長写像**という（等長写像は単射で一様連続）。
+- 議論は $\ZF$ で行い、選択公理（とくに可算選択公理）を使う箇所は明記する。
+:::
+
+## コーシー列と完備性 {#top:sec-cpl-complete}
+
+::: definition コーシー列・完備 {#top:complete-metric keywords="Cauchy sequence, complete metric space" index="コーシー列|こーしーれつ, 完備|かんび, 完備距離空間|かんびきょりくうかん"}
+距離空間 $(X,d)$ の点列 $(x_{n})$ が**コーシー列**であるとは、任意の $\varepsilon>0$ に対し $N$ があって、$m,n\ge N$ なら $d(x_{m},x_{n})<\varepsilon$ となることをいう。すべてのコーシー列が（$X$ の点に）収束するとき、$(X,d)$ は**完備**であるという。
+:::
+
+::: proposition コーシー列の基本性質 {#top:cauchy-basic keywords="convergent sequences are Cauchy; Cauchy sequences are bounded; a Cauchy sequence with a convergent subsequence converges" index="コーシー列の性質|こーしーれつのせいしつ"}
+1. 収束する点列はコーシー列である。
+2. コーシー列は有界である。
+3. コーシー列が収束する部分列をもてば、もとの点列も同じ点に収束する。
+:::
+
+::: proof
+**1.** $x_{n}\to x$ なら、$\varepsilon>0$ について $n\ge N\Rightarrow d(x_{n},x)<\varepsilon/2$ となる $N$ をとると、$m,n\ge N$ で $d(x_{m},x_{n})\le d(x_{m},x)+d(x,x_{n})<\varepsilon$。
+
+**2.** $\varepsilon=1$ の $N$ をとると、$n\ge N$ で $d(x_{n},x_{N})<1$。$R\defeq\max\{d(x_{1},x_{N}),\ldots,d(x_{N-1},x_{N}),1\}$ とおけば、すべての点が $x_{N}$ から距離 $R$ 以内にあり、直径は $2R$ 以下。
+
+**3.** 部分列 $x_{n_{k}}\to x$ とする。$\varepsilon>0$ について、$m,n\ge N\Rightarrow d(x_{m},x_{n})<\varepsilon/2$ となる $N$ と、$k\ge K\Rightarrow d(x_{n_{k}},x)<\varepsilon/2$ となる $K$ をとる。$n\ge N$ について、$k\ge K$ かつ $n_{k}\ge N$ となる $k$ をとれば（$n_{k}\to\infty$）、$d(x_{n},x)\le d(x_{n},x_{n_{k}})+d(x_{n_{k}},x)<\varepsilon$。
+:::
+
+::: theorem 実数の完備性 {#top:reals-complete keywords="R and R^n are complete; Q is not" index="実数の完備性|じっすうのかんびせい"}
+1. $\R$（通常の距離 $\lvert x-y\rvert$）は完備である。
+2. $\R^{n}$（ユークリッド距離）は完備である。
+3. $\mathbb{Q}$（$\R$ の部分空間としての距離）は完備でない。
+:::
+
+::: proof
+**1.** 実数の連続性（上に有界な空でない集合は上限をもつ）を使う。コーシー列 $(x_{n})$ は有界（\ref{top:cauchy-basic} の 2）なので、$a_{n}\defeq\inf_{k\ge n}x_{k}$ が存在する。$(a_{n})$ は単調非減少で上に有界なので、上限 $L$ をもち $a_{n}\to L$（$\varepsilon>0$ について $a_{N}>L-\varepsilon$ となる $N$ があり、$n\ge N$ で $L-\varepsilon<a_{N}\le a_{n}\le L$）。次に、$\varepsilon>0$ について $m,n\ge N\Rightarrow\lvert x_{m}-x_{n}\rvert<\varepsilon$ となる $N$ をとると、$n\ge N$ で $x_{k}>x_{n}-\varepsilon$（$k\ge n$）なので $x_{n}-\varepsilon\le a_{n}\le x_{n}$、すなわち $\lvert x_{n}-a_{n}\rvert\le\varepsilon$。よって
+$$
+\lvert x_{n}-L\rvert\le\lvert x_{n}-a_{n}\rvert+\lvert a_{n}-L\rvert\to0
+$$
+となる（前の項は $\varepsilon$ 以下で $\varepsilon$ は任意）。
+
+**2.** 点 $x=(x^{(1)},\ldots,x^{(n)})$ について $\lvert x^{(i)}-y^{(i)}\rvert\le d(x,y)\le\sum_{i}\lvert x^{(i)}-y^{(i)}\rvert$。前の不等式から $\R^{n}$ のコーシー列の各成分は $\R$ のコーシー列で、1 から収束する。後の不等式から、成分ごとの極限を並べた点にもとの列が収束する。
+
+**3.** $\sqrt{2}$ の小数第 $n$ 位までの近似 $q_{n}\in\mathbb{Q}$ は $\R$ で $\sqrt{2}$ に収束するので、コーシー列（1 の性質は $\R$ の中で成り立ち、距離は同じ）。$\mathbb{Q}$ の点 $q$ に収束すれば、$\R$ でも $q$ に収束し、ハウスドルフ空間の極限の一意性（\ref{top:hausdorff-unique-limits}）から $q=\sqrt{2}$ となり、$\sqrt{2}$ の無理性に反する。
+:::
+
+::: example 完備性は位相的性質でない
+$(0,1)$ と $\R$ は同相（たとえば $t\mapsto\tan(\pi(t-1/2))$）だが、$(0,1)$ は通常の距離で完備でない（$1/n$ は $(0,1)$ でコーシー列だが、収束先 $0$ は $(0,1)$ にない）。$\R$ は完備である。したがって完備性は距離に依存し、同相写像で保たれない。
+:::
+
+::: proposition 部分空間の完備性 {#top:complete-closed keywords="closed subspaces of complete spaces are complete; complete subspaces are closed" index="完備な部分空間|かんびなぶぶんくうかん"}
+$(X,d)$ を距離空間、$A\subseteq X$ とし、$A$ には $d$ の制限を入れる。
+1. $X$ が完備で $A$ が閉なら、$A$ は完備。
+2. $A$ が完備なら、$A$ は $X$ で閉（可算選択公理を使う）。
+:::
+
+::: proof
+**1.** $A$ のコーシー列は $X$ のコーシー列なので、ある $x\in X$ に収束する。$x$ の各近傍は列の点（$A$ の点）を含むので $x\in\overline{A}=A$（\ref{top:closure-neighborhood}）。
+
+**2.** $x\in\overline{A}$ なら、$A$ の点列 $a_{n}\to x$ がある（\ref{top:sequences-first-countable}。可算選択）。収束列なのでコーシー列（\ref{top:cauchy-basic} の 1）で、$A$ の完備性からある $a\in A$ に収束する。極限の一意性から $x=a\in A$。
+:::
+
+::: theorem カントールの共通部分定理 {#top:cantor-intersection keywords="Cantor intersection theorem: completeness iff nested closed sets with diameters tending to 0 have nonempty intersection" index="カントールの共通部分定理|かんとーるのきょうつうぶぶんていり"}
+距離空間 $(X,d)$ について次は同値である。
+1. $X$ は完備。
+2. 空でない閉集合の減少列 $F_{1}\supseteq F_{2}\supseteq\cdots$ で $\operatorname{diam}F_{n}\to0$ となるものについて、$\bigcap_{n}F_{n}$ はちょうど一点からなる。
+
+1 ⇒ 2 には可算選択公理を使う。
+:::
+
+::: proof
+**1 ⇒ 2.** 各 $n$ で $x_{n}\in F_{n}$ を選ぶ（可算選択）。$m,n\ge N$ なら $x_{m},x_{n}\in F_{N}$ なので $d(x_{m},x_{n})\le\operatorname{diam}F_{N}\to0$、よってコーシー列で、ある $x$ に収束する。各 $N$ について、$n\ge N$ の $x_{n}$ は閉集合 $F_{N}$ に属するので $x\in F_{N}$。よって $x\in\bigcap F_{n}$。二点 $x,y$ が共通部分にあれば $d(x,y)\le\operatorname{diam}F_{n}\to0$ で $x=y$。
+
+**2 ⇒ 1.** コーシー列 $(x_{n})$ について $F_{n}\defeq\overline{\{x_{k}:k\ge n\}}$ とおく。空でない閉集合の減少列で、閉包をとっても直径は変わらない（距離の連続性）ので $\operatorname{diam}F_{n}=\sup_{k,l\ge n}d(x_{k},x_{l})\to0$。2 から $\bigcap F_{n}=\{x\}$。$x_{n},x\in F_{n}$ なので $d(x_{n},x)\le\operatorname{diam}F_{n}\to0$。
+:::
+
+## 関数空間の完備性 {#top:sec-cpl-function-spaces}
+
+::: theorem 有界写像の空間の完備性 {#top:bounded-functions-complete keywords="the space of bounded maps into a complete metric space with the sup metric is complete; bounded continuous maps form a closed subspace" index="一様距離|いちようきょり, 有界連続関数の空間|ゆうかいれんぞくかんすうのくうかん"}
+$S$ を集合、$(Y,e)$ を完備距離空間とし、$B(S,Y)$ を $S$ から $Y$ への有界な写像（像が有界）全体に一様距離
+$$
+\rho(f,g)\defeq\sup_{s\in S}e\bigl(f(s),g(s)\bigr)
+$$
+を入れた距離空間とする（$S=\varnothing$ なら $B(S,Y)$ は一点）。
+1. $B(S,Y)$ は完備である。
+2. $S$ が位相空間なら、連続な有界写像全体 $C_{b}(S,Y)$ は $B(S,Y)$ の閉集合であり、したがって完備である。
+:::
+
+::: proof
+$\rho$ が距離であることは、$e$ の性質を各点で使い上限をとればよい（有界性から $\rho<\infty$）。
+
+**1.** $(f_{n})$ をコーシー列とする。各 $s$ で $e(f_{m}(s),f_{n}(s))\le\rho(f_{m},f_{n})$ なので $(f_{n}(s))$ は $Y$ のコーシー列で、極限 $f(s)$ が一意に定まる（選択は不要）。$\varepsilon>0$ について $m,n\ge N\Rightarrow\rho(f_{m},f_{n})<\varepsilon$ となる $N$ をとる。$n\ge N$ と $s\in S$ について、$m\to\infty$ とすれば（距離の連続性）$e(f(s),f_{n}(s))\le\varepsilon$。よって $f$ は有界（$f_{N}$ の像の $\varepsilon$ 近傍に入る）で、$n\ge N$ で $\rho(f,f_{n})\le\varepsilon$。$f_{n}\to f$。
+
+**2.** 閉包の点 $f\in\overline{C_{b}(S,Y)}$ をとる（点列を使わず近傍で議論する）。$s_{0}\in S$, $\varepsilon>0$ について、$\rho(f,g)<\varepsilon/3$ となる $g\in C_{b}(S,Y)$ がある（\ref{top:closure-neighborhood}）。$g$ の連続性から $s_{0}$ の近傍 $V$ で $s\in V\Rightarrow e(g(s),g(s_{0}))<\varepsilon/3$ となるものがあり、$s\in V$ なら
+$$
+e(f(s),f(s_{0}))\le\tfrac{\varepsilon}{3}+e(g(s),g(s_{0}))+\tfrac{\varepsilon}{3}<\varepsilon
+$$
+よって $f$ は連続。1 と \ref{top:complete-closed} の 1 から $C_{b}(S,Y)$ は完備。
+:::
+
+## 一様連続写像の延長と完備化 {#top:sec-cpl-completion}
+
+::: theorem 一様連続写像の延長 {#top:uniform-extension keywords="uniformly continuous maps on dense subsets extend uniquely to the closure when the target is complete" index="一様連続写像の延長|いちようれんぞくしゃぞうのえんちょう"}
+$(X,d)$ を距離空間、$D\subseteq X$ を稠密な部分集合、$(Y,e)$ を完備距離空間とし、$f\colon D\to Y$ を一様連続とする。このとき連続写像 $F\colon X\to Y$ で $F|_{D}=f$ となるものがただ一つあり、$F$ は一様連続である。$f$ が等長写像なら $F$ も等長写像である（存在には可算選択公理を使う）。
+:::
+
+::: proof
+**一意性.** 二つの延長は稠密な $D$ 上で一致し、$Y$ はハウスドルフ（\ref{top:metric-normal}）なので一致する（\ref{top:hausdorff-properties} の 2）。
+
+**存在.** $x\in X$ について、
+$$
+A_{n}(x)\defeq\overline{f\bigl[D\cap B(x,1/n)\bigr]}
+$$
+とおく。$D$ は稠密なので $A_{n}(x)\neq\varnothing$。$A_{n}(x)$ は $n$ について減少する閉集合列である。$\varepsilon>0$ に対し一様連続性の $\delta$ をとると、$2/n<\delta$ なら $D\cap B(x,1/n)$ の二点の距離は $\delta$ 未満なので、$\operatorname{diam}A_{n}(x)\le\varepsilon$。よって $\operatorname{diam}A_{n}(x)\to0$ で、カントールの共通部分定理（\ref{top:cantor-intersection}。可算選択）から $\bigcap_{n}A_{n}(x)$ はただ一点で、それを $F(x)$ とおく。
+
+- **延長**：$x\in D$ なら $f(x)\in A_{n}(x)$（$x\in D\cap B(x,1/n)$）なので $F(x)=f(x)$。
+- **一様連続**：$\varepsilon>0$ について、$d(u,v)<\delta\Rightarrow e(f(u),f(v))<\varepsilon$（$u,v\in D$）となる $\delta$ をとる。$d(x,y)<\delta/3$ とし、$n$ を $1/n<\delta/3$ ととる。$u\in D\cap B(x,1/n)$, $v\in D\cap B(y,1/n)$ なら $d(u,v)<\delta$ なので $e(f(u),f(v))<\varepsilon$。$F(x)\in A_{n}(x)$, $F(y)\in A_{n}(y)$ は、それぞれ $f(u)$, $f(v)$ の形の点の極限なので、$e(F(x),F(y))\le\varepsilon$。
+- **等長性**：$f$ が等長なら、上と同様に $u\to x$, $v\to y$ の極限をとって $e(F(x),F(y))=d(x,y)$（$e(f(u),f(v))=d(u,v)$ の両辺が連続に依存する）。
+:::
+
+::: definition 完備化 {#top:completion keywords="completion of a metric space" index="完備化|かんびか"}
+距離空間 $X$ の**完備化**とは、完備距離空間 $\widehat{X}$ と等長写像 $\iota\colon X\to\widehat{X}$ の対で、$\iota[X]$ が $\widehat{X}$ で稠密なものをいう。
+:::
+
+::: theorem 完備化の存在と一意性 {#top:completion-exists keywords="every metric space has a completion, unique up to isometry; Kuratowski embedding" index="完備化の存在|かんびかのそんざい, クラトフスキー埋め込み|くらとふすきーうめこみ"}
+1. どの距離空間 $X$ にも完備化がある（選択公理を使わない）。
+2. $(\widehat{X},\iota)$, $(\widetilde{X},\kappa)$ が完備化なら、全単射な等長写像 $\theta\colon\widehat{X}\to\widetilde{X}$ で $\theta\circ\iota=\kappa$ となるものがある（可算選択公理を使う）。
+:::
+
+::: proof
+**1.** $X=\varnothing$ なら自明。点 $a\in X$ を固定し、$x\in X$ について
+$$
+\iota(x)\defeq d(x,\cdot)-d(a,\cdot)\colon X\to\R
+$$
+とおく。三角不等式から $\lvert d(x,z)-d(a,z)\rvert\le d(x,a)$ なので $\iota(x)$ は有界で、連続（$d(x,\cdot)$ は 1-リプシッツ）。よって $\iota(x)\in C_{b}(X,\R)$。一様距離について
+$$
+\rho(\iota(x),\iota(y))=\sup_{z}\lvert d(x,z)-d(y,z)\rvert=d(x,y)
+$$
+となる：三角不等式から上限は $d(x,y)$ 以下で、$z=y$ で等号。よって $\iota$ は等長写像。$C_{b}(X,\R)$ は完備（\ref{top:bounded-functions-complete}, \ref{top:reals-complete}）なので、閉包 $\widehat{X}\defeq\overline{\iota[X]}$ は完備（\ref{top:complete-closed} の 1）で、$\iota[X]$ はその中で稠密。
+
+**2.** $\kappa\circ\iota^{-1}\colon\iota[X]\to\widetilde{X}$ は等長なので、\ref{top:uniform-extension} から等長写像 $\theta\colon\widehat{X}\to\widetilde{X}$ に延長される。同様に $\iota\circ\kappa^{-1}$ の延長 $\theta'\colon\widetilde{X}\to\widehat{X}$ がある。$\theta'\circ\theta$ は $\iota[X]$ 上で恒等写像に一致するので、延長の一意性から $\theta'\circ\theta=\mathrm{id}$。同様に $\theta\circ\theta'=\mathrm{id}$。よって $\theta$ は全単射。
+
+::: hypcheck
+- **$Y$ の完備性**（\ref{top:uniform-extension}）：$\bigcap A_{n}(x)$ が空でないことに使った。$Y=\mathbb{Q}$ なら、$\mathbb{Q}$ 上の恒等写像は $\R$ に延長できない。
+- **一様連続性**：$\operatorname{diam}A_{n}(x)\to0$ に使った。単なる連続性では足りない：$f(x)=\sin(1/x)$ は $D=(0,1]$ 上連続だが、$X=[0,1]$ に延長できない。
+- **完備化の構成**：$\R$ の完備性と $C_{b}$ の完備性だけを使い、選択公理は使っていない。一意性では延長定理を通して可算選択を使った。
+:::
+:::
+
+## 縮小写像の不動点定理 {#top:sec-cpl-banach}
+
+::: theorem バナッハの不動点定理 {#top:banach-fixed-point keywords="Banach fixed point theorem, contraction mapping principle" index="バナッハの不動点定理|ばなっはのふどうてんていり, 縮小写像|しゅくしょうしゃぞう"}
+$(X,d)$ を空でない完備距離空間とし、$T\colon X\to X$ が**縮小写像**、すなわちある $0\le c<1$ で $d(Tx,Ty)\le c\,d(x,y)$ がすべての $x,y$ で成り立つとする。このとき $T$ はただ一つの不動点 $x^{\ast}$ をもち、任意の $x_{0}$ から $x_{n+1}\defeq Tx_{n}$ で作った点列は $x^{\ast}$ に収束する。
+:::
+
+::: proof
+**一意性.** $Tx=x$, $Ty=y$ なら $d(x,y)\le c\,d(x,y)$ で、$c<1$ から $d(x,y)=0$。
+
+**存在.** $x_{0}$ を一つ固定する（$X\neq\varnothing$。一回の選択なので選択公理は要らない）。帰納法で $d(x_{n+1},x_{n})\le c^{n}d(x_{1},x_{0})$。$m>n$ なら三角不等式と等比級数の和から
+$$
+d(x_{m},x_{n})\le\sum_{k=n}^{m-1}c^{k}d(x_{1},x_{0})\le\frac{c^{n}}{1-c}\,d(x_{1},x_{0})
+$$
+で、右辺は $n\to\infty$ で $0$ に収束する。よってコーシー列で、完備性からある $x^{\ast}$ に収束する。$T$ は（リプシッツなので）連続で、$x_{n+1}=Tx_{n}\to Tx^{\ast}$、極限の一意性から $Tx^{\ast}=x^{\ast}$。
+
+::: hypcheck
+- **完備性**：$(x_{n})$ の極限の存在に使った。$X=(0,1]$, $Tx=x/2$ は縮小写像だが不動点がない。
+- **$c<1$ が一様であること**：$d(Tx,Ty)<d(x,y)$（$x\neq y$）だけでは足りない：$X=[1,\infty)$, $Tx=x+1/x$ は不動点をもたない。
+- **選択公理**：使っていない（点列は $T$ の反復で一意に決まる）。
+:::
+:::
+
+::: supplement
+**前提を変えると.** 位相空間 $X$ が、その位相を与える完備な距離をもつとき**完備距離化可能**という。$(0,1)$ は通常の距離では完備でないが、$\R$ と同相なので完備距離化可能である（問題 \ref{top:prob-complete-metric-on-interval}）。完備距離空間の部分空間が完備距離化可能であることと、$G_{\delta}$ 集合（可算個の開集合の共通部分）であることは同値であることが知られている（R. Engelking, *General Topology* §4.3 を参照。ここでは証明しない）。たとえば無理数全体は完備距離化可能である。
+
+**類似の定理.** バナッハの不動点定理は、常微分方程式の解の存在と一意性（ピカール–リンデレーフの定理）や陰関数定理の証明に使われる。コンパクトな距離空間上では、$d(Tx,Ty)<d(x,y)$（$x\neq y$）だけで不動点の存在と一意性が言える（エーデルシュタインの定理）。
+
+**完備化の別構成.** 教科書では、コーシー列全体を「距離が $0$ に近づく」という同値関係で割る構成が多い。上の構成は、その代わりに完備な空間 $C_{b}(X,\R)$ の中の閉包をとった。どちらも一意性の定理から同じものを与える。
+:::
+
+::: intuition 高い視点から：完備化は反射
+距離空間と一様連続写像の圏で、完備距離空間のなす充満部分圏を考える。\ref{top:uniform-extension} は「$X$ から完備空間への一様連続写像は、$\widehat{X}$ を通してただ一通りに分解する」と言っており、完備化 $X\mapsto\widehat{X}$ は包含関手の左随伴、すなわち完備距離空間の部分圏は反射部分圏である（\ref{cat:reflective-subcategory}）。ストーン–チェックのコンパクト化（\ref{top:stone-cech}）と同じ形の普遍性である。
+
+比喩で言えば、完備化は「穴だけを埋め、余計なものは何も足さない」操作である。$\mathbb{Q}$ の数直線の無数の穴を埋めると $\R$ になり、それ以外のものは入らない（$\iota[X]$ が稠密）。さらに、F. W. Lawvere は距離空間を「距離を射とする圏」とみなし、コーシー列の完備化を圏の「コーシー完備化」の特別な場合として理解した（1973 年の論文。ここでは事実として紹介するにとどめる）。
+:::
+
+## 問題 {#top:sec-cpl-problems}
+
+::: problem {#top:prob-complete-metric-on-interval}
+$\varphi\colon(0,1)\to\R$ を同相写像とし、$d'(x,y)\defeq\lvert\varphi(x)-\varphi(y)\rvert$ とおく。$d'$ は $(0,1)$ 上の距離で、通常の位相を与え、完備であることを示せ。
+:::
+
+::: solution
+$d'$ が距離であることは、$\varphi$ が単射であることと $\R$ の距離の性質から従う。$\varphi$ は $((0,1),d')$ から $\R$ への全単射な等長写像なので、$d'$ の開球は $\varphi$ による $\R$ の開区間の逆像であり、$\varphi$ が通常の位相についての同相写像であることから、$d'$ の距離位相は通常の位相に一致する。$d'$ についてのコーシー列は $\varphi$ で $\R$ のコーシー列に移り、$\R$ で収束する（\ref{top:reals-complete}）。$\varphi^{-1}$ は等長なので、もとの列は $d'$ で収束する。
+:::
+
+::: problem {#top:prob-proper-complete}
+距離空間 $X$ で、有界な閉集合がすべてコンパクトならば、$X$ は完備であることを示せ（可算選択公理を使ってよい）。
+:::
+
+::: solution
+コーシー列 $(x_{n})$ は有界（\ref{top:cauchy-basic} の 2）なので、$K\defeq\overline{\{x_{n}:n\in\N\}}$ は有界な閉集合（閉包をとっても直径は変わらない）で、コンパクト。$F_{n}\defeq\overline{\{x_{k}:k\ge n\}}$ は $K$ の空でない閉集合の減少列なので、有限交叉性（\ref{top:compact-equivalents}）から $\bigcap F_{n}\neq\varnothing$。その点 $x$ について、\ref{top:cantor-intersection} の 2 ⇒ 1 と同じく $d(x_{n},x)\le\operatorname{diam}F_{n}\to0$。（この解答は選択公理を使っていない。）
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

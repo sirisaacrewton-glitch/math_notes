@@ -40,7 +40,7 @@ function walkDir(absDir, relDir, depth) {
     title: meta.title || (relDir ? stripPrefix(path.basename(absDir)) : CONFIG.SITE_TITLE),
     abbr: meta.abbr || meta.title || stripPrefix(path.basename(absDir)),
     en: meta.en || '', description: meta.description || '', intro: meta.intro || '',
-    msc: meta.msc || '', id: meta.id || '', prereq: meta.prereq || [], groups: meta.groups || null, children: []
+    msc: meta.msc || '', id: meta.id || '', prereq: meta.prereq || [], groups: meta.groups || null, also: meta.also || [], alsoKids: [], alsoIn: [], children: []
   };
   var entries = fs.readdirSync(absDir, { withFileTypes: true })
     .filter(function (e) { return e.name.charAt(0) !== '.' && e.name.charAt(0) !== '_'; })
@@ -100,6 +100,28 @@ var dirById = {};
   }
   node.children.forEach(function (c) { if (c.kind === 'dir') collect(c); });
 })(tree);
+
+// 別の場所にも表示する（_meta.json の "also"）。住所（フォルダの位置）はそのままで、
+// メニューと概要ページでは、指定した親フォルダの子としても表示する。
+// 指定はフォルダ id か、第 1・第 2 階層の分類記号（"18", "18A"）。
+(function resolveAlso() {
+  var byCode = {};
+  tree.children.forEach(function (d) {
+    if (d.kind !== 'dir') return;
+    byCode[d.name.split('-')[0]] = d;
+    d.children.forEach(function (e) { if (e.kind === 'dir') byCode[e.name.split('-')[0]] = e; });
+  });
+  (function walk(node) {
+    (node.also || []).forEach(function (t) {
+      var target = dirById[t] || byCode[t];
+      var where = node.path + '_meta.json';
+      if (!target) { warn(where, '"also" の行き先 "' + t + '" が見つかりません（フォルダ id か分類記号で書く）'); return; }
+      if (node.path.indexOf(target.path) === 0) { warn(where, '"also" の行き先 "' + t + '" は自分の祖先です（すでにその下に表示されています）'); return; }
+      target.alsoKids.push(node); node.alsoIn.push(target);
+    });
+    node.children.forEach(function (c) { if (c.kind === 'dir') walk(c); });
+  })(tree);
+})();
 
 /* ---------------- 索引語 ---------------- */
 // {term, reading} の配列。env の index="用語|よみ, …"、本文中の \index{用語|よみ}、定義環境の太字
@@ -483,11 +505,13 @@ function write(abs, content) {
   if (old !== content) fs.writeFileSync(abs, content);
 }
 
-function jsTree(node) {
+function jsTree(node, isAlso) {
+  // isAlso：別の場所への表示（"also"）として出す写し。x: 1 の印を付け、写しの中ではさらに写しを出さない
+  var c = node.children.map(function (c) { return c.kind === 'dir' ? jsTree(c, isAlso) : { k: 'p', i: c.idx }; });
+  if (!isAlso) node.alsoKids.forEach(function (a) { var t = jsTree(a, true); t.x = 1; c.push(t); });
   return {
     k: 'd', path: node.path, title: node.title, abbr: node.abbr, en: node.en, d: node.description,
-    s: node.solo ? 1 : undefined,
-    c: node.children.map(function (c) { return c.kind === 'dir' ? jsTree(c) : { k: 'p', i: c.idx }; })
+    s: node.solo ? 1 : undefined, c: c
   };
 }
 
@@ -497,6 +521,12 @@ function dirSource(node) {
   if (node.description) s += node.description + '\n\n';
   if (node.intro) s += node.intro + '\n\n';
   if (node.msc) s += '<p class="mn-msc">MSC2020: ' + Core.escapeHtml(node.msc) + '</p>\n\n';
+  if (node.alsoIn.length) {
+    var r0 = relRoot(node.path + 'index.html');
+    s += '<p class="mn-also">関連する分野：' + node.alsoIn.map(function (t) {
+      return '<a href="' + r0 + t.path + 'index.html">' + Core.escapeHtml(t.title) + '</a>';
+    }).join('、') + '（この系列はそこからも表示されます）</p>\n\n';
+  }
   s += prereqSource(node);
   var subdirs = node.children.filter(function (c) { return c.kind === 'dir'; });
   var leaves = node.children.filter(function (c) { return c.kind === 'page'; });
@@ -525,13 +555,22 @@ function dirSource(node) {
     }
     subdirs = [];
   }
-  if (subdirs.length) {
+  var alsoKids = node.path ? node.alsoKids : [];
+  if (subdirs.length || alsoKids.length) {
     s += '## 分野\n\n<div class="mn-cards">\n';
     subdirs.forEach(function (d) {
       var n = countPages(d);
       s += '<a class="mn-card" href="' + d.name + '/index.html"><span class="mn-card-title">' + Core.escapeHtml(d.title) +
         '</span>' + (d.en ? '<span class="mn-card-en">' + Core.escapeHtml(d.en) + '</span>' : '') +
         '<span class="mn-card-desc">' + Core.escapeHtml(d.description || '') + '</span><span class="mn-card-count">' + n + ' ページ</span></a>\n';
+    });
+    var r1 = relRoot(node.path + 'index.html');
+    alsoKids.forEach(function (d) {
+      var home = d.crumbs.filter(function (c) { return !c.s; }).slice(0, -1).map(function (c) { return c.title; }).join(' › ');
+      s += '<a class="mn-card mn-card-also" href="' + r1 + d.path + 'index.html"><span class="mn-card-title">' + Core.escapeHtml(d.title) +
+        '</span>' + (d.en ? '<span class="mn-card-en">' + Core.escapeHtml(d.en) + '</span>' : '') +
+        '<span class="mn-card-desc">' + Core.escapeHtml(d.description || '') + '</span><span class="mn-card-count">' +
+        countPages(d) + ' ページ・所在：' + Core.escapeHtml(home) + '</span></a>\n';
     });
     s += '</div>\n\n';
   }

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>クライスリ圏と比較関手 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/03-monads/02-kleisli.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# クライスリ圏と比較関手 {#cat:page-kleisli keywords="Kleisli category, Kleisli adjunction, Kleisli comparison functor, free algebras, category of adjunctions defining a monad, initial and terminal adjunction, partial functions, relations, word monad, free semigroup"}
+
+前ページ（\ref{cat:page-monads}）で、モナド $\mathsf{T}$ は代数の圏 $\mathbf{X}^{T}$ との随伴から得られ、$\mathsf{T}$ を定めるどの随伴からも $\mathbf{X}^{T}$ への比較関手がただ一つあることを見た。本ページでは逆の端を扱う。$\mathbf{X}$ の射 $x\to Ty$ を新しい射 $x\to y$ とみなす**クライスリ圏** $\mathbf{X}_{T}$（\ref{cat:kleisli-category}）もまた $\mathsf{T}$ を定める随伴を与え、$\mathsf{T}$ を定めるどの随伴へも $\mathbf{X}_{T}$ から比較関手がただ一つ出る（\ref{cat:kleisli-comparison}）。こうして、$\mathsf{T}$ を定める随伴の全体の中で、クライスリ圏は始、アイレンバーグ–ムーア圏は終の位置にある（\ref{cat:kleisli-em-initial-terminal}）。クライスリ圏は「自由代数だけからなる圏」で、プログラムの言葉では「副作用つきの関数」の圏である。
+
+> 資料：Mac Lane, *Categories for the Working Mathematician* 第 VI 章 §4–§5。Mac Lane が証明を略した部分（クライスリ圏が圏であること、比較関手の存在と一意性）は本サイトで補った。
+
+## 記法と定義の確認 {#cat:sec-kl-notation}
+
+::: notation
+- モナド $\mathsf{T}=(T,\eta,\mu)$、随伴が定めるモナド、T 代数、$\mathbf{X}^{T}$、$F^{T}\dashv G^{T}$、比較関手 $K$ は \ref{cat:monad}, \ref{cat:monad-from-adjunction}, \ref{cat:t-algebra}, \ref{cat:eilenberg-moore-adjunction}, \ref{cat:comparison-functor} のとおり。
+- 随伴 $(F,G,\varphi)$ の転置の全単射 $\varphi\colon\mathbf{A}(Fx,a)\cong\mathbf{X}(x,Ga)$ と、$\varphi(f)=Gf\circ\eta_{x}$、$\varphi^{-1}(g)=\varepsilon_{a}\circ Fg$ は \ref{cat:adjunction}, \ref{cat:triangle-identities} のとおり。
+:::
+
+## クライスリ圏 {#cat:sec-kl-kleisli}
+
+::: definition クライスリ圏 {#cat:kleisli-category keywords="Kleisli category, Kleisli composition, Kleisli arrows" index="クライスリ圏|くらいすりけん, クライスリ合成|くらいすりごうせい"}
+モナド $\mathsf{T}$ の**クライスリ圏** $\mathbf{X}_{T}$ の対象は $\mathbf{X}$ の対象、射 $x\rightsquigarrow y$ は $\mathbf{X}$ の射 $f\colon x\to Ty$ とする。合成と恒等射を
+$$
+g\circ_{T}f\defeq\mu_{z}\circ Tg\circ f\quad(f\colon x\to Ty,\ g\colon y\to Tz),\qquad1^{T}_{x}\defeq\eta_{x}
+$$
+で定める。
+:::
+
+::: proposition クライスリ圏は圏 {#cat:kleisli-is-category keywords="Kleisli composition is associative and unital" index="クライスリ圏の結合律|くらいすりけんのけつごうりつ"}
+$\mathbf{X}_{T}$ は圏である。
+:::
+
+::: proof
+**Step 1（左単位律）.** $\eta_{y}\circ_{T}f=\mu_{y}\circ T\eta_{y}\circ f=f$（モナドの単位律 $\mu\cdot T\eta=1$）。
+
+**Step 2（右単位律）.** $g\circ_{T}\eta_{y}=\mu_{z}\circ Tg\circ\eta_{y}=\mu_{z}\circ\eta_{Tz}\circ g=g$（$\eta$ の自然性 $Tg\circ\eta_{y}=\eta_{Tz}\circ g$ と単位律 $\mu\cdot\eta T=1$）。
+
+**Step 3（結合律）.** $h\colon z\to Tw$ も加えて、
+$$
+\begin{aligned}
+h\circ_{T}(g\circ_{T}f)&=\mu_{w}\circ Th\circ\mu_{z}\circ Tg\circ f\\
+&=\mu_{w}\circ\mu_{Tw}\circ T^{2}h\circ Tg\circ f\\
+&=\mu_{w}\circ T\mu_{w}\circ T^{2}h\circ Tg\circ f\\
+&=\mu_{w}\circ T(\mu_{w}\circ Th\circ g)\circ f=(h\circ_{T}g)\circ_{T}f.
+\end{aligned}
+$$
+2 行目は $\mu$ の自然性 $Th\circ\mu_{z}=\mu_{Tw}\circ T^{2}h$、3 行目はモナドの結合律、4 行目は $T$ の関手性。
+
+::: hypcheck
+- モナドの三つの公理と、$\eta$, $\mu$ の自然性をすべて使った（単位律は Step 1, 2、結合律と $\mu$ の自然性は Step 3、$\eta$ の自然性は Step 2）。
+:::
+:::
+
+::: theorem クライスリの随伴 {#cat:kleisli-adjunction keywords="Kleisli adjunction defines the monad" index="クライスリの随伴|くらいすりのずいはん"}
+$F_{T}\colon\mathbf{X}\to\mathbf{X}_{T}$、$G_{T}\colon\mathbf{X}_{T}\to\mathbf{X}$ を
+$$
+\begin{aligned}
+&F_{T}x\defeq x,&&F_{T}k\defeq\eta_{y}\circ k\quad(k\colon x\to y),\\
+&G_{T}y\defeq Ty,&&G_{T}f\defeq\mu_{y}\circ Tf\quad(f\colon x\to Ty)
+\end{aligned}
+$$
+で定めると、これらは関手で、恒等写像 $\mathbf{X}_{T}(F_{T}x,y)=\mathbf{X}(x,Ty)=\mathbf{X}(x,G_{T}y)$ は随伴 $F_{T}\dashv G_{T}$ を与える。この随伴が定めるモナドは $\mathsf{T}$ である。
+:::
+
+::: proof
+**Step 1（$F_{T}$ は関手）.** $F_{T}1_{x}=\eta_{x}=1^{T}_{x}$。$l\colon y\to z$ について
+$$
+F_{T}l\circ_{T}F_{T}k=\mu_{z}\circ T\eta_{z}\circ Tl\circ\eta_{y}\circ k=Tl\circ\eta_{y}\circ k=\eta_{z}\circ l\circ k=F_{T}(l\circ k)
+$$
+（単位律と $\eta$ の自然性）。
+
+**Step 2（$G_{T}$ は関手）.** $G_{T}\eta_{x}=\mu_{x}\circ T\eta_{x}=1_{Tx}$。$f\colon x\to Ty$, $g\colon y\to Tz$ について
+$$
+\begin{aligned}
+G_{T}(g\circ_{T}f)&=\mu_{z}\circ T\mu_{z}\circ T^{2}g\circ Tf=\mu_{z}\circ\mu_{Tz}\circ T^{2}g\circ Tf\\
+&=\mu_{z}\circ Tg\circ\mu_{y}\circ Tf=G_{T}g\circ G_{T}f
+\end{aligned}
+$$
+（結合律と $\mu$ の自然性）。
+
+**Step 3（全単射の自然性）.** $x$ について：$k\colon x'\to x$ と $f\colon x\to Ty$ について、$f\circ_{T}F_{T}k=\mu_{y}\circ Tf\circ\eta_{x}\circ k=\mu_{y}\circ\eta_{Ty}\circ f\circ k=f\circ k$。$y$ について：$g\colon y\to Tz$ について、$g\circ_{T}f=\mu_{z}\circ Tg\circ f=G_{T}g\circ f$。どちらも、恒等写像が両側の作用と両立することを言っている。
+
+**Step 4（モナド）.** 単位は $1_{F_{T}x}=\eta_{x}$ の転置で $\eta_{x}$。$G_{T}F_{T}=T$（$G_{T}F_{T}k=\mu\circ T\eta\circ Tk=Tk$）。余単位 $\varepsilon_{T,y}$ は $1_{Ty}$ を射 $Ty\rightsquigarrow y$ とみたもので、乗法は $G_{T}\varepsilon_{T,y}=\mu_{y}\circ T1=\mu_{y}$。
+:::
+
+::: example
+1. **部分写像.** $\mathbf{Set}$ のモナド $TX\defeq X\sqcup\{\bot\}$（$\eta$ は包含、$\mu$ は二つの $\bot$ を一つにまとめる）のクライスリ射 $X\to Y\sqcup\{\bot\}$ は、$X$ から $Y$ への**部分写像**（値が $\bot$ のところで未定義）である。クライスリ合成は、未定義を伝える部分写像の合成になる。よって $\mathbf{Set}_{T}$ は集合と部分写像の圏である。
+2. **関係.** 冪集合モナド $\mathcal{P}$ のクライスリ射 $X\to\mathcal{P}Y$ は関係 $R\subseteq X\times Y$（$x\mapsto\{y:xRy\}$）で、クライスリ合成 $\mu\circ\mathcal{P}g\circ f$ は $x\mapsto\bigcup\{g(y):y\in f(x)\}$、すなわち関係の合成である。$\mathbf{Set}_{\mathcal{P}}$ は集合と関係の圏 $\mathbf{Rel}$ である。
+3. **プログラムの副作用.** 関数型プログラミングでは、$x\to Ty$ を「副作用 $T$ をもつ関数」とみて、クライスリ合成で副作用を順につなぐ。例 1 は失敗しうる計算、例 2 は非決定的な計算に当たる。
+:::
+
+## 二つの比較関手 {#cat:sec-kl-comparison}
+
+::: theorem クライスリ圏からの比較関手 {#cat:kleisli-comparison keywords="Kleisli comparison functor, uniqueness" index="クライスリ比較関手|くらいすりひかくかんしゅ"}
+随伴 $(F,G,\eta,\varepsilon,\varphi)\colon\mathbf{X}\rightharpoonup\mathbf{A}$ が定めるモナドを $\mathsf{T}=(GF,\eta,G\varepsilon F)$ とする。関手 $L\colon\mathbf{X}_{T}\to\mathbf{A}$ で $GL=G_{T}$ かつ $LF_{T}=F$ となるものがただ一つあり、
+$$
+Lx\defeq Fx,\qquad Lf\defeq\varepsilon_{Fy}\circ Ff=\varphi^{-1}(f)\quad(f\colon x\to GFy).
+$$
+$L$ は充満忠実で、その像は自由な対象 $Fx$ からなる $\mathbf{A}$ の充満部分圏である。
+:::
+
+::: proof
+**Step 1（$L$ は関手）.** $L\eta_{x}=\varepsilon_{Fx}\circ F\eta_{x}=1_{Fx}$（三角等式）。$f\colon x\to Ty$, $g\colon y\to Tz$ について
+$$
+\begin{aligned}
+L(g\circ_{T}f)&=\varepsilon_{Fz}\circ FG\varepsilon_{Fz}\circ FGFg\circ Ff\\
+&=\varepsilon_{Fz}\circ\varepsilon_{FGFz}\circ FGFg\circ Ff\\
+&=\varepsilon_{Fz}\circ Fg\circ\varepsilon_{Fy}\circ Ff=Lg\circ Lf.
+\end{aligned}
+$$
+2 行目は $\varepsilon$ の自然性を射 $\varepsilon_{Fz}$ に、3 行目は射 $Fg$ に使った。
+
+**Step 2（二つの等式）.** $GLf=G\varepsilon_{Fy}\circ GFf=\mu_{y}\circ Tf=G_{T}f$、$GLx=GFx=G_{T}x$。$LF_{T}k=\varepsilon_{Fy}\circ F\eta_{y}\circ Fk=Fk$（三角等式）。
+
+**Step 3（一意性）.** $L'$ も条件を満たすとする。対象では $L'x=L'F_{T}x=Fx$。射 $f\colon x\to Ty$ は、クライスリ圏で
+$$
+f=1_{Ty}\circ_{T}F_{T}f\quad(1_{Ty}\text{ を射 }Ty\rightsquigarrow y\text{ とみる})
+$$
+と書ける（右辺は $\mu_{y}\circ T1\circ\eta_{Ty}\circ f=f$）。よって $L'f=L'(1_{Ty})\circ Ff$。$a\defeq L'(1_{Ty})\colon FGFy\to Fy$ の転置は $\varphi(a)=Ga\circ\eta_{GFy}$ で、$Ga=G_{T}(1_{Ty})=\mu_{y}=G\varepsilon_{Fy}$ なので、$\varphi(a)=G\varepsilon_{Fy}\circ\eta_{GFy}=1_{GFy}=\varphi(\varepsilon_{Fy})$（三角等式）。$\varphi$ は全単射なので $a=\varepsilon_{Fy}$、すなわち $L'f=\varepsilon_{Fy}\circ Ff=Lf$。
+
+**Step 4（充満忠実）.** $\mathbf{X}_{T}(x,y)=\mathbf{X}(x,GFy)\to\mathbf{A}(Fx,Fy)$, $f\mapsto Lf=\varphi^{-1}(f)$ は全単射である。像の対象は $Fx$ の形のものだけ。
+
+::: hypcheck
+- **$GL=G_{T}$ の使い方**：Step 3 で、$L'(1_{Ty})$ そのものではなく、その $G$ による像だけが分かる。転置 $\varphi(a)=Ga\circ\eta$ が $Ga$ だけで決まることを使って、$a$ を決めた。$G$ が忠実でなくても通る。
+- **$LF_{T}=F$**：対象の決定と、Step 3 の分解 $f=1\circ_{T}F_{T}f$ の後半に使った。
+- Mac Lane はこの証明を読者に任せている（随伴の写像の一般論を使う方針を示唆）。ここでは転置で直接示した。
+:::
+:::
+
+::: corollary 始と終の随伴 {#cat:kleisli-em-initial-terminal keywords="Kleisli adjunction is initial and Eilenberg-Moore adjunction is terminal among adjunctions defining a monad" index="モナドを定める随伴の圏|もなどをさだめるずいはんのけん"}
+モナド $\mathsf{T}$ を定める随伴 $(F,G)\colon\mathbf{X}\rightharpoonup\mathbf{A}$ を対象とし、$(F,G)\to(F',G')$ の射を関手 $M\colon\mathbf{A}\to\mathbf{A}'$ で $G'M=G$, $MF=F'$ となるものとする（メタ圏）。この中で、クライスリの随伴（\ref{cat:kleisli-adjunction}）は始対象、アイレンバーグ–ムーアの随伴（\ref{cat:eilenberg-moore-adjunction}）は終対象である。
+:::
+
+::: proof
+\ref{cat:kleisli-comparison} はクライスリの随伴から各対象へちょうど一つの射があること、\ref{cat:comparison-functor} は各対象からアイレンバーグ–ムーアの随伴へちょうど一つの射があることを言う。射の合成は関手の合成で、条件 $G'M=G$, $MF=F'$ は合成で保たれる。
+:::
+
+::: remark
+上の「随伴の全体」は一般に集合にならない（$\mathbf{A}$ を動かすので）。Mac Lane は演習で「この圏は本当に存在するか」と問うている。ここでは、始対象・終対象の主張を、個々の随伴への関手の存在と一意性の主張（二つの定理）として読めば十分である。
+:::
+
+::: example
+**クライスリ比較関手が同型でない例.** $\mathbf{Set}$ の定数モナド $TS\defeq1$（一点集合）は、終圏 $\mathbf{1}$ との随伴 $F\colon\mathbf{Set}\to\mathbf{1}$, $G\colon\mathbf{1}\to\mathbf{Set}$（$G$ は一点集合を選ぶ）から定まる。$\mathbf{Set}_{T}$ の対象はすべての集合で、各 hom は一点なので、$L\colon\mathbf{Set}_{T}\to\mathbf{1}$ は充満忠実だが対象で単射でなく、同型ではない（圏同値ではある）。一般に $L$ は像 $F\mathbf{X}$ への圏同値で、$F$ が対象で単射なら同型になる。
+:::
+
+## 語と自由半群 {#cat:sec-kl-words}
+
+::: example
+**半群のモナド.** 忘却関手 $G\colon\mathbf{Smgrp}\to\mathbf{Set}$ は、長さ 1 以上の語の半群 $WX=\bigsqcup_{n\ge1}X^{n}$ を左随伴にもつ（\ref{cat:free-monoid} の長さ 0 を除いた版）。定まるモナド $\mathsf{W}$ は、$\eta_{X}(x)=(x)$（一文字の語）、$\mu_{X}$ は「語の語」の外側の括弧を外す写像である。W 代数 $(S,h)$ は、$h$ を $S^{n}$ に制限した $n$ 項演算 $v_{n}\colon S^{n}\to S$ の族で、$v_{1}=1$ と
+$$
+v_{n_{1}+\cdots+n_{k}}=v_{k}\circ(v_{n_{1}}\times\cdots\times v_{n_{k}})
+$$
+を満たすもの（結合の等式を成分ごとに書いたもの）である。$k=2$, $(n_{1},n_{2})=(2,1),(1,2)$ から $v_{2}(v_{2}(x,y),z)=v_{3}(x,y,z)=v_{2}(x,v_{2}(y,z))$ で $v_{2}$ は結合的、さらに帰納法で $v_{n+1}=v_{n}\circ(v_{2}\times1)$ となり、W 代数は「結合的な二項演算とその反復」と同じものである。比較関手 $K\colon\mathbf{Smgrp}\to\mathbf{Set}^{W}$ は $(S,\cdot)\mapsto(S,(v_{n})_{n})$（$v_{n}$ は積の反復）で、圏の同型である。\ref{cat:prob-mon-monoid-algebras} と同じ議論で、一つの二項演算と「すべての反復」を行き来できることが要点である。
+:::
+
+::: supplement
+**前提を変えると.** 比較関手 $K\colon\mathbf{A}\to\mathbf{X}^{T}$ が同型になる条件はベックの定理（\ref[ベックのモナド性定理]{cat:beck-monadicity}）、クライスリ比較関手 $L$ が同型になる条件は「$F$ が対象で全単射」（上の例）である。
+
+**類似の定理.** \ref{cat:kleisli-em-initial-terminal} は、普遍代数で「代数の種類 $\tau$ の自由代数のなす圏」と「代数全体の圏」が、同じ自由代数の構造を共有する両端であることの抽象版である。クライスリ圏の射 $x\to Ty$ は「$y$ の元を変数とする項で、$x$ の各元を書いたもの」、つまり代入（置換）であり、クライスリ合成は代入の合成である。
+
+**高い視点から：モナドの二つの実現.** 一つのモナド（代数の理論）に対し、「自由代数だけ」の圏と「すべての代数」の圏が両端にあり、間にいろいろな随伴が並ぶ。比喩で言えば、クライスリ圏は「教科書の例題だけを集めた問題集」、アイレンバーグ–ムーア圏は「その解法で解けるすべての問題」で、どちらも同じ解法（モナド）から復元できる。$\mathbf{Set}$ 上の有限的なモナド（有限個の変数の項で決まるもの）では、有限集合を対象とするクライスリ圏の部分圏の反対圏（ローヴェア理論）から $\mathbf{Set}$ への有限積を保つ関手として、代数を表せることが知られている（範囲外）。
+:::
+
+## 問題 {#cat:sec-kl-problems}
+
+::: problem {#cat:prob-kl-ff-free}
+\ref{cat:kleisli-comparison} の $L$ について、$\mathbf{X}_{T}$ は $\mathbf{A}$ の充満部分圏 $F\mathbf{X}$（対象 $Fx$ 全体）と圏同値であることを示せ。
+:::
+
+::: solution
+$L$ を $F\mathbf{X}$ への関手とみると、充満忠実（Step 4）で、どの対象 $Fx$ も $Lx$ に等しいので本質的全射。\ref{cat:equivalence-characterization} により圏同値。
+:::
+
+::: problem {#cat:prob-kl-em-free}
+$\mathbf{X}_{T}$ は $\mathbf{X}^{T}$ の自由代数 $F^{T}x$ からなる充満部分圏と圏同値であることを示せ。
+:::
+
+::: solution
+アイレンバーグ–ムーアの随伴（\ref{cat:eilenberg-moore-adjunction}）も $\mathsf{T}$ を定めるので、\ref{cat:kleisli-comparison} をそれに使えば、$L\colon\mathbf{X}_{T}\to\mathbf{X}^{T}$, $Lx=F^{T}x$ は充満忠実で像は自由代数の充満部分圏。前問と同様に圏同値。具体的には、$f\colon x\to Ty$ に対応する準同型は $\mu_{y}\circ Tf\colon(Tx,\mu_{x})\to(Ty,\mu_{y})$ である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

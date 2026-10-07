@@ -229,7 +229,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | CB-10 | 01-basics/10-adjoint-functor-theorem | フレイドの随伴関手定理 | V.6–8 | 5896–6449 | 完了 |
 | CS-01 | 02-structured-categories/01-cartesian-closed | デカルト閉圏とローヴェアの不動点定理（予約ラベル cat:lawvere-fixed-point, cat:cartesian-closed） | IV.6, IV.9–10 | 4816–4877, 5174–5362 | 完了 |
 | CM-01 | 03-monads/01-monads-algebras | モナドとアイレンバーグ–ムーア代数、比較関手 | VI.1–3 | 6675–6984 | 完了 |
-| CM-02 | 03-monads/02-kleisli | クライスリ圏と比較の要約、語と自由半群 | VI.4–5 | 6985–7196 | 未 |
+| CM-02 | 03-monads/02-kleisli | クライスリ圏と比較の要約、語と自由半群 | VI.4–5 | 6985–7196 | 完了 |
 | CM-03 | 03-monads/03-beck | 分裂余等化子とベックのモナド性定理 | VI.6–7 | 7197–7540 | 未 |
 | CM-04 | 03-monads/04-algebras-compact | 普遍代数の圏とコンパクトハウスドルフ空間のモナド性 | VI.8–9 | 7540–7700 | 未 |
 
@@ -264,6 +264,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-07 圏論 CM-02（02-kleisli, cat:page-kleisli：クライスリ圏（圏であることの証明）、クライスリの随伴、部分写像と関係の例、クライスリ比較関手（一意性は転置で）、始と終の随伴、半群のモナド）。Mac Lane VI.4–5。
 - 2026-10-07 圏論 CM-01（18A/03-monads 新設、01-monads-algebras, cat:page-monads：モナド、随伴が定めるモナド、閉包作用素、T 代数、アイレンバーグ–ムーアの随伴、比較定理（一意性を直接計算で）、モナド的、冪集合モナドの代数＝完備半束）。Mac Lane VI.1–3。
 - 2026-10-07 型理論 TT-08（08-univalence, logic:page-hott：両側逆による同値、擬逆との同値、idtoeqv と一価性公理、0≠1、一価性から宇宙が集合でないこと、命題・集合・h レベル、ヘドベリの定理、2 は集合、円周（fact））を執筆。予約ラベル logic:page-hott を定義。
 - 2026-10-07 型理論 TT-07（07-identity-types, logic:page-identity-types：恒等型と道帰納法、逆・合成・ap・輸送、亜群の法則、ap の関手性、apd、Σ の η、ホモトピーと関数外延性（独立性は fact）、可縮性と基点付きの道の空間、UIP の非証明可能性（ホフマン–シュトライヒャー、fact））を執筆。資料なし。

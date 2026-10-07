@@ -407,6 +407,41 @@
       "num": "2.5",
       "page": "18-category-theory/18A-general-theory/01-basics/02-functors.html"
     },
+    "cat:kleisli-adjunction": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "クライスリの随伴",
+      "num": "2.3",
+      "page": "18-category-theory/18A-general-theory/03-monads/02-kleisli.html"
+    },
+    "cat:kleisli-category": {
+      "status": "defined",
+      "type": "definition",
+      "title": "クライスリ圏",
+      "num": "2.1",
+      "page": "18-category-theory/18A-general-theory/03-monads/02-kleisli.html"
+    },
+    "cat:kleisli-comparison": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "クライスリ圏からの比較関手",
+      "num": "2.4",
+      "page": "18-category-theory/18A-general-theory/03-monads/02-kleisli.html"
+    },
+    "cat:kleisli-em-initial-terminal": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "始と終の随伴",
+      "num": "2.5",
+      "page": "18-category-theory/18A-general-theory/03-monads/02-kleisli.html"
+    },
+    "cat:kleisli-is-category": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "クライスリ圏は圏",
+      "num": "2.2",
+      "page": "18-category-theory/18A-general-theory/03-monads/02-kleisli.html"
+    },
     "cat:lawvere-ccc-form": {
       "status": "defined",
       "type": "corollary",
@@ -596,6 +631,13 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/01-basics/02-functors.html"
     },
+    "cat:page-kleisli": {
+      "status": "defined",
+      "type": "page",
+      "title": "クライスリ圏と比較関手",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/03-monads/02-kleisli.html"
+    },
     "cat:page-limits": {
       "status": "defined",
       "type": "page",
@@ -735,6 +777,20 @@
       "title": "",
       "num": "1.10",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/01-cartesian-closed.html"
+    },
+    "cat:prob-kl-em-free": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "2.8",
+      "page": "18-category-theory/18A-general-theory/03-monads/02-kleisli.html"
+    },
+    "cat:prob-kl-ff-free": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "2.7",
+      "page": "18-category-theory/18A-general-theory/03-monads/02-kleisli.html"
     },
     "cat:prob-mon-monoid-algebras": {
       "status": "defined",
@@ -1232,6 +1288,41 @@
       "title": "問題",
       "num": "",
       "page": "18-category-theory/18A-general-theory/01-basics/02-functors.html"
+    },
+    "cat:sec-kl-comparison": {
+      "status": "defined",
+      "type": "section",
+      "title": "二つの比較関手",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/03-monads/02-kleisli.html"
+    },
+    "cat:sec-kl-kleisli": {
+      "status": "defined",
+      "type": "section",
+      "title": "クライスリ圏",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/03-monads/02-kleisli.html"
+    },
+    "cat:sec-kl-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/03-monads/02-kleisli.html"
+    },
+    "cat:sec-kl-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/03-monads/02-kleisli.html"
+    },
+    "cat:sec-kl-words": {
+      "status": "defined",
+      "type": "section",
+      "title": "語と自由半群",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/03-monads/02-kleisli.html"
     },
     "cat:sec-lim-definition": {
       "status": "defined",
@@ -28488,14 +28579,8 @@
       "status": "planned",
       "title": "ベックのモナド性定理",
       "referencedFrom": [
-        "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html"
-      ]
-    },
-    "cat:kleisli-category": {
-      "status": "planned",
-      "title": "クライスリ圏",
-      "referencedFrom": [
-        "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html"
+        "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html",
+        "18-category-theory/18A-general-theory/03-monads/02-kleisli.html"
       ]
     },
     "cat:page-elementary-topos": {

@@ -319,3 +319,9 @@
 | full / faithful / fully faithful | 充満 / 忠実 / 充満忠実 | | レンスター訳 |
 | (Grothendieck) universe | 宇宙 | | |
 
+| syntactic category / classifying category | 構文圏 | 分類圏 | 仮。日本語の本（terms.py の対象）に用例なし。logic:page-lambek |
+| internal language | 内部言語 | | 仮。用例なし。logic:page-lambek |
+| generic model | 標準モデル | 総称モデル | 仮。用例なし。logic:page-lambek |
+| unit type / product type | 単位型 / 積型 | 直積型 | 仮。用例なし。logic:page-ccc-semantics |
+| lambda theory / equation in context | λ 理論 / 文脈つき等式 | | 仮。用例なし。logic:page-ccc-semantics |
+| strict cartesian closed functor | 厳密なデカルト閉関手 | | 仮。logic:page-lambek |

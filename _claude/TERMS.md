@@ -325,3 +325,7 @@
 | unit type / product type | 単位型 / 積型 | 直積型 | 仮。用例なし。logic:page-ccc-semantics |
 | lambda theory / equation in context | λ 理論 / 文脈つき等式 | | 仮。用例なし。logic:page-ccc-semantics |
 | strict cartesian closed functor | 厳密なデカルト閉関手 | | 仮。logic:page-lambek |
+| dependent function type (Pi type) / dependent pair type (Sigma type) | Π 型（依存関数型） / Σ 型（依存対型） | 依存積 / 依存和 | 仮。日本語の本に用例なし。logic:page-dependent-types |
+| judgmental (definitional) equality | 判断上の等しさ | 定義的等しさ | 仮。logic:page-dependent-types |
+| type family / induction principle | 型の族 / 帰納原理 | | 仮。logic:page-dependent-types |
+| universe (type theory) | 宇宙 | | 集合論・圏論の「宇宙」と同じ語。logic:page-dependent-types |

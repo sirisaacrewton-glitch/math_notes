@@ -5916,6 +5916,34 @@
       "num": "6.3",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/06-derived-rules.html"
     },
+    "logic:dt-inductive-types": {
+      "status": "defined",
+      "type": "definition",
+      "title": "空型・単位型・二元型・和型・自然数型",
+      "num": "6.6",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/06-dependent-types.html"
+    },
+    "logic:dt-judgments": {
+      "status": "defined",
+      "type": "definition",
+      "title": "判断",
+      "num": "6.1",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/06-dependent-types.html"
+    },
+    "logic:dt-structural-rules": {
+      "status": "defined",
+      "type": "definition",
+      "title": "構造規則",
+      "num": "6.2",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/06-dependent-types.html"
+    },
+    "logic:dt-universe-remark": {
+      "status": "defined",
+      "type": "remark",
+      "title": "宇宙",
+      "num": "6.7",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/06-dependent-types.html"
+    },
     "logic:eq-transpose-natural": {
       "status": "defined",
       "type": "equation",
@@ -6854,6 +6882,13 @@
       "num": "",
       "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/01-simply-typed.html"
     },
+    "logic:page-dependent-types": {
+      "status": "defined",
+      "type": "page",
+      "title": "依存型理論：Π 型と Σ 型",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/06-dependent-types.html"
+    },
     "logic:page-derived-rules": {
       "status": "defined",
       "type": "page",
@@ -7050,6 +7085,13 @@
       "num": "4.13",
       "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/04-ccc-semantics.html"
     },
+    "logic:pi-type": {
+      "status": "defined",
+      "type": "definition",
+      "title": "Π 型",
+      "num": "6.3",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/06-dependent-types.html"
+    },
     "logic:prime-sentence": {
       "status": "defined",
       "type": "definition",
@@ -7238,6 +7280,20 @@
       "title": "酒場の論理式",
       "num": "3.16",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/03-semantics.html"
+    },
+    "logic:prob-dt-not-not-dne": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "6.11",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/06-dependent-types.html"
+    },
+    "logic:prob-dt-swap-sigma": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "6.10",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/06-dependent-types.html"
     },
     "logic:prob-erdos-rado-branching": {
       "status": "defined",
@@ -8218,6 +8274,55 @@
       "title": "量化子の派生規則",
       "num": "",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/06-derived-rules.html"
+    },
+    "logic:sec-dt-basic-types": {
+      "status": "defined",
+      "type": "section",
+      "title": "その他の基本的な型",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/06-dependent-types.html"
+    },
+    "logic:sec-dt-judgments": {
+      "status": "defined",
+      "type": "section",
+      "title": "判断と構造規則",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/06-dependent-types.html"
+    },
+    "logic:sec-dt-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/06-dependent-types.html"
+    },
+    "logic:sec-dt-pat": {
+      "status": "defined",
+      "type": "section",
+      "title": "命題としての型",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/06-dependent-types.html"
+    },
+    "logic:sec-dt-pi": {
+      "status": "defined",
+      "type": "section",
+      "title": "Π 型",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/06-dependent-types.html"
+    },
+    "logic:sec-dt-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/06-dependent-types.html"
+    },
+    "logic:sec-dt-sigma": {
+      "status": "defined",
+      "type": "section",
+      "title": "Σ 型と帰納原理",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/06-dependent-types.html"
     },
     "logic:sec-f-data": {
       "status": "defined",
@@ -9206,6 +9311,20 @@
       "num": "9.3",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/09-craig-robinson.html"
     },
+    "logic:sigma-projections": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "射影",
+      "num": "6.5",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/06-dependent-types.html"
+    },
+    "logic:sigma-type": {
+      "status": "defined",
+      "type": "definition",
+      "title": "Σ 型",
+      "num": "6.4",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/06-dependent-types.html"
+    },
     "logic:sigma01-separation": {
       "status": "defined",
       "type": "definition",
@@ -9451,6 +9570,13 @@
       "num": "5.15",
       "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html"
     },
+    "logic:table-dependent-propositions-as-types": {
+      "status": "defined",
+      "type": "table",
+      "title": "述語論理と依存型",
+      "num": "6.8",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/06-dependent-types.html"
+    },
     "logic:tableau-closed": {
       "status": "defined",
       "type": "definition",
@@ -9583,6 +9709,13 @@
       "title": "型の解釈",
       "num": "3.4",
       "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/03-system-f.html"
+    },
+    "logic:type-theoretic-choice": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "型理論的選択公理",
+      "num": "6.9",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/06-dependent-types.html"
     },
     "logic:typing-basic": {
       "status": "defined",
@@ -27985,7 +28118,22 @@
       "title": "HoTT の系列",
       "referencedFrom": [
         "03-mathematical-logic/03F-proof-theory/09-type-theory/01-simply-typed.html",
-        "03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html"
+        "03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html",
+        "03-mathematical-logic/03F-proof-theory/09-type-theory/06-dependent-types.html"
+      ]
+    },
+    "logic:page-identity-types": {
+      "status": "planned",
+      "title": "恒等型と道帰納法",
+      "referencedFrom": [
+        "03-mathematical-logic/03F-proof-theory/09-type-theory/06-dependent-types.html"
+      ]
+    },
+    "logic:prob-it-add-zero": {
+      "status": "planned",
+      "title": "次ページの問題",
+      "referencedFrom": [
+        "03-mathematical-logic/03F-proof-theory/09-type-theory/06-dependent-types.html"
       ]
     },
     "meas:lebesgue-measure": {

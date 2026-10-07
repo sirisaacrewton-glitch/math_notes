@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>依存型理論：Π 型と Σ 型 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/09-type-theory/06-dependent-types.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 依存型理論：Π 型と Σ 型 {#logic:page-dependent-types keywords="dependent type theory, Martin-Lof type theory, dependent function type, Pi type, dependent pair type, Sigma type, judgmental equality, type family, induction principle, natural numbers type, propositions as types for predicate logic, type theoretic axiom of choice"}
+
+単純型付きラムダ計算（\ref{logic:page-curry-howard}）では、型は項に依存しない。**依存型理論**では、型が項に依存してよい。たとえば「長さ $n$ の列の型 $\mathrm{Vec}(n)$」のように、項 $n:\mathbb{N}$ ごとに型 $B(n)$ が決まる**型の族**を扱う。族 $B$ に対し、各 $x:A$ に $B(x)$ の元を対応させる関数の型 **Π 型** $\prod_{x:A}B(x)$（\ref{logic:pi-type}）と、$x:A$ と $B(x)$ の元の組の型 **Σ 型** $\sum_{x:A}B(x)$（\ref{logic:sigma-type}）が基本の構成である。カリー＝ハワード対応を述語論理に広げると、Π 型は全称量化 $\forall$、Σ 型は存在量化 $\exists$ に当たる（\ref{logic:table-dependent-propositions-as-types}）。この読み方のもとでは、「各 $x$ に $R(x,y)$ となる $y$ がある」から「選択関数がある」が**定理として証明できる**（\ref{logic:type-theoretic-choice}）。本ページは、マルティン＝レーフの依存型理論のうち、恒等型を除いた部分を扱う。恒等型は次ページ \ref[恒等型と道帰納法]{logic:page-identity-types} で扱い、それがホモトピー型理論（\ref[HoTT の系列]{logic:page-hott}）の出発点になる。
+
+> 資料フォルダに参考書がない（主な参考書に予定している E. Rijke, *Introduction to Homotopy Type Theory* のテキストは未入手）。マルティン＝レーフ型理論の標準的な定式化を、本サイトで組み立てた。規則の細部（宇宙の扱い、η 規則の有無など）は文献ごとに異なる。
+
+## 記法と定義の確認 {#logic:sec-dt-notation}
+
+::: notation
+- 単純型付きラムダ計算、文脈、代入 $M[N/x]$、β 簡約・η 等式、カリー＝ハワード対応は \ref{logic:page-curry-howard}, \ref{logic:page-ccc-semantics} のとおり。本ページでも束縛変数に型を書く（チャーチ流）。
+- **判断上の等しさ**を $\equiv$ と書く（規則から導かれる、項や型の「定義による」等しさ）。次ページの恒等型 $\mathrm{Id}_{A}(a,b)$（命題としての等しさ）と区別する。
+- 型 $\mathsf{0}$, $\mathsf{1}$, $\mathsf{2}$ は空型・単位型・二元型。太字は真のクラスと圏に使うので（START の規則）、型にはサンセリフ体を使う。
+- 体系は形式体系そのもの（メタ理論は有限の記号操作）。モデルについて述べる箇所では $\ZFC$ で考える。
+:::
+
+## 判断と構造規則 {#logic:sec-dt-judgments}
+
+::: definition 判断 {#logic:dt-judgments keywords="judgments of dependent type theory, context, type formation, typing, judgmental equality" index="判断（型理論）|はんだんかたりろん, 判断上の等しさ|はんだんじょうのひとしさ, 型の族|かたのぞく"}
+依存型理論は次の 5 種類の**判断**を規則で導く体系である。
+1. $\Gamma\ \mathsf{ctx}$：$\Gamma$ は文脈である。
+2. $\Gamma\vdash A\ \mathsf{type}$：文脈 $\Gamma$ で $A$ は型である。
+3. $\Gamma\vdash a:A$：$a$ は型 $A$ の項である。
+4. $\Gamma\vdash A\equiv B\ \mathsf{type}$：型として判断上等しい。
+5. $\Gamma\vdash a\equiv b:A$：型 $A$ の項として判断上等しい。
+
+**文脈**は $x_{1}{:}A_{1},\dots,x_{n}{:}A_{n}$ の形の列で、各 $A_{i}$ は**前の変数に依存してよい**：$\cdot\ \mathsf{ctx}$（空の文脈）と、$\Gamma\vdash A\ \mathsf{type}$ から $(\Gamma,x{:}A)\ \mathsf{ctx}$（$x$ は新しい変数）。$\Gamma,x{:}A\vdash B\ \mathsf{type}$ のとき、$B$ を $A$ 上の**型の族**と呼び $B(x)$ と書く。$a:A$ を代入した型 $B[a/x]$ を $B(a)$ と書く。
+:::
+
+::: definition 構造規則 {#logic:dt-structural-rules keywords="variable rule, weakening, substitution, conversion rule" index="変換規則（型理論）|へんかんきそくかたりろん"}
+次の規則を採用する（いずれも、前提の判断が導けるときに結論を導いてよい）。
+1. （変数）$(\Gamma,x{:}A,\Delta)\ \mathsf{ctx}$ なら $\Gamma,x{:}A,\Delta\vdash x:A$。
+2. （弱化）$\Gamma\vdash A\ \mathsf{type}$ のもとで、$\Gamma,\Delta\vdash\mathcal{J}$ から $\Gamma,y{:}A,\Delta\vdash\mathcal{J}$（$\mathcal{J}$ は判断の右辺。$y$ は新しい変数）。
+3. （代入）$\Gamma\vdash a:A$ のもとで、$\Gamma,x{:}A,\Delta\vdash\mathcal{J}$ から $\Gamma,\Delta[a/x]\vdash\mathcal{J}[a/x]$。
+4. （等しさ）$\equiv$ は型についても項についても反射的・対称的・推移的で、すべての構成子と両立する。
+5. （変換）$\Gamma\vdash a:A$ と $\Gamma\vdash A\equiv B\ \mathsf{type}$ から $\Gamma\vdash a:B$。
+:::
+
+::: intuition
+弱化と代入は、多くの文献では「規則の帰納法で示せる性質（許容規則）」として扱われるが、その証明は長いので、本ページでは最初から規則として採用した（前々ページ \ref{logic:lambda-theory} で代入を規則にしたのと同じ考え）。変換規則 5 は、型が計算によって変わる（たとえば $B(0+1)$ と $B(1)$）ことを許すための規則で、依存型理論に特有である。
+:::
+
+## Π 型 {#logic:sec-dt-pi}
+
+::: definition Π 型 {#logic:pi-type keywords="dependent function type, Pi type, dependent product" index="Π 型|ぱいがた, 依存関数型|いぞんかんすうがた"}
+$\Gamma\vdash A\ \mathsf{type}$ と $\Gamma,x{:}A\vdash B\ \mathsf{type}$ から、型 $\Gamma\vdash\prod_{x:A}B\ \mathsf{type}$ を作る（**形成**）。項の規則は次のとおり。
+$$
+\frac{\Gamma,x{:}A\vdash b:B}{\Gamma\vdash\lambda x{:}A.\,b:\prod_{x:A}B}\ (\Pi\mathrm{I})\qquad\frac{\Gamma\vdash f:\prod_{x:A}B\quad\Gamma\vdash a:A}{\Gamma\vdash f\,a:B(a)}\ (\Pi\mathrm{E})
+$$
+計算規則：$(\lambda x{:}A.\,b)\,a\equiv b[a/x]$（β）、$\lambda x{:}A.\,(f\,x)\equiv f$（η。$x\notin\mathrm{FV}(f)$）。$B$ が $x$ に依存しないとき $\prod_{x:A}B$ を $A\to B$ と書く。
+:::
+
+::: intuition
+$\prod_{x:A}B(x)$ の元は、各 $x$ に「その $x$ ごとに異なる型」$B(x)$ の元を選ぶ関数である。集合論で言えば直積 $\prod_{x\in A}B(x)$（選択関数全体）に当たるので、「依存積」とも呼ばれる。$\Pi\mathrm{E}$ の結論の型 $B(a)$ が引数 $a$ によって変わる点が、単純型との違いである。
+:::
+
+::: example
+1. 恒等関数を型ごとにまとめた多相的な恒等関数は、宇宙（\ref{logic:dt-universe-remark}）$\mathcal{U}$ を使って $\lambda A{:}\mathcal{U}.\,\lambda x{:}A.\,x:\prod_{A:\mathcal{U}}A\to A$ と書ける。
+2. 合成：$\Gamma\vdash g:\prod_{y:B}C(y)$ と $\Gamma\vdash f:A\to B$ から $\lambda x{:}A.\,g(f\,x):\prod_{x:A}C(f\,x)$（$\Pi\mathrm{E}$ を二回、型の族 $C(f\,x)$ は代入規則で作る）。
+:::
+
+## Σ 型と帰納原理 {#logic:sec-dt-sigma}
+
+::: definition Σ 型 {#logic:sigma-type keywords="dependent pair type, Sigma type, dependent sum, induction principle for Sigma types, projections" index="Σ 型|しぐまがた, 依存対型|いぞんついがた, 帰納原理|きのうげんり"}
+$\Gamma\vdash A\ \mathsf{type}$ と $\Gamma,x{:}A\vdash B\ \mathsf{type}$ から $\Gamma\vdash\sum_{x:A}B\ \mathsf{type}$ を作る。
+1. （導入）$\Gamma\vdash a:A$ と $\Gamma\vdash b:B(a)$ から $\Gamma\vdash(a,b):\sum_{x:A}B$。
+2. （帰納原理）型の族 $\Gamma,p{:}\sum_{x:A}B\vdash C(p)\ \mathsf{type}$ と、$\Gamma,x{:}A,y{:}B\vdash c:C((x,y))$ から
+$$
+\Gamma\vdash\mathrm{ind}_{\Sigma}(c):\prod_{p:\sum_{x:A}B}C(p).
+$$
+3. （計算）$\mathrm{ind}_{\Sigma}(c)\,(a,b)\equiv c[a/x,b/y]$。
+
+$B$ が $x$ に依存しないとき $\sum_{x:A}B$ を $A\times B$ と書く。
+:::
+
+::: intuition
+帰納原理は「$C(p)$ をすべての組 $p$ について示すには、$p=(x,y)$ の形のものについて示せばよい」と言う。$C$ が $p$ に依存してよいこと（**依存除去**）が重要で、これがあるので第二射影に正しい型が付く（次の命題）。
+:::
+
+::: proposition 射影 {#logic:sigma-projections keywords="first and second projections of Sigma types" index="射影（Σ 型）|しゃえいしぐまがた"}
+次の項が定義でき、$\mathrm{pr}_{1}(a,b)\equiv a$、$\mathrm{pr}_{2}(a,b)\equiv b$ が成り立つ。
+$$
+\begin{aligned}
+\mathrm{pr}_{1}&:\textstyle\prod_{p:\sum_{x:A}B}A,\\
+\mathrm{pr}_{2}&:\textstyle\prod_{p:\sum_{x:A}B}B(\mathrm{pr}_{1}\,p).
+\end{aligned}
+$$
+:::
+
+::: proof
+**Step 1（第一射影）.** 帰納原理を定数の族 $C(p)\defeq A$ と $c\defeq x$ に使い、$\mathrm{pr}_{1}\defeq\mathrm{ind}_{\Sigma}(x)$。計算規則から $\mathrm{pr}_{1}(a,b)\equiv x[a/x,b/y]\equiv a$。
+
+**Step 2（第二射影の型の族）.** $C(p)\defeq B(\mathrm{pr}_{1}\,p)$ とおく。これは $\Gamma,p{:}\sum_{x:A}B\vdash C(p)\ \mathsf{type}$（$\Gamma,p{:}\sum B\vdash\mathrm{pr}_{1}\,p:A$ を $B$ の $x$ に代入）。
+
+**Step 3（組の上での値）.** $p=(x,y)$ のとき、Step 1 から $\mathrm{pr}_{1}(x,y)\equiv x$ なので $C((x,y))\equiv B(x)$。$\Gamma,x{:}A,y{:}B\vdash y:B(x)$ と変換規則から $y:C((x,y))$。
+
+**Step 4.** $\mathrm{pr}_{2}\defeq\mathrm{ind}_{\Sigma}(y)$。計算規則から $\mathrm{pr}_{2}(a,b)\equiv b$。
+
+::: hypcheck
+- **依存除去**：Step 4 で、族 $C(p)=B(\mathrm{pr}_{1}p)$ が $p$ に依存することを使った。$C$ が定数の族だけの除去規則（非依存な除去）では $\mathrm{pr}_{2}$ は作れない。
+- **変換規則**：Step 3 で、$B(x)$ と $C((x,y))$ の判断上の等しさを使った。
+- $\Sigma$ の η 規則 $(\mathrm{pr}_{1}p,\mathrm{pr}_{2}p)\equiv p$ は採用していない。次ページの恒等型を使うと、それを命題として証明できる。
+:::
+:::
+
+## その他の基本的な型 {#logic:sec-dt-basic-types}
+
+::: definition 空型・単位型・二元型・和型・自然数型 {#logic:dt-inductive-types keywords="empty type, unit type, booleans, coproduct type, natural numbers type, induction principles" index="空型|くうがた, 二元型|にげんがた, 和型|わがた, 自然数型|しぜんすうがた"}
+各型について、形成・導入・帰納原理（依存除去）・計算規則を定める。帰納原理では型の族 $C$ は任意で、結論は $\prod$ 型の項である。
+1. **空型** $\mathsf{0}$：導入なし。帰納原理 $\mathrm{ind}_{\mathsf{0}}:\prod_{z:\mathsf{0}}C(z)$。
+2. **単位型** $\mathsf{1}$：$\star:\mathsf{1}$。$c:C(\star)$ から $\mathrm{ind}_{\mathsf{1}}(c):\prod_{z:\mathsf{1}}C(z)$、$\mathrm{ind}_{\mathsf{1}}(c)\star\equiv c$。
+3. **和型** $A+B$：$\mathrm{inl}\,a$, $\mathrm{inr}\,b$。$x{:}A\vdash c_{1}:C(\mathrm{inl}\,x)$ と $y{:}B\vdash c_{2}:C(\mathrm{inr}\,y)$ から $\mathrm{ind}_{+}(c_{1},c_{2}):\prod_{z:A+B}C(z)$、計算は $\mathrm{inl}\,a\mapsto c_{1}[a/x]$, $\mathrm{inr}\,b\mapsto c_{2}[b/y]$。$\mathsf{2}\defeq\mathsf{1}+\mathsf{1}$。
+4. **自然数型** $\mathbb{N}$：$0:\mathbb{N}$、$n:\mathbb{N}$ から $\mathrm{succ}\,n:\mathbb{N}$。$c_{0}:C(0)$ と $n{:}\mathbb{N},h{:}C(n)\vdash c_{s}:C(\mathrm{succ}\,n)$ から $\mathrm{ind}_{\mathbb{N}}(c_{0},c_{s}):\prod_{n:\mathbb{N}}C(n)$、計算は
+$$
+\mathrm{ind}_{\mathbb{N}}(c_{0},c_{s})\,0\equiv c_{0},\quad\mathrm{ind}_{\mathbb{N}}(c_{0},c_{s})(\mathrm{succ}\,n)\equiv c_{s}[n/n,\ \mathrm{ind}_{\mathbb{N}}(c_{0},c_{s})\,n/h].
+$$
+:::
+
+::: example
+**加法.** $C(n)\defeq\mathbb{N}\to\mathbb{N}$（定数の族）、$c_{0}\defeq\lambda m.\,m$、$c_{s}\defeq\lambda m.\,\mathrm{succ}(h\,m)$ として $\mathrm{add}\defeq\mathrm{ind}_{\mathbb{N}}(c_{0},c_{s})$、$n+m\defeq\mathrm{add}\,n\,m$。計算規則から $0+m\equiv m$、$\mathrm{succ}\,n+m\equiv\mathrm{succ}(n+m)$。一方 $n+0\equiv n$ は（$n$ が変数のとき）判断上の等しさとしては成り立たない。それは次ページの恒等型を使い、帰納原理で命題として証明する（\ref[次ページの問題]{logic:prob-it-add-zero}）。これは、帰納原理（族 $C$ が $n$ に依存する場合）が「数学的帰納法」そのものであることを示している。
+:::
+
+::: remark 宇宙 {#logic:dt-universe-remark}
+型の族を関数として扱うには、型を元にもつ型（**宇宙**）$\mathcal{U}$ を置き、$A:\mathcal{U}$ なら $A$ は型とする規則を加える。族 $B:A\to\mathcal{U}$ が $x{:}A\vdash B(x)\ \mathsf{type}$ の代わりになる。$\mathcal{U}:\mathcal{U}$ を認めると体系は矛盾する（ジラールのパラドックス。J.-Y. Girard の 1972 年の学位論文による）ので、宇宙の列 $\mathcal{U}_{0}:\mathcal{U}_{1}:\cdots$ を使う。本ページの主張は宇宙を使わずに述べられる。
+:::
+
+## 命題としての型 {#logic:sec-dt-pat}
+
+::: table 述語論理と依存型 {#logic:table-dependent-propositions-as-types}
+| 論理 | 型 | 証明（項）の例 |
+|---|---|---|
+| 命題 $P$ | 型 $P$ | $p:P$ |
+| $\bot$（偽） | $\mathsf{0}$ | なし |
+| $\top$（真） | $\mathsf{1}$ | $\star$ |
+| $P\wedge Q$ | $P\times Q$ | $(p,q)$ |
+| $P\vee Q$ | $P+Q$ | $\mathrm{inl}\,p$ |
+| $P\to Q$ | $P\to Q$ | $\lambda x.\,q$ |
+| $\neg P$ | $P\to\mathsf{0}$ | |
+| $\forall x{\in}A.\,P(x)$ | $\prod_{x:A}P(x)$ | $\lambda x.\,p(x)$ |
+| $\exists x{\in}A.\,P(x)$ | $\sum_{x:A}P(x)$ | $(a,p)$ |
+:::
+
+::: intuition
+この対応は、ブラウワー–ハイティング–コルモゴロフ解釈（$\forall x\,P(x)$ の証明は各 $x$ に $P(x)$ の証明を与える手続き、$\exists x\,P(x)$ の証明は証人 $a$ と $P(a)$ の証明の組）を、そのまま型の規則にしたものである。$\exists$ の証明が証人を**取り出せる形で**含むことが、次の定理の鍵になる。
+:::
+
+::: example
+1. **爆発律** $\neg P\to(P\to Q)$：$\lambda n.\,\lambda p.\,\mathrm{ind}_{\mathsf{0}}(n\,p)$（族は定数の $Q$）。
+2. **排中律の二重否定** $\neg\neg(P+\neg P)$：$\lambda k.\,k\bigl(\mathrm{inr}(\lambda p.\,k(\mathrm{inl}\,p))\bigr)$。型を確かめる：$k:\neg(P+\neg P)$, $p:P$ のとき $k(\mathrm{inl}\,p):\mathsf{0}$ なので $\lambda p.\,k(\mathrm{inl}\,p):\neg P$、それを $\mathrm{inr}$ して $k$ に渡すと $\mathsf{0}$。
+3. **量化子の交換** $\bigl(\sum_{x:A}\prod_{y:B}R(x,y)\bigr)\to\prod_{y:B}\sum_{x:A}R(x,y)$：$\lambda s.\,\lambda y.\,(\mathrm{pr}_{1}s,\ \mathrm{pr}_{2}s\,y)$。
+:::
+
+::: theorem 型理論的選択公理 {#logic:type-theoretic-choice keywords="type theoretic axiom of choice, distributivity of Pi over Sigma, Martin-Lof's choice" index="型理論的選択公理|かたりろんてきせんたくこうり"}
+型 $A$, $B$ と族 $x{:}A,y{:}B\vdash R(x,y)\ \mathsf{type}$ について、次の型の項がある。
+$$
+\mathrm{ac}:\Bigl(\prod_{x:A}\sum_{y:B}R(x,y)\Bigr)\to\sum_{f:A\to B}\prod_{x:A}R(x,f\,x).
+$$
+:::
+
+::: intuition
+「各 $x$ について $R(x,y)$ となる $y$ がある」の証明 $h$ は、各 $x$ に組 $(y,r)$ を対応させる関数である。第一成分だけを集めた $\lambda x.\,\mathrm{pr}_{1}(h\,x)$ が選択関数になる。つまり、この「選択公理」は $\exists$ を Σ 型で読んだことからの帰結で、集合論の選択公理のような強い原理ではない。
+:::
+
+::: proof
+$h:\prod_{x:A}\sum_{y:B}R(x,y)$ を仮定の変数とする（文脈 $\Gamma\defeq h{:}\prod_{x:A}\sum_{y:B}R(x,y)$）。
+
+**Step 1（選択関数）.** $\Gamma,x{:}A\vdash h\,x:\sum_{y:B}R(x,y)$（$\Pi\mathrm{E}$）。\ref{logic:sigma-projections} から $\mathrm{pr}_{1}(h\,x):B$。$\Pi\mathrm{I}$ で $f_{h}\defeq\lambda x{:}A.\,\mathrm{pr}_{1}(h\,x):A\to B$。
+
+**Step 2（各 $x$ での証明）.** \ref{logic:sigma-projections} から $\Gamma,x{:}A\vdash\mathrm{pr}_{2}(h\,x):R(x,\mathrm{pr}_{1}(h\,x))$。
+
+**Step 3（型の一致）.** β 規則から $f_{h}\,x\equiv\mathrm{pr}_{1}(h\,x)$。よって $R(x,f_{h}\,x)\equiv R(x,\mathrm{pr}_{1}(h\,x))$（等しさの両立性）で、変換規則から $\mathrm{pr}_{2}(h\,x):R(x,f_{h}\,x)$。$\Pi\mathrm{I}$ で
+$$
+\Gamma\vdash\lambda x{:}A.\,\mathrm{pr}_{2}(h\,x):\prod_{x:A}R(x,f_{h}\,x).
+$$
+
+**Step 4（組にする）.** 族 $f{:}A\to B\vdash\prod_{x:A}R(x,f\,x)\ \mathsf{type}$ の $f$ に $f_{h}$ を代入した型が Step 3 の型なので、Σ 型の導入規則から
+$$
+\Gamma\vdash\bigl(f_{h},\ \lambda x.\,\mathrm{pr}_{2}(h\,x)\bigr):\sum_{f:A\to B}\prod_{x:A}R(x,f\,x).
+$$
+$\Pi\mathrm{I}$（$h$ を抽象）で $\mathrm{ac}$ が得られる。
+
+::: hypcheck
+- **Σ の依存除去**：$\mathrm{pr}_{2}$ の存在（Step 2）に使った。存在量化を、証人を取り出せない形（次の補足の「切り詰め」）で解釈すると、この証明は通らない。
+- **変換規則と β**：Step 3 で、$R(x,f_{h}x)$ と $R(x,\mathrm{pr}_{1}(hx))$ を同一視するのに使った。
+- **選択公理（集合論の）**：使っていない。$A,B$ に何の条件も要らない。
+- 逆向き $\bigl(\sum_{f}\prod_{x}R(x,fx)\bigr)\to\prod_{x}\sum_{y}R(x,y)$ も $\lambda s.\lambda x.\,(\mathrm{pr}_{1}s\,x,\ \mathrm{pr}_{2}s\,x)$ で作れる。両者が互いに逆であること（同値であること）は、次ページの恒等型と関数外延性を使って述べられる。
+:::
+:::
+
+::: supplement
+**前提を変えると.** 存在量化 $\exists$ を Σ 型でなく、「証明が高々一つしかないように潰した型」（命題的切り詰め $\Vert\sum_{x:A}P(x)\Vert$。ホモトピー型理論で導入される）で読むと、上の形の選択原理は一般には証明できず、集合論の選択公理に近い強い原理になる。その場合、選択原理と排中律の関係はディアコネスク–グッドマン–マイヒルの定理（選択公理から排中律が従う。トポスでの形）の類似として知られている（詳細は範囲外）。
+
+**類似の定理.** 集合論で選択公理を仮定して証明する「$\forall x\,\exists y\,R(x,y)\to\exists f\,\forall x\,R(x,f(x))$」（\ref{set:ac-equivalences}）と同じ形の主張だが、ここでは選択公理を使わずに証明できる。違いは $\exists$ の意味にある：集合論の $\exists$ は証人を取り出す手続きを含まない。
+
+**高い視点から：Π は Σ の上の分配法則.** 型 $A$ 上の族を、圏論では $A$ 上の対象（スライス圏 $\mathbf{C}/A$ の対象）とみなす。Σ は引き戻し関手 $A^{\ast}$ の左随伴、Π は右随伴に当たる（局所デカルト閉圏での解釈。\ref{logic:page-ccc-semantics} の補足）。この見方では、型理論的選択公理は「Π が Σ の上に分配する」（$\prod\sum\cong\sum\prod$）という、集合の圏での等式 $\prod_{x\in A}\coprod_{y\in B}R_{x,y}\cong\coprod_{f\colon A\to B}\prod_{x\in A}R_{x,f(x)}$ と同じ形をしている。比喩で言えば、「各部屋から一人ずつ選ぶ方法の全体」は「各部屋の人の組み合わせ表」と同じものだ、という数え上げの等式である。
+:::
+
+## 問題 {#logic:sec-dt-problems}
+
+::: problem {#logic:prob-dt-swap-sigma}
+$\sum_{x:A}\sum_{y:B}R(x,y)\to\sum_{y:B}\sum_{x:A}R(x,y)$ の項を、Σ の帰納原理を使って作れ。
+:::
+
+::: solution
+$\mathrm{ind}_{\Sigma}$ を外側の組 $(x,q)$（$q:\sum_{y:B}R(x,y)$）に使い、さらに $q$ に $\mathrm{ind}_{\Sigma}$ を使って $q=(y,r)$ の場合に帰着させる。その場合の値は $(y,(x,r))$ で、型は $\sum_{y:B}\sum_{x:A}R(x,y)$（導入規則を二回）。帰納原理の族はどちらも定数の族（結論の型）なので、計算規則と型の一致に問題はない。射影で書けば $\lambda s.\,(\mathrm{pr}_{1}\mathrm{pr}_{2}s,\ (\mathrm{pr}_{1}s,\ \mathrm{pr}_{2}\mathrm{pr}_{2}s))$。
+:::
+
+::: problem {#logic:prob-dt-not-not-dne}
+$\neg\neg\neg P\to\neg P$ の項を作れ（三重否定は否定に戻る）。
+:::
+
+::: solution
+$\lambda t{:}\neg\neg\neg P.\,\lambda p{:}P.\,t\bigl(\lambda n{:}\neg P.\,n\,p\bigr)$。$p:P$ のとき $\lambda n.\,n\,p:\neg\neg P$ で、$t$ に渡すと $\mathsf{0}$。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

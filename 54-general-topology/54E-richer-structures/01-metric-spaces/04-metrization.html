@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>距離化定理とストーンの定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54E-richer-structures/01-metric-spaces/04-metrization.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 距離化定理とストーンの定理 {#top:page-metrization keywords="metrizable space, countable products of metric spaces, Hilbert cube, regular second countable spaces are normal, Urysohn metrization theorem, Stone theorem, metric spaces are paracompact, Nagata-Smirnov"}
+
+位相空間の位相が、ある距離から定まるとき、その空間を**距離化可能**という（\ref{top:metrizable}）。どのような位相空間が距離化可能かを位相的な条件で特徴づけるのが距離化の問題である。**ウリゾーンの距離化定理**は、第二可算な $T_{3}$ 空間が距離化可能であることを、ヒルベルト立方体 $[0,1]^{\N}$ への埋め込みによって示す（\ref{top:urysohn-metrization}）。逆向きの性質として、距離空間はパラコンパクトである（**ストーンの定理**、\ref{top:stone-paracompact}）。本ページでは M. E. Rudin による短い証明を書き下ろす。
+
+> 資料：内田伏一『集合と位相』§21、小山晃『位相空間論』第 7 章を参考に、証明は本サイトで書き下ろした。ストーンの定理の証明は M. E. Rudin, "A new proof that metric spaces are paracompact", *Proc. Amer. Math. Soc.* 20 (1969) の方針による。
+
+## 記法と定義の確認 {#top:sec-mz-notation}
+
+::: notation
+- 距離位相は \ref{top:metric-topology}。直積位相とその開基は \ref{top:product-topology}, \ref{top:product-base}。埋め込みは \ref{top:homeomorphism} の 3。
+- 分離公理・ウリゾーンの補題・パラコンパクト性は \ref{top:separation-axioms}, \ref{top:urysohn-lemma}, \ref{top:paracompact}。
+- 第二可算（可算な開基をもつ）は \ref{top:second-countable}。
+- 議論は $\ZF$ で行い、選択公理を使う箇所は明記する。
+:::
+
+::: definition 距離化可能 {#top:metrizable keywords="metrizable topological space" index="距離化可能|きょりかかのう"}
+位相空間 $(X,\mathcal{O})$ が**距離化可能**であるとは、$X$ 上の距離 $d$ で、距離位相 $\mathcal{O}_{d}$ が $\mathcal{O}$ に一致するものがあることをいう。
+:::
+
+距離化可能な空間は $T_{4}$（\ref{top:metric-normal}）で、第一可算であり（\ref{top:metric-countability}）、部分空間も距離化可能（距離の制限）である。
+
+## 可算個の直積 {#top:sec-mz-products}
+
+::: proposition 距離空間の可算直積 {#top:countable-product-metrizable keywords="countable products of metrizable spaces are metrizable; the Hilbert cube" index="可算直積の距離化|かさんちょくせきのきょりか, ヒルベルト立方体|ひるべるとりっぽうたい"}
+$(X_{n},d_{n})_{n\ge1}$ を距離空間とし、$X\defeq\prod_{n}X_{n}$ に直積位相を入れる。
+$$
+d(x,y)\defeq\sum_{n\ge1}2^{-n}\min\{1,\ d_{n}(x_{n},y_{n})\}
+$$
+は $X$ 上の距離で、その距離位相は直積位相に一致する。とくに**ヒルベルト立方体** $[0,1]^{\N}$ は距離化可能である。
+:::
+
+::: proof
+**距離.** 級数は $\sum 2^{-n}=1$ で抑えられて収束する。$d(x,y)=0$ なら各 $d_{n}(x_{n},y_{n})=0$ で $x=y$。三角不等式は、$\min\{1,\cdot\}$ が三角不等式を保つこと（$\min\{1,a+b\}\le\min\{1,a\}+\min\{1,b\}$）から各項で成り立ち、和をとればよい。
+
+**距離位相 ⊆ 直積位相.** 開球 $B(x,\varepsilon)$ の点 $y$ について、$y$ を含み $B(x,\varepsilon)$ に含まれる基本開集合を見つければよい。$\delta\defeq\varepsilon-d(x,y)>0$ とし、$N$ を $2^{-N}<\delta/2$ ととる。
+$$
+W\defeq\bigcap_{n\le N}p_{n}^{-1}\bigl[B_{d_{n}}(y_{n},\delta/2)\bigr]
+$$
+は基本開集合で $y\in W$。$z\in W$ なら、$n\le N$ の項の和は $\sum_{n\le N}2^{-n}\cdot\delta/2<\delta/2$、$n>N$ の項の和は $2^{-N}<\delta/2$ なので $d(y,z)<\delta$、よって $d(x,z)<\varepsilon$。
+
+**直積位相 ⊆ 距離位相.** 準開基の元 $p_{n}^{-1}[U]$（$U$ は $X_{n}$ で開）が $d$ について開であることを示せばよい（\ref{top:subbase-generates}）。$x\in p_{n}^{-1}[U]$ について、$B_{d_{n}}(x_{n},r)\subseteq U$ となる $0<r\le1$ をとる。$d(x,y)<2^{-n}r$ なら $2^{-n}\min\{1,d_{n}(x_{n},y_{n})\}<2^{-n}r$、$r\le1$ なので $d_{n}(x_{n},y_{n})<r$、よって $y\in p_{n}^{-1}[U]$。
+:::
+
+## 第二可算な正則空間 {#top:sec-mz-normal}
+
+::: lemma 第二可算な正則空間は正規 {#top:regular-second-countable-normal keywords="regular second countable spaces are normal (Tychonoff)" index="第二可算正則空間の正規性|だいにかさんせいそくくうかんのせいきせい"}
+第二可算な正則空間は正規である。
+:::
+
+::: proof
+可算な開基 $\mathcal{B}$ を固定し、その数え上げを一つ固定する。交わらない閉集合 $A,B$ をとる。$\mathcal{B}_{A}\defeq\{U\in\mathcal{B}:\overline{U}\cap B=\varnothing\}$、$\mathcal{B}_{B}\defeq\{V\in\mathcal{B}:\overline{V}\cap A=\varnothing\}$ とおき、$\mathcal{B}$ の数え上げの順に $U_{1},U_{2},\ldots$, $V_{1},V_{2},\ldots$ と並べる（有限なら同じ元をくり返す。空の場合は下で扱う）。
+
+**被覆.** $a\in A$ について、正則性（\ref{top:regular-normal-characterization} の 1）から $a\in O\subseteq\overline{O}\subseteq X\setminus B$ となる開集合 $O$ があり、開基の元 $U$ で $a\in U\subseteq O$ となるものがある。$\overline{U}\subseteq\overline{O}$ は $B$ と交わらないので $U\in\mathcal{B}_{A}$。よって $\bigcup_{n}U_{n}\supseteq A$。同様に $\bigcup_{n}V_{n}\supseteq B$。（$A=\varnothing$ なら $\varnothing$ と $X$ で分離される。$B$ も同様。）
+
+**分離.** 
+$$
+U'_{n}\defeq U_{n}\setminus\bigcup_{k\le n}\overline{V_{k}},\qquad V'_{n}\defeq V_{n}\setminus\bigcup_{k\le n}\overline{U_{k}}
+$$
+とおく（有限個の閉集合を除くので開）。$\overline{V_{k}}\cap A=\varnothing$ なので $U'_{n}\cap A=U_{n}\cap A$、よって $U'\defeq\bigcup_{n}U'_{n}\supseteq A$。同様に $V'\defeq\bigcup_{n}V'_{n}\supseteq B$。$U'_{n}\cap V'_{m}=\varnothing$ を示す：$n\le m$ なら $V'_{m}$ は $\overline{U_{n}}\supseteq U_{n}\supseteq U'_{n}$ を除いている。$m\le n$ なら $U'_{n}$ は $\overline{V_{m}}\supseteq V'_{m}$ を除いている。よって $U'\cap V'=\varnothing$。
+
+::: hypcheck
+- **正則性**：$A$ の点の近傍で、閉包ごと $B$ を避けるものをとるのに使った。
+- **第二可算性**：被覆を可算個に揃え、番号順に「先に出たものの閉包を除く」操作をするのに使った。リンデレーフ性でも同じ議論ができるが、そのときは可算部分被覆の選択に選択公理を使う。
+- **選択公理**：使っていない（開基の数え上げを一つ固定しただけ）。
+:::
+:::
+
+## ウリゾーンの距離化定理 {#top:sec-mz-urysohn}
+
+::: theorem ウリゾーンの距離化定理 {#top:urysohn-metrization keywords="Urysohn metrization theorem: second countable T3 spaces embed in the Hilbert cube and are metrizable" index="ウリゾーンの距離化定理|うりぞーんのきょりかていり, 距離化定理|きょりかていり"}
+第二可算な $T_{3}$ 空間はヒルベルト立方体 $[0,1]^{\N}$ に埋め込める。したがって距離化可能である（DC を使う）。
+:::
+
+::: proof
+$X$ を第二可算な $T_{3}$ 空間とし、可算な開基 $\mathcal{B}=\{B_{1},B_{2},\ldots\}$ を固定する。\ref{top:regular-second-countable-normal} から $X$ は正規で、$T_{1}$ なので $T_{4}$。
+
+**関数の族.** $P\defeq\{(m,n):\overline{B_{m}}\subseteq B_{n}\}$ は可算である。各 $(m,n)\in P$ について、交わらない閉集合 $\overline{B_{m}}$ と $X\setminus B_{n}$ のウリゾーン関数を選び、$1$ から引いたものを $g_{m,n}\colon X\to[0,1]$ とする：$\overline{B_{m}}$ 上 $1$、$X\setminus B_{n}$ 上 $0$（ウリゾーンの補題 \ref{top:urysohn-lemma}。可算回の選択と補題自体で DC）。
+
+**写像.** $F\colon X\to[0,1]^{P}$, $F(x)\defeq(g_{m,n}(x))_{(m,n)\in P}$ とおく。各成分が連続なので $F$ は連続（\ref{top:product-maps}）。$P$ は可算なので、$[0,1]^{P}$ は $[0,1]^{\N}$ の閉部分空間（$P$ が有限なら、残りの座標を $0$ に固定した部分）と同相で、\ref{top:countable-product-metrizable} から距離化可能。
+
+**開写像性.** $U\subseteq X$ を開とし、$P_{U}\defeq\{(m,n)\in P:B_{n}\subseteq U\}$ とおく。次を示す。
+$$
+F[U]=F[X]\cap\bigcup_{(m,n)\in P_{U}}p_{(m,n)}^{-1}\bigl[(0,1]\bigr]
+$$
+「$\supseteq$」：$g_{m,n}(y)>0$ なら $y\in B_{n}\subseteq U$。「$\subseteq$」：$x\in U$ なら、$x\in B_{n}\subseteq U$ となる $n$ があり、正則性（\ref{top:regular-normal-characterization} の 1）から $x\in O\subseteq\overline{O}\subseteq B_{n}$ となる開集合 $O$、さらに $x\in B_{m}\subseteq O$ となる $m$ がある。$\overline{B_{m}}\subseteq\overline{O}\subseteq B_{n}$ なので $(m,n)\in P_{U}$ で、$g_{m,n}(x)=1>0$。
+
+**単射.** $x\neq y$ なら、$T_{1}$ から $U\defeq X\setminus\{y\}$ は $x$ を含む開集合で、上の議論から $g_{m,n}(x)=1$ となる $(m,n)\in P_{U}$ がある。$y\notin B_{n}$ なので $g_{m,n}(y)=0$。
+
+以上から $F$ は埋め込みで、$X$ は距離化可能な空間の部分空間と同相、したがって距離化可能。
+
+::: hypcheck
+- **第二可算性**：関数の族を可算個にとり、可算直積（距離化可能）に埋め込むのに使った。
+- **正則性**：正規性（\ref{top:regular-second-countable-normal}）と、$\overline{B_{m}}\subseteq B_{n}$ となる組が十分あること（開写像性）に使った。
+- **$T_{1}$**：単射性に使った。$T_{1}$ でない正則空間（密着空間など）は距離化可能でない。
+- **DC**：ウリゾーン関数の選択。
+:::
+:::
+
+::: corollary 第二可算と可分距離化可能 {#top:separable-metrizable}
+位相空間について、「第二可算な $T_{3}$ 空間」であることと「可分な距離化可能空間」であることは同値である（可算選択公理と DC を使う）。とくに可分な距離空間はヒルベルト立方体に埋め込める。
+:::
+
+::: proof
+前者なら \ref{top:urysohn-metrization} で距離化可能、第二可算なので可分（\ref{top:second-countable-properties}）。後者なら距離空間として第二可算（\ref{top:metric-countability}）で $T_{3}$（\ref{top:metric-normal}）。
+:::
+
+::: corollary コンパクトハウスドルフ空間の距離化 {#top:compact-metrizable keywords="a compact Hausdorff space is metrizable iff it is second countable" index="コンパクトハウスドルフ空間の距離化|こんぱくとはうすどるふくうかんのきょりか"}
+コンパクトハウスドルフ空間 $X$ について、$X$ が距離化可能であることと、第二可算であることは同値である（可算選択公理と DC を使う）。
+:::
+
+::: proof
+距離化可能なら、コンパクト距離空間は第二可算（\ref{top:compact-metric-second-countable}）。第二可算なら、コンパクトハウスドルフ空間は $T_{4}$（\ref{top:compact-hausdorff-normal}）、とくに $T_{3}$ なので \ref{top:urysohn-metrization}。
+:::
+
+## ストーンの定理 {#top:sec-mz-stone}
+
+::: theorem ストーンの定理 {#top:stone-paracompact keywords="A. H. Stone: every metric space is paracompact; M. E. Rudin's proof" index="ストーンの定理（パラコンパクト）|すとーんのていりぱらこんぱくと"}
+距離空間はパラコンパクトである（選択公理を使う）。
+:::
+
+::: proof
+$(X,d)$ を距離空間、$\mathcal{U}$ を開被覆とする。選択公理により $\mathcal{U}$ を整列し、$\mathcal{U}=\{U_{s}:s<\kappa\}$（$\kappa$ は順序数）と添字づける。各点 $x$ について、$x\in U_{s}$ となる最小の $s$ を $s(x)$ と書く。
+
+**構成.** $n\ge1$ についての帰納法で、開集合 $D_{s,n}$（$s<\kappa$）を次のように定める。$E_{n}\defeq\bigcup_{t<\kappa,\,j<n}D_{t,j}$（$n$ より前に作った集合の和）とし、
+$$
+C_{s,n}\defeq\bigl\{x\in X:s(x)=s,\ x\notin E_{n},\ B(x,3\cdot2^{-n})\subseteq U_{s}\bigr\}
+$$
+$$
+D_{s,n}\defeq\bigcup_{x\in C_{s,n}}B(x,2^{-n})
+$$
+とおく。各段は明示的に定義されているので、ここでは選択を使わない。$D_{s,n}$ は開で、$x\in C_{s,n}$ なら $B(x,2^{-n})\subseteq B(x,3\cdot2^{-n})\subseteq U_{s}$ なので $D_{s,n}\subseteq U_{s}$。よって $\mathcal{D}\defeq\{D_{s,n}\}$ は $\mathcal{U}$ の開細分の候補である。
+
+**被覆.** $x\in X$ をとり、$s\defeq s(x)$、$n$ を $B(x,3\cdot2^{-n})\subseteq U_{s}$ となるようにとる。$x\in E_{n}$ なら $x$ はある $D_{t,j}$ に属する。そうでなければ $x\in C_{s,n}\subseteq D_{s,n}$。
+
+**局所有限.** $x\in X$ をとる。被覆性から $x\in D_{s,n}$ となる $(s,n)$ があるので、一つ固定する（どれでもよい）。$D_{s,n}$ は開なので、$B(x,2^{-j})\subseteq D_{s,n}$ となる $j\ge1$ をとる。$W\defeq B(x,2^{-n-j})$ が有限個の $D_{t,i}$ としか交わらないことを示す。
+
+(a) $i\ge n+j$ なら、$W$ はどの $D_{t,i}$ とも交わらない。実際、$D_{t,i}$ を作る球 $B(y,2^{-i})$ の中心 $y\in C_{t,i}$ は $y\notin E_{i}\supseteq D_{s,n}$（$n<i$）なので、$y\notin B(x,2^{-j})$、すなわち $d(x,y)\ge2^{-j}$。一方 $n\ge1$, $i\ge n+j\ge j+1$ から $2^{-n-j}+2^{-i}\le2^{-j-1}+2^{-j-1}=2^{-j}$ なので、$W$ と $B(y,2^{-i})$ は交わらない。
+
+(b) $i<n+j$ なら、$W$ と交わる $D_{t,i}$ は高々一つである。$t<u$ として、$p\in W\cap D_{t,i}$, $q\in W\cap D_{u,i}$ があるとする。$p\in B(y,2^{-i})$, $q\in B(z,2^{-i})$（$y\in C_{t,i}$, $z\in C_{u,i}$）とすると、$B(y,3\cdot2^{-i})\subseteq U_{t}$ で、$s(z)=u>t$ なので $z\notin U_{t}$、よって $d(y,z)\ge3\cdot2^{-i}$。しかし $i\le n+j-1$ から $2\cdot2^{-n-j}\le2^{-i}$ で、
+$$
+\begin{aligned}
+d(y,z)&\le d(y,p)+d(p,x)+d(x,q)+d(q,z)\\
+&<2^{-i}+2\cdot2^{-n-j}+2^{-i}\le3\cdot2^{-i}
+\end{aligned}
+$$
+となり矛盾する。
+
+(a), (b) から、$W$ と交わる $\mathcal{D}$ の元は高々 $n+j-1$ 個である。$X$ はハウスドルフ（\ref{top:metric-normal}）なので、$X$ はパラコンパクトである。
+
+::: hypcheck
+- **整列（選択公理）**：$s(x)$ を定め、(b) で「中心 $z$ は $U_{t}$ に入らない」を使うのに必要だった。整列したあとの構成は明示的で、点ごとの選択は使っていない。
+- **距離**：球の半径 $2^{-n}$ と $3\cdot2^{-n}$ の比較による (a), (b) の評価に使った。
+- **(a) で $n\ge1$**：$2^{-n-j}\le2^{-j-1}$ のために使った。
+:::
+:::
+
+::: supplement
+**距離化定理の一般形.** 位相空間が距離化可能であることは、次のそれぞれと同値であることが知られている（R. Engelking, *General Topology* §4.4。ここでは証明しない）。
+- $T_{3}$ で、σ局所有限な開基（可算個の局所有限な族の和である開基）をもつ（**長田–スミルノフの距離化定理**）。
+- $T_{3}$ で、σ離散的な開基をもつ（**ビングの距離化定理**）。
+
+ウリゾーンの距離化定理は、可算な開基（一点ずつの族は局所有限）の場合として含まれる。また、パラコンパクトなハウスドルフ空間が局所的に距離化可能なら距離化可能である（スミルノフの定理）。
+
+**前提を変えると.** 第二可算性を外すと、ウリゾーンの距離化定理は成り立たない：$\omega_{1}$（順序位相）や一点コンパクト化 $\omega_{1}+1$ は $T_{4}$ だが距離化可能でない（パラコンパクトでないものもある、\ref{top:paracompact} の後の例）。コンパクト性があれば、第二可算性と距離化可能性は同値になる（\ref{top:compact-metrizable}）。
+:::
+
+::: intuition 高い視点から：可算個の温度計
+ウリゾーンの距離化定理の証明は、空間の点を「可算個の連続関数の値の列」で記録する。比喩で言えば、空間のあちこちに可算個の温度計 $g_{m,n}$ を置き、各点をその読みの列 $(g_{m,n}(x))$ で表す。温度計が十分多ければ（正則性と第二可算性）、読みの列から点と近さが復元でき、空間はヒルベルト立方体の部分空間として「座標づけ」される。ヒルベルト立方体は、可分距離空間すべてを収める**普遍的な**空間である（\ref{top:separable-metrizable}）。
+
+チコノフの埋め込み定理（\ref{top:tychonoff-embedding}）も同じ発想だが、そちらは温度計を非可算個許すので、距離の代わりにコンパクト化が得られる。
+:::
+
+## 問題 {#top:sec-mz-problems}
+
+::: problem {#top:prob-uncountable-product-not-metrizable}
+$[0,1]^{\R}$ は第一可算でなく、したがって距離化可能でないことを示せ（可算選択公理を使ってよい）。
+:::
+
+::: solution
+点 $0$（すべての座標が $0$）に可算な基本近傍系 $(N_{k})$ があるとする。各 $N_{k}$ に含まれる基本開集合 $W_{k}\ni0$ を選ぶ（可算選択）。$W_{k}$ は有限個の座標 $J_{k}$ だけを制限する（\ref{top:product-base}）。$J\defeq\bigcup_{k}J_{k}$ は可算なので、$i\in\R\setminus J$ がとれる。$O\defeq p_{i}^{-1}[[0,1/2)]$ は $0$ の開近傍だが、どの $N_{k}$ も $O$ に含まれない：$W_{k}\subseteq N_{k}$ は座標 $i$ を制限しないので、座標 $i$ が $1$ の点を含む。
+:::
+
+::: problem {#top:prob-one-point-uncountable-discrete}
+非可算な離散空間 $D$ の一点コンパクト化 $D^{\ast}$ は、コンパクトハウスドルフだが距離化可能でないことを示せ。
+:::
+
+::: solution
+$D$ は局所コンパクトハウスドルフ（一点 $\{x\}$ がコンパクトな近傍）なので、$D^{\ast}$ はコンパクトハウスドルフ（\ref{top:one-point-properties}）。距離化可能なら第二可算（\ref{top:compact-metrizable}）で、開部分空間 $D$ も第二可算になる。しかし $D$ の開基は各一点集合 $\{x\}$ を含まなければならず（$\{x\}$ が開で、それに含まれる空でない開集合は $\{x\}$ だけ）、非可算である。矛盾。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

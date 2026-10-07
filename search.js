@@ -443,10 +443,10 @@
    * 子をもつ分野を選ぶときは、子メニュー先頭の「〇〇 全体」を選ぶ。 */
   var DIRS = {};   // path -> {node, parent}
   (function walk(n, parent) {
-    (n.c || []).forEach(function (c) { if (c.k === 'd') { DIRS[c.path] = { node: c, parent: parent }; walk(c, c); } });
+    (n.c || []).forEach(function (c) { if (c.k === 'd' && !c.x) { DIRS[c.path] = { node: c, parent: parent }; walk(c, c); } });
   })(IDX.tree || { c: [] }, null);
   function hasPagesAny(n) { return (n.c || []).some(function (c) { return c.k !== 'd' || hasPagesAny(c); }); }
-  function subdirs(n) { return ((n && n.c) || []).filter(function (c) { return c.k === 'd' && hasPagesAny(c); }); }
+  function subdirs(n) { return ((n && n.c) || []).filter(function (c) { return c.k === 'd' && !c.x && hasPagesAny(c); }); }
   function dirLabel(path) {
     if (!path || !DIRS[path]) return 'すべての分野';
     var names = [], d = DIRS[path];

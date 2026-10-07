@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>パラコンパクト性と 1 の分割 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54D-general-properties/01-separation-compactness/08-paracompactness.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# パラコンパクト性と 1 の分割 {#top:page-paracompactness keywords="locally finite family, refinement, paracompact space, Dieudonne theorem, sigma-compact, compact exhaustion, shrinking lemma, partition of unity"}
+
+コンパクト性は「開被覆が有限部分被覆をもつ」という条件で、局所的な情報を有限個にまとめて大域的な結論を得るのに使われた。多様体や距離空間はふつうコンパクトでないが、「開被覆を細分して、各点の近くでは有限個しか効かないようにできる」という弱い条件は満たす。これが**パラコンパクト性**である（\ref{top:paracompact}）。パラコンパクトなハウスドルフ空間は正規であり（\ref{top:paracompact-normal}）、任意の開被覆に従属する **1 の分割**をもつ（\ref{top:partition-of-unity-existence}）。1 の分割は、局所的に作った関数や構造を貼り合わせる標準的な道具である。
+
+> 資料：小山晃『位相空間論』第 7 章を参考に、本サイトで証明を書き下ろした。パラコンパクトの定義にハウスドルフ性を含めるかどうかは本によって異なる。本サイトでは含める。
+
+## 記法と定義の確認 {#top:sec-pc-notation}
+
+::: notation
+- 位相空間 $X$ の部分集合の族 $\mathcal{A}=(A_{\lambda})_{\lambda\in\Lambda}$ について、$\bigcup\mathcal{A}=X$ のとき**被覆**、さらに各 $A_{\lambda}$ が開なら**開被覆**という。
+- 正規性・ウリゾーンの補題は前ページまでのとおり（\ref{top:separation-axioms}, \ref{top:regular-normal-characterization}, \ref{top:urysohn-lemma}）。
+- 関数 $f\colon X\to\R$ の**台**を $\operatorname{supp}f\defeq\overline{\{x:f(x)\neq0\}}$ とする。
+- 議論は $\ZF$ で行い、選択公理を使う箇所は明記する。
+:::
+
+## 局所有限な族とパラコンパクト性 {#top:sec-pc-definitions}
+
+::: definition 局所有限・細分 {#top:locally-finite keywords="locally finite family, point-finite family, refinement of a cover" index="局所有限|きょくしょゆうげん, 点有限|てんゆうげん, 細分|さいぶん"}
+1. 族 $(A_{\lambda})_{\lambda\in\Lambda}$ が**局所有限**であるとは、各点 $x$ が、$\{\lambda:A_{\lambda}\cap W\neq\varnothing\}$ が有限となる近傍 $W$ をもつことをいう。各点を含む $A_{\lambda}$ が有限個であるとき**点有限**という。局所有限なら点有限である。
+2. 被覆 $\mathcal{V}$ が被覆 $\mathcal{U}$ の**細分**であるとは、$\mathcal{V}$ の各元が $\mathcal{U}$ のある元に含まれることをいう。
+:::
+
+::: lemma 局所有限な族の閉包 {#top:locally-finite-closure keywords="closure of a locally finite union is the union of closures" index="局所有限な族の閉包|きょくしょゆうげんなぞくのへいほう"}
+$(A_{\lambda})$ が局所有限なら、$(\overline{A_{\lambda}})$ も局所有限で、
+$$
+\overline{\bigcup_{\lambda}A_{\lambda}}=\bigcup_{\lambda}\overline{A_{\lambda}}
+$$
+が成り立つ。とくに局所有限な閉集合族の和は閉集合である。
+:::
+
+::: proof
+**局所有限性.** $x$ の開近傍 $W$ で $A_{\lambda}$ と交わるものが有限個とする（近傍は開近傍を含むので、開としてよい）。$W$ が開なので、$W\cap A_{\lambda}=\varnothing$ なら $W\cap\overline{A_{\lambda}}=\varnothing$（$X\setminus W$ は $A_{\lambda}$ を含む閉集合）。よって $W$ と交わる $\overline{A_{\lambda}}$ も有限個。
+
+**等式.** 「$\supseteq$」は各 $\overline{A_{\lambda}}\subseteq\overline{\bigcup A_{\lambda}}$ から。「$\subseteq$」：$x\in\overline{\bigcup A_{\lambda}}$ とし、上の開近傍 $W$ をとる。$W$ と交わる $A_{\lambda}$ を $A_{\lambda_{1}},\ldots,A_{\lambda_{n}}$ とする。$x\notin\overline{A_{\lambda_{k}}}$（$k=1,\ldots,n$）と仮定すると、
+$$
+W'\defeq W\setminus\bigl(\overline{A_{\lambda_{1}}}\cup\cdots\cup\overline{A_{\lambda_{n}}}\bigr)
+$$
+は $x$ の開近傍で、どの $A_{\lambda}$ とも交わらない。これは $x\in\overline{\bigcup A_{\lambda}}$（\ref{top:closure-neighborhood}）に反する。よってある $k$ で $x\in\overline{A_{\lambda_{k}}}$。
+:::
+
+::: definition パラコンパクト {#top:paracompact keywords="paracompact space: Hausdorff and every open cover has a locally finite open refinement" index="パラコンパクト|ぱらこんぱくと"}
+ハウスドルフ空間 $X$ が**パラコンパクト**であるとは、$X$ の任意の開被覆が、局所有限な開被覆による細分をもつことをいう。
+:::
+
+::: example
+1. コンパクトハウスドルフ空間はパラコンパクト：有限部分被覆はそれ自身の細分で、有限族は局所有限。
+2. 離散空間はパラコンパクト：一点集合全体の被覆は、任意の開被覆の細分で、局所有限（点 $x$ の近傍 $\{x\}$ は一つの元とだけ交わる）。
+3. 距離空間はパラコンパクトである（A. H. Stone, 1948。選択公理を使う。\ref{top:stone-paracompact}）。
+4. 順序数 $\omega_{1}$（順序位相、\ref{top:omega-one-space}）はパラコンパクトでないことが知られている（R. Engelking, *General Topology* の例。ここでは証明しない）。
+:::
+
+## パラコンパクト空間は正規 {#top:sec-pc-normal}
+
+::: theorem デュドネの定理 {#top:paracompact-normal keywords="Dieudonne: paracompact Hausdorff spaces are normal" index="デュドネの定理|でゅどねのていり, パラコンパクト空間の正規性|ぱらこんぱくとくうかんのせいきせい"}
+パラコンパクト空間は正規であり、したがって $T_{4}$ である。
+:::
+
+::: proof
+二段階で示す。どちらの段も次の形の主張を使う。
+
+**主張.** $X$ をパラコンパクトとし、$A$ を集合、$F$ を閉集合とする。$F$ の各点 $y$ について「$\overline{U}\cap A=\varnothing$ となる $y$ の開近傍 $U$」があるなら、$A$ と $F$ は開集合で分離される。
+
+**主張の証明.** $\mathcal{U}\defeq\{U\text{ 開}:\overline{U}\cap A=\varnothing\}$ とおく（条件を満たす開集合すべてを集めるので、選択は要らない）。仮定から $\mathcal{U}$ は $F$ を覆うので、$\mathcal{U}\cup\{X\setminus F\}$ は $X$ の開被覆である。パラコンパクト性から、その局所有限な開細分 $\mathcal{V}$ がある。
+$$
+\mathcal{V}_{F}\defeq\{V\in\mathcal{V}:V\cap F\neq\varnothing\},\qquad O\defeq\bigcup\mathcal{V}_{F}
+$$
+とおく。$\mathcal{V}$ は $F$ を覆い、$F$ の点を含む元は $\mathcal{V}_{F}$ に属するので $F\subseteq O$。$V\in\mathcal{V}_{F}$ は $X\setminus F$ に含まれないので、ある $U\in\mathcal{U}$ に含まれ、$\overline{V}\subseteq\overline{U}$ は $A$ と交わらない。$\mathcal{V}_{F}$ は局所有限なので、\ref{top:locally-finite-closure} から $\overline{O}=\bigcup_{V\in\mathcal{V}_{F}}\overline{V}$ も $A$ と交わらない。よって $O\supseteq F$ と $X\setminus\overline{O}\supseteq A$ が求める開集合である。
+
+**正則性.** 点 $x$ と閉集合 $F\not\ni x$ をとる。$A\defeq\{x\}$ とする。$y\in F$ について、ハウスドルフ性から $y\in U$, $x\in U'$, $U\cap U'=\varnothing$ となる開集合があり、$X\setminus U'$ は $U$ を含む閉集合なので $x\notin\overline{U}$。主張から $x$ と $F$ は分離される。
+
+**正規性.** 交わらない閉集合 $A,F$ をとる。$y\in F$ について、いま示した正則性から、$y$ の開近傍 $U$ で $\overline{U}\cap A=\varnothing$ となるものがある（$y$ と閉集合 $A$ を分離する $U\ni y$, $U'\supseteq A$ について $\overline{U}\subseteq X\setminus U'$）。主張から $A$ と $F$ は分離される。$T_{1}$ はハウスドルフ性から従う。
+
+::: hypcheck
+- **ハウスドルフ性**：正則性の段で、点 $y$ の近傍の閉包が $x$ を含まないようにするのに使った。
+- **局所有限性**：$\overline{O}$ が $\overline{V}$ の和になること（\ref{top:locally-finite-closure}）に使った。単なる開細分では $\overline{O}$ が大きくなり得る。
+- **選択公理**：使っていない（開近傍をすべて集めた族を使った）。
+:::
+:::
+
+## σコンパクトな局所コンパクト空間 {#top:sec-pc-sigma-compact}
+
+::: lemma コンパクト集合による近似列 {#top:compact-exhaustion keywords="compact exhaustion of a sigma-compact locally compact Hausdorff space" index="コンパクト近似列|こんぱくときんじれつ, σコンパクト|しぐまこんぱくと"}
+$X$ を局所コンパクトなハウスドルフ空間とし、コンパクト集合の列 $(C_{n})_{n\ge1}$ で $X=\bigcup_{n}C_{n}$ となるもの（**σコンパクト**）があるとする。このとき、コンパクト集合の列 $(K_{n})_{n\ge1}$ で
+$$
+K_{n}\subseteq\operatorname{int}K_{n+1},\qquad X=\bigcup_{n}K_{n}
+$$
+となるものがある（DC を使う）。
+:::
+
+::: proof
+$K_{1}\defeq C_{1}$。$K_{n}$ ができたとする。コンパクト集合 $L\defeq K_{n}\cup C_{n+1}$ の各点 $x$ は、閉包がコンパクトな開近傍をもつ（\ref{top:lch-neighborhood-base}）。それらは $L$ を覆うので、有限個 $U_{1},\ldots,U_{m}$ で覆える。$K_{n+1}\defeq\overline{U_{1}}\cup\cdots\cup\overline{U_{m}}$ とおくと、コンパクト集合の有限和なのでコンパクトで、$L\subseteq U_{1}\cup\cdots\cup U_{m}\subseteq\operatorname{int}K_{n+1}$。各段で有限個の近傍を選び、それが前の段に依存するので DC を使う。$C_{n}\subseteq K_{n}$ なので $X=\bigcup K_{n}$。
+:::
+
+::: theorem σコンパクトな局所コンパクトハウスドルフ空間はパラコンパクト {#top:sigma-compact-paracompact keywords="sigma-compact locally compact Hausdorff spaces (e.g. second countable manifolds) are paracompact" index="σコンパクト空間のパラコンパクト性|しぐまこんぱくとくうかんのぱらこんぱくとせい"}
+σコンパクトな局所コンパクトハウスドルフ空間はパラコンパクトである（DC を使う）。
+:::
+
+::: proof
+\ref{top:compact-exhaustion} の $(K_{n})$ をとり、$K_{0}\defeq K_{-1}\defeq\varnothing$ とおく。$n\ge1$ について
+$$
+A_{n}\defeq K_{n}\setminus\operatorname{int}K_{n-1},\qquad O_{n}\defeq\operatorname{int}K_{n+1}\setminus K_{n-2}
+$$
+とおく。$A_{n}$ はコンパクト集合 $K_{n}$ の閉部分集合なのでコンパクト（\ref{top:compact-basic}）。$O_{n}$ は開（$K_{n-2}$ はハウスドルフ空間のコンパクト集合なので閉、\ref{top:compact-hausdorff-closed}）。$A_{n}\subseteq O_{n}$：$A_{n}\subseteq K_{n}\subseteq\operatorname{int}K_{n+1}$ で、$K_{n-2}\subseteq\operatorname{int}K_{n-1}$ なので $A_{n}\cap K_{n-2}=\varnothing$。
+
+開被覆 $\mathcal{U}$ をとる。$\{U\cap O_{n}:U\in\mathcal{U}\}$ は $A_{n}$ を覆うので、有限部分族 $\mathcal{V}_{n}$ で $A_{n}$ を覆うものを選ぶ（可算回の選択）。$\mathcal{V}\defeq\bigcup_{n}\mathcal{V}_{n}$ とおく。
+
+- **細分**：各元は $U\cap O_{n}\subseteq U$ の形。
+- **被覆**：$x\in X$ について、$x\in K_{n}$ となる最小の $n$ をとると、$x\notin K_{n-1}\supseteq\operatorname{int}K_{n-1}$ なので $x\in A_{n}$。$A_{n}$ は $\mathcal{V}_{n}$ で覆われる。
+- **局所有限**：$x\in X$ について、$x\in K_{m}\subseteq\operatorname{int}K_{m+1}$ となる $m$ をとり、近傍 $W\defeq\operatorname{int}K_{m+1}$ を考える。$n\ge m+3$ なら $K_{n-2}\supseteq K_{m+1}\supseteq W$ なので $O_{n}\cap W=\varnothing$。よって $W$ と交わりうるのは $\mathcal{V}_{1},\ldots,\mathcal{V}_{m+2}$ の元だけで、これは有限個。
+
+::: hypcheck
+- **局所コンパクト・ハウスドルフ**：近似列の構成（\ref{top:lch-neighborhood-base}）と、$K_{n-2}$ が閉であることに使った。
+- **σコンパクト**：近似列が $X$ 全体を覆うことに使った。
+- **選択**：近似列の構成で DC、$\mathcal{V}_{n}$ の選択で可算選択。
+:::
+:::
+
+::: corollary 第二可算な局所コンパクトハウスドルフ空間 {#top:second-countable-lch-paracompact}
+第二可算な局所コンパクトハウスドルフ空間（たとえば第二可算なハウスドルフ位相多様体）はパラコンパクトである（DC を使う）。
+:::
+
+::: proof
+σコンパクトであることを示せば \ref{top:sigma-compact-paracompact} による（問題 \ref{top:prob-second-countable-sigma-compact}）。
+:::
+
+## 1 の分割 {#top:sec-pc-partition}
+
+::: definition 1 の分割 {#top:partition-of-unity keywords="partition of unity, locally finite, subordinate to an open cover" index="1 の分割|いちのぶんかつ, 従属する（1 の分割）|じゅうぞくする"}
+位相空間 $X$ の**（局所有限な）1 の分割**とは、連続関数の族 $(\varphi_{\lambda}\colon X\to[0,1])_{\lambda\in\Lambda}$ で、台の族 $(\operatorname{supp}\varphi_{\lambda})$ が局所有限であり、各点で $\sum_{\lambda}\varphi_{\lambda}(x)=1$（和は実質的に有限和）となるものをいう。開被覆 $\mathcal{U}$ について、各 $\operatorname{supp}\varphi_{\lambda}$ が $\mathcal{U}$ のある元に含まれるとき、1 の分割は $\mathcal{U}$ に**従属する**という。
+:::
+
+::: lemma 局所有限な和の連続性 {#top:locally-finite-sum}
+連続関数 $g_{\lambda}\colon X\to\R$ の台の族が局所有限なら、$g\defeq\sum_{\lambda}g_{\lambda}$ は各点で有限和として定まり、連続である。
+:::
+
+::: proof
+$x$ の開近傍 $W$ で、台と交わる $g_{\lambda}$ が $g_{\lambda_{1}},\ldots,g_{\lambda_{n}}$ だけのものをとる。$W$ 上では $g=g_{\lambda_{1}}+\cdots+g_{\lambda_{n}}$ で、これは連続。連続性は局所的な性質なので（開集合 $G$ について $g^{-1}[G]\cap W$ が $W$ で開、したがって $X$ で開、これらの和が $g^{-1}[G]$）、$g$ は連続である。
+:::
+
+::: lemma 縮小補題 {#top:shrinking-lemma keywords="shrinking lemma for point-finite open covers of normal spaces" index="縮小補題|しゅくしょうほだい"}
+$X$ を正規空間とし、$(V_{\lambda})_{\lambda\in\Lambda}$ を点有限な開被覆とする。このとき開被覆 $(W_{\lambda})_{\lambda\in\Lambda}$ で、各 $\lambda$ について $\overline{W_{\lambda}}\subseteq V_{\lambda}$ となるものがある（選択公理を使う）。
+:::
+
+::: proof
+選択公理により $\Lambda$ を整列し、順序数 $\kappa$ で $\Lambda=\{\lambda_{\alpha}:\alpha<\kappa\}$ と添字づける。$V_{\alpha}\defeq V_{\lambda_{\alpha}}$ と書く。超限帰納法で開集合 $W_{\alpha}$ を、次の条件 $(P_{\alpha})$ を満たすように作る。
+$$
+\overline{W_{\alpha}}\subseteq V_{\alpha},\qquad \{W_{\beta}\}_{\beta\le\alpha}\cup\{V_{\beta}\}_{\beta>\alpha}\ \text{は被覆}
+$$
+**まず、$\alpha$ 未満がすべてできたとき $\{W_{\beta}\}_{\beta<\alpha}\cup\{V_{\beta}\}_{\beta\ge\alpha}$ が被覆であることを示す.** $x\in X$ をとる。$x$ がある $V_{\beta}$（$\beta\ge\alpha$）に入れば終わり。そうでなければ、点有限性から $x$ を含む $V_{\beta}$ は有限個で、すべて $\beta<\alpha$。その最大の添字を $\beta_{0}$ とする。$(P_{\beta_{0}})$ から $x$ は $\{W_{\beta}\}_{\beta\le\beta_{0}}\cup\{V_{\beta}\}_{\beta>\beta_{0}}$ のどれかに入るが、$\beta>\beta_{0}$ の $V_{\beta}$ には入らないので、ある $W_{\beta}$（$\beta\le\beta_{0}<\alpha$）に入る。
+
+**$W_{\alpha}$ の構成.** 閉集合
+$$
+F\defeq X\setminus\Bigl(\bigcup_{\beta<\alpha}W_{\beta}\cup\bigcup_{\beta>\alpha}V_{\beta}\Bigr)
+$$
+は、いま示したことから $V_{\alpha}$ に含まれる。正規性（\ref{top:regular-normal-characterization} の 2）から $F\subseteq W_{\alpha}\subseteq\overline{W_{\alpha}}\subseteq V_{\alpha}$ となる開集合 $W_{\alpha}$ を選ぶ（選択公理）。$F\subseteq W_{\alpha}$ から $(P_{\alpha})$ の被覆条件が成り立つ。
+
+最後に、$\{W_{\alpha}\}_{\alpha<\kappa}$ が被覆であることは、上の「まず」の議論を $\alpha=\kappa$ について行えばよい（$\beta\ge\kappa$ の $V_{\beta}$ はない）。
+:::
+
+::: theorem パラコンパクト空間の 1 の分割 {#top:partition-of-unity-existence keywords="paracompact spaces admit partitions of unity subordinate to any open cover" index="1 の分割の存在|いちのぶんかつのそんざい"}
+$X$ をパラコンパクト空間とする。$X$ の任意の開被覆 $\mathcal{U}$ に対し、$\mathcal{U}$ に従属する 1 の分割がある（選択公理を使う）。
+:::
+
+::: proof
+**ステップ 1.** パラコンパクト性から、$\mathcal{U}$ の局所有限な開細分 $(V_{\lambda})_{\lambda\in\Lambda}$ をとる。$X$ は正規（\ref{top:paracompact-normal}）で、局所有限な被覆は点有限なので、縮小補題（\ref{top:shrinking-lemma}）を二回使って、開被覆 $(W_{\lambda})$, $(W'_{\lambda})$ で
+$$
+\overline{W'_{\lambda}}\subseteq W_{\lambda},\qquad \overline{W_{\lambda}}\subseteq V_{\lambda}
+$$
+となるものをとる（二回目は $(W_{\lambda})$ に適用する。$W_{\lambda}\subseteq V_{\lambda}$ なので $(W_{\lambda})$ も点有限）。
+
+**ステップ 2.** 各 $\lambda$ について、交わらない閉集合 $\overline{W'_{\lambda}}$ と $X\setminus W_{\lambda}$ にウリゾーンの補題（\ref{top:urysohn-lemma}）を使い、連続関数 $g_{\lambda}\colon X\to[0,1]$ で $\overline{W'_{\lambda}}$ 上 $1$、$X\setminus W_{\lambda}$ 上 $0$ となるものを選ぶ（選択公理）。$\{g_{\lambda}\neq0\}\subseteq W_{\lambda}$ なので
+$$
+\operatorname{supp}g_{\lambda}\subseteq\overline{W_{\lambda}}\subseteq V_{\lambda}
+$$
+で、$(V_{\lambda})$ が局所有限なので台の族も局所有限。
+
+**ステップ 3.** $g\defeq\sum_{\lambda}g_{\lambda}$ は連続（\ref{top:locally-finite-sum}）。$(W'_{\lambda})$ は被覆なので、各 $x$ はある $W'_{\lambda}$ に入り、$g(x)\ge g_{\lambda}(x)=1$。$\varphi_{\lambda}\defeq g_{\lambda}/g$ とおけば、連続で値は $[0,1]$、$\operatorname{supp}\varphi_{\lambda}=\operatorname{supp}g_{\lambda}\subseteq V_{\lambda}$ は $\mathcal{U}$ のある元に含まれ、$\sum_{\lambda}\varphi_{\lambda}=1$。
+
+::: hypcheck
+- **パラコンパクト性**：局所有限な細分（台の局所有限性と和の連続性）と、正規性（縮小補題・ウリゾーンの補題）の両方に使った。
+- **縮小を二回**：一回だけだと $g_{\lambda}$ の台が $\overline{V_{\lambda}}$ までしか抑えられず、$\mathcal{U}$ の元に含まれる保証がない。
+- **選択公理**：縮小補題の整列と各段の選択、ウリゾーン関数の選択に使った。
+:::
+:::
+
+::: supplement
+**前提を変えると.** パラコンパクト性は次の条件と同値であることが知られている（R. Engelking, *General Topology* §5.1。ここでは証明しない）：(i) ハウスドルフで、任意の開被覆に従属する 1 の分割をもつ。(ii) $T_{1}$ かつ正則で、任意の開被覆が可算個の局所有限な族の和として書ける開細分（σ局所有限な開細分）をもつ（**マイケルの定理**）。とくに、正則なリンデレーフ空間はパラコンパクトである。
+
+**類似の定理.** 距離空間はパラコンパクト（ストーンの定理、\ref{top:stone-paracompact}）。パラコンパクト性は閉部分空間に遺伝するが、直積には遺伝しない：ゾルゲンフライ直線は（正則リンデレーフなので）パラコンパクトだが、その二乗は正規でないので（\ref{top:regular-hereditary} の後の注意）パラコンパクトでない。
+
+**1 の分割の使いどころ.** 多様体上のリーマン計量の存在、ベクトル束の内積の存在、ド・ラームの定理の証明などは、局所的に作ったものを 1 の分割で足し合わせて得られる。
+:::
+
+::: intuition 高い視点から：局所から大域へのつなぎ
+パラコンパクト性は「局所的に作ったものを、各点で有限個だけ重ねて足し合わせる」ことを可能にする条件である。比喩で言えば、局所的な地図（チャート）を何枚も持っているとき、1 の分割は各地点で各地図をどの程度信頼するかを表す重みで、その重みで平均をとると一枚の大域的な地図ができる。足し算ができる対象（実数値関数、内積、凸集合に値をとるもの）なら、この平均は意味をもつ。
+
+層の言葉では、パラコンパクト空間上の連続関数の層は「細層」であり、高次のコホモロジーが消える。これが 1 の分割が「局所から大域への障害」を消す理由である（層コホモロジーの系列で扱う予定。ここでは事実として述べる）。
+:::
+
+## 問題 {#top:sec-pc-problems}
+
+::: problem {#top:prob-second-countable-sigma-compact}
+第二可算な局所コンパクトハウスドルフ空間は σコンパクトであることを示せ。
+:::
+
+::: solution
+可算な開基 $\mathcal{B}$ をとり、$\mathcal{B}_{0}\defeq\{B\in\mathcal{B}:\overline{B}\text{ はコンパクト}\}$ とおく（可算）。$\mathcal{B}_{0}$ は $X$ を覆う：$x\in X$ について、\ref{top:lch-neighborhood-base} から閉包がコンパクトな開近傍 $U$ があり、開基の元 $B$ で $x\in B\subseteq U$ となるものがある。$\overline{B}\subseteq\overline{U}$ はコンパクト集合の閉部分集合なのでコンパクトで、$B\in\mathcal{B}_{0}$。$\mathcal{B}_{0}$ を数え上げて $B_{1},B_{2},\ldots$ とすれば、$X=\bigcup_{n}\overline{B_{n}}$。（$\mathcal{B}_{0}$ が空や有限の場合も同様。数え上げは $\mathcal{B}$ の数え上げを固定すれば選択は要らない。）
+:::
+
+::: problem {#top:prob-locally-finite-not-point-finite}
+点有限だが局所有限でない開集合族の例を挙げよ。
+:::
+
+::: solution
+$\R$ で $A_{n}\defeq(1/(n+1),1/n)$（$n\ge1$）とおく。各点を含む $A_{n}$ は高々一つなので点有限。しかし $0$ のどの近傍 $(-\varepsilon,\varepsilon)$ も、$1/n<\varepsilon$ となる無限個の $A_{n}$ と交わるので、局所有限でない。（$0$ はどの $A_{n}$ にも含まれないことに注意。）
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

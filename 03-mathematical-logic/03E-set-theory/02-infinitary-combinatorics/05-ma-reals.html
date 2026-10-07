@@ -21,7 +21,7 @@
 - 本ページでは選択公理を仮定する（$\ZFC$）。各証明の「前提条件の使用箇所」に、選択公理と MA をどこで使ったかを明記する。
 - 半順序・両立・反鎖・c.c.c.・稠密集合・フィルター・$\mathrm{MA}(\kappa)$ は \ref{set:forcing-poset}, \ref{set:compatible}, \ref{set:ccc-poset}, \ref{set:dense-set}, \ref{set:poset-filter}, \ref{set:ma} の意味で用いる。フィルターの有限個の元は $G$ の中に共通の拡張をもつ（\ref{set:poset-filter-basic}）。$\mathrm{MA}(\kappa)$ は $\kappa$ について単調（\ref{set:ma-basic}）、$\mathrm{MA}(\aleph_{0})$ は c.c.c. を仮定しない形で ZFC の定理（\ref{set:ma-omega}）、$\mathrm{MA}(\kappa)$ ならば $\kappa<2^{\aleph_{0}}$（\ref{set:ma-continuum-false}）。
 - 前ページの主定理 \ref{set:ma-ad} を使う：$\mathrm{MA}(\kappa)$ のもとで、$\mathcal{A},\mathcal{C}\subseteq\mathcal{P}(\omega)$ が $\lvert\mathcal{A}\rvert,\lvert\mathcal{C}\rvert\le\kappa$ で「任意の $y\in\mathcal{C}$ と有限な $F\subseteq\mathcal{A}$ について $y\setminus\bigcup F$ は無限」を満たせば、すべての $x\in\mathcal{A}$ と有限にしか交わらず、すべての $y\in\mathcal{C}$ と無限に交わる $d\subseteq\omega$ がある。
-- 位相空間の用語は通常の意味で用いる。$A\subseteq X$ の閉包を $\overline{A}$、内部を $\operatorname{int}A$ と書く。$A$ が**稠密**とは $\overline{A}=X$、すなわち空でない任意の開集合が $A$ と交わること。$N$ が**疎**（nowhere dense）とは $\operatorname{int}\overline{N}=\varnothing$ となること、$M$ が**第一類**（first category, meager）とは可算個の疎集合の和に含まれることをいう（\ref[疎集合と第一類集合]{top:first-category}）。$\overline{N}$ は $N$ が疎なら疎な閉集合なので、$M$ が第一類であることは「可算個の疎な閉集合の和に含まれる」ことと同値である。
+- 位相空間の用語は通常の意味で用いる。$A\subseteq X$ の閉包を $\overline{A}$、内部を $\operatorname{int}A$ と書く。$A$ が**稠密**とは $\overline{A}=X$、すなわち空でない任意の開集合が $A$ と交わること。$N$ が**疎**（nowhere dense）とは $\operatorname{int}\overline{N}=\varnothing$ となること、$M$ が**第一類**（first category, meager）とは可算個の疎集合の和に含まれることをいう（\ref{top:first-category}）。$\overline{N}$ は $N$ が疎なら疎な閉集合なので、$M$ が第一類であることは「可算個の疎な閉集合の和に含まれる」ことと同値である。
 - コンパクト・ハウスドルフ（\ref{top:compact}, \ref{top:hausdorff}）。$X$ がコンパクトであることは、有限交叉性をもつ（有限個の共通部分が常に空でない）閉集合族の共通部分が空でないことと同値である（補集合をとれば開被覆の言い換えになる）。空間 $X$ が**局所コンパクト**であるとは、任意の点 $x$ と $x$ を含む開集合 $W$ に対し、$x\in U$, $\overline{U}\subseteq W$ で $\overline{U}$ がコンパクトとなる開集合 $U$ が存在することとする（ハウスドルフ空間では通常の定義と同値。\ref{top:locally-compact}）。$\R$ は、閉区間がコンパクトである（\ref{top:heine-borel}）ことから局所コンパクトである。
 - 空間 $X$ が **c.c.c.** をもつとは、対ごとに交わらない空でない開集合の族がすべて可算であること（\ref{set:ccc-space}）。$X$ の空でない開集合全体に包含 $\subseteq$ で順序を入れた半順序では「両立 $\iff$ 交わる」であり、この半順序が c.c.c. をもつことと空間 $X$ が c.c.c. をもつことは同値（\ref{set:ccc-poset} の例 3）。可分空間は c.c.c.（\ref{set:separable-ccc}）で、特に $\R$ は c.c.c.。直積空間 $\prod_{i\in I}X_{i}$ は、有限個の添字 $r\subseteq I$ についての部分直積 $\prod_{i\in r}X_{i}$ がすべて c.c.c. ならば c.c.c. である（\ref{set:ccc-product-finite}）。直積位相の開基は、有限個の座標以外は全体であるような開集合の直積（**開箱**）である（\ref{top:product-topology}）。
 - $\mathcal{B}_{\Q}$ は有理数を端点とする空でない開区間 $(a,b)$（$a<b$, $a,b\in\Q$）全体とする。$\mathcal{B}_{\Q}$ は可算無限であり（$(a,b)\mapsto\langle a,b\rangle$ は $\Q\times\Q$ への単射）、$\R$ の開基である：開集合 $W$ と $x\in W$ に対し $(x-\delta,x+\delta)\subseteq W$ となる $\delta>0$ をとり、$x-\delta<a<x<b<x+\delta$ となる有理数 $a,b$ をとれば $x\in(a,b)\subseteq W$。
@@ -108,7 +108,7 @@ $$
 - $K_{\alpha}$ は疎：空でない基本開集合 $[s]=\{g\mid g\restr{\ell}=s\}$（$s\in{}^{\ell}\omega_{1}$）は、$s$ に値 $\alpha+1$ を付け足した $[s^{\frown}\langle\alpha+1\rangle]$ を含み、これは $K_{\alpha}$ と交わらない。
 - $\bigcup_{\alpha<\omega_{1}}K_{\alpha}=X$：$f\in X$ の値域は $\omega_{1}$ の可算部分集合なので有界であり（$\omega_{1}$ の正則性、\ref{set:successor-regular}）、上界 $\alpha$ について $f\in K_{\alpha}$。
 
-したがって $X$ は ZFC で $\aleph_{1}$ 個の疎な閉集合の和であり、しかも $X$ は完備距離空間なのでベールのカテゴリー定理（\ref[ベールのカテゴリー定理]{top:baire-category}）により第一類ではない。
+したがって $X$ は ZFC で $\aleph_{1}$ 個の疎な閉集合の和であり、しかも $X$ は完備距離空間なのでベールのカテゴリー定理（\ref{top:baire-category}）により第一類ではない。
 :::
 
 ## 実数直線の測度 0 集合 {#set:sec-ma-measure}
@@ -318,7 +318,7 @@ $\mathrm{MA}(\kappa)$ を仮定する。$X$ を局所コンパクト c.c.c. ハ�
 :::
 
 ::: supplement
-\ref{set:baire-compact} は一般位相でのベールのカテゴリー定理（\ref[ベールのカテゴリー定理]{top:baire-category}）のうち局所コンパクト空間の場合である。完備距離空間の場合も、条件を「半径 $1/n$ 以下の開球」などに制限すれば同じ半順序の議論で示せる。
+\ref{set:baire-compact} は一般位相でのベールのカテゴリー定理（\ref{top:baire-category}）のうち局所コンパクト空間の場合である。完備距離空間の場合も、条件を「半径 $1/n$ 以下の開球」などに制限すれば同じ半順序の議論で示せる。
 :::
 
 ::: corollary MA のもとでの小さい実数の集合 {#set:ma-small-sets-null-meager keywords="MA implies sets of reals of size less than continuum are null and meager, covering numbers" index="連続体より小さい実数の集合|れんぞくたいよりちいさいじっすうのしゅうごう"}

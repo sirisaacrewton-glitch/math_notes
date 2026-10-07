@@ -225,7 +225,8 @@
     // 表示用の見出しで束ねられた第 2 階層の上の第 1 階層は、その見出しに置き換える
     crumbs = crumbs.map(function (c, i) {
       var nx = crumbs[i + 1], v = nx && VIRT[nx.path];
-      return v && i === 0 ? { title: v.title, path: v.href.replace(/index\.html$/, ''), s: 0 } : c;
+      // 見出しが第 2 階層一つだけを束ねるとき（例：03E を「集合論」として出す）は、同じ名前が二度出ないよう飛ばす
+      return v && i === 0 ? { title: v.title, path: v.href.replace(/index\.html$/, ''), s: v.paths.length === 1 ? 1 : 0 } : c;
     });
     var parts = ['<a href="' + ROOT + 'index.html">ホーム</a>'].concat(crumbs.filter(function (c) { return !c.s; }).map(function (c) {
       return '<a href="' + ROOT + c.path + 'index.html">' + esc(c.title) + '</a>';

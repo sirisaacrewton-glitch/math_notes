@@ -213,7 +213,7 @@
       pq.neg.push({ kind: /[\\^_{}]/.test(w) ? 'tex' : 'text', s: w, txt: fold(w), txtC: fold(w, true), tex: norm(w) });
     });
     if (query.types && query.types.length) pq.types = (pq.types || []).concat(query.types);
-    if (query.dirs && query.dirs.length) pq.dirs = query.dirs.slice();
+    if (query.dirs && query.dirs.length) pq.dirs = expandDirs(query.dirs);
     if (query.mode === 'any') pq.mode = 'any';
     if (query.cs) {
       pq.cs = true;
@@ -441,10 +441,53 @@
    * 広い画面：macOS のメニューのように、項目にマウスを乗せると右に子メニューが開く。
    * 狭い画面：1 階層ずつ表示し、「‹ 戻る」で上の階層へ。
    * 子をもつ分野を選ぶときは、子メニュー先頭の「〇〇 全体」を選ぶ。 */
-  var DIRS = {};   // path -> {node, parent}
+  // 分野の木は、メニュー（☰）と同じ表示上の階層で作る（site.js の renderTree と同じ規則）：
+  //   第 1 層は大分野（_meta.json の groups）、その下は groups の項目（第 1 階層のフォルダ、または表示用の見出し）。
+  //   solo のフォルダ（親の唯一の子）は飛ばし、"also" の写しは出さない。
+  //   表示用の見出しと大分野は実在のフォルダでないので、"@" で始まる仮のキーをもち、dirs に含むフォルダの一覧をもつ。
+  //   フォルダの階層を変えたら、メニュー・トップページ・パンくずと一緒に、ここ（検索の分野選択）も確かめること。
+  var DIRS = {};   // key -> {node, parent}。node.dirs はその分野が含む実在のフォルダのパス
+  var DTREE = (function () {
+    var T = IDX.tree || { c: [] };
+    function findDir(p) {
+      var hit = null;
+      (function walk(n) { (n.c || []).forEach(function (c) { if (hit || c.k !== 'd') return; if (c.path === p) hit = c; else if (p.indexOf(c.path) === 0) walk(c); }); })(T);
+      return hit;
+    }
+    function wrap(raw, title) {
+      var kids = [];
+      (raw.c || []).forEach(function (c) {
+        if (c.k !== 'd') { kids.push(c); return; }
+        if (c.x) return;
+        if (c.s) { wrap(c).c.forEach(function (k) { kids.push(k); }); return; }
+        kids.push(wrap(c));
+      });
+      return { k: 'd', path: raw.path, title: title || raw.title, en: raw.en || '', c: kids, dirs: [raw.path] };
+    }
+    if (!IDX.groups) return wrap(T);
+    var root = { k: 'd', path: '', title: '', c: [], dirs: [] };
+    IDX.groups.forEach(function (g, gi) {
+      var gn = { k: 'd', path: '@' + gi + '/', title: g.title, en: g.en || '', c: [], dirs: [] };
+      g.items.forEach(function (it, ii) {
+        var raws = it.paths.map(findDir).filter(Boolean), n;
+        if (!raws.length) return;
+        if (raws.length === 1) n = wrap(raws[0], it.v ? it.title : null);
+        else n = { k: 'd', path: '@' + gi + '.' + ii + '/', title: it.title, en: it.en || '', c: raws.map(function (r) { return wrap(r); }), dirs: it.paths.slice() };
+        gn.c.push(n); gn.dirs = gn.dirs.concat(n.dirs);
+      });
+      if (gn.c.length) root.c.push(gn);
+    });
+    return root;
+  })();
   (function walk(n, parent) {
-    (n.c || []).forEach(function (c) { if (c.k === 'd' && !c.x) { DIRS[c.path] = { node: c, parent: parent }; walk(c, c); } });
-  })(IDX.tree || { c: [] }, null);
+    (n.c || []).forEach(function (c) { if (c.k === 'd') { DIRS[c.path] = { node: c, parent: parent }; walk(c, c); } });
+  })(DTREE, null);
+  // 分野の選択キー（URL の in= にも入る）を、絞り込みに使う実在のフォルダのパスに展開する
+  function expandDirs(keys) {
+    var out = [];
+    keys.forEach(function (k) { if (DIRS[k]) out = out.concat(DIRS[k].node.dirs); else out.push(k); });
+    return out;
+  }
   function hasPagesAny(n) { return (n.c || []).some(function (c) { return c.k !== 'd' || hasPagesAny(c); }); }
   function subdirs(n) { return ((n && n.c) || []).filter(function (c) { return c.k === 'd' && !c.x && hasPagesAny(c); }); }
   function dirLabel(path) {
@@ -485,7 +528,7 @@
       var head = parent ? '' : '<button type="button" role="menuitem" class="mn-menu-item mn-menu-all' + (!value ? ' is-current' : '') +
         '" data-select="" data-depth="0"><span class="mn-menu-text">すべての分野</span></button><div class="mn-menu-sep"></div>';
       return '<div class="mn-menu-col" role="menu" data-depth="' + depth + '">' + head +
-        subdirs(parent || IDX.tree).map(function (n) { return itemHtml(n, depth); }).join('') + '</div>';
+        subdirs(parent || DTREE).map(function (n) { return itemHtml(n, depth); }).join('') + '</div>';
     }
     function renderCascade() {
       var cols = [columnHtml(null, 0)];
@@ -587,7 +630,7 @@
       var list = menu.querySelector('.mn-tree-list');
       list.innerHTML = filterText.trim() ? filterRows() :
         '<div class="mn-tree-row' + (!value ? ' is-current' : '') + '" style="--depth:0"><span class="mn-tree-spacer" aria-hidden="true"></span><button type="button" class="mn-tree-pick mn-tree-all" data-select="">すべての分野</button></div>' +
-        treeRows(IDX.tree, 0);
+        treeRows(DTREE, 0);
       var r = btn.getBoundingClientRect();
       menu.style.left = '8px'; menu.style.right = '8px';
       menu.style.top = (r.bottom + 4) + 'px';
@@ -598,7 +641,7 @@
       if (openSet[p]) { Object.keys(openSet).forEach(function (k) { if (k.indexOf(p) === 0) delete openSet[k]; }); }
       else {
         // 同じ階層で開いているもの（とその子孫）を閉じる
-        subdirs(parent || IDX.tree).forEach(function (sib) {
+        subdirs(parent || DTREE).forEach(function (sib) {
           Object.keys(openSet).forEach(function (k) { if (k.indexOf(sib.path) === 0) delete openSet[k]; });
         });
         openSet[n.path] = true;

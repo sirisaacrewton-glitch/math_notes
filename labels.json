@@ -5636,6 +5636,13 @@
       "num": "4.3",
       "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/04-ccc-semantics.html"
     },
+    "logic:circle-hit": {
+      "status": "defined",
+      "type": "fact",
+      "title": "円周とその基本群",
+      "num": "8.14",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/08-univalence.html"
+    },
     "logic:cl-category": {
       "status": "defined",
       "type": "lemma",
@@ -5972,12 +5979,26 @@
       "num": "6.7",
       "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/06-dependent-types.html"
     },
+    "logic:eq-hedberg-rewrite": {
+      "status": "defined",
+      "type": "equation",
+      "title": "",
+      "num": "8.11",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/08-univalence.html"
+    },
     "logic:eq-transpose-natural": {
       "status": "defined",
       "type": "equation",
       "title": "",
       "num": "4.10",
       "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/04-ccc-semantics.html"
+    },
+    "logic:equivalence-of-types": {
+      "status": "defined",
+      "type": "definition",
+      "title": "同値",
+      "num": "8.1",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/08-univalence.html"
     },
     "logic:erdos-rado-properties": {
       "status": "defined",
@@ -6336,12 +6357,33 @@
       "num": "7.4",
       "page": "03-mathematical-logic/03B-general-logic/03-modal-logic/07-incomplete-modal-logic.html"
     },
+    "logic:h-levels": {
+      "status": "defined",
+      "type": "definition",
+      "title": "命題・集合",
+      "num": "8.8",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/08-univalence.html"
+    },
     "logic:h-not-lob-closed": {
       "status": "defined",
       "type": "theorem",
       "title": "H はレーブ規則で閉じていない",
       "num": "7.11",
       "page": "03-mathematical-logic/03B-general-logic/03-modal-logic/07-incomplete-modal-logic.html"
+    },
+    "logic:hedberg": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "ヘドベリの定理",
+      "num": "8.9",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/08-univalence.html"
+    },
+    "logic:hedberg-lemma": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "弱定数な自己写像があれば集合",
+      "num": "8.10",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/08-univalence.html"
     },
     "logic:heine-borel-wkl": {
       "status": "defined",
@@ -6384,6 +6426,13 @@
       "title": "恒等型と道帰納法",
       "num": "7.1",
       "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/07-identity-types.html"
+    },
+    "logic:idtoeqv": {
+      "status": "defined",
+      "type": "definition",
+      "title": "道から同値へ",
+      "num": "8.4",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/08-univalence.html"
     },
     "logic:ijmn-convergent": {
       "status": "defined",
@@ -6958,6 +7007,13 @@
       "title": "GL の公理系と基本定理",
       "num": "",
       "page": "03-mathematical-logic/03B-general-logic/03-modal-logic/02-gl-axioms.html"
+    },
+    "logic:page-hott": {
+      "status": "defined",
+      "type": "page",
+      "title": "ホモトピー型理論：同値と一価性公理",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/08-univalence.html"
     },
     "logic:page-identity-types": {
       "status": "defined",
@@ -7701,6 +7757,20 @@
       "num": "6.12",
       "page": "03-mathematical-logic/03B-general-logic/03-modal-logic/06-trees-for-gl.html"
     },
+    "logic:prob-ua-contr-prop": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "8.16",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/08-univalence.html"
+    },
+    "logic:prob-ua-prop-set": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "8.15",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/08-univalence.html"
+    },
     "logic:prob-uniform-substitution-converse": {
       "status": "defined",
       "type": "problem",
@@ -7826,6 +7896,13 @@
       "title": "読み方の一意性（命題論理）",
       "num": "1.3",
       "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/01-syntax-semantics.html"
+    },
+    "logic:qinv-isequiv": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "擬逆と同値",
+      "num": "8.2",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/08-univalence.html"
     },
     "logic:quantifier-equality-axioms": {
       "status": "defined",
@@ -9374,6 +9451,55 @@
       "num": "",
       "page": "03-mathematical-logic/03B-general-logic/03-modal-logic/06-trees-for-gl.html"
     },
+    "logic:sec-ua-equivalence": {
+      "status": "defined",
+      "type": "section",
+      "title": "同値",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/08-univalence.html"
+    },
+    "logic:sec-ua-hit": {
+      "status": "defined",
+      "type": "section",
+      "title": "高次帰納型",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/08-univalence.html"
+    },
+    "logic:sec-ua-hlevels": {
+      "status": "defined",
+      "type": "section",
+      "title": "型の階層とヘドベリの定理",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/08-univalence.html"
+    },
+    "logic:sec-ua-not-set": {
+      "status": "defined",
+      "type": "section",
+      "title": "宇宙は集合でない",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/08-univalence.html"
+    },
+    "logic:sec-ua-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/08-univalence.html"
+    },
+    "logic:sec-ua-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/08-univalence.html"
+    },
+    "logic:sec-ua-univalence": {
+      "status": "defined",
+      "type": "section",
+      "title": "一価性公理",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/08-univalence.html"
+    },
     "logic:sec-undefinable": {
       "status": "defined",
       "type": "section",
@@ -9829,6 +9955,20 @@
       "num": "1.5",
       "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/01-syntax-semantics.html"
     },
+    "logic:two-distinct": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "二つの元は異なる",
+      "num": "8.6",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/08-univalence.html"
+    },
+    "logic:two-is-set": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "二元型は集合",
+      "num": "8.12",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/08-univalence.html"
+    },
     "logic:type-interpretation": {
       "status": "defined",
       "type": "definition",
@@ -9899,12 +10039,26 @@
       "num": "1.9",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/01-syntax.html"
     },
+    "logic:univalence-axiom": {
+      "status": "defined",
+      "type": "axiom",
+      "title": "一価性公理",
+      "num": "8.5",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/08-univalence.html"
+    },
     "logic:universal-henkin-axioms": {
       "status": "defined",
       "type": "definition",
       "title": "全称型のヘンキン公理",
       "num": "8.4",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/08-completeness-alternative.html"
+    },
+    "logic:universe-not-set": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "宇宙は集合でない",
+      "num": "8.7",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/08-univalence.html"
     },
     "logic:valuation-term-model": {
       "status": "defined",
@@ -28197,6 +28351,13 @@
       "num": "4.4",
       "page": "54-general-topology/54E-richer-structures/01-metric-spaces/04-metrization.html"
     },
+    "at:fundamental-group-circle": {
+      "status": "planned",
+      "title": "代数的位相幾何の系列",
+      "referencedFrom": [
+        "03-mathematical-logic/03F-proof-theory/09-type-theory/08-univalence.html"
+      ]
+    },
     "at:page-cellular-homology": {
       "status": "planned",
       "title": "胞体ホモロジー",
@@ -28244,16 +28405,6 @@
       "title": "ベクトル空間の基底の存在",
       "referencedFrom": [
         "03-mathematical-logic/03E-set-theory/01-basics/10-axiom-of-choice.html"
-      ]
-    },
-    "logic:page-hott": {
-      "status": "planned",
-      "title": "HoTT の系列",
-      "referencedFrom": [
-        "03-mathematical-logic/03F-proof-theory/09-type-theory/01-simply-typed.html",
-        "03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html",
-        "03-mathematical-logic/03F-proof-theory/09-type-theory/06-dependent-types.html",
-        "03-mathematical-logic/03F-proof-theory/09-type-theory/07-identity-types.html"
       ]
     },
     "meas:lebesgue-measure": {

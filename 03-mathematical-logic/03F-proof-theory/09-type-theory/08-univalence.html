@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ホモトピー型理論：同値と一価性公理 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/09-type-theory/08-univalence.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ホモトピー型理論：同値と一価性公理 {#logic:page-hott keywords="homotopy type theory, HoTT, equivalence of types, bi-invertible map, fiber, univalence axiom, idtoeqv, ua, h-levels, propositions, sets, Hedberg's theorem, decidable equality, universe is not a set, higher inductive types, circle"}
+
+前ページ（\ref{logic:page-identity-types}）で、恒等型は亜群の構造をもち、型は「点と道からなる空間」のようにふるまうことを見た。**ホモトピー型理論**（HoTT）は、この見方を基本に据える。型の間の「同じさ」として、等しさ（道）より緩い**同値**（\ref{logic:equivalence-of-types}）を定め、宇宙 $\mathcal{U}$ の中での等しさ $A=_{\mathcal{U}}B$ が同値 $A\simeq B$ と同値であることを公理とする。これがヴォエヴォドスキーの**一価性公理**（\ref{logic:univalence-axiom}）である。本ページでは、一価性公理から「宇宙は集合でない」（\ref{logic:universe-not-set}）こと、つまり等しさの証明が一意でない型が実際にあることを示す。一方、等しさが決定可能な型は集合である（ヘドベリの定理、\ref{logic:hedberg}）。型を、等しさの構造の複雑さで命題・集合・…と階層に分ける（\ref{logic:h-levels}）のが、HoTT の基本的な見取り図である。
+
+> 資料フォルダに参考書がない（E. Rijke, *Introduction to Homotopy Type Theory* と、*Homotopy Type Theory: Univalent Foundations of Mathematics*（The Univalent Foundations Program, Institute for Advanced Study, 2013。通称 HoTT 本）が標準的な文献）。定義と証明は本サイトで組み立てた。同値の定義には文献によっていくつかの流儀があり、本ページでは「両側逆をもつ写像」を使う。
+
+## 記法と定義の確認 {#logic:sec-ua-notation}
+
+::: notation
+- Π 型・Σ 型・空型 $\mathsf{0}$・単位型 $\mathsf{1}$・和型・帰納原理は \ref{logic:page-dependent-types}、恒等型・道帰納法・逆と合成・$\mathrm{ap}$・輸送 $\mathrm{tr}$・ホモトピー $f\sim g$・$\mathrm{happly}$・可縮性は \ref{logic:page-identity-types} のとおり（\ref{logic:identity-type}, \ref{logic:path-operations}, \ref{logic:groupoid-laws}, \ref{logic:homotopy-funext}, \ref{logic:contractible}）。
+- 宇宙 $\mathcal{U}$（\ref{logic:dt-universe-remark}）を一つ固定し、$\mathsf{0},\mathsf{1}:\mathcal{U}$ で、$\mathcal{U}$ は Π・Σ・和・恒等型で閉じているとする。$\mathcal{U}$ の元を単に型と呼ぶ。
+- $\mathsf{2}\defeq\mathsf{1}+\mathsf{1}$、$0_{\mathsf{2}}\defeq\mathrm{inl}\,\star$、$1_{\mathsf{2}}\defeq\mathrm{inr}\,\star$。$\mathsf{2}$ の帰納原理（$C(0_{\mathsf{2}})$ と $C(1_{\mathsf{2}})$ の元から $\prod_{b:\mathsf{2}}C(b)$）は、和型と単位型の帰納原理を続けて使えば得られる。
+:::
+
+## 同値 {#logic:sec-ua-equivalence}
+
+::: definition 同値 {#logic:equivalence-of-types keywords="equivalence, bi-invertible map, quasi-inverse, A equivalent to B" index="同値（型の）|どうちかたの, 両側逆|りょうがわぎゃく, 擬逆|ぎぎゃく"}
+$f:A\to B$ について、
+$$
+\mathrm{isequiv}(f)\defeq\Bigl(\sum_{g:B\to A}f\circ g\sim\mathrm{id}_{B}\Bigr)\times\Bigl(\sum_{h:B\to A}h\circ f\sim\mathrm{id}_{A}\Bigr)
+$$
+の元があるとき $f$ を**同値**という（右逆 $g$ と左逆 $h$ をもつ）。$A\simeq B\defeq\sum_{f:A\to B}\mathrm{isequiv}(f)$。また、$g:B\to A$ で $f\circ g\sim\mathrm{id}$ かつ $g\circ f\sim\mathrm{id}$ となるものを $f$ の**擬逆**という。
+:::
+
+::: proposition 擬逆と同値 {#logic:qinv-isequiv keywords="quasi-inverse iff bi-invertible" index="擬逆と同値|ぎぎゃくとどうち"}
+$f$ が擬逆をもつことと、$\mathrm{isequiv}(f)$ の元があることは同値（互いに他を導く関数がある）。
+:::
+
+::: proof
+**擬逆 ⇒ 同値.** 擬逆 $g$ を右逆と左逆の両方に使う。
+
+**同値 ⇒ 擬逆.** 右逆 $g$（$\alpha:f\circ g\sim\mathrm{id}$）と左逆 $h$（$\beta:h\circ f\sim\mathrm{id}$）から、$y:B$ ごとに道
+$$
+g\,y\overset{\beta(g y)^{-1}}{=\!=}h(f(g\,y))\overset{\mathrm{ap}_{h}(\alpha y)}{=\!=}h\,y
+$$
+を合成して $\gamma:g\sim h$ を得る。すると $x:A$ について $g(f\,x)=h(f\,x)=x$（$\gamma(f x)$ と $\beta x$ の合成）なので、$g\circ f\sim\mathrm{id}$。$f\circ g\sim\mathrm{id}$ は $\alpha$。よって $g$ は擬逆。
+:::
+
+::: example
+1. $\mathrm{id}_{A}$ は同値（擬逆は $\mathrm{id}_{A}$、ホモトピーは $\lambda x.\,\mathrm{refl}_{x}$）。これを $\mathrm{idequiv}_{A}:A\simeq A$ と書く。
+2. **否定** $\mathrm{neg}:\mathsf{2}\to\mathsf{2}$ を $\mathsf{2}$ の帰納原理で $\mathrm{neg}\,0_{\mathsf{2}}\defeq1_{\mathsf{2}}$, $\mathrm{neg}\,1_{\mathsf{2}}\defeq0_{\mathsf{2}}$ と定める。$\mathrm{neg}$ は自分自身を擬逆にもつ：$\mathrm{neg}(\mathrm{neg}\,b)=b$ を $b$ に関する帰納法で示せば、両方の場合とも判断上等しいので $\mathrm{refl}$。これで同値 $e_{\mathrm{neg}}:\mathsf{2}\simeq\mathsf{2}$ が得られる。
+:::
+
+::: remark
+擬逆をもつことの型 $\sum_{g}(f\circ g\sim\mathrm{id})\times(g\circ f\sim\mathrm{id})$ は、一般には「証明が一つに決まらない」型である。一方 $\mathrm{isequiv}(f)$（両側逆）は、関数外延性のもとでは命題（\ref{logic:h-levels}）になることが知られている。「同値であること」そのものが追加の情報をもたないように、本ページでは両側逆を定義に使った。
+:::
+
+## 一価性公理 {#logic:sec-ua-univalence}
+
+::: definition 道から同値へ {#logic:idtoeqv keywords="idtoeqv, paths in the universe give equivalences" index="道から同値への写像|みちからどうちへのしゃぞう"}
+道帰納法（族 $C(A,B,p)\defeq A\simeq B$、$c\defeq\mathrm{idequiv}_{A}$）で
+$$
+\mathrm{idtoeqv}:\prod_{A,B:\mathcal{U}}(A=_{\mathcal{U}}B)\to(A\simeq B),\qquad\mathrm{idtoeqv}(\mathrm{refl}_{A})\equiv\mathrm{idequiv}_{A}.
+$$
+:::
+
+::: axiom 一価性公理 {#logic:univalence-axiom keywords="univalence axiom, Voevodsky" index="一価性公理|いっかせいこうり, 単一性公理|たんいつせいこうり"}
+すべての $A,B:\mathcal{U}$ について、$\mathrm{idtoeqv}:(A=_{\mathcal{U}}B)\to(A\simeq B)$ は同値である。とくに右逆 $\mathrm{ua}:(A\simeq B)\to(A=_{\mathcal{U}}B)$ があり、
+$$
+\mathrm{idtoeqv}(\mathrm{ua}(e))=e\qquad(e:A\simeq B).
+$$
+:::
+
+::: intuition
+一価性公理は「同値な型は等しい」と言う。数学の実際では、同型な構造は区別せずに扱う（同型な群は「同じ群」とみなす）。一価性公理はこれを公理にしたもので、等しい型の間ではすべての性質が輸送で移る（\ref{logic:path-operations}）から、「同値な型の間では、型理論で述べられるすべての性質が移る」ことになる。その代わり、等しさの証明（道）が一意でなくなる：$A=A$ の元は $A$ の自己同値と同じだけある。
+:::
+
+## 宇宙は集合でない {#logic:sec-ua-not-set}
+
+::: lemma 二つの元は異なる {#logic:two-distinct keywords="0 is not equal to 1 in the type 2, large elimination" index="二元型の元の区別|にげんがたのもとのくべつ"}
+$\neg(0_{\mathsf{2}}=_{\mathsf{2}}1_{\mathsf{2}})$ の元がある。
+:::
+
+::: proof
+**Step 1（型を値にとる関数）.** $\mathsf{2}$ の帰納原理を定数の族 $C(b)\defeq\mathcal{U}$ に使い、$\mathrm{code}:\mathsf{2}\to\mathcal{U}$ を $\mathrm{code}\,0_{\mathsf{2}}\defeq\mathsf{1}$, $\mathrm{code}\,1_{\mathsf{2}}\defeq\mathsf{0}$ で定める。
+
+**Step 2（輸送）.** $p:0_{\mathsf{2}}=1_{\mathsf{2}}$ を仮定する。族 $b\mapsto\mathrm{code}\,b$ に沿った輸送で $\mathrm{tr}(p,\star):\mathrm{code}\,1_{\mathsf{2}}\equiv\mathsf{0}$。
+
+**Step 3.** $\lambda p.\,\mathrm{tr}(p,\star):(0_{\mathsf{2}}=1_{\mathsf{2}})\to\mathsf{0}$。
+
+::: hypcheck
+- **宇宙**：Step 1 で、値が型である関数（帰納原理の族として $\mathcal{U}$ 自身を使う「大きな除去」）が要る。宇宙がないと、この補題は本ページの規則だけからは示せない。
+:::
+:::
+
+::: theorem 宇宙は集合でない {#logic:universe-not-set keywords="univalence implies the universe is not a set, failure of UIP" index="宇宙は集合でない|うちゅうはしゅうごうでない"}
+一価性公理のもとで、$\mathsf{2}=_{\mathcal{U}}\mathsf{2}$ の元 $\mathrm{ua}(e_{\mathrm{neg}})$ と $\mathrm{refl}_{\mathsf{2}}$ は等しくない：$\neg\bigl(\mathrm{ua}(e_{\mathrm{neg}})=\mathrm{refl}_{\mathsf{2}}\bigr)$ の元がある。とくに $\mathcal{U}$ は集合でない（\ref{logic:h-levels}）。
+:::
+
+::: proof
+$q:\mathrm{ua}(e_{\mathrm{neg}})=\mathrm{refl}_{\mathsf{2}}$ を仮定して $\mathsf{0}$ の元を作る。
+
+**Step 1（同値の等しさに移す）.** $\mathrm{ap}_{\mathrm{idtoeqv}}(q):\mathrm{idtoeqv}(\mathrm{ua}(e_{\mathrm{neg}}))=\mathrm{idtoeqv}(\mathrm{refl}_{\mathsf{2}})$。左辺は一価性公理の等式で $e_{\mathrm{neg}}$ に等しく、右辺は判断上 $\mathrm{idequiv}_{\mathsf{2}}$。合成して $r:e_{\mathrm{neg}}=_{\mathsf{2}\simeq\mathsf{2}}\mathrm{idequiv}_{\mathsf{2}}$。
+
+**Step 2（関数の等しさに移す）.** 第一射影をとって $\mathrm{ap}_{\mathrm{pr}_{1}}(r):\mathrm{neg}=_{\mathsf{2}\to\mathsf{2}}\mathrm{id}_{\mathsf{2}}$。
+
+**Step 3（値の等しさに移す）.** $\mathrm{happly}$（\ref{logic:homotopy-funext}）を $0_{\mathsf{2}}$ で使い、$\mathrm{neg}\,0_{\mathsf{2}}=\mathrm{id}_{\mathsf{2}}\,0_{\mathsf{2}}$。判断上 $\mathrm{neg}\,0_{\mathsf{2}}\equiv1_{\mathsf{2}}$, $\mathrm{id}\,0_{\mathsf{2}}\equiv0_{\mathsf{2}}$ なので、$1_{\mathsf{2}}=0_{\mathsf{2}}$。
+
+**Step 4.** その逆をとって $0_{\mathsf{2}}=1_{\mathsf{2}}$、\ref{logic:two-distinct} から $\mathsf{0}$ の元。
+
+$\mathcal{U}$ が集合なら $\mathsf{2}=_{\mathcal{U}}\mathsf{2}$ は命題で、$\mathrm{ua}(e_{\mathrm{neg}})=\mathrm{refl}_{\mathsf{2}}$ の元があるはずなので、$\neg\mathrm{isSet}(\mathcal{U})$ も得られる。
+
+::: hypcheck
+- **一価性公理**：Step 1 で $\mathrm{idtoeqv}\circ\mathrm{ua}$ が恒等に等しいこと（右逆の部分）だけを使った。左逆の部分は使っていない。
+- **関数外延性は使っていない**：使ったのは逆向きの $\mathrm{happly}$（道帰納法で常に定義できる）だけである。
+- **宇宙が $\mathsf{0},\mathsf{1}$ を含むこと**：\ref{logic:two-distinct} の Step 1 で使った。
+- 系として、一価性公理が無矛盾なら（次の補足の事実）、恒等の証明の一意性（\ref{logic:uip-not-provable}）は本ページの規則と両立しない、すなわち一価性公理と UIP は同時には仮定できない。
+:::
+:::
+
+## 型の階層とヘドベリの定理 {#logic:sec-ua-hlevels}
+
+::: definition 命題・集合 {#logic:h-levels keywords="h-levels, mere propositions, sets, homotopy levels, truncation levels" index="命題（HoTT）|めいだいほっと, 集合（HoTT）|しゅうごうほっと, h レベル|えいちれべる"}
+$\mathrm{isProp}(A)\defeq\prod_{x,y:A}x=y$（任意の二元が等しい）、$\mathrm{isSet}(A)\defeq\prod_{x,y:A}\mathrm{isProp}(x=y)$（任意の二つの道が等しい）。前者を満たす型を**命題**、後者を満たす型を**集合**という。一般に、可縮を $-2$ 段、命題を $-1$ 段とし、$n+1$ 段の型を「すべての恒等型が $n$ 段」の型として、**h レベル**（ホモトピー段数）の階層を定める。
+:::
+
+::: theorem ヘドベリの定理 {#logic:hedberg keywords="Hedberg's theorem, types with decidable equality are sets" index="ヘドベリの定理|へどべりのていり, 決定可能な等しさ|けっていかのうなひとしさ"}
+$A$ の等しさが**決定可能**（$\prod_{x,y:A}(x=y)+\neg(x=y)$ の元 $d$ がある）なら、$A$ は集合である。
+:::
+
+::: lemma 弱定数な自己写像があれば集合 {#logic:hedberg-lemma keywords="weakly constant endomaps on identity types" index="弱定数写像|じゃくていすうしゃぞう"}
+各 $x,y:A$ に関数 $f_{x,y}:(x=y)\to(x=y)$ があり、**弱定数**（$\prod_{p,q:x=y}f_{x,y}\,p=f_{x,y}\,q$）ならば、$A$ は集合である。
+:::
+
+::: proof
+**Step 1（任意の道を $f$ で書き直す）.** すべての $x,y$ と $p:x=y$ について
+$$
+p=(f_{x,x}\,\mathrm{refl}_{x})^{-1}\cdot f_{x,y}\,p
+\label{logic:eq-hedberg-rewrite}
+$$
+を道帰納法で示す。族は $C(x,y,p)\defeq$「\eqref{logic:eq-hedberg-rewrite}」で、$p\equiv\mathrm{refl}_{x}$ のとき右辺は $u^{-1}\cdot u$（$u\defeq f_{x,x}\mathrm{refl}_{x}$）で、群の法則（\ref{logic:groupoid-laws}）$u^{-1}\cdot u=\mathrm{refl}_{x}$ の逆の道が $C(x,x,\mathrm{refl}_{x})$ の元になる。
+
+**Step 2.** $p,q:x=y$ について、弱定数性の道 $w:f_{x,y}\,p=f_{x,y}\,q$ をとる。Step 1 を $p$ と $q$ に使い、間を $\mathrm{ap}_{\lambda t.\,u^{-1}\cdot t}(w)$ でつなぐと
+$$
+p=u^{-1}\cdot f_{x,y}\,p=u^{-1}\cdot f_{x,y}\,q=q.
+$$
+よって $\mathrm{isProp}(x=y)$。
+
+::: hypcheck
+- **族が $f_{x,x}\mathrm{refl}_{x}$ を含むこと**：Step 1 の右辺は $x$ だけに依存する $u$ と、$p$ に依存する $f_{x,y}p$ からなり、族として $x,y,p$ のすべてで意味をもつ。$p$ を $q$ と直接比べる族（$p=q$）では、$q$ を固定できないので道帰納法が使えない。
+:::
+:::
+
+::: restate {ref="logic:hedberg"}
+:::
+
+::: proof
+**Step 1（自己写像の定義）.** $x,y:A$ と $p:x=y$ について、$d\,x\,y$ に和型の帰納原理を使い、
+$$
+f_{x,y}\,p\defeq\begin{cases}e&(d\,x\,y\equiv\mathrm{inl}\,e),\\\mathrm{ind}_{\mathsf{0}}(n\,p)&(d\,x\,y\equiv\mathrm{inr}\,n)\end{cases}
+$$
+と定める（第二の場合は $n\,p:\mathsf{0}$ から任意の型の元が出る）。
+
+**Step 2（弱定数性）.** $p,q:x=y$ について $f_{x,y}p=f_{x,y}q$ を、$z\defeq d\,x\,y$ に関する和型の帰納法で示す（族は $z$ を含むように、$f$ の定義の $d\,x\,y$ を $z$ に置き換えたもの）。$z\equiv\mathrm{inl}\,e$ なら両辺とも $e$ なので $\mathrm{refl}_{e}$。$z\equiv\mathrm{inr}\,n$ なら $n\,p:\mathsf{0}$ なので、$\mathrm{ind}_{\mathsf{0}}$ で任意の型、とくに求める型の元が出る。
+
+**Step 3.** \ref{logic:hedberg-lemma}。
+
+::: hypcheck
+- **決定可能性**：Step 1 で、道 $p$ の情報を捨てて $d$ が与える一つの道 $e$ に取り替えるのに使った。これが「弱定数」の源である。
+- **排中律は使っていない**：決定可能性は $A$ についての仮定で、論理全体の排中律ではない。
+:::
+:::
+
+::: corollary 二元型は集合 {#logic:two-is-set keywords="the type 2 is a set" index="二元型は集合|にげんがたはしゅうごう"}
+$\mathsf{2}$ は集合である。
+:::
+
+::: proof
+$\mathsf{2}$ の帰納原理を二回使い、四つの場合で $d$ を定める：$(0_{\mathsf{2}},0_{\mathsf{2}})$ と $(1_{\mathsf{2}},1_{\mathsf{2}})$ では $\mathrm{inl}\,\mathrm{refl}$、$(0_{\mathsf{2}},1_{\mathsf{2}})$ では \ref{logic:two-distinct} の元を $\mathrm{inr}$、$(1_{\mathsf{2}},0_{\mathsf{2}})$ では $\mathrm{inr}(\lambda p.\,t(p^{-1}))$（$t$ は \ref{logic:two-distinct} の元）。ヘドベリの定理（\ref{logic:hedberg}）から集合。
+:::
+
+::: remark
+同じ方法で、$\mathbb{N}$ の等しさも決定可能であり（$0\neq\mathrm{succ}\,n$ と後者関数の単射性を、\ref{logic:two-distinct} と同じく型を値にとる関数で示す）、$\mathbb{N}$ は集合である。一方、宇宙 $\mathcal{U}$ は集合でない（\ref{logic:universe-not-set}）ので、等しさが決定可能でない。
+:::
+
+## 高次帰納型 {#logic:sec-ua-hit}
+
+::: fact 円周とその基本群 {#logic:circle-hit keywords="higher inductive types, circle S1, base, loop, fundamental group of the circle is the integers" index="高次帰納型|こうじきのうがた, 円周（HoTT）|えんしゅうほっと"}
+点を生成するだけでなく**道も生成する**帰納的な型を**高次帰納型**という。代表例の**円周** $S^{1}$ は、点 $\mathrm{base}:S^{1}$ と道 $\mathrm{loop}:\mathrm{base}=\mathrm{base}$ で生成され、帰納原理は「$b:C(\mathrm{base})$ と、$\mathrm{loop}$ の上の道 $\mathrm{tr}^{C}(\mathrm{loop},b)=b$ から $\prod_{x:S^{1}}C(x)$」の形をもつ。一価性公理のもとで $(\mathrm{base}=\mathrm{base})\simeq\mathbb{Z}$ が証明できる（D. R. Licata and M. Shulman, Calculating the fundamental group of the circle in homotopy type theory, *LICS 2013*）。位相空間の円周の基本群が $\mathbb{Z}$ であること（\ref[代数的位相幾何の系列]{at:fundamental-group-circle}、予定）の型理論版である。
+:::
+
+::: supplement
+**一価性公理の無矛盾性（事実）.** 一価性公理は、型をカン複体（単体的集合のうち、角の充填条件を満たすもの）と解釈するモデルで成り立つことが知られている（V. Voevodsky のモデル。C. Kapulkin and P. LeFanu Lumsdaine, The simplicial model of univalent foundations (after Voevodsky), *Journal of the European Mathematical Society*, 2021）。また、一価性公理が「計算する」体系として立方体型理論が提案されている（C. Cohen, T. Coquand, S. Huber, A. Mörtberg による。2018 年の論文）。
+
+**前提を変えると.** 一価性公理を外し UIP（\ref{logic:uip-not-provable}）を仮定すると、すべての型が集合になり、集合論に近い世界になる。逆に一価性公理を仮定すると、UIP は偽になる（\ref{logic:universe-not-set}）。どちらも本ページの基本規則とは両立するが、互いには両立しない。
+
+**類似の定理.** \ref{logic:qinv-isequiv} の証明は、圏論で「右逆と左逆をもつ射の右逆と左逆は一致し、両側逆になる」ことの証明と同じである（亜群の一段上で、等式を道に置き換えたもの）。圏同値の特徴づけ（\ref{cat:equivalence-characterization}）での擬逆関手も、同じ考えで等式を自然同型に緩めたものである。
+
+**高い視点から：同値は空間のホモトピー同値.** 型を空間、道を道とみると、同値 $A\simeq B$ はホモトピー同値、h レベルは「何次元以上のホモトピー群が消えるか」に当たる：命題は空か一点（に可縮）、集合は各連結成分が可縮な空間（離散空間）、亜群は 2 次以上のホモトピー群が消える空間である。一価性公理は、宇宙 $\mathcal{U}$ を「型を点とし、同値を道とする空間」（分類空間）にする公理だと言える。比喩で言えば、集合論の数学は「誰が誰であるか」を気にするが、一価的な数学は「どう取り替えられるか」だけを気にし、取り替え方が複数あることを正面から扱う。
+:::
+
+## 問題 {#logic:sec-ua-problems}
+
+::: problem {#logic:prob-ua-prop-set}
+命題は集合であることを示せ（$\mathrm{isProp}(A)\to\mathrm{isSet}(A)$）。
+:::
+
+::: solution
+$h:\mathrm{isProp}(A)$ とする。各 $x,y$ について $f_{x,y}\,p\defeq h\,x\,y$（$p$ を無視する定数関数）は弱定数である（両辺とも $h\,x\,y$ なので $\mathrm{refl}$）。\ref{logic:hedberg-lemma} から $A$ は集合。
+:::
+
+::: problem {#logic:prob-ua-contr-prop}
+可縮な型は命題であることを示せ。
+:::
+
+::: solution
+$(a,c):\mathrm{isContr}(A)$（$c:\prod_{x}a=x$）とする。$x,y:A$ について $(c\,x)^{-1}\cdot c\,y:x=y$。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

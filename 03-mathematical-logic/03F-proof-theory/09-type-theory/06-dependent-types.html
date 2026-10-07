@@ -13,7 +13,7 @@
 <script type="text/markdown" id="source">
 # 依存型理論：Π 型と Σ 型 {#logic:page-dependent-types keywords="dependent type theory, Martin-Lof type theory, dependent function type, Pi type, dependent pair type, Sigma type, judgmental equality, type family, induction principle, natural numbers type, propositions as types for predicate logic, type theoretic axiom of choice"}
 
-単純型付きラムダ計算（\ref{logic:page-curry-howard}）では、型は項に依存しない。**依存型理論**では、型が項に依存してよい。たとえば「長さ $n$ の列の型 $\mathrm{Vec}(n)$」のように、項 $n:\mathbb{N}$ ごとに型 $B(n)$ が決まる**型の族**を扱う。族 $B$ に対し、各 $x:A$ に $B(x)$ の元を対応させる関数の型 **Π 型** $\prod_{x:A}B(x)$（\ref{logic:pi-type}）と、$x:A$ と $B(x)$ の元の組の型 **Σ 型** $\sum_{x:A}B(x)$（\ref{logic:sigma-type}）が基本の構成である。カリー＝ハワード対応を述語論理に広げると、Π 型は全称量化 $\forall$、Σ 型は存在量化 $\exists$ に当たる（\ref{logic:table-dependent-propositions-as-types}）。この読み方のもとでは、「各 $x$ に $R(x,y)$ となる $y$ がある」から「選択関数がある」が**定理として証明できる**（\ref{logic:type-theoretic-choice}）。本ページは、マルティン＝レーフの依存型理論のうち、恒等型を除いた部分を扱う。恒等型は次ページ \ref[恒等型と道帰納法]{logic:page-identity-types} で扱い、それがホモトピー型理論（\ref[HoTT の系列]{logic:page-hott}）の出発点になる。
+単純型付きラムダ計算（\ref{logic:page-curry-howard}）では、型は項に依存しない。**依存型理論**では、型が項に依存してよい。たとえば「長さ $n$ の列の型 $\mathrm{Vec}(n)$」のように、項 $n:\mathbb{N}$ ごとに型 $B(n)$ が決まる**型の族**を扱う。族 $B$ に対し、各 $x:A$ に $B(x)$ の元を対応させる関数の型 **Π 型** $\prod_{x:A}B(x)$（\ref{logic:pi-type}）と、$x:A$ と $B(x)$ の元の組の型 **Σ 型** $\sum_{x:A}B(x)$（\ref{logic:sigma-type}）が基本の構成である。カリー＝ハワード対応を述語論理に広げると、Π 型は全称量化 $\forall$、Σ 型は存在量化 $\exists$ に当たる（\ref{logic:table-dependent-propositions-as-types}）。この読み方のもとでは、「各 $x$ に $R(x,y)$ となる $y$ がある」から「選択関数がある」が**定理として証明できる**（\ref{logic:type-theoretic-choice}）。本ページは、マルティン＝レーフの依存型理論のうち、恒等型を除いた部分を扱う。恒等型は次ページ \ref{logic:page-identity-types} で扱い、それがホモトピー型理論（\ref{logic:page-hott}）の出発点になる。
 
 > 資料フォルダに参考書がない（主な参考書に予定している E. Rijke, *Introduction to Homotopy Type Theory* のテキストは未入手）。マルティン＝レーフ型理論の標準的な定式化を、本サイトで組み立てた。規則の細部（宇宙の扱い、η 規則の有無など）は文献ごとに異なる。
 
@@ -129,7 +129,7 @@ $$
 :::
 
 ::: example
-**加法.** $C(n)\defeq\mathbb{N}\to\mathbb{N}$（定数の族）、$c_{0}\defeq\lambda m.\,m$、$c_{s}\defeq\lambda m.\,\mathrm{succ}(h\,m)$ として $\mathrm{add}\defeq\mathrm{ind}_{\mathbb{N}}(c_{0},c_{s})$、$n+m\defeq\mathrm{add}\,n\,m$。計算規則から $0+m\equiv m$、$\mathrm{succ}\,n+m\equiv\mathrm{succ}(n+m)$。一方 $n+0\equiv n$ は（$n$ が変数のとき）判断上の等しさとしては成り立たない。それは次ページの恒等型を使い、帰納原理で命題として証明する（\ref[次ページの問題]{logic:prob-it-add-zero}）。これは、帰納原理（族 $C$ が $n$ に依存する場合）が「数学的帰納法」そのものであることを示している。
+**加法.** $C(n)\defeq\mathbb{N}\to\mathbb{N}$（定数の族）、$c_{0}\defeq\lambda m.\,m$、$c_{s}\defeq\lambda m.\,\mathrm{succ}(h\,m)$ として $\mathrm{add}\defeq\mathrm{ind}_{\mathbb{N}}(c_{0},c_{s})$、$n+m\defeq\mathrm{add}\,n\,m$。計算規則から $0+m\equiv m$、$\mathrm{succ}\,n+m\equiv\mathrm{succ}(n+m)$。一方 $n+0\equiv n$ は（$n$ が変数のとき）判断上の等しさとしては成り立たない。それは次ページの恒等型を使い、帰納原理で命題として証明する（\ref{logic:prob-it-add-zero}）。これは、帰納原理（族 $C$ が $n$ に依存する場合）が「数学的帰納法」そのものであることを示している。
 :::
 
 ::: remark 宇宙 {#logic:dt-universe-remark}

@@ -13,7 +13,7 @@
 <script type="text/markdown" id="source">
 # 恒等型と道帰納法 {#logic:page-identity-types keywords="identity type, path induction, J eliminator, propositional equality, groupoid laws, transport, ap, dependent ap, homotopy, function extensionality, contractible type, based path space, uniqueness of identity proofs, groupoid model"}
 
-前ページ（\ref{logic:page-dependent-types}）の体系では、等しさは判断上の等しさ $\equiv$ しかなく、「$n+0$ と $n$ が等しい」のように帰納法で示すべき等しさを、型の中で命題として述べることができなかった。**恒等型** $a=_{A}b$（\ref{logic:identity-type}）は、等しさを命題（型）にする。その除去規則が**道帰納法**（$J$）で、「$a=b$ の証明 $p$ についての主張は、$p$ が $\mathrm{refl}$ のときに示せば十分」と言う。本ページでは、道帰納法だけから、等しさの対称性・推移性・代入原理（輸送）が導けることと、それらがさらに一段上の等しさのもとで群の法則を満たすこと（\ref{logic:groupoid-laws}）を示す。最後に、基点付きの道の空間が可縮であること（\ref{logic:based-path-space-contractible}）を示す。これは、恒等型を「点の間の道の空間」とみるホモトピー的な解釈（\ref[HoTT の系列]{logic:page-hott}）の基本の事実である。
+前ページ（\ref{logic:page-dependent-types}）の体系では、等しさは判断上の等しさ $\equiv$ しかなく、「$n+0$ と $n$ が等しい」のように帰納法で示すべき等しさを、型の中で命題として述べることができなかった。**恒等型** $a=_{A}b$（\ref{logic:identity-type}）は、等しさを命題（型）にする。その除去規則が**道帰納法**（$J$）で、「$a=b$ の証明 $p$ についての主張は、$p$ が $\mathrm{refl}$ のときに示せば十分」と言う。本ページでは、道帰納法だけから、等しさの対称性・推移性・代入原理（輸送）が導けることと、それらがさらに一段上の等しさのもとで群の法則を満たすこと（\ref{logic:groupoid-laws}）を示す。最後に、基点付きの道の空間が可縮であること（\ref{logic:based-path-space-contractible}）を示す。これは、恒等型を「点の間の道の空間」とみるホモトピー的な解釈（\ref{logic:page-hott}）の基本の事実である。
 
 > 資料フォルダに参考書がない。マルティン＝レーフの内包的恒等型の標準的な扱いを、本サイトで組み立てた。
 
@@ -143,7 +143,7 @@ $$
 :::
 
 ::: fact 関数外延性は証明できない {#logic:funext-independent keywords="function extensionality is not provable in intensional Martin-Lof type theory" index="関数外延性の独立性|かんすうがいえんせいのどくりつせい"}
-本ページの規則（Π・Σ・帰納的な型・恒等型）だけからは、関数外延性は証明できないことが知られている（関数の等しさを内包的に解釈するモデルによる）。そのため、必要なときは公理として加える。ホモトピー型理論では、一価性公理（\ref[HoTT の系列]{logic:page-hott}）から関数外延性が導かれる（V. Voevodsky による。詳細は範囲外）。
+本ページの規則（Π・Σ・帰納的な型・恒等型）だけからは、関数外延性は証明できないことが知られている（関数の等しさを内包的に解釈するモデルによる）。そのため、必要なときは公理として加える。ホモトピー型理論では、一価性公理（\ref{logic:page-hott}）から関数外延性が導かれる（V. Voevodsky による。詳細は範囲外）。
 :::
 
 ## 可縮な型と基点付きの道の空間 {#logic:sec-it-contractible}

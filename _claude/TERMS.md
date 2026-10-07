@@ -332,3 +332,7 @@
 | identity type / path / path induction | 恒等型 / 道 / 道帰納法 | 同一性型 | 仮。日本語の本に用例なし。logic:page-identity-types |
 | transport / homotopy / function extensionality | 輸送 / ホモトピー / 関数外延性 | | 仮。logic:page-identity-types |
 | contractible / uniqueness of identity proofs | 可縮 / 恒等の証明の一意性（UIP） | | 可縮は位相の用語と同じ。logic:page-identity-types |
+| equivalence (of types) / bi-invertible / quasi-inverse | 同値 / 両側逆 / 擬逆 | | 仮。logic:page-hott |
+| univalence axiom | 一価性公理 | 単一性公理 | 仮。日本語の本に用例なし（日本語の文献では「一価性公理」が使われているとされる。未確認）。logic:page-hott |
+| mere proposition / set / h-level | 命題 / 集合 / h レベル | ホモトピー段数 | 仮。logic:page-hott |
+| higher inductive type | 高次帰納型 | | 仮。logic:page-hott |

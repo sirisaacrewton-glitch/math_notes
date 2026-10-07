@@ -336,3 +336,7 @@
 | univalence axiom | 一価性公理 | 単一性公理 | 仮。日本語の本に用例なし（日本語の文献では「一価性公理」が使われているとされる。未確認）。logic:page-hott |
 | mere proposition / set / h-level | 命題 / 集合 / h レベル | ホモトピー段数 | 仮。logic:page-hott |
 | higher inductive type | 高次帰納型 | | 仮。logic:page-hott |
+| monad / comonad | モナド / 余モナド | トリプル | モナドはレンスター訳。余モナドはサイトの「余単位」「余極限」に合わせた（仮）。cat:page-monads |
+| algebra for a monad / Eilenberg–Moore category | T 代数 / アイレンバーグ–ムーア圏 | | 仮。cat:page-monads |
+| comparison functor / monadic | 比較関手 / モナド的 | | 仮。cat:page-monads |
+| Kleisli category | クライスリ圏 | | 仮。cat:page-monads |

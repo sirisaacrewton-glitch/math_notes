@@ -134,6 +134,13 @@
       "num": "10.3",
       "page": "18-category-theory/18A-general-theory/01-basics/10-adjoint-functor-theorem.html"
     },
+    "cat:comparison-functor": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "比較定理",
+      "num": "1.5",
+      "page": "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html"
+    },
     "cat:completeness-criterion": {
       "status": "defined",
       "type": "corollary",
@@ -182,6 +189,13 @@
       "title": "双対原理",
       "num": "3.3",
       "page": "18-category-theory/18A-general-theory/01-basics/03-constructions.html"
+    },
+    "cat:eilenberg-moore-adjunction": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "アイレンバーグ–ムーアの随伴",
+      "num": "1.4",
+      "page": "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html"
     },
     "cat:equalizer-monic": {
       "status": "defined",
@@ -435,6 +449,27 @@
       "num": "6.9",
       "page": "18-category-theory/18A-general-theory/01-basics/06-limits.html"
     },
+    "cat:monad": {
+      "status": "defined",
+      "type": "definition",
+      "title": "モナド",
+      "num": "1.1",
+      "page": "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html"
+    },
+    "cat:monad-from-adjunction": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "随伴が定めるモナド",
+      "num": "1.2",
+      "page": "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html"
+    },
+    "cat:monadic": {
+      "status": "defined",
+      "type": "definition",
+      "title": "モナド的な関手",
+      "num": "1.6",
+      "page": "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html"
+    },
     "cat:monic-epic": {
       "status": "defined",
       "type": "definition",
@@ -568,6 +603,13 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/01-basics/06-limits.html"
     },
+    "cat:page-monads": {
+      "status": "defined",
+      "type": "page",
+      "title": "モナドとアイレンバーグ–ムーア代数",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html"
+    },
     "cat:page-yoneda": {
       "status": "defined",
       "type": "page",
@@ -693,6 +735,20 @@
       "title": "",
       "num": "1.10",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/01-cartesian-closed.html"
+    },
+    "cat:prob-mon-monoid-algebras": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "1.8",
+      "page": "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html"
+    },
+    "cat:prob-mon-powerset-algebras": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "1.7",
+      "page": "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html"
     },
     "cat:prob-no-right-adjoint": {
       "status": "defined",
@@ -1212,6 +1268,41 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/01-basics/06-limits.html"
     },
+    "cat:sec-mon-algebras": {
+      "status": "defined",
+      "type": "section",
+      "title": "モナドの代数",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html"
+    },
+    "cat:sec-mon-comparison": {
+      "status": "defined",
+      "type": "section",
+      "title": "比較関手",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html"
+    },
+    "cat:sec-mon-monad": {
+      "status": "defined",
+      "type": "section",
+      "title": "モナド",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html"
+    },
+    "cat:sec-mon-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html"
+    },
+    "cat:sec-mon-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html"
+    },
     "cat:sec-yon-notation": {
       "status": "defined",
       "type": "section",
@@ -1295,6 +1386,13 @@
       "title": "部分圏",
       "num": "1.3",
       "page": "18-category-theory/18A-general-theory/01-basics/01-categories.html"
+    },
+    "cat:t-algebra": {
+      "status": "defined",
+      "type": "definition",
+      "title": "T 代数とアイレンバーグ–ムーア圏",
+      "num": "1.3",
+      "page": "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html"
     },
     "cat:triangle-identities": {
       "status": "defined",
@@ -28377,6 +28475,27 @@
       "title": "実数全体の濃度",
       "referencedFrom": [
         "03-mathematical-logic/03E-set-theory/01-basics/11-cardinal-exponentiation.html"
+      ]
+    },
+    "cat:algebras-monadic": {
+      "status": "planned",
+      "title": "普遍代数の圏のモナド性",
+      "referencedFrom": [
+        "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html"
+      ]
+    },
+    "cat:beck-monadicity": {
+      "status": "planned",
+      "title": "ベックのモナド性定理",
+      "referencedFrom": [
+        "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html"
+      ]
+    },
+    "cat:kleisli-category": {
+      "status": "planned",
+      "title": "クライスリ圏",
+      "referencedFrom": [
+        "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html"
       ]
     },
     "cat:page-elementary-topos": {

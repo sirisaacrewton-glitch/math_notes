@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>モナドとアイレンバーグ–ムーア代数 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# モナドとアイレンバーグ–ムーア代数 {#cat:page-monads keywords="monad, triple, comonad, monad defined by an adjunction, closure operator, algebra for a monad, Eilenberg-Moore category, free algebra, comparison functor, monadic functor"}
+
+随伴 $F\dashv G\colon\mathbf{A}\to\mathbf{X}$ があると、合成 $T=GF$ は $\mathbf{X}$ の自己関手で、単位 $\eta\colon1\Rightarrow T$ と「二回施したものを一回にまとめる」変換 $\mu\colon T^{2}\Rightarrow T$ をもつ。この構造を公理化したものが**モナド**（\ref{cat:monad}）で、自己関手の圏の中のモノイドと言える。逆に、どのモナドも随伴から来る：モナド $T$ の**代数**（\ref{cat:t-algebra}）の圏 $\mathbf{X}^{T}$ と忘却関手が、$T$ を与える随伴をなす（\ref{cat:eilenberg-moore-adjunction}）。さらに、$T$ を与えるどの随伴からも $\mathbf{X}^{T}$ への**比較関手**がただ一つある（\ref{cat:comparison-functor}）。群・環上の加群・完備束などは、それぞれ適当なモナドの代数として捉え直せる。
+
+> 資料：Mac Lane, *Categories for the Working Mathematician* 第 VI 章 §1–§3。
+
+## 記法と定義の確認 {#cat:sec-mon-notation}
+
+::: notation
+- 関手・自然変換・横の合成と交換法則は \ref{cat:page-functors}, \ref{cat:horizontal-composition}, \ref{cat:interchange-law} のとおり。自然変換 $\alpha\colon S\Rightarrow S'$ と関手 $R$ について、$R\alpha$ は成分 $(R\alpha)_{x}=R(\alpha_{x})$、$\alpha R$ は成分 $(\alpha R)_{x}=\alpha_{Rx}$ の自然変換である（横の合成の特別な場合）。自然変換の縦の合成を $\cdot$ と書く。
+- 随伴 $(F,G,\eta,\varepsilon)\colon\mathbf{X}\rightharpoonup\mathbf{A}$（$F\colon\mathbf{X}\to\mathbf{A}$ が左随伴、$G\colon\mathbf{A}\to\mathbf{X}$ が右随伴、$\eta$ が単位、$\varepsilon$ が余単位）と三角等式 $G\varepsilon\cdot\eta G=1_{G}$, $\varepsilon F\cdot F\eta=1_{F}$ は \ref{cat:adjunction}, \ref{cat:unit-counit}, \ref{cat:triangle-identities} のとおり。
+- 基礎は $\ZFC$＋宇宙一つ（\ref{cat:page-categories}）。
+:::
+
+## モナド {#cat:sec-mon-monad}
+
+::: definition モナド {#cat:monad keywords="monad, triple, unit and multiplication of a monad, monoid in the category of endofunctors" index="モナド|もなど, 単位（モナドの）|たんいもなどの, 乗法（モナドの）|じょうほうもなどの"}
+圏 $\mathbf{X}$ の**モナド** $\mathsf{T}=(T,\eta,\mu)$ は、関手 $T\colon\mathbf{X}\to\mathbf{X}$ と自然変換 $\eta\colon1_{\mathbf{X}}\Rightarrow T$（**単位**）、$\mu\colon T^{2}\Rightarrow T$（**乗法**）で、次の等式を満たすものである。
+$$
+\mu\cdot T\mu=\mu\cdot\mu T\colon T^{3}\Rightarrow T,\qquad\mu\cdot T\eta=1_{T}=\mu\cdot\eta T.
+$$
+成分で書けば、各 $x$ について $\mu_{x}\circ T\mu_{x}=\mu_{x}\circ\mu_{Tx}$（**結合律**）、$\mu_{x}\circ T\eta_{x}=1_{Tx}=\mu_{x}\circ\eta_{Tx}$（**単位律**）。双対に、自己関手 $L$ と $\varepsilon\colon L\Rightarrow1$, $\delta\colon L\Rightarrow L^{2}$ で双対の等式を満たすものを**余モナド**という。
+:::
+
+::: intuition
+モノイド $(M,\cdot,e)$ の定義で、集合 $M$ を自己関手 $T$ に、直積 $M\times M$ を合成 $T\circ T$ に、乗法 $M\times M\to M$ を $\mu\colon T^{2}\Rightarrow T$ に、単位元 $1\to M$ を $\eta\colon1\Rightarrow T$ に置き換えたものである。プログラムの言葉では、$Tx$ は「$x$ 型の値を、何らかの付加情報（非決定性、例外、状態など）つきで返す計算」、$\eta$ は「付加情報なしで値を返す」、$\mu$ は「計算を返す計算を一つの計算に平らにする」操作である。
+:::
+
+::: proposition 随伴が定めるモナド {#cat:monad-from-adjunction keywords="every adjunction defines a monad GF and a comonad FG" index="随伴が定めるモナド|ずいはんがさだめるもなど"}
+随伴 $(F,G,\eta,\varepsilon)\colon\mathbf{X}\rightharpoonup\mathbf{A}$ について、$(GF,\eta,G\varepsilon F)$ は $\mathbf{X}$ のモナドである。双対に $(FG,\varepsilon,F\eta G)$ は $\mathbf{A}$ の余モナドである。
+:::
+
+::: proof
+$T\defeq GF$, $\mu\defeq G\varepsilon F$（成分 $\mu_{x}=G(\varepsilon_{Fx})\colon GFGFx\to GFx$）とおく。$\mu$ は自然変換 $\varepsilon$ に関手を前後から施したものなので自然である。
+
+**Step 1（結合律）.** 成分で $\mu_{x}\circ T\mu_{x}=\mu_{x}\circ\mu_{Tx}$、すなわち
+$$
+G\varepsilon_{Fx}\circ GFG\varepsilon_{Fx}=G\varepsilon_{Fx}\circ G\varepsilon_{FGFx}
+$$
+を示す。両辺は $G$ を $\mathbf{A}$ の射 $\varepsilon_{a}\circ FG\varepsilon_{a}$ と $\varepsilon_{a}\circ\varepsilon_{FGa}$（$a\defeq Fx$）に施したものである。$\varepsilon$ の自然性を射 $\varepsilon_{a}\colon FGa\to a$ に使うと、$\varepsilon_{a}\circ FG(\varepsilon_{a})=\varepsilon_{a}\circ\varepsilon_{FGa}$ が成り立つ（自然性の四角形 $\varepsilon_{a}\circ FG(f)=f\circ\varepsilon_{b}$ で $f=\varepsilon_{a}$, $b=FGa$）。
+
+**Step 2（単位律）.** $\mu_{x}\circ\eta_{Tx}=G\varepsilon_{Fx}\circ\eta_{GFx}=(G\varepsilon\cdot\eta G)_{Fx}=1_{GFx}$（三角等式の第一式を対象 $Fx$ で）。$\mu_{x}\circ T\eta_{x}=G\varepsilon_{Fx}\circ GF\eta_{x}=G\bigl((\varepsilon F\cdot F\eta)_{x}\bigr)=G(1_{Fx})=1$（第二式）。
+
+余モナドは双対（$\mathbf{A}^{\mathrm{op}}$ で同じ議論）。
+
+::: hypcheck
+- **$\varepsilon$ の自然性**：Step 1 に使った。
+- **二つの三角等式**：Step 2 で、それぞれ片方の単位律に使った。
+:::
+:::
+
+::: example
+1. **自由モノイド.** 忘却関手 $\mathbf{Mon}\to\mathbf{Set}$ と自由モノイド関手（\ref{cat:free-monoid}）の随伴から、$\mathbf{Set}$ のモナド $T S=S^{\ast}$（$S$ の元の有限列全体）、$\eta_{S}(s)=(s)$（長さ 1 の列）、$\mu_{S}$ は列の列をつなげる写像、が得られる。
+2. **冪集合.** $\mathcal{P}S$（$S$ の部分集合全体、写像には順像を対応させる）、$\eta_{S}(s)=\{s\}$、$\mu_{S}(\mathcal{A})=\bigcup\mathcal{A}$ は $\mathbf{Set}$ のモナドである（結合律は $\bigcup\bigcup\mathcal{F}=\bigcup\{\bigcup\mathcal{A}:\mathcal{A}\in\mathcal{F}\}$、単位律は $\bigcup\{\{s\}:s\in A\}=A=\bigcup\{A\}$）。
+3. **群作用.** 群 $G$ について $TX\defeq G\times X$、$\eta_{X}(x)=(e,x)$、$\mu_{X}(g_{1},(g_{2},x))=(g_{1}g_{2},x)$。モナドの公理は群の結合律と単位律そのものである。
+4. **前順序の閉包作用素.** 前順序 $P$（を圏とみたもの）のモナドは、単調写像 $T$ で $x\le Tx$, $TTx\le Tx$ を満たすものと同じである（前順序では図式は自動的に可換）。$x\le Tx$ から $Tx\le TTx$ なので、$P$ が半順序なら $TTx=Tx$：モナドは**閉包作用素**にほかならない（例：位相空間の部分集合の閉包、部分群の生成）。
+:::
+
+## モナドの代数 {#cat:sec-mon-algebras}
+
+::: definition T 代数とアイレンバーグ–ムーア圏 {#cat:t-algebra keywords="algebra for a monad, T-algebra, structure map, Eilenberg-Moore category" index="T 代数|てぃーだいすう, 構造射|こうぞうしゃ, アイレンバーグ–ムーア圏|あいれんばーぐむーあけん"}
+モナド $\mathsf{T}=(T,\eta,\mu)$ の **T 代数** $(x,h)$ は、対象 $x$ と射 $h\colon Tx\to x$（**構造射**）で
+$$
+h\circ Th=h\circ\mu_{x}\colon T^{2}x\to x,\qquad h\circ\eta_{x}=1_{x}
+$$
+を満たすものである。T 代数の**準同型** $f\colon(x,h)\to(x',h')$ は、$f\circ h=h'\circ Tf$ を満たす射 $f\colon x\to x'$ である。T 代数と準同型は（$\mathbf{X}$ の合成で）圏をなし、これを $\mathbf{X}^{T}$（**アイレンバーグ–ムーア圏**）と書く。
+:::
+
+::: example
+1. **閉包作用素.** $\mathsf{T}$ が半順序 $P$ の閉包作用素のとき、T 代数は $Tx\le x$ となる $x$、すなわち $Tx=x$ となる**閉元**である。
+2. **群作用.** 例 3 のモナドの T 代数は、写像 $h\colon G\times X\to X$ で $h(g_{1},h(g_{2},x))=h(g_{1}g_{2},x)$, $h(e,x)=x$ を満たすもの、すなわち $G$ の $X$ への作用である。準同型は $G$ 同変写像。
+3. **加群.** 環 $R$ について、$\mathbf{Ab}$ のモナド $TA\defeq R\otimes A$（$\eta(a)=1\otimes a$, $\mu(r_{1}\otimes r_{2}\otimes a)=r_{1}r_{2}\otimes a$）の T 代数は左 $R$ 加群である。
+4. **自由モノイド.** 例 1 のモナドの T 代数 $(S,h)$ は、$h\colon S^{\ast}\to S$ で $h((s))=s$ と「列の列をつないでから計算しても、各列を計算してから計算しても同じ」を満たすもので、$s\cdot t\defeq h((s,t))$, $e\defeq h(())$ とおけばモノイドになる（逆も成り立つ）。つまり T 代数はモノイドそのものである（\ref{cat:prob-mon-monoid-algebras}）。
+:::
+
+::: theorem アイレンバーグ–ムーアの随伴 {#cat:eilenberg-moore-adjunction keywords="every monad is defined by its algebras, free algebra functor, forgetful functor from Eilenberg-Moore category" index="自由代数|じゆうだいすう, アイレンバーグ–ムーアの随伴|あいれんばーぐむーあのずいはん"}
+モナド $\mathsf{T}$ について、
+$$
+G^{T}(x,h)\defeq x,\quad G^{T}f\defeq f;\qquad F^{T}x\defeq(Tx,\mu_{x}),\quad F^{T}k\defeq Tk
+$$
+とおくと、$F^{T}\dashv G^{T}$ で、単位は $\eta$、余単位は $\varepsilon^{T}_{(x,h)}\defeq h$。この随伴が定めるモナド（\ref{cat:monad-from-adjunction}）は $\mathsf{T}$ 自身である。
+:::
+
+::: proof
+**Step 1（$F^{T}$ は関手）.** $(Tx,\mu_{x})$ は T 代数である：$\mu_{x}\circ T\mu_{x}=\mu_{x}\circ\mu_{Tx}$ はモナドの結合律、$\mu_{x}\circ\eta_{Tx}=1$ は単位律。$k\colon x\to y$ について $Tk$ が準同型であること $Tk\circ\mu_{x}=\mu_{y}\circ T^{2}k$ は $\mu$ の自然性。関手であることは $T$ が関手であることから。
+
+**Step 2（余単位は準同型で自然）.** $F^{T}G^{T}(x,h)=(Tx,\mu_{x})$ で、$h\colon(Tx,\mu_{x})\to(x,h)$ が準同型であること $h\circ\mu_{x}=h\circ Th$ は T 代数の第一の等式そのもの。自然性：準同型 $f\colon(x,h)\to(x',h')$ について $f\circ h=h'\circ Tf$ は準同型の定義そのもの。単位 $\eta\colon1\Rightarrow G^{T}F^{T}=T$ はモナドの単位で、自然である。
+
+**Step 3（三角等式）.** $(G^{T}\varepsilon^{T}\cdot\eta G^{T})_{(x,h)}=h\circ\eta_{x}=1_{x}$（T 代数の第二の等式）。$(\varepsilon^{T}F^{T}\cdot F^{T}\eta)_{x}=\mu_{x}\circ T\eta_{x}=1_{Tx}$（モナドの単位律）。三角等式を満たす単位・余単位の組は随伴を与える（\ref{cat:adjunction-equivalent-forms}）。
+
+**Step 4（元のモナドに戻る）.** $G^{T}F^{T}=T$、単位は $\eta$、乗法は $(G^{T}\varepsilon^{T}F^{T})_{x}=G^{T}\varepsilon^{T}_{(Tx,\mu_{x})}=\mu_{x}$。
+
+::: hypcheck
+- **モナドの公理**：結合律と単位律の片方は Step 1（自由代数が代数であること）に、もう片方の単位律は Step 3 に使った。
+- **T 代数の二つの等式**：結合の等式は Step 2（$h$ が準同型）に、単位の等式は Step 3 に使った。
+:::
+:::
+
+::: intuition
+$F^{T}x=(Tx,\mu_{x})$ は「$x$ 上の自由代数」で、群作用の場合は $G\times X$ への左からの作用、モノイドの場合は語のモノイドである。この定理は「どのモナドも、少なくとも一つの随伴から来る」ことを言う。次ページのクライスリ圏は、もう一つの（いわば最小の）随伴を与える。
+:::
+
+## 比較関手 {#cat:sec-mon-comparison}
+
+::: theorem 比較定理 {#cat:comparison-functor keywords="comparison functor to the Eilenberg-Moore category, uniqueness of the comparison functor" index="比較関手|ひかくかんしゅ, 比較定理|ひかくていり"}
+随伴 $(F,G,\eta,\varepsilon)\colon\mathbf{X}\rightharpoonup\mathbf{A}$ が定めるモナドを $\mathsf{T}=(GF,\eta,G\varepsilon F)$ とする。関手 $K\colon\mathbf{A}\to\mathbf{X}^{T}$ で $G^{T}K=G$ かつ $KF=F^{T}$ となるものがただ一つある。それは
+$$
+Ka\defeq(Ga,\ G\varepsilon_{a}),\qquad Kf\defeq Gf.
+$$
+:::
+
+::: proof
+**Step 1（$Ka$ は T 代数）.** 構造射 $h\defeq G\varepsilon_{a}\colon GFGa\to Ga$ について、結合の等式 $h\circ T h=h\circ\mu_{Ga}$ は
+$$
+G\varepsilon_{a}\circ GFG\varepsilon_{a}=G\varepsilon_{a}\circ G\varepsilon_{FGa}
+$$
+で、$G$ を $\varepsilon$ の自然性の等式 $\varepsilon_{a}\circ FG\varepsilon_{a}=\varepsilon_{a}\circ\varepsilon_{FGa}$ に施したもの（\ref{cat:monad-from-adjunction} の Step 1 と同じ）。単位の等式 $G\varepsilon_{a}\circ\eta_{Ga}=1$ は三角等式。
+
+**Step 2（$Kf$ は準同型、$K$ は関手）.** $f\colon a\to a'$ について $Gf\circ G\varepsilon_{a}=G\varepsilon_{a'}\circ GFGf$ は $\varepsilon$ の自然性に $G$ を施したもの。関手性は $G$ の関手性から。
+
+**Step 3（等式）.** $G^{T}K=G$ は定義から。$KFx=(GFx,G\varepsilon_{Fx})=(Tx,\mu_{x})=F^{T}x$、$KFk=GFk=Tk=F^{T}k$。
+
+**Step 4（一意性）.** $K'$ も条件を満たすとする。$G^{T}K'=G$ から、$K'a=(Ga,h_{a})$（ある構造射 $h_{a}$）、$K'f=Gf$ の形である。$h_{a}=G\varepsilon_{a}$ を示す。$\varepsilon_{a}\colon FGa\to a$ に $K'$ を施すと、準同型
+$$
+G\varepsilon_{a}\colon K'(FGa)=F^{T}(Ga)=(GFGa,\mu_{Ga})\to(Ga,h_{a})
+$$
+が得られる（$K'F=F^{T}$ を使った）。準同型の条件は $G\varepsilon_{a}\circ\mu_{Ga}=h_{a}\circ T(G\varepsilon_{a})$。両辺に右から $T\eta_{Ga}$ を合成する：
+$$
+\begin{aligned}
+\text{左辺}&=G\varepsilon_{a}\circ\mu_{Ga}\circ T\eta_{Ga}=G\varepsilon_{a},\\
+\text{右辺}&=h_{a}\circ T(G\varepsilon_{a}\circ\eta_{Ga})=h_{a}\circ T(1_{Ga})=h_{a}.
+\end{aligned}
+$$
+左辺はモナドの単位律、右辺は三角等式 $G\varepsilon\cdot\eta G=1$。よって $h_{a}=G\varepsilon_{a}$、$K'=K$。
+
+::: hypcheck
+- **$KF=F^{T}$**：存在の側では Step 3 で確かめ、一意性の側では Step 4 で $K'(FGa)$ の構造射を知るのに使った。$G^{T}K=G$ だけでは $K$ は一意でない（構造射を自由に選べる余地が残る）。
+- **三角等式とモナドの単位律**：Step 4 で $T\eta_{Ga}$ を合成して構造射を取り出すのに使った。
+- Mac Lane は一意性を随伴の写像の一般論（第 IV 章 §7）から導いているが、ここでは直接計算した。
+:::
+:::
+
+::: definition モナド的な関手 {#cat:monadic keywords="monadic functor, tripleable, strictly monadic" index="モナド的|もなどてき"}
+右随伴 $G\colon\mathbf{A}\to\mathbf{X}$ について、比較関手 $K\colon\mathbf{A}\to\mathbf{X}^{T}$ が圏の同型のとき、$G$ は（**厳密に**）**モナド的**であるという。$K$ が圏同値のときにモナド的と呼ぶ流儀もある（Mac Lane は同型、Barr–Wells は同値の意味で使う）。
+:::
+
+::: example
+1. 忘却関手 $\mathbf{Grp}\to\mathbf{Set}$、$R\text{-}\mathbf{Mod}\to\mathbf{Set}$、$\mathbf{Mon}\to\mathbf{Set}$ はモナド的である。これらは普遍代数の圏の忘却関手で、一般の場合は次々ページで扱う（\ref[普遍代数の圏のモナド性]{cat:algebras-monadic}）。
+2. **モナド的でない例.** 忘却関手 $G\colon\mathbf{Top}\to\mathbf{Set}$ は、離散位相を与える関手 $D$ を左随伴にもつ（恒等写像 $X\to GDX$ が普遍射）。$GD=1$ で、定まるモナドは恒等モナド $(1,1,1)$、その代数は集合そのもの（構造射は恒等射しかない）なので $\mathbf{Set}^{T}=\mathbf{Set}$、比較関手は $G$ 自身である。$G$ は同型でも同値でもない：圏同値は充満である（\ref{cat:equivalence-characterization}）が、$G$ は充満でない。たとえば二点集合 $\{0,1\}$ に密着位相と離散位相を入れた空間をそれぞれ $I$, $D$ とすると、恒等写像 $GI\to GD$ は集合の写像だが、連続写像 $I\to D$ の像ではない（$\{0\}$ の逆像 $\{0\}$ が $I$ で開でない）。
+:::
+
+::: supplement
+**前提を変えると.** 比較関手が同型になるかどうかを、$G$ の性質（余等化子の扱い）で判定するのがベックの定理（\ref[ベックのモナド性定理]{cat:beck-monadicity}）である。
+
+**類似の定理.** \ref{cat:comparison-functor} は「$\mathbf{X}^{T}$ は $T$ を定める随伴のうち**終**のもの」を言う。対になる「始」のものがクライスリ圏（\ref[クライスリ圏]{cat:kleisli-category}）で、$T$ を定める随伴は、クライスリ圏とアイレンバーグ–ムーア圏の間に並ぶ。
+
+**高い視点から：モナドは「代数の理論」.** 普遍代数では、代数の種類（群、環、…）を演算と等式で与える。モナドは、その情報を「$S$ 上の自由代数の台集合 $TS$」と「項の代入 $\mu$」だけにまとめたもので、演算の選び方（表示）によらない。$TS$ は「$S$ の元を変数とする項を、等式で割ったもの」、$\mu$ は「項の中の変数に項を代入してから計算する」ことに当たる。比喩で言えば、モナドは「レシピ集」、T 代数は「そのレシピを実際に作れる台所」、自由代数は「材料をそのまま並べただけの料理」で、比較関手は「どの台所も、そのレシピ集をどう実行するかで決まる」ことを言う。
+:::
+
+## 問題 {#cat:sec-mon-problems}
+
+::: problem {#cat:prob-mon-powerset-algebras}
+冪集合モナド $\mathcal{P}$（例 2）について、$\mathcal{P}$ 代数 $(X,h)$ は、$x\le y\iff h\{x,y\}=y$ で半順序を入れると、すべての部分集合 $S$ が上限 $h(S)$ をもつ半順序（完備半束）になることを示せ（Mac Lane 第 VI 章 §2 演習 1。E. Manes による）。
+:::
+
+::: solution
+**Step 1（基本の等式）.** 単位の等式から $h\{x\}=x$。結合の等式は、部分集合の族 $\mathcal{A}\subseteq\mathcal{P}X$ について $h\bigl(\bigcup\mathcal{A}\bigr)=h\{h(A):A\in\mathcal{A}\}$。
+
+**Step 2（半順序）.** 反射律：$h\{x,x\}=h\{x\}=x$。反対称律：$h\{x,y\}=y$ かつ $h\{y,x\}=x$ なら $x=y$（集合 $\{x,y\}=\{y,x\}$）。推移律：$h\{x,y\}=y$, $h\{y,z\}=z$ のとき、Step 1 で
+$$
+h\{x,z\}=h\{x,h\{y,z\}\}=h\{h\{x\},h\{y,z\}\}=h\{x,y,z\}
+$$
+（$\mathcal{A}=\{\{x\},\{y,z\}\}$）、同様に $h\{x,y,z\}=h\{h\{x,y\},h\{z\}\}=h\{y,z\}=z$。
+
+**Step 3（上限）.** $s\defeq h(S)$ とおく。
+
+*上界であること.* $x\in S$ なら、Step 1 を $\mathcal{A}=\{\{x\},S\}$ に使って $h\{x,s\}=h\{h\{x\},h(S)\}=h(\{x\}\cup S)=h(S)=s$、すなわち $x\le s$。
+
+*最小であること.* $u$ を $S$ の上界（すべての $x\in S$ で $h\{x,u\}=u$）とする。Step 1 を $\mathcal{A}=\{S,\{u\}\}$ に使うと $h\{s,u\}=h(S\cup\{u\})$。一方 $S\cup\{u\}$ は $\mathcal{A}'=\{\{x,u\}:x\in S\}\cup\{\{u\}\}$ の合併でもあるので、$h(S\cup\{u\})=h\bigl(\{h\{x,u\}:x\in S\}\cup\{h\{u\}\}\bigr)=h\{u\}=u$。よって $h\{s,u\}=u$、すなわち $s\le u$。$S=\varnothing$ でも同じ計算が通り、$h(\varnothing)$ は最小元である。
+:::
+
+::: problem {#cat:prob-mon-monoid-algebras}
+自由モノイドのモナド（例 1）の T 代数とモノイドが一対一に対応することを示せ。
+:::
+
+::: solution
+モノイド $(M,\cdot,e)$ には $h(m_{1},\dots,m_{n})\defeq m_{1}\cdots m_{n}$（空列は $e$）を対応させる。結合の等式は「列の列をつないでから積をとる」と「各列の積をとってから積をとる」が等しいこと（一般結合律）、単位の等式は $h((m))=m$。逆に T 代数 $(S,h)$ から $s\cdot t\defeq h((s,t))$, $e\defeq h(())$ とおく。結合律：結合の等式を列の列 $((s,t),(u))$ と $((s),(t,u))$ に使うと、どちらも $h((s,t,u))$ に等しく、左辺は $h((s\cdot t,u))$、右辺は $h((s,t\cdot u))$（単位の等式 $h((u))=u$ を使う）。単位律：$((s),())$ に使って $h((s,e))=h((s))=s$。二つの対応が互いに逆であることは、$h$ が二項の積で決まること（列の長さに関する帰納法で、結合の等式を $((s_{1},\dots,s_{n-1}),(s_{n}))$ に使う）から。準同型はモノイド準同型に対応する。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

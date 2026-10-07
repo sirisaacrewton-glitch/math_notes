@@ -590,7 +590,9 @@
     app = L.app;
     var article = app.querySelector('.mn-article');
     var parsed = renderArticle(article, L.text);
-    document.title = (parsed.page.title || '') + ' | ' + C.SITE_TITLE;
+    document.title = KIND === 'home'
+      ? C.SITE_TITLE + (C.SITE_SUBTITLE ? '（' + C.SITE_SUBTITLE + '）' : '')
+      : (parsed.page.title || '') + ' | ' + C.SITE_TITLE;
     renderTree(app.querySelector('.mn-tree'));
     renderCrumbs(app.querySelector('.mn-crumbs'));
     fillBackrefs(article);

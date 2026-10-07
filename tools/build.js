@@ -478,11 +478,16 @@ function relRoot(relPath) {
   var s = ''; for (var i = 0; i < depth; i++) s += '../'; return s;
 }
 
+// トップページのタイトル（サイト名だけ。副題があれば添える）
+function homeTitle() {
+  return CONFIG.SITE_TITLE + (CONFIG.SITE_SUBTITLE ? '（' + CONFIG.SITE_SUBTITLE + '）' : '');
+}
+
 function pageHtml(opts) {
   var r = opts.root;
   return '<!DOCTYPE html>\n<html lang="ja">\n<head>\n<meta charset="utf-8">\n' +
     '<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
-    '<title>' + Core.escapeHtml(opts.title) + ' | ' + Core.escapeHtml(CONFIG.SITE_TITLE) + '</title>\n' +
+    '<title>' + Core.escapeHtml(opts.kind === 'home' ? homeTitle() : opts.title + ' | ' + CONFIG.SITE_TITLE) + '</title>\n' +
     '<link rel="stylesheet" href="' + r + 'vendor/katex/katex.min.css">\n' +
     '<link rel="stylesheet" href="' + r + 'style.css">\n' +
     '<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>\n' +

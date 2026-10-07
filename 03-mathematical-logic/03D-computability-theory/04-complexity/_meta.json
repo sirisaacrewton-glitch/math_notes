@@ -1,0 +1,11 @@
+{
+  "id": "comp-complexity",
+  "title": "計算複雑性",
+  "en": "Computational Complexity",
+  "abbr": "計算複雑性",
+  "description": "時間計算量とクラス P・NP、クック–レヴィンの定理と NP 完全問題、領域計算量（サヴィッチの定理、PSPACE、L と NL、NL = coNL）、階層定理と相対化、確率的計算と量子計算。（Sipser 第 7〜10 章を参考にする。量子計算は資料なし）",
+  "msc": "68Q15, 68Q17, 68Q12",
+  "prereq": [
+    {"dir": "comp-computability", "note": "チューリング機械と決定可能性、写像還元"}
+  ]
+}

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ネットとフィルターによる収束 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54A-generalities/01-topological-spaces/05-nets-filters.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ネットとフィルターによる収束 {#top:page-nets-filters keywords="directed set, net, Moore-Smith convergence, subnet, cluster point, filter, filter base, ultrafilter, convergence of filters, sequences in first countable spaces"}
+
+距離空間では、閉包や連続性を点列の収束で特徴づけられた。一般の位相空間では点列では足りないが、添字を自然数から**有向集合**に広げた**ネット**（有向点族）を使えば、同じ特徴づけが成り立つ（\ref{top:net-closure}, \ref{top:net-continuity}）。ネットと同じ働きをするもう一つの道具が**フィルター**で（\ref{top:filter-convergence}）、超フィルターはコンパクト性とチコノフの定理の証明で中心的な役割を果たす（\ref{top:ultrafilter-cluster}）。第一可算な空間では、点列で十分である（\ref{top:sequences-first-countable}）。
+
+> 資料：内田伏一『集合と位相』には該当する節がないため、標準的な構成（J. L. Kelley, *General Topology* 第 2 章に相当する内容）を自分で組み立てた。フィルターの定義は集合論の系列（\ref{set:filter}）とモデル理論の系列（\ref{model:ultrafilter}）に合わせる。
+
+## 記法と定義の確認 {#top:sec-nf-notation}
+
+::: notation
+- 近傍・基本近傍系・閉包・連続・第一可算は前ページまでのとおり（\ref{top:neighborhood}, \ref{top:neighborhood-base}, \ref{top:closure-neighborhood}, \ref{top:continuous}, \ref{top:second-countable}）。
+- 集合 $I$ 上のフィルター・超フィルター・有限交叉性・超フィルター補題は \ref{set:filter}, \ref{model:ultrafilter}, \ref{model:ultrafilter-lemma} のとおり。本ページでは、フィルターは空集合を含まない（真のフィルター）とする。
+- 選択公理を使う箇所は明記する。
+:::
+
+## ネット {#top:sec-nf-nets}
+
+::: definition 有向集合とネット {#top:net keywords="directed set, net, convergence of nets, eventually, frequently" index="有向集合|ゆうこうしゅうごう, ネット|ねっと, 有向点族|ゆうこうてんぞく, 収束（ネット）|しゅうそくねっと"}
+集合 $D$ 上の前順序 $\le$ が、任意の $d_{1},d_{2}\in D$ に対し $d_{1},d_{2}\le d_{3}$ となる $d_{3}$ をもつとき、$(D,\le)$ を**有向集合**という（$D\neq\varnothing$ とする）。有向集合 $D$ から位相空間 $X$ への写像 $(x_{d})_{d\in D}$ を $X$ の**ネット**という。
+1. ネットが集合 $A$ に**最終的に入る**とは、ある $d_{0}$ があって $d\ge d_{0}$ ならすべて $x_{d}\in A$ となることをいう。**頻繁に入る**とは、任意の $d_{0}$ に対し $d\ge d_{0}$ で $x_{d}\in A$ となる $d$ があることをいう。
+2. ネットが点 $x$ に**収束する**（$x_{d}\to x$）とは、$x$ の任意の近傍に最終的に入ることをいう。$x$ の任意の近傍に頻繁に入るとき、$x$ をネットの**集積点**という。
+:::
+
+::: example
+1. 点列 $(x_{n})_{n\in\N}$ は $\N$（通常の順序）を添字とするネットで、収束の定義は通常のもの。
+2. **近傍のネット.** 点 $x$ の近傍系 $\mathcal{N}(x)$ に逆包含（$N\le M\iff N\supseteq M$）を入れると有向集合（$N\cap M$ が上界）になる。各 $N$ に点 $x_{N}\in N$ を選べば（選択公理）、$x_{N}\to x$。
+3. **リーマン和.** 区間 $[a,b]$ の分割（分点と代表点の組）を細分の順序で有向集合とみると、リーマン和は $\R$ のネットで、リーマン積分はその極限である。
+:::
+
+::: theorem ネットによる閉包の特徴づけ {#top:net-closure keywords="a point is in the closure of A iff some net in A converges to it" index="ネットと閉包|ねっととへいほう"}
+（選択公理）$x\in\overline{A}$ であることと、$A$ の元からなるネットで $x$ に収束するものがあることは同値である。
+:::
+
+::: proof
+「⇒」：$x\in\overline{A}$ なら、各近傍 $N\in\mathcal{N}(x)$ は $A$ と交わる（\ref{top:closure-neighborhood}）。$x_{N}\in N\cap A$ を選ぶ（選択公理）。例 2 と同様に $x_{N}\to x$：近傍 $M$ について、$N\ge M$（$N\subseteq M$）なら $x_{N}\in N\subseteq M$。
+
+「⇐」：$x_{d}\to x$, $x_{d}\in A$ とする。$x$ の近傍 $N$ にネットは最終的に入るので、ある $x_{d}\in N\cap A$。よって $N$ は $A$ と交わり、$x\in\overline{A}$。
+:::
+
+::: theorem ネットによる連続性の特徴づけ {#top:net-continuity keywords="continuity iff preservation of convergent nets" index="ネットと連続性|ねっととれんぞくせい"}
+（選択公理）写像 $f\colon X\to Y$ が点 $x$ で連続であることと、$x$ に収束する任意のネット $(x_{d})$ について $f(x_{d})\to f(x)$ となることは同値である。
+:::
+
+::: proof
+「⇒」：$f(x)$ の近傍 $N$ について $f^{-1}[N]$ は $x$ の近傍なので、ネットは最終的に $f^{-1}[N]$ に入り、$f(x_{d})$ は最終的に $N$ に入る。
+
+「⇐」：$f$ が $x$ で連続でないとすると、$f(x)$ の近傍 $N$ で、$f^{-1}[N]$ が $x$ の近傍でないものがある。すなわち、$x$ の各近傍 $M$ は $f^{-1}[N]$ に含まれず、$x_{M}\in M\setminus f^{-1}[N]$ を選べる（選択公理）。$(x_{M})_{M\in\mathcal{N}(x)}$ は $x$ に収束するが、$f(x_{M})\notin N$ なので $f(x_{M})\not\to f(x)$。
+:::
+
+::: definition 部分ネット {#top:subnet keywords="subnet (Willard / Kelley)" index="部分ネット|ぶぶんねっと"}
+ネット $(x_{d})_{d\in D}$ の**部分ネット**とは、有向集合 $E$ と写像 $h\colon E\to D$ で、任意の $d_{0}\in D$ に対しある $e_{0}\in E$ があって $e\ge e_{0}\Rightarrow h(e)\ge d_{0}$ となるものによる合成 $(x_{h(e)})_{e\in E}$ をいう。
+:::
+
+::: theorem 集積点と部分ネット {#top:cluster-subnet keywords="x is a cluster point of a net iff some subnet converges to x" index="集積点と部分ネット|しゅうせきてんとぶぶんねっと"}
+$x$ がネット $(x_{d})_{d\in D}$ の集積点であることと、$x$ に収束する部分ネットがあることは同値である。
+:::
+
+::: proof
+「⇐」：$x$ の近傍 $N$ と $d_{0}$ をとる。部分ネット $(x_{h(e)})$ は最終的に $N$ に入り、$h(e)$ は最終的に $d_{0}$ 以上なので、両方を満たす $e$ がある（$E$ は有向）。$d\defeq h(e)\ge d_{0}$ で $x_{d}\in N$。
+
+「⇒」：$E\defeq\{(d,N)\in D\times\mathcal{N}(x):x_{d}\in N\}$ に、$(d,N)\le(d',N')\iff d\le d'\land N\supseteq N'$ を入れる。**有向性**：$(d_{1},N_{1}),(d_{2},N_{2})\in E$ について、$d_{1},d_{2}\le d_{3}$ となる $d_{3}$ をとり、集積点の定義から $d\ge d_{3}$ で $x_{d}\in N_{1}\cap N_{2}$ となる $d$ をとると $(d,N_{1}\cap N_{2})\in E$ は上界。$E\neq\varnothing$ も同様（$N=X$）。$h(d,N)\defeq d$ とおく。**部分ネット**：$d_{0}$ について $e_{0}\defeq(d,X)$（$d\ge d_{0}$ を一つ）をとれば、$e\ge e_{0}$ なら $h(e)\ge d\ge d_{0}$。**収束**：近傍 $M$ について、$(d,M)\in E$ となる $d$ をとり（集積点の定義）、$(d',N)\ge(d,M)$ なら $x_{h(d',N)}=x_{d'}\in N\subseteq M$。
+
+::: hypcheck
+- **選択公理**：「⇒」で $e_{0}$ や上界をとるところは存在を言うだけで、関数として選ぶ必要はない。この定理は $\ZF$ で成り立つ。
+- **部分ネットの定義**：部分列（単調増加な $h$）より緩い定義を使った。部分列だけでは、第一可算でない空間で集積点に収束する部分列がないことがある。
+:::
+:::
+
+::: proposition 第一可算な空間では点列で十分 {#top:sequences-first-countable keywords="in first countable spaces, closure and continuity are determined by sequences" index="点列で十分|てんれつでじゅうぶん"}
+（可算選択公理）$X$ を第一可算とする。
+1. $x\in\overline{A}$ であることと、$A$ の点列で $x$ に収束するものがあることは同値。
+2. $f\colon X\to Y$ が $x$ で連続であることと、$x$ に収束する任意の点列 $x_{n}$ について $f(x_{n})\to f(x)$ となることは同値。
+:::
+
+::: proof
+$x$ の可算な基本近傍系 $\{V_{n}\}$ をとり、$W_{n}\defeq V_{0}\cap\cdots\cap V_{n}$ とおくと、$W_{n}$ は減少する基本近傍系である。
+
+**1.** $x\in\overline{A}$ なら各 $W_{n}\cap A$ から $x_{n}$ を選ぶ（可算選択）。近傍 $N\supseteq W_{m}$ について、$n\ge m$ なら $x_{n}\in W_{n}\subseteq W_{m}\subseteq N$。逆は \ref{top:net-closure} の「⇐」と同じ。
+
+**2.** 「⇒」は \ref{top:net-continuity}。「⇐」：連続でなければ、$f(x)$ の近傍 $N$ で、各 $W_{n}$ について $x_{n}\in W_{n}\setminus f^{-1}[N]$ となるものがある（可算選択）。$x_{n}\to x$ だが $f(x_{n})\notin N$。
+:::
+
+## フィルター {#top:sec-nf-filters}
+
+::: definition フィルターの収束 {#top:filter-convergence keywords="convergence of filters, neighbourhood filter, filter base, cluster point of a filter" index="フィルターの収束|ふぃるたーのしゅうそく, 近傍フィルター|きんぼうふぃるたー, フィルター基|ふぃるたーき"}
+集合 $X$ 上のフィルター $\mathcal{F}$（空集合を含まない）が点 $x$ に**収束する**（$\mathcal{F}\to x$）とは、$\mathcal{N}(x)\subseteq\mathcal{F}$ となることをいう（近傍系 $\mathcal{N}(x)$ はフィルターで、**近傍フィルター**という）。$x$ が $\mathcal{F}$ の**集積点**であるとは、すべての $F\in\mathcal{F}$ について $x\in\overline{F}$ となることをいう。空でない $\mathcal{B}\subseteq\mathcal{P}(X)$ で、$\varnothing\notin\mathcal{B}$ かつ任意の二元が $\mathcal{B}$ の元を共通に含むものを**フィルター基**といい、$\{F:\text{ある }B\in\mathcal{B}\text{ で }B\subseteq F\}$ をそれが生成するフィルターという。
+:::
+
+::: proposition ネットとフィルターの対応 {#top:nets-filters-correspondence keywords="nets and filters give the same convergence" index="ネットとフィルターの対応|ねっととふぃるたーのたいおう"}
+1. ネット $(x_{d})_{d\in D}$ に対し、$\mathcal{F}\defeq\{F:\text{ネットが最終的に }F\text{ に入る}\}$ はフィルター（**付随するフィルター**）で、$x_{d}\to x\iff\mathcal{F}\to x$。
+2. フィルター $\mathcal{F}$ に対し、$D\defeq\{(y,F):y\in F\in\mathcal{F}\}$ に $(y,F)\le(y',F')\iff F\supseteq F'$ を入れた有向集合と、$x_{(y,F)}\defeq y$ によるネットについて、付随するフィルターは $\mathcal{F}$ で、したがって $x_{d}\to x\iff\mathcal{F}\to x$。
+:::
+
+::: proof
+**1.** $X\in\mathcal{F}$。$\varnothing\notin\mathcal{F}$（$D\neq\varnothing$）。上に閉じることは明らか。$F_{1},F_{2}\in\mathcal{F}$ なら、それぞれの $d_{1},d_{2}$ の上界から先はどちらにも入るので $F_{1}\cap F_{2}\in\mathcal{F}$。収束の同値は定義から。
+
+**2.** $D$ は有向（$(y,F),(y',F')$ の上界は $(z,F\cap F')$、$z\in F\cap F'$ は $\varnothing\notin\mathcal{F}$ から存在する。選択は不要：上界の存在を言うだけ）。ネットが最終的に $F_{0}\in\mathcal{F}$ に入ること：$(y,F)\ge(y_{0},F_{0})$ なら $y\in F\subseteq F_{0}$。逆に最終的に $G$ に入るなら、$(y_{0},F_{0})$ から先が $G$ に入り、$F_{0}$ の任意の点 $y$ について $(y,F_{0})\ge(y_{0},F_{0})$ なので $F_{0}\subseteq G$、$G\in\mathcal{F}$。
+:::
+
+::: theorem 超フィルターと集積点 {#top:ultrafilter-cluster keywords="every filter is contained in an ultrafilter; cluster points of a filter are limits of finer ultrafilters; ultrafilters converge to their cluster points" index="超フィルターと集積点|ちょうふぃるたーとしゅうせきてん"}
+1. 超フィルター $\mathcal{U}$ の集積点 $x$ には $\mathcal{U}$ が収束する。
+2. （選択公理）$x$ がフィルター $\mathcal{F}$ の集積点であることと、$\mathcal{F}\subseteq\mathcal{U}$ となる超フィルター $\mathcal{U}$ で $x$ に収束するものがあることは同値である。
+:::
+
+::: proof
+**1.** $N$ を $x$ の開近傍とする。$N\notin\mathcal{U}$ なら、超フィルターなので $N^{c}\in\mathcal{U}$。集積点の定義から $x\in\overline{N^{c}}=N^{c}$（$N^{c}$ は閉）で、$x\in N$ に反する。よって開近傍はすべて $\mathcal{U}$ に属し、フィルターは上に閉じるので $\mathcal{N}(x)\subseteq\mathcal{U}$。
+
+**2.** 「⇐」：$F\in\mathcal{F}\subseteq\mathcal{U}$ と $x$ の近傍 $N\in\mathcal{U}$ について $F\cap N\in\mathcal{U}$ は空でない。よって $x\in\overline{F}$。「⇒」：$\mathcal{F}\cup\mathcal{N}(x)$ は有限交叉性をもつ：$F_{1}\cap\cdots\cap F_{m}\in\mathcal{F}$ と $N_{1}\cap\cdots\cap N_{k}\in\mathcal{N}(x)$ について、$x\in\overline{F_{1}\cap\cdots\cap F_{m}}$ から交わる。超フィルター補題（\ref{model:ultrafilter-lemma}）から、これを含む超フィルター $\mathcal{U}$ がある。$\mathcal{N}(x)\subseteq\mathcal{U}$ なので $\mathcal{U}\to x$。
+:::
+
+::: supplement
+**前提を変えると.**
+- *点列では足りない例.* 順序数 $\omega_{1}+1$ に順序位相を入れると、$\omega_{1}$ は $\omega_{1}$ 未満の順序数の集合の閉包に入るが、$\omega_{1}$ 未満の順序数の点列は $\omega_{1}$ に収束しない（可算集合の上限は $\omega_{1}$ 未満、\ref{set:page-cofinality}）。ネットなら、$(\alpha)_{\alpha<\omega_{1}}$ そのものが $\omega_{1}$ に収束する。
+- *選択公理.* \ref{top:net-closure} の「⇒」は、選択なしでは一般に成り立たない形をしている（ネットの点を選ぶ必要がある）。フィルターで言い換えると、$x\in\overline{A}$ は「$\{N\cap A:N\in\mathcal{N}(x)\}$ がフィルター基である」ことと同値で、こちらは選択を使わない。フィルターがネットより基礎論的に扱いやすいのはこのためである。
+
+**類似の概念.** 一様空間ではコーシーネット・コーシーフィルターが定義でき、完備性を一般化できる。ネットの考え方は、ムーア–スミスの収束論（1922）に由来し、ケリーの教科書で標準になった。フィルターはカルタン（1937）による。
+
+**高い視点から：収束は「近づき方」の構造.** ネットやフィルターは「点に近づく仕方」を記述する。位相空間は、近づき方の全体で決まる：閉集合は「その中から近づける点をすべて含む集合」である（\ref{top:net-closure}）。比喩で言えば、点列は「一歩ずつ近づく」近づき方だけを許し、ネットは「一般の手順書（有向集合）に従う」近づき方を許す。距離空間や第一可算な空間では一歩ずつで足りるが、$\omega_{1}$ のような「長い」空間では、可算の手順では届かない点がある。
+:::
+
+## 問題 {#top:sec-nf-problems}
+
+::: problem {#top:prob-net-unique-limit-fails}
+密着位相の空間では、すべてのネットがすべての点に収束することを示せ。補有限位相の無限集合では、相異なる点からなる点列がすべての点に収束することを示せ。
+:::
+
+::: solution
+密着空間の近傍は全体だけなので、どのネットも最終的に入る。補有限位相で、点 $x$ の近傍 $N$ は補集合が有限なので、相異なる点の列は有限個の点を除いて $N$ に入り、ある番号から先は $N$ に入る。
+:::
+
+::: problem {#top:prob-subsequence-not-enough}
+第一可算な空間で、点 $x$ が点列 $(x_{n})$ の集積点なら、$x$ に収束する部分列があることを示せ。
+:::
+
+::: solution
+減少する基本近傍系 $W_{k}$（\ref{top:sequences-first-countable} の証明）をとる。$n_{0}<n_{1}<\cdots$ を帰納的に、$n_{k}>n_{k-1}$ かつ $x_{n_{k}}\in W_{k}$ となるように選ぶ（集積点なので存在する。最小のものをとれば選択は不要）。近傍 $N\supseteq W_{m}$ について、$k\ge m$ なら $x_{n_{k}}\in W_{k}\subseteq N$。（点 $x$ の可算な基本近傍系を一つ固定するだけなので、選択公理は要らない。）
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

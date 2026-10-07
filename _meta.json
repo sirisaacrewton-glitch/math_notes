@@ -1,0 +1,77 @@
+{
+  "title": "数学ノート",
+  "en": "Math Notes",
+  "description": "数学を分野ごとに体系化したノート。定義・定理・証明にラベルを付け、ページをまたいでワンクリックで参照できます。",
+  "intro": "",
+  "msc": "",
+  "groups": [
+    {
+      "title": "基礎論",
+      "en": "Foundations",
+      "codes": [
+        "03",
+        {
+          "title": "圏論",
+          "en": "Category Theory",
+          "description": "圏・関手・自然変換、構造をもつ圏、トポス。",
+          "codes": [
+            "18A",
+            "18B"
+          ]
+        }
+      ]
+    },
+    {
+      "title": "代数",
+      "en": "Algebra",
+      "codes": [
+        "12",
+        "13",
+        "15",
+        "16",
+        {
+          "title": "ホモロジー代数",
+          "en": "Homological Algebra",
+          "description": "",
+          "codes": [
+            "18G"
+          ]
+        },
+        "20"
+      ]
+    },
+    {
+      "title": "数論",
+      "en": "Number Theory",
+      "codes": [
+        "11"
+      ]
+    },
+    {
+      "title": "解析",
+      "en": "Analysis",
+      "codes": [
+        "26",
+        "28",
+        "30",
+        "34",
+        "35",
+        "42",
+        "46",
+        "60"
+      ]
+    },
+    {
+      "title": "幾何・位相",
+      "en": "Geometry and Topology",
+      "codes": [
+        "14",
+        "22",
+        "53",
+        "54",
+        "55",
+        "58"
+      ]
+    }
+  ]
+}

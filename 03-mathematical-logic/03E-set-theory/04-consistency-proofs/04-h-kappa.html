@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>H(κ)：遺伝的に濃度 κ 未満の集合 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/04-consistency-proofs/04-h-kappa.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# H(κ)：遺伝的に濃度 κ 未満の集合 {#set:page-h-kappa keywords="H(kappa), hereditarily of cardinality less than kappa, hereditarily finite, hereditarily countable, model of ZFC minus power set, strongly inaccessible cardinal, Con(ZFC) implies Con(ZFC + no inaccessible)"}
+
+$\ZFC$ の中で、冪集合公理以外の $\ZFC$ の公理を満たす**集合**のモデルを作る重要な方法を述べる。無限基数 $\kappa$ について、推移閉包の濃度が $\kappa$ 未満である集合全体を $H(\kappa)$ とする。$\kappa$ が非可算な正則基数なら $H(\kappa)$ は $\ZFC-\mathrm{P}$ のモデルであり、さらに $\ZFC$ のモデルになるのは $\kappa$ が強到達不能であるときに限る。応用として、冪集合公理が他の公理から証明できないこと、$\mathrm{Con}(\ZFC)\to\mathrm{Con}(\ZFC+\text{強到達不能基数は存在しない})$ を示す。（Kunen 第 IV 章 §6 に対応する。）
+
+## 記法と定義の確認 {#set:sec-h-kappa-notation}
+
+::: notation
+- 前ページ（\ref{set:page-more-absoluteness}）に従い、**基礎の公理を断りなく仮定する**。したがってすべての集合は $\mathbf{WF}$ に属し、ランク $\rank(x)$（\ref{set:rank}, \ref{set:rank-basic}）がすべての集合について定義される。$R(\alpha)$ は累積階層（\ref{set:cumulative-hierarchy}）で、$R(\alpha+1)=\mathcal{P}(R(\alpha))$。
+- 推移閉包 $\operatorname{trcl}(x)$ とその基本性質（\ref{set:transitive-closure}, \ref{set:transitive-closure-basic}）、推移閉包の元のランク（\ref{set:trcl-rank}）を使う。
+- $\lvert y\rvert<\kappa$ と書くときは、\ref{set:cardinality} の約束どおり「$y$ は整列可能で、その濃度は $\kappa$ 未満」を意味する。したがって $H(\kappa)$ の定義自体には選択公理は要らない。選択公理を使う主張には（AC）と明記する。
+- 正則基数（\ref{set:regular-cardinal}）、強到達不能基数（\ref{set:inaccessible}：$\kappa>\omega$、正則、かつ任意の基数 $\lambda<\kappa$ で $2^{\lambda}<\kappa$）、正則基数は小さい和で尽くせないこと（\ref{set:regular-small-union}）を使う。
+- 相対化 $\varphi^{\mathbf{M}}$、\ref{set:relative-consistency-lemma}、公理ごとの判定法（\ref{set:extensionality-in-transitive}, \ref{set:foundation-in-wf-subclass}, \ref{set:comprehension-in-class}, \ref{set:pairing-union-in-class}, \ref{set:replacement-in-class}, \ref{set:power-set-in-transitive}）は \ref{set:page-relativization}、絶対性と \ref{set:infinity-in-transitive}, \ref{set:well-order-downward} は \ref{set:page-absoluteness}、順序数の絶対性（\ref{set:absolute-ordinals}）は \ref{set:page-more-absoluteness} のとおり。
+- 部分体系の名前（$\ZFC-\mathrm{P}$ など）は \ref{set:zf-subsystems} のとおり。
+- $\mathrm{Si}(\kappa)$ で「$\kappa$ は強到達不能基数である」を表す集合論の論理式を表す。
+:::
+
+## 定義と基本性質 {#set:sec-h-kappa-basic}
+
+::: definition H(κ) {#set:h-kappa keywords="H(kappa), hereditarily of cardinality less than kappa, hereditarily finite sets, hereditarily countable sets" index="H(κ)|えいちかっぱ, 遺伝的に濃度 κ 未満|いでんてきにのうどかっぱみまん, 遺伝的に有限な集合|いでんてきにゆうげんなしゅうごう, 遺伝的に可算な集合|いでんてきにかさんなしゅうごう"}
+無限基数 $\kappa$ に対し
+$$
+H(\kappa)\defeq\{x:\lvert\operatorname{trcl}(x)\rvert<\kappa\}
+$$
+と定める。$H(\kappa)$ の元は**遺伝的に濃度 $\kappa$ 未満**であるという。$H(\omega)$ の元を**遺伝的に有限な集合**、$H(\omega_{1})$ の元を**遺伝的に可算な集合**という。
+:::
+
+::: intuition
+$x\in H(\kappa)$ とは、$x$ 自身だけでなく、$x$ の元、元の元、……と $\in$ を何段たどっても、現れる集合の総数が $\kappa$ 未満であるということである。「$x$ が小さい」だけでは足りない。たとえば $\{\omega_{1}\}$ は元を一つしかもたないが、推移閉包は $\{\omega_{1}\}\cup\omega_{1}$ で非可算なので遺伝的に可算ではない。
+:::
+
+この定義はクラスを定めるが、実は集合である。
+
+::: lemma H(κ) は R(κ) に含まれる {#set:h-kappa-in-r-kappa keywords="H(kappa) is a subset of R(kappa)"}
+任意の無限基数 $\kappa$ について $H(\kappa)\subseteq R(\kappa)$。とくに $H(\kappa)$ は集合である。
+:::
+
+::: proof
+$x\in H(\kappa)$ を固定し、$t\defeq\operatorname{trcl}(x)$、$S\defeq\{\rank(y):y\in t\}$ とおく（置換公理により $S$ は集合で、$S\subseteq\mathbf{ON}$）。
+
+**Step 1（$S$ は順序数）.** $\alpha$ を $S$ に属さない最小の順序数とする（$S$ は集合なので、$S$ に属さない順序数は存在する）。$\alpha$ の最小性から $\alpha\subseteq S$ である。$S\subseteq\alpha$ を示す。そうでないとすると、$\alpha\notin S$ なので $\alpha$ より大きい $S$ の元がある。そのうち最小のものを $\beta$ とし、$\rank(y)=\beta$ となる $y\in t$ をとる。$z\in y$ とすると、$t$ は推移的（\ref{set:transitive-closure-basic} の 2）なので $z\in t$、よって $\rank(z)\in S$。また $\rank(z)<\rank(y)=\beta$（\ref{set:rank-basic} の 2）。$\rank(z)\neq\alpha$（$\alpha\notin S$）で、$\alpha<\rank(z)<\beta$ は $\beta$ の最小性に反するので、$\rank(z)<\alpha$。したがって \ref{set:rank-basic} の 3 より
+$$
+\beta=\rank(y)=\sup\{\rank(z)+1:z\in y\}\le\alpha,
+$$
+これは $\alpha<\beta$ に矛盾する。よって $S=\alpha$。
+
+**Step 2（$\alpha<\kappa$）.** $\lvert t\rvert<\kappa$ なので $t$ は整列可能である。$t$ の整列順序を一つ固定し、各 $\xi\in\alpha=S$ に $\rank(y)=\xi$ となる $y\in t$ のうち最小のものを対応させると、単射 $\alpha\to t$ が得られる（選択公理は使わない）。よって $\lvert\alpha\rvert\le\lvert t\rvert<\kappa$。$\kappa$ は基数なので、もし $\alpha\ge\kappa$ なら $\kappa\subseteq\alpha$ から $\kappa=\lvert\kappa\rvert\le\lvert\alpha\rvert$ となり矛盾する。したがって $\alpha<\kappa$。
+
+**Step 3.** $x\subseteq t$（\ref{set:transitive-closure-basic} の 1）なので、$x$ の各元 $y$ は $\rank(y)<\alpha$ を満たし、\ref{set:rank-basic} の 1 より $y\in R(\alpha)$。よって $x\subseteq R(\alpha)$、すなわち $x\in R(\alpha+1)$ で、$\rank(x)\le\alpha<\kappa$。再び \ref{set:rank-basic} の 1 より $x\in R(\kappa)$。
+:::
+
+::: remark
+Step 1 の $\alpha$ は $\rank(x)$ に等しい：$t$ の元のランクはすべて $\rank(x)$ 未満（\ref{set:trcl-rank}）なので $\alpha=S\subseteq\rank(x)$、逆に Step 3 より $\rank(x)\le\alpha$。すなわち $\rank(x)=\{\rank(y):y\in\operatorname{trcl}(x)\}$。
+:::
+
+::: hypcheck
+- 基礎の公理は、$t$ のすべての元にランクが定義されること（Step 1）で使った。
+- $\kappa$ が基数であることは Step 2 の最後、$\lvert t\rvert<\kappa$（整列可能性を含む）は Step 2 の単射の構成で使った。選択公理は使っていない。
+- $\kappa$ が無限であることはこの証明では使っていない（定義で無限基数に限っているだけである）。
+:::
+
+一般には $H(\kappa)$ は $R(\kappa)$ の真部分集合である。たとえば $\mathcal{P}(\omega)\in R(\omega+2)\subseteq R(\omega_{1})$ だが、$\mathcal{P}(\omega)\subseteq\operatorname{trcl}(\mathcal{P}(\omega))$ は非可算なので $\mathcal{P}(\omega)\notin H(\omega_{1})$。等号が成り立つ場合は次のとおりである。
+
+::: lemma H(κ) = R(κ) となる条件 {#set:h-kappa-eq-r-kappa keywords="H(kappa) = R(kappa) iff kappa = omega or strongly inaccessible"}
+（AC）$\kappa$ を正則基数とする。$H(\kappa)=R(\kappa)$ であるための必要十分条件は、$\kappa=\omega$ であるか $\kappa$ が強到達不能であることである。
+:::
+
+::: proof
+**（$\Leftarrow$）** $\kappa=\omega$ または $\kappa$ が強到達不能とする。まず
+$$
+\forall\alpha<\kappa\;\bigl(\lvert R(\alpha)\rvert<\kappa\bigr)
+$$
+を $\alpha$ に関する帰納法で示す。
+
+- $\kappa=\omega$ のとき：$R(n)$ は有限である（\ref{set:r-n-finite}）。
+- $\kappa$ が強到達不能のとき：$R(0)=\varnothing$。$\alpha+1<\kappa$ で $\mu\defeq\lvert R(\alpha)\rvert<\kappa$ なら、$\lvert R(\alpha+1)\rvert=\lvert\mathcal{P}(R(\alpha))\rvert=2^{\mu}<\kappa$（強到達不能の定義。$\mu$ が有限のときも $2^{\mu}$ は有限で $<\kappa$）。$\alpha<\kappa$ が極限順序数なら $R(\alpha)=\bigcup_{\xi<\alpha}R(\xi)$ で、添字の個数は $\lvert\alpha\rvert<\kappa$、各 $\lvert R(\xi)\rvert<\kappa$ なので、**$\kappa$ の正則性**と \ref{set:regular-small-union}（**AC**）より $\lvert R(\alpha)\rvert<\kappa$。
+
+次に $x\in R(\kappa)$ とし、$\alpha\defeq\rank(x)<\kappa$ とおく。$\operatorname{trcl}(x)$ の元のランクは $\alpha$ 未満（\ref{set:trcl-rank}）なので $\operatorname{trcl}(x)\subseteq R(\alpha)$（\ref{set:rank-basic} の 1）。よって $\lvert\operatorname{trcl}(x)\rvert\le\lvert R(\alpha)\rvert<\kappa$（AC のもとですべての集合は整列可能）で、$x\in H(\kappa)$。以上で $R(\kappa)\subseteq H(\kappa)$、\ref{set:h-kappa-in-r-kappa} と合わせて $H(\kappa)=R(\kappa)$。
+
+**（$\Rightarrow$）** 対偶を示す。$\kappa>\omega$ が正則で強到達不能でないとする。強到達不能の定義の三条件のうち $\kappa>\omega$ と正則性は満たすので、ある基数 $\lambda<\kappa$ で $2^{\lambda}\ge\kappa$ となる。$\lambda$ の元はランクが $\lambda$ 未満（\ref{set:rank-ordinal}：$\rank(\xi)=\xi$）なので $\lambda\subseteq R(\lambda)$、したがって $\lambda$ の任意の部分集合は $R(\lambda)$ の部分集合、すなわち $R(\lambda+1)$ の元である。よって $\mathcal{P}(\lambda)\subseteq R(\lambda+1)$、$\mathcal{P}(\lambda)\in R(\lambda+2)$。$\kappa$ は無限基数なので極限順序数であり（\ref{set:infinite-cardinal-limit}）、$\lambda+2<\kappa$、したがって $\mathcal{P}(\lambda)\in R(\kappa)$。一方 $\mathcal{P}(\lambda)\subseteq\operatorname{trcl}(\mathcal{P}(\lambda))$ より $\lvert\operatorname{trcl}(\mathcal{P}(\lambda))\rvert\ge2^{\lambda}\ge\kappa$ なので $\mathcal{P}(\lambda)\notin H(\kappa)$。よって $H(\kappa)\neq R(\kappa)$。
+:::
+
+::: hypcheck
+- $\kappa$ の正則性は（$\Leftarrow$）の極限段階でのみ使った。（$\Rightarrow$）では正則性は使っていない（仮定の「正則で強到達不能でない」から $2^{\lambda}\ge\kappa$ を取り出すのに使っただけである）。
+- AC は、極限段階の \ref{set:regular-small-union} と、$\operatorname{trcl}(x)$ の整列可能性、$2^{\lambda}$ が意味をもつこと（$\mathcal{P}(\lambda)$ の整列可能性）で使った。
+- 特異基数 $\kappa$ についてはこの補題は述べていない（下の補足を参照）。
+:::
+
+::: lemma H(κ) の基本性質 {#set:h-kappa-basic keywords="H(kappa) is transitive, closed under union, pairing, subsets"}
+任意の無限基数 $\kappa$ について次が成り立つ。
+
+1. $H(\kappa)$ は推移的である。
+2. $H(\kappa)\cap\mathbf{ON}=\kappa$。
+3. $x\in H(\kappa)$ ならば $\bigcup x\in H(\kappa)$。
+4. $x,y\in H(\kappa)$ ならば $\{x,y\}\in H(\kappa)$。
+5. $x\in H(\kappa)$ かつ $y\subseteq x$ ならば $y\in H(\kappa)$。
+6. （AC）$\kappa$ が正則ならば、任意の $x$ について
+$$
+x\in H(\kappa)\iff\bigl(x\subseteq H(\kappa)\land\lvert x\rvert<\kappa\bigr).
+$$
+:::
+
+::: proof
+以下、整列可能な集合の部分集合は整列可能で、濃度は大きくならない（\ref{set:cardinality-basic}）ことを断りなく使う。
+
+**1.** $y\in x\in H(\kappa)$ なら $\operatorname{trcl}(y)\subseteq\operatorname{trcl}(x)$（\ref{set:transitive-closure-basic} の 5）なので $\lvert\operatorname{trcl}(y)\rvert\le\lvert\operatorname{trcl}(x)\rvert<\kappa$。
+
+**2.** 順序数 $\alpha$ は推移的なので $\operatorname{trcl}(\alpha)=\alpha$（\ref{set:transitive-closure-basic} の 4）。よって $\alpha\in H(\kappa)\iff\lvert\alpha\rvert<\kappa$。$\alpha<\kappa$ なら $\lvert\alpha\rvert\le\alpha<\kappa$、$\alpha\ge\kappa$ なら $\lvert\alpha\rvert\ge\lvert\kappa\rvert=\kappa$（$\kappa$ は基数）。したがって $\alpha\in H(\kappa)\iff\alpha<\kappa$。
+
+**3.** $x\subseteq\operatorname{trcl}(x)$ で $\operatorname{trcl}(x)$ は推移的なので、$\bigcup x\subseteq\operatorname{trcl}(x)$。$\operatorname{trcl}(x)$ は $\bigcup x$ を含む推移的集合なので、\ref{set:transitive-closure-basic} の 3 より $\operatorname{trcl}(\bigcup x)\subseteq\operatorname{trcl}(x)$。
+
+**4.** \ref{set:transitive-closure-basic} の 6 より $\operatorname{trcl}(\{x,y\})=\{x,y\}\cup\operatorname{trcl}(x)\cup\operatorname{trcl}(y)$。整列可能な集合 $A,B$ の和 $A\cup B$ は直和 $A\sqcup B$ に単射で埋め込め、直和は整列可能で濃度 $\lvert A\rvert+\lvert B\rvert$（\ref{set:cardinal-sum-product}）をもつ。$\kappa$ 未満の二つの基数の和は、両方有限なら有限（\ref{set:finite-cardinal-arithmetic}）、そうでなければ大きい方に等しい（\ref{set:cardinal-absorption}）ので、いずれにせよ $\kappa$ 未満（$\kappa$ は無限）。これを二回使うと $\lvert\operatorname{trcl}(\{x,y\})\rvert<\kappa$。
+
+**5.** $\operatorname{trcl}(y)\subseteq\operatorname{trcl}(x)$（\ref{set:transitive-closure-basic} の 8）。
+
+**6.** （$\Rightarrow$）1 より $x\subseteq H(\kappa)$、$x\subseteq\operatorname{trcl}(x)$ より $\lvert x\rvert<\kappa$（ここまで AC は不要）。（$\Leftarrow$）$x\subseteq H(\kappa)$, $\lvert x\rvert<\kappa$ とする。\ref{set:transitive-closure-basic} の 6 より
+$$
+\operatorname{trcl}(x)=x\cup\bigcup\{\operatorname{trcl}(y):y\in x\}.
+$$
+右辺は $\lvert x\rvert+1<\kappa$ 個の集合（$x$ と、各 $y\in x$ の $\operatorname{trcl}(y)$）の和で、各集合の濃度は $\kappa$ 未満である。**$\kappa$ の正則性**と \ref{set:regular-small-union}（**AC**）より $\lvert\operatorname{trcl}(x)\rvert<\kappa$。
+:::
+
+::: hypcheck
+- 1〜5 は選択公理も正則性も使わない。4 で $\kappa$ が無限であることを使った（$\kappa$ 未満の二つの基数の和が $\kappa$ 未満）。
+- 6 の（$\Leftarrow$）でのみ AC と正則性を使った。正則性を外すと 6 は偽になりうる（\ref{set:prob-h-kappa-singular}）。
+:::
+
+## H(κ) は ZFC − P のモデル {#set:sec-h-kappa-model}
+
+::: theorem H(κ) は ZFC − P のモデル {#set:h-kappa-zfc-minus-p keywords="H(kappa) is a model of ZFC minus Power Set for regular uncountable kappa" index="H(κ) のモデル|えいちかっぱのもでる"}
+（AC）$\kappa$ を正則基数で $\kappa>\omega$ とする。このとき $\ZFC-\mathrm{P}$ の各公理は $H(\kappa)$ の中で真である。
+:::
+
+::: proof
+\ref{set:zf-subsystems} の公理を一つずつ確かめる。以下 $\mathbf{M}\defeq H(\kappa)$ とし、番号は \ref{set:h-kappa-basic} のものである。
+
+- **公理 0（集合の存在）.** $0\in H(\kappa)$（2）なので $\mathbf{M}\neq\varnothing$。
+- **外延性.** $\mathbf{M}$ は推移的（1）なので \ref{set:extensionality-in-transitive}。
+- **基礎.** 基礎の公理を仮定しているので $\mathbf{M}\subseteq\mathbf{WF}$、\ref{set:foundation-in-wf-subclass}。
+- **分出.** $z,\vec{w}\in\mathbf{M}$ について $\{x\in z:\varphi^{\mathbf{M}}(x,z,\vec{w})\}\subseteq z$ なので、5 よりこれは $\mathbf{M}$ に属する。\ref{set:comprehension-in-class}。
+- **対と和.** 4 と 3（$z=\{x,y\}$, $z=\bigcup x$ をとればよい）。\ref{set:pairing-union-in-class}。
+- **置換.** $A,\vec{w}\in\mathbf{M}$ で $\forall x\in A\,\exists!y\in\mathbf{M}\,\varphi^{\mathbf{M}}(x,y,A,\vec{w})$ とし、$Y\defeq\{y\in\mathbf{M}:\exists x\in A\,\varphi^{\mathbf{M}}(x,y,A,\vec{w})\}$ とおく（$\mathbf{V}$ の置換公理で集合）。$Y$ は $A$ からの全射の像なので $\lvert Y\rvert\le\lvert A\rvert$（\ref{set:surjection-cardinality}、**AC**）で、$\lvert A\rvert\le\lvert\operatorname{trcl}(A)\rvert<\kappa$。$Y\subseteq\mathbf{M}$ なので 6（**正則性**と AC）より $Y\in\mathbf{M}$。\ref{set:replacement-in-class}。
+- **無限.** ここまでで $\mathbf{M}$ は $\ZF-\mathrm{P}-\mathrm{Inf}$ の推移的なモデルである。**$\kappa>\omega$** と 2 より $\omega\in\mathbf{M}$ なので、\ref{set:infinity-in-transitive}。
+- **選択.** 選択公理（\ref{set:ax-choice}）は「すべての集合は整列可能」なので、$\forall A\in\mathbf{M}\,\exists R\in\mathbf{M}\,(R\text{ は }A\text{ を整列する})^{\mathbf{M}}$ を示せばよい。$A\in\mathbf{M}$ とし、$\mathbf{V}$ の AC で $A$ の整列順序 $R\subseteq A\times A$ をとる。$R$ の元 $\langle a,b\rangle=\{\{a\},\{a,b\}\}$（$a,b\in A\subseteq\mathbf{M}$）は 4 を三回使って $\mathbf{M}$ に属するので $R\subseteq\mathbf{M}$。また $\lvert R\rvert\le\lvert A\times A\rvert<\kappa$（$\lvert A\rvert$ が有限なら有限、無限なら \ref{set:kappa-times-kappa} より $\lvert A\rvert$）。6 より $R\in\mathbf{M}$。$\mathbf{M}$ は $\ZF-\mathrm{P}-\mathrm{Inf}$ の推移的なモデルなので \ref{set:well-order-downward} より（$R$ は $A$ を整列する）$^{\mathbf{M}}$。
+:::
+
+::: hypcheck
+- **正則性**は置換公理と選択公理で（\ref{set:h-kappa-basic} の 6 を通して）使った。
+- **$\kappa>\omega$** は無限公理でのみ使った。$\kappa=\omega$ なら $H(\omega)=R(\omega)$（\ref{set:h-kappa-eq-r-kappa}）で、無限公理以外が成り立つことは \ref{set:wf-relativization} で既に示した（この場合は冪集合公理も成り立ち、無限公理は偽）。
+- **AC** は置換（像の濃度評価）、6、選択公理の検証で使った。
+- 冪集合公理は検証していない。それが成り立つかどうかが次の定理である。
+:::
+
+::: theorem 到達不能基数と ZFC のモデル {#set:inaccessible-model keywords="H(kappa) is a model of ZFC iff kappa is strongly inaccessible, R(kappa) model of ZFC" index="到達不能基数と ZFC のモデル|とうたつふのうきすうとぜっとえふしーのもでる"}
+（AC）$\kappa$ を正則基数で $\kappa>\omega$ とする。次の三条件は同値である。
+
+1. 冪集合公理は $H(\kappa)$ の中で真である（したがって \ref{set:h-kappa-zfc-minus-p} と合わせて、$\ZFC$ のすべての公理が $H(\kappa)$ の中で真である）。
+2. $H(\kappa)=R(\kappa)$。
+3. $\kappa$ は強到達不能である。
+
+とくに、$\kappa$ が強到達不能なら $\ZFC$ の各公理 $\varphi$ について $\varphi^{H(\kappa)}$、すなわち $\varphi^{R(\kappa)}$ が成り立つ。
+:::
+
+::: proof
+**2 $\iff$ 3.** $\kappa>\omega$ なので \ref{set:h-kappa-eq-r-kappa} そのものである。
+
+**1 の言い換え.** $\mathbf{M}\defeq H(\kappa)$ は推移的なので、\ref{set:power-set-in-transitive} より、冪集合公理が $\mathbf{M}$ で真であることは
+$$
+\forall x\in\mathbf{M}\;\exists y\in\mathbf{M}\;\bigl(\mathcal{P}(x)\cap\mathbf{M}\subseteq y\bigr)
+$$
+と同値である。$x\in\mathbf{M}$ なら $\mathcal{P}(x)\subseteq\mathbf{M}$（\ref{set:h-kappa-basic} の 5）なので $\mathcal{P}(x)\cap\mathbf{M}=\mathcal{P}(x)$。さらに、$\mathcal{P}(x)\subseteq y\in\mathbf{M}$ なら 5 より $\mathcal{P}(x)\in\mathbf{M}$ であり、逆に $\mathcal{P}(x)\in\mathbf{M}$ なら $y=\mathcal{P}(x)$ ととればよい。したがって
+$$
+\text{1}\iff\forall x\in H(\kappa)\;\bigl(\mathcal{P}(x)\in H(\kappa)\bigr).
+$$
+
+**3 $\Rightarrow$ 1.** 2 より $H(\kappa)=R(\kappa)$ で、$\kappa$ は極限順序数なので $x\in R(\kappa)$ なら $\mathcal{P}(x)\in R(\kappa)$（\ref{set:r-limit-closure}）。
+
+**1 $\Rightarrow$ 3.** 対偶を示す。3 が成り立たなければ、$\kappa>\omega$ が正則であることから、ある基数 $\lambda<\kappa$ で $2^{\lambda}\ge\kappa$ となる。\ref{set:h-kappa-basic} の 2 より $\lambda\in H(\kappa)$。一方 $\mathcal{P}(\lambda)\subseteq\operatorname{trcl}(\mathcal{P}(\lambda))$ より $\lvert\operatorname{trcl}(\mathcal{P}(\lambda))\rvert\ge2^{\lambda}\ge\kappa$、すなわち $\mathcal{P}(\lambda)\notin H(\kappa)$。よって 1 の言い換えが偽になる。
+:::
+
+::: hypcheck
+- 「$\ZFC$ が $H(\kappa)$ の中で真」はメタの理論での無限個の主張（公理ごとの $\varphi^{H(\kappa)}$）であり、一つの論理式ではない。上の定理の 1 は冪集合公理という一つの文についての主張なので、三条件の同値性は $\ZFC$ の一つの定理として述べられている。最後の「とくに」は、公理ごとに $\ZFC\vdash\mathrm{Si}(\kappa)\to\varphi^{H(\kappa)}$ という図式である。
+- 正則性と $\kappa>\omega$ は、\ref{set:h-kappa-eq-r-kappa} と \ref{set:h-kappa-zfc-minus-p} を通して使った。1 の言い換え自体は任意の無限基数で成り立つ。
+:::
+
+\ref{set:h-kappa-zfc-minus-p} と \ref{set:inaccessible-model} から、たとえば $\kappa=\omega_{1}$（正則：\ref{set:successor-regular}。$2^{\omega}\ge\omega_{1}$ なので強到達不能でない）をとると、$H(\omega_{1})$ は $\ZFC-\mathrm{P}$ と冪集合公理の否定を満たす。\ref{set:relative-consistency-lemma} により
+$$
+\mathrm{Con}(\ZFC)\to\mathrm{Con}(\ZFC-\mathrm{P}+\lnot\mathrm{P})
+$$
+であり、冪集合公理は $\ZFC$ の他の公理から証明できない。$H(\omega_{1})$ ではもっと強いことが成り立つ。
+
+::: corollary すべての集合が可算であることの無矛盾性 {#set:con-all-countable keywords="Con(ZFC) implies Con(ZFC minus P + every set is countable), H(omega_1)"}
+$\mathrm{Con}(\ZFC)\to\mathrm{Con}(\ZFC-\mathrm{P}+\forall x\,(x\text{ は可算}))$。
+:::
+
+::: proof
+$\ZFC$ の中で $H(\omega_{1})$ を考える。$\omega_{1}$ は正則（\ref{set:successor-regular}）で $>\omega$ なので、\ref{set:h-kappa-zfc-minus-p} より $\ZFC-\mathrm{P}$ の各公理は $H(\omega_{1})$ で真である。
+
+「$x$ は可算」を「単射 $f\colon x\to\omega$ が存在する」（\ref{set:finite-set}）とする。$x\in H(\omega_{1})$ とすると $\lvert x\rvert\le\lvert\operatorname{trcl}(x)\rvert\le\omega$ なので、単射 $f\colon x\to\omega$ がある。$f\subseteq x\times\omega$ の元は $H(\omega_{1})$ の元の順序対なので $H(\omega_{1})$ に属し（\ref{set:h-kappa-basic} の 1, 2, 4）、$\lvert f\rvert=\lvert x\rvert<\omega_{1}$ なので \ref{set:h-kappa-basic} の 6 より $f\in H(\omega_{1})$。「$f$ は $x$ から $\omega$ への単射」は、$\omega\in H(\omega_{1})$ の絶対性（\ref{set:absolute-ordinals}）と関数・単射の Δ₀ 性（\ref{set:absolute-relations-functions}）により $H(\omega_{1})$ について絶対的なので、（$x$ は可算）$^{H(\omega_{1})}$。よって $(\forall x\,(x\text{ は可算}))^{H(\omega_{1})}$。$H(\omega_{1})\neq\varnothing$ なので \ref{set:relative-consistency-lemma} を適用すればよい。
+:::
+
+## 強到達不能基数の非存在の無矛盾性 {#set:sec-no-inaccessible}
+
+$\kappa$ が強到達不能なら、基数算術の基本的な概念は $H(\kappa)$ について絶対的であることが確かめられる。ここでは次の補題だけを示す。鍵は、$H(\kappa)$ の元の間の関数がすべて $H(\kappa)$ に属することである。
+
+::: lemma 関数は H(κ) に属する {#set:h-kappa-functions keywords="functions between elements of H(kappa) belong to H(kappa)"}
+（AC）$\kappa$ を正則な無限基数とし、$a,b\in H(\kappa)$ とする。このとき任意の関数 $f\colon a\to b$ は $H(\kappa)$ に属する。
+:::
+
+::: proof
+$f$ の元 $\langle u,v\rangle$（$u\in a$, $v\in b$）は、$H(\kappa)$ の推移性と \ref{set:h-kappa-basic} の 4 より $H(\kappa)$ に属する。よって $f\subseteq H(\kappa)$。また $\lvert f\rvert=\lvert a\rvert\le\lvert\operatorname{trcl}(a)\rvert<\kappa$。\ref{set:h-kappa-basic} の 6 より $f\in H(\kappa)$。
+:::
+
+::: lemma 強到達不能性の絶対性 {#set:inaccessible-absolute keywords="being strongly inaccessible is absolute for H(kappa)"}
+（AC）$\kappa$ を強到達不能基数とする。このとき「$\alpha$ は強到達不能基数である」は $H(\kappa)$ について絶対的である。すなわち任意の $\alpha\in H(\kappa)$（つまり $\alpha<\kappa$）について $\mathrm{Si}^{H(\kappa)}(\alpha)\iff\mathrm{Si}(\alpha)$。
+:::
+
+::: proof
+$\mathbf{M}\defeq H(\kappa)$ とする。$\mathbf{M}$ は $\ZFC$ の推移的なモデルである（\ref{set:inaccessible-model}）。以下の論理式に現れる「関数」「全単射」「共終」「順序数」「$\omega$」は Δ₀ 論理式で表され（\ref{set:absolute-relations-functions}, \ref{set:absolute-ordinals}）$\mathbf{M}$ について絶対的である。問題は $\exists f$ という有界でない量化だが、\ref{set:h-kappa-functions} より、$\mathbf{M}$ の元の間の関数はすべて $\mathbf{M}$ に属するので、$\exists f$ を $\exists f\in\mathbf{M}$ に置き換えても真理値は変わらない。これを使って $\alpha<\kappa$ について順に確かめる。
+
+**Step 1（基数であること）.** 「$\alpha$ は基数」$\iff$「$\alpha$ は順序数で、$\forall\beta\in\alpha\,\lnot\exists f\,(f\colon\beta\to\alpha\text{ は全単射})$」。$\beta,\alpha\in\mathbf{M}$ なので上の注意により絶対的。
+
+**Step 2（共終数と正則性）.** $\beta\le\alpha$ について「$\exists f\,(f\colon\beta\to\alpha\text{ は共終})$」は同じ理由で絶対的なので、その最小の $\beta$ である $\cf(\alpha)$（\ref{set:cofinality}）は絶対的：$\cf^{\mathbf{M}}(\alpha)=\cf(\alpha)$。よって「$\alpha$ は正則」（$\alpha$ は極限順序数で $\cf(\alpha)=\alpha$）も絶対的。
+
+**Step 3（$2^{\lambda}<\alpha$）.** 基数 $\lambda<\alpha$ について、$\mathcal{P}(\lambda)^{\mathbf{M}}=\mathcal{P}(\lambda)\cap\mathbf{M}=\mathcal{P}(\lambda)$（\ref{set:power-rank-relativized} の 1 と \ref{set:h-kappa-basic} の 5）で、これは $\mathbf{M}$ の元である（\ref{set:inaccessible-model} の証明の「1 の言い換え」）。「$2^{\lambda}<\alpha$」$\iff$「$\exists\beta\in\alpha\,\exists f\,(f\colon\beta\to\mathcal{P}(\lambda)\text{ は全単射})$」で、$\beta,\mathcal{P}(\lambda)\in\mathbf{M}$ なので上の注意により絶対的。
+
+**Step 4.** $\mathrm{Si}(\alpha)$ は「$\alpha>\omega$、$\alpha$ は正則基数、かつ $\forall\lambda\in\alpha\,(\lambda\text{ は基数}\to2^{\lambda}<\alpha)$」で、有界量化 $\forall\lambda\in\alpha$ と Step 1〜3 の絶対的な論理式の組み合わせなので絶対的（\ref{set:absolute-connectives}, \ref{set:absolute-bounded-quantifier}）。
+:::
+
+::: hypcheck
+- $\kappa$ の正則性は \ref{set:h-kappa-functions} で、強到達不能性は Step 3 で $\mathcal{P}(\lambda)\in\mathbf{M}$ を得るのに使った。
+- $\alpha\in H(\kappa)$ は、Step 1〜3 のパラメータ $\beta,\lambda,\mathcal{P}(\lambda)$ が $\mathbf{M}$ に属することを保証するのに使った。
+:::
+
+とくに $\kappa$ が最小の強到達不能基数なら、$H(\kappa)$ は $\ZFC+\lnot\exists\alpha\,\mathrm{Si}(\alpha)$ のモデルである。ただし $\ZFC$ の中では強到達不能基数の存在を証明できない（次の系による）ので、「最小の強到達不能基数」を $\ZFC$ の中で定義することはできない。次の系はこの点を場合分けで回避する。
+
+::: corollary 強到達不能基数の非存在の無矛盾性 {#set:con-no-inaccessible keywords="Con(ZFC) implies Con(ZFC + there is no strongly inaccessible cardinal)" index="到達不能基数の非存在|とうたつふのうきすうのひそんざい"}
+$\mathrm{Con}(\ZFC)\to\mathrm{Con}(\ZFC+\lnot\exists\alpha\,\mathrm{Si}(\alpha))$。
+:::
+
+::: proof
+クラス $\mathbf{M}$ を
+$$
+\mathbf{M}\defeq\{x:\forall\kappa\,(\mathrm{Si}(\kappa)\to x\in H(\kappa))\}
+$$
+で定める。\ref{set:relative-consistency-lemma}（$T=\ZFC$, $S=\ZFC+\lnot\exists\alpha\,\mathrm{Si}(\alpha)$）を使うため、$\ZFC$ から $\exists x\,\mathbf{M}(x)$ と、$S$ の各文 $\varphi$ について $\varphi^{\mathbf{M}}$ が証明できることを示す。$0$ はすべての $H(\kappa)$ に属するので $\mathbf{M}(0)$。$\varphi\in S$ を固定し、$\ZFC$ の中で場合分けする。
+
+**場合 1：強到達不能基数が存在しない.** このとき $\forall x\,\mathbf{M}(x)$ である。一般に $\forall x\,\mathbf{M}(x)$ のもとでは任意の論理式 $\psi$ について $\psi^{\mathbf{M}}\leftrightarrow\psi$ である（$\psi$ の構成に関する帰納法。量化子の段階で $\exists x\,(\mathbf{M}(x)\land\psi^{\mathbf{M}})\leftrightarrow\exists x\,\psi$）。$\varphi$ は $\ZFC$ の公理か、場合 1 の仮定 $\lnot\exists\alpha\,\mathrm{Si}(\alpha)$ そのものなので $\varphi$ が成り立ち、したがって $\varphi^{\mathbf{M}}$。
+
+**場合 2：強到達不能基数が存在する.** その最小のもの $\kappa_{0}$ をとる。$\kappa\le\kappa'$ なら $H(\kappa)\subseteq H(\kappa')$（定義から明らか）なので、$x\in H(\kappa_{0})$ ならすべての強到達不能基数 $\kappa$ について $x\in H(\kappa)$、すなわち $\mathbf{M}(x)$。逆に $\mathbf{M}(x)$ なら $x\in H(\kappa_{0})$。よって $\forall x\,(\mathbf{M}(x)\leftrightarrow x\in H(\kappa_{0}))$ で、場合 1 と同様の帰納法により $\varphi^{\mathbf{M}}\leftrightarrow\varphi^{H(\kappa_{0})}$。
+
+- $\varphi$ が $\ZFC$ の公理なら、\ref{set:inaccessible-model} より $\varphi^{H(\kappa_{0})}$。
+- $\varphi=\lnot\exists\alpha\,\mathrm{Si}(\alpha)$ なら、$\varphi^{H(\kappa_{0})}$ は $\lnot\exists\alpha\in H(\kappa_{0})\,\mathrm{Si}^{H(\kappa_{0})}(\alpha)$ である。$\alpha\in H(\kappa_{0})$ について、\ref{set:inaccessible-absolute} より $\mathrm{Si}^{H(\kappa_{0})}(\alpha)\iff\mathrm{Si}(\alpha)$。「$\alpha$ は順序数」の絶対性と \ref{set:h-kappa-basic} の 2 より、ここで考える $\alpha$ は $\alpha<\kappa_{0}$ の順序数で、$\kappa_{0}$ の最小性から $\mathrm{Si}(\alpha)$ は偽。よって $\varphi^{H(\kappa_{0})}$。
+
+どちらの場合も $\varphi^{\mathbf{M}}$ が成り立つので、$\ZFC\vdash\varphi^{\mathbf{M}}$。\ref{set:relative-consistency-lemma} より結論を得る。
+:::
+
+::: hypcheck
+- 場合分けは $\ZFC$ の中での排中律による。$\ZFC$ はどちらの場合かを決めないが、どちらの場合でも $\varphi^{\mathbf{M}}$ が証明できるので、$\ZFC\vdash\varphi^{\mathbf{M}}$ となる。
+- 場合 2 で最小の $\kappa_{0}$ がとれるのは、順序数のクラスの空でない部分クラスが最小元をもつからである。
+- この系から、$\ZFC$ が無矛盾なら $\ZFC\nvdash\exists\alpha\,\mathrm{Si}(\alpha)$ も従う（そうでなければ $\ZFC+\lnot\exists\alpha\,\mathrm{Si}(\alpha)$ は矛盾する）。これは \ref{set:inaccessible-unprovable} の強到達不能基数版の証明を与える。
+:::
+
+逆向きの問い、すなわち $\ZFC$ の中で $\ZFC+\exists\kappa\,\mathrm{Si}(\kappa)$ のモデルを作れるか、という問いの答えは否定的である。これは第二不完全性定理と関わり、Kunen 第 IV 章 §10 で論じられる（本サイトでは IV 章の補遺のページで扱う予定）。
+
+## 問題 {#set:sec-h-kappa-problems}
+
+::: problem {#set:prob-h-kappa-singular}
+（AC）$\kappa=\aleph_{\omega}$ とする。$X\defeq\{\omega_{n}:n\in\omega\}$ は $X\subseteq H(\kappa)$ かつ $\lvert X\rvert<\kappa$ を満たすが、$X\notin H(\kappa)$ であることを示せ。すなわち \ref{set:h-kappa-basic} の 6 は正則性を外すと成り立たない。
+:::
+
+::: solution
+各 $\omega_{n}<\aleph_{\omega}$ なので \ref{set:h-kappa-basic} の 2 より $\omega_{n}\in H(\kappa)$、よって $X\subseteq H(\kappa)$。$\lvert X\rvert=\omega<\kappa$。一方 $X\subseteq\operatorname{trcl}(X)$ で $\operatorname{trcl}(X)$ は推移的なので、各 $\omega_{n}\subseteq\operatorname{trcl}(X)$、よって $\aleph_{\omega}=\bigcup_{n}\omega_{n}\subseteq\operatorname{trcl}(X)$ で $\lvert\operatorname{trcl}(X)\rvert\ge\aleph_{\omega}=\kappa$。したがって $X\notin H(\kappa)$。（正則性が効くのは、$\kappa$ 未満の個数の $\kappa$ 未満の集合の和が $\kappa$ 未満になるという点であり、$\cf(\aleph_{\omega})=\omega$ なのでこれが崩れる。）
+:::
+
+::: problem {#set:prob-h-omega-one-no-omega-one}
+$H(\omega_{1})$ の中では非可算な順序数が存在しないこと、すなわち $(\lnot\exists\alpha\,(\alpha\text{ は非可算な順序数}))^{H(\omega_{1})}$ を示せ。また、このことから $H(\omega_{1})$ で冪集合公理が成り立たないことを、\ref{set:inaccessible-model} を使わずに説明せよ。
+:::
+
+::: solution
+前半は \ref{set:con-all-countable} の証明で示した $(\forall x\,(x\text{ は可算}))^{H(\omega_{1})}$ から直ちに従う。後半：もし冪集合公理が $H(\omega_{1})$ で成り立てば、$H(\omega_{1})$ の中で $\mathcal{P}(\omega)^{H(\omega_{1})}$ が存在し、$H(\omega_{1})$ は $\ZFC$ のモデルになる。カントールの定理（\ref{set:cantor}）は $\ZFC$ で証明できるので、$H(\omega_{1})$ の中で $\mathcal{P}(\omega)^{H(\omega_{1})}$ は非可算になる。これは前半（すべての集合が $H(\omega_{1})$ の中で可算）に矛盾する。
+:::
+
+::: problem {#set:prob-h-omega}
+$H(\omega)=R(\omega)$ を、\ref{set:h-kappa-eq-r-kappa} を使わず、選択公理も使わずに直接示せ。
+:::
+
+::: solution
+$H(\omega)\subseteq R(\omega)$ は \ref{set:h-kappa-in-r-kappa}（AC 不要）。逆に $x\in R(\omega)$ なら $\rank(x)=n<\omega$ で、$\operatorname{trcl}(x)\subseteq R(n)$（\ref{set:trcl-rank}, \ref{set:rank-basic} の 1）。$R(n)$ は有限（\ref{set:r-n-finite}。$n$ に関する帰納法で、有限集合の冪集合は有限）なので、その部分集合 $\operatorname{trcl}(x)$ も有限（\ref{set:finite-basic}）であり、有限集合は整列可能なので $\lvert\operatorname{trcl}(x)\rvert<\omega$。有限性の議論に選択公理は要らない。
+:::
+
+::: supplement
+**前提の検討.**
+- \ref{set:h-kappa-in-r-kappa} と \ref{set:h-kappa-basic} の 1〜5 は選択公理なしで成り立つ（$\lvert\cdot\rvert<\kappa$ に整列可能性を含めているため）。選択公理と正則性が本質的に効くのは \ref{set:h-kappa-basic} の 6 であり、そこから置換公理と選択公理の成立が従う。
+- 正則性は外せない（\ref{set:prob-h-kappa-singular}）。特異な $\kappa$ については、$\kappa$ は極限基数なので（後続基数は正則：\ref{set:successor-regular}）、$x\in H(\kappa)$ なら $\mu\defeq\lvert\operatorname{trcl}(x)\rvert$ について $\mu^{+}<\kappa$ で $x\in H(\mu^{+})$ となり、$H(\kappa)=\bigcup_{\mu<\kappa}H(\mu^{+})$ が成り立つ。$H(\kappa)$ が置換公理を満たすかどうかは、本ページでは調べていない（Kunen 第 IV 章の演習 5 が特異な場合を扱っているが、その内容はここでは確認していない）。
+- \ref{set:h-kappa-zfc-minus-p} で $\kappa>\omega$ を $\kappa=\omega$ にすると、無限公理が偽で冪集合公理が真になる（$H(\omega)=R(\omega)$、\ref{set:r-omega-model}）。
+
+**関連する結果.** 強到達不能基数 $\kappa$ に対する $R(\kappa)$ は、圏論や代数幾何で使われる**グロタンディーク宇宙**（推移的で、対・冪集合・「宇宙の元で添字付けられた族の和」について閉じた集合）の典型例であり、空でない非可算なグロタンディーク宇宙はちょうど強到達不能 $\kappa$ に対する $R(\kappa)$ であることが知られている（一般にはこう言われている。本サイトでは証明していない）。また、正則な $\kappa$ に対する $H(\kappa)$ は、後の章で「十分大きな $\theta$ について $H(\theta)$ の初等部分構造をとる」という形で頻繁に使われる（Kunen の後の章による）。
+
+**高い視点から：小さな集合の宇宙.** $H(\kappa)$ は「$\kappa$ より小さい手順でしか作れない集合」の世界である。対や和、部分集合をとる操作は小さなものを小さなまま保つので、$H(\kappa)$ はそれらについて閉じている。正則性は「小さな個数の小さなものを集めても小さい」ことを保証し、置換公理（小さな族の像）が成り立つ。しかし冪集合は「小さなもの」から一度に $2^{\lambda}$ 個の対象を生み出す操作で、$2^{\lambda}$ が $\kappa$ を超えうるなら $H(\kappa)$ を突き破る。強到達不能とは、ちょうどこの最後の操作まで含めて「内側から $\kappa$ に届く手段がない」ということである。圏論で「小さな集合の圏 $\mathbf{Set}$」を扱うためにグロタンディーク宇宙を一つ固定するのは、この閉じた世界を集合論の中に一つ用意することにあたる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

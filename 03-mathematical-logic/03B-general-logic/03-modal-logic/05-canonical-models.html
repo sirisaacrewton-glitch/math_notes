@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>カノニカルモデル | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/03-modal-logic/05-canonical-models.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# カノニカルモデル {#logic:page-canonical-models keywords="canonical model, Lindenbaum lemma for modal logic, Geach axioms, Lemmon-Scott, i,j,m,n convergence, canonical model of GL"}
+
+無矛盾な正規様相論理 $L$ に対して、すべての極大無矛盾集合を世界とする一つのモデル（**カノニカルモデル**）を作ると、そこで妥当な論理式はちょうど $L$ の定理になる。これを使うと、「$\Diamond^{i}\Box^{j}A\to\Box^{m}\Diamond^{n}A$」の形の公理（ギーチの公理）を加えた体系が、対応する**収束条件**をもつフレームについて完全であることが一挙に示せる。$\mathsf{K},\mathsf{K4},\mathsf{T},\mathsf{S4},\mathsf{B},\mathsf{S5}$ はすべてこの形である。一方 $\mathsf{GL}$ のカノニカルモデルは逆整礎でなく、この方法は $\mathsf{GL}$ には使えない。
+
+## 記法と定義の確認 {#logic:sec-canon-notation}
+
+::: notation
+- 正規様相論理・正規性・恒真式による推論は \ref{logic:page-normal-modal-logics}、クリプキモデルと真理・妥当性、$R^{i}$、$\Box^{i},\Diamond^{i}$ の真理（\ref{logic:kripke-abbreviations}）は \ref{logic:page-kripke-semantics}、有限の場合の完全性の議論は \ref{logic:page-modal-completeness} のとおり。
+- $L$ は常に**無矛盾な**（$L\nvdash\bot$）正規様相論理とする。命題変数は可算個なので、様相論理式全体は可算で、$A_{0},A_{1},\dots$ と数え上げられる（選択公理は要らない）。
+:::
+
+## 極大無矛盾集合 {#logic:sec-canon-mcs}
+
+::: definition L-無矛盾と極大 {#logic:canonical-mcs}
+様相論理式の集合 $X$ が **$L$-無矛盾**であるとは、どんな有限部分集合 $Y\subset X$ についても $L\nvdash\neg\bigwedge Y$ となることをいう。$L$-無矛盾で、すべての様相論理式 $A$ について $A\in X$ または $\neg A\in X$ となるものを**極大 $L$-無矛盾集合**という。
+:::
+
+::: lemma リンデンバウムの補題（様相論理） {#logic:modal-lindenbaum}
+1. $X$ が無矛盾なら、$X\cup\{A\}$ と $X\cup\{\neg A\}$ の少なくとも一方は無矛盾である。
+2. 無矛盾な集合は極大無矛盾集合に含まれる。
+3. 極大無矛盾集合 $w$ について、$L\vdash A$ なら $A\in w$。$A_{1},\dots,A_{n}\in w$ かつ $L\vdash A_{1}\wedge\cdots\wedge A_{n}\to B$ なら $B\in w$。$A\in w$ と $\neg A\in w$ のちょうど一方が成り立つ。
+:::
+
+::: proof
+**1.** ともに矛盾するなら、有限の $U,V\subset X$ で $L\vdash\neg(\bigwedge U\wedge A)$, $L\vdash\neg(\bigwedge V\wedge\neg A)$。恒真式により $L\vdash\neg\bigwedge(U\cup V)$ となり、$X$ が矛盾する。
+
+**2.** $S_{0}\defeq X$、$S_{i}\cup\{A_{i}\}$ が無矛盾なら $S_{i+1}\defeq S_{i}\cup\{A_{i}\}$、そうでなければ $S_{i+1}\defeq S_{i}\cup\{\neg A_{i}\}$。1 より帰納法で各 $S_{i}$ は無矛盾。$S\defeq\bigcup_{i}S_{i}$ の有限部分集合はある $S_{i}$ に含まれるので $S$ は無矛盾で、各 $A_{i}$ について $A_{i}$ か $\neg A_{i}$ を含む。
+
+**3.** $L\vdash A$ で $A\notin w$ なら $\neg A\in w$、$L\vdash\neg\neg A$ より $\{\neg A\}$ が矛盾。後半も同様（$\neg B\in w$ と仮定から矛盾する有限部分集合ができる）。最後は無矛盾性と極大性。
+:::
+
+## カノニカルモデル {#logic:sec-canonical-model}
+
+::: definition カノニカルモデル {#logic:canonical-model keywords="canonical model" index="カノニカルモデル|かのにかるもでる"}
+$W_{L}$ を極大 $L$-無矛盾集合全体とし、$wR_{L}x\defeq$「すべての $A$ について $\Box A\in w$ なら $A\in x$」、$V_{L}\defeq\{(w,p):p\in w\}$ とする。$\mathcal{M}_{L}\defeq(W_{L},R_{L},V_{L})$ を $L$ の**カノニカルモデル**という。$W_{L}\neq\varnothing$（$\varnothing$ は無矛盾なので 2 による）。
+:::
+
+::: lemma R_L の双対的な特徴づけ {#logic:canonical-r-dual}
+$wR_{L}x\iff$「すべての $B\in x$ について $\Diamond B\in w$」。
+:::
+
+::: proof
+($\Rightarrow$) $B\in x$ で $\Diamond B\notin w$ なら $\neg\Diamond B\in w$、正規性 10 より $\Box\neg B\in w$、よって $\neg B\in x$ となり矛盾。($\Leftarrow$) $\Box A\in w$ で $A\notin x$ なら $\neg A\in x$、仮定より $\Diamond\neg A\in w$、すなわち $\neg\Box A\in w$（正規性 10）となり矛盾。
+:::
+
+::: lemma 真理補題（カノニカルモデル） {#logic:canonical-truth-lemma}
+すべての $A$ と $w\in W_{L}$ について $A\in w\iff\mathcal{M}_{L},w\models A$。
+:::
+
+::: proof
+$A$ に関する帰納法。$\bot\notin w$、命題変数は $V_{L}$ の定義。含意は、$L\vdash\neg(B\to C)\leftrightarrow B\wedge\neg C$ と極大性から $(B\to C)\in w\iff B\notin w$ または $C\in w$ で、帰納法の仮定による。$\Box B$：$\Box B\in w$, $wR_{L}x$ なら $B\in x$。逆に $\Box B\notin w$ なら $X\defeq\{\neg B\}\cup\{D:\Box D\in w\}$ は無矛盾（矛盾するなら $L\vdash D_{1}\wedge\cdots\wedge D_{n}\to B$、正規性 5 より $\Box B\in w$）で、それを含む $x$ について $wR_{L}x$、$B\notin x$。帰納法の仮定で $\models$ に移す。
+:::
+
+::: theorem カノニカルモデルの基本定理 {#logic:canonical-fundamental}
+$L\vdash A\iff A$ は $\mathcal{M}_{L}$ で妥当。とくに（$L=\mathsf{K}$ として）$\mathsf{K}\vdash A\iff A$ はすべてのモデルで妥当。
+:::
+
+::: proof
+$L\vdash A$ ならすべての $w$ で $A\in w$（\ref{logic:modal-lindenbaum} の 3）。$L\nvdash A$ なら $\{\neg A\}$ は無矛盾で、それを含む $w$ で $A\notin w$。真理補題による。後半の $\Leftarrow$ はこれ、$\Rightarrow$ は健全性（\ref{logic:kripke-k-sound}）。
+:::
+
+::: lemma R_L^i の特徴づけ {#logic:canonical-r-power}
+$wR_{L}^{i}x\iff$「すべての $A$ について $\Box^{i}A\in w$ なら $A\in x$」$\iff$「すべての $B\in x$ について $\Diamond^{i}B\in w$」。
+:::
+
+::: proof
+第二の同値は \ref{logic:canonical-r-dual} と同様。第一を $i$ に関する帰納法で示す。$i=0$ は $w=x$ の場合で、極大無矛盾集合が包含で比較できれば等しいことによる（$w\subset x$ なら、$A\notin w$ で $\neg A\in w\subset x$ なので $A\notin x$）。($\Rightarrow$) $wR_{L}^{i}zR_{L}x$ で $\Box^{i+1}A\in w$ なら、帰納法の仮定より $\Box A\in z$、よって $A\in x$。
+
+($\Leftarrow$) 右辺を仮定し、$Z\defeq\{\Diamond B:B\in x\}\cup\{C:\Box^{i}C\in w\}$ とおく。$Z$ が矛盾するなら、$B\defeq B_{1}\wedge\cdots$（$x$ の有限個の元の連言、$x$ に属する）と $C\defeq C_{1}\wedge\cdots$（$\Box^{i}C\in w$。正規性 4 を $i$ 回使う）で $L\vdash\neg(\Diamond B\wedge C)$（$\Diamond B\to\Diamond B_{k}$ は正規性 6）、すなわち $L\vdash C\to\Box\neg B$。正規性 1 を $i$ 回使って $L\vdash\Box^{i}C\to\Box^{i+1}\neg B$、よって $\Box^{i+1}\neg B\in w$、仮定から $\neg B\in x$ となり矛盾する。$Z\subset z$ となる $z$ をとると、帰納法の仮定より $wR_{L}^{i}z$、\ref{logic:canonical-r-dual} より $zR_{L}x$。
+:::
+
+## 収束条件とギーチの公理 {#logic:sec-convergence}
+
+::: definition 収束条件 {#logic:ijmn-convergent keywords="i,j,m,n-convergence, Geach condition" index="収束条件|しゅうそくじょうけん"}
+自然数 $i,j,m,n$ について、関係 $R$ が **$(i,j,m,n)$-収束的**であるとは、$wR^{i}x$ かつ $wR^{j}y$ なら、$xR^{m}z$ かつ $yR^{n}z$ となる $z$ があることをいう。論理式 $\Diamond^{i}\Box^{m}A\to\Box^{j}\Diamond^{n}A$ を **$(i,j,m,n)$ のギーチの公理**という。
+:::
+
+::: theorem 収束条件の健全性 {#logic:geach-sound}
+$R$ が $(i,j,m,n)$-収束的なら、$\Diamond^{i}\Box^{m}A\to\Box^{j}\Diamond^{n}A$ はそのフレームで妥当である。
+:::
+
+::: proof
+$w\models\Diamond^{i}\Box^{m}A$ とし、$wR^{j}y$ とする。$wR^{i}x$, $x\models\Box^{m}A$ となる $x$ がある（\ref{logic:kripke-abbreviations}）。収束性より $xR^{m}z$, $yR^{n}z$ となる $z$ があり、$z\models A$。よって $y\models\Diamond^{n}A$、$w\models\Box^{j}\Diamond^{n}A$。
+:::
+
+::: theorem カノニカルモデルの収束性 {#logic:geach-canonical}
+$L$ が $(i,j,m,n)$ のギーチの公理（すべての $A$ について）を定理にもつなら、$R_{L}$ は $(i,j,m,n)$-収束的である。
+:::
+
+::: proof
+$wR_{L}^{i}x$, $wR_{L}^{j}y$ とし、$Z\defeq\{A:\Box^{m}A\in x\}\cup\{B:\Box^{n}B\in y\}$ とおく。$Z$ が無矛盾なら、それを含む $z$ について \ref{logic:canonical-r-power} より $xR_{L}^{m}z$, $yR_{L}^{n}z$。$Z$ が矛盾するとし、$A\defeq$（有限個の $A_{k}$ の連言、正規性 4 より $\Box^{m}A\in x$）、$B\defeq$（同様に $\Box^{n}B\in y$）で $L\vdash A\to\neg B$ とする。正規性 1, 6 より $L\vdash\Diamond^{n}A\to\Diamond^{n}\neg B$、正規性 10 より右辺は $\neg\Box^{n}B$ と同値。一方 $\Box^{m}A\in x$ と \ref{logic:canonical-r-power} より $\Diamond^{i}\Box^{m}A\in w$、ギーチの公理より $\Box^{j}\Diamond^{n}A\in w$、再び \ref{logic:canonical-r-power} より $\Diamond^{n}A\in y$、よって $\neg\Box^{n}B\in y$ となり、$\Box^{n}B\in y$ に矛盾する。
+:::
+
+::: theorem ギーチの公理をもつ体系の完全性 {#logic:geach-completeness keywords="Lemmon-Scott theorem, completeness for Geach logics" index="レモン–スコットの定理|れもんすこっとのていり"}
+$\alpha$ を四つ組の集合とし、$\mathsf{K}\alpha$ を $\mathsf{K}$ に $(i,j,m,n)\in\alpha$ のギーチの公理すべてを加えた体系とする。$\mathsf{K}\alpha\vdash A\iff A$ は、すべての $(i,j,m,n)\in\alpha$ について収束的なすべてのモデルで妥当。
+:::
+
+::: proof
+($\Rightarrow$) \ref{logic:geach-sound} と、フレームで妥当な論理式が正規様相論理をなすこと（\ref{logic:kripke-k-sound}）。($\Leftarrow$) \ref{logic:geach-canonical} よりカノニカルモデルが条件を満たすので、そこで $A$ が妥当、\ref{logic:canonical-fundamental} より $\mathsf{K}\alpha\vdash A$。（$\mathsf{K}\alpha$ は無矛盾である：一点で反射的なフレームはすべての収束条件を満たし、$\bot$ はそこで妥当でない。）
+:::
+
+::: proposition 代表的な体系はギーチの形 {#logic:geach-examples}
+1. $R$ が推移的 $\iff(0,2,1,0)$-収束的、反射的 $\iff(0,0,1,0)$-収束的、対称的 $\iff(0,1,0,1)$-収束的、ユークリッド的 $\iff(1,1,0,1)$-収束的。
+2. 対応するギーチの公理は、それぞれ $\Box A\to\Box\Box A$（推移。公理 4）、$\Box A\to A$（反射。公理 $\mathrm{T}$）、$A\to\Box\Diamond A$（対称。公理 $\mathrm{B}$）、$\Diamond A\to\Box\Diamond A$（ユークリッド。公理 5）である。
+3. したがって、$\mathsf{K4},\mathsf{T},\mathsf{S4},\mathsf{B},\mathsf{S5}$ はギーチの公理による体系で、それぞれ推移的・反射的・反射的かつ推移的・反射的かつ対称的・反射的かつユークリッド的なモデル（フレーム）について完全である。
+:::
+
+::: proof
+**1.** 推移的：$(0,2,1,0)$-収束は「$w=x$, $wR^{2}y$ なら $xRz$, $y=z$ となる $z$」、すなわち「$xR^{2}y\Rightarrow xRy$」で推移性。反射的：「$w=x=y$ なら $xRz$, $z=y$」、すなわち $xRx$。対称的：「$w=x$, $wRy$ なら $x=z$, $yRz$」、すなわち $xRy\Rightarrow yRx$。ユークリッド的：「$wRx$, $wRy$ なら $x=z$, $yRz$」、すなわち $yRx$（これはユークリッド性の対称な形）。
+
+**2.** 定義 $\Diamond^{i}\Box^{m}A\to\Box^{j}\Diamond^{n}A$ に代入する（$\Diamond^{0}A=\Box^{0}A=A$）。たとえば $(1,1,0,1)$ では $\Diamond A\to\Box\Diamond A$。
+
+**3.** 1, 2 と \ref{logic:geach-completeness}。$\mathsf{S5}$ は公理 $\mathrm{T}$ と公理 5 による。
+:::
+
+## GL のカノニカルモデル {#logic:sec-gl-canonical}
+
+::: proposition GL のカノニカルモデルは逆整礎でない {#logic:gl-canonical-not-cwf}
+$R_{\mathsf{GL}}$ は推移的だが、逆整礎でない（反射的な点をもつ）。
+:::
+
+::: proof
+**推移性.** $\mathsf{GL}\vdash\Box A\to\Box\Box A$（\ref{logic:gl-four}）はギーチの公理 $(0,2,1,0)$ なので、\ref{logic:geach-canonical} による。
+
+**反射的な点（メローニの議論）.** 算術的解釈 $\ast$ を一つとり（たとえばすべての命題変数に $0=0$）、$w\defeq\{A:\mathcal{N}\models A^{\ast}\}$ とおく（\ref{pt:page-arithmetical-soundness}）。$w$ は $\mathsf{GL}$-無矛盾である：$A_{1},\dots,A_{n}\in w$ で $\mathsf{GL}\vdash\neg(A_{1}\wedge\cdots\wedge A_{n})$ なら、算術的健全性（\ref{pt:gl-arithmetical-soundness}）より $\PA\vdash\neg(A_{1}^{\ast}\wedge\cdots)$、$\mathcal{N}\models\PA$ なので $A_{k}^{\ast}$ のどれかが偽となり矛盾する。$w$ は極大である（$A^{\ast}$ か $\neg A^{\ast}$ が真）。$wR_{\mathsf{GL}}w$：$\Box A\in w$ なら $\mathrm{Bew}(\Godel{A^{\ast}})$ が真で、$\PA\vdash A^{\ast}$、したがって $A^{\ast}$ は真で $A\in w$。反射的な点 $w$ があれば $\{w\}$ に極大元がないので、逆整礎でない。
+:::
+
+::: remark
+したがって $\mathsf{GL}$ の完全性（\ref{logic:completeness-gl}）は、カノニカルモデルからは直接得られない。有限の極大無矛盾集合を使う前ページの構成が必要だった。上の議論が使ったのは、$w$ が $\Box A\to A$ をすべて含む極大無矛盾集合であることだけである（そのような集合 $w$ では $\Box A\in w\Rightarrow A\in w$ なので $wR_{\mathsf{GL}}w$）。
+:::
+
+## 問題 {#logic:sec-canon-problems}
+
+::: problem {#logic:prob-canon-serial}
+関係 $R$ が**継続的**（すべての $w$ に $wRx$ となる $x$ がある）であることは $(0,0,1,1)$-収束性と同値であること、対応するギーチの公理が $\Box A\to\Diamond A$ であることを示し、$\mathsf{KD}\defeq\mathsf{K}\oplus\{\Box A\to\Diamond A\}$ が継続的なモデルについて完全であることを結論せよ。
+:::
+
+::: solution
+$(0,0,1,1)$-収束：$w=x=y$ なら $xRz$ かつ $xRz$ となる $z$、すなわち $\exists z\,xRz$。ギーチの公理は $\Diamond^{0}\Box^{1}A\to\Box^{0}\Diamond^{1}A=\Box A\to\Diamond A$。\ref{logic:geach-completeness} による。
+:::
+
+::: problem {#logic:prob-canon-dense}
+$R$ が**稠密**（$wRy$ なら $wRz$, $zRy$ となる $z$ がある）であることに対応するギーチの公理を求めよ。
+:::
+
+::: solution
+$(0,1,2,0)$-収束：$w=x$, $wRy$ なら $xR^{2}z$, $y=z$、すなわち $wRy\Rightarrow wR^{2}y$ で稠密性。ギーチの公理は $\Box^{2}A\to\Box A$。
+:::
+
+::: supplement
+**高い視点から：カノニカルモデルは「普遍的な」モデル.** カノニカルモデルの世界は「$L$ と両立する可能な完全な状態の記述」すべてであり、あらゆる $L$ のモデルの世界の情報を一つに集めた普遍的な対象である。代数的には、$L$ のリンデンバウム–タルスキ代数（様相代数）の超フィルター全体に、$\Box$ から誘導される関係を入れたもの（ジョンソン–タルスキの双対）にあたり、ストーン双対の様相版である。ギーチの公理のように、フレームの一階の条件に対応する公理で、しかもカノニカルモデルがその条件を満たす（**カノニカル**である）ものについては、この普遍的なモデルが完全性を一挙に与える。レーブの公理は一階で書けない条件（逆整礎性）に対応し、カノニカルでない例になっている。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

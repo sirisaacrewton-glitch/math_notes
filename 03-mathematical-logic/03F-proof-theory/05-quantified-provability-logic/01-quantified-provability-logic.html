@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>量化された証明可能性論理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/05-quantified-provability-logic/01-quantified-provability-logic.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 量化された証明可能性論理 {#pt:page-quantified-provability-logic keywords="quantified modal logic, QML, realization of predicate letters, always provable, always true, Barcan formula, converse Barcan formula, relativized arithmetical hierarchy, oracle, Kleene T predicate, complete sets"}
+
+命題の証明可能性論理では、命題変数に算術の文を割り当てたとき常に証明可能な様相論理式は $\mathsf{GL}$ で、常に真なものは $\mathsf{GLS}$ でちょうど公理化され、どちらも決定可能だった（\ref{pt:page-solovay}, \ref{pt:page-gls-uniform-completeness}）。本系列では、述語記号と量化子をもつ様相論理式（**量化様相論理**）について同じ問いを考え、答えが極端に否定的であることを示す：常に証明可能な文の集合は $\Pi^{0}_{2}$ 完全（ヴァルダニャン）、常に真な文の集合は算術的でない（アルテモフ）。本ページでは、量化様相論理式の算術的な翻訳を定義し、二つの集合の複雑さの**上界**と簡単な例を示す（\ref{pt:qml-upper-bounds}, \ref{pt:barcan}）。あわせて、後のページで使う相対化された算術的階層の事項をまとめる（\ref{pt:relative-hierarchy}）。本系列は Boolos 第 17・18 章に沿うが、証明は自分の言葉で組み立て直す。
+
+## 記法と定義の確認 {#pt:sec-qml-notation}
+
+::: notation
+- 算術の言語 $\mathcal{L}_{\mathrm{ar}}=\{0,S,+,\cdot\}$、$\PA$、標準モデル $\mathcal{N}$、Σ 論理式、証明可能性述語 $\mathrm{Bew}$、自由変数に数項を代入した $\mathrm{Bew}[F]$（\ref{pt:bew-bracket}）とその D1・D2（\ref{pt:bew-bracket-nec}, \ref{pt:bew-bracket-mp}）、形式化された Σ 完全性 $\PA\vdash F\to\mathrm{Bew}[F]$（\ref{pt:formalized-sigma-completeness}）、第二不完全性定理（\ref{pt:godel-second}）、タルスキの定理（\ref{pt:tarski-undefinability}）は不完全性定理の系列のとおり。
+- 変数 $v_{0},v_{1},\dots$ は量化様相論理と算術で共通とする。捕獲を避ける代入 $F\langle t/x\rangle$ と α 同値は \ref{pt:page-alpha-equivalence} のとおり。
+- 神託機械、チューリング還元、算術的階層 $\Sigma_{n},\Pi_{n}$、普遍集合と階層定理は \ref{comp:page-turing-reducibility} のとおり。本系列では、算術的階層を $\Sigma^{0}_{n}$, $\Pi^{0}_{n}$ とも書く。
+- $V\defeq\{\Godel{\sigma}:\sigma\text{ は }\mathcal{L}_{\mathrm{ar}}\text{ の文で }\mathcal{N}\models\sigma\}$（**真理集合**）。
+:::
+
+## 量化様相論理と算術的翻訳 {#pt:sec-qml}
+
+::: definition 量化様相論理式 {#pt:qml keywords="quantified modal logic, QML, predicate letters" index="量化様相論理|りょうかようそうろんり"}
+**述語記号** $\pi$（それぞれ項数 $n\ge1$ をもつ）を可算無限個用意する。**量化様相論理式**（QML の論理式）を次で帰納的に定める：$\bot$、変数 $x_{1},\dots,x_{n}$ と $n$ 項述語記号 $\pi$ による $\pi x_{1}\cdots x_{n}$ は論理式で、$F,G$ が論理式なら $(F\to G)$, $\forall x\,F$, $\Box F$ も論理式。関数記号・定数記号・等号はない。$\neg,\wedge,\vee,\exists,\Diamond$ は通常の略記である。自由変数 $\mathrm{FV}(F)$ は通常どおり（$\Box$ は変数を束縛しない）。
+:::
+
+::: definition 実現と翻訳 {#pt:qml-realization keywords="realization, translation of QML formulas into arithmetic" index="実現（量化様相論理）|じつげんりょうかようそうろんり"}
+1. 述語記号の集合を定義域とする写像 $\ast$ で、各 $n$ 項述語記号 $\pi$ に、自由変数がちょうど $v_{0},\dots,v_{n-1}$ である $\mathcal{L}_{\mathrm{ar}}$ の論理式 $\pi^{\ast}$ を割り当てるものを**実現**という。QML の論理式 $F$ に現れる述語記号をすべて定義域に含むとき、$\ast$ を $F$ の実現という。
+2. $F$ の実現 $\ast$ による**翻訳** $F^{\ast}$ を次で定める。
+   - $(\pi x_{1}\cdots x_{n})^{\ast}\defeq\pi^{\ast}(x_{1},\dots,x_{n})$：$\pi^{\ast}$ の $v_{0},\dots,v_{n-1}$ に $x_{1},\dots,x_{n}$ を同時に捕獲を避けて代入したもの（まず $\pi^{\ast}$ を α 同値で $x_{i}$ を束縛変数に含まない形に取り替えておく）。
+   - $\bot^{\ast}\defeq\bot$, $(F\to G)^{\ast}\defeq(F^{\ast}\to G^{\ast})$, $(\forall x\,F)^{\ast}\defeq\forall x\,(F^{\ast})$。
+   - $(\Box F)^{\ast}\defeq\mathrm{Bew}[F^{\ast}]$。
+3. QML の文 $S$ が**常に証明可能**とは、$S$ のすべての実現 $\ast$ について $\PA\vdash S^{\ast}$ となることをいい、**常に真**とは、すべての実現 $\ast$ について $\mathcal{N}\models S^{\ast}$ となることをいう。
+:::
+
+::: lemma 翻訳の基本性質 {#pt:qml-translation-basic}
+1. $\mathrm{FV}(F^{\ast})=\mathrm{FV}(F)$。
+2. $F^{\ast}$ は、$\ast$ が $F$ に現れる述語記号に割り当てる論理式だけで（α 同値を除いて）決まる。
+3. 常に証明可能な文は常に真である。
+:::
+
+::: proof
+1. $F$ の構成に関する帰納法。原子論理式では、$\pi^{\ast}$ の自由変数 $v_{0},\dots,v_{n-1}$ がちょうど $x_{1},\dots,x_{n}$ に置き換わる。$\Box$ では $\mathrm{FV}(\mathrm{Bew}[G])=\mathrm{FV}(G)$（\ref{pt:bew-bracket}、自由変数に数項を代入する項が残る）。
+2. 帰納法。
+3. $\PA$ の定理は $\mathcal{N}$ で真（$\mathcal{N}\models\PA$, \ref{pt:standard-model}）。
+:::
+
+::: proposition バーカン式とその逆 {#pt:barcan keywords="Barcan formula, converse Barcan formula" index="バーカン式|ばーかんしき"}
+$F$ を 1 項述語記号とする。
+1. **逆バーカン式** $\exists x\,\Box Fx\to\Box\exists x\,Fx$ は常に証明可能である。
+2. **バーカン式** $\Box\exists x\,Fx\to\exists x\,\Box Fx$ は常に真ではない。
+:::
+
+::: proof
+1. 実現 $\ast$ をとり、$G\defeq F^{\ast}(x)$ とする（自由変数 $x$）。$\PA\vdash G\to\exists x\,G$ なので、D1（\ref{pt:bew-bracket-nec}）と D2（\ref{pt:bew-bracket-mp}）より $\PA\vdash\mathrm{Bew}[G]\to\mathrm{Bew}[\exists x\,G]$。$\mathrm{Bew}[\exists x\,G]$ は $x$ を含まないので、述語論理で $\PA\vdash\exists x\,\mathrm{Bew}[G]\to\mathrm{Bew}[\exists x\,G]$。これは逆バーカン式の翻訳である。
+2. $\mathrm{Con}\defeq\neg\mathrm{Bew}(\Godel{\bot})$ とし、
+$$
+F^{\ast}(v_{0})\defeq(v_{0}=0\wedge\mathrm{Con})\vee(v_{0}=S0\wedge\neg\mathrm{Con})
+$$
+とする。$\PA\vdash\exists x\,F^{\ast}(x)$（$\mathrm{Con}$ か $\neg\mathrm{Con}$ のどちらかで $x=0$ か $x=S0$）なので、D1 より $\mathrm{Bew}[\exists x\,F^{\ast}]$ は真。一方、各 $n$ について $\PA\vdash F^{\ast}(\underline{n})$ とすると、$n=0$ なら $\PA\vdash\mathrm{Con}$ で第二不完全性定理に反し、$n=1$ なら $\PA\vdash\neg\mathrm{Con}$ で、$\PA$ の健全性（$\neg\mathrm{Con}$ は偽）に反し、$n\ge2$ なら $\PA\vdash\bot$ に反する。$\mathrm{Bew}[F^{\ast}(x)]$ の $x$ に $n$ を入れた文が真であることは $\PA\vdash F^{\ast}(\underline{n})$ と同値（\ref{pt:bew-correct}）なので、$\exists x\,\mathrm{Bew}[F^{\ast}]$ は偽。よってバーカン式の翻訳は偽である。
+:::
+
+## 相対化された算術的階層 {#pt:sec-relative-hierarchy}
+
+以下では自然数の集合 $A$ を神託とする計算を扱う。神託機械（\ref{comp:oracle-tm}）の計算は有限なので、ゲーデル数で符号化できる。
+
+::: definition 相対化されたクリーネの T 述語 {#pt:relative-t-predicate keywords="relativized Kleene T predicate, computation correct for an oracle" index="クリーネの T 述語（相対化）|くりーねのてぃーじゅつごそうたいか"}
+神託機械の停止する計算（各問い合わせへの答えを含めた時点表示の有限列）の符号を $k$ とする。計算 $k$ が集合 $A$ について**正しい**とは、その中のすべての問い合わせ「$n\in?$」への答えが、$n\in A$ のとき「はい」、そうでないとき「いいえ」であることをいう。$T^{A}(e,\vec{i},k)$ を「$k$ は符号 $e$ の神託機械の入力 $\vec{i}$ の上の停止する計算で、$A$ について正しい」と定める。符号化は、計算 $k$ の中で問い合わせられる数がすべて $k$ より小さくなるように選ぶ（標準的な符号化はこれを満たす）。
+:::
+
+::: lemma T 述語の基本性質 {#pt:relative-t-basic}
+1. $T^{A}$ は $A$ で決定可能（$A$ にチューリング還元可能）である。
+2. 集合 $A,B$ が $k$ 未満で一致する（$m<k$ について $m\in A\iff m\in B$）なら、$T^{A}(e,\vec{i},k)\iff T^{B}(e,\vec{i},k)$。
+3. （クリーネの枚挙定理）$A$ で認識可能な関係 $R$ について、ある $e$ で $R=\{\vec{i}:\exists k\,T^{A}(e,\vec{i},k)\}$。
+:::
+
+::: proof
+1. $k$ が符号 $e$ の機械の入力 $\vec{i}$ の上の停止する計算の符号かどうかは神託なしで決定でき、その中の有限個の問い合わせの答えを神託 $A$ で確かめればよい。
+2. 計算 $k$ の問い合わせはすべて $k$ 未満の数についてなので、$A$ と $B$ で正しさが一致する。
+3. $R$ を認識する神託機械の符号を $e$ とすると、$\vec{i}\in R\iff$ $A$ について正しい受理計算がある。（受理と停止を区別する場合は、拒否するときループするように機械を修正しておく。）
+:::
+
+::: definition 相対化された算術的階層 {#pt:relative-hierarchy keywords="relativized arithmetical hierarchy, Sigma_m in A, Pi_m in A, complete in A" index="相対化された算術的階層|そうたいかされたさんじゅつてきかいそう"}
+集合 $A$ について、関係 $R$ が **$A$ で $\Sigma^{0}_{0}$**（$=$ $\Pi^{0}_{0}$）とは $A$ で決定可能なことをいい、**$A$ で $\Sigma^{0}_{m+1}$** とは $A$ で $\Pi^{0}_{m}$ の関係 $S$ により $R=\{\vec{i}:\exists j\,S(\vec{i},j)\}$ と書けることをいい、**$A$ で $\Pi^{0}_{m+1}$** とは $A$ で $\Sigma^{0}_{m}$ の $S$ により $R=\{\vec{i}:\forall j\,S(\vec{i},j)\}$ と書けることをいう。$A=\N$（または $\varnothing$）のときは \ref{comp:arithmetical-hierarchy} の $\Sigma_{m},\Pi_{m}$ に一致する。
+
+集合 $S$ が **$A$ で $\Pi^{0}_{m}$ 完全**であるとは、$S$ が $A$ で $\Pi^{0}_{m}$ で、$A$ で $\Pi^{0}_{m}$ の任意の集合 $S'$ に対して（神託なしで）計算可能な関数 $f$ で $S'=\{i:f(i)\in S\}$ となるものがあることをいう。$\Sigma^{0}_{m}$ 完全も同様。
+:::
+
+::: theorem 完全な集合の位置 {#pt:complete-not-sigma}
+$m\ge1$ とする。$A$ で $\Pi^{0}_{m}$ 完全な集合は、$A$ で $\Sigma^{0}_{m}$ でない。とくに
+1. $\Pi^{0}_{2}$ 完全な集合は $\Sigma^{0}_{2}$ でなく、したがって $\Sigma^{0}_{1}$（認識可能）でも決定可能でもない。
+2. $V$ で $\Pi^{0}_{1}$ 完全な集合は $V$ で $\Sigma^{0}_{1}$ でなく、したがって $V$ で決定可能でなく、算術的でもない。
+:::
+
+::: proof
+\ref{comp:page-turing-reducibility} の普遍集合（\ref{comp:universal-sigma-n}）と階層定理（\ref{comp:hierarchy-theorem}）の証明は、すべての機械に同じ神託 $A$ を与えても（$T^{A}$ と \ref{pt:relative-t-basic} の 3 を使って）そのまま通り、$A$ で $\Pi^{0}_{m}$ だが $A$ で $\Sigma^{0}_{m}$ でない集合 $D$ が得られる。$S$ が $A$ で $\Pi^{0}_{m}$ 完全なら $D=\{i:f(i)\in S\}$ となる計算可能な $f$ があり、$S$ が $A$ で $\Sigma^{0}_{m}$ なら $D$ も $A$ で $\Sigma^{0}_{m}$ になる（$\Sigma^{0}_{m}$ の定義の決定可能な関係に $f$ を代入しても $A$ で決定可能）。矛盾する。
+
+1 の後半は \ref{comp:hierarchy-basic} の 2（$\Sigma^{0}_{1}\subseteq\Sigma^{0}_{2}$）と \ref{comp:sigma1-recognizable}。2 の後半：算術的な集合 $B$（論理式 $\varphi(x)$ で定義される）は $V$ で決定可能（$n\in B\iff\Godel{\varphi(\underline{n})}\in V$）で、$V$ で決定可能なら $V$ で $\Sigma^{0}_{1}$。
+:::
+
+::: remark 真理集合についての事実 {#pt:truth-set-facts}
+1. $V$ は算術的でない（タルスキの定理、\ref{pt:tarski-undefinability}）。
+2. 各 $r$ について、論理記号の出現が $r$ 個以下の真な文のゲーデル数の集合 $V_{r}$ は算術的である。これは、論理記号の数を制限した文についての真理を、$\Sigma_{n}$ 型の部分的な真理述語で定義できることによる、と一般に言われている（Boolos 第 17 章の注。本サイトでは部分的な真理述語を構成していない）。
+:::
+
+## 上界 {#pt:sec-qml-upper}
+
+::: proposition 二つの集合の複雑さの上界 {#pt:qml-upper-bounds keywords="always provable sentences are Pi_2, always true sentences are Pi_1 in V" index="常に証明可能な文の複雑さ|つねにしょうめいかのうなぶんのふくざつさ"}
+1. 常に証明可能な QML の文のゲーデル数の集合は $\Pi^{0}_{2}$ である。
+2. 常に真な QML の文のゲーデル数の集合は $V$ で $\Pi^{0}_{1}$ である。
+:::
+
+::: proof
+\ref{pt:qml-translation-basic} の 2 より、$S$ に現れる述語記号**だけ**に論理式を割り当てる有限の実現を考えれば十分で、それは数で符号化できる。
+1. $R(i,j,k)\defeq$「$i$ は QML の文 $S$ のゲーデル数で、$j$ が $S$ の述語記号だけに論理式を割り当てる実現 $\ast$ の符号ならば、$k$ は $S^{\ast}$ の $\PA$ での証明の符号である」は決定可能で、$i$ が常に証明可能な文 $\iff\forall j\,\exists k\,R(i,j,k)$。
+2. $U(i,j)\defeq$「$i$ が文 $S$ のゲーデル数で、$j$ が $S$ の実現 $\ast$ の符号ならば、$\Godel{S^{\ast}}\in V$」は $V$ で決定可能（$S^{\ast}$ の計算は神託なしで、真偽の判定を $V$ に問う）。常に真 $\iff\forall j\,U(i,j)$。
+:::
+
+::: hypcheck
+- **有限の実現への制限**：実現は述語記号全体の上の写像で、そのままでは数で表せない。\ref{pt:qml-translation-basic} の 2 により、文に現れる有限個の述語記号の値だけを数で表せばよい。
+- **D1・D2 の自由変数版**：\ref{pt:barcan} の 1 で、自由変数をもつ論理式についての $\mathrm{Bew}[\cdot]$ の性質を使った。
+- **第二不完全性定理と健全性**：\ref{pt:barcan} の 2 で、$\mathrm{Con}$ と $\neg\mathrm{Con}$ がどちらも証明できないことに使った。
+:::
+
+## 問題 {#pt:sec-qml-problems}
+
+::: problem {#pt:prob-qml-box-forall}
+$\Box\forall x\,Fx\to\forall x\,\Box Fx$ は常に証明可能であることを示せ。
+:::
+
+::: solution
+$\PA\vdash\forall x\,G\to G$（$G\defeq F^{\ast}(x)$）より、D1・D2 で $\PA\vdash\mathrm{Bew}[\forall x\,G]\to\mathrm{Bew}[G]$。左辺は $x$ を含まないので一般化して $\PA\vdash\mathrm{Bew}[\forall x\,G]\to\forall x\,\mathrm{Bew}[G]$。
+:::
+
+::: problem {#pt:prob-qml-forall-box}
+$\forall x\,\Box Fx\to\Box\forall x\,Fx$ は常に真ではないことを示せ。（ヒント：$F^{\ast}(v_{0})\defeq\neg\mathrm{Prf}(v_{0},\Godel{\bot})$。）
+:::
+
+::: solution
+各 $n$ について $\neg\mathrm{Prf}(\underline{n},\Godel{\bot})$ は真な Δ 文なので証明可能（Σ 完全性）。よって $\forall x\,\mathrm{Bew}[F^{\ast}]$ は真。一方 $\forall x\,F^{\ast}(x)$ は $\mathrm{Con}$ と同じ（証明 $x$ がないことを全称で述べたもの）で、第二不完全性定理より証明できないので $\mathrm{Bew}[\forall x\,F^{\ast}]$ は偽。
+:::
+
+::: supplement
+**前提の検討.**
+- QML から等号・関数記号を除いたのは Boolos の設定に従ったものである。等号を加えた場合（等号を算術の等号と解釈する）の決定可能な断片は、この系列の後のページで扱う。
+- \ref{pt:qml-upper-bounds} の上界は、後のページで最良であることが示される（ヴァルダニャンの定理とマッギー–ヴァルダニャン–ブーロスの定理）。
+
+**関連する結果.**
+- *QGL.* $\mathsf{GL}$ に一階述語論理を加えた体系の定理は常に証明可能だが、モンターニャ（1984）がこの体系で証明できない常に証明可能な文の例を与え、ヴァルダニャン（1985）の定理によって、常に証明可能な文の集合はそもそも公理化できない（認識可能でない）ことがわかった、と Boolos は述べている。
+- *対照.* 純粋な述語論理の文では、妥当な文、常に証明可能な文、常に真な文の三つのクラスが一致する（ヒルベルト–ベルナイスによるレーヴェンハイム–スコーレムの定理の算術的な精密化による、と言われている）。
+
+**高い視点から：様相が量化子と出会うと.** 命題の場合、算術的解釈の多様さは、$\mathsf{GL}$ という有限の規則の体系ですべて捉えられた。量化子が加わると、述語記号に割り当てる論理式の自由度が、算術の構造（加法と乗法）そのものを QML の中に「模型」として作ることを許してしまう。次のページで見るように、適切な QML の文が「述語記号の解釈が自然数の標準的な模型である」ことを強制でき、そこから QML の問いに算術の真理の全体（アルテモフ）や $\Pi^{0}_{2}$ の全体（ヴァルダニャン）が埋め込まれる。たとえれば、命題論理は「部品の性質」しか語れないが、量化子が加わると「部品で機械を組み立てる設計図」が書けるようになり、設計図の正しさの判定が機械（算術）の難しさを丸ごと引き継ぐ、ということである。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

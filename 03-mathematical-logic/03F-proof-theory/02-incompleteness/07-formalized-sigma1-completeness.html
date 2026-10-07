@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>形式化された Σ 完全性と D3 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/02-incompleteness/07-formalized-sigma1-completeness.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 形式化された Σ 完全性と D3 {#pt:page-formalized-sigma-completeness keywords="formalized Sigma_1 completeness, provable Sigma completeness, derivability condition D3"}
+
+Σ 完全性（\ref{pt:sigma-completeness}）は「真な Σ 文は $\PA$ で証明できる」という外からの主張だった。本ページではこれを $\PA$ の**中で**証明する：任意の Σ 論理式 $F$ について
+$$
+\PA\vdash F\to\mathrm{Bew}[F].
+$$
+これを**形式化された Σ 完全性**という。$\mathrm{Bew}(\Godel{\varphi})$ 自身が Σ 文なので、とくに第三の導出可能性条件 D3：$\PA\vdash\mathrm{Bew}(\Godel{\varphi})\to\mathrm{Bew}(\Godel{\mathrm{Bew}(\Godel{\varphi})})$ が得られる。
+
+証明の方針は、\ref{pt:sigma-upward} の議論を $\PA$ のモデル $\mathcal{M}$ の中の「導出」について行うことである。$\mathcal{M}$ の元（超準的でもよい）に対して、それを数項として代入した文の導出を $\mathcal{M}$ の中で組み立てる。
+
+## 記法と定義の確認 {#pt:sec-fsc-notation}
+
+::: notation
+- 構文の述語と関数、$\mathrm{Bew}$、$\mathrm{Bew}[F]$ は \ref{pt:page-arithmetization}、D1・D2 とその一般の形、導出の連結、閉項の代入についての補題は \ref{pt:page-derivability-d1-d2} のとおり。$\mathrm{ClTm}(t)$ は閉項のコードを表す Δ 論理式。
+- $\mathcal{M}$ は $\PA$ の任意のモデル。論理式 $F$ と $\mathcal{M}$ の割り当て（$F$ の自由変数 $v_{k_{i}}$ に $a_{i}$）について、$F^{\star}\defeq\mathrm{sub}(\cdots\mathrm{sub}(\Godel{F},\Godel{v_{k_{1}}},\mathrm{num}(a_{1}))\cdots,\Godel{v_{k_{m}}},\mathrm{num}(a_{m}))$ と書く。$\mathcal{M}$ の中で $\mathrm{Bew}[F]$ が成り立つことは $\mathrm{Bew}(F^{\star})$ と同じである。項 $t$ についても同様に $t^{\star}$（$\mathrm{subt}$ による）と書く。
+- **標準的な論理式のコードの計算.** $F$ がメタの論理式のとき、$F^{\star}$ を $\mathrm{sub}$ の定義に従って展開する計算は、$F$ の構造に沿った有限回の操作で、どの段階も $\mathcal{M}$ の中の等式として成り立つ。たとえば $(F\to G)^{\star}=\mathrm{imp}(F^{\star},G^{\star})$、$(t=s)^{\star}=\mathrm{eq}(t^{\star},s^{\star})$、$(v_{i})^{\star}=\mathrm{num}(a)$（$v_{i}\mapsto a$）、$S(t)^{\star}=(11,t^{\star})$。以下、この種の計算を断りなく使う（正当化は \ref{pt:closed-term-substitution} と $\mathrm{sub}$ の定義による、$F$ の構造に関するメタの帰納法である）。
+:::
+
+## 内部の代入例 {#pt:sec-internal-instances}
+
+::: lemma 内部の代入例 {#pt:internal-instance keywords="internal instantiation"}
+$\theta$ を、自由変数 $v_{k_{1}},\dots,v_{k_{m}}$ をもつ論理式で $\PA\vdash\theta$ とする。$\mathcal{M}$ の任意の元 $t_{1},\dots,t_{m}$ で $\mathrm{ClTm}(t_{i})$ を満たすものについて、$\theta$ の $v_{k_{i}}$ に $t_{i}$ を代入したコード $\theta[\vec{t}\,]\defeq\mathrm{sub}(\cdots\mathrm{sub}(\Godel{\theta},\Godel{v_{k_{1}}},t_{1})\cdots,\Godel{v_{k_{m}}},t_{m})$ について $\mathcal{M}\models\mathrm{Bew}(\theta[\vec{t}\,])$。
+:::
+
+::: proof
+\ref{pt:bew-bracket-nec} の証明で、$\mathrm{num}(a_{i})$ を $t_{i}$ に置き換えればよい。そこで使ったのは、$\mathrm{num}(a_{i})$ が閉項のコードであること（$\forall$E の条件 $\mathrm{Tm}$, $\mathrm{Sbl}$ と、代入の順序の入れ替え \ref{pt:closed-term-substitution} の 5）だけである。
+:::
+
+::: intuition
+「$\PA$ の定理 $\theta$ の、任意の（超準的でもよい）閉項による代入例は、$\mathcal{M}$ の中で証明可能」ということである。これと D2 の一般の形（\ref{pt:d2}）を組み合わせると、$\mathcal{M}$ の中の「証明可能性」について、$\PA$ の定理を使った推論ができる。たとえば、$\mathrm{Bew}(\mathrm{eq}(p,q))$ と $\mathrm{Bew}(\mathrm{eq}(q,r))$ から、定理 $x=y\to(y=z\to x=z)$ の代入例と D2 を二回使って $\mathrm{Bew}(\mathrm{eq}(p,r))$ が得られる。以下ではこの形の推論を「内部で推論して」と書く。
+:::
+
+## 数項の計算の形式化 {#pt:sec-internal-numerals}
+
+以下、$\mathrm{pl}(x,y)\defeq(13,x,y)$, $\mathrm{tm}(x,y)\defeq(15,x,y)$, $\mathrm{lt}(x,y)\defeq(17,x,y)$（項 $x+y$, $x\cdot y$、論理式 $x<y$ のコードを作る関数）とする。
+
+::: lemma 内部の数項の計算 {#pt:internal-numerals}
+$\mathcal{M}$ の任意の元 $a,b$ について次が成り立つ。
+1. $\mathrm{Bew}(\mathrm{eq}(\mathrm{pl}(\mathrm{num}(a),\mathrm{num}(b)),\mathrm{num}(a+b)))$、$\mathrm{Bew}(\mathrm{eq}(\mathrm{tm}(\mathrm{num}(a),\mathrm{num}(b)),\mathrm{num}(a\cdot b)))$。
+2. $a<b$ なら $\mathrm{Bew}(\mathrm{lt}(\mathrm{num}(a),\mathrm{num}(b)))$、$a\ge b$ なら $\mathrm{Bew}(\mathrm{neg}(\mathrm{lt}(\mathrm{num}(a),\mathrm{num}(b))))$。
+3. $a\neq b$ なら $\mathrm{Bew}(\mathrm{neg}(\mathrm{eq}(\mathrm{num}(a),\mathrm{num}(b))))$。
+:::
+
+::: proof
+**1（和）.** $a$ を固定し $b$ についての帰納法（主張は Σ 論理式で書けるので \ref{pt:model-induction} が使える）。$b=0$：$\mathrm{num}(0)=\Godel{0}$ で、主張は定理 $x+0=x$（$\mathrm{A1}$ から）の $\mathrm{num}(a)$ による内部の代入例である。$b\to b+1$：$\mathrm{num}(b+1)=(11,\mathrm{num}(b))$ は $S(\mathrm{num}(b))$ のコードである。定理 $x+S(y)=S(x+y)$ の代入例から $\mathrm{num}(a)+S(\mathrm{num}(b))=S(\mathrm{num}(a)+\mathrm{num}(b))$ が内部で証明可能。帰納法の仮定と定理 $x=y\to S(x)=S(y)$ の代入例から $S(\mathrm{num}(a)+\mathrm{num}(b))=S(\mathrm{num}(a+b))$ が内部で証明可能で、右辺のコードは $\mathrm{num}(a+b+1)$。推移律で結論を得る。
+
+**1（積）.** 同様に $b$ についての帰納法で、$\mathrm{M1},\mathrm{M2}$ の代入例と和の場合を使う：$\mathrm{num}(a)\cdot S(\mathrm{num}(b))=\mathrm{num}(a)\cdot\mathrm{num}(b)+\mathrm{num}(a)=\mathrm{num}(a\cdot b)+\mathrm{num}(a)=\mathrm{num}(a\cdot b+a)$（二番目の等号は定理 $x=y\to x+z=y+z$ の代入例）。
+
+**2.** $a$ を固定し $b$ についての帰納法で前半を示す。$b=0$ では前件が偽。$a<b+1$ なら $a<b$ か $a=b$。$a=b$ なら定理 $x<S(x)$ の代入例。$a<b$ なら帰納法の仮定と定理 $x<y\to x<S(y)$ の代入例。後半：$a=b$ なら定理 $\neg\,x<x$ の代入例。$b<a$ なら前半で $\mathrm{Bew}(\mathrm{lt}(\mathrm{num}(b),\mathrm{num}(a)))$ で、定理 $y<x\to\neg\,x<y$ の代入例と D2。
+
+**3.** $a<b$ か $b<a$。前者なら 2 と定理 $x<y\to\neg\,x=y$ の代入例、後者も同様（$\neg\,y=x\to\neg\,x=y$ も使う）。
+
+::: hypcheck
+- **$\mathcal{M}$ の中の帰納法**：1, 2 で、$b$ が超準的な元でも主張が成り立つことを保証する。外から $b$ ごとに（メタの帰納法で）示すのでは、標準的な $b$ にしか届かない。
+- 使った「定理」はすべて \ref{pt:pa-order} などで示した $\PA$ の定理、または等号の論理的な性質である。
+:::
+:::
+
+::: lemma 項の値の内部の証明可能性 {#pt:internal-term-value}
+任意の項 $t$ と $\mathcal{M}$ の割り当てについて、$t$ の値を $c$ とすると $\mathcal{M}\models\mathrm{Bew}(\mathrm{eq}(t^{\star},\mathrm{num}(c)))$。
+:::
+
+::: proof
+$t$ に関する（メタの）帰納法。変数 $v_{i}\mapsto a$ なら $t^{\star}=\mathrm{num}(a)$ で、定理 $x=x$ の代入例。$0$ なら $t^{\star}=\Godel{0}=\mathrm{num}(0)$ で同じ。$S(t)$ なら、帰納法の仮定と定理 $x=y\to S(x)=S(y)$ の代入例で、右辺は $\mathrm{num}(c+1)$。$t+s$ なら、帰納法の仮定（値 $c,d$）と定理 $x=x'\to(y=y'\to x+y=x'+y')$ の代入例で $t^{\star}+s^{\star}=\mathrm{num}(c)+\mathrm{num}(d)$ が内部で証明可能、\ref{pt:internal-numerals} の 1 と推移律。$t\cdot s$ も同様。
+:::
+
+## 形式化された Σ 完全性 {#pt:sec-fsc}
+
+::: theorem 形式化された Σ 完全性 {#pt:formalized-sigma-completeness keywords="formalized Sigma completeness, provable Sigma_1 completeness" index="形式化された Σ 完全性|けいしきかされたしぐまかんぜんせい"}
+任意の Σ 論理式 $F$ について、$\PA\vdash F\to\mathrm{Bew}[F]$。
+:::
+
+::: proof
+**Step 1（狭義の Σ への帰着）.** $F$ が Σ なら、狭義の Σ 論理式 $G$ で $\PA\vdash\forall\vec{x}\,(F\leftrightarrow G)$ となるものがある。$\PA\vdash G\to F$ と \ref{pt:bew-bracket-nec} から $\PA\vdash\mathrm{Bew}[G\to F]$、\ref{pt:bew-bracket-mp} から $\PA\vdash\mathrm{Bew}[G]\to\mathrm{Bew}[F]$。よって $G$ について示せば十分である。以下、$\mathcal{M}$ とその割り当てを任意にとり、「$\mathcal{M}\models G$ ならば $\mathcal{M}\models\mathrm{Bew}(G^{\star})$」が**すべての割り当てについて**成り立つ論理式の集合が、狭義の Σ 論理式の生成元を含み、各操作で閉じていることを示す。
+
+**Step 2（原子論理式とその否定）.** $G=(t=s)$ で真なら、値は等しく $c$ とおける。\ref{pt:internal-term-value} と対称律・推移律から $\mathrm{Bew}(\mathrm{eq}(t^{\star},s^{\star}))$、すなわち $\mathrm{Bew}(G^{\star})$。$G=(t<s)$ で真なら値 $c<d$ で、\ref{pt:internal-numerals} の 2 と、定理 $x=x'\to(y=y'\to(x'<y'\to x<y))$ の代入例による。$\neg\,t=s$, $\neg\,t<s$ も、\ref{pt:internal-numerals} の 2, 3 と同様の等号の定理による。$\bot$ は偽、$\neg\bot$ は定理なので \ref{pt:bew-bracket-nec}。
+
+**Step 3（$\wedge,\vee$）.** $G=G_{1}\wedge G_{2}$ が真なら、仮定から $\mathrm{Bew}(G_{1}^{\star})$, $\mathrm{Bew}(G_{2}^{\star})$。定理 $G_{1}\to(G_{2}\to G_{1}\wedge G_{2})$ に \ref{pt:bew-bracket-nec}, \ref{pt:bew-bracket-mp} を使う（$\mathrm{Bew}[\cdot]$ の代入は、各論理式の自由変数についてだけ行われるが、\ref{pt:bew-bracket-mp} の証明の Step 2 のとおり整合する）。$\vee$ は定理 $G_{1}\to G_{1}\vee G_{2}$ などによる。
+
+**Step 4（$\exists x$）.** $G=\exists x\,G_{1}$ が真なら、ある $a$ で割り当てを $x\mapsto a$ に書き換えると $G_{1}$ が真。仮定（書き換えた割り当てについて）から $\mathrm{Bew}[G_{1}]$ がその割り当てで成り立つ。定理 $G_{1}\to\exists x\,G_{1}$ に \ref{pt:bew-bracket-nec}, \ref{pt:bew-bracket-mp} を同じ割り当てで使うと、$\mathrm{Bew}[\exists x\,G_{1}]$ がその割り当てで成り立つ。$\exists x\,G_{1}$ に $x$ は自由に現れないので、これは元の割り当てでの $\mathrm{Bew}(G^{\star})$ と同じである（\ref{pt:closed-term-substitution} の 4）。
+
+**Step 5（有界全称）.** $G=\forall x<t\,G_{1}$（$x\notin\mathrm{var}(t)$）が真とし、$t$ の値を $c$ とする。$G$ にも $G_{1}$ にも現れない変数 $y$ をとり、$B\defeq\forall x<y\,G_{1}$ とおく。$\mathcal{M}$ の元 $n$ に対し、割り当てを $y\mapsto n$ に書き換えたときの $B^{\star}$ を $B^{\star}(n)$ と書く。$n\le c$ についての帰納法で $\mathrm{Bew}(B^{\star}(n))$ を示す（主張は Σ 論理式で書けるので帰納法が使える）。
+- $n=0$：$B[0/y]=\forall x\,(x<0\to G_{1})$ は $\mathrm{O1}$ により $\PA$ の定理で、\ref{pt:bew-bracket-nec} より $\mathrm{Bew}[B[0/y]]$。$\mathrm{num}(0)=\Godel{0}$ なので、これは $\mathrm{Bew}(B^{\star}(0))$ である。
+- $n\to n+1$（$n<c$）：$n<c$ なので、仮定（$x\mapsto n$ に書き換えた割り当て）から $G_{1}$ についての $\mathrm{Bew}$ が成り立つ。定理 $B\to(G_{1}[y/x]\to B[S(y)/y])$（$\mathrm{O2}$ による）に \ref{pt:bew-bracket-nec}, \ref{pt:bew-bracket-mp} を $y\mapsto n$ で使う。$G_{1}[y/x]$ に $y\mapsto n$ を代入したコードは $G_{1}$ に $x\mapsto n$ を代入したコードに等しく（$y$ は $G_{1}$ に現れない。標準的な論理式のコードの計算）、$B[S(y)/y]$ に $y\mapsto n$ を代入したコードは $B^{\star}(n+1)$ に等しい（$(11,\mathrm{num}(n))=\mathrm{num}(n+1)$）。よって $\mathrm{Bew}(B^{\star}(n+1))$。
+
+したがって $\mathrm{Bew}(B^{\star}(c))$。最後に定理 $y=t\to(B\to G)$ に \ref{pt:bew-bracket-nec}, \ref{pt:bew-bracket-mp} を $y\mapsto c$ で使い、\ref{pt:internal-term-value} の $\mathrm{Bew}(\mathrm{eq}(t^{\star},\mathrm{num}(c)))$ と対称律から $\mathrm{Bew}(G^{\star})$。
+
+**Step 6.** 以上により、すべての狭義の Σ 論理式 $G$ と $\PA$ のすべてのモデル・割り当てについて $G\to\mathrm{Bew}[G]$ が成り立つ。完全性定理より $\PA\vdash G\to\mathrm{Bew}[G]$。
+
+::: hypcheck
+- **$\mathcal{M}$ の中の帰納法**：Step 5 と、補題 \ref{pt:internal-numerals}。これが外の Σ 完全性（\ref{pt:sigma-completeness}）との違いで、$\mathcal{M}$ の元 $c$ が超準的でも $\mathrm{Bew}$ を示せる。
+- **狭義の Σ の生成に関する帰納法**：これはメタの帰納法である（$G$ はメタの論理式）。論理式の複雑さについて $\PA$ の中で帰納法をしているのではない。
+- **有界全称の $x\notin\mathrm{var}(t)$**：Step 5 で $t$ の値が $x$ の値によらないこと。
+:::
+:::
+
+::: corollary D3 {#pt:d3 keywords="derivability condition D3"}
+任意の論理式 $\varphi$ について、$\PA\vdash\mathrm{Bew}(\Godel{\varphi})\to\mathrm{Bew}(\Godel{\mathrm{Bew}(\Godel{\varphi})})$。
+:::
+
+::: proof
+$\mathrm{Bew}(\Godel{\varphi})$ は Σ 文（\ref{pt:bew-sigma}）で、文 $F$ については $\mathrm{Bew}[F]=\mathrm{Bew}(\Godel{F})$ である。形式化された Σ 完全性による。
+:::
+
+::: remark
+D1・D2・D3 がそろったので、以後、第二不完全性定理やレーブの定理は、$\mathrm{Bew}$ の定義の詳細に立ち入らず、この三条件と対角化定理だけから導ける（\ref{pt:page-second-incompleteness-lob}）。
+:::
+
+## 問題 {#pt:sec-fsc-problems}
+
+::: problem {#pt:prob-fsc-sentence}
+形式化された Σ 完全性の特別な場合として、任意の Σ 文 $\sigma$ について $\PA\vdash\sigma\to\mathrm{Bew}(\Godel{\sigma})$ となることを確かめ、これと Σ 完全性（外側の定理）との論理的な関係を述べよ。
+:::
+
+::: solution
+文なら $\mathrm{Bew}[\sigma]=\mathrm{Bew}(\Godel{\sigma})$。外側の Σ 完全性「$\mathcal{N}\models\sigma\Rightarrow\PA\vdash\sigma$」は、形式化された版と $\mathcal{N}\models\PA$ から次のように出る：$\mathcal{N}\models\sigma$ なら、$\mathcal{N}\models\sigma\to\mathrm{Bew}(\Godel{\sigma})$ より $\mathcal{N}\models\mathrm{Bew}(\Godel{\sigma})$、\ref{pt:bew-correct} より $\PA\vdash\sigma$。ただし本系列では、形式化された版の証明の中で外側の Σ 完全性（D1 を通じて）を使っているので、これは循環しない別証明ではなく、両者が整合していることの確認である。
+:::
+
+::: problem {#pt:prob-fsc-pi-fails}
+$\PA$ が無矛盾なら、$\neg\mathrm{Bew}(\Godel{\bot})\to\mathrm{Bew}(\Godel{\neg\mathrm{Bew}(\Godel{\bot})})$ は $\PA$ の定理でないことを、第二不完全性定理（\ref{pt:page-second-incompleteness-lob}）を先取りして示し、形式化された Σ 完全性が Π 文には拡張できないことを確かめよ。
+:::
+
+::: solution
+定理だとすると、$\mathrm{Con}\defeq\neg\mathrm{Bew}(\Godel{\bot})$ について $\PA\vdash\mathrm{Con}\to\mathrm{Bew}(\Godel{\mathrm{Con}})$。第二不完全性定理の形式化された形 $\PA\vdash\mathrm{Con}\to\neg\mathrm{Bew}(\Godel{\mathrm{Con}})$ と合わせて $\PA\vdash\neg\mathrm{Con}$、すなわち $\PA\vdash\mathrm{Bew}(\Godel{\bot})$。これは真な Π 文 $\mathrm{Con}$ の否定で、$\PA$ が $\mathcal{N}$ で健全なら起こらない（$\PA$ が単に無矛盾なだけの場合も、この文は $\PA$ で証明できないことが知られているが、それには別の議論が要る）。$\mathrm{Con}$ は Π 文なので、Π 文に対する形式化された完全性は成り立たない。
+:::
+
+::: supplement
+**高い視点から：Σ 完全性の「自己反映」.** 外側の Σ 完全性は「真な Σ 文には証明がある」、形式化された版は「$\PA$ 自身がそのことを知っている」である。これは、計算が停止するなら、その停止の記録（計算の履歴）が有限の対象として存在し、その記録から証明を**機械的に**組み立てられる、ということの反映である。組み立ての手続き自体が $\PA$ の中で記述・検証できるので、「真なら証明可能」が $\PA$ の中で証明される。これに対して、Π 文の真理は「すべての入力で停止しない」という無限の情報を含み、有限の記録で証明を組み立てることができない。D3 は、証明可能性という Σ 性質について、この自己反映が成り立つことを述べている。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

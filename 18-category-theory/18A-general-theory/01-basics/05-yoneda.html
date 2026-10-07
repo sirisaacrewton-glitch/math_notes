@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>普遍射と米田の補題 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/01-basics/05-yoneda.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 普遍射と米田の補題 {#cat:page-yoneda keywords="universal arrow, universal property, universal element, representable functor, representation, Yoneda lemma, Yoneda embedding"}
+
+自由群・商群・直積・テンソル積など、数学の多くの構成は「ある性質をもつものの中で、他のすべてを一意に経由させる最初のもの」として特徴づけられる。これを圏の言葉で述べたのが**普遍射**（\ref{cat:universal-arrow}）であり、普遍射はコンマ圏の始対象である。普遍性を hom 集合の自然な全単射として言い換えると、**表現可能関手**（\ref{cat:representable-functor}）の概念に至る。**米田の補題**（\ref{cat:yoneda-lemma}）は、表現可能関手からの自然変換が、表現する対象の上の一つの元で完全に決まることを述べる。その系として、圏は前層の圏の中に充満忠実に埋め込まれ（**米田埋め込み**、\ref{cat:yoneda-embedding}）、対象は「他の対象からの射のなす関手」によって同型を除いて決まる。
+
+> 資料：Mac Lane, *Categories for the Working Mathematician* 第 III 章 §1–§2。訳語はレンスター『ベーシック圏論』（同書は米田の補題を第 4 章で扱う）。
+
+## 記法と定義の確認 {#cat:sec-yon-notation}
+
+::: notation
+- 関手・自然変換・関手圏 $[\mathbf{C},\mathbf{D}]$・$\operatorname{Nat}(S,T)$・反対圏・反変関手・hom 関手 $\mathbf{C}(a,-)$, $\mathbf{C}(-,b)$・hom 双関手は \ref{cat:page-functors}, \ref{cat:page-constructions} のとおり（\ref{cat:functor}, \ref{cat:natural-transformation}, \ref{cat:functor-category}, \ref{cat:contravariant-functor}）。
+- コンマ圏 $(c\downarrow S)$ と始対象の一意性は \ref{cat:slice-category}, \ref{cat:initial-unique} のとおり。
+- 局所小の圏 $\mathbf{D}$ について、$\mathbf{D}(r,-)\colon\mathbf{D}\to\mathbf{Set}$ は射 $h\colon d\to d'$ を $h\circ-$ に移す共変 hom 関手。$\{*\}$ は一点集合。
+:::
+
+## 普遍射 {#cat:sec-yon-universal}
+
+::: definition 普遍射 {#cat:universal-arrow keywords="universal arrow from an object to a functor, universal arrow from a functor to an object, universal property" index="普遍射|ふへんしゃ, 普遍性|ふへんせい"}
+関手 $S\colon\mathbf{D}\to\mathbf{C}$ と対象 $c\in\mathbf{C}$ について、**$c$ から $S$ への普遍射**とは、組 $(r,u)$（$r\in\mathbf{D}$, $u\colon c\to Sr$）で、任意の $d\in\mathbf{D}$ と $f\colon c\to Sd$ に対し、$Sf'\circ u=f$ となる $f'\colon r\to d$ がちょうど一つあるものをいう。双対的に、**$S$ から $c$ への普遍射**とは、組 $(r,v)$（$v\colon Sr\to c$）で、任意の $f\colon Sd\to c$ に対し $v\circ Sf'=f$ となる $f'\colon d\to r$ がちょうど一つあるものをいう。
+:::
+
+::: intuition
+$c$ から $S$ への射 $f\colon c\to Sd$ を「$c$ を $S$ の像の中に送る方法」と考えると、普遍射 $u$ は、そのような方法すべての「原型」である。どんな $f$ も、$u$ を使ったあと $\mathbf{D}$ の中の射 $f'$ で動かせば得られ、しかも $f'$ は一意である。自由群でいえば、集合 $X$ から群の台集合への写像は、すべて自由群への埋め込みを経由して、一意な準同型で得られる。
+:::
+
+::: proposition 普遍射はコンマ圏の始対象 {#cat:universal-is-initial keywords="universal arrows are initial objects in comma categories; uniqueness up to unique isomorphism" index="普遍射の一意性|ふへんしゃのいちいせい"}
+1. $(r,u)$ が $c$ から $S$ への普遍射であることと、$(r,u)$ がコンマ圏 $(c\downarrow S)$ の始対象であることは同値である。
+2. $(r,u)$, $(r',u')$ がともに $c$ から $S$ への普遍射なら、$Sh\circ u=u'$ となる同型射 $h\colon r\to r'$ がちょうど一つある。
+:::
+
+::: proof
+**1.** $(c\downarrow S)$ の対象は組 $(d,f\colon c\to Sd)$ で、射 $(r,u)\to(d,f)$ は $Sf'\circ u=f$ となる $f'\colon r\to d$（\ref{cat:slice-category}）。始対象であるとは、各 $(d,f)$ にそのような $f'$ がちょうど一つあることで、普遍射の定義そのもの。
+
+**2.** 1 と始対象の一意性（\ref{cat:initial-unique}）から、$(c\downarrow S)$ の同型射 $h\colon(r,u)\to(r',u')$ がちょうど一つある。$(c\downarrow S)$ の射の合成と恒等射は $\mathbf{D}$ のそれなので、$h$ は $\mathbf{D}$ でも同型射。
+:::
+
+::: example
+1. **基底による自由な線形空間.** 体 $K$ と集合 $X$ について、$X$ を基底とする線形空間 $K^{(X)}$（有限個の係数が非零の形式的な一次結合）と、$x$ を基底ベクトル $x$ に移す写像 $j\colon X\to UK^{(X)}$ は、$X$ から忘却関手 $U\colon\mathbf{Vect}_{K}\to\mathbf{Set}$ への普遍射である。任意の写像 $f\colon X\to UW$ は、一次結合への線形な延長 $f'(\sum a_{x}x)=\sum a_{x}f(x)$ で一意に延びる（基底上の値で線形写像が決まる）。
+2. **自由圏・自由モノイド.** \ref{cat:free-category}, \ref{cat:free-monoid} は、それぞれ $G$ から $U\colon\mathbf{Cat}\to\mathbf{Grph}$、$X$ から $U\colon\mathbf{Mon}\to\mathbf{Set}$ への普遍射の存在を述べている。
+3. **商集合.** 同値関係 $E$ をもつ集合 $S$ について、射影 $p\colon S\to S/E$ は、「$E$ を保つ写像」の中で普遍である。すなわち $sEs'\Rightarrow f(s)=f(s')$ を満たす $f\colon S\to X$ は、$f=f'\circ p$ となる $f'\colon S/E\to X$ をちょうど一つもつ（$f'([s])\defeq f(s)$）。下の普遍元の言葉では、$(S/E,p)$ は「$E$ を保つ写像の集合」を対応させる関手の普遍元である。
+4. **商体（射を単射に制限した場合）.** 整域 $D$ の商体 $Q(D)$ と埋め込み $j\colon D\to Q(D)$ は、整域と**単射**準同型の圏への、体の圏からの包含関手についての普遍射である（単射 $D\to K$ は $Q(D)\to K$ に一意に延びる）。射を整域のすべての準同型にすると、$\mathbb{Z}$ からの普遍射は存在しない：$\mathbb{Z}\to\mathbb{F}_{p}$（各素数 $p$）と $\mathbb{Z}\to\mathbb{Q}$ のすべてを経由させる体 $F$ と $u\colon\mathbb{Z}\to F$ があれば、$\mathbb{F}_{p}$ への体の準同型 $F\to\mathbb{F}_{p}$ から $F$ の標数は $p$、$\mathbb{Q}$ への準同型から標数は $0$ となって矛盾する（体の準同型は標数を保つ）。
+5. **積.** 群（集合・位相空間）の直積 $a\times b$ と射影 $p,q$ は、対角関手 $\Delta\colon\mathbf{C}\to\mathbf{C}\times\mathbf{C}$（$\Delta c=(c,c)$）から対象 $(a,b)$ への普遍射 $(a\times b,(p,q))$ である。射 $(f,g)\colon\Delta c\to(a,b)$ が、$p\circ h=f$, $q\circ h=g$ となる $h\colon c\to a\times b$ を一意にもつことが、直積の普遍性である（\ref{cat:product}）。
+:::
+
+::: definition 普遍元 {#cat:universal-element keywords="universal element of a set-valued functor" index="普遍元|ふへんげん"}
+関手 $H\colon\mathbf{D}\to\mathbf{Set}$ の**普遍元**とは、組 $(r,e)$（$r\in\mathbf{D}$, $e\in Hr$）で、任意の $d\in\mathbf{D}$ と $x\in Hd$ に対し、$(Hf)(e)=x$ となる $f\colon r\to d$ がちょうど一つあるものをいう。
+:::
+
+::: proposition 普遍射と普遍元 {#cat:universal-arrow-element keywords="universal elements are universal arrows from a point; universal arrows are universal elements of hom functors" index="普遍射と普遍元の関係|ふへんしゃとふへんげんのかんけい"}
+1. $(r,e)$ が $H\colon\mathbf{D}\to\mathbf{Set}$ の普遍元であることと、$(r,\hat{e})$（$\hat{e}\colon\{*\}\to Hr$, $*\mapsto e$）が $\{*\}$ から $H$ への普遍射であることは同値。
+2. $\mathbf{C}$ が局所小のとき、$(r,u)$ が $c$ から $S\colon\mathbf{D}\to\mathbf{C}$ への普遍射であることと、$(r,u)$ が関手 $\mathbf{C}(c,S-)\colon\mathbf{D}\to\mathbf{Set}$ の普遍元であることは同値。
+:::
+
+::: proof
+**1.** 写像 $\{*\}\to Hd$ と元 $x\in Hd$ は一対一に対応し、$Hf\circ\hat{e}=\hat{x}$ は $(Hf)(e)=x$ と同値。
+
+**2.** $\mathbf{C}(c,S-)$ は $h\colon d\to d'$ を $Sh\circ-$ に移す関手（$S$ と共変 hom 関手の合成）。$(\mathbf{C}(c,Sf'))(u)=Sf'\circ u$ なので、普遍元の条件「$Sf'\circ u=f$ となる $f'$ がちょうど一つ」は普遍射の条件そのもの。
+:::
+
+## 表現可能関手 {#cat:sec-yon-representable}
+
+::: proposition 普遍射の hom 集合による言い換え {#cat:universal-hom-bijection keywords="universal arrows correspond to natural bijections of hom-sets" index="普遍射と hom 集合の全単射|ふへんしゃとほむしゅうごうのぜんたんしゃ"}
+$\mathbf{C},\mathbf{D}$ を局所小とし、$S\colon\mathbf{D}\to\mathbf{C}$, $c\in\mathbf{C}$, $r\in\mathbf{D}$ とする。
+1. $u\colon c\to Sr$ について、$(r,u)$ が普遍射であることと、
+$$
+\varphi_{d}\colon\mathbf{D}(r,d)\to\mathbf{C}(c,Sd),\quad f'\mapsto Sf'\circ u
+$$
+がすべての $d$ で全単射であることは同値で、このとき $\varphi$ は $d$ について自然である。
+2. 逆に、$d$ について自然な全単射の族 $\varphi_{d}\colon\mathbf{D}(r,d)\to\mathbf{C}(c,Sd)$ は、$u\defeq\varphi_{r}(1_{r})$ として 1 の形に書け、$(r,u)$ は普遍射である。
+:::
+
+::: proof
+**1.** 全単射であることは、普遍射の定義（存在と一意性）の言い換え。自然性：$g\colon d\to d'$ について $\varphi_{d'}(g\circ f')=S(g\circ f')\circ u=Sg\circ(Sf'\circ u)=Sg\circ\varphi_{d}(f')$。
+
+**2.** $f'\colon r\to d$ について、$\varphi$ の自然性の四角形（射 $f'$ について）を $1_{r}\in\mathbf{D}(r,r)$ で評価すると
+$$
+\varphi_{d}(f'\circ1_{r})=Sf'\circ\varphi_{r}(1_{r}),
+$$
+すなわち $\varphi_{d}(f')=Sf'\circ u$。$\varphi_{d}$ は全単射なので、1 から $(r,u)$ は普遍射。
+
+::: hypcheck
+- **自然性**：2 で、全単射の族が一つの元 $u$ で決まることに使った。自然でない全単射の族（各 $d$ ごとに勝手に選んだもの）は、普遍射を与えるとは限らない。この「一つの元で決まる」議論を一般の関手に広げたのが、米田の補題である。
+:::
+:::
+
+::: definition 表現可能関手 {#cat:representable-functor keywords="representable functor, representation, representing object" index="表現可能関手|ひょうげんかのうかんしゅ, 表現（関手の）|ひょうげんかんしゅの, 表現対象|ひょうげんたいしょう"}
+$\mathbf{D}$ を局所小とする。関手 $K\colon\mathbf{D}\to\mathbf{Set}$ の**表現**とは、組 $(r,\psi)$（$r\in\mathbf{D}$、$\psi\colon\mathbf{D}(r,-)\Rightarrow K$ は自然同型）をいい、$r$ を**表現対象**という。表現をもつ関手を**表現可能**という。反変関手 $\mathbf{D}^{\mathrm{op}}\to\mathbf{Set}$ の表現も、$\mathbf{D}(-,r)$ からの自然同型として同様に定める。
+:::
+
+::: proposition 表現と普遍元 {#cat:representation-universal-element keywords="representations correspond to universal elements" index="表現と普遍元|ひょうげんとふへんげん"}
+$\mathbf{D}$ を局所小、$K\colon\mathbf{D}\to\mathbf{Set}$ とする。$(r,e)$ が $K$ の普遍元なら、$\psi_{d}(f)\defeq(Kf)(e)$ で定まる $\psi\colon\mathbf{D}(r,-)\Rightarrow K$ は表現である。逆に、すべての表現 $(r,\psi)$ はちょうど一つの普遍元 $(r,e)$（$e=\psi_{r}(1_{r})$）からこの形で得られる。
+:::
+
+::: proof
+普遍元の定義は「各 $\psi_{d}$ が全単射」と同値。自然性：$g\colon d\to d'$ について $\psi_{d'}(g\circ f)=K(g\circ f)(e)=Kg(Kf(e))=Kg(\psi_{d}(f))$。逆に表現 $\psi$ について、自然性を $1_{r}$ で評価すると（\ref{cat:universal-hom-bijection} の 2 と同じ議論で）$\psi_{d}(f)=(Kf)(\psi_{r}(1_{r}))$ となる。$\psi_{d}$ が全単射なので $(r,\psi_{r}(1_{r}))$ は普遍元で、$e$ は $\psi$ から $e=\psi_{r}(1_{r})$ で一意に決まる。
+:::
+
+::: example
+1. 忘却関手 $U\colon\mathbf{Grp}\to\mathbf{Set}$ は、整数の加法群 $\mathbb{Z}$ と元 $1\in U\mathbb{Z}$ で表現される：$\mathbf{Grp}(\mathbb{Z},G)\cong UG$（準同型 $\mathbb{Z}\to G$ は $1$ の行き先で決まる）。
+2. 反変冪集合関手 $\mathcal{P}^{-1}\colon\mathbf{Set}^{\mathrm{op}}\to\mathbf{Set}$（逆像、\ref{cat:contravariant-functor} の例 2）は、$\{0,1\}$ と元 $\{1\}\in\mathcal{P}(\{0,1\})$ で表現される：$\mathbf{Set}(X,\{0,1\})\cong\mathcal{P}(X)$（特性関数 $\chi\mapsto\chi^{-1}[\{1\}]$）。
+3. 忘却関手 $U\colon\mathbf{Top}\to\mathbf{Set}$ は一点空間で表現される。
+:::
+
+## 米田の補題 {#cat:sec-yon-yoneda}
+
+::: theorem 米田の補題 {#cat:yoneda-lemma keywords="Yoneda lemma" index="米田の補題|よねだのほだい"}
+$\mathbf{D}$ を局所小、$K\colon\mathbf{D}\to\mathbf{Set}$ を関手、$r\in\mathbf{D}$ とする。
+$$
+y_{K,r}\colon\operatorname{Nat}(\mathbf{D}(r,-),K)\to Kr,\quad\alpha\mapsto\alpha_{r}(1_{r})
+$$
+は全単射である。逆写像は $x\in Kr$ に、$\alpha^{x}_{d}(f)\defeq(Kf)(x)$ で定まる自然変換 $\alpha^{x}$ を対応させる。さらに $y_{K,r}$ は $K$ と $r$ について自然である。
+:::
+
+::: intuition
+表現可能関手 $\mathbf{D}(r,-)$ は、恒等射 $1_{r}$ という一つの元から「生成」されている：任意の $f\in\mathbf{D}(r,d)$ は $1_{r}$ を $f$ で動かしたもの（$f=f\circ1_{r}$）だからである。自然変換は動かし方と両立するので、生成元 $1_{r}$ の行き先 $\alpha_{r}(1_{r})$ を決めれば全体が決まり、しかも行き先は $Kr$ のどの元でもよい。自由群からの準同型が生成元の行き先で決まるのと同じ構図である。
+:::
+
+::: proof
+**Step 1（$\alpha^{x}$ は自然変換）.** $g\colon d\to d'$ と $f\in\mathbf{D}(r,d)$ について
+$$
+\alpha^{x}_{d'}(g\circ f)=K(g\circ f)(x)=Kg\bigl(Kf(x)\bigr)=Kg\bigl(\alpha^{x}_{d}(f)\bigr).
+$$
+
+**Step 2（$y(\alpha^{x})=x$）.** $\alpha^{x}_{r}(1_{r})=K(1_{r})(x)=x$。
+
+**Step 3（$\alpha^{y(\alpha)}=\alpha$）.** $\alpha$ の自然性を射 $f\colon r\to d$ について書き、$1_{r}$ で評価すると
+$$
+\alpha_{d}(f)=\alpha_{d}(f\circ1_{r})=Kf\bigl(\alpha_{r}(1_{r})\bigr)=\alpha^{y(\alpha)}_{d}(f).
+$$
+Step 2, 3 から、$y_{K,r}$ と $x\mapsto\alpha^{x}$ は互いに逆写像。
+
+**Step 4（$K$ についての自然性）.** 自然変換 $\theta\colon K\Rightarrow K'$ について、$y_{K',r}(\theta\cdot\alpha)=\theta_{r}(\alpha_{r}(1_{r}))=\theta_{r}(y_{K,r}(\alpha))$。左辺の $\theta\cdot\alpha$ は縦の合成（$\operatorname{Nat}(\mathbf{D}(r,-),-)$ の射への作用）である。
+
+**Step 5（$r$ についての自然性）.** 射 $h\colon r\to r'$ は自然変換 $\mathbf{D}(h,-)\colon\mathbf{D}(r',-)\Rightarrow\mathbf{D}(r,-)$（成分は $-\circ h$）を誘導し、$\alpha\mapsto\alpha\cdot\mathbf{D}(h,-)$ が写像 $\operatorname{Nat}(\mathbf{D}(r,-),K)\to\operatorname{Nat}(\mathbf{D}(r',-),K)$ を与える。これと $Kh\colon Kr\to Kr'$ が $y$ と可換であること：
+$$
+\begin{aligned}
+y_{K,r'}(\alpha\cdot\mathbf{D}(h,-))&=\alpha_{r'}(1_{r'}\circ h)=\alpha_{r'}(h\circ1_{r})\\
+&=Kh\bigl(\alpha_{r}(1_{r})\bigr)=Kh\bigl(y_{K,r}(\alpha)\bigr).
+\end{aligned}
+$$
+三つ目の等号は $\alpha$ の射 $h$ についての自然性。
+
+::: hypcheck
+- **局所小**：$\mathbf{D}(r,-)$ が $\mathbf{Set}$ への関手になるために使った。補題の内容（全単射）自体は、hom 集合が小さくなくても成り立つ。
+- **$\operatorname{Nat}(\mathbf{D}(r,-),K)$ の大きさ**：$\mathbf{D}$ が大きいと、関手圏 $[\mathbf{D},\mathbf{Set}]$ は局所小とは限らない（\ref{cat:functor-category-size} の hypcheck）が、米田の補題により、この特定の $\operatorname{Nat}$ は小さい集合 $Kr$ と全単射で、小さい。
+- **使わなかったもの**：$K$ が表現可能であることも、$\mathbf{D}$ が小さいことも使っていない。
+:::
+:::
+
+::: corollary 米田埋め込み {#cat:yoneda-embedding keywords="Yoneda embedding is fully faithful; representing objects are unique up to isomorphism" index="米田埋め込み|よねだうめこみ"}
+$\mathbf{D}$ を局所小とする。
+1. 対象 $r,r'$ について、$h\mapsto\mathbf{D}(h,-)$ は全単射 $\mathbf{D}(r',r)\to\operatorname{Nat}(\mathbf{D}(r,-),\mathbf{D}(r',-))$ である。
+2. $\mathbf{D}$ が小さいとき、$r\mapsto\mathbf{D}(-,r)$, $h\mapsto h\circ-$ で定まる関手 $\mathbf{y}\colon\mathbf{D}\to[\mathbf{D}^{\mathrm{op}},\mathbf{Set}]$（**米田埋め込み**）は充満忠実で、対象について単射である。
+3. $\mathbf{D}(r,-)\cong\mathbf{D}(r',-)$ なら $r\cong r'$。したがって、表現可能関手の表現対象は同型を除いて一意である。
+:::
+
+::: proof
+**1.** 米田の補題を $K=\mathbf{D}(r',-)$ に適用すると、$\operatorname{Nat}(\mathbf{D}(r,-),\mathbf{D}(r',-))\cong\mathbf{D}(r',r)$ で、逆写像は $h\in\mathbf{D}(r',r)$ に $\alpha^{h}_{d}(f)=\mathbf{D}(r',f)(h)=f\circ h$、すなわち $\alpha^{h}=\mathbf{D}(h,-)$ を対応させる。
+
+**2.** 双対：反対圏 $\mathbf{D}^{\mathrm{op}}$ に 1 を適用すると、$h\mapsto h\circ-$ が全単射 $\mathbf{D}(r,r')\to\operatorname{Nat}(\mathbf{D}(-,r),\mathbf{D}(-,r'))$。これが $\mathbf{y}$ の射への作用で、関手性は結合律から。全単射なので充満忠実。$r\neq r'$ なら $\mathbf{D}(-,r)$ と $\mathbf{D}(-,r')$ は（$1_{r}\in\mathbf{D}(r,r)$ が $\mathbf{D}(r,r')$ に属さないので）異なる関手で、対象について単射。
+
+**3.** 自然同型 $\alpha\colon\mathbf{D}(r,-)\Rightarrow\mathbf{D}(r',-)$ と逆 $\beta$ をとり、1 で $\alpha=\mathbf{D}(h,-)$, $\beta=\mathbf{D}(k,-)$（$h\colon r'\to r$, $k\colon r\to r'$）と書く。$\beta\cdot\alpha=\mathbf{D}(h,-)\cdot$ の合成を計算すると $(\beta\cdot\alpha)_{d}(f)=f\circ h\circ k$ なので、$\beta\cdot\alpha=\mathbf{D}(h\circ k,-)$。これが恒等変換 $=\mathbf{D}(1_{r},-)$ なので、1 の単射性から $h\circ k=1_{r}$。同様に $k\circ h=1_{r'}$。
+
+::: hypcheck
+- **2 で $\mathbf{D}$ が小さいこと**：関手圏 $[\mathbf{D}^{\mathrm{op}},\mathbf{Set}]$ を（局所小の）圏として作るために使った（\ref{cat:functor-category-size}）。1 と 3 は局所小だけで成り立つ。
+:::
+:::
+
+::: supplement
+**類似の定理.**
+- *ケイリーの定理.* 群 $G$（対象一つの圏）に米田埋め込みを適用すると、$G$ は $G$ 自身への右作用（右からの積）の同変写像の群と同型になる。$G$ を自分自身の置換群に埋め込むケイリーの定理は、米田の補題の最も単純な場合である。
+- *前層の圏の性質.* 米田埋め込みの像は、前層の圏の中で「表現可能な前層」であり、任意の前層は表現可能な前層の余極限として書ける（稠密性。\ref{cat:colimit} を使う。Mac Lane 第 III 章 §7）。
+
+**一般化.** 米田の補題は、関手 $K$ が $\mathbf{Set}$ 値であることを使った。豊穣圏（hom が集合でなく、モノイダル圏の対象であるような圏）にも、対応する米田の補題がある。
+
+**高い視点から：対象は「どう見えるか」で決まる.** 米田埋め込みは、対象 $r$ を「すべての対象 $d$ から $r$ を見たときの見え方 $\mathbf{D}(d,r)$ の全体」で置き換える。米田の補題の系 3 は、この「見え方」が同型なら対象も同型であることを言う。比喩で言えば、物体の形は、あらゆる方向から当てた光の影の全体で決まる。代数幾何で、図形（スキーム）をそれが表現する関手（「環 $A$ に値をとる点の集合」）と同一視する考え方は、この見方に基づいている。
+:::
+
+## 問題 {#cat:sec-yon-problems}
+
+::: problem {#cat:prob-quotient-group-universal}
+群 $G$ の正規部分群 $N$ について、射影 $p\colon G\to G/N$ が、関手 $H\colon\mathbf{Grp}\to\mathbf{Set}$（$H(G')\defeq\{f\colon G\to G'\text{ 準同型}:f[N]=\{1\}\}$、射には後から合成）の普遍元であることを確かめよ。それを使って、$M\subseteq N$ がともに $G$ の正規部分群のとき $(G/M)/(N/M)\cong G/N$ を、剰余類の計算をせずに示せ。
+:::
+
+::: solution
+**普遍元.** $f\in HG'$ について、$f=f'\circ p$ となる準同型 $f'\colon G/N\to G'$ は $f'(gN)\defeq f(g)$ でちょうど一つ（$f[N]=1$ から代表元によらない）。
+
+**同型.** $q\colon G\to G/M$, $\bar{q}\colon G/M\to(G/M)/(N/M)$ とし、$\pi\defeq\bar{q}\circ q$ とおく。$\pi[N]=1$ で、$\pi$ が $N$ を潰す準同型の中で普遍であることを示せば、\ref{cat:universal-is-initial} の 2（普遍元の一意性）から $(G/M)/(N/M)\cong G/N$。$f\colon G\to G'$ が $f[N]=1$ を満たすとする。$f[M]=1$ なので $q$ の普遍性から $f=f_{1}\circ q$ となる $f_{1}\colon G/M\to G'$ が一意にあり、$f_{1}[N/M]=f[N]=1$ なので $\bar{q}$ の普遍性から $f_{1}=f_{2}\circ\bar{q}$ となる $f_{2}$ が一意にある。$f=f_{2}\circ\pi$ で、一意性も二段の一意性（$q,\bar{q}$ が全射でエピ射）から。
+:::
+
+::: problem {#cat:prob-yoneda-contravariant}
+$\mathbf{D}$ を局所小、$K\colon\mathbf{D}^{\mathrm{op}}\to\mathbf{Set}$ を前層とする。$\operatorname{Nat}(\mathbf{D}(-,r),K)\cong Kr$（$\alpha\mapsto\alpha_{r}(1_{r})$）を、米田の補題を $\mathbf{D}^{\mathrm{op}}$ に適用して導け。
+:::
+
+::: solution
+$\mathbf{D}^{\mathrm{op}}$ も局所小で、$\mathbf{D}^{\mathrm{op}}(r,d)=\mathbf{D}(d,r)$。$\mathbf{D}^{\mathrm{op}}$ の共変 hom 関手 $\mathbf{D}^{\mathrm{op}}(r,-)$ は、$\mathbf{D}^{\mathrm{op}}$ の射 $h^{\mathrm{op}}\colon d\to d'$（$\mathbf{D}$ の $h\colon d'\to d$）を $h^{\mathrm{op}}\circ_{\mathrm{op}}-=-\circ h$ に移すので、反変 hom 関手 $\mathbf{D}(-,r)$ と同じものである。$K$ は $\mathbf{D}^{\mathrm{op}}$ 上の共変関手なので、米田の補題（\ref{cat:yoneda-lemma}）がそのまま適用でき、$\mathbf{D}^{\mathrm{op}}$ での恒等射は $\mathbf{D}$ と同じ $1_{r}$。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

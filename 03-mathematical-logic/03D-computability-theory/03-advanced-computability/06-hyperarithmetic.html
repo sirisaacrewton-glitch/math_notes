@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>超算術的階層とクリーネの定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/03-advanced-computability/06-hyperarithmetic.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 超算術的階層とクリーネの定理 {#comp:page-hyperarithmetic keywords="hyperarithmetical hierarchy, H-sets, transfinite iteration of the jump, Kleene's theorem Delta^1_1 = HYP, effective transfinite recursion"}
+
+算術的階層（\ref{comp:arithmetical-hierarchy}）の各段は、停止問題のジャンプ（\ref{comp:jump}）を有限回重ねた神託 $\varnothing^{(n)}$ で測られる。本ページでは、ジャンプを**計算可能な整列順序に沿って超限回**重ねる。こうして得られる**H 集合**（\ref{comp:h-set}）に計算可能な集合を**超算術的**という（\ref{comp:hyperarithmetic}）。主定理は**クリーネの定理**である：超算術的集合はちょうど $\Delta^{1}_{1}$ 集合である（\ref{comp:kleene-hyp-theorem}）。「⊆」は H 集合の存在と一意性から直ちに出る。「⊇」は、前々ページの層別（\ref{comp:delta11-criterion}）で $\Delta^{1}_{1}$ 集合の木の深さを計算可能な $\alpha$ 未満に押さえ、深さ $\alpha$ 未満であることを、整列順序に沿ったジャンプの塔で一段ずつ判定することで示す。その判定を一つのプログラムにまとめるのに、再帰定理（\ref{comp:second-recursion-theorem}）を使う（**実効的超限再帰**）。
+
+> 資料：新井敏康『数学基礎論』第 6 章 §6.5 の後半（定義 6.5.33 以降の超算術的集合とクリーネの定理）。新井の本は超算術的集合のコードを帰納的に定義しているが、本ページでは整列順序に沿った H 集合で定義し、証明も前ページまでの木の深さに合わせて自分で組み立てた。クリーネの順序数表記 $\mathcal{O}$ による標準的な定義との関係は補足に書く。
+
+## 記法と定義の確認 {#comp:sec-hy-notation}
+
+::: notation
+- 神託機械、チューリング還元 $\le_{\mathrm{T}}$、ジャンプ $B'$ は \ref{comp:oracle-tm}, \ref{comp:jump}, \ref{comp:jump-properties} のとおり。神託機械 $M$ を符号で表し、$M^{B}$ が入力 $w$ を受理することを $M^{B}(w)\downarrow$ と書く。$B'=\{\langle M,w\rangle:M^{B}(w)\downarrow\}$。
+- 指数 $\varphi_{e}$、s-m-n 定理、クリーネの再帰定理は \ref{comp:index}, \ref{comp:smn}, \ref{comp:second-recursion-theorem} のとおり。
+- 計算可能な整列順序 $(D,\prec)$、その順序同型 $o:D\to\operatorname{otp}(D,\prec)$ は \ref{comp:computable-well-order} のとおり。計算可能順序数と $\omega_{1}^{\mathrm{CK}}$ は \ref{comp:computable-ordinal}, \ref{comp:computable-ordinal-wo}。
+- 木 $T$ と $s\in T$ について $T_{s}=\{t:s^{\frown}t\in T\}$（\ref{comp:tree-rank-basic} の 4）。$T_{s}$ が整礎なら $\lvert T_{s}\rvert=\sup\{\lvert T_{s^{\frown}\langle m\rangle}\rvert+1:s^{\frown}\langle m\rangle\in T\}$（ランクの定義と同補題の 4 から）。
+- 集合 $X\subseteq\N$ と $b$ について、$X^{[b]}\defeq\{u:\langle b,u\rangle\in X\}$（$b$ 列）、整列順序 $(D,\prec)$ と $b\in D$ について $X^{[\prec b]}\defeq\{\langle c,u\rangle\in X:c\prec b\}$（$b$ より前の列をまとめたもの）。
+- 集合 $B$ は特性関数 $\chi_{B}$ と同一視し、関数を引数にもつ関係（\ref{comp:computable-functional-relation}）の引数に置く。メタレベルは $\ZF$ に可算選択公理を加えて議論する。
+:::
+
+## H 集合 {#comp:sec-hy-h-sets}
+
+::: definition H 集合 {#comp:h-set keywords="H-set along a computable well-ordering, transfinite iteration of the jump" index="H 集合|えいちしゅうごう, ジャンプの超限反復|じゃんぷのちょうげんはんぷく"}
+$(D,\prec)$ を計算可能な整列順序とする。集合 $H\subseteq\N$ が **$(D,\prec)$ に沿った H 集合**であるとは、次の二つが成り立つことをいう。
+1. $H$ の元はすべて $\langle b,u\rangle$（$b\in D$）の形である。
+2. すべての $b\in D$ について $H^{[b]}=\bigl(H^{[\prec b]}\bigr)'$。
+:::
+
+::: intuition
+$H$ の $b$ 列は、それより前のすべての列をまとめたものについての停止問題である。$D=\{0,1,\dots,n-1\}$（通常の順序）なら、$H^{[0]}=\varnothing'$、$H^{[1]}=(\{0\}\times\varnothing')'$ で、以下 $\varnothing^{(k+1)}$ と同じ次数の集合が並ぶ（問題 \ref{comp:prob-arithmetical-hyp}）。順序が無限になると、$\omega$ 番目の列は「すべての $\varnothing^{(n)}$ をまとめたもの」のジャンプになり、算術的階層を超える。
+:::
+
+::: lemma H 集合の存在と一意性 {#comp:h-set-unique keywords="existence and uniqueness of H-sets" index="H 集合の一意性|えいちしゅうごうのいちいせい"}
+計算可能な整列順序 $(D,\prec)$ に沿った H 集合はちょうど一つ存在する。
+:::
+
+::: proof
+**Step 1（存在）.** $\prec$ は $D$ 上の整礎で集合的な関係なので、整礎関係上の超限再帰（\ref{set:wf-recursion}）により、$D$ 上の関数 $G$ で
+$$
+G(b)=\Bigl(\bigl\{\langle c,u\rangle:c\prec b,\ u\in G(c)\bigr\}\Bigr)'
+$$
+を満たすものがある。$H\defeq\{\langle b,u\rangle:b\in D,\ u\in G(b)\}$ とおけば、$H^{[b]}=G(b)$, $H^{[\prec b]}=\{\langle c,u\rangle:c\prec b,u\in G(c)\}$ なので、定義の 1, 2 が成り立つ。
+
+**Step 2（一意性）.** $H_{1},H_{2}$ を H 集合とし、$\prec$ についての帰納法（\ref{set:wf-induction}）で $H_{1}^{[b]}=H_{2}^{[b]}$ を示す。$c\prec b$ について $H_{1}^{[c]}=H_{2}^{[c]}$ なら $H_{1}^{[\prec b]}=H_{2}^{[\prec b]}$ なので、ジャンプをとって $H_{1}^{[b]}=H_{2}^{[b]}$。定義の 1 から、$H_{1}=H_{2}$。
+
+::: hypcheck
+- **前提「整列順序」**：Step 1 の再帰と Step 2 の帰納法の両方に使った。整礎でない計算可能な全順序に沿った「H 集合」は、存在しないことも、複数あることもある（補足のハリソン順序の注意）。
+- **計算可能性**：存在と一意性には使っていない。次の補題（定義の算術性）で使う。
+:::
+:::
+
+::: lemma H 集合であることは算術的 {#comp:h-set-arithmetical keywords="being an H-set is an arithmetical property of the set" index="H 集合の算術性|えいちしゅうごうのさんじゅつせい"}
+計算可能な整列順序 $(D,\prec)$ を固定する。$\mathrm{Hset}(g)$ を「$g$ は $\{0,1\}$ 値で、$\{v:g(v)=1\}$ は $(D,\prec)$ に沿った H 集合」とすると、$\mathrm{Hset}$ は（関数引数 $g$ をもつ）算術的な関係である。
+:::
+
+::: proof
+$H=\{v:g(v)=1\}$ とおく。定義の 1 は「$\forall v\,(g(v)=1\to v=\langle(v)_{0},(v)_{1}\rangle\land(v)_{0}\in D)$」で算術的。定義の 2 は
+$$
+\forall b\in D\ \forall u\ \bigl[\,g(\langle b,u\rangle)=1\leftrightarrow u\in(H^{[\prec b]})'\,\bigr].
+$$
+$v\in H^{[\prec b]}\iff v=\langle c,u'\rangle\land c\prec b\land g(v)=1$ は $g,b,v$ について計算可能（$D$ と $\prec$ が決定可能なため）なので、$u=\langle M,w\rangle$ について「$M^{H^{[\prec b]}}(w)\downarrow$」は「ある $t$ について、$M$ を神託 $H^{[\prec b]}$（の問い合わせを $g$ で答える）のもとで $t$ 段動かすと受理する」と書け、$t$ を固定した部分は $g,b,u,t$ について計算可能。よって括弧の中は算術的で、全体も算術的。
+:::
+
+::: definition 超算術的集合 {#comp:hyperarithmetic keywords="hyperarithmetical set, HYP" index="超算術的集合|ちょうさんじゅつてきしゅうごう, HYP|はいぱー"}
+集合 $A\subseteq\N$ が**超算術的**であるとは、ある計算可能な整列順序に沿った H 集合 $H$ について $A\le_{\mathrm{T}}H$ となることをいう。超算術的集合全体を $\mathrm{HYP}$ と書く。
+:::
+
+## 超算術的集合は Δ¹₁ {#comp:sec-hy-hyp-delta}
+
+::: theorem 超算術的集合は Δ¹₁ {#comp:hyp-delta11 keywords="hyperarithmetical sets are Delta^1_1" index="超算術的集合の Δ¹₁ 性|ちょうさんじゅつてきしゅうごうのでるたわんわんせい"}
+超算術的集合は $\Delta^{1}_{1}$ である。
+:::
+
+::: proof
+$A\le_{\mathrm{T}}H$ とし、$H$ は $(D,\prec)$ に沿った H 集合、$M$ は $H$ を神託にして $A$ を決定する（すべての入力で停止する）神託機械とする。$\mathrm{Acc}(g,x)$ を「$M$ が神託 $\{v:g(v)=1\}$ のもとで $x$ を受理する」とすると、これは「ある $t$ について $t$ 段で受理」なので算術的。H 集合の存在と一意性（\ref{comp:h-set-unique}）から、
+$$
+\begin{aligned}
+x\in A&\iff\exists g\,\bigl[\mathrm{Hset}(g)\land\mathrm{Acc}(g,x)\bigr]\\
+&\iff\forall g\,\bigl[\mathrm{Hset}(g)\to\mathrm{Acc}(g,x)\bigr].
+\end{aligned}
+$$
+実際、「存在」から $g=\chi_{H}$ がとれて、一意性から $\mathrm{Hset}(g)$ を満たす $g$ は $\chi_{H}$ だけである。\ref{comp:h-set-arithmetical} から括弧の中は算術的なので、一行目は $\Sigma^{1}_{1}$、二行目は $\Pi^{1}_{1}$（\ref{comp:analytical-hierarchy}）。
+
+::: hypcheck
+- **存在**：一行目の「⇒」と二行目の「⇐」（$\forall g$ を $\chi_{H}$ に適用する）に使った。
+- **一意性**：一行目の「⇐」と二行目の「⇒」に使った。一意性がないと、別の「H 集合」での計算結果が混ざる。
+- **$(D,\prec)$ の計算可能性**：\ref{comp:h-set-arithmetical} で $\mathrm{Hset}$ を算術的にするのに使った。
+:::
+:::
+
+## Δ¹₁ 集合は超算術的 {#comp:sec-hy-delta-hyp}
+
+この節を通して、$A$ を $\Delta^{1}_{1}$ 集合とし、$w$ を \ref{comp:delta11-criterion} の計算可能な全域関数とする。すなわち $w(x)\in\mathrm{TR}$ で、$T_{x}\defeq T(w(x))$ とおくと $x\in A\iff T_{x}$ は整礎。$\chi(x,s)\defeq\varphi_{w(x)}(s)$ は計算可能な全域関数で、$s\in T_{x}\iff\chi(x,s)=1$。
+
+::: lemma 深さ β 未満の節点の再帰的特徴づけ {#comp:rank-below-recursion keywords="recursive characterization of nodes of rank below beta" index="深さ β 未満の節点|ふかさべーたみまんのせってん"}
+順序数 $\beta$ について
+$$
+P_{\beta}\defeq\{(x,s):s\in T_{x},\ (T_{x})_{s}\text{ は整礎で }\lvert(T_{x})_{s}\rvert<\beta\}
+$$
+とおく。すべての $\beta$ と $(x,s)$ について、次が成り立つ。
+$$
+(x,s)\in P_{\beta}\iff s\in T_{x}\land\exists\gamma<\beta\ \forall m\,\bigl[s^{\frown}\langle m\rangle\in T_{x}\to(x,s^{\frown}\langle m\rangle)\in P_{\gamma}\bigr]
+$$
+:::
+
+::: proof
+$T\defeq T_{x}$ と略記する。$s\in T$ のとき、$s$ の子 $s^{\frown}\langle m\rangle\in T$ の部分木は $T_{s^{\frown}\langle m\rangle}=(T_{s})_{\langle m\rangle}$ である。
+
+「⇒」：$T_{s}$ は整礎で $\delta\defeq\lvert T_{s}\rvert<\beta$。$\gamma\defeq\delta$ とおく。子の部分木 $T_{s^{\frown}\langle m\rangle}$ は整礎な $T_{s}$ の部分木なので整礎で（その枝から $T_{s}$ の枝ができる）、記法の確認の式から $\lvert T_{s^{\frown}\langle m\rangle}\rvert+1\le\delta$、すなわち $\lvert T_{s^{\frown}\langle m\rangle}\rvert<\gamma$。
+
+「⇐」：$\gamma<\beta$ で、すべての子 $s^{\frown}\langle m\rangle\in T$ について $T_{s^{\frown}\langle m\rangle}$ が整礎で深さ $<\gamma$ とする。$T_{s}$ が枝 $g$ をもてば、$n\mapsto g(n+1)$ は子の部分木 $T_{s^{\frown}\langle g(0)\rangle}$ の枝になり矛盾するので、$T_{s}$ は整礎。深さは $\sup\{\lvert T_{s^{\frown}\langle m\rangle}\rvert+1\}\le\gamma<\beta$。
+
+::: hypcheck
+- **「⇒」で $\gamma=\lvert T_{s}\rvert$ をとったこと**：$\beta$ が極限でも後続でも同じ議論で済む。極限と後続の場合分けが要らないことが、次の定理で「前の段すべて」をまとめて参照する H 集合の定義（極限でもジャンプをとる）と噛み合う。
+:::
+:::
+
+::: lemma 神託機械の構成の一様性 {#comp:oracle-uniformity keywords="uniformity of constructions of oracle machines; relativized s-m-n" index="神託機械の一様な構成|しんたくきかいのいちようなこうせい"}
+次の操作は、パラメータから機械の符号を計算する全域的な計算可能関数で実現できる。
+1. （相対化された s-m-n）神託機械 $M$ と数 $a$ から、「入力 $w$ に対し、入力 $\langle a,w\rangle$ で $M$ を（同じ神託のもとで）動かす」神託機械 $M_{a}$ を作る。
+2. 数 $k$ から、「計算の途中で $\varphi_{k}$ の値を（神託を使わずに）万能機械で計算する」ことを部品として含む神託機械を作る。
+:::
+
+::: proof
+機械の符号は有限の記述で、1 は入力の前に $a$ を書き込む部分を付け足すだけ、2 は万能機械（\ref{comp:universal-function}）の記述に $k$ を初期値として書き込む部分を付け足すだけである。どちらも神託への問い合わせの仕組みには触れないので、s-m-n 定理（\ref{comp:smn}）と同じく、符号の書き換えとして原始再帰的に計算できる。
+:::
+
+::: theorem Δ¹₁ 集合は超算術的 {#comp:delta11-hyp keywords="Delta^1_1 sets are hyperarithmetical" index="Δ¹₁ 集合の超算術性|でるたわんわんしゅうごうのちょうさんじゅつせい"}
+$\Delta^{1}_{1}$ 集合は超算術的である。
+:::
+
+::: proof
+**Step 0（整列順序の準備）.** \ref{comp:delta11-criterion} から、計算可能順序数 $\alpha$ で、$x\in A\Rightarrow\lvert T_{x}\rvert<\alpha$ となるものがある。$\alpha+1$ も計算可能（\ref{comp:omega1ck-basic} の 2）なので、順序型 $\alpha+1$ の計算可能な整列順序 $(D_{0},\prec_{0})$ がある（\ref{comp:computable-ordinal-wo}）。その最大元を $b^{*}$ とすると $o(b^{*})=\alpha$。$D\defeq D_{0}\times\{0,1\}$ に
+$$
+\langle c,i\rangle\prec\langle c',i'\rangle\iff c\prec_{0}c'\lor(c=c'\land i<i')
+$$
+を入れると、$(D,\prec)$ は計算可能な整列順序である（各 $c$ を 2 点 $\langle c,0\rangle\prec\langle c,1\rangle$ に置き換えたもの。空でない $Z\subseteq D$ の最小元は、第 1 成分の $\prec_{0}$ 最小値 $c_{0}$ をとり、第 1 成分が $c_{0}$ の元のうち第 2 成分が小さい方）。$H$ を $(D,\prec)$ に沿った H 集合とする（\ref{comp:h-set-unique}）。
+
+**Step 1（各段の神託の名前）.** $c\in D_{0}$ について
+$$
+Y_{c}\defeq H^{[\prec\langle c,0\rangle]},\qquad Z_{c}\defeq H^{[\prec\langle c,1\rangle]}
+$$
+とおく。$\langle d,i\rangle\prec\langle c,0\rangle\iff d\prec_{0}c$ なので、$Y_{c}$ は「$c$ より前の段の両方の列」をまとめたもの、$Z_{c}=Y_{c}\cup\{\langle\langle c,0\rangle,u\rangle:u\in Y_{c}'\}$（$H^{[\langle c,0\rangle]}=Y_{c}'$ だから）。また $H^{[\langle c,1\rangle]}=Z_{c}'$。
+
+**Step 2（プログラム $k$ に付随する機械）.** 数 $k$ に対し、二つの神託機械を考える。
+- $N_{k}$：神託 $Y$ のもとで入力 $\langle c',x,s\rangle$ に対し、$m=0,1,2,\dots$ を順に調べ、$\chi(x,s^{\frown}\langle m\rangle)=1$ かつ $\langle\langle c',1\rangle,\varphi_{k}(c',x,s^{\frown}\langle m\rangle)\rangle\notin Y$ となる $m$ が見つかったら受理する（$\varphi_{k}$ の値は神託を使わずに計算する）。
+- $N'_{k}$：神託 $Z$ のもとで入力 $\langle c,x,s\rangle$ に対し、$\chi(x,s)=1$ でなければ停止せずに動き続ける。$\chi(x,s)=1$ なら、$c'\prec_{0}c$ となる $c'\in D_{0}$ を順に調べ、$\langle\langle c,0\rangle,\langle N_{k},\langle c',x,s\rangle\rangle\rangle\notin Z$ となる $c'$ が見つかったら受理する。
+
+\ref{comp:oracle-uniformity} から、$k\mapsto N_{k}$, $k\mapsto N'_{k}$ は計算可能で、
+$$
+g(k,c,x,s)\defeq\langle N'_{k},\langle c,x,s\rangle\rangle
+$$
+は全域的な計算可能関数である。
+
+**Step 3（再帰定理）.** s-m-n 定理（\ref{comp:smn}）で $\varphi_{h(k)}(c,x,s)\simeq g(k,c,x,s)$ となる全域的な計算可能関数 $h$ をとり（3 引数は組の符号で 1 引数とみる）、再帰定理（\ref{comp:second-recursion-theorem}）で $\varphi_{k}\simeq\varphi_{h(k)}$ となる $k$ を固定する。すると $\varphi_{k}(c,x,s)=g(k,c,x,s)$ で、$\varphi_{k}$ は全域的。以下 $N\defeq N_{k}$, $N'\defeq N'_{k}$。
+
+**Step 4（主張）.** $\prec_{0}$ についての帰納法で、すべての $c\in D_{0}$ と $(x,s)$ について次を示す。
+$$
+(x,s)\in P_{o(c)}\iff\varphi_{k}(c,x,s)\in H^{[\langle c,1\rangle]}
+$$
+$c$ を固定し、すべての $c'\prec_{0}c$ で主張が成り立つと仮定する。
+
+**Step 4a（内側）.** $c'\prec_{0}c$ なら $\langle c',1\rangle\prec\langle c,0\rangle$ なので、$\langle\langle c',1\rangle,v\rangle\in Y_{c}\iff v\in H^{[\langle c',1\rangle]}$。帰納法の仮定と合わせて、$c'\prec_{0}c$ のとき
+$$
+\begin{aligned}
+&N^{Y_{c}}(\langle c',x,s\rangle)\downarrow\\
+&\iff\exists m\,\bigl[s^{\frown}\langle m\rangle\in T_{x}\land(x,s^{\frown}\langle m\rangle)\notin P_{o(c')}\bigr].
+\end{aligned}
+$$
+ジャンプの定義から、左辺は $\langle N,\langle c',x,s\rangle\rangle\in Y_{c}'$、すなわち $\langle\langle c,0\rangle,\langle N,\langle c',x,s\rangle\rangle\rangle\in Z_{c}$ と同値（Step 1）。
+
+**Step 4b（外側）.** Step 4a から、$s\in T_{x}$ のとき
+$$
+\begin{aligned}
+&N'^{Z_{c}}(\langle c,x,s\rangle)\downarrow\\
+&\iff\exists c'\prec_{0}c\ \forall m\,\bigl[s^{\frown}\langle m\rangle\in T_{x}\to(x,s^{\frown}\langle m\rangle)\in P_{o(c')}\bigr].
+\end{aligned}
+$$
+$s\notin T_{x}$ なら左辺は偽。$c'$ が $c$ の $\prec_{0}$ 前者を動くとき、$o(c')$ は $o(c)$ 未満の順序数をちょうど一度ずつ動く（$o$ は順序同型で、値域は始切片）。よって \ref{comp:rank-below-recursion} から、左辺は $(x,s)\in P_{o(c)}$ と同値。一方、ジャンプの定義から左辺は $\langle N',\langle c,x,s\rangle\rangle\in Z_{c}'=H^{[\langle c,1\rangle]}$、すなわち $\varphi_{k}(c,x,s)\in H^{[\langle c,1\rangle]}$ と同値。これで主張が示された。
+
+**Step 5（A の判定）.** $x\in A$ を判定するには、$\chi(x,\langle\rangle)$ を計算し、$0$（$T_{x}=\varnothing$）なら $x\in A$ とする。$1$ なら、神託 $H$ に $\langle\langle b^{*},1\rangle,\varphi_{k}(b^{*},x,\langle\rangle)\rangle$ を問い合わせ、答えが「属する」なら $x\in A$ とする。正しさ：$T_{x}=\varnothing$ なら $T_{x}$ は整礎で $x\in A$。$T_{x}\neq\varnothing$ のとき、Step 4 から問い合わせの答えは $(x,\langle\rangle)\in P_{\alpha}$、すなわち「$T_{x}$ が整礎で $\lvert T_{x}\rvert<\alpha$」と同値。$x\in A$ なら Step 0 からこれが成り立ち、$x\notin A$ なら $T_{x}$ は整礎でないので成り立たない。よって $A\le_{\mathrm{T}}H$ で、$A$ は超算術的。
+
+::: hypcheck
+- **前提「$A$ は $\Delta^{1}_{1}$」**：Step 0 で、層別定理（\ref{comp:delta11-criterion} の 2）により深さの上界 $\alpha$ を計算可能にとるのに使った。その核心は有界性定理（\ref{comp:spector-boundedness}）である。$A=\mathrm{WT}$（$\Pi^{1}_{1}$ だが $\Delta^{1}_{1}$ でない）では上界が $\omega_{1}^{\mathrm{CK}}$ になり、計算可能な整列順序がとれない。
+- **2 点に分けた順序 $D_{0}\times\{0,1\}$**：深さの判定は「$\exists\gamma\,\forall m$」の二重の量化子（相対的に $\Sigma_{2}$）なので、各段でジャンプが 2 回要る。Step 4a で 1 回（$\langle c,0\rangle$ 列）、Step 4b で 1 回（$\langle c,1\rangle$ 列）使った。
+- **再帰定理**：Step 3 で、各段の判定に「前の段の判定に使うプログラム」自身の指数 $k$ を埋め込むのに使った。これにより極限の段でも一つのプログラムで前の段すべてを参照できる。各段で別々の還元をとる（帰納法の仮定に「ある還元がある」とだけ書く）と、極限の段で無限個の還元を一つにまとめられない。
+- **$\varphi_{k}$ の全域性**：$g$ が全域的なので、$N,N'$ の内部の $\varphi_{k}$ の計算は必ず止まる。Step 4a で $N$ が「見つかれば受理」という探索として正しく働くのに必要だった。
+- **公理**：Step 0 と Step 4 は $\ZF$。$\Delta^{1}_{1}$ の閉包性を使う \ref{comp:delta11-criterion} で可算選択公理を使っている。
+:::
+:::
+
+::: theorem クリーネの定理 {#comp:kleene-hyp-theorem keywords="Kleene's theorem: Delta^1_1 = hyperarithmetical" index="クリーネの定理（Δ¹₁＝HYP）|くりーねのていりでるたわんわん"}
+$\N$ の部分集合が $\Delta^{1}_{1}$ であることと、超算術的であることは同値である。
+$$
+\Delta^{1}_{1}=\mathrm{HYP}
+$$
+:::
+
+::: proof
+「⊇」は \ref{comp:hyp-delta11}、「⊆」は \ref{comp:delta11-hyp}。
+:::
+
+::: intuition
+$\Delta^{1}_{1}$ は「関数についての量化子を一つ使えば、肯定にも否定にも証拠を挙げられる」集合で、超算術的は「整礎な（計算可能に与えられた）長さの神託の塔があれば決定できる」集合である。前者は論理の言葉、後者は計算の言葉の定義で、クリーネの定理はそれが一致することを述べる。塔の長さが計算可能な順序数で済むことを保証するのが、有界性定理である。
+:::
+
+::: corollary 超算術的集合の閉包性 {#comp:hyp-closure keywords="HYP is closed under Turing reducibility and the jump; WT and Kleene's O are not hyperarithmetical" index="超算術的集合の閉包性|ちょうさんじゅつてきしゅうごうのへいほうせい"}
+1. $A\le_{\mathrm{T}}B$ で $B$ が超算術的なら、$A$ も超算術的。
+2. $A$ が超算術的なら、$A'$ も超算術的。
+3. 算術的な集合は超算術的である。
+4. $\mathrm{WT}$ は超算術的でない。
+:::
+
+::: proof
+**1.** $B\le_{\mathrm{T}}H$ なら $A\le_{\mathrm{T}}H$（$\le_{\mathrm{T}}$ の推移性、\ref{comp:turing-reduction-basic}）。
+
+**2.** 問題 \ref{comp:prob-delta11-jump} で $A'$ が $\Delta^{1}_{1}$ であることを示し、クリーネの定理を使う。
+
+**3.** 算術的な集合は（関数の量化子を使わずに定義されるので）$\Sigma^{1}_{1}$ かつ $\Pi^{1}_{1}$（関数の空な量化を付け足す）であり、クリーネの定理による。
+
+**4.** $\mathrm{WT}$ は $\Sigma^{1}_{1}$ でない（\ref{comp:wt-complete} の 3）ので $\Delta^{1}_{1}$ でなく、クリーネの定理から超算術的でない。
+:::
+
+::: fact クリーネの O による超算術的階層 {#comp:kleene-o-hierarchy keywords="Kleene's system of notations O, H_a, Spector's uniqueness theorem" index="順序数表記|じゅんじょすうひょうき, スペクターの一意性定理|すぺくたーのいちいせいていり"}
+標準的な文献では、超算術的階層はクリーネの順序数表記の体系 $\mathcal{O}$（$1$ が $0$ の表記、$2^{a}$ が後続、$3\cdot5^{e}$ が $\varphi_{e}$ の値の列の極限の表記）に沿って、後続の段ではジャンプ、極限の段では前の段の結び（ジャンプをとらない）で $H_{a}$ を定める。
+1. $\mathcal{O}$ は $\Pi^{1}_{1}$ 完全である。
+2. （スペクター）$a,b\in\mathcal{O}$ が同じ順序数を表すなら、$H_{a}$ と $H_{b}$ はチューリング同値である。
+3. （クリーネ）$H_{a}$（$a\in\mathcal{O}$）のどれかに計算可能な集合は、ちょうど $\Delta^{1}_{1}$ 集合である。
+
+出典：H. Rogers, *Theory of Recursive Functions and Effective Computability*；G. E. Sacks, *Higher Recursion Theory*。本ページの H 集合は極限の段でもジャンプをとる点で違うが、3 と \ref{comp:kleene-hyp-theorem} から、得られる集合のクラスは同じである。
+:::
+
+::: supplement
+**前提を変えると.**
+- *整礎でない順序に沿った H 集合.* 計算可能な全順序で整礎でないもの（たとえばハリソン順序）にも「H 集合の条件を満たす集合」が存在することがあるが、一意ではなく、\ref{comp:hyp-delta11} の議論は崩れる。整礎性が $\Pi^{1}_{1}$ の条件であることと、有界性定理の裏側の現象である。
+- *一つの段で 2 回のジャンプ.* \ref{comp:delta11-hyp} の証明で $D_{0}$ を 2 倍にしたのは便宜で、順序型を $\alpha\cdot2$ に増やせば足りる。どの計算可能順序数も上界にとれないなら（$\Pi^{1}_{1}$ でない場合）、どう工夫しても足りない。
+
+**類似の定理.**
+- *スースリンの定理.* ボールド体では、$\boldsymbol{\Delta}^{1}_{1}$ 集合（解析集合でかつ余解析集合）はちょうどボレル集合である（A. S. Kechris, *Classical Descriptive Set Theory*）。ボレル集合は開集合から可算和と補集合を $\omega_{1}$ 回まで繰り返して得られる。クリーネの定理はその実効版で、「可算和」が「ジャンプ」に、「$\omega_{1}$」が「$\omega_{1}^{\mathrm{CK}}$」に当たる。
+- *スペクター–ガンディの定理.* $\Pi^{1}_{1}$ 集合は、「ある超算術的な関数 $h$ について算術的な条件 $R(x,h)$」の形に書ける集合とちょうど一致する（Sacks の上掲書）。関数の全称量化子を、超算術的な関数についての存在量化子に置き換えられるということである。
+- *二階算術との関係.* 超算術的集合全体は、二階算術の体系 $\Sigma^{1}_{1}\text{-}\mathsf{AC}_{0}$ や $\Delta^{1}_{1}\text{-}\mathsf{CA}_{0}$ の最小の ω モデルになり、$\mathsf{ATR}_{0}$（\ref{pt:big-five}）のモデルにはならないことが知られている（S. G. Simpson, *Subsystems of Second Order Arithmetic*）。
+
+**高い視点から：塔を何段まで建てられるか.** 算術的階層は、停止問題の神託を「$\omega$ 段まで」積んだ塔だった。超算術的階層はこの塔を超限の高さに積み増す。ただし高さは、計算できる設計図（計算可能な整列順序）で与えられる範囲に限られる。$\omega_{1}^{\mathrm{CK}}$ は、設計図の描ける高さの上限である。クリーネの定理は、この塔で決定できる問いが、「関数一つの証拠で肯定も否定もできる」問い（$\Delta^{1}_{1}$）とちょうど一致すると言う。比喩で言えば、$\Delta^{1}_{1}$ の問いは「必ず有限の高さで答えの出る、ただし高さは前もって超限かもしれない探索」であり、有界性定理はその高さを設計図の範囲に収め、再帰定理はその設計図を一つのプログラムに書き下す。
+:::
+
+## 問題 {#comp:sec-hy-problems}
+
+::: problem {#comp:prob-arithmetical-hyp}
+$D=\{0,1,\dots,n\}$（通常の順序）に沿った H 集合を $H$ とする。
+1. 集合 $X,Y$ について、$X\le_{\mathrm{T}}Y$ なら $X'\le_{\mathrm{m}}Y'$、また $X\le_{\mathrm{m}}X'$ であることを示せ。
+2. $\varnothing^{(k+1)}\le_{\mathrm{T}}H^{[k]}$（$k\le n$）を示せ。
+:::
+
+::: solution
+**1.** $X$ を $Y$ で決定する神託機械を $M_{0}$ とする。神託機械 $M$ に、「$X$ への問い合わせを、$M_{0}$ を神託 $Y$ のもとで動かして答える」ように書き換えた機械 $\tilde{M}$ を対応させると（\ref{comp:oracle-uniformity} と同様に計算可能）、$M^{X}(w)\downarrow\iff\tilde{M}^{Y}(w)\downarrow$。よって $\langle M,w\rangle\mapsto\langle\tilde{M},w\rangle$ が $X'\le_{\mathrm{m}}Y'$ を与える。後半は、$x$ に「神託に $x$ を問い合わせ、属すれば受理、属さなければ停止しない」機械 $M_{x}$ を対応させ、$x\mapsto\langle M_{x},0\rangle$ とすればよい。
+
+**2.** $k$ についての帰納法。$k=0$：$H^{[\prec0]}=\varnothing$ なので $H^{[0]}=\varnothing'$。$k>0$：$\varnothing^{(k)}\le_{\mathrm{T}}H^{[k-1]}$ と仮定する。$H^{[k-1]}\le_{\mathrm{m}}H^{[\prec k]}$（$u\mapsto\langle k-1,u\rangle$）なので $\varnothing^{(k)}\le_{\mathrm{T}}H^{[\prec k]}$、1 から $\varnothing^{(k+1)}\le_{\mathrm{m}}(H^{[\prec k]})'=H^{[k]}$。
+:::
+
+::: problem {#comp:prob-delta11-jump}
+$A$ が $\Delta^{1}_{1}$ なら、$A'$ も $\Delta^{1}_{1}$ であることを、解析的階層の閉包性だけを使って（クリーネの定理を使わずに）示せ。
+:::
+
+::: solution
+$\mathrm{Acc}(g,u)$ を「$u=\langle M,w\rangle$ で、$M$ が神託 $\{v:g(v)=1\}$ のもとで $w$ を受理する」とする（算術的）。$\mathrm{Ch}(g)\defeq\forall n\,[(g(n)=1\land n\in A)\lor(g(n)=0\land n\notin A)]$ とおくと、$A$ と $\overline{A}$ がともに $\Sigma^{1}_{1}$ なので、$\mathrm{Ch}$ は $\Sigma^{1}_{1}$ の関係の $\vee,\wedge$ と $\forall n$ で $\Sigma^{1}_{1}$。また $\neg\mathrm{Ch}(g)=\exists n\,[(g(n)\neq1\lor n\notin A)\land(g(n)\neq0\lor n\in A)]$ は、$A,\overline{A}$ がともに $\Pi^{1}_{1}$ なので $\Pi^{1}_{1}$。$\mathrm{Ch}(g)$ を満たす $g$ は $\chi_{A}$ だけなので
+$$
+\begin{aligned}
+u\in A'&\iff\exists g\,\bigl[\mathrm{Ch}(g)\land\mathrm{Acc}(g,u)\bigr]\\
+&\iff\forall g\,\bigl[\neg\mathrm{Ch}(g)\lor\mathrm{Acc}(g,u)\bigr].
+\end{aligned}
+$$
+一行目は $\Sigma^{1}_{1}$（$\exists g$ で閉じる）、二行目は $\Pi^{1}_{1}$（$\forall g$ で閉じる）。よって $A'$ は $\Delta^{1}_{1}$。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

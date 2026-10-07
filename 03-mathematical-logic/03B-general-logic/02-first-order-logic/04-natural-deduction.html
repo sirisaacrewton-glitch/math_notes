@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>形式的証明（自然演繹） | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/02-first-order-logic/04-natural-deduction.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 形式的証明（自然演繹） {#logic:page-natural-deduction keywords="natural deduction, derivation, proof system, eigenvariable condition, deduction theorem, consistency, 証明体系"}
+
+「$\Sigma$ から $\varphi$ が証明できる」ことを、記号列の形だけで判定できる規則によって定義する。本系列では、ゲンツェンに始まる**自然演繹**を採る。自然演繹は、仮定を置いて推論を進め、後でその仮定を「解消」する、という数学の証明の書き方をそのまま形式化したものである。本ページでは導出（形式的な証明）を仮定付きの木として厳密に定義し、$\Sigma\vdash\varphi$ を定め、弱化・演繹定理・カット・無矛盾性に関する基本性質を示す。ここで導いた $\Sigma\vdash\varphi$ が意味論の $\Sigma\models\varphi$（\ref{logic:model}）と一致すること、すなわち健全性と完全性が、以後の目標である。
+
+## 記法と定義の確認 {#logic:sec-nd-notation}
+
+::: notation
+- 論理式、略記（$\neg\varphi\defeq\varphi\to\bot$ など）、自由変数は \ref{logic:formula}, \ref{logic:abbreviations}, \ref{logic:free-variables} のとおり。原始記号は $\bot,\to,\forall,=$ なので、推論規則もこの四つについてだけ定める。$\neg,\wedge,\vee,\exists$ の規則は \ref{logic:page-derived-rules} で導く。
+- 代入 $\varphi[t/x]$ と代入可能性は \ref{logic:substitution}, \ref{logic:substitutable} のとおり。
+- $\Sigma,\Gamma,\Delta$ は論理式の集合（無限集合でもよく、自由変数を含んでもよい）を表す。$\Sigma\cup\{\varphi\}$ を $\Sigma,\varphi$ と書くこともある。
+- 論理的帰結 $\Sigma\models\varphi$ は局所的な意味（\ref{logic:model}, \ref{logic:global-consequence}）である。
+:::
+
+## 導出の定義 {#logic:sec-nd-definition}
+
+導出は、各節点に論理式が付いた有限の木であり、葉には**仮定**が置かれる。仮定の一部は、途中の推論規則（$\to$ 導入と背理法）によって**解消**される。解消されずに残った仮定の集合を、その導出の**未解消の仮定**という。以下では、導出 $D$ とその**結論** $\mathrm{concl}(D)$、**未解消の仮定の集合** $\mathrm{A}(D)$ を同時に帰納的に定義する。
+
+::: definition 自然演繹の導出 {#logic:deduction-system keywords="natural deduction, derivation, inference rules, deduction system" index="自然演繹|しぜんえんえき, 導出|どうしゅつ, 推論規則|すいろんきそく, 仮定|かてい, 解消|かいしょう, 未解消の仮定|みかいしょうのかてい"}
+**導出**と、その結論 $\mathrm{concl}(D)$、未解消の仮定の集合 $\mathrm{A}(D)$（論理式の有限集合）を、次の規則で帰納的に定める。導出の全体は、これらの規則で作られるものだけからなる。以下の図では横線の上に前提となる導出の結論を、下に新しい導出の結論を書く。
+
+**(仮定)** 任意の論理式 $\varphi$ について、$\varphi$ だけからなる一点の木 $\langle\varphi\rangle$ は導出であり、$\mathrm{concl}=\varphi$, $\mathrm{A}=\{\varphi\}$。
+
+**($\to$I：含意導入)** $D$ を導出、$\varphi$ を論理式、$\psi=\mathrm{concl}(D)$ とする。
+$$
+\frac{\ \psi\ }{\ \varphi\to\psi\ }\;(\to\mathrm{I})
+$$
+結論は $\varphi\to\psi$、$\mathrm{A}=\mathrm{A}(D)\setminus\{\varphi\}$（仮定 $\varphi$ を解消する。$\varphi\notin\mathrm{A}(D)$ でもよい）。
+
+**($\to$E：含意除去)** $D_{1},D_{2}$ を導出とし、$\mathrm{concl}(D_{1})=\varphi\to\psi$, $\mathrm{concl}(D_{2})=\varphi$ とする。
+$$
+\frac{\ \varphi\to\psi\qquad\varphi\ }{\psi}\;(\to\mathrm{E})
+$$
+結論は $\psi$、$\mathrm{A}=\mathrm{A}(D_{1})\cup\mathrm{A}(D_{2})$。
+
+**(RAA：背理法)** $D$ を導出で $\mathrm{concl}(D)=\bot$ とし、$\varphi$ を論理式とする。
+$$
+\frac{\ \bot\ }{\ \varphi\ }\;(\mathrm{RAA})
+$$
+結論は $\varphi$、$\mathrm{A}=\mathrm{A}(D)\setminus\{\neg\varphi\}$（仮定 $\neg\varphi$ を解消する）。
+
+**($\forall$I：全称導入)** $D$ を導出、$\varphi=\mathrm{concl}(D)$、$x$ を変数とし、**固有変数条件**「すべての $\psi\in\mathrm{A}(D)$ について $x\notin\mathrm{FV}(\psi)$」が成り立つとする。
+$$
+\frac{\ \varphi\ }{\ \forall x\,\varphi\ }\;(\forall\mathrm{I})
+$$
+結論は $\forall x\,\varphi$、$\mathrm{A}=\mathrm{A}(D)$。
+
+**($\forall$E：全称除去)** $D$ を導出で $\mathrm{concl}(D)=\forall x\,\varphi$ とし、$t$ を $\varphi$ の中で $x$ に代入可能な項とする。
+$$
+\frac{\ \forall x\,\varphi\ }{\ \varphi[t/x]\ }\;(\forall\mathrm{E})
+$$
+結論は $\varphi[t/x]$、$\mathrm{A}=\mathrm{A}(D)$。
+
+**($=$I：等号導入)** 任意の項 $t$ について、前提のない推論 $\dfrac{}{\ t=t\ }\,(=\mathrm{I})$ は導出であり、結論は $t=t$、$\mathrm{A}=\varnothing$。
+
+**($=$E：等号除去)** $D_{1},D_{2}$ を導出、$\varphi$ を論理式、$x$ を変数、$s,t$ を項とし、$\mathrm{concl}(D_{1})=(s=t)$, $\mathrm{concl}(D_{2})=\varphi[s/x]$ で、$s$ と $t$ はともに $\varphi$ の中で $x$ に代入可能であるとする。
+$$
+\frac{\ s=t\qquad\varphi[s/x]\ }{\ \varphi[t/x]\ }\;(=\mathrm{E})
+$$
+結論は $\varphi[t/x]$、$\mathrm{A}=\mathrm{A}(D_{1})\cup\mathrm{A}(D_{2})$。
+
+形式的には、導出は規則の名前・パラメータ（解消する論理式、$\forall$I の変数、$\forall$E の項、$=$E の $\varphi,x$）・前提の導出を並べた組として表す（たとえば $(\to\mathrm{I},\varphi,D)$）。組の成分は組から一通りに取り出せるので、導出に関する構造的帰納法と構造的再帰は、論理式の場合（\ref{logic:structural-recursion}）と同様に正当である。
+:::
+
+::: intuition
+- **仮定と解消.** 数学の証明で「$\varphi$ と仮定する。…よって $\psi$。ゆえに $\varphi\to\psi$」と書くとき、最後の段階で仮定 $\varphi$ はもう前提ではなくなる。これが $\to$I での解消である。背理法は「$\neg\varphi$ と仮定すると矛盾する。ゆえに $\varphi$」である。
+- **固有変数条件.** 「$x$ を任意にとる。…$\varphi$。$x$ は任意だったから $\forall x\,\varphi$」という推論は、$x$ について何も仮定していないときにだけ正しい。「$x$ は素数とする」と仮定したまま「すべての $x$ について」と結論してはならない。固有変数条件はこれを、その $\forall$I より上にある未解消の仮定に $x$ が自由に現れないこと、として述べたものである。
+- **代入可能性.** $\forall$E と $=$E では、項を代入したときに捕獲が起きてはならない（\ref{logic:ex-capture}）。
+:::
+
+::: remark 規則の定式化についての注意 {#logic:nd-formulation-remark}
+- **固有変数条件の範囲.** 条件は「$\forall$I を適用する導出 $D$ の未解消の仮定 $\mathrm{A}(D)$」について課す。後で $D$ を含む大きな導出を作っても、この条件は変わらない。したがって、二つの導出を $\to$E でつないでも、それぞれの内部の $\forall$I の正しさは保たれる。これが本ページの弱化・カット（\ref{logic:derivability-basic}）が導出の書き換えなしに成り立つ理由である。仮定の集合を左辺に明示するシークエント形式（$\Sigma\vdash\psi$ から $\Sigma\vdash\forall x\,\psi$）で固有変数条件を「$x$ が $\Sigma$ に自由に現れない」とすると、$\Sigma$ に余分な論理式を加える弱化の際に条件が壊れうるので、固有変数の付け替えが必要になる。
+- **固有変数と量化される変数.** ここでの $\forall$I は、結論で量化される変数 $x$ そのものに固有変数条件を課している。「$\varphi[a/x]$ から $\forall x\,\varphi$ を導く（$a$ は固有変数）」という形の規則は、\ref{logic:page-derived-rules} で派生規則として導く。
+- **仮定の解消の仕方.** $\to$I では、未解消の仮定のうち $\varphi$ を**すべて**同時に解消する。どの出現を解消するかを印で区別する流儀もあるが、「何が導出できるか」には影響しない。
+:::
+
+::: definition 導出可能性と無矛盾性 {#logic:derivability keywords="derivability, provability, consistency, inconsistency" index="導出可能|どうしゅつかのう, 証明可能|しょうめいかのう, 無矛盾|むむじゅん, 矛盾|むじゅん"}
+論理式の集合 $\Sigma$ と論理式 $\varphi$ について、$\mathrm{concl}(D)=\varphi$ かつ $\mathrm{A}(D)\subset\Sigma$ となる導出 $D$ が存在するとき、$\varphi$ は $\Sigma$ から**導出可能**であるといい、$\Sigma\vdash\varphi$ と書く。$\varnothing\vdash\varphi$ を $\vdash\varphi$ と書く。$\Sigma\vdash\bot$ のとき $\Sigma$ は**矛盾する**といい、そうでないとき**無矛盾**であるという。
+:::
+
+::: example 基本的な導出 {#logic:ex-basic-derivations}
+**(1) $\vdash\varphi\to\varphi$.** 仮定 $\langle\varphi\rangle$ に $\to$I を施すと、結論 $\varphi\to\varphi$、未解消の仮定 $\{\varphi\}\setminus\{\varphi\}=\varnothing$。
+
+**(2) $\vdash\neg\neg\varphi\to\varphi$.** 仮定 $\neg\neg\varphi=(\neg\varphi\to\bot)$ と仮定 $\neg\varphi$ に $\to$E を施して $\bot$（未解消の仮定 $\{\neg\neg\varphi,\neg\varphi\}$）。RAA で $\varphi$ を結論し $\neg\varphi$ を解消する（未解消 $\{\neg\neg\varphi\}$）。$\to$I で $\neg\neg\varphi$ を解消する。
+$$
+\dfrac{\dfrac{\dfrac{\neg\varphi\to\bot\qquad\neg\varphi}{\bot}\,(\to\mathrm{E})}{\varphi}\,(\mathrm{RAA})}{\neg\neg\varphi\to\varphi}\,(\to\mathrm{I})
+$$
+
+**(3) $\vdash\forall x\,\varphi\to\varphi[t/x]$（$t$ は代入可能）.** 仮定 $\forall x\,\varphi$ に $\forall$E、次に $\to$I。
+
+**(4) $x\notin\mathrm{FV}(\varphi)$ ならば $\vdash\forall x\,(\varphi\to\psi)\to(\varphi\to\forall x\,\psi)$.** 仮定 $\forall x\,(\varphi\to\psi)$ に項 $x$ で $\forall$E を施すと $(\varphi\to\psi)[x/x]=\varphi\to\psi$（\ref{logic:substitution-basic} の 2。$x$ は代入可能、\ref{logic:substitutable-sufficient} の 3）。仮定 $\varphi$ と $\to$E で $\psi$。このとき未解消の仮定は $\{\forall x\,(\varphi\to\psi),\varphi\}$ であり、$x$ はどちらにも自由に現れない（前者は $x$ が束縛され、後者は前提による）。よって $\forall$I で $\forall x\,\psi$。最後に $\to$I を二回施す。前提 $x\notin\mathrm{FV}(\varphi)$ を外すと、$\forall$I の固有変数条件が満たされない。
+
+**(5) 等号の対称律 $\vdash s=t\to t=s$.** $s,t$ に現れない変数 $x$ をとり（\ref{logic:fresh-variable}）、$\varphi\defeq(x=s)$ とおく。$x\notin\mathrm{var}(s)$ なので $\varphi[s/x]=(s=s)$, $\varphi[t/x]=(t=s)$ であり、$\varphi$ は原子論理式なので $s,t$ は代入可能である。仮定 $s=t$ と $=$I による $s=s$ に $=$E を施して $t=s$、最後に $\to$I。
+$$
+\dfrac{\dfrac{s=t\qquad\dfrac{}{s=s}\,(=\mathrm{I})}{t=s}\,(=\mathrm{E})}{s=t\to t=s}\,(\to\mathrm{I})
+$$
+:::
+
+::: example 導出にならない例 {#logic:ex-illegal}
+$P(x)$ を仮定して $\forall$I を施すことはできない（未解消の仮定 $P(x)$ に $x$ が自由に現れる）。実際、$\{P(x)\}\not\models\forall x\,P(x)$ なので（\ref{logic:global-consequence}）、健全性定理（\ref{logic:page-soundness}）により $\{P(x)\}\not\vdash\forall x\,P(x)$ である。一方、$\vdash P(x)\to P(x)$ から $\forall$I で $\vdash\forall x\,(P(x)\to P(x))$ は正しい（仮定が解消されている）。
+:::
+
+## 導出可能性の基本性質 {#logic:sec-nd-basic}
+
+::: lemma 未解消の仮定の有限性 {#logic:assumptions-finite}
+任意の導出 $D$ について $\mathrm{A}(D)$ は有限集合である。
+:::
+
+::: proof
+導出に関する帰納法。仮定では一元集合、$=$I では空集合。$\to$I, RAA は有限集合から元を除き、$\forall$I, $\forall$E は変えず、$\to$E, $=$E は二つの有限集合の和をとる。
+:::
+
+::: proposition 導出可能性の基本性質 {#logic:derivability-basic keywords="weakening, cut, deduction theorem, finiteness" index="弱化|じゃっか, 演繹定理|えんえきていり, カット|かっと"}
+任意の $\Sigma,\Sigma',\varphi,\psi$ について次が成り立つ。
+1. **（仮定）** $\varphi\in\Sigma$ ならば $\Sigma\vdash\varphi$。
+2. **（弱化）** $\Sigma\vdash\varphi$ かつ $\Sigma\subset\Sigma'$ ならば $\Sigma'\vdash\varphi$。
+3. **（有限性・構文論的コンパクト性）** $\Sigma\vdash\varphi$ ならば、ある有限部分集合 $\Sigma_{0}\subset\Sigma$ について $\Sigma_{0}\vdash\varphi$。
+4. **（演繹定理）** $\Sigma\cup\{\varphi\}\vdash\psi\iff\Sigma\vdash\varphi\to\psi$。
+5. **（カット）** $\Sigma\vdash\varphi$ かつ $\Sigma\cup\{\varphi\}\vdash\psi$ ならば $\Sigma\vdash\psi$。
+:::
+
+::: proof
+**1.** 仮定 $\langle\varphi\rangle$ は $\mathrm{A}=\{\varphi\}\subset\Sigma$。
+
+**2.** $\mathrm{A}(D)\subset\Sigma\subset\Sigma'$ となる同じ導出 $D$ が使える。導出そのものは変えないので、固有変数条件も変わらない。
+
+**3.** $\Sigma_{0}\defeq\mathrm{A}(D)$ とすればよい（\ref{logic:assumptions-finite}）。
+
+**4.** ($\Rightarrow$) $\mathrm{concl}(D)=\psi$, $\mathrm{A}(D)\subset\Sigma\cup\{\varphi\}$ とする。$D$ に $\to$I を施した導出の未解消の仮定は $\mathrm{A}(D)\setminus\{\varphi\}\subset\Sigma$ で、結論は $\varphi\to\psi$。($\Leftarrow$) $\mathrm{concl}(D)=\varphi\to\psi$, $\mathrm{A}(D)\subset\Sigma$ とする。$D$ と仮定 $\langle\varphi\rangle$ に $\to$E を施すと、結論 $\psi$、未解消の仮定 $\mathrm{A}(D)\cup\{\varphi\}\subset\Sigma\cup\{\varphi\}$。
+
+**5.** 4 より $\Sigma\vdash\varphi\to\psi$。これを与える導出 $D_{1}$ と、$\Sigma\vdash\varphi$ を与える導出 $D_{2}$ に $\to$E を施すと、結論 $\psi$、未解消の仮定 $\mathrm{A}(D_{1})\cup\mathrm{A}(D_{2})\subset\Sigma$。$D_{1},D_{2}$ の内部の $\forall$I の固有変数条件は、それぞれの部分導出の未解消の仮定についての条件なので、$\to$E でつないでも保たれている。
+
+::: hypcheck
+- **固有変数条件を部分導出の未解消の仮定について課したこと**（\ref{logic:nd-formulation-remark}）：2 と 5 で、導出を書き換えずに済んだ理由である。
+- 背理法（RAA）はここでは使っていない。1–5 は、RAA を除いた体系（直観主義論理の自然演繹）でも同じ証明で成り立つ。
+:::
+:::
+
+::: proposition 矛盾と導出可能性 {#logic:consistency-basic keywords="consistency and derivability, ex falso" index="爆発律|ばくはつりつ"}
+1. **（爆発律）** $\Sigma\vdash\bot$ ならば、任意の $\varphi$ について $\Sigma\vdash\varphi$。
+2. $\Sigma\vdash\varphi\iff\Sigma\cup\{\neg\varphi\}$ は矛盾する。
+3. $\Sigma\not\vdash\varphi\iff\Sigma\cup\{\neg\varphi\}$ は無矛盾。
+4. $\Sigma$ が無矛盾ならば、任意の $\varphi$ について $\Sigma\cup\{\varphi\}$ と $\Sigma\cup\{\neg\varphi\}$ の少なくとも一方は無矛盾である。
+5. $\Sigma\vdash\varphi$ かつ $\Sigma\vdash\neg\varphi$ ならば $\Sigma$ は矛盾する。
+:::
+
+::: proof
+**1.** $\Sigma\vdash\bot$ を与える導出 $D$ に、論理式 $\varphi$ で RAA を施す。未解消の仮定は $\mathrm{A}(D)\setminus\{\neg\varphi\}\subset\Sigma$、結論は $\varphi$。
+
+**5.** $\neg\varphi=(\varphi\to\bot)$ なので、二つの導出に $\to$E を施すと、結論 $\bot$、未解消の仮定は二つの和で $\Sigma$ に含まれる。
+
+**2.** ($\Rightarrow$) 弱化より $\Sigma\cup\{\neg\varphi\}\vdash\varphi$、仮定より $\Sigma\cup\{\neg\varphi\}\vdash\neg\varphi$ なので、5 より矛盾する。($\Leftarrow$) $\Sigma\cup\{\neg\varphi\}\vdash\bot$ を与える導出 $D$ に $\varphi$ で RAA を施すと、未解消の仮定は $\mathrm{A}(D)\setminus\{\neg\varphi\}\subset\Sigma$、結論 $\varphi$。
+
+**3.** 2 の両辺の否定である。
+
+**4.** 両方とも矛盾すると仮定する。$\Sigma\cup\{\varphi\}\vdash\bot$ から演繹定理（\ref{logic:derivability-basic} の 4）で $\Sigma\vdash\varphi\to\bot=\neg\varphi$。$\Sigma\cup\{\neg\varphi\}\vdash\bot$ から 2 で $\Sigma\vdash\varphi$。5 より $\Sigma$ は矛盾し、仮定に反する。
+
+::: hypcheck
+- **RAA（背理法）**：1 と 2 の ($\Leftarrow$) で使った。これが古典論理を特徴づける規則である。4 は完全性定理の証明（リンデンバウムの補題）で使うが、その証明は 2 を通じて RAA に依存している。
+- 5 は RAA を使っていない。
+:::
+:::
+
+::: remark 他の証明体系との関係 {#logic:nd-other-systems}
+\ref{set:page-axioms} では、形式的証明を「論理公理と推論規則から有限列として作る」ヒルベルト流の体系で説明し、さらに「文でない $\varphi$ について $S\vdash\varphi$ は全称閉包の証明」という約束をとっている。本系列の自然演繹の $\Sigma\vdash\varphi$ は、自由変数を含む前提をそのまま扱う局所的な導出可能性であり、この約束とは異なる（\ref{logic:global-consequence} と同じ違いである）。文についてはどちらの体系でも同じ論理式が導出可能であり、その同値性は \ref{pt:equivalence-of-systems} で示す。当面は、完全性定理を経由すれば、文についての導出可能性がどちらの体系でも $\models$ に一致することから同値性が従う、と理解してよい。
+:::
+
+## 問題 {#logic:sec-nd-problems}
+
+::: problem {#logic:prob-nd-transitivity}
+等号の推移律 $\vdash r=s\to(s=t\to r=t)$ を導出せよ。
+:::
+
+::: solution
+$r,s,t$ に現れない変数 $x$ をとり $\varphi\defeq(r=x)$ とおく。$\varphi[s/x]=(r=s)$, $\varphi[t/x]=(r=t)$ で、原子論理式なので代入可能。仮定 $s=t$ と仮定 $r=s$ に $=$E を施して $r=t$（未解消 $\{s=t,r=s\}$）。$\to$I で $s=t$ を解消して $s=t\to r=t$、さらに $\to$I で $r=s$ を解消する。
+:::
+
+::: problem {#logic:prob-nd-peirce}
+パースの法則 $\vdash((\varphi\to\psi)\to\varphi)\to\varphi$ を導出せよ。どこで RAA を使ったか答えよ。
+:::
+
+::: solution
+仮定 $\theta\defeq(\varphi\to\psi)\to\varphi$、仮定 $\neg\varphi$ をおく。まず $\varphi\to\psi$ を導く：仮定 $\varphi$ と $\neg\varphi$ に $\to$E で $\bot$、RAA で $\psi$ を結論する（$\neg\psi$ は仮定されていないので解消するものはない）、$\to$I で $\varphi$ を解消して $\varphi\to\psi$（未解消 $\{\neg\varphi\}$）。これと $\theta$ に $\to$E で $\varphi$。これと $\neg\varphi$ に $\to$E で $\bot$。RAA で $\varphi$ を結論して $\neg\varphi$ を解消（未解消 $\{\theta\}$）。最後に $\to$I で $\theta$ を解消する。RAA は二回使い、一回目は爆発律（\ref{logic:consistency-basic} の 1）として、二回目は本来の背理法として使った。二回目の RAA は除けない（パースの法則は直観主義論理では導出できないことが知られている）。
+:::
+
+::: problem {#logic:prob-nd-forall-swap}
+$\vdash\forall x\,\forall y\,\varphi\to\forall y\,\forall x\,\varphi$ を導出せよ。固有変数条件の確認も書くこと。
+:::
+
+::: solution
+$x=y$ なら $\to$I だけでよいので、$x\neq y$ とする。仮定 $\forall x\,\forall y\,\varphi$ に項 $x$ で $\forall$E を施すと $(\forall y\,\varphi)[x/x]=\forall y\,\varphi$。さらに項 $y$ で $\forall$E を施すと $\varphi[y/y]=\varphi$（いずれも \ref{logic:substitution-basic} の 2 と \ref{logic:substitutable-sufficient} の 3）。未解消の仮定は $\{\forall x\,\forall y\,\varphi\}$ だけで、$x,y$ はそこに自由に現れないので、$\forall$I で $\forall x\,\varphi$、再び $\forall$I で $\forall y\,\forall x\,\varphi$。最後に $\to$I。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>プログラミング言語 L と計算可能関数 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/02-computability/01-language-L.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# プログラミング言語 L と計算可能関数 {#comp:page-language-L keywords="while programs, loop programs, programming language L, computable partial function, big-step semantics, structured programming"}
+
+本ページから、計算可能性を**プログラミング言語 L** によって定義する。L は、変数への代入（$0$ の代入、$1$ を足す、$1$ を引く、変数の写し）、逐次実行、回数を決めた繰り返し $\mathtt{for}$、条件つきの繰り返し $\mathtt{while}$ だけをもつ小さな言語である。チューリング機械（\ref{comp:turing-machine}）よりも、普段書くプログラムに近いので直感的にとらえやすい。L で計算できる部分関数を**計算可能**と呼び（\ref{comp:L-computable}）、後のページで、原始再帰関数（$\mathtt{while}$ を除いた L）、一般再帰関数、レジスタ機械、チューリング機械と比べる。
+
+本ページでは、L の構文（\ref{comp:L-syntax}）と意味（\ref{comp:L-semantics}）を定め、意味が一意に決まること（\ref{comp:L-determinism}）、現れない変数は書き換えられないこと（\ref{comp:L-locality}）、$\mathtt{for}$ だけのプログラムは必ず停止すること（\ref{comp:for-total}）を示し、よく使う命令の略記（\ref{comp:L-macros}）と合成についての閉包性（\ref{comp:L-composition}）を準備する。
+
+> L のような言語（while プログラム、LOOP プログラム）による計算可能性の扱いは、Meyer–Ritchie (1967) の LOOP 言語などに由来する標準的な方法である。資料フォルダにこの形の教科書はないので、定義と証明は本サイトで組み立てた。基本命令の選び方は本によって異なるが、計算できる関数の範囲は変わらない（\ref{comp:L-macros} の後の注意）。
+
+## 記法と定義の確認 {#comp:sec-L-notation}
+
+::: notation
+- $\N=\{0,1,2,\dots\}$。**切り捨ての引き算** $m\mathbin{\dot{-}}n\defeq\max(m-n,0)$。
+- **部分関数** $f\colon\N^{k}\rightharpoonup\N$ とは、定義域 $\mathrm{dom}(f)\subseteq\N^{k}$ 上の写像のこと。$\vec{m}\in\mathrm{dom}(f)$ を $f(\vec{m})\downarrow$（**定義される**）、そうでないことを $f(\vec{m})\uparrow$ と書く。$\mathrm{dom}(f)=\N^{k}$ のとき $f$ は**全域的**である。
+- 部分関数の値を含む二つの式 $e_{1},e_{2}$ について、$e_{1}\simeq e_{2}$ は「両辺がともに定義されて値が等しいか、両辺がともに定義されない」ことを表す（クリーネの等号）。
+- **変数**は $x_{0},x_{1},x_{2},\dots$ の可算個とし、その全体を $\mathrm{Var}$ と書く。$x,y,z,u,v$ などは変数を表す文字として使う。
+- **状態**とは写像 $\sigma\colon\mathrm{Var}\to\N$ のこと。$\sigma[x\mapsto n]$ は、$x$ での値だけを $n$ に変えた状態である。
+:::
+
+## 構文 {#comp:sec-L-syntax}
+
+::: definition L のプログラム {#comp:L-syntax keywords="syntax of L, assignment, sequential composition, for loop, while loop" index="プログラミング言語 L|ぷろぐらみんぐげんごえる"}
+**L のプログラム**を次の規則で帰納的に定める。$x,y$ は任意の変数である。
+1. （基本命令）$x:=0$、$x:=x+1$、$x:=x\mathbin{\dot{-}}1$、$x:=y$ はプログラムである。
+2. （逐次実行）$P,Q$ がプログラムなら、$(P;Q)$ はプログラムである。
+3. （for ループ）$P$ がプログラムなら、$\mathtt{for}\ x\ \mathtt{do}\ P\ \mathtt{od}$ はプログラムである。
+4. （while ループ）$P$ がプログラムなら、$\mathtt{while}\ x\neq0\ \mathtt{do}\ P\ \mathtt{od}$ はプログラムである。
+
+規則 4 を使わずに作られるプログラムを **for プログラム**と呼び、その全体を $\mathrm{L}_{\mathrm{for}}$ と書く。プログラム $P$ に現れる変数の（有限）集合を $\mathrm{var}(P)$ と書く。$;$ の括弧は、意味が変わらない（問題 \ref{comp:prob-L-assoc}）ので省く。
+:::
+
+::: remark
+for ループの繰り返し回数は、**ループに入ったときの** $x$ の値で決まり、本体 $P$ の中で $x$ が書き換えられても変わらない（\ref{comp:L-semantics} の 5）。この約束によって、for ループは必ず有限回で終わる。while ループは、ループの頭で毎回 $x$ の値を調べ、$0$ なら終わる。
+:::
+
+::: remark Python 風の表示 {#comp:L-python-display keywords="Python-like notation for L programs" index="Python 風の表示（L の）|ぱいそんふうのひょうじえるの"}
+定義はここまでの記号で厳密に与えたが、具体的なプログラムは読みやすさのため、以下 Python に似た形で表示する。対応は次のとおりで、表示は定義の略記にすぎない。
+
+| L のプログラム | 表示 |
+|---|---|
+| $x:=0$ | `x = 0` |
+| $x:=x+1$ | `x += 1` |
+| $x:=x\mathbin{\dot{-}}1$ | `x = max(x - 1, 0)` |
+| $x:=y$ | `x = y` |
+| $P;Q$ | $P$ の行の後に $Q$ の行を書く |
+| $\mathtt{for}\ x\ \mathtt{do}\ P\ \mathtt{od}$ | `for _ in range(x):` の下に $P$ を字下げして書く |
+| $\mathtt{while}\ x\neq0\ \mathtt{do}\ P\ \mathtt{od}$ | `while x != 0:` の下に $P$ を字下げして書く |
+
+Python の `for _ in range(x):` も、繰り返しの回数をループに入ったときの `x` の値で決め、本体で `x` を書き換えても回数は変わらないので、L の for ループ（\ref{comp:L-semantics} の 5）と同じ意味になる。変数の値は常に自然数で、`x = max(x - 1, 0)` は $0$ から引いても $0$ のままであることを表す。後で導入する略記（\ref{comp:L-macros}）も、`x = y + z`、`if x != 0:`、`y = f(z1, z2)` などと Python の書き方で表示する。
+:::
+
+## 意味 {#comp:sec-L-semantics}
+
+::: definition L の意味（大きいステップの意味論） {#comp:L-semantics keywords="big-step operational semantics, evaluation relation" index="意味（プログラムの）|いみぷろぐらむの"}
+プログラム $P$ と状態 $\sigma,\tau$ の間の関係 $\langle P,\sigma\rangle\Downarrow\tau$（「$P$ を状態 $\sigma$ から実行すると停止して状態 $\tau$ になる」）を、次の規則で閉じた**最小の**関係として定める。
+1. $\langle x:=0,\sigma\rangle\Downarrow\sigma[x\mapsto0]$。
+2. $\langle x:=x+1,\sigma\rangle\Downarrow\sigma[x\mapsto\sigma(x)+1]$、$\langle x:=x\mathbin{\dot{-}}1,\sigma\rangle\Downarrow\sigma[x\mapsto\sigma(x)\mathbin{\dot{-}}1]$。
+3. $\langle x:=y,\sigma\rangle\Downarrow\sigma[x\mapsto\sigma(y)]$。
+4. $\langle P,\sigma\rangle\Downarrow\sigma'$ かつ $\langle Q,\sigma'\rangle\Downarrow\tau$ なら、$\langle P;Q,\sigma\rangle\Downarrow\tau$。
+5. $n\defeq\sigma(x)$ とする。状態 $\sigma_{0}=\sigma,\sigma_{1},\dots,\sigma_{n}=\tau$ で、すべての $i<n$ について $\langle P,\sigma_{i}\rangle\Downarrow\sigma_{i+1}$ となるものがあれば、$\langle\mathtt{for}\ x\ \mathtt{do}\ P\ \mathtt{od},\sigma\rangle\Downarrow\tau$。（$n=0$ なら $\tau=\sigma$。）
+6. $W\defeq\mathtt{while}\ x\neq0\ \mathtt{do}\ P\ \mathtt{od}$ とする。$\sigma(x)=0$ なら $\langle W,\sigma\rangle\Downarrow\sigma$。$\sigma(x)\neq0$ で、$\langle P,\sigma\rangle\Downarrow\sigma'$ かつ $\langle W,\sigma'\rangle\Downarrow\tau$ なら、$\langle W,\sigma\rangle\Downarrow\tau$。
+
+「最小の関係」は、規則で閉じた関係すべての共通部分である（共通部分も規則で閉じている）。言い換えると、$\langle P,\sigma\rangle\Downarrow\tau$ が成り立つのは、それが規則を有限回使って導かれる（**導出**をもつ）ときに限る。したがって、$\Downarrow$ についての性質は**導出に関する帰納法**で示せる。
+:::
+
+::: remark
+規則 6 は $W$ 自身を前提に含むので、プログラムの構成に関する帰納法では定義できない。最小の関係として定めたことで、$\sigma$ から始めて while ループが終わらないとき、どの $\tau$ についても $\langle W,\sigma\rangle\Downarrow\tau$ は成り立たない（有限の導出がない）。
+:::
+
+::: example
+次のプログラム $P\defeq\mathtt{while}\ x_{1}\neq0\ \mathtt{do}\ x_{1}:=x_{1}+1\ \mathtt{od}$ を考える。
+```python P
+while x1 != 0:
+    x1 += 1
+```
+$\sigma(x_{1})=0$ なら $\langle P,\sigma\rangle\Downarrow\sigma$。$\sigma(x_{1})\neq0$ なら、どの $\tau$ でも $\langle P,\sigma\rangle\Downarrow\tau$ とならない：そうなる導出のうち最も短いものをとると、最後の規則は 6 の後半で、前提 $\langle P,\sigma[x_{1}\mapsto\sigma(x_{1})+1]\rangle\Downarrow\tau$ がより短い導出をもつ。新しい状態でも $x_{1}\neq0$ なので、同じ議論で無限に短くなり、矛盾する。
+:::
+
+::: proposition 意味の一意性 {#comp:L-determinism keywords="determinism of L" index="決定性（L の）|けっていせいえるの"}
+$\langle P,\sigma\rangle\Downarrow\tau$ かつ $\langle P,\sigma\rangle\Downarrow\tau'$ なら $\tau=\tau'$。したがって各プログラム $P$ は状態の上の部分写像 $[\![P]\!]$ を定める：$\langle P,\sigma\rangle\Downarrow\tau$ となる $\tau$ があればそれ（唯一）を $[\![P]\!](\sigma)$ とし、なければ $[\![P]\!](\sigma)$ は定義されない。
+:::
+
+::: proof
+$\langle P,\sigma\rangle\Downarrow\tau$ の導出に関する帰納法で、「すべての $\tau'$ について、$\langle P,\sigma\rangle\Downarrow\tau'$ なら $\tau'=\tau$」を示す。$\langle P,\sigma\rangle\Downarrow\tau'$ の導出の最後の規則は、$P$ の形で決まる（基本命令なら 1〜3、$P;Q$ なら 4、for なら 5、while なら 6 で、6 の前半と後半は $\sigma(x)=0$ かどうかで決まる）。
+- 規則 1〜3：$\tau$ も $\tau'$ も $\sigma$ から一つの式で決まるので等しい。
+- 規則 4：$\langle P_{1},\sigma\rangle\Downarrow\sigma'$, $\langle P_{2},\sigma'\rangle\Downarrow\tau$ と $\langle P_{1},\sigma\rangle\Downarrow\sigma''$, $\langle P_{2},\sigma''\rangle\Downarrow\tau'$ があるとき、前提についての帰納法の仮定で $\sigma''=\sigma'$、さらに $\tau'=\tau$。
+- 規則 5：二つの列 $(\sigma_{i})$, $(\sigma'_{i})$ はどちらも長さ $n=\sigma(x)$ で $\sigma_{0}=\sigma'_{0}=\sigma$。$i$ に関する帰納法で、前提 $\langle P,\sigma_{i}\rangle\Downarrow\sigma_{i+1}$ についての帰納法の仮定から $\sigma'_{i+1}=\sigma_{i+1}$。よって $\tau'=\sigma'_{n}=\sigma_{n}=\tau$。
+- 規則 6：前半なら $\tau=\tau'=\sigma$。後半なら規則 4 と同じ議論。
+:::
+
+::: lemma 局所性 {#comp:L-locality keywords="locality, frame property" index="局所性（プログラムの）|きょくしょせいぷろぐらむの"}
+$V\defeq\mathrm{var}(P)$ とする。
+1. $\langle P,\sigma\rangle\Downarrow\tau$ なら、$V$ に属さない変数 $z$ について $\tau(z)=\sigma(z)$。
+2. $\sigma$ と $\sigma'$ が $V$ 上で一致し、$\langle P,\sigma\rangle\Downarrow\tau$ なら、$\langle P,\sigma'\rangle\Downarrow\tau'$ となる $\tau'$ があり、$\tau'$ は $V$ 上で $\tau$ と、$V$ の外で $\sigma'$ と一致する。
+:::
+
+::: proof
+どちらも $\langle P,\sigma\rangle\Downarrow\tau$ の導出に関する帰納法。
+1. 規則 1〜3 で書き換わるのは $x\in V$ だけである。規則 4〜6 では、前提に現れるプログラム $P_{1},P_{2}$（または本体）の変数は $V$ に含まれるので、帰納法の仮定を各段に使えば $z$ の値は変わらない。
+2. 規則 1〜3：右辺の値（$0$, $\sigma(x)\pm1$, $\sigma(y)$）は $V$ 上の値だけで決まる。規則 4：帰納法の仮定を $P_{1}$ に使って $\sigma'_{1}$ を得ると、$\sigma'_{1}$ は $V$ 上で $\sigma_{1}$ と一致するので、$P_{2}$ にも使える。規則 5：$x\in V$ なので $\sigma'(x)=\sigma(x)=n$ で、繰り返し回数が同じになる。各段に帰納法の仮定を使う。規則 6：$x\in V$ なので $\sigma(x)=0$ かどうかが $\sigma'$ でも同じで、後半は規則 4 と同じ。$V$ の外での一致は 1 による。
+:::
+
+::: proposition for プログラムは停止する {#comp:for-total keywords="loop programs always terminate" index="for プログラム|ふぉーぷろぐらむ"}
+$P\in\mathrm{L}_{\mathrm{for}}$ なら、すべての状態 $\sigma$ について $[\![P]\!](\sigma)\downarrow$。
+:::
+
+::: proof
+$P$ の構成に関する帰納法。基本命令は規則 1〜3 で停止する。$P_{1};P_{2}$ は、帰納法の仮定で $\sigma_{1}\defeq[\![P_{1}]\!](\sigma)$、$\tau\defeq[\![P_{2}]\!](\sigma_{1})$ が存在するので、規則 4 で停止する。$\mathtt{for}\ x\ \mathtt{do}\ Q\ \mathtt{od}$ は、$n=\sigma(x)$ として $\sigma_{i+1}\defeq[\![Q]\!](\sigma_{i})$ を $i<n$ について順に定めればよい（各段で帰納法の仮定を使う）。規則 6 は $\mathrm{L}_{\mathrm{for}}$ に現れない。
+:::
+
+## 計算可能関数 {#comp:sec-L-computable}
+
+::: definition 計算可能な部分関数 {#comp:L-computable keywords="L-computable, computable partial function, for-computable" index="計算可能（L で）|けいさんかのうえるで"}
+$\vec{m}=(m_{1},\dots,m_{k})\in\N^{k}$ に対し、**入力状態** $\sigma_{\vec{m}}$ を、$\sigma_{\vec{m}}(x_{i})=m_{i}$（$1\le i\le k$）、それ以外の変数では $0$ と定める。プログラム $P$ が部分関数 $f\colon\N^{k}\rightharpoonup\N$ を**計算する**とは、すべての $\vec{m}$ について
+$$
+f(\vec{m})\simeq[\![P]\!](\sigma_{\vec{m}})(x_{0})
+$$
+となる（右辺は $[\![P]\!](\sigma_{\vec{m}})\downarrow$ のときだけ定義される）ことをいう。つまり入力は $x_{1},\dots,x_{k}$ に置き、出力は停止したときの $x_{0}$ の値である。
+- L のプログラムで計算できる部分関数を **計算可能**（L 計算可能）な部分関数という。全域的なものを**計算可能関数**という。
+- $\mathrm{L}_{\mathrm{for}}$ のプログラムで計算できる関数を **for 計算可能**という（\ref{comp:for-total} により全域的）。
+
+集合 $A\subseteq\N^{k}$ は、特性関数 $\chi_{A}$（$\vec{m}\in A$ で $1$、そうでなければ $0$）が計算可能なとき**決定可能**という。
+:::
+
+::: remark
+「計算可能」は、どの計算模型を選ぶかに依存する定義に見える。後のページで、一般再帰関数（\ref{comp:page-recursive-functions}）、レジスタ機械（\ref{comp:page-register-machines}）、チューリング機械（\ref{comp:page-turing-completeness}）が、どれも L と同じ部分関数を計算することを示す。チャーチ–チューリングの提唱（\ref{comp:church-turing}）は、この共通の範囲が「アルゴリズムで計算できる」ことの正しい定式化であるという主張で、数学的な定理ではない。
+:::
+
+## 略記 {#comp:sec-L-macros}
+
+::: proposition よく使う命令の略記 {#comp:L-macros keywords="macros, derived instructions, conditional" index="略記（L の命令の）|りゃっきえるのめいれい"}
+以下で $x,y,z$ は変数、$u,v$ は他のどこにも現れない**新しい**変数とする。1〜5 では、左の略記を右の for プログラムの意味で使う。6 は二つのプログラムの意味が等しいという主張である。どの場合も、停止後の状態は、$x$（条件文では $P$ の変数）と新しい変数以外で入力の状態と一致する（\ref{comp:L-locality}）。
+1. $x:=y+z$ は次のプログラムの略記。実行後 $x=\sigma(y)+\sigma(z)$。
+```python x = y + z
+u = z
+x = y
+for _ in range(u):
+    x += 1
+```
+2. $x:=y\mathbin{\dot{-}}z$ は次の略記（`x = y - z` と表示し、負になる場合は $0$）。実行後 $x=\sigma(y)\mathbin{\dot{-}}\sigma(z)$。
+```python x = y - z（切り捨て）
+u = z
+x = y
+for _ in range(u):
+    x = max(x - 1, 0)
+```
+3. $x:=y\cdot z$ は次の略記。実行後 $x=\sigma(y)\sigma(z)$。
+```python x = y * z
+u = y
+v = z
+x = 0
+for _ in range(v):
+    x = x + u      # 1 の略記
+```
+4. $x:=c$（定数 $c\in\N$）は、`x = 0` の後に `x += 1` を $c$ 回並べたもの。
+5. $\mathtt{if}\ x\neq0\ \mathtt{then}\ P\ \mathtt{fi}$ は次の略記で、$\sigma(x)\neq0$ なら $P$ を $1$ 回、$\sigma(x)=0$ なら $0$ 回実行する。$\mathtt{if}\ x=0\ \mathtt{then}\ P\ \mathtt{fi}$ も、2 行目を省いて `u = max(u - x, 0)` とすれば同様。
+```python if x != 0: P
+u = 1
+v = max(u - x, 0)    # x = 0 なら 1、そうでなければ 0
+u = max(u - v, 0)    # x ≠ 0 なら 1、そうでなければ 0
+for _ in range(u):
+    P
+```
+6. $\mathtt{for}\ x\ \mathtt{do}\ P\ \mathtt{od}$ と次のプログラム（$u\notin\mathrm{var}(P)$）は、新しい変数 $u$ を除いて同じ状態を与える。
+```python for を while で書く
+u = x
+while u != 0:
+    P
+    u = max(u - 1, 0)
+```
+:::
+
+::: proof
+1. $u:=z$ の後 $u=\sigma(z)$、$x:=y$ の後 $x=\sigma(y)$（$x=z$ でも、$z$ の値は先に $u$ に写してある）。for ループは $\sigma(z)$ 回 $x$ に $1$ を足すので、$i$ に関する帰納法で $i$ 回目の後 $x=\sigma(y)+i$。2 も同じ。
+3. 2 行目までで $u=\sigma(y)$, $v=\sigma(z)$, $x=0$。本体 $x:=x+u$ は 1 の略記で、$u$ を書き換えない（1 の新しい変数は $u,v$ と別にとる）。$i$ 回目の後 $x=i\cdot\sigma(y)$。
+5. $v=1\mathbin{\dot{-}}\sigma(x)$ は $\sigma(x)=0$ なら $1$、そうでなければ $0$。$u=1\mathbin{\dot{-}}v$ はその逆で、for ループの回数になる。
+6. 右辺：$u$ の値は本体 $P$ で変わらない（\ref{comp:L-locality} の 1、$u\notin\mathrm{var}(P)$）ので、各周回の終わりに $1$ ずつ減り、ちょうど $\sigma(x)$ 周で $u=0$ になって止まる。各周回で $P$ が一度実行されるので、左辺の規則 5 の列 $\sigma_{0},\dots,\sigma_{n}$ と、$u$ 以外で一致する状態を順にたどる（$i$ に関する帰納法と \ref{comp:L-locality} の 2）。$P$ が停止しない段があれば、両辺とも停止しない。
+:::
+
+::: remark
+6 により、for ループは while ループと基本命令で書けるので、L の for は便利のためのもので、計算できる部分関数の範囲を広げない。逆に、L から $x:=x\mathbin{\dot{-}}1$ を除いても範囲は変わらない（問題 \ref{comp:prob-L-predecessor}）。このように基本命令の選び方には自由度があり、どれを選んでも以下の結果は同じである。
+:::
+
+::: proposition 合成についての閉包性 {#comp:L-composition keywords="closure under composition, subroutine call" index="合成（計算可能関数の）|ごうせいけいさんかのうかんすうの"}
+$g\colon\N^{l}\rightharpoonup\N$ と $h_{1},\dots,h_{l}\colon\N^{k}\rightharpoonup\N$ が計算可能なら、合成
+$$
+f(\vec{m})\simeq g\bigl(h_{1}(\vec{m}),\dots,h_{l}(\vec{m})\bigr)
+$$
+（右辺はすべての $h_{j}(\vec{m})$ が定義され、さらに $g$ がその値で定義されるときに限り定義される）も計算可能である。$g,h_{j}$ が for 計算可能なら $f$ も for 計算可能である。
+:::
+
+::: proof
+**サブルーチン呼び出し.** 部分関数 $\phi\colon\N^{p}\rightharpoonup\N$ を計算するプログラム $R$ と、変数 $y,z_{1},\dots,z_{p}$ について、命令 $y:=\phi(z_{1},\dots,z_{p})$ を次で定める。$\mathrm{var}(R)$ の各変数 $x_{i}$ を、これまで使っていない新しい変数 $w_{i}$ に置き換えたプログラムを $R'$ とする。
+```python y = φ(z1, …, zp) の展開
+w_j = 0          # R の変数 x_j を名前を変えた w_j すべてについて
+w1 = z1
+...
+wp = zp
+R'               # R の変数 x_j を w_j に置き換えたプログラム
+y = w0
+```
+最初の行で、$R'$ の変数は $R$ の入力状態 $\sigma_{\vec{n}}$（$\vec{n}=(\sigma(z_{1}),\dots,\sigma(z_{p}))$）と同じ値をもつ（変数の名前を付け替えただけなので、$R'$ の実行は $R$ の実行と同じ導出をたどる。\ref{comp:L-locality} の 2）。よって $R'$ は $\phi(\vec{n})\downarrow$ のときに限り停止し、そのとき $w_{0}=\phi(\vec{n})$。$R'$ の外の変数は変わらない（\ref{comp:L-locality} の 1）。
+
+**合成.** 新しい変数 $v_{1},\dots,v_{l}$ をとり、
+```python 合成 f(x1, …, xk) = g(h1(…), …, hl(…))
+v1 = h1(x1, ..., xk)
+...
+vl = hl(x1, ..., xk)
+x0 = g(v1, ..., vl)
+```
+とする（各呼び出しで別々の新しい変数を使う）。入力状態 $\sigma_{\vec{m}}$ から、$j$ 番目の呼び出しは $h_{j}(\vec{m})\downarrow$ のときに限り停止して $v_{j}=h_{j}(\vec{m})$ とし、入力変数 $x_{1},\dots,x_{k}$ は書き換えない。最後の呼び出しは $g(h_{1}(\vec{m}),\dots)\downarrow$ のときに限り停止する。よってこのプログラムは $f$ を計算する。$g,h_{j}$ を計算するプログラムが $\mathrm{L}_{\mathrm{for}}$ に属すれば、組み立てたものも $\mathrm{L}_{\mathrm{for}}$ に属する。
+:::
+
+::: hypcheck
+- **最小の関係として定めたこと**（\ref{comp:L-semantics}）：導出に関する帰納法（\ref{comp:L-determinism}、\ref{comp:L-locality}）と、停止しない実行に値を与えないことの両方に使った。
+- **for の回数を入口で固定したこと**：\ref{comp:for-total} で、ループが有限回で終わることに本質的に使った。本体で $x$ を書き換えると回数が変わる約束にすると、$\mathtt{for}\ x\ \mathtt{do}\ x:=x+1\ \mathtt{od}$ が停止しなくなる。
+- **新しい変数**：\ref{comp:L-macros} と \ref{comp:L-composition} で、局所性（\ref{comp:L-locality}）を使って途中の計算が他の変数を壊さないことを保証するのに使った。変数が可算無限個あることがここで効いている。
+- **入力状態の他の変数を $0$ にしたこと**：$R$ の実行が入力だけで決まるようにするために使った（サブルーチン呼び出しの最初の行はこれを再現している）。
+:::
+
+## 問題 {#comp:sec-L-problems}
+
+::: problem {#comp:prob-L-assoc}
+$[\![(P;Q);R]\!]=[\![P;(Q;R)]\!]$（部分写像として等しい）を示せ。
+:::
+
+::: solution
+$\langle(P;Q);R,\sigma\rangle\Downarrow\tau$ の導出の最後は規則 4 で、$\langle P;Q,\sigma\rangle\Downarrow\sigma_{2}$, $\langle R,\sigma_{2}\rangle\Downarrow\tau$。前者の最後も規則 4 で、$\langle P,\sigma\rangle\Downarrow\sigma_{1}$, $\langle Q,\sigma_{1}\rangle\Downarrow\sigma_{2}$。規則 4 を二度使って $\langle Q;R,\sigma_{1}\rangle\Downarrow\tau$、$\langle P;(Q;R),\sigma\rangle\Downarrow\tau$。逆も同様。停止しない場合は、片方が停止すれば他方も停止することから従う。
+:::
+
+::: problem {#comp:prob-L-predecessor}
+基本命令 $x:=x\mathbin{\dot{-}}1$ は、他の基本命令と for で書けることを示せ。
+:::
+
+::: solution
+新しい変数 $u,v$ をとり、次のプログラムとする。
+```python x = max(x - 1, 0) を for で書く
+u = 0
+v = 0
+for _ in range(x):
+    u = v
+    v += 1
+x = u
+```
+$i$ 周後に $(u,v)=(i\mathbin{\dot{-}}1,i)$ であることが $i$ に関する帰納法で分かる（$i=0$ で $(0,0)$、$i\to i+1$ で $u=i$, $v=i+1$）。$\sigma(x)$ 周後に $u=\sigma(x)\mathbin{\dot{-}}1$ で、最後にそれを $x$ に写す。
+:::
+
+::: problem {#comp:prob-L-examples}
+次の関数が for 計算可能であることを示せ：(a) $\max(m,n)$、(b) $\chi_{=}(m,n)$（$m=n$ で $1$、そうでなければ $0$）、(c) $m^{n}$。
+:::
+
+::: solution
+(a) $(m\mathbin{\dot{-}}n)+n=\max(m,n)$ による。
+```python max(x1, x2)
+x0 = x1 - x2      # 切り捨ての引き算（略記 2）
+x0 = x0 + x2
+```
+(b) $u=\lvert m-n\rvert$ が $0$ になるのは $m=n$ のときに限る。
+```python x1 と x2 が等しいか
+u = x1 - x2       # 切り捨て
+v = x2 - x1       # 切り捨て
+u = u + v
+x0 = 1
+if u != 0:
+    x0 = 0
+```
+(c) $i$ 周後に $x_{0}=m^{i}$。
+```python x1 の x2 乗
+x0 = 1
+for _ in range(x2):
+    x0 = x0 * x1
+```
+:::
+
+::: problem {#comp:prob-L-nowhere}
+(a) 定義域が空の部分関数 $\N\rightharpoonup\N$ は計算可能であることを示せ。(b) for 計算可能でないことを示せ。
+:::
+
+::: solution
+(a) 次のプログラムは、
+```python
+x2 += 1
+while x2 != 0:
+    x2 += 1
+```
+入力によらず while の条件が常に成り立つので停止しない（本文の例と同じ議論）。(b) for プログラムはすべての入力で停止する（\ref{comp:for-total}）ので、全域的な関数しか計算しない。
+:::
+
+::: supplement
+**前提の検討.**
+- 変数の値を自然数に限ったので、L のプログラムは「無限に大きいメモリをもつ機械」の模型である。変数の値に上限 $N$ を設けると（$N$ を超える足し算は $N$ に止める、など）、状態は有限個しかなく、計算できるものは本質的に有限オートマトン（\ref{comp:dfa}）と同じ程度になる。
+- for ループを除くと、while と基本命令だけでも同じ部分関数が計算できる（\ref{comp:L-macros} の 6）。しかし、while を除くと計算できる範囲は真に狭くなる（\ref{comp:page-ackermann}）。
+- 変数の個数を固定すると範囲が狭くなるかは自明でない。レジスタ機械では、レジスタ $2$ 個でも（入力と出力をうまくコード化すれば）すべての計算可能関数を計算できることが知られている（ミンスキー。\ref{comp:page-register-machines} で触れる）。
+
+**関連する結果.**
+- *構造化定理.* goto 文をもつプログラム（レジスタ機械のプログラム）は、while ループ一つと条件文で書き直せる（ベーム–ヤコピーニの定理として知られる主張の一形態。\ref{comp:page-recursive-functions} の標準形で、L について示す）。
+- *意味の別の与え方.* 本ページの $\Downarrow$ は**大きいステップの操作的意味論**である。1 命令ずつ状態を変える**小さいステップの意味論**や、次の**表示的意味論**でも同じ部分写像 $[\![P]\!]$ が得られる。
+
+**高い視点から：while は最小不動点.** 状態から状態への部分写像全体を $\mathcal{D}$ とし、$g\sqsubseteq g'$ を「$g'$ は $g$ の拡張」と定めると、$\mathcal{D}$ は「定義域を増やしていく」順序で、上向きの鎖の和をもつ。while ループ $W=\mathtt{while}\ x\neq0\ \mathtt{do}\ P\ \mathtt{od}$ の意味は、写像
+$$
+\Phi(g)(\sigma)\simeq\begin{cases}\sigma&(\sigma(x)=0)\\ g([\![P]\!](\sigma))&(\sigma(x)\neq0)\end{cases}
+$$
+の**最小の不動点**であり、$\varnothing\sqsubseteq\Phi(\varnothing)\sqsubseteq\Phi^{2}(\varnothing)\sqsubseteq\cdots$ の和として得られる（$\Phi^{n}(\varnothing)$ は「$n$ 周以内で終わる実行」だけを知っている近似）。これはクリーネの不動点定理の一例で、言語方程式の最小解（\ref{comp:page-fixed-points}）と同じ形をしている。プログラムを「一つのループの式 $W=\Phi(W)$ を解いたもの」と見る比喩は、正規表現のスター $A^{\ast}=\{\varepsilon\}\cup AA^{\ast}$ と同じ発想である。圏論的には、$[\![P;Q]\!]=[\![Q]\!]\circ[\![P]\!]$ なので、意味はプログラムの逐次実行を「部分写像の圏」での合成に写す関手のようにふるまう。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

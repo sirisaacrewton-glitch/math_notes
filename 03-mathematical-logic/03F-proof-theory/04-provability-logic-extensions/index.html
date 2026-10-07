@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>証明可能性論理の展開 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/04-provability-logic-extensions/index.html" data-kind="dir">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 証明可能性論理の展開（Further Provability Logics）
+
+Grz と S4 を保つ様相の解釈、集合論・解析学における様相論理、無矛盾性と ω 無矛盾性の結合証明可能性論理 GLB。（Boolos 第 12〜16 章に対応）
+
+<p class="mn-msc">MSC2020: 03F45, 03B45</p>
+
+## 前提知識
+
+- [証明論と型理論 › 証明可能性論理 GL](../../../03-mathematical-logic/03F-proof-theory/03-provability-logic/index.html)（全体、8 ページ）
+- [集合論 › 整礎集合](../../../03-mathematical-logic/03E-set-theory/03-well-founded-sets/index.html)（全体、6 ページ）：累積階層（集合論における様相論理で使う）
+- [集合論 › 相対無矛盾性の初歩](../../../03-mathematical-logic/03E-set-theory/04-consistency-proofs/index.html)（全体、6 ページ）：推移的モデル・絶対性（同上）
+
+## 目次
+
+<ol class="mn-dirtoc">
+<li value="1"><a href="01-grz.html">§1 Grz と S4 を保つ証明可能性の解釈</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 1.1</span> <span class="mn-dirtoc-title">⊡ 翻訳</span></li><li><span class="mn-dirtoc-kind">命題 1.2</span> <span class="mn-dirtoc-title">S4 の ⊡ 翻訳</span></li><li><span class="mn-dirtoc-kind">定義 1.3</span> <span class="mn-dirtoc-title">真理付きの翻訳</span></li><li><span class="mn-dirtoc-kind">補題 1.4</span> <span class="mn-dirtoc-title">真理付きの翻訳は ⊡ 翻訳の翻訳</span></li><li><span class="mn-dirtoc-kind">定義 1.5</span> <span class="mn-dirtoc-title">Grz と S4Grz</span></li><li><span class="mn-dirtoc-kind">定義 1.6</span> <span class="mn-dirtoc-title">反対称・逆弱整礎</span></li><li><span class="mn-dirtoc-kind">命題 1.7</span> <span class="mn-dirtoc-title">Grz は S4 を含む</span></li><li><span class="mn-dirtoc-kind">定理 1.8</span> <span class="mn-dirtoc-title">S4 を保つ解釈の論理（Boolos 第 12 章の主定理）</span></li><li><span class="mn-dirtoc-kind">補題 1.9</span> <span class="mn-dirtoc-title">Grz の健全性</span></li><li><span class="mn-dirtoc-kind">補題 1.10</span> <span class="mn-dirtoc-title">有限の場合</span></li><li><span class="mn-dirtoc-kind">補題 1.11</span> <span class="mn-dirtoc-title">Grz の完全性</span></li><li><span class="mn-dirtoc-kind">補題 1.12</span> <span class="mn-dirtoc-title">反射閉包と ⊡ 翻訳</span></li></ul></li>
+<li value="2"><a href="02-set-theory.html">§2 集合論における様相論理</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 2.1</span> <span class="mn-dirtoc-title">集合論的解釈</span></li><li><span class="mn-dirtoc-kind">定義 2.2</span> <span class="mn-dirtoc-title">有限前整列</span></li><li><span class="mn-dirtoc-kind">補題 2.3</span> <span class="mn-dirtoc-title">前整列の特徴づけ</span></li><li><span class="mn-dirtoc-kind">定義 2.4</span> <span class="mn-dirtoc-title">体系 I</span></li><li><span class="mn-dirtoc-kind">補題 2.5</span> <span class="mn-dirtoc-title">I の派生定理</span></li><li><span class="mn-dirtoc-kind">定理 2.6</span> <span class="mn-dirtoc-title">推移的モデルの様相論理（Solovay）</span></li><li><span class="mn-dirtoc-kind">定義 2.8</span> <span class="mn-dirtoc-title">有限狭義全順序と体系 J</span></li><li><span class="mn-dirtoc-kind">定理 2.9</span> <span class="mn-dirtoc-title">宇宙の様相論理（Solovay）</span></li></ul></li>
+<li value="3"><a href="03-analysis.html">§3 解析学における様相論理</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 3.1</span> <span class="mn-dirtoc-title">解析学</span></li><li><span class="mn-dirtoc-kind">定義 3.2</span> <span class="mn-dirtoc-title">ω 規則と An_ω</span></li><li><span class="mn-dirtoc-kind">定義 3.3</span> <span class="mn-dirtoc-title">解釈</span></li><li><span class="mn-dirtoc-kind">定理 3.4</span> <span class="mn-dirtoc-title">ω 規則のもとでの証明可能性の様相論理（Solovay）</span></li><li><span class="mn-dirtoc-kind">定理 3.5</span> <span class="mn-dirtoc-title">ω 規則による Π¹₁ 完全性</span></li><li><span class="mn-dirtoc-kind">定義 3.7</span> <span class="mn-dirtoc-title">道</span></li><li><span class="mn-dirtoc-kind">補題 3.8</span> <span class="mn-dirtoc-title">排反性</span></li><li><span class="mn-dirtoc-kind">補題 3.9</span> <span class="mn-dirtoc-title">歩みは止まるか進む</span></li><li><span class="mn-dirtoc-kind">補題 3.10</span> <span class="mn-dirtoc-title">ソロヴェイ文の性質</span></li><li><span class="mn-dirtoc-kind">補題 3.11</span> <span class="mn-dirtoc-title">埋め込み補題</span></li><li><span class="mn-dirtoc-kind">定理 3.12</span> <span class="mn-dirtoc-title">真理の場合（Solovay）</span></li></ul></li>
+<li value="4"><a href="04-glb-semantics.html">§4 結合証明可能性論理 GLB とその意味論</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 4.1</span> <span class="mn-dirtoc-title">ω 証明可能・PA⁺</span></li><li><span class="mn-dirtoc-kind">命題 4.2</span> <span class="mn-dirtoc-title">ω 証明可能性の言い換え</span></li><li><span class="mn-dirtoc-kind">定義 4.4</span> <span class="mn-dirtoc-title">ω 証明可能性述語</span></li><li><span class="mn-dirtoc-kind">命題 4.5</span> <span class="mn-dirtoc-title">ω 証明可能性述語の正しさ</span></li><li><span class="mn-dirtoc-kind">定理 4.6</span> <span class="mn-dirtoc-title">ω 証明可能性の D1・D2</span></li><li><span class="mn-dirtoc-kind">定理 4.7</span> <span class="mn-dirtoc-title">形式化された Σ₃ 完全性</span></li><li><span class="mn-dirtoc-kind">系 4.8</span> <span class="mn-dirtoc-title">ω 証明可能性についてのレーブの定理</span></li><li><span class="mn-dirtoc-kind">定義 4.9</span> <span class="mn-dirtoc-title">GLB と GLSB</span></li><li><span class="mn-dirtoc-kind">定理 4.10</span> <span class="mn-dirtoc-title">GLB の算術的健全性</span></li><li><span class="mn-dirtoc-kind">命題 4.11</span> <span class="mn-dirtoc-title">GLB の公理に対応するフレームの性質</span></li><li><span class="mn-dirtoc-kind">定義 4.12</span> <span class="mn-dirtoc-title">IDzh と IDzh モデル</span></li><li><span class="mn-dirtoc-kind">定理 4.13</span> <span class="mn-dirtoc-title">IDzh の健全性と完全性</span></li></ul></li>
+<li value="5"><a href="05-glb-completeness.html">§5 GLB の算術的完全性と決定可能性</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">補題 5.1</span> <span class="mn-dirtoc-title">最小の ω 証明についての文</span></li><li><span class="mn-dirtoc-kind">定義 5.3</span> <span class="mn-dirtoc-title">OK な道</span></li><li><span class="mn-dirtoc-kind">定義 5.4</span> <span class="mn-dirtoc-title">GLB のソロヴェイ文</span></li><li><span class="mn-dirtoc-kind">補題 5.5</span> <span class="mn-dirtoc-title">道の排他性</span></li><li><span class="mn-dirtoc-kind">補題 5.6</span> <span class="mn-dirtoc-title">道を延ばす</span></li><li><span class="mn-dirtoc-kind">補題 5.7</span> <span class="mn-dirtoc-title">道の行き先</span></li><li><span class="mn-dirtoc-kind">補題 5.8</span> <span class="mn-dirtoc-title">証明可能性についての性質</span></li><li><span class="mn-dirtoc-kind">補題 5.9</span> <span class="mn-dirtoc-title">埋め込み補題（GLB）</span></li><li><span class="mn-dirtoc-kind">定理 5.10</span> <span class="mn-dirtoc-title">GLB の算術的完全性（ジャパリゼ）</span></li><li><span class="mn-dirtoc-kind">定理 5.11</span> <span class="mn-dirtoc-title">GLSB の算術的完全性</span></li></ul></li>
+<li value="6"><a href="06-glb-fixed-point.html">§6 GLB の不動点定理と閉様相論理式</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">補題 6.1</span> <span class="mn-dirtoc-title">C は逆整礎な順序</span></li><li><span class="mn-dirtoc-kind">定義 6.2</span> <span class="mn-dirtoc-title">様相化（二つの箱）</span></li><li><span class="mn-dirtoc-kind">定理 6.3</span> <span class="mn-dirtoc-title">GLB の不動点定理（イグナチェフ）</span></li><li><span class="mn-dirtoc-kind">定義 6.4</span> <span class="mn-dirtoc-title">二つの箱のキャラクター</span></li><li><span class="mn-dirtoc-kind">補題 6.5</span> <span class="mn-dirtoc-title">キャラクターの一致（GLB）</span></li><li><span class="mn-dirtoc-kind">命題 6.8</span> <span class="mn-dirtoc-title">閉じた GLB の論理式の真偽と証明可能性</span></li></ul></li>
+</ol>
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ハーディ関数とグッドスタイン列 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/07-ordinal-analysis/05-goodstein.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ハーディ関数とグッドスタイン列 {#pt:page-goodstein keywords="Hardy hierarchy, fundamental sequences, fast-growing functions, Goodstein sequences, hereditary base notation, Kirby-Paris theorem, provably recursive functions of PA"}
+
+$\PA$ の強さは、超限帰納法（\ref{pt:pa-proof-theoretic-ordinal}）だけでなく、「$\PA$ で全域性が証明できる計算可能関数がどれだけ速く増加しうるか」でも測れる。本ページでは、$\varepsilon_{0}$ 未満の順序数で添字付けられた急増加関数の族（**ハーディ関数** $H_{\alpha}$、\ref{pt:hardy-functions}）を定義し、その基本性質を示す。次に、自然数を「遺伝的な $k$ 進表示」で書いて底を一つずつ上げながら $1$ を引いていく**グッドスタイン列**を定義し、それが必ず $0$ に達することを、$\varepsilon_{0}$ 未満の順序数の減少列に対応させて証明する（\ref{pt:goodstein-terminates}）。グッドスタイン列の停止は $\PA$ では証明できないこと（カービー–パリス）が知られており、その背景にある「$\PA$ で証明できる関数はハーディ関数 $H_{\alpha}$（$\alpha<\varepsilon_{0}$）で抑えられる」という定理を、証明なしで紹介する。
+
+> 主な資料は新井敏康『数学基礎論』第 8 章 §8.4.3（定義 8.4.16、命題 8.4.17 の一部、定理 8.4.18、定理 8.4.26）。基本列の定義は新井の本に従い、グッドスタイン列の停止の証明は、底の置き換えと順序数の対応を自分で定式化し直して書いた。定理 8.4.18 と定理 8.4.26 の 2 は本サイトでは証明していない。
+
+## 記法と定義の確認 {#pt:sec-oa5-notation}
+
+::: notation
+- カントール標準形、$\varepsilon_{0}$、標準形の辞書式比較は \ref{pt:page-epsilon0} のとおり（\ref{pt:cantor-normal-form}, \ref{pt:cnf-comparison}, \ref{pt:epsilon0-basic}）。本ページでは標準形を係数付きで $\omega^{\alpha_{1}}\cdot c_{1}+\cdots+\omega^{\alpha_{n}}\cdot c_{n}$（$\alpha_{1}>\cdots>\alpha_{n}$, $0<c_{i}<\omega$）とも書く（同じ項を $c_{i}$ 個並べたもの）。
+- 二つの順序数 $\gamma=\omega^{\gamma_{1}}+\cdots+\omega^{\gamma_{k}}$, $\beta=\omega^{\beta_{1}}+\cdots+\omega^{\beta_{l}}$（標準形）について、$\gamma_{k}\ge\beta_{1}$（または $\gamma=0$ か $\beta=0$）のとき、和 $\gamma+\beta$ の標準形は二つの項の列をつないだものになる。このとき $\gamma+\beta$ を**標準的な和**という。
+- 関数 $f$ の $n$ 回の合成を $f^{(n)}$ と書く（$f^{(0)}(x)=x$）。
+- $\PA$ で**証明可能な再帰関数**とは、$\Sigma_{1}$ 論理式 $A(\vec{x},y)$ で、$\PA\vdash\forall\vec{x}\,\exists!y\,A(\vec{x},y)$ かつ $A$ が $\N$ で $f$ のグラフを定義するものがある関数 $f$ のことである（新井の本の定義 8.4.11）。
+:::
+
+## 基本列とハーディ関数 {#pt:sec-oa5-hardy}
+
+::: definition 基本列 {#pt:fundamental-sequence keywords="fundamental sequences for limit ordinals below epsilon_0" index="基本列|きほんれつ"}
+$\alpha<\varepsilon_{0}$ と $x\in\N$ について $\alpha[x]$ を次で定める。
+1. $0[x]\defeq0$、$(\beta+1)[x]\defeq\beta$。
+2. $\lambda$ が極限順序数で、標準形の最後の項が $\omega^{\delta}$（$\delta>0$）のとき、$\lambda=\gamma+\omega^{\delta}$（標準的な和）と書いて
+$$
+\lambda[x]\defeq
+\begin{cases}
+\gamma+\omega^{\eta}\cdot x & \delta=\eta+1\text{ のとき},\\
+\gamma+\omega^{\delta[x]} & \delta\text{ が極限順序数のとき}.
+\end{cases}
+$$
+$\delta<\lambda$ なので（\ref{pt:epsilon0-basic} の 4）、これは $\lambda$ の大きさについての再帰で定まる。
+:::
+
+::: lemma 基本列の性質 {#pt:fundamental-sequence-basic keywords="lambda[x] is increasing with supremum lambda"}
+極限順序数 $\lambda<\varepsilon_{0}$ について、$\lambda[x]<\lambda[x+1]<\lambda$ で、$\sup_{x}\lambda[x]=\lambda$。また、標準的な和 $\gamma+\beta$（$\beta>0$）について $(\gamma+\beta)[x]=\gamma+\beta[x]$。
+:::
+
+::: proof
+後半は定義から（$\gamma+\beta$ の最後の項は $\beta$ の最後の項で、$\beta[x]$ の定義で取り除く部分 $\gamma'$ が $\gamma+\gamma'$ になる。後者の場合も同様）。
+
+前半を $\lambda$ についての超限帰納法で示す。$\lambda=\gamma+\omega^{\eta+1}$ なら $\lambda[x]=\gamma+\omega^{\eta}\cdot x$ は $x$ について狭義増加で、$\omega^{\eta}\cdot x<\omega^{\eta}\cdot\omega=\omega^{\eta+1}$、上限は $\gamma+\sup_{x}\omega^{\eta}\cdot x=\gamma+\omega^{\eta+1}$（和と積の右の引数についての連続性）。$\lambda=\gamma+\omega^{\delta}$（$\delta$ 極限）なら、帰納法の仮定（$\delta<\lambda$）から $\delta[x]$ は狭義増加で上限 $\delta$。$\omega^{\cdot}$ の狭義単調性と連続性から、$\omega^{\delta[x]}$ は狭義増加で上限 $\omega^{\delta}$、したがって $\gamma+\omega^{\delta[x]}$ も同様。
+:::
+
+::: definition ハーディ関数 {#pt:hardy-functions keywords="Hardy hierarchy H_alpha" index="ハーディ関数|はーでぃかんすう, 急増加関数|きゅうぞうかかんすう"}
+$\alpha<\varepsilon_{0}$ についての超限再帰で、自然数上の関数 $H_{\alpha}$ を
+$$
+\begin{aligned}
+&H_{0}(x)\defeq x,\qquad H_{\beta+1}(x)\defeq H_{\beta}(x+1),\\
+&H_{\lambda}(x)\defeq H_{\lambda[x]}(x)\quad(\lambda\text{ は極限})
+\end{aligned}
+$$
+で定める。
+:::
+
+::: proposition ハーディ関数の計算 {#pt:hardy-basic keywords="H_{gamma+beta} = H_gamma o H_beta, examples H_omega(x)=2x" index="ハーディ関数の性質|はーでぃかんすうのせいしつ"}
+1. 標準的な和 $\gamma+\beta$ について $H_{\gamma+\beta}=H_{\gamma}\circ H_{\beta}$。
+2. $H_{k}(x)=x+k$（$k<\omega$）、$H_{\omega}(x)=2x$、$H_{\omega\cdot c}(x)=2^{c}x$。
+3. $H_{\omega^{2}}(x)=2^{x}x$。
+4. 一般に $H_{\omega^{\eta+1}}(x)=H_{\omega^{\eta}}^{(x)}(x)$。
+:::
+
+::: proof
+**1.** $\beta$ についての超限帰納法。$\beta=0$ は $H_{\gamma}=H_{\gamma}\circ H_{0}$。$\beta=\beta'+1$ なら $\gamma+\beta=(\gamma+\beta')+1$ で、$H_{\gamma+\beta}(x)=H_{\gamma+\beta'}(x+1)=H_{\gamma}(H_{\beta'}(x+1))=H_{\gamma}(H_{\beta}(x))$（$\gamma+\beta'$ も標準的な和）。$\beta$ が極限なら、\ref{pt:fundamental-sequence-basic} から $(\gamma+\beta)[x]=\gamma+\beta[x]$（これも標準的な和）で、$H_{\gamma+\beta}(x)=H_{\gamma+\beta[x]}(x)=H_{\gamma}(H_{\beta[x]}(x))=H_{\gamma}(H_{\beta}(x))$。
+
+**2.** $H_{k}(x)=x+k$ は $k$ についての帰納法。$\omega[x]=\omega^{0}\cdot x=x$ なので $H_{\omega}(x)=H_{x}(x)=2x$。$\omega\cdot c$ は $\omega$ を $c$ 個つないだ標準的な和なので、1 から $H_{\omega\cdot c}=H_{\omega}^{(c)}$、すなわち $2^{c}x$。
+
+**3.** $\omega^{2}[x]=\omega\cdot x$ なので $H_{\omega^{2}}(x)=H_{\omega\cdot x}(x)=2^{x}x$。
+
+**4.** $\omega^{\eta+1}[x]=\omega^{\eta}\cdot x$ で、これは $\omega^{\eta}$ を $x$ 個つないだ標準的な和なので、1 から $H_{\omega^{\eta}\cdot x}=H_{\omega^{\eta}}^{(x)}$。
+:::
+
+::: remark
+4 から、$H_{\omega^{3}}(x)$ は $2^{x}x$ を $x$ 回合成したもので、指数の塔の高さが $x$ 程度になる。$H_{\omega^{\omega}}(x)=H_{\omega^{x}}(x)$ はアッカーマン関数（\ref{comp:ackermann}）と同程度の増加度をもつことが知られている。一般に、$\alpha$ が大きいほど $H_{\alpha}$ は（十分大きな $x$ で）速く増加し、$\alpha<\beta$ なら $H_{\beta}$ は $H_{\alpha}$ を十分大きな引数で上から抑える（新井の本の命題 8.4.17。証明には基本列のバッハマン条件を使う）。
+:::
+
+::: theorem PA で証明可能な再帰関数の限界 {#pt:pa-provably-recursive-bound keywords="every provably recursive function of PA is dominated by some H_alpha, alpha < epsilon_0" index="証明可能な再帰関数|しょうめいかのうなさいきかんすう"}
+$f$ が $\PA$ で証明可能な再帰関数なら、ある $\alpha<\varepsilon_{0}$ と定数 $c$ があって、すべての $\vec{x}$ について $f(\vec{x})\le H_{\alpha}(\max\{\vec{x},c\})$。
+:::
+
+::: proof
+本サイトでは証明しない。新井の本の定理 8.4.18 では、\ref{pt:page-gentzen-bound} の埋め込みとカット除去を精密化し、ω 規則の前提に「数の大きさの上界」を記録した導出（演算子で制御された導出）を使って、$\exists y$ の証拠の大きさを $H_{\alpha}$ で評価する。
+:::
+
+## グッドスタイン列 {#pt:sec-oa5-goodstein}
+
+::: definition 遺伝的な底の表示 {#pt:hereditary-base keywords="hereditary base-b notation, base bump" index="遺伝的 b 進表示|いでんてきびーしんひょうじ"}
+$b\ge2$ とする。$m>0$ の $b$ 進表示を $m=b^{e_{1}}\cdot c_{1}+\cdots+b^{e_{n}}\cdot c_{n}$（$e_{1}>\cdots>e_{n}\ge0$, $0<c_{i}<b$）とする。$e_{i}<m$ なので、$m$ の大きさについての累積再帰で次を定める（$m=0$ ではどちらも $0$）。
+1. **底の置き換え** $m[b{:=}b+1]\defeq(b+1)^{e_{1}[b{:=}b+1]}\cdot c_{1}+\cdots+(b+1)^{e_{n}[b{:=}b+1]}\cdot c_{n}$（指数も遺伝的に置き換える）。
+2. **対応する順序数** $o_{b}(m)\defeq\omega^{o_{b}(e_{1})}\cdot c_{1}+\cdots+\omega^{o_{b}(e_{n})}\cdot c_{n}$（底 $b$ を遺伝的に $\omega$ で置き換える）。
+:::
+
+::: example
+$m=266$, $b=2$：$266=2^{8}+2^{3}+2=2^{2^{3}}+2^{2+1}+2^{1}=2^{2^{2+1}}+2^{2+1}+2$。$266[2{:=}3]=3^{3^{3+1}}+3^{3+1}+3$（約 $4\cdot10^{38}$）、$o_{2}(266)=\omega^{\omega^{\omega+1}}+\omega^{\omega+1}+\omega$。
+:::
+
+::: lemma 底の置き換えと順序数 {#pt:base-bump-ordinal keywords="o_b is order preserving and invariant under base bump"}
+$b\ge2$ と $m,m'\in\N$ について：
+1. $m<m'\iff o_{b}(m)<o_{b}(m')$。
+2. $o_{b}(m)$ の定義の右辺はカントール標準形である（指数が狭義減少）。
+3. $o_{b+1}(m[b{:=}b+1])=o_{b}(m)$。とくに $m<m'\Rightarrow m[b{:=}b+1]<m'[b{:=}b+1]$。
+4. $o_{b}(m)<\varepsilon_{0}$。
+:::
+
+::: proof
+$\max(m,m')$ についての累積帰納法で、すべての $b\ge2$ について同時に示す。
+
+**1, 2.** $m<m'$ とする。$b$ 進表示の比較は、指数と係数の組 $(e_{1},c_{1}),(e_{2},c_{2}),\dots$ の辞書式比較である（先に大きな指数をもつ方、指数が同じなら大きな係数をもつ方が大きく、それが同じなら次の組を比べる。下位の項の和は $b^{e}$ 未満であることによる）。帰納法の仮定（指数 $e_{i}<m'$ についての 1）から $o_{b}$ は指数の大小を保ち、とくに $o_{b}(e_{1})>o_{b}(e_{2})>\cdots$（2）。標準形の比較（\ref{pt:cnf-comparison}）も、係数付きで書けば指数と係数の組の辞書式比較であり、係数はそのまま移るので、$o_{b}(m)<o_{b}(m')$。逆向きは、$m=m'$ なら値が等しく、$m>m'$ なら同じ議論で $o_{b}(m)>o_{b}(m')$ となることから。
+
+**3.** $e_{i}'\defeq e_{i}[b{:=}b+1]$ とおく。帰納法の仮定から $o_{b+1}(e_{i}')=o_{b}(e_{i})$ で、これは $i$ について狭義減少なので、$b+1$ についての 1（帰納法の仮定：$e_{i}'$ どうしの比較）から $e_{1}'>e_{2}'>\cdots$。また $c_{i}<b<b+1$。したがって $m[b{:=}b+1]=(b+1)^{e_{1}'}c_{1}+\cdots$ はちょうど $b+1$ 進表示で、
+$$
+o_{b+1}(m[b{:=}b+1])=\omega^{o_{b+1}(e_{1}')}\cdot c_{1}+\cdots=\omega^{o_{b}(e_{1})}\cdot c_{1}+\cdots=o_{b}(m).
+$$
+後半は、1（$b$ と $b+1$ について）から $m<m'\Rightarrow o_{b}(m)<o_{b}(m')\Rightarrow o_{b+1}(m[b{:=}b+1])<o_{b+1}(m'[b{:=}b+1])\Rightarrow m[b{:=}b+1]<m'[b{:=}b+1]$。
+
+**4.** 帰納法の仮定から指数 $o_{b}(e_{i})<\varepsilon_{0}$ で、\ref{pt:epsilon0-basic} の 3 から和も $\varepsilon_{0}$ 未満。
+:::
+
+::: definition グッドスタイン列 {#pt:goodstein-sequence keywords="Goodstein sequence" index="グッドスタイン列|ぐっどすたいんれつ"}
+$m\in\N$ から始まる**グッドスタイン列** $(m_{k})_{k}$ を
+$$
+m_{0}\defeq m,\qquad m_{k+1}\defeq m_{k}[k+2{:=}k+3]\mathbin{\dot{-}}1
+$$
+で定める（$\dot{-}$ は $0$ で止まる引き算）。つまり、遺伝的な $k+2$ 進表示で底を $k+3$ に上げてから $1$ を引く。
+:::
+
+::: example
+$m=3$：$m_{0}=3=2+1$；$m_{1}=(3+1)-1=3$；$m_{2}=3$ は $3$ 進で $3^{1}$ なので $4^{1}-1=3$；$m_{3}=3$ は $4$ 進で $3$（係数）なので $3-1=2$；$m_{4}=1$；$m_{5}=0$。一方 $m=4=2^{2}$ では $m_{1}=3^{3}-1=26=2\cdot3^{2}+2\cdot3+2$、$m_{2}=2\cdot4^{2}+2\cdot4+2-1=41$と急速に大きくなるが、それでもいずれ $0$ に達する（$0$ に達するまでの長さは $3\cdot2^{402653211}-3$ であることが知られている）。
+:::
+
+::: theorem グッドスタインの定理 {#pt:goodstein-terminates keywords="Goodstein's theorem: every Goodstein sequence terminates" index="グッドスタインの定理|ぐっどすたいんのていり"}
+任意の $m$ について、ある $k$ で $m_{k}=0$。
+:::
+
+::: proof
+$\alpha_{k}\defeq o_{k+2}(m_{k})$ とおく（\ref{pt:base-bump-ordinal} の 4 から $\alpha_{k}<\varepsilon_{0}$）。$m_{k}>0$ なら $\alpha_{k+1}<\alpha_{k}$ を示す。$m_{k}' \defeq m_{k}[k+2{:=}k+3]$ とおくと、\ref{pt:base-bump-ordinal} の 3 から $o_{k+3}(m_{k}')=o_{k+2}(m_{k})=\alpha_{k}$。$m_{k}>0$ なら $m_{k}'>0$（置き換えは $0$ 以外を $0$ にしない）で、$m_{k+1}=m_{k}'-1<m_{k}'$ なので、\ref{pt:base-bump-ordinal} の 1 から
+$$
+\alpha_{k+1}=o_{k+3}(m_{k+1})<o_{k+3}(m_{k}')=\alpha_{k}.
+$$
+もしすべての $k$ で $m_{k}>0$ なら、$(\alpha_{k})$ は順序数の無限下降列となり、順序数の整列性に反する。
+:::
+
+::: theorem カービー–パリスの定理 {#pt:kirby-paris-goodstein keywords="Kirby-Paris: Goodstein's theorem is unprovable in PA" index="カービー–パリスの定理（グッドスタイン）|かーびーぱりすのていりぐっどすたいん"}
+グッドスタインの定理（を自然に $\Pi_{2}$ 文として表したもの）は $\PA$ で証明できない。
+:::
+
+::: proof
+本サイトでは証明しない。概略を述べる。$m$ から始まるグッドスタイン列が $0$ に達するまでの長さを $L(m)$ とすると、$L(m)$ は本ページのハーディ関数で $L(m)=H_{o_{2}(m)}(3)-3$ と表せることが知られている（チホン。底 $b$ の段階で順序数を $\lambda\mapsto\lambda[b]$ と分解しながら一歩ずつ減らすことと、$H_{\alpha}(b)-b$ の再帰が一致することによる）。$m$ を $2^{2^{\cdot^{\cdot^{2}}}}$（高さ $n$）にとると $o_{2}(m)=\omega_{n}$ なので、$L$ は $H_{\omega_{n}}$ たちを次々に追い越し、どの $H_{\alpha}$（$\alpha<\varepsilon_{0}$）でも抑えられない。もしグッドスタインの定理が $\PA$ で証明できれば、$L$ は $\PA$ で証明可能な再帰関数となり、\ref{pt:pa-provably-recursive-bound} に反する。（カービーとパリスの元の証明（1982）は、$\PA$ の超準モデルの切断を使うモデル論的なものである。）
+:::
+
+::: hypcheck
+- **$\alpha<\varepsilon_{0}$**：基本列 \ref{pt:fundamental-sequence} の再帰（$\delta<\lambda$）と、グッドスタイン列の順序数が $\varepsilon_{0}$ 未満であること（\ref{pt:base-bump-ordinal} の 4）に使った。
+- **標準的な和**：\ref{pt:hardy-basic} の 1 で、$(\gamma+\beta)[x]=\gamma+\beta[x]$ が成り立つための条件として使った。標準的でない和（$\gamma$ の最後の指数が $\beta$ の先頭の指数より小さい場合）では、$\gamma$ の一部が吸収されて成り立たない。
+- **底の置き換えの順序保存**：\ref{pt:base-bump-ordinal} の 3 の証明で、置き換えた指数がまた狭義減少になること（したがって $b+1$ 進表示になること）に使った。
+- **順序数の整列性**：\ref{pt:goodstein-terminates} の最後に使った。この部分（$\varepsilon_{0}$ についての超限帰納法）が $\PA$ で形式化できないことが、カービー–パリスの定理の核心である。
+:::
+
+## 問題 {#pt:sec-oa5-problems}
+
+::: problem {#pt:prob-goodstein-small}
+$m$ から始まるグッドスタイン列が $0$ に達する最小の $k$ を $L(m)$ とする。$m=1,2,3$ について $L(m)$ を計算し、$L(m)=H_{o_{2}(m)}(3)-3$（\ref{pt:kirby-paris-goodstein} の証明の概略の式）と一致することを確かめよ。さらに $m=4$ について右辺を計算し、例で述べた値 $3\cdot2^{402653211}-3$ になることを確かめよ。
+:::
+
+::: solution
+$m=1$：$m_{1}=0$ で $L(1)=1$。$o_{2}(1)=1$, $H_{1}(3)=H_{0}(4)=4$ で $4-3=1$。
+$m=2=2^{1}$：$m_{1}=3-1=2$, $m_{2}=2-1=1$（$3$ 進で $2$ は係数なので底を上げても $2$）、$m_{3}=0$ で $L(2)=3$。$o_{2}(2)=\omega$, $H_{\omega}(3)=H_{3}(3)=6$ で $6-3=3$。
+$m=3$：例から $L(3)=5$。$o_{2}(3)=\omega+1$, $H_{\omega+1}(3)=H_{\omega}(4)=8$ で $8-3=5$。
+$m=4=2^{2}$：$o_{2}(4)=\omega^{\omega}$。$\omega^{\omega}[3]=\omega^{3}$ なので $H_{\omega^{\omega}}(3)=H_{\omega^{3}}(3)=H_{\omega^{2}}^{(3)}(3)$（\ref{pt:hardy-basic} の 4）。$H_{\omega^{2}}(x)=2^{x}x$ を三回使うと、$3\mapsto24\mapsto2^{24}\cdot24=402653184\mapsto2^{402653184}\cdot402653184$。$402653184=3\cdot2^{27}$ なので、値は $3\cdot2^{402653211}$ で、$L(4)=3\cdot2^{402653211}-3$。
+:::
+
+::: problem {#pt:prob-hardy-omega-omega}
+$H_{\omega^{\omega}}(x)=H_{\omega^{x}}(x)$ を確かめ、$H_{\omega^{\omega}}(2)$ と $H_{\omega^{\omega}}(3)$ を計算せよ（$H_{\omega^{3}}(3)$ は大きいので、その形を書けばよい）。
+:::
+
+::: solution
+$\omega^{\omega}$ の最後の項は $\omega^{\omega}$ 自身（$\gamma=0$, $\delta=\omega$ 極限）で、$\omega^{\omega}[x]=\omega^{\omega[x]}=\omega^{x}$。よって $H_{\omega^{\omega}}(x)=H_{\omega^{x}}(x)$。$H_{\omega^{\omega}}(2)=H_{\omega^{2}}(2)=2^{2}\cdot2=8$。$H_{\omega^{\omega}}(3)=H_{\omega^{3}}(3)=H_{\omega^{2}}^{(3)}(3)$ で、$H_{\omega^{2}}(3)=2^{3}\cdot3=24$、$H_{\omega^{2}}(24)=2^{24}\cdot24$、$H_{\omega^{\omega}}(3)=2^{2^{24}\cdot24}\cdot2^{24}\cdot24$。
+:::
+
+::: supplement
+**前提の検討.**
+- グッドスタインの定理の証明（\ref{pt:goodstein-terminates}）は $\varepsilon_{0}$ の整列性だけを使う。各 $m$ について、$m$ から始まる列の停止は $\varepsilon_{0}$ のある始切片 $o_{2}(m)$ 未満の整列性で足り、\ref{pt:gentzen-wellordering} によりそれは $\PA$ で証明できる。したがって、「各 $m$ について列が停止する」という個々の主張はすべて $\PA$ で証明できるが、「すべての $m$ について」という一様な主張は証明できない。
+- ハーディ関数の値は基本列の選び方に依存する。本ページの基本列は標準的なものだが、別の基本列をとると、同じ添字の関数でも増加度が大きく変わりうることが知られている。
+
+**関連する結果.**
+- *急増加階層.* $F_{0}(x)=x+1$, $F_{\alpha+1}(x)=F_{\alpha}^{(x)}(x)$, $F_{\lambda}(x)=F_{\lambda[x]}(x)$ で定まる**急増加階層**も広く使われ、$H_{\omega^{\alpha}}=F_{\alpha}$ が（適当な約束のもとで）成り立つことが知られている。$\PA$ で証明可能な再帰関数は、ちょうど $F_{\alpha}$（$\alpha<\varepsilon_{0}$）のどれかで抑えられる関数全体であると言われている。
+- *パリス–ハーリントンの定理.* 有限ラムゼーの定理の変形 $\mathrm{PH}$（\ref{logic:page-rm-ramsey} の補足）も、同様に $\PA$ で証明可能な再帰関数の限界を超える増加度をもつことから、$\PA$ で証明できない。
+- *ヒドラゲーム.* カービー–パリスは、木を切っていくゲーム（ヒドラ）が必ず終わることも $\PA$ で証明できないことを示した。木の構造が $\varepsilon_{0}$ 未満の順序数の表記そのものになっている。
+
+**高い視点から：増加速度の物差しとしての順序数.** 順序数解析は、体系の強さを三つの言葉で同時に測る：超限帰納法の長さ（$\varepsilon_{0}$）、証明可能な再帰関数の増加速度（$H_{\alpha}$, $\alpha<\varepsilon_{0}$）、そして独立な組合せ論的命題（グッドスタイン列、ヒドラ、パリス–ハーリントン）。グッドスタイン列は、表面上は自然数の素朴な操作だが、その裏で $\varepsilon_{0}$ 未満の順序数がゆっくり減少している。比喩で言えば、数そのものは天文学的に膨れ上がるのに、「その数を表すのに必要な順序数の高さ」は確実に下がっていく。$\PA$ はこの順序数の目盛りを $\varepsilon_{0}$ まで一度に読む力をもたないので、膨張がいつか必ず止むことを証明できない。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>反映原理・反復無矛盾性・非コンパクト性 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/03-provability-logic/03-reflection-incompactness.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 反映原理・反復無矛盾性・非コンパクト性 {#pt:page-reflection-incompactness keywords="reflection principle, iterated consistency, Leivant, Solovay hierarchy, incompactness of GL, Fine, Rautenberg, Goldfarb"}
+
+前ページのランクの方法を、命題変数を含む論理式にも使う。まず、推移的なモデルの長さ $n$ の鎖と $n$ 個の反映原理についての鳩の巣論法を示し、そこから
+- $n$ 個の反映原理の連言は、$n$ 回反復した反映原理より強くはなれないこと（レイヴァントの定理）、
+- $n$ 回反復した無矛盾性の主張は $n$ 個の反映原理の連言と同値だが、$n$ 個より少ない反映原理の連言からは導けないこと
+
+を導く。次に、命題変数を一つだけ含む論理式は、閉様相論理式と違って有限の階層に収まらないこと（ソロヴェイの定理）を示す。最後に、$\mathsf{GL}$ ではコンパクト性定理が成り立たないこと（ファイン、ラウテンベルク）を示す。（Boolos 第 7 章後半に対応する。）
+
+## 記法と定義の確認 {#pt:sec-reflection-notation}
+
+::: notation
+- 様相論理式、正規性（\ref{logic:normality}）、クリプキモデル、$\mathcal{M},w\models A$、$R^{i}$ と略記の真理（\ref{logic:kripke-abbreviations}）は \ref{logic:page-normal-modal-logics}, \ref{logic:page-kripke-semantics} のとおり。$\bigwedge\emptyset=\top$。
+- $\mathsf{GL}$ の健全性は推移的かつ逆整礎なフレームについて（\ref{logic:kripke-soundness} の 3）、完全性は有限・推移的・非反射的なフレームについて（\ref{logic:modal-fmp-decidability}, \ref{logic:finite-transitive-cwf}）使う。
+- 有限・推移的・非反射的なフレームの世界のランク $\rho$（\ref{pt:world-rank}）、中間値の補題 \ref{pt:rank-intermediate}、閉様相論理式のトレースと真理（\ref{pt:truth-by-rank}, \ref{pt:basic-traces}, \ref{pt:trace-provability}）、\ref{pt:box-bot-false}、閉様相論理式についての \ref{pt:letterless-gl-pa} は \ref{pt:page-letterless-normal-form} のとおり。とくに $w\models\Box^{n}\bot\iff\rho(w)<n$、$w\models\Diamond^{n}\top\iff\rho(w)\ge n$。
+- 算術的解釈と翻訳、$\mathsf{GL}$ の算術的健全性 \ref{pt:gl-arithmetical-soundness}、文 $S$ の反映原理 $\mathrm{Bew}(\Godel{S})\to S$（\ref{pt:reflection-principles}）は \ref{pt:page-arithmetical-soundness} のとおり。翻訳は $\bot,\to$ を保つので、略記 $\neg,\wedge,\vee,\leftrightarrow,\top,\Diamond$ の翻訳も算術の同じ略記になる（$\Diamond A=\neg\Box\neg A$ の翻訳は $\neg\mathrm{Bew}(\Godel{\neg A^{\ast}})$）。
+- 以下、とくに断らなければ $\vdash$ は $\mathsf{GL}\vdash$ を表す。
+:::
+
+## 鳩の巣補題 {#pt:sec-pigeonhole}
+
+以下、様相論理式 $A_{0},\dots,A_{n-1}$ に対して
+$$
+X_{n}\defeq\{\Box A_{i}\to A_{i}:i<n\}
+$$
+とおく（$n=0$ なら $X_{0}=\emptyset$）。$X_{n}$ の元の個数は高々 $n$ である。
+
+::: lemma 鳩の巣補題 {#pt:reflection-pigeonhole keywords="pigeonhole lemma for reflection principles"}
+$\mathcal{M}$ を推移的なモデルとし、$w_{n}Rw_{n-1}R\cdots Rw_{1}Rw_{0}$ とする。このとき、ある $j\le n$ で $w_{j}\models\bigwedge X_{n}$。
+:::
+
+::: proof
+否定を仮定すると、各 $j\in\{0,1,\dots,n\}$ に対して $w_{j}\not\models\Box A_{i}\to A_{i}$ となる $i=f(j)<n$ がとれる。$f\colon\{0,\dots,n\}\to\{0,\dots,n-1\}$ で、定義域が $n+1$ 個、値域が $n$ 個なので（鳩の巣原理）、$j<k\le n$ で $f(j)=f(k)=i$ となるものがある。このとき $w_{j}\not\models A_{i}$ かつ $w_{k}\models\Box A_{i}$。一方、$w_{k}Rw_{k-1}R\cdots Rw_{j}$ と推移性より $w_{k}Rw_{j}$ なので $w_{j}\models A_{i}$ となり、矛盾する。（$n=0$ のときは $\bigwedge X_{0}=\top$ で自明。）
+
+::: hypcheck
+- **推移性**：$w_{k}Rw_{j}$ を得るのに使った。
+- 逆整礎性や有限性は使っていない。
+:::
+:::
+
+::: lemma ランクの鎖 {#pt:rank-chain}
+$(W,R)$ を有限・推移的・非反射的なフレーム、$w\in W$、$m<\rho(w)$ とする。このとき $x_{m}Rx_{m-1}R\cdots Rx_{0}$、各 $j\le m$ で $wRx_{j}$ かつ $\rho(x_{j})=j$ となる $x_{m},\dots,x_{0}$ がある。
+:::
+
+::: proof
+\ref{pt:rank-intermediate} より $wRx_{m}$, $\rho(x_{m})=m$ となる $x_{m}$ がある。$x_{j}$（$j\ge1$, $\rho(x_{j})=j$）が得られたら、$j-1<\rho(x_{j})$ なので再び \ref{pt:rank-intermediate} より $x_{j}Rx_{j-1}$, $\rho(x_{j-1})=j-1$ となる $x_{j-1}$ がある。推移性より各 $j$ で $wRx_{j}$。
+:::
+
+## 反映原理と反復 {#pt:sec-leivant}
+
+::: theorem レイヴァントの定理 {#pt:leivant keywords="Leivant's theorem" index="レイヴァントの定理|れいゔぁんとのていり"}
+$\vdash\bigwedge X_{n}\to(\Box^{k}p\to p)$ ならば $k\le n$。
+:::
+
+::: proof
+$k>n$ と仮定して矛盾を導く。$W\defeq\{n,n-1,\dots,0,-1\}$、$wRx\defeq(w>x)$、$p$ は世界 $-1$ でだけ真、とするモデルを考える。これは有限・推移的・非反射的で、健全性定理より仮定の論理式はすべての世界で真である。
+
+$0\le j\le n$ とする。$j\not\models p$。$jR^{k}y$ なら（$R^{k}$ は長さ $k$ の $>$ の鎖）$y\le j-k$ で、$y\ge-1$ かつ $k>n\ge j$ より $k\ge j+1$、したがって $y\le-1$、すなわち $y=-1$ で $y\models p$。よって $j\models\Box^{k}p$（\ref{logic:kripke-abbreviations}）、$j\not\models\Box^{k}p\to p$。仮定の論理式が $j$ で真なので $j\not\models\bigwedge X_{n}$。これが $j=n,\dots,0$ のすべてで成り立ち、鎖 $nR(n-1)R\cdots R0$ について \ref{pt:reflection-pigeonhole} に反する。
+:::
+
+::: remark 評価の最良性
+$k=n$ は実現できる：$A_{i}\defeq\Box^{i}p$ とすると、$\bigwedge_{i<n}(\Box^{i+1}p\to\Box^{i}p)$ から恒真式（推移律を $n-1$ 回）で $\Box^{n}p\to p$ が従う。したがって、「$n$ 個の反映原理の連言から導ける反復反映原理 $\Box^{k}p\to p$」の最大の $k$ はちょうど $n$ である。この定理は $\mathsf{GL}$ の中での主張であり、算術での対応物（すべての算術的解釈についての主張）はソロヴェイの定理（\ref{pt:page-solovay}）を使うと得られる。
+:::
+
+::: definition 反復無矛盾性 {#pt:iterated-consistency keywords="iterated consistency assertion" index="反復無矛盾性|はんぷくむむじゅんせい"}
+$n\ge0$ について、定数文 $C_{n}\defeq(\Diamond^{n}\top)^{\ast}$ を **$n$ 回反復した無矛盾性の主張**という。$C_{0}=\top$、$C_{1}=\neg\mathrm{Bew}(\Godel{\neg\top})$ は $\PA$ で $\mathrm{Con}$ と同値、$C_{2}$ は「$\PA+\mathrm{Con}$ は無矛盾」にあたる。\ref{pt:basic-traces} の 1 と \ref{pt:trace-provability} より $\vdash\Diamond^{n}\top\leftrightarrow\neg\Box^{n}\bot$。
+:::
+
+::: theorem 反映原理から反復無矛盾性への逆向きの含意 {#pt:reflection-iterated-con}
+任意の様相論理式 $A_{0},\dots,A_{n-1}$ について、
+$$
+\vdash\Box\bigl(\textstyle\bigwedge X_{n}\to\Diamond^{n}\top\bigr)\to\bigl(\Diamond^{n}\top\to\bigwedge X_{n}\bigr).
+$$
+:::
+
+::: proof
+完全性（\ref{logic:modal-fmp-decidability}）より、有限・推移的・非反射的なモデルの任意の世界 $w$ で真であることを示せばよい。$w\models\Box(\bigwedge X_{n}\to\Diamond^{n}\top)$ かつ $w\models\Diamond^{n}\top$ とする。$n=0$ なら $\bigwedge X_{0}=\top$ で自明なので $n\ge1$ とする。
+
+**Step 1.** $w\models\Diamond^{n}\top$ より $\rho(w)\ge n$。\ref{pt:rank-chain}（$m=n-1$）より $x_{n-1}R\cdots Rx_{0}$、$wRx_{j}$、$\rho(x_{j})=j$ となる $x_{j}$ がある。
+
+**Step 2.** 各 $j<n$ で $\rho(x_{j})=j<n$ なので $x_{j}\not\models\Diamond^{n}\top$。$wRx_{j}$ より $x_{j}\models\bigwedge X_{n}\to\Diamond^{n}\top$ なので、$x_{j}\not\models\bigwedge X_{n}$。
+
+**Step 3.** 鎖 $wRx_{n-1}R\cdots Rx_{0}$（長さ $n$、世界は $n+1$ 個）に \ref{pt:reflection-pigeonhole} を適用すると、この中のある世界で $\bigwedge X_{n}$ が真。Step 2 より、それは $w$ である。
+:::
+
+::: corollary 反復無矛盾性と反映原理の連言 {#pt:iterated-con-reflection-arith}
+$\PA$ の文 $S_{0},\dots,S_{n-1}$ について、$R\defeq\bigwedge_{i<n}(\mathrm{Bew}(\Godel{S_{i}})\to S_{i})$ とする。
+1. $\PA\vdash R\to C_{n}$ ならば $\PA\vdash C_{n}\to R$。
+2. $C_{n}$ は $\PA$ で、ある $n$ 個の反映原理の連言と同値である：$\PA\vdash C_{n}\leftrightarrow\bigwedge_{i<n}\bigl(\mathrm{Bew}(\Godel{(\Box^{i}\bot)^{\ast}})\to(\Box^{i}\bot)^{\ast}\bigr)$。
+:::
+
+::: proof
+**1.** 相異なる命題変数 $p_{0},\dots,p_{n-1}$ をとり、$p_{i}^{\ast}=S_{i}$ となる算術的解釈 $\ast$ をとる（他の命題変数には何を割り当ててもよい）。$A_{i}=p_{i}$ とすると、翻訳は略記を保つので $(\bigwedge X_{n}\to\Diamond^{n}\top)^{\ast}$ はちょうど $R\to C_{n}$ である。仮定と D1（\ref{pt:d1}）より $\PA\vdash\mathrm{Bew}(\Godel{R\to C_{n}})$、これは $(\Box(\bigwedge X_{n}\to\Diamond^{n}\top))^{\ast}$。\ref{pt:reflection-iterated-con} と \ref{pt:gl-arithmetical-soundness} より $\PA\vdash(\Box(\cdots))^{\ast}\to(C_{n}\to R)$。モーダスポネンスで $\PA\vdash C_{n}\to R$。
+
+**2.** 閉様相論理式のトレースを比べる：$[\![\bigwedge_{i<n}(\Box^{i+1}\bot\to\Box^{i}\bot)]\!]=\bigcap_{i<n}(\N\setminus\{i\})=\{m:m\ge n\}=[\![\Diamond^{n}\top]\!]$（\ref{pt:basic-traces}）。\ref{pt:trace-provability} より $\mathsf{GL}$ で同値で、\ref{pt:gl-arithmetical-soundness} より翻訳は $\PA$ で同値。
+:::
+
+::: theorem 反映原理の個数の下限 {#pt:fewer-reflections}
+$m<n$ ならば、任意の様相論理式 $A_{0},\dots,A_{m-1}$ について
+$$
+\vdash\Box\bigl(\textstyle\bigwedge X_{m}\to\Diamond^{n}\top\bigr)\to\Box^{m+1}\bot.
+$$
+したがって、$m<n$ 個の文 $S_{0},\dots,S_{m-1}$ の反映原理の連言 $R$ について $\PA\nvdash R\to C_{n}$。すなわち $n$ 回反復した無矛盾性の主張は、$n$ 個の反映原理の連言と同値だが、$n$ 個より少ない反映原理の連言からは $\PA$ で導けない。
+:::
+
+::: proof
+**Step 1（様相論理）.** 有限・推移的・非反射的なモデルの世界 $w$ で $w\models\Box(\bigwedge X_{m}\to\Diamond^{n}\top)$ とし、$w\not\models\Box^{m+1}\bot$、すなわち $\rho(w)\ge m+1$ と仮定する。\ref{pt:rank-chain}（$m<\rho(w)$）より $x_{m}R\cdots Rx_{0}$、$wRx_{j}$、$\rho(x_{j})=j$ となる $x_{j}$ がある。$j\le m<n$ なので $x_{j}\not\models\Diamond^{n}\top$、$wRx_{j}$ より $x_{j}\models\bigwedge X_{m}\to\Diamond^{n}\top$ なので $x_{j}\not\models\bigwedge X_{m}$（$j=0,\dots,m$）。これは鎖 $x_{m}R\cdots Rx_{0}$ について \ref{pt:reflection-pigeonhole} に反する。よって $w\models\Box^{m+1}\bot$、完全性より主張の論理式は $\mathsf{GL}$ の定理。
+
+**Step 2（算術）.** $\PA\vdash R\to C_{n}$ と仮定する。\ref{pt:iterated-con-reflection-arith} の 1 の証明と同様に、$p_{i}^{\ast}=S_{i}$ とすると D1 より $\PA\vdash(\Box(\bigwedge X_{m}\to\Diamond^{n}\top))^{\ast}$、Step 1 と \ref{pt:gl-arithmetical-soundness} より $\PA\vdash(\Box^{m+1}\bot)^{\ast}$。$\mathcal{N}\models\PA$ より $(\Box^{m+1}\bot)^{\ast}$ は真となり、\ref{pt:box-bot-false} に反する。後半の「同値」は \ref{pt:iterated-con-reflection-arith} の 2。
+
+::: hypcheck
+- **$\mathcal{N}\models\PA$**：Step 2 の最後で使う。Boolos は $\PA$ の $1$-無矛盾性（偽の $\Sigma_{1}$ 文を証明しないこと）を仮定する形で述べている。$m\ge0$ なので $(\Box^{m+1}\bot)^{\ast}=\mathrm{Bew}(\cdots)$ は Σ 文（\ref{pt:page-arithmetization}）であり、偽の Σ 文を証明しないことだけで足りる。
+:::
+:::
+
+::: example
+$n=2$, $m=1$：$\vdash\Box((\Box p\to p)\to\Diamond\Diamond\top)\to\Box\Box\bot$。したがって、どんな文 $S$ についても、$S$ の反映原理から「$\PA+\mathrm{Con}$ は無矛盾」（$C_{2}$）は $\PA$ で導けない。一方 $C_{2}$ は二つの反映原理 $\mathrm{Bew}(\Godel{\bot})\to\bot$ と $\mathrm{Bew}(\Godel{\mathrm{Bew}(\Godel{\bot})})\to\mathrm{Bew}(\Godel{\bot})$ の連言と同値である。$C_{1}$ は一つの反映原理 $\mathrm{Bew}(\Godel{\bot})\to\bot$ と同値である。
+:::
+
+## 一変数の論理式の階層 {#pt:sec-solovay-hierarchy}
+
+閉様相論理式は、$\mathsf{GL}$ で $\Box^{n}\bot$ たちの真理関数的な組み合わせと同値だった（\ref{pt:letterless-normal-form}）。すなわち「様相の中に真理関数的な結合を入れ子にする」必要がない。命題変数が一つでもあると、そうはならないことを示す。
+
+::: definition 階層 H_n {#pt:solovay-hierarchy index="ソロヴェイの階層|そろゔぇいのかいそう"}
+$p$ 以外の命題変数を含まない様相論理式を**一変数の論理式**という。
+- $H_{0}$：$\mathsf{GL}$ で $p,\neg p,\top,\bot$ のどれかと同値な一変数の論理式全体。
+- $H_{n+1}$：$\mathsf{GL}$ で、$r\ge0$, $B\in H_{n}$ である論理式 $\Diamond^{r}B$ たちの真理関数的な組み合わせと同値な一変数の論理式全体。
+:::
+
+::: lemma 階層の基本性質 {#pt:solovay-hierarchy-basic}
+1. $H_{n}\subset H_{n+1}$。$H_{n+1}$（$n\ge0$）と $H_{0}$ は真理関数的な組み合わせで閉じている。
+2. 様相次数 $d$ の一変数の論理式は $H_{d}$ に属する。とくに、すべての一変数の論理式はある $H_{n}$ に属する。
+3. 閉様相論理式はすべて $H_{1}$ に属する。
+:::
+
+::: proof
+**1.** $B\in H_{n}$ なら $B=\Diamond^{0}B$ は一つの項からなる組み合わせなので $B\in H_{n+1}$。$H_{n+1}$ の元の組み合わせは、各元を同値な組み合わせに置き換えると（置換定理 \ref{logic:replacement-theorem}）$\Diamond^{r}B$ たちの組み合わせと同値。$H_{0}$：$p,\neg p,\top,\bot$ の組み合わせは真理値表により再びこの四つのどれかと同値である（$p$ の二つの値に対する値の組が四通りしかない）。
+
+**2.** 様相次数 $d$ に関する帰納法。$d=0$ なら $p$ と $\bot$ の組み合わせで、1 より $H_{0}$。$d>0$ なら、論理式は $p$ と $\Box C$（$d(C)<d$）たちの真理関数的な組み合わせである。正規性 10 より $\vdash\Box C\leftrightarrow\neg\Diamond\neg C$、帰納法の仮定と 1 より $\neg C\in H_{d-1}$、よって $\Diamond\neg C$ は $H_{d}$ の定義の項。$p=\Diamond^{0}p$ で $p\in H_{0}\subset H_{d-1}$。したがって $H_{d}$。
+
+**3.** 標準形定理より閉様相論理式は $\Box^{n}\bot$ たちの組み合わせと同値で、$\vdash\Box^{n}\bot\leftrightarrow\neg\Diamond^{n}\top$（\ref{pt:iterated-consistency} の定義の後）。$\top\in H_{0}$ なので $\Diamond^{n}\top$ は $H_{1}$ の定義の項。
+:::
+
+::: theorem ソロヴェイの定理（階層の真の増大） {#pt:solovay-hierarchy-proper keywords="Solovay's theorem on the hierarchy of one-variable formulas"}
+すべての $n\ge0$ について $H_{n}\subsetneq H_{n+1}$。
+:::
+
+::: proof
+**Step 1（区別する論理式）.** $P_{0}\defeq p$, $P_{k+1}\defeq p\wedge\Diamond P_{k}$ とする。$w\models P_{k}$ は「$w=d_{k}Rd_{k-1}R\cdots Rd_{0}$ で、すべての $d_{j}$ で $p$ が真となる鎖がある」と同値である（$k$ に関する帰納法。\ref{logic:kripke-abbreviations}）。また $P_{k}\in H_{k}$：$P_{0}\in H_{0}$、$P_{k}\in H_{k}$ なら $\Diamond P_{k}$ は $H_{k+1}$ の定義の項、$p\in H_{0}\subset H_{k+1}$ なので $P_{k+1}\in H_{k+1}$（\ref{pt:solovay-hierarchy-basic} の 1）。以下、$P_{n+1}\notin H_{n}$ を示す。
+
+**Step 2（モデル）.** 世界を $a_{-1}$ と、各 $i\ge0$ について三つの世界 $a_{i},b_{i},c_{i}$ とする。$a_{-1}$ の**段**を $-1$、$a_{i},b_{i},c_{i}$ の段を $i$ とする。次の**矢印**を引く（$i\ge1$。段 $i$ から段 $i-1$ へ）：
+$$
+a_{i}\to a_{i-1},\,b_{i-1},\,c_{i-1};\qquad b_{i}\to b_{i-1},\,c_{i-1};\qquad c_{i}\to a_{i-1},\,b_{i-1},\,c_{i-1},
+$$
+および段 $0$ では $a_{0}\to a_{-1}$, $c_{0}\to a_{-1}$（$b_{0}$ からは矢印がない）。$wRx\defeq$「$w$ から $x$ へ矢印を一本以上たどって行ける」とし、$p$ は $a_{i}$（$i\ge-1$）と $b_{i}$（$i\ge0$）で真、$c_{i}$ で偽とする。
+
+$R$ は推移的。矢印は段をちょうど $1$ 下げるので、$wRx$ なら $x$ の段は $w$ の段より小さく、$R$ は逆整礎（空でない集合の中で段が最小の元が $R$-極大元）。よって $\mathsf{GL}$ の定理はすべての世界で真であり（\ref{logic:kripke-soundness} の 3）、$\mathsf{GL}$ で同値な論理式は各世界で同じ真理値をもつ。
+
+**Step 3（到達範囲）.** $a_{i},c_{i}$（$i\ge0$）からは段 $i-1$ のすべての世界へ矢印がある。これから、段 $\ell\le i-1$ の世界はすべて $a_{i}$ と $c_{i}$ から到達可能（段 $i-1$ の $a_{i-1}$ または $c_{i-1}$ を経由して帰納的に）。$b_{i}$（$i\ge1$）から到達可能な世界は、$b_{i-1},c_{i-1}$ と、段 $i-2$ 以下のすべての世界（$c_{i-1}$ 経由）である。とくに、$k\ge0$ について
+- (i) $R(a_{k+1})=\{$段 $\le k$ のすべての世界$\}$、$R(b_{k+1})=R(a_{k+1})\setminus\{a_{k}\}$。
+- (ii) $r\ge2$ なら $R^{r}(a_{k+1})=R^{r}(b_{k+1})=\{$段 $\le k+1-r$ のすべての世界$\}$。
+
+ここで $R(w)\defeq\{x:wRx\}$、$R^{r}(w)\defeq\{x:wR^{r}x\}$。(ii) の理由：推移的な $R$ について $wR^{r}x$ は「$w$ から $x$ へ長さ $r$ 以上の矢印の道がある」と同値（長さ $r$ 以上の道は $r$ 個の空でない区間に分けられる。逆に $R$ の各段階は長さ $1$ 以上の道）。矢印は段を $1$ ずつ下げるので、$x$ の段 $\le k+1-r$ が必要。逆に段 $\le k+1-r\le k-1$ の世界 $x$ は、$a_{k+1}$ からは $a_{k}\to\cdots$、$b_{k+1}$ からは $b_{k+1}\to c_{k}\to\cdots$ と、長さ（段の差）$\ge r$ の道で到達できる。
+
+**Step 4（区別できないこと）.** 「$A\in H_{i}$ ならば、すべての $j\ge i$ で $a_{j}\models A\iff b_{j}\models A$」を $i$ に関する帰納法で示す。
+
+$i=0$：$A$ は $p,\neg p,\top,\bot$ のどれかと同値で、$p$ は $a_{j},b_{j}$ の両方で真なので成り立つ。
+
+$i\to i+1$：$A\in H_{i+1}$ は $\Diamond^{r}B$（$B\in H_{i}$）たちの組み合わせと同値なので、$j\ge i+1$ とし、各 $\Diamond^{r}B$ について $a_{j}\models\Diamond^{r}B\iff b_{j}\models\Diamond^{r}B$ を示せば十分。$j=k+1$（$k\ge i$）と書く。
+- $r=0$：$j\ge i$ なので帰納法の仮定そのもの。
+- $r\ge2$：(ii) より $R^{r}(a_{j})=R^{r}(b_{j})$ なので、\ref{logic:kripke-abbreviations} の $\Diamond^{r}$ の真理条件より一致。
+- $r=1$：(i) より $R(b_{j})\subset R(a_{j})$ なので、$b_{j}\models\Diamond B\Rightarrow a_{j}\models\Diamond B$。逆に $a_{j}Rd$, $d\models B$ とする。$d\neq a_{k}$ なら (i) より $b_{j}Rd$。$d=a_{k}$ なら、$k\ge i$ と帰納法の仮定より $b_{k}\models B$、$b_{j}\to b_{k}$ なので $b_{j}\models\Diamond B$。
+
+**Step 5（結論）.** $a_{n}Ra_{n-1}R\cdots Ra_{0}Ra_{-1}$ はすべて $p$ の世界なので、Step 1 より $a_{n}\models P_{n+1}$。一方、$b_{n}=d_{n+1}R\cdots Rd_{0}$ がすべて $p$ の世界の鎖だとすると、$R$ は段を $1$ 以上下げ、$d_{0}$ の段は $\ge-1$ なので、各段階でちょうど $1$ 段ずつ下がり $d_{\ell}$ の段は $\ell-1$ である。段 $n-1$ の $p$ の世界で $b_{n}$ から到達可能なのは $b_{n-1}$ だけ（(i)：$a_{n-1}\notin R(b_{n})$）なので $d_{n}=b_{n-1}$、同様に帰納的に $d_{\ell}=b_{\ell-1}$（$\ell\ge1$）。すると $d_{1}=b_{0}$ から $d_{0}$ への $R$ がなければならないが、$b_{0}$ からは矢印がない。矛盾。よって $b_{n}\not\models P_{n+1}$。Step 4 より $P_{n+1}\notin H_{n}$、Step 1 より $P_{n+1}\in H_{n+1}$。
+
+::: hypcheck
+- **Step 4 で $j\ge i$ の形に強めたこと**：$r=0$ の項 $B\in H_{i}$ を $a_{i+1},b_{i+1}$ で比べる必要があり、帰納法の仮定を $a_{i},b_{i}$ だけにすると足りない。
+- **逆整礎性**：Step 2 で、$\mathsf{GL}$ で同値な論理式を同一視するために使った（モデルは無限だが、健全性は逆整礎なフレーム一般について成り立つ）。
+:::
+:::
+
+## 非コンパクト性 {#pt:sec-incompactness}
+
+論理式の集合 $\Gamma$ が世界 $w$ で**真**とは、$\Gamma$ のすべての元が $w$ で真であることをいう。一階述語論理のコンパクト性定理（\ref{logic:compactness}）の類似「有限部分集合がすべて $\mathsf{GL}$ に適切なモデルのある世界で真なら、$\Gamma$ 全体もそうである」は成り立たない。
+
+::: lemma 無限上昇の強制 {#pt:infinite-ascent}
+様相論理式 $E_{0},E_{1},\dots$ に対し $\Gamma_{E}\defeq\{\Diamond E_{0}\}\cup\{\Box(E_{i}\to\Diamond E_{i+1}):i\in\N\}$ とする。$\Gamma_{E}$ は、推移的かつ逆整礎なモデルのどの世界でも真にならない。
+:::
+
+::: proof
+推移的かつ逆整礎なモデルの世界 $w$ で $\Gamma_{E}$ が真とする。$Y\defeq\{x:wRx\text{ かつ、ある }i\text{ で }x\models E_{i}\}$ とおく。$w\models\Diamond E_{0}$ より $Y\neq\emptyset$。$x\in Y$、$x\models E_{i}$ とすると、$wRx$ と $w\models\Box(E_{i}\to\Diamond E_{i+1})$ より $x\models\Diamond E_{i+1}$、すなわち $xRy$, $y\models E_{i+1}$ となる $y$ がある。推移性より $wRy$ なので $y\in Y$。よって $Y$ の各元は $Y$ のある元に $R$ で到達し、$Y$ に $R$-極大元がない。逆整礎性に反する。
+:::
+
+::: theorem GL の非コンパクト性（ファイン、ラウテンベルク） {#pt:gl-incompactness keywords="incompactness of GL, Fine, Rautenberg" index="非コンパクト性（GL）|ひこんぱくとせいじーえる"}
+相異なる命題変数 $p_{0},p_{1},\dots$ について $U\defeq\{\Diamond p_{0}\}\cup\{\Box(p_{i}\to\Diamond p_{i+1}):i\in\N\}$ とする。$U$ の任意の有限部分集合は、ある有限・推移的・非反射的なモデルのある世界で真だが、$U$ 全体は、推移的かつ逆整礎なモデルのどの世界でも真にならない。
+:::
+
+::: proof
+**全体.** \ref{pt:infinite-ascent}（$E_{i}=p_{i}$）。
+
+**有限部分集合.** 有限部分集合は、ある $n$ について $U_{n}\defeq\{\Diamond p_{0}\}\cup\{\Box(p_{i}\to\Diamond p_{i+1}):i<n\}$ に含まれる。$W\defeq\{w,w_{0},w_{1},\dots,w_{n}\}$、矢印を $w\to w_{0}\to w_{1}\to\cdots\to w_{n}$、$R$ をその推移閉包（一本以上の矢印で到達可能）、$p_{i}$ は $i\le n$ のとき $w_{i}$ でだけ真（$i>n$ ではどこでも偽）とする。有限・推移的で、矢印が一直線に進むので非反射的。$w\models\Diamond p_{0}$（$wRw_{0}$）。$i<n$ とし、$wRx$, $x\models p_{i}$ とすると $x=w_{i}$ で、$w_{i}Rw_{i+1}$, $w_{i+1}\models p_{i+1}$ なので $x\models\Diamond p_{i+1}$。よって $w\models\Box(p_{i}\to\Diamond p_{i+1})$。
+:::
+
+::: theorem 一変数での非コンパクト性（ゴールドファーブ） {#pt:gl-incompactness-one-variable}
+$C_{i}\defeq p\wedge\Box^{i}\bot$, $B_{i}\defeq\Diamond C_{i}$, $A_{i}\defeq\neg B_{i}\wedge B_{i+1}$ とし、$U'\defeq\{\Diamond A_{0}\}\cup\{\Box(A_{i}\to\Diamond A_{i+1}):i\in\N\}$ とする。$U'$ の任意の有限部分集合は、ある有限・推移的・非反射的なモデルのある世界で真だが、$U'$ 全体は推移的かつ逆整礎なモデルのどの世界でも真にならない。
+:::
+
+::: proof
+**全体.** \ref{pt:infinite-ascent}（$E_{i}=A_{i}$）。
+
+**有限部分集合.** $n$ を固定する。世界を $w$、$w_{j}$, $x_{j}$（$0\le j\le n$）、$y_{j,\ell}$（$1\le\ell\le j\le n$）とし、矢印を
+$$
+\begin{aligned}
+&w\to w_{0},\quad w_{j}\to w_{j+1}\ (j<n),\quad w_{j}\to x_{j},\\
+&x_{j}\to y_{j,1}\to y_{j,2}\to\cdots\to y_{j,j}
+\end{aligned}
+$$
+とする。$R$ は一本以上の矢印で到達可能という関係、$p$ は $x_{j}$ たちでだけ真とする。有限・推移的で、矢印の道は同じ世界に戻らないので非反射的である。
+
+**(a) ランク.** $x_{j}$ から到達可能な世界は $y_{j,1},\dots,y_{j,j}$ で、それらは一直線に並ぶので、$\rho(x_{j})=j$（\ref{pt:world-rank}）。
+
+**(b) $C_{i}$.** $z\models C_{i}\iff z\models p$ かつ $\rho(z)<i$（\ref{pt:truth-by-rank}, \ref{pt:basic-traces} の 1）$\iff z=x_{j}$ で $j<i$。
+
+**(c) $B_{i}$.** $x_{j}$ に到達可能な世界は $w$ と $w_{k}$（$k\le j$）だけである。よって $z\neq w$ について、$z\models B_{i}\iff$ ある $j<i$ で $zRx_{j}\iff z=w_{k}$ で、ある $j$ が $k\le j<i$（かつ $j\le n$）を満たす $\iff z=w_{k}$ かつ $k<i$。
+
+**(d) $A_{i}$.** $z\neq w$ について、(c) より $z\models A_{i}\iff z=w_{k}$ かつ $k\ge i$ かつ $k<i+1\iff z=w_{i}$（$i\le n$ のとき。$i>n$ ならどこでも偽）。
+
+**(e) 検証.** $wRw_{0}$ なので $w\models\Diamond A_{0}$。$i<n$ とし、$wRz$, $z\models A_{i}$ とすると（$z\neq w$ は非反射性から）$z=w_{i}$、$w_{i}Rw_{i+1}\models A_{i+1}$ なので $z\models\Diamond A_{i+1}$。よって $U'$ の有限部分集合を含む $\{\Diamond A_{0}\}\cup\{\Box(A_{i}\to\Diamond A_{i+1}):i<n\}$ は $w$ で真。
+:::
+
+::: corollary GL の強完全性の失敗 {#pt:gl-not-strongly-complete}
+1. $U$（や $U'$）は $\mathsf{GL}$-無矛盾（\ref{logic:canonical-mcs}）だが、推移的かつ逆整礎なモデルのどの世界でも真にならない。すなわち、「$\mathsf{GL}$-無矛盾な集合は $\mathsf{GL}$ に適切なモデルのある世界で真」という強い完全性は成り立たない。
+2. $\mathsf{GL}$ のカノニカルモデル（\ref{logic:canonical-model}）は逆整礎でない。
+:::
+
+::: proof
+**1.** 有限部分集合 $Y\subset U$ について $\mathsf{GL}\vdash\neg\bigwedge Y$ なら、健全性より $\neg\bigwedge Y$ は $Y$ を真にする世界でも真で、矛盾する。
+
+**2.** リンデンバウムの補題（\ref{logic:modal-lindenbaum}）より $U\subset w$ となる極大 $\mathsf{GL}$-無矛盾集合 $w$ があり、真理補題（\ref{logic:canonical-truth-lemma}）よりカノニカルモデルの世界 $w$ で $U$ は真。カノニカルモデルは推移的（\ref{logic:gl-canonical-not-cwf}）なので、\ref{pt:gl-incompactness} より逆整礎でない。これは \ref{logic:gl-canonical-not-cwf} の、算術を使わない別証明である。
+:::
+
+## 問題 {#pt:sec-reflection-problems}
+
+::: problem {#pt:prob-leivant-zero}
+\ref{pt:leivant} の $n=0$ の場合を直接確かめよ：$k\ge1$ なら $\nvdash\Box^{k}p\to p$。
+:::
+
+::: solution
+$W=\{0,-1\}$, $0R(-1)$, $p$ は $-1$ でだけ真とする。$k=1$ なら $0\models\Box p$, $0\not\models p$。$k\ge2$ なら $0$ からの $R^{k}$ の後続者はなく $0\models\Box^{k}p$、$0\not\models p$。有限・推移的・非反射的なので健全性より $\nvdash\Box^{k}p\to p$。
+:::
+
+::: problem {#pt:prob-c2-two-reflections}
+\ref{pt:iterated-con-reflection-arith} の 2 を $n=2$ で具体的に書き、\ref{pt:fewer-reflections} と合わせて、$C_{2}$ が「ちょうど二つ」の反映原理を必要とすることを説明せよ。
+:::
+
+::: solution
+$\PA\vdash C_{2}\leftrightarrow(\mathrm{Bew}(\Godel{\bot})\to\bot)\wedge(\mathrm{Bew}(\Godel{\mathrm{Bew}(\Godel{\bot})})\to\mathrm{Bew}(\Godel{\bot}))$。\ref{pt:fewer-reflections}（$m=1$, $n=2$）より、どんな一つの文 $S$ の反映原理からも $C_{2}$ は導けない（$m=0$ なら $\PA\nvdash C_{2}$）。よって二つの反映原理の連言で表せ、一つでは表せない。
+:::
+
+::: problem {#pt:prob-h0-h1}
+$\Diamond p\notin H_{0}$ を、\ref{pt:solovay-hierarchy-proper} のモデルを使わずに示せ。
+:::
+
+::: solution
+$\Diamond p$ が $p,\neg p,\top,\bot$ のどれかと同値だとする。世界 $0,1$ に $1R0$ とし、$p$ が $0$ でだけ真のモデルでは $1\models\Diamond p$, $1\not\models p$ なので $p$, $\bot$ と異なる（$1$ での値）。$0\not\models\Diamond p$ なので $\top$ とも異なる。$p$ がどこでも偽のモデルで、一点 $0$ では $0\not\models\Diamond p$, $0\models\neg p$ なので $\neg p$ とも異なる。いずれのモデルも有限・推移的・非反射的なので健全性に反する。
+:::
+
+::: supplement
+**前提の検討.**
+- 鳩の巣補題（\ref{pt:reflection-pigeonhole}）は推移性だけを使い、逆整礎性は使わない。レイヴァントの定理と反映原理の下限では、$\mathsf{GL}$ の健全性・完全性を通して有限・推移的・非反射的なモデルを使う。
+- \ref{pt:fewer-reflections} の算術の部分は、Boolos の述べ方に合わせれば $\mathcal{N}\models\PA$ を $1$-無矛盾性に弱められる（hypcheck 参照）。
+- 非コンパクト性は $\mathsf{GL}$ に固有である：$\mathsf{K4}$ や $\mathsf{S4}$ などのカノニカルモデルが適切なフレームになる体系（\ref{logic:geach-completeness}）では、$L$-無矛盾な集合はカノニカルモデルの世界で真になり、強い完全性が成り立つ。$\mathsf{GL}$ ではそれがカノニカルモデルの逆整礎性の失敗（\ref{pt:gl-not-strongly-complete}）として現れる。逆整礎性が一階の文で書けないこと（\ref{logic:cwf-not-first-order}）とも関係があると考えられるが、ここでは立ち入らない。
+
+**関連する結果.** ソロヴェイの階層定理は、閉様相論理式の標準形定理（\ref{pt:letterless-normal-form}）が「閉」であることに本質的に依存することを示している。一方、不動点定理（\ref{pt:page-fixed-point-theorem}）は、$p$ について様相の下にしか現れない方程式の解は閉様相論理式や $p$ 以外の変数の論理式で表せることを述べ、別の意味での「標準形」を与える。
+
+**高い視点から：鎖の長さを数える論理.** 本ページの結果はすべて、有限・推移的・非反射的なフレームの**鎖の長さ**についての組合せ論である。反映原理 $\Box A\to A$ は「ここでは $A$ の成り立ちが下へ降りたときに崩れない」という局所的な条件で、鳩の巣補題は「$n$ 個の局所条件では、長さ $n$ の鎖のどこかで全部が同時に成り立つ点が出てしまう」ことを言う。$\Diamond^{n}\top$（「下に長さ $n$ の鎖がある」）はまさに鎖の長さを測る物差しなので、$n$ 個未満の反映原理では長さ $n$ を保証できない。算術の側では、鎖の長さは「無矛盾性を何回積み上げられるか」であり、反映原理の個数はそれを支える「支柱の本数」にあたる。非コンパクト性は、有限の鎖はいくらでも長くできるのに、無限の上昇鎖は逆整礎性が禁じる、という $\omega$ と有限の間の隔たりの様相的な表れであり、一階述語論理では超積（モデル理論のページで扱う）のような「極限」の構成が無限の鎖を作ってしまうのと対照的である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

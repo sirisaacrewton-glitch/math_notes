@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>半順序とマーティンの公理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/03-martin-axiom.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 半順序とマーティンの公理 {#set:page-martin-axiom keywords="Martin's axiom, MA, partial order, forcing poset, countable chain condition, dense set, filter, generic filter"}
+
+連続体仮説（\ref{set:ch}）が成り立たないとき、$\omega<\kappa<2^{\aleph_{0}}$ を満たす基数 $\kappa$ が存在する。そのような $\kappa$ は $\omega$ に似ているのか、それとも $2^{\aleph_{0}}$ に似ているのか。たとえば次の問いは、$\kappa=\omega$ ならばすべて「はい」と答えられる。
+
+1. $2^{\kappa}=2^{\aleph_{0}}$ か。
+2. $\omega$ の部分集合からなる大きさ $\kappa$ の概素族（\ref{set:almost-disjoint}）は、極大でないか。
+3. ルベーグ測度 $0$ の実数の集合を $\kappa$ 個合併しても、測度 $0$ か。
+4. 第一類集合を $\kappa$ 個合併しても、第一類か。
+
+強制法によれば、どの問いも $\ZFC+\lnot\mathrm{CH}$ からは決まらない。**マーティンの公理**（MA）は、これらすべてに「はい」と答える組合せ論的な原理を 1 つにまとめたもので、強制法を知らなくても述べることができ、また使うことができる。本ページでは MA を述べるための半順序の言葉を用意し、MA の最も基本的な性質（$\mathrm{MA}(\aleph_{0})$ は ZFC の定理であり、$\mathrm{MA}(2^{\aleph_{0}})$ は偽である）を示す。上の問い 1〜4 への応用は \ref{set:page-ma-consequences} と \ref{set:page-ma-reals} で行う。
+
+## 記法と定義の確認 {#set:sec-ma-notation}
+
+::: notation
+- 本ページでは選択公理を仮定する（$\ZFC$）。各証明の「前提条件の使用箇所」に、選択公理がどこで必要かを明記する。AC のもとでは任意の集合 $A$ が濃度 $\lvert A\rvert$ をもつ（\ref{set:every-set-cardinality}）。
+- 有限・可算は \ref{set:finite-set} の意味。$\le\kappa$ 個の濃度 $\le\kappa$ の集合の和の濃度は $\le\kappa$（\ref{set:union-bound}。特に可算個の可算集合の和は可算）。全射 $X\to Y$ があれば $\lvert Y\rvert\le\lvert X\rvert$（\ref{set:surjection-cardinality}）。
+- ${}^{B}A$ は $B$ から $A$ への写像全体（\ref{set:function-set}）。$2^{\aleph_{0}}=\lvert{}^{\omega}2\rvert=\lvert\mathcal{P}(\omega)\rvert$ は基数の冪（\ref{set:cardinal-exponentiation}）であり、カントールの定理により $\aleph_{0}<2^{\aleph_{0}}$（\ref{set:cantor-strict}）。以下 $2^{\aleph_{0}}$ を $2^{\omega}$ とも書く。基数の和・積は $\oplus$, $\otimes$（\ref{set:cardinal-sum-product}）。
+- $\omega_{1}=\aleph_{1}$ は最小の非可算基数で、正則である（\ref{set:successor-regular}）。
+- 関数 $p$ は順序対の集合であり（\ref{set:function}）、関数 $p,q$ について $p\subseteq q$ は「$q$ は $p$ の拡張」を意味する。
+- （狭義の）半順序・全順序は \ref{set:total-order} の意味であるが、本ページで導入する「強制法の半順序」（\ref{set:forcing-poset}）は反射的な関係 $\le$ を基本にとる点が異なる。
+- 位相空間の可算鎖条件（c.c.c.）は \ref{set:ccc-space}、可算個の有限集合の Δ システム補題は \ref{set:delta-system-lemma} を参照。
+:::
+
+## 半順序と両立性 {#set:sec-ma-posets}
+
+::: definition 半順序（強制法の意味で） {#set:forcing-poset keywords="partial order, preorder, forcing poset, condition, extension" index="半順序|はんじゅんじょ, 条件|じょうけん, 拡張|かくちょう, 強制半順序|きょうせいはんじゅんじょ"}
+1. 組 $\langle\PP,\le\rangle$ が**半順序**であるとは、$\PP\ne\varnothing$ であり、$\le$ が $\PP$ 上の関係であって次を満たすことをいう。
+   - **反射律**：$\forall p\in\PP\ (p\le p)$。
+   - **推移律**：$\forall p,q,r\in\PP\ (p\le q\land q\le r\to p\le r)$。
+
+   $p\le q$ を「$p$ は $q$ を**拡張**する」と読み、$\PP$ の元を**条件**（condition）と呼ぶ。
+2. 半順序 $\langle\PP,\le\rangle$ が**狭義の意味での半順序**であるとは、さらに
+   $$
+   \forall p,q\in\PP\ (p\le q\land q\le p\to p=q)
+   $$
+   （反対称律）を満たすことをいう。このとき $p<q\iff(p\le q\land p\ne q)$ と定める。
+:::
+
+::: intuition
+条件 $p$ は、これから作りたい対象についての「部分的な情報」であり、$p\le q$ は「$p$ は $q$ より多くの情報をもつ（$q$ の言っていることをすべて言っている）」ことを表す。情報が多いほど「小さい」と書くのは強制法の慣習である。反対称律を要求しないのは、異なる条件が同じ情報を表すことを許しておくと、後で半順序からブール代数を作る（\ref{set:boolean-completion}）ときや反復強制法を扱うときに便利だからで、この一般性で余分な手間はかからない。
+
+混乱しないよう、半順序 $\langle\PP,\le\rangle$ を単に「半順序 $\PP$」と呼ぶことが多い。
+:::
+
+::: example
+- $\PP$ を空でない任意の集合とし、$\le$ を $\PP\times\PP$ 全体（すべての $p,q$ について $p\le q$）とすると、反射律・推移律を満たす半順序である。$\PP$ が 2 元以上なら反対称律は成り立たない。
+- 空でない集合族 $\PP$ に包含の逆 $p\le q\iff p\supseteq q$ を入れたもの、あるいは包含 $p\le q\iff p\subseteq q$ を入れたものは、狭義の意味での半順序である（反対称律は外延性の公理）。
+:::
+
+::: lemma 狭義の半順序の基本性質 {#set:forcing-poset-strict keywords="strict part of a partial order"}
+$\langle\PP,\le\rangle$ が狭義の意味での半順序ならば、$\langle\PP,<\rangle$ は \ref{set:total-order} の意味の（狭義の）半順序であり、任意の $p,q\in\PP$ について $p\le q\iff(p=q\lor p<q)$ である。
+:::
+
+::: proof
+**Step 1（非反射律）.** $p<p$ は $p\ne p$ を含むので成り立たない。
+
+**Step 2（推移律）.** $p<q$, $q<r$ とする。$\le$ の推移律より $p\le r$。もし $p=r$ なら $r\le q$ かつ $q\le r$ となり、反対称律より $q=r$ で $q<r$ に反する。よって $p\ne r$、すなわち $p<r$。
+
+**Step 3.** $p\le q$ のとき、$p=q$ か $p\ne q$ のいずれかで、後者なら $p<q$。逆に $p=q$ なら反射律より $p\le q$、$p<q$ なら定義より $p\le q$。
+
+::: hypcheck
+- **反射律**：Step 3。**推移律**：Step 2。**反対称律**：Step 2 で $p\ne r$ を示すのに使った。反対称律がなければ、$p\le q\le p$, $p\ne q$ のとき $p<q<p$ だが $p\not<p$ となり、$<$ は推移的でない。
+- 集合論の公理は論理と外延性以外に使っていない。
+:::
+:::
+
+::: definition 鎖・両立・非両立・反鎖 {#set:compatible keywords="chain, compatible, incompatible, antichain" index="鎖|くさり, 両立|りょうりつ, 非両立|ひりょうりつ, 反鎖|はんさ"}
+$\langle\PP,\le\rangle$ を半順序とする。
+1. $C\subseteq\PP$ が**鎖**であるとは、$\forall p,q\in C\ (p\le q\lor q\le p)$ となることをいう。
+2. $p,q\in\PP$ が**両立する**とは、$\exists r\in\PP\ (r\le p\land r\le q)$ となることをいう。このような $r$ を $p,q$ の**共通の拡張**という。両立しないとき $p,q$ は**両立しない**といい、$p\perp q$ と書く。
+3. $A\subseteq\PP$ が**反鎖**であるとは、$\forall p,q\in A\ (p\ne q\to p\perp q)$ となることをいう。
+:::
+
+::: intuition
+$p,q$ が両立するとは、2 つの情報が矛盾せず、両方を含む情報 $r$ がありうること。反鎖は「互いに矛盾する情報」の集まりで、これから作る対象はその中の高々 1 つとしか整合しない。「反鎖」は「鎖」の反対（どの 2 元も比較可能）ではなく、「どの 2 元も共通の拡張をもたない」ことである点に注意する。比較可能な 2 元は両立する（次の補題）ので、鎖と反鎖の共通部分は高々 1 元である。
+:::
+
+::: lemma 両立性の基本性質 {#set:compatible-basic keywords="basic properties of compatibility"}
+$\langle\PP,\le\rangle$ を半順序、$p,q,p',q'\in\PP$ とする。
+1. $p\le q$ ならば $p$ と $q$ は両立する。特に $p$ は $p$ 自身と両立する。
+2. $p'\le p$, $q'\le q$ で $p'$ と $q'$ が両立するならば、$p$ と $q$ は両立する。対偶をとると、$p\perp q$ ならば $p'\perp q'$。
+:::
+
+::: proof
+**(1)** $r=p$ とおくと、反射律より $r\le p$、仮定より $r\le q$。$p\le p$ なので $p$ は $p$ と両立する。
+
+**(2)** $r\le p'$, $r\le q'$ となる $r$ をとる。推移律より $r\le p$, $r\le q$。
+
+::: hypcheck
+- **反射律**：(1)。**推移律**：(2)。
+:::
+:::
+
+::: definition 可算鎖条件 {#set:ccc-poset keywords="countable chain condition, ccc, c.c.c., countable antichain condition" index="可算鎖条件|かさんさじょうけん, c.c.c.|しーしーしー"}
+半順序 $\PP$ が**可算鎖条件**（countable chain condition, c.c.c.）をもつとは、$\PP$ の反鎖がすべて可算であることをいう。
+:::
+
+::: intuition
+条件は反鎖を通じてしか「分岐」しないので、c.c.c. は「互いに矛盾する選択肢が非可算個並ぶことはない」という小ささの条件である。名前に「鎖」とあるが実際には**反鎖**についての条件で、文献によっては c.a.c.（countable antichain condition）と呼ばれる。位相空間の c.c.c.（\ref{set:ccc-space}）との関係は次の例 (3) を見よ。
+:::
+
+::: example
+1. $\PP=\omega_{1}$ に順序数の通常の順序 $\le$ を入れる。任意の 2 元は比較可能なので (1) より両立し、反鎖は高々 1 元である。したがって $\PP$ は c.c.c. をもつ。このように $\PP$ 自身は非可算でも c.c.c. はありうる。
+2. $X$ を空でない集合とし、$\PP=\mathcal{P}(X)\setminus\{\varnothing\}$ に $p\le q\iff p\subseteq q$ を入れる。$p,q$ が両立する $\iff$ $r\subseteq p\cap q$ となる空でない $r$ がある $\iff$ $p\cap q\ne\varnothing$。よって反鎖とは、空でない集合の対ごとに交わらない族のことである。$\PP$ が c.c.c. をもつことと $\lvert X\rvert\le\omega$ は同値である：
+   - $X$ が可算なら単射 $e\colon X\to\omega$ をとり、反鎖 $A$ の各元 $p$ に $\min e[p]$ を対応させると、対ごとに交わらないことから単射 $A\to\omega$ になる（選択公理は要らない）。
+   - $X$ が非可算なら、単集合全体 $\{\{x\}\mid x\in X\}$ は非可算な反鎖である。
+3. $X$ を位相空間、$\PP$ を $X$ の空でない開集合全体とし、$p\le q\iff p\subseteq q$ とする。(2) と同様に「$p,q$ が両立する $\iff$ $p\cap q\ne\varnothing$」（$p\cap q$ は開集合なので、それ自身が共通の拡張になる）。したがって $\PP$ が c.c.c. をもつことと、空間 $X$ が c.c.c.（\ref{set:ccc-space}）をもつことは同値である。
+4. ブール代数 $\mathcal{B}$（\ref{set:boolean-algebra}）について、$\PP=\mathcal{B}\setminus\{0\}$ に $\mathcal{B}$ の順序を入れると、$p\perp q\iff p\wedge q=0$ となる。
+:::
+
+## 稠密集合とフィルター {#set:sec-ma-dense-filter}
+
+::: definition 稠密集合 {#set:dense-set keywords="dense subset of a partial order" index="稠密集合|ちゅうみつしゅうごう"}
+半順序 $\PP$ の部分集合 $D$ が $\PP$ で**稠密**であるとは、
+$$
+\forall p\in\PP\ \exists q\in D\ (q\le p)
+$$
+となることをいう。
+:::
+
+::: intuition
+稠密集合は、作りたい対象に課す 1 つの「要請」を表す。どんな部分的な情報 $p$ から出発しても、それをさらに詳しくして要請 $D$ を満たす情報 $q$ にできる、ということ。位相空間の空でない開集合の半順序（上の例 3）では、$D$ が稠密であることは「どの空でない開集合も $D$ のある元を含む」ことであり、位相的な稠密性の類似になっている。
+:::
+
+::: definition フィルター {#set:poset-filter keywords="filter in a partial order" index="フィルター（半順序の）|ふぃるたー"}
+半順序 $\PP$ の部分集合 $G$ が $\PP$ の**フィルター**であるとは、次の 2 条件を満たすことをいう。
+1. $\forall p,q\in G\ \exists r\in G\ (r\le p\land r\le q)$。
+2. $\forall p\in G\ \forall q\in\PP\ (p\le q\to q\in G)$（上に閉じている）。
+
+$G\cap D\ne\varnothing$ のとき、$G$ は $D$ と**交わる**という。
+:::
+
+::: intuition
+フィルター $G$ は「互いに矛盾しない情報をまとめて集めたもの」で、1 つの対象を記述する候補である。(1) は $G$ の情報が互いに整合し、しかもその整合性が $G$ の中で確かめられること、(2) は $G$ に属する情報から導かれる弱い情報も $G$ に属することを表す。この定義では $\varnothing$ もフィルターである。稠密集合 $D$ と交わるとは、要請 $D$ が $G$ の中の情報で満たされることである。
+:::
+
+::: lemma フィルターの基本性質 {#set:poset-filter-basic keywords="basic properties of filters in a partial order, generated filter"}
+$\PP$ を半順序とする。
+1. フィルター $G$ の任意の 2 元は両立する。
+2. フィルター $G$ の空でない有限部分集合 $\{p_{0},\dots,p_{n-1}\}$ に対し、すべての $i<n$ について $r\le p_{i}$ となる $r\in G$ がある。
+3. $\PP$ の元の列 $\langle p_{n}\mid n<\omega\rangle$ が $p_{0}\ge p_{1}\ge p_{2}\ge\cdots$（すべての $n$ で $p_{n+1}\le p_{n}$）を満たすならば、
+   $$
+   G=\{q\in\PP\mid\exists n<\omega\ (p_{n}\le q)\}
+   $$
+   はすべての $p_{n}$ を含むフィルターである。特に $p\in\PP$ について $\{q\in\PP\mid p\le q\}$ はフィルターである。
+:::
+
+::: proof
+**(1)** 定義の条件 1 そのものである。
+
+**(2)** $n$ についての帰納法。$n=1$ なら $r=p_{0}$（反射律）。$n$ で成り立つとし、$p_{0},\dots,p_{n}\in G$ とする。帰納法の仮定より $r'\le p_{0},\dots,p_{n-1}$ となる $r'\in G$ があり、条件 1 より $r\le r'$, $r\le p_{n}$ となる $r\in G$ がある。推移律より $r$ は $p_{0},\dots,p_{n}$ すべての拡張である。
+
+**(3)** まず $m\le n$ ならば $p_{n}\le p_{m}$ であることを $n$ についての帰納法で示す：$n=m$ なら反射律、$p_{n}\le p_{m}$ なら $p_{n+1}\le p_{n}\le p_{m}$ と推移律。反射律より各 $p_{n}\in G$。
+- *条件 1*：$q,q'\in G$ とし、$p_{n}\le q$, $p_{n'}\le q'$ とする。$k=\max(n,n')$ とおくと $p_{k}\le p_{n}\le q$, $p_{k}\le p_{n'}\le q'$ であり、$p_{k}\in G$。
+- *条件 2*：$q\in G$, $q\le q'$ なら、$p_{n}\le q\le q'$ となる $n$ があるので $q'\in G$。
+
+最後の主張は、定数列 $p_{n}=p$ に適用すればよい。
+
+::: hypcheck
+- **反射律・推移律**：(2), (3)。
+- **$\omega$ 上の帰納法**（\ref{set:peano}）：(2) と (3) の単調性。
+- **分出公理**：(3) で $G$ を集合として定めるのに使った。選択公理は使っていない。
+:::
+:::
+
+## マーティンの公理 {#set:sec-ma-definition}
+
+::: definition マーティンの公理 {#set:ma keywords="Martin's axiom, MA, MA(kappa)" index="マーティンの公理|まーてぃんのこうり, MA|えむえー"}
+$\kappa$ を基数とする。
+1. $\mathrm{MA}(\kappa)$ とは次の主張である：$\PP$ が c.c.c. をもつ（空でない）半順序で、$\mathcal{D}$ が $\PP$ の稠密部分集合からなる $\lvert\mathcal{D}\rvert\le\kappa$ の族ならば、すべての $D\in\mathcal{D}$ と交わるフィルター $G$ が $\PP$ に存在する。
+2. **マーティンの公理** $\mathrm{MA}$ とは、「すべての基数 $\kappa<2^{\aleph_{0}}$ について $\mathrm{MA}(\kappa)$」という主張である。
+:::
+
+::: intuition
+条件は作りたい対象の有限的な近似、稠密集合はその対象に課す要請である。$\mathrm{MA}(\kappa)$ は「$\PP$ が c.c.c. という意味で小さいなら、$\kappa$ 個の要請を同時に満たす（十分に**ジェネリック**な）対象が存在する」ことを主張する。可算個の要請なら、要請を 1 つずつ順に満たしていけば必ずうまくいく（\ref{set:ma-omega}）。MA はこの「可算の場合に成り立つこと」が $2^{\aleph_{0}}$ 未満のすべての $\kappa$ で成り立つという主張であり、「$2^{\aleph_{0}}$ 未満の無限基数はすべて $\omega$ のように振る舞う」という見方を定式化したものといえる。$2^{\aleph_{0}}$ 以上では偽になる（\ref{set:ma-continuum-false}）ので、MA はこの形の主張のうち矛盾しない最強のものである。
+:::
+
+::: definition 有限部分関数の半順序 {#set:fn-poset keywords="Fn(I,J), finite partial functions, Cohen poset" index="有限部分関数の半順序|ゆうげんぶぶんかんすうのはんじゅんじょ, コーエンの半順序|こーえんのはんじゅんじょ"}
+集合 $I,J$ に対し、
+$$
+\operatorname{Fn}(I,J)=\{p\mid p\text{ は関数}\land\dom p\subseteq I\land\ran p\subseteq J\land\lvert p\rvert<\omega\}
+$$
+とおき、$p\le q\iff p\supseteq q$ と順序を入れる。$\operatorname{Fn}(I,J)\subseteq\mathcal{P}(I\times J)$ なので、冪集合の公理と分出公理によりこれは集合であり、空関数 $\varnothing$ を含むので空でない。包含の逆なので狭義の意味での半順序である。
+:::
+
+::: intuition
+条件 $p$ は「作りたい関数 $f\colon I\to J$ の、有限個の点での値」を指定したもので、$p\le q$ は $p$ が $q$ より多くの点で値を指定していることを表す。$\operatorname{Fn}(\omega,2)$ はコーエンが連続体仮説の独立性の証明で用いた半順序であり、「ジェネリックな実数」を有限の近似で作る。
+:::
+
+::: lemma 有限部分関数の半順序の基本性質 {#set:fn-poset-basic keywords="compatibility in Fn(I,J), union of a filter is a function"}
+$I,J$ を集合とし、$\PP=\operatorname{Fn}(I,J)$ とする。
+1. $p,q\in\PP$ が両立する $\iff$ $p,q$ が $\dom p\cap\dom q$ 上で一致する。このとき $p\cup q$ は共通の拡張である。
+2. $G$ が $\PP$ のフィルターならば、$f_{G}=\bigcup G$ は関数であり、$\dom f_{G}\subseteq I$, $\ran f_{G}\subseteq J$。
+3. $i\in I$ について $D_{i}=\{p\in\PP\mid i\in\dom p\}$ とおく。$J\ne\varnothing$ ならば $D_{i}$ は稠密であり、$G\cap D_{i}\ne\varnothing$ ならば $i\in\dom f_{G}$。
+:::
+
+::: proof
+**(1)** ($\Rightarrow$) $r\le p$, $r\le q$ とすると $r\supseteq p\cup q$。$i\in\dom p\cap\dom q$ ならば $\langle i,p(i)\rangle\in r$, $\langle i,q(i)\rangle\in r$ で、$r$ は関数なので $p(i)=q(i)$。
+
+($\Leftarrow$) $p\cup q$ は関数である：$\langle i,a\rangle,\langle i,b\rangle\in p\cup q$ とすると、両方 $p$ に属すか両方 $q$ に属すなら $p$ または $q$ が関数であることから $a=b$、一方が $p$ に他方が $q$ に属すなら $i\in\dom p\cap\dom q$ で、仮定より $a=b$。また $\dom(p\cup q)=\dom p\cup\dom q\subseteq I$、$\ran(p\cup q)\subseteq J$、$\lvert p\cup q\rvert\le\lvert p\rvert\oplus\lvert q\rvert<\omega$（\ref{set:finite-cardinal-arithmetic}）。よって $p\cup q\in\PP$ で、$p\cup q\supseteq p$, $p\cup q\supseteq q$。
+
+**(2)** $\langle i,a\rangle,\langle i,b\rangle\in f_{G}$ とし、$\langle i,a\rangle\in p\in G$, $\langle i,b\rangle\in q\in G$ とする。\ref{set:poset-filter-basic} (1) より $p,q$ は両立するので、(1) より $p(i)=q(i)$、すなわち $a=b$。よって $f_{G}$ は関数。$G$ の各元は $I\times J$ の部分集合なので、$f_{G}\subseteq I\times J$。
+
+**(3)** $p\in\PP$ をとる。$i\in\dom p$ なら $p\in D_{i}$ で $p\le p$。$i\notin\dom p$ なら $j\in J$ を 1 つとり $q=p\cup\{\langle i,j\rangle\}$ とおくと、$q\in\PP$, $q\le p$, $q\in D_{i}$。よって $D_{i}$ は稠密。$p\in G\cap D_{i}$ なら $i\in\dom p\subseteq\dom f_{G}$。
+
+::: hypcheck
+- **外延性・対・和集合・冪集合・分出の公理**：$p\cup q$, $\bigcup G$, $\PP$ を作るのに使った。
+- **$J\ne\varnothing$**：(3) で値 $j$ をとるのに使った。$J=\varnothing$ なら $\PP=\{\varnothing\}$ で、$D_{i}=\varnothing$ は稠密でない。
+- 選択公理は使っていない（(3) で選ぶ $j$ は 1 つだけ）。
+:::
+:::
+
+::: proposition 可算な値域をもつ有限部分関数の半順序は c.c.c. {#set:fn-ccc keywords="Fn(I,J) is ccc for countable J" index="コーエン強制の可算鎖条件|こーえんきょうせいのかさんさじょうけん"}
+$I$ を任意の集合、$J$ を可算集合とすると、$\operatorname{Fn}(I,J)$ は c.c.c. をもつ。
+:::
+
+::: intuition
+条件の定義域は $I$ の有限部分集合で、$I$ はいくら大きくてもよい。非可算個の条件があれば、Δ システム補題によってそのうち非可算個の定義域は共通の「根」$r$ で重なり、それ以外では互いに交わらない。根の上での値の決め方は可算通りしかないので、2 つの条件は根の上で一致し、両立してしまう。
+:::
+
+::: proof
+$\PP=\operatorname{Fn}(I,J)$ とし、$A\subseteq\PP$ が非可算な反鎖であると仮定して矛盾を導く。
+
+**Step 1（添字付け）.** $A$ は非可算なので $\omega_{1}\le\lvert A\rvert$ であり、単射 $\omega_{1}\to A$、$\alpha\mapsto p_{\alpha}$ がある。$\alpha\ne\beta$ ならば $p_{\alpha}\perp p_{\beta}$ である。
+
+**Step 2（有限集合の上の関数は可算個）.** 任意の有限集合 $d$ について ${}^{d}J$ は可算である。実際 $d\approx n$（$n<\omega$）とすると ${}^{d}J\preccurlyeq{}^{n}\omega$（\ref{set:function-set-bijections}）で、${}^{n}\omega\subseteq{}^{<\omega}\omega\approx\omega$（\ref{set:kappa-finite-sequences}）。
+
+**Step 3（定義域の族が可算な場合）.** $\mathcal{E}=\{\dom p_{\alpha}\mid\alpha<\omega_{1}\}$ が可算であるとする。$\omega_{1}=\bigcup_{d\in\mathcal{E}}\{\alpha<\omega_{1}\mid\dom p_{\alpha}=d\}$ は可算個の集合の和なので、どれかの $d\in\mathcal{E}$ について $X_{d}=\{\alpha\mid\dom p_{\alpha}=d\}$ は非可算である（すべて可算なら \ref{set:union-bound} より $\omega_{1}$ が可算になる）。$\alpha\mapsto p_{\alpha}$ は $X_{d}$ から ${}^{d}J$ への単射なので、Step 2 に反する。
+
+**Step 4（定義域の族が非可算な場合）.** $\mathcal{E}$ は有限集合からなる非可算な族なので、Δ システム補題（\ref{set:delta-system-lemma}）により、非可算な $\mathcal{E}'\subseteq\mathcal{E}$ と有限集合 $r$ があって、相異なる $d,d'\in\mathcal{E}'$ について $d\cap d'=r$ となる。各 $d\in\mathcal{E}'$ について $\dom p_{\alpha}=d$ となる $\alpha$ を 1 つ選び（選択公理）$q_{d}=p_{\alpha}$ とおく。$d\mapsto q_{d}\restr{r}$ は $\mathcal{E}'$ から ${}^{r}J$ への写像で、Step 2 より ${}^{r}J$ は可算、$\mathcal{E}'$ は非可算なので、$d\ne d'$ で $q_{d}\restr{r}=q_{d'}\restr{r}$ となるものがある（単射なら $\mathcal{E}'$ が可算になる）。$\dom q_{d}\cap\dom q_{d'}=d\cap d'=r$ でその上で一致するので、\ref{set:fn-poset-basic} (1) より $q_{d}$ と $q_{d'}$ は両立する。一方 $q_{d}\ne q_{d'}$（定義域が異なる）はどちらも $A$ の元なので $q_{d}\perp q_{d'}$。これは矛盾である。
+
+::: hypcheck
+- **$J$ が可算であること**：Step 2 で使った。$J$ が非可算で $I\ne\varnothing$ なら $\{\{\langle i,j\rangle\}\mid j\in J\}$（$i\in I$ を固定）は非可算な反鎖であり、結論は成り立たない（\ref{set:ma-ccc-necessary}）。
+- **Δ システム補題**（\ref{set:delta-system-lemma}）：Step 4 の核心。
+- **選択公理**：Step 1 の単射の存在（非可算集合の濃度の比較）、Step 3 の \ref{set:union-bound}、Step 4 の $q_{d}$ の選択に使った。
+- $I$ の大きさには何の仮定もしていない。
+:::
+:::
+
+::: example
+$\operatorname{Fn}(\omega,2)$ での典型的な稠密集合を挙げる（\ref{set:fn-poset-basic} の記号で）。$G$ をフィルターとし、$f_{G}=\bigcup G$ とおく。
+- $D_{n}=\{p\mid n\in\dom p\}$（$n<\omega$）はすべて稠密で、すべての $D_{n}$ と交われば $f_{G}\colon\omega\to2$ は全域的な関数になる。$\varnothing$ もフィルターであり $f_{\varnothing}=\varnothing$ なので、稠密集合と交わることを要求しないと $f_{G}$ はいくらでも小さくなりうる。
+- $E=\{p\mid\exists n\in\dom p\ (p(n)=1)\}$ は稠密である（$p$ に $\langle n,1\rangle$、$n\notin\dom p$ を付け加えればよい）。$G\cap E\ne\varnothing$ ならば $f_{G}$ は定数関数 $0$ ではない。
+- 同様に、あらかじめ与えた $h\in{}^{\omega}2$ について $E_{h}=\{p\mid\exists n\in\dom p\ (p(n)\ne h(n))\}$ は稠密で、$G\cap E_{h}\ne\varnothing$ ならば $f_{G}\ne h$ である。「ジェネリックな関数」は、あらかじめ与えたどの関数とも異なる。
+:::
+
+## MA の基本性質 {#set:sec-ma-basic}
+
+::: lemma MA の単調性 {#set:ma-basic keywords="monotonicity of MA(kappa)" index="MA の単調性|えむえーのたんちょうせい"}
+基数 $\kappa\le\kappa'$ について、$\mathrm{MA}(\kappa')$ ならば $\mathrm{MA}(\kappa)$。
+:::
+
+::: proof
+$\mathrm{MA}(\kappa')$ を仮定し、c.c.c. をもつ半順序 $\PP$ と、$\lvert\mathcal{D}\rvert\le\kappa$ となる稠密集合の族 $\mathcal{D}$ をとる。$\lvert\mathcal{D}\rvert\le\kappa\le\kappa'$ なので、$\mathrm{MA}(\kappa')$ をそのまま $\mathcal{D}$ に適用して、すべての $D\in\mathcal{D}$ と交わるフィルターが得られる。
+
+::: hypcheck
+- 基数の順序の推移性だけを使った。
+:::
+:::
+
+::: theorem $\mathrm{MA}(\aleph_{0})$ は ZFC の定理 {#set:ma-omega keywords="MA(omega) is provable in ZFC, Rasiowa-Sikorski lemma" index="ラシオワ＝シコルスキの補題|らしおわしこるすきのほだい"}
+$\PP$ を任意の半順序、$\mathcal{D}$ を $\PP$ の稠密部分集合からなる可算な族とすると、すべての $D\in\mathcal{D}$ と交わるフィルター $G$ が存在する。特に $\mathrm{MA}(\aleph_{0})$ が成り立ち、\ref{set:ma-basic} より任意の有限の $n$ について $\mathrm{MA}(n)$ も成り立つ。
+:::
+
+::: intuition
+可算個の要請 $D_{0},D_{1},\dots$ を順番に処理する。$p_{0}$ から出発し、$p_{n}$ を拡張して $D_{n}$ の元 $p_{n+1}$ にする。稠密性により各段階で拡張は必ずできる。得られた下降列 $p_{0}\ge p_{1}\ge\cdots$ の上にあるもの全体がフィルターになる。c.c.c. は使わない。
+:::
+
+::: proof
+**Step 1（$\mathcal{D}=\varnothing$ の場合）.** $\PP\ne\varnothing$ なので $p\in\PP$ をとり、$G=\{q\mid p\le q\}$ とすれば \ref{set:poset-filter-basic} (3) よりフィルターで、交わるべき $D$ はない。
+
+**Step 2（数え上げ）.** $\mathcal{D}\ne\varnothing$ とする。$\mathcal{D}$ は可算で空でないので、全射 $n\mapsto D_{n}$、$\omega\to\mathcal{D}$ がある（単射 $e\colon\mathcal{D}\to\omega$ と $D^{*}\in\mathcal{D}$ を 1 つとり、$n\in\ran e$ なら $D_{n}=e^{-1}(n)$、そうでなければ $D_{n}=D^{*}$ とする）。
+
+**Step 3（下降列の構成）.** 選択公理により、$\mathcal{P}(\PP)\setminus\{\varnothing\}$ 上の選択関数 $c$ を 1 つ固定する（\ref{set:choice-function}）。$p_{0}=c(\PP)$ とし、$\omega$ 上の再帰（\ref{set:recursion-on-ordinal}）により
+$$
+p_{n+1}=c\bigl(\{q\in D_{n}\mid q\le p_{n}\}\bigr)
+\label{set:eq-ma-omega-recursion}
+$$
+と定める。右辺の集合は、$D_{n}$ が稠密なので空でない。よって $p_{n+1}\in D_{n}$ かつ $p_{n+1}\le p_{n}$。
+
+**Step 4（フィルター）.** $G=\{q\in\PP\mid\exists n\ (p_{n}\le q)\}$ とおくと、\ref{set:poset-filter-basic} (3) により $G$ はすべての $p_{n}$ を含むフィルターである。任意の $D\in\mathcal{D}$ は Step 2 よりある $D_{n}$ に等しく、$p_{n+1}\in G\cap D_{n}$。
+
+::: hypcheck
+- **選択公理**：Step 3 で選択関数 $c$ を使った。実際に必要なのは従属選択公理（DC）で、$\PP$ が整列可能（たとえば可算）なら $c$ を整列順序の最小元で置き換えられ、ZF で済む。
+- **$\PP\ne\varnothing$**：Step 1 と $p_{0}$ の選択。**稠密性**：Step 3 で選択する集合が空でないこと。
+- **$\mathcal{D}$ が可算であること**：Step 2 で $\omega$ で数え上げ、Step 3 の再帰を $\omega$ の長さで済ませるのに使った。
+- **c.c.c. は使っていない**。したがってこの定理は c.c.c. をもたない半順序にも適用できる。
+:::
+:::
+
+::: supplement
+**位相的な意味.** $X$ を空でない完備距離空間またはコンパクト・ハウスドルフ空間とし、$\PP$ を $X$ の空でない開集合全体（$\subseteq$ で順序付ける）とすると、この定理の議論は**ベールのカテゴリー定理**（\ref[ベールのカテゴリー定理]{top:baire-category}）の証明そのものである：稠密開集合 $U_{n}$ ごとに $D_{n}=\{p\mid\overline{p}\subseteq U_{n}\}$（完備距離空間の場合はさらに $p$ の直径 $<1/(n+1)$ も課す）が稠密になり、下降列の閉包の共通部分が $\bigcap_{n}U_{n}$ の点を与える。この意味で $\mathrm{MA}(\kappa)$ は、ベールのカテゴリー定理の「$\kappa$ 個版」である（\ref{set:ma-compact-ccc}、同値性は \ref{set:ma-equivalents}）。
+:::
+
+::: theorem $\mathrm{MA}(2^{\aleph_{0}})$ は偽 {#set:ma-continuum-false keywords="MA(2^omega) is false" index="MA(2^ω) の否定|えむえーにのおめがじょうのひてい"}
+$\mathrm{MA}(2^{\aleph_{0}})$ は成り立たない。したがって \ref{set:ma-basic} より、$\mathrm{MA}(\kappa)$ が成り立つならば $\kappa<2^{\aleph_{0}}$ である。
+:::
+
+::: intuition
+ジェネリックな関数 $f_{G}\colon\omega\to2$ は、あらかじめ与えたどの関数 $h$ とも異なるように作れる（$h$ ごとに稠密集合 $E_{h}$ を用意する）。しかし $h$ を**すべての**関数 $\omega\to2$ にわたらせると、$f_{G}$ 自身とも異なることになって矛盾する。要請の個数がちょうど $2^{\aleph_{0}}$ になるので、$\mathrm{MA}(2^{\aleph_{0}})$ が否定される。
+:::
+
+::: proof
+$\mathrm{MA}(2^{\aleph_{0}})$ を仮定して矛盾を導く。$\PP=\operatorname{Fn}(\omega,2)$ とする。
+
+**Step 1（$\PP$ は c.c.c.）.** $\PP$ は可算である：$p\in\PP$ に有限集合 $s_{p}=\{2n+p(n)\mid n\in\dom p\}\subseteq\omega$ を対応させると、$s_{p}$ から $p$ が復元できる（$m\in s_{p}$ について $n=\lfloor m/2\rfloor$、$p(n)=m-2n$）ので $p\mapsto s_{p}$ は単射であり、$\omega$ の有限部分集合全体は $s\mapsto\sum_{m\in s}2^{m}$ で $\omega$ に単射される（2 進展開の一意性）。したがって $\PP$ の任意の部分集合、特に任意の反鎖は可算である。
+
+**Step 2（稠密集合）.** $n<\omega$ について $D_{n}=\{p\in\PP\mid n\in\dom p\}$、$h\in{}^{\omega}2$ について
+$$
+E_{h}=\{p\in\PP\mid\exists n\in\dom p\ (p(n)\ne h(n))\}
+$$
+とおく。$D_{n}$ は \ref{set:fn-poset-basic} (3) より稠密である。$E_{h}$ も稠密である：$p\in\PP$ に対し、$\dom p$ は有限なので $n\notin\dom p$ となる $n<\omega$ があり（\ref{set:finite-basic}）、$q=p\cup\{\langle n,1-h(n)\rangle\}$ とおくと $q\in E_{h}$, $q\le p$。
+
+**Step 3（族の大きさ）.** $\mathcal{D}=\{D_{n}\mid n<\omega\}\cup\{E_{h}\mid h\in{}^{\omega}2\}$ とおく。前者は $\omega$ からの全射の像、後者は ${}^{\omega}2$ からの全射の像なので、\ref{set:surjection-cardinality} より濃度はそれぞれ $\le\aleph_{0}$, $\le2^{\aleph_{0}}$。よって $\lvert\mathcal{D}\rvert\le\aleph_{0}\oplus2^{\aleph_{0}}=2^{\aleph_{0}}$（\ref{set:cardinal-absorption}）。
+
+**Step 4（矛盾）.** $\mathrm{MA}(2^{\aleph_{0}})$ より、すべての $D\in\mathcal{D}$ と交わるフィルター $G$ がある。\ref{set:fn-poset-basic} (2), (3) より $f=\bigcup G$ は $\omega$ から $2$ への関数で、$\dom f=\omega$、すなわち $f\in{}^{\omega}2$。そこで $h=f$ とすると $G\cap E_{f}\ne\varnothing$ なので、$p\in G$ と $n\in\dom p$ で $p(n)\ne f(n)$ となるものがある。しかし $p\subseteq\bigcup G=f$ より $p(n)=f(n)$。これは矛盾である。
+
+**Step 5.** $\mathrm{MA}(\kappa)$ かつ $\kappa\ge2^{\aleph_{0}}$ とすると、\ref{set:ma-basic} より $\mathrm{MA}(2^{\aleph_{0}})$ となり Step 4 に反する。よって $\kappa<2^{\aleph_{0}}$（基数は比較可能）。
+
+::: hypcheck
+- **選択公理**：Step 3 で \ref{set:surjection-cardinality} と基数の吸収則を使うところ。$2^{\aleph_{0}}$ を基数として扱うこと自体にも使っている。
+- **$E_{h}$ を $h\in{}^{\omega}2$ すべてについて用意したこと**：Step 4 で $h=f$ とできる理由。族の大きさがちょうど $2^{\aleph_{0}}$ になるのはここである。
+- **冪集合の公理**：${}^{\omega}2$ と $\mathcal{D}$ を集合として作るのに使った。
+:::
+:::
+
+::: corollary CH のもとでの MA {#set:ch-implies-ma keywords="CH implies MA" index="CH と MA|しーえいちとえむえー"}
+$\mathrm{CH}$ ならば $\mathrm{MA}$ が成り立つ。したがって $\mathrm{MA}$ が興味深いのは $\mathrm{MA}+\lnot\mathrm{CH}$ の場合である。
+:::
+
+::: proof
+$\mathrm{CH}$ より $2^{\aleph_{0}}=\aleph_{1}$。基数 $\kappa<\aleph_{1}$ は $\kappa\le\aleph_{0}$ を満たす（$\aleph_{1}$ は $\aleph_{0}$ より大きい最小の基数）。\ref{set:ma-omega} と \ref{set:ma-basic} より $\mathrm{MA}(\kappa)$ が成り立つ。
+
+::: hypcheck
+- **CH**：$2^{\aleph_{0}}$ 未満の基数を可算に限るのに使った。**選択公理**：\ref{set:ma-omega} を通じて使った。
+:::
+:::
+
+::: fact $\mathrm{MA}+\lnot\mathrm{CH}$ の無矛盾性 {#set:ma-consistency keywords="consistency of MA + not CH, Solovay-Tennenbaum" index="ソロヴェイ＝テネンバウムの定理|そろゔぇいてねんばうむのていり"}
+$\ZFC$ が無矛盾ならば、$\ZFC+\mathrm{MA}+2^{\aleph_{0}}=\aleph_{2}$ も無矛盾である。より一般に、$\kappa>\aleph_{1}$ が正則基数で $2^{<\kappa}=\kappa$ を満たすならば、c.c.c. をもつ半順序による強制拡大で $\mathrm{MA}+2^{\aleph_{0}}=\kappa$ を成り立たせることができる（Solovay–Tennenbaum, *Iterated Cohen extensions and Souslin's problem*, Ann. of Math. 94 (1971)；Kunen, *Set Theory* (1980), 第 VIII 章 §6）。証明は \ref{set:solovay-tennenbaum} で与える。
+:::
+
+::: supplement
+MA は $2^{\aleph_{0}}$ が正則であることを導く（\ref{set:ma-continuum-regular}）ので、上の事実で $\kappa$ を正則に限っているのは本質的である。たとえば $2^{\aleph_{0}}=\aleph_{2}$, $\aleph_{\omega+1}$, あるいは（弱到達不能基数の存在が無矛盾なら）最初の弱到達不能基数（\ref{set:inaccessible}）であるような MA のモデルがある。
+:::
+
+::: proposition 可算鎖条件は外せない {#set:ma-ccc-necessary keywords="ccc cannot be dropped from MA, Fn(omega, omega_1)" index="MA における c.c.c. の必要性|えむえーにおけるしーしーしーのひつようせい"}
+$\PP=\operatorname{Fn}(\omega,\omega_{1})$ と、$\alpha<\omega_{1}$ について $D_{\alpha}=\{p\in\PP\mid\alpha\in\ran p\}$ を考える。各 $D_{\alpha}$ は稠密であるが、すべての $D_{\alpha}$（$\alpha<\omega_{1}$）と交わるフィルターは存在しない。したがって $\mathrm{MA}(\aleph_{1})$ の定義から「c.c.c. をもつ」という仮定を外した主張は（ZFC で）偽である。また $\PP$ は c.c.c. をもたない。
+:::
+
+::: proof
+**Step 1（稠密性）.** $p\in\PP$, $\alpha<\omega_{1}$ とする。$\alpha\in\ran p$ なら $p\in D_{\alpha}$。そうでなければ、$\dom p$ は有限なので $n\notin\dom p$ となる $n<\omega$ をとり、$q=p\cup\{\langle n,\alpha\rangle\}$ とおくと $q\in D_{\alpha}$, $q\le p$。
+
+**Step 2（フィルターは存在しない）.** $G$ がすべての $D_{\alpha}$ と交わるフィルターだとする。\ref{set:fn-poset-basic} (2) より $f=\bigcup G$ は $\dom f\subseteq\omega$ の関数であり、各 $\alpha<\omega_{1}$ について $p\in G\cap D_{\alpha}$ をとると $\alpha\in\ran p\subseteq\ran f$。よって $f$ は $\dom f$ から $\omega_{1}$ への全射で、\ref{set:surjection-cardinality} より $\aleph_{1}=\lvert\omega_{1}\rvert\le\lvert\dom f\rvert\le\aleph_{0}$。これは矛盾である。
+
+**Step 3（c.c.c. でない）.** $\{\langle0,\alpha\rangle\}$（$\alpha<\omega_{1}$）は $\PP$ の元で、$\alpha\ne\beta$ なら $0$ での値が異なるので \ref{set:fn-poset-basic} (1) より両立しない。よってこれらは非可算な反鎖をなす。
+
+**Step 4.** 稠密集合の族 $\{D_{\alpha}\mid\alpha<\omega_{1}\}$ の濃度は $\le\aleph_{1}$ なので、Step 2 は c.c.c. の仮定を外した $\mathrm{MA}(\aleph_{1})$ を否定する。
+
+::: hypcheck
+- **選択公理**：Step 2 の \ref{set:surjection-cardinality}（ただし $\dom f\subseteq\omega$ は整列可能なので、ここは ZF でも済む）。
+- **$\omega_{1}$ が非可算であること**：Step 2 の矛盾と Step 3。
+:::
+:::
+
+::: supplement
+\ref{set:ma-omega} は c.c.c. なしで成り立つので、この命題は「$\kappa>\omega$ では c.c.c. が本質的に効いている」ことを示している。c.c.c. をより広いクラスの条件に取り替えて、$\aleph_{1}$ 個の稠密集合について MA に類似した公理を考えることもできる。c.c.c. な半順序と可算閉な半順序をともに含む「適正（proper）」な半順序について考えたものが**適正強制公理**（PFA）である。PFA は $2^{\aleph_{0}}=\aleph_{2}$ を導く（Todorčević, Veličković）。
+:::
+
+## 問題 {#set:sec-ma-problems}
+
+::: problem {#set:prob-ma-dense-below}
+半順序 $\PP$ の部分集合 $D$ が**開稠密**であるとは、$D$ が稠密で下に閉じている（$q\le p\in D\Rightarrow q\in D$）ことをいう。$\mathrm{MA}(\kappa)$ の定義で「稠密集合」を「開稠密集合」に置き換えても同値な主張になることを示せ。
+:::
+
+::: solution
+開稠密集合は稠密なので、元の $\mathrm{MA}(\kappa)$ から置き換えた主張が従う。逆に置き換えた主張を仮定し、稠密集合の族 $\mathcal{D}$（$\lvert\mathcal{D}\rvert\le\kappa$）をとる。各 $D\in\mathcal{D}$ について $D^{\downarrow}=\{q\in\PP\mid\exists p\in D\ (q\le p)\}$ は下に閉じており（推移律）、$D\subseteq D^{\downarrow}$（反射律）なので稠密である。$D\mapsto D^{\downarrow}$ の像の濃度は $\le\kappa$ なので、すべての $D^{\downarrow}$ と交わるフィルター $G$ がある。$q\in G\cap D^{\downarrow}$ とし $q\le p\in D$ となる $p$ をとると、$G$ は上に閉じているので $p\in G\cap D$。よって $G$ はすべての $D\in\mathcal{D}$ と交わる。
+:::
+
+::: problem {#set:prob-ma-maximal-antichain}
+半順序 $\PP$ の反鎖 $A$ が**極大**であるとは、$A$ を真に含む反鎖がないことをいう。(a) 極大反鎖 $A$ について $A^{\downarrow}=\{q\mid\exists a\in A\ (q\le a)\}$ は稠密であることを示せ。(b) フィルター $G$ が $A^{\downarrow}$ と交われば、$G\cap A$ はちょうど 1 元であることを示せ。
+:::
+
+::: solution
+(a) $p\in\PP$ をとる。$p\in A$ なら $p\in A^{\downarrow}$。$p\notin A$ なら、$A$ の極大性より $A\cup\{p\}$ は反鎖でないので、ある $a\in A$ が $p$ と両立する（$A$ の元どうしは両立しないので、両立する組は $p$ を含む）。共通の拡張 $q\le p$, $q\le a$ をとると $q\in A^{\downarrow}$。
+
+(b) $q\in G\cap A^{\downarrow}$, $q\le a\in A$ とすると $a\in G$（上に閉じている）。$a,a'\in G\cap A$ なら \ref{set:poset-filter-basic} (1) より両立するので、反鎖の定義から $a=a'$。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

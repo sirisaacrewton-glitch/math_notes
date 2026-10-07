@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GL のタブロー | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/03-modal-logic/06-trees-for-gl.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# GL のタブロー {#logic:page-trees-for-gl keywords="tableau method, truth trees, semantic tableaux for GL, decision procedure, K closed under Löb rule"}
+
+**タブロー**（木の方法）は、論理式の否定を仮定して場合分けを進め、すべての場合が矛盾すれば元の論理式が定理であると判定する証明の探索法である。ここでは $\mathsf{GL}$ のためのタブローを、符号付き論理式の有限集合についての再帰的な手続きとして定式化し、(1) 手続きが必ず停止すること、(2) 閉じれば定理であること（健全性）、(3) 開いていれば有限・推移的・非反射的な木の上の反例モデルが読み取れること（完全性）を示す。これは $\mathsf{GL}$ の完全性と決定可能性（\ref{logic:page-modal-completeness}）の別証明であり、実際に使える判定法を与える。最後に、同じ方法で $\mathsf{K}$ がレーブ規則で閉じていることを示す。
+
+## 記法と定義の確認 {#logic:sec-trees-notation}
+
+::: notation
+- 様相論理式の部分論理式 $\mathrm{Sub}$、恒真式による推論、正規性は \ref{logic:page-normal-modal-logics}、$\mathsf{GL}$ の基本定理（とくに公理 4 \ref{logic:gl-four} と問題 \ref{logic:prob-gl-last-point}）は \ref{logic:page-gl-axioms}、クリプキモデルと真理は \ref{logic:page-kripke-semantics} のとおり。
+- **符号付き論理式**とは、$\mathsf{T}A$ または $\mathsf{F}A$（$A$ は様相論理式）の形のものをいう。符号付き論理式の有限集合 $\Gamma$ に対し、その**特性論理式** $\Gamma^{\ast}$ を、$\mathsf{T}A$ を $A$ に、$\mathsf{F}A$ を $\neg A$ に置き換えたものの連言とする（$\varnothing^{\ast}=\top$）。モデルの世界 $w$ が $\Gamma$ を**満たす**とは、$\mathsf{T}A\in\Gamma$ なら $w\models A$、$\mathsf{F}A\in\Gamma$ なら $w\not\models A$ となることをいう。
+- 以下、判定したい論理式 $A_{0}$ を固定し、現れる符号付き論理式はすべて $A_{0}$ の部分論理式に符号を付けたものとする。$n\defeq$（$A_{0}$ の部分論理式のうち $\Box$ で始まるものの個数）。
+:::
+
+## タブローの定義 {#logic:sec-trees-definition}
+
+::: definition 飽和と直接の矛盾 {#logic:tableau-saturated keywords="propositionally saturated set" index="タブロー|たぶろー"}
+符号付き論理式の有限集合 $\Gamma$ が
+- **直接に矛盾する**とは、$\mathsf{T}\bot\in\Gamma$、またはある $A$ で $\mathsf{T}A,\mathsf{F}A\in\Gamma$ となることをいう。
+- **飽和している**とは、$\mathsf{T}(F\to G)\in\Gamma$ なら $\mathsf{F}F\in\Gamma$ または $\mathsf{T}G\in\Gamma$、$\mathsf{F}(F\to G)\in\Gamma$ なら $\mathsf{T}F,\mathsf{F}G\in\Gamma$ となることをいう。
+:::
+
+::: definition 飽和化 {#logic:tableau-saturation}
+符号付き論理式を一つの順序で並べておく。$\Gamma$ の**飽和化** $\mathrm{Sat}(\Gamma)$（有限個の集合からなる集合）を次で定める。$\Gamma$ が飽和していれば $\mathrm{Sat}(\Gamma)\defeq\{\Gamma\}$。そうでなければ、条件を満たさない最初の符号付き論理式について、
+$$
+\begin{aligned}
+&\mathsf{T}(F\to G)\text{ なら }\mathrm{Sat}(\Gamma)\defeq\mathrm{Sat}(\Gamma\cup\{\mathsf{F}F\})\cup\mathrm{Sat}(\Gamma\cup\{\mathsf{T}G\}),\\
+&\mathsf{F}(F\to G)\text{ なら }\mathrm{Sat}(\Gamma)\defeq\mathrm{Sat}(\Gamma\cup\{\mathsf{T}F,\mathsf{F}G\}).
+\end{aligned}
+$$
+右辺の集合は $\Gamma$ より真に大きく、$A_{0}$ の符号付き部分論理式（有限個）の中にあるので、この再帰は停止する。
+:::
+
+::: lemma 飽和化の性質 {#logic:tableau-saturation-basic}
+$\mathrm{Sat}(\Gamma)$ の各元 $\Delta$ は飽和していて $\Gamma\subset\Delta$ であり、恒真式により $\Gamma^{\ast}\leftrightarrow\bigvee_{\Delta\in\mathrm{Sat}(\Gamma)}\Delta^{\ast}$ が成り立つ。
+:::
+
+::: proof
+定義に関する帰納法。分岐の場合、$\mathsf{T}(F\to G)\in\Gamma$ なので $\Gamma^{\ast}$ は $(\Gamma\cup\{\mathsf{F}F\})^{\ast}\vee(\Gamma\cup\{\mathsf{T}G\})^{\ast}$ と恒真式により同値。$\mathsf{F}(F\to G)$ の場合は $\neg(F\to G)\leftrightarrow F\wedge\neg G$ による。
+:::
+
+::: definition 窓と閉じたタブロー {#logic:tableau-closed keywords="closed tableau, window" index="閉じたタブロー|とじたたぶろー"}
+飽和した $\Delta$ と $\mathsf{F}\Box C\in\Delta$ に対し、**窓**
+$$
+\mathrm{Win}(\Delta,C)\defeq\{\mathsf{F}C,\ \mathsf{T}\Box C\}\cup\{\mathsf{T}D,\ \mathsf{T}\Box D:\mathsf{T}\Box D\in\Delta\}
+$$
+を定める。$\mu(\Gamma)\defeq n-\#\{\Box D:\mathsf{T}\Box D\in\Gamma\}$ とおく。$\Gamma$ の**タブローが閉じる**ことを $\mu(\Gamma)$ に関する帰納法で次のように定める：すべての $\Delta\in\mathrm{Sat}(\Gamma)$ が**閉じている**こと、ここで飽和した $\Delta$ が閉じているとは、$\Delta$ が直接に矛盾するか、ある $\mathsf{F}\Box C\in\Delta$ について $\mathrm{Win}(\Delta,C)$ のタブローが閉じることをいう。
+:::
+
+::: lemma 再帰の正当性 {#logic:tableau-termination}
+$\Delta$ が直接に矛盾しない飽和した集合で $\mathsf{F}\Box C\in\Delta$ なら、$\mu(\mathrm{Win}(\Delta,C))<\mu(\Delta)\le\mu(\Gamma)$（$\Delta\in\mathrm{Sat}(\Gamma)$）。したがって上の定義は $\mu$ に関する帰納法として正当であり、タブローが閉じるかどうかは有限回の計算で決まる。
+:::
+
+::: proof
+直接に矛盾しないので $\mathsf{T}\Box C\notin\Delta$。$\mathrm{Win}(\Delta,C)$ の $\mathsf{T}\Box$ の付く論理式は、$\Delta$ のもの全部と $\Box C$ なので、個数が真に増える。$\Delta\supset\Gamma$ より $\mu(\Delta)\le\mu(\Gamma)$。$\mu\ge0$ なので、窓の入れ子の深さは $n$ 以下で、各段で調べる集合は有限個である。直接に矛盾する $\Delta$ については窓を考える必要がない（定義上すでに閉じている）。
+:::
+
+
+## 健全性：閉じれば定理 {#logic:sec-trees-soundness}
+
+::: theorem タブローの健全性 {#logic:gl-tableau-soundness}
+$\Gamma$ のタブローが閉じるなら $\mathsf{GL}\vdash\neg\Gamma^{\ast}$。とくに $\{\mathsf{F}A_{0}\}$ のタブローが閉じるなら $\mathsf{GL}\vdash A_{0}$。
+:::
+
+::: proof
+$\mu(\Gamma)$ に関する帰納法。\ref{logic:tableau-saturation-basic} より、各 $\Delta\in\mathrm{Sat}(\Gamma)$ について $\mathsf{GL}\vdash\neg\Delta^{\ast}$ を示せばよい。
+
+**Step 1（直接の矛盾）.** $\Delta^{\ast}$ が $\bot$ を含むか、$A$ と $\neg A$ を含むなら、恒真式により $\neg\Delta^{\ast}$。
+
+**Step 2（窓）.** $\mathsf{F}\Box C\in\Delta$ で $\mathrm{Win}(\Delta,C)$ のタブローが閉じるとする。帰納法の仮定（\ref{logic:tableau-termination}）より $\mathsf{GL}\vdash\neg W$、ここで $W\defeq\neg C\wedge\Box C\wedge\bigwedge_{j}(D_{j}\wedge\Box D_{j})$（$\mathsf{T}\Box D_{j}\in\Delta$ 全体）。必然化と正規性 10 より $\mathsf{GL}\vdash\neg\Diamond W$。一方、次の三つが $\mathsf{GL}$ の定理である。
+- $\neg\Box C\to\Diamond(\neg C\wedge\Box C)$：問題 \ref{logic:prob-gl-last-point} の $\Diamond p\to\Diamond(p\wedge\Box\neg p)$ に $p\mapsto\neg C$ を代入し、$\Box\neg\neg C\leftrightarrow\Box C$（正規性 2）と $\Diamond\neg C\leftrightarrow\neg\Box C$（正規性 10）を使う。
+- $\Box D\to\Box(D\wedge\Box D)$：公理 4（\ref{logic:gl-four}）と正規性 3。
+- $\Diamond X\wedge\Box Y\to\Diamond(X\wedge Y)$：正規性 8。
+
+これらから $\mathsf{GL}\vdash\neg\Box C\wedge\bigwedge_{j}\Box D_{j}\to\Diamond W$（$\Box$ の連言は正規性 4 で一つにまとめる）。左辺の各項は $\Delta^{\ast}$ の連言項なので $\mathsf{GL}\vdash\Delta^{\ast}\to\Diamond W$、よって $\mathsf{GL}\vdash\neg\Delta^{\ast}$。
+
+::: hypcheck
+- **GL の定理 $\neg\Box C\to\Diamond(\neg C\wedge\Box C)$**（レーブの公理から）：Step 2 で、窓に $\mathsf{T}\Box C$ を入れてよい理由。$\mathsf{K4}$ ではこれが成り立たず、窓に $\Box C$ を入れられない。
+- **公理 4**：窓に $\mathsf{T}\Box D_{j}$ を入れてよい理由。
+:::
+:::
+
+## 完全性：開いていれば反例 {#logic:sec-trees-completeness}
+
+::: theorem タブローの完全性 {#logic:gl-tableau-completeness}
+$\Gamma$ のタブローが閉じないなら、有限・推移的・非反射的な木の上のモデルに、$\Gamma$ を満たす世界（根）がある。
+:::
+
+::: proof
+$\mu(\Gamma)$ に関する帰納法。閉じないので、閉じていない $\Delta\in\mathrm{Sat}(\Gamma)$ がある。$\Delta$ は直接に矛盾せず、各 $\mathsf{F}\Box C\in\Delta$ について $\mathrm{Win}(\Delta,C)$ のタブローは閉じない。帰納法の仮定より、各 $C$ に有限・推移的・非反射的な木のモデル $\mathcal{M}_{C}=(W_{C},R_{C},V_{C})$ と、$\mathrm{Win}(\Delta,C)$ を満たす根 $r_{C}$ がある（$W_{C}$ の元はすべて $r_{C}$ か $r_{C}$ から到達できるとしてよい：生成部分モデル \ref{logic:generated-submodel}）。
+
+**Step 1（モデル）.** $W_{C}$ たちを互いに素にとり、新しい点 $w$ を加えて $W\defeq\{w\}\cup\bigcup_{C}W_{C}$、$R\defeq\bigcup_{C}R_{C}\cup\{(w,x):x\in\bigcup_{C}W_{C}\}$、$V\defeq\bigcup_{C}V_{C}\cup\{(w,p):\mathsf{T}p\in\Delta\}$ とする。有限・推移的・非反射的な木である。各 $W_{C}$ の点から見える世界は $\mathcal{M}_{C}$ の中と同じなので、連続性（\ref{logic:generated-submodel}）より $W_{C}$ の点での真理は $\mathcal{M}_{C}$ と同じ。
+
+**Step 2（真理）.** $A$ に関する帰納法で「$\mathsf{T}A\in\Delta\Rightarrow w\models A$、$\mathsf{F}A\in\Delta\Rightarrow w\not\models A$」を示す。
+- $\bot$：$\mathsf{T}\bot\notin\Delta$、$w\not\models\bot$。命題変数：$\mathsf{T}p\in\Delta$ なら $V$ の定義から真、$\mathsf{F}p\in\Delta$ なら直接に矛盾しないので $\mathsf{T}p\notin\Delta$、よって偽。
+- 含意：飽和性と帰納法の仮定。
+- $\mathsf{F}\Box C\in\Delta$：$wRr_{C}$ で $r_{C}\not\models C$（$\mathsf{F}C\in\mathrm{Win}$）。よって $w\not\models\Box C$。
+- $\mathsf{T}\Box D\in\Delta$：$w$ から見える世界は各 $W_{C}$ の点である。根 $r_{C}$ は $\mathsf{T}D,\mathsf{T}\Box D$ を満たすので $r_{C}\models D$ で、$r_{C}$ から見えるすべての点で $D$。$W_{C}$ の点は $r_{C}$ かその後の点なので、すべてで $D$。よって $w\models\Box D$。（$\mathsf{F}\Box C$ がないときは $w$ から何も見えず、$w\models\Box D$ は自明。）
+
+よって $w$ は $\Delta\supset\Gamma$ を満たす。
+:::
+
+::: corollary GL の判定法 {#logic:tableau-decision}
+$\mathsf{GL}\vdash A_{0}\iff\{\mathsf{F}A_{0}\}$ のタブローが閉じる。これは有限回の計算で判定できる。さらに、$\mathsf{GL}\nvdash A_{0}$ なら、高さ（$w_{0}Rw_{1}R\cdots$ の長さ）が $n$ 以下の有限・推移的・非反射的な木の上で $A_{0}$ が偽になる。
+:::
+
+::: proof
+$\Leftarrow$ は健全性、$\Rightarrow$ は完全性と健全性定理（\ref{logic:kripke-soundness}）の対偶。高さの評価は、窓の入れ子の深さが $n$ 以下であること（\ref{logic:tableau-termination}）による。
+:::
+
+## K とレーブ規則 {#logic:sec-k-lob-rule}
+
+::: theorem K のタブロー {#logic:tableau-k}
+窓を $\mathrm{Win}_{\mathsf{K}}(\Delta,C)\defeq\{\mathsf{F}C\}\cup\{\mathsf{T}D:\mathsf{T}\Box D\in\Delta\}$ に変え、測度を「符号付き論理式の様相次数の最大値」に変えると、同様に、閉じれば $\mathsf{K}\vdash\neg\Gamma^{\ast}$、閉じなければ有限で**ループのない**（$w_{0}Rw_{1}R\cdots Rw_{k}=w_{0}$ となる列がない）フレームの上に $\Gamma$ を満たす世界がある。
+:::
+
+::: proof
+窓の論理式の様相次数は、$\Box C$, $\Box D$ より一つずつ小さいので、測度は真に減る。健全性は $\mathsf{K}\vdash\neg\Box C\wedge\bigwedge\Box D_{j}\to\Diamond(\neg C\wedge\bigwedge D_{j})$（正規性 8 と 10）による。完全性は、Step 1 で $R$ を推移閉包にせず「$w$ から各根 $r_{C}$ へ」の辺だけを加える（$R\defeq\bigcup R_{C}\cup\{(w,r_{C})\}$）。できるフレームは有限の木（ループがない）で、真理の議論は $\mathsf{T}\Box D$ の場合に根 $r_{C}$ だけを見ればよい。
+:::
+
+::: corollary K はレーブ規則で閉じている {#logic:k-lob-rule}
+$\mathsf{K}\vdash\Box A\to A$ ならば $\mathsf{K}\vdash A$。
+:::
+
+::: proof
+$\mathsf{K}\nvdash A$ とする。\ref{logic:tableau-k} より、有限でループのないフレームのモデルのある世界で $A$ が偽。$A$ が偽な世界のうち、$R$ で「最も先」のもの $w$（$wRx$ となる $x$ ではすべて $A$ が真）がとれる：さもなければ、$A$ が偽な世界から $A$ が偽な世界へ無限に進めて、有限なのでループができる。$w\models\Box A$, $w\not\models A$ なので $\Box A\to A$ はこのモデルで偽で、健全性（\ref{logic:kripke-k-sound}）より $\mathsf{K}\nvdash\Box A\to A$。
+:::
+
+::: remark
+この系から、逆整礎なフレームをちょうど特徴づける様相論理式がないこと（\ref{logic:cwf-not-modal}）の別証明も得られる：そのような $A$ があれば、逆整礎でないフレームがあるので $\mathsf{K}\nvdash A$、\ref{logic:tableau-k} よりループのない有限（したがって逆整礎な）フレームで $A$ が偽になり、矛盾する。
+:::
+
+## 問題 {#logic:sec-trees-problems}
+
+::: problem {#logic:prob-tableau-lob}
+$\{\mathsf{F}(\Box(\Box p\to p)\to\Box p)\}$ のタブローが閉じることを確かめよ。
+:::
+
+::: solution
+飽和化で $\mathsf{T}\Box(\Box p\to p)$, $\mathsf{F}\Box p$ を得る（一つの $\Delta$）。窓 $\mathrm{Win}(\Delta,p)=\{\mathsf{F}p,\mathsf{T}\Box p,\mathsf{T}(\Box p\to p),\mathsf{T}\Box(\Box p\to p)\}$ を飽和化すると、$\mathsf{T}(\Box p\to p)$ から $\mathsf{F}\Box p$（$\mathsf{T}\Box p$ と直接に矛盾）か $\mathsf{T}p$（$\mathsf{F}p$ と直接に矛盾）に分かれ、どちらも閉じる。よって窓が閉じ、$\Delta$ が閉じる。
+:::
+
+::: problem {#logic:prob-tableau-countermodel}
+$\Box(p\vee\Box p)\to(\Box p\vee\Box\Box p)$ が $\mathsf{GL}$ の定理でないことを、タブローから反例を読み取って示せ。
+:::
+
+::: solution
+$\mathsf{F}$ を付けて飽和化すると $\mathsf{T}\Box(p\vee\Box p)$, $\mathsf{F}\Box p$, $\mathsf{F}\Box\Box p$。窓 $\mathrm{Win}(\cdot,p)$ は $\mathsf{F}p,\mathsf{T}\Box p,\mathsf{T}(p\vee\Box p),\mathsf{T}\Box(p\vee\Box p)$ で、飽和化すると開いた集合が残る（$\mathsf{T}\Box p$ の枝）。窓 $\mathrm{Win}(\cdot,\Box p)$ は $\mathsf{F}\Box p,\mathsf{T}\Box\Box p,\mathsf{T}(p\vee\Box p),\mathsf{T}\Box(p\vee\Box p)$ で、飽和化すると $\mathsf{T}p$ の枝が開き、そこでさらに $\mathsf{F}\Box p$ の窓（$\mathsf{F}p,\mathsf{T}\Box p,\ldots$）が開く。読み取れるモデル：$W=\{0,1,2,3\}$, $R=\{(0,1),(0,2),(0,3),(2,3)\}$、$p$ は $2$ でだけ真。$0$ で $\Box(p\vee\Box p)$ は真（$1$ と $3$ は見る世界がないので $\Box p$ が真、$2$ では $p$ が真）、$\Box p$ は偽（$1$ で偽）、$\Box\Box p$ は偽（$2$ で $\Box p$ が偽：$3$ で $p$ は偽）。
+:::
+
+::: supplement
+**高い視点から：証明の探索と反例の構成は同じ手続きの両面.** タブローは「定理であることの証明」と「定理でないことの反例」を同時に探す。閉じたタブローは $\mathsf{GL}$ の証明に変換でき（健全性の証明がその変換）、開いたタブローはそのまま有限の木のモデルになる。レーブの公理が要請する逆整礎性は、窓を開くたびに $\Box$ の付いた仮定が一つずつ増え、それが有限個しかないので窓の入れ子が必ず止まる、という形で手続きの停止性に現れている。これは、一階述語論理で完全性を証明の探索（タブロー）から得る方法（\ref{logic:tableau-completeness}）の様相版である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

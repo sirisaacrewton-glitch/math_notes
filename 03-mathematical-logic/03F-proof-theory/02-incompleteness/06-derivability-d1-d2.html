@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>導出可能性条件 D1・D2 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/02-incompleteness/06-derivability-d1-d2.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 導出可能性条件 D1・D2 {#pt:page-derivability-d1-d2 keywords="derivability conditions, Hilbert-Bernays-Löb, D1, D2, provable modus ponens"}
+
+証明可能性述語 $\mathrm{Bew}$ について、ヒルベルト–ベルナイス–レーブの**導出可能性条件**は次の三つである（$\varphi,\psi$ は任意の論理式）。
+
+- **(D1)** $\PA\vdash\varphi$ ならば $\PA\vdash\mathrm{Bew}(\Godel{\varphi})$。
+- **(D2)** $\PA\vdash\mathrm{Bew}(\Godel{\varphi\to\psi})\to(\mathrm{Bew}(\Godel{\varphi})\to\mathrm{Bew}(\Godel{\psi}))$。
+- **(D3)** $\PA\vdash\mathrm{Bew}(\Godel{\varphi})\to\mathrm{Bew}(\Godel{\mathrm{Bew}(\Godel{\varphi})})$。
+
+本ページでは、このうち D1 と D2 を証明する。あわせて、自由変数を含む論理式 $F$ について、数項を代入した証明可能性 $\mathrm{Bew}[F]$（\ref{pt:bew-bracket}）の D1・D2 に当たる性質を示す。これは次のページで D3 を示すのに使う。
+
+## 記法と定義の確認 {#pt:sec-d12-notation}
+
+::: notation
+- ゲーデル数 $\Godel{\cdot}$、構文の述語と関数（$\mathrm{Fm},\mathrm{Tm},\mathrm{Oc},\mathrm{Fr},\mathrm{sub},\mathrm{Sbl},\mathrm{num},\mathrm{imp},\mathrm{all},\mathrm{cl}$）、行の列 $\mathrm{Deriv}$、$\mathrm{Pf}$、$\mathrm{Bew}$、$\mathrm{Bew}[F]$ は \ref{pt:page-arithmetization} のとおり。行の付加情報に書く前提の行番号は、行どうしの差として記録されている。
+- $\mathcal{M}$ は $\PA$ の任意のモデル。$\mathcal{M}$ の元 $y$ が $\mathrm{Deriv}(y)$ を満たすとき、$y$ を（$\mathcal{M}$ の中の）導出と呼ぶ。$\mathcal{M}$ が超準モデルなら、導出の長さや、そこに現れる「論理式」は超準的でありうる。
+- 連結 $\ast$ と一項の列 $[\ell]$ は \ref{pt:sequence-operations} のとおり。
+:::
+
+## D1 {#pt:sec-d1}
+
+::: theorem D1 {#pt:d1 keywords="derivability condition D1" index="導出可能性条件|どうしゅつかのうせいじょうけん"}
+任意の論理式 $\varphi$ について、$\PA\vdash\varphi$ ならば $\PA\vdash\mathrm{Bew}(\Godel{\varphi})$。
+:::
+
+::: proof
+$\PA\vdash\varphi$ なら、\ref{pt:bew-correct} より $\mathcal{N}\models\mathrm{Bew}(\Godel{\varphi})$。$\mathrm{Bew}(\Godel{\varphi})$ は Σ 文（\ref{pt:bew-sigma}）なので、Σ 完全性（\ref{pt:sigma-completeness}）より $\PA\vdash\mathrm{Bew}(\Godel{\varphi})$。
+:::
+
+::: remark
+逆向き「$\PA\vdash\mathrm{Bew}(\Godel{\varphi})\Rightarrow\PA\vdash\varphi$」は、$\PA$ で証明できる Σ 文が真であること（Σ 健全性。たとえば $\mathcal{N}\models\PA$ から従う）を使えば成り立つ：$\mathcal{N}\models\mathrm{Bew}(\Godel{\varphi})$ となり、\ref{pt:bew-correct} を使う。ただし、これは $\PA$ の中の推論ではなく、D1 と違って $\PA$ が健全であることに依存する。
+:::
+
+## 導出の連結と D2 {#pt:sec-d2}
+
+::: lemma 導出の連結 {#pt:derivation-concat keywords="concatenation of derivations"}
+$\mathcal{M}$ で、$y,y'$ が導出なら $y\ast y'$ も導出であり、$k<\mathrm{lh}(y)$ なら $(y\ast y')_{k}=y_{k}$、$k<\mathrm{lh}(y')$ なら $(y\ast y')_{\mathrm{lh}(y)+k}=y'_{k}$。さらに、導出 $z$ の後ろに、$z$ の行を前提として正当化される行 $\ell$ を付け加えた $z\ast[\ell]$ も導出である。
+:::
+
+::: proof
+項の等式は連結の定義から従う。行 $k$ が正当化されるかどうかは、$k$ 行目の内容と、付加情報に書かれた差 $d$（$1\le d\le k$）だけ前の行の内容だけで決まる（\ref{pt:derivation-lines} の条件はこれらと、構文の述語・関数の値だけで書かれている）。$y\ast y'$ の $\mathrm{lh}(y)+k$ 行目は $y'_{k}$ で、差 $d\le k$ だけ前の行は $\mathrm{lh}(y)+(k-d)$ 行目、すなわち $y'_{k-d}$ である。よって $y'$ の中で正当化される行は $y\ast y'$ の中でも正当化される。前半の $y$ の部分は同じ行のままである。最後の主張は、$z\ast[\ell]$ の最後の行が、仮定から $z$ の行を参照して正当化されることによる。
+:::
+
+::: theorem D2 {#pt:d2 keywords="derivability condition D2, provable modus ponens"}
+任意の論理式 $\varphi,\psi$ について、$\PA\vdash\mathrm{Bew}(\Godel{\varphi\to\psi})\to(\mathrm{Bew}(\Godel{\varphi})\to\mathrm{Bew}(\Godel{\psi}))$。より一般に、$\mathcal{M}$ の任意の元 $x,x'$ について、$\mathrm{Bew}(\mathrm{imp}(x,x'))$ かつ $\mathrm{Bew}(x)$ ならば $\mathrm{Bew}(x')$。
+:::
+
+::: proof
+一般の形を示せば、$x=\Godel{\varphi}$, $x'=\Godel{\psi}$ として（$\mathrm{imp}(\Godel{\varphi},\Godel{\psi})=\Godel{\varphi\to\psi}$ は具体的な等式で、\ref{pt:syntax-provable} により $\PA$ で成り立つ）前半が従う。
+
+**Step 1.** $\mathrm{Pf}(y,\mathrm{imp}(x,x'))$、$\mathrm{Pf}(y',x)$ とする。$y,y'$ の最後の行を $(A,(\mathrm{imp}(x,x'),w))$, $(A',(x,w'))$ とし、$m\defeq\mathrm{lh}(y)$, $m'\defeq\mathrm{lh}(y')$ とおく。
+
+**Step 2.** $z\defeq y\ast y'$ とすると、\ref{pt:derivation-concat} より導出で、$m-1$ 行目と $m+m'-1$ 行目はそれぞれ上の二行である。行
+$$
+\ell\defeq\bigl(A\ast A',(x',(m'+1,1))\bigr)
+$$
+を加える。新しい行は $m+m'$ 行目で、差 $m'+1$ だけ前が $m-1$ 行目（結論 $\mathrm{imp}(x,x')$）、差 $1$ だけ前が $m+m'-1$ 行目（結論 $x$）なので、$\to$E で正当化される（仮定のリスト $A\ast A'$ の項全体は $\{A\}\cup\{A'\}$）。
+
+**Step 3.** $z\ast[\ell]$ の最後の行の仮定は $A$ か $A'$ の項で、どちらも $\mathrm{Ax}_{\PA}$ を満たす。よって $\mathrm{Pf}(z\ast[\ell],x')$、すなわち $\mathrm{Bew}(x')$。
+
+::: hypcheck
+- **行番号を差で記録したこと**：Step 2 で連結しても $y'$ の付加情報が正しいままであること（\ref{pt:derivation-concat}）。
+- **$\PA$ の帰納法**：有限列の連結の存在と性質（\ref{pt:finseq-exists}）を通じて使う。
+:::
+:::
+
+::: corollary D1・D2 から従う性質 {#pt:d12-consequences}
+任意の論理式 $\varphi,\psi$ について次が成り立つ。
+1. $\PA\vdash\varphi\to\psi$ ならば $\PA\vdash\mathrm{Bew}(\Godel{\varphi})\to\mathrm{Bew}(\Godel{\psi})$。
+2. $\PA\vdash\mathrm{Bew}(\Godel{\varphi\wedge\psi})\leftrightarrow\mathrm{Bew}(\Godel{\varphi})\wedge\mathrm{Bew}(\Godel{\psi})$。
+:::
+
+::: proof
+**1.** D1 で $\PA\vdash\mathrm{Bew}(\Godel{\varphi\to\psi})$、D2 と三段論法。**2.** $\to$：$\varphi\wedge\psi\to\varphi$ と $\varphi\wedge\psi\to\psi$ は恒真式の代入例で $\PA$ の定理なので、1 による。$\leftarrow$：$\varphi\to(\psi\to\varphi\wedge\psi)$ に D1 を使い、D2 を二回使う。
+:::
+
+::: intuition
+D1・D2 は、様相論理の必然化則と分配公理（\ref{logic:normal-modal-logic}）にちょうど対応する。この対応により、様相論理の $\Box$ を $\mathrm{Bew}$ と読む算術的解釈が意味をもつ（\ref{pt:page-arithmetical-soundness}）。1, 2 は正規性（\ref{logic:normality} の 1, 3）の算術版である。
+:::
+
+## 閉項の代入についての内部の補題 {#pt:sec-internal-substitution}
+
+$\mathrm{ClTm}(t)\defeq\mathrm{Tm}(t)\wedge\forall v<t\,\neg\mathrm{Oc}(v,t)$（**閉項のコード**）とおく。これは Δ 論理式である。
+
+::: lemma 閉項の代入 {#pt:closed-term-substitution}
+$\mathcal{M}$ の元 $t,t',v,v',u,x$ について、$\mathrm{ClTm}(t)$, $\mathrm{ClTm}(t')$, $\mathrm{Var}(v)$, $\mathrm{Var}(v')$, $\mathrm{Var}(u)$, $\mathrm{Fm}(x)$ とする。
+1. すべての $a$ について $\mathrm{ClTm}(\mathrm{num}(a))$。
+2. $\mathrm{Sbl}(t,v,x)$。
+3. $\mathrm{Fm}(\mathrm{sub}(x,v,t))$ であり、$\mathrm{Fr}(u,\mathrm{sub}(x,v,t))\iff\mathrm{Fr}(u,x)\wedge u\neq v$。
+4. $\neg\mathrm{Fr}(v,x)$ ならば $\mathrm{sub}(x,v,t)=x$。
+5. $v\neq v'$ ならば $\mathrm{sub}(\mathrm{sub}(x,v,t),v',t')=\mathrm{sub}(\mathrm{sub}(x,v',t'),v,t)$。
+:::
+
+::: proof
+いずれも $x$（項の場合は項のコード）についての強い帰納法（\ref{pt:pa-strong-induction}）で、定義（\ref{pt:syntax-predicates}）の場合分けに従って確かめる。帰納法を使う集合は論理式で定義できる。
+
+**1.** $a$ についての帰納法。$\mathrm{num}(0)=9$ は閉項。$\mathrm{num}(a+1)=(11,\mathrm{num}(a))$ に変数が現れるのは $\mathrm{num}(a)$ に現れるときだけ（$\mathrm{Oc}$ の定義）。
+
+**2.** 原子論理式と $\bot$ では定義により真。$\mathrm{imp}$ の場合は帰納法の仮定。$x=\mathrm{all}(y,x_{2})$ の場合、$t$ には変数が現れないので $\neg\mathrm{Oc}(y,t)$、帰納法の仮定より $\mathrm{Sbl}(t,v,x_{2})$。よって定義の後半の条件が成り立つ。
+
+**3.** まず項について、$\mathrm{Tm}(\mathrm{subt}(s,v,t))$ と「$\mathrm{Oc}(u,\mathrm{subt}(s,v,t))\iff\mathrm{Oc}(u,s)\wedge u\neq v$」を $s$ についての帰納法で示す（$s=v$ なら $\mathrm{subt}=t$ に変数は現れない、$s$ が他の変数なら $s$ のまま、複合項は成分ごと）。論理式について、原子論理式はこれから、$\mathrm{imp}$ は帰納法の仮定から従う。$x=\mathrm{all}(y,x_{2})$ で $y=v$ なら $\mathrm{sub}(x,v,t)=x$ で、$\mathrm{Fr}(v,x)$ は偽なので主張が成り立つ。$y\neq v$ なら $\mathrm{sub}(x,v,t)=\mathrm{all}(y,\mathrm{sub}(x_{2},v,t))$ で、$\mathrm{Fr}(u,\cdot)\iff u\neq y\wedge\mathrm{Fr}(u,\mathrm{sub}(x_{2},v,t))\iff u\neq y\wedge\mathrm{Fr}(u,x_{2})\wedge u\neq v\iff\mathrm{Fr}(u,x)\wedge u\neq v$。
+
+**4.** 項については「$\neg\mathrm{Oc}(v,s)$ なら $\mathrm{subt}(s,v,t)=s$」を帰納法で示す。論理式について、原子論理式はこれから、$\mathrm{imp}$ は帰納法の仮定から、$\mathrm{all}(y,x_{2})$ は $y=v$ なら定義から、$y\neq v$ なら $\neg\mathrm{Fr}(v,x_{2})$ と帰納法の仮定から。
+
+**5.** 項について $\mathrm{subt}(\mathrm{subt}(s,v,t),v',t')=\mathrm{subt}(\mathrm{subt}(s,v',t'),v,t)$：$s=v$ なら両辺 $t$（左辺は $\mathrm{subt}(t,v',t')=t$、4 の項の場合）、$s=v'$ なら両辺 $t'$、他の変数や $9$ なら両辺 $s$、複合項は成分ごと。論理式について、$\mathrm{all}(y,x_{2})$ の場合は $y=v$, $y=v'$, それ以外に分け、$y=v$ なら両辺とも $\mathrm{all}(y,\mathrm{sub}(x_{2},v',t'))$（定義）、$y=v'$ も同様、それ以外は帰納法の仮定による。
+:::
+
+## 自由変数を含む論理式の D1・D2 {#pt:sec-bew-bracket}
+
+::: theorem Bew[·] の D1 {#pt:bew-bracket-nec}
+任意の論理式 $F$ について、$\PA\vdash F$ ならば $\PA\vdash\mathrm{Bew}[F]$。
+:::
+
+::: proof
+**Step 1.** $F$ の自由変数を $v_{k_{1}},\dots,v_{k_{m}}$（$k_{1}<\cdots<k_{m}$）とし、$C\defeq\forall v_{k_{m}}\cdots\forall v_{k_{1}}F$ を全称閉包（$\mathrm{cl}$ の順序）とする。$\PA$ の公理は文なので、$\forall$I を $m$ 回使って $\PA\vdash C$。D1 より $\PA\vdash\mathrm{Bew}(\Godel{C})$。
+
+**Step 2.** $\mathcal{M}$ で、各 $v_{k_{i}}$ に元 $a_{i}$ が割り当てられているとする。$\mathrm{Pf}(y,\Godel{C})$ となる $y$ をとる。$C_{i}\defeq\forall v_{k_{i}}\cdots\forall v_{k_{1}}F$（$C_{m}=C$, $C_{0}=F$）とおき、$e_{m}\defeq\Godel{C}$、$e_{i-1}\defeq\mathrm{sub}(e_{i}',\Godel{v_{k_{i}}},\mathrm{num}(a_{i}))$（$e_{i}=\mathrm{all}(\Godel{v_{k_{i}}},e_{i}')$）と定める。$y$ の後ろに、$i=m,m-1,\dots,1$ の順に、直前の行（結論 $e_{i}$）から項 $\mathrm{num}(a_{i})$ による $\forall$E の行（結論 $e_{i-1}$、仮定のリストは同じ）を $m$ 行付け加える。\ref{pt:closed-term-substitution} の 1, 2 より $\forall$E の条件（$\mathrm{Tm}$ と $\mathrm{Sbl}$）が満たされ、\ref{pt:derivation-concat} より結果は導出で、仮定は $y$ と同じなので $\PA$ の公理である。
+
+**Step 3.** $e_{i}$ を具体的に計算する。$j<i$ について $v_{k_{j}}\neq v_{k_{i}}$ なので、$\mathrm{sub}$ の定義（全称の場合）を繰り返し使うと
+$$
+e_{0}=\mathrm{sub}(\cdots\mathrm{sub}(\Godel{F},\Godel{v_{k_{m}}},\mathrm{num}(a_{m}))\cdots,\Godel{v_{k_{1}}},\mathrm{num}(a_{1})).
+$$
+\ref{pt:closed-term-substitution} の 5 で代入の順序を入れ替えると、これは $\mathrm{Bew}[F]$ の中の項（$k_{1}$ から順に代入したもの）に等しい。よって $\mathcal{M}\models\mathrm{Bew}[F]$。$\mathcal{M}$ と割り当ては任意なので、完全性定理より $\PA\vdash\mathrm{Bew}[F]$。
+
+::: hypcheck
+- **$m$ がメタの自然数であること**：Step 2, 3 は、$F$ ごとに決まった有限回の操作である。$\mathcal{M}$ の中の帰納法は、有限列と代入の性質を通じてだけ使っている。
+- **数項が閉項であること**：Step 2 の $\mathrm{Sbl}$ と、Step 3 の代入の順序の入れ替え（\ref{pt:closed-term-substitution} の 5 は閉項についての主張）。
+:::
+:::
+
+::: theorem Bew[·] の D2 {#pt:bew-bracket-mp}
+任意の論理式 $F,G$ について、$\PA\vdash\mathrm{Bew}[F\to G]\to(\mathrm{Bew}[F]\to\mathrm{Bew}[G])$。
+:::
+
+::: proof
+$\mathcal{M}$ で、$F\to G$ の自由変数 $v_{k_{1}},\dots,v_{k_{m}}$ に元 $a_{1},\dots,a_{m}$ が割り当てられているとする。コード $x$ に対し、$\sigma(x)$ を $v_{k_{1}},\dots,v_{k_{m}}$ に $\mathrm{num}(a_{1}),\dots,\mathrm{num}(a_{m})$ をこの順に代入した結果とする。
+
+**Step 1.** $\mathrm{sub}$ の定義（含意の場合）を繰り返し使って、$\sigma(\Godel{F\to G})=\mathrm{imp}(\sigma(\Godel{F}),\sigma(\Godel{G}))$。
+
+**Step 2.** $\mathrm{Bew}[F]$ の中の項は、$F$ の自由変数だけに代入したものである。$\sigma(\Godel{F})$ ではそれ以外の $v_{k_{i}}$ にも代入するが、\ref{pt:closed-term-substitution} の 3 より、途中の段階でも $v_{k_{i}}$ は自由に現れないので、4 よりその代入は何も変えない。よって $\sigma(\Godel{F})$ は $\mathrm{Bew}[F]$ の中の項に等しい。$G$ についても同様。
+
+**Step 3.** 仮定 $\mathrm{Bew}[F\to G]$ と $\mathrm{Bew}[F]$ は、Step 1, 2 より $\mathrm{Bew}(\mathrm{imp}(\sigma(\Godel{F}),\sigma(\Godel{G})))$ と $\mathrm{Bew}(\sigma(\Godel{F}))$ である。D2 の一般の形（\ref{pt:d2}）より $\mathrm{Bew}(\sigma(\Godel{G}))$、すなわち $\mathrm{Bew}[G]$。完全性定理による。
+:::
+
+## 問題 {#pt:sec-d12-problems}
+
+::: problem {#pt:prob-bew-conj}
+D1, D2 だけを使って（\ref{pt:d12-consequences} を使わずに）、$\PA\vdash\mathrm{Bew}(\Godel{\varphi})\wedge\mathrm{Bew}(\Godel{\psi})\to\mathrm{Bew}(\Godel{\varphi\wedge\psi})$ を示せ。
+:::
+
+::: solution
+$\varphi\to(\psi\to\varphi\wedge\psi)$ は恒真式の代入例で、$\PA$ の定理である。D1 より $\PA\vdash\mathrm{Bew}(\Godel{\varphi\to(\psi\to\varphi\wedge\psi)})$。D2 より $\PA\vdash\mathrm{Bew}(\Godel{\varphi})\to\mathrm{Bew}(\Godel{\psi\to\varphi\wedge\psi})$、再び D2 より $\PA\vdash\mathrm{Bew}(\Godel{\psi\to\varphi\wedge\psi})\to(\mathrm{Bew}(\Godel{\psi})\to\mathrm{Bew}(\Godel{\varphi\wedge\psi}))$。命題論理の推論でまとめる。
+:::
+
+::: problem {#pt:prob-d2-internal}
+$\PA\vdash\forall x\,\forall x'\,\bigl(\mathrm{Bew}(\mathrm{imp}(x,x'))\wedge\mathrm{Bew}(x)\to\mathrm{Bew}(x')\bigr)$ は、D2（各 $\varphi,\psi$ についての図式）より強い主張である理由を述べよ。
+:::
+
+::: solution
+D2 は、メタの論理式 $\varphi,\psi$ ごとに一つずつの $\PA$ の定理を与える図式である。問題の文は一つの文で、$x,x'$ は $\PA$ の中で量化されているので、超準モデルでは「論理式のコード」が超準的な元でもよい。\ref{pt:d2} の証明はこの一般の形を示している（Boolos が第 2 章の終わりで、弱い体系でも成り立つ強い主張として触れているものにあたる）。
+:::
+
+::: supplement
+**高い視点から.** D1 は「外から見た証明」を「内側の証明の存在」に写し、D2 は「内側でも推論規則が使える」ことを言う。どちらも、$\PA$ の中に自分の証明体系のモデル（コピー）があることの帰結である。ただし内側のコピーは外側と完全には一致しない：超準モデルでは、内側の「証明」が超準的な長さをもち、外から見ると証明でないものが内側では証明と判定されうる。第二不完全性定理は、この食い違いを $\PA$ 自身が排除できないことを示している。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

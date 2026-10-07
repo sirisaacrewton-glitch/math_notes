@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>有限部分関数による強制 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/07-forcing/04-finite-partial-functions.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 有限部分関数による強制 {#set:page-fn-forcing keywords="Cohen forcing, Fn(I,J), consistency of not CH, preservation of cardinals, preservation of cofinalities, countable chain condition, nice names, continuum can be aleph_2, equiconsistency with inaccessible cardinals"}
+
+強制法による最も有名な相対無矛盾性の証明は $\mathrm{Con}(\ZFC+\lnot\mathrm{CH})$ である。本ページの方法で、$2^{\aleph_{0}}$ が $\aleph_{2}$, $\aleph_{3}$, $\aleph_{\omega_{1}}$ など、明らかに矛盾するもの以外の任意の値をとるモデルが作れる。道具は有限部分関数の半順序 $\mathrm{Fn}(I,J)$ である。基数が保たれることを保証するのが c.c.c. であり、$2^{\lambda}$ の上界を与えるのが「よい名前」の数え上げである。（Kunen 第 VII 章 §5 に対応する。）
+
+## 記法と定義の確認 {#set:sec-fn-notation}
+
+::: notation
+- 本ページを通して $M$ は $\ZFC$ の c.t.m. で固定する。p.o.、ジェネリック、名前、$M[G]$、$\check{x}$、$\mathrm{op}$ と \ref{set:generic-dense-below} は \ref{set:page-generic-extensions}、強制関係、強制定理（\ref{set:forcing-theorem}）とその系（\ref{set:forcing-basic}, \ref{set:forcing-corollary}）は \ref{set:page-forcing-relation}、\ref{set:mg-model-zfc}, \ref{set:forcing-equivalent} は \ref{set:page-zfc-in-mg} のとおり。
+- $\mathrm{Fn}(I,J)$（\ref{set:fn-poset}）、$\mathrm{Fn}(I,J)$ の基本性質（\ref{set:fn-poset-basic}）、可算な $J$ について $\mathrm{Fn}(I,J)$ が c.c.c.（\ref{set:fn-ccc}）、c.c.c.（\ref{set:ccc-poset}）、反鎖（\ref{set:compatible}）は第 II 章のとおり。
+- 共終数・正則（\ref{set:cofinality}, \ref{set:regular-cardinal}, \ref{set:regular-is-cardinal}, \ref{set:cf-increasing}, \ref{set:cf-transfer}）、後続基数は正則（\ref{set:successor-regular}）、基数の集合の上限は基数（\ref{set:successor-cardinal-basic}）、和集合の濃度（\ref{set:union-bound}）、GCH のもとでの冪（\ref{set:gch-exponentiation}）、$\kappa^{\cf\kappa}>\kappa$（\ref{set:konig-cofinality-power}）、到達不能基数（\ref{set:inaccessible}）は第 I 章のとおり。
+- $x$ が $M$ で何かであることを $(\cdots)^{M}$ で表す。たとえば $\lvert x\rvert^{M}$ は $M$ の中で計算した濃度、$\omega_{2}^{M}$ は $M$ の $\omega_{2}$。
+:::
+
+## Fn(I, J) とジェネリックな関数 {#set:sec-fn-generic}
+
+$\mathrm{Fn}(I,J)$ は最大元 $\mathbf{1}=\varnothing$（空関数）をもつ p.o. である。「有限」は絶対的なので $\mathrm{Fn}(I,J)$ も絶対的で、$I,J\in M$ なら $\mathrm{Fn}(I,J)=\mathrm{Fn}(I,J)^{M}\in M$。
+
+$G$ が $\mathrm{Fn}(I,J)$ のフィルターなら、$\bigcup G$ は $\dom(\bigcup G)\subseteq I$, $\ran(\bigcup G)\subseteq J$ の関数である（\ref{set:fn-poset-basic}）。$J\neq\varnothing$ なら、各 $i\in I$ について $D_{i}\defeq\{p:i\in\dom(p)\}$ は稠密で、$I,J\in M$ なら絶対性より $D_{i}\in M$。したがって $G$ が $M$ 上ジェネリックなら各 $D_{i}$ と交わり、$\dom(\bigcup G)=I$。同様に $I$ が無限なら、各 $j\in J$ について $\{p:j\in\ran(p)\}$ は稠密で $M$ に属するので、$\ran(\bigcup G)=J$。以上で次が示された。
+
+::: lemma ジェネリックな関数 {#set:fn-generic-onto keywords="the generic function is a surjection from I onto J"}
+$I,J\in M$、$I$ は無限、$J\neq\varnothing$ で、$G$ が $M$ 上 $\mathrm{Fn}(I,J)$-ジェネリックなら、$\bigcup G$ は $I$ から $J$ の上への関数である。
+:::
+
+簡単な応用として、基数の概念は $M,M[G]$ について絶対的とは限らない。
+
+::: example 基数の崩壊 {#set:fn-collapse keywords="collapsing a cardinal to be countable, Fn(omega,kappa)" index="崩壊（基数の）|ほうかいきすうの"}
+$\kappa$ を $M$ の非可算基数（$\kappa\in M$ で（$\kappa$ は非可算基数）$^{M}$）、$\PP\defeq\mathrm{Fn}(\omega,\kappa)$、$G$ を $M$ 上 $\PP$-ジェネリックとする。$\bigcup G\in M[G]$（$\bigcup$ の絶対性と \ref{set:mg-model-zfc}）で、\ref{set:fn-generic-onto} より $\bigcup G$ は $\omega$ から $\kappa$ の上への関数なので、$M[G]$ の中で $\kappa$ は可算な順序数である。このとき $\PP$ は $\kappa$ を**崩壊させる**という。
+:::
+
+別の $I,J$ で $\mathrm{Fn}(I,J)$ を使うと、CH が成り立たないモデルが得られる。$\kappa$ を $M$ の非可算基数とし、$\PP\defeq\mathrm{Fn}(\kappa\times\omega,2)$ とすると、$G$ がジェネリックなら $\bigcup G\colon\kappa\times\omega\to2$。$\bigcup G$ は $\omega$ から $2$ への関数の $\kappa$-列を符号化していると考えられる：$\alpha<\kappa$, $n<\omega$ について $f_{\alpha}(n)\defeq(\bigcup G)(\alpha,n)$。絶対性より列 $\langle f_{\alpha}:\alpha<\kappa\rangle$（各 $\alpha$ に $f_{\alpha}$ を対応させる関数）は $M[G]$ に属する。さらに $f_{\alpha}$ はすべて異なる：$\alpha\neq\beta$ について
+$$
+D_{\alpha\beta}\defeq\{p\in\PP:\exists n\in\omega\,(\langle\alpha,n\rangle,\langle\beta,n\rangle\in\dom(p)\land p(\alpha,n)\neq p(\beta,n))\}
+$$
+は稠密で $M$ に属するので $G\cap D_{\alpha\beta}\neq\varnothing$、これは $f_{\alpha}\neq f_{\beta}$ を意味する。よって $M[G]$ は $\omega$ から $2$ への相異なる関数の $\kappa$-列を含む。
+
+::: lemma 多くの実数を加える {#set:fn-many-reals keywords="Fn(kappa x omega, 2) adds kappa many reals"}
+$\kappa\in M$ で $G$ が $M$ 上 $\mathrm{Fn}(\kappa\times\omega,2)$-ジェネリックなら、$(2^{\omega}\ge\lvert\kappa\rvert)^{M[G]}$。
+:::
+
+$\kappa=\omega_{2}^{M}$ ととれば $M[G]$ で $2^{\omega}\ge\omega_{2}$、すなわち CH が偽になるように見える。しかしまず $\kappa$ が $\omega_{2}^{M[G]}$ でもあることを確かめる必要がある。少し違う半順序で、$M$ の非可算基数が $M[G]$ で可算な順序数になりうることを見たばかりなので、これは自明ではない。$\mathrm{Fn}(\kappa\times\omega,2)$ でそれが起きないのは、この半順序が $M$ の中で c.c.c. だからである（$M$ は可算なので $\mathbf{V}$ では自明に c.c.c. だが、それは関係ない）。$(\mathrm{Fn}(\kappa\times\omega,2)$ は c.c.c.$)^{M}$ は、\ref{set:fn-ccc}（$I$ は任意、$J$ は可算なら $\mathrm{Fn}(I,J)$ は c.c.c.）を $M$ の中で適用すれば従う。
+
+## c.c.c. と基数の保存 {#set:sec-ccc-preservation}
+
+c.c.c. な p.o. は第 II 章の MA の議論に多くの例がある。強制法での c.c.c. の重要性は次の補題にある。これは $M[G]$ に現れる任意の関数を $M$ の中で近似する方法を与える。
+
+::: lemma c.c.c. による近似 {#set:ccc-approximation keywords="ccc approximation lemma, every function in M[G] is covered by a countable-valued function in M" index="c.c.c. による近似|しーしーしーによるきんじ"}
+$\PP\in M$、（$\PP$ は c.c.c.）$^{M}$、$A,B\in M$ とし、$G$ を $M$ 上 $\PP$-ジェネリック、$f\in M[G]$ を $f\colon A\to B$ とする。このとき $F\colon A\to\mathcal{P}(B)$ で、$F\in M$、すべての $a\in A$ について $f(a)\in F(a)$ かつ $(\lvert F(a)\rvert\le\omega)^{M}$ となるものがある。
+:::
+
+::: proof
+$f=\tau_{G}$ となる $\tau\in M^{\PP}$ を固定する。$M[G]$ で真な主張は強制されるので（\ref{set:forcing-theorem} の 2）、
+$$
+p\Vdash\tau\text{ は }\check{A}\text{ から }\check{B}\text{ への関数}
+$$
+となる $p\in G$ がある（形式的には「$x$ は $y$ から $z$ への関数」を表す論理式 $\varphi(x,y,z)$ に強制定理を適用する。どの $\varphi$ を使うかは \ref{set:forcing-equivalent} より関係ない）。
+$$
+F(a)\defeq\{b\in B:\exists q\le p\,(q\Vdash\tau(\check{a})=\check{b})\}
+$$
+とおくと、強制関係の定義可能性（\ref{set:forcing-theorem} の 1）より $F\in M$。
+
+**$f(a)\in F(a)$.** $a\in A$、$b\defeq f(a)$ とする。$\tau_{G}(a)=b$ なので、$r\Vdash\tau(\check{a})=\check{b}$ となる $r\in G$ がある。$r$ と $p$ の共通の拡張 $q\in G$ は $q\le p$ で $q\Vdash\tau(\check{a})=\check{b}$（\ref{set:forcing-basic}）。よって $b\in F(a)$。
+
+**$(\lvert F(a)\rvert\le\omega)^{M}$.** $M$ の AC により、$Q\in M$、$Q\colon F(a)\to\PP$ で、各 $b\in F(a)$ について $Q(b)\le p$ かつ $Q(b)\Vdash\tau(\check{a})=\check{b}$ となるものをとる。$b\neq b'$ なら $Q(b)\perp Q(b')$ である：両立すれば共通の拡張 $r$ があり、$r\in H$ となるジェネリックな $H$ をとると（\ref{set:generic-exists}）、$p\in H$ なので $\tau_{H}$ は $A$ から $B$ への関数で、$\tau_{H}(a)=b$ かつ $\tau_{H}(a)=b'$ となり矛盾する。したがって $Q$ は単射で、$\{Q(b):b\in F(a)\}$ は $\PP$ の反鎖である。$Q\in M$ で（$\PP$ は c.c.c.）$^{M}$ なので、$(\lvert F(a)\rvert\le\omega)^{M}$。
+:::
+
+::: hypcheck
+- c.c.c. は $M$ の中で成り立つことが必要である（最後の段階で $M$ の中の反鎖の可算性を使う）。$\mathbf{V}$ での c.c.c. は自明で役に立たない。
+- $M$ の可算性は、ジェネリックな $H$ の存在で使った（強制定理にも含まれている）。
+:::
+
+次に c.c.c. と基数の絶対性の関係を論じる。
+
+::: definition 基数の保存 {#set:preserve-cardinals keywords="preservation of cardinals" index="基数を保つ|きすうをたもつ"}
+$\PP\in M$ が**基数を保つ**とは、$M$ 上 $\PP$-ジェネリックな任意の $G$ について
+$$
+\forall\beta\in o(M)\;\bigl((\beta\text{ は基数})^{M}\leftrightarrow(\beta\text{ は基数})^{M[G]}\bigr)
+$$
+となることをいう。
+:::
+
+$\omega$ は絶対的なので、基数の保存が問題になるのは $\beta>\omega$ の場合だけである。また $\beta$ が $M[G]$ の基数なら自動的に $M$ の基数である：$M$ の中に、より小さい順序数から $\beta$ の上への関数があれば、それは $M[G]$ にも属するからである。したがって、$\PP$ が基数を保つことは
+$$
+\forall\beta\in o(M)\;\bigl[(\beta>\omega\land(\beta\text{ は基数})^{M})\to(\beta\text{ は基数})^{M[G]}\bigr]
+$$
+と同値である。\ref{set:ccc-approximation} から、（$\PP$ は c.c.c.）$^{M}$ なら $\PP$ は基数を保つことが容易に分かる（$B=\beta$、$A$ を $\beta$ より小さい順序数とする）。実際、$\PP$ は共終数も保つ。これは少し強い主張である。
+
+::: definition 共終数の保存 {#set:preserve-cofinalities keywords="preservation of cofinalities" index="共終数を保つ|きょうしゅうすうをたもつ"}
+$\PP\in M$ が**共終数を保つ**とは、$M$ 上 $\PP$-ジェネリックな任意の $G$ と $M$ の任意の極限順序数 $\gamma$ について $\cf(\gamma)^{M}=\cf(\gamma)^{M[G]}$ となることをいう。
+:::
+
+::: lemma {#set:cof-implies-card}
+$\PP$ が共終数を保つなら、$\PP$ は基数を保つ。
+:::
+
+::: proof
+$\alpha\ge\omega$ が $M$ の正則基数なら、$\cf(\alpha)^{M[G]}=\cf(\alpha)^{M}=\alpha$ なので $\alpha$ は $M[G]$ の正則基数（\ref{set:regular-is-cardinal}）。$\beta>\omega$ が $M$ の極限基数なら、$M$ の正則な（実際には後続の：\ref{set:successor-regular}）基数は $\beta$ で非有界であり、それらは $M[G]$ でも正則、したがって基数である。$\beta$ はそれらの上限なので、$M[G]$ でも基数である（\ref{set:successor-cardinal-basic} の 3）。$M$ の無限基数は正則か極限基数（あるいは両方）なので（$\ZFC$ の中で、後続基数は正則）、$M$ のすべての無限基数は $M[G]$ の基数である。
+:::
+
+共終数を保たずに基数を保つ $\PP$ の例もある（Prikry 1970）が、本書では扱わない、と Kunen は述べている。次の補題は、共終数の保存のために確かめるべきことを簡単にする。
+
+::: lemma 正則基数だけ調べればよい {#set:regular-suffices}
+$\PP\in M$ とし、$M$ 上 $\PP$-ジェネリックな任意の $G$ と $M$ の任意の正則な非可算基数 $\kappa$ について（$\kappa$ は正則）$^{M[G]}$ が成り立つとする。このとき $\PP$ は共終数を保つ。
+:::
+
+::: proof
+$\gamma$ を $M$ の極限順序数とし、$\kappa\defeq\cf(\gamma)^{M}$ とおく。$M$ の中で \ref{set:cf-increasing} を適用すると、$\kappa$ から $\gamma$ への狭義増加な共終写像 $f\in M$ がある。（$\kappa$ は正則）$^{M}$ なので、仮定より（$\kappa=\omega$ なら $\omega$ の絶対性より）（$\kappa$ は正則）$^{M[G]}$。$f\in M[G]$ で、「狭義増加で共終」は絶対的なので、$M[G]$ の中で \ref{set:cf-transfer} を適用すると $\cf(\gamma)^{M[G]}=\cf(\kappa)^{M[G]}=\kappa$。
+:::
+
+::: theorem c.c.c. な p.o. は共終数を保つ {#set:ccc-preserves keywords="ccc forcing preserves cofinalities and cardinals" index="c.c.c. と基数の保存|しーしーしーときすうのほぞん"}
+$\PP\in M$ で（$\PP$ は c.c.c.）$^{M}$ なら、$\PP$ は共終数を保つ（したがって基数を保つ）。
+:::
+
+::: proof
+そうでないとすると、\ref{set:regular-suffices} より、$\kappa\in M$、$\kappa>\omega$、（$\kappa$ は正則）$^{M}$ だが（$\kappa$ は正則でない）$^{M[G]}$ となるものがある。よって $\alpha<\kappa$ と $f\in M[G]$ で、$f$ が $\alpha$ から $\kappa$ への共終写像であるものがある。\ref{set:ccc-approximation}（$A=\alpha$, $B=\kappa$）より、$F\in M$、$F\colon\alpha\to\mathcal{P}(\kappa)$ で、すべての $\xi<\alpha$ について $f(\xi)\in F(\xi)$ かつ $(\lvert F(\xi)\rvert\le\omega)^{M}$ となるものがある。$S\defeq\bigcup_{\xi<\alpha}F(\xi)$ とおくと $S\in M$ で、$S\supseteq\ran(f)$ は $\kappa$ の非有界部分集合である。$M$ の中で \ref{set:union-bound} を適用すると $(\lvert S\rvert\le\lvert\alpha\rvert\cdot\omega<\kappa)^{M}$（$\kappa$ は非可算）で、$M$ の中で $\kappa$ は正則なので $S$ は $\kappa$ で有界である。これは矛盾。
+:::
+
+これで $\lnot\mathrm{CH}$ のモデルを作るのに必要なものがすべてそろった。$\PP\defeq\mathrm{Fn}(\omega_{2}^{M}\times\omega,2)$ とすると $\PP$ は $M$ で c.c.c. なので基数を保ち、$\omega_{2}^{M}=\omega_{2}^{M[G]}$。\ref{set:fn-many-reals} より $(2^{\omega}\ge\omega_{2})^{M[G]}$。
+
+## よい名前と冪の上界 {#set:sec-nice-names}
+
+次の問いは、$2^{\omega}$ を**ちょうど** $\omega_{2}$ にできるかどうかである。$(2^{\omega}\ge\omega_{3})^{M}$ なら、基数を保つどんな拡大でも同じことが成り立つことは容易に分かる。しかし $M$ が GCH のモデルなら、$\mathrm{Fn}(\omega_{2}^{M}\times\omega,2)$ による強制で $M[G]$ の $2^{\omega}$ はちょうど $\omega_{2}$ になることを示す。より一般に、$M$ での基数の冪の値を使って $M[G]$ での基数の冪の上界を与える。
+
+上界は、$M[G]$ の冪集合公理の証明（\ref{set:mg-model-zfc}）をもう少し注意深く行うことで得られる。冪集合公理のためには、$\sigma\in M^{\PP}$ に対し、$\sigma$ のすべての可能な部分集合を代表する名前の集合 $S$ を $M$ の中で得れば十分だった。今度はそのような $S$ を小さい濃度でとることを試みる。
+
+::: definition よい名前 {#set:nice-name keywords="nice name for a subset" index="よい名前|よいなまえ"}
+$\sigma\in\mathbf{V}^{\PP}$ について、**$\sigma$ の部分集合のよい名前**とは、各 $A_{\pi}$ が $\PP$ の反鎖であるような
+$$
+\tau=\bigcup\{\{\pi\}\times A_{\pi}:\pi\in\dom(\sigma)\}
+$$
+の形の $\tau\in\mathbf{V}^{\PP}$ のことである。
+:::
+
+いつものように、この概念は $M$ の中で使うが、よい名前であることは絶対的である。
+
+::: lemma よい名前は部分集合を代表する {#set:nice-name-exists keywords="every subset is named by a nice name"}
+$\PP\in M$、$\sigma,\mu\in M^{\PP}$ とすると、$\sigma$ の部分集合のよい名前 $\tau\in M^{\PP}$ で
+$$
+\mathbf{1}\Vdash(\mu\subseteq\sigma\to\mu=\tau)
+$$
+となるものがある。
+:::
+
+::: proof
+各 $\pi\in\dom(\sigma)$ について、$A_{\pi}\subseteq\PP$ を次を満たすようにとる：
+1. すべての $p\in A_{\pi}$ について $p\Vdash\pi\in\mu$。
+2. $A_{\pi}$ は $\PP$ の反鎖。
+3. $A_{\pi}$ は 1, 2 を満たすもののうち（包含について）極大。
+
+強制関係の定義可能性と $M$ の中のツォルンの補題（\ref{set:zorn}）により、$\langle A_{\pi}:\pi\in\dom(\sigma)\rangle\in M$ ととれる。$\tau\defeq\bigcup\{\{\pi\}\times A_{\pi}:\pi\in\dom(\sigma)\}$ とする。$\mathbf{1}\Vdash(\mu\subseteq\sigma\to\mu=\tau)$ を示すには、$M$ 上ジェネリックな任意の $G$ について $\mu_{G}\subseteq\sigma_{G}\to\mu_{G}=\tau_{G}$ を示せばよい。$\mu_{G}\subseteq\sigma_{G}$ とする。
+
+**$\mu_{G}\subseteq\tau_{G}$.** $a\in\mu_{G}$ とする。$\mu_{G}\subseteq\sigma_{G}$ なので、ある $\pi\in\dom(\sigma)$ で $a=\pi_{G}$。$A_{\pi}\cap G\neq\varnothing$ なら、$p\in A_{\pi}\cap G$ について $\langle\pi,p\rangle\in\tau$, $p\in G$ なので $a=\pi_{G}\in\tau_{G}$。$A_{\pi}\cap G=\varnothing$ と仮定すると、\ref{set:generic-dense-below} の 1 より、$q\in G$ ですべての $p\in A_{\pi}$ について $p\perp q$ となるものがある。$\pi_{G}\in\mu_{G}$ なので、$q'\Vdash\pi\in\mu$ となる $q'\in G$ がある。$q,q'$ の共通の拡張 $r$ をとると、$r\Vdash\pi\in\mu$（\ref{set:forcing-basic}）で、$r$ は $A_{\pi}$ のどの元とも両立しない（$r\le q$）。よって $A_{\pi}\cup\{r\}$ は 1, 2 を満たし、$A_{\pi}$ の極大性に反する。
+
+**$\tau_{G}\subseteq\mu_{G}$.** $a\in\tau_{G}$ なら、$p\in G$ となる $\langle\pi,p\rangle\in\tau$ について $a=\pi_{G}$。$\tau$ の定義より $p\in A_{\pi}$、したがって $p\Vdash\pi\in\mu$ なので $a=\pi_{G}\in\mu_{G}$。
+:::
+
+$\tau$ が $\sigma$ の部分集合のよい名前でも、一般に $\tau_{G}\subseteq\sigma_{G}$ とは限らないが、それは関係ない。重要なのは、$\sigma$ のすべての部分集合がよい名前で代表されることである。
+
+::: lemma 冪の上界 {#set:nice-name-count keywords="upper bound for 2^lambda in ccc extensions" index="冪の上界（強制拡大）|べきのじょうかいきょうせいかくだい"}
+$\PP\in M$ とし、$M$ の中で、$\PP$ は c.c.c.、$\lvert\PP\rvert=\kappa\ge\omega$、$\lambda$ は無限基数、$\theta=\kappa^{\lambda}$ であるとする（つまりこれらが $M$ に相対化して成り立つ）。$G$ を $M$ 上 $\PP$-ジェネリックとすると、$M[G]$ の中で $2^{\lambda}\le\theta$。
+:::
+
+::: proof
+**Step 1（$M$ の中での数え上げ）.** $M$ の中では $\PP$ の反鎖はすべて可算なので、反鎖は高々 $\kappa^{\omega}$ 個である（反鎖は $\PP$ の可算部分集合で、それは $\omega$ から $\PP$ への関数の値域として表せる）。$\dom(\check{\lambda})=\{\check{\xi}:\xi<\lambda\}$ は濃度 $\lambda$ をもち、$\check{\lambda}$ の部分集合のよい名前は $\xi\mapsto A_{\check{\xi}}$ で決まるので、よい名前は高々 $(\kappa^{\omega})^{\lambda}=\kappa^{\omega\cdot\lambda}=\kappa^{\lambda}=\theta$ 個である。$M$ の中で、$\check{\lambda}$ の部分集合のよい名前をすべて $\tau_{\alpha}$（$\alpha<\theta$）と枚挙する（重複を許す）。
+
+**Step 2（$M[G]$ の中の全射）.** $\pi\defeq\{\langle\mathrm{op}(\check{\alpha},\tau_{\alpha}),\mathbf{1}\rangle:\alpha<\theta\}\in M^{\PP}$ とすると、$f\defeq\pi_{G}\in M[G]$ は定義域 $\theta$ の関数で $f(\alpha)=\tau_{\alpha G}$（\ref{set:up-op-names-val}）。
+
+**Step 3.** $x\in M[G]$、$x\subseteq\lambda$ とし、$x=\mu_{G}$ とする。\ref{set:nice-name-exists}（$\sigma=\check{\lambda}$）より、よい名前 $\tau$ で $\mathbf{1}\Vdash(\mu\subseteq\check{\lambda}\to\mu=\tau)$ となるものがあり、$\tau=\tau_{\alpha}$ となる $\alpha<\theta$ がある。$\mu_{G}\subseteq\lambda=\check{\lambda}_{G}$ なので $x=\mu_{G}=\tau_{\alpha G}=f(\alpha)$。よって $\mathcal{P}(\lambda)^{M[G]}\subseteq\ran(f)$ で、$M[G]$ の中で $2^{\lambda}\le\lvert\theta\rvert\le\theta$。
+:::
+
+::: hypcheck
+- c.c.c.（$M$ の中）は Step 1 で反鎖を可算にし、その数を $\kappa^{\omega}$ で抑えるのに使った。
+- $M$ の AC は、Step 1 の枚挙と \ref{set:nice-name-exists} のツォルンの補題で使った。
+- $\kappa^{\omega\cdot\lambda}=\kappa^{\lambda}$ は $\lambda$ が無限なので $\omega\cdot\lambda=\lambda$（基数の積）による。
+:::
+
+これを使うと、$2^{\omega}$ がほとんど何でもよいことが示せる。
+
+::: lemma 連続体の大きさを決める {#set:continuum-kappa keywords="2^omega = kappa in the Cohen extension when kappa^omega = kappa"}
+$\kappa$ を $M$ の無限基数で $(\kappa^{\omega}=\kappa)^{M}$ となるものとし、$\PP\defeq\mathrm{Fn}(\kappa\times\omega,2)$、$G$ を $M$ 上 $\PP$-ジェネリックとする。このとき $(2^{\omega}=\kappa)^{M[G]}$。
+:::
+
+::: proof
+$M$ の中で $\lvert\PP\rvert=\lvert\kappa\times\omega\rvert=\kappa$（有限部分関数の数え上げ：\ref{set:kappa-finite-sequences}）で、$\PP$ は c.c.c.（\ref{set:fn-ccc}）。\ref{set:nice-name-count}（$\lambda=\omega$）より $M[G]$ で $2^{\omega}\le\kappa^{\omega}=\kappa$。一方 \ref{set:fn-many-reals} より $M[G]$ で $2^{\omega}\ge\lvert\kappa\rvert$ で、$\PP$ は基数を保つ（\ref{set:ccc-preserves}）ので $\kappa$ は $M[G]$ でも基数、$\lvert\kappa\rvert^{M[G]}=\kappa$。
+:::
+
+とくに $M$ が GCH を満たせば、$M$ の中で $\cf(\kappa)>\omega$ なら $\kappa^{\omega}=\kappa$（\ref{set:gch-exponentiation} の 3）。したがって連続体は、共終数が $\omega$ でないものなら何でもよいことが無矛盾である（ケーニッヒの補題 \ref{set:konig-cofinality-power} より $\cf(2^{\omega})>\omega$ なので、これは最善である：$\cf(2^{\omega})=\omega$ なら $(2^{\omega})^{\omega}=2^{\omega}$ となり矛盾）。
+
+::: corollary 連続体の値の無矛盾性 {#set:con-continuum keywords="Con(ZFC + 2^omega = aleph_2), Con(ZFC + 2^omega = aleph_{omega_1})" index="連続体仮説の否定の無矛盾性|れんぞくたいかせつのひていのむむじゅんせい"}
+$\mathrm{Con}(\ZFC)$ ならば
+1. $\mathrm{Con}(\ZFC+2^{\omega}=\omega_{2})$、
+2. $\mathrm{Con}(\ZFC+2^{\omega}=\omega_{\omega_{1}})$、など。
+:::
+
+::: proof
+ジェネリック拡大の方法が相対無矛盾性の証明を与えることは \ref{set:forcing-proof-structure} で論じた。$\ZF$ の中で $\ZF+\mathbf{V}=\mathbf{L}$ の任意の有限個の公理の c.t.m. の存在が証明でき（\ref{set:ctm-v-eq-l}）、$\mathbf{V}=\mathbf{L}$ は GCH を導く（\ref{set:v-eq-l-gch}）ので、$M$ は $\ZFC+\mathrm{GCH}$ を満たすとして出発してよい。2 を得るには、GCH を満たす $M$ から出発し、$\kappa=\omega_{\omega_{1}}^{M}$ として \ref{set:continuum-kappa} を適用する（$\cf(\kappa)^{M}=\omega_{1}^{M}>\omega$）。$M[G]$ で $2^{\omega}=\kappa$ で、$\PP$ は基数を保つので $M[G]$ で $\kappa=\omega_{\omega_{1}}$。1 も同様（$\kappa=\omega_{2}^{M}$）。
+:::
+
+連続体は弱到達不能にもなりうる。
+
+::: corollary 到達不能基数との等無矛盾性 {#set:equiconsistent-inaccessible keywords="equiconsistency: inaccessible, weakly inaccessible, continuum weakly inaccessible" index="等無矛盾性|とうむむじゅんせい"}
+次の四つの理論は**等無矛盾**である（すなわち $\mathrm{Con}(T_{1})\leftrightarrow\mathrm{Con}(T_{2})\leftrightarrow\mathrm{Con}(T_{3})\leftrightarrow\mathrm{Con}(T_{4})$）。
+- $T_{1}$：$\ZFC+\mathrm{GCH}+\exists\kappa\,(\kappa$ は強到達不能$)$。
+- $T_{2}$：$\ZFC+\exists\kappa\,(\kappa$ は弱到達不能$)$。
+- $T_{3}$：$\ZFC+2^{\omega}$ は弱到達不能。
+- $T_{4}$：$\ZFC+\exists\kappa<2^{\omega}\,(\kappa$ は弱到達不能$)$。
+:::
+
+::: proof
+**$\mathrm{Con}(T_{3})\to\mathrm{Con}(T_{2})$、$\mathrm{Con}(T_{4})\to\mathrm{Con}(T_{2})$** は明らか（$T_{3},T_{4}$ は $T_{2}$ の公理をすべて証明する）。
+
+**$\mathrm{Con}(T_{2})\to\mathrm{Con}(T_{1})$.** $\ZFC$ の定理として、$\kappa$ が弱到達不能なら $\kappa$ は $\mathbf{L}$ で弱到達不能であり（\ref{set:l-kappa-model} の証明の後半）、$\mathbf{L}$ の GCH（\ref{set:ac-gch-in-l}）より $\mathbf{L}$ で強到達不能である（\ref{set:strong-implies-weak}）。したがって $T_{2}$ の中で、$\mathbf{L}$ は $T_{1}$ の内部モデルであることが証明でき、\ref{set:relative-consistency-lemma} による。
+
+**$\mathrm{Con}(T_{1})\to\mathrm{Con}(T_{3})$、$\mathrm{Con}(T_{1})\to\mathrm{Con}(T_{4})$.** $M$ を $T_{1}$ の c.t.m. とし、$\kappa$ を $M$ の強到達不能基数とする。$\PP$ が $M$ で c.c.c. なら、共終数の保存（\ref{set:ccc-preserves}）により、$\kappa$ は $M[G]$ でも正則かつ極限基数（$M$ の $\kappa$ 未満の基数は $M[G]$ でも基数で $\kappa$ で非有界）なので、$M[G]$ で弱到達不能である。したがって、$\lambda>\kappa$ が $M$ の基数なら、$\PP=\mathrm{Fn}(\lambda\times\omega,2)$ による強制で $M[G]$ は $T_{4}$ のモデルになる（\ref{set:fn-many-reals} より $2^{\omega}\ge\lambda>\kappa$）。$\kappa$ は $M$ で強到達不能で GCH が成り立つので $(\kappa^{\omega}=\kappa)^{M}$（\ref{set:gch-exponentiation} の 3、$\cf(\kappa)=\kappa>\omega$）。よって $\PP=\mathrm{Fn}(\kappa\times\omega,2)$ による強制で $(2^{\omega}=\kappa)^{M[G]}$（\ref{set:continuum-kappa}）となり、$M[G]$ は $T_{3}$ を満たす。
+
+形式的に、前段が $\mathrm{Con}(T_{1})\to\mathrm{Con}(T_{3})$（あるいは $T_{4}$）の有限的な相対無矛盾性証明を与えることを見るには、\ref{set:forcing-proof-structure} の議論を $\ZFC$ の代わりに $T_{1}$ を基本の理論として適用する。すなわち $T_{1}$ の中で $T_{1}$ の任意の有限個の公理の c.t.m. $M$ の存在を証明し（\ref{set:ctm-exists}）、強制で $T_{3}$ の任意の有限個の公理の c.t.m. $M[G]$ を作る。
+:::
+
+ゲーデルの不完全性定理により、$\mathrm{Con}(\ZFC)\to\mathrm{Con}(T_{1})$ の形の相対無矛盾性証明は期待できない（\ref{set:no-finitistic-con-inaccessible}）。
+
+$\mathrm{Fn}(\kappa\times\omega,2)$ による拡大で、非可算基数の冪を計算することもできる（Kunen 第 VII 章の演習 G1）。その特別な場合（$\kappa=1$）として、引用しやすい相対無矛盾性の結果が得られる。
+
+::: corollary GCH と V ≠ L {#set:con-gch-v-neq-l keywords="Con(ZFC) implies Con(ZFC + GCH + V not equal L)"}
+$\mathrm{Con}(\ZFC)\to\mathrm{Con}(\ZFC+\mathrm{GCH}+\mathbf{V}\neq \mathbf{L})$。
+:::
+
+::: proof
+GCH を満たす $M$ から出発し、$\PP\defeq\mathrm{Fn}(\omega,2)$ とする。\ref{set:ctm-v-neq-l} の証明のとおり $M[G]$ は $\mathbf{V}\neq \mathbf{L}$ を満たす。$\PP$ は $M$ で可算、したがって c.c.c. なので基数を保つ。$\lambda$ を $M$ の無限基数とし、$\theta\defeq(\lambda^{+})^{M}=(\omega^{\lambda})^{M}$（$M$ の GCH と \ref{set:gch-exponentiation} の 1：$\omega\le\lambda$ なので $\omega^{\lambda}=\lambda^{+}$）とおく。\ref{set:nice-name-count}（$\kappa=\omega$）より $(2^{\lambda}\le\theta)^{M[G]}$。基数の保存より $\theta=(\lambda^{+})^{M[G]}$ なので、$M[G]$ のすべての無限基数 $\lambda$（それは $M$ の無限基数と同じ）について $(2^{\lambda}\le\lambda^{+})^{M[G]}$、すなわち $M[G]$ で GCH が成り立つ。
+:::
+
+最後に、$\mathrm{Fn}(I,2)$ による拡大では $\mathrm{MA}+\lnot\mathrm{CH}$ のモデルは得られない（Kunen 第 VII 章の演習 G7）。これにはずっと複雑な p.o. が必要になる（第 VIII 章）。
+
+## 問題 {#set:sec-fn-problems}
+
+::: problem {#set:prob-cohen-omega-one}
+$M$ を GCH を満たす c.t.m.、$\PP=\mathrm{Fn}(\omega_{2}^{M}\times\omega,2)$ とする。$M[G]$ で $2^{\omega}=\omega_{2}$ かつ $2^{\omega_{1}}=\omega_{2}$ であることを示せ。
+:::
+
+::: solution
+\ref{set:continuum-kappa}（$\kappa=\omega_{2}^{M}$、$(\kappa^{\omega}=\kappa)^{M}$ は GCH と $\cf(\kappa)>\omega$ から）と基数の保存より $(2^{\omega}=\omega_{2})^{M[G]}$。\ref{set:nice-name-count}（$\lambda=\omega_{1}$、$\kappa=\omega_{2}$）より $M[G]$ で $2^{\omega_{1}}\le(\omega_{2}^{\omega_{1}})^{M}=\omega_{2}$（GCH のもとで $\cf(\omega_{2})=\omega_{2}>\omega_{1}$ なので \ref{set:gch-exponentiation} の 3）。一方 $2^{\omega_{1}}\ge2^{\omega}=\omega_{2}$。よって $2^{\omega_{1}}=\omega_{2}$。
+:::
+
+::: problem {#set:prob-collapse-not-ccc}
+$\kappa$ が $M$ の非可算基数のとき、$\mathrm{Fn}(\omega,\kappa)$ は $M$ で c.c.c. でないことを、\ref{set:ccc-preserves} と \ref{set:fn-collapse} を使って示せ。また直接、非可算な反鎖を与えよ。
+:::
+
+::: solution
+c.c.c. なら基数を保つが、\ref{set:fn-collapse} で $\kappa$ は $M[G]$ で可算になるので矛盾。直接には、$\{\{\langle0,\alpha\rangle\}:\alpha<\kappa\}$ は（$M$ の中で）濃度 $\kappa$ の反鎖である：$\alpha\neq\beta$ なら $\{\langle0,\alpha\rangle\}$ と $\{\langle0,\beta\rangle\}$ は $0$ での値が異なるので両立しない。
+:::
+
+::: supplement
+**前提の検討.**
+- \ref{set:ccc-preserves} は $M$ の中での c.c.c. だけを使う。より一般に、$M$ の中で $\kappa$-c.c. な p.o. は $\kappa$ 以上の正則基数を保つことが同じ方法で示せる（Kunen 第 VII 章 §6 で扱われる）。
+- \ref{set:nice-name-count} の上界は、$M$ での基数の冪の値に依存する。$M$ で GCH が成り立たなければ、同じ $\PP$ でも $M[G]$ の $2^{\omega}$ は大きくなりうる。
+- \ref{set:continuum-kappa} の仮定 $(\kappa^{\omega}=\kappa)^{M}$ は、ケーニッヒの補題から $\cf(\kappa)>\omega$ を含意する。これが連続体の値に対する唯一の $\ZFC$ の制約であることが、GCH を満たす $M$ から出発することで分かる。
+
+**関連する結果.** 正則基数の冪 $2^{\kappa}$ の値を同時に（単調性とケーニッヒの補題の制約の範囲で）任意に指定できることはイーストンの定理（\ref{set:easton}）として知られ、第 VIII 章で扱われる。特異基数の冪にはシルバーの定理（\ref{set:silver}）のような $\ZFC$ の制約がある。
+
+**高い視点から：情報の量と連続体.** $\mathrm{Fn}(\kappa\times\omega,2)$ のジェネリックな $G$ は、$\kappa$ 個の「互いに独立なランダムな実数」を $M$ に付け加える。c.c.c. は「各段階で可算個の選択肢しか残らない」という情報の少なさを表し、そのため新しい全射（基数の崩壊）は作られない。よい名前の数え上げは、「付け加えた実数から作れる実数」は $M$ の中の可算な情報（反鎖）の $\lambda$ 個の組で記述されるので $\kappa^{\lambda}$ 個しかない、という情報量の評価である。実数の個数が $\kappa$ になるのは、付け加えた材料の量（$\kappa$）が、そこから作れるものの量（$\kappa^{\omega}=\kappa$）と釣り合うからである。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

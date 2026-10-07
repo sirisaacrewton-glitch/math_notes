@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>結合証明可能性論理 GLB とその意味論 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/04-provability-logic-extensions/04-glb-semantics.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 結合証明可能性論理 GLB とその意味論 {#pt:page-glb-semantics keywords="GLB, joint provability logic, omega-consistency, omega-provability, omega-rule, Dzhaparidze, Ignatiev, IDzh, bimodal"}
+
+$\PA$ で「証明可能」に加えて「ω 証明可能」（否定が ω 無矛盾でない）を考えると、二つの箱 $\Box$（証明可能）と $[1]$（ω 証明可能）をもつ様相論理が現れる。本ページでは、ω 証明可能性を算術の中で定式化してその導出可能性条件を示し、ジャパリゼの体系 $\mathsf{GLB}$ が算術的に健全であることを証明する。次に、$\mathsf{GLB}$ には自然なクリプキ意味論がないことを見て、イグナチェフに従い、クリプキ意味論をもつ部分体系 $\mathsf{IDzh}$ を導入し、その健全性・完全性と、$\mathsf{GLB}$ への還元に使う補題を示す。$\mathsf{GLB}$ の算術的完全性は次ページで証明する。（Boolos 第 15 章前半に対応する。）
+
+## 記法と定義の確認 {#pt:sec-glb-notation}
+
+::: notation
+- $\PA$、Σ 論理式、ω 無矛盾（\ref{pt:omega-consistent}）、構文の関数、$\mathrm{Pf}$, $\mathrm{Bew}$、$\mathrm{Bew}[F]$、D1–D3、\ref{pt:bew-correct}、導出の連結（\ref{pt:derivation-concat}）、内部の代入例（\ref{pt:internal-instance}）、形式化された Σ 完全性（\ref{pt:formalized-sigma-completeness}）、閉項の代入の補題（\ref{pt:closed-term-substitution}）、対角化定理とレーブの定理は \ref{pt:page-arithmetization} から \ref{pt:page-second-incompleteness-lob} までのとおり。$\mathcal{M}$ は $\PA$ の任意のモデル。
+- 様相論理の記法、有限の極大無矛盾集合（\ref{logic:modal-mcs}, \ref{logic:modal-mcs-properties}。証明は恒真式を含みモーダスポネンスで閉じた体系ならそのまま通る）、$\mathsf{GL}$ の完全性の証明（\ref{logic:completeness-gl}）、フレームの対応（\ref{logic:frame-correspondence}）は \ref{logic:page-normal-modal-logics} から \ref{logic:page-modal-completeness} までのとおり。
+- 算術的解釈（\ref{pt:realization}）、$\mathsf{GL}$ の算術的健全性の証明（\ref{pt:gl-arithmetical-soundness}）は \ref{pt:page-arithmetical-soundness} のとおり。
+:::
+
+## ω 証明可能性 {#pt:sec-omega-provability}
+
+::: definition ω 証明可能・PA⁺ {#pt:omega-provable keywords="omega-provable, PA plus, omega-proof, omega-rule" index="ω 証明可能|おめがしょうめいかのう, PA⁺|ぴーえーぷらす"}
+1. 文 $S$ が（$\PA$ で）**ω 証明可能**とは、$\PA+\neg S$ が ω 無矛盾でないことをいう。
+2. 論理式 $E$ と変数 $v$ で、すべての $n$ について $\PA\vdash E[\underline{n}/v]$ となるとき、$\forall v\,E$ を **ω 公理**という。$\PA$ の公理と ω 公理をすべて公理とする理論を $\PA^{+}$ とする。
+3. ω 公理 $\forall v\,E$ と文 $S$ で $\PA\vdash\forall v\,E\to S$ となるとき、その組を $S$ の **ω 証明**という。
+:::
+
+::: proposition ω 証明可能性の言い換え {#pt:omega-provable-equiv}
+文 $S$ について次は同値である。
+1. $S$ は ω 証明可能。
+2. $S$ の ω 証明がある。
+3. $\PA^{+}\vdash S$。
+
+さらに、ω 証明可能な文は真であり、$\PA$ で証明可能な文は ω 証明可能である。
+:::
+
+::: proof
+**1 ⇒ 2.** $\PA+\neg S\vdash\exists x\,\varphi(x)$ かつすべての $n$ で $\PA+\neg S\vdash\neg\varphi(\underline{n})$ とする（$x$ だけが自由変数としてよい。他の自由変数は全称閉包で扱う）。$E\defeq\neg S\to\neg\varphi(x)$ とすると、$\neg S$ を仮定とする導出に →I を使うと（$\neg S$ は文なので固有変数の条件は問題にならない） $\PA\vdash E[\underline{n}/x]$。また $\forall x\,E$ と $\neg S$ から $\forall x\,\neg\varphi(x)$、$\PA+\neg S\vdash\exists x\,\varphi(x)$ と矛盾するので、$\PA\vdash\forall x\,E\to S$（RAA）。
+
+**2 ⇒ 1.** ω 証明 $\forall v\,E\to S$ があれば、$\varphi(v)\defeq\neg E$ について $\PA+\neg S\vdash\exists v\,\varphi(v)$（$\neg S$ から $\neg\forall v\,E$）かつ $\PA+\neg S\vdash\neg\varphi(\underline{n})$（$\PA\vdash E[\underline{n}/v]$ から）。
+
+**2 ⇔ 3.** 2 ⇒ 3 は明らか。$\PA^{+}\vdash S$ なら、導出で使う ω 公理は有限個 $\forall v_{1}E_{1},\dots,\forall v_{k}E_{k}$ で、新しい変数 $v$ に揃えて $E\defeq E_{1}[v/v_{1}]\wedge\cdots\wedge E_{k}[v/v_{k}]$ とすると（代入可能になるよう束縛変数を取り替える）、$\forall v\,E$ は ω 公理で $\PA\vdash\forall v\,E\to S$。
+
+**後半.** $\mathcal{N}\models\PA$ より、ω 公理 $\forall v\,E$ はすべての $n$ で $E[\underline{n}/v]$ が（全称閉包として）真なので真である。$\PA\vdash\forall v\,E\to S$ から $S$ も真。$\PA\vdash S$ なら $\forall v\,(0=0)\to S$ が ω 証明。
+:::
+
+::: remark
+「ω 規則（すべての $n$ について $A(\underline{n})$ から $\forall x\,A(x)$）を何回でも使ってよい証明可能性」は真理と一致する（ヒルベルト）が、ω 証明可能性は ω 規則を**一回**使うことにあたる（上の 2）。ω 証明可能性は算術で定義できる（次の定義）ので、タルスキの定理より真理とは一致しない。
+:::
+
+::: definition ω 証明可能性述語 {#pt:omega-bew keywords="omega-provability predicate" index="ω 証明可能性述語|おめがしょうめいかのうせいじゅつご"}
+$a$ が $\mathrm{all}(a_{1},a_{2})$ の形（$\mathrm{fst}(a)=5$、$a_{1}$ は変数、$a_{2}$ は論理式のコード）であるとき、
+$$
+\mathrm{ωAx}(a,z)\defeq\mathrm{fst}(a)=5\wedge\mathrm{Var}(a_{1})\wedge\mathrm{Fm}(a_{2})\wedge\mathrm{Bew}(\mathrm{sub}(a_{2},a_{1},\mathrm{num}(z)))
+$$
+とし、$\forall z\,\mathrm{ωAx}(a,z)$ を「$a$ は ω 公理のコード」と読む。導出 $y$ の最後の行の仮定のリストを $A$ とし、
+$$
+\begin{aligned}
+\mathrm{ωPf}(y,x)&\defeq\forall z\,\Bigl(\mathrm{Deriv}(y)\wedge0<\mathrm{lh}(y)\wedge\varphi_{\mathrm{lh}(y)-1}=x\\
+&\qquad\wedge\forall i<\mathrm{lh}(A)\,\bigl(\mathrm{Ax}_{\PA}(A_{i})\vee\mathrm{ωAx}(A_{i},z)\bigr)\Bigr),\\
+\mathrm{ωBew}(x)&\defeq\exists y\,\mathrm{ωPf}(y,x)
+\end{aligned}
+$$
+とおく（記号は \ref{pt:derivation-lines} のとおり）。$[1]S$ で $\mathrm{ωBew}(\Godel{S})$ を表す。
+:::
+
+$\forall z$ の中の論理式は Σ 論理式（\ref{pt:sigma-closure}）なので、$\mathrm{ωPf}$ は「$\forall z$（Σ 論理式）」の形、$\mathrm{ωBew}$ は「$\exists y\,\forall z$（Σ 論理式）」の形である。後者の形の論理式と $\PA$ で同値な論理式を **Σ₃ 論理式**、前者の形のものを **Π₂ 論理式**と呼ぶ（本系列で使うのはこれだけである。$\forall i<\ell\,(P_{i}\vee\forall z\,Q_{i})\leftrightarrow\forall z\,\forall i<\ell\,(P_{i}\vee Q_{i})$ で $\forall z$ を外に出した）。
+
+::: proposition ω 証明可能性述語の正しさ {#pt:omega-bew-correct}
+文 $S$ について $\mathcal{N}\models\mathrm{ωBew}(\Godel{S})\iff\PA^{+}\vdash S\iff S$ は ω 証明可能。
+:::
+
+::: proof
+\ref{pt:bew-correct} より、$\mathcal{N}$ で $\forall z\,\mathrm{ωAx}(\Godel{\forall v\,E},z)$ はすべての $n$ で $\PA\vdash E[\underline{n}/v]$ と同値（$\mathrm{sub}$ の正しさ \ref{pt:syntax-correct}）、すなわち $\forall v\,E$ が ω 公理であることと同値。あとは \ref{pt:bew-correct} の証明（導出の行の列と木の対応）を、仮定が $\PA$ の公理または ω 公理である場合に繰り返せばよい。後半は \ref{pt:omega-provable-equiv}。
+:::
+
+## ω 証明可能性の導出可能性条件 {#pt:sec-omega-derivability}
+
+::: theorem ω 証明可能性の D1・D2 {#pt:omega-d12}
+1. $\PA\vdash\mathrm{Bew}(x)\to\mathrm{ωBew}(x)$。とくに、$\PA\vdash S$ なら $\PA\vdash\mathrm{ωBew}(\Godel{S})$。
+2. $\mathcal{M}$ の任意の元 $x,x'$ について、$\mathrm{ωBew}(\mathrm{imp}(x,x'))$ かつ $\mathrm{ωBew}(x)$ ならば $\mathrm{ωBew}(x')$。とくに $\PA\vdash[1](S\to S')\to([1]S\to[1]S')$。
+:::
+
+::: proof
+**1.** $\mathcal{M}$ で $\mathrm{Pf}(y,x)$ なら、$y$ の最後の行の仮定はすべて $\mathrm{Ax}_{\PA}$ を満たすので、すべての $z$ で括弧の中が成り立ち $\mathrm{ωPf}(y,x)$。後半は D1 と合わせる。
+
+**2.** D2 の一般の形（\ref{pt:d2}）の証明と同じである：$\mathrm{ωPf}(y,\mathrm{imp}(x,x'))$, $\mathrm{ωPf}(y',x)$ なら、$y\ast y'$ の後に $\to$E の行 $\ell$ を加えた $z'\defeq y\ast y'\ast[\ell]$ は導出で、最後の行の仮定は $y$ と $y'$ の最後の行の仮定の合併である。各仮定は（どの $z$ についても）$\mathrm{Ax}_{\PA}$ か $\mathrm{ωAx}(\cdot,z)$ を満たすので、$\mathrm{ωPf}(z',x')$。
+:::
+
+::: theorem 形式化された Σ₃ 完全性 {#pt:sigma3-completeness keywords="formalized Sigma_3 completeness for omega-provability"}
+Σ₃ 文 $S$ について $\PA\vdash S\to[1]S$。とくに $\PA\vdash[1]S\to[1][1]S$（D3 の類似）、$\PA\vdash\neg\Box S\to[1]\neg\Box S$。
+:::
+
+::: proof
+**Step 1（形の固定）.** $\PA\vdash S\leftrightarrow S'$、$S'=\exists y\,\forall v\,B(y,v)$（$B$ は Σ 論理式で自由変数は $y,v$ だけ）とする。$S'$ について示せば、$\PA\vdash S'\to S$ と D1・D2（\ref{pt:omega-d12}）から $\PA\vdash[1]S'\to[1]S$ で、$S$ についても従う。
+
+**Step 2（$\mathcal{M}$ の中で）.** $\mathcal{M}\models S'$ とし、$\forall v\,B(m,v)$ となる $m$ をとる。$e\defeq\mathrm{sub}(\Godel{B},\Godel{y},\mathrm{num}(m))$、$a\defeq\mathrm{all}(\Godel{v},e)$ とする。すべての $z$ で $B(m,z)$ が成り立つので、形式化された Σ 完全性（\ref{pt:formalized-sigma-completeness}、割り当て $y\mapsto m$, $v\mapsto z$）と代入の順序の入れ替え（\ref{pt:closed-term-substitution} の 5）より $\mathrm{Bew}(\mathrm{sub}(e,\Godel{v},\mathrm{num}(z)))$。よって $a$ は ω 公理のコードの条件 $\forall z\,\mathrm{ωAx}(a,z)$ を満たす。
+
+**Step 3.** $\PA\vdash\forall v\,B(y,v)\to S'$ なので、内部の代入例（\ref{pt:internal-instance}、$y\mapsto\mathrm{num}(m)$）より $\mathrm{Bew}(\mathrm{imp}(a,\Godel{S'}))$（$\mathrm{sub}$ は $\mathrm{imp}$ と $\mathrm{all}(\Godel{v},\cdot)$（$v\neq y$）の中に入り、$S'$ では $y$ が束縛されているので変わらない：\ref{pt:closed-term-substitution} の 4）。その証明 $d$ の後ろに、仮定 $a$ の一行と $\to$E の一行を付け加えた列は導出で、最後の行の結論は $\Godel{S'}$、仮定は $d$ の仮定（$\PA$ の公理）と $a$。よって $\mathrm{ωPf}$ が成り立ち、$[1]S'$。
+
+**Step 4（後半）.** $[1]S$ は $\mathrm{ωBew}$ の形から Σ₃ 文。$\neg\Box S\leftrightarrow\forall v\,\neg\mathrm{Pf}(v,\Godel{S})$ で、$\neg\mathrm{Pf}$ は Δ なので、形だけの $\exists y$ を付ければ Σ₃ 文。
+
+::: hypcheck
+- **形式化された Σ 完全性が $\mathcal{M}$ の任意の割り当てで使えること**：Step 2 で $m$ や $z$ が超準的でもよい。
+- **ω 公理を仮定に置く定義**：Step 3 で、ω 公理を一つ仮定として加えるだけで済み、内部で論理的な変形（連言の構成など）をする必要がない。
+:::
+:::
+
+::: corollary ω 証明可能性についてのレーブの定理 {#pt:omega-lob}
+任意の文 $S$ について、$\PA\vdash[1]S\to S$ なら $\PA\vdash S$。また $\PA\vdash[1]([1]S\to S)\to[1]S$。
+:::
+
+::: proof
+\ref{pt:lob-theorem} と \ref{pt:formalized-lob} の証明は、D1, D2, D3 と対角化定理しか使わない。$\mathrm{Bew}$ を $\mathrm{ωBew}$ に置き換えると、D1 は \ref{pt:omega-d12} の 1、D2 は同 2、D3 は \ref{pt:sigma3-completeness} で成り立つ。前半については、$\PA\vdash[1]S\to S$ から同じ議論で $\PA\vdash S$ が得られる（最後の段で使う D1 も ω 版）。
+:::
+
+## GLB とその算術的健全性 {#pt:sec-glb}
+
+::: definition GLB と GLSB {#pt:glb keywords="GLB, GLSB, Dzhaparidze's bimodal logic" index="GLB|じーえるびー, ジャパリゼの体系|じゃぱりぜのたいけい"}
+二つの箱 $\Box$ と $[1]$ をもつ様相論理式を考える（$\Diamond\defeq\neg\Box\neg$、$\langle1\rangle\defeq\neg[1]\neg$）。$\mathsf{GLB}$ は、恒真式と次の形の論理式すべてを公理とし、モーダスポネンスと $\Box$ の必然化則を推論規則とする体系である。
+$$
+\begin{gathered}
+\Box(A\to B)\to(\Box A\to\Box B),\qquad[1](A\to B)\to([1]A\to[1]B),\\
+\Box(\Box A\to A)\to\Box A,\qquad[1]([1]A\to A)\to[1]A,\\
+\Box A\to[1]A,\qquad\neg\Box A\to[1]\neg\Box A.
+\end{gathered}
+$$
+$\mathsf{GLSB}$ は、$\mathsf{GLB}$ の定理と $[1]A\to A$ の形の論理式すべてを公理とし、モーダスポネンスだけを規則とする体系である。算術的解釈 $\ast$ による翻訳は $([1]A)^{\ast}\defeq\mathrm{ωBew}(\Godel{A^{\ast}})$ で拡張する。
+:::
+
+$\mathsf{GLB}\vdash A$ なら $\mathsf{GLB}\vdash\Box A$、公理 $\Box A\to[1]A$ で $\mathsf{GLB}\vdash[1]A$ なので、$[1]$ の必然化則は導かれる規則である。$\mathsf{GL}$ の場合（\ref{logic:gl-four}）と同じ証明で $\mathsf{GLB}\vdash\Box A\to\Box\Box A$、$\mathsf{GLB}\vdash[1]A\to[1][1]A$。とくに $\mathsf{GLB}\vdash\Box A\to[1]\Box A$（$\Box A\to\Box\Box A$ と $\Box\Box A\to[1]\Box A$）。
+
+::: theorem GLB の算術的健全性 {#pt:glb-soundness}
+$\mathsf{GLB}\vdash A$ ならば、すべての算術的解釈 $\ast$ で $\PA\vdash A^{\ast}$。$\mathsf{GLSB}\vdash A$ ならば、すべての $\ast$ で $A^{\ast}$ は真。
+:::
+
+::: proof
+証明の長さに関する帰納法。恒真式・$\Box$ の分配公理とレーブの公理・モーダスポネンス・$\Box$ の必然化則は \ref{pt:gl-arithmetical-soundness} と同じ。$[1]$ の分配公理は \ref{pt:omega-d12} の 2、$[1]$ のレーブの公理は \ref{pt:omega-lob}、$\Box A\to[1]A$ は \ref{pt:omega-d12} の 1、$\neg\Box A\to[1]\neg\Box A$ は \ref{pt:sigma3-completeness}。後半：$\mathsf{GLB}$ の定理は $\PA$ で証明でき真、$[1]A\to A$ の翻訳は \ref{pt:omega-bew-correct} と \ref{pt:omega-provable-equiv} の後半により真、モーダスポネンスは真理を保つ。
+:::
+
+::: example
+$\mathsf{GLB}\vdash\Box\bot\to[1]\bot$ だが、$\neg\Box\bot\to[1]\neg\Box\bot$ より「$\PA$ が無矛盾なら、$\PA$ の無矛盾性は ω 証明可能」。$\PA\nvdash\mathrm{Con}$ なので、ω 証明可能だが証明可能でない文の例（真の Π₁ 文）である。また $\PA+\Box\bot$ は無矛盾だが ω 無矛盾でない：$\Box\bot$ は偽なので $\neg\Box\bot$ は ω 証明可能、すなわち $\PA+\Box\bot$ は ω 無矛盾でない。
+:::
+
+## GLB とクリプキ意味論 {#pt:sec-glb-kripke}
+
+二つの到達可能性関係 $R,R_{1}$ をもつフレーム $(W,R,R_{1})$ とモデル $(W,R,R_{1},V)$ を考え、$\Box$ を $R$、$[1]$ を $R_{1}$ で解釈する。
+
+::: proposition GLB の公理に対応するフレームの性質 {#pt:glb-frame-conditions}
+1. $\Box p\to[1]p$ が $(W,R,R_{1})$ で妥当 $\iff$ $R_{1}\subset R$。
+2. $\neg\Box p\to[1]\neg\Box p$ が妥当 $\iff$ 「$wR_{1}x$ かつ $wRy$ なら $xRy$」。
+3. $\Box(\Box p\to p)\to\Box p$ が妥当なら $R$ は非反射的。
+4. したがって $\mathsf{GLB}$ の公理がすべて妥当なフレームでは $R_{1}=\emptyset$ で、$[1]\bot$ が妥当になる。しかし $\mathsf{GLB}\nvdash[1]\bot$。よって $\mathsf{GLB}$ は、この種のフレームのどのクラスについても完全でない。
+:::
+
+::: proof
+**1.**（$\Rightarrow$）$wR_{1}x$ とし、$p$ を $x$ 以外で真にする。$wRx$ でなければ $w\models\Box p$、よって $w\models[1]p$、$x\models p$ となり矛盾。（$\Leftarrow$）明らか。
+
+**2.**（$\Rightarrow$）$wR_{1}x$, $wRy$ とし、$p$ を $y$ 以外で真にする。$w\models\neg\Box p$ なので $x\models\neg\Box p$、すなわち $xRz$ かつ $z\not\models p$ となる $z$ があり、$z=y$。（$\Leftarrow$）$w\models\neg\Box p$ なら $wRy$, $y\not\models p$ となる $y$ があり、$wR_{1}x$ なら $xRy$ で $x\models\neg\Box p$。
+
+**3.** \ref{logic:frame-correspondence} の 5 より $R$ は逆整礎、したがって非反射的。
+
+**4.** $wR_{1}x$ なら 1 より $wRx$、2（$y=x$）より $xRx$ となり 3 に反する。$\mathsf{GLB}\nvdash[1]\bot$ は、健全性より $\PA\vdash\mathrm{ωBew}(\Godel{\bot})$ となり、\ref{pt:omega-bew-correct} から $\bot$ が真になってしまうことによる。
+:::
+
+## 部分体系 IDzh {#pt:sec-idzh}
+
+::: definition IDzh と IDzh モデル {#pt:idzh keywords="IDzh, Ignatiev's system" index="IDzh|あいでぃーじーえっち"}
+$\mathsf{IDzh}$ は、恒真式と
+$$
+\begin{aligned}
+&\Box(A\to B)\to(\Box A\to\Box B),\qquad[1](A\to B)\to([1]A\to[1]B),\\
+&\Box(\Box A\to A)\to\Box A,\qquad[1]([1]A\to A)\to[1]A,\\
+&\Box A\to[1]\Box A,\qquad\neg\Box A\to[1]\neg\Box A
+\end{aligned}
+$$
+を公理とし、モーダスポネンス、$\Box$ の必然化則、$[1]$ の必然化則を規則とする体系である（$\mathsf{GLB}$ の公理 $\Box A\to[1]A$ を $\mathsf{GLB}$ の定理 $\Box A\to[1]\Box A$ に取り替えたもの）。**IDzh モデル**とは、$W$ が有限で空でなく、$R,R_{1}$ がともに推移的・非反射的で、
+$$
+wR_{1}x\ \Longrightarrow\ \text{すべての }y\text{ について }(wRy\iff xRy)
+$$
+を満たす $(W,R,R_{1},V)$ である。
+:::
+
+$\mathsf{IDzh}\subset\mathsf{GLB}$ である（$\mathsf{GLB}$ は $[1]$ の必然化則で閉じ、$\Box A\to[1]\Box A$ を証明する）。IDzh モデルでは $wR_{1}x$ と $wRx$ は同時に成り立たない（成り立てば $xRx$）。
+
+::: theorem IDzh の健全性と完全性 {#pt:idzh-completeness}
+$\mathsf{IDzh}\vdash A$ であることと、$A$ がすべての IDzh モデルで妥当であることは同値である。とくに $\mathsf{IDzh}$ は決定可能である。
+:::
+
+::: proof
+**健全性.** 妥当な論理式の集合は三つの規則で閉じている。分配公理は明らか、レーブの公理は $R,R_{1}$ が有限・推移的・非反射的なので \ref{logic:kripke-soundness} の 3 と同じ。$\Box A\to[1]\Box A$：$w\models\Box A$、$wR_{1}x$、$xRy$ なら条件より $wRy$ で $y\models A$、よって $x\models\Box A$。$\neg\Box A\to[1]\neg\Box A$：$wRy$, $y\not\models A$、$wR_{1}x$ なら $xRy$ で $x\models\neg\Box A$。
+
+**完全性.** $\mathsf{IDzh}\nvdash A$ とし、$L=\mathsf{IDzh}$, $D=A$ について有限の極大無矛盾集合の全体 $W$ をとる（部分論理式は両方の箱について閉じているとする）。
+$$
+\begin{aligned}
+wRx\defeq{}&\text{(a) すべての }\Box B\in w\text{ で }B,\Box B\in x,\\
+&\text{(b) ある }\Box D\in x\text{ で }\Box D\notin w,\\
+wR_{1}x\defeq{}&\text{(a) すべての }[1]B\in w\text{ で }B,[1]B\in x,\\
+&\text{(b) すべての }\Box C\in\mathrm{Sub}(A)\text{ で }(\Box C\in w\iff\Box C\in x),\\
+&\text{(c) ある }[1]D\in x\text{ で }[1]D\notin w
+\end{aligned}
+$$
+とし、$V\defeq\{(w,p):p\in w\}$ とする。$R$ は $\mathsf{GL}$ の場合と同じく推移的・非反射的。$R_{1}$ も同様（(b) は同値関係なので推移的）。条件：$wR_{1}x$ なら (b) より $w$ と $x$ の $\Box$ で始まる元は同じなので、$R$ の定義から $wRy\iff xRy$。
+
+真理補題（$B\in\mathrm{Sub}(A)$ について $B\in w\iff w\models B$）の $\Box C$ の場合は \ref{logic:completeness-gl} と同じ（使うのは $\Box$ についての $\mathsf{GL}$ の公理と規則だけ）。$[1]C$ の場合：$[1]C\in w$ なら (a) より $wR_{1}x$ で $C\in x$。$[1]C\notin w$ とし、
+$$
+\begin{aligned}
+X\defeq{}&\{\neg C,[1]C\}\cup\{D,[1]D:[1]D\in w\}\cup\{\Box F:\Box F\in w\}\\
+&\cup\{\neg\Box F:\Box F\in\mathrm{Sub}(A),\ \Box F\notin w\}
+\end{aligned}
+$$
+とおく。$X$ が矛盾すると仮定すると、$X$ の元の連言で $[1]C$ と $\neg C$ 以外のものを $\Gamma$ とし $\mathsf{IDzh}\vdash\Gamma\to([1]C\to C)$。$[1]$ の必然化と分配公理で $\mathsf{IDzh}\vdash[1]\Gamma'\to[1]([1]C\to C)$（$[1]\Gamma'$ は $\Gamma$ の各連言肢に $[1]$ を付けた連言）。$[1]D\to[1][1]D$（$[1]$ の公理 4 の類似）、$\Box F\to[1]\Box F$、$\neg\Box F\to[1]\neg\Box F$ と $[1]$ のレーブの公理から、$\mathsf{IDzh}\vdash\bigwedge\{[1]D:[1]D\in w\}\wedge\bigwedge\{\Box F\}\wedge\bigwedge\{\neg\Box F\}\to[1]C$。左辺の元はすべて $w$ に属するので $[1]C\in w$ となり矛盾。よって $X\subset x$ となる $x\in W$ があり、(a), (b), (c)（$[1]C\in x\setminus w$）より $wR_{1}x$、$\neg C\in x$ から $x\not\models C$。
+
+$\{\neg A\}$ を含む $w$ で $A$ は偽。決定可能性は、世界の数が上から抑えられる有限モデルを調べればよいことによる。
+:::
+
+## 生成部分モデルと A-完全性 {#pt:sec-idzh-generated}
+
+IDzh モデルで $wTx\defeq$「$w=x$ または $wRx$ または $wR_{1}x$ または $wR\,|\,R_{1}x$」とする（$wR\,|\,R_{1}x$ は $wRyR_{1}x$ となる $y$ があること）。
+
+::: lemma IDzh モデルの生成部分モデル {#pt:idzh-generated-submodel}
+$T(w)\defeq\{x:wTx\}$ は $R$ と $R_{1}$ で閉じており、$T$ は推移的である。$T(w)$ に制限したモデル $\mathcal{M}^{w}$ は IDzh モデルで、$x\in T(w)$ と任意の $B$ について $\mathcal{M},x\models B\iff\mathcal{M}^{w},x\models B$。
+:::
+
+::: proof
+$R$ で閉じていること：$x\in R(w)$ なら $R(x)\subset R(w)$（推移性）。$x\in R_{1}(w)$ なら条件より $R(x)=R(w)$。$wRyR_{1}x$ なら $R(x)=R(y)\subset R(w)$。$R_{1}$ で閉じていること：$x\in R(w)$ なら $R_{1}(x)\subset(R\,|\,R_{1})(w)$。$x\in R_{1}(w)$ なら $R_{1}(x)\subset R_{1}(w)$。$wRyR_{1}x$ なら $R_{1}(x)\subset R_{1}(y)$ で $(R\,|\,R_{1})(w)$ に含まれる。閉じているので $T$ は推移的。真理の一致は、$B$ に関する帰納法（両方の箱の後続者が $T(w)$ の中にある）。
+:::
+
+::: definition ⊠ と U_A と A-完全 {#pt:a-complete}
+$\boxtimes B\defeq B\wedge\Box B\wedge[1]B\wedge\Box[1]B$ とすると、IDzh モデルで $w\models\boxtimes B\iff$ すべての $x\in T(w)$ で $x\models B$。
+$$
+U_{A}\defeq\bigwedge\{\boxtimes(\Box B\to[1]B):B\text{ は }A\text{ の部分論理式}\}
+$$
+とおく。$\mathsf{GLB}\vdash U_{A}$（公理 $\Box B\to[1]B$ と必然化）。IDzh モデル $\mathcal{M}$ が **$A$-完全**であるとは、すべての世界とすべての部分論理式 $B$ で $\Box B\to[1]B$ が真であることをいう。
+:::
+
+::: lemma U_A と A-完全性 {#pt:ua-lemma}
+$\mathcal{M}^{w}$ が $A$-完全であることと、$\mathcal{M},w\models U_{A}$ は同値である。
+:::
+
+::: proof
+$\boxtimes$ の真理条件と、\ref{pt:idzh-generated-submodel} の真理の一致による。
+:::
+
+::: theorem GLB の算術的完全性（主張） {#pt:glb-main-statement}
+様相論理式 $A$ について次は同値である：(i) $\mathsf{IDzh}\vdash U_{A}\to A$、(ii) $\mathsf{GLB}\vdash A$、(iii) すべての算術的解釈 $\ast$ で $\PA\vdash A^{\ast}$。とくに $\mathsf{GLB}$ は決定可能である。
+:::
+
+(i) ⇒ (ii) は $\mathsf{IDzh}\subset\mathsf{GLB}$ と $\mathsf{GLB}\vdash U_{A}$、(ii) ⇒ (iii) は \ref{pt:glb-soundness}。(iii) ⇒ (i) は次ページ（\ref{pt:glb-completeness}）で、ソロヴェイの構成を二つの関係に拡張して示す。
+
+## 問題 {#pt:sec-glb-problems}
+
+::: problem {#pt:prob-glb-diamond}
+$\mathsf{GLB}\vdash\langle1\rangle A\to\Diamond A$ と $\mathsf{GLB}\vdash\Diamond A\to[1]\Diamond A$ を示し、算術的な意味を述べよ。
+:::
+
+::: solution
+前者は公理 $\Box\neg A\to[1]\neg A$ の対偶。後者は公理 $\neg\Box\neg A\to[1]\neg\Box\neg A$。意味：ω 無矛盾な文は無矛盾。「$S$ は $\PA$ と無矛盾」は（真なら）ω 証明可能。
+:::
+
+::: problem {#pt:prob-idzh-model}
+$\mathsf{GLB}\vdash\Box\bot\to[1]\bot$ だが $\mathsf{IDzh}\nvdash\Box\bot\to[1]\bot$ であることを示せ。
+:::
+
+::: solution
+$\mathsf{GLB}$ では公理 $\Box A\to[1]A$ の $A=\bot$ の場合。$\mathsf{IDzh}$ については、$W=\{0,1\}$, $R=\emptyset$, $R_{1}=\{(0,1)\}$ とすると、$R,R_{1}$ は推移的・非反射的で、$R(0)=R(1)=\emptyset$ なので IDzh モデルの条件を満たす。世界 $0$ で $\Box\bot$ は真、$[1]\bot$ は偽（$0R_{1}1$）。健全性（\ref{pt:idzh-completeness}）より $\mathsf{IDzh}\nvdash\Box\bot\to[1]\bot$。このモデルは $\bot$-完全でない（\ref{pt:a-complete}）。
+:::
+
+::: supplement
+**前提の検討.**
+- ω 証明可能性述語の定義で、ω 公理を導出の仮定として許した。これにより、D2 の類似（\ref{pt:omega-d12}）と Σ₃ 完全性（\ref{pt:sigma3-completeness}）が、内部で論理式を組み立てる操作なしに示せた。Boolos は「ω 証明の述語を自然に形式化したもの」とだけ述べ、同値性の形式化を読者に委ねている。
+- $\mathsf{GLB}$ の公理 $\Box A\to[1]A$ はクリプキ意味論と相性が悪い（\ref{pt:glb-frame-conditions}）。$\mathsf{IDzh}$ はそれを弱めた $\Box A\to[1]\Box A$ だけを公理とし、代わりに有限個の $\Box B\to[1]B$ を前件 $U_{A}$ に回す。これは $\mathsf{GLS}$ の反映原理を $A^{\mathrm{S}}$ の前件に回したのと同じ発想である。
+
+**関連する結果.** ジャパリゼは、$\Box$ と $[1],[2],\dots$（ω 証明可能性、さらにその反復）をもつ多様相論理 $\mathsf{GLP}$ を導入し、その算術的完全性を示した。$\mathsf{GLP}$ は後に、ベクレミシェフによって算術の順序数解析に応用されている（一般にはこう言われているが、本サイトでは扱っていない）。
+
+**高い視点から：強さの異なる二つの証明者.** $\Box$ と $[1]$ は、証明能力の異なる二人の証明者である：$[1]$ の証明者は、$\Box$ の証明者が各数について確かめたことを一度にまとめてよい。公理 $\neg\Box A\to[1]\neg\Box A$ は「弱い証明者が何かを証明できないことは、強い証明者には証明できる」（Π₁ の真理は ω 規則一回で得られる）という非対称性を表す。クリプキ意味論では、この非対称性を $R_{1}\subset R$ と「$R_{1}$ で移っても $R$ の見える範囲は変わらない」の両方で表そうとすると矛盾する。イグナチェフの工夫は、$R_{1}$ で移っても $R$ の景色が変わらない（$\Box$ から見て区別できない）世界へ移る、という構造だけを残し、$R_{1}\subset R$ は必要な有限個の論理式についてだけ要求する、というものである。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

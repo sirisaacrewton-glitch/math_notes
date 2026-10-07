@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>構文の算術化と証明可能性述語 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/02-incompleteness/05-arithmetization.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 構文の算術化と証明可能性述語 {#pt:page-arithmetization keywords="Gödel numbering, arithmetization of syntax, course-of-values recursion, provability predicate, Bew"}
+
+項・論理式・導出に数（**ゲーデル数**）を割り当て、「$x$ は論理式のコードである」「$y$ は $x$ の $\PA$ からの導出のコードである」といった構文の概念を $\mathcal{L}_{\mathrm{ar}}$ の論理式で表す。道具は前ページの有限列と、それを使った**累積再帰**である。最後に**証明可能性述語** $\mathrm{Bew}(x)\defeq\exists y\,\mathrm{Pf}(y,x)$ を定め、それが Σ 論理式であり、標準構造で「$\PA$ で証明可能」をちょうど表すことを示す。
+
+算術化する証明体系は、本サイトの一階述語論理の自然演繹（\ref{logic:deduction-system}）そのものである。導出の木は、未解消の仮定の集合を各行に書き込んだ**行の列**として線形に表す。これにより、ここで定める $\mathrm{Bew}$ が表す「証明可能性」は、本サイトの $\PA\vdash$ と文字どおり一致する。
+
+## 記法と定義の確認 {#pt:sec-arith-notation}
+
+::: notation
+- 一階述語論理の構文（項・論理式・自由変数・代入・代入可能性）は \ref{logic:page-syntax}, \ref{logic:page-substitution} のとおり。変数は $v_{0},v_{1},\dots$（\ref{logic:language}）。
+- 対 $(x,y)$、三つ組 $(x,y,z)\defeq(x,(y,z))$、成分 $\mathrm{fst},\mathrm{snd}$、有限列 $\mathrm{FinSeq}$・長さ $\mathrm{lh}$・項 $s_{i}$・切り出し・連結・$[\,]$・$[n]$、Σ 関数は \ref{pt:page-sequence-coding} のとおり。対の成分は対より小さい（\ref{pt:pairing-basic} の 2）。
+- $\mathcal{M}$ は $\PA$ の任意のモデルで、そこで示した主張は完全性定理により $\PA$ の定理である。
+- 数 $n$ を論理式の中で数項 $\underline{n}$ として使うときも、誤解のない限り下線を省く。
+:::
+
+## ゲーデル数 {#pt:sec-godel-numbering}
+
+::: definition ゲーデル数 {#pt:godel-number keywords="Gödel number, code" index="ゲーデル数|げーでるすう"}
+$\mathcal{L}_{\mathrm{ar}}$ の項と論理式 $e$ の**ゲーデル数** $\Godel{e}\in\N$ を、構造的再帰（\ref{logic:structural-recursion}）で次のように定める。
+$$
+\begin{aligned}
+&\Godel{v_{i}}=2i+19,\quad\Godel{0}=9,\quad\Godel{S(t)}=(11,\Godel{t}),\\
+&\Godel{t+s}=(13,\Godel{t},\Godel{s}),\quad\Godel{t\cdot s}=(15,\Godel{t},\Godel{s}),
+\end{aligned}
+$$
+$$
+\begin{aligned}
+&\Godel{\bot}=1,\quad\Godel{t=s}=(7,\Godel{t},\Godel{s}),\quad\Godel{t<s}=(17,\Godel{t},\Godel{s}),\\
+&\Godel{(\varphi\to\psi)}=(3,\Godel{\varphi},\Godel{\psi}),\quad\Godel{\forall v_{i}\,\varphi}=(5,\Godel{v_{i}},\Godel{\varphi}).
+\end{aligned}
+$$
+ここで対・三つ組は標準構造での値である。論理式の中では $\Godel{e}$ の数項 $\underline{\Godel{e}}$ も $\Godel{e}$ と書く。
+:::
+
+::: lemma コード化の単射性 {#pt:godel-injective}
+$e\mapsto\Godel{e}$ は項と論理式の全体の上で単射であり、項のコードと論理式のコードは重ならない（ただし $\Godel{\bot}=1$ は項のコードでない）。また、直接の成分のコードは全体のコードより小さい。
+:::
+
+::: proof
+対の値は偶数（\ref{pt:pairing-basic} の定義の因子 $2$）で、$1,9$ と変数のコード $2i+19$ は奇数で互いに異なる。対の値からは、第一成分（$3,5,7,11,13,15,17$ のどれか）で形が決まり、\ref{pt:pairing-basic} の 1 より成分が一意に定まる。項と論理式の読み方の一意性（\ref{logic:unique-readability-terms} と論理式についての同種の定理）と合わせて、構造に関する帰納法で単射性が従う。項の第一成分 $11,13,15$ と論理式の第一成分 $3,5,7,17$ は異なる。成分が小さいことは \ref{pt:pairing-basic} の 2 による。
+:::
+
+## 累積再帰 {#pt:sec-course-of-values}
+
+::: theorem 累積再帰 {#pt:course-of-values keywords="course-of-values recursion" index="累積再帰|るいせきさいき"}
+$g(\vec{p},x,s)$ を Σ 関数とする。次を満たす Σ 関数 $h(\vec{p},x)$ がある。$\tilde{h}(\vec{p},x)$ を長さ $x$ で第 $j$ 項が $h(\vec{p},j)$ の有限列とすると（\ref{pt:finseq-exists}）、
+$$
+\PA\vdash\forall\vec{p}\,\forall x\;h(\vec{p},x)=g(\vec{p},x,\tilde{h}(\vec{p},x)).
+$$
+さらに標準構造では、$h^{\mathcal{N}}$ は「すべての $x$ で $H(x)=g^{\mathcal{N}}(\vec{p},x,\langle H(0),\dots,H(x-1)\rangle)$」（右辺の $\langle\cdots\rangle$ はその列のコード）を満たすただ一つの関数 $H$ である。
+:::
+
+::: proof
+**Step 1（定義）.** $u\restr{[0,j)}$ を $u$ の長さ $j$ の切り出しとして
+$$
+\begin{aligned}
+H(\vec{p},x,y)\defeq\exists u\,\bigl(&\mathrm{FinSeq}(u)\wedge\mathrm{lh}(u)=S(x)\\
+&\wedge\forall j<S(x)\,u_{j}=g(\vec{p},j,u\restr{[0,j)})\wedge u_{x}=y\bigr)
+\end{aligned}
+$$
+とおく。$\exists u$ の中は Δ 論理式と Σ 関数の値の比較を有界量化で組み合わせたものなので、$H$ は Σ 論理式である。
+
+**Step 2（存在）.** $\mathcal{M}$ で $x$ についての帰納法で、条件を満たす $u$（長さ $x+1$）の存在を示す。$x=0$ では $[g(\vec{p},0,[\,])]$。$x$ で $u$ がとれれば、$u$ を延長して第 $x+1$ 項を $g(\vec{p},x+1,u)$ とする（\ref{pt:finseq-exists}）。延長した列の長さ $x+1$ の切り出しは $u$ である（有限列の法則 \ref{pt:finseq-law}）。
+
+**Step 3（一意性）.** $u,u'$ がともに条件を満たすとき、$j\le x$ についての強い帰納法（\ref{pt:pa-strong-induction}）で $u_{j}=u'_{j}$：$j$ 未満で一致すれば、有限列の法則より $u\restr{[0,j)}=u'\restr{[0,j)}$ で、$u_{j}=g(\vec{p},j,u\restr{[0,j)})=u'_{j}$。
+
+**Step 4（等式）.** $h(\vec{p},x)$ を与える $u$ について、$j<x$ なら $u$ の長さ $j+1$ の切り出しは $h(\vec{p},j)$ を与える列なので $u_{j}=h(\vec{p},j)$。よって $u\restr{[0,x)}=\tilde{h}(\vec{p},x)$（有限列の法則）で、$h(\vec{p},x)=u_{x}=g(\vec{p},x,\tilde{h}(\vec{p},x))$。
+
+**Step 5（標準構造）.** $h^{\mathcal{N}}$ は Step 4 の等式を満たす。そのような関数が一つしかないことは、自然数についての強い帰納法による。
+:::
+
+以下、構文の概念を累積再帰で定義する。定義式の右辺では、$x$ の成分 $c<x$ における値 $h(c)$ を、$\tilde{h}(x)$ の第 $c$ 項として参照する（$c<x$ なので列の中にある）。述語 $P$ は、その**特性関数**（値 $1$ か $0$ をとる Σ 関数）$\chi_{P}$ で定義し、$P(x)\defeq\chi_{P}(x)=1$ とする。こうして定めた述語は、Σ 関数のグラフなので Δ 論理式である（\ref{pt:functional-formula}）。
+
+## 構文の概念の定義 {#pt:sec-syntax-in-pa}
+
+::: definition 構文の述語と関数 {#pt:syntax-predicates keywords="Term, Form, free variable, substitution function, substitutable, sentence, numeral function" index="構文の算術化|こうぶんのさんじゅつか"}
+次の述語と関数を定める。三つ組 $x=(a,b,c)$ であることを「$x=(\mathrm{fst}(x),\mathrm{fst}(\mathrm{snd}(x)),\mathrm{snd}(\mathrm{snd}(x)))$」で表し、そのとき $x_{1}\defeq\mathrm{fst}(\mathrm{snd}(x))$, $x_{2}\defeq\mathrm{snd}(\mathrm{snd}(x))$ と書く。$x=(11,\mathrm{snd}(x))$ のときは $x_{1}\defeq\mathrm{snd}(x)$ と書く。
+1. $\mathrm{Var}(x)\defeq\exists i<x\,(x=2\cdot i+19)$。
+2. $\mathrm{Tm}(x)$：$x=9$、または $\mathrm{Var}(x)$、または（$x=(11,x_{1})$ かつ $\mathrm{Tm}(x_{1})$）、または（$x$ が三つ組で $\mathrm{fst}(x)\in\{13,15\}$ かつ $\mathrm{Tm}(x_{1})$, $\mathrm{Tm}(x_{2})$）。
+3. $\mathrm{Fm}(x)$：$x=1$、または（三つ組で $\mathrm{fst}(x)\in\{7,17\}$ かつ $\mathrm{Tm}(x_{1})$, $\mathrm{Tm}(x_{2})$）、または（三つ組で $\mathrm{fst}(x)=3$ かつ $\mathrm{Fm}(x_{1})$, $\mathrm{Fm}(x_{2})$）、または（三つ組で $\mathrm{fst}(x)=5$ かつ $\mathrm{Var}(x_{1})$, $\mathrm{Fm}(x_{2})$）。
+4. $\mathrm{Oc}(v,x)$（変数 $v$ が項 $x$ に現れる）：$x=v$、または $x=(11,x_{1})$ で $\mathrm{Oc}(v,x_{1})$、または $x$ が三つ組で $\mathrm{Oc}(v,x_{1})\vee\mathrm{Oc}(v,x_{2})$。
+5. $\mathrm{Fr}(v,x)$（$v$ が論理式 $x$ に自由に現れる）：$\mathrm{fst}(x)\in\{7,17\}$ で $\mathrm{Oc}(v,x_{1})\vee\mathrm{Oc}(v,x_{2})$、$\mathrm{fst}(x)=3$ で $\mathrm{Fr}(v,x_{1})\vee\mathrm{Fr}(v,x_{2})$、$\mathrm{fst}(x)=5$ で $x_{1}\neq v\wedge\mathrm{Fr}(v,x_{2})$。
+6. $\mathrm{subt}(x,v,t)$（項への代入）：$x=v$ なら $t$、$x=(11,x_{1})$ なら $(11,\mathrm{subt}(x_{1},v,t))$、$x$ が $\mathrm{fst}(x)\in\{13,15\}$ の三つ組なら $(\mathrm{fst}(x),\mathrm{subt}(x_{1},v,t),\mathrm{subt}(x_{2},v,t))$、それ以外は $x$。
+7. $\mathrm{sub}(x,v,t)$（論理式への代入）：$\mathrm{fst}(x)\in\{7,17\}$ の三つ組なら $(\mathrm{fst}(x),\mathrm{subt}(x_{1},v,t),\mathrm{subt}(x_{2},v,t))$、$\mathrm{fst}(x)=3$ なら $(3,\mathrm{sub}(x_{1},v,t),\mathrm{sub}(x_{2},v,t))$、$\mathrm{fst}(x)=5$ で $x_{1}=v$ なら $x$、$\mathrm{fst}(x)=5$ で $x_{1}\neq v$ なら $(5,x_{1},\mathrm{sub}(x_{2},v,t))$、それ以外は $x$。
+8. $\mathrm{Sbl}(t,v,x)$（$t$ は $x$ の中で $v$ に代入可能）：$\mathrm{fst}(x)\in\{7,17\}$ または $x=1$ なら真、$\mathrm{fst}(x)=3$ なら $\mathrm{Sbl}(t,v,x_{1})\wedge\mathrm{Sbl}(t,v,x_{2})$、$\mathrm{fst}(x)=5$ なら $\neg\mathrm{Fr}(v,x)\vee(\neg\mathrm{Oc}(x_{1},t)\wedge\mathrm{Sbl}(t,v,x_{2}))$。
+9. $\mathrm{Sent}(x)\defeq\mathrm{Fm}(x)\wedge\forall v<x\,\neg\mathrm{Fr}(v,x)$。
+10. $\mathrm{num}(0)=9$、$\mathrm{num}(n+1)=(11,\mathrm{num}(n))$。$\mathrm{imp}(x,y)\defeq(3,x,y)$、$\mathrm{neg}(x)\defeq(3,x,1)$、$\mathrm{all}(v,x)\defeq(5,v,x)$、$\mathrm{eq}(t,s)\defeq(7,t,s)$。
+11. 全称閉包 $\mathrm{cl}(x)\defeq c(x,x)$、ここで $c(x,0)\defeq x$、$c(x,n+1)\defeq\mathrm{all}(2n+19,c(x,n))$（$\mathrm{Fr}(2n+19,x)$ のとき）、$c(x,n)$（それ以外）。
+
+2–8 は累積再帰（パラメータ $v,t$ 付き）、10, 11 は \ref{pt:sigma-recursion} による Σ 関数、1, 9 は有界な論理式である。
+:::
+
+::: remark 全称閉包の順序
+$\mathrm{cl}$ は、論理式に自由に現れる変数を、番号の小さいものが内側になるように全称量化する。\ref{pt:peano-arithmetic} の帰納法の公理 $\mathrm{Ind}_{\varphi,x}$ の全称量化子 $\forall y_{1}\cdots\forall y_{k}$ も、この順序（$y_{1}$ の番号が最大）にとるものとする。どの順序にしても論理的に同値なので、$\PA$ の定理は変わらない。$v_{i}$ が $x$ に自由に現れれば $\Godel{v_{i}}<x$ なので $i<x$ であり、$c(x,x)$ ですべての自由変数が量化される。
+:::
+
+::: definition PA の公理 {#pt:axiom-predicate}
+$\mathrm{ind}(\varphi,v)$ を、コード $\varphi$ の論理式と変数 $v$ から帰納法の公理の母式 $\varphi[0/v]\wedge\forall v\,(\varphi\to\varphi[S(v)/v])\to\forall v\,\varphi$ のコードを作る Σ 関数（$\mathrm{sub}$, $\mathrm{imp}$, $\mathrm{neg}$, $\mathrm{all}$ の合成。$\wedge$ は略記を展開する）とし、
+$$
+\begin{aligned}
+\mathrm{Ax}_{\PA}(x)\defeq{}&x=\Godel{\mathrm{S1}}\vee\cdots\vee x=\Godel{\mathrm{O2}}\\
+&\vee\exists\varphi<x\,\exists v<x\,\bigl(\mathrm{Fm}(\varphi)\wedge\mathrm{Var}(v)\wedge x=\mathrm{cl}(\mathrm{ind}(\varphi,v))\bigr)
+\end{aligned}
+$$
+とおく。$\varphi,v$ は $x$ の成分の成分（…）なので $x$ より小さく、量化子の上限は制限にならない。$\mathrm{Ax}_{\PA}$ は Δ 論理式である。
+:::
+
+::: proposition 標準構造での正しさ {#pt:syntax-correct}
+標準構造 $\mathcal{N}$ で次が成り立つ（$t,s$ は項、$\varphi$ は論理式、$x$ は変数）。
+1. $\mathcal{N}\models\mathrm{Tm}(n)\iff n$ はある項のコード。$\mathcal{N}\models\mathrm{Fm}(n)\iff n$ はある論理式のコード。
+2. $\mathcal{N}\models\mathrm{Fr}(\Godel{x},\Godel{\varphi})\iff x\in\mathrm{FV}(\varphi)$。$\mathcal{N}\models\mathrm{Sent}(\Godel{\varphi})\iff\varphi$ は文。
+3. $\mathrm{sub}^{\mathcal{N}}(\Godel{\varphi},\Godel{x},\Godel{s})=\Godel{\varphi[s/x]}$。$\mathcal{N}\models\mathrm{Sbl}(\Godel{s},\Godel{x},\Godel{\varphi})\iff s$ は $\varphi$ の中で $x$ に代入可能。
+4. $\mathrm{num}^{\mathcal{N}}(n)=\Godel{\underline{n}}$、$\mathrm{cl}^{\mathcal{N}}(\Godel{\varphi})$ は $\varphi$ の全称閉包のコード。
+5. $\mathcal{N}\models\mathrm{Ax}_{\PA}(n)\iff n$ は $\PA$ の公理のコード。
+:::
+
+::: proof
+各述語・関数は、\ref{pt:course-of-values} の Step 5 により、標準構造では定義の場合分けを満たすただ一つの関数である。一方、メタの概念（項であること、$\mathrm{FV}$、代入、代入可能性）の再帰的な定義（\ref{logic:free-variables}, \ref{logic:substitution}, \ref{logic:substitutable}）をコードに移すと、\ref{pt:godel-injective}（成分が一意に定まること）により、同じ場合分けを満たす関数になる。よって両者は一致する。1 は $n$ に関する強い帰納法で、$n$ の形（$9$、変数のコード、第一成分 $11$ の対など）ごとに確かめる。3 の代入可能性の $\forall$ の場合は、定義の「$x\notin\mathrm{FV}(\forall y\,\alpha)$、または $y\notin\mathrm{var}(s)$ かつ …」がそのまま $\neg\mathrm{Fr}(v,x)\vee(\neg\mathrm{Oc}(x_{1},t)\wedge\cdots)$ に対応する。4, 5 も同様である。
+:::
+
+::: corollary 構文の事実の証明可能性 {#pt:syntax-provable}
+たとえば $\PA\vdash\mathrm{Fm}(\Godel{\varphi})$、$\PA\vdash\mathrm{sub}(\Godel{\varphi},\Godel{x},\mathrm{num}(\underline{n}))=\Godel{\varphi[\underline{n}/x]}$、$\PA\vdash\mathrm{Sent}(\Godel{\sigma})$（$\sigma$ は文）、$\PA\vdash\neg\mathrm{Var}(\Godel{\forall})$ のように、標準構造で真な、Δ 論理式と Σ 関数の値についての具体的な等式・関係は、$\PA$ で証明できる。
+:::
+
+::: proof
+Σ 関数の値の等式 $f(\underline{\vec{m}})=\underline{k}$ は Σ 文、Δ 論理式の具体例とその否定も Σ 文で、\ref{pt:syntax-correct} より真である。Σ 完全性（\ref{pt:sigma-completeness}）による。
+:::
+
+## 導出のコードと証明可能性述語 {#pt:sec-proof-predicate}
+
+::: definition 行の列としての導出 {#pt:derivation-lines keywords="linearized derivation, sequent lines" index="行の列による導出|ぎょうのれつによるどうしゅつ"}
+**行**とは、有限列 $A$（仮定のリスト）、論理式 $\varphi$、付加情報 $w$ の組 $\ell=(A,(\varphi,w))$ である。$A$ の項全体の集合を $\{A\}$ と書く。有限列 $y=(\ell_{0},\dots,\ell_{m-1})$ の各行 $\ell_{k}=(A_{k},(\varphi_{k},w_{k}))$ が、次のどれかによって**正当化される**とき、$y$ を**導出の行の列**という（$j,j'<k$）。
+- **仮定**：$\{A_{k}\}=\{\varphi_{k}\}$。
+- **$\to$I**：$\varphi_{k}=(\chi\to\varphi_{j})$、$w_{k}=(j,\chi)$、$\{A_{k}\}=\{A_{j}\}\setminus\{\chi\}$。
+- **$\to$E**：$w_{k}=(j,j')$、$\varphi_{j}=(\varphi_{j'}\to\varphi_{k})$、$\{A_{k}\}=\{A_{j}\}\cup\{A_{j'}\}$。
+- **RAA**：$w_{k}=j$、$\varphi_{j}=\bot$、$\{A_{k}\}=\{A_{j}\}\setminus\{\neg\varphi_{k}\}$。
+- **$\forall$I**：$w_{k}=(j,x)$、$\varphi_{k}=\forall x\,\varphi_{j}$、$\{A_{k}\}=\{A_{j}\}$、$x$ は $\{A_{j}\}$ のどの元にも自由に現れない。
+- **$\forall$E**：$w_{k}=(j,t)$、$\varphi_{j}=\forall x\,\psi$、$t$ は $\psi$ の中で $x$ に代入可能、$\varphi_{k}=\psi[t/x]$、$\{A_{k}\}=\{A_{j}\}$。
+- **$=$I**：$\varphi_{k}=(t=t)$ となる項 $t$ があり、$w_{k}=t$、$\{A_{k}\}=\varnothing$。
+- **$=$E**：$w_{k}=(j,j',\psi,x,s,t)$（入れ子の組）、$\varphi_{j}=(s=t)$、$\varphi_{j'}=\psi[s/x]$、$s,t$ は $\psi$ の中で $x$ に代入可能、$\varphi_{k}=\psi[t/x]$、$\{A_{k}\}=\{A_{j}\}\cup\{A_{j'}\}$。
+
+ただし、付加情報に書く前提の行番号 $j$ は、実際には差 $k-j$（$1\le k-j\le k$ となる数）として記録する。こうすると、導出の行の列を二つ連結しても、後ろの列の付加情報を書き換えずに済む（\ref{pt:derivation-concat}）。この定義をコードに移した論理式を $\mathrm{Deriv}(y)$ とする（集合の等式 $\{A\}=\{B\}\setminus\{\chi\}$ などは、$A,B$ の添字についての有界量化で書く）。さらに
+$$
+\begin{aligned}
+\mathrm{Pf}(y,x)&\defeq\mathrm{Deriv}(y)\wedge0<\mathrm{lh}(y)\wedge\varphi_{\mathrm{lh}(y)-1}=x\\
+&\qquad\wedge\forall i<\mathrm{lh}(A_{\mathrm{lh}(y)-1})\,\mathrm{Ax}_{\PA}((A_{\mathrm{lh}(y)-1})_{i}),\\
+\mathrm{Bew}(x)&\defeq\exists y\,\mathrm{Pf}(y,x)
+\end{aligned}
+$$
+とおく。
+:::
+
+::: proposition Pf と Bew の複雑さ {#pt:bew-sigma}
+$\mathrm{Deriv}$ と $\mathrm{Pf}$ は Δ 論理式であり、$\mathrm{Bew}$ は Σ 論理式である。
+:::
+
+::: proof
+付加情報 $w_{k}$ に規則のパラメータ（前提の行番号、解消する論理式、変数、項）をすべて書き込んだので、「行 $k$ が正当化される」は、$y$ の成分についての Σ 関数の値の比較と、$\mathrm{Fm},\mathrm{Tm},\mathrm{Fr},\mathrm{Sbl},\mathrm{sub}$ と有界量化（添字は $\mathrm{lh}$ 未満、パラメータは $y$ の成分）だけで書ける。よって Δ 論理式である。$\mathrm{Pf}$ も同様。$\mathrm{Bew}$ は Δ 論理式に $\exists y$ を付けたものなので Σ である（\ref{pt:sigma-closure}）。
+:::
+
+::: remark
+付加情報 $w$ を行に含めない定義では、たとえば $\forall$E の項 $t$ を「$\exists t$」で探すことになり、$x$ が自由に現れない場合には $t$ の大きさを抑えられない。$w$ を含めることで、この種の上限の議論（Boolos が Term の Δ 性について行う長い議論）を避けている。
+:::
+
+::: theorem 証明可能性述語の正しさ {#pt:bew-correct keywords="correctness of Bew"}
+任意の論理式 $\varphi$ について、$\mathcal{N}\models\mathrm{Bew}(\Godel{\varphi})\iff\PA\vdash\varphi$。
+:::
+
+::: proof
+**Step 1（行の列から木へ）.** 標準構造の導出の行の列 $y$ について、各 $k$ に対し、結論 $\varphi_{k}$、$\mathrm{A}(D_{k})=\{A_{k}\}$ となる導出の木 $D_{k}$（\ref{logic:deduction-system}）があることを $k$ に関する強い帰納法で示す。行の正当化の各場合は、木の規則の一つにそのまま対応する。たとえば $\to$I なら $D_{k}\defeq(\to\mathrm{I},\chi,D_{j})$ で、$\mathrm{A}(D_{k})=\mathrm{A}(D_{j})\setminus\{\chi\}=\{A_{j}\}\setminus\{\chi\}=\{A_{k}\}$。$\forall$I の固有変数条件は「$x$ は $\{A_{j}\}=\mathrm{A}(D_{j})$ のどの元にも自由に現れない」そのものである。（ここで \ref{pt:syntax-correct} により、コード上の条件はメタの条件と一致する。）
+
+**Step 2（木から行の列へ）.** 導出の木 $D$ に関する構造的帰納法で、最後の行が $(A,(\mathrm{concl}(D),w))$、$\{A\}=\mathrm{A}(D)$ となる導出の行の列があることを示す。仮定と $=$I は一行の列。一つの前提をもつ規則は、前提の列の後に一行を加える。二つの前提をもつ規則は、二つの列を連結し（付加情報は行の差で書いてあるので、後の列を書き換える必要はない）、一行を加える。
+
+**Step 3.** $\PA\vdash\varphi$ は、$\mathrm{concl}(D)=\varphi$, $\mathrm{A}(D)\subset\PA$ となる木 $D$ の存在であり（\ref{logic:derivability}）、Step 1, 2 と \ref{pt:syntax-correct} の 5 より、これは $\mathcal{N}\models\exists y\,\mathrm{Pf}(y,\Godel{\varphi})$ と同値である。
+:::
+
+::: remark 数項を代入した証明可能性 {#pt:bew-bracket}
+論理式 $F$ の自由変数が $v_{k_{1}},\dots,v_{k_{m}}$（$k_{1}<\cdots<k_{m}$）のとき、
+$$
+\begin{aligned}
+\mathrm{Bew}[F]\defeq\mathrm{Bew}\bigl(&\mathrm{sub}(\cdots\mathrm{sub}(\Godel{F},\Godel{v_{k_{1}}},\mathrm{num}(v_{k_{1}}))\cdots,\\
+&\Godel{v_{k_{m}}},\mathrm{num}(v_{k_{m}}))\bigr)
+\end{aligned}
+$$
+とおく。$\mathrm{Bew}[F]$ は $F$ と同じ自由変数をもち、標準構造で $v_{k_{i}}$ に $n_{i}$ を割り当てたとき「$F$ に数項 $\underline{n_{1}},\dots,\underline{n_{m}}$ を代入した文が $\PA$ で証明できる」を意味する（\ref{pt:syntax-correct}, \ref{pt:bew-correct}）。$F$ が文なら $\mathrm{Bew}[F]=\mathrm{Bew}(\Godel{F})$。
+:::
+
+## 問題 {#pt:sec-arith-problems}
+
+::: problem {#pt:prob-code-small}
+$\Godel{0=0}$ と $\Godel{\neg\bot}$ を計算せよ。
+:::
+
+::: solution
+$\Godel{0=0}=(7,9,9)=(7,(9,9))$。$(9,9)=2(18^{2}+9+1)=2\cdot334=668$、$(7,668)=2(675^{2}+7+1)=2\cdot455633=911266$。$\neg\bot=(\bot\to\bot)$ なので $\Godel{\neg\bot}=(3,1,1)=(3,(1,1))$、$(1,1)=12$、$(3,12)=2(15^{2}+3+1)=2\cdot229=458$。
+:::
+
+::: problem {#pt:prob-bew-not-delta}
+$\PA$ が無矛盾で、さらに「$\PA$ で証明できる Σ 文は真」（Σ 健全性）が成り立つと仮定する。$\mathrm{Bew}$ が Δ 論理式（$\neg\mathrm{Bew}$ も Σ）ならば、どんな矛盾が起こるか。後のページの結果（第一不完全性定理）を先取りして答えよ。
+:::
+
+::: solution
+$\neg\mathrm{Bew}$ が Σ なら、Σ 完全性により、証明できない文 $\varphi$ ごとに $\PA\vdash\neg\mathrm{Bew}(\Godel{\varphi})$。対角化定理で $\PA\vdash G\leftrightarrow\neg\mathrm{Bew}(\Godel{G})$ となる $G$ をとる（\ref{pt:page-diagonal-first-incompleteness}）。$G$ が証明できないなら $\PA\vdash\neg\mathrm{Bew}(\Godel{G})$、よって $\PA\vdash G$ となり矛盾する。$G$ が証明できるなら $\mathrm{Bew}(\Godel{G})$ は真な Σ 文で $\PA\vdash\mathrm{Bew}(\Godel{G})$、$\PA\vdash\neg G$ となり $\PA$ が矛盾する。したがって $\mathrm{Bew}$ は Δ でない（これは第一不完全性定理の議論そのものである）。
+:::
+
+::: supplement
+**高い視点から：自己言及の土台.** ゲーデル数化は、構文という「言語の外の世界」を、算術という「言語が語る世界」の中に写す関手のようなものである。本ページで示したのは、この写しが構文の操作（代入、規則の適用）を**算術の中で計算可能な操作**（Σ 関数）に写すということである。とくに $\mathrm{sub}$ と $\mathrm{num}$ により、論理式が「自分自身のコードを自分に代入した結果」について語れるようになる。これが次のページ以降の対角化の土台になる。構文の概念が Δ 論理式で書けるのは、それらが「部分を調べ尽くせば決まる」有限的な概念だからであり、証明可能性 $\mathrm{Bew}$ だけが「証明を探す」という非有界な探索を含むので Σ にとどまる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

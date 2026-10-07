@@ -1,0 +1,21 @@
+{
+  "id": "pt-provability-ext",
+  "title": "証明可能性論理の展開",
+  "en": "Further Provability Logics",
+  "abbr": "証明可能性展開",
+  "description": "Grz と S4 を保つ様相の解釈、集合論・解析学における様相論理、無矛盾性と ω 無矛盾性の結合証明可能性論理 GLB。（Boolos 第 12〜16 章に対応）",
+  "msc": "03F45, 03B45",
+  "prereq": [
+    {
+      "dir": "pt-provability"
+    },
+    {
+      "dir": "set-well-founded",
+      "note": "累積階層（集合論における様相論理で使う）"
+    },
+    {
+      "dir": "set-consistency",
+      "note": "推移的モデル・絶対性（同上）"
+    }
+  ]
+}

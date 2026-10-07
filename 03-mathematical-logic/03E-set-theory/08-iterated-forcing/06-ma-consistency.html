@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MA + ¬CH の無矛盾性 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/08-iterated-forcing/06-ma-consistency.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# MA + ¬CH の無矛盾性 {#set:page-ma-consistency keywords="consistency of MA + not CH, Solovay-Tennenbaum theorem, bookkeeping, finite support iteration of ccc posets, MA + 2^omega = kappa"}
+
+有限台反復（\ref{set:page-iterated-forcing}）を使って、マーティンの公理と $2^{\aleph_{0}}=\kappa$ が同時に成り立つ c.c.c. 拡大を作る（**ソロヴェイ＝テネンバウムの定理**）。第 II 章で証明なしに述べた \ref{set:ma-consistency} の証明である。鍵は、(i) 考えるべき c.c.c. な p.o. を集合の大きさに制限すること（\ref{set:ma-pord}）、(ii) すべての候補を「いずれ一度は」扱うための帳簿付けの関数、(iii) 小さい集合は途中の段階に現れること（\ref{set:iteration-small-sets}）の三つである。（Kunen 第 VIII 章 §6 に対応する。）
+
+## 記法と定義の確認 {#set:sec-ma-con-notation}
+
+::: notation
+- $M$ は $\ZFC$ の c.t.m.。反復強制の構成、段階間の埋め込み $i_{\xi\eta}$、$G_{\xi}=i_{\xi\kappa}^{-1}[G]$ は \ref{set:iteration-construction}, \ref{set:iteration-embedding}, \ref{set:iteration-models} のとおり。有限台反復は κ-c.c. を保つ（\ref{set:fs-iteration-cc}）、小さい集合は途中の段階に現れる（\ref{set:iteration-small-sets}）。
+- マーティンの公理 $\mathrm{MA}(\lambda)$, $\mathrm{MA}$（\ref{set:ma}）、半順序のフィルター（\ref{set:poset-filter}）、$\mathrm{MA}(\lambda)$ は大きさ $\le\lambda$ の半順序に制限してよいこと（\ref{set:ma-small-posets}）、$\mathrm{MA}(\aleph_{0})$ は $\ZFC$ の定理（\ref{set:ma-omega}）、$\mathrm{MA}(2^{\aleph_{0}})$ は偽（\ref{set:ma-continuum-false}）、MA のもとで $2^{\aleph_{0}}$ は正則（\ref{set:ma-continuum-regular}）、$\mathrm{MA}(\lambda)$ のもとで $2^{\lambda}=2^{\aleph_{0}}$（\ref{set:ma-two-kappa}）は第 II 章のとおり。
+- 第 II 章の半順序（\ref{set:forcing-poset}）は最大元をもたなくてよいが、強制法の p.o. は最大元 $\mathbf{1}$ をもつ。
+- 最大原理（\ref{set:maximal-principle}）、名前の翻訳 $i^{*}$ とその性質（\ref{set:name-translation}, \ref{set:name-translation-basic}）、よい名前（\ref{set:nice-name}, \ref{set:nice-name-exists}）、c.c.c. な p.o. は基数と共終数を保つ（\ref{set:ccc-preserves}）、よい名前による冪の上界（\ref{set:nice-name-count}）は第 VII 章のとおり。
+:::
+
+## 素朴な方針 {#set:sec-ma-con-naive}
+
+$\kappa$ を $M$ の正則基数とし、MA と $2^{\omega}=\kappa$ を満たす $M$ のジェネリック拡大を作りたいとする。素朴には $\kappa$ 回強制を反復して、モデルの鎖
+$$
+M=M_{0}\subseteq M_{1}\subseteq\cdots\subseteq M_{\xi}\subseteq\cdots\subseteq M_{\kappa}
+$$
+を作る。$M_{\xi}$ が与えられたら c.c.c. な p.o. $\mathbb{Q}_{\xi}\in M_{\xi}$ を選び、$G_{\xi}$ を $M_{\xi}$ 上 $\mathbb{Q}_{\xi}$-ジェネリックとして $M_{\xi+1}=M_{\xi}[G_{\xi}]$ とする。$\lambda<\kappa$ について $M_{\kappa}$ で $\mathrm{MA}(\lambda)$ を確かめるには、$M_{\kappa}$ で $\mathbb{Q}$ を c.c.c. な p.o.、$\lvert\mathbb{Q}\rvert\le\lambda$、$\mathcal{D}$ を $\le\lambda$ 個の稠密集合の族とする。$\mathcal{D}$ と $\mathbb{Q}$ は大きさ $<\kappa$ の対象なので、ある $\eta<\kappa$ で $M_{\eta}$ に属するだろう。構成を、ある $\xi\ge\eta$ で $\mathbb{Q}=\mathbb{Q}_{\xi}$ となるように整えておけば、$\mathcal{D}\in M_{\eta}\subseteq M_{\xi}$ なので $G_{\xi}$ は $\mathcal{D}$ のすべての稠密集合と交わる $\mathbb{Q}$ のフィルターである。
+
+厳密には、モデルの鎖の代わりに $M$ の中の p.o. の鎖 $\langle\PP_{\xi}:\xi\le\kappa\rangle$ を作り、$\mathbb{Q}_{\xi}$ を p.o. の $\PP_{\xi}$-名前 $\pi_{\xi}$ で置き換える。反復の基本的な補題は \ref{set:page-iterated-forcing} で証明済みなので、残るのは、正しい帳簿付けにより $\pi_{\xi}$ が関連するすべての c.c.c. な p.o. の名前を動くようにすることだけである。c.c.c. な p.o. 全体は真のクラスなので、まず集合だけ考えればよいことを示す。
+
+## 小さい p.o. への帰着 {#set:sec-ma-con-reduction}
+
+::: definition {#set:pord keywords="pord(A, W)"}
+$\mathrm{pord}(A,W)$ は「$W$ は集合 $A$ の c.c.c. な半順序で、最大元 $0$ をもつ」という主張の略記である。ここで「$W$ は $A$ の半順序」とは、$W\subseteq A\times A$ が反射的かつ推移的であること（$\langle x,y\rangle\in W$ を $x\le_{W}y$ と読む。反対称でなくてよい）をいう。
+:::
+
+::: lemma MA の小さい p.o. への帰着 {#set:ma-pord keywords="MA(lambda) reduces to orders on lambda with largest element 0"}
+任意の無限基数 $\lambda$ について、次は同値である。
+1. $\mathrm{MA}(\lambda)$。
+2. $\mathrm{pord}(\lambda,W)$ で、$\mathcal{D}$ が $\langle\lambda,W\rangle$ の $\le\lambda$ 個の稠密集合の族（各 $D\in\mathcal{D}$ は $\lambda$ の部分集合で順序 $W$ について稠密）ならば、$\langle\lambda,W\rangle$ のフィルターですべての $D\in\mathcal{D}$ と交わるものがある。
+:::
+
+::: proof
+1 ⇒ 2 は、2 が 1 の特別な場合なので明らかである。2 を仮定して $\mathrm{MA}(\lambda)$ を示す。\ref{set:ma-small-posets} より、大きさ $\le\lambda$ の半順序に制限した $\mathrm{MA}(\lambda)$ を示せばよい。$\langle\mathbb{Q},\le\rangle$ を $\lvert\mathbb{Q}\rvert\le\lambda$ の c.c.c. な半順序、$\mathcal{D}$ を $\mathbb{Q}$ の $\le\lambda$ 個の稠密集合の族とし、すべての $D\in\mathcal{D}$ と交わるフィルター $G\subseteq\mathbb{Q}$ を探す。
+
+第 II 章では半順序が最大元をもつことを要求しておらず、また $\lvert\mathbb{Q}\rvert<\lambda$ かもしれない。この二点を補うため、$\mathbb{Q}$ と交わらない大きさ $\lambda$ の集合 $S$ をとり、$\mathbb{Q}\cup S$ 上の順序 $\le'$ を、$\le$ に加えて「すべての $p\in\mathbb{Q}$, $s\in S$ について $p\le's$」「すべての $s,t\in S$ について $s\le't$」と定める（$s\le'p$ となる $p\in\mathbb{Q}$ はない）。反射律・推移律は場合分けで直ちに確かめられ、$S$ の任意の元が最大元である。
+
+- **両立性は変わらない.** $\le'$ で $x\le'q$（$q\in\mathbb{Q}$）なら $x\in\mathbb{Q}$ である。よって $\mathbb{Q}$ の二元の共通の拡張は $\mathbb{Q}$ に属し、$\mathbb{Q}$ の二元が $\mathbb{Q}\cup S$ で両立することと $\mathbb{Q}$ で両立することは同値である。
+- **c.c.c.** $s\in S$ は任意の $x$ と両立する（$\mathbb{Q}$ の元 $q$ となら $q$ が共通の拡張、$S$ の元 $t$ となら $s$ または $t$ が共通の拡張）。よって二元以上の反鎖は $\mathbb{Q}$ に含まれ、上の注意より $\mathbb{Q}$ の反鎖なので可算である。
+- **稠密性.** $D\in\mathcal{D}$ は $\mathbb{Q}\cup S$ でも稠密である：$q\in\mathbb{Q}$ の下には $D$ の元がある。$s\in S$ なら、$D\neq\varnothing$（空でない $\mathbb{Q}$ で稠密）の任意の元 $d$ について $d\le's$。
+
+$\lvert\mathbb{Q}\cup S\rvert=\lambda$ なので、$s_{0}\in S$ を固定して全単射 $h\colon\mathbb{Q}\cup S\to\lambda$ で $h(s_{0})=0$ となるものをとり、$W\defeq\{\langle h(x),h(y)\rangle:x\le'y\}$ とおくと $\mathrm{pord}(\lambda,W)$ で、$\{h[D]:D\in\mathcal{D}\}$ は $\langle\lambda,W\rangle$ の $\le\lambda$ 個の稠密集合の族である。2 より、それらすべてと交わるフィルター $F$ があり、$G'\defeq h^{-1}[F]$ は $\mathbb{Q}\cup S$ のフィルターですべての $D\in\mathcal{D}$ と交わる。$G\defeq G'\cap\mathbb{Q}$ とおく。$G$ は $D\subseteq\mathbb{Q}$ と交わるので空でなく、$\mathbb{Q}$ の中で上に閉じており、$G$ の二元の $G'$ の中の共通の拡張は（上の注意より）$\mathbb{Q}$ に属するので $G$ に属する。よって $G$ は $\mathbb{Q}$ のフィルターで、すべての $D\in\mathcal{D}$ と交わる。
+:::
+
+$M$ の基数 $\kappa$ について、MA と $2^{\omega}=\kappa$ を満たす $M$ の c.c.c. 拡大を作りたい。
+- MA ならば $2^{\omega}$ は正則（\ref{set:ma-continuum-regular}）なので、$\kappa$ は $M[G]$ で、したがって $M$ で正則でなければならない（$M$ での共終な写像は $M[G]$ に属する）。
+- MA ならば $\lambda<2^{\omega}$ について $2^{\lambda}=2^{\omega}$（\ref{set:ma-two-kappa}）なので、$M$ でも $2^{<\kappa}=\kappa$ でなければならない（\ref{set:prob-ma-con-necessary}）。
+- もちろん $\kappa=\omega$ ではありえない。
+
+これらの必要条件は十分でもある。
+
+## ソロヴェイ＝テネンバウムの定理 {#set:sec-solovay-tennenbaum}
+
+::: theorem ソロヴェイ＝テネンバウム {#set:solovay-tennenbaum keywords="Solovay-Tennenbaum theorem, ccc extension satisfying MA + 2^omega = kappa" index="ソロヴェイ＝テネンバウムの定理（証明）|そろゔぇいてねんばうむのていりしょうめい"}
+$M$ で $\kappa>\omega$、$\kappa$ は正則、$2^{<\kappa}=\kappa$ とする。このとき $\PP\in M$ で（$\PP$ は c.c.c.）$^{M}$ かつ、$G$ が $M$ 上 $\PP$-ジェネリックならつねに $M[G]$ が MA と $2^{\omega}=\kappa$ を満たすものがある。
+:::
+
+（Kunen の仮定の「$\kappa$ と $\omega_{1}$ の比較」の部分は OCR が崩れているが、直後の本文「もちろん $\kappa$ は $\omega$ ではありえない」から $\kappa>\omega$ と読んだ。$\kappa=\omega_{1}$ のときは $2^{<\omega_{1}}=\omega_{1}$ が CH であり、結論は CH と $\mathrm{MA}(\omega)$ だけになる。）
+
+::: proof
+**段階 0：帳簿付けの関数.** $M$ の中で、全射 $f\colon\kappa\to\kappa\times\kappa$ で
+$$
+\forall\xi,\eta,\gamma<\kappa\;(f(\xi)=\langle\eta,\gamma\rangle\to\eta\le\xi)
+$$
+を満たすものを固定する（存在は \ref{set:prob-bookkeeping}）。$f$ は後で説明する帳簿付けに使う。
+
+**段階 1：反復の形.** $M$ の中で、有限台の反復強制の構成
+$$
+\bigl\langle\langle\langle\PP_{\xi},\le_{\PP_{\xi}},\mathbf{1}_{\PP_{\xi}}\rangle:\xi\le\kappa\rangle,\;\langle\langle\check{\lambda}_{\xi},\sigma_{\xi},\check{0}\rangle:\xi<\kappa\rangle\bigr\rangle
+$$
+を作る。すなわち \ref{set:iteration-construction} の $\pi_{\xi}$ はつねに、定義域が順序数 $\lambda_{\xi}$ で最大元 $0$ をもつ p.o. の $\PP_{\xi}$-名前であり、順序の名前 $\sigma_{\xi}$ が本質的な部分である。構成では各 $\xi<\kappa$ について次を保証する。
+$$
+\text{(1)}\;\;\mathbf{1}\Vdash_{\PP_{\xi}}\mathrm{pord}(\check{\lambda}_{\xi},\sigma_{\xi}),\qquad\text{(2)}\;\;\omega\le\lambda_{\xi}<\kappa\text{ で }\lambda_{\xi}\text{ は }M\text{ の基数}.
+$$
+(1) より $\langle\check{\lambda}_{\xi},\sigma_{\xi},\check{0}\rangle$ は p.o. の名前（\ref{set:po-name}）である。
+
+**段階 2：鎖条件.** (1) のもとで、各 $\xi\le\kappa$ について $\PP_{\xi}$ は $M$ で c.c.c. である。これは \ref{set:fs-iteration-cc}（$\kappa$ をそこでの $\omega_{1}$ として）からの帰納法による。ただし一点注意：(1) の「c.c.c.」は $M[G_{\xi}]$ の $\omega_{1}$ についての鎖条件だが、帰納法の仮定で $\PP_{\xi}$ は c.c.c. なので \ref{set:ccc-preserves} より $\omega_{1}^{M[G_{\xi}]}=\omega_{1}^{M}$ で、(1) は $\mathbf{1}\Vdash(\pi_{\xi}$ は $\check{\omega}_{1}$-c.c.$)$ を与える。これが \ref{set:fs-iteration-cc} の仮定である。
+
+**段階 3：大きさの見積もり.** $M$ の中で、$\xi<\kappa$ なら $\lvert\PP_{\xi}\rvert<\kappa$、$\lvert\PP_{\kappa}\rvert\le\kappa$ である。実際 $p\in\PP_{\xi}$ の成分は $p_{\mu}\in\dom(\check{\lambda}_{\mu})=\{\check{\alpha}:\alpha<\lambda_{\mu}\}$ で台は有限なので、$p$ は有限集合 $\mathrm{supt}(p)\subseteq\xi$ 上の関数 $\mu\mapsto p_{\mu}$ で決まる。$\xi<\kappa$ なら (2) と $\kappa$ の正則性より $\nu\defeq\sup_{\mu<\xi}\lambda_{\mu}<\kappa$ で、$\lvert\PP_{\xi}\rvert\le\lvert[\xi\times\nu]^{<\omega}\rvert\le\max(\lvert\xi\rvert,\nu,\omega)<\kappa$（**ここで $\kappa$ の正則性と $\kappa>\omega$ を使う**）。$\xi=\kappa$ なら同様に $\le\kappa$。
+
+これはよい名前の個数の計算に使い、そこで $2^{<\kappa}=\kappa$ を使う。まず $M$ で、$\lambda<\kappa$ について
+$$
+\kappa^{\lambda}=\kappa
+$$
+である：$\kappa$ は正則で $\lambda<\kappa$ なので $\lambda$ から $\kappa$ への関数は有界であり、$\kappa^{\lambda}\le\kappa\cdot\sup_{\alpha<\kappa}\lvert\alpha\rvert^{\lambda}\le\kappa\cdot2^{<\kappa}=\kappa$（$\lvert\alpha\rvert^{\lambda}\le2^{\max(\lvert\alpha\rvert,\lambda)}$ で $\max(\lvert\alpha\rvert,\lambda)<\kappa$）。**ここで $2^{<\kappa}=\kappa$ を使う。**
+- $M$ で $\PP_{\kappa}$ は c.c.c.、$\lvert\PP_{\kappa}\rvert\le\kappa$、$\kappa^{\omega}=\kappa$ なので、\ref{set:nice-name-count}（の証明、$\lvert\PP\rvert\le\kappa$ の形）より、$G$ が $M$ 上 $\PP_{\kappa}$-ジェネリックなら $M[G]$ で $2^{\omega}\le\kappa$。
+- $\xi<\kappa$, $\lambda<\kappa$ について、$M$ で $(\lambda\times\lambda)\check{}$ の部分集合のよい $\PP_{\xi}$-名前は高々 $(\kappa^{\omega})^{\lambda}=\kappa$ 個である（反鎖は可算で、$\PP_{\xi}$ の可算部分集合は $\le\kappa^{\omega}=\kappa$ 個、よい名前は $\lambda\times\lambda$ から反鎖全体への関数で決まる）。
+
+**段階 4：候補の列挙.** 各 $\PP_{\eta}$ が構成されたら、$M$ の中で、全射（繰り返しを許す）
+$$
+\gamma\mapsto\langle\lambda^{\gamma}_{\eta},\sigma^{\gamma}_{\eta}\rangle\quad(\gamma<\kappa)
+$$
+を、$\lambda$ が $\omega\le\lambda<\kappa$ の基数で $\sigma$ が $(\lambda\times\lambda)\check{}$ の部分集合のよい $\PP_{\eta}$-名前であるような組 $\langle\lambda,\sigma\rangle$ 全体の上に選ぶ（段階 3 よりこの集合は大きさ $\le\kappa$ で空でない）。段階 $\xi$ ではすべての $\sigma^{\gamma}_{\xi}$ を考えたいが、一度に一つしか使えないので後回しにする。つまり段階 $\xi$ では、ある $\eta\le\xi$ についての $\sigma^{\gamma}_{\eta}$ を使う。すべての名前がいずれ考慮されるように帳簿付けをするのが $f$ の役割である。
+
+**段階 5：$\pi_{\xi}$ の選び方.** $\PP_{\xi}$ まで構成したとし、$f(\xi)=\langle\eta,\gamma\rangle$ とする。$\eta\le\xi$ なので $\PP_{\eta}$-名前 $\sigma^{\gamma}_{\eta}$ は定義済みである（**ここで $f$ の性質 $\eta\le\xi$ を使う**）。$\sigma\defeq i_{\eta\xi}^{*}(\sigma^{\gamma}_{\eta})$（$\PP_{\xi}$-名前）、$\lambda\defeq\lambda^{\gamma}_{\eta}$ とおき、$\lambda_{\xi}\defeq\lambda$ とする。$\sigma_{\xi}=\sigma$ としたくなるが、$\sigma$ は c.c.c. な p.o. の名前とは限らない。そこで $\sigma_{\xi}$ を
+$$
+\mathbf{1}\Vdash_{\PP_{\xi}}\bigl(\mathrm{pord}(\check{\lambda},\sigma_{\xi})\land[\mathrm{pord}(\check{\lambda},\sigma)\to\sigma_{\xi}=\sigma]\bigr)\tag{$*$}
+$$
+を満たす $\PP_{\xi}$-名前とする。そのような $\sigma_{\xi}$ があることを見る。$\ZFC\vdash\exists W\,\mathrm{pord}(\lambda,W)$ である（たとえば $W=\lambda\times\lambda$：すべての二元が互いに $\le_{W}$ で、反射的・推移的、$0$ は最大元、すべての二元が両立するので反鎖は高々一元）。したがって
+$$
+\mathbf{1}\Vdash\exists W\,(\mathrm{pord}(\check{\lambda},W)\land[\mathrm{pord}(\check{\lambda},\sigma)\to W=\sigma])
+$$
+（$\mathrm{pord}(\check{\lambda},\sigma)$ なら $W=\sigma$、そうでなければ $W=\check{\lambda}\times\check{\lambda}$ の値をとればよい）であり、最大原理（\ref{set:maximal-principle}）より $\sigma_{\xi}$ が存在する。(1), (2) は明らかに満たされる。
+
+以上で構成が決まる（極限段階の $\PP_{\xi}$ は有限台の定義で決まる）。
+
+**段階 6：選択の正当化.** 列挙や $\sigma_{\xi}$ を「選ぶ」ことを $M$ の中の超限再帰として正当化するには、$M$ の AC から、大きさ $\kappa$ の各集合に型 $\kappa$ の整列を定義可能な仕方で割り当てられるわけではない、という点に注意が要る。Kunen の処方は、最初に $M$ の中で $R(\kappa^{+})$ の整列順序 $\lhd$ を一つ固定し、列挙も $\sigma_{\xi}$ も $\lhd$ について最初のものをとる、というものである。構成全体が $R(\kappa^{+})^{M}$ の中に留まることは帰納法で容易に確かめられる、と Kunen は述べている（本サイトでは詳細を確かめていない）。
+
+**段階 7：$M[G]$ での検証の枠組み.** $\PP\defeq\PP_{\kappa}$ とし、$G$ を $M$ 上 $\PP$-ジェネリックとする。$\PP$ は c.c.c. なので $M$ と $M[G]$ は同じ基数と共終数をもち（\ref{set:ccc-preserves}）、$\kappa$ は $M[G]$ でも正則である。$M$ の無限基数 $\lambda<\kappa$ のそれぞれについて $M[G]$ で $\mathrm{MA}(\lambda)$ が成り立つことを示す。そうすれば、$\mathrm{MA}(\lambda)$ なら $\lambda<2^{\omega}$（\ref{set:ma-continuum-false}）なので $M[G]$ で $2^{\omega}\ge\kappa$ となり、段階 3 と合わせて $2^{\omega}=\kappa$。さらに有限の $\lambda$ については \ref{set:ma-omega} により $\mathrm{MA}(\lambda)$ が成り立つので、$M[G]$ で MA が成り立つ。
+
+\ref{set:ma-pord} より、$M[G]$ で、$\omega\le\lambda<\kappa$ の基数 $\lambda$、$W\subseteq\lambda\times\lambda$ で $\mathrm{pord}(\lambda,W)$、$\langle\lambda,W\rangle$ の $\le\lambda$ 個の稠密集合の族 $\mathcal{D}$ をとり、$\langle\lambda,W\rangle$ のフィルターで $\mathcal{D}$ のすべての稠密集合と交わるものを見つければよい。$\mathcal{D}=\varnothing$ なら自明なので、$\mathcal{D}=\{D_{\mu}:\mu<\lambda\}$（繰り返しを許す）と書く。
+
+**段階 8：$W$ と $\mathcal{D}$ は途中の段階に現れる.** $\xi\le\kappa$ について $G_{\xi}=i_{\xi\kappa}^{-1}[G]$ とする。\ref{set:iteration-small-sets} を、$\alpha=\kappa$、$\mathcal{J}$ を有限集合のイデアル（元は $\kappa$ で有界）、$S=\lambda\times\lambda\in M$ として適用する。$M[G]$ で $\lvert S\rvert=\lambda<\kappa=\cf(\kappa)$ である（**$\kappa$ の $M[G]$ での正則性を使う**）。
+- $X=W$ とすると、ある $\eta_{1}<\kappa$ で $W\in M[G_{\eta_{1}}]$。
+- $X=\{\langle\mu,\nu\rangle\in\lambda\times\lambda:\nu\in D_{\mu}\}$ とすると、ある $\eta_{2}<\kappa$ でこの $X$ は $M[G_{\eta_{2}}]$ に属し、$D_{\mu}=\{\nu:\langle\mu,\nu\rangle\in X\}$ なので列 $\langle D_{\mu}:\mu<\lambda\rangle$ も $M[G_{\eta_{2}}]$ に属する。
+
+$\eta\defeq\max(\eta_{1},\eta_{2})$ とすれば、\ref{set:iteration-models} より $\mathcal{D},W\in M[G_{\eta}]$。
+
+**段階 9：帳簿付けが $W$ を拾う.** \ref{set:nice-name-exists} より、$(\lambda\times\lambda)\check{}$ の部分集合のよい $\PP_{\eta}$-名前 $\tau$ で $W=\mathrm{val}(\tau,G_{\eta})$ となるものがある（$W$ の任意の名前 $\mu$ について $\mathbf{1}\Vdash(\mu\subseteq(\lambda\times\lambda)\check{}\to\mu=\tau)$ となる $\tau$ をとる）。$\lambda$ は $M$ の基数で $\omega\le\lambda<\kappa$ なので、ある $\gamma<\kappa$ で $\langle\lambda,\tau\rangle=\langle\lambda^{\gamma}_{\eta},\sigma^{\gamma}_{\eta}\rangle$。$f$ は全射なので $f(\xi)=\langle\eta,\gamma\rangle$ となる $\xi$ があり、$f$ の性質より $\xi\ge\eta$（**ここで $f$ の全射性を使う**）。$\sigma\defeq i_{\eta\xi}^{*}(\sigma^{\gamma}_{\eta})$ とおくと、$i_{\eta\xi}^{-1}[G_{\xi}]=G_{\eta}$（\ref{set:iteration-models} の証明）と \ref{set:name-translation-basic} の 1 より
+$$
+W=\mathrm{val}(\sigma^{\gamma}_{\eta},G_{\eta})=\mathrm{val}(\sigma,G_{\xi}).
+$$
+
+**段階 10：$\mathrm{pord}(\lambda,W)$ は $M[G_{\xi}]$ でも成り立つ.** 「$W$ は $\lambda$ の半順序で最大元 $0$ をもつ」は $\Delta_{0}$ なので $M[G_{\xi}]\subseteq M[G]$ の間で絶対的である。c.c.c. は一般には絶対的でないが、$M[G_{\xi}]$ で $W$ が c.c.c. でなければ、$M[G_{\xi}]$ に $\le_{W}$ の非可算反鎖 $A$ がある。「$A$ は反鎖」は $\Delta_{0}$（$\forall a,b\in A\,(a\neq b\to\forall r\in\lambda\,\neg(r\le_{W}a\land r\le_{W}b))$）なので $M[G]$ でも反鎖であり、$\PP_{\xi}$, $\PP$ はともに c.c.c. なので $\omega_{1}^{M[G_{\xi}]}=\omega_{1}^{M}=\omega_{1}^{M[G]}$ で、$A$ は $M[G]$ でも非可算である。これは $M[G]$ での $\mathrm{pord}(\lambda,W)$ に矛盾する。
+
+**段階 11：ジェネリックなフィルター.** $\lambda_{\xi}=\lambda$ と $(*)$ より $\mathbf{1}\Vdash[\mathrm{pord}(\check{\lambda},\sigma)\to\sigma_{\xi}=\sigma]$ なので、段階 10 と強制定理より $\mathrm{val}(\sigma_{\xi},G_{\xi})=W$。よって $\mathbb{Q}_{\xi}\defeq\mathrm{val}(\pi_{\xi},G_{\xi})=\langle\lambda,W,0\rangle$。\ref{set:iteration-models} より $M[G_{\xi+1}]\subseteq M[G]$ は $M[G_{\xi}]$ 上 $\mathbb{Q}_{\xi}$-ジェネリックなフィルター $H_{\xi}$ を含む。$\mathcal{D}\in M[G_{\eta}]\subseteq M[G_{\xi}]$ で、各 $D_{\mu}$ は $M[G_{\xi}]$ でも $\langle\lambda,W\rangle$ で稠密（稠密性は $\Delta_{0}$）なので、$H_{\xi}$ は $\mathcal{D}$ のすべての稠密集合と交わる。$H_{\xi}$ がフィルターであることも $\Delta_{0}$ で $M[G]$ に遺伝する。以上で $M[G]$ の $\mathrm{MA}(\lambda)$ が示された。
+:::
+
+::: hypcheck
+- $\kappa$ の正則性：段階 3（$\lvert\PP_{\xi}\rvert<\kappa$ と $\kappa^{\lambda}=\kappa$）、段階 8（$\lambda<\cf(\kappa)$）。
+- $2^{<\kappa}=\kappa$：段階 3（$\kappa^{\lambda}=\kappa$、よって $2^{\omega}\le\kappa$ と候補の個数 $\le\kappa$）。
+- $\kappa>\omega$：段階 3 の大きさの見積もりと $\kappa^{\omega}=\kappa$（$\omega<\kappa=\cf(\kappa)$ で $\omega$ から $\kappa$ への関数が有界になる）に使った。$\kappa=\omega$ では候補の $\lambda$ がなく、結論 $2^{\omega}=\omega$ も偽である。
+- 有限台：\ref{set:fs-iteration-cc}（c.c.c. の保存）と \ref{set:iteration-small-sets}（$\mathcal{J}$ の元が有界）の両方で使った。
+- 帳簿付けの $f$ の二つの性質：$\eta\le\xi$ は段階 5 で名前が定義済みであるために、全射性は段階 9 で候補が必ず拾われるために使った。
+:::
+
+::: corollary {#set:con-ma-not-ch keywords="Con(ZFC) implies Con(ZFC + MA + 2^omega = aleph_2)" index="MA + ¬CH の無矛盾性|えむえーかつひしーえいちのむむじゅんせい"}
+$\mathrm{Con}(\ZFC)\to\mathrm{Con}(\ZFC+\mathrm{MA}+2^{\omega}=\omega_{2})$。同様に、$2^{\omega}$ を $\omega_{3}$ や $\omega_{\omega+1}$ などの任意の後続基数（より一般に $\omega$ より大きい正則基数で、GCH のもとで $2^{<\kappa}=\kappa$ となるもの）にできる。
+:::
+
+::: proof
+GCH を満たす $M$（\ref{set:con-zfc-gch}）から出発する。GCH のもとで、正則な $\kappa>\omega$ はつねに $2^{<\kappa}=\kappa$ を満たす（$\kappa=\mu^{+}$ なら $2^{<\kappa}=2^{\mu}=\mu^{+}$、$\kappa$ が極限基数なら $2^{<\kappa}=\sup_{\mu<\kappa}\mu^{+}=\kappa$）。$\kappa=\omega_{2}^{M}$ として \ref{set:solovay-tennenbaum} を適用し、$\PP$ は c.c.c. なので $\omega_{2}^{M[G]}=\omega_{2}^{M}$。
+:::
+
+（Kunen の系 6.4 の $2^{\omega}$ の値の添字は OCR で判読できないため、本ページでは $\omega_{2}$ の形で述べ、証明が任意の正則基数に通ることを付記した。）
+
+::: corollary {#set:con-ma-weakly-inaccessible keywords="MA + 2^omega weakly inaccessible"}
+$\mathrm{Con}(\ZFC+\exists\kappa\,(\kappa\text{ は弱到達不能}))\to\mathrm{Con}(\ZFC+\mathrm{MA}+2^{\omega}\text{ は弱到達不能})$。
+:::
+
+::: proof
+\ref{set:equiconsistent-inaccessible} の $T_{2}\to T_{1}$ の部分（その証明）により、$\kappa$ が強到達不能な $M$ から出発してよい。$\kappa$ は正則で、強極限なので $2^{<\kappa}=\kappa$。\ref{set:solovay-tennenbaum} より $M[G]\models\mathrm{MA}+2^{\omega}=\kappa$。$\PP$ は c.c.c. なので $M[G]$ で $\kappa$ は正則であり、$M$ で $\kappa$ 未満の基数は $\kappa$ で非有界で、それらは $M[G]$ でも基数なので、$\kappa$ は $M[G]$ で極限基数、すなわち弱到達不能である（$2^{\omega}=\kappa$ なので強到達不能ではない）。
+:::
+
+## 問題 {#set:sec-ma-con-problems}
+
+::: problem {#set:prob-bookkeeping}
+$\kappa$ を無限基数とする。全射 $f\colon\kappa\to\kappa\times\kappa$ で、$f(\xi)=\langle\eta,\gamma\rangle$ ならつねに $\eta\le\xi$ となるものがあることを示せ。
+:::
+
+::: solution
+$\lvert\kappa\times\kappa\times\kappa\rvert=\kappa$ なので全射 $g\colon\kappa\to\kappa\times\kappa\times\kappa$ がある。$g(\xi)=\langle\eta,\gamma,\delta\rangle$ のとき、$\eta\le\xi$ なら $f(\xi)\defeq\langle\eta,\gamma\rangle$、$\eta>\xi$ なら $f(\xi)\defeq\langle0,0\rangle$ とおく。性質 $\eta\le\xi$ は定義から明らか（$\langle0,0\rangle$ でも $0\le\xi$）。
+
+全射性：$\langle\eta,\gamma\rangle\in\kappa\times\kappa$ を固定する。$\delta<\kappa$ ごとに $g(\xi_{\delta})=\langle\eta,\gamma,\delta\rangle$ となる $\xi_{\delta}$ があり、$\delta\mapsto\xi_{\delta}$ は単射なので $\{\xi_{\delta}:\delta<\kappa\}$ は大きさ $\kappa$ の $\kappa$ の部分集合で、$\kappa$ で非有界である（有界なら大きさ $\le\lvert\beta\rvert<\kappa$ となる。$\kappa$ は基数なので $\beta<\kappa$ なら $\lvert\beta\rvert<\kappa$）。よって $\xi_{\delta}\ge\eta$ となる $\delta$ があり、$f(\xi_{\delta})=\langle\eta,\gamma\rangle$。
+
+なお、この帳簿付けでは各組 $\langle\eta,\gamma\rangle$ は $\kappa$ 回現れる（上の議論で $\xi_{\delta}\ge\eta$ となる $\delta$ は $\kappa$ 個ある）が、証明では一回で十分である。
+:::
+
+::: problem {#set:prob-ma-con-necessary}
+$\PP\in M$ が $M$ で c.c.c. で、$G$ が $M$ 上 $\PP$-ジェネリック、$M[G]\models\mathrm{MA}+2^{\omega}=\kappa$ とする。$M$ で $\kappa$ は正則で $2^{<\kappa}=\kappa$ であることを示せ。
+:::
+
+::: solution
+**正則性.** \ref{set:ma-continuum-regular} より $\kappa$ は $M[G]$ で正則。$M$ で $\cf(\kappa)=\theta<\kappa$ なら、共終な写像 $\theta\to\kappa$ が $M\subseteq M[G]$ にあり、$\theta$ は $M$ の基数なので c.c.c. により $M[G]$ でも基数で、$M[G]$ で $\cf(\kappa)\le\theta<\kappa$ となり矛盾する。$\kappa$ が $M$ の基数であることも c.c.c. から従う（$M[G]$ の基数は $M$ の基数）。
+
+**$2^{<\kappa}=\kappa$.** $\lambda<\kappa$ を $M$ の無限基数とする。$M[G]$ で $\lambda<2^{\omega}$ なので \ref{set:ma-two-kappa} より $2^{\lambda}=\kappa$。$\mathcal{P}(\lambda)^{M}\subseteq\mathcal{P}(\lambda)^{M[G]}$ なので、$M[G]$ で $\lvert\mathcal{P}(\lambda)^{M}\rvert\le\kappa$。$M$ での $\mu\defeq\lvert\mathcal{P}(\lambda)\rvert^{M}$ は $M$ の基数で、c.c.c. により $M[G]$ でも基数であり、$M$ の全単射 $\mu\to\mathcal{P}(\lambda)^{M}$ は $M[G]$ に属するので、$M[G]$ で $\mu=\lvert\mathcal{P}(\lambda)^{M}\rvert\le\kappa$。よって $M$ で $2^{\lambda}\le\kappa$ で、$2^{<\kappa}\le\kappa$。逆向きは $\lambda<\kappa$ について $2^{\lambda}>\lambda$ で、$\kappa$ が極限基数なら $\sup_{\lambda<\kappa}\lambda=\kappa$、$\kappa=\mu^{+}$ なら $2^{\mu}\ge\mu^{+}=\kappa$ から従う。
+:::
+
+::: problem {#set:prob-ma-con-consequences}
+\ref{set:solovay-tennenbaum} で $\kappa=\omega_{2}$ としたモデル $M[G]$ で、ススリン木は存在せず、$2^{\omega_{1}}=\omega_{2}$ であることを示せ。
+:::
+
+::: solution
+$M[G]$ で $2^{\omega}=\omega_{2}$ なので $\omega_{1}<2^{\omega}$ で、MA より $\mathrm{MA}(\aleph_{1})$。\ref{set:ma-no-suslin-tree}（または \ref{set:ma-sh}）よりススリン木は存在しない。また \ref{set:ma-two-kappa} より $2^{\omega_{1}}=2^{\omega}=\omega_{2}$。したがってこのモデルでは $\neg\mathrm{CH}$ と SH が成り立ち、とくに SH は $\neg\mathrm{CH}$ と両立する（$\mathbf{L}$ では $\diamondsuit$ が成り立ちススリン木が存在すること、\ref{set:page-diamond}, \ref{set:page-diamond-in-l} と対照）。
+:::
+
+::: supplement
+**前提の検討.**
+- 「$\kappa$ 正則」と「$2^{<\kappa}=\kappa$」は、\ref{set:prob-ma-con-necessary} で見たとおり c.c.c. 拡大で MA + $2^{\omega}=\kappa$ を得るための必要条件でもあり、\ref{set:solovay-tennenbaum} はこれらが十分であることを示している。
+- 反復の長さは $\kappa$ そのものであり、$\kappa$ 段階で MA の候補をすべて処理できるのは、候補（よい名前）が各段階で $\le\kappa$ 個しかないこと（$2^{<\kappa}=\kappa$）と、帳簿付けで各候補が後の段階で拾われることによる。
+- 可算台でなく有限台を使うのは、c.c.c. を保つため（\ref{set:fs-iteration-cc}）である。可算台では一般に c.c.c. は保たれない（\ref{set:page-iterated-forcing} の注意）。
+
+**関連する結果.** この定理は Solovay–Tennenbaum（*Ann. of Math.* 94 (1971)）による（\ref{set:ma-consistency} の文献）。同じ枠組みで、候補の p.o. を c.c.c. から「固有」（proper）に広げ、可算台反復を用いると、固有強制公理 PFA の無矛盾性（超コンパクト基数を仮定）が得られることが一般に知られている（本サイトでは扱っていない）。PFA は $2^{\aleph_{0}}=\aleph_{2}$ を導くことも知られている。
+
+**高い視点から：待ち行列としての帳簿付け.** この証明は「無限に長い作業の待ち行列」の管理に似ている。各段階で新しい依頼（c.c.c. な p.o. の候補）が $\kappa$ 件ずつ届くが、一段階で処理できるのは一件だけである。関数 $f$ は「段階 $\eta$ に届いた $\gamma$ 番目の依頼を、段階 $\xi\ge\eta$ で処理する」という割り当て表で、$\kappa\times\kappa$ 件の依頼を $\kappa$ 段階にすべて詰め込めるのは $\kappa\cdot\kappa=\kappa$ だからである。そして「小さい依頼は途中の段階ですでに届いている」（\ref{set:iteration-small-sets}）ことが、最終モデルでの任意の依頼がいずれかの段階の待ち行列に並んでいたことを保証する。代数的に言えば、$M[G]$ は「すべての小さい c.c.c. な方程式系に解を付け加えた」閉包であり、MA は「小さい c.c.c. な系はつねに解ける」という一種の代数的閉包性として読める（これは本サイトの比喩である）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

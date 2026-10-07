@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ウラムの定理と押し下げ補題 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/11-ulam-fodor.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ウラムの定理と押し下げ補題 {#set:page-ulam-fodor keywords="Ulam matrix, Ulam theorem, diagonal intersection, pressing-down lemma, Fodor lemma"}
+
+前ページ（\ref{set:page-club-filter}）で、$\cf(\mu)\ge\omega_{2}$ なら共終数の違いによって交わらない定常集合が作れることを見たが、$\omega_{1}$ ではこの方法は使えない。本ページではまず、後続基数 $\kappa$ 上の十分完備なイデアルは必ず「$\kappa$ 個の交わらない正の集合」をもつという**ウラムの定理**を示し、その系として、任意の正則基数 $\kappa>\omega$ が $\kappa$ 個の交わらない定常集合をもつことを導く。
+
+後半では、閉非有界集合の $\kappa$-完備性の証明（\ref{set:club-filter-complete}）の「反復して上限をとる」議論を 2 つの方向に押し広げる。1 つは有限項演算で閉じた順序数が閉非有界集合をなすこと（\ref{set:closure-club}）、もう 1 つは $\kappa$ 個の閉非有界集合の**対角共通部分**が閉非有界であること（\ref{set:diagonal-intersection}）である。後者から、定常集合上の退行的な関数はある定常集合上で定数になるという**押し下げ補題**（フォドアの補題, \ref{set:fodor}）が従う。押し下げ補題は ◇ の理論（\ref{set:diamond}）をはじめ、無限組合せ論のいたるところで使われる。
+
+## 記法と定義の確認 {#set:sec-ulam-notation}
+
+::: notation
+- $A$ 上のフィルター・イデアル・双対（\ref{set:filter}, \ref{set:ideal}, \ref{set:dual-filter}）、$\kappa$-完備性（\ref{set:kappa-complete}）は前ページの意味。イデアル $\mathcal{I}$ について、$X\notin\mathcal{I}$ となる $X$ を **$\mathcal{I}$-正**の集合と呼ぶ。
+- 閉集合・閉非有界集合（\ref{set:club}）、閉非有界フィルター $\mathrm{Cub}(\kappa)$（\ref{set:club-filter}）、定常集合・非定常イデアル $\mathrm{Cub}(\kappa)^{*}$（\ref{set:stationary}）は前ページの意味。$\cf(\kappa)>\omega$ なら $\mathrm{Cub}(\kappa)$ は $\cf(\kappa)$-完備（AC, \ref{set:club-filter-complete}）。定常集合の基本性質は \ref{set:stationary-basic}。
+- \ref{set:club-reduction} により、閉非有界集合と定常集合は正則基数 $\kappa>\omega$ の上で考えれば十分である。本ページでは主にこの場合を扱う。
+- 長さ $\cf(\mu)$ 未満の列は有界（\ref{set:short-sequence-bounded}）。閉であることは「空でない部分集合の上限（$\mu$ 未満のもの）で閉じている」ことと同値（\ref{set:closed-sup}）。
+- $S^{\kappa}_{\lambda}=\{\gamma<\kappa\mid\cf(\gamma)=\lambda\}$ は $\lambda$ 正則, $\cf(\kappa)>\max(\lambda,\omega)$ のとき定常（\ref{set:cf-stationary}）。
+- 有限項演算とその閉包は \ref{set:finitary-closure} の意味。閉包補題（\ref{set:closure-lemma}, AC）：$\lvert B\rvert\le\nu$, $\lvert\mathcal{F}\rvert\le\nu$（$\nu$ 無限）なら $B$ の $\mathcal{F}$ による閉包の濃度は $\le\nu$。
+- 和集合の濃度の評価（\ref{set:union-bound}, AC）：$\le\nu$ 個の、濃度 $\le\nu$ の集合の和の濃度は $\le\nu$。
+:::
+
+## ウラムの定理 {#set:sec-ulam}
+
+::: theorem ウラムの定理 {#set:ulam keywords="Ulam's theorem, Ulam matrix" index="ウラムの定理|うらむのていり, ウラム行列|うらむぎょうれつ"}
+（AC）$\kappa$ を後続基数とし、$\mathcal{I}$ を $\kappa$ 上の $\kappa$-完備なイデアルで、すべての単集合 $\{\alpha\}$（$\alpha<\kappa$）を含むものとする。このとき、互いに交わらない $\mathcal{I}$-正の集合 $X_{\alpha}\subseteq\kappa$（$\alpha<\kappa$）が存在する。
+:::
+
+::: intuition
+$\kappa=\lambda^{+}$ とする。各 $\rho<\kappa$ は濃度 $\le\lambda$ なので、$\rho$ の元に $\lambda$ 未満の「番号」を単射で振ることができる。「$\rho$ の中で $\alpha$ が番号 $\xi$ をもつ」ような $\rho$ を集めた集合 $X^{\alpha}_{\xi}$ を $\lambda\times\kappa$ の行列（**ウラム行列**）に並べると、各行（$\xi$ を固定）は互いに素で、各列（$\alpha$ を固定）の和は $\kappa$ のほぼ全体になる。完備性から各列に 1 つは正の集合があり、それらの行番号を鳩の巣原理で揃えれば、1 つの行に $\kappa$ 個の正の集合が並ぶ。
+:::
+
+::: proof
+$\kappa=\lambda^{+}$ とする（$\lambda$ は基数）。$\kappa$ は後続基数なので $\omega<\kappa$ であり（\ref{set:successor-cardinal}）、$\lambda\ge\omega$ である。
+
+**Step 1（小さい集合は $\mathcal{I}$ に属する）.** $Y\subseteq\kappa$ が $\lvert Y\rvert\le\lambda$ ならば $Y\in\mathcal{I}$。実際、$\nu=\lvert Y\rvert<\kappa$ と全単射 $b\colon\nu\to Y$ をとると $Y=\bigcup_{\beta<\nu}\{b(\beta)\}$ は $\mathcal{I}$ の元の長さ $\nu<\kappa$ の列の和なので、$\kappa$-完備性より $Y\in\mathcal{I}$。
+
+**Step 2（番号付けの選択）.** 各 $\rho<\kappa$ について $\lvert\rho\rvert\le\lambda$（\ref{set:successor-regular} の証明の Step 1 と同じ：$\lvert\rho\rvert\le\rho<\lambda^{+}$ と $\lambda^{+}$ の最小性）なので、単射 $\rho\to\lambda$ が存在する。**選択公理**により、各 $\rho<\kappa$ について単射 $f_{\rho}\colon\rho\to\lambda$ を 1 つずつ選ぶ。
+
+**Step 3（ウラム行列）.** $\alpha<\kappa$, $\xi<\lambda$ について
+$$
+X^{\alpha}_{\xi}=\{\rho<\kappa\mid\alpha<\rho,\ f_{\rho}(\alpha)=\xi\}
+\label{set:eq-ulam-matrix}
+$$
+とおく（$\alpha<\rho$ なので $\alpha\in\dom f_{\rho}$）。次の 2 つが成り立つ。
+- *行は互いに素*：$\xi$ を固定し $\alpha\ne\beta$ とする。$\rho\in X^{\alpha}_{\xi}\cap X^{\beta}_{\xi}$ なら $f_{\rho}(\alpha)=\xi=f_{\rho}(\beta)$ となり $f_{\rho}$ の単射性に反する。よって $X^{\alpha}_{\xi}\cap X^{\beta}_{\xi}=\varnothing$。
+- *列の和は末端*：$\alpha$ を固定すると $\bigcup_{\xi<\lambda}X^{\alpha}_{\xi}=\{\rho<\kappa\mid\alpha<\rho\}=\kappa\setminus(\alpha+1)$。$\supseteq$ は $\rho>\alpha$ なら $\xi=f_{\rho}(\alpha)<\lambda$ について $\rho\in X^{\alpha}_{\xi}$ となることから、$\subseteq$ は定義から。
+
+**Step 4（各列に正の集合がある）.** $\alpha<\kappa$ を固定する。すべての $\xi<\lambda$ について $X^{\alpha}_{\xi}\in\mathcal{I}$ と仮定すると、$\lambda<\kappa$ と $\kappa$-完備性より $\kappa\setminus(\alpha+1)\in\mathcal{I}$。また $\lvert\alpha+1\rvert\le\lambda$ なので Step 1 より $\alpha+1\in\mathcal{I}$。よって $\kappa=(\alpha+1)\cup(\kappa\setminus(\alpha+1))\in\mathcal{I}$ となり、$\kappa\notin\mathcal{I}$（イデアルの定義）に反する。したがって
+$$
+h(\alpha)=\min\{\xi<\lambda\mid X^{\alpha}_{\xi}\notin\mathcal{I}\}
+$$
+が定まる（最小元をとるだけなので、ここでは選択は要らない）。
+
+**Step 5（行番号を揃える）.** $h\colon\kappa\to\lambda$ である。すべての $\xi<\lambda$ について $\lvert h^{-1}\{\xi\}\rvert\le\lambda$ と仮定すると、$\kappa=\bigcup_{\xi<\lambda}h^{-1}\{\xi\}$ は $\lambda$ 個の、濃度 $\le\lambda$ の集合の和なので、\ref{set:union-bound}（AC）より $\lvert\kappa\rvert\le\lambda$ となり矛盾。よって、ある $\xi_{0}<\lambda$ について $H=h^{-1}\{\xi_{0}\}$ は $\lvert H\rvert>\lambda$、すなわち $\lvert H\rvert=\kappa$（$H\subseteq\kappa$）。
+
+**Step 6（結論）.** $H$ は $\kappa$ の部分集合で濃度 $\kappa$ なので、$\operatorname{type}(H)\le\kappa$ かつ $\operatorname{type}(H)\ge\lvert H\rvert=\kappa$、すなわち順序枚挙 $e_{H}\colon\kappa\to H$ がある。$X_{\alpha}=X^{e_{H}(\alpha)}_{\xi_{0}}$（$\alpha<\kappa$）とおくと、$h(e_{H}(\alpha))=\xi_{0}$ より各 $X_{\alpha}\notin\mathcal{I}$。$e_{H}$ は単射なので、Step 3 の「行は互いに素」より $\alpha\ne\beta$ なら $X_{\alpha}\cap X_{\beta}=\varnothing$。
+
+::: hypcheck
+- **選択公理**：Step 2 で $\kappa$ 個の単射 $f_{\rho}$ を同時に選ぶのに、Step 5 で \ref{set:union-bound} を使うのに用いた。
+- **$\kappa$ が後続基数であること**：Step 2（各 $\rho<\kappa$ が $\lambda$ に単射で入ること）と Step 4・Step 5（$\lambda<\kappa$ と、$\lambda$ 個の $\lambda$ 以下の集合の和が $\kappa$ に届かないこと）で使った。
+- **$\kappa$-完備性**：Step 1 で $\le\lambda$ 個の単集合の和、Step 4 で $\lambda$ 個の $X^{\alpha}_{\xi}$ の和をとるのに使った。
+- **単集合を含むこと**：Step 1 でのみ使った。
+- **$\kappa\notin\mathcal{I}$**（イデアルの定義 (1)）：Step 4 の矛盾に使った。
+- 置換公理・分出公理で行列 $\langle X^{\alpha}_{\xi}\rangle$ を 1 つの集合として作った。
+:::
+:::
+
+::: supplement
+**前提を変えると.** 単集合を含むという仮定を外すと成り立たない：$\alpha_{0}<\kappa$ を固定した単項イデアル $\{X\subseteq\kappa\mid\alpha_{0}\notin X\}$ は任意の完備性をもつが、正の集合はすべて $\alpha_{0}$ を含むので、2 つの交わらない正の集合すらない。
+**弱到達不能基数では.** 証明は後続基数であることを本質的に使う。非可算基数 $\kappa$ 上に、単集合を含む $\kappa$-完備な**素イデアル**（双対が超フィルター）が存在するとき $\kappa$ を**可測基数**という。上の定理（の系 \ref{set:ulam-no-ultrafilter}）により可測基数は後続基数でなく、実際には強到達不能であって、その存在は ZFC では証明できない（\ref[可測基数]{set:measurable-cardinal}）。
+:::
+
+::: corollary 後続基数上の超フィルター {#set:ulam-no-ultrafilter keywords="no kappa-complete nonprincipal ultrafilter on a successor cardinal" index="完備な超フィルターの非存在|かんびなちょうふぃるたーのひそんざい"}
+（AC）$\kappa$ が後続基数ならば、$\kappa$ 上の $\kappa$-完備な超フィルター $\mathcal{U}$ で、単集合をひとつも含まない（すなわち $\{\alpha\}\notin\mathcal{U}$ がすべての $\alpha<\kappa$ で成り立つ）ものは存在しない。特に $\omega_{1}$ 上に、単集合を含まない可算完備な超フィルターはない。
+:::
+
+::: proof
+そのような $\mathcal{U}$ があるとし、$\mathcal{I}=\mathcal{U}^{*}$ とおく。$\mathcal{I}$ は $\kappa$-完備なイデアル（\ref{set:kappa-complete-basic} (1)）。$\{\alpha\}\notin\mathcal{U}$ で $\mathcal{U}$ は超フィルターなので $\kappa\setminus\{\alpha\}\in\mathcal{U}$、すなわち $\{\alpha\}\in\mathcal{I}$。\ref{set:ulam} より交わらない $\mathcal{I}$-正の集合 $X_{0},X_{1}$ がある。$X_{i}\notin\mathcal{I}$ は $\kappa\setminus X_{i}\notin\mathcal{U}$ を意味し、超フィルター性より $X_{i}\in\mathcal{U}$。すると $\varnothing=X_{0}\cap X_{1}\in\mathcal{U}$ となり矛盾。$\omega_{1}=\omega^{+}$ への適用が後半である。
+
+::: hypcheck
+- **選択公理**：\ref{set:ulam} を通じて使った。
+- **超フィルター性**：$\{\alpha\}\in\mathcal{I}$ と $X_{i}\in\mathcal{U}$ を導くのに使った。
+:::
+:::
+
+::: corollary 交わらない定常集合の族 {#set:disjoint-stationary keywords="kappa disjoint stationary sets" index="交わらない定常集合|まじわらないていじょうしゅうごう"}
+（AC）任意の正則基数 $\kappa>\omega$ について、$\kappa$ 上の互いに交わらない定常集合 $S_{\alpha}$（$\alpha<\kappa$）が存在する。
+:::
+
+::: proof
+**Case 1（$\kappa$ が後続基数）.** $\mathcal{I}=\mathrm{Cub}(\kappa)^{*}$ とおく。$\mathrm{Cub}(\kappa)$ は $\cf(\kappa)=\kappa$-完備なフィルター（\ref{set:club-filter-complete}）なので、$\mathcal{I}$ は $\kappa$-完備イデアル（\ref{set:kappa-complete-basic} (1)）。単集合は有界なので非定常（\ref{set:stationary-basic} (2)）、すなわち $\mathcal{I}$ に属する。\ref{set:ulam} より交わらない $\mathcal{I}$-正、すなわち定常な集合 $S_{\alpha}$（$\alpha<\kappa$）が得られる。
+
+**Case 2（$\kappa$ が極限基数）.** このとき $\kappa$ は弱到達不能である（\ref{set:inaccessible}）。$R=\{\lambda<\kappa\mid\lambda\text{ は正則基数}\}$ とおく。
+- *$R$ は $\kappa$ で非有界*：$\xi<\kappa$ に対し $\lvert\xi\rvert^{+}$ は $\xi$ より大きい基数（\ref{set:club-examples} (3) の証明）で、$\kappa$ は極限基数なので $\lvert\xi\rvert^{+}<\kappa$。$\lvert\xi\rvert^{+}$ は無限なら後続基数として正則（\ref{set:successor-regular}, AC）。$\xi$ が有限の場合は $\omega\in R$ が $\xi$ 以上である。
+- *$\operatorname{type}(R)=\kappa$*：\ref{set:short-sequence-bounded} (2) より $\operatorname{type}(R)\ge\cf(\kappa)=\kappa$、\ref{set:type-subset} より $\operatorname{type}(R)\le\kappa$。
+
+$R$ の順序枚挙 $e_{R}\colon\kappa\to R$ をとり、$S_{\alpha}=S^{\kappa}_{e_{R}(\alpha)}=\{\gamma<\kappa\mid\cf(\gamma)=e_{R}(\alpha)\}$ とおく。$e_{R}(\alpha)$ は正則で $e_{R}(\alpha)<\kappa=\cf(\kappa)$ なので、\ref{set:cf-stationary} より $S_{\alpha}$ は定常。$e_{R}$ は単射で共終数は一意なので、$\alpha\ne\beta$ なら $S_{\alpha}\cap S_{\beta}=\varnothing$。
+
+::: hypcheck
+- **選択公理**：Case 1 で \ref{set:ulam} と \ref{set:club-filter-complete} (2) を通じて、Case 2 で後続基数の正則性に使った。
+- **$\kappa$ の正則性**：Case 1 で $\mathrm{Cub}(\kappa)$ が $\kappa$-完備であること（一般には $\cf(\kappa)$-完備）、Case 2 で $\operatorname{type}(R)=\kappa$ と $e_{R}(\alpha)<\cf(\kappa)$ に使った。
+:::
+:::
+
+::: corollary 定常集合の分割（後続基数の場合） {#set:stationary-partition-successor keywords="splitting a stationary set, successor cardinal" index="定常集合の分割|ていじょうしゅうごうのぶんかつ"}
+（AC）$\kappa$ を後続基数、$S\subseteq\kappa$ を定常集合とすると、$S$ は $\kappa$ 個の互いに交わらない定常集合に分割される。
+:::
+
+::: proof
+**Step 1（$S$ に制限した非定常イデアル）.** $\mathcal{I}_{S}=\{X\subseteq\kappa\mid X\cap S\text{ は非定常}\}$ とおく。$\varnothing\in\mathcal{I}_{S}$、$S$ が定常なので $\kappa\notin\mathcal{I}_{S}$。$X\subseteq Y\in\mathcal{I}_{S}$ なら $X\cap S\subseteq Y\cap S$ で非定常集合の部分集合は非定常（\ref{set:stationary-basic} (2) の対偶）。長さ $\lambda<\kappa$ の列 $X_{\alpha}\in\mathcal{I}_{S}$ について $\bigl(\bigcup X_{\alpha}\bigr)\cap S=\bigcup(X_{\alpha}\cap S)$ は \ref{set:stationary-basic} (4) より非定常。よって $\mathcal{I}_{S}$ は $\kappa$-完備イデアルで、単集合 $\{\alpha\}$ は $\{\alpha\}\cap S$ が有界なので $\mathcal{I}_{S}$ に属する。
+
+**Step 2.** \ref{set:ulam} より交わらない $\mathcal{I}_{S}$-正の集合 $X_{\alpha}$（$\alpha<\kappa$）がある。$T_{\alpha}=X_{\alpha}\cap S$ は定常で互いに交わらない。$T_{0}$ を $T_{0}\cup\bigl(S\setminus\bigcup_{\alpha}T_{\alpha}\bigr)$ に取り替えれば（定常集合を含む集合は定常）、$S$ の分割が得られる。
+
+::: hypcheck
+- **選択公理**：\ref{set:ulam} と \ref{set:stationary-basic} (4) を通じて使った。
+- **$S$ が定常であること**：$\kappa\notin\mathcal{I}_{S}$ に使った。
+:::
+:::
+
+::: fact ソロヴェイの定常集合分割定理 {#set:solovay-splitting keywords="Solovay's splitting theorem" index="ソロヴェイの分割定理|そろゔぇいのぶんかつていり"}
+（ZFC）任意の正則基数 $\kappa>\omega$ について、$\kappa$ の任意の定常部分集合は $\kappa$ 個の互いに交わらない定常集合に分割される（R. M. Solovay, *Real-valued measurable cardinals*, Axiomatic Set Theory, Proc. Sympos. Pure Math. 13, Part I (1971)）。
+:::
+
+::: supplement
+後続基数では \ref{set:stationary-partition-successor} のとおりウラムの定理から直ちに従うが、弱到達不能基数では格段に難しい。Kunen（1980）は、ある正則 $\kappa>\omega$ について「$\kappa$ の定常集合 $\kappa^{+}$ 個からなる概素族」が存在しないことがありうるか、を（同書の時点で）未解決問題として挙げている。その後の進展は本サイトでは未確認である。
+:::
+
+## 閉包点と対角共通部分 {#set:sec-diagonal}
+
+以下この節では $\kappa>\omega$ を正則基数とする。
+
+::: lemma 演算で閉じた順序数の集合は閉非有界 {#set:closure-club keywords="closure points of finitary functions form a club, Lowenheim-Skolem" index="閉包点の集合|へいほうてんのしゅうごう"}
+（AC）$\mathcal{F}$ を $\kappa$ 上の有限項演算の集合で $\lvert\mathcal{F}\rvert<\kappa$ とする。このとき
+$$
+C=\{\gamma<\kappa\mid\gamma\text{ は }\mathcal{F}\text{ のすべての元で閉じている}\}
+$$
+は $\kappa$ の閉非有界集合である。
+:::
+
+::: intuition
+小さい集合 $\xi$ を $\mathcal{F}$ で閉じさせても（閉包補題により）小さいままで、$\kappa$ の正則性から $\kappa$ 未満の順序数 $g(\xi)$ に収まる。しかし $g(\xi)$ 自体は閉じているとは限らないので、閉包をとって上に抑える操作を $\omega$ 回繰り返し、その上限をとる。演算は有限項なので、上限では各引数の組がどこかの段階ですでに揃っていて、値もその次の段階に入る。これは下方レーヴェンハイム＝スコーレムの定理の組合せ論的な核心である。
+:::
+
+::: proof
+**Step 1（$C$ は閉）.** 極限 $\delta<\kappa$ で $C\cap\delta$ が $\delta$ で非有界とする。$f\in\mathcal{F}$ を $n$ 項演算とする。
+- $n\ge1$ のとき：$x_{1},\dots,x_{n}<\delta$ をとる。$m=\max_{i}x_{i}$ とおくと、非有界性より $m+1\le\gamma$ となる $\gamma\in C\cap\delta$ があり、$x_{i}\in\gamma$。$\gamma$ は $f$ で閉じているので $f(x_{1},\dots,x_{n})\in\gamma\subseteq\delta$。
+- $n=0$ のとき：$C\cap\delta$ の元 $\gamma$ を 1 つとると $f\in\gamma\subseteq\delta$。
+
+よって $\delta\in C$。
+
+**Step 2（閉包を順序数で抑える）.** $\xi<\kappa$ に対し、$G(\xi)$ を $\xi$ の $\mathcal{F}$ による閉包（\ref{set:finitary-closure}）とする。$\nu=\max(\lvert\xi\rvert,\lvert\mathcal{F}\rvert,\omega)$ とおくと、$\kappa>\omega$ は基数で $\lvert\xi\rvert,\lvert\mathcal{F}\rvert<\kappa$ なので $\nu<\kappa$。閉包補題（\ref{set:closure-lemma}, AC）より $\lvert G(\xi)\rvert\le\nu<\kappa=\cf(\kappa)$。よって $G(\xi)$ は $\kappa$ で非有界でなく（\ref{set:short-sequence-bounded} (2)）、$G(\xi)\subseteq\zeta$ となる $\zeta<\kappa$ がある。そこで
+$$
+g(\xi)=\min\{\zeta<\kappa\mid\xi<\zeta,\ G(\xi)\subseteq\zeta\}
+$$
+と定める（$\max(\zeta,\xi+1)$ が候補になるので存在する）。$G(\xi)\supseteq\xi$ で、$G(\xi)$ は $\mathcal{F}$ で閉じている。
+
+**Step 3（反復）.** $\xi<\kappa$ を任意にとり、$\xi_{0}=\xi$, $\xi_{k+1}=g(\xi_{k})$, $\gamma=\sup_{k<\omega}\xi_{k}$ とおく。$\xi_{0}<\xi_{1}<\cdots$ で、$\cf(\kappa)=\kappa>\omega$ なので $\gamma<\kappa$（\ref{set:short-sequence-bounded} (1)）、$\gamma>\xi$。
+
+**Step 4（$\gamma\in C$）.** $f\in\mathcal{F}$ を $n$ 項演算とする。
+- $n\ge1$ のとき：$x_{1},\dots,x_{n}<\gamma$ とすると、各 $x_{i}<\xi_{k_{i}}$ となる $k_{i}$ があり、$k=\max_{i}k_{i}$ とおくと列が増加なのですべての $x_{i}\in\xi_{k}\subseteq G(\xi_{k})$。$G(\xi_{k})$ は $f$ で閉じているので $f(x_{1},\dots,x_{n})\in G(\xi_{k})\subseteq g(\xi_{k})=\xi_{k+1}\subseteq\gamma$。
+- $n=0$ のとき：$f\in G(\xi_{0})\subseteq\xi_{1}\subseteq\gamma$。
+
+よって $\gamma\in C$ かつ $\gamma>\xi$。$\xi$ は任意なので $C$ は非有界。
+
+::: hypcheck
+- **選択公理**：Step 2 で閉包補題（\ref{set:closure-lemma}）を通じて使った。
+- **$\kappa$ の正則性**：Step 2 で濃度 $<\kappa$ の集合が有界であることに使った。
+- **$\kappa>\omega$**：Step 2 で $\nu<\kappa$、Step 3 で $\gamma<\kappa$ に使った。
+- **演算が有限項であること**：Step 1・Step 4 で、引数が有限個なのでその最大値をとれることに使った。$\omega$ 項の演算、たとえば $\sup$ を 1 つ許すだけで、$\kappa=\omega_{1}$ のとき可算極限順序数 $\gamma$ で閉じたものは存在しなくなりうる。
+- **$\lvert\mathcal{F}\rvert<\kappa$**：Step 2 で $\nu<\kappa$ に使った。
+:::
+:::
+
+::: example
+- 1 つの関数 $f\colon\kappa\to\kappa$ について、$\{\gamma<\kappa\mid f[\gamma]\subseteq\gamma\}$ は閉非有界である。
+- $\pi\colon\kappa\times\kappa\to\kappa$ を全単射とし（\ref{set:kappa-times-kappa}）、$\pi$ と、その逆写像の 2 つの成分 $\pi_{0},\pi_{1}\colon\kappa\to\kappa$ の 3 つの演算を考えると、$\{\gamma<\kappa\mid\pi[\gamma\times\gamma]=\gamma\}$ は閉非有界集合を含む：3 つの演算で閉じた $\gamma$ は $\pi[\gamma\times\gamma]\subseteq\gamma$ と $\pi^{-1}[\gamma]\subseteq\gamma\times\gamma$ を満たす。
+- 群・環など、有限項の演算を $<\kappa$ 個もつ $\kappa$ 上の構造について、部分構造になっている始切片 $\gamma$ の全体は閉非有界である。
+:::
+
+::: definition 対角共通部分 {#set:diagonal-intersection-def keywords="diagonal intersection" index="対角共通部分|たいかくきょうつうぶぶん"}
+$X_{\alpha}\subseteq\kappa$（$\alpha<\kappa$）に対し、
+$$
+\mathop{\Delta}_{\alpha<\kappa}X_{\alpha}=\{\gamma<\kappa\mid\text{すべての }\alpha<\gamma\text{ について }\gamma\in X_{\alpha}\}
+$$
+を $\langle X_{\alpha}\mid\alpha<\kappa\rangle$ の**対角共通部分**という。
+:::
+
+::: intuition
+$\kappa$ 個の集合の本当の共通部分は空になりうる（たとえば $X_{\alpha}=(\alpha,\kappa)$ の共通部分は空）。対角共通部分は「$\gamma$ が $X_{\alpha}$ に入ることを、$\alpha<\gamma$ のものについてだけ要求する」という条件の弱め方で、上の例では $\mathop{\Delta}_{\alpha}(\alpha,\kappa)=\kappa$ となる。$\gamma$ から見ると「自分より小さい番号の集合だけに入っていればよい」。
+:::
+
+::: lemma 対角共通部分は閉非有界 {#set:diagonal-intersection keywords="diagonal intersection of clubs is club, normality of the club filter" index="対角共通部分の閉非有界性|たいかくきょうつうぶぶんのへいひゆうかいせい"}
+$C_{\alpha}$（$\alpha<\kappa$）が $\kappa$ の閉非有界集合ならば、$D=\mathop{\Delta}_{\alpha<\kappa}C_{\alpha}$ は $\kappa$ の閉非有界集合である。
+:::
+
+::: proof
+**Step 1（$D$ は閉）.** 極限 $\delta<\kappa$ で $D\cap\delta$ が $\delta$ で非有界とする。$\alpha<\delta$ を固定する。$\zeta<\delta$ を任意にとると、$\max(\zeta,\alpha+1)<\delta$ なので、非有界性から $\max(\zeta,\alpha+1)\le\gamma$ となる $\gamma\in D\cap\delta$ がある。$\alpha<\gamma\in D$ なので $\gamma\in C_{\alpha}$、かつ $\zeta\le\gamma<\delta$。よって $C_{\alpha}\cap\delta$ は $\delta$ で非有界で、$C_{\alpha}$ は閉なので $\delta\in C_{\alpha}$。$\alpha<\delta$ は任意なので $\delta\in D$。
+
+**Step 2（飛び越し関数）.** $\xi<\kappa$ について $E_{\xi}=\bigcap_{\alpha\le\xi}C_{\alpha}$ とおく。これは長さ $\xi+1<\kappa=\cf(\kappa)$ の閉非有界集合の列の共通部分なので、\ref{set:club-filter-complete} (1) より閉非有界である。そこで $g(\xi)=\min(E_{\xi}\setminus(\xi+1))$ と定めると、$\xi<g(\xi)<\kappa$ で、$g(\xi)\in C_{\alpha}$（すべての $\alpha\le\xi$）。
+
+**Step 3（反復）.** $\xi<\kappa$ を任意にとり、$\xi_{0}=\xi$, $\xi_{n+1}=g(\xi_{n})$, $\gamma=\sup_{n}\xi_{n}$ とおく。前と同様に $\gamma<\kappa$ は極限順序数で $\gamma>\xi$、$\{\xi_{n}\}$ は $\gamma$ で非有界（\ref{set:short-sequence-bounded} (1), \ref{set:closed-sup} Step 1）。
+
+**Step 4（$\gamma\in D$）.** $\alpha<\gamma$ を固定する。$\alpha<\xi_{m}$ となる $m$ がある。$n\ge m$ なら $\alpha<\xi_{n}$ なので、Step 2 より $\xi_{n+1}=g(\xi_{n})\in C_{\alpha}$。$\{\xi_{n+1}\mid n\ge m\}$ は $\gamma$ で非有界なので $C_{\alpha}\cap\gamma$ は非有界で、$C_{\alpha}$ が閉なので $\gamma\in C_{\alpha}$。よって $\gamma\in D$。$\xi$ は任意なので $D$ は非有界。
+
+::: hypcheck
+- **$\kappa$ の正則性**：Step 2 で $\xi+1<\cf(\kappa)$ として \ref{set:club-filter-complete} (1) を使うのに、Step 3 で $\gamma<\kappa$ とするのに（$\cf(\kappa)>\omega$）使った。
+- **選択公理は使っていない**：閉非有界集合の列 $\langle C_{\alpha}\rangle$ が与えられているので、$g$ は最小元として定まる（ZF）。
+:::
+:::
+
+::: supplement
+**フィルターの言葉で.** （AC）$X_{\alpha}\in\mathrm{Cub}(\kappa)$（$\alpha<\kappa$）ならば $\mathop{\Delta}_{\alpha}X_{\alpha}\in\mathrm{Cub}(\kappa)$。実際、閉非有界 $C_{\alpha}\subseteq X_{\alpha}$ を選べば $\mathop{\Delta}C_{\alpha}\subseteq\mathop{\Delta}X_{\alpha}$。$\kappa$ 上のフィルターで、この性質（対角共通部分で閉じていること）をもつものを**正規**という。$\kappa$ 上の正規フィルターで、すべての末端 $(\alpha,\kappa)$（$\alpha<\kappa$）を含むものは $\mathrm{Cub}(\kappa)$ を含むことが知られており、$\mathrm{Cub}(\kappa)$ はそのような正規フィルターのうち最小のものである。（末端を含むという仮定は外せない：定常集合 $S$ について $\{X\subseteq\kappa\mid S\subseteq X\}$ は正規で有界集合を含まないが、$\alpha\ge\min S$ の末端 $(\alpha,\kappa)$ を含まず、したがって $\mathrm{Cub}(\kappa)$ を含まない。）
+
+**ブール代数の言葉で.** $\mathcal{P}(\kappa)/\mathrm{Cub}(\kappa)^{*}$ において、$\kappa$ 個の元 $[A_{\alpha}]$ の下限が存在し、それは対角共通部分 $[\mathop{\Delta}A_{\alpha}]$ に等しい（Kunen 第 II 章 演習 44）。
+:::
+
+## 押し下げ補題 {#set:sec-fodor}
+
+::: theorem 押し下げ補題（フォドアの補題） {#set:fodor keywords="pressing-down lemma, Fodor's lemma, regressive function" index="押し下げ補題|おしさげほだい, フォドアの補題|ふぉどあのほだい, 退行的関数|たいこうてきかんすう"}
+（AC）$\kappa>\omega$ を正則基数、$S\subseteq\kappa$ を定常集合とし、$f\colon S\to\kappa$ が**退行的**、すなわちすべての $\gamma\in S$ について $f(\gamma)<\gamma$ を満たすとする。このとき、ある $\alpha<\kappa$ について $f^{-1}\{\alpha\}$ は定常である。
+:::
+
+::: intuition
+定常集合の各点 $\gamma$ で、値を $\gamma$ より下に「押し下げる」と、どこか 1 つの値 $\alpha$ に定常個の点が集まってしまう。$\kappa$ 個の値 $\alpha<\kappa$ があるのに「$\kappa$ 個の非定常集合の和は非定常」とは一般に言えない（$\kappa$ は単集合の和）。それでも結論が成り立つのは、$\gamma$ の値が $\gamma$ 未満に限られるおかげで、「$\gamma$ から見て自分より小さい番号だけを気にすればよい」対角共通部分が使えるからである。
+:::
+
+::: proof
+**Step 1（背理法の仮定）.** すべての $\alpha<\kappa$ について $f^{-1}\{\alpha\}$ が非定常だと仮定する。\ref{set:stationary-basic} (1) より、各 $\alpha$ について $C_{\alpha}\cap f^{-1}\{\alpha\}=\varnothing$ となる閉非有界集合 $C_{\alpha}$ が存在する。**選択公理**により、このような $C_{\alpha}$ を各 $\alpha<\kappa$ について 1 つずつ選ぶ。
+
+**Step 2（対角共通部分）.** $D=\mathop{\Delta}_{\alpha<\kappa}C_{\alpha}$ は \ref{set:diagonal-intersection} より閉非有界である。$S$ は定常なので $D\cap S\ne\varnothing$（\ref{set:stationary-basic} (1)）。$\gamma\in D\cap S$ をとる。
+
+**Step 3（矛盾）.** $\alpha=f(\gamma)$ とおくと、退行性より $\alpha<\gamma$。$\gamma\in D$ なので $\gamma\in C_{\alpha}$。一方 $f(\gamma)=\alpha$ なので $\gamma\in f^{-1}\{\alpha\}$。これは $C_{\alpha}\cap f^{-1}\{\alpha\}=\varnothing$ に反する。
+
+よって、ある $\alpha$ について $f^{-1}\{\alpha\}$ は定常である。
+
+::: hypcheck
+- **選択公理**：Step 1 で $\kappa$ 個の閉非有界集合 $C_{\alpha}$ を同時に選ぶのに使った。
+- **退行性 $f(\gamma)<\gamma$**：Step 3 で $\gamma\in C_{f(\gamma)}$ を導く核心。$f(\gamma)\le\gamma$ に弱めると、恒等写像が反例になる（各逆像は単集合で非定常）。
+- **$S$ が定常であること**：Step 2 で $D\cap S\ne\varnothing$ に使った。
+- **$\kappa$ の正則性と $\kappa>\omega$**：\ref{set:diagonal-intersection} を使うのに必要。
+:::
+:::
+
+::: example
+**$\omega_{1}$ 上の連続関数は最終的に定数.** （AC）$\omega_{1}$ に順序位相（\ref{top:order-topology}）を入れ、$F\colon\omega_{1}\to\R$ を連続とする。このとき、ある $\beta<\omega_{1}$ について $F$ は $(\beta,\omega_{1})$ 上で定数である。
+
+*証明.* 順序位相での連続性から、各極限順序数 $\gamma<\omega_{1}$ と $k<\omega$ について、ある $\eta<\gamma$ があって $(\eta,\gamma]$ 上で $\lvert F(\zeta)-F(\gamma)\rvert<2^{-k}$ となる。その最小の $\eta$ を $g_{k}(\gamma)$ とおく（選択は要らない）。
+
+- *Step 1.* $\mathrm{Lim}\cap\omega_{1}$ は閉非有界（\ref{set:club-examples} (2)）なので定常で、$g_{k}$ はその上の退行的関数である。押し下げ補題より、ある $\beta_{k}$ について $T_{k}=g_{k}^{-1}\{\beta_{k}\}$ は定常、特に非有界である。
+- *Step 2.* $\zeta>\beta_{k}$ を任意にとり、$\gamma\in T_{k}$ を $\gamma\ge\zeta$ ととると $\zeta\in(\beta_{k},\gamma]$ なので $\lvert F(\zeta)-F(\gamma)\rvert<2^{-k}$。同様に $\lvert F(\beta_{k}+1)-F(\gamma)\rvert<2^{-k}$。よって $\zeta>\beta_{k}$ ならつねに $\lvert F(\zeta)-F(\beta_{k}+1)\rvert<2^{1-k}$。
+- *Step 3.* $\beta=\sup_{k}\beta_{k}<\omega_{1}$（$\omega_{1}$ の正則性、\ref{set:short-sequence-bounded} (1)）。$\zeta,\zeta'>\beta$ なら各 $k$ について $\lvert F(\zeta)-F(\zeta')\rvert<2^{2-k}$。$k$ は任意なので $F(\zeta)=F(\zeta')$。
+:::
+
+::: supplement
+**逆向き.** 非定常集合上では結論が崩れるだけでなく、「定常であること」は押し下げ補題の結論で特徴づけられる。$S\subseteq\kappa\setminus\{0\}$ が非定常なら、すべての逆像が $\kappa$ で有界な退行的関数 $f\colon S\to\kappa$ が存在する。実際、$C\cap S=\varnothing$ となる閉非有界集合 $C$ をとり $f(\gamma)=\sup(C\cap\gamma)$ とおく。
+- *退行性*：$\gamma=\beta+1$ なら $C\cap\gamma\subseteq\beta+1$ で $\sup(C\cap\gamma)\le\beta<\gamma$。$\gamma$ が極限で $\sup(C\cap\gamma)=\gamma$ なら $C\cap\gamma$ は $\gamma$ で非有界で、閉性から $\gamma\in C$ となり $C\cap S=\varnothing$ に反する。
+- *逆像は有界*：$f(\gamma)=\alpha$ とし、$c=\min(C\setminus(\alpha+1))$ とおく。$\gamma>c$ なら $c\in C\cap\gamma$ で $f(\gamma)\ge c>\alpha$ となり矛盾し、$\gamma\ne c$（$c\in C$, $\gamma\notin C$）なので $\gamma<c$。
+
+したがって $S\subseteq\kappa\setminus\{0\}$ について、「$S$ は定常」$\iff$「$S$ 上の任意の退行的関数は、ある定常集合上で定数」$\iff$「$S$ 上の任意の退行的関数は、ある非有界集合上で定数」。（最後の $\Rightarrow$ は定常集合が非有界であること、$\Leftarrow$ は上の構成の対偶による。）
+
+**一般化.** 押し下げ補題は $\mathrm{Cub}(\kappa)$ の正規性（対角共通部分で閉じること）と同値であり、任意の正規フィルターについて同じ形で成り立つ。押し下げ補題は ◇ からススリン木を構成する議論（\ref{set:diamond-suslin}）や、シルバーの定理（\ref{set:silver}）の証明で使われる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

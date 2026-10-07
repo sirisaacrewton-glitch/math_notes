@@ -1,0 +1,32 @@
+{
+  "id": "set-constructible",
+  "title": "構成可能集合",
+  "en": "The Constructible Sets",
+  "abbr": "構成可能",
+  "description": "L の基本性質、L における ZF、構成可能性公理、L での AC と GCH、L における ◇。（Kunen 第 VI 章に対応）",
+  "msc": "03E45",
+  "prereq": [
+    {
+      "dir": "set-basics",
+      "from": 1,
+      "to": 13
+    },
+    {
+      "dir": "set-combinatorics",
+      "from": 10,
+      "to": 13,
+      "note": "閉非有界集合と ◇（L で ◇ を示すため）"
+    },
+    {
+      "dir": "set-well-founded",
+      "from": 1,
+      "to": 6
+    },
+    {
+      "dir": "set-consistency"
+    },
+    {
+      "dir": "set-definability"
+    }
+  ]
+}

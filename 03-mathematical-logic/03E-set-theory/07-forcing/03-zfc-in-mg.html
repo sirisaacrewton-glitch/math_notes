@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M[G] における ZFC | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/07-forcing/03-zfc-in-mg.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# M[G] における ZFC {#set:page-zfc-in-mg keywords="generic extension satisfies ZFC, comprehension in M[G], replacement in M[G], power set in M[G], choice in M[G], Con(ZFC) implies Con(ZFC + V not equal L)"}
+
+前ページの強制定理を使って、ジェネリック拡大 $M[G]$ が $\ZFC$ のモデルであることを示す。分出公理には強制関係の定義可能性、置換公理と冪集合公理には「十分に多くの名前を $M$ の集合に集められること」、選択公理には $M$ の中の名前の枚挙を使う。系として $\mathrm{Con}(\ZFC)\to\mathrm{Con}(\ZFC+\mathbf{V}\neq \mathbf{L})$ が得られる。（Kunen 第 VII 章 §4 に対応する。）
+
+## 記法と定義の確認 {#set:sec-zfc-mg-notation}
+
+::: notation
+- $M$ は $\ZFC$ の c.t.m.、$\langle\PP,\le,\mathbf{1}\rangle\in M$ は p.o.、$G$ は $M$ 上 $\PP$-ジェネリック。名前、$M^{\PP}$、$\tau_{G}$、$M[G]$、$\check{x}$、$\mathrm{op}$ と \ref{set:check-name-val}, \ref{set:m-g-transitive}, \ref{set:up-op-names-val}, \ref{set:m-g-easy-axioms}, \ref{set:generic-not-in-m} は \ref{set:page-generic-extensions}、強制関係 $\Vdash$、$\Vdash^{*}$、強制定理（\ref{set:forcing-theorem}）とその系（\ref{set:forcing-basic}, \ref{set:forcing-corollary}）は \ref{set:page-forcing-relation} のとおり。
+- クラスのモデルの判定法（\ref{set:comprehension-in-class}, \ref{set:replacement-in-class}, \ref{set:power-set-in-transitive}, \ref{set:infinity-in-transitive}）と証明の相対化（\ref{set:relativized-proof}）、$\mathbf{L}$ の最小性（\ref{set:l-in-set-model}）を使う。
+- 選択公理は「すべての集合は整列可能」（\ref{set:ax-choice}）の形とする。
+:::
+
+## 選択公理の言い換え {#set:sec-ac-reformulation}
+
+選択公理は通常と少し違う形で確かめるのが便利である。
+
+::: lemma 選択公理と順序数による枚挙 {#set:ac-enumeration keywords="AC iff every set is covered by the range of a function on an ordinal"}
+（$\ZF$）AC は次と同値である：
+$$
+\forall x\;\exists\alpha\in\mathbf{ON}\;\exists f\;\bigl(f\text{ は関数}\land\dom(f)=\alpha\land x\subseteq\ran(f)\bigr).
+\label{set:eq-ac-enumeration}
+$$
+:::
+
+::: proof
+（$\Rightarrow$）$x$ の整列順序から、順序型を $\alpha$ として同型 $f\colon\alpha\to x$ をとればよい（\ref{set:ordinal-type}）。（$\Leftarrow$）$x,\alpha,f$ が \eqref{set:eq-ac-enumeration} のとおりとする。$z\in x$ に $g(z)\defeq\min f^{-1}[\{z\}]$ を対応させると（$z\in\ran(f)$ なので空でない順序数の集合の最小元）、$g$ は $x$ から $\alpha$ への単射である。$y\,R\,z:\iff g(y)<g(z)$ とすると $R$ は $x$ を整列する。
+:::
+
+## M[G] は ZFC のモデル {#set:sec-mg-model-zfc}
+
+::: theorem M[G] は ZFC のモデル {#set:mg-model-zfc keywords="M[G] satisfies ZFC" index="ジェネリック拡大の ZFC|じぇねりっくかくだいのぜっとえふしー"}
+$M$ を $\ZFC$ の c.t.m.、$\langle\PP,\le,\mathbf{1}\rangle\in M$ を p.o.、$G$ を $M$ 上 $\PP$-ジェネリックとする。このとき $M[G]$ は $\ZFC$ を満たす。
+:::
+
+::: proof
+外延性・基礎・対・和集合はすでに確かめた（\ref{set:m-g-easy-axioms}）。$M[G]$ は推移的（\ref{set:m-g-transitive}）である。
+
+**分出.** \ref{set:comprehension-in-class} より、各論理式 $\varphi(x,v,y_{1},\dots,y_{n})$ と $\sigma,\tau_{1},\dots,\tau_{n}\in M^{\PP}$ について
+$$
+\{a\in\sigma_{G}:\varphi^{M[G]}(a,\sigma_{G},\tau_{1G},\dots,\tau_{nG})\}\in M[G]
+$$
+を示せばよい。以下 $\tau_{1},\dots,\tau_{n}$ の記載を省き、
+$$
+\rho\defeq\{\langle\pi,p\rangle\in\dom(\sigma)\times\PP:p\Vdash(\pi\in\sigma\land\varphi(\pi,\sigma))\}
+$$
+とおく。強制関係の定義可能性（\ref{set:forcing-theorem} の 1）より $\rho$ は $M$ の中で $\Vdash^{*}$ を使って分出公理で定義でき、$\rho\in M$。$\rho$ の元は（名前, 条件）の組なので $\rho\in M^{\PP}$。$\rho_{G}=\{a\in\sigma_{G}:\varphi^{M[G]}(a,\sigma_{G})\}$ を示す。
+
+- （$\subseteq$）$\rho_{G}$ の元は、$p\in G$ となる $\langle\pi,p\rangle\in\rho$ についての $\pi_{G}$ の形である。$\rho$ の定義より $p\Vdash(\pi\in\sigma\land\varphi(\pi,\sigma))$ なので、$\Vdash$ の定義より $\pi_{G}\in\sigma_{G}$ かつ $\varphi^{M[G]}(\pi_{G},\sigma_{G})$。
+- （$\supseteq$）$a\in\sigma_{G}$ かつ $\varphi^{M[G]}(a,\sigma_{G})$ とする。ある $\pi\in\dom(\sigma)$ で $a=\pi_{G}$。すると $(\pi_{G}\in\sigma_{G}\land\varphi(\pi_{G},\sigma_{G}))^{M[G]}$ なので、真理補題（\ref{set:forcing-theorem} の 2）より $p\Vdash(\pi\in\sigma\land\varphi(\pi,\sigma))$ となる $p\in G$ がある。$\langle\pi,p\rangle\in\rho$ なので $\pi_{G}\in\rho_{G}$。
+
+**置換.** \ref{set:replacement-in-class} より、各論理式 $\varphi(x,y,v,z_{1},\dots,z_{n})$ と $\sigma,\tau_{1},\dots,\tau_{n}\in M^{\PP}$ について、$(\forall x\in\sigma_{G}\,\exists!y\,\varphi(x,y,\sigma_{G},\vec{\tau}_{G}))^{M[G]}$ ならば
+$$
+\forall x\in\sigma_{G}\;\exists y\in\rho_{G}\;\varphi^{M[G]}(x,y,\sigma_{G},\vec{\tau}_{G})
+\label{set:eq-replacement-collection}
+$$
+となる $\rho\in M^{\PP}$ があることを示せばよい（そのとき一意性より $\{y\in M[G]:\exists x\in\sigma_{G}\,\varphi^{M[G]}\}\subseteq\rho_{G}$）。$\vec{\tau}$ の記載を省く。
+
+*Step 1（名前を集める）.* $M$ の中で次の集合 $S\in M$、$S\subseteq M^{\PP}$ を作る：
+$$
+\forall\pi\in\dom(\sigma)\;\forall p\in\PP\;\bigl[\exists\mu\in M^{\PP}\,(p\Vdash\varphi(\pi,\mu))\to\exists\mu\in S\,(p\Vdash\varphi(\pi,\mu))\bigr].
+$$
+\ref{set:forcing-theorem} の 1 より、$p\Vdash\varphi(\pi,\mu)$ は $M$ に相対化した論理式 $(p\Vdash^{*}\varphi(\pi,\mu))^{M}$ で表される。そこで $M$ の中で、各 $\langle\pi,p\rangle\in\dom(\sigma)\times\PP$ に、$p\Vdash^{*}\varphi(\pi,\mu)$ となる $\PP$-名前 $\mu$ があればそのような $\mu$ のランクの最小値を、なければ $0$ を対応させる。$M$ の置換公理より、これらの順序数の上限 $\alpha$ が $M$ に存在する。$S\defeq\{\mu\in M^{\PP}:\rank(\mu)\le\alpha\}$ とすると（$M$ の中で $(\mathbf{V}^{\PP}\cap R(\alpha+1))^{M}$ として作れ、ランクの絶対性より上の集合に等しい）$S\in M$ で、求める性質をもつ。（Kunen はここで $M$ の中の反映定理を使っているが、上のようにランクの最小値を集める方が直接的である。）
+
+*Step 2.* $\rho\defeq S\times\{\mathbf{1}\}$ とおくと、$\rho\in M^{\PP}$ で $\rho_{G}=\{\mu_{G}:\mu\in S\}$。$x\in\sigma_{G}$ を固定すると、ある $\pi\in\dom(\sigma)$ で $x=\pi_{G}$。仮定より $(\exists y\,\varphi(\pi_{G},y))^{M[G]}$ なので、ある $\nu\in M^{\PP}$ で $\varphi^{M[G]}(\pi_{G},\nu_{G})$。真理補題より $p\Vdash\varphi(\pi,\nu)$ となる $p\in G$ がある。$S$ の性質より $p\Vdash\varphi(\pi,\mu)$ となる $\mu\in S$ があり、$p\in G$ なので $\varphi^{M[G]}(\pi_{G},\mu_{G})$、$\mu_{G}\in\rho_{G}$。よって \eqref{set:eq-replacement-collection} が成り立つ。
+
+上の証明は、仮定の $\exists!y$ を $\exists y$ に弱めた「より強い」置換公理を示したように見える。しかしこの「より強い」公理は収集公理（反映の一種）であり、$\ZF$ から導ける（Kunen 第 III 章の演習 15）。
+
+**無限.** 以上で $M[G]$ は $\ZF-\mathrm{P}$ の無限公理以外を満たす。$\omega=\check{\omega}_{G}\in M[G]$（\ref{set:check-name-val}）なので \ref{set:infinity-in-transitive} より無限公理も成り立ち、$M[G]$ は $\ZF-\mathrm{P}$ を満たす。
+
+**冪集合.** \ref{set:power-set-in-transitive} より、$\sigma_{G}\in M[G]$ について、$\forall x\in M[G]\,(x\subseteq\sigma_{G}\to x\in\rho_{G})$ となる $\rho\in M^{\PP}$ を作ればよい。
+$$
+S\defeq\{\tau\in M^{\PP}:\dom(\tau)\subseteq\dom(\sigma)\}=\mathcal{P}(\dom(\sigma)\times\PP)^{M}
+$$
+とおく（$\dom(\tau)\subseteq\dom(\sigma)$ となる名前は $\dom(\sigma)\times\PP$ の部分集合で、逆にそのような部分集合は名前である。$M$ の冪集合公理と \ref{set:power-rank-relativized} より $S\in M$）。$\rho\defeq S\times\{\mathbf{1}\}$ とする。$\mu\in M^{\PP}$ で $\mu_{G}\subseteq\sigma_{G}$ となるものを固定し、$\mu_{G}\in\rho_{G}$ を示す。
+$$
+\tau\defeq\{\langle\pi,p\rangle:\pi\in\dom(\sigma)\land p\Vdash\pi\in\mu\}
+$$
+とおくと、定義可能性より $\tau\in M$ で、$\tau\in S$、したがって $\tau_{G}\in\rho_{G}$。$\mu_{G}=\tau_{G}$ を示せばよい。
+- （$\mu_{G}\subseteq\tau_{G}$）$\mu_{G}\subseteq\sigma_{G}$ なので、$\mu_{G}$ の元はある $\pi\in\dom(\sigma)$ についての $\pi_{G}$ の形である。$\pi_{G}\in\mu_{G}$ なので真理補題より $p\Vdash\pi\in\mu$ となる $p\in G$ があり、$\langle\pi,p\rangle\in\tau$、よって $\pi_{G}\in\tau_{G}$。
+- （$\tau_{G}\subseteq\mu_{G}$）$\tau_{G}$ の元は、$p\in G$ となる $\langle\pi,p\rangle\in\tau$ についての $\pi_{G}$ の形で、$p\Vdash\pi\in\mu$ なので $\pi_{G}\in\mu_{G}$。
+
+**選択.** $M[G]$ は $\ZF$ を満たすので、\ref{set:ac-enumeration}（$\ZF$ の定理）は $M[G]$ で成り立つ（\ref{set:relativized-proof}）。したがって $M[G]$ で \eqref{set:eq-ac-enumeration} を示せばよい。$x=\sigma_{G}\in M[G]$ を固定する。$M$ の AC より、$\gamma\mapsto\pi_{\gamma}$ という $M$ に属する関数で $\dom(\sigma)=\{\pi_{\gamma}:\gamma<\alpha\}$ となるものがある。
+$$
+\tau\defeq\{\mathrm{op}(\check{\gamma},\pi_{\gamma}):\gamma<\alpha\}\times\{\mathbf{1}\}
+$$
+とおくと $\tau\in M^{\PP}$ で、\ref{set:up-op-names-val} より $\tau_{G}=\{\langle\gamma,\pi_{\gamma G}\rangle:\gamma<\alpha\}$。これは定義域 $\alpha$ の関数で、$\sigma_{G}\subseteq\ran(\tau_{G})$（$\sigma_{G}$ の元はある $\pi\in\dom(\sigma)$ の値）。関数であること、定義域、値域は絶対的なので、$M[G]$ の中で \eqref{set:eq-ac-enumeration} が $x$ について成り立つ。
+
+以上で $\ZFC$ のすべての公理が $M[G]$ で成り立つ。
+:::
+
+::: hypcheck
+- **ジェネリック性**は、真理補題（分出の $\supseteq$、置換の Step 2、冪集合の $\mu_{G}\subseteq\tau_{G}$）を通して使った。
+- **強制関係の定義可能性**は、$\rho$（分出）、$S$（置換）、$\tau$（冪集合）が $M$ に属することに使った。これがなければ、名前を $M$ の中で作れない。
+- $M$ の公理は、分出（$\rho,\tau$）、置換（Step 1 の上限）、冪集合（$S$）、選択（$\dom(\sigma)$ の枚挙）のそれぞれで、$M[G]$ の対応する公理を示すのに使った。
+- 冪集合公理の証明の鍵は、$\sigma_{G}$ の任意の部分集合の代表となる名前を含む集合 $S$ が $M$ の中にあることである。$\mu_{G}\subseteq\sigma_{G}$（あるいは $\mu_{G}=0$）となる $\mu$ 全体は通常 $M$ の集合に含まれない（Kunen 第 VII 章の演習 A9）。
+:::
+
+強制法で追加の公理を満たすように $\PP$ を設計する方法は次ページ以降で述べる。ここでは、これまでの結果から直ちに得られる帰結を一つ述べる。
+
+::: corollary V ≠ L を満たすジェネリック拡大 {#set:ctm-v-neq-l}
+$M$ を $\ZFC$ の c.t.m. とすると、$\ZFC+\mathbf{V}\neq \mathbf{L}$ を満たす c.t.m. $N\supseteq M$ がある。
+:::
+
+::: proof
+\ref{set:mg-model-zfc} の記号で、$G\notin M$ となる $\PP$ を選べばよい。これは $\PP$ が \ref{set:generic-not-in-m} の条件を満たせば成り立ち、たとえば $\PP=\mathrm{Fn}(\omega,2)$ でよい（\ref{set:prob-generic-fn}）。$N\defeq M[G]$ とする（$G$ は \ref{set:generic-exists} で存在）。$N$ は可算（$M^{\PP}\subseteq M$ は可算）で推移的、$\ZFC$ を満たす。$o(N)=o(M)$（\ref{set:m-g-transitive}）なので、\ref{set:l-in-set-model} より $\mathbf{L}^{N}=L_{o(N)}=L_{o(M)}=\mathbf{L}^{M}\subseteq M$。$G\in N\setminus M$ なので $N\neq \mathbf{L}^{N}$、すなわち $(\mathbf{V}\neq \mathbf{L})^{N}$。
+:::
+
+::: corollary {#set:con-v-neq-l keywords="Con(ZFC) implies Con(ZFC + V not equal L)" index="V ≠ L の無矛盾性|ぶいのっといこーるえるのむむじゅんせい"}
+$\mathrm{Con}(\ZFC)\to\mathrm{Con}(\ZFC+\mathbf{V}\neq \mathbf{L})$。
+:::
+
+::: proof
+\ref{set:page-generic-extensions} の \ref{set:forcing-proof-structure} のとおり、\ref{set:ctm-v-neq-l} を「$\ZFC$ の十分多くの有限個の公理の c.t.m.」について適用する：$\ZFC+\mathbf{V}\neq \mathbf{L}$ の有限個の公理 $\varphi_{1},\dots,\varphi_{n}$ に対し、上の証明に必要な $\ZFC$ の有限個の公理の c.t.m. $M$ を \ref{set:ctm-exists} でとり、$\ZFC\vdash\exists N\,\bigwedge_{i}\varphi_{i}^{N}$ を得る。
+:::
+
+これからは、$\varphi$ が数学的にある程度複雑な主張であるような $p\Vdash\varphi$ をしばしば論じる。そのときいつものように、$\varphi$ を集合論のもとの言語の論理式として陽に書くことはせず、標準的な数学の記法で表し、それを集合論の論理式の略記とみなす。略記を展開した論理式の正確な形を気にする必要はない。$\ZFC$ で同値な二つの論理式は同じ条件で強制されるからである。
+
+::: lemma 同値な論理式の強制 {#set:forcing-equivalent keywords="forcing respects ZFC-provable equivalence"}
+1. $\ZFC\vdash\forall\vec{x}\,(\varphi(\vec{x})\to\psi(\vec{x}))$ とすると、$\ZFC$ の任意の c.t.m. $M$、p.o. $\PP\in M$、$p\in\PP$、$\tau_{1},\dots,\tau_{n}\in M^{\PP}$ について $p\Vdash\varphi(\vec{\tau})\to p\Vdash\psi(\vec{\tau})$。
+2. さらに $\ZFC\vdash\forall\vec{x}\,(\varphi\leftrightarrow\psi)$ なら $p\Vdash\varphi(\vec{\tau})\iff p\Vdash\psi(\vec{\tau})$。
+:::
+
+::: proof
+**1.** $M$ 上ジェネリックな任意の $G$ について $M[G]$ は $\ZFC$ を満たす（\ref{set:mg-model-zfc}）ので、\ref{set:relativized-proof} より $\varphi^{M[G]}(\vec{\tau}_{G})\to\psi^{M[G]}(\vec{\tau}_{G})$。$\Vdash$ の定義から従う。**2.** 1 を両向きに使う。
+:::
+
+## 問題 {#set:sec-zfc-mg-problems}
+
+::: problem {#set:prob-mg-union}
+\ref{set:mg-model-zfc} を使わずに、$\sigma\in M^{\PP}$ に対し $\bigcup(\sigma_{G})$ を名前で直接表せ。（ヒント：$\{\langle\pi,r\rangle:\exists\langle\rho,p\rangle\in\sigma\,\exists q\,(\langle\pi,q\rangle\in\rho\land r\le p\land r\le q)\}$。）
+:::
+
+::: solution
+与えられた集合を $\theta$ とする。$\theta\in M^{\PP}$ は明らか。$\pi_{G}\in\theta_{G}$ なら $\langle\pi,r\rangle\in\theta$, $r\in G$ で、$r\le p,q$ より $p,q\in G$、$\langle\rho,p\rangle\in\sigma$ より $\rho_{G}\in\sigma_{G}$、$\langle\pi,q\rangle\in\rho$ より $\pi_{G}\in\rho_{G}$。よって $\pi_{G}\in\bigcup\sigma_{G}$。逆に $x\in\rho_{G}\in\sigma_{G}$ なら、$\langle\rho',p\rangle\in\sigma$ で $p\in G$, $\rho'_{G}=\rho_{G}$ となるものがあり、$x\in\rho'_{G}$ より $\langle\pi,q\rangle\in\rho'$ で $q\in G$, $\pi_{G}=x$ となるものがある。$p,q$ の共通の拡張 $r\in G$ をとると $\langle\pi,r\rangle\in\theta$ で $x=\pi_{G}\in\theta_{G}$。
+:::
+
+::: problem {#set:prob-mg-omega}
+$\omega^{M[G]}=\omega$ であり、$M[G]$ の順序数はちょうど $M$ の順序数であることを説明せよ。
+:::
+
+::: solution
+$M[G]$ は $\ZFC$ の推移的なモデルなので $\omega$ は絶対的（\ref{set:absolute-ordinals}）で、$\omega^{M[G]}=\omega$。順序数については \ref{set:m-g-transitive} の 3 と、順序数であることの絶対性による。
+:::
+
+::: supplement
+**前提の検討.**
+- \ref{set:mg-model-zfc} は $\PP$ についての仮定（c.c.c. など）を何も使わない。$M$ の中の任意の p.o. について $M[G]$ は $\ZFC$ を満たす。追加の公理が成り立つかどうかが $\PP$ の組合せ論的性質に依存する。
+- \ref{set:ctm-v-neq-l} は $\PP$ が \eqref{set:eq-splitting} を満たすことだけを使う。
+
+**関連する結果.** $\mathrm{Con}(\ZF)\to\mathrm{Con}(\ZF+\lnot\mathrm{AC})$ も強制法（対称的なモデル、あるいは $\mathbf{HOD}$ の変形）で示されることが知られている（Kunen 第 VII 章の演習でも扱われているとされる。本サイトでは扱っていない）。
+
+**高い視点から：体の拡大との類比.** $M[G]$ が $\ZFC$ を満たすことは、体 $K$ に元 $a$ を添加した $K(a)$ がまた体になることに似ている。体の場合、$K(a)$ の元は「$a$ を含む $K$ 係数の有理式」で表され、四則演算で閉じることは有理式の計算で確かめられる。$M[G]$ の場合、元は「$G$ を含む $M$ の名前」で表され、集合論の公理（分出・置換・冪集合）で閉じることは名前の操作で確かめられる。ただし集合論では「有理式」にあたる名前の集まりが巨大（真のクラス）なので、置換や冪集合で必要な名前を $M$ の**集合**に集められること（ランクによる有界化、$\mathcal{P}(\dom(\sigma)\times\PP)^{M}$）が鍵になる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

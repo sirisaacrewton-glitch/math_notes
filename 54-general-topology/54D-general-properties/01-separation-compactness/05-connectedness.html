@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>連結性 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54D-general-properties/01-separation-compactness/05-connectedness.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 連結性 {#top:page-connectedness keywords="connected space, clopen sets, connected subsets of R are intervals, intermediate value theorem, connected components, path-connected, topologist's sine curve, locally connected"}
+
+空間が「二つの部分に切り離せない」ことを**連結**という（\ref{top:connected}）。実数直線の連結な部分集合はちょうど区間であり（\ref{top:connected-intervals}）、そこから中間値の定理が従う（\ref{top:intermediate-value}）。連結性は連続写像・閉包・直積で保たれ、空間は**連結成分**に分かれる（\ref{top:components}）。より強い**弧状連結性**（道でつなげること）は連結性を導くが、逆は成り立たない（位相幾何学者のサイン曲線、\ref{top:topologist-sine}）。
+
+> 資料：内田伏一『集合と位相』§25。
+
+## 記法と定義の確認 {#top:sec-con-notation}
+
+::: notation
+- 開かつ閉、閉包、連続写像、部分空間、直積、商写像は前ページまでのとおり（\ref{top:closed-set-axioms}, \ref{top:interior-closure}, \ref{top:continuous}, \ref{top:subspace}, \ref{top:product-topology}）。
+- $\{0,1\}$ には離散位相を入れる。実数の上限の性質は既知とする。
+- 議論は $\ZF$ で行う。
+:::
+
+## 連結性の定義 {#top:sec-con-definition}
+
+::: definition 連結 {#top:connected keywords="connected space, separation of a space" index="連結|れんけつ, 連結空間|れんけつくうかん, 分離（連結性）|ぶんりれんけつせい"}
+位相空間 $X$ が**連結**であるとは、交わらない空でない二つの開集合の和として書けないことをいう。部分集合 $A$ が連結であるとは、部分空間 $A$ が連結であることをいう（空集合は連結とする）。
+:::
+
+::: proposition 連結性の言い換え {#top:connected-equivalents keywords="connected iff no nontrivial clopen subsets iff every continuous map to {0,1} is constant" index="連結性の言い換え|れんけつせいのいいかえ"}
+次は同値である。
+1. $X$ は連結。
+2. $X$ の開かつ閉な部分集合は $\varnothing$ と $X$ だけ。
+3. 連続写像 $X\to\{0,1\}$ はすべて定値写像。
+:::
+
+::: proof
+**1 ⇔ 2.** $X=U\sqcup V$（空でない開集合）なら $U$ は開かつ閉（$U=V^{c}$）。逆に開かつ閉な $U\neq\varnothing,X$ があれば $X=U\sqcup U^{c}$。**2 ⇔ 3.** 連続写像 $f\colon X\to\{0,1\}$ と開かつ閉な集合 $f^{-1}[\{1\}]$ が一対一に対応する（\ref{top:prob-characteristic-continuous}）。
+:::
+
+::: theorem ℝ の連結集合は区間 {#top:connected-intervals keywords="a subset of R is connected iff it is an interval" index="区間の連結性|くかんのれんけつせい"}
+$A\subseteq\R$ が連結であることと、$A$ が区間（$a,b\in A$, $a<c<b$ なら $c\in A$）であることは同値である。とくに $\R$ と $[0,1]$ は連結である。
+:::
+
+::: proof
+**連結 ⇒ 区間.** $a,b\in A$, $a<c<b$, $c\notin A$ なら、$A=(A\cap(-\infty,c))\sqcup(A\cap(c,\infty))$ は空でない開集合への分割。
+
+**区間 ⇒ 連結.** $A=U\sqcup V$（$A$ で開、空でない）と仮定し、$a\in U$, $b\in V$ をとる。$a<b$ としてよい（逆なら対称な議論）。$[a,b]\subseteq A$（区間）。$s\defeq\sup(U\cap[a,b])$ とおく。$s\in[a,b]\subseteq A$。
+
+- $s\in U$ の場合：$s\neq b$（$b\in V$）なので $s<b$。$U$ は $A$ で開なので、ある $\varepsilon$ で $(s-\varepsilon,s+\varepsilon)\cap A\subseteq U$。$[a,b]\subseteq A$ なので $[s,\min(s+\varepsilon/2,b)]\subseteq U$ となり、上限に反する。
+- $s\in V$ の場合：$s\neq a$ なので $s>a$。ある $\varepsilon$ で $(s-\varepsilon,s]\cap[a,b]\subseteq V$ で、$U\cap[a,b]$ の元は $s$ 以下なので $s-\varepsilon$ 以下、$s$ が上限であることに反する。
+
+いずれも矛盾。
+
+::: hypcheck
+- **上限の性質（実数の完備性）**：区間 ⇒ 連結の核心。$\mathbb{Q}$ では偽：$\mathbb{Q}=(\mathbb{Q}\cap(-\infty,\sqrt{2}))\sqcup(\mathbb{Q}\cap(\sqrt{2},\infty))$ で、$\mathbb{Q}$ は連結でない（しかも順序の意味では「区間」）。
+:::
+:::
+
+::: proposition 連結性の保存 {#top:connected-preservation keywords="continuous images, unions with a common point, closures, products of connected spaces are connected" index="連結性の保存|れんけつせいのほぞん"}
+1. 連結空間の連続像は連結。
+2. 連結集合の族 $(A_{\lambda})$ がある共通の点をもてば（あるいは任意の二つが交われば）、和 $\bigcup A_{\lambda}$ は連結。
+3. $A$ が連結で $A\subseteq B\subseteq\overline{A}$ なら $B$ は連結。
+4. 連結空間の直積は連結。
+:::
+
+::: proof
+**1.** $f\colon X\to f[X]$ と連続な $g\colon f[X]\to\{0,1\}$ について $g\circ f$ は定値なので $g$ も定値（$f$ は全射）。
+
+**2.** 連続な $g\colon\bigcup A_{\lambda}\to\{0,1\}$ は各 $A_{\lambda}$ 上で定値。共通点 $p$ での値に、どの $A_{\lambda}$ 上の値も一致するので、$g$ は定値。（任意の二つが交わる場合：$A_{\lambda}$ と $A_{\mu}$ の共通点で値が一致する。）
+
+**3.** 連続な $g\colon B\to\{0,1\}$ は $A$ 上で定値 $c$。$g^{-1}[\{c\}]$ は $B$ で閉で $A$ を含むので、$B$ での $A$ の閉包 $\overline{A}\cap B=B$ を含む。
+
+**4.** 二つの場合：$X,Y$ 連結、$(x_{0},y_{0})\in X\times Y$ を固定する。各 $x$ について $T_{x}\defeq(\{x\}\times Y)\cup(X\times\{y_{0}\})$ は、連結な $\{x\}\times Y\approx Y$ と $X\times\{y_{0}\}\approx X$ が点 $(x,y_{0})$ を共有するので連結（2）。$T_{x}$ はすべて $(x_{0},y_{0})$ を含み、和は $X\times Y$ なので連結（2）。有限個は帰納法。無限個：点 $a\in\prod X_{i}$ を固定し、有限個の座標以外が $a$ と一致する点の集合 $D$ を考える。$D$ は、有限個の座標の集合 $F$ ごとの部分集合 $D_{F}\approx\prod_{i\in F}X_{i}$（連結）の和で、すべて $a$ を含むので連結。$D$ は稠密（基本開集合は有限個の座標だけを制限するので $D$ と交わる）で、3 から直積は連結。
+
+::: hypcheck
+- **4 の無限直積**：$D$ が稠密であることに、直積位相の基本開集合が有限個の座標しか制限しないことを使った。箱位相の $\R^{\N}$ は連結でない（有界な列の集合と非有界な列の集合が、ともに開かつ閉）。
+:::
+:::
+
+::: corollary 中間値の定理 {#top:intermediate-value keywords="intermediate value theorem" index="中間値の定理|ちゅうかんちのていり"}
+連結空間 $X$ 上の連続関数 $f\colon X\to\R$ について、$f(x)<c<f(y)$ なら $f(z)=c$ となる $z$ がある。
+:::
+
+::: proof
+$f[X]$ は $\R$ の連結集合（\ref{top:connected-preservation} の 1）なので区間（\ref{top:connected-intervals}）で、$f(x),f(y)$ を含むので $c$ を含む。
+:::
+
+## 連結成分 {#top:sec-con-components}
+
+::: definition 連結成分 {#top:components keywords="connected component, totally disconnected" index="連結成分|れんけつせいぶん, 完全不連結|かんぜんふれんけつ"}
+点 $x$ を含む連結集合すべての和を、$x$ の**連結成分**という。すべての連結成分が一点集合である空間を**完全不連結**という。
+:::
+
+::: proposition 連結成分の性質 {#top:components-properties keywords="components are maximal connected, closed, and partition the space" index="連結成分の性質|れんけつせいぶんのせいしつ"}
+連結成分は、$x$ を含む最大の連結集合で、閉集合である。異なる点の連結成分は一致するか交わらず、空間は連結成分に分割される。
+:::
+
+::: proof
+和は $x$ を共有する連結集合の和なので連結（\ref{top:connected-preservation} の 2）で、定義から最大。閉包も連結（同 3）なので、最大性から閉包と一致し、閉。$x,y$ の成分 $C_{x},C_{y}$ が交われば $C_{x}\cup C_{y}$ は連結で、最大性から $C_{x}=C_{x}\cup C_{y}=C_{y}$。
+:::
+
+::: example
+$\mathbb{Q}$、カントール集合、カントール空間 $\{0,1\}^{\N}$ は完全不連結である（$\mathbb{Q}$ では、二点 $p<q$ の間の無理数 $r$ で $(-\infty,r)$ と $(r,\infty)$ に分けられる）。連結成分は開集合とは限らない（$\mathbb{Q}$ の一点集合は開でない）。
+:::
+
+## 弧状連結性 {#top:sec-con-path}
+
+::: definition 弧状連結 {#top:path-connected keywords="path, path-connected space, arcwise connected" index="道|みち, 弧状連結|こじょうれんけつ, 道連結|みちれんけつ"}
+連続写像 $\gamma\colon[0,1]\to X$ を、$\gamma(0)$ から $\gamma(1)$ への**道**という。任意の二点が道で結べる空間を**弧状連結**という。
+:::
+
+::: proposition 弧状連結なら連結 {#top:path-connected-connected keywords="path-connected spaces are connected" index="弧状連結と連結|こじょうれんけつとれんけつ"}
+弧状連結な空間は連結である。
+:::
+
+::: proof
+$X=\varnothing$ なら自明。点 $p$ を固定すると、各 $x$ について $p$ から $x$ への道の像は連結（$[0,1]$ の連続像）で $p$ を含む。それらの和は $X$ で、\ref{top:connected-preservation} の 2 から連結。（各 $x$ に道を選ぶ必要はない：$p$ を含む道の像すべての和をとればよい。）
+:::
+
+::: example 位相幾何学者のサイン曲線 {#top:topologist-sine}
+$S\defeq\{(x,\sin(1/x)):0<x\le1\}$ とし、$T\defeq S\cup(\{0\}\times[-1,1])$（$\R^{2}$ の部分空間）とする。$T$ は連結だが弧状連結でない。
+
+**連結.** $S$ は連結な $(0,1]$ の連続像で連結。$T\subseteq\overline{S}$（$x_{n}=1/(2\pi n+\arcsin t)$ で $(x_{n},t)\to(0,t)$）なので \ref{top:connected-preservation} の 3。
+
+**弧状連結でない.** 道 $\gamma\colon[0,1]\to T$ で $\gamma(0)=(0,0)$, $\gamma(1)\in S$ となるものがあるとする。$\tau\defeq\sup\{t:\gamma(t)\in\{0\}\times[-1,1]\}$ とおくと、閉集合の逆像は閉なので $\gamma(\tau)=(0,y_{0})$ で、$t>\tau$ では $\gamma(t)\in S$。$\gamma$ の第 1 成分 $x(t)$ は連続で $x(\tau)=0$、$t>\tau$ で $x(t)>0$。連続性から、$\delta>0$ を $t\in[\tau,\tau+\delta]$ で第 2 成分が $y_{0}$ から $1/2$ 未満しか動かないようにとる。$x(\tau+\delta)>0$ で、中間値の定理から、$[\tau,\tau+\delta]$ 上で $x$ は区間 $[0,x(\tau+\delta)]$ のすべての値をとる。この区間には $\sin(1/x)=1$ となる $x$ と $\sin(1/x)=-1$ となる $x$ の両方があり、第 2 成分は $1$ と $-1$ の両方の値をとる。$y_{0}$ から $1/2$ 未満という条件に反する。
+:::
+
+::: proposition ℝⁿ の開連結集合は弧状連結 {#top:open-connected-path-connected keywords="open connected subsets of R^n are path-connected" index="開連結集合の弧状連結性|かいれんけつしゅうごうのこじょうれんけつせい"}
+$\R^{n}$ の開集合 $U$ が連結なら、弧状連結である。
+:::
+
+::: proof
+$p\in U$ を固定し、$P\defeq\{x\in U:p\text{ から }x\text{ への }U\text{ 内の道がある}\}$ とおく。$p\in P$。$P$ は開：$x\in P$ と $B(x,\varepsilon)\subseteq U$ について、$B(x,\varepsilon)$ の点 $y$ は線分 $t\mapsto(1-t)x+ty$（球は凸）で $x$ と結べ、道をつなげると（$[0,1/2]$ と $[1/2,1]$ で貼り合わせ、\ref{top:pasting-lemma}）$p$ から $y$ への道ができる。$U\setminus P$ も同様に開。連結性から $P=U$。
+:::
+
+::: supplement
+**前提を変えると.** 連結性の定義を閉集合で言い換えても同じだが、「弧状」の代わりに「連続な単射の道（弧）」を要求する**弧連結**は、ハウスドルフ空間では弧状連結と同値である（R. Engelking, *General Topology*。ここでは証明しない）。
+
+**類似の定理.** 局所弧状連結な空間（各点に弧状連結な近傍の基本系がある）では、連結成分と弧状連結成分が一致し、成分は開集合になる。\ref{top:open-connected-path-connected} はその特別な場合である。
+
+**高い視点から：連結性は「$\{0,1\}$ への写像」で測る.** \ref{top:connected-equivalents} の 3 は、連結性を「二点の離散空間への連続写像が定数しかない」という、外への写像の言葉で述べている。連結成分の集合は、空間から離散空間への「最も細かい」連続な分け方であり、代数的位相幾何の $0$ 次元ホモロジー $H_{0}$（弧状連結成分で生成される自由加群）につながる。比喩で言えば、連結性は「この空間をスイッチ一つで二色に塗り分けられるか」であり、塗り分けられない空間が連結である。
+:::
+
+## 問題 {#top:sec-con-problems}
+
+::: problem {#top:prob-r-not-homeo-r2}
+$\R$ と $\R^{2}$ は同相でないことを示せ。
+:::
+
+::: solution
+同相写像 $f\colon\R^{2}\to\R$ があれば、$\R^{2}\setminus\{p\}$ と $\R\setminus\{f(p)\}$ も同相。前者は弧状連結（二点を、$p$ を避ける折れ線で結べる）なので連結、後者は連結でない（$(-\infty,f(p))\sqcup(f(p),\infty)$）。矛盾。
+:::
+
+::: problem {#top:prob-circle-not-interval}
+$S^{1}$ と $[0,1]$ は同相でないことを示せ。
+:::
+
+::: solution
+$[0,1]$ から内点 $1/2$ を除くと連結でないが、$S^{1}$ からどの一点を除いても弧状連結（残りは開区間と同相）。同相写像はこの性質を保つ。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>アッカーマン関数と while の必要性 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/02-computability/03-ackermann.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# アッカーマン関数と while の必要性 {#comp:page-ackermann keywords="Ackermann function, Ackermann-Peter function, not primitive recursive, loop programs bounded, Meyer-Ritchie bounding lemma, while loop necessary"}
+
+for プログラムはすべての入力で停止する（\ref{comp:for-total}）。では、全域的な計算可能関数はすべて for プログラムで計算できるだろうか。本ページでは、そうでないことを**アッカーマン関数** $A$（\ref{comp:ackermann}）で示す。for プログラムが状態の値をどこまで大きくできるかは、入れ子の深さに応じた $A(k,\cdot)$ で抑えられ（\ref{comp:loop-bound}）、対角線 $A(y,y)$ はそのどれよりも速く増えるので原始再帰的でない（\ref{comp:ackermann-not-pr}）。一方 $A$ は、スタックを使えば while ループ一つで計算できる（\ref{comp:ackermann-computable}）。したがって L の while は、全域的な関数の範囲でも本質的に計算能力を広げる。
+
+## 記法と定義の確認 {#comp:sec-ack-notation}
+
+::: notation
+- L、$\mathrm{L}_{\mathrm{for}}$、意味 $[\![P]\!]$、局所性（\ref{comp:L-locality}）、略記（\ref{comp:L-macros}）、サブルーチン呼び出し（\ref{comp:L-composition}）は \ref{comp:page-language-L} のとおり。
+- 原始再帰関数と for 計算可能関数の一致（\ref{comp:pr-equals-for}）、対関数 $\pi,\pi_{1},\pi_{2}$（\ref{comp:pairing-pr}）を使う。
+- 関数 $g\colon\N\to\N$ の $t$ 回の合成を $g^{t}$ と書く（$g^{0}=\mathrm{id}$）。
+- プログラム $P$ と状態 $\sigma$ について $\lvert\sigma\rvert_{P}\defeq\max\{\sigma(v):v\in\mathrm{var}(P)\}$ とする。
+:::
+
+## アッカーマン関数 {#comp:sec-ackermann}
+
+::: definition アッカーマン関数 {#comp:ackermann keywords="Ackermann function, Ackermann-Peter" index="アッカーマン関数|あっかーまんかんすう"}
+$A\colon\N^{2}\to\N$ を次で定める。
+$$
+\begin{aligned}
+A(0,y)&=y+1,\\
+A(x+1,0)&=A(x,1),\\
+A(x+1,y+1)&=A(x,A(x+1,y)).
+\end{aligned}
+$$
+これは $x$ に関する帰納法で、各 $x$ について関数 $A(x,\cdot)$ を定める：$A(0,\cdot)$ は後者関数で、$A(x+1,\cdot)$ は $A(x,\cdot)$ から $y$ に関する原始再帰で決まる。したがって $A$ はただ一つの全域的な関数である。
+:::
+
+::: remark
+この形はペーテルとロビンソンによるもので、アッカーマン自身の 3 変数の関数を簡略化したものとして知られている。$A(1,y)=y+2$、$A(2,y)=2y+3$（\ref{comp:ackermann-growth} の 5）、$A(3,y)=2^{y+3}-3$（問題 \ref{comp:prob-ack-3}）、$A(4,y)$ は $2$ の累乗の塔になる。
+:::
+
+::: lemma アッカーマン関数の増大 {#comp:ackermann-growth keywords="monotonicity of Ackermann function" index="アッカーマン関数の単調性|あっかーまんかんすうのたんちょうせい"}
+すべての $x,y$ について次が成り立つ。
+1. $A(x,y)>y$。
+2. $A(x,y+1)>A(x,y)$。したがって $y<y'$ なら $A(x,y)<A(x,y')$。
+3. $A(x+1,y)\ge A(x,y+1)$。
+4. $A(x+1,y)>A(x,y)$。したがって $x\le x'$ なら $A(x,y)\le A(x',y)$。
+5. $A(1,y)=y+2$、$A(2,y)=2y+3$。
+6. $A(x,A(x,y))<A(x+2,y)$。
+:::
+
+::: proof
+1. $x$ に関する帰納法で、各 $x$ について $y$ に関する帰納法。$x=0$：$y+1>y$。$x+1$, $y=0$：$A(x+1,0)=A(x,1)>1>0$（$x$ についての仮定）。$x+1$, $y+1$：$A(x+1,y+1)=A(x,A(x+1,y))>A(x+1,y)>y$（前者は $x$ についての仮定、後者は $y$ についての仮定）なので $A(x+1,y+1)\ge y+2>y+1$。
+2. $x=0$ は明らか。$x+1$ では $A(x+1,y+1)=A(x,A(x+1,y))>A(x+1,y)$（1 を $x$ と $A(x+1,y)$ に使う）。
+3. $y$ に関する帰納法。$y=0$ は等号。$A(x+1,y)\ge A(x,y+1)$ とすると、1 より $A(x+1,y)\ge A(x,y+1)\ge y+2$、よって 2 から
+$$
+A(x+1,y+1)=A(x,A(x+1,y))\ge A(x,y+2).
+$$
+4. 3 と 2 から $A(x+1,y)\ge A(x,y+1)>A(x,y)$。
+5. $A(1,0)=A(0,1)=2$、$A(1,y+1)=A(0,A(1,y))=A(1,y)+1$ から $A(1,y)=y+2$。$A(2,0)=A(1,1)=3$、$A(2,y+1)=A(1,A(2,y))=A(2,y)+2$ から $A(2,y)=2y+3$。
+6. 4 と 2 から $A(x,A(x,y))<A(x,A(x+1,y))=A(x+1,y+1)$、さらに 3 から $A(x+1,y+1)\le A(x+2,y)$。
+:::
+
+::: lemma 反復の評価 {#comp:ackermann-iteration keywords="iterating Ackermann function"}
+$A_{k}\defeq A(k,\cdot)$ とすると、すべての $m,t$ について $A_{k}^{t}(m)<A(k+1,m+t)$。また $k\ge2$ なら $A(k,2m)<A(k+2,m)$。
+:::
+
+::: proof
+$t$ に関する帰納法。$t=0$ は \ref{comp:ackermann-growth} の 1。$A_{k}^{t}(m)<A(k+1,m+t)$ とすると、2 から
+$$
+A_{k}^{t+1}(m)=A_{k}(A_{k}^{t}(m))<A_{k}(A(k+1,m+t))=A(k+1,m+t+1).
+$$
+後半：$k\ge2$ なら 5 と 4 から $2m<2m+3=A(2,m)\le A(k,m)$。よって 2 と 6 から $A(k,2m)<A(k,A(k,m))<A(k+2,m)$。
+:::
+
+## for プログラムの増大の上限 {#comp:sec-loop-bound}
+
+::: theorem for プログラムの上限 {#comp:loop-bound keywords="bounding lemma for loop programs, Meyer-Ritchie" index="for プログラムの上限|ふぉーぷろぐらむのじょうげん"}
+各 $P\in\mathrm{L}_{\mathrm{for}}$ について、ある $k\ge1$ があって、すべての状態 $\sigma$ で
+$$
+\lvert[\![P]\!](\sigma)\rvert_{P}<A(k,\lvert\sigma\rvert_{P}).
+$$
+:::
+
+::: proof
+このような $k$ を $P$ の**上限の指数**と呼ぶ。\ref{comp:ackermann-growth} の 4 より、上限の指数より大きい数も上限の指数である。$P$ の構成に関する帰納法。$m\defeq\lvert\sigma\rvert_{P}$、$[\![\cdot]\!]$ の値が定義されることは \ref{comp:for-total} による。
+
+**基本命令.** 書き換えた変数の値は $m+1$ 以下、他は変わらないので、$\lvert[\![P]\!](\sigma)\rvert_{P}\le m+1<m+2=A(1,m)$。$k=1$。
+
+**逐次実行 $P=P_{1};P_{2}$.** $P_{1},P_{2}$ の上限の指数の大きい方を $k$ とする。$\sigma_{1}\defeq[\![P_{1}]\!](\sigma)$ とする。$\mathrm{var}(P_{1})$ 上の値は $A(k,\lvert\sigma\rvert_{P_{1}})\le A(k,m)$ 未満、$\mathrm{var}(P)\setminus\mathrm{var}(P_{1})$ 上の値は変わらず（\ref{comp:L-locality}）$m<A(k,m)$。よって $m_{1}\defeq\lvert\sigma_{1}\rvert_{P}<A(k,m)$。同じ議論を $P_{2}$ と $\sigma_{1}$ に使うと、
+$$
+\lvert[\![P]\!](\sigma)\rvert_{P}<A(k,m_{1})<A(k,A(k,m))<A(k+2,m)
+$$
+（2 と 6）。$k+2$ が $P$ の上限の指数になる。
+
+**for ループ $P=\mathtt{for}\ x\ \mathtt{do}\ Q\ \mathtt{od}$.** $Q$ の上限の指数を $k$ とする。$n\defeq\sigma(x)\le m$（$x\in\mathrm{var}(P)$）。規則 5 の列 $\sigma_{0}=\sigma,\dots,\sigma_{n}$ について $m_{t}\defeq\lvert\sigma_{t}\rvert_{P}$ とおく。逐次実行と同じ議論で $m_{t+1}<A(k,m_{t})$。よって $t$ に関する帰納法と 2 から $m_{t}\le A_{k}^{t}(m)$。\ref{comp:ackermann-iteration} から
+$$
+\begin{aligned}
+\lvert[\![P]\!](\sigma)\rvert_{P}=m_{n}&\le A_{k}^{n}(m)<A(k+1,m+n)\\
+&\le A(k+1,2m)<A(k+3,m)
+\end{aligned}
+$$
+（$n\le m$ と 2、および $k+1\ge2$ での \ref{comp:ackermann-iteration} の後半）。$k+3$ が $P$ の上限の指数になる。
+:::
+
+::: corollary アッカーマン関数は原始再帰的でない {#comp:ackermann-not-pr keywords="Ackermann function is not primitive recursive" index="アッカーマン関数は原始再帰的でない|あっかーまんかんすうはげんしさいきてきでない"}
+1. 原始再帰関数 $f\colon\N^{l}\to\N$ のそれぞれに対し、ある $k$ があって、すべての $\vec{m}$ で $f(\vec{m})<A(k,\max\vec{m})$（$l=0$ なら $\max\vec{m}\defeq0$）。
+2. $g(y)\defeq A(y,y)$ は原始再帰的でない。したがって $A$ も原始再帰的でない。
+:::
+
+::: proof
+1. \ref{comp:pr-equals-for} により $f$ を計算する for プログラム $P$ がある。$\mathrm{var}(P)$ に $x_{0},x_{1},\dots,x_{l}$ が含まれない場合は、それらを現れるようにする（例えば先頭に $x_{i}:=x_{i}$ を付ける。意味は変わらない）。入力状態 $\sigma_{\vec{m}}$ では $\lvert\sigma_{\vec{m}}\rvert_{P}=\max\vec{m}$ なので、\ref{comp:loop-bound} の $k$ について $f(\vec{m})=[\![P]\!](\sigma_{\vec{m}})(x_{0})<A(k,\max\vec{m})$。
+2. $g$ が原始再帰的なら、1 の $k$ で $g(k)<A(k,k)=g(k)$ となり矛盾する。$A$ が原始再帰的なら、$g(y)=A(U^{1}_{1}(y),U^{1}_{1}(y))$ も原始再帰的になる。
+:::
+
+## アッカーマン関数の計算 {#comp:sec-ackermann-computable}
+
+スタック（数の有限列）を数でコード化する：空のスタックを $0$、スタック $s$ の上に $a$ を積んだものを $\mathrm{push}(a,s)\defeq\pi(a,s)+1$ とする。$\pi$ が全単射なので、正の数はどれもただ一通りに $\mathrm{push}(a,s)$ と書ける。$\mathrm{top}(c)\defeq\pi_{1}(c\mathbin{\dot{-}}1)$、$\mathrm{pop}(c)\defeq\pi_{2}(c\mathbin{\dot{-}}1)$ とすると、$\mathrm{top}(\mathrm{push}(a,s))=a$、$\mathrm{pop}(\mathrm{push}(a,s))=s$ で、これらはすべて原始再帰的（\ref{comp:pairing-pr}）、したがって for プログラムで計算できる（\ref{comp:pr-equals-for}）。スタック $a_{1},\dots,a_{r}$（$a_{r}$ が一番上）を $[a_{1},\dots,a_{r}]$ と書く。
+
+::: theorem アッカーマン関数は計算可能 {#comp:ackermann-computable keywords="Ackermann function is computable, stack machine" index="アッカーマン関数の計算|あっかーまんかんすうのけいさん"}
+$A$ を計算する L のプログラムで、while ループを一つだけ含むものがある。
+:::
+
+::: proof
+**プログラム.** 変数 $c$（スタック）、$a$、$y$ を使い、サブルーチン呼び出し（\ref{comp:L-composition}）と条件文（\ref{comp:L-macros} の 5）を略記として使う。
+```python アッカーマン関数を計算するプログラム（while ループは一つ）
+c = push(x1, 0)          # スタック。push, top, pop は for プログラムで計算できる
+y = x2
+while c != 0:
+    a = top(c)
+    c = pop(c)
+    if a == 0:
+        y += 1
+    elif y == 0:
+        c = push(a - 1, c)
+        y = 1
+    else:
+        c = push(a - 1, c)
+        c = push(a, c)
+        y = y - 1
+x0 = y
+```
+表示は \ref{comp:L-python-display} の約束による。`if … elif … else` の三つの場合のうちちょうど一つが実行されるように、条件は周回の初めの $a,y$ の値で判定する（L では、判定結果を新しい変数に保存してから三つの条件文 $\mathtt{if}\ u\neq0\ \mathtt{then}\ \cdots$ を並べる）。条件 $a\neq0\wedge y=0$ などは、特性関数（原始再帰的）を計算して条件文に使えばよい。
+
+**一周の働き.** 周回の初めの $(c,y)$ が $([s_{1},\dots,s_{r},a],y)$（$s$ は残りのスタック）のとき、周回の終わりは次のとおり。
+- $a=0$：$([s_{1},\dots,s_{r}],y+1)$。
+- $a\ge1$, $y=0$：$([s_{1},\dots,s_{r},a-1],1)$。
+- $a\ge1$, $y\ge1$：$([s_{1},\dots,s_{r},a-1,a],y-1)$。
+
+**停止と正しさ.** 次の主張を、$(a,y)$ に関する辞書式順序（$\N^{2}$ 上の整礎な順序）の帰納法で示す。
+
+> 任意のスタック $s$ について、$(c,y)=(s\text{ の上に }a\text{ を積んだもの},y)$ から周回を有限回繰り返すと、$(c,y)=(s,A(a,y))$ になる。しかもそれまでの各周回の終わりでは、$c$ は $s$ の上に一つ以上の数を積んだスタックである。
+
+- $a=0$：一周で $(s,y+1)=(s,A(0,y))$。途中の周回はない。
+- $a=a'+1$, $y=0$：一周で $(s\cdot[a'],1)$（$s$ の上に $a'$ を積んだもの）。$(a',1)$ は辞書式に $(a,0)$ より小さいので、帰納法の仮定でさらに有限回の周回で $(s,A(a',1))=(s,A(a,0))$。
+- $a=a'+1$, $y=y'+1$：一周で $(s\cdot[a',a],y')$。$(a,y')<(a,y)$ なので、帰納法の仮定（スタック $s\cdot[a']$ について）で $(s\cdot[a'],A(a,y'))$ になる。$(a',A(a,y'))<(a,y)$ なので、さらに $(s,A(a',A(a,y')))=(s,A(a,y))$ になる。どの途中の段階でも、スタックは $s\cdot[a']$ か、その上にさらに積んだものなので、後半も成り立つ（$y=0$ の場合も同様）。
+
+入力 $(m_{1},m_{2})$ では最初に $(c,y)=([m_{1}],m_{2})$ で、$s$ を空として主張を使うと、有限回の周回で $(c,y)=(0,A(m_{1},m_{2}))$ になる。主張の後半から、それより前の周回の終わりでは $c\neq0$ なので、ループはちょうどそこで止まる。L の意味では、周回の回数 $N$ に関する帰納法で「$N$ 周後に $c=0$ となり、それより前は $c\neq0$ なら、while ループはその状態で停止する」が規則 6 から従う。最後に $x_{0}:=y$ で出力は $A(m_{1},m_{2})$。
+:::
+
+::: corollary for 計算可能関数は計算可能関数の真部分クラス {#comp:for-proper keywords="loop computable proper subclass of total computable" index="while の必要性|ほわいるのひつようせい"}
+原始再帰関数（＝for 計算可能関数）全体は、全域的な計算可能関数全体の真部分集合である。
+:::
+
+::: proof
+包含は定義から（for プログラムは L のプログラム）。$A$ は全域的で計算可能（\ref{comp:ackermann-computable}）だが原始再帰的でない（\ref{comp:ackermann-not-pr}）。
+:::
+
+::: hypcheck
+- **for の回数が入口の値で決まること**：\ref{comp:loop-bound} の for ループの場合で、繰り返し回数 $n$ を $n\le m$ と評価するのに使った。回数が本体の実行中に増えうる while ループでは、この評価ができない。
+- **局所性**（\ref{comp:L-locality}）：書き換えられない変数の値が $m$ のままであることに使った。
+- **辞書式順序の整礎性**：\ref{comp:ackermann-computable} の停止の証明に本質的である。アッカーマン関数の定義が「二重の帰納法」であることが、for ループ（一重の回数）で足りない理由の直感的な説明になる。
+- **定義の全域性**：\ref{comp:ackermann} の定義が $x$ についての帰納法で正当化されることを使い、$A$ がただ一つの全域的な関数であるとした。
+:::
+
+## 問題 {#comp:sec-ack-problems}
+
+::: problem {#comp:prob-ack-3}
+$A(3,y)=2^{y+3}-3$ を示せ。
+:::
+
+::: solution
+$A(3,0)=A(2,1)=5=2^{3}-3$。$A(3,y)=2^{y+3}-3$ なら、\ref{comp:ackermann-growth} の 5 から
+$$
+A(3,y+1)=A(2,A(3,y))=2(2^{y+3}-3)+3=2^{y+4}-3.
+$$
+:::
+
+::: problem {#comp:prob-ack-rows-pr}
+各 $x$ について、$1$ 変数関数 $A(x,\cdot)$ は原始再帰的であることを示せ。
+:::
+
+::: solution
+$x$ に関する帰納法。$A(0,\cdot)=S$。$A(x,\cdot)$ が原始再帰的なら、$f(0)=A(x,1)$, $f(y+1)=A(x,f(y))$ はパラメータのない原始再帰で、定義から $f=A(x+1,\cdot)$。（ここで $x$ は固定した数で、$x$ についての帰納法は「各 $x$ ごとに原始再帰の定義がある」ことを示すメタな帰納法である。これらを $x$ について一様にまとめた $A$ は原始再帰的でない。）
+:::
+
+::: problem {#comp:prob-ack-dominate}
+$1$ 変数の原始再帰関数 $f$ のそれぞれについて、ある $y_{0}$ があり、$y\ge y_{0}$ ならつねに $f(y)<A(y,y)$ となることを示せ。
+:::
+
+::: solution
+\ref{comp:ackermann-not-pr} の 1 の $k$ をとる。$y\ge k$ なら、\ref{comp:ackermann-growth} の 4 から $f(y)<A(k,y)\le A(y,y)$。$y_{0}\defeq k$。
+:::
+
+::: supplement
+**前提の検討.**
+- \ref{comp:loop-bound} は値の上限を述べるだけで、for プログラムの「実行時間」を直接扱ってはいない。しかし基本命令の実行回数も同じように $A(k',\cdot)$ で抑えられるので、for プログラムは実行時間も原始再帰的な関数で抑えられる。
+- 原始再帰的でない全域的計算可能関数の存在は、万能プログラムを使った対角線論法でも示せる（すべての for プログラムを数え上げ、$n$ 番目の for プログラムの入力 $n$ での値に $1$ を足す。\ref{comp:page-universal-smn}）。アッカーマン関数による証明は、具体的な関数を与える点と、増大の速さという理由を示す点で異なる。
+
+**関連する結果.**
+- *アッカーマン関数のグラフ.* 関係 $A(x,y)=z$ は原始再帰的であることが知られている（計算の過程が $z$ で抑えられることを使う）。したがって「グラフが原始再帰的でも関数が原始再帰的とは限らない」。
+- *証明論との関係.* $\PA$ で全域性が証明できる計算可能関数は、ε₀ より小さい順序数で添え字付けた高速増加関数で抑えられることが知られている（ゲンツェン、クライゼル）。原始再帰関数は $\omega$ より小さい段階、アッカーマン関数は段階 $\omega$ に当たる。本サイトでは示していない。
+
+**高い視点から：二重の帰納法と演算の塔.** $A(1,\cdot)$, $A(2,\cdot)$, $A(3,\cdot)$, $A(4,\cdot)$ は、ほぼ「足し算、掛け算、累乗、累乗の塔」に当たり、$A(x+1,\cdot)$ は $A(x,\cdot)$ の反復である。for ループ一つは「既にある関数を、入力で決まる回数だけ反復する」ことしかできないので、入れ子の深さ $k$ のプログラムはこの塔の $k$ 段目程度までしか登れない。アッカーマン関数は塔の段数そのものを入力にとるので、どの有限の段にも収まらない。順序数で言えば、原始再帰は「$\omega$ 未満の各段階での帰納法」、アッカーマン関数は「$\omega^{2}$ 型の辞書式順序での帰納法」を必要とする。while ループは「いつ終わるか分からない反復」を許すことで、このような整礎な順序に沿った任意の再帰を表せるようになる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

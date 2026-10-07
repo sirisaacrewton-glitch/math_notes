@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>整礎集合 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/03-well-founded-sets/index.html" data-kind="dir">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 整礎集合（The Well-Founded Sets）
+
+累積階層とランク、整礎関係、基礎の公理、整礎関係上の帰納法と再帰。（Kunen 第 III 章に対応）
+
+<p class="mn-msc">MSC2020: 03E30</p>
+
+## 前提知識
+
+- [集合論 › 基礎事項](../../../03-mathematical-logic/03E-set-theory/01-basics/index.html) [§1](../../../03-mathematical-logic/03E-set-theory/01-basics/01-axioms-overview.html)〜[§13](../../../03-mathematical-logic/03E-set-theory/01-basics/13-konig.html)（集合論の言語と ZFC の公理 〜 ケーニッヒの定理）：順序数と超限再帰、基数
+
+## 目次
+
+<ol class="mn-dirtoc">
+<li value="1"><a href="01-cumulative-hierarchy.html">§1 累積階層とランク</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 1.1</span> <span class="mn-dirtoc-title">累積階層</span></li><li><span class="mn-dirtoc-kind">定義 1.2</span> <span class="mn-dirtoc-title">整礎集合</span></li><li><span class="mn-dirtoc-kind">補題 1.3</span> <span class="mn-dirtoc-title">累積階層の基本性質</span></li><li><span class="mn-dirtoc-kind">補題 1.4</span> <span class="mn-dirtoc-title">最初に現れる段階は後続順序数</span></li><li><span class="mn-dirtoc-kind">定義 1.5</span> <span class="mn-dirtoc-title">ランク</span></li><li><span class="mn-dirtoc-kind">補題 1.6</span> <span class="mn-dirtoc-title">ランクの基本性質</span></li><li><span class="mn-dirtoc-kind">補題 1.7</span> <span class="mn-dirtoc-title">順序数のランク</span></li><li><span class="mn-dirtoc-kind">補題 1.8</span> <span class="mn-dirtoc-title">WF の特徴づけ</span></li><li><span class="mn-dirtoc-kind">命題 1.9</span> <span class="mn-dirtoc-title">ランクの計算</span></li><li><span class="mn-dirtoc-kind">定理 1.10</span> <span class="mn-dirtoc-title">WF の閉包性</span></li></ul></li>
+<li value="2"><a href="02-size-of-wf.html">§2 WF の大きさと数学的対象</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">補題 2.1</span> <span class="mn-dirtoc-title">極限段階の閉包性</span></li><li><span class="mn-dirtoc-kind">定理 2.3</span> <span class="mn-dirtoc-title">数の体系は整礎集合</span></li><li><span class="mn-dirtoc-kind">補題 2.4</span> <span class="mn-dirtoc-title">二進展開</span></li><li><span class="mn-dirtoc-kind">定理 2.5</span> <span class="mn-dirtoc-title">R(n) は有限</span></li><li><span class="mn-dirtoc-kind">定理 2.6</span> <span class="mn-dirtoc-title">アッカーマンの符号化</span></li><li><span class="mn-dirtoc-kind">系 2.8</span> <span class="mn-dirtoc-title">R(ω) は可算</span></li><li><span class="mn-dirtoc-kind">定理 2.9</span> <span class="mn-dirtoc-title">累積階層の大きさ</span></li><li><span class="mn-dirtoc-kind">定理 2.10</span> <span class="mn-dirtoc-title">構造の WF への移植</span></li><li><span class="mn-dirtoc-kind">命題 2.11</span> <span class="mn-dirtoc-title">スコットのトリック</span></li></ul></li>
+<li value="3"><a href="03-well-founded-relations.html">§3 整礎関係と推移閉包</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 3.1</span> <span class="mn-dirtoc-title">整礎関係</span></li><li><span class="mn-dirtoc-kind">補題 3.3</span> <span class="mn-dirtoc-title">整礎関係の基本性質</span></li><li><span class="mn-dirtoc-kind">命題 3.4</span> <span class="mn-dirtoc-title">順序数への単調写像による判定</span></li><li><span class="mn-dirtoc-kind">補題 3.5</span> <span class="mn-dirtoc-title">整礎集合の上で $\in$ は整礎</span></li><li><span class="mn-dirtoc-kind">補題 3.6</span> <span class="mn-dirtoc-title">推移的集合上で $\in$ が整礎なら整礎集合</span></li><li><span class="mn-dirtoc-kind">定義 3.7</span> <span class="mn-dirtoc-title">推移閉包</span></li><li><span class="mn-dirtoc-kind">補題 3.8</span> <span class="mn-dirtoc-title">推移閉包の基本性質</span></li><li><span class="mn-dirtoc-kind">定理 3.9</span> <span class="mn-dirtoc-title">整礎集合の同値な条件</span></li><li><span class="mn-dirtoc-kind">系 3.11</span> <span class="mn-dirtoc-title">推移閉包の元のランク</span></li></ul></li>
+<li value="4"><a href="04-foundation.html">§4 基礎の公理</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定理 4.1</span> <span class="mn-dirtoc-title">基礎の公理の同値な形</span></li><li><span class="mn-dirtoc-kind">系 4.2</span> <span class="mn-dirtoc-title">すべての集合はランクをもつ</span></li><li><span class="mn-dirtoc-kind">命題 4.3</span> <span class="mn-dirtoc-title">$\in$-帰納法</span></li><li><span class="mn-dirtoc-kind">命題 4.5</span> <span class="mn-dirtoc-title">$\in$ の輪と無限降下列の不在</span></li><li><span class="mn-dirtoc-kind">命題 4.6</span> <span class="mn-dirtoc-title">整礎性と降下列</span></li><li><span class="mn-dirtoc-kind">定理 4.8</span> <span class="mn-dirtoc-title">基礎の公理のもとでの順序数</span></li><li><span class="mn-dirtoc-kind">命題 4.9</span> <span class="mn-dirtoc-title">遺伝的に推移的な集合</span></li></ul></li>
+<li value="5"><a href="05-wf-recursion.html">§5 整礎関係上の帰納法と再帰</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 5.1</span> <span class="mn-dirtoc-title">クラス上の整礎関係</span></li><li><span class="mn-dirtoc-kind">定義 5.3</span> <span class="mn-dirtoc-title">集合的関係</span></li><li><span class="mn-dirtoc-kind">定義 5.4</span> <span class="mn-dirtoc-title">前者・閉包</span></li><li><span class="mn-dirtoc-kind">補題 5.5</span> <span class="mn-dirtoc-title">前者の閉包の基本性質</span></li><li><span class="mn-dirtoc-kind">定理 5.7</span> <span class="mn-dirtoc-title">部分クラスの極小元</span></li><li><span class="mn-dirtoc-kind">命題 5.8</span> <span class="mn-dirtoc-title">集合的でない整礎関係の極小元</span></li><li><span class="mn-dirtoc-kind">系 5.9</span> <span class="mn-dirtoc-title">整礎関係上の帰納法</span></li><li><span class="mn-dirtoc-kind">定理 5.11</span> <span class="mn-dirtoc-title">整礎関係上の超限再帰</span></li><li><span class="mn-dirtoc-kind">定義 5.13</span> <span class="mn-dirtoc-title">閉集合と近似</span></li><li><span class="mn-dirtoc-kind">補題 5.14</span> <span class="mn-dirtoc-title">近似の基本性質</span></li><li><span class="mn-dirtoc-kind">定義 5.15</span> <span class="mn-dirtoc-title">整礎関係のランク</span></li><li><span class="mn-dirtoc-kind">補題 5.17</span> <span class="mn-dirtoc-title">ランクの基本性質</span></li></ul></li>
+<li value="6"><a href="06-mostowski.html">§6 モストフスキの崩壊定理</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定理 6.1</span> <span class="mn-dirtoc-title">モストフスキの崩壊定理</span></li><li><span class="mn-dirtoc-kind">定義 6.3</span> <span class="mn-dirtoc-title">モストフスキの崩壊関数</span></li><li><span class="mn-dirtoc-kind">補題 6.5</span> <span class="mn-dirtoc-title">崩壊関数の基本性質</span></li><li><span class="mn-dirtoc-kind">定義 6.6</span> <span class="mn-dirtoc-title">外延的な関係</span></li><li><span class="mn-dirtoc-kind">補題 6.7</span> <span class="mn-dirtoc-title">推移的なクラス上の $\in$ は外延的</span></li><li><span class="mn-dirtoc-kind">補題 6.8</span> <span class="mn-dirtoc-title">外延的なら崩壊関数は同型</span></li><li><span class="mn-dirtoc-kind">命題 6.9</span> <span class="mn-dirtoc-title">整列順序の崩壊</span></li><li><span class="mn-dirtoc-kind">系 6.10</span> <span class="mn-dirtoc-title">基礎の公理のもとでの崩壊</span></li></ul></li>
+</ol>
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

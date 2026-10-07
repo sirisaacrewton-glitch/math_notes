@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>再帰定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/02-computability/12-recursion-theorem.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 再帰定理 {#comp:page-recursion-theorem keywords="recursion theorem, self-reproducing machine, quine, Kleene's recursion theorem, fixed-point theorem, minimal Turing machines"}
+
+前のページでは、smn 定理から指数についての再帰定理（\ref{comp:second-recursion-theorem}）を導いた。本ページではそれをチューリング機械の言葉で述べ直し、応用を扱う。チューリング機械は、自分自身の符号を計算して、それを他の計算に使うことができる。これが**再帰定理**（\ref{comp:recursion-theorem}）で、「自分の記述を知っている機械」を作る一般的な方法を与える。本ページでは、まず自分自身を出力する機械（\ref{comp:self}）を作り、それを一般化して再帰定理を示す。応用として、$A_{\mathsf{TM}}$ の決定不能性の別証明、状態数最小の機械の集合が認識可能でないこと（\ref{comp:min-tm}）、計算可能な変換の不動点定理（\ref{comp:fixed-point}）を示す。
+
+## 記法と定義の確認 {#comp:sec-rec-notation}
+
+::: notation
+- TM、計算可能関数、符号化 $\langle\cdot\rangle$、$A_{\mathsf{TM}}$、写像還元、高水準の記述は \ref{comp:page-turing-machines}, \ref{comp:page-decidability}, \ref{comp:page-mapping-reducibility} のとおり。
+- 機械 $A$ と $B$ を「$A$ を動かし、終わったら $B$ を動かす」ようにつないだ機械を $AB$ と書く。その符号 $\langle AB\rangle$ は $\langle A\rangle$ と $\langle B\rangle$ から計算できる。
+:::
+
+## 自分自身を出力する機械 {#comp:sec-self}
+
+::: lemma 文字列を書く機械 {#comp:print-machine}
+計算可能関数 $q\colon\Sigma^{\ast}\to\Sigma^{\ast}$ で、各 $w$ について $q(w)$ が「入力を消してテープに $w$ を書いて停止する機械」$P_{w}$ の符号 $\langle P_{w}\rangle$ になるものがある。
+:::
+
+::: proof
+$P_{w}$ の遷移表は、テープを消す固定の部分と、$w$ の各文字を順に書く $\lvert w\rvert$ 個の状態からなる。これは $w$ から機械的に書き下せる。
+:::
+
+::: theorem 自己出力機械 {#comp:self keywords="self-reproducing Turing machine, quine" index="自己出力機械|じこしゅつりょくきかい"}
+入力を無視して自分自身の符号 $\langle\mathit{SELF}\rangle$ を出力する TM $\mathit{SELF}$ が存在する。
+:::
+
+::: proof
+$\mathit{SELF}=AB$ の形で作る。
+- $B$：テープ上の文字列 $\langle M\rangle$（ある機械の符号）を読み、$q(\langle M\rangle)=\langle P_{\langle M\rangle}\rangle$ を計算し（\ref{comp:print-machine}）、それを $\langle M\rangle$ と組み合わせて $\langle P_{\langle M\rangle}M\rangle$ を出力する。$B$ の定義は $A$ に依存しない。
+- $A\defeq P_{\langle B\rangle}$（$B$ の符号を書く機械）。
+
+$\mathit{SELF}=AB$ を動かすと、$A$ がテープに $\langle B\rangle$ を書き、$B$ がそれを読んで $\langle P_{\langle B\rangle}B\rangle=\langle AB\rangle$ を出力する。
+:::
+
+::: intuition
+「次の文を二回、二回目は引用符に入れて書け：『次の文を二回、二回目は引用符に入れて書け：』」という指示は、それに従うと指示自身が出てくる。$B$ が「指示」、$A$ が「引用されたもの」に当たる。循環を避けるため、$B$ を先に作り、$A$ を $B$ から作るのが要点である。
+:::
+
+## 再帰定理 {#comp:sec-recursion}
+
+::: theorem 再帰定理 {#comp:recursion-theorem keywords="recursion theorem, Kleene" index="再帰定理|さいきていり"}
+$T$ を、二つの引数をとる計算可能な部分関数 $t(u,w)$ を計算する TM とする（入力 $\langle u,w\rangle$）。このとき TM $R$ で、すべての $w$ について $R$ の $w$ の上の振る舞い（受理・拒否・ループ・出力）が $T$ の $\langle\langle R\rangle,w\rangle$ の上の振る舞いと同じになるものが存在する。
+:::
+
+::: proof
+$R=ABT$ の形で作る。\ref{comp:print-machine} と同様に、計算可能関数 $q'$ で、$q'(u)$ が「入力 $w$ を残したまま、その後ろに区切り記号と $u$ を書いて停止する機械」$A_{u}$ の符号になるものがある。
+- $B$：テープに $w$ と区切り記号と符号 $\langle M\rangle$ があるとき、$q'(\langle M\rangle)=\langle A_{\langle M\rangle}\rangle$ から $\langle A_{\langle M\rangle}M\rangle$ を計算し、テープを $\langle\langle A_{\langle M\rangle}M\rangle,w\rangle$ に書き換えて停止する（その後 $T$ が動く）。$B$ の定義は $A$ にも $T$ にも依存しない。
+- $A\defeq A_{\langle BT\rangle}$。
+
+$R$ を $w$ の上で動かすと、$A$ がテープを $w$ と $\langle BT\rangle$ にし、$B$ が $\langle A_{\langle BT\rangle}BT\rangle=\langle ABT\rangle=\langle R\rangle$ を計算してテープを $\langle\langle R\rangle,w\rangle$ にし、以後は $T$ がその入力の上で動く。よって $R$ の $w$ の上の振る舞いは $T$ の $\langle\langle R\rangle,w\rangle$ の上の振る舞いと同じである。
+:::
+
+::: hypcheck
+- **$B$ が $A$ に依存しないこと**：$B$ は与えられた符号から「それを書く機械」を作るだけで、$A$ が何であるかを知らない。そのため、$A$ を $\langle BT\rangle$ から定義しても循環しない。
+- **計算可能な部分関数**：$T$ は停止しない入力があってもよい。$R$ の振る舞いは $T$ の振る舞いそのものである。
+:::
+
+## 応用 {#comp:sec-rec-applications}
+
+::: corollary $A_{\mathsf{TM}}$ の決定不能性（再帰定理による） {#comp:atm-via-recursion}
+$A_{\mathsf{TM}}$ は決定可能でない。
+:::
+
+::: proof
+判定機 $H$ が $A_{\mathsf{TM}}$ を決定するとする。再帰定理で、次の $R$ を作る：「入力 $w$ に対し、自分の符号 $\langle R\rangle$ を得て、$H$ を $\langle R,w\rangle$ の上で動かし、$H$ が受理すれば拒否し、拒否すれば受理する」（$t(u,w)$ を「$H$ を $\langle u,w\rangle$ の上で動かし逆の答えを出す」として \ref{comp:recursion-theorem} を使う）。$R$ が $w$ を受理する $\iff H$ が $\langle R,w\rangle$ を拒否する $\iff R$ が $w$ を受理しない、で矛盾する。
+:::
+
+::: definition 最小の機械 {#comp:min-tm-definition}
+TM $M$ が**最小**であるとは、$\langle M'\rangle$ が $\langle M\rangle$ より短い TM $M'$ で $L(M')=L(M)$ となるものがないことをいう。$\mathit{MIN}_{\mathsf{TM}}\defeq\{\langle M\rangle:M\text{ は最小}\}$。
+:::
+
+::: theorem 最小機械の集合は認識不能 {#comp:min-tm keywords="MIN_TM is not Turing-recognizable" index="MIN_TM|みんてぃーえむ"}
+$\mathit{MIN}_{\mathsf{TM}}$ はチューリング認識可能でない。
+:::
+
+::: proof
+列挙機 $E$ が $\mathit{MIN}_{\mathsf{TM}}$ を列挙するとする（\ref{comp:enumerator}）。再帰定理で次の $C$ を作る：「入力 $w$ に対し、自分の符号 $\langle C\rangle$ を得て、$E$ を動かし、$\langle C\rangle$ より長い符号 $\langle D\rangle$ が初めて列挙されるまで待ち、$D$ を $w$ の上で模倣する」。$\mathit{MIN}_{\mathsf{TM}}$ は無限集合（どの長さを超えても最小な機械がある：言語は無限個あり、各言語には最小の機械がある）なので、そのような $D$ はいつか列挙される。すると $L(C)=L(D)$ で $\lvert\langle C\rangle\rvert<\lvert\langle D\rangle\rvert$ なので $D$ は最小でなく、$\langle D\rangle\in\mathit{MIN}_{\mathsf{TM}}$ に反する。
+:::
+
+::: theorem 不動点定理 {#comp:fixed-point keywords="fixed-point version of the recursion theorem, Rogers" index="不動点定理（計算論）|ふどうてんていりけいさんろん"}
+$f\colon\Sigma^{\ast}\to\Sigma^{\ast}$ を計算可能関数とする。このとき TM $F$ で、$f(\langle F\rangle)$ がある TM $G$ の符号で $L(G)=L(F)$ となるものが存在する。（$f(\langle F\rangle)$ が符号でない場合は、それをすべて拒否する機械の符号とみなす。）
+:::
+
+::: proof
+再帰定理で次の $F$ を作る：「入力 $w$ に対し、自分の符号 $\langle F\rangle$ を得て、$f(\langle F\rangle)$ を計算し、それが表す機械 $G$ を $w$ の上で模倣する」。$F$ は $w$ を受理する $\iff G$ が $w$ を受理する、なので $L(F)=L(G)$。
+:::
+
+## 問題 {#comp:sec-rec-problems}
+
+::: problem {#comp:prob-rice-via-recursion}
+再帰定理を使ってライスの定理（\ref{comp:rice}）を証明せよ。
+:::
+
+::: solution
+$P$ を言語についての自明でない性質とし、判定機 $R_{P}$ があるとする。$\langle M_{1}\rangle\in P$, $\langle M_{2}\rangle\notin P$ をとる。再帰定理で次の $C$ を作る：「入力 $w$ に対し、$\langle C\rangle$ を得て $R_{P}$ を $\langle C\rangle$ の上で動かす。受理すれば $M_{2}$ を $w$ の上で模倣し、拒否すれば $M_{1}$ を $w$ の上で模倣する」。$\langle C\rangle\in P$ なら $L(C)=L(M_{2})$ で、$P$ は言語の性質なので $\langle C\rangle\notin P$、矛盾。$\langle C\rangle\notin P$ なら $L(C)=L(M_{1})$ で $\langle C\rangle\in P$、矛盾。
+:::
+
+::: problem {#comp:prob-no-total-fixed-free}
+$f(\langle M\rangle)\defeq\langle M'\rangle$（$M'$ は $M$ の受理と拒否を入れ替えた機械）とする。不動点定理の $F$ について $L(F)=L(F')$ であることから、$F$ はどんな機械か答えよ。
+:::
+
+::: solution
+$L(F)=L(F')$ とする。$w\in L(F)$ なら $F$ は $w$ を受理し、$F'$ は $w$ を拒否するので $w\notin L(F')$、矛盾。よって $L(F)=\varnothing$ で、$F'$ も何も受理しない。$F$ が拒否する入力は $F'$ が受理するので、$F$ はどの入力も拒否せず、すべての入力の上でループする機械である。
+:::
+
+::: supplement
+**前提の検討.**
+- 再帰定理は、機械が「自分の符号」を手に入れられることを保証するだけで、何か特別な能力を与えるわけではない。実際、定理の証明は自己出力の仕組みを機械の前に付け足すだけである。
+- \ref{comp:min-tm} の「$\mathit{MIN}_{\mathsf{TM}}$ は無限」は、言語が無限個あり、異なる言語を認識する機械は異なることから従う。
+
+**関連する結果.**
+- *クリーネの再帰定理と不完全性定理.* 再帰定理は、算術の**対角化定理**（\ref{pt:page-diagonal-first-incompleteness}）の計算論版である：対角化定理は「自分のゲーデル数について述べる文」を、再帰定理は「自分の符号を使う機械」を作る。どちらも「代入の関数 $q$ を自分自身に適用する」という同じ構造をもつ。
+- *ローヴェアの不動点定理.* 両者を圏論的に統一した定式化として知られている（\ref{cat:lawvere-fixed-point}）。
+
+**高い視点から：引用と使用.** 自己出力機械の秘密は、同じ文字列 $\langle B\rangle$ を二通りに使うことにある：一度は「データ」として書き（$A$）、一度は「命令」として実行する（$B$）。データとプログラムを同じ文字列で表せること（万能機械の存在）が、自己言及を可能にしている。生物の自己複製（遺伝情報を、複製されるデータとしても、複製を行う機械を作る命令としても使う）は、フォン・ノイマンがこの構造を指摘した例としてよく挙げられる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

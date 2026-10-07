@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ラムゼーの定理と ACA₀ | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/06-reverse-mathematics/04-ramsey.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ラムゼーの定理と ACA₀ {#logic:page-rm-ramsey keywords="Ramsey's theorem, infinite Ramsey theorem, homogeneous set, Erdos-Rado tree, pre-homogeneous, ACA0, RT32, RT22, Seetapun, Paris-Harrington, Jockusch, reverse mathematics"}
+
+**無限ラムゼーの定理**は、自然数の $k$ 個組を有限個の色で塗り分けると、どの $k$ 個組も同じ色になる無限集合（**等質集合**）があるという主張である。本ページでは、$\mathsf{ACA}_{0}$ で「$k$ 個組のラムゼーの定理から $k+1$ 個組のラムゼーの定理が導ける」ことを、**エルデシュ–ラドーの木**とケーニッヒの補題（\ref{logic:konig-aca}）を使って示す（\ref{logic:ramsey-step-aca}）。逆に、三つ組の二色塗り分けについてのラムゼーの定理から $\mathsf{ACA}_{0}$ が導けることを示し（\ref{logic:rt3-aca}）、標準的な $k\ge3$ について $\mathrm{RT}^{k}$ が $\mathsf{RCA}_{0}$ の上で $\mathsf{ACA}_{0}$ と同値であることを結論する（\ref{logic:ramsey-aca}）。最後に、$\mathsf{ACA}_{0}$ と同値になる定理をまとめ、二つ組の場合 $\mathrm{RT}^{2}_{2}$ が例外的であることに触れる。
+
+> 主な資料は田中一之『逆数学と 2 階算術』第 2 章 §2.4 後半（定理 2.26–2.28 と定理群 3）。証明は自分の言葉で組み立て直し、エルデシュ–ラドーの木は「各数の経路」として定義し直して、木であること・有限分岐であること・道の性質を補って示した。
+
+## 記法と定義の確認 {#logic:sec-rm4-notation}
+
+::: notation
+- 二階算術、$\mathsf{RCA}_{0}$, $\mathsf{ACA}_{0}$ と、$\mathsf{ACA}_{0}$ の同値な言い換え（$\Sigma^{0}_{1}$ 内包公理）は \ref{pt:page-soa-subsystems} と \ref{logic:page-rm-aca0} のとおり（\ref{pt:big-five}, \ref{logic:aca-equivalents}）。
+- 木・有限分岐・道・ケーニッヒの補題 $\mathsf{KL}$ は \ref{logic:konig-lemma-def} のとおり。$\sigma^{\frown}m$, $g\restr n$ も同ページの記法。
+- 集合 $X\subseteq\N$ について、$X$ の元の狭義増加な $k$ 個組 $(a_{1},\dots,a_{k})$（$a_{1}<\cdots<a_{k}$）の全体を $[X]^{k}$ と書く。$k$ 個組は数で符号化されており、$[X]^{k}$ は $X$ から有界な論理式で定義される集合である。数 $l\ge1$ を $\{0,\dots,l-1\}$ と同一視する。
+- 集合 $X$ が**無限**であるとは、$\forall b\,\exists n>b\,(n\in X)$ となることをいう。
+- 本ページの「$k$」「$l$」は、とくに断らない限り二階算術の中の数変数であり、「標準的な $k$」は具体的な自然数 $0,1,2,\dots$（メタレベルの数）を表す。
+:::
+
+## ラムゼーの定理とエルデシュ–ラドーの木 {#logic:sec-rm4-ramsey}
+
+::: definition 無限ラムゼーの定理 {#logic:ramsey-def keywords="infinite Ramsey theorem RTkl, coloring, homogeneous set" index="ラムゼーの定理（逆数学）|らむぜーのていりぎゃくすうがく, 等質集合|とうしつしゅうごう"}
+1. 関数 $f\colon[\N]^{k}\to l$ を、$k$ 個組の **$l$ 色の塗り分け**という。集合 $H\subseteq\N$ が $f$ の**等質集合**であるとは、$f$ が $[H]^{k}$ 上で定数であることをいう。
+2. $\mathrm{RT}^{k}_{l}$：任意の $f\colon[\N]^{k}\to l$ は無限の等質集合をもつ。
+3. $\mathrm{RT}^{k}\defeq\forall l\,\mathrm{RT}^{k}_{l}$（田中の本の $\mathrm{RT}(k)$）。
+:::
+
+::: remark
+1. $\mathrm{RT}^{k}_{l}$ は「$\forall f\,\exists H$（算術的条件）」の形の $\Pi^{1}_{2}$ 文である。$k$ を変数として「$\forall k\,\mathrm{RT}^{k}$」と一つの文にまとめることもできる。
+2. $\mathrm{RT}^{0}$ は自明（$[\N]^{0}$ は空の組一つだけ）。$\mathrm{RT}^{1}_{l}$ は**無限鳩の巣原理**である。標準的な $l$ についての $\mathrm{RT}^{1}_{l}$ は $\mathsf{RCA}_{0}$ で証明できる（$l$ 個の集合 $f^{-1}(i)$ がどれも有限なら、最大の上界より先の数がどこにも属さず矛盾）。$l$ を変数とする $\mathrm{RT}^{1}$ は $\mathsf{RCA}_{0}$ では証明できず、有界収集原理 $\mathrm{B}\Sigma^{0}_{2}$ と同値であることが知られている（ハースト。本サイトでは示していない）。
+:::
+
+まず、ラムゼーの定理の帰納的な証明の要になる木を定義する。
+
+::: definition エルデシュ–ラドーの木 {#logic:erdos-rado-tree keywords="Erdos-Rado tree, pre-homogeneous sequence" index="エルデシュ–ラドーの木|えるでしゅらどーのき"}
+$f\colon[\N]^{k+1}\to l$ とする。各 $j\in\N$ について、有限列 $\sigma_{j}$（$j$ の**経路**）を次のように定める。
+1. $\sigma_{j}(0)\defeq0$。
+2. $\sigma_{j}(0),\dots,\sigma_{j}(i)$ が定まり $\sigma_{j}(i)<j$ のとき、$\sigma_{j}(i+1)$ を、$\sigma_{j}(i)<m\le j$ であって、すべての $p_{1}<\cdots<p_{k}\le i$ について
+$$
+f(\sigma_{j}(p_{1}),\dots,\sigma_{j}(p_{k}),m)=f(\sigma_{j}(p_{1}),\dots,\sigma_{j}(p_{k}),j)\tag{1}
+$$
+となる最小の $m$ とする（$m=j$ は条件を満たすので、このような $m$ は存在する）。
+3. $\sigma_{j}(i)=j$ となったら止める。
+
+列 $\sigma_{j}$ は狭義増加で $j$ で終わる。$T_{f}\defeq\{\text{空列}\}\cup\{\sigma_{j}:j\in\N\}$ を $f$ の**エルデシュ–ラドーの木**という。
+:::
+
+::: remark
+(1) の条件は、「$m$ と $j$ は、すでに経路に並んだ数の $k$ 個組から見て、同じ色で見える」ということである。$j$ を根 $0$ から降ろしていき、各段で「祖先たちから見た色のパターンが $j$ と同じ最初の数」の下へ進み、そのような数が $j$ 自身になったところで $j$ を置く、と考えるとよい。$\sigma_{j}$ は $j$ と $f$ から有界な探索で計算でき（各段で $m\le j$ の範囲を調べればよい）、$T_{f}$ は $f$ をパラメータとする有界な論理式で定義できる（$\sigma\in T_{f}\iff\sigma$ は空列か、$\sigma=\sigma_{j}$（$j$ は $\sigma$ の最後の値））。
+:::
+
+::: lemma エルデシュ–ラドーの木の性質 {#logic:erdos-rado-properties keywords="properties of the Erdos-Rado tree: tree, infinite, finitely branching, paths are pre-homogeneous" index="前等質|ぜんとうしつ"}
+$\mathsf{RCA}_{0}$ で次が証明できる。$f\colon[\N]^{k+1}\to l$ について：
+1. $\sigma_{j}$ の長さ $i+1$ の始切片は $\sigma_{\sigma_{j}(i)}$ に等しい。とくに $T_{f}$ は木で、無限である。
+2. 長さ $i+1$ の節点 $\sigma\in T_{f}$ の子の個数は高々 $l^{\binom{i+1}{k}}$ である。とくに $T_{f}$ は有限分岐木である。
+3. $g$ が $T_{f}$ の道なら、$g$ は狭義増加で、すべての $p_{1}<\cdots<p_{k}<q<q'$ について
+$$
+f(g(p_{1}),\dots,g(p_{k}),g(q))=f(g(p_{1}),\dots,g(p_{k}),g(q')).
+$$
+（このような列を**前等質**という。$k+1$ 個組の色が最初の $k$ 個だけで決まる。）
+:::
+
+::: proof
+**1.** $j'\defeq\sigma_{j}(i)$ とおき、$\sigma_{j'}(r)=\sigma_{j}(r)$（$r\le i$）を $r$ についての帰納法で示す（条件は有界な論理式なので $\Sigma^{0}_{0}$ 帰納法でよい）。$r=0$ はどちらも $0$。$r<i$ で $r$ まで一致しているとする。$\sigma_{j}(r+1)$ は、$\sigma_{j}(r)<m\le j$ で「$p_{1}<\cdots<p_{k}\le r$ について $m$ と $j$ が同じ色で見える」最小の $m$ である。ここで $j'=\sigma_{j}(i)$ は $i>r$ 段で選ばれた数なので、定義の (1)（$i-1\ge r$ 段の条件）から、$p_{1}<\cdots<p_{k}\le r$ について $j'$ と $j$ は同じ色で見える。したがって $\sigma_{j}(r)<m\le j'$ の範囲で、「$m$ と $j$ が同じ色で見える」と「$m$ と $j'$ が同じ色で見える」は同値である。$\sigma_{j}(r+1)\le\sigma_{j}(i)=j'$ なので、二つの最小値は一致し、$\sigma_{j'}(r+1)=\sigma_{j}(r+1)$。
+
+これで、$T_{f}$ の元の始切片が再び $T_{f}$ の元であることがわかる（空列も含めた）。$\sigma_{j}$ は $j$ で終わるので $j\neq j'$ なら $\sigma_{j}\neq\sigma_{j'}$ で、$T_{f}$ は無限である。
+
+**2.** $\sigma\in T_{f}$ の長さを $i+1$、子を $\sigma^{\frown}m$ と $\sigma^{\frown}m'$（$m<m'$）とする。1 により $\sigma^{\frown}m=\sigma_{m}$, $\sigma^{\frown}m'=\sigma_{m'}$ である。各子 $m$ に、関数
+$$
+\lambda_{m}\colon[\{0,\dots,i\}]^{k}\to l,\qquad\lambda_{m}(p_{1},\dots,p_{k})\defeq f(\sigma(p_{1}),\dots,\sigma(p_{k}),m)
+$$
+を対応させる。$\lambda_{m}=\lambda_{m'}$ と仮定すると、$m$ は $\sigma(i)<m\le m'$ で (1)（$j=m'$）を満たすので、$\sigma_{m'}(i+1)\le m<m'$ となり、$\sigma_{m'}(i+1)=m'$ に反する。よって異なる子には異なる $\lambda$ が対応し、$\lambda$ の候補は $l^{\binom{i+1}{k}}$ 個なので子の個数は高々その数である。子の集合が有限であること（上界をもつこと）は、子の個数が有界であることと、子を小さい順に数える議論（$\Sigma^{0}_{1}$ 帰納法）から従う。
+
+**3.** $T_{f}$ の元は狭義増加なので $g$ も狭義増加。$q<q'$ とし、$j\defeq g(q')$ とおく。$g\restr(q'+1)\in T_{f}$ は $j$ で終わるので $\sigma_{j}$ に等しく、$g(q)=\sigma_{j}(q)$ である。$q\ge1$ なら $g(q)$ は $\sigma_{j}$ の第 $q$ 段で (1)（$i=q-1$）を満たすように選ばれたので、$p_{1}<\cdots<p_{k}\le q-1$、すなわち $p_{k}<q$ について
+$$
+f(g(p_{1}),\dots,g(p_{k}),g(q))=f(g(p_{1}),\dots,g(p_{k}),j)
+$$
+となる。$j=g(q')$ なので主張が従う。（$q=0$ のときは $p_{k}<q$ となる組がなく、主張は空虚に成り立つ。）
+:::
+
+::: intuition
+$k=1$ の例として、二つ組の二色塗り分け $f(a,b)\defeq1$（$3\mid b-a$ のとき）、$0$（それ以外）のエルデシュ–ラドーの木の先頭部分を描く。各数は、祖先たちから見た色が同じになる位置まで降りていく。たとえば $5$ は、$0$ から見て色 $0$（$5-0$ は $3$ の倍数でない）なので $0$ の下で色 $0$ の最初の数 $1$ へ進み、$1$ から見て色 $0$ なので $1$ の下の色 $0$ の最初の数 $2$ へ進み、$2$ から見て色 $1$ で、$2$ の下にまだ数がないので $2$ の子になる。どの道でも、各節点から子孫への色は一定になっている（前等質）。
+
+```svg f(a,b)=1（3 が b−a を割るとき）のエルデシュ–ラドーの木。強調した道 0, 3, 6, 9, … では、各節点から下の子孫への色がすべて 1。道 0, 1, 2, 5, 8 では 0 と 1 から下が色 0、2 と 5 から下が色 1
+<svg viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg" font-size="15">
+  <g stroke="currentColor" stroke-width="1.5">
+    <line x1="300" y1="30" x2="170" y2="90"/>
+    <line x1="170" y1="90" x2="100" y2="150"/>
+    <line x1="170" y1="90" x2="240" y2="150"/>
+    <line x1="100" y1="150" x2="100" y2="210"/>
+    <line x1="100" y1="210" x2="100" y2="270"/>
+    <line x1="240" y1="150" x2="240" y2="210"/>
+  </g>
+  <g style="stroke: var(--mn-accent)" stroke-width="3">
+    <line x1="300" y1="30" x2="440" y2="90"/>
+    <line x1="440" y1="90" x2="440" y2="150"/>
+    <line x1="440" y1="150" x2="440" y2="210"/>
+    <line x1="440" y1="210" x2="440" y2="262" stroke-dasharray="5 4"/>
+  </g>
+  <g style="fill: var(--mn-accent-soft)" stroke="currentColor">
+    <circle cx="300" cy="30" r="15"/>
+    <circle cx="170" cy="90" r="15"/>
+    <circle cx="100" cy="150" r="15"/>
+    <circle cx="240" cy="150" r="15"/>
+    <circle cx="100" cy="210" r="15"/>
+    <circle cx="240" cy="210" r="15"/>
+    <circle cx="100" cy="270" r="15"/>
+    <circle cx="440" cy="90" r="15"/>
+    <circle cx="440" cy="150" r="15"/>
+    <circle cx="440" cy="210" r="15"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="300" y="35">0</text>
+    <text x="170" y="95">1</text>
+    <text x="100" y="155">2</text>
+    <text x="240" y="155">4</text>
+    <text x="100" y="215">5</text>
+    <text x="240" y="215">7</text>
+    <text x="100" y="275">8</text>
+    <text x="440" y="95">3</text>
+    <text x="440" y="155">6</text>
+    <text x="440" y="215">9</text>
+  </g>
+  <text x="470" y="95" font-size="13" style="fill: var(--mn-fg-soft)">0 から見て色 1</text>
+  <text x="40" y="95" font-size="13" style="fill: var(--mn-fg-soft)">0 から見て色 0</text>
+  <text x="270" y="155" font-size="13" style="fill: var(--mn-fg-soft)">1 から見て色 1</text>
+  <text x="6" y="138" font-size="12" style="fill: var(--mn-fg-soft)">1 から見て色 0</text>
+</svg>
+```
+
+子の**個数**は色のパターンの数 $l^{\binom{i+1}{k}}$ で抑えられるが、子の**値**（次にどの数が来るか）を抑える関数は一般には得られない（問題 \ref{logic:prob-erdos-rado-branching}）。この点が、$\mathsf{WKL}$ では足りずケーニッヒの補題が必要になる理由である（\ref{logic:konig-aca} の後の注意）。
+:::
+
+## ラムゼーの定理と ACA₀ の同値性 {#logic:sec-rm4-aca}
+
+::: theorem ACA₀ における RT の帰納段階 {#logic:ramsey-step-aca keywords="ACA0 proves RTk implies RTk+1" index="ラムゼーの定理の帰納段階|らむぜーのていりのきのうだんかい"}
+$\mathsf{ACA}_{0}$ で $\forall k\,\forall l\,(\mathrm{RT}^{k}_{l}\to\mathrm{RT}^{k+1}_{l})$ が証明できる。したがって、各標準的な $k$ について $\mathsf{ACA}_{0}\vdash\mathrm{RT}^{k}$ である。
+:::
+
+::: proof
+$\mathrm{RT}^{k}_{l}$ を仮定し、$f\colon[\N]^{k+1}\to l$ を任意にとる。
+
+**Step 1（前等質な列）.** エルデシュ–ラドーの木 $T_{f}$（\ref{logic:erdos-rado-tree}）は $\mathsf{RCA}_{0}$ で存在し、\ref{logic:erdos-rado-properties} の 1, 2 により無限の有限分岐木である。$\mathsf{ACA}_{0}$ ではケーニッヒの補題が成り立つ（\ref{logic:konig-aca} の $1\Rightarrow2$）ので、$T_{f}$ は道 $g$ をもつ。\ref{logic:erdos-rado-properties} の 3 により $g$ は狭義増加で前等質である。
+
+**Step 2（$k$ 個組の塗り分け）.** $\hat{f}\colon[\N]^{k}\to l$ を
+$$
+\hat{f}(p_{1},\dots,p_{k})\defeq f(g(p_{1}),\dots,g(p_{k}),g(p_{k}+1))
+$$
+と定める（$g$ と $f$ の合成なので存在する）。前等質性から、すべての $q>p_{k}$ で $f(g(p_{1}),\dots,g(p_{k}),g(q))=\hat{f}(p_{1},\dots,p_{k})$ である。
+
+**Step 3（等質集合）.** 仮定 $\mathrm{RT}^{k}_{l}$ により、$\hat{f}$ の無限の等質集合 $H'$ がある（色 $c$ とする）。$H\defeq\{g(p):p\in H'\}$ とおく。$g$ は狭義増加なので $g(p)\ge p$ で、$n\in H\iff\exists p\le n\,(p\in H'\wedge g(p)=n)$ は有界な論理式であり、$H$ は存在し無限である。$(a_{1},\dots,a_{k+1})\in[H]^{k+1}$ とし、$a_{r}=g(p_{r})$（$p_{1}<\cdots<p_{k+1}$, $p_{r}\in H'$）と書くと、Step 2 から
+$$
+f(a_{1},\dots,a_{k+1})=\hat{f}(p_{1},\dots,p_{k})=c.
+$$
+よって $H$ は $f$ の無限の等質集合である。
+
+**標準的な $k$.** $\mathrm{RT}^{0}$ は自明で、上の結果を $k=0,1,\dots$ に（メタレベルで有限回）適用すれば、各標準的な $k$ について $\mathsf{ACA}_{0}\vdash\mathrm{RT}^{k}$。
+:::
+
+::: remark
+「$\forall k\,\mathrm{RT}^{k}$」を $\mathsf{ACA}_{0}$ の中で $k$ についての帰納法で導くことはできない：$\mathrm{RT}^{k}$ は $\Pi^{1}_{2}$ 文で、$\mathsf{ACA}_{0}$ が許す帰納法は集合についての帰納法の公理（すなわち算術的論理式の帰納法）だけである。実際、$\mathsf{ACA}_{0}$ は $\forall k\,\mathrm{RT}^{k}$ を証明しないことが知られている（$\mathsf{RCA}_{0}$ の上で $\forall k\,\mathrm{RT}^{k}$ は「任意の $n$ と $X$ について $n$ 回のジャンプ $X^{(n)}$ が存在する」と同値であることが知られている。本サイトでは示していない）。
+:::
+
+::: lemma 三つ組の二色ラムゼーの定理から ACA₀ {#logic:rt3-aca keywords="RT32 implies ACA0 over RCA0" index="RT³₂ と ACA₀|あーるてぃーさんにとえーしーえーぜろ"}
+$\mathsf{RCA}_{0}$ の上で、$\mathrm{RT}^{3}_{2}$ から $\mathsf{ACA}_{0}$ が導ける。
+:::
+
+::: proof
+\ref{logic:aca-equivalents} により $\Sigma^{0}_{1}$ 内包公理を示せばよい。$\varphi(m)\equiv\exists n\,\theta(m,n)$（$\theta$ は有界）を任意にとる。
+
+**Step 1（塗り分け）.** $a<b<c$ について
+$$
+f(a,b,c)\defeq
+\begin{cases}
+1 & \forall m<a\,\bigl(\exists n<c\,\theta(m,n)\to\exists n<b\,\theta(m,n)\bigr)\text{ のとき},\\
+0 & \text{それ以外}
+\end{cases}
+$$
+と定める。条件は有界な論理式なので $f$ は $\mathsf{RCA}_{0}$ で存在する。$f(a,b,c)=1$ は、「$a$ 未満の $m$ で、$c$ 未満に証拠をもつものは、すでに $b$ 未満に証拠をもつ」という意味である。
+
+**Step 2（色は 1）.** $\mathrm{RT}^{3}_{2}$ で無限の等質集合 $X$ をとる。色が $0$ であると仮定する。$a\in X$ をとり、$X$ の元 $a<b_{0}<b_{1}<\cdots<b_{a+1}$ をとる（$X$ は無限なので $\Sigma^{0}_{1}$ 帰納法でとれる）。各 $r\le a$ について $f(a,b_{r},b_{r+1})=0$ なので、
+$$
+m<a,\quad\exists n<b_{r+1}\,\theta(m,n),\quad\neg\exists n<b_{r}\,\theta(m,n)
+$$
+を満たす最小の $m$ があり、それを $m_{r}$ とする。$r<r'$ で $m_{r}=m_{r'}$ とすると、$m_{r}$ は $b_{r+1}\le b_{r'}$ 未満に証拠をもつので $\neg\exists n<b_{r'}\,\theta(m_{r'},n)$ に反する。よって $m_{0},\dots,m_{a}$ は $a$ 未満の相異なる $a+1$ 個の数となり、有限の鳩の巣原理（$\Sigma^{0}_{0}$ 帰納法で示せる）に反する。したがって色は $1$ である。
+
+**Step 3（$\varphi$ の $\Pi^{0}_{1}$ による記述）.** 次を示す：
+$$
+\varphi(m)\iff\forall a\,\forall b\,\bigl((a\in X\wedge b\in X\wedge m<a<b)\to\exists n<b\,\theta(m,n)\bigr).
+$$
+（$\Leftarrow$）$X$ は無限なので $m<a<b$ となる $a,b\in X$ があり、右辺から $\exists n<b\,\theta(m,n)$、とくに $\varphi(m)$。
+（$\Rightarrow$）$\theta(m,n_{0})$ とし、$a,b\in X$, $m<a<b$ とする。$X$ の元 $c$ で $c>\max(b,n_{0})$ となるものをとる。Step 2 から $f(a,b,c)=1$ で、$m<a$ かつ $n_{0}<c$ なので、$\exists n<b\,\theta(m,n)$。
+
+右辺は（$X$ をパラメータとする）$\Pi^{0}_{1}$ 論理式、左辺は $\Sigma^{0}_{1}$ 論理式なので、$\Delta^{0}_{1}$ 内包公理で $\{m:\varphi(m)\}$ が存在する。
+:::
+
+::: lemma 指数の引き下げ {#logic:rt-weakening keywords="RTkl implies RTjl for j <= k" index="ラムゼーの定理の単調性|らむぜーのていりのたんちょうせい"}
+$\mathsf{RCA}_{0}$ で、$1\le j\le k$, $2\le l'\le l$ のとき、$\mathrm{RT}^{k}_{l}\to\mathrm{RT}^{j}_{l'}$ が証明できる。
+:::
+
+::: proof
+$f\colon[\N]^{j}\to l'$ に対し、$f'(a_{1},\dots,a_{k})\defeq f(a_{1},\dots,a_{j})$ は $[\N]^{k}\to l'\subseteq l$ の塗り分けである。$\mathrm{RT}^{k}_{l}$ で $f'$ の無限の等質集合 $H$（色 $c$）をとる。$(a_{1},\dots,a_{j})\in[H]^{j}$ について、$H$ は無限なので $a_{j}<a_{j+1}<\cdots<a_{k}$ となる $H$ の元を足せて、$f(a_{1},\dots,a_{j})=f'(a_{1},\dots,a_{k})=c$。よって $H$ は $f$ の等質集合である。
+:::
+
+::: theorem ラムゼーの定理と ACA₀ の同値性 {#logic:ramsey-aca keywords="RTk is equivalent to ACA0 for standard k >= 3" index="ラムゼーの定理と ACA₀|らむぜーのていりとえーしーえーぜろ"}
+標準的な $k\ge3$ と $l\ge2$ について、$\mathsf{RCA}_{0}$ の上で $\mathrm{RT}^{k}$, $\mathrm{RT}^{k}_{l}$, $\mathsf{ACA}_{0}$ はすべて同値である。
+:::
+
+::: proof
+$\mathsf{ACA}_{0}\Rightarrow\mathrm{RT}^{k}$ は \ref{logic:ramsey-step-aca}。$\mathrm{RT}^{k}\Rightarrow\mathrm{RT}^{k}_{l}$ は定義から。$\mathrm{RT}^{k}_{l}\Rightarrow\mathrm{RT}^{3}_{2}$ は \ref{logic:rt-weakening}（$k\ge3$, $l\ge2$ を使う）。$\mathrm{RT}^{3}_{2}\Rightarrow\mathsf{ACA}_{0}$ は \ref{logic:rt3-aca}。
+:::
+
+::: remark ACA₀ と同値な定理のまとめ {#logic:aca-equivalents-summary}
+$\mathsf{RCA}_{0}$ の上で $\mathsf{ACA}_{0}$ と同値になる主な定理を挙げる（田中の本の定理群 3 による。本サイトで証明したものには参照を付けた）。
+1. ボルツァーノ–ワイエルシュトラスの定理、コーシー列の収束、上限の存在、単調収束定理（\ref{logic:aca-analysis}）。
+2. 有限分岐木についてのケーニッヒの補題（\ref{logic:konig-aca}）。
+3. 標準的な $k\ge3$ についてのラムゼーの定理 $\mathrm{RT}^{k}$（\ref{logic:ramsey-aca}）。
+4. アスコリ–アルツェラの補題、可算なベクトル空間が基底をもつこと、可算な可換環が極大イデアルをもつこと（本サイトでは示していない）。
+
+一方、$\mathrm{RT}^{2}_{2}$ は例外的である。$\mathrm{RT}^{2}_{2}$ が $\mathsf{ACA}_{0}$ と同値かどうかは長く未解決だったが、シータプン（1995）が $\mathrm{RT}^{2}_{2}$ から $\mathsf{ACA}_{0}$ が導けないことを示した。さらに、$\mathrm{RT}^{2}_{2}$ から $\mathsf{WKL}_{0}$ も導けないこと（リュー、2012）が知られており、$\mathrm{RT}^{2}_{2}$ は「五つの体系」のどれとも同値にならない代表例になっている。
+:::
+
+::: hypcheck
+- **ケーニッヒの補題（したがって $\mathsf{ACA}_{0}$）**：\ref{logic:ramsey-step-aca} の Step 1 で、エルデシュ–ラドーの木の道をとるのに一回だけ使った。木は有限分岐だが、子の値の上界が一般には得られないので、$\mathsf{WKL}$ では足りない（問題 \ref{logic:prob-erdos-rado-branching} 参照）。
+- **仮定 $\mathrm{RT}^{k}_{l}$**：\ref{logic:ramsey-step-aca} の Step 3 で、$\hat{f}$ の等質集合をとるのに使った。
+- **$k\ge3$**：\ref{logic:ramsey-aca} で、$\mathrm{RT}^{k}_{l}$ を $\mathrm{RT}^{3}_{2}$ に引き下げるのに使った。$k=2$ では結論が成り立たない（シータプン）。
+- **有限の鳩の巣原理と $\Sigma^{0}_{1}$ 帰納法**：\ref{logic:rt3-aca} の Step 2 で、$X$ から $a+2$ 個の元を選ぶこと、$a$ 未満に $a+1$ 個の相異なる数がないことに使った。
+- **$\Delta^{0}_{1}$ 内包公理**：\ref{logic:rt3-aca} の Step 3 で、$\varphi$ の $\Sigma^{0}_{1}$ と $\Pi^{0}_{1}$ の記述から集合を作るのに使った。
+- **$f$ が $[\N]^{k+1}$ 全体で定義されていること**：エルデシュ–ラドーの木の定義の (1) で、任意の $k+1$ 個組の色を参照した。
+:::
+
+## 問題 {#logic:sec-rm4-problems}
+
+::: problem {#logic:prob-bw-ramsey}
+$\mathsf{ACA}_{0}$ で、$\mathrm{RT}^{2}_{2}$ と単調収束定理（\ref{logic:aca-analysis}）を使ってボルツァーノ–ワイエルシュトラスの定理を導け。（田中の本の問題。）
+:::
+
+::: solution
+$(x_{n})$ を有界な実数列とし、$m<n$ について $c(m,n)\defeq1$（$x_{m}\le x_{n}$ のとき）、$0$（$x_{m}>x_{n}$ のとき）と定める。$x_{m}\le x_{n}$ は $\Pi^{0}_{1}$ なので、$\mathsf{ACA}_{0}$ で $c$ は存在する（$\mathsf{RCA}_{0}$ では一般に存在しない）。$\mathrm{RT}^{2}_{2}$ で無限の等質集合 $H$ をとり、$H$ の元を小さい順に $n_{0}<n_{1}<\cdots$ と並べる（$H$ の元を数える関数は $\mathsf{RCA}_{0}$ で存在する）。色が $1$ なら $(x_{n_{k}})$ は有界な増加列、色が $0$ なら狭義減少列で、後者は $(-x_{n_{k}})$ を考えれば増加列になる。単調収束定理により部分列 $(x_{n_{k}})$ は収束する。
+:::
+
+::: problem {#logic:prob-rt3-jockusch}
+$K$ を停止問題の集合とする。計算可能な塗り分け $f\colon[\N]^{3}\to2$ で、その無限の等質集合がどれも $K$ を計算する（$K\le_{T}H$）ものがあることを、\ref{logic:rt3-aca} の証明から導け。このことから、ω モデル $\mathrm{REC}$（\ref{pt:omega-rca0}）で $\mathrm{RT}^{3}_{2}$ が成り立たないことを結論せよ。
+:::
+
+::: solution
+$K=\{m:\exists n\,\theta(m,n)\}$（$\theta$ は計算可能な関係）と書き、証明の Step 1 の $f$ を使う。$f$ は計算可能である。$H$ を無限の等質集合とすると、Step 2 により色は $1$ で、Step 3 により「$m\in K\iff\exists n<b\,\theta(m,n)$、ただし $b$ は $H$ の元で $m$ より大きい元 $a\in H$ よりさらに大きい最初の元」となる。$H$ を使えば $a,b$ は探索で求まり、右辺は有界な判定なので、$K$ は $H$ から計算できる。$K$ は計算可能でないので、$H$ も計算可能でない。したがって $f\in\mathrm{REC}$ だが $\mathrm{REC}$ に $f$ の無限の等質集合はなく、$\mathrm{REC}\not\models\mathrm{RT}^{3}_{2}$。（これはヨックシュ（1972）の結果の一部である。）
+:::
+
+::: problem {#logic:prob-erdos-rado-branching}
+$k\ge1$ とする。$\mathsf{WKL}_{0}$ に次の仮定 (B) を加えると、$\mathrm{RT}^{k}_{l}\to\mathrm{RT}^{k+1}_{l}$ が証明できることを示せ。
+
+(B) 任意の $f\colon[\N]^{k+1}\to l$ について、関数 $h$ で、$\sigma^{\frown}m\in T_{f}$ なら $m\le h(\lvert\sigma\rvert)$ となるものが存在する。
+
+さらに、「$\mathsf{WKL}_{0}+\mathrm{RT}^{2}_{2}$ は $\mathsf{ACA}_{0}$ を証明しない」という既知の結果（チョラク–ヨックシュ–スレイマン）を認めて、(B) は $\mathsf{WKL}_{0}+\mathrm{RT}^{2}_{2}$ で（$k=2$, $l=2$ について）証明できないことを結論せよ。
+:::
+
+::: solution
+前半：\ref{logic:ramsey-step-aca} の証明で、ケーニッヒの補題を使ったのは $T_{f}$ の道をとる Step 1 だけである。(B) の $h$ があれば、$T_{f}$ は子の値が $h$ で抑えられた無限木なので、問題 \ref{logic:prob-bounded-konig-wkl}（$\mathsf{WKL}_{0}$ で成り立つ）により道をもつ。Step 2, 3 は $\mathsf{RCA}_{0}$ の議論なので、そのまま $\mathrm{RT}^{k+1}_{l}$ が従う。
+
+後半：$\mathsf{WKL}_{0}+\mathrm{RT}^{2}_{2}$ が $k=2$, $l=2$ の (B) を証明するとすると、前半から $\mathsf{WKL}_{0}+\mathrm{RT}^{2}_{2}\vdash\mathrm{RT}^{3}_{2}$、\ref{logic:rt3-aca} から $\mathsf{WKL}_{0}+\mathrm{RT}^{2}_{2}\vdash\mathsf{ACA}_{0}$ となり、既知の結果に反する。したがって、エルデシュ–ラドーの木の子の値の上界は、一般にこれらの体系の中では得られない。
+:::
+
+::: supplement
+**前提の検討.**
+- \ref{logic:ramsey-step-aca} では $l$ を固定したまま $k$ を一つ上げた。色の数 $l$ についての一様性は使っていないので、$\mathrm{RT}^{k}_{l}\to\mathrm{RT}^{k+1}_{l}$ が各 $l$ ごとに成り立つ。
+- \ref{logic:rt3-aca} では二色しか使わなかった。三色以上は \ref{logic:rt-weakening} で二色に帰着できるので、色の数は強さに影響しない（$k\ge3$ のとき）。
+- 有限ラムゼーの定理（任意の $k,l,m$ について、十分大きな $N$ をとれば $[N]^{k}$ の $l$ 色の塗り分けに大きさ $m$ の等質集合がある）は一階算術の文で、$\mathsf{PA}$ で証明できる（本サイトでは示していない）。
+
+**関連する結果.**
+- *パリス–ハーリントンの定理.* 有限ラムゼーの定理に「等質集合 $H$ の大きさが $\min H$ 以上」という条件を加えた命題 $\mathrm{PH}$ は、無限ラムゼーの定理から（コンパクト性を使って）導けて真であるが、$\mathsf{PA}$ では証明できない（パリス–ハーリントン、1977）。$\mathrm{PH}$ は $\forall k\,\mathrm{RT}^{k}$ の一階算術版の影であり、$\mathsf{ACA}_{0}$ が $\mathsf{PA}$ の保存拡大であること（\ref{pt:page-soa-aca0}）と合わせると、$\mathsf{ACA}_{0}$ も $\mathrm{PH}$ を証明しない。具体的な数学の命題で $\mathsf{PA}$ から独立なものの最初の例として知られている。
+- *計算可能性の側.* ヨックシュ（1972）は、計算可能な $f\colon[\N]^{k}\to l$ は $\Pi^{0}_{k}$ の無限等質集合をもつこと、また $k\ge3$ では無限等質集合がどれも $\varnothing'$ を計算するような計算可能な $f$ があることを示した（問題 \ref{logic:prob-rt3-jockusch} は後者の一部）。$k=2$ では、無限等質集合が $\varnothing'$ を計算しないようにとれる（シータプン）。
+- *ラムゼー性と強い体系.* 自然数の無限部分集合全体を $\Sigma^{0}_{1}$ や $\Sigma^{0}_{2}$ の条件で二分するラムゼー性は、それぞれ $\mathsf{ATR}_{0}$, $\Pi^{1}_{1}\text{-}\mathsf{CA}_{0}$ と同値になることが知られている（田中の本の §2.5 による）。
+
+**高い視点から：無秩序の不可能性と一回の神託.** ラムゼーの定理は「十分大きな構造には、必ず完全に秩序だった部分がある」という原理の典型である。エルデシュ–ラドーの木は、この秩序を一段ずつ組み立てる装置で、「色の情報を $k+1$ 個組から $k$ 個組へ一つ落とす」ことを、木の道を選ぶ一回の操作に集約している。逆数学の視点では、その道を選ぶのにケーニッヒの補題、すなわちジャンプ一回分の神託が必要であり（\ref{logic:konig-aca}）、三つ組の塗り分けはちょうどその神託（停止問題）を符号化できる（\ref{logic:rt3-aca}）。比喩で言えば、$\mathrm{RT}^{k}$ から $\mathrm{RT}^{k+1}$ へ上がる各段で「誰が仲間か」を見分ける審判を一人雇う必要があり、$\mathsf{ACA}_{0}$ は審判を有限人なら何人でも雇えるが、「全員まとめて雇う契約」（$\forall k\,\mathrm{RT}^{k}$）は結べない。二つ組の場合だけは、審判なしでも（停止問題を使わずに）等質集合を見つける工夫があり、これが $\mathrm{RT}^{2}_{2}$ の特異な強さの源になっている。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

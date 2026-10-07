@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>記述の長さと非圧縮性 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/01-kolmogorov.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 記述の長さと非圧縮性 {#comp:page-kolmogorov keywords="Kolmogorov complexity, descriptive complexity, minimal description, invariance theorem, optimality, incompressible strings, randomness, uncomputability of K, Berry paradox"}
+
+文字列 $x$ の**記述の複雑さ** $K(x)$ とは、$x$ を出力するチューリング機械とその入力の組の最短の記述の長さである（\ref{comp:kolmogorov-complexity}）。$0^{1000}$ のように規則的な文字列は短く記述でき、規則のない文字列は自分自身を書くより短くは記述できない（**非圧縮**）。本ページでは、$K$ の基本的な上界、記述方式の選び方によらず定数の差しか生じないこと（**最適性**、\ref{comp:kolmogorov-optimality}）、各長さに非圧縮な文字列が存在すること（\ref{comp:incompressible-exist}）、$K$ が計算可能でないこと（\ref{comp:k-uncomputable}）を示す。
+
+## 記法と定義の確認 {#comp:sec-kc-notation}
+
+::: notation
+- TM、計算可能関数、符号 $\langle M\rangle$、万能機械は \ref{comp:page-turing-machines}, \ref{comp:page-decidability} のとおり。本ページでは文字列は $\{0,1\}$ 上のものとする。
+- **自己区切りの符号.** 文字列 $u=u_{1}\cdots u_{m}$ に対し $\bar{u}\defeq u_{1}u_{1}u_{2}u_{2}\cdots u_{m}u_{m}01$ とする。$\bar{u}w$ という形の文字列からは、二文字ずつ読んで $01$ に出会うまでで $u$ が、残りとして $w$ が一意に取り出せる。$\lvert\bar{u}\rvert=2\lvert u\rvert+2$。
+- TM $M$ と文字列 $w$ の組の記述を $\langle M,w\rangle\defeq\overline{\langle M\rangle}\,w$ と定める。
+:::
+
+## 記述の複雑さ {#comp:sec-kc}
+
+::: definition 記述の複雑さ {#comp:kolmogorov-complexity keywords="minimal description, Kolmogorov complexity, descriptive complexity" index="記述の複雑さ|きじゅつのふくざつさ, コルモゴロフ複雑性|こるもごろふふくざつせい, 最小記述|さいしょうきじゅつ"}
+文字列 $x$ の**記述**とは、TM $M$ と文字列 $w$ の組で、$M$ が $w$ の上で停止してテープに $x$ だけを残すもののことで、その長さは $\lvert\langle M,w\rangle\rvert$ とする。最短の記述（長さが同じなら辞書式最小）を $x$ の**最小記述** $d(x)$ といい、
+$$
+K(x)\defeq\lvert d(x)\rvert
+$$
+を $x$ の**記述の複雑さ**（コルモゴロフ複雑性）という。
+:::
+
+::: proposition 基本的な上界 {#comp:kolmogorov-bounds}
+定数 $c$ があって、すべての $x,y$ について次が成り立つ。
+1. $K(x)\le\lvert x\rvert+c$。
+2. $K(xx)\le K(x)+c$。
+3. $K(xy)\le2K(x)+K(y)+c$。
+:::
+
+::: proof
+1. 入力をそのまま残して停止する機械 $M_{\mathrm{id}}$ について、$\langle M_{\mathrm{id}},x\rangle$ は $x$ の記述で長さ $\lvert x\rvert+\lvert\overline{\langle M_{\mathrm{id}}\rangle}\rvert$。
+2. 機械 $N$：「入力 $\langle M,w\rangle$ に対し、$M$ を $w$ の上で模倣して出力 $s$ を得て、$ss$ を出力する」。$\langle N,d(x)\rangle$ は $xx$ の記述で、長さ $K(x)+\lvert\overline{\langle N\rangle}\rvert$。
+3. 機械 $N'$：「入力 $\overline{u}\,v$ に対し、$u,v$ をそれぞれ記述とみなして模倣し、出力 $s,t$ の連接 $st$ を出力する」。$\langle N',\overline{d(x)}\,d(y)\rangle$ は $xy$ の記述で、長さ $2K(x)+2+K(y)+\lvert\overline{\langle N'\rangle}\rvert$。
+:::
+
+::: theorem 最適性 {#comp:kolmogorov-optimality keywords="invariance theorem, optimality of K" index="最適性（記述の複雑さ）|さいてきせいきじゅつのふくざつさ, 不変性定理|ふへんせいていり"}
+$p\colon\{0,1\}^{\ast}\to\{0,1\}^{\ast}$ を計算可能な部分関数（**記述方式**）とし、$K_{p}(x)\defeq\min\{\lvert s\rvert:p(s)=x\}$（なければ $\infty$）とする。このとき定数 $c_{p}$ があって、すべての $x$ について $K(x)\le K_{p}(x)+c_{p}$。
+:::
+
+::: proof
+$p$ を計算する機械 $M_{p}$ をとる（$p(s)$ が定義されるとき $M_{p}$ は $s$ の上で停止して $p(s)$ を残す）。$p(s)=x$ となる最短の $s$ について $\langle M_{p},s\rangle$ は $x$ の記述で、長さ $K_{p}(x)+\lvert\overline{\langle M_{p}\rangle}\rvert$。$c_{p}\defeq\lvert\overline{\langle M_{p}\rangle}\rvert$。
+:::
+
+## 非圧縮な文字列 {#comp:sec-incompressible}
+
+::: definition 圧縮可能 {#comp:compressible keywords="compressible, incompressible string" index="非圧縮な文字列|ひあっしゅくなもじれつ"}
+$c\ge1$ について、$K(x)\le\lvert x\rvert-c$ のとき $x$ は **$c$ だけ圧縮可能**であるという。$1$ だけ圧縮可能でない（$K(x)\ge\lvert x\rvert$）とき $x$ は**非圧縮**であるという。
+:::
+
+::: theorem 非圧縮な文字列の存在 {#comp:incompressible-exist keywords="incompressible strings of every length exist" index="非圧縮な文字列の存在|ひあっしゅくなもじれつのそんざい"}
+各 $n$ について、長さ $n$ の非圧縮な文字列が存在する。さらに $c\ge1$ について、長さ $n$ の文字列のうち $c$ だけ圧縮可能なものは $2^{n-c+1}-1$ 個未満である。
+:::
+
+::: proof
+長さ $n$ の文字列は $2^{n}$ 個。長さ $l$ の記述は高々 $2^{l}$ 個で、異なる文字列の最小記述は異なる（記述が出力を決める）。$K(x)\le n-c$ となる $x$ の数は、長さ $n-c$ 以下の文字列の数 $\sum_{l=0}^{n-c}2^{l}=2^{n-c+1}-1$ 以下である（空でない記述しかないので実際は真に小さい）。$c=1$ なら $2^{n}-1<2^{n}$ なので、非圧縮な $x$ が少なくとも一つある。
+:::
+
+::: corollary 圧縮できない割合
+長さ $n$ の文字列のうち、$c$ だけ圧縮可能なものの割合は $2^{-c+1}$ 未満である。たとえば $c=10$ なら $1/512$ 未満で、ほとんどの文字列はほとんど圧縮できない。
+:::
+
+## 計算不能性 {#comp:sec-k-uncomputable}
+
+::: theorem $K$ の計算不能性 {#comp:k-uncomputable keywords="Kolmogorov complexity is not computable, Berry paradox" index="記述の複雑さの計算不能性|きじゅつのふくざつさのけいさんふのうせい"}
+関数 $x\mapsto K(x)$ は計算可能でない。
+:::
+
+::: proof
+$K$ が計算可能とする。次の機械 $B$ を考える：「入力 $n$（二進表記）に対し、文字列を長さ順・辞書式に $x_{0},x_{1},\dots$ と調べ、$K(x)\ge n$ となる最初の $x$ を出力する」。各長さに非圧縮な文字列がある（\ref{comp:incompressible-exist}）ので、$B$ はすべての $n$ の上で停止する。$y_{n}\defeq B(n)$ とおくと $K(y_{n})\ge n$。一方 $\langle B,\mathrm{bin}(n)\rangle$ は $y_{n}$ の記述なので
+$$
+K(y_{n})\le\lvert\mathrm{bin}(n)\rvert+\lvert\overline{\langle B\rangle}\rvert\le\log_{2}n+1+c_{B} .
+$$
+$n$ を十分大きくとると $n>\log_{2}n+1+c_{B}$ となり、矛盾する。
+:::
+
+::: hypcheck
+- **非圧縮な文字列の存在**：$B$ が必ず停止することに使った。
+- **ベリーの逆理**：「$n$ 以上の記述を必要とする最初の文字列」を、$\log n$ 程度の長さで記述してしまうという矛盾が証明の骨格である。逆理が矛盾にならず定理になるのは、「記述」を TM による計算で厳密に定めたからである。
+:::
+
+## 問題 {#comp:sec-kc-problems}
+
+::: problem {#comp:prob-incompressible-no-infinite-re}
+非圧縮な文字列全体の集合は、無限のチューリング認識可能な部分集合をもたないことを示せ。
+:::
+
+::: solution
+無限の認識可能な部分集合 $C$ があるとし、列挙機 $E$ で列挙する（\ref{comp:enumerator}）。機械 $B'$：「入力 $n$ に対し、$E$ を動かし、長さ $n$ 以上の文字列が初めて列挙されたらそれを出力する」。$C$ は無限なので停止し、出力 $y$ は非圧縮で $\lvert y\rvert\ge n$、よって $K(y)\ge n$。一方 $K(y)\le\log_{2}n+1+c_{B'}$ で、$n$ が大きいと矛盾する。
+:::
+
+::: problem {#comp:prob-k-unbounded-below}
+任意の $c$ について $K(x)\ge c$ となる $x$ は無限に多いが、$K(x)\le c$ となる $x$ は有限個であることを示せ。
+:::
+
+::: solution
+長さ $c$ 以下の記述は有限個なので、$K(x)\le c$ の $x$ は有限個。$\{0,1\}^{\ast}$ は無限なので、残りの $K(x)>c$ の $x$ は無限に多い。
+:::
+
+::: supplement
+**前提の検討.**
+- 記述 $\langle M,w\rangle$ の符号の選び方（$\overline{\langle M\rangle}$ の自己区切りの方法など）を変えても、$K$ は定数の差しか変わらない（\ref{comp:kolmogorov-optimality} の議論）。
+- \ref{comp:kolmogorov-bounds} の 3 の係数 $2$ は、$x$ の記述の終わりを示すための二倍化による。接頭辞のない（自己区切りの）記述方式を使う「接頭辞複雑性」では、$\log$ の項に改善できることが知られている。
+
+**関連する結果.**
+- *チャイティンの不完全性定理.* 無矛盾で認識可能な公理系 $T$（算術を含む）には定数 $L_{T}$ があって、$T$ は「$K(x)>L_{T}$」という形の文を一つも証明できない（実際にはほとんどすべての $x$ がこの形の真な文を満たすのに）。証明は \ref{comp:k-uncomputable} と同じベリーの逆理の考え方による、と知られている。
+- *ランダム性.* 無限列のランダム性（マルティン＝レーフ・ランダム）は、すべての初期部分が（接頭辞複雑性の意味で）ほぼ非圧縮であることと同値であることが知られている（シュノア–レヴィン）。
+
+**高い視点から：情報量としての長さ.** $K(x)$ は、$x$ を再現するのに必要な最小の情報量を、計算という共通の物差しで測ったものである。最適性（\ref{comp:kolmogorov-optimality}）は、万能機械という「最も良い圧縮器」が、どんな特定の圧縮器にも定数の差でしか負けないことを述べている。しかし、その最良の圧縮率を計算することはできない（\ref{comp:k-uncomputable}）。たとえれば、「この文章はこれ以上要約できない」と判定する完全な要約器は存在しない、ということである。シャノンのエントロピーが確率分布についての平均的な情報量であるのに対し、$K$ は個々の対象についての情報量で、ランダムな源から来た文字列の $K$ の期待値はエントロピーにほぼ等しいことが知られている。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

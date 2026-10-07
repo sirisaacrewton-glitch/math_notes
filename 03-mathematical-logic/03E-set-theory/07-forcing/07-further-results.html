@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>強制法のさらなる結果 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/07-forcing/07-further-results.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 強制法のさらなる結果 {#set:page-forcing-further keywords="mixing lemma, maximal principle, forcing diamond, destroying a Suslin tree, Levy collapse, Kurepa hypothesis, omega_1 of the extension"}
+
+これまでの節に収まらなかった技術的な結果と、強制法の三つの例を集める：名前の張り合わせと**最大原理**、可算部分関数による $\lozenge$ の強制、ススリン木の破壊、そして $\omega_{1}$ を $M$ の任意の非可算正則基数にする**レヴィ崩壊**。（Kunen 第 VII 章 §8 に対応する。）
+
+## 記法と定義の確認 {#set:sec-further-notation}
+
+::: notation
+- 本ページを通して $M$ は $\ZFC$ の c.t.m. で固定する。$\check{x}$、$\Gamma$、$\Vdash$、強制定理とその系（\ref{set:forcing-theorem}, \ref{set:forcing-basic}, \ref{set:forcing-corollary}）、\ref{set:forcing-equivalent}、\ref{set:generic-dense-below} は前ページまでのとおり。
+- $\mathrm{Fn}(I,J)$, $\mathrm{Fn}(I,J,\lambda)$、鎖条件と閉性による保存（\ref{set:kappa-cc-preserves}, \ref{set:closed-no-new-functions}, \ref{set:closed-preserves}, \ref{set:fn-lambda-closed}, \ref{set:fn-lambda-cc}）、同型な p.o.（\ref{set:isomorphism-same-extension}）、真理値（\ref{set:truth-value-basic}）は \ref{set:page-fn-forcing}, \ref{set:page-larger-fn}, \ref{set:page-embeddings-bvm} のとおり。
+- $\lozenge$（\ref{set:diamond}）、閉非有界集合・定常集合（\ref{set:club}, \ref{set:stationary}）、木・ススリン木・よく刈り込まれた木・クレパ木（\ref{set:tree}, \ref{set:suslin-tree}, \ref{set:suslin-is-kappa-tree}, \ref{set:well-pruned}, \ref{set:well-pruned-exists}, \ref{set:tree-compatible-comparable}, \ref{set:kurepa-tree}）、Δ システム補題（\ref{set:delta-system-general}）は第 II 章のとおり。
+:::
+
+## 名前の張り合わせと最大原理 {#set:sec-maximal-principle}
+
+::: lemma 名前の張り合わせ {#set:mixing-lemma keywords="mixing lemma, gluing names along an antichain" index="名前の張り合わせ|なまえのはりあわせ"}
+$M$ の中で、$A$ を $\PP$ の反鎖とし、各 $q\in A$ に $\PP$-名前 $\sigma_{q}$ が与えられているとする（$\langle\sigma_{q}:q\in A\rangle\in M$）。このとき、すべての $q\in A$ について $q\Vdash\pi=\sigma_{q}$ となる $\pi\in M^{\PP}$ がある。
+:::
+
+::: proof
+$M$ の中で
+$$
+\pi\defeq\bigcup_{q\in A}\{\langle\tau,r\rangle:r\le q\land r\Vdash\tau\in\sigma_{q}\land\tau\in\dom(\sigma_{q})\}
+$$
+とおく（強制関係の定義可能性より $\pi\in M$）。$q\in A$ と、$q\in G$ となるジェネリックな $G$ を固定し、$\pi_{G}=\sigma_{qG}$ を示す。
+
+（$\subseteq$）$\pi_{G}$ の元は、$r\in G$ となる $\langle\tau,r\rangle\in\pi$ についての $\tau_{G}$ の形である。ある $q'\in A$ で $r\le q'$ かつ $r\Vdash\tau\in\sigma_{q'}$。$q',q\in G$（$r\in G$ で上に閉じている）で $A$ は反鎖なので $q'=q$。よって $r\Vdash\tau\in\sigma_{q}$ で、$\tau_{G}\in\sigma_{qG}$。
+
+（$\supseteq$）$\sigma_{qG}$ の元は、ある $\tau\in\dom(\sigma_{q})$ についての $\tau_{G}$ の形である。$p\Vdash\tau\in\sigma_{q}$ となる $p\in G$ をとり、$p,q$ の共通の拡張 $r\in G$ をとると、$\langle\tau,r\rangle\in\pi$ なので $\tau_{G}\in\pi_{G}$。
+:::
+
+次の結果の動機として、$M[G]$ が $\ZFC$ を満たすことを示したとき、存在の主張を確かめるたびに、$G$ によらずに存在を証明する名前を作ったことに注意する。たとえば対の公理を確かめるには、各 $\sigma,\tau\in M^{\PP}$ について $\mathbf{1}\Vdash\exists x\,(\sigma\in x\land\tau\in x)$ を示せば十分だった（すなわち各ジェネリックな $G$ について $\sigma_{G},\tau_{G}\in\pi_{G}$ となる $\pi$ がある）。しかし実際には $G$ によらない $\pi$、すなわち $\mathrm{up}(\sigma,\tau)$ で $\mathbf{1}\Vdash(\sigma\in\pi\land\tau\in\pi)$ となるものを見つけた。これができるのは、**最大原理**と呼ばれるより一般的な事実の一部である。
+
+::: theorem 最大原理 {#set:maximal-principle keywords="maximal principle, fullness" index="最大原理|さいだいげんり"}
+$\PP\in M$、$\tau_{1},\dots,\tau_{n}\in M^{\PP}$ とし、$p\Vdash\exists x\,\varphi(x,\tau_{1},\dots,\tau_{n})$ とする。このとき $p\Vdash\varphi(\pi,\tau_{1},\dots,\tau_{n})$ となる $\pi\in M^{\PP}$ がある。
+:::
+
+::: proof
+$\vec{\tau}$ の記載を省く。$M$ の中のツォルンの補題により、$A\in M$ で次を満たすものをとる。
+1. $A$ は $\PP$ の反鎖。
+2. $\forall q\in A\,(q\le p\land\exists\sigma\in M^{\PP}\,(q\Vdash\varphi(\sigma)))$。
+3. $A$ は 1, 2 を満たすもののうち極大。
+
+$M$ の AC で、各 $q\in A$ について $q\Vdash\varphi(\sigma_{q})$ となる $\sigma_{q}\in M^{\PP}$ を選び、\ref{set:mixing-lemma} より $q\Vdash\pi=\sigma_{q}$（$q\in A$）となる $\pi\in M^{\PP}$ をとる。すると $q\in A$ について $q\Vdash(\varphi(\sigma_{q})\land\pi=\sigma_{q})$、したがって $q\Vdash\varphi(\pi)$（\ref{set:forcing-equivalent}）。
+
+$p\Vdash\varphi(\pi)$ を示す。そうでないとすると、$r\Vdash\lnot\varphi(\pi)$ となる $r\le p$ がある（\ref{set:forcing-corollary} の 2）。$p\Vdash\exists x\,\varphi(x)$ なので、$\{q:\exists\sigma\in M^{\PP}\,(q\Vdash\varphi(\sigma))\}$ は $p$ の下で稠密（\ref{set:forcing-corollary} の 3）であり、$q_{0}\le r$ で $\exists\sigma\,(q_{0}\Vdash\varphi(\sigma))$ となるものがある。各 $q\in A$ について $q\Vdash\varphi(\pi)$、$q_{0}\Vdash\lnot\varphi(\pi)$ なので $q\perp q_{0}$。よって $A\cup\{q_{0}\}$ は 1, 2 を満たし（$q_{0}\le r\le p$）、$A$ の極大性に反する。
+:::
+
+\ref{set:maximal-principle} はブール値モデルの枠組み（\ref{set:page-embeddings-bvm}）で最もよく理解される。\ref{set:truth-value-basic} の 4 より $\lVert\exists x\,\varphi(x)\rVert=\bigvee\{\lVert\varphi(\sigma)\rVert:\sigma\in M^{\PP}\}$ だが、\ref{set:maximal-principle} は、$\lVert\varphi(\sigma)\rVert$ が可能な最大値 $\lVert\exists x\,\varphi(x)\rVert$ に達する $\sigma$ が実際にあることを述べる。
+
+## ◇ の強制 {#set:sec-forcing-diamond}
+
+$\mathbf{L}$ で成り立つことが知られている組合せ論的原理の多くは、強制でもその無矛盾性を示せる。最も易しいのは $\lozenge$ である。この議論は可算部分関数を使うが、前ページの方法とは趣が異なる。
+
+::: theorem ◇ の強制 {#set:forcing-diamond keywords="adding a diamond sequence by countable conditions" index="◇ の強制|だいやもんどのきょうせい"}
+$\PP\defeq\mathrm{Fn}(\omega_{1},2,\omega_{1})^{M}$ とし、$G$ を $M$ 上 $\PP$-ジェネリックとする。このとき $\mathcal{P}(\omega)\cap M=\mathcal{P}(\omega)\cap M[G]$、$\omega_{1}^{M}=\omega_{1}^{M[G]}$ で、$M[G]$ で $\lozenge$ が成り立つ。
+:::
+
+::: proof
+**最初の二つの主張.** $\PP$ は $M$ で $\omega_{1}$-閉（\ref{set:fn-lambda-closed}）なので、\ref{set:closed-no-new-functions}（$\omega$ から $2$ への関数、すなわち $\omega$ の部分集合の特性関数は新たに加わらない）と \ref{set:closed-preserves}（$\omega_{1}$ 以下の基数を保つ）から直ちに従う。
+
+**別の同型な p.o.** $\lozenge$ についての議論は、$M$ で $\PP$ と同型な別の p.o. を使うと分かりやすい。$I\defeq\{\langle\alpha,\xi\rangle:\xi<\alpha<\omega_{1}^{M}\}$、$\mathbb{Q}\defeq\mathrm{Fn}(I,2,\omega_{1})^{M}$ とする。$M$ で $\lvert I\rvert=\omega_{1}$ なので $\PP$ と $\mathbb{Q}$ は $M$ で同型で、\ref{set:isomorphism-same-extension} より、$M$ 上 $\mathbb{Q}$-ジェネリックな任意の $G$ について $M[G]$ で $\lozenge$ が成り立つことを確かめれば十分である（$\omega_{1}^{M}=\omega_{1}^{M[G]}$ なので以下 $\omega_{1}$ と書く）。
+
+$G$ を $M$ 上 $\mathbb{Q}$-ジェネリックとすると $g\defeq\bigcup G$ は $I$ から $2$ への関数である。$\alpha<\omega_{1}$ について $A_{\alpha}\defeq\{\xi<\alpha:g(\alpha,\xi)=1\}$ とし、$M[G]$ で $\langle A_{\alpha}:\alpha<\omega_{1}\rangle$ が $\lozenge$ 列であることを示す。すなわち $B\in M[G]$, $B\subseteq\omega_{1}$ について $\{\alpha:B\cap\alpha=A_{\alpha}\}$ が $M[G]$ で定常であることを示す。
+
+そうでないと仮定する。$B$ の名前 $\tau\in M^{\mathbb{Q}}$、閉非有界集合の名前 $\sigma\in M^{\mathbb{Q}}$、$p\in G$ で
+$$
+p\Vdash\bigl[\tau\subseteq\check{\omega}_{1}\land\sigma\subseteq\check{\omega}_{1}\land\sigma\text{ は閉非有界}\land\forall\alpha\in\sigma\,(\tau\cap\alpha\neq\dot{A}_{\alpha})\bigr]
+\label{set:eq-diamond-forcing-assumption}
+$$
+となるものがある。ここで $\dot{A}_{\alpha}$ は $\Gamma$（\ref{set:gamma-name}）から上の定義で作った $A_{\alpha}$ の名前を表す。以下 $G$ と $B$ のことは忘れ、\eqref{set:eq-diamond-forcing-assumption} から直接矛盾を導く。
+
+**$M$ の中の構成.** 以下の段落は $M$ の中で行う。$q\in\mathbb{Q}$ について、$\dom(q)\subseteq\{\langle\alpha,\xi\rangle:\xi<\alpha<\beta\}$ となる最小の $\beta<\omega_{1}$ を $\mathrm{supt}(q)$ とする（$q$ は可算なので存在する）。$p_{n}$, $\beta_{n}$, $\delta_{n}$, $h_{n}$（$n\in\omega$）を次を満たすように帰納的に定める。
+1. $p_{0}=p$。
+2. $\beta_{n}=\mathrm{supt}(p_{n})$。
+3. $\delta_{n}>\beta_{n}$。
+4. $p_{n+1}\le p_{n}$。
+5. $p_{n+1}\Vdash\check{\delta}_{n}\in\sigma$。
+6. $\mathrm{supt}(p_{n+1})>\delta_{n}$。
+7. $h_{n}\subseteq\beta_{n}$ かつ $p_{n+1}\Vdash\tau\cap\check{\beta}_{n}=\check{h}_{n}$。
+
+この帰納法が実行できることを確かめる。$p_{n}$ が与えられると $\beta_{n}$ が決まる。$p_{n}\le p$ なので $p_{n}\Vdash\sigma$ は閉非有界、したがって $p_{n}\Vdash\exists x\in\check{\omega}_{1}\,(x>\check{\beta}_{n}\land x\in\sigma)$。\ref{set:forcing-corollary} の 4 より、$q\le p_{n}$ と $\delta_{n}\in\omega_{1}$ で $q\Vdash(\check{\delta}_{n}>\check{\beta}_{n}\land\check{\delta}_{n}\in\sigma)$ となるものがあり、$\delta_{n}>\beta_{n}$ かつ $q\Vdash\check{\delta}_{n}\in\sigma$。$r\le q$ を $\mathrm{supt}(r)>\delta_{n}$ となるようにとる（定義域に $\langle\alpha,0\rangle$、$\alpha>\delta_{n}$ を加える）。最後に 7 のため、$F\defeq\mathcal{P}(\beta_{n})$（$M$ の中の冪集合）とおく。$\omega_{1}$-閉な p.o. は $\beta_{n}$ から $2$ への新しい関数を加えない（\ref{set:closed-no-new-functions}）ので $r\Vdash\tau\cap\check{\beta}_{n}\in\check{F}$。\ref{set:forcing-corollary} の 4 より、$h_{n}\in F$ と $p_{n+1}\le r$ で $p_{n+1}\Vdash\tau\cap\check{\beta}_{n}=\check{h}_{n}$ となるものがある。$\mathrm{supt}$ は拡張で減らないので 6 も成り立つ。
+
+なお $M$ の中で、$\beta_{0}<\delta_{0}<\beta_{1}<\delta_{1}<\cdots$ である。
+$$
+\gamma\defeq\sup_{n}\beta_{n}=\sup_{n}\delta_{n}
+$$
+とし、$p_{\omega}\defeq\bigcup_{n}p_{n}$ とする（$\omega_{1}$-閉性。$\mathrm{supt}(p_{\omega})=\gamma$）。各 $n$ について $p_{\omega}\le p_{n+1}$ なので $p_{\omega}\Vdash\tau\cap\check{\beta}_{n}=\check{h}_{n}$。したがって $h_{n}$ は互いに整合的で（$h_{m}=h_{n}\cap\beta_{m}$, $m<n$）、$h_{\omega}\defeq\bigcup_{n}h_{n}\subseteq\gamma$ について $p_{\omega}\Vdash\tau\cap\check{\gamma}=\check{h}_{\omega}$。$\dom(p_{\omega})$ には $\langle\gamma,\xi\rangle$ の形の対がないので、$p_{\omega}$ を
+$$
+s\defeq p_{\omega}\cup\{\langle\langle\gamma,\xi\rangle,1\rangle:\xi\in h_{\omega}\}\cup\{\langle\langle\gamma,\xi\rangle,0\rangle:\xi\in\gamma\setminus h_{\omega}\}
+$$
+に拡張できる。すると $s\Vdash\dot{A}_{\gamma}=\check{h}_{\omega}$ なので $s\Vdash\tau\cap\check{\gamma}=\dot{A}_{\gamma}$。一方 $s\Vdash\check{\gamma}\in\sigma$ でもある：$s$ を含むジェネリックな $H$ について $\sigma_{H}$ は閉で、すべての $\delta_{n}$ を含み、$\gamma=\sup\delta_{n}$ は極限順序数なので $\gamma\in\sigma_{H}$。よって
+$$
+s\Vdash\exists\alpha\in\sigma\,(\tau\cap\alpha=\dot{A}_{\alpha})
+$$
+で、$s\le p$ なので \eqref{set:eq-diamond-forcing-assumption} に反する。
+:::
+
+::: hypcheck
+- $\omega_{1}$-閉性は、最初の二つの主張、7 の $F$ への帰属、$p_{\omega}$ の存在の三か所で使った。
+- $I$ の形（$\xi<\alpha$）は、$\mathrm{supt}$ を使って「まだ $\gamma$ 段目の予想が決まっていない」条件 $p_{\omega}$ を作り、最後にそれを $h_{\omega}$ に一致させて拡張するのに使った。これが $\mathbb{Q}$ に移った理由である。
+:::
+
+$\lozenge\to\mathrm{CH}$（\ref{set:diamond-ch}）なので、$M$ で CH が成り立つかどうかにかかわらず $M[G]$ で CH が成り立つ。$M$ で CH が偽なら、$\mathcal{P}(\omega)$ は増えないので、$M$ の $2^{\omega}$ が $M[G]$ で崩壊するのである。
+
+$\lozenge^{+}$ の無矛盾性には \ref{set:forcing-diamond} の方法は使えない。$M[G]$ で $\lozenge^{+}$ が偽になりうるからである（Kunen 第 VIII 章の演習 J5–J7）。$M$ を注意深く選べば $M[G]$ で $\lozenge^{+}$ が成り立つ。たとえば $M$ が $\mathbf{V}=\mathbf{L}$ を満たせば $M[G]$ は $\exists X\subseteq\omega_{1}\,(\mathbf{V}=\mathbf{L}[X])$ を満たし、これは $\lozenge^{+}$ を導く（第 VI 章の演習 8）が、もちろん $M$ 自身も $\lozenge^{+}$ を満たすので、この議論は新しいことを示さない。\ref{set:forcing-diamond} の精神で $\lozenge^{+}$ の無矛盾性を強制で示すこともできるが、半順序はもっと複雑である（演習 H18–H20）。
+
+\ref{set:forcing-diamond} は $\mathbf{L}$ が教えなかったことを教える：$\lozenge$ は $2^{\aleph_{1}}=\aleph_{2}$ を導かない。実際、CH $+2^{\aleph_{1}}>\aleph_{2}$ を満たす $M$（\ref{set:con-gch-violations} により存在する）から出発すると、$\PP$ は基数を崩壊させない（$M$ で $\omega_{1}$-閉かつ、CH より $2^{<\omega_{1}}=\omega_{1}$ なので $\omega_{2}$-c.c.：\ref{set:fn-lambda-cc}）ので、$M[G]$ は $\lozenge+2^{\aleph_{1}}>\aleph_{2}$ を満たす（$\mathcal{P}(\omega_{1})^{M}\subseteq\mathcal{P}(\omega_{1})^{M[G]}$ で基数は保たれる）。同様に $\lozenge^{+}$ も $2^{\aleph_{1}}=\aleph_{2}$ を導かない（演習 H20）。
+
+$\lozenge$ は $\omega_{1}$-ススリン木の存在を導く（\ref{set:diamond-suslin}）ので、\ref{set:forcing-diamond} の $M[G]$ にはススリン木がある。歴史的には、ジェックが最初にジェネリック拡大でススリン木を加えられることを示し、$\lozenge$ の登場とともにその議論は容易に \ref{set:forcing-diamond} に修正された、と Kunen は述べている。ジェックの元の議論は、$M$ の任意の正則な $\kappa$ について $\kappa$-ススリン木を加えるように一般化できる（演習 H11–H14）点で今でも興味がある。そのような木の存在は $\kappa$ についての $\lozenge$ の類似からは従わない。
+
+## ススリン木の破壊 {#set:sec-destroy-suslin}
+
+ススリン木を壊すのも易しい。木を逆さにすれば、それは自分自身を壊す。
+
+::: theorem ススリン木の破壊 {#set:destroy-suslin-tree keywords="forcing with a Suslin tree destroys it, Suslin tree is kappa-Baire" index="ススリン木の破壊|すすりんぎのはかい"}
+$\kappa>\omega$ を $M$ の正則基数、$T$ を $M$ の $\kappa$-ススリン木とする。このとき p.o. $\PP\in M$ で、（$\PP$ は $\kappa$-c.c.）$^{M}$、$\PP$ は共終数を保ち、$M$ 上 $\PP$-ジェネリックな任意の $G$ について次を満たすものがある。
+1. $T$ は $M[G]$ で $\kappa$-ススリン木でない。
+2. $\alpha<\kappa$ かつ $B\in M$ なら ${}^{\alpha}B\cap M[G]={}^{\alpha}B\cap M$。
+:::
+
+::: proof
+MA$(\omega_{1})$ がススリン木の非存在を導く証明（\ref{set:ma-no-suslin-tree}）をまねる。$M$ の中で、$T$ のよく刈り込まれた $\kappa$-部分木 $T'$ をとる（\ref{set:suslin-is-kappa-tree}, \ref{set:well-pruned-exists}）。$\lhd$ を $T'$ の木の順序とし、$\PP$ を $T'$ に逆の順序を入れたものとする：$p\le_{\PP}q:\iff q\unlhd p$。$\PP$ は p.o. で、$\mathbf{1}_{\PP}$ は $T'$ の最小元（根。\ref{set:well-pruned} より一つ）である。$T'$ はよく刈り込まれているので、各 $\alpha<\kappa$ について $D_{\alpha}\defeq\{p:\operatorname{ht}(p,T')>\alpha\}$ は $\PP$ で稠密である。$G$ が $\PP$ のフィルターなら、$G$ は $T'$ の鎖である（両立する二元は木で比較可能：\ref{set:tree-compatible-comparable}）。$G$ が $M$ 上ジェネリックなら、すべての $\alpha<\kappa$ について $G\cap D_{\alpha}\neq\varnothing$ なので、$G$ は $\kappa$ 未満の任意に高い高さの $T'$ の元を含む。よって $M[G]$ で $T'$ は長さ $\kappa$ の鎖をもち、アロンシャイン木でさえない。$T'\subseteq T$ なので $T$ も $M[G]$ で長さ $\kappa$ の鎖をもち、1 が成り立つ。
+
+$T'$ は $M$ で $\kappa$-ススリン木なので（反鎖の濃度が $\kappa$ 未満）、（$\PP$ は $\kappa$-c.c.）$^{M}$ であり、$\PP$ は $\kappa$ 以上の共終数を保つ（\ref{set:kappa-cc-preserves}）。したがって 2 を確かめれば十分である：2 から、\ref{set:closed-preserves} を \ref{set:closed-no-new-functions} から導いたのと同じ議論で、$\kappa$ 未満の共終数も保たれる。
+
+**2 の証明.** $f\colon\alpha\to B$、$\alpha<\kappa$、$B\in M$、$f\in M[G]$ とし、$f=\tau_{G}$ とする。各 $\xi<\alpha$ について $p_{\xi}\Vdash\tau(\check{\xi})=(f(\xi))\check{}$ となる $p_{\xi}\in G$ がある。集合 $\{\langle p,\xi,y\rangle:p\in\PP\land y\in B\land\xi\in\alpha\land p\Vdash\tau(\check{\xi})=\check{y}\}$ は $M$ に属し、したがって $M[G]$ に属するので、$M[G]$ の AC を使って列 $\langle p_{\xi}:\xi<\alpha\rangle$ を $M[G]$ の中で選べる。$G$ は鎖で、$\{p_{\xi}:\xi<\alpha\}\subseteq G$、$\kappa$ は $M[G]$ で正則（上で示した $\kappa$ 以上の共終数の保存）なので、$p_{\xi}$ の高さの上限は $\kappa$ 未満であり、それより高い $G$ の元 $q$（$G\cap D_{\eta}$ の元）はすべての $p_{\xi}$ の上にある：$\forall\xi<\alpha\,(q\le_{\PP}p_{\xi})$。すると各 $\xi<\alpha$ について $q\Vdash\tau(\check{\xi})=(f(\xi))\check{}$ なので
+$$
+f=\{\langle\xi,y\rangle\in\alpha\times B:q\Vdash\tau(\check{\xi})=\check{y}\}\in M
+$$
+（右辺は強制関係の定義可能性より $M$ に属する。等号は、$q\in G$ なので $q\Vdash\tau(\check{\xi})=\check{y}$ なら $y=\tau_{G}(\xi)=f(\xi)$ であることによる）。
+:::
+
+\ref{set:destroy-suslin-tree} は、部分関数から生じない p.o. の強制での最初の応用である（ただし第 II 章で MA を適用したときには、そのような p.o. をすでに使っている）。また 2 は、$\PP$ が $M$ で $\kappa$-閉でなくても成り立ちうることを示している。よく刈り込まれた $\kappa$-ススリン木は決して $\kappa$-閉でない：もしそうなら、帰納的に道を選べてしまう。任意の $\PP$ について 2 は、$\PP$ が $M$ で **$\kappa$-ベール**であるという性質と同値である（Kunen 第 VII 章の演習 B4）。強制を使わずに $\kappa$-ススリン木が $\kappa$-ベールであることを直接示すこともできる（演習 H16）が、上の証明の方が少し易しい。
+
+\ref{set:destroy-suslin-tree} が容易に証明されたからといって、SH の無矛盾性を示すのが易しいと考えてはならない。そのためには $M$ のすべての $\omega_{1}$-ススリン木を壊すために強制を超限回反復する必要がある。第 VIII 章でそのような反復を行い、$\mathrm{MA}+\lnot\mathrm{CH}$、したがって SH の無矛盾性を示す。\ref{set:destroy-suslin-tree} は $\omega_{2}$ を大きくせずに $\omega_{1}$-ススリン木を壊せることを述べるので、SH $+$ CH は無矛盾だと予想される。実際そうだが、その反復強制の議論（ジェンセンによる。Devlin–Johnsbråten 1974）は本書で扱うものより難しい。$\kappa>\omega_{1}$ ではすべての $\kappa$-ススリン木を壊すのはより難しく、$\kappa$-ススリン仮説の無矛盾性については未解決の問題がいくつもある、と Kunen（1980）は述べている。とくに GCH $+\omega_{2}$-SH が無矛盾かどうかは未解決とされ（\ref{set:destroy-suslin-tree} からすれば無矛盾である「はず」だが、Gregory 1976 は GCH $+\omega_{2}$-SH が「$\omega_{2}$ は $\mathbf{L}$ でマーロ」を導くことを示した）、その後の進展は本サイトでは確かめていない。
+
+## M[G] の ω₁ とレヴィ崩壊 {#set:sec-levy-collapse}
+
+次の強制の例への導入として、$\omega_{1}^{M[G]}$ は何か、と問う。$\omega_{1}^{M[G]}$ は $M$ で正則でなければならない（$M[G]$ で正則なので $M$ でも正則）。$\PP$ をうまく定めれば、$\omega_{1}^{M[G]}$ を $\omega$ 以外の $M$ の任意の正則基数にできることを見る。まず後続基数はすでに扱えることに注意する。
+
+::: lemma 後続基数を ω₁ にする {#set:collapse-to-successor}
+$M$ の中で $\lambda$ を無限基数、$\kappa=\lambda^{+}$ とし、$\PP\defeq\mathrm{Fn}(\omega,\lambda)$、$G$ を $M$ 上 $\PP$-ジェネリックとする。このとき $\omega_{1}^{M[G]}=\kappa$。
+:::
+
+::: proof
+$\alpha<\kappa$ なら、$M$ の中に $\lambda$ から $\alpha$ の上への関数がある（$\alpha\ge1$ のとき）。$\bigcup G$ は $\omega$ から $\lambda$ の上への関数（\ref{set:fn-generic-onto}）なので、合成して（$\alpha$ は可算）$^{M[G]}$。よって $\omega_{1}^{M[G]}\ge\kappa$。一方 $(\lvert\PP\rvert=\lambda)^{M}$ なので $\PP$ は $M$ で $\kappa$-c.c.（反鎖の濃度は $\lvert\PP\rvert$ 以下）で、$\kappa$ は後続基数なので $M$ で正則。\ref{set:kappa-cc-preserves} より $\PP$ は $\kappa$ 以上の基数を保ち、$\kappa$ は $M[G]$ でも基数である。よって $\omega_{1}^{M[G]}=\kappa$。
+:::
+
+$\kappa$ が $M$ で弱到達不能なら、有限関数を少し違う仕方で使って強制し、$\kappa$ 未満のすべての順序数を崩壊させつつ $\kappa$ を保つ。各 $\alpha<\kappa$ について写像 $f_{\alpha}\colon\omega\to\alpha$ を加えたい。記法の便宜上、$\langle f_{\alpha}:\alpha<\kappa\rangle$ を定義域 $\kappa\times\omega$ の一つの関数として符号化する。
+
+::: definition レヴィ崩壊 {#set:levy-collapse keywords="Levy collapse, Lv(kappa), Col(omega, <kappa)" index="レヴィ崩壊|れゔぃほうかい"}
+任意の $\kappa$ について、**レヴィ崩壊の順序** $\mathrm{Lv}(\kappa)$ を
+$$
+\begin{aligned}
+\mathrm{Lv}(\kappa)\defeq\{p:{}&\lvert p\rvert<\omega\land p\text{ は関数}\land\dom(p)\subseteq\kappa\times\omega\\
+&\land\forall\langle\alpha,n\rangle\in\dom(p)\,(p(\alpha,n)\in\alpha)\}
+\end{aligned}
+$$
+とし、包含の逆で順序付ける：$p\le q\iff q\subseteq p$。
+:::
+
+以下、$\kappa$ が $M$ の非可算正則基数なら、$\mathrm{Lv}(\kappa)$ による強制で $\kappa=\omega_{1}^{M[G]}$ となることを示す。後続基数は \ref{set:collapse-to-successor} のより易しい議論で扱えたので、これは通常 $\kappa$ が $M$ で弱到達不能のときにだけ興味がある。
+
+::: lemma レヴィ崩壊の鎖条件 {#set:levy-cc}
+$\kappa$ が正則かつ非可算なら、$\mathrm{Lv}(\kappa)$ は $\kappa$-c.c. をもつ。
+:::
+
+::: proof
+$\{p_{\mu}:\mu<\kappa\}$ を $\mathrm{Lv}(\kappa)$ の相異なる元の族とし、そのうち二つが両立することを示す。定義域はすべて有限である。ある有限集合 $d$ が $\kappa$ 個の $\mu$ について $\dom(p_{\mu})=d$ となるなら、そのような $p_{\mu}$ の可能性は $\prod_{\langle\alpha,n\rangle\in d}\lvert\alpha\rvert<\kappa$ 通り（有限個の $\kappa$ 未満の基数の積）しかないので、相異なる元という仮定に反する。したがって相異なる定義域は $\kappa$ 個あり、Δ システム補題（\ref{set:delta-system-general}。$\alpha<\kappa$ について $\lvert{}^{<\omega}\alpha\rvert\le\max(\lvert\alpha\rvert,\omega)<\kappa$）より、$\lvert B\rvert=\kappa$ となる $B$ で $\{\dom(p_{\mu}):\mu\in B\}$ が根 $r$ の Δ システムをなすものがある。$p_{\mu}\restr r$ の可能性は $\kappa$ 未満なので、$\kappa$ の正則性より $\lvert C\rvert=\kappa$ となる $C\subseteq B$ で $p_{\mu}\restr r$（$\mu\in C$）がすべて等しいものがある。すると $p_{\mu}$（$\mu\in C$）は互いに両立する（和が関数）。
+:::
+
+::: theorem レヴィ崩壊は κ を ω₁ にする {#set:levy-collapse-omega-one keywords="Levy collapse makes kappa = omega_1" index="レヴィ崩壊と ω₁|れゔぃほうかいとおめがわん"}
+$M$ の中で $\kappa$ を正則かつ非可算とし、$G$ を $M$ 上 $\mathrm{Lv}(\kappa)$-ジェネリックとする。このとき $\kappa=\omega_{1}^{M[G]}$。
+:::
+
+::: proof
+\ref{set:levy-cc} を $M$ の中で適用すると（$\mathrm{Lv}(\kappa)$ は $\kappa$-c.c.）$^{M}$ なので、\ref{set:kappa-cc-preserves} より $\kappa$ は $M[G]$ でも基数である。一方 $0<\alpha<\kappa$ なら、標準的な稠密性の議論（$\{p:\langle\alpha,n\rangle\in\dom(p)\}$ と、$\beta<\alpha$ について $\{p:\exists n\,(p(\alpha,n)=\beta)\}$ は稠密で $M$ に属する）により
+$$
+\{\langle n,\beta\rangle:\exists p\in G\,(p(\alpha,n)=\beta)\}
+$$
+は $\omega$ から $\alpha$ の上への関数なので、$\alpha$ は $M[G]$ で可算である。よって $\kappa=\omega_{1}^{M[G]}$。
+:::
+
+ソロヴェイ（1970）は、レヴィ崩壊を使って $\mathbb{R}$ のすべての部分集合がルベーグ可測であるような $\ZF$ のモデルを得た。より正確には、$M$ の強到達不能な $\kappa$ から出発すると、$M[G]$ では、$X\subseteq\mathbb{R}$ で $X\in\mathbf{HOD}(\mathcal{P}(\omega))$（Kunen 第 V 章の演習 9 で定義される）なら $X$ はルベーグ可測である。もちろん $M[G]$ は AC を満たすので非可測集合をもつが、（$M[G]$ の中で定義した）内部モデル $\mathbf{HOD}(\mathcal{P}(\omega))$ は $\ZF+$「実数のすべての集合はルベーグ可測」を満たす。Kunen（1980）の時点では、$\mathrm{Con}(\ZFC)$ だけから $\ZF+$「実数のすべての集合はルベーグ可測」の無矛盾性が示せるかどうかは未解決とされていた（Kunen は校正時の追記で、シェラーの最近の結果によりそれは不可能である、と述べている。すなわち到達不能基数が必要である）。
+
+レヴィの順序はクレパ仮説 KH にも関係する。
+
+::: corollary レヴィ崩壊とクレパ仮説 {#set:levy-kh keywords="Levy collapse of an inaccessible gives KH" index="レヴィ崩壊とクレパ仮説|れゔぃほうかいとくれぱかせつ"}
+$M$ の中で $\kappa$ を強到達不能とし、$G$ を $M$ 上 $\mathrm{Lv}(\kappa)$-ジェネリックとする。このとき $M[G]$ で KH が成り立つ。
+:::
+
+::: proof
+$M$ の中で、$T\defeq{}^{<\kappa}2$ を高さ $\kappa$ の完全二分木とする（順序は延長）。$T$ のレベル $\alpha$ は ${}^{\alpha}2\cap M$ で、$\kappa$ は $M$ で強到達不能なので $(\lvert{}^{\alpha}2\rvert<\kappa)^{M}$、したがって $M[G]$ で可算である（$\kappa=\omega_{1}^{M[G]}$ 未満の順序数はすべて可算：\ref{set:levy-collapse-omega-one}）。よって $T$ は $M[G]$ で $\omega_{1}$-木である。$M$ の中で $T$ は $2^{\kappa}\ge\kappa^{+}$ 本の道をもち（各 $f\in{}^{\kappa}2$ が道を定める）、それらは $M[G]$ でも道である。$\kappa$ 以上の基数は崩壊しない（\ref{set:levy-cc}, \ref{set:kappa-cc-preserves}）ので、$(\kappa^{+})^{M}=\omega_{2}^{M[G]}$ で、$T$ は $M[G]$ で少なくとも $\omega_{2}$ 本の道をもつ。よって（$T$ は $\omega_{1}$-クレパ木）$^{M[G]}$。
+:::
+
+しかし KH のモデルを得るのに到達不能基数は必要ない。$\mathrm{Con}(\ZFC)\to\mathrm{Con}(\ZFC+\mathrm{KH})$ を示すには、KH が $\lozenge^{+}$ から従い（\ref{set:diamond-plus-kurepa}）、したがって $\mathbf{L}$ で成り立つ（\ref{set:v-eq-l-diamond-plus}）ことを使うか、到達不能基数を必要としない別の強制の議論を使う（Kunen 第 VII 章の演習 H19）。
+
+皮肉なことに、$\mathrm{Lv}(\kappa)$ の少し変形したものを使って $\lnot\mathrm{KH}$ のモデルを作ることができる。やはり $\kappa$ は $M$ で強到達不能とするが、（$M$ の中で）可算な部分関数で強制して、$\alpha<\kappa$ について $\omega_{1}$ から $\alpha$ の上への写像を加える。\ref{set:levy-collapse-omega-one} の議論を容易に修正して $\omega_{1}=\omega_{1}^{M[G]}$ かつ $\kappa=\omega_{2}^{M[G]}$ を示せる。しかし $(\lnot\mathrm{KH})^{M[G]}$ を示すには反復強制の技術が必要なので、この順序についての議論は第 VIII 章 §3 に回す。KH と異なり、$\lnot\mathrm{KH}$ は到達不能基数を必要とする：$\lnot\mathrm{KH}$ は $\omega_{2}$ が $\mathbf{L}$ で到達不能であることを導く（演習 B9）。
+
+## 問題 {#set:sec-further-problems}
+
+::: problem {#set:prob-maximal-principle-pairing}
+最大原理を使わずに、$\mathbf{1}\Vdash\exists x\,(\sigma\in x\land\tau\in x)$ から $G$ によらない証人の名前を具体的に与えよ。また、$p\Vdash\exists x\,(x\in\sigma)$ のとき、$p\Vdash\pi\in\sigma$ となる $\pi\in\dom(\sigma)$ があるとは限らないことを例で示せ（ヒント：$\sigma=\{\langle\check{0},q\rangle,\langle\check{1},q'\rangle\}$、$q\perp q'$）。
+:::
+
+::: solution
+前半：$\pi=\mathrm{up}(\sigma,\tau)$（\ref{set:up-op-names-val}）。後半：$\PP=\mathrm{Fn}(\omega,2)$、$q=\{\langle0,0\rangle\}$, $q'=\{\langle0,1\rangle\}$、$\sigma=\{\langle\check{0},q\rangle,\langle\check{1},q'\rangle\}$ とする。どのジェネリックな $G$ も $q$ か $q'$ のどちらかを含む（$\{q,q'\}$ の下に閉じた集合は稠密）ので $\mathbf{1}\Vdash\exists x\,(x\in\sigma)$。しかし $\mathbf{1}\Vdash\check{0}\in\sigma$ でも $\mathbf{1}\Vdash\check{1}\in\sigma$ でもない（$q'\in G$ なら $\sigma_{G}=\{1\}$、$q\in G$ なら $\{0\}$）。最大原理が与える $\pi$ は、$q$ の下では $\check{0}$、$q'$ の下では $\check{1}$ と一致するように張り合わせた名前であり、$\dom(\sigma)$ の元ではない。
+:::
+
+::: problem {#set:prob-levy-omega-two}
+$M$ で $\kappa$ が強到達不能のとき、$\mathrm{Lv}(\kappa)$ による拡大 $M[G]$ で $2^{\omega}=\omega_{1}$ であることを示せ。
+:::
+
+::: solution
+$M$ の中で $\lvert\mathrm{Lv}(\kappa)\rvert=\kappa$（有限部分関数の数え上げ）で、$\mathrm{Lv}(\kappa)$ は $\kappa$-c.c. なので反鎖は $\kappa$ 未満の大きさで、その個数は高々 $\kappa^{<\kappa}=\kappa$（$\kappa$ は強到達不能なので $\kappa^{<\kappa}=\kappa$）。$\check{\omega}$ の部分集合のよい名前は高々 $\kappa^{\omega}=\kappa$ 個で、\ref{set:nice-name-count} の証明と同様に $M[G]$ で $2^{\omega}\le\kappa=\omega_{1}$（\ref{set:levy-collapse-omega-one}）。逆は自明なので $2^{\omega}=\omega_{1}$。
+:::
+
+::: supplement
+**前提の検討.**
+- 最大原理（\ref{set:maximal-principle}）は $M$ の AC（ツォルンの補題と選択）を本質的に使う。
+- \ref{set:forcing-diamond} で $\omega_{1}$-閉性は、条件の可算な減少列の下限をとることに使われる。有限条件の $\mathrm{Fn}(\omega_{1},2)$ ではこの議論は使えない。
+- \ref{set:levy-collapse-omega-one} では $\kappa$ の正則性だけを使う。$\kappa$ が弱到達不能でなくても主張は成り立つが、後続基数の場合は \ref{set:collapse-to-successor} で足りる。
+
+**関連する結果.** レヴィ崩壊は、大きな基数の無矛盾性の強さを小さな基数の性質（$\omega_{1}$ や $\omega_{2}$ の組合せ論）に移す標準的な道具である（一般にはこう言われている）。たとえばソロヴェイのモデルや、$\lnot\mathrm{KH}$、$\omega_{2}$ の木の性質のモデルで使われる。
+
+**高い視点から：局所から大域への張り合わせ.** 名前の張り合わせ（\ref{set:mixing-lemma}）は、層の理論の「張り合わせ公理」そのものである：反鎖 $A$ は空間の「互いに交わらない開集合の族」、各 $\sigma_{q}$ は $q$ 上の局所切断、$\pi$ はそれらを張り合わせた大域切断である。最大原理は「存在が局所的に保証されるなら、証人は大域切断として選べる」と述べ、これは層が「十分に多くの切断をもつ」（充満性）ことにあたる。ブール値モデルの言葉では、$\exists$ の真理値が上限として達成されることであり、完備ブール代数の完備性と $M$ の選択公理がそれを保証している。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

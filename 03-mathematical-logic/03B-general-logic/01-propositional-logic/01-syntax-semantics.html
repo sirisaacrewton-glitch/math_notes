@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>命題論理の構文と意味論 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/01-propositional-logic/01-syntax-semantics.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 命題論理の構文と意味論 {#logic:page-prop-syntax keywords="propositional logic, propositional formulas, truth assignment, tautology, truth table, functional completeness, normal forms"}
+
+命題論理は、「かつ」「ならば」「でない」などの結合子で命題を組み合わせたときの真偽の法則を扱う。個々の命題の中身には立ち入らず、命題を**命題変数** $p,q,r,\dots$ で表し、その真偽の組合せだけを考える。本ページでは命題論理の論理式を記号列として定義して読み方の一意性を示し、真理値の割り当てによる意味論を定める。さらに、原始記号 $\bot,\to$ だけであらゆる真理関数が表せること（**関数的完全性**）と、選言標準形・連言標準形を示す。ここでの構文と意味論は、一階述語論理（\ref{logic:page-syntax}, \ref{logic:page-semantics}）の、量化子と項をもたない特別な場合にあたる。
+
+## 記法と定義の確認 {#logic:sec-prop-syntax-notation}
+
+::: notation
+- **メタ理論.** 通常の数学（$\ZFC$）の中で議論する。このページでは選択公理を使わない。自然数に関する帰納法と $\omega$ 上の再帰（\ref{set:recursion-on-ordinal}）を使う。
+- **記号列.** 集合 $A$ の元の有限列を $A$ 上の記号列という。長さを $\lvert w\rvert$、連結を $uw$ と書き、$w=uv$ のとき $u$ を $w$ の始切片（$v\neq\varepsilon$ なら真の始切片）という。同じ記号列の二つの始切片は比較可能（短い方が長い方の始切片）である。記号列の一致を $=$ で表す。
+- $\#_{a}(w)$ は $w$ に現れる記号 $a$ の個数である。真理値は $1$（真）と $0$（偽）で表す。
+:::
+
+## 論理式 {#logic:sec-prop-formulas}
+
+::: definition 命題論理の論理式 {#logic:prop-formula keywords="propositional variable, propositional formula" index="命題変数|めいだいへんすう, 命題論理|めいだいろんり, 論理式|ろんりしき"}
+集合 $\mathrm{PV}$ を固定し、その元を**命題変数**という。記号 $\bot$（矛盾）、$\to$（含意）、$\mathtt{(}$, $\mathtt{)}$ は $\mathrm{PV}$ の元ではなく、互いに異なるとする。記号列の集合 $\Phi_{k}$ を
+$$
+\Phi_{0}\defeq\mathrm{PV}\cup\{\bot\},\qquad \Phi_{k+1}\defeq\Phi_{k}\cup\{\mathtt{(}\,\varphi\to\psi\,\mathtt{)}:\varphi,\psi\in\Phi_{k}\}
+$$
+で定め、$\mathrm{PForm}\defeq\bigcup_{k}\Phi_{k}$ の元を（$\mathrm{PV}$ 上の）**命題論理の論理式**という。$\Phi_{0}$ の元を**原子論理式**という。$\mathtt{(}\,\varphi\to\psi\,\mathtt{)}$ を $(\varphi\to\psi)$ と書く。略記
+$$
+\begin{aligned}
+&\neg\varphi\defeq(\varphi\to\bot),\quad\top\defeq\neg\bot,\quad\varphi\wedge\psi\defeq\neg(\varphi\to\neg\psi),\\
+&\varphi\vee\psi\defeq(\neg\varphi\to\psi),\quad\varphi\leftrightarrow\psi\defeq(\varphi\to\psi)\wedge(\psi\to\varphi)
+\end{aligned}
+$$
+と括弧の省略は、一階述語論理（\ref{logic:abbreviations}）と同じ約束に従う。論理式 $\varphi$ に現れる命題変数の集合を $\mathrm{Var}(\varphi)$ と書く。
+:::
+
+::: intuition
+命題変数は「真か偽かのどちらかである何かの主張」の名前である。$p$ が「雨が降っている」、$q$ が「道が濡れている」なら、$p\to q$ は「雨が降っているならば道が濡れている」である。命題論理では主張の中身は問わず、形だけから真偽の法則を調べる。
+:::
+
+::: lemma 論理式に関する帰納法 {#logic:prop-formula-induction}
+論理式の性質が、すべての原子論理式で成り立ち、$\varphi,\psi$ で成り立てば $(\varphi\to\psi)$ でも成り立つならば、すべての論理式で成り立つ。また、すべての論理式は原子論理式であるか、論理式 $\varphi,\psi$ によって $(\varphi\to\psi)$ と書ける。
+:::
+
+::: proof
+「$\Phi_{k}$ のすべての元が性質をもつ」を $k$ に関する帰納法で示す。$\Phi_{k+1}$ の元は $\Phi_{k}$ に属するか、$\Phi_{k}$ の元 $\varphi,\psi$ による $(\varphi\to\psi)$ だからである。後半はこの帰納法を「原子論理式か含意の形」という性質に適用すればよい。
+:::
+
+::: theorem 読み方の一意性（命題論理） {#logic:prop-unique-readability keywords="unique readability" index="読み方の一意性|よみかたのいちいせい"}
+任意の論理式は、原子論理式であるか $(\varphi\to\psi)$ の形であるかのちょうど一方であり、$(\varphi\to\psi)=(\varphi'\to\psi')$ ならば $\varphi=\varphi'$ かつ $\psi=\psi'$ である。
+:::
+
+::: proof
+$\lambda(w)\defeq\#_{\mathtt{(}}(w)-\#_{\mathtt{)}}(w)$ とおく。
+
+**Step 1（括弧のつり合い）.** 任意の論理式 $\varphi$ について、(a) $\lambda(\varphi)=0$、(b) $\varphi$ の任意の始切片 $u$ について $\lambda(u)\ge 0$、(c) $\varphi$ が $(\alpha\to\beta)$ の形なら、$1\le\lvert u\rvert<\lvert\varphi\rvert$ の始切片 $u$ について $\lambda(u)\ge 1$。論理式に関する帰納法で示す。原子論理式は長さ $1$ で括弧を含まないので (a), (b) が成り立ち、(c) は該当しない。$\varphi=(\alpha\to\beta)$ で $\alpha,\beta$ が (a), (b) を満たすとき、$\lambda(\varphi)=1+0+0+0-1=0$。$1\le\lvert u\rvert<\lvert\varphi\rvert$ の始切片は $u=\mathtt{(}\,w$（$w$ は $\alpha$ の始切片）か $u=\mathtt{(}\,\alpha\to w$（$w$ は $\beta$ の始切片）であり、いずれも $\lambda(u)=1+\lambda(w)\ge 1$。$\varepsilon$ と $\varphi$ 自身は $\lambda=0$ なので (b) も成り立つ。
+
+**Step 2（始切片）.** 論理式 $\psi$ が論理式 $\varphi$ の始切片ならば $\psi=\varphi$。実際、最初の記号は一致する。それが $\mathrm{PV}\cup\{\bot\}$ の元なら $\varphi$ は長さ $1$ で、$\psi=\varphi$。それが $\mathtt{(}$ なら $\varphi,\psi$ はともに含意の形で、もし $\lvert\psi\rvert<\lvert\varphi\rvert$ なら Step 1 (c) より $\lambda(\psi)\ge 1$ だが (a) より $\lambda(\psi)=0$ で矛盾する。
+
+**Step 3（一意性）.** 最初の記号で原子論理式と含意は区別される。$(\varphi\to\psi)=(\varphi'\to\psi')$ なら、最初の $\mathtt{(}$ を除いた記号列の始切片として $\varphi,\varphi'$ は比較可能なので、Step 2 より $\varphi=\varphi'$。続く記号はともに $\to$ で、残りの $\psi\,\mathtt{)}=\psi'\,\mathtt{)}$ から最後の記号を除いて $\psi=\psi'$。
+
+::: hypcheck
+- **含意を括弧で囲むこと**：Step 1 (c) と Step 2。括弧がないと $p\to q\to r$ が二通りに読める（問題 \ref{logic:prob-prop-ambiguous}）。
+- **$\bot,\to$, 括弧が命題変数でないこと**：Step 2, 3 の最初の記号による区別。
+:::
+:::
+
+::: theorem 構造的再帰（命題論理） {#logic:prop-recursion keywords="structural recursion"}
+集合 $X$、写像 $G_{0}\colon\Phi_{0}\to X$ と $G_{\to}\colon\mathrm{PForm}\times\mathrm{PForm}\times X\times X\to X$ に対し、$F\colon\mathrm{PForm}\to X$ で、原子論理式 $\varphi$ について $F(\varphi)=G_{0}(\varphi)$、任意の $\varphi,\psi$ について $F((\varphi\to\psi))=G_{\to}(\varphi,\psi,F(\varphi),F(\psi))$ を満たすものがただ一つ存在する。
+:::
+
+::: proof
+$\Phi_{k}$ 上の写像 $F_{k}$ を $k$ に関する再帰で作る。$F_{0}\defeq G_{0}$。$F_{k}$ が $\Phi_{k}$ 上で条件を満たすとき、$\varphi\in\Phi_{k+1}\setminus\Phi_{k}$ は $\varphi=(\alpha\to\beta)$（$\alpha,\beta\in\Phi_{k}$）と**一通りに**書ける（\ref{logic:prop-unique-readability}）ので、$F_{k+1}(\varphi)\defeq G_{\to}(\alpha,\beta,F_{k}(\alpha),F_{k}(\beta))$、$\Phi_{k}$ 上では $F_{k+1}\defeq F_{k}$ と定めれば写像として定まり、条件を満たす。$F\defeq\bigcup_{k}F_{k}$ が求める写像である。一意性は \ref{logic:prop-formula-induction} による。一階述語論理の場合（\ref{logic:structural-recursion}）と同じ議論である。
+:::
+
+## 真理値による意味論 {#logic:sec-prop-semantics}
+
+::: definition 真理値割り当てと真理値 {#logic:truth-assignment keywords="truth assignment, valuation, truth value" index="真理値割り当て|しんりちわりあて, 真理値|しんりち, 付値|ふち"}
+写像 $v\colon\mathrm{PV}\to\{0,1\}$ を**真理値割り当て**という。構造的再帰（\ref{logic:prop-recursion}）により、論理式の**真理値** $\bar{v}(\varphi)\in\{0,1\}$ を
+$$
+\begin{aligned}
+&\bar{v}(p)=v(p),\qquad\bar{v}(\bot)=0,\\
+&\bar{v}((\varphi\to\psi))=\begin{cases}0&(\bar{v}(\varphi)=1\text{ かつ }\bar{v}(\psi)=0)\\ 1&(\text{それ以外})\end{cases}
+\end{aligned}
+$$
+で定める。$\bar{v}(\varphi)=1$ のとき、$v$ は $\varphi$ を**充足する**という。
+:::
+
+::: proposition 略記の真理値 {#logic:prop-abbreviation-semantics}
+任意の $v,\varphi,\psi$ について、$\bar{v}(\neg\varphi)=1-\bar{v}(\varphi)$、$\bar{v}(\top)=1$、$\bar{v}(\varphi\wedge\psi)=\min(\bar{v}(\varphi),\bar{v}(\psi))$、$\bar{v}(\varphi\vee\psi)=\max(\bar{v}(\varphi),\bar{v}(\psi))$、$\bar{v}(\varphi\leftrightarrow\psi)=1\iff\bar{v}(\varphi)=\bar{v}(\psi)$。
+:::
+
+::: proof
+定義に従って計算する。$\bar{v}(\neg\varphi)=\bar{v}(\varphi\to\bot)$ は、$\bar{v}(\bot)=0$ なので $\bar{v}(\varphi)=1$ のときだけ $0$。$\wedge$ は $\neg(\varphi\to\neg\psi)$ で、$\bar{v}(\varphi\to\neg\psi)=0\iff\bar{v}(\varphi)=1$ かつ $\bar{v}(\psi)=1$。$\vee$ は $\neg\varphi\to\psi$ で、$0$ になるのは $\bar{v}(\neg\varphi)=1$ かつ $\bar{v}(\psi)=0$、すなわち両方 $0$ のときだけ。$\leftrightarrow$ は $\wedge$ と $\to$ の結果から従う。
+:::
+
+::: lemma 一致補題（命題論理） {#logic:prop-coincidence}
+真理値割り当て $v,w$ が $\mathrm{Var}(\varphi)$ 上で一致するならば $\bar{v}(\varphi)=\bar{w}(\varphi)$。
+:::
+
+::: proof
+論理式に関する帰納法。命題変数 $p$ では $p\in\mathrm{Var}(p)$ なので一致する。$\bot$ では両辺 $0$。含意では $\mathrm{Var}(\varphi),\mathrm{Var}(\psi)\subset\mathrm{Var}((\varphi\to\psi))$ なので、帰納法の仮定から成分の真理値が一致し、定義の右辺が一致する。
+:::
+
+::: definition 恒真式と論理的帰結 {#logic:tautology keywords="tautology, satisfiable, semantic consequence" index="恒真式|こうしんしき, トートロジー|ととろじー, 充足可能|じゅうそくかのう, 論理的帰結|ろんりてききけつ"}
+すべての真理値割り当てで真理値 $1$ をとる論理式を**恒真式**（トートロジー）という。論理式の集合 $\Sigma$ のすべての元を充足する割り当てがあるとき $\Sigma$ は**充足可能**であるという。すべての元が $1$ になる割り当てで必ず $\bar{v}(\varphi)=1$ となるとき、$\varphi$ は $\Sigma$ の**論理的帰結**であるといい $\Sigma\models\varphi$ と書く。$\models\varphi$ は $\varphi$ が恒真式であることを表す。
+:::
+
+::: example
+- $p\to p$、$\neg\neg p\to p$、$((p\to q)\to p)\to p$（パースの法則）、$p\vee\neg p$ は恒真式である。最後のものは略記を展開すると $\neg p\to\neg p$ である。
+- $\{p,p\to q\}\models q$。$\{p\to q\}\not\models q\to p$（$v(p)=0$, $v(q)=1$ が反例）。
+- 真理値は $\mathrm{Var}(\varphi)$ への割り当てだけで決まる（\ref{logic:prop-coincidence}）ので、$\mathrm{Var}(\varphi)$ が $n$ 個なら $2^{n}$ 通りを調べれば恒真式かどうか判定できる（真理値表）。
+:::
+
+::: proposition 一様代入 {#logic:uniform-substitution keywords="uniform substitution" index="一様代入|いちようだいにゅう"}
+論理式 $\varphi$ の中の命題変数 $p$ をすべて論理式 $\chi$ に置き換えた論理式を $\varphi[\chi/p]$（構造的再帰で定める）とする。任意の割り当て $v$ について、$w\defeq v[p\mapsto\bar{v}(\chi)]$（$p$ でだけ値を $\bar{v}(\chi)$ に変えた割り当て）とおくと $\bar{v}(\varphi[\chi/p])=\bar{w}(\varphi)$。とくに、$\varphi$ が恒真式なら $\varphi[\chi/p]$ も恒真式である。
+:::
+
+::: proof
+論理式に関する帰納法。$\varphi=p$ なら左辺 $\bar{v}(\chi)$、右辺 $w(p)=\bar{v}(\chi)$。$\varphi=q\neq p$ なら両辺 $v(q)$。$\bot$ なら両辺 $0$。含意は成分ごとに帰納法の仮定を使う。後半は、右辺が恒真式の真理値なので常に $1$ であることによる。
+:::
+
+::: remark 量化子がないこと {#logic:prop-no-binding}
+命題論理には変数を束縛する記号がないので、置き換え $\varphi[\chi/p]$ は常に意味を保つ。一階述語論理で代入可能性（\ref{logic:substitutable}）が必要になったのは、量化子による捕獲のためだった。
+:::
+
+## 関数的完全性と標準形 {#logic:sec-prop-normal-forms}
+
+::: theorem 関数的完全性 {#logic:functional-completeness keywords="functional completeness, truth-functional completeness, expressive adequacy" index="関数的完全性|かんすうてきかんぜんせい"}
+$n\ge 1$ とし、$p_{1},\dots,p_{n}$ を異なる命題変数とする。任意の写像 $F\colon\{0,1\}^{n}\to\{0,1\}$ に対し、$\mathrm{Var}(\varphi)\subset\{p_{1},\dots,p_{n}\}$ である論理式 $\varphi$（原始記号 $\bot,\to$ だけで書かれる）で、すべての割り当て $v$ について
+$$
+\bar{v}(\varphi)=F\bigl(v(p_{1}),\dots,v(p_{n})\bigr)
+$$
+を満たすものが存在する。
+:::
+
+::: proof
+**Step 1（リテラル）.** $a\in\{0,1\}$ に対し $p^{1}\defeq p$, $p^{0}\defeq\neg p$ とおく。\ref{logic:prop-abbreviation-semantics} より $\bar{v}(p^{a})=1\iff v(p)=a$。
+
+**Step 2（一点で真になる式）.** $\vec{a}=(a_{1},\dots,a_{n})\in\{0,1\}^{n}$ に対し $\chi_{\vec{a}}\defeq p_{1}^{a_{1}}\wedge\cdots\wedge p_{n}^{a_{n}}$ とおく。\ref{logic:prop-abbreviation-semantics} と Step 1 より $\bar{v}(\chi_{\vec{a}})=1\iff$ すべての $i$ で $v(p_{i})=a_{i}$。
+
+**Step 3（選言）.** $S\defeq\{\vec{a}:F(\vec{a})=1\}$ とし、$\varphi\defeq\bigvee_{\vec{a}\in S}\chi_{\vec{a}}$（$S=\varnothing$ なら $\varphi\defeq\bot$）とおく（選言の順序は $\{0,1\}^{n}$ の辞書式順序で固定する）。$\bar{v}(\varphi)=1\iff$ ある $\vec{a}\in S$ で $\bar{v}(\chi_{\vec{a}})=1\iff(v(p_{1}),\dots,v(p_{n}))\in S\iff F(v(p_{1}),\dots,v(p_{n}))=1$。略記を展開すれば $\varphi$ は $\bot,\to$ と $p_{i}$ だけで書かれている。
+:::
+
+::: corollary 選言標準形と連言標準形 {#logic:normal-forms keywords="disjunctive normal form, conjunctive normal form" index="選言標準形|せんげんひょうじゅんけい, 連言標準形|れんげんひょうじゅんけい"}
+任意の論理式 $\varphi$ は、リテラル（命題変数かその否定）の連言の選言（選言標準形）で、また、リテラルの選言の連言（連言標準形）で、真理値が常に等しいものをもつ（ただし定数的に偽・真のものは $\bot$, $\top$ とする）。
+:::
+
+::: proof
+$\mathrm{Var}(\varphi)=\{p_{1},\dots,p_{n}\}$ とし（$n=0$ なら $\varphi$ の真理値は割り当てによらず、$\bot$ か $\top$ で表せる）、$F(\vec{a})\defeq\bar{v}_{\vec{a}}(\varphi)$（$v_{\vec{a}}(p_{i})=a_{i}$）に \ref{logic:functional-completeness} の Step 3 の構成を適用すれば選言標準形を得る（一致補題 \ref{logic:prop-coincidence} により、真理値は $p_{1},\dots,p_{n}$ の値だけで決まる）。連言標準形は、$\neg\varphi$ の選言標準形 $\bigvee_{\vec{a}}\chi_{\vec{a}}$ をとり、その否定をド・モルガンの法則（真理値の計算で $\neg\bigvee\chi_{\vec{a}}$ と $\bigwedge\neg\chi_{\vec{a}}$、$\neg\bigwedge p_{i}^{a_{i}}$ と $\bigvee p_{i}^{1-a_{i}}$ の真理値が等しい）で書き直せばよい。
+:::
+
+::: supplement
+**高い視点.** 真理値が常に等しい論理式を同一視すると、$n$ 個の命題変数の論理式の同値類全体は、$2^{2^{n}}$ 個の元からなるブール代数になり、関数的完全性はこれが $\{0,1\}^{n}\to\{0,1\}$ の写像全体（$n$ 変数の真理関数全体）と一致することを述べている。真理値割り当て $v$ は、このブール代数から二元ブール代数 $\{0,1\}$ への準同型にあたる。後で導出可能性で割った代数（リンデンバウム代数）も同じものになることが、完全性定理（\ref{logic:page-prop-completeness}）の内容である。
+:::
+
+## 問題 {#logic:sec-prop-syntax-problems}
+
+::: problem {#logic:prob-prop-ambiguous}
+含意を括弧なしで $\varphi\to\psi$ と書く記法では、$p\to q\to r$ が二通りに読め、読み方によって真理値が異なる割り当てがあることを示せ。
+:::
+
+::: solution
+$(p\to q)\to r$ と $p\to(q\to r)$ の二通りに読める。$v(p)=v(q)=v(r)=0$ では、前者は $\bar{v}(p\to q)=1$, $\bar{v}(r)=0$ より $0$、後者は $\bar{v}(p)=0$ より $1$。
+:::
+
+::: problem {#logic:prob-arrow-only}
+$\bot$ を使わず、命題変数と $\to$ だけで作られる論理式は、すべての命題変数に $1$ を割り当てる割り当てで真理値 $1$ をとることを示せ。したがって $\{\to\}$ だけでは関数的完全でない。
+:::
+
+::: solution
+論理式に関する帰納法。命題変数は $1$。$\bar{v}(\varphi)=\bar{v}(\psi)=1$ なら $\bar{v}(\varphi\to\psi)=1$。よって $\neg p$ のように、この割り当てで $0$ になる真理関数は表せない。
+:::
+
+::: problem {#logic:prob-uniform-substitution-converse}
+一様代入の逆は成り立たない。すなわち、$\varphi[\chi/p]$ が恒真式でも $\varphi$ が恒真式とは限らない例を挙げよ。
+:::
+
+::: solution
+$\varphi=p$, $\chi=\top$。$\varphi[\chi/p]=\top$ は恒真式だが $p$ は恒真式でない。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

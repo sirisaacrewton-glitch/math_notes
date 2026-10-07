@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>順序位相 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54B-basic-constructions/01-constructions/03-order-topology.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 順序位相 {#top:page-order-topology keywords="order topology, linearly ordered topological space, open intervals and rays, ordinal spaces, omega_1, lexicographic order on the square, order topology versus subspace topology"}
+
+全順序集合には、開区間を開集合の部品とする自然な位相がある（**順序位相**、\ref{top:order-topology}）。実数の通常の位相はその代表例で、順序数に順序位相を入れた空間 $\omega_{1}$, $\omega_{1}+1$ は、一般位相で反例を作るための基本的な材料になる。本ページでは順序位相の定義と基本性質（ハウスドルフ性、閉包と上限の関係）を述べ、部分空間の位相と順序位相が一致しない例（\ref{top:order-vs-subspace}）や、辞書式順序の正方形（\ref{top:lexicographic-square}）を扱う。
+
+> 資料：内田伏一『集合と位相』には順序位相の節がないため、標準的な内容（J. R. Munkres, *Topology*, §14 に相当）を自分で組み立てた。順序数については集合論の系列を使う。
+
+## 記法と定義の確認 {#top:sec-ot-notation}
+
+::: notation
+- 全順序・整列順序・順序数・上限・後続順序数・極限順序数・共終数は集合論の系列のとおり（\ref{set:total-order}, \ref{set:well-order}, \ref{set:ordinal}, \ref{set:sup-ordinals}, \ref{set:limit-ordinal}, \ref{set:page-cofinality}）。順序数 $\alpha$ はそれ未満の順序数の集合で、$<$ は $\in$。
+- 開基・第一可算・ネットと点列の収束・部分空間は前ページまでのとおり（\ref{top:base}, \ref{top:second-countable}, \ref{top:net}, \ref{top:subspace}）。
+- 全順序集合 $(X,<)$ の区間を $(a,b)\defeq\{x:a<x<b\}$、$(a,\to)\defeq\{x:a<x\}$、$(\leftarrow,b)\defeq\{x:x<b\}$ と書く（$X$ が $\R$ でないことを強調するため、無限大の記号は使わない）。
+:::
+
+## 順序位相の定義 {#top:sec-ot-definition}
+
+::: definition 順序位相 {#top:order-topology keywords="order topology, linearly ordered topological space" index="順序位相|じゅんじょいそう, 全順序位相空間|ぜんじゅんじょいそうくうかん"}
+二点以上をもつ全順序集合 $(X,<)$ について、開区間 $(a,b)$ と開半直線 $(a,\to)$, $(\leftarrow,b)$（$a,b\in X$）の全体を準開基とする位相を**順序位相**という。
+:::
+
+::: proposition 順序位相の開基 {#top:order-topology-base keywords="base of the order topology" index="順序位相の開基|じゅんじょいそうのかいき"}
+順序位相の開基として、開区間 $(a,b)$、最小元 $m$ があれば $[m,b)\defeq(\leftarrow,b)$、最大元 $M$ があれば $(a,M]\defeq(a,\to)$ の形の集合の全体がとれる。
+:::
+
+::: proof
+開半直線の有限個の共通部分を計算する。$(a,\to)\cap(\leftarrow,b)=(a,b)$、$(a,\to)\cap(a',\to)=(\max(a,a'),\to)$ などなので、準開基の有限共通部分は空集合・$X$・開区間・開半直線のいずれか。最小元のない側の開半直線 $(\leftarrow,b)$ は、$c<b$ となる $c$ について開区間 $(c,b)$ の和なので、開区間で置き換えられる（最小元がなければ、任意の $x<b$ に $c<x$ となる $c$ がある）。最小元 $m$ があれば $(\leftarrow,b)=[m,b)$ はそれ自身を開基に残す。$X$ についても同様。
+:::
+
+::: example
+1. $\R$, $\mathbb{Q}$ の順序位相は、通常の位相（距離位相）に一致する（開区間は開球）。
+2. $\N$ の順序位相は離散位相（$\{0\}=(\leftarrow,1)$, $\{n\}=(n-1,n+1)$）。$\mathbb{Z}$ も同様。
+3. 順序数 $\omega+1=\{0,1,\dots,\omega\}$ の順序位相で、$\omega$ の基本近傍系は $(n,\omega]$（$n<\omega$）で、点列 $n\to\omega$。この空間は $\{0\}\cup\{1/n:n\ge1\}\subseteq\R$ と同相（$n\mapsto1/(n+1)$, $\omega\mapsto0$）。
+:::
+
+::: proposition 順序位相はハウスドルフ {#top:order-hausdorff keywords="order topologies are Hausdorff" index="順序位相のハウスドルフ性|じゅんじょいそうのはうすどるふせい"}
+順序位相をもつ空間の異なる二点 $x<y$ は、交わらない開集合で分けられる。
+:::
+
+::: proof
+**場合 1：$x<z<y$ となる $z$ がある.** $(\leftarrow,z)\ni x$ と $(z,\to)\ni y$ は交わらない。
+
+**場合 2：そのような $z$ がない（$y$ は $x$ の直後）.** $(\leftarrow,y)$ と $(x,\to)$ をとる。両方に属する $w$ は $x<w<y$ を満たすが、そのような $w$ はないので交わらない。$x\in(\leftarrow,y)$, $y\in(x,\to)$。
+:::
+
+## 順序数の空間 {#top:sec-ot-ordinals}
+
+::: proposition 順序数の空間での閉包と上限 {#top:ordinal-closure-sup keywords="in ordinal spaces, closure points are suprema; limit ordinals are limit points" index="順序数空間の閉包|じゅんじょすうくうかんのへいほう"}
+順序数 $\gamma$（$\gamma\ge2$）に順序位相を入れる。$A\subseteq\gamma$ と $\beta<\gamma$ について次が成り立つ。
+1. $\beta$ が後続順序数または $0$ なら、$\{\beta\}$ は開集合（孤立点）である。
+2. $\beta$ が極限順序数のとき、$\beta\in\overline{A}$ であることと、$\beta\in A$ または $\beta=\sup(A\cap\beta)$ であることは同値。
+3. とくに、$A$ が $\gamma$ で閉であることと、$\beta<\gamma$ がつねに「$A\cap\beta\neq\varnothing$ で $\sup(A\cap\beta)=\beta$ なら $\beta\in A$」を満たすことは同値。
+:::
+
+::: proof
+**1.** $\beta=0$ なら $\{0\}=(\leftarrow,1)$（$1<\gamma$）。$\beta=\delta+1$ なら $\{\beta\}=(\delta,\beta+1)$（$\beta+1<\gamma$ のとき）または $(\delta,\to)$（$\beta$ が最大元のとき）。
+
+**2.** $\beta$ の基本近傍系は $(\delta,\beta]$（$\delta<\beta$）の形の開集合である（開基の元で $\beta$ を含むものは $(\delta,\varepsilon)$, $\varepsilon>\beta$ の形で、$(\delta,\beta]=(\delta,\beta+1)$ を含む）。$\beta\notin A$ とする。$\beta\in\overline{A}\iff$ すべての $\delta<\beta$ で $(\delta,\beta]\cap A\neq\varnothing$ $\iff$ すべての $\delta<\beta$ で $\delta<a<\beta$ となる $a\in A$ がある $\iff$ $\sup(A\cap\beta)=\beta$（\ref{set:sup-ordinals}：上限が $\beta$ であることは、$\beta$ 未満の任意の $\delta$ を超える元があることと、元がすべて $\beta$ 未満であることと同値）。
+
+**3.** 2 と 1（後続順序数は孤立点なので、閉包に新しく入るのは極限順序数だけ）。
+:::
+
+::: theorem ω₁ と ω₁+1 {#top:omega-one-space keywords="the space omega_1 is first countable, sequentially compact-like, not second countable; omega_1 in omega_1+1 is not a limit of a sequence" index="ω₁ の空間|おめがわんのくうかん"}
+$\omega_{1}$（最小の非可算順序数）と $\omega_{1}+1$ に順序位相を入れる。
+1. $\omega_{1}$ は第一可算である。
+2. $\omega_{1}+1$ で、$\omega_{1}\in\overline{\omega_{1}}$ だが、$\omega_{1}$ 未満の順序数の点列で $\omega_{1}$ に収束するものはない。とくに $\omega_{1}+1$ は第一可算でない。
+3. （可算選択公理）$\omega_{1}$ の点列は、必ず収束する部分列をもつ。
+4. $\omega_{1}$ は第二可算でも可分でもない。
+:::
+
+::: proof
+**1.** $\beta<\omega_{1}$ が極限順序数なら、$\beta$ は可算なので、$\beta$ に共終な増加列 $\delta_{n}\to\beta$ がある（可算な極限順序数の共終数は $\omega$）。$(\delta_{n},\beta]$ は基本近傍系：$(\delta,\beta]$ について $\delta<\delta_{n}$ となる $n$ がある。後続順序数は孤立点。
+
+**2.** $\omega_{1}$ は $\omega_{1}$ 未満の順序数の上限なので、\ref{top:ordinal-closure-sup} の 2 から閉包に入る。可算個の $\beta_{n}<\omega_{1}$ の上限 $\sup_{n}\beta_{n}$ は可算順序数の可算和で、可算（可算選択公理を使う。集合論の系列の $\mathrm{cf}(\omega_{1})=\omega_{1}$）なので $\omega_{1}$ 未満。よって近傍 $(\sup\beta_{n},\omega_{1}]$ は点列のどの項も含まず、収束しない。第一可算なら点列で閉包が捉えられる（\ref{top:sequences-first-countable}）ので、第一可算でない。
+
+**3.** 点列 $(\beta_{n})$ について、単調非減少な部分列を作る。$n_{0}$ を $\beta_{n_{0}}=\min_{n}\beta_{n}$ となる最小の番号とし、$n_{k+1}$ を、$n>n_{k}$ の範囲での $\beta_{n}$ の最小値をとる最小の番号とする（順序数の集合は最小元をもつので、選択は要らない）。$n>n_{k}$ の範囲は $n>n_{k-1}$ の範囲に含まれるので、$\beta_{n_{k+1}}\ge\beta_{n_{k}}$。非減少列 $(\beta_{n_{k}})$ の上限を $\tau$ とすると、2 と同じく $\tau<\omega_{1}$ で、$\beta_{n_{k}}\to\tau$：$\tau$ の近傍 $(\delta,\tau]$ について、$\delta<\tau$ なので $\delta<\beta_{n_{k}}$ となる $k$ があり、それ以降の項はすべて $(\delta,\tau]$ に入る（列が最終的に一定なら明らか）。
+
+**4.** 可算集合 $D\subseteq\omega_{1}$ の上限 $\sigma$ は $\omega_{1}$ 未満なので、開集合 $(\sigma,\to)$ は $D$ と交わらず、$D$ は稠密でない。可分でないので第二可算でもない（\ref{top:second-countable-properties}）。
+
+::: hypcheck
+- **可算選択公理**：2 と 3 で「可算順序数の可算和は可算」に使った。$\ZF$ だけでは、$\omega_{1}$ が可算個の可算順序数の和になりうる（共終数が $\omega$ になりうる）ことが知られている。
+- **3 の主張**：点列についての主張で、$\omega_{1}$ は**点列コンパクト**だがコンパクトでない（開被覆 $\{[0,\beta):\beta<\omega_{1}\}$ は有限部分被覆をもたない）。コンパクト性と点列コンパクト性の違いの標準的な例である（\ref{top:compact}）。
+:::
+:::
+
+## 順序位相と部分空間 {#top:sec-ot-subspace}
+
+::: proposition 順序位相と相対位相は一致するとは限らない {#top:order-vs-subspace keywords="the order topology on a subset need not equal the subspace topology; convex subsets" index="順序位相と相対位相|じゅんじょいそうとそうたいいそう"}
+1. $Y=[0,1)\cup\{2\}\subseteq\R$ では、$\R$ からの相対位相で $\{2\}$ は開（孤立点）だが、$Y$ 自身の順序位相では $\{2\}$ は開でない。
+2. 全順序集合 $X$ の**凸**な部分集合 $Y$（$a<c<b$, $a,b\in Y$ なら $c\in Y$）では、相対位相と順序位相は一致する。
+:::
+
+::: proof
+**1.** 相対位相：$\{2\}=(1.5,2.5)\cap Y$。順序位相：$Y$ の中で $2$ を含む開基の元は $(a,\to)_{Y}=\{y\in Y:y>a\}$（$2$ は最大元）で、$a<2$ なら $a\in[0,1)$ でこの集合は $(a,1)$ の点を含む。よって $\{2\}$ は開でない。（$Y$ の順序位相は $[0,1]$ と同相である。）
+
+**2.** $Y$ の順序位相の準開基の元 $(a,\to)_{Y}=(a,\to)\cap Y$ は相対位相で開。逆に $X$ の準開基の元 $(c,\to)$ について、$(c,\to)\cap Y$ は、$c\in Y$ なら $(c,\to)_{Y}$、$c\notin Y$ なら凸性から $Y\subseteq(c,\to)$ か $Y\cap(c,\to)=\varnothing$ のどちらか（$c$ より小さい $Y$ の元と大きい元があれば凸性から $c\in Y$）。いずれも $Y$ の順序位相で開。
+:::
+
+::: example 辞書式順序の正方形 {#top:lexicographic-square}
+$I^{2}=[0,1]\times[0,1]$ に辞書式順序（$(a,b)<(c,d)\iff a<c\lor(a=c\land b<d)$）の順序位相を入れた空間を**辞書式順序の正方形**という。各縦線 $\{a\}\times[0,1]$ の内部 $\{a\}\times(0,1)$ は開集合で、それらは非可算個の互いに交わらない空でない開集合なので、この空間は可分でない。一方、コンパクトで（順序位相をもつ全順序集合が上限をもち最大・最小元をもてばコンパクト）、第一可算である。コンパクト・第一可算・非可分の距離化不能な空間の例として使われる。
+:::
+
+::: supplement
+**前提を変えると.** 全順序の代わりに半順序に区間の位相を入れると、ハウスドルフ性が失われることがある。ハウスドルフ性の証明（\ref{top:order-hausdorff}）は、任意の二点が比較可能であることを使っている。
+
+**類似の定理.** 順序位相をもつ空間（全順序位相空間）は、正規空間であり、さらに強く「遺伝的に正規」である（\ref{top:hausdorff} の後で扱う）。ススリンの問題（\ref{set:page-suslin-problem}）は、順序位相をもつ空間についての問い「可算鎖条件をもつ稠密な全順序で完備なものは $\R$ と同型か」であり、ZFC から独立である。
+
+**高い視点から：順序から位相へ.** 順序位相は、「$x$ より大きい」「$y$ より小さい」という比較だけで観測できる性質を開集合とする位相である（開半直線が準開基）。比喩で言えば、物差しをもたず「どちらが大きいか」だけを判定できる観測者に見える位相である。$\R$ ではこれが距離の位相と一致するが、$\omega_{1}$ のように「長い」順序では、どの可算な観測の列も最後まで届かない点が現れる。
+:::
+
+## 問題 {#top:sec-ot-problems}
+
+::: problem {#top:prob-omega-plus-one-compact}
+順序位相をもつ $\omega+1$ の任意の開被覆は有限部分被覆をもつことを示せ。
+:::
+
+::: solution
+$\omega$ を含む開集合 $U$ は、ある $(n,\omega]$ を含む。残りの有限個の点 $0,\dots,n$ をそれぞれ被覆の一つの元で覆えばよい（有限個の選択は選択公理なしで行える）。
+:::
+
+::: problem {#top:prob-omega1-closed-unbounded}
+$\omega_{1}$ の閉集合で非有界（任意の $\beta<\omega_{1}$ より大きい元を含む）なものを**閉非有界集合**という。二つの閉非有界集合 $C,D$ の共通部分は閉非有界であることを示せ（集合論の系列のクラブ集合と同じ概念）。
+:::
+
+::: solution
+閉性は明らか。非有界性：$\beta<\omega_{1}$ について、$c_{0}\in C$, $c_{0}>\beta$、$d_{0}\in D$, $d_{0}>c_{0}$、$c_{1}\in C$, $c_{1}>d_{0}$, … と交互に選ぶ（最小のものをとれば選択は不要）。$\sigma\defeq\sup_{n}c_{n}=\sup_{n}d_{n}<\omega_{1}$（可算選択から可算和は可算）は極限順序数で、\ref{top:ordinal-closure-sup} の 3 から $\sigma\in C\cap D$、$\sigma>\beta$。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

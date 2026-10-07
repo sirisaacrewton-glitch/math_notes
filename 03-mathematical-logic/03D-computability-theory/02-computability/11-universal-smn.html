@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>万能プログラムと smn 定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/02-computability/11-universal-smn.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 万能プログラムと smn 定理 {#comp:page-universal-smn keywords="universal program, universal function, Kleene T predicate, Kleene normal form theorem, smn theorem, s-m-n theorem, parameter theorem, indices, acceptable numbering, second recursion theorem, primitive recursive functions not closed under inverse"}
+
+プログラムを数で表す（**コード化**）と、「コード $e$ と入力 $\vec{m}$ を受け取り、$e$ が表すプログラムを $\vec{m}$ で実行する」こと自体が計算可能になる（**万能関数**、\ref{comp:universal-function}）。本ページでは、レジスタ機械（\ref{comp:register-machine}）をコード化し、一歩の実行が原始再帰的であること（\ref{comp:step-pr}）から、**クリーネの標準形定理**（\ref{comp:normal-form}）
+$$
+\varphi^{(k)}_{e}(\vec{m})\simeq U\bigl(\mu t\,T_{k}(e,\vec{m},t)\bigr)
+$$
+を示し、それを使って停止問題 $K$ が決定不能であること（\ref{comp:halting-L}）を数の言葉で示す。次に、引数の一部を固定したプログラムのコードが原始再帰的に求まるという **smn 定理**（\ref{comp:smn}）を示し、その応用としてクリーネの**再帰定理**（\ref{comp:second-recursion-theorem}）を導く。問題では、原始再帰関数が逆関数をとる操作で閉じていないこと（問題 \ref{comp:prob-pr-inverse}）を扱う。
+
+## 記法と定義の確認 {#comp:sec-univ-notation}
+
+::: notation
+- レジスタ機械、様相、$\to_{M}$、レジスタ機械で計算可能な部分関数は \ref{comp:page-register-machines} のとおり。L とレジスタ機械の同値性（\ref{comp:L-equals-rm}）と、L と部分再帰関数の同値性（\ref{comp:L-equals-recursive}）を使い、以下「計算可能」はこれらのどれで定めても同じ意味とする。
+- 原始再帰関数とその閉包性（\ref{comp:pr-closure}）、対関数 $\pi,\pi_{1},\pi_{2}$（\ref{comp:pairing-pr}）、$n$ 番目の素数 $p(n)$（問題 \ref{comp:prob-pr-primes}）、$\lfloor x/y\rfloor$ と整除（問題 \ref{comp:prob-pr-div}）を使う。
+- 状態 $\sigma$ は、有限個の変数を除いて $0$ のとき**有限台**という。入力状態と、そこからレジスタ機械を実行して現れる状態はすべて有限台である。
+:::
+
+## レジスタ機械のコード化 {#comp:sec-rm-coding}
+
+::: definition 素因数分解による列のコード {#comp:prime-sequence-code keywords="prime power coding, exponent function" index="素因数分解による列のコード|そいんすうぶんかいによるれつのこーど"}
+1. $s\ge1$ と $j$ について、$\exp(s,j)$ を $s$ の素因数分解での $p(j)$ の指数とする。$\exp(s,j)=\mu a<s\,[p(j)^{a+1}\nmid s]$（$p(j)^{a}\mid s$ なら $2^{a}\le s$ なので $a<s$）なので、$\exp$ は原始再帰的である（$s=0$ では $0$ と約束する）。
+2. 有限台の状態 $\sigma$ の**コード**を $\ulcorner\sigma\urcorner\defeq\prod_{j}p(j)^{\sigma(x_{j})}$ とする（有限の積）。$\exp(\ulcorner\sigma\urcorner,j)=\sigma(x_{j})$。
+:::
+
+::: definition レジスタ機械のコード {#comp:rm-code keywords="Godel numbering of register machines, index" index="レジスタ機械のコード|れじすたきかいのこーど"}
+1. 命令のコードを $\ulcorner\mathtt{inc}(r)\urcorner\defeq3r$、$\ulcorner\mathtt{dec}(r)\urcorner\defeq3r+1$、$\ulcorner\mathtt{jz}(r,l)\urcorner\defeq3\pi(r,l)+2$ とする。どの自然数もちょうど一つの命令のコードである。
+2. レジスタ機械 $I_{0},\dots,I_{N-1}$ のコードを $\prod_{q<N}p(q)^{\ulcorner I_{q}\urcorner+1}$ とする。
+3. 逆に、各 $e\in\N$ が表すレジスタ機械 $M_{e}$ を次で定める。$\mathrm{lh}(e)\defeq\mu q\le e\,[p(q)\nmid e]$（$e\ge1$。$p(e)>e$ なので範囲内に解がある）、$\mathrm{lh}(0)\defeq0$ とし、$q<\mathrm{lh}(e)$ について $M_{e}$ の $q$ 番の命令を、コード $\mathrm{ins}(e,q)\defeq\exp(e,q)\mathbin{\dot{-}}1$ の命令とする。
+
+$\mathrm{lh}$ と $\mathrm{ins}$ は原始再帰的である。2 のコード $e$ については $M_{e}$ は元の機械に一致するので、すべてのレジスタ機械はある $M_{e}$ として現れる。
+:::
+
+::: remark
+$M_{e}$ に現れるレジスタの番号 $r$ はどれも $e$ 以下である（命令のコード $c\le e$ について、$c=3r$ なら $r\le c$、$c=3\pi(r,l)+2$ なら $r\le\pi(r,l)\le c$）。
+:::
+
+::: definition 指数（インデックス） {#comp:index keywords="index of a partial computable function, phi_e" index="指数（計算可能関数の）|しすうけいさんかのうかんすうの"}
+$\varphi^{(k)}_{e}\colon\N^{k}\rightharpoonup\N$ を、$M_{e}$ が計算する $k$ 変数の部分関数とする。$e$ を $\varphi^{(k)}_{e}$ の**指数**という。$k=1$ のときは $\varphi_{e}$ と書く。\ref{comp:L-equals-rm} により、$\varphi^{(k)}_{0},\varphi^{(k)}_{1},\dots$ は $k$ 変数の計算可能な部分関数をすべて（重複を許して）並べたものである。
+:::
+
+## 一歩の実行と標準形 {#comp:sec-normal-form}
+
+::: lemma 一歩の実行は原始再帰的 {#comp:step-pr keywords="step function is primitive recursive" index="一歩の関数|いっぽのかんすう"}
+様相 $(p,\sigma)$（$\sigma$ は有限台）のコードを $\pi(p,\ulcorner\sigma\urcorner)$ とする。原始再帰関数 $\mathrm{Step}\colon\N^{2}\to\N$ で、すべての $e$ と様相 $(p,\sigma)$ について
+- $p<\mathrm{lh}(e)$ なら $\mathrm{Step}(e,\pi(p,\ulcorner\sigma\urcorner))=\pi(p',\ulcorner\sigma'\urcorner)$、ただし $(p,\sigma)\to_{M_{e}}(p',\sigma')$、
+- $p\ge\mathrm{lh}(e)$ なら $\mathrm{Step}(e,c)=c$
+
+となるものがある。
+:::
+
+::: proof
+$p\defeq\pi_{1}(c)$, $s\defeq\pi_{2}(c)$, $a\defeq\mathrm{ins}(e,p)$ とし、場合分け（\ref{comp:pr-closure} の 5）で定める。
+- $p\ge\mathrm{lh}(e)$：$c$。
+- $a\equiv0\pmod 3$（$\mathtt{inc}(r)$, $r=\lfloor a/3\rfloor$）：$\pi(p+1,s\cdot p(r))$。
+- $a\equiv1$（$\mathtt{dec}(r)$）：$p(r)\mid s$ なら $\pi(p+1,\lfloor s/p(r)\rfloor)$、そうでなければ $\pi(p+1,s)$。
+- $a\equiv2$（$\mathtt{jz}(r,l)$, $r=\pi_{1}(\lfloor a/3\rfloor)$, $l=\pi_{2}(\lfloor a/3\rfloor)$）：$p(r)\nmid s$ なら $\pi(l,s)$、そうでなければ $\pi(p+1,s)$。
+
+$s=\ulcorner\sigma\urcorner$ のとき、$p(r)\mid s$ は $\sigma(x_{r})\neq0$ と同値で、$s\cdot p(r)$ と $s/p(r)$ はそれぞれ $\sigma(x_{r})$ を $1$ 増やした・減らした状態のコードである。よって各場合が \ref{comp:register-machine} の 3 と一致する。
+:::
+
+::: definition クリーネの T 述語 {#comp:kleene-t keywords="Kleene T predicate, result-extracting function" index="クリーネの T 述語|くりーねのてぃーじゅつご"}
+$\mathrm{Run}(e,c,0)\defeq c$、$\mathrm{Run}(e,c,t+1)\defeq\mathrm{Step}(e,\mathrm{Run}(e,c,t))$ とし（原始再帰）、$\vec{m}\in\N^{k}$ の入力状態のコードを $\mathrm{in}(\vec{m})\defeq\prod_{i=1}^{k}p(i)^{m_{i}}$ とする。
+$$
+\begin{aligned}
+T_{k}(e,\vec{m},t)&:\iff\pi_{1}\bigl(\mathrm{Run}(e,\pi(0,\mathrm{in}(\vec{m})),t)\bigr)\ge\mathrm{lh}(e),\\
+U(e,\vec{m},t)&\defeq\exp\bigl(\pi_{2}(\mathrm{Run}(e,\pi(0,\mathrm{in}(\vec{m})),t)),0\bigr).
+\end{aligned}
+$$
+$T_{k}$ は原始再帰的関係、$U$ は原始再帰関数である。$T_{k}(e,\vec{m},t)$ は「$M_{e}$ を入力 $\vec{m}$ で $t$ 歩実行すると停止している」ことを表す。
+:::
+
+::: theorem クリーネの標準形定理 {#comp:normal-form keywords="Kleene normal form theorem" index="クリーネの標準形定理|くりーねのひょうじゅんけいていり"}
+すべての $e,k,\vec{m}$ について
+$$
+\varphi^{(k)}_{e}(\vec{m})\simeq U\bigl(e,\vec{m},\mu t\,T_{k}(e,\vec{m},t)\bigr).
+$$
+とくに、すべての計算可能な部分関数は「原始再帰的関係の最小化を一度だけ使い、それを原始再帰関数に代入したもの」として書ける。
+:::
+
+::: proof
+\ref{comp:step-pr} から、$t$ に関する帰納法で、$\mathrm{Run}(e,\pi(0,\mathrm{in}(\vec{m})),t)$ は、$M_{e}$ を入力状態 $\sigma_{\vec{m}}$ から $t$ 歩実行した様相（停止した後はその様相のまま）のコードである。したがって、$M_{e}$ が $\sigma_{\vec{m}}$ から停止することは「ある $t$ で $T_{k}(e,\vec{m},t)$」と同値で、最小の $t_{0}$ では $\mathrm{Run}$ は停止した様相 $(p,\tau)$ のコード、$U(e,\vec{m},t_{0})=\exp(\ulcorner\tau\urcorner,0)=\tau(x_{0})$。これは $\varphi^{(k)}_{e}(\vec{m})$ の定義（\ref{comp:register-machine} の 5）そのものである。停止しないなら右辺の $\mu$ は定義されない。
+:::
+
+::: corollary 万能関数 {#comp:universal-function keywords="universal function, enumeration theorem, universal program" index="万能関数|ばんのうかんすう"}
+各 $k$ について、$\Phi_{k}(e,\vec{m})\simeq\varphi^{(k)}_{e}(\vec{m})$ で定まる部分関数 $\Phi_{k}\colon\N^{k+1}\rightharpoonup\N$ は計算可能である。$\Phi_{k}$ を計算するプログラムを**万能プログラム**という。
+:::
+
+::: proof
+\ref{comp:normal-form} の右辺は原始再帰関数の最小化と合成なので部分再帰関数であり、\ref{comp:L-equals-recursive} により計算可能。
+:::
+
+## 停止問題 {#comp:sec-halting-L}
+
+::: theorem L の停止問題 {#comp:halting-L keywords="halting problem for L, K is undecidable, diagonal argument" index="停止問題（L の）|ていしもんだいえるの"}
+$K\defeq\{e:\varphi_{e}(e)\downarrow\}$ は決定不能である。一方、$K$ はある計算可能な部分関数の定義域である。
+:::
+
+::: proof
+後半：$K$ は $e\mapsto\Phi_{1}(e,e)$（\ref{comp:universal-function}）の定義域。
+
+前半：$\chi_{K}$ が計算可能だとする。部分関数 $d(e)\defeq0$（$e\notin K$）、$d(e)\uparrow$（$e\in K$）は、「$\chi_{K}(e)$ を計算し、$1$ なら停止しない while ループ（問題 \ref{comp:prob-L-nowhere}）に入り、$0$ なら $0$ を出力する」プログラムで計算できる。$d=\varphi_{a}$ となる $a$ をとる（\ref{comp:index}）。$a\in K$ なら $\varphi_{a}(a)=d(a)\uparrow$ で $a\notin K$、$a\notin K$ なら $\varphi_{a}(a)=d(a)=0\downarrow$ で $a\in K$。いずれも矛盾。
+:::
+
+## smn 定理 {#comp:sec-smn}
+
+::: theorem smn 定理 {#comp:smn keywords="smn theorem, s-m-n theorem, parameter theorem, currying of programs" index="smn 定理|えすえむえぬていり"}
+$m,n\ge1$ とする。原始再帰関数 $s^{m}_{n}\colon\N^{m+1}\to\N$ で、すべての $e,\vec{y}\in\N^{m},\vec{x}\in\N^{n}$ について
+$$
+\varphi^{(n)}_{s^{m}_{n}(e,\vec{y})}(\vec{x})\simeq\varphi^{(m+n)}_{e}(\vec{y},\vec{x})
+$$
+となるものがある。
+:::
+
+::: proof
+**機械の組み立て.** $e$ と $\vec{y}=(y_{1},\dots,y_{m})$ に対し、次の三つを順に並べたレジスタ機械 $M'$ を作る。ゼロレジスタを $z\defeq e+m+n+1$ とする（$M_{e}$ と以下の前置部に現れるどのレジスタとも異なる。\ref{comp:rm-code} の後の注意）。
+1. **移動**：$b=0,1,\dots,n-1$ の順に、$i\defeq n-b$ について、位置 $4b$ から始まる 4 命令
+$$
+\mathtt{jz}(i,4b+4);\ \mathtt{dec}(i);\ \mathtt{inc}(m+i);\ \mathtt{jz}(z,4b)
+$$
+を置く。これは $x_{i}$ の値を $x_{m+i}$ に足し込み、$x_{i}=0$ にする。
+2. **定数の設定**：$j=1,\dots,m$ の順に $\mathtt{inc}(j)$ を $y_{j}$ 個置く。
+3. **本体**：$M_{e}$ の命令を、$\mathtt{jz}(r,l)$ の飛び先を $l+P$ に変えて置く。ここで $P\defeq4n+y_{1}+\dots+y_{m}$ は前置部（1・2）の長さ。
+
+**正しさ.** 入力状態 $\sigma_{\vec{x}}$（$x_{1},\dots,x_{n}$ に $\vec{x}$、他は $0$）から始める。移動の段階 $b$ で、移動先 $x_{m+n-b}$ は $0$ である：$m+n-b>n$ なら初めから $0$ で、まだ書き込まれていない（それまでの移動先はより大きい番号）。$m+n-b\le n$ なら、それは段階 $b-m<b$ で移動元になって $0$ にされた後、書き込まれていない。したがって移動の後、$x_{m+i}=x_{i}$ の元の値（$1\le i\le n$）で、$x_{1},\dots,x_{m}$ は $0$ である（移動先はすべて $m+1$ 以上で、$i\le m$ の $x_{i}$ は移動元になって $0$ になったか、初めから $0$）。定数の設定の後、状態はちょうど入力 $(\vec{y},\vec{x})$ の入力状態 $\sigma_{(\vec{y},\vec{x})}$ になる。本体は飛び先をずらしただけの $M_{e}$ なので、$M_{e}$ を $\sigma_{(\vec{y},\vec{x})}$ から実行するのと同じ様相の列を（プログラムカウンタを $P$ ずらして）たどり、$M_{e}$ がプログラムカウンタ $\ge\mathrm{lh}(e)$ で停止するとき、そのときに限り $M'$ はプログラムカウンタ $\ge P+\mathrm{lh}(e)$ で停止する。前置部は必ず停止する。よって $M'$ は $\vec{x}\mapsto\varphi^{(m+n)}_{e}(\vec{y},\vec{x})$ を計算する。
+
+**コードの原始再帰性.** $M'$ の $q$ 番の命令のコード $a(e,\vec{y},q)$ は、$q$ についての場合分けで原始再帰的に書ける。$q<4n$ なら $b=\lfloor q/4\rfloor$, $i=n-b$ として $q\bmod4$ に応じて上の 4 命令のコード。$4n\le q<P$ なら、$q'\defeq q-4n$ について $y_{1}+\dots+y_{j-1}\le q'<y_{1}+\dots+y_{j}$ となる $j$（有界最小化で求まる）について $3j$。$P\le q<P+\mathrm{lh}(e)$ なら、$c\defeq\mathrm{ins}(e,q-P)$ について、$c\equiv2\pmod3$ のとき $3\pi(\pi_{1}(\lfloor c/3\rfloor),\pi_{2}(\lfloor c/3\rfloor)+P)+2$、それ以外は $c$。よって
+$$
+s^{m}_{n}(e,\vec{y})\defeq\prod_{q<P+\mathrm{lh}(e)}p(q)^{a(e,\vec{y},q)+1}
+$$
+は有界な積（\ref{comp:pr-closure} の 2）として原始再帰的で、$M_{s^{m}_{n}(e,\vec{y})}=M'$。
+:::
+
+::: theorem クリーネの再帰定理 {#comp:second-recursion-theorem keywords="Kleene's second recursion theorem, fixed point theorem for indices" index="再帰定理（クリーネの）|さいきていりくりーねの"}
+$h\colon\N\to\N$ が全域的な計算可能関数なら、ある $e$ で $\varphi_{e}\simeq\varphi_{h(e)}$（部分関数として等しい）。
+:::
+
+::: proof
+$g(u,x)\simeq\Phi_{1}(h(s^{1}_{1}(u,u)),x)$ は計算可能（\ref{comp:universal-function}、\ref{comp:smn}、合成）なので、ある $a$ で $g\simeq\varphi^{(2)}_{a}$。$e\defeq s^{1}_{1}(a,a)$ とすると、すべての $x$ で
+$$
+\varphi_{e}(x)\simeq\varphi^{(2)}_{a}(a,x)\simeq g(a,x)\simeq\varphi_{h(s^{1}_{1}(a,a))}(x)=\varphi_{h(e)}(x).
+$$
+:::
+
+::: remark
+チューリング機械についての再帰定理（\ref{comp:recursion-theorem}）は、「自分自身の記述を得られる機械」を作る形で述べた。上の証明は、それを指数と smn 定理だけで行ったものである。$s^{1}_{1}(u,u)$ は「プログラム $u$ に自分自身のコード $u$ を渡したもの」で、対角化定理（\ref{pt:diagonal-lemma}）の $\varphi(\ulcorner\varphi\urcorner)$ と同じ役割を果たす。
+:::
+
+::: hypcheck
+- **コード化の全射性**：\ref{comp:rm-code} で、どの数も何かのレジスタ機械を表すようにした。これにより $\varphi_{e}$ がすべての $e$ で定義され、再帰定理で $h(e)$ が何であっても $\varphi_{h(e)}$ が意味をもつ。
+- **一歩が原始再帰的であること**（\ref{comp:step-pr}）：標準形で $T_{k}$ を原始再帰的にするのに使った。L の構文木を直接解釈するより、レジスタ機械の方が一歩の関数を書きやすいので、L とレジスタ機械の同値性（\ref{comp:L-equals-rm}）を経由した。
+- **ゼロレジスタの選び方**：smn 定理で、$z$ が $M_{e}$ のレジスタと衝突しないことに、レジスタ番号が $e$ 以下であること（\ref{comp:rm-code} の後の注意）を使った。
+- **$h$ の全域性**：再帰定理で $g$ を定めるのに使った（部分的な $h$ でも、$h(e)\downarrow$ となる $e$ について同様の主張が成り立つ形があることが知られている）。
+:::
+
+## 問題 {#comp:sec-univ-problems}
+
+::: problem {#comp:prob-pr-inverse}
+（原始再帰関数は逆関数で閉じない）原始再帰的な全単射 $f\colon\N\to\N$ で、逆写像 $f^{-1}$ が原始再帰的でないものがあることを示せ。次の手順に従え。
+1. アッカーマン関数の対角線 $g(y)=A(y,y)$（\ref{comp:ackermann-not-pr}）の指数 $e_{0}$ をとり、$c(n)\defeq\pi(t(n),n)$（$t(n)\defeq\mu t\,T_{1}(e_{0},n,t)$）とおく。$c$ は全域的で、グラフ $\{(n,c(n))\}$ は原始再帰的だが、$c$ は原始再帰的でないことを示せ。
+2. $H(n)\defeq\sum_{i\le n}(c(i)+1)$ は狭義単調増加で、グラフが原始再帰的、$H$ は原始再帰的でなく、$H(n+1)-H(n)\ge2$ であることを示せ。
+3. $x=H(n)$ なら $f(x)\defeq2n$、$x$ が $H$ の値域にないなら $f(x)\defeq2k+1$（$k$ は $x$ 未満で $H$ の値域にない数の個数）と定める。$f$ が原始再帰的な全単射で、$f^{-1}$ が原始再帰的でないことを示せ。
+:::
+
+::: solution
+1. $g$ は全域的で計算可能（\ref{comp:ackermann-computable}）なので $t(n)$ はすべての $n$ で定義される。グラフ：$c(n)=w$ は
+$$
+\pi_{2}(w)=n\wedge T_{1}(e_{0},n,\pi_{1}(w))\wedge\forall t<\pi_{1}(w)\,\neg T_{1}(e_{0},n,t)
+$$
+と同値で、原始再帰的（\ref{comp:pr-closure}）。$c$ が原始再帰的なら $g(n)=U(e_{0},n,\pi_{1}(c(n)))$（\ref{comp:normal-form}）も原始再帰的になり矛盾。
+2. $c(i)+1\ge1$ なので狭義単調増加。$c(n+1)=\pi(t,n+1)\ge n+1\ge1$（\ref{comp:pairing-pr}）から $H(n+1)-H(n)=c(n+1)+1\ge2$。グラフ：$c'(i,w)\defeq\mu v\le w\,[c(i)=v]$（$c(i)\le w$ なら $c(i)$、そうでなければ $w+1$）は 1 から原始再帰的で、$H(n)=w$ は $\sum_{i\le n}(c'(i,w)+1)=w$ と同値である。実際、$H(n)=w$ ならすべての $i\le n$ で $c(i)<w$ なので $c'=c$ で左辺は $H(n)$。$H(n)\neq w$ なら、すべての $c(i)\le w$ のとき左辺は $H(n)\neq w$、ある $c(i)>w$ のとき左辺は $c'(i,w)+1=w+2$ 以上で $w$ と異なる。$H$ が原始再帰的なら $c(n)=H(n)\mathbin{\dot{-}}H(n\mathbin{\dot{-}}1)\mathbin{\dot{-}}1$（$n\ge1$）、$c(0)=H(0)\mathbin{\dot{-}}1$ も原始再帰的になり矛盾。
+3. $H(n)\ge n$ なので、$x\in\mathrm{ran}\,H\iff\exists n\le x\,H(n)=x$ は原始再帰的、そのときの $n$ も $\mu n\le x\,[H(n)=x]$ で求まる。$k=\sum_{w<x}\chi_{\N\setminus\mathrm{ran}H}(w)$ も原始再帰的。よって $f$ は原始再帰的（場合分け）。全単射：$\mathrm{ran}\,H$ は狭義増加列 $H(0)<H(1)<\cdots$ で、$H(n)\mapsto2n$ は偶数全体への全単射。補集合は 2 から無限集合で、小さい順に $w_{0}<w_{1}<\cdots$ と並べると $f(w_{k})=2k+1$ は奇数全体への全単射。$f^{-1}(2n)=H(n)$ なので、$f^{-1}$ が原始再帰的なら $H$ も原始再帰的になり矛盾。（なお $f^{-1}(y)=\mu x\,[f(x)=y]$ は計算可能である。計算可能関数の全単射の逆は計算可能だが、原始再帰性は保たれない。）
+:::
+
+::: problem {#comp:prob-no-total-enumeration}
+全域的な計算可能関数 $u\colon\N^{2}\to\N$ で、すべての全域的な計算可能関数 $g\colon\N\to\N$ がある $e$ について $g=u(e,\cdot)$ となるものは存在しないことを示せ。（したがって全域的な計算可能関数だけを並べる「万能関数」はない。）
+:::
+
+::: solution
+そのような $u$ があれば、$g(x)\defeq u(x,x)+1$ は全域的で計算可能なので、ある $e$ で $g=u(e,\cdot)$。$x=e$ で $u(e,e)+1=u(e,e)$ となり矛盾する。部分関数の万能関数 $\Phi_{1}$ ではこの議論は使えない：$\Phi_{1}(x,x)+1$ は $\Phi_{1}(x,x)\uparrow$ の点で定義されないので、$\Phi_{1}(e,e)\uparrow$ となるだけで矛盾にならない。
+:::
+
+::: problem {#comp:prob-composition-index}
+原始再帰関数 $\mathrm{comp}\colon\N^{2}\to\N$ で、すべての $a,b$ について $\varphi_{\mathrm{comp}(a,b)}\simeq\varphi_{a}\circ\varphi_{b}$ となるものがあることを示せ。
+:::
+
+::: solution
+$g(a,b,x)\simeq\Phi_{1}(a,\Phi_{1}(b,x))$ は計算可能なので、ある $d$ で $g\simeq\varphi^{(3)}_{d}$。$\mathrm{comp}(a,b)\defeq s^{2}_{1}(d,a,b)$ とすると、smn 定理から $\varphi_{\mathrm{comp}(a,b)}(x)\simeq\varphi^{(3)}_{d}(a,b,x)\simeq\varphi_{a}(\varphi_{b}(x))$。
+:::
+
+::: problem {#comp:prob-total-not-decidable}
+$\mathrm{Tot}\defeq\{e:\varphi_{e}\text{ は全域的}\}$ は決定不能であることを示せ。
+:::
+
+::: solution
+$\mathrm{Tot}$ が決定可能だとする。smn 定理（\ref{comp:smn}）で、$\varphi_{s(e)}(x)\simeq\Phi_{1}(e,e)$（$x$ によらない）となる原始再帰関数 $s$ をとる（$g(e,x)\simeq\Phi_{1}(e,e)$ の指数 $b$ について $s(e)\defeq s^{1}_{1}(b,e)$）。$\varphi_{s(e)}$ は $e\in K$ なら全域的、$e\notin K$ なら定義域が空。よって $e\in K\iff s(e)\in\mathrm{Tot}$ で、$K$ が決定可能になり \ref{comp:halting-L} に矛盾する。
+:::
+
+::: problem {#comp:prob-halt-on-zero}
+$H_{0}\defeq\{e:\varphi_{e}(0)\downarrow\}$ は決定不能であることを示せ。
+:::
+
+::: solution
+問題 \ref{comp:prob-total-not-decidable} の解答の原始再帰関数 $s$（$\varphi_{s(e)}(x)\simeq\Phi_{1}(e,e)$）を使うと、$e\in K\iff\varphi_{s(e)}(0)\downarrow\iff s(e)\in H_{0}$。$H_{0}$ が決定可能なら $K$ も決定可能になり、\ref{comp:halting-L} に矛盾する。
+:::
+
+::: supplement
+**前提の検討.**
+- 標準形定理で使う最小化は一度だけで、$T_{k}$ と $U$ は計算可能な部分関数 $\varphi^{(k)}_{e}$ によらず固定されている。これは \ref{comp:normal-form-program}（プログラムごとの標準形）を一様にしたものである。
+- コード化の詳細（素因数分解か、対関数の反復か）は結果に影響しない。必要なのは、命令の取り出しと一歩の実行が原始再帰的になることだけである。
+
+**関連する結果.**
+- *許容的な番号付け.* 計算可能な部分関数の番号付け $\psi_{0},\psi_{1},\dots$ で、万能関数が計算可能で smn 定理が成り立つものを**許容的**という。許容的な番号付けどうしは計算可能な全単射で移り合う（ロジャーズの同型定理）ことが知られている。したがって、本ページの結果はコード化の選び方によらない。本サイトでは示していない。
+- *ライスの定理.* 計算可能な部分関数の集合 $\mathcal{C}$ で自明でないものについて、$\{e:\varphi_{e}\in\mathcal{C}\}$ は決定不能である（\ref{comp:rice} のチューリング機械版）。再帰定理から直接示すこともできる。
+
+**高い視点から：カリー化としての smn 定理.** 2 変数関数 $\varphi^{(2)}_{e}(y,x)$ を「$y$ を受け取り、1 変数関数 $x\mapsto\varphi^{(2)}_{e}(y,x)$ を返すもの」と見るのが**カリー化**で、smn 定理は、この変換がプログラムのコードの上で原始再帰的に行えることを述べる。万能関数は逆向きの「評価写像」$\mathrm{ev}(e,x)=\varphi_{e}(x)$ である。圏論では、関数の空間 $B^{A}$ と評価写像 $\mathrm{ev}\colon B^{A}\times A\to B$、カリー化 $\Lambda\colon\mathrm{Hom}(C\times A,B)\to\mathrm{Hom}(C,B^{A})$ の組が**デカルト閉圏**を特徴づける。$\N$ 自身が「自分の上の計算可能な部分関数の空間」の役割を（コードを通して）果たすことが計算可能性理論の特徴で、これを圏として組み立てたものが実現可能性トポス（ハイランド）に当たると言われている。比喩で言えば、万能プログラムは「どんな楽譜でも演奏できる演奏家」、smn 定理は「楽譜の一部をあらかじめ書き込んだ新しい楽譜を作る写譜屋」、再帰定理は「自分自身の楽譜を譜面台に置いて弾く曲」がいつでも書けることである。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

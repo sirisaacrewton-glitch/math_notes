@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>型なしラムダ計算と合流性 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/04-lambda-calculus/01-untyped-lambda.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 型なしラムダ計算と合流性 {#logic:page-lambda-calculus keywords="untyped lambda calculus, lambda terms, alpha equivalence, capture-avoiding substitution, beta reduction, Church-Rosser theorem, confluence, parallel reduction, Tait-Martin-Lof, complete development, Takahashi, normal form, fixed point combinator"}
+
+**ラムダ計算**は、「関数を作る」（**抽象** $\lambda x.M$）と「関数を適用する」（**適用** $MN$）の二つだけで計算を表す体系である（チャーチ、1930 年代）。計算は **β 簡約** $(\lambda x.M)N\to M[N/x]$（\ref{logic:beta-reduction}）を繰り返すことで進む。簡約の順序は一つに決まらないが、どの順序で簡約しても、最終的に同じ項にたどり着けるという**チャーチ–ロッサーの定理**（合流性、\ref{logic:church-rosser}）が成り立つ。本ページではこれを、**並行簡約**（\ref{logic:parallel-reduction}）と**完全展開**（\ref{logic:complete-development}）を使う高橋の方法で示す。系として正規形の一意性（\ref{logic:normal-form-unique}）と β 等式の無矛盾性が従う。最後に、すべての項が不動点をもつという**不動点定理**（\ref{logic:fixed-point-combinator}）を示す。計算可能性との関係（チャーチ数とラムダ定義可能性）は次のページで扱う。
+
+> 資料フォルダにラムダ計算の教科書はなく、標準的な定義と証明（Barendregt の教科書や高橋の論文で知られている方法）を本サイトで組み立てた。
+
+## 記法と定義の確認 {#logic:sec-lambda-notation}
+
+::: notation
+- 関係 $R$ の反射推移閉包を $R^{\ast}$、反射対称推移閉包を $R^{=}$ と書く。
+- 関係 $R$ が**菱形性**をもつとは、$M\mathrel{R}M_{1}$ かつ $M\mathrel{R}M_{2}$ なら、ある $M_{3}$ で $M_{1}\mathrel{R}M_{3}$ かつ $M_{2}\mathrel{R}M_{3}$ となることをいう。$R^{\ast}$ が菱形性をもつとき $R$ は**合流的**という。
+- 一階述語論理の束縛変数と代入、α 同値の扱いは \ref{logic:page-substitution} と \ref{pt:page-alpha-equivalence} のとおりで、本ページでも同じ方針をとる。
+:::
+
+## ラムダ項 {#logic:sec-lambda-terms}
+
+::: definition ラムダ項 {#logic:lambda-term keywords="lambda term, variable, application, abstraction, free variables" index="ラムダ項|らむだこう, 抽象（ラムダ計算）|ちゅうしょうらむだけいさん, 適用（ラムダ計算）|てきようらむだけいさん"}
+可算無限個の**変数** $x,y,z,\dots$ を固定する。**ラムダ項**を次で帰納的に定める。
+1. 変数 $x$ はラムダ項。
+2. $M,N$ がラムダ項なら、$(MN)$ はラムダ項（**適用**）。
+3. $M$ がラムダ項で $x$ が変数なら、$(\lambda x.M)$ はラムダ項（**抽象**）。
+
+括弧の省略：適用は左結合（$MNL=(MN)L$）、$\lambda$ の範囲はできるだけ右まで（$\lambda x.MN=\lambda x.(MN)$）、$\lambda xy.M=\lambda x.\lambda y.M$。**自由変数** $\mathrm{FV}(M)$ を $\mathrm{FV}(x)=\{x\}$, $\mathrm{FV}(MN)=\mathrm{FV}(M)\cup\mathrm{FV}(N)$, $\mathrm{FV}(\lambda x.M)=\mathrm{FV}(M)\setminus\{x\}$ で定める。自由変数のない項を**閉項**という。
+:::
+
+::: definition α 同値と代入 {#logic:lambda-substitution keywords="alpha equivalence, capture-avoiding substitution, Barendregt convention" index="α 同値（ラムダ計算）|あるふぁどうちらむだけいさん"}
+1. 束縛変数の名前の付け替え $\lambda x.M\equiv\lambda y.M\{y/x\}$（$y\notin\mathrm{FV}(M)$ で、$y$ は $M$ に束縛変数としても現れない。$M\{y/x\}$ は $x$ の自由な出現を $y$ に置き換えたもの）を部分項に繰り返し行って移り合う項を **α 同値**といい、以下 α 同値な項を同一視する。
+2. **代入** $M[N/x]$ を、$M$ の束縛変数を（α 同値の範囲で）$\mathrm{FV}(N)\cup\{x\}$ と異なるように選んだうえで、
+$$
+\begin{aligned}
+x[N/x]&=N,\qquad y[N/x]=y\ (y\neq x),\\
+(M_{1}M_{2})[N/x]&=M_{1}[N/x]\,M_{2}[N/x],\qquad(\lambda y.M)[N/x]=\lambda y.M[N/x]
+\end{aligned}
+$$
+で定める（最後の式では $y\neq x$, $y\notin\mathrm{FV}(N)$）。この代入は α 同値類の上で矛盾なく定まる（一階述語論理の場合と同じ議論）。
+:::
+
+::: lemma 代入の補題 {#logic:lambda-substitution-lemma keywords="substitution lemma" index="代入の補題（ラムダ計算）|だいにゅうのほだいらむだけいさん"}
+$x\neq y$ かつ $x\notin\mathrm{FV}(L)$ なら、$M[N/x][L/y]=M[L/y][N[L/y]/x]$。
+:::
+
+::: proof
+$M$ に関する帰納法（束縛変数は $x,y,\mathrm{FV}(N),\mathrm{FV}(L)$ と異なるように選ぶ）。$M=x$：左辺は $N[L/y]$、右辺は $x[N[L/y]/x]=N[L/y]$。$M=y$：左辺は $y[L/y]=L$（$x\neq y$ なので $y[N/x]=y$）、右辺は $L[N[L/y]/x]=L$（$x\notin\mathrm{FV}(L)$）。$M=z$（$z\neq x,y$）：両辺とも $z$。適用と抽象は帰納法の仮定から（抽象では束縛変数の選び方により代入が中に入る）。
+:::
+
+## β 簡約 {#logic:sec-beta}
+
+::: definition β 簡約 {#logic:beta-reduction keywords="beta reduction, redex, compatible closure, beta equality, normal form" index="β 簡約|べーたかんやく, 基（ラムダ計算）|きらむだけいさん, 正規形（ラムダ計算）|せいきけいらむだけいさん"}
+1. 形 $(\lambda x.M)N$ の項を**基**（β 基、redex）という。
+2. **一段の β 簡約** $\to_{\beta}$ を、次の規則で生成される最小の関係とする：$(\lambda x.M)N\to_{\beta}M[N/x]$。$M\to_{\beta}M'$ なら $MN\to_{\beta}M'N$, $NM\to_{\beta}NM'$, $\lambda x.M\to_{\beta}\lambda x.M'$。
+3. $\twoheadrightarrow_{\beta}\defeq(\to_{\beta})^{\ast}$、$=_{\beta}\defeq(\to_{\beta})^{=}$。
+4. 基を部分項に含まない項を **β 正規形**という。$M\twoheadrightarrow_{\beta}N$ で $N$ が正規形のとき、$N$ を $M$ の正規形という。
+:::
+
+::: example
+1. $I\defeq\lambda x.x$、$K\defeq\lambda xy.x$ とすると $KMN\to_{\beta}(\lambda y.M)N\to_{\beta}M$（$y\notin\mathrm{FV}(M)$ に選ぶ）。
+2. $\omega\defeq\lambda x.xx$、$\Omega\defeq\omega\omega$ とすると $\Omega\to_{\beta}\Omega$ で、$\Omega$ が簡約される項は $\Omega$ だけなので、$\Omega$ は正規形をもたない。
+3. $K I\Omega$ は、外側から簡約すると $K I\Omega\to_{\beta}(\lambda y.I)\Omega\to_{\beta}I$ と正規形に至るが、$\Omega$ を簡約し続けると終わらない。簡約の順序で停止するかどうかが変わりうる。
+:::
+
+## チャーチ–ロッサーの定理 {#logic:sec-church-rosser}
+
+::: definition 並行簡約 {#logic:parallel-reduction keywords="parallel reduction, Tait-Martin-Lof" index="並行簡約|へいこうかんやく"}
+**並行簡約** $\Rightarrow$ を、次の規則で生成される最小の関係とする。
+1. $x\Rightarrow x$。
+2. $M\Rightarrow M'$ なら $\lambda x.M\Rightarrow\lambda x.M'$。
+3. $M\Rightarrow M'$, $N\Rightarrow N'$ なら $MN\Rightarrow M'N'$。
+4. $M\Rightarrow M'$, $N\Rightarrow N'$ なら $(\lambda x.M)N\Rightarrow M'[N'/x]$。
+
+規則 1〜3 から、$M\Rightarrow M$ がすべての $M$ で成り立つ（$M$ に関する帰納法）。
+:::
+
+::: lemma 並行簡約と β 簡約 {#logic:parallel-beta keywords="beta reduction between one step and many steps"}
+$\to_{\beta}\ \subseteq\ \Rightarrow\ \subseteq\ \twoheadrightarrow_{\beta}$。したがって $\Rightarrow^{\ast}=\twoheadrightarrow_{\beta}$。
+:::
+
+::: proof
+前半：$\to_{\beta}$ の定義に関する帰納法。基 $(\lambda x.M)N\to_{\beta}M[N/x]$ は規則 4（$M\Rightarrow M$, $N\Rightarrow N$）。文脈の規則は 2・3 と反射性。後半：$\Rightarrow$ の定義に関する帰納法。規則 4：帰納法の仮定で $M\twoheadrightarrow_{\beta}M'$, $N\twoheadrightarrow_{\beta}N'$ なので、$(\lambda x.M)N\twoheadrightarrow_{\beta}(\lambda x.M')N'\to_{\beta}M'[N'/x]$。他の規則も同様。最後の主張は、$R\subseteq S\subseteq R^{\ast}$ なら $S^{\ast}=R^{\ast}$ による。
+:::
+
+::: lemma 並行簡約と代入 {#logic:parallel-substitution keywords="parallel reduction is substitutive"}
+$M\Rightarrow M'$ かつ $N\Rightarrow N'$ なら、$M[N/x]\Rightarrow M'[N'/x]$。
+:::
+
+::: proof
+$M\Rightarrow M'$ の導出に関する帰納法（束縛変数は $x$ と $\mathrm{FV}(N)\cup\mathrm{FV}(N')$ と異なるように選ぶ）。
+- 規則 1：$M=M'=y$。$y=x$ なら両辺は $N\Rightarrow N'$。$y\neq x$ なら両辺は $y$。
+- 規則 2・3：帰納法の仮定と同じ規則。
+- 規則 4：$M=(\lambda y.P)Q$, $M'=P'[Q'/y]$（$P\Rightarrow P'$, $Q\Rightarrow Q'$）。左辺は $(\lambda y.P[N/x])\,Q[N/x]$。帰納法の仮定で $P[N/x]\Rightarrow P'[N'/x]$, $Q[N/x]\Rightarrow Q'[N'/x]$ なので、規則 4 から
+$$
+M[N/x]\Rightarrow P'[N'/x]\bigl[Q'[N'/x]/y\bigr]=P'[Q'/y][N'/x]=M'[N'/x].
+$$
+等号は代入の補題（\ref{logic:lambda-substitution-lemma}。$y\neq x$, $y\notin\mathrm{FV}(N')$）による。
+:::
+
+::: definition 完全展開 {#logic:complete-development keywords="complete development, Takahashi" index="完全展開|かんぜんてんかい"}
+項 $M^{\bullet}$ を次で定める（$M$ の中のすべての基を内側から同時に簡約したもの）：$x^{\bullet}=x$、$(\lambda x.M)^{\bullet}=\lambda x.M^{\bullet}$、$((\lambda x.M)N)^{\bullet}=M^{\bullet}[N^{\bullet}/x]$、$M$ が抽象でないとき $(MN)^{\bullet}=M^{\bullet}N^{\bullet}$。
+:::
+
+::: lemma 三角形の補題 {#logic:triangle keywords="triangle property of parallel reduction" index="三角形の補題|さんかくけいのほだい"}
+$M\Rightarrow M'$ なら $M'\Rightarrow M^{\bullet}$。
+:::
+
+::: proof
+$M\Rightarrow M'$ の導出に関する帰納法。
+- 規則 1：$M'=x=M^{\bullet}$。
+- 規則 2：$M=\lambda x.P$, $M'=\lambda x.P'$。帰納法の仮定 $P'\Rightarrow P^{\bullet}$ と規則 2。
+- 規則 3：$M=PQ$, $M'=P'Q'$。$P$ が抽象でなければ、帰納法の仮定と規則 3 で $P'Q'\Rightarrow P^{\bullet}Q^{\bullet}=M^{\bullet}$。$P=\lambda x.P_{0}$ なら、$P\Rightarrow P'$ は規則 2 によるので $P'=\lambda x.P'_{0}$（$P_{0}\Rightarrow P'_{0}$）。帰納法の仮定で $P'_{0}\Rightarrow P_{0}^{\bullet}$, $Q'\Rightarrow Q^{\bullet}$ なので、規則 4 で $(\lambda x.P'_{0})Q'\Rightarrow P_{0}^{\bullet}[Q^{\bullet}/x]=M^{\bullet}$。
+- 規則 4：$M=(\lambda x.P)Q$, $M'=P'[Q'/x]$。帰納法の仮定 $P'\Rightarrow P^{\bullet}$, $Q'\Rightarrow Q^{\bullet}$ と \ref{logic:parallel-substitution} から $P'[Q'/x]\Rightarrow P^{\bullet}[Q^{\bullet}/x]=M^{\bullet}$。
+
+（規則 3 の後半では、$P\Rightarrow P'$ の導出の部分導出 $P_{0}\Rightarrow P'_{0}$ に帰納法の仮定を使った。）
+:::
+
+::: theorem チャーチ–ロッサーの定理 {#logic:church-rosser keywords="Church-Rosser theorem, confluence of beta reduction" index="チャーチ–ロッサーの定理|ちゃーちろっさーのていり, 合流性|ごうりゅうせい"}
+β 簡約は合流的である：$M\twoheadrightarrow_{\beta}M_{1}$ かつ $M\twoheadrightarrow_{\beta}M_{2}$ なら、ある $M_{3}$ で $M_{1}\twoheadrightarrow_{\beta}M_{3}$ かつ $M_{2}\twoheadrightarrow_{\beta}M_{3}$。
+:::
+
+::: proof
+**$\Rightarrow$ の菱形性.** $M\Rightarrow M_{1}$, $M\Rightarrow M_{2}$ なら、三角形の補題から $M_{1}\Rightarrow M^{\bullet}$, $M_{2}\Rightarrow M^{\bullet}$。
+
+**$\Rightarrow^{\ast}$ の菱形性.** 菱形性をもつ関係の反射推移閉包は菱形性をもつ：$M\Rightarrow^{m}M_{1}$, $M\Rightarrow^{n}M_{2}$（$m,n$ 段）について、$m\times n$ の格子を菱形性で一つずつ埋めればよい（$m+n$ に関する帰納法）。
+
+\ref{logic:parallel-beta} から $\Rightarrow^{\ast}=\twoheadrightarrow_{\beta}$ なので、結論を得る。
+:::
+
+::: corollary 正規形の一意性と無矛盾性 {#logic:normal-form-unique keywords="uniqueness of normal forms, consistency of beta equality" index="正規形の一意性（ラムダ計算）|せいきけいのいちいせいらむだけいさん"}
+1. $M=_{\beta}N$ なら、ある $L$ で $M\twoheadrightarrow_{\beta}L$, $N\twoheadrightarrow_{\beta}L$。
+2. 項の正規形は（あれば）一つしかない。
+3. 異なる正規形どうしは β 等しくない。とくに $\lambda xy.x\neq_{\beta}\lambda xy.y$ で、β 等式は「すべての項が等しい」という自明な等式ではない。
+:::
+
+::: proof
+1. $=_{\beta}$ の定義（$\to_{\beta}$ と逆向きの段の有限列）に関する帰納法。$M=_{\beta}N'$, $N'\leftarrow_{\beta}N$ または $N'\to_{\beta}N$ について、帰納法の仮定の $L'$（$M,N'\twoheadrightarrow_{\beta}L'$）をとる。$N'\to_{\beta}N$ の場合は合流性を $N'$ から $L'$ と $N$ への簡約に使う。もう一方は $N\to_{\beta}N'\twoheadrightarrow_{\beta}L'$ でよい。
+2. $M$ の正規形 $N_{1},N_{2}$ について、合流性から共通の簡約先があるが、正規形からは自分自身にしか簡約されないので $N_{1}=N_{2}$。
+3. 1 と、正規形は自分自身にしか簡約されないことによる。
+:::
+
+## 不動点定理 {#logic:sec-lambda-fixed-point}
+
+::: theorem 不動点定理 {#logic:fixed-point-combinator keywords="fixed point theorem, Y combinator, Turing's fixed point combinator" index="不動点結合子|ふどうてんけつごうし, Y 結合子|わいけつごうし"}
+すべての項 $F$ について、$F X=_{\beta}X$ となる項 $X$ がある。具体的に $Y\defeq\lambda f.(\lambda x.f(xx))(\lambda x.f(xx))$ とすると $YF=_{\beta}F(YF)$。さらに $\Theta\defeq(\lambda xy.y(xxy))(\lambda xy.y(xxy))$ とすると $\Theta F\twoheadrightarrow_{\beta}F(\Theta F)$。
+:::
+
+::: proof
+$W\defeq\lambda x.F(xx)$ とすると $YF\to_{\beta}WW\to_{\beta}F(WW)$。また $F(YF)\to_{\beta}F(WW)$。よって $YF=_{\beta}F(WW)=_{\beta}F(YF)$。$X\defeq YF$。
+$A\defeq\lambda xy.y(xxy)$ とすると $\Theta F=AAF\to_{\beta}(\lambda y.y(AAy))F\to_{\beta}F(AAF)=F(\Theta F)$。
+:::
+
+::: remark
+$YF$ は $F(YF)$ に**簡約される**わけではない（両者は共通の項 $F(WW)$ に簡約されるだけ）が、チューリングの $\Theta$ では $\Theta F\twoheadrightarrow_{\beta}F(\Theta F)$ となる。不動点結合子により、再帰的な定義「$g=F(g)$」をラムダ計算の中で解ける。これは、クリーネの再帰定理（\ref{comp:second-recursion-theorem}）や対角化定理（\ref{pt:diagonal-lemma}）と同じ「自己適用 $xx$」による不動点で、言語方程式の最小解（\ref{comp:page-fixed-points}）とは別系統の不動点である。
+:::
+
+::: hypcheck
+- **α 同値の同一視と束縛変数の選び方**：代入の補題と \ref{logic:parallel-substitution} で、変数の捕獲が起きないことに使った。
+- **並行簡約を使った理由**：一段の β 簡約 $\to_{\beta}$ は菱形性をもたない（基 $(\lambda x.xx)((\lambda y.y)z)$ の外側を簡約すると内側の基が二つに複製される）。$\Rightarrow$ は複製された基をまとめて簡約できるので菱形性をもつ。
+- **$\Rightarrow\subseteq\twoheadrightarrow_{\beta}$**：$\Rightarrow^{\ast}$ の合流性を $\twoheadrightarrow_{\beta}$ に戻すのに使った。
+- **三角形の補題の規則 3 の場合分け**：$P$ が抽象のとき完全展開は基を簡約するので、規則 4 を使って補う必要があった。
+:::
+
+## 問題 {#logic:sec-lambda-problems}
+
+::: problem {#logic:prob-beta-not-diamond}
+$\to_{\beta}$ が菱形性をもたないことを、$M\defeq(\lambda x.xx)(Iz)$（$I=\lambda y.y$）で確かめよ。
+:::
+
+::: solution
+$M\to_{\beta}(Iz)(Iz)$（外側）と $M\to_{\beta}(\lambda x.xx)z$（内側）。後者から一段で行けるのは $zz$ だけ。前者から一段で行けるのは $z(Iz)$ と $(Iz)z$ で、$zz$ ではない。よって両方から一段で同じ項に至ることはできない（二段なら $zz$ で合流する）。
+:::
+
+::: problem {#logic:prob-omega-k}
+$KI\Omega$ と $I$ が β 等しいこと、$\Omega$ と $I$ が β 等しくないことを示せ。
+:::
+
+::: solution
+前者は本文の例。後者：$\Omega=_{\beta}I$ なら \ref{logic:normal-form-unique} の 1 から共通の簡約先 $L$ があるが、$\Omega$ が簡約される項は $\Omega$ だけで、$I$ は正規形なので $L=\Omega=I$ となり矛盾する。
+:::
+
+::: problem {#logic:prob-fixed-point-application}
+不動点定理を使い、すべての $N$ で $XN=_{\beta}X$ となる項 $X$（何を受け取っても自分自身を返す項）を作れ。
+:::
+
+::: solution
+$F\defeq\lambda x.\lambda y.x$（$=K$）について $X\defeq YK$ とすると $X=_{\beta}KX$ なので、$XN=_{\beta}KXN=_{\beta}X$。
+:::
+
+::: supplement
+**前提の検討.**
+- 合流性は、簡約が停止すること（正規化可能性）を何も主張しない。型のない体系では $\Omega$ のように止まらない項がある。単純型付きラムダ計算では、すべての簡約列が停止する（強正規化）ことが知られており、カリー＝ハワード対応（\ref{logic:page-curry-howard}）で扱う予定である。
+- η 簡約 $\lambda x.Mx\to M$（$x\notin\mathrm{FV}(M)$）を加えた βη 簡約も合流的であることが知られている。
+
+**関連する結果.**
+- *ラムダ定義可能性.* 自然数をチャーチ数 $\underline{n}\defeq\lambda fx.f^{n}x$ で表すと、ラムダ計算で表せる部分関数はちょうど計算可能な部分関数である（クリーネ、チャーチ、チューリング）。次のページで扱う。
+- *標準化定理.* 正規形があるなら、最も左外側の基から簡約する戦略（正規順序）で必ずそこに至ることが知られている。
+- *スコットのモデル.* 型のないラムダ計算のモデル（$D\cong D^{D}$ となる領域 $D$）を、連続写像に限って構成できる（スコットの $D_{\infty}$）。
+
+**高い視点から：計算を等式から切り離す.** β 等式 $=_{\beta}$ は「計算すると同じ値になる」という対称な関係だが、それだけでは何も計算できない（どちら向きにも書き換えられる）。チャーチ–ロッサーの定理は、向きをもつ簡約 $\twoheadrightarrow_{\beta}$ だけで等式を判定できる（二つの項が等しいなら、両方を簡約して出会える）ことを保証し、等式の理論を「計算」に変える。比喩で言えば、二人が別々の道で山を下りても、必ずどこかで合流できる地形になっている。完全展開 $M^{\bullet}$ は「今見えている基をすべて一度に片付けた地点」で、どの一歩の並行簡約からもそこへ一歩で行ける（三角形の補題）。圏論的には、型なしラムダ計算のモデルは対象 $D$ と同型 $D\cong D^{D}$（関数の空間）をもつデカルト閉圏の対象で、集合の圏ではカントールの定理によりこれは一点集合しかありえない。自己適用 $xx$ と不動点定理は、このような「自分の関数空間と同型な対象」の存在と表裏一体で、ローヴェアの不動点定理の典型例である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

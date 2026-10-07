@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>部分空間と直積空間 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54B-basic-constructions/01-constructions/01-subspaces-products.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 部分空間と直積空間 {#top:page-subspaces-products keywords="subspace topology, relative topology, product topology, Tychonoff product topology, box topology, projections, universal property of the product, cylinders"}
+
+位相空間から新しい位相空間を作る基本的な方法は、部分集合に位相を制限すること（**部分空間**、\ref{top:subspace}）と、空間の族の直積集合に位相を入れること（**直積空間**、\ref{top:product-topology}）である。どちらも前ページの始位相（\ref{top:initial-topology}）の特別な場合で、それぞれ包含写像・射影を連続にする最弱の位相として特徴づけられる。直積位相は位相空間の圏での積であり（\ref{top:product-universal}）、各座標ごとに大きい開集合をとる**箱位相**（\ref{top:box-topology}）とは、無限個の積で異なる。
+
+> 資料：内田伏一『集合と位相』§19–§20。
+
+## 記法と定義の確認 {#top:sec-sp-notation}
+
+::: notation
+- 位相・開基・準開基・閉包・連続写像・同相・始位相とその普遍性は前ページまでのとおり（\ref{top:topological-space}, \ref{top:base}, \ref{top:subbase}, \ref{top:interior-closure}, \ref{top:continuous}, \ref{top:homeomorphism}, \ref{top:initial-topology}, \ref{top:initial-topology-universal}）。
+- 集合の族 $(X_{i})_{i\in I}$ の直積 $\prod_{i}X_{i}$ は、$i\mapsto x_{i}\in X_{i}$ となる関数 $x=(x_{i})_{i}$ の全体で、射影を $p_{i}(x)\defeq x_{i}$ と書く。直積が空でないこと（すべての $X_{i}$ が空でなければ）は選択公理と同値である（\ref{set:ax-choice}）。
+- 圏論の積は \ref{cat:product} のとおり。
+:::
+
+## 部分空間 {#top:sec-sp-subspace}
+
+::: definition 部分空間 {#top:subspace keywords="subspace, relative topology, induced topology" index="部分空間|ぶぶんくうかん, 相対位相|そうたいいそう"}
+位相空間 $X$ と部分集合 $A$ について、$\mathcal{O}_{A}\defeq\{U\cap A:U\text{ は }X\text{ の開集合}\}$ は $A$ 上の位相である。これを**相対位相**といい、$(A,\mathcal{O}_{A})$ を $X$ の**部分空間**という。
+:::
+
+::: proposition 部分空間の基本性質 {#top:subspace-basic keywords="subspace topology is the initial topology of the inclusion; closed sets and closures in subspaces" index="部分空間の基本性質|ぶぶんくうかんのきほんせいしつ"}
+$A\subseteq X$ を部分空間とし、$\iota\colon A\to X$ を包含とする。
+1. $\mathcal{O}_{A}$ は位相で、$\iota$ の始位相（$\iota$ を連続にする最弱の位相）である。したがって、$g\colon Z\to A$ が連続であることと、$\iota\circ g\colon Z\to X$ が連続であることは同値。
+2. $A$ の閉集合は、$X$ の閉集合 $F$ による $F\cap A$ の形の集合である。$B\subseteq A$ の $A$ での閉包は $\overline{B}\cap A$（$\overline{B}$ は $X$ での閉包）。
+3. $X$ の開基 $\mathcal{B}$ について $\{B\cap A:B\in\mathcal{B}\}$ は $A$ の開基。
+4. $A$ が $X$ で開（閉）なら、$A$ の開（閉）集合は $X$ の開（閉）集合でもある。
+5. （推移性）$B\subseteq A\subseteq X$ のとき、$B$ の $A$ からの相対位相と $X$ からの相対位相は一致する。
+:::
+
+::: proof
+**1.** $(U\cap A)\cap(V\cap A)=(U\cap V)\cap A$、$\bigcup(U_{\lambda}\cap A)=(\bigcup U_{\lambda})\cap A$ から位相。$\iota^{-1}[U]=U\cap A$ なので、$\mathcal{O}_{A}$ はちょうど $\iota$ による開集合の逆像の全体で、これは始位相の準開基であり、すでに位相なので始位相そのもの。普遍性は \ref{top:initial-topology-universal}。
+
+**2.** $A\setminus(U\cap A)=U^{c}\cap A$。閉包：$\overline{B}\cap A$ は $B$ を含む $A$ の閉集合。$A$ の閉集合 $F\cap A\supseteq B$ なら $F\supseteq\overline{B}$ なので $F\cap A\supseteq\overline{B}\cap A$。
+
+**3.** $A$ の開集合 $U\cap A$ と $x\in U\cap A$ について、$x\in B\subseteq U$ となる $B\in\mathcal{B}$ があり、$x\in B\cap A\subseteq U\cap A$。
+
+**4.** $U\cap A$ は二つの開集合の共通部分。閉も同様。
+
+**5.** $B$ の $A$ からの開集合は $(U\cap A)\cap B=U\cap B$。
+:::
+
+::: example
+1. $\R$ の部分空間 $[0,1]$ で、$[0,1/2)$ は開集合（$(-1,1/2)\cap[0,1]$）だが、$\R$ では開でない。
+2. $\mathbb{Z}\subseteq\R$ の相対位相は離散位相（$\{n\}=(n-1/2,n+1/2)\cap\mathbb{Z}$）。$\{1/n:n\ge1\}$ も離散だが、$\{0\}\cup\{1/n\}$ は離散でない（$0$ の近傍は $1/n$ を含む）。
+3. 距離空間 $(X,d)$ の部分集合 $A$ の相対位相は、制限した距離 $d\restriction(A\times A)$ の距離位相に一致する（$A$ での開球は $B(x,\varepsilon)\cap A$）。
+:::
+
+## 直積位相 {#top:sec-sp-product}
+
+::: definition 直積位相 {#top:product-topology keywords="product topology, Tychonoff topology, cylinder sets" index="直積位相|ちょくせきいそう, 積位相|せきいそう, 直積空間|ちょくせきくうかん, 柱集合|ちゅうしゅうごう"}
+位相空間の族 $(X_{i})_{i\in I}$ について、直積集合 $\prod_{i}X_{i}$ 上の、すべての射影 $p_{i}$ を連続にする最弱の位相（$(p_{i})$ の始位相）を**直積位相**といい、得られる空間を**直積空間**という。
+:::
+
+::: proposition 直積位相の開基 {#top:product-base keywords="base of the product topology: finitely many open conditions" index="直積位相の開基|ちょくせきいそうのかいき"}
+直積位相の準開基として $\{p_{i}^{-1}[U]:i\in I,U\text{ は }X_{i}\text{ で開}\}$ が、開基として
+$$
+\prod_{i\in I}U_{i}\quad(U_{i}\text{ は }X_{i}\text{ で開、有限個の }i\text{ を除いて }U_{i}=X_{i})
+$$
+の形の集合（**基本開集合**）の全体がとれる。
+:::
+
+::: proof
+準開基は始位相の定義（\ref{top:initial-topology}）。有限個の $p_{i_{1}}^{-1}[U_{1}]\cap\cdots\cap p_{i_{n}}^{-1}[U_{n}]$ は、座標 $i_{k}$ で $U_{k}$（同じ $i$ が複数回あれば共通部分）、他の座標で $X_{i}$ の直積なので、基本開集合の形。逆に基本開集合はこの形の有限共通部分。
+:::
+
+::: theorem 直積の普遍性 {#top:product-universal keywords="the product space is the categorical product in Top" index="直積の普遍性|ちょくせきのふへんせい"}
+位相空間 $Z$ と連続写像 $f_{i}\colon Z\to X_{i}$ の族に対し、$p_{i}\circ f=f_{i}$ となる連続写像 $f\colon Z\to\prod X_{i}$ がちょうど一つある（$f(z)=(f_{i}(z))_{i}$）。すなわち、直積空間と射影は $\mathbf{Top}$ での積（\ref{cat:product}）である。
+:::
+
+::: proof
+集合の写像として $f$ は $f(z)=(f_{i}(z))$ に限る（成分が決まる）。連続性は始位相の普遍性（\ref{top:initial-topology-universal}）から：$p_{i}\circ f=f_{i}$ がすべて連続。
+:::
+
+::: corollary 直積の基本的な連続写像 {#top:product-maps keywords="product of maps, diagonal map, projections are open" index="直積写像|ちょくせきしゃぞう, 対角写像|たいかくしゃぞう"}
+1. 連続写像 $g_{i}\colon X_{i}\to Y_{i}$ の直積 $\prod g_{i}\colon(x_{i})\mapsto(g_{i}(x_{i}))$ は連続。
+2. 対角写像 $X\to X^{I}$, $x\mapsto(x)_{i}$ は連続。
+3. 射影 $p_{i}$ は開写像である。
+4. 有限個の $\R$ の直積位相は $\R^{n}$ の通常の位相に一致する。
+:::
+
+::: proof
+**1, 2.** 普遍性：成分 $g_{i}\circ p_{i}$ や $1_{X}$ が連続。**3.** 基本開集合の像は $U_{i}$（空でなければ）で、像は和と交換する。**4.** 直積位相の基本開集合 $\prod_{k}(a_{k},b_{k})$（開区間で十分）は通常の位相で開で、通常の開球 $B(x,\varepsilon)$ は $\prod_{k}(x_{k}-\varepsilon/\sqrt{n},x_{k}+\varepsilon/\sqrt{n})$ を含む（\ref{top:metric-topology} の例 3 の $d_{\infty}$ との比較）。
+:::
+
+::: proposition 直積の閉包 {#top:product-closure keywords="closure of a product is the product of closures" index="直積の閉包|ちょくせきのへいほう"}
+$A_{i}\subseteq X_{i}$ について $\overline{\prod_{i}A_{i}}=\prod_{i}\overline{A_{i}}$。とくに閉集合の直積は閉集合である。
+:::
+
+::: proof
+「⊆」：$\prod\overline{A_{i}}=\bigcap_{i}p_{i}^{-1}[\overline{A_{i}}]$ は閉集合の共通部分で閉、$\prod A_{i}$ を含む。「⊇」：$x\in\prod\overline{A_{i}}$ と基本開集合 $\prod U_{i}\ni x$ について、各 $i$ で $x_{i}\in U_{i}$ かつ $x_{i}\in\overline{A_{i}}$ なので $U_{i}\cap A_{i}\neq\varnothing$。各 $i$ から点 $a_{i}\in U_{i}\cap A_{i}$ を選べば（選択公理。ただし有限個の $i$ 以外は $U_{i}=X_{i}$ で、$A_{i}$ の点を選ぶ）$(a_{i})\in\prod U_{i}\cap\prod A_{i}$。$\prod A_{i}=\varnothing$ の場合は両辺とも空（ある $A_{i}=\varnothing$ なら $\overline{A_{i}}=\varnothing$）。
+:::
+
+## 箱位相 {#top:sec-sp-box}
+
+::: definition 箱位相 {#top:box-topology keywords="box topology" index="箱位相|はこいそう"}
+$\prod_{i}U_{i}$（すべての $U_{i}$ が $X_{i}$ で開、有限個という制限なし）の全体を開基とする位相を**箱位相**という。
+:::
+
+::: proposition 箱位相と直積位相の違い {#top:box-vs-product keywords="box topology is finer; diagonal map into R^N with box topology is not continuous" index="箱位相と直積位相|はこいそうとちょくせきいそう"}
+箱位相は直積位相より強く、$I$ が有限なら一致する。$\R^{\N}$ で、対角写像 $\R\to\R^{\N}$, $t\mapsto(t,t,\dots)$ は直積位相について連続だが、箱位相については連続でない。
+:::
+
+::: proof
+箱位相の開基は (B2) を満たし（成分ごとの共通部分）、直積位相の基本開集合を含むので強い。有限なら基本開集合と同じ形。対角写像 $\Delta$ の直積位相での連続性は \ref{top:product-maps} の 2。箱位相で $V\defeq\prod_{n}(-1/(n+1),1/(n+1))$ は開で $\Delta(0)\in V$ だが、$\Delta^{-1}[V]=\bigcap_{n}(-1/(n+1),1/(n+1))=\{0\}$ は $\R$ で開でない。
+:::
+
+::: remark
+箱位相は、直積の普遍性（\ref{top:product-universal}）を満たさない：上の対角写像は成分がすべて連続なのに、箱位相への写像として連続でない。圏論的に正しい「積」は直積位相である。
+:::
+
+::: supplement
+**前提を変えると.** 直積位相の基本開集合が「有限個の座標だけを制限する」ことが、チコノフの定理（コンパクト空間の直積はコンパクト。\ref{top:tychonoff}）を成り立たせる。箱位相ではチコノフの定理は成り立たない：$\{0,1\}^{\N}$（離散な二点の箱積）は離散空間で、無限集合なのでコンパクトでない。
+
+**類似の定理.** ヒューイット–マルチェフスキー–ポンジチェリの定理：可分空間の、連続体濃度以下の個数の直積は可分である（R. Engelking, *General Topology*）。一方、非可算個の $\R$ の直積は第一可算でない（基本開集合は有限個の座標しか制限しないので、可算個の近傍の共通部分も、可算個を除くすべての座標で自由である）。
+
+**高い視点から：始位相としての部分空間と直積.** 部分空間は包含写像一本の始位相、直積は射影の族の始位相で、どちらも $\mathbf{Top}$ の極限の構成の部品である：$\mathbf{Top}$ の極限は、集合の極限（\ref{cat:set-complete}）に、極限錐の射影の始位相を入れたものである（等化子は部分空間、積は直積）。比喩で言えば、始位相は「与えられた座標系で見て、必要最小限だけ細かくする」見方で、直積位相は「有限個の座標を見るだけで判定できる性質だけを開集合とする」見方である。
+:::
+
+## 問題 {#top:sec-sp-problems}
+
+::: problem {#top:prob-graph-closed}
+$f\colon X\to\R$ が連続なら、グラフ $\{(x,f(x))\}$ は $X\times\R$ の閉集合であることを示せ。
+:::
+
+::: solution
+$h\colon X\times\R\to\R$, $(x,y)\mapsto y-f(x)$ は連続（普遍性で $(x,y)\mapsto(f(x),y)$ が連続で、引き算 $\R^{2}\to\R$ が連続）。グラフは $h^{-1}[\{0\}]$ で、$\{0\}$ は閉なので閉。
+:::
+
+::: problem {#top:prob-product-of-subspaces}
+$A_{i}\subseteq X_{i}$ について、$\prod A_{i}$ の、直積空間 $\prod X_{i}$ からの相対位相と、部分空間 $A_{i}$ の直積位相は一致することを示せ。
+:::
+
+::: solution
+普遍性で比べる（\ref{top:initial-topology-universal} の一意性）。$g\colon Z\to\prod A_{i}$ が前者で連続 $\iff$ $Z\to\prod X_{i}$ として連続 $\iff$ 各 $Z\to X_{i}$ が連続 $\iff$（部分空間の普遍性）各 $Z\to A_{i}$ が連続 $\iff$ 後者で連続。これは始位相の推移性（\ref{top:prob-initial-transitive}）の特別な場合である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

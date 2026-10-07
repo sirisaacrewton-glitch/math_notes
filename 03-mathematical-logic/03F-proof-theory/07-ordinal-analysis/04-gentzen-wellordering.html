@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ゲンツェンの整列性証明と PA の証明論的順序数 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/07-ordinal-analysis/04-gentzen-wellordering.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ゲンツェンの整列性証明と PA の証明論的順序数 {#pt:page-gentzen-wellordering keywords="Gentzen's well-ordering proof, PA proves transfinite induction below epsilon_0, jump formula, proof-theoretic ordinal of PA, epsilon_0"}
+
+前ページでは、$\PA(X)$ で超限帰納法が証明できる原始再帰的整列順序の順序型は $\varepsilon_{0}$ 未満であることを示した（\ref{pt:gentzen-bound}）。本ページではその逆、すなわち**標準的な $\varepsilon_{0}$ 順序のどの始切片についても、$\PA(X)$ で超限帰納法が証明できる**ことを示す（ゲンツェン、\ref{pt:gentzen-wellordering}）。鍵は、論理式 $A$ についての超限帰納法から、より複雑な論理式 $j[A]$ についての超限帰納法を経由して、指数的に長い順序についての超限帰納法を導く**ゲンツェンの跳躍**（\ref{pt:jump-progressive}）である。二つの結果を合わせて、$\PA$ の**証明論的順序数**が $\varepsilon_{0}$ であることが結論される（\ref{pt:pa-proof-theoretic-ordinal}）。
+
+> 主な資料は新井敏康『数学基礎論』第 8 章 §8.4.2（補題 8.4.9、定理 8.4.8, 8.4.10）。証明は新井の本の議論に沿い、使う順序数表記の性質を \ref{pt:standard-epsilon0-properties} の番号で明示した。
+
+## 記法と定義の確認 {#pt:sec-oa4-notation}
+
+::: notation
+- 標準的な $\varepsilon_{0}$ 順序 $(\mathrm{OT},\prec)$、演算 $\hat{+}$, $\hat{\omega}^{a}\cdot n$ と値 $o(a)$ は \ref{pt:page-epsilon0} のとおり（\ref{pt:notation-codes}, \ref{pt:notation-system}, \ref{pt:notation-operations}）。本ページでは $\prec,\hat{+},\hat{\omega}$ をそれぞれ $<,+,\omega$ と書き、ギリシャ文字 $\alpha,\beta,\gamma,\delta$ は $\mathrm{OT}$ の元（符号）を動く変数とする（$\forall\alpha\,\varphi$ は $\forall x\,(x\in\mathrm{OT}\to\varphi)$ の略記。$\mathrm{OT}$ は原始再帰的なので $\PA(X)$ の原子論理式で書ける）。$\forall\gamma<\beta\,\varphi$ は $\forall\gamma\,(\gamma<\beta\to\varphi)$ の略記。
+- $\omega_{0}\defeq\omega^{0}$（値は $1$）、$\omega_{n+1}\defeq\omega^{\omega_{n}}$ も符号として扱う。値は \ref{pt:epsilon0} の $\omega_{n}$ である。
+- \ref{pt:standard-epsilon0-properties} の性質 1–5（$<$ は $0$ を最小元とする線形順序；和の結合律と $0$；$\omega^{\alpha}\cdot(n+1)=\omega^{\alpha}\cdot n+\omega^{\alpha}$；$\gamma<\beta+\omega^{0}\leftrightarrow\gamma\le\beta$；$\alpha>0\wedge\gamma<\beta+\omega^{\alpha}\to\exists\alpha'<\alpha\,\exists n\,(\gamma<\beta+\omega^{\alpha'}\cdot n)$）は $\PA$（したがって $\PA(X)$）で証明できることを使う（本サイトでは形式化を示していない）。
+- 体系 $\PA(X)$、$\mathrm{Prog}$, $\mathrm{TI}$、階数 $\lvert\cdot\rvert_{\prec}$ は \ref{pt:page-gentzen-bound} のとおり（\ref{pt:pa-x}, \ref{pt:progressive-ti}）。以下、$\PA(X)$ の中での議論は通常の数学の言葉で書くが、すべて $\PA(X)$ の証明に書き直せる（帰納法は $\PA(X)$ の帰納法の始件を、その他の推論は一階述語論理の推論を使う）。
+:::
+
+::: definition 論理式についての前進性 {#pt:prog-formula keywords="progressiveness of a formula along the standard epsilon_0 ordering"}
+論理式 $A(\alpha)$（他の自由変数を含んでよい）について
+$$
+\mathrm{Prog}(A)\defeq\forall\alpha\,\bigl(\forall\beta<\alpha\,A(\beta)\to A(\alpha)\bigr).
+$$
+$A(\alpha)\equiv\alpha\in X$ のとき、これは \ref{pt:progressive-ti} の $\mathrm{Prog}[\prec,X]$ の、$\mathrm{OT}$ に制限した形である。
+:::
+
+## ゲンツェンの跳躍 {#pt:sec-oa4-jump}
+
+::: definition 跳躍論理式 {#pt:jump-formula keywords="Gentzen's jump formula j[A]" index="跳躍論理式|ちょうやくろんりしき"}
+論理式 $A(\gamma)$ に対し、
+$$
+j[A](\alpha)\defeq\forall\beta\,\bigl(\forall\gamma<\beta\,A(\gamma)\to\forall\gamma<\beta+\omega^{\alpha}\,A(\gamma)\bigr).
+$$
+:::
+
+::: intuition
+$j[A](\alpha)$ は、「$A$ が $\beta$ 未満で成り立つことが分かっていれば、さらに $\omega^{\alpha}$ だけ先まで成り立つ」という主張である。$A$ についての前進性は、$A$ を一歩ずつ先に延ばす力しかないが、$j[A]$ についての前進性は「$\omega^{\alpha}$ 歩ずつ延ばす力」を一歩ずつ強めていく。$j[A]$ について長さ $\delta$ まで超限帰納法が成り立てば、$A$ については長さ $\omega^{\delta}$ まで成り立つ。この指数的な飛躍を、論理式の複雑さを一段上げることと引き換えに得るのが跳躍である。
+
+```svg j[A](α)：A が β 未満で成り立てば（濃い区間）、β + ω^α 未満まで成り立つ（薄い区間が加わる）
+<svg viewBox="0 0 560 110" xmlns="http://www.w3.org/2000/svg" font-size="14">
+  <line x1="30" y1="55" x2="530" y2="55" stroke="currentColor" stroke-width="1.5"/>
+  <rect x="30" y="45" width="200" height="20" style="fill: var(--mn-accent)"/>
+  <rect x="230" y="45" width="220" height="20" style="fill: var(--mn-accent-soft); stroke: var(--mn-accent)" stroke-dasharray="4 3"/>
+  <text x="25" y="90">0</text>
+  <text x="222" y="90">β</text>
+  <text x="420" y="90">β + ω^α</text>
+  <text x="70" y="35" font-size="13" style="fill: var(--mn-fg-soft)">A が成り立つ（仮定）</text>
+  <text x="265" y="35" font-size="13" style="fill: var(--mn-fg-soft)">j[A](α) で延ばせる範囲</text>
+</svg>
+```
+:::
+
+::: lemma 跳躍は前進性を保つ {#pt:jump-progressive keywords="Prog(A) implies Prog(j[A])" index="ゲンツェンの跳躍|げんつぇんのちょうやく"}
+任意の論理式 $A$ について、$\PA(X)\vdash\mathrm{Prog}(A)\to\mathrm{Prog}(j[A])$。
+:::
+
+::: proof
+$\PA(X)$ の中で議論する。$\mathrm{Prog}(A)$ を仮定し、$\alpha$ について
+$$
+\forall\delta<\alpha\,j[A](\delta)\tag{1}
+$$
+を仮定して $j[A](\alpha)$ を示す。そのため $\beta$ をとり、
+$$
+\forall\gamma<\beta\,A(\gamma)\tag{2}
+$$
+を仮定し、$\gamma<\beta+\omega^{\alpha}$ について $A(\gamma)$ を示す。
+
+**Case 1（$\alpha=0$）.** 性質 4 から $\gamma<\beta+\omega^{0}$ は $\gamma\le\beta$ を意味する。$\gamma<\beta$ なら (2) から $A(\gamma)$。$\gamma=\beta$ なら、(2) と $\mathrm{Prog}(A)$ から $A(\beta)$。
+
+**Case 2（$\alpha>0$）.** 性質 5 から、ある $\delta<\alpha$ と $n$ で $\gamma<\beta+\omega^{\delta}\cdot n$。(1) から $j[A](\delta)$。そこで $n$ についての（$\PA(X)$ の）帰納法で
+$$
+\forall n\,\forall\gamma<\beta+\omega^{\delta}\cdot n\,A(\gamma)\tag{3}
+$$
+を示す。$n=0$：性質 3, 2 から $\beta+\omega^{\delta}\cdot0=\beta+0=\beta$ なので (2) そのもの。$n\Rightarrow n+1$：$\beta'\defeq\beta+\omega^{\delta}\cdot n$ とおくと帰納法の仮定は $\forall\gamma<\beta'\,A(\gamma)$。$j[A](\delta)$ をこの $\beta'$ に適用して $\forall\gamma<\beta'+\omega^{\delta}\,A(\gamma)$。性質 2, 3 から $\beta'+\omega^{\delta}=\beta+(\omega^{\delta}\cdot n+\omega^{\delta})=\beta+\omega^{\delta}\cdot(n+1)$。
+
+(3) から $A(\gamma)$。以上で $j[A](\alpha)$ が示され、$\mathrm{Prog}(j[A])$ が得られた。
+:::
+
+## 整列性証明 {#pt:sec-oa4-wellordering}
+
+::: theorem ゲンツェンの整列性証明 {#pt:gentzen-wellordering keywords="Gentzen: PA proves transfinite induction up to each omega_n" index="ゲンツェンの整列性証明|げんつぇんのせいれつせいしょうめい"}
+各自然数 $n$ と任意の論理式 $A$ について
+$$
+\PA(X)\vdash\mathrm{Prog}(A)\to\forall\gamma<\omega_{n}\,A(\gamma).
+$$
+:::
+
+::: proof
+$n$ についての**メタレベルの**帰納法で、「すべての論理式 $A$ について」主張が成り立つことを示す。
+
+**$n=0$.** $\gamma<\omega_{0}=0+\omega^{0}$ なら、性質 4 から $\gamma\le0$、性質 1 から $\gamma=0$。$0$ より小さい元はない（性質 1）ので、$\mathrm{Prog}(A)$ を $\alpha=0$ に適用して $A(0)$。
+
+**$n\Rightarrow n+1$.** $\mathrm{Prog}(A)$ を仮定する。\ref{pt:jump-progressive} から $\mathrm{Prog}(j[A])$。帰納法の仮定を**論理式 $j[A]$** に適用して $\forall\delta<\omega_{n}\,j[A](\delta)$。$\mathrm{Prog}(j[A])$ を $\alpha=\omega_{n}$ に適用して $j[A](\omega_{n})$。これを $\beta=0$ に適用すると、仮定 $\forall\gamma<0\,A(\gamma)$ は（$0$ より小さい元がないので）成り立ち、$\forall\gamma<0+\omega^{\omega_{n}}\,A(\gamma)$。性質 2 から $0+\omega^{\omega_{n}}=\omega_{n+1}$。
+:::
+
+::: corollary 始切片についての超限帰納法 {#pt:ti-initial-segments keywords="PA(X) proves TI for each initial segment of the standard epsilon_0 ordering"}
+$a\in\mathrm{OT}$ について、$\prec_{a}$ を $x\prec_{a}y:\iff x\prec y\prec a$ で定める（原始再帰的）。すべての $a\in\mathrm{OT}$ について $\PA(X)\vdash\mathrm{TI}[\prec_{a}]$。
+:::
+
+::: proof
+$o(a)<\varepsilon_{0}$ なので、ある $n$ で $o(a)<o(\omega_{n})$、すなわち $a\prec\omega_{n}$（\ref{pt:notation-system}）。この事実（具体的な数の間の原始再帰的関係）は $\PA(X)$ で計算により証明できる。$\PA(X)$ の中で $\mathrm{Prog}[\prec_{a},X]$ を仮定し、$x\in X$ を示す。
+- $x\not\prec a$ なら、$y\prec_{a}x$ となる $y$ はないので、$\mathrm{Prog}[\prec_{a},X]$ から直ちに $x\in X$。
+- $x\prec a$ の場合のため、$A(\gamma)\defeq(\gamma<a\to\gamma\in X)$ とおき $\mathrm{Prog}(A)$ を示す：$\forall\beta<\gamma\,A(\beta)$ を仮定し、$\gamma<a$ とする。$y\prec_{a}\gamma$ なら $y<\gamma<a$ で $A(y)$ から $y\in X$。$\mathrm{Prog}[\prec_{a},X]$ から $\gamma\in X$。
+
+\ref{pt:gentzen-wellordering} から $\forall\gamma<\omega_{n}\,A(\gamma)$。$x\prec a\prec\omega_{n}$ なので（性質 1 の推移性）$A(x)$、すなわち $x\in X$。
+:::
+
+## PA の証明論的順序数 {#pt:sec-oa4-ordinal}
+
+::: definition 証明論的順序数 {#pt:proof-theoretic-ordinal keywords="proof-theoretic ordinal" index="証明論的順序数|しょうめいろんてきじゅんじょすう"}
+集合変数 $X$ を含む算術の体系 $T$ について、
+$$
+\lvert T\rvert\defeq\sup\{\lvert\prec\rvert:\ \prec\text{ は原始再帰的な整礎関係で }T\vdash\mathrm{TI}[\prec]\}
+$$
+を $T$ の**証明論的順序数**という。
+:::
+
+::: theorem PA の証明論的順序数 {#pt:pa-proof-theoretic-ordinal keywords="the proof-theoretic ordinal of PA is epsilon_0" index="PA の証明論的順序数|ぴーえーのしょうめいろんてきじゅんじょすう"}
+$\lvert\PA(X)\rvert=\varepsilon_{0}$。さらに上限は達成されない：$\PA(X)\vdash\mathrm{TI}[\prec]$ となる原始再帰的な整礎関係 $\prec$ はすべて $\lvert\prec\rvert<\varepsilon_{0}$ を満たす。
+:::
+
+::: proof
+上界と「達成されない」ことは \ref{pt:gentzen-bound}。下界：$a\in\mathrm{OT}$, $a\neq0$ について $\prec_{a}$ の階数は、$x\prec a$ なら $\lvert x\rvert_{\prec_{a}}=o(x)$（$o(x)$ についての帰納法：$\lvert x\rvert_{\prec_{a}}=\sup\{o(y)+1:y\prec x\}=o(x)$。$o$ は順序同型なので $\{o(y):y\prec x\}=o(x)$）、それ以外の $x$ は $0$ なので、$\lvert\prec_{a}\rvert=\sup\{o(x)+1:x\prec a\}=o(a)$。\ref{pt:ti-initial-segments} から $\lvert\PA(X)\rvert\ge o(a)$。$o$ は全射なので $o(a)$ は $\varepsilon_{0}$ 未満の任意の順序数をとり、$\lvert\PA(X)\rvert\ge\varepsilon_{0}$。
+:::
+
+::: remark
+1. **メタ帰納法の役割.** \ref{pt:gentzen-wellordering} の証明は、$n$ ごとに別の $\PA(X)$ の証明を与える：$n$ が一つ増えるごとに跳躍論理式が一段入れ子になり（$j[j[\cdots j[A]\cdots]]$）、使う帰納法の論理式が複雑になる。これを一つの証明にまとめて「すべての $n$ について」とするには、任意の深さの論理式を一様に扱う道具（真理述語）が必要で、それは $\PA$ にはない。\ref{pt:gentzen-bound} は、この一様化が実際に不可能であることを示している。
+2. **帰納法の強さとの対応.** 同様の解析を部分体系に適用すると、$\Sigma_{n}$ 論理式の帰納法だけを許す体系 $\mathrm{I}\Sigma_{n}$（$n\ge1$）の証明論的順序数は $\omega_{n+1}$ であることが知られている（本サイトでは示していない）。
+:::
+
+::: hypcheck
+- **メタレベルの帰納法と「すべての論理式」**：\ref{pt:gentzen-wellordering} の帰納法の段階で、帰納法の仮定を元の $A$ ではなく $j[A]$ に適用した。帰納法の主張を「すべての論理式について」にしたのはこのためである。
+- **$\PA(X)$ の帰納法**：\ref{pt:jump-progressive} の Case 2 で、$\forall\gamma<\beta+\omega^{\delta}\cdot n\,A(\gamma)$（$A$ に依存する複雑な論理式）について使った。任意の論理式についての帰納法が $\PA$ の特徴であり、これが $\varepsilon_{0}$ 未満のすべての順序数に届く理由になっている。
+- **順序数表記の性質 1–5**：Case 1 で性質 4、Case 2 で性質 5（極限の場合の分解）と 2, 3（和の計算）、\ref{pt:gentzen-wellordering} で性質 1, 2, 4 を使った。これらが $\PA$ で証明できることは引用である。
+- **$a\prec\omega_{n}$ となる $n$ の存在**：\ref{pt:ti-initial-segments} で、$\varepsilon_{0}$ の定義（$\omega_{n}$ の上限）を使った。
+:::
+
+## 問題 {#pt:sec-oa4-problems}
+
+::: problem {#pt:prob-jump-depth}
+$\mathrm{dp}(j[A])$ を $\mathrm{dp}(A)$ と、$<,+,\omega$ を表す原始再帰的な記号の形に応じた定数で評価し、$\omega_{n}$ までの超限帰納法の \ref{pt:gentzen-wellordering} の証明で使う帰納法の論理式の深さが、$n$ について（少なくとも）一次関数的に増えることを確かめよ。
+:::
+
+::: solution
+$\forall\gamma<\beta\,A(\gamma)$ は $\forall\gamma\,(\gamma\not<\beta\vee A(\gamma))$（$\mathrm{OT}$ への制限も同様のリテラルの選言）なので深さ $\mathrm{dp}(A)+2$ 程度（定数 $k_{1}$ を足したもの）。$j[A](\alpha)=\forall\beta\,(\neg\forall\gamma<\beta\,A\vee\forall\gamma<\beta+\omega^{\alpha}\,A)$ は、さらに $\vee$ と $\forall\beta$ の二段を加えて深さ $\mathrm{dp}(A)+k$（$k$ は定数）。$\omega_{n}$ の証明では $j^{n}[A]$（$j$ を $n$ 回）を使うので深さは $\mathrm{dp}(A)+nk$ で、$n$ について一次関数的に増える。（とくに、$\PA$ の部分体系で帰納法の論理式の複雑さを制限すると、届く順序数も制限される。）
+:::
+
+::: problem {#pt:prob-why-not-epsilon0}
+\ref{pt:gentzen-wellordering} から「$\PA(X)\vdash\mathrm{Prog}(X)\to\forall\gamma\,(\gamma\in X)$」（$\varepsilon_{0}$ 全体についての超限帰納法）を導こうとすると、どこで議論が破綻するか説明せよ。
+:::
+
+::: solution
+各 $\gamma\in\mathrm{OT}$ について、ある $n$ で $\gamma<\omega_{n}$ であり、\ref{pt:gentzen-wellordering} から $\PA(X)\vdash\mathrm{Prog}(X)\to\gamma\in X$ は（$\gamma$ ごとに）証明できる。しかし $\forall\gamma$ を導くには、$\PA(X)$ の中で「すべての $n$ について $\mathrm{Prog}(X)\to\forall\gamma<\omega_{n}\,\gamma\in X$」を示す必要があり、その $n$ についての帰納法の論理式は $j^{n}[X]$ のように $n$ に依存して深さが増えるので、一つの論理式として書けない。$\PA(X)$ は無限個の証明をまとめる ω 規則をもたないので、この一様化はできない。実際、\ref{pt:gentzen-bound} によりそれは不可能である。
+:::
+
+::: problem {#pt:prob-ti-epsilon0-con}
+$\PA(X)$ に $\mathrm{TI}[\prec]$（$\prec$ は標準的な $\varepsilon_{0}$ 順序）を加えた体系は、$\PA$ の無矛盾性を証明することが知られている（ゲンツェン）。このことと第二不完全性定理（\ref{pt:godel-second}）から、$\PA(X)\nvdash\mathrm{TI}[\prec]$ の別証明が得られるかを論ぜよ。
+:::
+
+::: solution
+$\PA(X)+\mathrm{TI}[\prec]\vdash\mathrm{Con}(\PA)$ を認める。$\PA(X)\vdash\mathrm{TI}[\prec]$ なら $\PA(X)\vdash\mathrm{Con}(\PA)$ で、$X$ を含まない文についての $\PA(X)$ と $\PA$ の関係（$X$ に任意の論理式、たとえば $x=x$ を代入しても証明は通るので、$\PA(X)$ で証明できる $X$ を含まない文は、原始再帰関数の記号を加えた $\PA$ で証明でき、それは $\PA$ の保存拡大）から $\PA\vdash\mathrm{Con}(\PA)$ となり、第二不完全性定理に反する。したがって、ゲンツェンの無矛盾性証明を認めれば別証明が得られる。ただし、ゲンツェンの無矛盾性証明そのものが、本系列のカット除去と同種の議論（$\varepsilon_{0}$ についての超限帰納法による）を必要とするので、議論の重さはあまり変わらない。
+:::
+
+::: supplement
+**前提の検討.**
+- \ref{pt:gentzen-wellordering} では原始再帰的な表記系 $\mathrm{OT}$ の性質 1–5 を $\PA$ で使った。順序数表記の「自然さ」（標準性）は重要で、型が $\varepsilon_{0}$ でも、不自然な符号化をした原始再帰的整列順序については、$\PA$ で始切片の超限帰納法が証明できないことがある（$\lvert T\rvert$ の定義に整列順序の選び方の問題があることが知られている）。
+- 本ページの議論は $X$ を含む一様な超限帰納法を扱ったが、\ref{pt:gentzen-wellordering} は任意の論理式 $A$ について成り立つので、個別の論理式についての超限帰納法にもそのまま当てはまる。
+
+**関連する結果.**
+- *急増加関数.* $\varepsilon_{0}$ 未満の順序数で添字付けられたハーディ階層 $H_{\alpha}$ を使うと、$\PA$ で全域性が証明できる計算可能関数は、ある $H_{\alpha}$（$\alpha<\varepsilon_{0}$）で抑えられることが知られている（新井の本の定理 8.4.18）。$H_{\varepsilon_{0}}$ 程度の増大度をもつ関数（グッドスタイン列の長さなど）の全域性は $\PA$ で証明できない。
+- *二階算術との関係.* $\mathsf{ACA}_{0}$ は $\PA$ の保存拡大（\ref{pt:aca0-conservative-pa}）で、証明論的順序数も $\varepsilon_{0}$ である。$\mathsf{ATR}_{0}$ の証明論的順序数は $\Gamma_{0}$ であると言われている（\ref{pt:page-soa-subsystems} の補足）。
+
+**高い視点から：帰納法の強さを順序数で読む.** ゲンツェンの二つの定理（限界定理と整列性証明）は、「$\PA$ の帰納法の力」を「$\varepsilon_{0}$ 未満の超限帰納法」という順序数の言葉に翻訳している。跳躍 $j[A]$ は、論理式の複雑さを一段上げるごとに順序数を指数的に伸ばす装置であり、$\PA$ の帰納法が任意の有限の複雑さの論理式に使えることが、$\omega,\omega^{\omega},\omega^{\omega^{\omega}},\dots$ のすべての段に届くことに対応している。比喩で言えば、$\PA$ は「有限段の梯子を何本でも継ぎ足せるが、無限段の梯子は作れない」体系で、$\varepsilon_{0}$ はその継ぎ足しで届く高さの上限である。この翻訳によって、異なる体系の強さを一本の順序数の数直線の上で比べられるようになる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>自然演繹・LK・ヒルベルト流の同値性 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/01-sequent-calculus/04-equivalence-of-systems.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 自然演繹・LK・ヒルベルト流の同値性 {#pt:equivalence-of-systems keywords="equivalence of proof systems, Hilbert system, natural deduction, sequent calculus with equality, deduction theorem"}
+
+一階述語論理の三つの証明体系——自然演繹（\ref{logic:deduction-system}）、シーケント計算 $\mathsf{LK}$（\ref{pt:lk}）に等号の初期シーケントとカットを加えた $\mathsf{LK}^{=}+\mathrm{Cut}$、ヒルベルト流の体系 $\mathsf{H}$——が同じ導出可能性を与えることを、意味論を経由せず構文論的な翻訳で示す（\ref{pt:systems-equivalence}）。翻訳の要点は、多重後件のシーケント $\Gamma\Rightarrow\Delta$ を自然演繹の「$\Gamma$ と $\Delta$ の各元の否定から矛盾が出る」と読むことと、ヒルベルト流の演繹定理である。
+
+## 記法と定義の確認 {#pt:sec-eqs-notation}
+
+::: notation
+- 自然演繹の導出、未解消の仮定の集合 $\mathrm{A}(D)$、導出可能性 $\Sigma\vdash\varphi$ とその基本性質（仮定・弱化・演繹定理・カット）は \ref{logic:deduction-system}, \ref{logic:derivability-basic} のとおり。本ページでは自然演繹の導出可能性を $\vdash_{\mathrm{ND}}$ と書く。
+- $\mathsf{LK}$、捕獲を避ける代入、α 同値と導出可能性の不変性は \ref{pt:page-sequent-calculus}, \ref{pt:page-alpha-equivalence} のとおり（\ref{pt:lk}, \ref{pt:lk-identity}, \ref{pt:lk-weakening}, \ref{pt:capture-avoiding-substitution}, \ref{pt:alpha-renaming}, \ref{pt:alpha-clean}, \ref{pt:alpha-derivability}）。
+- 有限集合 $\Gamma$ をシーケントに書くときは、各元を一回ずつ並べた多重集合とみなす。$\neg\Delta\defeq\{\neg\delta:\delta\in\Delta\}$。
+:::
+
+## 二つの体系の定義 {#pt:sec-eqs-systems}
+
+::: definition ヒルベルト流の体系 H {#pt:hilbert-system keywords="Hilbert system, axiom schemes, modus ponens, generalization" index="ヒルベルト流の体系|ひるべるとりゅうのたいけい"}
+次の形の論理式すべてを**公理**とする（$\varphi,\psi,\chi$ は任意の論理式、$t,s$ は項）。
+- (H1) $\varphi\to(\psi\to\varphi)$。
+- (H2) $(\varphi\to(\psi\to\chi))\to((\varphi\to\psi)\to(\varphi\to\chi))$。
+- (H3) $\neg\neg\varphi\to\varphi$。
+- (Q1) $\forall x\,\varphi\to\varphi[t/x]$（$t$ は $\varphi$ の中で $x$ に代入可能）。
+- (Q2) $\forall x\,(\varphi\to\psi)\to(\varphi\to\forall x\,\psi)$（$x\notin\mathrm{FV}(\varphi)$）。
+- (E1) $t=t$。
+- (E2) $s=t\to(\varphi[s/x]\to\varphi[t/x])$（$s,t$ は $\varphi$ の中で $x$ に代入可能）。
+
+**定理**の集合 $\mathrm{Thm}_{\mathsf{H}}$ を、公理を含み、モーダスポネンス（$\varphi$ と $\varphi\to\psi$ から $\psi$）と汎化（$\varphi$ から $\forall x\,\varphi$）で閉じた最小の集合とする。論理式の集合 $\Gamma$ について $\Gamma\vdash_{\mathsf{H}}\varphi$ を、$\varphi$ が $\Gamma\cup\mathrm{Thm}_{\mathsf{H}}$ からモーダスポネンスだけで得られることと定める。
+:::
+
+汎化を定理にだけ許すのは、仮定に自由に現れる変数について汎化すると健全でなくなるからである（$P(x)\vdash\forall x\,P(x)$ を許してはならない）。定義から、$\Gamma\vdash_{\mathsf{H}}$ は仮定（$\varphi\in\Gamma$ なら $\Gamma\vdash_{\mathsf{H}}\varphi$）、弱化、モーダスポネンスについて閉じており、$\varnothing\vdash_{\mathsf{H}}\varphi\iff\varphi\in\mathrm{Thm}_{\mathsf{H}}$（$\mathrm{Thm}_{\mathsf{H}}$ はモーダスポネンスで閉じている）。
+
+::: definition 等号つきの LK {#pt:lk-equality keywords="LK with equality, reflexivity and replacement initial sequents" index="等号つきの LK|とうごうつきのえるけー"}
+$\mathsf{LK}^{=}$ は、$\mathsf{LK}$ に次の初期シーケントを加えた体系である（$P$ は $\bot$ 以外の原子論理式、$s,t$ は項、$\Gamma,\Delta$ は任意）。
+$$
+\begin{aligned}
+&(\mathrm{Ref})\ \ \Gamma\Rightarrow\Delta,t=t\\
+&(\mathrm{Repl})\ \ s=t,P[s/x],\Gamma\Rightarrow\Delta,P[t/x]
+\end{aligned}
+$$
+$\mathsf{LK}^{=}+\mathrm{Cut}$ はさらにカットを許す。
+:::
+
+::: lemma LK の補題の拡張 {#pt:lk-equality-structural}
+\ref{pt:lk-identity}、\ref{pt:lk-alpha-replacement}、\ref{pt:lk-substitution}、\ref{pt:lk-weakening} は $\mathsf{LK}^{=}+\mathrm{Cut}$ でも成り立つ（カットのある導出はカットのある導出に移る）。
+:::
+
+::: proof
+各証明に、新しい初期シーケントとカットの場合を加えればよい。Ref と Repl は文脈が任意なので弱化と α 同値への取り替えで初期シーケントのまま（主論理式は原子論理式）。代入 $\langle r/z\rangle$ については、Ref はそのまま、Repl は $x$ を $\mathrm{var}(r)\cup\{z\}\cup\mathrm{var}(P)$ に属さない新しい変数に取り替えた形（$P[s/x]$ は $P[x'/x][s/x']$ に等しい）で表しておくと、\ref{logic:substitution-commutation} より $P[s/x'][r/z]=P[r/z][s[r/z]/x']$ なので再び Repl の形になる。カットは両方の前提に帰納法の仮定を使い、同じ規則（カット論理式に同じ操作を施したもの）を使う。
+:::
+
+## 補題 {#pt:sec-eqs-lemmas}
+
+::: lemma H の演繹定理 {#pt:hilbert-deduction-theorem keywords="deduction theorem for the Hilbert system" index="演繹定理（ヒルベルト流）|えんえきていりひるべるとりゅう"}
+1. $\vdash_{\mathsf{H}}\varphi\to\varphi$。
+2. $\Gamma\cup\{\varphi\}\vdash_{\mathsf{H}}\psi$ なら $\Gamma\vdash_{\mathsf{H}}\varphi\to\psi$。
+3. $\vdash_{\mathsf{H}}\varphi\to\psi$ かつ $\vdash_{\mathsf{H}}\psi\to\chi$ なら $\vdash_{\mathsf{H}}\varphi\to\chi$。
+:::
+
+::: proof
+1. H2 の代入例 $(\varphi\to((\varphi\to\varphi)\to\varphi))\to((\varphi\to(\varphi\to\varphi))\to(\varphi\to\varphi))$ と H1 の代入例 $\varphi\to((\varphi\to\varphi)\to\varphi)$, $\varphi\to(\varphi\to\varphi)$ に二回モーダスポネンスを使う。
+
+2. $\psi$ が $\Gamma\cup\{\varphi\}\cup\mathrm{Thm}_{\mathsf{H}}$ からモーダスポネンスで得られる過程に関する帰納法。$\psi\in\Gamma\cup\mathrm{Thm}_{\mathsf{H}}$ なら、H1 $\psi\to(\varphi\to\psi)$ とモーダスポネンス。$\psi=\varphi$ なら 1。$\psi$ が $\chi$ と $\chi\to\psi$ から得られたなら、帰納法の仮定 $\Gamma\vdash_{\mathsf{H}}\varphi\to\chi$, $\Gamma\vdash_{\mathsf{H}}\varphi\to(\chi\to\psi)$ と H2 にモーダスポネンスを二回使う。
+
+3. $\{\varphi\}\vdash_{\mathsf{H}}\chi$（モーダスポネンス二回）に 2 を使う。
+:::
+
+::: lemma 等号の置き換え {#pt:lk-equality-replacement}
+1. $\vdash_{\mathrm{Cut}}s=t\Rightarrow t=s$（$\mathsf{LK}^{=}+\mathrm{Cut}$ で）。
+2. $s,t$ が $\varphi$ の中で $x$ に代入可能なら、$\mathsf{LK}^{=}+\mathrm{Cut}$ で $\vdash_{\mathrm{Cut}}s=t,\varphi[s/x]\Rightarrow\varphi[t/x]$。
+:::
+
+::: proof
+1. $x$ を $s$ に現れない変数とし、原子論理式 $P\defeq(x=s)$ について Repl は $s=t,\ s=s\Rightarrow t=s$。Ref $s=t\Rightarrow t=s,\ s=s$ とカット（カット論理式 $s=s$）して結論を得る。
+
+2. $c(\varphi)$ に関する帰納法（すべての $s,t$ について同時に）。$x\notin\mathrm{FV}(\varphi)$ なら両辺は $\varphi$ で同一律。以下 $x\in\mathrm{FV}(\varphi)$ とする。
+- *原子論理式.* $\bot$ は $x$ を含まない。それ以外は Repl。
+- *$\varphi=\alpha\to\beta$.* 帰納法の仮定より $t=s,\alpha[t/x]\Rightarrow\alpha[s/x]$ と $s=t,\beta[s/x]\Rightarrow\beta[t/x]$。前者と 1 をカットで合わせて $s=t,\alpha[t/x]\Rightarrow\alpha[s/x]$。弱化し、L$\to$（主論理式 $\alpha[s/x]\to\beta[s/x]$）で $s=t,\alpha[s/x]\to\beta[s/x],\alpha[t/x]\Rightarrow\beta[t/x]$、R$\to$ で結論。
+- *$\varphi=\forall y\,\alpha$.* $x\in\mathrm{FV}(\varphi)$ より $y\neq x$ で、代入可能性より $y\notin\mathrm{var}(s)\cup\mathrm{var}(t)$、$s,t$ は $\alpha$ の中で代入可能。帰納法の仮定 $s=t,\alpha[s/x]\Rightarrow\alpha[t/x]$ を弱化し、L$\forall$（項 $y$）で $s=t,\forall y\,\alpha[s/x]\Rightarrow\alpha[t/x]$。$y\notin\mathrm{FV}(s=t,\forall y\,\alpha[s/x],\forall y\,\alpha[t/x])$ なので R$\forall$（固有変数 $y$）で $s=t,\forall y\,\alpha[s/x]\Rightarrow\forall y\,\alpha[t/x]$。
+:::
+
+::: lemma 全称と α 同値 {#pt:forall-cas-alpha}
+$y\notin\mathrm{FV}(\forall x\,A)$ なら $\forall y\,(A\langle y/x\rangle)\equiv\forall x\,A$。
+:::
+
+::: proof
+$y=x$ なら $A\langle x/x\rangle\equiv A$。$y\neq x$ なら $y\notin\mathrm{FV}(A)$。\ref{pt:alpha-clean} で $A\equiv A'$, $y\notin\mathrm{BV}(A')$ をとると $y\notin\mathrm{Var}(A')$ で、$A\langle y/x\rangle\equiv A'[y/x]$。\ref{pt:alpha-renaming} より $\forall x\,A'\equiv\forall y\,A'[y/x]$ で、\ref{pt:alpha-invariants} の 3 と推移律より結論を得る。
+:::
+
+## 同値性定理 {#pt:sec-eqs-theorem}
+
+::: theorem 三つの体系の同値性 {#pt:systems-equivalence keywords="equivalence of natural deduction, LK and the Hilbert system" index="証明体系の同値性|しょうめいたいけいのどうちせい"}
+論理式の有限集合 $\Gamma$ と論理式 $\varphi$ について、次は同値である。
+1. $\Gamma\vdash_{\mathrm{ND}}\varphi$。
+2. $\Gamma\vdash_{\mathsf{H}}\varphi$。
+3. $\mathsf{LK}^{=}+\mathrm{Cut}$ で $\vdash_{\mathrm{Cut}}\Gamma\Rightarrow\varphi$。
+
+さらに、$\mathsf{LK}^{=}+\mathrm{Cut}$ で $\vdash_{\mathrm{Cut}}\Gamma\Rightarrow\Delta$ であることと $\Gamma\cup\neg\Delta\vdash_{\mathrm{ND}}\bot$ は同値である。
+:::
+
+1 ⇔ 2 と 1 ⇔ 3 を順に示す。
+
+::: proof 2 ⇒ 1
+$\Gamma\vdash_{\mathrm{ND}}$ は仮定とモーダスポネンス（$\to$E）について閉じているので、$\mathrm{Thm}_{\mathsf{H}}$ の元が自然演繹で仮定なしに導出できることを示せばよい。それには、公理が導出でき、汎化が保たれることを示せば十分である。
+- *H1, H2.* $\to$I と $\to$E で直ちに。
+- *H3.* 仮定 $\neg\neg\varphi$, $\neg\varphi$ から $\to$E で $\bot$、RAA で $\neg\varphi$ を解消して $\varphi$、$\to$I。
+- *Q1.* 仮定 $\forall x\,\varphi$ から $\forall$E。
+- *Q2.* 仮定 $\forall x\,(\varphi\to\psi)$, $\varphi$ から $\forall$E（項 $x$。$x$ は自分自身に代入可能）と $\to$E で $\psi$。未解消の仮定 $\forall x\,(\varphi\to\psi)$, $\varphi$ に $x$ は自由に現れない（$x\notin\mathrm{FV}(\varphi)$）ので $\forall$I で $\forall x\,\psi$、$\to$I を二回。
+- *E1, E2.* $=$I と、仮定 $s=t$, $\varphi[s/x]$ からの $=$E、$\to$I。
+- *汎化.* $\varnothing\vdash_{\mathrm{ND}}\varphi$ の導出は未解消の仮定をもたないので、$\forall$I が使える。
+:::
+
+::: proof 1 ⇒ 2
+自然演繹の導出 $D$ に関する帰納法で $\mathrm{A}(D)\vdash_{\mathsf{H}}\mathrm{concl}(D)$ を示す（弱化により結論を得る）。
+- *仮定, $\to$E.* 明らか。$\forall$E は Q1、$=$I は E1、$=$E は E2 とモーダスポネンス。
+- *$\to$I.* $\mathrm{A}(D)\subseteq(\mathrm{A}(D)\setminus\{\varphi\})\cup\{\varphi\}$ なので、\ref{pt:hilbert-deduction-theorem} の 2 より $\mathrm{A}(D)\setminus\{\varphi\}\vdash_{\mathsf{H}}\varphi\to\psi$。
+- *RAA.* 同様に $\mathrm{A}(D)\setminus\{\neg\varphi\}\vdash_{\mathsf{H}}\neg\varphi\to\bot=\neg\neg\varphi$、H3 で $\varphi$。
+- *$\forall$I.* $\mathrm{A}(D)=\{\gamma_{1},\dots,\gamma_{k}\}\vdash_{\mathsf{H}}\varphi$ で、$x$ はどの $\gamma_{i}$ にも自由に現れないとする。演繹定理を $k$ 回使って $\vdash_{\mathsf{H}}\gamma_{1}\to(\cdots\to(\gamma_{k}\to\varphi))$。汎化で $\forall x\,(\gamma_{1}\to\chi_{1})$（$\chi_{1}\defeq\gamma_{2}\to\cdots\to\varphi$）、Q2（$x\notin\mathrm{FV}(\gamma_{1})$）で $\vdash_{\mathsf{H}}\gamma_{1}\to\forall x\,\chi_{1}$。以下、$\vdash_{\mathsf{H}}\forall x\,(\gamma_{i}\to\chi_{i})\to(\gamma_{i}\to\forall x\,\chi_{i})$（Q2）と \ref{pt:hilbert-deduction-theorem} の 3 を、$\gamma_{1}\to\cdots\to\gamma_{i-1}\to(\ \cdot\ )$ の内側で使うことを繰り返す（$k$ に関する帰納法）と $\vdash_{\mathsf{H}}\gamma_{1}\to\cdots\to\gamma_{k}\to\forall x\,\varphi$。モーダスポネンスで $\mathrm{A}(D)\vdash_{\mathsf{H}}\forall x\,\varphi$。
+:::
+
+内側での書き換えは、「$\vdash_{\mathsf{H}}\theta\to\theta'$ なら $\vdash_{\mathsf{H}}(\gamma\to\theta)\to(\gamma\to\theta')$」（$\{\gamma\to\theta,\gamma\}\vdash_{\mathsf{H}}\theta'$ に演繹定理を二回）を繰り返し使うことで正当化される。
+
+::: proof 1 ⇒ 3
+自然演繹の導出 $D$ に関する帰納法で、$\vdash_{\mathrm{Cut}}\mathrm{A}(D)\Rightarrow\mathrm{concl}(D)$ を示す（弱化 \ref{pt:lk-equality-structural} で結論を得る）。以下 $\mathsf{LK}^{=}+\mathrm{Cut}$ での導出を考え、前提の導出に弱化を施して文脈を共通の集合 $\Gamma$ にそろえる。
+- *仮定.* 同一律 $\varphi\Rightarrow\varphi$。
+- *$\to$I.* $\Gamma\defeq\mathrm{A}(D)\setminus\{\varphi\}$ とすると、帰納法の仮定（と弱化）から $\varphi,\Gamma\Rightarrow\psi$、R$\to$ で $\Gamma\Rightarrow\varphi\to\psi$。
+- *$\to$E.* $\Gamma\Rightarrow\varphi\to\psi$ と $\Gamma\Rightarrow\varphi$ がある。後者を弱化した $\Gamma\Rightarrow\psi,\varphi$ と同一律 $\psi,\Gamma\Rightarrow\psi$ から L$\to$ で $\varphi\to\psi,\Gamma\Rightarrow\psi$。前者を弱化した $\Gamma\Rightarrow\psi,\varphi\to\psi$ とカットして $\Gamma\Rightarrow\psi$。
+- *RAA.* $\Gamma\defeq\mathrm{A}(D)\setminus\{\neg\varphi\}$ とすると $\neg\varphi,\Gamma\Rightarrow\bot$、R$\to$ で $\Gamma\Rightarrow\neg\neg\varphi$。一方 $\neg\neg\varphi\Rightarrow\varphi$ は、R$\to$ で得た $\Rightarrow\varphi,\neg\varphi$（前提 $\varphi\Rightarrow\varphi,\bot$）と L$\bot$ $\bot\Rightarrow\varphi$ から L$\to$ で導出できる。弱化とカットで $\Gamma\Rightarrow\varphi$。
+- *$\forall$I.* $\Gamma\Rightarrow\varphi$ で $x\notin\mathrm{FV}(\Gamma)$。$\varphi\equiv\varphi\langle x/x\rangle$ なので R$\forall$（固有変数 $x$。$x\notin\mathrm{FV}(\Gamma,\forall x\,\varphi)$）で $\Gamma\Rightarrow\forall x\,\varphi$。
+- *$\forall$E.* 同一律 $\varphi[t/x],\forall x\,\varphi\Rightarrow\varphi[t/x]$ に L$\forall$（$\varphi[t/x]\equiv\varphi\langle t/x\rangle$）で $\forall x\,\varphi\Rightarrow\varphi[t/x]$。弱化とカット。
+- *$=$I.* Ref。
+- *$=$E.* \ref{pt:lk-equality-replacement} の 2 と、二回のカット。
+:::
+
+::: proof 3 ⇒ 1
+より強く、$\vdash_{\mathrm{Cut}}\Gamma\Rightarrow\Delta$ なら $\Gamma\cup\neg\Delta\vdash_{\mathrm{ND}}\bot$ を、導出に関する帰納法で示す。そうすれば $\Delta=\{\varphi\}$ のとき $\Gamma\cup\{\neg\varphi\}\vdash_{\mathrm{ND}}\bot$ で、RAA より $\Gamma\vdash_{\mathrm{ND}}\varphi$。以下 $\Sigma\defeq\Gamma\cup\neg\Delta$ とし、自然演繹の弱化とカット（\ref{logic:derivability-basic}）を断りなく使う。
+- *Ax.* $P\in\Gamma$, $\neg P\in\neg\Delta$ から $\to$E で $\bot$。*L$\bot$.* $\bot\in\Gamma$。
+- *Ref.* $\neg(t=t)\in\neg\Delta$ と $=$I。*Repl.* $s=t$, $P[s/x]$ から $=$E で $P[t/x]$（原子論理式なので代入可能）、$\neg P[t/x]$ と $\to$E。
+- *L$\to$.* 帰納法の仮定 $\Sigma\cup\{\neg A\}\vdash\bot$ と $\Sigma\cup\{B\}\vdash\bot$。前者と RAA で $\Sigma\vdash A$、$A\to B$ と $\to$E で $\Sigma\cup\{A\to B\}\vdash B$、後者とカットで $\Sigma\cup\{A\to B\}\vdash\bot$。
+- *R$\to$.* 帰納法の仮定 $\Sigma\cup\{A,\neg B\}\vdash\bot$。RAA と $\to$I で $\Sigma\vdash A\to B$、$\neg(A\to B)$ と $\to$E。
+- *L$\forall$.* 帰納法の仮定 $\Sigma\cup\{C,\forall x\,A\}\vdash\bot$（$C\equiv A\langle t/x\rangle$）。\ref{pt:alpha-clean} で $A\equiv A'$（$t$ は $A'$ の中で代入可能）をとると、$\forall x\,A\vdash\forall x\,A'$（\ref{pt:alpha-derivability}）、$\forall$E で $A'[t/x]$、$A'[t/x]\equiv C$ なので $\vdash C$。カット。
+- *R$\forall$.* 帰納法の仮定 $\Sigma\cup\{\neg C\}\vdash\bot$（$C\equiv A\langle y/x\rangle$、$y\notin\mathrm{FV}(\Gamma,\Delta,\forall x\,A)$）。RAA で $\Sigma\vdash C$。$y\notin\mathrm{FV}(\Sigma)$ なので $\forall$I で $\Sigma\vdash\forall y\,C$。\ref{pt:forall-cas-alpha} と \ref{pt:alpha-invariants} の 3 より $\forall y\,C\equiv\forall x\,A$ なので $\Sigma\vdash\forall x\,A$（\ref{pt:alpha-derivability}）、$\neg\forall x\,A$ と $\to$E。
+- *Cut.* 帰納法の仮定 $\Sigma\cup\{\neg C\}\vdash\bot$ と $\Sigma\cup\{C\}\vdash\bot$。前者と RAA で $\Sigma\vdash C$、後者とカット。
+
+逆（$\Gamma\cup\neg\Delta\vdash_{\mathrm{ND}}\bot$ なら $\vdash_{\mathrm{Cut}}\Gamma\Rightarrow\Delta$）は、1 ⇒ 3 より $\vdash_{\mathrm{Cut}}\Gamma,\neg\Delta\Rightarrow\bot$ で、各 $\neg\delta$ を前件から除くには、$\Gamma\Rightarrow\Delta,\neg\delta$ … ではなく、$\Rightarrow\delta,\neg\delta$（同一律と R$\to$）を弱化してカットで $\neg\delta$ を一つずつ除き、最後に後件の $\bot$ を反転（\ref{pt:lk-inversion} の 5 は等号つきでも同じ証明で成り立つ）で除けばよい。
+:::
+
+::: hypcheck
+- 1 ⇒ 2 の $\forall$I で、ヒルベルト流の汎化を定理にだけ許したことが効いている。仮定を演繹定理で前件に移してから汎化し、Q2（$x$ が前件に自由に現れないこと）で量化子を内側へ戻す。自然演繹の固有変数条件がちょうど Q2 の条件に対応する。
+- 3 ⇒ 1 の R$\forall$ で、固有変数 $y$ が $\Sigma=\Gamma\cup\neg\Delta$ に自由に現れないことを使った。$\neg\Delta$ の自由変数は $\Delta$ と同じである。
+- 等号は Ref・Repl の初期シーケントとしてだけ加えたので、$\mathsf{LK}^{=}$ ではカット除去がそのままでは成り立たない（\ref{pt:lk-equality-replacement} の 1 でカットを使った）。本ページの同値性はカットを許した体系についてのものである。
+:::
+
+::: remark 大域的な約束との関係 {#pt:eqs-global-remark}
+\ref{set:formal-deduction} の「文でない $\varphi$ について $S\vdash\varphi$ は全称閉包の証明」という約束は、文については上の局所的な導出可能性と一致する。実際、$\varphi$ が文なら定義はそのまま一致し、一般の $\varphi$ についても $\vdash_{\mathrm{ND}}\forall\vec{x}\,\varphi\iff\vdash_{\mathrm{ND}}\varphi$（$\forall$I と $\forall$E）である。前提の集合 $S$ が文からなるなら、自由変数の条件は自動的に満たされる。
+:::
+
+## 問題 {#pt:sec-eqs-problems}
+
+::: problem {#pt:prob-eqs-gen-hyp}
+ヒルベルト流の体系で、仮定のある導出に汎化を許す（$\Gamma\vdash\varphi$ から $\Gamma\vdash\forall x\,\varphi$）と、演繹定理が成り立たなくなることを示せ。
+:::
+
+::: solution
+許すと $P(x)\vdash\forall x\,P(x)$ となる。演繹定理が成り立てば $\vdash P(x)\to\forall x\,P(x)$ で、汎化と Q1 から $\vdash P(y)\to\forall x\,P(x)$ も得られるが、これは $M=\{0,1\}$, $P^{\mathcal{M}}=\{0\}$, $y\mapsto0$ で偽であり、健全性（公理は妥当で規則は妥当性を保つ）に反する。したがって、汎化を仮定つきで許すなら、演繹定理に「$\varphi$ に自由に現れる変数で汎化しない」などの条件が要る。
+:::
+
+::: problem {#pt:prob-eqs-sym}
+$\mathsf{H}$ で $\vdash_{\mathsf{H}}s=t\to t=s$ を示せ。
+:::
+
+::: solution
+E2 を $\varphi\defeq(x=s)$（$x$ は $s$ に現れない変数）について使うと $s=t\to(s=s\to t=s)$。$\{s=t\}\vdash_{\mathsf{H}}s=s\to t=s$、E1 $s=s$ とモーダスポネンスで $\{s=t\}\vdash_{\mathsf{H}}t=s$、演繹定理で結論。
+:::
+
+::: supplement
+**前提の検討.**
+- 三つの体系の同値性は、すべて導出に関する帰納法による構文論的な翻訳で示した。完全性定理（意味論）は使っていない。
+- 翻訳のうち、$\mathsf{LK}$ から自然演繹への方向で多重後件を「否定して仮定に移す」読み方をしたのは、古典論理（RAA）に依存する。直観主義論理では、後件が一つの $\mathsf{LJ}$ と直観主義の自然演繹・ヒルベルト流が対応する。
+
+**関連する結果.** 等号つきの体系でカット除去を成り立たせるには、等号を左規則として加える（Negri–von Plato）などの工夫が要ることが一般に知られている。また、自然演繹の正規化定理は $\mathsf{LK}$（$\mathsf{LJ}$）のカット除去と密接に対応することが知られている（本サイトでは扱っていない）。
+
+**高い視点から：三つの「証明」の見方.** ヒルベルト流は「定理の列」として、自然演繹は「仮定から結論への木」として、シーケント計算は「帰結関係そのものの導出」として、同じ論理を表す。ヒルベルト流は公理を増やすのが容易で算術化に向き、自然演繹は数学者の推論に近く、シーケント計算は部分論理式性により証明の探索と解析に向く。同値性定理は、用途に応じて最も便利な表現を選んでよいことの保証である（これは本サイトの要約である）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

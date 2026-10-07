@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>基礎の公理再論とさらなる絶対性 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/04-consistency-proofs/03-more-absoluteness.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 基礎の公理再論とさらなる絶対性 {#set:page-more-absoluteness keywords="WF is a model of ZF, Con(ZF minus) implies Con(ZF), absoluteness of ordinals, finite sets, well-orderings, order type, ordinal arithmetic, absoluteness of recursive definitions, rank, transitive closure"}
+
+前二ページの結果をまとめると、$\ZF^{-}$ のもとで $\mathbf{WF}$ は $\ZF$ のモデルであり、$\mathrm{Con}(\ZF^{-})\to\mathrm{Con}(\ZF)$ が得られる。そこで以後は基礎の公理を基本の公理として仮定する。基礎の公理があると $\in$ の整礎性を使って多くの概念の絶対性が示せる：順序数であること、$\omega$、有限集合、整列順序、順序型、順序数の算術、そして一般に整礎な関係の上の再帰で定義された関数（ランク、推移閉包など）。一方、冪集合 $\mathcal{P}(x)$ や $R(\alpha)$ は絶対的でない。（Kunen 第 IV 章 §4–5 に対応する。）
+
+## 記法と定義の確認 {#set:sec-more-abs-notation}
+
+::: notation
+- 相対化、モデル、\ref{set:relative-consistency-lemma}、\ref{set:wf-relativization} は \ref{set:page-relativization}、絶対性（\ref{set:absolute}）、Δ₀ 論理式とその絶対性、\ref{set:absolute-equivalent}, \ref{set:absolute-composition}、「本ページの方法で絶対的」という言い方、\ref{set:absolute-basic-notions}, \ref{set:absolute-relations-functions}, \ref{set:well-order-downward}, \ref{set:wf-infinity} は \ref{set:page-absoluteness} のとおり。
+- 順序数（\ref{set:ordinal}）と基礎の公理のもとでの特徴づけ（\ref{set:ordinal-foundation}：$\ZF-\mathrm{P}$ で、順序数 $\iff$ 推移的で $\in$ により全順序付けられる）、後続順序数・極限順序数・自然数（\ref{set:successor-ordinal}, \ref{set:limit-ordinal}, \ref{set:natural-number}）、$\omega$ は最小の極限順序数（\ref{set:omega-least-limit}）、順序型（\ref{set:ordinal-type}, \ref{set:order-type}）、順序数の和・積・冪（\ref{set:ordinal-addition}, \ref{set:ordinal-multiplication}, \ref{set:ordinal-exponentiation}）、有限集合（\ref{set:finite-set}）、${}^{n}A$ と $A^{<\omega}$（\ref{set:finite-sequence}）は基礎事項のとおり。
+- 整礎・集合的な関係、$\mathrm{pred}$、整礎再帰（\ref{set:wf-recursion}）、整礎関係のランク（\ref{set:relation-rank}）、推移閉包（\ref{set:transitive-closure}）は \ref{set:page-well-founded-relations}, \ref{set:page-wf-recursion} のとおり。
+:::
+
+## 基礎の公理の最後の一言 {#set:sec-last-word-foundation}
+
+::: theorem WF は ZF のモデル {#set:wf-model-zf keywords="WF is a model of ZF" index="WF は ZF のモデル|だぶりゅーえふはぜっとえふのもでる"}
+（$\ZF^{-}$）$\ZF$ のすべての公理は $\mathbf{WF}$ の中で真である。
+:::
+
+::: proof
+\ref{set:wf-relativization}（無限公理以外）と \ref{set:wf-infinity}（無限公理）。
+:::
+
+::: lemma WF における整列可能性 {#set:wf-well-orderable}
+（$\ZF^{-}$）$A\in\mathbf{WF}$ について、$A$ が整列可能であることと（$A$ は整列可能）$^{\mathbf{WF}}$ は同値である。
+:::
+
+::: proof
+（$\Rightarrow$）$R\subseteq A\times A$ が $A$ を整列するとする。$A\times A\in\mathbf{WF}$（\ref{set:wf-closure}）で、$R\subseteq A\times A\subseteq\mathbf{WF}$ なので $R\in\mathbf{WF}$（\ref{set:wf-subset}）。$\mathbf{WF}$ は $\ZF-\mathrm{P}-\mathrm{Inf}$ の推移的なモデルなので、\ref{set:well-order-downward} より（$R$ は $A$ を整列する）$^{\mathbf{WF}}$。
+
+（$\Leftarrow$）（$R$ は $A$ を整列する）$^{\mathbf{WF}}$ となる $R\in\mathbf{WF}$ をとる。全順序であることは絶対的なので $R$ は $A$ を全順序付け、$\mathbf{WF}$ に属する $A$ の空でない部分集合は $R$-最小元をもつ。$A$ の部分集合はすべて $\mathbf{WF}$ に属する（$X\subseteq A\subseteq\mathbf{WF}$ と \ref{set:wf-subset}）ので、$R$ は $A$ を整列する。
+:::
+
+::: corollary {#set:ac-in-wf}
+（$\ZF^{-}$）$\mathrm{AC}\to\mathrm{AC}^{\mathbf{WF}}$。したがって $\ZFC^{-}$ のもとで $\mathbf{WF}$ は $\ZFC$ のモデルである。
+:::
+
+::: proof
+$\mathrm{AC}^{\mathbf{WF}}$ は $\forall A\in\mathbf{WF}\,(A\text{ は整列可能})^{\mathbf{WF}}$（\ref{set:ax-choice}）で、\ref{set:wf-well-orderable} による。
+:::
+
+逆 $\mathrm{AC}^{\mathbf{WF}}\to\mathrm{AC}$ は成り立つとは限らない（すべての整礎集合は整列可能だが、ある整礎でない集合は整列可能でない、ということが $\ZF^{-}$ と無矛盾である。Kunen 第 IV 章の演習による。本サイトでは証明しない）。
+
+::: corollary 基礎の公理の相対無矛盾性 {#set:con-foundation}
+$\mathrm{Con}(\ZF^{-})\to\mathrm{Con}(\ZF)$、$\mathrm{Con}(\ZFC^{-})\to\mathrm{Con}(\ZFC)$。
+:::
+
+::: proof
+\ref{set:wf-model-zf}, \ref{set:ac-in-wf} と \ref{set:relative-consistency-lemma}（$\mathbf{WF}\neq\emptyset$）。
+:::
+
+この結果は、相対無矛盾性の証明で基礎の公理を基本の公理として使うことを正当化する。$\mathrm{Con}(\ZF^{-})\to\mathrm{Con}(\ZF)$ なので、$\mathrm{Con}(\ZF)\to\mathrm{Con}(S)$ の証明はそのまま $\mathrm{Con}(\ZF^{-})\to\mathrm{Con}(S)$ の証明になる。
+
+::: remark ZF⁻⁻
+直観的には、$\ZF$ は整礎集合を、$\ZF^{-}$ は遺伝的集合（\ref{set:hereditary-set}）を公理化している。集合でない対象（原子、ウルエレメント）も含む「存在するものすべて」を公理化するには、述語 $\mathrm{Set}(x)$ を加えた言語で $\ZF^{-}$ の公理を $\mathrm{Set}$ で修正した体系 $\ZF^{--}$ を考える（外延性は $\forall x,y\,(\mathrm{Set}(x)\land\mathrm{Set}(y)\land\forall z\,(z\in x\leftrightarrow z\in y)\to x=y)$ となる）。$\ZF^{--}$ の中で $\mathbf{WF}$ は $\ZF$ を満たし、$\mathrm{Con}(\ZF^{--})\to\mathrm{Con}(\ZF)$（Kunen による。本サイトでは詳細を扱わない）。
+:::
+
+**以後、基礎の公理を断りなく仮定する。** 基本の体系は $\ZF$（第 VII, VIII 章では $\ZFC$）である。
+
+## 順序数と有限性の絶対性 {#set:sec-ordinal-absoluteness}
+
+::: theorem 順序数に関する絶対性 {#set:absolute-ordinals keywords="absoluteness of being an ordinal, omega" index="順序数の絶対性|じゅんじょすうのぜったいせい"}
+次の関係と定数は、$\ZF-\mathrm{P}$ のもとで Δ₀ 論理式と同値な論理式で定義され、$\ZF-\mathrm{P}$ の推移的なモデルについて絶対的である：(a) $x$ は順序数、(b) $x$ は極限順序数、(c) $x$ は後続順序数、(d) $x$ は自然数（有限順序数）、(e) $\omega$、(f) $0,1,2,\dots$（各標準的な自然数）。
+:::
+
+::: proof
+**(a)** \ref{set:ordinal-foundation} より、$\ZF-\mathrm{P}$ のもとで「$x$ は順序数」$\iff$「$x$ は推移的で、$\in$ により全順序付けられる」。推移的は Δ₀（\ref{set:absolute-basic-notions}）、全順序は $\forall y,z,u\in x\,(y\notin y\land(y\in z\land z\in u\to y\in u)\land(y\in z\lor y=z\lor z\in y))$ で Δ₀。
+
+**(c)** $x$ は後続順序数 $\iff x$ は順序数 $\land\exists y\in x\,(x=S(y))$（$x=S(y)$ なら $y\in x$）。**(b)** $x$ は極限順序数 $\iff x$ は順序数 $\land x\neq0\land\lnot(x$ は後続順序数$)$。**(d)** $x$ は自然数 $\iff x$ は順序数 $\land(x=0\lor x\text{ は後続})\land\forall y\in x\,(y=0\lor y\text{ は後続})$（$\beta\le\alpha$ は $\beta\in\alpha\lor\beta=\alpha$）。**(e)** $x=\omega\iff x$ は極限順序数 $\land\forall y\in x\,\lnot(y$ は極限順序数$)$（\ref{set:omega-least-limit}。$\omega$ の存在に無限公理を使う）。**(f)** $x=0$ は Δ₀、$x=n+1\iff\exists y\in x\,(y=n\land x=S(y))$ で帰納的に Δ₀。
+
+いずれも \ref{set:absolute-equivalent}（$S=\ZF-\mathrm{P}$）と \ref{set:delta0-absolute} による。
+:::
+
+::: lemma 有限部分集合 {#set:finite-subsets-in-model}
+$\mathbf{M}$ を $\ZF-\mathrm{P}$ の推移的なモデルとすると、$\mathbf{M}$ の有限部分集合はすべて $\mathbf{M}$ に属する。
+:::
+
+::: proof
+$n\in\omega$ に関する帰納法で「$x\subseteq\mathbf{M}$, $\lvert x\rvert=n$ なら $x\in\mathbf{M}$」を示す。$n=0$ は $0^{\mathbf{M}}=0$（絶対性）。$\lvert x\rvert=n+1$ なら $y\in x$ をとると $y\in\mathbf{M}$、帰納法の仮定より $x\setminus\{y\}\in\mathbf{M}$。$\{y\}$ と $\cup$ は絶対的で $\mathbf{M}$ の中で定義されているので $x=\{y\}\cup(x\setminus\{y\})\in\mathbf{M}$。
+:::
+
+::: theorem 有限性の絶対性 {#set:absolute-finite}
+次は $\ZF-\mathrm{P}$ の推移的なモデル $\mathbf{M}$ について絶対的である：(a) $x$ は有限、(b) ${}^{n}A$（$n\notin\omega$ なら $0$ とする二変数の演算）、(c) $A^{<\omega}$。
+:::
+
+::: proof
+**(a)** $x$ は有限 $\iff\exists f\,\varphi(x,f)$、$\varphi\defeq f$ は単射 $\land\dom(f)=x\land\ran(f)\in\omega$（$\ZF-\mathrm{P}$ のもとで \ref{set:finite-set} と同値）。$\varphi$ は絶対的（\ref{set:absolute-relations-functions}, \ref{set:absolute-ordinals}）。$x\in\mathbf{M}$ について $\exists f\in\mathbf{M}\,\varphi\iff\exists f\,\varphi$ を示せばよい。$\Rightarrow$ は明らか。$\Leftarrow$：$\varphi(x,f)$ なら $f$ は $\mathbf{M}$ の元の順序対（順序対は絶対的で $\mathbf{M}$ の中で作れる）からなる有限集合なので、\ref{set:finite-subsets-in-model} より $f\in\mathbf{M}$。
+
+**(b)** $A,n\in\mathbf{M}$、$n\in\omega$ について $({}^{n}A)^{\mathbf{M}}=\{f\in\mathbf{M}:f\colon n\to A\}$（関数であることなどの絶対性）。$f\colon n\to A$ なら $f$ は有限集合で (a) と同様に $f\in\mathbf{M}$。よって $({}^{n}A)^{\mathbf{M}}={}^{n}A$。$n\notin\omega$ の場合は $\omega$ の絶対性。**(c)** $A^{<\omega}=\bigcup\{{}^{n}A:n\in\omega\}$ で、(b) と、$\mathbf{M}$ の中で $\{{}^{n}A:n\in\omega\}$ を置換公理で作れることから同様。
+:::
+
+## 整列順序と順序数の算術 {#set:sec-well-order-absoluteness}
+
+::: theorem 整列順序と順序型の絶対性 {#set:absolute-well-order}
+次は $\ZF-\mathrm{P}$ の推移的なモデル $\mathbf{M}$ について絶対的である：(a) $R$ は $A$ を整列する、(b) $\operatorname{type}(A,R)$。
+:::
+
+::: proof
+**(a)** \ref{set:well-order-downward} より $A,R\in\mathbf{M}$ について $(R$ は $A$ を整列する$)\Rightarrow(\cdots)^{\mathbf{M}}$。逆に $(R$ は $A$ を整列する$)^{\mathbf{M}}$ とする。$\ZF-\mathrm{P}$ では整列集合はある順序数と同型（\ref{set:ordinal-type}）なので、これを $\mathbf{M}$ の中で使うと、$f,\alpha\in\mathbf{M}$ で（$\alpha$ は順序数で $f$ は $\langle A,R\rangle$ から $\langle\alpha,\in\rangle$ への同型）$^{\mathbf{M}}$ となるものがある。この論理式は \ref{set:absolute-ordinals} と本ページの方法で絶対的なので、$\alpha$ は本当に順序数で $f$ は本当に同型写像。よって $R$ は $A$ を本当に整列する（順序数は $\in$ で整列される）。**(b)** 同じ議論で $\operatorname{type}^{\mathbf{M}}(A,R)=\alpha=\operatorname{type}(A,R)$。
+:::
+
+::: theorem 順序数の算術の絶対性 {#set:absolute-ordinal-arithmetic}
+$\alpha+1$, $\alpha+\beta$, $\alpha\cdot\beta$ は $\ZF-\mathrm{P}$ の推移的なモデルについて絶対的である。
+:::
+
+::: proof
+$\alpha+1=S(\alpha)$。$\alpha+\beta=\operatorname{type}(\alpha\oplus\beta)$、$\alpha\cdot\beta=\operatorname{type}(\beta\otimes\alpha)$ で、順序和・辞書式積の順序集合（\ref{set:well-order-sum-product-def}）は直積・順序対・有界量化から作られるので本ページの方法で絶対的、\ref{set:absolute-well-order} の (b) と合成（\ref{set:absolute-composition}）による。
+:::
+
+## 再帰的定義の絶対性 {#set:sec-recursion-absoluteness}
+
+クラス $\mathbf{A}$（論理式 $\mathbf{A}(x)$）の $\mathbf{M}$ への相対化を $\mathbf{A}^{\mathbf{M}}\defeq\{x\in\mathbf{M}:\mathbf{A}^{\mathbf{M}}(x)\}$ とし、$\mathbf{A}$ が $\mathbf{M}$ について絶対的とは $\mathbf{A}^{\mathbf{M}}=\mathbf{A}\cap\mathbf{M}$ のことである（たとえば $\mathbf{V}^{\mathbf{M}}=\mathbf{M}$、$\ZF-\mathrm{P}$ の推移的なモデルでは $\mathbf{ON}^{\mathbf{M}}=\mathbf{ON}\cap\mathbf{M}$）。二変数のクラス（関係）$\mathbf{R}$ についても $\mathbf{R}^{\mathbf{M}}=\mathbf{R}\cap(\mathbf{M}\times\mathbf{M})$ のとき絶対的という。クラス関数 $\mathbf{G}$（$\forall x\,\exists!y\,\mathbf{G}(x,y)$）は、$(\forall x\,\exists!y\,\mathbf{G}(x,y))^{\mathbf{M}}$ を確かめてから $\mathbf{G}^{\mathbf{M}}\colon\mathbf{M}\to\mathbf{M}$ を考え、$\mathbf{G}^{\mathbf{M}}=\mathbf{G}\restr{\mathbf{M}}$ のとき絶対的という。
+
+::: theorem 整礎再帰の絶対性 {#set:absolute-wf-recursion keywords="absoluteness of definitions by well-founded recursion" index="再帰的定義の絶対性|さいきてきていぎのぜったいせい"}
+$\mathbf{R}$ を $\mathbf{A}$ 上で整礎かつ集合的な関係、$\mathbf{F}\colon\mathbf{A}\times\mathbf{V}\to\mathbf{V}$ とし、$\mathbf{G}\colon\mathbf{A}\to\mathbf{V}$ を \ref{set:wf-recursion} により $\mathbf{G}(x)=\mathbf{F}(x,\mathbf{G}\restr{\mathrm{pred}(\mathbf{A},x,\mathbf{R})})$ で定める。$\mathbf{M}$ を $\ZF-\mathrm{P}$ の推移的なモデルとし、
+1. $\mathbf{F}$ は $\mathbf{M}$ について絶対的、
+2. $\mathbf{R}$ と $\mathbf{A}$ は $\mathbf{M}$ について絶対的、（$\mathbf{R}$ は $\mathbf{A}$ 上で集合的）$^{\mathbf{M}}$、かつすべての $x\in\mathbf{M}\cap\mathbf{A}$ で $\mathrm{pred}(\mathbf{A},x,\mathbf{R})\in\mathbf{M}$
+
+とする。このとき $\mathbf{G}$ は $\mathbf{M}$ について絶対的である。
+:::
+
+::: proof
+**Step 1（$\mathbf{M}$ の中の整礎性）.** $\mathbf{R}^{\mathbf{M}}=\mathbf{R}\cap\mathbf{M}^{2}$ は $\mathbf{A}^{\mathbf{M}}=\mathbf{A}\cap\mathbf{M}$ 上で整礎（$\mathbf{R}$ が $\mathbf{A}$ 上で整礎なので）。とくに $\mathbf{M}$ に属する空でない部分集合は $\mathbf{R}^{\mathbf{M}}$-極小元をもち、「極小元である」は絶対的なので（$\mathbf{R}$ は $\mathbf{A}$ 上で整礎）$^{\mathbf{M}}$。
+
+**Step 2（$\mathbf{M}$ の中の再帰）.** 再帰定理（\ref{set:wf-recursion}）は $\ZF-\mathrm{P}$ で証明できるので、$\mathbf{M}$ の中で成り立ち、$\mathbf{G}^{\mathbf{M}}\colon\mathbf{A}^{\mathbf{M}}\to\mathbf{M}$ で $\mathbf{G}^{\mathbf{M}}(x)=\mathbf{F}^{\mathbf{M}}(x,\mathbf{G}^{\mathbf{M}}\restr{\mathrm{pred}^{\mathbf{M}}(\mathbf{A}^{\mathbf{M}},x,\mathbf{R}^{\mathbf{M}})})$ となるものがある。ここで $\mathrm{pred}^{\mathbf{M}}(x)=\mathrm{pred}(\mathbf{A},x,\mathbf{R})\cap\mathbf{M}=\mathrm{pred}(\mathbf{A},x,\mathbf{R})$（仮定より $\mathrm{pred}(x)\in\mathbf{M}$、推移性で $\subseteq\mathbf{M}$）。また $\mathbf{G}^{\mathbf{M}}\restr{\mathrm{pred}(x)}$ は $\mathbf{M}$ の中で置換公理により作られる $\mathbf{M}$ の元であり、制限は絶対的なので本当の制限に等しい。
+
+**Step 3（帰納法）.** $\{x\in\mathbf{A}\cap\mathbf{M}:\mathbf{G}^{\mathbf{M}}(x)\neq\mathbf{G}(x)\}$ が空でないとして $\mathbf{R}$-極小元 $x$ をとる（\ref{set:wf-minimal-element}）。$\mathrm{pred}(x)$ の上で $\mathbf{G}^{\mathbf{M}}=\mathbf{G}$ なので、$\mathbf{G}^{\mathbf{M}}(x)=\mathbf{F}^{\mathbf{M}}(x,\mathbf{G}\restr{\mathrm{pred}(x)})=\mathbf{F}(x,\mathbf{G}\restr{\mathrm{pred}(x)})=\mathbf{G}(x)$（$\mathbf{F}$ の絶対性、$\mathbf{G}\restr{\mathrm{pred}(x)}=\mathbf{G}^{\mathbf{M}}\restr{\mathrm{pred}(x)}\in\mathbf{M}$）。矛盾。
+:::
+
+$\mathbf{R}$ が $\in$ で $\mathbf{A}$ が $\mathbf{V}$ や $\mathbf{ON}$ のときは、条件 2 は明らかである（$\mathrm{pred}(\mathbf{V},x,\in)=x\in\mathbf{M}$）。
+
+::: theorem 再帰で定義される関数 {#set:absolute-rank-trcl}
+次は $\ZF-\mathrm{P}$ の推移的なモデルについて絶対的である：(a) $\alpha^{\beta}$（順序数の冪）、(b) $\rank(x)$（$=\rank(x,\mathbf{V},\in)$。\ref{set:relation-rank}）、(c) 推移閉包 $\mathrm{trcl}(x)$。
+:::
+
+::: proof
+**(a)** $\beta$ に関する再帰（\ref{set:ordinal-exponentiation}）で、各段の操作（積、上限 $\bigcup$、場合分け）は絶対的なので \ref{set:absolute-wf-recursion}（$\mathbf{R}=\in$, $\mathbf{A}=\mathbf{ON}$）。**(b)** $\rank(x)=\sup\{\rank(y)+1:y\in x\}$ という $x$ に関する $\in$-再帰で、$\sup$ は $\bigcup$、$+1$ は $S$ なので同様。**(c)** $\bigcup^{n}x$（\ref{set:transitive-closure}）を二変数の演算として（$n\notin\omega$ なら $0$）$\omega$ 上の再帰で定めると絶対的で、$\mathrm{trcl}(x)=\bigcup\{\bigcup^{n}x:n\in\omega\}$ も絶対的。
+:::
+
+(b) は $\rank$ を**再帰で**定義したと考えることが重要である。累積階層（\ref{set:rank}）による定義は冪集合を使うので、冪集合公理を満たさない $\mathbf{M}$ では意味をもたない。冪集合公理のもとでは両者は一致する（\ref{set:rank-basic} の等式と $\in$-帰納法）。
+
+::: lemma 冪集合と累積階層の相対化 {#set:power-rank-relativized}
+$\mathbf{M}$ を $\ZF$ の推移的なモデルとする。
+1. $x\in\mathbf{M}$ なら $\mathcal{P}(x)^{\mathbf{M}}=\mathcal{P}(x)\cap\mathbf{M}$。
+2. $\alpha\in\mathbf{M}$ なら $R(\alpha)^{\mathbf{M}}=R(\alpha)\cap\mathbf{M}$。
+:::
+
+::: proof
+**1.** $\mathcal{P}(x)^{\mathbf{M}}=\{z\in\mathbf{M}:(z\subseteq x)^{\mathbf{M}}\}$ で、$\subseteq$ は絶対的。**2.** $R(\alpha)=\{x:\rank(x)<\alpha\}$ で、$\rank$ は絶対的（\ref{set:absolute-rank-trcl}）なので $R(\alpha)^{\mathbf{M}}=\{x\in\mathbf{M}:\rank(x)<\alpha\}=R(\alpha)\cap\mathbf{M}$。
+:::
+
+したがって $\mathcal{P}$ と $R(\alpha)$ は一般に絶対的でない。後の章では $\mathbf{M}$ を可算な集合にとる（反映定理の後で可能になる）が、そのとき $\mathcal{P}(x)^{\mathbf{M}}\neq\mathcal{P}(x)$（$x$ が無限なら $\mathcal{P}(x)$ は非可算）、$R(\alpha)^{\mathbf{M}}\neq R(\alpha)$（$\alpha>\omega$ なら）である。
+
+## 問題 {#set:sec-more-abs-problems}
+
+::: problem {#set:prob-cardinal-not-absolute}
+「$x$ は基数」は $\ZF-\mathrm{P}$ の推移的なモデルの下へは保たれる（$\mathbf{V}$ で基数なら $\mathbf{M}$ の中でも基数）ことを示せ。
+:::
+
+::: solution
+$\alpha\in\mathbf{M}$ が基数とは、$\alpha$ は順序数で、$\beta<\alpha$ から $\alpha$ への全射（あるいは全単射）がないこと。$\mathbf{M}$ の中の基数性は「$\mathbf{M}$ に属する全単射 $f\colon\beta\to\alpha$ がない」で、$\mathbf{V}$ に全単射がなければ $\mathbf{M}$ にもない（全単射であることは絶対的）。逆は一般に成り立たない：$\mathbf{M}$ に全単射が属さないだけかもしれない。
+:::
+
+::: problem {#set:prob-omega-one-relativized}
+可算な推移的モデル $\mathbf{M}$（ここでは存在を仮定する）について、$\omega_{1}^{\mathbf{M}}$ は本当の $\omega_{1}$ より小さい可算順序数であることを説明せよ。
+:::
+
+::: solution
+$\omega_{1}^{\mathbf{M}}$ は $\mathbf{M}$ の中で「最小の非可算順序数」である（順序数であることは絶対的なので本当の順序数）。$\omega_{1}^{\mathbf{M}}\in\mathbf{M}$ で $\mathbf{M}$ は推移的なので $\omega_{1}^{\mathbf{M}}\subseteq\mathbf{M}$、$\mathbf{M}$ は可算なので $\omega_{1}^{\mathbf{M}}$ は可算。よって本当の $\omega_{1}$ より小さい。$\mathbf{M}$ の中で非可算に見えるのは、$\omega$ から $\omega_{1}^{\mathbf{M}}$ への全射が $\mathbf{M}$ に属さないためである（スコーレムの逆説 \ref{logic:skolem-paradox}）。
+:::
+
+::: supplement
+**前提の検討.**
+- 基礎の公理は、\ref{set:absolute-ordinals} の (a)（順序数の Δ₀ による特徴づけ）で本質的に使う。基礎の公理がなければ「推移的で $\in$ により全順序付けられる」集合が順序数とは限らない。
+- \ref{set:absolute-well-order} の (a) は $\mathbf{M}$ が置換公理を満たすことを（順序型の存在を通じて）使う。$\ZF-\mathrm{P}-\mathrm{Inf}$ の推移的なモデルでは下向き（\ref{set:well-order-downward}）しか言えなかった。
+
+**関連する結果.** 本ページで絶対的と示された概念は、後で「Δ₁ 概念は絶対的」「Σ₁ 概念は上に保たれる」という一般形（シェーンフィールドの絶対性定理など）に整理されることが知られている（一般にはこう言われている。本サイトの範囲では扱っていない）。
+
+**高い視点から：整礎性が「内部の計算」を正しくする.** 再帰で定義される関数の絶対性（\ref{set:absolute-wf-recursion}）は、推移的なモデルの住人が同じ漸化式で計算すれば同じ答えを得る、ということである。これは計算機科学で、同じプログラムをどの環境で実行しても（必要なデータがそろっていれば）同じ結果を返す、という「参照透過性」に似ている。整礎性は「計算が必ず止まること」、推移性は「必要なデータ（前者の集合）がすべて手元にあること」にあたる。冪集合はこの意味で「計算」ではなく、環境の大きさそのものに依存するので絶対的でない。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

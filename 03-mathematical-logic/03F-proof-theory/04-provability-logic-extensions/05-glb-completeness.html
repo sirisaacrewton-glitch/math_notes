@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GLB の算術的完全性と決定可能性 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/04-provability-logic-extensions/05-glb-completeness.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# GLB の算術的完全性と決定可能性 {#pt:page-glb-completeness keywords="arithmetical completeness of GLB, GLSB, Dzhaparidze, Ignatiev, Solovay sentences for GLB, GLP, decidability"}
+
+前ページの主張（\ref{pt:glb-main-statement}）の残りの部分、すなわち「すべての算術的解釈で証明可能なら $\mathsf{IDzh}\vdash U_{A}\to A$」を証明する（ジャパリゼの定理。証明はイグナチェフの簡略化による）。ソロヴェイの構成を、二つの関係 $R$（証明）と $R_{1}$（ω 証明）をもつ IDzh モデルに拡張する：世界を渡り歩く「道」$h$ は、まず $R$ に沿って証明に導かれて進み、ある時点からは $R_{1}$ に沿って ω 証明に導かれて進む。これにより $\mathsf{GLB}$ と、真理についての体系 $\mathsf{GLSB}$ の算術的完全性と決定可能性が得られる。（Boolos 第 15 章後半に対応する。）
+
+## 記法と定義の確認 {#pt:sec-glbc-notation}
+
+::: notation
+- $\mathsf{GLB}$, $\mathsf{GLSB}$, $\mathsf{IDzh}$、IDzh モデル、$T$ と生成部分モデル、$U_{A}$、$A$-完全、\ref{pt:ua-lemma}, \ref{pt:idzh-completeness} は \ref{pt:page-glb-semantics} のとおり。$\mathrm{ωPf}$, $\mathrm{ωBew}$, $[1]S=\mathrm{ωBew}(\Godel{S})$、\ref{pt:omega-d12}, \ref{pt:sigma3-completeness}, \ref{pt:omega-bew-correct} も同ページのとおり。
+- $\PA$ の記法、$\mathrm{Pf}$, $\mathrm{Bew}$, $\Box S=\mathrm{Bew}(\Godel{S})$、D1–D3、形式化された Σ 完全性、内部の代入例、一般化された対角化定理、最小数原理は前の系列のとおり。この頁では $\vdash$ で $\PA\vdash$ を表し、$\PA$ の定理は $\PA$ の任意のモデル $\mathcal{M}$ で示してから完全性定理で得る。
+- $\mathrm{ωPf}(y,x)=\forall z\,Q(y,x,z)$（$Q$ は Σ 論理式）と書く（\ref{pt:omega-bew} の定義の括弧の中を $Q$ とする）。$\mathrm{Pf}(b,x)\wedge\mathrm{Pf}(b,x')\to x=x'$、$\mathrm{ωPf}(b,x)\wedge\mathrm{ωPf}(b,x')\to x=x'$（どちらも $x$ は最後の行の論理式）。
+:::
+
+## 最小の証明の主張の ω 証明可能性 {#pt:sec-least-proof-sentences}
+
+::: lemma 最小の ω 証明についての文 {#pt:least-omega-proof-sigma3}
+$c,c_{1},\dots,c_{r}$ を標準的な数（文のコード）とし、
+$$
+\Theta\defeq\exists b\,\Bigl(\mathrm{ωPf}(b,c)\wedge\bigwedge_{j\le r}\forall a<b\,\neg\mathrm{ωPf}(a,c_{j})\Bigr)
+$$
+とする。このとき $\vdash\Theta\to[1]\Theta$。
+:::
+
+::: proof
+$Q(y,x,z)$ を、Δ の部分 $G(y,x)$（$y$ は導出で最後の論理式は $x$）と、最後の行の仮定 $A^{y}_{i}$（$i<\ell(y)$）についての条件「$\mathrm{Ax}_{\PA}(A^{y}_{i})$ または（$F(A^{y}_{i})$ かつ $\mathrm{Bew}(t(A^{y}_{i},z))$）」に分ける。ここで $F(a)$ は「$a=\mathrm{all}(a_{1},a_{2})$ の形」を表す Δ 論理式、$t(a,z)\defeq\mathrm{sub}(a_{2},a_{1},\mathrm{num}(z))$。
+
+**Step 1（反例の選び出し）.** $\mathcal{M}$ で $\mathrm{ωPf}(b,c)$ かつ各 $j$ と $a<b$ で $\neg\mathrm{ωPf}(a,c_{j})$ とする。$a<b$, $j\le r$ について、$\neg Q(a,c_{j},z)$ となる $z$ があるので、$\neg G(a,c_{j})$ であるか、ある $i<\ell(a)$ で $\neg\mathrm{Ax}_{\PA}(A^{a}_{i})$ かつ（$\neg F(A^{a}_{i})$ または $\neg\mathrm{Bew}(t(A^{a}_{i},z))$）。最小数原理により、前者なら値 $0$、後者なら条件を満たす最小の対 $(i,z)$ に $1$ を足した値を $\tau(a,j)$ とする関数が定義でき、\ref{pt:finseq-exists} により $s_{a(r+1)+j}=\tau(a,j)$（$a<b$, $j\le r$）となる有限列 $s$ がある。
+
+**Step 2（ω 公理）.** 論理式
+$$
+E(b,s,v)\defeq Q(b,c,v)\wedge\bigwedge_{j\le r}\forall a<b\,\Phi_{j}(a,s,v),
+$$
+$$
+\begin{aligned}
+\Phi_{j}\defeq{}&\bigl(s_{a(r+1)+j}=0\wedge\neg G(a,c_{j})\bigr)\\
+&\vee\exists i<\ell(a)\,\exists z<s_{a(r+1)+j}\bigl(s_{a(r+1)+j}=(i,z)+1\wedge\neg\mathrm{Ax}_{\PA}(A^{a}_{i})\\
+&\qquad\wedge(\neg F(A^{a}_{i})\vee\neg\mathrm{Pf}(v,t(A^{a}_{i},z)))\bigr)
+\end{aligned}
+$$
+は Σ 論理式である。Step 1 の $b,s$ について、すべての $v$ で $E(b,s,v)$ が成り立つ（$Q(b,c,v)$ は $\mathrm{ωPf}(b,c)$ から、$\Phi_{j}$ は $\tau$ の選び方と、$\neg\mathrm{Bew}(t)$ なら $\neg\mathrm{Pf}(v,t)$ であることから）。形式化された Σ 完全性より、すべての $v$ で $\mathrm{Bew}[E](b,s,v)$。よって $e\defeq\mathrm{all}(\Godel{v},\mathrm{sub}(\mathrm{sub}(\Godel{E},\Godel{b},\mathrm{num}(b)),\Godel{s},\mathrm{num}(s)))$ は ω 公理の条件を満たす。
+
+**Step 3（ω 公理から Θ へ）.** $\vdash\forall v\,E(b,s,v)\to\Theta$（$b,s$ は自由変数）を示す。$\forall v\,E$ を仮定すると $\forall v\,Q(b,c,v)$、すなわち $\mathrm{ωPf}(b,c)$。$a<b$ で $\mathrm{ωPf}(a,c_{j})$ と仮定すると $G(a,c_{j})$ なので、$\Phi_{j}$ の第一の選言肢は偽で、$s_{a(r+1)+j}=(i,z)+1$ となる**一つの** $(i,z)$（$v$ によらない）について、すべての $v$ で $\neg\mathrm{Ax}_{\PA}(A^{a}_{i})\wedge(\neg F(A^{a}_{i})\vee\neg\mathrm{Pf}(v,t(A^{a}_{i},z)))$。よって $\neg\mathrm{Ax}_{\PA}(A^{a}_{i})$ かつ（$\neg F(A^{a}_{i})$ または $\neg\mathrm{Bew}(t(A^{a}_{i},z))$）で、$\neg Q(a,c_{j},z)$ となり $\mathrm{ωPf}(a,c_{j})$ に反する。したがって $\Theta$（証人 $b$）。
+
+**Step 4.** 内部の代入例（$b\mapsto\mathrm{num}(b)$, $s\mapsto\mathrm{num}(s)$）より $\mathrm{Bew}(\mathrm{imp}(e,\Godel{\Theta}))$。\ref{pt:sigma3-completeness} の Step 3 と同じく、その証明に仮定 $e$ の行と $\to$E の行を加えると、$\mathrm{ωPf}$ を満たす導出が得られ、$[1]\Theta$。
+:::
+
+::: corollary {#pt:sigma3-conjunction}
+Σ 文、$\neg\Box S$ の形の文、\ref{pt:least-omega-proof-sigma3} の形の文の有限個の連言 $\Xi$ について $\vdash\Xi\to[1]\Xi$。
+:::
+
+::: proof
+Σ 文 $\sigma$ は形式化された Σ 完全性で $\sigma\to\Box\sigma$、\ref{pt:omega-d12} の 1 で $\to[1]\sigma$。$\neg\Box S$ は \ref{pt:sigma3-completeness}。連言は、恒真式 $X\to(Y\to X\wedge Y)$ に \ref{pt:omega-d12} を使う。
+:::
+
+## GLB のソロヴェイ文 {#pt:sec-glb-solovay}
+
+以下、$\mathsf{IDzh}\nvdash U_{A}\to A$ とする。IDzh の完全性（\ref{pt:idzh-completeness}）より IDzh モデルと世界 $e$ で $e\models U_{A}$, $e\not\models A$ となるものがあり、生成部分モデルに移って（\ref{pt:idzh-generated-submodel}, \ref{pt:ua-lemma}）$\mathcal{M}_{A}=(W,R,R_{1},V)$ は $A$-完全、$W=T(e)$ とする。$W=\{1,\dots,n\}$, $e=1$ とし、新しい世界 $0$ を加えて $R$ を $R\cup\{(0,x):x\in W\}$ に拡張する（$R_{1}$ は変えない。以下この拡張も $R$ と書く）。$0$ には $R_{1}$ の後続者がなく、$W$ の世界の $R$ の後続者は変わらないので、IDzh モデルの条件（$wR_{1}x\Rightarrow(wRy\iff xRy)$）は保たれる。$wCx\defeq wRx\vee wR_{1}x\vee wR\,|\,R_{1}x$ とする。$T(1)=W$ なので、$1Cx$ となる $x$ は $1$ 以外の $W$ の元すべてである。
+
+::: definition OK な道 {#pt:ok-path}
+$m\ge0$ とし、関数 $h\colon\{0,\dots,m\}\to W\cup\{0\}$ が **$w$-OK** とは、$h(0)=0$, $h(m)=w$、各 $i<m$ で $h(i)Rh(i+1)$ または $h(i)R_{1}h(i+1)$、かつ $h(i)R_{1}h(i+1)Rh(i+2)$ となる $i$ がないことをいう。ある $w$ について $w$-OK なとき **OK** という。OK な $h$ について、$k=k_{h}$ を「$k\le i<m$ なるすべての $i$ で $h(i)R_{1}h(i+1)$」となる最小の $k$ とする。
+:::
+
+OK な $h$ は $0=h(0)Rh(1)R\cdots Rh(k)R_{1}h(k+1)R_{1}\cdots R_{1}h(m)$ の形で、$R$ の部分・$R_{1}$ の部分はそれぞれ同じ世界を繰り返さない（推移性と非反射性）ので、OK な $h$ は有限個である。$0$ は $R_{1}$ の後続者をもたないので、$m>0$ なら $k\ge1$。$h\ast x$ で、$h$ に値 $h(m+1)=x$ を付け加えた関数を表す。
+
+::: definition GLB のソロヴェイ文 {#pt:glb-solovay-sentences}
+一般化された対角化定理（\ref{pt:generalized-diagonal-lemma}）により、各 $w\in W\cup\{0\}$ について
+$$
+\vdash S_{w}\leftrightarrow\underline{w}=\underline{w}\wedge\bigvee\{A_{h}\wedge B_{h}\wedge C_{h}\wedge D_{h}:h\text{ は }w\text{-OK}\}
+$$
+となる文 $S_{0},\dots,S_{n}$ をとる。ここで（$\neg S_{x}$ のコードは $\mathrm{neg}(y_{x})$ として対角化の論理式に書く）
+$$
+\begin{aligned}
+A_{h}&\defeq\bigwedge_{i<k}\ \bigwedge_{x:h(i)Rx}\exists b\bigl(\mathrm{Pf}(b,\Godel{\neg S_{h(i+1)}})\wedge\forall a<b\,\neg\mathrm{Pf}(a,\Godel{\neg S_{x}})\bigr),\\
+B_{h}&\defeq\bigwedge_{x:h(k)Rx}\neg\mathrm{Bew}(\Godel{\neg S_{x}}),\\
+C_{h}&\defeq\bigwedge_{k\le i<m}\ \bigwedge_{x:h(i)R_{1}x}\exists b\bigl(\mathrm{ωPf}(b,\Godel{\neg S_{h(i+1)}})\wedge\forall a<b\,\neg\mathrm{ωPf}(a,\Godel{\neg S_{x}})\bigr),\\
+D_{h}&\defeq\bigwedge_{x:h(m)R_{1}x}\neg\mathrm{ωBew}(\Godel{\neg S_{x}}).
+\end{aligned}
+$$
+$AB_{h}\defeq A_{h}\wedge B_{h}$、$ABC_{h}$, $ABCD_{h}$ も同様に書く。
+:::
+
+対角化定理の証明（Step 3）より $S_{w}$ は右辺の論理式に数項を代入したもので、第一の連言肢 $\underline{w}=\underline{w}$ が異なるので、$w\neq w'$ なら $S_{w}$ と $S_{w'}$ は異なる文、$\Godel{\neg S_{w}}\neq\Godel{\neg S_{w'}}$。$A_{h}$ は Σ 文、$B_{h}$ は $\neg\Box$ の連言、$C_{h}$ は \ref{pt:least-omega-proof-sigma3} の形の文の連言である。
+
+**読み方.** $A_{h}$：「各 $i<k$ で、$h(i)$ の $R$-後続者のうち最初に否定が証明されるのは $h(i+1)$」。$B_{h}$：「$h(k)$ の $R$-後続者の否定はどれも証明されない」。$C_{h}$, $D_{h}$ は同じことを ω 証明について $R_{1}$ に沿って述べる。$S_{w}$ は「証明と ω 証明に導かれた道は $w$ に行き着く」。
+
+## ソロヴェイ文の性質 {#pt:sec-glb-solovay-properties}
+
+::: lemma 道の排他性 {#pt:glb-paths-exclusive}
+$h\neq h'$ が OK なら $\vdash\neg(ABCD_{h}\wedge ABCD_{h'})$。したがって $x\neq x'$ なら $\vdash\neg(S_{x}\wedge S_{x'})$。
+:::
+
+::: proof
+二つの「最小の証明」の主張 $\exists b(\mathrm{Pf}(b,\Godel{\neg S_{x}})\wedge\forall a<b\,\neg\mathrm{Pf}(a,\Godel{\neg S_{x'}}))$ と、$x,x'$ を入れ替えたものは、$x\neq x'$ なら両立しない：証人 $b,b'$ は異なり（$\mathrm{Pf}(b,\cdot)$ は関数的で $\Godel{\neg S_{x}}\neq\Godel{\neg S_{x'}}$）、$b<b'$ なら第二の主張に、$b'<b$ なら第一の主張に反する。$\mathrm{ωPf}$ についても同じ。また「$\mathrm{Pf}(b,\Godel{\neg S_{x}})$ となる $b$ がある」と $\neg\mathrm{Bew}(\Godel{\neg S_{x}})$、$\mathrm{ωPf}$ と $\neg\mathrm{ωBew}$ も両立しない。
+
+**Case 1（共通の定義域で異なる）.** 最小の $j$ で $h(j)\neq h'(j)$ とすると $j=i+1$, $h(i)=h'(i)$。$x\defeq h(i+1)$, $x'\defeq h'(i+1)$。(a) $h,h'$ とも第 $i$ 段が $R$ なら、$A_{h}$ と $A_{h'}$ に上の両立しない主張がある（$h(i)Rx'$ なので $A_{h}$ の $x$ についての連言肢は $x'$ に関する部分を含む）。(b) $h$ の第 $i$ 段が $R$、$h'$ の第 $i$ 段が $R_{1}$ なら、$h'$ の第 $0$ 段から第 $i-1$ 段は $h$ と同じく $R$ なので $k_{h'}=i$、$B_{h'}$ は $\neg\mathrm{Bew}(\Godel{\neg S_{x}})$ を含み（$h'(k_{h'})=h(i)Rx$）、$A_{h}$ は $\mathrm{Pf}(b,\Godel{\neg S_{x}})$ の存在を含む。(c) (b) の逆。(d) 両方 $R_{1}$ なら $C_{h}$ と $C_{h'}$ に（ω 版の）両立しない主張がある。
+
+**Case 2（$h'$ が $h$ の真の延長）.** $x\defeq h'(m+1)$。$h(m)Rx$ なら、$h'$ の第 $m$ 段が $R$ なので $h$ のすべての段は $R$ で $k_{h}=m$、$B_{h}$ は $\neg\mathrm{Bew}(\Godel{\neg S_{x}})$ を、$A_{h'}$ は $\mathrm{Pf}(b,\Godel{\neg S_{x}})$ の存在を含む。$h(m)R_{1}x$ なら、$D_{h}$ は $\neg\mathrm{ωBew}(\Godel{\neg S_{x}})$ を、$C_{h'}$ は $\mathrm{ωPf}(b,\Godel{\neg S_{x}})$ の存在を含む（$m\ge k_{h'}$）。**Case 3** は Case 2 の逆。
+
+後半：$x$-OK な $h$ と $x'$-OK な $h'$ は最後の値が異なるので異なる。
+:::
+
+$h$ の段がすべて $R$ のとき、$h$ は **$R_{1}$ なし**という（このとき $k=m$）。$h'$ が $h$ の **$R$-延長**とは、$h'$ が $h$ を延長し、延長部分の段がすべて $R$ であることをいう。**$R_{1}$-延長**も同様。
+
+::: lemma 道を延ばす {#pt:glb-path-extension}
+1. $h$ が $R_{1}$ なしなら、$\vdash A_{h}\to AB_{h}\vee\bigvee\{A_{h\ast x}:h(m)Rx\}$。
+2. $h$ が $R_{1}$ なしなら、$\vdash A_{h}\to AB_{h}\vee\bigvee\{AB_{h'}:h'\text{ は }h\text{ の }R\text{-延長}\}$。
+3. $h$ が $R_{1}$ なしなら、$\vdash AB_{h}\to ABCD_{h}\vee\bigvee\{ABC_{h\ast x}:h(m)R_{1}x\}$。
+4. $h$ が OK なら、$\vdash ABC_{h}\to ABCD_{h}\vee\bigvee\{ABC_{h\ast x}:h(m)R_{1}x\}$。
+5. $h$ が OK なら、$\vdash ABC_{h}\to ABCD_{h}\vee\bigvee\{ABCD_{h'}:h'\text{ は }h\text{ の }R_{1}\text{-延長}\}$。
+:::
+
+::: proof
+**1.** $\mathcal{M}$ で $A_{h}$ が成り立ち $B_{h}$ が成り立たないとすると、$h(m)Rx$ で $\neg S_{x}$ の証明をもつ $x$ がある。$h(m)$ の $R$-後続者（有限個）の否定の証明のうち最小のもの $b$ をとり（最小数原理）、それが $\neg S_{x}$ の証明とすると、すべての $R$-後続者 $y$ で $\forall a<b\,\neg\mathrm{Pf}(a,\Godel{\neg S_{y}})$。$h\ast x$ は（$R_{1}$ なしの）OK な道で、$A_{h\ast x}$ は $A_{h}$ にこの主張を加えたものなので成り立つ。
+
+**2.** $h(m)$ の $R$ に関するランク（\ref{pt:world-rank}）に関する（メタの）帰納法。$R$-後続者がなければ $B_{h}$ は空な連言 $\top$ で、$A_{h}\to AB_{h}$。そうでなければ 1 と、$h(m)Rx$ なる $x$（ランクが小さい）について帰納法の仮定を $h\ast x$ に使い、$h\ast x$ とその $R$-延長が $h$ の $R$-延長であることに注意する。
+
+**3.** $k=m$ なので $C_{h}=\top$。$\mathcal{M}$ で $AB_{h}$ が成り立ち $D_{h}$ が成り立たないとすると、1 と同様に $h(m)$ の $R_{1}$-後続者の否定の ω 証明のうち最小のものをとり、その $x$ について $h\ast x$ は OK（最後の段が $R_{1}$）、$k_{h\ast x}=m$ なので $A_{h\ast x}=A_{h}$, $B_{h\ast x}=B_{h}$、$C_{h\ast x}$ は最小性の主張そのもの。
+
+**4.** 3 と同じ（$A,B$ は変わらず、$C$ に第 $m$ 段の主張が加わる）。**5.** 4 と、$R_{1}$ に関するランクについての帰納法（2 と同様）。
+:::
+
+::: lemma 道の行き先 {#pt:glb-destinations}
+1. $h$ が $R_{1}$ なしなら $\vdash A_{h}\to S_{h(m)}\vee\bigvee\{S_{x}:h(m)Cx\}$。
+2. $h$ が OK なら $\vdash ABC_{h}\to S_{h(m)}\vee\bigvee\{S_{x}:h(m)R_{1}x\}$。
+3. $\vdash S_{0}\vee S_{1}\vee\cdots\vee S_{n}$。
+:::
+
+::: proof
+$h'$ が $h'(m')$-OK なら $\vdash ABCD_{h'}\to S_{h'(m')}$（$S_{h'(m')}$ の選言肢）であることを繰り返し使う。
+
+**1.** \ref{pt:glb-path-extension} の 2 より、$AB_{h}$ の場合と、$R$-延長 $h'$ についての $AB_{h'}$ の場合を考えればよい。$AB_{h'}$（$h'=h$ も含む）については 3 より $ABCD_{h'}$ か $ABC_{h'\ast x}$（$h'(m')R_{1}x$）、後者は 5 より $ABCD_{h'\ast x}$ か $ABCD_{h''}$（$h''$ は $h'\ast x$ の $R_{1}$-延長）。行き先はそれぞれ $h'(m')$, $x$, $h''(m'')$ で、$h(m)$ から $h'(m')$ へは $=$ または $R$、$x$ と $h''(m'')$ へは $R_{1}$ か $R\,|\,R_{1}$（推移性で $R_{1}$ の段はまとめられる）。よって行き先は $h(m)$ か $h(m)Cx$ となる $x$。
+
+**2.** \ref{pt:glb-path-extension} の 5 で、行き先は $h(m)$ か $R_{1}$-延長の終点（$R_{1}$ の推移性より $h(m)R_{1}$ で到達）。
+
+**3.** $h=\{(0,0)\}$ は $R_{1}$ なしで、$A_{h}$ は空な連言なので $\vdash A_{h}$。1 より $\vdash S_{0}\vee\bigvee\{S_{x}:0Cx\}$ で、$0Cx$ となる $x$ は $W$ の元。
+:::
+
+::: lemma 証明可能性についての性質 {#pt:glb-solovay-provability}
+$w\in W\cup\{0\}$ とする。$wQx\defeq wCx\vee\exists z\,(zR_{1}w\wedge zR_{1}x)$ とおく。
+1. $wRx$ なら $\vdash S_{w}\to\neg\Box\neg S_{x}$。
+2. $wR_{1}x$ なら $\vdash S_{w}\to\neg[1]\neg S_{x}$。
+3. $w\neq0$ なら $\vdash S_{w}\to\Box\bigvee\{S_{x}:wQx\}$。
+4. $w\neq0$ なら $\vdash S_{w}\to[1]\bigvee\{S_{x}:wR_{1}x\}$。
+5. $w\in W$ なら $\vdash S_{w}\to[1]\neg S_{w}$。
+:::
+
+::: proof
+各 $w$-OK な $h$ について、$ABCD_{h}$ から結論が従うことを示せばよい。
+
+**1.** $h(m)=w$。$k=m$ なら $h(k)=w$。$k<m$ なら $h(k)R_{1}\cdots R_{1}h(m)=w$ で推移性より $h(k)R_{1}w$、IDzh モデルの条件より $h(k)$ と $w$ の $R$-後続者は同じ。いずれにせよ $h(k)Rx$ で、$B_{h}$ は $\neg\Box\neg S_{x}$ を含む。
+
+**2.** $D_{h}$ は $\neg[1]\neg S_{x}$ を含む（$h(m)=w$）。
+
+**3.** $h$ の初めの $R$ の部分 $g\defeq h\restr\{0,\dots,k\}$ は $R_{1}$ なしで、$g(k)=w$ または $g(k)R_{1}w$。どちらの場合も $g(k)Cx$ なら $wQx$（前者は定義、後者は $z=g(k)$）。\ref{pt:glb-destinations} の 1 より $\vdash A_{g}\to S_{g(k)}\vee\bigvee\{S_{x}:wQx\}$、D1, D2 より $\vdash\Box A_{g}\to\Box(S_{g(k)}\vee\bigvee\{S_{x}:wQx\})$。$A_{g}$ は Σ 文なので $\vdash A_{g}\to\Box A_{g}$。$w\neq0$ より $m\ge1$、よって $k\ge1$ で、$A_{g}$ は第 $k-1$ 段の主張から $\mathrm{Pf}(b,\Godel{\neg S_{g(k)}})$ の存在を含み、$\vdash A_{g}\to\Box\neg S_{g(k)}$。D2 と恒真式 $\neg X\to((X\vee Y)\to Y)$ で $\vdash A_{g}\to\Box\bigvee\{S_{x}:wQx\}$。$A_{h}=A_{g}$。
+
+**4.** $h(m)=w$, $m\ge1$。最後の段が $R$ なら（$k=m$）$A_{h}$ から $\Box\neg S_{w}$、したがって $[1]\neg S_{w}$（\ref{pt:omega-d12} の 1）。最後の段が $R_{1}$ なら $C_{h}$ から $[1]\neg S_{w}$。\ref{pt:glb-destinations} の 2 と \ref{pt:omega-d12} より $\vdash[1]ABC_{h}\to[1](S_{w}\vee\bigvee\{S_{x}:wR_{1}x\})$。\ref{pt:sigma3-conjunction} より $\vdash ABC_{h}\to[1]ABC_{h}$。3 と同様に $[1]\neg S_{w}$ で $S_{w}$ を消す。
+
+**5.** 4 と、$wR_{1}x$ なら $x\neq w$ なので \ref{pt:glb-paths-exclusive} より $\vdash S_{x}\to\neg S_{w}$、よって $\vdash\bigvee\{S_{x}:wR_{1}x\}\to\neg S_{w}$ に \ref{pt:omega-d12} を使う。
+:::
+
+## 埋め込みと定理の証明 {#pt:sec-glb-embedding}
+
+算術的解釈を $p^{\ast}\defeq\bigvee\{S_{w}:w\in W,\ w\models p\}$ で定める。
+
+::: lemma 埋め込み補題（GLB） {#pt:glb-embedding}
+$A$ の部分論理式 $B$ と $w\in W$ について、$w\models B$ なら $\vdash S_{w}\to B^{\ast}$、$w\not\models B$ なら $\vdash S_{w}\to\neg B^{\ast}$。
+:::
+
+::: proof
+$B$ の構成に関する帰納法。命題変数は \ref{pt:glb-paths-exclusive}、真理関数は恒真式による。
+
+**$\Box C$, $w\models\Box C$.** まず、$wQx$ ならば $x\models C$ を示す。$wRx$ なら明らか。$wR_{1}x$、$wRyR_{1}x$、または $zR_{1}w$ かつ $zR_{1}x$ のとき、$x\not\models C$ と仮定すると、それぞれ $w$, $y$, $z$ で $[1]C$ が偽、$A$-完全性（$\Box C\to[1]C$）より $\Box C$ が偽、したがってそれぞれ $wRa$, $yRa$, $zRa$ かつ $a\not\models C$ となる $a$ がある。$wRyRa$ なら推移性で、$zR_{1}w$ かつ $zRa$ なら IDzh モデルの条件で、いずれも $wRa$ となり $w\models\Box C$ に反する。$wQx$ なら $x\in W$ なので、帰納法の仮定より $\vdash\bigvee\{S_{x}:wQx\}\to C^{\ast}$、D1, D2 と \ref{pt:glb-solovay-provability} の 3 より $\vdash S_{w}\to\Box C^{\ast}$。
+
+**$\Box C$, $w\not\models\Box C$.** $wRx$, $x\not\models C$ となる $x$ について、帰納法の仮定より $\vdash C^{\ast}\to\neg S_{x}$、D1, D2 で $\vdash\Box C^{\ast}\to\Box\neg S_{x}$、\ref{pt:glb-solovay-provability} の 1 より $\vdash S_{w}\to\neg\Box C^{\ast}$。
+
+**$[1]C$.** $w\models[1]C$ なら $wR_{1}x$ なるすべての $x$ で $x\models C$、帰納法の仮定と \ref{pt:omega-d12}、\ref{pt:glb-solovay-provability} の 4。$w\not\models[1]C$ なら $wR_{1}x$, $x\not\models C$ となる $x$ について同様に \ref{pt:glb-solovay-provability} の 2。
+:::
+
+::: theorem GLB の算術的完全性（ジャパリゼ） {#pt:glb-completeness keywords="Dzhaparidze's theorem, arithmetical completeness of GLB" index="ジャパリゼの定理|じゃぱりぜのていり"}
+様相論理式 $A$ について、$\mathsf{IDzh}\vdash U_{A}\to A$、$\mathsf{GLB}\vdash A$、すべての算術的解釈で $\PA\vdash A^{\ast}$、の三つは同値である。とくに $\mathsf{GLB}$ は決定可能である。
+:::
+
+::: proof
+前ページで述べたとおり、残りは「$\mathsf{IDzh}\nvdash U_{A}\to A$ なら $\PA\nvdash A^{\ast}$」。上の構成で、$1\not\models A$ と埋め込み補題より $\vdash S_{1}\to\neg A^{\ast}$、D1, D2 で $\vdash\Box A^{\ast}\to\Box\neg S_{1}$、$0R1$ と \ref{pt:glb-solovay-provability} の 1 より $\vdash S_{0}\to\neg\Box A^{\ast}$。
+
+$\PA$ の外で：$w\in W$ で $S_{w}$ が真なら、\ref{pt:glb-solovay-provability} の 5 と健全性より $[1]\neg S_{w}$ が真、\ref{pt:omega-bew-correct} と \ref{pt:omega-provable-equiv} の後半より $\neg S_{w}$ が真となり矛盾。\ref{pt:glb-destinations} の 3 より $S_{0}$ が真で、$\neg\Box A^{\ast}$ が真、すなわち $\PA\nvdash A^{\ast}$。決定可能性は $\mathsf{IDzh}$ の決定可能性による。
+
+::: hypcheck
+- **$A$-完全性**：埋め込み補題の $\Box C$ の場合で、$Q$ に沿った世界にまで $C$ を伝えるのに使った。これが前件 $U_{A}$ の役割である。
+- **ω 証明可能な文が真であること（$\PA^{+}$ の健全性）**：最後の段で $S_{w}$（$w\in W$）の偽を示すのに使う。$\mathsf{GL}$ の場合（\ref{pt:solovay}）には $\PA$ の健全性だった。
+- **IDzh モデルの条件 $wR_{1}x\Rightarrow(wRy\iff xRy)$**：\ref{pt:glb-solovay-provability} の 1 と埋め込み補題で使った。
+:::
+:::
+
+## 真理の場合：GLSB {#pt:sec-glsb}
+
+::: theorem GLSB の算術的完全性 {#pt:glsb-completeness}
+$H_{A}\defeq\bigwedge\{\Box C\to C:\Box C\in\mathrm{Sub}(A)\}\wedge\bigwedge\{[1]C\to C:[1]C\in\mathrm{Sub}(A)\}$ とする。次は同値である：$\mathsf{GLSB}\vdash A$、$\mathsf{GLB}\vdash H_{A}\to A$、すべての算術的解釈 $\ast$ で $A^{\ast}$ が真。とくに $\mathsf{GLSB}$ は決定可能である。
+:::
+
+::: proof
+$\mathsf{GLB}\vdash H_{A}\to A$ なら、$\mathsf{GLSB}\vdash[1]C\to C$ と $\mathsf{GLB}\vdash\Box C\to[1]C$ から $\mathsf{GLSB}\vdash H_{A}$、よって $\mathsf{GLSB}\vdash A$。$\mathsf{GLSB}\vdash A$ なら $A^{\ast}$ は真（\ref{pt:glb-soundness}）。残りは「$\mathsf{GLB}\nvdash H_{A}\to A$ なら、ある $\ast$ で $A^{\ast}$ が偽」。
+
+**Step 1（モデル）.** \ref{pt:glb-completeness} より $\mathsf{IDzh}\nvdash U_{H_{A}\to A}\to(H_{A}\to A)$。$(H_{A}\to A)$-完全（したがって $A$-完全）な IDzh モデルで、根を $0$ として $W=\{0,\dots,n\}=T(0)$、$0\models H_{A}$, $0\not\models A$ となるものがある。今度は新しい世界を加えず、この $W,R,R_{1}$ でソロヴェイ文 $S_{0},\dots,S_{n}$ を同じ定義で作る（$0R_{1}w$ となる $w$ がありうる）。\ref{pt:glb-paths-exclusive}, \ref{pt:glb-path-extension}, \ref{pt:glb-destinations}, \ref{pt:glb-solovay-provability} の 1, 2 の証明は、$0$ が $R$ で全体を見ることを使っていないのでそのまま成り立つ。
+
+**Step 2（$0$ を含む性質）.** $wQ'x\defeq wQx\vee(w=x=0)\vee(x=0\wedge0R_{1}w)$、$wR_{1}'x\defeq wR_{1}x\vee(w=x=0)$ とする。すべての $w\in W$ について (a) $\vdash S_{w}\to\Box\bigvee\{S_{x}:wQ'x\}$、(b) $\vdash S_{w}\to[1]\bigvee\{S_{x}:wR_{1}'x\}$。
+
+(a)：\ref{pt:glb-solovay-provability} の 3 の証明で、$g$ の定義域が $\{0\}$ でない（$k\ge1$）場合は同じ。$k=0$ なら $g(0)=0$ で $\vdash A_{g}$、\ref{pt:glb-destinations} の 1 より $\vdash S_{0}\vee\bigvee\{S_{x}:0Cx\}$。$w=0$ なら右辺の $x$ はすべて $wQ'x$。$w\neq0$ なら $h$ は $R_{1}$ の段だけからなり $0R_{1}w$、このとき $x=0$ は $wQ'x$、$0Cx$ なら $wQx$（$z=0$）。いずれにせよ $\vdash\bigvee\{S_{x}:wQ'x\}$、D1 で結論。(b)：$w\neq0$ は \ref{pt:glb-solovay-provability} の 4 と同じ。$w=0$ なら $0$-OK な道は $\{(0,0)\}$ だけで、\ref{pt:glb-destinations} の 2 と \ref{pt:sigma3-conjunction} から $\vdash ABC_{h}\to[1](S_{0}\vee\bigvee\{S_{x}:0R_{1}x\})$。
+
+**Step 3（埋め込み）.** $p^{\ast}\defeq\bigvee\{S_{w}:w\models p\}$ として、すべての $w\in W$（$0$ を含む）で埋め込み補題が成り立つ。新しい場合だけ述べる。$\Box C$ で $w\models\Box C$ のとき、$wQ'x$ なら $x\models C$：$w=x=0$ なら $0\models H_{A}$ より $0\models\Box C\to C$。$x=0$, $0R_{1}w$ で $0\not\models C$ とすると、$0\not\models\Box C$ なので $0Ra$, $a\not\models C$ となる $a$ があり、IDzh モデルの条件より $wRa$ で矛盾。$[1]C$ で $w\models[1]C$ のとき、$w=x=0$ なら $0\models[1]C\to C$。あとは (a), (b) を使って前と同じ。
+
+**Step 4.** $0\not\models A$ より $\vdash S_{0}\to\neg A^{\ast}$。$w\neq0$ なら \ref{pt:glb-solovay-provability} の 5 と健全性で $S_{w}$ は偽、\ref{pt:glb-destinations} の 3 より $S_{0}$ は真。よって $A^{\ast}$ は偽。
+:::
+
+## GLP {#pt:sec-glp}
+
+::: example 自分の矛盾性を主張する文
+$\vdash S\leftrightarrow\Box\neg S$ となる文 $S$ は、偽だが $\PA$ と無矛盾で、しかし ω 無矛盾でない。実際、$\Box\neg p$ の不動点は $\Box\bot$（\ref{pt:fixed-point-special} の表）なので $\vdash S\leftrightarrow\Box\bot$、$S$ は偽で、$\PA\nvdash\neg S$（$\PA\nvdash\mathrm{Con}$）。$\neg S\leftrightarrow\neg\Box\bot$ は \ref{pt:sigma3-completeness} より ω 証明可能なので、$\PA+S$ は ω 無矛盾でない。Boolos によれば、同様に、自分の ω 矛盾性を主張する文は偽で ω 無矛盾だが、次の段階の無矛盾性（下の $\PA^{++}$ についての無矛盾性）をもたない。
+:::
+
+::: remark GLP
+$\PA^{+}$ に対して同じ操作を繰り返すと、$\PA^{++}$（$\PA^{+}$ で各数について証明できる $A(\underline{n})$ から $\forall x\,A(x)$ を加える）、…が得られ、対応する箱 $[0]=\Box,[1],[2],\dots$ をもつ体系 $\mathsf{GLP}$ の公理は、恒真式と、各 $n$ について $[n](A\to B)\to([n]A\to[n]B)$, $[n]([n]A\to A)\to[n]A$, $[n]A\to[n+1]A$, $\neg[n]A\to[n+1]\neg[n]A$、規則はモーダスポネンスと $[0]$ の必然化則である。ジャパリゼは $\mathsf{GLP}$ とその真理版の算術的完全性も示した（Boolos 第 15 章の紹介による。本サイトでは証明していない）。Boolos によれば、$\mathsf{GLB}$ から $\mathsf{GLP}$ への拡張は、$\mathsf{GL}$ から $\mathsf{GLB}$ への拡張ほどの困難を含まない。
+:::
+
+## 問題 {#pt:sec-glbc-problems}
+
+::: problem {#pt:prob-glb-ok-paths}
+$W=\{1,2\}$, $R=\{(1,2)\}$, $R_{1}=\emptyset$ に世界 $0$ を加えたとき、OK な道をすべて書き出し、$S_{2}$ がどんな主張かを述べよ。
+:::
+
+::: solution
+$R=\{(0,1),(0,2),(1,2)\}$、$R_{1}=\emptyset$ なので、OK な道は $R$ の鎖：$(0)$, $(0,1)$, $(0,2)$, $(0,1,2)$。$S_{2}$ は、$2$-OK な道 $(0,2)$ と $(0,1,2)$ に対応する二つの選言肢の選言で、前者は「$0$ の後続者 $1,2$ の否定のうち最初に証明されるのは $\neg S_{2}$ で、$2$ の後続者はない」、後者は「最初に証明されるのは $\neg S_{1}$、$1$ の後続者の中では $\neg S_{2}$ が最初に証明される」。$R_{1}$ が空なので $C,D$ は空な連言で、これは $\mathsf{GL}$ のソロヴェイ文（前の系列）の「閉じた文」版である。
+:::
+
+::: supplement
+**前提の検討.**
+- 証明全体で、ω 証明についての「最小の証明」の主張 $C_{h}$ が $[1]$ の下に持ち上がること（\ref{pt:least-omega-proof-sigma3}）が技術的な要である。Boolos は $C_{h}$ が Σ₃ であることから一般の Σ₃ 完全性で済ませているが、本ページでは Σ₃ の階層の一般論を使わずに、必要な形の文について直接 ω 公理を組み立てた。
+- 前の系列のソロヴェイの定理では二変数の論理式 $H(a,b)$ を対角化で作ったが、ここでは閉じた文 $S_{w}$ を同時に対角化で作り、「最小の証明」の比較で道 $h$ を記述した。両者は同じ考え方の二つの定式化である。
+
+**関連する結果.** $\mathsf{GLB}$ の不動点定理と閉様相論理式の標準形（イグナチェフ）は次ページで扱う。
+
+**高い視点から：二段の舞台.** $\mathsf{GL}$ のソロヴェイの構成は、$\PA$ の証明に導かれて世界を移動する一人の役者だった。$\mathsf{GLB}$ では役者は二段階で動く：最初は通常の証明に導かれて $R$ に沿って、次にω 証明に導かれて $R_{1}$ に沿って。一度 $R_{1}$ の段に入ると $R$ には戻らない（OK の条件）のは、ω 証明の舞台が通常の証明の舞台の「上」にあることの表れであり、IDzh モデルの条件（$R_{1}$ で移っても $R$ の景色が変わらない）は、この二段の舞台が整合するための条件である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

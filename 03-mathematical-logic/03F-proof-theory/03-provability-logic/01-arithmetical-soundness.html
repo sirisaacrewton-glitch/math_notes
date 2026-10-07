@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>算術的解釈と GL・GLS の健全性 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/03-provability-logic/01-arithmetical-soundness.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 算術的解釈と GL・GLS の健全性 {#pt:page-arithmetical-soundness keywords="arithmetical realization, arithmetical interpretation, arithmetical soundness, GL, GLS, always provable, always true, reflection principle"}
+
+様相論理の $\Box$ を「$\PA$ で証明可能」と読むとき、どの様相論理の原理が正しいか。これを正確に問うために、命題変数に算術の文を割り当てる**算術的解釈**を定める。本ページでは、$\mathsf{GL}$ の定理はどの算術的解釈のもとでも $\PA$ で証明でき（**算術的健全性**）、$\mathsf{GL}$ に反映原理 $\Box A\to A$ を加えた $\mathsf{GLS}$ の定理はどの算術的解釈のもとでも真であることを示す。逆（算術的完全性）はソロヴェイの定理（\ref{pt:page-solovay}）である。後半では、$\mathsf{GL}$ の定理を翻訳して、算術の証明可能性についての具体的な事実を読み取る。
+
+## 記法と定義の確認 {#pt:sec-realization-notation}
+
+::: notation
+- 様相論理式、恒真式（命題的付値による）、正規様相論理、$\mathsf{K4}$, $\mathsf{GL}$ と $\mathsf{GL}$ の基本定理は \ref{logic:page-normal-modal-logics}, \ref{logic:page-gl-axioms} のとおり。様相論理式を $A,B$ で表す。
+- $\PA$、$\mathrm{Bew}$、D1–D3（\ref{pt:d1}, \ref{pt:d2}, \ref{pt:d3}）、形式化されたレーブの定理（\ref{pt:formalized-lob}）、$\mathrm{Con}=\neg\mathrm{Bew}(\Godel{\bot})$ は \ref{pt:page-second-incompleteness-lob} までのとおり。
+- 一階の文を素文（\ref{logic:prime-sentence}）上の命題論理の論理式とみる見方と、命題論理の導出は一階の導出であること（\ref{logic:prop-derivation-lift}）を使う。
+:::
+
+## 算術的解釈 {#pt:sec-realization}
+
+::: definition 算術的解釈と翻訳 {#pt:realization keywords="realization, arithmetical interpretation, translation" index="算術的解釈|さんじゅつてきかいしゃく"}
+各命題変数に $\mathcal{L}_{\mathrm{ar}}$ の文を割り当てる写像 $\ast$ を**算術的解釈**という。様相論理式 $A$ の $\ast$ による**翻訳** $A^{\ast}$ を構造的再帰（\ref{logic:modal-unique-readability}）で
+$$
+\begin{aligned}
+&\bot^{\ast}\defeq\bot,\qquad p^{\ast}\defeq\ast(p),\qquad(A\to B)^{\ast}\defeq(A^{\ast}\to B^{\ast}),\\
+&(\Box A)^{\ast}\defeq\mathrm{Bew}(\Godel{A^{\ast}})
+\end{aligned}
+$$
+と定める。$A^{\ast}$ は文である。$A$ に現れる命題変数で一致する二つの解釈は $A$ に同じ翻訳を与え、とくに閉様相論理式の翻訳は解釈によらない。
+:::
+
+::: definition 常に証明可能・常に真 {#pt:always-provable keywords="always provable, always true" index="常に証明可能|つねにしょうめいかのう, 常に真|つねにしん"}
+すべての算術的解釈 $\ast$ について $\PA\vdash A^{\ast}$ となる様相論理式 $A$ を**常に証明可能**、すべての $\ast$ について $\mathcal{N}\models A^{\ast}$ となるものを**常に真**という。$\mathcal{N}\models\PA$ なので、常に証明可能なら常に真である。
+:::
+
+::: lemma 恒真式の翻訳 {#pt:tautology-translation}
+$A$ が様相論理式の恒真式（\ref{logic:modal-tautology}）ならば、任意の $\ast$ について $\vdash A^{\ast}$（前提なしで一階の自然演繹で導出できる）。
+:::
+
+::: proof
+$\mathcal{L}_{\mathrm{ar}}$ の文を素文上の命題論理の論理式とみる（\ref{logic:prime-sentence}）。素文への任意の真理値割り当て $v$ に対し、命題的付値 $V$ を $V(p)\defeq\bar{v}(p^{\ast})$、$V(\Box B)\defeq\bar{v}((\Box B)^{\ast})$ で定めると、$A$ に関する帰納法で $\bar{V}(A)=\bar{v}(A^{\ast})$（$\bot$ と $\to$ は両側で同じ式で計算され、$p$ と $\Box B$ は定義そのもの）。$A$ は恒真式なので $\bar{v}(A^{\ast})=1$。$v$ は任意なので $A^{\ast}$ は命題論理の恒真式で、命題論理の完全性定理（\ref{logic:prop-completeness}）より命題論理で導出でき、\ref{logic:prop-derivation-lift} より一階でも導出できる。
+:::
+
+## 算術的健全性 {#pt:sec-arith-soundness}
+
+::: theorem K4 の算術的健全性 {#pt:k4-soundness}
+$\mathsf{K4}\vdash A$ ならば、任意の算術的解釈 $\ast$ について $\PA\vdash A^{\ast}$。
+:::
+
+::: proof
+$\mathsf{K4}$ の証明（\ref{logic:modal-hilbert-system}）の長さに関する帰納法。恒真式は \ref{pt:tautology-translation}。分配公理の翻訳は $\mathrm{Bew}(\Godel{A^{\ast}\to B^{\ast}})\to(\mathrm{Bew}(\Godel{A^{\ast}})\to\mathrm{Bew}(\Godel{B^{\ast}}))$ で、D2。公理 4 の翻訳は $\mathrm{Bew}(\Godel{A^{\ast}})\to\mathrm{Bew}(\Godel{\mathrm{Bew}(\Godel{A^{\ast}})})$ で、D3。モーダスポネンスは $(A\to B)^{\ast}=(A^{\ast}\to B^{\ast})$ による。必然化則は、$\PA\vdash A^{\ast}$ なら D1 より $\PA\vdash\mathrm{Bew}(\Godel{A^{\ast}})=(\Box A)^{\ast}$。
+:::
+
+::: theorem GL の算術的健全性 {#pt:gl-arithmetical-soundness keywords="arithmetical soundness of GL" index="算術的健全性|さんじゅつてきけんぜんせい"}
+$\mathsf{GL}\vdash A$ ならば、任意の算術的解釈 $\ast$ について $\PA\vdash A^{\ast}$。すなわち $\mathsf{GL}$ の定理は常に証明可能である。
+:::
+
+::: proof
+$\mathsf{GL}=\mathsf{K}\oplus\mathrm{L}$ の証明の長さに関する帰納法。\ref{pt:k4-soundness} の証明のうち恒真式・分配公理・モーダスポネンス・必然化則の場合はそのまま使える。レーブの公理の翻訳は
+$$
+(\Box(\Box A\to A)\to\Box A)^{\ast}=\mathrm{Bew}(\Godel{\mathrm{Bew}(\Godel{A^{\ast}})\to A^{\ast}})\to\mathrm{Bew}(\Godel{A^{\ast}})
+$$
+で、形式化されたレーブの定理（\ref{pt:formalized-lob}、$S=A^{\ast}$）により $\PA$ の定理である。
+
+::: hypcheck
+- **D3 を直接は使わないこと**：$\mathsf{GL}$ の公理には公理 4 がない（\ref{logic:gl-four} で導かれる）。ただし形式化されたレーブの定理の証明の中で D3 を使っている。
+- **レーブの定理の形式化された形**：レーブの定理（規則の形）だけでは、公理 $\mathrm{L}$ の翻訳が $\PA$ の定理であることは言えない。
+:::
+:::
+
+::: remark 別証明
+Boolos は、$\mathsf{K4}$ にレーブ規則「$\vdash\Box A\to A$ なら $\vdash A$」を加えた体系が $\mathsf{GL}$ と同じ定理をもつことを示し、レーブの定理（規則の形）から健全性を導く証明も与えている。また、$\mathsf{K4}$ の定理 \ref{logic:lob-argument-formalized} と対角化定理から、公理 $\mathrm{L}$ の翻訳が証明できることを直接示すこともできる（本系列の \ref{pt:formalized-lob} の証明はこれにあたる）。
+:::
+
+## GLS {#pt:sec-gls}
+
+::: definition GLS {#pt:gls keywords="GLS, Solovay's logic" index="GLS|じーえるえす"}
+$\mathsf{GL}$ の定理すべてと、形 $\Box A\to A$ の様相論理式すべてを公理とし、推論規則をモーダスポネンスだけとする体系を $\mathsf{GLS}$ という。
+:::
+
+::: theorem GLS の算術的健全性 {#pt:gls-soundness}
+$\mathsf{GLS}\vdash A$ ならば、任意の算術的解釈 $\ast$ について $\mathcal{N}\models A^{\ast}$。すなわち $\mathsf{GLS}$ の定理は常に真である。
+:::
+
+::: proof
+$\mathsf{GLS}$ の証明の長さに関する帰納法。$\mathsf{GL}$ の定理 $A$ は \ref{pt:gl-arithmetical-soundness} より $\PA\vdash A^{\ast}$、$\mathcal{N}\models\PA$ と健全性定理より $\mathcal{N}\models A^{\ast}$。$(\Box A\to A)^{\ast}=\mathrm{Bew}(\Godel{A^{\ast}})\to A^{\ast}$：$\mathcal{N}\models\mathrm{Bew}(\Godel{A^{\ast}})$ なら \ref{pt:bew-correct} より $\PA\vdash A^{\ast}$ で、したがって $\mathcal{N}\models A^{\ast}$。モーダスポネンスは真理を保つ。
+:::
+
+::: proposition GLS は正規でない {#pt:gls-not-normal}
+$\mathsf{GLS}\vdash\neg\Box\bot$ だが $\mathsf{GLS}\nvdash\Box\neg\Box\bot$。一方、$\mathsf{GLS}\vdash A$ なら $\mathsf{GLS}\vdash\Diamond A$。
+:::
+
+::: proof
+$\neg\Box\bot=(\Box\bot\to\bot)$ は公理である。$\mathsf{GLS}\vdash\Box\neg\Box\bot$ なら、\ref{pt:gls-soundness} より $\mathcal{N}\models\mathrm{Bew}(\Godel{\mathrm{Con}})$、\ref{pt:bew-correct} より $\PA\vdash\mathrm{Con}$ となり、第二不完全性定理（\ref{pt:godel-second}）に反する。後半：公理 $\Box\neg A\to\neg A$ の対偶から $\mathsf{GLS}\vdash A\to\Diamond A$、モーダスポネンスで $\Diamond A$。とくに $\top,\Diamond\top,\Diamond\Diamond\top,\dots$ はすべて $\mathsf{GLS}$ の定理である（$\mathsf{GL}\nvdash\Diamond\top$。\ref{logic:gl-consistent} の後の注意）。
+:::
+
+::: theorem GLS の別の公理化 {#pt:gls-alternative}
+$\mathsf{GLS}'$ を、$\mathsf{GL}$ の公理（恒真式・分配公理・レーブの公理）の必然化 $\Box B$ すべてと、形 $\Box A\to\Box\Box A$ と $\Box A\to A$ の論理式すべてを公理とし、推論規則をモーダスポネンスだけとする体系とする。このとき $\mathsf{GLS}$ と $\mathsf{GLS}'$ の定理は一致する。
+:::
+
+::: proof
+**Step 1（$\mathsf{GLS}'\subset\mathsf{GLS}$）.** $\mathsf{GLS}'$ の公理は $\mathsf{GLS}$ の定理である（$\Box B$ と $\Box A\to\Box\Box A$ は $\mathsf{GL}$ の定理、\ref{logic:gl-four}）。
+
+**Step 2（$\mathsf{GL}\subset\mathsf{GLS}'$）.** $\mathsf{GL}$ の証明の長さに関する帰納法で、「$\mathsf{GL}\vdash B$ なら $\mathsf{GLS}'\vdash\Box B$ かつ $\mathsf{GLS}'\vdash B$」を示す。$B$ が $\mathsf{GL}$ の公理なら $\Box B$ は公理で、公理 $\Box B\to B$ と合わせて $B$。$B$ が $A\to B$ と $A$ からモーダスポネンスで得られたなら、帰納法の仮定から $\mathsf{GLS}'\vdash\Box(A\to B)$, $\Box A$, $A\to B$, $A$。分配公理は $\mathsf{GL}$ の公理なので、いま示したことから $\mathsf{GLS}'\vdash\Box(A\to B)\to(\Box A\to\Box B)$、モーダスポネンス二回で $\Box B$、また $B$。$B=\Box A$ が必然化で得られたなら、帰納法の仮定の $\Box A$ から、公理 $\Box A\to\Box\Box A$ で $\Box\Box A=\Box B$。
+
+**Step 3.** Step 2 より $\mathsf{GLS}$ の公理はすべて $\mathsf{GLS}'$ の定理で、推論規則は同じなので $\mathsf{GLS}\subset\mathsf{GLS}'$。
+:::
+
+## GL から読み取れる算術の事実 {#pt:sec-gl-consequences}
+
+以下、文 $S$ について「$S$ は証明可能」を $\mathrm{Bew}(\Godel{S})$、「$S$ は $\PA$ と無矛盾」を $\neg\mathrm{Bew}(\Godel{\neg S})$ で表す。$\mathsf{GL}$ の定理 $A$ から、\ref{pt:gl-arithmetical-soundness} により、$A$ の任意の翻訳が $\PA$ の定理として得られる。
+
+::: corollary 形式化された第二不完全性定理と無矛盾性の決定不能性 {#pt:gl-consequence-consistency}
+1. $\PA\vdash\mathrm{Con}\to\neg\mathrm{Bew}(\Godel{\mathrm{Con}})$。
+2. $\PA\vdash\neg\mathrm{Bew}(\Godel{\mathrm{Bew}(\Godel{\bot})})\to\bigl(\neg\mathrm{Bew}(\Godel{\mathrm{Con}})\wedge\neg\mathrm{Bew}(\Godel{\neg\mathrm{Con}})\bigr)$：「矛盾性が証明できないなら、無矛盾性は決定できない」ことが $\PA$ で証明できる。
+:::
+
+::: proof
+**1.** $\mathsf{GL}\vdash\neg\Box\bot\to\neg\Box\neg\Box\bot$（\ref{logic:gl-second-incompleteness}）の翻訳。**2.** $\bot\to\Box\bot$ は恒真式なので、正規性 1 より $\mathsf{GL}\vdash\Box\bot\to\Box\Box\bot$、対偶で $\mathsf{GL}\vdash\neg\Box\Box\bot\to\neg\Box\bot$。1 の様相版と合わせて $\mathsf{GL}\vdash\neg\Box\Box\bot\to\neg\Box\neg\Box\bot$。また恒真式 $\neg\neg\Box\bot\leftrightarrow\Box\bot$ に正規性 2 を使うと $\mathsf{GL}\vdash\neg\Box\neg\neg\Box\bot\leftrightarrow\neg\Box\Box\bot$。よって $\mathsf{GL}\vdash\neg\Box\Box\bot\to(\neg\Box\neg\Box\bot\wedge\neg\Box\neg\neg\Box\bot)$。$\mathrm{Con}=\neg\mathrm{Bew}(\Godel{\bot})$ はちょうど $\neg\Box\bot$ の翻訳、$\neg\mathrm{Con}$ は $\neg\neg\Box\bot$ の翻訳なので、この定理の翻訳が 2 である。
+:::
+
+::: corollary 自己言及文の性質 {#pt:gl-consequence-fixed-points}
+任意の文 $S$ について、次は $\PA$ の定理である（それぞれ \ref{logic:gl-four-fixed-points} の 1–4 の翻訳。$p^{\ast}=S$）。
+1. $S$ が「自分は証明できない」と同値であることが証明可能なら、$S$ は $\mathrm{Con}$ と同値であることが証明可能。
+2. $S$ が「自分は証明可能」と同値であることが証明可能なら、$S$ は証明可能。
+3. $S$ が「自分は反証可能」と同値であることが証明可能なら、$S$ は $\neg\mathrm{Con}$ と同値であることが証明可能。
+4. $S$ が「自分は無矛盾」と同値であることが証明可能なら、$S$ は反証可能。
+:::
+
+::: proof
+\ref{logic:gl-four-fixed-points} の各項を $p^{\ast}=S$ で翻訳する。たとえば 1 は $\Box(p\leftrightarrow\neg\Box p)\to\Box(p\leftrightarrow\neg\Box\bot)$ の翻訳 $\mathrm{Bew}(\Godel{S\leftrightarrow\neg\mathrm{Bew}(\Godel{S})})\to\mathrm{Bew}(\Godel{S\leftrightarrow\mathrm{Con}})$ である。2 は $\Box p\leftrightarrow\Box(p\leftrightarrow\top)$ から $\Box(p\leftrightarrow\Box p)\to\Box p$ を使う。
+:::
+
+::: corollary レーブの定理の自己強化 {#pt:lob-self-strengthening}
+任意の文 $R,S$ について、$\PA\vdash\mathrm{Bew}(\Godel{R})\wedge\mathrm{Bew}(\Godel{S})\to S$ ならば $\PA\vdash\mathrm{Bew}(\Godel{R})\to S$。
+:::
+
+::: proof
+仮定を $\PA\vdash\mathrm{Bew}(\Godel{R})\to(\mathrm{Bew}(\Godel{S})\to S)$ と書き直し、D1, D2 より $\PA\vdash\mathrm{Bew}(\Godel{\mathrm{Bew}(\Godel{R})})\to\mathrm{Bew}(\Godel{\mathrm{Bew}(\Godel{S})\to S})$。D3 と形式化されたレーブの定理から $\PA\vdash\mathrm{Bew}(\Godel{R})\to\mathrm{Bew}(\Godel{S})$。仮定と合わせて $\PA\vdash\mathrm{Bew}(\Godel{R})\to S$。（これは $\mathsf{GL}$ のレーブ規則の一般形 \ref{logic:lob-rule} の 2 の翻訳にあたる。）
+:::
+
+::: proposition 反映原理 {#pt:reflection-principles keywords="reflection principle, local reflection" index="反映原理|はんえいげんり"}
+文 $S$ について $\mathrm{Bew}(\Godel{S})\to S$ を $S$ の**反映原理**という。
+1. $\PA\vdash\mathrm{Bew}(\Godel{S})\to S$ となるのは、$\PA\vdash S$ のときに限る。
+2. $\PA$ と無矛盾な文 $S$（$\PA\nvdash\neg S$）で、すべての文 $R$ の反映原理を $\PA$ 上で含意する（$\PA\vdash S\to(\mathrm{Bew}(\Godel{R})\to R)$）ものは存在しない。
+3. ゲーデル文 $G$ の反映原理は $\PA$ で証明できない（$\PA$ が無矛盾なら）。
+:::
+
+::: proof
+**1.** レーブの定理（\ref{pt:lob-theorem}）とその自明な逆。**2.** $R=\neg S$ とすると $\PA\vdash S\to(\mathrm{Bew}(\Godel{\neg S})\to\neg S)$、命題論理で $\PA\vdash\mathrm{Bew}(\Godel{\neg S})\to\neg S$。1 より $\PA\vdash\neg S$。**3.** 1 より、証明できれば $\PA\vdash G$ となり第一不完全性定理に反する。
+:::
+
+## 問題 {#pt:sec-realization-problems}
+
+::: problem {#pt:prob-letterless-translation}
+閉様相論理式 $\Box\Box\bot\to\Box\bot$ の翻訳を書き、それが $\PA$ で証明できないことを、$\PA$ が「$\mathcal{N}$ で健全」であることを使って示せ。これから、この論理式が $\mathsf{GL}$ の定理でないことを結論せよ。
+:::
+
+::: solution
+翻訳は $\mathrm{Bew}(\Godel{\mathrm{Bew}(\Godel{\bot})})\to\mathrm{Bew}(\Godel{\bot})$。$\PA$ で証明できるなら、レーブの定理（$S=\mathrm{Bew}(\Godel{\bot})$）より $\PA\vdash\mathrm{Bew}(\Godel{\bot})$、健全性より $\mathcal{N}\models\mathrm{Bew}(\Godel{\bot})$、すなわち $\PA$ は矛盾し、$\mathcal{N}\models\PA$ に反する。よって証明できず、\ref{pt:gl-arithmetical-soundness} の対偶より $\mathsf{GL}$ の定理でない。
+:::
+
+::: problem {#pt:prob-gls-diamond}
+$\mathsf{GLS}\vdash\Diamond\top$ だが $\mathsf{GL}\nvdash\Diamond\top$ であることを確かめ、$\Diamond\top$ の翻訳が何を意味するかを述べよ。
+:::
+
+::: solution
+$\Diamond\top=\neg\Box\neg\top$ は $\mathsf{GL}$ で $\neg\Box\bot$ と同値で、$\mathsf{GLS}$ の公理 $\Box\bot\to\bot$ から得られる。$\mathsf{GL}\nvdash\neg\Box\bot$ は \ref{logic:gl-consistent} の後の注意による。翻訳は $\neg\mathrm{Bew}(\Godel{\neg\top})$ で、$\PA$ で $\mathrm{Con}$ と同値である。すなわち $\Diamond\top$ は「算術は無矛盾」を表し、常に真だが常に証明可能ではない。
+:::
+
+::: supplement
+**高い視点から：様相論理は証明可能性の「代数」である.** 算術的解釈は、様相論理式を「証明可能性についての主張の図式」とみなす。$\mathsf{GL}$ の健全性は、$\PA$ の証明可能性述語が満たす性質のうち、命題論理の組み合わせで表せる部分がすべて $\mathsf{GL}$ に含まれることの半分を述べ、ソロヴェイの定理が残りの半分を与える。すると、証明可能性についての問い（たとえば「無矛盾性の無矛盾性は証明できるか」）は、有限の手続きで決定できる様相論理の問い（$\mathsf{GL}$ は決定可能。\ref{logic:page-modal-completeness}）に変わる。これは、群の元についての等式の問いが、群の公理から導けるかどうかの問いに変わるのと似ている：$\mathsf{GL}$ は「証明可能性」という構造の等式論である。$\mathsf{GL}$ と $\mathsf{GLS}$ の違いは、「$\PA$ が知っていること」と「実際に成り立つこと」の違いである。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grz と S4 を保つ証明可能性の解釈 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/04-provability-logic-extensions/01-grz.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# Grz と S4 を保つ証明可能性の解釈 {#pt:page-grz keywords="Grzegorczyk logic, Grz, S4Grz, truth-translation, boxdot translation, provable and true, S4-preserving interpretation, intuitionistic logic"}
+
+$\Box$ を「証明可能」と読むと $\Box p\to p$ は常に証明可能ではない。しかし $\Box A$ を「$A$ は証明可能で、しかも真」と読めば、$\mathsf{S4}$ の定理はすべて保たれる。本ページでは、この読み方のもとで常に証明可能な様相論理式、常に真な様相論理式が、ともにちょうどグジェゴルチクの体系 $\mathsf{Grz}$ の定理であることを示す（Boolos 第 12 章の主定理）。$\mathsf{Grz}$ は $\mathsf{S4}$ より真に強く、有限・推移的・反射的・反対称的なフレームについて完全である。最後に、直観主義命題論理との関係に触れる。
+
+## 記法と定義の確認 {#pt:sec-grz-notation}
+
+::: notation
+- 様相論理式、正規様相論理、公理による体系（\ref{logic:modal-hilbert-system}）、$\mathsf{K},\mathsf{K4},\mathsf{T},\mathsf{S4},\mathsf{S5}$、正規性、恒真式による推論、$\boxdot A\defeq A\wedge\Box A$、\ref{logic:k4-boxdot} は \ref{logic:page-normal-modal-logics} のとおり。
+- クリプキフレーム・モデル、関係の性質（\ref{logic:relation-properties}）、フレームの対応（\ref{logic:frame-correspondence}）、生成部分モデル、健全性は \ref{logic:page-kripke-semantics}、有限の極大無矛盾集合とその性質（\ref{logic:modal-mcs}, \ref{logic:modal-mcs-properties}）は \ref{logic:page-modal-completeness} のとおり。後者の性質の証明は、$L$ が正規様相論理であることしか使わないので、任意の正規様相論理 $L$ について成り立つ。
+- 算術的解釈、$\mathsf{GLS}$、$A^{\mathrm{S}}$、ソロヴェイの定理と $\mathsf{GLS}$ の算術的完全性、一様な算術的完全性（\ref{pt:solovay}, \ref{pt:gls-arithmetical-completeness}, \ref{pt:uniform-completeness}）、鳩の巣補題（\ref{pt:reflection-pigeonhole}）は \ref{pt:page-solovay}, \ref{pt:page-gls-uniform-completeness} などのとおり。
+:::
+
+## ⊡ 翻訳と真理付きの翻訳 {#pt:sec-boxdot-translation}
+
+::: definition ⊡ 翻訳 {#pt:boxdot-translation keywords="boxdot translation, splitting translation" index="⊡ 翻訳|ぼっくすどっとほんやく"}
+様相論理式 $A$ の **⊡ 翻訳** $A^{\boxdot}$ を、$A$ のすべての $\Box$ を $\boxdot$ に置き換えたものとして再帰的に定める：$p^{\boxdot}\defeq p$、$\bot^{\boxdot}\defeq\bot$、$(A\to B)^{\boxdot}\defeq A^{\boxdot}\to B^{\boxdot}$、$(\Box A)^{\boxdot}\defeq\boxdot A^{\boxdot}=A^{\boxdot}\wedge\Box A^{\boxdot}$。
+:::
+
+::: proposition S4 の ⊡ 翻訳 {#pt:s4-boxdot}
+$\mathsf{S4}\vdash A$ ならば $\mathsf{K4}\vdash A^{\boxdot}$。
+:::
+
+::: proof
+$\mathsf{S4}$ の証明の長さに関する帰納法。恒真式 $A$ の ⊡ 翻訳は恒真式である：命題的付値 $V$ に対し、$V^{\circ}(p)\defeq V(p)$、$V^{\circ}(\Box B)\defeq\bar{V}((\Box B)^{\boxdot})$ と定めると、構成に関する帰納法ですべての $C$ について $\bar{V}^{\circ}(C)=\bar{V}(C^{\boxdot})$ となり、$\bar{V}^{\circ}(A)=1$ から $\bar{V}(A^{\boxdot})=1$。分配公理の翻訳 $\boxdot(A\to B)\to(\boxdot A\to\boxdot B)$ は $\mathsf{K}$ の定理（分配公理と恒真式）。$\mathrm{T}$ の翻訳 $\boxdot A\to A$ は恒真式。公理 4 の翻訳 $\boxdot A\to\boxdot\boxdot A$ は \ref{logic:k4-boxdot} の 2（$\boxdot A\to\Box\boxdot A$）と恒真式から $\mathsf{K4}$ の定理。モーダスポネンスは翻訳と可換。必然化則：$\mathsf{K4}\vdash A^{\boxdot}$ なら必然化で $\mathsf{K4}\vdash\Box A^{\boxdot}$、よって $\mathsf{K4}\vdash\boxdot A^{\boxdot}$。
+:::
+
+::: definition 真理付きの翻訳 {#pt:truth-translation keywords="truth-translation" index="真理付きの翻訳|しんりつきのほんやく"}
+算術的解釈 $\ast$ に対し、様相論理式 $A$ の**真理付きの翻訳** ${}^{\ast}\!A$ を、${}^{\ast}p\defeq p^{\ast}$、${}^{\ast}\bot\defeq\bot$、${}^{\ast}(A\to B)\defeq{}^{\ast}\!A\to{}^{\ast}\!B$、${}^{\ast}(\Box A)\defeq{}^{\ast}\!A\wedge\mathrm{Bew}(\Godel{{}^{\ast}\!A})$ で定める。${}^{\ast}(\Box A)$ は「${}^{\ast}\!A$ は真で、しかも証明可能」と読める。
+:::
+
+真理の述語は算術で定義できない（タルスキの定理、\ref{pt:page-rosser-tarski}）が、特定の文 $S$ の真理は $S$ 自身で表せる。これが ${}^{\ast}(\Box A)$ の第二の連言肢である。
+
+::: lemma 真理付きの翻訳は ⊡ 翻訳の翻訳 {#pt:truth-translation-boxdot}
+すべての $A$ と $\ast$ について ${}^{\ast}\!A=(A^{\boxdot})^{\ast}$（記号列として一致）。
+:::
+
+::: proof
+$A$ に関する帰納法。$\Box A$ の場合：${}^{\ast}(\Box A)={}^{\ast}\!A\wedge\mathrm{Bew}(\Godel{{}^{\ast}\!A})=(A^{\boxdot})^{\ast}\wedge\mathrm{Bew}(\Godel{(A^{\boxdot})^{\ast}})=(A^{\boxdot}\wedge\Box A^{\boxdot})^{\ast}=((\Box A)^{\boxdot})^{\ast}$（翻訳は略記 $\wedge$ と可換）。他の場合は定義から。
+:::
+
+## Grz {#pt:sec-grz-system}
+
+::: definition Grz と S4Grz {#pt:grz keywords="Grzegorczyk's axiom, Grz, S4Grz" index="Grz|じーあーるぜっと, グジェゴルチクの公理|ぐじぇごるちくのこうり"}
+**グジェゴルチクの公理**を $\Box(\Box(p\to\Box p)\to p)\to p$ とし、$\mathsf{K}$ にその代入例をすべて公理として加えた正規様相論理を $\mathsf{Grz}$、$\mathsf{S4}$ に加えたものを $\mathsf{S4Grz}$ とする。
+:::
+
+::: definition 反対称・逆弱整礎 {#pt:weakly-cwf keywords="antisymmetric, converse weakly well-founded" index="反対称的|はんたいしょうてき, 逆弱整礎|ぎゃくじゃくせいそ"}
+$W$ 上の関係 $R$ が**反対称的**とは、$wRx$ かつ $xRw$ なら $w=x$ となることをいう。**逆弱整礎**とは、$W$ の空でない任意の部分集合 $X$ に、$wRx$ となる $x\in X$ が $w$ 自身に限られる元 $w\in X$（**弱極大元**）があることをいう。
+:::
+
+::: example S4Grz は S4 より強い
+グジェゴルチクの公理は $\mathsf{S5}$ の定理でもない：$W=\{0,1\}$ 上の全関係（同値関係）で、$p$ は $1$ でだけ真とする。$1\models p$ かつ $1\not\models\Box p$（$1$ は $0$ を見る）なので $p\to\Box p$ は $1$ で偽、両方の世界が $1$ を見るので $\Box(p\to\Box p)$ はどの世界でも偽。よって $\Box(p\to\Box p)\to p$ はどこでも真、$0\models\Box(\Box(p\to\Box p)\to p)$ だが $0\not\models p$。このフレームは $\mathsf{S5}$ に適切なので、健全性より $\mathsf{S5}\nvdash$ グジェゴルチクの公理、したがって $\mathsf{S4}\nvdash$。
+:::
+
+::: proposition Grz は S4 を含む {#pt:grz-contains-s4}
+$\mathsf{Grz}\vdash\Box A\to A$ かつ $\mathsf{Grz}\vdash\Box A\to\Box\Box A$。したがって $\mathsf{Grz}$ と $\mathsf{S4Grz}$ の定理は一致する。
+:::
+
+::: proof
+**T.** 恒真式 $A\to(\Box(A\to\Box A)\to A)$ に正規性 1 を使うと $\mathsf{K}\vdash\Box A\to\Box(\Box(A\to\Box A)\to A)$。グジェゴルチクの公理（$p\mapsto A$）で $\Box A\to A$。
+
+**4.** $B\defeq\Box A\to\Box\Box A$, $C\defeq A\wedge B$ とおく。
+
+**Step 1.** $\mathsf{K}\vdash(C\to\Box C)\to(A\to\Box A)$。実際、恒真式により、$C\to\Box C$ と $A$ と $\neg\Box A$ を仮定すると、$\neg\Box A$ から $B$、$A$ と合わせて $C$、したがって $\Box C$。$\mathsf{K}\vdash\Box C\to\Box A$（$C\to A$ に正規性 1）なので $\Box A$ となり、$\neg\Box A$ と矛盾する。
+
+**Step 2.** Step 1 に正規性 1 と分配公理を使うと $\mathsf{K}\vdash\Box(C\to\Box C)\to(\Box A\to\Box\Box A)$、すなわち $\mathsf{K}\vdash\Box(C\to\Box C)\to B$。必然化で $\mathsf{K}\vdash\Box(\Box(C\to\Box C)\to B)$。
+
+**Step 3.** 恒真式 $A\to(\Box(C\to\Box C)\to A)$ と正規性 1 より $\mathsf{K}\vdash\Box A\to\Box(\Box(C\to\Box C)\to A)$。Step 2 と正規性 3 で合わせて $\mathsf{K}\vdash\Box A\to\Box(\Box(C\to\Box C)\to A\wedge B)$、すなわち $\mathsf{K}\vdash\Box A\to\Box(\Box(C\to\Box C)\to C)$。
+
+**Step 4.** グジェゴルチクの公理（$p\mapsto C$）で $\mathsf{Grz}\vdash\Box A\to C$、とくに $\mathsf{Grz}\vdash\Box A\to B=(\Box A\to\Box\Box A)$、恒真式で $\mathsf{Grz}\vdash\Box A\to\Box\Box A$。
+
+後半：$\mathsf{S4Grz}$ の公理は $\mathsf{Grz}$ の定理で、逆も明らか。
+:::
+
+## 主定理 {#pt:sec-grz-main}
+
+::: theorem S4 を保つ解釈の論理（Boolos 第 12 章の主定理） {#pt:grz-main-theorem keywords="main theorem on Grz" index="Grz の主定理|じーあーるぜっとのしゅていり"}
+様相論理式 $A$ について次の十条件は同値である。
+1. $\mathsf{S4Grz}\vdash A$。
+2. $\mathsf{Grz}\vdash A$。
+3. $\mathsf{GL}\vdash A^{\boxdot}$。
+4. すべての算術的解釈 $\ast$ で $\PA\vdash{}^{\ast}\!A$。
+5. $\mathsf{GLS}\vdash A^{\boxdot}$。
+6. すべての算術的解釈 $\ast$ で ${}^{\ast}\!A$ は真。
+7. 一様な算術的完全性定理（\ref{pt:uniform-completeness}）のある解釈 $\ast$ で $\PA\vdash{}^{\ast}\!A$。
+8. 同じ $\ast$ で $\PA\vdash(A^{\boxdot})^{\ast}$。
+9. $A$ はすべての有限・推移的・反射的・反対称的なフレームで妥当。
+10. $A$ はすべての推移的・反射的・逆弱整礎なフレームで妥当。
+:::
+
+証明の全体像：\ref{pt:truth-translation-boxdot} より 4 ⇔ 「すべての $\ast$ で $\PA\vdash(A^{\boxdot})^{\ast}$」で、ソロヴェイの定理より 3 ⇔ 4。$\mathsf{GLS}$ の算術的完全性より 5 ⇔ 6、一様完全性より 3 ⇔ 8、\ref{pt:truth-translation-boxdot} より 7 ⇔ 8。1 ⇔ 2 は \ref{pt:grz-contains-s4}、3 ⇒ 5 は明らか。残りは以下の補題で示す：1 ⇒ 10 ⇒ 9 ⇒ 1、9 ⇔ 3、5 ⇒ 3。
+
+::: lemma Grz の健全性 {#pt:grz-soundness}
+$\mathsf{Grz}\vdash A$ ならば、$A$ はすべての推移的・反射的・逆弱整礎なフレームで妥当（1 ⇒ 10）。
+:::
+
+::: proof
+フレームで妥当な論理式の集合は正規様相論理なので、グジェゴルチクの公理が妥当であることを示せばよい。モデル $\mathcal{M}$ をとり、$E\defeq\Box(\Box(p\to\Box p)\to p)$ とおいて
+$$
+X_{0}\defeq\{w:w\models E,\ w\not\models p\},\qquad X_{1}\defeq\{w:w\models E,\ w\models p,\ w\not\models\Box p\}
+$$
+とする。$X_{0}\cap X_{1}=\emptyset$。
+- $w\in X_{0}$ なら、反射性より $w\models\Box(p\to\Box p)\to p$ で $w\not\models p$ なので $w\not\models\Box(p\to\Box p)$：$wRx$, $x\models p$, $x\not\models\Box p$ となる $x$ がある。推移性より $x\models E$、よって $x\in X_{1}$。
+- $w\in X_{1}$ なら $wRx$, $x\not\models p$ となる $x$ があり、推移性より $x\models E$、$x\in X_{0}$。
+
+よって $X\defeq X_{0}\cup X_{1}$ の各元 $w$ は、$wRx$ かつ $x\neq w$（$X_{0},X_{1}$ の反対側）となる $x\in X$ をもつ。逆弱整礎性より $X=\emptyset$、とくに $X_{0}=\emptyset$ で、グジェゴルチクの公理はどこでも真。
+:::
+
+::: lemma 有限の場合 {#pt:finite-antisymmetric-cwwf}
+有限・推移的・反対称的なフレームは逆弱整礎である（10 ⇒ 9）。
+:::
+
+::: proof
+弱極大元のない空でない $X$ があるとする。$X$ の相異なる元の列 $x_{1},\dots,x_{m}$ で $i<j$ なら $x_{i}Rx_{j}$ となるものを、$m=\lvert W\rvert+1$ まで延ばせることを示す。$x_{m}$ は弱極大でないので、$x_{m}Ry$, $y\neq x_{m}$ となる $y\in X$ がある。推移性より各 $i$ で $x_{i}Ry$。$y=x_{i}$（$i<m$）なら $x_{m}Rx_{i}$ かつ $x_{i}Rx_{m}$ で、反対称性より $x_{i}=x_{m}$ となり矛盾。よって $y$ を加えて延ばせる。有限性に反する。
+:::
+
+::: lemma Grz の完全性 {#pt:grz-completeness}
+$\mathsf{Grz}\nvdash A$ ならば、$A$ はある有限・推移的・反射的・反対称的なフレームで妥当でない（9 ⇒ 1）。
+:::
+
+::: proof
+**Step 1（設定）.** $A$ の $\Box$ で始まる部分論理式を $\Box C_{1},\dots,\Box C_{m}$ とし、$D\defeq A\wedge\bigwedge_{k}(\Box(C_{k}\to\Box C_{k})\to\Box(C_{k}\to\Box C_{k}))$ とおく。$\mathsf{Grz}\nvdash D$ で、$\mathrm{Sub}(D)$ の $\Box$ で始まる元は $\Box C_{k}$ と $\Box(C_{k}\to\Box C_{k})$ である。$L=\mathsf{Grz}$, $D$ について有限の極大無矛盾集合の全体 $W$ をとる（\ref{logic:modal-mcs}）。$w,x\in W$ について
+$$
+\begin{aligned}
+&wQx\defeq\text{すべての }\Box E\in\mathrm{Sub}(D)\text{ で }\Box E\in w\Rightarrow\Box E\in x,\\
+&wRx\defeq wQx\text{ かつ }(xQw\Rightarrow w=x)
+\end{aligned}
+$$
+とする。$Q$ は反射的・推移的。$R$ は反射的・反対称的（$wRx$, $xRw$ なら $xQw$ から $w=x$）。推移性：$wRxRy$ なら $wQy$。$yQw$ なら $yQwQx$ より $yQx$、$xRy$ より $x=y$、すると $xQw$ で $wRx$ より $w=x$、よって $w=y$。$W$ は有限。
+
+**Step 2（真理補題）.** $\mathcal{M}\defeq(W,R,V)$、$V\defeq\{(w,p):p\in w\}$ とし、$B\in\mathrm{Sub}(A)$ について $B\in w\iff w\models B$ を $B$ の構成に関する帰納法で示す。命題変数・$\bot$・$\to$ は \ref{logic:modal-mcs-properties} による。$B=\Box C$ とする。
+
+（$\Rightarrow$）$\Box C\in w$, $wRx$ なら $wQx$ より $\Box C\in x$、$\mathsf{Grz}\vdash\Box C\to C$（\ref{pt:grz-contains-s4}）と \ref{logic:modal-mcs-properties} の 2 より $C\in x$、帰納法の仮定より $x\models C$。
+
+（$\Leftarrow$ の対偶）$\Box C\notin w$ とする。$C\notin w$ なら帰納法の仮定より $w\not\models C$、$wRw$ なので $w\not\models\Box C$。そこで $C\in w$ とする。このとき $\Box(C\to\Box C)\notin w$（属すれば $\mathsf{Grz}\vdash\Box(C\to\Box C)\wedge C\to\Box C$（T）より $\Box C\in w$）。$w$ の $\Box$ で始まる元を $\Box E_{1},\dots,\Box E_{r}$ とし、$Y\defeq\{\Box E_{1},\dots,\Box E_{r},\Box(C\to\Box C),\neg C\}$ とおく。
+
+$Y$ が矛盾すると仮定すると $\mathsf{Grz}\vdash\bigwedge_{i}\Box E_{i}\to(\Box(C\to\Box C)\to C)$。必然化と正規性 5、公理 4（\ref{pt:grz-contains-s4}）より $\mathsf{Grz}\vdash\bigwedge_{i}\Box E_{i}\to\Box(\Box(C\to\Box C)\to C)$。これをもう一度同じように持ち上げると $\mathsf{Grz}\vdash\bigwedge_{i}\Box E_{i}\to\Box\Box(\Box(C\to\Box C)\to C)$。グジェゴルチクの公理（$p\mapsto C$）の必然化と分配公理より $\mathsf{Grz}\vdash\Box\Box(\Box(C\to\Box C)\to C)\to\Box C$。よって $\mathsf{Grz}\vdash\bigwedge_{i}\Box E_{i}\to\Box C$、\ref{logic:modal-mcs-properties} の 2 より $\Box C\in w$ となり矛盾する。
+
+したがって $Y$ は無矛盾で、$Y\subset x$ となる $x\in W$ がある。$\Box E_{i}\in x$ より $wQx$。$\Box(C\to\Box C)\in x\setminus w$ なので $xQw$ でない。よって $wRx$。$\neg C\in x$ より $C\notin x$、帰納法の仮定より $x\not\models C$、したがって $w\not\models\Box C$。
+
+**Step 3.** $\{\neg A\}$ は無矛盾なので $\neg A\in w$ となる $w\in W$ があり、真理補題より $w\not\models A$。
+:::
+
+::: lemma 反射閉包と ⊡ 翻訳 {#pt:reflexive-closure-boxdot}
+$R$ を $W$ 上の関係とし、$R^{+}\defeq R\cup\{(x,x):x\in W\}$、$R^{-}\defeq R\setminus\{(x,x):x\in W\}$ とする。
+1. $R$ が推移的・非反射的なら、$R^{+}$ は推移的・反射的・反対称的で、$(R^{+})^{-}=R$。$R$ が推移的・反射的・反対称的なら、$R^{-}$ は推移的・非反射的で、$(R^{-})^{+}=R$。
+2. $R$ が推移的・非反射的なら、任意の付値 $V$、世界 $w$、様相論理式 $B$ について $(W,R,V),w\models B^{\boxdot}\iff(W,R^{+},V),w\models B$。
+3. したがって $\mathsf{GL}\vdash A^{\boxdot}$ と条件 9 は同値である（9 ⇔ 3）。
+:::
+
+::: proof
+**1.** 前半：$R^{+}$ の推移性は場合分け、反対称性は $wRx$, $xRw$ なら推移性より $wRw$ となり非反射性に反するから。後半：$R^{-}$ の推移性：$wR^{-}xR^{-}y$ なら $wRy$。$w=y$ なら $wRx$, $xRw$ で反対称性より $w=x$ となり矛盾、よって $w\neq y$。
+
+**2.** $B$ に関する帰納法。$B=\Box C$ のとき、$w\models_{R}\boxdot C^{\boxdot}\iff w\models_{R}C^{\boxdot}$ かつすべての $x$（$wRx$）で $x\models_{R}C^{\boxdot}$ $\iff$ すべての $x$（$wR^{+}x$）で $x\models_{R}C^{\boxdot}$ $\iff$（帰納法の仮定）すべての $x$（$wR^{+}x$）で $x\models_{R^{+}}C$ $\iff w\models_{R^{+}}\Box C$。
+
+**3.** $\mathsf{GL}\nvdash A^{\boxdot}$ なら、有限・推移的・非反射的なモデル $(W,R,V)$ で $A^{\boxdot}$ が偽、2 より $(W,R^{+},V)$ で $A$ が偽で、1 より $(W,R^{+})$ は条件 9 のフレーム。逆に条件 9 のフレーム $(W,R)$ で $A$ が偽なら、$R=(R^{-})^{+}$ と 2 より $(W,R^{-})$ で $A^{\boxdot}$ が偽、$(W,R^{-})$ は有限・推移的・非反射的なので健全性より $\mathsf{GL}\nvdash A^{\boxdot}$。
+:::
+
+::: lemma GLS から GL へ {#pt:grz-gls-to-gl}
+$\mathsf{GLS}\vdash A^{\boxdot}$ ならば $\mathsf{GL}\vdash A^{\boxdot}$（5 ⇒ 3）。
+:::
+
+::: proof
+対偶を示す。$\mathsf{GL}\nvdash A^{\boxdot}$ とし、有限・推移的・非反射的なモデル $\mathcal{M}=(W,R,V)$ で、根 $0$ から生成され（$W=\{0\}\cup R(0)$）、$\mathcal{M},0\not\models A^{\boxdot}$ となるものをとる（$W$ は正の整数を含まないように名前を付け替える）。$A^{\boxdot}$ の $\Box$ で始まる部分論理式の個数を $n$ とする。
+
+$X\defeq W\cup\{1,\dots,n\}$、$Q\defeq\{(j,i):1\le i<j\le n\}\cup\{(i,x):1\le i\le n,\ x\in W\}\cup R$ とし、新しい世界 $i$ の命題変数の値は $0$ と同じとする（$U$）。$\mathcal{N}\defeq(X,Q,U)$ は有限・推移的・非反射的で、$n\,Q\,(n-1)\,Q\cdots Q\,1\,Q\,0$。世界 $i+1$（$0\le i<n$）の $Q$-後続者は、$i$ と $i$ の $Q$-後続者である。
+
+**主張.** $0\le i<n$ と任意の $B$ について $\mathcal{N},i+1\models B^{\boxdot}\iff\mathcal{N},i\models B^{\boxdot}$。$B$ に関する帰納法：命題変数は $U$ の定義、真理関数は明らか。$B=\Box C$：上の後続者の記述から、任意の $F$ について $i+1\models\Box F\iff i\models F$ かつ $i\models\Box F$。よって $i+1\models C^{\boxdot}\wedge\Box C^{\boxdot}\iff$（帰納法の仮定と上の式）$i\models C^{\boxdot}$ かつ $i\models C^{\boxdot}\wedge\Box C^{\boxdot}\iff i\models(\Box C)^{\boxdot}$。
+
+生成部分モデルの性質より $\mathcal{N},0\not\models A^{\boxdot}$、主張よりすべての $i\le n$ で $\mathcal{N},i\not\models A^{\boxdot}$。鎖 $nQ\cdots Q0$ と、$A^{\boxdot}$ の $n$ 個の $\Box$ 部分論理式 $\Box F$ についての $\Box F\to F$ に鳩の巣補題（\ref{pt:reflection-pigeonhole}）を使うと、ある $i\le n$ でそれらがすべて真。その $i$ で $(A^{\boxdot})^{\mathrm{S}}$ は偽で、$\mathsf{GL}\nvdash(A^{\boxdot})^{\mathrm{S}}$、\ref{pt:gls-arithmetical-completeness} より $\mathsf{GLS}\nvdash A^{\boxdot}$。
+:::
+
+::: proof 主定理の証明
+全体像で述べた同値と、\ref{pt:grz-contains-s4}（1 ⇔ 2）、\ref{pt:grz-soundness}（1 ⇒ 10）、\ref{pt:finite-antisymmetric-cwwf}（10 ⇒ 9）、\ref{pt:grz-completeness}（9 ⇒ 1）、\ref{pt:reflexive-closure-boxdot}（9 ⇔ 3）、\ref{pt:grz-gls-to-gl}（5 ⇒ 3）を合わせる。3 ⇒ 5 は $\mathsf{GL}\subset\mathsf{GLS}$。
+:::
+
+::: corollary
+$\mathsf{Grz}$ は決定可能で（9 と、有限フレームの大きさの上限）、「証明可能で真」と読んだときに常に証明可能な論理式と常に真な論理式は一致する。
+:::
+
+## 補足：いくつかの注意 {#pt:sec-grz-remarks}
+
+::: proposition GL を Grz に還元する同様の翻訳はない {#pt:no-reverse-translation}
+$B'(p)$ を $p$ だけを含む論理式とし、$f$ を、真理関数的な結合と可換で $f(\Box A)=B'(f(A))$ を満たす様相論理式の上の写像とする。このとき「$\mathsf{GL}\vdash A\iff\mathsf{Grz}\vdash f(A)$」がすべての $A$ で成り立つことはない。
+:::
+
+::: proof
+$\mathsf{T}\vdash\Box\top\leftrightarrow\top$（正規性 4）と $\mathsf{T}\vdash\Box\bot\leftrightarrow\bot$（公理 T）から、閉様相論理式は $\mathsf{T}$、したがって $\mathsf{Grz}$ で $\top$ か $\bot$ と同値である（構成に関する帰納法）。$f(\Box\bot)=B'(\bot)$ は閉なので、$\mathsf{Grz}\vdash f(\Box\bot)$ か $\mathsf{Grz}\vdash\neg f(\Box\bot)=f(\neg\Box\bot)$。一方 $\mathsf{GL}\nvdash\Box\bot$ かつ $\mathsf{GL}\nvdash\neg\Box\bot$。
+:::
+
+::: proposition グジェゴルチクの公理のフレームの対応 {#pt:grz-frame-correspondence}
+フレーム $(W,R)$ で、グジェゴルチクの公理が妥当であるための必要十分条件は、$R$ が推移的・反射的・逆弱整礎であることである。ただし「必要」の向きで従属選択公理を使う。
+:::
+
+::: proof
+十分性は \ref{pt:grz-soundness}。必要性：公理が妥当なら、$\mathsf{Grz}$ の定理はすべて妥当（フレームで妥当な論理式の集合は正規様相論理）で、\ref{pt:grz-contains-s4} と \ref{logic:frame-correspondence} の 1, 2 より $R$ は反射的・推移的。逆弱整礎でないとすると、弱極大元のない空でない $X$ があり、従属選択公理により $w_{i}Rw_{i+1}$, $w_{i}\neq w_{i+1}$ となる $X$ の元の列 $w_{0},w_{1},\dots$ がとれる。互いに交わらない $Y,Z\subset W$ で、「$Y$ の各元は $Z$ のある元を $R$ で見る」「$Z$ の各元は $Y$ のある元を $R$ で見る」を満たし $Y\neq\emptyset$ となるものを作る。
+- 列の項がすべて異なるなら、$Y\defeq\{w_{2k}\}$, $Z\defeq\{w_{2k+1}\}$。
+- $w_{i}=w_{j}$（$i<j$）となるものがあれば、$w_{i}Rw_{i+1}$ かつ（推移性で）$w_{i+1}Rw_{j}=w_{i}$、$w_{i}\neq w_{i+1}$ なので、$Y\defeq\{w_{i}\}$, $Z\defeq\{w_{i+1}\}$。
+
+$p$ を $Y$ の外で真、$Y$ で偽とする。$y\in Y$ を一つとる。$yRx$ で $x\not\models p$ なら $x\in Y$ で、$x$ は $Z$ のある元 $z$ を見る。$z\models p$（$z\notin Y$）、$z$ は $Y$ の元を見るので $z\not\models\Box p$。よって $x\not\models\Box(p\to\Box p)$、$x\models\Box(p\to\Box p)\to p$。$x\models p$ の場合も成り立つので、$y\models\Box(\Box(p\to\Box p)\to p)$、しかし $y\not\models p$。公理が妥当であることに反する。
+:::
+
+::: remark 直観主義論理との関係
+ゲーデルは、直観主義命題論理 $\mathsf{I}$ の論理式 $A$ を $\neg B\mapsto\neg\Box B$、$B\to C\mapsto\Box B\to\Box C$、$B\vee C\mapsto\Box B\vee\Box C$、$B\wedge C\mapsto B\wedge C$（命題変数 $p\mapsto\Box p$ とする流儀もある）で翻訳した $A^{t}$ について、$\mathsf{I}\vdash A$ なら $\mathsf{S4}\vdash A^{t}$ を述べ、逆はマッキンゼーとタルスキが証明した。グジェゴルチクは $\mathsf{S4}$ を $\mathsf{S4Grz}$ に取り替えても同じことが成り立つことを示した（以上は Boolos 第 12 章の紹介による。本サイトでは証明していない）。これを主定理と組み合わせると、$\mathsf{I}\vdash A\iff\mathsf{GL}\vdash(A^{t})^{\boxdot}\iff$ 一様な解釈 $\ast$ で $\PA\vdash((A^{t})^{\boxdot})^{\ast}$、すなわち直観主義命題論理の古典算術への翻訳が得られる。
+:::
+
+## 問題 {#pt:sec-grz-problems}
+
+::: problem {#pt:prob-grz-t4-frame}
+$W=\{0,1,2\}$ 上の関係 $R=\{(0,0),(1,1),(2,2),(0,1),(1,2),(0,2)\}$ は推移的・反射的・反対称的であることを確かめ、$(W,R^{-})$ で $(\Box p\to p)^{\boxdot}$ と $(\Box p\to\Box\Box p)^{\boxdot}$ がどこでも真であることを \ref{pt:reflexive-closure-boxdot} を使わずに確かめよ。
+:::
+
+::: solution
+$R^{-}=\{(0,1),(1,2),(0,2)\}$。$(\Box p\to p)^{\boxdot}=\boxdot p\to p$ は恒真式。$(\Box p\to\Box\Box p)^{\boxdot}=\boxdot p\to\boxdot\boxdot p$：$w\models\boxdot p$ なら $w$ と $R^{-}$ の後続者すべてで $p$、後続者の後続者も（推移性で）後続者なので $\boxdot\boxdot p$。
+:::
+
+::: problem {#pt:prob-grz-not-s4}
+$\mathsf{S4}\nvdash\Box(\Box(p\to\Box p)\to p)\to p$ を、\ref{pt:grz-main-theorem} の 9 と、二点の全関係のフレームが反対称的でないことから説明せよ。
+:::
+
+::: solution
+二点の全関係のフレームは反射的・推移的なので $\mathsf{S4}$ に適切で、例で見たとおり公理はそこで偽。$\mathsf{Grz}$ の定理は有限・推移的・反射的・反対称的なフレームで妥当だが、このフレームは反対称的でないので矛盾はない。反例のフレームが「クラスター」（相異なる二点が互いに見合う）をもつことが、$\mathsf{Grz}$ と $\mathsf{S4}$ の違いである。
+:::
+
+::: supplement
+**前提の検討.**
+- \ref{pt:grz-contains-s4} の 4 の証明は、$\mathsf{K}$ にグジェゴルチクの公理を加えただけで推移性が導かれることを示し、やや意外である。証明ではグジェゴルチクの公理を $C=A\wedge(\Box A\to\Box\Box A)$ に使う。
+- \ref{pt:grz-gls-to-gl} では、鳩の巣補題が必要とする鎖の長さを稼ぐため、根の上に $n$ 個の世界を積んだ。⊡ 翻訳の真理が積んだ世界で変わらない（主張）ことが本質である。
+- \ref{pt:grz-frame-correspondence} の必要性で従属選択公理を使った。Boolos はこれを避けられるかを問いとして挙げている（その後の状況は確認していない）。
+
+**関連する結果.** $\mathsf{Grz}$ は $\mathsf{GL}$ の「反射的な版」とみることができ、$\mathsf{GL}$ と $\mathsf{Grz}$ のフレームは $R\mapsto R^{+}$, $R\mapsto R^{-}$ で対応する（\ref{pt:reflexive-closure-boxdot}）。これは逆整礎と逆弱整礎の対応でもある。
+
+**高い視点から：「証明可能かつ真」は知識の論理になる.** $\Box$ を「証明可能」と読むと $\mathsf{GL}$ は「自己を信頼できない証明者」の論理であり、$\Box A\to A$ は成り立たない。そこに「真である」を付け加えると、$\boxdot$ は「証明され、実際に正しい」、すなわち知識のような様相になり、$\mathsf{S4}$（知識の論理の典型）の公理が回復する。しかし単なる $\mathsf{S4}$ ではなく、逆整礎性の名残であるグジェゴルチクの公理（「証明可能な上昇の連鎖はいつか止まる」）が加わる。フレームの言葉では、非反射的な逆整礎の順序（$\mathsf{GL}$）に対角を付け加えて（$R^{+}$）反射的な半順序にしたものが $\mathsf{Grz}$ のフレームであり、⊡ 翻訳はその対角の付け加えを論理式の側で実行する操作である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

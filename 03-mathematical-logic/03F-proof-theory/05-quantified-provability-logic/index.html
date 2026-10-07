@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>量化された証明可能性論理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/05-quantified-provability-logic/index.html" data-kind="dir">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 量化された証明可能性論理（Quantified Provability Logic）
+
+量化様相論理の算術的解釈、常に証明可能な論理式の集合と常に真な論理式の集合の決定不能性の程度、1 項述語 1 つの場合。（Boolos 第 17・18 章に対応）
+
+<p class="mn-msc">MSC2020: 03F45, 03B45, 03D55</p>
+
+## 前提知識
+
+- [証明論と型理論 › 証明可能性論理 GL](../../../03-mathematical-logic/03F-proof-theory/03-provability-logic/index.html)（全体、8 ページ）
+- [一般論理 › 一階述語論理](../../../03-mathematical-logic/03B-general-logic/02-first-order-logic/index.html)（全体、9 ページ）
+
+## 目次
+
+<ol class="mn-dirtoc">
+<li value="1"><a href="01-quantified-provability-logic.html">§1 量化された証明可能性論理</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 1.1</span> <span class="mn-dirtoc-title">量化様相論理式</span></li><li><span class="mn-dirtoc-kind">定義 1.2</span> <span class="mn-dirtoc-title">実現と翻訳</span></li><li><span class="mn-dirtoc-kind">補題 1.3</span> <span class="mn-dirtoc-title">翻訳の基本性質</span></li><li><span class="mn-dirtoc-kind">命題 1.4</span> <span class="mn-dirtoc-title">バーカン式とその逆</span></li><li><span class="mn-dirtoc-kind">定義 1.5</span> <span class="mn-dirtoc-title">相対化されたクリーネの T 述語</span></li><li><span class="mn-dirtoc-kind">補題 1.6</span> <span class="mn-dirtoc-title">T 述語の基本性質</span></li><li><span class="mn-dirtoc-kind">定義 1.7</span> <span class="mn-dirtoc-title">相対化された算術的階層</span></li><li><span class="mn-dirtoc-kind">定理 1.8</span> <span class="mn-dirtoc-title">完全な集合の位置</span></li><li><span class="mn-dirtoc-kind">命題 1.10</span> <span class="mn-dirtoc-title">二つの集合の複雑さの上界</span></li></ul></li>
+<li value="2"><a href="02-artemov.html">§2 アルテモフの定理</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 2.1</span> <span class="mn-dirtoc-title">平坦化と括弧変換</span></li><li><span class="mn-dirtoc-kind">定義 2.2</span> <span class="mn-dirtoc-title">文 $T$</span></li><li><span class="mn-dirtoc-kind">定義 2.3</span> <span class="mn-dirtoc-title">表現関係</span></li><li><span class="mn-dirtoc-kind">補題 2.4</span> <span class="mn-dirtoc-title">表現の存在と同値類</span></li><li><span class="mn-dirtoc-kind">補題 2.5</span> <span class="mn-dirtoc-title">項の表現</span></li><li><span class="mn-dirtoc-kind">補題 2.6</span> <span class="mn-dirtoc-title">$E$ についての不変性</span></li><li><span class="mn-dirtoc-kind">補題 2.7</span> <span class="mn-dirtoc-title">全射性のもとでの一致</span></li><li><span class="mn-dirtoc-kind">補題 2.8</span> <span class="mn-dirtoc-title">Σ 論理式の上方への保存</span></li><li><span class="mn-dirtoc-kind">定義 2.9</span> <span class="mn-dirtoc-title">文 $D$</span></li><li><span class="mn-dirtoc-kind">補題 2.10</span> <span class="mn-dirtoc-title">計算可能性</span></li><li><span class="mn-dirtoc-kind">補題 2.11</span> <span class="mn-dirtoc-title">標準性（テネンバウムの議論）</span></li><li><span class="mn-dirtoc-kind">定理 2.12</span> <span class="mn-dirtoc-title">アルテモフの補題</span></li></ul></li>
+<li value="3"><a href="03-vardanyan.html">§3 ヴァルダニャンの定理と常に真な文の完全性</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">補題 3.1</span> <span class="mn-dirtoc-title">$\Pi^{0}_{2}$ 集合の言い換え</span></li><li><span class="mn-dirtoc-kind">定理 3.2</span> <span class="mn-dirtoc-title">ヴァルダニャンの定理</span></li><li><span class="mn-dirtoc-kind">定義 3.3</span> <span class="mn-dirtoc-title">集合で成り立つ・近似</span></li><li><span class="mn-dirtoc-kind">補題 3.4</span> <span class="mn-dirtoc-title">近似の性質</span></li><li><span class="mn-dirtoc-kind">補題 3.5</span> <span class="mn-dirtoc-title">実現と集合</span></li><li><span class="mn-dirtoc-kind">補題 3.6</span> <span class="mn-dirtoc-title">近似で止まる計算</span></li><li><span class="mn-dirtoc-kind">定理 3.7</span> <span class="mn-dirtoc-title">マッギー–ヴァルダニャン–ブーロスの定理</span></li></ul></li>
+<li value="4"><a href="04-one-predicate-letter.html">§4 1 項述語 1 つの場合</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">補題 4.1</span> <span class="mn-dirtoc-title">正の定義</span></li><li><span class="mn-dirtoc-kind">定義 4.2</span> <span class="mn-dirtoc-title">魔法の論理式</span></li><li><span class="mn-dirtoc-kind">補題 4.3</span> <span class="mn-dirtoc-title">魔法の論理式の性質</span></li><li><span class="mn-dirtoc-kind">定義 4.4</span> <span class="mn-dirtoc-title">集合の族</span></li><li><span class="mn-dirtoc-kind">補題 4.5</span> <span class="mn-dirtoc-title">符号化（Boolos の補題 14 の主要部）</span></li><li><span class="mn-dirtoc-kind">系 4.6</span> <span class="mn-dirtoc-title">真理値での符号化</span></li><li><span class="mn-dirtoc-kind">補題 4.7</span> <span class="mn-dirtoc-title">任意の集合への付け替え</span></li><li><span class="mn-dirtoc-kind">定理 4.8</span> <span class="mn-dirtoc-title">1 項述語 1 つでのヴァルダニャンの定理</span></li></ul></li>
+</ol>
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

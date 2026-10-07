@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>強制法 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/07-forcing/index.html" data-kind="dir">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 強制法（Forcing）
+
+ジェネリック拡大、強制関係、M[G] における ZFC、有限部分関数・大きい部分関数による強制、ブール値モデル。（Kunen 第 VII 章に対応）
+
+<p class="mn-msc">MSC2020: 03E40</p>
+
+## 前提知識
+
+- [集合論 › 無限組合せ論](../../../03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/index.html) [§1](../../../03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/01-almost-disjoint.html)〜[§6](../../../03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/06-ma-equivalents.html)（概素族と Δ システム補題 〜 MA の同値な言い換え）：Δ システム補題・可算鎖条件・マーティンの公理
+- [集合論 › 相対無矛盾性の初歩](../../../03-mathematical-logic/03E-set-theory/04-consistency-proofs/index.html)（全体、6 ページ）：相対化・絶対性・反映定理・可算推移的モデル
+
+## 目次
+
+<ol class="mn-dirtoc">
+<li value="1"><a href="01-generic-extensions.html">§1 強制法の概観とジェネリック拡大</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 1.2</span> <span class="mn-dirtoc-title">p.o. と c.t.m.</span></li><li><span class="mn-dirtoc-kind">定義 1.3</span> <span class="mn-dirtoc-title">ジェネリックなフィルター</span></li><li><span class="mn-dirtoc-kind">補題 1.4</span> <span class="mn-dirtoc-title">ジェネリックなフィルターの存在</span></li><li><span class="mn-dirtoc-kind">補題 1.5</span> <span class="mn-dirtoc-title">ジェネリックなフィルターは M に属さない</span></li><li><span class="mn-dirtoc-kind">定義 1.7</span> <span class="mn-dirtoc-title">P-名前</span></li><li><span class="mn-dirtoc-kind">定義 1.8</span> <span class="mn-dirtoc-title">V^P と M^P</span></li><li><span class="mn-dirtoc-kind">定義 1.9</span> <span class="mn-dirtoc-title">名前の値と M[G]</span></li><li><span class="mn-dirtoc-kind">補題 1.10</span> <span class="mn-dirtoc-title">M[G] の最小性</span></li><li><span class="mn-dirtoc-kind">定義 1.11</span> <span class="mn-dirtoc-title">標準的な名前 x̌</span></li><li><span class="mn-dirtoc-kind">補題 1.12</span> <span class="mn-dirtoc-title">M ⊆ M[G]</span></li><li><span class="mn-dirtoc-kind">定義 1.13</span> <span class="mn-dirtoc-title">G の標準的な名前</span></li><li><span class="mn-dirtoc-kind">補題 1.14</span> <span class="mn-dirtoc-title">G ∈ M[G]</span></li></ul></li>
+<li value="2"><a href="02-forcing-relation.html">§2 強制関係</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 2.1</span> <span class="mn-dirtoc-title">強制関係</span></li><li><span class="mn-dirtoc-kind">補題 2.3</span> <span class="mn-dirtoc-title">強制の基本性質</span></li><li><span class="mn-dirtoc-kind">定義 2.4</span> <span class="mn-dirtoc-title">関係 ⊩*</span></li><li><span class="mn-dirtoc-kind">補題 2.6</span> <span class="mn-dirtoc-title">⊩* と稠密性</span></li><li><span class="mn-dirtoc-kind">定理 2.7</span> <span class="mn-dirtoc-title">⊩* と M[G] での真理</span></li><li><span class="mn-dirtoc-kind">定理 2.9</span> <span class="mn-dirtoc-title">強制定理</span></li><li><span class="mn-dirtoc-kind">系 2.10</span> <span class="mn-dirtoc-title">強制の性質</span></li></ul></li>
+<li value="3"><a href="03-zfc-in-mg.html">§3 M[G] における ZFC</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">補題 3.1</span> <span class="mn-dirtoc-title">選択公理と順序数による枚挙</span></li><li><span class="mn-dirtoc-kind">定理 3.3</span> <span class="mn-dirtoc-title">M[G] は ZFC のモデル</span></li><li><span class="mn-dirtoc-kind">系 3.5</span> <span class="mn-dirtoc-title">V ≠ L を満たすジェネリック拡大</span></li><li><span class="mn-dirtoc-kind">補題 3.7</span> <span class="mn-dirtoc-title">同値な論理式の強制</span></li></ul></li>
+<li value="4"><a href="04-finite-partial-functions.html">§4 有限部分関数による強制</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">補題 4.1</span> <span class="mn-dirtoc-title">ジェネリックな関数</span></li><li><span class="mn-dirtoc-kind">補題 4.2</span> <span class="mn-dirtoc-title">多くの実数を加える</span></li><li><span class="mn-dirtoc-kind">補題 4.3</span> <span class="mn-dirtoc-title">c.c.c. による近似</span></li><li><span class="mn-dirtoc-kind">定義 4.4</span> <span class="mn-dirtoc-title">基数の保存</span></li><li><span class="mn-dirtoc-kind">定義 4.5</span> <span class="mn-dirtoc-title">共終数の保存</span></li><li><span class="mn-dirtoc-kind">補題 4.7</span> <span class="mn-dirtoc-title">正則基数だけ調べればよい</span></li><li><span class="mn-dirtoc-kind">定理 4.8</span> <span class="mn-dirtoc-title">c.c.c. な p.o. は共終数を保つ</span></li><li><span class="mn-dirtoc-kind">定義 4.9</span> <span class="mn-dirtoc-title">よい名前</span></li><li><span class="mn-dirtoc-kind">補題 4.10</span> <span class="mn-dirtoc-title">よい名前は部分集合を代表する</span></li><li><span class="mn-dirtoc-kind">補題 4.11</span> <span class="mn-dirtoc-title">冪の上界</span></li><li><span class="mn-dirtoc-kind">補題 4.12</span> <span class="mn-dirtoc-title">連続体の大きさを決める</span></li><li><span class="mn-dirtoc-kind">系 4.13</span> <span class="mn-dirtoc-title">連続体の値の無矛盾性</span></li></ul></li>
+<li value="5"><a href="05-larger-partial-functions.html">§5 大きい部分関数による強制</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 5.1</span> <span class="mn-dirtoc-title">Fn(I, J, λ)</span></li><li><span class="mn-dirtoc-kind">定義 5.4</span> <span class="mn-dirtoc-title">上・下での保存</span></li><li><span class="mn-dirtoc-kind">定義 5.7</span> <span class="mn-dirtoc-title">θ-鎖条件</span></li><li><span class="mn-dirtoc-kind">補題 5.8</span> <span class="mn-dirtoc-title">θ-c.c. による近似</span></li><li><span class="mn-dirtoc-kind">補題 5.9</span> <span class="mn-dirtoc-title">θ-c.c. は θ 以上の共終数を保つ</span></li><li><span class="mn-dirtoc-kind">補題 5.10</span> <span class="mn-dirtoc-title">Fn(I, J, λ) の鎖条件</span></li><li><span class="mn-dirtoc-kind">系 5.11</span> <span class="mn-dirtoc-title">Fn(I, J, λ) は上で保つ</span></li><li><span class="mn-dirtoc-kind">定義 5.12</span> <span class="mn-dirtoc-title">λ-閉</span></li><li><span class="mn-dirtoc-kind">定理 5.14</span> <span class="mn-dirtoc-title">λ-閉な強制は新しい短い列を加えない</span></li><li><span class="mn-dirtoc-kind">系 5.16</span> <span class="mn-dirtoc-title">λ-閉な p.o. は λ 以下の共終数を保つ</span></li><li><span class="mn-dirtoc-kind">定理 5.17</span> <span class="mn-dirtoc-title">Fn(I, J, λ) は共終数を保つ</span></li><li><span class="mn-dirtoc-kind">定理 5.18</span> <span class="mn-dirtoc-title">2^λ の値</span></li></ul></li>
+<li value="6"><a href="06-boolean-valued-models.html">§6 埋め込み・同型・ブール値モデル</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 6.1</span> <span class="mn-dirtoc-title">完全な埋め込み</span></li><li><span class="mn-dirtoc-kind">定義 6.2</span> <span class="mn-dirtoc-title">完全に含まれる</span></li><li><span class="mn-dirtoc-kind">補題 6.3</span> <span class="mn-dirtoc-title">完全な埋め込みの例</span></li><li><span class="mn-dirtoc-kind">補題 6.4</span> <span class="mn-dirtoc-title">ジェネリック性の判定</span></li><li><span class="mn-dirtoc-kind">定理 6.5</span> <span class="mn-dirtoc-title">完全な埋め込みとジェネリック</span></li><li><span class="mn-dirtoc-kind">系 6.6</span> <span class="mn-dirtoc-title">同型な p.o. は同じ拡大を与える</span></li><li><span class="mn-dirtoc-kind">定義 6.7</span> <span class="mn-dirtoc-title">稠密な埋め込み</span></li><li><span class="mn-dirtoc-kind">定理 6.11</span> <span class="mn-dirtoc-title">稠密な埋め込みは同じ拡大を与える</span></li><li><span class="mn-dirtoc-kind">定義 6.12</span> <span class="mn-dirtoc-title">名前の翻訳</span></li><li><span class="mn-dirtoc-kind">補題 6.13</span> <span class="mn-dirtoc-title">名前の翻訳と強制</span></li><li><span class="mn-dirtoc-kind">定義 6.14</span> <span class="mn-dirtoc-title">真理値</span></li><li><span class="mn-dirtoc-kind">補題 6.15</span> <span class="mn-dirtoc-title">真理値の性質</span></li></ul></li>
+<li value="7"><a href="07-further-results.html">§7 強制法のさらなる結果</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">補題 7.1</span> <span class="mn-dirtoc-title">名前の張り合わせ</span></li><li><span class="mn-dirtoc-kind">定理 7.2</span> <span class="mn-dirtoc-title">最大原理</span></li><li><span class="mn-dirtoc-kind">定理 7.3</span> <span class="mn-dirtoc-title">◇ の強制</span></li><li><span class="mn-dirtoc-kind">定理 7.5</span> <span class="mn-dirtoc-title">ススリン木の破壊</span></li><li><span class="mn-dirtoc-kind">補題 7.6</span> <span class="mn-dirtoc-title">後続基数を ω₁ にする</span></li><li><span class="mn-dirtoc-kind">定義 7.7</span> <span class="mn-dirtoc-title">レヴィ崩壊</span></li><li><span class="mn-dirtoc-kind">補題 7.8</span> <span class="mn-dirtoc-title">レヴィ崩壊の鎖条件</span></li><li><span class="mn-dirtoc-kind">定理 7.9</span> <span class="mn-dirtoc-title">レヴィ崩壊は κ を ω₁ にする</span></li><li><span class="mn-dirtoc-kind">系 7.10</span> <span class="mn-dirtoc-title">レヴィ崩壊とクレパ仮説</span></li></ul></li>
+<li value="8"><a href="08-other-approaches.html">§8 強制法の他の方法と歴史</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">命題 8.1</span> <span class="mn-dirtoc-title">c.t.m. を表す定数の保存性</span></li></ul></li>
+</ol>
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

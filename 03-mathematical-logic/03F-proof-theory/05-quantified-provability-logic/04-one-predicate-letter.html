@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1 項述語 1 つの場合 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/05-quantified-provability-logic/04-one-predicate-letter.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 1 項述語 1 つの場合 {#pt:page-one-predicate-letter keywords="Vardanyan's theorem for one monadic predicate letter, quantified provability logic with one one-place predicate letter, no nested boxes, encoding relations by provability, magic formula"}
+
+ヴァルダニャンは、前のページの二つの完全性定理（\ref{pt:vardanyan-theorem}, \ref{pt:mvb-theorem}）が、**1 項述語記号 $G$ ただ一つ**だけを使い、しかも $\Box$ の入れ子を許さない QML の断片 $\{G\}$ でも成り立つことを示した（\ref{pt:vardanyan-one-letter}）。証明の核心は、算術の関係（零・後者・和・積など）を、$G$ に割り当てた一つの論理式 $F$ から作られる**証明可能性の式** $\mathrm{Bew}[F(c)\vee F(x)\vee\cdots]$ で表すことにある。そのために、どの数でも偽になる「魔法の論理式」$\theta$ と、数の集合の族 $C(\cdot)$ を使って、「証明可能 $\iff$ 集合の共通部分が空」という符号化を作る（\ref{pt:one-letter-encoding}）。Boolos はこの証明を「非常に入り組んでいる」と述べており、本ページでも新しい部分（符号化）は詳しく、前のページの議論の繰り返しになる部分は変更点を述べるにとどめる。
+
+## 記法と定義の確認 {#pt:sec-one-notation}
+
+::: notation
+- QML、実現、翻訳、常に証明可能・常に真、$\Pi^{0}_{2}$ 完全・$V$ で $\Pi^{0}_{1}$ 完全、$T^{A}$ は \ref{pt:page-quantified-provability-logic} のとおり。
+- 表現関係 $R$、アルテモフの補題の各段（\ref{pt:artemov-lemma-1}〜\ref{pt:artemov-lemma-8}）、$\Pi^{0}_{2}$ 集合の言い換え（\ref{pt:pi2-infinitely-often}）、近似（\ref{pt:holds-at}, \ref{pt:approximation-basic}）、ヴァルダニャンの定理とマッギー–ヴァルダニャン–ブーロスの定理の証明は \ref{pt:page-artemov}, \ref{pt:page-vardanyan} のとおり。
+- 一般化された対角化定理（自由変数をパラメータにもつ形。\ref{pt:page-diagonal-first-incompleteness} の対角化定理の拡張）を使う。
+- **再構成の注記.** 本ページの集合 $C(j+10)$ の定義と、補題 14 の (d) の元 $a$ は、Boolos の本文テキストの読めない部分を、証明が通るように自分で補ったものである。
+:::
+
+## 対称な関係による算術 {#pt:sec-one-symmetric}
+
+自然数の関係を次で定める（$\le$ は通常の順序）。
+$$
+\begin{aligned}
+&Zi\iff i=0,\qquad Yi\iff i=1,\qquad Vij\iff i=j+1\text{ または }j=i+1,\\
+&A'ij\iff i\neq j\text{ かつ }(i+i=j\text{ または }j+j=i),\\
+&M'ij\iff i\neq j\text{ かつ }(i\cdot i=j\text{ または }j\cdot j=i),\\
+&A''ijk\iff i,j,k\text{ が相異なり、}i+j=k,\ j+k=i,\ k+i=j\text{ のどれか},\\
+&M''ijk\iff i,j,k\text{ が相異なり、}i\cdot j=k,\ j\cdot k=i,\ k\cdot i=j\text{ のどれか}.
+\end{aligned}
+$$
+$\neq$ と $V,A',M',A'',M''$ は、成り立つ組の成分が相異なり、成分の並べ替えで真偽が変わらない（**対称**）。
+
+::: lemma 正の定義 {#pt:one-letter-positive-definitions}
+等号・零・後者・和・積は、$\le,Z,Y,\neq,V,A',M',A'',M''$ から $\wedge$ と $\vee$ だけで定義できる。
+:::
+
+::: proof
+$i=j\iff i\le j\wedge j\le i$。$i+1=j\iff Vij\wedge i\le j$。
+$$
+\begin{aligned}
+i+j=k\iff&(Zi\wedge j=k)\vee(Zj\wedge i=k)\vee(A'ik\wedge i=j)\\
+&\vee(A''ijk\wedge i\le k\wedge j\le k).
+\end{aligned}
+$$
+（$i=j\neq0$ なら $i+i=k$ は $A'ik$、$i,j$ がともに $0$ でなく異なれば $k$ は両者より大きく三つは相異なる。）積も同様：
+$$
+\begin{aligned}
+i\cdot j=k\iff&((Zi\vee Zj)\wedge Zk)\vee(Yi\wedge j=k)\vee(Yj\wedge i=k)\\
+&\vee(M'ik\wedge i=j)\vee(M''ijk\wedge i\le k\wedge j\le k).
+\end{aligned}
+$$
+（$i=j\ge2$ なら $i\cdot i=k>i$ で $M'ik$。$i,j\ge2$ が異なれば $k$ は両者より大きい。$i=j=1$ の場合は $Yi\wedge j=k$ に含まれる。）
+:::
+
+$\mathcal{S}$ を述語記号 $\le,Z,Y,\neq,V,A',M',A'',M''$ の純粋な述語論理の言語とし、$T$ を $\mathcal{S}$ で書いた算術の有限個の定理の連言とする（\ref{pt:artemov-T} と同様に、零・後者・和・積の存在と一意性、$\PA$ の最初の 6 個の公理、順序の性質などを、\ref{pt:one-letter-positive-definitions} の翻訳で書いたもの。どれも $\PA$ の定理）。新しい 1 項述語記号 $N$（領域）を加え、$\mathcal{S}\cup\{N\}$ の 10 個の述語記号 $\pi$ それぞれに**特別な変数** $v_{\pi}$ を一つずつ用意する。論理式 $\varphi$ の量化子をすべて $N$ に制限したものを $\varphi^{N}$ と書く。
+
+## 証明可能性による関係の符号化 {#pt:sec-one-encoding}
+
+::: definition 魔法の論理式 {#pt:magic-formula}
+一般化された対角化定理により、自由変数 $y$ をもつ論理式 $\theta(y)$ で
+$$
+\begin{aligned}
+\PA\vdash\theta(y)\leftrightarrow\ &\text{「}\neg\theta(\underline{y})\text{ の証明があり、どの }k\text{ についての}\\
+&\neg\theta(\underline{k})\text{ の証明もそれより小さい符号をもたない」}
+\end{aligned}
+$$
+となるものをとる。右辺は Σ 論理式なので、$\theta$ は（$\PA$ のもとで）Σ である。
+:::
+
+::: lemma 魔法の論理式の性質 {#pt:magic-formula-properties}
+1. $\PA\vdash\theta(y)\wedge\theta(z)\to y=z$。
+2. $\PA\vdash\exists y\,\mathrm{Bew}[\neg\theta(y)]\to\mathrm{Bew}(\Godel{\bot})$。
+3. $\theta(y)$ はどの自然数についても偽である。
+:::
+
+::: proof
+1. 「最小の符号の証明」が証明する文 $\neg\theta(\underline{k})$ の $k$ は一つに決まる。
+2. $\PA$ の中で：ある $i$ で $\neg\theta(\underline{i})$ が証明可能とし、$\neg\theta(\underline{k})$ の形の文の証明のうち符号が最小のものの $k$ を $j$ とする。すると $\theta(j)$ が成り立ち（定義から）、$\theta$ は Σ なので形式化された Σ 完全性（\ref{pt:formalized-sigma-completeness}）より $\theta(\underline{j})$ は証明可能。$\neg\theta(\underline{j})$ も証明可能なので $\bot$ が証明可能。
+3. $\theta(i)$ が真なら、Σ 完全性より $\PA\vdash\theta(\underline{i})$。また定義より $\neg\theta(\underline{i})$ の証明があり、$\PA$ が矛盾する。
+:::
+
+::: definition 集合の族 {#pt:one-letter-sets}
+$D_{2},\dots,D_{9}$ を、$16$ で割った余りがそれぞれ $1,3,\dots,15$ の数の集合とする（互いに交わらない奇数の無限集合）。Σ 定義可能な全射 $f_{2}\colon\N\to D_{2}$, $f_{3}\colon\N\to D_{3}$（単射）、$f_{4},\dots,f_{7}\colon\N^{2}\to D_{4},\dots,D_{7}$（組 $(p,q)$ と $(p',q')$ を同じ値に送る $\iff\{p,q\}=\{p',q'\}$）、$f_{8},f_{9}\colon\N^{3}\to D_{8},D_{9}$（同様に $\{p,q,r\}$ で決まる）をとる。
+$$
+\begin{aligned}
+&C(0)\defeq\{0\},\qquad C(1)\defeq\{0\}\cup\{2,4,6,\dots\},\\
+&C(2)\defeq\{0\}\cup\{f_{2}(p):\neg Zp\},\qquad C(3)\defeq\{0\}\cup\{f_{3}(p):\neg Yp\},\\
+&C(4)\defeq\{0\}\cup\{f_{4}(p,q):\neg\,p\neq q\},\\
+&C(5),C(6),C(7)\text{ も同様}\ (V,A',M'),\\
+&C(8)\defeq\{0\}\cup\{f_{8}(p,q,r):\neg A''pqr\},\\
+&C(9)\text{ も同様}\ (M''),
+\end{aligned}
+$$
+とし、$j\ge0$ について
+$$
+\begin{aligned}
+C(j+10)\defeq\ &\{2+2m:m<j\}\cup\{f_{2}(p):j=p\}\cup\{f_{3}(p):j=p\}\\
+&\cup\{f_{l}(p,q):j\in\{p,q\},\ l=4,\dots,7\}\\
+&\cup\{f_{l}(p,q,r):j\in\{p,q,r\},\ l=8,9\}.
+\end{aligned}
+$$
+$w\in C(x)$ を表す Σ 論理式（$\PA$ で Δ）を同じ記号で書き、$B(x)\defeq\forall w\,(w\in C(x)\to\neg\theta(w))$ とする。
+:::
+
+::: lemma 符号化（Boolos の補題 14 の主要部） {#pt:one-letter-encoding keywords="encoding relations by provability of disjunctions" index="証明可能性による関係の符号化|しょうめいかのうせいによるかんけいのふごうか"}
+$\PA$ で次が証明できる。
+1. $x\ge10\to\mathrm{Bew}[B(0)\vee B(x)]$、および $x<10\to(\mathrm{Bew}[B(0)\vee B(x)]\to\mathrm{Bew}(\Godel{\bot}))$。
+2. $x\le y\to\mathrm{Bew}[B(1)\vee(B(y+10)\to B(x+10))]$、および $\neg\,x\le y\to(\mathrm{Bew}[\cdots]\to\mathrm{Bew}(\Godel{\bot}))$。
+3. $Zx\to\mathrm{Bew}[B(2)\vee B(x+10)]$、および $\neg Zx\to(\mathrm{Bew}[B(2)\vee B(x+10)]\to\mathrm{Bew}(\Godel{\bot}))$。$Y$（$C(3)$）も同様。
+4. $x\neq y\to\mathrm{Bew}[B(4)\vee B(x+10)\vee B(y+10)]$、および否定の場合。$V,A',M'$（$C(5),C(6),C(7)$）も同様。
+5. $A''xyz\to\mathrm{Bew}[B(8)\vee B(x+10)\vee B(y+10)\vee B(z+10)]$、および否定の場合。$M''$（$C(9)$）も同様。
+:::
+
+::: proof
+**一般の形.** 各前半の前件 $P(\vec{x})$ は Σ なので $\PA\vdash P\to\mathrm{Bew}[P]$。よって $\PA\vdash P\to(\text{Bew の中身})$ を示し、D1・D2 で $\mathrm{Bew}$ を付ければよい。各後半は、項 $t(\vec{x})$ で $\PA\vdash\neg P(\vec{x})\wedge(\text{中身})\to\neg\theta(t)$ となるものを見つければよい：すると $\PA\vdash\neg P\to\mathrm{Bew}[\neg P]$（$\neg P$ も Δ なので Σ）と D1・D2 から $\PA\vdash\neg P\wedge\mathrm{Bew}[\text{中身}]\to\mathrm{Bew}[\neg\theta(t)]$、$\exists y\,\mathrm{Bew}[t=y]$ と合わせて $\exists y\,\mathrm{Bew}[\neg\theta(y)]$、\ref{pt:magic-formula-properties} の 2 で $\mathrm{Bew}(\Godel{\bot})$。
+
+中身の形は「$\bigvee_{c}B(c)$」で、その否定は「各 $c$ に $\theta(w_{c})$ となる $w_{c}\in C(c)$ がある」であり、\ref{pt:magic-formula-properties} の 1 よりそれらの $w_{c}$ はすべて等しい。したがって、**中身は「$\bigcap_{c}C(c)$ に $\theta$ を満たす元がない」と同値**で、前半は「$P$ なら共通部分が空」、後半は「$\neg P$ なら共通部分の元 $t$ がある（$\bigvee B(c)\to\neg\theta(t)$）」を示せばよい。
+
+1. $C(0)\cap C(x)$：$x\ge10$ なら $0\notin C(x)$ で空。$x<10$ なら $0$ が共通部分にあり、$t\defeq0$。
+2. 中身 $B(1)\vee\neg B(y+10)\vee B(x+10)$ の否定は、$\theta$ を満たす $w$ が $C(1)\cap C(x+10)$ にあり、かつ $C(y+10)$ のどの元も $\theta$ を満たさないこと。$C(1)\cap C(x+10)=\{2+2m:m<x\}$（$C(x+10)$ の他の元は奇数）。$x\le y$ ならこれは $C(y+10)$ に含まれ、$w\in C(y+10)$ で $\theta(w)$ となり矛盾。よって前半が成り立つ。$x>y$ なら $t\defeq2+2y$ は $C(1)\cap C(x+10)$ に属し $C(y+10)$ に属さない。中身が成り立つとき、$B(1)$ か $B(x+10)$ なら $\neg\theta(t)$。$\neg B(y+10)$ なら $\theta(z)$ となる $z\in C(y+10)$ があり、$z\neq t$ なので \ref{pt:magic-formula-properties} の 1 より $\neg\theta(t)$。
+3. $C(2)\cap C(x+10)=\{f_{2}(x):\neg Zx\}$（$f_{2}$ は単射で、$D_{2}$ は他と交わらない）。$Zx$ なら空。$\neg Zx$ なら $t\defeq f_{2}(x)$。
+4. $C(4)\cap C(x+10)\cap C(y+10)=\{f_{4}(p,q):\neg\,p\neq q,\ x,y\in\{p,q\}\}$。$x\neq y$ なら $\{p,q\}=\{x,y\}$ で $p\neq q$ となり空。$\neg\,x\neq y$（$x=y$）なら $t\defeq f_{4}(x,y)$。
+5. $C(8)$ と三つの $C(\cdot+10)$ の共通部分は $\{f_{8}(p,q,r):\neg A''pqr,\ x,y,z\in\{p,q,r\}\}$。$A''xyz$ なら $x,y,z$ は相異なるので $\{p,q,r\}=\{x,y,z\}$ で、$A''$ の対称性より $A''pqr$、よって空。$\neg A''xyz$ なら $t\defeq f_{8}(x,y,z)$。
+:::
+
+::: corollary 真理値での符号化 {#pt:one-letter-encoding-truth}
+$\PA$ が無矛盾なので、自然数 $x,y,z$ について：$x\ge10\iff\mathrm{Bew}[B(0)\vee B(x)]$ が真、$x\le y\iff\mathrm{Bew}[B(1)\vee(B(y+10)\to B(x+10))]$ が真、$Zx\iff\mathrm{Bew}[B(2)\vee B(x+10)]$ が真、…、$M''xyz\iff\mathrm{Bew}[B(9)\vee B(x+10)\vee B(y+10)\vee B(z+10)]$ が真。
+:::
+
+::: lemma 任意の集合への付け替え {#pt:one-letter-B-prime}
+$D(x)$ を算術の任意の論理式とし、$B'(x)\defeq B(x)\wedge(x<10\vee\exists y\,\theta(y)\vee D(x-10))$ とする。このとき \ref{pt:one-letter-encoding} と \ref{pt:one-letter-encoding-truth} は $B$ を $B'$ に替えても成り立ち、$x\ge10$ について $B'(x)$ が真 $\iff D(x-10)$ が真。
+:::
+
+::: proof
+\ref{pt:magic-formula-properties} の 3 より $\theta$ はどこでも偽なので $B(x)$ はすべての $x$ で真、よって $x\ge10$ なら $B'(x)\iff D(x-10)$。また $\PA\vdash\exists y\,\theta(y)\to\forall x\,(B(x)\leftrightarrow B'(x))$。$\PA\vdash\neg\exists y\,\theta(y)\to\forall x\,B(x)$（$B$ の定義）で、$i<10$ なら $\PA\vdash i<10$ なので $\PA\vdash\neg\exists y\,\theta(y)\to B'(\underline{i})$。これらから、符号化に現れる各選言（$B(0)\vee B(x)$ など、少なくとも一つの $10$ 未満の引数をもつ）について $\PA\vdash(\cdots B\cdots)\leftrightarrow(\cdots B'\cdots)$ がわかる（$\exists y\,\theta(y)$ なら両辺は同じ、そうでなければ $10$ 未満の引数の項で両辺とも真）。D1・D2 で $\mathrm{Bew}$ を付けても同値。
+:::
+
+## 定理 {#pt:sec-one-theorem}
+
+::: theorem 1 項述語 1 つでのヴァルダニャンの定理 {#pt:vardanyan-one-letter keywords="Vardanyan: the theorems hold for the fragment with one monadic predicate letter and no nested boxes" index="1 項述語のヴァルダニャンの定理|いっこうじゅつごのゔぁるだにゃんのていり"}
+1 項述語記号 $G$ だけを使い、$\Box$ の入れ子をもたない QML の文について、常に証明可能な文の集合は $\Pi^{0}_{2}$ 完全であり、常に真な文の集合は $V$ で $\Pi^{0}_{1}$ 完全である。
+:::
+
+::: proof
+**全体の構成.** $\mathcal{S}\cup\{N,G\}$ の述語記号を、特別な変数を使った $\{G\}$ の論理式に置き換える：$x\le y$ を $G v_{\le}\vee(Gy\to Gx)$ で、他の $m$ 項記号 $\pi$（$N$ を含む）の $\pi x_{1}\cdots x_{m}$ を $G v_{\pi}\vee Gx_{1}\vee\cdots\vee Gx_{m}$ で置き換え（$G$ はそのまま）、それぞれ $\Box$ をかぶせる。すると、$G$ に論理式 $F$ を割り当てる実現 $\#$ のもとで、置き換えた式の翻訳は $\mathrm{Bew}[F(v_{\le})\vee(F(y)\to F(x))]$ などになる。特別な変数に $0,\dots,9$ を入れ、$F\defeq B'$ とすれば、\ref{pt:one-letter-B-prime} より、これらは（$10$ ずらした）標準的な関係 $\le,Z,\dots,M''$ と $N=\{x:x\ge10\}$ を表す。こうして、$G$ だけの文が「$\mathcal{S}\cup\{N,G\}$ の述語記号を Σ 論理式で解釈した実現」（**Σ 実現**）の働きをする。
+
+**$\Pi^{0}_{2}$ 完全性.** $S$ を $\Pi^{0}_{2}$ 集合、$P,Q_{n}$ を \ref{pt:vardanyan-theorem} の証明と同じとし、$H(G,v)$ を「$G$ は $v$ で $V$ を近似する」を表す $\mathcal{L}^{+}$ の論理式とする。
+$$
+\begin{aligned}
+&\chi_{n}\defeq\mathcal{I}\to\exists v\,\exists w\,(v\le w\wedge Q_{n}(w)\wedge\neg H(G,v)),\\
+&\mathcal{I}\defeq T\wedge\forall x\,\forall x'\,(Gx\wedge\neg Gx'\to x\neq x')
+\end{aligned}
+$$
+の $\chi_{n}^{N}$ に上の置き換えをして特別な変数で全称閉包をとった $\{G\}$ の文を $\phi_{n}$ とする（$\Box$ は原子論理式の置き換えにしか現れないので、入れ子はない）。$n\in S\iff\phi_{n}$ は常に証明可能、を示す。
+
+*Σ 実現についてのアルテモフの補題.* Σ 実現 $\ast$ について、$R(x,y)$ を「$N^{\ast}$ の元の列で、最初が $Z^{\ast}$ を満たし、隣り合う元が $V^{\ast}$ と $\le^{\ast}$ で後者の関係にあり、最後が $y$」とすると、\ref{pt:artemov-lemma-1}〜\ref{pt:artemov-lemma-4} と同じ議論で $\PA\vdash\mathcal{I}^{N\ast}\wedge R(\vec{x},\vec{y})\to(\tilde{F}(\vec{x})\leftrightarrow F^{N\ast}(\vec{y}))$（$\tilde{F}$ は $F$ の $Gx$ を $\exists y\,(R(x,y)\wedge G^{\ast}(y))$ に置き換えたもの）が示される（Boolos の補題 2〜11）。$D$ が要らないのは、\ref{pt:artemov-lemma-8} の機械 $p$ が使う $\{B_{0}\}^{\ast}$, $\{B_{1}\}^{\ast}$, $R$ が、Σ 実現と \ref{pt:one-letter-positive-definitions}（否定を使わない定義）により最初から認識可能だからである。$G$ の原子論理式の場合は、$\mathcal{I}$ の第 2 連言肢（$G$ は $\neq^{\ast}$ について閉じている）で扱う。
+
+*$\Rightarrow$.* $n\in S$ とし、実現 $\#$（$G^{\#}=F$）をとる。Σ 実現 $\ast$ を $\le^{\ast}\defeq\mathrm{Bew}[F(v_{\le})\vee(F(v_{1})\to F(v_{0}))]$、$\pi^{\ast}\defeq\mathrm{Bew}[F(v_{\pi})\vee F(v_{0})\vee\dots]$、$G^{\ast}\defeq F$ で定めると、$\phi_{n}^{\#}$ は $\chi_{n}^{N\ast}$ の特別な変数についての全称閉包そのものなので、$\PA\vdash\chi_{n}^{N\ast}$ を示せばよい。$S(x,u)\defeq\exists y\,(R(x,y)\wedge G^{\ast}(y))$（$u$ は特別な変数の列）について、一般化された対角化定理で $\PA\vdash F_{0}(u)\leftrightarrow\neg S(\mathrm{sub}(\Godel{F_{0}},u),u)$ となる $F_{0}$ をとり、$i$ を $\forall u\,F_{0}(u)$ のゲーデル数とする。$\{x:S(x,u)\}$ が $i$ で $V$ を近似するなら、$F_{0}(u)$ の真偽は $S(\mathrm{sub}(\Godel{F_{0}},u),u)$ と一致するはずで（部分論理式に関する帰納法）、対角化と矛盾するので、$\PA\vdash\neg H(\{x:S(x,u)\},i)$。Σ 実現についてのアルテモフの補題より $\PA\vdash\mathcal{I}^{N\ast}\wedge R(i,v)\to\neg H^{N\ast}(G^{\ast},v)$。$n\in S$ なので $i<j$ かつ $P(n,j)$ となる $j$ があり、以下 \ref{pt:vardanyan-theorem} の (5)〜(6) と同様にして $\PA\vdash\chi_{n}^{N\ast}$。
+
+*$\Leftarrow$.* すべての実現で $\phi_{n}$ が証明可能とする。$i$ を任意にとり、$m\le i$ のすべてで $V$ を近似する算術的な集合を定める論理式 $D(x)$（たとえば $V_{r}$、$r$ は十分大きい）をとり、$G^{\#}\defeq B'(v_{0})$（\ref{pt:one-letter-B-prime}）とする。$\phi_{n}^{\#}$ は真で、特別な変数に $0,\dots,9$ を入れたものも真。\ref{pt:one-letter-B-prime} により、それは $\chi_{n}$ を標準的な関係（$10$ ずらしたもの）と $G\defeq D$ で解釈したものと同じ真偽をもつ。$\mathcal{I}$ はこの解釈で真なので、$v\le w$, $P(n,w)$ かつ $D$ が $v$ で $V$ を近似しない $v,w$ がある。$D$ は $i$ 以下では近似するので $v>i$、よって $w>i$。$i$ は任意なので $n\in S$。
+
+**$V$ での $\Pi^{0}_{1}$ 完全性.** \ref{pt:mvb-lemma-14} の $\psi_{e,i}$ に同じ置き換えをし、特別な変数を存在量化した $\{G\}$ の文 $\rho_{e,i}$ について、$\exists k\,T^{V}(e,i,k)\iff$ ある実現で $\rho_{e,i}$ が真、が \ref{pt:mvb-lemma-14} と同様に示される（$\Rightarrow$ では $G^{\#}\defeq B'$ と特別な変数への $0,\dots,9$ の割り当てで、$R(x,y)\iff y=x+10$ となる）。あとは \ref{pt:mvb-theorem} の証明と同じ。
+:::
+
+::: hypcheck
+- **対称な関係と正の定義**（\ref{pt:one-letter-positive-definitions}）：述語記号を「証明可能性の式」で表すと、その解釈は Σ（$\mathrm{Bew}$ の形）になり、否定は Σ にならない。そのため、算術の関係を否定なしで定義できる基本関係が必要だった。対称性は、\ref{pt:one-letter-encoding} の 4, 5 で、集合 $\{p,q,r\}$ だけで組を判定する（$f_{l}$ が同値な組を同一視する）ために要る。
+- **魔法の論理式**：$\theta$ は真ではどこでも偽だが、$\PA$ の中では「どこか一点で真かもしれない」ことを否定できない。証明可能性 $\mathrm{Bew}[\bigvee B(c)]$ は「$\bigcap C(c)$ の中に $\theta$ の真になる点がない」ことの証明可能性になり、それが集合の共通部分の空性で決まる（\ref{pt:one-letter-encoding}）。
+- **$\Box$ の入れ子なし**：$\Box$ は各原子論理式の置き換えに一度だけ現れる。
+- **再構成**：$C(j+10)$ の定義、補題 2 の後半の元 $t=2+2y$ は、本文の読めない箇所を補ったもの（記法と定義の確認の注記）。Σ 実現についてのアルテモフの補題は、前のページの証明の変更点を述べるにとどめた。
+:::
+
+## 問題 {#pt:sec-one-problems}
+
+::: problem {#pt:prob-one-letter-successor}
+\ref{pt:one-letter-positive-definitions} の和の定義が正しいことを、$(i,j,k)=(0,0,0)$, $(2,2,4)$, $(1,3,4)$ について確かめよ。
+:::
+
+::: solution
+$(0,0,0)$：$Zi\wedge j=k$。$(2,2,4)$：$A'(2,4)$（$2\neq4$, $2+2=4$）かつ $i=j$。$(1,3,4)$：$1,3,4$ は相異なり $1+3=4$ なので $A''(1,3,4)$、かつ $1\le4$, $3\le4$。逆に、たとえば $(2,2,5)$ はどの選言肢も満たさない（$A'(2,5)$ は偽、$A''$ は相異なる三数を要求する）。
+:::
+
+::: problem {#pt:prob-magic-consistency}
+\ref{pt:magic-formula-properties} の 3 で、$\PA$ の無矛盾性をどこで使ったか述べよ。また、$\PA\nvdash\neg\exists y\,\theta(y)$ であることを示せ（ヒント：2 と第二不完全性定理）。
+:::
+
+::: solution
+3 では、$\theta(i)$ が真と仮定すると $\theta(\underline{i})$ と $\neg\theta(\underline{i})$ がともに証明可能になり、$\PA$ が矛盾することを使った。後半：$\PA\vdash\neg\exists y\,\theta(y)$ なら、各 $i$ で $\PA\vdash\neg\theta(\underline{i})$、よって $\exists y\,\mathrm{Bew}[\neg\theta(y)]$ は真な Σ 文で証明可能（Σ 完全性）。2 より $\PA\vdash\mathrm{Bew}(\Godel{\bot})$。$\PA$ は健全なので $\mathrm{Bew}(\Godel{\bot})$ は真、すなわち $\PA$ は矛盾し、仮定に反する。
+:::
+
+::: supplement
+**前提の検討.**
+- 断片 $\{G\}$ では、$\Box$ の中に $G$ の原子論理式の選言しか現れない。それでも、$G$ に割り当てる一つの論理式 $F$ の「証明可能性の振る舞い」が、算術の構造全体を符号化するのに十分である。
+- Boolos は、より簡単な証明があるかもしれないが知られていない、と述べている（1993 年時点）。
+
+**関連する結果.**
+- 1 項述語記号だけで、$\Box$ を使わない純粋な述語論理では、文の妥当性は決定可能である（単項述語論理の決定可能性）。様相 $\Box$ を一段加えるだけで、決定不能性の程度が $\Pi^{0}_{2}$ 完全まで跳ね上がることになる。
+
+**高い視点から：一つの論理式から算術を絞り出す.** 断片 $\{G\}$ では、実現は $G$ に一つの論理式 $F$ を割り当てることしかできない。しかし、$F$ の各点での値（$F(c)$ が真か）と、それらの選言の証明可能性は別物である：$F=B'$ はどの点でも真だが、$\mathrm{Bew}[B(0)\vee B(x)]$ が証明可能かどうかは、$\PA$ が $\theta$ の偽をどこまで知っているかに依存する。魔法の論理式 $\theta$ は、真理の上では透明（どこでも偽）で、証明の上では不透明（偽であることを証明できない）という二重性をもち、その不透明さの形を集合の族 $C(\cdot)$ で設計することで、算術の関係を「何が証明できないか」の模様として描き出している。たとえれば、白い紙（真理）の上に、見えないインク（証明可能性）で設計図を描く技法である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>言語方程式と不動点定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/01-automata/06-fixed-points.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 言語方程式と不動点定理 {#comp:page-fixed-points keywords="fixed point theorems, Knaster-Tarski theorem, Kleene fixed point theorem, least fixed point, contraction, ultrametric on languages, Arden's lemma, context-free languages as least fixed points, Ginsburg-Rice, Lawvere fixed point theorem"}
+
+アーデンの補題（\ref{comp:arden}）は、方程式 $X=AX\cup B$ の**最小の解**が $A^{\ast}B$ であり、$\varepsilon\notin A$ なら解が**一つしかない**ことを述べていた。この二つの主張は、それぞれ一般的な不動点定理の例になっている。本ページでは、言語の集合の上で次の三つの不動点定理を示す。
+1. **クナスター–タルスキの定理**（\ref{comp:knaster-tarski}）：単調な写像は最小の不動点をもつ。
+2. **クリーネの不動点定理**（\ref{comp:kleene-fixed-point}）：連続な写像の最小の不動点は $\varnothing$ から反復して得られる。
+3. **縮小写像の不動点定理**（\ref{comp:contraction-fixed-point}）：言語の間の「最初に食い違う長さ」で測る距離について縮小する写像は、ただ一つの不動点をもつ。
+
+応用として、文脈自由文法の生成する言語が、文法を言語の（一次とは限らない）連立方程式と見たときの最小の解であること（\ref{comp:cfg-least-fixed-point}）を示す。最後に、本サイトに現れる他の不動点定理（while ループの意味、再帰定理、対角化定理）との関係を述べる。
+
+## 記法と定義の確認 {#comp:sec-fp-notation}
+
+::: notation
+- 言語、連接、スター、正規表現、アーデンの補題、言語の連立一次方程式は \ref{comp:page-regular-expressions} のとおり。文脈自由文法（CFG）、導出 $\Rightarrow$, $\Rightarrow^{\ast}$、$L(G)$ は \ref{comp:cfg} のとおり。
+- $n\ge1$ について $\mathcal{P}(\Sigma^{\ast})^{n}$ を言語の $n$ 個組全体とし、成分ごとの包含 $\vec{X}\subseteq\vec{Y}$（すべての $i$ で $X_{i}\subseteq Y_{i}$）で順序を入れる。成分ごとの和 $\bigcup$ と共通部分 $\bigcap$ も同様に定める。$\vec{\varnothing}\defeq(\varnothing,\dots,\varnothing)$。
+- 写像 $f\colon\mathcal{P}(\Sigma^{\ast})^{n}\to\mathcal{P}(\Sigma^{\ast})^{n}$ の**不動点**とは $f(\vec{X})=\vec{X}$ となる $\vec{X}$ のこと。**最小の不動点**とは、どの不動点にも含まれる不動点のこと（あれば一つ）。
+:::
+
+## 単調写像と連続写像 {#comp:sec-fp-order}
+
+::: definition 単調・連続 {#comp:monotone-continuous keywords="monotone map, omega-continuous map, Scott continuity" index="単調写像|たんちょうしゃぞう, 連続写像（順序の）|れんぞくしゃぞうじゅんじょの"}
+$f\colon\mathcal{P}(\Sigma^{\ast})^{n}\to\mathcal{P}(\Sigma^{\ast})^{n}$ について：
+1. $f$ が**単調**とは、$\vec{X}\subseteq\vec{Y}$ なら $f(\vec{X})\subseteq f(\vec{Y})$ となること。
+2. $f$ が**連続**とは、増大列 $\vec{X}^{(0)}\subseteq\vec{X}^{(1)}\subseteq\cdots$ について $f(\bigcup_{k}\vec{X}^{(k)})=\bigcup_{k}f(\vec{X}^{(k)})$ となること。連続な写像は単調である（$\vec{X}\subseteq\vec{Y}$ に増大列 $\vec{X},\vec{Y},\vec{Y},\dots$ を考えよ）。
+:::
+
+::: theorem クナスター–タルスキの定理 {#comp:knaster-tarski keywords="Knaster-Tarski fixed point theorem, least fixed point, least pre-fixed point" index="クナスター–タルスキの定理|くなすたーたるすきのていり"}
+$f$ が単調なら、$\vec{M}\defeq\bigcap\{\vec{X}:f(\vec{X})\subseteq\vec{X}\}$ は $f$ の最小の不動点である。さらに、$f(\vec{X})\subseteq\vec{X}$ となるすべての $\vec{X}$ について $\vec{M}\subseteq\vec{X}$。
+:::
+
+::: proof
+$\mathcal{C}\defeq\{\vec{X}:f(\vec{X})\subseteq\vec{X}\}$ とおく（$(\Sigma^{\ast},\dots,\Sigma^{\ast})\in\mathcal{C}$ なので空でない）。
+1. $\vec{X}\in\mathcal{C}$ なら $\vec{M}\subseteq\vec{X}$ なので、単調性から $f(\vec{M})\subseteq f(\vec{X})\subseteq\vec{X}$。$\vec{X}\in\mathcal{C}$ は任意なので $f(\vec{M})\subseteq\bigcap\mathcal{C}=\vec{M}$。
+2. 1 と単調性から $f(f(\vec{M}))\subseteq f(\vec{M})$、すなわち $f(\vec{M})\in\mathcal{C}$。よって $\vec{M}\subseteq f(\vec{M})$。
+1・2 から $f(\vec{M})=\vec{M}$。不動点は $\mathcal{C}$ に属するので $\vec{M}$ を含む。最後の主張は $\vec{M}$ の定義から。
+:::
+
+::: theorem クリーネの不動点定理 {#comp:kleene-fixed-point keywords="Kleene fixed point theorem, iteration from bottom" index="クリーネの不動点定理|くりーねのふどうてんていり"}
+$f$ が連続なら、$\vec{\varnothing}\subseteq f(\vec{\varnothing})\subseteq f^{2}(\vec{\varnothing})\subseteq\cdots$ は増大列で、その和 $\bigcup_{k}f^{k}(\vec{\varnothing})$ は $f$ の最小の不動点である。
+:::
+
+::: proof
+増大列であることは $k$ に関する帰納法：$\vec{\varnothing}\subseteq f(\vec{\varnothing})$ は明らかで、$f^{k}(\vec{\varnothing})\subseteq f^{k+1}(\vec{\varnothing})$ なら単調性から $f^{k+1}(\vec{\varnothing})\subseteq f^{k+2}(\vec{\varnothing})$。$\vec{L}\defeq\bigcup_{k}f^{k}(\vec{\varnothing})$ とおくと、連続性から
+$$
+f(\vec{L})=\bigcup_{k}f^{k+1}(\vec{\varnothing})=\vec{L}
+$$
+（$k=0$ の項 $\vec{\varnothing}$ を加えても和は変わらない）。$\vec{X}$ を任意の不動点とすると、$k$ に関する帰納法で $f^{k}(\vec{\varnothing})\subseteq\vec{X}$（$f^{k+1}(\vec{\varnothing})\subseteq f(\vec{X})=\vec{X}$）なので $\vec{L}\subseteq\vec{X}$。
+:::
+
+## 縮小写像 {#comp:sec-fp-contraction}
+
+::: definition 言語の距離 {#comp:language-metric keywords="ultrametric on languages, prefix metric" index="言語の距離|げんごのきょり"}
+言語 $X,Y$ について、$X\neq Y$ なら $d(X,Y)\defeq2^{-\ell}$（$\ell$ は対称差 $X\triangle Y$ の元の長さの最小値）、$X=Y$ なら $d(X,Y)\defeq0$ と定める。組については $d(\vec{X},\vec{Y})\defeq\max_{i}d(X_{i},Y_{i})$。$d(\vec{X},\vec{Y})\le2^{-k}$ は「長さ $k$ 未満の文字列については、すべての成分で $\vec{X}$ と $\vec{Y}$ が一致する」ことと同値である。写像 $f$ が**縮小的**とは、すべての $\vec{X},\vec{Y}$ で $d(f(\vec{X}),f(\vec{Y}))\le\frac{1}{2}d(\vec{X},\vec{Y})$ となること、すなわち「長さ $k$ 未満で一致するなら、像は長さ $k+1$ 未満で一致する」ことである。
+:::
+
+::: remark
+$d$ は距離で、しかも**超距離**（$d(\vec{X},\vec{Z})\le\max(d(\vec{X},\vec{Y}),d(\vec{Y},\vec{Z}))$）である：$\vec{X},\vec{Y}$ が長さ $k$ 未満で一致し、$\vec{Y},\vec{Z}$ も一致すれば、$\vec{X},\vec{Z}$ も一致する。
+:::
+
+::: theorem 縮小写像の不動点定理 {#comp:contraction-fixed-point keywords="Banach fixed point theorem for languages, unique fixed point of contracting maps" index="縮小写像の不動点定理|しゅくしょうしゃぞうのふどうてんていり"}
+$f$ が縮小的なら、$f$ の不動点はただ一つ存在する。それは、任意の $\vec{Z}$ から始めた反復 $f^{k}(\vec{Z})$ の極限（各 $w$ について、十分大きいすべての $k$ で $w\in f^{k}(\vec{Z})_{i}$ となるかどうかで決まる組）である。
+:::
+
+::: proof
+**一意性.** $\vec{X},\vec{Y}$ が不動点なら $d(\vec{X},\vec{Y})=d(f(\vec{X}),f(\vec{Y}))\le\frac{1}{2}d(\vec{X},\vec{Y})$ なので $d(\vec{X},\vec{Y})=0$。
+
+**存在.** $\vec{Z}_{k}\defeq f^{k}(\vec{Z})$ とする。$d(\vec{Z}_{1},\vec{Z}_{0})\le1$ と縮小性から、$k$ に関する帰納法で $d(\vec{Z}_{k+1},\vec{Z}_{k})\le2^{-k}$。超距離の不等式から、$m\ge k$ なら $d(\vec{Z}_{m},\vec{Z}_{k})\le2^{-k}$、すなわち $\vec{Z}_{m}$ と $\vec{Z}_{k}$ は長さ $k$ 未満の文字列について一致する。そこで、長さ $\ell$ の $w$ について $w\in X_{i}:\iff w\in(\vec{Z}_{\ell+1})_{i}$ と定める。$m\ge\ell+1$ なら $\vec{Z}_{m}$ と $\vec{Z}_{\ell+1}$ は長さ $\ell$ の文字列について一致するので、$\vec{X}$ と $\vec{Z}_{m}$ は長さ $m$ 未満の文字列について一致する：$d(\vec{X},\vec{Z}_{m})\le2^{-m}$。すると
+$$
+d(f(\vec{X}),\vec{X})\le\max\bigl(d(f(\vec{X}),f(\vec{Z}_{m})),\,d(\vec{Z}_{m+1},\vec{X})\bigr)\le2^{-m-1}
+$$
+がすべての $m$ で成り立つので、$f(\vec{X})=\vec{X}$。
+:::
+
+## アーデンの補題と言語方程式 {#comp:sec-fp-arden}
+
+::: corollary 不動点定理から見たアーデンの補題 {#comp:arden-fixed-point keywords="Arden's lemma via fixed point theorems"}
+$f(X)\defeq AX\cup B$ とする。
+1. $f$ は連続で、最小の不動点は $\bigcup_{k}f^{k}(\varnothing)=A^{\ast}B$。
+2. $\varepsilon\notin A$ なら $f$ は縮小的で、不動点はただ一つ。
+3. より一般に、言語の連立一次方程式（\ref{comp:linear-system}）の右辺が定める写像は連続で、係数 $A_{ij}$ がどれも $\varepsilon$ を含まなければ縮小的である。
+:::
+
+::: proof
+1. 連接と和は増大列の和と交換する（$A(\bigcup_{k}X_{k})\cup B=\bigcup_{k}(AX_{k}\cup B)$）。$k$ に関する帰納法で $f^{k}(\varnothing)=\bigcup_{j<k}A^{j}B$（$f^{k+1}(\varnothing)=A\bigcup_{j<k}A^{j}B\cup B=\bigcup_{j<k+1}A^{j}B$）なので、和は $A^{\ast}B$。クリーネの不動点定理（\ref{comp:kleene-fixed-point}）による。
+2. $X,Y$ が長さ $k$ 未満で一致するとする。$AX$ の元で長さ $k$ 以下のものは $ax$（$a\in A$, $\lvert a\rvert\ge1$, $\lvert x\rvert\le k-1$）の形なので、$x\in X\iff x\in Y$ から、$AX$ と $AY$ は長さ $k+1$ 未満で一致する。$\cup B$ はこれを保つ。縮小写像の不動点定理（\ref{comp:contraction-fixed-point}）による。
+3. 各成分について 1・2 と同じ議論。
+:::
+
+::: remark
+\ref{comp:arden} では、これらを直接（代入を繰り返して）示した。不動点定理の形にすると、「最小の解」と「解の一意性」がそれぞれどの性質（連続性、縮小性）から来るのかが分かれる。
+:::
+
+## 文脈自由言語は最小の不動点 {#comp:sec-fp-cfg}
+
+CFG $G=(V,\Sigma,R,S)$ の変数を $V=\{V_{1},\dots,V_{n}\}$ とする。$\alpha\in(V\cup\Sigma)^{\ast}$ と組 $\vec{X}$ について、$\alpha[\vec{X}]$ を、$\alpha$ の各終端記号 $a$ を $\{a\}$ に、各変数 $V_{j}$ を $X_{j}$ に置き換えて連接した言語とする（$\alpha=\varepsilon$ なら $\{\varepsilon\}$）。**$G$ の方程式**を
+$$
+X_{i}=\bigcup_{(V_{i}\to\alpha)\in R}\alpha[\vec{X}]\qquad(1\le i\le n)
+$$
+と定め、右辺の定める写像を $f_{G}$ とする。$L_{i}\defeq\{w\in\Sigma^{\ast}:V_{i}\Rightarrow^{\ast}w\}$ とおく（$L(G)$ は開始変数の $L_{i}$）。
+
+::: lemma 導出の分解 {#comp:derivation-split keywords="context-freeness, splitting derivations"}
+$\alpha=u_{0}A_{1}u_{1}\cdots A_{r}u_{r}$（$u_{j}\in\Sigma^{\ast}$, $A_{j}\in V$）と $w\in\Sigma^{\ast}$ について、$\alpha\Rightarrow^{\ast}w$ が $N$ 段で成り立つことと、$w=u_{0}w_{1}u_{1}\cdots w_{r}u_{r}$ で各 $A_{j}\Rightarrow^{\ast}w_{j}$ が $N_{j}$ 段（$N_{1}+\dots+N_{r}=N$）で成り立つことは同値である。
+:::
+
+::: proof
+$N$ に関する帰納法。$N=0$ なら $\alpha=w$ で $r=0$。$N\ge1$ なら、最初の段はある $A_{j}$ を規則 $A_{j}\to\beta$ で書き換える。書き換えた後の文字列にも帰納法の仮定を使い、$\beta$ から生じる部分をまとめると、$A_{j}$ からの $N_{j}$ 段の導出が得られる。他の $A_{l}$ の部分は影響を受けない（規則の適用は文脈によらない）。逆向きは、各 $A_{j}$ の導出を順に行えばよい。
+:::
+
+::: theorem 文脈自由言語は方程式の最小解 {#comp:cfg-least-fixed-point keywords="context-free languages as least solutions, Ginsburg-Rice, ALGOL-like equations" index="文脈自由言語と最小不動点|ぶんみゃくじゆうげんごとさいしょうふどうてん"}
+$f_{G}$ は連続で、$(L_{1},\dots,L_{n})$ は $f_{G}$ の最小の不動点である。すなわち、$G$ の方程式の最小の解の開始変数の成分が $L(G)$ である。
+:::
+
+::: proof
+**連続性.** 連接は増大列の和と交換する：$(\bigcup_{k}X_{k})(\bigcup_{k}Y_{k})=\bigcup_{k}X_{k}Y_{k}$（$\supseteq$ は明らか。$\subseteq$ は $xy$ で $x\in X_{k}$, $y\in Y_{l}$ なら $xy\in X_{m}Y_{m}$、$m=\max(k,l)$）。和も同様なので、各 $\alpha[\cdot]$ と有限個の和 $f_{G}$ は連続。
+
+**最小の不動点.** クリーネの不動点定理から、$\vec{L}^{(h)}\defeq f_{G}^{h}(\vec{\varnothing})$ の和 $\bigcup_{h}\vec{L}^{(h)}$ が最小の不動点である。これが $(L_{1},\dots,L_{n})$ に等しいことを示す。
+
+*$\subseteq$.* $h$ に関する帰納法で $L^{(h)}_{i}\subseteq L_{i}$。$h=0$ は明らか。$w\in L^{(h+1)}_{i}$ なら、規則 $V_{i}\to\alpha=u_{0}A_{1}\cdots A_{r}u_{r}$ と $w_{j}\in L^{(h)}_{k_{j}}$（$A_{j}=V_{k_{j}}$）で $w=u_{0}w_{1}\cdots w_{r}u_{r}$。帰納法の仮定から $A_{j}\Rightarrow^{\ast}w_{j}$ なので、\ref{comp:derivation-split} から $V_{i}\Rightarrow\alpha\Rightarrow^{\ast}w$。
+
+*$\supseteq$.* $V_{i}\Rightarrow^{\ast}w$ の段数 $N$ に関する帰納法で、ある $h$ で $w\in L^{(h)}_{i}$。$N\ge1$ で、最初の段が $V_{i}\to\alpha$ なら、\ref{comp:derivation-split} から $w=u_{0}w_{1}\cdots w_{r}u_{r}$、$A_{j}\Rightarrow^{\ast}w_{j}$ は $N-1$ 段以下。帰納法の仮定で $w_{j}\in L^{(h_{j})}_{k_{j}}$。$h\defeq\max_{j}h_{j}$（$r=0$ なら $0$）とすると、列が増大なので $w_{j}\in L^{(h)}_{k_{j}}$、よって $w\in\alpha[\vec{L}^{(h)}]\subseteq L^{(h+1)}_{i}$。
+:::
+
+::: example 最小でない解 {#comp:ex-cfg-nonunique}
+1. $S\to aSb\mid\varepsilon$ の方程式 $X=\{a\}X\{b\}\cup\{\varepsilon\}$ は縮小的（$aXb$ の元は $X$ の元より $2$ 長い）なので、解は最小の解 $\{a^{n}b^{n}:n\ge0\}$ ただ一つ。
+2. $S\to SS\mid a$ の方程式 $X=XX\cup\{a\}$ の最小の解は $L(G)=\{a\}^{+}=\{a^{n}:n\ge1\}$ だが、$X=\{a\}^{\ast}$ も解である（$\{a\}^{\ast}\{a\}^{\ast}\cup\{a\}=\{a\}^{\ast}$）。この方程式は縮小的でない：$\varepsilon\in X$ のとき $XX$ は $X$ の元を「伸ばさない」。
+:::
+
+::: hypcheck
+- **単調性・連続性**：クナスター–タルスキでは単調性だけ、クリーネでは連続性（とくに「増大列の和と交換する」こと）を使った。言語の演算では、和・連接・スターはどれも連続で、補集合は単調ですらない（補集合を含む方程式 $X=\Sigma^{\ast}\setminus X$ は解をもたない）。
+- **縮小性**：一意性の証明だけで使い、存在は距離の完備性（\ref{comp:contraction-fixed-point} の存在の証明で、長さごとに値が安定すること）から得た。
+- **CFG の文脈自由性**：\ref{comp:derivation-split} で、導出が変数ごとに独立に分かれることに使った。これが方程式の右辺が「各変数の言語の連接」で書ける理由である。
+:::
+
+## 問題 {#comp:sec-fp-problems}
+
+::: problem {#comp:prob-fp-greatest}
+単調な $f$ は**最大の不動点** $\bigcup\{\vec{X}:\vec{X}\subseteq f(\vec{X})\}$ をもつことを示せ。また $f(X)=\{a\}X$ の最小と最大の不動点を求めよ（$\Sigma=\{a\}$）。
+:::
+
+::: solution
+クナスター–タルスキの証明の双対：$\mathcal{D}\defeq\{\vec{X}:\vec{X}\subseteq f(\vec{X})\}$、$\vec{G}\defeq\bigcup\mathcal{D}$ とすると、$\vec{X}\in\mathcal{D}$ について $\vec{X}\subseteq f(\vec{X})\subseteq f(\vec{G})$ なので $\vec{G}\subseteq f(\vec{G})$、さらに $f(\vec{G})\subseteq f(f(\vec{G}))$ から $f(\vec{G})\in\mathcal{D}$、$f(\vec{G})\subseteq\vec{G}$。不動点は $\mathcal{D}$ に属するので $\vec{G}$ に含まれる。
+$f(X)=aX$ の不動点：$X=aX$ なら $X$ の元はどれも $a$ で始まり、それを取り除いたものも $X$ に属するので、$X$ の元は無限に短くなれず、$X=\varnothing$。よって最小・最大の不動点はどちらも $\varnothing$（$\varepsilon\notin\{a\}$ なのでアーデンの補題とも整合し、$\{a\}^{\ast}\varnothing=\varnothing$）。
+:::
+
+::: problem {#comp:prob-fp-cfg-uniqueness}
+CFG $G$ のどの規則の右辺も終端記号で始まるとき（グライバッハ標準形のように）、$G$ の方程式の解はただ一つであることを示せ。
+:::
+
+::: solution
+右辺 $\alpha=a\beta$（$a\in\Sigma$）について $\alpha[\vec{X}]=\{a\}\beta[\vec{X}]$。$\vec{X},\vec{Y}$ が長さ $k$ 未満で一致するとき、$\beta[\vec{X}]$ と $\beta[\vec{Y}]$ も長さ $k$ 未満で一致する（$\beta[\vec{X}]$ の長さ $\ell<k$ の元 $x_{1}\cdots x_{r}$（各 $x_{j}$ は終端記号か $X_{k_{j}}$ の元）の各成分は長さ $\ell$ 以下なので、$\vec{Y}$ でも同じ元になる）。よって $\{a\}\beta[\vec{X}]$ と $\{a\}\beta[\vec{Y}]$ は長さ $k+1$ 未満で一致し、$f_{G}$ は縮小的である。\ref{comp:contraction-fixed-point} による。
+:::
+
+::: supplement
+**前提の検討.**
+- 本ページでは $\mathcal{P}(\Sigma^{\ast})^{n}$ だけを扱ったが、クナスター–タルスキの定理は任意の完備束で、クリーネの不動点定理は最小元をもち上向きの鎖の上限をもつ半順序（$\omega$ 完備半順序）で、縮小写像の定理は完備距離空間（バナッハの不動点定理）で、同じ証明で成り立つ。
+- クリーネの定理の「連続」を「単調」に弱めると、$\bigcup_{k}f^{k}(\vec{\varnothing})$ は不動点とは限らず、超限回の反復 $f^{\alpha}(\vec{\varnothing})$（順序数 $\alpha$）が必要になる。
+
+**関連する結果（本サイトの他の不動点定理）.**
+- *while ループの意味*（\ref{comp:page-language-L} の補足）：状態の上の部分写像の空間で、クリーネの不動点定理を使うと while ループの意味が得られる。部分写像の「定義域を広げる」順序は、ここでの包含の順序と同じ役割を果たす。
+- *クリーネの第一再帰定理*：計算可能な汎関数（部分関数を部分関数に写す、連続な写像）の最小不動点は計算可能な部分関数であることが知られている。上の while ループの例を一般の再帰的定義に広げたもので、本ページのクリーネの不動点定理の計算可能版である。本サイトでは示していない。
+- *クリーネの（第二）再帰定理*（\ref{comp:second-recursion-theorem}, \ref{comp:recursion-theorem}）：プログラムの**コード**の上の不動点で、順序や距離を使わず、対角化で得られる。
+- *対角化定理*（\ref{pt:diagonal-lemma}）と、それを使うゲーデルの不完全性定理・タルスキの定理：論理式の上の不動点で、構成は再帰定理と同じ形をしている。
+
+**高い視点から：二種類の不動点.** 不動点定理には大きく二系統がある。一つは**近似による**不動点（クナスター–タルスキ、クリーネ、バナッハ）で、「何もない状態 $\varnothing$ から少しずつ情報を足していき、極限で解に至る」。言語方程式の最小解、文脈自由言語、while ループ、帰納的定義はこの系統で、比喩で言えば「地図を少しずつ描き足して、最後に完成した地図を得る」ことである。もう一つは**対角化による**不動点（再帰定理、対角化定理）で、ローヴェアの不動点定理として圏論的にまとめられる：デカルト閉圏で $A\to B^{A}$ が「点ごとに全射」なら、$B$ の任意の自己射は不動点をもつ。カントールの対角線論法、停止問題、ゲーデル・タルスキの定理は、この定理の対偶（不動点をもたない写像 $\neg$ があるので、全射は存在しない）として読める。比喩で言えば、こちらは「自分自身を描いた地図」を、地図の描き方の規則を自分に当てはめることで一挙に作ることである。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

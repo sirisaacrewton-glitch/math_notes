@@ -1,0 +1,20 @@
+{
+  "id": "pt-provability",
+  "title": "証明可能性論理 GL",
+  "en": "The Provability Logic GL",
+  "abbr": "証明可能性",
+  "description": "算術的解釈と GL・GLS の健全性、閉様相論理式の標準形、反映原理、不動点定理、補間定理、ソロヴェイの算術的完全性定理。（Boolos 第 3 章後半・第 7〜9 章に対応）",
+  "msc": "03F45",
+  "prereq": [
+    {
+      "dir": "logic-modal",
+      "from": 1,
+      "to": 5,
+      "note": "正規様相論理・GL・クリプキ意味論・完全性・カノニカルモデル"
+    },
+    {
+      "dir": "pt-incompleteness",
+      "note": "証明可能性述語・導出可能性条件・対角化定理・レーブの定理"
+    }
+  ]
+}

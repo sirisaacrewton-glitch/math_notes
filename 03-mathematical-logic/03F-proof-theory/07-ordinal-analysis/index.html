@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>順序数解析 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/07-ordinal-analysis/index.html" data-kind="dir">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 順序数解析（Ordinal Analysis）
+
+カントール標準形と ε₀、標準的な ε₀ 順序、ω 規則をもつ無限シーケント計算とカット除去、ペアノ算術の埋め込みとゲンツェンの限界定理、ゲンツェンの整列性証明（PA の証明論的順序数は ε₀）。（新井『数学基礎論』第 8 章 §8.4 に対応）
+
+<p class="mn-msc">MSC2020: 03F15, 03F05</p>
+
+## 前提知識
+
+- [証明論と型理論 › 証明体系とカット除去](../../../03-mathematical-logic/03F-proof-theory/01-sequent-calculus/index.html)（全体、6 ページ）：シーケント計算とカット除去
+- [証明論と型理論 › 算術と不完全性定理](../../../03-mathematical-logic/03F-proof-theory/02-incompleteness/index.html)（全体、10 ページ）：ペアノ算術・原始再帰関数
+
+## 目次
+
+<ol class="mn-dirtoc">
+<li value="1"><a href="01-epsilon0.html">§1 ε₀ とカントール標準形</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">補題 1.1</span> <span class="mn-dirtoc-title">ω の冪の吸収</span></li><li><span class="mn-dirtoc-kind">補題 1.2</span> <span class="mn-dirtoc-title">標準形の和の評価</span></li><li><span class="mn-dirtoc-kind">定理 1.3</span> <span class="mn-dirtoc-title">カントール標準形</span></li><li><span class="mn-dirtoc-kind">系 1.4</span> <span class="mn-dirtoc-title">標準形の比較</span></li><li><span class="mn-dirtoc-kind">定義 1.5</span> <span class="mn-dirtoc-title">ε₀</span></li><li><span class="mn-dirtoc-kind">命題 1.6</span> <span class="mn-dirtoc-title">ε₀ の基本性質</span></li><li><span class="mn-dirtoc-kind">定義 1.7</span> <span class="mn-dirtoc-title">順序数表記の符号</span></li><li><span class="mn-dirtoc-kind">定理 1.8</span> <span class="mn-dirtoc-title">標準的な ε₀ 順序</span></li><li><span class="mn-dirtoc-kind">定義 1.9</span> <span class="mn-dirtoc-title">符号の演算</span></li><li><span class="mn-dirtoc-kind">命題 1.10</span> <span class="mn-dirtoc-title">演算の値</span></li><li><span class="mn-dirtoc-kind">命題 1.11</span> <span class="mn-dirtoc-title">標準的な ε₀ 順序の性質</span></li></ul></li>
+<li value="2"><a href="02-omega-logic.html">§2 ω 規則と無限導出のカット除去</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 2.1</span> <span class="mn-dirtoc-title">言語と論理式</span></li><li><span class="mn-dirtoc-kind">定義 2.2</span> <span class="mn-dirtoc-title">Gω と導出可能性</span></li><li><span class="mn-dirtoc-kind">補題 2.4</span> <span class="mn-dirtoc-title">単調性</span></li><li><span class="mn-dirtoc-kind">補題 2.5</span> <span class="mn-dirtoc-title">偽なリテラルの除去</span></li><li><span class="mn-dirtoc-kind">補題 2.6</span> <span class="mn-dirtoc-title">反転</span></li><li><span class="mn-dirtoc-kind">補題 2.8</span> <span class="mn-dirtoc-title">簡約補題</span></li><li><span class="mn-dirtoc-kind">定理 2.9</span> <span class="mn-dirtoc-title">無限導出のカット除去</span></li></ul></li>
+<li value="3"><a href="03-gentzen-bound.html">§3 ペアノ算術の埋め込みとゲンツェンの限界定理</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 3.1</span> <span class="mn-dirtoc-title">PA(X)</span></li><li><span class="mn-dirtoc-kind">補題 3.3</span> <span class="mn-dirtoc-title">トートロジー補題</span></li><li><span class="mn-dirtoc-kind">補題 3.4</span> <span class="mn-dirtoc-title">帰納法補題</span></li><li><span class="mn-dirtoc-kind">補題 3.5</span> <span class="mn-dirtoc-title">埋め込み補題</span></li><li><span class="mn-dirtoc-kind">定義 3.6</span> <span class="mn-dirtoc-title">前進性と超限帰納法</span></li><li><span class="mn-dirtoc-kind">定義 3.8</span> <span class="mn-dirtoc-title">前進性規則</span></li><li><span class="mn-dirtoc-kind">補題 3.9</span> <span class="mn-dirtoc-title">Gω^prg のカット除去</span></li><li><span class="mn-dirtoc-kind">補題 3.10</span> <span class="mn-dirtoc-title">限界補題</span></li><li><span class="mn-dirtoc-kind">定理 3.11</span> <span class="mn-dirtoc-title">ゲンツェンの限界定理</span></li></ul></li>
+<li value="4"><a href="04-gentzen-wellordering.html">§4 ゲンツェンの整列性証明と PA の証明論的順序数</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 4.1</span> <span class="mn-dirtoc-title">論理式についての前進性</span></li><li><span class="mn-dirtoc-kind">定義 4.2</span> <span class="mn-dirtoc-title">跳躍論理式</span></li><li><span class="mn-dirtoc-kind">補題 4.3</span> <span class="mn-dirtoc-title">跳躍は前進性を保つ</span></li><li><span class="mn-dirtoc-kind">定理 4.4</span> <span class="mn-dirtoc-title">ゲンツェンの整列性証明</span></li><li><span class="mn-dirtoc-kind">系 4.5</span> <span class="mn-dirtoc-title">始切片についての超限帰納法</span></li><li><span class="mn-dirtoc-kind">定義 4.6</span> <span class="mn-dirtoc-title">証明論的順序数</span></li><li><span class="mn-dirtoc-kind">定理 4.7</span> <span class="mn-dirtoc-title">PA の証明論的順序数</span></li></ul></li>
+<li value="5"><a href="05-goodstein.html">§5 ハーディ関数とグッドスタイン列</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 5.1</span> <span class="mn-dirtoc-title">基本列</span></li><li><span class="mn-dirtoc-kind">補題 5.2</span> <span class="mn-dirtoc-title">基本列の性質</span></li><li><span class="mn-dirtoc-kind">定義 5.3</span> <span class="mn-dirtoc-title">ハーディ関数</span></li><li><span class="mn-dirtoc-kind">命題 5.4</span> <span class="mn-dirtoc-title">ハーディ関数の計算</span></li><li><span class="mn-dirtoc-kind">定理 5.6</span> <span class="mn-dirtoc-title">PA で証明可能な再帰関数の限界</span></li><li><span class="mn-dirtoc-kind">定義 5.7</span> <span class="mn-dirtoc-title">遺伝的な底の表示</span></li><li><span class="mn-dirtoc-kind">補題 5.8</span> <span class="mn-dirtoc-title">底の置き換えと順序数</span></li><li><span class="mn-dirtoc-kind">定義 5.9</span> <span class="mn-dirtoc-title">グッドスタイン列</span></li><li><span class="mn-dirtoc-kind">定理 5.10</span> <span class="mn-dirtoc-title">グッドスタインの定理</span></li><li><span class="mn-dirtoc-kind">定理 5.11</span> <span class="mn-dirtoc-title">カービー–パリスの定理</span></li></ul></li>
+</ol>
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

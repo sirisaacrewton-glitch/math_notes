@@ -1,0 +1,19 @@
+{
+  "id": "set-definability",
+  "title": "定義可能性",
+  "en": "Defining Definability",
+  "abbr": "定義可能性",
+  "description": "定義可能性の形式化、順序数定義可能集合 OD と HOD。（Kunen 第 V 章に対応）",
+  "msc": "03E47",
+  "prereq": [
+    {
+      "dir": "set-basics",
+      "from": 1,
+      "to": 13
+    },
+    {
+      "dir": "set-consistency",
+      "note": "相対化・絶対性・反映定理"
+    }
+  ]
+}

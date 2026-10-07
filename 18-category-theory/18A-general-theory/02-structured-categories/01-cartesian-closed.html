@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>デカルト閉圏とローヴェアの不動点定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/02-structured-categories/01-cartesian-closed.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# デカルト閉圏とローヴェアの不動点定理 {#cat:page-cartesian-closed keywords="cartesian closed category, exponential object, evaluation, currying, Heyting algebra, point-surjective, weakly point-surjective, Lawvere fixed point theorem, diagonal argument, Cantor's theorem"}
+
+集合の圏では、写像 $X\times B\to C$ と、値が写像である写像 $X\to C^{B}$ が一対一に対応する（カリー化）。この性質を随伴として公理化したものが**デカルト閉圏**である（\ref{cat:cartesian-closed}）。デカルト閉圏では、「関数の集合」に当たる対象 $C^{B}$ と「関数を引数に適用する」射 $\mathrm{ev}$ が使える。本ページの主定理は**ローヴェアの不動点定理**（\ref{cat:lawvere-fixed-point}）である：対象 $A$ から $B^{A}$ への**点全射**な射があれば、$B$ のすべての自己射は不動点をもつ。その対偶はカントールの対角線論法の一般形であり、カントールの定理、ラッセルのパラドックス、タルスキの定理、ゲーデルの対角化定理に共通する構造を取り出したものである。
+
+> 資料：Mac Lane, *Categories for the Working Mathematician* 第 IV 章 §6, §9–§10。ローヴェアの不動点定理は、F. W. Lawvere, Diagonal arguments and cartesian closed categories（*Category Theory, Homology Theory and their Applications II*, Lecture Notes in Mathematics 92, Springer, 1969）による。証明と応用の整理は N. S. Yanofsky, A universal approach to self-referential paradoxes, incompleteness and fixed points（*Bulletin of Symbolic Logic* 9, 2003）を参考にした。
+
+## 記法と定義の確認 {#cat:sec-ccc-notation}
+
+::: notation
+- 積・終対象・極限、随伴・単位・余単位・転置、右随伴は極限を保存すること、米田埋め込みの系は \ref{cat:page-limits}, \ref{cat:page-adjunctions}, \ref{cat:page-adjoints-limits}, \ref{cat:page-yoneda} のとおり（\ref{cat:product}, \ref{cat:initial-terminal}, \ref{cat:adjunction}, \ref{cat:triangle-identities}, \ref{cat:adjoints-preserve-limits}, \ref{cat:yoneda-embedding}）。
+- 終対象を $1$ と書き、射 $x\colon1\to A$ を $A$ の**点**（大域元）という。$\mathbf{Set}$ では点は元と同じものである。
+- 積の射を $\langle f,g\rangle\colon c\to a\times b$、射の積を $f\times g\defeq\langle f\circ p_{1},g\circ p_{2}\rangle$、対角射を $\delta_{A}\defeq\langle1_{A},1_{A}\rangle\colon A\to A\times A$ と書く。$1\times A\cong A$ を同一視することがある（射影 $p_{2}\colon1\times A\to A$ は同型射）。
+- 圏はすべて局所小とする。
+:::
+
+## デカルト閉圏 {#cat:sec-ccc-definition}
+
+::: definition デカルト閉圏 {#cat:cartesian-closed keywords="cartesian closed category, exponential, evaluation map, exponential transpose (currying)" index="デカルト閉圏|でかるとへいけん, 冪対象|べきたいしょう, 評価射|ひょうかしゃ"}
+有限の積をもつ圏 $\mathbf{C}$ が**デカルト閉**であるとは、各対象 $b$ について関手 $-\times b\colon\mathbf{C}\to\mathbf{C}$ が右随伴 $(-)^{b}$ をもつことをいう：
+$$
+\mathbf{C}(a\times b,c)\cong\mathbf{C}(a,c^{b})\quad(a,c\text{ について自然}).
+$$
+$c^{b}$ を**冪対象**、余単位 $\mathrm{ev}_{b,c}\colon c^{b}\times b\to c$ を**評価射**、$f\colon a\times b\to c$ の転置を $\lambda f\colon a\to c^{b}$ と書く。
+:::
+
+::: proposition 評価射による言い換え {#cat:exponential-universal keywords="exponentials via the universal property of evaluation" index="冪対象の普遍性|べきたいしょうのふへんせい"}
+有限の積をもつ圏で、対象 $b,c$ について、対象 $e$ と射 $\mathrm{ev}\colon e\times b\to c$ が、任意の $f\colon a\times b\to c$ に対し $\mathrm{ev}\circ(\lambda f\times1_{b})=f$ となる $\lambda f\colon a\to e$ をちょうど一つもつとする。すべての $b,c$ についてこのような $(e,\mathrm{ev})$ があることと、$\mathbf{C}$ がデカルト閉であることは同値で、$e\cong c^{b}$。
+:::
+
+::: proof
+$(e,\mathrm{ev})$ は、関手 $-\times b$ から $c$ への普遍射（\ref{cat:universal-arrow} の双対）にほかならない：$-\times b$ を射 $\lambda f$ に施したものが $\lambda f\times1_{b}$ だからである。普遍射の族から右随伴が作れること（\ref{cat:adjunction-from-universal} の双対）と、右随伴の余単位が普遍射であること（\ref{cat:adjunction-equivalent-forms} の 2）から同値。同型は普遍射の一意性。
+:::
+
+::: example
+1. **$\mathbf{Set}$.** $c^{b}\defeq\mathbf{Set}(b,c)$、$\mathrm{ev}(g,y)=g(y)$、$\lambda f(x)=f(x,-)$（\ref{cat:adjunction} の例 3）。
+2. **$\mathbf{Cat}$.** 小さい圏の圏で、$\mathbf{C}^{\mathbf{B}}$ は関手圏 $[\mathbf{B},\mathbf{C}]$（\ref{cat:prob-currying}）。
+3. **ハイティング代数.** 前順序（を圏とみたもの）で、有限の積は最大元 $\top$（空の積）と下限 $p\wedge q$、冪は $q^{p}=(p\Rightarrow q)$ で、随伴の条件は
+$$
+r\wedge p\le q\iff r\le(p\Rightarrow q).
+$$
+これを満たす束を**ハイティング代数**という。ブール代数は $p\Rightarrow q\defeq\neg p\vee q$ でハイティング代数になる。集合 $U$ の冪集合 $\mathcal{P}(U)$ はブール代数。位相空間の開集合の束は、$(U\Rightarrow V)\defeq(U^{c}\cup V)$ の内部とするハイティング代数で、一般にはブール代数でない。
+4. **論理式の圏.** 直観主義命題論理の論理式を「$p$ から $q$ が導ける」で前順序にしたもの（を同値な論理式で割ったもの）は、$\wedge$ を積、$\to$ を冪とするハイティング代数である。デカルト閉圏の射の合成と型付きラムダ計算の項の代入が対応することは、カリー＝ハワード対応の圏論的な形である（\ref{logic:page-curry-howard}）。
+5. **前層の圏（事実）.** 小さい圏 $\mathbf{C}$ 上の前層の圏 $[\mathbf{C}^{\mathrm{op}},\mathbf{Set}]$ はデカルト閉で、$G^{F}(c)\defeq\operatorname{Nat}(\mathbf{y}c\times F,G)$（$\mathbf{y}$ は米田埋め込み）。米田の補題から、この形でなければならないことが分かる（Mac Lane 第 IV 章 §10 は、前層の圏がトポスであることを述べている。詳細は S. Mac Lane–I. Moerdijk, *Sheaves in Geometry and Logic* 第 I 章）。
+:::
+
+::: proposition デカルト閉でない圏 {#cat:not-cartesian-closed keywords="Grp and Ab are not cartesian closed" index="デカルト閉でない圏|でかるとへいでないけん"}
+$\mathbf{Grp}$ と $\mathbf{Ab}$ はデカルト閉でない。
+:::
+
+::: proof
+$-\times b$ が右随伴をもてば、左随伴として余極限を保存する（\ref{cat:adjoints-preserve-limits}）。とくに始対象（空の余極限）を始対象に移す。$\mathbf{Grp}$ の始対象は自明群 $0$ で、$0\times b\cong b$。$b$ を自明でない群にとれば $0\times b$ は始対象でない（$\mathbf{Grp}(b,\mathbb{Z}/2)$ は、たとえば $b=\mathbb{Z}/2$ で二元）。$\mathbf{Ab}$ も同様。
+:::
+
+::: proposition デカルト閉圏の基本的な同型 {#cat:ccc-isomorphisms keywords="c^1 = c, (c^b)^a = c^(a x b), initial object is strict-like: 0 x b = 0, distributivity" index="冪の法則|べきのほうそく"}
+デカルト閉圏で次が成り立つ（$\cong$ は自然同型）。
+1. $c^{1}\cong c$。
+2. $(c^{b})^{a}\cong c^{a\times b}$。
+3. 始対象 $0$ があれば $0\times b\cong0$。二つの余積があれば $(a\sqcup a')\times b\cong(a\times b)\sqcup(a'\times b)$。
+:::
+
+::: proof
+米田埋め込みの系（\ref{cat:yoneda-embedding} の 3。表現対象の一意性）を、次の $x$ について自然な全単射に適用する。
+
+**1.** $\mathbf{C}(x,c^{1})\cong\mathbf{C}(x\times1,c)\cong\mathbf{C}(x,c)$（$x\times1\cong x$）。
+
+**2.** $\mathbf{C}(x,(c^{b})^{a})\cong\mathbf{C}(x\times a,c^{b})\cong\mathbf{C}((x\times a)\times b,c)\cong\mathbf{C}(x\times(a\times b),c)\cong\mathbf{C}(x,c^{a\times b})$。
+
+**3.** $-\times b$ は左随伴なので余極限を保存する（\ref{cat:adjoints-preserve-limits}）。始対象は空の図式の余極限、余積は離散な二点の図式の余極限。
+:::
+
+## ローヴェアの不動点定理 {#cat:sec-ccc-lawvere}
+
+::: definition 点全射 {#cat:point-surjective keywords="point-surjective morphism, weakly point-surjective" index="点全射|てんぜんしゃ, 弱点全射|じゃくてんぜんしゃ"}
+終対象 $1$ をもつ圏で、射 $f\colon A\to B$ が**点全射**であるとは、$B$ の任意の点 $y\colon1\to B$ に対し、$A$ の点 $x$ で $f\circ x=y$ となるものがあることをいう。有限の積をもつ圏で、射 $\varphi\colon A\times A\to B$ が**弱点全射**であるとは、任意の射 $g\colon A\to B$ に対し、点 $a\colon1\to A$ で、$A$ のすべての点 $x$ について
+$$
+\varphi\circ\langle a,x\rangle=g\circ x
+$$
+となるものがあることをいう。
+:::
+
+::: intuition
+$\varphi(a,x)$ を「番号 $a$ の関数 $\varphi(a,-)$ を引数 $x$ に適用した値」と読むと、弱点全射とは「$A$ から $B$ へのどの関数も、点の上での値の意味で、ある番号 $a$ の関数として現れる」ことである。$\mathbf{Set}$ では、これは $a\mapsto\varphi(a,-)$ が $A$ から $B^{A}$ への全射であることと同じである。
+:::
+
+::: theorem ローヴェアの不動点定理 {#cat:lawvere-fixed-point keywords="Lawvere's fixed point theorem" index="ローヴェアの不動点定理|ろーゔぇあのふどうてんていり"}
+有限の積をもつ圏で、弱点全射 $\varphi\colon A\times A\to B$ があるならば、$B$ の任意の自己射 $t\colon B\to B$ は不動点をもつ。すなわち、$t\circ y=y$ となる点 $y\colon1\to B$ がある。
+:::
+
+::: proof
+**Step 1（対角線の関数）.** $g\defeq t\circ\varphi\circ\delta_{A}\colon A\to B$ とおく。点 $x$ について $g\circ x=t\circ\varphi\circ\langle x,x\rangle$（$\delta_{A}\circ x=\langle x,x\rangle$）。
+
+**Step 2（その番号）.** $\varphi$ は弱点全射なので、点 $a\colon1\to A$ で、すべての点 $x$ について $\varphi\circ\langle a,x\rangle=g\circ x$ となるものがある。
+
+**Step 3（対角線上で評価）.** $y\defeq\varphi\circ\langle a,a\rangle\colon1\to B$ とおく。Step 2 を $x=a$ に適用し、Step 1 を使うと
+$$
+y=\varphi\circ\langle a,a\rangle=g\circ a=t\circ\varphi\circ\langle a,a\rangle=t\circ y.
+$$
+
+::: hypcheck
+- **弱点全射**：Step 2 で、対角線の関数 $g$ の「番号」$a$ をとるのに一度だけ使った。
+- **積**：$\varphi$ の定義域 $A\times A$ と対角射 $\delta_{A}$ に使った。冪対象は使っていない。
+- **終対象と点**：不動点を点として述べるのに使った。点の少ない圏（たとえば、終対象からの射が少ない前層の圏）では、結論は弱いことに注意。
+- **使わなかったこと**：$t$ について何も仮定していない（任意の自己射）。
+:::
+:::
+
+::: corollary 冪対象を使った形 {#cat:lawvere-ccc-form keywords="Lawvere's fixed point theorem in a cartesian closed category: a point-surjective A -> B^A forces every endomorphism of B to have a fixed point" index="ローヴェアの不動点定理（冪対象の形）|ろーゔぇあのふどうてんていりべきたいしょうのかたち"}
+デカルト閉圏で、点全射 $f\colon A\to B^{A}$ があるならば、$B$ の任意の自己射は不動点をもつ。対偶：不動点をもたない自己射 $B\to B$ があれば、$A\to B^{A}$ の点全射は存在しない。
+:::
+
+::: proof
+$\varphi\defeq\mathrm{ev}\circ(f\times1_{A})\colon A\times A\to B$ が弱点全射であることを示せばよい。$g\colon A\to B$ について、$g\circ p_{2}\colon1\times A\to B$ の転置 $\hat{g}\defeq\lambda(g\circ p_{2})\colon1\to B^{A}$ は点で、点全射性から $f\circ a=\hat{g}$ となる点 $a$ がある。点 $x$ について、$\langle a,x\rangle=(a\times1_{A})\circ\langle1_{1},x\rangle$ なので
+$$
+\begin{aligned}
+\varphi\circ\langle a,x\rangle&=\mathrm{ev}\circ(\hat{g}\times1_{A})\circ\langle1_{1},x\rangle\\
+&=g\circ p_{2}\circ\langle1_{1},x\rangle=g\circ x.
+\end{aligned}
+$$
+二行目は転置の定義 $\mathrm{ev}\circ(\lambda h\times1)=h$（\ref{cat:exponential-universal}）。\ref{cat:lawvere-fixed-point} を適用する。
+:::
+
+::: corollary カントールの定理（圏論版） {#cat:cantor-via-lawvere keywords="Cantor's theorem as a corollary of Lawvere's fixed point theorem" index="カントールの定理（ローヴェア）|かんとーるのていりろーゔぇあ"}
+任意の集合 $X$ について、全射 $X\to\mathcal{P}(X)$ は存在しない。より一般に、二元以上の集合 $B$ について、全射 $X\to B^{X}$ は存在しない。
+:::
+
+::: proof
+$\mathbf{Set}$ はデカルト閉で、点は元なので、点全射は全射と同じである。$B$ が二元以上なら、不動点をもたない写像 $t\colon B\to B$ がある（異なる二元 $b_{0},b_{1}$ を入れ替え、他は $b_{0}$ に移す）。\ref{cat:lawvere-ccc-form} の対偶から、全射 $X\to B^{X}$ はない。$\mathcal{P}(X)\cong\{0,1\}^{X}$（特性関数）なので、前半が従う。
+:::
+
+::: example
+**証明を展開すると対角線論法になる.** カントールの定理の場合、$f\colon X\to\{0,1\}^{X}$、$t$ を $0,1$ の入れ替えとすると、Step 1 の $g(x)=1-f(x)(x)$ は対角線を反転した関数で、Step 3 は「$g=f(a)$ なら $g(a)=1-f(a)(a)=1-g(a)$」という矛盾である。これは \ref{set:cantor} の証明の集合 $\{x:x\notin f(x)\}$ と同じものである。
+:::
+
+::: supplement
+**一般化と類似の定理.**
+- *タルスキの定理とゲーデルの対角化定理.* ローヴェアの元の論文は、論理式の圏で同じ議論を行い、真理の定義不能性（\ref{pt:tarski-undefinability}）を導いた。$A$ を一変数の論理式（のゲーデル数）、$B$ を真理値とし、$\varphi(a,x)$ を「論理式 $a$ に $x$ を代入した文の真偽」とする。真理が算術的に定義できると、対角化（\ref{pt:diagonal-lemma}）が $\varphi$ の弱点全射性を与え、否定 $t=\neg$ が不動点をもたないことに矛盾する。ゲーデルの対角化定理は逆に、算術の中で「不動点が存在する」ことを主張する側の現れである。
+- *ラッセルのパラドックスと停止問題.* ヤノフスキー（上掲）は、集合と写像だけで書いたローヴェアの定理の対偶から、ラッセルのパラドックス、停止問題の決定不能性（\ref{comp:diagonalization-remark}）、グレリングのパラドックスなどが同じ形で得られることを示している。
+- *再帰定理.* クリーネの再帰定理（\ref{comp:second-recursion-theorem}）は「すべての計算可能な変換が不動点（の指数）をもつ」という主張で、ローヴェアの定理の「肯定の側」に当たる：指数による部分関数の枚挙は（部分関数の圏の適当な意味で）点全射であり、その結果として不動点が存在する。ただし再帰定理は、外延的な等しさ $\varphi_{e}\simeq\varphi_{h(e)}$ を結論とし、ローヴェアの定理がそのまま当てはまるわけではない（対応は比喩として理解するのが安全である）。
+- *反射的対象.* $D\cong D^{D}$ となる対象 $D$（型なしラムダ計算のモデル。\ref{logic:page-lambda-calculus}）があるデカルト閉圏では、ローヴェアの定理から $D$ のすべての自己射が不動点をもつ。これは型なしラムダ計算の不動点結合子 $Y$ の存在の圏論的な理由で、そのような圏（スコットの領域の圏など）では、不動点をもたない自己射は存在しない。$\mathbf{Set}$ にそのような $D$ が一点集合しかないのは、カントールの定理による。
+
+**前提を変えると.** 点全射を「エピ射」に弱めると、結論は成り立たない。たとえば、点の少ない圏では、エピ射 $A\to B^{A}$ があっても $B$ の自己射が不動点をもつとは限らない。ローヴェアの定理は、点（大域元）で議論する点に本質がある。
+
+**高い視点から：自己言及の幾何.** 不動点定理の証明は、「表の行（番号 $a$）と列（引数 $x$）」の対角線 $\langle x,x\rangle$ を通って、自分自身を表す番号 $a$ を見つける手順である。比喩で言えば、すべての地図を収めた地図帳（$\varphi$ が弱点全射）があるなら、地図帳自身を描いた地図もその中にあり、その地図の上で「自分の位置」を指す点（不動点）が見つかってしまう。カントールやタルスキの定理は、そのような地図帳が作れないこと（作れば矛盾する変換 $t$ がある）を、再帰定理や対角化定理は、作れる世界では自己言及が必ず成功することを述べている。
+:::
+
+## 問題 {#cat:sec-ccc-problems}
+
+::: problem {#cat:prob-ccc-composition}
+デカルト閉圏で、関数の合成に当たる射 $\mathrm{comp}\colon c^{b}\times b^{a}\to c^{a}$ を、評価射を使って構成し、$\mathbf{Set}$ で通常の合成と一致することを確かめよ。
+:::
+
+::: solution
+$c^{b}\times b^{a}\times a\to c$ を、$\mathrm{ev}_{b,c}\circ(1_{c^{b}}\times\mathrm{ev}_{a,b})$（積の結合の同型 $(c^{b}\times b^{a})\times a\cong c^{b}\times(b^{a}\times a)$ を経由）で定め、その転置を $\mathrm{comp}$ とする。$\mathbf{Set}$ では $(g,f,x)\mapsto g(f(x))$ の転置で、$(g,f)\mapsto g\circ f$。
+:::
+
+::: problem {#cat:prob-heyting-not-boolean}
+ハイティング代数で $\neg p\defeq(p\Rightarrow\bot)$（$\bot$ は最小元）とすると、$p\le\neg\neg p$ は常に成り立つが、$\neg\neg p\le p$ は一般には成り立たないことを、実数直線の開集合の束で示せ。
+:::
+
+::: solution
+$p\le\neg\neg p$：随伴から $p\le(\neg p\Rightarrow\bot)\iff p\wedge\neg p\le\bot$ で、$\neg p\le\neg p$ の転置 $\neg p\wedge p\le\bot$ から成り立つ。開集合の束では $\neg U$ は $U$ の補集合の内部。$U=\mathbb{R}\setminus\{0\}$ とすると $\neg U=\operatorname{int}\{0\}=\varnothing$、$\neg\neg U=\operatorname{int}\mathbb{R}=\mathbb{R}\not\le U$。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

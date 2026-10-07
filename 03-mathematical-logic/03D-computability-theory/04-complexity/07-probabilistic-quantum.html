@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>確率的計算と量子計算 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/04-complexity/07-probabilistic-quantum.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 確率的計算と量子計算 {#comp:page-probabilistic-quantum keywords="probabilistic Turing machine, BPP, RP, amplification, Schwartz-Zippel lemma, polynomial identity testing, quantum circuits, qubits, unitary gates, Toffoli gate, Hadamard gate, BQP, BPP ⊆ BQP ⊆ PSPACE, Shor's algorithm, Grover's algorithm"}
+
+計算の途中で**硬貨を投げてよい**としたら、何が効率よく計算できるか。本ページではまず、誤りの確率が $1/3$ 以下の多項式時間の確率的アルゴリズムで決定できる言語のクラス **BPP**（\ref{comp:class-bpp}）を定め、繰り返しで誤りを指数的に小さくできること（\ref{comp:amplification}）、$\mathrm{BPP}\subseteq\mathrm{PSPACE}$（\ref{comp:bpp-in-pspace}）を示す。確率的アルゴリズムの典型例として、多項式が恒等的に $0$ かどうかを、ランダムな点で値を調べて判定する方法（シュワルツ–ジッペルの補題、\ref{comp:schwartz-zippel}）を扱う。後半では**量子回路**（\ref{comp:quantum-circuit}）を定め、量子計算機が多項式時間で決定できる言語のクラス **BQP**（\ref{comp:class-bqp}）が $\mathrm{BPP}\subseteq\mathrm{BQP}\subseteq\mathrm{PSPACE}$（\ref{comp:bpp-in-bqp}, \ref{comp:bqp-in-pspace}）を満たすことを示す。
+
+> 量子計算の部分は資料フォルダに参考書がなく、一般的に知られている定義（量子回路の模型）に基づいて本サイトで組み立てた。ゲートの集合の選び方などは文献によって異なる。
+
+## 記法と定義の確認 {#comp:sec-pq-notation}
+
+::: notation
+- 非決定性 TM、多項式時間、P、NP、PSPACE は \ref{comp:page-time-complexity}, \ref{comp:page-np}, \ref{comp:page-space-complexity} のとおり。
+- 二項係数 $\binom{k}{j}$ と $\sum_{j}\binom{k}{j}=2^{k}$ を使う。有限集合 $S$ からの一様な選択の確率 $\Pr$ は、場合の数の比として扱う（有限の確率空間だけを使う）。
+- 複素ベクトル空間 $\C^{N}$ の標準内積 $\langle u,v\rangle=\sum_{i}\overline{u_{i}}v_{i}$、ノルム $\lVert v\rVert$、ユニタリ行列（$U^{\ast}U=I$）、テンソル積 $\otimes$ を使う。
+:::
+
+## 確率的計算 {#comp:sec-probabilistic}
+
+::: definition 確率的チューリング機械 {#comp:probabilistic-tm keywords="probabilistic Turing machine, coin flips" index="確率的チューリング機械|かくりつてきちゅーりんぐきかい"}
+**確率的 TM** とは、各段の選択肢がちょうど $2$ 個（または $1$ 個）の非決定性 TM で、計算の枝 $b$ の**確率**を $\Pr[b]\defeq2^{-k}$（$k$ は $b$ で選択肢が $2$ 個あった段の数）と定めたものである。入力 $w$ を**受理する確率**は、受理する枝の確率の和である。$M$ が言語 $A$ を**誤り確率 $\varepsilon$ で決定する**とは、$w\in A$ なら受理する確率が $1-\varepsilon$ 以上、$w\notin A$ なら $\varepsilon$ 以下であることをいう。
+:::
+
+::: remark
+時間 $t(n)$ の確率的 TM は、長さ $t(n)$ のランダムなビット列 $r\in\{0,1\}^{t(n)}$ を受け取る決定性 TM $M(w,r)$ と同じである（足りない選択は使わないビットとみなす）。受理する確率は $\lvert\{r:M(w,r)\text{ が受理}\}\rvert/2^{t(n)}$。
+:::
+
+::: definition BPP {#comp:class-bpp keywords="bounded-error probabilistic polynomial time, BPP, RP" index="BPP|びーぴーぴー"}
+多項式時間の確率的 TM が誤り確率 $1/3$ で決定できる言語全体を **BPP** という。$w\notin A$ なら必ず拒否し（誤り確率 $0$）、$w\in A$ なら確率 $1/2$ 以上で受理するものを **RP** という。
+:::
+
+::: lemma 誤りの縮小 {#comp:amplification keywords="amplification lemma, majority vote" index="誤りの縮小|あやまりのしゅくしょう"}
+$0\le\varepsilon<1/2$ とし、$M$ が $A$ を誤り確率 $\varepsilon$ で決定するとする。$M$ を独立に $k$ 回動かし多数決をとる機械の誤り確率は $\bigl(4\varepsilon(1-\varepsilon)\bigr)^{k/2}$ 以下である。とくに、誤り確率 $1/3$ を、多項式 $p(n)$ について $2^{-p(n)}$ にまで下げられる（$k=O(p(n))$ 回で）。
+:::
+
+::: proof
+多数決が誤るのは、$k$ 回のうち誤った回数 $j$ が $j\ge k/2$ のときに限る。各回の誤りの確率を $\varepsilon'\le\varepsilon$ とすると（独立な $k$ 組のランダムなビット列の上の一様な確率で）、その確率は
+$$
+\sum_{j\ge k/2}\binom{k}{j}\varepsilon'^{\,j}(1-\varepsilon')^{k-j}\le\sum_{j\ge k/2}\binom{k}{j}\varepsilon'^{\,k/2}(1-\varepsilon')^{k/2}\le2^{k}\bigl(\varepsilon'(1-\varepsilon')\bigr)^{k/2}.
+$$
+最初の不等式は、$\varepsilon'<1/2$ のとき $\varepsilon'/(1-\varepsilon')<1$ なので、$j\ge k/2$ で $\varepsilon'^{\,j}(1-\varepsilon')^{k-j}=\bigl(\varepsilon'(1-\varepsilon')\bigr)^{k/2}\bigl(\varepsilon'/(1-\varepsilon')\bigr)^{j-k/2}\le\bigl(\varepsilon'(1-\varepsilon')\bigr)^{k/2}$ による。$x(1-x)$ は $[0,1/2]$ で増加なので $\varepsilon'(1-\varepsilon')\le\varepsilon(1-\varepsilon)$。$\varepsilon=1/3$ では $4\varepsilon(1-\varepsilon)=8/9$ で、$(8/9)^{k/2}\le2^{-p(n)}$ となる $k=O(p(n))$ がある。
+:::
+
+::: theorem BPP は PSPACE に含まれる {#comp:bpp-in-pspace keywords="BPP subset PSPACE" index="BPP と PSPACE|びーぴーぴーとぴーすぺーす"}
+$\mathrm{P}\subseteq\mathrm{BPP}\subseteq\mathrm{PSPACE}$。
+:::
+
+::: proof
+前半は、硬貨を使わない機械を確率的 TM とみなせばよい。後半：$M(w,r)$（$r$ の長さ $t(n)$、多項式時間）について、$r$ を $\{0,1\}^{t(n)}$ の中で順に数え上げ、受理する $r$ の個数を数え、$2^{t(n)}/2$ を超えるかで答える。$r$ と計数器と $M$ の計算は多項式の領域で、各 $r$ の試行の領域は再利用する。
+:::
+
+::: lemma シュワルツ–ジッペルの補題 {#comp:schwartz-zippel keywords="Schwartz-Zippel lemma, polynomial identity testing" index="シュワルツ–ジッペルの補題|しゅわるつじっぺるのほだい"}
+$K$ を体、$p\in K[x_{1},\dots,x_{m}]$ を全次数 $d$ の $0$ でない多項式、$S\subseteq K$ を有限集合とする。$S^{m}$ から一様に選んだ $\vec{r}$ について
+$$
+\Pr\bigl[p(\vec{r})=0\bigr]\le\frac{d}{\lvert S\rvert}.
+$$
+:::
+
+::: proof
+$m$ に関する帰納法。$m=1$ なら、$0$ でない $d$ 次の一変数多項式の根は $d$ 個以下（因数定理）なので成り立つ。$m\ge2$ とし、$p=\sum_{i=0}^{k}x_{1}^{i}q_{i}(x_{2},\dots,x_{m})$（$q_{k}\neq0$）と書く。$q_{k}$ の全次数は $d-k$ 以下。事象 $E$「$q_{k}(r_{2},\dots,r_{m})=0$」について、帰納法の仮定から $\Pr[E]\le(d-k)/\lvert S\rvert$。$E$ が起きないとき、$(r_{2},\dots,r_{m})$ を固定すると $p(x_{1},r_{2},\dots)$ は $x_{1}$ の $k$ 次の $0$ でない多項式なので、$r_{1}$ が根になる確率は $k/\lvert S\rvert$ 以下。よって
+$$
+\Pr[p(\vec{r})=0]\le\Pr[E]+\Pr[p(\vec{r})=0\wedge\neg E]\le\frac{d-k}{\lvert S\rvert}+\frac{k}{\lvert S\rvert}=\frac{d}{\lvert S\rvert}.
+$$
+（第二項は、$\neg E$ となる $(r_{2},\dots,r_{m})$ ごとに $r_{1}$ の数え上げで評価し、それらを足し合わせたもの。）
+:::
+
+::: example 多項式の恒等式の判定
+整数係数の多項式を、加法・乗法・定数・変数からなる式（算術式）$F$ で与え、$F$ が多項式として $0$ かどうかを判定したい。展開すると項の数が指数的に増えうるが、$F$ の長さを $n$ とすると全次数は $n$ 以下なので、$S=\{1,\dots,3n\}$ から $\vec{r}$ を選んで $F(\vec{r})$ を計算すれば、$F\neq0$ のとき $F(\vec{r})=0$ となる確率は $1/3$ 以下（\ref{comp:schwartz-zippel}、$K=\mathbb{Q}$）。値 $F(\vec{r})$ の桁数は $n$ の多項式で抑えられる（各演算で桁数が高々足し算的に増える）ので、計算は多項式時間でできる。よって「$F\neq0$」は RP に属する。この問題が P に属するかどうかは知られていない。
+:::
+
+## 量子回路 {#comp:sec-quantum}
+
+::: definition 量子ビットと量子回路 {#comp:quantum-circuit keywords="qubit, quantum state, unitary gate, Hadamard, Toffoli, measurement, quantum circuit" index="量子回路|りょうしかいろ, 量子ビット|りょうしびっと"}
+1. $n$ **量子ビット**の**状態**とは、$\C^{2^{n}}=(\C^{2})^{\otimes n}$ の長さ $1$ のベクトルのこと。標準基底を $\lvert y\rangle$（$y\in\{0,1\}^{n}$）と書き、状態を $\sum_{y}\alpha_{y}\lvert y\rangle$（$\sum_{y}\lvert\alpha_{y}\rvert^{2}=1$）と表す。$\alpha_{y}$ を**振幅**という。
+2. **ゲート**は、少数の量子ビットに作用するユニタリ行列である。本ページでは次の三つだけを使う：**否定ゲート** $X\lvert a\rangle=\lvert1\oplus a\rangle$（1 量子ビット）、**アダマールゲート** $H\lvert0\rangle=\frac{1}{\sqrt2}(\lvert0\rangle+\lvert1\rangle)$, $H\lvert1\rangle=\frac{1}{\sqrt2}(\lvert0\rangle-\lvert1\rangle)$（1 量子ビット）と、**トフォリゲート** $\mathrm{Tof}\lvert a,b,c\rangle=\lvert a,b,c\oplus(a\wedge b)\rangle$（3 量子ビット、$\oplus$ は排他的論理和）。$n$ 量子ビットのうち指定した量子ビットにゲート $G$ を作用させる行列は、$G$ と残りの恒等行列のテンソル積（量子ビットの並べ替えを含む）で、これもユニタリである。
+3. **量子回路** $C$ とは、量子ビットの数 $N$ とゲートの作用の列 $G_{1},\dots,G_{s}$ のこと。入力 $x\in\{0,1\}^{n}$（$n\le N$）について、初期状態 $\lvert x0^{N-n}\rangle$ に $U_{C}\defeq G_{s}\cdots G_{1}$ を作用させ、得られた状態 $\sum_{y}\alpha_{y}\lvert y\rangle$ の第 $1$ 量子ビットを**測定**すると、$1$ が得られる確率は $\sum_{y:y_{1}=1}\lvert\alpha_{y}\rvert^{2}$ である（これを定義とする）。
+:::
+
+::: remark
+上の 2 では、振幅がすべて実数になるゲートの集合 $\{X,H,\mathrm{Tof}\}$ を選んだ。この集合（$H$ とトフォリゲートが本質で、$X$ は補助ビットを $1$ にするために加えた）で BQP（次の定義）が通常の（複素振幅の）ゲートの集合で定めたものと一致することが知られている（シーとアハロノフによる）。本サイトではこの一致は示していない。
+:::
+
+::: definition BQP {#comp:class-bqp keywords="bounded-error quantum polynomial time, BQP, uniform circuit family" index="BQP|びーきゅーぴー"}
+言語 $A\subseteq\{0,1\}^{\ast}$ が **BQP** に属するとは、多項式時間の決定性 TM が $1^{n}$ から量子回路 $C_{n}$（量子ビット数とゲート数は $n$ の多項式）の記述を出力でき（**一様**）、すべての $x\in\{0,1\}^{n}$ について、$x\in A$ なら $C_{n}$ が $1$ を出す確率が $2/3$ 以上、$x\notin A$ なら $1/3$ 以下となることをいう。
+:::
+
+::: theorem BPP は BQP に含まれる {#comp:bpp-in-bqp keywords="BPP subset BQP, reversible computation" index="可逆計算|かぎゃくけいさん"}
+$\mathrm{BPP}\subseteq\mathrm{BQP}$。
+:::
+
+::: proof
+$A\in\mathrm{BPP}$ を、多項式時間の決定性 TM $M(x,r)$（$r\in\{0,1\}^{m}$, $m$ は多項式）で与える。
+
+**可逆な回路.** 多項式時間の TM の計算は、入力長 $n$ ごとに AND・NOT・入力の複製からなる多項式の大きさのブール回路で表せ、その回路は多項式時間で書き出せる（クック–レヴィンの表 \ref{comp:cook-levin} の各升目を、前の行の近くの升目のブール関数として計算すればよい）。各ゲートを、新しい補助ビット（初期値 $0$）を使って可逆なゲートで置き換える：AND は $\mathrm{Tof}\lvert a,b,0\rangle=\lvert a,b,a\wedge b\rangle$、NOT は補助ビットに写してから反転（$\mathrm{Tof}$ と $X$ で $\lvert a,0\rangle\mapsto\lvert a,\neg a\rangle$：$X$ で値 $1$ の補助ビット $u$ を作り、$\mathrm{Tof}\lvert u,a,0\rangle=\lvert u,a,a\rangle$ で写してから $X$ で反転）、複製は $\mathrm{Tof}\lvert u,a,0\rangle=\lvert u,a,a\rangle$（$u=1$）。この回路 $R$ は基底ベクトルを基底ベクトルに移す置換行列で、$R\lvert x,r,0\cdots\rangle=\lvert x,r,M(x,r),\text{ごみ}\rangle$ となる（出力ビットを第 1 量子ビットに置くよう並べ替える）。
+
+**硬貨.** $m$ 個の量子ビット（初期値 $0$）に $H$ を作用させると $2^{-m/2}\sum_{r}\lvert r\rangle$ になる。全体の状態は
+$$
+2^{-m/2}\sum_{r\in\{0,1\}^{m}}\lvert x,r,0\cdots\rangle\ \xrightarrow{\ R\ }\ 2^{-m/2}\sum_{r}\lvert M(x,r),x,r,\text{ごみ}_{r}\rangle.
+$$
+右辺の基底ベクトルは $r$ ごとに異なる（$r$ がそのまま残っている）ので、第 1 量子ビットが $1$ になる確率は $\lvert\{r:M(x,r)=1\}\rvert\cdot2^{-m}$、すなわち $M$ が受理する確率に等しい。回路は多項式時間で書き出せるので、$A\in\mathrm{BQP}$。
+:::
+
+::: theorem BQP は PSPACE に含まれる {#comp:bqp-in-pspace keywords="BQP subset PSPACE, path sum, Feynman sum over histories" index="経路和|けいろわ"}
+$\mathrm{BQP}\subseteq\mathrm{PSPACE}$。
+:::
+
+::: proof
+$C_{n}$ のゲートを $G_{1},\dots,G_{s}$、量子ビット数を $N$ とする。最終状態の振幅は、行列の積を展開して
+$$
+\alpha_{y}=\langle y\rvert G_{s}\cdots G_{1}\lvert x0\cdots\rangle=\sum_{z_{1},\dots,z_{s-1}}\prod_{l=1}^{s}\langle z_{l}\rvert G_{l}\lvert z_{l-1}\rangle
+$$
+（$z_{0}=x0\cdots$, $z_{s}=y$、和は $\{0,1\}^{N}$ 上）。各ゲートは少数の量子ビットにしか作用しないので、$\langle z_{l}\rvert G_{l}\lvert z_{l-1}\rangle$ は $z_{l-1},z_{l}$ から直ちに計算でき、その値は $0,1,\pm\frac{1}{\sqrt2}$ のどれかである（$X$ と $\mathrm{Tof}$ は置換行列なので $0$ か $1$、$H$ は $\pm1/\sqrt2$ か $0$）。したがって各項は $0$ または $\pm2^{-h/2}$（$h$ は回路中の $H$ の個数で項によらない）なので、$\alpha_{y}=2^{-h/2}(P_{y}-Q_{y})$（$P_{y}$, $Q_{y}$ は値が $+$, $-$ の項の個数）。
+
+$P_{y},Q_{y}$ は、$z_{1},\dots,z_{s-1}$ を深さ優先で数え上げて計数すれば、$O(sN)$ ビットの領域で計算できる（項の数は指数的だが、各時点で一つの列と計数器だけを持つ）。受理する確率 $\sum_{y_{1}=1}\alpha_{y}^{2}=2^{-h}\sum_{y_{1}=1}(P_{y}-Q_{y})^{2}$ も、$y$ を順に数え上げて整数の和を計算すれば多項式の領域で求まり、$2^{h}\cdot\frac{1}{2}$ と比べて答えを出す。回路 $C_{n}$ の記述は多項式時間（したがって多項式領域）で得られる。
+:::
+
+::: hypcheck
+- **誤り確率が $1/2$ から離れていること**：\ref{comp:amplification} で $\varepsilon<1/2$ を使い、多数決で誤りが減ることを保証した。$\varepsilon=1/2$ では多数決は役に立たない。
+- **一様性**：BQP の定義で回路の記述を多項式時間で出力できることを要求した。これがないと、回路の族に計算不能な情報を埋め込める。\ref{comp:bqp-in-pspace} で回路を多項式領域で得るのに使った。
+- **ゲートの集合が有限で振幅が単純なこと**：\ref{comp:bqp-in-pspace} で、各項を $\pm2^{-h/2}$ と整数の計数で表すのに使った。一般の複素振幅のゲートでも、振幅を十分な精度で近似すれば同じ包含が成り立つことが知られている。
+- **可逆性**：量子回路のゲートはユニタリ（可逆）なので、\ref{comp:bpp-in-bqp} で古典的な計算を補助ビット付きの可逆な計算に直した。
+:::
+
+## 問題 {#comp:sec-pq-problems}
+
+::: problem {#comp:prob-rp-np}
+$\mathrm{P}\subseteq\mathrm{RP}\subseteq\mathrm{NP}$ を示せ。
+:::
+
+::: solution
+前半は硬貨を使わない機械。後半：$A\in\mathrm{RP}$ の機械 $M(w,r)$ について、$w\in A$ なら受理する $r$ が存在し、$w\notin A$ なら存在しない。よって $r$ を証明書とする多項式時間の検証機がある。
+:::
+
+::: problem {#comp:prob-hadamard-twice}
+1 量子ビットに $H$ を二回作用させると元の状態に戻ること（$H^{2}=I$）を確かめよ。また、$H\lvert0\rangle$ を測定すると $0$, $1$ がそれぞれ確率 $1/2$ で得られるのに、$H^{2}\lvert0\rangle$ を測定すると必ず $0$ が得られることを、振幅の打ち消し合いとして説明せよ。
+:::
+
+::: solution
+$H=\frac{1}{\sqrt2}\begin{pmatrix}1&1\\1&-1\end{pmatrix}$ で $H^{2}=\frac{1}{2}\begin{pmatrix}2&0\\0&2\end{pmatrix}=I$。$H\lvert0\rangle=\frac{1}{\sqrt2}(\lvert0\rangle+\lvert1\rangle)$ の振幅は $\pm1/\sqrt2$ で、測定の確率は各 $1/2$。もう一度 $H$ を作用させると、$\lvert1\rangle$ の振幅は $\frac{1}{\sqrt2}\cdot\frac{1}{\sqrt2}+\frac{1}{\sqrt2}\cdot(-\frac{1}{\sqrt2})=0$ と打ち消し合い、$\lvert0\rangle$ の振幅は $\frac12+\frac12=1$ と強め合う。確率的計算では確率（非負）を足し合わせるだけなので、このような打ち消し合いは起きない：硬貨を二回投げても結果は一様なままである。
+:::
+
+::: supplement
+**前提の検討.**
+- BPP の定義の $1/3$ は、$1/2$ より真に小さい任意の定数（あるいは $1/2-1/p(n)$）に変えてもクラスは変わらない（\ref{comp:amplification}）。
+- 量子回路の模型では、「途中で測定する」ことを許しても計算能力は変わらないことが知られている（測定を最後まで遅らせられる）。
+
+**関連する結果（本サイトでは示していない）.**
+- *ショアのアルゴリズム*（1994）：整数の素因数分解と離散対数は BQP に属する。素因数分解が BPP に属するかどうかは知られていない。
+- *グローヴァーのアルゴリズム*（1996）：$N$ 個の候補から条件を満たすものを、神託への問い合わせ $O(\sqrt{N})$ 回で見つけられる。古典的な確率的計算では $\Omega(N)$ 回が必要であり、問い合わせの回数については $\Theta(\sqrt{N})$ が最適であることも知られている（ベネット–バーンスタイン–ブラサール–ヴァジラニ）。
+- *BQP と NP.* BQP が NP を含むか、NP が BQP を含むかはどちらも知られていない。グローヴァーの最適性は、量子計算が NP 完全問題を「総当たりより指数的に速く」解けるとは限らないことの、神託に相対化した証拠とされる。
+- *拡張されたチャーチ–チューリングの提唱との関係*（\ref{comp:page-time-complexity} の補足）：素因数分解が BPP に属さず、量子計算機が物理的に実現できるなら、この提唱は成り立たないことになる。これは推測の段階の議論で、どちらも証明されていない。
+- *脱乱択化.* 回路の下界についての仮定のもとで $\mathrm{BPP}=\mathrm{P}$ が従うことが知られている（インパリアッツォ–ウィグダーソン）。素数判定は長く RP（の補集合）の代表例だったが、P に属することが示された（AKS 2002）。
+
+**高い視点から：確率から振幅へ.** 確率的計算の一歩は、確率分布（非負の成分の和が $1$ のベクトル）に**確率行列**を掛ける操作で、量子計算の一歩は、振幅のベクトル（二乗の和が $1$ のベクトル）に**ユニタリ行列**を掛ける操作である。どちらも計算の結果は「すべての計算の経路の重みの和」（\ref{comp:bqp-in-pspace} の経路和）で決まるが、確率の重みは常に非負で足し合わされるだけなのに対し、振幅の重みは正にも負にもなり、経路どうしが**干渉**して打ち消し合う（問題 \ref{comp:prob-hadamard-twice}）。量子アルゴリズムの技術は、正しい答えに至る経路を強め合わせ、誤った答えに至る経路を打ち消し合わせるように回路を設計することである。比喩で言えば、確率的計算は「多くの人に道を尋ねて多数決をとる」こと、量子計算は「波を送り出し、波の重ね合わせで出口だけが明るくなるように迷路を設計する」ことである。線形代数の言葉では、P・BPP・BQP の違いは、計算の一歩を表す行列が「置換行列」「確率行列」「ユニタリ行列」のどれであるかの違いに当たる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

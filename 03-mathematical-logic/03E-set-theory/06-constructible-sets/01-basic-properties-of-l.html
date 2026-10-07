@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L の基本性質 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/06-constructible-sets/01-basic-properties-of-l.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# L の基本性質 {#set:page-l-basic keywords="constructible sets, L, definable power set, L(alpha), L-rank, constructible hierarchy"}
+
+本章では $\ZF$ の中で**構成可能集合**のクラス $\mathbf{L}$ を定義する。$\mathbf{L}$ は $\ZFC+\mathrm{GCH}$ の推移的な真のクラスのモデルであり、$\lozenge$ や $\lozenge^{+}$ など多くの有用な組合せ論的原理を満たす。$\mathbf{L}=\bigcup_{\alpha\in\mathbf{ON}}L_{\alpha}$ とし、$L_{\alpha}$ は再帰で作る：$L_{0}=0$、極限 $\alpha$ では $L_{\alpha}=\bigcup_{\xi<\alpha}L_{\xi}$、そして $L_{\alpha+1}$ は、$L_{\alpha}$ の部分集合のうち $L_{\alpha}$ の有限個の元から $L_{\alpha}$ に相対化した論理式で定義できるものの全体とする。「論理式で定義できる」は \ref{set:page-formalizing-definability} の $\mathrm{Df}$ で厳密にする。
+
+$L_{\alpha}$ と累積階層 $R(\alpha)$ の定義の違いは、$R(\alpha+1)$ が $R(\alpha)$ の**すべての**部分集合を含むのに対し、$L_{\alpha+1}$ は**定義可能な**部分集合しか含まないことだけである。この違いは後で非常に重要になるが、似ているので単純な性質の多くは共通である。本ページでは $\ZF$ の中で $\mathbf{L}$ を厳密に定義し、その基本性質を調べる。（Kunen 第 VI 章冒頭と §1 に対応する。）
+
+## 記法と定義の確認 {#set:sec-l-basic-notation}
+
+::: notation
+- 基本の体系は $\ZF$（基礎の公理を含む）。選択公理を使う主張には（AC）と明記する。
+- $\mathrm{Df}(A,n)$、${}^{n}A$、$s^{\frown}\langle x\rangle$、$\mathrm{Diag}_{=}$ と、\ref{set:df-closure}, \ref{set:df-contains-definable}, \ref{set:df-countable} は \ref{set:page-formalizing-definability} のとおり。
+- 累積階層とその性質（\ref{set:cumulative-hierarchy}, \ref{set:r-alpha-basic}, \ref{set:rank-basic}, \ref{set:r-n-finite}）は \ref{set:page-cumulative-hierarchy} と \ref{set:page-size-of-wf} のとおり。
+- Δ₀ 論理式の絶対性（\ref{set:delta0-absolute}）、順序数であることの Δ₀ による特徴づけ（\ref{set:absolute-ordinals} の (a)）を使う。
+- 有限集合（\ref{set:finite-set}：$\lvert X\rvert=n$ は全単射 $n\to X$ の存在）、和集合の濃度（\ref{set:union-bound}）、全射と濃度（\ref{set:surjection-cardinality}）、$\lvert A\times A\rvert=\lvert A\rvert$（\ref{set:kappa-times-kappa}）を使う。
+:::
+
+## 定義可能な冪集合 {#set:sec-definable-power-set}
+
+::: definition 定義可能な冪集合 {#set:definable-power-set keywords="definable power set, D(A), definable subsets with parameters" index="定義可能な冪集合|ていぎかのうなべきしゅうごう, 定義可能部分集合|ていぎかのうぶぶんしゅうごう"}
+集合 $A$ に対し
+$$
+\begin{aligned}
+\mathcal{D}(A)\defeq\bigl\{X\subseteq A:{}&\exists n\in\omega\;\exists s\in{}^{n}A\;\exists R\in\mathrm{Df}(A,n+1)\\
+&\bigl(X=\{x\in A:s^{\frown}\langle x\rangle\in R\}\bigr)\bigr\}
+\end{aligned}
+$$
+と定める。直観的には $\mathcal{D}(A)$ は、$A$ の有限個の元 $s(0),\dots,s(n-1)$ をパラメータとして、$A$ に相対化した論理式で定義できる $A$ の部分集合の全体である。
+:::
+
+$\mathcal{D}(A)$ は、$\{(s,R):n\in\omega,\ s\in{}^{n}A,\ R\in\mathrm{Df}(A,n+1)\}$ の置換公理による像なので、冪集合公理を使わずに集合として存在する。メタの理論の論理式との関係は次のとおりである。
+
+::: lemma 論理式で定義される部分集合 {#set:definable-subset-formula}
+自由変数が表示したものだけである各論理式 $\varphi(v_{0},\dots,v_{n-1},x)$ について
+$$
+\ZF-\mathrm{P}\vdash\forall A\;\forall v_{0},\dots,v_{n-1}\in A\;\bigl[\{x\in A:\varphi^{A}(v_{0},\dots,v_{n-1},x)\}\in\mathcal{D}(A)\bigr].
+$$
+:::
+
+::: proof
+\ref{set:df-contains-definable}（変数の列 $v_{0},\dots,v_{n-1},x$）より $R\defeq\{t\in{}^{n+1}A:\varphi^{A}(t(0),\dots,t(n))\}\in\mathrm{Df}(A,n+1)$。$v_{0},\dots,v_{n-1}\in A$ を固定し $s\defeq\langle v_{0},\dots,v_{n-1}\rangle\in{}^{n}A$ とすると、$x\in A$ について $s^{\frown}\langle x\rangle\in R\iff\varphi^{A}(\vec{v},x)$。よって $\{x\in A:\varphi^{A}(\vec{v},x)\}=\{x\in A:s^{\frown}\langle x\rangle\in R\}\in\mathcal{D}(A)$。
+:::
+
+これも \ref{set:df-contains-definable} と同じく、論理式ごとに一つの定理を与える図式である。
+
+::: lemma D(A) の基本性質 {#set:definable-power-basic keywords="properties of the definable power set"}
+任意の集合 $A$ について次が成り立つ。
+1. $\mathcal{D}(A)\subseteq\mathcal{P}(A)$。
+2. $A$ が推移的ならば $A\subseteq\mathcal{D}(A)$。
+3. $A$ の有限部分集合はすべて $\mathcal{D}(A)$ に属する。
+4. （AC）$\lvert A\rvert\ge\omega$ ならば $\lvert\mathcal{D}(A)\rvert=\lvert A\rvert$。
+:::
+
+::: proof
+**1.** 定義から。
+
+**2.** \ref{set:definable-subset-formula} を論理式 $x\in v_{0}$ に適用すると、$\forall v\in A\,(\{x\in A:x\in v\}\in\mathcal{D}(A))$。$A$ が推移的なら $v\in A$ について $v\subseteq A$ なので $\{x\in A:x\in v\}=v$、よって $v\in\mathcal{D}(A)$。
+
+**3.** $n\in\omega$ を固定する。まず $R,S\in\mathrm{Df}(A,n+1)$ なら、\ref{set:df-closure} より
+$$
+\begin{aligned}
+&R\cup S={}^{n+1}A\setminus\bigl(({}^{n+1}A\setminus R)\cap({}^{n+1}A\setminus S)\bigr)\in\mathrm{Df}(A,n+1),\\
+&0=R\cap({}^{n+1}A\setminus R)\in\mathrm{Df}(A,n+1)
+\end{aligned}
+$$
+（$\mathrm{Df}(A,n+1)$ は空でない：$\mathrm{Diag}_{=}(A,n+1,0,0)$ を含む）。次に $m\le n$ に関する帰納法で
+$$
+E^{m}\defeq\{t\in{}^{n+1}A:\exists i<m\,(t(n)=t(i))\}\in\mathrm{Df}(A,n+1)
+$$
+を示す。$E^{0}=0$。$m<n$ なら $E^{m+1}=E^{m}\cup\mathrm{Diag}_{=}(A,n+1,n,m)$ で、上の和の閉包性による。よって $E^{n}\in\mathrm{Df}(A,n+1)$ で、任意の $s\in{}^{n}A$ について
+$$
+\ran(s)=\{x\in A:s^{\frown}\langle x\rangle\in E^{n}\}\in\mathcal{D}(A).
+$$
+$X\subseteq A$ が有限で $\lvert X\rvert=n$ なら、全単射 $s\colon n\to X$ があり $X=\ran(s)$ なので $X\in\mathcal{D}(A)$。
+
+**4.** AC と $\lvert A\rvert\ge\omega$ のもとで、$\lvert{}^{n}A\rvert=\lvert A\rvert$（$n\ge1$。\ref{set:kappa-times-kappa} を繰り返す）、$\lvert{}^{0}A\rvert=1$。$\lvert\mathrm{Df}(A,n+1)\rvert\le\omega$（\ref{set:df-countable}）。$\mathcal{D}(A)$ は $\bigcup_{n\in\omega}({}^{n}A\times\mathrm{Df}(A,n+1))$ の $(s,R)\mapsto\{x\in A:s^{\frown}\langle x\rangle\in R\}$ による像なので、\ref{set:union-bound} と \ref{set:surjection-cardinality} より $\lvert\mathcal{D}(A)\rvert\le\lvert A\rvert$。逆に 3 より $x\mapsto\{x\}$ は $A$ から $\mathcal{D}(A)$ への単射なので $\lvert A\rvert\le\lvert\mathcal{D}(A)\rvert$。
+:::
+
+::: hypcheck
+- 2 で $A$ の推移性を使った。推移的でない $A$ では、$v\in A$ でも $v\not\subseteq A$ なら $v\notin\mathcal{P}(A)$ なので $v\notin\mathcal{D}(A)$ である。
+- 3 は \ref{set:definable-subset-formula} から直ちには従わない。\ref{set:definable-subset-formula} は**メタの理論で固定した**論理式についての図式なので、「$n$ 個の元からなる集合」を $n\in\omega$ について一様に扱うには、上のように $\mathrm{Df}$ の中で直接 $E^{n}$ を作る必要がある（Kunen 第 VI 章の演習 19, 20 がこの点を扱っている）。
+- AC は 4 でのみ使った。
+:::
+
+## 構成可能階層 {#set:sec-constructible-hierarchy}
+
+::: definition 構成可能集合 {#set:constructible keywords="constructible hierarchy, L(alpha), constructible universe L" index="構成可能集合|こうせいかのうしゅうごう, 構成可能階層|こうせいかのうかいそう, L|える"}
+順序数 $\alpha$ に関する再帰で $L_{\alpha}$ を定める。
+1. $L_{0}\defeq0$。
+2. $L_{\alpha+1}\defeq\mathcal{D}(L_{\alpha})$。
+3. 極限順序数 $\alpha$ について $L_{\alpha}\defeq\bigcup_{\xi<\alpha}L_{\xi}$。
+
+$\mathbf{L}\defeq\bigcup\{L_{\alpha}:\alpha\in\mathbf{ON}\}$ とし、$\mathbf{L}$ の元を**構成可能**な集合という。
+:::
+
+**記法について.** Kunen (1980) は $L_{\alpha}$ を $L(\alpha)$ と書くが、本サイトでは現代の標準的な書き方に合わせて $L_{\alpha}$ と書く（$L(A)$ という書き方は、現在では集合 $A$ を加えた相対構成可能性の宇宙を表すのに使われることが多い）。また、$\mathbf{L}$, $\mathbf{V}$, $\mathbf{ON}$, $\mathbf{WF}$ のようなクラスは太字で書き、集合（たとえば $L_{\alpha}$）と区別する。
+
+$R(\alpha)$ についての \ref{set:page-cumulative-hierarchy} の結果の多く（すべてではない）は、$R(\alpha)$ のある特定の定義可能な部分集合が $R(\alpha+1)$ に属することしか使っていない。それらは $L_{\alpha}$ についても成り立つ。
+
+::: lemma $L_{\alpha}$ の基本性質 {#set:l-alpha-basic keywords="L(alpha) is transitive and increasing"}
+任意の順序数 $\alpha$ について
+1. $L_{\alpha}$ は推移的である。
+2. $\xi\le\alpha$ ならば $L_{\xi}\subseteq L_{\alpha}$。
+:::
+
+::: proof
+$\alpha$ に関する帰納法（\ref{set:r-alpha-basic} の証明とほぼ同じ）。$\beta<\alpha$ について 1, 2 が成り立つとする。$\alpha=0$ は自明。$\alpha$ が極限なら、推移的集合の和は推移的で、$\xi<\alpha$ について $L_{\xi}\subseteq L_{\alpha}$ は定義から。$\alpha=\beta+1$ とする。$L_{\beta}$ は推移的なので、\ref{set:definable-power-basic} の 1, 2 より
+$$
+L_{\beta}\subseteq L_{\alpha}=\mathcal{D}(L_{\beta})\subseteq\mathcal{P}(L_{\beta}).
+$$
+$x\in L_{\alpha}$ なら $x\subseteq L_{\beta}\subseteq L_{\alpha}$ なので $L_{\alpha}$ は推移的。$\xi\le\beta$ なら帰納法の仮定より $L_{\xi}\subseteq L_{\beta}\subseteq L_{\alpha}$。
+:::
+
+$x\in \mathbf{L}$ なら、$x\in L_{\alpha}$ となる最小の $\alpha$ は、定義の 3（極限では前の段階の和）より後続順序数である。
+
+::: definition L-ランク {#set:l-rank keywords="L-rank, rho(x)" index="L-ランク|えるらんく"}
+$x\in \mathbf{L}$ について、$x\in L_{\beta+1}$ となる最小の $\beta$ を $x$ の **$\mathbf{L}$-ランク**といい、$\rho(x)$ と書く。
+:::
+
+::: lemma {#set:l-rank-basic}
+任意の $\alpha$ について $L_{\alpha}=\{x\in \mathbf{L}:\rho(x)<\alpha\}$。
+:::
+
+::: proof
+（$\subseteq$）$x\in L_{\alpha}$ とする。$x\in L_{\gamma}$ となる最小の $\gamma\le\alpha$ は後続順序数 $\beta+1$ で（$L_{0}=0$ なので $\gamma\neq0$）、$\rho(x)\le\beta<\alpha$。（$\supseteq$）$\rho(x)=\beta<\alpha$ なら $x\in L_{\beta+1}\subseteq L_{\alpha}$（\ref{set:l-alpha-basic} の 2）。
+:::
+
+$R(\alpha)$ の場合と同様に、$x\in \mathbf{L}$ で $\beta=\rho(x)$ なら $x\subseteq L_{\beta}$、$x\notin L_{\beta}$、$x\in L_{\beta+1}$ である。$R(\alpha)$ と異なり、$L_{\beta}$ の部分集合で $\mathbf{L}$ に属するが $L_{\beta+1}$ に属さないものがしばしばある。しかし順序数は両方の構成で同じ段階に現れる。
+
+::: lemma L の順序数 {#set:l-ordinals keywords="ordinals are constructible, L(alpha) cap ON = alpha"}
+1. 任意の順序数 $\alpha$ について $\alpha\in \mathbf{L}$ かつ $\rho(\alpha)=\alpha$。
+2. 任意の順序数 $\alpha$ について $L_{\alpha}\cap\mathbf{ON}=\alpha$。
+:::
+
+::: proof
+**2** を $\alpha$ に関する帰納法で示す。$\alpha=0$ と極限の場合は帰納法の仮定から直ちに従う（極限なら $L_{\alpha}\cap\mathbf{ON}=\bigcup_{\xi<\alpha}\xi=\alpha$）。$\alpha=\beta+1$ で $L_{\beta}\cap\mathbf{ON}=\beta$ とする。$L_{\beta}\subseteq L_{\alpha}\subseteq\mathcal{P}(L_{\beta})$ より
+$$
+\beta\subseteq L_{\alpha}\cap\mathbf{ON}\subseteq\alpha
+$$
+（右の包含：$L_{\alpha}$ の順序数 $\gamma$ は $\gamma\subseteq L_{\beta}\cap\mathbf{ON}=\beta$ を満たすので $\gamma\le\beta$）。よって $\beta\in L_{\alpha}$ を示せばよい。\ref{set:absolute-ordinals} の (a) より、「$x$ は順序数」と $\ZF$ で同値な Δ₀ 論理式 $\psi(x)$ がある。$L_{\beta}$ は推移的なので $\psi$ は $L_{\beta}$ について絶対的（\ref{set:delta0-absolute}）で、
+$$
+\beta=L_{\beta}\cap\mathbf{ON}=\{x\in L_{\beta}:\psi^{L_{\beta}}(x)\}.
+$$
+\ref{set:definable-subset-formula}（パラメータなし）より $\beta\in\mathcal{D}(L_{\beta})=L_{\alpha}$。
+
+**1.** 2 より $\alpha\in L_{\alpha+1}$、$\alpha\notin L_{\alpha}$。\ref{set:l-rank-basic} より $\rho(\alpha)=\alpha$。
+:::
+
+::: lemma {#set:l-alpha-in-next}
+任意の $\alpha$ について $L_{\alpha}\in L_{\alpha+1}$。
+:::
+
+::: proof
+$L_{\alpha}=\{x\in L_{\alpha}:(x=x)^{L_{\alpha}}\}\in\mathcal{D}(L_{\alpha})=L_{\alpha+1}$（\ref{set:definable-subset-formula}）。
+:::
+
+$x\in \mathbf{L}$ なら $\bigcup x\in \mathbf{L}$ などの、\ref{set:page-cumulative-hierarchy} の閉包性の類似も示せるが、$\mathbf{L}$ が $\ZF$ のモデルであることが分かれば $\bigcup$ の絶対性から従う（次ページ）。ただし $\mathbf{WF}$ と異なり、$\mathbf{L}$ が $\mathbb{R}$ や $\mathbb{C}$ を含むとか、$\mathcal{P}$ のような絶対的でない演算で閉じているとは主張できない。
+
+## $L_{\alpha}$ と R(α) の比較 {#set:sec-l-vs-r}
+
+::: lemma {#set:l-in-r}
+任意の $\alpha$ について $L_{\alpha}\subseteq R(\alpha)$。
+:::
+
+::: proof
+$\alpha$ に関する帰納法。$0$ と極限の場合は明らか。$L_{\beta}\subseteq R(\beta)$ なら $L_{\beta+1}=\mathcal{D}(L_{\beta})\subseteq\mathcal{P}(L_{\beta})\subseteq\mathcal{P}(R(\beta))=R(\beta+1)$。
+:::
+
+::: lemma 有限部分集合 {#set:l-finite-subsets}
+$L_{\alpha}$ の有限部分集合はすべて $L_{\alpha+1}$ に属する。
+:::
+
+::: proof
+\ref{set:definable-power-basic} の 3。
+:::
+
+::: lemma L(ω) = R(ω) {#set:l-omega keywords="L(n) = R(n), L(omega) = R(omega)"}
+1. すべての $n\in\omega$ について $L_{n}=R(n)$。
+2. $L_{\omega}=R(\omega)$。
+:::
+
+::: proof
+**1.** $n$ に関する帰納法。$L_{0}=0=R(0)$。$L_{n}=R(n)$ なら、$R(n)$ は有限（\ref{set:r-n-finite}）なのでその部分集合はすべて有限で、\ref{set:l-finite-subsets} より $\mathcal{P}(L_{n})\subseteq L_{n+1}$。一方 $L_{n+1}\subseteq\mathcal{P}(L_{n})$ なので $L_{n+1}=\mathcal{P}(L_{n})=\mathcal{P}(R(n))=R(n+1)$。**2.** 1 と両者の極限での定義から。
+:::
+
+::: lemma $L_{\alpha}$ の大きさ {#set:l-alpha-size keywords="|L(alpha)| = |alpha| for infinite alpha"}
+（AC）$\alpha\ge\omega$ ならば $\lvert L_{\alpha}\rvert=\lvert\alpha\rvert$。
+:::
+
+::: proof
+$\alpha\subseteq L_{\alpha}$（\ref{set:l-ordinals} の 2）なので $\lvert\alpha\rvert\le\lvert L_{\alpha}\rvert$。$\alpha\ge\omega$ についての帰納法で $\lvert L_{\alpha}\rvert\le\lvert\alpha\rvert$ を示す。$\omega\le\beta<\alpha$ で $\lvert L_{\beta}\rvert=\lvert\beta\rvert$ と仮定する。すると、すべての $\beta<\alpha$ について $\lvert L_{\beta}\rvert\le\lvert\alpha\rvert$ である（$\beta<\omega$ なら $L_{\beta}=R(\beta)$ は有限：\ref{set:l-omega}）。
+
+- $\alpha$ が極限（$\alpha=\omega$ を含む）なら、$L_{\alpha}=\bigcup_{\beta<\alpha}L_{\beta}$ は、$\lvert\alpha\rvert$ 個の、濃度 $\lvert\alpha\rvert$ 以下の集合の和なので、\ref{set:union-bound}（**AC**）より $\lvert L_{\alpha}\rvert\le\lvert\alpha\rvert$。
+- $\alpha=\beta+1$（$\beta\ge\omega$）なら、$\lvert L_{\beta}\rvert=\lvert\beta\rvert=\lvert\alpha\rvert$（無限の $\beta$ について $\lvert\beta+1\rvert=\lvert\beta\rvert$）で、\ref{set:definable-power-basic} の 4 より $\lvert L_{\alpha}\rvert=\lvert\mathcal{D}(L_{\beta})\rvert=\lvert L_{\beta}\rvert=\lvert\alpha\rvert$。
+:::
+
+::: hypcheck
+- AC は極限の場合の \ref{set:union-bound} と、後続の場合の \ref{set:definable-power-basic} の 4 で使った。Kunen によれば、この補題は AC なしでも証明できる（Kunen 第 VI 章の演習 1。$L_{\alpha}$ の具体的な整列順序を作ることによると考えられるが、本サイトでは確かめていない）。
+:::
+
+\ref{set:l-alpha-size} は、濃度を比べるだけで「たいていの」$\alpha>\omega$ について $L_{\alpha}\neq R(\alpha)$ であることを示す。たとえば $\omega<\alpha<\omega_{1}$ なら $L_{\alpha}$ は可算だが $R(\alpha)$ は非可算である（$\mathcal{P}(\omega)\subseteq R(\omega+1)$）。Kunen は、$\alpha>\omega$ について $\lvert L_{\alpha}\rvert=\lvert R(\alpha)\rvert\iff\alpha=\beth_{\alpha}$ であることを演習としている（演習 2）。さらに $\mathcal{P}(\omega)\subseteq R(\omega+1)$ であり、$\omega$ のすべての部分集合が $\mathbf{L}$ に属すると考える理由はない。$\mathcal{P}(\omega)\not\subseteq \mathbf{L}$（第 VII 章により無矛盾）なら、すべての $\alpha>\omega$ について $L_{\alpha}\neq R(\alpha)$ である。一方 $\mathbf{V}=\mathbf{L}$ も無矛盾であり（次ページ）、そのとき $\alpha=\beth_{\alpha}$ なら $L_{\alpha}=R(\alpha)$ となる（演習 3）。
+
+## 問題 {#set:sec-l-basic-problems}
+
+::: problem {#set:prob-l-omega-plus-one}
+$\omega\in L_{\omega+1}$ であり、$L_{\omega+1}$ は可算であることを示せ（選択公理を使わずに）。
+:::
+
+::: solution
+\ref{set:l-ordinals} の 2 より $L_{\omega+1}\cap\mathbf{ON}=\omega+1$ なので $\omega\in L_{\omega+1}$。可算性：$L_{\omega}=R(\omega)$（\ref{set:l-omega}）は可算で（\ref{set:r-omega-countable}。具体的な全単射 $\omega\to R(\omega)$ がある）、その全単射で $R(\omega)$ を整列すると、各 ${}^{n}R(\omega)$ と $\bigcup_{n}{}^{n}R(\omega)$ の具体的な整列順序（辞書式など）が得られ可算である。$\mathrm{Df}(R(\omega),n+1)$ は $\mathrm{En}$ による具体的な全射 $\omega\to\mathrm{Df}$ をもつ（\ref{set:df-en}）。したがって $(n,s,R)$ の全体は具体的に可算で、その像 $L_{\omega+1}=\mathcal{D}(R(\omega))$ も、各元に最小の $(n,s,R)$ を対応させることで選択公理なしに可算である。
+:::
+
+::: problem {#set:prob-l-rank-union}
+任意の順序数 $\alpha$ について $L_{\alpha}\in \mathbf{L}$ かつ $\rho(L_{\alpha})=\alpha$ であることを示せ。
+:::
+
+::: solution
+\ref{set:l-alpha-in-next} より $L_{\alpha}\in L_{\alpha+1}$。一方、基礎の公理より $L_{\alpha}\notin L_{\alpha}$。\ref{set:l-rank-basic} より $\rho(L_{\alpha})<\alpha+1$ かつ $\rho(L_{\alpha})\not<\alpha$ なので $\rho(L_{\alpha})=\alpha$。
+:::
+
+::: supplement
+**前提の検討.**
+- 本ページは \ref{set:definable-power-basic} の 4 と \ref{set:l-alpha-size} を除いて選択公理を使わない。$\mathcal{D}$ の定義は冪集合公理を使わないが、$L_{\alpha}$ を全順序数について定める再帰そのものは $\ZF$ の置換公理を使う。
+- \ref{set:l-ordinals} で基礎の公理を使った（順序数の Δ₀ による特徴づけ \ref{set:absolute-ordinals} の (a) は基礎の公理に依存する）。
+- \ref{set:l-alpha-basic} の証明では、$\mathcal{D}(A)$ が $A$ の元を含む（$A$ が推移的なとき）ことが、$\mathcal{P}(A)$ が $A$ の元を含むことの代わりになった。
+
+**関連する結果.** $\mathbf{L}$ はゲーデル（1938, 1940）により導入され、$\ZFC+\mathrm{GCH}$ の無矛盾性の証明に使われた（一般にはこう言われている。Kunen の歴史的記述による）。$\mathbf{L}$ の階層を「定義可能な部分集合」ではなく「ある有限個の演算による閉包」で作る方法（ゲーデルの演算）もあることが知られている（本サイトでは扱っていない）。
+
+**高い視点から：名前のつくものだけを積み上げる.** $R(\alpha+1)=\mathcal{P}(R(\alpha))$ は「前の段階の部分集合をすべて」とる、いわば無制限な冪集合の宇宙である。これに対し $L_{\alpha+1}=\mathcal{D}(L_{\alpha})$ は「前の段階の言葉で**記述できる**部分集合だけ」をとる。数の体系にたとえれば、実数全体ではなく、すでに作った数から有限の手順で表せる数（代数的数など）だけを付け加えていく構成に似ている。各段階で付け加わるものは記述の数（$\lvert L_{\alpha}\rvert$ 程度）しかないので、$L_{\alpha}$ の大きさは $\lvert\alpha\rvert$ にとどまる（\ref{set:l-alpha-size}）。この「無駄のなさ」が、$\mathbf{L}$ で GCH が成り立つ理由の核心である（後のページで扱う）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

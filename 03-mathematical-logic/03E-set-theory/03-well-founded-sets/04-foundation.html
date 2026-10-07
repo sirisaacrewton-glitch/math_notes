@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>基礎の公理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/03-well-founded-sets/04-foundation.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 基礎の公理 {#set:page-foundation keywords="Axiom of Foundation, Axiom of Regularity, V = WF, epsilon-induction"}
+
+前ページまでに、空集合から冪集合をとる操作を超限回繰り返して得られる**整礎集合**のクラス $\mathbf{WF}$ を導入し、通常の数学の対象はすべて $\mathbf{WF}$ の中に（あるいは同型なコピーとして）見つかることを見た。そうであれば、議論の範囲をはじめから $\mathbf{WF}$ に限ってしまい、$\mathbf{V}=\mathbf{WF}$ を公理として採用するのは自然である。ただし $\mathbf{V}=\mathbf{WF}$ は $R(\alpha)$・順序数・超限再帰といった長い定義の積み重ねの上に立つ主張なので、公式の公理としては、これと同値で集合論の言語だけで短く書ける**基礎の公理**（\ref{set:ax-foundation}）を採用する。本ページでは、基礎の公理が $\mathbf{V}=\mathbf{WF}$ と同値であること（$\ZF^{-}$ で）、それが $\in$-帰納法の図式とも同値であること（$\ZF^{-}-\mathrm{P}$ で）を示し、その帰結として、$x\in x$ や $\in$ の無限降下列の不在、順序数の簡単な特徴づけを導く。
+
+## 記法と定義の確認 {#set:sec-foundation-notation}
+
+::: notation
+- 公理系の略号は \ref{set:zf-subsystems} に従う。$\ZF^{-}$ は $\ZF$ から基礎の公理を除いたもの、$\ZF^{-}-\mathrm{P}$ はさらに冪集合公理を除いたもの、$\ZF-\mathrm{P}$ は $\ZF$ から冪集合公理だけを除いたもの（基礎の公理は含む）である。**本ページの各結果には、どの体系で証明できるかを明記する。**特に断らない限り選択公理は使わない。
+- 基礎の公理（\ref{set:ax-foundation}）は
+$$
+\forall x\,\bigl(x\neq\varnothing\to\exists y\in x\,(y\cap x=\varnothing)\bigr)
+$$
+と同値である（$y\cap x=\varnothing$ は「$\exists z\,(z\in y\land z\in x)$ でない」の略記）。本ページではこれを AF と略すことがある。
+- 集合 $A$ 上の関係 $R$ が**整礎**であるとは、$A$ の空でない任意の部分集合 $X$ が **$R$-極小元**、すなわち $\lnot\exists z\in X\,(zRy)$ となる $y\in X$ をもつことである（\ref{set:well-founded-relation}）。$R\subseteq A\times A$ は要求しない。したがって $R$ が $A$ 上で整礎なら $A$ の任意の部分集合上でも整礎である。$R$ が $\in$ のとき、$y$ が $X$ の $\in$-極小元であることは $y\in X$ かつ $y\cap X=\varnothing$ と同じである。
+- 累積階層 $R(\alpha)$（$R(0)=\varnothing$, $R(\alpha+1)=\mathcal{P}(R(\alpha))$, 極限 $\gamma$ で $R(\gamma)=\bigcup_{\xi<\gamma}R(\xi)$）と整礎集合のクラス $\mathbf{WF}=\bigcup_{\alpha\in\mathbf{ON}}R(\alpha)$ は \ref{set:cumulative-hierarchy}, \ref{set:wf-class} の意味で用いる。これらの定義には冪集合公理を使う。
+- $x\in\mathbf{WF}$ のランク $\rank(x)$（\ref{set:rank}）は $x\in R(\beta+1)$ となる最小の $\beta$ であり、$y\in\mathbf{WF}$ ならば $y$ の元はすべて $\mathbf{WF}$ に属してランクが $\rank(y)$ より小さく、$\rank(y)=\sup\{\rank(x)+1\mid x\in y\}$ が成り立つ（\ref{set:rank-basic}）。また $x\subseteq\mathbf{WF}\iff x\in\mathbf{WF}$（\ref{set:wf-subset}）。
+- 集合 $A$ の推移閉包 $\operatorname{trcl}(A)=\bigcup_{n\in\omega}\bigcup^{n}A$（\ref{set:transitive-closure}）は $A$ を部分集合として含む最小の推移的集合であり、$x\in A$ ならば $\operatorname{trcl}(x)\subseteq\operatorname{trcl}(A)$ となる（\ref{set:transitive-closure-basic}）。推移閉包の存在には無限公理・置換公理・和集合の公理を使うが、冪集合公理は使わない。
+- $\ZF^{-}$ で次が成り立つ：$A\in\mathbf{WF}$ ならば $\in$ は $A$ 上で整礎である（\ref{set:wf-epsilon-wellfounded}）。$A$ が推移的で $\in$ が $A$ 上で整礎ならば $A\in\mathbf{WF}$（\ref{set:transitive-wf}）。任意の集合 $A$ について、$A\in\mathbf{WF}$、$\operatorname{trcl}(A)\in\mathbf{WF}$、「$\in$ は $\operatorname{trcl}(A)$ 上で整礎」の三つは同値である（\ref{set:wf-equivalents}）。
+- 順序数（\ref{set:ordinal}）は、推移的で、$\in_{x}=\{(y,z)\in x\times x\mid y\in z\}$ によって整列される集合 $x$ である。整列順序（\ref{set:well-order}）は、全順序（非反射律・推移律・三分律、\ref{set:total-order}）であって空でない部分集合が最小元をもつものである。
+:::
+
+## 基礎の公理の同値な言い換え {#set:sec-foundation-equivalents}
+
+::: theorem 基礎の公理の同値な形 {#set:foundation-equivalents keywords="equivalents of the Axiom of Foundation, V = WF" index="基礎の公理の同値な形|きそのこうりのどうちなかたち, V=WF|ぶいいこーるだぶりゅーえふ"}
+$\ZF^{-}$ において、次の三条件は同値である。
+
+1. 基礎の公理。
+2. 任意の集合 $A$ について、$\in$ は $A$ 上で整礎である。
+3. $\mathbf{V}=\mathbf{WF}$、すなわち任意の集合はある $R(\alpha)$ に属する。
+:::
+
+::: intuition
+(1) は「空でない集合は必ず $\in$ について一番下の元をもつ」という局所的な主張、(3) は「すべての集合は空集合から冪集合を繰り返しとって作られる」という大域的な主張である。両者をつなぐのが (2) と推移閉包である：ある集合 $A$ が $\mathbf{WF}$ に入るかどうかは、$A$ の元、元の元、…をすべて集めた $\operatorname{trcl}(A)$ の上で $\in$ が整礎かどうかだけで決まる（\ref{set:wf-equivalents}）。基礎の公理はその整礎性をすべての集合について保証する。
+:::
+
+::: example
+**基礎の公理を満たさない集合の例.** $\ZF^{-}$ だけからは、$x=\{x\}$ となる集合（**クワイン原子**）が存在しないことは証明できない（\ref{set:foundation-equivalents} の補足）。仮にそのような $x$ があれば、$\{x\}=x$ は空でないが、その唯一の元 $x$ について $x\cap\{x\}=x\neq\varnothing$ なので、基礎の公理の反例になる。また $x$ は推移的（$x$ の元は $x$ だけで、$x\subseteq x$）で、$\in$ は $x$ 上で整礎でない（$X=x$ の唯一の元 $x$ は $x\in x$ のため極小でない）。したがって \ref{set:transitive-wf} を適用する前提が崩れており、実際 $x\notin\mathbf{WF}$ である（$x\in\mathbf{WF}$ なら $x\in x$ から $\rank(x)<\rank(x)$ となってしまう）。
+:::
+
+::: proof
+**Step 1（(1) ⇒ (2)）.** $A$ を集合、$X\subseteq A$ を空でない部分集合とする。基礎の公理を $X$ に適用すると、$y\in X$ で $y\cap X=\varnothing$ となるものがある。これは「$z\in X$ かつ $z\in y$ となる $z$ がない」ということであり、$y$ が $X$ の $\in$-極小元であることにほかならない。よって $\in$ は $A$ 上で整礎である。
+
+**Step 2（(2) ⇒ (1)）.** $x\neq\varnothing$ とする。(2) を $A=x$ に適用し、空でない部分集合 $X=x$ をとると、$\in$-極小元 $y\in x$、すなわち $y\cap x=\varnothing$ となる $y\in x$ が得られる。これは基礎の公理の $x$ に対する主張である。
+
+**Step 3（(2) ⇒ (3)）.** 任意の集合 $A$ をとる。推移閉包 $\operatorname{trcl}(A)$ は集合であり（\ref{set:transitive-closure}）、(2) より $\in$ は $\operatorname{trcl}(A)$ 上で整礎である。\ref{set:wf-equivalents} の「$\in$ が $\operatorname{trcl}(A)$ 上で整礎 ⇒ $A\in\mathbf{WF}$」により、$A\in\mathbf{WF}$。$A$ は任意だったので $\mathbf{V}=\mathbf{WF}$。
+
+**Step 4（(3) ⇒ (2)）.** 任意の集合 $A$ をとる。(3) より $A\in\mathbf{WF}$ なので、\ref{set:wf-epsilon-wellfounded} により $\in$ は $A$ 上で整礎である。
+
+::: hypcheck
+- **(1) ⇔ (2)**（Step 1, 2）は定義の書き換えだけで、どの公理も使っていない。したがってこの部分は $\ZF^{-}-\mathrm{P}$（さらには無限公理も除いた体系）で成り立つ。
+- **冪集合公理**：(3) は $R(\alpha)$ と $\mathbf{WF}$ の定義を通して冪集合公理に依存する。Step 3 で使った \ref{set:wf-equivalents}（その中の \ref{set:transitive-wf}）と Step 4 で使った \ref{set:wf-epsilon-wellfounded} はランクを使う $\ZF^{-}$ の結果である。
+- **無限公理・置換公理・和集合の公理**：Step 3 で $\operatorname{trcl}(A)$ の存在に使った。
+- **基礎の公理**は、定理の主張の中で仮定・結論として現れるだけで、証明の中では使っていない（体系は $\ZF^{-}$）。選択公理も使っていない。
+:::
+:::
+
+::: supplement
+**$\mathbf{WF}$ は $\ZF$ のモデル.** $\ZF^{-}$ のもとで、$\ZF^{-}$ の各公理を「変数がすべて $\mathbf{WF}$ を動く」と読み替えたものは成り立ち、さらに $\mathbf{WF}$ の中では基礎の公理も成り立つ。これは $\mathbf{WF}$ が $\bigcup$, $\mathcal{P}$, 対などの操作で閉じていること（\ref{set:wf-closure}）と \ref{set:wf-subset} から従う。したがって $\ZF^{-}$ が無矛盾なら $\ZF$ も無矛盾である。相対化の形式的な扱いは \ref{set:wf-relativization} で扱う。
+
+**前提を変えると（基礎の公理の独立性）.** 逆に、$\ZF$ が無矛盾ならば、$\ZF^{-}$ に「クワイン原子 $x=\{x\}$ が存在する」を加えた体系も無矛盾である。これは、$\mathbf{V}$ 上の全単射 $\pi$ を用いて新しい所属関係 $x\in_{\pi}y\iff x\in\pi(y)$ を入れても $\ZF^{-}$ の公理が保たれるという**リーガー＝ベルナイスの置換法**による（$\pi$ として $\varnothing$ と $\{\varnothing\}$ を入れ替える写像をとれば、$\varnothing\in_{\pi}\varnothing$ となる）。さらに、基礎の公理を「すべての有向グラフはちょうど一通りに $\in$ で実現される」という**反基礎の公理**に取り替えた体系（アクゼルの AFA）も $\ZF$ と等無矛盾である。いずれにせよ、基礎の公理は他の公理から証明も反証もできない。
+
+**なぜ基礎の公理を採るか.** 基礎の公理は、通常の数学では使われない。それを認めることは、議論の範囲を、どのみちすべての数学が行われている $\mathbf{WF}$ に限ることと同値だからである。基礎の公理の役割は、$x\in x$ のような病的な集合を排除し（\ref{set:foundation-no-cycles}）、「すべての集合は空集合から段階的に作られる」という描像 $\mathbf{V}=\bigcup_{\alpha}R(\alpha)$ を与え、$\in$ についての帰納法・再帰（\ref{set:epsilon-induction}, \ref{set:wf-recursion}）を全集合の上で使えるようにすることにある。
+:::
+
+::: corollary すべての集合はランクをもつ {#set:foundation-every-set-rank keywords="every set has a rank" index="ランク|らんく"}
+$\ZF$ において、任意の集合 $x$ はランク $\rank(x)$ をもち、
+$$
+\rank(x)=\sup\{\rank(y)+1\mid y\in x\}
+$$
+が成り立つ。特に $y\in x$ ならば $\rank(y)<\rank(x)$ である。
+:::
+
+::: proof
+\ref{set:foundation-equivalents} の (1) ⇒ (3) より $x\in\mathbf{WF}$ なので $\rank(x)$ が定義される。等式と不等式は \ref{set:rank-basic} そのものである。
+
+::: hypcheck
+- **基礎の公理**：$x\in\mathbf{WF}$ を得るのに使った。**冪集合公理**：$\mathbf{WF}$ とランクの定義を通して。選択公理は使っていない。
+:::
+:::
+
+基礎の公理を超限帰納法の形に言い換えたものが、次の $\in$-帰納法である。
+
+::: proposition $\in$-帰納法 {#set:epsilon-induction keywords="epsilon-induction, set induction, AF*" index="ε帰納法|いぷしろんきのうほう, 所属関係についての帰納法|しょぞくかんけいについてのきのうほう"}
+$\ZF^{-}-\mathrm{P}$ において、基礎の公理は次の**$\in$-帰納法の図式**（各論理式 $\varphi(x)$ ごとに一つの文。$\varphi$ はパラメータを含んでよく、変数 $y$ を自由に含まない）と同値である：
+$$
+\forall x\,\bigl(\forall y\in x\;\varphi(y)\to\varphi(x)\bigr)\;\to\;\forall x\;\varphi(x).
+\label{set:eq-epsilon-induction}
+$$
+:::
+
+::: intuition
+「$x$ のすべての元で $\varphi$ が成り立つなら $x$ でも成り立つ」ことを示せば、すべての集合で $\varphi$ が成り立つ。空集合から始めて $\in$ を「下から上へ」たどる帰納法である。順序数上の累積帰納法（\ref{set:transfinite-induction}）が順序数に限られていたのに対し、こちらはすべての集合の上で使える。基礎の公理は「反例の集合には極小な反例がある」と言い、$\in$-帰納法は「極小な反例は存在しえない」と言っているので、両者は表裏の関係にある。ただし反例全体はクラスなので、集合に切り詰めるために推移閉包が要る。
+:::
+
+::: proof
+**Step 1（基礎の公理 ⇒ \eqref{set:eq-epsilon-induction}）.** 基礎の公理を仮定し、論理式 $\varphi$ が $\forall x\,(\forall y\in x\,\varphi(y)\to\varphi(x))$ を満たすとする。$\lnot\varphi(a)$ となる集合 $a$ があると仮定して矛盾を導く。
+
+反例の全体 $\{x\mid\lnot\varphi(x)\}$ は集合とは限らないので、$T=\operatorname{trcl}(\{a\})$ とおき、分出公理で
+$$
+X=\{z\in T\mid\lnot\varphi(z)\}
+$$
+をつくる。$\{a\}\subseteq T$ より $a\in T$ なので $a\in X$、特に $X\neq\varnothing$。基礎の公理を $X$ に適用して、$z\in X$ で $z\cap X=\varnothing$ となるものをとる。
+
+任意の $y\in z$ をとる。$T$ は推移的で $z\in T$ なので $y\in T$。$y\in z$ と $z\cap X=\varnothing$ より $y\notin X$。$y\in T$ かつ $y\notin X$ なので $X$ の定義から $\varphi(y)$。よって $\forall y\in z\,\varphi(y)$ が成り立ち、仮定から $\varphi(z)$。これは $z\in X$ に反する。
+
+**Step 2（\eqref{set:eq-epsilon-induction} ⇒ 基礎の公理）.** 図式 \eqref{set:eq-epsilon-induction} を仮定し、空でない集合 $A$ をとる。$A$ が $\in$-極小元をもたないと仮定して矛盾を導く。論理式 $\varphi(x)$ を「$x\notin A$」とする（$A$ はパラメータ）。
+
+$x$ を任意にとり、$\forall y\in x\,(y\notin A)$ と仮定する。もし $x\in A$ なら、$x$ の元はどれも $A$ に属さないので $x\cap A=\varnothing$ となり、$x$ は $A$ の $\in$-極小元になってしまう。これは仮定に反するので $x\notin A$、すなわち $\varphi(x)$。
+
+よって \eqref{set:eq-epsilon-induction} の前提が成り立ち、$\forall x\,(x\notin A)$、すなわち $A=\varnothing$。これは $A\neq\varnothing$ に反する。
+
+::: hypcheck
+- **無限公理・置換公理・和集合の公理・対の公理**：Step 1 で $\{a\}$ と $\operatorname{trcl}(\{a\})$ を作るのに使った（\ref{set:transitive-closure}）。
+- **分出公理**：Step 1 で $X$ を作るのに使った。ここで $\varphi$ がパラメータを含む任意の論理式であることが効いている。
+- **基礎の公理**：Step 1 で $X$ に適用した（この方向の仮定）。
+- Step 2 は論理だけで、どの公理も使っていない。冪集合公理・選択公理は使っていない。したがって同値性は $\ZF^{-}-\mathrm{P}$ で成り立つ。
+:::
+:::
+
+::: supplement
+**Step 1 で推移閉包が要る理由.** 基礎の公理は**集合**の極小元しか保証しない。$\{x\mid\lnot\varphi(x)\}$ から直接極小元をとることはできないので、$a$ の「下にある」集合だけを集めた $\operatorname{trcl}(\{a\})$ に制限した。極小元 $z$ の元がすべて再び $T$ に入る（$T$ の推移性）ことが、$z$ が $T$ の中だけでなく本当に極小な反例であることを保証している。同じ論法は整礎で集合的な一般の関係について \ref{set:wf-minimal-element} で繰り返される。
+
+**冪集合・無限を除くと.** 無限公理も除いた $\ZF^{-}-\mathrm{P}-\mathrm{Inf}$ では、推移閉包の存在が証明できないため、Step 1 は通らない。そこでは基礎の公理より \eqref{set:eq-epsilon-induction} のほうが真に強い原理になりうる。$\in$-帰納法の図式を公理として採れば、推移閉包の存在や $\in$ についての再帰が無限公理なしでも正当化できる（Kunen, Ch. III, Exercise 19）。
+:::
+
+## 基礎の公理の帰結 {#set:sec-foundation-consequences}
+
+::: proposition $\in$ の輪と無限降下列の不在 {#set:foundation-no-cycles keywords="no membership cycles, no infinite descending membership chains" index="無限降下列|むげんこうかれつ, 所属関係の輪|しょぞくかんけいのわ"}
+$\ZF-\mathrm{P}$ において次が成り立つ。
+
+1. 任意の $x$ について $x\notin x$。
+2. $x\in y$ かつ $y\in x$ となる $x,y$ は存在しない。より一般に、$n\ge1$ と $x_{0},\dots,x_{n}$ について $x_{0}\in x_{1}\in\cdots\in x_{n}\in x_{0}$ となることはない。
+3. $\forall n\in\omega\,(x_{n+1}\in x_{n})$ を満たす列 $\langle x_{n}\mid n\in\omega\rangle$ は存在しない。
+:::
+
+::: intuition
+集合を「元へ向かって下りていく」操作は必ず有限回で止まる。輪があれば同じ集合に戻ってきて永遠に下り続けられるし、無限降下列があればやはり止まらない。基礎の公理は、どちらの場合にも「下り続けられる元だけを集めた集合」に極小元がないことを突いて、これらを排除する。
+:::
+
+::: proof
+**(1)** $x$ を任意にとり、基礎の公理を空でない集合 $\{x\}$（対の公理）に適用する。$\{x\}$ の元は $x$ だけなので $x\cap\{x\}=\varnothing$。もし $x\in x$ なら $x\in x\cap\{x\}$ となって矛盾する。よって $x\notin x$。
+
+**(2)** $x_{0}\in x_{1}\in\cdots\in x_{n}\in x_{0}$ と仮定する。添字を $n+1$ を法として読み、$x_{n+1}=x_{0}$ と約束すると、仮定は「各 $i\le n$ について $x_{i}\in x_{i+1}$」となる。集合 $C=\{x_{0},\dots,x_{n}\}$ をとる（対と和集合の公理を有限回使う）。$C\neq\varnothing$ なので基礎の公理により $C$ の元 $x_{i}$ で $x_{i}\cap C=\varnothing$ となるものがある。ところが $i\ge1$ なら $x_{i-1}\in x_{i}$ かつ $x_{i-1}\in C$、$i=0$ なら $x_{n}\in x_{0}$ かつ $x_{n}\in C$ なので、いずれにせよ $x_{i}\cap C\neq\varnothing$。矛盾。$n=1$ の場合が前半の主張である。
+
+**(3)** そのような列 $f=\langle x_{n}\mid n\in\omega\rangle$ があると仮定する。$f$ は定義域 $\omega$ の関数（集合）なので、値域 $C=\ran f=\{x_{n}\mid n\in\omega\}$ は集合であり（置換公理、あるいは和集合と分出の公理）、$x_{0}\in C$ より空でない。基礎の公理により、ある $n$ について $x_{n}\cap C=\varnothing$。しかし $x_{n+1}\in x_{n}$ かつ $x_{n+1}\in C$ なので矛盾。
+
+::: hypcheck
+- **基礎の公理**：(1), (2), (3) のすべてで、適切な集合（$\{x\}$, $\{x_{0},\dots,x_{n}\}$, $\ran f$）に適用した。
+- **対の公理・和集合の公理**：(1), (2) で有限集合を作るのに使った。**置換公理**（または分出公理）：(3) で $\ran f$ を作るのに使った。
+- 冪集合公理・選択公理は使っていない。
+:::
+:::
+
+::: supplement
+**(3) の逆.** 「$\in$ の無限降下列が存在しない」ことから基礎の公理を導くには、選択公理（の弱い形）が必要になる（\ref{set:foundation-descending-chains}）。基礎の公理は無限降下列の不在を**選択なしで**導くが、その逆向きは、極小元をもたない集合から降下列を「一つずつ選んで」作る必要があるためである。
+:::
+
+::: proposition 整礎性と降下列 {#set:foundation-descending-chains keywords="well-founded iff no infinite descending sequence, dependent choice" index="降下列|こうかれつ"}
+集合 $A$ 上の関係 $R$ について次が成り立つ。
+
+1. （$\ZF^{-}-\mathrm{P}$）$R$ が $A$ 上で整礎ならば、$\forall n\in\omega\,(x_{n+1}Rx_{n})$ を満たす $A$ の元の列 $\langle x_{n}\mid n\in\omega\rangle$ は存在しない。
+2. （$\ZFC^{-}-\mathrm{P}$）逆に、そのような列が存在しなければ $R$ は $A$ 上で整礎である。
+3. （$\ZFC^{-}-\mathrm{P}$）基礎の公理は、「$\forall n\in\omega\,(x_{n+1}\in x_{n})$ を満たす列 $\langle x_{n}\mid n\in\omega\rangle$ は存在しない」と同値である。
+:::
+
+::: intuition
+整礎性は「どの空でない部分集合にも極小元がある」という、部分集合全体にわたる条件である。これを「$R$ に沿って無限に下り続けることはできない」という、列だけを見る条件に言い換えるのがこの命題である。前者から後者は直ちに従うが、後者から前者を導くには、極小元のない部分集合の中で「一歩下の元」を $\omega$ 回続けて選ぶ必要があり、選択公理を使う。
+:::
+
+::: proof
+**(1)** そのような列 $f=\langle x_{n}\mid n\in\omega\rangle$ があるとする。$X=\ran f\subseteq A$ は空でない集合（置換公理）なので、$R$ の整礎性から $R$-極小元 $x_{n}\in X$ がある。ところが $x_{n+1}\in X$ かつ $x_{n+1}Rx_{n}$ なので、$x_{n}$ は極小でない。矛盾。
+
+**(2)** 対偶を示す。$R$ が $A$ 上で整礎でないとし、$R$-極小元をもたない空でない部分集合 $X\subseteq A$ をとる。すなわち
+$$
+\forall x\in X\;\exists y\in X\;(yRx).
+\label{set:eq-no-minimal-element}
+$$
+
+*Step 1（整列順序をとる）.* 選択公理（\ref{set:ax-choice}：任意の集合は整列可能）により、$X$ の整列順序 $\lhd$ を一つとる。
+
+*Step 2（「一歩下の元」を選ぶ関数）.* $x\in X$ に対し、$S_{x}=\{y\in X\mid yRx\}$ は \eqref{set:eq-no-minimal-element} により空でない $X$ の部分集合なので、$\lhd$-最小元をもつ。それを $s(x)$ と書く。$x\mapsto s(x)$ は $X$ 上の（パラメータ $X,R,\lhd$ をもつ論理式で定義される）関数で、$s(x)\in X$ かつ $s(x)Rx$ を満たす。
+
+*Step 3（列の構成）.* $X\neq\varnothing$ なので $x_{0}$ として $X$ の $\lhd$-最小元をとる。$\omega$ 上の再帰（\ref{set:recursion-on-ordinal}）により、$x_{n+1}=s(x_{n})$（$x_{n}\in X$ のとき。$x_{n}\notin X$ のときは $x_{n+1}=\varnothing$ と決めておく）で列 $\langle x_{n}\mid n\in\omega\rangle$ を定める。
+
+*Step 4.* $n$ についての帰納法で $x_{n}\in X$：$x_{0}\in X$ であり、$x_{n}\in X$ なら $x_{n+1}=s(x_{n})\in X$。したがってすべての $n$ で $x_{n+1}=s(x_{n})Rx_{n}$ となり、$A$ の元の降下列が得られた。
+
+**(3)** 基礎の公理 ⇒ 降下列の不在は \ref{set:foundation-no-cycles} (3) である。逆に、$\in$ の降下列が存在しないと仮定し、空でない集合 $A$ をとる。$\in$ が $A$ 上で整礎でなければ、(2) の証明（$R=\in$）により $A$ の元からなる $\in$ の降下列ができて仮定に反する。よって $\in$ は $A$ 上で整礎であり、$X=A$ として $A$ は $\in$-極小元をもつ。これは基礎の公理の $A$ に対する主張である。
+
+::: hypcheck
+- **置換公理**：(1) で $\ran f$ を集合にするのに使った。(1) は基礎の公理も選択公理も使わないので $\ZF^{-}-\mathrm{P}$ で成り立つ。
+- **選択公理**：(2) の Step 1 で $X$ の整列順序をとるのに**本質的に**使った。これにより Step 2 の「選択」が一つの論理式で書けるようになり、Step 3 の再帰が（選択関数を毎回選ぶことなく）一度に実行できる。冪集合公理は使っていない：選択関数を $\mathcal{P}(X)$ 上で考える代わりに整列順序を使ったのはこのためである。
+- **無限公理・置換公理**：Step 3 の $\omega$ 上の再帰（\ref{set:recursion-on-ordinal}）。
+- (3) では前半に基礎の公理（\ref{set:foundation-no-cycles} を通して）、後半に (2) を通して選択公理を使った。
+:::
+:::
+
+::: supplement
+**選択公理の弱い形で足りる.** (2) の証明で実際に必要なのは、「$\forall x\in X\,\exists y\in X\,(yRx)$ ならば $X$ の中に $R$ に沿った無限降下列がある」という原理であり、これは**従属選択公理**（DC）と呼ばれる。DC は可算選択公理より強く、完全な選択公理より弱い。実数論の多くの議論（「列で特徴づける」種類の議論）で暗に使われているのはこの DC である。
+:::
+
+## 順序数の特徴づけ {#set:sec-foundation-ordinals}
+
+基礎の公理のもとでは、$\in$ はどの集合の上でも整礎なので、「$\in$ で整列される」という順序数の定義の中の整列性の部分は自動的に満たされる。
+
+::: theorem 基礎の公理のもとでの順序数 {#set:ordinal-foundation keywords="ordinal as transitive set totally ordered by membership" index="順序数の特徴づけ|じゅんじょすうのとくちょうづけ"}
+$\ZF-\mathrm{P}$ において、集合 $A$ が順序数であるための必要十分条件は、$A$ が推移的で、$\in_{A}=\{(y,z)\in A\times A\mid y\in z\}$ が $A$ 上の（狭義の）全順序であることである。
+:::
+
+::: intuition
+順序数の定義（\ref{set:ordinal}）は「推移的」「$\in$ で全順序付けられる」「どの空でない部分集合も最小元をもつ」の三つからなる。基礎の公理は最後の条件（の極小元版）を無条件に与え、全順序の中では極小元と最小元は同じものなので、三つ目の条件を落とせる。
+:::
+
+::: proof
+**(⇒)** 順序数の定義により $A$ は推移的で、$\in_{A}$ は $A$ 上の整列順序、特に全順序である。
+
+**(⇐)** $A$ が推移的で $\in_{A}$ が全順序であるとする。$\in_{A}$ が $A$ を整列することを示せばよい。空でない部分集合 $X\subseteq A$ をとる。基礎の公理を $X$ に適用して、$y\in X$ で $y\cap X=\varnothing$ となるものをとる。
+
+$y$ が $X$ の $\in_{A}$-最小元であることを示す。$z\in X$, $z\neq y$ とする。三分律により $z\in y$ か $y\in z$ のどちらかである。$z\in y$ なら $z\in y\cap X$ となり $y\cap X=\varnothing$ に反する。よって $y\in z$、すなわち $y\in_{A}z$。したがって $y$ は $X$ の最小元である。
+
+以上より $\in_{A}$ は $A$ の整列順序で、$A$ は順序数である。
+
+::: hypcheck
+- **基礎の公理**：(⇐) で $X$ の $\in$-極小元をとるのに使った。
+- **三分律**（全順序の仮定）：極小元が最小元であることを示すのに使った。
+- **置換公理**（直積 $A\times A$ の存在、\ref{set:cartesian-product-existence}）と**分出公理**：$\in_{A}$ を集合として作るのに使った。冪集合公理・選択公理は使っていない。
+:::
+:::
+
+::: supplement
+**前提を変えると.** 基礎の公理を除くと、この特徴づけは成り立たない。クワイン原子 $x=\{x\}$ があれば、$A=x$ は推移的で、三分律は（元が一つなので）自明に成り立つが、$x\in x$ のため $\in_{A}$ は非反射律を満たさず全順序ではない。そこで全順序の代わりに三分律だけを要求する次の命題 \ref{set:ordinal-hereditarily-transitive} の (3) を考えると、$A=x$ は (3) を満たすが順序数ではない。
+:::
+
+::: proposition 遺伝的に推移的な集合 {#set:ordinal-hereditarily-transitive keywords="ordinal as hereditarily transitive set" index="遺伝的に推移的|いでんてきにすいいてき"}
+$\ZF-\mathrm{P}$ において、集合 $x$ について次は同値である。
+
+1. $x$ は順序数である。
+2. $x$ は推移的で、$x$ の元はすべて推移的である。
+3. $x$ は推移的で、$\forall y,z\in x\,(y\in z\lor y=z\lor z\in y)$。
+:::
+
+::: intuition
+(2) は $\in$ の順序構造に一切触れない条件である。「推移的集合の推移的集合」というだけで順序数になってしまうのは、基礎の公理のもとでは $\in$-帰納法で「下から順に」順序数であることが伝わっていくからである。(3) は全順序の条件のうち三分律だけを残したもので、非反射律と推移律は基礎の公理から従う。
+:::
+
+::: proof
+**Step 1（(1) ⇒ (2), (3)）.** $x$ が順序数なら推移的であり、その元はすべて順序数（\ref{set:ordinal-basic} (1)）、特に推移的である。また $\in_{x}$ は全順序なので三分律が成り立つ。
+
+**Step 2（(2) ⇒ (1)）.** 性質「推移的で、元もすべて推移的」を $H(x)$ と書く。
+
+*Step 2a（$H$ は元に遺伝する）.* $H(x)$ かつ $y\in x$ とする。仮定より $y$ は推移的。$z\in y$ なら、$x$ の推移性より $z\in x$ なので、仮定より $z$ も推移的。よって $H(y)$。
+
+*Step 2b（$\in$-帰納法）.* 論理式 $\varphi(x)$ を「$H(x)$ ならば $x$ は順序数」として、$\in$-帰納法（\ref{set:epsilon-induction}）を適用する。$x$ について $\forall y\in x\,\varphi(y)$ を仮定し、$H(x)$ とする。$y\in x$ なら Step 2a より $H(y)$ なので、帰納法の仮定から $y$ は順序数。したがって $x$ は順序数からなる推移的集合であり、\ref{set:ordinal-well-ordered} (4) により順序数である。よって $\varphi(x)$。\ref{set:epsilon-induction} により、すべての $x$ で $\varphi(x)$ が成り立つ。
+
+**Step 3（(3) ⇒ (1)）.** $x$ が (3) を満たすとする。\ref{set:ordinal-foundation} により、$\in_{x}$ が全順序であること、すなわち非反射律と推移律を示せばよい（三分律は仮定）。
+- *非反射律*：$y\in x$ について $y\notin y$（\ref{set:foundation-no-cycles} (1)）。
+- *推移律*：$y,z,w\in x$ で $y\in z$, $z\in w$ とする。$y$ と $w$ に三分律を適用する。$y=w$ なら $y\in z\in y$ となり、\ref{set:foundation-no-cycles} (2)（$n=1$）に反する。$w\in y$ なら $y\in z\in w\in y$ となり、\ref{set:foundation-no-cycles} (2)（$n=2$）に反する。よって $y\in w$。
+
+したがって $\in_{x}$ は全順序であり、\ref{set:ordinal-foundation} より $x$ は順序数である。
+
+::: hypcheck
+- **基礎の公理**：Step 2b で $\in$-帰納法（\ref{set:epsilon-induction}。基礎の公理と推移閉包を使う）として、Step 3 で \ref{set:foundation-no-cycles} と \ref{set:ordinal-foundation} を通して使った。Step 1 と Step 2a は基礎の公理を使わない（$\ZF^{-}-\mathrm{P}$ で成り立つ）。
+- **無限公理**：Step 2b の $\in$-帰納法の中で推移閉包を作るのに使った。
+- **順序数の集合についての結果**（\ref{set:ordinal-well-ordered} (4)）：Step 2b。これは基礎の公理を使わない $\ZF^{-}$ の結果である。
+- 冪集合公理・選択公理は使っていない。
+:::
+:::
+
+::: supplement
+**$\ZF^{-}$ で (2) ⇒ (1) が崩れる例.** クワイン原子 $x=\{x\}$ は推移的で、その唯一の元 $x$ も推移的なので (2) を満たすが、$x\in x$ なので順序数ではない（順序数は自分自身の元でない、\ref{set:ordinal-irreflexive}）。したがって、この命題の (2) ⇒ (1) と (3) ⇒ (1) は $\ZF^{-}-\mathrm{P}$ では証明できない（クワイン原子の存在が $\ZF^{-}$ と矛盾しないこと、\ref{set:foundation-equivalents} の補足による）。
+
+**基礎の公理のない発展では.** 本サイトの順序数の定義（\ref{set:ordinal}）は、整列性を定義に含めることで基礎の公理に依存しないようにしてある。基礎の公理を仮定する教科書では、この命題の (2) を順序数の定義とすることも多い。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

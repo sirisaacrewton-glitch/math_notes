@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>分離公理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54D-general-properties/01-separation-compactness/01-separation-axioms.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 分離公理 {#top:page-separation-axioms keywords="separation axioms, T0, T1, Hausdorff space, T2, regular space, T3, normal space, T4, uniqueness of limits, closed diagonal, metric spaces are normal"}
+
+位相空間は一般に、点どうしや点と集合を開集合で「分ける」ことができるとは限らない。どの程度分けられるかを段階的に述べたのが**分離公理**で、$T_{0}$, $T_{1}$, $T_{2}$（ハウスドルフ）, 正則, 正規の順に強くなる（\ref{top:separation-axioms}, \ref{top:hausdorff}）。ハウスドルフ性は、ネットの極限が一意であることと同値で（\ref{top:hausdorff-unique-limits}）、解析学で扱う空間はほとんどがハウスドルフである。距離空間は正規である（\ref{top:metric-normal}）。本ページでは各公理の同値な言い換えと、公理が互いに異なることを示す例を述べる。
+
+> 資料：内田伏一『集合と位相』§21。正則・正規の定義に $T_{1}$ を含めるかどうかは本によって異なる。本サイトでは、正則・正規を $T_{1}$ を含まない形で定義し、$T_{1}$ と合わせたものを $T_{3}$, $T_{4}$ と呼ぶ。
+
+## 記法と定義の確認 {#top:sec-sep-notation}
+
+::: notation
+- 位相・閉包・近傍・基本近傍系・連続写像・部分空間・直積・ネットの収束・距離位相は前ページまでのとおり（\ref{top:closure-neighborhood}, \ref{top:neighborhood-base}, \ref{top:continuous}, \ref{top:subspace}, \ref{top:product-topology}, \ref{top:net}, \ref{top:metric-topology}）。
+- 部分集合 $A,B$ が**開集合で分離される**とは、交わらない開集合 $U\supseteq A$, $V\supseteq B$ があることをいう。点 $x$ は一点集合 $\{x\}$ とみなす。
+- 議論は $\ZF$ で行う。選択公理を使う箇所は明記する。
+:::
+
+## 分離公理の定義 {#top:sec-sep-definitions}
+
+::: definition 分離公理 {#top:separation-axioms keywords="T0 (Kolmogorov), T1 (Frechet), regular, normal, T3, T4" index="分離公理|ぶんりこうり, T₀ 空間|てぃーぜろくうかん, T₁ 空間|てぃーわんくうかん, 正則空間|せいそくくうかん, 正規空間|せいきくうかん, T₃ 空間|てぃーすりーくうかん, T₄ 空間|てぃーふぉーくうかん"}
+位相空間 $X$ について、
+- **$T_{0}$**：異なる二点 $x,y$ について、一方を含み他方を含まない開集合がある。
+- **$T_{1}$**：異なる二点 $x,y$ について、$x$ を含み $y$ を含まない開集合がある（役割を入れ替えても）。
+- **正則**：閉集合 $F$ と点 $x\notin F$ は開集合で分離される。
+- **正規**：交わらない二つの閉集合は開集合で分離される。
+- **$T_{3}$**：正則かつ $T_{1}$。**$T_{4}$**：正規かつ $T_{1}$。
+:::
+
+::: definition ハウスドルフ空間 {#top:hausdorff keywords="Hausdorff space, T2 space" index="ハウスドルフ空間|はうすどるふくうかん, T₂ 空間|てぃーつーくうかん"}
+異なる二点がつねに開集合で分離される空間を**ハウスドルフ空間**（**$T_{2}$ 空間**）という。
+:::
+
+::: proposition T₁ の言い換えと公理の強弱 {#top:separation-implications keywords="T1 iff points are closed; T4 implies T3 implies T2 implies T1 implies T0" index="分離公理の強弱|ぶんりこうりのきょうじゃく"}
+1. $X$ が $T_{1}$ であることと、すべての一点集合が閉集合であることは同値。
+2. $T_{4}\Rightarrow T_{3}\Rightarrow T_{2}\Rightarrow T_{1}\Rightarrow T_{0}$。
+:::
+
+::: proof
+**1.** $T_{1}$ なら、各 $y\neq x$ に $y$ を含み $x$ を含まない開集合 $U_{y}$ があり、$X\setminus\{x\}=\bigcup_{y\neq x}U_{y}$ は開（和集合は「$x$ を含まない開集合すべての和」と書けば選択は不要）。逆に $\{y\}$ が閉なら $X\setminus\{y\}$ が $x$ を含み $y$ を含まない開集合。
+
+**2.** $T_{4}\Rightarrow T_{3}$：$T_{1}$ から点は閉集合なので、正規性を点と閉集合に適用する。$T_{3}\Rightarrow T_{2}$：異なる $x,y$ について $\{y\}$ は閉で $x\notin\{y\}$、正則性から分離される。$T_{2}\Rightarrow T_{1}\Rightarrow T_{0}$ は定義から。
+:::
+
+::: example 分離公理を区別する例
+1. **シェルピンスキー空間** $\{0,1\}$（開集合 $\varnothing,\{1\},X$）は $T_{0}$ だが $T_{1}$ でない（$1$ を含み $0$ を含まない開集合はあるが、$0$ を含み $1$ を含まない開集合はない）。
+2. **無限集合上の補有限位相**は $T_{1}$（点は有限集合で閉）だが $T_{2}$ でない（空でない二つの開集合はつねに交わる、\ref{top:closed-set-axioms} の例 2）。
+3. **密着空間**（二点以上）は $T_{0}$ でないが、正則かつ正規（閉集合が $\varnothing$ と $X$ だけなので、条件が空に満たされる）。$T_{1}$ を含めない定義では、正則・正規は $T_{2}$ を導かない。
+4. **ハウスドルフだが正則でない空間**：下の \ref{top:k-topology}。
+5. **$T_{3}$ だが正規でない空間**：ゾルゲンフライ平面 $\R_{\ell}\times\R_{\ell}$、ニェミツキ平面（\ref[ニェミツキ平面]{top:niemytzki-plane}）。
+:::
+
+## ハウスドルフ空間 {#top:sec-sep-hausdorff}
+
+::: theorem ハウスドルフ性の言い換え {#top:hausdorff-unique-limits keywords="Hausdorff iff nets have unique limits iff the diagonal is closed" index="極限の一意性|きょくげんのいちいせい, 対角線集合|たいかくせんしゅうごう"}
+位相空間 $X$ について次は同値である。
+1. $X$ はハウスドルフ。
+2. $X$ のネットは高々一つの点に収束する。
+3. 対角線集合 $\Delta\defeq\{(x,x):x\in X\}$ は $X\times X$ の閉集合。
+4. 各点 $x$ の閉近傍すべての共通部分は $\{x\}$。
+:::
+
+::: proof
+**1 ⇒ 2.** $x_{d}\to x$, $x_{d}\to y$, $x\neq y$ なら、分離する開集合 $U\ni x$, $V\ni y$ の両方にネットは最終的に入るので、有向性からある $x_{d}\in U\cap V=\varnothing$。矛盾。
+
+**2 ⇒ 1.** $x\neq y$ が分離されないとする。有向集合 $D\defeq\mathcal{N}(x)\times\mathcal{N}(y)$（成分ごとの逆包含）の各 $(N,M)$ に $x_{(N,M)}\in N\cap M$ を選ぶ（選択公理。$N\cap M\neq\varnothing$ は分離されないことから：開近傍の対が交わり、近傍は開近傍を含む）。$x_{(N,M)}\to x$ かつ $\to y$ で 2 に反する。
+
+**1 ⇒ 3.** $(x,y)\notin\Delta$ なら $x\neq y$ で、分離する $U,V$ について $U\times V$ は $(x,y)$ の開近傍で $\Delta$ と交わらない（$U\cap V=\varnothing$）。よって補集合は開。
+
+**3 ⇒ 4.** $y\neq x$ なら $(x,y)\notin\Delta$ なので、基本開集合 $U\times V\ni(x,y)$ で $\Delta$ と交わらないもの、すなわち $U\cap V=\varnothing$ がある。$V^{c}$ は $U$ を含む閉集合、すなわち $x$ の閉近傍で、$y\notin V^{c}$。
+
+**4 ⇒ 1.** $y\neq x$ なら、$y$ を含まない $x$ の閉近傍 $N$ がある。$U\defeq N^{\circ}\ni x$, $V\defeq N^{c}\ni y$ は交わらない開集合。
+
+::: hypcheck
+- **2 ⇒ 1 の選択公理**：ネットの点を選ぶのに使った。フィルターで言えば、$\{N\cap M\}$ が生成するフィルターが $x$ と $y$ の両方に収束する、と選択なしで言える（\ref{top:nets-filters-correspondence}）。
+:::
+:::
+
+::: proposition ハウスドルフ空間の性質 {#top:hausdorff-properties keywords="subspaces and products of Hausdorff spaces; equalizers of maps into Hausdorff spaces are closed" index="ハウスドルフ空間の性質|はうすどるふくうかんのせいしつ"}
+1. ハウスドルフ空間の部分空間はハウスドルフ。ハウスドルフ空間の直積はハウスドルフ。
+2. $f,g\colon X\to Y$ が連続で $Y$ がハウスドルフなら、$\{x:f(x)=g(x)\}$ は閉集合。とくに、$X$ の稠密な部分集合上で一致する二つの連続写像は一致する。
+:::
+
+::: proof
+**1.** 部分空間：$U\cap A$, $V\cap A$。直積：$x\neq y$ ならある座標 $i$ で $x_{i}\neq y_{i}$、分離する $U,V$ について $p_{i}^{-1}[U]$, $p_{i}^{-1}[V]$。
+
+**2.** 集合は連続写像 $(f,g)\colon X\to Y\times Y$ による閉集合 $\Delta_{Y}$ の逆像（\ref{top:hausdorff-unique-limits} の 3）。稠密な $D$ 上で一致すれば、閉集合 $\{f=g\}\supseteq D$ は $\overline{D}=X$ を含む。
+:::
+
+## 正則性と正規性 {#top:sec-sep-regular-normal}
+
+::: proposition 正則性・正規性の言い換え {#top:regular-normal-characterization keywords="regular iff closed neighbourhoods form a base; normal iff every closed set has arbitrarily small closed neighbourhoods inside open sets" index="正則性の言い換え|せいそくせいのいいかえ, 正規性の言い換え|せいきせいのいいかえ"}
+1. $X$ が正則であることと、各点 $x$ と $x$ の開近傍 $W$ に対し、$x\in U\subseteq\overline{U}\subseteq W$ となる開集合 $U$ があること（閉近傍が基本近傍系をなすこと）は同値。
+2. $X$ が正規であることと、閉集合 $F$ と開集合 $G\supseteq F$ に対し、$F\subseteq U\subseteq\overline{U}\subseteq G$ となる開集合 $U$ があることは同値。
+:::
+
+::: proof
+**2**（1 も同じ議論で $F=\{x\}$ の場合）。「⇒」：$F$ と $G^{c}$ は交わらない閉集合なので、分離する開集合 $U\supseteq F$, $V\supseteq G^{c}$ がある。$U\subseteq V^{c}$ で $V^{c}$ は閉なので $\overline{U}\subseteq V^{c}\subseteq G$。「⇐」：交わらない閉集合 $A,B$ について $G\defeq B^{c}\supseteq A$ に適用し、$U$ と $V\defeq(\overline{U})^{c}\supseteq B$ が分離する。
+:::
+
+::: proposition 正則性の遺伝 {#top:regular-hereditary keywords="subspaces and products of regular spaces are regular; subspaces of normal spaces need not be normal" index="正則性の遺伝|せいそくせいのいでん"}
+1. 正則空間の部分空間は正則。正則空間の直積は正則。
+2. 正規空間の閉部分空間は正規。
+:::
+
+::: proof
+**1, 部分空間.** $A$ の閉集合 $F\cap A$（$F$ は $X$ で閉）と $x\in A\setminus F$ について、$X$ で分離する $U,V$ をとり $U\cap A$, $V\cap A$。
+
+**1, 直積.** \ref{top:regular-normal-characterization} の 1 を使う。$x=(x_{i})$ の開近傍は基本開集合 $W=\prod W_{i}$（有限個の $i$ を除いて $W_{i}=X_{i}$）を含む。各 $i$ で $x_{i}\in U_{i}\subseteq\overline{U_{i}}\subseteq W_{i}$ となる開集合をとる（$W_{i}=X_{i}$ の座標では $U_{i}=X_{i}$。残りは有限個なので選択公理は要らない）。$U\defeq\prod U_{i}$ は開で、$\overline{U}=\prod\overline{U_{i}}\subseteq W$（\ref{top:product-closure}）。
+
+**2.** 閉部分空間 $A$ の閉集合は $X$ でも閉（\ref{top:subspace-basic} の 4）なので、$X$ で分離して $A$ と交わる。
+:::
+
+::: remark
+正規性は部分空間（閉でないもの）にも直積にも遺伝しない。ゾルゲンフライ直線は正規だが、その二乗は正規でない（R. Engelking, *General Topology* の例。ここでは証明しない）。
+:::
+
+::: theorem 距離空間は正規 {#top:metric-normal keywords="metric spaces are T4 (normal Hausdorff)" index="距離空間の正規性|きょりくうかんのせいきせい"}
+距離空間は $T_{4}$（正規かつ $T_{1}$）である。とくにハウスドルフである。
+:::
+
+::: proof
+**$T_{1}$.** $x\neq y$ なら $B(x,d(x,y))$ は $y$ を含まない。
+
+**正規.** 交わらない閉集合 $A,B$ をとる（どちらかが空なら明らか）。$d(x,A)\defeq\inf_{a\in A}d(x,a)$ とおくと、$\lvert d(x,A)-d(y,A)\rvert\le d(x,y)$（三角不等式から $d(x,a)\le d(x,y)+d(y,a)$ の下限をとる）なので連続で、$A$ が閉なら $d(x,A)=0\iff x\in A$（\ref{top:interior-closure-basic} の例 3）。
+$$
+U\defeq\{x:d(x,A)<d(x,B)\},\qquad V\defeq\{x:d(x,B)<d(x,A)\}
+$$
+は連続関数 $d(\cdot,A)-d(\cdot,B)$ による開区間の逆像で開、明らかに交わらない。$a\in A$ なら $d(a,A)=0<d(a,B)$（$a\notin B$ で $B$ は閉）なので $A\subseteq U$。同様に $B\subseteq V$。
+
+::: hypcheck
+- **$A,B$ が閉**：$d(x,A)=0\Rightarrow x\in A$ に使った。閉でないと、たとえば $A=(0,1)$, $B=\{0\}$ は交わらないが分離できない。
+- **公理**：選択公理は使っていない（距離関数で開集合を直接書いた）。
+:::
+:::
+
+::: example ハウスドルフだが正則でない空間 {#top:k-topology}
+$K\defeq\{1/n:n\ge1\}$ とし、$\R$ に、通常の開集合と、$U\setminus K$（$U$ は通常の開集合）の形の集合の全体を開基とする位相を入れる（**$K$ 位相**）。開基の条件 (B2) は、$(U\setminus K)\cap V=(U\cap V)\setminus K$ などから成り立つ。この位相は通常の位相より強いのでハウスドルフ。$K$ は閉集合（補集合 $\R\setminus K$ は開基の元）で $0\notin K$ だが、$0$ と $K$ は分離できない：$0$ を含む開集合は $(-\varepsilon,\varepsilon)\setminus K$ を含み、$K$ を含む開集合 $V$ は、各 $1/n$ のまわりの通常の開区間を含む（$1/n\in K$ を含む開基の元は通常の開集合）。$1/n<\varepsilon$ となる $n$ について、$1/n$ のまわりの区間は $K$ に属さない点を含み、それは $(-\varepsilon,\varepsilon)\setminus K$ にも属する。よって正則でない。
+:::
+
+::: supplement
+**前提を変えると.** 正規性は、閉集合を「連続関数で分けられる」ことと同値である（ウリゾーンの補題。\ref[ウリゾーンの補題]{top:urysohn-lemma}）。正則性の連続関数版が「完全正則」（チコノフ空間）で、$T_{3}$ と $T_{4}$ の間に入る（\ref[完全正則空間]{top:completely-regular}）。
+
+**類似の定理.** コンパクトなハウスドルフ空間は正規である（\ref{top:compact-hausdorff-normal}）。正則でリンデレーフな空間も正規である。
+
+**高い視点から：分離公理は「見分ける力」の段階.** $T_{0}$ は二点を何らかの観測で区別できること、$T_{1}$ はどちらの点からも相手を区別できること、$T_{2}$ は二点を「互いに干渉しない領域」に閉じ込められることである。比喩で言えば、$T_{2}$ は二つの点に別々の柵を立てられることで、そのおかげで「近づき方の行き先」（極限）が一つに決まる。$T_{0}$ でない空間は、区別できない点を一つにまとめる（コルモゴロフ商）と $T_{0}$ にでき、位相的には同じ情報をもつ。
+:::
+
+## 問題 {#top:sec-sep-problems}
+
+::: problem {#top:prob-finite-t1-discrete}
+有限な $T_{1}$ 空間は離散空間であることを示せ。
+:::
+
+::: solution
+一点集合は閉なので、任意の部分集合は有限個の点の和として閉。補集合をとれば任意の部分集合は開。
+:::
+
+::: problem {#top:prob-hausdorff-image}
+コンパクトでない例でよいので、ハウスドルフ空間の連続像（商空間）がハウスドルフとは限らないことを示せ。
+:::
+
+::: solution
+\ref{top:quotient-not-hausdorff} の二つの原点をもつ直線 $L$ は、ハウスドルフ空間 $\R\times\{0,1\}$ の商写像による像だが、ハウスドルフでない。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

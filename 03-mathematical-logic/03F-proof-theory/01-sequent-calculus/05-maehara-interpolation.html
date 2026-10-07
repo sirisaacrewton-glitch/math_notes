@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>前原の方法による補間定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/01-sequent-calculus/05-maehara-interpolation.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 前原の方法による補間定理 {#pt:maehara-interpolation keywords="Maehara's method, Craig interpolation theorem, proof-theoretic proof of interpolation, split sequent, partition of a sequent, cut-free LK"}
+
+クレイグの補間定理（\ref{logic:craig-interpolation}）は、一階述語論理の系列では意味論的に（分離不能性定理を通して）証明した。本ページでは、カット除去定理（\ref{pt:cut-elimination}）を使い、カットのない導出に関する帰納法で補間式を**具体的に組み立てる**。シーケントの前件と後件をそれぞれ二つに分け、導出の各推論で補間式を作り替えていく方法で、前原昭二による方法として知られている（\ref{pt:maehara-lemma}）。この証明では、補間式が導出から計算でき、自由変数についての条件も同時に得られる。言語は関係記号だけからなるものに制限する（制限を外すときの問題は補足で述べる）。
+
+## 記法と定義の確認 {#pt:sec-mi-notation}
+
+::: notation
+- シーケント、$\mathsf{LK}$, $\mathsf{LK}+\mathrm{Cut}$、主論理式、固有変数、$\vdash$（カットのない導出がある）、$\vdash_{\mathrm{Cut}}$ は \ref{pt:lk} のとおり。等号は扱わない（$t=s$ は通常の二項関係記号の原子論理式）。
+- 道具：高さを保つ弱化（\ref{pt:lk-weakening}）、カット除去定理（\ref{pt:cut-elimination}）、捕獲を避ける代入の計算規則（\ref{pt:cas-rules}）、α 同値の代表のとり方（\ref{pt:alpha-clean}）。
+- 略記 $\neg A=(A\to\bot)$, $\top=\neg\bot$, $A\wedge B=\neg(A\to\neg B)$, $A\vee B=(\neg A\to B)$, $\exists x\,A=\neg\forall x\,\neg A$ は \ref{logic:abbreviations} のとおり。
+- **本ページの仮定**：言語 $\mathcal{L}$ は関係記号だけからなる（定数記号・関数記号を含まない）。したがって項は変数だけであり、L$\forall$ の項 $t$ も変数である。
+- $\mathrm{Rel}(A)$ は論理式 $A$ に現れる関係記号の集合である（$=$ を使っていればそれも数える。$\bot$ は論理記号なので数えない）。多重集合については $\mathrm{Rel}(\Gamma)\defeq\bigcup_{A\in\Gamma}\mathrm{Rel}(A)$, $\mathrm{Rel}(\Gamma,\Delta)\defeq\mathrm{Rel}(\Gamma)\cup\mathrm{Rel}(\Delta)$ とし、$\mathrm{FV}$ についても同様に書く。
+:::
+
+## 準備 {#pt:sec-mi-preliminaries}
+
+::: lemma 関係記号の不変性 {#pt:rel-invariance}
+論理式 $A,B$ と変数 $y,z$、変数の置換 $\pi$ について次が成り立つ。
+1. $\mathrm{Rel}(\pi\cdot A)=\mathrm{Rel}(A)$。
+2. $A\equiv B$ なら $\mathrm{Rel}(A)=\mathrm{Rel}(B)$。
+3. $\mathrm{Rel}(A[y/z])=\mathrm{Rel}(A)$。さらに $\mathrm{Rel}(A\langle y/z\rangle)=\mathrm{Rel}(A)$。
+:::
+
+::: proof
+1. $\pi\cdot A$ は $A$ の変数の出現だけを書き換えたものである（\ref{pt:swap} の構造的再帰）。$A$ の構成に関する帰納法で、関係記号の出現はそのまま残ることがわかる。
+2. $c(A)$ に関する帰納法で、\ref{pt:alpha-equivalence} の三つの場合に分ける。原子論理式なら $A=B$。含意なら成分ごとに帰納法の仮定。$A=\forall x\,\alpha$, $B=\forall y\,\beta$ で、ある $z$ について $(z\ x)\cdot\alpha\equiv(z\ y)\cdot\beta$ のとき、$c((z\ x)\cdot\alpha)=c(\alpha)<c(A)$（置換の作用は論理記号の並びを変えない）なので帰納法の仮定が使え、$\mathrm{Rel}((z\ x)\cdot\alpha)=\mathrm{Rel}((z\ y)\cdot\beta)$。1 より $\mathrm{Rel}(\alpha)=\mathrm{Rel}(\beta)$、よって $\mathrm{Rel}(A)=\mathrm{Rel}(B)$。
+3. 項は変数だけなので、代入 $[y/z]$ は自由な $z$ の出現を変数 $y$ に書き換えるだけである（\ref{logic:substitution}）。$A$ の構成に関する帰納法で $\mathrm{Rel}(A[y/z])=\mathrm{Rel}(A)$。後半は、$A\langle y/z\rangle\equiv A'[y/z]$ となる代表 $A'\equiv A$ をとり（\ref{pt:capture-avoiding-substitution}）、2 と前半を使う。
+:::
+
+カットのない導出の中で略記 $\neg,\wedge,\vee,\exists$ を扱うため、それらの規則が $\mathsf{LK}$ で（カットなしで）許容的であることを確かめておく。
+
+::: lemma 略記の派生規則 {#pt:lk-derived-rules keywords="derived rules for negation, conjunction, disjunction and existential quantifier in LK" index="派生規則（LK）|はせいきそくえるけー"}
+次の各項で、上の段のシーケントにカットのない導出があれば、下の段のシーケントにもカットのない導出がある。
+1. (R$\vee$) $\Gamma\Rightarrow\Delta,A,B$ から $\Gamma\Rightarrow\Delta,A\vee B$。
+2. (L$\vee$) $A,\Gamma\Rightarrow\Delta$ と $B,\Gamma\Rightarrow\Delta$ から $A\vee B,\Gamma\Rightarrow\Delta$。
+3. (R$\wedge$) $\Gamma\Rightarrow\Delta,A$ と $\Gamma\Rightarrow\Delta,B$ から $\Gamma\Rightarrow\Delta,A\wedge B$。
+4. (L$\wedge$) $A,B,\Gamma\Rightarrow\Delta$ から $A\wedge B,\Gamma\Rightarrow\Delta$。
+5. (R$\exists$) 変数 $t$ について、$\Gamma\Rightarrow\Delta,A\langle t/x\rangle$ から $\Gamma\Rightarrow\Delta,\exists x\,A$。
+6. (L$\exists$) $y\notin\mathrm{FV}(\Gamma,\Delta,\exists x\,A)$ のとき、$A\langle y/x\rangle,\Gamma\Rightarrow\Delta$ から $\exists x\,A,\Gamma\Rightarrow\Delta$。
+
+また、任意の $\Gamma,\Delta$ について $\vdash\Gamma\Rightarrow\Delta,\top$ である。
+:::
+
+::: proof
+各項で使う弱化はすべて \ref{pt:lk-weakening}（カットのない導出をカットのない導出に移す）である。
+
+1. $A\vee B=(A\to\bot)\to B$。L$\to$ を、$\Gamma\Rightarrow\Delta,B,A$（仮定）と $\bot,\Gamma\Rightarrow\Delta,B$（L$\bot$）に使って $A\to\bot,\Gamma\Rightarrow\Delta,B$。R$\to$ で結論を得る。
+2. 仮定 $A,\Gamma\Rightarrow\Delta$ を弱化して $A,\Gamma\Rightarrow\Delta,\bot$、R$\to$ で $\Gamma\Rightarrow\Delta,A\to\bot$。これと仮定 $B,\Gamma\Rightarrow\Delta$ に L$\to$ を使う。
+3. $A\wedge B=(A\to(B\to\bot))\to\bot$。仮定を弱化して $\Gamma\Rightarrow\Delta,\bot,B$ と $\Gamma\Rightarrow\Delta,\bot,A$ を得る。L$\to$ を $\Gamma\Rightarrow\Delta,\bot,B$ と $\bot,\Gamma\Rightarrow\Delta,\bot$（L$\bot$）に使って $B\to\bot,\Gamma\Rightarrow\Delta,\bot$。もう一度 L$\to$ を $\Gamma\Rightarrow\Delta,\bot,A$ とこれに使って $A\to(B\to\bot),\Gamma\Rightarrow\Delta,\bot$。R$\to$ で結論を得る。
+4. 仮定を弱化して $A,B,\Gamma\Rightarrow\Delta,\bot$、R$\to$ を二回使って $\Gamma\Rightarrow\Delta,A\to(B\to\bot)$。これと $\bot,\Gamma\Rightarrow\Delta$（L$\bot$）に L$\to$ を使う。
+5. $\exists x\,A=\forall x\,(A\to\bot)\to\bot$。仮定を弱化して $\forall x\,\neg A,\Gamma\Rightarrow\Delta,\bot,A\langle t/x\rangle$。これと $\bot,\forall x\,\neg A,\Gamma\Rightarrow\Delta,\bot$（L$\bot$）に L$\to$ を使って
+$$
+A\langle t/x\rangle\to\bot,\ \forall x\,\neg A,\ \Gamma\Rightarrow\Delta,\bot .
+$$
+\ref{pt:cas-rules} の 2 と 1（$\bot$ は原子論理式）より $(A\to\bot)\langle t/x\rangle\equiv(A\langle t/x\rangle\to\bot)$ なので、L$\forall$ の条件が満たされ、$\forall x\,\neg A,\Gamma\Rightarrow\Delta,\bot$。R$\to$ で結論を得る。
+6. 仮定を弱化して $A\langle y/x\rangle,\Gamma\Rightarrow\Delta,\bot$、R$\to$ で $\Gamma\Rightarrow\Delta,A\langle y/x\rangle\to\bot$。5 と同じく $A\langle y/x\rangle\to\bot\equiv(\neg A)\langle y/x\rangle$ で、$\mathrm{FV}(\forall x\,\neg A)=\mathrm{FV}(\exists x\,A)$ なので $y\notin\mathrm{FV}(\Gamma,\Delta,\forall x\,\neg A)$。R$\forall$（固有変数 $y$）で $\Gamma\Rightarrow\Delta,\forall x\,\neg A$。これと $\bot,\Gamma\Rightarrow\Delta$（L$\bot$）に L$\to$ を使う。
+
+最後の主張：$\bot,\Gamma\Rightarrow\Delta,\bot$（L$\bot$）に R$\to$ を使う。
+:::
+
+## 分割と補間式 {#pt:sec-mi-split}
+
+::: definition シーケントの分割と補間式 {#pt:split-sequent keywords="partition of a sequent, split sequent, interpolant of a partition" index="シーケントの分割|しーけんとのぶんかつ, 補間式（分割の）|ほかんしきぶんかつの"}
+1. シーケント $\Gamma\Rightarrow\Delta$ の**分割**とは、多重集合の分解 $\Gamma=\Gamma_{1},\Gamma_{2}$ と $\Delta=\Delta_{1},\Delta_{2}$ の組のことで、
+$$
+[\Gamma_{1}\,;\Gamma_{2}]\Rightarrow[\Delta_{1}\,;\Delta_{2}]
+$$
+と書く。$\Gamma_{1}\Rightarrow\Delta_{1}$ を**第 1 の側**、$\Gamma_{2}\Rightarrow\Delta_{2}$ を**第 2 の側**という。
+2. 論理式 $I$ がこの分割の**補間式**であるとは、次の (i)〜(iii) を満たすことをいう。
+   - (i) $\vdash\Gamma_{1}\Rightarrow\Delta_{1},I$。
+   - (ii) $\vdash I,\Gamma_{2}\Rightarrow\Delta_{2}$。
+   - (iii) $\mathrm{Rel}(I)\subseteq\mathrm{Rel}(\Gamma_{1},\Delta_{1})\cap\mathrm{Rel}(\Gamma_{2},\Delta_{2})$ かつ $\mathrm{FV}(I)\subseteq\mathrm{FV}(\Gamma_{1},\Delta_{1})\cap\mathrm{FV}(\Gamma_{2},\Delta_{2})$。
+
+   (i), (ii) の $\vdash$ はカットのない導出である。
+:::
+
+::: intuition
+第 1 の側を「$\Gamma_{1}$ をすべて仮定し $\Delta_{1}$ をすべて否定した状況」、第 2 の側を「$\Gamma_{2}$ をすべて仮定し $\Delta_{2}$ をすべて否定した状況」と読むと、$\Gamma\Rightarrow\Delta$ が導出できることは「二つの状況は両立しない」ことに当たる。補間式 $I$ は、第 1 の側から導かれ、第 2 の側と両立しない主張を、両方の側に共通の語彙だけで述べたものである。とくに $\Gamma_{2}$ と $\Delta_{1}$ が空のとき、$I$ は $\Gamma_{1}\Rightarrow I$ と $I\Rightarrow\Delta_{2}$ を満たす、通常の意味の補間式になる。
+:::
+
+## 前原の補題 {#pt:sec-mi-main}
+
+::: theorem 前原の補題 {#pt:maehara-lemma keywords="Maehara's lemma, interpolation for every partition of a cut-free derivable sequent" index="前原の補題|まえはらのほだい, 前原の方法|まえはらのほうほう"}
+$\vdash\Gamma\Rightarrow\Delta$（カットのない導出）ならば、$\Gamma\Rightarrow\Delta$ の**任意の**分割は補間式をもつ。
+:::
+
+::: proof
+$\Gamma\Rightarrow\Delta$ のカットのない導出の高さ $n$ に関する帰納法で、「高さ $n$ 以下の導出をもつシーケントの任意の分割は補間式をもつ」ことを示す。分割 $[\Gamma_{1}\,;\Gamma_{2}]\Rightarrow[\Delta_{1}\,;\Delta_{2}]$ を固定し、導出の最後の推論で場合を分ける。以下、(iii) の確認では
+$$
+\mathcal{R}_{k}\defeq\mathrm{Rel}(\Gamma_{k},\Delta_{k}),\qquad\mathcal{V}_{k}\defeq\mathrm{FV}(\Gamma_{k},\Delta_{k})\qquad(k=1,2)
+$$
+と書く（結論のシーケントの分割についての記号である）。弱化は \ref{pt:lk-weakening} で、カットを増やさない。
+
+**場合 1：Ax.** 結論は $P,\Gamma'\Rightarrow\Delta',P$ の形で、前件の $P$（主論理式）は $\Gamma_{1}$ か $\Gamma_{2}$ の一方に、後件の $P$ は $\Delta_{1}$ か $\Delta_{2}$ の一方に属する。四通りに分ける。
+- (1a) $P\in\Gamma_{1}$, $P\in\Delta_{1}$：$I\defeq\bot$。(i) $\Gamma_{1}\Rightarrow\Delta_{1},\bot$ は $P$ を両辺にもつので Ax。(ii) $\bot,\Gamma_{2}\Rightarrow\Delta_{2}$ は L$\bot$。(iii) $\mathrm{Rel}(\bot)=\mathrm{FV}(\bot)=\varnothing$。
+- (1b) $P\in\Gamma_{1}$, $P\in\Delta_{2}$：$I\defeq P$。(i) $\Gamma_{1}\Rightarrow\Delta_{1},P$ と (ii) $P,\Gamma_{2}\Rightarrow\Delta_{2}$ はともに Ax。(iii) $P$ は $\Gamma_{1}$ と $\Delta_{2}$ に属するので、$\mathrm{Rel}(P)\subseteq\mathcal{R}_{1}\cap\mathcal{R}_{2}$, $\mathrm{FV}(P)\subseteq\mathcal{V}_{1}\cap\mathcal{V}_{2}$。
+- (1c) $P\in\Gamma_{2}$, $P\in\Delta_{1}$：$I\defeq\neg P$。(i) $P,\Gamma_{1}\Rightarrow\Delta_{1},\bot$ は $P\in\Delta_{1}$ より Ax で、R$\to$ により $\Gamma_{1}\Rightarrow\Delta_{1},\neg P$。(ii) $\Gamma_{2}\Rightarrow\Delta_{2},P$（$P\in\Gamma_{2}$ より Ax）と $\bot,\Gamma_{2}\Rightarrow\Delta_{2}$（L$\bot$）に L$\to$ を使って $\neg P,\Gamma_{2}\Rightarrow\Delta_{2}$。(iii) (1b) と同様（$P$ は $\Delta_{1}$ と $\Gamma_{2}$ に属する）。
+- (1d) $P\in\Gamma_{2}$, $P\in\Delta_{2}$：$I\defeq\top$。(i) は \ref{pt:lk-derived-rules} の最後の主張。(ii) $\top,\Gamma_{2}\Rightarrow\Delta_{2}$ は $P$ を両辺にもつので Ax。(iii) $\mathrm{Rel}(\top)=\mathrm{FV}(\top)=\varnothing$。
+
+**場合 2：L$\bot$.** 主論理式 $\bot$ が $\Gamma_{1}$ に属するなら $I\defeq\bot$（(i) (ii) とも L$\bot$）、$\Gamma_{2}$ に属するなら $I\defeq\top$（(i) は \ref{pt:lk-derived-rules}、(ii) は L$\bot$）。(iii) は自明。
+
+**場合 3：L$\to$、主論理式が第 1 の側.** 結論の分割は $[A\to B,\Gamma_{1}'\,;\Gamma_{2}]\Rightarrow[\Delta_{1}\,;\Delta_{2}]$（$\Gamma_{1}=A\to B,\Gamma_{1}'$）で、前提は $\Gamma_{1}',\Gamma_{2}\Rightarrow\Delta,A$ と $B,\Gamma_{1}',\Gamma_{2}\Rightarrow\Delta$（高さ $n-1$ 以下）である。前提をそれぞれ
+$$
+[\Gamma_{1}'\,;\Gamma_{2}]\Rightarrow[\Delta_{1},A\,;\Delta_{2}],\qquad[B,\Gamma_{1}'\,;\Gamma_{2}]\Rightarrow[\Delta_{1}\,;\Delta_{2}]
+$$
+と分割し、帰納法の仮定で補間式 $I_{1},I_{2}$ をとる：
+$$
+\begin{aligned}
+&\vdash\Gamma_{1}'\Rightarrow\Delta_{1},A,I_{1},\qquad\vdash I_{1},\Gamma_{2}\Rightarrow\Delta_{2},\\
+&\vdash B,\Gamma_{1}'\Rightarrow\Delta_{1},I_{2},\qquad\vdash I_{2},\Gamma_{2}\Rightarrow\Delta_{2}.
+\end{aligned}
+$$
+$I\defeq I_{1}\vee I_{2}$ とする。
+- (i) 左の二つを弱化して $\Gamma_{1}'\Rightarrow\Delta_{1},I_{1},I_{2},A$ と $B,\Gamma_{1}'\Rightarrow\Delta_{1},I_{1},I_{2}$。L$\to$ で $A\to B,\Gamma_{1}'\Rightarrow\Delta_{1},I_{1},I_{2}$、R$\vee$（\ref{pt:lk-derived-rules} の 1）で $\Gamma_{1}\Rightarrow\Delta_{1},I_{1}\vee I_{2}$。
+- (ii) 右の二つに L$\vee$（同 2）。
+- (iii) $\mathrm{Rel}(I)=\mathrm{Rel}(I_{1})\cup\mathrm{Rel}(I_{2})$ で、$\mathrm{Rel}(I_{1})\subseteq\mathrm{Rel}(\Gamma_{1}',\Delta_{1},A)\cap\mathcal{R}_{2}$, $\mathrm{Rel}(I_{2})\subseteq\mathrm{Rel}(B,\Gamma_{1}',\Delta_{1})\cap\mathcal{R}_{2}$。$\mathrm{Rel}(A),\mathrm{Rel}(B)\subseteq\mathrm{Rel}(A\to B)$ なので両方とも $\mathcal{R}_{1}\cap\mathcal{R}_{2}$ に含まれる。$\mathrm{FV}$ も同じ。
+
+**場合 4：L$\to$、主論理式が第 2 の側.** 結論の分割は $[\Gamma_{1}\,;A\to B,\Gamma_{2}']\Rightarrow[\Delta_{1}\,;\Delta_{2}]$ である。前提を
+$$
+[\Gamma_{1}\,;\Gamma_{2}']\Rightarrow[\Delta_{1}\,;\Delta_{2},A],\qquad[\Gamma_{1}\,;B,\Gamma_{2}']\Rightarrow[\Delta_{1}\,;\Delta_{2}]
+$$
+と分割し、補間式 $I_{1},I_{2}$ をとる：
+$$
+\begin{aligned}
+&\vdash\Gamma_{1}\Rightarrow\Delta_{1},I_{1},\qquad\vdash I_{1},\Gamma_{2}'\Rightarrow\Delta_{2},A,\\
+&\vdash\Gamma_{1}\Rightarrow\Delta_{1},I_{2},\qquad\vdash I_{2},B,\Gamma_{2}'\Rightarrow\Delta_{2}.
+\end{aligned}
+$$
+$I\defeq I_{1}\wedge I_{2}$ とする。
+- (i) 左の二つに R$\wedge$（\ref{pt:lk-derived-rules} の 3）。
+- (ii) 右の二つを弱化して $I_{1},I_{2},\Gamma_{2}'\Rightarrow\Delta_{2},A$ と $B,I_{1},I_{2},\Gamma_{2}'\Rightarrow\Delta_{2}$。L$\to$ で $A\to B,I_{1},I_{2},\Gamma_{2}'\Rightarrow\Delta_{2}$、L$\wedge$（同 4）で $I_{1}\wedge I_{2},\Gamma_{2}\Rightarrow\Delta_{2}$。
+- (iii) 場合 3 と同様。
+
+**場合 5：R$\to$.** 主論理式 $A\to B$ が $\Delta_{1}$ に属する（$\Delta_{1}=\Delta_{1}',A\to B$）なら、前提 $A,\Gamma\Rightarrow\Delta',B$ を $[A,\Gamma_{1}\,;\Gamma_{2}]\Rightarrow[\Delta_{1}',B\,;\Delta_{2}]$ と分割し、その補間式 $I$ をそのまま使う。(i) $A,\Gamma_{1}\Rightarrow\Delta_{1}',B,I$ に R$\to$ を使う。(ii) は前提の分割の (ii) そのもの。(iii) $\mathrm{Rel}(A,B)\subseteq\mathrm{Rel}(A\to B)$, $\mathrm{FV}$ も同様。$\Delta_{2}$ に属するなら、前提を $[\Gamma_{1}\,;A,\Gamma_{2}]\Rightarrow[\Delta_{1}\,;\Delta_{2}',B]$ と分割し、補間式 $I$ の (ii) $I,A,\Gamma_{2}\Rightarrow\Delta_{2}',B$ に R$\to$ を使う。
+
+**場合 6：L$\forall$、主論理式が第 1 の側.** 結論の分割は $[\forall x\,A,\Gamma_{1}'\,;\Gamma_{2}]\Rightarrow[\Delta_{1}\,;\Delta_{2}]$、前提は $C,\forall x\,A,\Gamma\Rightarrow\Delta$ で、ある**変数** $y$ について $C\equiv A\langle y/x\rangle$ である（項は変数だけ）。前提を $[C,\forall x\,A,\Gamma_{1}'\,;\Gamma_{2}]\Rightarrow[\Delta_{1}\,;\Delta_{2}]$ と分割し、補間式 $I$ をとる：
+$$
+\vdash C,\forall x\,A,\Gamma_{1}'\Rightarrow\Delta_{1},I,\qquad\vdash I,\Gamma_{2}\Rightarrow\Delta_{2}.
+$$
+L$\forall$ を前者に使うと $\vdash\Gamma_{1}\Rightarrow\Delta_{1},I$（$I$ は文脈）。$\mathrm{Rel}(C)=\mathrm{Rel}(A)$（\ref{pt:rel-invariance} の 2, 3）と、\ref{pt:cas-rules} の 6 と \ref{pt:alpha-invariants} の 1 による
+$$
+\mathrm{FV}(C)\subseteq(\mathrm{FV}(A)\setminus\{x\})\cup\{y\}=\mathrm{FV}(\forall x\,A)\cup\{y\}
+$$
+から、$\mathrm{Rel}(I)\subseteq\mathcal{R}_{1}\cap\mathcal{R}_{2}$ と $\mathrm{FV}(I)\subseteq(\mathcal{V}_{1}\cup\{y\})\cap\mathcal{V}_{2}$ がわかる。
+- (6a) $y\notin\mathrm{FV}(I)$ または $y\in\mathcal{V}_{1}$ のとき：$\mathrm{FV}(I)\subseteq\mathcal{V}_{1}\cap\mathcal{V}_{2}$ なので、$I$ が結論の分割の補間式である。
+- (6b) $y\in\mathrm{FV}(I)$ かつ $y\notin\mathcal{V}_{1}$ のとき：$I'\defeq\forall y\,I$ とする。まず $I\langle y/y\rangle\equiv I$ である（\ref{pt:alpha-clean} で $I''\equiv I$, $y\notin\mathrm{BV}(I'')$ をとれば $I\langle y/y\rangle\equiv I''[y/y]=I''$）。(i) $\vdash\Gamma_{1}\Rightarrow\Delta_{1},I$ に、$C\defeq I$ として R$\forall$ を使う。固有変数の条件 $y\notin\mathrm{FV}(\Gamma_{1},\Delta_{1},\forall y\,I)$ は $y\notin\mathcal{V}_{1}$ から従う。よって $\vdash\Gamma_{1}\Rightarrow\Delta_{1},\forall y\,I$。(ii) $I,\Gamma_{2}\Rightarrow\Delta_{2}$ を弱化して $I,\forall y\,I,\Gamma_{2}\Rightarrow\Delta_{2}$、L$\forall$（項 $y$、$C\defeq I$）で $\forall y\,I,\Gamma_{2}\Rightarrow\Delta_{2}$。(iii) $\mathrm{Rel}(I')=\mathrm{Rel}(I)$ で、
+$$
+\mathrm{FV}(I')=\mathrm{FV}(I)\setminus\{y\}\subseteq\mathcal{V}_{1}\cap\mathcal{V}_{2}.
+$$
+
+**場合 7：L$\forall$、主論理式が第 2 の側.** 結論の分割は $[\Gamma_{1}\,;\forall x\,A,\Gamma_{2}']\Rightarrow[\Delta_{1}\,;\Delta_{2}]$ で、前提 $C,\forall x\,A,\Gamma\Rightarrow\Delta$（$C\equiv A\langle y/x\rangle$）を $[\Gamma_{1}\,;C,\forall x\,A,\Gamma_{2}']\Rightarrow[\Delta_{1}\,;\Delta_{2}]$ と分割して補間式 $I$ をとる：
+$$
+\vdash\Gamma_{1}\Rightarrow\Delta_{1},I,\qquad\vdash I,C,\forall x\,A,\Gamma_{2}'\Rightarrow\Delta_{2}.
+$$
+L$\forall$ で $\vdash I,\Gamma_{2}\Rightarrow\Delta_{2}$。場合 6 と同様に $\mathrm{FV}(I)\subseteq\mathcal{V}_{1}\cap(\mathcal{V}_{2}\cup\{y\})$。
+- (7a) $y\notin\mathrm{FV}(I)$ または $y\in\mathcal{V}_{2}$ のとき：$I$ が補間式である。
+- (7b) $y\in\mathrm{FV}(I)$ かつ $y\notin\mathcal{V}_{2}$ のとき：$I'\defeq\exists y\,I$ とする。(i) $\vdash\Gamma_{1}\Rightarrow\Delta_{1},I$ と $I\equiv I\langle y/y\rangle$ から、R$\exists$（\ref{pt:lk-derived-rules} の 5、$t=y$）で $\vdash\Gamma_{1}\Rightarrow\Delta_{1},\exists y\,I$。(ii) $\vdash I,\Gamma_{2}\Rightarrow\Delta_{2}$ に L$\exists$（同 6）を使う。条件 $y\notin\mathrm{FV}(\Gamma_{2},\Delta_{2},\exists y\,I)$ は $y\notin\mathcal{V}_{2}$ から従う。(iii) $\mathrm{FV}(I')=\mathrm{FV}(I)\setminus\{y\}\subseteq\mathcal{V}_{1}\cap\mathcal{V}_{2}$。
+
+**場合 8：R$\forall$.** 主論理式 $\forall x\,A$ が $\Delta_{1}$ に属する（$\Delta_{1}=\Delta_{1}',\forall x\,A$）とする。前提は $\Gamma\Rightarrow\Delta_{1}',\Delta_{2},C$ で、$C\equiv A\langle y/x\rangle$, $y\notin\mathrm{FV}(\Gamma,\Delta)$（$\forall x\,A\in\Delta$）。前提を $[\Gamma_{1}\,;\Gamma_{2}]\Rightarrow[\Delta_{1}',C\,;\Delta_{2}]$ と分割して補間式 $I$ をとる：
+$$
+\vdash\Gamma_{1}\Rightarrow\Delta_{1}',C,I,\qquad\vdash I,\Gamma_{2}\Rightarrow\Delta_{2}.
+$$
+$\mathrm{FV}(I)\subseteq\mathcal{V}_{2}$ で $y\notin\mathcal{V}_{2}$ なので $y\notin\mathrm{FV}(I)$。したがって固有変数の条件 $y\notin\mathrm{FV}(\Gamma_{1},\Delta_{1}',I,\forall x\,A)$ が満たされ、R$\forall$ で $\vdash\Gamma_{1}\Rightarrow\Delta_{1},I$。(ii) はそのまま。(iii) $y\notin\mathrm{FV}(I)$ と $\mathrm{FV}(C)\setminus\{y\}\subseteq\mathrm{FV}(\forall x\,A)$ より $\mathrm{FV}(I)\subseteq\mathcal{V}_{1}\cap\mathcal{V}_{2}$、$\mathrm{Rel}$ は \ref{pt:rel-invariance}。
+
+主論理式が $\Delta_{2}$ に属するときも同様で、前提を $[\Gamma_{1}\,;\Gamma_{2}]\Rightarrow[\Delta_{1}\,;\Delta_{2}',C]$ と分割し、補間式 $I$ について $\mathrm{FV}(I)\subseteq\mathcal{V}_{1}\not\ni y$ だから、$I,\Gamma_{2}\Rightarrow\Delta_{2}',C$ に R$\forall$ を使える。
+
+以上ですべての場合が尽くされた（$\mathsf{LK}$ の規則は Ax, L$\bot$, L$\to$, R$\to$, L$\forall$, R$\forall$ だけである）。
+:::
+
+::: hypcheck
+- **カットのない導出**：帰納法は最後の推論の場合分けで進み、カットの場合はない。カットがあると、カット論理式が両方の側に共通でない関係記号を含みうるため、この構成は使えない。これがカット除去定理を先に必要とする理由である（\ref{pt:maehara-craig}）。
+- **関係記号だけの言語**：場合 6・7 で、L$\forall$ の項が変数 $y$ なので $\mathrm{Rel}(C)=\mathrm{Rel}(A)$ と $\mathrm{FV}(C)\subseteq\mathrm{FV}(\forall x\,A)\cup\{y\}$ が成り立った。また \ref{pt:rel-invariance} の 3 で使った。
+- **弱化**：場合 3・4・6 と \ref{pt:lk-derived-rules} で使った。弱化がカットのない導出を保つこと（\ref{pt:lk-weakening}）が要る。高さを保つことは本ページでは使っていない。
+- **固有変数の条件**：場合 6b・7b では、量化する変数 $y$ が一方の側に現れないことが、R$\forall$ と L$\exists$ の固有変数の条件そのものになった。場合 8 では、前提の補間式が $y$ を含まないことが補間式の条件 (iii) から自動的に従った。
+- **任意の分割**：場合 3・4・6・7 で、前提には結論と異なる分割（$A$ や $C$ を加えた分割）を使う。帰納法の主張を「すべての分割について」にしてあるのはこのためである。
+:::
+
+## クレイグの補間定理（構文論的な形） {#pt:sec-mi-craig}
+
+::: corollary クレイグの補間定理（LK） {#pt:maehara-craig keywords="syntactic Craig interpolation theorem for LK" index="クレイグの補間定理（構文論的）|くれいぐのほかんていりこうぶんろんてき"}
+$\vdash_{\mathrm{Cut}}A\Rightarrow B$（$\mathsf{LK}+\mathrm{Cut}$ で）ならば、論理式 $I$ で
+$$
+\vdash A\Rightarrow I,\qquad\vdash I\Rightarrow B
+$$
+（ともにカットのない導出）を満たし、$\mathrm{Rel}(I)\subseteq\mathrm{Rel}(A)\cap\mathrm{Rel}(B)$, $\mathrm{FV}(I)\subseteq\mathrm{FV}(A)\cap\mathrm{FV}(B)$ となるものが存在する。
+:::
+
+::: proof
+カット除去定理（\ref{pt:cut-elimination}）より $\vdash A\Rightarrow B$。分割 $[A\,;\ ]\Rightarrow[\ ;B]$ に \ref{pt:maehara-lemma} を使う。
+:::
+
+::: remark 意味論的な補間定理との関係 {#pt:maehara-semantic-remark}
+- \ref{logic:craig-interpolation} は文について $\varphi\models\psi$ から補間式の存在を述べ、定数記号・関数記号・等号を含む言語でも成り立つ。本ページの結果は、関係記号だけの言語で、等号を通常の関係記号として扱う $\mathsf{LK}$ の導出可能性についてのものである。
+- 両者を結ぶには「等号を使わない論理式からなるシーケントが、等号を恒等関係と解釈するすべての構造で妥当なら、等号の規則なしの $\mathsf{LK}+\mathrm{Cut}$ で導出できる」という完全性が要る。本サイトの完全性定理（\ref{logic:completeness}）は等号の規則をもつ自然演繹についてのものである。等号を含まない論理の完全性（問題 \ref{logic:prob-completeness-equality-free}）と、\ref{pt:systems-equivalence} の証明から等号の規則を除いたものを組み合わせれば得られるはずだが、本サイトでは詳細を確かめていない。
+- 本ページの補間式は導出から計算でき、補間式の大きさ（記号の個数）は導出の推論の個数の定数倍程度で抑えられる（各推論で、前提の補間式に付け加わる記号は定数個である）。
+:::
+
+::: example 補間式の計算 {#pt:mi-example}
+$A=\forall y\,Q(y)$, $B=P(x)\to Q(x)$ とする。次のカットのない導出がある：
+1. $Q(x),P(x),\forall y\,Q(y)\Rightarrow Q(x)$（Ax）。
+2. L$\forall$（項 $x$、$C=Q(x)\equiv Q(y)\langle x/y\rangle$）で $P(x),\forall y\,Q(y)\Rightarrow Q(x)$。
+3. R$\to$ で $\forall y\,Q(y)\Rightarrow P(x)\to Q(x)$。
+
+分割 $[A\,;\ ]\Rightarrow[\ ;B]$ について証明の構成をたどる。3 は場合 5（第 2 の側）で、2 の分割 $[\forall y\,Q(y)\,;P(x)]\Rightarrow[\ ;Q(x)]$ の補間式をそのまま使う。2 は場合 6（第 1 の側）で、1 の分割 $[Q(x),\forall y\,Q(y)\,;P(x)]\Rightarrow[\ ;Q(x)]$ の補間式は場合 (1b) より $Q(x)$ である。第 1 の側 $\forall y\,Q(y)\Rightarrow$ の自由変数は $\varnothing$ で $x$ を含まないので場合 (6b) になり、補間式は $\forall x\,Q(x)$ である。実際 $\forall y\,Q(y)\Rightarrow\forall x\,Q(x)$ と $\forall x\,Q(x)\Rightarrow P(x)\to Q(x)$ はカットなしで導出でき、$\mathrm{Rel}=\{Q\}$, $\mathrm{FV}=\varnothing$ である。$Q(x)$ 自身は自由変数 $x$ が $A$ にないので補間式でない。
+:::
+
+## 問題 {#pt:sec-mi-problems}
+
+::: problem {#pt:prob-mi-swap-sides}
+$I$ が分割 $[\Gamma_{1}\,;\Gamma_{2}]\Rightarrow[\Delta_{1}\,;\Delta_{2}]$ の補間式なら、$\neg I$ は左右を入れ替えた分割 $[\Gamma_{2}\,;\Gamma_{1}]\Rightarrow[\Delta_{2}\,;\Delta_{1}]$ の補間式であることを示せ。
+:::
+
+::: solution
+(i) 入れ替えた分割の第 1 の側について：$\vdash I,\Gamma_{2}\Rightarrow\Delta_{2}$ を弱化して $I,\Gamma_{2}\Rightarrow\Delta_{2},\bot$、R$\to$ で $\vdash\Gamma_{2}\Rightarrow\Delta_{2},\neg I$。(ii) 第 2 の側について：$\vdash\Gamma_{1}\Rightarrow\Delta_{1},I$ と $\bot,\Gamma_{1}\Rightarrow\Delta_{1}$（L$\bot$）に L$\to$ を使って $\vdash\neg I,\Gamma_{1}\Rightarrow\Delta_{1}$。(iii) $\mathrm{Rel}(\neg I)=\mathrm{Rel}(I)$, $\mathrm{FV}(\neg I)=\mathrm{FV}(I)$ で、条件は二つの側について対称である。
+:::
+
+::: problem {#pt:prob-mi-disjoint}
+$\vdash_{\mathrm{Cut}}A\Rightarrow B$ で $\mathrm{Rel}(A)\cap\mathrm{Rel}(B)=\varnothing$ なら、$\vdash A\Rightarrow$ または $\vdash\ \Rightarrow B$ であることを示せ。（ヒント：関係記号を含まない論理式 $I$ について、$\vdash I\Rightarrow$ または $\vdash\ \Rightarrow I$ であることを $c(I)$ に関する帰納法で示す。）
+:::
+
+::: solution
+**ヒントの主張.** 関係記号を含まない論理式の原子論理式は $\bot$ だけである。$c(I)$ に関する帰納法で「$\vdash I\Rightarrow$ または $\vdash\ \Rightarrow I$」を示す。
+- $I=\bot$：$\vdash\bot\Rightarrow$（L$\bot$）。
+- $I=J\to K$：$\vdash J\Rightarrow$ なら、弱化して $J\Rightarrow K$、R$\to$ で $\vdash\ \Rightarrow J\to K$。$\vdash\ \Rightarrow K$ なら、弱化して $J\Rightarrow K$、R$\to$。残りは $\vdash\ \Rightarrow J$ かつ $\vdash K\Rightarrow$ の場合で、L$\to$ で $\vdash J\to K\Rightarrow$。
+- $I=\forall x\,J$：$J\langle x/x\rangle\equiv J$（場合 6b と同じ理由）。$\vdash\ \Rightarrow J$ なら R$\forall$（固有変数 $x$、$x\notin\mathrm{FV}(\forall x\,J)$）で $\vdash\ \Rightarrow\forall x\,J$。$\vdash J\Rightarrow$ なら弱化して $J,\forall x\,J\Rightarrow$、L$\forall$（項 $x$）で $\vdash\forall x\,J\Rightarrow$。
+
+**本題.** \ref{pt:maehara-craig} の補間式 $I$ は $\mathrm{Rel}(I)=\varnothing$ を満たす。$\vdash I\Rightarrow$ なら、弱化して $\vdash I,A\Rightarrow$、これと $\vdash A\Rightarrow I$ にカット（カット論理式 $I$）を使って $\vdash_{\mathrm{Cut}}A\Rightarrow$、カット除去定理で $\vdash A\Rightarrow$。$\vdash\ \Rightarrow I$ なら、弱化した $\vdash\ \Rightarrow B,I$ と $\vdash I\Rightarrow B$ をカットして同様に $\vdash\ \Rightarrow B$。
+:::
+
+::: problem {#pt:prob-mi-compute}
+$A=P(x)\wedge Q(x)$, $B=Q(x)\vee R(x)$ について、$\vdash A\Rightarrow B$ を示し、$\mathrm{Rel}(I)\subseteq\{Q\}$ を満たす補間式 $I$ を一つ挙げて、(i)〜(iii) を確かめよ（証明の構成をたどらなくてよい）。
+:::
+
+::: solution
+$I\defeq Q(x)$ とする。$\vdash P(x),Q(x)\Rightarrow Q(x)$（Ax）に L$\wedge$（\ref{pt:lk-derived-rules} の 4）を使って $\vdash A\Rightarrow Q(x)$。$\vdash Q(x)\Rightarrow Q(x),R(x)$（Ax）に R$\vee$（同 1）を使って $\vdash Q(x)\Rightarrow B$。L$\wedge$ を $P(x),Q(x)\Rightarrow Q(x),R(x)$ に、続けて R$\vee$ を使えば $\vdash A\Rightarrow B$ も得られる。$\mathrm{Rel}(I)=\{Q\}=\mathrm{Rel}(A)\cap\mathrm{Rel}(B)$, $\mathrm{FV}(I)=\{x\}=\mathrm{FV}(A)\cap\mathrm{FV}(B)$。
+:::
+
+::: supplement
+**前提の検討.**
+- *関数記号・定数記号.* 項に関数記号や定数記号が現れると、L$\forall$ の項 $t$ がもう一方の側にない記号を含むことがあり、場合 6・7 の (iii) が崩れる。この場合は、補間式の中で非共通の記号を含む項を新しい変数に置き換えて量化することで処理できることが一般に知られている（関数記号・定数記号も「共通の語彙」の条件に含める）。本サイトではこの拡張を確かめていない。
+- *等号.* 本ページの $\mathsf{LK}$ では $=$ は通常の関係記号で、$=$ が補間式に現れうるのは両方の側に $=$ があるときだけである。\ref{logic:craig-interpolation} の例 2 が示すように、本物の等号の下では共通の非論理記号がなくても等号だけからなる補間式が必要になることがある。等号の初期シーケントを加えた体系（\ref{pt:lk-equality}）で同じ構成を行うには、その体系のカット除去が要る。
+- *使わなかった道具.* 反転・縮約・代入補題（\ref{pt:lk-inversion}, \ref{pt:lk-contraction}, \ref{pt:lk-substitution}）は使っていない。弱化についても、高さを保つことは使っていない。
+
+**関連する結果.**
+- *リンドンの補間定理.* 関係記号の出現を正の位置・負の位置に分けて数えると、上の構成で作った補間式の正（負）の位置の関係記号は、両側で同じ符号で現れるものに限られる、という精密化が得られることが知られている（リンドンの補間定理）。全部の場合の確認は本サイトでは行っていない。
+- *直観主義論理.* 後件を高々一つの論理式に制限したシーケント計算 $\mathsf{LJ}$ でも、分割の仕方を制限して同じ方法で補間定理が示せることが一般に知られている。
+- *様相論理.* $\mathsf{GL}$ の補間定理は \ref{pt:page-interpolation} で扱った。
+- *ベートの定義可能性定理.* 補間定理の代表的な応用で、次のページで扱う。ロビンソンの統合無矛盾性定理（\ref{logic:robinson-joint-consistency}）も補間定理と同値である（\ref{logic:robinson-implies-craig}）。
+
+**高い視点から：国境の通訳.** 分割されたシーケントは、二つの国（第 1 の側と第 2 の側）が衝突している状況にたとえられる。導出はその衝突の証拠であり、前原の方法は、証拠を下から一段ずつたどりながら、両国の共通語だけで話す通訳 $I$ を育てていく。主論理式がどちらの国に属するかで、通訳の言葉を「または」でつなぐか「かつ」でつなぐかが決まり（場合 3・4）、一方の国にしかいない人物（変数 $y$）について話すときは「誰かが」「誰もが」と匿名化する（場合 6b・7b）。
+
+代数的には、補間定理は「共通の部分言語の理論を通じた二つの理論の貼り合わせがうまくいく」という**融合性**（amalgamation）の性質と結びつくことが一般に知られている。論理式を同値性で割ったリンデンバウム代数を考えると、命題論理ではブール代数の、一階述語論理ではハルモスの**多進代数**（polyadic algebra）やタルスキらの**円柱代数**（cylindric algebra）の性質として述べ直される。多進代数の枠組みでクレイグとベートの定理を扱ったドゥエニョ（A. Daigneault）の研究があると言われている（本サイトでは原論文を確かめていない）。圏論的には、言語の包含の四角形 $\mathcal{L}_{0}\subseteq\mathcal{L}_{1},\mathcal{L}_{2}\subseteq\mathcal{L}_{1}\cup\mathcal{L}_{2}$ に沿った理論の押し出し（pushout）が、各理論の保存拡大になっていることとして理解できる、という見方がある（これは本サイトの要約である）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

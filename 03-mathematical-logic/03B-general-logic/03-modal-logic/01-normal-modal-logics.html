@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>正規様相論理の体系 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/03-modal-logic/01-normal-modal-logics.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 正規様相論理の体系 {#logic:page-normal-modal-logics keywords="modal logic, normal modal logic, K, K4, T, S4, B, S5, necessitation, distribution axiom, uniform substitution, modalities"}
+
+命題論理に一項の結合子 $\Box$（「必然的に」「証明可能である」などと読む）を加えた**様相論理**を、ヒルベルト流の体系として定める。すべての恒真式と分配公理 $\Box(\varphi\to\psi)\to(\Box\varphi\to\Box\psi)$ を含み、モーダスポネンス・必然化則・一様代入則で閉じた論理式の集合を**正規様相論理**という。本ページでは、正規様相論理一般で成り立つ基本定理（正規性）と置換定理を示し、代表的な体系 $\mathsf{K},\mathsf{K4},\mathsf{T},\mathsf{S4},\mathsf{B},\mathsf{S5}$ について、様相の組合せがどこまで簡約できるかを調べる。証明可能性論理 $\mathsf{GL}$ は次のページ（\ref{logic:page-gl-axioms}）で扱う。
+
+本ページの議論は $\Box\varphi\to\varphi$ を仮定しない場合を常に念頭に置く。$\mathsf{GL}$ では $\Box\varphi\to\varphi$ が一般には証明できないからである。本ページはすべて構文論的（証明論的）な議論で、意味論（クリプキ意味論）は \ref{logic:page-kripke-semantics} で扱う。
+
+## 記法と定義の確認 {#logic:sec-modal-notation}
+
+::: notation
+- 命題論理の論理式・真理値割り当て・恒真式・一様代入は \ref{logic:page-prop-syntax} のとおり。命題変数の集合 $\mathrm{PV}=\{p_{0},p_{1},\dots\}$ は可算無限とし、$p,q,r$ などで命題変数を表す。
+- 本ページの証明体系はヒルベルト流（公理と推論規則による有限列）である。命題論理・一階述語論理の系列では自然演繹を使ったが、様相論理では必然化則を自然演繹の規則として扱うのが簡単でないため、慣例に従ってヒルベルト流をとる。
+- 連言 $\varphi_{1}\wedge\cdots\wedge\varphi_{n}$ は右に結合させ（$\varphi_{1}\wedge(\varphi_{2}\wedge(\cdots\wedge\varphi_{n}))$）、$n=0$ のときは $\top$、$n=1$ のときは $\varphi_{1}$ とする。
+:::
+
+## 様相論理式 {#logic:sec-modal-formulas}
+
+::: definition 様相論理式 {#logic:modal-formula keywords="modal formula, box, diamond" index="様相論理式|ようそうろんりしき, 必然性演算子|ひつぜんせいえんざんし, 可能性演算子|かのうせいえんざんし"}
+記号 $\bot$, $\to$, $\Box$, $\mathtt{(}$, $\mathtt{)}$ は $\mathrm{PV}$ の元ではなく互いに異なるとする。記号列の集合 $\Psi_{k}$ を
+$$
+\begin{aligned}
+\Psi_{0}&\defeq\mathrm{PV}\cup\{\bot\},\\
+\Psi_{k+1}&\defeq\Psi_{k}\cup\{\mathtt{(}\,\varphi\to\psi\,\mathtt{)}:\varphi,\psi\in\Psi_{k}\}\\
+&\qquad\cup\{\Box\,\varphi:\varphi\in\Psi_{k}\}
+\end{aligned}
+$$
+で定め、$\mathrm{MForm}\defeq\bigcup_{k}\Psi_{k}$ の元を**様相論理式**という。命題論理の略記 $\neg,\top,\wedge,\vee,\leftrightarrow$（\ref{logic:prop-formula}）に加えて
+$$
+\Diamond\varphi\defeq\neg\Box\neg\varphi
+$$
+と略記する。$\Box$ と $\Diamond$ は $\neg$ と同じく最も強く結び付く。命題変数を含まない様相論理式を**閉様相論理式**という（たとえば $\bot$, $\Box\bot$, $\neg\Box\bot\to\Box\bot$）。命題論理の論理式は、$\Box$ を含まない様相論理式である。
+:::
+
+::: intuition
+$\Box\varphi$ はさまざまに読める。「$\varphi$ は必然的に真」（形而上学的様相）、「$\varphi$ は証明可能」（証明可能性論理）、「$\varphi$ を知っている」（認識論理）など。どの読みでも成り立つべき最小限の性質を集めたのが正規様相論理 $\mathsf{K}$ で、読みに応じて公理を加える。$\Diamond\varphi=\neg\Box\neg\varphi$ は「$\varphi$ の否定が必然ではない」、すなわち「$\varphi$ は可能」と読む。証明可能性の読みでは「$\varphi$ は（理論と）無矛盾」である。
+:::
+
+::: lemma 様相論理式の読み方の一意性と構造的再帰 {#logic:modal-unique-readability keywords="unique readability for modal formulas, structural recursion"}
+1. すべての様相論理式は、$\Psi_{0}$ の元、$(\varphi\to\psi)$ の形、$\Box\varphi$ の形のちょうど一つであり、$(\varphi\to\psi)=(\varphi'\to\psi')$ なら $\varphi=\varphi'$ かつ $\psi=\psi'$、$\Box\varphi=\Box\varphi'$ なら $\varphi=\varphi'$ である。
+2. 集合 $X$ と写像 $G_{0}\colon\Psi_{0}\to X$、$G_{\to}\colon\mathrm{MForm}^{2}\times X^{2}\to X$、$G_{\Box}\colon\mathrm{MForm}\times X\to X$ に対し、$F(\varphi)=G_{0}(\varphi)$（$\varphi\in\Psi_{0}$）、$F((\varphi\to\psi))=G_{\to}(\varphi,\psi,F(\varphi),F(\psi))$、$F(\Box\varphi)=G_{\Box}(\varphi,F(\varphi))$ を満たす $F\colon\mathrm{MForm}\to X$ がただ一つ存在する。
+3. （帰納法）様相論理式の性質が $\Psi_{0}$ の元で成り立ち、$\varphi,\psi$ で成り立てば $(\varphi\to\psi)$ と $\Box\varphi$ でも成り立つならば、すべての様相論理式で成り立つ。
+:::
+
+::: proof
+**準備 0（形の分類と長さ）.** 定義より $\Psi_{0}\subseteq\Psi_{1}\subseteq\cdots$ であり、各様相論理式 $\theta$ には $\theta\in\Psi_{k}$ となる最小の $k$ がある。$k=0$ なら $\theta\in\Psi_{0}$ で、$\theta$ は $\mathrm{PV}\cup\{\bot\}$ の記号一つからなる長さ $1$ の記号列である。$k\ge1$ なら $\theta\in\Psi_{k}\setminus\Psi_{k-1}$ なので、定義より次のどちらかである。
+- $\theta=(\varphi\to\psi)$（$\varphi,\psi\in\Psi_{k-1}$）。このとき $\theta$ の先頭の記号は $\mathtt{(}$。
+- $\theta=\Box\varphi$（$\varphi\in\Psi_{k-1}$）。このとき $\theta$ の先頭の記号は $\Box$。
+
+とくに、どの様相論理式も空でない記号列であり、先頭の記号は $\mathrm{PV}\cup\{\bot\}$ の元、$\mathtt{(}$、$\Box$ のいずれかで、それぞれ $\Psi_{0}$ の元、含意の形、$\Box$ の形に対応する（記号 $\bot,\to,\Box,\mathtt{(},\mathtt{)}$ は $\mathrm{PV}$ に属さず互いに異なるという仮定を使う）。
+
+**準備 1（括弧のつり合い）.** 記号列 $w$ について、$w$ に現れる $\mathtt{(}$ の個数から $\mathtt{)}$ の個数を引いたものを $\lambda(w)$ とする。$\lambda(uv)=\lambda(u)+\lambda(v)$ である。すべての $k$ と $\theta\in\Psi_{k}$ について次の (a)〜(c) を、$k$ に関する帰納法で示す（以下の 3 はまだ使わない）。
+- (a) $\lambda(\theta)=0$。
+- (b) $\theta$ の任意の始切片 $u$ について $\lambda(u)\ge0$。
+- (c) $\theta$ の先頭の記号が $\mathtt{(}$ なら、$1\le\lvert u\rvert<\lvert\theta\rvert$ を満たす $\theta$ の任意の始切片 $u$ について $\lambda(u)\ge1$。
+
+$k=0$：$\theta$ は括弧を含まない長さ $1$ の記号列なので、(a), (b) は明らかで、(c) は該当しない。
+
+$k\to k+1$：$\theta\in\Psi_{k}$ なら帰納法の仮定による。そうでなければ準備 0 の二つの場合がある。
+
+$\theta=(\alpha\to\beta)$（$\alpha,\beta\in\Psi_{k}$）の場合、$\lambda(\to)=0$ と帰納法の仮定 (a) より
+$$
+\lambda(\theta)=1+\lambda(\alpha)+\lambda(\beta)-1=0 .
+$$
+$\theta$ の始切片 $u$ は次のいずれかである。
+- 空列：$\lambda(u)=0$。
+- $\mathtt{(}\,v$（$v$ は $\alpha$ の始切片）：$\lambda(u)=1+\lambda(v)\ge1$（帰納法の仮定 (b)）。
+- $\mathtt{(}\,\alpha\to w$（$w$ は $\beta$ の始切片）：$\lambda(u)=1+\lambda(w)\ge1$。
+- $\theta$ 自身：$\lambda(u)=0$。
+
+よって (b) が成り立ち、空列でも $\theta$ 自身でもない始切片は $\lambda\ge1$ なので (c) も成り立つ。
+
+$\theta=\Box\alpha$（$\alpha\in\Psi_{k}$）の場合、$\lambda(\theta)=\lambda(\alpha)=0$。始切片は空列か $\Box w$（$w$ は $\alpha$ の始切片）で、$\lambda(\Box w)=\lambda(w)\ge0$。先頭は $\Box$ なので (c) は該当しない。
+
+**準備 2（始切片）.** 様相論理式 $\psi$ が様相論理式 $\varphi$ の始切片なら $\psi=\varphi$ であることを、$\lvert\varphi\rvert$ に関する強い帰納法で示す。$\psi$ は空でないので、$\psi$ と $\varphi$ の先頭の記号 $s$ は一致する。準備 0 により $s$ で場合を分ける。
+- $s\in\mathrm{PV}\cup\{\bot\}$：$\varphi$, $\psi$ はともに $\Psi_{0}$ の元で長さ $1$ なので $\psi=\varphi$。
+- $s=\mathtt{(}$：$\lvert\psi\rvert<\lvert\varphi\rvert$ と仮定すると、$\psi$ は $1\le\lvert\psi\rvert<\lvert\varphi\rvert$ の $\varphi$ の始切片なので、準備 1 の (c) より $\lambda(\psi)\ge1$。一方、準備 1 の (a) より $\lambda(\psi)=0$ で矛盾する。よって $\lvert\psi\rvert=\lvert\varphi\rvert$ で、始切片なので $\psi=\varphi$。
+- $s=\Box$：準備 0 より $\varphi=\Box\varphi_{1}$, $\psi=\Box\psi_{1}$（$\varphi_{1},\psi_{1}$ は様相論理式）と書ける。$\psi_{1}$ は $\varphi_{1}$ の始切片で $\lvert\varphi_{1}\rvert<\lvert\varphi\rvert$ なので、帰納法の仮定より $\psi_{1}=\varphi_{1}$、よって $\psi=\varphi$。
+
+**1 の証明.** 準備 0 より、すべての様相論理式は三つの形のいずれかであり、三つの形は先頭の記号で区別されるので、ちょうど一つである。
+
+$\Box\varphi=\Box\varphi'$ なら、先頭の $\Box$ を取り除いて $\varphi=\varphi'$。
+
+$(\varphi\to\psi)=(\varphi'\to\psi')$ とする。先頭の $\mathtt{(}$ を取り除いた記号列を $w$ とすると、$\varphi$ と $\varphi'$ はともに $w$ の始切片なので、短い方は長い方の始切片である。どちらも様相論理式なので、準備 2 より $\varphi=\varphi'$。さらに $w$ から $\varphi\to$ を取り除くと $\psi\,\mathtt{)}=\psi'\,\mathtt{)}$ で、末尾の $\mathtt{)}$ を取り除いて $\psi=\psi'$。
+
+**2 の証明.** *存在.* $\Psi_{k}$ 上の写像 $F_{k}\colon\Psi_{k}\to X$ で $F_{k}\subseteq F_{k+1}$ となるものを、$k$ に関する再帰で定める。$F_{0}\defeq G_{0}$ とする。$F_{k}$ が定まったとし、$\theta\in\Psi_{k+1}$ について次のように定める。
+- $\theta\in\Psi_{k}$ なら $F_{k+1}(\theta)\defeq F_{k}(\theta)$。
+- $\theta\in\Psi_{k+1}\setminus\Psi_{k}$ で $\theta=(\varphi\to\psi)$（$\varphi,\psi\in\Psi_{k}$）なら $F_{k+1}(\theta)\defeq G_{\to}(\varphi,\psi,F_{k}(\varphi),F_{k}(\psi))$。
+- $\theta\in\Psi_{k+1}\setminus\Psi_{k}$ で $\theta=\Box\varphi$（$\varphi\in\Psi_{k}$）なら $F_{k+1}(\theta)\defeq G_{\Box}(\varphi,F_{k}(\varphi))$。
+
+1 より $\theta$ の形と成分 $\varphi,\psi$ は一通りに決まるので、$F_{k+1}$ は矛盾なく定まる（**ここで 1 を使う**）。$F_{0}\subseteq F_{1}\subseteq\cdots$ は写像の増大列なので、$F\defeq\bigcup_{k}F_{k}$ は $\mathrm{MForm}=\bigcup_{k}\Psi_{k}$ 上の写像である。
+
+$F$ が三つの等式を満たすことを確かめる。$\varphi\in\Psi_{0}$ なら $F(\varphi)=F_{0}(\varphi)=G_{0}(\varphi)$。$\theta=(\varphi\to\psi)$ とし、$\theta\in\Psi_{k}$ となる最小の $k$ をとる。準備 0 より $k\ge1$ で、$\theta\in\Psi_{k}\setminus\Psi_{k-1}$ だから $\theta=(\varphi'\to\psi')$（$\varphi',\psi'\in\Psi_{k-1}$）と書け、1 より $\varphi'=\varphi$, $\psi'=\psi$。したがって
+$$
+\begin{aligned}
+F(\theta)&=F_{k}(\theta)=G_{\to}(\varphi,\psi,F_{k-1}(\varphi),F_{k-1}(\psi))\\
+&=G_{\to}(\varphi,\psi,F(\varphi),F(\psi)).
+\end{aligned}
+$$
+$\theta=\Box\varphi$ の場合も同様に $F(\theta)=G_{\Box}(\varphi,F(\varphi))$。
+
+*一意性.* $F,F'$ がともに三つの等式を満たすとし、すべての $k$ について $F$ と $F'$ が $\Psi_{k}$ 上で一致することを $k$ に関する帰納法で示す。$k=0$ ではともに $G_{0}$ に等しい。$\Psi_{k}$ 上で一致するとし、$\theta\in\Psi_{k+1}\setminus\Psi_{k}$ とする。$\theta=(\varphi\to\psi)$（$\varphi,\psi\in\Psi_{k}$）なら
+$$
+\begin{aligned}
+F(\theta)&=G_{\to}(\varphi,\psi,F(\varphi),F(\psi))\\
+&=G_{\to}(\varphi,\psi,F'(\varphi),F'(\psi))=F'(\theta).
+\end{aligned}
+$$
+$\theta=\Box\varphi$ の場合も同様。よって $F=F'$。（この帰納法は次の 3 の特別な場合である。）
+
+**3 の証明.** 性質を満たす様相論理式全体を $S$ とし、すべての $k$ について $\Psi_{k}\subseteq S$ を $k$ に関する帰納法で示す。$k=0$ は仮定そのものである。$\Psi_{k}\subseteq S$ とし、$\theta\in\Psi_{k+1}$ とする。$\theta\in\Psi_{k}$ なら $\theta\in S$。$\theta=(\varphi\to\psi)$（$\varphi,\psi\in\Psi_{k}$）なら、帰納法の仮定より $\varphi,\psi$ は性質を満たし、仮定より $(\varphi\to\psi)$ も満たす。$\theta=\Box\varphi$（$\varphi\in\Psi_{k}$）の場合も同様。よって $\mathrm{MForm}=\bigcup_{k}\Psi_{k}\subseteq S$。3 の証明には 1 も 2 も使わない。
+:::
+
+::: definition 部分論理式と一様代入 {#logic:modal-substitution keywords="subformula, uniform substitution, substitution instance" index="部分論理式|ぶぶんろんりしき, 一様代入|いちようだいにゅう, 代入例|だいにゅうれい"}
+1. 様相論理式 $\varphi$ の**部分論理式**の集合 $\mathrm{Sub}(\varphi)$ を、構造的再帰で $\mathrm{Sub}(\varphi)=\{\varphi\}$（$\varphi\in\Psi_{0}$）、$\mathrm{Sub}((\varphi\to\psi))=\{(\varphi\to\psi)\}\cup\mathrm{Sub}(\varphi)\cup\mathrm{Sub}(\psi)$、$\mathrm{Sub}(\Box\varphi)=\{\Box\varphi\}\cup\mathrm{Sub}(\varphi)$ で定める。$\mathrm{Var}(\varphi)\defeq\mathrm{Sub}(\varphi)\cap\mathrm{PV}$ とする。
+2. 写像 $\sigma\colon\mathrm{PV}\to\mathrm{MForm}$ を**代入**という。$\varphi\sigma$ を構造的再帰で
+$$
+\begin{aligned}
+p\sigma&\defeq\sigma(p), &\qquad \bot\sigma&\defeq\bot,\\
+(\varphi\to\psi)\sigma&\defeq(\varphi\sigma\to\psi\sigma), & (\Box\varphi)\sigma&\defeq\Box(\varphi\sigma)
+\end{aligned}
+$$
+で定め、$\varphi$ の**代入例**という。とくに $\sigma(p)=\chi$、$\sigma(q)=q$（$q\neq p$）のとき $\varphi\sigma$ を $\varphi[\chi/p]$ と書く。
+:::
+
+::: remark 同時代入 {#logic:modal-simultaneous-substitution}
+上の $\sigma$ は有限個（あるいは無限個）の命題変数を**同時に**置き換える。$\varphi[\chi/p][\theta/q]$ は一般に $p,q$ の同時代入とは異なる（先に代入した $\chi$ の中の $q$ も置き換わる）。本ページでは最初から同時代入を基本の操作にとるので、一つずつの代入から同時代入を組み立てる議論は要らない。
+:::
+
+## 恒真式 {#logic:sec-modal-tautologies}
+
+::: definition 様相論理式の恒真式 {#logic:modal-tautology keywords="tautology in modal logic, propositional valuation" index="恒真式（様相論理）|こうしんしきようそうろんり"}
+$\Box$ で始まる様相論理式全体を $\mathrm{MForm}_{\Box}$ とする。写像 $V\colon\mathrm{PV}\cup\mathrm{MForm}_{\Box}\to\{0,1\}$ を**命題的付値**という。構造的再帰（\ref{logic:modal-unique-readability} の 2）で
+$$
+\begin{aligned}
+&\bar{V}(p)=V(p),\qquad\bar{V}(\bot)=0,\qquad\bar{V}(\Box\varphi)=V(\Box\varphi),\\
+&\bar{V}((\varphi\to\psi))=0\iff\bar{V}(\varphi)=1\text{ かつ }\bar{V}(\psi)=0
+\end{aligned}
+$$
+と定める。すべての命題的付値 $V$ で $\bar{V}(\varphi)=1$ となる様相論理式 $\varphi$ を**恒真式**という。
+:::
+
+::: intuition
+$\Box\psi$ の形の論理式を、中身を見ずに一つの命題変数とみなして真理値表で調べる、ということである。たとえば $\Box p\to\Box p$ や $\Box p\vee\neg\Box p$ は恒真式だが、$\Box p\to\Box(p\wedge p)$ は恒真式ではない（$\Box p$ と $\Box(p\wedge p)$ は別の「変数」として扱われる）。
+:::
+
+::: lemma 恒真式の基本性質 {#logic:modal-tautology-basic}
+1. 命題論理の恒真式（\ref{logic:tautology}）は、様相論理式としても恒真式である。
+2. 恒真式の代入例は恒真式である。
+3. $\varphi$ と $\varphi\to\psi$ が恒真式なら $\psi$ も恒真式である。
+4. 略記 $\neg,\wedge,\vee,\leftrightarrow$ の $\bar{V}$ による値は、命題論理の場合（\ref{logic:prop-abbreviation-semantics}）と同じ式で計算される。
+:::
+
+::: proof
+**1.** $\Box$ を含まない $\varphi$ について、$\bar{V}(\varphi)=\bar{v}(\varphi)$（$v\defeq V\restr{\mathrm{PV}}$、右辺は \ref{logic:truth-assignment} の真理値）が帰納法で成り立つ（両者の再帰の式は $\Box$ の場合を除いて同じ）。
+
+**2.** 代入 $\sigma$ と命題的付値 $V$ について、$V'(p)\defeq\bar{V}(p\sigma)$、$V'(\Box\psi)\defeq\bar{V}(\Box(\psi\sigma))$ とおく。$\bar{V}(\varphi\sigma)=\bar{V'}(\varphi)$ を $\varphi$ に関する帰納法で示す。$p$ と $\bot$ は定義から。含意は帰納法の仮定から。$\varphi=\Box\psi$ なら $(\Box\psi)\sigma=\Box(\psi\sigma)$ なので $\bar{V}((\Box\psi)\sigma)=V(\Box(\psi\sigma))=V'(\Box\psi)=\bar{V'}(\Box\psi)$。$\varphi$ が恒真式なら右辺は常に $1$ である。
+
+**3.** $\bar{V}(\varphi)=1$ かつ $\bar{V}(\varphi\to\psi)=1$ なら、含意の値の定義より $\bar{V}(\psi)=1$。
+
+**4.** \ref{logic:prop-abbreviation-semantics} の証明は $\bot$ と $\to$ の値の式しか使わないので、そのまま成り立つ。
+:::
+
+## 正規様相論理と代表的な体系 {#logic:sec-normal-modal-logics}
+
+::: definition 正規様相論理 {#logic:normal-modal-logic keywords="normal modal logic, distribution axiom, modus ponens, necessitation rule, uniform substitution rule" index="正規様相論理|せいきようそうろんり, 分配公理|ぶんぱいこうり, 必然化則|ひつぜんかそく, 一様代入則|いちようだいにゅうそく, モーダスポネンス|もーだすぽねんす"}
+形 $\Box(\varphi\to\psi)\to(\Box\varphi\to\Box\psi)$ の様相論理式を**分配公理**（公理 $\mathrm{K}$）という。様相論理式の集合 $\Lambda$ が**正規様相論理**であるとは、次を満たすことをいう。
+1. すべての恒真式とすべての分配公理を含む。
+2. **モーダスポネンス**：$\varphi\in\Lambda$ かつ $(\varphi\to\psi)\in\Lambda$ なら $\psi\in\Lambda$。
+3. **必然化則**：$\varphi\in\Lambda$ なら $\Box\varphi\in\Lambda$。
+4. **一様代入則**：$\varphi\in\Lambda$ なら、任意の代入 $\sigma$ について $\varphi\sigma\in\Lambda$。
+
+$\varphi\in\Lambda$ を $\Lambda\vdash\varphi$ とも書き、$\varphi$ は $\Lambda$ の**定理**であるという。
+:::
+
+::: definition 公理による体系 {#logic:modal-hilbert-system keywords="Hilbert system for modal logic, proof" index="ヒルベルト流の体系（様相論理）|ひるべるとりゅうのたいけいようそうろんり"}
+様相論理式の集合 $\mathrm{Ax}$ を、**代入について閉じている**（$\varphi\in\mathrm{Ax}$ なら $\varphi\sigma\in\mathrm{Ax}$）ものとする。恒真式・分配公理・$\mathrm{Ax}$ の元をまとめて**公理**と呼ぶ。様相論理式の有限列 $\varphi_{1},\dots,\varphi_{n}$ で、各 $\varphi_{k}$ が公理であるか、ある $i,j<k$ について $\varphi_{j}=(\varphi_{i}\to\varphi_{k})$（モーダスポネンス）であるか、ある $i<k$ について $\varphi_{k}=\Box\varphi_{i}$（必然化則）であるものを、$\varphi_{n}$ の**証明**という。証明をもつ論理式全体を $\mathsf{K}\oplus\mathrm{Ax}$ と書く。
+:::
+
+::: proposition 公理による体系は正規である {#logic:modal-hilbert-normal}
+$\mathrm{Ax}$ が代入について閉じているとき、$\mathsf{K}\oplus\mathrm{Ax}$ は、恒真式・分配公理・$\mathrm{Ax}$ を含む最小の正規様相論理である。とくに、正規様相論理 $\Lambda$ が $\mathrm{Ax}$ を含めば $\mathsf{K}\oplus\mathrm{Ax}\subset\Lambda$。
+:::
+
+::: proof
+**Step 1（一様代入則）.** 証明 $\varphi_{1},\dots,\varphi_{n}$ と代入 $\sigma$ について、$\varphi_{1}\sigma,\dots,\varphi_{n}\sigma$ が証明であることを示す。公理の代入例は公理である：恒真式は \ref{logic:modal-tautology-basic} の 2、分配公理 $\Box(\varphi\to\psi)\to(\Box\varphi\to\Box\psi)$ の代入例は $\Box(\varphi\sigma\to\psi\sigma)\to(\Box\varphi\sigma\to\Box\psi\sigma)$ で分配公理、$\mathrm{Ax}$ は仮定による。$\varphi_{j}=(\varphi_{i}\to\varphi_{k})$ なら $\varphi_{j}\sigma=(\varphi_{i}\sigma\to\varphi_{k}\sigma)$、$\varphi_{k}=\Box\varphi_{i}$ なら $\varphi_{k}\sigma=\Box(\varphi_{i}\sigma)$ で、推論規則の形が保たれる（代入の定義）。
+
+**Step 2（正規性）.** 公理は長さ $1$ の証明をもつ。二つの証明をつなげて $\psi$ または $\Box\varphi$ を付け加えると、モーダスポネンスと必然化則で閉じていることがわかる。Step 1 と合わせて正規である。
+
+**Step 3（最小性）.** $\Lambda$ を恒真式・分配公理・$\mathrm{Ax}$ を含む正規様相論理とする。証明 $\varphi_{1},\dots,\varphi_{n}$ の各 $\varphi_{k}$ が $\Lambda$ に属することを $k$ に関する帰納法で示せばよい。公理なら仮定から、モーダスポネンスと必然化則の場合は $\Lambda$ の閉包性と帰納法の仮定から従う。
+
+::: hypcheck
+- **$\mathrm{Ax}$ が代入について閉じていること**：Step 1。一様代入則は推論規則として加えなくても、公理を図式（代入例全体）で与えれば自動的に成り立つ。
+:::
+:::
+
+::: definition 代表的な体系 {#logic:modal-systems keywords="K, K4, T, S4, B, S5, axiom 4, axiom T, axiom B, axiom 5" index="K（様相論理）|けーようそうろんり, S4|えすふぉー, S5|えすふぁいぶ"}
+次の形の様相論理式全体を、それぞれ公理図式 $4$, $\mathrm{T}$, $\mathrm{B}$, $5$ と呼ぶ（$\varphi$ は任意の様相論理式）。
+$$
+\begin{aligned}
+4&:\ \Box\varphi\to\Box\Box\varphi, &\qquad \mathrm{T}&:\ \Box\varphi\to\varphi,\\
+\mathrm{B}&:\ \varphi\to\Box\Diamond\varphi, & 5&:\ \Diamond\varphi\to\Box\Diamond\varphi .
+\end{aligned}
+$$
+これらは代入について閉じている。次のように定める。
+$$
+\begin{aligned}
+\mathsf{K}&\defeq\mathsf{K}\oplus\varnothing, &\qquad \mathsf{K4}&\defeq\mathsf{K}\oplus4,\\
+\mathsf{T}&\defeq\mathsf{K}\oplus\mathrm{T}, & \mathsf{S4}&\defeq\mathsf{K}\oplus(\mathrm{T}\cup4),\\
+\mathsf{B}&\defeq\mathsf{K}\oplus(\mathrm{T}\cup\mathrm{B}), & \mathsf{S5}&\defeq\mathsf{K}\oplus(\mathrm{T}\cup5).
+\end{aligned}
+$$
+証明可能性論理 $\mathsf{GL}\defeq\mathsf{K}\oplus\{\Box(\Box\varphi\to\varphi)\to\Box\varphi\}$ は \ref{logic:page-gl-axioms} で扱う。
+:::
+
+::: remark 包含関係
+\ref{logic:modal-hilbert-normal} より、公理が多いほど定理も多い：$\mathsf{K}\subset\mathsf{K4}\subset\mathsf{S4}$、$\mathsf{K}\subset\mathsf{T}\subset\mathsf{S4}$、$\mathsf{T}\subset\mathsf{B}$、$\mathsf{T}\subset\mathsf{S5}$。さらに本ページで $\mathsf{S4}\subset\mathsf{S5}$, $\mathsf{B}\subset\mathsf{S5}$（\ref{logic:s5-alternative}）を示す。どの包含が真の包含かは、一部を \ref{logic:modal-translations} で示し、残りはクリプキ意味論による完全性（\ref{logic:page-modal-completeness}）で示す。
+:::
+
+::: lemma 恒真式による推論 {#logic:modal-tf-closure keywords="truth-functional consequence" index="恒真式による推論|こうしんしきによるすいろん"}
+$\Lambda$ を正規様相論理とする。$\Lambda\vdash\varphi_{1},\dots,\Lambda\vdash\varphi_{n}$ で、$\bar{V}(\varphi_{1})=\cdots=\bar{V}(\varphi_{n})=1$ となるすべての命題的付値 $V$ について $\bar{V}(\psi)=1$ ならば、$\Lambda\vdash\psi$。
+:::
+
+::: proof
+仮定より $\varphi_{1}\to(\varphi_{2}\to\cdots(\varphi_{n}\to\psi)\cdots)$ は恒真式である（ある $V$ で値 $0$ なら、含意の定義より $\bar{V}(\varphi_{1})=\cdots=\bar{V}(\varphi_{n})=1$, $\bar{V}(\psi)=0$ となり仮定に反する）。よって $\Lambda$ に属し、モーダスポネンスを $n$ 回使えば $\Lambda\vdash\psi$。
+:::
+
+以下、この補題による推論を「恒真式により」と書く。
+
+## 正規性の基本定理 {#logic:sec-normality}
+
+::: theorem 正規性 {#logic:normality keywords="normality, monotonicity of box, box distributes over conjunction" index="正規性|せいきせい"}
+$\Lambda$ を正規様相論理とし、$\vdash$ は $\Lambda\vdash$ を表す。
+1. $\vdash\varphi\to\psi$ ならば $\vdash\Box\varphi\to\Box\psi$。
+2. $\vdash\varphi\leftrightarrow\psi$ ならば $\vdash\Box\varphi\leftrightarrow\Box\psi$。
+3. $\vdash\Box(\varphi\wedge\psi)\leftrightarrow(\Box\varphi\wedge\Box\psi)$。
+4. $n\ge0$ について $\vdash\Box(\varphi_{1}\wedge\cdots\wedge\varphi_{n})\leftrightarrow(\Box\varphi_{1}\wedge\cdots\wedge\Box\varphi_{n})$。とくに $\vdash\Box\top$。
+5. $\vdash\varphi_{1}\wedge\cdots\wedge\varphi_{n}\to\psi$ ならば $\vdash\Box\varphi_{1}\wedge\cdots\wedge\Box\varphi_{n}\to\Box\psi$。
+6. $\vdash\varphi\to\psi$ ならば $\vdash\Diamond\varphi\to\Diamond\psi$。
+7. $\vdash\varphi\leftrightarrow\psi$ ならば $\vdash\Diamond\varphi\leftrightarrow\Diamond\psi$。
+8. $\vdash\Diamond\varphi\wedge\Box\psi\to\Diamond(\varphi\wedge\psi)$。
+9. $\vdash\varphi\wedge\psi\to\chi$ ならば $\vdash\Diamond\varphi\wedge\Box\psi\to\Diamond\chi$。
+10. $\vdash\neg\Box\varphi\leftrightarrow\Diamond\neg\varphi$、$\vdash\neg\Diamond\varphi\leftrightarrow\Box\neg\varphi$。
+:::
+
+::: proof
+**1.** 必然化則で $\vdash\Box(\varphi\to\psi)$、分配公理 $\Box(\varphi\to\psi)\to(\Box\varphi\to\Box\psi)$ とモーダスポネンスで $\vdash\Box\varphi\to\Box\psi$。
+
+**2.** 恒真式により $\vdash\varphi\to\psi$ と $\vdash\psi\to\varphi$。1 を両方に使い、恒真式により $\vdash\Box\varphi\leftrightarrow\Box\psi$。
+
+**3.** $(\to)$：$\varphi\wedge\psi\to\varphi$ と $\varphi\wedge\psi\to\psi$ は恒真式なので、1 より $\vdash\Box(\varphi\wedge\psi)\to\Box\varphi$、$\vdash\Box(\varphi\wedge\psi)\to\Box\psi$。$(\leftarrow)$：恒真式 $\varphi\to(\psi\to\varphi\wedge\psi)$ に 1 を使い $\vdash\Box\varphi\to\Box(\psi\to\varphi\wedge\psi)$。分配公理 $\Box(\psi\to\varphi\wedge\psi)\to(\Box\psi\to\Box(\varphi\wedge\psi))$ と合わせ、恒真式により $\vdash\Box\varphi\wedge\Box\psi\to\Box(\varphi\wedge\psi)$。両方向を恒真式でまとめる。
+
+**4.** $n$ に関する帰納法。$n=0$：$\top$ は恒真式なので必然化則で $\vdash\Box\top$、恒真式により $\vdash\Box\top\leftrightarrow\top$。$n=1$：$\Box\varphi_{1}\leftrightarrow\Box\varphi_{1}$ は恒真式。$n\ge2$：$R\defeq\varphi_{2}\wedge\cdots\wedge\varphi_{n}$ とおくと、3 より $\vdash\Box(\varphi_{1}\wedge R)\leftrightarrow\Box\varphi_{1}\wedge\Box R$、帰納法の仮定より $\vdash\Box R\leftrightarrow\Box\varphi_{2}\wedge\cdots\wedge\Box\varphi_{n}$。恒真式により結論を得る。
+
+**5.** 1 より $\vdash\Box(\varphi_{1}\wedge\cdots\wedge\varphi_{n})\to\Box\psi$。4 と恒真式による。
+
+**6.** 恒真式により $\vdash\neg\psi\to\neg\varphi$。1 より $\vdash\Box\neg\psi\to\Box\neg\varphi$、恒真式（対偶）により $\vdash\neg\Box\neg\varphi\to\neg\Box\neg\psi$、すなわち $\vdash\Diamond\varphi\to\Diamond\psi$。
+
+**7.** 6 を両方向に使う。
+
+**8.** $\psi\wedge\neg(\varphi\wedge\psi)\to\neg\varphi$ は恒真式なので、5 より $\vdash\Box\psi\wedge\Box\neg(\varphi\wedge\psi)\to\Box\neg\varphi$。恒真式により $\vdash\neg\Box\neg\varphi\wedge\Box\psi\to\neg\Box\neg(\varphi\wedge\psi)$、すなわち 8。
+
+**9.** 8 と、仮定に 6 を適用した $\vdash\Diamond(\varphi\wedge\psi)\to\Diamond\chi$ から、恒真式による。
+
+**10.** $\neg\neg\varphi\leftrightarrow\varphi$ は恒真式なので、2 より $\vdash\Box\neg\neg\varphi\leftrightarrow\Box\varphi$。$\Diamond\neg\varphi=\neg\Box\neg\neg\varphi$ なので、恒真式により $\vdash\Diamond\neg\varphi\leftrightarrow\neg\Box\varphi$。後半は $\neg\Diamond\varphi=\neg\neg\Box\neg\varphi$ と恒真式 $\neg\neg\theta\leftrightarrow\theta$ による。
+
+::: hypcheck
+- **必然化則**：1（したがって 2–9 すべて）と 4 の $n=0$。
+- **分配公理**：1 と 3。
+- **一様代入則**：使っていない。上の性質は、恒真式・分配公理を含みモーダスポネンスと必然化則で閉じた任意の集合で成り立つ。
+:::
+:::
+
+以下、\ref{logic:normality} の各項とその恒真式による帰結を、まとめて「正規性により」と書く。
+
+::: theorem 置換定理 {#logic:replacement-theorem keywords="replacement theorem, substitution of equivalents, first substitution theorem" index="置換定理|ちかんていり"}
+$\Lambda$ を正規様相論理とする。$\Lambda\vdash\varphi\leftrightarrow\psi$ ならば、任意の様相論理式 $\chi$ と命題変数 $p$ について $\Lambda\vdash\chi[\varphi/p]\leftrightarrow\chi[\psi/p]$。
+:::
+
+::: proof
+$\chi$ に関する帰納法（\ref{logic:modal-unique-readability} の 3）。$\chi=p$ なら結論は仮定そのもの。$\chi=q\neq p$ または $\bot$ なら $\chi\leftrightarrow\chi$ で恒真式。$\chi=(\alpha\to\beta)$ なら、帰納法の仮定 $\vdash\alpha[\varphi/p]\leftrightarrow\alpha[\psi/p]$, $\vdash\beta[\varphi/p]\leftrightarrow\beta[\psi/p]$ から恒真式により従う。$\chi=\Box\alpha$ なら、帰納法の仮定に正規性 2 を使えばよい（$(\Box\alpha)[\varphi/p]=\Box(\alpha[\varphi/p])$）。
+
+::: hypcheck
+- **仮定が定理であること**：$\Box\alpha$ の場合の正規性 2 は必然化則を使うので、「$\varphi\leftrightarrow\psi$ が定理である」ことが必要である。「$\varphi\leftrightarrow\psi$ を仮定すると $\chi[\varphi/p]\leftrightarrow\chi[\psi/p]$ が導ける」という含意の形（$\vdash(\varphi\leftrightarrow\psi)\to(\chi[\varphi/p]\leftrightarrow\chi[\psi/p])$）は一般には成り立たない（\ref{logic:second-substitution} の補足）。
+:::
+:::
+
+## K4 と強い必然性 ⊡ {#logic:sec-k4}
+
+::: definition 強い必然性 {#logic:boxdot keywords="strong box, boxdot" index="強い必然性|つよいひつぜんせい"}
+$\boxdot\varphi\defeq\varphi\wedge\Box\varphi$ と略記する。
+:::
+
+::: intuition
+$\mathsf{T}$ では $\Box\varphi\to\varphi$ が定理なので $\boxdot\varphi$ と $\Box\varphi$ は同値だが、$\mathsf{K4}$ や $\mathsf{GL}$ では異なる。証明可能性の読みでは、$\boxdot\varphi$ は「$\varphi$ は真で、しかも証明可能」である。$\Box\varphi\to\varphi$ がない体系で「$\varphi$ を仮定として使い、かつ $\Box$ の中にも持ち込む」ときに $\boxdot$ が自然に現れる。
+:::
+
+::: proposition K4 と ⊡ {#logic:k4-boxdot}
+1. $\mathsf{K4}\vdash\Box\boxdot\varphi\leftrightarrow\Box\varphi$。
+2. $\mathsf{K4}\vdash\boxdot\varphi\to\Box\boxdot\varphi$。
+3. $\mathsf{K4}\vdash\Diamond\Diamond\varphi\to\Diamond\varphi$。
+4. $\Lambda$ が $\mathsf{K4}$ を含む正規様相論理で $\Lambda\vdash\boxdot\varphi\to\psi$ ならば、$\Lambda\vdash\Box\varphi\to\Box\psi$。
+:::
+
+::: proof
+**1.** 正規性 3 より $\vdash\Box\boxdot\varphi\leftrightarrow\Box\varphi\wedge\Box\Box\varphi$。公理 $4$ の $\Box\varphi\to\Box\Box\varphi$ と恒真式により、右辺は $\Box\varphi$ と同値である。
+
+**2.** 公理 $4$ と恒真式により $\vdash\varphi\wedge\Box\varphi\to\Box\varphi\wedge\Box\Box\varphi$。右辺は正規性 3 により $\Box(\varphi\wedge\Box\varphi)$ と同値である。
+
+**3.** 公理 $4$ の代入例 $\Box\neg\varphi\to\Box\Box\neg\varphi$ をとる。$\Diamond\Diamond\varphi=\neg\Box\neg\neg\Box\neg\varphi$ で、恒真式 $\neg\neg\Box\neg\varphi\leftrightarrow\Box\neg\varphi$ に正規性 2 を使うと $\vdash\Box\neg\neg\Box\neg\varphi\leftrightarrow\Box\Box\neg\varphi$。よって恒真式により $\vdash\Diamond\Diamond\varphi\leftrightarrow\neg\Box\Box\neg\varphi$ で、公理 $4$ の対偶と合わせて $\vdash\Diamond\Diamond\varphi\to\neg\Box\neg\varphi=\Diamond\varphi$。
+
+**4.** 正規性 1 より $\Lambda\vdash\Box\boxdot\varphi\to\Box\psi$。$\Lambda\supset\mathsf{K4}$ なので 1 が $\Lambda$ でも成り立ち、恒真式により $\Lambda\vdash\Box\varphi\to\Box\psi$。
+:::
+
+::: theorem 第二置換定理 {#logic:second-substitution keywords="second substitution theorem, formalized replacement" index="第二置換定理|だいにちかんていり"}
+任意の様相論理式 $\varphi,\psi,\chi$ と命題変数 $p$ について
+$$
+\mathsf{K4}\vdash\boxdot(\varphi\leftrightarrow\psi)\to(\chi[\varphi/p]\leftrightarrow\chi[\psi/p]).
+$$
+:::
+
+::: proof
+$E\defeq(\varphi\leftrightarrow\psi)$ とおき、$\chi$ に関する帰納法で示す。$\chi=p$ なら $\boxdot E\to E$ は恒真式（連言の左）。$\chi=q\neq p$ または $\bot$ なら結論の後件が恒真式。$\chi=(\alpha\to\beta)$ なら、帰納法の仮定の二つから恒真式による。
+
+$\chi=\Box\alpha$ とし、$\mathsf{K4}\vdash\boxdot E\to(\alpha[\varphi/p]\leftrightarrow\alpha[\psi/p])$ を仮定する。\ref{logic:k4-boxdot} の 4 より
+$$
+\mathsf{K4}\vdash\Box E\to\Box(\alpha[\varphi/p]\leftrightarrow\alpha[\psi/p]).
+$$
+一般に $\mathsf{K}\vdash\Box(\theta\leftrightarrow\eta)\to(\Box\theta\leftrightarrow\Box\eta)$ である（$\Box(\theta\leftrightarrow\eta)\to\Box(\theta\to\eta)$ は正規性 1、そこから分配公理で $\Box\theta\to\Box\eta$、逆向きも同様で、恒真式でまとめる）。これと上の式、恒真式 $\boxdot E\to\Box E$ から、恒真式により $\mathsf{K4}\vdash\boxdot E\to(\Box\alpha[\varphi/p]\leftrightarrow\Box\alpha[\psi/p])$。
+
+::: hypcheck
+- **公理 4**：$\Box\alpha$ の場合に \ref{logic:k4-boxdot} の 4 を使った。前提 $\boxdot E$ が $\Box$ の中に入ると $\Box\boxdot E$ となり、それが $\Box E$ から得られるのは公理 4 による。
+:::
+:::
+
+::: corollary 第二置換定理の系 {#logic:second-substitution-corollary}
+$\mathsf{K4}\vdash\Box(\varphi\leftrightarrow\psi)\to\Box(\chi[\varphi/p]\leftrightarrow\chi[\psi/p])$、および $\mathsf{K4}\vdash\boxdot(\varphi\leftrightarrow\psi)\to\boxdot(\chi[\varphi/p]\leftrightarrow\chi[\psi/p])$。
+:::
+
+::: proof
+前半は第二置換定理に \ref{logic:k4-boxdot} の 4 を使う。後半は、第二置換定理と前半、恒真式 $\boxdot E\to\Box E$ から、恒真式による。
+:::
+
+::: supplement
+**前件の $\boxdot$ は外せない.** $\mathsf{K4}\nvdash\Box(\varphi\leftrightarrow\psi)\to(\chi[\varphi/p]\leftrightarrow\chi[\psi/p])$ となる例がある。$\chi=p$, $\varphi=q$, $\psi=\bot$ とすると、これは $\Box(q\leftrightarrow\bot)\to(q\leftrightarrow\bot)$ で、\ref{logic:modal-translations} の $\top$ 解釈で $\top\to(q\leftrightarrow\bot)$ に移り、恒真式でないので $\mathsf{K4}$ の定理でない。逆に、前件を $E$ だけにした $E\to(\chi[\varphi/p]\leftrightarrow\chi[\psi/p])$ も、$\chi=\Box p$ のとき一般には成り立たない（上の二つの翻訳ではどちらも恒真式に移るので、これを示すにはクリプキ意味論を使う）。「真であり、かつ証明可能」な同値だけが、$\Box$ の中を含めて置き換えを許す。
+:::
+
+::: theorem K4 における様相の簡約 {#logic:k4-bdbd}
+$\mathsf{K4}\vdash\Box\Diamond\Box\Diamond\varphi\leftrightarrow\Box\Diamond\varphi$。
+:::
+
+::: proof
+$\beta\defeq\Box\Diamond\varphi$ とおく。
+
+**Step 1（$\leftarrow$）.** 恒真式 $\varphi\wedge\beta\to\beta$ に正規性 9 を使い $\vdash\Diamond\varphi\wedge\Box\beta\to\Diamond\beta$。正規性 5 より $\vdash\Box\Diamond\varphi\wedge\Box\Box\beta\to\Box\Diamond\beta$。これは $\vdash\beta\wedge\Box\Box\beta\to\Box\Diamond\beta$ である。公理 4 の代入例 $\beta\to\Box\beta$（すなわち $\Box\Diamond\varphi\to\Box\Box\Diamond\varphi$）と $\Box\beta\to\Box\Box\beta$ から $\vdash\beta\to\Box\Box\beta$。恒真式により $\vdash\beta\to\Box\Diamond\beta$。
+
+**Step 2（補題）.** $\vdash\beta\wedge\Diamond\beta\to\Diamond\varphi$。実際、恒真式 $\beta\wedge\Diamond\varphi\to\Diamond\varphi$ に正規性 9 を使うと $\vdash\Diamond\beta\wedge\Box\Diamond\varphi\to\Diamond\Diamond\varphi$。$\Box\Diamond\varphi=\beta$ で、\ref{logic:k4-boxdot} の 3 より $\vdash\Diamond\Diamond\varphi\to\Diamond\varphi$。
+
+**Step 3（$\to$）.** Step 2 に正規性 9 を使うと $\vdash\Diamond\beta\wedge\Box\Diamond\beta\to\Diamond\Diamond\varphi$、\ref{logic:k4-boxdot} の 3 より右辺を $\Diamond\varphi$ にできる。正規性 5 より $\vdash\Box\Diamond\beta\wedge\Box\Box\Diamond\beta\to\Box\Diamond\varphi$。公理 4 より $\vdash\Box\Diamond\beta\to\Box\Box\Diamond\beta$ なので、恒真式により $\vdash\Box\Diamond\beta\to\Box\Diamond\varphi$。
+
+::: hypcheck
+- **公理 4**：Step 1 の二回と、Step 2・Step 3 の $\Diamond\Diamond\varphi\to\Diamond\varphi$、Step 3 の $\Box\Diamond\beta\to\Box\Box\Diamond\beta$。
+- **$\Box\varphi\to\varphi$ を使っていないこと**：この定理は $\mathsf{K4}$ を含むすべての正規様相論理、とくに $\mathsf{GL}$ で成り立つ。
+:::
+:::
+
+::: intuition
+クリプキ意味論（推移的な到達可能性関係）で言えば、$\Box\Diamond\varphi$ は「どこへ進んでも、さらに先に $\varphi$ の点がある」ことで、推移性のもとではこれを二度重ねても同じことになる。Step 3 で $\Diamond\beta$ と $\Box\Diamond\beta$ を組み合わせているのは、「$\beta$ が成り立つ点からさらに一歩先へ進める」ことを保証するためである（行き止まりの点では $\beta$ は自明に成り立つが $\Diamond\varphi$ は成り立たない）。
+:::
+
+## T, S4, S5 と様相の個数 {#logic:sec-t-s4-s5}
+
+::: proposition T と S4 の基本定理 {#logic:t-s4-basic}
+1. $\mathsf{T}\vdash\varphi\to\Diamond\varphi$、$\mathsf{T}\vdash\Box\varphi\to\Diamond\varphi$。
+2. $\mathsf{S4}\vdash\Box\varphi\leftrightarrow\Box\Box\varphi$、$\mathsf{S4}\vdash\Diamond\varphi\leftrightarrow\Diamond\Diamond\varphi$。
+3. $\mathsf{S4}\vdash\Box\Diamond\Box\Diamond\varphi\leftrightarrow\Box\Diamond\varphi$、$\mathsf{S4}\vdash\Diamond\Box\Diamond\Box\varphi\leftrightarrow\Diamond\Box\varphi$。
+:::
+
+::: proof
+**1.** 公理 $\mathrm{T}$ の代入例 $\Box\neg\varphi\to\neg\varphi$ の対偶が $\varphi\to\neg\Box\neg\varphi$（恒真式により）。これと $\Box\varphi\to\varphi$ から後半。
+
+**2.** $\Box\varphi\to\Box\Box\varphi$ は公理 4、逆は公理 $\mathrm{T}$ の代入例 $\Box\Box\varphi\to\Box\varphi$。$\Diamond$ については、$\Diamond\Diamond\varphi\to\Diamond\varphi$ が \ref{logic:k4-boxdot} の 3、逆が 1 の $\Diamond\varphi\to\Diamond\Diamond\varphi$（代入例）。
+
+**3.** 前半は \ref{logic:k4-bdbd}。後半：前半を $\neg\varphi$ に代入して $\vdash\Box\Diamond\Box\Diamond\neg\varphi\leftrightarrow\Box\Diamond\neg\varphi$。両辺の否定をとり、正規性 10（$\neg\Box\theta\leftrightarrow\Diamond\neg\theta$, $\neg\Diamond\theta\leftrightarrow\Box\neg\theta$）と恒真式 $\neg\neg\varphi\leftrightarrow\varphi$ を置換定理で内側へ順に適用すると、左辺は $\Diamond\Box\Diamond\Box\varphi$、右辺は $\Diamond\Box\varphi$ と同値になる。
+:::
+
+::: proposition S4 における様相の含意関係 {#logic:s4-modalities-implications}
+$\mathsf{S4}$ で次が成り立つ。
+$$
+\begin{aligned}
+&\Box\varphi\to\Box\Diamond\Box\varphi, &\qquad &\Box\Diamond\Box\varphi\to\Diamond\Box\varphi,\\
+&\Box\Diamond\Box\varphi\to\Box\Diamond\varphi, & &\Diamond\Box\varphi\to\Diamond\Box\Diamond\varphi,\\
+&\Box\Diamond\varphi\to\Diamond\Box\Diamond\varphi, & &\Diamond\Box\Diamond\varphi\to\Diamond\varphi .
+\end{aligned}
+$$
+また $\Box\varphi\to\varphi$、$\varphi\to\Diamond\varphi$。
+:::
+
+::: proof
+- $\Box\varphi\to\Box\Diamond\Box\varphi$：\ref{logic:t-s4-basic} の 1 を $\Box\varphi$ に代入した $\Box\varphi\to\Diamond\Box\varphi$ に正規性 1 を使い $\Box\Box\varphi\to\Box\Diamond\Box\varphi$。公理 4 と合わせる。
+- $\Box\Diamond\Box\varphi\to\Diamond\Box\varphi$：公理 $\mathrm{T}$ の代入例。
+- $\Box\Diamond\Box\varphi\to\Box\Diamond\varphi$：公理 $\mathrm{T}$ に正規性 6, 1 を順に使う。
+- $\Diamond\Box\varphi\to\Diamond\Box\Diamond\varphi$：$\varphi\to\Diamond\varphi$ に正規性 1, 6 を順に使う。
+- $\Box\Diamond\varphi\to\Diamond\Box\Diamond\varphi$：\ref{logic:t-s4-basic} の 1 の代入例。
+- $\Diamond\Box\Diamond\varphi\to\Diamond\varphi$：公理 $\mathrm{T}$ の代入例 $\Box\Diamond\varphi\to\Diamond\varphi$ に正規性 6 を使い $\Diamond\Box\Diamond\varphi\to\Diamond\Diamond\varphi$、\ref{logic:t-s4-basic} の 2 と合わせる。
+:::
+
+::: definition 様相 {#logic:modality keywords="modality" index="様相（記号列）|ようそうきごうれつ"}
+記号 $\Box$ と $\neg$ からなる有限列（空列を含む）$\mu$ を**様相**といい、$\mu$ を論理式 $\varphi$ の前に並べた論理式を $\mu\varphi$ と書く。正規様相論理 $\Lambda$ で、様相 $\mu,\nu$ が**同値**であるとは $\Lambda\vdash\mu p\leftrightarrow\nu p$（$p$ は命題変数）となることをいう。一様代入則により、このとき任意の $\varphi$ について $\Lambda\vdash\mu\varphi\leftrightarrow\nu\varphi$ である。
+:::
+
+::: lemma 否定を先頭に集める {#logic:modality-negation-normal}
+任意の正規様相論理で、任意の様相 $\mu$ は、$\Box,\Diamond$ だけからなる列 $\nu$ について $\nu$ または $\neg\nu$ と同値である。
+:::
+
+::: proof
+$\mu$ の長さに関する帰納法で、$\mu=s\mu'$（$s\in\{\Box,\neg\}$）とし、帰納法の仮定より $\vdash\mu'p\leftrightarrow\varepsilon\nu'p$（$\varepsilon$ は空列か $\neg$）とする。$s=\Box$ なら正規性 2 より $\vdash\Box\mu'p\leftrightarrow\Box\varepsilon\nu'p$。$\varepsilon$ が空列なら $\Box\nu'$ でよい。$\varepsilon=\neg$ なら正規性 10 より $\vdash\Box\neg\nu'p\leftrightarrow\neg\Diamond\nu'p$ なので $\neg\Diamond\nu'$ でよい。$s=\neg$ なら恒真式により $\vdash\neg\mu'p\leftrightarrow\neg\varepsilon\nu'p$ で、$\varepsilon=\neg$ なら $\neg\neg\theta\leftrightarrow\theta$ で $\nu'$、$\varepsilon$ が空列なら $\neg\nu'$ でよい。
+:::
+
+::: theorem S4 の様相は高々 14 個 {#logic:s4-fourteen}
+$\mathsf{S4}$ では、すべての様相は次の 14 個のいずれかと同値である。
+$$
+\text{空列},\ \Box,\ \Diamond,\ \Box\Diamond,\ \Diamond\Box,\ \Box\Diamond\Box,\ \Diamond\Box\Diamond
+$$
+と、それぞれの前に $\neg$ を付けたもの。
+:::
+
+::: proof
+**Step 1.** \ref{logic:modality-negation-normal} より、$\Box,\Diamond$ だけからなる列 $\nu$ が上の 7 つのどれかと同値であることを示せばよい。
+
+**Step 2（部分列の置き換え）.** $\nu=\alpha\gamma\beta$（$\alpha,\gamma,\beta$ は列）で $\mathsf{S4}\vdash\gamma q\leftrightarrow\gamma'q$ なら、一様代入則で $\vdash\gamma\beta p\leftrightarrow\gamma'\beta p$、置換定理（$\chi=\alpha q$, 代入する変数 $q$ は $p$ と異なるものをとる）で $\vdash\alpha\gamma\beta p\leftrightarrow\alpha\gamma'\beta p$。
+
+**Step 3（簡約）.** \ref{logic:t-s4-basic} の 2 より $\Box\Box$ と $\Box$、$\Diamond\Diamond$ と $\Diamond$ は同値なので、Step 2 で隣り合う同じ記号を一つにできる。こうして得られる $\Box$ と $\Diamond$ が交互に並ぶ列の長さが $4$ 以上なら、先頭の 4 文字は $\Box\Diamond\Box\Diamond$ か $\Diamond\Box\Diamond\Box$ で、\ref{logic:t-s4-basic} の 3 と Step 2 で 2 文字に短くできる。列の長さは真に減るので、この操作は終わり、長さ $3$ 以下の交互の列、すなわち 7 つのどれかになる。
+:::
+
+::: remark
+これら 14 個が $\mathsf{S4}$ で互いに同値でないことは、完全性定理（\ref{logic:page-modal-completeness}）を使って、反例となるクリプキモデルを与えて示せる。
+:::
+
+::: theorem S5 の別の公理化 {#logic:s5-alternative keywords="S5 = S4 + B" index="S5 の公理化|えすふぁいぶのこうりか"}
+$\mathsf{S5}=\mathsf{K}\oplus(\mathrm{T}\cup4\cup\mathrm{B})$。とくに $\mathsf{S4}\subset\mathsf{S5}$ かつ $\mathsf{B}\subset\mathsf{S5}$。
+:::
+
+::: proof
+\ref{logic:modal-hilbert-normal} より、各辺の公理がもう一方の辺の定理であることを示せば、両辺は互いに含まれる。
+
+**Step 1（$\mathsf{S5}\vdash\mathrm{B}$）.** \ref{logic:t-s4-basic} の 1 より $\vdash\varphi\to\Diamond\varphi$、公理 5 より $\vdash\Diamond\varphi\to\Box\Diamond\varphi$。
+
+**Step 2（$\mathsf{S5}\vdash4$）.** 公理 5 の代入例 $\Diamond\neg\varphi\to\Box\Diamond\neg\varphi$ をとる。正規性 10 より $\vdash\Diamond\neg\varphi\leftrightarrow\neg\Box\varphi$、これに正規性 2 を使い $\vdash\Box\Diamond\neg\varphi\leftrightarrow\Box\neg\Box\varphi$。よって $\vdash\neg\Box\varphi\to\Box\neg\Box\varphi$ で、対偶 $\vdash\neg\Box\neg\Box\varphi\to\Box\varphi$、すなわち $\vdash\Diamond\Box\varphi\to\Box\varphi$。これに正規性 1 を使い $\vdash\Box\Diamond\Box\varphi\to\Box\Box\varphi$。Step 1 を $\Box\varphi$ に代入した $\vdash\Box\varphi\to\Box\Diamond\Box\varphi$ と合わせて $\vdash\Box\varphi\to\Box\Box\varphi$。
+
+**Step 3（$\mathsf{K}\oplus(\mathrm{T}\cup4\cup\mathrm{B})\vdash5$）.** 公理 $\mathrm{B}$ の代入例 $\Diamond\varphi\to\Box\Diamond\Diamond\varphi$ と、\ref{logic:k4-boxdot} の 3（$\Diamond\Diamond\varphi\to\Diamond\varphi$）に正規性 1 を使った $\Box\Diamond\Diamond\varphi\to\Box\Diamond\varphi$ から。
+
+**Step 4.** 公理 $\mathrm{T}$ は両辺にある。以上より両辺は等しい。$\mathsf{S4}$ と $\mathsf{B}$ の公理は右辺に含まれる。
+:::
+
+::: theorem S5 の様相は高々 6 個 {#logic:s5-six}
+$\mathsf{S5}\vdash\Box\Box\varphi\leftrightarrow\Box\varphi$、$\mathsf{S5}\vdash\Diamond\Diamond\varphi\leftrightarrow\Diamond\varphi$、$\mathsf{S5}\vdash\Box\Diamond\varphi\leftrightarrow\Diamond\varphi$、$\mathsf{S5}\vdash\Diamond\Box\varphi\leftrightarrow\Box\varphi$。したがって $\mathsf{S5}$ では、すべての様相は 空列, $\Box$, $\Diamond$ とその否定の 6 個のいずれかと同値である。
+:::
+
+::: proof
+前半二つは $\mathsf{S4}\subset\mathsf{S5}$ と \ref{logic:t-s4-basic} の 2。$\Diamond\varphi\to\Box\Diamond\varphi$ は公理 5、逆は公理 $\mathrm{T}$。$\Diamond\Box\varphi\to\Box\varphi$ は \ref{logic:s5-alternative} の Step 2、逆は \ref{logic:t-s4-basic} の 1（$\Box\varphi$ に代入）。これらにより、$\Box,\Diamond$ の列は最後の記号だけを残して簡約できる（\ref{logic:s4-fourteen} の Step 2 の置き換えを使う）。否定は \ref{logic:modality-negation-normal} による。
+:::
+
+## 無矛盾性と消去解釈 {#logic:sec-modal-translations}
+
+::: proposition 二つの翻訳 {#logic:modal-translations keywords="erasure translation, verum translation, consistency of modal logics" index="消去解釈|しょうきょかいしゃく"}
+様相論理式から命題論理の論理式への写像 $\varphi\mapsto\varphi^{e}$ と $\varphi\mapsto\varphi^{t}$ を、$\Psi_{0}$ の元と $\to$ はそのまま写し、$(\Box\varphi)^{e}\defeq\varphi^{e}$、$(\Box\varphi)^{t}\defeq\top$ と定める（**消去解釈**と **$\top$ 解釈**）。
+1. $\mathsf{S5}\vdash\varphi$ ならば $\varphi^{e}$ は恒真式である。とくに $\mathsf{S5}$（したがって $\mathsf{K},\mathsf{K4},\mathsf{T},\mathsf{S4},\mathsf{B}$）は無矛盾（$\bot$ を定理にもたない）である。
+2. $\mathsf{K4}\vdash\varphi$ ならば $\varphi^{t}$ は恒真式である。とくに $\mathsf{K4}\nvdash\Box p\to p$ であり、$\mathsf{K4}\subsetneq\mathsf{S4}$、$\mathsf{K}\subsetneq\mathsf{T}$ である。
+:::
+
+::: proof
+**Step 1（恒真式は恒真式に移る）.** $\ast\in\{e,t\}$ と命題論理の真理値割り当て $v$ について、命題的付値 $V$ を $V(p)\defeq v(p)$、$V(\Box\psi)\defeq\bar{v}((\Box\psi)^{\ast})$ で定めると、$\bar{V}(\varphi)=\bar{v}(\varphi^{\ast})$ が $\varphi$ に関する帰納法で成り立つ（$\Box\psi$ の場合は $V$ の定義そのもの）。よって $\varphi$ が恒真式なら $\varphi^{\ast}$ も恒真式である。
+
+**Step 2（公理と規則）.** 両翻訳とも $(\varphi\to\psi)^{\ast}=(\varphi^{\ast}\to\psi^{\ast})$ なので、モーダスポネンスは恒真式を恒真式に移す（\ref{logic:modal-tautology-basic} の 3）。必然化則：$(\Box\varphi)^{e}=\varphi^{e}$、$(\Box\varphi)^{t}=\top$ で、いずれも恒真式から恒真式が得られる。公理：分配公理の翻訳は $(\varphi^{e}\to\psi^{e})\to(\varphi^{e}\to\psi^{e})$ と $\top\to(\top\to\top)$。公理 $\mathrm{T}$ の $e$ 翻訳は $\varphi^{e}\to\varphi^{e}$、公理 5 の $e$ 翻訳は $\neg\neg\varphi^{e}\to\neg\neg\varphi^{e}$（$\Diamond$ の略記を展開する）、公理 4 の $t$ 翻訳は $\top\to\top$。いずれも恒真式である。証明の長さに関する帰納法で 1, 2 の前半が従う。
+
+**Step 3.** $\bot^{e}=\bot$ は恒真式でないので $\mathsf{S5}\nvdash\bot$。$(\Box p\to p)^{t}=\top\to p$ は恒真式でないので $\mathsf{K4}\nvdash\Box p\to p$。$\Box p\to p$ は $\mathsf{T}$ と $\mathsf{S4}$ の公理なので包含は真である。
+
+::: hypcheck
+- **$\top$ 解釈と公理 $\mathrm{T}$**：$(\Box\varphi\to\varphi)^{t}=\top\to\varphi^{t}$ は恒真式でないので、2 は $\mathsf{T}$ を含む体系には使えない。逆に、消去解釈は公理 $\mathrm{T},4,5,\mathrm{B}$ すべてを恒真式に移す。
+:::
+:::
+
+::: remark
+二つの翻訳は、ただ一点からなるクリプキフレーム（反射的な一点、および到達可能な点のない一点）での真理にあたる（\ref{logic:page-kripke-semantics}）。\ref{logic:page-gl-axioms} では、$\top$ 解釈が $\mathsf{GL}$ の定理も恒真式に移すことから、$\mathsf{GL}$ と $\mathsf{T}$ をともに含む無矛盾な正規様相論理がないことを示す。
+:::
+
+## 問題 {#logic:sec-normal-modal-problems}
+
+::: problem {#logic:prob-diamond-disjunction}
+任意の正規様相論理で $\vdash\Diamond(\varphi\vee\psi)\leftrightarrow\Diamond\varphi\vee\Diamond\psi$ を示せ。また $\vdash\Diamond(\varphi\wedge\psi)\to\Diamond\varphi\wedge\Diamond\psi$ を示し、逆向きが $\mathsf{S5}$ でも一般に成り立たないことを、消去解釈がこの目的には使えない理由とともに述べよ。
+:::
+
+::: solution
+恒真式 $\neg(\varphi\vee\psi)\leftrightarrow\neg\varphi\wedge\neg\psi$ に正規性 2 を使い、正規性 3 と合わせて $\vdash\Box\neg(\varphi\vee\psi)\leftrightarrow\Box\neg\varphi\wedge\Box\neg\psi$。両辺の否定をとれば（恒真式により）$\vdash\Diamond(\varphi\vee\psi)\leftrightarrow\neg\Box\neg\varphi\vee\neg\Box\neg\psi$。
+
+後半：$\varphi\wedge\psi\to\varphi$ に正規性 6 を使い $\Diamond(\varphi\wedge\psi)\to\Diamond\varphi$、$\psi$ も同様。逆向き $\Diamond p\wedge\Diamond\neg p\to\Diamond(p\wedge\neg p)$ は、右辺が正規性で $\bot$ と同値（$\Diamond\bot\leftrightarrow\neg\Box\top$）なので $\neg(\Diamond p\wedge\Diamond\neg p)$ と同値になる。消去解釈では $\neg(p\wedge\neg p)$ に移り恒真式なので、消去解釈はこれが定理でないことを示せない。$\mathsf{S5}$ で定理でないことは、二点からなり互いに到達可能なクリプキモデル（一方で $p$、他方で $\neg p$）で示される（\ref{logic:page-modal-completeness}）。
+:::
+
+::: problem {#logic:prob-b-dual}
+$\mathsf{B}\vdash\Diamond\Box\varphi\to\varphi$ を示せ。
+:::
+
+::: solution
+公理 $\mathrm{B}$ の代入例 $\neg\varphi\to\Box\Diamond\neg\varphi$ をとる。正規性 10 より $\vdash\Diamond\neg\varphi\leftrightarrow\neg\Box\varphi$、正規性 2 より $\vdash\Box\Diamond\neg\varphi\leftrightarrow\Box\neg\Box\varphi$。よって $\vdash\neg\varphi\to\Box\neg\Box\varphi$、対偶をとって $\vdash\neg\Box\neg\Box\varphi\to\varphi$、すなわち $\vdash\Diamond\Box\varphi\to\varphi$。
+:::
+
+::: problem {#logic:prob-s5-not-lob}
+$\mathsf{S5}\nvdash\Box(\Box p\to p)\to\Box p$ を示せ。
+:::
+
+::: solution
+消去解釈（\ref{logic:modal-translations}）で $((p\to p)\to p)$ に移る。$v(p)=0$ のとき値は $0$ なので恒真式でなく、したがって $\mathsf{S5}$ の定理でない。したがって、$\mathsf{GL}$ の公理はここで扱った体系のどれでも証明できない。
+:::
+
+::: supplement
+**高い視点から：様相代数.** 正規様相論理 $\Lambda$ で $\Lambda\vdash\varphi\leftrightarrow\psi$ となる論理式を同一視すると、$\neg,\wedge,\vee$ によってブール代数ができ（リンデンバウム–タルスキ代数）、置換定理は $\Box$ がこの同一視と両立すること（合同関係であること）を意味する。正規性 4 は、$\Box$ がこのブール代数の上の「有限の交わりを保ち、最大元 $1$ を $1$ に写す」演算子であることを言っている。このようなブール代数と演算子の組を**様相代数**という。
+
+**位相との類比.** $\mathsf{S4}$ の公理は、位相空間の内部作用素 $\mathrm{int}$ の性質
+$$
+\begin{aligned}
+&\mathrm{int}(X)=X, &\qquad &\mathrm{int}(A\cap B)=\mathrm{int}A\cap\mathrm{int}B,\\
+&\mathrm{int}A\subset A, & &\mathrm{int}\,\mathrm{int}A=\mathrm{int}A
+\end{aligned}
+$$
+と、それぞれ正規性 4（$\Box\top$ と連言の保存）、公理 $\mathrm{T}$、公理 4 として対応する。$\Box$ を「内部」、$\Diamond$ を「閉包」と読むと、\ref{logic:s4-fourteen} は、位相空間の部分集合に内部と閉包と補集合を繰り返し施して得られる集合は高々 14 種類であるという、クラトフスキの閉包–補集合問題と同じ構造をもつ。$\mathsf{S4}$ が位相空間の内部作用素の論理として完全であること（マッキンゼー–タルスキの定理）が知られている、とされる（本サイトでは未確認）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WF の大きさと数学的対象 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/03-well-founded-sets/02-size-of-wf.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# WF の大きさと数学的対象 {#set:page-size-of-wf keywords="size of the cumulative hierarchy, hereditarily finite sets, Ackermann coding, Scott's trick, mathematics inside WF"}
+
+前ページ（\ref{set:page-cumulative-hierarchy}）で累積階層 $R(\alpha)$ と整礎集合のクラス $\mathbf{WF}$ を導入した。本ページでは、通常の数学で使う対象がすべて $\mathbf{WF}$ の中にあることを確かめる。具体的な対象（整数・有理数・実数・複素数）は $R(\omega+\omega)$ という比較的低い段階に入っており、群や位相空間のような抽象的な対象も、選択公理のもとで $\mathbf{WF}$ の中に同型なコピーをもつ。あわせて累積階層の各段階の大きさを求める：$R(n)$ は有限、$R(\omega)$ は可算（選択公理なしで、しかも具体的な全単射がある）、そして選択公理のもとで $\lvert R(\omega+\alpha)\rvert=\beth_{\alpha}$ である。これらは「基礎の公理 $\mathbf{V}=\mathbf{WF}$ を採用しても数学は何も失わない」ことの根拠になる（\ref{set:foundation-equivalents}）。
+
+## 記法と定義の確認 {#set:sec-swf-notation}
+
+::: notation
+- 体系の略号は \ref{set:zf-subsystems} に従う。基礎の公理は仮定しない。選択公理（AC、\ref{set:ax-choice}）を使う結果には「（AC）」と明記する。
+- 累積階層 $R(\alpha)$（\ref{set:cumulative-hierarchy}）、整礎集合のクラス $\mathbf{WF}$（\ref{set:wf-class}）、ランク $\rank(x)$（\ref{set:rank}）。$R(\alpha)$ は推移的で $\alpha$ について単調（\ref{set:r-alpha-basic}）、$R(\alpha)=\{x\in\mathbf{WF}\mid\rank(x)<\alpha\}$、$\rank(y)=\sup\{\rank(x)+1\mid x\in y\}$（\ref{set:rank-basic}）、$\rank(\alpha)=\alpha$（\ref{set:rank-ordinal}）。
+- $x\in\mathbf{WF}\iff x\subseteq\mathbf{WF}$、$\mathbf{WF}$ の元の部分集合のランクは元のランク以下（\ref{set:wf-subset}）。和集合・冪集合・対・順序対・直積・関数の集合のランクの計算（\ref{set:rank-operations}）と閉包性（\ref{set:wf-closure}）。
+- 自然数の和・積・冪は順序数の演算（\ref{set:ordinal-addition}, \ref{set:ordinal-multiplication}, \ref{set:ordinal-exponentiation}）であり、自然数の範囲では通常の算術に一致する（\ref{set:natural-arithmetic}, \ref{set:finite-cardinal-arithmetic}, \ref{set:finite-exponentiation}）。$\omega+\alpha$ は順序数の和である。
+- 濃度 $\lvert A\rvert$（\ref{set:cardinality}）、有限集合・可算集合（\ref{set:finite-set}）、基数の冪 $2^{\kappa}=\lvert\mathcal{P}(\kappa)\rvert$（\ref{set:cardinal-exponentiation}, \ref{set:exponent-laws}）、ベート数 $\beth_{\alpha}$（\ref{set:beth}）。
+:::
+
+## 数の体系は R(ω+ω) に入る {#set:sec-number-systems}
+
+::: lemma 極限段階の閉包性 {#set:r-limit-closure keywords="R(lambda) closed under operations for limit lambda" index="累積階層の極限段階|るいせきかいそうのきょくげんだんかい"}
+（$\ZF^{-}$）$\lambda$ を極限順序数とする。
+
+1. $x\in R(\lambda)$ ならば $\bigcup x$, $\mathcal{P}(x)$, $\{x\}$ および $x$ の任意の部分集合は $R(\lambda)$ に属する。
+2. $x,y\in R(\lambda)$ ならば $\{x,y\}$, $\langle x,y\rangle$, $x\cup y$, $x\cap y$, $x\setminus y$, $x\times y$, ${}^{y}x$ は $R(\lambda)$ に属する。
+:::
+
+::: proof
+**Step 1（有限段の上昇）.** $\beta<\lambda$ ならすべての $n<\omega$ で $\beta+n<\lambda$ である。$n$ についての帰納法による：$n=0$ は仮定、$\beta+n<\lambda$ なら $\lambda$ は極限なので $(\beta+n)+1=\beta+(n+1)<\lambda$（\ref{set:limit-characterization}, \ref{set:ordinal-addition-laws} (4)）。
+
+**Step 2.** $x,y\in R(\lambda)$ なら $\rho=\rank(x)<\lambda$, $\sigma=\rank(y)<\lambda$（\ref{set:rank-basic} (1)）で、$\mu=\max(\rho,\sigma)<\lambda$。\ref{set:rank-operations} と \ref{set:wf-subset} (2) により、列挙した集合はすべて $\mathbf{WF}$ に属し、ランクは $\rho+1$ または $\mu+3$ 以下である。Step 1 よりこれらは $\lambda$ 未満なので、\ref{set:rank-basic} (1) よりすべて $R(\lambda)$ に属する。
+
+::: hypcheck
+- **$\lambda$ が極限順序数であること**：Step 1。後続順序数 $\lambda=\beta+1$ では $x\in R(\beta+1)$ でも $\mathcal{P}(x)\notin R(\beta+1)$ となりうる（$x=R(\beta)$）。
+- $\ZF^{-}$ で成り立つ（\ref{set:rank-operations} と同じ公理を使う）。
+:::
+:::
+
+::: construction 数の体系の標準的な構成 {#set:number-systems-construction keywords="construction of integers, rationals, reals, complex numbers" index="整数の構成|せいすうのこうせい, 有理数の構成|ゆうりすうのこうせい, デデキントの切断|ででぎんとのせつだん"}
+以下の構成を**標準的な構成**とよぶ。
+- $\N=\omega$。
+- $\Z$ は、$\omega\times\omega$ 上の同値関係 $\langle m,n\rangle\sim\langle m',n'\rangle\iff m+n'=m'+n$ による同値類全体の集合（$\langle m,n\rangle$ の類が「$m-n$」を表す）。
+- $\Q$ は、$\Z\times(\Z\setminus\{0\})$ 上の同値関係 $\langle a,b\rangle\sim\langle a',b'\rangle\iff ab'=a'b$ による同値類全体の集合（「$a/b$」）。
+- $\R$ は、$\Q$ のデデキント切断（空でなく、$\Q$ 全体でなく、下に閉じていて最大元をもたない $\Q$ の部分集合）全体の集合。
+- $\C=\R\times\R$。
+
+各体系の演算 $+$, $\cdot$ と順序 $<$ は、それぞれ $(X\times X)\times X$ と $X\times X$ の部分集合（$X$ はその体系）として定義する。構成の詳細と、これらが通常の性質をもつことは \ref[実数の構成]{calc:real-construction} で扱う。
+:::
+
+::: theorem 数の体系は整礎集合 {#set:number-systems-wf keywords="Z, Q, R, C are in R(omega+omega)" index="数の体系と累積階層|かずのたいけいとるいせきかいそう"}
+（$\ZF^{-}$）標準的な構成による $\N$, $\Z$, $\Q$, $\R$, $\C$ と、それらの演算・順序は、すべて $R(\omega+\omega)$ に属する。したがって構造 $\langle\R,+,\cdot,<\rangle$ なども $R(\omega+\omega)$ に属する。
+:::
+
+::: intuition
+実数を作るのに必要なのは「自然数から出発して、直積をとる・部分集合を切り出す・冪集合をとる」操作を有限回行うことだけであり、各操作でランクは有限しか上がらない。自然数全体 $\omega$ のランクが $\omega$ なので、到達するのは $\omega+n$ の段階にすぎない。
+:::
+
+::: proof
+$\lambda=\omega+\omega$ とおく。$\lambda$ は極限順序数である（$\omega$ が極限順序数なので \ref{set:arithmetic-normal} (3)）。以下、\ref{set:r-limit-closure} を「(1)(2)」と引用する。
+
+**Step 1（$\N$）.** $\rank(\omega)=\omega<\lambda$（\ref{set:rank-ordinal}）なので $\omega\in R(\lambda)$。
+
+**Step 2（$\Z$）.** (2) より $\omega\times\omega\in R(\lambda)$、(1) より $\mathcal{P}(\omega\times\omega)\in R(\lambda)$。同値類は $\omega\times\omega$ の部分集合なので $\Z\subseteq\mathcal{P}(\omega\times\omega)$、(1) より $\Z\in R(\lambda)$。$\Z$ の演算・順序は $(\Z\times\Z)\times\Z$, $\Z\times\Z$（(2) より $R(\lambda)$ の元）の部分集合なので、(1) より $R(\lambda)$ に属する。
+
+**Step 3（$\Q$）.** $\{0_{\Z}\}\in R(\lambda)$ と $\Z\setminus\{0_{\Z}\}\in R(\lambda)$（(1)(2)）、$\Z\times(\Z\setminus\{0_{\Z}\})\in R(\lambda)$（(2)）。$\Q$ はその冪集合の部分集合なので (1) より $\Q\in R(\lambda)$。演算・順序は Step 2 と同様。
+
+**Step 4（$\R$）.** $\R\subseteq\mathcal{P}(\Q)\in R(\lambda)$ なので $\R\in R(\lambda)$。演算・順序は Step 2 と同様。
+
+**Step 5（$\C$）.** $\C=\R\times\R\in R(\lambda)$（(2)）。演算は $(\C\times\C)\times\C$ の部分集合。
+
+**Step 6（構造）.** $\langle\R,+,\cdot,<\rangle$ を $\langle\langle\langle\R,+\rangle,\cdot\rangle,<\rangle$ のように順序対の入れ子で表せば、(2) より $R(\lambda)$ に属する。
+
+::: hypcheck
+- **無限公理**：$\omega$ の存在。**冪集合の公理・分出公理・対の公理・和集合の公理・置換公理**：\ref{set:r-limit-closure} と各構成の存在。
+- 選択公理・基礎の公理は使っていない（$\ZF^{-}$ で成り立つ）。
+:::
+:::
+
+::: example
+ランクを実際に計算すると次のようになる（\ref{set:rank-operations}）。
+- $m,n<\omega$ なら $\rank(\langle m,n\rangle)=\max(m,n)+2$。$\Z$ の元（同値類）は無限集合で、それに属する対のランクは $\omega$ 未満で上に有界でないので、ランクは $\omega$。よって $\rank(\Z)=\omega+1$。
+- $\Z\times(\Z\setminus\{0\})$ の元のランクは $\omega+2$。$\Q$ の元はその無限部分集合なのでランク $\omega+3$、$\rank(\Q)=\omega+4$。
+- 切断は $\Q$ の空でない部分集合なのでランク $\omega+4$、$\rank(\R)=\omega+5$。$\C=\R\times\R$ の元のランクは $\omega+6$ で、$\rank(\C)=\omega+7$。
+
+したがって $\R\in R(\omega+6)\setminus R(\omega+5)$ である。この値は構成の選び方に依存し、数学的な意味はない。意味があるのは「有限段しか上がらない」ことである。
+:::
+
+## R(n) と R(ω) {#set:sec-hereditarily-finite}
+
+::: lemma 二進展開 {#set:binary-expansion keywords="binary expansion of natural numbers" index="二進展開|にしんてんかい"}
+（$\ZF^{-}$）$t<\omega$ についての再帰で、写像 $b_{t}\colon\mathcal{P}(t)\to\omega$ を
+$$
+b_{0}(\varnothing)=0,\qquad b_{t+1}(S)=\begin{cases}b_{t}(S)&(t\notin S)\\ 2^{t}+b_{t}(S\setminus\{t\})&(t\in S)\end{cases}
+$$
+と定める（$S\subseteq t+1$ なら $S\setminus\{t\}\subseteq t$）。このとき
+
+1. $b_{t}$ は $\mathcal{P}(t)$ から $2^{t}$ への全単射である。
+2. $s\le t$ ならば、$S\subseteq s$ について $b_{t}(S)=b_{s}(S)$。
+
+したがって $m<\omega$ に対し、$m<2^{t}$ となる $t$ をとって $D(m)=b_{t}^{-1}(m)$ とおくと、$D(m)$ は $t$ の取り方によらない。$D(m)$ を $m$ の**二進数字の集合**とよぶ（$m=\sum_{i\in D(m)}2^{i}$）。
+:::
+
+::: proof
+**(1)** $t$ についての帰納法。$t=0$：$\mathcal{P}(0)=\{\varnothing\}$、$2^{0}=1=\{0\}$ で、$b_{0}$ は全単射。
+
+$b_{t}\colon\mathcal{P}(t)\to2^{t}$ が全単射と仮定する。$\mathcal{P}(t+1)$ を $\mathcal{A}=\{S\mid t\notin S\}=\mathcal{P}(t)$ と $\mathcal{B}=\{S\mid t\in S\}$ に分ける。
+- $b_{t+1}\restr{\mathcal{A}}=b_{t}$ は $\mathcal{A}$ から $2^{t}$ への全単射。
+- $\mathcal{B}\to\mathcal{P}(t)$, $S\mapsto S\setminus\{t\}$ は全単射（逆写像は $T\mapsto T\cup\{t\}$）。これと $b_{t}$、および $k\mapsto2^{t}+k$ を合成したものが $b_{t+1}\restr{\mathcal{B}}$ である。$k\mapsto2^{t}+k$ は単射（左簡約律 \ref{set:ordinal-addition-laws} (6)）で、$2^{t}=\{k\mid k<2^{t}\}$ を $C=\{2^{t}+k\mid k<2^{t}\}$ の上に写す。よって $b_{t+1}\restr{\mathcal{B}}$ は $\mathcal{B}$ から $C$ への全単射。
+- $2^{t+1}=2^{t}\cdot2=2^{t}+2^{t}$ であり、$m<2^{t}+2^{t}$ となる $m$ は、$m<2^{t}$ であるか、$2^{t}\le m$ で $m=2^{t}+k$（$k<2^{t}$、\ref{set:ordinal-addition-laws} (9) と (6)）であるかのちょうど一方である。すなわち $2^{t+1}=2^{t}\sqcup C$（交わらない和）。
+
+以上より $b_{t+1}$ は $\mathcal{P}(t+1)$ から $2^{t+1}$ への全単射。
+
+**(2)** $t$ についての帰納法。$t=s$ なら自明。$S\subseteq s\le t$ なら $t\notin S$ なので $b_{t+1}(S)=b_{t}(S)=b_{s}(S)$。
+
+**$D(m)$ の整合性.** $s\le t$ で $m<2^{s}\le2^{t}$ とし、$S=b_{s}^{-1}(m)\subseteq s$ とおくと、(2) より $b_{t}(S)=m$、$b_{t}$ は単射なので $b_{t}^{-1}(m)=S$。
+
+::: hypcheck
+- **$\omega$ 上の再帰と帰納法**（\ref{set:recursion-on-ordinal}, \ref{set:peano}）、自然数の算術（\ref{set:ordinal-addition-laws}, \ref{set:ordinal-exponentiation}）。
+- 冪集合 $\mathcal{P}(t)$ の存在に冪集合の公理を使ったが、$t$ が有限なので実は不要である（有限集合の部分集合全体は帰納法で作れる）。選択公理・基礎の公理は使っていない。
+:::
+:::
+
+::: theorem R(n) は有限 {#set:r-n-finite keywords="R(n) is finite, hereditarily finite" index="遺伝的有限集合|いでんてきゆうげんしゅうごう"}
+（$\ZF^{-}$）すべての $n<\omega$ について $R(n)$ は有限集合であり、$t_{0}=0$, $t_{n+1}=2^{t_{n}}$ とおくと $\lvert R(n)\rvert=t_{n}$。
+:::
+
+::: example
+$\lvert R(n)\rvert$ は $0,1,2,4,16,65536,2^{65536},\dots$ と増える。$R(3)=\{0,1,\{1\},2\}$ で、$R(4)=\mathcal{P}(R(3))$ の $16$ 個の元は
+$$
+\begin{aligned}
+&0,\ 1,\ \{1\},\ \{\{1\}\},\ \{2\},\ 2,\ \{0,\{1\}\},\ \{0,2\},\\
+&\{1,\{1\}\},\ \{1,2\},\ \{\{1\},2\},\ \{0,1,\{1\}\},\\
+&3,\ \{0,\{1\},2\},\ \{1,\{1\},2\},\ \{0,1,\{1\},2\}
+\end{aligned}
+$$
+である（$\{0\}=1$, $\{0,1\}=2$, $\{0,1,2\}=3$）。
+:::
+
+::: proof
+$n$ についての帰納法で「全単射 $R(n)\to t_{n}$ が存在する」ことを示す。$n=0$：$R(0)=\varnothing$、$t_{0}=0$ で、空写像が全単射。
+
+$h\colon R(n)\to t_{n}$ を全単射とする（存在を仮定した一つの写像をとるだけで、選択は行わない）。$X\mapsto h[X]$ は $\mathcal{P}(R(n))$ から $\mathcal{P}(t_{n})$ への全単射であり（逆写像は $Y\mapsto h^{-1}[Y]$）、\ref{set:binary-expansion} の $b_{t_{n}}$ と合成すると、全単射 $R(n+1)=\mathcal{P}(R(n))\to2^{t_{n}}=t_{n+1}$ が得られる。$t_{n+1}$ は自然数なので $R(n+1)$ は有限で、$\lvert R(n+1)\rvert=t_{n+1}$（自然数は基数：\ref{set:omega-cardinal}）。
+
+::: hypcheck
+- **$\omega$ 上の帰納法**、**冪集合の公理**（$R(n+1)$）、\ref{set:binary-expansion}。
+- 選択公理は使っていない：各段階で存在が分かっている全単射を一つとるだけである。基礎の公理も使っていない。
+:::
+:::
+
+::: theorem アッカーマンの符号化 {#set:ackermann-coding keywords="Ackermann coding, Ackermann bijection between omega and hereditarily finite sets" index="アッカーマンの符号化|あっかーまんのふごうか"}
+（$\ZF^{-}$）自然数 $n,m$ について、$n\mathrel{E}m$ を「$m$ の二進展開の $n$ 桁目（$2^{n}$ の位）が $1$」、すなわち $n\in D(m)$ で定める（\ref{set:binary-expansion}）。このとき全単射 $F\colon R(\omega)\to\omega$ で、すべての $x,y\in R(\omega)$ について
+$$
+y\in x\iff F(y)\mathrel{E}F(x)
+\label{set:eq-ackermann}
+$$
+を満たすものが存在する。すなわち $\langle R(\omega),\in\rangle\cong\langle\omega,E\rangle$。具体的には $F(x)=\sum_{y\in x}2^{F(y)}$ である。
+:::
+
+::: intuition
+遺伝的有限集合 $x$ を、「元 $y$ の番号 $F(y)$ の位に $1$ を立てた二進数」で符号化する。$\varnothing\mapsto0$、$\{\varnothing\}\mapsto2^{0}=1$、$\{\{\varnothing\}\}\mapsto2^{1}=2$、$2=\{0,1\}\mapsto2^{0}+2^{1}=3$、… となり、自然数と遺伝的有限集合がちょうど一対一に対応する。
+:::
+
+::: proof
+**Step 1（段階ごとの定義）.** $t_{n}$ を \ref{set:r-n-finite} のとおりとし、$\omega$ 上の再帰で写像 $F_{n}\colon R(n)\to\omega$ を
+$$
+F_{0}=\varnothing,\qquad F_{n+1}(x)=b_{t_{n}}\bigl(F_{n}[x]\bigr)\quad(x\in R(n+1),\ \text{すなわち }x\subseteq R(n))
+$$
+と定める。ただし右辺が意味をもつには $F_{n}[x]\subseteq t_{n}$ が要るので、次の主張と同時に帰納的に確かめる。
+
+**Step 2（帰納法の主張）.** 各 $n$ について次を示す。
+- (a) $F_{n}$ は $R(n)$ から $t_{n}$ への全単射。
+- (b) $F_{n+1}$ は $F_{n}$ の拡張：$x\in R(n)$ なら $F_{n+1}(x)=F_{n}(x)$。
+- (c) $x\in R(n+1)$ なら $D(F_{n+1}(x))=F_{n}[x]$。
+
+*(a)*：$n=0$ は自明。(a) が $n$ で成り立てば、$x\mapsto F_{n}[x]$ は $\mathcal{P}(R(n))$ から $\mathcal{P}(t_{n})$ への全単射で、$b_{t_{n}}\colon\mathcal{P}(t_{n})\to2^{t_{n}}=t_{n+1}$ も全単射（\ref{set:binary-expansion} (1)）なので、$F_{n+1}$ は $R(n+1)$ から $t_{n+1}$ への全単射。
+
+*(c)*：$F_{n}[x]\subseteq t_{n}$ で $F_{n+1}(x)=b_{t_{n}}(F_{n}[x])<2^{t_{n}}$ なので、$D$ の定義（$t=t_{n}$ でとる）から $D(F_{n+1}(x))=F_{n}[x]$。
+
+*(b)*：$n=0$ なら $R(0)=\varnothing$ で自明。$n\ge1$ とし、$n=k+1$ で (b) が $k$ について成り立つとする。$x\in R(k+1)$ なら $x\subseteq R(k)$ なので、$F_{k+1}$ が $F_{k}$ の拡張であることから $F_{k+1}[x]=F_{k}[x]$。また $t_{k}<2^{t_{k}}=t_{k+1}$（$s<2^{s}$ は $s$ についての帰納法で分かる）なので、\ref{set:binary-expansion} (2) より
+$$
+F_{k+2}(x)=b_{t_{k+1}}\bigl(F_{k+1}[x]\bigr)=b_{t_{k+1}}\bigl(F_{k}[x]\bigr)=b_{t_{k}}\bigl(F_{k}[x]\bigr)=F_{k+1}(x).
+$$
+
+**Step 3（貼り合わせ）.** (b) より $\{F_{n}\mid n<\omega\}$ は包含について鎖をなす関数の族なので、$F=\bigcup_{n<\omega}F_{n}$ は関数で、定義域は $\bigcup_{n}R(n)=R(\omega)$。
+- *単射*：$x,x'\in R(\omega)$ はある共通の $R(n)$ に属し（単調性）、$F_{n}$ は単射。
+- *全射*：$t_{n}$ は狭義増加なので $t_{n}\ge n$、したがって $m<\omega$ は $m<t_{m+1}$ を満たし、$m\in\ran F_{m+1}\subseteq\ran F$。
+
+**Step 4（$\in$ の保存）.** $x,y\in R(\omega)$ とし、$x,y\in R(n)$ となる $n$ をとる。$x\in R(n)\subseteq R(n+1)$ なので (c) より $D(F(x))=D(F_{n+1}(x))=F_{n}[x]$。$F_{n}$ は単射で $y\in R(n)$ なので、$y\in x\iff F_{n}(y)\in F_{n}[x]\iff F(y)\in D(F(x))\iff F(y)\mathrel{E}F(x)$。
+
+**Step 5（明示式）.** $x\in R(n+1)$ について $F(x)=b_{t_{n}}(F_{n}[x])$ は、二進数字の集合が $\{F(y)\mid y\in x\}$ である自然数、すなわち $\sum_{y\in x}2^{F(y)}$ である。
+
+::: hypcheck
+- **$\omega$ 上の再帰と帰納法**：Step 1, 2。**置換公理・和集合の公理**：Step 3 の $F=\bigcup_{n}F_{n}$。
+- 選択公理は使っていない：$F$ は一意に定義されている。基礎の公理も使っていない。
+:::
+:::
+
+::: corollary R(ω) は可算 {#set:r-omega-countable keywords="R(omega) is countable, hereditarily finite sets are countable" index="遺伝的有限集合の可算性|いでんてきゆうげんしゅうごうのかさんせい"}
+（$\ZF^{-}$）$\lvert R(\omega)\rvert=\omega$。
+:::
+
+::: proof
+\ref{set:ackermann-coding} の $F$ は全単射 $R(\omega)\to\omega$ であり、$\omega$ は基数（\ref{set:omega-cardinal}）なので $\lvert R(\omega)\rvert=\omega$。
+
+::: hypcheck
+- \ref{set:ackermann-coding} だけを使った。**選択公理は使っていない**。
+:::
+:::
+
+::: supplement
+**選択公理を使う簡単な証明との違い.** $R(\omega)=\bigcup_{n}R(n)$ は可算個の有限集合の和なので、AC のもとでは \ref{set:union-bound} から直ちに可算である。しかし AC なしでは、可算個の有限集合（たとえば 2 元集合）の和が可算とは限らない。ここでは各 $R(n)$ の数え方 $F_{n}$ を**一斉に**定義したので AC が不要になった。Kunen は、$R(n)$ の整列順序から $R(n+1)={}^{R(n)}2$ の辞書式順序を作ることを帰納的にくり返して、同じことを示している。
+
+**$\langle R(\omega),\in\rangle$ と算術.** \ref{set:ackermann-coding} により、遺伝的有限集合についての命題と自然数についての命題は互いに翻訳できる。これが、有限の集合論（$\ZF$ から無限公理を否定に置き換え、推移閉包の存在（または $\in$-帰納法の図式）を加えた体系）とペアノ算術が互いに翻訳できる（本質的に同じ理論である）ことの基礎になる。推移閉包の仮定を外すとこの対応は崩れるとされる（Kaye–Wong の結果。本サイトでは原典未確認）。
+:::
+
+## R(ω+α) の大きさ {#set:sec-size-r-alpha}
+
+::: theorem 累積階層の大きさ {#set:r-omega-plus-alpha keywords="size of R(omega+alpha) = beth_alpha" index="累積階層の大きさ|るいせきかいそうのおおきさ"}
+（AC）すべての順序数 $\alpha$ について $\lvert R(\omega+\alpha)\rvert=\beth_{\alpha}$。
+:::
+
+::: intuition
+$R(\omega)$ は可算で、一段上がるごとに冪集合をとるので大きさは $2^{(\cdot)}$ で増え、極限では上限になる。これはちょうどベート数の定義そのものである。
+:::
+
+::: proof
+$\alpha$ についての三つの場合による超限帰納法（\ref{set:transfinite-induction} (3)）。AC のもとでは任意の集合が濃度をもつ（\ref{set:every-set-cardinality}）。
+
+**Case 1（$\alpha=0$）.** $\omega+0=\omega$ で、\ref{set:r-omega-countable} より $\lvert R(\omega)\rvert=\omega=\beth_{0}$。
+
+**Case 2（$\alpha=\beta+1$）.** $\lvert R(\omega+\beta)\rvert=\beth_{\beta}$ と仮定する。$\omega+(\beta+1)=(\omega+\beta)+1$（\ref{set:ordinal-addition-laws} (4)）なので $R(\omega+\alpha)=\mathcal{P}(R(\omega+\beta))$。全単射 $R(\omega+\beta)\to\beth_{\beta}$ から全単射 $\mathcal{P}(R(\omega+\beta))\to\mathcal{P}(\beth_{\beta})$ が得られるので、$\lvert R(\omega+\alpha)\rvert=\lvert\mathcal{P}(\beth_{\beta})\rvert=2^{\beth_{\beta}}=\beth_{\beta+1}$。
+
+**Case 3（$\alpha=\gamma$ が極限順序数）.** すべての $\beta<\gamma$ で $\lvert R(\omega+\beta)\rvert=\beth_{\beta}$ と仮定する。
+
+*Step 1（和集合による表示）.* $\omega+\gamma$ は極限順序数で $\omega+\gamma=\sup\{\omega+\beta\mid\beta<\gamma\}$（\ref{set:arithmetic-normal} (3)）。したがって
+$$
+R(\omega+\gamma)=\bigcup_{\xi<\omega+\gamma}R(\xi)=\bigcup_{\beta<\gamma}R(\omega+\beta).
+$$
+実際、$\xi<\omega+\gamma$ ならある $\beta<\gamma$ で $\xi<\omega+\beta$ となり $R(\xi)\subseteq R(\omega+\beta)$。逆に $\beta<\gamma$ なら $\omega+\beta<\omega+\gamma$。
+
+*Step 2（下からの評価）.* 各 $\beta<\gamma$ で $R(\omega+\beta)\subseteq R(\omega+\gamma)$ なので $\beth_{\beta}\le\lvert R(\omega+\gamma)\rvert$。よって $\beth_{\gamma}=\sup_{\beta<\gamma}\beth_{\beta}\le\lvert R(\omega+\gamma)\rvert$。
+
+*Step 3（上からの評価）.* $\kappa=\beth_{\gamma}$ は無限基数である（\ref{set:beth-properties} (1)）。$\beta<\gamma$ なら $\lvert R(\omega+\beta)\rvert=\beth_{\beta}\le\kappa$（同 (2)）。添字集合 $\gamma$ については、$\alpha\mapsto\aleph_{\alpha}$ が狭義増加（\ref{set:aleph-properties}）なので $\gamma\le\aleph_{\gamma}$（\ref{set:increasing-above-identity}）、さらに $\aleph_{\gamma}\le\beth_{\gamma}$（\ref{set:beth-properties} (3)）より $\lvert\gamma\rvert\le\gamma\le\kappa$。したがって \ref{set:union-bound} により $\lvert R(\omega+\gamma)\rvert\le\kappa$。
+
+Step 2, 3 より $\lvert R(\omega+\gamma)\rvert=\beth_{\gamma}$。
+
+::: hypcheck
+- **選択公理**：各 $R(\omega+\alpha)$ が濃度をもつこと（$\alpha\ge1$ では $R(\omega+\alpha)$ は $\mathcal{P}(\omega)$ と対等な集合を含み、AC なしでは整列可能とは限らない）、および Case 3 の Step 3 の \ref{set:union-bound} に使った。
+- **冪集合の公理**：Case 2。基礎の公理は使っていない（$\ZFC^{-}$ で成り立つ）。
+:::
+:::
+
+::: supplement
+**AC なしでは.** 大きさの比較は AC なしでも部分的に言える。$R(\omega+1)=\mathcal{P}(R(\omega))$ は \ref{set:ackermann-coding} により $\mathcal{P}(\omega)$ と具体的な全単射で結ばれるので、$\R$ と対等である。しかし $\ZF$ では $\mathcal{P}(\omega)$ が整列可能であることは証明できないので、$\lvert R(\omega+1)\rvert$ という基数は一般には定まらない。さらに $\ZF$（基礎の公理込み）では、AC は「すべての順序数 $\alpha$ について $\mathcal{P}(\alpha)$ が整列可能」と同値である（Kunen, *Set Theory*, 第 III 章 演習 9）。
+
+**到達不能基数.** $\kappa$ が（強）到達不能基数（\ref{set:inaccessible}）なら $\lvert R(\kappa)\rvert=\kappa$ であり、$R(\kappa)$ は $\ZFC$ のモデルになる（\ref{set:inaccessible-model}）。
+:::
+
+## 抽象的な対象 {#set:sec-abstract-structures}
+
+::: theorem 構造の WF への移植 {#set:wf-structures keywords="every group or topological space is isomorphic to one in WF" index="構造の移植|こうぞうのいしょく"}
+（AC）
+
+1. 任意の群は、$\mathbf{WF}$ に属する群と同型である。
+2. 任意の位相空間は、$\mathbf{WF}$ に属する位相空間と同相である。
+:::
+
+::: intuition
+群や位相空間は「台集合の上の構造」であり、台集合の元が何であるかには意味がない。AC のもとでは台集合を濃度 $\kappa$（順序数なので整礎）と一対一に対応させ、構造をそのまま $\kappa$ 上に写せばよい。できた構造は整礎集合 $\kappa$ から標準的な操作で作られているので $\mathbf{WF}$ に属する。
+:::
+
+::: proof
+**(1)** 群 $\langle G,\cdot\rangle$（$\cdot\colon G\times G\to G$）をとる。
+
+*Step 1（台集合の取り替え）.* AC により $G$ は濃度 $\kappa=\lvert G\rvert$ をもち、全単射 $f\colon\kappa\to G$ がある（\ref{set:every-set-cardinality}）。$\kappa$ 上の演算 $\circ$ を
+$$
+\xi\circ\eta=f^{-1}\bigl(f(\xi)\cdot f(\eta)\bigr)\qquad(\xi,\eta<\kappa)
+$$
+で定める。
+
+*Step 2（同型）.* 定義より $f(\xi\circ\eta)=f(\xi)\cdot f(\eta)$。群の公理は $f$ で移る：結合律は $f((\xi\circ\eta)\circ\zeta)=(f(\xi)f(\eta))f(\zeta)=f(\xi)(f(\eta)f(\zeta))=f(\xi\circ(\eta\circ\zeta))$ と $f$ の単射性から、単位元は $f^{-1}(e)$、$\xi$ の逆元は $f^{-1}(f(\xi)^{-1})$。よって $\langle\kappa,\circ\rangle$ は群で、$f$ は同型写像。
+
+*Step 3（WF への所属）.* $\kappa\in\mathbf{WF}$（\ref{set:rank-ordinal}）。$\circ\subseteq(\kappa\times\kappa)\times\kappa$ で、\ref{set:wf-closure} より $(\kappa\times\kappa)\times\kappa\in\mathbf{WF}$、\ref{set:wf-subset} (2) より $\circ\in\mathbf{WF}$。したがって $\langle\kappa,\circ\rangle\in\mathbf{WF}$（\ref{set:wf-closure}）。
+
+**(2)** 位相空間 $\langle X,\mathcal{T}\rangle$（$\mathcal{T}\subseteq\mathcal{P}(X)$ は開集合系）をとり、全単射 $f\colon\kappa\to X$ をとる。
+
+*Step 1.* $\mathcal{T}'=\{f^{-1}[U]\mid U\in\mathcal{T}\}$ とおく（置換公理）。
+
+*Step 2（位相であること）.* 逆像は和集合・共通部分を保つ：$f^{-1}[\bigcup_{i}U_{i}]=\bigcup_{i}f^{-1}[U_{i}]$、$f^{-1}[U\cap V]=f^{-1}[U]\cap f^{-1}[V]$、$f^{-1}[\varnothing]=\varnothing$、$f^{-1}[X]=\kappa$。また $f$ が全単射なので $U\mapsto f^{-1}[U]$ は $\mathcal{P}(X)$ から $\mathcal{P}(\kappa)$ への全単射で、$\mathcal{T}'$ の元の族 $\{V_{i}\}$ は $V_{i}=f^{-1}[U_{i}]$（$U_{i}=f[V_{i}]\in\mathcal{T}$）と表せる。よって $\mathcal{T}'$ は $\varnothing,\kappa$ を含み、任意の和と有限の共通部分で閉じる。
+
+*Step 3（同相）.* $U\in\mathcal{T}$ なら $f^{-1}[U]\in\mathcal{T}'$ なので $f$ は連続。$V\in\mathcal{T}'$ なら $V=f^{-1}[U]$（$U\in\mathcal{T}$）で、$(f^{-1})^{-1}[V]=f[V]=U\in\mathcal{T}$ なので $f^{-1}$ も連続。
+
+*Step 4（WF への所属）.* $\mathcal{T}'\subseteq\mathcal{P}(\kappa)\in\mathbf{WF}$ なので \ref{set:wf-subset} (2) より $\mathcal{T}'\in\mathbf{WF}$、$\langle\kappa,\mathcal{T}'\rangle\in\mathbf{WF}$。
+
+::: hypcheck
+- **選択公理**：$G$, $X$ が整列可能であること（濃度 $\kappa$ と全単射 $f$ の存在）に使った。これが本質的な仮定である（下の補足）。
+- **置換公理・分出公理・冪集合公理**：$\circ$, $\mathcal{T}'$ の構成と $\mathcal{P}(\kappa)$。基礎の公理は使っていない（$\ZFC^{-}$ で成り立つ）。
+:::
+:::
+
+::: supplement
+**一般化.** 証明は群・位相空間に特有のことを何も使っていない。台集合 $A$ と、$A$ の元・部分集合・有限直積の部分集合などから作られる構造（環・体・順序集合・測度空間・多様体…）は、$A$ が整列可能であれば（AC がなくても）同じ方法で $\mathbf{WF}$ の中に同型なコピーをもつ。より一般に、$A$ が $\mathbf{WF}$ のある元と対等であれば十分である。
+
+**AC は外せない.** $\ZF^{-}$ だけでは \ref{set:wf-structures} は証明できない（Kunen, *Set Theory*, 第 IV 章 演習 25）。基礎の公理がないと、$\mathbf{WF}$ のどの元とも対等でない集合（たとえば、整列できないクワイン原子の集合）がありうるからである。一方、基礎の公理のもとでは $\mathbf{V}=\mathbf{WF}$（\ref{set:foundation-equivalents}）なので、この定理は AC なしで自明に成り立つ。
+:::
+
+::: proposition スコットのトリック {#set:scott-trick keywords="Scott's trick" index="スコットのトリック|すこっとのとりっく"}
+（$\ZF^{-}$）
+
+1. $\mathbf{C}\subseteq\mathbf{WF}$ を空でないクラスとすると、ランク最小の元の全体
+$$
+\mathbf{C}_{\min}=\{x\in\mathbf{C}\mid\forall y\in\mathbf{C}\ (\rank(x)\le\rank(y))\}
+$$
+は空でない**集合**である。
+2. $\sim$ を $\mathbf{WF}$ 上の同値関係（論理式で定義されるクラスの関係）とし、$x\in\mathbf{WF}$ に対し $[x]_{S}=\{y\in\mathbf{WF}\mid y\sim x\}_{\min}$ とおく。このとき $x,y\in\mathbf{WF}$ について $x\sim y\iff[x]_{S}=[y]_{S}$。
+:::
+
+::: intuition
+同値類 $\{y\mid y\sim x\}$（たとえば $x$ と対等な集合全体、$x$ と同型な群全体）は一般に真のクラスで、集合として扱えない。しかしランクが最小のものだけを残せば、それは一つの段階 $R(\alpha+1)$ に収まるので集合になり、しかも同値類の代わりとして働く。
+:::
+
+::: proof
+**(1)** $\mathbf{C}$ の元のランク全体は順序数の空でないクラスなので、最小元 $\alpha$ がある（\ref{set:transfinite-induction} (1)）。このとき $\mathbf{C}_{\min}=\{x\in\mathbf{C}\mid\rank(x)=\alpha\}=\mathbf{C}\cap\bigl(R(\alpha+1)\setminus R(\alpha)\bigr)$（\ref{set:rank-basic} (1)）であり、クラスと集合の共通部分なので集合（\ref{set:class-basic} (1)）。ランク $\alpha$ の元が $\mathbf{C}$ にあるので空でない。
+
+**(2)** ($\Rightarrow$) $x\sim y$ なら、同値関係の対称律・推移律より $\{z\mid z\sim x\}=\{z\mid z\sim y\}$ なので、$[x]_{S}=[y]_{S}$。($\Leftarrow$) (1) より $[x]_{S}\ne\varnothing$ なので $z\in[x]_{S}=[y]_{S}$ をとると、$z\sim x$ かつ $z\sim y$、よって $x\sim y$。
+
+::: hypcheck
+- **分出公理**（\ref{set:class-basic} (1) を通して）と \ref{set:rank-basic}。
+- 選択公理・基礎の公理は使っていない（$\ZF^{-}$ で成り立つ）。
+:::
+:::
+
+::: supplement
+**濃度への応用.** $A\in\mathbf{WF}$ に対し $\{B\in\mathbf{WF}\mid B\approx A\}_{\min}$ は AC なしで定義でき、$A\approx B\iff$ 両者が一致する。これにより整列可能とは限らない集合にも「濃度」を割り当てられる（\ref{set:page-choice} の補足で触れた方法）。基礎の公理のもとでは $\mathbf{WF}=\mathbf{V}$ なので、すべての集合に適用できる。同様に「群の同型類」「順序型」なども集合として扱える。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

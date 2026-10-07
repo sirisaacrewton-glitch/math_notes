@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>位相空間 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54A-generalities/01-topological-spaces/01-topologies.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 位相空間 {#top:page-topologies keywords="topological space, topology, open set, closed set, neighbourhood, neighbourhood system, discrete topology, indiscrete topology, cofinite topology, metric topology, finer and coarser topologies"}
+
+微分積分では、「点 $x$ に十分近い点」を $\varepsilon$ と $\delta$ で表した。距離空間では、それは「$x$ を中心とする十分小さい球の中の点」である。位相空間の考え方は、近さを数で測ることをやめ、「どの集合が開いているか」だけを公理として与えることである（\ref{top:topological-space}）。連続性・収束・コンパクト性など、近さに関する概念の多くは開集合だけで述べられる。本ページでは位相の定義と例を述べ、開集合・閉集合・近傍による三つの同値な与え方を比べる（\ref{top:neighborhood-axioms}）。
+
+> 資料：内田伏一『集合と位相』§13–§16。本文は写さず、定義の流れと訳語を参考にした。本サイトでは空集合上の位相も許す。
+
+## 記法と定義の確認 {#top:sec-tops-notation}
+
+::: notation
+- 集合・部分集合・冪集合 $\mathcal{P}(X)$・和集合・共通部分・補集合・写像は集合論の系列のとおり（\ref{set:page-axioms}, \ref{set:function}）。集合 $X$ を固定して、$A\subseteq X$ の補集合を $A^{c}\defeq X\setminus A$ と書く。
+- 集合の族 $(A_{\lambda})_{\lambda\in\Lambda}$ について、$\Lambda=\varnothing$ のとき $\bigcup_{\lambda}A_{\lambda}=\varnothing$、$\bigcap_{\lambda}A_{\lambda}=X$（全体集合 $X$ の中で考える）と約束する。
+- 実数 $\R$ の性質（順序、上限、絶対値の三角不等式）は既知とする。
+- 議論は $\ZF$ で行う。選択公理を使う箇所は明記する。
+:::
+
+## 位相の定義 {#top:sec-tops-definition}
+
+::: definition 位相空間 {#top:topological-space keywords="topology, topological space, open set" index="位相|いそう, 位相空間|いそうくうかん, 開集合|かいしゅうごう"}
+集合 $X$ の部分集合の族 $\mathcal{O}\subseteq\mathcal{P}(X)$ が次の三条件を満たすとき、$\mathcal{O}$ を $X$ 上の**位相**という。
+- (O1) $\varnothing\in\mathcal{O}$ かつ $X\in\mathcal{O}$。
+- (O2) $U,V\in\mathcal{O}$ なら $U\cap V\in\mathcal{O}$。
+- (O3) $\mathcal{O}$ の元の任意の族 $(U_{\lambda})_{\lambda\in\Lambda}$ について $\bigcup_{\lambda}U_{\lambda}\in\mathcal{O}$。
+
+組 $(X,\mathcal{O})$ を**位相空間**、$\mathcal{O}$ の元を**開集合**、$X$ の元を**点**という。位相が文脈から明らかなとき、$(X,\mathcal{O})$ を単に $X$ と書く。
+:::
+
+::: intuition
+開集合は「その各点の十分近くを全部含む集合」という直感を抽象化したものである。有限個の開集合の共通部分が開集合なのは「十分近く」の有限個の条件は同時に満たせるからで、無限個の共通部分が開集合とは限らないのは、$(-1/n,1/n)$ の共通部分 $\{0\}$ のように、「十分近く」の幅が $0$ に縮みうるからである。
+:::
+
+::: remark
+(O2) を繰り返すと、有限個の開集合の共通部分は開集合である（$n$ 個についての帰納法）。(O3) で $\Lambda=\varnothing$ とすると $\varnothing\in\mathcal{O}$ が出るので、(O1) の前半は (O3) から従う。
+:::
+
+::: example
+1. **離散位相.** $\mathcal{O}=\mathcal{P}(X)$。すべての部分集合が開集合。
+2. **密着位相.** $\mathcal{O}=\{\varnothing,X\}$。
+3. **補有限位相.** $X$ を集合とし、$\mathcal{O}\defeq\{\varnothing\}\cup\{U\subseteq X:X\setminus U\text{ は有限}\}$。(O2)：$(U\cap V)^{c}=U^{c}\cup V^{c}$ は有限集合の和で有限（どちらかが $\varnothing$ なら共通部分も $\varnothing$）。(O3)：$\varnothing$ でない $U_{\lambda_{0}}$ があれば $(\bigcup U_{\lambda})^{c}\subseteq U_{\lambda_{0}}^{c}$ は有限。$X$ が有限なら離散位相に一致する。
+4. **シェルピンスキー空間.** $X=\{0,1\}$, $\mathcal{O}=\{\varnothing,\{1\},X\}$。開集合でない一点集合 $\{0\}$ をもつ最小の例。
+5. **一点集合と空集合.** 一点集合上の位相は $\{\varnothing,X\}$ だけ。空集合上の位相は $\{\varnothing\}$ だけ。
+:::
+
+## 閉集合 {#top:sec-tops-closed}
+
+::: definition 閉集合 {#top:closed-set keywords="closed set" index="閉集合|へいしゅうごう"}
+位相空間 $X$ の部分集合 $F$ が**閉集合**であるとは、補集合 $F^{c}$ が開集合であることをいう。
+:::
+
+::: proposition 閉集合の性質と閉集合による位相の与え方 {#top:closed-set-axioms keywords="axioms for closed sets; topologies are determined by their closed sets" index="閉集合の公理|へいしゅうごうのこうり"}
+1. 位相空間の閉集合の全体 $\mathcal{F}$ は次を満たす：(F1) $\varnothing,X\in\mathcal{F}$。(F2) $E,F\in\mathcal{F}$ なら $E\cup F\in\mathcal{F}$。(F3) $\mathcal{F}$ の元の任意の族の共通部分は $\mathcal{F}$ に属する。
+2. 逆に、(F1)〜(F3) を満たす $\mathcal{F}\subseteq\mathcal{P}(X)$ に対し、$\mathcal{O}\defeq\{F^{c}:F\in\mathcal{F}\}$ は位相で、その閉集合の全体はちょうど $\mathcal{F}$ である。
+:::
+
+::: proof
+ド・モルガンの法則 $(\bigcup_{\lambda}U_{\lambda})^{c}=\bigcap_{\lambda}U_{\lambda}^{c}$, $(U\cap V)^{c}=U^{c}\cup V^{c}$ と $(A^{c})^{c}=A$ によって、(O1)〜(O3) と (F1)〜(F3) が互いに移る。空な族についても、約束（$\bigcup\varnothing=\varnothing$, $\bigcap\varnothing=X$）がちょうどド・モルガンの法則と両立する。
+:::
+
+::: example
+1. 離散空間ではすべての部分集合が閉集合でもある。開集合でも閉集合でもある集合を**開かつ閉**（クロープン）という。
+2. 補有限位相では、閉集合は $X$ と有限集合である。$X$ が無限集合なら、異なる二つの空でない開集合はつねに交わる（補集合がともに有限なので、共通部分の補集合も有限で、共通部分は無限）。
+3. 開集合でも閉集合でもない集合はふつうにある：シェルピンスキー空間の $\{0\}$ は閉集合だが開集合でなく、$\R$（次の節の通常の位相）の $[0,1)$ はどちらでもない。
+:::
+
+## 距離による位相 {#top:sec-tops-metric}
+
+::: definition 距離空間と距離位相 {#top:metric-topology keywords="metric space, open ball, metric topology, usual topology of R^n" index="距離空間|きょりくうかん, 距離位相|きょりいそう, 開球|かいきゅう, 通常の位相|つうじょうのいそう"}
+集合 $X$ 上の**距離**とは、関数 $d\colon X\times X\to\R$ で、すべての $x,y,z$ について
+- $d(x,y)\ge0$ で、$d(x,y)=0\iff x=y$、
+- $d(x,y)=d(y,x)$、
+- $d(x,z)\le d(x,y)+d(y,z)$（三角不等式）
+
+を満たすものをいう。組 $(X,d)$ を**距離空間**という。$x\in X$, $\varepsilon>0$ について $B(x,\varepsilon)\defeq\{y:d(x,y)<\varepsilon\}$ を**開球**という。$U\subseteq X$ が、各 $x\in U$ についてある $\varepsilon>0$ で $B(x,\varepsilon)\subseteq U$ となるとき、$U$ を $d$ についての開集合とし、その全体を $\mathcal{O}_{d}$（**距離位相**）と書く。$\R^{n}$ にユークリッド距離 $d(x,y)=\bigl(\sum_{i}(x_{i}-y_{i})^{2}\bigr)^{1/2}$ を入れた距離位相を**通常の位相**という。
+:::
+
+::: proposition 距離位相は位相 {#top:metric-topology-is-topology keywords="the metric topology is a topology; open balls are open" index="距離位相は位相|きょりいそうはいそう"}
+距離空間 $(X,d)$ について、$\mathcal{O}_{d}$ は $X$ 上の位相であり、開球 $B(x,\varepsilon)$ は開集合である。
+:::
+
+::: proof
+**開球は開集合.** $y\in B(x,\varepsilon)$ とし、$\delta\defeq\varepsilon-d(x,y)>0$ とおく。$z\in B(y,\delta)$ なら、三角不等式から $d(x,z)\le d(x,y)+d(y,z)<d(x,y)+\delta=\varepsilon$ なので $z\in B(x,\varepsilon)$。
+
+**(O1).** $\varnothing$ は条件を空に満たし、$X$ はすべての球を含む。
+
+**(O2).** $x\in U\cap V$ について $B(x,\varepsilon_{1})\subseteq U$, $B(x,\varepsilon_{2})\subseteq V$ となる $\varepsilon_{1},\varepsilon_{2}$ をとり、$\varepsilon\defeq\min(\varepsilon_{1},\varepsilon_{2})$ とすると $B(x,\varepsilon)\subseteq U\cap V$。
+
+**(O3).** $x\in\bigcup_{\lambda}U_{\lambda}$ なら $x\in U_{\lambda_{0}}$ となる $\lambda_{0}$ があり、$B(x,\varepsilon)\subseteq U_{\lambda_{0}}\subseteq\bigcup U_{\lambda}$ となる $\varepsilon$ がある。
+
+::: hypcheck
+- **三角不等式**：開球が開集合であることに使った。三角不等式がないと、開球が開集合にならないことがある。
+- **(O2) で最小値をとったこと**：有限個（二つ）の正数の最小値は正である。無限個の正数の下限は $0$ になりうるので、無限個の共通部分には同じ議論が使えない。
+- **公理**：(O3) で、各 $x$ について $\lambda_{0}$ と $\varepsilon$ の存在を言うだけで、選択は要らない。
+:::
+:::
+
+::: example
+1. 離散位相は、離散距離 $d(x,y)\defeq1$（$x\neq y$）の距離位相である（$B(x,1/2)=\{x\}$）。
+2. 二点以上の集合上の密着位相は、どの距離の距離位相でもない：$x\neq y$ なら $B(x,d(x,y))$ は $x$ を含み $y$ を含まない、空でも全体でもない開集合である。
+3. 異なる距離が同じ位相を与えることがある。$\R^{n}$ の距離 $d_{\infty}(x,y)\defeq\max_{i}\lvert x_{i}-y_{i}\rvert$ は、$d_{\infty}\le d\le\sqrt{n}\,d_{\infty}$ からユークリッド距離 $d$ と同じ開集合を定める（各開球が他方の開球を含む）。
+:::
+
+## 近傍 {#top:sec-tops-neighborhoods}
+
+::: definition 近傍 {#top:neighborhood keywords="neighbourhood, neighbourhood system, open neighbourhood" index="近傍|きんぼう, 近傍系|きんぼうけい, 開近傍|かいきんぼう"}
+位相空間 $X$ の点 $x$ について、部分集合 $N$ が $x$ の**近傍**であるとは、$x\in U\subseteq N$ となる開集合 $U$ があることをいう。開集合である近傍を**開近傍**という。$x$ の近傍の全体 $\mathcal{N}(x)$ を $x$ の**近傍系**という。
+:::
+
+::: proposition 開集合の近傍による特徴づけ {#top:open-iff-neighborhood keywords="a set is open iff it is a neighbourhood of each of its points" index="開集合と近傍|かいしゅうごうときんぼう"}
+$U\subseteq X$ が開集合であることと、$U$ がそのすべての点の近傍であることは同値である。
+:::
+
+::: proof
+「⇒」：$x\in U\subseteq U$。「⇐」：各 $x\in U$ に $x\in V_{x}\subseteq U$ となる開集合 $V_{x}$ がある。$U=\bigcup_{x\in U}V_{x}$ は (O3) から開集合。（$V_{x}$ を一斉に選ぶ必要はない：$U$ は、$U$ に含まれる開集合すべての和 $\bigcup\{V\in\mathcal{O}:V\subseteq U\}$ に等しく、各 $x$ がそのどれかに入るからである。）
+:::
+
+::: theorem 近傍系の公理 {#top:neighborhood-axioms keywords="Hausdorff's neighbourhood axioms; topologies correspond bijectively to neighbourhood systems" index="近傍系の公理|きんぼうけいのこうり, ハウスドルフの近傍公理|はうすどるふのきんぼうこうり"}
+1. 位相空間の近傍系は、各点 $x$ について次を満たす。
+   - (N1) $X\in\mathcal{N}(x)$。$N\in\mathcal{N}(x)$ なら $x\in N$。
+   - (N2) $N\in\mathcal{N}(x)$, $N\subseteq M$ なら $M\in\mathcal{N}(x)$。
+   - (N3) $N,M\in\mathcal{N}(x)$ なら $N\cap M\in\mathcal{N}(x)$。
+   - (N4) $N\in\mathcal{N}(x)$ なら、ある $V\in\mathcal{N}(x)$ で、すべての $y\in V$ について $N\in\mathcal{N}(y)$。
+2. 逆に、集合 $X$ の各点 $x$ に、(N1)〜(N4) を満たす族 $\mathcal{N}(x)\subseteq\mathcal{P}(X)$ が与えられたとき、
+$$
+\mathcal{O}\defeq\{U\subseteq X:\text{すべての }x\in U\text{ で }U\in\mathcal{N}(x)\}
+$$
+は位相で、$\mathcal{O}$ についての $x$ の近傍系はちょうど $\mathcal{N}(x)$ である。
+3. したがって、$X$ 上の位相と、(N1)〜(N4) を満たす近傍系の割り当ては一対一に対応する。
+:::
+
+::: proof
+**1.** (N1)：$X$ は開集合。$x\in U\subseteq N$ から $x\in N$。(N2)：$x\in U\subseteq N\subseteq M$。(N3)：$x\in U\subseteq N$, $x\in U'\subseteq M$ なら $x\in U\cap U'\subseteq N\cap M$ で、$U\cap U'$ は (O2) から開集合。(N4)：$x\in U\subseteq N$ となる開集合 $U$ を $V$ とすると、$V$ は $x$ の近傍で、各 $y\in V$ について $y\in U\subseteq N$ なので $N\in\mathcal{N}(y)$。
+
+**2, Step 1（位相であること）.** (O1)：$\varnothing$ は条件を空に満たす。$X$ は (N1) から。(O2)：$x\in U\cap V$ なら $U,V\in\mathcal{N}(x)$ で、(N3) から $U\cap V\in\mathcal{N}(x)$。(O3)：$x\in\bigcup U_{\lambda}$ なら $x\in U_{\lambda_{0}}\in\mathcal{N}(x)$ で、(N2) から $\bigcup U_{\lambda}\in\mathcal{N}(x)$。
+
+**2, Step 2（$\mathcal{N}(x)\subseteq$ 新しい近傍系）.** $N\in\mathcal{N}(x)$ とし、$U\defeq\{y\in X:N\in\mathcal{N}(y)\}$ とおく。
+- $x\in U$（定義から）。
+- $U\subseteq N$：$y\in U$ なら $N\in\mathcal{N}(y)$ で、(N1) から $y\in N$。
+- $U\in\mathcal{O}$：$y\in U$ とする。$N\in\mathcal{N}(y)$ なので (N4) から $V\in\mathcal{N}(y)$ で、すべての $z\in V$ について $N\in\mathcal{N}(z)$、すなわち $V\subseteq U$ となるものがある。(N2) から $U\in\mathcal{N}(y)$。
+
+よって $x\in U\subseteq N$, $U\in\mathcal{O}$ で、$N$ は $\mathcal{O}$ についての $x$ の近傍。
+
+**2, Step 3（逆の包含）.** $N$ が $\mathcal{O}$ についての $x$ の近傍なら、$x\in U\subseteq N$ となる $U\in\mathcal{O}$ がある。$\mathcal{O}$ の定義から $U\in\mathcal{N}(x)$ で、(N2) から $N\in\mathcal{N}(x)$。
+
+**3.** 1 と 2 の対応が互いに逆であること：位相 $\mathcal{O}$ から近傍系を作り、2 で位相に戻すと、\ref{top:open-iff-neighborhood} から元の $\mathcal{O}$ に戻る。近傍系から 2 で位相を作り、その近傍系をとると、Step 2, 3 から元の近傍系に戻る。
+
+::: hypcheck
+- **(N4)**：2 の Step 2 で $U$ が開集合であることに使った。外すと、近傍系から作った位相の近傍系が元より小さくなる。例：$X=\{0,1,2\}$ で $\mathcal{N}(0)=\{N:\{0,1\}\subseteq N\}$, $\mathcal{N}(1)=\{N:\{1,2\}\subseteq N\}$, $\mathcal{N}(2)=\{N:2\in N\}$ は (N1)〜(N3) を満たすが (N4) を満たさず（$\{0,1\}\in\mathcal{N}(0)$ だが $\{0,1\}\notin\mathcal{N}(1)$）、作った位相での $0$ の近傍は $X$ だけになる（$\{0,1\}$ は $1$ の近傍でないので開集合でなく、$0$ を含む開集合は $X$ だけ）。
+- **(N1) の後半**：Step 2 の $U\subseteq N$ に使った。
+:::
+:::
+
+## 位相の比較 {#top:sec-tops-comparison}
+
+::: definition 位相の強弱 {#top:finer-coarser keywords="finer topology, coarser topology, stronger, weaker" index="位相の強弱|いそうのきょうじゃく, 強い位相|つよいいそう, 弱い位相|よわいいそう, 細かい位相|こまかいいそう"}
+同じ集合 $X$ 上の位相 $\mathcal{O}_{1},\mathcal{O}_{2}$ について、$\mathcal{O}_{1}\subseteq\mathcal{O}_{2}$ のとき、$\mathcal{O}_{2}$ は $\mathcal{O}_{1}$ より**強い**（**細かい**）、$\mathcal{O}_{1}$ は $\mathcal{O}_{2}$ より**弱い**（**粗い**）という。
+:::
+
+::: proposition 位相の共通部分と生成される位相 {#top:intersection-of-topologies keywords="intersection of topologies is a topology; topology generated by a family of subsets" index="生成される位相|せいせいされるいそう"}
+1. $X$ 上の位相の任意の族 $(\mathcal{O}_{i})_{i\in I}$ について、$\bigcap_{i}\mathcal{O}_{i}$（$I=\varnothing$ のときは $\mathcal{P}(X)$）は位相である。
+2. したがって、任意の $\mathcal{S}\subseteq\mathcal{P}(X)$ について、$\mathcal{S}$ を含む最弱の位相 $\mathcal{O}(\mathcal{S})$（**$\mathcal{S}$ が生成する位相**）が存在する。
+3. $X$ 上の位相の全体は、包含について完備束をなす（最小元は密着位相、最大元は離散位相）。
+:::
+
+::: proof
+**1.** (O1)〜(O3) の各条件は、すべての $\mathcal{O}_{i}$ で成り立てば共通部分でも成り立つ。
+
+**2.** $\mathcal{S}$ を含む位相（離散位相は少なくとも一つ）の全体の共通部分をとる。これは 1 から位相で、$\mathcal{S}$ を含み、$\mathcal{S}$ を含むどの位相にも含まれる。
+
+**3.** 任意の族の下限は 1 の共通部分、上限は和集合 $\bigcup_{i}\mathcal{O}_{i}$ が生成する位相（2）。
+:::
+
+::: example
+$\R$ 上で、密着位相 $\subseteq$ 補有限位相 $\subseteq$ 通常の位相 $\subseteq$ 離散位相。二つ目の包含：有限集合は通常の位相で閉集合（一点集合 $\{a\}$ の補集合 $(-\infty,a)\cup(a,\infty)$ は開球の和）なので、補有限な集合は開集合。包含はいずれも真である（たとえば $(0,1)$ は通常の位相で開集合だが補有限でない）。
+:::
+
+::: supplement
+**前提を変えると.** 開集合の族ではなく「閉包作用素」から位相を定める方法もある（\ref{top:kuratowski-closure}）。
+
+**類似の概念.** 近傍系の公理（\ref{top:neighborhood-axioms}）は、ハウスドルフが位相空間を最初に定義したときの形に近い。開集合・閉集合・近傍系・閉包作用素・収束のどれを原始概念にしても同じ理論ができる。
+
+**高い視点から：位相は「観測できる性質」の族.** 開集合を「有限の手間で確認できる性質」と読む見方がある。点 $x$ が開集合 $U$ に属することは、有限の精度で $x$ を測れば確認できる。有限個の性質を同時に確認すること（共通部分）と、無数の候補のうちどれか一つを確認すること（和集合）はできるが、無限個の性質を同時に確認すること（無限の共通部分）はできない。比喩で言えば、位相は「どこまで細かく見分けられるか」を決める眼鏡で、強い位相ほど度の強い眼鏡である。離散位相はすべての点を見分け、密着位相は何も見分けない。計算可能性の系列のカントール空間の位相（\ref{comp:page-analytical-hierarchy} の始切片 $\bar{f}(n)$ による近さ）は、この見方の典型である。
+:::
+
+## 問題 {#top:sec-tops-problems}
+
+::: problem {#top:prob-topologies-on-two-points}
+二点集合 $\{0,1\}$ 上の位相をすべて求めよ。また、それらを包含の順序で並べよ。
+:::
+
+::: solution
+位相は $\varnothing$ と $\{0,1\}$ を含むので、残りは $\{0\}$, $\{1\}$ を含むかどうかで決まる。(O2), (O3) は二つの一点集合の共通部分 $\varnothing$ と和 $\{0,1\}$ がすでに入っているので、四つの選び方すべてが位相になる：密着位相 $\{\varnothing,X\}$、二つのシェルピンスキー位相 $\{\varnothing,\{0\},X\}$ と $\{\varnothing,\{1\},X\}$、離散位相。包含は、密着が最小、離散が最大で、二つのシェルピンスキー位相は互いに比較できない。
+:::
+
+::: problem {#top:prob-cocountable}
+非可算集合 $X$ 上で、$\{\varnothing\}\cup\{U:X\setminus U\text{ は可算}\}$ が位相（**補可算位相**）であることを示せ。また、この位相は補有限位相より真に強いことを示せ。
+:::
+
+::: solution
+(O2)：二つの可算集合の和は可算。(O3)：空でない $U_{\lambda_{0}}$ について $(\bigcup U_{\lambda})^{c}\subseteq U_{\lambda_{0}}^{c}$ は可算集合の部分集合で可算（$\ZF$ で成り立つ）。(O2) の「可算集合の和は可算」は、二つの集合なので選択公理は要らない。補有限な集合は補可算なので、補有限位相は補可算位相に含まれる。真の包含：$X$ の可算無限部分集合 $C$ をとると、$X\setminus C$ は補可算だが補有限でない。ただし、非可算集合が可算無限部分集合をもつことの証明には可算選択公理が要る（無限集合から $\omega$ への単射を作るのに、可算回の選択をする）。$\ZF$ だけでは、可算無限部分集合をもたない無限集合（デデキント有限な無限集合）の存在が否定できない。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>チューリング還元と算術的階層 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/03-advanced-computability/02-turing-reducibility.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# チューリング還元と算術的階層 {#comp:page-turing-reducibility keywords="oracle Turing machine, Turing reducibility, Turing jump, arithmetical hierarchy, Sigma_n, Pi_n, Delta_n, Kleene normal form, universal sets, hierarchy theorem, TOT, FIN, Post's theorem"}
+
+**神託機械**は、ある集合 $B$ について「$x\in B$ か」を一段で問い合わせられるチューリング機械である（\ref{comp:oracle-tm}）。$B$ を神託にして $A$ が決定できるとき $A$ は $B$ に**チューリング還元**される。本ページでは、チューリング還元とジャンプ（停止問題の相対化）を定義し、決定可能な関係に量化子を交互に付けて得られる**算術的階層** $\Sigma_{n},\Pi_{n}$ を導入する。$\Sigma_{1}$ がちょうど認識可能な集合であること（\ref{comp:sigma1-recognizable}）、各段に普遍集合があり階層が真に増加すること（\ref{comp:hierarchy-theorem}）を示す。この階層は、量化された証明可能性論理の系列で使う。
+
+## 記法と定義の確認 {#comp:sec-tr-notation}
+
+::: notation
+- TM、判定機、認識可能・決定可能、符号化、万能機械、$A_{\mathsf{TM}}$ の決定不能性（対角線論法）、写像還元 $\le_{\mathrm{m}}$ は \ref{comp:page-turing-machines}, \ref{comp:page-decidability}, \ref{comp:page-mapping-reducibility} のとおり。
+- 自然数 $n$ を二進表記の文字列と同一視し、自然数の組 $(x_{1},\dots,x_{k})$ を符号 $\langle x_{1},\dots,x_{k}\rangle$ で一つの文字列にまとめる。こうして $\N^{k}$ の部分集合（**関係**）についても決定可能・認識可能を考える。
+:::
+
+## 神託機械とチューリング還元 {#comp:sec-oracle}
+
+::: definition 神託機械 {#comp:oracle-tm keywords="oracle Turing machine, Turing reducibility" index="神託機械|しんたくきかい, チューリング還元|ちゅーりんぐかんげん"}
+集合 $B$ についての**神託機械** $M^{B}$ は、通常のテープに加えて**問い合わせテープ**と、特別な状態 $q_{?}$, $q_{\mathrm{yes}}$, $q_{\mathrm{no}}$ をもつ TM である。$q_{?}$ に入ると、一段で、問い合わせテープの文字列 $y$ が $B$ に属すれば $q_{\mathrm{yes}}$ に、属さなければ $q_{\mathrm{no}}$ に移る。$A$ が**$B$ にチューリング還元可能**（$A\le_{\mathrm{T}}B$）とは、$B$ についての神託機械で $A$ を決定する（すべての入力で停止する）ものがあることをいう。$B$ についての神託機械で認識できる集合を **$B$ で認識可能**という。
+:::
+
+::: proposition チューリング還元の基本性質 {#comp:turing-reduction-basic}
+1. $\le_{\mathrm{T}}$ は反射的かつ推移的。
+2. $A\le_{\mathrm{m}}B$ なら $A\le_{\mathrm{T}}B$。また $\overline{A}\le_{\mathrm{T}}A$。
+3. $A\le_{\mathrm{T}}B$ で $B$ が決定可能なら $A$ も決定可能。
+:::
+
+::: proof
+1. 推移性：$A$ を $B$ で決定する機械の各問い合わせ「$y\in B$？」を、$B$ を $C$ で決定する機械の模倣で置き換える（模倣は必ず停止する）。
+2. 前半：$f(w)$ を計算して一度問い合わせ、その答えを返す。後半：一度問い合わせて答えを反転する。
+3. 1 の置き換えを、$B$ の判定機で行う。
+:::
+
+::: definition ジャンプ {#comp:jump keywords="Turing jump, relativized halting problem" index="ジャンプ（チューリング）|じゃんぷちゅーりんぐ"}
+集合 $B$ の**ジャンプ**を $B'\defeq\{\langle M,w\rangle:M\text{ は神託機械で }M^{B}\text{ は }w\text{ を受理する}\}$ と定める。$\varnothing'$ は（神託を使わない機械の）$A_{\mathsf{TM}}$ と相互に $\le_{\mathrm{m}}$ で還元できる。$B^{(0)}\defeq B$, $B^{(n+1)}\defeq(B^{(n)})'$。
+:::
+
+::: theorem ジャンプの性質 {#comp:jump-properties}
+1. $B'$ は $B$ で認識可能である。
+2. $B'\not\le_{\mathrm{T}}B$。
+3. $A$ が $B$ で認識可能なら $A\le_{\mathrm{m}}B'$。
+:::
+
+::: proof
+1. 万能機械（\ref{comp:universal-tm}）が神託機械を模倣するとき、模倣される機械の問い合わせを自分の神託 $B$ に回せばよい。
+2. $A_{\mathsf{TM}}$ の決定不能性（\ref{comp:atm-undecidable}）の証明を神託機械で行う：$B'$ を $B$ で決定する神託機械 $H^{B}$ があれば、「入力 $\langle M\rangle$ に対し $H^{B}$ を $\langle M,\langle M\rangle\rangle$ で動かし逆の答えを出す」神託機械 $D^{B}$ が作れ、$D$ 自身の符号で矛盾する。（神託はどの機械にも同じ $B$ が与えられるので、対角線論法はそのまま通る。）
+3. $A=L(M^{B})$ なら $w\mapsto\langle M,w\rangle$。
+:::
+
+## 算術的階層 {#comp:sec-arithmetical-hierarchy}
+
+::: definition 算術的階層 {#comp:arithmetical-hierarchy keywords="arithmetical hierarchy, Sigma_n, Pi_n, Delta_n" index="算術的階層|さんじゅつてきかいそう, Σ_n 集合|しぐまえぬしゅうごう"}
+$n\ge1$ とする。関係 $A\subseteq\N^{k}$ が **$\Sigma_{n}$** であるとは、決定可能な関係 $R\subseteq\N^{k+n}$ で
+$$
+\vec{x}\in A\iff\exists y_{1}\,\forall y_{2}\,\exists y_{3}\cdots\mathsf{Q}y_{n}\ R(\vec{x},y_{1},\dots,y_{n})
+$$
+（量化子は $\exists$ から始まり交互に $n$ 個、$\mathsf{Q}$ は $n$ が奇数なら $\exists$、偶数なら $\forall$。量化子はすべて $\N$ を動く）となるものがあることをいう。$\forall$ から始まるものを **$\Pi_{n}$**、$\Sigma_{n}$ かつ $\Pi_{n}$ であるものを **$\Delta_{n}$** という。$\Sigma_{0}=\Pi_{0}=\Delta_{0}$ は決定可能な関係とする。
+:::
+
+::: lemma 階層の基本性質 {#comp:hierarchy-basic}
+1. $A$ が $\Sigma_{n}$ であることと $\overline{A}$ が $\Pi_{n}$ であることは同値。
+2. $\Sigma_{n}\cup\Pi_{n}\subseteq\Delta_{n+1}$。
+3. 同じ種類の量化子が続くものは一つにまとめられる：たとえば $\exists y\,\exists z\,R$ は、対の符号化 $u=\langle y,z\rangle$ で $\exists u\,R'$（$R'$ は決定可能）に書ける。また、決定可能な関係に余分な量化子を付けても種類は変わらない。したがって、$\Sigma_{n}$ は $\exists$ で、$\Pi_{n}$ は $\forall$ で、$\Sigma_{n}$ と $\Pi_{n}$ はそれぞれ $\wedge,\vee$ で閉じている。
+:::
+
+::: proof
+1. 否定を量化子の内側に移すと $\exists$ と $\forall$ が入れ替わり、$\overline{R}$ は決定可能（\ref{comp:prob-decidable-complement}）。
+2. $\Sigma_{n}$ の関係に、使わない変数についての量化子を外側（$\forall y_{0}$）や内側に加える。
+3. 対の符号化とその成分の取り出しは計算可能で、$R'(\vec{x},u)\defeq R(\vec{x},(u)_{0},(u)_{1})$ は決定可能。$\wedge,\vee$ は、二つの量化子の列の変数を別々にとり、量化子を外に並べてから 3 の前半でまとめる。
+:::
+
+::: theorem $\Sigma_{1}$ と認識可能性（クリーネの標準形） {#comp:sigma1-recognizable keywords="Sigma_1 = Turing-recognizable, Kleene normal form, Delta_1 = decidable" index="クリーネの標準形|くりーねのひょうじゅんけい"}
+1. 関係が $\Sigma_{1}$ であることと、認識可能であることは同値である。
+2. 関係が $\Delta_{1}$ であることと、決定可能であることは同値である。
+:::
+
+::: proof
+1. *$\Rightarrow$*：$\vec{x}\in A\iff\exists y\,R(\vec{x},y)$ なら、$y=0,1,2,\dots$ について順に $R(\vec{x},y)$ を判定し、真になれば受理する機械が $A$ を認識する。*$\Leftarrow$*：$A=L(M)$ なら、$T(\vec{x},t)\defeq$「$M$ は入力 $\vec{x}$ を $t$ 段以内に受理する」は決定可能（$t$ 段だけ模倣する）で、$\vec{x}\in A\iff\exists t\,T(\vec{x},t)$。
+2. 1 と、$A$, $\overline{A}$ がともに認識可能なら決定可能（問題 \ref{comp:prob-decidable-complement}）と、\ref{comp:hierarchy-basic} の 1。
+:::
+
+::: example 階層の例 {#comp:hierarchy-examples}
+TM の符号 $e$ について、$W_{e}\defeq L(M_{e})$ とする。
+- $\{e:W_{e}\neq\varnothing\}$ は $\Sigma_{1}$：$\exists x\,\exists t\,T(e,x,t)$（$T$ は「$M_{e}$ が $x$ を $t$ 段以内に受理」）。
+- $\mathit{TOT}\defeq\{e:M_{e}\text{ はすべての入力で停止する}\}$ は $\Pi_{2}$：$\forall x\,\exists t\,H(e,x,t)$（$H(e,x,t)$ は「$M_{e}$ は $x$ の上で $t$ 段以内に停止する」で、決定可能）。
+- $\mathit{FIN}\defeq\{e:W_{e}\text{ は有限}\}$ は $\Sigma_{2}$：$\exists N\,\forall x\,\forall t\,(x>N\to\neg T(e,x,t))$（$\forall x\,\forall t$ は一つにまとめる）。
+:::
+
+## 普遍集合と階層定理 {#comp:sec-hierarchy-theorem}
+
+::: lemma 普遍集合 {#comp:universal-sigma-n keywords="universal Sigma_n set" index="普遍集合（算術的階層）|ふへんしゅうごうさんじゅつてきかいそう"}
+各 $n\ge1$ と $k\ge1$ について、$\Sigma_{n}$ の関係 $U_{n}\subseteq\N^{1+k}$ で、任意の $\Sigma_{n}$ の関係 $A\subseteq\N^{k}$ に対しある $e$ で $A=\{\vec{x}:(e,\vec{x})\in U_{n}\}$ となるものがある（**普遍 $\Sigma_{n}$ 関係**）。$\Pi_{n}$ についても同様。
+:::
+
+::: proof
+$n$ に関する帰納法。$n=1$：$U_{1}\defeq\{(e,\vec{x}):M_{e}\text{ は }\langle\vec{x}\rangle\text{ を受理する}\}$ は認識可能なので $\Sigma_{1}$（\ref{comp:sigma1-recognizable}）、任意の $\Sigma_{1}$ 関係は認識可能なのである $M_{e}$ で $A=L(M_{e})$。$\Pi_{1}$ の普遍関係は $\overline{U_{1}}$（\ref{comp:hierarchy-basic} の 1）。
+
+$n\to n+1$：$\Sigma_{n+1}$ の関係は $\vec{x}\in A\iff\exists y\,B(\vec{x},y)$（$B$ は $\Pi_{n}$、\ref{comp:hierarchy-basic} の 3 で先頭の $\exists$ を一つにまとめる）の形である。帰納法の仮定の $(k+1)$ 変数の普遍 $\Pi_{n}$ 関係 $V_{n}$ について $U_{n+1}\defeq\{(e,\vec{x}):\exists y\,(e,\vec{x},y)\in V_{n}\}$ とすれば、$U_{n+1}$ は $\Sigma_{n+1}$ で、$B=\{(\vec{x},y):(e,\vec{x},y)\in V_{n}\}$ となる $e$ について $A=\{\vec{x}:(e,\vec{x})\in U_{n+1}\}$。$\Pi_{n+1}$ は補集合。
+:::
+
+::: theorem 階層定理 {#comp:hierarchy-theorem keywords="arithmetical hierarchy is proper" index="階層定理（算術的階層）|かいそうていりさんじゅつてきかいそう"}
+各 $n\ge1$ について、$\Pi_{n}$ だが $\Sigma_{n}$ でない集合がある。したがって $\Sigma_{n}\subsetneq\Delta_{n+1}$、$\Delta_{n}\subsetneq\Sigma_{n}$。
+:::
+
+::: proof
+$U_{n}\subseteq\N^{2}$ を $k=1$ の普遍 $\Sigma_{n}$ 関係とし、$D\defeq\{x:(x,x)\notin U_{n}\}$ とする。$\{x:(x,x)\in U_{n}\}$ は $\Sigma_{n}$（決定可能な関係の変数を同じにしても決定可能）なので $D$ は $\Pi_{n}$。$D$ が $\Sigma_{n}$ なら、ある $e$ で $D=\{x:(e,x)\in U_{n}\}$ となり、$x=e$ を代入すると $e\in D\iff(e,e)\in U_{n}\iff e\notin D$ で矛盾する。後半：$D\in\Pi_{n}\subseteq\Delta_{n+1}$ で $D\notin\Sigma_{n}$ なので $\Sigma_{n}\neq\Delta_{n+1}$。$\overline{D}\in\Sigma_{n}\setminus\Pi_{n}$ なので $\overline{D}\notin\Delta_{n}$。
+:::
+
+::: hypcheck
+- **普遍関係**：対角線論法を各段で行うために使った。$n=1$ の普遍関係は万能機械から得られ、$n+1$ は量化子を一つ付け加えて得られる。
+- **決定可能な関係が補集合で閉じること**：\ref{comp:hierarchy-basic} の 1 で使った。
+:::
+
+## 問題 {#comp:sec-tr-problems}
+
+::: problem {#comp:prob-etm-turing}
+$E_{\mathsf{TM}}\le_{\mathrm{T}}A_{\mathsf{TM}}$ を示せ。$E_{\mathsf{TM}}\le_{\mathrm{m}}A_{\mathsf{TM}}$ は成り立たないことも示せ。
+:::
+
+::: solution
+入力 $\langle M\rangle$ から、「入力を無視し、すべての文字列の上で $M$ をダブテイルで模倣し、どれかが受理されれば受理する」機械 $M'$ と任意の $w_{0}$ を作り、神託に $\langle M',w_{0}\rangle\in A_{\mathsf{TM}}$ を問い合わせ、答えを反転する。$M'$ が $w_{0}$ を受理する $\iff L(M)\neq\varnothing$。後半：$E_{\mathsf{TM}}\le_{\mathrm{m}}A_{\mathsf{TM}}$ なら、$A_{\mathsf{TM}}$ は認識可能なので $E_{\mathsf{TM}}$ も認識可能（\ref{comp:mapping-basic} の 3）。$\overline{E_{\mathsf{TM}}}$ も認識可能（問題 \ref{comp:prob-etm-co-recognizable}）なので $E_{\mathsf{TM}}$ が決定可能になり、\ref{comp:etm-undecidable} に反する。
+:::
+
+::: problem {#comp:prob-tot-not-sigma2}
+$\mathit{TOT}$ は $\Sigma_{2}$ でないことが知られている（$\Pi_{2}$ 完全）。ここでは、$\mathit{TOT}$ が $\Sigma_{1}$ でないことを示せ。
+:::
+
+::: solution
+入力 $\langle M,w\rangle$ から、次の機械 $M''$ の符号を計算する：「入力 $t$（自然数）に対し、$M$ を $w$ の上で $t$ 段だけ模倣する。その間に $M$ が受理していればループし、そうでなければ停止する」。$M$ が $w$ を受理しないなら $M''$ はすべての入力で停止し、受理するなら（受理までの段数 $t_{0}$ 以上の入力で）ループする。よって $\langle M,w\rangle\mapsto\langle M''\rangle$ は $\overline{A_{\mathsf{TM}}}\le_{\mathrm{m}}\mathit{TOT}$ を与える。$\mathit{TOT}$ が $\Sigma_{1}$（認識可能）なら \ref{comp:mapping-basic} の 3 より $\overline{A_{\mathsf{TM}}}$ も認識可能となり、\ref{comp:co-atm-unrecognizable} に反する。
+:::
+
+::: supplement
+**前提の検討.**
+- 算術的階層は、量化子が自然数の上を動くことを前提とする。量化子を集合（関数）の上に動かすと、解析的階層 $\Sigma^{1}_{n}$ が得られる（二階算術の系列で扱う予定）。
+- \ref{comp:hierarchy-basic} の 3 の「量化子をまとめる」操作は、対の符号化が計算可能であることだけを使う。
+
+**関連する結果.**
+- *ポストの定理.* $A$ が $\Sigma_{n+1}$ であることと、$A$ が $\varnothing^{(n)}$ で認識可能であることは同値で、$\Delta_{n+1}$ はちょうど $\varnothing^{(n)}$ で決定可能な集合である。本サイトでは証明していない。
+- *算術との対応.* $\Sigma_{n}$ の関係は、算術の言語で、有界量化子だけの論理式に $n$ 個の交互の量化子を付けた論理式（不完全性定理の系列の $\Sigma$ 論理式の一般化）で定義できる関係と一致することが知られている（$n=1$ の一方向は \ref{comp:tm-sigma-definable}）。
+- *ポストの問題とフリードバーグ–ムチニクの定理.* $\varnothing<_{\mathrm{T}}A<_{\mathrm{T}}\varnothing'$ となる認識可能な $A$ が存在する（チューリング次数の理論、1956–57）。
+
+**高い視点から：神託の塔.** ジャンプ $B\mapsto B'$ は「$B$ を知っている者にとっての停止問題」を作る操作で、\ref{comp:jump-properties} の 2 は、どれだけ強い神託をもらっても、その神託についての停止問題は解けないことを示している。算術的階層はこの塔の各段の高さに当たり、$\Sigma_{n}$ の量化子の交互の個数は、問題を解くのに必要な神託の段数（停止問題を何回重ねて問えばよいか）を測っている。たとえれば、どんなに賢い賢者に相談できても、その賢者自身が答えられない問い（その賢者についての停止問題）が必ず一段上にある、という塔である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>還元とライスの定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/02-computability/09-reducibility.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 還元とライスの定理 {#comp:page-reducibility keywords="reducibility, E_TM undecidable, REGULAR_TM, EQ_TM, Rice's theorem, linear bounded automaton, computation history, E_LBA undecidable"}
+
+問題 $A$ を解く方法が問題 $B$ を解く方法から得られるとき、$A$ は $B$ に**還元**される。$A_{\mathsf{TM}}$ が決定不能であること（\ref{comp:atm-undecidable}）を出発点に、$A_{\mathsf{TM}}$ を還元できる問題はすべて決定不能になる。本ページでは、機械の認識する言語が空か（$E_{\mathsf{TM}}$）、正規か、二つの機械が同じ言語を認識するか、といった問題の決定不能性を還元で示し、それらをまとめて「認識する言語についての自明でない性質はすべて決定不能」という**ライスの定理**（\ref{comp:rice}）を証明する。最後に、**計算履歴**を使った還元で、テープを入力の長さに制限した機械（線形有界オートマトン）についても空性問題が決定不能であることを示す（\ref{comp:elba-undecidable}）。
+
+## 記法と定義の確認 {#comp:sec-red-notation}
+
+::: notation
+- TM、判定機、決定可能・認識可能、時点表示、符号化 $\langle\cdot\rangle$、$A_{\mathsf{TM}}$ と $\mathit{HALT}_{\mathsf{TM}}$ の決定不能性（\ref{comp:atm-undecidable}, \ref{comp:halting-problem}）は \ref{comp:page-turing-machines}, \ref{comp:page-decidability} のとおり。
+- 高水準の記述で、TM $M$ と文字列 $w$ から新しい TM $M'$ の**符号を計算する**とは、$\langle M,w\rangle$ から $\langle M'\rangle$ を出力する手続きが TM で実行できることをいう。$M'$ を実際に動かす必要はない。
+:::
+
+## 還元による決定不能性 {#comp:sec-red-basic}
+
+::: theorem $E_{\mathsf{TM}}$ の決定不能性 {#comp:etm-undecidable keywords="emptiness problem for Turing machines is undecidable" index="E_TM の決定不能性|いーてぃーえむのけっていふのうせい"}
+$E_{\mathsf{TM}}\defeq\{\langle M\rangle:M\text{ は TM で }L(M)=\varnothing\}$ は決定可能でない。
+:::
+
+::: proof
+判定機 $R$ が $E_{\mathsf{TM}}$ を決定するとする。$A_{\mathsf{TM}}$ の判定機 $S$ を作る：入力 $\langle M,w\rangle$ に対し、次の TM $M_{1}$ の符号を計算する。
+
+> $M_{1}$：入力 $x$ に対し、$x\neq w$ なら拒否する。$x=w$ なら $M$ を $w$ の上で動かし、$M$ が受理すれば受理する。
+
+$L(M_{1})=\{w\}$（$M$ が $w$ を受理するとき）、$\varnothing$（そうでないとき）である。$S$ は $R$ を $\langle M_{1}\rangle$ の上で動かし、$R$ が受理すれば拒否、拒否すれば受理する。$S$ は判定機で $A_{\mathsf{TM}}$ を決定し、\ref{comp:atm-undecidable} に反する。
+:::
+
+::: theorem 正規性と等価性の決定不能性 {#comp:regular-eq-tm-undecidable keywords="REGULAR_TM and EQ_TM are undecidable" index="REGULAR_TM|れぎゅらーてぃーえむ, EQ_TM|いーきゅーてぃーえむ"}
+1. $\mathit{REGULAR}_{\mathsf{TM}}\defeq\{\langle M\rangle:L(M)\text{ は正規}\}$ は決定可能でない。
+2. $EQ_{\mathsf{TM}}\defeq\{\langle M_{1},M_{2}\rangle:L(M_{1})=L(M_{2})\}$ は決定可能でない。
+:::
+
+::: proof
+1. 判定機 $R$ を仮定し、$A_{\mathsf{TM}}$ を決定する。入力 $\langle M,w\rangle$ から次の $M_{2}$ を作る。
+
+> $M_{2}$：入力 $x$ に対し、$x$ が $0^{n}1^{n}$ の形なら受理する。そうでなければ $M$ を $w$ の上で動かし、$M$ が受理すれば受理する。
+
+$M$ が $w$ を受理すれば $L(M_{2})=\Sigma^{\ast}$（正規）、そうでなければ $L(M_{2})=\{0^{n}1^{n}\}$（正規でない、\ref{comp:ex-0n1n}）。よって $R$ が $\langle M_{2}\rangle$ を受理するかどうかで $\langle M,w\rangle\in A_{\mathsf{TM}}$ が決まる。
+
+2. 判定機 $R$ を仮定する。$L(M_{\varnothing})=\varnothing$ となる TM（すべて拒否する機械）$M_{\varnothing}$ を固定し、$\langle M\rangle\mapsto\langle M,M_{\varnothing}\rangle$ として $R$ を使えば $E_{\mathsf{TM}}$ が決定でき、\ref{comp:etm-undecidable} に反する。
+:::
+
+## ライスの定理 {#comp:sec-rice}
+
+::: definition 言語の性質 {#comp:language-property}
+TM の符号からなる集合 $P$ が**認識する言語についての性質**であるとは、$L(M_{1})=L(M_{2})$ ならば $\langle M_{1}\rangle\in P\iff\langle M_{2}\rangle\in P$ となることをいう。$P$ が**自明でない**とは、$P$ に属する TM の符号と属さない TM の符号がともに存在することをいう。
+:::
+
+::: theorem ライスの定理 {#comp:rice keywords="Rice's theorem" index="ライスの定理|らいすのていり"}
+TM が認識する言語についての自明でない性質 $P$ は、決定可能でない。
+:::
+
+::: proof
+判定機 $R_{P}$ が $P$ を決定するとする。$L(T_{\varnothing})=\varnothing$ となる TM $T_{\varnothing}$ を固定する。$\langle T_{\varnothing}\rangle\notin P$ と仮定してよい（$\langle T_{\varnothing}\rangle\in P$ なら、$P$ の補集合 $\overline{P}$（TM の符号の中での補集合）も自明でない性質で、決定可能なので、$\overline{P}$ について議論すればよい）。$P$ は自明でないので、$\langle T\rangle\in P$ となる TM $T$ がある。
+
+$A_{\mathsf{TM}}$ の判定機を作る：入力 $\langle M,w\rangle$ から次の $M_{w}$ を作る。
+
+> $M_{w}$：入力 $x$ に対し、まず $M$ を $w$ の上で動かす。$M$ が拒否すれば拒否する。$M$ が受理すれば、$T$ を $x$ の上で動かし、$T$ が受理すれば受理する。
+
+$M$ が $w$ を受理すれば $L(M_{w})=L(T)$ で $\langle M_{w}\rangle\in P$。そうでなければ（拒否またはループ）$L(M_{w})=\varnothing=L(T_{\varnothing})$ で、$P$ が言語についての性質なので $\langle M_{w}\rangle\notin P$。よって $R_{P}$ を $\langle M_{w}\rangle$ の上で動かせば $A_{\mathsf{TM}}$ が決定でき、矛盾する。
+:::
+
+::: hypcheck
+- **言語についての性質**：$L(M_{w})=\varnothing$ のとき、$M_{w}$ と $T_{\varnothing}$ は機械としては異なるが同じ言語を認識するので、$P$ について同じ扱いになる。機械そのものの性質（たとえば「状態が $5$ 個以下」）にはライスの定理は適用できず、実際それは決定可能である。
+- **自明でないこと**：$P$ に属する $T$ と属さない $T_{\varnothing}$ の両方を使った。
+- **$\overline{P}$ への移行**：$\overline{P}$ も言語についての自明でない性質であることを使った。
+:::
+
+## 計算履歴による還元 {#comp:sec-computation-history}
+
+::: definition 線形有界オートマトンと計算履歴 {#comp:lba keywords="linear bounded automaton, LBA, computation history" index="線形有界オートマトン|せんけいゆうかいおーとまとん, 計算履歴|けいさんりれき"}
+1. **線形有界オートマトン**（LBA）とは、ヘッドが入力の書かれた範囲から出られない（右端を越えようとすると留まる）TM のことである。
+2. TM $M$ の入力 $w$ の上の**受理計算履歴**とは、時点表示の列 $C_{1},\dots,C_{l}$ で、$C_{1}=q_{0}w$、$C_{l}$ は受理時点表示、各 $i$ で $C_{i}\vdash C_{i+1}$ となるものである。これを区切り記号で $\#C_{1}\#C_{2}\#\cdots\#C_{l}\#$ と並べた文字列で表す。
+:::
+
+::: lemma LBA の受理問題 {#comp:alba-decidable keywords="A_LBA is decidable" index="A_LBA|えーえるびーえー"}
+$A_{\mathsf{LBA}}\defeq\{\langle M,w\rangle:M\text{ は LBA で }w\in L(M)\}$ は決定可能である。
+:::
+
+::: proof
+状態数を $q$、テープ記号の数を $g$、$n\defeq\lvert w\rvert$ とすると、LBA の時点表示は（状態、ヘッドの位置、長さ $n$ のテープ内容）で決まるので高々 $qng^{n}$ 個である。$M$ を $w$ の上で $qng^{n}$ 段模倣する。その間に受理・拒否すればそれに従う。停止しなければ、ある時点表示が二度現れており、決定的な計算は以後同じ循環を繰り返すので $M$ はループする。そのときは拒否する。
+:::
+
+::: theorem LBA の空性問題の決定不能性 {#comp:elba-undecidable keywords="E_LBA is undecidable, computation histories" index="E_LBA の決定不能性|いーえるびーえーのけっていふのうせい"}
+$E_{\mathsf{LBA}}\defeq\{\langle B\rangle:B\text{ は LBA で }L(B)=\varnothing\}$ は決定可能でない。
+:::
+
+::: proof
+判定機 $R$ を仮定し、$A_{\mathsf{TM}}$ を決定する。入力 $\langle M,w\rangle$ から、「$M$ の $w$ の上の受理計算履歴」だけを受理する LBA $B$ を作る。$B$ は入力 $x$ に対し次を確かめ、すべて成り立てば受理する。
+1. $x$ が $\#C_{1}\#\cdots\#C_{l}\#$ の形で、各 $C_{i}$ が $M$ の時点表示の形（状態の記号をちょうど一つ含む）であること。
+2. $C_{1}=q_{0}w$。
+3. $C_{l}$ の状態が $q_{\mathrm{acc}}$。
+4. 各 $i<l$ について $C_{i}\vdash C_{i+1}$。
+
+1〜3 は入力の範囲内の走査で確かめられる。4 は、$C_{i}$ と $C_{i+1}$ の対応する位置に交互に印をつけながら、両者がヘッドの周りの（$\delta$ が決める）高々三文字を除いて一致し、その三文字が $\delta$ に従って変化していることを照合する。印はテープの記号を印つきの記号に書き換えて表すので、入力の範囲を出ない。$M$ が $w$ を受理すれば受理計算履歴がちょうど一つあり $L(B)\neq\varnothing$、受理しなければ $L(B)=\varnothing$。よって $R$ が $\langle B\rangle$ を拒否することと $\langle M,w\rangle\in A_{\mathsf{TM}}$ は同値で、$A_{\mathsf{TM}}$ が決定可能になり矛盾する。
+:::
+
+::: hypcheck
+- **計算履歴**：$M$ の計算そのもの（無限に続きうる）ではなく、「受理するという証拠の検証」を LBA に任せたのが要点である。検証は入力（履歴）の長さの範囲で済む。
+- **$A_{\mathsf{LBA}}$ は決定可能**（\ref{comp:alba-decidable}）なのに $E_{\mathsf{LBA}}$ は決定不能：個々の入力の受理は有限の時点表示の数で抑えられるが、「受理する入力が一つでもあるか」は、すべての長さの入力を調べる必要があり、抑えが効かない。
+:::
+
+## 問題 {#comp:sec-red-problems}
+
+::: problem {#comp:prob-rice-examples}
+ライスの定理を使って、次がどれも決定可能でないことを示せ。
+1. $\{\langle M\rangle:L(M)\text{ は有限}\}$。
+2. $\{\langle M\rangle:\varepsilon\in L(M)\}$。
+3. $\{\langle M\rangle:L(M)=\Sigma^{\ast}\}$。
+:::
+
+::: solution
+いずれも認識する言語だけで決まる性質である。自明でないことは、すべて拒否する機械（$L=\varnothing$：1 に属し、2, 3 に属さない）とすべて受理する機械（$L=\Sigma^{\ast}$：1 に属さず、2, 3 に属する）から。\ref{comp:rice} より決定可能でない。
+:::
+
+::: problem {#comp:prob-five-states}
+$\{\langle M\rangle:M\text{ の状態は }5\text{ 個以下}\}$ は決定可能であることを示し、これがライスの定理に反しない理由を述べよ。
+:::
+
+::: solution
+$\langle M\rangle$ から状態の個数を読み取って比べればよい。この集合は機械そのものの性質で、同じ言語を認識する機械でも状態数は異なりうるので、\ref{comp:language-property} の意味で言語についての性質ではない。
+:::
+
+::: supplement
+**前提の検討.**
+- 本ページの還元はすべて「$B$ の判定機があれば $A$ の判定機が作れる」という形である。この還元の概念は、次のページで写像還元とチューリング還元に整理される。
+- ライスの定理は「決定可能でない」ことを主張するが、認識可能かどうかについては何も言わない。たとえば $\{\langle M\rangle:L(M)\neq\varnothing\}$ は認識可能（問題 \ref{comp:prob-etm-co-recognizable}）である。認識可能性についての類似（ライス–シャピロの定理）が知られている。
+
+**関連する結果.**
+- *ポストの対応問題*：文字列の組の列から、上下が一致するように並べられるかを問う問題も、計算履歴の考え方で決定不能であることが示される（次のページ）。
+- *文脈自由文法についての決定不能な問題*：$\{\langle G\rangle:L(G)=\Sigma^{\ast}\}$ は決定可能でない。計算履歴の「誤り」が文脈自由文法で記述できること（履歴を一つおきに逆順にして並べる工夫）による、と Sipser 第 5 章で示されている（本サイトでは扱わない）。
+- *ヒルベルトの第 10 問題*：整数係数の多項式が整数解をもつかどうかは決定可能でない（マチャセビッチ、1970）。これも計算の過程を算術で表すという計算履歴の考え方の延長にある。
+
+**高い視点から：困難の伝播.** 還元は「問題の困難さの比較」で、$A$ を $B$ に還元すると「$B$ は $A$ と同じくらい難しい」ことがわかる。$A_{\mathsf{TM}}$ という一つの難しい問題から、還元の矢印を逆向きにたどることで困難が次々に伝播していく。ライスの定理は、機械の振る舞い（認識する言語）を外から言い当てる一般的な方法がないことを述べており、たとえるなら「プログラムのソースコードを見ただけで、それが何をするかを（自明でない意味で）完全に判定する検査器は作れない」ということである。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

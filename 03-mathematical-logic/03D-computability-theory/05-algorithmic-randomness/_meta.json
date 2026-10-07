@@ -1,0 +1,14 @@
+{
+  "id": "comp-randomness",
+  "title": "アルゴリズム的ランダムネス",
+  "en": "Algorithmic Randomness",
+  "abbr": "ランダムネス",
+  "description": "記述の長さ（コルモゴロフ複雑性）と非圧縮性、接頭辞なしコルモゴロフ複雑性、クラフトの不等式、マルチン＝レーフのランダムネス、レヴィン–シュノアの定理、チャイティンの Ω。",
+  "msc": "03D32, 68Q30",
+  "prereq": [
+    {
+      "dir": "comp-computability",
+      "note": "チューリング機械、万能プログラム、停止問題"
+    }
+  ]
+}

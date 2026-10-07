@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ACA₀ とペアノ算術 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/06-second-order-arithmetic/02-aca0-conservativity.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ACA₀ とペアノ算術 {#pt:page-soa-aca0 keywords="ACA0, Peano arithmetic, conservative extension, arithmetical induction, definable sets, expansion of models of PA, consistency of PA, RCA0 conservative over I Sigma1"}
+
+$\mathsf{ACA}_{0}$ は算術的に定義できる集合の存在を認める体系である（\ref{pt:big-five}）。本ページでは、$\mathsf{ACA}_{0}$ が数についての主張（一階算術の文）に関しては、ちょうどペアノ算術 $\PA$ と同じだけの証明能力をもつこと、すなわち **$\mathsf{ACA}_{0}$ は $\PA$ の保存拡大である**ことを示す（\ref{pt:aca0-conservative-pa}）。片方の向き（$\PA$ の定理は $\mathsf{ACA}_{0}$ で証明できる）は、$\mathsf{ACA}_{0}$ で算術的論理式すべての帰納法が成り立つこと（\ref{pt:aca0-arith-induction}）から従う。もう片方は、$\PA$ の任意のモデルに、そこで**定義可能な集合**全体を付け加えると $\mathsf{ACA}_{0}$ のモデルになること（\ref{pt:definable-expansion}）と完全性定理による。系として、$\mathsf{ACA}_{0}$ は $\PA$ の無矛盾性を証明しない（\ref{pt:aca0-not-con-pa}）。
+
+> 主な資料は田中一之『逆数学と 2 階算術』第 2 章 §2.4（定理 2.20, 2.21 と直後の問題）。証明は自分の言葉で組み立て直し、定義可能集合の構造が $\mathsf{ACA}_{0}$ のモデルになることの、論理式の翻訳についての部分を補って書いた。
+
+## 記法と定義の確認 {#pt:sec-soa2-notation}
+
+::: notation
+- 二階算術の言語 $\mathcal{L}_{2}$、$\mathcal{L}_{2}$ 構造 $(M,\mathcal{S}_{M},\dots)$、算術的論理式、$\mathsf{RCA}_{0}$, $\mathsf{ACA}_{0}$ は \ref{pt:page-soa-subsystems} のとおり（\ref{pt:l2-language}, \ref{pt:l2-hierarchy}, \ref{pt:l2-axioms}, \ref{pt:big-five}）。
+- **一階算術の論理式**とは、集合変数を（自由にも束縛としても）含まない $\mathcal{L}_{2}$ の論理式のことである。その言語を $\mathcal{L}_{1}$ と書く（記号は $0,1,+,\cdot,<,=$）。$\mathcal{L}_{1}$ 構造 $M$ について、$M$ の部分集合 $A$ が（パラメータ付きで）**定義可能**であるとは、$\mathcal{L}_{1}$ 論理式 $\varphi(x,y_{1},\dots,y_{k})$ と $b_{1},\dots,b_{k}\in M$ があって
+$$
+A=A^{\varphi}_{\vec{b}}\defeq\{a\in M:M\models\varphi(a,\vec{b})\}
+$$
+となることをいう。定義可能な部分集合全体を $\mathrm{Def}(M)$ と書く。
+- ペアノ算術 $\PA$ は \ref{pt:peano-arithmetic} で後者関数 $S$ を使って定義した。本ページでは $S(x)$ を $x+1$ と読み替え、$\PA$ を「$\mathcal{L}_{1}$ の基本公理（\ref{pt:l2-axioms} の 1）と、すべての $\mathcal{L}_{1}$ 論理式についての帰納法」からなる $\mathcal{L}_{1}$ の理論とみなす。二つの形は、$1\defeq S(0)$, $S(x)\defeq x+1$ と読み替えて互いの公理を証明できる（基本公理と帰納法による通常の計算。本サイトでは詳細を省略する）。
+- 理論 $T'$ が理論 $T$ の**保存拡大**であるとは、$T$ の定理はすべて $T'$ の定理であり、かつ $T$ の言語の文 $\sigma$ について $T'\vdash\sigma$ なら $T\vdash\sigma$ となることをいう。
+- 完全性定理は \ref{logic:completeness}。二種類の変数をもつ理論にも同じ形で使う（\ref{pt:l2-language} の後の注意）。
+:::
+
+## ACA₀ と算術的帰納法 {#pt:sec-soa2-induction}
+
+::: proposition ACA₀ の算術的帰納法 {#pt:aca0-arith-induction keywords="ACA0 proves arithmetical induction" index="算術的帰納法|さんじゅつてききのうほう"}
+任意の算術的論理式 $\varphi(n)$（数・集合のパラメータを含んでよい）について、$\mathsf{ACA}_{0}$ で
+$$
+\varphi(0)\wedge\forall n\,(\varphi(n)\to\varphi(n+1))\to\forall n\,\varphi(n)
+$$
+が証明できる。さらに、$\mathsf{ACA}_{0}$ は「基本公理 ＋ 帰納法の公理 ＋ 算術的内包公理」と同じ定理をもつ（$\Sigma^{0}_{1}$ 帰納法と $\Delta^{0}_{1}$ 内包公理は余分である）。
+:::
+
+::: proof
+**前半.** $\varphi(0)$ と $\forall n\,(\varphi(n)\to\varphi(n+1))$ を仮定する。算術的内包公理（$\varphi$ は算術的で、新しい変数 $X$ は $\varphi$ に現れない）で
+$$
+X\defeq\{n:\varphi(n)\}
+$$
+をとる。$0\in X$ かつ $\forall n\,(n\in X\to n+1\in X)$ が仮定から従うので、帰納法の公理（\ref{pt:l2-axioms} の 2）により $\forall n\,(n\in X)$、したがって $\forall n\,\varphi(n)$。
+
+**後半.** 「基本公理 ＋ 帰納法の公理 ＋ 算術的内包公理」を $T$ とする。前半の証明は $\Sigma^{0}_{1}$ 帰納法も $\Delta^{0}_{1}$ 内包公理も使っていないので、$T$ で算術的帰納法、とくに $\Sigma^{0}_{1}$ 帰納法が証明できる。$\Delta^{0}_{1}$ 内包公理は、仮定の $\Sigma^{0}_{1}$ 論理式についての算術的内包公理から直ちに従う（仮定 $\forall n\,(\varphi\leftrightarrow\psi)$ は使わずに集合が得られる）。よって $T$ は $\mathsf{ACA}_{0}$ の公理をすべて証明し、逆は明らかである。
+:::
+
+::: corollary PA は ACA₀ に含まれる {#pt:pa-in-aca0 keywords="PA is contained in ACA0"}
+$\PA$ の定理（$\mathcal{L}_{1}$ の文）は、すべて $\mathsf{ACA}_{0}$ の定理である。
+:::
+
+::: proof
+$\PA$ の公理は基本公理と $\mathcal{L}_{1}$ 論理式の帰納法である。$\mathcal{L}_{1}$ 論理式は算術的論理式なので、\ref{pt:aca0-arith-induction} により $\mathsf{ACA}_{0}$ で証明できる。$\PA$ の証明は $\mathsf{ACA}_{0}$ の証明に（公理をその証明で置き換えて）書き直せる。
+:::
+
+## 定義可能集合によるモデルの拡張 {#pt:sec-soa2-expansion}
+
+::: intuition
+$\PA$ のモデル $M$ が与えられたとき、$M$ の中で論理式で書ける集合（定義可能集合）は、$M$ の住人にとって「名前の付いた集合」である。$\mathsf{ACA}_{0}$ が新たに存在を主張する集合は、算術的論理式で定義される集合だけであり、その論理式の中の集合パラメータもまた定義可能なら、全体を一つの一階の論理式に書き直せる。したがって、定義可能集合だけを集めた世界は算術的内包公理で閉じており、$\mathsf{ACA}_{0}$ のモデルになる。この世界の数の部分は $M$ そのままなので、$\mathsf{ACA}_{0}$ で数について新しいことを証明しても、$M$ で成り立つことしか出てこない。
+:::
+
+::: lemma 論理式の翻訳 {#pt:formula-translation keywords="translation of arithmetical formulas with definable set parameters" index="論理式の翻訳（定義可能集合）|ろんりしきのほんやくていぎかのうしゅうごう"}
+$M$ を $\mathcal{L}_{1}$ 構造とし、$\mathcal{S}\defeq\mathrm{Def}(M)$ とする。算術的論理式 $\psi(x_{1},\dots,x_{r},X_{1},\dots,X_{s})$ と、集合 $A_{i}=A^{\varphi_{i}}_{\vec{b}_{i}}\in\mathcal{S}$（$i=1,\dots,s$）について、$\mathcal{L}_{1}$ 論理式 $\psi^{\ast}(\vec{x},\vec{y}_{1},\dots,\vec{y}_{s})$ があって、すべての $\vec{a}\in M^{r}$ について
+$$
+(M,\mathcal{S})\models\psi(\vec{a},A_{1},\dots,A_{s})\iff M\models\psi^{\ast}(\vec{a},\vec{b}_{1},\dots,\vec{b}_{s}).
+$$
+$\psi^{\ast}$ は $\psi$ の中の各原子論理式 $t\in X_{i}$ を $\varphi_{i}(t,\vec{y}_{i})$ で置き換えたものでよい（$\vec{y}_{i}$ は $\psi$ に現れない新しい変数とし、$\varphi_{i}$ の束縛変数は $t$ の変数と衝突しないように付け替える）。
+:::
+
+::: proof
+$\psi$ の構成についての帰納法による。
+
+*原子論理式.* $t=s$, $t<s$ は集合変数を含まないので $\psi^{\ast}=\psi$ で、両辺は同じ $M$ での真偽を表す（$(M,\mathcal{S})$ の数の部分は $M$ である）。$t\in X_{i}$ については、
+$$
+(M,\mathcal{S})\models t^{M}[\vec{a}]\in A_{i}\iff t^{M}[\vec{a}]\in A^{\varphi_{i}}_{\vec{b}_{i}}\iff M\models\varphi_{i}(t[\vec{a}],\vec{b}_{i}).
+$$
+最後の同値で、$\varphi_{i}(x,\vec{y}_{i})$ の $x$ に項 $t$ を代入した論理式の真偽が、$x$ に $t$ の値を割り当てたときの真偽と一致すること（代入補題。$t$ が代入可能であることは束縛変数の付け替えで保証される）を使った。
+
+*$\neg,\wedge$.* 充足の定義から、$(\neg\psi)^{\ast}=\neg\psi^{\ast}$, $(\psi\wedge\chi)^{\ast}=\psi^{\ast}\wedge\chi^{\ast}$ で同値が保たれる。
+
+*数量化子 $\exists x$.* $(M,\mathcal{S})\models\exists x\,\psi(x,\dots)$ は、ある $a\in M$ で $(M,\mathcal{S})\models\psi(a,\dots)$ となることで、帰納法の仮定からある $a\in M$ で $M\models\psi^{\ast}(a,\dots)$、すなわち $M\models\exists x\,\psi^{\ast}$。ここで、$(M,\mathcal{S})$ の数量化子が動く範囲と $M$ の量化子が動く範囲がどちらも $M$ であることを使った。
+
+$\psi$ は算術的なので集合量化子は現れず、以上で帰納法は完了する。
+:::
+
+::: lemma 定義可能集合による拡張は ACA₀ のモデル {#pt:definable-expansion keywords="(M, Def(M)) is a model of ACA0 when M is a model of PA" index="定義可能集合による拡張|ていぎかのうしゅうごうによるかくちょう"}
+$M\models\PA$ なら、$(M,\mathrm{Def}(M))\models\mathsf{ACA}_{0}$。
+:::
+
+::: proof
+$\mathcal{S}\defeq\mathrm{Def}(M)$ とし、\ref{pt:aca0-arith-induction} の後半により、基本公理・帰納法の公理・算術的内包公理を確かめればよい。
+
+**Step 1（基本公理）.** 集合変数を含まない文なので、$(M,\mathcal{S})$ での真偽は $M$ での真偽と同じで、$M\models\PA$ から成り立つ。
+
+**Step 2（帰納法の公理）.** $A\in\mathcal{S}$ とし、$A=A^{\varphi}_{\vec{b}}$ と書く。$0\in A$ かつ $\forall n\,(n\in A\to n+1\in A)$ が $(M,\mathcal{S})$ で成り立つとすると、\ref{pt:formula-translation} から $M\models\varphi(0,\vec{b})\wedge\forall n\,(\varphi(n,\vec{b})\to\varphi(n+1,\vec{b}))$。$\PA$ の $\varphi$ についての帰納法（パラメータ $\vec{y}$ を全称閉包で含む形）を $\vec{b}$ に適用して $M\models\forall n\,\varphi(n,\vec{b})$、すなわち $A=M$。
+
+**Step 3（算術的内包公理）.** 算術的論理式 $\psi(n,\vec{x},X_{1},\dots,X_{s})$（$X$ は現れない）と、パラメータ $\vec{a}\in M$, $A_{i}=A^{\varphi_{i}}_{\vec{b}_{i}}\in\mathcal{S}$ をとる。\ref{pt:formula-translation} の $\psi^{\ast}$ を使うと、
+$$
+\{n\in M:(M,\mathcal{S})\models\psi(n,\vec{a},\vec{A})\}=\{n\in M:M\models\psi^{\ast}(n,\vec{a},\vec{b}_{1},\dots,\vec{b}_{s})\}.
+$$
+右辺は $\mathcal{L}_{1}$ 論理式 $\psi^{\ast}$ とパラメータ $\vec{a},\vec{b}_{1},\dots,\vec{b}_{s}$ で定義されるので $\mathcal{S}$ に属する。これがこの $\psi$ についての内包公理の証拠 $X$ になる。
+:::
+
+::: theorem ACA₀ は PA の保存拡大 {#pt:aca0-conservative-pa keywords="ACA0 is a conservative extension of PA" index="ACA₀ の保存性|えーしーえーぜろのほぞんせい, 保存拡大|ほぞんかくだい"}
+$\mathsf{ACA}_{0}$ は $\PA$ の保存拡大である：$\mathcal{L}_{1}$ の文 $\sigma$ について、$\PA\vdash\sigma\iff\mathsf{ACA}_{0}\vdash\sigma$。
+:::
+
+::: proof
+（$\Rightarrow$）\ref{pt:pa-in-aca0}。
+
+（$\Leftarrow$）対偶を示す。$\PA\nvdash\sigma$ とする。完全性定理（\ref{logic:completeness}）により $\PA+\neg\sigma$ は無矛盾で、モデル $M\models\PA+\neg\sigma$ がある。\ref{pt:definable-expansion} により $(M,\mathrm{Def}(M))\models\mathsf{ACA}_{0}$。$\sigma$ は集合変数を含まないので、\ref{pt:formula-translation}（$s=0$ の場合）から $(M,\mathrm{Def}(M))\models\neg\sigma$。$\mathsf{ACA}_{0}$ の健全性（完全性定理の易しい向き）により $\mathsf{ACA}_{0}\nvdash\sigma$。
+:::
+
+::: corollary ACA₀ は Con(PA) を証明しない {#pt:aca0-not-con-pa keywords="ACA0 does not prove Con(PA)"}
+$\mathsf{ACA}_{0}\nvdash\mathrm{Con}$（$\mathrm{Con}$ は \ref{pt:godel-second} の $\PA$ の無矛盾性を表す $\mathcal{L}_{1}$ の文）。
+:::
+
+::: proof
+$\mathrm{Con}$ は $\mathcal{L}_{1}$ の文なので、$\mathsf{ACA}_{0}\vdash\mathrm{Con}$ なら \ref{pt:aca0-conservative-pa} から $\PA\vdash\mathrm{Con}$。$\PA$ は無矛盾（\ref{pt:standard-model}）なので、第二不完全性定理（\ref{pt:godel-second} の 1）に反する。
+:::
+
+::: remark
+1. **証明の非構成性.** 上の証明は完全性定理（したがって $\PA$ のモデルの存在）を使う。「$\mathsf{ACA}_{0}$ の証明を $\PA$ の証明に書き換える」有限的な手続き（カット除去などの証明論的手法）による証明もあることが知られており、その場合、保存性そのものが弱い体系（$\mathsf{PRA}$ 程度）で証明できると言われている。本サイトでは示していない。
+2. **有限公理化可能性.** $\mathsf{ACA}_{0}$ は有限個の公理で公理化できることが知られている（算術的内包公理を、跳躍の存在などの有限個の公理で置き換える）。一方 $\PA$ は有限公理化できない（ルィル＝ナルジェフスキ）ことが知られている。保存拡大でありながら有限公理化可能になるのは、集合変数が「すべての論理式についての帰納法」を一つの公理（帰納法の公理）にまとめる役を果たすからである。
+3. **全帰納法をもつ $\mathsf{ACA}$.** $\mathsf{ACA}_{0}$ にすべての $\mathcal{L}_{2}$ 論理式の帰納法を加えた体系 $\mathsf{ACA}$ は、算術の真理述語（充足関係）を集合として作り、それについて帰納法を使うことで $\mathrm{Con}$ を証明できることが知られている。したがって $\mathsf{ACA}$ は $\PA$ の保存拡大ではない。
+:::
+
+::: hypcheck
+- **$M\models\PA$（すべての $\mathcal{L}_{1}$ 論理式の帰納法）**：\ref{pt:definable-expansion} の Step 2 で、任意の定義可能集合についての帰納法の公理を、それを定義する（任意の複雑さの）論理式の帰納法に帰着させるのに使った。$M$ が $\mathrm{I}\Sigma_{n}$ のモデルにすぎなければ、$\mathrm{Def}(M)$ では帰納法の公理が成り立たないことがある。
+- **算術的内包公理の論理式が算術的であること**：\ref{pt:formula-translation} は集合量化子を含まない論理式についてしか成り立たない（集合量化子は $\mathrm{Def}(M)$ を動くが、それを一階の論理式で表す方法はない）。$\Pi^{1}_{1}$ 内包公理などでは同じ議論は通らない。
+- **完全性定理と健全性**：\ref{pt:aca0-conservative-pa} の（$\Leftarrow$）で、$\PA$ のモデルの存在と、$\mathsf{ACA}_{0}$ のモデルで偽な文が証明できないことに使った。
+- **帰納法の公理が「集合についての」形であること**：\ref{pt:aca0-arith-induction} で、算術的内包公理で作った集合に帰納法の公理を適用した。
+- **代入補題**：\ref{pt:formula-translation} の原子論理式の場合に使った。
+:::
+
+## 問題 {#pt:sec-soa2-problems}
+
+::: problem {#pt:prob-rca0-isigma1}
+$\mathsf{RCA}_{0}$ が $\mathrm{I}\Sigma_{1}$（基本公理 ＋ $\Sigma_{1}$ 論理式の帰納法、\ref{pt:weak-arithmetics}）の保存拡大であることを、上と同様の方法で示す方針を述べよ。（田中の本の問題。）ただし、$\mathrm{I}\Sigma_{1}$ のモデルでは $\Sigma_{1}$ 収集原理（$\forall x<a\,\exists y\,\theta(x,y)\to\exists b\,\forall x<a\,\exists y<b\,\theta(x,y)$、$\theta$ は $\Sigma_{1}$）が成り立つことを既知としてよい。
+:::
+
+::: solution
+$M\models\mathrm{I}\Sigma_{1}$ について、$\mathcal{S}$ を、$M$ で $\Sigma_{1}$ 論理式と $\Pi_{1}$ 論理式の両方で（パラメータ付きで）定義できる集合（$\Delta_{1}$ 定義可能集合）全体とする。
+1. **翻訳.** $\Sigma^{0}_{1}$ 論理式 $\psi$ の集合パラメータ $A_{i}$ を、正の位置の $t\in A_{i}$ は $A_{i}$ の $\Sigma_{1}$ 定義で、負の位置（否定の中）は $\Pi_{1}$ 定義の否定（$\Sigma_{1}$）で置き換えると、$\psi$ は有界量化子と $\Sigma_{1}$ 論理式の組み合わせになる。有界量化子の内側の存在量化子は、$\Sigma_{1}$ 収集原理で外に出せるので、全体は $M$ で $\Sigma_{1}$ 論理式と同値になる。同様に $\Pi^{0}_{1}$ 論理式は $\Pi_{1}$ 論理式と同値になる。
+2. **$\Delta^{0}_{1}$ 内包公理.** $(M,\mathcal{S})\models\forall n\,(\varphi(n)\leftrightarrow\psi(n))$（$\varphi$ が $\Sigma^{0}_{1}$, $\psi$ が $\Pi^{0}_{1}$）なら、1 により $\{n:\varphi(n)\}$ は $M$ で $\Sigma_{1}$ でも $\Pi_{1}$ でも定義でき、$\mathcal{S}$ に属する。
+3. **$\Sigma^{0}_{1}$ 帰納法.** 1 により $M$ の $\Sigma_{1}$ 帰納法に帰着する。
+4. 基本公理は $M$ で成り立つ。
+
+よって $(M,\mathcal{S})\models\mathsf{RCA}_{0}$ で、あとは \ref{pt:aca0-conservative-pa} と同じ議論で、$\mathcal{L}_{1}$ の文について $\mathsf{RCA}_{0}\vdash\sigma\Rightarrow\mathrm{I}\Sigma_{1}\vdash\sigma$。逆向き（$\mathrm{I}\Sigma_{1}$ の定理が $\mathsf{RCA}_{0}$ で証明できる）は、$\mathsf{RCA}_{0}$ が集合パラメータのない $\Sigma^{0}_{1}$ 帰納法を含むことによる。
+:::
+
+::: problem {#pt:prob-aca0-pi11}
+$\theta(X)$ を（自由な集合変数 $X$ だけをもつ）算術的論理式とし、$\mathsf{ACA}_{0}\vdash\forall X\,\theta(X)$ とする。任意の $\mathcal{L}_{1}$ 論理式 $\varphi(x,\vec{y})$ について、$\theta(X)$ の $t\in X$ を $\varphi(t,\vec{y})$ で置き換えた論理式を $\theta[\varphi]$ とすると、$\PA\vdash\forall\vec{y}\,\theta[\varphi]$ であることを示せ。
+:::
+
+::: solution
+完全性定理により、任意の $M\models\PA$ と $\vec{b}\in M$ について $M\models\theta[\varphi](\vec{b})$ を示せばよい。$(M,\mathrm{Def}(M))\models\mathsf{ACA}_{0}$（\ref{pt:definable-expansion}）なので、$(M,\mathrm{Def}(M))\models\forall X\,\theta(X)$。$A\defeq A^{\varphi}_{\vec{b}}\in\mathrm{Def}(M)$ を代入して $(M,\mathrm{Def}(M))\models\theta(A)$。\ref{pt:formula-translation} により、これは $M\models\theta[\varphi](\vec{b})$ と同値である。
+:::
+
+::: problem {#pt:prob-aca0-arith-omega}
+\ref{pt:definable-expansion} を標準モデル $M=\N$ に適用すると、$\mathrm{Def}(\N)$ は算術的集合全体 $\mathrm{ARITH}$ になることを確かめ、\ref{pt:omega-aca0} の「$\mathrm{ARITH}$ は $\mathsf{ACA}_{0}$ の ω モデルである」の別証明になっていることを説明せよ。
+:::
+
+::: solution
+$\N$ の部分集合で $\mathcal{L}_{1}$ 論理式（パラメータは数）で定義できるものは、算術的階層のいずれかの $\Sigma_{n}$ に属する集合、すなわち算術的集合である（パラメータの数は定数の数項で置き換えられる）。逆に、算術的集合は定義により $\mathcal{L}_{1}$ 論理式で定義できる。よって $\mathrm{Def}(\N)=\mathrm{ARITH}$。$\N\models\PA$（\ref{pt:standard-model}）なので、\ref{pt:definable-expansion} から $(\N,\mathrm{ARITH})\models\mathsf{ACA}_{0}$、すなわち $\mathrm{ARITH}$ は $\mathsf{ACA}_{0}$ の ω モデルである。\ref{pt:omega-aca0} では跳躍で閉じたチューリングイデアルとしての特徴づけから導いたが、ここでは「定義可能性」から直接導いている。
+:::
+
+::: supplement
+**前提の検討.**
+- \ref{pt:definable-expansion} の $\mathrm{Def}(M)$ を、それより大きな集合族に替えてもよい：算術的内包公理で閉じ、帰納法の公理を満たす族なら何でも $\mathsf{ACA}_{0}$ のモデルになる。保存性の証明には、どの $M\models\PA$ にも少なくとも一つの拡張があれば十分で、$\mathrm{Def}(M)$ はその最小の候補である。
+- 保存性は $\mathcal{L}_{1}$ の**文**についての主張だが、問題 \ref{pt:prob-aca0-pi11} のように、$\Pi^{1}_{1}$ 文についても「すべての定義可能集合への代入例が $\PA$ で証明できる」という形の保存性が成り立つ。
+
+**関連する結果.**
+- *$\mathsf{WKL}_{0}$ の保存性.* $\mathsf{WKL}_{0}$ は $\Pi^{1}_{1}$ 文について $\mathsf{RCA}_{0}$ の保存拡大（ハーリントン）で、したがって $\mathcal{L}_{1}$ の文について $\mathrm{I}\Sigma_{1}$ の保存拡大である（問題 \ref{pt:prob-rca0-isigma1} と合わせて）。これは \ref{pt:page-soa-wkl0-conservation} で扱う予定である。
+- *類似の現象.* 集合論では、クラスを扱うフォン・ノイマン–ベルナイス–ゲーデルの集合論 $\mathsf{NBG}$ が、集合についての文に関して $\mathsf{ZF}$ の保存拡大であることが知られている。$\mathsf{ACA}_{0}$ と $\PA$ の関係はその算術版で、「定義可能なクラス（集合）だけを付け加えた」ことが共通の理由になっている。
+- *証明論的強さ.* $\mathsf{ACA}_{0}$ の証明論的順序数は $\PA$ と同じ $\varepsilon_{0}$ であると言われている（\ref{pt:page-epsilon0}、予定）。
+
+**高い視点から：名前を付けても新しい事実は生まれない.** $\mathsf{ACA}_{0}$ の集合変数は、算術的論理式という「記述」に名前を付けて対象として扱えるようにする装置である。保存性定理は、この名前付けが数についての新しい事実を何も生まないことを言っている。モデルの対応として見ると、$\PA$ のモデル $M$ に $(M,\mathrm{Def}(M))$ を対応させる操作は、数の部分を取り出す操作（集合の領域を忘れる操作）の切断になっている。すなわち、どの $\PA$ のモデルも $\mathsf{ACA}_{0}$ のモデルの数の部分として現れ、これが保存性の意味論的な内容である（逆に、$\mathsf{ACA}_{0}$ のモデルの数の部分は、\ref{pt:aca0-arith-induction} により $\PA$ のモデルである）。比喩で言えば、辞書に新しい見出し語（集合の名前）を加えても、それらがすべて既存の言葉で定義されているなら、辞書が述べる世界の事実は変わらない。逆に、$\mathsf{ACA}$ のように「新しい見出し語についての議論の仕方」（帰納法）まで強めると、真理述語のような既存の言葉では定義できない概念を扱えるようになり、$\mathrm{Con}$ という新しい事実が証明できるようになる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

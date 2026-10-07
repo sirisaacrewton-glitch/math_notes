@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>初等拡大と量化子消去 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03C-model-theory/01-elementary-extensions/index.html" data-kind="dir">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 初等拡大と量化子消去（Elementary Extensions and Quantifier Elimination）
+
+部分構造と初等部分構造、タルスキ–ヴォートの判定法、レーヴェンハイム–スコーレムの定理、初等鎖、保存定理、量化子消去とモデル完全性、稠密線形順序と代数的閉体。（Chang–Keisler 第 1 章 §5、第 3 章 §1–2 の内容に相当。本文は自分の言葉で組み立てる）
+
+<p class="mn-msc">MSC2020: 03C07, 03C10</p>
+
+## 前提知識
+
+- [一般論理 › 一階述語論理](../../../03-mathematical-logic/03B-general-logic/02-first-order-logic/index.html)（全体、9 ページ）：構造と充足関係、完全性定理とコンパクト性定理
+
+## 目次
+
+<ol class="mn-dirtoc">
+<li value="1"><a href="01-elementary-substructures.html">§1 初等部分構造とレーヴェンハイム–スコーレムの定理</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 1.1</span> <span class="mn-dirtoc-title">部分構造</span></li><li><span class="mn-dirtoc-kind">定義 1.2</span> <span class="mn-dirtoc-title">初等的同値</span></li><li><span class="mn-dirtoc-kind">定義 1.3</span> <span class="mn-dirtoc-title">埋め込みと初等埋め込み</span></li><li><span class="mn-dirtoc-kind">定義 1.4</span> <span class="mn-dirtoc-title">初等部分構造</span></li><li><span class="mn-dirtoc-kind">補題 1.5</span> <span class="mn-dirtoc-title">部分構造は量化子のない論理式を保つ</span></li><li><span class="mn-dirtoc-kind">定理 1.6</span> <span class="mn-dirtoc-title">タルスキ–ヴォートの判定法</span></li><li><span class="mn-dirtoc-kind">定理 1.7</span> <span class="mn-dirtoc-title">下降レーヴェンハイム–スコーレムの定理</span></li><li><span class="mn-dirtoc-kind">系 1.8</span> <span class="mn-dirtoc-title">指定された濃度の初等部分構造</span></li><li><span class="mn-dirtoc-kind">定義 1.11</span> <span class="mn-dirtoc-title">初等図式</span></li><li><span class="mn-dirtoc-kind">補題 1.12</span> <span class="mn-dirtoc-title">初等図式のモデルは初等拡大を与える</span></li><li><span class="mn-dirtoc-kind">定理 1.13</span> <span class="mn-dirtoc-title">上昇レーヴェンハイム–スコーレムの定理</span></li></ul></li>
+<li value="2"><a href="02-elementary-chains.html">§2 初等鎖と保存定理</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">補題 2.1</span> <span class="mn-dirtoc-title">埋め込みは量化子のない論理式を保つ</span></li><li><span class="mn-dirtoc-kind">補題 2.2</span> <span class="mn-dirtoc-title">埋め込みの像</span></li><li><span class="mn-dirtoc-kind">定義 2.3</span> <span class="mn-dirtoc-title">図式</span></li><li><span class="mn-dirtoc-kind">補題 2.4</span> <span class="mn-dirtoc-title">図式のモデルは埋め込みを与える</span></li><li><span class="mn-dirtoc-kind">補題 2.5</span> <span class="mn-dirtoc-title">新しい定数の消去</span></li><li><span class="mn-dirtoc-kind">定理 2.6</span> <span class="mn-dirtoc-title">ウォシュ–タルスキの定理</span></li><li><span class="mn-dirtoc-kind">定義 2.7</span> <span class="mn-dirtoc-title">鎖と初等鎖</span></li><li><span class="mn-dirtoc-kind">補題 2.8</span> <span class="mn-dirtoc-title">鎖の和</span></li><li><span class="mn-dirtoc-kind">定理 2.9</span> <span class="mn-dirtoc-title">初等鎖の定理（タルスキ–ヴォート）</span></li><li><span class="mn-dirtoc-kind">命題 2.10</span> <span class="mn-dirtoc-title">全称存在文は鎖の和で保たれる</span></li><li><span class="mn-dirtoc-kind">補題 2.11</span> <span class="mn-dirtoc-title">全称存在帰結のモデルの拡大</span></li><li><span class="mn-dirtoc-kind">補題 2.12</span> <span class="mn-dirtoc-title">存在文を反映する拡大の初等拡大への埋め込み</span></li></ul></li>
+<li value="3"><a href="03-quantifier-elimination.html">§3 量化子消去とモデル完全性</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 3.1</span> <span class="mn-dirtoc-title">量化子消去</span></li><li><span class="mn-dirtoc-kind">補題 3.2</span> <span class="mn-dirtoc-title">量化子のない論理式の選言標準形</span></li><li><span class="mn-dirtoc-kind">補題 3.3</span> <span class="mn-dirtoc-title">一つの存在量化子への帰着</span></li><li><span class="mn-dirtoc-kind">定義 3.5</span> <span class="mn-dirtoc-title">端点のない稠密線形順序</span></li><li><span class="mn-dirtoc-kind">定理 3.6</span> <span class="mn-dirtoc-title">DLO の量化子消去</span></li><li><span class="mn-dirtoc-kind">系 3.7</span> <span class="mn-dirtoc-title">DLO の完全性</span></li><li><span class="mn-dirtoc-kind">定義 3.8</span> <span class="mn-dirtoc-title">モデル完全</span></li><li><span class="mn-dirtoc-kind">命題 3.9</span> <span class="mn-dirtoc-title">量化子消去ならモデル完全</span></li><li><span class="mn-dirtoc-kind">定理 3.10</span> <span class="mn-dirtoc-title">ロビンソンの判定法</span></li></ul></li>
+<li value="4"><a href="04-acf.html">§4 代数的閉体の量化子消去</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">補題 4.1</span> <span class="mn-dirtoc-title">生成された部分構造</span></li><li><span class="mn-dirtoc-kind">補題 4.2</span> <span class="mn-dirtoc-title">量化子のない性質が同じ組の生成する部分構造</span></li><li><span class="mn-dirtoc-kind">定理 4.3</span> <span class="mn-dirtoc-title">量化子消去の判定法</span></li><li><span class="mn-dirtoc-kind">定義 4.4</span> <span class="mn-dirtoc-title">代数的閉体の理論</span></li><li><span class="mn-dirtoc-kind">補題 4.5</span> <span class="mn-dirtoc-title">項は多項式である</span></li><li><span class="mn-dirtoc-kind">定理 4.6</span> <span class="mn-dirtoc-title">ACF の量化子消去</span></li><li><span class="mn-dirtoc-kind">系 4.7</span> <span class="mn-dirtoc-title">ACF の帰結</span></li><li><span class="mn-dirtoc-kind">系 4.8</span> <span class="mn-dirtoc-title">レフシェッツの原理</span></li><li><span class="mn-dirtoc-kind">系 4.9</span> <span class="mn-dirtoc-title">ヒルベルトの零点定理（弱形）</span></li></ul></li>
+</ol>
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

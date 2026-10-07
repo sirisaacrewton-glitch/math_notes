@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>集合論における様相論理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/04-provability-logic-extensions/02-set-theory.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 集合論における様相論理 {#pt:page-modal-set-theory keywords="modal logic within set theory, truth in all transitive models, truth in all universes, Solovay, finite prewellordering, GL.3, Jensen-Karp theorem"}
+
+$\Box$ を「$\ZF$ で証明可能」と読むと、その様相論理は $\PA$ の場合と同じく $\mathsf{GL}$ になる、と一般に言われている。本ページでは、証明可能性を弱めた二つの概念——「**$\ZF$ のすべての推移的モデルで成り立つ**」と「**すべての宇宙 $R(\kappa)$（$\kappa$ は到達不能）で成り立つ**」——を $\Box$ と読んだときの様相論理を決定する。前者は $\mathsf{GL}$ に「有限前整列」を特徴づける公理を加えた体系 $\mathsf{I}$、後者は「有限狭義全順序」を特徴づける公理を加えた体系 $\mathsf{J}$ であり、どちらも Solovay（1975 年秋）による（\ref{pt:transitive-models-theorem}, \ref{pt:universes-theorem}）。証明には集合論の比較的高度な事実（構成可能集合、強制法、Jensen–Karp の定理）を使う。（Boolos, *The Logic of Provability* 第 13 章に対応する。）
+
+## 記法と定義の確認 {#pt:sec-mst-notation}
+
+::: notation
+- 様相論理の記法、$\mathsf{GL}$、$\mathsf{GL}$ が $\mathsf{K4}$ を含むこと（\ref{logic:gl-four}）、レーブ規則、クリプキ意味論、有限な推移的フレームでは非反射的と逆整礎が同値であること（\ref{logic:finite-transitive-cwf}）、有限の極大無矛盾集合（\ref{logic:modal-mcs}, \ref{logic:modal-mcs-properties}）、カノニカルモデル（\ref{logic:canonical-model}, \ref{logic:canonical-r-dual}, \ref{logic:canonical-truth-lemma}）は \ref{logic:page-normal-modal-logics} から \ref{logic:page-canonical-models} までのとおり。$\mathrm{Sub}(A)$ は $A$ の部分論理式の集合。
+- ソロヴェイの算術的完全性定理とその証明の型（ソロヴェイ文とその基本性質、埋め込み補題：\ref{pt:solovay}, \ref{pt:solovay-properties}, \ref{pt:solovay-embedding}）は \ref{pt:page-solovay} のとおり。$\mathsf{GLS}$ と $A^{\mathrm{S}}$ は \ref{pt:page-gls-uniform-completeness} のとおり。
+- 集合論側：累積階層 $R(\alpha)$、推移的モデル、絶対性、モストフスキの崩壊定理（\ref{set:mostowski}）、形式化された充足関係 $\models$ と相対化の一致（\ref{set:relativization-vs-satisfaction}）、$L_{\alpha}$ の絶対性（\ref{set:l-absolute}）、$\ZF+\mathbf{V}=\mathbf{L}$ の推移的モデルは $L_{o(M)}$ の形であること（\ref{set:v-eq-l-models-unique}）、到達不能基数 $\kappa$ について $R(\kappa)$ が $\ZFC$ のモデルであること（\ref{set:inaccessible-model}）と到達不能性の絶対性（\ref{set:inaccessible-absolute}）、強制法による連続体の値の調整（\ref{set:continuum-kappa}）は第 I〜VII 章のとおり。$o(M)\defeq M\cap\mathbf{ON}$ は推移的集合 $M$ の高さ。
+- 本ページで「**推移的モデル**」とは $\ZF$ の推移的な集合モデル（$M$ は推移的集合で、$\ZF$ のすべての公理 $\varphi$ について $\langle M,\in\rangle\models\ulcorner\varphi\urcorner$）を指す。これは集合論の一つの論理式で表される。
+- 本ページの議論は Boolos に従い非形式的な集合論の中で行う。「真である」は $\mathbf{V}$ で真であることを指し、$\ZF$ の定理は真であると仮定する。強制法や構成可能集合についての議論が、集合モデルの充足関係 $\models$ を使って $\ZF$ の中で形式化できることを断りなく使う（これは一般に知られているが、本サイトの第 VI・VII 章は主にメタ理論の中の議論として書いている）。
+:::
+
+## 二つの弱い証明可能性 {#pt:sec-mst-interpretations}
+
+まず背景を述べる。$\mathsf{GL}$ の定理でない $A$ に対しては、ソロヴェイの証明（\ref{pt:page-solovay}）により、文 $S_{0},\dots,S_{n}$ と算術的解釈 $\ast$ で、$\PA$ の中で「$A^{\ast}$ は証明できない」が反映原理 $\mathrm{Bew}(\ulcorner\neg S_{i}\urcorner)\to\neg S_{i}$ の連言から導かれるものがある。反映原理は $\ZF$ で証明できるので、$\ZF$ は「$A^{\ast}$ は $\PA$ で証明できない」を証明する。同じ議論を $\ZF$ 自身に適用すると、$\Box$ を「$\ZF$ で証明可能」と読んだ様相論理も $\mathsf{GL}$ になる、と Boolos は述べている（本サイトでは細部を確かめていない）。
+
+以下では $\Box$ のより弱い二つの読みを考える。
+
+::: definition 集合論的解釈 {#pt:set-interpretations keywords="interpretation of modal sentences in set theory, truth in all transitive models, truth in all universes" index="集合論的解釈（様相論理式の）|しゅうごうろんてきかいしゃく"}
+各命題変数に集合論の言語の文を割り当てる写像 $\ast$ を固定する。
+1. 集合論の文 $\sigma$ について、$\mathrm{Tr}(\sigma)$ を「$\sigma$ はすべての推移的モデルで成り立つ」、すなわち $\forall M\,(M\text{ は推移的モデル}\to M\models\ulcorner\sigma\urcorner)$ を表す文とする。
+2. **宇宙**とは、強到達不能基数 $\kappa$ についての $R(\kappa)$ のことをいう。$\mathrm{U}(\sigma)$ を「$\sigma$ はすべての宇宙で成り立つ」を表す文とする。
+3. 様相論理式 $A$ の**推移的モデル解釈** $A^{\ast}$ を、$p^{\ast}\defeq\ast(p)$、$\bot^{\ast}\defeq\bot$、$(B\to C)^{\ast}\defeq(B^{\ast}\to C^{\ast})$、$(\Box B)^{\ast}\defeq\mathrm{Tr}(B^{\ast})$ で定める。**宇宙解釈**は最後を $(\Box B)^{\ast}\defeq\mathrm{U}(B^{\ast})$ に替えたものである。
+:::
+
+宇宙を扱うときは Boolos に従い $\ZF$ に選択公理を含める（以下その場合も単に $\ZF$ と書く）。推移的モデルを扱うときは選択公理を仮定しない。
+
+次の二つの事実を繰り返し使う。
+- **（形式化された健全性）** $\ZF\vdash\varphi\to\psi$ なら $\ZF\vdash\mathrm{Tr}(\varphi)\to\mathrm{Tr}(\psi)$。実際、$\varphi\to\psi$ の証明は有限個の $\ZF$ の公理しか使わず、$\ZF$ は「$\ZF$ のすべての公理を満たす集合モデルは、$\ZF$ の公理から一階論理で導かれる文を満たす」（集合モデルについての健全性定理）を証明する。とくに $\ZF\vdash\varphi$ なら $\ZF\vdash\mathrm{Tr}(\varphi)$。宇宙は $\ZF$ のモデル（\ref{set:inaccessible-model}）なので、$\mathrm{U}$ についても同様である。
+- **（絶対性）** $M$ が推移的モデルで $N\in M$ なら、「$N$ は推移的モデル」と「$N\models\ulcorner\sigma\urcorner$」は $M$ と $\mathbf{V}$ の間で絶対的である（推移性は $\Delta_{0}$、集合構造の充足関係は $\omega$ 上の再帰で定義され、$\ZF$ の推移的モデルについて絶対的）。また $N\in M$ なら $o(N)<o(M)$（$o(N)=N\cap\mathbf{ON}\in M$ は $M$ の順序数）。
+
+## 推移的モデルにおける真理 {#pt:sec-mst-transitive}
+
+::: definition 有限前整列 {#pt:finite-prewellordering keywords="finite prewellordering" index="有限前整列|ゆうげんぜんせいれつ"}
+フレーム $\langle W,R\rangle$ が**有限前整列**であるとは、$W$ が有限、$R$ が推移的かつ非反射的で、すべての $w,x,y\in W$ について
+$$
+wRx\to(wRy\lor yRx)
+$$
+が成り立つことをいう。
+:::
+
+::: lemma 前整列の特徴づけ {#pt:prewellordering-rank}
+$\langle W,R\rangle$ を有限な推移的・非反射的フレームとする。$\langle W,R\rangle$ が有限前整列であることと、ある $f\colon W\to\mathbb{N}$ ですべての $w,x\in W$ について
+$$
+f(w)>f(x)\iff wRx
+$$
+となるものがあることは同値である。さらにこのとき $f$ として $\rho(w)\defeq\max(\{0\}\cup\{\rho(x)+1:wRx\})$（ランク）がとれ、$\rho$ の値域は $\{0,1,\dots,\max\rho\}$ 全体である。
+:::
+
+::: proof
+$\rho$ は有限な推移的・非反射的（したがって逆整礎、\ref{logic:finite-transitive-cwf}）フレームの上で逆向きの再帰により定義される。
+
+（⇒）有限前整列とする。$wRx$ なら $\rho(w)\ge\rho(x)+1>\rho(x)$。逆に $\rho(w)=i>j=\rho(x)$ とする。ランクの定義より $w=w_{i}Rw_{i-1}R\cdots Rw_{0}$ となる $w_{k}$（$\rho(w_{k})=k$）がとれ、$x$ についても $x=x_{j}R\cdots Rx_{0}$ がとれる。推移性より $wRw_{j}$（$j<i$）。前整列の条件を $wRw_{j}$ と $y=x$ に適用すると $wRx$ または $xRw_{j}$。$xRw_{j}$ なら $xRw_{j}Rw_{j-1}R\cdots Rw_{0}$ より $\rho(x)\ge j+1$ となり矛盾する。よって $wRx$。値域：$\rho(w)=i>0$ なら $\rho(x)=i-1$ となる $x$ があるので、値域は下に閉じている。
+
+（⇐）$f$ があるとし、$wRx$、$y\in W$ とする。$f(w)>f(x)$ なので、$f(w)>f(y)$（このとき $wRy$）または $f(y)\ge f(w)>f(x)$（このとき $yRx$）である。
+:::
+
+::: definition 体系 I {#pt:system-i keywords="system I, modal logic of truth in all transitive models" index="体系 I|たいけいあい"}
+$\mathsf{GL}$ に、すべての様相論理式 $A,B$ についての
+$$
+\Box(\Box A\to\Box B)\lor\Box(\Box B\to A)
+$$
+を公理として加えた正規様相論理を $\mathsf{I}$ とする。
+:::
+
+（Boolos のこの公理の式は OCR で一部欠落しているため、証明の中での使われ方から上の形に復元した。この形の公理が、根をもつ有限な推移的・非反射的フレームのうちちょうど有限前整列で妥当であることは、5 点以下のフレームすべてについて計算機で確かめた。）
+
+::: lemma I の派生定理 {#pt:system-i-derived}
+次が成り立つ。
+1. $\mathsf{I}\vdash\Box(\Box C\to\Box D)\lor\Box(\Box D\to\Box C)$。
+2. $\mathsf{I}\vdash\Box(\Box C\to\Box D)\lor\Box(\Box D\to C)$。
+:::
+
+::: proof
+2 は公理そのもの（$A=C$, $B=D$）。1：公理に $A\defeq C\land\Box C$, $B\defeq D$ を代入すると
+$$
+\Box(\Box(C\land\Box C)\to\Box D)\lor\Box(\Box D\to C\land\Box C).
+$$
+$\mathsf{K4}\vdash\Box(C\land\Box C)\leftrightarrow\Box C$（$\Box$ は連言と可換で、$\Box C\to\Box\Box C$）であり、$\mathsf{GL}\supseteq\mathsf{K4}$（\ref{logic:gl-four}）なので、第一の選言肢は $\Box(\Box C\to\Box D)$ と同値。第二は $\Box(\Box D\to C)\land\Box(\Box D\to\Box C)$ と同値なので、$\Box(\Box D\to\Box C)$ を導く。
+:::
+
+::: theorem 推移的モデルの様相論理（Solovay） {#pt:transitive-models-theorem keywords="Solovay's theorem on truth in all transitive models" index="推移的モデルの様相論理|すいいてきもでるのようそうろんり"}
+$\alpha$ で $L_{\alpha}$ が $\ZF$ のモデルとなるものが無限個あると仮定する。様相論理式 $A$ について次の三条件は同値である（$\ast$ は推移的モデル解釈）。
+- (A) すべての $\ast$ について $\ZF\vdash A^{\ast}$。
+- (B) $A$ はすべての有限前整列で妥当。
+- (C) $\mathsf{I}\vdash A$。
+:::
+
+(A) ⇒ (B) と (C) ⇒ (A) は Boolos の議論に従い、(B) ⇒ (C) は Boolos の証明が OCR で読み取れない部分を含むので、本サイトで組み立て直した証明を与える。
+
+### (A) ⇒ (B)
+
+::: proof
+対偶を示す。有限前整列 $\langle W,R\rangle$ と付値 $V$ と $w^{\ast}\in W$ で $w^{\ast}\not\models A$ となるものがあるとする。\ref{pt:prewellordering-rank} より、ランク $\rho$ の値を $0,\dots,n-1$ とし、ランク $i$ の点を $(i,0),\dots,(i,r_{i}-1)$（$r_{i}\ge1$）と名付け直すと
+$$
+W=\{(i,j):i<n,\ j<r_{i}\},\qquad (i,j)R(k,m)\iff i>k
+$$
+としてよい。$W'\defeq W\cup\{0\}$、$R'\defeq R\cup\{\langle0,z\rangle:z\in W\}$ とする。
+
+**段階 1：文の定義.** 「$\ZF+\mathbf{V}=\mathbf{L}$ の推移的モデル」は集合論の論理式で表せるので、「それがちょうど $i$ 個ある」「少なくとも $n$ 個ある」も文で表せる。
+- $S_{0}\defeq$「$\ZF+\mathbf{V}=\mathbf{L}$ の推移的モデルが少なくとも $n$ 個ある」。
+- $i<n$, $j<r_{i}-1$ について $S_{(i,j)}\defeq$「それがちょうど $i$ 個あり、かつ $2^{\aleph_{0}}=\aleph_{j+1}$」。
+- $S_{(i,r_{i}-1)}\defeq$「それがちょうど $i$ 個あり、かつ $2^{\aleph_{0}}$ は $\aleph_{1},\dots,\aleph_{r_{i}-1}$ のどれとも等しくない」。
+
+（Boolos の $S_{(i,j)}$ の定義は添字の範囲が OCR で読み取れないため、選択公理なしでも場合分けが尽くされるよう、この形に整えた。）
+
+次の (a)〜(e) を示す。
+- (a) $x\neq y$ なら $\ZF\vdash\neg(S_{x}\land S_{y})$。
+- (b) $\ZF\vdash\bigvee\{S_{x}:x\in W'\}$。
+- (c) $xR'y$ なら $\ZF\vdash S_{x}\to\neg\mathrm{Tr}(\neg S_{y})$（「$S_{y}$ はある推移的モデルで成り立つ」）。
+- (d) $x\in W$ なら $\ZF\vdash S_{x}\to\mathrm{Tr}\bigl(\bigvee\{S_{y}:xRy\}\bigr)$。
+- (e) $S_{0}$ は真。
+
+(a), (b) は定義から明らか（個数と連続体についての場合分けが互いに排反で尽くされている）。(e) は仮定から従う。
+
+**準備（$\ZF$ の中で）.** $L_{\alpha}$ が $\ZF$ のモデルなら $L_{\alpha}$ は $\mathbf{V}=\mathbf{L}$ を満たし（$\alpha$ は極限で、\ref{set:l-absolute} より $\mathbf{L}^{L_{\alpha}}=\bigcup_{\beta<\alpha}L_{\beta}=L_{\alpha}$）、逆に $\ZF+\mathbf{V}=\mathbf{L}$ の推移的モデル $N$ は $N=L_{o(N)}$ である（\ref{set:v-eq-l-models-unique}）。したがって $\ZF+\mathbf{V}=\mathbf{L}$ の推移的モデルは、$L_{\alpha}\models\ZF$ となる $\alpha$ の小さい順 $\alpha_{0}<\alpha_{1}<\cdots$ に並べた $L_{\alpha_{0}},L_{\alpha_{1}},\dots$ である。$L_{\beta}\in L_{\alpha}\iff\beta<\alpha$ と絶対性より、$L_{\alpha_{k}}$ の中の $\ZF+\mathbf{V}=\mathbf{L}$ の推移的モデルはちょうど $L_{\alpha_{0}},\dots,L_{\alpha_{k-1}}$ の $k$ 個である。
+
+**段階 2：(c).** $xR'y$、$y=(k,m)$ とし、$\ZF$ の中で $S_{x}$ を仮定する。$x=0$ なら $n\ge k+1$ 個、$x=(i,j)$（$i>k$）ならちょうど $i\ge k+1$ 個のモデルがあるので、$L_{\alpha_{k}}$ が存在する。
+- $L_{\alpha_{k}}$ は整列可能なので、選択公理なしで下降レーヴェンハイム–スコーレムの議論が使え、可算な初等部分構造をとってモストフスキ崩壊（\ref{set:mostowski}）すると、可算推移的モデル $M_{0}$ で、$M_{0}$ と $L_{\alpha_{k}}$ が同じ文を満たすものが得られる。とくに $M_{0}\models\ZF+\mathbf{V}=\mathbf{L}$ で、$M_{0}$ は「$\ZF+\mathbf{V}=\mathbf{L}$ の推移的モデルがちょうど $k$ 個ある」を満たす。$M_{0}\models\mathbf{V}=\mathbf{L}$ なので $M_{0}\models\mathrm{AC}+\mathrm{GCH}$。
+- 目標の連続体の値を $\aleph_{m+1}$（$m<r_{k}-1$ のとき）または $\aleph_{r_{k}}$（$m=r_{k}-1$ のとき）とし、$\theta\defeq\omega_{m+1}^{M_{0}}$（または $\omega_{r_{k}}^{M_{0}}$）とする。$M_{0}$ で $\theta^{\omega}=\theta$（GCH）なので、$M_{0}$ 上 $\mathrm{Fn}(\theta\times\omega,2)$-ジェネリックな $G$（$M_{0}$ は可算なので存在する）をとると、$M_{0}[G]\models\ZFC+2^{\aleph_{0}}=\theta$ で基数は保たれる（\ref{set:continuum-kappa}）。
+- $o(M_{0}[G])=o(M_{0})$ である。$M_{0}[G]$ の元 $N$ で $\ZF+\mathbf{V}=\mathbf{L}$ の推移的モデルであるものは $N=L_{\beta}$、$\beta=o(N)<o(M_{0})$ の形で、$L_{\beta}=L_{\beta}^{M_{0}}\in M_{0}$。よって $M_{0}[G]$ の中のそのようなモデルは $M_{0}$ の中のものと同じく $k$ 個である。
+
+以上より $M_{0}[G]$ は $S_{y}$ を満たす推移的モデルである。
+
+**段階 3：(d).** $x=(i,j)$ とすると、$\bigvee\{S_{y}:xRy\}=\bigvee\{S_{(k,m)}:k<i,\ m<r_{k}\}$ は $\ZF$ で「$\ZF+\mathbf{V}=\mathbf{L}$ の推移的モデルは $i$ 個未満」と同値である（$k$ ごとに $S_{(k,m)}$ が場合分けを尽くす。$i=0$ のときは空の選言 $\bot$）。$\ZF$ の中で $S_{x}$ を仮定し、$M$ を推移的モデルとする。$\mathbf{L}^{M}=L_{o(M)}$ は $\ZF$ の推移的モデルで（$M\models$「$\mathbf{L}$ は $\ZF$ のモデル」、\ref{set:l-model-zf}）、$\mathbf{V}=\mathbf{L}$ を満たす。$M$ の中の $\ZF+\mathbf{V}=\mathbf{L}$ の推移的モデルは $L_{\beta}$（$\beta<o(M)$）の形で、$\mathbf{V}$ の中の $i$ 個のうち $L_{o(M)}$ 以外のものである。よって $M$ の中では $i$ 個未満であり、絶対性より $M$ は「$i$ 個未満」を満たす。（$i=0$ なら、推移的モデル $M$ が存在すると $L_{o(M)}$ が 1 個目になって矛盾するので、推移的モデルは存在せず、$\mathrm{Tr}(\bot)$ が成り立つ。）
+
+**段階 4：埋め込み.** $p^{\ast}\defeq\bigvee\{S_{x}:x\in W,\ x\models p\}$ とおく。$x\in W$ と $B\in\mathrm{Sub}(A)$ について、$x\models B$ なら $\ZF\vdash S_{x}\to B^{\ast}$、$x\not\models B$ なら $\ZF\vdash S_{x}\to\neg B^{\ast}$ を $B$ に関する帰納法で示す（\ref{pt:solovay-embedding} と同じ型）。命題変数は $p^{\ast}$ の定義と (a) により、$\bot$ と $\to$ は帰納法の仮定から従う。$B=\Box C$ とする。
+- $x\models\Box C$ なら、$xRy$ となるすべての $y$ で $y\models C$ なので $\ZF\vdash\bigvee_{xRy}S_{y}\to C^{\ast}$。形式化された健全性より $\ZF\vdash\mathrm{Tr}(\bigvee_{xRy}S_{y})\to\mathrm{Tr}(C^{\ast})$ で、(d) と合わせて $\ZF\vdash S_{x}\to(\Box C)^{\ast}$。
+- $x\not\models\Box C$ なら、$xRy$, $y\not\models C$ となる $y$ があり、$\ZF\vdash S_{y}\to\neg C^{\ast}$、すなわち $\ZF\vdash C^{\ast}\to\neg S_{y}$。形式化された健全性より $\ZF\vdash\mathrm{Tr}(C^{\ast})\to\mathrm{Tr}(\neg S_{y})$ で、(c) と合わせて $\ZF\vdash S_{x}\to\neg(\Box C)^{\ast}$。
+
+**段階 5：結論.** $w^{\ast}\not\models A$ なので $\ZF\vdash S_{w^{\ast}}\to\neg A^{\ast}$、段階 4 の第二の場合と同様にして $\ZF\vdash\neg\mathrm{Tr}(\neg S_{w^{\ast}})\to\neg\mathrm{Tr}(A^{\ast})$。(c)（$0R'w^{\ast}$）と合わせて $\ZF\vdash S_{0}\to\neg\mathrm{Tr}(A^{\ast})$。$S_{0}$ は真で $\ZF$ の定理は真なので、「$A^{\ast}$ を満たさない推移的モデルがある」は真である。もし $\ZF\vdash A^{\ast}$ なら、すべての推移的モデルは $A^{\ast}$ を満たす（集合モデルについての健全性）ので矛盾する。よって $\ZF\nvdash A^{\ast}$。
+:::
+
+### (B) ⇒ (C)
+
+::: proof
+対偶を示す。$\mathsf{I}\nvdash A$ とする。$\mathcal{S}\defeq\mathrm{Sub}(A)\cup\{\neg B:B\in\mathrm{Sub}(A)\}$ とし、$\mathcal{S}$ の**極大部分集合**とは、各 $B\in\mathrm{Sub}(A)$ について $B$ と $\neg B$ のちょうど一方を含む部分集合のこととする。$\mathrm{Sub}(A)$ に属する $\Box$ で始まる論理式を**箱論理式**と呼び、$\mathcal{S}$ の部分集合 $w$ について $\mathrm{B}(w)\defeq\{\Box C\in w\}$ とする。
+
+**段階 1：箱の比較の固定.** 箱論理式 $\Box C,\Box D$ についての
+$$
+\Box(\Box C\to\Box D),\qquad\Box(\Box D\to C)
+$$
+の形の論理式全体を $\mathcal{Q}$ とし（有限集合）、$B_{1},\dots,B_{r}$ と枚挙する。$\mathcal{W}_{0}\defeq\varnothing$ とし、$\{\neg A\}\cup\mathcal{W}_{i}\cup\{B_{i+1}\}$ が $\mathsf{I}$-無矛盾なら $\mathcal{W}_{i+1}\defeq\mathcal{W}_{i}\cup\{B_{i+1}\}$、そうでなければ $\mathcal{W}_{i+1}\defeq\mathcal{W}_{i}\cup\{\neg B_{i+1}\}$ とする。$\{\neg A\}\cup\mathcal{W}_{i}$ は各 $i$ で無矛盾である（両方の拡大が矛盾するなら $\{\neg A\}\cup\mathcal{W}_{i}$ から $B_{i+1}$ と $\neg B_{i+1}$ が導かれる）。
+- $\Delta\defeq\bigwedge(\mathcal{W}_{r}\cap\mathcal{Q})$（選ばれた肯定形の連言）とし、$\Delta^{-}$ を、$\Delta$ の各連言肢 $\Box X$ から $\Box$ を外した $X$ の連言とする。
+- $\mathsf{I}\vdash\Delta\to\Box\Delta$（各連言肢 $\Box X$ について $\Box X\to\Box\Box X$、\ref{logic:gl-four}）、$\mathsf{I}\vdash\Delta\to\Box\Delta^{-}$。
+- $\mathsf{I}$ が $B\lor B'$（$B,B'\in\mathcal{Q}$）を証明するなら、$B,B'$ の少なくとも一方は $\Delta$ の連言肢である（両方が否定形で選ばれると $\{\neg A\}\cup\mathcal{W}_{r}$ が矛盾する）。\ref{pt:system-i-derived} より、各箱論理式 $\Box C,\Box D$ について、$\Box(\Box C\to\Box D)$ または $\Box(\Box D\to\Box C)$ が $\Delta$ の連言肢であり、また $\Box(\Box C\to\Box D)$ または $\Box(\Box D\to C)$ が $\Delta$ の連言肢である。
+- $\neg A\land\Delta$ は無矛盾である（$\{\neg A\}\cup\mathcal{W}_{r}$ の部分）。
+
+**段階 2：モデル.** $W_{1}$ を、$\Delta\land\Delta^{-}\land\bigwedge x$ が $\mathsf{I}$-無矛盾な $\mathcal{S}$ の極大部分集合 $x$ 全体とする。また $w_{0}$ を、$\neg A\in w_{0}$ かつ $\Delta\land\bigwedge w_{0}$ が無矛盾な $\mathcal{S}$ の極大部分集合とする（$\neg A\land\Delta$ の無矛盾性から、$\mathrm{Sub}(A)$ の元を一つずつ肯定か否定で加えて作れる）。$\mathcal{S}$ の極大部分集合 $w,x$ について
+$$
+wRx\defeq\bigl(\forall\Box C\in w\ (C\in x\land\Box C\in x)\bigr)\land\exists\Box D\in x\ (\Box D\notin w)
+$$
+と定め、$W^{\ast}\defeq\{w_{0}\}\cup\{x\in W_{1}:w_{0}Rx\}$、$R^{\ast}\defeq R\restr{W^{\ast}}$（$W^{\ast}\times W^{\ast}$ への制限）、$V(p)\defeq\{w\in W^{\ast}:p\in w\}$ とする。$R$ は推移的（$\Box C\in w\Rightarrow\Box C\in x\Rightarrow C,\Box C\in y$、また $\Box D\in y\setminus x$ なら $\Box D\notin w$）かつ非反射的である。
+
+**段階 3：真理補題.** $w\in W^{\ast}$, $B\in\mathrm{Sub}(A)$ について $B\in w\iff w\models B$ を示す。命題変数・$\bot$・$\to$ は極大性と無矛盾性から従う。$B=\Box C$ とする。$\Box C\in w$ で $wR^{\ast}x$ なら $C\in x$ なので帰納法の仮定より $x\models C$。$\Box C\notin w$ とし、
+$$
+X\defeq\{\neg C,\Box C\}\cup\{D,\Box D:\Box D\in w\}
+$$
+とおく。$\Delta\land\Delta^{-}\land\bigwedge X$ が矛盾すると仮定すると、$P\defeq\bigwedge_{\Box D\in w}(D\land\Box D)$ として $\mathsf{I}\vdash\Delta\land\Delta^{-}\land P\to(\Box C\to C)$。必然化と分配で $\mathsf{I}\vdash\Box\Delta\land\Box\Delta^{-}\land\Box P\to\Box(\Box C\to C)$、レーブの公理で右辺から $\Box C$。$\Box D\to\Box(D\land\Box D)$（4 を使う）と段階 1 より $\mathsf{I}\vdash\Delta\land\bigwedge_{\Box D\in w}\Box D\to\Box C$ となり、$\neg\Box C\in w$ かつ $\Delta\land\bigwedge w$ が無矛盾であることに反する。よって $X$ を $W_{1}$ の元 $x$ に拡大でき、$wRx$、$\neg C\in x$。$w=w_{0}$ なら $x\in W^{\ast}$、$w\in W_{1}$ で $w_{0}Rw$ なら推移性より $w_{0}Rx$ で $x\in W^{\ast}$。帰納法の仮定より $x\not\models C$、よって $w\not\models\Box C$。
+
+とくに $\neg A\in w_{0}$ より $w_{0}\not\models A$。
+
+**段階 4：$W^{\ast}$ は有限前整列.** $f(w)\defeq\lvert\mathrm{Sub}(A)$ の箱論理式で $w$ に属さないもの$\rvert$ とし、\ref{pt:prewellordering-rank} の条件 $f(w)>f(x)\iff wR^{\ast}x$ を示す。$wRx$ なら $\mathrm{B}(w)\subsetneq\mathrm{B}(x)$ なので $f(w)>f(x)$。逆を示す。
+- **$W_{1}$ の中で箱の集合は比較可能.** $x,y\in W_{1}$ で $\Box E\in x\setminus y$, $\Box F\in y\setminus x$ とすると、段階 1 より $\Box(\Box E\to\Box F)$ か $\Box(\Box F\to\Box E)$ が $\Delta$ の連言肢で、$\Delta^{-}$ は $\Box E\to\Box F$ か $\Box F\to\Box E$ を含む。前者なら $x$ が、後者なら $y$ が $\Delta^{-}$ と矛盾する。
+- $w=w_{0}$ なら、$x\neq w_{0}$ は $W_{1}$ の元で $w_{0}Rx$（$W^{\ast}$ の定義）。$x=w_{0}$ となることはない（$w\in W_{1}$ なら $w_{0}Rw$ より $f(w_{0})>f(w)$）。
+- $w,x\in W_{1}$ で $f(w)>f(x)$ とする。比較可能性より $\mathrm{B}(w)\subsetneq\mathrm{B}(x)$ で、$\Box D\in x\setminus w$ がとれる。$\Box C\in w$ とすると $\Box C\in x$。さらに $C\in x$ を示す。段階 1 より $\Box(\Box C\to\Box D)$ か $\Box(\Box D\to C)$ が $\Delta$ の連言肢である。前者なら $\Delta^{-}\ni\Box C\to\Box D$ で、$\Box C\in w$, $\neg\Box D\in w$ が $\Delta^{-}$ と矛盾する。よって後者で、$\Delta^{-}\ni\Box D\to C$、$\Box D\in x$ より $C\in x$（$\neg C\in x$ なら矛盾）。したがって $wRx$。
+
+以上より $\langle W^{\ast},R^{\ast}\rangle$ は有限前整列で、$A$ はそこで妥当でない。
+:::
+
+::: hypcheck
+- $\Delta^{-}$（外した形）を $W_{1}$ の世界に課すのは、箱の比較を世界ごとに効かせるためである。根 $w_{0}$ には $\Delta^{-}$ を課さない（$\neg A$ と両立するとは限らない）。そのため $W^{\ast}$ を $w_{0}$ から生成される部分に制限した。
+- 公理 $\Box(\Box A\to\Box B)\lor\Box(\Box B\to A)$ は、段階 4 の二箇所（箱の比較可能性と $C\in x$）でだけ使った。$\mathsf{GL}$ の公理（レーブ）は段階 3 の真理補題で使った。
+:::
+
+### (C) ⇒ (A)
+
+(C) ⇒ (A) には次の定理を使う。
+
+::: fact Jensen–Karp の定理 {#pt:jensen-karp keywords="Jensen-Karp theorem, transitive models, ill-founded trees" index="ジェンセン–カープの定理|じぇんせんかーぷのていり"}
+$\chi$ を集合論の文とする。$M,N$ が推移的モデルで $o(M)<o(N)$、$M\models\chi$ なら、$N\models$「$\chi$ はある推移的モデルで成り立つ」。この主張は各 $\chi$ について $\ZF$ で証明できる。
+:::
+
+$M\in N$ とは限らないので自明ではない。Boolos の証明の要点は次のとおりである（本サイトでは細部を確かめていない）。
+- $\ZF$ の公理と $\chi$ を、新しい述語記号を使ったスコーレムの $\forall\exists$ 標準形の文 $\theta_{1},\theta_{2},\dots$ に書き換える（$\theta_{i}$ のモデルの $\in$ への縮約は元の公理のモデルになり、元の公理のモデルは $\theta_{i}$ のモデルに拡張できる）。
+- 「$\omega$ の有限部分集合上の構造で、最初の $j$ 個の $\theta_{i}$ を部分的に満たし、各点に $o(M)$ 未満の順序数のラベル $f$ を $\in$ に沿って単調に付けたもの」全体に、延長の順序 $\prec$ を入れた木 $\langle X,\prec\rangle$ を考える。$o(M)\in N$ なので $X\in N$。
+- $M$ 自身（のスコーレム拡張）の有限部分構造を順に延ばすと、$X$ の無限下降列が $\mathbf{V}$ にある。整礎性は推移的モデルについて絶対的なので、$X$ は $N$ の中でも整礎でない。$N$ を $\mathbf{L}^{N}$ に取り替えて選択公理を使うと、$N$ の中に無限下降列がとれる。
+- その列の和は $\ZF+\chi$ のモデルで、ラベル $f$ により整礎、外延性も満たすので、$N$ の中でモストフスキ崩壊すると、$\chi$ を満たす推移的モデルが $N$ の中に得られる。
+
+::: proof
+$\mathsf{I}$ の証明に関する帰納法で、$\mathsf{I}\vdash A$ ならすべての $\ast$ について $\ZF\vdash A^{\ast}$ を示す。恒真式とモーダスポネンスは明らか。分配公理 $\mathrm{Tr}(\sigma\to\tau)\land\mathrm{Tr}(\sigma)\to\mathrm{Tr}(\tau)$ はモデルごとの充足の性質から、必然化則は形式化された健全性から従う。
+
+**レーブの公理.** 文 $\sigma$ について、$\ZF$ の中で $\neg\mathrm{Tr}(\sigma)$ を仮定する。$\neg\sigma$ を満たす推移的モデルのうち $o(M)$ が最小のもの $M$ をとる。$N\in M$ で $M$ が「$N$ は推移的モデル」と思うなら、絶対性より $N$ は本当に推移的モデルで $o(N)<o(M)$、最小性より $N\models\sigma$、絶対性より $M\models$「$N\models\sigma$」。よって $M\models\mathrm{Tr}(\sigma)\land\neg\sigma$、すなわち $M\models\neg(\mathrm{Tr}(\sigma)\to\sigma)$ で、$\neg\mathrm{Tr}(\mathrm{Tr}(\sigma)\to\sigma)$。対偶をとると $\mathrm{Tr}(\mathrm{Tr}(\sigma)\to\sigma)\to\mathrm{Tr}(\sigma)$。
+
+**公理 $\Box(\Box A\to\Box B)\lor\Box(\Box B\to A)$.** 文 $\sigma,\tau$ について、$\ZF$ の中で両方の選言肢の否定を仮定すると、推移的モデル $M,N$ で
+$$
+M\models\mathrm{Tr}(\sigma)\land\neg\mathrm{Tr}(\tau),\qquad N\models\mathrm{Tr}(\tau)\land\neg\sigma
+$$
+となるものがある。$M\models\neg\mathrm{Tr}(\tau)$ より、$K\in M$ で $K$ は推移的モデル、$K\models\neg\tau$ となるものがあり（絶対性）、$o(K)<o(M)$。
+- $o(K)<o(N)$ なら、Jensen–Karp の定理より $N\models$「$\neg\tau$ はある推移的モデルで成り立つ」となり、$N\models\mathrm{Tr}(\tau)$ に反する。よって $o(N)\le o(K)<o(M)$。
+- すると Jensen–Karp の定理（$N\models\neg\sigma$）より $M\models$「$\neg\sigma$ はある推移的モデルで成り立つ」となり、$M\models\mathrm{Tr}(\sigma)$ に反する。
+:::
+
+::: hypcheck
+- 「$L_{\alpha}$ が $\ZF$ のモデルとなる $\alpha$ が無限個ある」は (A) ⇒ (B) の (e) だけで使った（実際に要るのは $n$ 個）。この仮定は $\ZF$ では証明できない（\ref{set:page-zf-in-l} の議論から、$\ZF$ が無矛盾ならそのような $\alpha$ が存在しないモデルもあると一般に言われている）。
+- Jensen–Karp の定理は (C) ⇒ (A) の新しい公理の健全性だけに使った。
+:::
+
+## 宇宙における真理 {#pt:sec-mst-universes}
+
+::: definition 有限狭義全順序と体系 J {#pt:system-j keywords="finite strict linear ordering, GL.3, system J" index="体系 J|たいけいじぇい, 有限狭義全順序|ゆうげんきょうぎぜんじゅんじょ"}
+1. フレーム $\langle W,R\rangle$ が**有限狭義全順序**であるとは、$W$ が有限、$R$ が推移的かつ非反射的で、すべての $w,x\in W$ について $wRx$、$w=x$、$xRw$ のいずれかが成り立つことをいう。
+2. $\mathsf{GL}$ に、すべての $A,B$ についての
+$$
+\Box(\Box A\land A\to B)\lor\Box(\Box B\land B\to A)
+$$
+を公理として加えた正規様相論理を $\mathsf{J}$ とする。
+:::
+
+（この公理の式も OCR で一部欠落しているため、証明の中での使われ方から復元した。一般には $\mathsf{GL.3}$ と呼ばれる体系の公理と同じ形である。根をもつ有限な推移的・非反射的フレームのうちちょうど有限狭義全順序で妥当であることを、5 点以下のフレームについて計算機で確かめた。）
+
+::: theorem 宇宙の様相論理（Solovay） {#pt:universes-theorem keywords="Solovay's theorem on truth in all universes" index="宇宙の様相論理|うちゅうのようそうろんり"}
+（選択公理を含む $\ZF$ で考える。）強到達不能基数が無限個あると仮定する。様相論理式 $A$ について次の三条件は同値である（$\ast$ は宇宙解釈）。
+- (A) すべての $\ast$ について $\ZF\vdash A^{\ast}$。
+- (B) $A$ はすべての有限狭義全順序で妥当。
+- (C) $\mathsf{J}\vdash A$。
+:::
+
+**宇宙についての事実.** $\kappa$ が強到達不能なら $R(\kappa)\models\ZFC$（\ref{set:inaccessible-model}）。$\lambda<\kappa$ について「$\lambda$ は強到達不能」は $R(\kappa)$ と $\mathbf{V}$ で一致し（\ref{set:inaccessible-absolute}、$H(\kappa)=R(\kappa)$）、$R(\kappa)$ の中で計算した $R(\lambda)$ は $R(\lambda)$ である（$x\in R(\kappa)$ なら $\mathcal{P}(x)\subseteq R(\kappa)$ なので累積階層の再帰は $R(\kappa)$ で絶対的）。したがって $R(\kappa)$ の中の宇宙は、ちょうど $\lambda<\kappa$ が強到達不能な $R(\lambda)$ である。
+
+::: proof
+**(A) ⇒ (B).** 対偶を示す。有限狭義全順序は $W=\{1,\dots,n\}$, $R={<}$ としてよく、$1\not\models A$ とする（$A$ が偽になる点から先だけを考えればよい。生成部分モデル）。$W'\defeq\{0\}\cup W$, $R'\defeq{<}$ とし、
+- $S_{0}\defeq$「宇宙が少なくとも $n$ 個ある」、
+- $1\le i\le n$ について $S_{i}\defeq$「宇宙がちょうど $n-i$ 個ある」
+
+とおく。仮定より $S_{0}$ は真。$S_{i}$ は互いに排反で、$\bigvee_{i\le n}S_{i}$ は証明可能。$i<j$ で $S_{i}$ を仮定すると宇宙は少なくとも $n-j+1$ 個あり、下から $n-j+1$ 番目の到達不能基数 $\kappa$ について $R(\kappa)$ の中の宇宙はちょうど $n-j$ 個なので $R(\kappa)\models S_{j}$（(c) の類似）。$i\ge1$ で $S_{i}$ を仮定すると、任意の宇宙 $R(\kappa)$ の中の宇宙は $\kappa$ 自身を除いた $n-i-1$ 個以下なので、$R(\kappa)\models\bigvee_{j>i}S_{j}$（(d) の類似）。あとは \ref{pt:transitive-models-theorem} の (A) ⇒ (B) の段階 4, 5 と同じく、$p^{\ast}\defeq\bigvee\{S_{i}:1\le i\le n,\ i\models p\}$ とすれば $\ZF\nvdash A^{\ast}$。
+
+**(C) ⇒ (A).** $\mathsf{GL}$ の公理は \ref{pt:transitive-models-theorem} と同様に扱う（レーブの公理では、$\neg\sigma$ を満たす宇宙のうち $\kappa$ が最小のものをとる）。新しい公理について、$\ZF$ の中で両方の選言肢の否定を仮定すると、宇宙 $M=R(\kappa)$, $N=R(\lambda)$ で
+$$
+M\models\mathrm{U}(\sigma)\land\sigma\land\neg\tau,\qquad N\models\mathrm{U}(\tau)\land\tau\land\neg\sigma
+$$
+となるものがある。$M\models\sigma$, $N\models\neg\sigma$ より $\kappa\neq\lambda$。$\kappa<\lambda$ なら $M$ は $N$ の中の宇宙なので $N\models\mathrm{U}(\tau)$ から $M\models\tau$ となり矛盾。$\lambda<\kappa$ なら同様に $N\models\sigma$ となり矛盾する。
+
+**(B) ⇒ (C).** 対偶を示す。$\mathcal{M}_{\mathsf{J}}=\langle W_{\mathsf{J}},R_{\mathsf{J}},V_{\mathsf{J}}\rangle$ を $\mathsf{J}$ のカノニカルモデルとする（\ref{logic:canonical-model}）。
+- *推移性.* $wR_{\mathsf{J}}xR_{\mathsf{J}}y$, $\Box B\in w$ なら、$\mathsf{J}\vdash\Box B\to\Box\Box B$ より $\Box\Box B\in w$、$\Box B\in x$、$B\in y$。
+- *区分的連結性*（$wR_{\mathsf{J}}x$, $wR_{\mathsf{J}}y$ なら $xR_{\mathsf{J}}y$, $x=y$, $yR_{\mathsf{J}}x$ のいずれか）。そうでないとすると、$\Box B\in x$, $B\notin y$ となる $B$、$\Box C\in y$, $C\notin x$ となる $C$、$D\in x$, $D\notin y$ となる $D$ がある。
+$$
+P\defeq\Box B\land(B\lor D),\qquad Q\defeq\Box C\land(C\lor\neg D)
+$$
+とおく。$P\in x$（$\Box B\in x$, $D\in x$）、$\Box P\in x$（$\Box\Box B$ と $\Box(B\lor D)$ は $\Box B$ から導かれる）、$P\notin y$（$B,D\notin y$）。同様に $Q\in y$, $\Box Q\in y$, $Q\notin x$（$C\notin x$, $\neg D\notin x$）。よって $x$ は $\Box P\land P\land\neg Q$ を、$y$ は $\Box Q\land Q\land\neg P$ を含み、\ref{logic:canonical-r-dual} より $w$ は $\Diamond(\Box P\land P\land\neg Q)\land\Diamond(\Box Q\land Q\land\neg P)$ を含む。これは $\mathsf{J}$ の公理 $\Box(\Box P\land P\to Q)\lor\Box(\Box Q\land Q\to P)$ の否定であり矛盾する。
+- *点 $v$ の選び方.* $\mathsf{J}\nvdash A$ なので $A\notin u$ となる $u\in W_{\mathsf{J}}$ がある。$\Box A\in u$ なら $v\defeq u$。そうでなければ、$\mathsf{GL}\vdash\neg\Box A\to\Diamond(\Box A\land\neg A)$（レーブの公理の対偶）より、$uR_{\mathsf{J}}v$ で $\Box A,\neg A\in v$ となる $v$ がある。いずれにせよ $\Box A,\neg A\in v$。
+- *最後の反例.* 同様に、$\Box C\in\mathrm{Sub}(A)$ で $\neg\Box C\in v$ なら、$vR_{\mathsf{J}}x$ かつ $\Box C,\neg C\in x$ となる $x$ があり、そのような $x$ は一意である：二つあれば区分的連結性より一方が他方を見るが、$\Box C$ を含む点が見る点は $C$ を含むので矛盾する。この $x$ を $x_{C}$ と書く。
+
+$W\defeq\{v\}\cup\{x_{C}:\Box C\in\mathrm{Sub}(A),\ \neg\Box C\in v\}$、$R\defeq R_{\mathsf{J}}\restr{W}$、$p$ は $p\in w$ の点で真とする。$W$ は有限、$R$ は推移的。非反射的：$v$ は $\Box A,\neg A$ を、$x_{C}$ は $\Box C,\neg C$ を含むので自分自身を見ない。連結：$v$ はすべての $x_{C}$ を見て、相異なる $x_{C},x_{D}$ は区分的連結性（どちらも $v$ から見える）より一方が他方を見る。よって $\langle W,R\rangle$ は有限狭義全順序である。
+
+*真理補題.* $w\in W$, $B\in\mathrm{Sub}(A)$ について $B\in w\iff w\models B$ を示す。$\Box C\in w$ なら $wRx$ となる $x$ は $C$ を含み、帰納法の仮定より $x\models C$。$\Box C\notin w$ とする。$\Box C\in v$ とすると $w=v$ か $vR_{\mathsf{J}}w$ で、後者なら $\Box\Box C\in v$ から $\Box C\in w$ となりいずれも矛盾するので、$\neg\Box C\in v$ で $x_{C}\in W$。$x_{C}\neq w$（$\Box C\in x_{C}$）なので $wRx_{C}$ か $x_{C}Rw$。後者なら $\Box\Box C\in x_{C}$ から $\Box C\in w$ となり矛盾。よって $wRx_{C}$、$\neg C\in x_{C}$、帰納法の仮定より $x_{C}\not\models C$ で $w\not\models\Box C$。
+
+$\neg A\in v$ なので $v\not\models A$。
+:::
+
+::: hypcheck
+- 区分的連結性の証明で、$\mathsf{J}$ の公理を $P,Q$ の代入例として一度だけ使った。$P,Q$ の形は本サイトで選んだもので、Boolos の証明の該当部分（$E=\neg B\lor D$ を使う）は OCR で読み取れなかった。
+- 強到達不能基数が無限個あるという仮定は (A) ⇒ (B) の $S_{0}$ の真理だけに使った（実際に要るのは $n$ 個）。
+:::
+
+## 「つねに真」の体系 {#pt:sec-mst-always-true}
+
+$\mathsf{GLS}$ と同じく、$\mathsf{I}$ の定理と $\Box A\to A$ をすべて公理とし、モーダスポネンスだけを規則とする体系 $\mathsf{IS}$、同様の $\mathsf{JS}$ を考える。$A^{\mathrm{S}}\defeq\bigwedge\{\Box D\to D:\Box D\in\mathrm{Sub}(A)\}\to A$（\ref{pt:a-s-translation}）とすると、$\mathsf{I}\vdash A^{\mathrm{S}}$ なら $\mathsf{IS}\vdash A$ は明らかで、$\mathsf{I}\nvdash A^{\mathrm{S}}$ ならある $\ast$ について $A^{\ast}$ が偽になることが、$\mathsf{GLS}$ の算術的完全性（\ref{pt:gls-arithmetical-completeness}）と同じ議論で示せる、と Boolos は述べている。$\mathsf{JS}$ についても同様である。
+
+問題は健全性の側である。$\mathsf{IS}$ の健全性には、すべての文 $S$ について図式「$S\to$ $S$ はある推移的モデルで成り立つ」が真であることが要り、$\mathsf{JS}$ にはより強い図式「$S\to$ $S$ はある $R(\kappa)$（$\kappa$ は到達不能）で成り立つ」が要る。Lévy は、後者（したがって前者）が「狭義単調増加で連続な定義可能関数 $F\colon\mathbf{ON}\to\mathbf{ON}$ の値域には到達不能基数が少なくとも一つある」という図式から導かれることを示した、と Boolos は述べている。この図式から健全性を導くことを健全性の証明とみなしてよいかどうかは、Boolos も未解決の問題としている（本サイトでは確かめていない）。
+
+## 問題 {#pt:sec-mst-problems}
+
+::: problem {#pt:prob-mst-i-vs-j}
+$\mathsf{I}\subseteq\mathsf{J}$ であり、しかも $\mathsf{J}$ の公理 $\Box(\Box p\land p\to q)\lor\Box(\Box q\land q\to p)$ は $\mathsf{I}$ で証明できないことを、\ref{pt:transitive-models-theorem} と \ref{pt:universes-theorem} の (B) ⇔ (C) を使って示せ。
+:::
+
+::: solution
+有限狭義全順序は有限前整列である（$wRx$ と $y$ について、連結性より $y=w$ なら $wRx$ から $yRx$、$y\neq w$ なら $wRy$ または $yRw$、後者なら推移性より $yRx$）。よって $\mathsf{I}\vdash A$ なら $A$ はすべての有限前整列、とくにすべての有限狭義全順序で妥当で、$\mathsf{J}\vdash A$。
+
+後半：$W=\{r,a,b\}$、$rRa$, $rRb$ だけのフレームは有限前整列（ランク $\rho(r)=1$, $\rho(a)=\rho(b)=0$ で \ref{pt:prewellordering-rank} の条件を満たす）だが全順序でない。$p$ を $a$ でだけ、$q$ を $b$ でだけ真とすると、$a\models\Box p\land p\land\neg q$（$a$ は何も見ないので $\Box p$ は真）、$b\models\Box q\land q\land\neg p$ なので、$r$ で $\mathsf{J}$ の公理は偽。よって \ref{pt:transitive-models-theorem} より $\mathsf{I}$ で証明できない。
+:::
+
+::: problem {#pt:prob-mst-box-bot}
+推移的モデル解釈で $(\Box\bot)^{\ast}=\mathrm{Tr}(\bot)$ は「推移的モデルは存在しない」を意味する。$\mathsf{I}\nvdash\neg\Box\bot$ を \ref{pt:transitive-models-theorem} の (B) ⇔ (C) で確かめ、それが「$\ZF$ は推移的モデルの存在を証明しない」ことと整合することを説明せよ。
+:::
+
+::: solution
+一点のフレーム（$R=\varnothing$）は有限前整列で、そこで $\Box\bot$ は真、$\neg\Box\bot$ は偽。よって $\mathsf{I}\nvdash\neg\Box\bot$。\ref{pt:transitive-models-theorem} より、ある $\ast$ について（実際には $\ast$ によらず）$\ZF\nvdash\neg\mathrm{Tr}(\bot)$、すなわち $\ZF$ は「推移的モデルが存在する」を証明しない。これは、推移的モデルの存在から $\mathrm{Con}(\ZF)$ が従い、第二不完全性定理より $\ZF$（が無矛盾なら）はそれを証明しないことと整合する。
+:::
+
+::: problem {#pt:prob-mst-derived}
+\ref{pt:system-i-derived} の 1 を、有限前整列の上で意味論的に確かめよ。
+:::
+
+::: solution
+有限前整列の点 $u$ で $\Box(\Box C\to\Box D)$ が偽とすると、$uRv$ で $v\models\Box C\land\neg\Box D$ となる $v$ がある。$uRt$, $t\models\Box D$ とする。$\rho(t)\ge\rho(v)$ なら、\ref{pt:prewellordering-rank} より $v$ が見る点はすべて $t$ も見る（$vRz\iff\rho(v)>\rho(z)$ で、$\rho(t)>\rho(z)$）ので、$t\models\Box D$ から $v\models\Box D$ となり矛盾。よって $\rho(t)<\rho(v)$ で、$t$ が見る点は $v$ も見るので $v\models\Box C$ から $t\models\Box C$。したがって $u\models\Box(\Box D\to\Box C)$。
+:::
+
+::: supplement
+**前提の検討.**
+- 二つの定理の (A) ⇒ (B) は $\ZF$ で証明できない仮定（$L_{\alpha}\models\ZF$ となる $\alpha$ の存在、到達不能基数の存在）を使う。これは、$\PA$ の場合にソロヴェイ文 $S_{0}$ の真理を使うのと同じ役割であり、健全性を超える「真理」の側の仮定である。
+- (C) ⇒ (A) の新しい公理の健全性は、推移的モデルの場合は Jensen–Karp の定理という非自明な事実に、宇宙の場合は宇宙どうしが $\in$ で全順序に並ぶという単純な事実に依存する。前者で全順序にならず「前整列」になるのは、高さの同じ推移的モデルが多数ありうる（互いに元にならない）ことの反映である。
+- (B) ⇒ (C) は純粋に様相論理の議論で、集合論の仮定を使わない。
+
+**関連する結果.** $\mathsf{GL.3}$（本ページの $\mathsf{J}$）は有限狭義全順序について完全であることが一般に知られている。また「$\ZF$ の $\omega$ モデルで成り立つ」「$\beta$ モデルで成り立つ」など他の弱い証明可能性の様相論理も研究されている、と一般に言われている（本サイトでは扱っていない）。次のページでは二階算術（解析学）で同様の問題を考える予定である。
+
+**高い視点から：モデルの「高さ」が作るフレーム.** 算術の場合、ソロヴェイの証明は「証明の長さ」という一次元の時間に沿って点を動かした。集合論の場合は、推移的モデルの**高さ** $o(M)$ がその役割を果たす。宇宙 $R(\kappa)$ は高さで一列に並び、低いものは高いものの元になるので、見えるものは高さだけで決まり、フレームは全順序になる。推移的モデルは同じ高さのものが多数あり、互いを元として含まないが、Jensen–Karp の定理は「高いモデルは低いモデルの理論を（別のモデルとして）必ず見る」と保証するので、見える理論は高さだけで決まる。これがちょうど「同じランクの点は同じ点を見る」前整列の構造である。高さを「時刻」とみると、$\Box$ は「これより前のすべての時刻で成り立つ」を意味し、$\mathsf{J}$ は時間が一本の場合、$\mathsf{I}$ は同じ時刻に複数の「並行世界」がある場合の時相論理だと言える（これは本サイトの比喩である）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

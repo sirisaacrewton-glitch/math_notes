@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GLB の不動点定理と閉様相論理式 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/04-provability-logic-extensions/06-glb-fixed-point.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# GLB の不動点定理と閉様相論理式 {#pt:page-glb-fixed-point keywords="fixed point theorem for GLB, Ignatiev, bimodal characters, letterless sentences of GLB, omega-consistency self-reference"}
+
+$\mathsf{GL}$ の不動点定理（\ref{pt:fixed-point-theorem}）は $\mathsf{GLB}$ に拡張できる（イグナチェフ）：$p$ のすべての出現が $\Box$ か $[1]$ の作用域にある $A$ に対し、$p$ を含まない $H$ で $\mathsf{GLB}\vdash\boxdot(p\leftrightarrow A)\leftrightarrow\boxdot(p\leftrightarrow H)$ となるものがある。証明は、$\mathsf{GL}$ の不動点定理の第二証明（\ref{pt:fixed-point-second-proof}）を IDzh モデルに移したものである。算術では、証明可能性と ω 証明可能性を混ぜて自己言及する文も、$\PA$ で同値を除いて一意の明示的な解をもつ。最後に、閉じた（命題変数を含まない）$\mathsf{GLB}$ の論理式の真偽が機械的に判定できることを述べる。（Boolos 第 16 章に対応する。）
+
+## 記法と定義の確認 {#pt:sec-glbfp-notation}
+
+::: notation
+- $\mathsf{GLB}$, $\mathsf{GLSB}$, $\mathsf{IDzh}$、IDzh モデル、$T$、$\boxtimes B\defeq B\wedge\Box B\wedge[1]B\wedge\Box[1]B$（$w\models\boxtimes B\iff$ すべての $x\in T(w)$ で $x\models B$）、IDzh の完全性（\ref{pt:idzh-completeness}）、生成部分モデル（\ref{pt:idzh-generated-submodel}）は \ref{pt:page-glb-semantics}、GLB と GLSB の算術的完全性は \ref{pt:page-glb-completeness} のとおり。
+- $\boxdot B\defeq B\wedge\Box B$。$\Diamond\defeq\neg\Box\neg$、$\langle1\rangle\defeq\neg[1]\neg$。$\pm C$ は $C$ か $\neg C$。
+- 不動点定理の枠組み（\ref{pt:fixed-point-uniqueness}, \ref{pt:fixed-point-arith}）、キャラクター（\ref{pt:character}）は \ref{pt:page-fixed-point-theorem}, \ref{pt:page-fixed-point-second-proof} のとおり。
+- 以下、IDzh モデルは $\mathcal{M}=(W,R,R_{1},V)$ などと書き、$wCx\defeq wRx\vee wR_{1}x\vee wR\,|\,R_{1}x$ とする（$wTx\iff w=x\vee wCx$）。
+:::
+
+::: lemma C は逆整礎な順序 {#pt:idzh-c-order}
+IDzh モデルで、$R$ に関するランクを $\rho$、$R_{1}$ に関するランクを $\rho_{1}$ とする（\ref{pt:world-rank}）。$wCx$ ならば $(\rho(x),\rho_{1}(x))$ は $(\rho(w),\rho_{1}(w))$ より辞書式順序で真に小さい。したがって $C$ は推移的・非反射的で、$C$ に関して極大な元（$wCx$ となる $x$ が指定の集合にないもの）が空でない集合には必ずある。
+:::
+
+::: proof
+$wRx$ なら $\rho(x)<\rho(w)$。$wR_{1}x$ なら IDzh モデルの条件より $R(x)=R(w)$ なので $\rho(x)=\rho(w)$（ランクは $R$ の後続者だけで決まる）、かつ $\rho_{1}(x)<\rho_{1}(w)$。$wRyR_{1}x$ なら $\rho(x)=\rho(y)<\rho(w)$。$T$ は推移的（\ref{pt:idzh-generated-submodel}）で、$wCx$, $xCy$ なら $wTy$ かつ辞書式の値が真に小さいので $w\neq y$、よって $wCy$。非反射性も値の比較から。極大元は、有限集合の中で辞書式の値が最小の元をとればよい。
+:::
+
+## 不動点定理 {#pt:sec-glb-fixed-point}
+
+::: definition 様相化（二つの箱） {#pt:modalized-glb}
+$A$ が **$p$ について様相化されている**とは、$\bot$、$p$ 以外の命題変数、$\Box D$、$[1]D$ から $\to$ で組み立てられることをいう（$p$ のすべての出現が $\Box$ か $[1]$ の作用域にある）。
+:::
+
+::: theorem GLB の不動点定理（イグナチェフ） {#pt:glb-fixed-point-theorem keywords="Ignatiev's fixed point theorem for GLB" index="GLB の不動点定理|じーえるびーのふどうてんていり"}
+$A$ が $p$ について様相化されているなら、$p$ を含まず $A$ の命題変数だけを含む $H$ で
+$$
+\mathsf{GLB}\vdash\boxdot(p\leftrightarrow A)\leftrightarrow\boxdot(p\leftrightarrow H)
+$$
+となるものがある。
+:::
+
+以下、$A$ を固定し、$A$ の $p$ 以外の命題変数を $q_{1},\dots,q_{s}$、$A$ の $\Box$ で始まる部分論理式の個数を $j$、$[1]$ で始まる部分論理式の個数を $k$ とし、$n\defeq j(k+1)+k$ とおく。
+
+**帰着.** $\mathsf{GLB}\vdash\boxtimes B\leftrightarrow\boxdot B$（$\Box B\to[1]B$ と $\Box B\to\Box\Box B\to\Box[1]B$）で $\mathsf{IDzh}\subset\mathsf{GLB}$ なので、$\mathsf{IDzh}\vdash\boxtimes(p\leftrightarrow A)\leftrightarrow\boxtimes(p\leftrightarrow H)$ を示せばよい。
+
+::: definition 二つの箱のキャラクター {#pt:character-glb}
+$0$-キャラクターは $\pm q_{1}\wedge\cdots\wedge\pm q_{s}$、$m$-キャラクターが $V_{1},\dots,V_{t}$ のとき $(m+1)$-キャラクターは
+$$
+\pm q_{1}\wedge\cdots\wedge\pm q_{s}\wedge\pm\Diamond V_{1}\wedge\cdots\wedge\pm\Diamond V_{t}\wedge\pm\langle1\rangle V_{1}\wedge\cdots\wedge\pm\langle1\rangle V_{t}.
+$$
+各世界でちょうど一つの $m$-キャラクター $U(m,w)$ が真である（\ref{pt:character-basic} と同じ）。$U(m,w)=U(m,x)$（$m\ge1$）なら、$wRw'$ に対し $xSx'$ かつ $U(m-1,x')=U(m-1,w')$ となる $x'$ があり、$R_{1}$ についても同様。
+:::
+
+::: lemma キャラクターの一致（GLB） {#pt:glb-character-agreement}
+$\mathcal{M}$, $\mathcal{N}=(X,S,S_{1},Q)$ を IDzh モデル、$\mathcal{M},w_{0}\models\boxtimes(p\leftrightarrow A)$、$\mathcal{N},x_{0}\models\boxtimes(p\leftrightarrow A)$、$U(n,w_{0})=U(n,x_{0})$ とする。このとき $w_{0}\models p\iff x_{0}\models p$。
+:::
+
+::: proof
+$A$ の $\Box$ で始まる部分論理式と $[1]$ で始まる部分論理式からなる集合 $Z$ の**重さ**を $c(k+1)+d$（$c,d$ はそれぞれ $Z$ の中の $\Box$ で始まる元、$[1]$ で始まる元の個数）とする。重さの最大値は $n$ で、$Z$ に新しい元を加えると重さは真に増える。
+
+結論を否定する。$P(i,Z,w,x,\mathbf{D})$ を次の連言とする：$Z$ の重さ $\ge i$、$w\in T(w_{0})$、$x\in T(x_{0})$、$Z$ の元は $w$ と $x$ でともに真、$U(n-i,w)=U(n-i,x)$、$\mathbf{D}$ は $A$ の部分論理式 $\Box D$ または $[1]D$ で $w$ と $x$ での真理値が異なる（したがって $\mathbf{D}\notin Z$）。
+
+**観察.** $T(w_{0})$ のすべての世界で $p\leftrightarrow A$ が真（$\boxtimes$ の真理条件）。$w\in T(w_{0})$, $x\in T(x_{0})$ が $q$ たちで一致し、$A$ のある部分論理式で異なるなら、$A$ のある $\Box$ か $[1]$ で始まる部分論理式で異なる（\ref{pt:character-agreement} の Step 1 と同じ）。
+
+**出発点.** $U(n,w_{0})=U(n,x_{0})$ より $q$ で一致し $p$ で異なるので、観察より $P(0,\emptyset,w_{0},x_{0},\mathbf{D})$ となる $\mathbf{D}$ がある。
+
+**一段進める（$i<n$）.** $P(i,Z,w,x,\mathbf{D})$ とする。
+
+*Case 1：$\mathbf{D}=\Box D$, $w\not\models\Box D$, $x\models\Box D$*（逆も同様）。$wRy$, $y\not\models D$ となる $y$ のうち $R$-ランク最小のものを $w'$ とすると $w'\models\Box D$, $w'\not\models D$。キャラクターの性質より $xSx'$, $U(n-i-1,x')=U(n-i-1,w')$ となる $x'$ があり、$x'\models D$, $x'\models\Box D$。$Z'\defeq\{\Box B\in Z\}\cup\{\Box D\}$ とする。$\Box$ で始まる元が一つ増え、$[1]$ で始まる元は高々 $k$ 個失われるので、重さは $\ge(c+1)(k+1)>c(k+1)+d\ge i$、すなわち $\ge i+1$。$\Box B\in Z$ は推移性で $w',x'$ でも真。
+*Case 2：$\mathbf{D}=[1]D$, $w\not\models[1]D$, $x\models[1]D$*（逆も同様）。$wR_{1}y$, $y\not\models D$ となる $y$ のうち $R_{1}$-ランク最小の $w'$ をとり、同様に $xS_{1}x'$ となる $x'$ をとる。$Z'\defeq Z\cup\{[1]D\}$ で重さは $+1$ 以上。$[1]B\in Z$ は $R_{1}$ の推移性で $w'$ でも真、$\Box B\in Z$ は IDzh モデルの条件 $R(w')=R(w)$ より $w'$ でも真。$x'$ も同様。
+
+いずれの場合も $w'\in T(w_{0})$, $x'\in T(x_{0})$（$T(w_{0})$ は $R,R_{1}$ で閉じている）、$w',x'$ は $D$ で異なり、$U(n-i-1)$ が等しいので $q$ で一致し、観察より新しい $\mathbf{D}'$ が見つかる。よって $P(i+1,Z',w',x',\mathbf{D}')$。
+
+**結論.** 帰納法で $P(n,Z,w,x,\mathbf{D})$ となるが、$Z$ の重さは $\ge n$（最大）で $\mathbf{D}\notin Z$、$Z\cup\{\mathbf{D}\}$ の重さは $n$ を超え、矛盾する。
+
+::: hypcheck
+- **重さ**：Case 1 で $[1]$ の元を捨てる必要がある（$R$ で移ると $[1]B$ は保たれるとは限らない）ので、$\Box$ の元一つを $[1]$ の元全部より重くした。
+- **IDzh モデルの条件**：Case 2 で $\Box B$ を保つのに使った。
+:::
+:::
+
+::: proof GLB の不動点定理の証明
+**Step 1.** $H\defeq\bigvee\{U:U\text{ は }n\text{-キャラクターで }\mathsf{IDzh}\vdash\boxtimes(p\leftrightarrow A)\wedge U\to p\}$ とする。$H$ は $p$ を含まず、$q$ たちだけを含む。\ref{pt:fixed-point-second-proof} の証明と同じく、\ref{pt:glb-character-agreement} と IDzh の完全性から $\mathsf{IDzh}\vdash\boxtimes(p\leftrightarrow A)\to(p\leftrightarrow H)$。
+
+**Step 2（$\boxtimes$ への持ち上げ）.** IDzh モデルで $w\models\boxtimes(p\leftrightarrow A)$ なら、$T$ の推移性より各 $x\in T(w)$ で $x\models\boxtimes(p\leftrightarrow A)$、Step 1 より $x\models p\leftrightarrow H$、よって $w\models\boxtimes(p\leftrightarrow H)$。完全性より $\mathsf{IDzh}\vdash\boxtimes(p\leftrightarrow A)\to\boxtimes(p\leftrightarrow H)$。
+
+**Step 3（逆向き）.** $z\models\boxtimes(p\leftrightarrow H)$ だが $z\not\models\boxtimes(p\leftrightarrow A)$ となる IDzh モデルと $z$ があるとする。$p\leftrightarrow A$ が偽となる $T(z)$ の世界のうち、\ref{pt:idzh-c-order} で $C$ に関して極大なもの $w$ をとる：$wCx$ ならすべて $x\models p\leftrightarrow A$。$w$ での $p$ の値だけを反転したモデル $\mathcal{M}'$ を考える。$wCx$ となる $x$ から $T$ で到達可能な世界に $w$ はない（あれば $wCw$）。したがって $wCx$ となる $x$ での真理は変わらず、$A$ は $\Box D$, $[1]D$ と $p$ 以外の命題変数の真理関数なので $w$ での $A$ の値も変わらない。よって $\mathcal{M}',w\models p\leftrightarrow A$、$wCx$ なら $\mathcal{M}',x\models p\leftrightarrow A$、すなわち $\mathcal{M}',w\models\boxtimes(p\leftrightarrow A)$。Step 1 より $\mathcal{M}',w\models p\leftrightarrow H$。$H$ は $p$ を含まないので $w$ での値は $\mathcal{M}$ と同じで、$p$ は反転しているから $\mathcal{M},w\not\models p\leftrightarrow H$。一方 $zTw$ と $z\models\boxtimes(p\leftrightarrow H)$ から $w\models p\leftrightarrow H$。矛盾。完全性より $\mathsf{IDzh}\vdash\boxtimes(p\leftrightarrow H)\to\boxtimes(p\leftrightarrow A)$。
+
+**Step 4.** Step 2, 3 と帰着による。
+
+::: hypcheck
+- **$p$ について様相化されていること**：Step 3 で $w$ での $A$ の値が $p$ の反転で変わらないことに使った。
+- **$C$ の逆整礎性**（\ref{pt:idzh-c-order}）：Step 3 の極大な $w$ の存在。$\mathsf{GL}$ の場合のゴールドファーブの補題（\ref{pt:goldfarb-reduction}）で最小ランクの世界をとったのと同じ役割である。
+:::
+:::
+
+::: remark 箱を増やさない不動点
+$\mathsf{GLB}$ は $\mathsf{GL}$ を含み、また $\mathsf{GL}$ の $\Box$ を $[1]$ に書き換えた体系も含む（$[1]$ は分配公理・レーブの公理・必然化則を満たす）。したがって、$A$ が $[1]$ を含まなければ $H$ も $[1]$ を含まないようにとれ（$\mathsf{GL}$ の不動点）、$A$ が $\Box$ を含まなければ $H$ は $\Box$ を含まないようにとれる（Boolos による注意）。
+:::
+
+::: example ω 証明可能性についての自己言及
+$A=\neg[1]p$ の不動点は $\neg[1]\bot$、$A=[1]\neg p$ の不動点は $[1]\bot$（$\mathsf{GL}$ の場合の表 \ref{pt:fixed-point-special} の $[1]$ 版）。\ref{pt:fixed-point-arith} と同じ議論（$[1]$ の必然化則は D1 の ω 版 \ref{pt:omega-d12}）により、算術では「自分は ω 証明可能でない」と主張する文は $\PA$ で「$\PA$ は ω 無矛盾」（$\neg\mathrm{ωBew}(\Godel{\bot})$）と同値、「自分の否定は ω 証明可能」と主張する文は「$\PA$ は ω 無矛盾でない」と同値である。
+:::
+
+::: corollary 算術における一意性
+$A$ が $p$ について様相化され $H$ がその不動点なら、任意の算術的解釈 $\ast$ と文 $S$ について、$\PA\vdash S\leftrightarrow A^{\ast_{S}}$ ならば $\PA\vdash S\leftrightarrow H^{\ast}$。また $\PA\vdash H^{\ast}\leftrightarrow A^{\ast_{H^{\ast}}}$。
+:::
+
+::: proof
+\ref{pt:fixed-point-arith} の証明と同じ（$\mathsf{GLB}$ の算術的健全性 \ref{pt:glb-soundness} を使う）。
+:::
+
+## 閉じた論理式 {#pt:sec-glb-letterless}
+
+::: proposition 閉じた GLB の論理式の真偽と証明可能性 {#pt:glb-letterless-decidable}
+命題変数を含まない $\mathsf{GLB}$ の論理式 $A$ の翻訳 $A^{\ast}$ は $\ast$ によらない。$A^{\ast}$ が真であることは $\mathsf{GLSB}\vdash A$ と同値、$\PA\vdash A^{\ast}$ は $\mathsf{GLB}\vdash A$ と同値で、どちらも機械的に判定できる。
+:::
+
+::: proof
+翻訳が $\ast$ によらないことは構成に関する帰納法。$A^{\ast}$ が真なら、すべての解釈で真なので、\ref{pt:glsb-completeness} より $\mathsf{GLSB}\vdash A$。逆は健全性。後半は \ref{pt:glb-completeness}。判定可能性は $\mathsf{GLB}$, $\mathsf{GLSB}$ の決定可能性による。
+:::
+
+::: remark イグナチェフの標準形
+Boolos 第 16 章は、イグナチェフによる閉じた $\mathsf{GLB}$ の論理式の**標準形**を与えている：$\omega^{\omega}$ 未満の順序数 $\alpha$ に対して閉じた論理式 $D\alpha$ を定め、任意の閉じた論理式が $D\alpha$ たちの真理関数的な組み合わせと $\mathsf{GLB}$ で同値になることを示す（$\mathsf{GL}$ の $\Box^{n}\bot$ の役割を $D\alpha$ が果たし、$\mathsf{GL}$ の場合 \ref{pt:letterless-normal-form} の自然数 $n$ が順序数 $\alpha$ に置き換わる）。$D\alpha$ はすべて偽なので、標準形から真偽が読み取れる。$D\alpha$ の具体的な定義と証明の細部は、手元の資料（Boolos のテキスト抽出）では記号の多くが失われており正確に再構成できなかったので、本ページでは扱わない。上の \ref{pt:glb-letterless-decidable} は、標準形を使わずに真偽の判定可能性だけを与える。
+:::
+
+::: remark 解析学
+Boolos は、$\Box$ を二階算術（解析学）の証明可能性、$[1]$ を解析学での ω 規則による証明可能性と読んでも、$\mathsf{GLB}$ と $\mathsf{GLSB}$ がそれぞれ証明可能性と真理の論理になることを、証明の概略とともに述べている。これは解析学における様相論理（Boolos 第 14 章。本サイトでは後で扱う予定）の準備を要するので、ここでは紹介にとどめる。
+:::
+
+## 問題 {#pt:sec-glbfp-problems}
+
+::: problem {#pt:prob-glb-fp-omega}
+$A=\neg[1]p$ について、IDzh モデルで $\boxtimes(p\leftrightarrow\neg[1]p)\to(p\leftrightarrow\neg[1]\bot)$ が妥当であることを直接確かめよ。
+:::
+
+::: solution
+$w\models\boxtimes(p\leftrightarrow\neg[1]p)$ とし、$w$ の $R_{1}$-ランク $r$ に関する帰納法で「$x\in T(w)$ なら $x\models p\iff x$ は $R_{1}$ の後続者をもつ」を示す（$T(w)$ は $R_{1}$ で閉じ、$x\models p\leftrightarrow\neg[1]p$）。$R_{1}$ の後続者がなければ $[1]p$ は真で $p$ は偽。後続者があれば、$R_{1}$-ランク最小の後続者 $y$ は後続者をもたないので $y\not\models p$、よって $x\not\models[1]p$、$x\models p$。「$R_{1}$ の後続者をもつ」は $\neg[1]\bot$ の真理条件である。
+:::
+
+::: supplement
+**前提の検討.**
+- 証明は IDzh モデルの上で行い、$\mathsf{GLB}$ の公理 $\Box A\to[1]A$ は、最後に $\boxtimes$ と $\boxdot$ の同値（帰着）でだけ使った。
+- \ref{pt:glb-character-agreement} の $n$ は $\mathsf{GL}$ の場合の $\Box$ 部分論理式の個数より大きく、不動点の様相次数の上限も $j(k+1)+k$ になる。
+
+**高い視点から.** 二つの箱の不動点定理は、「一段下」の参照が二種類（$R$ と $R_{1}$）になっても、辞書式順序（\ref{pt:idzh-c-order}）が逆整礎である限り、自己言及の方程式が一意に解けることを示している。$\mathsf{GL}$ では自然数のランクだったものが、ここでは（$R$ のランク, $R_{1}$ のランク）の組になる。イグナチェフの標準形で順序数 $\omega^{\omega}$ が現れるのは、この二重の順序（さらに多くの箱では多重の順序）の高さを測るのに自然数では足りないことの表れと考えられる（これは解釈であり、Boolos の証明の内容ではない）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

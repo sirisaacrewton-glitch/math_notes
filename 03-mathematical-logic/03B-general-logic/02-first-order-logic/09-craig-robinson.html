@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>クレイグの補間定理とロビンソンの統合無矛盾性定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/02-first-order-logic/09-craig-robinson.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# クレイグの補間定理とロビンソンの統合無矛盾性定理 {#logic:page-craig-robinson keywords="Craig interpolation theorem, Robinson consistency theorem, Robinson joint consistency theorem, interpolant, 補間定理, 統合無矛盾性定理"}
+
+$\varphi\models\psi$ のとき、$\varphi$ と $\psi$ の**共通の記号だけ**で書かれた文 $\theta$ で、$\varphi\models\theta$ かつ $\theta\models\psi$ となるものが存在する。これが**クレイグの補間定理**である。また、二つの理論が共通の言語で完全な理論を共有するなら、二つを合わせても矛盾しない。これが**ロビンソンの統合無矛盾性定理**である。本ページの前半では、二つの理論が共通の言語の文で「分離」できないならその合併がモデルをもつという補題（\ref{logic:inseparability-theorem}）を、完全性定理の証明（\ref{logic:page-completeness}）のヘンキン構成を二つの理論について**共通の定数**で同時に行うことによって証明する。後半では、この補題から二つの定理を直ちに導き、さらにコンパクト性定理のもとで両者が互いに導き合うことを示す。証明は意味論的な構成であり、カット除去は使わない。
+
+## 記法と定義の確認 {#logic:sec-craig-notation}
+
+::: notation
+- 導出可能性 $\Sigma\vdash_{\mathcal{K}}\varphi$ は言語 $\mathcal{K}$ の導出による（\ref{logic:derivation-symbols}）。定数の追加についての保存性（\ref{logic:conservativity-constants}）、新しい定数についての一般化（\ref{logic:generalization-constants}）、定数の置き換えの単射性 $\varphi[y/c][c/y]=\varphi$（\ref{logic:constant-replacement-injective}）を使う。
+- 派生規則（\ref{logic:derived-propositional}, \ref{logic:derived-quantifier}）、完全な無矛盾集合の性質（\ref{logic:complete-theory-properties}）、項モデル定理（\ref{logic:term-model}）、同型は充足を保つこと（\ref{logic:isomorphism-invariance}）、縮小（\ref{logic:reduct-lemma}）を使う。
+- **言語の和と共通部分.** 言語 $\mathcal{L}_{1},\mathcal{L}_{2}$ は**両立する**とする。すなわち、両方に属する記号は、両方で同じ種類（定数・関数・関係記号）で同じ項数をもつ。このとき記号の和集合と共通部分がそれぞれ言語になり、$\mathcal{L}_{1}\cup\mathcal{L}_{2}$、$\mathcal{L}_{0}\defeq\mathcal{L}_{1}\cap\mathcal{L}_{2}$ と書く。論理記号（$\bot,\to,\forall,=$）と変数はすべての言語に共通なので、$\mathcal{L}_{0}$ に非論理記号が一つもなくても、$\bot$ や $\exists x\,\exists y\,\neg\,x=y$ は $\mathcal{L}_{0}$ の文である。
+- 前半では $\mathcal{L}_{1},\mathcal{L}_{2}$ は可算とし、選択公理は使わない（一般の言語への拡張は後半の補間定理の証明で扱う）。
+- 完全性定理（\ref{logic:completeness}）、健全性定理（\ref{logic:soundness}）、コンパクト性定理（\ref{logic:compactness}）、縮小（\ref{logic:reduct-lemma}）を使う。
+- 文の有限集合 $F=\{\sigma_{1},\dots,\sigma_{k}\}$ に対し $\bigwedge F\defeq\sigma_{1}\wedge\cdots\wedge\sigma_{k}$（$k=0$ なら $\top$）とする。どの構造でも $\mathcal{M}\models\bigwedge F\iff\mathcal{M}\models F$（\ref{logic:abbreviation-semantics}）。
+- 言語 $\mathcal{K}$ の文の集合 $T$ が**完全**であるとは、$\mathcal{K}$ の任意の文 $\sigma$ について $T\vdash\sigma$ または $T\vdash\neg\sigma$ であることをいう（\ref{logic:complete-theory} の「$\sigma\in T$ または $\neg\sigma\in T$」より弱い、導出について閉じていない集合にも使える形）。
+:::
+
+## 分離不能な理論の組 {#logic:sec-inseparability-definition}
+
+前半では、二つの理論が共通の言語の文で分離できないことを定義し、そのとき合併がモデルをもつことを示す。
+
+::: definition 分離と分離不能 {#logic:separation keywords="separation, inseparable pair of theories" index="分離不能|ぶんりふのう, 分離|ぶんり"}
+$\mathcal{L}_{0}\subset\mathcal{L}_{1},\mathcal{L}_{2}$ を上のとおりとし、$\Delta_{1}$ を $\mathcal{L}_{1}$ の文の集合、$\Delta_{2}$ を $\mathcal{L}_{2}$ の文の集合とする。$\mathcal{L}_{0}$ の文 $\theta$ で
+$$
+\Delta_{1}\vdash_{\mathcal{L}_{1}}\theta\quad\text{かつ}\quad\Delta_{2}\vdash_{\mathcal{L}_{2}}\neg\theta
+$$
+を満たすものを、組 $(\Delta_{1},\Delta_{2})$ を**分離する**文という。そのような文が存在しないとき、$(\Delta_{1},\Delta_{2})$ は（$\mathcal{L}_{0}$ について）**分離不能**であるという。
+:::
+
+::: intuition
+$\theta$ は、$\Delta_{1}$ と $\Delta_{2}$ が共通の言葉で「真っ向から対立する」証拠である。$\Delta_{1}$ は $\theta$ を主張し、$\Delta_{2}$ は $\theta$ の否定を主張する。分離不能であるとは、共通の言葉で表せる事柄については両者が衝突しない、ということである。\ref{logic:inseparability-theorem}は、このとき両者を同時に満たすモデルが実際に作れる、と主張する。
+:::
+
+::: lemma 分離の基本性質 {#logic:separation-basic}
+1. **（対称性）** $(\Delta_{1},\Delta_{2})$ が分離可能であることと、$(\Delta_{2},\Delta_{1})$ が（$\mathcal{L}_{1}$ と $\mathcal{L}_{2}$ の役割を入れ替えて）分離可能であることは同値である。
+2. $(\Delta_{1},\Delta_{2})$ が分離不能ならば、$\Delta_{1}$ も $\Delta_{2}$ も無矛盾である。
+3. $(\Delta_{1},\Delta_{2})$ が分離不能で $\Delta_{i}'\subset\Delta_{i}$ ならば、$(\Delta_{1}',\Delta_{2}')$ も分離不能である。分離不能な組の増大列の和は分離不能である。
+:::
+
+::: proof
+**1.** $\theta$ が $(\Delta_{1},\Delta_{2})$ を分離するなら、$\Delta_{2}\vdash\neg\theta$ かつ $\Delta_{1}\vdash\theta$ で、$\theta\vdash\neg\neg\theta$（\ref{logic:derived-propositional} の 1 で $\{\theta,\neg\theta\}\vdash\bot$ から）なので、$\neg\theta$ が $(\Delta_{2},\Delta_{1})$ を分離する。逆も同様である。
+
+**2.** $\Delta_{1}\vdash\bot$ なら、$\bot$ は $\mathcal{L}_{0}$ の文で $\vdash\neg\bot$（$\bot\to\bot$）なので $\bot$ が分離する。$\Delta_{2}\vdash\bot$ なら爆発律で $\Delta_{2}\vdash\neg\top$ となり、$\vdash\top$ なので $\top$ が分離する。
+
+**3.** 前半は弱化。後半：和が $\theta$ で分離されるなら、二つの導出が使う前提は有限個で、ある段階の組に含まれるので、その組が $\theta$ で分離される。
+:::
+
+::: lemma 新しい定数を加えても分離不能 {#logic:separation-new-constants}
+$C$ を $\mathcal{L}_{1}\cup\mathcal{L}_{2}$ に含まれない定数記号の集合とし、$\mathcal{L}_{i}'\defeq\mathcal{L}_{i}\cup C$（$i=0,1,2$）とおく。$\mathcal{L}_{1}$ の文の集合 $T_{1}$ と $\mathcal{L}_{2}$ の文の集合 $T_{2}$ が $\mathcal{L}_{0}$ について分離不能ならば、$(T_{1},T_{2})$ は $\mathcal{L}_{0}'$ について（$\vdash_{\mathcal{L}_{1}'}$, $\vdash_{\mathcal{L}_{2}'}$ による導出で）分離不能である。
+:::
+
+::: proof
+**Step 1.** $\mathcal{L}_{0}'$ の文 $\theta$ が $T_{1}\vdash_{\mathcal{L}_{1}'}\theta$, $T_{2}\vdash_{\mathcal{L}_{2}'}\neg\theta$ を満たすとする。$\theta$ に現れる $C$ の元を $d_{1},\dots,d_{k}$ とし、$\theta$ に現れない互いに異なる変数 $y_{1},\dots,y_{k}$ をとる。$\theta_{0}\defeq\theta$, $\theta_{j}\defeq\theta_{j-1}[y_{j}/d_{j}]$ とおく。$y_{j}\notin\mathrm{Var}(\theta_{j-1})$ なので \ref{logic:constant-replacement-injective} より $\theta_{j-1}=\theta_{j}[d_{j}/y_{j}]$。$\theta_{k}$ は $\mathcal{L}_{0}$ の論理式で、$\mathrm{FV}(\theta_{k})\subset\{y_{1},\dots,y_{k}\}$（\ref{logic:constant-replacement-properties} の 5）。
+
+**Step 2.** $\vartheta_{j}\defeq\forall y_{j}\cdots\forall y_{1}\,\theta_{j}$（$\vartheta_{0}=\theta$）とおき、$T_{1}\vdash\vartheta_{j-1}$ から $T_{1}\vdash\vartheta_{j}$ を示す。$y_{j}$ は $y_{1},\dots,y_{j-1}$ と異なるので $\vartheta_{j-1}=(\forall y_{j-1}\cdots\forall y_{1}\,\theta_{j})[d_{j}/y_{j}]$ であり、$d_{j}$ は $\forall y_{j-1}\cdots\forall y_{1}\,\theta_{j}$ にも $T_{1}$ の元（$\mathcal{L}_{1}$ の文）にも現れない。\ref{logic:generalization-constants} より $T_{1}\vdash\forall y_{j}\,\forall y_{j-1}\cdots\forall y_{1}\,\theta_{j}=\vartheta_{j}$。よって $T_{1}\vdash\vartheta_{k}$。同様に $T_{2}\vdash\forall y_{k}\cdots\forall y_{1}\,\neg\theta_{k}$。
+
+**Step 3.** $\chi\defeq\vartheta_{k}$ は $\mathcal{L}_{0}$ の文である。$\{\forall\vec{y}\,\theta_{k},\forall\vec{y}\,\neg\theta_{k}\}\vdash\bot$（両方に項 $y_{k},\dots,y_{1}$ で $\forall$E を施して $\theta_{k}$ と $\neg\theta_{k}$）なので、$T_{2}\vdash\neg\chi$。\ref{logic:conservativity-constants} より $T_{1}\vdash_{\mathcal{L}_{1}}\chi$, $T_{2}\vdash_{\mathcal{L}_{2}}\neg\chi$。これは $\mathcal{L}_{0}$ についての分離不能性に反する。
+:::
+
+## 分離不能性を保つ拡大 {#logic:sec-inseparability-extension}
+
+以下、$C=\{c_{0},c_{1},\dots\}$ を $\mathcal{L}_{1}\cup\mathcal{L}_{2}$ に含まれない可算無限個の互いに異なる定数記号とし、$\mathcal{L}_{i}'=\mathcal{L}_{i}\cup C$ とする。分離・分離不能は $\mathcal{L}_{0}'$ について、導出は $\mathcal{L}_{1}',\mathcal{L}_{2}'$ で考える。
+
+::: lemma 決定 {#logic:inseparable-decide}
+$(\Delta_{1},\Delta_{2})$ が分離不能で、$\sigma$ が $\mathcal{L}_{1}'$ の文ならば、$(\Delta_{1}\cup\{\sigma\},\Delta_{2})$ と $(\Delta_{1}\cup\{\neg\sigma\},\Delta_{2})$ の少なくとも一方は分離不能である。$\mathcal{L}_{2}'$ の文について、第二成分を拡大する場合も同様である。
+:::
+
+::: proof
+両方とも分離可能と仮定し、$\theta_{1},\theta_{2}$（$\mathcal{L}_{0}'$ の文）で
+$$
+\Delta_{1}\cup\{\sigma\}\vdash\theta_{1},\quad\Delta_{2}\vdash\neg\theta_{1},\qquad \Delta_{1}\cup\{\neg\sigma\}\vdash\theta_{2},\quad\Delta_{2}\vdash\neg\theta_{2}
+$$
+とする。$\vee$I で $\Delta_{1}\cup\{\sigma\}\vdash\theta_{1}\vee\theta_{2}$, $\Delta_{1}\cup\{\neg\sigma\}\vdash\theta_{1}\vee\theta_{2}$、排中律 $\vdash\sigma\vee\neg\sigma$ と $\vee$E で $\Delta_{1}\vdash\theta_{1}\vee\theta_{2}$（\ref{logic:derived-propositional} の 4, 5）。一方 $\Delta_{2}\vdash\neg(\theta_{1}\vee\theta_{2})$：$\vee$E により $\Delta_{2}\cup\{\theta_{1}\vee\theta_{2}\}\vdash\bot$（場合 $\theta_{i}$ では $\neg\theta_{i}$ と矛盾）、$\neg$I。$\theta_{1}\vee\theta_{2}$ は $\mathcal{L}_{0}'$ の文なので $(\Delta_{1},\Delta_{2})$ が分離され、仮定に反する。第二成分の場合は、\ref{logic:separation-basic} の 1（対称性）により第一成分の場合に帰着する。
+:::
+
+::: lemma 証拠の追加 {#logic:inseparable-witness}
+$(\Delta_{1},\Delta_{2})$ が分離不能で、$\exists x\,\varphi\in\Delta_{1}$（$\varphi$ は $\mathcal{L}_{1}'$ の論理式、$\mathrm{FV}(\varphi)\subset\{x\}$）とする。$d\in C$ が $\varphi$ にも $\Delta_{1}\cup\Delta_{2}$ のどの元にも現れないならば、$(\Delta_{1}\cup\{\varphi[d/x]\},\Delta_{2})$ は分離不能である。第二成分についても同様である。
+:::
+
+::: proof
+**Step 1（仮定と記号）.** $\mathcal{L}_{0}'$ の文 $\theta$ で $\Delta_{1}\cup\{\varphi[d/x]\}\vdash\theta$, $\Delta_{2}\vdash\neg\theta$ となるものがあると仮定する。$\theta$ にも $\varphi$ にも現れず $x$ とも異なる変数 $y$ をとり、$\theta_{0}\defeq\theta[y/d]$ とおく。\ref{logic:constant-replacement-injective} より $\theta=\theta_{0}[d/y]$。$\theta_{0}$ は $d$ を含まない $\mathcal{L}_{0}'$ の論理式で、$\mathrm{FV}(\theta_{0})\subset\{y\}$。
+
+**Step 2（$\Delta_{1}\vdash\exists y\,\theta_{0}$）.** 演繹定理で $\Delta_{1}\vdash\varphi[d/x]\to\theta$。$y$ は $\varphi$ に現れないので代入可能で $y\notin\mathrm{FV}(\varphi)$、\ref{logic:substitution-composition} より $\varphi[y/x][d/y]=\varphi[d/x]$。よって
+$$
+\Delta_{1}\vdash\bigl(\varphi[y/x]\to\theta_{0}\bigr)[d/y].
+$$
+$d$ は $\varphi[y/x]\to\theta_{0}$ にも $\Delta_{1}$ にも現れないので、\ref{logic:generalization-constants} より $\Delta_{1}\vdash\forall y\,(\varphi[y/x]\to\theta_{0})$。次に、\ref{logic:derived-quantifier} の 4 を $\neg\varphi$ に使うと $\{\forall y\,(\neg\varphi)[y/x]\}\vdash\forall x\,\neg\varphi$ なので、$\{\exists x\,\varphi\}\vdash\neg\forall y\,\neg(\varphi[y/x])=\exists y\,\varphi[y/x]$。最後に $\exists$E（\ref{logic:derived-quantifier} の 2）を、$\Gamma=\{\forall y\,(\varphi[y/x]\to\theta_{0})\}$、存在量化される論理式 $\varphi[y/x]$、$\chi=\exists y\,\theta_{0}$ として使う。$\Gamma\cup\{\varphi[y/x]\}\vdash\theta_{0}$（項 $y$ で $\forall$E、$\to$E）から $\exists$I で $\exists y\,\theta_{0}$ が導ける。$y$ は $\Gamma$ の元にも $\chi$ にも自由に現れない。よって $\Delta_{1}\vdash\exists y\,\theta_{0}$。
+
+**Step 3（$\Delta_{2}\vdash\neg\exists y\,\theta_{0}$）.** $\Delta_{2}\vdash\neg\theta=(\neg\theta_{0})[d/y]$ で、$d$ は $\neg\theta_{0}$ にも $\Delta_{2}$ にも現れないので、\ref{logic:generalization-constants} より $\Delta_{2}\vdash\forall y\,\neg\theta_{0}$。$\exists y\,\theta_{0}=\neg\forall y\,\neg\theta_{0}$ なので $\Delta_{2}\cup\{\exists y\,\theta_{0}\}\vdash\bot$、$\neg$I で $\Delta_{2}\vdash\neg\exists y\,\theta_{0}$。
+
+**Step 4.** $\exists y\,\theta_{0}$ は $\mathcal{L}_{0}'$ の文（$\mathrm{FV}(\theta_{0})\subset\{y\}$）なので、Step 2, 3 より $(\Delta_{1},\Delta_{2})$ が分離される。これは仮定に反する。第二成分の場合は対称性（\ref{logic:separation-basic} の 1）による。
+
+::: hypcheck
+- **$d$ が $\Delta_{2}$ に現れないこと**：Step 3 の一般化。外すと偽：$\Delta_{2}=\{\neg P(d)\}$（$P\in\mathcal{L}_{0}$）、$\Delta_{1}=\{\exists x\,P(x)\}$ とすると、$(\Delta_{1},\Delta_{2})$ は（両方を満たす構造があり、健全性定理より分離する文は存在しないので）分離不能であるが、$\Delta_{1}\cup\{P(d)\}$ と $\Delta_{2}$ は $P(d)$ で分離される。
+- **$d$ が $\Delta_{1}$ と $\varphi$ に現れないこと**：Step 2 の一般化。
+- **$\theta$ が $d$ を含んでよいこと**：分離する文は $\mathcal{L}_{0}'$ の文なので、新しい証拠 $d$ を含みうる。Step 1 で $d$ を変数 $y$ に抽象化し、$\exists y$ で閉じることで、$d$ を含まない分離文に取り替えた。
+:::
+:::
+
+## 共通の定数によるヘンキン構成 {#logic:sec-inseparability-construction}
+
+::: lemma 共通言語で分離できない理論の組の合併はモデルをもつ {#logic:inseparability-theorem keywords="joint consistency, separation lemma" index="分離できない理論の組|ぶんりできないりろんのくみ"}
+$\mathcal{L}_{1},\mathcal{L}_{2}$ を両立する可算な言語、$\mathcal{L}_{0}=\mathcal{L}_{1}\cap\mathcal{L}_{2}$ とする。$\mathcal{L}_{1}$ の文の集合 $T_{1}$ と $\mathcal{L}_{2}$ の文の集合 $T_{2}$ が $\mathcal{L}_{0}$ について分離不能ならば、$T_{1}\cup T_{2}$ は $\mathcal{L}_{1}\cup\mathcal{L}_{2}$ 構造のモデルをもつ。
+:::
+
+::: intuition
+二つの理論を、それぞれ完全性定理の証明と同じく「すべての文の真偽を決め、存在するものに共通の名前 $c_{i}$ を付ける」ように拡大する。そのとき分離不能性を保っておくと、共通の言語の文、とくに「$c_{i}=c_{j}$ か」「$f(c_{i})=c_{j}$ か」「$P(c_{i})$ か」（$f,P\in\mathcal{L}_{0}$）についての判断が二つの理論で一致する。名前 $c_{i}$ の同値類からできる二つの項モデルは、共通の記号については同じ構造になるので、一つの領域の上で貼り合わせられる。
+:::
+
+::: proof
+**Step 1（出発点）.** \ref{logic:separation-new-constants} より $(T_{1},T_{2})$ は $\mathcal{L}_{0}'$ について分離不能である。$\mathcal{L}_{1}'$ の文を $\sigma_{0},\sigma_{1},\dots$、$\mathcal{L}_{2}'$ の文を $\tau_{0},\tau_{1},\dots$ と数え上げる（可算性）。
+
+**Step 2（構成）.** 分離不能な組 $(\Delta_{1}^{n},\Delta_{2}^{n})$ で、$\Delta_{i}^{n}$ が $T_{i}$ に有限個の文を加えたものであるような増大列を、$n$ に関する再帰で作る。$(\Delta_{1}^{0},\Delta_{2}^{0})\defeq(T_{1},T_{2})$。$(\Delta_{1}^{n},\Delta_{2}^{n})$ から次の四段階で $(\Delta_{1}^{n+1},\Delta_{2}^{n+1})$ を作る。$T_{i}$ は $C$ の元を含まないので、各段階で $\Delta_{1}\cup\Delta_{2}$ に現れる $C$ の元は有限個であり、「現れない $c_{j}$ のうち番号最小のもの」が常にとれる。
+1. $(\Delta_{1}^{n}\cup\{\sigma_{n}\},\Delta_{2}^{n})$ が分離不能ならこれを、そうでなければ $(\Delta_{1}^{n}\cup\{\neg\sigma_{n}\},\Delta_{2}^{n})$ をとる（\ref{logic:inseparable-decide} により分離不能）。
+2. 1 で $\sigma_{n}$ を加え、$\sigma_{n}$ が $\exists x\,\varphi$ の形（記号列として $\neg\forall x\,\neg\varphi$。読み方の一意性より $x,\varphi$ は一通りに決まる）ならば、$\varphi$ にも現在の $\Delta_{1}\cup\Delta_{2}$ にも現れない番号最小の $d\in C$ をとり、$\varphi[d/x]$ を第一成分に加える（\ref{logic:inseparable-witness} により分離不能）。
+3. 1 と同様に $\tau_{n}$ または $\neg\tau_{n}$ を第二成分に加える。
+4. 2 と同様に、3 で $\tau_{n}=\exists x\,\psi$ を加えた場合は証拠 $\psi[d/x]$ を第二成分に加える。
+
+$\Delta_{i}^{\ast}\defeq\bigcup_{n}\Delta_{i}^{n}$ とおく。
+
+**Step 3（極限の性質）.** 次が成り立つ。
+- (a) $(\Delta_{1}^{\ast},\Delta_{2}^{\ast})$ は分離不能（\ref{logic:separation-basic} の 3）。とくに $\Delta_{1}^{\ast},\Delta_{2}^{\ast}$ は無矛盾（同 2）。
+- (b) $\Delta_{1}^{\ast}$ は $\mathcal{L}_{1}'$ で完全、$\Delta_{2}^{\ast}$ は $\mathcal{L}_{2}'$ で完全（各 $\sigma_{n}$, $\tau_{n}$ について段階 1, 3 で決めた）。
+- (c) $\exists x\,\varphi\in\Delta_{1}^{\ast}$ ならば、ある $d\in C$ について $\varphi[d/x]\in\Delta_{1}^{\ast}$。実際 $\exists x\,\varphi=\sigma_{n}$ とすると、段階 1 で $\neg\sigma_{n}$ を加えていたら $\Delta_{1}^{\ast}$ は $\sigma_{n}$ と $\neg\sigma_{n}$ を含み (a) に反するので、$\sigma_{n}$ を加えており、段階 2 で証拠が加えられている。$\Delta_{2}^{\ast}$ についても同様。
+- (d) $\Delta_{i}^{\ast}$ は $\mathcal{L}_{i}'$ でヘンキン的である。実際 $\mathrm{FV}(\varphi)\subset\{x\}$ のとき、$\exists x\,\varphi\in\Delta_{1}^{\ast}$ なら (c) の $d$ について $\Delta_{1}^{\ast}\vdash\varphi[d/x]$ なので $\Delta_{1}^{\ast}\vdash\exists x\,\varphi\to\varphi[d/x]$。そうでなければ (b) より $\neg\exists x\,\varphi\in\Delta_{1}^{\ast}$ で、\ref{logic:derived-propositional} の 6 より任意の $d$ について $\Delta_{1}^{\ast}\vdash\exists x\,\varphi\to\varphi[d/x]$。
+- (e) $\mathcal{L}_{0}'$ の任意の文 $\theta$ について $\theta\in\Delta_{1}^{\ast}\iff\theta\in\Delta_{2}^{\ast}$。実際、$\theta\in\Delta_{1}^{\ast}$ で $\theta\notin\Delta_{2}^{\ast}$ なら、$\theta$ は $\mathcal{L}_{2}'$ の文でもあるので (b) より $\neg\theta\in\Delta_{2}^{\ast}$ となり、$\theta$ が分離する。逆向きも、$\neg\theta$ が $(\Delta_{1}^{\ast},\Delta_{2}^{\ast})$ を分離すること（$\Delta_{2}^{\ast}\vdash\theta\vdash\neg\neg\theta$）から同様。
+
+**Step 4（二つの項モデル）.** (a), (b), (d) と $C\neq\varnothing$ から、項モデル定理（\ref{logic:term-model}）により $\mathcal{L}_{1}'$ 構造 $\mathcal{M}_{1}\models\Delta_{1}^{\ast}$ と $\mathcal{L}_{2}'$ 構造 $\mathcal{M}_{2}\models\Delta_{2}^{\ast}$ が得られる。$\mathcal{M}_{i}$ での閉項 $t$ の同値類を $[t]_{i}$ と書く。
+
+**Step 5（元はすべて $C$ の名前をもつ）.** $\mathcal{L}_{1}'$ の閉項 $t$ について、$\vdash t=t$ と $\exists$I から $\Delta_{1}^{\ast}\vdash\exists x\,(x=t)$（$x\notin\mathrm{var}(t)$）、\ref{logic:complete-theory-properties} の 1 より $\exists x\,(x=t)\in\Delta_{1}^{\ast}$。(c) より、ある $d\in C$ で $(d=t)\in\Delta_{1}^{\ast}$、すなわち $[t]_{1}=[d]_{1}$。よって $M_{1}=\{[c]_{1}:c\in C\}$。同様に $M_{2}=\{[c]_{2}:c\in C\}$。
+
+**Step 6（対応 $h$）.** $h\colon M_{1}\to M_{2}$ を $h([c]_{1})\defeq[c]_{2}$（$c\in C$）で定める。$c,d\in C$ について、(e) を $\mathcal{L}_{0}'$ の文 $c=d$ に使うと
+$$
+[c]_{1}=[d]_{1}\iff(c=d)\in\Delta_{1}^{\ast}\iff(c=d)\in\Delta_{2}^{\ast}\iff[c]_{2}=[d]_{2}
+$$
+なので、$h$ は well-defined かつ単射であり、Step 5 より全射である。
+
+**Step 7（$h$ は $\mathcal{L}_{0}'$ の記号を保つ）.**
+- 定数記号 $e\in\mathcal{L}_{0}'$：Step 5 より $(e=c)\in\Delta_{1}^{\ast}$ となる $c\in C$ があり、(e) より $(e=c)\in\Delta_{2}^{\ast}$。よって $h(e^{\mathcal{M}_{1}})=h([e]_{1})=h([c]_{1})=[c]_{2}=[e]_{2}=e^{\mathcal{M}_{2}}$。
+- 関数記号 $f\in\mathcal{L}_{0}$（項数 $n$）と $c_{1},\dots,c_{n}\in C$：Step 5 より $(f(\vec{c})=d)\in\Delta_{1}^{\ast}$ となる $d\in C$ があり、(e) より $(f(\vec{c})=d)\in\Delta_{2}^{\ast}$。よって $h(f^{\mathcal{M}_{1}}([c_{1}]_{1},\dots))=h([d]_{1})=[d]_{2}=[f(\vec{c})]_{2}=f^{\mathcal{M}_{2}}([c_{1}]_{2},\dots)$。
+- 関係記号 $P\in\mathcal{L}_{0}$：$([c_{1}]_{1},\dots)\in P^{\mathcal{M}_{1}}\iff P(\vec{c})\in\Delta_{1}^{\ast}\iff P(\vec{c})\in\Delta_{2}^{\ast}\iff([c_{1}]_{2},\dots)\in P^{\mathcal{M}_{2}}$。
+
+Step 5 より $M_{1}$ の元はすべて $[c]_{1}$ の形なので、$h$ は $\mathcal{M}_{1}\restr{\mathcal{L}_{0}'}$ から $\mathcal{M}_{2}\restr{\mathcal{L}_{0}'}$ への同型写像である。
+
+**Step 8（貼り合わせ）.** $\mathcal{L}_{1}'\cup\mathcal{L}_{2}'$ 構造 $\mathcal{N}$ を、領域 $M_{2}$ とし、$\mathcal{L}_{2}'$ の記号は $\mathcal{M}_{2}$ と同じに、$\mathcal{L}_{1}'\setminus\mathcal{L}_{0}'$ の記号は $h$ で移して
+$$
+\begin{aligned}
+&e^{\mathcal{N}}\defeq h(e^{\mathcal{M}_{1}}),\qquad f^{\mathcal{N}}(\vec{b})\defeq h\bigl(f^{\mathcal{M}_{1}}(h^{-1}(b_{1}),\dots,h^{-1}(b_{n}))\bigr),\\
+&P^{\mathcal{N}}\defeq\{\vec{b}:(h^{-1}(b_{1}),\dots)\in P^{\mathcal{M}_{1}}\}
+\end{aligned}
+$$
+と定める。$\mathcal{L}_{1}'$ と $\mathcal{L}_{2}'$ に共通の記号は $\mathcal{L}_{0}'$ の記号なので、定義は矛盾しない。Step 7 と定義から $h$ は $\mathcal{M}_{1}$ から $\mathcal{N}\restr{\mathcal{L}_{1}'}$ への同型写像であり、$\mathcal{N}\restr{\mathcal{L}_{2}'}=\mathcal{M}_{2}$ である。\ref{logic:isomorphism-invariance} より $\mathcal{N}\restr{\mathcal{L}_{1}'}\models\Delta_{1}^{\ast}\supset T_{1}$、また $\mathcal{N}\restr{\mathcal{L}_{2}'}\models T_{2}$。\ref{logic:reduct-lemma} より $\mathcal{N}\models T_{1}\cup T_{2}$ であり、その $\mathcal{L}_{1}\cup\mathcal{L}_{2}$ への縮小が求めるモデルである。
+
+::: hypcheck
+- **分離不能性**：Step 3 (e) で共通の言語の文の判断が一致することを導くのに使い、それが Step 6–7 の同型の本質である。外すと偽：$T_{1}=\{P(c)\}$, $T_{2}=\{\neg P(c)\}$（$P,c\in\mathcal{L}_{0}$）は $P(c)$ で分離され、$T_{1}\cup T_{2}$ はモデルをもたない。
+- **共通の定数 $C$ を両方の言語に加えたこと**：Step 5–6。証拠を別々の定数にすると、二つの項モデルの元の対応が決まらない。
+- **ヘンキン的であること（(c)）**：Step 5 で、領域のすべての元が共通の名前 $c\in C$ をもつことに使った。これがないと $h$ が全域で定義できない。
+- **可算性**：Step 1 の数え上げ。選択公理は使っていない。
+- **カット除去は使っていない**：使ったのは自然演繹の派生規則、新しい定数についての一般化、項モデル定理（完全性定理の構成）だけである。
+:::
+:::
+
+::: supplement
+**完全性定理との関係.** $\mathcal{L}_{1}=\mathcal{L}_{2}=\mathcal{L}$, $T_{2}=\varnothing$ とすると、$(T_{1},\varnothing)$ が分離不能であることは「$T_{1}\vdash\theta$ かつ $\vdash\neg\theta$ となる文 $\theta$ がない」、すなわち $T_{1}$ が無矛盾であることと同値である（$T_{1}\vdash\bot$ なら $\bot$ が分離し、逆に $\theta$ が分離すれば $T_{1}\vdash\theta\wedge\neg\theta$）。このとき\ref{logic:inseparability-theorem}は、文の集合についてのモデル存在定理（\ref{logic:model-existence-sentences}）そのものである。\ref{logic:inseparability-theorem}は、完全性定理を「二つの言語の間の相対的な形」に拡張したものとみなせる。
+
+**高い視点.** Step 6–8 は、二つの構造が共通部分 $\mathcal{L}_{0}'$ 上で同型であるときに「押し出し」（二つを共通部分に沿って貼り合わせた構造）を作る操作である。言語の包含 $\mathcal{L}_{0}\subset\mathcal{L}_{1},\mathcal{L}_{2}$ と、モデルを縮小する操作の関係として、この種の「貼り合わせの性質」は、論理体系を抽象的に扱う理論（制度の理論など）で補間定理と結び付けて研究されている、とされる（本サイトでは未確認）。
+:::
+
+## クレイグの補間定理 {#logic:sec-craig}
+
+後半では、前半の \ref{logic:inseparability-theorem} を使って二つの定理を証明する。
+
+::: theorem クレイグの補間定理 {#logic:craig-interpolation keywords="Craig interpolation theorem, interpolant" index="クレイグの補間定理|くれいぐのほかんていり, 補間定理|ほかんていり, 補間式|ほかんしき"}
+$\varphi$ を $\mathcal{L}_{1}$ の文、$\psi$ を $\mathcal{L}_{2}$ の文とし、$\varphi\models\psi$ とする。このとき $\mathcal{L}_{0}$ の文 $\theta$ で
+$$
+\varphi\models\theta\qquad\text{かつ}\qquad\theta\models\psi
+$$
+を満たすものが存在する。このような $\theta$ を $\varphi$ と $\psi$ の**補間式**という。完全性定理により、$\models$ を $\vdash$ に置き換えてもよい。
+:::
+
+::: intuition
+$\varphi$ から $\psi$ が導かれるのは、両者が共有する語彙を通じてだけである、という主張である。$\varphi$ に固有の記号（$\psi$ に現れない記号）について $\varphi$ が述べていることは、$\psi$ を導くのには効かない。補間式 $\theta$ は、$\varphi$ の内容のうち $\psi$ を導くのに必要な部分を、共通の言葉だけで述べ直したものである。
+:::
+
+::: example
+1. $\varphi=P(c)\wedge Q(c)$、$\psi=\exists x\,(Q(x)\vee R(x))$ とする。共通の非論理記号は $Q$ だけで、$\theta=\exists x\,Q(x)$ が補間式である。$c$ は $\psi$ に現れないので、$Q(c)$ は補間式になれない。
+2. $\varphi=\neg\,c=d$（$c,d$ は定数記号）、$\psi=\exists x\,\exists y\,(\neg\,x=y\wedge\top)$ ならば、共通の非論理記号はないが、等号だけからなる $\theta=\exists x\,\exists y\,\neg\,x=y$ が補間式である。等号が論理記号であるために、共通の非論理記号がなくても意味のある補間式がある。
+3. $\varphi$ が充足可能でないなら $\theta=\bot$、$\psi$ が妥当なら $\theta=\top$ が補間式である。
+:::
+
+::: proof
+**Step 1（有限の言語への縮小）.** $\mathcal{K}_{1}$ を $\varphi$ に現れる非論理記号からなる言語、$\mathcal{K}_{2}$ を $\psi$ に現れる非論理記号からなる言語、$\mathcal{K}_{0}\defeq\mathcal{K}_{1}\cap\mathcal{K}_{2}\subset\mathcal{L}_{0}$ とする。$\mathcal{K}_{1},\mathcal{K}_{2}$ は有限なので可算である。
+
+**Step 2（$\{\varphi\}\cup\{\neg\psi\}$ はモデルをもたない）.** $\mathcal{K}_{1}\cup\mathcal{K}_{2}$ 構造 $\mathcal{M}$ が $\varphi\wedge\neg\psi$ を満たすとする。$\mathcal{M}$ の領域は空でないので、$(\mathcal{L}_{1}\cup\mathcal{L}_{2})\setminus(\mathcal{K}_{1}\cup\mathcal{K}_{2})$ の記号を任意に解釈して $\mathcal{L}_{1}\cup\mathcal{L}_{2}$ 構造 $\mathcal{M}'$ に拡大できる。\ref{logic:reduct-lemma} より $\mathcal{M}'\models\varphi$, $\mathcal{M}'\not\models\psi$ となり、$\varphi\models\psi$ に反する。
+
+**Step 3（分離）.** Step 2 と \ref{logic:inseparability-theorem}（言語 $\mathcal{K}_{1},\mathcal{K}_{2}$）の対偶により、$(\{\varphi\},\{\neg\psi\})$ は $\mathcal{K}_{0}$ について分離可能である。すなわち、$\mathcal{K}_{0}$ の文 $\theta$ で
+$$
+\{\varphi\}\vdash_{\mathcal{K}_{1}}\theta,\qquad\{\neg\psi\}\vdash_{\mathcal{K}_{2}}\neg\theta
+$$
+となるものがある。
+
+**Step 4（補間式）.** 後者から $\{\theta,\neg\psi\}\vdash\bot$（$\neg$E）、\ref{logic:consistency-basic} の 2 より $\{\theta\}\vdash\psi$。健全性定理より $\varphi\models\theta$, $\theta\models\psi$。$\theta$ は $\mathcal{K}_{0}\subset\mathcal{L}_{0}$ の文である。
+
+::: hypcheck
+- **\ref{logic:inseparability-theorem}**：Step 3。その証明はカット除去を使わず、完全性定理のヘンキン構成を二つの言語で同時に行うものだった。したがって、補間定理の本証明は意味論的な証明である。
+- **有限の言語への縮小**：Step 1 により、$\mathcal{L}_{1},\mathcal{L}_{2}$ がどんなに大きくても、可算の場合の \ref{logic:inseparability-theorem}で足りる。このため選択公理は使っていない。
+- **$\varphi,\psi$ が文であること**：自由変数を含む論理式の場合は、共通の自由変数だけを含む補間式を求めるのが自然な形である。その証明には、束縛変数を付け替えて自由変数と衝突しないようにする操作（α 同値の議論）が要るので、本系列では扱わない（\ref{pt:page-alpha-equivalence}）。
+:::
+:::
+
+::: supplement
+**証明論的な証明.** 補間定理には、カット除去定理を使って、カットのない導出の構造に関する帰納法で補間式を具体的に組み立てる証明もある（前原の方法。\ref{pt:maehara-interpolation}、証明体系とカット除去の系列で扱う予定）。そちらの証明は補間式を導出から計算でき、$\theta$ の中で関係記号が正の位置・負の位置のどちらに現れるかまで制御できる（リンドンの補間定理）。本ページの証明は存在を示すだけである。
+
+**ベートの定義可能性定理.** 補間定理の重要な応用に、「関係記号 $P$ が理論 $T$ のすべてのモデルで他の記号から一通りに決まる（暗黙的に定義される）ならば、$P$ は他の記号の論理式で明示的に定義される」というベートの定義可能性定理がある。証明は \ref{pt:beth-definability} で、本ページの補間定理から導く。
+:::
+
+## ロビンソンの統合無矛盾性定理 {#logic:sec-robinson}
+
+::: theorem ロビンソンの統合無矛盾性定理 {#logic:robinson-joint-consistency keywords="Robinson consistency theorem, Robinson joint consistency theorem" index="ロビンソンの統合無矛盾性定理|ろびんそんのとうごうむむじゅんせいていり, 統合無矛盾性定理|とうごうむむじゅんせいていり"}
+$T_{1}$ を $\mathcal{L}_{1}$ の文の無矛盾な集合、$T_{2}$ を $\mathcal{L}_{2}$ の文の無矛盾な集合とし、$\mathcal{L}_{0}$ の文の集合 $T$ で次を満たすものがあるとする。
+- $T$ は無矛盾かつ（$\mathcal{L}_{0}$ で）完全である。
+- $T\subset T_{1}$ かつ $T\subset T_{2}$。
+
+このとき $T_{1}\cup T_{2}$ は無矛盾である（すなわち $\mathcal{L}_{1}\cup\mathcal{L}_{2}$ 構造のモデルをもつ）。
+:::
+
+::: intuition
+$T_{1}$ と $T_{2}$ が共通の言語について述べることが、完全な理論 $T$ によってすべて決まっているなら、両者は共通の言葉では対立しえない。対立しえないなら（分離不能なら）両者を合わせてもよい、というのが\ref{logic:inseparability-theorem}であった。
+:::
+
+::: proof
+$\mathcal{L}_{1},\mathcal{L}_{2}$ が可算な場合は、\ref{logic:inseparability-theorem} から直接示せる。$(T_{1},T_{2})$ が $\mathcal{L}_{0}$ の文 $\theta$ で分離されたとすると、$T$ の完全性より $T\vdash\theta$ か $T\vdash\neg\theta$ である。前者なら $T\subset T_{2}$ より $T_{2}\vdash\theta$ と $T_{2}\vdash\neg\theta$ で $T_{2}$ が矛盾し、後者なら同様に $T_{1}$ が矛盾する。よって分離不能であり、\ref{logic:inseparability-theorem}から $T_{1}\cup T_{2}$ はモデルをもつ。
+
+一般の言語の場合は、補間定理とコンパクト性定理を使う。
+
+**Step 1（有限部分への帰着）.** $T_{1}\cup T_{2}$ がモデルをもたないと仮定する。コンパクト性定理（\ref{logic:compactness}）より、有限集合 $F_{1}\subset T_{1}$, $F_{2}\subset T_{2}$ で $F_{1}\cup F_{2}$ がモデルをもたないものがある。すなわち $\bigwedge F_{1}\models\neg\bigwedge F_{2}$（\ref{logic:reduct-lemma} で $\mathcal{L}_{1}\cup\mathcal{L}_{2}$ 構造について考える）。
+
+**Step 2（補間）.** $\bigwedge F_{1}$ は $\mathcal{L}_{1}$ の文、$\neg\bigwedge F_{2}$ は $\mathcal{L}_{2}$ の文なので、補間定理より $\mathcal{L}_{0}$ の文 $\theta$ で $\bigwedge F_{1}\models\theta$, $\theta\models\neg\bigwedge F_{2}$ となるものがある。
+
+**Step 3（完全性による場合分け）.** $T$ は完全なので $T\vdash\theta$ か $T\vdash\neg\theta$。
+- $T\vdash\theta$ のとき：$T\subset T_{2}$ と健全性定理より $T_{2}\models\theta$、よって $T_{2}\models\neg\bigwedge F_{2}$。一方 $F_{2}\subset T_{2}$ より $T_{2}\models\bigwedge F_{2}$。したがって $T_{2}$ はモデルをもたず、完全性定理より $T_{2}$ は矛盾する。これは仮定に反する。
+- $T\vdash\neg\theta$ のとき：同様に $T_{1}\models\neg\theta$ と $T_{1}\models\bigwedge F_{1}\models\theta$ から $T_{1}$ が矛盾する。
+
+::: hypcheck
+- **$T$ の完全性**：Step 3 の場合分け（および可算の場合の証明）で本質的に使った。外すと偽：$\mathcal{L}_{0}=\{P\}$, $T=\varnothing$, $T_{1}=\{\forall x\,P(x)\}$, $T_{2}=\{\neg\forall x\,P(x)\}$（$\mathcal{L}_{1}=\mathcal{L}_{2}=\mathcal{L}_{0}$ でもよい）。どちらも無矛盾だが和は矛盾する。
+- **$T\subset T_{1}$ かつ $T\subset T_{2}$**：Step 3 の両方の場合。片方にしか含まれないと偽：$\mathcal{L}_{0}=\mathcal{L}_{1}=\mathcal{L}_{2}=\{P\}$、$T=T_{1}=\{\forall x\,P(x),\forall x\,\forall y\,x=y\}$（一点の構造だけをモデルにもち、どのモデルも同型なので完全）、$T_{2}=\{\neg\forall x\,P(x)\}$。$T\not\subset T_{2}$ で、和は矛盾する。
+- **$T_{1},T_{2}$ の無矛盾性**：結論の矛盾を導く相手として使った。
+- **選択公理**：一般の言語では Step 1 のコンパクト性定理（\ref{logic:completeness} を経由）で使う。可算な言語では使わない。
+:::
+:::
+
+## 二つの定理の同値性 {#logic:sec-craig-robinson-equivalence}
+
+上ではロビンソンの定理を補間定理から導いた。逆に、ロビンソンの定理から補間定理を導くこともできる。本系列では両方とも\ref{logic:inseparability-theorem}から独立に導いたので、以下の議論は循環ではなく、二つの定理が同じ強さであることの確認である。
+
+::: proposition 統合無矛盾性定理から補間定理へ {#logic:robinson-implies-craig}
+コンパクト性定理とロビンソンの統合無矛盾性定理を仮定すると、クレイグの補間定理が導かれる。
+:::
+
+::: proof
+$\varphi\models\psi$（$\varphi$ は $\mathcal{L}_{1}$ の文、$\psi$ は $\mathcal{L}_{2}$ の文）で、補間式がないと仮定して矛盾を導く。$\varphi$ が充足可能でなければ $\bot$ が補間式なので、$\varphi$ は充足可能としてよい。
+
+**Step 1.** $T_{0}\defeq\{\theta:\theta\text{ は }\mathcal{L}_{0}\text{ の文で }\varphi\models\theta\}$ とおく。$T_{0}\cup\{\neg\psi\}$ は充足可能である。実際、そうでなければコンパクト性定理より有限個の $\theta_{1},\dots,\theta_{k}\in T_{0}$ で $\{\theta_{1},\dots,\theta_{k},\neg\psi\}$ が充足可能でないものがあり、$\theta\defeq\theta_{1}\wedge\cdots\wedge\theta_{k}$（$k=0$ なら $\top$）は $\varphi\models\theta$, $\theta\models\psi$ を満たす補間式になってしまう。
+
+**Step 2.** $\mathcal{M}$ を $T_{0}\cup\{\neg\psi\}$ を充足する $\mathcal{L}_{2}$ 構造とし、$T\defeq\{\sigma:\sigma\text{ は }\mathcal{L}_{0}\text{ の文で }\mathcal{M}\models\sigma\}$ とおく。$T$ は $\mathcal{M}\restr{\mathcal{L}_{0}}$ をモデルにもつので無矛盾であり、任意の $\mathcal{L}_{0}$ の文 $\sigma$ について $\sigma\in T$ か $\neg\sigma\in T$ なので完全である。また $T_{0}\subset T$。
+
+**Step 3.** $T\cup\{\varphi\}$ は充足可能である。実際、そうでなければコンパクト性定理より有限個の $\sigma_{1},\dots,\sigma_{k}\in T$ で $\varphi\models\neg(\sigma_{1}\wedge\cdots\wedge\sigma_{k})$。$k=0$ なら $\varphi$ が充足可能でないことになり仮定に反する。$k\ge 1$ なら $\neg(\sigma_{1}\wedge\cdots\wedge\sigma_{k})\in T_{0}\subset T$ となるが、$\mathcal{M}\models\sigma_{1}\wedge\cdots\wedge\sigma_{k}$ なので $\mathcal{M}\not\models\neg(\sigma_{1}\wedge\cdots\wedge\sigma_{k})$ であり、$T$ の定義に反する。
+
+**Step 4.** $T_{1}\defeq T\cup\{\varphi\}$（$\mathcal{L}_{1}$）と $T_{2}\defeq T\cup\{\neg\psi\}$（$\mathcal{L}_{2}$、$\mathcal{M}$ がモデル）はともに無矛盾で、完全な $T$ を共通に含む。ロビンソンの定理より $T_{1}\cup T_{2}$ はモデルをもち、そのモデルで $\varphi$ が真で $\psi$ が偽である。これは $\varphi\models\psi$ に反する。
+:::
+
+::: supplement
+**まとめ.** 本系列での依存関係は次のとおりである。
+
+$$
+\begin{aligned}
+&\text{完全性定理の構成}\ \Longrightarrow\ \text{分離の補題}\\
+&\qquad\Longrightarrow\ \begin{cases}\text{クレイグの補間定理}\\[2pt]\text{ロビンソンの統合無矛盾性定理}\end{cases}
+\end{aligned}
+$$
+
+完全性定理とコンパクト性定理のもとでは、補間定理と統合無矛盾性定理は互いに導き合う（\ref{logic:robinson-implies-craig} と、上の統合無矛盾性定理の一般の場合の証明）。\ref{logic:inseparability-theorem}自体も、補間定理から「分離不能なら $T_{1}\cup T_{2}$ の有限部分集合は充足可能」を示してコンパクト性定理を使えば導ける。三つは同じ現象の異なる言い表し方である。
+
+**高い視点.** 統合無矛盾性定理は、共通の言語の完全な理論を「共通の土台」として、二つの理論のモデルを一つに合わせられるという**融合**の性質である。モデル理論では、この種の性質は初等拡大の融合（アマルガメーション）として一般化される（\ref[初等部分構造と初等拡大]{model:elementary-substructure}）。
+:::
+
+## 問題 {#logic:sec-craig-problems}
+
+
+::: problem {#logic:prob-inseparable-example}
+$\mathcal{L}_{1}=\{P,Q\}$, $\mathcal{L}_{2}=\{Q,R\}$（すべて項数 $1$）、$T_{1}=\{\forall x\,(P(x)\to Q(x)),\exists x\,P(x)\}$, $T_{2}=\{\forall x\,(Q(x)\to R(x)),\forall x\,\neg R(x)\}$ とする。$(T_{1},T_{2})$ を分離する $\mathcal{L}_{0}=\{Q\}$ の文を見つけよ。
+:::
+
+::: solution
+$\theta=\exists x\,Q(x)$。$T_{1}\vdash\exists x\,Q(x)$（$P(x)\to Q(x)$ と $\exists$E, $\exists$I）、$T_{2}\vdash\forall x\,\neg Q(x)$（$Q(x)\to R(x)$ と $\neg R(x)$ から $\neg Q(x)$、$\forall$I）なので $T_{2}\vdash\neg\exists x\,Q(x)$。実際 $T_{1}\cup T_{2}$ はモデルをもたない。
+:::
+
+::: problem {#logic:prob-inseparable-equality}
+$\mathcal{L}_{0}$ に非論理記号がなくても、分離する文として等号を含む文が必要になる例を挙げよ。
+:::
+
+::: solution
+$\mathcal{L}_{1}=\{c,d\}$（定数）、$\mathcal{L}_{2}=\{P\}$（項数 $1$）、$T_{1}=\{\neg\,c=d\}$, $T_{2}=\{\forall x\,\forall y\,x=y\}$ とする。$\mathcal{L}_{0}$ は非論理記号をもたない。$T_{1}\vdash\exists x\,\exists y\,\neg\,x=y$、$T_{2}\vdash\neg\exists x\,\exists y\,\neg\,x=y$ なので、この文が分離する。$\bot$ や $\top$ では分離できない（$T_{1},T_{2}$ はそれぞれ無矛盾）。
+:::
+
+
+::: problem {#logic:prob-craig-find}
+次の $\varphi\models\psi$ について補間式を一つ求めよ。
+1. $\varphi=\forall x\,(P(x)\to Q(x))\wedge P(c)$、$\psi=\exists y\,(Q(y)\vee R(y))$。
+2. $\varphi=\forall x\,\forall y\,(f(x)=f(y)\to x=y)\wedge\exists x\,\forall y\,\neg\,f(y)=x$、$\psi=\neg\exists x\,\exists y\,\forall z\,(z=x\vee z=y)$（$\varphi$ は「$f$ が単射で全射でない」、$\psi$ は「元が二個以下ではない」）。
+:::
+
+::: solution
+1. 共通の非論理記号は $Q$。$\theta=\exists y\,Q(y)$。$\varphi\models Q(c)\models\exists y\,Q(y)$、$\exists y\,Q(y)\models\psi$。
+2. 共通の非論理記号はない。「単射で全射でない写像がある」ことから領域は無限なので、$\varphi\models\lambda_{3}$（「少なくとも三個の元がある」、\ref{logic:ex-finiteness}）であり、$\lambda_{3}\models\psi$。よって $\theta=\lambda_{3}=\exists x_{1}\,\exists x_{2}\,\exists x_{3}\,(\neg\,x_{1}=x_{2}\wedge\neg\,x_{1}=x_{3}\wedge\neg\,x_{2}=x_{3})$。
+:::
+
+::: problem {#logic:prob-craig-no-common}
+$\mathcal{L}_{1}$ と $\mathcal{L}_{2}$ に共通の非論理記号がないとき、$\varphi\models\psi$ ならば、$\varphi$ が充足可能でないか、$\psi$ が「元の個数」だけで決まるある性質を満たす（すなわち、等号だけの文 $\theta$ で $\varphi\models\theta\models\psi$ となる）ことを確かめよ。とくに、等号を含まない論理では「$\varphi$ が充足可能でないか $\psi$ が妥当」となることを示せ。
+:::
+
+::: solution
+前半は補間定理そのものである（$\mathcal{L}_{0}$ の文は等号だけで書かれ、その真偽は領域の濃度だけで決まる）。等号を含まない論理では、非論理記号をもたない文は $\bot$ と $\to$ と量化子だけから作られ、どの構造でも同じ真偽をもつ（論理式に関する帰納法で、$\bot$ は偽、量化子は領域が空でないので真偽を変えない）。よって補間式 $\theta$ は常に真か常に偽であり、前者なら $\psi$ は妥当、後者なら $\varphi$ は充足可能でない。
+:::
+
+::: problem {#logic:prob-robinson-counterexample}
+ロビンソンの統合無矛盾性定理で、「$T$ が完全」を「$T_{1}$ と $T_{2}$ の $\mathcal{L}_{0}$ の帰結が一致する」に置き換えると、結論は成り立つか。
+:::
+
+::: solution
+成り立つ。$T\defeq\{\sigma\in\mathrm{Sent}_{\mathcal{L}_{0}}:T_{1}\models\sigma\}$ とおくと仮定より $T_{2}$ の $\mathcal{L}_{0}$ の帰結とも一致する。$(T_{1},T_{2})$ が $\theta$ で分離されたとすると $T_{1}\models\theta$ なので $T_{2}\models\theta$、かつ $T_{2}\models\neg\theta$ で $T_{2}$ は矛盾する。よって（可算の場合）\ref{logic:inseparability-theorem}から $T_{1}\cup T_{2}$ はモデルをもつ（一般の場合は補間定理とコンパクト性で同様）。ただしこの条件は、$T_{1}$ の $\mathcal{L}_{0}$ の帰結全体が完全であることを要求していない点で元の定理とは形が異なる。元の定理はこの形の特別な場合である（$T$ が完全なら、$T_{i}$ の $\mathcal{L}_{0}$ の帰結はどちらも $T$ の帰結に一致する）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

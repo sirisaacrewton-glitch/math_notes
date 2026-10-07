@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>アルテモフの定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/05-quantified-provability-logic/02-artemov.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# アルテモフの定理 {#pt:page-artemov keywords="Artemov's theorem, always true sentences are not arithmetical, arithmetic in the predicate calculus, flattening, representation of numbers, Tennenbaum's theorem, Artemov's lemma"}
+
+**アルテモフの定理**（\ref{pt:artemov-theorem}）：常に真な QML の文の集合は算術的でない。証明の考え方は、算術の文 $S$ を、述語記号 $Z,E,S,A,M$（零・等号・後者・和・積）についての QML の文 $\{S\}$ に書き直し、「述語記号の解釈が自然数の標準的な模型を与える」ことを強制する QML の文 $\{T\}\wedge D$ を前に付けることにある。前者 $\{T\}$ は算術の有限個の定理を書き直したもので、解釈を「標準モデルを初期部分にもつ模型」にする。後者 $D$ は様相を使って、解釈された関係が**計算可能**であることを強制し、テネンバウムの定理の議論によって模型が標準モデルそのものになることを導く（\ref{pt:artemov-lemma-8}）。こうして、$S$ が真であることと $\{T\}\wedge D\to\{S\}$ が常に真であることが同値になり（\ref{pt:artemov-theorem}）、タルスキの定理から結論が従う。
+
+## 記法と定義の確認 {#pt:sec-artemov-notation}
+
+::: notation
+- QML、実現 $\ast$、翻訳 $F^{\ast}$、常に真・常に証明可能は \ref{pt:page-quantified-provability-logic} のとおり（\ref{pt:qml-realization}）。
+- $\PA$、Σ 論理式、Σ 完全性（\ref{pt:sigma-completeness}）、有限列のコード $\mathrm{FinSeq}(s)$, $\mathrm{lh}(s)$, $s_{i}$（\ref{pt:finseq}, \ref{pt:sequence-operations}）、β 関数の補題（\ref{pt:beta-lemma}）、$\mathrm{Bew}[\cdot]$ とその性質、タルスキの定理は不完全性定理の系列のとおり。$x<y$ は $\exists z\,(x+Sz=y)$ の略記。
+- 太字でない $T$ は算術の文（下で定める）、$\{\cdot\}$ は算術の論理式から QML の論理式への変換（下で定める）を表す。
+- **本ページの水準.** 以下の補題の多くは「$\PA$ の中で議論する」形の証明で、$\PA$ の中での帰納法と有限列の操作を使う。とくに \ref{pt:artemov-lemma-7}, \ref{pt:artemov-lemma-8} では、チューリング機械と証明探索についての計算可能性の基本事実（Σ 論理式で定義される関係を認識する機械の存在など）を $\PA$ の中で形式化したものを使う。その形式化は定型的だが長いので、本サイトでは Boolos と同じく要点を述べる。
+:::
+
+## 算術の書き直し {#pt:sec-artemov-translation}
+
+::: definition 平坦化と括弧変換 {#pt:flattening keywords="flattening of arithmetical formulas, braced translation into predicate letters" index="平坦化（算術の論理式）|へいたんかさんじゅつのろんりしき"}
+$G$ を 1 項述語記号とし、$\mathcal{L}^{+}\defeq\mathcal{L}_{\mathrm{ar}}\cup\{G\}$ とする。$Z$（1 項）、$E,S$（2 項）、$A,M$（3 項）を $G$ と異なる述語記号とする。
+1. 項 $t$ と変数 $w$（$t$ に現れない）について、論理式 $\Phi_{t}(w)$（「$t=w$」の平坦な形）を次で定める：$\Phi_{x}(w)\defeq x=w$、$\Phi_{0}(w)\defeq0=w$、$\Phi_{St}(w)\defeq\exists u\,(\Phi_{t}(u)\wedge Su=w)$、$\Phi_{t+s}(w)\defeq\exists u\,\exists u'\,(\Phi_{t}(u)\wedge\Phi_{s}(u')\wedge u+u'=w)$、$\Phi_{t\cdot s}(w)$ も同様（$u,u'$ は新しい変数）。
+2. 原子論理式の平坦化を $\widehat{t=s}\defeq\exists w\,(\Phi_{t}(w)\wedge\Phi_{s}(w))$、$\widehat{Gt}\defeq\exists w\,(\Phi_{t}(w)\wedge Gw)$ とし、$\widehat{\phantom{F}}$ を論理結合子と量化子と可換に延ばす。$\hat{F}$ の原子論理式は次の 6 種類だけである：
+$$
+u=v,\quad0=u,\quad Su=v,\quad u+v=w,\quad u\cdot v=w,\quad Gu\qquad(u,v,w\text{ は変数}).
+$$
+$\PA\vdash\forall\vec{x}\,(F\leftrightarrow\hat{F})$（$G$ を含む場合は述語論理と等号の公理で）。
+3. $\hat{F}$ の原子論理式 $u=v$, $0=u$, $Su=v$, $u+v=w$, $u\cdot v=w$ をそれぞれ $Euv$, $Zu$, $Suv$, $Auvw$, $Muvw$ に置き換えた（$Gu$ はそのまま）純粋な述語論理の論理式を $\{F\}$ と書く。$\mathrm{FV}(\{F\})=\mathrm{FV}(F)$。
+:::
+
+::: definition 文 $T$ {#pt:artemov-T}
+算術の文 $T$ を、$\PA$ の次の定理の連言とする（すべて 6 種類の原子論理式で書いておく。$\{T\}$ はそれを括弧変換したもの）。
+- (T1) $=$ は同値関係で、$0=\cdot$, $S$, $+$, $\cdot$ の各原子論理式は $=$ で置き換えても真偽が変わらない（合同性）。
+- (T2) $\exists x\,0=x$、$\forall x\,\exists y\,Sx=y$、$\forall x\,\forall y\,\exists z\,x+y=z$、$\forall x\,\forall y\,\exists z\,x\cdot y=z$ と、これらの一意性（たとえば $0=x\wedge0=y\to x=y$, $Sx=y\wedge Sx=y'\to y=y'$）。
+- (T3) $\neg(Sx=y\wedge0=y)$、$Sx=z\wedge Sx'=z\to x=x'$（後者関数の性質）。
+- (T4) 加法・乗法の再帰式：$0=y\to(x+y=z\leftrightarrow x=z)$、$Sy=y'\wedge x+y=z\wedge Sz=z'\to x+y'=z'$、$0=y\to(x\cdot y=z\leftrightarrow0=z)$、$Sy=y'\wedge x\cdot y=z\wedge z+x=w\to x\cdot y'=w$（自由変数は全称閉包をとる）。
+- (T5) 順序の性質：$\forall z\,\neg z<0$、$Sx=x'\to(z<x'\leftrightarrow z<x\vee z=x)$、$0=x\vee0<x$、$x<x'\wedge Sx=y\to y<x'\vee y=x'$。
+- (T6) $\forall x\,\neg(C_{0}(x)\wedge C_{1}(x))$、(T7) β 関数の文 $S_{\beta}$、(T8) $\forall a\,\forall b\,\forall j\,(0<b\to\neg(B_{0}(a,b,j)\wedge B_{1}(a,b,j)))$。（$C_{0},C_{1},S_{\beta},B_{0},B_{1}$ は \ref{pt:artemov-lemma-8} で定める。）
+:::
+
+::: definition 表現関係 {#pt:artemov-representation}
+実現 $\ast$ について、算術の論理式
+$$
+\begin{aligned}
+R(x,y)\defeq\exists s\,\bigl(&\mathrm{FinSeq}(s)\wedge\mathrm{lh}(s)=x+1\wedge s_{x}=y\\
+&\wedge Z^{\ast}(s_{0})\wedge\forall z<x\ S^{\ast}(s_{z},s_{z+1})\bigr)
+\end{aligned}
+$$
+を考える（「$y$ は $\ast$ の定める模型の中で $x$ を表す」）。組については $R(\vec{x},\vec{y})\defeq R(x_{1},y_{1})\wedge\dots\wedge R(x_{n},y_{n})$。
+:::
+
+## 模型の初期部分 {#pt:sec-artemov-initial}
+
+以下 $\ast$ を任意の実現とし、「$\PA\vdash$」の主張では $\PA$ の中で議論する。$\{T\}^{\ast}$ を仮定すると、(T1)〜(T5) の括弧変換の翻訳、たとえば「$E^{\ast}$ は同値関係」「$S^{\ast}$ は全域で $E^{\ast}$ について関数的・単射」「$\neg(S^{\ast}(x,y)\wedge Z^{\ast}(y))$」などが使える。
+
+::: lemma 表現の存在と同値類 {#pt:artemov-lemma-1}
+1. $\PA\vdash\{T\}^{\ast}\to\forall x\,\exists y\,R(x,y)$。
+2. $\PA\vdash\{T\}^{\ast}\wedge R(x,y)\wedge E^{\ast}(y,y')\to R(x,y')$。
+3. $\PA\vdash\{T\}^{\ast}\wedge R(x,y)\wedge R(x',y')\to(x=x'\leftrightarrow E^{\ast}(y,y'))$。
+4. $\PA\vdash\{T\}^{\ast}\wedge R(x,y)\to(x=0\leftrightarrow Z^{\ast}(y))$。
+:::
+
+::: proof
+1. $x$ に関する帰納法。$x=0$：$\{T\}^{\ast}$ の $\exists x\,Z^{\ast}(x)$ から $y$ をとり、長さ $1$ の列 $(y)$。$x\to x+1$：$R(x,y)$ の証拠の列 $s$ と、$S^{\ast}$ の全域性から $S^{\ast}(y,y')$ となる $y'$ をとり、$s$ を $y'$ で延ばす。
+2. $x$ に関する帰納法。$x=0$：$Z^{\ast}(y)$ と $E^{\ast}(y,y')$ から合同性で $Z^{\ast}(y')$。$x+1$：$R(x+1,y)$ の列の最後の一つ前 $u=s_{x}$ について $S^{\ast}(u,y)$ で、合同性より $S^{\ast}(u,y')$。列の最後を $y'$ に取り替えれば $R(x+1,y')$。
+4. $x=0$ なら定義から $Z^{\ast}(y)$。$x=x_{0}+1$ なら $S^{\ast}(s_{x_{0}},y)$ で、$\neg(S^{\ast}\wedge Z^{\ast})$ より $\neg Z^{\ast}(y)$。
+3. まず「$R(x,y)\wedge R(x,y')\to E^{\ast}(y,y')$」を $x$ に関する帰納法で示す：$x=0$ は $Z^{\ast}$ の一意性。$x+1$ では、列の一つ前の $u,u'$ について帰納法の仮定で $E^{\ast}(u,u')$、合同性で $S^{\ast}(u,y')$、関数性で $E^{\ast}(y,y')$。これで $\Rightarrow$ が従う。$\Leftarrow$ は $x$ に関する帰納法（$x',y,y'$ について全称）：$x=0$ なら $Z^{\ast}(y)$, $E^{\ast}(y,y')$ から $Z^{\ast}(y')$ で、4 より $x'=0$。$x=x_{0}+1$ なら $S^{\ast}(u,y)$, $R(x_{0},u)$。$x'=0$ なら $Z^{\ast}(y')$ から $Z^{\ast}(y)$ となり $\neg(S^{\ast}\wedge Z^{\ast})$ に反する。$x'=x'_{0}+1$ なら $S^{\ast}(u',y')$, $R(x'_{0},u')$ で、$E^{\ast}(y,y')$ と合同性から $S^{\ast}(u',y)$、単射性から $E^{\ast}(u,u')$、帰納法の仮定から $x_{0}=x'_{0}$。
+:::
+
+::: lemma 項の表現 {#pt:artemov-terms}
+項 $t(\vec{x})$ について $\PA\vdash\{T\}^{\ast}\wedge R(\vec{x},\vec{y})\to\forall w\,(\{\Phi_{t}\}^{\ast}(\vec{y},w)\leftrightarrow R(t(\vec{x}),w))$。とくに、原子論理式 $t=s$ について $\PA\vdash\{T\}^{\ast}\wedge R(\vec{x},\vec{y})\to(t=s\leftrightarrow\{t=s\}^{\ast}(\vec{y}))$。
+:::
+
+::: proof
+$t$ に関する帰納法。
+- $t=x_{i}$：$\{\Phi_{t}\}^{\ast}(\vec{y},w)=E^{\ast}(y_{i},w)$ で、\ref{pt:artemov-lemma-1} の 2, 3 より $R(x_{i},w)$ と同値。
+- $t=0$：$Z^{\ast}(w)\iff R(0,w)$（長さ $1$ の列）。
+- $t=St'$：$\exists u\,(R(t'(\vec{x}),u)\wedge S^{\ast}(u,w))\iff R(St'(\vec{x}),w)$（$\Rightarrow$ は列の延長、$\Leftarrow$ は列の最後の一つ前をとる）。
+- $t=t_{1}+t_{2}$：まず「$R(x,y)\wedge R(x',y')\wedge A^{\ast}(y,y',w)\to R(x+x',w)$」を $x'$ に関する帰納法で示す。$x'=0$：$Z^{\ast}(y')$ と (T4) の翻訳より $E^{\ast}(y,w)$、\ref{pt:artemov-lemma-1} の 2 で $R(x,w)$。$x'+1$：$R(x',u)$, $S^{\ast}(u,y')$ となる $u$、$A^{\ast}(y,u,w_{0})$ となる $w_{0}$、$S^{\ast}(w_{0},w_{1})$ となる $w_{1}$ をとる。帰納法の仮定で $R(x+x',w_{0})$、列の延長で $R(x+x'+1,w_{1})$。(T4) の翻訳で $A^{\ast}(y,y',w_{1})$、関数性で $E^{\ast}(w,w_{1})$、よって $R(x+(x'+1),w)$。これで $\Rightarrow$ が従う。$\Leftarrow$：$R(t_{1},u)$, $R(t_{2},u')$ となる $u,u'$（\ref{pt:artemov-lemma-1} の 1）と $A^{\ast}(u,u',w')$ となる $w'$ をとると、$\Rightarrow$ より $R(t_{1}+t_{2},w')$、\ref{pt:artemov-lemma-1} の 3 より $E^{\ast}(w,w')$、合同性で $A^{\ast}(u,u',w)$。
+- $t=t_{1}\cdot t_{2}$：同様（(T4) の乗法の再帰式と加法の場合を使う）。
+
+原子論理式：$\{t=s\}^{\ast}(\vec{y})\iff\exists w\,(R(t,w)\wedge R(s,w))$ で、\ref{pt:artemov-lemma-1} の 1, 3 より $t=s$ と同値。
+:::
+
+::: lemma $E$ についての不変性 {#pt:artemov-invariance}
+$\mathcal{L}_{\mathrm{ar}}$ の論理式 $F(\vec{x},z)$ について $\PA\vdash\{T\}^{\ast}\wedge E^{\ast}(z,z')\to(\{F\}^{\ast}(\vec{y},z)\leftrightarrow\{F\}^{\ast}(\vec{y},z'))$。
+:::
+
+::: proof
+$\{F\}$ の構成に関する帰納法。原子論理式は (T1) の翻訳（$E^{\ast}$ は同値関係で、各関係はその合同関係）。論理結合子と量化子は帰納法の仮定。
+:::
+
+::: lemma 全射性のもとでの一致 {#pt:artemov-lemma-4}
+$\mathcal{L}_{\mathrm{ar}}$ の論理式 $F(\vec{x})$ について
+$$
+\PA\vdash\{T\}^{\ast}\wedge\forall y\,\exists x\,R(x,y)\wedge R(\vec{x},\vec{y})\to(F(\vec{x})\leftrightarrow\{F\}^{\ast}(\vec{y})).
+$$
+:::
+
+::: proof
+$\hat{F}$ の構成に関する帰納法（$\PA\vdash F\leftrightarrow\hat{F}$）。原子論理式は \ref{pt:artemov-terms}。論理結合子は帰納法の仮定。$\exists x\,F'$：$F'(\vec{x},x)$ なら \ref{pt:artemov-lemma-1} の 1 で $R(x,y)$ となる $y$ をとり、帰納法の仮定で $\{F'\}^{\ast}(\vec{y},y)$。逆に $\{F'\}^{\ast}(\vec{y},y)$ なら、仮定 $\forall y\,\exists x\,R(x,y)$ で $R(x,y)$ となる $x$ をとり、帰納法の仮定で $F'(\vec{x},x)$。
+:::
+
+::: lemma Σ 論理式の上方への保存 {#pt:artemov-lemma-6}
+変数を上限とする有界量化子だけを使う狭義の Σ 論理式 $F(\vec{x})$（\ref{pt:sigma-formula}。$\forall z<t$ は $\exists w\,(w=t\wedge\forall z<w)$ と書き直して、上限が変数であるとしてよい）について
+$$
+\PA\vdash\{T\}^{\ast}\wedge R(\vec{x},\vec{y})\to(F(\vec{x})\to\{F\}^{\ast}(\vec{y})).
+$$
+:::
+
+::: proof
+$F$ の構成に関する帰納法。原子論理式とその否定は \ref{pt:artemov-terms}（同値なので否定も扱える）。$\wedge,\vee$ は帰納法の仮定。$\exists x\,F'$ は \ref{pt:artemov-lemma-4} の証明の前半（\ref{pt:artemov-lemma-1} の 1 だけを使う）。
+
+$\forall z<x\,F'(\vec{x},x,z)$：$\{\forall z<x\,F'\}=\forall z\,(z\{<\}x\to\{F'\})$ である。$x$ に関する $\PA$ の中の帰納法で「$R(x,y)$ かつ $\forall z<x\,F'$ なら $\forall z\,(z\{<\}^{\ast}y\to\{F'\}^{\ast}(\vec{y},y,z))$」を示す。$x=0$：$Z^{\ast}(y)$ で、(T5) の $\forall z\,\neg z<0$ の翻訳より $z\{<\}^{\ast}y$ となる $z$ はない。$x=x_{0}+1$：$R(x_{0},y_{0})$, $S^{\ast}(y_{0},y)$ となる $y_{0}$ をとる。(T5) の翻訳より、$z\{<\}^{\ast}y$ なら $z\{<\}^{\ast}y_{0}$ か $E^{\ast}(z,y_{0})$。前者は帰納法の仮定（$\forall z<x_{0}\,F'$ は仮定から従う）で $\{F'\}^{\ast}(\ldots,z)$。後者は、$F'(\vec{x},x,x_{0})$ と帰納法の仮定（$F'$ について、$R(x_{0},y_{0})$）で $\{F'\}^{\ast}(\ldots,y_{0})$、\ref{pt:artemov-invariance} で $\{F'\}^{\ast}(\ldots,z)$。（$R(x,y)$ の $y$ は $\{F'\}$ の中で動かないので、外側の変数 $x$ についての $R$ を保ったまま帰納法を回す。）
+:::
+
+## 様相による計算可能性の強制 {#pt:sec-artemov-modal}
+
+::: definition 文 $D$ {#pt:artemov-D}
+QML の文 $D$ を次の連言とする。
+$$
+\begin{aligned}
+&\Diamond\top\wedge\forall x\,(Zx\to\Box Zx)\wedge\forall x\,(\neg Zx\to\Box\neg Zx)\\
+&\wedge\forall x\,\forall y\,(Exy\to\Box Exy)\wedge\forall x\,\forall y\,(\neg Exy\to\Box\neg Exy)\\
+&\wedge(S\text{ について同様})\wedge(A\text{ について同様})\wedge(M\text{ について同様}).
+\end{aligned}
+$$
+:::
+
+::: lemma 計算可能性 {#pt:artemov-lemma-7}
+$\PA\vdash D^{\ast}\to$「$Z^{\ast},E^{\ast},S^{\ast},A^{\ast},M^{\ast}$ は決定可能な関係を定める」。ここで「$K$ は決定可能な関係を定める」は、「ある（チューリング機械の符号）$u$ があって、すべての $\vec{x}$ について、$u$ は $K(\vec{x})$ なら $0$ を、$\neg K(\vec{x})$ なら $1$ を出力して停止する」を表す算術の論理式とする。
+:::
+
+::: proof
+$\PA$ の中で、$D^{\ast}$ を仮定する。$(\Diamond\top)^{\ast}$ は $\neg\mathrm{Bew}(\Godel{\bot})$、すなわち $\PA$ の無矛盾性である。$A^{\ast}$ を例にとる。機械 $u$：「$x,y,z$ が与えられたら、$\PA$ の証明を順に調べ、$A^{\ast}(x,y,z)$ の証明か $\neg A^{\ast}(x,y,z)$ の証明（数項を代入したもの）を探す。前者が先に見つかれば $0$、後者なら $1$ を出力する」。排中律より $A^{\ast}(x,y,z)$ か $\neg A^{\ast}(x,y,z)$ が成り立ち、$D^{\ast}$ の該当する連言肢（$\forall\vec{x}\,(A\vec{x}\to\Box A\vec{x})^{\ast}$ など）より成り立つ方は証明可能なので、$u$ は停止する。無矛盾性より両方が証明されることはないので、出力は正しい。
+:::
+
+::: lemma 標準性（テネンバウムの議論） {#pt:artemov-lemma-8 keywords="Tennenbaum-style argument" index="テネンバウムの定理|てねんばうむのていり"}
+$\PA\vdash\{T\}^{\ast}\wedge D^{\ast}\to\forall y\,\exists x\,R(x,y)$。
+:::
+
+::: proof
+**準備.** $C(e,x,z)$ を「符号 $e$ のチューリング機械は入力 $x$ の上で停止して $z$ を出力する」を自然に表す Σ 論理式とし、$C_{0}(x)\defeq C(x,x,0)$, $C_{1}(x)\defeq C(x,x,1)$ とする。(T6) は機械の出力の一意性で、$\PA$ の定理である。
+$$
+\begin{aligned}
+&B_{0}(a,b,i)\defeq\exists q\,(q\cdot(1+(i+1)\cdot b)=a),\\
+&B_{1}(a,b,i)\defeq\exists q\,(q\cdot(1+(i+1)\cdot b)+1=a)
+\end{aligned}
+$$
+とし、β 関数の補題（\ref{pt:beta-lemma}）を $C_{0}$ の特性関数（値は $0$ か $1$）に使った
+$$
+\begin{aligned}
+S_{\beta}\defeq\forall k\,\exists a\,\exists b\,\bigl(0<b\wedge\forall j<k\,(&(C_{0}(j)\to B_{0}(a,b,j))\\
+\wedge\,&(\neg C_{0}(j)\to B_{1}(a,b,j)))\bigr)
+\end{aligned}
+$$
+を (T7) とする（$\PA$ の定理）。(T8) は、$0<b$ なら $1+(i+1)b>1$ で割った余りが $0$ と $1$ の両方にはならないことで、$\PA$ の定理である。
+
+**$\PA$ の中の議論.** $\{T\}^{\ast}$, $D^{\ast}$ を仮定し、背理法で、$R(r,k)$ となる $r$ がない $k$ があるとする。$\{S_{\beta}\}^{\ast}$ を $k$ に使い、$a,b$ で $\{0<b\}^{\ast}$ かつ、$j\{<\}^{\ast}k$ のすべての $j$ について「$\{C_{0}\}^{\ast}(j)$ なら $\{B_{0}\}^{\ast}(a,b,j)$、そうでなければ $\{B_{1}\}^{\ast}(a,b,j)$」となるものをとる。\ref{pt:artemov-lemma-7} より $Z^{\ast},\dots,M^{\ast}$ は決定可能なので、存在量化子と連言と選言だけで作られる $\{B_{0}\}^{\ast}$, $\{B_{1}\}^{\ast}$ は認識可能な関係で、$R(x,y)$ も認識可能である。
+
+次の機械 $p$（$a,b$ をパラメータとする）を考える：入力 $i$ に対し、$R(i,j)$ となる $j$ を探し（\ref{pt:artemov-lemma-1} の 1 より存在し、$R$ は認識可能なので見つかる）、続いて $\{B_{0}\}^{\ast}(a,b,j)$ と $\{B_{1}\}^{\ast}(a,b,j)$ の証拠を並行して探し、前者が先に見つかれば $1$、後者なら $0$ を出力する。
+
+*$p$ は全域.* $R(i,j)$ なら $j\{<\}^{\ast}k$ であることを $i$ に関する帰納法で示す。$i=0$：$Z^{\ast}(j)$ である。(T5) の $0=x\vee0<x$ の翻訳を $k$ に使うと、$Z^{\ast}(k)$ か、$Z^{\ast}(w)$ かつ $w\{<\}^{\ast}k$ となる $w$ がある。前者なら $R(0,k)$（長さ $1$ の列）となり仮定に反する。後者なら $Z^{\ast}$ の一意性で $E^{\ast}(j,w)$、\ref{pt:artemov-invariance} で $j\{<\}^{\ast}k$。$i+1$：$R(i,j')$, $S^{\ast}(j',j)$ となる $j'$ で、帰納法の仮定より $j'\{<\}^{\ast}k$、(T5) の最後の性質の翻訳より $j\{<\}^{\ast}k$ か $E^{\ast}(j,k)$ で、後者は同様に不可能。よって $\{B_{0}\}^{\ast}(a,b,j)$ か $\{B_{1}\}^{\ast}(a,b,j)$ の一方が成り立ち、$p$ は停止する。
+
+*$p$ の出力.* $C_{0}(i)$ なら、\ref{pt:artemov-lemma-6} より $\{C_{0}\}^{\ast}(j)$、よって $\{B_{0}\}^{\ast}(a,b,j)$ で、(T8) の翻訳より $\{B_{1}\}^{\ast}(a,b,j)$ でないので $p$ は $1$ を出力する。$C_{1}(i)$ なら、\ref{pt:artemov-lemma-6} と (T6) の翻訳より $\{C_{0}\}^{\ast}(j)$ でなく、$\{B_{1}\}^{\ast}(a,b,j)$ だけが成り立ち、$p$ は $0$ を出力する。
+
+*矛盾.* $p$ の符号を $e$ とする。$p$ が $e$ の上で $1$ を出力すれば $C_{1}(e)$ で、上より $p$ は $0$ を出力するはずで矛盾。$0$ を出力すれば $C_{0}(e)$ で、$p$ は $1$ を出力するはずで矛盾。$p$ は全域なので、どちらかが起こり、矛盾する。
+:::
+
+::: theorem アルテモフの補題 {#pt:artemov-lemma keywords="Artemov's lemma" index="アルテモフの補題|あるてもふのほだい"}
+$\mathcal{L}_{\mathrm{ar}}$ の任意の論理式 $F(\vec{x})$ と任意の実現 $\ast$ について
+$$
+\PA\vdash\{T\}^{\ast}\wedge D^{\ast}\wedge R(\vec{x},\vec{y})\to(F(\vec{x})\leftrightarrow\{F\}^{\ast}(\vec{y})).
+$$
+:::
+
+::: proof
+\ref{pt:artemov-lemma-4} と \ref{pt:artemov-lemma-8}。
+:::
+
+::: hypcheck
+- **$\{T\}$ の役割**：$\ast$ の定める模型が、$E^{\ast}$ を同一視とみれば、標準モデルを初期部分（$R$ の像）として含むことを保証した（\ref{pt:artemov-lemma-1}, \ref{pt:artemov-terms}）。
+- **$D$ の役割**：(i) $\Diamond\top$ が無矛盾性を、(ii) 残りの連言肢が各関係とその否定の証明可能性を与え、証明探索で関係が決定可能になった（\ref{pt:artemov-lemma-7}）。様相 $\Box$ が使われるのはここだけである。
+- **テネンバウムの議論**：模型が非標準的な元 $k$ をもつと、β 関数で $k$ 未満の「$C_{0}$ の表」を一つの元の組 $(a,b)$ に詰め込め、関係が決定可能なのでその表を読み出す機械 $p$ が作れ、$p$ は $C_{0}$ と $C_{1}$ を分離してしまう（$C_{0}$ と $C_{1}$ は計算可能な集合で分離できない、という対角線論法）。
+- **再構成の注記**：Boolos の (T5) と (T8) に当たる部分は、OCR の不鮮明な箇所を含むので、証明が通るように自分で定めた。とくに $S_{\beta}$ に $0<b$ を加え、(T8) を「$0<b$ のとき」に限った（$b=0$ だと $B_{0}$ と $B_{1}$ が両立しうるため）。
+:::
+
+## アルテモフの定理 {#pt:sec-artemov-theorem}
+
+::: theorem アルテモフの定理 {#pt:artemov-theorem keywords="the set of always true sentences of QML is not arithmetical" index="アルテモフの定理|あるてもふのていり"}
+常に真な QML の文のゲーデル数の集合は算術的でない。
+:::
+
+::: proof
+算術の文 $S$ に QML の文 $S^{!}\defeq(\{T\}\wedge D\to\{S\})$ を対応させる。$S\mapsto S^{!}$ は計算可能な単射である。$S$ が真 $\iff S^{!}$ が常に真、を示す。
+
+*$\Rightarrow$.* 任意の実現 $\ast$ について、アルテモフの補題を文 $S$ に使うと $\PA\vdash\{T\}^{\ast}\wedge D^{\ast}\to(S\leftrightarrow\{S\}^{\ast})$ で、これは真。$S$ が真なので $(\{T\}\wedge D\to\{S\})^{\ast}$ は真。
+
+*$\Leftarrow$.* 標準的な実現 $Z^{\ast}=(0=v_{0})$, $E^{\ast}=(v_{0}=v_{1})$, $S^{\ast}=(Sv_{0}=v_{1})$, $A^{\ast}=(v_{0}+v_{1}=v_{2})$, $M^{\ast}=(v_{0}\cdot v_{1}=v_{2})$ をとる。このとき $\{F\}^{\ast}$ は $\hat{F}$ そのものなので $F$ と同値。$\{T\}^{\ast}$ は $T$（$\PA$ の定理の連言）と同値で真。$D^{\ast}$ も真：$(\Diamond\top)^{\ast}$ は $\PA$ の無矛盾性で真、$\forall x\,(0=x\to\mathrm{Bew}[0=x])$ などは、各 $n$ について真な原子文・原子文の否定が証明可能（Σ 完全性 \ref{pt:sigma-completeness}）であることから真。よって $\{S\}^{\ast}$ は真、すなわち $S$ は真。
+
+*結論.* 常に真な文の集合 $\mathcal{A}$ が算術的なら、計算可能な $S\mapsto S^{!}$ のグラフは Σ 定義可能（\ref{comp:tm-sigma-definable}）なので、$V=\{\Godel{S}:\Godel{S^{!}}\in\mathcal{A}\}$ も算術的になり、タルスキの定理（\ref{pt:tarski-undefinability}）に反する。
+:::
+
+## 問題 {#pt:sec-artemov-problems}
+
+::: problem {#pt:prob-artemov-no-D}
+$D$ を除いた $\{T\}\to\{S\}$ では、「$S$ が真 $\Rightarrow$ 常に真」が一般に成り立たないことを、非標準モデルを使って説明せよ。（厳密な証明は求めない。）
+:::
+
+::: solution
+$\{T\}$ は算術の有限個の定理しか強制しないので、$\ast$ として、$\PA$ の非標準モデル（または $T$ を満たすが $S$ を満たさない模型）を自然数の上に算術的に定義できる関係で実現したものをとれる（ヒルベルト–ベルナイスの算術的な完全性定理による、と一般に言われている）。$T\wedge\neg S$ が無矛盾なら（たとえば $S$ が $\PA$ で証明できない真な文で、$T$ がその一部なら）、そのような模型で $\{T\}^{\ast}$ は真で $\{S\}^{\ast}$ は偽になる。$D$ はこの種の模型を、関係の決定可能性を通じて排除する。
+:::
+
+::: problem {#pt:prob-artemov-standard-D}
+\ref{pt:artemov-theorem} の証明の $\Leftarrow$ で、$D^{\ast}$ のうち $\forall x\,\forall y\,(\neg Exy\to\Box\neg Exy)^{\ast}$ が真であることを確かめよ。
+:::
+
+::: solution
+$E^{\ast}=(v_{0}=v_{1})$ なので、示すべきは「$m\neq n$ なら $\PA\vdash\neg\,\underline{m}=\underline{n}$」である。$\neg\,\underline{m}=\underline{n}$ は真な Δ 文なので、Σ 完全性（\ref{pt:sigma-completeness}）より証明可能である。
+:::
+
+::: supplement
+**前提の検討.**
+- 実際に使った $\PA$ の性質は、(T1)〜(T8) が $\PA$ の定理であること、$\PA$ の中での帰納法、Σ 完全性、無矛盾性である。$\PA$ を同様の性質をもつ他の算術の理論に変えても議論は通ると考えられる（本サイトでは確かめていない）。
+- \ref{pt:artemov-lemma-8} は、算術的に定義された模型が標準的であることを導くテネンバウムの定理（$\PA$ の非標準可算モデルでは加法も乗法も計算可能でない）の議論を、$\PA$ の中で再現したものである。テネンバウムの定理を同様の状況で最初に使ったのはプリスコ（述語論理の実現可能な論理式の集合が算術的でないことの証明）とされる、と Boolos は述べている。
+
+**関連する結果.**
+- 次のページでは、同じ道具（$\{T\}$, $D$, $R$）に 1 項述語記号 $G$ を加えて、常に証明可能な文の集合が $\Pi^{0}_{2}$ 完全であること（ヴァルダニャン）と、常に真な文の集合が $V$ で $\Pi^{0}_{1}$ 完全であることを示す。
+
+**高い視点から：模型の中の自然数.** QML の文 $\{T\}\wedge D$ は「述語記号の解釈は、等号で割れば自然数そのものである」と述べる一つの公理系として働く。一階の公理だけでは非標準的な元を排除できない（コンパクト性）が、$\Box$ を通じて「解釈が証明可能性について安定（真なら証明可能）」であることを要求すると、解釈は計算可能になり、計算可能な模型は標準モデルしかない（テネンバウム）。たとえれば、一階の言葉だけでは偽物の自然数を見分けられないが、「各事実に証明書が付いていること」を要求すると偽物は自分の正体を隠せなくなる、ということである。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

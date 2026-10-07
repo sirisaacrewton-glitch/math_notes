@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GL の補間定理と不動点定理の第三証明 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/03-provability-logic/06-interpolation.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# GL の補間定理と不動点定理の第三証明 {#pt:page-interpolation keywords="Craig interpolation for GL, Beth definability for GL, Smoryński, Bernardi, uniqueness of fixed points, third proof of the fixed point theorem"}
+
+一階述語論理のクレイグの補間定理（\ref{logic:craig-interpolation}）の類似が $\mathsf{GL}$ でも成り立つ：$\mathsf{GL}\vdash A\to C$ ならば、$A$ と $C$ に共通の命題変数だけを含む $B$ で $\mathsf{GL}\vdash A\to B$, $\mathsf{GL}\vdash B\to C$ となるものがある。本ページでは、分離できない集合を世界とするモデルを使うスモリンスキーの証明を与え、そこからベートの定義可能性定理の類似を導く。さらに、不動点の一意性（ベルナルディ）と定義可能性定理を組み合わせて、不動点定理の第三証明を得る。（Boolos 第 8 章後半に対応する。）
+
+## 記法と定義の確認 {#pt:sec-interpolation-notation}
+
+::: notation
+- 様相論理式、一様代入、恒真式による推論（\ref{logic:modal-tf-closure}）、正規性、$\boxdot$、レーブ規則の一般形（\ref{logic:lob-rule} の 2：$\vdash\boxdot\varphi_{1}\wedge\cdots\wedge\boxdot\varphi_{n}\wedge\Box\psi\to\psi$ ならば $\vdash\Box\varphi_{1}\wedge\cdots\wedge\Box\varphi_{n}\to\Box\psi$）は \ref{logic:page-normal-modal-logics}, \ref{logic:page-gl-axioms} のとおり。
+- 有限集合 $S$ について $\bigwedge S$ はその元の連言（順序を一つ固定する。順序を変えても恒真式により同値）、$\bigwedge\emptyset=\top$。論理式の集合 $S$ が**無矛盾**とは $\nvdash\neg\bigwedge S$ のこと。
+- 「有限モデル」は有限・推移的・非反射的なクリプキモデル。$\mathsf{GL}$ の健全性と完全性はこれについて使う。
+- $p$ について様相化されている（\ref{pt:modalized}）、不動点、ゴールドファーブの補題（\ref{pt:goldfarb-reduction}）は \ref{pt:page-fixed-point-theorem} のとおり。
+- 以下、とくに断らなければ $\vdash$ は $\mathsf{GL}\vdash$ を表す。
+:::
+
+::: lemma レーブ規則の使い方 {#pt:lob-rule-usage}
+$\Gamma$ を $\Box$ で始まる論理式の有限集合とし、$\Gamma^{\boxdot}\defeq\{G,\Box G:\Box G\in\Gamma\}$ とおく。
+1. $\vdash\bigwedge\Gamma^{\boxdot}\to B$ ならば $\vdash\bigwedge\Gamma\to\Box B$。
+2. $\vdash\bigwedge\Gamma^{\boxdot}\wedge\Box E\wedge\neg E\to F$ ならば $\vdash\bigwedge\Gamma\wedge\Box\neg F\to\Box E$。
+:::
+
+::: proof
+$\bigwedge\Gamma^{\boxdot}$ は恒真式により $\bigwedge_{\Box G\in\Gamma}\boxdot G$ と同値である。**1.** 仮定から恒真式により $\vdash\bigwedge\boxdot G\wedge\Box B\to B$、レーブ規則の一般形より $\vdash\bigwedge\Box G\to\Box B$。**2.** 仮定の対偶から恒真式により $\vdash\bigwedge\boxdot G\wedge\boxdot\neg F\wedge\Box E\to E$（$\boxdot\neg F\to\neg F$ を使う）。レーブ規則の一般形（$\varphi$ たちに $G$ たちと $\neg F$、$\psi=E$）より $\vdash\bigwedge\Box G\wedge\Box\neg F\to\Box E$。
+:::
+
+## クレイグの補間定理 {#pt:sec-craig-gl}
+
+::: theorem GL の補間定理 {#pt:gl-interpolation keywords="Craig interpolation lemma for GL" index="補間定理（GL）|ほかんていりじーえる"}
+$\vdash A\to C$ ならば、$A$ と $C$ の両方に現れる命題変数だけを含む論理式 $B$ で、$\vdash A\to B$ かつ $\vdash B\to C$ となるものがある。
+:::
+
+証明のための設定を固定する。$\mathcal{L}_{0}$ を、命題変数がすべて $A$ に現れる論理式全体、$\mathcal{L}_{1}$ を、命題変数がすべて $C$ に現れる論理式全体、$\mathcal{L}\defeq\mathcal{L}_{0}\cap\mathcal{L}_{1}$ とする（閉様相論理式はすべて $\mathcal{L}$ に属する）。$X$ を $A$ の部分論理式と $\neg C$ の部分論理式の全体、$Y\defeq\{\neg D:D\in X\}$ とする。$X\cup Y$ は有限で、その各元は $\mathcal{L}_{0}$ か $\mathcal{L}_{1}$ に属する。$S\subset X\cup Y$ について $S_{i}\defeq S\cap\mathcal{L}_{i}$（$i=0,1$）とおくと $S=S_{0}\cup S_{1}$。
+
+::: definition 分離 {#pt:separation keywords="separating formula, inseparable set" index="分離（補間定理）|ぶんりほかんていり"}
+$S\subset X\cup Y$ とする。$B\in\mathcal{L}$ で $\vdash\bigwedge S_{0}\to B$ かつ $\vdash\bigwedge S_{1}\to\neg B$ となるとき、$B$ は $S$ を**分離する**という。$S$ を分離する論理式がないとき、$S$ は**分離不能**という。分離不能で、すべての $D\in X$ について $D\in S$ または $\neg D\in S$ となる $S$ を**極大**という。
+:::
+
+$S$ が分離不能なら $S_{0}$ と $S_{1}$ はともに無矛盾である：$S_{0}$ が矛盾すれば $\bot$ が、$S_{1}$ が矛盾すれば $\top$ が $S$ を分離する。
+
+::: lemma 分離不能性の拡張 {#pt:inseparable-extension}
+$S$ が分離不能で $D\in X$ ならば、$S\cup\{D\}$ と $S\cup\{\neg D\}$ の少なくとも一方は分離不能である。したがって、分離不能な集合は極大な集合に含まれる。
+:::
+
+::: proof
+両方とも分離可能として、$S$ を分離する論理式を作る。$S\cup\{D\}$ を分離する $B$、$S\cup\{\neg D\}$ を分離する $B'$ をとる。$D$ と $\neg D$ の命題変数は同じなので、次の三つの場合がある。
+
+**(a) $D\in\mathcal{L}$.** $D,\neg D$ は $(\cdot)_{0}$ と $(\cdot)_{1}$ の両方に入るので
+$$
+\begin{aligned}
+&\vdash\textstyle\bigwedge S_{0}\wedge D\to B,\quad\vdash\bigwedge S_{1}\wedge D\to\neg B,\quad\vdash\bigwedge S_{0}\wedge\neg D\to B',\\
+&\vdash\textstyle\bigwedge S_{1}\wedge\neg D\to\neg B'.
+\end{aligned}
+$$
+$B^{\dagger}\defeq(D\to B)\wedge(\neg D\to B')\in\mathcal{L}$ とすると、恒真式により $\vdash\bigwedge S_{0}\to B^{\dagger}$。また $\vdash\bigwedge S_{1}\to(D\to\neg B)\wedge(\neg D\to\neg B')$ で、右辺は恒真式により $\neg B^{\dagger}$ を導く。
+
+**(b) $D\in\mathcal{L}_{0}\setminus\mathcal{L}_{1}$.** $D,\neg D$ は $(\cdot)_{0}$ にだけ入るので、$\vdash\bigwedge S_{0}\wedge D\to B$, $\vdash\bigwedge S_{1}\to\neg B$, $\vdash\bigwedge S_{0}\wedge\neg D\to B'$, $\vdash\bigwedge S_{1}\to\neg B'$。$B^{\dagger}\defeq B\vee B'$ が $S$ を分離する。
+
+**(c) $D\in\mathcal{L}_{1}\setminus\mathcal{L}_{0}$.** 同様に $\vdash\bigwedge S_{0}\to B$, $\vdash\bigwedge S_{1}\wedge D\to\neg B$, $\vdash\bigwedge S_{0}\to B'$, $\vdash\bigwedge S_{1}\wedge\neg D\to\neg B'$。$B^{\dagger}\defeq B\wedge B'$ が $S$ を分離する。
+
+いずれも $S$ の分離不能性に反する。後半は、有限集合 $X$ の元を順に一つずつ処理すればよい。
+:::
+
+極大な集合 $w$ では、$D\in X$ について $D\in w$ と $\neg D\in w$ のちょうど一方が成り立つ（両方なら、$D\in\mathcal{L}_{j}$ となる $j$ について $w_{j}$ が矛盾する）。極大な集合全体を $W$ とし、
+$$
+\begin{aligned}
+wRx\defeq{}&\text{すべての }\Box E\in w\text{ で }E,\Box E\in x\text{、かつ、}\\
+&\text{ある }\Box E\in x\text{ で }\Box E\notin w,
+\end{aligned}
+$$
+$w$ で $p$ が真 $\defeq p\in w$ とする。$W$ は有限、$R$ は非反射的（第二の条件）かつ推移的（$wRx$, $xRy$ なら、$\Box E\in w$ から $\Box E\in x$、したがって $E,\Box E\in y$。$\Box E\in x\setminus w$ なら $\Box E\in y$）。これを $\mathcal{M}$ とする。
+
+::: lemma 真理補題（分離不能な集合のモデル） {#pt:inseparable-truth-lemma}
+$w\in W$, $D\in X$ について $\mathcal{M},w\models D\iff D\in w$。
+:::
+
+::: proof
+$D$ の構成に関する帰納法。$D\in\mathcal{L}_{i}$ となる $i$ を一つ選び、$w_{i}\defeq w\cap\mathcal{L}_{i}$ とする。$D$ の部分論理式 $E$ とその否定は $X\cup Y$ の $\mathcal{L}_{i}$ の元なので、それらが $w$ に属することと $w_{i}$ に属することは同値。$w_{i}$ は無矛盾である。
+
+**$D=p$** は定義。**$D=\bot$**：$\bot\in w$ なら $w_{i}$ が矛盾する。よって $\bot\notin w$ で、$w\not\models\bot$ と一致。
+
+**$D=E\to E'$.** $D\in w\iff E\notin w$ または $E'\in w$ を示す。（$\Rightarrow$）$D,E\in w$ で $E'\notin w$ なら $\neg E'\in w$ で、$\{E\to E',E,\neg E'\}\subset w_{i}$ は矛盾。（$\Leftarrow$）$D\notin w$ なら $\neg D\in w$。$E\notin w$ なら $\neg E\in w$ で $\{\neg E,\neg(E\to E')\}\subset w_{i}$ は矛盾、$E'\in w$ なら $\{E',\neg(E\to E')\}\subset w_{i}$ は矛盾。帰納法の仮定より主張が従う。
+
+**$D=\Box E$.**（$\Box E\in w\Rightarrow w\models\Box E$）$wRx$ なら $E\in x$、帰納法の仮定より $x\models E$。
+
+（$\Box E\notin w\Rightarrow w\not\models\Box E$）$\neg\Box E\in w$ である。$\Gamma\defeq\{\Box G:\Box G\in w\}$、
+$$
+S\defeq\Gamma^{\boxdot}\cup\{\Box E,\neg E\}=\{G,\Box G:\Box G\in w\}\cup\{\Box E,\neg E\}
+$$
+とおく（$\Box G\in X$ なので $G\in X$。$S\subset X\cup Y$）。$S$ が分離不能であることを示せば、\ref{pt:inseparable-extension} より $S\subset x$ となる極大な $x$ があり、$wRx$（$\Box G\in w\Rightarrow G,\Box G\in x$、$\Box E\in x\setminus w$）、$\neg E\in x$ より $E\notin x$、帰納法の仮定より $x\not\models E$ で、$w\not\models\Box E$ となる。
+
+$\Gamma_{j}\defeq\Gamma\cap\mathcal{L}_{j}$ とすると $G\in\mathcal{L}_{j}\iff\Box G\in\mathcal{L}_{j}$ なので $S_{j}=\Gamma_{j}^{\boxdot}\cup(\{\Box E,\neg E\}\cap\mathcal{L}_{j})$。また $\Gamma_{j}\subset w_{j}$、$\Box E\in\mathcal{L}_{j}$ なら $\neg\Box E\in w_{j}$。$B\in\mathcal{L}$ が $S$ を分離すると仮定し、$w$ を分離する論理式を作って矛盾を導く。$E\in\mathcal{L}_{i}$ なので三つの場合がある。
+
+- **$E\in\mathcal{L}_{0}\setminus\mathcal{L}_{1}$**：$\vdash\bigwedge\Gamma_{0}^{\boxdot}\wedge\Box E\wedge\neg E\to B$, $\vdash\bigwedge\Gamma_{1}^{\boxdot}\to\neg B$。\ref{pt:lob-rule-usage} の 2 より $\vdash\bigwedge\Gamma_{0}\wedge\Box\neg B\to\Box E$、$\neg\Box E\in w_{0}$ より $\vdash\bigwedge w_{0}\to\neg\Box\neg B$。1 より $\vdash\bigwedge w_{1}\to\Box\neg B$。よって $\neg\Box\neg B\in\mathcal{L}$ が $w$ を分離する。
+- **$E\in\mathcal{L}_{1}\setminus\mathcal{L}_{0}$**：$\vdash\bigwedge\Gamma_{0}^{\boxdot}\to B$, $\vdash\bigwedge\Gamma_{1}^{\boxdot}\wedge\Box E\wedge\neg E\to\neg B$。1 より $\vdash\bigwedge w_{0}\to\Box B$。2（$F=\neg B$、恒真式 $\Box\neg\neg B\leftrightarrow\Box B$ は正規性 2）より $\vdash\bigwedge\Gamma_{1}\wedge\Box B\to\Box E$、$\neg\Box E\in w_{1}$ より $\vdash\bigwedge w_{1}\to\neg\Box B$。よって $\Box B$ が $w$ を分離する。
+- **$E\in\mathcal{L}$**：$\vdash\bigwedge\Gamma_{0}^{\boxdot}\wedge\Box E\wedge\neg E\to B$, $\vdash\bigwedge\Gamma_{1}^{\boxdot}\wedge\Box E\wedge\neg E\to\neg B$。$F\defeq B\to(\Box E\to E)$ とおく。第二式から恒真式により $\vdash\bigwedge\Gamma_{1}^{\boxdot}\to F$、1 より $\vdash\bigwedge w_{1}\to\Box F$。第一式から恒真式により $\vdash\bigwedge\Gamma_{0}^{\boxdot}\wedge\Box E\wedge\neg E\to\neg F$（$\neg E$ と $\Box E$ の下で $F$ は $\neg B$ と同値）、2 より $\vdash\bigwedge\Gamma_{0}\wedge\Box\neg\neg F\to\Box E$、正規性 2 で $\Box\neg\neg F$ を $\Box F$ に置き換え、$\neg\Box E\in w_{0}$ より $\vdash\bigwedge w_{0}\to\neg\Box F$。よって $\neg\Box F\in\mathcal{L}$ が $w$ を分離する。
+
+いずれも $w$ の分離不能性に反する。
+:::
+
+::: proof 補間定理の証明
+$A\in\mathcal{L}$ なら $B=A$、$C\in\mathcal{L}$ なら $B=C$ が補間式になるので、$A\notin\mathcal{L}_{1}$, $\neg C\notin\mathcal{L}_{0}$ としてよい。このとき $S=\{A,\neg C\}$ について $S_{0}=\{A\}$, $S_{1}=\{\neg C\}$ で、$B$ が $S$ を分離することは $B\in\mathcal{L}$, $\vdash A\to B$, $\vdash\neg C\to\neg B$（すなわち $\vdash B\to C$）と同値。補間式がないとすると $S$ は分離不能で、\ref{pt:inseparable-extension} より極大な $w\supset S$ がある。\ref{pt:inseparable-truth-lemma} より $\mathcal{M},w\models A$ かつ $\mathcal{M},w\models\neg C$（$A,\neg C\in X$）。$\mathcal{M}$ は有限モデルなので、健全性より $\nvdash A\to C$ となり、仮定に反する。
+
+::: hypcheck
+- **レーブ規則（逆整礎性）**：真理補題の $\Box$ の場合で、\ref{pt:lob-rule-usage} を通して使った。ここが $\mathsf{GL}$ に固有の部分で、$\mathsf{K}$ や $\mathsf{K4}$ では $\Box E$ を $S$ に含めない形で同様の議論をする。
+- **$X$ の有限性**：$W$ の有限性（したがって $\mathcal{M}$ が有限モデルであること）と、\ref{pt:inseparable-extension} の後半に使った。
+- **無矛盾性を $w$ 全体でなく $w_{i}$ について使うこと**：$w$ 自身が無矛盾かどうかは、補間定理を仮定しないと分からない。真理補題では各 $D$ ごとに $w_{0}$ か $w_{1}$ の片方だけを使う。
+:::
+:::
+
+## ベートの定義可能性定理 {#pt:sec-beth-gl}
+
+::: theorem GL のベートの定義可能性定理 {#pt:gl-beth keywords="Beth definability theorem for GL" index="ベートの定義可能性定理（GL）|べーとのていぎかのうせいていりじーえる"}
+$D$ を論理式、$q\neq p$ を $D$ に現れない命題変数、$D'\defeq D[q/p]$ とする。$\vdash D\wedge D'\to(p\leftrightarrow q)$ ならば、$D$ に現れる $p$ 以外の命題変数だけを含む $H$ で $\vdash D\to(p\leftrightarrow H)$ となるものがある。
+:::
+
+::: proof
+仮定から恒真式により $\vdash D\wedge p\to(D'\to q)$。$D\wedge p$ の命題変数は $D$ のもの（$p$ を含む）、$D'\to q$ の命題変数は $D$ の $p$ 以外のものと $q$ なので、共通の命題変数は $D$ の $p$ 以外のものだけ（$q\notin D$）。\ref{pt:gl-interpolation} より、それらだけを含む $H$ で
+$$
+\vdash D\wedge p\to H,\qquad\vdash H\to(D'\to q)
+$$
+となるものがある。第二式に一様代入 $q\mapsto p$ を施すと、$H$ は $q$ を含まず $D'[p/q]=D$ なので $\vdash H\to(D\to p)$。二式から恒真式により $\vdash D\to(p\leftrightarrow H)$。
+:::
+
+「$D$ が $p$ を暗に一意に定める（$D$ を満たす $p$ は同値を除いて一つ）」ならば「$D$ の下で $p$ を明示的に定義する $H$ がある」という形は、一階述語論理のベートの定義可能性定理と同じである。
+
+## 不動点の一意性と第三証明 {#pt:sec-third-proof}
+
+::: lemma ベルナルディの一意性補題 {#pt:bernardi-uniqueness keywords="uniqueness of fixed points, Bernardi" index="不動点の一意性|ふどうてんのいちいせい"}
+$A$ を $p$ について様相化された論理式、$q$ を $A$ に現れない命題変数（$q\neq p$）、$A'\defeq A[q/p]$ とする。このとき
+$$
+\vdash\boxdot(p\leftrightarrow A)\wedge\boxdot(q\leftrightarrow A')\to(p\leftrightarrow q).
+$$
+:::
+
+::: proof
+$A\wedge p$ の部分論理式 $B$ に対し $B'\defeq B[q/p]$ とし（$p'=q$）、すべての部分論理式 $B$ について $\vdash\boxdot(p\leftrightarrow A)\wedge\boxdot(q\leftrightarrow A')\to(B\leftrightarrow B')$ を示す（$B=p$ で主張）。$E\defeq\boxdot(p\leftrightarrow A)\wedge\boxdot(q\leftrightarrow A')$ とおく。
+
+否定を仮定すると、完全性より有限モデルと世界 $w$ で $w\models E$ かつある部分論理式 $B$ で $w\not\models B\leftrightarrow B'$ となるものがある。そのような $w$ のうちランク最小のものをとる。
+
+**Step 1.** ある $A$ の部分論理式 $\Box D$ で $w\not\models\Box D\leftrightarrow\Box D'$。実際、部分論理式 $B$ は $p$、$p$ 以外の命題変数、$A$ の $\Box$ で始まる部分論理式から $\bot,\to$ で組み立てられ、$B'$ は同じ組み立てで $p$ を $q$ に、$\Box D$ を $\Box D'$ に変えたものである。すべての $\Box D$ で $w\models\Box D\leftrightarrow\Box D'$ なら、$A$ は $p$ について様相化されているので $w\models A\leftrightarrow A'$、$w\models E$ より $w\models p\leftrightarrow A$, $w\models q\leftrightarrow A'$ なので $w\models p\leftrightarrow q$、したがって $w\models B\leftrightarrow B'$ となり矛盾する。
+
+**Step 2.** $wRx$ なら推移性より $x\models E$、$\rho(x)<\rho(w)$ なので $w$ の最小性より $x\models D\leftrightarrow D'$（$D$ は部分論理式）。よって $w\models\Box D\leftrightarrow\Box D'$ となり、Step 1 に反する。
+:::
+
+\ref{pt:fixed-point-uniqueness} の 2 は不動点どうしの一意性だったが、この補題は「$p\leftrightarrow A$ の二つの解は同値」という、不動点の存在を前提しない形の一意性である。
+
+::: theorem 不動点定理（第三証明） {#pt:fixed-point-third-proof}
+$p$ について様相化された $A$ は不動点をもつ。
+:::
+
+::: proof
+$A$ に現れない命題変数 $q\neq p$ をとり、$D\defeq\boxdot(p\leftrightarrow A)$ とすると $D'=D[q/p]=\boxdot(q\leftrightarrow A[q/p])$。\ref{pt:bernardi-uniqueness} より $\vdash D\wedge D'\to(p\leftrightarrow q)$。\ref{pt:gl-beth} より、$D$ の $p$ 以外の命題変数、すなわち $A$ の $p$ 以外の命題変数だけを含む $H$ で $\vdash\boxdot(p\leftrightarrow A)\to(p\leftrightarrow H)$ となるものがある。\ref{pt:goldfarb-reduction} より $H$ は不動点である。
+:::
+
+三つの証明を比べると、第一証明は不動点の「形」（$A$ の $p$ に不動点を代入した形）を、第二証明は様相次数の上限を、第三証明は「一意性 ⇒ 存在」という構造を明らかにする。第三証明は $H$ を具体的に与えないが、補間定理の証明を追えば構成できる。
+
+## 問題 {#pt:sec-interpolation-problems}
+
+::: problem {#pt:prob-de-jongh}
+（ド・ヨング。Boolos の演習問題による）$A$ が $p$ について様相化され、$B$ が $p$ を含まないとき、$\vdash\boxdot(p\leftrightarrow A)\to B$ ならば $\vdash B$ であることを、不動点定理を使わずに示せ。
+:::
+
+::: solution
+$\nvdash B$ とすると、有限モデル $\mathcal{M}=(W,R,V)$ の世界 $w$ で $w\not\models B$。ランクに関する再帰で新しい付値 $V'$ を定める：ランク $r$ の世界 $x$ での $p$ の値は、ランク $r$ 未満の世界での $V'$ が定まった段階で「$x$ で $A$ が真か」で決める。$A$ は $\Box D$ たちと $p$ 以外の命題変数の真理関数で、$x$ での $\Box D$ の値は $x$ から到達可能な（ランクの小さい）世界での値だけで決まる（生成部分モデル）ので、これは循環しない。$V'$ は $p$ 以外では $V$ と同じとする。新しいモデル $\mathcal{M}'$ ではすべての世界で $p\leftrightarrow A$ が真なので $w\models\boxdot(p\leftrightarrow A)$。$B$ は $p$ を含まないので一致補題より $\mathcal{M}',w\not\models B$。健全性より $\nvdash\boxdot(p\leftrightarrow A)\to B$。
+:::
+
+::: problem {#pt:prob-sonobe}
+（Boolos の演習問題にもとづく）$A$ の命題変数の出現がすべて $\Box$ の作用域の中にあるとする。
+1. $\vdash\Box\bot\to A$ または $\vdash\Box\bot\to\neg A$ を示せ。
+2. $\vdash\Diamond\top\to\Diamond A$ または $\vdash\Diamond\top\to\Diamond\neg A$ を示せ。
+:::
+
+::: solution
+**1.** $A$ は $\bot$ と $\Box D$ の形の論理式の真理関数である。ランク $0$ の世界では $\Box D$ はすべて真なので、$A$ の値は、$\Box D$ をすべて $\top$ に置き換えた命題論理の論理式の値で、世界によらない。それが真なら $A$ はランク $0$ のすべての世界で真で、$w\models\Box\bot\iff\rho(w)=0$ なので $\Box\bot\to A$ はすべての有限モデルで妥当、完全性より定理。偽なら同様に $\Box\bot\to\neg A$。
+
+**2.** 1 の前者の場合、$\rho(w)\ge1$ の世界（$w\models\Diamond\top$）はランク $0$ の世界を見る（\ref{pt:rank-intermediate}）ので $w\models\Diamond A$。後者も同様。
+:::
+
+::: problem {#pt:prob-g-plus}
+（Boolos の演習問題による）任意の文 $U$ に対し、$\PA\vdash G^{+}\leftrightarrow\neg\mathrm{Bew}(\Godel{U\to G^{+}})$ となる文 $G^{+}$ が存在し、そのような $G^{+}$ はすべて $\PA\vdash G^{+}\leftrightarrow\neg\mathrm{Bew}(\Godel{\neg U})$ を満たすことを示せ。
+:::
+
+::: solution
+存在は対角化定理（\ref{pt:diagonal-lemma}）。後半は、$A=\neg\Box(q\to p)$ の不動点 $\Diamond q$（\ref{pt:fixed-point-first-proof} の後の例 2）と \ref{pt:fixed-point-arith} の 2（$q^{\ast}=U$, $p^{\ast}=G^{+}$）による。$(\Diamond q)^{\ast}=\neg\mathrm{Bew}(\Godel{\neg U})$。
+:::
+
+::: supplement
+**前提の検討.**
+- 補間定理の証明で $\mathsf{GL}$ に固有なのは真理補題の $\Box$ の場合だけであり、レーブ規則を使って「$\Box E$ を仮定に加えてよい」ことが、到達先の世界で $\Box E$ が成り立つ（したがって $R$ の第二条件）ことを保証する。
+- ベートの定理は補間定理だけから導かれ、$\mathsf{GL}$ に固有の性質は使わない。一方、ベルナルディの補題は逆整礎性（ランク最小の反例）と様相化の条件を本質的に使う。
+- \ref{pt:prob-de-jongh} は「$\boxdot(p\leftrightarrow A)$ は $p$ を含まない情報について何も主張しない」ことを示し、不動点定理の「存在」の側面を、付値の再帰的な構成として意味論的に捉えている。
+
+**関連する結果.** 様相論理の補間定理は体系によって成り立つかどうかが異なる。$\mathsf{K}$, $\mathsf{K4}$, $\mathsf{S4}$, $\mathsf{S5}$ などでは成り立つことが知られている（一般的にはこう言われているが、本サイトでは証明していない）。二つ以上の命題変数についての同時不動点の存在（スマリヤンの問いに由来する二重の不動点定理）も、Boolos の演習問題にある。
+
+**高い視点から：一意性は存在を生む.** ベートの定理の考え方は、「方程式の解が高々一つなら、その解は係数だけで書ける」というものである。これは代数で、多項式の根がガロア群の作用で動かないなら係数の有理式で書ける、という原理に似ている：ここでは「$p$ を $q$ に取り替える」操作が、$D$ を満たす限り $p$ を動かさないこと（ベルナルディの補題）が、$p$ が共通の語彙（$p$ 以外の命題変数）で定義できること（補間定理）を導く。補間式は、$A$ と $C$ の間の「共通言語への射影」として、圏論でいう押し出しの普遍性に似た役割を果たす：$A$ から $C$ への含意は、必ず共通語彙の論理式を経由して分解できるのである。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

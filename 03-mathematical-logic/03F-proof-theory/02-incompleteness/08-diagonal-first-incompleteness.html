@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>対角化定理と第一不完全性定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/02-incompleteness/08-diagonal-first-incompleteness.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 対角化定理と第一不完全性定理 {#pt:page-diagonal-first-incompleteness keywords="diagonal lemma, fixed point lemma, generalized diagonal lemma, Gödel sentence, first incompleteness theorem, omega-consistency"}
+
+**対角化定理**は、任意の性質 $P(y)$ に対して「自分のゲーデル数が $P$ をもつ」と主張する文 $S$、すなわち $\PA\vdash S\leftrightarrow P(\Godel{S})$ となる文を作れることを主張する。$P(y)$ として $\neg\mathrm{Bew}(y)$ をとると、「自分は証明できない」と主張する**ゲーデル文** $G$ が得られ、$\PA$ が無矛盾なら $G$ は証明できず、$\PA$ が $\omega$ 無矛盾なら $\neg G$ も証明できない。これが**第一不完全性定理**である。
+
+## 記法と定義の確認 {#pt:sec-diag-notation}
+
+::: notation
+- ゲーデル数、構文の述語と関数（とくに $\mathrm{sub}$, $\mathrm{num}$）、$\mathrm{Pf}$, $\mathrm{Bew}$ とその正しさは \ref{pt:page-arithmetization}、D1 は \ref{pt:d1} のとおり。Σ 関数と、関数的な論理式による略記 $\varphi(f(\vec{x}))\defeq\exists y\,(F(\vec{x},y)\wedge\varphi(y))$ は \ref{pt:functional-formula} のとおり。
+- 文 $\sigma$ が $\PA$ で**決定できない**とは、$\PA\nvdash\sigma$ かつ $\PA\nvdash\neg\sigma$ であることをいう。そのような文があるとき $\PA$ は**不完全**であるという。
+:::
+
+## 対角化定理 {#pt:sec-diagonal-lemma}
+
+::: theorem 一般化された対角化定理 {#pt:generalized-diagonal-lemma keywords="generalized diagonal lemma, simultaneous fixed points" index="対角化定理|たいかくかていり"}
+$y_{0},\dots,y_{n}$ と $\vec{z}=(z_{1},\dots,z_{m})$ を互いに異なる変数とし、$P_{0},\dots,P_{n}$ を自由変数が $y_{0},\dots,y_{n},\vec{z}$ の中にある論理式とする。このとき、自由変数が $\vec{z}$ の中にある論理式 $S_{0},\dots,S_{n}$ で、各 $i\le n$ について
+$$
+\PA\vdash S_{i}\leftrightarrow P_{i}(\Godel{S_{0}},\dots,\Godel{S_{n}},\vec{z})
+$$
+となるものが存在する（右辺は $y_{j}$ に数項 $\underline{\Godel{S_{j}}}$ を代入したもの）。$P_{i}$ がすべて Σ（すべて Δ）なら、$S_{i}$ もすべて Σ（すべて Δ）にとれる。
+:::
+
+::: proof
+**Step 1（代入関数）.** $\vec{z}$ と $y_{0},\dots,y_{n}$ のどれとも異なる変数 $x_{0},\dots,x_{n}$ をとる。Σ 関数
+$$
+\mathrm{su}(w,a_{0},\dots,a_{n})\defeq\mathrm{sub}(\cdots\mathrm{sub}(w,\Godel{x_{0}},\mathrm{num}(a_{0}))\cdots,\Godel{x_{n}},\mathrm{num}(a_{n}))
+$$
+を考える（\ref{pt:syntax-predicates} の Σ 関数の合成）。これは「コード $w$ の論理式の $x_{0},\dots,x_{n}$ に数項 $\underline{a_{0}},\dots,\underline{a_{n}}$ を代入した結果のコード」である。
+
+**Step 2（対角化の材料）.** 各 $i$ について論理式
+$$
+D_{i}(x_{0},\dots,x_{n},\vec{z})\defeq P_{i}\bigl(\mathrm{su}(x_{0},x_{0},\dots,x_{n}),\dots,\mathrm{su}(x_{n},x_{0},\dots,x_{n}),\vec{z}\bigr)
+$$
+を考え（関数的な論理式による略記を展開したもの。導入する束縛変数は新しいものをとる）、$k_{i}\defeq\Godel{D_{i}}$ とおく。
+
+**Step 3（文の定義）.** $S_{i}\defeq D_{i}[\underline{k_{0}}/x_{0}]\cdots[\underline{k_{n}}/x_{n}]$ とおく。数項は閉項なので代入可能で、$S_{i}$ の自由変数は $\vec{z}$ の中にある。$S_{i}$ は $P_{i}(\mathrm{su}(\underline{k_{0}},\underline{k_{0}},\dots,\underline{k_{n}}),\dots,\vec{z})$ を展開したものである。
+
+**Step 4（鍵となる等式）.** 標準構造で $\mathrm{su}(k_{j},k_{0},\dots,k_{n})$ は、$D_{j}$ の $x_{0},\dots,x_{n}$ に $\underline{k_{0}},\dots,\underline{k_{n}}$ を代入した論理式、すなわち $S_{j}$ のコードである（\ref{pt:syntax-correct}）。よって Σ 文 $\mathrm{su}(\underline{k_{j}},\underline{k_{0}},\dots,\underline{k_{n}})=\underline{\Godel{S_{j}}}$ は真で、Σ 完全性（\ref{pt:sigma-completeness}）より $\PA$ で証明できる。
+
+**Step 5（結論）.** $\PA$ の任意のモデル $\mathcal{M}$ と割り当てで、Step 4 の値の等式により、$S_{i}$ が成り立つことと $P_{i}(\Godel{S_{0}},\dots,\Godel{S_{n}},\vec{z})$ が成り立つことは同値である（関数的な論理式の略記の意味と、意味論的代入補題）。完全性定理より結論を得る。
+
+**Step 6（複雑さ）.** $S_{i}$ は $P_{i}$ の $y_{j}$ に Σ 関数の値を入れたものなので、$P_{i}$ が Σ（Δ）なら Σ（Δ）である（\ref{pt:page-sequence-coding} の記法の確認）。
+
+::: hypcheck
+- **Σ 完全性**：Step 4 の、$\mathrm{su}$ の具体的な値の等式を $\PA$ で証明するのに使う。$\mathrm{su}$ が Σ 関数であることが必要である。
+- **$x_{i}$ が $\vec{z}$, $y_{j}$ と異なること**：Step 3 で代入しても $\vec{z}$ が影響を受けず、$P_{i}$ の構造が保たれるため。
+- 帰納法の公理は Step 4 の Σ 完全性と、$\mathrm{su}$ が関数的であることの証明（有限列の理論）を通じてだけ使っている。
+:::
+:::
+
+::: corollary 対角化定理 {#pt:diagonal-lemma keywords="diagonal lemma, fixed point lemma"}
+自由変数が $y$ だけの論理式 $P(y)$ に対し、$\PA\vdash S\leftrightarrow P(\Godel{S})$ となる文 $S$ が存在する。
+:::
+
+::: proof
+一般化された対角化定理で $n=0$, $m=0$ とする。
+:::
+
+::: intuition
+嘘つきのパラドックス「この文は偽である」の「この文」は、自然言語では指示語で作れるが、算術の言語には指示語がない。対角化定理は、$\mathrm{sub}$ と $\mathrm{num}$ を使って「自分自身の記述を自分に代入した結果」について語る論理式を作ることで、指示語の代わりを果たす。「“に自分の引用を代入したものは $P$ である”に自分の引用を代入したものは $P$ である」（クワインの構成）がその自然言語版である。
+:::
+
+## 第一不完全性定理 {#pt:sec-first-incompleteness}
+
+::: definition ゲーデル文 {#pt:godel-sentence keywords="Gödel sentence" index="ゲーデル文|げーでるぶん"}
+対角化定理で $P(y)\defeq\neg\mathrm{Bew}(y)$ とした文 $G$、すなわち $\PA\vdash G\leftrightarrow\neg\mathrm{Bew}(\Godel{G})$ となる文を**ゲーデル文**という。
+:::
+
+::: definition ω 無矛盾 {#pt:omega-consistent keywords="omega-consistency" index="ω 無矛盾|おめがむむじゅん"}
+$\PA$ を含む理論 $T$ が **ω 無矛盾**であるとは、どんな論理式 $\varphi(x)$ についても、「すべての $n$ で $T\vdash\neg\varphi(\underline{n})$」かつ「$T\vdash\exists x\,\varphi(x)$」とはならないことをいう。ω 無矛盾なら無矛盾である（矛盾する理論はすべての文を証明する）。$\mathcal{N}\models T$ なら $T$ は ω 無矛盾である。
+:::
+
+::: theorem ゲーデルの第一不完全性定理 {#pt:godel-first keywords="Gödel's first incompleteness theorem" index="第一不完全性定理|だいいちふかんぜんせいていり, ゲーデルの不完全性定理|げーでるのふかんぜんせいていり"}
+$G$ をゲーデル文とする。
+1. $\PA$ が無矛盾ならば、$\PA\nvdash G$。
+2. $\PA$ が ω 無矛盾ならば、$\PA\nvdash\neg G$。
+
+とくに $\mathcal{N}\models\PA$ なので、$G$ は $\PA$ で決定できず、$G$ は（標準構造で）真である。
+:::
+
+::: proof
+**Step 1（1）.** $\PA\vdash G$ とする。D1（\ref{pt:d1}）より $\PA\vdash\mathrm{Bew}(\Godel{G})$。一方 $G$ の性質から $\PA\vdash\neg\mathrm{Bew}(\Godel{G})$。よって $\PA$ は矛盾する。
+
+**Step 2（2）.** $\PA$ が ω 無矛盾で $\PA\vdash\neg G$ とする。$\PA$ は無矛盾なので、1 より $\PA\nvdash G$。\ref{pt:bew-correct} より、どの $n$ についても $\mathcal{N}\models\neg\mathrm{Pf}(\underline{n},\Godel{G})$。$\mathrm{Pf}$ は Δ 論理式なので（\ref{pt:bew-sigma}）、$\neg\mathrm{Pf}(\underline{n},\Godel{G})$ は真な Σ 文で、Σ 完全性より $\PA\vdash\neg\mathrm{Pf}(\underline{n},\Godel{G})$（すべての $n$）。一方 $\PA\vdash\neg G$ と $G$ の性質から $\PA\vdash\mathrm{Bew}(\Godel{G})$、すなわち $\PA\vdash\exists y\,\mathrm{Pf}(y,\Godel{G})$。これは $\varphi(y)\defeq\mathrm{Pf}(y,\Godel{G})$ について ω 無矛盾性に反する。
+
+**Step 3（真であること）.** 1 より $\PA\nvdash G$ なので、\ref{pt:bew-correct} より $\mathcal{N}\models\neg\mathrm{Bew}(\Godel{G})$。$\mathcal{N}\models\PA$ なので $\mathcal{N}\models G\leftrightarrow\neg\mathrm{Bew}(\Godel{G})$、よって $\mathcal{N}\models G$。
+
+::: hypcheck
+- **無矛盾性**：Step 1 は背理法の形で、$\PA$ が矛盾するという結論を導く。仮定を外すと、矛盾した理論はすべてを証明するので主張は偽になる。
+- **ω 無矛盾性**：Step 2。単なる無矛盾性だけでは $\PA\nvdash\neg G$ は示せない。実際、$\PA$ が無矛盾なら $\PA+\neg G$ も無矛盾だが（1 の対偶の形）、$\PA+\neg G$ は $\neg G$ を証明する。この仮定を無矛盾性に弱めるのがロッサーの定理（\ref{pt:page-rosser-tarski}）である。
+- **D1**：Step 1。D1 は Σ 完全性から得られた（\ref{pt:d1}）。
+:::
+:::
+
+::: remark 拡張についての注意 {#pt:first-incompleteness-extensions}
+証明で使ったのは、(a) 公理の集合が Δ 論理式 $\mathrm{Ax}_{T}$ で定義できること、(b) $T$ が $\PA$ を含むこと（Σ 完全性と対角化定理を使うため）、だけである。したがって、$\mathrm{Ax}_{\PA}$ を $\mathrm{Ax}_{T}$ に置き換えれば、公理が Δ 論理式で定義できる $\PA$ の任意の拡大 $T$ について、同じ定理が成り立つ。たとえば $\PA$ に有限個の文を加えた理論、あるいはゲーデル文そのものを加えた $\PA+G$ も不完全である。$\PA$ を完全な理論に拡大しようとすると、公理の集合を Δ（計算可能）に保つことができない。これを「計算可能な公理化をもつ算術の理論は完全にならない」と言い換えられる（計算可能性と Δ 定義可能性の関係は本系列では扱わない）。
+:::
+
+::: remark ゲーデル文の形
+$G$ は $\neg\mathrm{Bew}(\Godel{G})$ と同値で、$\mathrm{Bew}$ は Σ なので、$G$ は Π 文（Σ 文の否定）と同値である。Σ 完全性（\ref{pt:sigma-completeness}）により真な Σ 文はすべて証明できるので、不完全性はこの「一つ上の」複雑さで初めて現れる。
+:::
+
+## 問題 {#pt:sec-diag-problems}
+
+::: problem {#pt:prob-godel-sentence-unique}
+ゲーデル文は一つとは限らない（対角化の構成に依存する）。$G_{1},G_{2}$ がともに $\PA\vdash G_{i}\leftrightarrow\neg\mathrm{Bew}(\Godel{G_{i}})$ を満たすとき、両者はともに真であることを示せ（$\PA\vdash G_{1}\leftrightarrow G_{2}$ も成り立つが、それには第二不完全性定理の議論が要る）。
+:::
+
+::: solution
+第一不完全性定理の Step 1, 3 は $G$ の構成によらず、性質 $\PA\vdash G\leftrightarrow\neg\mathrm{Bew}(\Godel{G})$ だけを使っている。よって $\mathcal{N}\models\PA$ から、$G_{1},G_{2}$ はともに証明できず真である。（後で、どちらも $\neg\mathrm{Bew}(\Godel{\bot})$ と $\PA$ で同値であることがわかる。\ref{logic:gl-four-fixed-points} の 1 の算術版。）
+:::
+
+::: problem {#pt:prob-henkin-sentence}
+$\PA\vdash H\leftrightarrow\mathrm{Bew}(\Godel{H})$ となる文 $H$（ヘンキン文）の存在を示せ。$H$ が証明できるかどうかは、D1–D3 と対角化定理だけからは直ちにわからない。この問いに答えるのがレーブの定理である。
+:::
+
+::: solution
+対角化定理で $P(y)\defeq\mathrm{Bew}(y)$ とする。レーブの定理（\ref{pt:page-second-incompleteness-lob}）により $\PA\vdash\mathrm{Bew}(\Godel{H})\to H$ から $\PA\vdash H$ が従うので、$H$ は証明できる。
+:::
+
+::: problem {#pt:prob-pa-plus-notg}
+$\PA$ が無矛盾なら $\PA+\neg G$ も無矛盾であることを示し、$\PA+\neg G$ は ω 無矛盾でないことを確かめよ。
+:::
+
+::: solution
+$\PA+\neg G$ が矛盾するなら $\PA\vdash G$（演繹定理と RAA）となり、第一不完全性定理の 1 に反する。$\PA+\neg G\vdash\exists y\,\mathrm{Pf}(y,\Godel{G})$ だが、$\PA\nvdash G$ なのですべての $n$ で $\PA\vdash\neg\mathrm{Pf}(\underline{n},\Godel{G})$、したがって $\PA+\neg G$ でも証明できる。よって ω 無矛盾でない。$\PA+\neg G$ のモデルは超準モデルで、そこでは $G$ の「証明」にあたる超準的な元がある。
+:::
+
+::: supplement
+**高い視点から：対角線論法と不動点.** 対角化定理は、カントールの対角線論法（\ref{set:page-cantor}）と同じ構造をもつ。圏論的には、ローヴェアの不動点定理（\ref{cat:lawvere-fixed-point}）として統一されることが知られている：「対象 $A$ から $A$ 上の性質の空間への“点ごとに全射な”写像があれば、性質の空間の任意の自己写像は不動点をもつ」。算術では、$A$ は論理式（のコード）、写像は「コードを代入する」操作 $\mathrm{sub}$、自己写像は $P$ を施す操作で、不動点が対角化定理の文 $S$ にあたる。カントールの定理は、この不動点が**存在しない**（否定には不動点がない）ことから全射の不存在を導く対偶の形であり、不完全性定理は、不動点が存在することから「証明可能性は真理と一致しない」を導く形である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>飽和モデル | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03C-model-theory/02-types-and-countable-models/03-saturated-models.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 飽和モデル {#model:page-saturated-models keywords="saturated model, kappa-saturated, types over a set, universal model, homogeneous, countable saturated model, existence of saturated elementary extensions"}
+
+原子モデルが「どうしても実現しなければならない型だけを実現する」最小のモデルだったのに対し、**飽和モデル**は「小さいパラメータの集合の上で実現できる型をすべて実現する」最大のモデルである（\ref{model:saturated}）。本ページでは、パラメータつきの型を導入し、(1) どの構造も $\kappa^{+}$ 飽和な初等拡大をもつこと（\ref{model:saturated-extension}）、(2) $\kappa$ 飽和なモデルは濃度 $\le\kappa$ の初等的同値なモデルをすべて初等的に含むこと（**普遍性**、\ref{model:saturated-universal}）、(3) 同じ濃度の飽和モデルは同型であること（\ref{model:saturated-unique}）、(4) 可算飽和モデルが存在するための必要十分条件（\ref{model:countable-saturated}）を示す。
+
+## 記法と定義の確認 {#model:sec-saturated-notation}
+
+::: notation
+- 型、完全型、実現・省略、$\mathrm{tp}$、型の基本性質（\ref{model:type-basic}）は \ref{model:page-types-omitting} のとおり。初等図式・初等鎖の定理・下降レーヴェンハイム–スコーレムの定理は \ref{model:page-elementary-substructures}, \ref{model:page-elementary-chains} のとおり。
+- $A\subseteq M$ について、$\mathcal{L}_{A}$ は $a\in A$ の名前 $c_{a}$ を加えた言語、$\mathcal{M}_{A}$ は $c_{a}$ を $a$ と解釈した拡大で、$\mathrm{Th}(\mathcal{M}_{A})$ はその理論である。
+- 基数 $\kappa$ について $\kappa^{+}$ は次の基数で、選択公理のもとで正則である（\ref{set:successor-regular}）：$\kappa^{+}$ 未満の長さの列の上界は $\kappa^{+}$ 未満で、濃度 $\le\kappa$ の集合の $\kappa^{+}$ 未満の順序数の和は $\kappa^{+}$ 未満。
+- **公理.** $\ZFC$ で議論する。
+:::
+
+## パラメータつきの型と飽和 {#model:sec-saturated-def}
+
+::: definition $A$ 上の型と飽和 {#model:saturated keywords="type over a set of parameters, kappa-saturated, saturated model" index="A 上の型|えーじょうのかた, κ 飽和|かっぱほうわ, 飽和モデル|ほうわもでる"}
+$\mathcal{M}$ を $\mathcal{L}$ 構造、$A\subseteq M$ とする。
+1. $\mathcal{L}_{A}$ の論理式からなる型 $p(\vec{x})$ が $\mathrm{Th}(\mathcal{M}_{A})$ と両立するとき、$p$ を $\mathcal{M}$ の**$A$ 上の型**という。$A$ 上の $n$ 変数の完全型（$\mathrm{Th}(\mathcal{M}_{A})$ の完全型）全体を $S_{n}^{\mathcal{M}}(A)$ と書く。
+2. 無限基数 $\kappa$ について、$\mathcal{M}$ が **$\kappa$ 飽和**であるとは、$\lvert A\rvert<\kappa$ となる任意の $A\subseteq M$ について、$A$ 上の $1$ 変数の型がすべて $\mathcal{M}$（正確には $\mathcal{M}_{A}$）で実現されることをいう。$\mathcal{M}$ が $\lvert M\rvert$ 飽和のとき、$\mathcal{M}$ を**飽和**しているという。
+:::
+
+::: lemma n 変数への拡張 {#model:saturated-n-types}
+$\mathcal{M}$ が $\kappa$ 飽和で $\lvert A\rvert<\kappa$ なら、$A$ 上の任意の $n$ 変数の型は $\mathcal{M}$ で実現される。
+:::
+
+::: proof
+$n$ に関する帰納法。$n=1$ は定義。$p(x_{1},\dots,x_{n+1})$ を $A$ 上の型とし、
+$$
+p'(x_{1},\dots,x_{n})\defeq\Bigl\{\exists x_{n+1}\,(\varphi_{1}\wedge\dots\wedge\varphi_{k}):\varphi_{1},\dots,\varphi_{k}\in p\Bigr\}
+$$
+とおく。$p$ を実現する組（$\mathrm{Th}(\mathcal{M}_{A})$ のあるモデルの中の）の最初の $n$ 成分が $p'$ を実現するので、$p'$ は $A$ 上の型である。帰納法の仮定より $\vec{b}\in M^{n}$ が $p'$ を実現する。$A'\defeq A\cup\{b_{1},\dots,b_{n}\}$ は $\lvert A'\rvert<\kappa$（$\kappa$ は無限）で、$q(x_{n+1})\defeq p(\vec{b},x_{n+1})$（$\vec{x}$ に $c_{b_{i}}$ を代入したもの）は $A'$ 上の型である。実際、有限個の $\varphi_{1},\dots,\varphi_{k}\in p$ について、$\exists x_{n+1}\,(\varphi_{1}\wedge\dots\wedge\varphi_{k})(\vec{b})$ が $\mathcal{M}_{A'}$ で真なので、$q$ の有限部分は $\mathcal{M}_{A'}$ で実現され、\ref{model:type-basic} の 1 より $q$ は $\mathrm{Th}(\mathcal{M}_{A'})$ と両立する。$\kappa$ 飽和性より $b_{n+1}\in M$ が $q$ を実現し、$(\vec{b},b_{n+1})$ が $p$ を実現する。
+:::
+
+::: lemma 型の実現と初等拡大 {#model:realize-all-types}
+$\mathcal{M}$ を $\mathcal{L}$ 構造とし、$P$ を $M$ の部分集合 $A$ と $A$ 上の $1$ 変数の型 $p$ の組 $(A,p)$ の集合とする。このとき $\mathcal{M}\preccurlyeq\mathcal{N}$ で、すべての $(A,p)\in P$ について $p$ が $\mathcal{N}$ で実現されるものがある。さらに $\lvert N\rvert\le\lvert M\rvert+\lvert\mathcal{L}\rvert+\lvert P\rvert+\aleph_{0}$ とできる。
+:::
+
+::: proof
+各 $(A,p)\in P$ に新しい定数 $d_{(A,p)}$ をとり、$\Sigma\defeq\mathrm{Eldiag}(\mathcal{M})\cup\bigcup_{(A,p)\in P}p(d_{(A,p)})$ とする。有限部分は、$\delta\in\mathrm{Eldiag}(\mathcal{M})$ と有限個の $(A_{j},p_{j})$ と $\varphi_{j,1},\dots,\varphi_{j,l}\in p_{j}$ だけを含む。$p_{j}$ は $\mathrm{Th}(\mathcal{M}_{A_{j}})$ と両立するので $\mathcal{M}_{A_{j}}\models\exists x\,(\varphi_{j,1}\wedge\dots\wedge\varphi_{j,l})$（そうでなければ否定が $\mathrm{Th}(\mathcal{M}_{A_{j}})$ に属する）で、その証拠に $d_{(A_{j},p_{j})}$ を解釈すれば $\mathcal{M}_{M}$ の拡大が有限部分を満たす。コンパクト性定理より $\Sigma$ にモデル $\mathcal{N}'$ があり、\ref{model:elementary-diagram-lemma} より $\mathcal{M}$ は $\mathcal{N}'\restr{\mathcal{L}}$ に初等的に埋め込まれる（像を同一視する）。$d_{(A,p)}^{\mathcal{N}'}$ が $p$ を実現する（$c_{a}$ の解釈は $a$ のまま）。濃度の評価は、下降レーヴェンハイム–スコーレムの定理を $M\cup\{d^{\mathcal{N}'}_{(A,p)}\}$ に使う。
+:::
+
+## 飽和な初等拡大の存在 {#model:sec-saturated-existence}
+
+::: theorem 飽和な初等拡大 {#model:saturated-extension keywords="existence of kappa^+-saturated elementary extensions" index="飽和な初等拡大の存在|ほうわなしょとうかくだいのそんざい"}
+任意の無限基数 $\kappa$ と $\mathcal{L}$ 構造 $\mathcal{M}$ について、$\kappa^{+}$ 飽和な初等拡大 $\mathcal{M}^{\ast}\succcurlyeq\mathcal{M}$ が存在する。
+:::
+
+::: proof
+順序数 $\alpha\le\kappa^{+}$ に関する再帰で初等鎖 $(\mathcal{M}_{\alpha})_{\alpha\le\kappa^{+}}$ を作る。$\mathcal{M}_{0}\defeq\mathcal{M}$。$\mathcal{M}_{\alpha+1}$ は、$\lvert A\rvert\le\kappa$ のすべての $A\subseteq M_{\alpha}$ とすべての $p\in S_{1}^{\mathcal{M}_{\alpha}}(A)$ の組を $P$ として、\ref{model:realize-all-types} で得る $\mathcal{M}_{\alpha}$ の初等拡大とする。極限順序数 $\lambda$ では $\mathcal{M}_{\lambda}\defeq\bigcup_{\alpha<\lambda}\mathcal{M}_{\alpha}$（\ref{model:elementary-chain} より各 $\mathcal{M}_{\alpha}\preccurlyeq\mathcal{M}_{\lambda}$）。$\mathcal{M}^{\ast}\defeq\mathcal{M}_{\kappa^{+}}$ とする。
+
+$A\subseteq M^{\ast}$, $\lvert A\rvert\le\kappa$、$p$ を $\mathcal{M}^{\ast}$ の $A$ 上の $1$ 変数の型とする。各 $a\in A$ が属する最初の $M_{\alpha_{a}}$ をとると、$\kappa^{+}$ は正則で $\lvert A\rvert\le\kappa$ なので $\beta\defeq\sup_{a}\alpha_{a}<\kappa^{+}$、$A\subseteq M_{\beta}$。$\mathcal{M}_{\beta}\preccurlyeq\mathcal{M}^{\ast}$ より $\mathrm{Th}((\mathcal{M}_{\beta})_{A})=\mathrm{Th}(\mathcal{M}^{\ast}_{A})$ なので、$p$ は $\mathcal{M}_{\beta}$ の $A$ 上の型で、完全型 $p'\in S_{1}^{\mathcal{M}_{\beta}}(A)$ に含まれる（\ref{model:type-basic} の 2）。構成より $p'$ は $\mathcal{M}_{\beta+1}$ で実現され、$\mathcal{M}_{\beta+1}\preccurlyeq\mathcal{M}^{\ast}$ なのでその元は $\mathcal{M}^{\ast}$ でも $p$ を実現する。
+:::
+
+::: hypcheck
+- **$\kappa^{+}$ の正則性**：$A$ がある $M_{\beta}$（$\beta<\kappa^{+}$）に収まることに使った。鎖の長さを $\kappa$ の共終数が $\kappa$ より小さい順序数にすると、この議論は通らない。
+- **初等鎖の定理**：極限段と、$\mathcal{M}_{\beta}$ と $\mathcal{M}^{\ast}$ の間で型を比べるところ。
+- **選択公理**：正則性、コンパクト性、各段の選択（超限再帰で選択関数を固定する）。
+:::
+
+## 普遍性と一意性 {#model:sec-saturated-universal}
+
+::: theorem 飽和モデルの普遍性 {#model:saturated-universal keywords="kappa-saturated models are kappa^+-universal" index="普遍性（飽和モデル）|ふへんせいほうわもでる"}
+$\mathcal{M}$ が $\kappa$ 飽和で、$\mathcal{N}\equiv\mathcal{M}$, $\lvert N\rvert\le\kappa$ なら、初等埋め込み $\mathcal{N}\to\mathcal{M}$ が存在する。
+:::
+
+::: proof
+$N=\{n_{\xi}:\xi<\kappa\}$ と並べる（$\lvert N\rvert<\kappa$ なら長さ $\lvert N\rvert$ の列。重複を許して長さ $\kappa$ にしてもよい）。$m_{\xi}\in M$ を、各 $\eta\le\kappa$ について
+$$
+(\ast)_{\eta}\qquad\mathrm{tp}^{\mathcal{N}}\bigl((n_{\xi})_{\xi<\eta}\bigr)=\mathrm{tp}^{\mathcal{M}}\bigl((m_{\xi})_{\xi<\eta}\bigr)
+$$
+（無限個の変数の型：有限部分ごとに型が等しいという意味）となるように超限再帰で選ぶ。$(\ast)_{0}$ は $\mathcal{N}\equiv\mathcal{M}$。極限 $\eta$ では、$(\ast)_{\eta}$ は有限部分についての条件なので、$\xi<\eta$ での成立から従う。$(\ast)_{\eta}$ から $(\ast)_{\eta+1}$：$A\defeq\{m_{\xi}:\xi<\eta\}$ は $\lvert A\rvert\le\lvert\eta\rvert<\kappa$ である（$\eta<\kappa$ の場合を扱えば十分）。
+$$
+p(x)\defeq\{\varphi(c_{m_{\xi_{1}}},\dots,c_{m_{\xi_{k}}},x):\mathcal{N}\models\varphi(n_{\xi_{1}},\dots,n_{\xi_{k}},n_{\eta}),\ \xi_{i}<\eta\}
+$$
+は $A$ 上の型である：有限部分 $\varphi_{1},\dots,\varphi_{l}$ について、$\mathcal{N}\models\exists x\,\bigwedge\varphi_{j}(\vec{n},x)$ なので $(\ast)_{\eta}$ より $\mathcal{M}\models\exists x\,\bigwedge\varphi_{j}(\vec{m},x)$。$\kappa$ 飽和性より $m_{\eta}\in M$ が $p$ を実現し、$(\ast)_{\eta+1}$ が成り立つ。$(\ast)_{\kappa}$ より $n_{\xi}\mapsto m_{\xi}$ は well-defined（$x=y$ の型の比較）で、\ref{model:type-preserving-elementary} より初等埋め込みである。
+:::
+
+::: theorem 飽和モデルの一意性 {#model:saturated-unique keywords="uniqueness of saturated models" index="飽和モデルの一意性|ほうわもでるのいちいせい"}
+$\mathcal{M},\mathcal{N}$ が飽和で、$\mathcal{M}\equiv\mathcal{N}$, $\lvert M\rvert=\lvert N\rvert$ なら、$\mathcal{M}\cong\mathcal{N}$。
+:::
+
+::: proof
+$\kappa\defeq\lvert M\rvert=\lvert N\rvert$ とする（無限とする。有限なら $\mathcal{M}\equiv\mathcal{N}$ から同型が従うことが知られているが、ここでは扱わない）。\ref{model:saturated-universal} の証明の超限再帰を往復で行う：$M=\{m'_{\xi}\}$, $N=\{n'_{\xi}\}$ を長さ $\kappa$ で並べ、偶数段（$\xi=\lambda+2k$）では $\mathcal{N}$ の次の元 $n'$ の行き先を $\mathcal{M}$ の飽和性で選び、奇数段では $\mathcal{M}$ の次の元の戻り先を $\mathcal{N}$ の飽和性で選ぶ。各段までに選んだ元は $\kappa$ 未満個なので飽和性が使える。$\kappa$ 段の後、すべての元が対応に現れ、型を保つ全単射、すなわち同型が得られる。
+:::
+
+## 可算飽和モデル {#model:sec-countable-saturated}
+
+::: theorem 可算飽和モデルの存在 {#model:countable-saturated keywords="countable saturated model exists iff type spaces are countable" index="可算飽和モデル|かさんほうわもでる"}
+$\mathcal{L}$ を可算、$T$ を有限モデルをもたない完全な理論とする。$T$ が可算飽和モデルをもつための必要十分条件は、すべての $n$ で $S_{n}(T)$ が可算であることである。
+:::
+
+::: proof
+**必要性.** $\mathcal{M}$ を可算飽和モデルとする。$q\in S_{n}(T)$ は $\varnothing$ 上の型（$\mathrm{Th}(\mathcal{M}_{\varnothing})=T$）なので、\ref{model:saturated-n-types} より $\mathcal{M}$ で実現され、$q=\mathrm{tp}(\vec{a})$ となる組 $\vec{a}\in M^{n}$ がある。組は可算個しかないので $S_{n}(T)$ は可算。
+
+**十分性.** *Step 1.* $\mathcal{M}\models T$ と有限の $A=\{a_{1},\dots,a_{k}\}\subseteq M$ について、$S_{1}^{\mathcal{M}}(A)$ は可算である。実際、$p\in S_{1}^{\mathcal{M}}(A)$ に、$c_{a_{i}}$ を変数 $x_{i}$ に置き換えた論理式の集合 $\hat{p}(x_{1},\dots,x_{k},x)$ を対応させると、$p$ を実現する元 $b$（$\mathcal{M}$ のある初等拡大の中の）について $\hat{p}\subseteq\mathrm{tp}(\vec{a},b)\in S_{k+1}(T)$ で、$\hat{p}$ は $p$ を決め、完全型なので $\hat{p}=\mathrm{tp}(\vec{a},b)$。$p\mapsto\hat{p}$ は単射で、$S_{k+1}(T)$ は可算。
+
+*Step 2.* 可算モデル $\mathcal{M}_{0}\models T$（下降レーヴェンハイム–スコーレムの定理）から始め、$\mathcal{M}_{i+1}$ を、$\mathcal{M}_{i}$ の有限部分集合 $A$（可算個）とその上の完全型 $p\in S_{1}^{\mathcal{M}_{i}}(A)$（Step 1 より各 $A$ について可算個）の組すべてを $P$ として、\ref{model:realize-all-types} で得る可算な初等拡大とする。$\mathcal{M}_{\omega}\defeq\bigcup_{i}\mathcal{M}_{i}$ は可算で、$\mathcal{M}_{i}\preccurlyeq\mathcal{M}_{\omega}$（\ref{model:elementary-chain}）。
+
+*Step 3.* 有限の $A\subseteq M_{\omega}$ はある $M_{i}$ に含まれ、$\mathcal{M}_{\omega}$ の $A$ 上の型は $\mathcal{M}_{i}$ の $A$ 上の完全型に含まれ（\ref{model:saturated-extension} の証明と同じ）、$\mathcal{M}_{i+1}$ で実現される。よって $\mathcal{M}_{\omega}$ は $\aleph_{0}$ 飽和、すなわち可算飽和である。$T$ は有限モデルをもたないので $\mathcal{M}_{\omega}$ は可算無限。
+:::
+
+::: corollary 可算モデルの両極 {#model:prime-and-saturated}
+$\mathcal{L}$ が可算、$T$ が有限モデルをもたない完全な理論で、すべての $S_{n}(T)$ が可算なら、$T$ は可算な素モデル $\mathcal{M}_{0}$ と可算飽和モデル $\mathcal{M}_{1}$ をもち、$T$ の任意の可算モデル $\mathcal{N}$ について初等埋め込み $\mathcal{M}_{0}\to\mathcal{N}\to\mathcal{M}_{1}$ がある。
+:::
+
+::: proof
+\ref{model:atomic-existence} の 2 と \ref{model:atomic-prime}、\ref{model:countable-saturated} と \ref{model:saturated-universal}（$\kappa=\aleph_{0}$）。
+:::
+
+## 問題 {#model:sec-saturated-problems}
+
+::: problem {#model:prob-q-saturated}
+$(\mathbb{Q},<)$ は飽和（$\aleph_{0}$ 飽和）であることを、$\mathrm{DLO}$ の量化子消去を使って示せ。
+:::
+
+::: solution
+有限の $A=\{a_{1}<\dots<a_{k}\}\subseteq\mathbb{Q}$ と $A$ 上の $1$ 変数の型 $p(x)$ をとる。$p$ を含む完全型 $p'$ を考える。量化子消去（\ref{model:dlo-qe}、パラメータは定数 $c_{a_{i}}$ として扱い、$x_{1},\dots,x_{k},x$ の論理式の量化子消去を使う）より、$p'$ は $x=a_{i}$, $x<a_{i}$, $a_{i}<x$ のどれが属するかで決まる。$x=a_{i}$ なら $a_{i}$ が実現する。そうでなければ $x$ は $a_{i}<x<a_{i+1}$、$x<a_{1}$、$a_{k}<x$ のどれかの位置にあり、$\mathbb{Q}$ の稠密性と端点のなさからその位置に有理数がある。その有理数は $p'$ と同じ原子論理式を満たすので $p'$、したがって $p$ を実現する。
+:::
+
+::: problem {#model:prob-n-not-saturated}
+$\mathrm{Th}(\N,<)$ の可算モデル $(\N,<)$ は $\aleph_{0}$ 飽和でないことを示せ。
+:::
+
+::: solution
+$p(x)\defeq\{\exists y_{1}\cdots\exists y_{n}\,(y_{1}<y_{2}<\dots<y_{n}<x):n\in\N\}$（$x$ の下に少なくとも $n$ 個の元がある）は $\varnothing$ 上の型である（有限部分は $(\N,<)$ で $x=n$ により実現される）が、$(\N,<)$ の各元 $m$ の下には $m$ 個しか元がないので、$p$ は実現されない。
+:::
+
+::: supplement
+**前提の検討.**
+- \ref{model:saturated-extension} は濃度を制御していない。濃度 $\kappa$ の飽和モデルの存在には、$2^{<\kappa}=\kappa$ のような集合論的な仮定（$\kappa$ が正則で $2^{\lambda}\le\kappa$, $\lambda<\kappa$ など）や、理論の安定性が要ることが知られている。本サイトでは扱わない。
+- 飽和の定義を $1$ 変数の型で述べたが、\ref{model:saturated-n-types} により $n$ 変数でも同じである（$\kappa$ が無限であることを使う）。
+
+**関連する結果.**
+- *特殊モデル.* Chang–Keisler 第 5 章では、飽和モデルの濃度の問題を避けるために、飽和の度合いが増える初等鎖の和である**特殊モデル**を導入し、同じ濃度の特殊モデルの一意性を示す。これを使うと、集合論的な仮定なしに、ベートの定義可能性定理やロビンソンの統合無矛盾性定理のモデル論的な証明が得られる（\ref{pt:beth-definability}、\ref{logic:robinson-joint-consistency}）。
+- *超冪*による飽和モデルの構成（可算不完全な超フィルターによる超冪は $\aleph_{1}$ 飽和）は超積の系列で扱う。
+- *モンスターモデル.* 現代のモデル理論では、十分大きい飽和（あるいは強同質）なモデルを一つ固定し、その中ですべての議論を行う流儀が標準的である。
+
+**高い視点から：最大のモデル.** 素モデルが $T$ のモデルの圏の弱い始対象だったように、飽和モデルは、濃度を区切った範囲での弱い終対象（すべてのモデルを初等的に受け入れる、\ref{model:saturated-universal}）に当たる。型空間の言葉では、素モデルが孤立点だけを、飽和モデルがすべての点（さらに小さいパラメータの上のすべての点）を実現する。たとえるなら、素モデルは「最低限の住人しかいない村」、飽和モデルは「想像できる限りどんな住人も（小さな条件で指定される限り）必ず見つかる大都市」である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>単純型付きラムダ計算とカリー＝ハワード対応 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/05-curry-howard/01-simply-typed.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 単純型付きラムダ計算とカリー＝ハワード対応 {#logic:page-curry-howard keywords="simply typed lambda calculus, Curry-Howard correspondence, propositions as types, proofs as programs, natural deduction implicational fragment, subject reduction, normalization of proofs, strong normalization, Tait reducibility, computability predicates"}
+
+型なしラムダ計算（\ref{logic:page-lambda-calculus}）の項に**型**を付けると、型 $A\to B$ の項は「$A$ を受け取り $B$ を返す関数」になる。**単純型付きラムダ計算**（\ref{logic:typing-rules}）の型付け規則は、直観主義命題論理の含意の自然演繹（\ref{logic:nj-implication}）の規則と一字一句同じ形をしている。これが**カリー＝ハワード対応**（\ref{logic:curry-howard}）で、型は命題、項は証明、β 簡約は証明の**正規化**（回り道の除去）に対応する。本ページでは、簡約で型が保たれること（\ref{logic:subject-reduction}）と、型の付く項はどの順序で簡約しても必ず停止すること（**強正規化定理**、\ref{logic:strong-normalization}）をテイトの方法で示す。系として、含意だけの直観主義論理の証明は正規形に直せることが分かる。
+
+> 資料フォルダに参考書がなく、標準的な定義と証明（テイトの還元可能性の方法、ジラールの『Proofs and Types』で知られている形）を本サイトで組み立てた。
+
+## 記法と定義の確認 {#logic:sec-ch-notation}
+
+::: notation
+- ラムダ項、自由変数、代入、代入の補題、$\to_{\beta}$, $\twoheadrightarrow_{\beta}$、正規形は \ref{logic:page-lambda-calculus} のとおり。
+- 命題論理の自然演繹は \ref{logic:page-prop-completeness} のとおり（古典論理）。本ページではその含意の部分を、文脈を明示した形で（直観主義的に）扱う。
+- 項 $M$ が**強正規化可能**とは、$M=M_{0}\to_{\beta}M_{1}\to_{\beta}\cdots$ という無限の簡約列がないことをいい、その全体を $\mathrm{SN}$ と書く。$M\in\mathrm{SN}$ なら、$M$ からの簡約列の長さの上限 $\nu(M)$ がある（$M$ から一段で得られる項は有限個なので、ケーニヒの補題による）。
+:::
+
+## 型と型付け {#logic:sec-ch-typing}
+
+::: definition 単純型 {#logic:simple-type keywords="simple types, base types, arrow types" index="単純型|たんじゅんがた"}
+**型**を、型変数（基本型）$\alpha,\beta,\dots$ と、型 $A,B$ から作る $A\to B$ で帰納的に定める（$\to$ は右結合：$A\to B\to C=A\to(B\to C)$）。
+:::
+
+::: definition 型付け規則 {#logic:typing-rules keywords="typing context, typing judgement, simply typed lambda calculus a la Curry" index="型付け|かたづけ, 単純型付きラムダ計算|たんじゅんかたつきらむだけいさん"}
+**文脈** $\Gamma$ は、変数と型の対 $x:A$ の有限集合で、各変数が高々一度しか現れないもの。**型判断** $\Gamma\vdash M:A$ を次の規則で導かれるものとする（カリー流：項は型なしの項そのもの）。
+$$
+\frac{(x:A)\in\Gamma}{\Gamma\vdash x:A}\ (\mathrm{var})\qquad\frac{\Gamma,x:A\vdash M:B}{\Gamma\vdash\lambda x.M:A\to B}\ (\to\mathrm{I})
+$$
+$$
+\frac{\Gamma\vdash M:A\to B\quad\Gamma\vdash N:A}{\Gamma\vdash MN:B}\ (\to\mathrm{E})
+$$
+（$\to\mathrm{I}$ では $x$ は $\Gamma$ に現れないとする。束縛変数は α 同値で選べる。）$\Gamma\vdash M:A$ となる $\Gamma,A$ があるとき $M$ は**型付け可能**という。
+:::
+
+::: example
+$\vdash\lambda x.x:A\to A$、$\vdash\lambda xy.x:A\to B\to A$、$\vdash\lambda fgx.f(gx):(B\to C)\to(A\to B)\to A\to C$。一方、$\omega=\lambda x.xx$ は型付け可能でない：$x:A$ で $xx$ に型が付くには $A=A\to B$ が必要だが、型の大きさを比べるとこれは不可能である。
+:::
+
+::: lemma 型付けの基本性質 {#logic:typing-basic keywords="weakening, substitution lemma for typing" index="型付けの代入補題|かたづけのだいにゅうほだい"}
+1. （弱化）$\Gamma\vdash M:A$ で $\Gamma\subseteq\Gamma'$ なら $\Gamma'\vdash M:A$。
+2. （生成）$\Gamma\vdash\lambda x.M:C$ なら $C=A\to B$ かつ $\Gamma,x:A\vdash M:B$。$\Gamma\vdash MN:B$ ならある $A$ で $\Gamma\vdash M:A\to B$, $\Gamma\vdash N:A$。
+3. （代入）$\Gamma,x:A\vdash M:B$ かつ $\Gamma\vdash N:A$ なら $\Gamma\vdash M[N/x]:B$。
+:::
+
+::: proof
+1. 導出に関する帰納法（$\to\mathrm{I}$ では束縛変数を $\Gamma'$ に現れないように選ぶ）。
+2. 項の形から最後の規則が決まる（$\lambda x.M$ は $\to\mathrm{I}$、$MN$ は $\to\mathrm{E}$）。
+3. $\Gamma,x:A\vdash M:B$ の導出に関する帰納法。$M=x$ なら $B=A$ で $M[N/x]=N$。$M=y\neq x$ なら $y:B\in\Gamma$。$M=\lambda y.M'$ なら（$y\notin\mathrm{FV}(N)$, $y\neq x$ に選び）帰納法の仮定と弱化。$M=M_{1}M_{2}$ は帰納法の仮定と $\to\mathrm{E}$。
+:::
+
+::: theorem 簡約で型が保たれる {#logic:subject-reduction keywords="subject reduction, type preservation" index="主部簡約|しゅぶかんやく, 型の保存|かたのほぞん"}
+$\Gamma\vdash M:A$ かつ $M\to_{\beta}M'$ なら $\Gamma\vdash M':A$。
+:::
+
+::: proof
+$M\to_{\beta}M'$ の定義に関する帰納法。基 $(\lambda x.P)Q\to_{\beta}P[Q/x]$ の場合、生成補題から $\Gamma\vdash\lambda x.P:B\to A$, $\Gamma\vdash Q:B$、さらに $\Gamma,x:B\vdash P:A$。代入補題から $\Gamma\vdash P[Q/x]:A$。文脈の規則の場合は、生成補題で部分項の型を取り出し、帰納法の仮定と同じ規則で戻す。
+:::
+
+## カリー＝ハワード対応 {#logic:sec-curry-howard}
+
+::: definition 含意の直観主義自然演繹 {#logic:nj-implication keywords="implicational intuitionistic natural deduction, NJ implication fragment" index="直観主義自然演繹（含意）|ちょっかんしゅぎしぜんえんえきがんい"}
+命題変数と $\to$ だけからなる論理式について、判断 $\Delta\vdash A$（$\Delta$ は論理式の有限集合）を次の規則で導かれるものとする：$A\in\Delta$ なら $\Delta\vdash A$；$\Delta,A\vdash B$ なら $\Delta\vdash A\to B$（$\to$ 導入）；$\Delta\vdash A\to B$, $\Delta\vdash A$ なら $\Delta\vdash B$（$\to$ 除去）。
+:::
+
+::: theorem カリー＝ハワード対応 {#logic:curry-howard keywords="Curry-Howard isomorphism, propositions as types" index="カリー＝ハワード対応|かりーはわーどたいおう"}
+型変数を命題変数と同一視する。
+1. $\Gamma\vdash M:A$ なら、$\{B:(x:B)\in\Gamma\}\vdash A$。
+2. $\Delta\vdash A$ なら、$\Delta=\{B_{1},\dots,B_{k}\}$ の各 $B_{i}$ に異なる変数 $x_{i}$ を割り当てた文脈 $\Gamma$ と、項 $M$ で $\Gamma\vdash M:A$ となるものがある。
+
+さらに、型判断の導出と自然演繹の導出は、規則ごとに一対一に対応し（$\mathrm{var}$ と仮定、$\to\mathrm{I}$ と $\to$ 導入、$\to\mathrm{E}$ と $\to$ 除去）、項 $M$ は導出を符号化している。
+:::
+
+::: proof
+1. 型判断の導出から項を消すと自然演繹の導出になる（導出に関する帰納法）。
+2. 導出に関する帰納法で項を作る。仮定 $B_{i}$ は $x_{i}$、$\to$ 導入は $\lambda x.M$（$\Delta,A$ の $A$ に新しい変数 $x$ を割り当てる。$A$ がすでに $\Delta$ に属するときも新しい変数を割り当て、弱化（\ref{logic:typing-basic}）で文脈をそろえる）、$\to$ 除去は $MN$。
+:::
+
+::: remark 正規化との対応
+自然演繹の導出で、$\to$ 導入の直後に同じ $\to$ を除去する「回り道」
+$$
+\dfrac{\dfrac{\begin{array}{c}[A]\\ \vdots\\ B\end{array}}{A\to B}\quad\begin{array}{c}\vdots\\ A\end{array}}{B}
+$$
+は、$A$ の証明を仮定 $[A]$ の位置に差し込んで $B$ を直接導く導出に書き換えられる。これは項の上では β 簡約 $(\lambda x.M)N\to_{\beta}M[N/x]$ そのものである。したがって、正規形の項は回り道のない導出（**正規な導出**）に対応する。次の強正規化定理は、どんな導出も、回り道の除去をどの順序で行っても有限回で正規な導出に至ることを示す。これは自然演繹の**正規化定理**（シーケント計算のカット除去 \ref{pt:page-cut-elimination} に当たる）の、含意の部分の証明になっている。
+:::
+
+## 強正規化定理 {#logic:sec-sn}
+
+::: definition 還元可能な項 {#logic:reducibility keywords="reducibility candidates, Tait computability predicate" index="還元可能（テイトの）|かんげんかのうていとの"}
+型 $A$ ごとに項の集合 $\mathrm{Red}_{A}$ を、型に関する帰納法で定める。
+1. 型変数 $\alpha$ について $\mathrm{Red}_{\alpha}\defeq\mathrm{SN}$。
+2. $\mathrm{Red}_{A\to B}\defeq\{M:\text{すべての }N\in\mathrm{Red}_{A}\text{ について }MN\in\mathrm{Red}_{B}\}$。
+
+**中立な項**とは、抽象でない項（変数か適用）のこととする。
+:::
+
+::: lemma 還元可能性の性質 {#logic:reducibility-properties keywords="CR1 CR2 CR3" index="還元可能性の性質|かんげんかのうせいのせいしつ"}
+すべての型 $A$ について：
+- (CR1) $\mathrm{Red}_{A}\subseteq\mathrm{SN}$。
+- (CR2) $M\in\mathrm{Red}_{A}$ かつ $M\to_{\beta}M'$ なら $M'\in\mathrm{Red}_{A}$。
+- (CR3) $M$ が中立で、$M$ から一段で得られるすべての $M'$ が $\mathrm{Red}_{A}$ に属するなら、$M\in\mathrm{Red}_{A}$。
+
+とくに (CR3) から、すべての変数 $x$ は $\mathrm{Red}_{A}$ に属する（変数は中立で、一段で得られる項がない）。
+:::
+
+::: proof
+型に関する帰納法で三つを同時に示す。
+
+**型変数 $\alpha$.** (CR1) は定義。(CR2)：$M\in\mathrm{SN}$ の簡約先も $\mathrm{SN}$。(CR3)：$M$ からの簡約列は一段目で $\mathrm{SN}$ の項に入るので無限にならない。
+
+**$A\to B$.**
+- (CR1)：$M\in\mathrm{Red}_{A\to B}$ とする。帰納法の仮定（$A$ の CR3）で変数 $x\in\mathrm{Red}_{A}$ なので $Mx\in\mathrm{Red}_{B}\subseteq\mathrm{SN}$（$B$ の CR1）。$M$ に無限の簡約列があれば $Mx$ にもある（各段の文脈として $\cdot\,x$ を付ける）ので、$M\in\mathrm{SN}$。
+- (CR2)：$M\to_{\beta}M'$, $N\in\mathrm{Red}_{A}$ なら $MN\to_{\beta}M'N$ で $MN\in\mathrm{Red}_{B}$、$B$ の (CR2) で $M'N\in\mathrm{Red}_{B}$。
+- (CR3)：$M$ は中立で、一段の簡約先はすべて $\mathrm{Red}_{A\to B}$ に属するとする。$N\in\mathrm{Red}_{A}$ について $MN\in\mathrm{Red}_{B}$ を示す。$N\in\mathrm{SN}$（$A$ の CR1）なので、$\nu(N)$ に関する帰納法を使う。$MN$ は中立（適用）で、$M$ が抽象でないので $MN$ 自身は基でなく、一段の簡約先は (a) $M'N$（$M\to_{\beta}M'$）か (b) $MN'$（$N\to_{\beta}N'$）である。(a) は仮定 $M'\in\mathrm{Red}_{A\to B}$ から $\mathrm{Red}_{B}$ に属する。(b) は $N'\in\mathrm{Red}_{A}$（$A$ の CR2）で $\nu(N')<\nu(N)$ なので、帰納法の仮定から $MN'\in\mathrm{Red}_{B}$。$B$ の (CR3) から $MN\in\mathrm{Red}_{B}$。
+:::
+
+::: lemma 抽象の還元可能性 {#logic:reducibility-abstraction keywords="reducibility of abstractions"}
+すべての $N\in\mathrm{Red}_{A}$ について $M[N/x]\in\mathrm{Red}_{B}$ なら、$\lambda x.M\in\mathrm{Red}_{A\to B}$。
+:::
+
+::: proof
+$N\in\mathrm{Red}_{A}$ について $(\lambda x.M)N\in\mathrm{Red}_{B}$ を示す。$x\in\mathrm{Red}_{A}$ なので $M=M[x/x]\in\mathrm{Red}_{B}\subseteq\mathrm{SN}$、また $N\in\mathrm{SN}$（CR1）。$\nu(M)+\nu(N)$ に関する帰納法を使う。$(\lambda x.M)N$ は中立で、一段の簡約先は (a) $M[N/x]$（仮定から $\mathrm{Red}_{B}$）、(b) $(\lambda x.M')N$（$M\to_{\beta}M'$）、(c) $(\lambda x.M)N'$（$N\to_{\beta}N'$）である。(b)：$M'$ もすべての $N''\in\mathrm{Red}_{A}$ で $M'[N''/x]\in\mathrm{Red}_{B}$ を満たす（$M[N''/x]\to_{\beta}M'[N''/x]$ と CR2）ので、帰納法の仮定。(c)：$N'\in\mathrm{Red}_{A}$（CR2）で帰納法の仮定。(CR3) から $(\lambda x.M)N\in\mathrm{Red}_{B}$。
+:::
+
+::: theorem 強正規化定理 {#logic:strong-normalization keywords="strong normalization of simply typed lambda calculus" index="強正規化定理|きょうせいきかていり"}
+$\Gamma\vdash M:A$ なら $M\in\mathrm{SN}$。
+:::
+
+::: proof
+**主張.** $x_{1}:A_{1},\dots,x_{k}:A_{k}\vdash M:A$ で、$N_{i}\in\mathrm{Red}_{A_{i}}$ なら $M[N_{1}/x_{1},\dots,N_{k}/x_{k}]\in\mathrm{Red}_{A}$（同時代入。束縛変数は $N_{i}$ の自由変数と異なるように選ぶ）。型判断の導出に関する帰納法。
+- $\mathrm{var}$：$M=x_{i}$ なら代入の結果は $N_{i}\in\mathrm{Red}_{A_{i}}$。
+- $\to\mathrm{E}$：$M=PQ$。帰納法の仮定で $P[\vec{N}/\vec{x}]\in\mathrm{Red}_{B\to A}$, $Q[\vec{N}/\vec{x}]\in\mathrm{Red}_{B}$ なので、定義から $(PQ)[\vec{N}/\vec{x}]\in\mathrm{Red}_{A}$。
+- $\to\mathrm{I}$：$M=\lambda y.P$, $A=B\to C$, $\Gamma,y:B\vdash P:C$。任意の $N\in\mathrm{Red}_{B}$ について、帰納法の仮定（$y$ に $N$ を代入する）で $P[\vec{N}/\vec{x}][N/y]=P[\vec{N}/\vec{x},N/y]\in\mathrm{Red}_{C}$（$y$ は $N_{i}$ に自由に現れないので、順に代入しても同時代入と同じ）。\ref{logic:reducibility-abstraction} から $\lambda y.P[\vec{N}/\vec{x}]\in\mathrm{Red}_{B\to C}$。
+
+**結論.** 変数 $x_{i}\in\mathrm{Red}_{A_{i}}$（\ref{logic:reducibility-properties}）を代入すると $M\in\mathrm{Red}_{A}\subseteq\mathrm{SN}$（CR1）。
+:::
+
+::: corollary 正規化 {#logic:normalization-corollary keywords="normalization of implicational proofs, every typable term has a normal form"}
+型付け可能な項は正規形をもち、その正規形は一意で、同じ型をもつ。とくに、含意の直観主義自然演繹で導ける判断は、正規な導出をもつ。
+:::
+
+::: proof
+強正規化定理から簡約は必ず止まり、正規形に至る。一意性はチャーチ–ロッサーの定理（\ref{logic:normal-form-unique}）、型は \ref{logic:subject-reduction}。後半はカリー＝ハワード対応（\ref{logic:curry-howard}）と、正規形の項が正規な導出に対応すること。
+:::
+
+::: hypcheck
+- **還元可能性の定義の型に関する帰納法**：$\mathrm{SN}$ だけを直接帰納法で示そうとすると、$\to\mathrm{E}$ の場合（$P,Q\in\mathrm{SN}$ から $PQ\in\mathrm{SN}$）が成り立たない（$\omega\omega$ の反例）。型に沿って強めた性質 $\mathrm{Red}_{A}$ を使うのがテイトの方法の核心である。
+- **中立な項**：(CR3) と \ref{logic:reducibility-abstraction} で、適用 $MN$ 自身が基にならない（あるいは基が一つに決まる）ことを使った。
+- **$\nu$ の存在**：$\mathrm{SN}$ の項からの簡約列の長さが有界であることを、帰納法の尺度に使った（一段の簡約先が有限個であることによる）。
+- **同時代入**：主張を開いた項（自由変数をもつ項）について示すために、すべての自由変数に還元可能な項を代入する形にした。
+:::
+
+## 問題 {#logic:sec-ch-problems}
+
+::: problem {#logic:prob-ch-proofs}
+次の論理式の（含意の直観主義自然演繹での）証明に対応する項を書け：(a) $A\to A$、(b) $(A\to B\to C)\to(A\to B)\to A\to C$、(c) $((A\to B)\to A)\to A$（パースの法則）。
+:::
+
+::: solution
+(a) $\lambda x.x$。(b) $\lambda fgx.fx(gx)$（組合せ子 $S$）。(c) $A,B$ を異なる型変数とすると、この型の閉項はない。あれば強正規化定理と \ref{logic:subject-reduction} から、この型の正規形の閉項がある。正規形の項は、抽象 $\lambda x.P$ か、頭部が変数の適用 $hN_{1}\cdots N_{k}$（$k\ge0$、$N_{i}$ は正規形）の形である（頭部が抽象だと基ができる）。
+- 型が $\to$ の形の閉項で頭部が変数のものはない（閉項なので）から、項は $\lambda f.M$ で、$f:(A\to B)\to A\vdash M:A$、$M$ は正規形。
+- $M$ の型 $A$ は型変数なので $M$ は抽象でなく、頭部の変数は $f$ しかない。$f$ の型から $M=fN$、$N$ は型 $A\to B$ の正規形。
+- $N$ の頭部が変数なら、それは $f$ で結果の型は $A\neq A\to B$。よって $N=\lambda y.P$、$f,y:A\vdash P:B$。
+- $P$ の型 $B$ は型変数なので頭部は変数で、$f$ も $y$ も結果の型は $A\neq B$。矛盾。
+
+よってパースの法則は含意の直観主義自然演繹では証明できない（古典論理では証明できる）。
+:::
+
+::: problem {#logic:prob-ch-omega-untypable}
+$\Omega=(\lambda x.xx)(\lambda x.xx)$ が型付け可能でないことを、強正規化定理を使って示せ。
+:::
+
+::: solution
+$\Omega\to_{\beta}\Omega$ なので無限の簡約列があり、$\Omega\notin\mathrm{SN}$。型付け可能なら強正規化定理に反する。
+:::
+
+::: supplement
+**前提の検討.**
+- 強正規化定理は、型を付けた体系では「すべての計算が止まる」ことを保証する。その代わり、型の付く項で定義できる関数は限られ（\ref{logic:page-lambda-definability} の補足）、単純型付きラムダ計算はチューリング完全でない。不動点結合子 $Y$ には型が付かない。
+- 本ページの証明は型の構造に関する帰納法を使うので、体系を「二階の型」（ジラールの体系 F）に広げると、還元可能性の定義が型の帰納法で書けなくなる。ジラールは「還元可能性の候補」を使ってこれを克服したことが知られている。
+
+**関連する結果.**
+- *対応の拡張.* 連言は対の型 $A\times B$、選言は直和型 $A+B$、偽 $\bot$ は空の型に対応し、直観主義命題論理全体が型付きラムダ計算に対応する。量化子は依存型（マルティン＝レーフ型理論）に、古典論理は継続（コール/cc の型が パースの法則）に対応することが知られている。
+- *ホモトピー型理論.* 依存型理論の型を空間、項を点、恒等型を道とみなす解釈がある（\ref[HoTT の系列]{logic:page-hott}、予定）。
+
+**高い視点から：証明は計算である.** カリー＝ハワード対応は、「$A$ の証明」と「型 $A$ のプログラム」が同じものであると言う。$A\to B$ の証明は「$A$ の証明を $B$ の証明に変換する手続き」（ブラウワー–ハイティング–コルモゴロフ解釈）で、モーダス・ポネンスはその手続きの実行（関数適用）、証明の回り道の除去は計算（β 簡約）である。圏論的には、単純型付きラムダ計算（に η 等式を加えたもの）は**デカルト閉圏**の内部言語であり、型は対象、項 $x:A\vdash M:B$ は射 $A\to B$、$\lambda$ はカリー化 $\mathrm{Hom}(C\times A,B)\cong\mathrm{Hom}(C,B^{A})$ に当たる（ランベック）。論理・計算・圏の三者が一つの構造の三つの顔であることは「カリー＝ハワード＝ランベック対応」と呼ばれる。比喩で言えば、定理は「仕様書」、証明は「仕様を満たすプログラム」、正規化は「プログラムを実行して答えを出すこと」である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

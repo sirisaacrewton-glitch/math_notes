@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>クリプキ意味論 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/03-modal-logic/03-kripke-semantics.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# クリプキ意味論 {#logic:page-kripke-semantics keywords="Kripke semantics, Kripke frame, Kripke model, accessibility relation, validity, generated submodel, frame correspondence, converse well-founded"}
+
+様相論理式に、**可能世界**と**到達可能性関係**による意味を与える。**クリプキフレーム**は集合 $W$ と $W$ 上の二項関係 $R$ の組で、$\Box A$ は「$w$ から到達できるすべての世界で $A$ が真」のとき世界 $w$ で真とする。本ページでは、真理の定義とその基本性質（代入についての閉包、生成部分モデル、様相次数による局所性）を示し、代表的な公理が**ちょうど**フレームのどんな性質に対応するかを調べる。とくにレーブの公理 $\Box(\Box p\to p)\to\Box p$ は「推移的かつ逆整礎」に対応する。これから各体系の健全性定理が得られる。完全性は次のページで示す。
+
+## 記法と定義の確認 {#logic:sec-kripke-notation}
+
+::: notation
+- 様相論理式、恒真式、正規様相論理、代表的な体系 $\mathsf{K},\mathsf{K4},\mathsf{T},\mathsf{S4},\mathsf{B},\mathsf{S5},\mathsf{GL}$、一様代入 $A\sigma$ と $A[B/p]$ は \ref{logic:page-normal-modal-logics}, \ref{logic:page-gl-axioms} のとおり。
+- $R\subset W\times W$ について $wRx$ を「$w$ から $x$ に到達できる（$w$ は $x$ を見る）」と読む。$R^{0}$ を $W$ 上の恒等関係、$R^{i+1}\defeq\{(w,y):\exists x\,(wR^{i}x\wedge xRy)\}$ とする。
+- $\Box^{0}A\defeq A$, $\Box^{i+1}A\defeq\Box\Box^{i}A$、$\Diamond^{i}A$ も同様。
+:::
+
+## フレームとモデル {#logic:sec-kripke-frames}
+
+::: definition 関係の性質 {#logic:relation-properties keywords="reflexive, irreflexive, transitive, symmetric, euclidean, converse well-founded" index="反射的|はんしゃてき, 非反射的|ひはんしゃてき, 推移的|すいいてき, 対称的|たいしょうてき, ユークリッド的|ゆーくりっどてき, 逆整礎|ぎゃくせいそ"}
+$W$ 上の関係 $R$ が
+- **反射的**：すべての $w\in W$ で $wRw$。**非反射的**：どの $w$ でも $wRw$ でない。
+- **推移的**：$wRx$ かつ $xRy$ なら $wRy$。**対称的**：$wRx$ なら $xRw$。
+- **ユークリッド的**：$wRx$ かつ $wRy$ なら $xRy$。
+- **逆整礎**：$W$ の空でない任意の部分集合 $X$ が **$R$-極大元**（$x\in X$ で、$xRy$ となる $y\in X$ がないもの）をもつ。
+
+逆整礎な関係は非反射的である（$wRw$ なら $\{w\}$ に極大元がない）。
+:::
+
+::: remark 逆整礎と無限上昇列
+$R$ が逆整礎なら、$w_{0}Rw_{1}Rw_{2}R\cdots$ となる無限列（**無限上昇列**）はない（その値の集合に極大元がない）。逆に、無限上昇列がなければ逆整礎であることの証明には従属選択公理を使う（極大元のない空でない $X$ から、各 $x\in X$ に $xRy$ となる $y\in X$ を順に選ぶ）。
+:::
+
+::: definition クリプキフレームとクリプキモデル {#logic:kripke-model keywords="Kripke frame, Kripke model, valuation, possible worlds" index="クリプキフレーム|くりぷきふれーむ, クリプキモデル|くりぷきもでる, 付値（クリプキ）|ふちくりぷき, 可能世界|かのうせかい, 到達可能性関係|とうたつかのうせいかんけい"}
+**クリプキフレーム**（以下フレーム）とは、空でない集合 $W$ と $W$ 上の関係 $R$ の組 $\mathcal{F}=(W,R)$ である。$W$ の元を**世界**、$R$ を**到達可能性関係**という。$W$ の各元と命題変数の間の関係 $V\subset W\times\mathrm{PV}$ を**付値**といい、組 $\mathcal{M}=(W,R,V)$ を $\mathcal{F}$ の上の**クリプキモデル**（以下モデル）という。フレームやモデルが反射的・推移的などであるとは、$R$ がその性質をもつことをいう。
+:::
+
+::: definition 真理 {#logic:kripke-truth keywords="truth at a world, satisfaction in Kripke models" index="世界での真理|せかいでのしんり"}
+モデル $\mathcal{M}=(W,R,V)$、世界 $w\in W$、様相論理式 $A$ に対し、$\mathcal{M},w\models A$ を構造的再帰（\ref{logic:modal-unique-readability}）で次のように定める。
+- $\mathcal{M},w\models p\iff(w,p)\in V$。
+- $\mathcal{M},w\not\models\bot$。
+- $\mathcal{M},w\models A\to B\iff\mathcal{M},w\not\models A$ または $\mathcal{M},w\models B$。
+- $\mathcal{M},w\models\Box A\iff wRx$ となるすべての $x$ で $\mathcal{M},x\models A$。
+
+モデルが明らかなときは $w\models A$ と書く。すべての世界で真のとき $A$ は $\mathcal{M}$ で**妥当**といい、フレーム $\mathcal{F}$ の上のすべてのモデルで妥当のとき $A$ は $\mathcal{F}$ で**妥当**という（$\mathcal{F}\models A$）。
+:::
+
+::: proposition 略記の真理 {#logic:kripke-abbreviations}
+$w\models\neg A\iff w\not\models A$、$w\models A\wedge B\iff w\models A$ かつ $w\models B$、$w\models A\vee B\iff w\models A$ または $w\models B$、$w\models\Diamond A\iff wRx$ かつ $x\models A$ となる $x$ がある、$w\models\boxdot A\iff$「$wRx$ または $w=x$」となるすべての $x$ で $x\models A$。さらに $w\models\Box^{i}A\iff wR^{i}y$ となるすべての $y$ で $y\models A$、$w\models\Diamond^{i}A\iff wR^{i}y$ かつ $y\models A$ となる $y$ がある。
+:::
+
+::: proof
+最初の五つは定義を展開する（$\neg A=A\to\bot$、$\Diamond A=\neg\Box\neg A$ など。\ref{logic:prop-abbreviation-semantics} と同じ計算）。$\Box^{i}$ は $i$ についての帰納法：$i=0$ は $R^{0}$ が恒等関係であることから。$w\models\Box^{i+1}A=\Box\Box^{i}A$ は「$wRx$ となるすべての $x$ で、$xR^{i}y$ となるすべての $y$ で $y\models A$」で、$R^{i+1}$ の定義（$wR^{i+1}y\iff\exists x\,(wR^{i}x\wedge xRy)$）と $R^{i}$ の結合性（$R^{i+1}=R\circ R^{i}$ でもあることが $i$ についての帰納法でわかる）により右辺と同値である。$\Diamond^{i}$ は双対。
+:::
+
+::: intuition
+$\Box A$ は「どこへ一歩進んでも $A$」、$\Diamond A$ は「一歩進んで $A$ になれる所がある」である。到達可能性関係に条件を課すことで、$\Box$ の性質（$\Box A\to A$ や $\Box A\to\Box\Box A$）が変わる。証明可能性の読みでは、$w$ から見える世界は「$w$ の理論が無矛盾だと主張する、より強い理論のモデル」のようなものと考えられる。
+:::
+
+::: theorem K の健全性 {#logic:kripke-k-sound}
+モデル $\mathcal{M}$ で妥当な論理式の集合は、恒真式と分配公理を含み、モーダスポネンスと必然化則で閉じている。フレームで妥当な論理式の集合は、さらに一様代入で閉じている。したがって、フレーム $\mathcal{F}$ で妥当な論理式全体は正規様相論理であり、とくに $\mathsf{K}\vdash A$ なら $A$ はすべてのフレームで妥当である。
+:::
+
+::: proof
+**Step 1（恒真式）.** 世界 $w$ を固定し、命題的付値 $V'(p)\defeq[w\models p]$, $V'(\Box B)\defeq[w\models\Box B]$（$[\cdot]$ は真なら $1$）とおくと、$\bar{V'}(A)=[w\models A]$ が $A$ に関する帰納法で成り立つ（$\to$ の計算が一致する）。恒真式は $\bar{V'}=1$ なので $w\models A$。
+
+**Step 2（分配公理とモーダスポネンス）.** $w\models\Box(A\to B)$ かつ $w\models\Box A$ なら、$wRx$ となる $x$ で $x\models A\to B$ かつ $x\models A$、よって $x\models B$。したがって $w\models\Box B$。モーダスポネンスは真理の定義の $\to$ の場合による。
+
+**Step 3（必然化）.** $A$ がすべての世界で真なら、とくに $wRx$ となる $x$ で真なので、すべての $w$ で $\Box A$ が真。
+
+**Step 4（一様代入）.** $A$ が $\mathcal{F}$ で妥当とし、代入 $\sigma$ と $\mathcal{F}$ の上のモデル $\mathcal{M}=(W,R,V)$ をとる。付値 $V^{\sigma}\defeq\{(w,p):\mathcal{M},w\models\sigma(p)\}$ とし $\mathcal{M}^{\sigma}\defeq(W,R,V^{\sigma})$ とおくと、$B$ に関する帰納法で $\mathcal{M}^{\sigma},w\models B\iff\mathcal{M},w\models B\sigma$（$\Box$ の場合は両辺とも「$wRx$ となるすべての $x$ で」の形で、帰納法の仮定を各 $x$ で使う）。$\mathcal{M}^{\sigma}$ も $\mathcal{F}$ の上のモデルなので $\mathcal{M}^{\sigma},w\models A$、よって $\mathcal{M},w\models A\sigma$。
+
+**Step 5.** Step 1–4 より、$\mathcal{F}$ で妥当な論理式全体は正規様相論理で、\ref{logic:modal-hilbert-normal} より $\mathsf{K}$ を含む。
+
+::: hypcheck
+- **フレームでの妥当性**：Step 4 の一様代入は、モデルで妥当なだけでは成り立たない。すべての世界で $p$ が真で $q$ が偽のモデルでは、$p$ は妥当だがその代入例 $q$ は妥当でない。
+:::
+:::
+
+## 局所性と生成部分モデル {#logic:sec-kripke-locality}
+
+::: definition 様相次数 {#logic:modal-degree keywords="modal degree, modal depth" index="様相次数|ようそうじすう"}
+$d(p)=d(\bot)=0$、$d(A\to B)=\max(d(A),d(B))$、$d(\Box A)=d(A)+1$ で様相論理式の**様相次数**を定める。$\Box$ の入れ子の最大の深さである。
+:::
+
+::: theorem 連続性定理 {#logic:continuity-theorem keywords="continuity theorem, locality of modal truth"}
+$\mathcal{M}=(W,R,V)$, $\mathcal{N}=(X,S,U)$ をモデル、$w\in W$、$d(A)=n$ とし、$P$ を $A$ に現れる命題変数を含む集合とする。$X\supset\{x:\exists i\le n\,wR^{i}x\}$、$S=\{(x,y):x,y\in X,\ xRy\}$、すべての $x\in X$, $p\in P$ で $(x,p)\in U\iff(x,p)\in V$ ならば、$\mathcal{M},w\models A\iff\mathcal{N},w\models A$。
+:::
+
+::: proof
+$A$ の部分論理式 $B$ に関する帰納法で、「$wR^{i}x$ かつ $d(B)+i\le n$ ならば $\mathcal{M},x\models B\iff\mathcal{N},x\models B$」を示す（このとき $i\le n$ なので $x\in X$）。$i=0$, $B=A$ とすれば定理が従う。$B$ が命題変数（$P$ の元）や $\bot$ なら仮定から、$B=C\to D$ なら $d(C),d(D)\le d(B)$ なので帰納法の仮定から。$B=\Box C$ とすると $d(C)+i+1\le n$。$xRy$ なら $wR^{i+1}y$ で $i+1\le n$ より $y\in X$、よって $xSy$。逆に $xSy$ なら $xRy$。したがって「$x$ から $R$ で到達できる $y$」と「$S$ で到達できる $y$」は一致し、各 $y$ について帰納法の仮定（$i+1$）が使えるので、$\mathcal{M},x\models\Box C\iff\mathcal{N},x\models\Box C$。
+:::
+
+::: corollary 生成部分モデル {#logic:generated-submodel keywords="generated submodel" index="生成部分モデル|せいせいぶぶんもでる"}
+$\mathcal{M}=(W,R,V)$、$w\in W$ とし、$X\defeq\{x:\exists i\,wR^{i}x\}$、$S\defeq R\cap(X\times X)$、$U\defeq V\cap(X\times\mathrm{PV})$ とおく。$\mathcal{M}_{w}\defeq(X,S,U)$ を $w$ から**生成された部分モデル**という。任意の $A$ と $x\in X$ について $\mathcal{M},x\models A\iff\mathcal{M}_{w},x\models A$。
+:::
+
+::: proof
+$x\in X$ から到達できる世界はすべて $X$ に属するので、$x$ を起点に連続性定理を使う（$P=\mathrm{PV}$）。$x$ から $i$ 歩で到達できる世界は $w$ から到達できるので $X$ に含まれる。
+:::
+
+::: corollary 一致補題 {#logic:agreement-lemma keywords="agreement lemma"}
+$\mathcal{M}=(W,R,V)$ と $\mathcal{N}=(W,R,U)$ が、$A$ に現れる命題変数についてすべての世界で一致すれば、$\mathcal{M},w\models A\iff\mathcal{N},w\models A$。
+:::
+
+## 公理とフレームの性質の対応 {#logic:sec-correspondence}
+
+::: theorem フレームの対応 {#logic:frame-correspondence keywords="frame correspondence, correspondence theory" index="フレームの対応|ふれーむのたいおう"}
+フレーム $\mathcal{F}=(W,R)$ について次が成り立つ。
+1. $\mathcal{F}\models\Box p\to p\iff R$ は反射的。
+2. $\mathcal{F}\models\Box p\to\Box\Box p\iff R$ は推移的。
+3. $\mathcal{F}\models p\to\Box\Diamond p\iff R$ は対称的。
+4. $\mathcal{F}\models\Diamond p\to\Box\Diamond p\iff R$ はユークリッド的。
+5. $\mathcal{F}\models\Box(\Box p\to p)\to\Box p\iff R$ は推移的かつ逆整礎。
+:::
+
+::: proof
+**1.** ($\Rightarrow$) $w\in W$ を固定し、$V\defeq\{(x,p):wRx\}$ とする。$w\models\Box p$ なので $w\models p$、すなわち $wRw$。($\Leftarrow$) $w\models\Box p$ なら $wRw$ より $w\models p$。
+
+**2.** ($\Rightarrow$) $wRx$, $xRy$ とし、$V\defeq\{(z,p):wRz\}$。$w\models\Box p$ なので $w\models\Box\Box p$、$x\models\Box p$、$y\models p$、すなわち $wRy$。($\Leftarrow$) $w\models\Box p$、$wRx$、$xRy$ なら推移性より $wRy$ で $y\models p$。よって $x\models\Box p$、$w\models\Box\Box p$。
+
+**3.** ($\Rightarrow$) $wRx$ とし、$V\defeq\{(w,p)\}$（$p$ は $w$ でだけ真）。$w\models p$ なので $x\models\Diamond p$、すなわち $xRz$ かつ $z\models p$ となる $z$ があり、$z=w$。よって $xRw$。($\Leftarrow$) $w\models p$、$wRx$ なら対称性より $xRw$ で $x\models\Diamond p$。
+
+**4.** ($\Rightarrow$) $wRx$, $wRy$ とし、$V\defeq\{(y,p)\}$。$w\models\Diamond p$（$y$ が証拠）なので $w\models\Box\Diamond p$、$x\models\Diamond p$、すなわち $xRy$。($\Leftarrow$) $w\models\Diamond p$（証拠 $y$）、$wRx$ ならユークリッド性より $xRy$ で $x\models\Diamond p$。
+
+**5.** ($\Rightarrow$) $\mathcal{F}$ で妥当な論理式全体は正規様相論理で（\ref{logic:kripke-k-sound}）、レーブの公理を含むので $\mathsf{GL}$ を含み（\ref{logic:modal-hilbert-normal}）、\ref{logic:gl-four} より $\Box p\to\Box\Box p$ を含む。2 より推移的。逆整礎でないとし、極大元のない空でない $X\subset W$ をとり、$V\defeq\{(a,p):a\notin X\}$、$w\in X$ とする。$w\models\Box(\Box p\to p)$ を示す：$wRx$ とし $x\models\Box p$ と仮定する。$x\in X$ なら、$X$ に極大元がないので $xRy$ となる $y\in X$ があり、$y\not\models p$ で $x\not\models\Box p$ となり矛盾する。よって $x\notin X$、$x\models p$。したがって $x\models\Box p\to p$。一方 $w\in X$ なので $wRy$ となる $y\in X$ があり $y\not\models p$、よって $w\not\models\Box p$。これはレーブの公理が $w$ で偽であることを示す。
+
+($\Leftarrow$) $R$ が推移的かつ逆整礎で、$w\not\models\Box p$ とする。$X\defeq\{x:wRx\wedge x\not\models p\}$ は空でないので、極大元 $x$ がある。$xRy$ なら推移性より $wRy$ で、$y\notin X$ なので $y\models p$。よって $x\models\Box p$、$x\not\models p$、すなわち $x\not\models\Box p\to p$。$wRx$ なので $w\not\models\Box(\Box p\to p)$。
+
+::: hypcheck
+- 各 ($\Rightarrow$) では、付値を**うまく選べる**こと（フレームでの妥当性）を使った。モデルでの妥当性からは、フレームの性質は一般に出てこない。
+- 5 の ($\Rightarrow$) で推移性を得るのに、$\mathsf{GL}\vdash\Box p\to\Box\Box p$（\ref{logic:gl-four}）とフレームでの妥当性が一様代入・必然化で閉じていること（\ref{logic:kripke-k-sound}）を使った。
+- 5 の ($\Leftarrow$) で逆整礎性を「空でない部分集合の極大元」として使ったので、選択公理は要らない。
+:::
+:::
+
+::: intuition
+5 の証明は帰納法そのものである。逆整礎な関係では「$w$ から見えるすべての世界で $A$ なら $w$ でも $A$」を示せばすべての世界で $A$ となる（逆向きの帰納法）。レーブの公理はこの帰納法の原理を様相論理の言葉で書いたものである。
+:::
+
+::: theorem 健全性定理 {#logic:kripke-soundness keywords="soundness of modal logics w.r.t. Kripke frames" index="健全性定理（様相論理）|けんぜんせいていりようそうろんり"}
+1. $\mathsf{K4}\vdash A$ なら $A$ はすべての推移的フレームで妥当。
+2. $\mathsf{T}\vdash A$ なら反射的フレーム、$\mathsf{S4}\vdash A$ なら反射的かつ推移的フレーム、$\mathsf{B}\vdash A$ なら反射的かつ対称的フレーム、$\mathsf{S5}\vdash A$ なら反射的かつユークリッド的フレームで妥当。
+3. $\mathsf{GL}\vdash A$ なら $A$ はすべての推移的かつ逆整礎なフレームで妥当であり、とくにすべての有限・推移的・非反射的フレームで妥当。
+:::
+
+::: proof
+フレームで妥当な論理式全体は正規様相論理（\ref{logic:kripke-k-sound}）で、\ref{logic:frame-correspondence} より各体系の追加の公理（の一つの代入例、したがって一様代入によりすべての代入例）を含む。\ref{logic:modal-hilbert-normal} より各体系を含む。$\mathsf{S5}$ の公理 $\mathrm{T},5$ は 1, 4 に対応する。3 の後半は次の命題による。
+:::
+
+::: proposition 有限な推移的フレームの逆整礎性 {#logic:finite-transitive-cwf}
+有限かつ推移的なフレームについて、非反射的であることと逆整礎であることは同値である。
+:::
+
+::: proof
+逆整礎なら非反射的であることは定義の直後に見た。非反射的とする。$x_{1}Rx_{2}R\cdots Rx_{n}$ なら $i<j$ で $x_{i}\neq x_{j}$：等しいとすると推移性より $x_{i}Rx_{j}=x_{i}$ で非反射性に反する。極大元のない空でない $X$ があるとすると、帰納法で任意の $n$ について $X$ の元の列 $x_{1}R\cdots Rx_{n}$ が作れ（各段で次の元を $X$ から一つ選ぶ。$n$ は有限なので有限回の選択）、それらは互いに異なるので $\lvert W\rvert\ge n$。$n=\lvert W\rvert+1$ として矛盾する。
+:::
+
+::: corollary 真の包含 {#logic:modal-proper-inclusions}
+$\mathsf{K}\subsetneq\mathsf{K4}\subsetneq\mathsf{S4}\subsetneq\mathsf{S5}$、$\mathsf{T}\subsetneq\mathsf{B}\subsetneq\mathsf{S5}$、$\mathsf{K4}\subsetneq\mathsf{GL}$、$\mathsf{T}\not\subset\mathsf{K4}$、$\mathsf{K4}\not\subset\mathsf{T}$。
+:::
+
+::: proof
+包含は \ref{logic:page-normal-modal-logics} で示した（$\mathsf{K4}\subset\mathsf{GL}$ は \ref{logic:gl-four}）。真であることを反例のフレームで示す（健全性定理の対偶）。
+- $\Box p\to\Box\Box p\notin\mathsf{K}$, $\mathsf{T}$：$W=\{0,1,2\}$、$R$ を反射的閉包に $0R1$, $1R2$ を加えたもの（反射的だが推移的でない）で、$p$ を $0,1$ で真、$2$ で偽とすると $0\models\Box p$, $0\not\models\Box\Box p$。
+- $\Box p\to p\notin\mathsf{K4}$：一点で到達可能性が空のフレーム（推移的）で $p$ を偽にすると $\Box p$ は真。
+- $p\to\Box\Diamond p\notin\mathsf{S4}$：$W=\{0,1\}$, $R=\{(0,0),(1,1),(0,1)\}$（反射的・推移的）、$p$ を $0$ でだけ真とすると $0\models p$, $1\not\models\Diamond p$ なので $0\not\models\Box\Diamond p$。
+- $\Box p\to\Box\Box p\notin\mathsf{B}$：$W=\{0,1,2\}$、$R$ を反射的・対称的な閉包で $0\sim1\sim2$ の隣どうしだけ（$0R2$ でない）とし、$p$ を $0,1$ で真とすると $0\models\Box p$、$1\not\models\Box p$ なので $0\not\models\Box\Box p$。
+- $\Box(\Box p\to p)\to\Box p\notin\mathsf{K4}$：一点 $w$ で $wRw$ のフレーム（推移的）で $p$ を偽にする。$w$ は偽の $p$ をもつ自分自身を見るので $w\not\models\Box p$、よって $w\models\Box p\to p$、$w\models\Box(\Box p\to p)$ で、レーブの公理は $w$ で偽。
+:::
+
+::: remark
+これで \ref{logic:s4-fourteen}, \ref{logic:s5-six} の様相が互いに同値でないことも、反例のモデルを与えて示せる（各対について、一方が真で他方が偽になる世界を作る）。本サイトでは個々の反例は省く。
+:::
+
+## 定義できない性質 {#logic:sec-undefinable}
+
+::: proposition 逆整礎性は一階の文で書けない {#logic:cwf-not-first-order}
+関係記号 $\rho$ だけの一階の言語で、「$\rho$ が逆整礎」（あるいは「推移的かつ逆整礎」）な構造をちょうどモデルとする文 $\sigma$ は存在しない。
+:::
+
+::: proof
+そのような $\sigma$ があるとし、新しい定数記号 $a_{0},a_{1},\dots$ をとる。$\{\sigma\}\cup\{a_{i}\,\rho\,a_{j}:i<j\}$ の有限部分集合が $a_{0},\dots,a_{N}$ しか含まないとき、構造 $(\{0,\dots,N\},<)$ で $a_{i}$ を $i$ と解釈すると充足される：この関係は有限・推移的・非反射的なので逆整礎（\ref{logic:finite-transitive-cwf}）で $\sigma$ が真、$i<j$ なら $a_{i}\,\rho\,a_{j}$ も真。コンパクト性定理（\ref{logic:compactness}）より全体がモデルをもつが、そこでは $a_{0}\rho a_{1}\rho\cdots$ が無限上昇列で、$\rho$ は逆整礎でない。これは $\sigma$ がそのモデルで真であることに反する。
+:::
+
+::: proposition 逆整礎性だけを表す様相論理式はない {#logic:cwf-not-modal}
+フレーム $\mathcal{F}$ について「$\mathcal{F}\models A\iff\mathcal{F}$ は逆整礎」となる様相論理式 $A$ は存在しない。
+:::
+
+::: proof
+そのような $A$ があるとする。$W=\N$, $R=\{(n,n+1)\}$ は逆整礎でないので、あるモデルと世界 $w$ で $A$ が偽。$d\defeq d(A)$、$X\defeq\{w,w+1,\dots,w+d\}$、$S\defeq R\cap(X\times X)$ とし、付値を制限したモデルを作ると、連続性定理より $w$ で $A$ は偽のまま。ところが $(X,S)$ は逆整礎である（空でない $Y\subset X$ の最大の数が $S$-極大元）。したがって仮定から $A$ は $(X,S)$ で妥当なはずで、矛盾する。
+:::
+
+::: remark
+「推移的かつ逆整礎」はレーブの公理でちょうど特徴づけられる（\ref{logic:frame-correspondence} の 5）が、推移性を外した「逆整礎」だけは様相論理式で特徴づけられない。
+:::
+
+## 問題 {#logic:sec-kripke-problems}
+
+::: problem {#logic:prob-kripke-diamond-box}
+$\mathcal{F}\models\Diamond\Box p\to\Box\Diamond p$ となるフレームの条件（チャーチ–ロッサー性質：$wRx$, $wRy$ なら $xRz$, $yRz$ となる $z$ がある）を示せ。
+:::
+
+::: solution
+($\Leftarrow$) $w\models\Diamond\Box p$（証拠 $x$、$x\models\Box p$）、$wRy$ とする。条件の $z$ について $xRz$ より $z\models p$、$yRz$ より $y\models\Diamond p$。よって $w\models\Box\Diamond p$。($\Rightarrow$) $wRx$, $wRy$ とし、$V\defeq\{(z,p):xRz\}$。$x\models\Box p$ なので $w\models\Diamond\Box p$、したがって $w\models\Box\Diamond p$、$y\models\Diamond p$：$yRz$ かつ $z\models p$、すなわち $xRz$ となる $z$ がある。
+:::
+
+::: problem {#logic:prob-kripke-gl-not-t}
+$\mathsf{GL}\nvdash\Diamond\top$ と $\mathsf{GL}\nvdash\neg\Box\bot$ を、有限・推移的・非反射的なフレームを使って示せ。
+:::
+
+::: solution
+一点で到達可能性が空のフレーム（有限・推移的・非反射的）では、$\Box\bot$ は真（見える世界がない）なので $\neg\Box\bot$ と $\Diamond\top$ は偽。健全性定理（\ref{logic:kripke-soundness} の 3）の対偶による。
+:::
+
+::: supplement
+**高い視点から：様相論理はフレームを見る「窓」である.** 様相論理式は、関係 $R$ についての二階の主張（すべての付値について）をフレームの性質として表す。反射性・推移性のように一階で書ける性質もあれば、逆整礎性のように一階では書けず、様相論理式（レーブの公理）と推移性の組み合わせでだけ書ける性質もある（\ref{logic:cwf-not-first-order}）。逆に、様相論理式は世界の近くしか見られない（連続性定理）ので、「逆整礎」単独のように局所的に判定できない性質は書けない（\ref{logic:cwf-not-modal}）。様相論理は「到達関係を少しずつたどる」視点から構造を見る言語であり、モデル理論でいえば、有界な量化子だけを使う一階論理の断片（ガードされた断片）に近い。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

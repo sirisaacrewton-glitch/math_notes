@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>接頭辞なし複雑性とクラフトの不等式 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/02-prefix-free-complexity.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 接頭辞なし複雑性とクラフトの不等式 {#comp:page-prefix-free-complexity keywords="prefix-free Kolmogorov complexity, prefix-free machine, self-delimiting, Kraft inequality, Kraft-Chaitin theorem, machine existence theorem, coding theorem, Chaitin's Omega"}
+
+記述の複雑さ $K(x)$（\ref{comp:kolmogorov-complexity}）では、記述が「どこで終わるか」を記述の外から教えている。記述を**それ自体で終わりが分かる**もの（どの記述も他の記述の真の接頭辞でない）に制限すると、記述の長さに $2^{-\lvert p\rvert}$ という**重み**を付けて足し合わせられるようになる（**クラフトの不等式**、\ref{comp:kraft}）。本ページでは、接頭辞なしの機械と、それによる複雑性 $H(x)$（\ref{comp:prefix-complexity}）を定め、最適な機械の存在（\ref{comp:universal-prefix-machine}）、上界 $H(x)\le\lvert x\rvert+2\log\lvert x\rvert+O(1)$ と、これが $\lvert x\rvert+O(1)$ にはならないこと（\ref{comp:prefix-bounds}）を示す。さらに、望む長さの記述を割り当てる機械を作る**クラフト–チャイティンの定理**（\ref{comp:kraft-chaitin}）を証明し、その応用として、計算可能な重み $P(x)$ について $H(x)\le-\log P(x)+O(1)$ となること（\ref{comp:coding-weight}）を示す。
+
+> 記号について：本サイトでは、記述の複雑さ（\ref{comp:page-kolmogorov}）の $K$ と区別するため、接頭辞なし複雑性を $H$ と書く（チャイティンの記号）。文献では接頭辞なしの方を $K$、元の方を $C$ と書くことが多い（Li–Vitányi、Downey–Hirschfeldt など）。本系列は資料フォルダに参考書がなく、一般に知られている定義と証明を本サイトで組み立てた。
+
+## 記法と定義の確認 {#comp:sec-pf-notation}
+
+::: notation
+- 文字列は $\{0,1\}$ 上のもの。$\lvert x\rvert$ は長さ、$\varepsilon$ は空列。文字列 $p$ が $q$ の**接頭辞**であるとは $q=pr$ となる $r$ があることで、$p\preceq q$ と書く。$p\preceq q$ または $q\preceq p$ のとき**比較可能**という。
+- 文字列と自然数を、長さ優先の辞書式順序 $\varepsilon,0,1,00,01,\dots$ で同一視する。計算可能な部分関数 $\{0,1\}^{\ast}\rightharpoonup\{0,1\}^{\ast}$ は、この同一視で \ref{comp:page-language-L} の意味で定める（\ref{comp:L-equals-tm} により TM で定めても同じ）。
+- 記述の複雑さ $K$、その最適性（\ref{comp:kolmogorov-optimality}）、計算不能性（\ref{comp:k-uncomputable}）は \ref{comp:page-kolmogorov} のとおり。$\log$ は底 $2$。
+:::
+
+## 接頭辞なしの機械 {#comp:sec-prefix-machines}
+
+::: definition 接頭辞なしの機械 {#comp:prefix-free-machine keywords="prefix-free set, prefix-free machine, self-delimiting machine" index="接頭辞なし|せっとうじなし, 接頭辞なしの機械|せっとうじなしのきかい"}
+1. 文字列の集合 $S$ が**接頭辞なし**とは、$S$ の異なる二元がどれも比較可能でないことをいう。
+2. **接頭辞なしの機械**とは、計算可能な部分関数 $M\colon\{0,1\}^{\ast}\rightharpoonup\{0,1\}^{\ast}$ で、定義域が接頭辞なしのもののこと。
+:::
+
+::: lemma 接頭辞なしの機械の数え上げ {#comp:prefix-machine-enumeration keywords="effective enumeration of prefix-free machines"}
+計算可能な部分関数 $\Psi(e,p)$ で、(1) 各 $e$ について $M_{e}\defeq\Psi(e,\cdot)$ は接頭辞なしの機械であり、(2) すべての接頭辞なしの機械がある $M_{e}$ として現れるものがある。
+:::
+
+::: proof
+$\psi_{e}$ を（文字列の上の）計算可能な部分関数の数え上げとする（\ref{comp:index}、万能関数 \ref{comp:universal-function}）。$M_{e}(p)$ を次の手続きで定める：$t=0,1,2,\dots$ の順に、長さ $t$ 以下のすべての $q$ について $\psi_{e}(q)$ を $t$ 段まで計算し、停止したものを見つけた順に「採用」の候補とする。候補 $q$ は、それまでに採用したどの文字列とも比較可能でないときに限り採用する。$p$ が採用されたら $M_{e}(p)\defeq\psi_{e}(p)$ とする（採用されなければ未定義）。
+採用された文字列の集合は、構成から接頭辞なしである。$\psi_{e}$ の定義域がもともと接頭辞なしなら、どの候補も採用されるので $M_{e}=\psi_{e}$。採用の手続きは $e,p$ について一様なので $\Psi$ は計算可能。
+:::
+
+::: theorem 最適な接頭辞なしの機械 {#comp:universal-prefix-machine keywords="universal prefix-free machine, optimality" index="万能な接頭辞なしの機械|ばんのうなせっとうじなしのきかい"}
+$U(1^{e}0p)\defeq M_{e}(p)$ で定まる $U$ は接頭辞なしの機械で、すべての接頭辞なしの機械 $M$ について、定数 $c_{M}$ があり、$M(p)=x$ ならある $q$ で $U(q)=x$, $\lvert q\rvert\le\lvert p\rvert+c_{M}$。
+:::
+
+::: proof
+$U$ の定義域は $\{1^{e}0p:p\in\mathrm{dom}(M_{e})\}$。$1^{e}0p$ と $1^{e'}0p'$ が比較可能なら、先頭の $1$ の個数が等しく（$0$ の位置が一致する）$e=e'$、さらに $p,p'$ が比較可能なので $p=p'$。よって接頭辞なし。$M=M_{e}$ なら $q\defeq1^{e}0p$、$c_{M}\defeq e+1$。
+:::
+
+::: definition 接頭辞なし複雑性 {#comp:prefix-complexity keywords="prefix-free complexity H(x)" index="接頭辞なし複雑性|せっとうじなしふくざつせい"}
+$H(x)\defeq\min\{\lvert p\rvert:U(p)=x\}$。\ref{comp:universal-prefix-machine} により、どの接頭辞なしの機械 $M$ についても $H(x)\le H_{M}(x)+c_{M}$（$H_{M}$ は $M$ で同様に定めたもの）。
+:::
+
+## クラフトの不等式 {#comp:sec-kraft}
+
+::: theorem クラフトの不等式 {#comp:kraft keywords="Kraft inequality" index="クラフトの不等式|くらふとのふとうしき"}
+$S$ が接頭辞なしなら、$\sum_{p\in S}2^{-\lvert p\rvert}\le1$。
+:::
+
+::: proof
+文字列 $p=p_{1}\cdots p_{k}$ に半開区間 $I_{p}\defeq[0.p_{1}\cdots p_{k},\ 0.p_{1}\cdots p_{k}+2^{-k})\subseteq[0,1)$（二進小数）を対応させる。$I_{p}$ は「二進展開が $p$ で始まる $[0,1)$ の実数」全体（二進展開は $1$ が無限に続かないものをとる）で、長さは $2^{-\lvert p\rvert}$。$p,q$ が比較可能でなければ、ある位置で文字が異なるので $I_{p}\cap I_{q}=\varnothing$。$S$ の有限部分集合 $S_{0}$ について、$\{I_{p}\}_{p\in S_{0}}$ は $[0,1)$ の互いに交わらない区間なので長さの和は $1$ 以下。$S_{0}$ は任意なので和は $1$ 以下。
+:::
+
+::: corollary 接頭辞なし複雑性の評価 {#comp:prefix-bounds keywords="bounds on H, H(x) not bounded by |x|+O(1)" index="接頭辞なし複雑性の評価|せっとうじなしふくざつせいのひょうか"}
+1. $\sum_{x}2^{-H(x)}\le1$。
+2. $H(x)\le\lvert x\rvert+2\log\lvert x\rvert+O(1)$（$\lvert x\rvert\ge2$）。また $K(x)\le H(x)+O(1)$。
+3. どんな定数 $c$ についても、$H(x)\le\lvert x\rvert+c$ がすべての $x$ で成り立つことはない。
+:::
+
+::: proof
+1. $x\mapsto$（$H(x)$ を与える最短の $p_{x}$）は単射で、$\{p_{x}\}$ は $U$ の定義域の部分集合なので接頭辞なし。\ref{comp:kraft}。
+2. 長さ $\ell\defeq\lvert x\rvert$ の二進表記 $b(\ell)$（$\lfloor\log\ell\rfloor+1$ ビット）を自己区切りの符号 $\overline{b(\ell)}$（\ref{comp:page-kolmogorov} の記法、長さ $2\lvert b(\ell)\rvert+2$）にし、$\overline{b(\ell)}x$ を記述とする機械 $M$ を考える。$M$ は $\overline{b(\ell)}$ を読んで $\ell$ を知り、続く $\ell$ 文字を読んで出力する。定義域は接頭辞なし（$\overline{b(\ell)}$ の終わりが分かり、そこから長さ $\ell$ で終わる）。$H(x)\le2\log\ell+\ell+O(1)$。後半：$U$ は（定義域を制限しない）普通の機械でもあるので、$K$ の最適性（\ref{comp:kolmogorov-optimality}）から $K(x)\le H(x)+O(1)$。
+3. $H(x)\le\lvert x\rvert+c$ がすべての $x$ で成り立てば、1 から $1\ge\sum_{x}2^{-H(x)}\ge\sum_{x}2^{-\lvert x\rvert-c}=2^{-c}\sum_{\ell}2^{\ell}\cdot2^{-\ell}=\infty$ となり矛盾する。
+:::
+
+## クラフト–チャイティンの定理 {#comp:sec-kraft-chaitin}
+
+::: theorem クラフト–チャイティンの定理 {#comp:kraft-chaitin keywords="Kraft-Chaitin theorem, machine existence theorem, KC set" index="クラフト–チャイティンの定理|くらふとちゃいてぃんのていり"}
+$(d_{0},x_{0}),(d_{1},x_{1}),\dots$ を、自然数と文字列の対の計算可能な列（有限でもよい）で、$\sum_{i}2^{-d_{i}}\le1$ となるものとする。このとき接頭辞なしの機械 $M$ と文字列 $p_{0},p_{1},\dots$ で、$\lvert p_{i}\rvert=d_{i}$, $M(p_{i})=x_{i}$ となるものがある。
+:::
+
+::: proof
+**区間の割り当て.** 長さ $d$ の文字列 $p$ と、$[0,1)$ の**二進区間** $I_{p}$（長さ $2^{-d}$、左端は $2^{-d}$ の倍数）は一対一に対応する。要求 $(d_{i},x_{i})$ を順に処理し、各段階で、まだ割り当てていない部分（**空き**）を、長さが互いに異なる有限個の二進区間の非交和として保つ。初めの空きは $[0,1)=I_{\varepsilon}$。
+
+要求 $(d,x)$ が来たとき：
+- 空きに長さ $2^{-d}$ の区間 $I_{p}$ があれば、それを割り当てる（$M(p)\defeq x$）。
+- なければ、空きの区間のうち長さが $2^{-d}$ より大きい最小のもの $I_{q}$（長さ $2^{-d'}$, $d'<d$）を選ぶ。$I_{q}$ を $I_{q0},I_{q1}$ に分け、$I_{q1}$ を空きに残し、$I_{q0}$ をさらに分けることを繰り返して、
+$$
+I_{q}=I_{q0^{d-d'}}\sqcup I_{q0^{d-d'-1}1}\sqcup\cdots\sqcup I_{q01}\sqcup I_{q1}
+$$
+（長さ $2^{-d}$ と、$2^{-d},2^{-d+1},\dots,2^{-d'-1}$）とする。$p\defeq q0^{d-d'}$ を割り当て、残りを空きに加える。
+
+**$I_{q}$ が存在すること.** 割り当て済みの長さの和は $\sum_{j<i}2^{-d_{j}}$ なので、空きの長さの和は $1-\sum_{j<i}2^{-d_{j}}\ge2^{-d_{i}}$（仮定）。空きの区間の長さは互いに異なる $2$ の冪なので、すべて $2^{-d}$ 未満なら和は $2^{-d-1}+2^{-d-2}+\cdots<2^{-d}$ となり矛盾する。長さ $2^{-d}$ のものはない場合なので、$2^{-d}$ より長いものがある。
+
+**空きの長さが互いに異なり続けること.** 新たに空きに加わる長さは $2^{-d},\dots,2^{-d'-1}$ で互いに異なる。$2^{-d}$ は（この場合）元の空きになかった。$2^{-d+1},\dots,2^{-d'-1}$ が元の空きにあれば、それは $2^{-d}$ より長く $2^{-d'}$ より短い空きの区間で、$I_{q}$ の最小性に反する。$I_{q}$ 自身は空きから除かれる。
+
+**接頭辞なし.** 割り当てた区間は互いに交わらないので、対応する文字列は比較可能でない（比較可能なら一方の区間が他方を含む）。$M$ は「要求の列を計算しながら上の割り当てを行い、入力 $p$ が割り当てられたら対応する $x_{i}$ を出す」手続きで計算でき、定義域は割り当てた文字列の集合なので接頭辞なしである。
+:::
+
+::: corollary 計算可能な重みによる上界 {#comp:coding-weight keywords="coding theorem (weak form), H(x) ≤ -log P(x) + O(1)" index="符号化定理（弱い形）|ふごうかていりよわいかたち"}
+$P$ を、有理数の値をとる計算可能な関数で、$P(x)\ge0$, $\sum_{x}P(x)\le1$ となるものとする。このとき定数 $c$ があり、$P(x)>0$ となるすべての $x$ で $H(x)\le-\log P(x)+c$。
+:::
+
+::: proof
+$P(x)>0$ となる $x$ を順に並べ（$P$ は計算可能なので、$x$ を順に調べればよい）、$d_{x}\defeq\lceil-\log P(x)\rceil$ とする（有理数から計算できる）。$2^{-d_{x}}\le P(x)$ なので $\sum_{x}2^{-d_{x}}\le1$。\ref{comp:kraft-chaitin} の機械 $M$ で $H_{M}(x)\le d_{x}$、よって $H(x)\le d_{x}+c_{M}\le-\log P(x)+1+c_{M}$。
+:::
+
+::: hypcheck
+- **接頭辞なし**：クラフトの不等式で、区間が交わらないことに本質的に使った。$K$ の記述は接頭辞なしでないので、$\sum_{x}2^{-K(x)}$ は発散する（問題 \ref{comp:prob-kraft-plain}）。
+- **空きの長さを互いに異ならせる不変条件**：クラフト–チャイティンの定理で、空きの総量が足りれば十分長い区間があることに使った。この条件がないと、空きが細かく断片化して、総量は足りても割り当てられなくなる。
+- **列の計算可能性**：$M$ が計算可能であることに使った。要求を後から取り消すことはできないので、割り当ては要求の到着順に行う。
+- **$P$ の計算可能性**：\ref{comp:coding-weight} で、要求の列を計算するのに使った。下から近似できる（左 c.e. な）重みでも同様の結果が成り立つ（補足）。
+:::
+
+## 問題 {#comp:sec-pf-problems}
+
+::: problem {#comp:prob-kraft-plain}
+$\sum_{x}2^{-K(x)}=\infty$ を示せ。
+:::
+
+::: solution
+\ref{comp:kolmogorov-bounds} から $K(x)\le\lvert x\rvert+c$（$c$ は定数）なので、$\sum_{x}2^{-K(x)}\ge2^{-c}\sum_{\ell}2^{\ell}2^{-\ell}=\infty$。
+:::
+
+::: problem {#comp:prob-H-numbers}
+自然数 $n$ を（長さ優先の辞書式順序で同一視した）文字列とみなす。$H(n)\le\log n+2\log\log n+O(1)$（$n\ge4$）を示し、$\sum_{n}2^{-H(n)}\le1$ と比べて、$H(n)\ge\log n$ が無限に多くの $n$ で成り立つことを示せ。
+:::
+
+::: solution
+$n$ に対応する文字列の長さは $\lfloor\log(n+1)\rfloor$ 程度なので、\ref{comp:prefix-bounds} の 2 から前半が従う。後半：$H(n)<\log n$ が $n\ge n_{0}$ のすべてで成り立つなら、$\sum_{n\ge n_{0}}2^{-H(n)}>\sum_{n\ge n_{0}}1/n=\infty$ となり \ref{comp:prefix-bounds} の 1 に矛盾する。
+:::
+
+::: supplement
+**前提の検討.**
+- 接頭辞なしの代わりに「定義域が接頭辞なしになるよう、機械が入力の終わりを自分で判断する」（入力を一文字ずつ要求する機械）と定めても、同じ $H$ が（定数の差を除いて）得られることが知られている。
+- \ref{comp:coding-weight} の重み $P$ は計算可能としたが、$\sum_{x}P(x)\le1$ で、$P$ が下から計算可能に近似できる（左 c.e.）場合にも成り立つことが知られている。とくに $\mathbf{m}(x)\defeq\sum_{U(p)=x}2^{-\lvert p\rvert}$ について $H(x)=-\log\mathbf{m}(x)+O(1)$（**符号化定理**、レヴィン、チャイティン）。
+
+**関連する結果.**
+- *チャイティンの $\Omega$.* $\Omega\defeq\sum_{p\in\mathrm{dom}(U)}2^{-\lvert p\rvert}$ はクラフトの不等式で $1$ 以下の実数で、停止する記述を数え上げていけば下から近似できるが、計算可能でない（\ref{comp:page-martin-lof}）。
+- *対称性.* $H(x,y)=H(x)+H(y\mid x,H(x))+O(1)$（情報の対称性）が知られている（ガーチ）。
+
+**高い視点から：長さを確率とみなす.** クラフトの不等式は、接頭辞なしの符号の長さ $\ell$ を「確率 $2^{-\ell}$」と読み替えてよいことを述べる。硬貨を投げて $0,1$ の列を作り、それが記述 $p$ で始まる確率がちょうど $2^{-\lvert p\rvert}$ で、接頭辞なしなので異なる記述の事象は排反である。$H(x)\approx-\log\mathbf{m}(x)$ は、情報理論の「確率 $P$ の事象を符号化するには $-\log P$ ビットが必要十分」（シャノン）の計算可能版である。比喩で言えば、$H(x)$ は「でたらめに打鍵する猿が、万能機械に $x$ を出させる確率」の対数で、短い記述をもつ $x$ ほど猿に打ち出されやすい。クラフト–チャイティンの定理は、その逆に「望む確率の配分を書けば、その配分どおりの長さの符号が作れる」ことを保証する、符号の**存在定理**である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

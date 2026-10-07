@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>識別不能列とエーレンフォイヒト–モストフスキのモデル | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03C-model-theory/02-types-and-countable-models/04-indiscernibles.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 識別不能列とエーレンフォイヒト–モストフスキのモデル {#model:page-indiscernibles keywords="indiscernible sequence, order indiscernibles, Ramsey theorem, Skolem functions, Skolemization, Skolem hull, Ehrenfeucht-Mostowski model, automorphisms"}
+
+構造の中の列 $(a_{i})_{i\in I}$ が**識別不能**であるとは、添字の順序だけが同じなら、どの有限部分列も同じ型をもつことである（\ref{model:indiscernible}）。本ページでは、ラムゼーの定理（\ref{model:ramsey}）とコンパクト性から、無限モデルをもつ理論は**任意の**線形順序で添字付けられた識別不能列をもつモデルをもつことを示す（\ref{model:indiscernibles-exist}）。さらに理論を**スコーレム化**し（\ref{model:skolemization}）、識別不能列が生成するモデルを作ると、添字の順序の自己同型がモデルの自己同型に延びる（**エーレンフォイヒト–モストフスキのモデル**、\ref{model:em-model}）。これにより、無限モデルをもつ理論は、任意の無限濃度で、自己同型を非常に多くもつモデルをもつ。
+
+## 記法と定義の確認 {#model:sec-indisc-notation}
+
+::: notation
+- 型 $\mathrm{tp}$、初等部分構造、タルスキ–ヴォートの判定法（\ref{model:tarski-vaught}）、生成された部分構造（\ref{model:generated-substructure}）、初等図式、コンパクト性定理は前のページまでのとおり。
+- 集合 $X$ と $n\in\N$ について、$[X]^{n}$ は $X$ の $n$ 元部分集合全体を表す。線形順序 $(I,<)$ の元の組 $\vec{i}=(i_{1},\dots,i_{n})$ が**増加**とは $i_{1}<\dots<i_{n}$ のこと。
+- **公理.** $\ZFC$ で議論する。
+:::
+
+## ラムゼーの定理 {#model:sec-ramsey}
+
+::: theorem 無限ラムゼーの定理 {#model:ramsey keywords="infinite Ramsey theorem" index="ラムゼーの定理|らむぜーのていり"}
+$X$ を無限集合、$n\ge1$, $k\ge1$ とし、$f\colon[X]^{n}\to\{1,\dots,k\}$ とする。このとき無限集合 $H\subseteq X$ で、$f$ が $[H]^{n}$ の上で定数になるもの（$f$ の**等質集合**）が存在する。
+:::
+
+::: proof
+$X$ の可算無限部分集合をとり、$X\subseteq\N$ としてよい。$n$ に関する帰納法。
+
+**$n=1$.** 無限集合を有限個に分けると、どれかは無限である（鳩の巣原理）。
+
+**$n\to n+1$.** $f\colon[X]^{n+1}\to\{1,\dots,k\}$ とする。無限集合 $X_{0}\supseteq X_{1}\supseteq\cdots$、元 $x_{0}<x_{1}<\cdots$、色 $c_{0},c_{1},\dots$ を次のように作る。$X_{0}\defeq X$。$X_{j}$ が決まったら $x_{j}\defeq\min X_{j}$ とし、$f_{j}\colon[X_{j}\setminus\{x_{j}\}]^{n}\to\{1,\dots,k\}$ を $f_{j}(s)\defeq f(\{x_{j}\}\cup s)$ で定める。帰納法の仮定で、$f_{j}$ が定数 $c_{j}$ になる無限集合 $X_{j+1}\subseteq X_{j}\setminus\{x_{j}\}$ をとる（各段で一つを選ぶ。従属選択）。$x_{j}<\min X_{j+1}=x_{j+1}$。
+
+$n=1$ の場合を $j\mapsto c_{j}$ に使い、無限集合 $J\subseteq\N$ と色 $c$ で $c_{j}=c$（$j\in J$）となるものをとる。$H\defeq\{x_{j}:j\in J\}$ とする。$H$ の $n+1$ 元部分集合の最小元を $x_{j}$ とすると、残りの元は $X_{j+1}$ に属し、$f$ の値は $f_{j}$ の値 $c_{j}=c$ である。
+:::
+
+## 識別不能列 {#model:sec-indiscernibles}
+
+::: definition 識別不能列 {#model:indiscernible keywords="indiscernible sequence, order indiscernibles" index="識別不能列|しきべつふのうれつ"}
+$\mathcal{M}$ を構造、$(I,<)$ を線形順序とする。$M$ の元の族 $(a_{i})_{i\in I}$（$i\neq j$ なら $a_{i}\neq a_{j}$）が**識別不能列**であるとは、任意の $n$ と、$I$ の増加な $n$ 組 $\vec{i}$, $\vec{j}$ について
+$$
+\mathrm{tp}^{\mathcal{M}}(a_{i_{1}},\dots,a_{i_{n}})=\mathrm{tp}^{\mathcal{M}}(a_{j_{1}},\dots,a_{j_{n}})
+$$
+となることをいう。
+:::
+
+::: example
+$(\mathbb{Q},<)$ の任意の狭義増加列は識別不能列である：$\mathrm{DLO}$ の量化子消去（\ref{model:dlo-qe}）より、組の型は $x_{k}<x_{l}$, $x_{k}=x_{l}$ の真偽で決まり（\ref{model:cantor-dlo} の証明）、増加な組ではそれらがすべて同じである。
+:::
+
+::: theorem 識別不能列の存在 {#model:indiscernibles-exist keywords="existence of models with indiscernible sequences" index="識別不能列の存在|しきべつふのうれつのそんざい"}
+$T$ を無限モデルをもつ理論、$(I,<)$ を無限線形順序とする。このとき $T$ のモデル $\mathcal{M}$ と、$\mathcal{M}$ の識別不能列 $(a_{i})_{i\in I}$ が存在する。
+:::
+
+::: proof
+新しい定数 $c_{i}$（$i\in I$）を加え、
+$$
+\begin{aligned}
+\Sigma\defeq T&\cup\{\neg\,c_{i}=c_{j}:i\neq j\}\\
+&\cup\{\varphi(c_{i_{1}},\dots,c_{i_{n}})\leftrightarrow\varphi(c_{j_{1}},\dots,c_{j_{n}}):\varphi(x_{1},\dots,x_{n}),\ \vec{i},\vec{j}\text{ 増加}\}
+\end{aligned}
+$$
+とする。$\Sigma$ のモデルの $c_{i}$ の値は識別不能列である（$\mathrm{tp}$ の等しさは、各 $\varphi$ について真偽が一致することにほかならない）。コンパクト性定理より、$\Sigma$ の有限部分集合 $\Sigma_{0}$ がモデルをもつことを示せばよい。
+
+$\Sigma_{0}$ に現れる論理式 $\varphi$ を $\varphi_{1},\dots,\varphi_{m}$、定数の添字を $i$ の有限集合 $I_{0}$ とする。変数を補って（使わない変数を足して）、すべての $\varphi_{l}$ が同じ $n$ 個の変数 $x_{1},\dots,x_{n}$ の論理式であるとしてよい（$\leftrightarrow$ の両辺の添字の組は、増加なまま長さ $n$ に延ばせる。$I$ は無限なので延ばす余地がある。延ばした添字も $I_{0}$ に加える）。$\mathcal{N}\models T$ を無限モデルとし、相異なる元 $b_{0},b_{1},\dots\in N$ をとり、$X\defeq\{b_{0},b_{1},\dots\}$ に $b_{p}\prec b_{q}\iff p<q$ で順序を入れる。$s\in[X]^{n}$ を $\prec$ で増加に並べた組 $\vec{s}$ について
+$$
+f(s)\defeq\bigl(\text{$\mathcal{N}\models\varphi_{l}(\vec{s})$ なら 1、そうでなければ 0}\bigr)_{l=1,\dots,m}\in\{0,1\}^{m}
+$$
+と色を付ける。ラムゼーの定理（\ref{model:ramsey}）で無限の等質集合 $H\subseteq X$ をとる。$I_{0}=\{i_{1}<\dots<i_{r}\}$ とし、$H$ の $\prec$ についての最初の $r$ 個の元 $h_{1}\prec\dots\prec h_{r}$ について $c_{i_{t}}$ を $h_{t}$ と解釈する（$\Sigma_{0}$ に現れない $c_{i}$ は任意に解釈する）。$\neg\,c_{i}=c_{j}$ は $h$ が相異なるので真。$\varphi_{l}(c_{\vec{i}})\leftrightarrow\varphi_{l}(c_{\vec{j}})$ は、$\vec{i},\vec{j}$ が増加なら対応する $h$ の組も $\prec$ で増加で、$H$ の等質性から両辺の真偽が一致するので真である。
+:::
+
+::: hypcheck
+- **無限モデル**：ラムゼーの定理を適用する無限集合 $X$ を作るのに使った。
+- **ラムゼーの定理**：有限部分ごとに、増加な組の上で真偽の揃った元の並びを見つけるのに使った。コンパクト性はそれを全体に貼り合わせる。
+- **$I$ の任意性**：$I$ の順序型は、有限部分 $I_{0}$ の上の順序としてしか使っていない。したがって $I$ は任意の無限線形順序でよい（有限でもよいが、その場合は自明）。
+:::
+
+## スコーレム化 {#model:sec-skolem}
+
+::: lemma スコーレム化 {#model:skolemization keywords="Skolemization, Skolem functions, Skolem theory" index="スコーレム化|すこーれむか, スコーレム理論|すこーれむりろん"}
+（AC）言語 $\mathcal{L}$ と $\mathcal{L}$ の理論 $T$ に対し、言語 $\mathcal{L}^{\mathrm{Sk}}\supseteq\mathcal{L}$（$\lvert\mathcal{L}^{\mathrm{Sk}}\rvert=\lvert\mathcal{L}\rvert+\aleph_{0}$）と $\mathcal{L}^{\mathrm{Sk}}$ の理論 $T^{\mathrm{Sk}}\supseteq T$ で、次を満たすものがある。
+1. $T$ の任意のモデルは $T^{\mathrm{Sk}}$ のモデルに拡大できる。
+2. $\mathcal{L}^{\mathrm{Sk}}$ の任意の論理式 $\varphi(\vec{x},y)$（$\vec{x}=(x_{1},\dots,x_{n})$、$n\ge0$）について、$n$ 項関数記号 $f_{\varphi}$（$n=0$ なら定数記号）で $T^{\mathrm{Sk}}\models\forall\vec{x}\,(\exists y\,\varphi\to\varphi[f_{\varphi}(\vec{x})/y])$ となるものがある（$f_{\varphi}(\vec{x})$ は $\varphi$ の中で $y$ に代入可能になるよう、束縛変数は α 同値で取り替えておく）。
+3. $T^{\mathrm{Sk}}$ のモデル $\mathcal{M}$ と空でない部分構造 $\mathcal{N}\subset\mathcal{M}$（$\mathcal{L}^{\mathrm{Sk}}$ 構造として）について $\mathcal{N}\preccurlyeq\mathcal{M}$。
+:::
+
+::: proof
+$\mathcal{L}_{0}\defeq\mathcal{L}$ とし、$\mathcal{L}_{k+1}$ を、$\mathcal{L}_{k}$ の各論理式 $\varphi(\vec{x},y)$（自由変数を $\vec{x},y$ に固定した組として）に新しい関数記号 $f_{\varphi}$ を加えた言語とする。$\mathcal{L}^{\mathrm{Sk}}\defeq\bigcup_{k}\mathcal{L}_{k}$, $T^{\mathrm{Sk}}\defeq T\cup\{\text{2 の文（スコーレム公理）}\}$。$\mathcal{L}^{\mathrm{Sk}}$ の論理式は有限なのである $\mathcal{L}_{k}$ に属し、$f_{\varphi}\in\mathcal{L}_{k+1}$ なので 2 が成り立つ。濃度は $\lvert\mathcal{L}_{k}\rvert\le\lvert\mathcal{L}\rvert+\aleph_{0}$ から。
+
+1. $\mathcal{M}\models T$ を $\mathcal{L}_{k}$ 構造 $\mathcal{M}_{k}$ まで拡大したとする。$\mathcal{L}_{k}$ の各 $\varphi(\vec{x},y)$ と $\vec{a}\in M^{n}$ について、$\mathcal{M}_{k}\models\exists y\,\varphi(\vec{a})$ なら証拠の一つを、そうでなければ任意の元を $f_{\varphi}^{\mathcal{M}_{k+1}}(\vec{a})$ と定める（選択公理）。新しい記号は $\mathcal{L}_{k}$ の論理式の充足を変えない（縮小の補題）ので、$\mathcal{M}_{k+1}$ は $\mathcal{L}_{k}$ の論理式 $\varphi$ のスコーレム公理を満たす。和をとると $T^{\mathrm{Sk}}$ のモデルになる。
+2. 構成から。
+3. タルスキ–ヴォートの判定法（\ref{model:tarski-vaught}）を確かめる。$N$ に値をとる割り当て $v$ について $\mathcal{M},v\models\exists y\,\varphi$ なら、$\mathrm{FV}(\varphi)\setminus\{y\}=\{\vec{x}\}$ として $b\defeq f_{\varphi}^{\mathcal{M}}(v(\vec{x}))$ は $\mathcal{N}$ が関数で閉じているので $N$ に属し、スコーレム公理と意味論的代入補題より $\mathcal{M},v[y\mapsto b]\models\varphi$。
+:::
+
+::: definition スコーレム包 {#model:skolem-hull keywords="Skolem hull" index="スコーレム包|すこーれむほう"}
+$T^{\mathrm{Sk}}$ のモデル $\mathcal{M}$ と $A\subseteq M$ について、$A$ を含む $\mathcal{M}$ の最小の部分構造（$\mathcal{L}^{\mathrm{Sk}}$ は定数をもつので $A=\varnothing$ でも空でない。\ref{model:generated-substructure} と同様に、$A$ の元に $\mathcal{L}^{\mathrm{Sk}}$ の項を施した値全体）を $\mathrm{Hull}(A)$ と書く。\ref{model:skolemization} の 3 より $\mathrm{Hull}(A)\preccurlyeq\mathcal{M}$ で、$\lvert\mathrm{Hull}(A)\rvert\le\lvert A\rvert+\lvert\mathcal{L}\rvert+\aleph_{0}$。
+:::
+
+## エーレンフォイヒト–モストフスキのモデル {#model:sec-em}
+
+::: theorem エーレンフォイヒト–モストフスキ {#model:em-model keywords="Ehrenfeucht-Mostowski theorem, models with many automorphisms" index="エーレンフォイヒト–モストフスキの定理|えーれんふぉいひともすとふすきのていり, EM モデル|いーえむもでる"}
+（AC）$T$ を無限モデルをもつ $\mathcal{L}$ の理論、$(I,<)$ を無限線形順序とする。このとき $T$ のモデル $\mathcal{M}$（$\lvert M\rvert\le\lvert I\rvert+\lvert\mathcal{L}\rvert+\aleph_{0}$）と、$\mathcal{M}$ の識別不能列 $(a_{i})_{i\in I}$ で、$(I,<)$ の任意の順序自己同型 $\sigma$ が $\mathcal{M}$ の自己同型 $\hat{\sigma}$（$\hat{\sigma}(a_{i})=a_{\sigma(i)}$）に延びるものが存在する。
+:::
+
+::: proof
+**Step 1.** $T^{\mathrm{Sk}}$ は無限モデルをもつ（$T$ の無限モデルを \ref{model:skolemization} の 1 で拡大する）。\ref{model:indiscernibles-exist} を $T^{\mathrm{Sk}}$ と $I$ に使い、$T^{\mathrm{Sk}}$ のモデル $\mathcal{M}'$ と、$\mathcal{L}^{\mathrm{Sk}}$ について識別不能な列 $(a_{i})_{i\in I}$ をとる。$\mathcal{M}^{\ast}\defeq\mathrm{Hull}(\{a_{i}:i\in I\})\preccurlyeq\mathcal{M}'$ とする。$\mathcal{M}^{\ast}$ でも $(a_{i})$ は $\mathcal{L}^{\mathrm{Sk}}$ について識別不能である（初等部分構造なので型は変わらない）。
+
+**Step 2（自己同型）.** $\mathcal{M}^{\ast}$ の元は、$\mathcal{L}^{\mathrm{Sk}}$ の項 $t(x_{1},\dots,x_{n})$ と増加な $\vec{i}$ による $t^{\mathcal{M}^{\ast}}(a_{i_{1}},\dots,a_{i_{n}})$ の形である（項の変数を並べ替え、重複を除けば増加にできる）。$\hat{\sigma}(t(a_{\vec{i}}))\defeq t(a_{\sigma(\vec{i})})$ と定める。
+- *well-defined かつ単射*：$t(a_{\vec{i}})=s(a_{\vec{j}})$ とする。$\vec{i}$ と $\vec{j}$ の成分を合わせて増加に並べた組 $\vec{k}$ を考えると、等式は $\vec{k}$ の成分についての論理式 $\psi(a_{\vec{k}})$ である。$\sigma$ は順序を保つので $\sigma(\vec{k})$ も増加で、成分の重なり方も同じである。識別不能性より $\psi(a_{\sigma(\vec{k})})$ も成り立ち、$t(a_{\sigma(\vec{i})})=s(a_{\sigma(\vec{j})})$。逆向き（単射）は $\sigma^{-1}$ に同じ議論をする。
+- *全射*：$t(a_{\vec{j}})=\hat{\sigma}(t(a_{\sigma^{-1}(\vec{j})}))$。
+- *初等的*：$\mathcal{L}^{\mathrm{Sk}}$ の論理式 $\varphi$（束縛変数は項が代入可能になるよう α 同値で取り替える）と $\mathcal{M}^{\ast}$ の元 $t_{1}(a_{\vec{i}}),\dots$ について、$\varphi(t_{1}(\vec{x}),\dots)$ は $a_{\vec{k}}$ についての論理式なので、同じく識別不能性から真偽が $\hat{\sigma}$ で保たれる。よって $\hat{\sigma}$ は $\mathcal{L}^{\mathrm{Sk}}$ 構造の自己同型である。
+
+**Step 3.** $\mathcal{M}\defeq\mathcal{M}^{\ast}\restr{\mathcal{L}}$ は $T$ のモデルで、$\hat{\sigma}$ は $\mathcal{L}$ 構造としても自己同型、$(a_{i})$ は $\mathcal{L}$ についても識別不能である。濃度はスコーレム包の評価から。
+:::
+
+::: corollary 自己同型の多いモデル {#model:many-automorphisms}
+（AC）無限モデルをもつ可算言語の理論 $T$ と無限基数 $\kappa$ について、濃度 $\kappa$ の $T$ のモデルで、相異なる自己同型を少なくとも $\kappa$ 個もつものがある。
+:::
+
+::: proof
+$I\defeq\kappa\times\mathbb{Q}$ に辞書式順序を入れると、$\lvert I\rvert=\kappa$ で、各 $\alpha<\kappa$ と $q\in\mathbb{Q}$ について、成分 $\alpha$ の $\mathbb{Q}$ だけを $q$ ずらす $\sigma_{\alpha,q}$ は順序自己同型である。\ref{model:em-model} のモデル $\mathcal{M}$ は $\lvert M\rvert\le\kappa$ で、識別不能列は相異なる $\kappa$ 個の元をもつので $\lvert M\rvert=\kappa$。$\alpha$ ごとに $\hat{\sigma}_{\alpha,1}$ は相異なる（$a_{(\alpha,0)}$ を動かすのは $\hat{\sigma}_{\alpha,1}$ だけ）ので、自己同型は少なくとも $\kappa$ 個ある。
+:::
+
+## 問題 {#model:sec-indisc-problems}
+
+::: problem {#model:prob-ramsey-finite-fails}
+無限ラムゼーの定理で、$n=2$, $k=2$ のとき、等質集合が「無限」でなく「$X$ と同じ濃度」にとれるとは限らないことを、$X=\R$ と $f(\{a,b\})\defeq$（$a<b$ のとき、$a,b$ の整列順序 $\prec$（選択公理で固定）での順序と実数の順序が一致すれば 1、一致しなければ 2）で示せ。（シェルピンスキーの例）
+:::
+
+::: solution
+等質集合 $H\subseteq\R$ が非可算とする。色が 1 なら $(H,<)$ と $(H,\prec)$ の順序が一致し、$(H,<)$ は整列順序になる。色が 2 なら $(H,>)$ が整列順序になる。いずれにせよ、$\R$ の部分集合で通常の順序（またはその逆）について非可算な整列順序をもつことになる。整列順序の各元 $h$（最大元を除く）にその次の元 $h^{+}$ をとると開区間 $(h,h^{+})$（または $(h^{+},h)$）は互いに交わらない空でない開区間で、それぞれ有理数を含むので、可算個しかない。よって矛盾する。
+:::
+
+::: problem {#model:prob-em-nonstandard}
+ペアノ算術 $\mathrm{PA}$ の言語でも、$\mathrm{PA}$ の可算モデルで自明でない自己同型をもつものがあることを、\ref{model:em-model} から結論せよ。$(\N,0,S,+,\cdot)$ 自身は自明な自己同型しかもたないことも示せ。
+:::
+
+::: solution
+$\mathrm{PA}$ は無限モデルをもつので、$I=\mathbb{Q}$ に \ref{model:em-model} を使えば、可算モデルと、$q\mapsto q+1$ に対応する自己同型（$a_{0}\mapsto a_{1}\neq a_{0}$）が得られる。$(\N,0,S,+,\cdot)$ の自己同型 $h$ は $h(0)=0$, $h(S(n))=S(h(n))$ なので、帰納法で $h(n)=n$。
+:::
+
+::: supplement
+**前提の検討.**
+- \ref{model:many-automorphisms} は弱い形で、実際には $2^{\kappa}$ 個の自己同型をもつ濃度 $\kappa$ のモデルも作れることが知られている。
+- ラムゼーの定理の証明では、$X$ を $\N$ に縮めてから従属選択を使った。可算無限部分集合の存在には可算選択の一部を使う。
+- スコーレム化（\ref{model:skolemization} の 1）では選択公理を本質的に使う（スコーレム関数の値の選択）。
+
+**関連する結果.**
+- *モーリーの範疇性定理.* 可算言語の理論がある非可算濃度で範疇的なら、すべての非可算濃度で範疇的である。証明には EM モデルと $\omega$ 安定性の理論が使われる（Chang–Keisler 第 7 章、本サイトでは扱わない）。
+- *ハンフ数.* $\omega_{1}$ 型の識別不能列を使って、無限モデルをもつ理論は任意に大きいモデルをもつことの精密化が得られる。
+- *集合論との接点.* 集合論の $0^{\sharp}$（構成可能宇宙 $\mathbf{L}$ の識別不能元のクラス）は、ここでの識別不能列の考え方を $\mathbf{L}$ に適用したものである、と一般に言われている。
+
+**高い視点から：添字から構造への関手.** EM の構成は、線形順序 $I$ からモデル $\mathcal{M}(I)$ を作り、順序の埋め込み $I\to J$ を初等埋め込み $\mathcal{M}(I)\to\mathcal{M}(J)$ に送る**関手**として理解できる（識別不能列の型（EM 型）を一つ固定するとき）。順序の自己同型がモデルの自己同型になるのは、この関手性の特別な場合である。たとえるなら、識別不能列は「どれも見分けのつかない同じ型の煉瓦」で、スコーレム関数はその煉瓦から建物を組む設計図である。煉瓦の並べ方（$I$）だけを変えれば同じ設計図で別の建物ができ、煉瓦の並べ替え（順序自己同型）は建物全体の対称性になる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

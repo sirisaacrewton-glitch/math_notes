@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>関手と自然変換 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/01-basics/02-functors.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 関手と自然変換 {#cat:page-functors keywords="functor, forgetful functor, hom functor, full, faithful, isomorphism of categories, natural transformation, natural isomorphism, equivalence of categories, monic, epic, split, initial object, terminal object, zero object"}
+
+圏の間の「構造を保つ写像」が**関手**である（\ref{cat:functor}）。関手の間の「構造を保つ写像」が**自然変換**である（\ref{cat:natural-transformation}）。圏論はもともと、「自然な同型」という数学者の日常的な言い回しを正確にするために、自然変換を定義する目的で作られた。本ページでは関手と自然変換の定義と例を述べ、圏の同型と、それより弱い**圏同値**（\ref{cat:equivalence-of-categories}）を導入する。後半では、単射・全射の圏論版である**モノ射**・**エピ射**（\ref{cat:monic-epic}）と、始対象・終対象（\ref{cat:initial-terminal}）を扱う。
+
+> 資料：S. Mac Lane, *Categories for the Working Mathematician* 第 I 章 §3–§5。訳語はレンスター『ベーシック圏論』。
+
+## 記法と定義の確認 {#cat:sec-fun-notation}
+
+::: notation
+- 圏、hom 集合 $\mathbf{C}(a,b)$、部分圏・充満部分圏、同型射、局所小、圏 $\mathbf{Set}$, $\mathbf{Grp}$, $\mathbf{Ab}$, $\mathbf{Ring}$, $\mathbf{Top}$, $\mathbf{Vect}_{F}$ は \ref{cat:page-categories} のとおり（\ref{cat:category}, \ref{cat:subcategory}, \ref{cat:isomorphism}, \ref{cat:small-category}）。
+- 群・環・線形空間の初歩（準同型、交換子部分群、行列式、双対空間）は既知とする。証明で使う代数の事実は、その都度明記する。
+- 基礎は前ページと同じ（$\ZFC$＋宇宙）。選択公理を使う箇所は明記する。
+:::
+
+## 関手 {#cat:sec-fun-functors}
+
+::: definition 関手 {#cat:functor keywords="functor, covariant functor, object function, arrow function" index="関手|かんしゅ, 共変関手|きょうへんかんしゅ"}
+圏 $\mathbf{C}$ から圏 $\mathbf{D}$ への**関手** $F\colon\mathbf{C}\to\mathbf{D}$ は、$\mathbf{C}$ の各対象 $c$ に $\mathbf{D}$ の対象 $Fc$ を、$\mathbf{C}$ の各射 $f\colon c\to c'$ に $\mathbf{D}$ の射 $Ff\colon Fc\to Fc'$ を対応させる二つの関数の組で、次を満たすものをいう。
+- (F1) すべての対象 $c$ について $F(1_{c})=1_{Fc}$。
+- (F2) $\operatorname{dom}g=\operatorname{cod}f$ なら $F(g\circ f)=Fg\circ Ff$。
+:::
+
+::: intuition
+関手は、$\mathbf{C}$ の対象と射の「絵」を $\mathbf{D}$ の中に描くものである。射の向きと合成の関係（どの射をつなぐと何になるか）がそのまま保たれる。位相空間にホモロジー群を対応させる操作のように、対象だけでなく射（連続写像）にも代数的な射（準同型）を対応させ、しかも合成と整合的であることが、関手の要点である。
+:::
+
+::: example
+1. **忘却関手.** 群 $G$ にその台集合を、準同型にそれ自身を（関数として）対応させる $U\colon\mathbf{Grp}\to\mathbf{Set}$。同様に $\mathbf{Ring}\to\mathbf{Ab}$（乗法を忘れる）、$\mathbf{Top}\to\mathbf{Set}$ など。
+2. **冪集合関手.** $X\mapsto\mathcal{P}(X)$、$f\colon X\to Y$ に像をとる写像 $\mathcal{P}f\colon S\mapsto f[S]$ を対応させる $\mathcal{P}\colon\mathbf{Set}\to\mathbf{Set}$。$f[\,\cdot\,]$ は $1_{X}$ に対して恒等写像、$(g\circ f)[S]=g[f[S]]$ なので関手である。
+3. **アーベル化.** 群 $G$ に $G^{\mathrm{ab}}\defeq G/[G,G]$ を、準同型 $f\colon G\to H$ に誘導される $f^{\mathrm{ab}}\colon G^{\mathrm{ab}}\to H^{\mathrm{ab}}$ を対応させる $\mathbf{Grp}\to\mathbf{Ab}$。準同型は交換子を交換子に移すので、$f[[G,G]]\subseteq[H,H]$ で $f^{\mathrm{ab}}$ が定まる。
+4. **一般線形群.** 可換環 $K$ に $GL_{n}(K)$ を、環準同型 $\varphi\colon K\to K'$ に成分ごとの適用 $GL_{n}(\varphi)$ を対応させる $\mathbf{CRing}\to\mathbf{Grp}$。
+5. **前順序の間の関手**は単調写像（$p\le q\Rightarrow Fp\le Fq$）であり、**モノイド（群）の間の関手**は単位元を保つ準同型である。群 $G$（対象一つの圏）から $\mathbf{Set}$ への関手は、$G$ の集合への作用（置換表現）と同じものである。
+6. **共変 hom 関手.** 局所小の圏 $\mathbf{C}$ と対象 $a$ について、$\mathbf{C}(a,-)\colon\mathbf{C}\to\mathbf{Set}$ を、$c\mapsto\mathbf{C}(a,c)$、$f\colon c\to c'$ に「左から $f$ を合成する」写像 $f\circ-\colon\mathbf{C}(a,c)\to\mathbf{C}(a,c')$ を対応させて定める。(F1) は単位律、(F2) は結合律 $(g\circ f)\circ h=g\circ(f\circ h)$ による。
+7. **ホモロジー.** 各 $n$ について、特異ホモロジー群 $H_{n}$ は関手 $\mathbf{Top}\to\mathbf{Ab}$ で、ホモトピックな写像は同じ準同型を誘導するので、関手 $\mathbf{hTop}\to\mathbf{Ab}$ ともみなせる（代数的位相幾何の系列で扱う予定）。
+:::
+
+::: proposition 関手の合成と関手は同型射を保つこと {#cat:functor-basic keywords="composition of functors, identity functor, functors preserve isomorphisms" index="関手の合成|かんしゅのごうせい, 恒等関手|こうとうかんしゅ"}
+1. 関手 $F\colon\mathbf{C}\to\mathbf{D}$, $G\colon\mathbf{D}\to\mathbf{E}$ について、対象・射ごとの合成 $G\circ F$ は関手である。関手の合成は結合的で、恒等関数からなる**恒等関手** $1_{\mathbf{C}}$ が単位になる。
+2. 関手は同型射を同型射に移す：$f$ が同型射なら $Ff$ も同型射で、$(Ff)^{-1}=F(f^{-1})$。
+:::
+
+::: proof
+**1.** $GF(1_{c})=G(1_{Fc})=1_{GFc}$、$GF(g\circ f)=G(Fg\circ Ff)=GFg\circ GFf$。結合律と単位律は、関数の合成のそれから。
+
+**2.** $F(f^{-1})\circ Ff=F(f^{-1}\circ f)=F(1_{c})=1_{Fc}$ で、逆向きも同様。
+
+::: hypcheck
+- **2 の逆は成り立たない**：$Ff$ が同型射でも $f$ は同型射とは限らない。例：$\mathbf{2}$（\ref{cat:category} の例 1）から $\mathbf{1}$ への関手は射 $0\to1$ を恒等射に移すが、$0\to1$ は同型射でない。充満忠実な関手ならこの逆が成り立つ（\ref{cat:fully-faithful-reflects}）。
+:::
+:::
+
+::: remark
+小さい圏とその間の関手は、関手の合成について圏 $\mathbf{Cat}$ をなす（\ref{cat:small-category} の注意）。$\mathbf{Cat}$ の対象の集合は $\mathcal{U}$ の部分集合で、$\mathbf{Cat}$ は大きく局所小である。
+:::
+
+::: definition 圏の同型・充満・忠実 {#cat:full-faithful keywords="isomorphism of categories, full functor, faithful functor, fully faithful functor" index="圏の同型|けんのどうけい, 充満関手|じゅうまんかんしゅ, 忠実関手|ちゅうじつかんしゅ, 充満忠実|じゅうまんちゅうじつ"}
+関手 $F\colon\mathbf{C}\to\mathbf{D}$ と対象 $c,c'$ について、射の対応は関数
+$$
+F_{c,c'}\colon\mathbf{C}(c,c')\to\mathbf{D}(Fc,Fc'),\quad f\mapsto Ff
+$$
+を定める。
+1. すべての $c,c'$ で $F_{c,c'}$ が全射のとき $F$ は**充満**、単射のとき**忠実**、全単射のとき**充満忠実**であるという。
+2. 関手 $G\colon\mathbf{D}\to\mathbf{C}$ で $G\circ F=1_{\mathbf{C}}$, $F\circ G=1_{\mathbf{D}}$ となるものがあるとき、$F$ を**圏の同型**という。
+:::
+
+::: proposition 圏の同型の特徴づけ {#cat:isomorphism-of-categories keywords="a functor is an isomorphism of categories iff it is bijective on objects and arrows" index="圏の同型の特徴づけ|けんのどうけいのとくちょうづけ"}
+関手 $F\colon\mathbf{C}\to\mathbf{D}$ が圏の同型であることと、$F$ が対象についても射についても全単射であることは同値である。
+:::
+
+::: proof
+「⇒」：$G$ が両側の逆なので、対象の関数も射の関数も逆関数をもつ。
+
+「⇐」：$G$ を対象・射の逆関数とする。$G$ が関手であることを示せばよい。$d\in\mathbf{D}$ について $d=Fc$ と書け、$F(1_{c})=1_{d}$ なので $G(1_{d})=1_{c}=1_{Gd}$。$\mathbf{D}$ の射 $g\colon d\to d'$ について、$Gg\colon c\to c'$ とすると $F(Gg)=g$ は $Fc\to Fc'$ なので $F$ の対象の単射性から $c=Gd$, $c'=Gd'$。合成できる $g,h$ について $F(Gh\circ Gg)=FGh\circ FGg=h\circ g$ なので、$G(h\circ g)=Gh\circ Gg$。
+
+::: hypcheck
+- 「⇐」で、$Gg$ の定義域が $Gd$ であることを示すのに、対象についての単射性を使った。
+:::
+:::
+
+::: example
+1. 忘却関手 $\mathbf{Grp}\to\mathbf{Set}$ は忠実だが充満でない（準同型でない写像がある）。
+2. 充満部分圏の包含関手は充満忠実で、部分圏の包含関手は忠実である。
+3. 充満忠実でも圏の同型とは限らない：$\mathbf{1}\to\mathbf{Set}$ で唯一の対象を $\{0\}$ に移す関手は充満忠実（$\mathbf{Set}(\{0\},\{0\})$ は一点）だが、対象について全射でない。
+:::
+
+::: proposition 充満忠実な関手は同型射を反映する {#cat:fully-faithful-reflects keywords="fully faithful functors reflect isomorphisms" index="同型射の反映|どうけいしゃのはんえい"}
+$F\colon\mathbf{C}\to\mathbf{D}$ が充満忠実で、$f\colon c\to c'$ について $Ff$ が同型射ならば、$f$ は同型射である。
+:::
+
+::: proof
+$(Ff)^{-1}\colon Fc'\to Fc$ は、充満性から $g\colon c'\to c$ を使って $Fg$ と書ける。$F(g\circ f)=Fg\circ Ff=1_{Fc}=F(1_{c})$ で、忠実性から $g\circ f=1_{c}$。同様に $f\circ g=1_{c'}$。
+
+::: hypcheck
+- **充満性**：逆射の候補 $g$ を $\mathbf{C}$ の中に見つけるのに使った。
+- **忠実性**：$F$ で等しい射が等しいことを使った。
+- **どちらも外せない**：\ref{cat:functor-basic} の hypcheck の $\mathbf{2}\to\mathbf{1}$ は忠実だが充満でなく（$\mathbf{2}(1,0)=\varnothing$ から $\mathbf{1}$ の恒等射に全射しない）、同型射でない $0\to1$ を同型射に移す。また、加法モノイド $(\N,+)$（対象一つの圏）から $\mathbf{1}$ への関手は充満だが忠実でなく、可逆でない射 $1\in\N$ を同型射に移す。
+:::
+:::
+
+## 自然変換 {#cat:sec-fun-natural}
+
+::: definition 自然変換 {#cat:natural-transformation keywords="natural transformation, component, naturality square, natural isomorphism" index="自然変換|しぜんへんかん, 成分（自然変換の）|せいぶんしぜんへんかんの, 自然同型|しぜんどうけい"}
+関手 $S,T\colon\mathbf{C}\to\mathbf{D}$ の間の**自然変換** $\tau\colon S\Rightarrow T$ とは、$\mathbf{C}$ の各対象 $c$ に $\mathbf{D}$ の射 $\tau_{c}\colon Sc\to Tc$（**成分**）を対応させる関数で、$\mathbf{C}$ のすべての射 $f\colon c\to c'$ について
+$$
+Tf\circ\tau_{c}=\tau_{c'}\circ Sf
+$$
+（**自然性**の四角形が可換）となるものをいう。すべての成分が同型射であるとき、$\tau$ を**自然同型**といい、$S\cong T$ と書く。
+:::
+
+::: intuition
+関手 $S$ と $T$ を $\mathbf{C}$ の二つの「絵」とみると、自然変換は一方の絵を他方の絵へ、すべての射と両立するように移す方法である。数学で「自然な同型」と言うとき、それは「基底や生成元のような恣意的な選択に依らずに定まり、したがってすべての射と両立する同型」という意味であり、自然変換の自然性の条件がそれを正確に表している。
+:::
+
+::: example
+1. **行列式.** 各可換環 $K$ について $\det_{K}\colon GL_{n}(K)\to K^{\times}$（単数群）は群準同型で（$\det(AB)=\det A\det B$ を既知とする）、環準同型 $\varphi\colon K\to K'$ について $\det_{K'}(GL_{n}(\varphi)A)=\varphi(\det_{K}A)$（行列式は成分の多項式で、$\varphi$ は和と積を保つ）。よって $\det\colon GL_{n}\Rightarrow(-)^{\times}$ は関手 $\mathbf{CRing}\to\mathbf{Grp}$ の間の自然変換である。
+2. **アーベル化の射影.** 射影 $p_{G}\colon G\to G^{\mathrm{ab}}$ は、恒等関手からアーベル化（を $\mathbf{Grp}$ への関手とみたもの）への自然変換である。$f\colon G\to H$ について $f^{\mathrm{ab}}\circ p_{G}=p_{H}\circ f$ は $f^{\mathrm{ab}}$ の定義そのもの。
+3. **二重双対.** 体 $F$ 上の線形空間 $V$ について、$\iota_{V}\colon V\to V^{**}$, $\iota_{V}(v)(\lambda)\defeq\lambda(v)$ は自然変換 $1_{\mathbf{Vect}_{F}}\Rightarrow(-)^{**}$ である。線形写像 $f\colon V\to W$ について、$f^{**}(\iota_{V}v)(\mu)=\iota_{V}v(\mu\circ f)=\mu(fv)=\iota_{W}(fv)(\mu)$（$\mu\in W^{*}$）。有限次元の空間だけからなる充満部分圏に制限すると、$\iota_{V}$ は同型（次元の比較による。線形代数の事実）なので、自然同型になる。
+:::
+
+::: proposition 有限次元空間と双対の同型は自然でない {#cat:dual-not-natural keywords="V and V* are isomorphic but not naturally" index="自然でない同型|しぜんでないどうけい"}
+$F=\mathbb{Q}$ とし、$\mathbf{V}$ を有限次元の $\mathbb{Q}$ 線形空間と線形同型写像からなる圏とする。$D(V)\defeq V^{*}$、$D(f)\defeq(f^{-1})^{*}$ と定めると $D\colon\mathbf{V}\to\mathbf{V}$ は関手で、各 $V$ について $V\cong D(V)$ だが、自然同型 $\eta\colon1_{\mathbf{V}}\Rightarrow D$ は存在しない。
+:::
+
+::: proof
+**Step 1（$D$ は関手）.** $D(1_{V})=(1_{V})^{*}=1_{V^{*}}$。$f\colon U\to V$, $g\colon V\to W$ について $D(g\circ f)=((g\circ f)^{-1})^{*}=(f^{-1}\circ g^{-1})^{*}=(g^{-1})^{*}\circ(f^{-1})^{*}=D(g)\circ D(f)$（双対写像は合成の順序を逆にする：$(h\circ k)^{*}=k^{*}\circ h^{*}$）。
+
+**Step 2（自然でないこと）.** 自然同型 $\eta$ があったとする。一次元の空間 $V=\mathbb{Q}e$ と双対基底 $e^{*}$ をとり、$\eta_{V}(e)=ce^{*}$ と書く。$\eta_{V}$ は同型なので $c\neq0$。$f\defeq2\cdot1_{V}$ について、自然性 $D(f)\circ\eta_{V}=\eta_{V}\circ f$ を $e$ で評価する。$D(f)=(\tfrac{1}{2}\cdot1_{V})^{*}=\tfrac{1}{2}\cdot1_{V^{*}}$ なので、左辺は $\tfrac{c}{2}e^{*}$、右辺は $\eta_{V}(2e)=2ce^{*}$。$c\neq0$ から $\tfrac{1}{2}=2$ となり矛盾。
+
+::: hypcheck
+- **体が $\mathbb{Q}$ であること**：Step 2 で $\lambda^{2}\neq1$ となる $\lambda=2$ を使った。$\lambda^{2}=1$ がすべての $\lambda\neq0$ で成り立つ体（$\mathbb{F}_{2}$, $\mathbb{F}_{3}$）では、一次元の空間だけではこの議論は使えない。
+- **同型射だけの圏に制限したこと**：$D$ を共変関手にするため $(f^{-1})^{*}$ を使ったので、$f$ が可逆である必要があった。双対をとる操作は本来「反変関手」で（\ref{cat:contravariant-functor}）、恒等関手と比べるには向きを合わせる工夫が要る。
+:::
+:::
+
+::: proposition 自然変換の縦の合成 {#cat:vertical-composition keywords="vertical composition of natural transformations" index="自然変換の合成|しぜんへんかんのごうせい"}
+$\sigma\colon R\Rightarrow S$, $\tau\colon S\Rightarrow T$（$R,S,T\colon\mathbf{C}\to\mathbf{D}$）について、$(\tau\cdot\sigma)_{c}\defeq\tau_{c}\circ\sigma_{c}$ は自然変換 $R\Rightarrow T$ である。この合成は結合的で、恒等変換 $(1_{S})_{c}\defeq1_{Sc}$ が単位になる。自然同型 $\tau$ の成分ごとの逆射は自然同型 $\tau^{-1}\colon T\Rightarrow S$ をなす。
+:::
+
+::: proof
+$f\colon c\to c'$ について、結合律と二つの自然性から
+$$
+\begin{aligned}
+Tf\circ\tau_{c}\circ\sigma_{c}&=\tau_{c'}\circ Sf\circ\sigma_{c}\\
+&=\tau_{c'}\circ\sigma_{c'}\circ Rf.
+\end{aligned}
+$$
+結合律と単位律は成分ごとに $\mathbf{D}$ のそれから。逆：自然性の式 $Tf\circ\tau_{c}=\tau_{c'}\circ Sf$ の左から $\tau_{c'}^{-1}$、右から $\tau_{c}^{-1}$ を合成すると $\tau_{c'}^{-1}\circ Tf=Sf\circ\tau_{c}^{-1}$。
+:::
+
+## 圏同値 {#cat:sec-fun-equivalence}
+
+::: definition 圏同値 {#cat:equivalence-of-categories keywords="equivalence of categories, quasi-inverse" index="圏同値|けんどうち, 擬逆|ぎぎゃく"}
+関手 $F\colon\mathbf{C}\to\mathbf{D}$ が**圏同値**であるとは、関手 $G\colon\mathbf{D}\to\mathbf{C}$ と自然同型 $G\circ F\cong1_{\mathbf{C}}$, $F\circ G\cong1_{\mathbf{D}}$ があることをいう。$G$ を $F$ の**擬逆**という。圏同値があるとき $\mathbf{C}\simeq\mathbf{D}$ と書く。
+:::
+
+::: intuition
+圏の同型は対象の一致まで要求するが、圏論では「同型な対象」を区別する理由はふつうない。圏同値は、「同型を除いて同じ」という意味での同じさである。同型な対象を何個も含むか、各同型類から一つずつだけ含むかの違いは、圏同値では消える。
+:::
+
+::: example
+**有限集合と有限順序数.** $\mathbf{Fin}$ を小さい有限集合と関数の圏、$\mathbf{FinOrd}$ をその充満部分圏で対象が有限順序数 $n=\{0,\dots,n-1\}$ のものとする。包含関手 $I\colon\mathbf{FinOrd}\to\mathbf{Fin}$ は圏同値である。実際、各有限集合 $X$ について、要素の個数 $\#X$ と全単射 $e_{X}\colon X\to\#X$ を選び（$X$ が順序数なら $e_{X}=1_{X}$ とする）、$f\colon X\to Y$ に $\#f\defeq e_{Y}\circ f\circ e_{X}^{-1}$ を対応させると、$\#\colon\mathbf{Fin}\to\mathbf{FinOrd}$ は関手で（$\#(g\circ f)=e_{Z}ge_{Y}^{-1}e_{Y}fe_{X}^{-1}$）、$\#\circ I=1_{\mathbf{FinOrd}}$、また $e\colon1_{\mathbf{Fin}}\Rightarrow I\circ\#$ は自然同型（自然性 $\#f\circ e_{X}=e_{Y}\circ f$ は $\#f$ の定義）。$I$ は圏の同型ではない（対象について全射でない）。$e_{X}$ の選択に（有限集合の族全体についての）選択公理を使った。
+:::
+
+::: proposition 圏同値は充満忠実 {#cat:equivalence-fully-faithful keywords="an equivalence is fully faithful and essentially surjective" index="本質的全射|ほんしつてきぜんしゃ"}
+圏同値 $F\colon\mathbf{C}\to\mathbf{D}$ は充満忠実で、**本質的全射**（$\mathbf{D}$ の各対象 $d$ がある $Fc$ と同型）である。
+:::
+
+::: proof
+$G$ を擬逆、$\eta\colon1_{\mathbf{C}}\Rightarrow GF$, $\varepsilon\colon FG\Rightarrow1_{\mathbf{D}}$ を自然同型とする（向きは \ref{cat:vertical-composition} の逆で揃えてよい）。
+
+**本質的全射.** $\varepsilon_{d}\colon FGd\to d$ が同型なので $d\cong F(Gd)$。
+
+**忠実.** $f,f'\colon c\to c'$ で $Ff=Ff'$ とする。自然性から $GFf\circ\eta_{c}=\eta_{c'}\circ f$ なので
+$$
+f=\eta_{c'}^{-1}\circ GFf\circ\eta_{c}=\eta_{c'}^{-1}\circ GFf'\circ\eta_{c}=f'.
+$$
+同じ議論を $G$（$F$ が擬逆）に適用すると、$G$ も忠実である。
+
+**充満.** $g\colon Fc\to Fc'$ とし、$f\defeq\eta_{c'}^{-1}\circ Gg\circ\eta_{c}\colon c\to c'$ とおく。自然性から $GFf=\eta_{c'}\circ f\circ\eta_{c}^{-1}=Gg$。$G$ は忠実なので $Ff=g$。
+
+::: hypcheck
+- 「充満」の最後で、$G$ の忠実性（$F$ についての「忠実」の議論を $G$ に適用したもの）を使った。
+- **逆**：充満忠実で本質的全射な関手は圏同値である。ただし擬逆を作るには、各 $d$ に同型 $Fc\cong d$ を一つずつ選ぶ必要があり、選択公理を使う（\ref{cat:equivalence-characterization}）。
+:::
+:::
+
+## モノ射とエピ射 {#cat:sec-fun-monic}
+
+::: definition モノ射・エピ射・分裂 {#cat:monic-epic keywords="monomorphism, monic, epimorphism, epic, split monic, split epic, section, retraction" index="モノ射|ものしゃ, エピ射|えぴしゃ, 分裂モノ|ぶんれつもの, 分裂エピ|ぶんれつえぴ, 切断|せつだん, レトラクション|れとらくしょん"}
+射 $m\colon a\to b$ が**モノ射**であるとは、任意の $f,g\colon x\to a$ について $m\circ f=m\circ g\Rightarrow f=g$ となることをいう（左から消去できる）。双対的に、$e\colon a\to b$ が**エピ射**であるとは、任意の $f,g\colon b\to y$ について $f\circ e=g\circ e\Rightarrow f=g$ となることをいう（右から消去できる）。$r\circ m=1_{a}$ となる $r$ があるとき $m$ を**分裂モノ**（$m$ は**切断**、$r$ は**レトラクション**）、$e\circ s=1_{b}$ となる $s$ があるとき $e$ を**分裂エピ**という。
+:::
+
+::: proposition モノ射・エピ射の基本性質 {#cat:monic-epic-basic keywords="basic properties of monics and epis" index="モノ射の基本性質|ものしゃのきほんせいしつ"}
+1. モノ射の合成はモノ射、エピ射の合成はエピ射。
+2. $g\circ f$ がモノ射なら $f$ はモノ射。$g\circ f$ がエピ射なら $g$ はエピ射。
+3. 分裂モノはモノ射、分裂エピはエピ射。同型射はモノ射かつエピ射。
+4. モノ射かつ分裂エピである射は同型射。エピ射かつ分裂モノである射も同型射。
+:::
+
+::: proof
+**1.** $m,m'$ がモノ射で $m'\circ m\circ f=m'\circ m\circ g$ なら、$m'$ を消去して $m\circ f=m\circ g$、$m$ を消去して $f=g$。エピ射も同様（右から）。
+
+**2.** $f\circ h=f\circ k$ なら $(g\circ f)\circ h=(g\circ f)\circ k$ で、$g\circ f$ がモノ射なので $h=k$。エピ射も同様。
+
+**3.** $r\circ m=1$ のとき、$r\circ m=1$ がモノ射（恒等射は明らかにモノ射）なので 2 から $m$ はモノ射。分裂エピも同様。同型射は両方向に分裂する。
+
+**4.** $m\colon a\to b$ がモノ射で $m\circ s=1_{b}$ とする。$m\circ(s\circ m)=(m\circ s)\circ m=m=m\circ1_{a}$ で、$m$ を左から消去して $s\circ m=1_{a}$。よって $s$ は両側の逆射。後半も同様。
+
+::: hypcheck
+- **「モノ射かつエピ射」は同型とは限らない**：4 は片方が分裂していることを要求する。例：下の \ref{cat:monic-epic-examples} の 3（$\mathbb{Z}\to\mathbb{Q}$）や、前順序の $p\to q$（$p<q$）は、モノ射かつエピ射だが同型射でない（前順序では平行な射が高々一つなので、すべての射がモノ射かつエピ射）。
+:::
+:::
+
+::: proposition 具体的な圏のモノ射とエピ射 {#cat:monic-epic-examples keywords="monics and epis in Set, Ab, Top, Ring" index="具体的な圏のモノ射|ぐたいてきなけんのものしゃ"}
+1. $\mathbf{Set}$ では、モノ射は単射、エピ射は全射とちょうど一致する。空でない定義域をもつモノ射は分裂し、（選択公理のもとで）エピ射は分裂する。
+2. $\mathbf{Top}$ では、モノ射は単射な連続写像、エピ射は全射な連続写像とちょうど一致する。
+3. $\mathbf{Ring}$ では、包含 $\mathbb{Z}\to\mathbb{Q}$ はモノ射かつエピ射だが、全射ではなく同型射でもない。
+4. $\mathbf{Ab}$ では、エピ射は全射な準同型とちょうど一致する。
+:::
+
+::: proof
+**1.** 単射ならモノ射：$m(f(x))=m(g(x))$ から $f(x)=g(x)$。モノ射なら単射：$m(a)=m(a')$ なら、一点集合 $\{0\}$ からの関数 $0\mapsto a$, $0\mapsto a'$ が $m$ との合成で一致するので、$a=a'$。全射ならエピ射：$b=e(a)$ について $f(b)=f(e(a))=g(e(a))=g(b)$。エピ射なら全射：$b_{0}\in b$ が $e$ の値でないとすると、$f,g\colon b\to\{0,1\}$ を $f\equiv0$、$g$ を $\{b_{0}\}$ の特性関数とすると $f\circ e=g\circ e$（どちらも $0$）だが $f\neq g$。分裂：単射 $m\colon a\to b$（$a\neq\varnothing$）について、$a_{0}\in a$ を一つ固定し、$r(b)\defeq$「$m(x)=b$ となる唯一の $x$、なければ $a_{0}$」とおくと $r\circ m=1_{a}$。全射 $e$ について、各 $b$ に $e(x)=b$ となる $x$ を選べば（選択公理）切断になる。
+
+**2.** モノ射の側は 1 と同じ（一点空間からの連続写像を使う）。全射ならエピ射も同じ。エピ射なら全射：$y_{0}$ が値でないとし、$Y\to\{0,1\}$（**密着位相**、開集合は $\varnothing$ と全体だけ）への二つの写像 $f\equiv0$ と $\{y_{0}\}$ の特性関数を考える。密着空間への写像はすべて連続なので、1 と同じ議論で矛盾。
+
+**3.** モノ射：$f,g\colon R\to\mathbb{Z}$ が包含との合成で一致すれば、包含は単射なので $f=g$。エピ射：環準同型 $f,g\colon\mathbb{Q}\to S$ が $\mathbb{Z}$ 上で一致するとする。$n\neq0$ について $f(1/n)\cdot f(n)=f(1)=1$ なので $f(n)$ は $S$ で可逆で $f(1/n)=f(n)^{-1}$。同様に $g(1/n)=g(n)^{-1}=f(n)^{-1}$。よって $f(m/n)=f(m)f(n)^{-1}=g(m/n)$。全射でないので同型射でもない（$\mathbf{Ring}$ の同型射は全単射）。
+
+**4.** 全射ならエピ射は 1 と同じ。エピ射 $e\colon A\to B$ が全射でないとすると、商群 $B/e[A]$ は零でなく、射影 $p\colon B\to B/e[A]$ と零準同型 $0$ は $p\circ e=0=0\circ e$ を満たすが $p\neq0$。
+
+::: hypcheck
+- **2 の密着位相**：エピ射なら全射の証明で、比較の相手として「どんな写像でも連続になる」空間が必要だった。ハウスドルフ空間の圏では、稠密な像をもつ連続写像がすでにエピ射になり、エピ射は全射と一致しない。
+- **4 の商群**：可換群では任意の部分群が正規部分群なので、商がとれた。$\mathbf{Grp}$ でもエピ射は全射と一致するが、像が正規部分群とは限らないので、別の議論が要る（Mac Lane 第 I 章 §5 の演習）。
+- **1 の分裂**：エピ射が分裂することは、選択公理と同値である（各全射が切断をもつことが、選択公理の一つの形）。
+:::
+:::
+
+## 始対象と終対象 {#cat:sec-fun-initial}
+
+::: definition 始対象・終対象・零対象 {#cat:initial-terminal keywords="initial object, terminal object, zero object, null object" index="始対象|したいしょう, 終対象|しゅうたいしょう, 零対象|れいたいしょう"}
+対象 $i$ が**始対象**であるとは、すべての対象 $c$ について $\mathbf{C}(i,c)$ がちょうど一つの元をもつことをいう。双対的に、$t$ が**終対象**であるとは、すべての $c$ について $\mathbf{C}(c,t)$ がちょうど一つの元をもつことをいう。始対象かつ終対象であるものを**零対象**という。
+:::
+
+::: proposition 始対象の一意性 {#cat:initial-unique keywords="initial objects are unique up to unique isomorphism" index="始対象の一意性|したいしょうのいちいせい"}
+$i,i'$ が始対象なら、$i$ から $i'$ への唯一の射は同型射である。終対象も同様。
+:::
+
+::: proof
+$f\colon i\to i'$, $g\colon i'\to i$ を唯一の射とする。$g\circ f$ と $1_{i}$ はどちらも $i\to i$ の射で、$\mathbf{C}(i,i)$ は一点なので $g\circ f=1_{i}$。同様に $f\circ g=1_{i'}$。
+:::
+
+::: example
+1. $\mathbf{Set}$ では空集合が始対象、一点集合が終対象（零対象はない：$\mathbf{Set}(\{0\},\varnothing)=\varnothing$）。
+2. $\mathbf{Grp}$, $\mathbf{Ab}$, $R\text{-}\mathbf{Mod}$ では自明群（零加群）が零対象。
+3. $\mathbf{Ring}$ では $\mathbb{Z}$ が始対象（$1$ の行き先が決まる）、零環が終対象。
+4. 半順序では、始対象は最小元、終対象は最大元。
+5. $\mathbf{Set}_{*}$ では一点集合が零対象。
+:::
+
+::: supplement
+**前提を変えると.**
+- *関手でない対応.* 群にその中心を対応させる操作は関手 $\mathbf{Grp}\to\mathbf{Grp}$（あるいは $\mathbf{Ab}$）にならない（問題 \ref{cat:prob-center-not-functor}）。準同型は中心の元を中心の外に移しうるからである。このように、対象への対応が自然に見えても、射への対応がないものがある。
+- *自然変換と選択.* \ref{cat:dual-not-natural} のように、すべての $V$ で同型 $V\cong V^{*}$ があっても、それを基底の選択なしに一斉に選ぶことはできない。圏同値の例（$\mathbf{FinOrd}\simeq\mathbf{Fin}$）では逆に、選択によって作った関手 $\#$ に、選択の跡が自然同型の形で残っている。
+
+**類似の定理.** モノ射とエピ射は互いに双対で、一方について示したことは、射の向きを逆にした圏（反対圏、\ref{cat:opposite-category}）で読み替えると他方についての命題になる。始対象と終対象も同様である。
+
+**高い視点から：関手は「圏の準同型」、自然変換は「関手の間のホモトピー」.** 関手 $\mathbf{C}\to\mathbf{D}$ を対象とし、自然変換を射とすると、新しい圏（関手圏、\ref{cat:functor-category}）ができる。自然変換 $\tau\colon S\Rightarrow T$ は、関手 $\mathbf{C}\times\mathbf{2}\to\mathbf{D}$ で、$\mathbf{C}\times\{0\}$ で $S$、$\mathbf{C}\times\{1\}$ で $T$ になるものと同じものである（$\mathbf{2}$ は区間 $[0,1]$ の役をする）。比喩で言えば、関手が「絵」なら、自然変換は一枚の絵を別の絵へ連続的に動かす「動画」で、位相空間の写像のホモトピー（区間 $[0,1]$ でつないだ写像の族）とまったく同じ形をしている。
+:::
+
+## 問題 {#cat:sec-fun-problems}
+
+::: problem {#cat:prob-center-not-functor}
+群 $G$ にその中心 $Z(G)$ を対応させる関手 $Z\colon\mathbf{Grp}\to\mathbf{Ab}$（射への対応は何でもよい）であって、包含 $Z(G)\hookrightarrow G$ が自然変換になるものは存在しないことを示せ。また、射への対応を任意にしてよくても、群 $G$ を $Z(G)$ に移す関手 $\mathbf{Grp}\to\mathbf{Ab}$ は存在しないことを示せ。（ヒント：対称群 $S_{2}\xrightarrow{i}S_{3}\xrightarrow{r}S_{2}$ で $r\circ i=1$ となるものを考えよ。）
+:::
+
+::: solution
+$S_{2}=\{1,\tau\}$ を $S_{3}$ の互換 $(1\,2)$ が生成する部分群として包含 $i$ をとり、$r\colon S_{3}\to S_{2}$ を符号 $\operatorname{sgn}$（偶置換を $1$、奇置換を $\tau$ に）とすると、$r\circ i=1_{S_{2}}$。$Z$ がそのような関手なら $Z(r)\circ Z(i)=Z(1_{S_{2}})=1_{Z(S_{2})}$。$Z(S_{2})=S_{2}$（可換）は 2 元、$Z(S_{3})$ は自明群（$S_{3}$ の中心は自明）。恒等写像 $1_{Z(S_{2})}$ が自明群を経由して分解することになるが、自明群を経由する写像は定値なので、2 元集合の恒等写像にはなり得ない。前半はこの特別な場合である。
+:::
+
+::: problem {#cat:prob-functors-from-ordinals}
+圏 $\mathbf{C}$ について、関手 $\mathbf{1}\to\mathbf{C}$, $\mathbf{2}\to\mathbf{C}$, $\mathbf{3}\to\mathbf{C}$ が、それぞれ $\mathbf{C}$ の対象、射、合成できる射の組と一対一に対応することを示せ。
+:::
+
+::: solution
+$\mathbf{1}\to\mathbf{C}$ は唯一の対象の行き先 $c$ で決まり、唯一の射（恒等射）は (F1) から $1_{c}$ に行く。$\mathbf{2}\to\mathbf{C}$ は、射 $0\to1$ の行き先 $f\colon c\to c'$ で決まる（対象の行き先は $f$ の定義域・余域、恒等射は (F1) で決まる）。逆に任意の $f$ からこうして関手ができる（(F2) で確かめるべき合成は恒等射を含むものだけ）。$\mathbf{3}\to\mathbf{C}$ は $0\to1$, $1\to2$ の行き先 $f,g$（$\operatorname{cod}f=\operatorname{dom}g$）で決まり、$0\to2$ の行き先は (F2) から $g\circ f$ でなければならない。逆に、このように定めると (F2) が成り立つ（$\mathbf{3}$ の恒等射以外の合成は $(1\to2)\circ(0\to1)=(0\to2)$ だけ）。
+:::
+
+::: problem {#cat:prob-faithful-reflects-monic}
+$F\colon\mathbf{C}\to\mathbf{D}$ が忠実で、$Ff$ がモノ射ならば $f$ はモノ射であることを示せ。また、関手は一般にモノ射を保たないことを例で示せ。
+:::
+
+::: solution
+$f\circ g=f\circ h$ なら $Ff\circ Fg=Ff\circ Fh$ で、$Ff$ がモノ射なので $Fg=Fh$、忠実性から $g=h$。後半：$\mathbf{2}$ の射 $0\to1$ はモノ射（平行な射が高々一つ）。$\mathbf{2}\to\mathbf{Set}$ を $0\mapsto\{0,1\}$, $1\mapsto\{0\}$ とし、射 $0\to1$ を唯一の写像 $\{0,1\}\to\{0\}$ に移すと関手で、その写像は単射でないのでモノ射でない（\ref{cat:monic-epic-examples} の 1）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

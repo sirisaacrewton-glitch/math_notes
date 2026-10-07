@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ゲーデルの体系 T | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/05-curry-howard/02-system-t.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ゲーデルの体系 T {#logic:page-system-t keywords="Goedel's system T, higher-type primitive recursion, recursor, strong normalization of system T, representable functions, Ackermann function in T, Dialectica"}
+
+単純型付きラムダ計算（\ref{logic:page-curry-howard}）は強正規化可能なので、型の付いた項はすべて停止する計算を表すが、表せる関数は限られる。**ゲーデルの体系 T** は、これに自然数の型 $\mathrm{N}$ と、すべての型で使える**原始再帰の演算子**（再帰子）$\mathrm{R}$ を加えた体系である。本ページでは、T の項も強正規化可能であること（\ref{logic:t-strong-normalization}）を、テイトの還元可能性の方法を拡張して示す。T では原始再帰関数（\ref{logic:t-primitive-recursive}）だけでなく、高い型の再帰を使ってアッカーマン関数（\ref{logic:t-ackermann}）も表せる。一方、T で表せる関数は計算可能な全域関数の真部分集合である（\ref{logic:t-not-all}）。T で表せる関数は、ちょうどペアノ算術で全域性が証明できる関数であることが知られている（ゲーデルの**ディアレクティカ解釈**）。
+
+> 資料フォルダに参考書がなく、標準的な定義と証明（ジラールらの『Proofs and Types』で扱われている形として知られているもの）を本サイトで組み立てた。章立てや記号の細部は原典で確認していない。T のチャーチ–ロッサー性は本サイトでは証明していない（\ref{logic:t-church-rosser}）。
+
+## 記法と定義の確認 {#logic:sec-t-notation}
+
+::: notation
+- ラムダ項、代入、$\to_{\beta}$、正規形、チャーチ–ロッサーの定理は \ref{logic:page-lambda-calculus} のとおり。単純型、文脈、型付け規則、強正規化 $\mathrm{SN}$ と $\nu(M)$（$M$ からの簡約列の長さの最大値）、還元可能性 $\mathrm{Red}_{A}$ と (CR1)–(CR3) は \ref{logic:page-curry-howard} のとおり（\ref{logic:typing-rules}, \ref{logic:reducibility}, \ref{logic:reducibility-properties}）。
+- 原始再帰関数、アッカーマン関数は \ref{comp:page-primitive-recursive}, \ref{comp:ackermann} のとおり。
+- 本ページでは、項の**大きさ** $\lvert M\rvert$（記号の個数）も帰納法の尺度に使う。
+:::
+
+## 体系 T {#logic:sec-t-system}
+
+::: definition 体系 T {#logic:system-t keywords="system T: types N and arrows, constants 0, S, R, reduction rules" index="体系 T|たいけいてぃー, 再帰子|さいきし"}
+1. **型**：$\mathrm{N}$ は型で、$A,B$ が型なら $A\to B$ も型。
+2. **項**：変数、定数 $0$, $\mathrm{S}$, $\mathrm{R}$ から、適用と抽象で作る（型なしの項に定数を加えたもの）。
+3. **型付け規則**：\ref{logic:typing-rules} の三つの規則に、次の公理を加える（$A$ は任意の型）。
+$$
+\Gamma\vdash0:\mathrm{N},\qquad\Gamma\vdash\mathrm{S}:\mathrm{N}\to\mathrm{N},\qquad\Gamma\vdash\mathrm{R}:A\to(A\to\mathrm{N}\to A)\to\mathrm{N}\to A.
+$$
+4. **簡約**：β 簡約 $(\lambda x.M)N\to M[N/x]$ と
+$$
+\mathrm{R}\,U\,V\,0\to U,\qquad\mathrm{R}\,U\,V\,(\mathrm{S}\,t)\to V\,(\mathrm{R}\,U\,V\,t)\,t
+$$
+を基とし、項の文脈について閉じた一段の簡約を $\to$、その反射推移閉包を $\twoheadrightarrow$ と書く。
+5. **数項**：$\underline{n}\defeq\mathrm{S}^{n}0=\mathrm{S}(\mathrm{S}(\cdots(\mathrm{S}\,0)\cdots))$。
+:::
+
+::: remark
+$\mathrm{R}\,U\,V\,n$ は、「$U$ から始めて、$k=0,1,\dots,n-1$ について $a\mapsto V\,a\,\underline{k}$ を順に施した値」である。$A=\mathrm{N}$ なら通常の原始再帰だが、$A$ を $\mathrm{N}\to\mathrm{N}$ などの関数の型にすると、「関数を値とする再帰」（**高い型の原始再帰**）になる。これが T の表現力の源である。
+:::
+
+::: lemma T の基本性質 {#logic:t-basic keywords="subject reduction for T, closed normal terms of type N are numerals"}
+1. （型の保存）$\Gamma\vdash M:A$ かつ $M\to M'$ なら $\Gamma\vdash M':A$。
+2. （正規形）型 $\mathrm{N}$ の閉じた正規形の項は数項 $\underline{n}$ である。
+:::
+
+::: proof
+**1.** β 簡約は \ref{logic:subject-reduction} と同じ。$\mathrm{R}\,U\,V\,0\to U$：生成補題（定数の型は公理で決まる）から $U:A$。$\mathrm{R}\,U\,V\,(\mathrm{S}\,t)\to V\,(\mathrm{R}\,U\,V\,t)\,t$：$U:A$, $V:A\to\mathrm{N}\to A$, $t:\mathrm{N}$ なので $\mathrm{R}\,U\,V\,t:A$ で、$V\,(\mathrm{R}\,U\,V\,t)\,t:A$。文脈の場合は帰納法。
+
+**2.** 任意の項は、$\lambda x_{1}\cdots x_{m}.\,h\,M_{1}\cdots M_{k}$（$h$ は変数か定数。**頭部標準形**）か、$\lambda\vec{x}.(\lambda y.P)Q\,M_{1}\cdots M_{k}$（β 基を頭にもつ）の形をしている（項の構成についての帰納法）。$M$ を型 $\mathrm{N}$ の閉じた正規形とすると、後者は正規形でなく、$m\ge1$ なら型は矢印型なので、$M=h\,M_{1}\cdots M_{k}$ で、$h$ は（閉じているので）定数。$M_{i}$ は閉じた正規形である。項の大きさについての帰納法で示す。
+- $h=0$：型から $k=0$、$M=\underline{0}$。
+- $h=\mathrm{S}$：型 $\mathrm{N}$ になるのは $k=1$ のときで、$M_{1}:\mathrm{N}$ は帰納法の仮定から数項、よって $M$ も数項。
+- $h=\mathrm{R}$：型 $\mathrm{N}$ になるには $k\ge3$ が必要（$k\le2$ では型が矢印型）。$M_{3}:\mathrm{N}$ は帰納法の仮定から $0$ か $\mathrm{S}\,t$ の形で、$\mathrm{R}\,M_{1}\,M_{2}\,M_{3}$ が基になり、正規形であることに反する。
+:::
+
+::: proposition T のチャーチ–ロッサー性 {#logic:t-church-rosser keywords="confluence of system T"}
+T の簡約は合流的である：$M\twoheadrightarrow M_{1}$, $M\twoheadrightarrow M_{2}$ なら、ある $M_{3}$ で $M_{i}\twoheadrightarrow M_{3}$。したがって正規形は（あれば）一意である。
+:::
+
+::: proof
+本サイトでは証明しない。T の簡約規則は、左辺どうしが重ならず（臨界対がない）、変数が左辺に一度ずつしか現れない（左線形）ので、\ref{logic:church-rosser} の並行簡約の方法がそのまま拡張できることが知られている（高階の書換え系の**直交性**による合流性）。
+:::
+
+## 強正規化 {#logic:sec-t-sn}
+
+::: definition T の還元可能性 {#logic:t-reducibility keywords="reducibility for system T, neutral terms"}
+型 $A$ ごとに $\mathrm{Red}_{A}$ を \ref{logic:reducibility} と同じく定める：$\mathrm{Red}_{\mathrm{N}}\defeq\mathrm{SN}$（T の簡約について）、$\mathrm{Red}_{A\to B}\defeq\{M:\forall N\in\mathrm{Red}_{A}\,(MN\in\mathrm{Red}_{B})\}$。項が**中立**であるとは、抽象でなく、$\mathrm{R}$, $\mathrm{R}\,U$, $\mathrm{R}\,U\,V$ のどの形でもないことをいう。
+:::
+
+::: lemma (CR1)–(CR3) {#logic:t-cr keywords="CR1-CR3 for system T"}
+すべての型 $A$ について、\ref{logic:reducibility-properties} の (CR1)–(CR3) が T の簡約と上の中立の定義で成り立つ。とくに変数と $0$ は $\mathrm{Red}_{\mathrm{N}}$ に属し、変数はすべての $\mathrm{Red}_{A}$ に属する。
+:::
+
+::: proof
+\ref{logic:reducibility-properties} の証明がそのまま通る。(CR3) の $A\to B$ の場合で使ったのは、「$M$ が中立なら、$MN$ の一段の簡約先は $M'N$ か $MN'$ に限る」ことだけである。T では、$MN$ が基になるのは $M$ が抽象（β）か $M=\mathrm{R}\,U\,V$（$\mathrm{R}$ の規則）のときだけで、どちらも中立の定義で除いた。$MN$ は中立である（抽象でなく、$M$ が中立なので $\mathrm{R}\,U$ や $\mathrm{R}\,U\,V$ の形でもない：$MN=\mathrm{R}\,U$ なら $M=\mathrm{R}$、$MN=\mathrm{R}\,U\,V$ なら $M=\mathrm{R}\,U$ で、どちらも中立でない）。$0$ は一段の簡約先がないので $\mathrm{SN}$。
+:::
+
+::: lemma 定数の還元可能性 {#logic:t-constants-reducible keywords="reducibility of 0, S and R"}
+$\mathrm{S}\in\mathrm{Red}_{\mathrm{N}\to\mathrm{N}}$、$\mathrm{R}\in\mathrm{Red}_{A\to(A\to\mathrm{N}\to A)\to\mathrm{N}\to A}$（すべての型 $A$）。
+:::
+
+::: proof
+**$\mathrm{S}$.** $t\in\mathrm{SN}$ なら、$\mathrm{S}\,t$ の簡約は $t$ の中でしか起きない（$\mathrm{S}\,t$ は基でない）ので $\mathrm{S}\,t\in\mathrm{SN}$。
+
+**$\mathrm{R}$.** 定義から、$U\in\mathrm{Red}_{A}$, $V\in\mathrm{Red}_{A\to\mathrm{N}\to A}$, $t\in\mathrm{Red}_{\mathrm{N}}=\mathrm{SN}$ について $\mathrm{R}\,U\,V\,t\in\mathrm{Red}_{A}$ を示せばよい。CR1 から $U,V\in\mathrm{SN}$。三つ組 $(U,V,t)$ についての、
+$$
+\bigl(\nu(U)+\nu(V)+\nu(t),\ \lvert t\rvert\bigr)
+$$
+の辞書式順序（自然数の対なので整礎）による帰納法で示す。$\mathrm{R}\,U\,V\,t$ は中立（引数を三つもつ）なので、(CR3) により、一段の簡約先がすべて $\mathrm{Red}_{A}$ に属することを示せばよい。簡約先は次のどれかである。
+- $\mathrm{R}\,U'\,V\,t$, $\mathrm{R}\,U\,V'\,t$, $\mathrm{R}\,U\,V\,t'$（引数の中の簡約）：CR2 で $U',V',t'$ も還元可能で、$\nu$ の和が真に減るので、帰納法の仮定から $\mathrm{Red}_{A}$ に属する。
+- $t=0$ で $U$：仮定から $\mathrm{Red}_{A}$。
+- $t=\mathrm{S}\,t_{0}$ で $V\,(\mathrm{R}\,U\,V\,t_{0})\,t_{0}$：$\mathrm{S}\,t_{0}$ の簡約は $t_{0}$ の中でしか起きないので $\nu(t_{0})=\nu(t)$ で、$\lvert t_{0}\rvert<\lvert t\rvert$。帰納法の仮定から $\mathrm{R}\,U\,V\,t_{0}\in\mathrm{Red}_{A}$。$t_{0}\in\mathrm{SN}=\mathrm{Red}_{\mathrm{N}}$ なので、$V$ の還元可能性の定義から $V\,(\mathrm{R}\,U\,V\,t_{0})\,t_{0}\in\mathrm{Red}_{A}$。
+:::
+
+::: theorem T の強正規化定理 {#logic:t-strong-normalization keywords="strong normalization of system T" index="体系 T の強正規化|たいけいてぃーのきょうせいきか"}
+T で型の付く項はすべて強正規化可能である。
+:::
+
+::: proof
+\ref{logic:strong-normalization} の証明の主張（還元可能な項を代入すると還元可能）を、型判断の導出についての帰納法で示す。新しい場合は定数の公理だけで、定数は代入で変わらず、\ref{logic:t-cr}（$0$）と \ref{logic:t-constants-reducible}（$\mathrm{S},\mathrm{R}$）から還元可能である。$\to\mathrm{I}$ の場合に使う \ref{logic:reducibility-abstraction} は、(CR1)–(CR3) と「$(\lambda x.M)N$ は中立で、その一段の簡約先は β 基の縮約か部分項の簡約に限る」ことだけを使うので、T でもそのまま成り立つ。変数を代入して、型の付く項は還元可能、CR1 から強正規化可能。
+:::
+
+## T で表せる関数 {#logic:sec-t-representable}
+
+::: definition 表現可能な関数 {#logic:t-representable keywords="functions representable in system T" index="T で表現可能な関数|てぃーでひょうげんかのうなかんすう"}
+関数 $f\colon\N^{k}\to\N$ が T で**表現可能**であるとは、閉じた項 $F:\mathrm{N}\to\cdots\to\mathrm{N}\to\mathrm{N}$（$\mathrm{N}$ が $k+1$ 個）があって、すべての $\vec{n}$ について $F\,\underline{n_{1}}\cdots\underline{n_{k}}\twoheadrightarrow\underline{f(\vec{n})}$ となることをいう。
+:::
+
+::: lemma 再帰子の計算 {#logic:t-recursor-unfolding keywords="unfolding the recursor on numerals"}
+$\mathrm{R}\,U\,V\,\underline{0}\twoheadrightarrow U$、$\mathrm{R}\,U\,V\,\underline{n+1}\twoheadrightarrow V\,(\mathrm{R}\,U\,V\,\underline{n})\,\underline{n}$。したがって $a_{0}\defeq U$, $a_{n+1}\defeq V\,a_{n}\,\underline{n}$ とおくと、$\mathrm{R}\,U\,V\,\underline{n}$ と $a_{n}$ は共通の項に簡約される（$n$ についての帰納法）。
+:::
+
+::: proof
+前半は簡約規則そのもの（$\underline{n+1}=\mathrm{S}\,\underline{n}$）。後半は $n$ についての帰納法で $\mathrm{R}\,U\,V\,\underline{n}\twoheadrightarrow a_{n}$ を示す：$n+1$ では $\mathrm{R}\,U\,V\,\underline{n+1}\to V\,(\mathrm{R}\,U\,V\,\underline{n})\,\underline{n}\twoheadrightarrow V\,a_{n}\,\underline{n}=a_{n+1}$。
+:::
+
+::: theorem 原始再帰関数は T で表現可能 {#logic:t-primitive-recursive keywords="primitive recursive functions are representable in T (with recursion at type N)"}
+すべての原始再帰関数は T で表現可能である（再帰子は型 $\mathrm{N}$ のものだけで足りる）。
+:::
+
+::: proof
+原始再帰関数の定義（\ref{comp:primitive-recursive}）についての帰納法。ゼロ関数 $\lambda\vec{x}.0$、後者 $\mathrm{S}$、射影 $\lambda\vec{x}.x_{i}$ は明らか。合成 $f(\vec{x})=g(h_{1}(\vec{x}),\dots,h_{m}(\vec{x}))$ は $\lambda\vec{x}.G(H_{1}\vec{x})\cdots(H_{m}\vec{x})$（各 $H_{i}\vec{x}$ はまず数項に簡約し、それから $G$ を簡約する）。原始再帰 $h(\vec{x},0)=g(\vec{x})$, $h(\vec{x},y+1)=k(\vec{x},y,h(\vec{x},y))$ は
+$$
+H\defeq\lambda\vec{x}\,y.\,\mathrm{R}\,(G\vec{x})\,(\lambda a\,b.\,K\,\vec{x}\,b\,a)\,y
+$$
+（$\mathrm{R}$ は型 $\mathrm{N}$ のもの）。\ref{logic:t-recursor-unfolding} の $a_{n}$ について、$n$ についての帰納法で $a_{n}\twoheadrightarrow\underline{h(\vec{x},n)}$：$a_{0}=G\vec{x}\twoheadrightarrow\underline{g(\vec{x})}$、$a_{n+1}=(\lambda a\,b.K\vec{x}\,b\,a)\,a_{n}\,\underline{n}\twoheadrightarrow K\,\vec{x}\,\underline{n}\,\underline{h(\vec{x},n)}\twoheadrightarrow\underline{h(\vec{x},n+1)}$。
+:::
+
+::: theorem アッカーマン関数は T で表現可能 {#logic:t-ackermann keywords="Ackermann function is representable in T using recursion at type N->N" index="アッカーマン関数（体系 T）|あっかーまんかんすうたいけいてぃー"}
+$\mathrm{Ack}(0,n)=n+1$, $\mathrm{Ack}(m+1,n)=\mathrm{Ack}(m,\cdot)^{(n+1)}(1)$（関数 $\mathrm{Ack}(m,\cdot)$ を $n+1$ 回合成して $1$ に施す）で定まる関数は T で表現可能である。
+:::
+
+::: proof
+**反復.** $\mathrm{It}\defeq\lambda f\,n.\,\mathrm{R}\,(f\,\underline{1})\,(\lambda a\,b.\,f\,a)\,n:(\mathrm{N}\to\mathrm{N})\to\mathrm{N}\to\mathrm{N}$（型 $\mathrm{N}$ の再帰子）。\ref{logic:t-recursor-unfolding} から、$f$ がある関数 $\phi$ を表すなら $\mathrm{It}\,f\,\underline{n}\twoheadrightarrow\underline{\phi^{(n+1)}(1)}$。
+
+**アッカーマン.** 型 $A\defeq\mathrm{N}\to\mathrm{N}$ の再帰子を使って
+$$
+\mathrm{A}\defeq\lambda m.\,\mathrm{R}\,\mathrm{S}\,(\lambda g\,b.\,\mathrm{It}\,g)\,m:\mathrm{N}\to(\mathrm{N}\to\mathrm{N}).
+$$
+\ref{logic:t-recursor-unfolding} の $a_{0}=\mathrm{S}$, $a_{m+1}=(\lambda g\,b.\mathrm{It}\,g)\,a_{m}\,\underline{m}\twoheadrightarrow\mathrm{It}\,a_{m}$ について、$m$ についての帰納法で「$a_{m}$ は関数 $\mathrm{Ack}(m,\cdot)$ を表す」：$m=0$ は $\mathrm{S}$。$a_{m}$ が $\mathrm{Ack}(m,\cdot)$ を表せば、$\mathrm{It}\,a_{m}\,\underline{n}\twoheadrightarrow\underline{\mathrm{Ack}(m,\cdot)^{(n+1)}(1)}=\underline{\mathrm{Ack}(m+1,n)}$。よって $\lambda m\,n.\,\mathrm{A}\,m\,n$ が $\mathrm{Ack}$ を表す。
+:::
+
+::: remark
+$\mathrm{Ack}$ は原始再帰的でない（\ref{comp:ackermann-not-pr}）。T で原始再帰関数の外に出られたのは、型 $\mathrm{N}\to\mathrm{N}$ の再帰子、すなわち「関数を値とする再帰」を使ったからである。再帰子の型の複雑さ（型の入れ子の深さ）を上げるごとに、表せる関数の増加速度が上がることが知られている。
+:::
+
+::: theorem T で表現可能な関数は計算可能な全域関数の真部分集合 {#logic:t-not-all keywords="representable functions of T are total computable, but not all total computable functions"}
+1. T で表現可能な関数は、計算可能な全域関数である。
+2. 計算可能な全域関数で、T で表現可能でないものがある。
+:::
+
+::: proof
+**1.** $F$ が $f$ を表すとする。$F\,\underline{\vec{n}}$ を、たとえば最も左の基から順に簡約していくと、強正規化定理（\ref{logic:t-strong-normalization}）から有限回で正規形に達し、型の保存と \ref{logic:t-basic} の 2 からそれは数項 $\underline{m}$ である。$F\underline{\vec{n}}\twoheadrightarrow\underline{f(\vec{n})}$ も正規形なので、チャーチ–ロッサー性（\ref{logic:t-church-rosser}）による正規形の一意性から $m=f(\vec{n})$。この手続きは計算可能である（項は有限の記号列で、一段の簡約は計算できる）。
+
+**2.** 型 $\mathrm{N}\to\mathrm{N}$ の閉じた項を、記号列として計算可能に枚挙して $F_{0},F_{1},\dots$ とする（型付け可能性は型推論で判定できることが知られている。あるいは、型判断の導出ごと枚挙すればよい）。$d(n)\defeq(F_{n}\,\underline{n}\text{ の正規形の値})+1$ とおくと、1 の手続きにより $d$ は計算可能な全域関数である。$d$ が $F_{e}$ で表されるなら $d(e)=d(e)+1$ となり矛盾する。
+:::
+
+::: remark
+T で表現可能な関数は、ちょうどペアノ算術 $\PA$（あるいはハイティング算術）で全域性が証明できる再帰関数（\ref{pt:page-goodstein} の意味）であることが知られている。一方向は、$\PA$ の証明を T の項に翻訳する**ゲーデルのディアレクティカ解釈**（1958）による。他方向は、T の強正規化を $\varepsilon_{0}$ 未満の超限帰納法で示せることによる（本サイトでは示していない）。こうして T は、\ref{pt:page-gentzen-wellordering} の $\varepsilon_{0}$ と同じ強さの「計算の体系」を与える。
+:::
+
+::: hypcheck
+- **中立の定義から部分適用 $\mathrm{R}\,U\,V$ を除いたこと**：\ref{logic:t-cr} の (CR3) で、適用 $MN$ が新しい基を作らないことを保証した。$\mathrm{R}$ を含む項の還元可能性は \ref{logic:t-constants-reducible} で別に示した。
+- **辞書式の帰納法 $(\nu,\lvert t\rvert)$**：\ref{logic:t-constants-reducible} で、$t=\mathrm{S}\,t_{0}$ の場合に $\nu$ が減らないが $t$ の大きさが減ることを使った。
+- **$\mathrm{Red}_{\mathrm{N}}=\mathrm{SN}$**：再帰子の引数 $t$ について強正規化性だけを使えばよいことにした。これにより $\mathrm{S}$ の還元可能性も直ちに従う。
+- **チャーチ–ロッサー性**：\ref{logic:t-not-all} の 1 で、計算した正規形が $f$ の値であることに使った。本サイトでは証明していない。
+- **高い型の再帰子**：\ref{logic:t-ackermann} で、型 $\mathrm{N}\to\mathrm{N}$ の再帰子を使った。型 $\mathrm{N}$ の再帰子だけでは原始再帰関数しか表せないことが知られている。
+:::
+
+## 問題 {#logic:sec-t-problems}
+
+::: problem {#logic:prob-t-predecessor}
+前者関数 $\mathrm{pd}(0)=0$, $\mathrm{pd}(n+1)=n$ と、$\mathrm{iszero}(0)=1$, $\mathrm{iszero}(n+1)=0$ を表す T の項を書け。型なしラムダ計算でのクリーネの前者関数（\ref{logic:lambda-arith}）と比べて何が簡単になっているか。
+:::
+
+::: solution
+$\mathrm{PD}\defeq\lambda n.\,\mathrm{R}\,0\,(\lambda a\,b.\,b)\,n$：$\mathrm{R}\,0\,(\lambda ab.b)\,\underline{n+1}\to(\lambda ab.b)\,(\mathrm{R}\cdots\underline{n})\,\underline{n}\twoheadrightarrow\underline{n}$。$\mathrm{IZ}\defeq\lambda n.\,\mathrm{R}\,\underline{1}\,(\lambda a\,b.\,0)\,n$。T の再帰子は、前の値 $a$ と一緒に「今の段の番号」$b=\underline{n}$ を渡すので、前者はそれを返すだけでよい。チャーチ数だけを使う型なしの場合は、番号を対で持ち回る工夫（クリーネの技法）が必要だった。
+:::
+
+::: problem {#logic:prob-t-iteration-only}
+再帰子の代わりに**反復子** $\mathrm{It}:A\to(A\to A)\to\mathrm{N}\to A$（$\mathrm{It}\,U\,V\,0\to U$, $\mathrm{It}\,U\,V\,(\mathrm{S}t)\to V(\mathrm{It}\,U\,V\,t)$）だけをもつ体系でも、対の型があれば再帰子が定義できることを、$A\times\mathrm{N}$ についての反復で示す方針を述べよ。
+:::
+
+::: solution
+$\mathrm{R}\,U\,V\,n$ を、対 $\langle a_{k},\underline{k}\rangle$ を反復で更新して計算する：初期値 $\langle U,0\rangle$、更新 $\langle a,b\rangle\mapsto\langle V\,a\,b,\mathrm{S}\,b\rangle$ を $n$ 回施し、第一成分をとる。対の型 $A\times\mathrm{N}$ と射影があれば、これは $\mathrm{It}$ の一回の使用で書ける。数値として値が一致することは $n$ についての帰納法で確かめられる（ただし、項としての簡約の振る舞い、たとえば $\mathrm{R}\,U\,V\,(\mathrm{S}\,t)$ が $t$ を正規化せずに一段で展開されることは再現されない）。
+:::
+
+::: supplement
+**前提の検討.**
+- 強正規化の証明は、型についての帰納法（還元可能性の定義）と、項についての帰納法の二重構造をもつ。T では型の個数は無限だが、一つの項の証明に使う型は有限個なので、各項の強正規化は算術の中で（$\varepsilon_{0}$ 未満の帰納法で）示せる。すべての項について一度に示すことは $\PA$ ではできないことが知られている（T の強正規化から $\PA$ の無矛盾性が従うため）。
+- 型の付かない項に再帰子を加えると、強正規化は成り立たない（たとえば $\omega\omega$ はそのまま残る）。
+
+**関連する結果.**
+- *ディアレクティカ解釈.* ゲーデル（1958）は、ハイティング算術の各定理 $A$ に、T の項についての $\exists\vec{x}\,\forall\vec{y}\,A_{D}(\vec{x},\vec{y})$（$A_{D}$ は量化子のない論理式）という形の解釈を与え、$\vec{x}$ を実現する T の項を証明から取り出せることを示した。$\Pi_{2}$ 文 $\forall n\,\exists m\,\theta$ の証明からは、$m$ を計算する T の項が得られる。
+- *System F.* T の再帰子を、型変数についての量化（多相型）で置き換えた体系が**ジラール–レイノルズの System F** で、自然数の型を $\forall\alpha.(\alpha\to\alpha)\to\alpha\to\alpha$ として定義できる。System F で表現可能な関数は、二階算術で全域性が証明できる関数であることが知られている（ジラール）。
+
+**高い視点から：型は停止性の証明書.** T の項の型は、その計算が停止することの証明書になっている：型 $\mathrm{N}\to\mathrm{N}$ をもつことは、それだけで全域関数を表すことを保証する。その代償として、T は計算可能な全域関数のすべては表せない（\ref{logic:t-not-all}）。これは、停止性を保証する任意の「安全な」プログラミング言語は、すべての停止するプログラムを書くことはできないという一般的な現象（対角線論法）の一例である。比喩で言えば、型は「この機械は必ず止まる」という安全基準で、基準を満たす機械しか作らない工場では、止まるがその基準では認定できない機械はいつまでも作れない。どれだけ強い基準（T の再帰子、System F の多相性）を採用しても、その基準の外に止まる機械が残る。基準の強さは、それを正当化する算術の体系の強さ（$\PA$, 二階算術）と対応している。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

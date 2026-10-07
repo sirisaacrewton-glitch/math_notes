@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>商空間と接着空間 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54B-basic-constructions/01-constructions/02-quotients.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 商空間と接着空間 {#top:page-quotients keywords="quotient topology, quotient map, identification, saturated set, quotient space by an equivalence relation, collapsing a subspace, adjunction space, gluing, torus, Mobius band, line with two origins"}
+
+図形の一部を「貼り合わせる」操作を位相で表したのが**商空間**である。区間の両端を同一視すると円になり、正方形の対辺を同一視するとトーラスになる。商空間の位相は、射影を連続にする最強の位相（前ページまでの**終位相**、\ref{top:final-topology}）として定まり（\ref{top:quotient-topology}）、「商空間から出る写像は、もとの空間から出る写像で、同一視された点に同じ値をとるもの」という普遍性で特徴づけられる（\ref{top:quotient-universal}）。どの写像が商写像になるかの判定法（\ref{top:quotient-map-criteria}）と、空間を写像に沿って貼り合わせる**接着空間**（\ref{top:adjunction-space}）も扱う。
+
+> 資料：内田伏一『集合と位相』§20。小山晃『位相空間論』の商位相・接着空間の節を参考にした。
+
+## 記法と定義の確認 {#top:sec-qt-notation}
+
+::: notation
+- 位相・連続写像・開写像・閉写像・同相・終位相とその普遍性・部分空間・直積は前ページまでのとおり（\ref{top:continuous}, \ref{top:homeomorphism}, \ref{top:final-topology}, \ref{top:final-topology-universal}, \ref{top:subspace}, \ref{top:product-topology}）。
+- 集合 $X$ 上の同値関係 $\sim$ について、商集合を $X/{\sim}$、射影を $\pi\colon X\to X/{\sim}$, $x\mapsto[x]$ と書く。
+- 議論は $\ZF$ で行う。
+:::
+
+## 商位相と商写像 {#top:sec-qt-quotient}
+
+::: definition 商位相と商写像 {#top:quotient-topology keywords="quotient topology, quotient map, identification map, quotient space" index="商位相|しょういそう, 商写像|しょうしゃぞう, 商空間|しょうくうかん, 等化写像|とうかしゃぞう"}
+1. 位相空間 $X$ から集合 $Y$ への全射 $q$ について、$\{V\subseteq Y:q^{-1}[V]\text{ は }X\text{ で開}\}$（$q$ の終位相）を $q$ による**商位相**という。
+2. 位相空間の間の全射 $q\colon X\to Y$ が**商写像**であるとは、$Y$ の位相が $q$ による商位相に一致すること、すなわち「$V\subseteq Y$ が開 $\iff$ $q^{-1}[V]$ が開」であることをいう。
+3. 同値関係 $\sim$ について、$X/{\sim}$ に射影 $\pi$ による商位相を入れた空間を**商空間**という。
+:::
+
+::: intuition
+商位相は、$q$ を連続にする位相のうちで最も細かいものである。同一視された点の集まり（$q$ の各ファイバー）は一点に潰れ、潰れた点のまわりの開集合は「もとの空間で、潰される点の集まり全体を囲む開集合」から来る。
+:::
+
+::: definition 飽和集合 {#top:saturated-set keywords="saturated subset with respect to a surjection" index="飽和集合|ほうわしゅうごう"}
+全射 $q\colon X\to Y$ について、$A\subseteq X$ が**飽和**しているとは、$A=q^{-1}[q[A]]$、すなわち $A$ が $q$ のファイバーの和であることをいう。
+:::
+
+::: proposition 商写像の言い換え {#top:quotient-saturated keywords="quotient maps via saturated open sets" index="商写像と飽和開集合|しょうしゃぞうとほうわかいしゅうごう"}
+連続な全射 $q\colon X\to Y$ が商写像であることと、飽和した開集合の像がつねに開集合であることは同値である。閉集合についても同様。
+:::
+
+::: proof
+飽和集合 $A$ と $Y$ の部分集合 $V$ は、$A=q^{-1}[V]$, $V=q[A]$ によって一対一に対応する（全射なので $q[q^{-1}[V]]=V$）。商写像の条件「$q^{-1}[V]$ 開 $\Rightarrow$ $V$ 開」は、$A=q^{-1}[V]$ と書き直せば「飽和開集合 $A$ の像 $q[A]$ は開」と同じ。逆向きの「$V$ 開 $\Rightarrow$ $q^{-1}[V]$ 開」は連続性。閉集合は補集合をとる（$q^{-1}[V^{c}]=(q^{-1}[V])^{c}$ で、飽和集合の補集合は飽和）。
+:::
+
+::: theorem 商写像の普遍性 {#top:quotient-universal keywords="universal property of quotient maps; maps out of a quotient" index="商写像の普遍性|しょうしゃぞうのふへんせい"}
+$q\colon X\to Y$ を商写像とする。連続写像 $f\colon X\to Z$ が $q$ のファイバー上で一定（$q(x)=q(x')\Rightarrow f(x)=f(x')$）ならば、$f=\bar{f}\circ q$ となる写像 $\bar{f}\colon Y\to Z$ がただ一つあり、$\bar{f}$ は連続である。さらに、$\bar{f}$ が開写像（閉写像）であることと、$f$ が飽和した開（閉）集合を開（閉）集合に移すことは同値である。
+:::
+
+::: proof
+**存在と一意性.** $y=q(x)$ について $\bar{f}(y)\defeq f(x)$ と定める。$q$ は全射なので $x$ は存在し、ファイバー上で $f$ が一定なので値は $x$ の選び方によらない（関数として定義でき、選択は要らない：$\bar{f}=\{(q(x),f(x)):x\in X\}$）。$\bar{f}\circ q=f$ から $\bar{f}$ は $q$ の値域（全体）上で決まるので一意。
+
+**連続性.** $W\subseteq Z$ 開について $q^{-1}[\bar{f}^{-1}[W]]=f^{-1}[W]$ は開なので、商写像の定義から $\bar{f}^{-1}[W]$ は開（終位相の普遍性 \ref{top:final-topology-universal} と同じ）。
+
+**開写像.** $Y$ の開集合と $X$ の飽和開集合は $V\leftrightarrow q^{-1}[V]$ で対応し（\ref{top:quotient-saturated}）、$\bar{f}[V]=f[q^{-1}[V]]$。
+:::
+
+::: corollary 商空間と同相 {#top:quotient-homeomorphism keywords="a continuous surjection that identifies exactly the fibres of a quotient map induces a homeomorphism iff it is itself a quotient map" index="商空間との同相|しょうくうかんとのどうそう"}
+$q\colon X\to Y$ を商写像、$f\colon X\to Z$ を連続な全射で、$q(x)=q(x')\iff f(x)=f(x')$ とする。誘導される $\bar{f}\colon Y\to Z$ は連続な全単射で、$\bar{f}$ が同相写像であることと、$f$ が商写像であることは同値である。
+:::
+
+::: proof
+$\bar{f}$ は全射で、ファイバーが一致するので単射。$\bar{f}$ が同相なら $f=\bar{f}\circ q$ は商写像の合成（同相写像は商写像で、商写像の合成は商写像：$V$ の逆像を二段でたどる）。逆に $f$ が商写像なら、$\bar{f}^{-1}$ は $q$ を $f$ のファイバー上で一定な写像とみて \ref{top:quotient-universal} を $f$ に適用した写像で、連続。
+:::
+
+## 商写像の判定 {#top:sec-qt-criteria}
+
+::: proposition 商写像の判定 {#top:quotient-map-criteria keywords="open or closed continuous surjections are quotient maps; retractions; compositions" index="商写像の判定|しょうしゃぞうのはんてい"}
+連続な全射 $q\colon X\to Y$ について、次のいずれかなら $q$ は商写像である。
+1. $q$ は開写像。
+2. $q$ は閉写像。
+3. $q\circ s=1_{Y}$ となる連続写像 $s\colon Y\to X$ がある。
+:::
+
+::: proof
+$V\subseteq Y$ で $q^{-1}[V]$ が開とする。**1.** $V=q[q^{-1}[V]]$（全射）は開集合の像で開。**2.** 補集合 $V^{c}=q[q^{-1}[V^{c}]]=q[(q^{-1}[V])^{c}]$ は閉集合の像で閉。**3.** $V=s^{-1}[q^{-1}[V]]$（$y\in V\iff q(s(y))\in V$）は連続写像による開集合の逆像で開。
+:::
+
+::: example
+1. **射影.** 直積の射影 $p\colon X\times Y\to X$（$Y\neq\varnothing$）は開写像なので商写像（\ref{top:product-maps} の 3）。
+2. **商写像だが開でも閉でもない例.** $X=[0,1]\sqcup[2,3]$（$\R$ の部分空間）から $Y=[0,2]$ への写像 $q$ を、$[0,1]$ 上で $x\mapsto x$、$[2,3]$ 上で $x\mapsto x-1$ とする。$q$ は連続な全射で、閉写像である：$X$ の閉集合 $F$ について、$F\cap[0,1]$ と $F\cap[2,3]$ は閉区間の閉部分集合なので $\R$ で閉で、$q[F]=(F\cap[0,1])\cup\{x-1:x\in F\cap[2,3]\}$ は二つの閉集合の和で閉。よって商写像。一方、開写像でない：$[0,1]$ は $X$ で開だが、像 $[0,1]$ は $Y=[0,2]$ で開でない（$1$ のどの近傍も $(1,2]$ の点を含む）。
+3. **商写像の制限は商写像とは限らない.** 商写像を部分空間に制限すると商写像でなくなることがある。ただし、飽和した開集合（または閉集合）への制限は商写像である（問題 \ref{top:prob-restriction-saturated}）。
+:::
+
+## 典型的な商空間 {#top:sec-qt-examples}
+
+::: example 円・トーラス・メビウスの帯
+1. **円.** $[0,1]$ 上で $0\sim1$（他は自分自身とだけ同値）とした商空間は、単位円 $S^{1}$ と同相である。写像 $f(t)=(\cos2\pi t,\sin2\pi t)$ は連続な全射で、ファイバーはちょうど $\sim$ の同値類。$f$ は閉写像（$[0,1]$ はコンパクトで、コンパクト集合の連続像はコンパクト、コンパクト集合は $\R^{2}$ で閉）なので商写像で、\ref{top:quotient-homeomorphism} から $[0,1]/{\sim}\approx S^{1}$。（コンパクト性については \ref{top:compact} で示す。）
+2. **トーラス.** $[0,1]^{2}$ で $(0,t)\sim(1,t)$, $(s,0)\sim(s,1)$ とした商空間は $S^{1}\times S^{1}$ と同相（1 と同じ議論を写像 $(s,t)\mapsto(f(s),f(t))$ に適用する）。
+3. **メビウスの帯.** $[0,1]^{2}$ で $(0,t)\sim(1,1-t)$ とした商空間。
+:::
+
+::: definition 部分空間を潰す {#top:collapse keywords="collapsing a subspace to a point, X/A" index="部分空間を一点に潰す|ぶぶんくうかんをいってんにつぶす"}
+$A\subseteq X$（$A\neq\varnothing$）について、$A$ の点どうしをすべて同値とし、他の点は自分自身とだけ同値とする関係による商空間を $X/A$ と書く。
+:::
+
+::: example
+$D^{n}\defeq\{x\in\R^{n}:\lvert x\rvert\le1\}$ と境界 $S^{n-1}$ について、$D^{n}/S^{n-1}\approx S^{n}$（コンパクト性を使った \ref{top:quotient-homeomorphism} による。写像は、中心からの距離 $r$ の点を、北極から南極へ $r$ に応じて動かすもの）。
+:::
+
+::: proposition 商空間はハウスドルフとは限らない {#top:quotient-not-hausdorff keywords="quotients of Hausdorff spaces need not be Hausdorff: line with two origins, R/Q" index="二つの原点をもつ直線|ふたつのげんてんをもつちょくせん"}
+1. $\R/\mathbb{Q}$（$\mathbb{Q}$ を一点に潰す）では、潰した点 $[0]$ と無理数 $x$ の点 $[x]$ は、交わらない開集合で分けられない。
+2. （**二つの原点をもつ直線**）$X=\R\times\{0,1\}$ で、$x\neq0$ について $(x,0)\sim(x,1)$ とした商空間 $L$ では、二点 $[(0,0)]$, $[(0,1)]$ は交わらない開集合で分けられない。一方、$L$ の各点は $\R$ と同相な開近傍をもつ。
+:::
+
+::: proof
+**1.** $[0]$ を含む開集合 $V$ の逆像は $\mathbb{Q}$ を含む開集合 $U$。$[x]$ を含む開集合 $W$ の逆像は $x$ を含む開集合 $U'$。$U'$ は $x$ のまわりの開区間を含み、それは有理数を含むので、$U\cap U'\neq\varnothing$、よって $V\cap W\neq\varnothing$。
+
+**2.** $[(0,0)]$ を含む開集合の逆像は $(0,0)$ のまわりの $(-\varepsilon,\varepsilon)\times\{0\}$ を含み、飽和しているので $((-\varepsilon,\varepsilon)\setminus\{0\})\times\{1\}$ も含む。$[(0,1)]$ の側も同様で、二つは $x\neq0$ の小さい点で交わる。後半：$\R\times\{i\}$ の像 $V_{i}$ は飽和開集合 $(\R\times\{i\})\cup((\R\setminus\{0\})\times\{1-i\})$ の像で開。$\R\to V_{i}$, $x\mapsto[(x,i)]$ は連続な全単射で、開写像（$\R$ の開集合 $U$ の像の逆像は $U\times\{i\}\cup(U\setminus\{0\})\times\{1-i\}$ で開）なので同相。
+:::
+
+## 接着空間 {#top:sec-qt-adjunction}
+
+::: definition 接着空間 {#top:adjunction-space keywords="adjunction space, attaching a space along a map, pushout in Top" index="接着空間|せっちゃくくうかん, 貼り合わせ|はりあわせ"}
+位相空間 $X$, $Y$、閉部分空間 $A\subseteq X$、連続写像 $f\colon A\to Y$ について、直和空間 $X\sqcup Y$ 上で $a\sim f(a)$（$a\in A$）が生成する同値関係による商空間を $Y\cup_{f}X$ と書き、$X$ を $f$ に沿って $Y$ に**接着**した空間という。
+:::
+
+::: proposition 接着空間の普遍性 {#top:adjunction-universal keywords="the adjunction space is the pushout in Top" index="接着空間の普遍性|せっちゃくくうかんのふへんせい"}
+$i\colon Y\to Y\cup_{f}X$, $j\colon X\to Y\cup_{f}X$ を、直和への包含と射影の合成とする。$j\restriction A=i\circ f$ で、連続写像 $g\colon Y\to Z$, $h\colon X\to Z$ が $h\restriction A=g\circ f$ を満たせば、$\varphi\circ i=g$, $\varphi\circ j=h$ となる連続写像 $\varphi\colon Y\cup_{f}X\to Z$ がただ一つある。すなわち、接着空間は $\mathbf{Top}$ での押し出し（\ref{cat:coequalizer}）である。
+:::
+
+::: proof
+$g$ と $h$ を合わせた写像 $[g,h]\colon X\sqcup Y\to Z$ は連続（直和位相は二つの包含の終位相）。$[g,h](a)=h(a)=g(f(a))=[g,h](f(a))$ なので、$[g,h]$ は生成元 $a\sim f(a)$ を保ち、「$[g,h]$ の値が等しい」という同値関係は $\sim$ を含む（最小性）。よって $[g,h]$ はファイバー上で一定で、\ref{top:quotient-universal} から連続な $\varphi$ が一意に定まる。
+:::
+
+::: example
+1. $X=D^{n}$, $A=S^{n-1}$, $Y=\{*\}$ なら $Y\cup_{f}X=D^{n}/S^{n-1}\approx S^{n}$。
+2. $Y$ に $D^{n}$ を写像 $f\colon S^{n-1}\to Y$ で接着することを、**$n$ 胞体の接着**という。胞体を順に接着して作る空間（CW 複体）は、代数的位相幾何の基本的な対象である（\ref[胞体ホモロジー]{at:page-cellular-homology}）。
+:::
+
+::: supplement
+**前提を変えると.**
+- *商写像の積.* 商写像 $q\colon X\to Y$ と空間 $Z$ について、$q\times1_{Z}\colon X\times Z\to Y\times Z$ は商写像とは限らない。$Z$ が局所コンパクトハウスドルフなら商写像になる（ホワイトヘッドの定理。小山晃『位相空間論』定理 6.2、R. Engelking, *General Topology*）。この不具合を避けるため、代数的位相幾何ではコンパクト生成空間の圏を使うことがある（Mac Lane 第 VII 章 §8）。
+- *接着空間で $A$ が閉であること.* 閉でなくても商空間は定義できるが、$i\colon Y\to Y\cup_{f}X$ が閉埋め込みになるなどの良い性質が失われる。
+
+**類似の定理.** 商写像の普遍性（\ref{top:quotient-universal}）は、商集合・商群・商環の普遍性と同じ形をしている。$\mathbf{Top}$ の余等化子は、集合の余等化子（商集合）に商位相を入れたものである（\ref{cat:set-complete} の 2 に終位相を加えたもの）。
+
+**高い視点から：商位相は「余極限の位相」.** 前ページの直積が始位相による極限だったのと双対的に、直和と商は終位相による余極限である。比喩で言えば、商位相は「同一視によって新たに開集合ができないよう、もとの空間で許されていた開き方をそのまま受け継ぐ」位相である。同一視の結果、二つの点がもとの空間でどれだけ離れていても、潰された相手を通じて近づいてしまうことがあり、それがハウスドルフ性の破れ（\ref{top:quotient-not-hausdorff}）として現れる。
+:::
+
+## 問題 {#top:sec-qt-problems}
+
+::: problem {#top:prob-restriction-saturated}
+商写像 $q\colon X\to Y$ と、飽和した開集合 $U\subseteq X$ について、制限 $q\restriction U\colon U\to q[U]$ は商写像であることを示せ。
+:::
+
+::: solution
+$V\subseteq q[U]$ で $(q\restriction U)^{-1}[V]=q^{-1}[V]\cap U$ が $U$ で開とする。$U$ は飽和しているので $q^{-1}[V]\subseteq q^{-1}[q[U]]=U$、よって $q^{-1}[V]\cap U=q^{-1}[V]$ は $U$ で開、$U$ は $X$ で開なので $X$ で開。$q$ は商写像なので $V$ は $Y$ で開で、$q[U]$ の中でも開。連続性と全射性は明らか。
+:::
+
+::: problem {#top:prob-quotient-composition}
+商写像の合成は商写像であることを示せ。また、$q\colon X\to Y$ と $r\colon Y\to Z$ が連続な全射で、$r\circ q$ が商写像ならば $r$ は商写像であることを示せ。
+:::
+
+::: solution
+前半：$(r\circ q)^{-1}[W]=q^{-1}[r^{-1}[W]]$ が開なら、$q$ が商写像なので $r^{-1}[W]$ が開、$r$ が商写像なので $W$ が開。後半：$r^{-1}[W]$ が開なら、$q$ の連続性から $q^{-1}[r^{-1}[W]]$ が開、$r\circ q$ が商写像なので $W$ が開。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

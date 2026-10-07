@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ペアノ算術の埋め込みとゲンツェンの限界定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/07-ordinal-analysis/03-gentzen-bound.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ペアノ算術の埋め込みとゲンツェンの限界定理 {#pt:page-gentzen-bound keywords="embedding of PA into omega-logic, tautology lemma, induction lemma, transfinite induction, progressive, boundedness lemma, Gentzen's theorem PA does not prove TI up to epsilon_0, proof-theoretic ordinal"}
+
+本ページでは、ペアノ算術（に未定の集合 $X$ を加えた体系 $\PA(X)$）の有限の証明が、前ページの無限シーケント計算 $\mathbf{G}_{\omega}$（\ref{pt:g-omega}）の高さ $\omega+m$ の導出に埋め込めることを示す（\ref{pt:pa-embedding}）。カット除去（\ref{pt:omega-cut-elimination}）で得られるカットのない導出の高さは $\varepsilon_{0}$ 未満であり、カットのない導出からは、超限帰納法で示せる範囲が導出の高さで抑えられる（\ref{pt:boundedness}）。これを合わせると、**$\PA(X)$ で超限帰納法が証明できる原始再帰的整列順序の順序型は $\varepsilon_{0}$ 未満である**（ゲンツェン、\ref{pt:gentzen-bound}）。
+
+> 主な資料は新井敏康『数学基礎論』第 8 章 §8.4.1–8.4.2（補題 8.4.4–8.4.7、定理 8.4.3）。帰納法補題は、高さの評価を簡単な線形の形にして示し直した。$\PA(X)$ の形式化（公理の一覧と帰納法の扱い）は本サイトで選んだもので、新井の本の形とは細部が異なる。
+
+## 記法と定義の確認 {#pt:sec-oa3-notation}
+
+::: notation
+- 言語 $\mathcal{L}(X)$、否定標準形の論理式、深さ $\mathrm{dp}$、閉項と数項の同一視、$\mathbf{G}_{\omega}$ と $\vdash^{\alpha}_{c}$、反転・簡約・カット除去は \ref{pt:page-omega-logic} のとおり（\ref{pt:omega-language}, \ref{pt:g-omega}, \ref{pt:omega-inversion}, \ref{pt:omega-reduction}, \ref{pt:omega-cut-elimination}）。
+- $\varepsilon_{0}$、$2_{k}(\alpha)$ と $\varepsilon_{0}$ の閉包性は \ref{pt:epsilon0-basic} と \ref{pt:omega-cut-elimination}。
+- 自然数上の二項関係 $\prec$ が**原始再帰的**であるとは、原始再帰関数 $f_{\prec}$ で $y\prec x\iff f_{\prec}(y,x)=0$ となるものがあることをいう。$\mathcal{L}(X)$ では $y\prec x$, $y\not\prec x$ をそれぞれリテラル $f_{\prec}(y,x)=0$, $f_{\prec}(y,x)\neq0$ の略記とする。
+:::
+
+## 体系 PA(X) と埋め込み {#pt:sec-oa3-embedding}
+
+::: definition PA(X) {#pt:pa-x keywords="Peano arithmetic with a set variable X in Tait-style sequent calculus" index="PA(X)|ぴーえーえっくす"}
+$\PA(X)$ は、$\mathcal{L}(X)$ の（自由変数を含んでよい）論理式の有限集合をシーケントとする、次の片側シーケント計算である。
+1. **数学的始件** $\Gamma,\Theta$：$\Theta$ は次のどれかの形のリテラルの集合（$s,t,u,\vec{t}$ は任意の項）。
+$$
+\begin{aligned}
+&t=t;\quad s\neq t,\ t=s;\quad s\neq t,\ t\neq u,\ s=u;\quad s\neq t,\ f(\dots s\dots)=f(\dots t\dots);\\
+&s\neq t,\ s\notin X,\ t\in X;\quad t\notin X,\ t\in X;\quad S(t)\neq0;\quad S(s)\neq S(t),\ s=t;
+\end{aligned}
+$$
+および原始再帰関数の記号の定義式（$f(\vec{t})=g(\vec{t})$ の形の等式。例：$s+0=s$, $s+S(t)=S(s+t)$）。
+2. **帰納法の始件** $\Gamma,\neg A(0),\exists x\,(A(x)\wedge\neg A(S(x))),A(t)$（$A(a)$ は任意の論理式）。
+3. **推論規則**：$\Gamma,A_{0}$ と $\Gamma,A_{1}$ から $\Gamma,A_{0}\wedge A_{1}$；$\Gamma,A_{i}$ から $\Gamma,A_{0}\vee A_{1}$；$\Gamma,A(b)$ から $\Gamma,\forall x\,A(x)$（$b$ は $\Gamma,\forall x\,A(x)$ に自由に現れない変数、**固有変数**）；$\Gamma,A(t)$ から $\Gamma,\exists x\,A(x)$；$\Gamma,C$ と $\Gamma,\neg C$ から $\Gamma$（カット）。
+
+$\PA(X)\vdash\Gamma$ は、$\Gamma$ がこの体系で（有限の木として）導出できることを表す。
+:::
+
+::: remark
+1. 数学的始件はどれも、自由変数に任意の数項を代入すると、**真な等号リテラルを含むか、$n\notin X$ と $n\in X$ の対を含む**（たとえば $s\neq t,s\notin X,t\in X$ は、$s,t$ の値が違えば $s\neq t$ が真、等しければ $n\notin X,n\in X$ の対）。埋め込みで使うのはこの性質だけである。
+2. $X$ を含まない論理式については、この体系は \ref{pt:peano-arithmetic} の $\PA$ に原始再帰関数の記号と定義式を加えたものと同じ定理をもち、それは $\PA$ の保存拡大であることが知られている（原始再帰関数は $\PA$ で定義でき、その定義式が証明できるので。本サイトでは詳細を省略する）。$X$ は「任意の集合」を表すパラメータで、$X$ を含む定理は、$X$ に任意の論理式を代入しても成り立つ。
+:::
+
+::: lemma トートロジー補題 {#pt:tautology-lemma keywords="tautology lemma in G_omega"}
+任意の閉論理式 $A$ とシーケント $\Gamma$ について、$\vdash^{2\mathrm{dp}(A)}_{0}\Gamma,\neg A,A$。
+:::
+
+::: proof
+$A$ の構成についての帰納法。$A$ がリテラルなら、等号リテラルなら $A,\neg A$ の一方が真、$X$ のリテラルなら $n\notin X,n\in X$ の対なので始件（高さ $0$）。$A$ と $\neg A$ は対称なので、$A=A_{0}\wedge A_{1}$ と $A=\forall x\,B(x)$ の場合を考えればよい。
+
+$A=A_{0}\wedge A_{1}$, $d_{i}\defeq\mathrm{dp}(A_{i})$：帰納法の仮定から $\vdash^{2d_{i}}_{0}\Gamma,\neg A,A,\neg A_{i},A_{i}$。$\neg A=\neg A_{0}\vee\neg A_{1}$ を主論理式とする（$\vee$）で $\vdash^{2d_{i}+1}_{0}\Gamma,\neg A,A,A_{i}$。$A$ を主論理式とする（$\wedge$）で $\vdash^{2\max(d_{0},d_{1})+2}_{0}\Gamma,\neg A,A$、すなわち高さ $2\mathrm{dp}(A)$。
+
+$A=\forall x\,B(x)$：各 $n$ について帰納法の仮定から $\vdash^{2\mathrm{dp}(A)-2}_{0}\Gamma,\neg A,A,\neg B(n),B(n)$。$\neg A=\exists x\,\neg B(x)$ を主論理式とする（$\exists$）で高さ $2\mathrm{dp}(A)-1$ の $\Gamma,\neg A,A,B(n)$ を得て、ω 規則で $\vdash^{2\mathrm{dp}(A)}_{0}\Gamma,\neg A,A$。
+:::
+
+::: lemma 帰納法補題 {#pt:induction-lemma keywords="induction lemma in G_omega"}
+$A(x)$ を $x$ 以外に自由変数をもたない論理式、$d\defeq\mathrm{dp}(A)$、$E\defeq\exists x\,(A(x)\wedge\neg A(S(x)))$ とする。任意の $k,n$ と $\Gamma$ について
+$$
+\vdash^{2d+2n}_{0}\Gamma,\neg A(k),E,A(k+n).
+$$
+したがって $\vdash^{\omega}_{0}\Gamma,\neg A(0),E,\forall x\,A(x)$。
+:::
+
+::: proof
+$n$ についての帰納法。$n=0$ はトートロジー補題（\ref{pt:tautology-lemma}）。$n\Rightarrow n+1$：$\Gamma'\defeq\Gamma\cup\{\neg A(k),E,A(k+n+1)\}$ とおく。帰納法の仮定と単調性から $\vdash^{2d+2n}_{0}\Gamma',A(k+n)$。トートロジー補題から $\vdash^{2d}_{0}\Gamma',\neg A(k+n+1)$（$A(k+n+1)\in\Gamma'$）。（$\wedge$）で $\vdash^{2d+2n+1}_{0}\Gamma',A(k+n)\wedge\neg A(k+n+1)$。$S(k+n)$ は値 $k+n+1$ の閉項なので、これは $E$ の代入例であり、$E\in\Gamma'$ を主論理式とする（$\exists$）で $\vdash^{2d+2n+2}_{0}\Gamma'$。
+
+後半：$k=0$ として、すべての $n$ で $\vdash^{2d+2n}_{0}\Gamma,\neg A(0),E,\forall x\,A(x),A(n)$（単調性）で、高さ $2d+2n<\omega$ なので、ω 規則で高さ $\omega$。
+:::
+
+::: lemma 埋め込み補題 {#pt:pa-embedding keywords="embedding lemma: PA(X) proofs into G_omega" index="埋め込み補題|うめこみほだい"}
+$\PA(X)\vdash\Gamma(a_{1},\dots,a_{r})$（自由変数はすべて $a_{1},\dots,a_{r}$ の中）なら、自然数 $m,c$ があって、すべての数 $n_{1},\dots,n_{r}$ について
+$$
+\vdash^{\omega+m}_{c}\Gamma(n_{1},\dots,n_{r}).
+$$
+:::
+
+::: proof
+$\PA(X)$ の導出を一つ固定し、その高さを $m$、導出中のカット論理式の深さの最大値に $1$ を足したものを $c$（カットがなければ $c=0$）とする。導出の中に現れるすべての自由変数（固有変数を含む）に数項を代入する任意の代入 $\sigma$ について、高さ $h$ の部分導出の結論 $\Delta$ に対し $\vdash^{\omega+h}_{c}\Delta\sigma$ を、導出についての帰納法で示す。結論に現れない変数への代入は任意（たとえば $0$）でよいので、これで補題が従う。
+- **数学的始件**：\ref{pt:pa-x} の注意の 1 から、$\Delta\sigma$ は $\mathbf{G}_{\omega}$ の始件で、高さ $0$。
+- **帰納法の始件** $\Gamma,\neg A(0),E,A(t)$：\ref{pt:induction-lemma}（$A$ の $x$ 以外の自由変数に $\sigma$ を施したもの）から $\vdash^{\omega}_{0}\Gamma\sigma,\neg A(0),E,\forall x\,A(x)$。反転（\ref{pt:omega-inversion} の 2）で $\forall x\,A(x)$ を $A(\mathrm{val}(t\sigma))$ に置き換え、高さは $\omega$。
+- **（$\wedge$）（$\vee$）（$\exists$）**：帰納法の仮定に $\mathbf{G}_{\omega}$ の同じ規則（$\exists$ では証拠 $\mathrm{val}(t\sigma)$）を適用する。$\mathbf{G}_{\omega}$ では主論理式が前提に残るが、単調性で前提に主論理式を加えてから規則を適用すればよい。高さは $\omega+h$ から $\omega+h+1$。
+- **（$\forall$）**：前提 $\Gamma,A(b)$（$b$ は固有変数）について、帰納法の仮定を、$\sigma$ の $b$ の値だけを $k$ に変えた代入 $\sigma_{k}$ に適用すると、$b$ は $\Gamma,\forall x\,A(x)$ に現れないので $\vdash^{\omega+h}_{c}\Gamma\sigma,A(k)\sigma$（すべての $k$）。ω 規則で $\vdash^{\omega+h+1}_{c}\Gamma\sigma,\forall x\,A(x)\sigma$。
+- **カット**：帰納法の仮定に $\mathbf{G}_{\omega}$ のカットを適用する。$\mathrm{dp}(C\sigma)=\mathrm{dp}(C)<c$。
+:::
+
+## 超限帰納法と限界補題 {#pt:sec-oa3-bound}
+
+::: definition 前進性と超限帰納法 {#pt:progressive-ti keywords="progressive, transfinite induction TI, ordinal rank |n|" index="前進的|ぜんしんてき, 超限帰納法（算術）|ちょうげんきのうほうさんじゅつ"}
+$\prec$ を原始再帰的な二項関係とする。
+1. $\mathrm{Prog}[\prec,X]\defeq\forall x\,\bigl(\exists y\,(y\prec x\wedge y\notin X)\vee x\in X\bigr)$（「$x$ より小さいものがすべて $X$ に属すれば $x\in X$」。$X$ は $\prec$ について**前進的**）。$\mathrm{dp}(\mathrm{Prog}[\prec,X])=4$。
+2. $\mathrm{TI}[\prec]$ はシーケント $\neg\mathrm{Prog}[\prec,X],\forall x\,(x\in X)$（$\prec$ についての**超限帰納法**）。
+3. $\prec$ が整礎なとき、各 $n$ の**階数** $\lvert n\rvert_{\prec}\defeq\sup\{\lvert m\rvert_{\prec}+1:m\prec n\}$（$\prec$ についての整礎な再帰で定義）、$\lvert\prec\rvert\defeq\sup\{\lvert n\rvert_{\prec}+1:n\in\N\}$。
+:::
+
+::: remark
+$\prec$ が整列順序なら $\lvert\prec\rvert$ はその順序型である。$X$ は公理で何も規定されていない未定の集合なので、$\PA(X)\vdash\mathrm{TI}[\prec]$ は、$X$ に何を代入しても同じ証明で超限帰納法が成り立つこと（**一様な**超限帰納法）を意味する。
+:::
+
+限界補題のため、$\mathbf{G}_{\omega}$ に次の規則を加える。
+
+::: definition 前進性規則 {#pt:prg-rule keywords="progressiveness rule (prg)"}
+$\prec$ を原始再帰的な二項関係とする。$\mathbf{G}_{\omega}^{\mathrm{prg}}$ は $\mathbf{G}_{\omega}$ に次の規則を加えた体系で、その導出可能性を $\vdash^{\alpha}_{c,\mathrm{prg}}$ と書く。
+- **（prg）** $n\in X\in\Gamma$ で、$\vdash^{\beta}_{c,\mathrm{prg}}\Gamma,\forall y\,(y\not\prec n\vee y\in X)$, $\beta<\alpha$ なら $\vdash^{\alpha}_{c,\mathrm{prg}}\Gamma$。
+:::
+
+::: lemma Gω^prg のカット除去 {#pt:prg-cut-elimination keywords="cut elimination remains valid with the rule (prg)"}
+\ref{pt:omega-monotone}, \ref{pt:false-literal-elimination}, \ref{pt:omega-inversion}, \ref{pt:omega-reduction}, \ref{pt:omega-cut-elimination} は $\mathbf{G}_{\omega}^{\mathrm{prg}}$ でもそのまま成り立つ。また $\vdash^{8}_{0,\mathrm{prg}}\mathrm{Prog}[\prec,X]$。
+:::
+
+::: proof
+（prg）の主論理式 $n\in X$ はリテラルで、偽な等号リテラルでも、反転する $\wedge,\forall,\vee$ の論理式でもなく、簡約補題の $C$（$\vee,\exists$, $n\notin X$, 等号リテラル）でもない。したがって各補題の証明で、（prg）は「主論理式が取り除く論理式と異なる規則」として、前提に帰納法の仮定を適用して同じ規則をかけ直す場合に入る。
+
+$\mathrm{Prog}$ の導出：$B(n)\defeq\exists y\,(y\prec n\wedge y\notin X)$, $U(n)\defeq\neg B(n)=\forall y\,(y\not\prec n\vee y\in X)$, $P(n)\defeq B(n)\vee n\in X$ とおく。トートロジー補題（$\mathrm{dp}(U(n))=2$）から $\vdash^{4}_{0}B(n),n\in X,U(n)$。（prg）（主論理式 $n\in X$）で $\vdash^{5}_{0,\mathrm{prg}}B(n),n\in X$。単調性で $P(n)$ を加え、$P(n)$ を主論理式とする（$\vee$）を二回（副論理式 $n\in X$、次に $B(n)$）使って $\vdash^{7}_{0,\mathrm{prg}}P(n)$。ω 規則で $\vdash^{8}_{0,\mathrm{prg}}\mathrm{Prog}[\prec,X]$。
+:::
+
+::: lemma 限界補題 {#pt:boundedness keywords="boundedness lemma: cut-free derivations of positive X-literals bound the rank" index="限界補題|げんかいほだい"}
+$\prec$ を整礎な原始再帰的関係とし、$\Delta=\{n_{1}\in X,\dots,n_{k}\in X\}$（$k\ge1$）とする。$\vdash^{\alpha}_{0,\mathrm{prg}}\Delta$ なら $\min_{i}\lvert n_{i}\rvert_{\prec}\le\alpha$。
+:::
+
+::: proof
+$\alpha$ についての超限帰納法。$\vdash^{\alpha}_{0,\mathrm{prg}}\Delta$ の最後の推論を考える。$\Delta$ は $X$ の正のリテラルだけからなるので始件ではなく（真な等号リテラルも $n\notin X$ もない）、（$\wedge$）（$\vee$）（ω）（$\exists$）は主論理式が複合論理式なので使えず、カットはカットの深さ $0$ 未満にはならないので使えない。したがって最後の推論は、ある $n_{i}\in X$ を主論理式とする（prg）で、前提は $\vdash^{\beta}_{0,\mathrm{prg}}\Delta,\forall y\,(y\not\prec n_{i}\vee y\in X)$（$\beta<\alpha$）。
+
+$\min_{j}\lvert n_{j}\rvert_{\prec}>\alpha$ と仮定して矛盾を導く。$m\prec n_{i}$ を任意にとる。反転（\ref{pt:omega-inversion} の 2, 3）で $\vdash^{\beta}_{0,\mathrm{prg}}\Delta,m\not\prec n_{i},m\in X$。$m\not\prec n_{i}$ は偽な等号リテラルなので除去でき（\ref{pt:false-literal-elimination}）、$\vdash^{\beta}_{0,\mathrm{prg}}\Delta,m\in X$。帰納法の仮定から $\min(\lvert m\rvert_{\prec},\min_{j}\lvert n_{j}\rvert_{\prec})\le\beta$ で、$\lvert n_{j}\rvert_{\prec}>\alpha>\beta$ なので $\lvert m\rvert_{\prec}\le\beta$。$m\prec n_{i}$ は任意なので
+$$
+\lvert n_{i}\rvert_{\prec}=\sup\{\lvert m\rvert_{\prec}+1:m\prec n_{i}\}\le\beta+1\le\alpha,
+$$
+仮定に反する。
+:::
+
+::: intuition
+限界補題は、「$X$ について何も知らずに $n\in X$ を導くには、（prg）で $n$ より小さいものを一つずつ $X$ に入れていくしかない」ことを言っている。カットのない導出では、（prg）以外に $n\in X$ を作る方法がないので、導出の高さが $n$ の階数（$n$ より下にどれだけ長い下降列の木があるか）以上でなければならない。カット除去は、$\PA(X)$ の証明をこの「愚直な」形に変える操作で、変換後の高さが $\varepsilon_{0}$ 未満であることが、$\PA$ の強さの限界を与える。
+:::
+
+## ゲンツェンの限界定理 {#pt:sec-oa3-gentzen}
+
+::: theorem ゲンツェンの限界定理 {#pt:gentzen-bound keywords="Gentzen: if PA(X) proves TI along a primitive recursive relation, its order type is below epsilon_0" index="ゲンツェンの定理（順序数解析）|げんつぇんのていりじゅんじょすうかいせき"}
+$\prec$ を原始再帰的な二項関係とする。$\PA(X)\vdash\mathrm{TI}[\prec]$ なら、$\prec$ は整礎で $\lvert\prec\rvert<\varepsilon_{0}$。
+:::
+
+::: proof
+**Step 1（埋め込み）.** \ref{pt:pa-embedding} から、ある $m,c$ で $\vdash^{\omega+m}_{c}\neg\mathrm{Prog}[\prec,X],\forall x\,(x\in X)$（閉じたシーケントなので代入は不要）。反転で、すべての $n$ について $\vdash^{\omega+m}_{c}\neg\mathrm{Prog}[\prec,X],n\in X$。
+
+**Step 2（整礎性）.** $\mathbf{G}_{\omega}$ の健全性（\ref{pt:g-omega} の後の注意の 3）を、$X$ として $\prec$ の整礎部分 $W\defeq\{n:n\text{ から始まる無限下降列 }n\succ n_{1}\succ n_{2}\succ\cdots\text{ はない}\}$ をとって適用する。$W$ は前進的（$n$ より小さいものがすべて $W$ に属すれば、$n$ からの無限下降列の第二項が $W$ に属するので矛盾）なので $\mathrm{Prog}[\prec,W]$ は真で、すべての $n$ について $n\in W$。よって $\prec$ は整礎である。
+
+**Step 3（カット除去）.** $d\defeq\max(c,5)$ とする。\ref{pt:prg-cut-elimination} の $\vdash^{8}_{0,\mathrm{prg}}\mathrm{Prog}$ と Step 1 を、単調性で $n\in X$ を加えてから $\mathrm{Prog}$（深さ $4<d$）でカットすると、$\vdash^{\omega+m+1}_{d,\mathrm{prg}}n\in X$（$8\le\omega+m$）。\ref{pt:prg-cut-elimination} によりカット除去が使え、$\alpha\defeq2_{d}(\omega+m+1)$ について $\vdash^{\alpha}_{0,\mathrm{prg}}n\in X$（すべての $n$）。
+
+**Step 4（限界）.** 限界補題（\ref{pt:boundedness}、$k=1$）から、すべての $n$ で $\lvert n\rvert_{\prec}\le\alpha$。よって $\lvert\prec\rvert\le\alpha+1$。$\omega+m+1<\varepsilon_{0}$ と \ref{pt:epsilon0-basic} の 3 から $\alpha<\varepsilon_{0}$ なので、$\lvert\prec\rvert<\varepsilon_{0}$。
+:::
+
+::: corollary
+\ref{pt:notation-system} の標準的な $\varepsilon_{0}$ 順序 $\prec$（順序型 $\varepsilon_{0}$）について、$\PA(X)\nvdash\mathrm{TI}[\prec]$。
+:::
+
+::: proof
+$\PA(X)\vdash\mathrm{TI}[\prec]$ なら \ref{pt:gentzen-bound} から $\lvert\prec\rvert<\varepsilon_{0}$ だが、$\lvert\prec\rvert=\varepsilon_{0}$ である。
+:::
+
+::: remark
+逆に、標準的な $\varepsilon_{0}$ 順序の各始切片 $\prec_{\alpha}$（$\alpha<\varepsilon_{0}$）については $\PA(X)\vdash\mathrm{TI}[\prec_{\alpha}]$ である（ゲンツェン。\ref{pt:page-gentzen-wellordering}）。したがって、$\PA(X)$ で超限帰納法が証明できる原始再帰的整列順序の順序型の上限はちょうど $\varepsilon_{0}$ であり、これを $\PA$ の**証明論的順序数**という。
+:::
+
+::: hypcheck
+- **埋め込みの高さが $\omega+m$ で一様であること**：\ref{pt:pa-embedding} で、帰納法の始件を ω 規則でまとめ（\ref{pt:induction-lemma}）、代入する数に依存しない高さにした。これにより Step 3 の高さ $\alpha$ が $n$ によらない。
+- **ω 規則**：\ref{pt:induction-lemma} と \ref{pt:pa-embedding} の（$\forall$）の場合に、無限個の数値例をまとめるのに使った。有限の体系への埋め込みでは不可能な一様化である。
+- **（prg）の主論理式がリテラルであること**：\ref{pt:prg-cut-elimination} で、カット除去がそのまま使えることに使った。
+- **カットのないこと**：\ref{pt:boundedness} で、最後の推論が（prg）に限られることに使った。カットがあれば、$\mathrm{Prog}$ を使って一度に多くの $n\in X$ を導けてしまう。
+- **$\prec$ が原始再帰的であること**：$y\prec n$ が閉じた等号リテラルとして真偽の決まる形で書け、限界補題で $m\not\prec n_{i}$ を偽なリテラルとして除去できた。
+- **$\varepsilon_{0}$ の閉包性**：Step 4 で $2_{d}(\omega+m+1)<\varepsilon_{0}$ に使った。
+:::
+
+## 問題 {#pt:sec-oa3-problems}
+
+::: problem {#pt:prob-ti-omega}
+自然数の通常の順序 $<$（原始再帰的、順序型 $\omega$）について、$\PA(X)\vdash\mathrm{TI}[<]$ であることを、$\PA(X)$ の帰納法（$A(a)\defeq\forall y\,(y\not<a\vee y\in X)$ に適用）で示す方針を述べよ。これは \ref{pt:gentzen-bound} と矛盾しないか。
+:::
+
+::: solution
+$\mathrm{Prog}[<,X]$ を仮定し、$A(a)$ について帰納法を使う。$A(0)$ は $y<0$ がないので成り立つ。$A(a)$ なら、$\mathrm{Prog}$ を $a$ に適用して $a\in X$、よって $y<a+1$ なら $y<a$ か $y=a$ で $y\in X$、すなわち $A(a+1)$。帰納法で $\forall a\,A(a)$、とくに $A(a+1)$ から $a\in X$。シーケントとしては、これらの推論を片側の形に直せばよい。$\lvert<\rvert=\omega<\varepsilon_{0}$ なので、\ref{pt:gentzen-bound} と矛盾しない。
+:::
+
+::: problem {#pt:prob-boundedness-sharp}
+限界補題 \ref{pt:boundedness} の評価が大きくは改良できないことを示せ：$\prec$ を整礎な原始再帰的関係とすると、すべての $n$ について $\vdash^{\omega\cdot\lvert n\rvert_{\prec}+3}_{0,\mathrm{prg}}n\in X$ である。
+:::
+
+::: solution
+$\lvert n\rvert_{\prec}$ についての超限帰納法。$D_{m}\defeq m\not\prec n\vee m\in X$, $\Gamma\defeq\{\forall y\,(y\not\prec n\vee y\in X),\,n\in X\}$ とおく。各 $m$ について $\Gamma,D_{m}$ を導く。
+- $m\not\prec n$ なら $m\not\prec n$ は真なリテラルで、$\Gamma,D_{m},m\not\prec n$ は始件。（$\vee$）で高さ $1$。
+- $m\prec n$ なら $\lvert m\rvert_{\prec}<\lvert n\rvert_{\prec}$ で、帰納法の仮定と単調性から $\vdash^{\omega\cdot\lvert m\rvert_{\prec}+3}_{0,\mathrm{prg}}\Gamma,D_{m},m\in X$、（$\vee$）で高さ $\omega\cdot\lvert m\rvert_{\prec}+4$。これは $\omega\cdot\lvert m\rvert_{\prec}+\omega\le\omega\cdot\lvert n\rvert_{\prec}$ より小さい。
+
+$\lvert n\rvert_{\prec}\ge1$ なら、どの前提の高さも $\omega\cdot\lvert n\rvert_{\prec}$ 未満なので、ω 規則で $\vdash^{\omega\cdot\lvert n\rvert_{\prec}}_{0,\mathrm{prg}}\Gamma$。$\lvert n\rvert_{\prec}=0$ なら $m\prec n$ となる $m$ はなく、前提の高さはすべて $1$ で、ω 規則で高さ $2$。いずれの場合も（prg）（主論理式 $n\in X$）で $\vdash^{\omega\cdot\lvert n\rvert_{\prec}+3}_{0,\mathrm{prg}}n\in X$。
+
+限界補題は $\lvert n\rvert_{\prec}\le\alpha$ を与え、この構成は $\alpha=\omega\cdot\lvert n\rvert_{\prec}+3$ で実現するので、カットのない導出の高さと階数は「$\omega$ 倍」の違いを除いて一致する。
+:::
+
+::: supplement
+**前提の検討.**
+- \ref{pt:gentzen-bound} は「一様な」超限帰納法 $\mathrm{TI}[\prec]$（$X$ についての帰納法）についての主張である。個々の算術的論理式 $A$ について $\mathrm{Prog}[\prec,A]\to\forall x\,A(x)$ が $\PA$ で証明できるかどうかは別の問題だが、$X$ に $A$ を代入すれば一様な場合から個別の場合が従うので、一様な場合の限界はそのまま個別の場合の限界でもある（ただし、個別の論理式についての限界には、一般に別の議論が必要である）。
+- 原始再帰的関係に限ったのは、$y\prec n$ が真偽の決まるリテラルとして扱えるためである。
+
+**関連する結果.**
+- *ゲンツェンの無矛盾性証明.* ゲンツェン（1936）は、$\PA$ の証明に順序数を割り当て、カットを減らす変換で順序数が減ることを示して、$\mathsf{PRA}$ に $\varepsilon_{0}$ までの（量化子のない論理式についての）超限帰納法を加えた体系で $\mathrm{Con}(\PA)$ を証明した。本ページの方法（ω 規則による無限の導出）は、シュッテらによる後の整理であると言われている。
+- *証明可能な再帰関数.* 同じ方法で、$\PA$ で全域性が証明できる関数が、$\varepsilon_{0}$ 未満の順序数で添字付けた急増加階層（ハーディ階層など）の関数で抑えられることが示せる（新井の本の §8.4.3）。
+
+**高い視点から：証明の複雑さを順序数で測る.** ゲンツェンの限界定理は、$\PA$ の証明を「高さ $\varepsilon_{0}$ 未満のカットのない無限の証明」に変換できることから、$\PA$ が証明できる超限帰納法の範囲を測る。証明を対象として扱い、その複雑さを順序数という尺度で測ることで、体系の強さが一つの順序数に集約される。比喩で言えば、$\PA$ はどれほど巧妙な証明を書いても、$\varepsilon_{0}$ という「高さ制限」のある建物の中でしか議論できない。$\varepsilon_{0}$ に届く超限帰納法を証明するには、建物の外に出る（より強い体系を使う）必要がある。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

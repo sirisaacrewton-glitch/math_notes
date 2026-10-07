@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ソロヴェイの算術的完全性定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/03-provability-logic/07-solovay.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ソロヴェイの算術的完全性定理 {#pt:page-solovay keywords="Solovay's arithmetical completeness theorem, Solovay sentences, Solovay function, provability logic of PA"}
+
+$\mathsf{GL}$ の定理はすべて常に証明可能だった（\ref{pt:gl-arithmetical-soundness}）。本ページではその逆、**ソロヴェイの算術的完全性定理**を証明する：様相論理式 $A$ が常に証明可能（すべての算術的解釈 $\ast$ で $\PA\vdash A^{\ast}$）ならば $\mathsf{GL}\vdash A$。したがって $\mathsf{GL}$ は、$\PA$ の証明可能性述語が $\PA$ の中で満たす性質のうち、命題論理と $\mathrm{Bew}$ で表せるものを過不足なく捉える。証明では、$A$ を偽にする有限モデルを、対角化で定めた「世界を渡り歩く関数」によって算術の中に埋め込む。（Boolos 第 9 章前半に対応する。）
+
+## 記法と定義の確認 {#pt:sec-solovay-notation}
+
+::: notation
+- $\PA$、Σ 論理式・Δ 論理式と閉包性（\ref{pt:sigma-formula}, \ref{pt:sigma-closure}）、モデルの中の帰納法（\ref{pt:model-induction}）と最小数原理（\ref{pt:pa-strong-induction}）は \ref{pt:page-peano-arithmetic} のとおり。$\mathcal{M}$ は $\PA$ の任意のモデルで、そこで示した主張は完全性定理により $\PA$ の定理である。
+- 有限列 $\mathrm{FinSeq}$、$\mathrm{lh}$、$s_{x}$、連結 $\ast$、一項の列 $[v]$、切り出し、有限列の法則（\ref{pt:finseq-law}）は \ref{pt:page-sequence-coding} のとおり。
+- 構文の関数（$\mathrm{num},\mathrm{sub},\mathrm{neg},\mathrm{imp},\mathrm{all},\mathrm{eq}$ など）、$\mathrm{Pf}$ と $\mathrm{Bew}$（\ref{pt:derivation-lines}, \ref{pt:bew-sigma}）、\ref{pt:syntax-provable}, \ref{pt:bew-correct}、導出の連結（\ref{pt:derivation-concat}）、D1–D3（\ref{pt:d1}, \ref{pt:d2}, \ref{pt:d3}）、形式化された Σ 完全性（\ref{pt:formalized-sigma-completeness}）、一般化された対角化定理（\ref{pt:generalized-diagonal-lemma}）は \ref{pt:page-arithmetization} から \ref{pt:page-diagonal-first-incompleteness} までのとおり。$\Box S$ で $\mathrm{Bew}(\Godel{S})$ を表すことがある。
+- 算術的解釈と翻訳、$\mathsf{GL}$ の算術的健全性は \ref{pt:page-arithmetical-soundness} のとおり。$\mathsf{GL}$ の有限モデルに関する完全性（\ref{logic:modal-fmp-decidability}, \ref{logic:finite-transitive-cwf}）と生成部分モデル（\ref{logic:generated-submodel}）を使う。
+- 論理式の選言 $\bigvee_{j\in J}S_{j}$ は $J=\emptyset$ のとき $\bot$。
+:::
+
+## 定理の主張 {#pt:sec-solovay-statement}
+
+::: theorem ソロヴェイの算術的完全性定理 {#pt:solovay keywords="Solovay's arithmetical completeness theorem for GL" index="ソロヴェイの定理|そろゔぇいのていり, 算術的完全性定理|さんじゅつてきかんぜんせいていり"}
+様相論理式 $A$ について、$\mathsf{GL}\vdash A$ であることと、すべての算術的解釈 $\ast$ について $\PA\vdash A^{\ast}$ であることは同値である。
+:::
+
+一方向は \ref{pt:gl-arithmetical-soundness}。以下、$\mathsf{GL}\nvdash A$ と仮定し、$\PA\nvdash A^{\ast}$ となる $\ast$ を構成する。
+
+::: example 算術についての帰結
+$A=\Box(\Box p\vee\Box\neg p)\to(\Box p\vee\Box\neg p)$ は $\mathsf{GL}$ の定理でない：世界 $1,2,3$、$1R2$, $1R3$、$p$ は $2$ でだけ真のモデルで、$2,3$ は後続者がないので $\Box p\vee\Box\neg p$ が真、よって $1\models\Box(\Box p\vee\Box\neg p)$。一方 $1\not\models\Box p$（$3$）、$1\not\models\Box\neg p$（$2$）。定理より、ある文 $S$ について $A^{\ast}$（$p^{\ast}=S$）は $\PA$ で証明できない。すなわち、「$S$ は決定不能」と「『$S$ は決定可能』は証明可能」を $\PA$ に同時に加えても無矛盾であるような文 $S$ がある。
+:::
+
+## ソロヴェイ関数 {#pt:sec-solovay-function}
+
+**有限モデルの準備.** $\mathsf{GL}\nvdash A$ なので、有限・推移的・非反射的なモデルと世界 $w$ で $w\not\models A$ となるものがある。$w$ から生成された部分モデルに移り、世界に番号を付けて、$W=\{1,\dots,n\}$、$w=1$、$2\le i\le n$ ならば $1Ri$、としてよい（生成部分モデルの世界は $w$ と $w$ の後続者で、真理は保たれる）。$\mathcal{M}_{A}=(W,R,V)$ とし、$\mathcal{M}_{A},1\not\models A$。
+
+新しい世界 $0$ を加える：$W'\defeq\{0,1,\dots,n\}$、$R'\defeq R\cup\{(0,i):1\le i\le n\}$、命題変数の値は $0$ で $1$ と同じとする（$V'$）。$(W',R')$ も有限・推移的・非反射的である。$i\ge1$ については $iR'j\iff iRj$。
+
+**考え方.** 自然数上の関数 $h$ を、$h(0)=0$ から始め、「$h(x)=i$ で、$x$ が『$h$ の極限は $j$ でない』の証明のコードであり $iR'j$」なら $h(x+1)=j$、それ以外は $h(x+1)=h(x)$ と定める。$h$ は $R'$ に沿ってしか動かず、$R'$ は逆整礎なので、$h$ は最終的に一つの値（極限）に落ち着く。文 $S_{j}$ を「$h$ の極限は $j$」とすると、$h$ の定義が $S_{j}$ に言及し、$S_{j}$ が $h$ に言及するので、対角化で循環を解く。
+
+::: definition ソロヴェイ文 {#pt:solovay-sentences keywords="Solovay sentences, Solovay function" index="ソロヴェイ文|そろゔぇいぶん"}
+変数 $a,b,c$ を固定する。各 $j\le n$ について、論理式のコード $y$ から論理式
+$$
+\begin{aligned}
+&\neg\exists c\,\forall a\,\bigl(c\le a\to F(a,\underline{j})\bigr)\\
+&(F\text{ はコード }y\text{ の論理式、}F(a,\underline{j})\text{ は }b\text{ に }\underline{j}\text{ を代入したもの})
+\end{aligned}
+$$
+のコードを作る関数を $\sigma_{j}(y)$ とする（$\mathrm{sub}$, $\mathrm{num}$ と論理記号のコードを組み立てる関数の合成なので Σ 関数。$\exists,\le$ は略記を展開する）。$i\in W'$ について
+$$
+\begin{aligned}
+\mathrm{Tr}_{i}(y,x,s)\defeq{}&\bigwedge_{j:iR'j}\bigl(\mathrm{Pf}(x,\sigma_{j}(y))\to s_{x+1}=\underline{j}\bigr)\\
+&\wedge\Bigl(\bigwedge_{j:iR'j}\neg\mathrm{Pf}(x,\sigma_{j}(y))\to s_{x+1}=\underline{i}\Bigr),
+\end{aligned}
+$$
+$$
+\begin{aligned}
+\mathrm{Seq}(y,s,a)\defeq{}&\mathrm{FinSeq}(s)\wedge\mathrm{lh}(s)=a+1\wedge s_{0}=0\wedge\forall x\le a\,\bigvee_{i\le n}s_{x}=\underline{i}\\
+&\wedge\forall x<a\,\bigwedge_{i\le n}\bigl(s_{x}=\underline{i}\to\mathrm{Tr}_{i}(y,x,s)\bigr),
+\end{aligned}
+$$
+$$
+B(y,a,b)\defeq\exists s\,\bigl(\mathrm{Seq}(y,s,a)\wedge s_{a}=b\bigr)
+$$
+とおく。一般化された対角化定理（\ref{pt:generalized-diagonal-lemma}、$\vec{z}=(a,b)$）により、自由変数が $a,b$ の論理式 $H(a,b)$ で
+$$
+\PA\vdash H(a,b)\leftrightarrow B(\Godel{H},a,b)
+$$
+となるものをとり、$S_{j}\defeq\exists c\,\forall a\,(c\le a\to H(a,\underline{j}))$（$j\le n$）を**ソロヴェイ文**とする。
+:::
+
+**複雑さ.** $\mathrm{Pf}$ は Δ、$\sigma_{j}$ は Σ 関数なので、$\mathrm{Pf}(x,\sigma_{j}(y))$ とその否定は Σ（関数的な論理式の略記の二通りの読み、\ref{pt:functional-formula}）。有界量化と $\wedge,\vee,\exists$ で閉じているので（\ref{pt:sigma-closure}）$B$ は Σ で、対角化定理より $H$ も Σ にとれる。
+
+**コードの計算.** $\sigma_{j}(\Godel{H})=\Godel{\neg S_{j}}$ は標準構造で真な Σ 関数の値の等式なので、\ref{pt:syntax-provable} より $\PA\vdash\sigma_{j}(\Godel{H})=\Godel{\neg S_{j}}$。したがって $\mathcal{M}$ の中では、$H(a,b)$ は $\mathrm{Tr}_{i}$ の $\sigma_{j}(y)$ を数 $\Godel{\neg S_{j}}$ に置き換えた $\mathrm{Seq}$ によって特徴づけられる。以下、$y=\Godel{H}$ を省略して $\mathrm{Seq}(s,a)$, $\mathrm{Tr}_{i}(x,s)$ と書く。
+
+::: lemma 証明はいくらでも大きくとれる {#pt:large-proofs}
+$\mathcal{M}$ で、$\mathrm{Pf}(y,x)$ ならば、任意の $m$ について $m<y'$ かつ $\mathrm{Pf}(y',x)$ となる $y'$ がある。とくに $\PA\vdash\mathrm{Bew}(x)\to\forall m\,\exists y'>m\,\mathrm{Pf}(y',x)$。
+:::
+
+::: proof
+$t\defeq\mathrm{num}(m)$ とし、行 $\ell\defeq([\,],(\mathrm{eq}(t,t),t))$ を考えると、$[\ell]$ は $=$I で正当化される一行の導出である。導出の連結（\ref{pt:derivation-concat}）より $y'\defeq[\ell]\ast y$ は導出で、最後の行は $y$ の最後の行と同じなので $\mathrm{Pf}(y',x)$。大きさ：$\mathrm{num}(0)=9$, $\mathrm{num}(k+1)=(11,\mathrm{num}(k))>\mathrm{num}(k)$（\ref{pt:pairing-basic} の 2）から帰納法で $\mathrm{num}(k)\ge k$。対の成分は対より小さいので $t<\ell$。有限列 $y'=((a',b'),k')$ の項は $y'_{0}=\beta(a',b',0)=\mathrm{rm}(a',\cdot)\le a'<y'$。よって $m\le t<\ell=y'_{0}<y'$。
+:::
+
+::: lemma ソロヴェイ関数 {#pt:solovay-function}
+$\mathcal{M}$ で次が成り立つ。
+1. 各 $a$ について、$\mathrm{Seq}(s,a)$ となる $s$ がただ一つある。$h(a)$ をその $s$ の $s_{a}$ とすると、$H(a,b)\iff b=h(a)$ で、$h(a)\in\{0,\dots,n\}$（標準的な数）。
+2. $h(0)=0$。$h(x)=i$ のとき、ある $j$ で $iR'j$ かつ $\mathrm{Pf}(x,\Godel{\neg S_{j}})$ ならば $h(x+1)=j$（そのような $j$ は高々一つ）、そうでなければ $h(x+1)=i$。
+3. $h(x)=i$ ならば、すべての $x'\ge x$ で $h(x')=i$ または $iR'h(x')$。
+:::
+
+::: proof
+**準備.** $\mathrm{Pf}(x,z)\wedge\mathrm{Pf}(x,z')\to z=z'$（$z$ は $x$ の最後の行の論理式）。$j\neq k$ なら $\Godel{\neg S_{j}}\neq\Godel{\neg S_{k}}$（異なる標準的な数）。よって 2 の $j$ は高々一つで、$\mathrm{Tr}_{i}(x,s)$ は「$s_{x+1}$ は、上の $j$ があれば $j$、なければ $i$」と同値である。この値を $\tau(i,x)$ と書く。
+
+**1（存在）.** $a$ に関する帰納法（論理式 $\exists s\,\mathrm{Seq}(s,a)$）。$a=0$：$[0]$。$\mathrm{Seq}(s,a)$ とし $i\defeq s_{a}$（$0$ から $n$ のどれか）とすると、$s'\defeq s\ast[\tau(i,a)]$ は $\mathrm{Seq}(s',a+1)$ を満たす（$x<a$ の条件は $s$ から、$x=a$ の条件は作り方から）。
+
+**1（一意性）.** $\mathrm{Seq}(s,a)$, $\mathrm{Seq}(s',a)$ なら、$x$ に関する帰納法（論理式 $x\le a\to s_{x}=s'_{x}$）で $s_{x}=s'_{x}$（$x=0$ は $0$、$x+1\le a$ なら $s_{x}=s'_{x}=i$ から $s_{x+1}=\tau(i,x)=s'_{x+1}$）。有限列の法則より $s=s'$。$H(a,b)\iff B(\Godel{H},a,b)\iff b=s_{a}$。
+
+**2.** $\mathrm{Seq}(s,a+1)$ なら、切り出し $s\restr{[0,a+1)}$ は $\mathrm{Seq}(\cdot,a)$ を満たすので、一意性より $h(a)=s_{a}$。よって $h(x+1)=s_{x+1}=\tau(s_{x},x)=\tau(h(x),x)$。$h(0)=0$ は $s_{0}=0$。
+
+**3.** $x'$ に関する帰納法（論理式 $x\le x'\to(h(x')=\underline{i}\vee\bigvee_{j:iR'j}h(x')=\underline{j})$）。$h(x')=i$ または $iR'h(x')$ のとき、2 より $h(x'+1)=h(x')$ か、$h(x')R'h(x'+1)$ で、推移性より主張が保たれる。
+:::
+
+## ソロヴェイ文の性質 {#pt:sec-solovay-properties}
+
+$S_{j}$ は $\mathcal{M}$ で「ある $c$ 以上のすべての $a$ で $h(a)=j$」と読める。
+
+::: lemma ソロヴェイ文の基本性質 {#pt:solovay-properties}
+1. $i\neq j$ なら $\PA\vdash\neg(S_{i}\wedge S_{j})$。
+2. 各 $i\in W'$ について $\PA\vdash H(a,\underline{i})\to S_{i}\vee\bigvee_{j:iR'j}S_{j}$。
+3. $\PA\vdash S_{0}\vee S_{1}\vee\cdots\vee S_{n}$。
+4. $iR'j$ なら $\PA\vdash S_{i}\to\neg\Box\neg S_{j}$。
+5. $i\ge1$ なら $\PA\vdash S_{i}\to\Box\neg S_{i}$。
+6. $i\ge1$ なら $\PA\vdash S_{i}\to\Box\bigvee_{j:iRj}S_{j}$。
+:::
+
+::: proof
+以下 $\mathcal{M}$ で考える。
+
+**1.** $S_{i}$ の $c$ と $S_{j}$ の $c'$ の大きい方以上の $a$ で $h(a)=i$ かつ $h(a)=j$ となり矛盾。
+
+**2.** $(W',R')$ のランク（\ref{pt:world-rank}）に関する（メタの）帰納法。$i$ より低いランクの $j$（$iR'j$ となる $j$ はそうである）について主張が成り立つとする。$h(a)=i$ とする。すべての $a'\ge a$ で $h(a')=i$ なら $S_{i}$（$c=a$）。そうでなければ、ある $a'\ge a$ で $h(a')=j\neq i$ で、\ref{pt:solovay-function} の 3 より $iR'j$。帰納法の仮定（$\PA$ の定理なので $\mathcal{M}$ で成り立つ）より $S_{j}$ または $jR'k$ となる $k$ で $S_{k}$、推移性より $iR'k$。
+
+**3.** $h(0)=0$ と 2（$i=0$、$0R'j$ はすべての $j\ge1$）。
+
+**4.** $S_{i}$ とし、$c$ をとる。$\mathrm{Bew}(\Godel{\neg S_{j}})$ と仮定すると、\ref{pt:large-proofs} より $c\le x$ かつ $\mathrm{Pf}(x,\Godel{\neg S_{j}})$ となる $x$ がある。$h(x)=i$、$iR'j$ なので \ref{pt:solovay-function} の 2 より $h(x+1)=j$。$R'$ は非反射的なので $j\neq i$ で、$x+1\ge c$ に反する。
+
+**5.** $S_{i}$ なら $h(c)=i$。$h(0)=0\neq i$ なので、ある $x$ で $h(x)\neq i$ かつ $h(x+1)=i$（そうでなければ帰納法ですべての $x$ で $h(x)\neq i$）。\ref{pt:solovay-function} の 2 より、$h(x+1)\neq h(x)$ となるのは $\mathrm{Pf}(x,\Godel{\neg S_{h(x+1)}})$ のときだけなので、$\mathrm{Pf}(x,\Godel{\neg S_{i}})$、よって $\mathrm{Bew}(\Godel{\neg S_{i}})$。
+
+**6.** 2 から $\PA\vdash\exists a\,H(a,\underline{i})\to S_{i}\vee\bigvee_{j:iR'j}S_{j}$、D1 と D2 より $\PA\vdash\Box\exists a\,H(a,\underline{i})\to\Box(S_{i}\vee\bigvee_{j}S_{j})$。$\exists a\,H(a,\underline{i})$ は Σ 文なので、形式化された Σ 完全性より $\PA\vdash\exists a\,H(a,\underline{i})\to\Box\exists a\,H(a,\underline{i})$。また $\PA\vdash S_{i}\to\exists a\,H(a,\underline{i})$（$a=c$）。5 の $\Box\neg S_{i}$ と、恒真式 $\neg S_{i}\to((S_{i}\vee X)\to X)$ に D1, D2 を使ったものから、$\PA\vdash S_{i}\to\Box\bigvee_{j:iR'j}S_{j}$。$i\ge1$ では $iR'j\iff iRj$。
+:::
+
+## 埋め込み補題と定理の証明 {#pt:sec-solovay-proof}
+
+算術的解釈 $\ast$ を、各命題変数 $p$ について
+$$
+p^{\ast}\defeq\bigvee\{S_{i}:i\in W',\ i\text{ で }p\text{ が真（}V'\text{）}\}
+$$
+で定める。
+
+::: lemma 埋め込み補題 {#pt:solovay-embedding}
+$1\le i\le n$ と、$A$ の部分論理式 $B$ について、$\mathcal{M}_{A},i\models B$ ならば $\PA\vdash S_{i}\to B^{\ast}$、$\mathcal{M}_{A},i\not\models B$ ならば $\PA\vdash S_{i}\to\neg B^{\ast}$。
+:::
+
+::: proof
+$B$ の構成に関する帰納法。
+
+**$B=p$.** $i\models p$ なら $S_{i}$ は $p^{\ast}$ の選言肢。$i\not\models p$ なら、$i\ge1$ なので $S_{i}$ は選言肢でなく、各選言肢 $S_{k}$（$k\neq i$）について \ref{pt:solovay-properties} の 1 より $\PA\vdash S_{i}\to\neg S_{k}$、よって $\PA\vdash S_{i}\to\neg p^{\ast}$。
+
+**$B=\bot$** は偽で、$\PA\vdash S_{i}\to\neg\bot$。**$B=C\to D$** は帰納法の仮定から恒真式による。
+
+**$B=\Box C$, $i\models\Box C$.** $iRj$ となるすべての $j$ で $j\models C$、帰納法の仮定より $\PA\vdash S_{j}\to C^{\ast}$、よって $\PA\vdash\bigvee_{j:iRj}S_{j}\to C^{\ast}$。D1, D2 より $\PA\vdash\Box\bigvee_{j:iRj}S_{j}\to\Box C^{\ast}$、\ref{pt:solovay-properties} の 6 より $\PA\vdash S_{i}\to\Box C^{\ast}=(\Box C)^{\ast}$。
+
+**$B=\Box C$, $i\not\models\Box C$.** $iRj$ かつ $j\not\models C$ となる $j$（$\ge1$）があり、帰納法の仮定より $\PA\vdash S_{j}\to\neg C^{\ast}$、対偶で $\PA\vdash C^{\ast}\to\neg S_{j}$、D1, D2 より $\PA\vdash\Box C^{\ast}\to\Box\neg S_{j}$。$iR'j$ なので \ref{pt:solovay-properties} の 4 より $\PA\vdash S_{i}\to\neg\Box\neg S_{j}$、よって $\PA\vdash S_{i}\to\neg\Box C^{\ast}$。
+:::
+
+::: proof ソロヴェイの定理の証明
+**Step 1（$\PA$ の中の部分）.** $1\not\models A$ なので埋め込み補題より $\PA\vdash S_{1}\to\neg A^{\ast}$、対偶と D1, D2 より $\PA\vdash\Box A^{\ast}\to\Box\neg S_{1}$。$0R'1$ なので \ref{pt:solovay-properties} の 4 より $\PA\vdash S_{0}\to\neg\Box\neg S_{1}$。よって
+$$
+\PA\vdash S_{0}\to\neg\Box A^{\ast}.
+$$
+
+**Step 2（$\PA$ の外の部分）.** $\mathcal{N}\models\PA$ を使う。$i\ge1$ で $S_{i}$ が真とすると、\ref{pt:solovay-properties} の 5 より $\Box\neg S_{i}$ が真、\ref{pt:bew-correct} より $\PA\vdash\neg S_{i}$、健全性より $\neg S_{i}$ が真となり矛盾。よって $S_{1},\dots,S_{n}$ はすべて偽で、\ref{pt:solovay-properties} の 3 より $S_{0}$ が真。Step 1 と健全性より $\neg\Box A^{\ast}$ が真、\ref{pt:bew-correct} より $\PA\nvdash A^{\ast}$。
+
+::: hypcheck
+- **有限性・推移性・非反射性（逆整礎性）**：$W'$ が有限なので $S_{j}$ の選言・連言が有限になり、\ref{pt:solovay-properties} の 2 のランクに関する帰納法は逆整礎性（有限で非反射的・推移的）による。
+- **$\mathcal{N}\models\PA$**：Step 2 だけで使う。$\PA$ の中で証明できるのは $\bigwedge_{i\ge1}(\Box\neg S_{i}\to\neg S_{i})\to\neg\Box A^{\ast}$（性質 3, 5 と Step 1 から）であり、前件は真だが $\PA$ では証明できない（第二不完全性定理の類似）。
+- **世界 $0$ の役割**：Step 1 で「$S_{0}$ の下で $S_{1}$ は無矛盾」を使うために、$1$ の上にもう一つ世界を置いた。$S_{0}$ は真だが、$\PA$ はそれを知らない。
+:::
+:::
+
+::: corollary PA の証明可能性論理 {#pt:provability-logic-of-pa keywords="provability logic of PA"}
+常に証明可能な様相論理式の全体は $\mathsf{GL}$ の定理の全体に一致し、したがって決定可能である（\ref{logic:modal-fmp-decidability}）。
+:::
+
+::: remark 仮定の弱め方
+Step 2 で必要なのは、$\PA$ が「$\neg S_{i}$ の形の文」について健全であることである。$\PA$ を、再帰的に公理化された $\PA$ の拡大で Σ 健全なもの（証明できる Σ 文はすべて真）に取り替えても、その証明可能性論理は $\mathsf{GL}$ であることが知られている（一般にはこう言われており、証明は $S_{i}$ の扱いを修正して行う。本サイトでは扱わない）。
+:::
+
+## 問題 {#pt:sec-solovay-problems}
+
+::: problem {#pt:prob-solovay-consistency}
+$\mathsf{GL}\nvdash\neg\Box\bot$ に対してソロヴェイの構成を具体的に行え（有限モデルは一点 $W=\{1\}$、$1\models\Box\bot$）。$S_{0},S_{1}$ はそれぞれ何を主張し、Step 1 は何を与えるか。
+:::
+
+::: solution
+$W'=\{0,1\}$, $0R'1$。$h$ は $0$ から始まり、$x$ が $\neg S_{1}$ の証明なら $1$ に移り、$1$ からは動かない。$S_{1}$ は「$h$ は最終的に $1$」、$S_{0}$ は「$h$ は最終的に $0$」を主張する。性質 5 より $\PA\vdash S_{1}\to\Box\neg S_{1}$ で、逆に $\mathcal{M}$ で $\Box\neg S_{1}$ なら、\ref{pt:large-proofs} の大きな証明 $x$ で $h$ は $1$ に移る（またはすでに $1$）ので $S_{1}$。よって $\PA\vdash S_{1}\leftrightarrow\Box\neg S_{1}$ で、\ref{pt:fixed-point-arith}（$A=\Box\neg p$ の不動点 $\Box\bot$）より $\PA\vdash S_{1}\leftrightarrow\Box\bot$。性質 1, 3 より $\PA\vdash S_{0}\leftrightarrow\neg S_{1}$、すなわち $S_{0}$ は $\mathrm{Con}$ と同値。$A=\neg\Box\bot$ で $A^{\ast}=\mathrm{Con}$、Step 1 は $\PA\vdash S_{0}\to\neg\Box\mathrm{Con}$、すなわち形式化された第二不完全性定理 $\PA\vdash\mathrm{Con}\to\neg\Box\mathrm{Con}$ にあたる。
+:::
+
+::: problem {#pt:prob-solovay-example}
+「算術についての帰結」の例の $S$ を、ソロヴェイ文を使って具体的に書け。
+:::
+
+::: solution
+$W=\{1,2,3\}$, $1R2$, $1R3$、$p$ は $2$ で真。$W'$ では $0$ が $1$ と同じ値をとるが、$1\not\models p$ なので $p^{\ast}=S_{2}$。$S=S_{2}$（「$h$ は最終的に $2$」）とすればよい。
+:::
+
+::: supplement
+**前提の検討.**
+- 有限モデルへの帰着（$\mathsf{GL}$ の有限モデル性）が本質的である：$S_{j}$ たちは有限個でなければならない。
+- $\Box$ の翻訳が $\mathrm{Bew}$ そのものであることは、D1–D3、形式化された Σ 完全性（性質 6）、証明がいくらでも大きくとれること（性質 4）を通して使われる。とくに性質 4 は $\mathrm{Pf}$ の具体的な形（導出の連結）に依存する。
+
+**関連する結果.** 次ページでは、同じ構成を少し変えて $\mathsf{GLS}$ の算術的完全性（常に真な論理式は $\mathsf{GLS}$ の定理）を示し、さらに一つの解釈ですべての非定理を同時に反証する一様な完全性、Σ 文に限った証明可能性論理を扱う。
+
+**高い視点から：モデルを算術の中に「演じさせる」.** ソロヴェイの構成は、有限のクリプキモデルを $\PA$ の中で**演じさせる**方法である。関数 $h$ は世界 $0$ から出発し、$\PA$ が「$h$ はそこに行き着かない」と証明するたびに、まさにその世界へ跳ぶ。したがって $\PA$ は、どの世界 $j$ についても「$h$ が $j$ に行き着く」を反証できない（反証すれば $h$ がそこへ跳んで反証が誤りになる）ので、$S_{j}$ は無矛盾であり、しかも $h$ が $i$ にいるなら $\PA$ は「$h$ はさらに先へ進む」ことを知っている（性質 5, 6）。こうして「$\PA$ から見た可能性」が $R$ に沿った到達可能性として正確に再現される。これは、自己言及によって反例を**実現する**という意味で、ゲーデル文の構成（「私は証明できない」）を、有限個の文が互いに言及し合う形に一般化したものとみることができる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>型と可算モデル | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03C-model-theory/02-types-and-countable-models/index.html" data-kind="dir">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 型と可算モデル（Types and Countable Models）
+
+型と型空間、型の省略定理、原子モデルと素モデル、可算範疇性（ライル–ナルジェフスキの定理）、飽和モデル、識別不能元とエーレンフォイヒト–モストフスキのモデル。（Chang–Keisler 第 2 章 §2–3、第 3 章 §3、第 5 章 §1 の内容に相当）
+
+<p class="mn-msc">MSC2020: 03C15, 03C50, 03C35</p>
+
+## 前提知識
+
+- [モデル理論 › 初等拡大と量化子消去](../../../03-mathematical-logic/03C-model-theory/01-elementary-extensions/index.html)（全体、4 ページ）：初等部分構造とレーヴェンハイム–スコーレムの定理
+
+## 目次
+
+<ol class="mn-dirtoc">
+<li value="1"><a href="01-types-omitting.html">§1 型と型の省略定理</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 1.1</span> <span class="mn-dirtoc-title">型・実現・省略</span></li><li><span class="mn-dirtoc-kind">補題 1.2</span> <span class="mn-dirtoc-title">型の基本性質</span></li><li><span class="mn-dirtoc-kind">定義 1.3</span> <span class="mn-dirtoc-title">孤立した型</span></li><li><span class="mn-dirtoc-kind">命題 1.4</span> <span class="mn-dirtoc-title">孤立型はすべてのモデルで実現される</span></li><li><span class="mn-dirtoc-kind">定理 1.5</span> <span class="mn-dirtoc-title">型の省略定理</span></li></ul></li>
+<li value="2"><a href="02-countable-models.html">§2 原子モデル・素モデル・可算範疇性</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">補題 2.1</span> <span class="mn-dirtoc-title">孤立した完全型</span></li><li><span class="mn-dirtoc-kind">補題 2.2</span> <span class="mn-dirtoc-title">型を保つ写像は初等的</span></li><li><span class="mn-dirtoc-kind">定義 2.3</span> <span class="mn-dirtoc-title">原子モデル・素モデル</span></li><li><span class="mn-dirtoc-kind">補題 2.4</span> <span class="mn-dirtoc-title">往復の一歩</span></li><li><span class="mn-dirtoc-kind">定理 2.5</span> <span class="mn-dirtoc-title">可算原子モデルは素モデル</span></li><li><span class="mn-dirtoc-kind">定理 2.6</span> <span class="mn-dirtoc-title">可算原子モデルの一意性</span></li><li><span class="mn-dirtoc-kind">定義 2.7</span> <span class="mn-dirtoc-title">孤立型の稠密性</span></li><li><span class="mn-dirtoc-kind">定理 2.8</span> <span class="mn-dirtoc-title">原子モデルの存在</span></li><li><span class="mn-dirtoc-kind">定義 2.9</span> <span class="mn-dirtoc-title">ω 範疇的</span></li><li><span class="mn-dirtoc-kind">定理 2.10</span> <span class="mn-dirtoc-title">ライル–ナルジェフスキの定理</span></li><li><span class="mn-dirtoc-kind">系 2.11</span> <span class="mn-dirtoc-title">カントールの定理</span></li></ul></li>
+<li value="3"><a href="03-saturated-models.html">§3 飽和モデル</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 3.1</span> <span class="mn-dirtoc-title">$A$ 上の型と飽和</span></li><li><span class="mn-dirtoc-kind">補題 3.2</span> <span class="mn-dirtoc-title">n 変数への拡張</span></li><li><span class="mn-dirtoc-kind">補題 3.3</span> <span class="mn-dirtoc-title">型の実現と初等拡大</span></li><li><span class="mn-dirtoc-kind">定理 3.4</span> <span class="mn-dirtoc-title">飽和な初等拡大</span></li><li><span class="mn-dirtoc-kind">定理 3.5</span> <span class="mn-dirtoc-title">飽和モデルの普遍性</span></li><li><span class="mn-dirtoc-kind">定理 3.6</span> <span class="mn-dirtoc-title">飽和モデルの一意性</span></li><li><span class="mn-dirtoc-kind">定理 3.7</span> <span class="mn-dirtoc-title">可算飽和モデルの存在</span></li><li><span class="mn-dirtoc-kind">系 3.8</span> <span class="mn-dirtoc-title">可算モデルの両極</span></li></ul></li>
+<li value="4"><a href="04-indiscernibles.html">§4 識別不能列とエーレンフォイヒト–モストフスキのモデル</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定理 4.1</span> <span class="mn-dirtoc-title">無限ラムゼーの定理</span></li><li><span class="mn-dirtoc-kind">定義 4.2</span> <span class="mn-dirtoc-title">識別不能列</span></li><li><span class="mn-dirtoc-kind">定理 4.3</span> <span class="mn-dirtoc-title">識別不能列の存在</span></li><li><span class="mn-dirtoc-kind">補題 4.4</span> <span class="mn-dirtoc-title">スコーレム化</span></li><li><span class="mn-dirtoc-kind">定義 4.5</span> <span class="mn-dirtoc-title">スコーレム包</span></li><li><span class="mn-dirtoc-kind">定理 4.6</span> <span class="mn-dirtoc-title">エーレンフォイヒト–モストフスキ</span></li><li><span class="mn-dirtoc-kind">系 4.7</span> <span class="mn-dirtoc-title">自己同型の多いモデル</span></li></ul></li>
+</ol>
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

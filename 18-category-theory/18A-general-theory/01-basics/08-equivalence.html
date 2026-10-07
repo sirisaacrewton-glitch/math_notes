@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>反射部分圏と圏同値 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/01-basics/08-equivalence.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 反射部分圏と圏同値 {#cat:page-equivalence keywords="reflective subcategory, reflector, coreflective subcategory, full and faithful right adjoints, counit is epi, adjoint equivalence, equivalence of categories, skeleton, essentially surjective"}
+
+随伴 $F\dashv G$ の右随伴 $G$ がどれだけ「単射的」かは、余単位 $\varepsilon$ の性質で測れる：$G$ が忠実であることは $\varepsilon$ の成分がエピ射であることと、充満忠実であることは $\varepsilon$ が同型であることと同値である（\ref{cat:right-adjoint-full-faithful}）。部分圏の包含が左随伴をもつとき、その部分圏を**反射的**という（\ref{cat:reflective-subcategory}）。アーベル化は群の圏の中の可換群の圏への反射である。後半では、圏同値（\ref{cat:equivalence-of-categories}）が「充満忠実かつ本質的全射」と同値で、さらに単位と余単位がともに同型である随伴（**随伴同値**）に改良できることを示す（\ref{cat:equivalence-characterization}）。
+
+> 資料：Mac Lane, *Categories for the Working Mathematician* 第 IV 章 §3–§4。
+
+## 記法と定義の確認 {#cat:sec-eqv-notation}
+
+::: notation
+- 随伴、単位と余単位、三角等式、普遍射からの左随伴の構成は \ref{cat:page-adjunctions} のとおり（\ref{cat:adjunction}, \ref{cat:triangle-identities}, \ref{cat:adjunction-equivalent-forms}, \ref{cat:adjunction-from-universal}）。
+- 圏同値、充満・忠実、本質的全射、圏同値は充満忠実であること（\ref{cat:equivalence-of-categories}, \ref{cat:full-faithful}, \ref{cat:equivalence-fully-faithful}）、モノ射・エピ射・分裂は \ref{cat:monic-epic} のとおり。
+- 圏はすべて局所小とする。
+:::
+
+## 右随伴が充満・忠実である条件 {#cat:sec-eqv-full-faithful}
+
+::: theorem 右随伴の充満性・忠実性と余単位 {#cat:right-adjoint-full-faithful keywords="a right adjoint is faithful iff counits are epi, full iff counits are split monic, fully faithful iff counit is an isomorphism" index="右随伴の充満忠実性|みぎずいはんのじゅうまんちゅうじつせい"}
+随伴 $(F,G,\eta,\varepsilon)\colon\mathbf{X}\rightharpoonup\mathbf{A}$（$F\dashv G$）について次が成り立つ。
+1. $G$ が忠実であることと、すべての $\varepsilon_{a}$ がエピ射であることは同値。
+2. $G$ が充満であることと、すべての $\varepsilon_{a}$ が分裂モノであることは同値。
+3. したがって、$G$ が充満忠実であることと、$\varepsilon$ が自然同型であることは同値。
+
+双対的に、$F$ が充満忠実であることと、$\eta$ が自然同型であることは同値。
+:::
+
+::: proof
+**Step 1（鍵の等式）.** $a,c\in\mathbf{A}$ について、合成
+$$
+\mathbf{A}(a,c)\xrightarrow{\ G_{a,c}\ }\mathbf{X}(Ga,Gc)\xrightarrow{\ \varphi^{-1}\ }\mathbf{A}(FGa,c)
+$$
+は $h\mapsto h\circ\varepsilon_{a}$ に等しい。実際、\ref{cat:triangle-identities} の 2 と $\varepsilon$ の自然性から $\varphi^{-1}(Gh)=\varepsilon_{c}\circ FGh=h\circ\varepsilon_{a}$。$\varphi^{-1}$ は全単射なので、$G_{a,c}$ が単射（全射）であることと、$h\mapsto h\circ\varepsilon_{a}$ が単射（全射）であることは同値。
+
+**Step 2（1）.** 「すべての $c$ で $h\mapsto h\circ\varepsilon_{a}$ が単射」はエピ射の定義そのもの。
+
+**Step 3（2）.** すべての $c$ で全射なら、$c=FGa$ とし $1_{FGa}=h_{0}\circ\varepsilon_{a}$ となる $h_{0}\colon a\to FGa$ をとれば、$\varepsilon_{a}$ は分裂モノ。逆に $r\circ\varepsilon_{a}=1$ なら、任意の $k\colon FGa\to c$ は $k=(k\circ r)\circ\varepsilon_{a}$ で、全射。
+
+**Step 4（3）.** 1, 2 と \ref{cat:monic-epic-basic} の 4（エピ射かつ分裂モノは同型射）。逆に同型射はエピ射かつ分裂モノ。自然同型であることは、成分がすべて同型であることと同じ。
+
+**双対.** 反対圏をとると、$F^{\mathrm{op}}$ が $G^{\mathrm{op}}$ の右随伴になり、余単位が $\eta$ になる（\ref{cat:duality-principle}）。
+:::
+
+## 反射部分圏 {#cat:sec-eqv-reflective}
+
+::: definition 反射部分圏 {#cat:reflective-subcategory keywords="reflective subcategory, reflector, reflection, coreflective subcategory, coreflector" index="反射部分圏|はんしゃぶぶんけん, 反射子|はんしゃし, 余反射部分圏|よはんしゃぶぶんけん"}
+圏 $\mathbf{B}$ の部分圏 $\mathbf{A}$ が**反射的**であるとは、包含関手 $K\colon\mathbf{A}\to\mathbf{B}$ が左随伴 $R\colon\mathbf{B}\to\mathbf{A}$（**反射子**）をもつことをいう。双対的に、$K$ が右随伴をもつとき**余反射的**という。
+:::
+
+::: proposition 反射部分圏の基本性質 {#cat:reflective-basic keywords="reflections via universal arrows; for full reflective subcategories the counit is an isomorphism" index="反射の特徴づけ|はんしゃのとくちょうづけ"}
+1. $\mathbf{A}\subseteq\mathbf{B}$ が反射的であることと、各 $b\in\mathbf{B}$ に $\mathbf{A}$ の対象 $Rb$ と射 $\eta_{b}\colon b\to Rb$ があって、$\mathbf{A}$ の対象 $a$ への任意の射 $g\colon b\to a$ が、$\mathbf{A}$ の射 $f\colon Rb\to a$ により $g=f\circ\eta_{b}$ と一意に書けることは同値。
+2. 反射の余単位 $\varepsilon_{a}\colon RKa\to a$ はエピ射である。$\mathbf{A}$ が充満部分圏なら、$\varepsilon$ は自然同型で、$Ra\cong a$（$a\in\mathbf{A}$）。
+:::
+
+::: proof
+**1.** \ref{cat:adjunction-from-universal}（$x$ から $K$ への普遍射の族）の言い換え。
+
+**2.** 包含関手は忠実なので、\ref{cat:right-adjoint-full-faithful} の 1。充満部分圏の包含は充満忠実なので、同定理の 3。
+:::
+
+::: example
+1. **アーベル化.** $\mathbf{Ab}$ は $\mathbf{Grp}$ の反射的な充満部分圏で、反射子はアーベル化 $G\mapsto G^{\mathrm{ab}}$（\ref{cat:functor} の例 3）。射影 $p_{G}\colon G\to G^{\mathrm{ab}}$ が 1 の普遍射：可換群 $A$ への準同型 $g\colon G\to A$ は交換子を潰すので、$G^{\mathrm{ab}}\to A$ を一意に誘導する。
+2. **ねじれ部分群.** 可換群 $A$ の位数有限の元全体 $TA$ は部分群で、ねじれ群（すべての元の位数が有限な可換群）の充満部分圏は $\mathbf{Ab}$ の中で余反射的である（余反射子は $A\mapsto TA$）：ねじれ群 $B$ からの準同型 $B\to A$ の像は位数有限の元からなるので、$TA$ を経由する。
+3. **完備化（事実）.** 距離空間と一様連続写像の圏の中で、完備距離空間の充満部分圏は反射的で、反射子は完備化である。完全正則ハウスドルフ空間の圏の中で、コンパクトハウスドルフ空間の充満部分圏は反射的で、反射子はストーン–チェックのコンパクト化である（Mac Lane 第 IV 章 §3。証明は位相の系列で扱う予定）。
+4. **半順序化.** 前順序と単調写像の圏の中で、半順序の充満部分圏は反射的：前順序 $P$ を同値関係 $p\le q\le p$ で割った半順序が反射（問題 \ref{cat:prob-partial-order-reflective}）。
+:::
+
+## 圏同値の特徴づけ {#cat:sec-eqv-equivalence}
+
+::: definition 随伴同値 {#cat:adjoint-equivalence keywords="adjoint equivalence" index="随伴同値|ずいはんどうち"}
+随伴 $(T,S,\eta,\varepsilon)$（$T\dashv S$）で、単位 $\eta$ と余単位 $\varepsilon$ がともに自然同型であるものを**随伴同値**という。
+:::
+
+::: theorem 圏同値の特徴づけ {#cat:equivalence-characterization keywords="equivalence iff fully faithful and essentially surjective iff part of an adjoint equivalence" index="圏同値の特徴づけ|けんどうちのとくちょうづけ"}
+関手 $S\colon\mathbf{A}\to\mathbf{C}$ について、次は同値である。
+1. $S$ は圏同値である（\ref{cat:equivalence-of-categories}）。
+2. $S$ はある随伴同値 $(T,S,\eta,\varepsilon)$ の右随伴である。
+3. $S$ は充満忠実かつ本質的全射である。
+
+3 ⇒ 2 には選択公理を使う。
+:::
+
+::: proof
+**2 ⇒ 1.** 定義から（$T$ が擬逆）。
+
+**1 ⇒ 3.** \ref{cat:equivalence-fully-faithful}。
+
+**3 ⇒ 2, Step 1（普遍射）.** 本質的全射なので、各 $c\in\mathbf{C}$ に、対象 $T_{0}c\in\mathbf{A}$ と同型射 $\eta_{c}\colon c\to S(T_{0}c)$ を一つずつ選ぶ（選択公理）。$\eta_{c}$ が $c$ から $S$ への普遍射であることを示す。$f\colon c\to Sa$ について、$f\circ\eta_{c}^{-1}\colon ST_{0}c\to Sa$ は、$S$ が充満なので $Sg$（$g\colon T_{0}c\to a$）と書け、$S$ が忠実なので $g$ は一意。$f=Sg\circ\eta_{c}$ と $f\circ\eta_{c}^{-1}=Sg$ は同値なので、$g$ は $Sg\circ\eta_{c}=f$ を満たす唯一の射。
+
+**Step 2（随伴）.** \ref{cat:adjunction-from-universal} から、$T_{0}$ は一意に関手 $T$ に延び、$T\dashv S$ で単位は $\eta$（成分がすべて同型なので自然同型）。
+
+**Step 3（余単位）.** 三角等式 $S\varepsilon_{a}\circ\eta_{Sa}=1_{Sa}$（\ref{cat:triangle-identities} の 3）から、$S\varepsilon_{a}=\eta_{Sa}^{-1}$ は同型射。$S$ は充満忠実なので同型射を反映し（\ref{cat:fully-faithful-reflects}）、$\varepsilon_{a}$ は同型射。よって随伴同値。
+
+::: hypcheck
+- **充満性・忠実性**：Step 1 で、$\eta_{c}$ の普遍性（存在と一意性）に使った。Step 3 では同型射の反映に再び使った。
+- **本質的全射**：Step 1 で $\eta_{c}$ の存在に使った。
+- **選択公理**：Step 1 で、$\mathbf{C}$ のすべての対象について同型を一斉に選んだ。$\mathbf{C}$ が大きいと、これは宇宙 $\mathcal{U}$ の部分集合で添字付けた選択で、$\ZFC$ の選択公理で足りる（$\mathbf{C}$ は宇宙の方法では集合なので）。
+:::
+:::
+
+::: remark
+随伴同値 $(T,S,\eta,\varepsilon)$ では、$(S,T,\varepsilon^{-1},\eta^{-1})$ も随伴になる（三角等式の逆をとる）。したがって擬逆 $T$ は $S$ の左随伴であると同時に右随伴でもある。
+:::
+
+::: definition 骨格 {#cat:skeleton keywords="skeleton of a category, skeletal category" index="骨格|こっかく, 骨格的|こっかくてき"}
+圏 $\mathbf{C}$ の充満部分圏 $\mathbf{A}$ で、$\mathbf{C}$ の各対象がちょうど一つの $\mathbf{A}$ の対象と同型であるものを、$\mathbf{C}$ の**骨格**という。同型な対象が等しい圏を**骨格的**という。
+:::
+
+::: proposition 圏はその骨格と同値 {#cat:skeleton-equivalent keywords="every category has a skeleton and is equivalent to it; full subcategories meeting every isomorphism class are reflective" index="骨格との同値|こっかくとのどうち"}
+1. （選択公理）すべての圏は骨格をもつ。
+2. $\mathbf{A}\subseteq\mathbf{C}$ が充満部分圏で、$\mathbf{C}$ の各対象が $\mathbf{A}$ のある対象と同型なら、包含関手 $K$ は圏同値で、余単位が恒等変換である随伴同値 $(T,K,\eta,1)$ の一部になる。とくに $\mathbf{A}$ は反射的である。
+3. 圏はその骨格と同値である。
+:::
+
+::: proof
+**1.** 同型の関係 $\cong$ は $\operatorname{Ob}\mathbf{C}$ 上の同値関係（\ref{cat:isomorphism-basic}）。各同値類から代表元を一つずつ選び（選択公理）、その全体を対象とする充満部分圏をとる。
+
+**2.** $K$ は充満忠実で本質的全射なので、\ref{cat:equivalence-characterization} の 3 ⇒ 2 を適用する。その Step 1 の選択で、$a\in\mathbf{A}$ については $T_{0}a\defeq a$, $\eta_{a}\defeq1_{a}$ と選んでおく。三角等式から $K\varepsilon_{a}=\eta_{Ka}^{-1}=1_{a}$ で、$K$ は包含なので $\varepsilon_{a}=1_{a}$。
+
+**3.** 1 の骨格に 2 を適用する。
+:::
+
+::: example
+1. 有限集合の圏 $\mathbf{Fin}$ の骨格として、有限順序数の充満部分圏 $\mathbf{FinOrd}$ がとれる（\ref{cat:equivalence-of-categories} の例）。
+2. 体 $K$ 上の有限次元線形空間の圏の骨格として、$K^{n}$（$n\ge0$）の充満部分圏がとれ、これは行列の圏 $\mathbf{Mat}_{K}$（に対象 $0$ を加えたもの）と同型である。「有限次元の線形代数は行列の計算と同じ」ことの圏論的な表現である。
+3. **双対定理（事実）.** ポントリャーギン双対（局所コンパクト可換群とその指標群）やゲルファント–ナイマルクの定理（コンパクトハウスドルフ空間と可換 C* 環）は、ある圏と別の圏の反対圏の同値として述べられる（Mac Lane 第 IV 章 §4）。
+:::
+
+::: supplement
+**前提を変えると.**
+- *忠実だが充満でない右随伴.* 忘却関手 $U\colon\mathbf{Grp}\to\mathbf{Set}$ は忠実で、余単位 $\varepsilon_{G}\colon F(UG)\to G$（$G$ の元を生成元とする自由群から $G$ への標準的な全射）はエピ射だが、同型ではない。「すべての群は自由群の商である」という事実は、この余単位がエピ射であることの言い換えである。
+- *選択公理なしの圏同値.* 選択公理がないと、「充満忠実かつ本質的全射」から擬逆が作れないことがある。そのため、選択公理を仮定しない圏論（構成的な圏論、ホモトピー型理論の中の圏論）では、二つの概念を区別して扱う。
+
+**類似の定理.** 反射部分圏は「最良の近似で $\mathbf{A}$ に入れる」方法を与える。代数幾何の層化（前層から層へ）、位相の $T_{0}$ 化、可換化、完備化など、「ある性質をもつ最良のもの」を作る構成の多くは反射である。
+
+**高い視点から：圏同値は「同型の同型」.** 対象の同型は「名前の付け替え」、圏の同型は「対象と射の名前の付け替え」だが、圏同値は「同型な対象を区別しない」水準での同じさである。比喩で言えば、骨格は辞書の見出し語の一覧で、元の圏は同じ意味の言い換えをすべて並べた辞書である。どちらを使っても、言える内容（圏論的な性質）は変わらない。圏論的な性質とは、圏同値で保たれる性質のことで、「対象の個数」のように同値で保たれない性質は、圏論的でない性質である。
+:::
+
+## 問題 {#cat:sec-eqv-problems}
+
+::: problem {#cat:prob-skeletons-isomorphic}
+圏 $\mathbf{C}$ の二つの骨格 $\mathbf{A}_{1},\mathbf{A}_{2}$ は圏として同型であることを示せ。
+:::
+
+::: solution
+各 $a\in\mathbf{A}_{1}$ に、$a$ と同型な $\mathbf{A}_{2}$ の唯一の対象 $\theta a$ と、同型射 $e_{a}\colon a\to\theta a$ を選ぶ。$f\colon a\to a'$ に $\theta f\defeq e_{a'}\circ f\circ e_{a}^{-1}$ を対応させると、$\theta$ は関手（\ref{cat:equivalence-of-categories} の例と同じ計算）。対象について：$\theta$ は単射（$\theta a=\theta a'$ なら $a\cong a'$ で、$\mathbf{A}_{1}$ は骨格なので $a=a'$）かつ全射（$b\in\mathbf{A}_{2}$ と同型な $\mathbf{A}_{1}$ の対象 $a$ について $\theta a\cong b$、$\mathbf{A}_{2}$ は骨格なので $\theta a=b$）。射について：$f\mapsto e_{a'}\circ f\circ e_{a}^{-1}$ は $\mathbf{C}(a,a')\to\mathbf{C}(\theta a,\theta a')$ の全単射（逆は $g\mapsto e_{a'}^{-1}\circ g\circ e_{a}$）で、骨格は充満なので hom 集合は $\mathbf{C}$ と同じ。\ref{cat:isomorphism-of-categories} から同型。
+:::
+
+::: problem {#cat:prob-partial-order-reflective}
+前順序と単調写像の圏 $\mathbf{Preord}$ の中で、半順序の充満部分圏 $\mathbf{Pos}$ が反射的であることを示せ。
+:::
+
+::: solution
+前順序 $P$ に、$p\approx q\iff(p\le q\land q\le p)$ による商 $P/{\approx}$ に $[p]\le[q]\iff p\le q$（代表元によらない）を入れたものを対応させ、$\eta_{P}\colon P\to P/{\approx}$ を射影とする。$P/{\approx}$ は半順序（$[p]\le[q]\le[p]$ なら $p\approx q$）。半順序 $Q$ への単調写像 $g\colon P\to Q$ について、$p\approx q$ なら $g(p)\le g(q)\le g(p)$ で、反対称律から $g(p)=g(q)$。よって $\bar{g}([p])\defeq g(p)$ は代表元によらず単調で、$g=\bar{g}\circ\eta_{P}$。$\eta_{P}$ は全射なので $\bar{g}$ は一意。\ref{cat:reflective-basic} の 1 から反射的。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>健全性定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/02-first-order-logic/05-soundness.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 健全性定理 {#logic:page-soundness keywords="soundness theorem, soundness, 健全性"}
+
+導出できる論理式は、前提の論理的帰結になっている。すなわち $\Sigma\vdash\varphi$ ならば $\Sigma\models\varphi$ である。これが**健全性定理**であり、自然演繹の各規則が「正しい推論」であることを確かめれば、導出に関する帰納法で証明できる。証明自体は短いが、各規則に付けた条件（固有変数条件と代入可能性）がどこで必要になるかがはっきり見える。健全性定理の系として、充足可能な集合は無矛盾であること、したがってある論理式が導出**できない**ことを反例となる構造で示せることが得られる。
+
+## 記法と定義の確認 {#logic:sec-soundness-notation}
+
+::: notation
+- 導出 $D$、その結論 $\mathrm{concl}(D)$、未解消の仮定の集合 $\mathrm{A}(D)$、導出可能性 $\Sigma\vdash\varphi$、無矛盾性は \ref{logic:deduction-system}, \ref{logic:derivability} のとおり。導出は規則 (仮定)、$\to$I, $\to$E, RAA, $\forall$I, $\forall$E, $=$I, $=$E から帰納的に作られる。
+- 充足関係 $\mathcal{M},v\models\varphi$、論理的帰結 $\Sigma\models\varphi$（局所的な意味）は \ref{logic:satisfaction}, \ref{logic:model} のとおり。
+- 使う意味論の補題：一致補題（\ref{logic:coincidence}）、意味論的代入補題（\ref{logic:semantic-substitution}）、略記の意味（\ref{logic:abbreviation-semantics}）。
+:::
+
+## 健全性定理 {#logic:sec-soundness-theorem}
+
+::: theorem 健全性定理 {#logic:soundness keywords="soundness theorem" index="健全性定理|けんぜんせいていり, 健全性|けんぜんせい"}
+任意の導出 $D$ について $\mathrm{A}(D)\models\mathrm{concl}(D)$ が成り立つ。したがって、任意の論理式の集合 $\Sigma$ と論理式 $\varphi$ について
+$$
+\Sigma\vdash\varphi\ \Longrightarrow\ \Sigma\models\varphi .
+$$
+:::
+
+::: intuition
+導出の各段階で「未解消の仮定がすべて成り立つ構造と割り当てでは、その段階の結論も成り立つ」という性質が保たれる、ということである。仮定を解消する規則（$\to$I, RAA）では未解消の仮定の集合が小さくなるので、その分を規則自身が補っていることを確かめる。
+:::
+
+::: proof
+後半は前半から従う。実際、$\Sigma\vdash\varphi$ なら $\mathrm{concl}(D)=\varphi$, $\mathrm{A}(D)\subset\Sigma$ となる $D$ があり、前半と \ref{logic:consequence-basic} の 1 から $\Sigma\models\varphi$。
+
+前半を導出に関する帰納法で示す。各場合で、$\mathcal{M}$ を構造、$v$ を割り当てとし、$\mathcal{M},v\models\mathrm{A}(D)$ を仮定して $\mathcal{M},v\models\mathrm{concl}(D)$ を示す。前提となる導出 $D_{1},D_{2},D'$ については、帰納法の仮定 $\mathrm{A}(D_{i})\models\mathrm{concl}(D_{i})$ が使える。
+
+**Step 1（仮定）.** $D=\langle\varphi\rangle$ なら $\mathrm{A}(D)=\{\varphi\}$ なので明らか。
+
+**Step 2（$=$I）.** 結論 $t=t$ は、どの $\mathcal{M},v$ でも $t^{\mathcal{M},v}=t^{\mathcal{M},v}$ なので充足される。
+
+**Step 3（$\to$I）.** $D$ は $D'$（結論 $\psi$）に $\to$I を施したもので、結論 $\varphi\to\psi$、$\mathrm{A}(D)=\mathrm{A}(D')\setminus\{\varphi\}$ とする。$\mathcal{M},v\not\models\varphi$ なら充足の定義 4 により $\mathcal{M},v\models\varphi\to\psi$。$\mathcal{M},v\models\varphi$ なら、これと $\mathcal{M},v\models\mathrm{A}(D)$ から $\mathcal{M},v\models\mathrm{A}(D')$ であり、帰納法の仮定より $\mathcal{M},v\models\psi$、よって $\mathcal{M},v\models\varphi\to\psi$。
+
+**Step 4（$\to$E）.** $\mathrm{A}(D)=\mathrm{A}(D_{1})\cup\mathrm{A}(D_{2})$ なので $\mathcal{M},v$ は $\mathrm{A}(D_{1})$ と $\mathrm{A}(D_{2})$ を充足し、帰納法の仮定より $\mathcal{M},v\models\varphi\to\psi$ かつ $\mathcal{M},v\models\varphi$。定義 4 より $\mathcal{M},v\models\psi$。
+
+**Step 5（RAA）.** $D$ は $D'$（結論 $\bot$）に RAA を施したもので、結論 $\varphi$、$\mathrm{A}(D)=\mathrm{A}(D')\setminus\{\neg\varphi\}$ とする。$\mathcal{M},v\not\models\varphi$ と仮定する。\ref{logic:abbreviation-semantics} の 1 より $\mathcal{M},v\models\neg\varphi$ なので、$\mathcal{M},v\models\mathrm{A}(D')$ であり、帰納法の仮定より $\mathcal{M},v\models\bot$ となるが、これは充足の定義 1 に反する。よって $\mathcal{M},v\models\varphi$。
+
+**Step 6（$\forall$I）.** $D$ は $D'$（結論 $\varphi$）に $\forall$I を施したもので、結論 $\forall x\,\varphi$、$\mathrm{A}(D)=\mathrm{A}(D')$ であり、固有変数条件よりすべての $\psi\in\mathrm{A}(D')$ について $x\notin\mathrm{FV}(\psi)$ とする。$a\in M$ を任意にとる。$v$ と $v[x\mapsto a]$ は $x$ 以外で一致するので、各 $\psi\in\mathrm{A}(D')$ の $\mathrm{FV}(\psi)$ 上で一致する。一致補題（\ref{logic:coincidence}）より $\mathcal{M},v[x\mapsto a]\models\mathrm{A}(D')$。帰納法の仮定より $\mathcal{M},v[x\mapsto a]\models\varphi$。$a$ は任意なので、充足の定義 5 より $\mathcal{M},v\models\forall x\,\varphi$。
+
+**Step 7（$\forall$E）.** $D$ は $D'$（結論 $\forall x\,\varphi$）に、$\varphi$ の中で $x$ に代入可能な項 $t$ で $\forall$E を施したものとする。帰納法の仮定より $\mathcal{M},v\models\forall x\,\varphi$ なので、とくに $a=t^{\mathcal{M},v}$ について $\mathcal{M},v[x\mapsto a]\models\varphi$。$t$ は代入可能なので、意味論的代入補題（\ref{logic:semantic-substitution}）より $\mathcal{M},v\models\varphi[t/x]$。
+
+**Step 8（$=$E）.** $D_{1}$ の結論が $s=t$、$D_{2}$ の結論が $\varphi[s/x]$ で、$s,t$ は $\varphi$ の中で $x$ に代入可能とする。帰納法の仮定より $\mathcal{M},v\models s=t$、すなわち $s^{\mathcal{M},v}=t^{\mathcal{M},v}\eqdef b$、および $\mathcal{M},v\models\varphi[s/x]$。$s$ が代入可能なので、意味論的代入補題より $\mathcal{M},v[x\mapsto b]\models\varphi$。$t$ も代入可能で $t^{\mathcal{M},v}=b$ なので、同じ補題を逆向きに使って $\mathcal{M},v\models\varphi[t/x]$。
+
+::: hypcheck
+- **固有変数条件**：Step 6 で、$v[x\mapsto a]$ でも未解消の仮定が成り立つことを一致補題で導くのに使った。外すと偽：仮定 $P(x)$ に $\forall$I を施せば $\{P(x)\}\vdash\forall x\,P(x)$ となるが、\ref{logic:global-consequence} の構造と割り当てで $\{P(x)\}\not\models\forall x\,P(x)$。
+- **$\forall$E の代入可能性**：Step 7 で意味論的代入補題を使うのに必要。外すと偽：$\varphi=\neg\forall y\,\neg\neg\,x=y$（すなわち $\exists y\,\neg\,x=y$）、$t=y$ とすると、$\forall x\,\varphi$ は二元以上の構造で真だが、$\varphi[y/x]=\exists y\,\neg\,y=y$ はどの構造でも偽。
+- **$=$E の代入可能性（$s$ と $t$ の両方）**：Step 8。$t$ の代入可能性を外すと偽：$\varphi=\exists y\,\neg\,z=y$、$s=x$、$t=y$ とする。二元以上の領域と $v(x)=v(y)$ である割り当てでは、$x=y$ と $\varphi[x/z]=\exists y\,\neg\,x=y$ はともに充足されるが、結論 $\varphi[y/z]=\exists y\,\neg\,y=y$ は偽。$s$ の代入可能性を外した場合も、$s$ と $t$ の役割を入れ替えた同様の例がある。
+- **メタ理論が古典論理であること**：Step 5（「$\mathcal{M},v\not\models\varphi$ と仮定して矛盾」から $\mathcal{M},v\models\varphi$ を結論する）。RAA の健全性はメタ理論の背理法に依存している。
+- 等号の解釈が本当の等号であること（構造の定義で $=$ は論理記号）：Step 2 と Step 8。
+:::
+:::
+
+::: supplement
+**逆向き.** 健全性定理の逆（$\Sigma\models\varphi$ ならば $\Sigma\vdash\varphi$）が完全性定理（\ref{logic:completeness}）である。健全性は各規則を一つずつ確かめれば済むのに対し、完全性は「導出できないなら反例となる構造がある」ことを示す必要があり、構造を作る議論になる。
+
+**直観主義論理.** RAA を除いた体系（爆発律 $\bot\vdash\varphi$ は別に規則として加える）は直観主義論理の自然演繹である。上の証明から RAA の場合を除いたものは、この体系が古典的な構造の意味論に対して健全であることを示している。直観主義論理に対してはクリプキ意味論などの別の意味論があり、そちらについても健全性と完全性が成り立つことが知られている（本系列では扱わない）。
+:::
+
+## 系：無矛盾性と導出不能性 {#logic:sec-soundness-corollaries}
+
+::: corollary 充足可能ならば無矛盾 {#logic:satisfiable-consistent keywords="satisfiable implies consistent"}
+充足可能な論理式の集合は無矛盾である。とくに $\varnothing$ は無矛盾であり、$\not\vdash\bot$。
+:::
+
+::: proof
+$\mathcal{M},v\models\Sigma$ とする。$\Sigma\vdash\bot$ なら健全性定理より $\Sigma\models\bot$ なので $\mathcal{M},v\models\bot$ となるが、これは充足の定義 1 に反する。$\varnothing$ はどの $\mathcal{M},v$ でも充足される（領域が空でない構造は存在する。たとえば一点集合を領域とし、すべての記号をその一点で解釈する）。
+:::
+
+::: example 導出できないことの証明 {#logic:ex-non-derivability}
+健全性定理の対偶「$\Sigma\not\models\varphi$ ならば $\Sigma\not\vdash\varphi$」により、導出できないことは反例の構造を一つ挙げれば示せる。
+1. $\{P(x)\}\not\vdash\forall x\,P(x)$（\ref{logic:global-consequence} の反例）。
+2. $\not\vdash\forall x\,\exists y\,Q(x,y)\to\exists y\,\forall x\,Q(x,y)$（\ref{logic:prob-order-of-quantifiers} の反例）。
+3. $\not\vdash\exists x\,P(x)\to\forall x\,P(x)$：領域 $\{0,1\}$、$P^{\mathcal{M}}=\{0\}$。
+4. 群の公理から可換性は導出できない：可換でない群（たとえば $3$ 次の対称群）が群の公理の反例のモデルになる。
+
+導出の定義を直接調べて「どう組み合わせても $\varphi$ が出てこない」ことを示すのは一般に難しい。健全性定理は、その問題を具体的な構造を一つ作る問題に置き換える。
+:::
+
+## 問題 {#logic:sec-soundness-problems}
+
+::: problem {#logic:prob-soundness-variant}
+$\forall$I の固有変数条件を「$x$ が結論 $\forall x\,\varphi$ に自由に現れないこと」に置き換えた体系を考える。この条件は何も制限していないことを確かめ、この体系が健全でないことを示せ。
+:::
+
+::: solution
+$\mathrm{FV}(\forall x\,\varphi)=\mathrm{FV}(\varphi)\setminus\{x\}$ なので、$x$ は $\forall x\,\varphi$ に決して自由に現れない。よって新しい条件は常に満たされ、どんな導出にも $\forall$I を施せる。とくに仮定 $x=c$ に $\forall$I を施すと $\{x=c\}\vdash\forall x\,(x=c)$ となる。しかし領域 $\{0,1\}$、$c^{\mathcal{M}}=0$、$v(x)=0$ とすると、前提 $x=c$ は充足され、結論 $\forall x\,(x=c)$ は（$x$ に $1$ を割り当てると偽なので）充足されない。よって健全でない。正しい固有変数条件が見ているのは結論ではなく、**未解消の仮定**である。
+:::
+
+::: problem {#logic:prob-soundness-classical}
+$\vdash\neg\neg\varphi\to\varphi$ の健全性（すなわち $\models\neg\neg\varphi\to\varphi$）を、充足の定義から直接確かめよ。どこでメタ理論の古典論理を使うか。
+:::
+
+::: solution
+$\mathcal{M},v\models\neg\neg\varphi$ とする。\ref{logic:abbreviation-semantics} の 1 を二回使うと、これは「$\mathcal{M},v\models\varphi$ でない、ということはない」であり、メタ理論の二重否定除去によって $\mathcal{M},v\models\varphi$ となる。二重否定除去（あるいは排中律「$\mathcal{M},v\models\varphi$ であるかないかのどちらか」）を使う点が古典的である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

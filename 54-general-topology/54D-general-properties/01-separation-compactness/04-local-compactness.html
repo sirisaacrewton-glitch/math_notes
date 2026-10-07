@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>局所コンパクト空間と一点コンパクト化 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54D-general-properties/01-separation-compactness/04-local-compactness.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 局所コンパクト空間と一点コンパクト化 {#top:page-local-compactness keywords="locally compact space, compact neighbourhoods, one-point compactification, Alexandroff compactification, stereographic projection, R^n and the sphere S^n"}
+
+$\R^{n}$ はコンパクトでないが、各点のまわりではコンパクトな近傍（閉球）をもつ。このような空間を**局所コンパクト**という（\ref{top:locally-compact}）。局所コンパクトなハウスドルフ空間に「無限遠点」を一つ加えると、コンパクトなハウスドルフ空間になる（**一点コンパクト化**、\ref{top:one-point-compactification}）。たとえば $\R^{n}$ の一点コンパクト化は球面 $S^{n}$ である（\ref{top:rn-one-point}）。
+
+> 資料：内田伏一『集合と位相』§24。
+
+## 記法と定義の確認 {#top:sec-lc-notation}
+
+::: notation
+- コンパクト性、ハウスドルフ空間のコンパクト集合は閉、コンパクトからハウスドルフへの写像、正則性の言い換えは前ページまでのとおり（\ref{top:compact}, \ref{top:compact-basic}, \ref{top:compact-hausdorff-closed}, \ref{top:compact-to-hausdorff}, \ref{top:regular-normal-characterization}）。
+- 議論は $\ZF$ で行う。
+:::
+
+## 局所コンパクト性 {#top:sec-lc-definition}
+
+::: definition 局所コンパクト {#top:locally-compact keywords="locally compact space" index="局所コンパクト|きょくしょこんぱくと"}
+位相空間 $X$ が**局所コンパクト**であるとは、各点がコンパクトな近傍をもつことをいう。
+:::
+
+::: proposition 局所コンパクトハウスドルフ空間の近傍 {#top:lch-neighborhood-base keywords="in a locally compact Hausdorff space every point has a base of open neighbourhoods with compact closures" index="局所コンパクトハウスドルフ空間|きょくしょこんぱくとはうすどるふくうかん"}
+$X$ を局所コンパクトなハウスドルフ空間とする。点 $x$ と開近傍 $W$ について、開集合 $U$ で、$x\in U\subseteq\overline{U}\subseteq W$ かつ $\overline{U}$ がコンパクトなものがある。とくに $X$ は $T_{3}$ である。
+:::
+
+::: proof
+**Step 1.** $x$ のコンパクトな近傍 $K$ をとり、$x\in V\subseteq K$ となる開集合 $V$ をとる。$K$ はハウスドルフ空間のコンパクト集合なので閉で、$\overline{V}\subseteq K$ はコンパクト（閉部分集合）。
+
+**Step 2.** 部分空間 $\overline{V}$ はコンパクトハウスドルフなので正則（\ref{top:compact-hausdorff-normal}）。$\overline{V}$ の中で、$x$ の開近傍 $V\cap W$（$\overline{V}$ で開）に対し、$\overline{V}$ で開な $O$ で $x\in O\subseteq\operatorname{cl}_{\overline{V}}O\subseteq V\cap W$ となるものがある（\ref{top:regular-normal-characterization} の 1）。
+
+**Step 3.** $O\subseteq V\cap W\subseteq V$ で、$O$ は $\overline{V}$ で開なので $O=G\cap\overline{V}$（$G$ は $X$ で開）、したがって $O=G\cap V$ は $X$ で開。$\overline{V}$ は $X$ で閉なので、$O$ の $X$ での閉包は $\overline{V}$ での閉包に等しく（\ref{top:subspace-basic} の 2）、$V\cap W\subseteq W$ に含まれ、コンパクト（$\overline{V}$ の閉部分集合）。$U\defeq O$。
+
+::: hypcheck
+- **ハウスドルフ性**：Step 1 で $K$ が閉であることと、Step 2 の正則性に使った。ハウスドルフでない局所コンパクト空間では、コンパクトな閉近傍があるとは限らない。
+:::
+:::
+
+::: example
+1. $\R^{n}$ は局所コンパクト（閉球はハイネ＝ボレルの定理からコンパクト）。離散空間も局所コンパクト（$\{x\}$ はコンパクト）。
+2. $\mathbb{Q}$ は局所コンパクトでない：$0$ のコンパクトな近傍 $K$ があれば、ある $[-\varepsilon,\varepsilon]\cap\mathbb{Q}\subseteq K$（端点は無理数にとる）は $K$ の閉部分集合としてコンパクトだが、$\R$ の閉集合でないので（$\R$ のコンパクト集合は閉）矛盾。
+3. 無限次元のノルム空間は局所コンパクトでない（関数解析の系列で扱う予定。リースの定理）。
+4. 局所コンパクト空間の連続像は局所コンパクトとは限らないが、開かつ連続な全射の像は局所コンパクトである（問題 \ref{top:prob-open-image-lc}）。
+:::
+
+## 一点コンパクト化 {#top:sec-lc-compactification}
+
+::: definition 一点コンパクト化 {#top:one-point-compactification keywords="one-point (Alexandroff) compactification" index="一点コンパクト化|いってんこんぱくとか, アレクサンドロフのコンパクト化|あれくさんどろふのこんぱくとか, 無限遠点|むげんえんてん"}
+位相空間 $X$ と、$X$ に属さない点 $\infty$ について、$X^{*}\defeq X\cup\{\infty\}$ に次の位相を入れたものを $X$ の**一点コンパクト化**という：開集合は、$X$ の開集合と、$X^{*}\setminus K$（$K$ は $X$ のコンパクトな閉集合）の形の集合。
+:::
+
+::: theorem 一点コンパクト化の性質 {#top:one-point-properties keywords="the one-point compactification is compact; Hausdorff iff X is locally compact Hausdorff; X is an open subspace" index="一点コンパクト化の性質|いってんこんぱくとかのせいしつ"}
+1. 上の族は $X^{*}$ 上の位相で、$X$ は $X^{*}$ の開部分空間（相対位相はもとの位相）である。
+2. $X^{*}$ はコンパクトである。
+3. $X^{*}$ がハウスドルフであることと、$X$ が局所コンパクトなハウスドルフ空間であることは同値である。
+4. $X$ がコンパクトでなければ、$X$ は $X^{*}$ で稠密である。
+:::
+
+::: proof
+**1.** (O1)：$\varnothing$ は $X$ で開、$X^{*}=X^{*}\setminus\varnothing$。(O2)：$X$ の開集合どうしはよい。$(X^{*}\setminus K)\cap(X^{*}\setminus L)=X^{*}\setminus(K\cup L)$ で、$K\cup L$ はコンパクトな閉集合。$U\cap(X^{*}\setminus K)=U\cap(X\setminus K)$ は $X$ で開。(O3)：和に $\infty$ を含む集合 $X^{*}\setminus K_{\lambda}$ が一つ以上あれば、和は $X^{*}\setminus\bigl(\bigcap_{\lambda}K_{\lambda}\cap\bigcap_{\mu}(X\setminus U_{\mu})\bigr)$ の形で、括弧の中は（一つの $K_{\lambda_{0}}$ の閉部分集合として）コンパクトな閉集合。なければ $X$ の開集合の和。部分空間：$X$ の開集合はそのまま、$(X^{*}\setminus K)\cap X=X\setminus K$ も $X$ で開。$X$ 自身は $X$ の開集合なので $X^{*}$ で開。
+
+**2.** 開被覆 $\mathcal{U}$ の中で $\infty$ を含む元 $X^{*}\setminus K$ をとる。$K$ はコンパクトで、$\mathcal{U}$ の元と $X$ の交わり（$X$ で開）の有限個で覆われる。それらと $X^{*}\setminus K$ で $X^{*}$ が覆われる。
+
+**3.** 「⇐」：$X$ の二点は $X$ で分離される。$x\in X$ と $\infty$：\ref{top:lch-neighborhood-base} から $x\in U$, $\overline{U}$ コンパクト（閉）となる開集合 $U$ をとると、$U$ と $X^{*}\setminus\overline{U}$ が分離する。「⇒」：$X$ は $X^{*}$ の部分空間なのでハウスドルフ。$x\in X$ と $\infty$ を分離する開集合 $U\ni x$, $X^{*}\setminus K\ni\infty$ をとると $U\subseteq K$ で、$K$ は $x$ のコンパクトな近傍。
+
+**4.** $\infty$ の任意の開近傍 $X^{*}\setminus K$ は、$K\neq X$（$X$ はコンパクトでない）なので $X$ と交わる。
+:::
+
+::: proposition 一点コンパクト化の一意性 {#top:one-point-unique keywords="uniqueness of the one-point compactification" index="一点コンパクト化の一意性|いってんこんぱくとかのいちいせい"}
+$X$ を局所コンパクトなハウスドルフ空間、$Y$ をコンパクトなハウスドルフ空間、$e\colon X\to Y$ を埋め込みで、$Y\setminus e[X]$ が一点 $p$ であるとする。このとき $e$ を延長して $\infty\mapsto p$ とした写像 $X^{*}\to Y$ は同相写像である。
+:::
+
+::: proof
+写像 $h$ は全単射。$X^{*}$ はコンパクト、$Y$ はハウスドルフなので、連続性を示せば同相（\ref{top:compact-to-hausdorff}）。$Y$ の開集合 $V$ について：$p\notin V$ なら $h^{-1}[V]=e^{-1}[V]$ は $X$ で開。$p\in V$ なら $Y\setminus V$ は $Y$ のコンパクトな閉集合で $e[X]$ に含まれ、$K\defeq e^{-1}[Y\setminus V]$ は（$e$ が埋め込みなので）$X$ のコンパクト集合、ハウスドルフなので閉。$h^{-1}[V]=X^{*}\setminus K$ は開。
+:::
+
+::: example 球面 {#top:rn-one-point}
+$\R^{n}$ の一点コンパクト化は $S^{n}=\{x\in\R^{n+1}:\lvert x\rvert=1\}$ と同相である。北極 $N=(0,\dots,0,1)$ からの立体射影の逆写像
+$$
+e(y)\defeq\Bigl(\frac{2y}{\lvert y\rvert^{2}+1},\ \frac{\lvert y\rvert^{2}-1}{\lvert y\rvert^{2}+1}\Bigr)
+$$
+は $\R^{n}$ から $S^{n}\setminus\{N\}$ への同相写像（逆写像 $(x,t)\mapsto x/(1-t)$ も連続）で、$S^{n}$ はコンパクトハウスドルフなので、\ref{top:one-point-unique} から $(\R^{n})^{*}\approx S^{n}$。同様に、$\N$（離散）の一点コンパクト化は $\{0\}\cup\{1/n:n\ge1\}$ と同相で、順序数 $\omega+1$ と同相（\ref{top:order-topology-base} の例 3）。
+:::
+
+::: supplement
+**前提を変えると.** ハウスドルフでない $X$ についても $X^{*}$ はコンパクトだが、ハウスドルフにはならない。たとえば $X=\mathbb{Q}$ では、$\infty$ の開近傍は $\mathbb{Q}\setminus K$（$K$ コンパクト）を含むが、$\mathbb{Q}$ のコンパクト集合は内部が空なので、$\infty$ と各点を分離できない。
+
+**類似の定理.** 局所コンパクトハウスドルフ空間は完全正則で（\ref[完全正則空間]{top:completely-regular}）、ストーン–チェックのコンパクト化 $\beta X$ をもつ。一点コンパクト化はコンパクト化の中で「最小」のもの、$\beta X$ は「最大」のものである。
+
+**高い視点から：無限遠点を一つ足す.** 一点コンパクト化は、空間の「遠くへ逃げていく」近づき方をすべて一点にまとめる操作である。比喩で言えば、平面の上でどの方向にどこまで行っても、最後には同じ一つの「地平線の点」にたどり着く、と考えると平面が球面に閉じる。複素関数論のリーマン球面 $\mathbb{C}\cup\{\infty\}$ はこの例で、$1/z$ によって $0$ と $\infty$ を入れ替える座標変換が使えるようになる。
+:::
+
+## 問題 {#top:sec-lc-problems}
+
+::: problem {#top:prob-open-image-lc}
+局所コンパクト空間 $X$ から $Y$ への連続な開全射 $f$ があれば、$Y$ は局所コンパクトであることを示せ。
+:::
+
+::: solution
+$y=f(x)$ とし、$x$ のコンパクトな近傍 $K$ と開集合 $x\in U\subseteq K$ をとる。$f[U]$ は開（開写像）で $y$ を含み、$f[U]\subseteq f[K]$、$f[K]$ はコンパクト（連続像）。よって $f[K]$ は $y$ のコンパクトな近傍。
+:::
+
+::: problem {#top:prob-closed-subspace-lc}
+局所コンパクト空間の閉部分空間は局所コンパクトであり、局所コンパクトハウスドルフ空間の開部分空間は局所コンパクトであることを示せ。
+:::
+
+::: solution
+閉部分空間 $F$ と $x\in F$：$x$ のコンパクト近傍 $K$ について $K\cap F$ はコンパクト（$K$ の閉部分集合）で、$F$ での $x$ の近傍。開部分空間 $W$ と $x\in W$：\ref{top:lch-neighborhood-base} から $x\in U\subseteq\overline{U}\subseteq W$ で $\overline{U}$ コンパクトなものがあり、$\overline{U}$ は $W$ での $x$ のコンパクト近傍。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

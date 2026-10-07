@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>マルチン＝レーフのランダムネス | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/03-martin-lof.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# マルチン＝レーフのランダムネス {#comp:page-martin-lof keywords="Martin-Lof randomness, Martin-Lof test, universal test, Cantor space, Levin-Schnorr theorem, incompressibility of prefixes, Chaitin's Omega, halting probability"}
+
+無限の $0,1$ の列 $X$ が「ランダム」であるとは何か。本ページでは、**マルチン＝レーフ検定**（\ref{comp:ml-test}）——測度がいくらでも小さくなる、計算可能に数え上げられる「異常な列の集まり」の列——のどれにも引っかからない列を**ランダム**と定める。検定には**万能なもの**（\ref{comp:universal-ml-test}）があるので、ランダムでない列全体は測度 $0$ である。主定理は、ランダム性が「始切片が圧縮できない」こと、すなわち $H(X\restr n)\ge n-c$ と同値であるという**レヴィン–シュノアの定理**（\ref{comp:levin-schnorr}）である。最後に、万能な接頭辞なしの機械が停止する確率 **$\Omega$**（\ref{comp:chaitin-omega}）がランダムであること（\ref{comp:omega-random}）を示す。
+
+> 本ページも資料フォルダに参考書がなく、一般に知られている定義と証明を本サイトで組み立てた。
+
+## 記法と定義の確認 {#comp:sec-ml-notation}
+
+::: notation
+- 接頭辞 $\preceq$、接頭辞なしの集合、接頭辞なしの機械、万能な接頭辞なしの機械 $U$、接頭辞なし複雑性 $H$、$\sum_{x}2^{-H(x)}\le1$（\ref{comp:prefix-bounds}）、クラフト–チャイティンの定理（\ref{comp:kraft-chaitin}）は \ref{comp:page-prefix-free-complexity} のとおり。
+- $2^{\omega}$ は $0,1$ の無限列全体（**カントール空間**）。$X\in2^{\omega}$ の最初の $n$ 項からなる文字列を $X\restr n$ と書く。文字列 $\sigma$ について $[\sigma]\defeq\{X:\sigma\preceq X\}$（$\sigma$ が $X$ の始切片）、文字列の集合 $W$ について $[W]\defeq\bigcup_{\sigma\in W}[\sigma]$。
+- 文字列の集合 $W$ が **c.e.**（計算可能に数え上げ可能）とは、半決定可能（\ref{comp:page-representability} の記法）であることをいう。集合の列 $(W_{n})_{n}$ が**一様に c.e.** とは $\{(n,\sigma):\sigma\in W_{n}\}$ が c.e. であることをいう。
+- 停止集合 $K$ の決定不能性（\ref{comp:halting-L}）を使う。
+:::
+
+## 開集合の測度 {#comp:sec-ml-measure}
+
+::: definition 測度 {#comp:cantor-measure keywords="uniform measure on Cantor space, measure of open sets" index="カントール空間の測度|かんとーるくうかんのそくど"}
+1. 有限集合 $F$ の文字列について、$N\ge\max_{\sigma\in F}\lvert\sigma\rvert$ をとり、$\lambda([F])\defeq\lvert\{\tau\in\{0,1\}^{N}:\text{ある }\sigma\in F\text{ で }\sigma\preceq\tau\}\rvert\cdot2^{-N}$ とする（$N$ によらない：$N$ を $1$ 増やすと、数える $\tau$ の個数も全体の個数もちょうど $2$ 倍になる）。
+2. 任意の集合 $W$ について $\lambda([W])\defeq\sup\{\lambda([F]):F\subseteq W\text{ は有限}\}$。
+3. $A\subseteq2^{\omega}$ が**測度 $0$** とは、すべての $\varepsilon>0$ について、$A\subseteq[W]$ かつ $\lambda([W])<\varepsilon$ となる $W$ があることをいう。
+:::
+
+::: lemma 測度の基本性質 {#comp:measure-basic keywords="subadditivity, prefix-free sum"}
+1. $\lambda([W])\le\sum_{\sigma\in W}2^{-\lvert\sigma\rvert}$。$W$ が接頭辞なしなら等号。
+2. $\lambda([W\cup W'])\le\lambda([W])+\lambda([W'])$。可算個の和についても同様。
+3. c.e. な $W$ から、接頭辞なしの c.e. な集合 $W^{\ast}$ で $[W^{\ast}]=[W]$ となるものが（一様に）作れる。
+:::
+
+::: proof
+1. 有限の $F$ について、長さ $N$ の $\tau$ で $F$ のどれかの延長であるものの個数は $\sum_{\sigma\in F}2^{N-\lvert\sigma\rvert}$ 以下で、$F$ が接頭辞なしなら（延長の集合が交わらないので）等号。上限をとる。
+2. 有限部分集合 $F\subseteq W\cup W'$ を $F\cap W$ と $F\setminus W$ に分けて 1 の数え上げを使う。可算個も同様（有限部分集合は有限個の $W_{i}$ にしか触れない）。
+3. $W$ を $\sigma_{0},\sigma_{1},\dots$ と数え上げる。段階 $s$ で $W^{\ast}_{s}$ が接頭辞なしの有限集合とする。$\sigma_{s}$ が来たら、$L\defeq\max(\lvert\sigma_{s}\rvert,\max\{\lvert\rho\rvert:\rho\in W^{\ast}_{s}\})$ とし、長さ $L$ の $\tau\succeq\sigma_{s}$ で $W^{\ast}_{s}$ のどの元の延長でもないものをすべて $W^{\ast}_{s+1}$ に加える。加えた $\tau$ は $W^{\ast}_{s}$ のどの元とも比較可能でない（$\rho\preceq\tau$ は除いた。$\tau\prec\rho$ は $\lvert\rho\rvert\le L=\lvert\tau\rvert$ からありえない）ので接頭辞なしが保たれ、$[\sigma_{s}]\subseteq[W^{\ast}_{s+1}]\subseteq[W]$。
+:::
+
+## マルチン＝レーフ検定 {#comp:sec-ml-test}
+
+::: definition マルチン＝レーフ検定とランダムネス {#comp:ml-test keywords="Martin-Lof test, Martin-Lof random" index="マルチン＝レーフ検定|まるちんれーふけんてい, マルチン＝レーフのランダムネス|まるちんれーふのらんだむねす"}
+**マルチン＝レーフ検定**とは、一様に c.e. な文字列の集合の列 $(V_{n})_{n\in\N}$ で、すべての $n$ について $\lambda([V_{n}])\le2^{-n}$ となるものをいう。$X\in\bigcap_{n}[V_{n}]$ のとき $X$ は検定に**落ちる**という。どのマルチン＝レーフ検定にも落ちない $X$ を（マルチン＝レーフの意味で）**ランダム**という。
+:::
+
+::: remark
+$\bigcap_{n}[V_{n}]$ は測度 $0$ である（$\lambda([V_{n}])\le2^{-n}$）。検定は「確率 $2^{-n}$ でしか起こらない異常」を $n$ ごとに計算可能に記述したもので、ランダムな列は、計算可能に記述できるどの測度 $0$ の性質（$\bigcap_{n}[V_{n}]$ の形のもの）ももたない列である。例えば、計算可能な列 $X$ は $V_{n}\defeq\{X\restr n\}$ の検定に落ちるのでランダムでない。
+:::
+
+::: theorem 万能な検定 {#comp:universal-ml-test keywords="universal Martin-Lof test" index="万能な検定|ばんのうなけんてい"}
+マルチン＝レーフ検定 $(U_{n})$ で、$X$ がランダムであることと $X\notin\bigcap_{n}[U_{n}]$ が同値となるものがある。とくに、ランダムでない列全体は測度 $0$ である。
+:::
+
+::: proof
+$W_{e}$ を $e$ 番目の c.e. な集合（$\varphi_{e}$ の定義域を、組 $(m,\sigma)$ の集合と読んだもの）とし、$W_{e,m}\defeq\{\sigma:(m,\sigma)\in W_{e}\}$ とする。$\widehat{W}_{e,m}$ を、$W_{e,m}$ を数え上げながら、新しい $\sigma$ を加えると（それまでに加えたものとの有限の和の）測度が $2^{-m}$ を超える場合はその $\sigma$ を加えない、という手続きで作る（有限集合の測度は \ref{comp:cantor-measure} の 1 で計算できる）。すると $\lambda([\widehat{W}_{e,m}])\le2^{-m}$ で、$W_{e,m}$ がもともと $\lambda([W_{e,m}])\le2^{-m}$ なら $\widehat{W}_{e,m}=W_{e,m}$（どの有限部分の測度も $2^{-m}$ 以下なので何も除かれない）。
+$$
+U_{n}\defeq\bigcup_{e}\widehat{W}_{e,n+e+1}
+$$
+とする。一様に c.e. で、\ref{comp:measure-basic} の 2 から $\lambda([U_{n}])\le\sum_{e}2^{-(n+e+1)}=2^{-n}$。任意の検定 $(V_{m})$ は、ある $e$ で $V_{m}=W_{e,m}=\widehat{W}_{e,m}$（すべての $m$）となるので、$V_{n+e+1}\subseteq U_{n}$。$X$ が $(V_{m})$ に落ちれば、すべての $n$ で $X\in[V_{n+e+1}]\subseteq[U_{n}]$ で、$(U_{n})$ にも落ちる。
+:::
+
+## レヴィン–シュノアの定理 {#comp:sec-levin-schnorr}
+
+::: theorem レヴィン–シュノアの定理 {#comp:levin-schnorr keywords="Levin-Schnorr theorem, randomness equals incompressibility" index="レヴィン–シュノアの定理|れゔぃんしゅのあのていり"}
+$X\in2^{\omega}$ について、$X$ がランダムであることと、定数 $c$ があってすべての $n$ で $H(X\restr n)\ge n-c$ となることは同値である。
+:::
+
+::: proof
+**ランダム $\Rightarrow$ 圧縮できない.** 対偶を示す。$V_{c}\defeq\{\sigma:H(\sigma)<\lvert\sigma\rvert-c\}$ とする。$H(\sigma)<k$ は「長さ $k$ 未満の $p$ で $U(p)=\sigma$ となるものがある」と同値で半決定可能なので、$(V_{c})_{c}$ は一様に c.e.。\ref{comp:measure-basic} の 1 と \ref{comp:prefix-bounds} の 1 から
+$$
+\lambda([V_{c}])\le\sum_{\sigma\in V_{c}}2^{-\lvert\sigma\rvert}<\sum_{\sigma}2^{-H(\sigma)-c}\le2^{-c}.
+$$
+よって $(V_{c})$ はマルチン＝レーフ検定。すべての $c$ で $H(X\restr n)<n-c$ となる $n$ があるなら、$X\in[V_{c}]$（すべての $c$）で、$X$ はランダムでない。
+
+**圧縮できない $\Rightarrow$ ランダム.** 対偶を示す。$X$ がランダムでないとし、万能な検定 $(U_{n})$（\ref{comp:universal-ml-test}）をとる。\ref{comp:measure-basic} の 3 で、各 $U_{2n}$ を接頭辞なしの c.e. な $U^{\ast}_{2n}$（$[U^{\ast}_{2n}]=[U_{2n}]$）に取り替える。要求の列
+$$
+\bigl(\lvert\sigma\rvert-n,\ \sigma\bigr)\qquad(n\ge1,\ \sigma\in U^{\ast}_{2n})
+$$
+は計算可能に数え上げられ（$\lvert\sigma\rvert-n<0$ のものは、$\lambda([U^{\ast}_{2n}])\le2^{-2n}$ より $\lvert\sigma\rvert\ge2n$ なので現れない）、\ref{comp:measure-basic} の 1（接頭辞なしで等号）から
+$$
+\sum_{n\ge1}\sum_{\sigma\in U^{\ast}_{2n}}2^{-\lvert\sigma\rvert+n}=\sum_{n\ge1}2^{n}\lambda([U_{2n}])\le\sum_{n\ge1}2^{n}2^{-2n}=1.
+$$
+クラフト–チャイティンの定理（\ref{comp:kraft-chaitin}）の機械 $M$ について、$\sigma\in U^{\ast}_{2n}$ なら $H(\sigma)\le\lvert\sigma\rvert-n+c_{M}$。任意の $c$ について $n\defeq c+c_{M}+1$ とすると、$X\in[U^{\ast}_{2n}]$ なので、ある始切片 $\sigma=X\restr m\in U^{\ast}_{2n}$ があり、$H(X\restr m)\le m-n+c_{M}<m-c$。よって圧縮できない定数 $c$ は存在しない。
+:::
+
+## チャイティンの $\Omega$ {#comp:sec-omega}
+
+::: definition 停止確率 {#comp:chaitin-omega keywords="Chaitin's Omega, halting probability" index="チャイティンの Ω|ちゃいてぃんのおめが, 停止確率|ていしかくりつ"}
+$\Omega\defeq\sum_{p\in\mathrm{dom}(U)}2^{-\lvert p\rvert}$。クラフトの不等式から $0<\Omega\le1$。$U$ の定義域を数え上げ、段階 $s$ までに見つかった $p$ の和を $\Omega_{s}$ とすると、$\Omega_{s}$ は有理数で単調に増加し $\Omega$ に収束する。
+:::
+
+::: lemma Ω は計算可能でない {#comp:omega-not-computable keywords="Omega is not computable, Omega is irrational"}
+$\Omega$ は計算可能な実数でない（すべての $n$ について $\lvert\Omega-q_{n}\rvert<2^{-n}$ となる有理数 $q_{n}$ を計算する手続きはない）。とくに $\Omega$ は有理数でない。
+:::
+
+::: proof
+そのような手続きがあるとする。$n$ が与えられたら、$q_{n+1}$ を計算し、$\Omega_{s}>q_{n+1}-2^{-n-1}$ となる $s$ を探す（$\Omega_{s}\to\Omega>q_{n+1}-2^{-n-1}$ なので見つかる）。このとき $\Omega-\Omega_{s}<(q_{n+1}+2^{-n-1})-(q_{n+1}-2^{-n-1})=2^{-n}$。長さ $n$ 以下の $p$ で段階 $s$ までに停止していないものは、決して停止しない（停止すれば $\Omega\ge\Omega_{s}+2^{-n}$ となる）。よって $\mathrm{dom}(U)$ は決定可能になる。一方、$1^{e}0\in\mathrm{dom}(M)\iff e\in K$ となる接頭辞なしの機械 $M$（定義域 $\{1^{e}0:e\in K\}$ は接頭辞なし）があり、$M=M_{d}$ として $1^{e}0\in\mathrm{dom}(M)\iff1^{d}01^{e}0\in\mathrm{dom}(U)$ なので、$K$ が決定可能になり \ref{comp:halting-L} に矛盾する。有理数は計算可能なので、後半が従う。
+:::
+
+::: theorem Ω はランダム {#comp:omega-random keywords="Omega is Martin-Lof random" index="Ω のランダム性|おめがのらんだむせい"}
+$\Omega$ の二進展開 $\Omega=0.\omega_{1}\omega_{2}\cdots$ を列とみなしたものはランダムである。
+:::
+
+::: proof
+$\Omega$ は有理数でないので二進展開は一意で、$\Omega\restr n\defeq\omega_{1}\cdots\omega_{n}$ について $0.\Omega\restr n<\Omega<0.\Omega\restr n+2^{-n}$。
+
+次の計算可能な部分関数 $g$ を考える：入力 $\tau$（長さ $n$）について、$\Omega_{s}>0.\tau$ となる $s$ を探し、段階 $s$ までに停止した長さ $n$ 以下の $p$ の出力 $U(p)$ の集合を $O$ とし、$O$ に属さない文字列のうち（長さ優先の辞書式順序で）最初のものを $g(\tau)$ とする。$\tau=\Omega\restr n$ なら $s$ は見つかり、\ref{comp:omega-not-computable} の証明と同じ理由で（$\Omega-\Omega_{s}<2^{-n}$）、長さ $n$ 以下の停止する $p$ はすべて段階 $s$ までに停止している。よって $x\defeq g(\Omega\restr n)$ は長さ $n$ 以下のどの記述の出力でもなく、$H(x)>n$。
+
+一方、$g$ を $U$ の記述に前置する接頭辞なしの機械 $M(p)\defeq g(U(p))$ を考えると（定義域は $\mathrm{dom}(U)$ の部分集合なので接頭辞なし）、$H(g(\tau))\le H(\tau)+c_{M}$。よって $n<H(x)\le H(\Omega\restr n)+c_{M}$、すなわち $H(\Omega\restr n)>n-c_{M}$ がすべての $n$ で成り立つ。レヴィン–シュノアの定理（\ref{comp:levin-schnorr}）から $\Omega$ はランダムである。
+:::
+
+::: hypcheck
+- **接頭辞なし複雑性 $H$ を使ったこと**：レヴィン–シュノアの定理の前半で $\sum_{\sigma}2^{-H(\sigma)}\le1$ を使った。$K$ ではこの和が発散する（問題 \ref{comp:prob-kraft-plain}）ので、同じ形の定理は成り立たない。実際、どんな列についても $K(X\restr n)\le n-\log n$ となる $n$ が無限にあることが知られている（マルチン＝レーフ）。
+- **接頭辞なしへの取り替え**（\ref{comp:measure-basic} の 3）：後半で、要求の重みの和を測度で抑えるのに使った（接頭辞なしでないと和が測度より大きくなりうる）。
+- **万能な検定**：後半で、ランダムでないことを一つの検定 $(U_{n})$ で表すのに使った。
+- **$\Omega$ が有理数でないこと**：二進展開を一意にし、$0.\Omega\restr n<\Omega$（$s$ が見つかること）に使った。
+:::
+
+## 問題 {#comp:sec-ml-problems}
+
+::: problem {#comp:prob-random-not-computable}
+ランダムな列は計算可能でないことを、(a) 検定を作る方法で、(b) レヴィン–シュノアの定理を使う方法で示せ。
+:::
+
+::: solution
+(a) 本文の注意：$X$ が計算可能なら $V_{n}\defeq\{X\restr n\}$ は一様に c.e. で $\lambda([V_{n}])=2^{-n}$。$X$ はこれに落ちる。
+(b) $X$ が計算可能なら、$n\mapsto X\restr n$ は計算可能なので $H(X\restr n)\le H(n)+O(1)\le\log n+2\log\log n+O(1)$（問題 \ref{comp:prob-H-numbers}）。これは $n-c$ より小さくなる。
+:::
+
+::: problem {#comp:prob-random-frequency}
+ランダムな列 $X$ では、$0$ が無限に多く現れることを示せ。
+:::
+
+::: solution
+$0$ が有限個しか現れないなら、ある $\sigma$ について $X=\sigma111\cdots$ で、$X$ は計算可能になる。問題 \ref{comp:prob-random-not-computable} に矛盾する。（より強く、ランダムな列では $0$ の割合が $1/2$ に収束する（大数の法則）ことが知られている。その証明は、割合が外れる列の集合を検定として書くことによる。）
+:::
+
+::: supplement
+**前提の検討.**
+- 検定の条件 $\lambda([V_{n}])\le2^{-n}$ の $2^{-n}$ は、計算可能に $0$ に収束する任意の列に変えてもランダムの概念は変わらない（部分列をとればよい）。
+- 「一様に c.e.」を「一様に決定可能」に強めた検定（シュノアのランダムネスなど）や、測度が計算可能であることを要求する検定では、異なる（より弱い）ランダムネスの概念が得られる。
+
+**関連する結果.**
+- *ミラー–ユーの定理.* $X$ がランダムであることと、$K(X\restr n)\ge n-H(n)-O(1)$ がすべての $n$ で成り立つことは同値であることが知られている。
+- *クチェラ–ガーチの定理.* どんな列も、あるランダムな列から計算できる（チューリング還元できる）ことが知られている。
+- *不完全性との関係（チャイティン）.* 健全で計算可能に公理化された理論 $T$ について、ある定数 $c_{T}$ があり、$T$ は「$H(x)>c_{T}$」の形の文を一つも証明できない（ほとんどの $x$ でそれが真であるにもかかわらず）。また $T$ は $\Omega$ の二進展開のビットを有限個しか決定できない。
+
+**高い視点から：三つの顔をもつランダムネス.** マルチン＝レーフのランダムネスは、(1) **統計的**には「計算可能に記述できるどんな稀な性質にも当てはまらない」（検定に落ちない）、(2) **情報的**には「始切片が圧縮できない」（レヴィン–シュノア）、(3) **予測不能性**としては「計算可能な賭けの戦略でいくらでも儲けることはできない」（シュノアのマルチンゲールによる特徴づけ。本サイトでは扱っていない）、という三つの同値な顔をもつ。三つの直観がちょうど一つの概念に一致することは、計算可能性の三つの定義の一致（\ref{comp:L-equals-tm}）に似て、この定義が「正しい」ことの根拠とされる。比喩で言えば、ランダムな列は「どんな探偵（検定）にも怪しまれず、どんな要約者（圧縮）にも要約されず、どんな賭博師（マルチンゲール）にも見透かされない」列である。$\Omega$ は、停止問題という計算の世界の「無限の情報」を、ランダムな数の形に圧縮したもので、そのビットの一つ一つが、数学的な問いの束に対する答えを含んでいる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

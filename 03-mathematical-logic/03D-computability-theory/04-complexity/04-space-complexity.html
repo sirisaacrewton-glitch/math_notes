@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>領域計算量とサヴィッチの定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/04-complexity/04-space-complexity.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 領域計算量とサヴィッチの定理 {#comp:page-space-complexity keywords="space complexity, SPACE, NSPACE, Savitch's theorem, PSPACE, NPSPACE, TQBF, quantified Boolean formulas, PSPACE-complete, configuration graph"}
+
+**領域計算量**は、計算に使うテープの升目の数で計算の資源を測る（\ref{comp:space-class}）。時間と違い、領域は**再利用できる**。そのため、非決定性の領域は決定性の領域の 2 乗で模倣できるという**サヴィッチの定理**（\ref{comp:savitch}）が成り立ち、多項式領域のクラスでは非決定性が力を持たない：$\mathrm{PSPACE}=\mathrm{NPSPACE}$（\ref{comp:class-pspace}）。本ページでは、量化記号付きの命題論理式の真偽判定 **TQBF** が PSPACE 完全であること（\ref{comp:tqbf-complete}）も示す。その還元は、サヴィッチの定理の証明の「中間の時点表示で二分する」再帰を、論理式の量化子で書いたものである。
+
+## 記法と定義の確認 {#comp:sec-space-notation}
+
+::: notation
+- TM、時点表示、判定機、非決定性 TM、実行時間、P、NP、多項式時間還元 $\le_{\mathrm{P}}$、一段の局所性（\ref{comp:local-step}）は \ref{comp:page-time-complexity}, \ref{comp:page-np} のとおり。
+- 命題論理の論理式は \ref{logic:page-prop-syntax} のとおり。
+:::
+
+## 領域計算量のクラス {#comp:sec-space-class}
+
+::: definition 領域計算量 {#comp:space-class keywords="space complexity, SPACE, NSPACE" index="領域計算量|りょういきけいさんりょう, SPACE|すぺーす, NSPACE|えぬすぺーす"}
+1. 判定機 $M$（単一テープ、決定性）の**使用領域**とは、関数 $s_{M}(n)\defeq$「長さ $n$ の入力の上で、$M$ のヘッドが訪れる升目の数の最大値」のこと。非決定性の判定機では、すべての計算の枝についての最大値とする。
+2. $f\colon\N\to\N$ について、$\mathrm{SPACE}(f(n))$（$\mathrm{NSPACE}(f(n))$）を、使用領域 $O(f(n))$ の決定性（非決定性）の単一テープ判定機で決定できる言語全体とする。
+:::
+
+::: example
+SAT は $\mathrm{SPACE}(n)$ に属する：変数への真偽の割り当てを、すべて $0$ から始めて二進の数え上げで順に試し、各割り当てで論理式の値を計算する。割り当ての記録は変数の個数（$\le n$）升、値の計算は $O(n)$ 升で、試し終えた割り当ての領域は次の試行で再利用する。時間は指数的だが、領域は線形である。
+:::
+
+::: lemma 領域と時間 {#comp:space-time keywords="space bounds time, number of configurations" index="時点表示の個数|じてんひょうじのこすう"}
+$f(n)\ge n$ とする。使用領域 $f(n)$ の決定性の判定機は、時間 $2^{O(f(n))}$ で停止する。とくに $\mathrm{SPACE}(f(n))\subseteq\bigcup_{c}\mathrm{TIME}(2^{c f(n)})$。
+:::
+
+::: proof
+長さ $n$ の入力の上で現れる時点表示は、状態（$\lvert Q\rvert$ 通り）、ヘッドの位置（$f(n)$ 通り）、使う升目の内容（$\lvert\Gamma\rvert^{f(n)}$ 通り）で決まるので、高々 $\lvert Q\rvert f(n)\lvert\Gamma\rvert^{f(n)}=2^{O(f(n))}$ 個（$f(n)\ge n\ge1$ を使う）。決定性の判定機の計算で同じ時点表示が二度現れると、そこから先が繰り返されて停止しないので、停止する計算の長さは時点表示の個数以下である。
+:::
+
+## サヴィッチの定理 {#comp:sec-savitch}
+
+::: theorem サヴィッチの定理 {#comp:savitch keywords="Savitch's theorem, NSPACE(f) in SPACE(f^2)" index="サヴィッチの定理|さゔぃっちのていり"}
+$f(n)\ge n$ で、$f(n)$ の値（を一進で書いたもの）が入力から領域 $O(f(n))$ で計算できるとする。このとき $\mathrm{NSPACE}(f(n))\subseteq\mathrm{SPACE}(f(n)^{2})$。
+:::
+
+::: proof
+$A$ を使用領域 $f(n)$ の非決定性判定機 $N$ が決定するとする。$N$ を、受理する前にテープを消してヘッドを左端に戻すように変えておくと、長さ $n$ の入力についての受理時点表示はただ一つ $c_{\mathrm{acc}}$ になる。\ref{comp:space-time} の証明と同様に、時点表示の個数は $2^{df(n)}$ 以下（$d$ は定数）なので、受理する枝があれば、長さ $2^{df(n)}$ 以下で受理する枝がある（同じ時点表示を二度通る部分を切り取ればよい）。
+
+**再帰.** 時点表示 $c_{1},c_{2}$（長さ $f(n)$ の升目と状態とヘッド位置で、$O(f(n))$ 升で書ける）と $t=2^{j}$ について、手続き $\mathrm{CANYIELD}(c_{1},c_{2},t)$ を次で定める：
+- $t=1$：$c_{1}=c_{2}$ か、$c_{1}$ から $N$ の一段で $c_{2}$ になれるなら受理。そうでなければ拒否。
+- $t\ge2$：長さ $f(n)$ のすべての時点表示 $c_{m}$ を順に書き出し、$\mathrm{CANYIELD}(c_{1},c_{m},t/2)$ と $\mathrm{CANYIELD}(c_{m},c_{2},t/2)$ がともに受理なら受理。どの $c_{m}$ でもだめなら拒否。
+
+$t$ に関する帰納法で、$\mathrm{CANYIELD}(c_{1},c_{2},t)$ が受理することと、$N$ が $c_{1}$ から $t$ 段以下で $c_{2}$ に到達できることは同値である（$t$ 段以下の計算の中央の時点表示を $c_{m}$ とする）。判定機 $M$ は、$f(n)$ を計算してから $\mathrm{CANYIELD}(c_{\mathrm{start}},c_{\mathrm{acc}},2^{df(n)})$ を実行する。
+
+**領域.** 再帰はスタックで実装する。一段の呼び出しで記録するのは $c_{1},c_{2},c_{m}$ と $\log_{2}t$（$O(f(n))$ ビット）で $O(f(n))$ 升。再帰の深さは $\log_{2}2^{df(n)}=df(n)$。よって全体で $O(f(n)\cdot f(n))=O(f(n)^{2})$。$M$ は決定性で、すべての入力で停止する（再帰は有限）。
+:::
+
+::: remark
+仮定「$f(n)$ が領域 $O(f(n))$ で計算できる」は、$f(n)=1,2,3,\dots$ と順に試す工夫で外せることが知られている。また $f(n)\ge\log n$ でも成り立つ（入力テープと作業テープを分ける模型で。\ref{comp:page-logspace}）。
+:::
+
+::: definition PSPACE {#comp:class-pspace keywords="PSPACE, NPSPACE, EXPTIME, inclusions of complexity classes" index="PSPACE|ぴーすぺーす"}
+$$
+\mathrm{PSPACE}\defeq\bigcup_{k}\mathrm{SPACE}(n^{k}),\qquad\mathrm{NPSPACE}\defeq\bigcup_{k}\mathrm{NSPACE}(n^{k}).
+$$
+サヴィッチの定理（$f(n)=n^{k}$ は領域 $O(n^{k})$ で計算できる）から $\mathrm{NPSPACE}=\mathrm{PSPACE}$。さらに
+$$
+\mathrm{P}\subseteq\mathrm{NP}\subseteq\mathrm{PSPACE}\subseteq\mathrm{EXPTIME}.
+$$
+最初の包含は明らか。二つ目は、時間 $t$ の機械の使用領域は $t$ 以下なので $\mathrm{NP}\subseteq\mathrm{NPSPACE}=\mathrm{PSPACE}$。三つ目は \ref{comp:space-time}。
+:::
+
+## TQBF {#comp:sec-tqbf}
+
+::: definition 量化記号付きの命題論理式 {#comp:tqbf keywords="quantified Boolean formula, TQBF" index="TQBF|てぃーきゅーびーえふ, 量化記号付き命題論理式|りょうかきごうつきめいだいろんりしき"}
+命題変数 $p$ について $\forall p\,\varphi$（$\varphi[\top/p]\wedge\varphi[\bot/p]$ の意味）と $\exists p\,\varphi$（$\varphi[\top/p]\vee\varphi[\bot/p]$ の意味）を許した命題論理の論理式を**量化記号付き命題論理式**という。自由変数のないものは真か偽かが決まる。$\mathrm{TQBF}\defeq\{\langle\varphi\rangle:\varphi\text{ は自由変数をもたない真な量化記号付き命題論理式}\}$。
+:::
+
+::: theorem TQBF は PSPACE 完全 {#comp:tqbf-complete keywords="TQBF is PSPACE-complete" index="PSPACE 完全|ぴーすぺーすかんぜん"}
+TQBF は PSPACE に属し、すべての $A\in\mathrm{PSPACE}$ について $A\le_{\mathrm{P}}\mathrm{TQBF}$（**PSPACE 完全**）。
+:::
+
+::: proof
+**PSPACE に属する.** 論理式の構成に関する再帰で値を計算する：$\forall p\,\varphi$ は $p$ を真と偽にしてそれぞれ $\varphi$ を評価し、両方真なら真（$\exists$ は一方）。再帰の深さは論理式の長さ $n$ 以下で、各段で記録するのは変数の値と位置の $O(\log n)$ ビット程度（ここでは雑に $O(n)$ 升とする）。最初の評価で使った領域は二回目に再利用する。全体で $O(n^{2})$ 升。
+
+**PSPACE 困難.** $A$ を使用領域 $f(n)=n^{k}$ の決定性判定機 $M$ が決定するとし、サヴィッチの定理の証明と同様に受理時点表示をただ一つ $c_{\mathrm{acc}}$ にしておく。時点表示を、Cook–Levin（\ref{comp:cook-levin}）と同様に「位置 $j\le f(n)+1$ の記号が $s$」を表す命題変数の組 $\vec{c}$（$O(f(n))$ 個）で表す。$t=2^{j}$ について、自由変数 $\vec{c}_{1},\vec{c}_{2}$ をもつ論理式 $\Phi_{t}(\vec{c}_{1},\vec{c}_{2})$「$\vec{c}_{1}$ から $t$ 段以下で $\vec{c}_{2}$ に至る」を次で作る。
+- $t=1$：「$\vec{c}_{1}=\vec{c}_{2}$（対応する変数どうしの $\leftrightarrow$ の連言）、または $\vec{c}_{1}\vdash\vec{c}_{2}$」。後者は \ref{comp:local-step} により、適用できる遷移についての選言と、各位置の局所的な条件の連言で書け、長さは $O(f(n))$。どちらにも「$\vec{c}$ が時点表示を表す（各位置にちょうど一つの記号、状態はちょうど一つ）」条件を加える。
+- $t\ge2$：
+$$
+\begin{aligned}
+\Phi_{t}(\vec{c}_{1},\vec{c}_{2})\defeq{}&\exists\vec{m}\,\forall\vec{c}_{3}\,\forall\vec{c}_{4}\,\Bigl(\bigl((\vec{c}_{3}=\vec{c}_{1}\wedge\vec{c}_{4}=\vec{m})\vee(\vec{c}_{3}=\vec{m}\wedge\vec{c}_{4}=\vec{c}_{2})\bigr)\\
+&\qquad\to\Phi_{t/2}(\vec{c}_{3},\vec{c}_{4})\Bigr).
+\end{aligned}
+$$
+（$\exists\vec{m}$ は $\vec{m}$ の各変数についての $\exists$ の並び。）
+
+$\Phi_{t}$ は「中間の時点表示 $\vec{m}$ があって、前半と後半がどちらも $t/2$ 段以下」を表す。$\Phi_{t/2}$ を一度しか書かない（$\forall\vec{c}_{3}\vec{c}_{4}$ で二つの場合をまとめる）ので、長さは $\lvert\Phi_{t}\rvert=\lvert\Phi_{t/2}\rvert+O(f(n))$。$t=2^{df(n)}$（時点表示の個数の上限）まで $df(n)$ 段なので、$\lvert\Phi_{t}\rvert=O(f(n)^{2})$ で、多項式時間で書き出せる。$w\mapsto\Phi_{2^{df(n)}}(\vec{c}_{\mathrm{start}},\vec{c}_{\mathrm{acc}})$（開始と受理の時点表示を定数として代入したもの）が還元で、$t$ に関する帰納法で $\Phi_{t}$ の意味が正しいことから $w\in A\iff$ この文が真。
+:::
+
+::: hypcheck
+- **領域の再利用**：サヴィッチの定理で、$c_{m}$ を書き出して試した領域を次の $c_{m}$ に使い回すことに本質的に使った。時間ではこれができないので、NP について同じ議論は成り立たない。
+- **受理時点表示の一意化**：$\mathrm{CANYIELD}$ と $\Phi_{t}$ の目標を一つの時点表示にするのに使った。
+- **$\forall$ による二つの場合のまとめ**：\ref{comp:tqbf-complete} で、$\Phi_{t/2}$ を二回書くと長さが $t$ に比例して指数的になるのを避けた。
+- **$f(n)\ge n$**：時点表示の個数を $2^{O(f(n))}$ と評価するとき（ヘッド位置の $f(n)$ 通りを吸収する）と、入力自体を書いておく領域に使った。
+:::
+
+## 問題 {#comp:sec-space-problems}
+
+::: problem {#comp:prob-np-in-pspace}
+NP 完全な問題 SAT が $\mathrm{SPACE}(n)$ に属すること（本文の例）を使って、$\mathrm{NP}\subseteq\mathrm{PSPACE}$ を（サヴィッチの定理を使わずに）示せ。
+:::
+
+::: solution
+$A\in\mathrm{NP}$ なら $A\le_{\mathrm{P}}\mathrm{SAT}$（\ref{comp:cook-levin}）。還元 $f$ は多項式時間なので、$f(w)$ の長さは $\lvert w\rvert$ の多項式 $p$ で抑えられ、$f(w)$ を書き出すのに多項式の領域で足りる。その上で SAT の判定を領域 $O(p(n))$ で行う。全体で多項式領域。
+:::
+
+::: problem {#comp:prob-formula-game}
+自由変数のない量化記号付き命題論理式 $\exists p_{1}\forall p_{2}\exists p_{3}\cdots\psi$ を、二人の遊戯者が交互に変数の値を決めるゲーム（$\exists$ の変数は E が、$\forall$ の変数は A が決め、最後に $\psi$ が真なら E の勝ち）と見る。論理式が真であることと、E に必勝法があることが同値であることを示せ。
+:::
+
+::: solution
+量化子の数に関する帰納法。量化子がなければ、論理式が真 $\iff$ E の勝ち。$\exists p\,\varphi$ が真 $\iff$ ある値 $b$ で $\varphi[b/p]$ が真 $\iff$（帰納法の仮定）E は $p=b$ と決めた後の残りのゲームに必勝法をもつ $\iff$ E は最初の手を $b$ として必勝法をもつ。$\forall p\,\varphi$ が真 $\iff$ どちらの値でも $\varphi[b/p]$ が真 $\iff$ A がどちらを選んでも E は残りに必勝法をもつ。（したがって、このような「交互に選ぶゲームの勝敗」は一般に PSPACE 完全になりうる。）
+:::
+
+::: supplement
+**前提の検討.**
+- 本ページでは単一テープの機械で領域を定めたので、入力そのものの $n$ 升が常に使用領域に含まれ、$f(n)\ge n$ を仮定した。線形未満の領域（$\log n$ など）を扱うには、入力は読み取り専用のテープに置いて数えない模型を使う（\ref{comp:page-logspace}）。
+- サヴィッチの定理の 2 乗が改善できるかどうか（たとえば $\mathrm{NSPACE}(f)\subseteq\mathrm{SPACE}(f^{1.5})$）は知られていない。
+
+**関連する結果.**
+- *一般化された陣取りゲーム*（generalized geography）や、$n\times n$ 盤の囲碁やチェスの一般化の多くが PSPACE 困難であることが知られている。
+- $\mathrm{P}\neq\mathrm{EXPTIME}$ は時間階層定理から従う（\ref{comp:page-hierarchy}）ので、$\mathrm{P}\subseteq\mathrm{NP}\subseteq\mathrm{PSPACE}\subseteq\mathrm{EXPTIME}$ の包含のうち少なくとも一つは真の包含であるが、どれかは分かっていない。
+
+**高い視点から：交互の量化と二分探索.** サヴィッチの定理は「$t$ 段の到達」を「$t/2$ 段の到達二つ」に分ける再帰で、到達可能性の関係 $R_{t}$ について $R_{2t}=R_{t}\circ R_{t}$（関係の合成）を使っている。行列で言えば、隣接行列の $2^{j}$ 乗を繰り返し 2 乗で計算することに当たる。TQBF への還元はこれを論理式に書いたもので、$\exists\vec{m}\forall\vec{c}_{3}\vec{c}_{4}$ という**量化子の交替**が、二つの部分問題を一つの式でまとめる鍵になっている。NP が「存在量化一つ」（証明書が存在する）で特徴づけられたのに対し、PSPACE は「存在と全称の交替を多項式回」許したものと見なせ、これは二人ゲームの必勝法の存在という形をとる。比喩で言えば、NP は「答えの書かれた紙が一枚ある」問題、PSPACE は「相手のどんな手にも応じられる戦略がある」問題である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

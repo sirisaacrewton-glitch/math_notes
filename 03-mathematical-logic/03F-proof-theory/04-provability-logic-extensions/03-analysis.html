@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>解析学における様相論理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/04-provability-logic-extensions/03-analysis.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 解析学における様相論理 {#pt:page-modal-analysis keywords="modal logic within analysis, second-order arithmetic, omega-rule, provability under the omega-rule, Pi^1_1 completeness, Solovay, simultaneous diagonalization"}
+
+**解析学**（二階算術）で「$\omega$ 規則を使って証明可能」を $\Box$ と読むと、その様相論理は（通常の証明可能性と同じく）$\mathsf{GL}$ になる、という Solovay の定理（1976 年に予告され、証明は Boolos の本で初めて公表された）を証明する（\ref{pt:analysis-omega-theorem}）。健全性の側では、$\omega$ 規則を使った証明可能性が $\Pi^{1}_{1}$ 完全であることを解析学の中で示し、導出可能性条件の類似を得る。完全性の側では、ソロヴェイ文を一変数の述語から作る代わりに、文 $S_{0},\dots,S_{n}$ を**同時に対角化**で作る（Dzhaparidze、de Jongh–Jumelet–Montagna の手法）。そこで「どちらが先に $\omega$ 規則で証明されるか」を比較するために、$\Pi^{1}_{1}$ 集合の前整列性（構成的順序数による）を使う。（Boolos, *The Logic of Provability* 第 14 章に対応する。）
+
+## 記法と定義の確認 {#pt:sec-ma-notation}
+
+::: notation
+- $\PA$、算術的解釈、$\mathsf{GL}$ の算術的健全性とソロヴェイの算術的完全性定理（\ref{pt:realization}, \ref{pt:gl-arithmetical-soundness}, \ref{pt:solovay}）、一般化された対角化定理（\ref{pt:generalized-diagonal-lemma}）、レーブの定理（\ref{pt:lob-theorem}）、$\mathsf{GLS}$（\ref{pt:gls-arithmetical-completeness}）は \ref{pt:page-arithmetization} から \ref{pt:page-gls-uniform-completeness} までのとおり。同時対角化の型の議論は \ref{pt:page-glb-completeness} でも使った。
+- 様相論理側の記法、$\mathsf{GL}$ の有限フレームについての完全性（\ref{logic:completeness-gl}）は \ref{logic:page-modal-completeness} のとおり。
+- 有限列の符号 $s$ に対し $s\ast t$ は連結、$[\,]$ は空列、$\langle i\rangle$ は長さ 1 の列。関数 $f\colon\omega\to\omega$ について $\bar{f}(x)\defeq[f(0),\dots,f(x-1)]$（長さ $x$ の始切片の符号）。
+- 本ページでも、論理式の符号化・述語の自然な定義・その性質が解析学で証明できることなどの細部は、Boolos と同じく「自然に」行えるものとして省略する箇所がある。そのような箇所は明記する。
+:::
+
+## 解析学と ω 規則 {#pt:sec-ma-analysis}
+
+::: definition 解析学 {#pt:analysis keywords="analysis, second-order arithmetic, comprehension scheme" index="解析学（二階算術）|かいせきがくにかいさんじゅつ, 内包公理図式（二階算術）|ないほうこうりずしき"}
+二階の論理（数の変数 $x,y,\dots$ と集合（または関係）の変数 $X,Y,\dots$ をもつ）に、
+- 後者関数の公理 $\neg(0=Sx)$ と $Sx=Sy\to x=y$、
+- 帰納法の公理（一つの二階論理式）$X0\land\forall x\,(Xx\to XSx)\to\forall x\,Xx$、
+- 内包公理図式：$X$ を自由に含まない任意の論理式 $A(x)$（一階・二階のパラメータを含んでよい）についての $\exists X\,\forall x\,(Xx\leftrightarrow A(x))$
+
+を加えた理論を**解析学**という。本ページでは $\vdash$ で解析学での証明可能性を表す。
+:::
+
+デデキントが示したように、加法と乗法は $0$ と後者から解析学の中で定義でき、それらの再帰的な等式が証明できる。$\PA$ の各帰納法の公理は、解析学の帰納法の公理と内包公理図式から従うので、解析学は（この定義のもとで）$\PA$ の拡大である。$\mathsf{GL}$ と $\mathsf{GLS}$ の算術的完全性の証明は、$\PA$ から解析学へ本質的な変更なしに移せる、と Boolos は述べている（本サイトでは細部を確かめていない）。
+
+::: definition ω 規則と An_ω {#pt:an-omega keywords="omega-rule, An_omega, provability under the omega-rule" index="ω 規則|おめがきそく, Anω|えーえぬおめが"}
+1. **$\omega$ 規則**とは、（無限個の）文 $A(\underline{n})$（$n\in\omega$）から $\forall x\,A(x)$ を推論する規則である。
+2. **$\mathrm{An}_{\omega}$** の定理とは、解析学のすべての公理を含み、通常の論理の推論規則と $\omega$ 規則で閉じたすべての集合に属する文のことをいう。$\omega\vdash F$ で $F$ が $\mathrm{An}_{\omega}$ の定理であることを表し、$F$ は**$\omega$ 規則のもとで（解析学で）証明可能**であるという。
+3. $\Theta$ を $\mathrm{An}_{\omega}$ の定理のゲーデル数の集合とする。
+:::
+
+$\Theta$ は、ある算術的な条件（公理を含み、規則で閉じていること）を満たすすべての集合の共通部分なので $\Pi^{1}_{1}$ である。$\Theta$ を自然に定義する $\Pi^{1}_{1}$ 論理式を $\Theta(x)$ とする。
+
+::: definition 解釈 {#pt:analysis-realization keywords="realization in analysis with the omega-rule box"}
+各命題変数に解析学の言語の文を割り当てる写像 $\ast$ について、$p^{\ast}\defeq\ast(p)$、$\bot^{\ast}\defeq\bot$、$(A\to B)^{\ast}\defeq(A^{\ast}\to B^{\ast})$、$(\Box A)^{\ast}\defeq\Theta(\Godel{A^{\ast}})$ と定める。
+:::
+
+::: theorem ω 規則のもとでの証明可能性の様相論理（Solovay） {#pt:analysis-omega-theorem keywords="Solovay's theorem: the modal logic of provability in analysis under the omega-rule is GL" index="ω 規則のもとでの証明可能性の様相論理|おめがきそくのもとでのしょうめいかのうせいのようそうろんり"}
+様相論理式 $A$ について次の三条件は同値である。
+- (A) $\mathsf{GL}\vdash A$。
+- (B) すべての $\ast$ について $\vdash A^{\ast}$。
+- (C) すべての $\ast$ について $\omega\vdash A^{\ast}$。
+:::
+
+(B) ⇒ (C) は明らか（$\mathrm{An}_{\omega}$ は解析学を含む）。
+
+## 健全性：Π¹₁ 完全性 {#pt:sec-ma-soundness}
+
+(A) ⇒ (B) を示すには、$\Theta(x)$ と解析学について、ヒルベルト–ベルナイス–レーブの導出可能性条件の類似
+- (i) $\vdash S$ なら $\vdash\Theta(\Godel{S})$、
+- (ii) $\vdash\Theta(\Godel{S\to S'})\to(\Theta(\Godel{S})\to\Theta(\Godel{S'}))$、
+- (iii) $\vdash\Theta(\Godel{S})\to\Theta(\Godel{\Theta(\Godel{S})})$
+
+（$S,S'$ は任意の文）を示せば十分である。実際、そのとき \ref{pt:gl-arithmetical-soundness} の証明（レーブの定理の導出を $\mathrm{Bew}$ の代わりに $\Theta$ で繰り返す）がそのまま通る。(i) は、$S$ の証明が使う公理と推論が $\Theta$ に属することを解析学が証明すること、(ii) は $\Theta$ がモーダスポネンスで閉じていることを解析学が証明することから従う（Boolos は「十分明らか」としている）。$\Theta(\Godel{S})$ は $\Pi^{1}_{1}$ 文なので、(iii) は次の (iv) から従う。
+
+::: theorem ω 規則による Π¹₁ 完全性 {#pt:pi11-completeness keywords="Pi^1_1 completeness of the omega-rule, formalized in analysis" index="Π¹₁ 完全性（ω 規則）|ぱいいちいちかんぜんせい"}
+(iv) $S$ が $\Pi^{1}_{1}$ 文なら $\vdash S\to\Theta(\Godel{S})$。
+:::
+
+(iv) は、「真の $\Pi^{1}_{1}$ 文は $\mathrm{An}_{\omega}$ で証明できる」という次の議論を解析学の中で形式化することで得られる。$\Pi^{1}_{1}$ 文は、原始再帰的な関係 $R$ について $\forall f\,\exists x\,R(\bar{f}(x))$ の形の文と（解析学で証明可能に）同値である（クリーネの標準形。一般に知られている事実として使う）。
+
+::: proof
+$\forall f\,\exists x\,R(\bar{f}(x))$ が真であるとし、$\omega\vdash\forall f\,\exists x\,R(\bar{f}(x))$ を示す。
+$$
+\mathrm{Sec}\defeq\{s:s\text{ は有限列の符号で }\omega\vdash\forall f\,\exists x\,R(s\ast\bar{f}(x))\}
+$$
+とおく。
+
+**補題 1：$R(s)$ なら $s\in\mathrm{Sec}$.** $R(s)$ は原始再帰的な関係の真の事例なので $\vdash R(\underline{s})$、とくに $\omega\vdash R(\underline{s}\ast[\,])$。$\bar{f}(0)=[\,]$ なので $\omega\vdash\forall f\,\exists x\,R(\underline{s}\ast\bar{f}(x))$（$x=0$ を証拠にとる）。
+
+**補題 2：すべての $i$ について $s\ast\langle i\rangle\in\mathrm{Sec}$ なら $s\in\mathrm{Sec}$.** 仮定より、すべての $i$ について $\omega\vdash\forall f\,\exists x\,R(s\ast\langle\underline{i}\rangle\ast\bar{f}(x))$。$\omega$ 規則より
+$$
+\omega\vdash\forall y\,\forall f\,\exists x\,R(s\ast\langle y\rangle\ast\bar{f}(x)).
+$$
+任意の $g$ について、$y\defeq g(0)$、$f(n)\defeq g(n+1)$（内包公理図式で存在する）とおくと $s\ast\langle y\rangle\ast\bar{f}(x)=s\ast\bar{g}(x+1)$ なので、$\omega\vdash\forall g\,\exists x\,R(s\ast\bar{g}(x))$、すなわち $s\in\mathrm{Sec}$。
+
+**本体.** $[\,]\notin\mathrm{Sec}$ と仮定する。$h(0)\defeq[\,]$、
+$$
+h(n+1)\defeq h(n)\ast\langle i_{n}\rangle,\qquad i_{n}\defeq\min\{i:h(n)\ast\langle i\rangle\notin\mathrm{Sec}\}
+$$
+（そのような $i$ がなければ $i_{n}\defeq0$）と定める。補題 2 の対偶と $n$ に関する帰納法より、すべての $n$ について $i_{n}$ は実際に存在し、$h(n)\notin\mathrm{Sec}$。補題 1 より、すべての $n$ について $\neg R(h(n))$。$f(n)\defeq i_{n}$ とすると $h(n)=\bar{f}(n)$ なので、すべての $n$ で $\neg R(\bar{f}(n))$ となり、仮定 $\forall f\,\exists x\,R(\bar{f}(x))$ に反する。よって $[\,]\in\mathrm{Sec}$、すなわち $\omega\vdash\forall f\,\exists x\,R([\,]\ast\bar{f}(x))$、したがって $\omega\vdash\forall f\,\exists x\,R(\bar{f}(x))$。
+:::
+
+::: hypcheck
+- この議論を解析学の中で形式化するとき、$\mathrm{Sec}$（$\Theta$ を使って定義される $\Pi^{1}_{1}$ の集合）や関数 $h$ の存在に**制限のない内包公理図式**を使う。これが（算術的内包などの弱い体系でなく）解析学を選ぶ理由の一つである。
+- $\omega$ 規則は補題 2 でだけ使った。補題 1 は通常の証明可能性で足りる。
+:::
+
+## 準備：構成的順序数と Π¹₁ 集合の前整列 {#pt:sec-ma-ordinals}
+
+完全性の側では、二つの文のどちらが「先に」$\mathrm{An}_{\omega}$ の定理になるかを比較したい。$\PA$ の場合は証明の符号の大小で比較したが、$\omega$ 規則の証明は無限の対象なので、代わりに次の事実を使う。
+
+::: fact Θ 上の Π¹₁ 前整列 {#pt:theta-prewellordering keywords="Pi^1_1 prewellordering of Theta, Kleene's O, constructive ordinals" index="Π¹₁ 前整列|ぱいいちいちぜんせいれつ"}
+$\Pi^{1}_{1}$ の関係 $\preceq$ で次を満たすものがある。
+1. $x\preceq y$ なら $x\in\Theta$（$\preceq$ の定義域は $\Theta$）。
+2. $\preceq$ を $\Theta$ に制限すると反射的な整列順序である。とくに $x,y\in\Theta$ なら $x\preceq y$ または $y\preceq x$ で、$x\preceq y$ かつ $y\preceq x$ なら $x=y$。
+3. $x\in\Theta$ かつ $y\notin\Theta$ なら $x\preceq y$。
+
+さらに、$\preceq$ を自然に定義する $\Pi^{1}_{1}$ 論理式 $\rho(x,y)$ について、1〜3 の内容（とくに次の (P1)〜(P4)）は解析学で証明できる。
+- (P1) $\vdash\rho(x,y)\to\Theta(x)$。
+- (P2) $\vdash\Theta(x)\land\Theta(y)\to\rho(x,y)\lor\rho(y,x)$。
+- (P3) 相異なる数 $a\neq b$ について $\vdash\neg(\rho(\underline{a},\underline{b})\land\rho(\underline{b},\underline{a}))$。
+- (P4) $\vdash\Theta(x)\land\neg\Theta(y)\to\rho(x,y)$。
+:::
+
+Boolos の証明の要点は次のとおりである（本サイトでは細部を確かめていない）。構成的順序数の記法系 $\langle\mathcal{O},<_{\mathcal{O}}\rangle$ について、$|a|$ を $a\in\mathcal{O}$ の表す順序数、$\mathcal{O}_{a}\defeq\{b\in\mathcal{O}:|b|<|a|\}$ とする。
+- $\{\langle a,b\rangle:a\in\mathcal{O}\land b\notin\mathcal{O}_{a}\}$ は $\Pi^{1}_{1}$ である（Sacks, *Higher Recursion Theory* の議論に修正を加えたもの。$\mathcal{O}$ 上で $<_{\mathcal{O}}$ と一致する r.e. 関係を使い、帰納的な条件を満たす関係の共通部分として書く）。
+- $\mathcal{O}$ は $\Pi^{1}_{1}$ 完全なので、再帰的な $g$ で $x\in\Theta\iff g(x)\in\mathcal{O}$ となるものがある。$x\preceq y$ を「$g(x)\in\mathcal{O}$ で、$g(y)\notin\mathcal{O}_{g(x)}$、かつ（$g(y)\notin\mathcal{O}_{2^{g(x)}}$ または $x\le y$）」と定めると、これは
+$$
+\begin{aligned}
+x\preceq y\iff{}&g(x)\in\mathcal{O}\land\bigl[g(y)\in\mathcal{O}\to\lvert g(x)\rvert<\lvert g(y)\rvert\\
+&\lor(\lvert g(x)\rvert=\lvert g(y)\rvert\land x\le y)\bigr]
+\end{aligned}
+$$
+と同値になり、1〜3 が従う。
+
+（Boolos の $\preceq$ の定義式は OCR で一部欠落しているため、上の同値な形 (**) から読み取れる形で述べた。）
+
+直観的には、$x\preceq y$ は「$x$ は $y$ と同時かそれより早く $\Theta$ に入る」を意味する。$|g(x)|$ が「$x$ が $\Theta$ に入る時刻」の役割を果たし、同時刻の場合は数の大小で順序を決める。
+
+## 完全性：同時対角化によるソロヴェイ文 {#pt:sec-ma-completeness}
+
+(C) ⇒ (A) を示す。$\mathsf{GL}\nvdash A$ とすると、\ref{logic:completeness-gl} より、有限・推移的・非反射的なモデル $\mathcal{M}=\langle W,R,V\rangle$、$W=\{1,\dots,n\}$ で $\mathcal{M},1\not\models A$ となるものがある。$R$ を $0Rx$（$x\in W$）で拡張し（記号はそのまま $R$）、$W\cup\{0\}$ 上でも推移的・非反射的とする。
+
+::: definition 道 {#pt:ma-ok-functions}
+$m\le n$ とし、$h\colon\{0,\dots,m\}\to W\cup\{0\}$ が **$w$-OK** であるとは、$h(0)=0$、$h(m)=w$、すべての $i<m$ について $h(i)Rh(i+1)$ となることをいう。ある $w$ について $w$-OK であるとき **OK** という。$W$ は有限なので OK な $h$ は有限個である。OK な $h$ の定義域を $\{0,\dots,m\}$ と書く。$h'$ が $h$ を**延長する**とは、$m<m'$ かつ $i\le m$ で $h'(i)=h(i)$ となることをいう。$h\ast x$ は $h$ の後ろに $x$ を一つ付け加えた関数（定義域 $\{0,\dots,m+1\}$）である。
+:::
+
+**文の定義.** $\mathrm{neg}$ を、すべての文 $S$ について $\mathrm{neg}(\Godel{S})=\Godel{\neg S}$ となる原始再帰的な関数（の項）とする。一般化された対角化定理（\ref{pt:generalized-diagonal-lemma}。解析学は $\PA$ を含むので解析学でも成り立つ）により、文 $S_{w}$（$w\in W\cup\{0\}$）で
+$$
+\vdash S_{w}\leftrightarrow\underline{w}=\underline{w}\land\bigvee\{A_{h}\land B_{h}:h\text{ は }w\text{-OK}\}
+$$
+となるものがある。ここで
+$$
+\begin{aligned}
+A_{h}&\defeq\bigwedge_{i<m}\ \bigwedge_{x:\,h(i)Rx}\rho\bigl(\Godel{\neg S_{h(i+1)}},\Godel{\neg S_{x}}\bigr),\\
+B_{h}&\defeq\bigwedge_{x:\,h(m)Rx}\neg\Theta\bigl(\Godel{\neg S_{x}}\bigr).
+\end{aligned}
+$$
+連言 $\underline{w}=\underline{w}$ は、$x\neq x'$ のとき $S_{x}$ と $S_{x'}$ が相異なる文になることを保証するためのものである（(P3) を使うため）。$A_{h}$ は $\Pi^{1}_{1}$ 文である。以下 $AB_{h}\defeq A_{h}\land B_{h}$ と書く。
+
+**直観.** 点 $0$ から出発し、今いる点の後続点 $x$ のうち「$\neg S_{x}$ が最も早く $\Theta$ に入る」ものへ移る。どの後続点についても $\neg S_{x}$ が $\Theta$ に入らなければ、そこで止まる。$S_{w}$ は「この歩みが $w$ で止まる」を表す。$A_{h}$ は「歩みが $h$ に沿う」、$B_{h}$ は「$h(m)$ で止まる」である。
+
+::: lemma 排反性 {#pt:ma-exclusive}
+1. OK な $h\neq h'$ について $\vdash\neg(AB_{h}\land AB_{h'})$。
+2. $x\neq x'$（$x,x'\in W\cup\{0\}$）なら $\vdash\neg(S_{x}\land S_{x'})$。
+:::
+
+::: proof
+1. 三つの場合に分ける。
+- *ある $j$ で $h(j)$, $h'(j)$ がともに定義され相異なる場合.* そのような最小の $j$ をとる。$h(0)=0=h'(0)$ なので $j=i+1$ で $h(i)=h'(i)$。$x\defeq h(i+1)$, $x'\defeq h'(i+1)$ はともに $h(i)$ の後続点で $x\neq x'$。$A_{h}$ の連言肢に $\rho(\Godel{\neg S_{x}},\Godel{\neg S_{x'}})$、$A_{h'}$ の連言肢に $\rho(\Godel{\neg S_{x'}},\Godel{\neg S_{x}})$ がある。$\neg S_{x}$ と $\neg S_{x'}$ は相異なる文なので、(P3) よりこの二つは両立しない。
+- *$h'$ が $h$ を真に延長する場合.* $x\defeq h'(m+1)$ とすると $h(m)Rx$ で、$B_{h}$ の連言肢に $\neg\Theta(\Godel{\neg S_{x}})$ がある。一方 $A_{h'}$ の $i=m$ の部分に（後続点として $x$ 自身をとった）$\rho(\Godel{\neg S_{x}},\Godel{\neg S_{x}})$ があり、(P1) より $\Theta(\Godel{\neg S_{x}})$ を導く。
+- *$h$ が $h'$ を真に延長する場合.* 前の場合と同様。
+
+2. $S_{x}\land S_{x'}$ を仮定すると、$x$-OK な $h$ と $x'$-OK な $h'$ で $AB_{h}\land AB_{h'}$ となるものがあるが、$h(m)=x\neq x'=h'(m')$ より $h\neq h'$ なので 1 に反する。
+:::
+
+::: lemma 歩みは止まるか進む {#pt:ma-step}
+1. $\vdash A_{h}\to AB_{h}\lor\bigvee\{A_{h\ast x}:h(m)Rx\}$。
+2. $\vdash A_{h}\to AB_{h}\lor\bigvee\{AB_{h'}:h'\text{ は }h\text{ を延長する OK な関数}\}$。
+3. $\vdash A_{h}\to S_{h(m)}\lor\bigvee\{S_{x}:h(m)Rx\}$。
+4. $\vdash\bigvee\{S_{w}:w\in W\cup\{0\}\}$。
+:::
+
+::: proof
+1. 解析学の中で、$A_{h}$ を仮定し $B_{h}$ の否定を仮定する。すると $h(m)Rx$ かつ $\Theta(\Godel{\neg S_{x}})$ となる $x$ がある。$h(m)$ の後続点は有限個なので、そのうち $\Theta(\Godel{\neg S_{x}})$ となるもの全体の中で $\preceq$ について最小の $x$ をとれる（(P2) による比較と、有限集合の最小元の存在）。$h(m)$ の任意の後続点 $y$ について、$\Theta(\Godel{\neg S_{y}})$ なら最小性より $\rho(\Godel{\neg S_{x}},\Godel{\neg S_{y}})$、そうでなければ (P4) より同じ式が成り立つ。よって $h\ast x$ は OK で、$A_{h\ast x}$ が成り立つ。
+
+2. 道の長さは高々 $n$ なので（$R$ は非反射的・推移的で $W\cup\{0\}$ は $n+1$ 点）、$m$ に関する下向きの帰納法で示す。$m=n$ なら $h(m)$ は後続点をもたず、$B_{h}$ は空の連言 $\top$ なので $A_{h}\to AB_{h}$。$m+1$ の場合を仮定すると、1 と、$h(m)Rx$ となる各 $x$ についての帰納法の仮定 $A_{h\ast x}\to AB_{h\ast x}\lor\bigvee\{AB_{h'}:h'\text{ は }h\ast x\text{ を延長}\}$ から従う（$h'$ が $h$ を延長することは、ある $x$ について $h'=h\ast x$ か $h'$ が $h\ast x$ を延長することと同値）。
+
+3. 2 より、$A_{h}$ から $AB_{h}$ か、$h$ を延長する $h'$ についての $AB_{h'}$ が導かれる。$h$ は $h(m)$-OK なので $\vdash AB_{h}\to S_{h(m)}$（$S_{h(m)}$ の定義の選言肢）。$h'$ が $h$ を延長するなら $h'$ は $h'(m')$-OK で $\vdash AB_{h'}\to S_{h'(m')}$、しかも $h(m)Rh(m+1)R\cdots Rh'(m')$ と推移性より $h(m)Rh'(m')$。
+
+4. $h\defeq\{\langle0,0\rangle\}$（$m=0$）とすると $A_{h}$ は空の連言 $\top$ で、3 より $\vdash S_{0}\lor\bigvee\{S_{x}:0Rx\}$。$0$ はすべての $x\in W$ を見るので、これが求める式である。
+:::
+
+::: lemma ソロヴェイ文の性質 {#pt:ma-solovay-properties}
+1. $w\in W\cup\{0\}$, $wRx$ なら $\vdash S_{w}\to\neg\Theta(\Godel{\neg S_{x}})$。
+2. $w\in W$ なら $\vdash S_{w}\to\Theta(\Godel{\neg S_{w}})$。
+3. $w\in W$ なら $\vdash S_{w}\to\Theta\bigl(\Godel{\bigvee\{S_{x}:wRx\}}\bigr)$。
+:::
+
+::: proof
+1. $S_{w}$ は $w$-OK な $h$ についての $AB_{h}$ の選言と同値で、各 $B_{h}$ は（$h(m)=w$, $wRx$ より）$\neg\Theta(\Godel{\neg S_{x}})$ を連言肢にもつ。
+
+2. $w$-OK な $h$ について、$w\neq0$ なので $m\ge1$、$m=i+1$ と書ける。$A_{h}$ の $i$ の部分の、後続点として $x=h(i+1)=w$ 自身をとった連言肢 $\rho(\Godel{\neg S_{w}},\Godel{\neg S_{w}})$ と (P1) より $\vdash A_{h}\to\Theta(\Godel{\neg S_{w}})$。
+
+3. $w$-OK な $h$ について、\ref{pt:ma-step} の 3 より $\vdash A_{h}\to S_{w}\lor\bigvee\{S_{x}:wRx\}$。(i), (ii) より
+$$
+\vdash\Theta(\Godel{A_{h}})\to\Theta\bigl(\Godel{S_{w}\lor\textstyle\bigvee\{S_{x}:wRx\}}\bigr).
+$$
+$A_{h}$ は $\Pi^{1}_{1}$ 文なので (iv) より $\vdash A_{h}\to\Theta(\Godel{A_{h}})$。2 と (ii)（$\neg S_{w}$ と $S_{w}\lor X$ から $X$ を導く命題論理の推論を $\Theta$ の中で行う）より、$\vdash A_{h}\to\Theta(\Godel{\bigvee\{S_{x}:wRx\}})$。$S_{w}$ はこれらの $A_{h}$（の $AB_{h}$）の選言を導くので結論を得る。
+:::
+
+::: lemma 埋め込み補題 {#pt:ma-embedding}
+$\ast(p)\defeq\bigvee\{S_{w}:w\in W,\ w\models p\}$ とおく。$w\in W$ と $A$ の部分論理式 $B$ について、$\mathcal{M},w\models B$ なら $\vdash S_{w}\to B^{\ast}$、$\mathcal{M},w\not\models B$ なら $\vdash S_{w}\to\neg B^{\ast}$。
+:::
+
+::: proof
+$B$ に関する帰納法。$B=p$ のとき、$w\models p$ なら $S_{w}$ は $p^{\ast}$ の選言肢、$w\not\models p$ なら \ref{pt:ma-exclusive} の 2 より $S_{w}$ は $p^{\ast}$ の各選言肢と両立しない。命題論理の場合は帰納法の仮定から。$B=\Box C$ とする。
+- $w\models\Box C$ なら、$wRx$ となるすべての $x$（$\in W$）で $x\models C$、帰納法の仮定より $\vdash S_{x}\to C^{\ast}$、よって $\vdash\bigvee\{S_{x}:wRx\}\to C^{\ast}$。(i), (ii) より $\vdash\Theta(\Godel{\bigvee\{S_{x}:wRx\}})\to\Theta(\Godel{C^{\ast}})$ で、\ref{pt:ma-solovay-properties} の 3 と合わせて $\vdash S_{w}\to B^{\ast}$。
+- $w\not\models\Box C$ なら、$wRx$, $x\not\models C$ となる $x$ があり、$\vdash S_{x}\to\neg C^{\ast}$、すなわち $\vdash C^{\ast}\to\neg S_{x}$。(i), (ii) より $\vdash\Theta(\Godel{C^{\ast}})\to\Theta(\Godel{\neg S_{x}})$ で、\ref{pt:ma-solovay-properties} の 1 と合わせて $\vdash S_{w}\to\neg B^{\ast}$。
+:::
+
+**(C) ⇒ (A) の証明の完了.**
+
+::: proof
+$\mathrm{An}_{\omega}$ の定理はすべて真である（標準モデル、すなわち二階の変数がすべての部分集合を動くモデルで）。また $\Theta(x)$ は標準モデルで $\Theta$ を正しく定義する。
+- $i\in W$ で $S_{i}$ が真なら、\ref{pt:ma-solovay-properties} の 2（解析学の定理なので真）より $\Theta(\Godel{\neg S_{i}})$ が真、すなわち $\neg S_{i}$ は $\mathrm{An}_{\omega}$ の定理で、したがって真となり矛盾する。よって $i\in W$ なら $S_{i}$ は偽。
+- \ref{pt:ma-step} の 4 より $S_{0},\dots,S_{n}$ のどれかは真なので、$S_{0}$ が真。
+- $1\not\models A$ なので埋め込み補題より $\vdash S_{1}\to\neg A^{\ast}$、すなわち $\vdash A^{\ast}\to\neg S_{1}$。(i), (ii) より $\vdash\Theta(\Godel{A^{\ast}})\to\Theta(\Godel{\neg S_{1}})$。\ref{pt:ma-solovay-properties} の 1（$0R1$）より $\vdash S_{0}\to\neg\Theta(\Godel{\neg S_{1}})$、よって $\vdash S_{0}\to\neg\Theta(\Godel{A^{\ast}})$。
+
+$S_{0}$ は真なので $\neg\Theta(\Godel{A^{\ast}})$ は真、すなわち $A^{\ast}$ は $\mathrm{An}_{\omega}$ の定理でない。これは (C) の否定である。
+:::
+
+::: hypcheck
+- \ref{pt:theta-prewellordering} の (P1)〜(P4) は、それぞれ \ref{pt:ma-exclusive}（P1, P3）、\ref{pt:ma-step} の 1（P2, P4）、\ref{pt:ma-solovay-properties} の 2（P1）で使った。
+- (iv)（$\Pi^{1}_{1}$ 完全性）は \ref{pt:ma-solovay-properties} の 3 で $A_{h}\to\Theta(\Godel{A_{h}})$ を得るのに使った。$A_{h}$ が $\Pi^{1}_{1}$ であることは $\rho$ が $\Pi^{1}_{1}$ であることによる（$B_{h}$ は $\Pi^{1}_{1}$ の否定で $\Sigma^{1}_{1}$）。
+- 最後の段落では、解析学の定理と $\mathrm{An}_{\omega}$ の定理が標準モデルで真であることを使った。これは $\PA$ の場合に $\mathbb{N}$ での真理を使ったのと同じ役割である。
+:::
+
+## 真理の場合 {#pt:sec-ma-truth}
+
+::: theorem 真理の場合（Solovay） {#pt:analysis-omega-truth keywords="GLS for provability under the omega-rule"}
+様相論理式 $A$ について、$\mathsf{GLS}\vdash A$ であることと、すべての $\ast$ について $A^{\ast}$ が（標準モデルで）真であることは同値である。
+:::
+
+解析学は真の文しか証明しないので、左から右は明らかである。逆の証明は $\mathsf{GLS}$ の算術的完全性（\ref{pt:gls-arithmetical-completeness}）の証明と細部まで非常によく似ているとして、Boolos は注に回している（本サイトでは細部を確かめていない）。
+
+## 問題 {#pt:sec-ma-problems}
+
+::: problem {#pt:prob-ma-con-omega}
+\ref{pt:analysis-omega-theorem} から、$\omega\nvdash\neg\Theta(\Godel{\bot})$（「$\mathrm{An}_{\omega}$ は矛盾しない」は $\mathrm{An}_{\omega}$ で証明できない）を導け。また、これが第二不完全性定理の類似であることを説明せよ。
+:::
+
+::: solution
+$\mathsf{GL}\nvdash\neg\Box\bot$（一点のフレームで $\Box\bot$ は真）。(A) ⇔ (C) より、ある $\ast$ について $\omega\nvdash(\neg\Box\bot)^{\ast}=\neg\Theta(\Godel{\bot})$（$\bot^{\ast}=\bot$ なので実際には $\ast$ によらない）。$\neg\Theta(\Godel{\bot})$ は「$\bot$ は $\mathrm{An}_{\omega}$ の定理でない」、すなわち $\mathrm{An}_{\omega}$ の無矛盾性を表すので、$\mathrm{An}_{\omega}$ は自分の無矛盾性を証明しない。$\omega$ 規則を加えても、$\Theta$ が導出可能性条件 (i)〜(iii) を満たす限り第二不完全性定理の型の現象は避けられない（ヒルベルトが期待した「$\omega$ 規則による不完全性の克服」はこの意味では成り立たない）。
+:::
+
+::: problem {#pt:prob-ma-lemma2}
+\ref{pt:pi11-completeness} の証明の補題 2 で、$\omega$ 規則を使わずに $s\in\mathrm{Sec}$ を結論しようとすると何が足りないかを説明せよ。
+:::
+
+::: solution
+仮定は、各 $i$ について別々に $\omega\vdash\forall f\,\exists x\,R(s\ast\langle\underline{i}\rangle\ast\bar{f}(x))$ が成り立つ、という無限個の主張である。$\forall y$ をつけた一つの文 $\forall y\,\forall f\,\exists x\,R(s\ast\langle y\rangle\ast\bar{f}(x))$ を得るには、各事例の証明を一様にまとめる手段が要る。有限の証明体系では、無限個の事例が証明できても全称文が証明できるとは限らない（$\omega$ 不完全性）。$\omega$ 規則はちょうどこの一様化を推論規則として許すものである。
+:::
+
+::: supplement
+**前提の検討.**
+- (A) ⇒ (B) では $\Theta$ の導出可能性条件 (i)〜(iii) だけを使った。(iii) の証明に $\Pi^{1}_{1}$ 完全性を使い、その形式化に解析学の制限のない内包公理図式を使う。
+- (C) ⇒ (A) の要は、$\Theta$ が $\Pi^{1}_{1}$ であり、$\Pi^{1}_{1}$ 集合が $\Pi^{1}_{1}$ の前整列をもつ（\ref{pt:theta-prewellordering}）ことである。証明の長さで比較できない無限の証明に対し、構成的順序数による「時刻」が比較の役割を果たす。
+- ソロヴェイ文を一変数の述語 $H(a,b)$ から作る代わりに同時対角化で作ったのは、$\omega$ 規則の「証明」を数で枚挙できないからである。
+
+**関連する結果.** 同じ同時対角化の手法は、証明可能性と $\omega$ 無矛盾性の双対を二つの箱とする $\mathsf{GLB}$ の算術的完全性（\ref{pt:page-glb-completeness}）でも使われる。$\Pi^{1}_{1}$ 集合の前整列性（ノルム）は記述集合論・高次再帰理論の基本的な道具であることが一般に知られている（Sacks, *Higher Recursion Theory*）。
+
+**高い視点から：「時刻」の取り替え.** ソロヴェイの議論の骨格は「各点の否定がいつ証明されるか」を比べて、モデルの中を一歩ずつ歩く機械を作ることである。$\PA$ では時刻は証明の符号（自然数）、集合論のページでは推移的モデルの高さ（順序数）、本ページでは $\Theta$ に入る構成的順序数 $|g(x)|$ であった。どの場合も必要なのは、(a) 時刻が整列していること（歩みが止まる）、(b) 「この時刻までに証明された」が理論の中で十分に表現でき、導出可能性条件を満たすこと、の二つだけで、時刻の素材（数、順序数、構成的順序数）は取り替えがきく。この意味で $\mathsf{GL}$ は「整列した時間の中で、過去に確定した事実」の論理だと言える（これは本サイトの比喩である）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

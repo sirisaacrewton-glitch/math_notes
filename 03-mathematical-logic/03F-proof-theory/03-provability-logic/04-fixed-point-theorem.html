@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>不動点定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/03-provability-logic/04-fixed-point-theorem.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 不動点定理 {#pt:page-fixed-point-theorem keywords="fixed point theorem for GL, de Jongh, Sambin, modalized, Bernardi, Smoryński, Reidhaar-Olson, self-reference"}
+
+対角化定理（\ref{pt:diagonal-lemma}）は、算術の論理式 $\varphi(x)$ に対して「自分について $\varphi$ が成り立つ」と主張する文の**存在**を保証するが、その文がどんな文と同値かは教えない。$\varphi$ が $\mathrm{Bew}$ と真理関数だけで書けるとき、この問いに完全に答えるのが**不動点定理**（ド・ヨング、サンビン）である：$p$ が $\Box$ の中にしか現れない様相論理式 $A(p)$ に対して、$p$ を含まない様相論理式 $H$ で、$\mathsf{GL}$ の中で「$p\leftrightarrow A(p)$ が真かつ証明可能」と「$p\leftrightarrow H$ が真かつ証明可能」が同値になるものがある。算術に翻訳すると、$S\leftrightarrow A(S)$ を満たす文 $S$ は $\PA$ で一意に定まり、明示的な文 $H^{\ast}$ と同値になる。本ページでは、不動点の一意性と基本性質、$p$ 以外の命題変数を含まない特別な場合のトレースによる証明（計算の手続きを含む）、そして一般の場合の第一証明（サンビン、ライトハール＝オルソン）を与える。（Boolos 第 8 章前半に対応する。）
+
+## 記法と定義の確認 {#pt:sec-fixed-point-notation}
+
+::: notation
+- 様相論理式、一様代入 $C[H/p]$、命題的付値と恒真式（\ref{logic:modal-tautology}）、正規性、$\boxdot C\defeq C\wedge\Box C$（\ref{logic:boxdot}）、\ref{logic:k4-boxdot}、第二置換定理とその系（\ref{logic:second-substitution}, \ref{logic:second-substitution-corollary}）は \ref{logic:page-normal-modal-logics} のとおり。$A(p)$ と書いたとき、$A(H)$ は $A[H/p]$ を表す。
+- クリプキモデル、生成部分モデル（\ref{logic:generated-submodel}）、一致補題（\ref{logic:agreement-lemma}）、健全性と $\mathsf{GL}$ の有限フレームに関する完全性（\ref{logic:kripke-soundness}, \ref{logic:modal-fmp-decidability}）は \ref{logic:page-kripke-semantics}, \ref{logic:page-modal-completeness} のとおり。$w\models\boxdot E$ は「$w$ と、$wRx$ となるすべての $x$ で $E$ が真」と同値である。
+- ランク $\rho$、中間値の補題、トレース $[\![\cdot]\!]$、標準形の具体形（\ref{pt:normal-form-by-trace}）は \ref{pt:page-letterless-normal-form} のとおり。
+- 以下、とくに断らなければ $\vdash$ は $\mathsf{GL}\vdash$ を表す。「有限モデル」は有限・推移的・非反射的なクリプキモデルを表す（$\mathsf{GL}$ の完全性はこれで足りる）。
+:::
+
+## 様相化された論理式と不動点 {#pt:sec-modalized}
+
+::: definition p について様相化されている {#pt:modalized keywords="modalized in p" index="様相化されている|ようそうかされている"}
+命題変数 $p$ を固定する。次を満たす最小の様相論理式の集合の元を、**$p$ について様相化されている**という：$\bot$、$p$ 以外の命題変数、任意の $\Box D$ を含み、$B,C$ を含めば $B\to C$ を含む。
+:::
+
+これは「$p$ のすべての出現が $\Box$ の作用域の中にある」ことと同値である。様相化された $A$ は、$\Box D$ の形の論理式と $p$ 以外の命題変数を原子とする命題論理の論理式である。とくに、命題的付値 $V$ について $\bar{V}(A)$ は $V(p)$ によらない（構成に関する帰納法）。$p$ を含まない論理式は $p$ について様相化されている。
+
+::: definition 不動点 {#pt:fixed-point keywords="fixed point" index="不動点（様相論理）|ふどうてんようそうろんり"}
+$A$ を $p$ について様相化された論理式とする。$p$ を含まず、$A$ に現れる命題変数だけを含む論理式 $H$ で
+$$
+\vdash\boxdot(p\leftrightarrow A)\leftrightarrow\boxdot(p\leftrightarrow H)
+$$
+となるものを、$A$ の（$p$ に関する）**不動点**という。
+:::
+
+::: theorem 不動点定理 {#pt:fixed-point-theorem keywords="fixed point theorem, de Jongh-Sambin theorem" index="不動点定理|ふどうてんていり, ド・ヨング–サンビンの定理|どよんぐさんびんのていり"}
+$p$ について様相化された任意の論理式 $A$ は不動点をもつ。
+:::
+
+証明は \ref{pt:sec-first-proof} で与える。まず不動点の基本性質を見る。
+
+::: proposition 不動点の一意性と性質 {#pt:fixed-point-uniqueness}
+$A$ を $p$ について様相化された論理式、$H$ をその不動点とする。
+1. $\vdash H\leftrightarrow A(H)$。
+2. $p$ を含まず $A$ の命題変数だけを含む $I$ について、$I$ が $A$ の不動点であることと $\vdash H\leftrightarrow I$ は同値である。
+3. $\vdash\Box(p\leftrightarrow A)\leftrightarrow\Box(p\leftrightarrow H)$。
+:::
+
+::: proof
+**1.** 不動点の式に一様代入 $p\mapsto H$ を施す。$H$ は $p$ を含まないので $H[H/p]=H$、よって $\vdash\boxdot(H\leftrightarrow A(H))\leftrightarrow\boxdot(H\leftrightarrow H)$。右辺は恒真式 $H\leftrightarrow H$ とその必然化から定理なので $\vdash\boxdot(H\leftrightarrow A(H))$、とくに $\vdash H\leftrightarrow A(H)$。
+
+**2.**（$\Leftarrow$）$\vdash H\leftrightarrow I$ なら、恒真式と必然化・正規性 2 より $\vdash\boxdot(p\leftrightarrow H)\leftrightarrow\boxdot(p\leftrightarrow I)$ で、不動点の式とつなぐ。（$\Rightarrow$）$H,I$ がともに不動点なら $\vdash\boxdot(p\leftrightarrow H)\leftrightarrow\boxdot(p\leftrightarrow I)$。$p\mapsto H$ を代入すると $\vdash\boxdot(H\leftrightarrow H)\leftrightarrow\boxdot(H\leftrightarrow I)$ で、1 と同様に $\vdash H\leftrightarrow I$。
+
+**3.** \ref{logic:k4-boxdot} の 1（$\mathsf{GL}\supset\mathsf{K4}$、\ref{logic:gl-four}）より $\vdash\Box C\leftrightarrow\Box\boxdot C$。不動点の式に正規性 2 を使うと $\vdash\Box\boxdot(p\leftrightarrow A)\leftrightarrow\Box\boxdot(p\leftrightarrow H)$ で、両辺を書き換える。
+:::
+
+::: corollary 算術における自己言及文 {#pt:fixed-point-arith keywords="self-referential sentences, explicit solutions" index="自己言及文|じこげんきゅうぶん"}
+$A$ を $p$ について様相化された論理式、$H$ をその不動点、$\ast$ を算術的解釈とする。文 $S$ に対し $\ast_{S}$ を、$p$ に $S$ を割り当て他は $\ast$ と同じ解釈とする。
+1. $\PA\vdash H^{\ast}\leftrightarrow A^{\ast_{H^{\ast}}}$。すなわち $H^{\ast}$ は方程式「$S\leftrightarrow A^{\ast_{S}}$」の解である。
+2. 任意の文 $S$ について、$\PA\vdash S\leftrightarrow A^{\ast_{S}}$ ならば $\PA\vdash S\leftrightarrow H^{\ast}$。
+:::
+
+::: proof
+**準備.** 任意の $C$ について $(C[H/p])^{\ast}=C^{\ast_{H^{\ast}}}$（記号列として一致）。$C$ に関する帰納法：$p$ では両辺 $H^{\ast}$、他の命題変数と $\bot$ では両辺同じ、$\to$ はそのまま、$(\Box C[H/p])^{\ast}=\mathrm{Bew}(\Godel{(C[H/p])^{\ast}})=\mathrm{Bew}(\Godel{C^{\ast_{H^{\ast}}}})=(\Box C)^{\ast_{H^{\ast}}}$。また $H$ は $p$ を含まないので $H^{\ast_{S}}=H^{\ast}$。
+
+**1.** \ref{pt:fixed-point-uniqueness} の 1 を翻訳（\ref{pt:gl-arithmetical-soundness}）し、準備を使う。
+
+**2.** 仮定と D1（\ref{pt:d1}）より $\PA\vdash(S\leftrightarrow A^{\ast_{S}})\wedge\mathrm{Bew}(\Godel{S\leftrightarrow A^{\ast_{S}}})$、これは $(\boxdot(p\leftrightarrow A))^{\ast_{S}}$ である。不動点の式の翻訳より $\PA\vdash(\boxdot(p\leftrightarrow H))^{\ast_{S}}$、その連言の左から $\PA\vdash S\leftrightarrow H^{\ast}$。
+:::
+
+したがって、$\mathrm{Bew}$ と真理関数で書ける自己言及の方程式は、$\PA$ の中で同値を除いて一意の解をもち、その解は $p$ を含まない（自己言及を含まない）文 $H^{\ast}$ で与えられる。\ref{logic:gl-four-fixed-points} はその最初の例であった（\ref{pt:gl-consequence-fixed-points}）。
+
+## 証明の枠組み {#pt:sec-fixed-point-reduction}
+
+::: lemma ⊡ への持ち上げ {#pt:boxdot-lift}
+$\vdash\boxdot B\to C$ ならば $\vdash\boxdot B\to\boxdot C$。
+:::
+
+::: proof
+\ref{logic:k4-boxdot} の 4 より $\vdash\Box B\to\Box C$。恒真式 $\boxdot B\to\Box B$ と合わせて $\vdash\boxdot B\to\Box C$、仮定と恒真式により $\vdash\boxdot B\to C\wedge\Box C$。
+:::
+
+::: lemma ゴールドファーブの補題 {#pt:goldfarb-reduction keywords="Goldfarb's lemma"}
+$A$ を $p$ について様相化された論理式、$H$ を $p$ を含まない論理式とする。$\vdash\boxdot(p\leftrightarrow A)\to(p\leftrightarrow H)$ ならば $\vdash\boxdot(p\leftrightarrow H)\to(p\leftrightarrow A)$。したがってこのとき（$H$ が $A$ の命題変数だけを含めば）$H$ は $A$ の不動点である。
+:::
+
+::: proof
+**Step 1（最小ランクの反例）.** 結論の論理式が $\mathsf{GL}$ の定理でないとすると、完全性より、有限モデル $\mathcal{M}=(W,R,V)$ でそれが偽になる世界がある。そのような世界のうちランク最小のものを $w$ とする。$w\models\boxdot(p\leftrightarrow H)$ かつ $w\not\models p\leftrightarrow A$。$wRx$ なら、推移性より $x\models\boxdot(p\leftrightarrow H)$、$\rho(x)<\rho(w)$ と $w$ の最小性より $x\models p\leftrightarrow A$。
+
+**Step 2（付値の変更）.** $V'$ を、世界 $w$ での $p$ の真理値だけを反転させ、他はすべて $V$ と同じ付値とし、$\mathcal{N}\defeq(W,R,V')$ とする。$\mathcal{N}$ も有限モデルである。
+
+**Step 3（$w$ より上では同じ）.** $wRx$ とする。$x$ から生成された部分モデル（\ref{logic:generated-submodel}）の世界は $x$ と $xRy$ となる $y$ であり、$w$ を含まない（$x=w$ や $xRw$ なら推移性より $wRw$ となり非反射性に反する）。よって $\mathcal{M}$ と $\mathcal{N}$ から $x$ で生成された部分モデルは一致し、任意の $C$ で $\mathcal{M},x\models C\iff\mathcal{N},x\models C$。
+
+**Step 4（$\mathcal{N}$ での $\boxdot(p\leftrightarrow A)$）.** $A$ は $\Box D$ の形の論理式と $p$ 以外の命題変数 $q$ の真理関数的な組み合わせである。$\mathcal{M},w\models\Box D\iff$ すべての $x$（$wRx$）で $\mathcal{M},x\models D\iff$（Step 3）すべての $x$ で $\mathcal{N},x\models D\iff\mathcal{N},w\models\Box D$。また $q$ の真理値は $w$ で同じ。よって $\mathcal{M},w\models A\iff\mathcal{N},w\models A$。$p$ の真理値は $w$ で反転しているので、$\mathcal{M},w\not\models p\leftrightarrow A$ から $\mathcal{N},w\models p\leftrightarrow A$。$wRx$ なら Step 1, 3 より $\mathcal{N},x\models p\leftrightarrow A$。よって $\mathcal{N},w\models\boxdot(p\leftrightarrow A)$。
+
+**Step 5（$\mathcal{N}$ での $p\leftrightarrow H$ の失敗）.** $H$ は $p$ を含まないので、一致補題（\ref{logic:agreement-lemma}）より $\mathcal{M},w\models H\iff\mathcal{N},w\models H$。$\mathcal{M},w\models p\leftrightarrow H$ で $p$ の値は反転しているので、$\mathcal{N},w\not\models p\leftrightarrow H$。
+
+**Step 6.** Step 4, 5 より $\boxdot(p\leftrightarrow A)\to(p\leftrightarrow H)$ は有限モデル $\mathcal{N}$ の $w$ で偽で、健全性より $\mathsf{GL}$ の定理でない。仮定に反する。
+
+**後半.** 仮定と前半に \ref{pt:boxdot-lift} を使うと、$\vdash\boxdot(p\leftrightarrow A)\to\boxdot(p\leftrightarrow H)$ と $\vdash\boxdot(p\leftrightarrow H)\to\boxdot(p\leftrightarrow A)$。
+
+::: hypcheck
+- **$A$ が $p$ について様相化されていること**：Step 4 で、$w$ での $A$ の真理値が $w$ での $p$ の値によらないことに使った。様相化されていない $A$ では、$w$ で $p$ を反転させると $A$ の値も変わりうるので、この議論は成り立たない。
+- **$H$ が $p$ を含まないこと**：Step 5。
+- **非反射性・推移性**：Step 3。**ランク最小**：Step 1 で上の世界の $p\leftrightarrow A$ を得るのに使った（逆整礎性の使いどころ）。
+:::
+:::
+
+以上より、不動点定理を示すには、$p$ について様相化された各 $A$ に対し、$A$ の命題変数（$p$ 以外）だけを含む $H$ で $\vdash\boxdot(p\leftrightarrow A)\to(p\leftrightarrow H)$ となるものを見つければよい。
+
+## 特別な場合：p 以外の命題変数を含まないとき {#pt:sec-fixed-point-special}
+
+この節では、$A$ は $p$ について様相化され、$p$ 以外の命題変数を含まないとする。$p$ 以外の命題変数を含まない論理式を **$p$ 論理式**という。$A$ の中の $\Box D$ の形の部分論理式（相異なるもの）の個数を $n$ とする。
+
+::: definition A-トレース {#pt:a-trace keywords="A-trace" index="A-トレース|えーとれーす"}
+各 $m\in\N$ に対し、$p$ 論理式全体の上の関数 $t_{m}$（値は $0,1$）を $m$ に関する再帰で定める。$t_{i}$（$i<m$）が定まったとき、命題的付値 $V_{m}$ を
+$$
+V_{m}(\Box D)\defeq1\iff\text{すべての }i<m\text{ で }t_{i}(D)=1,\qquad V_{m}(p)\defeq\bar{V}_{m}(A)
+$$
+で定め（$\bar{V}_{m}(A)$ は $V_{m}(p)$ によらないので、右の定義は循環しない。他の命題変数には $0$ を割り当てる）、$t_{m}\defeq\bar{V}_{m}$ とする。$[\![B]\!]_{A}\defeq\{m:t_{m}(B)=1\}$ を $B$ の **$A$-トレース**という。
+:::
+
+定義から $[\![\bot]\!]_{A}=\emptyset$、$[\![B\to C]\!]_{A}=(\N\setminus[\![B]\!]_{A})\cup[\![C]\!]_{A}$、$[\![\Box D]\!]_{A}=\{m:[0,m)\subset[\![D]\!]_{A}\}$、$[\![p]\!]_{A}=[\![A]\!]_{A}$。したがって閉様相論理式 $B$ については $[\![B]\!]_{A}=[\![B]\!]$（通常のトレース。構成に関する帰納法）。
+
+::: lemma A-トレースと真理 {#pt:a-trace-truth}
+$\mathcal{M}$ を、すべての世界で $p\leftrightarrow A$ が真である有限モデルとする。任意の世界 $w$ と $p$ 論理式 $B$ について $\mathcal{M},w\models B\iff\rho(w)\in[\![B]\!]_{A}$。
+:::
+
+::: proof
+$\rho(w)$ に関する帰納法で、ランクの小さい世界では主張が成り立つとする。$U_{w}$ を、$\Box$ で始まる論理式と命題変数に $w$ での真理値を割り当てる命題的付値とすると、任意の $B$ で $\mathcal{M},w\models B\iff\bar{U}_{w}(B)=1$（構成に関する帰納法）。$m\defeq\rho(w)$ とし、$U_{w}$ と $V_{m}$ が $p$ と $\Box D$ の形の論理式（$D$ は $p$ 論理式）で一致することを示せば、$B$ の値 $\bar{U}_{w}(B)=\bar{V}_{m}(B)=t_{m}(B)$ が従う。
+
+**$\Box D$.** $w\not\models\Box D$ なら $wRx$, $x\not\models D$ となる $x$ があり、$\rho(x)<m$ と帰納法の仮定より $\rho(x)\notin[\![D]\!]_{A}$、よって $V_{m}(\Box D)=0$。逆に $V_{m}(\Box D)=0$ なら $i<m$ で $i\notin[\![D]\!]_{A}$ となるものがあり、\ref{pt:rank-intermediate} より $wRx$, $\rho(x)=i$ となる $x$ があって、帰納法の仮定より $x\not\models D$、よって $w\not\models\Box D$。
+
+**$p$.** $A$ は $\Box D$ たちの真理関数なので、いま示したことから $\bar{U}_{w}(A)=\bar{V}_{m}(A)$。仮定より $U_{w}(p)=\bar{U}_{w}(A)$、定義より $V_{m}(p)=\bar{V}_{m}(A)$ なので一致する。
+:::
+
+::: lemma A-トレースの安定 {#pt:a-trace-stable}
+ある $i\le n$ が存在して、$A$ のすべての部分論理式 $B$（と $p$）およびすべての $j\ge i$ について $t_{j}(B)=t_{i}(B)$。$i$ は有限の計算で求まる。
+:::
+
+::: proof
+$A$ の $\Box$ で始まる部分論理式を $\Box D_{1},\dots,\Box D_{n}$ とする。$A$ の部分論理式は $\bot$, $p$, $\Box D_{k}$ から $\to$ で組み立てられるので、その $t_{j}$ の値は $V_{j}$ の $\Box D_{1},\dots,\Box D_{n}$ での値で決まる（$V_{j}(p)$ も $\bar{V}_{j}(A)$ としてそれで決まる）。
+
+**(a)** $[\![\Box D_{k}]\!]_{A}$ は下に閉じている（$j$ を含めば $j$ 未満をすべて含む）。$0$ を含むので、$\N$ か、ある $c_{k}\ge1$ について $[0,c_{k})$ である。$c_{k}$ がないときは $c_{k}\defeq\infty$ とおく。
+
+**(b)** 行 $j$ と $j+1$ が $\Box D_{k}$ で異なるのは $c_{k}=j+1$ のときに限る。$\{1,\dots,n+1\}$ の $n+1$ 個のうち、$c_{1},\dots,c_{n}$ のどれとも異なるものがある（鳩の巣原理）。それを $i+1$（$0\le i\le n$）とすると、行 $i$ と $i+1$ はすべての $\Box D_{k}$ で一致し、したがって $A$ のすべての部分論理式と $p$ で一致する。
+
+**(c)** 行 $j$ と $j+1$ が $A$ のすべての部分論理式で一致すれば、行 $j+1$ と $j+2$ も一致する：各 $k$ で
+$$
+t_{j+2}(\Box D_{k})=t_{j+1}(\Box D_{k})\cdot t_{j+1}(D_{k}),\qquad t_{j+1}(\Box D_{k})=t_{j}(\Box D_{k})\cdot t_{j}(D_{k})
+$$
+（定義から）で、$t_{j+1}(D_{k})=t_{j}(D_{k})$（$D_{k}$ は部分論理式）なので $t_{j+2}(\Box D_{k})=t_{j}(\Box D_{k})\cdot t_{j}(D_{k})=t_{j+1}(\Box D_{k})$。(b) の冒頭の注意から全部分論理式で一致する。
+
+(b), (c) と帰納法より主張が従う。計算は行 $0,1,\dots$ を順に作り、隣り合う二行が一致した時点で止めればよい（(c) により、その後は変わらない）。
+:::
+
+::: theorem 不動点定理の特別な場合（ベルナルディ、スモリンスキー） {#pt:fixed-point-special}
+$A$ が $p$ について様相化され $p$ 以外の命題変数を含まないとき、閉様相論理式 $H$ で $[\![H]\!]=[\![A]\!]_{A}$ となるもの（\ref{pt:normal-form-by-trace} の形。\ref{pt:a-trace-stable} より $[\![A]\!]_{A}$ は $[0,i)$ の部分集合か、$\{j:j\ge i\}$ を含む）をとると、$H$ は $A$ の不動点である。とくに $A$ の不動点は閉様相論理式の標準形でとれ、その翻訳 $H^{\ast}$ は、$[\![A]\!]_{A}$ が補有限のとき真、$[\![A]\!]_{A}=\N$ のとき $\PA$ で証明可能で、そうでなければそれぞれ偽・証明不能である。
+:::
+
+::: proof
+**Step 1（$H$ の存在）.** \ref{pt:a-trace-stable} の $i$ について、$i\notin[\![A]\!]_{A}$ なら $[\![A]\!]_{A}\subset[0,i)$ は有限で、$H\defeq\bigvee_{m\in[\![A]\!]_{A}}(\Box^{m+1}\bot\wedge\neg\Box^{m}\bot)$。$i\in[\![A]\!]_{A}$ なら補有限で、$H\defeq\bigwedge_{m\notin[\![A]\!]_{A}}(\Box^{m+1}\bot\to\Box^{m}\bot)$。いずれも $[\![H]\!]=[\![A]\!]_{A}$（\ref{pt:normal-form-by-trace} の証明）。よって $[\![p\leftrightarrow H]\!]_{A}=\N$（$[\![p]\!]_{A}=[\![A]\!]_{A}=[\![H]\!]_{A}$）。
+
+**Step 2（$\boxdot(p\leftrightarrow A)\to(p\leftrightarrow H)$）.** 有限モデル $\mathcal{M}'$ の世界 $w$ で $w\models\boxdot(p\leftrightarrow A)$ とする。$w$ から生成された部分モデル $\mathcal{M}$ の世界は $w$ と $wRx$ となる $x$ で、そのすべてで $p\leftrightarrow A$ が真（\ref{logic:generated-submodel}）。$\mathcal{M}$ も有限モデルなので、\ref{pt:a-trace-truth} より $\mathcal{M},w\models p\leftrightarrow H\iff\rho_{\mathcal{M}}(w)\in[\![p\leftrightarrow H]\!]_{A}=\N$。よって $\mathcal{M},w\models p\leftrightarrow H$、生成部分モデルの性質から $\mathcal{M}',w\models p\leftrightarrow H$。完全性より $\vdash\boxdot(p\leftrightarrow A)\to(p\leftrightarrow H)$。
+
+**Step 3.** $H$ は閉なので、\ref{pt:goldfarb-reduction} より不動点。真偽と証明可能性は \ref{pt:letterless-gls-truth}, \ref{pt:letterless-gl-pa}。
+
+::: hypcheck
+- **$\boxdot$ であること**：Step 2 で $w$ 自身での $p\leftrightarrow A$ を使う。$\Box(p\leftrightarrow A)$ だけでは、生成部分モデル全体で $p\leftrightarrow A$ が真にならない。
+- **$p$ 以外の命題変数がないこと**：\ref{pt:a-trace-truth} で、真理がランクだけで決まることに使った。
+:::
+:::
+
+::: remark 標準形定理の再証明
+$A$ が閉様相論理式なら $A$ は $p$ について様相化されており、上の $H$ について $\vdash\boxdot(p\leftrightarrow A)\to(p\leftrightarrow H)$。$p\mapsto A$ を代入すると $\vdash\boxdot(A\leftrightarrow A)\to(A\leftrightarrow H)$ で、前件は定理なので $\vdash A\leftrightarrow H$。これは \ref{pt:letterless-normal-form} の別証明である（\ref{pt:trace-provability} を使わず、\ref{pt:a-trace-truth} と完全性による）。
+:::
+
+## 計算の手続きと例 {#pt:sec-fixed-point-table}
+
+$A$-トレースは真理値表のように計算できる。行 $m=0,1,2,\dots$ について、各 $\Box D$ の値は「$D$ がそれより上のすべての行で $1$」かどうかで決まり（行 $0$ ではすべての $\Box D$ が $1$）、それから $A$ の値、$p$ の値（$A$ と同じ）、他の部分論理式の値が決まる。隣り合う二行が一致したら止める。
+
+::: example $A=\Box p\to\Box\neg p$（「証明可能なら反証可能」）
+| 行 $m$ | $\Box p$ | $\Box\neg p$ | $A$ | $p$ |
+|---|---|---|---|---|
+| 0 | 1 | 1 | 1 | 1 |
+| 1 | 1 | 0 | 0 | 0 |
+| 2 | 0 | 0 | 1 | 1 |
+| 3 | 0 | 0 | 1 | 1 |
+
+行 $1$ の $\Box\neg p$ は $t_{0}(\neg p)=0$ から $0$、行 $2$ の $\Box p$ は $t_{1}(p)=0$ から $0$。行 $2$ と $3$ が一致するので $[\![A]\!]_{A}=\N\setminus\{1\}$、不動点は $H=\Box^{2}\bot\to\Box\bot$。算術では：$S$ が「$S$ が証明可能なら $\neg S$ も証明可能」と $\PA$ で同値であることと、$S$ が「$\PA$ の矛盾性が証明可能なら $\PA$ は矛盾する」と同値であることは同値。$[\![A]\!]_{A}$ は補有限だが $\N$ でないので、この $S$ は真で証明不能である。
+:::
+
+::: example 代表的な不動点
+同じ手続きで次が得られる（各行の計算は読者に任せる。問題を参照）。
+
+| $A$ | $[\![A]\!]_{A}$ | 不動点 $H$ | $S\leftrightarrow A^{\ast_{S}}$ の解の読み |
+|---|---|---|---|
+| $\neg\Box p$ | $\N\setminus\{0\}$ | $\neg\Box\bot$ | 自分の証明不能性を主張する文は $\mathrm{Con}$ と同値 |
+| $\Box p$ | $\N$ | $\top$ | 自分の証明可能性を主張する文は証明可能（ヘンキンの問題） |
+| $\Box\neg p$ | $\{0\}$ | $\Box\bot$ | 自分の反証可能性を主張する文は $\neg\mathrm{Con}$ と同値 |
+| $\neg\Box\neg p$ | $\emptyset$ | $\bot$ | 自分の無矛盾性を主張する文は反証可能 |
+| $\neg\Box p\wedge\neg\Box\neg p$ | $\emptyset$ | $\bot$ | 自分の決定不能性を主張する文は反証可能 |
+| $\Box p\to\Box\neg p$ | $\N\setminus\{1\}$ | $\Box^{2}\bot\to\Box\bot$ | 上の例 |
+
+最初の四つは \ref{logic:gl-four-fixed-points} と一致する。
+:::
+
+::: proposition 不動点の様相次数は A の次数を超えうる {#pt:fixed-point-degree}
+$A=\Box p\to\Box\neg p$（様相次数 $1$）のどの不動点も様相次数 $2$ 以上である。
+:::
+
+::: proof
+不動点は $p$ を含まず $A$ の命題変数だけを含むので閉様相論理式で、\ref{pt:fixed-point-uniqueness} の 2 より $\Box^{2}\bot\to\Box\bot$ と同値、したがってトレースは $\N\setminus\{1\}$（\ref{pt:trace-provability}）。様相次数 $d\le1$ の閉様相論理式のトレースは、\ref{pt:trace-stable} より $1$ 以上の数をすべて含むか、すべて含まないかのどちらかなので、$\N\setminus\{1\}$ にはならない。
+:::
+
+一方、不動点は常に様相次数が $A$ の $\Box$ 部分論理式の個数 $n$ 以下のものがとれる（次ページの第二証明）。上の例では $n=2$ である。
+
+## 一般の場合の第一証明 {#pt:sec-first-proof}
+
+サンビンの構成と、ライトハール＝オルソンによるその意味論的な正当化を与える。
+
+::: definition 分解 {#pt:decomposition}
+$A$ を $p$ について様相化された論理式とする。$A$ の**長さ $k$ の分解**とは、$A$ に現れない相異なる命題変数 $q_{1},\dots,q_{k}$（$p$ とも異なる）、$p$ を含まない論理式 $B$、論理式 $D_{1},\dots,D_{k}$ の組で、
+$$
+A=B[\Box D_{1}/q_{1},\dots,\Box D_{k}/q_{k}]\quad(\text{同時代入})
+$$
+となり、$B$ の命題変数が $A$ の $p$ 以外の命題変数と $q_{1},\dots,q_{k}$ の中にあるものをいう。$A=B(\Box D_{1},\dots,\Box D_{k})$ とも書く。
+:::
+
+$p$ について様相化された論理式は分解をもつ（定義 \ref{pt:modalized} の構成に関する帰納法：$\bot$ と $q\neq p$ は長さ $0$、$\Box D$ は $D$ が $p$ を含めば $B=q_{1}$, $D_{1}=D$ の長さ $1$、含まなければ長さ $0$、$B\to C$ は二つの分解を、新しい命題変数が重ならないようにとってつなぐ）。
+
+::: theorem 不動点定理（第一証明） {#pt:fixed-point-first-proof}
+$A$ が長さ $k$ の分解 $B(\Box D_{1},\dots,\Box D_{k})$ をもつとき、次の $H$ は $A$ の不動点である。$k=0$ なら $H\defeq A$。$k\ge1$ なら、各 $i$ について
+$$
+A_{i}\defeq B(\Box D_{1},\dots,\Box D_{i-1},\top,\Box D_{i+1},\dots,\Box D_{k})
+$$
+（長さ $k-1$ の分解をもつ）の不動点 $H_{i}$ を帰納的にとり、
+$$
+H\defeq B(\Box D_{1}(H_{1}),\dots,\Box D_{k}(H_{k})).
+$$
+:::
+
+::: proof
+**Step 0（帰納法の設定）.** $k$ に関する帰納法。$k=0$ なら $A=B$ は $p$ を含まないので、$\boxdot(p\leftrightarrow A)\leftrightarrow\boxdot(p\leftrightarrow A)$ は恒真式で、$H=A$ は不動点。$k\ge1$ とする。$A_{i}$ は $B[\top/q_{i}]$ と残りの $\Box D_{j}$ による長さ $k-1$ の分解をもち、$p$ について様相化され、命題変数は $A$ のものに含まれる。帰納法の仮定より不動点 $H_{i}$ があり、その命題変数は $A$ の $p$ 以外のものに含まれる。よって $H$ も $p$ を含まず、$A$ の $p$ 以外の命題変数だけを含む。\ref{pt:goldfarb-reduction} より、$\vdash\boxdot(p\leftrightarrow A)\to(p\leftrightarrow H)$ を示せばよい。
+
+以下、有限モデル $\mathcal{M}$ を固定し、$D_{i}$ を $D_{i}(p)$ と書く。健全性より、$\mathsf{K4}$ の定理 \ref{logic:second-substitution-corollary} と、$\mathsf{GL}$ の定理「$H_{i}$ は $A_{i}$ の不動点」は $\mathcal{M}$ のすべての世界で真である。
+
+**Step 1.** $y\models\boxdot(p\leftrightarrow A)$ かつ $y\models\Box D_{i}(p)$ ならば、$y\models D_{i}(p)\leftrightarrow D_{i}(H_{i})$ かつ $y\models\Box D_{i}(p)\leftrightarrow\Box D_{i}(H_{i})$。
+
+実際、$yRz$ なら推移性より $z\models\Box D_{i}(p)$。よって $y$ と $yRz$ となるすべての $z$ で $\Box D_{i}(p)\leftrightarrow\top$ が真、すなわち $y\models\boxdot(\Box D_{i}(p)\leftrightarrow\top)$。$\chi\defeq B(\Box D_{1},\dots,\Box D_{i-1},q_{i},\Box D_{i+1},\dots)$ とすると $\chi[\Box D_{i}/q_{i}]=A$、$\chi[\top/q_{i}]=A_{i}$ なので、第二置換定理の系より $y\models\boxdot(A\leftrightarrow A_{i})$。$y\models\boxdot(p\leftrightarrow A)$ と合わせて（各世界で推移律）$y\models\boxdot(p\leftrightarrow A_{i})$、不動点の式より $y\models\boxdot(p\leftrightarrow H_{i})$。第二置換定理（$\chi=D_{i}$ と $\chi=\Box D_{i}$、$p$ に $p$ と $H_{i}$）より主張が従う。
+
+**Step 2.** $x\models\boxdot(p\leftrightarrow A)$ ならば $x\models\boxdot(\Box D_{i}(p)\to\Box D_{i}(H_{i}))$。
+
+実際、$y=x$ または $xRy$ で $y\models\Box D_{i}(p)$ とすると、推移性より $y\models\boxdot(p\leftrightarrow A)$ で、Step 1 より $y\models\Box D_{i}(H_{i})$。
+
+**Step 3.** $w\models\boxdot(p\leftrightarrow A)$ ならば $w\models\boxdot(\Box D_{i}(H_{i})\to\Box D_{i}(p))$。
+
+実際、$x=w$ または $wRx$ で $x\not\models\Box D_{i}(p)$ とする。$xRy$ かつ $y\not\models D_{i}(p)$ となる $y$ のうち、ランク最小のものをとる。$yRz$ なら $xRz$（推移性）かつ $\rho(z)<\rho(y)$ なので、最小性より $z\models D_{i}(p)$。よって $y\models\Box D_{i}(p)$。$wRy$（推移性）なので $y\models\boxdot(p\leftrightarrow A)$ で、Step 1 より $y\models D_{i}(p)\leftrightarrow D_{i}(H_{i})$、したがって $y\not\models D_{i}(H_{i})$。$xRy$ なので $x\not\models\Box D_{i}(H_{i})$。
+
+**Step 4（結論）.** $w\models\boxdot(p\leftrightarrow A)$ とすると、Step 2（$x=w$）と Step 3 より、すべての $i$ で $w\models\boxdot(\Box D_{i}(p)\leftrightarrow\Box D_{i}(H_{i}))$。$i=1,\dots,k$ の順に第二置換定理を使う：
+$$
+\chi_{i}\defeq B(\Box D_{1}(H_{1}),\dots,\Box D_{i-1}(H_{i-1}),q_{i},\Box D_{i+1}(p),\dots,\Box D_{k}(p))
+$$
+とすると（$q_{i}$ は $H_{j}$ や $D_{j}$ に現れない）、$w\models\chi_{i}[\Box D_{i}(p)/q_{i}]\leftrightarrow\chi_{i}[\Box D_{i}(H_{i})/q_{i}]$。$i=1$ の左辺は $A$、$i=k$ の右辺は $H$、$\chi_{i}[\Box D_{i}(H_{i})/q_{i}]=\chi_{i+1}[\Box D_{i+1}(p)/q_{i+1}]$ なので、つなげて $w\models A\leftrightarrow H$。$w\models p\leftrightarrow A$ より $w\models p\leftrightarrow H$。完全性より $\vdash\boxdot(p\leftrightarrow A)\to(p\leftrightarrow H)$。
+
+::: hypcheck
+- **ランク最小の $y$（逆整礎性）**：Step 3 で、$\Box D_{i}(p)$ が成り立つ「一番上の反例」をとるのに使った。
+- **推移性**：Step 1, 2, 3 で $\boxdot(p\leftrightarrow A)$ や $\Box D_{i}(p)$ を上の世界に伝えるのに使った。
+- **第二置換定理が $\boxdot$ を前件にもつこと**：Step 1, 4 で $\boxdot$ の形の同値を用意したのはこのためである（\ref{logic:second-substitution} の補足）。
+:::
+:::
+
+::: example
+1. $A=\Box(p\to q)$：$B=q_{1}$, $D_{1}=p\to q$、$A_{1}=\top$ で $H_{1}=\top$。$H=\Box(\top\to q)$、$\mathsf{GL}$ で $\Box q$ と同値。算術では、「$S$ ならば $U$」が証明可能であることと同値な文 $S$ は、$U$ の証明可能性 $\mathrm{Bew}(\Godel{U})$ と同値である。$\vdash\Box q\leftrightarrow\Box(\Box q\to q)$ はレーブの公理とその逆（$q\to(\Box q\to q)$ と正規性 1）から直接確かめられる。
+2. $A=\neg\Box(q\to p)$：$B=\neg q_{1}$, $D_{1}=q\to p$、$A_{1}=\neg\top$ で $H_{1}=\neg\top$。$H=\neg\Box(q\to\neg\top)$、$\mathsf{GL}$ で $\Diamond q=\neg\Box\neg q$ と同値。算術では、「$\PA+U$ で証明できない」と主張する文は、$\PA+U$ の無矛盾性 $\neg\mathrm{Bew}(\Godel{\neg U})$ と同値（$U=\top$ がゲーデル文）。
+3. $A=\neg\Box p$：$B=\neg q_{1}$, $D_{1}=p$、$H_{1}=\neg\top$、$H=\neg\Box\neg\top$、$\mathsf{GL}$ で $\neg\Box\bot$ と同値で、特別な場合の結果と一致する。
+:::
+
+::: remark 分解の選び方
+分解は一意でなく、選び方によって得られる不動点の様相次数は大きく変わりうる（同値ではある。\ref{pt:fixed-point-uniqueness} の 2）。Boolos 第 8 章には、同じ $A$ の二つの分解から、様相次数 $2$ と $5$ の（同値な）不動点が得られる例がある。第一証明の不動点は $A$ の $p$ の出現に不動点を代入した形をしているので、$A$ と「形が似ている」。
+:::
+
+## 問題 {#pt:sec-fixed-point-problems}
+
+::: problem {#pt:prob-fixed-point-table}
+「代表的な不動点」の表のうち $\Box\neg p$ と $\neg\Box p\wedge\neg\Box\neg p$ の行を、$A$-トレースの行を計算して確かめよ。
+:::
+
+::: solution
+$A=\Box\neg p$：行 $0$ で $\Box\neg p=1$、$p=1$。行 $1$ で $t_{0}(\neg p)=0$ より $\Box\neg p=0$、$p=0$。行 $2$ でも $\Box\neg p=0$。行 $1,2$ が一致し $[\![A]\!]_{A}=\{0\}$、$H=\Box\bot\wedge\neg\Box^{0}\bot$、すなわち $\Box\bot\wedge\neg\bot$ で $\Box\bot$ と同値。
+
+$A=\neg\Box p\wedge\neg\Box\neg p$：行 $0$ で $\Box p=\Box\neg p=1$、$A=0$、$p=0$。行 $1$ で $\Box p=t_{0}(p)=0$、$\Box\neg p=t_{0}(\neg p)=1$、$A=0$、$p=0$。行 $2$ で $\Box p=0$、$\Box\neg p=1$（$t_{0}(\neg p)=t_{1}(\neg p)=1$）、$A=0$。行 $1,2$ が一致し $[\![A]\!]_{A}=\emptyset$、$H=\bot$。
+:::
+
+::: problem {#pt:prob-fixed-point-verify}
+例の 2（$A=\neg\Box(q\to p)$, $H=\Diamond q$）について、$\vdash H\leftrightarrow A(H)$、すなわち $\vdash\Diamond q\leftrightarrow\neg\Box(q\to\Diamond q)$ をクリプキ意味論で直接確かめよ。
+:::
+
+::: solution
+右辺は $\Diamond(q\wedge\neg\Diamond q)$ と同値（正規性 10 と恒真式）。有限モデルで $w\models\Diamond q$ とすると、$wRx$ かつ $x\models q$ となる $x$ のうちランク最小のものは、$xRy$ なら $wRy$ かつ $\rho(y)<\rho(x)$ なので $y\not\models q$、よって $x\models q\wedge\neg\Diamond q$。逆は $q\wedge\neg\Diamond q\to q$ と正規性 6。完全性より定理である。
+:::
+
+::: problem {#pt:prob-fixed-point-uniqueness-arith}
+\ref{pt:fixed-point-arith} を使って、$\PA\vdash S\leftrightarrow\neg\mathrm{Bew}(\Godel{S})$ を満たす文 $S$ はすべて $\PA$ で互いに同値であることを示せ。
+:::
+
+::: solution
+$A=\neg\Box p$, $H=\neg\Box\bot$ とすると、そのような $S$ は \ref{pt:fixed-point-arith} の 2 より $\PA\vdash S\leftrightarrow\mathrm{Con}$。二つあればどちらも $\mathrm{Con}$ と同値。
+:::
+
+::: supplement
+**前提の検討.**
+- 「$p$ について様相化されている」は外せない：$A=p$ なら $p\leftrightarrow A$ は恒真で、$p$ を含まないどんな $H$ についても $\boxdot(p\leftrightarrow H)$ とは同値でない。$A=\neg p$ なら $\boxdot(p\leftrightarrow\neg p)$ は $\bot$ と同値で、不動点に相当するものがない。
+- 不動点定理は $\mathsf{GL}$ に特有の性質であり、証明ではレーブの公理（逆整礎性）が、ゴールドファーブの補題の Step 1 と第一証明の Step 3 の「最小ランク」として現れる。
+- 算術への応用（\ref{pt:fixed-point-arith}）は $\mathsf{GL}$ の算術的健全性と D1 だけを使う。ソロヴェイの定理は不要である。
+
+**関連する結果.** 特別な場合はベルナルディとスモリンスキーが独立に、一般の場合はド・ヨングとサンビンが独立に証明した（Boolos による）。次ページでは様相次数 $n$ 以下の不動点を与える第二証明と、そこから得られる「不動点定理の様相化」を、その次のページでは補間定理とベートの定義可能性定理による第三証明を扱う。
+
+**高い視点から：不動点は「縮小写像」の一意な不動点である.** $p$ について様相化された $A$ は、$p$ の値を「一段下（$R$ で到達可能な、ランクの小さい世界）」でしか参照しない。したがって $A$-トレースの計算のように、ランク $0$ の世界から順に $p$ の値が一意に決まっていく。これは、距離空間で「後の値が前の値だけで決まる」写像が縮小写像になり、バナッハの不動点定理で一意の不動点をもつのと同じ構造である（逆整礎性が「完備性」、$\Box$ による一段の遅れが「縮小」にあたる）。実際、逆整礎な関係の上の再帰的定義が一意の解をもつという定理（集合論の整礎再帰定理）が、ここでは各モデルの中で働いている。不動点定理は、この「各モデルでの一意の解」が一つの論理式 $H$ で一様に書けることを主張し、算術では「自己言及の方程式は、自己言及を含まない明示的な解をもつ」ことになる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

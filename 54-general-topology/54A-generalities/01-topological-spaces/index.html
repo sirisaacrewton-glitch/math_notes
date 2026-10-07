@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>位相空間 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54A-generalities/01-topological-spaces/index.html" data-kind="dir">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 位相空間（Topological Spaces）
+
+位相の定義と例、近傍系、閉包・内部・境界、開基・準開基・可算公理、連続写像と同相、ネットとフィルターによる収束。（内田伏一『集合と位相』§15–§18 を参考）
+
+<p class="mn-msc">MSC2020: 54A05, 54A10, 54A20</p>
+
+## 前提知識
+
+- [集合論 › 基礎事項](../../../03-mathematical-logic/03E-set-theory/01-basics/index.html)（全体、13 ページ）：集合・写像・順序・選択公理
+
+## 目次
+
+<ol class="mn-dirtoc">
+<li value="1"><a href="01-topologies.html">§1 位相空間</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 1.1</span> <span class="mn-dirtoc-title">位相空間</span></li><li><span class="mn-dirtoc-kind">定義 1.3</span> <span class="mn-dirtoc-title">閉集合</span></li><li><span class="mn-dirtoc-kind">命題 1.4</span> <span class="mn-dirtoc-title">閉集合の性質と閉集合による位相の与え方</span></li><li><span class="mn-dirtoc-kind">定義 1.5</span> <span class="mn-dirtoc-title">距離空間と距離位相</span></li><li><span class="mn-dirtoc-kind">命題 1.6</span> <span class="mn-dirtoc-title">距離位相は位相</span></li><li><span class="mn-dirtoc-kind">定義 1.7</span> <span class="mn-dirtoc-title">近傍</span></li><li><span class="mn-dirtoc-kind">命題 1.8</span> <span class="mn-dirtoc-title">開集合の近傍による特徴づけ</span></li><li><span class="mn-dirtoc-kind">定理 1.9</span> <span class="mn-dirtoc-title">近傍系の公理</span></li><li><span class="mn-dirtoc-kind">定義 1.10</span> <span class="mn-dirtoc-title">位相の強弱</span></li><li><span class="mn-dirtoc-kind">命題 1.11</span> <span class="mn-dirtoc-title">位相の共通部分と生成される位相</span></li></ul></li>
+<li value="2"><a href="02-closure-interior.html">§2 閉包・内部・境界</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 2.1</span> <span class="mn-dirtoc-title">内部と閉包</span></li><li><span class="mn-dirtoc-kind">命題 2.2</span> <span class="mn-dirtoc-title">内部と閉包の基本性質</span></li><li><span class="mn-dirtoc-kind">命題 2.3</span> <span class="mn-dirtoc-title">閉包の近傍による特徴づけ</span></li><li><span class="mn-dirtoc-kind">定理 2.4</span> <span class="mn-dirtoc-title">クラトフスキーの閉包公理</span></li><li><span class="mn-dirtoc-kind">定義 2.5</span> <span class="mn-dirtoc-title">境界・外部・集積点・導集合</span></li><li><span class="mn-dirtoc-kind">命題 2.6</span> <span class="mn-dirtoc-title">境界と導集合の性質</span></li><li><span class="mn-dirtoc-kind">定義 2.7</span> <span class="mn-dirtoc-title">稠密・可分</span></li><li><span class="mn-dirtoc-kind">命題 2.8</span> <span class="mn-dirtoc-title">稠密性の特徴づけ</span></li></ul></li>
+<li value="3"><a href="03-bases-countability.html">§3 開基と可算公理</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 3.1</span> <span class="mn-dirtoc-title">開基</span></li><li><span class="mn-dirtoc-kind">定理 3.2</span> <span class="mn-dirtoc-title">開基となる条件</span></li><li><span class="mn-dirtoc-kind">定義 3.3</span> <span class="mn-dirtoc-title">準開基</span></li><li><span class="mn-dirtoc-kind">命題 3.4</span> <span class="mn-dirtoc-title">準開基の生成する位相</span></li><li><span class="mn-dirtoc-kind">定義 3.5</span> <span class="mn-dirtoc-title">基本近傍系</span></li><li><span class="mn-dirtoc-kind">定義 3.6</span> <span class="mn-dirtoc-title">可算公理・リンデレーフ</span></li><li><span class="mn-dirtoc-kind">命題 3.7</span> <span class="mn-dirtoc-title">第二可算な空間の性質</span></li><li><span class="mn-dirtoc-kind">命題 3.8</span> <span class="mn-dirtoc-title">距離空間の可算性</span></li><li><span class="mn-dirtoc-kind">命題 3.9</span> <span class="mn-dirtoc-title">ゾルゲンフライ直線は第二可算でない</span></li></ul></li>
+<li value="4"><a href="04-continuous-maps.html">§4 連続写像と同相</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 4.1</span> <span class="mn-dirtoc-title">連続写像</span></li><li><span class="mn-dirtoc-kind">定理 4.2</span> <span class="mn-dirtoc-title">連続性の同値な条件</span></li><li><span class="mn-dirtoc-kind">定理 4.3</span> <span class="mn-dirtoc-title">距離空間の連続性</span></li><li><span class="mn-dirtoc-kind">命題 4.4</span> <span class="mn-dirtoc-title">連続写像の合成と位相空間の圏</span></li><li><span class="mn-dirtoc-kind">命題 4.5</span> <span class="mn-dirtoc-title">貼り合わせ補題</span></li><li><span class="mn-dirtoc-kind">定義 4.6</span> <span class="mn-dirtoc-title">同相写像・開写像・閉写像・埋め込み</span></li><li><span class="mn-dirtoc-kind">命題 4.7</span> <span class="mn-dirtoc-title">同相写像の特徴づけ</span></li><li><span class="mn-dirtoc-kind">定義 4.8</span> <span class="mn-dirtoc-title">始位相</span></li><li><span class="mn-dirtoc-kind">定理 4.9</span> <span class="mn-dirtoc-title">始位相の普遍性</span></li><li><span class="mn-dirtoc-kind">定義 4.10</span> <span class="mn-dirtoc-title">終位相</span></li><li><span class="mn-dirtoc-kind">定理 4.11</span> <span class="mn-dirtoc-title">終位相の普遍性</span></li></ul></li>
+<li value="5"><a href="05-nets-filters.html">§5 ネットとフィルターによる収束</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 5.1</span> <span class="mn-dirtoc-title">有向集合とネット</span></li><li><span class="mn-dirtoc-kind">定理 5.2</span> <span class="mn-dirtoc-title">ネットによる閉包の特徴づけ</span></li><li><span class="mn-dirtoc-kind">定理 5.3</span> <span class="mn-dirtoc-title">ネットによる連続性の特徴づけ</span></li><li><span class="mn-dirtoc-kind">定義 5.4</span> <span class="mn-dirtoc-title">部分ネット</span></li><li><span class="mn-dirtoc-kind">定理 5.5</span> <span class="mn-dirtoc-title">集積点と部分ネット</span></li><li><span class="mn-dirtoc-kind">命題 5.6</span> <span class="mn-dirtoc-title">第一可算な空間では点列で十分</span></li><li><span class="mn-dirtoc-kind">定義 5.7</span> <span class="mn-dirtoc-title">フィルターの収束</span></li><li><span class="mn-dirtoc-kind">命題 5.8</span> <span class="mn-dirtoc-title">ネットとフィルターの対応</span></li><li><span class="mn-dirtoc-kind">定理 5.9</span> <span class="mn-dirtoc-title">超フィルターと集積点</span></li></ul></li>
+</ol>
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

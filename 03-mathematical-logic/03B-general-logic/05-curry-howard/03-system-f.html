@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>二階の型と System F | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/05-curry-howard/03-system-f.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 二階の型と System F {#logic:page-system-f keywords="System F, polymorphic lambda calculus, second-order types, Girard-Reynolds, reducibility candidates, strong normalization of System F, impredicativity, Church numerals typed, representable functions"}
+
+単純型付きラムダ計算の型に、型変数についての全称量化 $\forall\alpha.A$ を加えると、「任意の型 $\alpha$ について働く」**多相的な**関数に型が付けられるようになる。これが**System F**（ジラール 1972、レイノルズ 1974）である。カリー＝ハワード対応のもとで、System F は直観主義の**二階命題論理**（命題変数についての量化をもつ論理）に対応する。本ページでは、System F の型の付く項が強正規化可能であること（\ref{logic:f-strong-normalization}）を、ジラールの**還元可能性候補**の方法で示す。この証明は、型 $\forall\alpha.A$ の解釈を「すべての候補にわたる共通部分」で定めるという**非可述的**な定義に依存する。また、自然数・積・和などのデータ型が System F の中で定義でき（\ref{logic:f-data-types}）、ゲーデルの体系 T（\ref{logic:page-system-t}）の関数がすべて表せること、それでも計算可能な全域関数のすべては表せないこと（\ref{logic:f-representable}）を示す。
+
+> 資料フォルダに参考書がなく、標準的な定義と証明（ジラールらの『Proofs and Types』で知られている還元可能性候補の方法）を本サイトで組み立てた。本ページでは項に型の情報を書かない**カリー流**の System F を使う。原典はチャーチ流（型の抽象と適用を項に書く形）で述べていると記憶しているが、確認していない。
+
+## 記法と定義の確認 {#logic:sec-f-notation}
+
+::: notation
+- ラムダ項、代入、$\to_{\beta}$, $\twoheadrightarrow_{\beta}$、正規形、チャーチ–ロッサーの定理とその系（正規形の一意性）は \ref{logic:page-lambda-calculus}（\ref{logic:church-rosser}, \ref{logic:normal-form-unique}）。チャーチ数 $c_{n}=\lambda f\,x.\,f^{n}x$ とその算術は \ref{logic:page-lambda-definability}（\ref{logic:church-numeral}, \ref{logic:lambda-arith}）。
+- $\mathrm{SN}$、$\nu(M)$、中立な項（抽象でない項）、(CR1)–(CR3) は \ref{logic:page-curry-howard} のとおり（\ref{logic:reducibility-properties}）。本ページの項は型なしの純粋なラムダ項で、簡約は β 簡約だけである。
+:::
+
+## 型と型付け {#logic:sec-f-typing}
+
+::: definition System F {#logic:system-f keywords="types of System F, typing rules forall introduction and elimination" index="System F|しすてむえふ, 多相型|たそうがた"}
+1. **型**：型変数 $\alpha,\beta,\dots$ は型；$A,B$ が型なら $A\to B$ と $\forall\alpha.A$ は型。$\forall\alpha$ は $\alpha$ を束縛し、型の自由変数 $\mathrm{FTV}(A)$、型の代入 $A[B/\alpha]$ を通常どおり（束縛変数の捕獲を避けて）定める。文脈 $\Gamma$ の自由型変数 $\mathrm{FTV}(\Gamma)$ はそこに現れる型の自由型変数全体。
+2. **型付け規則**：\ref{logic:typing-rules} の (var), ($\to$I), ($\to$E) に次を加える。
+$$
+\frac{\Gamma\vdash M:A\quad\alpha\notin\mathrm{FTV}(\Gamma)}{\Gamma\vdash M:\forall\alpha.A}\ (\forall\mathrm{I})\qquad\frac{\Gamma\vdash M:\forall\alpha.A}{\Gamma\vdash M:A[B/\alpha]}\ (\forall\mathrm{E})
+$$
+（$B$ は任意の型。項 $M$ は変わらない。）
+:::
+
+::: example
+1. $\vdash\lambda x.x:\forall\alpha.\alpha\to\alpha$（恒等関数は「どの型でも」恒等関数）。(var), ($\to$I), ($\forall$I)（文脈が空なので条件を満たす）。
+2. $\mathrm{Nat}\defeq\forall\alpha.(\alpha\to\alpha)\to\alpha\to\alpha$ とすると、すべてのチャーチ数について $\vdash c_{n}:\mathrm{Nat}$。
+3. $\vdash\lambda x.xx:(\forall\alpha.\alpha\to\alpha)\to(\forall\alpha.\alpha\to\alpha)$：$x:\forall\alpha.\alpha\to\alpha$ を（$\forall$E で）$(\forall\alpha.\alpha\to\alpha)\to(\forall\alpha.\alpha\to\alpha)$ と $\forall\alpha.\alpha\to\alpha$ の二通りに使う。単純型では型の付かない自己適用 $xx$ に型が付く（\ref{logic:prob-ch-omega-untypable} と比較）。
+:::
+
+## 還元可能性候補と強正規化 {#logic:sec-f-sn}
+
+::: definition 還元可能性候補 {#logic:reducibility-candidate keywords="reducibility candidates (Girard)" index="還元可能性候補|かんげんかのうせいこうほ"}
+ラムダ項の集合 $\mathcal{C}$ が**還元可能性候補**（以下**候補**）であるとは、次を満たすことをいう。
+- (CR1) $\mathcal{C}\subseteq\mathrm{SN}$。
+- (CR2) $M\in\mathcal{C}$, $M\to_{\beta}M'$ なら $M'\in\mathcal{C}$。
+- (CR3) $M$ が中立で、$M$ の一段の簡約先がすべて $\mathcal{C}$ に属するなら $M\in\mathcal{C}$。
+
+候補全体を $\mathcal{CR}$ と書く。
+:::
+
+::: lemma 候補の基本性質 {#logic:candidate-basic keywords="SN is a candidate, variables belong to every candidate, intersection and arrow of candidates"}
+1. $\mathrm{SN}\in\mathcal{CR}$。
+2. 候補はすべての変数を含む（変数は中立で、一段の簡約先がない）。
+3. 候補の空でない族の共通部分は候補である。
+4. $\mathcal{C},\mathcal{D}\in\mathcal{CR}$ なら $\mathcal{C}\Rightarrow\mathcal{D}\defeq\{M:\forall N\in\mathcal{C}\,(MN\in\mathcal{D})\}$ は候補である。
+:::
+
+::: proof
+1. (CR1) は自明、(CR2) は $\mathrm{SN}$ の項の簡約先も $\mathrm{SN}$、(CR3) は簡約列の一段目で $\mathrm{SN}$ の項に入ることから。
+2. (CR3) を一段の簡約先のない中立な項に適用。
+3. (CR1)–(CR3) はどれも「すべての $\mathcal{C}$ で成り立てば共通部分で成り立つ」形の条件である（(CR1) は族が空でないことを使う）。
+4. \ref{logic:reducibility-properties} の $A\to B$ の場合の証明で、$\mathrm{Red}_{A},\mathrm{Red}_{B}$ の性質として (CR1)–(CR3) と「変数が属する」ことだけを使っていたので、そのまま $\mathcal{C},\mathcal{D}$ について通る（変数 $x\in\mathcal{C}$ は 2 から）。
+:::
+
+::: definition 型の解釈 {#logic:type-interpretation keywords="interpretation of types as candidates, impredicative intersection" index="非可述的定義|ひかじゅつてきていぎ"}
+型変数から候補への写像 $\rho$（**付値**）について、型 $A$ の解釈 $[\![A]\!]_{\rho}$ を型の構成についての帰納法で定める。
+$$
+\begin{aligned}
+&[\![\alpha]\!]_{\rho}\defeq\rho(\alpha),\qquad[\![A\to B]\!]_{\rho}\defeq[\![A]\!]_{\rho}\Rightarrow[\![B]\!]_{\rho},\\
+&[\![\forall\alpha.A]\!]_{\rho}\defeq\bigcap_{\mathcal{C}\in\mathcal{CR}}[\![A]\!]_{\rho[\alpha:=\mathcal{C}]}.
+\end{aligned}
+$$
+$\rho[\alpha:=\mathcal{C}]$ は $\alpha$ だけを $\mathcal{C}$ に変えた付値。
+:::
+
+::: lemma 解釈の性質 {#logic:interpretation-properties keywords="interpretations are candidates, substitution lemma for interpretations"}
+1. $[\![A]\!]_{\rho}$ は候補である。
+2. $[\![A]\!]_{\rho}$ は $\mathrm{FTV}(A)$ 上の $\rho$ の値だけで決まる。
+3. （代入）$[\![A[B/\alpha]]\!]_{\rho}=[\![A]\!]_{\rho[\alpha:=[\![B]\!]_{\rho}]}$。
+:::
+
+::: proof
+いずれも $A$ の構成についての帰納法。
+1. 型変数は $\rho$ の値が候補。$A\to B$ は \ref{logic:candidate-basic} の 4。$\forall\alpha.A$ は、帰納法の仮定から各 $[\![A]\!]_{\rho[\alpha:=\mathcal{C}]}$ が候補で、$\mathcal{CR}$ は空でない（$\mathrm{SN}\in\mathcal{CR}$）ので、\ref{logic:candidate-basic} の 3。
+2. 定義を展開すれば、束縛された型変数の値は内側で取り替えられるので、自由な型変数の値しか使わない。
+3. $A=\alpha$ なら両辺 $[\![B]\!]_{\rho}$。$A=\beta\neq\alpha$ なら両辺 $\rho(\beta)$。$A\to A'$ は帰納法の仮定。$A=\forall\beta.A'$（$\beta\neq\alpha$, $\beta\notin\mathrm{FTV}(B)$ に選ぶ）なら、各 $\mathcal{C}$ について帰納法の仮定（付値 $\rho[\beta:=\mathcal{C}]$）と、2 から $[\![B]\!]_{\rho[\beta:=\mathcal{C}]}=[\![B]\!]_{\rho}$ を使って $[\![A'[B/\alpha]]\!]_{\rho[\beta:=\mathcal{C}]}=[\![A']\!]_{\rho[\beta:=\mathcal{C}][\alpha:=[\![B]\!]_{\rho}]}$。共通部分をとれば主張。
+:::
+
+::: theorem System F の強正規化定理 {#logic:f-strong-normalization keywords="strong normalization of System F (Girard)" index="System F の強正規化|しすてむえふのきょうせいきか"}
+$\Gamma\vdash M:A$ なら $M\in\mathrm{SN}$。
+:::
+
+::: proof
+**主張.** $x_{1}:A_{1},\dots,x_{k}:A_{k}\vdash M:A$ なら、任意の付値 $\rho$ と $N_{i}\in[\![A_{i}]\!]_{\rho}$ について $M[\vec{N}/\vec{x}]\in[\![A]\!]_{\rho}$。型判断の導出についての帰納法で示す。
+- (var), ($\to$E)：\ref{logic:strong-normalization} の証明と同じ（$\Rightarrow$ の定義）。
+- ($\to$I)：\ref{logic:reducibility-abstraction} の証明は、$\mathrm{Red}_{A},\mathrm{Red}_{B}$ の性質として (CR1)–(CR3) と変数の所属だけを使っていたので、候補 $[\![A]\!]_{\rho},[\![B]\!]_{\rho}$ についてそのまま通る（\ref{logic:interpretation-properties} の 1）。
+- ($\forall$I)：$\Gamma\vdash M:A$, $\alpha\notin\mathrm{FTV}(\Gamma)$ から $\Gamma\vdash M:\forall\alpha.A$。任意の候補 $\mathcal{C}$ について、付値 $\rho'\defeq\rho[\alpha:=\mathcal{C}]$ を考える。$\alpha\notin\mathrm{FTV}(A_{i})$ なので \ref{logic:interpretation-properties} の 2 から $[\![A_{i}]\!]_{\rho'}=[\![A_{i}]\!]_{\rho}\ni N_{i}$。帰納法の仮定（付値 $\rho'$）から $M[\vec{N}/\vec{x}]\in[\![A]\!]_{\rho'}$。$\mathcal{C}$ は任意なので、共通部分 $[\![\forall\alpha.A]\!]_{\rho}$ に属する。
+- ($\forall$E)：帰納法の仮定から $M[\vec{N}/\vec{x}]\in[\![\forall\alpha.A]\!]_{\rho}\subseteq[\![A]\!]_{\rho[\alpha:=[\![B]\!]_{\rho}]}$（$[\![B]\!]_{\rho}$ は候補）$=[\![A[B/\alpha]]\!]_{\rho}$（\ref{logic:interpretation-properties} の 3）。
+
+**結論.** すべての型変数に $\mathrm{SN}$ を割り当てる付値 $\rho$ と、変数 $N_{i}\defeq x_{i}$（\ref{logic:candidate-basic} の 2 から $[\![A_{i}]\!]_{\rho}$ に属する）をとれば、$M\in[\![A]\!]_{\rho}\subseteq\mathrm{SN}$。
+:::
+
+::: remark
+1. **非可述性.** $[\![\forall\alpha.A]\!]_{\rho}$ の定義の共通部分は「すべての候補」にわたり、その中には $[\![\forall\alpha.A]\!]_{\rho}$ 自身も含まれる。定義される対象を含む全体を使って定義するこの循環的な（**非可述的な**）定義は、集合論（あるいは二階算術の全内包公理）では正当だが、より弱い体系では使えない。実際、System F の強正規化は二階算術で証明できないことが知られている（それから二階算術の無矛盾性が従うため）。
+2. ($\forall$E) の場合に、$B$ の解釈 $[\![B]\!]_{\rho}$ を共通部分の一つの成分として取り出した。$B$ は $\forall\alpha.A$ より複雑な型でもよく（例：$\lambda x.xx$ の型付け）、型の大きさについての帰納法では扱えない。これが単純型の場合（型についての帰納法で $\mathrm{Red}_{A}$ を定義）と本質的に違う点である。
+:::
+
+## データ型と表現可能な関数 {#logic:sec-f-data}
+
+::: proposition System F のデータ型 {#logic:f-data-types keywords="encoding of natural numbers, booleans, products, sums in System F" index="チャーチ符号化（System F）|ちゃーちふごうかしすてむえふ"}
+次の型と項について、記載の型付けが成り立つ。
+1. **自然数**：$\mathrm{Nat}\defeq\forall\alpha.(\alpha\to\alpha)\to\alpha\to\alpha$。$c_{n}:\mathrm{Nat}$、$\mathrm{succ}\defeq\lambda n\,f\,x.\,f(n\,f\,x):\mathrm{Nat}\to\mathrm{Nat}$。任意の型 $A$ について、$n:\mathrm{Nat}$ は（$\forall$E で）$(A\to A)\to A\to A$ の型ももつ（**型 $A$ での反復**）。
+2. **真偽値**：$\mathrm{Bool}\defeq\forall\alpha.\alpha\to\alpha\to\alpha$、$\mathrm{true}\defeq\lambda x\,y.x$, $\mathrm{false}\defeq\lambda x\,y.y$。
+3. **積**：$A\times B\defeq\forall\alpha.(A\to B\to\alpha)\to\alpha$、$\langle M,N\rangle\defeq\lambda k.\,k\,M\,N$、$\pi_{1}\defeq\lambda p.\,p\,(\lambda x\,y.x)$, $\pi_{2}\defeq\lambda p.\,p\,(\lambda x\,y.y)$。$M:A$, $N:B$ なら $\langle M,N\rangle:A\times B$ で、$\pi_{i}\langle M_{1},M_{2}\rangle\twoheadrightarrow_{\beta}M_{i}$。
+4. **和**：$A+B\defeq\forall\alpha.(A\to\alpha)\to(B\to\alpha)\to\alpha$、$\iota_{1}M\defeq\lambda f\,g.\,f\,M$, $\iota_{2}N\defeq\lambda f\,g.\,g\,N$、場合分けは $\iota_{1}M$ に $f,g$ を適用するだけ。
+:::
+
+::: proof
+1：$c_{n}$ は $f:\alpha\to\alpha$, $x:\alpha$ のもとで $f^{n}x:\alpha$ で、($\to$I) を二回と ($\forall$I)。$\mathrm{succ}$：$n:\mathrm{Nat}$ を ($\forall$E) で $(\alpha\to\alpha)\to\alpha\to\alpha$ に具体化すると $n\,f\,x:\alpha$、$f(n\,f\,x):\alpha$。3：$k:A\to B\to\alpha$ のもとで $k\,M\,N:\alpha$。$\pi_{1}$ は $p:A\times B$ を ($\forall$E) で $\alpha:=A$ に具体化し、$\lambda xy.x:A\to B\to A$ を渡す。簡約は $(\lambda p.p(\lambda xy.x))(\lambda k.kMN)\to(\lambda k.kMN)(\lambda xy.x)\to(\lambda xy.x)MN\twoheadrightarrow M$。2, 4 も同様。
+:::
+
+::: definition 表現可能 {#logic:f-representable-def keywords="functions representable in System F"}
+関数 $f\colon\N^{k}\to\N$ が System F で**表現可能**であるとは、$\vdash F:\mathrm{Nat}\to\cdots\to\mathrm{Nat}\to\mathrm{Nat}$ となる閉じた項 $F$ があって、すべての $\vec{n}$ について $F\,c_{n_{1}}\cdots c_{n_{k}}\twoheadrightarrow_{\beta}c_{f(\vec{n})}$ となることをいう。
+:::
+
+::: theorem System F で表現可能な関数 {#logic:f-representable keywords="System F represents all primitive recursive functions and the Ackermann function, but not all total computable functions"}
+1. 原始再帰関数とアッカーマン関数は System F で表現可能である。
+2. System F で表現可能な関数は計算可能な全域関数である。
+3. 計算可能な全域関数で、System F で表現可能でないものがある。
+:::
+
+::: proof
+**1.** 原始再帰：$h(\vec{x},0)=g(\vec{x})$, $h(\vec{x},y+1)=k(\vec{x},y,h(\vec{x},y))$ について、型 $\mathrm{Nat}\times\mathrm{Nat}$ での反復で、対 $\langle c_{j},c_{h(\vec{x},j)}\rangle$ を更新する：
+$$
+H\defeq\lambda\vec{x}\,y.\,\pi_{2}\bigl(y\,(\lambda p.\langle\mathrm{succ}(\pi_{1}p),\,K\,\vec{x}\,(\pi_{1}p)\,(\pi_{2}p)\rangle)\,\langle c_{0},G\vec{x}\rangle\bigr).
+$$
+$y=c_{n}$ のとき、更新関数を $n$ 回施した項は、$j$ についての帰納法で対 $\langle c_{j},c_{h(\vec{x},j)}\rangle$ に簡約される（各段で $\pi_{1},\pi_{2}$ を \ref{logic:f-data-types} の 3 で簡約）ので、$H\,\vec{c}\,c_{n}\twoheadrightarrow c_{h(\vec{x},n)}$。ゼロ・後者・射影・合成は明らか。型が付くことは、$y:\mathrm{Nat}$ を $\alpha:=\mathrm{Nat}\times\mathrm{Nat}$ に具体化して確かめられる。
+
+アッカーマン関数（\ref{logic:t-ackermann} の形）：$\mathrm{Step}\defeq\lambda g\,n.\,n\,g\,(g\,c_{1}):(\mathrm{Nat}\to\mathrm{Nat})\to\mathrm{Nat}\to\mathrm{Nat}$（$n$ を $\alpha:=\mathrm{Nat}$ に具体化）、$\mathrm{Ack}\defeq\lambda m.\,m\,\mathrm{Step}\,\mathrm{succ}$（$m$ を $\alpha:=\mathrm{Nat}\to\mathrm{Nat}$ に具体化）。$g$ が関数 $\phi$ を表すなら $\mathrm{Step}\,g\,c_{n}\twoheadrightarrow g^{n}(g\,c_{1})\twoheadrightarrow c_{\phi^{(n+1)}(1)}$ で、$m$ についての帰納法から $c_{m}\,\mathrm{Step}\,\mathrm{succ}\twoheadrightarrow\mathrm{Step}^{m}\,\mathrm{succ}$ は $\mathrm{Ack}(m,\cdot)$ を表す。
+
+**2.** $F\,\vec{c}$ は型が付く（$\to$E）ので、強正規化定理から、たとえば最左の基から簡約すると有限回で正規形に達する。チャーチ–ロッサーの定理（\ref{logic:normal-form-unique}）から正規形は一意で、$F\vec{c}\twoheadrightarrow c_{f(\vec{n})}$（正規形）なので、得られた正規形は $c_{f(\vec{n})}$。この手続きは計算可能。
+
+**3.** 型判断 $\vdash F:\mathrm{Nat}\to\mathrm{Nat}$ の導出を計算可能に枚挙し、対応する項を $F_{0},F_{1},\dots$ とする。$d(n)$ を、「$F_{n}c_{n}$ の正規形（2 と同じく存在する）が $c_{m}$ ならば $m+1$、チャーチ数でなければ $0$」と定めると、$d$ は計算可能な全域関数である。$d$ が $F_{e}$ で表されるなら、$F_{e}c_{e}$ の正規形は $c_{d(e)}$ なので $d(e)=d(e)+1$ となり矛盾する。
+:::
+
+::: remark
+System F で表現可能な関数は、ちょうど二階算術（全内包公理をもつ $\mathsf{Z}_{2}$、\ref{pt:big-five}）で全域性が証明できる再帰関数であることが知られている（ジラールの**表現定理**）。体系 T（\ref{logic:page-system-t}）は $\PA$ に、System F は二階算術に対応する。
+:::
+
+::: hypcheck
+- **候補の族が空でないこと**：\ref{logic:interpretation-properties} の 1 で、$\forall$ の解釈（共通部分）が候補になることに使った（$\mathrm{SN}$ が候補）。
+- **$\alpha\notin\mathrm{FTV}(\Gamma)$**：($\forall$I) の場合に、文脈の型の解釈が $\alpha$ の値に依存しないことに使った。この条件がないと、たとえば $x:\alpha\vdash x:\forall\alpha.\alpha$ が導けて、任意の型が得られてしまう。
+- **代入補題（型の解釈）**：($\forall$E) の場合に、具体化した型の解釈を共通部分の成分として取り出すのに使った。
+- **チャーチ–ロッサーの定理**：\ref{logic:f-representable} の 2, 3 で、正規形が一意であることに使った（型なしラムダ計算で証明済み）。
+- **非可述的な共通部分**：\ref{logic:type-interpretation} で、すべての候補にわたる共通部分を使った。集合論の冪集合公理と分出公理による。
+:::
+
+## 問題 {#logic:sec-f-problems}
+
+::: problem {#logic:prob-f-side-condition}
+($\forall$I) の条件 $\alpha\notin\mathrm{FTV}(\Gamma)$ を外した体系では、正規形をもたない項 $\Omega\defeq(\lambda x.xx)(\lambda x.xx)$ に型が付くことを示せ。
+:::
+
+::: solution
+条件を外すと、$x:\alpha\vdash x:\alpha$ から ($\forall$I) で $x:\alpha\vdash x:\forall\alpha.\alpha$、($\forall$E) で $x:\alpha\vdash x:\alpha\to\alpha$。($\to$E) で $x:\alpha\vdash xx:\alpha$、($\to$I) で $\vdash\lambda x.xx:\alpha\to\alpha$、文脈が空なので ($\forall$I) で $\vdash\lambda x.xx:\forall\alpha.\alpha\to\alpha$。これを ($\forall$E) で $\alpha:=\forall\beta.\beta\to\beta$ に具体化すると $\lambda x.xx:(\forall\beta.\beta\to\beta)\to(\forall\beta.\beta\to\beta)$ で、($\to$E) で $\vdash\Omega:\forall\beta.\beta\to\beta$。$\Omega\to_{\beta}\Omega$ なので $\Omega$ は正規形をもたず、強正規化定理が成り立たない。強正規化の証明では、($\forall$I) の場合にこの条件を使って、文脈の型の解釈が $\alpha$ の値に依存しないことを保証していた。
+:::
+
+::: problem {#logic:prob-f-exponent}
+$\mathrm{exp}\defeq\lambda m\,n.\,n\,m$ がチャーチ数について $\mathrm{exp}\,c_{m}\,c_{n}\twoheadrightarrow c_{m^{n}}$ を満たすことを確かめ、System F で $\mathrm{exp}$ に型 $\mathrm{Nat}\to\mathrm{Nat}\to\mathrm{Nat}$ が付くか検討せよ。
+:::
+
+::: solution
+$c_{n}\,c_{m}=(\lambda f\,x.f^{n}x)\,c_{m}\twoheadrightarrow\lambda x.c_{m}^{n}x$ で、$c_{m}\circ c_{m}$ はチャーチ数として $c_{m^{2}}$ の働きをする（$c_{a}(c_{b}f)=f^{ab}$）ので、$\lambda x.c_{m}^{n}x$ は $\lambda x.\lambda y.\,x^{m^{n}}y$ に簡約され $c_{m^{n}}$。型付け：$n:\mathrm{Nat}$ を $\alpha:=(\beta\to\beta)$ に具体化すると $n:((\beta\to\beta)\to(\beta\to\beta))\to(\beta\to\beta)\to\beta\to\beta$。$m:\mathrm{Nat}$ を $\alpha:=\beta$ に具体化した $m:(\beta\to\beta)\to\beta\to\beta$ を渡すと $n\,m:(\beta\to\beta)\to\beta\to\beta$。($\to$I) と ($\forall$I) で $\lambda m\,n.\,n\,m:\mathrm{Nat}\to\mathrm{Nat}\to\mathrm{Nat}$。（単純型では $m$ と $n$ の型が異なる型変数の具体化を要求するので、同じ $\mathrm{Nat}$ 型では型が付かない。多相性がここで本質的に使われている。）
+:::
+
+::: supplement
+**前提の検討.**
+- カリー流では項に型の情報がないので、型付け可能性の判定は決定不能であることが知られている（ウェルズ 1994）。強正規化の証明自体は、型判断の導出についての帰納法なので、この決定不能性の影響を受けない。
+- 還元可能性候補の条件 (CR1)–(CR3) は、単純型の場合の還元可能性が満たしていた性質を抽出したものである。候補の定義を変える（たとえば「飽和集合」を使う）流儀もあるが、強正規化の証明の構造は同じである。
+
+**関連する結果.**
+- *二階命題論理.* カリー＝ハワード対応のもとで、System F の型は直観主義の二階命題論理の論理式で、$\forall\alpha$ は命題変数についての量化である。$A\wedge B$, $A\vee B$, $\bot$, $\exists\alpha.A$ はそれぞれ $\forall\alpha.(A\to B\to\alpha)\to\alpha$, $\forall\alpha.(A\to\alpha)\to(B\to\alpha)\to\alpha$, $\forall\alpha.\alpha$, $\forall\beta.(\forall\alpha.(A\to\beta))\to\beta$ で定義できる（ラッセル–プラヴィッツの定義）。\ref{logic:f-data-types} の積と和はこの定義の項の版である。
+- *依存型.* 型が項に依存できるようにした体系（マーティン＝レーフの型理論、構成の計算）では、述語論理まで含めたカリー＝ハワード対応が得られ、証明支援系の基礎になっている。
+
+**高い視点から：多相性と自然性.** 型 $\forall\alpha.A$ の項は「すべての型について一様に働く」プログラムである。この一様性は、圏論の**自然変換**の考え方に対応していると言われている：$\forall\alpha.\alpha\to\alpha$ の閉じた正規形の項が本質的に恒等関数だけであることは、恒等関手から自身への自然変換が恒等変換だけであることの類比である（レイノルズの**パラメトリシティ**から、チャーチ流の System F で示せることが知られている）。強正規化の証明で、$\forall$ の解釈を「すべての候補の共通部分」にしたことも、「どの解釈を選んでも成り立つ」という一様性の表現である。比喩で言えば、多相的なプログラムは「中身を見ずに箱を扱う配達員」で、箱の中身（型）を知らないからこそ、できることが限られ（自由定理）、その限定が正規化や一意性といった強い性質を生む。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

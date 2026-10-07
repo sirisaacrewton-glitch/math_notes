@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>連続写像と同相 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54A-generalities/01-topological-spaces/04-continuous-maps.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 連続写像と同相 {#top:page-continuous-maps keywords="continuous map, continuity at a point, epsilon-delta, homeomorphism, open map, closed map, embedding, initial topology, final topology, pasting lemma, category Top"}
+
+位相空間の間の「構造を保つ写像」が**連続写像**で、開集合の逆像が開集合であることで定義される（\ref{top:continuous}）。距離空間では、これは $\varepsilon$–$\delta$ による連続性と一致する（\ref{top:continuity-metric}）。連続写像の逆も連続である全単射が**同相写像**で、同相な空間は位相的には区別できない（\ref{top:homeomorphism}）。後半では、写像の族を連続にする最弱の位相（**始位相**、\ref{top:initial-topology}）と最強の位相（**終位相**、\ref{top:final-topology}）を導入する。部分空間・直積・商の位相はすべてこの二つの特別な場合である。
+
+> 資料：内田伏一『集合と位相』§14, §16。
+
+## 記法と定義の確認 {#top:sec-cm-notation}
+
+::: notation
+- 位相・開集合・閉集合・近傍・閉包・開基・準開基・距離位相は前ページまでのとおり（\ref{top:topological-space}, \ref{top:neighborhood}, \ref{top:interior-closure}, \ref{top:closure-neighborhood}, \ref{top:base}, \ref{top:subbase}, \ref{top:metric-topology}）。
+- 写像 $f\colon X\to Y$ と $B\subseteq Y$ について $f^{-1}[B]\defeq\{x:f(x)\in B\}$（逆像）、$A\subseteq X$ について $f[A]$（像）。逆像は和・共通部分・補集合と交換する。
+- 圏・関手の言葉は圏論の系列のとおり（\ref{cat:category}, \ref{cat:functor}）。
+:::
+
+## 連続写像 {#top:sec-cm-continuous}
+
+::: definition 連続写像 {#top:continuous keywords="continuous map, continuity at a point" index="連続写像|れんぞくしゃぞう, 連続（点での）|れんぞくてんでの"}
+位相空間の間の写像 $f\colon X\to Y$ が点 $x$ で**連続**であるとは、$f(x)$ の任意の近傍 $N$ について $f^{-1}[N]$ が $x$ の近傍であることをいう。すべての点で連続な写像を**連続写像**という。
+:::
+
+::: theorem 連続性の同値な条件 {#top:continuity-equivalents keywords="continuity via preimages of open sets, closed sets, closures, subbases" index="連続性の同値条件|れんぞくせいのどうちじょうけん"}
+写像 $f\colon X\to Y$ について次は同値である。
+1. $f$ は連続。
+2. $Y$ の開集合の逆像は $X$ の開集合。
+3. $Y$ の閉集合の逆像は $X$ の閉集合。
+4. すべての $A\subseteq X$ について $f[\overline{A}]\subseteq\overline{f[A]}$。
+5. $Y$ の準開基 $\mathcal{S}$ のすべての元の逆像は $X$ の開集合（準開基を一つ固定する）。
+:::
+
+::: proof
+**1 ⇒ 2.** $V$ を開集合とし、$x\in f^{-1}[V]$ とする。$V$ は $f(x)$ の近傍なので $f^{-1}[V]$ は $x$ の近傍。すべての点の近傍なので開集合（\ref{top:open-iff-neighborhood}）。
+
+**2 ⇒ 3.** $f^{-1}[F^{c}]=(f^{-1}[F])^{c}$。
+
+**3 ⇒ 4.** $\overline{f[A]}$ は閉集合なので、$f^{-1}[\overline{f[A]}]$ は $A$ を含む閉集合で、$\overline{A}\subseteq f^{-1}[\overline{f[A]}]$。像をとって $f[\overline{A}]\subseteq\overline{f[A]}$。
+
+**4 ⇒ 3.** $F$ を閉集合、$A\defeq f^{-1}[F]$ とする。$f[\overline{A}]\subseteq\overline{f[A]}\subseteq\overline{F}=F$ なので $\overline{A}\subseteq f^{-1}[F]=A$、$A$ は閉集合。
+
+**2 ⇒ 5.** 準開基の元は開集合。
+
+**5 ⇒ 2.** 開集合 $V$ は準開基の元の有限共通部分の和で、逆像は有限共通部分と和に交換するので、$f^{-1}[V]$ は開集合の有限共通部分の和。
+
+**2 ⇒ 1.** $f(x)$ の近傍 $N$ は開集合 $V$ で $f(x)\in V\subseteq N$ となるものを含み、$x\in f^{-1}[V]\subseteq f^{-1}[N]$。
+
+::: hypcheck
+- **4 の向き**：連続写像は閉包の点を閉包の点に移す（$f[\overline{A}]\subseteq\overline{f[A]}$）が、等号は一般に成り立たない：$\R$ の恒等写像を離散位相から通常の位相への写像とみると連続で、$A=\mathbb{Q}$ について $f[\overline{A}]=\mathbb{Q}\subsetneq\R=\overline{f[A]}$。
+- **像についての主張は成り立たない**：連続写像は開集合を開集合に移すとは限らない（下の開写像の例）。
+:::
+:::
+
+::: theorem 距離空間の連続性 {#top:continuity-metric keywords="continuity in metric spaces is epsilon-delta continuity" index="ε-δ による連続性|いぷしろんでるたによるれんぞくせい"}
+距離空間 $(X,d)$, $(Y,e)$ の間の写像 $f$ が点 $x$ で連続であることと、任意の $\varepsilon>0$ に対しある $\delta>0$ で、$d(x,y)<\delta\Rightarrow e(f(x),f(y))<\varepsilon$ となることは同値である。
+:::
+
+::: proof
+「⇒」：$B(f(x),\varepsilon)$ は $f(x)$ の近傍なので、$f^{-1}[B(f(x),\varepsilon)]$ は $x$ の近傍で、開球 $B(x,\delta)$ を含む。「⇐」：$f(x)$ の近傍 $N$ は $B(f(x),\varepsilon)$ を含み、仮定から $B(x,\delta)\subseteq f^{-1}[B(f(x),\varepsilon)]\subseteq f^{-1}[N]$ なので、$f^{-1}[N]$ は $x$ の近傍。
+:::
+
+::: proposition 連続写像の合成と位相空間の圏 {#top:continuous-composition keywords="composition of continuous maps; the category Top" index="位相空間の圏|いそうくうかんのけん"}
+連続写像の合成は連続で、恒等写像は連続である。したがって、小さい位相空間と連続写像は圏 $\mathbf{Top}$ をなす（\ref{cat:small-category} の例 2）。
+:::
+
+::: proof
+$(g\circ f)^{-1}[W]=f^{-1}[g^{-1}[W]]$ と \ref{top:continuity-equivalents} の 2。
+:::
+
+::: proposition 貼り合わせ補題 {#top:pasting-lemma keywords="pasting lemma for open covers and finite closed covers" index="貼り合わせ補題|はりあわせほだい"}
+$X=\bigcup_{\lambda}A_{\lambda}$ とし、$f\colon X\to Y$ の各制限 $f\restriction A_{\lambda}$ が $A_{\lambda}$ の相対位相（\ref{top:subspace}：$A$ の開集合を $U\cap A$（$U$ は $X$ で開）とする位相）について連続とする。次のいずれかなら $f$ は連続である。
+1. すべての $A_{\lambda}$ が開集合。
+2. $A_{\lambda}$ が有限個で、すべて閉集合。
+:::
+
+::: proof
+**1.** $V$ を $Y$ の開集合とする。$f^{-1}[V]=\bigcup_{\lambda}(f\restriction A_{\lambda})^{-1}[V]$ で、各項は $A_{\lambda}$ で開、すなわち $U_{\lambda}\cap A_{\lambda}$（$U_{\lambda}$ は $X$ で開）と書ける。$A_{\lambda}$ が開集合なので $U_{\lambda}\cap A_{\lambda}$ は $X$ で開で、和も開。
+
+**2.** 閉集合 $F$ について、同様に $f^{-1}[F]=\bigcup_{\lambda}(f\restriction A_{\lambda})^{-1}[F]$ の各項は $A_{\lambda}$ で閉、すなわち $X$ の閉集合と $A_{\lambda}$ の共通部分で、$A_{\lambda}$ が閉なので $X$ で閉。有限個の閉集合の和なので閉。
+
+::: hypcheck
+- **2 の有限性**：無限個の閉集合の和は閉とは限らない。$\R$ を一点集合 $\{x\}$（閉集合）の和とみると、各制限は連続だが、任意の写像 $\R\to\R$ がこの条件を満たしてしまう。
+- **公理**：(1) の $U_{\lambda}$ を選ぶ必要はない：$f^{-1}[V]\cap A_{\lambda}$ が $X$ で開であることだけを使えばよい（$A_{\lambda}$ 開のとき、$A_{\lambda}$ の開集合は $X$ の開集合）。
+:::
+:::
+
+## 同相写像 {#top:sec-cm-homeomorphism}
+
+::: definition 同相写像・開写像・閉写像・埋め込み {#top:homeomorphism keywords="homeomorphism, homeomorphic, open map, closed map, topological embedding" index="同相写像|どうそうしゃぞう, 同相|どうそう, 開写像|かいしゃぞう, 閉写像|へいしゃぞう, 埋め込み（位相）|うめこみいそう"}
+1. 連続な全単射 $f\colon X\to Y$ で、逆写像 $f^{-1}$ も連続なものを**同相写像**という（$\mathbf{Top}$ の同型射）。同相写像があるとき $X$ と $Y$ は**同相**であるといい $X\approx Y$ と書く。
+2. 開集合の像が開集合である写像を**開写像**、閉集合の像が閉集合である写像を**閉写像**という。
+3. 連続写像 $f\colon X\to Y$ が、$X$ から部分空間 $f[X]$ への同相写像であるとき、$f$ を**埋め込み**という。
+:::
+
+::: proposition 同相写像の特徴づけ {#top:homeomorphism-characterization keywords="a continuous bijection is a homeomorphism iff it is open iff it is closed" index="同相写像の特徴づけ|どうそうしゃぞうのとくちょうづけ"}
+連続な全単射 $f$ について、次は同値である：$f$ は同相写像、$f$ は開写像、$f$ は閉写像。
+:::
+
+::: proof
+$f^{-1}$ の連続性は、$(f^{-1})^{-1}[U]=f[U]$ が開集合であること（$f$ が開写像）と同値。閉集合についても同様。
+:::
+
+::: example
+1. **連続な全単射で同相でないもの.** $[0,2\pi)\to S^{1}$（単位円）, $t\mapsto(\cos t,\sin t)$ は連続な全単射だが、$[0,\pi)$ の像は $S^{1}$ で開でない（$(1,0)$ のどの近傍も下半分の点を含む）ので開写像でなく、同相でない。
+2. **同相な例.** 開区間 $(-1,1)$ と $\R$ は同相：$x\mapsto x/(1-\lvert x\rvert)$ は連続な全単射で、逆写像 $y\mapsto y/(1+\lvert y\rvert)$ も連続。同様にすべての開区間は互いに同相。
+3. **開写像だが閉写像でない.** 射影 $p\colon\R^{2}\to\R$, $(x,y)\mapsto x$ は開写像（開球の像は開区間）だが、閉集合 $\{(x,y):xy=1\}$ の像 $\R\setminus\{0\}$ は閉でない。
+4. 位相的性質（同相で保たれる性質）の例：可分性、第一・第二可算性、リンデレーフ性。有界性（距離空間で）は位相的性質ではない：$(-1,1)\approx\R$。
+:::
+
+## 始位相と終位相 {#top:sec-cm-initial-final}
+
+::: definition 始位相 {#top:initial-topology keywords="initial topology, weak topology induced by a family of maps" index="始位相|しいそう, 弱位相（写像族の）|じゃくいそうしゃぞうぞくの"}
+集合 $X$ と、位相空間 $Y_{i}$ への写像の族 $f_{i}\colon X\to Y_{i}$（$i\in I$）について、すべての $f_{i}$ を連続にする $X$ 上の最弱の位相を**始位相**という。それは $\{f_{i}^{-1}[V]:i\in I,V\text{ は }Y_{i}\text{ で開}\}$ が生成する位相で、この族は準開基である。
+:::
+
+::: theorem 始位相の普遍性 {#top:initial-topology-universal keywords="universal property of the initial topology" index="始位相の普遍性|しいそうのふへんせい"}
+$X$ に $(f_{i})$ の始位相を入れる。位相空間 $Z$ からの写像 $g\colon Z\to X$ が連続であることと、すべての $f_{i}\circ g$ が連続であることは同値である。さらに、この性質をもつ $X$ 上の位相は始位相に限る。
+:::
+
+::: proof
+「⇒」は合成の連続性。「⇐」：準開基の元 $f_{i}^{-1}[V]$ の逆像 $g^{-1}[f_{i}^{-1}[V]]=(f_{i}\circ g)^{-1}[V]$ は開集合なので、\ref{top:continuity-equivalents} の 5 から $g$ は連続。
+
+一意性：$X$ 上の位相 $\mathcal{T}$ がこの性質をもつとする。$g=1_{X}\colon(X,\mathcal{T})\to(X,\mathcal{T})$ は連続なので各 $f_{i}$ は $\mathcal{T}$ で連続、よって $\mathcal{T}$ は始位相 $\mathcal{T}_{0}$ より強い。逆に $g=1_{X}\colon(X,\mathcal{T}_{0})\to(X,\mathcal{T})$ は、各 $f_{i}\circ g=f_{i}$ が $\mathcal{T}_{0}$ で連続なので、性質から連続、よって $\mathcal{T}\subseteq\mathcal{T}_{0}$。
+:::
+
+::: definition 終位相 {#top:final-topology keywords="final topology, strong topology coinduced by a family of maps" index="終位相|しゅういそう, 強位相（写像族の）|きょういそうしゃぞうぞくの"}
+位相空間 $X_{i}$ から集合 $Y$ への写像の族 $f_{i}\colon X_{i}\to Y$ について、$\{V\subseteq Y:\text{すべての }i\text{ で }f_{i}^{-1}[V]\text{ が開}\}$ は $Y$ 上の位相で、すべての $f_{i}$ を連続にする最強の位相である。これを**終位相**という。
+:::
+
+::: theorem 終位相の普遍性 {#top:final-topology-universal keywords="universal property of the final topology" index="終位相の普遍性|しゅういそうのふへんせい"}
+$Y$ に $(f_{i})$ の終位相を入れる。写像 $g\colon Y\to Z$ が連続であることと、すべての $g\circ f_{i}$ が連続であることは同値である。この性質をもつ位相は終位相に限る。
+:::
+
+::: proof
+位相であること：逆像は和・共通部分と交換するので (O1)〜(O3) が成り立つ。最強であること：各 $f_{i}$ を連続にする位相の開集合は条件を満たすので、終位相に含まれる。普遍性：「⇐」：$W\subseteq Z$ 開なら、$f_{i}^{-1}[g^{-1}[W]]=(g\circ f_{i})^{-1}[W]$ は開なので、$g^{-1}[W]$ は終位相で開。一意性は始位相と双対的。
+:::
+
+::: remark
+始位相は、写像の族を錐とみたときの「極限」側、終位相は「余極限」側の構成である。実際、忘却関手 $U\colon\mathbf{Top}\to\mathbf{Set}$ について、集合の極限（余極限）に始位相（終位相）を入れたものが位相空間の極限（余極限）になる（\ref{top:product-topology}、\ref{top:quotient-topology}）。これは $U$ が左随伴（離散位相）と右随伴（密着位相）の両方をもつこと（\ref{cat:adjunction} の例 4）の現れで、$U$ は極限と余極限の両方を保存する（\ref{cat:adjoints-preserve-limits}）。
+:::
+
+::: supplement
+**前提を変えると.** 点での連続性を「点列の収束を保つ」で定義すると、第一可算でない空間では一般の連続性と一致しない（\ref{top:net-continuity}）。たとえば非可算集合上の補可算位相で、収束する点列は「最終的に定数」になる列だけなので、恒等写像を離散位相への写像とみたものは点列の収束を保つが、連続でない。
+
+**類似の定理.** 同相写像の判定には、コンパクト空間からハウスドルフ空間への連続な全単射は自動的に同相写像である、という定理がよく使われる（\ref{top:compact-to-hausdorff}）。例 1 の $[0,2\pi)$ はコンパクトでないので、この定理が当てはまらない。
+
+**高い視点から：連続性は「観測の引き戻し」.** 開集合を観測可能な性質と読む見方（\ref{top:page-topologies} の補足）では、$f$ が連続であるとは、「$f(x)$ についての観測可能な性質」が「$x$ についての観測可能な性質」に引き戻されることである。比喩で言えば、出力を有限の精度で知りたければ、入力を有限の精度で知れば足りる。始位相は「与えられた観測装置 $f_{i}$ だけで見分けられる最も粗い見方」、終位相は「与えられた入り口 $f_{i}$ から入るすべての見方と矛盾しない最も細かい見方」である。
+:::
+
+## 問題 {#top:sec-cm-problems}
+
+::: problem {#top:prob-characteristic-continuous}
+$A\subseteq X$ の特性関数 $\chi_{A}\colon X\to\{0,1\}$（$\{0,1\}$ は離散位相）が連続であることと、$A$ が開かつ閉であることは同値であることを示せ。
+:::
+
+::: solution
+$\{0,1\}$ の開集合は $\varnothing,\{0\},\{1\},\{0,1\}$ で、逆像はそれぞれ $\varnothing,A^{c},A,X$。すべて開であることは、$A$ と $A^{c}$ がともに開、すなわち $A$ が開かつ閉であることと同値。
+:::
+
+::: problem {#top:prob-initial-transitive}
+始位相は推移的であることを示せ：$f_{i}\colon X\to Y_{i}$、各 $Y_{i}$ が写像 $g_{ij}\colon Y_{i}\to Z_{ij}$ の始位相をもつとき、$X$ の $(f_{i})$ による始位相は、$(g_{ij}\circ f_{i})_{i,j}$ による始位相と一致する。
+:::
+
+::: solution
+普遍性で比べる。$h\colon W\to X$ が前者の位相で連続 $\iff$ すべての $f_{i}\circ h$ が連続 $\iff$（$Y_{i}$ の始位相の普遍性）すべての $g_{ij}\circ f_{i}\circ h$ が連続 $\iff$ 後者の位相で連続。\ref{top:initial-topology-universal} の一意性から、二つの位相は一致する。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

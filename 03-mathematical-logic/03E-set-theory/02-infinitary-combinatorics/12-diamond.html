@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>◇ とススリン木 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/12-diamond.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ◇ とススリン木 {#set:page-diamond keywords="diamond principle, Jensen's diamond, Suslin tree from diamond, ever-branching tree"}
+
+ススリン仮説（\ref{set:suslin-hypothesis}）は、ススリン木（\ref{set:suslin-tree}）が存在しないという主張と同値である（\ref{set:suslin-tree-line}）。MA$(\omega_{1})$ のもとではススリン木は存在しない（\ref{set:ma-no-suslin-tree}）。本ページでは逆向きの原理として、ジェンセンの**ダイヤモンド原理** ◇ を導入し、◇ のもとでススリン木が構成できることを示す。◇ は「$\omega_{1}$ の任意の部分集合の始切片を、定常集合上の位置で正しく言い当てる」列の存在を主張する。◇ から CH が従うが、◇ はそれより真に強く、CH だけからはススリン木の存在は導けないことが知られている。
+
+構成の骨組みは次のとおりである。木を $\omega_{1}$ 自身の上に作ると、木の性質が閉非有界集合上の可算順序数に「反映」する（\ref{set:tree-reflection}）。◇ 列はその反映先の可算な段階で極大反鎖を言い当てるので、その段階で言い当てた反鎖を「上で封じる」ように木を延ばしておけば、すべての極大反鎖が可算になる（\ref{set:diamond-suslin-criterion}）。
+
+## 記法と定義の確認 {#set:sec-diamond-notation}
+
+::: notation
+- 閉集合・閉非有界集合（\ref{set:club}）、閉非有界フィルター $\mathrm{Cub}(\omega_{1})$（\ref{set:club-filter}）、定常集合（\ref{set:stationary}）は \ref{set:page-club-filter} の意味で、$\omega_{1}$ 上で用いる。定常集合は非有界で、定常集合と閉非有界集合の共通部分は定常であり、可算個の非定常集合の和は非定常である（\ref{set:stationary-basic}）。可算個の閉非有界集合の共通部分は閉非有界（\ref{set:club-filter-complete}）。$\omega_{1}$ 未満の極限順序数の全体は閉非有界（\ref{set:club-examples} (2)）。
+- $\omega_{1}$ 上の可算個の有限項演算で閉じた順序数の全体は閉非有界である（\ref{set:closure-club}）。ここで $\gamma<\omega_{1}$ が演算 $f$ で閉じているとは $f[\gamma^{n}]\subseteq\gamma$ のこと（\ref{set:finitary-closure}）。
+- $X\subseteq\omega_{1}$ が可算であることと、$X$ が $\omega_{1}$ で有界であることは同値である（AC のもとで $\omega_{1}$ は正則：\ref{set:successor-regular}, \ref{set:regular-bounded}）。
+- 木・高さ $\operatorname{ht}(x,T)$・レベル $\operatorname{Lev}_{\alpha}(T)$・部分木（\ref{set:tree}, \ref{set:tree-height}）、鎖・反鎖（\ref{set:tree-chain-antichain}）、$\kappa$-木（\ref{set:kappa-tree}）、ススリン木（\ref{set:suslin-tree}）は \ref{set:page-trees} の意味。木の順序を $<_{T}$ と書き、順序数としての大小 $<$ と区別する。$y<_{T}x$ かつ $\operatorname{ht}(y,T)=\beta$ となる唯一の $y$ を $x\restr{\beta}$ と書く（\ref{set:tree-basic} (1)）。$\omega_{1}$-木は濃度 $\omega_{1}$ をもち（\ref{set:kappa-tree-size}）、木の鎖は整列されて高さの写像は鎖の上で狭義増加（\ref{set:tree-chain-well-ordered}）。
+- CH は \ref{set:ch} の意味。順序数の積 $\omega\cdot\beta$ は \ref{set:ordinal-multiplication} の意味で、\ref{set:ordinal-multiplication-structure}, \ref{set:ordinal-multiplication-laws} を用いる。
+- 本ページの結果はすべて ZFC で示す（◇ などの仮定は各主張に明記する）。
+:::
+
+## ダイヤモンド原理 {#set:sec-diamond-def}
+
+::: definition ◇ {#set:diamond keywords="diamond principle, Jensen's diamond, diamond sequence" index="ダイヤモンド原理|だいやもんどげんり, ◇列|だいやもんどれつ, ◇|だいやもんど"}
+**◇**（ダイヤモンド）とは、次の主張である：集合の列 $\langle A_{\alpha}\mid\alpha<\omega_{1}\rangle$ で、各 $A_{\alpha}\subseteq\alpha$ であり、任意の $A\subseteq\omega_{1}$ について
+$$
+\{\alpha<\omega_{1}\mid A\cap\alpha=A_{\alpha}\}\text{ が }\omega_{1}\text{ で定常}
+\label{set:eq-diamond}
+$$
+となるものが存在する。この条件を満たす列を **◇ 列**という。
+:::
+
+::: intuition
+$A_{\alpha}$ は「$\alpha$ の段階での、まだ見ぬ集合 $A$ の始切片 $A\cap\alpha$ の予想」である。◇ 列は可算個の情報（$A_{\alpha}$ はたった 1 つの集合）しか各段階でもたないのに、$\omega_{1}$ の $2^{\aleph_{1}}$ 個ある部分集合のどれについても、定常集合という「無視できない量」の段階で予想を的中させる。これは超限的な構成で「$\alpha$ の段階で、将来現れうるすべての対象のうち 1 つに対処しておけば、実はすべての対象に対処したことになる」という形で使われる。
+:::
+
+::: example
+- 条件 \eqref{set:eq-diamond} は各 $A$ について的中する段階が**非有界**に（しかも閉非有界集合と必ず交わるように）あることを要求しており、的中が 1 回でよいのではない。たとえば $A_{\alpha}=\varnothing$（すべての $\alpha$）とすると、$A=\varnothing$ はすべての $\alpha$ で的中するが、$A=\omega_{1}$ は $\alpha=0$ でしか的中しない（$\omega_{1}\cap\alpha=\alpha\ne\varnothing$ が $\alpha>0$ で成り立つ）ので、これは ◇ 列ではない。
+:::
+
+::: lemma ◇ は CH を導く {#set:diamond-ch keywords="diamond implies CH" index="◇とCH|だいやもんどとしーえいち"}
+◇ ならば CH、すなわち $2^{\aleph_{0}}=\aleph_{1}$ である。
+:::
+
+::: intuition
+$\omega$ の部分集合 $A$ は、$\alpha\ge\omega$ の段階で的中すれば $A=A\cap\alpha=A_{\alpha}$ そのものが列に現れる。したがって $\mathcal{P}(\omega)$ は $\omega_{1}$ 個の項からなる列に全部載ってしまう。
+:::
+
+::: proof
+$\langle A_{\alpha}\mid\alpha<\omega_{1}\rangle$ を ◇ 列とする。
+
+**Step 1（$\mathcal{P}(\omega)$ は列に現れる）.** $A\subseteq\omega$ をとる。$S_{A}=\{\alpha<\omega_{1}\mid A\cap\alpha=A_{\alpha}\}$ は定常なので非有界であり（\ref{set:stationary-basic} (2)）、$\omega\le\alpha$ となる $\alpha\in S_{A}$ がある。$A\subseteq\omega\subseteq\alpha$ より $A=A\cap\alpha=A_{\alpha}$。
+
+**Step 2（単射）.** $A\subseteq\omega$ に $h(A)=\min\{\alpha<\omega_{1}\mid A_{\alpha}=A\}$（Step 1 より空でない順序数の集合の最小元）を対応させる。$h(A)=h(B)$ なら $A=A_{h(A)}=B$ なので $h\colon\mathcal{P}(\omega)\to\omega_{1}$ は単射であり、$2^{\aleph_{0}}\le\aleph_{1}$。
+
+**Step 3.** カントールの定理（\ref{set:cantor-strict}）より $\aleph_{0}<2^{\aleph_{0}}$ であり、$\aleph_{1}$ は $\aleph_{0}$ より大きい最小の基数なので $\aleph_{1}\le2^{\aleph_{0}}$。Step 2 と合わせて $2^{\aleph_{0}}=\aleph_{1}$。
+
+::: hypcheck
+- **◇**：Step 1 で、$\omega$ の部分集合が列に現れることに使った。実際に使ったのは「$A\subseteq\omega$ について的中する $\alpha\ge\omega$ がある」ことだけである。
+- **定常集合は非有界**（\ref{set:stationary-basic} (2)）：Step 1。
+- **選択公理**：$2^{\aleph_{0}}$ を基数として扱うのに使った（Step 2 の単射の構成自体は最小元をとるだけで選択を行っていない）。
+:::
+:::
+
+::: supplement
+**逆は成り立たない.** CH は ◇ を導かない：$\ZFC+\mathrm{CH}+\lnot\Diamond$ は（$\ZFC$ が無矛盾なら）無矛盾である（R. B. Jensen。K. J. Devlin and H. Johnsbråten, *The Souslin Problem*, Lecture Notes in Math. 405, Springer, 1974 では、さらに $\mathrm{GCH}$ と「ススリン木が存在しない」が両立することが示されている）。したがって本ページの主定理 \ref{set:diamond-suslin} は CH だけでは示せない。一方、◇ は構成可能性公理 $\mathbf{V}=\mathbf{L}$ から従い、$\mathrm{GCH}$ と両立する（Kunen, *Set Theory* (1980), 第 VI 章 §5）。
+
+**一般の正則基数.** 正則基数 $\kappa>\omega$ について、$A_{\alpha}\subseteq\alpha$（$\alpha<\kappa$）で、任意の $A\subseteq\kappa$ について $\{\alpha<\kappa\mid A\cap\alpha=A_{\alpha}\}$ が $\kappa$ で定常となる列の存在を $\Diamond_{\kappa}$ という（◇ は $\Diamond_{\omega_{1}}$ のこと）。上と同じ議論で、$\beta<\kappa$ の部分集合はすべて列に現れるので $2^{\lvert\beta\rvert}\le\kappa$、したがって $2^{<\kappa}=\kappa$（\ref{set:kappa-below-lambda-sup}）が従う（Kunen 第 II 章演習 52）。
+
+**概素な定常集合族.** ◇ 列 $\langle A_{\alpha}\rangle$ について $S_{A}=\{\alpha\mid A\cap\alpha=A_{\alpha}\}$ とおくと、$A\ne B$ なら、$\delta=\min((A\setminus B)\cup(B\setminus A))$ より上の段階では $A\cap\alpha\ne B\cap\alpha$ なので $S_{A}\cap S_{B}\subseteq\delta+1$ は可算である。各 $S_{A}$ は定常（特に非可算）なので $A\mapsto S_{A}$ は単射であり、◇ のもとで「相異なる 2 元の共通部分が可算な、$2^{\aleph_{1}}$ 個の定常集合の族」が得られる（ZFC だけでも互いに交わらない $\omega_{1}$ 個の定常集合がある：\ref{set:disjoint-stationary}）。
+:::
+
+## 至るところで枝分かれする木 {#set:sec-ever-branching}
+
+::: definition 至るところで枝分かれする木 {#set:ever-branching keywords="ever-branching tree, splitting tree" index="至るところで枝分かれする木|いたるところでえだわかれするき"}
+木 $T$ が**至るところで枝分かれする**（ever-branching）とは、すべての $x\in T$ について、$\{y\in T\mid x<_{T}y\}$ が $<_{T}$ で全順序付けられないことをいう。すなわち、どの $x$ の上にも、互いに比較不能な 2 元 $y,y'>_{T}x$ がある。
+:::
+
+::: intuition
+どの点から上を見ても、一本道のままでは終わらず、必ずどこかで二股に分かれている木。ススリン木の構成で「鎖が長くなりすぎない」ことを保証するための技術的な条件である。枝分かれが至るところにあれば、長い鎖があると、その鎖から少しずつ外れた点を拾って長い反鎖が作れてしまう。したがって鎖について心配する必要がなくなり、反鎖だけを制御すればよくなる（次の補題）。
+:::
+
+::: lemma 極大反鎖との比較 {#set:max-antichain-comparable keywords="maximal antichain in a tree" index="極大反鎖|きょくだいはんさ"}
+木 $S$ の反鎖 $A$ が（包含に関して）**極大**、すなわち $A\subsetneq A'$ となる $S$ の反鎖 $A'$ がないことは、すべての $x\in S$ がある $a\in A$ と比較可能（$x\le_{S}a$ または $a\le_{S}x$）であることと同値である。
+:::
+
+::: proof
+**($\Leftarrow$)** $A\subsetneq A'$ となる反鎖 $A'$ があれば、$x\in A'\setminus A$ は $A'$ の他の元、特に $A$ のすべての元と比較不能で、かつ $x\notin A$ なので $x=a$ となる $a\in A$ もない。これは仮定に反する。
+
+**($\Rightarrow$)** ある $x\in S$ が $A$ のどの元とも比較不能（等しくもない）とする。すると $x\notin A$ であり、$A\cup\{x\}$ は $A$ を真に含む反鎖となり、$A$ の極大性に反する。
+
+::: hypcheck
+- 反鎖と比較可能性の定義だけを使った。ZF で成り立つ。
+:::
+:::
+
+::: lemma 極大反鎖だけを調べればよい {#set:ever-branching-suslin keywords="ever-branching omega_1-tree with countable maximal antichains is Suslin" index="ススリン木の判定法|すすりんぎのはんていほう"}
+$T$ を至るところで枝分かれする $\omega_{1}$-木とし、$T$ のすべての極大反鎖が可算であるとする。このとき $T$ はススリン木である。
+:::
+
+::: intuition
+反鎖については、ツォルンの補題で極大反鎖に広げれば可算性が遺伝する。鎖については、非可算な鎖 $B$ があったとすると、枝分かれの仮定から $B$ の各点の少し上に「$B$ から外れた点」がとれる。$B$ に沿って十分高く飛び飛びに登りながらこの外れた点を拾っていけば、拾った点どうしは比較不能になり、非可算な反鎖ができてしまう。
+:::
+
+::: proof
+\ref{set:kappa-tree-size} より $\lvert T\rvert=\omega_{1}$ である。
+
+**Step 1（反鎖は可算）.** $A$ を $T$ の反鎖とする。$A$ を含む $T$ の反鎖の全体 $P$ を包含で半順序付ける。$P$ の空でない鎖 $\mathcal{C}$ について $\bigcup\mathcal{C}$ は反鎖である（その 2 元 $x\ne y$ はそれぞれある $A_{1},A_{2}\in\mathcal{C}$ に属し、$\mathcal{C}$ は包含で全順序なので大きい方に両方が属し、比較不能）。空の鎖の上界は $A$ 自身である。よって**ツォルンの補題**（\ref{set:zorn}）により $P$ は極大元 $A^{*}$ をもち、$A^{*}$ は $T$ の極大反鎖である（$A^{*}\subsetneq A'$ となる反鎖 $A'$ があれば $A'\in P$ で極大性に反する）。仮定より $A^{*}$ は可算なので、$A\subseteq A^{*}$ も可算である。
+
+**Step 2（鎖の下方閉包）.** $B$ を $T$ の非可算な鎖と仮定して矛盾を導く。$\bar{B}=\{z\in T\mid\exists b\in B\ (z\le_{T}b)\}$ とおく。
+- *$\bar{B}$ は鎖*：$z\le_{T}b$, $z'\le_{T}b'$（$b,b'\in B$）とする。$B$ は鎖なので、たとえば $b\le_{T}b'$ とすると、$z,z'\le_{T}b'$ となり \ref{set:tree-basic} (3) より $z,z'$ は比較可能。
+- *下に閉じている*：$z\in\bar{B}$, $w<_{T}z$ なら $w\le_{T}z\le_{T}b$ となる $b\in B$ があり、$w\in\bar{B}$。
+- *高さは非有界*：\ref{set:tree-chain-well-ordered} より高さの写像は $B$ 上で単射なので、$\{\operatorname{ht}(b,T)\mid b\in B\}$ は $\omega_{1}$ の非可算部分集合であり、$\omega_{1}$ で非有界である。
+
+**Step 3（$B$ から外れた点）.** $x\in T$ とする。$T$ は至るところで枝分かれするので、比較不能な $y,y'>_{T}x$ がある。$\bar{B}$ は鎖なので、$y,y'$ の少なくとも一方は $\bar{B}$ に属さない。**選択公理**により、各 $x\in T$ について $x<_{T}f(x)$ かつ $f(x)\notin\bar{B}$ となる $f(x)\in T$ を選ぶ。
+
+**Step 4（飛び飛びに登る）.** 超限再帰（\ref{set:transfinite-recursion}）で $x_{\alpha}\in B$（$\alpha<\omega_{1}$）を次のように定める：$\sigma_{\alpha}=\sup\{\operatorname{ht}(f(x_{\beta}),T)+1\mid\beta<\alpha\}$ とおくと、これは可算個の可算順序数の上限なので $\sigma_{\alpha}<\omega_{1}$。Step 2 より $\operatorname{ht}(b,T)\ge\sigma_{\alpha}$ となる $b\in B$ があるので、そのような $b$ のうち高さが最小のもの（\ref{set:tree-chain-well-ordered} より高さは $B$ 上で単射なので一意）を $x_{\alpha}$ とする。このとき $\beta<\alpha$ ならば
+$$
+\operatorname{ht}(f(x_{\beta}),T)<\sigma_{\alpha}\le\operatorname{ht}(x_{\alpha},T)<\operatorname{ht}(f(x_{\alpha}),T)
+\label{set:eq-ever-branching-heights}
+$$
+（最後の不等号は $x_{\alpha}<_{T}f(x_{\alpha})$ と \ref{set:tree-basic} (2) による）。
+
+**Step 5（非可算な反鎖）.** $\beta<\alpha<\omega_{1}$ について $f(x_{\beta})$ と $f(x_{\alpha})$ が比較不能であることを示す。比較可能だとすると、\eqref{set:eq-ever-branching-heights} より高さは $f(x_{\beta})$ の方が小さいので $f(x_{\beta})<_{T}f(x_{\alpha})$。また $x_{\alpha}<_{T}f(x_{\alpha})$ なので、$f(x_{\beta})$ と $x_{\alpha}$ はともに $f(x_{\alpha})$ の下にあり比較可能（\ref{set:tree-basic} (3)）で、\eqref{set:eq-ever-branching-heights} より $\operatorname{ht}(f(x_{\beta}))<\operatorname{ht}(x_{\alpha})$ だから $f(x_{\beta})<_{T}x_{\alpha}$。$x_{\alpha}\in B\subseteq\bar{B}$ で $\bar{B}$ は下に閉じているので $f(x_{\beta})\in\bar{B}$ となり、Step 3 の選び方に反する。よって $\{f(x_{\alpha})\mid\alpha<\omega_{1}\}$ は反鎖であり、\eqref{set:eq-ever-branching-heights} より $\alpha\mapsto f(x_{\alpha})$ は（高さが狭義増加なので）単射だから、この反鎖は非可算である。これは Step 1 に反する。
+
+以上より $T$ の鎖も反鎖も可算であり、$\lvert T\rvert=\omega_{1}$ なので $T$ はススリン木である。
+
+::: hypcheck
+- **ツォルンの補題**（AC）：Step 1 で反鎖を極大反鎖に広げるのに使った。
+- **選択公理**：Step 3 で $f$ を選ぶのに使った。$T$ の台集合が $\omega_{1}$ のような順序数の集合なら、「条件を満たす最小の順序数」をとれば選択は要らない。Step 4 は高さの最小性で $x_{\alpha}$ を一意に決めたので選択を使っていない。
+- **至るところで枝分かれすること**：Step 3 で本質的に使った。たとえば $\omega_{1}$ 自身は $\omega_{1}$-木で、反鎖はすべて 1 点以下（したがって可算）だが、非可算な鎖 $\omega_{1}$ をもつ。
+- **$\omega_{1}$ の正則性**（AC）：Step 2 で非可算集合が非有界であることに、Step 4 で $\sigma_{\alpha}<\omega_{1}$ に使った。
+:::
+:::
+
+## 木の反映 {#set:sec-tree-reflection}
+
+::: definition レベル $\alpha$ より下の部分木 {#set:tree-below-level keywords="subtree below level alpha, T_alpha" index="レベルより下の部分木|れべるよりしたのぶぶんぎ"}
+木 $T$ と順序数 $\alpha$ について
+$$
+T_{<\alpha}=\bigcup_{\beta<\alpha}\operatorname{Lev}_{\beta}(T)=\{x\in T\mid\operatorname{ht}(x,T)<\alpha\}
+$$
+とおき、$T$ の順序を制限して木とみなす。
+:::
+
+::: intuition
+$T$ を第 $\alpha$ レベルの直前で切り取った木である。$x\in T_{<\alpha}$ の前者はすべて $x$ より低いので $T_{<\alpha}$ は下に閉じており、\ref{set:tree-basic} (5) より $T$ の部分木で、$\beta<\alpha$ について $\operatorname{Lev}_{\beta}(T_{<\alpha})=\operatorname{Lev}_{\beta}(T)$、$\alpha\le\operatorname{ht}(T)$ なら $\operatorname{ht}(T_{<\alpha})=\alpha$。
+:::
+
+::: lemma 木の性質の閉非有界集合への反映 {#set:tree-reflection keywords="reflection of tree properties to a club, Lowenheim-Skolem for trees" index="木の反映|きのはんえい"}
+$T=\langle\omega_{1},<_{T}\rangle$ を $\omega_{1}$-木とする（台集合は $\omega_{1}$ そのもの）。
+1. $C_{T}=\{\alpha<\omega_{1}\mid T_{<\alpha}=\alpha\}$ は $\omega_{1}$ の閉非有界集合である。
+2. $A\subseteq\omega_{1}$ が $T$ の極大反鎖ならば、
+$$
+D_{A}=\{\alpha<\omega_{1}\mid T_{<\alpha}=\alpha\text{ かつ }A\cap\alpha\text{ は }T_{<\alpha}\text{ の極大反鎖}\}
+$$
+は $\omega_{1}$ の閉非有界集合である。
+:::
+
+::: intuition
+$T_{<\alpha}=\alpha$ とは「高さ $\alpha$ 未満の点の全体が、ちょうど順序数として $\alpha$ 未満の点の全体になっている」ということ。2 つの条件「$\xi<\alpha$ なら $\xi$ の高さは $\alpha$ 未満」「高さ $\xi<\alpha$ の点はすべて $\alpha$ 未満」は、それぞれ 1 つの関数で閉じていることとして書けるので、閉包点の集合として閉非有界になる。極大反鎖 $A$ についても、「各点に、それと比較可能な $A$ の元を 1 つ対応させる関数」で閉じていれば、$A\cap\alpha$ は $T_{<\alpha}$ の中で極大になる。これは、可算の段階で全体の構造を「縮小コピー」として見るレーヴェンハイム＝スコーレムの議論である。
+:::
+
+::: proof
+**Step 1（3 つの関数）.** $\xi<\omega_{1}$ に対し
+$$
+f(\xi)=\operatorname{ht}(\xi,T),\qquad g(\xi)=\sup\{\eta+1\mid\eta\in\operatorname{Lev}_{\xi}(T)\}
+$$
+とおく。$\operatorname{ht}(T)=\omega_{1}$ なので $f(\xi)<\omega_{1}$。$\operatorname{Lev}_{\xi}(T)$ は可算なので $g(\xi)$ は可算個の可算順序数の上限であり $g(\xi)<\omega_{1}$。よって $f,g\colon\omega_{1}\to\omega_{1}$ である。さらに (2) のために、$A$ を極大反鎖として
+$$
+h(\xi)=\min\{a\in A\mid a\text{ と }\xi\text{ は }<_{T}\text{ について比較可能}\}
+$$
+とおく（\ref{set:max-antichain-comparable} より右辺の集合は空でない。$A\subseteq\omega_{1}$ なので順序数としての最小元をとればよく、選択は要らない）。
+
+**Step 2（閉包点は $C_{T}$ に入る）.** $\alpha<\omega_{1}$ が $f$ と $g$ で閉じているとする。
+- *$\alpha\subseteq T_{<\alpha}$*：$\xi<\alpha$ なら $\operatorname{ht}(\xi,T)=f(\xi)<\alpha$、すなわち $\xi\in T_{<\alpha}$。
+- *$T_{<\alpha}\subseteq\alpha$*：$x\in T_{<\alpha}$ とし $\xi=\operatorname{ht}(x,T)<\alpha$ とおく。$x\in\operatorname{Lev}_{\xi}(T)$ なので $x<x+1\le g(\xi)<\alpha$。
+
+よって $T_{<\alpha}=\alpha$。
+
+**Step 3（$C_{T}$ は閉）.** 極限順序数 $\delta<\omega_{1}$ で $C_{T}\cap\delta$ が $\delta$ で非有界なものをとる。
+- $\xi<\delta$ なら、$\xi+1<\delta$ なので $\xi+1\le\alpha$ となる $\alpha\in C_{T}\cap\delta$ があり、$\xi\in\alpha=T_{<\alpha}$、すなわち $\operatorname{ht}(\xi,T)<\alpha<\delta$。よって $\xi\in T_{<\delta}$。
+- $x\in T_{<\delta}$ なら、$\operatorname{ht}(x,T)+1<\delta$ なので $\operatorname{ht}(x,T)<\alpha$ となる $\alpha\in C_{T}\cap\delta$ があり、$x\in T_{<\alpha}=\alpha\subseteq\delta$。
+
+よって $T_{<\delta}=\delta$、すなわち $\delta\in C_{T}$。
+
+**Step 4（(1) の結論）.** \ref{set:closure-club} より $f,g$ で閉じた $\alpha$ の全体 $E$ は閉非有界であり、Step 2 より $E\subseteq C_{T}$。よって $C_{T}$ は非有界で、Step 3 と合わせて閉非有界である。
+
+**Step 5（(2)：閉包点は $D_{A}$ に入る）.** $\alpha$ が $f,g,h$ で閉じているとする。Step 2 より $T_{<\alpha}=\alpha$。$A\cap\alpha=A\cap T_{<\alpha}$ は $T_{<\alpha}$ の反鎖である。$x\in T_{<\alpha}=\alpha$ をとると $h(x)\in\alpha$ であり、$h(x)\in A\cap\alpha$ は $x$ と比較可能である。\ref{set:max-antichain-comparable} より $A\cap\alpha$ は $T_{<\alpha}$ の極大反鎖であり、$\alpha\in D_{A}$。
+
+**Step 6（$D_{A}$ は閉）.** 極限順序数 $\delta<\omega_{1}$ で $D_{A}\cap\delta$ が $\delta$ で非有界なものをとる。$D_{A}\subseteq C_{T}$ なので Step 3 より $T_{<\delta}=\delta$。$x\in T_{<\delta}$ をとると、Step 3 と同様に $\operatorname{ht}(x,T)<\alpha$ となる $\alpha\in D_{A}\cap\delta$ があり、$x\in T_{<\alpha}$ は $A\cap\alpha\subseteq A\cap\delta$ のある元と比較可能である。\ref{set:max-antichain-comparable} より $A\cap\delta$ は $T_{<\delta}$ の極大反鎖であり、$\delta\in D_{A}$。
+
+**Step 7（(2) の結論）.** \ref{set:closure-club} より $f,g,h$ で閉じた $\alpha$ の全体は閉非有界で、Step 5 よりそれは $D_{A}$ に含まれる。Step 6 と合わせて $D_{A}$ は閉非有界である。
+
+::: hypcheck
+- **$T$ が $\omega_{1}$-木であること**：Step 1 で $f,g$ の値が $\omega_{1}$ に入ること（高さが $\omega_{1}$、各レベルが可算）に使った。
+- **$A$ の極大性**：Step 1 で $h$ が定義できることに使った。
+- **\ref{set:closure-club}**（AC）：Step 4, Step 7。可算個（ここでは 2 個または 3 個）の 1 項演算に適用した。
+- **$\omega_{1}$ の正則性**（AC）：Step 1 で $g(\xi)<\omega_{1}$ に使った。
+- 台集合が $\omega_{1}$ であることは、$T_{<\alpha}$ と順序数 $\alpha$ を比較する主張そのものの意味づけと、Step 1 で $h$ を選択なしに定義することに使った。
+:::
+:::
+
+## ◇ によるススリン木の構成 {#set:sec-diamond-suslin}
+
+::: lemma ◇ 列による反鎖の封じ込め {#set:diamond-suslin-criterion keywords="sealing antichains with a diamond sequence" index="反鎖の封じ込め|はんさのふうじこめ"}
+$T=\langle\omega_{1},<_{T}\rangle$ を至るところで枝分かれする $\omega_{1}$-木とし、$\langle A_{\alpha}\mid\alpha<\omega_{1}\rangle$ を ◇ 列とする。すべての極限順序数 $\alpha<\omega_{1}$ について
+$$
+\begin{aligned}
+&\bigl(T_{<\alpha}=\alpha\text{ かつ }A_{\alpha}\text{ は }T_{<\alpha}\text{ の極大反鎖}\bigr)\\
+&\qquad\Longrightarrow\ \forall x\in\operatorname{Lev}_{\alpha}(T)\ \exists y\in A_{\alpha}\ (y<_{T}x)
+\end{aligned}
+\label{set:eq-diamond-seal}
+$$
+が成り立つならば、$T$ はススリン木である。
+:::
+
+::: intuition
+条件 \eqref{set:eq-diamond-seal} は、「予想 $A_{\alpha}$ が $T_{<\alpha}$ の極大反鎖なら、第 $\alpha$ レベルのすべての点はその反鎖のどれかの上にある」、すなわち $A_{\alpha}$ より上には、$A_{\alpha}$ と比較不能な点が生えないように木を延ばした、ということである。すると $A_{\alpha}$ は $T$ 全体でも極大反鎖のまま「封じ込め」られ、それ以上大きくなれない。任意の極大反鎖 $A$ について、◇ によりこの封じ込めが $A\cap\alpha$ に対して起こる段階 $\alpha$ があり、そこで $A=A\cap\alpha$ は可算になる。
+:::
+
+::: proof
+\ref{set:ever-branching-suslin} より、$T$ のすべての極大反鎖が可算であることを示せばよい。$A$ を $T$ の極大反鎖とする。
+
+**Step 1（閉非有界集合）.** \ref{set:tree-reflection} (2) と \ref{set:club-examples} (2)、および \ref{set:club-filter-complete} (1) より
+$$
+C=\{\alpha<\omega_{1}\mid\alpha\text{ は極限順序数},\ T_{<\alpha}=\alpha,\ A\cap\alpha\text{ は }T_{<\alpha}\text{ の極大反鎖}\}
+$$
+は閉非有界集合である。
+
+**Step 2（的中する段階）.** ◇ より $S=\{\alpha<\omega_{1}\mid A\cap\alpha=A_{\alpha}\}$ は定常なので、$C\cap S\ne\varnothing$（\ref{set:stationary-basic} (1)）。$\alpha\in C\cap S$ を 1 つとる。すると $\alpha$ は極限順序数で、$T_{<\alpha}=\alpha$ であり、$A_{\alpha}=A\cap\alpha$ は $T_{<\alpha}$ の極大反鎖である。したがって \eqref{set:eq-diamond-seal} が適用でき、$\operatorname{Lev}_{\alpha}(T)$ のすべての点はある $y\in A\cap\alpha$ の上にある。
+
+**Step 3（$A\subseteq\alpha$）.** $z\in A$ で $\operatorname{ht}(z,T)\ge\alpha$ となるものがあったとする。$x=z$（$\operatorname{ht}(z,T)=\alpha$ のとき）または $x=z\restr{\alpha}$（$\operatorname{ht}(z,T)>\alpha$ のとき）とおくと、$x\in\operatorname{Lev}_{\alpha}(T)$ かつ $x\le_{T}z$。Step 2 より $y<_{T}x$ となる $y\in A\cap\alpha$ があり、$y<_{T}z$。$y\ne z$ はともに反鎖 $A$ の元なので比較不能のはずであり、矛盾する。よって $A$ のすべての元の高さは $\alpha$ 未満で、$A\subseteq T_{<\alpha}=\alpha$。
+
+**Step 4.** $\alpha<\omega_{1}$ は可算順序数なので $A$ は可算である。
+
+::: hypcheck
+- **◇**：Step 2 で、$A\cap\alpha=A_{\alpha}$ となる $\alpha$ が閉非有界集合 $C$ の中にとれることに使った。的中する段階が非有界であるだけでは足りず、**定常**であることが必要である。
+- **\eqref{set:eq-diamond-seal}**：Step 2・Step 3 で使った。
+- **至るところで枝分かれすること**：\ref{set:ever-branching-suslin} を適用するのに使った（鎖の可算性）。
+- **\ref{set:tree-reflection}**（AC）：Step 1。
+:::
+:::
+
+::: theorem ◇ はススリン木の存在を導く {#set:diamond-suslin keywords="diamond implies there is a Suslin tree, Jensen" index="◇とススリン木|だいやもんどとすすりんぎ, ジェンセンの定理|じぇんせんのていり"}
+◇ ならば、ススリン木（$\omega_{1}$-ススリン木）が存在する。
+:::
+
+::: intuition
+$\omega_{1}$ を可算個ずつのブロック $I_{\beta}=\{\omega\cdot\beta+n\mid n<\omega\}$ に分け、$I_{\beta}$ が第 $\beta$ レベルになるように、下から順に木の順序を決めていく。後続段階では各点の真上に 2 点ずつ置いて枝分かれさせ、極限段階 $\alpha$ では、それまでの木の各点から伸びる長さ $\alpha$ の枝を可算本選び、その頂点として第 $\alpha$ レベルの点を置く。◇ 列の予想 $A_{\alpha}$ がそれまでの木の極大反鎖なら、枝を選ぶときに必ず $A_{\alpha}$ の元を通るようにする。これで \ref{set:diamond-suslin-criterion} の条件が満たされる。
+:::
+
+::: proof
+$\langle A_{\alpha}\mid\alpha<\omega_{1}\rangle$ を ◇ 列とする。
+
+**Step 1（ブロックへの分割）.** $\beta<\omega_{1}$ について $\omega\cdot\beta$ は可算である（\ref{set:ordinal-multiplication-structure} より $(\xi,n)\mapsto\omega\cdot\xi+n$ は $\beta\times\omega$ から $\omega\cdot\beta$ への全単射で、$\beta\times\omega$ は可算）。したがって $\omega\cdot\beta<\omega_{1}$ であり、\ref{set:ordinal-multiplication-laws} (5) より $\omega\cdot\omega_{1}=\sup_{\beta<\omega_{1}}\omega\cdot\beta\le\omega_{1}$、(8) より $\omega_{1}\le\omega\cdot\omega_{1}$。よって $\omega\cdot\omega_{1}=\omega_{1}$。そこで
+$$
+I_{\beta}=\{\omega\cdot\beta+n\mid n<\omega\}\qquad(\beta<\omega_{1})
+$$
+とおくと、\ref{set:ordinal-multiplication-structure} と \ref{set:ordinal-multiplication-laws} (9)（割り算の一意性）より、$\{I_{\beta}\mid\beta<\omega_{1}\}$ は $\omega_{1}$ の分割であり、各 $I_{\beta}$ は $n\mapsto\omega\cdot\beta+n$ により $\omega$ と全単射で結ばれる。さらに各 $\alpha\le\omega_{1}$ について $\omega\cdot\alpha=\bigcup_{\beta<\alpha}I_{\beta}$、$\omega\cdot(\alpha+1)=\omega\cdot\alpha\cup I_{\alpha}$（(4)）。
+
+**Step 2（あらかじめ行う選択）.** **選択公理**により、次の 2 つを固定する。
+- 各 $1\le\alpha<\omega_{1}$ について全単射 $e_{\alpha}\colon\omega\to\omega\cdot\alpha$（$\omega\cdot\alpha$ は可算無限）。
+- 各極限順序数 $\alpha<\omega_{1}$ について共終写像 $c_{\alpha}\colon\omega\to\alpha$（$\cf(\alpha)=\omega$。\ref{set:cf-basic}, \ref{set:successor-regular}）。
+
+以後の構成では、「条件を満たす元を 1 つとる」操作はすべて「条件を満たす最小の順序数をとる」ことで行い、これ以上の選択はしない。
+
+**Step 3（構成すべきもの）.** $\alpha\le\omega_{1}$ について $\omega\cdot\alpha$ 上の関係 $R_{\alpha}$ を、次の条件 (0)〜(4) を満たすように超限再帰（\ref{set:recursion-three-clauses}）で定める。$R_{\alpha}$ を木の順序とみて $T^{\alpha}=\langle\omega\cdot\alpha,R_{\alpha}\rangle$ と書き、$x<_{\alpha}y$ で $\langle x,y\rangle\in R_{\alpha}$ を表す。
+- (0) $\alpha'<\alpha$ ならば $R_{\alpha'}=R_{\alpha}\cap(\omega\cdot\alpha')^{2}$ であり、さらに $y\in\omega\cdot\alpha'$, $x<_{\alpha}y$ ならば $x\in\omega\cdot\alpha'$（$\omega\cdot\alpha'$ は $T^{\alpha}$ の部分木）。
+- (1) $T^{\alpha}$ は木であり、すべての $\beta<\alpha$ について $\operatorname{Lev}_{\beta}(T^{\alpha})=I_{\beta}$。
+- (2) $\beta+1<\alpha$ かつ $n<\omega$ ならば、$x<_{\alpha}\omega\cdot(\beta+1)+2n\iff x\le_{\alpha}\omega\cdot\beta+n$ であり、$x<_{\alpha}\omega\cdot(\beta+1)+2n+1\iff x\le_{\alpha}\omega\cdot\beta+n$。
+- (3) $\beta<\gamma<\alpha$ かつ $x\in I_{\beta}$ ならば、$x<_{\alpha}y$ となる $y\in I_{\gamma}$ がある。
+- (4) 極限順序数 $\gamma<\alpha$ について、$T^{\alpha}_{<\gamma}=\gamma$ かつ $A_{\gamma}$ が $T^{\alpha}_{<\gamma}$ の極大反鎖ならば、すべての $x\in I_{\gamma}$ に対し $y<_{\alpha}x$ となる $y\in A_{\gamma}$ がある。
+
+(1) より $T^{\alpha}_{<\gamma}$（$\gamma\le\alpha$）の台集合は $\bigcup_{\beta<\gamma}I_{\beta}=\omega\cdot\gamma$ であり、(0) よりその順序は $R_{\gamma}$ である。したがって (4) の前提「$T^{\alpha}_{<\gamma}=\gamma$ かつ …」は $\alpha$ によらず「$\omega\cdot\gamma=\gamma$ かつ $A_{\gamma}$ は $T^{\gamma}$ の極大反鎖」と同じことである。以下、この前提が成り立つ極限順序数 $\gamma$ を**活性**と呼ぶ。
+
+**Step 4（初期段階と極限段階）.** $R_{0}=\varnothing$（$\omega\cdot0=\varnothing$ 上）、$R_{1}=\varnothing$（$\omega\cdot1=\omega=I_{0}$ 上。$I_{0}$ の元はすべて高さ $0$）とする。極限順序数 $\alpha\le\omega_{1}$ では $R_{\alpha}=\bigcup_{\alpha'<\alpha}R_{\alpha'}$ とおく。$\alpha'<\alpha$ で (0)〜(4) が成り立てば、$\alpha$ でも成り立つ：
+- (0)：$\alpha''<\alpha'<\alpha$ での整合性から $R_{\alpha}\cap(\omega\cdot\alpha')^{2}=R_{\alpha'}$。$x<_{\alpha}y$ なら、ある $\alpha''<\alpha$（$\alpha''\ge\alpha'$ としてよい）で $x<_{\alpha''}y$ で、$\alpha''$ での (0) より $x\in\omega\cdot\alpha'$。
+- (1)：推移律・非反射律は、関係する有限個の元を含む段階 $R_{\alpha'}$ で成り立つ。$x\in I_{\beta}$（$\beta<\alpha$）の前者の集合は、(0) より $T^{\beta+1}$ での前者の集合と一致し、それは型 $\beta$ の整列集合である。よって $T^{\alpha}$ は木で、$\operatorname{Lev}_{\beta}(T^{\alpha})=I_{\beta}$。
+- (2)(3)(4)：各主張は $\alpha$ 未満の特定の添字についての主張で、それらをすべて含む段階 $\alpha'<\alpha$（(2) なら $\beta+2$、(3) なら $\gamma+1$、(4) なら $\gamma+1$）で成り立ち、(0) より $R_{\alpha}$ でも成り立つ。
+
+**Step 5（後続段階 $\alpha=\beta+1\to\beta+2$）.** $R_{\beta+1}$ が (0)〜(4) を満たすとし、$R_{\beta+2}$ を $\omega\cdot(\beta+2)=\omega\cdot(\beta+1)\cup I_{\beta+1}$ 上に
+$$
+\begin{aligned}
+R_{\beta+2}=R_{\beta+1}\cup\bigl\{&\langle x,\omega\cdot(\beta+1)+2n+i\rangle\ \big\vert\\
+&n<\omega,\ i<2,\ x\le_{\beta+1}\omega\cdot\beta+n\bigr\}
+\end{aligned}
+$$
+と定める。$z=\omega\cdot(\beta+1)+2n+i$ の前者の集合は $P_{z}=\{x\mid x\le_{\beta+1}\omega\cdot\beta+n\}$ であり、これは $T^{\beta+1}$ で下に閉じた鎖（\ref{set:tree-basic} (3)）で、型は $\beta+1$（$\omega\cdot\beta+n$ の前者の型 $\beta$ に最大元を 1 つ加えたもの）。
+- (0)：新しい対の第 2 成分はすべて $I_{\beta+1}$ にあり、古い元の前者は変わらない。
+- (1)：推移律は $P_{z}$ が下に閉じていることから、非反射律は $z\notin P_{z}$ から従う。$I_{\beta+1}$ の元どうしは比較されない。前者の集合は整列され、$\operatorname{Lev}_{\beta+1}(T^{\beta+2})=I_{\beta+1}$。
+- (2)：定義そのもの。
+- (3)：$\gamma=\beta+1$ の場合を示せばよい。$x\in I_{\beta'}$, $\beta'\le\beta$ とする。$\beta'=\beta$ なら $x=\omega\cdot\beta+n$ として $x<_{\beta+2}\omega\cdot(\beta+1)+2n$。$\beta'<\beta$ なら (3) より $x<_{\beta+1}y$ となる $y=\omega\cdot\beta+n\in I_{\beta}$ があり、$x<_{\beta+2}\omega\cdot(\beta+1)+2n$。
+- (4)：$\beta+1$ は極限順序数でないので新たな要求はない。
+
+**Step 6（極限段階の上の新しいレベル：枝の選択）.** $\alpha<\omega_{1}$ を極限順序数とし、$R_{\alpha}$ が (0)〜(4) を満たすとする。$x\in\omega\cdot\alpha$ ごとに、$x$ を含み $T^{\alpha}$ のすべてのレベルと交わる、下に閉じた鎖 $B(x)$ を作る。
+- *出発点 $y_{0}$*：$\alpha$ が活性でないなら $m=x$ とおく。$\alpha$ が活性なら、$A_{\alpha}$ は $T^{\alpha}$ の極大反鎖なので、$x$ と比較可能な $a\in A_{\alpha}$ がある（\ref{set:max-antichain-comparable}）。そのうち最小の順序数を $a$ とし、$x,a$ のうち $<_{\alpha}$ について大きい方（等しければその元）を $m$ とする。いずれの場合も $\zeta_{0}=\operatorname{ht}(m,T^{\alpha})+1<\alpha$ とおき、$y_{0}$ を $m<_{\alpha}y_{0}$ となる $y_{0}\in I_{\zeta_{0}}$ のうち最小の順序数とする（(3) より存在する）。
+- *枝を伸ばす*：$\zeta_{k+1}=\max(\zeta_{k},c_{\alpha}(k))+1$（$<\alpha$）とし、$y_{k+1}$ を $y_{k}<_{\alpha}y_{k+1}$ となる $y_{k+1}\in I_{\zeta_{k+1}}$ のうち最小の順序数とする（(3) より存在する）。
+- *鎖*：$B(x)=\{z\in\omega\cdot\alpha\mid\exists k<\omega\ (z\le_{\alpha}y_{k})\}$。
+
+$B(x)$ の性質を確かめる。$y_{0}<_{\alpha}y_{1}<_{\alpha}\cdots$ なので、$B(x)$ は鎖である（$z\le y_{k}$, $z'\le y_{l}$ なら両者は $y_{\max(k,l)}$ 以下で比較可能）。定義から下に閉じており、$x\le_{\alpha}m<_{\alpha}y_{0}$ より $x\in B(x)$。$\zeta_{k}$ は狭義増加で $\zeta_{k+1}>c_{\alpha}(k)$ なので、$c_{\alpha}$ の共終性から $\sup_{k}\zeta_{k}=\alpha$。任意の $\eta<\alpha$ について $\eta<\zeta_{k}$ となる $k$ があり、$y_{k}\restr{\eta}\in B(x)\cap I_{\eta}$。$B(x)$ は鎖なので各レベルと高々 1 点で交わる（\ref{set:tree-basic} (2)）。したがって $B(x)$ は各 $I_{\eta}$（$\eta<\alpha$）とちょうど 1 点で交わり、高さの写像は $B(x)$ から $\alpha$ への順序同型である（\ref{set:tree-chain-well-ordered}）。特に $\operatorname{type}(B(x))=\alpha$。さらに、$\alpha$ が活性なら $a\le_{\alpha}m<_{\alpha}y_{0}$ より $a\in B(x)\cap A_{\alpha}$ である。
+
+**Step 7（極限段階の上の新しいレベル：定義と検証）.** Step 6 の記号で、$\omega\cdot(\alpha+1)=\omega\cdot\alpha\cup I_{\alpha}$ 上に
+$$
+R_{\alpha+1}=R_{\alpha}\cup\bigl\{\langle z,\omega\cdot\alpha+n\rangle\ \big\vert\ n<\omega,\ z\in B(e_{\alpha}(n))\bigr\}
+$$
+と定める。$\omega\cdot\alpha+n$ の前者の集合は $B(e_{\alpha}(n))$ である。
+- (0)：新しい対の第 2 成分はすべて $I_{\alpha}$ にある。
+- (1)：推移律は $B(e_{\alpha}(n))$ が下に閉じていることから、非反射律は $B(e_{\alpha}(n))\subseteq\omega\cdot\alpha$ から従う。前者の集合 $B(e_{\alpha}(n))$ は鎖として整列され（\ref{set:tree-chain-well-ordered}）、型は $\alpha$ なので $\operatorname{Lev}_{\alpha}(T^{\alpha+1})=I_{\alpha}$。
+- (2)：新たな要求はない（$\alpha$ は後続順序数でない）。
+- (3)：$\gamma=\alpha$ の場合を示せばよい。$x\in I_{\beta}$, $\beta<\alpha$ とする。$e_{\alpha}$ は全射なので $x=e_{\alpha}(n)$ となる $n$ があり、$x\in B(x)$ より $x<_{\alpha+1}\omega\cdot\alpha+n\in I_{\alpha}$。
+- (4)：$\gamma=\alpha$ の場合を示せばよい。$\alpha$ が活性とし、$\omega\cdot\alpha+n\in I_{\alpha}$ をとる。Step 6 より $B(e_{\alpha}(n))$ は $A_{\alpha}$ の元 $a$ を含み、$a<_{\alpha+1}\omega\cdot\alpha+n$。
+
+**Step 8（完成した木）.** 以上で再帰が完了する（再帰の各段階の操作は、$R_{\alpha}$ が (0)〜(4) を満たさない場合には $R_{\alpha+1}=R_{\alpha}$ などと任意に定めておけば、すべての入力に対して定義されている）。帰納法（\ref{set:transfinite-induction}）により、すべての $\alpha\le\omega_{1}$ で (0)〜(4) が成り立つ。$T=T^{\omega_{1}}=\langle\omega_{1},R_{\omega_{1}}\rangle$ とおく（$\omega\cdot\omega_{1}=\omega_{1}$）。
+- *$\omega_{1}$-木*：(1) より $T$ は木で、各 $\beta<\omega_{1}$ について $\operatorname{Lev}_{\beta}(T)=I_{\beta}$ は可算かつ空でない。$\omega_{1}=\bigcup_{\beta<\omega_{1}}I_{\beta}$ なので $\operatorname{Lev}_{\omega_{1}}(T)=\varnothing$、よって $\operatorname{ht}(T)=\omega_{1}$（\ref{set:tree-basic} (4)）。
+- *至るところで枝分かれする*：$x=\omega\cdot\beta+n\in I_{\beta}$ に対し、(2) より $\omega\cdot(\beta+1)+2n$ と $\omega\cdot(\beta+1)+2n+1$ はともに $x$ の上にあり、同じレベルの相異なる元なので比較不能である。
+- *\eqref{set:eq-diamond-seal}*：$T_{<\gamma}$ は $T^{\gamma}$ と同じ木なので（Step 3 の注意）、(4) はまさに \eqref{set:eq-diamond-seal} である。
+
+よって \ref{set:diamond-suslin-criterion} より $T$ はススリン木である。
+
+::: hypcheck
+- **◇**：◇ 列 $\langle A_{\alpha}\rangle$ を Step 6 の構成に用い、Step 8 で \ref{set:diamond-suslin-criterion} を適用するのに使った。構成そのものは**任意の**列 $\langle A_{\alpha}\mid\alpha<\omega_{1}\rangle$（$A_{\alpha}\subseteq\alpha$）について実行でき、◇ の定常性が効くのは \ref{set:diamond-suslin-criterion} の証明の中だけである。
+- **選択公理**：Step 2 で全単射 $e_{\alpha}$ と共終写像 $c_{\alpha}$ を $\omega_{1}$ 個同時に選ぶのに使った。また \ref{set:diamond-suslin-criterion}（\ref{set:tree-reflection}, \ref{set:ever-branching-suslin}）を通じて使っている。
+- **超限再帰**（\ref{set:recursion-three-clauses}）と**超限帰納法**：Step 3〜8。各段階で行う操作は「最小の順序数をとる」ことだけである。
+- **条件 (3)**：Step 6 で $y_{0},y_{k+1}$ がとれることに本質的に使った。(3) を保つことが、極限段階で「すべての点の上に高さ $\alpha$ の点を置ける」ことを保証する。
+- **$\alpha$ が可算であること**：Step 2 の $e_{\alpha}$（第 $\alpha$ レベルは可算個の点しか置けないので、それまでの木の各点に 1 本ずつ枝を割り当てるには $\omega\cdot\alpha$ が可算でなければならない）と、$\cf(\alpha)=\omega$ による枝の構成（Step 6）に使った。
+:::
+:::
+
+::: supplement
+**二分木への埋め込み.** 各レベルを $I_{\beta}$ に揃えたのは順序数の計算を簡単にするためである。構成を少し変えて、$\operatorname{Lev}_{0}=\{0\}$, $\operatorname{Lev}_{1}=\{1,2\}$, $\operatorname{Lev}_{2}=\{3,4,5,6\}$, …, $\operatorname{Lev}_{\omega+\alpha}=\{\omega\cdot(1+\alpha)+n\mid n<\omega\}$ とし、各点がちょうど 2 つの直後の点をもち、極限レベルの相異なる点が相異なる枝（前者の集合）をもつようにすることもできる。そうして得たススリン木は完全二分木 ${}^{<\omega_{1}}2$ の部分木として実現できる（Kunen 第 II 章演習 34 も参照）。
+
+**MA との対比.** MA$(\omega_{1})$ はススリン木の存在を否定する（\ref{set:ma-no-suslin-tree}）ので、◇ と MA$(\omega_{1})$ は両立しない。これは次のようにも分かる：◇ は CH を導く（\ref{set:diamond-ch}）が、CH のもとでは MA$(\omega_{1})$ は MA$(2^{\aleph_{0}})$ と同じ主張であり、後者は偽である（\ref{set:ma-continuum-false}）。
+:::
+
+::: corollary ◇ はススリン仮説を否定する {#set:diamond-not-sh keywords="diamond implies not SH" index="◇とススリン仮説|だいやもんどとすすりんかせつ"}
+◇ ならば、ススリン線が存在する。すなわちススリン仮説は成り立たない。
+:::
+
+::: proof
+\ref{set:diamond-suslin} よりススリン木が存在し、ススリン木の存在はススリン線の存在と同値である（\ref{set:suslin-tree-line}）。ススリン仮説（\ref{set:suslin-hypothesis}）はススリン線が存在しないという主張なので、成り立たない。
+
+::: hypcheck
+- \ref{set:diamond-suslin}（◇, AC）と \ref{set:suslin-tree-line}（ZFC）だけを使った。
+:::
+:::
+
+::: supplement
+◇ は $\mathbf{V}=\mathbf{L}$ から従う（Kunen 第 VI 章 §5）ので、$\ZFC$ が無矛盾なら $\ZFC+\lnot\mathrm{SH}$ も無矛盾である。一方 MA $+\lnot$CH はススリン仮説を導き（\ref{set:ma-sh}）、$\ZFC+\mathrm{MA}+\lnot\mathrm{CH}$ も無矛盾である（Kunen 第 VIII 章）。こうしてススリン仮説は $\ZFC$ から独立である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

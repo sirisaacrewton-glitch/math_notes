@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>イーストン式強制 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/08-iterated-forcing/04-easton-forcing.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# イーストン式強制 {#set:page-easton-forcing keywords="Easton forcing, Easton index function, Easton support, powers of regular cardinals, 2^{aleph_n} = aleph_{n+3}, singular cardinals hypothesis, covering lemma"}
+
+無限個の正則基数の冪を同時に変える方法を示す。GCH を満たす $M$ から出発すると、正則基数の冪 $2^{\kappa}$ は、単調性と $\cf(2^{\kappa})>\kappa$ という「明らかな」制約を満たす限りどんな値にもできる（**イーストンの定理**、\ref{set:easton}）。鍵は、適当な「イーストン台」をもつ積の p.o. $\PP(E)$ と、それを各 $\lambda$ で「$\lambda$ 以下の部分」と「$\lambda$ より上の部分」の積に分解することである。（Kunen 第 VIII 章 §4 に対応する。）
+
+## 記法と定義の確認 {#set:sec-easton-notation}
+
+::: notation
+- $M$ は $\ZFC$ の c.t.m.。積の補題（\ref{set:product-lemma}, \ref{set:product-generic-factor}）は \ref{set:page-products}、$\mathrm{Fn}(I,J,\lambda)$、閉性・鎖条件と近似（\ref{set:lambda-closed}, \ref{set:closed-no-new-functions}, \ref{set:kappa-cc-approximation}, \ref{set:con-gch-violations}）は \ref{set:page-larger-fn}、よい名前と \ref{set:nice-name-exists} は \ref{set:page-fn-forcing}、同型な p.o.（\ref{set:isomorphism-same-extension}）は \ref{set:page-embeddings-bvm} のとおり。
+- GCH のもとでの冪（\ref{set:gch-exponentiation}）、ケーニッヒの補題 $\cf(2^{\kappa})>\kappa$（\ref{set:konig-cofinality-power} の系）、Δ システム補題（\ref{set:delta-system-general}）、正則基数の和（\ref{set:regular-small-union}）は第 I 章・第 II 章のとおり。
+- 本ページでは、第 VII 章の $\mathrm{Fn}(\kappa\times\lambda,2,\lambda)$ の代わりに、同型で同じ拡大を与える $\mathrm{Fn}(\kappa,2,\lambda)$ を使う（$(\lvert\kappa\times\lambda\rvert=\kappa)^{M}$ のとき。\ref{set:isomorphism-same-extension}）。
+:::
+
+## 二つの基数の場合の見直し {#set:sec-easton-two}
+
+二つの基数の場合（\ref{set:con-gch-violations}）を積の結果で見直す。$M$ が GCH を満たし、$2^{\omega_{1}}=\omega_{4}\land2^{\omega_{2}}=\omega_{5}$ を満たす拡大を探すとする。第 VII 章の精神で、$\PP_{2}\defeq\mathrm{Fn}(\omega_{5},2,\omega_{2})^{M}$、$G_{2}$ を $M$ 上 $\PP_{2}$-ジェネリックとすると、$M[G_{2}]$ は $2^{\omega}=\omega_{1}\land2^{\omega_{1}}=\omega_{2}\land2^{\omega_{2}}=\omega_{5}$ を満たす。次に $\PP_{1}\defeq\mathrm{Fn}(\omega_{4},2,\omega_{1})^{M[G_{2}]}$、$G_{1}$ を $M[G_{2}]$ 上 $\PP_{1}$-ジェネリックとすると、$M[G_{2}][G_{1}]$ は $2^{\omega_{1}}=\omega_{4}\land2^{\omega_{2}}=\omega_{5}$ を満たす。
+
+ここで $\PP_{1}$ は $\mathrm{Fn}(\omega_{4},2,\omega_{1})^{M}$ でもある：$M$ と $M[G_{2}]$ は大きさ $\omega$ の同じ対象をもつ（$\PP_{2}$ は $\omega_{2}$-閉：\ref{set:closed-no-new-functions}）からである。したがって $\PP_{1}\in M$ で、$G=G_{1}\times G_{2}$ は $M$ 上 $\PP_{1}\times\PP_{2}$-ジェネリック、$M[G_{2}][G_{1}]=M[G]$（積の補題）。こうして反復拡大を一段階の拡大とみなせる。同じく積の補題より $M[G]=M[G_{1}][G_{2}]$ で、$G_{2}$ は $M[G_{1}]$ 上 $\PP_{2}$-ジェネリックである。しかし $\PP_{2}$ は $\mathrm{Fn}(\omega_{5},2,\omega_{2})^{M[G_{1}]}$ ではない。$M[G_{1}]$ には大きさ $\omega_{1}$ の新しい部分関数があるからである。実際、$M[G_{1}]$ 上 $\mathrm{Fn}(\omega_{5},2,\omega_{2})^{M[G_{1}]}$ で強制すると $\omega_{3}$ と $\omega_{4}$ が崩壊する（Kunen 第 VII 章の演習 G3）が、$M[G_{1}]$ 上 $\PP_{2}$ で強制すると基数は保たれる（$M[G_{1}][G_{2}]=M[G_{2}][G_{1}]$ で、$M$, $M[G_{2}]$, $M[G_{2}][G_{1}]$ はすべて同じ基数をもつ）。したがって、積による強制はどちらの順の反復ともみなせるが、$\PP_{1}\times\PP_{2}$ の場合は、まず「通常の」方法で $\omega_{2}$ の $\omega_{5}$ 個のジェネリックな部分集合を加えて $M[G_{2}]$ を得て、次に $M[G_{2}]$ 上で「通常の」方法で $\omega_{1}$ の $\omega_{4}$ 個のジェネリックな部分集合を加える、と見るのがより「自然」である。
+
+さて $\forall n\in\omega\,(2^{\omega_{n}}=\omega_{n+3})$ のモデルが欲しいとする。これを $M$ の拡大の無限列で達成する方法ははっきりしないかもしれないが、積の構成を一般化しようとすると、最も明らかな方法がうまくいく。$\PP_{n}\defeq\mathrm{Fn}(\omega_{n+3},2,\omega_{n})^{M}$ とし、$\PP$ を無限の直積 $(\prod_{n\in\omega}\PP_{n})^{M}$ とする。$G$ が $M$ 上 $\PP$-ジェネリックなら、$M[G]$ は $\forall n\in\omega\,(2^{\omega_{n}}=\omega_{n+3})$ を満たすことを見る。非形式的には、$\PP$ は、$\omega_{n}$ の $\omega_{n+3}$ 個のジェネリックな部分集合を加える反復強制を、（それが何を意味するにせよ）大きい $n$ から先に行うものと考えられる。
+
+以下、イーストン強制の形式的な展開を行う。これにより、正則基数の上の基数の冪は、「明らかに偽」でないものならどんなものでもよいことが示される。
+
+## イーストンの p.o. {#set:sec-easton-po}
+
+::: definition 添字関数とイーストンの p.o. {#set:easton-po keywords="index function, Easton index function, P(E), Easton support" index="イーストンの半順序|いーすとんのはんじゅんじょ, イーストン台|いーすとんだい, 添字関数|そえじかんすう"}
+1. **添字関数**とは、定義域が正則基数の集合である関数 $E$ のことである。
+2. **イーストン添字関数**とは、次を満たす添字関数 $E$ のことである。
+   - (a) すべての $\kappa\in\dom(E)$ について $E(\kappa)$ は基数で $\cf(E(\kappa))>\kappa$。
+   - (b) $\forall\kappa,\kappa'\in\dom(E)\,(\kappa<\kappa'\to E(\kappa)\le E(\kappa'))$。
+3. $E$ を添字関数とするとき、$\PP(E)$ を次を満たす関数 $p$ の全体とする。
+   - (a) $\dom(p)=\dom(E)$。
+   - (b) すべての $\kappa\in\dom(p)$ について $p(\kappa)\in\mathrm{Fn}(E(\kappa),2,\kappa)$。
+   - (c) すべての正則基数 $\lambda$（$\dom(E)$ に属さなくてよい）について $\lvert\{\kappa\in\lambda\cap\dom(E):p(\kappa)\neq0\}\rvert<\lambda$。
+
+   $\PP(E)$ は成分ごとに順序付ける：$p\le p'\iff\forall\kappa\in\dom(E)\,(p'(\kappa)\subseteq p(\kappa))$。$\PP(E)$ の $\mathbf{1}$ は、各 $\kappa\in\dom(E)$ で $\mathbf{1}(\kappa)=0$（$\mathrm{Fn}(E(\kappa),2,\kappa)$ の $\mathbf{1}$）となる元である。
+:::
+
+直観的には、正則基数の冪は任意のイーストン添字関数で与えられることが無矛盾であることを示す。つまり 2 の (a), (b) の制約（ケーニッヒの補題 $\cf(2^{\kappa})>\kappa$ と、$\mathcal{P}(\kappa)\subseteq\mathcal{P}(\kappa')$ による $\kappa<\kappa'\to2^{\kappa}\le2^{\kappa'}$）のもとでなら、何でもよい。形式的には、$E$ を $M$ の任意の添字関数とし、$M$ が GCH を満たすなら、$\PP(E)^{M}$ は基数を保つことを示す。さらに $E$ が $M$ のイーストン添字関数なら、$\PP(E)^{M}$ は $M[G]$ で $\forall\kappa\in\dom(E)\,(2^{\kappa}=E(\kappa))$ を成り立たせる。
+
+3 の (c) がなければ、$\PP(E)$ は成分ごとに順序付けた直積 $\prod\{\mathrm{Fn}(E(\kappa),2,\kappa):\kappa\in\dom(E)\}$ そのものである。$\dom(E)$ は基数だけを含むので、(c) が新しいことを言うのは $\lambda$ が弱到達不能のときだけで、そのとき $\lambda$ 未満の $\kappa$ のうち $\lambda$ 未満個を除いて $p(\kappa)$ が $\mathbf{1}$（$=0$）であることを要求する。
+
+実際には、議論で $\PP(E)$ を無限の直積として扱うことはない。むしろ、\ref{set:page-cohen-model}, \ref{set:page-kurepa-independence} と同様、重要なのは $\PP(E)$ を多くの仕方で二つの因子の積とみなせることである。
+
+::: definition {#set:easton-split}
+$E$ を添字関数、$\lambda$ を基数とするとき、$E^{+}_{\lambda}\defeq E\restr\{\kappa:\kappa>\lambda\}$、$E^{-}_{\lambda}\defeq E\restr\{\kappa:\kappa\le\lambda\}$ とする。
+:::
+
+::: lemma イーストンの p.o. の分解 {#set:easton-factor}
+$E$ を添字関数、$\lambda$ を任意の基数とすると、$\PP(E)$ は $\PP(E^{-}_{\lambda})\times\PP(E^{+}_{\lambda})$ と同型である。
+:::
+
+::: proof
+$p\mapsto\langle p\restr{\dom(E^{-}_{\lambda})},p\restr{\dom(E^{+}_{\lambda})}\rangle$ が同型である。制限は 3 の (a)〜(c) を保ち、逆に二つの成分を合わせたものも (c) を満たす（正則な $\lambda'$ について、$\lambda'$ 未満の二つの基数の和は $\lambda'$ 未満）。順序と $\mathbf{1}$ は成分ごとなので保たれる。
+:::
+
+多くの議論で、任意の $\lambda$ について、前ページまでの結果を使って $\PP(E)$ による拡大を反復拡大——まず $\PP(E^{+}_{\lambda})$、次に $\PP(E^{-}_{\lambda})$——とみなす。特別な場合として、$\dom(E)\cap\lambda^{+}=\varnothing$ の場合と $\dom(E)\subseteq\lambda^{+}$ の場合がある。これらは積の理論を必要としないが、一般の議論に含まれるので別に扱う必要はない。たとえば $\dom(E)\cap\lambda^{+}=\varnothing$ なら $E=E^{+}_{\lambda}$ で $\PP(E)=\PP(E^{+}_{\lambda})$、$E^{-}_{\lambda}=0$ なので $\PP(E^{-}_{\lambda})=\{0\}$（一元の順序）で、$\PP(E)$ は自明に $\PP(E^{-}_{\lambda})\times\PP(E^{+}_{\lambda})$ と同型である。
+
+$\PP(E)$ の定義に 3 の (c) を入れておくことの重要性は、$\PP(E^{-}_{\lambda})$ が $\lambda^{+}$-c.c. をもつことを示せる点にある。
+
+::: lemma 下の部分の鎖条件 {#set:easton-cc}
+$E$ を添字関数とし、$\dom(E)\subseteq\lambda^{+}$、$2^{<\lambda}=\lambda$、$\lambda$ は正則とする。このとき $\PP(E)$ は $\lambda^{+}$-c.c. をもつ。
+:::
+
+::: proof
+$p\in\PP(E)$ について
+$$
+d(p)\defeq\bigcup\{\{\kappa\}\times\dom(p(\kappa)):\kappa\in\dom(E)\}
+$$
+とおく。3 の (c)（正則な $\lambda$ について）より $\{\kappa\in\dom(E):p(\kappa)\neq0\}$ の大きさは $\lambda$ 未満（$\lambda$ 自身が $\dom(E)$ に属しうるので「$\lambda$ 未満、または $\lambda$ 未満の集合に一点を加えたもの」）で、各 $\lvert\dom(p(\kappa))\rvert<\kappa\le\lambda$。$\lambda$ の正則性（\ref{set:regular-small-union}）より $\lvert d(p)\rvert<\lambda$。
+
+$\{p_{\alpha}:\alpha<\lambda^{+}\}\subseteq\PP(E)$ を相異なる元の族とする。$2^{<\lambda}=\lambda$ と $\lambda$ の正則性から $\lambda^{<\lambda}=\lambda$（\ref{set:fn-lambda-cc} の証明と同様）なので、$\alpha<\lambda^{+}$ について $\lvert{}^{<\lambda}\alpha\rvert\le\lambda^{<\lambda}=\lambda<\lambda^{+}$ で、Δ システム補題（\ref{set:delta-system-general}、$\theta=\lambda^{+}$）が使える。同じ $d$ が $\lambda^{+}$ 回現れる場合は、$d$ 上の値の可能性が $2^{\lvert d\rvert}\le2^{<\lambda}=\lambda$ 通りなので、相異なるという仮定に反する（$p$ は $d(p)$ 上の値で決まる）。そうでなければ、$X\subseteq\lambda^{+}$ で $\lvert X\rvert=\lambda^{+}$ かつ $d(p_{\alpha})$（$\alpha\in X$）が根 $r$ の Δ システムをなすものがある。$\lvert r\rvert<\lambda$ なので $2^{\lvert r\rvert}\le\lambda$ で、$Y\subseteq X$、$\lvert Y\rvert=\lambda^{+}$ で
+$$
+\forall\alpha,\beta\in Y\;\forall\langle\kappa,i\rangle\in r\;\bigl(p_{\alpha}(\kappa)(i)=p_{\beta}(\kappa)(i)\bigr)
+$$
+となるものがある。すると $p_{\alpha}$（$\alpha\in Y$）は互いに両立する（成分ごとの和は関数で、大きさと 3 の (c) も保たれる）。
+:::
+
+\ref{set:easton-cc} で $\dom(E)\subseteq\lambda$ でも、GCH のもとでさえ $\PP(E)$ が $\lambda$-c.c. をもつとは結論できない。$\lambda$ が到達不能なら、これはちょうど $\lambda$ がマーロであるときに成り立つ（Kunen 第 VIII 章の演習 J4）。
+
+::: lemma 上の部分の閉性 {#set:easton-closed}
+$E$ を添字関数とし、$\dom(E)\cap\lambda^{+}=\varnothing$ とする。このとき $\PP(E)$ は $\lambda^{+}$-閉である。
+:::
+
+::: proof
+$\gamma<\lambda^{+}$（すなわち $\gamma\le\lambda$）と減少列 $\{p_{\xi}:\xi<\gamma\}$ について、$q(\kappa)\defeq\bigcup_{\xi<\gamma}p_{\xi}(\kappa)$ とする。$\kappa\in\dom(E)$ は $\kappa\ge\lambda^{+}>\gamma$ の正則基数なので、$\lvert q(\kappa)\rvert<\kappa$。3 の (c)：正則な $\lambda'$ について、$\lambda'\le\lambda$ なら $\lambda'\cap\dom(E)=\varnothing$ で自明、$\lambda'>\lambda$ なら $\gamma<\lambda'$ 個の、$\lambda'$ 未満の大きさの台の和なので $\lambda'$ 未満（\ref{set:regular-small-union}）。よって $q\in\PP(E)$ はすべての $p_{\xi}$ の下界である。
+:::
+
+::: lemma イーストン強制は共終数を保つ {#set:easton-preserves}
+$M$ の中で $E$ を添字関数、$\PP=\PP(E)$ とし、GCH が成り立つとする。このとき $\PP$ は共終数（したがって基数）を保つ。
+:::
+
+::: proof
+そうでないとすると、$M$ 上 $\PP$-ジェネリックな $G$ と、$M$ で正則で $M[G]$ で特異な $\theta>\omega$ がある。$\lambda\defeq\cf(\theta)^{M[G]}<\theta$ とおく。$\lambda$ は $M[G]$ で正則、したがって $M$ でも正則である。
+
+$M$ の中で $\PP_{0}\defeq\PP(E^{-}_{\lambda})$、$\PP_{1}\defeq\PP(E^{+}_{\lambda})$ とし、$j\colon\PP_{0}\times\PP_{1}\to\PP$ を同型（\ref{set:easton-factor}）とする。$j^{-1}[G]$ は $M$ 上 $\PP_{0}\times\PP_{1}$-ジェネリックで $M[G]=M[j^{-1}[G]]$ なので、\ref{set:product-generic-factor} と積の補題より、$G_{1}$（$\PP_{1}$ への成分）は $M$ 上 $\PP_{1}$-ジェネリック、$G_{0}$ は $M[G_{1}]$ 上 $\PP_{0}$-ジェネリックで、$M[G]=M[G_{1}][G_{0}]$。
+
+$M[G]=M[G_{1}][G_{0}]$ の中で $f$ を $\lambda$ から $\theta$ への共終写像とする。$\PP_{1}$ は $M$ で $\lambda^{+}$-閉（\ref{set:easton-closed}）なので長さ $\le\lambda$ の新しい列を加えず（\ref{set:closed-no-new-functions}）、したがって $M$ の GCH から $(2^{<\lambda}=\lambda)^{M[G_{1}]}$ で、$\PP_{0}$ は $M$ と $M[G_{1}]$ で同じ集合である（その元は大きさ $\lambda$ 未満の情報からなる）。$M[G_{1}]$ の中で \ref{set:easton-cc} を適用すると（$\PP_{0}$ は $\lambda^{+}$-c.c.）$^{M[G_{1}]}$。よって \ref{set:kappa-cc-approximation}（基礎モデル $M[G_{1}]$）より、$F\in M[G_{1}]$、$F\colon\lambda\to\mathcal{P}(\theta)$ で、すべての $\alpha<\lambda$ について $f(\alpha)\in F(\alpha)$ かつ $(\lvert F(\alpha)\rvert\le\lambda)^{M[G_{1}]}$ となるものがある。$\PP_{1}$ は $M$ で $\lambda^{+}$-閉なので、（各 $F(\alpha)$ を $\lambda$ から $\theta$ への関数の値域として符号化すれば長さ $\lambda$ の列の列なので）$F\in M$ で、$M$ の中で $\lvert F(\alpha)\rvert\le\lambda$。
+
+すると $M$ の中で $\bigcup_{\alpha<\lambda}F(\alpha)$ は濃度 $\le\lambda$ で $\theta$ で共終であり、$\theta$ が $M$ で正則（$\theta>\lambda$）であることに反する。
+:::
+
+::: hypcheck
+- GCH は $\PP_{0}$ の $\lambda^{+}$-c.c. に必要な $2^{<\lambda}=\lambda$ を与えるのに使った。
+- 分解 $\PP\cong\PP_{0}\times\PP_{1}$ を「$\PP_{1}$ を先に、$\PP_{0}$ を後に」強制すると読むのが要点である：$\PP_{1}$ は閉性で下の構造を守り、$\PP_{0}$ はその上で鎖条件で共終数を守る。
+:::
+
+::: theorem イーストンの定理 {#set:easton-theorem keywords="Easton's theorem, powers of regular cardinals can be arbitrary" index="イーストンの定理（証明）|いーすとんのていりしょうめい"}
+$M$ の中で $E$ をイーストン添字関数、$\PP=\PP(E)$ とし、GCH が成り立つとする。このとき $\PP$ は共終数（したがって基数）を保ち、$G$ が $M$ 上 $\PP$-ジェネリックなら、$M[G]$ で
+$$
+\forall\kappa\in\dom(E)\;(2^{\kappa}=E(\kappa)).
+$$
+より一般に、$M[G]$ の中で無限基数 $\theta$ について
+$$
+\begin{aligned}
+&E'(\theta)\defeq\max\bigl(\theta^{+},\sup\{E(\kappa):\kappa\in\dom(E)\land\kappa\le\theta\}\bigr),\\
+&E^{*}(\theta)\defeq\begin{cases}E'(\theta)&(\cf(E'(\theta))>\theta),\\E'(\theta)^{+}&(\text{そうでないとき})\end{cases}
+\end{aligned}
+$$
+とおくと、$2^{\theta}=E^{*}(\theta)$。
+:::
+
+::: proof
+共終数の保存は \ref{set:easton-preserves} で、これにより $E'$ と $E^{*}$ の定義は $M$ と $M[G]$ について絶対的である。$E$ の仮定（\ref{set:easton-po} の 2）より、$\kappa\in\dom(E)$ について $E^{*}(\kappa)=E(\kappa)$（単調性より $E'(\kappa)=\max(\kappa^{+},E(\kappa))=E(\kappa)$、$\cf(E(\kappa))>\kappa$）。$M$ の無限基数 $\theta$ を固定し、$M[G]$ で $2^{\theta}=E^{*}(\theta)$ を示す。
+
+**（$2^{\theta}\ge E^{*}(\theta)$）** ケーニッヒの補題（$\cf(2^{\theta})>\theta$）より、$\kappa\in\dom(E)$ について $2^{\kappa}\ge E(\kappa)$ を示せば十分である（そうすれば $2^{\theta}\ge\sup\{2^{\kappa}:\kappa\le\theta\}\cup\{\theta^{+}\}$ から $2^{\theta}\ge E'(\theta)$、さらに $\cf(E'(\theta))\le\theta$ なら $2^{\theta}\neq E'(\theta)$ なので $2^{\theta}\ge E'(\theta)^{+}$）。$M[G]$ で $2^{\kappa}\ge E(\kappa)$ を見るには、$\PP$ の因子 $\mathrm{Fn}(E(\kappa),2,\kappa)^{M}$ が $\kappa$ の相異なる部分集合の $E(\kappa)$-列を加えることを使う。形式的には、$M$ の中で単射 $h\colon E(\kappa)\times\kappa\to E(\kappa)$ をとり、$M[G]$ の中で $\alpha<E(\kappa)$ について
+$$
+A_{\alpha}\defeq\{\xi<\kappa:\exists p\in G\,(p(\kappa)(h(\alpha,\xi))=1)\}
+$$
+とおく。$\langle A_{\alpha}:\alpha<E(\kappa)\rangle\in M[G]$ で、稠密性の議論（$\alpha\neq\beta$ について、ある $\xi$ で $h(\alpha,\xi),h(\beta,\xi)$ での値が異なる条件は稠密）より $\alpha\neq\beta\to A_{\alpha}\neq A_{\beta}$。
+
+**（$2^{\theta}\le E^{*}(\theta)$）** $\lambda\defeq\cf(\theta)^{M}=\cf(\theta)^{M[G]}$ とし、\ref{set:easton-preserves} の証明と同様に進む。$M$ の中で $\PP$ は $\PP_{0}\times\PP_{1}$（$\PP_{0}=\PP(E^{-}_{\lambda})$, $\PP_{1}=\PP(E^{+}_{\lambda})$）と同型で、$\PP_{0}$ は $\lambda^{+}$-c.c.、$\PP_{1}$ は $\lambda^{+}$-閉。さらに $M[G]=M[G_{1}][G_{0}]$ で、$G_{1}$ は $M$ 上 $\PP_{1}$-ジェネリック、$G_{0}$ は $M[G_{1}]$ 上 $\PP_{0}$-ジェネリック。
+
+*特別な場合 $\lambda=\theta$（$\theta$ が正則）.* $M$ の中で $\lvert\PP_{0}\rvert\le E^{*}(\lambda)$ である：$\dom(E^{-}_{\lambda})$ の各 $\kappa\le\lambda$ について
+$$
+\lvert\mathrm{Fn}(E(\kappa),2,\kappa)\rvert\le\lvert\mathrm{Fn}(E^{*}(\lambda),2,\kappa)\rvert\le E^{*}(\lambda)^{\lambda}
+$$
+で、$\PP_{0}$ の元は大きさ $\lambda$ 以下の台をもつので $\lvert\PP_{0}\rvert\le(E^{*}(\lambda)^{\lambda})^{\lambda}=E^{*}(\lambda)^{\lambda}$。$\cf(E^{*}(\lambda))>\lambda$ と GCH より $E^{*}(\lambda)^{\lambda}=E^{*}(\lambda)$（\ref{set:gch-exponentiation} の 3）。$\PP_{1}$ は $M$ で $\lambda^{+}$-閉なので、$M[G_{1}]$ でも $E^{*}(\lambda)^{\lambda}=E^{*}(\lambda)$、$\PP_{0}$ は $\lambda^{+}$-c.c.、$\lvert\PP_{0}\rvert\le E^{*}(\lambda)$ である。したがって $M[G_{1}]$ の中で、$\check{\lambda}$ の部分集合のよい $\PP_{0}$-名前は高々 $(E^{*}(\lambda)^{\lambda})^{\lambda}=E^{*}(\lambda)$ 個で（反鎖は大きさ $\lambda$ 以下）、$M[G_{1}][G_{0}]$ で $2^{\lambda}\le E^{*}(\lambda)$（\ref{set:nice-name-count} と同じ議論）。
+
+以上で、$\theta$ が正則な場合に $M[G]$ で $2^{\theta}=E^{*}(\theta)$ が示された。
+
+*一般の場合.* まず $M[G]$ で $E^{*}(\theta)^{\lambda}=E^{*}(\theta)$ を確かめる。$f\in M[G]\cap{}^{\lambda}(E^{*}(\theta))$ とする。$\PP_{0}$ は $M[G_{1}]$ で $\lambda^{+}$-c.c. なので（\ref{set:kappa-cc-approximation}）、
+$$
+F\in{}^{\lambda\times\lambda}(E^{*}(\theta))\cap M[G_{1}]
+\label{set:eq-easton-approx-1}
+$$
+で
+$$
+\forall\alpha<\lambda\;\exists\beta<\lambda\;(f(\alpha)=F(\alpha,\beta))
+\label{set:eq-easton-approx-2}
+$$
+となるものがある。$\PP_{1}$ は $M$ で $\lambda^{+}$-閉なので、\eqref{set:eq-easton-approx-1} を満たす $F$ は実は $M$ に属し、$M$ の GCH よりそのような $F$ は $E^{*}(\theta)^{\lambda}=E^{*}(\theta)$ 個しかない（$\cf(E^{*}(\theta))>\theta\ge\lambda$）。各 $F$ について、\eqref{set:eq-easton-approx-2} を満たす $f\in M[G]$ の集合は $M[G]$ で大きさ $\lambda^{\lambda}=2^{\lambda}=E^{*}(\lambda)\le E^{*}(\theta)$（$\lambda$ は $M[G]$ で正則なので上の特別な場合が使え、$E^{*}$ は単調）。よって $(\lvert{}^{\lambda}E^{*}(\theta)\rvert\le E^{*}(\theta))^{M[G]}$。
+
+以下、完全に $M[G]$ の中で議論し、$\lambda<\theta$、すなわち $\theta$ は特異とする。$B$ を $\theta$ の有界な部分集合の集合とする。正則な $\delta<\theta$ について $\lvert\mathcal{P}(\delta)\rvert=E^{*}(\delta)\le E^{*}(\theta)$ で、正則基数（後続基数）は $\theta$ で共終なので $\lvert B\rvert\le E^{*}(\theta)$。$\theta$ に共終な列 $\langle\theta_{\alpha}:\alpha<\lambda\rangle$ を固定すると、$g\mapsto\bigcup\{g(\alpha):\alpha<\lambda\}$ は ${}^{\lambda}B$ から $\mathcal{P}(\theta)$ の上への写像（$X\subseteq\theta$ は $\alpha\mapsto X\cap\theta_{\alpha}$ の像）なので、$2^{\theta}\le E^{*}(\theta)^{\lambda}=E^{*}(\theta)$。
+:::
+
+::: corollary {#set:con-easton-example keywords="Con(ZFC + for all n 2^{aleph_n} = aleph_{n+3})"}
+$\mathrm{Con}(\ZFC)$ ならば $\mathrm{Con}(\ZFC+\forall n\in\omega\,(2^{\omega_{n}}=\omega_{n+3})+\forall\kappa\ge\omega_{\omega}\,(2^{\kappa}=\kappa^{+}))$。
+:::
+
+::: proof
+GCH を満たす $M$ から出発し、$E(\omega_{n})\defeq\omega_{n+3}$（$n\in\omega$）とする。$E$ はイーストン添字関数である（$\cf(\omega_{n+3})=\omega_{n+3}>\omega_{n}$、単調）。\ref{set:easton-theorem} より $M[G]$ で $2^{\omega_{n}}=E^{*}(\omega_{n})=\omega_{n+3}$。$\kappa\ge\omega_{\omega}$ なら $E'(\kappa)=\max(\kappa^{+},\omega_{\omega})=\kappa^{+}$ で $\cf(\kappa^{+})>\kappa$ なので $2^{\kappa}=\kappa^{+}$。
+:::
+
+## 補足：クラスの強制と特異基数 {#set:sec-easton-remarks}
+
+\ref{set:easton-theorem} より、$\lambda\notin\dom(E)$ なら $M[G]$ で $2^{\lambda}$ は可能な限り小さい。したがって $\lambda$ で冪を「跳ね上げ」たいなら $\lambda$ を $\dom(E)$ に入れなければならない。特定の正則な $\lambda$ についてはこれは問題ないが、たとえば $\forall\kappa\,(\kappa\text{ が正則}\to2^{\kappa}=\kappa^{+++})$ の無矛盾性を示したいとすると、「明らかな」$\PP$ は $M$ の真のクラスになる。真のクラスによる強制は一般には $\ZFC$ のモデルを作らないが、イーストン拡大の場合は作る（Easton 1970、あるいは Kunen 第 VIII 章の演習 G1–G5）。
+
+$\lambda$ が $M$ で特異なら $\lambda$ は $\dom(E)$ に属しえず、$\lambda$ で冪を跳ね上げるのが難しい原理的な理由がある。モデルのことを忘れて、$\lambda$ を特異とし $f(\lambda)\defeq\sup\{2^{\kappa}:\kappa<\lambda\}$ とおく。次の二つの場合のどちらかが成り立つ。
+
+- **場合 I：$\cf(f(\lambda))\neq\cf(\lambda)$.** このとき $\exists\kappa_{0}<\lambda\,\forall\kappa\,(\kappa_{0}\le\kappa<\lambda\to2^{\kappa}=2^{\kappa_{0}})$ で、実際 $\cf(f(\lambda))>\lambda$。この場合 $2^{\lambda}=f(\lambda)$ が容易に分かる（Kunen 第 VIII 章の演習 H1）。
+- **場合 II：$\cf(f(\lambda))=\cf(\lambda)$.** このとき $2^{\lambda}\ge f(\lambda)^{+}$。
+
+\ref{set:easton-theorem} より、GCH のモデルのイーストン拡大では $2^{\lambda}=f(\lambda)^{+}$ である。さらに Kunen によれば、ジェンセンの結果により、$2^{\lambda}>f(\lambda)^{+}$ の無矛盾性を（大きな基数なしに）強制で示すことは不可能である。より正確には、
+$$
+\forall\lambda\,\bigl(\lambda\text{ は特異}\land\cf(f(\lambda))=\cf(\lambda)\to2^{\lambda}=f(\lambda)^{+}\bigr)
+\label{set:eq-sch}
+$$
+と
+$$
+\forall X\subseteq\mathbf{ON}\,\bigl(\lvert X\rvert\ge\omega_{1}\to\exists Y\subseteq\mathbf{ON}\,(X\subseteq Y\land\lvert X\rvert=\lvert Y\rvert\land Y\in \mathbf{L})\bigr)
+\label{set:eq-covering}
+$$
+（被覆性質 CL）を考えると、\eqref{set:eq-covering} $\to$ \eqref{set:eq-sch} が容易に分かる（演習 H2）。\eqref{set:eq-covering} は $\ZFC$ の定理ではないが、ジェンセンの被覆補題により、\eqref{set:eq-covering} の否定は「$0^{\#}$ が存在する」という主張を導き、これはすべての非可算基数が $\mathbf{L}$ で到達不能（さらにマーロで弱コンパクト）であることを導く。さらに「$0^{\#}$ が存在する」は $\mathbf{V}=\mathbf{L}$ のモデルの任意の強制拡大で偽である（したがって \eqref{set:eq-covering} と \eqref{set:eq-sch} は真）。$0^{\#}$ はシルヴァーとソロヴェイが導入し、可測（あるいはラムジー）基数の存在から「$0^{\#}$ が存在する」が従うことを示した。$0^{\#}$ の定義から、\eqref{set:eq-covering} の否定は実は「$0^{\#}$ が存在する」と同値である。
+
+プリクリーとシルヴァーの結果により、超コンパクト基数をもつモデルのジェネリック拡大で \eqref{set:eq-sch} の否定を成り立たせることができ、マギドールは、$M$ が巨大基数より少し強いものをもてば、あるジェネリック拡大で
+$$
+\forall n<\omega\,(2^{\omega_{n}}=\omega_{n+1})\land2^{\omega_{\omega}}=\omega_{\omega+2}
+$$
+を成り立たせることさえできることを示した（Kunen による。本サイトでは確かめていない。また Kunen 以後、この種の結果に必要な大きな基数の強さは大幅に下げられたと一般に言われているが、詳細は確かめていない）。
+
+共終数が非可算な特異基数では、\eqref{set:eq-sch} のある形は $\ZFC$ で証明できる。たとえばシルヴァーは、$\omega<\cf(\lambda)<\lambda$ かつ $\forall\kappa<\lambda\,(2^{\kappa}=\kappa^{+})$ なら $2^{\lambda}=\lambda^{+}$ であることを示した（\ref{set:silver}。Galvin–Hajnal 1975、Kunen 第 VIII 章の演習 H3–H6）。
+
+## 問題 {#set:sec-easton-problems}
+
+::: problem {#set:prob-easton-one-cardinal}
+$E$ の定義域が一点 $\{\kappa\}$ のとき、$\PP(E)$ は $\mathrm{Fn}(E(\kappa),2,\kappa)$ と同型であり、\ref{set:easton-theorem} は \ref{set:power-lambda-kappa} の特別な場合（$\lambda=\kappa$）に一致することを確かめよ。
+:::
+
+::: solution
+$\dom(p)=\{\kappa\}$ なので $p\mapsto p(\kappa)$ が同型で、3 の (c) は自明に成り立つ。\ref{set:easton-theorem} は $2^{\kappa}=E(\kappa)$ を与え、\ref{set:power-lambda-kappa} の仮定（$M$ で $\kappa$ は正則、$2^{<\kappa}=\kappa$、$E(\kappa)^{\kappa}=E(\kappa)$）は GCH と $\cf(E(\kappa))>\kappa$ から従う。
+:::
+
+::: problem {#set:prob-easton-singular-value}
+\ref{set:con-easton-example} のモデルで $2^{\omega_{\omega}}=\omega_{\omega+1}$ であることを、場合 I・II の区別で説明せよ。
+:::
+
+::: solution
+$f(\omega_{\omega})=\sup_{n}2^{\omega_{n}}=\sup_{n}\omega_{n+3}=\omega_{\omega}$ で、$\cf(f(\omega_{\omega}))=\omega=\cf(\omega_{\omega})$ なので場合 II であり、$2^{\omega_{\omega}}\ge\omega_{\omega+1}$。\ref{set:easton-theorem} より $2^{\omega_{\omega}}=E^{*}(\omega_{\omega})$ で、$E'(\omega_{\omega})=\max(\omega_{\omega+1},\omega_{\omega})=\omega_{\omega+1}$、$\cf(\omega_{\omega+1})>\omega_{\omega}$ なので $E^{*}(\omega_{\omega})=\omega_{\omega+1}=f(\omega_{\omega})^{+}$。
+:::
+
+::: supplement
+**前提の検討.**
+- \ref{set:easton-po} の 3 の (c)（イーストン台）は、\ref{set:easton-cc} で下の部分の鎖条件を得るのに本質的である。(c) がないと、弱到達不能な $\lambda$ の下で無限個の成分が動き、$\lambda^{+}$-c.c. が壊れうる。
+- $M$ の GCH は、鎖条件（$2^{<\lambda}=\lambda$）と冪の計算（$E^{*}(\theta)^{\lambda}=E^{*}(\theta)$）の両方で使った。
+- \ref{set:easton-theorem} の「$E^{*}$」は、$\dom(E)$ に属さない基数（特異基数を含む）での冪の値を、単調性とケーニッヒの補題から決まる最小値として与えている。
+
+**関連する結果.** イーストンの定理は \ref{set:easton} として第 I 章で予告した結果の証明である。特異基数の冪についての $\ZFC$ の制約はシルヴァーの定理に始まり、シェラーの pcf 理論（たとえば $2^{\aleph_{\omega}}<\aleph_{\omega_{4}}$（$\aleph_{\omega}$ が強極限のとき））に至ることが一般に知られている（本サイトでは扱っていない）。
+
+**高い視点から：局所的な自由と大域的な整合性.** イーストン強制は、各正則基数 $\kappa$ に「$\kappa$ の部分集合を $E(\kappa)$ 個加える」独立な装置 $\mathrm{Fn}(E(\kappa),2,\kappa)$ を置き、それらを「小さい台」で束ねたものである。各 $\lambda$ で上下に分解すると、上の部分は閉性により $\lambda$ 以下の世界を乱さず、下の部分は鎖条件により $\lambda$ より上の基数を乱さない。こうして各基数での操作は互いに干渉せず、正則基数の冪は局所的に自由に決められる。特異基数ではこの分解がうまくいかず（特異基数を $\dom(E)$ に入れると崩壊が起きる）、冪は下の値から「大域的な整合性」によって決まってしまう。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

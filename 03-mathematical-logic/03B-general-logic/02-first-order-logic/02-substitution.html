@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>代入と代入可能性 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/02-first-order-logic/02-substitution.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 代入と代入可能性 {#logic:page-substitution keywords="substitution, substitutability, free for, variable capture, capture-avoiding, 代入"}
+
+論理式 $\varphi$ の自由変数 $x$ に項 $s$ を代入した論理式 $\varphi[s/x]$ は、推論規則（「$\forall x\,\varphi$ から $\varphi[s/x]$ を導く」）と意味論（「$\varphi[s/x]$ が真であることは、$x$ の値を $s$ の値にしたとき $\varphi$ が真であること」）の両方で中心的な役割を果たす。ただし、代入によって $s$ の中の変数が $\varphi$ の量化子に「捕獲」されると意味が変わってしまう。本ページでは、代入を記号列の書き換えとして**常に定義される操作**として定め、捕獲が起きないという条件（**代入可能性**）を別に再帰的に定義する。そのうえで、以後の証明で使う代入の基本性質（自由変数の変化、代入の合成と交換、定数を変数に置き換える操作）を、すべて論理式の形に関する帰納法で証明する。
+
+## 記法と定義の確認 {#logic:sec-substitution-notation}
+
+::: notation
+- 言語 $\mathcal{L}$、項、論理式、原子論理式は \ref{logic:language}, \ref{logic:term}, \ref{logic:formula} のとおり。原始記号は $\bot,\to,\forall,=$ で、$\neg,\wedge,\vee,\exists$ は略記（\ref{logic:abbreviations}）である。
+- $\mathrm{var}(t)$, $\mathrm{FV}(\varphi)$, $\mathrm{BV}(\varphi)$, $\mathrm{Var}(\varphi)$, $\mathrm{Con}(\varphi)$ は \ref{logic:free-variables} のとおり。$\mathrm{Var}(\varphi)=\mathrm{FV}(\varphi)\cup\mathrm{BV}(\varphi)$ である（\ref{logic:var-fv-bv}）。
+- 以下の定義はすべて構造的再帰（\ref{logic:structural-recursion}）により、証明はすべて項・論理式に関する帰納法（\ref{logic:term-induction}, \ref{logic:formula-induction}）による。帰納法の場合分けは、読み方の一意性（\ref{logic:unique-readability-formulas}）によって漏れも重複もない。
+- $=$ は記号列としての一致を表す（\ref{logic:sec-syntax-notation}）。
+:::
+
+## 代入の定義 {#logic:sec-substitution-definition}
+
+::: definition 代入 {#logic:substitution keywords="substitution" index="代入|だいにゅう"}
+項 $s$ と変数 $x$ を固定する。項 $t$ への代入 $t[s/x]$ を
+$$
+\begin{aligned}
+&x[s/x]=s,\qquad y[s/x]=y\ (y\neq x),\qquad c[s/x]=c,\\
+&f(t_{1},\dots,t_{n})[s/x]=f(t_{1}[s/x],\dots,t_{n}[s/x])
+\end{aligned}
+$$
+で定める。論理式への代入 $\varphi[s/x]$ を
+$$
+\begin{aligned}
+&\bot[s/x]=\bot,\qquad (t_{1}=t_{2})[s/x]=(t_{1}[s/x]=t_{2}[s/x]),\\
+&P(t_{1},\dots,t_{n})[s/x]=P(t_{1}[s/x],\dots,t_{n}[s/x]),
+\end{aligned}
+$$
+$$
+\begin{aligned}
+&(\alpha\to\beta)[s/x]=(\alpha[s/x]\to\beta[s/x]),\\
+&(\forall y\,\alpha)[s/x]=\begin{cases}\forall y\,\alpha & (y=x)\\ \forall y\,(\alpha[s/x]) & (y\neq x)\end{cases}
+\end{aligned}
+$$
+で定める。$\varphi[s/x]$ はどんな $s,x,\varphi$ に対しても定義される。
+:::
+
+::: intuition
+$\varphi[s/x]$ は「$\varphi$ の中で $x$ が**自由に**現れている場所を $s$ で置き換えた記号列」である。$\forall x$ の中では $x$ は束縛されているので置き換えない（$y=x$ の場合）。一方、$y\neq x$ の場合には $\forall y$ の中へ入って置き換えるので、$s$ が $y$ を含んでいると、その $y$ が $\forall y$ に捕獲される。この定義はそれを禁止していない。捕獲が起きないことは次の「代入可能性」として別に扱う。
+:::
+
+::: example 変数の捕獲 {#logic:ex-capture}
+$\mathcal{L}_{\mathrm{ar}}$ で $\varphi=\exists y\,(x<y)$ とする。これは「$x$ より大きいものがある」という意味である。略記を展開すると $\varphi=\neg\forall y\,\neg(x<y)$ であり、定義どおりに計算すると
+$$
+\varphi[y/x]=\neg\forall y\,\neg(y<y)=\exists y\,(y<y)
+$$
+となる。これは「自分自身より大きいものがある」という意味で、元の意味「$x$ より大きいものがある」の $x$ に $y$ の値を入れたもの（「$y$ より大きいものがある」）とは違う。代入した $y$ が $\exists y$ に捕獲されたためである。一方、$\varphi[S(z)/x]=\exists y\,(S(z)<y)$ では捕獲は起きていない。
+:::
+
+::: lemma 代入の基本性質 {#logic:substitution-basic keywords="basic properties of substitution"}
+任意の項 $t,s$、変数 $x$、論理式 $\varphi$ について次が成り立つ。
+1. $x\notin\mathrm{var}(t)$ ならば $t[s/x]=t$。$x\notin\mathrm{FV}(\varphi)$ ならば $\varphi[s/x]=\varphi$。
+2. $t[x/x]=t$, $\varphi[x/x]=\varphi$。
+3. $x\in\mathrm{var}(t)$ ならば $\mathrm{var}(t[s/x])=(\mathrm{var}(t)\setminus\{x\})\cup\mathrm{var}(s)$。
+4. $\mathrm{BV}(\varphi[s/x])=\mathrm{BV}(\varphi)$ であり、$c(\varphi[s/x])=c(\varphi)$（$c$ は論理的複雑さ、\ref{logic:sentence}）。
+:::
+
+::: proof
+**Step 1（1 の項の場合）.** 項に関する帰納法。$t=y$ で $x\notin\mathrm{var}(t)=\{y\}$ なら $y\neq x$ なので $t[s/x]=y=t$。$t=c$ なら $c[s/x]=c$。$t=f(t_{1},\dots,t_{n})$ なら $x\notin\mathrm{var}(t_{i})$ がすべての $i$ で成り立つので、帰納法の仮定より $t_{i}[s/x]=t_{i}$、よって $t[s/x]=t$。
+
+**Step 2（1 の論理式の場合）.** 論理式に関する帰納法。原子論理式は Step 1 から従う（$\mathrm{FV}$ は現れる項の $\mathrm{var}$ の和集合）。$(\alpha\to\beta)$ は $x\notin\mathrm{FV}(\alpha)$ かつ $x\notin\mathrm{FV}(\beta)$ なので帰納法の仮定から従う。$\forall y\,\alpha$ では、$y=x$ なら定義より $(\forall x\,\alpha)[s/x]=\forall x\,\alpha$。$y\neq x$ なら、$x\notin\mathrm{FV}(\alpha)\setminus\{y\}$ かつ $x\neq y$ より $x\notin\mathrm{FV}(\alpha)$ なので、帰納法の仮定から $\alpha[s/x]=\alpha$、よって $(\forall y\,\alpha)[s/x]=\forall y\,\alpha$。
+
+**Step 3（2）.** 項に関する帰納法で $t[x/x]=t$（$x[x/x]=x$、他は明らか）。論理式も同様で、$\forall y\,\alpha$ の場合は $y=x$ なら定義から、$y\neq x$ なら帰納法の仮定から従う。
+
+**Step 4（3）.** 項に関する帰納法。$t=x$ なら両辺 $\mathrm{var}(s)$。$t=f(t_{1},\dots,t_{n})$ のとき、$x\in\mathrm{var}(t_{i})$ となる $i$ には帰納法の仮定を、$x\notin\mathrm{var}(t_{i})$ となる $i$ には 1 を使うと、$\mathrm{var}(t_{i}[s/x])$ は前者では $(\mathrm{var}(t_{i})\setminus\{x\})\cup\mathrm{var}(s)$、後者では $\mathrm{var}(t_{i})=\mathrm{var}(t_{i})\setminus\{x\}$ である。前者が少なくとも一つあるので、和集合をとって主張を得る。
+
+**Step 5（4）.** 論理式に関する帰納法。代入は原子論理式を原子論理式に、含意を含意に、$\forall y$ を $\forall y$ に写し、量化子の変数を変えない。したがって $\mathrm{BV}$ も、$\to$ と $\forall$ の個数も変わらない。
+
+::: hypcheck
+- **1 の前提 $x\notin\mathrm{FV}(\varphi)$**：Step 2 で $y\neq x$ の場合に $x\notin\mathrm{FV}(\alpha)$ を導くのに使った。$x\in\mathrm{BV}(\varphi)$ であっても自由でなければ変化しない（例：$(\forall x\,P(x))[s/x]=\forall x\,P(x)$）。
+- **3 の前提 $x\in\mathrm{var}(t)$**：外すと $\mathrm{var}(s)$ が余分に入り偽になる（$t=y$, $s=z$ なら $\mathrm{var}(t[s/x])=\{y\}$）。
+:::
+:::
+
+## 代入可能性 {#logic:sec-substitution-free-for}
+
+::: definition 代入可能 {#logic:substitutable keywords="substitutable, free for, substitutability" index="代入可能|だいにゅうかのう, 自由に代入できる|じゆうにだいにゅうできる"}
+「項 $s$ は論理式 $\varphi$ の中で変数 $x$ に**代入可能**である」（$s$ is free for $x$ in $\varphi$）を、$\varphi$ に関する構造的再帰で次のように定める。
+- $\varphi$ が原子論理式のとき：常に代入可能。
+- $\varphi=(\alpha\to\beta)$ のとき：$s$ が $\alpha$ の中でも $\beta$ の中でも $x$ に代入可能であること。
+- $\varphi=\forall y\,\alpha$ のとき：$x\notin\mathrm{FV}(\forall y\,\alpha)$ であるか、または「$y\notin\mathrm{var}(s)$ であり、かつ $s$ は $\alpha$ の中で $x$ に代入可能」であること。
+:::
+
+::: intuition
+$\forall y\,\alpha$ の中で実際に置き換えが起こる（$x$ が自由に現れる）なら、置き換える項 $s$ は $y$ を含んではならない（含めば捕獲される）、というのがこの定義の中身である。$x$ が $\forall y\,\alpha$ に自由に現れないなら、代入は何も変えない（\ref{logic:substitution-basic} の 1）ので、条件を課さない。
+:::
+
+::: example
+\ref{logic:ex-capture} の $\varphi=\neg\forall y\,\neg(x<y)$ では、$x\in\mathrm{FV}(\forall y\,\neg(x<y))$ かつ $y\in\mathrm{var}(y)$ なので、$y$ は $\varphi$ の中で $x$ に代入可能でない。$S(z)$ は代入可能である。$\forall x\,P(x)$ の中では、どんな項も $x$ に代入可能である（$x$ が自由に現れない）。
+:::
+
+::: lemma 代入可能性の十分条件 {#logic:substitutable-sufficient keywords="sufficient conditions for substitutability"}
+1. $x\notin\mathrm{FV}(\varphi)$ ならば、任意の項 $s$ は $\varphi$ の中で $x$ に代入可能である。
+2. $\mathrm{var}(s)\cap\mathrm{BV}(\varphi)=\varnothing$ ならば、$s$ は $\varphi$ の中で任意の変数に代入可能である。とくに閉項（たとえば定数記号）は常に代入可能であり、$\varphi$ に現れない変数も常に代入可能である。
+3. 変数 $x$ は $\varphi$ の中で $x$ 自身に代入可能である。
+:::
+
+::: proof
+いずれも論理式に関する帰納法である。原子論理式では常に代入可能なので、含意と全称の場合だけを示す。含意 $(\alpha\to\beta)$ については、前提が $\alpha$ と $\beta$ に引き継がれる（$\mathrm{FV}$, $\mathrm{BV}$ は和集合）ので、帰納法の仮定から従う。以下、$\varphi=\forall y\,\alpha$ とする。
+
+**1.** $x\notin\mathrm{FV}(\forall y\,\alpha)$ なので、定義の前半の条件により代入可能である。
+
+**2.** $x\notin\mathrm{FV}(\varphi)$ ならば 1 による。そうでなければ、$y\in\mathrm{BV}(\varphi)$ と前提から $y\notin\mathrm{var}(s)$ である。また $\mathrm{BV}(\alpha)\subset\mathrm{BV}(\varphi)$ なので前提は $\alpha$ に引き継がれ、帰納法の仮定から $s$ は $\alpha$ の中で $x$ に代入可能である。定義の後半の条件が満たされる。閉項は $\mathrm{var}=\varnothing$ なので条件を満たす。$\varphi$ に現れない変数 $z$ は $z\notin\mathrm{BV}(\varphi)$（\ref{logic:var-fv-bv}）なので条件を満たす。
+
+**3.** $x\notin\mathrm{FV}(\varphi)$ ならば 1 による。そうでなければ $x\in\mathrm{FV}(\forall y\,\alpha)$ なので $y\neq x$、すなわち $y\notin\mathrm{var}(x)=\{x\}$ であり、帰納法の仮定から $x$ は $\alpha$ の中で $x$ に代入可能である。
+:::
+
+::: proposition 代入と自由変数 {#logic:substitution-fv keywords="free variables of a substitution instance"}
+$s$ が $\varphi$ の中で $x$ に代入可能であり、$x\in\mathrm{FV}(\varphi)$ ならば
+$$
+\mathrm{FV}(\varphi[s/x])=(\mathrm{FV}(\varphi)\setminus\{x\})\cup\mathrm{var}(s).
+$$
+$x\notin\mathrm{FV}(\varphi)$ ならば $\mathrm{FV}(\varphi[s/x])=\mathrm{FV}(\varphi)$ である。とくに、$\mathrm{FV}(\varphi)\subset\{x\}$ で $s$ が閉項ならば、$\varphi[s/x]$ は文である。
+:::
+
+::: proof
+後半は \ref{logic:substitution-basic} の 1 から明らかなので、前半を論理式に関する帰納法で示す。
+
+**Step 1（原子論理式）.** $\mathrm{FV}$ は現れる項の $\mathrm{var}$ の和集合である。$x$ を含む項には \ref{logic:substitution-basic} の 3 を、含まない項には同じ補題の 1 を使い、和集合をとると主張を得る（$x$ を含む項が少なくとも一つある）。
+
+**Step 2（含意）.** $\varphi=(\alpha\to\beta)$ とする。$x\in\mathrm{FV}(\alpha)$ か $x\in\mathrm{FV}(\beta)$ である。$x$ を自由にもつ成分には帰納法の仮定を、もたない成分には後半を使い、和集合をとる。
+
+**Step 3（全称）.** $\varphi=\forall y\,\alpha$ で $x\in\mathrm{FV}(\varphi)$ とする。すると $y\neq x$、$x\in\mathrm{FV}(\alpha)$ であり、代入可能性の定義から $y\notin\mathrm{var}(s)$ かつ $s$ は $\alpha$ の中で $x$ に代入可能である。定義と帰納法の仮定から
+$$
+\mathrm{FV}(\varphi[s/x])=\mathrm{FV}(\alpha[s/x])\setminus\{y\}=\bigl((\mathrm{FV}(\alpha)\setminus\{x\})\cup\mathrm{var}(s)\bigr)\setminus\{y\}.
+$$
+$y\notin\mathrm{var}(s)$ なので右辺は $\bigl(\mathrm{FV}(\alpha)\setminus\{x,y\}\bigr)\cup\mathrm{var}(s)=(\mathrm{FV}(\varphi)\setminus\{x\})\cup\mathrm{var}(s)$ に等しい。
+
+::: hypcheck
+- **代入可能性**：Step 3 の最後の等号（$y\notin\mathrm{var}(s)$）でだけ使った。外すと偽になる。\ref{logic:ex-capture} の $\varphi$ と $s=y$ では、右辺は $\{y\}$ だが $\mathrm{FV}(\exists y\,(y<y))=\varnothing$ である。捕獲とは、まさに「代入した項の自由変数が消える」現象である。
+:::
+:::
+
+## 代入の合成 {#logic:sec-substitution-composition}
+
+束縛変数の名前の付け替え（$\forall x\,\varphi$ を $\forall y\,\varphi[y/x]$ に書き換える）や、定数を変数に戻す議論では、「$x$ をいったん $y$ に替え、その $y$ にさらに $s$ を代入する」操作を扱う。
+
+::: proposition 代入の合成 {#logic:substitution-composition keywords="composition of substitutions, renaming" index="代入の合成|だいにゅうのごうせい"}
+$y$ は $\varphi$ の中で $x$ に代入可能であり、$y\notin\mathrm{FV}(\varphi)$ であるとする。このとき次が成り立つ。
+1. 任意の項 $s$ について、記号列として $\varphi[y/x][s/y]=\varphi[s/x]$。
+2. $s$ が $\varphi$ の中で $x$ に代入可能ならば、$s$ は $\varphi[y/x]$ の中で $y$ に代入可能である。
+:::
+
+::: intuition
+$y$ が $\varphi$ に自由に現れていないので、$\varphi[y/x]$ の中の $y$ の自由な出現は、ちょうど元の $x$ の自由な出現の位置にある。そこを $s$ で置き換えれば、元の $x$ を直接 $s$ で置き換えたのと同じ記号列になる。$y$ が代入可能であることは、$y$ を入れた時点で捕獲が起きず、その位置が「自由な出現」のまま保たれることを保証する。
+:::
+
+::: proof
+**Step 0（項の場合）.** 項 $t$ で $y\notin\mathrm{var}(t)$ ならば $t[y/x][s/y]=t[s/x]$ である。実際、項に関する帰納法で、$t=x$ なら両辺 $s$、$t=z\neq x$ なら $z\neq y$ なので両辺 $z$、$t=c$ なら両辺 $c$、$t=f(\dots)$ なら成分ごとに帰納法の仮定を使う。
+
+以下、1 と 2 を同時に論理式に関する帰納法で示す。
+
+**Step 1（原子論理式）.** 現れる各項 $t$ は $y\notin\mathrm{var}(t)$ を満たす（$y\notin\mathrm{FV}(\varphi)$）ので、Step 0 から 1 が従う。2 は原子論理式なので自明である。
+
+**Step 2（含意）.** 前提（$y$ が代入可能、$y\notin\mathrm{FV}$、$s$ が代入可能）は $\alpha,\beta$ に引き継がれるので、帰納法の仮定から従う。
+
+**Step 3（全称 $\varphi=\forall z\,\alpha$、$z=x$）.** $\varphi[y/x]=\varphi$ である。$y\notin\mathrm{FV}(\varphi)$ なので $\varphi[s/y]=\varphi$ であり、一方 $\varphi[s/x]=\varphi$ なので 1 が成り立つ。2 は $y\notin\mathrm{FV}(\varphi[y/x])=\mathrm{FV}(\varphi)$ と \ref{logic:substitutable-sufficient} の 1 から従う。
+
+**Step 4（全称、$z\neq x$、$x\notin\mathrm{FV}(\varphi)$）.** \ref{logic:substitution-basic} の 1 より $\varphi[y/x]=\varphi$, $\varphi[s/x]=\varphi$ であり、$y\notin\mathrm{FV}(\varphi)$ より $\varphi[s/y]=\varphi$。よって 1 が成り立つ。2 は Step 3 と同様である。
+
+**Step 5（全称、$z\neq x$、$x\in\mathrm{FV}(\varphi)$）.** $y$ が代入可能なので、定義から $z\notin\mathrm{var}(y)$、すなわち $z\neq y$ であり、$y$ は $\alpha$ の中で $x$ に代入可能である。また $y\notin\mathrm{FV}(\forall z\,\alpha)$ と $z\neq y$ から $y\notin\mathrm{FV}(\alpha)$。したがって $\alpha$ は帰納法の仮定の前提を満たす。
+
+1 について：$z\neq x$, $z\neq y$ なので
+$$
+\begin{aligned}
+\varphi[y/x][s/y]&=\bigl(\forall z\,\alpha[y/x]\bigr)[s/y]=\forall z\,\bigl(\alpha[y/x][s/y]\bigr)=\forall z\,\bigl(\alpha[s/x]\bigr)\\
+&=\varphi[s/x].
+\end{aligned}
+$$
+第 3 の等号が帰納法の仮定である。
+
+2 について：$s$ が $\varphi$ の中で $x$ に代入可能なので、定義から $z\notin\mathrm{var}(s)$ であり、$s$ は $\alpha$ の中で $x$ に代入可能である。帰納法の仮定より $s$ は $\alpha[y/x]$ の中で $y$ に代入可能である。$\varphi[y/x]=\forall z\,(\alpha[y/x])$ であり、$z\notin\mathrm{var}(s)$ なので、定義の後半の条件により $s$ は $\varphi[y/x]$ の中で $y$ に代入可能である。
+
+::: hypcheck
+- **$y\notin\mathrm{FV}(\varphi)$**：Step 0（元からある $y$ まで $s$ に置き換わらないこと）、Step 3–4（$\varphi[s/y]=\varphi$）、Step 5（$y\notin\mathrm{FV}(\alpha)$）で使った。外すと偽：$\varphi=P(x,y)$ なら $\varphi[y/x][s/y]=P(s,s)$ だが $\varphi[s/x]=P(s,y)$。
+- **$y$ の代入可能性**：Step 5 の $z\neq y$ で使った。外すと偽：$\varphi=\forall y\,P(x)$ とすると $\varphi[y/x]=\forall y\,P(y)$ で、$[s/y]$ は何も変えず $\forall y\,P(y)$ のままだが、$\varphi[s/x]=\forall y\,P(s)$ である。
+- 1 は $s$ の代入可能性を**仮定していない**。これは両辺とも捕獲を許す記号列の操作として定義されているからである。
+:::
+:::
+
+::: corollary 新しい変数による付け替え {#logic:fresh-renaming keywords="renaming by a fresh variable"}
+変数 $y$ が $\varphi$ に現れない（$y\notin\mathrm{Var}(\varphi)$）ならば、$y$ は $\varphi$ の中で $x$ に代入可能であり、$x$ は $\varphi[y/x]$ の中で $y$ に代入可能であって、
+$$
+\varphi[y/x][x/y]=\varphi .
+$$
+:::
+
+::: proof
+$y\notin\mathrm{BV}(\varphi)$ なので、\ref{logic:substitutable-sufficient} の 2 より $y$ は代入可能である。また $y\notin\mathrm{FV}(\varphi)$。$x$ は $\varphi$ の中で $x$ に代入可能（\ref{logic:substitutable-sufficient} の 3）なので、\ref{logic:substitution-composition} を $s=x$ として使うと、$x$ は $\varphi[y/x]$ の中で $y$ に代入可能であり、$\varphi[y/x][x/y]=\varphi[x/x]=\varphi$（\ref{logic:substitution-basic} の 2）。
+:::
+
+## 代入の交換 {#logic:sec-substitution-commutation}
+
+::: proposition 代入の交換 {#logic:substitution-commutation keywords="substitution lemma, commutation of substitutions" index="代入の交換|だいにゅうのこうかん"}
+$x\neq y$ かつ $x\notin\mathrm{var}(r)$ とする。任意の項 $t,s$ について
+$$
+t[s/x][r/y]=t[r/y]\bigl[s[r/y]/x\bigr]
+$$
+が成り立つ。さらに、論理式 $\varphi$ が「$y\notin\mathrm{BV}(\varphi)$ または $y\notin\mathrm{var}(s)$」を満たすならば
+$$
+\varphi[s/x][r/y]=\varphi[r/y]\bigl[s[r/y]/x\bigr].
+$$
+:::
+
+::: intuition
+$x$ に $s$ を入れてから $y$ に $r$ を入れると、$s$ の中の $y$ にも $r$ が入る。順序を逆にするときは、その分を補って $s$ の代わりに $s[r/y]$ を入れればよい。$x\notin\mathrm{var}(r)$ は、後から入れる $r$ の中の $x$ が二度目の代入で書き換えられないための条件である。
+:::
+
+::: proof
+**Step 1（項）.** 項に関する帰納法。
+- $t=x$：左辺は $s[r/y]$。右辺は $x[r/y]=x$（$x\neq y$）なので $x[s[r/y]/x]=s[r/y]$。
+- $t=y$：左辺は $y[s/x]=y$（$y\neq x$）なので $y[r/y]=r$。右辺は $r[s[r/y]/x]=r$（$x\notin\mathrm{var}(r)$ と \ref{logic:substitution-basic} の 1）。
+- $t=z\notin\{x,y\}$ または $t=c$：両辺とも $t$。
+- $t=f(t_{1},\dots,t_{n})$：両辺とも成分ごとに計算され、帰納法の仮定から一致する。
+
+**Step 2（論理式）.** 論理式に関する帰納法。前提「$y\notin\mathrm{BV}(\varphi)$ または $y\notin\mathrm{var}(s)$」は成分に引き継がれる。原子論理式は Step 1 から、含意は帰納法の仮定から従う。$\varphi=\forall z\,\alpha$ とする。
+- $z=y$：このとき $y\in\mathrm{BV}(\varphi)$ なので、前提から $y\notin\mathrm{var}(s)$、したがって $s[r/y]=s$（\ref{logic:substitution-basic} の 1）。$y\neq x$ なので、左辺は $(\forall y\,\alpha)[s/x][r/y]=(\forall y\,\alpha[s/x])[r/y]=\forall y\,(\alpha[s/x])$、右辺は $(\forall y\,\alpha)[r/y][s/x]=(\forall y\,\alpha)[s/x]=\forall y\,(\alpha[s/x])$ で一致する。
+- $z=x$：左辺は $(\forall x\,\alpha)[r/y]=\forall x\,(\alpha[r/y])$。右辺は $(\forall x\,\alpha[r/y])[s[r/y]/x]=\forall x\,(\alpha[r/y])$。一致する。
+- $z\notin\{x,y\}$：両辺とも $\forall z$ の内側に代入が入り、$\forall z\,(\alpha[s/x][r/y])$ と $\forall z\,(\alpha[r/y][s[r/y]/x])$ になる。帰納法の仮定から一致する。
+
+::: hypcheck
+- **$x\neq y$**：Step 1 の $t=x$, $t=y$ の場合分けが成り立つために使った。
+- **$x\notin\mathrm{var}(r)$**：Step 1 の $t=y$ の場合。外すと偽：$t=y$, $r=x$ なら左辺 $x$、右辺 $s[x/y]$。
+- **「$y\notin\mathrm{BV}(\varphi)$ または $y\notin\mathrm{var}(s)$」**：Step 2 の $z=y$ の場合に使った。両方を外すと偽：$\varphi=\forall y\,P(x)$, $s=y$ とすると、左辺は $(\forall y\,P(y))[r/y]=\forall y\,P(y)$、右辺は $(\forall y\,P(x))[r/x]=\forall y\,P(r)$。
+- 代入可能性は仮定していない（両辺とも記号列の操作として一致する）。代入可能性の保存を別に示す必要がある場合は、その都度確かめる。
+:::
+:::
+
+## 定数の置き換え {#logic:sec-substitution-constants}
+
+完全性定理の証明では、「新しい定数記号 $c$ について $\Sigma\vdash\varphi(c)$ が示せたら、$c$ を新しい変数に置き換えた証明も正しい」という操作を使う（\ref{logic:page-derived-rules}）。そのための記号列の操作を定める。
+
+::: definition 定数の置き換え {#logic:constant-replacement keywords="replacing a constant by a variable" index="定数の置き換え|ていすうのおきかえ"}
+定数記号 $c$ と変数 $y$ に対し、項 $t$ の中の $c$ の出現をすべて $y$ に書き換えた項 $t[y/c]$、論理式 $\varphi$ の中の $c$ の出現をすべて $y$ に書き換えた論理式 $\varphi[y/c]$ を、構造的再帰で定める。
+$$
+\begin{aligned}
+&c[y/c]=y,\quad d[y/c]=d\ (d\neq c),\quad z[y/c]=z,\\
+&f(t_{1},\dots,t_{n})[y/c]=f(t_{1}[y/c],\dots,t_{n}[y/c]),
+\end{aligned}
+$$
+$$
+\begin{aligned}
+&\bot[y/c]=\bot,\quad (t_{1}=t_{2})[y/c]=(t_{1}[y/c]=t_{2}[y/c]),\\
+&P(\vec{t})[y/c]=P(t_{1}[y/c],\dots,t_{n}[y/c]),
+\end{aligned}
+$$
+$$
+(\alpha\to\beta)[y/c]=(\alpha[y/c]\to\beta[y/c]),\qquad (\forall z\,\alpha)[y/c]=\forall z\,(\alpha[y/c]).
+$$
+:::
+
+::: intuition
+定数記号は束縛されないので、変数への代入と違って量化子による例外がない。ただし、置き換え先の $y$ が $\varphi$ の中で量化されていると、新しく入った $y$ が捕獲される。そのため、使うときは $y$ を $\varphi$ に現れない新しい変数に選ぶ。
+:::
+
+::: proposition 定数の置き換えの性質 {#logic:constant-replacement-properties keywords="properties of constant replacement"}
+$c$ を定数記号、$y$ を変数とする。
+1. $c\notin\mathrm{Con}(\varphi)$ ならば $\varphi[y/c]=\varphi$。
+2. $c\notin\mathrm{Con}(\varphi)$ ならば、任意の変数 $x$ について $\varphi[c/x][y/c]=\varphi[y/x]$。
+3. $y\neq x$ ならば $\varphi[t/x][y/c]=\varphi[y/c]\bigl[t[y/c]/x\bigr]$。
+4. $y\notin\mathrm{BV}(\varphi)$ かつ $y\neq x$ で、$t$ が $\varphi$ の中で $x$ に代入可能ならば、$t[y/c]$ は $\varphi[y/c]$ の中で $x$ に代入可能である。
+5. $y\notin\mathrm{BV}(\varphi)$ ならば、$\mathrm{FV}(\varphi[y/c])$ は $c\in\mathrm{Con}(\varphi)$ のとき $\mathrm{FV}(\varphi)\cup\{y\}$、そうでないとき $\mathrm{FV}(\varphi)$ に等しい。
+:::
+
+::: proof
+いずれも論理式に関する帰納法で、項の場合は項に関する帰納法で先に示しておく。定数の置き換えは形を保ち（原子論理式は原子論理式に、$\forall z$ は $\forall z$ に）、量化子の変数を変えないことに注意する。
+
+**1.** 項 $t$ で $c\notin\mathrm{Con}(t)$ なら $t[y/c]=t$（帰納法）。論理式も各場合で成分に帰納法の仮定を使えばよい。
+
+**2.** 項：$c\notin\mathrm{Con}(t)$ のとき $t[c/x][y/c]=t[y/x]$。$t=x$ なら $c[y/c]=y=x[y/x]$、$t=z\neq x$ なら両辺 $z$、$t=d$ なら $d\neq c$ より両辺 $d$、$t=f(\dots)$ なら成分ごと。論理式：原子論理式と含意は成分ごと。$\forall z\,\alpha$ では、$z=x$ なら $(\forall x\,\alpha)[c/x]=\forall x\,\alpha$ で、1 より $[y/c]$ で変わらず、右辺 $(\forall x\,\alpha)[y/x]=\forall x\,\alpha$ と一致する。$z\neq x$ なら両辺とも $\forall z$ の内側で計算され、帰納法の仮定から一致する。
+
+**3.** 項：$y\neq x$ のとき $t_{0}[t/x][y/c]=t_{0}[y/c][t[y/c]/x]$。$t_{0}=x$ なら両辺 $t[y/c]$（右辺は $x[y/c]=x$ に代入）。$t_{0}=c$ なら左辺 $c[y/c]=y$、右辺 $y[t[y/c]/x]=y$（$y\neq x$）。$t_{0}=z\neq x$ や $t_{0}=d\neq c$ なら両辺 $t_{0}$。関数記号は成分ごと。論理式：$\forall z\,\alpha$ で $z=x$ なら、左辺は $(\forall x\,\alpha)[y/c]=\forall x\,(\alpha[y/c])$、右辺は $(\forall x\,\alpha[y/c])[\cdot/x]=\forall x\,(\alpha[y/c])$ で一致。$z\neq x$ なら両辺 $\forall z$ の内側で計算され、帰納法の仮定から一致する。
+
+**4.** 原子論理式では常に代入可能、含意は成分ごとに帰納法の仮定から従う（前提は成分に引き継がれる）。$\varphi=\forall z\,\alpha$ とする。$y\neq x$ と 5 から、$x\in\mathrm{FV}(\varphi[y/c])\iff x\in\mathrm{FV}(\varphi)$ である（5 で増えうる自由変数は $y$ だけ）。
+- $x\notin\mathrm{FV}(\varphi)$ のとき：$x\notin\mathrm{FV}(\varphi[y/c])$ なので、定義の前半により代入可能。
+- $x\in\mathrm{FV}(\varphi)$ のとき：$t$ の代入可能性から $z\notin\mathrm{var}(t)$ かつ $t$ は $\alpha$ の中で $x$ に代入可能である。$\mathrm{var}(t[y/c])\subset\mathrm{var}(t)\cup\{y\}$ であり、$z\in\mathrm{BV}(\varphi)$ と $y\notin\mathrm{BV}(\varphi)$ から $z\neq y$ なので、$z\notin\mathrm{var}(t[y/c])$。また $y\notin\mathrm{BV}(\alpha)$ なので、帰納法の仮定から $t[y/c]$ は $\alpha[y/c]$ の中で $x$ に代入可能である。$\varphi[y/c]=\forall z\,(\alpha[y/c])$ なので、定義の後半の条件が成り立つ。
+
+**5.** 項：$\mathrm{var}(t[y/c])$ は、$c\in\mathrm{Con}(t)$ なら $\mathrm{var}(t)\cup\{y\}$、そうでなければ $\mathrm{var}(t)$（帰納法）。論理式：原子論理式と含意は成分ごと。$\forall z\,\alpha$ では $z\neq y$（$y\notin\mathrm{BV}$）なので、$\mathrm{FV}(\forall z\,\alpha[y/c])=\mathrm{FV}(\alpha[y/c])\setminus\{z\}$ に帰納法の仮定を使うと、$y$ を加えるかどうかだけが $\alpha$ と同じく決まる（$y\neq z$ なので $\setminus\{z\}$ で $y$ は消えない）。
+
+::: hypcheck
+- **1, 2 の $c\notin\mathrm{Con}(\varphi)$**：外すと、元からあった $c$ まで $y$ に書き換わる。
+- **3 の $y\neq x$**：項の $t_{0}=c$ の場合。$y=x$ だと右辺で新しく入った $y$ に $t$ が代入されてしまう。
+- **4 の $y\notin\mathrm{BV}(\varphi)$**：$z\neq y$ を導くのに使った。**4 の $y\neq x$**：$\mathrm{FV}$ の比較に使った。外すと偽：$\varphi=\forall z\,P(c)$, $y=x$, $t=z$ とすると、$x\notin\mathrm{FV}(\varphi)$ なので $t$ は代入可能だが、$\varphi[y/c]=\forall z\,P(x)$ の中で $t[y/c]=z$ は $x$ に代入可能でない。
+- **5 の $y\notin\mathrm{BV}(\varphi)$**：新しく入った $y$ が束縛されないために使った。外すと偽：$\varphi=\forall y\,P(c)$ なら $\varphi[y/c]=\forall y\,P(y)$ で、$\mathrm{FV}=\varnothing$。
+:::
+:::
+
+::: supplement
+**同時代入.** 変数の列 $\vec{x}=(x_{1},\dots,x_{n})$（互いに異なる）と項の列 $\vec{s}$ に対し、$x_{i}$ の自由な出現を一斉に $s_{i}$ に置き換える同時代入 $\varphi[\vec{s}/\vec{x}]$ も同様に定義できる。一般には逐次代入 $\varphi[s_{1}/x_{1}]\cdots[s_{n}/x_{n}]$ とは一致しない（$s_{1}$ が $x_{2}$ を含むと、$s_{1}$ の中の $x_{2}$ まで書き換わる）。本系列では、代入する項が定数記号か新しい変数である場面でしか複数の代入を使わないので、逐次代入で足りる。そのとき両者が一致することは、\ref{logic:substitution-commutation} を繰り返し使えば確かめられる。
+
+**捕獲を避ける代入.** 代入を「必要なら束縛変数を新しい変数に付け替えてから置き換える」操作として定義する流儀もある。そうすると代入は常に意味を保つが、結果は記号列としては一つに決まらず（付け替えの選び方による）、α 同値（\ref{pt:page-alpha-equivalence}）を法としてしか定まらない。本系列では、記号列として一つに決まる素朴な代入と、代入可能性という条件を分ける方針をとった。
+
+**高い視点.** 代入 $[s/x]$ は、項全体のなす自由な代数（\ref{logic:unique-readability-terms} の後の補足）の上で、生成元 $x$ の行き先を $s$ と決めて延ばした準同型である。論理式への代入が単純な準同型にならないのは、量化子 $\forall x$ が $x$ を「生成元から外す」操作だからである。
+:::
+
+## 問題 {#logic:sec-substitution-problems}
+
+::: problem {#logic:prob-substitution-compute}
+$\varphi=\forall y\,(P(x,y)\to\exists x\,Q(x,z))\to P(z,x)$ とする。次を計算し、項が代入可能かどうかを判定せよ。
+1. $\varphi[f(y)/x]$
+2. $\varphi[f(z)/x]$
+3. $\varphi[y/z]$
+:::
+
+::: solution
+$\varphi$ の後件 $P(z,x)$ と、前件の $P(x,y)$ に $x$ が自由に現れる。$\exists x\,Q(x,z)$ の中の $x$ は束縛されている。
+1. $\varphi[f(y)/x]=\forall y\,(P(f(y),y)\to\exists x\,Q(x,z))\to P(z,f(y))$。前件 $\forall y\,(\dots)$ に $x$ が自由に現れ、$y\in\mathrm{var}(f(y))$ なので代入可能**でない**（前件の $f(y)$ の $y$ が $\forall y$ に捕獲されている）。
+2. $\varphi[f(z)/x]=\forall y\,(P(f(z),y)\to\exists x\,Q(x,z))\to P(z,f(z))$。$f(z)$ は $y$ も $x$ も含まない。前件の $\exists x$（展開すると $\neg\forall x\,\neg$）の中には $x$ が自由に現れないので、そこでは条件が課されない。代入可能である。
+3. $\varphi[y/z]=\forall y\,(P(x,y)\to\exists x\,Q(x,y))\to P(y,x)$。前件の $Q(x,z)$ の $z$ は $\forall y$ の中にあり、$y$ が捕獲されるので代入可能**でない**。
+:::
+
+::: problem {#logic:prob-substitution-composition-fail}
+\ref{logic:substitution-composition} の 2 で、前提「$s$ が $\varphi$ の中で $x$ に代入可能」を外すと結論が偽になる例を挙げよ。
+:::
+
+::: solution
+$\varphi=\forall z\,P(x)$, $y$ を $\varphi$ に現れない変数、$s=z$ とする。$\varphi[y/x]=\forall z\,P(y)$ であり、$y$ はこの中で自由で $z\in\mathrm{var}(s)$ なので、$s$ は $\varphi[y/x]$ の中で $y$ に代入可能でない。実際、$s$ は元の $\varphi$ の中でも $x$ に代入可能でない。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

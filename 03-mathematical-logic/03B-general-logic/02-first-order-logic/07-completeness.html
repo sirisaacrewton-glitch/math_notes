@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>完全性定理とコンパクト性定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/02-first-order-logic/07-completeness.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 完全性定理とコンパクト性定理 {#logic:page-completeness keywords="completeness theorem, Gödel's completeness theorem, Henkin construction, term model, Lindenbaum's lemma, truth lemma, model existence theorem, compactness theorem, Löwenheim-Skolem theorem"}
+
+健全性定理（\ref{logic:soundness}）の逆、すなわち「前提の論理的帰結である論理式は必ず導出できる」ことを証明する。これがゲーデルの**完全性定理**である。証明はヘンキンの方法による。導出できないと仮定し、無矛盾な集合を (1) **ヘンキン公理**で「存在するものには名前が付いている」状態にし、(2) **リンデンバウムの補題**ですべての文の真偽を決め、(3) 閉項を等号で割った**項モデル**を作って、(4) **真理補題**により、その集合に属する文がちょうどそのモデルで真な文であることを示す。言語の大きさには制限を置かない。最後に系として、**コンパクト性定理**と、モデルの濃度についての**レーヴェンハイム–スコーレムの定理**の弱い形を導く。
+
+可算な言語に限って選択公理を使わない証明は、ケーニッヒの補題による別証明（\ref{logic:page-completeness-alternative}）で与える。
+
+## 記法と定義の確認 {#logic:sec-completeness-notation}
+
+::: notation
+- 導出可能性 $\Sigma\vdash_{\mathcal{L}}\varphi$（言語 $\mathcal{L}$ の導出による）、無矛盾性は \ref{logic:derivability}, \ref{logic:derivation-symbols} のとおり。言語を明示しないときは、その場で考えている言語での導出可能性である。
+- 使う構文の結果：演繹定理・弱化・カット・有限性（\ref{logic:derivability-basic}）、矛盾と導出可能性（\ref{logic:consistency-basic}）、命題論理・量化子・等号の派生規則（\ref{logic:derived-propositional}, \ref{logic:derived-quantifier}, \ref{logic:derived-equality}）、新しい定数についての一般化（\ref{logic:generalization-constants}）、定数の追加についての保存性（\ref{logic:conservativity-constants}）、自由変数と定数の交換（\ref{logic:variables-constants-exchange}）。
+- **構文論的コンパクト性.** 導出は有限の木なので、$\Sigma\vdash\varphi$ ならばある有限部分集合 $\Sigma_{0}\subset\Sigma$ で $\Sigma_{0}\vdash\varphi$ となる（\ref{logic:derivability-basic} の 3）。本ページではこれを**構文論的コンパクト性**と呼ぶ。とくに、$\Sigma$ が矛盾すればある有限部分集合が矛盾する。
+- 使う意味論の結果：一致補題（\ref{logic:coincidence}）、意味論的代入補題（\ref{logic:semantic-substitution}）とその系（\ref{logic:constant-substitution-semantics}）、縮小（\ref{logic:reduct-lemma}）、同型は充足を保つこと（\ref{logic:isomorphism-invariance}）。
+- **濃度.** 言語の濃度 $\lvert\mathcal{L}\rvert$ は $\mathrm{Con}_{\mathcal{L}}\cup\mathrm{Fun}_{\mathcal{L}}\cup\mathrm{Rel}_{\mathcal{L}}$ の濃度、構造 $\mathcal{M}$ の濃度は領域 $M$ の濃度 $\lvert M\rvert$ とする。$\kappa_{\mathcal{L}}\defeq\lvert\mathcal{L}\rvert+\aleph_{0}$ とおく。アルファベットは $\kappa_{\mathcal{L}}$ 個の記号からなるので、論理式全体・閉項全体の濃度は $\le\kappa_{\mathcal{L}}$ である（\ref{set:kappa-finite-sequences}）。
+- **公理.** 本ページは $\ZFC$ で議論する。選択公理は、ツォルンの補題（\ref{set:zorn}）と基数の計算で使う。使う箇所は hypcheck に明記する。
+- $\mathcal{L}$ の文の集合を**理論**ともいう（本系列では、導出について閉じていることは要求しない）。
+:::
+
+## 主張と言い換え {#logic:sec-completeness-statement}
+
+::: theorem 完全性定理 {#logic:completeness keywords="Gödel's completeness theorem, completeness theorem" index="完全性定理|かんぜんせいていり, ゲーデルの完全性定理|げーでるのかんぜんせいていり"}
+$\mathcal{L}$ を言語とし、$\Sigma$ を $\mathcal{L}$ の論理式の集合、$\varphi$ を $\mathcal{L}$ の論理式とする。$\Sigma\models\varphi$ ならば $\Sigma\vdash\varphi$ である。したがって、健全性定理と合わせて
+$$
+\Sigma\vdash\varphi\iff\Sigma\models\varphi .
+$$
+:::
+
+::: theorem モデル存在定理 {#logic:model-existence keywords="model existence theorem" index="モデル存在定理|もでるそんざいていり"}
+$\mathcal{L}$ を言語とする。$\mathcal{L}$ の論理式の無矛盾な集合 $\Sigma$ は充足可能である。すなわち、$\mathcal{L}$ 構造 $\mathcal{M}$ と割り当て $v$ で $\mathcal{M},v\models\Sigma$ となるものが存在する。さらに $\lvert M\rvert\le\kappa_{\mathcal{L}}=\lvert\mathcal{L}\rvert+\aleph_{0}$ にとれる。
+:::
+
+::: proposition 二つの定理の関係 {#logic:completeness-equivalence}
+モデル存在定理から完全性定理が従う。
+:::
+
+::: proof
+$\Sigma\not\vdash\varphi$ と仮定する。\ref{logic:consistency-basic} の 3 より $\Sigma\cup\{\neg\varphi\}$ は無矛盾なので、モデル存在定理より $\mathcal{M},v\models\Sigma\cup\{\neg\varphi\}$ となる $\mathcal{M},v$ がある。$\mathcal{M},v\models\Sigma$ かつ $\mathcal{M},v\not\models\varphi$（\ref{logic:abbreviation-semantics} の 1）なので $\Sigma\not\models\varphi$。対偶をとれば完全性定理である。逆向き（完全性定理からモデル存在定理）も、無矛盾な $\Sigma$ について $\Sigma\not\vdash\bot$ から $\Sigma\not\models\bot$ を得ればよいので成り立つ。
+:::
+
+以下、モデル存在定理を証明する。まず文の集合について示し（ヘンキン公理 → リンデンバウムの補題 → 項モデル）、最後に自由変数を定数に置き換えて論理式の集合に広げる。
+
+以下、モデル存在定理を証明する。まず文の集合について示し（ヘンキン公理 → リンデンバウムの補題 → 項モデル）、最後に自由変数を定数に置き換えて論理式の集合に広げる。
+
+## ヘンキン公理 {#logic:sec-completeness-henkin}
+
+::: definition ヘンキン的な理論 {#logic:henkin-theory keywords="Henkin theory, Henkin axiom, witness" index="ヘンキン公理|へんきんこうり, ヘンキン的|へんきんてき, 証拠|しょうこ"}
+$\mathcal{K}$ を言語、$\Gamma$ を $\mathcal{K}$ の文の集合とする。$\mathcal{K}$ の論理式 $\varphi$ と変数 $x$ で $\mathrm{FV}(\varphi)\subset\{x\}$ であるものに対し、$\mathcal{K}$ の定数記号 $d$ による文
+$$
+\exists x\,\varphi\to\varphi[d/x]
+$$
+を**ヘンキン公理**といい、$d$ をその**証拠**（witness）という。$\mathrm{FV}(\varphi)\subset\{x\}$ であるすべての $(x,\varphi)$ について、ある定数記号 $d$ でヘンキン公理 $\exists x\,\varphi\to\varphi[d/x]$ が $\Gamma$ から導出できるとき、$\Gamma$ は $\mathcal{K}$ で**ヘンキン的**であるという。ヘンキン的な $\Gamma$ を含む $\mathcal{K}$ の文の集合もヘンキン的である（弱化）。
+:::
+
+::: intuition
+「$\exists x\,\varphi$ が成り立つなら、それを満たすものに名前 $d$ が付いている」という性質である。後で閉項からモデルを作るとき、存在が主張されたものが実際にモデルの元として（名前 $d$ の値として）存在することを保証する。
+:::
+
+::: lemma ヘンキン公理の追加 {#logic:henkin-axiom-consistency}
+$\Delta$ を言語 $\mathcal{K}$ の文の無矛盾な集合、$\varphi$ を $\mathrm{FV}(\varphi)\subset\{x\}$ である $\mathcal{K}$ の論理式、$c$ を $\mathcal{K}$ の定数記号で、$\varphi$ にも $\Delta$ のどの元にも現れないものとする。このとき $\Delta\cup\{\exists x\,\varphi\to\varphi[c/x]\}$ は無矛盾である。
+:::
+
+::: proof
+矛盾すると仮定すると、演繹定理より $\Delta\vdash\neg(\exists x\,\varphi\to\varphi[c/x])$ で、、\ref{logic:derived-propositional} の 6 とカットから $\Delta\vdash\exists x\,\varphi$ と $\Delta\vdash(\neg\varphi)[c/x]$ を得る。仮定から $c$ は $\neg\varphi$ にも $\Delta$ にも現れないので、\ref{logic:generalization-constants} より $\Delta\vdash\forall x\,\neg\varphi$、これと $\Delta\vdash\neg\forall x\,\neg\varphi$ から $\Delta\vdash\bot$。
+
+::: hypcheck
+- **$c$ が $\varphi$ と $\Delta$ に現れないこと**：新しい定数についての一般化（\ref{logic:generalization-constants}）の前提。
+- **RAA**：\ref{logic:derived-propositional} の 6（含意の否定から前件を取り出す部分）。
+:::
+:::
+
+::: lemma ヘンキン拡大 {#logic:henkin-extension keywords="Henkin extension" index="ヘンキン拡大|へんきんかくだい"}
+$\mathcal{L}$ を任意の言語、$\Gamma_{0}$ を $\mathcal{L}$ の文の無矛盾な集合とする。$\mathcal{L}_{0}\defeq\mathcal{L}$ とし、$\mathcal{L}_{n+1}$ を、$\mathrm{FV}(\varphi)\subset\{x\}$ である $\mathcal{L}_{n}$ の論理式 $\varphi$ と変数 $x$ の組 $(x,\varphi)$ ごとに新しい定数記号 $c_{(x,\varphi)}$ を一つずつ（組が異なれば異なる記号として）$\mathcal{L}_{n}$ に加えた言語とする。ただし、すでに $\mathcal{L}_{m}$（$m<n$）の段階で記号が割り当てられた組には新しく加えない。$\mathcal{L}^{\ast}\defeq\bigcup_{n}\mathcal{L}_{n}$ とし、
+$$
+\Gamma_{H}\defeq\Gamma_{0}\cup\bigl\{\exists x\,\varphi\to\varphi[c_{(x,\varphi)}/x]:\ (x,\varphi)\ \text{は記号が割り当てられた組}\bigr\}
+$$
+とおく。このとき $\Gamma_{H}$ は $\mathcal{L}^{\ast}$ で無矛盾かつヘンキン的である。さらに $\kappa\defeq\lvert\mathcal{L}\rvert+\aleph_{0}$ とすると $\lvert\mathcal{L}^{\ast}\rvert\le\kappa$（この評価には選択公理を使う）。
+:::
+
+::: proof
+**Step 1（ヘンキン的）.** $\mathcal{L}^{\ast}$ の論理式は有限個の記号しか含まないので、ある $\mathcal{L}_{n}$ の論理式である。よって $\mathrm{FV}(\varphi)\subset\{x\}$ である組 $(x,\varphi)$ にはある段階で記号が割り当てられ、そのヘンキン公理が $\Gamma_{H}$ に属する。
+
+**Step 2（段階）.** 各定数記号 $c=c_{(x,\varphi)}$ に、それが加えられた段階 $\mathrm{st}(c)=n+1$（$c\in\mathcal{L}_{n+1}\setminus\mathcal{L}_{n}$）を対応させる。このとき $\varphi$ は $\mathcal{L}_{n}$ の論理式なので、段階が $n+1$ 以上の定数記号を含まない。
+
+**Step 3（無矛盾性）.** $\Gamma_{H}$ が矛盾すると仮定すると、有限個のヘンキン公理 $H_{1},\dots,H_{m}$ について $\Gamma_{0}\cup\{H_{1},\dots,H_{m}\}$ が矛盾する。$m$ が最小になるようにとる。$\Gamma_{0}$ は $\mathcal{L}^{\ast}$ でも無矛盾（\ref{logic:conservativity-constants}）なので $m\ge 1$。$H_{1},\dots,H_{m}$ の証拠のうち段階が最大のもの $c$ を一つとり、その公理を $H_{m}$ とする。$c$ は $H_{m}$ の論理式 $\varphi$ に現れない（Step 2）。$j<m$ について $H_{j}$ の証拠 $c'$ は $c$ と異なり（組が異なる）、$\mathrm{st}(c')\le\mathrm{st}(c)$ なので $H_{j}$ の論理式は段階 $\mathrm{st}(c)$ の定数を含まない（Step 2）。$\Gamma_{0}$ の元は $\mathcal{L}$ の文である。よって $c$ は $\Gamma_{0}\cup\{H_{1},\dots,H_{m-1}\}$ のどの元にも現れず、\ref{logic:henkin-axiom-consistency} により、$m$ の最小性から無矛盾な $\Gamma_{0}\cup\{H_{1},\dots,H_{m-1}\}$ に $H_{m}$ を加えても無矛盾である。これは矛盾である。
+
+**Step 4（濃度）.** $\lvert\mathcal{L}_{n}\rvert\le\kappa$ を帰納法で示す。$\mathcal{L}_{n}$ の論理式は $\lvert\mathcal{L}_{n}\rvert+\aleph_{0}\le\kappa$ 個の記号上の有限列なので、その全体の濃度は $\le\kappa$（\ref{set:kappa-finite-sequences}）であり、加える定数記号も $\le\kappa$ 個である。よって $\lvert\mathcal{L}_{n+1}\rvert\le\kappa$。$\mathcal{L}^{\ast}$ は濃度 $\le\kappa$ の集合の可算個の和なので $\lvert\mathcal{L}^{\ast}\rvert\le\aleph_{0}\cdot\kappa=\kappa$。
+
+::: hypcheck
+- **段階の最大の証拠を選ぶこと**：Step 3。どの証拠も「自分より段階の低い」定数しか含まない論理式の証拠なので、段階の最大のものは他の公理に現れない。これにより、公理を一つずつ取り除く帰納法が回る。可算な場合（\ref{logic:henkin-extension}）の「番号順」の役割を、ここでは「段階」が果たしている。
+- **選択公理**：Step 1–3 では使っていない（定数記号は組ごとに具体的に定めた）。Step 4 の濃度の評価（可算個の和の濃度）で使う。
+:::
+:::
+
+::: intuition
+ヘンキン公理を加えると言語が増え、増えた言語の存在文にもまた証拠が要る。そこで証拠を段階的に（$\mathcal{L}_{0}\subset\mathcal{L}_{1}\subset\cdots$）加える。各証拠は「自分より前の段階の記号だけで書かれた論理式」の証拠なので、段階の最も高い証拠を一つずつ取り除く議論（Step 3）で無矛盾性が保たれる。
+:::
+
+## リンデンバウムの補題 {#logic:sec-completeness-lindenbaum}
+
+::: definition 完全な理論 {#logic:complete-theory keywords="complete theory, maximal consistent set" index="完全な理論|かんぜんなりろん, 極大無矛盾|きょくだいむむじゅん"}
+言語 $\mathcal{K}$ の文の集合 $\Gamma$ が**完全**であるとは、$\mathcal{K}$ の任意の文 $\sigma$ について $\sigma\in\Gamma$ または $\neg\sigma\in\Gamma$ であることをいう。無矛盾かつ完全な文の集合は、文の集合として極大の無矛盾集合である（それより真に大きい文の集合は矛盾する）ので、**極大無矛盾集合**ともいう。
+:::
+
+::: lemma リンデンバウムの補題 {#logic:lindenbaum keywords="Lindenbaum's lemma" index="リンデンバウムの補題|りんでんばうむのほだい"}
+任意の言語 $\mathcal{K}$ について、$\mathcal{K}$ の文の無矛盾な集合 $\Gamma$ は、$\mathcal{K}$ の文の無矛盾かつ完全な集合 $\Gamma^{\ast}\supset\Gamma$ に拡大できる。
+:::
+
+::: proof
+**Step 1.** $\mathbb{P}$ を、$\Gamma$ を含む $\mathcal{K}$ の文の無矛盾な集合全体とし、包含関係で順序付ける。$\Gamma\in\mathbb{P}$ なので空でない。$\mathbb{P}$ の空でない鎖 $\mathcal{C}$ の和集合 $\bigcup\mathcal{C}$ は無矛盾である。実際、矛盾するなら使われる前提は有限個で、それらは鎖のある一つの元に含まれ、その元が矛盾してしまう。よって $\bigcup\mathcal{C}\in\mathbb{P}$ は $\mathcal{C}$ の上界である。
+
+**Step 2.** ツォルンの補題（\ref{set:zorn}）より $\mathbb{P}$ は極大元 $\Gamma^{\ast}$ をもつ。任意の文 $\sigma$ について、\ref{logic:consistency-basic} の 4 より $\Gamma^{\ast}\cup\{\sigma\}$ と $\Gamma^{\ast}\cup\{\neg\sigma\}$ の一方は無矛盾で、それは $\mathbb{P}$ に属し $\Gamma^{\ast}$ を含む。極大性からそれは $\Gamma^{\ast}$ に等しい。よって $\sigma\in\Gamma^{\ast}$ または $\neg\sigma\in\Gamma^{\ast}$。
+
+::: hypcheck
+- **選択公理**：Step 2 のツォルンの補題。言語が整列可能なら、文を整列させて超限帰納法で可算の場合と同様に構成することもできる（その場合は整列の選択に選択公理を使う）。
+:::
+:::
+
+::: lemma 完全な無矛盾集合の性質 {#logic:complete-theory-properties keywords="properties of maximal consistent sets"}
+$\Gamma^{\ast}$ を言語 $\mathcal{K}$ の文の無矛盾かつ完全な集合とする。$\mathcal{K}$ の任意の文 $\sigma,\alpha,\beta$ について次が成り立つ。
+1. $\Gamma^{\ast}\vdash\sigma\iff\sigma\in\Gamma^{\ast}$。
+2. $\neg\sigma\in\Gamma^{\ast}\iff\sigma\notin\Gamma^{\ast}$。
+3. $(\alpha\to\beta)\in\Gamma^{\ast}\iff$（$\alpha\notin\Gamma^{\ast}$ または $\beta\in\Gamma^{\ast}$）。
+4. $\Gamma^{\ast}$ がヘンキン的ならば、$\mathrm{FV}(\varphi)\subset\{x\}$ である任意の $\mathcal{K}$ の論理式 $\varphi$ について
+$$
+\forall x\,\varphi\in\Gamma^{\ast}\iff\text{$\mathcal{K}$ のすべての閉項 $t$ について }\varphi[t/x]\in\Gamma^{\ast}.
+$$
+:::
+
+::: proof
+**1.** ($\Leftarrow$) は仮定の規則。($\Rightarrow$) $\sigma\notin\Gamma^{\ast}$ なら完全性より $\neg\sigma\in\Gamma^{\ast}$ で、$\Gamma^{\ast}\vdash\sigma$ と $\neg$E から $\Gamma^{\ast}\vdash\bot$ となり矛盾する。
+
+**2.** 両方が属すると $\neg$E で矛盾し、どちらも属さないことは完全性に反する。よってちょうど一方が属する。
+
+**3.** ($\Rightarrow$) $\alpha\in\Gamma^{\ast}$ なら $\to$E で $\Gamma^{\ast}\vdash\beta$、1 より $\beta\in\Gamma^{\ast}$。($\Leftarrow$) $\alpha\notin\Gamma^{\ast}$ なら 2 より $\neg\alpha\in\Gamma^{\ast}$ で、\ref{logic:derived-propositional} の 6 より $\Gamma^{\ast}\vdash\alpha\to\beta$。$\beta\in\Gamma^{\ast}$ なら同じく 6 より $\Gamma^{\ast}\vdash\alpha\to\beta$。$\alpha\to\beta$ は文なので、1 より属する。
+
+**4.** ($\Rightarrow$) 閉項 $t$ は代入可能（\ref{logic:substitutable-sufficient} の 2）なので $\forall$E で $\Gamma^{\ast}\vdash\varphi[t/x]$。これは文（\ref{logic:substitution-fv}）なので 1 より属する。($\Leftarrow$) $\forall x\,\varphi\notin\Gamma^{\ast}$ とする。2 より $\neg\forall x\,\varphi\in\Gamma^{\ast}$、\ref{logic:derived-quantifier} の 5 より $\Gamma^{\ast}\vdash\exists x\,\neg\varphi$。$\mathrm{FV}(\neg\varphi)\subset\{x\}$ なので、ヘンキン的であることから、ある定数記号 $d$ について $\Gamma^{\ast}\vdash\exists x\,\neg\varphi\to(\neg\varphi)[d/x]$。$\to$E で $\Gamma^{\ast}\vdash\neg(\varphi[d/x])$、1 より $\neg(\varphi[d/x])\in\Gamma^{\ast}$、2 より $\varphi[d/x]\notin\Gamma^{\ast}$。$d$ は閉項なので、右辺が成り立たない。
+
+::: hypcheck
+- **ヘンキン的であること**：4 の ($\Leftarrow$) でだけ使った。外すと偽：$\mathcal{K}=\{P,c\}$（$P$ は項数 $1$）とし、$\{\exists x\,\neg P(x),P(c)\}$ を含む完全な無矛盾集合 $\Gamma^{\ast}$ をとる（この集合は領域 $\{0,1\}$ の構造で充足されるので、健全性とリンデンバウムの補題によりとれる）。閉項は $c$ だけで $P(c)\in\Gamma^{\ast}$ だが、$\forall x\,P(x)\notin\Gamma^{\ast}$。
+- **\ref{logic:derived-quantifier} の 5**（$\neg\forall\to\exists\neg$、RAA に依存）：4 の ($\Leftarrow$)。ヘンキン公理を存在文についてだけ課して全称文の場合を賄えるのは、この古典論理の規則による。
+:::
+:::
+
+## 項モデルと真理補題 {#logic:sec-completeness-term-model}
+
+::: theorem 項モデル定理 {#logic:term-model keywords="term model, canonical model, truth lemma" index="項モデル|こうもでる, 真理補題|しんりほだい"}
+$\mathcal{K}$ を定数記号を少なくとも一つもつ言語、$\Gamma^{\ast}$ を $\mathcal{K}$ の文の無矛盾・完全・ヘンキン的な集合とする。$\mathcal{K}$ の閉項全体を $T^{0}$ とし、$t,s\in T^{0}$ について
+$$
+t\sim s\iff(t=s)\in\Gamma^{\ast}
+$$
+と定める。このとき $\sim$ は $T^{0}$ 上の同値関係であり、次の $\mathcal{K}$ 構造 $\mathcal{M}$（**項モデル**）が well-defined に定まる。
+- 領域 $M\defeq T^{0}/{\sim}$（$t$ の同値類を $[t]$ と書く）。
+- $c^{\mathcal{M}}\defeq[c]$、$f^{\mathcal{M}}([t_{1}],\dots,[t_{n}])\defeq[f(t_{1},\dots,t_{n})]$、$P^{\mathcal{M}}\defeq\{([t_{1}],\dots,[t_{n}]):P(t_{1},\dots,t_{n})\in\Gamma^{\ast}\}$。
+
+さらに、
+1. 任意の閉項 $t$ について $t^{\mathcal{M}}=[t]$。
+2. **（真理補題）** $\mathcal{K}$ の任意の文 $\sigma$ について $\mathcal{M}\models\sigma\iff\sigma\in\Gamma^{\ast}$。
+
+とくに $\mathcal{M}\models\Gamma^{\ast}$ であり、$M$ の濃度は $\mathcal{K}$ の閉項全体の濃度以下である。
+:::
+
+::: proof
+**Step 1（領域が空でないこと）.** $\mathcal{K}$ は定数記号 $c$ をもつので $c\in T^{0}$、$M\neq\varnothing$。
+
+**Step 2（同値関係）.** $=$I より $\vdash t=t$ なので、\ref{logic:complete-theory-properties} の 1 より $(t=t)\in\Gamma^{\ast}$（反射律）。$(t=s)\in\Gamma^{\ast}$ なら \ref{logic:derived-equality} の 1 より $\Gamma^{\ast}\vdash s=t$、よって $(s=t)\in\Gamma^{\ast}$（対称律）。推移律も同命題の 1 から同様。
+
+**Step 3（well-defined）.** $t_{i}\sim s_{i}$（$i=1,\dots,n$）とする。\ref{logic:derived-equality} の 2 より $\Gamma^{\ast}\vdash f(\vec{t})=f(\vec{s})$ なので $f(\vec{t})\sim f(\vec{s})$。同命題の 3 より $P(\vec{t})\in\Gamma^{\ast}$ なら $\Gamma^{\ast}\vdash P(\vec{s})$、すなわち $P(\vec{s})\in\Gamma^{\ast}$（対称律で逆も）。よって $f^{\mathcal{M}}$ と $P^{\mathcal{M}}$ は代表元の選び方によらない。
+
+**Step 4（1）.** 閉項 $t$ の値は割り当てによらない（\ref{logic:coincidence}）。項に関する帰納法で、$c^{\mathcal{M}}=[c]$、$f(t_{1},\dots,t_{n})^{\mathcal{M}}=f^{\mathcal{M}}(t_{1}^{\mathcal{M}},\dots,t_{n}^{\mathcal{M}})=f^{\mathcal{M}}([t_{1}],\dots,[t_{n}])=[f(t_{1},\dots,t_{n})]$。とくに $M$ のすべての元はある閉項の値である。
+
+**Step 5（2、帰納法の設定）.** 「論理的複雑さが $n$ 以下のすべての文 $\sigma$ について $\mathcal{M}\models\sigma\iff\sigma\in\Gamma^{\ast}$」を $n$ に関する帰納法で示す。帰納法を論理式の形ではなく複雑さ $c$（\ref{logic:sentence}）に関して行うのは、全称の場合に $\varphi[t/x]$ という（$\forall x\,\varphi$ の成分そのものではない）文に帰納法の仮定を使うためである。代入は複雑さを変えない（\ref{logic:substitution-basic} の 4）。
+
+**Step 6（原子文）.** $\bot$：$\mathcal{M}\not\models\bot$ で、$\Gamma^{\ast}$ は無矛盾なので $\bot\notin\Gamma^{\ast}$。$s=t$（$s,t$ は閉項）：Step 4 より $\mathcal{M}\models s=t\iff s^{\mathcal{M}}=t^{\mathcal{M}}\iff[s]=[t]\iff(s=t)\in\Gamma^{\ast}$。$P(t_{1},\dots,t_{n})$：$\mathcal{M}\models P(\vec{t})\iff([t_{1}],\dots,[t_{n}])\in P^{\mathcal{M}}\iff P(\vec{t})\in\Gamma^{\ast}$（最後は Step 3 の well-definedness による）。
+
+**Step 7（含意）.** $\sigma=(\alpha\to\beta)$ なら $\alpha,\beta$ は文で複雑さが小さい。帰納法の仮定と \ref{logic:complete-theory-properties} の 3 より
+$$
+\begin{aligned}
+\mathcal{M}\models\alpha\to\beta&\iff(\mathcal{M}\not\models\alpha\text{ または }\mathcal{M}\models\beta)\\
+&\iff(\alpha\notin\Gamma^{\ast}\text{ または }\beta\in\Gamma^{\ast})\iff(\alpha\to\beta)\in\Gamma^{\ast}.
+\end{aligned}
+$$
+
+**Step 8（全称）.** $\sigma=\forall x\,\varphi$ とすると $\mathrm{FV}(\varphi)\subset\{x\}$。割り当て $v$ を一つ固定する。Step 4 より $M=\{t^{\mathcal{M}}:t\in T^{0}\}$ なので、
+$$
+\mathcal{M}\models\forall x\,\varphi\iff\text{すべての }t\in T^{0}\text{ について }\mathcal{M},v[x\mapsto t^{\mathcal{M}}]\models\varphi .
+$$
+閉項 $t$ は代入可能で $t^{\mathcal{M},v}=t^{\mathcal{M}}$ なので、意味論的代入補題より右辺の各条件は $\mathcal{M}\models\varphi[t/x]$ と同値である。$\varphi[t/x]$ は文で $c(\varphi[t/x])=c(\varphi)<c(\sigma)$ なので、帰納法の仮定より $\varphi[t/x]\in\Gamma^{\ast}$ と同値である。\ref{logic:complete-theory-properties} の 4 より、「すべての閉項 $t$ について $\varphi[t/x]\in\Gamma^{\ast}$」は $\forall x\,\varphi\in\Gamma^{\ast}$ と同値である。
+
+**Step 9（濃度）.** $M$ は $T^{0}$ の商集合なので、$T^{0}$ から $M$ への全射がある。選択公理により各類から代表元を一つ選べば単射 $M\to T^{0}$ が得られ、$\lvert M\rvert\le\lvert T^{0}\rvert$。（$T^{0}$ が可算なら、各類の最小番号の代表元をとればよく、選択公理は要らない。）
+
+::: hypcheck
+- **定数記号をもつこと**：Step 1（領域が空でないこと）。ヘンキン拡大で加えた定数がこれを保証する。
+- **等号で割ること**：Step 6 の等式の場合。割らずに $T^{0}$ そのものを領域にすると、$(c=d)\in\Gamma^{\ast}$ なのに $c\neq d$（記号列として異なる）なので $\mathcal{M}\not\models c=d$ となり、真理補題が成り立たない。等号を含まない言語の論理では、割る必要がない。
+- **等号の合同律**：Step 3。これがないと関数記号と関係記号の解釈が定義できない。
+- **ヘンキン的であること**：Step 8 で \ref{logic:complete-theory-properties} の 4 を使うのに必要。領域が閉項で尽くされる（Step 4）ので、全称文を閉項の代入例で判定できる。
+- **完全性**：Step 7, 8（\ref{logic:complete-theory-properties} の 2, 3）。
+- **意味論的代入補題**：Step 8。構文側の $\varphi[t/x]$ と意味論側の $v[x\mapsto t^{\mathcal{M}}]$ をつなぐ唯一の橋である。
+:::
+:::
+
+## モデル存在定理と完全性定理の証明 {#logic:sec-completeness-proof}
+
+::: corollary 文の集合のモデル存在 {#logic:model-existence-sentences}
+$\mathcal{L}$ を言語とする。$\mathcal{L}$ の文の無矛盾な集合 $\Gamma_{0}$ は、濃度 $\le\kappa_{\mathcal{L}}$ の $\mathcal{L}$ 構造をモデルにもつ。
+:::
+
+::: proof
+ヘンキン拡大（\ref{logic:henkin-extension}）で、$\lvert\mathcal{L}^{\ast}\rvert\le\kappa_{\mathcal{L}}$ の言語 $\mathcal{L}^{\ast}$ の無矛盾・ヘンキン的な $\Gamma_{H}\supset\Gamma_{0}$ をとり、リンデンバウムの補題（\ref{logic:lindenbaum}）で $\mathcal{L}^{\ast}$ の無矛盾・完全な $\Gamma^{\ast}\supset\Gamma_{H}$ をとる。$\Gamma^{\ast}$ はヘンキン的である（\ref{logic:henkin-theory}）。$\mathcal{L}^{\ast}$ は定数記号をもつ（$\Gamma_{0}$ が空でも、組 $(x,x=x)$ の証拠がある）ので、項モデル定理（\ref{logic:term-model}）より $\mathcal{L}^{\ast}$ 構造 $\mathcal{M}^{\ast}$ で $\mathcal{M}^{\ast}\models\Gamma^{\ast}$ となるものがある。その濃度は $\mathcal{L}^{\ast}$ の閉項全体の濃度 $\le\kappa_{\mathcal{L}}$ 以下である。縮小 $\mathcal{M}^{\ast}\restr{\mathcal{L}}$ は、\ref{logic:reduct-lemma} より $\Gamma_{0}$ のモデルである。
+:::
+
+::: restate {ref="logic:model-existence"}
+:::
+
+::: proof
+**Step 1（定数への置き換え）.** 変数ごとの新しい定数 $c_{x}$ を加えた言語 $\mathcal{L}_{\mathrm{Var}}$ と、$\Sigma^{\ast}=\{\psi^{\ast}:\psi\in\Sigma\}$ を \ref{logic:variables-constants-exchange} のとおりにとる。$\mathrm{Var}$ は可算なので $\kappa_{\mathcal{L}_{\mathrm{Var}}}=\kappa_{\mathcal{L}}$ で、$\Sigma^{\ast}$ は文の集合である。$\bot^{\ast}=\bot$ なので、同定理より $\Sigma^{\ast}\vdash_{\mathcal{L}_{\mathrm{Var}}}\bot\iff\Sigma\vdash_{\mathcal{L}}\bot$。よって $\Sigma^{\ast}$ は無矛盾である。
+
+**Step 2（モデル）.** \ref{logic:model-existence-sentences} より、濃度 $\le\kappa_{\mathcal{L}}$ の $\mathcal{L}_{\mathrm{Var}}$ 構造 $\mathcal{N}$ で $\mathcal{N}\models\Sigma^{\ast}$ となるものがある。割り当て $v$ を $v(x)\defeq c_{x}^{\mathcal{N}}$ と定める。
+
+**Step 3（割り当てとの対応）.** $\psi\in\Sigma$、$\mathrm{FV}(\psi)=\{x_{1},\dots,x_{k}\}$ とする。\ref{logic:constant-substitution-semantics} より、任意の割り当て $u$ について
+$$
+\mathcal{N}\models\psi^{\ast}\iff\mathcal{N},u[x_{1}\mapsto c_{x_{1}}^{\mathcal{N}}]\cdots[x_{k}\mapsto c_{x_{k}}^{\mathcal{N}}]\models\psi .
+$$
+右辺の割り当ては $\mathrm{FV}(\psi)$ 上で $v$ と一致するので、一致補題より右辺は $\mathcal{N},v\models\psi$ と同値である。よって $\mathcal{N},v\models\Sigma$。
+
+**Step 4（縮小）.** \ref{logic:reduct-lemma} より $\mathcal{N}\restr{\mathcal{L}},v\models\Sigma$。領域は $\mathcal{N}$ と同じなので濃度は $\le\kappa_{\mathcal{L}}$ である。
+:::
+
+::: restate {ref="logic:completeness"}
+:::
+
+::: proof
+\ref{logic:model-existence} と \ref{logic:completeness-equivalence} による。
+
+::: hypcheck
+- **選択公理**：ヘンキン拡大の濃度の評価、リンデンバウムの補題（ツォルンの補題）、項モデルの濃度の評価で使う。濃度の評価を問わなければ、使うのはリンデンバウムの補題だけである。可算な言語では、文を番号順に一つずつ決めていけばツォルンの補題は要らない（ケーニッヒの補題による証明 \ref{logic:completeness-via-konig} も選択公理を使わない）。
+- **背理法（RAA）**：\ref{logic:consistency-basic} の 3, 4 と \ref{logic:derived-quantifier} の 5 を通じて本質的に使っている。直観主義論理の自然演繹は、古典的な構造の意味論に対して完全でない（たとえば排中律の例は妥当だが導出できない）。
+- **自由変数を含む前提**：\ref{logic:variables-constants-exchange} で文の場合に帰着させた。局所的な帰結（\ref{logic:model}）を採っているので、割り当て $v$ を一つ作れば反例になる。大域的な帰結（\ref{logic:global-consequence}）を採ると、自然演繹は完全でなくなる（$\{P(x)\}\models_{\mathrm{gl}}\forall x\,P(x)$ だが導出できない）。
+:::
+:::
+
+::: remark 選択公理との関係 {#logic:completeness-choice-remark}
+可算な言語の完全性定理は $\ZF$ で証明できる（\ref{logic:completeness-via-konig}）。一般の言語についての完全性定理は、$\ZF$ のもとで選択公理より真に弱い原理（ブール代数の素イデアル定理）と同値であることが知られている、とされる（本サイトでは未確認）。
+:::
+
+::: supplement
+**ノートからの変更点.** 自作のノート第 4 章との主な違いは次のとおり。
+1. ヘンキン公理に順序（段階）を付け、証拠の定数が「その公理の論理式と、段階が同じか低い他の公理」に現れないようにした（\ref{logic:henkin-extension} の Step 3）。また、言語の大きさによらない形にした。
+2. 無矛盾性の保存で、定数を変数に置き換えて $\forall$I を施す部分を、\ref{logic:generalization-constants} として導出の置き換えの定理から厳密に導いた。
+3. 真理補題を、閉項による代入と意味論的代入補題を使って、論理的複雑さに関する帰納法として述べた（ノートでは原子論理式の場合と量化子の場合の橋渡しが省略されていた）。原始記号を $\bot,\to,\forall,=$ にしたので、存在量化子の場合は必要ない。
+4. 自由変数を含む前提を扱う補題（ノートの補題 2.10）を、導出図の束縛変数の付け替えなしで示した（\ref{logic:variables-constants-exchange}）。
+5. 領域が空でないことを、定数記号の存在から明示的に確かめた。
+
+**なぜヘンキン公理が必要か.** 閉項の商をそのまま使うと、「$\exists x\,\varphi$ は $\Gamma^{\ast}$ に属するのに、どの閉項 $t$ についても $\varphi[t/x]\in\Gamma^{\ast}$ でない」ことが起こりうる（\ref{logic:complete-theory-properties} の hypcheck の例）。そのとき項モデルでは $\exists x\,\varphi$ が偽になる。ヘンキン公理は、存在が主張されたものごとに名前を用意してこの食い違いをなくす。存在文についてだけ証拠を用意すれば全称文も扱えるのは、古典論理で $\neg\forall x\,\varphi$ から $\exists x\,\neg\varphi$ が導けるからである。
+
+**高い視点.** 文を「$\Gamma$ から導出可能な同値」で割った集合は、$\to,\bot$ から定まる演算でブール代数になる（リンデンバウム–タルスキ代数）。完全な無矛盾集合は、この代数の超フィルターにあたり、リンデンバウムの補題は「フィルターは超フィルターに拡張できる」という事実の特別な場合である。命題論理では、完全性定理はブール代数のストーンの表現定理（\ref[ストーンの表現定理]{top:stone-representation}）とほぼ同じ内容になる。一階述語論理では、量化子に対応する無限の上限・下限（$\forall x\,\varphi$ が代入例 $\varphi[t/x]$ の下限であること）を保つ超フィルターを選ぶ必要があり、ヘンキン公理がその役割を果たしている。
+:::
+
+## 系：コンパクト性定理 {#logic:sec-compactness-theorem}
+
+::: corollary コンパクト性定理 {#logic:compactness keywords="compactness theorem" index="コンパクト性定理|こんぱくとせいていり"}
+論理式の集合 $\Sigma$ が充足可能であるための必要十分条件は、$\Sigma$ のすべての有限部分集合が充足可能であることである。とくに $\Sigma\models\varphi$ ならば、ある有限部分集合 $\Sigma_{0}\subset\Sigma$ について $\Sigma_{0}\models\varphi$。
+:::
+
+::: proof
+必要性は明らかである（$\mathcal{M},v\models\Sigma$ なら部分集合も充足される）。十分性：$\Sigma$ が充足可能でないとすると $\Sigma\models\bot$。完全性定理（\ref{logic:completeness}）より $\Sigma\vdash\bot$。構文論的コンパクト性（\ref{logic:derivability-basic} の 3）より、ある有限の $\Sigma_{0}\subset\Sigma$ で $\Sigma_{0}\vdash\bot$、健全性定理より $\Sigma_{0}\models\bot$、すなわち $\Sigma_{0}$ は充足可能でない。後半：$\Sigma\models\varphi$ なら $\Sigma\cup\{\neg\varphi\}$ は充足可能でない（\ref{logic:consequence-basic} の 3）ので、ある有限部分集合が充足可能でなく、それを $\Sigma_{0}\cup\{\neg\varphi\}$（$\Sigma_{0}\subset\Sigma$ 有限）の部分集合とすれば、$\Sigma_{0}\models\varphi$。
+
+::: hypcheck
+- **完全性定理**：十分性の中心。構文論的コンパクト性（導出が有限の木であること）を、完全性定理が意味論に移している。
+- **選択公理**：完全性定理を経由して使う。可算な言語では使わない（\ref{logic:completeness-via-konig}）。
+:::
+:::
+
+::: supplement
+**名前の由来.** 文の集合 $\Sigma$ を固定した言語の完全な理論全体の空間に、各文 $\sigma$ について「$\sigma$ を含む完全な理論全体」を基本開集合とする位相を入れると、コンパクト性定理はこの空間がコンパクトであることと同値になる。これが「コンパクト性」という名前の由来である。
+
+**別証明.** コンパクト性定理は、証明体系を経由せず、超積とウォシュの定理を使って意味論だけで直接証明することもできる。これはモデル理論の系列（\ref[超積とウォシュの定理]{model:page-ultraproducts}）で扱う。命題論理の場合の三通りの証明は \ref{logic:page-prop-compactness} にある。
+:::
+
+::: example 有限性は一階の文で表せない {#logic:ex-finiteness}
+$n\ge 2$ について、「少なくとも $n$ 個の元がある」という文
+$$
+\lambda_{n}\defeq\exists x_{1}\cdots\exists x_{n}\bigwedge_{1\le i<j\le n}\neg\,x_{i}=x_{j}
+$$
+を考える（$x_{i}$ は互いに異なる変数）。$\mathcal{M}\models\lambda_{n}\iff\lvert M\rvert\ge n$ である。いま文の集合 $\Sigma$ が、いくらでも大きい有限のモデルをもつとする。$\Sigma\cup\{\lambda_{n}:n\ge 2\}$ の有限部分集合は有限個の $\lambda_{n}$ しか含まないので、十分大きい有限モデルで充足される。コンパクト性定理より、$\Sigma\cup\{\lambda_{n}:n\ge 2\}$ はモデルをもち、それは無限である。したがって、「有限の構造」全体をちょうどモデルの全体とするような文の集合は存在しない。たとえば「有限群」全体は一階の文の集合で公理化できない。
+:::
+
+::: example 算術の超準モデル {#logic:ex-nonstandard-arithmetic}
+算術の標準構造 $\mathcal{N}$（\ref{logic:structure} の例）で真な $\mathcal{L}_{\mathrm{ar}}$ の文全体を $\mathrm{Th}(\mathcal{N})$ とする。新しい定数記号 $e$ を加え、$n$ を表す閉項 $\underline{n}\defeq S(S(\cdots S(0)\cdots))$（$S$ が $n$ 個）について
+$$
+\Sigma\defeq\mathrm{Th}(\mathcal{N})\cup\{\underline{n}<e:n\in\N\}
+$$
+とおく。有限部分集合は有限個の $n$ しか含まないので、それらより大きい数を $e$ の解釈とすれば $\mathcal{N}$ の拡大で充足される。コンパクト性定理より $\Sigma$ はモデル $\mathcal{N}'$ をもつ。$\mathcal{N}'$（の縮小）は $\mathcal{N}$ と同じ文を満たすが、$e^{\mathcal{N}'}$ はどの $\underline{n}^{\mathcal{N}'}$ よりも大きい。$\mathcal{N}$ の元はすべてある $\underline{n}$ の値なので、\ref{logic:isomorphism-invariance} より $\mathcal{N}'\restr{\mathcal{L}_{\mathrm{ar}}}$ は $\mathcal{N}$ と同型でない（同型写像 $h$ があれば $h^{-1}(e^{\mathcal{N}'})$ はある $n$ で、文 $\neg(\underline{n}<\underline{n})$ を考えると矛盾する）。このようなモデルを算術の**超準モデル**という。
+:::
+
+## 系：レーヴェンハイム–スコーレムの定理（弱い形） {#logic:sec-compactness-ls}
+
+::: corollary モデルの濃度の上限（下降レーヴェンハイム–スコーレムの定理の基本形） {#logic:ls-downward-weak keywords="downward Löwenheim-Skolem theorem, countable models" index="レーヴェンハイム–スコーレムの定理|れーゔぇんはいむすこーれむのていり, 下降レーヴェンハイム–スコーレムの定理|かこうれーゔぇんはいむすこーれむのていり"}
+$\mathcal{L}$ を言語、$\kappa\ge\lvert\mathcal{L}\rvert+\aleph_{0}$ を基数とする。充足可能な $\mathcal{L}$ の論理式の集合は、濃度 $\le\kappa$ の構造で充足される。とくに、可算な言語の充足可能な論理式の集合は、領域が可算な構造で充足される（この場合は選択公理を使わない）。
+:::
+
+::: proof
+健全性定理より $\Sigma$ は無矛盾（\ref{logic:satisfiable-consistent}）。モデル存在定理（\ref{logic:model-existence}）より濃度 $\le\kappa_{\mathcal{L}}\le\kappa$ の構造で充足される。可算の場合に選択公理を使わないことは \ref{logic:completeness-via-konig} による。
+:::
+
+::: corollary モデルの濃度の下限（上昇レーヴェンハイム–スコーレムの定理の基本形） {#logic:ls-upward-weak keywords="upward Löwenheim-Skolem theorem" index="上昇レーヴェンハイム–スコーレムの定理|じょうしょうれーゔぇんはいむすこーれむのていり"}
+$\Sigma$ を $\mathcal{L}$ の論理式の集合とし、無限の領域をもつ構造で充足されるとする。$\kappa\ge\lvert\mathcal{L}\rvert+\aleph_{0}$ ならば、$\Sigma$ は濃度がちょうど $\kappa$ の構造で充足される。
+:::
+
+::: proof
+**Step 1.** 濃度 $\kappa$ の集合 $I$ で添字付けた、互いに異なる新しい定数記号 $e_{i}$（$i\in I$）を加えた言語を $\mathcal{L}'$ とし、
+$$
+\Sigma'\defeq\Sigma\cup\{\neg\,e_{i}=e_{j}:i,j\in I,\ i\neq j\}
+$$
+とおく。$\lvert\mathcal{L}'\rvert=\kappa$ である。
+
+**Step 2（有限部分の充足可能性）.** $\Sigma'$ の有限部分集合 $F$ に現れる $e_{i}$ を $e_{i_{1}},\dots,e_{i_{m}}$ とする。$\mathcal{M},v\models\Sigma$ で $M$ が無限の構造をとり、互いに異なる $a_{1},\dots,a_{m}\in M$ を選んで $e_{i_{k}}$ を $a_{k}$ と、他の $e_{i}$ を任意の元と解釈した $\mathcal{L}'$ 構造 $\mathcal{M}'$ を作る。\ref{logic:reduct-lemma} より $\mathcal{M}',v\models\Sigma$ であり、$F$ に含まれる不等式も充足される。
+
+**Step 3.** コンパクト性定理より $\Sigma'$ は充足可能で、\ref{logic:ls-downward-weak}（言語 $\mathcal{L}'$、濃度 $\kappa$）より濃度 $\le\kappa$ の $\mathcal{L}'$ 構造 $\mathcal{N}$ と割り当て $u$ で充足される。$i\mapsto e_{i}^{\mathcal{N}}$ は $I$ から $N$ への単射なので $\lvert N\rvert\ge\kappa$。よって $\lvert N\rvert=\kappa$（カントール–ベルンシュタインの定理）。縮小 $\mathcal{N}\restr{\mathcal{L}}$ と $u$ が $\Sigma$ を充足する。
+
+::: hypcheck
+- **無限モデルの存在**：Step 2 で互いに異なる $m$ 個の元を選ぶのに使った。有限のモデルしかもたない $\Sigma$（たとえば $\forall x\,\forall y\,x=y$）には成り立たない。
+- **$\kappa\ge\lvert\mathcal{L}\rvert+\aleph_{0}$**：Step 3 で \ref{logic:ls-downward-weak} を使うため。$\kappa<\lvert\mathcal{L}\rvert$ だと、たとえば $\kappa$ より多くの定数記号が互いに異なることを要求する $\Sigma$ には濃度 $\kappa$ のモデルがない。
+- **選択公理**：一般の言語でのコンパクト性と濃度の比較で使う。
+:::
+:::
+
+::: remark スコーレムのパラドックス {#logic:skolem-paradox}
+$\ZFC$ が無矛盾ならば、言語 $\mathcal{L}_{\in}$ は可算なので、\ref{logic:ls-downward-weak} より $\ZFC$ は領域が可算なモデル $\mathcal{M}$ をもつ（この議論自体は選択公理なしで行える）。一方 $\ZFC$ は「非可算集合が存在する」（\ref{set:page-cantor}）を証明する。これは矛盾ではない。$\mathcal{M}$ の中で「$a$ は非可算」が真であるとは、「$\mathcal{M}$ の元の中に $\omega$ から $a$ への全単射にあたるものがない」という意味であり、$\mathcal{M}$ の外から見て $a$ の $\in^{\mathcal{M}}$-元全体が可算であることとは両立する。
+:::
+
+::: remark 強い形 {#logic:ls-strong-remark}
+下降レーヴェンハイム–スコーレムの定理の通常の形は、「構造 $\mathcal{M}$ と部分集合 $A\subset M$ について、$A$ を含み濃度が $\le\lvert A\rvert+\lvert\mathcal{L}\rvert+\aleph_{0}$ の**初等部分構造**が存在する」という、与えられたモデルの内部に小さいモデルを見つける主張である。これは初等部分構造の概念とともにモデル理論の系列で扱う（
+ef[下降レーヴェンハイム–スコーレムの定理]{model:downward-lowenheim-skolem}）。上昇版の強い形（与えられた構造の初等拡大で指定した濃度のもの）も同様である。本ページの基本形は、モデルが「ある」ことしか主張しない。
+:::
+
+## 問題 {#logic:sec-completeness-problems}
+
+::: problem {#logic:prob-completeness-names}
+項モデル定理の状況で、$\mathcal{M}$ のすべての元はある**定数記号**の値であることを示せ（ヘンキン公理を $\varphi=(x=t)$ に使う）。
+:::
+
+::: solution
+閉項 $t$ をとる。$x\notin\mathrm{var}(t)$ なので $\mathrm{FV}(x=t)=\{x\}$。$\Gamma^{\ast}\vdash t=t$ から $\exists$I（項 $t$）で $\Gamma^{\ast}\vdash\exists x\,(x=t)$。ヘンキン的なので、ある定数記号 $d$ について $\Gamma^{\ast}\vdash\exists x\,(x=t)\to d=t$、よって $(d=t)\in\Gamma^{\ast}$、すなわち $[d]=[t]$。
+:::
+
+::: problem {#logic:prob-completeness-equality-free}
+等号を含まない言語の論理（原子論理式が $\bot$ と $P(\vec{t})$ だけで、$=$I, $=$E がない体系）について、項モデルを等号で割らずに $T^{0}$ そのものを領域として真理補題が成り立つことを確かめよ。
+:::
+
+::: solution
+$\sim$ を使わず、$c^{\mathcal{M}}=c$, $f^{\mathcal{M}}(t_{1},\dots,t_{n})=f(t_{1},\dots,t_{n})$, $P^{\mathcal{M}}=\{(\vec{t}):P(\vec{t})\in\Gamma^{\ast}\}$ とすれば、well-defined であることを確かめる必要がなく、$t^{\mathcal{M}}=t$ となる。真理補題の証明は、等式の場合を除いてそのまま通る（Step 8 は $M=T^{0}$ で成り立つ）。
+:::
+
+::: problem {#logic:prob-completeness-one-point}
+無矛盾な文の集合が有限のモデルしかもたない場合でも、項モデルの構成は正しく働くか。たとえば $\Gamma_{0}=\{\forall x\,\forall y\,x=y\}$ の場合に項モデルの領域の大きさを答えよ。
+:::
+
+::: solution
+働く。$\Gamma^{\ast}\supset\Gamma_{0}$ では任意の閉項 $t,s$ について $\forall$E を二回使って $\Gamma^{\ast}\vdash t=s$ なので、すべての閉項が同値になり、領域は一点集合である。ヘンキン拡大で無限個の定数を加えても、それらはすべて等号で同一視される。
+:::
+
+::: problem {#logic:prob-wellorder-not-axiomatizable}
+関係記号 $<$（項数 $2$）の言語で、「$<$ が整列順序である」構造全体をちょうどモデルの全体とする文の集合は存在しないことを示せ。
+:::
+
+::: solution
+そのような $\Sigma$ があったとする。新しい定数記号 $e_{0},e_{1},\dots$ を加え、$\Sigma'\defeq\Sigma\cup\{e_{n+1}<e_{n}:n\in\N\}$ とおく。有限部分集合は有限個の不等式 $e_{n+1}<e_{n}$（$n\le N$）しか含まないので、整列順序 $(\N,<)$ で $e_{n}$ を $N+1-n$（$n\le N+1$）、他を $0$ と解釈すれば充足される。コンパクト性定理より $\Sigma'$ はモデルをもち、その $<$ は整列順序（$\Sigma$ のモデル）なのに無限降下列 $e_{0}>e_{1}>\cdots$ をもつ。これは矛盾である。
+:::
+
+::: problem {#logic:prob-compactness-graph-coloring}
+可算な無限グラフについて、すべての有限部分グラフが $k$ 色で塗り分けられるなら、グラフ全体も $k$ 色で塗り分けられることを、コンパクト性定理から示せ（ド・ブラーン–エルデシュの定理の可算の場合）。
+:::
+
+::: solution
+頂点 $a$ ごとに定数記号 $c_{a}$、色ごとに項数 $1$ の関係記号 $R_{1},\dots,R_{k}$ をとる。$\Sigma$ を、各頂点 $a$ について「$R_{1}(c_{a})\vee\cdots\vee R_{k}(c_{a})$」と「$i\neq j$ について $\neg(R_{i}(c_{a})\wedge R_{j}(c_{a}))$」、各辺 $\{a,b\}$ と各 $i$ について「$\neg(R_{i}(c_{a})\wedge R_{i}(c_{b}))$」からなる集合とする。有限部分集合は有限個の頂点しか含まず、それらからなる有限部分グラフの塗り分けから充足される構造が作れる。コンパクト性定理から $\mathcal{M}\models\Sigma$。頂点 $a$ を、$\mathcal{M}\models R_{i}(c_{a})$ となる唯一の $i$ で塗れば、全体の塗り分けになる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

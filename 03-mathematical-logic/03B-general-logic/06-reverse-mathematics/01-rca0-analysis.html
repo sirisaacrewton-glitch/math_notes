@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RCA₀ と実数・連続関数 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/06-reverse-mathematics/01-rca0-analysis.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# RCA₀ と実数・連続関数 {#logic:page-rm-rca0 keywords="reverse mathematics, RCA0, real numbers in second-order arithmetic, fast Cauchy sequences, nested interval property, uncountability of reals, codes for continuous functions, intermediate value theorem, computable analysis"}
+
+**逆数学**は、通常の数学の定理 $\varphi$ について、「$\varphi$ を証明するにはどの集合存在公理が必要か」を、二階算術の部分体系（\ref{pt:big-five}）を物差しにして測る。典型的な結果は「$\mathsf{RCA}_{0}$ の上で $\varphi$ は $\mathsf{WKL}_{0}$（あるいは $\mathsf{ACA}_{0}$）と同値である」という形をとる。そのためには、まず最も弱い基底の体系 $\mathsf{RCA}_{0}$ の中で実数や連続関数を扱えるようにしなければならない。本ページでは、実数を**速く収束する有理数列**として符号化し（\ref{logic:rm-real}）、その大小と演算を定め（\ref{logic:rm-real-order}）、$\mathsf{RCA}_{0}$ で**区間縮小法**（\ref{logic:rm-nested-intervals}）、**実数の非可算性**（\ref{logic:rm-uncountable}）、連続関数の符号（\ref{logic:rm-continuous-code}）と**中間値の定理**（\ref{logic:rm-ivt}）が証明できることを示す。
+
+> 主な資料は田中一之『逆数学と 2 階算術』第 2 章 §2.2 で、証明は自分の言葉で組み立て直した（区間縮小法と非可算性の証明は、評価を細かく書き直してある）。記号は Simpson『Subsystems of Second Order Arithmetic』の標準に合わせた。
+
+## 記法と定義の確認 {#logic:sec-rm1-notation}
+
+::: notation
+- 二階算術の言語、論理式の階層、$\mathsf{RCA}_{0}$ とその基本性質（$\Sigma^{0}_{0}$ 内包公理、$\Pi^{0}_{1}$ 帰納法、対関数・有限列・関数の扱い、原始再帰と全域性の保証された最小化）は \ref{pt:page-soa-subsystems} のとおり（\ref{pt:big-five}, \ref{pt:rca0-basic}）。
+- 以下「$\mathsf{RCA}_{0}$ で証明できる」ことを、$\mathsf{RCA}_{0}$ の任意のモデルの中での推論として示す。そのモデルの数の領域は超準的な数を含んでもよいので、使える帰納法は $\Sigma^{0}_{1}$ 帰納法（と $\Pi^{0}_{1}$ 帰納法）だけで、作れる集合は $\Delta^{0}_{1}$ で定義できるものだけであることに注意する。
+:::
+
+## 整数・有理数・実数 {#logic:sec-rm1-reals}
+
+::: definition 整数と有理数 {#logic:rm-integers-rationals keywords="integers and rationals in RCA0" index="整数と有理数（二階算術）|せいすうとゆうりすうにかいさんじゅつ"}
+$\mathsf{RCA}_{0}$ で次のように定める。
+1. $\N\defeq\{n:n=n\}$。数の対 $(k,l)$ は整数 $k-l$ を表すとし、$(k,l)\equiv_{\mathbb{Z}}(m,n):\iff k+n=l+m$。各同値類で（対のコードが）最小のものを代表とし、その全体を $\mathbb{Z}$ とする。和と積は $(k,l)+(m,n)\defeq(k+m,l+n)$, $(k,l)\cdot(m,n)\defeq(km+ln,kn+lm)$ の代表として定める。
+2. $\mathbb{Z}\times(\mathbb{Z}\setminus\{0\})$ の対 $(a,b)$ は有理数 $a/b$ を表すとし、$(a,b)\equiv_{\mathbb{Q}}(c,d):\iff ad=bc$。代表の全体を $\mathbb{Q}$ とし、演算と大小を通常どおり代表で定める。
+:::
+
+::: remark
+「同値類で最小の代表」は、有界な量化子で定義できる（対 $(m,n)$ のコードより小さい対を調べればよい）ので、$\Sigma^{0}_{0}$ 内包公理で $\mathbb{Z},\mathbb{Q}$ は集合として存在する。$\mathbb{Q}$ が順序体の公理を満たすことは、$\mathsf{RCA}_{0}$ の一階の部分（$\mathrm{I}\Sigma_{1}$ を含む）での通常の計算で確かめられる。以下、有理数の四則と大小の比較は計算可能（$\Sigma^{0}_{0}$ で定義できる）である。
+:::
+
+::: definition 実数 {#logic:rm-real keywords="real numbers as fast Cauchy sequences" index="実数（二階算術）|じっすうにかいさんじゅつ"}
+1. 関数 $q\colon\N\to\mathbb{Q}$（$q_{n}\defeq q(n)$）で、すべての $n,i$ について $\lvert q_{n}-q_{n+i}\rvert\le2^{-n}$ となるものを**実数**といい、$q\in\mathbb{R}$ と書く。
+2. 実数 $p,q$ について、
+$$
+p=_{\mathbb{R}}q:\iff\forall n\,\bigl(\lvert p_{n}-q_{n}\rvert\le2^{-n+1}\bigr),\qquad p<_{\mathbb{R}}q:\iff\exists n\,\bigl(q_{n}-p_{n}>2^{-n+1}\bigr).
+$$
+$p\le_{\mathbb{R}}q$ は $\neg\,q<_{\mathbb{R}}p$ とする。有理数 $r$ は定数列 $(r,r,\dots)$ として実数とみなす。
+3. 和と積：$p+q\defeq(p_{n+1}+q_{n+1})_{n}$、$p\cdot q\defeq(p_{n+m}q_{n+m})_{n}$。ここで $m$ は $2^{m-1}\ge\max(\lvert p_{0}\rvert,\lvert q_{0}\rvert)+1$ となる最小の数。
+:::
+
+::: remark
+「実数」は二階算術の**集合**ではなく、集合（関数）についての**述語**である。$\mathbb{R}$ を同値類で割ることはできないので、$=_{\mathbb{R}}$ をそのまま等号の代わりに使う。$=_{\mathbb{R}}$ は $\Pi^{0}_{1}$、$<_{\mathbb{R}}$ は $\Sigma^{0}_{1}$ の論理式である。この非対称性が、実数の大小を「計算で決められない」ことの形式的な表れになっている。
+
+実数を**デデキントの切断**で定めない理由：切断の列 $(X_{n})$ が与えられても、各 $X_{n}$ から一つの無理数を引いた切断の列の存在は $\mathsf{RCA}_{0}$ では示せないことが知られている（田中の本に、値域が計算可能でない計算可能関数を使った具体例がある）。和や差のような基本的な演算が列に対して実行できないのは、解析学を展開するのに致命的である。
+:::
+
+::: lemma 実数の大小と演算 {#logic:rm-real-order keywords="equality and order of reals in RCA0" index="実数の大小（二階算術）|じっすうのだいしょうにかいさんじゅつ"}
+$\mathsf{RCA}_{0}$ で次が証明できる。実数 $p,q,r$ について：
+1. $=_{\mathbb{R}}$ は同値関係である。
+2. $p<_{\mathbb{R}}q$, $p=_{\mathbb{R}}q$, $q<_{\mathbb{R}}p$ のちょうど一つが成り立つ。
+3. 各 $n$ について、$\lvert p-p_{n}\rvert\le_{\mathbb{R}}2^{-n}$（実数 $p$ は有理数 $p_{n}$ から $2^{-n}$ 以内）。
+4. $p+q$, $p\cdot q$ は実数で、$=_{\mathbb{R}}$ について両立する。$(\mathbb{R},+,\cdot,<_{\mathbb{R}},=_{\mathbb{R}})$ はアルキメデス的順序体の公理を満たす。
+:::
+
+::: proof
+1. 反射性・対称性は明らか。推移性：$p=_{\mathbb{R}}q$, $q=_{\mathbb{R}}r$ とする。任意の $n$ と $m\ge n$ について、
+$$
+\begin{aligned}
+\lvert p_{n}-r_{n}\rvert&\le\lvert p_{n}-p_{m}\rvert+\lvert p_{m}-q_{m}\rvert+\lvert q_{m}-r_{m}\rvert+\lvert r_{m}-r_{n}\rvert\\
+&\le2^{-n+1}+2^{-m+2}.
+\end{aligned}
+$$
+これがすべての $m\ge n$ で成り立つので（有理数の不等式で）$\lvert p_{n}-r_{n}\rvert\le2^{-n+1}$。
+2. **少なくとも一つ.** $p<_{\mathbb{R}}q$ でも $q<_{\mathbb{R}}p$ でもなければ、すべての $n$ で $q_{n}-p_{n}\le2^{-n+1}$ かつ $p_{n}-q_{n}\le2^{-n+1}$、すなわち $p=_{\mathbb{R}}q$。
+**高々一つ.** $q_{n}-p_{n}>2^{-n+1}$ なら $p=_{\mathbb{R}}q$ の $n$ の場合に反する。$q_{n}-p_{n}>2^{-n+1}$ かつ $p_{m}-q_{m}>2^{-m+1}$ とし、$n\le m$ とする（逆も同様）。$q_{m}\ge q_{n}-2^{-n}$, $p_{m}\le p_{n}+2^{-n}$ から $q_{m}-p_{m}\ge q_{n}-p_{n}-2^{-n+1}>0$ となり、$p_{m}-q_{m}>0$ に反する。
+3. 定数列 $p_{n}$ と $p$ の差の列 $(p_{k+1}-p_{n})_{k}$ について、$\lvert p_{k+1}-p_{n}\rvert\le2^{-n}$（$k+1\ge n$ のとき）を使って $2$ の定義をたどればよい（有限個の $k<n$ の項は大小の判定に影響しないように、$<_{\mathbb{R}}$ の定義の $n$ を大きくとる）。
+4. $p+q$ が実数であること：$\lvert(p_{n+1}+q_{n+1})-(p_{n+1+i}+q_{n+1+i})\rvert\le2^{-n-1}+2^{-n-1}=2^{-n}$。積：$\lvert p_{k}\rvert,\lvert q_{k}\rvert\le\max(\lvert p_{0}\rvert,\lvert q_{0}\rvert)+1\le2^{m-1}$（$\lvert p_{k}-p_{0}\rvert\le1$）なので、
+$$
+\begin{aligned}
+\lvert p_{n+m}q_{n+m}-p_{n+m+i}q_{n+m+i}\rvert&\le\lvert q_{n+m}\rvert\,2^{-n-m}+\lvert p_{n+m+i}\rvert\,2^{-n-m}\\
+&\le2\cdot2^{m-1}\cdot2^{-n-m}=2^{-n}.
+\end{aligned}
+$$
+両立性と順序体の公理は、同様の有理数の評価の組み合わせで確かめられる（本サイトでは省略した）。
+:::
+
+::: definition 実数列と極限 {#logic:rm-sequence-limit keywords="sequences of reals, limits in RCA0" index="実数列（二階算術）|じっすうれつにかいさんじゅつ"}
+関数 $x\colon\N\times\N\to\mathbb{Q}$ で、各 $n$ について $x_{n}\defeq(x(n,m))_{m}$ が実数であるものを**実数列** $(x_{n})$ という。実数 $c$ が $(x_{n})$ の**極限**（$c=\lim_{n}x_{n}$）であるとは、$\forall k\,\exists n\,\forall i\,\bigl(\lvert c-x_{n+i}\rvert<_{\mathbb{R}}2^{-k}\bigr)$ となることをいう。
+:::
+
+## 区間縮小法と非可算性 {#logic:sec-rm1-nested}
+
+::: theorem 区間縮小法 {#logic:rm-nested-intervals keywords="nested interval property in RCA0" index="区間縮小法（RCA₀）|くかんしゅくしょうほうあーるしーえーぜろ"}
+$\mathsf{RCA}_{0}$ で次が証明できる：実数列 $(a_{n}),(b_{n})$ が、すべての $n$ で $a_{n}\le a_{n+1}\le b_{n+1}\le b_{n}$ を満たし、$\lim_{n}(b_{n}-a_{n})=0$ なら、$c=\lim_{n}a_{n}=\lim_{n}b_{n}$ となる実数 $c$ が存在する。
+:::
+
+::: proof
+$a_{n}=(p_{n,m})_{m}$, $b_{n}=(q_{n,m})_{m}$ とし、有理数 $\alpha_{n}\defeq p_{n,n}-2^{-n}$, $\beta_{n}\defeq q_{n,n}+2^{-n}$ をとる。\ref{logic:rm-real-order} の 3 から $\alpha_{n}\le a_{n}$, $b_{n}\le\beta_{n}$。したがって $n\le M$ なら
+$$
+\alpha_{n}\le a_{n}\le a_{M}\le b_{M}\le b_{n}\le\beta_{n},\tag{1}
+$$
+すなわち区間 $[\alpha_{n},\beta_{n}]$ と $[\alpha_{n'},\beta_{n'}]$ は、点 $a_{\max(n,n')}$ を共有する。
+
+**添字の選択.** $g(k)\defeq\mu n\,[\beta_{n}-\alpha_{n}<2^{-k}]$ とする。比較は有理数の比較なので、$g$ のグラフは有界な論理式で定義できる。$g$ が全域的であること：$\lim(b_{n}-a_{n})=0$ から $b_{n}-a_{n}<2^{-k-1}$ となる $n$ があり、(1) から $b-a$ は単調減少なので $n\ge k+3$ としてよい。すると $\beta_{n}-\alpha_{n}\le(b_{n}-a_{n})+2^{-n+1}<2^{-k-1}+2^{-k-2}<2^{-k}$。よって \ref{pt:rca0-basic} の 5 で $g$ は全域的な関数として存在する。
+
+**極限の構成.** $c_{k}\defeq\alpha_{g(k+1)}$ とする（原始再帰的な操作の合成なので関数として存在する）。$m\defeq g(k+1)$, $m'\defeq g(k+i+1)$ とすると、(1) から二つの区間は共通の点 $z$ をもち、$\beta_{m}-\alpha_{m}<2^{-k-1}$, $\beta_{m'}-\alpha_{m'}<2^{-k-i-1}$ なので
+$$
+\lvert c_{k}-c_{k+i}\rvert\le\lvert\alpha_{m}-z\rvert+\lvert z-\alpha_{m'}\rvert<2^{-k-1}+2^{-k-i-1}\le2^{-k}.
+$$
+よって $c\defeq(c_{k})_{k}$ は実数。
+
+**極限であること.** $k$ を固定し $m\defeq g(k+1)$ とする。$j\ge k+1$ なら、$c_{j}=\alpha_{g(j+1)}$ は $[\alpha_{m},\beta_{m}]$ と点を共有する区間の左端で、その区間の長さは $2^{-j-1}$ 未満なので、$\alpha_{m}-2^{-k-1}\le c_{j}\le\beta_{m}$。したがって $c$ も（\ref{logic:rm-real-order} の 3 で $c$ と $c_{j}$ を比べて）$[\alpha_{m}-2^{-k},\beta_{m}+2^{-k}]$ に入る。一方 $n\ge m$ なら (1) から $a_{n},b_{n}\in[\alpha_{m},\beta_{m}]$。よって $\lvert c-a_{n}\rvert,\lvert c-b_{n}\rvert<2^{-k-1}+2^{-k}<2^{-k+1}$。$k$ は任意なので $c=\lim a_{n}=\lim b_{n}$。
+:::
+
+::: intuition
+実数 $a_{n}$ そのものは比べられない（$<_{\mathbb{R}}$ は $\Sigma^{0}_{1}$）が、各 $a_{n}$ の有理数の近似 $\alpha_{n}$ と、区間の長さ $\beta_{n}-\alpha_{n}$ は計算で比べられる。そこで「十分短くなった区間」の番号 $g(k)$ を探索で求め、その左端を並べると極限の近似列になる。$\lim(b_{n}-a_{n})=0$ という仮定が、この探索が必ず止まることを保証している。
+```svg 区間縮小法：各段の区間 [αₙ, βₙ] は少しずつ短くなり、どの二つも点を共有する。十分短くなった区間の左端を並べたものが極限 c の近似列になる
+<svg viewBox="0 0 560 170" xmlns="http://www.w3.org/2000/svg" font-size="14">
+  <line x1="20" y1="150" x2="540" y2="150" stroke="currentColor"/>
+  <g stroke="currentColor" stroke-width="3">
+    <line x1="60" y1="30" x2="500" y2="30"/><line x1="150" y1="60" x2="420" y2="60"/>
+    <line x1="210" y1="90" x2="350" y2="90"/><line x1="250" y1="120" x2="300" y2="120"/>
+  </g>
+  <g style="fill: var(--mn-fg-soft)"><text x="20" y="35">n=0</text><text x="20" y="65">n=1</text><text x="20" y="95">n=2</text><text x="20" y="125">n=3</text></g>
+  <circle cx="276" cy="150" r="5" style="fill: var(--mn-accent)"/>
+  <text x="276" y="140" text-anchor="middle" style="fill: var(--mn-accent)">c</text>
+  <line x1="276" y1="20" x2="276" y2="145" style="stroke: var(--mn-accent)" stroke-dasharray="4 4"/>
+</svg>
+```
+:::
+
+::: theorem 実数の非可算性 {#logic:rm-uncountable keywords="uncountability of reals in RCA0, Cantor" index="実数の非可算性（RCA₀）|じっすうのひかさんせいあーるしーえーぜろ"}
+$\mathsf{RCA}_{0}$ で次が証明できる：任意の実数列 $(x_{n})$ に対し、すべての $n$ で $c\neq_{\mathbb{R}}x_{n}$ となる実数 $c$ が存在する。
+:::
+
+::: proof
+$x_{n}=(r_{n,m})_{m}$ とする。有理数の区間 $[u_{n},v_{n}]$（長さ $L_{n}\defeq v_{n}-u_{n}=4^{-n}$）を原始再帰で定める：$[u_{0},v_{0}]\defeq[0,1]$、$a\defeq r_{n,2n+3}$（$x_{n}$ から $2^{-2n-3}=L_{n}/8$ 以内の有理数、\ref{logic:rm-real-order} の 3）として、
+$$
+[u_{n+1},v_{n+1}]\defeq\begin{cases}[u_{n}+\tfrac{3}{4}L_{n},\ v_{n}]&\bigl(a\le u_{n}+\tfrac{1}{2}L_{n}\bigr)\\[2pt][u_{n},\ u_{n}+\tfrac{1}{4}L_{n}]&(\text{それ以外})\end{cases}
+$$
+（場合分けは有理数の比較なので計算できる）。前者の場合 $x_{n}\le a+\frac{1}{8}L_{n}\le u_{n}+\frac{5}{8}L_{n}=u_{n+1}-\frac{1}{8}L_{n}$、後者の場合 $x_{n}\ge a-\frac{1}{8}L_{n}>u_{n}+\frac{3}{8}L_{n}=v_{n+1}+\frac{1}{8}L_{n}$。どちらでも、$x_{n}$ は $[u_{n+1},v_{n+1}]$ から距離 $\frac{1}{8}L_{n}$ 以上離れている。
+
+区間は入れ子で長さ $4^{-n}\to0$ なので、区間縮小法（\ref{logic:rm-nested-intervals}、定数列を実数列とみなす）で $c=\lim u_{n}=\lim v_{n}$ がある。$c$ はすべての $[u_{n+1},v_{n+1}]$ に属する（$u$ は増加、$v$ は減少）ので、$\lvert c-x_{n}\rvert\ge\frac{1}{8}L_{n}>0$、すなわち $c\neq_{\mathbb{R}}x_{n}$（差が正の有理数で下から抑えられるので、$<_{\mathbb{R}}$ の証拠となる $n$ がとれる）。
+:::
+
+## 連続関数と中間値の定理 {#logic:sec-rm1-continuous}
+
+::: definition 連続関数の符号 {#logic:rm-continuous-code keywords="codes for continuous functions on reals" index="連続関数の符号|れんぞくかんすうのふごう"}
+$\Phi\subseteq\mathbb{Q}^{4}$ が次を満たすとき、**連続関数** $f\colon\mathrm{dom}f\subseteq\mathbb{R}\to\mathbb{R}$ の**符号**という。$(a,b,c,d)\in\Phi$ は「$a<x<b$ なら $c\le f(x)\le d$」と読む。
+1. $(a,b,c,d)\in\Phi$ なら $a<b$, $c\le d$。
+2. $(a,b,c,d),(a,b,c',d')\in\Phi$ なら $c\le d'$ かつ $c'\le d$（区間の値の情報が矛盾しない）。
+3. $(a,b,c,d)\in\Phi$ かつ $c'\le c\le d\le d'$ なら $(a,b,c',d')\in\Phi$（値の範囲を広げてよい）。
+4. $(a,b,c,d)\in\Phi$, $a\le a'<b'\le b$ なら $(a',b',c,d)\in\Phi$（定義域の区間を狭めてよい）。
+
+実数 $x$ が $f$ の**定義域**に属するとは、$\forall n\,\exists(a,b,c,d)\in\Phi\,(a<x<b\wedge d-c<2^{-n})$ のことをいう。このとき、すべての $(a,b,c,d)\in\Phi$ について「$a<x<b$ なら $c\le y\le d$」となる実数 $y$ が（$=_{\mathbb{R}}$ の意味で）ただ一つ存在する（区間縮小法による。田中の本では練習問題）。それを $f(x)$ と書く。
+:::
+
+::: theorem 中間値の定理 {#logic:rm-ivt keywords="intermediate value theorem in RCA0" index="中間値の定理（RCA₀）|ちゅうかんちのていりあーるしーえーぜろ"}
+$\mathsf{RCA}_{0}$ で次が証明できる：連続関数 $f$ の定義域が $[0,1]$ を含み、$f(0)<0<f(1)$ なら、$f(x)=0$ となる $x\in[0,1]$ がある。
+:::
+
+::: proof
+ある有理数 $q\in[0,1]$ で $f(q)=0$ なら、それでよい（古典論理の場合分け）。そうでないとする。有理数 $q$ について $f(q)\neq0$ なので、$f(q)$ の近似の列 $(s_{n})$ をとると、ある $n$ で $s_{n}<-2^{-n+1}$ または $s_{n}>2^{-n+1}$ となり（\ref{logic:rm-real-order} の 2）、前者なら $f(q)<0$、後者なら $f(q)>0$。この $n$ を探索すれば、$f(q)$ の符号を判定する関数が（全域性の保証された最小化で）得られる。そこで有理数の区間を原始再帰で
+$$
+\begin{gathered}
+[p_{0},q_{0}]\defeq[0,1],\qquad m_{n}\defeq\tfrac{p_{n}+q_{n}}{2},\\
+[p_{n+1},q_{n+1}]\defeq\begin{cases}[m_{n},q_{n}]&(f(m_{n})<0)\\ [p_{n},m_{n}]&(f(m_{n})>0)\end{cases}
+\end{gathered}
+$$
+と定める（**二分法**）。$\Pi^{0}_{1}$ 帰納法で、すべての $n$ について $f(p_{n})<0<f(q_{n})$。区間縮小法で $x=\lim p_{n}=\lim q_{n}$ がある。$f(x)>0$ なら、連続性（符号の 4 と定義域の条件）から $x$ のある有理数の近傍で $f>0$ となり、十分大きい $n$ で $p_{n}$ がその近傍に入って $f(p_{n})<0$ に反する。$f(x)<0$ も同様。よって $f(x)=0$。
+:::
+
+::: corollary
+$\mathsf{RCA}_{0}$ で、定義域が $[0,1]$ を含み値が $[0,1]$ に入る連続関数 $f$ は不動点をもつ。
+:::
+
+::: proof
+$g(x)\defeq x-f(x)$（符号から $g$ の符号を作れる）に中間値の定理を使う。$g(0)\le0\le g(1)$ で、等号の場合はその点が不動点である。
+:::
+
+::: remark RCA₀ で証明できる定理 {#logic:rm-rca0-theorems}
+田中の本と Simpson の本によれば、ほかに次の定理も $\mathsf{RCA}_{0}$ で証明できることが知られている：縮小写像についてのバナッハの不動点定理、完備可分距離空間のベールの範疇定理、代数学の基本定理、「無矛盾で完全な（可算言語の）理論はモデルをもつ」。いずれも、存在を主張する対象を**計算する手続き**（探索や近似）が具体的に書けるという共通点をもつ。一方、二次元以上のブラウワーの不動点定理や、$[0,1]$ 上の連続関数の最大値の存在は、$\mathsf{RCA}_{0}$ では証明できず、$\mathsf{WKL}_{0}$ と同値になる（\ref{logic:page-rm-wkl0}）。
+:::
+
+::: hypcheck
+- **全域性の保証された最小化**（\ref{pt:rca0-basic} の 5）：区間縮小法の $g$ と、中間値の定理の符号の判定で、探索が止まることを仮定（$\lim(b_{n}-a_{n})=0$、$f(q)\neq0$）から示してから使った。止まる保証のない探索は $\mathsf{RCA}_{0}$ では関数を定めない。
+- **実数を速く収束する列で定めたこと**：有理数の近似 $p_{n}$ が $2^{-n}$ 以内であることを、区間縮小法の $\alpha_{n},\beta_{n}$ と非可算性の $a=r_{n,2n+3}$ で使った。収束の速さが分からない一般のコーシー列では、近似の精度を計算できない。
+- **古典論理**：中間値の定理の最初の場合分け（有理数の零点があるかどうか）と、\ref{logic:rm-real-order} の 2 の三分律で使った。これらは計算できる判定ではないが、$\mathsf{RCA}_{0}$ は古典論理の体系なので許される。
+- **$\Pi^{0}_{1}$ 帰納法**：中間値の定理で、区間の端点の符号が保たれることを示すのに使った（$f(p_{n})<0$ は $\Sigma^{0}_{1}$ だが、符号の判定関数を使えば有界な式になり、$\Sigma^{0}_{1}$ 帰納法でも足りる）。
+:::
+
+## 問題 {#logic:sec-rm1-problems}
+
+::: problem {#logic:prob-rm-equal-pi01}
+実数の等号 $=_{\mathbb{R}}$ が $\Pi^{0}_{1}$、大小 $<_{\mathbb{R}}$ が $\Sigma^{0}_{1}$ の論理式で表されることを確かめ、計算可能な実数 $p,q$ について「$p=_{\mathbb{R}}q$ かどうか」は一般に決定不能であることを示せ（停止問題 $K$ の決定不能性 \ref{comp:halting-L} を使ってよい）。
+:::
+
+::: solution
+定義から明らか（有理数の比較は有界な式）。後半：$e$ に対し $q^{(e)}_{n}\defeq2^{-t}$（$t\le n$ で $T_{1}(e,e,t)$ となる最小の $t$ があるとき）、$0$（そうでないとき）とすると、$q^{(e)}$ は実数（値が変わるのは一度だけで、変わるときの差は $2^{-t}\le2^{-n}$ 以下）で、$e\mapsto q^{(e)}$ は計算可能。$q^{(e)}=_{\mathbb{R}}0\iff e\notin K$。$=_{\mathbb{R}}0$ が決定可能なら $K$ も決定可能になり矛盾。
+:::
+
+::: problem {#logic:prob-rm-sum-sequence}
+$\mathsf{RCA}_{0}$ で、実数列 $(x_{n}),(y_{n})$ に対し、項ごとの和の実数列 $(x_{n}+y_{n})$ が存在することを示せ。
+:::
+
+::: solution
+$x(n,m),y(n,m)$ を実数列の関数とし、$z(n,m)\defeq x(n,m+1)+y(n,m+1)$ とする。$z$ は $x,y$ から有界な論理式で定義されるので（グラフが $\Sigma^{0}_{0}$ 内包公理で存在する）、関数として存在し、各行は \ref{logic:rm-real-order} の 4 により実数 $x_{n}+y_{n}$ である。デデキントの切断による定義ではこのような構成が一般にはできない（\ref{logic:rm-real} の後の注意）ことと対照的である。
+:::
+
+::: supplement
+**前提の検討.**
+- 本ページの結果は、区間縮小法の仮定 $\lim(b_{n}-a_{n})=0$ を外すと成り立たない。単調有界な実数列の収束（上限の存在）は $\mathsf{RCA}_{0}$ では証明できず、$\mathsf{ACA}_{0}$ と同値になることが知られている（\ref{logic:page-rm-aca0}）。
+- 連続関数の符号の定義は、文献によって細部が異なる（Simpson は開集合の符号と同様の形で定めている）。
+
+**関連する結果.**
+- *計算可能解析学.* $\mathsf{RCA}_{0}$ の ω モデル $\mathrm{REC}$ は「計算可能な実数・計算可能な関数だけの世界」で、そこで成り立つ定理は計算可能解析学の結果に当たる。中間値の定理の計算可能版は、ここでの証明の二分法そのものである（有理数の零点がない場合に限らず、計算可能な零点の存在は知られている）。
+- *実閉体.* $\mathsf{RCA}_{0}$ の中の $\mathbb{R}$ が実閉体の理論のすべての定理を満たすことは、シンプソンと田中によって示されている（田中の本による）。$\mathbb{R}$ が集合でないので自明ではない。
+
+**高い視点から：存在するものは計算できるもの.** $\mathsf{RCA}_{0}$ の中で「実数 $c$ が存在する」ことを示すには、$c$ の近似列を計算する手続きを書かなければならない。区間縮小法は「区間の長さが $2^{-k}$ 未満になるまで待つ」探索、中間値の定理は「符号が分かるまで待つ」探索と二分法で、どちらも止まる保証があるから実数が作れる。逆に、連続関数の最大値のように、近似の手続きが一般には書けない（最大値を与える点が計算できない連続関数がある）定理は、$\mathsf{RCA}_{0}$ を超える公理を要する。比喩で言えば、$\mathsf{RCA}_{0}$ は「電卓とストップウォッチだけで解析学をする」体系で、逆数学はどの定理がそれだけで済み、どの定理が無限の探索（コンパクト性や完備性）を本質的に要するかを分類する。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "id": "set-consistency",
+  "title": "相対無矛盾性の初歩",
+  "en": "Easy Consistency Proofs",
+  "abbr": "無矛盾性",
+  "description": "相対化と絶対性、H(κ)、反映定理。（Kunen 第 IV 章に対応）",
+  "msc": "03E35, 03C62",
+  "prereq": [
+    {
+      "dir": "set-basics",
+      "from": 1,
+      "to": 13
+    },
+    {
+      "dir": "set-well-founded",
+      "from": 1,
+      "to": 6,
+      "note": "累積階層・整礎関係・モストフスキの崩壊"
+    }
+  ]
+}

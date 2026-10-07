@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ススリン問題 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/07-suslin-problem.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ススリン問題 {#set:page-suslin-problem keywords="Suslin problem, Souslin problem, Suslin line, Suslin hypothesis, SH, characterization of the real line"}
+
+位相空間では、可分ならば可算鎖条件（c.c.c.）をもつが、逆は一般には成り立たない（\ref{set:separable-ccc}）。ところが全順序集合に順序位相を入れた空間に話を限ると、「c.c.c. ならば可分か」という問いは ZFC からは決まらない。これが**ススリン問題**であり、もともとは実数直線 $\langle\R,<\rangle$ の順序型を「可分性」の代わりに「c.c.c.」で特徴付けられるか、という問いとして立てられた（Suslin, 1920）。
+
+本ページでは、反例となるはずの**ススリン線**と、それが存在しないという主張**ススリン仮説**（SH）を定義し、次の 3 点を示す。
+1. ススリン線 $X$ の平方 $X\times X$ は c.c.c. をもたない。したがって $\mathrm{MA}(\aleph_{1})$ のもとで SH が成り立つ。
+2. ススリン線があれば、稠密で、空でないどの開集合も可分でないススリン線がある。さらに、端点がなく連結なススリン線がある。
+3. SH は「端点をもたず連結で c.c.c. な全順序は $\R$ と同型」という主張と同値である。
+
+ススリン線と木の関係（ススリン木との対応）は \ref{set:page-suslin-kurepa} で扱う。
+
+## 記法と定義の確認 {#set:sec-suslin-notation}
+
+::: notation
+- 本ページでは $\ZFC$ を仮定する。選択公理（\ref{set:ax-choice}）をどこで使うかは各証明の「前提条件の使用箇所」に記す。可算個の可算集合の和は可算である（\ref{set:union-bound}。これには AC を使う）。
+- 全順序は**狭義**のもの（\ref{set:total-order}：非反射律・推移律・三分律）とし、$x\le y$ は「$x<y$ または $x=y$」の略記である。全順序 $\langle X,<\rangle$ を単に $X$ と書く。同型は \ref{set:order-isomorphism} の意味。
+- $a,b\in X$ に対し、**開区間**と**半直線**を
+  $$
+  \begin{aligned}
+  &(a,b)=\{x\in X\mid a<x<b\},\qquad(\leftarrow,b)=\{x\in X\mid x<b\},\\
+  &(a,\rightarrow)=\{x\in X\mid a<x\}
+  \end{aligned}
+  $$
+  と書く。$a\ge b$ なら $(a,b)=\varnothing$ であり、$a<b$ でも $a,b$ が隣り合っていれば $(a,b)=\varnothing$ となりうる。閉区間 $[a,b]=\{x\mid a\le x\le b\}$、半開区間 $[a,b)$ なども同様。
+- **順序位相**（\ref{top:order-topology}）：$X$ 全体・半直線・開区間からなる族を $\mathcal{B}_{X}$ とし、これらを**基本開集合**と呼ぶ。$U\subseteq X$ が**開**であるとは、各 $z\in U$ について $z\in B\subseteq U$ となる $B\in\mathcal{B}_{X}$ があることをいう。$\mathcal{B}_{X}$ の 2 元の共通部分は再び $\mathcal{B}_{X}$ の元か空集合なので、これは位相である。$X$ の位相といえば、つねにこの順序位相を指す。
+- $z\in X$ が**孤立点**であるとは $\{z\}$ が開であることをいう。$X\times X$ には積位相（\ref{top:product-topology}）を入れる。開集合 $U,V$ について $U\times V$ は $X\times X$ の開集合である。
+- 位相空間 $Y$ が **c.c.c.** をもつとは、互いに交わらない空でない開集合の族がすべて可算であることをいう（\ref{set:ccc-space}）。
+- 位相空間 $Y$ が**連結**であるとは、交わらない 2 つの空でない開集合の和として表せないことをいう（\ref{top:connected}）。
+- $\mathrm{MA}(\kappa)$ は \ref{set:ma} の意味。$\mathrm{MA}(\aleph_{1})$ のもとで c.c.c. 空間の積は c.c.c. である（\ref{set:ma-ccc-product}）。
+:::
+
+::: definition 部分集合の稠密性と可分性 {#set:separable-subset keywords="dense subset, separable subspace" index="可分|かぶん, 稠密（部分集合）|ちゅうみつぶぶんしゅうごう"}
+$Y$ を位相空間、$D\subseteq A\subseteq Y$ とする。
+1. $D$ が $A$ で**稠密**であるとは、$Y$ の開集合 $U$ で $U\cap A\ne\varnothing$ となるものがすべて $U\cap D\ne\varnothing$ を満たすことをいう。
+2. $A$ が**可分**であるとは、$A$ で稠密な可算集合 $D\subseteq A$ が存在することをいう。$A=Y$ のとき、これは空間 $Y$ の通常の可分性である。
+:::
+
+::: intuition
+部分空間 $A$ の開集合は $U\cap A$（$U$ は $Y$ の開集合）の形なので、これは部分空間 $A$ が可分であることにほかならない。本ページでは開区間や同値類など $Y$ の部分集合の可分性を何度も扱うので、部分空間の位相を持ち出さずに済むようこの形で定めておく。
+:::
+
+::: lemma 可分な部分集合の基本性質 {#set:separable-subset-basic keywords="separable subsets, countable union of separable sets"}
+$Y$ を位相空間とする。
+1. 可算集合 $A\subseteq Y$ は可分である。特に $\varnothing$ と単集合は可分である。
+2. $A$ が可分で $U$ が開集合ならば、$A\cap U$ は可分である。
+3. 可算集合 $N$ と可分な集合 $A_{n}$ $(n\in N)$ について、$\bigcup_{n\in N}A_{n}$ は可分である。
+:::
+
+::: proof
+**(1)** $D=A$ とおけばよい。$U\cap A\ne\varnothing$ ならそのまま $U\cap D\ne\varnothing$。
+
+**(2)** $D$ を $A$ で稠密な可算集合とし、$D'=D\cap U\subseteq A\cap U$ とおく。$D'$ は可算である。$V$ を開集合で $V\cap(A\cap U)\ne\varnothing$ とする。$V\cap U$ は開で $(V\cap U)\cap A\ne\varnothing$ だから、$D$ の稠密性より $(V\cap U)\cap D\ne\varnothing$、すなわち $V\cap D'\ne\varnothing$。
+
+**(3)** 各 $n\in N$ について $A_{n}$ で稠密な可算集合全体の集合は空でないので、選択公理によりそれぞれから 1 つずつ $D_{n}$ を選ぶ。$D=\bigcup_{n\in N}D_{n}$ は可算個の可算集合の和なので可算で、$D\subseteq\bigcup_{n}A_{n}$。開集合 $V$ が $\bigcup_{n}A_{n}$ と交われば、ある $n$ で $V\cap A_{n}\ne\varnothing$ であり、$V\cap D_{n}\ne\varnothing$、よって $V\cap D\ne\varnothing$。
+
+::: hypcheck
+- **選択公理**：(3) で $D_{n}$ を同時に選ぶのと、\ref{set:union-bound} で $D$ が可算であることを示すのに使った（可算選択で足りる）。
+- **分出公理**：(2) の $D'$。**和集合の公理・置換公理**：(3) の $D$。
+:::
+:::
+
+::: lemma 順序位相の基本性質 {#set:order-topology-basic keywords="order topology, basic properties, convex" index="凸集合（全順序）|とつしゅうごうぜんじゅんじょ"}
+$X$ を全順序とする。
+1. 基本開集合 $B\in\mathcal{B}_{X}$ は**凸**である：$s<t<u$, $s,u\in B$ ならば $t\in B$。また開区間・半直線は開集合である。
+2. $U$ が開集合で $z\in U$, $x'<z<y'$ ならば、$x'\le u<z<w\le y'$ かつ $(u,w)\subseteq U$ となる $u,w\in X$ が存在する。
+3. 空でない開集合 $U$ が $X$ の孤立点を含まないならば、$a<b<c$, $(a,b)\ne\varnothing$, $(b,c)\ne\varnothing$, $(a,c)\subseteq U$ となる $a,b,c\in X$ が存在する。
+4. $X$ が**稠密**（$a<b$ ならばつねに $(a,b)\ne\varnothing$）で 2 元以上をもつならば、$X$ は孤立点をもたない。
+:::
+
+::: proof
+**(1)** $B=(a,b)$ のとき、$s,u\in B$, $s<t<u$ なら $a<s<t<u<b$ で推移律より $a<t<b$。半直線と $X$ も同様。$B\in\mathcal{B}_{X}$ はそれ自身が各点の基本近傍なので開である。
+
+**(2)** $z\in B\subseteq U$ となる $B\in\mathcal{B}_{X}$ をとる。$B$ が下端 $a$ をもつ形（$(a,b)$ か $(a,\rightarrow)$）なら $u=\max\{a,x'\}$、そうでなければ $u=x'$ とおく。同様に $B$ が上端 $b$ をもつなら $w=\min\{b,y'\}$、そうでなければ $w=y'$。$a<z$, $x'<z$ などから $u<z<w$ であり、$x'\le u$, $w\le y'$。$u<t<w$ なら $t$ は $B$ の下端（あれば）より大きく上端（あれば）より小さいので $t\in B\subseteq U$。
+
+**(3)** $z\in U$ をとり、$z\in B\subseteq U$ となる $B\in\mathcal{B}_{X}$ をとる。
+
+*Step 1：$B$ は無限集合である.* $B$ が有限だとすると、$B=\{t_{0}<t_{1}<\dots<t_{n-1}\}$（$n\ge1$）と並べられる。$n=1$ なら $\{t_{0}\}=B$ は開、$n\ge2$ なら $\{t_{0}\}=B\cap(\leftarrow,t_{1})$ は 2 つの開集合の共通部分なので開。いずれにせよ $t_{0}\in U$ は孤立点となり、仮定に反する。
+
+*Step 2.* 無限集合 $B$ から相異なる 5 元をとり、$p_{0}<p_{1}<p_{2}<p_{3}<p_{4}$ と並べる。$a=p_{0}$, $b=p_{2}$, $c=p_{4}$ とおくと $p_{1}\in(a,b)$, $p_{3}\in(b,c)$ であり、(1) の凸性より $(a,c)\subseteq B\subseteq U$。
+
+**(4)** $z\in X$ とし、$z\in B\subseteq\{z\}$ となる $B\in\mathcal{B}_{X}$ があったとする。すなわち $B=\{z\}$。$B=(a,b)$ なら $a<z$ だから稠密性より $t\in(a,z)$ があり、$t\in B$, $t\ne z$ となって矛盾。$B=(\leftarrow,b)$ なら $z<b$ で $(z,b)$ の元が $B$ に入り矛盾。$B=(a,\rightarrow)$ も同様。$B=X$ なら $X$ が 2 元以上をもつことに反する。
+
+::: hypcheck
+- **全順序の推移律・三分律**：(1), (2)。(3) Step 2 で有限個の元を並べるのにも三分律を使う。
+- **稠密性・2 元以上**：(4) だけで使う。
+- 集合論の公理は分出以外に使っていない（選択公理は不要）。
+:::
+:::
+
+## ススリン線とススリン仮説 {#set:sec-suslin-line}
+
+::: definition ススリン線・ススリン仮説 {#set:suslin-line keywords="Suslin line, Souslin line" index="ススリン線|すすりんせん"}
+全順序 $\langle X,<\rangle$ が**ススリン線**であるとは、順序位相で $X$ が c.c.c. をもち、しかも可分でないことをいう。
+:::
+
+::: definition ススリン仮説 {#set:suslin-hypothesis keywords="Suslin's hypothesis, SH, Souslin hypothesis" index="ススリン仮説|すすりんかせつ, SH|えすえいち"}
+「ススリン線は存在しない」という主張を**ススリン仮説**（SH）という。
+:::
+
+::: intuition
+可分な空間はつねに c.c.c. である（互いに交わらない空でない開集合はそれぞれ可算稠密集合の相異なる元を含む）。ススリン線とは、全順序の世界でこの逆が破れる例である。$\R$ のように「直線」らしい空間では、開区間の交わらない族が可算であれば、可算個の点で全体を近似できそうに思える。SH はこの直感が正しいという主張であり、ススリン線はその直感を裏切る「細いが長い」直線である。
+
+ススリン線は非可算である（可算な空間は可分）。また、非可算な整列部分集合ももてない（\ref{set:prob-ccc-line-no-omega1}）ので、$\omega_{1}$ を埋め込んだような単純な例は作れない。
+:::
+
+::: example
+- $\R$（有理数全体 $\Q$ が可算稠密集合）や $\Q$ は可分なのでススリン線ではない。
+- $\omega_{1}$ に通常の順序を入れたものは c.c.c. をもたない。実際、各 $\alpha<\omega_{1}$ について $(\alpha,\alpha+2)=\{\alpha+1\}$ は空でない開集合で、これらは互いに交わらない。
+- $[0,1]\times[0,1]$ に辞書式順序を入れたものは c.c.c. をもたない。各 $x\in[0,1]$ について $(\langle x,0\rangle,\langle x,1\rangle)=\{x\}\times(0,1)$ が互いに交わらない空でない開集合となる。
+
+このように「c.c.c. をもたない」か「可分である」かのどちらかに落ちる例ばかりで、ZFC の中で具体的なススリン線を作ることはできない（\ref{set:suslin-independence}）。
+:::
+
+::: fact 実数直線の順序による特徴付け {#set:reals-order-characterization keywords="order-theoretic characterization of the real line, Cantor" index="実数直線の特徴付け|じっすうちょくせんのとくちょうづけ"}
+全順序 $X$ が
+- (a) 最小元も最大元ももたない、
+- (b) 順序位相で連結である、
+- (c) 順序位相で可分である
+
+を満たすならば、$\langle X,<\rangle\cong\langle\R,<\rangle$ である。（端点のない可算稠密全順序は $\Q$ と同型であるというカントールの定理を可算稠密部分集合に適用し、連結性を使ってその同型を $X$ 全体に延ばす。Cantor, *Math. Ann.* 46 (1895)；Kunen, *Set Theory* (1980), 第 II 章 演習 28, 29。）
+:::
+
+::: intuition
+ススリンの問いは、この特徴付けの (c) を (c′)「順序位相で c.c.c. をもつ」に弱めてもよいか、というものであった。(c) ⇒ (c′) はつねに成り立つので、問題は (c′) ⇒ (c) であり、SH のもとでは明らかに (c) と (c′) は同値になる。逆にススリン線があれば (a), (b), (c′) を満たすススリン線が作れる（\ref{set:suslin-line-complete}）ので、ススリンの問いは SH と同値になる（\ref{set:sh-reals}）。
+:::
+
+::: fact ススリン仮説の独立性 {#set:suslin-independence keywords="independence of Suslin's hypothesis, Jensen, Solovay-Tennenbaum" index="ススリン仮説の独立性|すすりんかせつのどくりつせい"}
+$\ZFC$ が無矛盾ならば、$\ZFC+\mathrm{SH}$ も $\ZFC+\lnot\mathrm{SH}$ も無矛盾である。
+- SH の無矛盾性：$\mathrm{MA}+\lnot\mathrm{CH}$ は無矛盾（\ref{set:ma-consistency}）で、SH を導く（\ref{set:ma-sh}）。さらに Jensen は $\ZFC+\mathrm{GCH}+\mathrm{SH}$ の無矛盾性を示した（Devlin–Johnsbråten, *The Souslin Problem*, LNM 405 (1974)）。
+- $\lnot\mathrm{SH}$ の無矛盾性：$\diamondsuit$ からススリン木が作れ（\ref{set:diamond-suslin}）、ススリン木からススリン線が作れる（\ref{set:suslin-tree-line}）。$\diamondsuit$ は $\mathbf{V}=\mathbf{L}$ で成り立ち、$\ZFC+\mathrm{GCH}$ と無矛盾である（Jensen 1972；Kunen, 第 VI 章）。
+:::
+
+## ススリン線の平方と MA {#set:sec-suslin-square}
+
+::: theorem MA$(\aleph_{1})$ ならば SH {#set:ma-sh keywords="MA(aleph_1) implies SH, Martin's axiom and Suslin's hypothesis" index="マーティンの公理とススリン仮説|まーてぃんのこうりとすすりんかせつ"}
+$\mathrm{MA}(\aleph_{1})$ ならば SH が成り立つ。特に $\mathrm{MA}+\lnot\mathrm{CH}$ ならば SH が成り立つ。
+:::
+
+::: intuition
+MA は「c.c.c. が積で保たれる」ことを保証する（\ref{set:ma-ccc-product}）。一方ススリン線は、その平方をとるとたちまち c.c.c. を失う（次の補題）。この 2 つが衝突するので、MA のもとではススリン線は存在しえない。可分性は有限積で保たれるから、ススリン線の平方が c.c.c. でないことは「ススリン線は可分な空間とはまったく違う」ことの表れでもある。
+:::
+
+::: lemma ススリン線の平方は c.c.c. でない {#set:suslin-square keywords="square of a Suslin line is not ccc" index="ススリン線の平方|すすりんせんのへいほう"}
+$X$ がススリン線ならば、$X\times X$ は c.c.c. をもたない。
+:::
+
+::: intuition
+可分でないことを使って、各段階で「これまでに選んだ可算個の点を避ける」開区間を見つけ、その中に点 $b_{\alpha}$ を 1 つ選んで区間を左右に割る。左右の半分を縦横にとった長方形 $(a_{\alpha},b_{\alpha})\times(b_{\alpha},c_{\alpha})$ は、どの 2 つも交わらない。1 次元では区間 $(a_{\alpha},c_{\alpha})$ どうしは重なりうるが、2 次元にすると「$b_{\xi}$ が $(a_{\alpha},c_{\alpha})$ の左にあるか右にあるか」で縦か横に必ず分離される、というのが仕掛けである。
+:::
+
+::: proof
+**Step 0（孤立点）.** $X$ の孤立点全体を $W$ とする。$\{\{z\}\mid z\in W\}$ は互いに交わらない空でない開集合の族なので、$X$ の c.c.c. より可算であり、$z\mapsto\{z\}$ は単射だから $W$ は可算である。
+
+**Step 1（帰納的な選択）.** 超限再帰（\ref{set:transfinite-recursion}）により、$\alpha<\omega_{1}$ について $a_{\alpha},b_{\alpha},c_{\alpha}\in X$ を次を満たすように選ぶ。
+$$
+\begin{aligned}
+&a_{\alpha}<b_{\alpha}<c_{\alpha},\qquad(a_{\alpha},b_{\alpha})\ne\varnothing,\qquad(b_{\alpha},c_{\alpha})\ne\varnothing,\\
+&(a_{\alpha},c_{\alpha})\cap\{b_{\xi}\mid\xi<\alpha\}=\varnothing.
+\end{aligned}
+\label{set:eq-suslin-square-choice}
+$$
+$\xi<\alpha$ について選び終えたとする。$E_{\alpha}=W\cup\{b_{\xi}\mid\xi<\alpha\}$ は、$\alpha$ が可算だから可算集合と可算集合の和で、可算である。$X$ は可分でないので $E_{\alpha}$ は $X$ で稠密でなく、$U\cap E_{\alpha}=\varnothing$ となる空でない開集合 $U$ がある。$U\cap W=\varnothing$ なので $U$ は $X$ の孤立点を含まず、\ref{set:order-topology-basic} (3) により $a<b<c$, $(a,b)\ne\varnothing\ne(b,c)$, $(a,c)\subseteq U$ となる $a,b,c$ がある。このような 3 つ組の集合 $T_{\alpha}\subseteq X^{3}$ は空でないので、$X^{3}$ 上の選択関数（\ref{set:ax-choice}）で 1 つ選んで $\langle a_{\alpha},b_{\alpha},c_{\alpha}\rangle$ とする。$(a_{\alpha},c_{\alpha})\subseteq U$ は $\{b_{\xi}\mid\xi<\alpha\}\subseteq E_{\alpha}$ と交わらないので \eqref{set:eq-suslin-square-choice} が成り立つ。
+
+**Step 2（長方形）.** $V_{\alpha}=(a_{\alpha},b_{\alpha})\times(b_{\alpha},c_{\alpha})$ とおく。開区間の積なので $X\times X$ の開集合であり、2 つの因子が空でないので $V_{\alpha}\ne\varnothing$。
+
+**Step 3（互いに交わらない）.** $\xi<\alpha$ とする。\eqref{set:eq-suslin-square-choice} より $b_{\xi}\notin(a_{\alpha},c_{\alpha})$ であり、三分律から $b_{\xi}\le a_{\alpha}$ または $b_{\xi}\ge c_{\alpha}$。
+- $b_{\xi}\le a_{\alpha}$ のとき：$s\in(a_{\xi},b_{\xi})$, $t\in(a_{\alpha},b_{\alpha})$ なら $s<b_{\xi}\le a_{\alpha}<t$ なので $s\ne t$。よって第 1 成分どうしが交わらず、$V_{\xi}\cap V_{\alpha}=\varnothing$。
+- $b_{\xi}\ge c_{\alpha}$ のとき：$s\in(b_{\xi},c_{\xi})$, $t\in(b_{\alpha},c_{\alpha})$ なら $t<c_{\alpha}\le b_{\xi}<s$。第 2 成分どうしが交わらず、$V_{\xi}\cap V_{\alpha}=\varnothing$。
+
+**Step 4.** Step 2, 3 より $\{V_{\alpha}\mid\alpha<\omega_{1}\}$ は互いに交わらない空でない開集合の族であり、$\alpha\mapsto V_{\alpha}$ は単射（異なる添字の $V$ は交わらず、空でないので等しくない）だから、この族は非可算である。よって $X\times X$ は c.c.c. をもたない。
+
+::: hypcheck
+- **$X$ の c.c.c.**：Step 0 で $W$ が可算であることに使った。
+- **$X$ が可分でない**：Step 1 で $U$ を見つけるのに使った。
+- **選択公理**：Step 1 の各段階で 3 つ組を選ぶのに（選択関数を固定して再帰に組み込む）、また $E_{\alpha}$ の可算性（\ref{set:union-bound}）に使った。
+- **置換公理**：超限再帰（\ref{set:transfinite-recursion}）で列 $\langle a_{\alpha},b_{\alpha},c_{\alpha}\mid\alpha<\omega_{1}\rangle$ を作るのに使った。
+:::
+:::
+
+::: restate {ref="set:ma-sh"}
+:::
+
+::: proof
+ススリン線 $X$ があったとする。$X$ は c.c.c. をもつので、$\mathrm{MA}(\aleph_{1})$ のもとで \ref{set:ma-ccc-product} により $X\times X$ も c.c.c. をもつ。これは \ref{set:suslin-square} に反する。よって SH。
+
+$\mathrm{MA}+\lnot\mathrm{CH}$ のとき、$\lnot\mathrm{CH}$ より $\aleph_{1}<2^{\aleph_{0}}$ なので MA の定義（\ref{set:ma}）から $\mathrm{MA}(\aleph_{1})$ が成り立つ。
+
+::: hypcheck
+- **$\mathrm{MA}(\aleph_{1})$**：積の c.c.c. を得るのに使った。$\mathrm{MA}(\aleph_{1})$ は \ref{set:ma-continuum-false} により $2^{\aleph_{0}}>\aleph_{1}$ を含意するので、この定理の仮定はそれ自体 $\lnot\mathrm{CH}$ を含む。
+- **選択公理**：補題 \ref{set:suslin-square} の中で使っている。
+:::
+:::
+
+::: supplement
+**CH と MA.** $\mathrm{CH}$ のもとでは $\mathrm{MA}$ は自明に成り立つ（\ref{set:ch-implies-ma}）が、それは $\mathrm{MA}(\kappa)$ を $\kappa<2^{\aleph_{0}}=\aleph_{1}$、つまり $\mathrm{MA}(\aleph_{0})$ としか言っていないからで、SH は導かない。本定理で本質的なのは $\mathrm{MA}(\aleph_{1})$ である。
+
+**木を使った証明.** ススリン線の存在はススリン木の存在と同値であり（\ref{set:suslin-tree-line}）、$\mathrm{MA}(\aleph_{1})$ はススリン木の存在を直接否定する（\ref{set:ma-no-suslin-tree}）。こちらは、ススリン木そのものを c.c.c. 半順序とみて MA を適用する証明である。
+
+**積と c.c.c.** 補題の証明が示すように、$X$ が c.c.c. でも $X\times X$ は c.c.c. とは限らない。可分性は積で保たれる（有限個の可算稠密集合の積は可算稠密）のと対照的である。$\ZFC$ だけでは「c.c.c. 空間の積は c.c.c.」は証明も反証もできない。
+:::
+
+## ススリン線を整える {#set:sec-suslin-nice}
+
+定義のままのススリン線は、孤立点や隙間をもつかもしれない。次の定理で、それらを取り除いたススリン線が得られることを示す。
+
+::: theorem 性質のよいススリン線 {#set:suslin-line-nice keywords="nice Suslin line, dense Suslin line, nowhere separable" index="稠密なススリン線|ちゅうみつなすすりんせん"}
+ススリン線が存在するならば、次を満たすススリン線 $X$ が存在する。
+1. $X$ は稠密である：$a<b$ ならば $(a,b)\ne\varnothing$。
+2. $X$ の空でない開集合はどれも可分でない。
+:::
+
+::: intuition
+ススリン線 $Y$ の中で「可分な区間でつながる点どうし」を同一視して 1 点につぶす。つぶれた各部分（同値類）は可分な「ゴミ」であり、それを取り除いたあとに残る骨格 $X$ では、どの区間も可分でない。可分な部分をつぶしても、c.c.c. であることは保たれ、非可分性の源は失われない。
+:::
+
+::: proof
+$Y$ をススリン線とする。$x,y\in Y$ に対し、$x,y$ の**間**を
+$$
+\operatorname{bt}(x,y)=\{t\in Y\mid\min\{x,y\}<t<\max\{x,y\}\}
+$$
+とおく（$x=y$ なら $\varnothing$）。これは開区間なので開集合である。$x\sim y$ を「$\operatorname{bt}(x,y)$ が可分」（\ref{set:separable-subset}）で定める。
+
+**Step 1（$\sim$ は同値関係）.** 反射律は $\operatorname{bt}(x,x)=\varnothing$ が可分であること（\ref{set:separable-subset-basic} (1)）から、対称律は $\operatorname{bt}(x,y)=\operatorname{bt}(y,x)$ から従う。推移律：$x\sim y$, $y\sim z$ とする。まず
+$$
+\operatorname{bt}(x,z)\subseteq\operatorname{bt}(x,y)\cup\{y\}\cup\operatorname{bt}(y,z) \label{set:eq-suslin-bt-cover}
+$$
+を示す。$t\in\operatorname{bt}(x,z)$ で $t\ne y$ とし、対称性から $x<t<z$ としてよい。$t<y$ なら $x<t<y$ で $t\in\operatorname{bt}(x,y)$、$t>y$ なら $y<t<z$ で $t\in\operatorname{bt}(y,z)$。右辺 $S$ は可分な集合 3 つの和なので可分（\ref{set:separable-subset-basic} (1), (3)）。$\operatorname{bt}(x,z)$ は開で $S$ に含まれるので $\operatorname{bt}(x,z)=S\cap\operatorname{bt}(x,z)$ は可分（同 (2)）。よって $x\sim z$。
+
+$x$ の同値類を $[x]$ とし、$X=\{[x]\mid x\in Y\}\subseteq\mathcal{P}(Y)$（冪集合・分出・置換の公理で集合）とする。
+
+**Step 2（同値類は凸）.** $x,y\in I\in X$, $x<t<y$ とする。$\operatorname{bt}(x,t)\subseteq\operatorname{bt}(x,y)$ で、$\operatorname{bt}(x,t)$ は開なので、\ref{set:separable-subset-basic} (2) により可分。よって $t\sim x$, $t\in I$。
+
+**Step 3（$X$ の順序）.** $I,J\in X$ について、$I<J$ を「$\forall x\in I\ \forall y\in J\ (x<y)$」で定める。
+- *非反射律*：$I\ne\varnothing$ なので $x\in I$ をとれば $x<x$ は偽。
+- *推移律*：$I<J<K$ なら、$J$ の元 $y$ を 1 つとって $x<y<z$（$x\in I$, $z\in K$）。
+- *三分律*：$I\ne J$ とし、$x\in I$, $y\in J$ をとる。$x\ne y$ で、たとえば $x<y$ とする。このとき $I<J$ を示す。$x'\in I$, $y'\in J$ で $y'<x'$ だったとする（$I\cap J=\varnothing$ より $x'\ne y'$）。もし $y<x'$ なら $x<y<x'$ と Step 2 から $y\in I$ となり矛盾、よって $x'<y$。もし $y'<x$ なら $y'<x<y$ から $x\in J$ となり矛盾、よって $x<y'$。すると $y'<x'<y$ で $y',y\in J$ だから $x'\in J$ となり矛盾。したがって $x'<y'$。$y<x$ の場合は同様に $J<I$。
+
+以下、$X$ の区間は $(I,J)=\{K\in X\mid I<K<J\}$ と書く。$t\in Y$ と $I<[t]<J$ は「$I$ の元 $<t<J$ の元」を意味する。
+
+**Step 4（各同値類は可分）.** $I\in X$ とする。$u<v$, $u,v\in I$, $(u,v)\ne\varnothing$ となる開区間 $(u,v)$ で、互いに交わらないものからなる族のうち極大なもの $\mathcal{M}$ をとる（そのような族全体を $\subseteq$ で順序付けると、鎖の和集合はまた族なので、\ref{set:zorn} により極大元がある）。$\mathcal{M}$ は $Y$ の互いに交わらない空でない開集合の族なので、$Y$ の c.c.c. より可算である。$\mathcal{M}=\{(x_{n},y_{n})\mid n\in N\}$（$N$ は可算）とする。$x_{n}\sim y_{n}$ なので $(x_{n},y_{n})=\operatorname{bt}(x_{n},y_{n})$ は可分で、稠密な可算集合 $D_{n}$ を選べる。$I$ の最小元・最大元のうち存在するものの集合を $F$ とし、$D=F\cup\bigcup_{n\in N}D_{n}$ とおく。$D$ は可算で、Step 2 より $D\subseteq I$。
+
+$D$ が $I$ で稠密なことを示す。$U$ を開集合、$z\in U\cap I$ とする。$z\in F$ なら $z\in U\cap D$。そうでなければ $x'<z<y'$ となる $x',y'\in I$ がある。\ref{set:order-topology-basic} (2) により $x'\le u<z<w\le y'$, $(u,w)\subseteq U$ となる $u,w$ があり、Step 2 より $u,w\in I$、また $z\in(u,w)$ なので $(u,w)\ne\varnothing$。$\mathcal{M}$ の極大性から $(u,w)$ はある $(x_{n},y_{n})$ と交わる（交わらないなら $(u,w)\notin\mathcal{M}$ であり、$\mathcal{M}\cup\{(u,w)\}$ がより大きい族になる）。$(u,w)\cap(x_{n},y_{n})$ は開で $(x_{n},y_{n})$ と交わるので $D_{n}$ と交わり、$U\cap D\supseteq(u,w)\cap D_{n}\ne\varnothing$。
+
+**Step 5（$X$ は 2 元以上で稠密）.** $X$ が 1 元なら $Y$ が 1 つの同値類となり、Step 4 より $Y$ は可分で矛盾。次に $I<J$ で $(I,J)=\varnothing$ だったとし、$x\in I$, $y\in J$ をとる。$t\in\operatorname{bt}(x,y)$ なら $I\le[t]\le J$（たとえば $[t]<I$ なら $t<x$ となる）で、$(I,J)=\varnothing$ より $[t]\in\{I,J\}$。よって $\operatorname{bt}(x,y)\subseteq I\cup J$。$I\cup J$ は可分（Step 4 と \ref{set:separable-subset-basic} (3)）で $\operatorname{bt}(x,y)$ は開なので、$\operatorname{bt}(x,y)$ は可分、すなわち $x\sim y$ で $I=J$ となり矛盾。これで (1) が示された。したがって \ref{set:order-topology-basic} (4) より $X$ は孤立点をもたない。
+
+**Step 6（区間 $(I,J)$ は可分でない）.** $I<J$ で $(I,J)$ が可分だったとし、$(I,J)$ で稠密な可算集合 $\{K_{n}\mid n\in N\}$ をとる。$\mathcal{L}$ を、$Y$ で空でない内部をもつ（空でない開集合を含む）同値類全体とする。異なる同値類の内部は交わらないので、$Y$ の c.c.c. より $\mathcal{L}$ は可算である。$x\in I$, $y\in J$ を固定し、可算個の同値類 $I,J,K_{n}\,(n\in N)$ と $\mathcal{L}$ の元のそれぞれで稠密な可算集合 $D_{L}$ を選んで（Step 4）、
+$$
+D=\operatorname{bt}(x,y)\cap\Bigl(D_{I}\cup D_{J}\cup\bigcup_{n\in N}D_{K_{n}}\cup\bigcup_{L\in\mathcal{L}}D_{L}\Bigr)
+$$
+とおく。$D$ は可算である。$D$ が $\operatorname{bt}(x,y)$ で稠密なことを示す。$U$ を開集合、$t\in U\cap\operatorname{bt}(x,y)$ とし、$L=[t]$ とおく。\ref{set:order-topology-basic} (2) により $x\le u<t<w\le y$, $U'=(u,w)\subseteq U$ となる $u,w$ をとる。$U'\subseteq\operatorname{bt}(x,y)$ なので、$U'\cap D_{M}\ne\varnothing$ となる $D_{M}$（上の和に現れるもの）を見つければよい。
+- $L\in\{I,J\}$ のとき：$U'$ は開で $t\in U'\cap L$ なので $U'\cap D_{L}\ne\varnothing$。
+- $I<L<J$ で $[u]<L$ のとき：$x\le u$ より $I\le[u]$。Step 5 より $([u],L)$ は空でなく、$X$ の基本開集合で $(I,J)$ に含まれるので、ある $K_{n}$ を含む。$s\in K_{n}$ は $[u]<K_{n}<L=[t]$ より $u<s<t<w$ を満たし、$s\in U'$。よって $U'\cap K_{n}\ne\varnothing$ で、$U'\cap D_{K_{n}}\ne\varnothing$。
+- $I<L<J$ で $L<[w]$ のとき：上と対称的。
+- $[u]=L=[w]$ のとき：Step 2 より $U'=(u,w)\subseteq L$ で、$U'$ は $t$ を含む空でない開集合だから $L\in\mathcal{L}$。$U'\cap D_{L}\ne\varnothing$。
+
+（$[u]\le L\le[w]$ はつねに成り立つので、場合はこれで尽きている。）よって $\operatorname{bt}(x,y)$ は可分、$x\sim y$ となり $I\ne J$ に反する。
+
+**Step 7（(2) の証明）.** $X$ の空でない開集合 $U$ が可分だったとする。$X$ は孤立点をもたないので \ref{set:order-topology-basic} (3) により $(I,J)\subseteq U$, $I<J$ となる $I,J$ があり、$(I,J)=U\cap(I,J)$ は可分（\ref{set:separable-subset-basic} (2)）で Step 6 に反する。特に $U=X$ として、$X$ は可分でない。
+
+**Step 8（$X$ は c.c.c.）.** $\{U_{\alpha}\mid\alpha<\omega_{1}\}$ が $X$ の互いに交わらない空でない開集合の族（$\alpha\mapsto U_{\alpha}$ は単射）だったとする。各 $\alpha$ について \ref{set:order-topology-basic} (3) と稠密性から $(I_{\alpha},J_{\alpha})\subseteq U_{\alpha}$ かつ $I_{\alpha}<K_{\alpha}<M_{\alpha}<K'_{\alpha}<J_{\alpha}$ となる同値類を選び、さらに $x_{\alpha}\in K_{\alpha}$, $y_{\alpha}\in K'_{\alpha}$ を選ぶ。$M_{\alpha}$ の元は $(x_{\alpha},y_{\alpha})$ に入るので $(x_{\alpha},y_{\alpha})\ne\varnothing$。$s\in(x_{\alpha},y_{\alpha})$ なら $K_{\alpha}\le[s]\le K'_{\alpha}$ なので $[s]\in(I_{\alpha},J_{\alpha})\subseteq U_{\alpha}$。したがって $s\in(x_{\alpha},y_{\alpha})\cap(x_{\beta},y_{\beta})$ なら $[s]\in U_{\alpha}\cap U_{\beta}$ で、$\alpha=\beta$。よって $\{(x_{\alpha},y_{\alpha})\mid\alpha<\omega_{1}\}$ は $Y$ の互いに交わらない空でない開集合の非可算族となり、$Y$ の c.c.c. に反する。
+
+以上により $X$ は c.c.c. をもち可分でない（Step 7, 8）ススリン線で、(1), (2) を満たす。
+
+::: hypcheck
+- **$Y$ の c.c.c.**：Step 4（$\mathcal{M}$ の可算性）、Step 6（$\mathcal{L}$ の可算性）、Step 8。
+- **$Y$ が可分でない**：Step 5（$X$ が 2 元以上）。$X$ の非可分性は Step 6, 7 で $\sim$ の定義から得ており、$Y$ の非可分性はそれを通じて間接的に効いている。
+- **選択公理**：Step 4 のツォルンの補題と $D_{n}$ の選択、Step 6 の $D_{L}$ の選択、Step 8 の $I_{\alpha},\dots,y_{\alpha}$ の選択、および可算和が可算であること（\ref{set:union-bound}）。
+- **冪集合・分出・置換の公理**：Step 1 で $X$ を集合として作るのに使った。
+:::
+:::
+
+::: supplement
+**Kunen の証明との違い.** Step 6 で、どの $K_{n}$ にも一致しない同値類 $L$ の内部の点は $K_{n}$ たちの稠密集合では近似できない。そのため、空でない内部をもつ同値類（c.c.c. により可算個しかない）の稠密集合も $D$ に加えている。Step 8 でも、$(I_{\alpha},J_{\alpha})$ の端の同値類 $I_{\alpha},J_{\alpha}$ そのものは $U_{\alpha}$ に入るとは限らないので、内側の同値類 $K_{\alpha},K'_{\alpha}$ から代表元をとっている。
+
+**さらに整える.** 次節で、端点を除いてデデキント完備化をとることで、端点がなく連結なススリン線が得られることを示す。
+:::
+
+## 完備なススリン線と実数直線の特徴付け {#set:sec-suslin-complete}
+
+::: definition デデキント完備 {#set:order-dedekind-complete keywords="Dedekind complete, complete linear order, supremum" index="デデキント完備|ででぎんとかんび, 上限|じょうげん"}
+全順序 $X$ が**デデキント完備**であるとは、上に有界な空でない部分集合がすべて上限（最小の上界）をもつことをいう。
+:::
+
+::: lemma デデキント切断による完備化 {#set:dedekind-cuts keywords="Dedekind cuts, Dedekind completion" index="デデキント切断|ででぎんとせつだん, デデキント完備化|ででぎんとかんびか"}
+$X$ を端点をもたない稠密な全順序で空でないものとする。$X$ の部分集合 $A$ で、$\varnothing\ne A\ne X$、下に閉じている（$a\in A$, $t<a$ なら $t\in A$）、最大元をもたない、の 3 条件を満たすものを**切断**と呼び、切断全体を $C$ とする。$C$ に $A<B\iff A\subsetneq B$ で順序を入れ、$e(x)=(\leftarrow,x)$ とおく。このとき
+1. $C$ は全順序であり、$e\colon X\to C$ は $x<y\iff e(x)<e(y)$ を満たす単射である。
+2. $A<B$ ならば $A<e(x)<B$ となる $x\in X$ がある。特に $C$ は稠密である。
+3. $C$ は端点をもたず、デデキント完備である。
+:::
+
+::: proof
+**(1)** *非反射律・推移律* は $\subsetneq$ の性質。*三分律*：$A\not\subseteq B$ とし $a\in A\setminus B$ をとる。$b\in B$ について、$a\le b$ なら $B$ が下に閉じていることから $a\in B$ となるので $b<a$、よって $b\in A$。したがって $B\subseteq A$ で、$A\ne B$ だから $B<A$。
+*$e(x)$ は切断*：$X$ に最小元がないので $e(x)\ne\varnothing$、$x\notin e(x)$ なので $e(x)\ne X$、下に閉じているのは推移律、最大元がないのは稠密性（$t<x$ なら $t<t'<x$ となる $t'$ がある）。*順序を保つ*：$x<y$ なら推移律より $e(x)\subseteq e(y)$ で、$x\in e(y)\setminus e(x)$。逆に $e(x)<e(y)$ なら $x\ne y$ で、$y<x$ なら $e(y)<e(x)$ となり非対称律に反するので $x<y$。
+
+**(2)** $A\subsetneq B$ とし、$b\in B\setminus A$ をとる。$B$ は最大元をもたないので $b<b'$ となる $b'\in B$ がある。$a\in A$ なら（(1) の三分律の議論と同様に）$a<b$ なので $A\subseteq e(b)\subsetneq e(b')$。よって $A<e(b')$。また $e(b')\subseteq B$（$B$ は下に閉じている）で $b'\in B\setminus e(b')$ だから $e(b')<B$。
+
+**(3)** *最大元がない*：$A\in C$ に対し $x\in X\setminus A$ をとり、$X$ に最大元がないので $y>x$ をとる。$A\subseteq e(x)$（(2) と同じ議論）で $x\in e(y)\setminus A$ だから $A<e(y)$。*最小元がない*：$a\in A$ をとると $e(a)\subseteq A$, $a\in A\setminus e(a)$ で $e(a)<A$。*完備性*：$\varnothing\ne S\subseteq C$ が $B\in C$ で上に有界とし、$A^{\ast}=\bigcup S$ とおく。$A^{\ast}$ は空でない切断の和なので空でなく、$A^{\ast}\subseteq B\ne X$、下に閉じている。$A^{\ast}$ が最大元 $m$ をもつなら、$m\in A\in S$ となる $A$ で $A$ の $m$ より大きい元が $A^{\ast}$ に入って矛盾。よって $A^{\ast}\in C$ であり、$S$ の各元を含むので上界、$S$ の上界 $B'$ はすべての $A\in S$ を含むので $A^{\ast}\subseteq B'$。したがって $A^{\ast}$ は $S$ の上限である。
+
+::: hypcheck
+- **稠密性**：(1) で $e(x)$ が最大元をもたないこと。**端点がない**：(1) で $e(x)\ne\varnothing$、(3) で $C$ が最大元をもたないこと。
+- **冪集合・分出の公理**：$C\subseteq\mathcal{P}(X)$ を作るのに、**和集合の公理**：(3) の $A^{\ast}$。選択公理は使っていない。
+:::
+:::
+
+::: lemma 稠密かつ完備な全順序は連結 {#set:complete-dense-connected keywords="dense complete linear order is connected" index="連結（全順序）|れんけつぜんじゅんじょ"}
+稠密でデデキント完備な全順序 $X$ は、順序位相で連結である。
+:::
+
+::: proof
+$X=U\cup V$, $U\cap V=\varnothing$, $U,V$ は空でない開集合だったとする。$u\in U$, $v\in V$ をとり、必要なら $U,V$ の名前を入れ替えて $u<v$ とする。
+$$
+S=\{t\in X\mid u\le t\le v\land[u,t]\subseteq U\}
+$$
+は $u$ を含み $v$ で上に有界なので、上限 $s$ をもつ。$u\le s\le v$ である。
+
+**Step 1.** $[u,s)\subseteq U$：$u\le r<s$ なら $r$ は $S$ の上界でないので $r<t$ となる $t\in S$ があり、$r\in[u,t]\subseteq U$。
+
+**Step 2（$s\in U$ はありえない）.** $s\in U$ とすると、$v\in V$ より $s<v$。$s\in B\subseteq U$ となる $B\in\mathcal{B}_{X}$ をとり、$B$ が上端 $b$ をもつなら $q=\min\{b,v\}$、もたないなら $q=v$ とおく。$s<q$ なので稠密性より $s<s'<q$ となる $s'$ がある。$s<r\le s'$ なら $r$ は $B$ の下端（あれば、それは $s$ より小さい）より大きく $q\le b$ より小さいので $r\in B$。よって Step 1 と合わせて $[u,s']\subseteq[u,s)\cup\{s\}\cup(s,s']\subseteq U$ で、$s'\le v$ だから $s'\in S$。$s'>s$ は $s$ が上界であることに反する。
+
+**Step 3（$s\in V$ もありえない）.** $s\in V$ とすると $u\in U$ より $u<s$。$s\in B\subseteq V$ となる $B\in\mathcal{B}_{X}$ をとり、$B$ が下端 $a$ をもつなら $p=\max\{a,u\}$、もたないなら $p=u$ とおく。$p<s$ なので $p<r<s$ となる $r$ がとれる。$r$ は $B$ の下端より大きく、$s$（したがって $B$ の上端）より小さいので $r\in B\subseteq V$。一方 $u<r<s$ なので Step 1 より $r\in U$。これは $U\cap V=\varnothing$ に反する。
+
+$s\in X=U\cup V$ なので矛盾である。
+
+::: hypcheck
+- **デデキント完備性**：$s$ の存在。**稠密性**：Step 2 の $s'$ と Step 3 の $r$。
+- 集合論の公理は分出（$S$ の定義）以外に使っていない。
+:::
+:::
+
+::: theorem 端点がなく連結なススリン線 {#set:suslin-line-complete keywords="complete Suslin line, connected Suslin line" index="連結なススリン線|れんけつなすすりんせん"}
+ススリン線が存在するならば、稠密で、端点をもたず、デデキント完備な（したがって連結な）ススリン線が存在する。
+:::
+
+::: intuition
+$\R$ を $\Q$ から作るのと同じ操作をススリン線に施す。端点を取り除き、デデキント切断で隙間を埋める。新しく加わる点は元の点で両側から近似されるので、c.c.c. も非可分性も変わらない。
+:::
+
+::: proof
+**Step 0.** \ref{set:suslin-line-nice} により、稠密なススリン線 $X$ がある。$X$ は可分でないので非可算である。
+
+**Step 1（端点を除く）.** $X'$ を、$X$ から最小元と最大元（存在すれば）を除いたものとする。$X'$ は空でない（$X$ は 3 元以上）。
+- *稠密*：$a<b$, $a,b\in X'$ なら $(a,b)\ne\varnothing$ で、その元は $a$ より大きく $b$ より小さいので $X$ の端点でなく、$X'$ に属する。したがって $X'$ の開区間は $X$ の開区間と一致する：$(a,b)_{X'}=(a,b)$。
+- *端点がない*：$a\in X'$ は $X$ の最大元でないので $a<b$ となる $b\in X$ がある。$b\in X'$ ならよい。$b=\max X$ なら稠密性より $c\in(a,b)$ があり、$c\in X'$, $a<c$。最小元についても同様。
+
+**Step 2（完備化）.** $X'$ に \ref{set:dedekind-cuts} を適用し、切断全体 $C$ と $e\colon X'\to C$ を得る。$C$ は稠密で端点をもたず、デデキント完備であり、\ref{set:complete-dense-connected} により連結。$C$ は 2 元以上をもつ（端点がない）ので、\ref{set:order-topology-basic} (4) より孤立点をもたない。
+
+**Step 3（$C$ は c.c.c.）.** $\{U_{\alpha}\mid\alpha<\omega_{1}\}$ が $C$ の互いに交わらない空でない開集合の族（添字について単射）だったとする。各 $\alpha$ について、\ref{set:order-topology-basic} (3) により $(A_{\alpha},B_{\alpha})\subseteq U_{\alpha}$, $A_{\alpha}<B_{\alpha}$ となる $A_{\alpha},B_{\alpha}$ を選び、\ref{set:dedekind-cuts} (2) を 2 回使って $A_{\alpha}<e(x_{\alpha})<e(y_{\alpha})<B_{\alpha}$ となる $x_{\alpha},y_{\alpha}\in X'$ を選ぶ。$x_{\alpha}<y_{\alpha}$ で、$X'$ の稠密性から $(x_{\alpha},y_{\alpha})\ne\varnothing$。$s\in(x_{\alpha},y_{\alpha})$ なら $e(s)\in(e(x_{\alpha}),e(y_{\alpha}))\subseteq U_{\alpha}$ なので、$\alpha\ne\beta$ について $(x_{\alpha},y_{\alpha})\cap(x_{\beta},y_{\beta})=\varnothing$。こうして $X$ の互いに交わらない空でない開区間が非可算個得られ、$X$ の c.c.c. に反する。
+
+**Step 4（$C$ は可分でない）.** $Q\subseteq C$ を $C$ で稠密な可算集合とする。$d,d'\in Q$, $d<d'$ の各組について、\ref{set:dedekind-cuts} (2) により $d<e(x_{d,d'})<d'$ となる $x_{d,d'}\in X'$ を 1 つ選び、$E=\{x_{d,d'}\mid d,d'\in Q,\ d<d'\}$ とおく。$E$ は $Q\times Q$ の部分集合の像なので可算である。$F$ を $X$ の端点（存在するもの）の集合とし、$E\cup F$ が $X$ で稠密なことを示す。
+
+$U$ を $X$ の開集合、$z\in U$ とする。$z\in F$ ならよい。$z\in X'$ なら $X'$ に端点がないので $x'<z<y'$ となる $x',y'\in X'$ があり、\ref{set:order-topology-basic} (2) により $x'\le u<z<w\le y'$, $(u,w)\subseteq U$ となる $u,w$ がある。$u,w\in X'$（$x'\le u$, $w\le y'$ より端点でない）で、$X'$ の稠密性から $u<u'<z<w'<w$ となる $u',w'\in X'$ がとれる。$C$ の開区間 $(e(u),e(u'))$ は $e$ の像の点（$u$ と $u'$ の間の点の像）を含むので空でなく、$Q$ の稠密性より $d\in Q\cap(e(u),e(u'))$ がある。同様に $d'\in Q\cap(e(w'),e(w))$。$d<e(u')<e(w')<d'$ なので $x_{d,d'}$ が定義され、$e(u)<d<e(x_{d,d'})<d'<e(w)$、すなわち $u<x_{d,d'}<w$。よって $x_{d,d'}\in U\cap E$。
+
+したがって $X$ は可分となり矛盾。
+
+**Step 5.** Step 2〜4 より $C$ は求めるススリン線である。
+
+::: hypcheck
+- **\ref{set:suslin-line-nice}**：Step 0 で稠密なススリン線をとるのに使った（性質 (2) までは使っていない）。
+- **$X$ の c.c.c.**：Step 3。**$X$ が可分でない**：Step 4。
+- **選択公理**：Step 3 の $A_{\alpha},B_{\alpha},x_{\alpha},y_{\alpha}$ の選択、Step 4 の $x_{d,d'}$ の選択と $E$ の可算性。
+:::
+:::
+
+::: theorem ススリン仮説と実数直線 {#set:sh-reals keywords="Suslin's hypothesis, characterization of the reals by ccc" index="ススリン問題|すすりんもんだい"}
+次は同値である。
+1. SH。
+2. 全順序 $X$ が (a) 端点をもたず、(b) 連結で、(c′) c.c.c. をもつならば、$\langle X,<\rangle\cong\langle\R,<\rangle$。
+:::
+
+::: proof
+**Step 1（順序同型は同相）.** $f\colon X\to X^{\ast}$ が全順序の同型ならば、$f[(a,b)]=(f(a),f(b))$, $f[(\leftarrow,b)]=(\leftarrow,f(b))$ などが成り立つ（$f$ は全単射で順序を保ち、逆写像も順序を保つ）。よって $f$ は基本開集合を基本開集合に写し、$f^{-1}$ も同様なので、$f$ は開集合を開集合に、稠密集合を稠密集合に写す。特に $X$ が可分であることと $X^{\ast}$ が可分であることは同値。
+
+**Step 2（1 ⇒ 2）.** $X$ が (a), (b), (c′) を満たすとする。SH より $X$ はススリン線でないので、c.c.c. をもつ $X$ は可分である。\ref{set:reals-order-characterization} より $X\cong\R$。
+
+**Step 3（2 ⇒ 1）.** ススリン線があったとする。\ref{set:suslin-line-complete} により、端点をもたず連結なススリン線 $X$ がある。$X$ は (a), (b), (c′) を満たすので 2 より $X\cong\R$。$\R$ は可分（$\Q$ が稠密）なので Step 1 より $X$ も可分となり、ススリン線であることに反する。
+
+::: hypcheck
+- **選択公理**：Step 3 で \ref{set:suslin-line-complete} を通じて使う。
+- **\ref{set:reals-order-characterization}**：Step 2 で使った（証明は本ページの範囲外）。
+:::
+:::
+
+::: supplement
+**ススリン問題の結末.** \ref{set:suslin-independence} により、2 は $\ZFC$ から証明も反証もできない。ススリンの「実数直線は c.c.c. で特徴付けられるか」という素朴な問いは、集合論の独立性の最初期の代表例の 1 つとなった。
+
+**完備なススリン線の性質.** \ref{set:suslin-line-complete} の $C$ はさらに、空でない開集合がどれも可分でないようにできる（\ref{set:suslin-line-nice} (2) の性質は完備化で保たれる。Step 4 の議論を開区間 $(u_{0},w_{0})$ の中で行えばよい）。
+:::
+
+## 問題 {#set:sec-suslin-problems}
+
+::: problem {#set:prob-ccc-line-no-omega1}
+全順序 $X$ が順序位相で c.c.c. をもつならば、$X$ には狭義単調増加な列 $\langle x_{\alpha}\mid\alpha<\omega_{1}\rangle$ も狭義単調減少な列も存在しないことを示せ。特にススリン線は非可算な整列部分集合をもたない。
+:::
+
+::: solution
+狭義単調増加列 $\langle x_{\alpha}\mid\alpha<\omega_{1}\rangle$ があったとする。$\alpha<\beta$ ならば、$(x_{\alpha},x_{\alpha+1})$ の元は $x_{\alpha+1}\le x_{\beta}$ より小さく、$(x_{\beta},x_{\beta+1})$ の元は $x_{\beta}$ より大きいので、開区間 $(x_{\alpha},x_{\alpha+1})$ $(\alpha<\omega_{1})$ は互いに交わらない。$A=\{\alpha<\omega_{1}\mid(x_{\alpha},x_{\alpha+1})\ne\varnothing\}$ とおく。
+
+- $A$ が非可算なら、$\{(x_{\alpha},x_{\alpha+1})\mid\alpha\in A\}$ が互いに交わらない空でない開集合の非可算族となり、c.c.c. に反する。
+- $A$ が可算なら、$A'=\{\alpha\mid\alpha+1\in A\}$ も可算（$\alpha\mapsto\alpha+1$ は単射）なので、$\omega_{1}\setminus(A\cup A')$ は非可算である（\ref{set:union-bound}）。その元 $\alpha$ について $(x_{\alpha},x_{\alpha+1})=\varnothing=(x_{\alpha+1},x_{\alpha+2})$ だから $(x_{\alpha},x_{\alpha+2})=\{x_{\alpha+1}\}$ は開集合である。相異なる $\alpha$ に対するこれらの単集合は互いに交わらないので、やはり c.c.c. に反する。
+
+減少列は $X$ の逆順序（順序位相は同じ）に対して同じ議論を行えばよい。
+
+非可算な整列部分集合 $A$ があれば、$A$ はある順序数 $\gamma$ と同型で（\ref{set:ordinal-type}）、$\gamma$ は非可算だから $\omega_{1}\le\gamma$ なので、その始めの $\omega_{1}$ 個の元が狭義単調増加列になる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

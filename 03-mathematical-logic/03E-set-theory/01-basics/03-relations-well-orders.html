@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>関係・関数・整列順序 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/01-basics/03-relations-well-orders.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 関係・関数・整列順序 {#set:page-relations-well-orders keywords="relation, function, injection, surjection, bijection, total order, well-order, order isomorphism, Axiom of Choice"}
+
+前ページで作った順序対と直積を使って、関係と関数を集合として定義し、単射・全射・全単射を導入する。後半では全順序と**整列順序**を定義し、整列集合の「硬さ」（自分の始切片と同型にならない、同型写像はただ一つ）と、任意の二つの整列集合が比較できるという**比較定理**を詳しく証明する。最後に、選択公理を「任意の集合は整列できる」という形で導入する。
+
+## 記法と定義の確認 {#set:sec-rel-notation}
+
+::: notation
+- 順序対 $\langle x,y\rangle$ とその特徴付け $\langle x,y\rangle=\langle x',y'\rangle\Rightarrow x=x'\land y=y'$ は \ref{set:ordered-pair}, \ref{set:ordered-pair-characterization}、直積 $A\times B$ は \ref{set:cartesian-product} による。和集合 $\bigcup$、共通部分・差集合は \ref{set:union}, \ref{set:intersection-difference}、分出の記法 $\{x\in z\mid\varphi\}$ は \ref{set:separation-notation} の意味である。
+- 本ページの結果は、最後の選択公理（\ref{set:ax-choice}）を除いて $\ZF^{-}-\mathrm{P}-\mathrm{Inf}$（\ref{set:zf-subsystems}）で証明される。すなわち基礎・無限・冪集合・選択のいずれの公理も使わない。
+- 例では、自然数全体 $\N$・整数全体 $\Z$・有理数全体 $\Q$ などを通常の意味で使う（公理からの構成は \ref{set:omega} 以降）。例は証明に使わない。
+:::
+
+## 関係 {#set:sec-relations}
+
+::: definition 関係・定義域・値域 {#set:relation keywords="relation, domain, range, inverse relation" index="関係|かんけい, 二項関係|にこうかんけい, 定義域|ていぎいき, 値域|ちいき, 逆関係|ぎゃくかんけい"}
+元がすべて順序対である集合 $R$ を**関係**という。$\langle x,y\rangle\in R$ を $xRy$ とも書く。任意の集合 $R$ に対し
+$$
+\dom(R)=\{x\mid\exists y\,(\langle x,y\rangle\in R)\},\qquad\ran(R)=\{y\mid\exists x\,(\langle x,y\rangle\in R)\}
+$$
+をそれぞれ $R$ の**定義域**・**値域**といい、
+$$
+R^{-1}=\{\langle x,y\rangle\mid\langle y,x\rangle\in R\}
+$$
+を $R$ の**逆関係**という。$R\subseteq A\times A$ のとき、$R$ を **$A$ 上の関係**という。
+:::
+
+::: intuition
+「$x$ と $y$ がこの関係にある」という情報を、関係にある組 $\langle x,y\rangle$ 全体の集合として表す。大小関係・整除関係・関数のグラフなどはすべてこの意味の関係である。右辺の集まりが集合であることは次の命題で確かめる。
+:::
+
+::: proposition 定義域・値域・逆関係の存在 {#set:dom-ran-existence}
+任意の集合 $R$ について、$\dom(R)$, $\ran(R)$, $R^{-1}$ は集合として存在し、
+$$
+\dom(R)\cup\ran(R)\subseteq\bigcup\bigcup R
+\label{set:eq-dom-ran-bound}
+$$
+が成り立つ。さらに $R$ が関係ならば $R\subseteq\dom(R)\times\ran(R)$ かつ $(R^{-1})^{-1}=R$ である。
+:::
+
+::: proof
+**Step 1（\eqref{set:eq-dom-ran-bound}）.** $\langle x,y\rangle\in R$ とする。$\langle x,y\rangle=\{\{x\},\{x,y\}\}$ なので $\{x\}\in\langle x,y\rangle\in R$ かつ $\{x,y\}\in\langle x,y\rangle\in R$、したがって和集合の定義より $\{x\}\in\bigcup R$ かつ $\{x,y\}\in\bigcup R$。さらに $x\in\{x\}$, $y\in\{x,y\}$ なので $x\in\bigcup\bigcup R$ かつ $y\in\bigcup\bigcup R$。
+
+**Step 2（存在）.** Step 1 より、$\dom(R)=\{x\in\bigcup\bigcup R\mid\exists y\,(\langle x,y\rangle\in R)\}$、$\ran(R)=\{y\in\bigcup\bigcup R\mid\exists x\,(\langle x,y\rangle\in R)\}$ と分出で切り出せる。$R^{-1}$ については、$\langle x,y\rangle$ が $R^{-1}$ の条件を満たせば $\langle y,x\rangle\in R$ より $x\in\ran(R)$, $y\in\dom(R)$ なので
+$$
+R^{-1}=\{z\in\ran(R)\times\dom(R)\mid\exists x\,\exists y\,(z=\langle x,y\rangle\land\langle y,x\rangle\in R)\}
+$$
+と切り出せる。
+
+**Step 3（$R\subseteq\dom(R)\times\ran(R)$）.** $R$ が関係なら、$z\in R$ はある $x,y$ で $z=\langle x,y\rangle$ と書け、定義より $x\in\dom(R)$, $y\in\ran(R)$。よって $z\in\dom(R)\times\ran(R)$。
+
+**Step 4（$(R^{-1})^{-1}=R$）.** $(R^{-1})^{-1}$ の元はある $x,y$ で $\langle x,y\rangle$ の形をしていて $\langle y,x\rangle\in R^{-1}$、すなわち $\langle x,y\rangle\in R$ を満たすもの全体である（2 段目では順序対の特徴付けにより $\langle y,x\rangle$ の成分が $y,x$ と定まることを使う）。$R$ が関係なら $R$ の元はすべて順序対なので、これはちょうど $R$ の元全体である。外延性より等しい。
+
+::: hypcheck
+- **和集合の公理**：Step 1, 2 で $\bigcup\bigcup R$ を作るのに使った。
+- **分出公理**：Step 2。
+- **直積の存在**（\ref{set:cartesian-product-existence}、置換公理を使う）：Step 2 の $R^{-1}$。
+- **順序対の特徴付け**（\ref{set:ordered-pair-characterization}）：Step 4。
+- **$R$ が関係であること**：Step 3, 4。任意の集合 $R$ では $R^{-1}$ は $R$ の順序対でない元を捨ててしまうので、$(R^{-1})^{-1}=R$ は成り立たない。
+:::
+:::
+
+::: definition 関係の合成 {#set:relation-composition keywords="composition of relations" index="合成|ごうせい"}
+関係 $R,S$ に対し
+$$
+S\circ R=\{\langle x,z\rangle\mid\exists y\,(\langle x,y\rangle\in R\land\langle y,z\rangle\in S)\}
+$$
+を $R$ と $S$ の**合成**という。これは $\dom(R)\times\ran(S)$ の部分集合として分出で得られる。
+:::
+
+## 関数 {#set:sec-functions}
+
+::: definition 関数 {#set:function keywords="function, map, restriction, image, preimage" index="関数|かんすう, 写像|しゃぞう, 制限|せいげん, 像|ぞう, 逆像|ぎゃくぞう"}
+関係 $f$ が
+$$
+\forall x\in\dom(f)\;\exists!y\;(\langle x,y\rangle\in f)
+$$
+を満たすとき、$f$ を**関数**（**写像**）という。$x\in\dom(f)$ に対し、$\langle x,y\rangle\in f$ となる唯一の $y$ を $f(x)$ と書く。$f\colon A\to B$ は「$f$ は関数で、$\dom(f)=A$ かつ $\ran(f)\subseteq B$」の略記である。
+
+$f\colon A\to B$ と $C\subseteq A$, $D\subseteq B$ に対し、次のように定める。
+- **制限**：$f\restr{C}=\{\langle x,y\rangle\in f\mid x\in C\}$。
+- **像**：$f[C]=\ran(f\restr{C})=\{f(x)\mid x\in C\}$。
+- **逆像**：$f^{-1}[D]=\{x\in A\mid f(x)\in D\}$。
+:::
+
+::: intuition
+関数とはそのグラフのことである、という立場をとる。したがって関数 $f$ は定義域と値の組によって完全に決まるが、「終域」$B$ は $f$ だけからは決まらない（$f\colon A\to B$ かつ $B\subseteq B'$ なら $f\colon A\to B'$）。そのため全射の概念（次節）は $B$ を指定して初めて意味をもつ。
+
+Kunen は像を $f''C$ と書く。集合論では $A$ の元がしばしば $A$ の部分集合でもある（たとえば順序数）ので、$f(C)$ と書くと「$C$ における値」と「$C$ の像」が紛らわしいからである。本サイトでは $f[C]$ と書く。
+:::
+
+::: example
+- $A$ 上の**恒等写像** $\id_{A}=\{\langle x,x\rangle\mid x\in A\}$ は $A\to A$ の関数である。
+- $\{\langle 0,1\rangle,\langle 1,1\rangle\}$ は関数だが、$\{\langle 0,0\rangle,\langle 0,1\rangle\}$ は $0$ に二つの値を対応させるので関数でない。
+- $\varnothing$ は $\dom(\varnothing)=\varnothing$ の関数で、任意の $B$ について $\varnothing\colon\varnothing\to B$。一方 $A\neq\varnothing$ なら $A\to\varnothing$ の関数はない。
+:::
+
+::: proposition 関数の基本性質 {#set:function-basic keywords="equality of functions, composition of functions"}
+1. **（関数の相等）** 関数 $f,g$ が $\dom(f)=\dom(g)$ を満たし、すべての $x\in\dom(f)$ について $f(x)=g(x)$ ならば $f=g$。
+2. **（合成）** $f\colon A\to B$, $g\colon B\to C$ ならば $g\circ f\colon A\to C$ であり、$(g\circ f)(x)=g(f(x))$。
+3. **（結合律と単位）** $f\colon A\to B$, $g\colon B\to C$, $h\colon C\to D$ ならば $h\circ(g\circ f)=(h\circ g)\circ f$ であり、$f\circ\id_{A}=f=\id_{B}\circ f$。
+4. **（制限）** $f\colon A\to B$, $C\subseteq A$ ならば $f\restr{C}\colon C\to B$ で、$x\in C$ について $(f\restr{C})(x)=f(x)$。
+:::
+
+::: proof
+**1.** $z\in f$ とすると、$f$ は関係なので $z=\langle x,y\rangle$ と書け、$x\in\dom(f)$, $y=f(x)$。仮定より $x\in\dom(g)$ かつ $g(x)=f(x)=y$ なので $\langle x,y\rangle\in g$。よって $f\subseteq g$。対称に $g\subseteq f$ であり、外延性より $f=g$。
+
+**2.** $x\in A$ とする。$y=f(x)\in B$, $z=g(y)$ とおくと $\langle x,y\rangle\in f$, $\langle y,z\rangle\in g$ なので $\langle x,z\rangle\in g\circ f$。よって $\dom(g\circ f)\supseteq A$。逆に $\langle x,z'\rangle\in g\circ f$ ならある $y'$ で $\langle x,y'\rangle\in f$, $\langle y',z'\rangle\in g$。$f$ が関数なので $y'=f(x)=y$、$g$ が関数なので $z'=g(y)=z$。したがって $\dom(g\circ f)=A$ で、各 $x$ の値はただ一つ $g(f(x))\in C$ である。$g\circ f$ の元はすべて順序対なので、$g\circ f$ は関数で $g\circ f\colon A\to C$。
+
+**3.** 2 より両辺とも $\dom=A$ の関数で、$x\in A$ における値は $h(g(f(x)))$ で一致する。1 より等しい。同様に $f\circ\id_{A}$ と $\id_{B}\circ f$ はどちらも定義域 $A$ で値 $f(x)$ をとるので $f$ に等しい。
+
+**4.** $f\restr{C}\subseteq f$ は関係で、$x\in C$ なら $\langle x,f(x)\rangle\in f\restr{C}$、$x\notin C$ なら $\langle x,y\rangle\notin f\restr{C}$。よって $\dom(f\restr{C})=C$ で、$\langle x,y\rangle\in f\restr{C}\Rightarrow\langle x,y\rangle\in f\Rightarrow y=f(x)$ より値は一意に $f(x)$。
+
+::: hypcheck
+- **外延性の公理**：1 の最後。
+- **順序対の特徴付け**：1 で $z=\langle x,y\rangle$ の成分から $x\in\dom(f)$ を読み取る部分、2 で合成の元の成分を比べる部分。
+- **$f,g$ が関数であること（値の一意性）**：2 の後半。
+:::
+:::
+
+## 単射・全射・全単射 {#set:sec-injection-surjection}
+
+::: definition 単射・全射・全単射 {#set:injection-surjection keywords="injection, one-to-one, surjection, onto, bijection" index="単射|たんしゃ, 全射|ぜんしゃ, 全単射|ぜんたんしゃ, 一対一|いちたいいち"}
+$f\colon A\to B$ とする。
+- 逆関係 $f^{-1}$ が関数であるとき、$f$ は**単射**（**1 対 1**）であるという。
+- $\ran(f)=B$ であるとき、$f$ は（$B$ への）**全射**であるという。
+- 単射かつ全射であるとき**全単射**であるという。
+:::
+
+::: intuition
+単射は「異なる元を異なる元に送る」、全射は「$B$ のどの元にも何かが送られてくる」、全単射は「$A$ と $B$ の元がもれなく 1 対 1 に対応する」ことである。Kunen に従って単射を「逆関係も関数」と定義したが、次の命題の 1 のとおり通常の定義と同値である。
+:::
+
+::: proposition 単射・全射の基本性質 {#set:injection-surjection-basic}
+$f\colon A\to B$, $g\colon B\to C$ とする。
+1. $f$ が単射であることと、$\forall x,x'\in A\,(f(x)=f(x')\to x=x')$ は同値である。
+2. $f,g$ がともに単射（全射、全単射）ならば $g\circ f$ も単射（$C$ への全射、全単射）である。
+3. $f$ が全単射ならば $f^{-1}\colon B\to A$ も全単射で、$f^{-1}\circ f=\id_{A}$, $f\circ f^{-1}=\id_{B}$。
+4. $h\colon B\to A$ が $h\circ f=\id_{A}$ を満たすならば、$f$ は単射で $h$ は $A$ への全射である。
+:::
+
+::: proof
+**1.** $\dom(f^{-1})=\ran(f)$ である（$\langle y,x\rangle\in f^{-1}\iff\langle x,y\rangle\in f$）。
+
+($\Rightarrow$) $f(x)=f(x')=y$ なら $\langle y,x\rangle,\langle y,x'\rangle\in f^{-1}$。$f^{-1}$ が関数なので $x=x'$。
+
+($\Leftarrow$) $f^{-1}$ は関係である。$y\in\dom(f^{-1})$ について $\langle y,x\rangle,\langle y,x'\rangle\in f^{-1}$ とすると $f(x)=y=f(x')$ なので仮定より $x=x'$。よって値は一意で、$f^{-1}$ は関数。
+
+**2.** *単射.* $g(f(x))=g(f(x'))$ なら $g$ の単射性（1）より $f(x)=f(x')$、$f$ の単射性より $x=x'$。*全射.* $z\in C$ に対し $g$ が全射なので $g(y)=z$ となる $y\in B$ があり、$f$ が全射なので $f(x)=y$ となる $x\in A$ がある。$(g\circ f)(x)=z$。全単射は両者を合わせる。
+
+**3.** $f$ が単射なので $f^{-1}$ は関数で、$\dom(f^{-1})=\ran(f)=B$（全射性）、$\ran(f^{-1})=\dom(f)=A$。よって $f^{-1}\colon B\to A$ は $A$ への全射。$(f^{-1})^{-1}=f$（\ref{set:dom-ran-existence}）は関数なので $f^{-1}$ は単射。$x\in A$ について $\langle f(x),x\rangle\in f^{-1}$ より $f^{-1}(f(x))=x$、したがって \ref{set:function-basic} の 1 から $f^{-1}\circ f=\id_{A}$。$y\in B$ について $x=f^{-1}(y)$ とおくと $\langle x,y\rangle\in f$ より $f(f^{-1}(y))=y$、よって $f\circ f^{-1}=\id_{B}$。
+
+**4.** $f(x)=f(x')$ なら $x=h(f(x))=h(f(x'))=x'$ なので $f$ は単射。任意の $x\in A$ について $x=h(f(x))\in\ran(h)$ なので $h$ は $A$ への全射。
+
+::: hypcheck
+- **順序対の特徴付け**：1 で $\dom(f^{-1})=\ran(f)$ を読み取る部分。
+- **\ref{set:function-basic}**：3 で写像の相等を、2 と 4 で合成の値の計算を使った。
+- 選択公理は使っていない。4 の逆「全射 $h\colon B\to A$ があれば $h\circ f=\id_{A}$ となる $f$ がある」には一般に選択公理が要る（\ref{set:surjection-cardinality}）。
+:::
+:::
+
+## 全順序 {#set:sec-total-orders}
+
+以下、順序は $<$ 型の**狭義の**順序で考える。
+
+::: definition 半順序・全順序 {#set:total-order keywords="strict partial order, strict total order, linear order" index="全順序|ぜんじゅんじょ, 線形順序|せんけいじゅんじょ, 半順序|はんじゅんじょ, 狭義の順序|きょうぎのじゅんじょ"}
+$A$ を集合、$R$ を関係とする。組 $\langle A,R\rangle$ が次の 1, 2 を満たすとき**（狭義の）半順序**であるといい、さらに 3 も満たすとき**（狭義の）全順序**であるという。後者のとき $R$ は $A$ を**全順序付ける**ともいう。
+1. **非反射律**：$\forall x\in A\;\lnot(xRx)$。
+2. **推移律**：$\forall x,y,z\in A\;(xRy\land yRz\to xRz)$。
+3. **三分律**：$\forall x,y\in A\;(x=y\lor xRy\lor yRx)$。
+:::
+
+::: intuition
+ここでは $R\subseteq A\times A$ を**仮定しない**。条件はすべて $A$ の元についてのものなので、$\langle A,R\rangle$ が全順序ならば、任意の $B\subseteq A$ について $\langle B,R\rangle$ も全順序になる（同じ $R$ を使い回せる）。これが後で部分集合への制限を扱う際に記法を軽くする。
+
+全順序では、1 と 2 から $xRy$ と $yRx$ が同時には成り立たないこと（**非対称律**：両方成り立てば推移律より $xRx$ となり 1 に反する）が従うので、三分律の三つの場合はちょうど一つだけが成り立つ。
+:::
+
+::: example
+- $\langle\N,<\rangle$, $\langle\Z,<\rangle$, $\langle\Q,<\rangle$, $\langle\R,<\rangle$ は全順序である。
+- 集合 $X$ の部分集合全体の上の真部分集合関係 $\subsetneq$ は半順序だが、$X$ が 2 元以上なら全順序でない（$\{a\}$ と $\{b\}$ は比較できない）。
+- 正の整数上の「$m$ が $n$ の真の約数」は半順序だが全順序でない。
+:::
+
+::: definition 順序同型 {#set:order-isomorphism keywords="order isomorphism, isomorphic orderings" index="順序同型|じゅんじょどうけい, 同型写像|どうけいしゃぞう"}
+関係 $R,S$ と集合 $A,B$ について、全単射 $f\colon A\to B$ であって
+$$
+\forall x,y\in A\;\bigl(xRy\leftrightarrow f(x)\,S\,f(y)\bigr)
+$$
+を満たすものを $\langle A,R\rangle$ から $\langle B,S\rangle$ への**同型写像**という。同型写像が存在するとき $\langle A,R\rangle\cong\langle B,S\rangle$ と書き、**同型**であるという。$A=B$, $R=S$ のとき同型写像を**自己同型**という。
+:::
+
+::: intuition
+同型な順序は、元の「名前」を付け替えただけで順序の構造としては同じものである。順序の性質（全順序である、最小元をもつ、整列している、…）はすべて同型で保たれる（次の命題）。
+:::
+
+::: proposition 同型の基本性質 {#set:order-isomorphism-basic}
+1. $\id_{A}$ は $\langle A,R\rangle$ の自己同型である。
+2. $f$ が $\langle A,R\rangle$ から $\langle B,S\rangle$ への同型写像なら、$f^{-1}$ は $\langle B,S\rangle$ から $\langle A,R\rangle$ への同型写像である。
+3. $f\colon\langle A,R\rangle\cong\langle B,S\rangle$, $g\colon\langle B,S\rangle\cong\langle C,T\rangle$ が同型写像なら、$g\circ f$ は $\langle A,R\rangle$ から $\langle C,T\rangle$ への同型写像である。
+4. $\langle A,R\rangle\cong\langle B,S\rangle$ で $\langle A,R\rangle$ が全順序ならば、$\langle B,S\rangle$ も全順序である。
+:::
+
+::: proof
+**1.** $\id_{A}$ は全単射で、$xRy\leftrightarrow\id_{A}(x)\,R\,\id_{A}(y)$ は自明。
+
+**2.** $f^{-1}$ は全単射（\ref{set:injection-surjection-basic} の 3）。$u,v\in B$ に対し $x=f^{-1}(u)$, $y=f^{-1}(v)$ とおくと $f(x)=u$, $f(y)=v$ なので、$f$ の条件より $f^{-1}(u)\,R\,f^{-1}(v)\iff xRy\iff uSv$。
+
+**3.** $g\circ f$ は全単射（\ref{set:injection-surjection-basic} の 2）で、$xRy\iff f(x)Sf(y)\iff g(f(x))\,T\,g(f(y))$。
+
+**4.** $u,v,w\in B$ とし、$x=f^{-1}(u)$ などとおく。*非反射律*：$uSu$ なら $xRx$ となり矛盾。*推移律*：$uSv$, $vSw$ なら $xRy$, $yRz$ より $xRz$、よって $uSw$。*三分律*：$x=y$, $xRy$, $yRx$ のいずれかが成り立ち、それぞれ $u=v$, $uSv$, $vSu$ を与える。
+
+::: hypcheck
+- **\ref{set:injection-surjection-basic}**：2, 3 で全単射性を得るのに使った。
+- **同型写像の条件が「$\leftrightarrow$」であること**：2 で逆向きの保存を得るのに使った。
+:::
+:::
+
+::: supplement
+全順序どうしの間では、「全単射で $xRy\to f(x)Sf(y)$（片方向）」だけで同型写像になる。実際 $f(x)Sf(y)$ のとき、三分律より $x=y$ か $xRy$ か $yRx$ だが、$x=y$ なら $f(x)Sf(x)$ で非反射律に反し、$yRx$ なら $f(y)Sf(x)$ となって非対称律に反するので $xRy$。半順序ではこれは成り立たない（$\{a,b\}$ 上の空の順序から $a<b$ の順序への恒等写像）。
+:::
+
+## 整列順序 {#set:sec-well-orders}
+
+::: definition 整列順序 {#set:well-order keywords="well-ordering, well-ordered set, least element" index="整列順序|せいれつじゅんじょ, 整列集合|せいれつしゅうごう, 最小元|さいしょうげん"}
+$\langle A,R\rangle$ を全順序とする。$X\subseteq A$ の元 $x$ が $\forall y\in X\;\lnot(yRx)$ を満たすとき、$x$ を $X$ の **$R$-最小元**という。$A$ の空でない任意の部分集合が $R$-最小元をもつとき、$\langle A,R\rangle$ を**整列順序**（**整列集合**）といい、$R$ は $A$ を**整列する**という。
+:::
+
+::: intuition
+全順序では三分律により、$x$ が $X$ の $R$-最小元であることは「$X$ の $x$ 以外のすべての元 $y$ について $xRy$」と同値であり、最小元は（あれば）ただ一つである（$x,x'$ がともに最小元で $x\neq x'$ なら $xRx'$ か $x'Rx$ で、どちらかの最小性に反する）。
+
+整列順序とは「どの部分を取り出しても先頭がある」順序であり、元を先頭から $1$ 番目、$2$ 番目、…、と（無限の先まで）数え上げていける順序である。この性質が**超限帰納法**（\ref{set:transfinite-induction}）を可能にする：性質 $P$ が成り立たない元があれば、その中の最小元を考えて矛盾を導く、という論法である。本ページの以下の証明はすべてこの形をしている。
+:::
+
+::: example
+- $\langle\N,<\rangle$ は整列順序である。$\langle\Z,<\rangle$, $\langle\Q,<\rangle$, $\langle\R,<\rangle$ は整列順序でない（全体が最小元をもたない）。$\{x\in\Q\mid x\ge 0\}$ も整列順序でない（$\{x\in\Q\mid x>0\}$ が最小元をもたない）。
+- $\N$ 上で「$0$ を最後に回す」順序 $1\lhd 2\lhd 3\lhd\cdots\lhd 0$（$x\lhd y\iff(x\neq 0\land y=0)\lor(x\neq 0\land y\neq 0\land x<y)$）も整列順序であるが、最大元をもつので $\langle\N,<\rangle$ とは同型でない。
+- $\N\times\N$ 上の辞書式順序（$\langle a,b\rangle\lhd\langle c,d\rangle\iff a<c\lor(a=c\land b<d)$）は整列順序である。空でない $X$ に対し、まず第 1 成分の最小値 $a_{0}$ をとり、次に第 1 成分が $a_{0}$ のものの中で第 2 成分の最小値をとればよい。
+- 空集合上の空の関係 $\langle\varnothing,\varnothing\rangle$ は（空虚に）整列順序である。
+:::
+
+::: definition 始切片 {#set:initial-segment keywords="initial segment, pred" index="始切片|しせっぺん, 切片|せっぺん"}
+関係 $R$ と $x\in A$ に対し
+$$
+\mathrm{pred}(A,x,R)=\{y\in A\mid yRx\}
+$$
+を $x$ で定まる $A$ の**始切片**という。また $X\subseteq A$ が
+$$
+\forall x\in X\;\forall y\in A\;(yRx\to y\in X)
+$$
+を満たすとき、$X$ は $A$ の中で**下に閉じている**という。
+:::
+
+::: intuition
+$\mathrm{pred}(A,x,R)$ は「$x$ より前にある元全体」である。$\langle A,R\rangle$ が全順序なら $\mathrm{pred}(A,x,R)$ は下に閉じている（$yRx$, $zRy$ なら $zRx$）。次の補題のとおり、整列順序ではその逆も（全体を除いて）成り立つ。
+:::
+
+::: lemma 整列順序の基本補題 {#set:well-order-basic-lemmas}
+$\langle A,R\rangle$ を整列順序とする。
+1. 任意の $B\subseteq A$ について $\langle B,R\rangle$ は整列順序である。特に $\mathrm{pred}(A,x,R)$ は $R$ で整列される。
+2. $y,x\in A$, $yRx$ ならば $\mathrm{pred}(\mathrm{pred}(A,x,R),y,R)=\mathrm{pred}(A,y,R)$。
+3. $\langle A,R\rangle$ と同型な $\langle B,S\rangle$ は整列順序である。
+:::
+
+::: proof
+**1.** $\langle B,R\rangle$ は全順序である（全順序の条件は $A$ の元についての全称命題なので、$B$ の元についても成り立つ）。$B$ の空でない部分集合 $X$ は $A$ の空でない部分集合でもあるので $R$-最小元をもつ。最小元の条件「$\forall y\in X\,\lnot(yRx)$」は $X$ だけで決まるので、それは $\langle B,R\rangle$ における最小元でもある。
+
+**2.** 任意の $z$ について、左辺に属することは「$z\in A\land zRx\land zRy$」、右辺に属することは「$z\in A\land zRy$」である。$zRy$ と仮定 $yRx$ から推移律で $zRx$ が従うので、両者は同値。外延性より等しい。
+
+**3.** \ref{set:order-isomorphism-basic} の 4 より $\langle B,S\rangle$ は全順序。$f\colon\langle A,R\rangle\cong\langle B,S\rangle$ とし、$\varnothing\neq Y\subseteq B$ をとる。$X=f^{-1}[Y]\subseteq A$ は、$Y$ の元 $u$ に対し $f^{-1}(u)\in X$ なので空でなく、$R$-最小元 $x$ をもつ。$u=f(x)\in Y$ が $Y$ の $S$-最小元である：$v\in Y$ が $vSu$ なら、$y=f^{-1}(v)\in X$ について $yRx$ となり $x$ の最小性に反する。
+
+::: hypcheck
+- **推移律**：2。
+- **\ref{set:order-isomorphism-basic}**：3 で全順序性と $f^{-1}$ が順序を保つことに使った。
+- **分出公理**：1 の $\mathrm{pred}$、3 の逆像 $f^{-1}[Y]$ の存在。
+:::
+:::
+
+::: lemma 下に閉じた集合は始切片 {#set:downward-closed-initial-segment}
+$\langle A,R\rangle$ を整列順序、$X\subseteq A$ を下に閉じた部分集合とする。このとき $X=A$ であるか、または $X=\mathrm{pred}(A,a,R)$ となる $a\in A$ がただ一つ存在する。
+:::
+
+::: proof
+$X\neq A$ とする。
+
+**Step 1（$a$ の選び方）.** $A\setminus X$ は空でないので $R$-最小元 $a$ をもつ。
+
+**Step 2（$\mathrm{pred}(A,a,R)\subseteq X$）.** $y\in A$, $yRa$ とする。$y\notin X$ なら $y\in A\setminus X$ かつ $yRa$ となり $a$ の最小性に反する。よって $y\in X$。
+
+**Step 3（$X\subseteq\mathrm{pred}(A,a,R)$）.** $y\in X$ とする。三分律より $y=a$, $aRy$, $yRa$ のいずれか。$y=a$ なら $a\in X$ となり $a\in A\setminus X$ に反する。$aRy$ なら、$X$ が下に閉じていて $y\in X$ なので $a\in X$ となり、やはり矛盾。よって $yRa$、すなわち $y\in\mathrm{pred}(A,a,R)$。
+
+**Step 4（一意性）.** $\mathrm{pred}(A,a,R)=\mathrm{pred}(A,a',R)$ かつ $a\neq a'$ とする。三分律より例えば $aRa'$ とすると $a\in\mathrm{pred}(A,a',R)=\mathrm{pred}(A,a,R)$ で $aRa$ となり非反射律に反する。$a'Ra$ の場合も同様。
+
+::: hypcheck
+- **整列性**：Step 1 で $A\setminus X$ の最小元をとるのに使った。
+- **三分律**：Step 3, 4。
+- **下に閉じていること**：Step 3。
+:::
+:::
+
+::: supplement
+全順序では下に閉じた集合が始切片とは限らない。$\langle\Q,<\rangle$ で $X=\{x\in\Q\mid x^{2}<2\lor x<0\}$ は下に閉じているが、どの $a\in\Q$ についても $\mathrm{pred}(\Q,a,<)$ に等しくない（デデキント切断）。
+:::
+
+::: lemma 同型写像は始切片を始切片に移す {#set:iso-preserves-initial-segment}
+$f$ を $\langle A,R\rangle$ から $\langle B,S\rangle$ への同型写像とし、$x\in A$ とする。このとき $f[\mathrm{pred}(A,x,R)]=\mathrm{pred}(B,f(x),S)$ であり、$f\restr{\mathrm{pred}(A,x,R)}$ は $\langle\mathrm{pred}(A,x,R),R\rangle$ から $\langle\mathrm{pred}(B,f(x),S),S\rangle$ への同型写像である。
+:::
+
+::: proof
+**Step 1（像の一致）.** $y\in\mathrm{pred}(A,x,R)$ なら $yRx$ より $f(y)\,S\,f(x)$ なので $f(y)\in\mathrm{pred}(B,f(x),S)$。逆に $w\in\mathrm{pred}(B,f(x),S)$ なら、$f$ が全射なので $w=f(y)$ となる $y\in A$ があり、$f(y)Sf(x)$ から同型写像の条件の逆向きで $yRx$。よって $w\in f[\mathrm{pred}(A,x,R)]$。
+
+**Step 2（同型写像であること）.** $g=f\restr{\mathrm{pred}(A,x,R)}$ は \ref{set:function-basic} の 4 より $\mathrm{pred}(A,x,R)$ 上の関数で、Step 1 より値域はちょうど $\mathrm{pred}(B,f(x),S)$、すなわち全射である。単射性と $yRz\leftrightarrow g(y)Sg(z)$ は $f$ のものをそのまま受け継ぐ。
+
+::: hypcheck
+- **同型写像の条件の両方向と全射性**：Step 1。
+:::
+:::
+
+::: lemma 増加写像は元を追い越さない {#set:well-order-increasing}
+$\langle A,R\rangle$ を整列順序、$f\colon A\to A$ を**狭義増加**、すなわち $\forall x,y\in A\,(xRy\to f(x)Rf(y))$ を満たす写像とする。このとき、すべての $x\in A$ について $\lnot\bigl(f(x)\,R\,x\bigr)$、すなわち $x=f(x)$ または $xRf(x)$ である。
+:::
+
+::: intuition
+整列集合の中では、順序を保ったまま元を「前に引き戻す」ことはできない。$\Z$ の $n\mapsto n-1$ のように全体を 1 つずつ前にずらす写像は、先頭がある整列集合では先頭の行き場がなくなる。
+:::
+
+::: proof
+**Step 1.** $X=\{x\in A\mid f(x)\,R\,x\}$ とおき（分出）、$X\neq\varnothing$ と仮定する。$X$ の $R$-最小元 $x_{0}$ をとる。
+
+**Step 2.** $x_{0}\in X$ より $f(x_{0})\,R\,x_{0}$。$f$ は狭義増加なので、$f(x_{0})\,R\,x_{0}$ に $f$ を施して $f(f(x_{0}))\,R\,f(x_{0})$。これは $y=f(x_{0})$ が $f(y)\,R\,y$ を満たすこと、すなわち $f(x_{0})\in X$ を意味する。
+
+**Step 3.** ところが $f(x_{0})\,R\,x_{0}$ かつ $f(x_{0})\in X$ なので、$x_{0}$ が $X$ の最小元であることに反する。よって $X=\varnothing$。最後の言い換えは三分律による。
+
+::: hypcheck
+- **整列性**：Step 1 で $X$ の最小元をとるのに使った（ここが本質）。
+- **狭義増加性**：Step 2。
+- **分出公理**：Step 1。
+:::
+:::
+
+::: theorem 整列集合は自分の始切片と同型にならない {#set:well-order-no-initial-iso keywords="well-order not isomorphic to initial segment, rigidity of well-orders" index="整列集合の剛性|せいれつしゅうごうのごうせい"}
+$\langle A,R\rangle$ を整列順序とすると、任意の $x\in A$ について
+$$
+\langle A,R\rangle\not\cong\langle\mathrm{pred}(A,x,R),R\rangle.
+$$
+:::
+
+::: intuition
+整列集合は、自分の「真の頭の部分」と同じ形をしていない。無限集合は自分の真部分集合と 1 対 1 に対応しうる（$\N$ と偶数全体など）が、**順序まで保って**始切片と対応させることはできない。この「硬さ」が、順序数（\ref{set:ordinal}）が整列集合の型をただ一つに代表できる理由になる。
+:::
+
+::: proof
+**Step 1.** 同型写像 $f\colon\langle A,R\rangle\to\langle\mathrm{pred}(A,x,R),R\rangle$ があったと仮定する。$\mathrm{pred}(A,x,R)\subseteq A$ なので、$f$ は $A\to A$ の写像ともみなせ、同型写像の条件より狭義増加である。
+
+**Step 2.** \ref{set:well-order-increasing} より $\lnot\bigl(f(x)\,R\,x\bigr)$。
+
+**Step 3.** 一方 $f(x)\in\mathrm{pred}(A,x,R)$ なので $f(x)\,R\,x$。Step 2 と矛盾する。
+
+::: hypcheck
+- **整列性**：Step 2 で \ref{set:well-order-increasing} を使うところ。
+- **同型写像の条件（片方向 $xRy\to f(x)Rf(y)$ と $\ran f\subseteq\mathrm{pred}(A,x,R)$）**：Step 1, 3。全単射性は使っていないので、実際には「$A$ から $\mathrm{pred}(A,x,R)$ への狭義増加写像は存在しない」が示されている。
+- 選択公理は使わない。
+:::
+:::
+
+::: supplement
+**整列性は外せない.** $\langle\Z,<\rangle$ では $n\mapsto n-1$ が $\Z$ から $\mathrm{pred}(\Z,0,<)=\{n\mid n<0\}$ への同型写像になる。$\langle\Q,<\rangle$ も始切片 $\{x\in\Q\mid x<0\}$ と同型である（$x\ge 0$ には $x\mapsto -1/(1+x)$、$x<0$ には $x\mapsto x-1$ を用いると、$\Q$ から $\{x\in\Q\mid x<0\}$ への順序を保つ全単射になる）。
+
+**Kunen の証明法.** Kunen は「$f(y)\neq y$ となる最小の $y$」を考える証明を示唆している。上の \ref{set:well-order-increasing} を経由すると、次の一意性定理にもそのまま使える。
+:::
+
+::: theorem 同型写像の一意性 {#set:well-order-iso-unique keywords="uniqueness of isomorphism between well-orders, rigidity" index="整列集合の自己同型|せいれつしゅうごうのじこどうけい"}
+$\langle A,R\rangle$, $\langle B,S\rangle$ を同型な整列順序とすると、$\langle A,R\rangle$ から $\langle B,S\rangle$ への同型写像はただ一つである。特に、整列順序の自己同型は恒等写像だけである。
+:::
+
+::: intuition
+二つの整列集合が同型なら、その対応のさせ方には選択の余地がない：先頭は先頭へ、2 番目は 2 番目へ、…と強制的に決まる。
+:::
+
+::: proof
+$f,g$ をともに $\langle A,R\rangle$ から $\langle B,S\rangle$ への同型写像とする。
+
+**Step 1.** $h=g^{-1}\circ f$ とおくと、\ref{set:order-isomorphism-basic} の 2, 3 より $h$ は $\langle A,R\rangle$ の自己同型、その逆 $h^{-1}=f^{-1}\circ g$ も自己同型である。特にどちらも $A\to A$ の狭義増加写像。
+
+**Step 2.** $x\in A$ を任意にとる。\ref{set:well-order-increasing} を $h$ に適用して $\lnot\bigl(h(x)\,R\,x\bigr)$。
+
+**Step 3.** \ref{set:well-order-increasing} を $h^{-1}$ と元 $h(x)$ に適用して $\lnot\bigl(h^{-1}(h(x))\,R\,h(x)\bigr)$、すなわち $\lnot\bigl(x\,R\,h(x)\bigr)$。
+
+**Step 4.** 三分律と Step 2, 3 より $h(x)=x$、すなわち $g^{-1}(f(x))=x$。両辺に $g$ を施して $f(x)=g(x)$。
+
+**Step 5.** $f,g$ は定義域 $A$ が等しく、すべての $x$ で値が一致するので \ref{set:function-basic} の 1 より $f=g$。自己同型の主張は、$B=A$, $S=R$, $g=\id_{A}$ とした場合である。
+
+::: hypcheck
+- **整列性**：Step 2, 3 で \ref{set:well-order-increasing} を使う。
+- **三分律**：Step 4。
+- **外延性**（関数の相等を通して）：Step 5。
+- 選択公理は使わない。
+:::
+:::
+
+::: supplement
+**前提を変えると.** 整列でない全順序は一般に非自明な自己同型をもつ：$\langle\Z,<\rangle$ の平行移動 $n\mapsto n+k$、$\langle\Q,<\rangle$ や $\langle\R,<\rangle$ の $x\mapsto 2x$ など。一方、恒等写像以外の自己同型をもたない（**剛な**）全順序がすべて整列順序というわけではない。例えば $\langle\N,>\rangle$ は整列でないが、その自己同型は $\langle\N,<\rangle$ の自己同型でもあるので、本定理より恒等写像だけである。
+:::
+
+## 整列集合の比較定理 {#set:sec-trichotomy}
+
+::: theorem 整列集合の比較定理 {#set:well-order-trichotomy keywords="comparability of well-orderings, trichotomy of well-orders" index="整列集合の比較定理|せいれつしゅうごうのひかくていり, 比較可能性|ひかくかのうせい"}
+$\langle A,R\rangle$, $\langle B,S\rangle$ を整列順序とする。次のうち**ちょうど一つ**が成り立つ。
+1. $\langle A,R\rangle\cong\langle B,S\rangle$。
+2. ある $y\in B$ について $\langle A,R\rangle\cong\langle\mathrm{pred}(B,y,S),S\rangle$。
+3. ある $x\in A$ について $\langle\mathrm{pred}(A,x,R),R\rangle\cong\langle B,S\rangle$。
+:::
+
+::: intuition
+二つの整列集合を先頭から揃えて並べ、1 番目どうし、2 番目どうし、…と対応させていくと、どちらかが先に尽きるか、同時に尽きるかのどれかになる。同時に尽きれば同型（1）、$A$ が先に尽きれば $A$ は $B$ の始切片と同型（2）、$B$ が先なら逆（3）である。
+
+「順に対応させていく」を超限再帰で定式化することもできるが、ここではもっと直接に、「$v$ の前の部分と $w$ の前の部分が同型になる組 $\langle v,w\rangle$」をすべて集めた集合 $f$ を作り、それが求める同型写像であることを示す。これにより超限再帰も置換公理を使った再帰的構成も不要になる。
+:::
+
+::: proof
+以下、$\mathrm{pred}(A,v,R)$ を $A_{v}$、$\mathrm{pred}(B,w,S)$ を $B_{w}$ と略記する。\ref{set:well-order-basic-lemmas} の 1 より $A_{v}$, $B_{w}$ はそれぞれ $R$, $S$ で整列される。
+
+**Step 1（$f$ の定義）.** 分出公理で
+$$
+f=\bigl\{z\in A\times B\;\big\vert\;\exists v\,\exists w\,\bigl(z=\langle v,w\rangle\land\langle A_{v},R\rangle\cong\langle B_{w},S\rangle\bigr)\bigr\}
+\label{set:eq-trichotomy-f}
+$$
+と定める。「$\cong$」は「同型写像である集合 $h$ が存在する」という論理式の略記なので、これは分出公理の正当な適用である。$f$ は $A\times B$ の部分集合なので関係である。
+
+**Step 2（$f$ は単射な関数）.** $\langle v,w\rangle,\langle v,w'\rangle\in f$ とする。$\langle A_{v},R\rangle\cong\langle B_{w},S\rangle$ と $\langle A_{v},R\rangle\cong\langle B_{w'},S\rangle$ から、\ref{set:order-isomorphism-basic} の 2, 3 により $\langle B_{w},S\rangle\cong\langle B_{w'},S\rangle$。$w\neq w'$ と仮定すると、三分律より $w'Sw$ または $wSw'$。$w'Sw$ の場合、\ref{set:well-order-basic-lemmas} の 2 より $B_{w'}=\mathrm{pred}(B_{w},w',S)$ なので、整列集合 $\langle B_{w},S\rangle$ が自分の始切片 $\mathrm{pred}(B_{w},w',S)$ と同型になり、\ref{set:well-order-no-initial-iso} に反する。$wSw'$ の場合も $w,w'$ を入れ替えて同様。よって $w=w'$ で、$f$ は関数である。
+
+$A$ と $B$ の役割を入れ替えた同じ議論により、$\langle v,w\rangle,\langle v',w\rangle\in f$ なら $v=v'$。すなわち $f^{-1}$ も関数で、$f$ は単射である。
+
+**Step 3（$\dom(f)$ と $\ran(f)$ は下に閉じている）.** $v\in\dom(f)$, $w=f(v)$ とし、同型写像 $h\colon\langle A_{v},R\rangle\to\langle B_{w},S\rangle$ をとる。$v'\in A$, $v'Rv$ とすると $v'\in A_{v}$ なので、\ref{set:iso-preserves-initial-segment} を $h$ と元 $v'$ に適用して
+$$
+\langle\mathrm{pred}(A_{v},v',R),R\rangle\cong\langle\mathrm{pred}(B_{w},h(v'),S),S\rangle .
+$$
+$v'Rv$ と $h(v')\,S\,w$（$h(v')\in B_{w}$ より）に \ref{set:well-order-basic-lemmas} の 2 を使うと、左辺は $A_{v'}$、右辺は $B_{h(v')}$ に等しい。したがって $\langle A_{v'},R\rangle\cong\langle B_{h(v')},S\rangle$、つまり $\langle v',h(v')\rangle\in f$。よって $v'\in\dom(f)$ であり、さらに
+$$
+f(v')=h(v')\quad(v'Rv)
+\label{set:eq-trichotomy-local}
+$$
+が成り立つ（Step 2 より $f$ の値は一意）。以上で $\dom(f)$ は $A$ の中で下に閉じている。$h^{-1}$ を使った対称な議論（$f^{-1}$ に対して同じことを行う）により、$\ran(f)$ は $B$ の中で下に閉じている。
+
+**Step 4（$f$ は $\dom(f)$ から $\ran(f)$ への同型写像）.** Step 2 より $f$ は $\dom(f)$ から $\ran(f)$ への全単射である。$v',v\in\dom(f)$ とする。
+- $v'Rv$ ならば、Step 3 の $h$（$v$ に対するもの）について \eqref{set:eq-trichotomy-local} より $f(v')=h(v')\in B_{f(v)}$、すなわち $f(v')\,S\,f(v)$。
+- 逆に $f(v')\,S\,f(v)$ とする。$v'=v$ なら $f(v)Sf(v)$ となり非反射律に反する。$vRv'$ なら前項より $f(v)Sf(v')$ となり、$f(v')Sf(v)$ と合わせて推移律から $f(v)Sf(v)$、やはり矛盾。三分律より $v'Rv$。
+
+よって $f$ は $\langle\dom(f),R\rangle$ から $\langle\ran(f),S\rangle$ への同型写像である。
+
+**Step 5（形の決定）.** Step 3 と \ref{set:downward-closed-initial-segment} より、$\dom(f)=A$ であるか、ある $a\in A$ について $\dom(f)=A_{a}$ である。同様に $\ran(f)=B$ であるか、ある $b\in B$ について $\ran(f)=B_{b}$ である。
+
+**Step 6（両方が真の始切片にはならない）.** $\dom(f)=A_{a}$ かつ $\ran(f)=B_{b}$ と仮定する。Step 4 より $f$ は $\langle A_{a},R\rangle$ から $\langle B_{b},S\rangle$ への同型写像なので、定義 \eqref{set:eq-trichotomy-f} より $\langle a,b\rangle\in f$、特に $a\in\dom(f)=A_{a}$、すなわち $aRa$ となり非反射律に反する。
+
+**Step 7（三つの場合）.** Step 5, 6 より、残る場合は次の三つである。
+- $\dom(f)=A$ かつ $\ran(f)=B$：Step 4 より $f$ が $\langle A,R\rangle\cong\langle B,S\rangle$ を与え、1 が成り立つ。
+- $\dom(f)=A$ かつ $\ran(f)=B_{b}$：$f$ が $\langle A,R\rangle\cong\langle B_{b},S\rangle$ を与え、2 が成り立つ（$y=b$）。
+- $\dom(f)=A_{a}$ かつ $\ran(f)=B$：$f$ が $\langle A_{a},R\rangle\cong\langle B,S\rangle$ を与え、3 が成り立つ（$x=a$）。
+
+以上で少なくとも一つが成り立つことが示された。
+
+**Step 8（高々一つしか成り立たない）.**
+- *1 と 2*：$\langle A,R\rangle\cong\langle B,S\rangle$ かつ $\langle A,R\rangle\cong\langle B_{y},S\rangle$ なら、\ref{set:order-isomorphism-basic} より $\langle B,S\rangle\cong\langle B_{y},S\rangle$ となり \ref{set:well-order-no-initial-iso} に反する。
+- *1 と 3*：同様に $\langle A,R\rangle\cong\langle A_{x},R\rangle$ となり矛盾。
+- *2 と 3*：同型写像 $g\colon\langle A,R\rangle\to\langle B_{y},S\rangle$ と $k\colon\langle B,S\rangle\to\langle A_{x},R\rangle$ をとる。\ref{set:iso-preserves-initial-segment} を $g$ と $x\in A$ に適用すると、$g\restr{A_{x}}$ は $\langle A_{x},R\rangle$ から $\langle\mathrm{pred}(B_{y},g(x),S),S\rangle$ への同型写像であり、$g(x)\,S\,y$ なので \ref{set:well-order-basic-lemmas} の 2 よりこれは $B_{g(x)}$ に等しい。すると $(g\restr{A_{x}})\circ k$ は $\langle B,S\rangle$ から $\langle B_{g(x)},S\rangle$ への同型写像となり、\ref{set:well-order-no-initial-iso} に反する。
+
+::: hypcheck
+- **分出公理**：Step 1 で $f$ を、各所で $A_{v}$, $B_{w}$ を作るのに使った。
+- **直積の存在**（\ref{set:cartesian-product-existence}）：Step 1 で $f$ を切り出す母集合 $A\times B$。これには置換公理（または冪集合公理）を使う。
+- **整列性**：Step 2 と Step 8 で \ref{set:well-order-no-initial-iso} を、Step 5 で \ref{set:downward-closed-initial-segment} を使うところ。
+- **三分律・非反射律・推移律**：Step 2, 4, 6。
+- **選択公理は使わない**。Step 3 で同型写像 $h$ を一つとったが、これは存在命題から一つとるだけであり、しかも \ref{set:well-order-iso-unique} によりそもそも一意である。超限再帰も使っていない。
+:::
+:::
+
+::: supplement
+**前提を変えると.** 整列でない全順序では比較定理は成り立たない。$\langle\N,<\rangle$ と $\langle\Z,<\rangle$ について、両者は同型でない（$\N$ は最小元をもつ）。$\Z$ の始切片 $\{n\mid n<k\}$ はどれも最小元をもたないので $\N$ と同型でない。$\N$ の始切片は有限集合なので $\Z$ と同型でない。
+
+**帰結.** この定理は、後に順序数の全体が $\in$ で整列されること（\ref{set:ordinal-well-ordered}）、各整列集合がただ一つの順序数と同型であること（\ref{set:ordinal-type}）の証明の土台になる。選択公理のもとでは任意の集合が整列できるので、任意の二つの集合の濃度が比較できる（\ref{set:ac-equivalences}）。
+:::
+
+## 選択公理 {#set:sec-choice}
+
+::: axiom 選択公理 {#set:ax-choice keywords="Axiom of Choice, AC, well-ordering principle" index="選択公理|せんたくこうり, AC|えーしー"}
+$$
+\forall A\;\exists R\;\bigl(R\text{ は }A\text{ を整列する}\bigr).
+$$
+すなわち、任意の集合 $A$ に対し、$\langle A,R\rangle$ が整列順序となる関係 $R$ が存在する。
+:::
+
+::: intuition
+どんな集合も、元を先頭から一列に（超限的に）並べることができる、という主張。並べ方が一つでもあれば、空でない部分集合からは「一番前の元」を選ぶことで一斉に元を選び出せるので、これは「空でない集合の族からいっせいに一つずつ元を選べる」という通常の形の選択公理と同値である（\ref{set:ac-equivalences}）。本サイトでは Kunen にならい、整列可能性の形を公理として採る。
+
+他の公理が「具体的に記述された集合の存在」を主張するのに対し、選択公理は整列順序 $R$ の存在だけを主張し、それを記述しない。そのため、どの結果が選択公理に依存するかを本分野では各証明で明記する。
+:::
+
+::: example
+- $\N$ は通常の $<$ で整列されるので、選択公理なしに整列できる。有限集合も選択公理なしに整列できる（\ref{set:finite-set}）。
+- $\N\times\N$ は辞書式順序で、$\Q$ は $\N$ との全単射を使って、選択公理なしに整列できる。
+- $\R$ の整列順序は $\ZF$ では構成できない：$\ZF$ が無矛盾ならば、$\ZF$ からは「$\R$ は整列可能である」を証明できない（コーエン）。
+:::
+
+::: supplement
+**独立性.** 選択公理は $\ZF$ からは証明も反証もできない：$\mathrm{Con}(\ZF)\Rightarrow\mathrm{Con}(\ZFC)$（ゲーデル、構成可能集合）と $\mathrm{Con}(\ZF)\Rightarrow\mathrm{Con}(\ZF+\lnot\mathrm{AC})$（コーエン、強制法）。
+
+**同値な形.** 選択関数の存在、ツォルンの補題（\ref{set:zorn}）、整列可能定理（\ref{set:well-ordering-theorem}）、直積の非空性などとの同値性は \ref{set:ac-equivalences} で証明する。
+
+**本ページとの関係.** 比較定理 \ref{set:well-order-trichotomy} は「与えられた二つの整列集合」を比べるだけなので選択公理を使わないが、選択公理があれば**任意の**二つの集合をそれぞれ整列して比較できる。これが基数の理論（\ref{set:cardinal}）の出発点になる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ウリゾーンの補題とティーツェの拡張定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54D-general-properties/01-separation-compactness/06-urysohn-tietze.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ウリゾーンの補題とティーツェの拡張定理 {#top:page-urysohn-tietze keywords="Urysohn lemma, Tietze extension theorem, normal spaces, functional separation, uniform limits, dyadic rationals"}
+
+正規性は「交わらない閉集合を開集合で分ける」という、開集合だけで書かれた条件である。**ウリゾーンの補題**は、この条件から実数値の連続関数が作れること、すなわち交わらない閉集合を連続関数 $f\colon X\to[0,1]$ で $0$ と $1$ に分けられることを主張する（\ref{top:urysohn-lemma}）。これをくり返し使うと、閉集合上の有界連続関数を全体に延長できる（**ティーツェの拡張定理**、\ref{top:tietze}）。どちらの性質も正規性と同値である。
+
+> 資料：内田伏一『集合と位相』§21, §29。証明の構成は標準的なもので、文章は本サイトで書き下ろした。
+
+## 記法と定義の確認 {#top:sec-ut-notation}
+
+::: notation
+- 正規・$T_{4}$ は \ref{top:separation-axioms} の意味（$T_{1}$ を含まない形）。正規性の言い換え \ref{top:regular-normal-characterization} の 2 をくり返し使う：閉集合 $F$ と開集合 $G\supseteq F$ に対し、$F\subseteq U\subseteq\overline{U}\subseteq G$ となる開集合 $U$ がある。
+- $[0,1]$, $[-1,1]$, $\R$ には通常の（距離から定まる）位相を入れる。連続性は \ref{top:continuity-equivalents} の 5（準開基の逆像）で確かめることが多い。$[0,1]$ では $[0,a)$, $(a,1]$（$0<a<1$）の形の集合全体が準開基になる（開区間 $(a,b)\cap[0,1]$ は $[0,b)\cap(a,1]$ と書けるため）。
+- $D\defeq\{k/2^{n}:n\in\N,\ 0\le k\le 2^{n}\}$ は $[0,1]$ の**二進有理数**全体。$D_{n}\defeq\{k/2^{n}:0\le k\le 2^{n}\}$ とおくと $D_{0}\subseteq D_{1}\subseteq\cdots$, $D=\bigcup_{n}D_{n}$ で、$D$ は $[0,1]$ で稠密（$a<b$ なら $2^{-n}<b-a$ となる $n$ について $(a,b)$ は $D_{n}$ の点を含む）。
+- 関数 $g\colon X\to\R$ について $\lVert g\rVert\defeq\sup_{x\in X}\lvert g(x)\rvert$（上限ノルム）。
+- 議論は $\ZF$ で行い、選択公理を使う箇所は明記する。
+:::
+
+::: definition 関数で分離される {#top:function-separated keywords="functionally separated sets, Urysohn function" index="関数による分離|かんすうによるぶんり, ウリゾーン関数|うりぞーんかんすう"}
+位相空間 $X$ の部分集合 $A,B$ が**関数で分離される**とは、連続関数 $f\colon X\to[0,1]$ で $f[A]\subseteq\{0\}$, $f[B]\subseteq\{1\}$ となるものがあることをいう。このような $f$ を $A,B$ の**ウリゾーン関数**と呼ぶ。
+:::
+
+関数で分離される集合は開集合で分離される：$f^{-1}[[0,1/2)]$ と $f^{-1}[(1/2,1]]$ が交わらない開集合で、それぞれ $A$, $B$ を含む。
+
+## ウリゾーンの補題 {#top:sec-ut-urysohn}
+
+::: theorem ウリゾーンの補題 {#top:urysohn-lemma keywords="Urysohn's lemma: a space is normal iff disjoint closed sets are functionally separated" index="ウリゾーンの補題|うりぞーんのほだい"}
+位相空間 $X$ について次は同値である。
+1. $X$ は正規。
+2. $X$ の交わらない二つの閉集合は、つねに関数で分離される。
+
+1 ⇒ 2 の証明には従属選択公理（DC）を使う。
+:::
+
+::: proof
+**2 ⇒ 1.** 直前の注意のとおり、関数で分離されれば開集合で分離される。
+
+**1 ⇒ 2.** 交わらない閉集合 $A,B$ をとる。
+
+**ステップ 1：開集合の族 $(U_{r})_{r\in D}$ を作る.** 次の条件を満たす開集合 $U_{r}$（$r\in D$）を作る。
+$$
+A\subseteq U_{0},\qquad U_{1}=X\setminus B,\qquad r<s\ \Rightarrow\ \overline{U_{r}}\subseteq U_{s}\quad(\ast)
+$$
+$D_{n}$ についての帰納法で、$D_{n}$ の各点に対して $U_{r}$ を定め、$D_{n}$ の中で $(\ast)$ が成り立つようにする。
+
+- **$n=0$.** $U_{1}\defeq X\setminus B$ は開（$B$ が閉）で、$A\subseteq U_{1}$（$A\cap B=\varnothing$）。正規性の言い換え（\ref{top:regular-normal-characterization} の 2。ここで**正規性**と **$A$ が閉**であることを使う）から、$A\subseteq U_{0}\subseteq\overline{U_{0}}\subseteq U_{1}$ となる開集合 $U_{0}$ を選ぶ。
+- **$n\to n+1$.** $D_{n+1}\setminus D_{n}$ の点は $r=(2k+1)/2^{n+1}$ の形で、その両隣 $r^{-}\defeq k/2^{n}$, $r^{+}\defeq(k+1)/2^{n}$ は $D_{n}$ に属し $r^{-}<r^{+}$。帰納法の仮定から $\overline{U_{r^{-}}}\subseteq U_{r^{+}}$ なので、閉集合 $\overline{U_{r^{-}}}$ と開集合 $U_{r^{+}}$ に正規性の言い換えを適用し、
+$$
+\overline{U_{r^{-}}}\subseteq U_{r}\subseteq\overline{U_{r}}\subseteq U_{r^{+}}
+$$
+となる開集合 $U_{r}$ を選ぶ（各段では有限個の選択だが、段から段へ前の選択に依存しながら可算回くり返すので、全体として DC を使う）。
+
+$D_{n+1}$ で $(\ast)$ を確かめる。$r<s$ を $D_{n+1}$ の点とする。
+- 両方が $D_{n}$ に属すれば帰納法の仮定。
+- $r$ が新しい点のとき、$r^{+}\le s$ である（$s\in D_{n+1}$, $s>r$ で、$r$ と $r^{+}$ の間に $D_{n+1}$ の点はない）。$\overline{U_{r}}\subseteq U_{r^{+}}$ で、$s=r^{+}$ ならこれで終わり。$s>r^{+}$ なら $U_{r^{+}}\subseteq\overline{U_{r^{+}}}\subseteq U_{s}$（$s$ が古い点なら帰納法の仮定、新しい点なら $r^{+}\le s^{-}$ と次の場合の議論）。
+- $s$ が新しい点のとき、同様に $r\le s^{-}$ で、$\overline{U_{s^{-}}}\subseteq U_{s}$。$r=s^{-}$ ならこれで終わり。$r<s^{-}$ なら $\overline{U_{r}}\subseteq U_{s^{-}}\subseteq\overline{U_{s^{-}}}\subseteq U_{s}$（$\overline{U_{r}}\subseteq U_{s^{-}}$ は、$r$ が古い点なら帰納法の仮定、新しい点なら前の場合）。
+
+どの場合も $\overline{U_{r}}\subseteq U_{s}$ が得られる。とくに $(\ast)$ から、$r<s$ なら $U_{r}\subseteq U_{s}$ である。
+
+**ステップ 2：関数の定義.** $x\in X$ について
+$$
+f(x)\defeq\inf\bigl(\{r\in D:x\in U_{r}\}\cup\{1\}\bigr)
+$$
+とおく。$0\le f(x)\le1$。$x\in A$ なら $x\in U_{0}$ なので $f(x)=0$。$x\in B$ なら、すべての $r\in D$ で $U_{r}\subseteq U_{1}=X\setminus B$ なので $x\notin U_{r}$、よって $f(x)=1$。
+
+**ステップ 3：連続性.** $0<a<1$ について次の二つを示す。
+$$
+f^{-1}\bigl[[0,a)\bigr]=\bigcup_{r\in D,\,r<a}U_{r},\qquad f^{-1}\bigl[(a,1]\bigr]=\bigcup_{s\in D,\,s>a}\bigl(X\setminus\overline{U_{s}}\bigr)
+$$
+右辺はどちらも開集合の和なので開であり、記法の注意（準開基）と \ref{top:continuity-equivalents} の 5 から $f$ は連続になる。
+
+- **第 1 式.** $f(x)<a$ なら、下限の定義から、$a$ より小さい元が $\{r:x\in U_{r}\}\cup\{1\}$ にある。$1\ge a$ なので、それは $x\in U_{r}$ となる $r<a$ である。逆に $x\in U_{r}$, $r<a$ なら $f(x)\le r<a$。
+- **第 2 式.** $f(x)>a$ とする。$D$ の稠密性から $a<s<s'<f(x)$ となる $s,s'\in D$ をとる。$x\in U_{s'}$ なら $f(x)\le s'$ となって矛盾するので $x\notin U_{s'}$。$(\ast)$ から $\overline{U_{s}}\subseteq U_{s'}$ なので $x\notin\overline{U_{s}}$。逆に $x\notin\overline{U_{s}}$, $s>a$ とする。$r\le s$ なら $U_{r}\subseteq\overline{U_{s}}$（$r=s$ なら $U_{s}\subseteq\overline{U_{s}}$、$r<s$ なら $U_{r}\subseteq U_{s}$）なので $x\notin U_{r}$。よって $\{r:x\in U_{r}\}$ の元はすべて $s$ より大きく、$f(x)\ge s>a$。
+
+::: hypcheck
+- **正規性**：ステップ 1 の各段で、閉集合とそれを含む開集合の間に「閉包ごと入る」開集合を挟むのに使った（\ref{top:regular-normal-characterization} の 2）。
+- **$A$, $B$ が閉**：$B$ が閉なので $U_{1}=X\setminus B$ が開。$A$ が閉なので $n=0$ で正規性を適用できる。
+- **交わらないこと**：$A\subseteq X\setminus B$ に使った。
+- **DC**：ステップ 1 の可算回の依存した選択。
+- **$D$ の稠密性**：ステップ 3 の第 2 式で $s,s'$ をとるのに使った。
+:::
+:::
+
+::: example 距離空間では明示的に書ける {#top:urysohn-metric}
+$(X,d)$ が距離空間で、$A,B$ が交わらない空でない閉集合なら、
+$$
+f(x)\defeq\frac{d(x,A)}{d(x,A)+d(x,B)}
+$$
+はウリゾーン関数である。分母は $0$ にならない（$d(x,A)=d(x,B)=0$ なら、$A,B$ が閉なので $x\in A\cap B$ となる。\ref{top:metric-normal} の証明を参照）。$d(\cdot,A)$, $d(\cdot,B)$ は連続なので $f$ も連続である。この構成は選択公理を使わない。
+:::
+
+::: corollary T₄ 空間の点は関数で分離される {#top:t4-functions-separate-points}
+$T_{4}$ 空間 $X$ の異なる二点 $x,y$ に対し、連続関数 $f\colon X\to[0,1]$ で $f(x)=0$, $f(y)=1$ となるものがある。
+:::
+
+::: proof
+$T_{1}$ から $\{x\}$, $\{y\}$ は閉集合（\ref{top:separation-implications} の 1）で、交わらない。ウリゾーンの補題を適用する。
+:::
+
+## 一様収束の準備 {#top:sec-ut-uniform}
+
+::: lemma 連続関数の一様極限は連続 {#top:uniform-limit keywords="uniform limit of continuous real functions is continuous; Weierstrass M-test" index="一様収束|いちようしゅうそく, ワイエルシュトラスの M 判定法|わいえるしゅとらすのえむはんていほう"}
+$X$ を位相空間とする。
+1. 連続関数 $g_{n}\colon X\to\R$ が $g\colon X\to\R$ に一様収束する（$\lVert g_{n}-g\rVert\to0$）なら、$g$ は連続である。
+2. 連続関数 $h_{k}\colon X\to\R$ について $\lVert h_{k}\rVert\le M_{k}$ かつ $\sum_{k}M_{k}<\infty$ なら、$\sum_{k}h_{k}$ は各点で絶対収束し、部分和はその和に一様収束する。とくに和は連続で、$\lVert\sum_{k}h_{k}\rVert\le\sum_{k}M_{k}$。
+:::
+
+::: proof
+**1.** $x\in X$ と $\varepsilon>0$ をとる。$\lVert g_{n}-g\rVert<\varepsilon/3$ となる $n$ を固定し、$g_{n}$ の連続性から $x$ の開近傍 $V$ を $y\in V\Rightarrow\lvert g_{n}(y)-g_{n}(x)\rvert<\varepsilon/3$ ととる。$y\in V$ なら
+$$
+\lvert g(y)-g(x)\rvert\le\lvert g(y)-g_{n}(y)\rvert+\lvert g_{n}(y)-g_{n}(x)\rvert+\lvert g_{n}(x)-g(x)\rvert<\varepsilon
+$$
+となる。$\R$ の開集合は開区間の和なので、これは $g$ の連続性を意味する。
+
+**2.** 各点で $\sum_{k}\lvert h_{k}(x)\rvert\le\sum_{k}M_{k}$ なので、和 $h(x)$ が存在する。$N$ 番目までの部分和を $S_{N}$ とすると $\lvert h(x)-S_{N}(x)\rvert\le\sum_{k>N}M_{k}$ で、右辺は $x$ によらず $0$ に収束する。各 $S_{N}$ は連続関数の有限和で連続なので、1 から $h$ は連続である。
+:::
+
+## ティーツェの拡張定理 {#top:sec-ut-tietze}
+
+::: lemma ティーツェの近似補題 {#top:tietze-step}
+$X$ を正規空間、$A\subseteq X$ を閉集合、$c>0$ とし、$f\colon A\to[-c,c]$ を連続とする。このとき連続関数 $g\colon X\to[-c/3,c/3]$ で、$A$ 上で $\lvert f-g\rvert\le 2c/3$ となるものがある。
+:::
+
+::: proof
+$A_{-}\defeq f^{-1}[[-c,-c/3]]$, $A_{+}\defeq f^{-1}[[c/3,c]]$ とおく。これらは $A$ の閉集合（$f$ の連続性、\ref{top:continuity-equivalents} の 3）で、$A$ が $X$ で閉なので $X$ でも閉（\ref{top:subspace-basic}）。また交わらない。ウリゾーンの補題（\ref{top:urysohn-lemma}）から、連続関数 $h\colon X\to[0,1]$ で $A_{-}$ 上 $0$、$A_{+}$ 上 $1$ となるものがある（$A_{-}$ や $A_{+}$ が空でも、補題の証明はそのまま通る）。$g\defeq(c/3)(2h-1)$ とおくと $g$ は連続で、値は $[-c/3,c/3]$ に入る。$x\in A$ について、
+- $f(x)\in[-c,-c/3]$ なら $g(x)=-c/3$ で、$\lvert f(x)-g(x)\rvert\le 2c/3$。
+- $f(x)\in[c/3,c]$ なら $g(x)=c/3$ で、同様。
+- $f(x)\in(-c/3,c/3)$ なら $g(x)\in[-c/3,c/3]$ なので、$\lvert f(x)-g(x)\rvert<2c/3$。
+:::
+
+::: theorem ティーツェの拡張定理 {#top:tietze keywords="Tietze extension theorem: continuous functions on closed subsets of normal spaces extend; equivalent to normality" index="ティーツェの拡張定理|てぃーつぇのかくちょうていり"}
+位相空間 $X$ について次は同値である。
+1. $X$ は正規。
+2. $X$ の任意の閉集合 $A$ と連続関数 $f\colon A\to[-1,1]$ に対し、連続関数 $F\colon X\to[-1,1]$ で $F|_{A}=f$ となるものがある。
+3. $X$ の任意の閉集合 $A$ と連続関数 $f\colon A\to\R$ に対し、連続関数 $F\colon X\to\R$ で $F|_{A}=f$ となるものがある。
+
+1 ⇒ 2, 1 ⇒ 3 の証明には DC を使う。
+:::
+
+::: proof
+**1 ⇒ 2.** 近似補題（\ref{top:tietze-step}）をくり返し使い、連続関数 $g_{0},g_{1},\ldots\colon X\to\R$ を、各 $n$ について
+$$
+\lVert g_{n}\rVert\le\frac{1}{3}\Bigl(\frac{2}{3}\Bigr)^{n},\qquad \Bigl\lvert f-\sum_{k=0}^{n}g_{k}\Bigr\rvert\le\Bigl(\frac{2}{3}\Bigr)^{n+1}\ \text{（$A$ 上）}
+$$
+となるように作る。$n=0$ は $c=1$ の近似補題そのもの。$n$ まで作れたら、$f_{n}\defeq f-\sum_{k\le n}g_{k}|_{A}$ は $A$ 上の連続関数で値は $[-c,c]$（$c=(2/3)^{n+1}$）に入るので、近似補題から $\lVert g_{n+1}\rVert\le c/3$, $\lvert f_{n}-g_{n+1}\rvert\le 2c/3=(2/3)^{n+2}$ となる $g_{n+1}$ を選ぶ（前の選択に依存した可算回の選択なので DC）。
+
+$\sum_{n}(1/3)(2/3)^{n}=1$ なので、\ref{top:uniform-limit} の 2 から $F\defeq\sum_{n}g_{n}$ は連続で $\lVert F\rVert\le1$。$A$ 上では、部分和と $f$ の差が $(2/3)^{n+1}\to0$ なので $F=f$。
+
+**1 ⇒ 3.** $\varphi\colon\R\to(-1,1)$, $\varphi(t)\defeq t/(1+\lvert t\rvert)$ は同相写像である（逆写像は $u\mapsto u/(1-\lvert u\rvert)$ で、どちらも連続）。2 を $\varphi\circ f\colon A\to(-1,1)\subseteq[-1,1]$ に適用し、連続な延長 $G\colon X\to[-1,1]$ を得る。$G$ の値が $\pm1$ になる点があり得るので、修正する。$C\defeq G^{-1}[\{-1,1\}]$ は閉集合で、$A$ 上 $\lvert G\rvert<1$ なので $A\cap C=\varnothing$。ウリゾーンの補題から連続関数 $k\colon X\to[0,1]$ で $A$ 上 $1$、$C$ 上 $0$ となるものをとり、$G'\defeq kG$ とおく。$x\in C$ なら $G'(x)=0$、$x\notin C$ なら $\lvert G'(x)\rvert\le\lvert G(x)\rvert<1$。よって $G'$ は $(-1,1)$ に値をとる連続関数で、$A$ 上 $G'=G=\varphi\circ f$。$F\defeq\varphi^{-1}\circ G'$ が求める延長である。
+
+**2 ⇒ 1 と 3 ⇒ 1.** 交わらない閉集合 $A_{0},A_{1}$ をとり、$A\defeq A_{0}\cup A_{1}$（閉）上で $f$ を $A_{0}$ 上 $0$、$A_{1}$ 上 $1$ と定める。$A_{0}=A\setminus A_{1}$ と $A_{1}$ は $A$ の開かつ閉な集合なので、$f$ は $A$ 上連続（開集合の逆像は $\varnothing$, $A_{0}$, $A_{1}$, $A$ のいずれか）。2 または 3 の延長 $F$ をとれば、$F^{-1}[(-\infty,1/2)]$ と $F^{-1}[(1/2,\infty)]$ が $A_{0}$, $A_{1}$ を分離する開集合である。
+
+::: hypcheck
+- **正規性**：ウリゾーンの補題を通じて、近似補題と 1 ⇒ 3 の修正（関数 $k$）で使った。
+- **$A$ が閉**：近似補題で $A_{\pm}$ が $X$ の閉集合になること、1 ⇒ 3 で $C$ と $A$ が交わらない閉集合の対になることに使った。閉でないと定理は成り立たない（補足の反例）。
+- **値域が有界かどうか**：2 では、近似の誤差を等比数列で抑えるために有界性を使った。3 は、$\R$ と開区間の同相 $\varphi$ を使って 2 に帰着した。値が $\pm1$ に到達し得る点の修正には、もう一度ウリゾーンの補題が必要だった。
+- **DC**：1 ⇒ 2 で $g_{n}$ を順に選ぶところ（とウリゾーンの補題自体）。
+- **一様収束の補題**：\ref{top:uniform-limit} は $\R$ の完備性（絶対収束級数の収束）と三角不等式だけを使っており、本定理に依存しない。循環はない。
+:::
+:::
+
+::: corollary ℝⁿ 値の延長 {#top:tietze-rn}
+$X$ が正規、$A$ が閉集合なら、連続写像 $f\colon A\to\R^{n}$ は連続写像 $F\colon X\to\R^{n}$ に延長できる。$f$ の値が直方体 $\prod_{i}[a_{i},b_{i}]$ に入るなら、$F$ も同じ直方体に値をとるようにとれる。
+:::
+
+::: proof
+成分ごとに \ref{top:tietze} の 3（または 2 を区間 $[a_{i},b_{i}]$ に平行移動・拡大したもの）を適用する。成分が連続であることと $\R^{n}$ への写像が連続であることは同値である（\ref{top:product-maps}）。
+:::
+
+::: supplement
+**閉集合の仮定は外せない.** $X=[0,1]$, $A=(0,1]$, $f(x)=\sin(1/x)$ とすると、$f$ は $A$ 上連続で有界だが、$x\to0$ で極限をもたないので $[0,1]$ 上の連続関数には延長できない。
+
+**値域を変えると.** 値域が区間や $\R^{n}$ の直方体なら延長できる（\ref{top:tietze-rn}）。円周 $S^{1}$ に値をとる写像は一般に延長できない。円板 $D^{2}$ の閉部分集合 $S^{1}$ 上の恒等写像を $D^{2}\to S^{1}$ に延長できないことは、代数的位相幾何で示される事実である（レトラクトが存在しないこと。ここでは証明しない）。
+
+**正規性を弱めると.** 正則だが正規でない空間（ゾルゲンフライ平面、ニェミツキ平面 \ref[ニェミツキ平面]{top:niemytzki-plane}）では、交わらない閉集合の対で関数による分離ができないものがある（ウリゾーンの補題の 2 ⇒ 1 から、開集合でも分離できない対がある）。点と閉集合を関数で分離できる空間が完全正則空間である（\ref[完全正則空間]{top:completely-regular}）。
+
+**類似の定理.** 距離空間では、閉集合上の連続関数を局所凸位相線形空間に値をとるまま延長できる（**デュグンジの拡張定理**。J. Dugundji, 1951。ここでは証明しない）。距離空間の場合は、\ref{top:urysohn-metric} と同様に DC を使わない構成もある。
+
+**選択公理について.** 上の証明は DC を使った。$\ZF$ だけでウリゾーンの補題が証明できるかどうかについては、ここでは扱わない（選択公理なしの位相空間論で研究されている問題だが、正確な結果を本サイトでは確認していない）。
+:::
+
+::: intuition 高い視点から：等高線から地形を作る
+ウリゾーンの補題の証明は、関数 $f$ を先に作るのではなく、その**等高線**にあたる開集合 $U_{r}$（だいたい「$f<r$ の部分」）を先に作り、最後に $f$ を下限で読み取る。条件 $(\ast)$ は、等高線が互いに交差せず、間に余裕をもって入れ子になっていることを表す。正規性は「二つの等高線の間にもう一本の等高線を引ける」という性質で、これを二進的にくり返すことで、稠密な高さのすべてに等高線が引ける。
+
+ティーツェの拡張定理は、制限写像 $C(X)\to C(A)$（$C(\cdot)$ は実数値連続関数全体）が全射である、と言い換えられる。圏論的に言えば、$\R$ や $[-1,1]$ は「正規空間の閉部分空間への埋め込み」に対して**移入的**な対象としてふるまう：閉部分空間から $\R$ への写像は、つねに全体へ延長できる。
+:::
+
+## 問題 {#top:sec-ut-problems}
+
+::: problem {#top:prob-connected-normal-uncountable}
+$T_{4}$ 空間 $X$ が連結で二点以上を含むなら、$X$ の濃度は連続体濃度以上であることを示せ。
+:::
+
+::: solution
+異なる二点 $x,y$ をとり、\ref{top:t4-functions-separate-points} の連続関数 $f\colon X\to[0,1]$ で $f(x)=0$, $f(y)=1$ となるものをとる。$f[X]$ は連結空間の連続像なので連結（\ref{top:connected-preservation}）で、$0$ と $1$ を含む。$\R$ の連結集合は区間なので（\ref{top:connected-intervals}）、$f[X]=[0,1]$。よって $f$ は $X$ から $[0,1]$ への全射である。選択公理のもとでは、全射の各ファイバーから一点ずつ選ぶことで $[0,1]$ から $X$ への単射が得られ、$\lvert X\rvert\ge2^{\aleph_{0}}$ となる（選択公理を仮定しないなら、結論は「$X$ から $[0,1]$ への全射がある」と述べるのが正確である）。
+:::
+
+::: problem {#top:prob-closed-gdelta-zero-set}
+$X$ を正規空間とし、$A$ を閉集合で、可算個の開集合の共通部分として書けるもの（閉 $G_{\delta}$ 集合）とする。連続関数 $f\colon X\to[0,1]$ で $A=f^{-1}[\{0\}]$ となるものがあることを示せ。
+:::
+
+::: solution
+$A=\bigcap_{n\ge1}V_{n}$（$V_{n}$ は開）とする。各 $n$ について $A$ と $X\setminus V_{n}$ は交わらない閉集合なので、ウリゾーン関数 $f_{n}\colon X\to[0,1]$（$A$ 上 $0$、$X\setminus V_{n}$ 上 $1$）を選ぶ（可算回の選択）。$f\defeq\sum_{n}2^{-n}f_{n}$ は \ref{top:uniform-limit} の 2 から連続で、値は $[0,1]$ に入る。$x\in A$ なら $f(x)=0$。$x\notin A$ ならある $n$ で $x\notin V_{n}$、よって $f_{n}(x)=1$ で $f(x)\ge2^{-n}>0$。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

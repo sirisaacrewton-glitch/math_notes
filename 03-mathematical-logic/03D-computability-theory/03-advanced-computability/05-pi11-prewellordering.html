@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Π¹₁ の前整列性：縮小・分離・一様化と基底定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/03-advanced-computability/05-pi11-prewellordering.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# Π¹₁ の前整列性：縮小・分離・一様化と基底定理 {#comp:page-pi11-prewellordering keywords="prewellordering property of Pi^1_1, Pi^1_1 norms, reduction property, separation theorem for Sigma^1_1, number uniformization, Delta^1_1 selection, Kleene basis theorem"}
+
+前ページ（\ref{comp:page-boundedness}）では、整礎木の深さを順序数として測り、$\Sigma^{1}_{1}$ では高い木を集められないこと（有界性定理）を示した。本ページでは同じ深さを、$\Pi^{1}_{1}$ 集合の元に順序数の「高さ」を付ける**ノルム**として使う。要点は、「$x$ が $y$ より先に（低い高さで）$\Pi^{1}_{1}$ 集合に入る」という比較の関係がそれ自身 $\Pi^{1}_{1}$ で書けることである（**前整列性**、\ref{comp:pi11-prewellordering}）。そこから、$\Pi^{1}_{1}$ の**縮小性**（\ref{comp:pi11-reduction}）、$\Sigma^{1}_{1}$ の**分離定理**（\ref{comp:sigma11-separation}）、数についての**一様化**（\ref{comp:pi11-number-uniformization}）が順に導かれる。最後に、空でない $\Sigma^{1}_{1}$ の関数の集合が $\mathrm{WT}$ で計算可能な元をもつこと（**クリーネの基底定理**、\ref{comp:kleene-basis}）を示す。
+
+> 資料：新井敏康『数学基礎論』第 6 章 §6.5 の比較定理（定理 6.5.22）とその系、被覆定理（定理 6.5.26）。新井の本は正の帰納的定義の段階の比較として述べているが、本ページでは前ページの木の深さをノルムに使い、すべて木の比較補題（\ref{comp:tree-comparison}）から導く。基底定理は新井の本の該当箇所にはなく、標準的な議論で補った。
+
+## 記法と定義の確認 {#comp:sec-pw-notation}
+
+::: notation
+- 木、枝、整礎、$T(e)$, $\mathrm{TR}$, $\mathrm{WT}$、ランク $\rho_{T}$、深さ $\lvert T\rvert$、根を足した木 $T^{+}$、埋め込み $S\preceq T$ は \ref{comp:page-boundedness} のとおり（\ref{comp:tree-rank}, \ref{comp:tree-rank-basic}, \ref{comp:tree-embedding}）。$T^{++}\defeq(T^{+})^{+}$。
+- 比較補題（\ref{comp:tree-comparison}）を次の形で繰り返し使う：$S$ が整礎で $T\neq\varnothing$ なら、$S\preceq T\iff$（$T$ が枝をもつ、または $\lvert S\rvert\le\lvert T\rvert$）。また $S\preceq T$ かつ $T$ が整礎なら $S$ も整礎。
+- 解析的階層 $\Sigma^{1}_{1},\Pi^{1}_{1},\Delta^{1}_{1}$ と閉包性は \ref{comp:analytical-hierarchy}, \ref{comp:quantifier-absorption} のとおり。$\Pi^{1}_{1}$ は（$\Sigma^{1}_{1}$ の双対として）$\wedge,\vee$、数の量化子 $\forall x,\exists x$、有界な量化子、計算可能な関数の代入で閉じている。$\Sigma^{1}_{1}$ の関係の否定は $\Pi^{1}_{1}$ である。
+- $\N^{k}$ の部分集合は、組の符号 $\langle x_{1},\dots,x_{k}\rangle$ によって $\N$ の部分集合と同一視する。
+- メタレベルは $\ZF$ に可算選択公理を加えたもので議論する（可算選択公理は数の量化子についての閉包性にだけ使う）。
+:::
+
+## WT 上のノルム {#comp:sec-pw-norm-wt}
+
+::: definition Π¹₁ ノルム {#comp:pi11-norm keywords="norm on a set, Pi^1_1-norm, prewellordering" index="ノルム（集合の）|のるむしゅうごうの, Π¹₁ ノルム|ぱいわんわんのるむ, 前整列|ぜんせいれつ"}
+集合 $A\subseteq\N$ から順序数への関数 $\varphi$ を $A$ の**ノルム**という。ノルム $\varphi$ に対し、$\N$ 上の二つの関係を
+$$
+\begin{aligned}
+x\le^{*}_{\varphi}y&\iff x\in A\land\bigl(y\notin A\lor\varphi(x)\le\varphi(y)\bigr),\\
+x<^{*}_{\varphi}y&\iff x\in A\land\bigl(y\notin A\lor\varphi(x)<\varphi(y)\bigr)
+\end{aligned}
+$$
+で定める。両方が $\Pi^{1}_{1}$ のとき、$\varphi$ を **$\Pi^{1}_{1}$ ノルム**という。すべての $\Pi^{1}_{1}$ 集合が $\Pi^{1}_{1}$ ノルムをもつことを、$\Pi^{1}_{1}$ の**前整列性**という。
+:::
+
+::: intuition
+$\varphi(x)$ は「$x$ が $A$ に入るのに必要な段数」と読める。$A$ に入らない元は段数 $\infty$（どの順序数よりも大きい）とみなすと、$x\le^{*}_{\varphi}y$ は「$x$ は $A$ に入り、しかも $y$ より遅くない」、$x<^{*}_{\varphi}y$ は「$x$ は $A$ に入り、$y$ より真に早い」である。$A$ に入らない $y$ との比較を「$x$ の勝ち」とすることで、比較が $A$ 全体で意味をもつ。名前の「前整列」は、$\le^{*}_{\varphi}$ を $A$ に制限したものが、反対称性を除いた整列順序（前整列順序）になることに由来する。
+:::
+
+::: lemma WT の標準ノルム {#comp:wt-norm keywords="the canonical Pi^1_1-norm on WT" index="WT のノルム|だぶりゅーてぃーののるむ"}
+$e\in\mathrm{WT}$ について $\lVert e\rVert\defeq\lvert T(e)^{+}\rvert$ とおく。
+1. $e\in\mathrm{TR}$ のとき、$T(e)^{+}$ は空でない木で、$T(e)^{+}$ が整礎であることと $e\in\mathrm{WT}$ は同値。$e\in\mathrm{WT}$ なら $\lVert e\rVert$ は、$T(e)=\varnothing$ のとき $0$、そうでないとき $\lvert T(e)\rvert+1$。
+2. $e,e'\in\mathrm{TR}$, $e\in\mathrm{WT}$ について、次が成り立つ。
+   - (a) $T(e')^{+}\preceq T(e)^{+}\iff e'\in\mathrm{WT}\land\lVert e'\rVert\le\lVert e\rVert$
+   - (b) $T(e')^{++}\preceq T(e)^{+}\iff e'\in\mathrm{WT}\land\lVert e'\rVert<\lVert e\rVert$
+3. $\lVert\cdot\rVert$ は $\mathrm{WT}$ の $\Pi^{1}_{1}$ ノルムである。より詳しく、$\le^{*},<^{*}$ をこのノルムの関係とすると次が成り立つ。
+$$
+\begin{aligned}
+e\le^{*}e'&\iff e\in\mathrm{WT}\land\bigl(e'\notin\mathrm{TR}\lor\neg\,T(e')^{++}\preceq T(e)^{+}\bigr),\\
+e<^{*}e'&\iff e\in\mathrm{WT}\land\bigl(e'\notin\mathrm{TR}\lor\neg\,T(e')^{+}\preceq T(e)^{+}\bigr)
+\end{aligned}
+$$
+:::
+
+::: proof
+**1.** $T(e)^{+}$ は $\langle\rangle$ を含む木である。$T(e)$ の枝 $g$ から $T(e)^{+}$ の枝 $\langle0\rangle^{\frown}g$ が得られ、逆に $T(e)^{+}$ の枝 $h$ は $h(0)=0$ で、$n\mapsto h(n+1)$ は $T(e)$ の枝になる。よって両者の整礎性は同値。深さは \ref{comp:tree-rank-basic} の 5 から（$T(e)=\varnothing$ なら $T(e)^{+}=\{\langle\rangle\}$ で深さ $0$）。
+
+**2 (a).** $T(e)^{+}$ は整礎で空でない（1）。「⇒」：比較補題の 1 から $T(e')^{+}$ は整礎、すなわち $e'\in\mathrm{WT}$ で、$\lVert e'\rVert=\lvert T(e')^{+}\rvert\le\lvert T(e)^{+}\rvert=\lVert e\rVert$。「⇐」：$T(e')^{+}$ は整礎で深さ $\lVert e'\rVert\le\lVert e\rVert$、行き先 $T(e)^{+}$ は空でないので、比較補題の 3 から埋め込みがある。
+
+**2 (b).** $T(e')^{+}$ は空でないので、\ref{comp:tree-rank-basic} の 5 から、$T(e')^{+}$ が整礎なら $\lvert T(e')^{++}\rvert=\lVert e'\rVert+1$。また $T(e')^{++}$ と $T(e')^{+}$ の整礎性は 1 と同じ理由で同値。あとは (a) と同様で、条件 $\lVert e'\rVert+1\le\lVert e\rVert$ は $\lVert e'\rVert<\lVert e\rVert$ と同値である。
+
+**3, Step 1（同値の確認）.** 一つ目を示す（二つ目も同様に (a) を使う）。両辺とも $e\in\mathrm{WT}$ を要求するので、$e\in\mathrm{WT}$ と仮定してよい。
+- $e'\notin\mathrm{TR}$ なら $e'\notin\mathrm{WT}$ なので、左辺は真で、右辺も真。
+- $e'\in\mathrm{TR}$ なら、(b) から
+$$
+\neg\,T(e')^{++}\preceq T(e)^{+}\iff e'\notin\mathrm{WT}\lor\lVert e\rVert\le\lVert e'\rVert,
+$$
+これは左辺の括弧の中にほかならない。
+
+**3, Step 2（Π¹₁ であること）.** $e'\in\mathrm{TR}$ のとき「$t\in T(e')^{++}$」は $e',t$ について算術的（$t=\langle\rangle$、$t=\langle0\rangle$、または $t=\langle0,0\rangle^{\frown}u$ で $\varphi_{e'}(u)=1$）なので、\ref{comp:tree-embedding-sigma11} の後半から「$T(e')^{++}\preceq T(e)^{+}$」は（その算術的な定義を $e'\notin\mathrm{TR}$ の場合にもそのまま使って）$\Sigma^{1}_{1}$ の関係で、その否定は $\Pi^{1}_{1}$。$\mathrm{WT}$ は $\Pi^{1}_{1}$（\ref{comp:wt-complete} の 1）、$e'\notin\mathrm{TR}$ は算術的なので、右辺は $\Pi^{1}_{1}$。
+
+::: hypcheck
+- **根を足す操作 $T\mapsto T^{+}$**：深さ $0$ の木が $\varnothing$ と $\{\langle\rangle\}$ の二つあるため、そのままでは比較補題 3 の前提「行き先が空でない」が満たせない（\ref{comp:tree-comparison} の hypcheck）。$T(e)^{+}$ に置き換えると木はいつも空でなく、深さも $T(e)$ の空・非空を区別する。
+- **前提 $e\in\mathrm{WT}$**：2 で行き先 $T(e)^{+}$ を整礎にするのに使った。$e\notin\mathrm{WT}$ なら任意の木が $T(e)^{+}$ に埋め込める（比較補題 2）ので、(a), (b) の左辺は常に真になる。
+- **$e'\notin\mathrm{TR}$ の場合分け**：$\varphi_{e'}$ が全域的でない、あるいは木でない場合にも関係を $\N$ 全体で定義するために必要だった。
+:::
+:::
+
+::: theorem Π¹₁ の前整列性 {#comp:pi11-prewellordering keywords="prewellordering property of Pi^1_1" index="前整列性|ぜんせいれつせい, Π¹₁ の前整列性|ぱいわんわんのぜんせいれつせい"}
+すべての $\Pi^{1}_{1}$ 集合 $A\subseteq\N$ は $\Pi^{1}_{1}$ ノルムをもつ。
+:::
+
+::: proof
+\ref{comp:wt-complete} の 2 から、計算可能な全域関数 $w$ で $x\in A\iff w(x)\in\mathrm{WT}$ となるものがある。$\varphi(x)\defeq\lVert w(x)\rVert$（$x\in A$）とおくと、
+$$
+x\le^{*}_{\varphi}y\iff w(x)\le^{*}w(y),\qquad x<^{*}_{\varphi}y\iff w(x)<^{*}w(y)
+$$
+（右辺は \ref{comp:wt-norm} の関係）。実際、$x\in A\iff w(x)\in\mathrm{WT}$、$y\notin A\iff w(y)\notin\mathrm{WT}$ で、ノルムの値は定義から一致する。右辺は $\Pi^{1}_{1}$ の関係に計算可能な関数を代入したものなので $\Pi^{1}_{1}$。
+
+::: hypcheck
+- **$A\le_{\mathrm{m}}\mathrm{WT}$**：$\mathrm{WT}$ の $\Pi^{1}_{1}$ 完全性（\ref{comp:wt-complete} の 2）だけを使った。ノルムは $w$ の選び方による（ノルムは一意でない）。
+- **使わなかったこと**：有界性定理は使っていない。前整列性は比較補題だけから出る。
+:::
+:::
+
+## 縮小性と分離定理 {#comp:sec-pw-reduction}
+
+::: theorem Π¹₁ の縮小性 {#comp:pi11-reduction keywords="reduction property for Pi^1_1" index="縮小性|しゅくしょうせい, Π¹₁ の縮小性|ぱいわんわんのしゅくしょうせい"}
+$A,B\subseteq\N$ が $\Pi^{1}_{1}$ ならば、$\Pi^{1}_{1}$ 集合 $A'\subseteq A$, $B'\subseteq B$ で、$A'\cap B'=\varnothing$ かつ $A'\cup B'=A\cup B$ となるものがある。
+:::
+
+::: intuition
+$A$ と $B$ の両方に入る元を、どちらか一方に振り分けたい。各元について「$A$ に入る段数」と「$B$ に入る段数」を競争させ、早く入った方（同時なら $A$）に振り分ける。前整列性により、この競争の判定が $\Pi^{1}_{1}$ でできる。
+:::
+
+::: proof
+**Step 1（まとめた集合とノルム）.** $C\defeq\{\langle0,x\rangle:x\in A\}\cup\{\langle1,x\rangle:x\in B\}$ は $\Pi^{1}_{1}$（$\vee$ と計算可能な代入で閉じる）。前整列性（\ref{comp:pi11-prewellordering}）から $C$ の $\Pi^{1}_{1}$ ノルム $\varphi$ をとり、その関係を $\le^{*},<^{*}$ と書く。
+
+**Step 2（定義）.**
+$$
+A'\defeq\{x:\langle0,x\rangle\le^{*}\langle1,x\rangle\},\qquad B'\defeq\{x:\langle1,x\rangle<^{*}\langle0,x\rangle\}
+$$
+とおく。どちらも $\Pi^{1}_{1}$ の関係に計算可能な関数を代入したものなので $\Pi^{1}_{1}$。
+
+**Step 3（包含）.** $x\in A'$ なら $\le^{*}$ の定義から $\langle0,x\rangle\in C$、すなわち $x\in A$。同様に $B'\subseteq B$。
+
+**Step 4（交わらないこと）.** $x\in A'\cap B'$ とすると、$\langle0,x\rangle,\langle1,x\rangle\in C$ で、$\varphi(\langle0,x\rangle)\le\varphi(\langle1,x\rangle)$ かつ $\varphi(\langle1,x\rangle)<\varphi(\langle0,x\rangle)$。順序数の三分律（\ref{set:ordinal-basic}）に反する。
+
+**Step 5（和が一致すること）.** Step 3 から $A'\cup B'\subseteq A\cup B$。逆に $x\in A\cup B$ とし、場合分けする。
+- $x\in A$, $x\notin B$：$\langle1,x\rangle\notin C$ なので $\langle0,x\rangle\le^{*}\langle1,x\rangle$、$x\in A'$。
+- $x\in B$, $x\notin A$：同様に $\langle1,x\rangle<^{*}\langle0,x\rangle$、$x\in B'$。
+- $x\in A\cap B$：三分律から $\varphi(\langle0,x\rangle)\le\varphi(\langle1,x\rangle)$ なら $x\in A'$、そうでなければ $\varphi(\langle1,x\rangle)<\varphi(\langle0,x\rangle)$ で $x\in B'$。
+
+::: hypcheck
+- **前整列性**：Step 1 の $C$ のノルムに使った。$\le^{*}$ と $<^{*}$ の両方が $\Pi^{1}_{1}$ であることが、$A'$ と $B'$ の両方を $\Pi^{1}_{1}$ にするのに必要だった。
+- **同点の扱い**：同時に入る元を $A'$ に入れるため、$A'$ では $\le^{*}$、$B'$ では $<^{*}$ を使った。両方 $\le^{*}$ にすると Step 4 が崩れる。
+:::
+:::
+
+::: corollary Σ¹₁ の分離定理 {#comp:sigma11-separation keywords="separation theorem for Sigma^1_1, effective Lusin separation" index="分離定理（Σ¹₁）|ぶんりていりしぐまわんわん"}
+$A,B\subseteq\N$ が交わらない $\Sigma^{1}_{1}$ 集合ならば、$\Delta^{1}_{1}$ 集合 $C$ で $A\subseteq C$ かつ $C\cap B=\varnothing$ となるものがある。
+:::
+
+::: proof
+**Step 1.** 補集合 $\overline{A},\overline{B}$ は $\Pi^{1}_{1}$ で、$A\cap B=\varnothing$ から $\overline{A}\cup\overline{B}=\N$。縮小性（\ref{comp:pi11-reduction}）を適用して、交わらない $\Pi^{1}_{1}$ 集合 $A^{\circ}\subseteq\overline{A}$, $B^{\circ}\subseteq\overline{B}$ で $A^{\circ}\cup B^{\circ}=\N$ となるものをとる。
+
+**Step 2.** $A^{\circ},B^{\circ}$ は交わらず和が $\N$ なので $B^{\circ}=\N\setminus A^{\circ}$。よって $C\defeq B^{\circ}$ は $\Pi^{1}_{1}$ で、補集合 $A^{\circ}$ も $\Pi^{1}_{1}$、すなわち $C$ は $\Delta^{1}_{1}$。
+
+**Step 3.** $x\in A$ なら $x\notin\overline{A}\supseteq A^{\circ}$ なので $x\in B^{\circ}=C$。$x\in C=B^{\circ}\subseteq\overline{B}$ なら $x\notin B$。
+
+::: hypcheck
+- **前提「交わらない」**：Step 1 で $\overline{A}\cup\overline{B}=\N$ に使った。これがないと $C$ の補集合が $\Pi^{1}_{1}$ になる保証がない。
+- **前提「Σ¹₁」**：補集合を $\Pi^{1}_{1}$ にして縮小性を使うためだけに使った。下の \ref{comp:pi11-inseparable} により、$\Pi^{1}_{1}$ の対では分離定理は成り立たない。
+:::
+:::
+
+::: corollary 被覆定理 {#comp:pi11-covering keywords="covering: a Sigma^1_1 subset of a Pi^1_1 set is covered by a Delta^1_1 set" index="被覆定理|ひふくていり"}
+$B\subseteq A\subseteq\N$ で、$B$ が $\Sigma^{1}_{1}$、$A$ が $\Pi^{1}_{1}$ ならば、$\Delta^{1}_{1}$ 集合 $C$ で $B\subseteq C\subseteq A$ となるものがある。
+:::
+
+::: proof
+$B$ と $\N\setminus A$ は交わらない $\Sigma^{1}_{1}$ 集合なので、分離定理（\ref{comp:sigma11-separation}）から $\Delta^{1}_{1}$ の $C$ で $B\subseteq C$, $C\cap(\N\setminus A)=\varnothing$ となるものがある。後者は $C\subseteq A$ にほかならない。
+:::
+
+::: remark
+前ページの \ref{comp:delta11-criterion} と合わせると、$A=\{x:w(x)\in\mathrm{WT}\}$ の $\Delta^{1}_{1}$ の層 $A_{\alpha}$ を使って、被覆定理のもう一つの証明が得られる：$w[B]$ は $\mathrm{WT}$ の $\Sigma^{1}_{1}$ 部分集合なので、有界性定理（\ref{comp:spector-boundedness}）から深さはある計算可能な $\alpha$ 未満で、$B\subseteq A_{\alpha}\subseteq A$。こちらは層まで指定できる点で情報が多い。
+:::
+
+::: theorem Δ¹₁ で分離できない Π¹₁ 集合の対 {#comp:pi11-inseparable keywords="Delta^1_1-inseparable pair of disjoint Pi^1_1 sets; failure of separation for Pi^1_1" index="分離不能な Π¹₁ 集合|ぶんりふのうなぱいわんわんしゅうごう"}
+交わらない $\Pi^{1}_{1}$ 集合 $C_{0},C_{1}\subseteq\N$ で、$C_{0}\subseteq D$, $D\cap C_{1}=\varnothing$ となる $\Delta^{1}_{1}$ 集合 $D$ が存在しないものがある。
+:::
+
+::: proof
+**Step 1（普遍集合）.** \ref{comp:analytical-enumeration} の 1 から、$\Pi^{1}_{1}$ の関係 $U(e,x)$ で、任意の $\Pi^{1}_{1}$ 集合 $P\subseteq\N$ がある $e$ で $P=U_{e}\defeq\{x:U(e,x)\}$ と書けるものがある。$x=\langle x_{0},x_{1}\rangle$ と組で書き、
+$$
+E_{0}\defeq\{x:U(x_{0},x)\},\qquad E_{1}\defeq\{x:U(x_{1},x)\}
+$$
+とおく。どちらも $\Pi^{1}_{1}$。
+
+**Step 2（縮小）.** 縮小性（\ref{comp:pi11-reduction}）で、交わらない $\Pi^{1}_{1}$ 集合 $C_{0}\subseteq E_{0}$, $C_{1}\subseteq E_{1}$ で $C_{0}\cup C_{1}=E_{0}\cup E_{1}$ となるものをとる。
+
+**Step 3（対角線論法）.** $\Delta^{1}_{1}$ の $D$ が $C_{0}\subseteq D$, $D\cap C_{1}=\varnothing$ を満たすと仮定する。$D$ も $\N\setminus D$ も $\Pi^{1}_{1}$ なので、$\N\setminus D=U_{a}$, $D=U_{b}$ となる $a,b$ がある。$x^{*}\defeq\langle a,b\rangle$ とおくと
+$$
+x^{*}\in E_{0}\iff x^{*}\notin D,\qquad x^{*}\in E_{1}\iff x^{*}\in D.
+$$
+- $x^{*}\in D$ の場合：$x^{*}\in E_{1}\setminus E_{0}$。$x^{*}\in E_{0}\cup E_{1}=C_{0}\cup C_{1}$ で、$C_{0}\subseteq E_{0}$ より $x^{*}\notin C_{0}$、よって $x^{*}\in C_{1}$。$D\cap C_{1}=\varnothing$ に反する。
+- $x^{*}\notin D$ の場合：$x^{*}\in E_{0}\setminus E_{1}$ で、同様に $x^{*}\in C_{0}\subseteq D$。矛盾。
+
+::: hypcheck
+- **縮小性**：Step 2 で、重なりのある $E_{0},E_{1}$ を、和を変えずに交わらない対に直すのに使った。
+- **普遍集合**：Step 3 の対角線論法で、$D$ と $\N\setminus D$ に添字を付けるのに使った。$\Delta^{1}_{1}$ であること（両方が $\Pi^{1}_{1}$）が本質的である。
+:::
+:::
+
+## 数についての一様化 {#comp:sec-pw-uniformization}
+
+::: theorem Π¹₁ 関係の数についての一様化 {#comp:pi11-number-uniformization keywords="number uniformization for Pi^1_1 relations, Pi^1_1 selection" index="一様化（数についての）|いちようかかずについての"}
+$R\subseteq\N\times\N$ が $\Pi^{1}_{1}$ ならば、$\Pi^{1}_{1}$ の関係 $R^{*}\subseteq R$ で、$\exists n\,R(x,n)$ となるすべての $x$ について $R^{*}(x,n)$ となる $n$ がちょうど一つあり、$\exists n\,R(x,n)$ とならない $x$ については $R^{*}(x,n)$ となる $n$ がないものがある（$R^{*}$ は $R$ を**一様化**する）。
+:::
+
+::: proof
+**Step 1（定義）.** $R$（を $\N$ の部分集合とみたもの）の $\Pi^{1}_{1}$ ノルム $\varphi$ をとり（\ref{comp:pi11-prewellordering}）、
+$$
+\begin{aligned}
+R^{*}(x,n)\iff\ &R(x,n)\land\forall m\,\bigl[(x,n)\le^{*}(x,m)\bigr]\\
+&\land\forall m<n\,\bigl[(x,n)<^{*}(x,m)\bigr]
+\end{aligned}
+$$
+とおく。$\Pi^{1}_{1}$ は数の量化子と有界な量化子で閉じているので、$R^{*}$ は $\Pi^{1}_{1}$。$R^{*}\subseteq R$ は定義から。
+
+**Step 2（存在）.** $\exists n\,R(x,n)$ とする。$\{\varphi(x,n):R(x,n)\}$ は空でない順序数の集合なので最小元 $\mu$ をもつ（\ref{set:sup-ordinals} の 2）。$\varphi(x,n_{0})=\mu$ となる最小の $n_{0}$ をとる。
+- 任意の $m$ について：$R(x,m)$ なら $\mu\le\varphi(x,m)$、そうでなければ定義から $(x,n_{0})\le^{*}(x,m)$。
+- $m<n_{0}$ について：$R(x,m)$ なら、$n_{0}$ の最小性から $\varphi(x,m)\neq\mu$ なので $\mu<\varphi(x,m)$。そうでなければ定義から $(x,n_{0})<^{*}(x,m)$。
+
+よって $R^{*}(x,n_{0})$。
+
+**Step 3（一意性）.** $R^{*}(x,n)$, $R^{*}(x,n')$, $n<n'$ とする。$R^{*}(x,n)$ の第 2 条件から $\varphi(x,n)\le\varphi(x,n')$、$R^{*}(x,n')$ の第 3 条件（$m=n<n'$）から $\varphi(x,n')<\varphi(x,n)$。三分律に反する。
+
+**Step 4.** $\exists n\,R(x,n)$ でなければ、$R^{*}\subseteq R$ から $R^{*}(x,n)$ となる $n$ はない。
+
+::: hypcheck
+- **前整列性**：Step 1 で $R^{*}$ を $\Pi^{1}_{1}$ にするのに、$\le^{*}$ と $<^{*}$ の両方を使った。
+- **閉包性**：$\forall m$ についての閉包に可算選択公理を使う（\ref{comp:quantifier-absorption} の 3 の双対）。
+- **一様化する変数が数であること**：Step 2 で「最小の $n_{0}$」をとったのは、自然数の整列性による。関数 $g$ についての一様化（$R(x,g)$ を一様化する $\Pi^{1}_{1}$ の関係）も成り立つが（近藤–アディソンの定理）、この議論だけでは足りない（下の補足）。
+:::
+:::
+
+::: corollary Δ¹₁ 選択 {#comp:delta11-selection keywords="Delta^1_1 selection, total Pi^1_1 relations have Delta^1_1 choice functions" index="Δ¹₁ 選択|でるたわんわんせんたく"}
+$R\subseteq\N\times\N$ が $\Pi^{1}_{1}$ で、すべての $x$ について $\exists n\,R(x,n)$ ならば、関数 $f:\N\to\N$ で、すべての $x$ について $R(x,f(x))$ となり、グラフ $\{(x,n):f(x)=n\}$ が $\Delta^{1}_{1}$ となるものがある。
+:::
+
+::: proof
+\ref{comp:pi11-number-uniformization} の $R^{*}$ をとり、$f(x)$ を $R^{*}(x,n)$ となる唯一の $n$ とする。グラフは $R^{*}$ そのもので $\Pi^{1}_{1}$。また、$f$ が全域的なので
+$$
+f(x)=n\iff\neg\,\exists m\,\bigl(m\neq n\land R^{*}(x,m)\bigr)
+$$
+で、右辺は $\Pi^{1}_{1}$ の関係の数の存在量化（$\Pi^{1}_{1}$）の否定なので $\Sigma^{1}_{1}$。よってグラフは $\Delta^{1}_{1}$。
+
+::: hypcheck
+- **前提「すべての $x$ で $\exists n\,R(x,n)$」**：$f$ の全域性に使い、グラフの $\Sigma^{1}_{1}$ 表示はこの全域性に依存する。外すと、グラフは $\Pi^{1}_{1}$ のままだが $\Sigma^{1}_{1}$ とは限らない。
+:::
+:::
+
+## クリーネの基底定理 {#comp:sec-pw-basis}
+
+::: theorem クリーネの基底定理 {#comp:kleene-basis keywords="Kleene basis theorem: nonempty Sigma^1_1 sets of functions have members computable in WT (in Kleene's O); leftmost branch" index="クリーネの基底定理|くりーねのきていていり, 最左の枝|さいさのえだ"}
+1. 計算可能な木 $T$ が枝をもつならば、$T$ の枝で $\mathrm{WT}$ について計算可能なもの（最左の枝）がある。
+2. $F\subseteq\N^{\N}$ が空でない $\Sigma^{1}_{1}$ の集合（関数を引数とする $\Sigma^{1}_{1}$ 関係 $F(f)$）ならば、$F$ の元で $\mathrm{WT}$ について計算可能なものがある。
+:::
+
+::: proof
+**1, Step 1（枝をもつ節点の集合）.** $\mathrm{IF}_{T}\defeq\{s\in T:T_{s}\text{ は枝をもつ}\}$ とおく（$T_{s}$ は \ref{comp:tree-rank-basic} の 4 の部分木）。$T$ が決定可能なので、s-m-n 定理（\ref{comp:smn}）により、計算可能な全域関数 $u$ で $\varphi_{u(s)}$ が $T_{s}$ の特性関数になるものがある（$u(s)\in\mathrm{TR}$）。したがって
+$$
+s\in\mathrm{IF}_{T}\iff s\in T\land u(s)\notin\mathrm{WT}
+$$
+で、$\mathrm{IF}_{T}$ は $\mathrm{WT}$ について計算可能（\ref{comp:oracle-tm}：神託 $\mathrm{WT}$ に $u(s)$ を問い合わせる）。
+
+**1, Step 2（最左の枝）.** $g(n)\defeq\min\{m:\bar{g}(n)^{\frown}\langle m\rangle\in\mathrm{IF}_{T}\}$ と再帰的に定める。$n$ についての帰納法で、$\bar{g}(n)\in\mathrm{IF}_{T}$ であり、したがって $g(n)$ が定義されることを示す。$n=0$：$T$ は枝をもつので $\langle\rangle\in\mathrm{IF}_{T}$。$\bar{g}(n)\in\mathrm{IF}_{T}$ なら、$T_{\bar{g}(n)}$ の枝 $h$ について $\bar{g}(n)^{\frown}\langle h(0)\rangle\in\mathrm{IF}_{T}$（$n\mapsto h(n+1)$ がその部分木の枝）なので、最小値 $g(n)$ が存在し、$\bar{g}(n+1)\in\mathrm{IF}_{T}\subseteq T$。よって $g$ は $T$ の枝。$g$ の計算は $\mathrm{IF}_{T}$ への問い合わせと最小値の探索（必ず止まる）なので、$g$ は $\mathrm{WT}$ について計算可能。
+
+**2.** $\neg F(f)$ は（関数引数 $f$ をもつ）$\Pi^{1}_{1}$ 関係なので、$\Pi^{1}_{1}$ 標準形（\ref{comp:pi11-normal-form}）から、決定可能で単調な $S(s,t)$ で
+$$
+F(f)\iff\exists g\ \forall n\ \neg S(\bar{f}(n),\bar{g}(n))
+$$
+となるものがある。対の列 $\langle\langle s(0),t(0)\rangle,\dots,\langle s(k-1),t(k-1)\rangle\rangle$（$\lvert s\rvert=\lvert t\rvert=k$）を $s\otimes t$ と書き、$U\defeq\{s\otimes t:\neg S(s,t)\}$ とおく。単調性の対偶から $U$ は木で、決定可能。$U$ の枝はちょうど $n\mapsto\langle f(n),g(n)\rangle$（$\forall n\,\neg S(\bar{f}(n),\bar{g}(n))$）の形の関数である。$F\neq\varnothing$ なので $U$ は枝をもち、1 から $\mathrm{WT}$ について計算可能な枝 $n\mapsto\langle f(n),g(n)\rangle$ がある。その第 1 成分 $f$ は $F$ の元で、$\mathrm{WT}$ について計算可能。
+
+::: hypcheck
+- **1 の前提「$T$ は計算可能」**：Step 1 で部分木の指数 $u(s)$ を計算可能に作るのに使った。$T$ が $\mathrm{WT}$ について計算可能なだけなら、この議論では $\mathrm{WT}$ の上の解析的な情報（$\mathrm{WT}$ に相対化した $\mathrm{WT}$）が要る。
+- **2 の前提「$\Sigma^{1}_{1}$」**：$\Pi^{1}_{1}$ 標準形で、$F$ を計算可能な木の枝の射影に書くのに使った。外すと偽：$\{f\}$（$f$ は $\mathrm{WT}$ について計算可能でない任意の関数）は空でないが、$\mathrm{WT}$ で計算可能な元をもたない（実際、$\{f\}$ が $\Sigma^{1}_{1}$ なら、$f(n)=m\iff\forall g\,(g\in\{f\}\to g(n)=m)$ から $f$ のグラフは $\Pi^{1}_{1}$ で、$\mathrm{WT}$ に $\le_{\mathrm{m}}$ 還元できる（\ref{comp:wt-complete} の 2）ので、$f(n)$ は「グラフに入る最小の $m$」として $\mathrm{WT}$ で計算できてしまう）。
+- **公理**：最左の枝は最小値で定まるので、選択公理を使っていない。
+:::
+:::
+
+::: supplement
+**前提を変えると.**
+- *$\Sigma^{1}_{1}$ の縮小性は成り立たない.* 問題 \ref{comp:prob-sigma11-no-reduction} を参照。$\Pi^{1}_{1}$ と $\Sigma^{1}_{1}$ のこの非対称は、前整列性が「先に入った方が勝つ」という $\Pi^{1}_{1}$ 側の情報にだけ基づくことの反映である。
+- *基底をもっと低くできるか.* 基底定理の $\mathrm{WT}$ は下げられる。空でない $\Sigma^{1}_{1}$ 集合は、$\mathrm{WT}$ より真に低い（$\mathrm{WT}\not\le_{\mathrm{T}}f$ となる）元をもつ（ガンディの基底定理。G. E. Sacks, *Higher Recursion Theory*）。一方、超算術的な元をもつとは限らない：枝をもつ計算可能な木で、どの枝も超算術的（\ref{comp:hyperarithmetic-fact}）でないものがある（クリーネ）。
+
+**類似の定理.**
+- *ボールド体の対応物.* 相対化して $\boldsymbol{\Pi}^{1}_{1}$（余解析集合）にすると、前整列性・縮小性・分離定理はそれぞれ、余解析集合の前整列性、余解析集合の縮小性（クラトフスキー）、解析集合の分離定理（ルジン）になる（A. S. Kechris, *Classical Descriptive Set Theory*）。
+- *近藤–アディソンの一様化定理.* 関数についての一様化：$\Pi^{1}_{1}$ の関係 $R(x,g)$ は $\Pi^{1}_{1}$ の関係で一様化できる。証明には、ノルムを一つでなく可算個並べた「スケール」を使う（新井『数学基礎論』§6.5、Kechris の上掲書）。
+- *第 2 段.* $\Sigma^{1}_{2}$ は前整列性をもち（ショーンフィールドの木表示から）、$\Pi^{1}_{2}$ はもたない。$\Pi^{1}_{1}$ と $\Sigma^{1}_{2}$ が「良い側」になる。これより上の段でどちらが前整列性をもつかは $\ZFC$ だけでは決まらず、決定性公理などの追加の公理に依存するとされる。
+
+**高い視点から：ノルムは「到着時刻」.** $\Pi^{1}_{1}$ 集合の元 $x$ に付けたノルム $\varphi(x)$ は、「$x$ が集合に入ったことが確認できる時刻」と読める。ただし時計は自然数ではなく順序数で進み、$\omega_{1}^{\mathrm{CK}}$ 段まで続く。前整列性の要点は、「$x$ が $y$ より遅くないか」を判定するのに、$y$ の到着を待つ必要がないことにある：$x$ の到着を見届けた時点で $y$ がまだ来ていなければ $x$ の勝ちで、それは $\Pi^{1}_{1}$ の言葉（$y$ の木の深さが $x$ の木の深さを超えない、ということを否定形で言う）で書ける。縮小性は「到着の早い方に振り分ける」規則、一様化は「最も早く到着した証人のうち番号最小のものを選ぶ」規則で、どちらもこの時刻の比較だけで成り立つ。
+:::
+
+## 問題 {#comp:sec-pw-problems}
+
+::: problem {#comp:prob-sigma11-no-reduction}
+$\Sigma^{1}_{1}$ は縮小性をもたないこと、すなわち、$\Sigma^{1}_{1}$ 集合 $A,B$ で、$A'\subseteq A$, $B'\subseteq B$, $A'\cap B'=\varnothing$, $A'\cup B'=A\cup B$ となる $\Sigma^{1}_{1}$ 集合 $A',B'$ が存在しないものがあることを示せ。
+:::
+
+::: solution
+\ref{comp:pi11-inseparable} の $C_{0},C_{1}$ をとり、$A\defeq\N\setminus C_{0}$, $B\defeq\N\setminus C_{1}$ とおく。これらは $\Sigma^{1}_{1}$ で、$C_{0}\cap C_{1}=\varnothing$ から $A\cup B=\N$。$\Sigma^{1}_{1}$ の $A'\subseteq A$, $B'\subseteq B$ が交わらず和が $\N$ だと仮定すると、$B'=\N\setminus A'$ なので $D\defeq B'$ は $\Delta^{1}_{1}$。
+- $C_{0}\subseteq D$：$x\in C_{0}$ なら $x\notin A\supseteq A'$ なので $x\in B'=D$。
+- $D\cap C_{1}=\varnothing$：$x\in D=B'\subseteq B=\N\setminus C_{1}$。
+
+これは \ref{comp:pi11-inseparable} に反する。
+:::
+
+::: problem {#comp:prob-norm-bounded}
+$\Pi^{1}_{1}$ 集合 $A$ の $\Pi^{1}_{1}$ ノルム $\varphi$ が**正規化されている**（値域 $\{\varphi(x):x\in A\}$ が順序数、すなわち始切片である）とする。すべての $x\in A$ について $\varphi(x)<\omega_{1}^{\mathrm{CK}}$ であることを示せ。また、正規化の仮定が必要な理由を述べよ。
+:::
+
+::: solution
+**Step 1（比較の Σ¹₁ 表示）.** $z\in A$ のとき、任意の $y$ について
+$$
+y<^{*}_{\varphi}z\iff\neg\bigl(z\le^{*}_{\varphi}y\bigr).
+$$
+実際、$z\in A$ なので $z\le^{*}_{\varphi}y\iff y\notin A\lor\varphi(z)\le\varphi(y)$ で、その否定は $y\in A\land\varphi(y)<\varphi(z)$、すなわち $y<^{*}_{\varphi}z$。右辺は $\Pi^{1}_{1}$ の否定なので $\Sigma^{1}_{1}$。同様に $z\in A$ のとき $y\le^{*}_{\varphi}z\iff\neg(z<^{*}_{\varphi}y)$。
+
+**Step 2（下降列の木）.** $x\in A$ を固定し、
+$$
+T_{x}\defeq\bigl\{\langle y_{0},\dots,y_{k-1}\rangle:\neg(x<^{*}_{\varphi}y_{0})\land\forall i<k-1\ \neg(y_{i}\le^{*}_{\varphi}y_{i+1})\bigr\}
+$$
+（空列を含む）とおく。これは $\Sigma^{1}_{1}$ の集合で、始切片で閉じているので木である。Step 1 と $i$ についての帰納法から、$\langle y_{0},\dots,y_{k-1}\rangle\in T_{x}$ は「すべての $y_{i}\in A$ で、$\varphi(y_{0})\le\varphi(x)$, $\varphi(y_{0})>\varphi(y_{1})>\cdots$」と同値。順序数の狭義下降列は有限なので $T_{x}$ は整礎。
+
+**Step 3（深さの計算）.** 末項が $y$ の列のランクが $\varphi(y)$ であることを、$R_{T_{x}}$ 上の帰納法で示す。子は末尾に $\varphi(z)<\varphi(y)$ となる $z\in A$ を足したものなので、ランクは $\sup\{\varphi(z)+1:z\in A,\varphi(z)<\varphi(y)\}$。正規化から、$\varphi(y)$ 未満のすべての順序数が $\varphi(z)$ の形で現れるので、この上限は $\varphi(y)$。根では同様に $\sup\{\varphi(y_{0})+1:\varphi(y_{0})\le\varphi(x)\}=\varphi(x)+1$。よって $\lvert T_{x}\rvert=\varphi(x)+1$。
+
+**Step 4.** $T_{x}$ は $\Sigma^{1}_{1}$ の整礎木なので、\ref{comp:boundedness-sigma11-trees} から $\varphi(x)+1<\omega_{1}^{\mathrm{CK}}$。
+
+**正規化が必要な理由.** 関係 $\le^{*}_{\varphi},<^{*}_{\varphi}$ は $\varphi$ の値の大小だけで決まるので、$\varphi$ に任意の狭義増加な順序数値関数を合成しても変わらない。たとえば $\varphi'(x)\defeq\omega_{1}+\varphi(x)$ も $\Pi^{1}_{1}$ ノルムだが、値はすべて $\omega_{1}^{\mathrm{CK}}$ を超える。正規化はこの任意性を取り除き、Step 3 で隙間のない値域を使えるようにする。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

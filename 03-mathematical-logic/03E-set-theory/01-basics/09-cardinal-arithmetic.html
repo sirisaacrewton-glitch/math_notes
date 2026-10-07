@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>基数の和と積・アレフ | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/01-basics/09-cardinal-arithmetic.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 基数の和と積・アレフ {#set:page-cardinal-arithmetic keywords="cardinal arithmetic, cardinal addition, cardinal multiplication, Hessenberg theorem, Hartogs number, aleph"}
+
+基数の和と積を「交わらない和集合の濃度」「直積の濃度」として定義する。有限の範囲では自然数の和・積に一致するが、無限基数では $\kappa\otimes\kappa=\kappa$（ヘッセンベルクの定理）が成り立ち、和も積も大きい方に吸収されてしまう。後半では、どの順序数よりも大きい基数が存在すること（ハルトークスの定理）を示し、無限基数を小さい順に並べた**アレフ** $\aleph_{\alpha}$ を超限再帰で定義する。
+
+## 記法と定義の確認 {#set:sec-cardinal-arithmetic-notation}
+
+::: notation
+- 議論は $\ZF$ の中で行い、**選択公理は使わない**。冪集合の公理（\ref{set:ax-power-set}）を使うのはハルトークスの定理 \ref{set:hartogs} とそれに依存する部分だけである。
+- $A\preccurlyeq B$, $A\approx B$, $A\prec B$ は \ref{set:cardinality-order}、整列可能な集合の濃度 $\lvert A\rvert$ は \ref{set:cardinality}、基数は \ref{set:cardinal} の意味。$\kappa,\lambda,\mu$ は基数を表す。
+- 整列可能な集合については $A\preccurlyeq B\iff\lvert A\rvert\le\lvert B\rvert$、$A\approx B\iff\lvert A\rvert=\lvert B\rvert$（\ref{set:cardinality-basic}）。$\lvert\alpha\rvert\le\beta\le\alpha\Rightarrow\lvert\beta\rvert=\lvert\alpha\rvert$（\ref{set:cardinal-between}）。シュレーダー＝ベルンシュタインの定理は \ref{set:schroder-bernstein}。
+- 自然数と $\omega$ は基数（\ref{set:omega-cardinal}）、有限集合は \ref{set:finite-set}、有限集合の性質は \ref{set:finite-basic}。
+- 順序数の和 $\alpha+\beta$ と積 $\alpha\cdot\beta$ は \ref{set:ordinal-addition}, \ref{set:ordinal-multiplication} のもので、$\alpha+\beta$ は $\alpha$ の後に $\beta$ を並べた整列集合（順序和、台集合 $\alpha\times\{0\}\cup\beta\times\{1\}$）の順序型、$\alpha\cdot\beta$ は $\beta\times\alpha$ の辞書式順序（辞書式積）の順序型（$\alpha$ を $\beta$ 回並べたもの）である（\ref{set:well-order-sum-product-def}）。\ref{set:well-order-sum-product-def} では順序和・辞書式積を $\oplus,\otimes$ と書いたが、**本ページ以降、基数の間の $\oplus,\otimes$ は下の \ref{set:cardinal-sum-product}（濃度）の意味でだけ用いる**。再帰的な等式 $\alpha+0=\alpha$, $\alpha+(\beta+1)=(\alpha+\beta)+1$, $\alpha\cdot 0=0$, $\alpha\cdot(\beta+1)=\alpha\cdot\beta+\alpha$ は \ref{set:ordinal-addition-laws}, \ref{set:ordinal-multiplication-laws} による。
+- 極限順序数は \ref{set:limit-ordinal}（$0$ でも後続順序数でもない順序数）、順序数の集合の上限 $\sup X=\bigcup X$ は \ref{set:sup-ordinals}。${}^{n}A$ と $A^{<\omega}=\bigcup_{n\in\omega}{}^{n}A$ は有限列の集合（\ref{set:finite-sequence}）。
+:::
+
+## 基数の和と積 {#set:sec-cardinal-sum-product}
+
+::: definition 基数の和と積 {#set:cardinal-sum-product keywords="cardinal addition, cardinal multiplication, cardinal sum, cardinal product" index="基数の和|きすうのわ, 基数の積|きすうのせき"}
+基数 $\kappa,\lambda$ に対し
+$$
+\kappa\oplus\lambda=\bigl\lvert\kappa\times\{0\}\cup\lambda\times\{1\}\bigr\rvert,\qquad \kappa\otimes\lambda=\lvert\kappa\times\lambda\rvert
+$$
+と定め、それぞれ**基数の和**、**基数の積**という。
+:::
+
+::: intuition
+$\kappa$ 個の元と $\lambda$ 個の元を「重ならないように」合わせた集合の大きさが和、$\kappa$ 個と $\lambda$ 個の組の個数が積である。$\times\{0\}$, $\times\{1\}$ は $\kappa$ と $\lambda$ に共通部分があっても（基数同士ではいつも $\kappa\subseteq\lambda$ か $\lambda\subseteq\kappa$ である）別物として並べるための札である。順序数の和・積と違い、**並べ方を忘れて大きさだけを見る**。
+:::
+
+::: supplement
+**定義が意味をもつこと.** 右辺の集合は整列可能である：$\kappa\times\{0\}\cup\lambda\times\{1\}$ には「$\kappa$ の部分を先に、$\lambda$ の部分を後に並べる」整列順序が、$\kappa\times\lambda$ には辞書式の整列順序がある（それぞれの順序型が順序数の和 $\kappa+\lambda$ と積 $\lambda\cdot\kappa$ である）。よって \ref{set:cardinality} の $\lvert\cdot\rvert$ が定義され、選択公理は要らない。
+
+**記号について.** 順序数の和・積と区別するため $\oplus,\otimes$ と書いた（Kunen と同じ記法）。右辺の集合は \ref{set:well-order-sum-product-def} の順序和 $\kappa\oplus\lambda$・辞書式積 $\kappa\otimes\lambda$ の台集合そのものなので、基数の和・積は「順序和・辞書式積の順序を忘れた濃度」である。整列集合としての $\oplus,\otimes$ と混同しないよう、以下では $\oplus,\otimes$ を基数に対してだけ使う。多くの文献では文脈で区別して $\kappa+\lambda$, $\kappa\cdot\lambda$ と書く。
+:::
+
+::: proposition {#set:cardinal-sum-product-basic keywords="commutativity of cardinal arithmetic, monotonicity"}
+$\kappa,\kappa',\lambda,\lambda'$ を基数、$\alpha,\beta$ を順序数とする。
+1. $\lvert\alpha+\beta\rvert=\lvert\alpha\rvert\oplus\lvert\beta\rvert$、$\lvert\alpha\cdot\beta\rvert=\lvert\alpha\rvert\otimes\lvert\beta\rvert$。
+2. （可換性）$\kappa\oplus\lambda=\lambda\oplus\kappa=\lvert\kappa+\lambda\rvert=\lvert\lambda+\kappa\rvert$、$\kappa\otimes\lambda=\lambda\otimes\kappa=\lvert\kappa\cdot\lambda\rvert=\lvert\lambda\cdot\kappa\rvert$。
+3. （単調性）$\kappa\le\kappa'$, $\lambda\le\lambda'$ ならば $\kappa\oplus\lambda\le\kappa'\oplus\lambda'$、$\kappa\otimes\lambda\le\kappa'\otimes\lambda'$。
+4. $A,B$ が整列可能で $A\cap B=\varnothing$ ならば $\lvert A\cup B\rvert=\lvert A\rvert\oplus\lvert B\rvert$。$A,B$ が整列可能ならば $A\times B$ も整列可能で $\lvert A\times B\rvert=\lvert A\rvert\otimes\lvert B\rvert$。
+:::
+
+::: proof
+**Step 1（(4) の和）.** 全単射 $p\colon\lvert A\rvert\to A$, $q\colon\lvert B\rvert\to B$ をとり、$r(\xi,0)=p(\xi)$, $r(\eta,1)=q(\eta)$ で $r\colon\lvert A\rvert\times\{0\}\cup\lvert B\rvert\times\{1\}\to A\cup B$ を定める。$p,q$ が全単射で $A\cap B=\varnothing$ なので $r$ は全単射。よって $A\cup B$ は整列可能で（\ref{set:well-orderable-iff-ordinal}）、\ref{set:cardinality-basic} (2) により $\lvert A\cup B\rvert=\lvert A\rvert\oplus\lvert B\rvert$。
+
+**Step 2（(4) の積）.** 同じ $p,q$ で $(\xi,\eta)\mapsto(p(\xi),q(\eta))$ は全単射 $\lvert A\rvert\times\lvert B\rvert\to A\times B$。よって $A\times B$ は整列可能で $\lvert A\times B\rvert=\lvert A\rvert\otimes\lvert B\rvert$。
+
+**Step 3（(1)）.** $\alpha+\beta$ は $\alpha\times\{0\}\cup\beta\times\{1\}$ と順序同型なので特に対等。$\alpha\times\{0\}\approx\lvert\alpha\rvert\times\{0\}$ などを Step 1 と同様に組み合わせて $\alpha\times\{0\}\cup\beta\times\{1\}\approx\lvert\alpha\rvert\times\{0\}\cup\lvert\beta\rvert\times\{1\}$。したがって $\lvert\alpha+\beta\rvert=\lvert\alpha\rvert\oplus\lvert\beta\rvert$。積も $\alpha\cdot\beta\approx\beta\times\alpha\approx\alpha\times\beta\approx\lvert\alpha\rvert\times\lvert\beta\rvert$（中央は $(\eta,\xi)\mapsto(\xi,\eta)$）から従う。
+
+**Step 4（(2)）.** $(\xi,0)\mapsto(\xi,1)$, $(\eta,1)\mapsto(\eta,0)$ は全単射 $\kappa\times\{0\}\cup\lambda\times\{1\}\to\lambda\times\{0\}\cup\kappa\times\{1\}$、$(\xi,\eta)\mapsto(\eta,\xi)$ は全単射 $\kappa\times\lambda\to\lambda\times\kappa$。残りの等号は (1) で $\alpha=\kappa$, $\beta=\lambda$（とその逆）とし、$\lvert\kappa\rvert=\kappa$ を使う。
+
+**Step 5（(3)）.** $\kappa\subseteq\kappa'$, $\lambda\subseteq\lambda'$ なので $\kappa\times\{0\}\cup\lambda\times\{1\}\subseteq\kappa'\times\{0\}\cup\lambda'\times\{1\}$、$\kappa\times\lambda\subseteq\kappa'\times\lambda'$。\ref{set:cardinality-basic} (3) より濃度の大小が従う。
+
+::: hypcheck
+- **置換公理**・**分出公理**：各全単射と順序型を集合として作るのに使った。
+- **\ref{set:cardinality-basic}**（その中でシュレーダー＝ベルンシュタインの定理）：Step 5 で包含から濃度の大小を得るのに使った。
+- 選択公理は使わない。$p,q$ はそれぞれ存在する全単射を一つ固定するだけである。
+:::
+:::
+
+::: supplement
+同様に全単射を具体的に書くことで、結合法則 $(\kappa\oplus\lambda)\oplus\mu=\kappa\oplus(\lambda\oplus\mu)$、$(\kappa\otimes\lambda)\otimes\mu=\kappa\otimes(\lambda\otimes\mu)$ と分配法則 $\kappa\otimes(\lambda\oplus\mu)=\kappa\otimes\lambda\oplus\kappa\otimes\mu$ も選択公理なしで示せる。順序数の算術では交換法則と右分配法則が破れていた（$1+\omega\neq\omega+1$, $(1+1)\cdot\omega\neq\omega+\omega$）が、それは順序を見ていたからであり、大きさだけを見る基数の算術では破れない。
+:::
+
+::: theorem 有限基数の算術 {#set:finite-cardinal-arithmetic keywords="finite cardinal arithmetic, commutativity of natural number addition" index="自然数の和の可換性|しぜんすうのわのかかんせい"}
+$n,m\in\omega$ ならば $n+m\in\omega$, $n\cdot m\in\omega$ であり、
+$$
+n\oplus m=n+m,\qquad n\otimes m=n\cdot m .
+$$
+特に、自然数の順序数としての和と積は可換である：$n+m=m+n$, $n\cdot m=m\cdot n$。
+:::
+
+::: intuition
+自然数については「並べてから数える」と「大きさだけ足す」が一致する。順序数の和・積の可換性は定義からは見えにくいが、基数の和・積の可換性（交換は単なる札の付け替え）を経由すると一行で出る。
+:::
+
+::: example
+- $\omega\oplus 1=\lvert 1+\omega\rvert=\lvert\omega\rvert=\omega$ だが、順序数としては $\omega<\omega+1$。
+- $\omega\otimes 2=\lvert 2\cdot\omega\rvert=\omega$ だが、順序数としては $2\cdot\omega=\omega<\omega\cdot 2=\omega+\omega$。
+:::
+
+::: proof
+**Step 1（$n+m\in\omega$）.** $n$ を固定して $m$ についての帰納法で示す。$n+0=n\in\omega$。$n+m\in\omega$ なら $n+(m+1)=(n+m)+1$ であり、自然数の後続は自然数（\ref{set:peano}）なので $\in\omega$。
+
+**Step 2（$n\cdot m\in\omega$）.** 同じく $m$ についての帰納法。$n\cdot 0=0\in\omega$。$n\cdot m\in\omega$ なら $n\cdot(m+1)=n\cdot m+n$ で、Step 1 より $\in\omega$。
+
+**Step 3（一致）.** \ref{set:cardinal-sum-product-basic} (1) と $\lvert n\rvert=n$, $\lvert m\rvert=m$ より $n\oplus m=\lvert n+m\rvert$。$n+m\in\omega$ は基数（\ref{set:omega-cardinal}）なので $\lvert n+m\rvert=n+m$。積も同様。
+
+**Step 4（可換性）.** \ref{set:cardinal-sum-product-basic} (2) より $n+m=n\oplus m=m\oplus n=m+n$、$n\cdot m=n\otimes m=m\otimes n=m\cdot n$。
+
+::: hypcheck
+- **$\omega$ 上の帰納法**：Step 1・2。**自然数が基数であること**（鳩の巣原理 \ref{set:pigeonhole} に基づく）：Step 3 の要。
+- 選択公理・冪集合の公理は使わない。
+:::
+:::
+
+::: corollary {#set:finite-union-product keywords="finite union of finite sets"}
+$A,B$ が有限集合ならば $A\cup B$ と $A\times B$ も有限であり、$A\cap B=\varnothing$ なら $\lvert A\cup B\rvert=\lvert A\rvert+\lvert B\rvert$、また $\lvert A\times B\rvert=\lvert A\rvert\cdot\lvert B\rvert$。
+:::
+
+::: proof
+**Step 1.** $A\cap B=\varnothing$ の場合と $A\times B$ については、\ref{set:cardinal-sum-product-basic} (4) と \ref{set:finite-cardinal-arithmetic} から直ちに従う。
+
+**Step 2.** 一般の場合、$A\cup B=A\cup(B\setminus A)$ は交わらない和であり、$B\setminus A\subseteq B$ は有限（\ref{set:finite-basic} (3)）。Step 1 より $\lvert A\cup B\rvert=\lvert A\rvert+\lvert B\setminus A\rvert<\omega$。
+
+::: hypcheck
+- **分出公理**：Step 2 の $B\setminus A$。**有限集合の部分集合は有限**（\ref{set:finite-basic} (3)）：Step 2。
+- 選択公理は使わない。$A,B$ は有限なので整列可能であり、\ref{set:cardinal-sum-product-basic} (4) がそのまま使える。
+:::
+:::
+
+## 無限基数と $\kappa\otimes\kappa=\kappa$ {#set:sec-hessenberg}
+
+::: lemma {#set:infinite-cardinal-limit keywords="infinite cardinals are limit ordinals"}
+無限基数（$\omega$ 以上の基数）は極限順序数である。
+:::
+
+::: proof
+$\kappa\ge\omega$ を基数とする。$\kappa\neq 0$ は明らか。$\kappa=\alpha+1$ と書けたとして矛盾を導く。
+
+**Step 1.** $\alpha\ge\omega$ である：$\alpha<\omega$ なら $\kappa=\alpha+1\in\omega$ となり $\kappa\ge\omega$ に反する。
+
+**Step 2.** $h\colon\alpha+1\to\alpha$ を、$h(\alpha)=0$、$n\in\omega$ なら $h(n)=n+1$、$\omega\le\xi<\alpha$ なら $h(\xi)=\xi$ で定める（$\alpha\ge\omega$ より $\omega\subseteq\alpha$ なので値はすべて $\alpha$ に入る）。$h$ は $\{\alpha\}\cup\omega$ を $\omega$ に全単射に写し、残りの部分 $\alpha\setminus\omega$ では恒等写像なので、全単射である。
+
+**Step 3.** よって $\alpha\approx\alpha+1=\kappa$ かつ $\alpha<\kappa$。これは $\kappa$ が基数であることに反する。
+
+::: hypcheck
+- **$\kappa\ge\omega$**：Step 1 で $\alpha\ge\omega$ を得て、Step 2 で $\omega\subseteq\alpha$ を「ずらす場所」に使った。有限の $n+1$ は基数で後続順序数である。
+- **分出公理**：Step 2 の $h$ を $(\alpha+1)\times\alpha$ から切り出すのに使った。選択公理は使わない。
+:::
+:::
+
+::: supplement
+逆は成り立たない：$\omega+\omega$ は極限順序数だが $\omega$ と対等で基数ではない。また $\omega$ 以上の順序数 $\alpha$ はすべて $\alpha\approx\alpha+1$ を満たす（Step 2）ので、無限の範囲では「1 個足す」ことで大きさは変わらない。
+:::
+
+ヘッセンベルクの定理の証明には、順序数の対全体に次の整列順序を入れる。
+
+::: definition ゲーデルの対順序 {#set:godel-order keywords="Gödel ordering, canonical well-ordering of pairs, max-lexicographic order" index="ゲーデルの対順序|げーでるのついじゅんじょ, 標準的整列順序|ひょうじゅんてきせいれつじゅんじょ"}
+順序数の対 $(\xi,\eta),(\gamma,\delta)$ に対し、$(\xi,\eta)\lhd(\gamma,\delta)$ を
+$$
+\begin{aligned}
+&\max(\xi,\eta)<\max(\gamma,\delta),\ \text{ または}\\
+&\bigl[\max(\xi,\eta)=\max(\gamma,\delta)\ \text{ かつ }\ (\xi,\eta)\text{ が }(\gamma,\delta)\text{ より辞書式で小さい}\bigr]
+\end{aligned}
+$$
+で定める。ここで辞書式で小さいとは「$\xi<\gamma$、または $\xi=\gamma$ かつ $\eta<\delta$」のことである。$\lhd$ は $\mathbf{ON}\times\mathbf{ON}$ 上のクラス関係である。
+:::
+
+::: intuition
+$\alpha\times\alpha$ を正方形と見て、大きさ $\mu$ の正方形の「外周の L 字」$\{(\xi,\eta)\mid\max(\xi,\eta)=\mu\}$ ごとに層に分け、内側の層から順に並べる。各層の中は辞書式に並べる。こうすると、どの点の前にも「その点を含む正方形 $(\mu+1)\times(\mu+1)$」の中の点しか来ない。これが $\kappa\times\kappa$ の順序型を $\kappa$ 以下に抑える鍵になる。
+:::
+
+::: example
+$\omega\times\omega$ を $\lhd$ で並べると
+$$
+(0,0),\ (0,1),(1,0),(1,1),\ (0,2),(1,2),(2,0),(2,1),(2,2),\ (0,3),\dots
+$$
+となる。各層 $\max=\mu$ は有限個（$2\mu+1$ 個）なので、どの点の前にも有限個の点しかなく、順序型は $\omega$ である。
+:::
+
+::: lemma {#set:godel-order-well-order keywords="Gödel ordering is a well-ordering"}
+1. 任意の順序数 $\alpha$ について、$\lhd$ は $\alpha\times\alpha$ の整列順序である。
+2. $(\gamma,\delta)\in\alpha\times\alpha$ とし $\mu=\max(\gamma,\delta)$ とおくと、$\lhd$ に関する $(\gamma,\delta)$ の前者全体 $\{p\in\alpha\times\alpha\mid p\lhd(\gamma,\delta)\}$ は $(\mu+1)\times(\mu+1)$ に含まれる。
+:::
+
+::: proof
+**Step 1（三つ組への埋め込み）.** $\alpha\times\alpha$ の元 $(\xi,\eta)$ に三つ組 $t(\xi,\eta)=(\max(\xi,\eta),\xi,\eta)\in\alpha\times\alpha\times\alpha$ を対応させる。$t$ は単射で、定義から $p\lhd q\iff t(p)<_{\mathrm{lex}}t(q)$（三つ組の辞書式順序）である。
+
+**Step 2（三つ組の辞書式順序は整列順序）.** 辞書式順序が狭義全順序であることは、各成分の三分律を第 1 成分から順に適用すれば確かめられる。空でない $X\subseteq\alpha\times\alpha\times\alpha$ に対し、$\mu_{0}$ を $X$ の元の第 1 成分の最小値、$\xi_{0}$ を第 1 成分が $\mu_{0}$ である元の第 2 成分の最小値、$\eta_{0}$ を第 1・第 2 成分が $\mu_{0},\xi_{0}$ である元の第 3 成分の最小値とする（各段階で対象の集合は空でなく、順序数の集合は最小元をもつ）。$(\mu_{0},\xi_{0},\eta_{0})\in X$ は $X$ の辞書式最小元である。
+
+**Step 3（(1)）.** 整列順序の部分集合への制限、および単射で引き戻した順序は整列順序である（\ref{set:well-orderable-iff-ordinal} Step 3 と同じ議論）。Step 1・2 より $\lhd$ は $\alpha\times\alpha$ の整列順序。
+
+**Step 4（(2)）.** $(\xi,\eta)\lhd(\gamma,\delta)$ なら定義から $\max(\xi,\eta)\le\max(\gamma,\delta)=\mu$、したがって $\xi,\eta\le\mu$、すなわち $\xi,\eta\in\mu+1$。
+
+::: hypcheck
+- **順序数の集合が最小元をもつこと**（\ref{set:ordinal-well-ordered}）：Step 2。
+- 選択公理は使わない。最小元は各段階で一意に決まる。
+:::
+:::
+
+::: theorem ヘッセンベルクの定理 {#set:kappa-times-kappa keywords="Hessenberg theorem, kappa times kappa equals kappa, κ⊗κ=κ" index="ヘッセンベルクの定理|へっせんべるくのていり"}
+$\kappa$ が無限基数ならば $\kappa\otimes\kappa=\kappa$、すなわち $\kappa\times\kappa\approx\kappa$。
+:::
+
+::: intuition
+無限基数の「正方形」は「一辺」と同じ大きさである。$\omega\times\omega\approx\omega$（有理数が可算であることの核心）を、すべての無限基数に一気に拡張する主張。証明は、最小の反例 $\kappa$ をとると、$\kappa$ より小さい正方形はすべて $\kappa$ より小さいので、ゲーデルの対順序で $\kappa\times\kappa$ を並べたとき、どの点の前にも $\kappa$ 個未満の点しか来ない、ということから従う。
+:::
+
+::: proof
+$\kappa\times\kappa\preccurlyeq\kappa$ を示せば、$\xi\mapsto(\xi,0)$ による $\kappa\preccurlyeq\kappa\times\kappa$ と \ref{set:schroder-bernstein} から $\kappa\times\kappa\approx\kappa$ となる。無限基数についての超限帰納法（\ref{set:transfinite-induction}）で示す：主張が成り立たない無限基数があったとして、その最小のものを $\kappa$ とし、矛盾を導く。
+
+**Step 1（小さい正方形は小さい）.** 任意の $\alpha<\kappa$ について $\lvert\alpha\times\alpha\rvert<\kappa$ である。
+- $\alpha$ が有限のとき：$\lvert\alpha\times\alpha\rvert=\alpha\cdot\alpha\in\omega$（\ref{set:finite-union-product}）で、$\omega\le\kappa$ より $<\kappa$。
+- $\alpha$ が無限のとき：$\lambda=\lvert\alpha\rvert$ は無限基数で、$\lambda\le\alpha<\kappa$（\ref{set:cardinal-between}）。$\kappa$ の最小性から $\lambda\otimes\lambda=\lambda$。よって \ref{set:cardinal-sum-product-basic} (4) より $\lvert\alpha\times\alpha\rvert=\lambda\otimes\lambda=\lambda<\kappa$。
+
+**Step 2（順序型をとる）.** \ref{set:godel-order-well-order} (1) より $(\kappa\times\kappa,\lhd)$ は整列集合なので、順序数 $\theta=\mathrm{type}(\kappa\times\kappa,\lhd)$ と順序同型 $F\colon(\theta,<)\to(\kappa\times\kappa,\lhd)$ がある（\ref{set:ordinal-type}）。
+
+**Step 3（$\theta\le\kappa$）.** $\kappa<\theta$ と仮定する。$\kappa\in\theta$ なので $p=F(\kappa)\in\kappa\times\kappa$ がとれる。$F$ は順序同型なので、$p$ の $\lhd$-前者全体はちょうど $F[\kappa]$ であり、$F$ の単射性から $F[\kappa]\approx\kappa$。一方 $\mu=\max(p)$ とおくと $\mu<\kappa$ で、$\kappa$ は極限順序数（\ref{set:infinite-cardinal-limit}）だから $\mu+1<\kappa$。\ref{set:godel-order-well-order} (2) より $F[\kappa]\subseteq(\mu+1)\times(\mu+1)$。したがって
+$$
+\kappa\approx F[\kappa]\preccurlyeq(\mu+1)\times(\mu+1),
+$$
+\ref{set:cardinality-basic} (3) と Step 1（$\alpha=\mu+1$）より $\kappa=\lvert\kappa\rvert\le\lvert(\mu+1)\times(\mu+1)\rvert<\kappa$ となり矛盾。よって $\theta\le\kappa$。
+
+**Step 4（結論）.** $\kappa\times\kappa\approx\theta\subseteq\kappa$ なので $\kappa\times\kappa\preccurlyeq\kappa$。これは $\kappa$ が反例であることに反する。したがってすべての無限基数 $\kappa$ について $\kappa\otimes\kappa=\kappa$。
+
+::: hypcheck
+- **超限帰納法**：最小の反例をとるのに使った（無限基数のクラスは $\mathbf{ON}$ の部分クラスなので最小元がある）。
+- **$\kappa$ が極限順序数であること**（\ref{set:infinite-cardinal-limit}）：Step 3 で $\mu+1<\kappa$ とするのに使った。ここが「無限」の仮定の使いどころである（$\kappa=2$ なら $2\times 2\not\approx 2$）。
+- **置換公理**：Step 2 で順序型 $\theta$ と $F$ を作るのに使った（\ref{set:ordinal-type} の中で）。
+- **シュレーダー＝ベルンシュタインの定理**：冒頭で $\preccurlyeq$ を $\approx$ に上げるのに、また \ref{set:cardinality-basic} を通じて Step 3 で使った。
+- 使わなかったもの：**選択公理**と**冪集合の公理**。全単射はゲーデルの対順序から標準的に（選ばずに）得られる。
+:::
+:::
+
+::: supplement
+**順序型はちょうど $\kappa$.** 証明から $\theta\le\kappa$ だが、$\theta\approx\kappa\times\kappa\approx\kappa$ で $\kappa$ は基数なので $\theta\ge\lvert\theta\rvert=\kappa$、よって $\mathrm{type}(\kappa\times\kappa,\lhd)=\kappa$。つまり順序同型 $J_{\kappa}\colon(\kappa\times\kappa,\lhd)\to(\kappa,<)$ が**一意に**存在し、全単射 $\kappa\times\kappa\to\kappa$ を選択公理なしで標準的に与える。$\mathbf{ON}\times\mathbf{ON}$ 全体を $\lhd$ で $\mathbf{ON}$ と同型に並べる写像を**ゲーデルの対関数** $\Gamma$ といい、$\Gamma[\kappa\times\kappa]=\kappa$ が無限基数 $\kappa$ ごとに成り立つ。この標準性（定義可能性）は、一つの $\kappa$ について使うだけなら必要ない（存在する全単射を一つ固定すればよい）が、多くの $\kappa$ について**同時に**全単射が要る場面では、選択公理の代わりになる。
+
+**一般の集合では.** 「任意の無限集合 $A$ について $A\times A\approx A$」は選択公理と同値である（タルスキ, 1924）。本定理は整列可能な集合に対してだけこれを保証する。
+
+**前提を変えると.** 順序数の積では成り立たない：$\omega\cdot\omega>\omega$ であり、辞書式順序では $\kappa\times\kappa$ の順序型は $\kappa\cdot\kappa>\kappa$ になる。証明がゲーデルの対順序を必要とするのは、辞書式順序だと $(1,0)$ の前にすでに $\kappa$ 個の点があるからである。
+:::
+
+::: corollary 基数の吸収則 {#set:cardinal-absorption keywords="absorption law, κ⊕λ = κ⊗λ = max(κ,λ)" index="吸収則|きゅうしゅうそく"}
+$\kappa,\lambda$ を基数とし、少なくとも一方が無限とする。
+1. $\kappa\oplus\lambda=\max(\kappa,\lambda)$。
+2. $\kappa,\lambda$ がともに $0$ でなければ $\kappa\otimes\lambda=\max(\kappa,\lambda)$。
+:::
+
+::: intuition
+無限の世界では、足しても掛けても大きい方の基数に「吸収」されて何も増えない。$\omega\oplus\omega=\omega$（偶数と奇数を合わせても可算）、$\omega\otimes\omega=\omega$（可算個の可算集合の直積は可算）など。
+:::
+
+::: proof
+可換性（\ref{set:cardinal-sum-product-basic} (2)）より $\lambda\le\kappa$ としてよい。すると $\kappa=\max(\kappa,\lambda)$ は無限基数。
+
+**Step 1（和の上界）.** 単調性（\ref{set:cardinal-sum-product-basic} (3)）より $\kappa\oplus\lambda\le\kappa\oplus\kappa$。$\kappa\times\{0\}\cup\kappa\times\{1\}=\kappa\times 2$ なので $\kappa\oplus\kappa=\kappa\otimes 2\le\kappa\otimes\kappa=\kappa$（\ref{set:kappa-times-kappa}）。
+
+**Step 2（和の下界）.** $\xi\mapsto(\xi,0)$ は単射 $\kappa\to\kappa\times\{0\}\cup\lambda\times\{1\}$ なので $\kappa\le\kappa\oplus\lambda$。
+
+**Step 3（積）.** $\lambda\ge1$ なので $0\in\lambda$ で、$\xi\mapsto(\xi,0)$ は単射 $\kappa\to\kappa\times\lambda$、よって $\kappa\le\kappa\otimes\lambda$。単調性より $\kappa\otimes\lambda\le\kappa\otimes\kappa=\kappa$。
+
+::: hypcheck
+- **少なくとも一方が無限**：\ref{set:kappa-times-kappa} を $\kappa$ に適用するのに使った。
+- **$\lambda\neq0$**：Step 3 の下界に使った（$\kappa\otimes 0=0$）。
+- 選択公理は使わない。
+:::
+:::
+
+::: corollary 有限列全体の濃度 {#set:kappa-finite-sequences keywords="|κ^{<ω}| = κ, finite sequences"}
+$\kappa$ が無限基数ならば $\lvert\kappa^{<\omega}\rvert=\kappa$。より一般に、整列可能な無限集合 $A$ について $A\times A\approx A$ かつ $A^{<\omega}\approx A$ であり、$A^{<\omega}$ は整列可能である。
+:::
+
+::: proof
+**Step 1（標準的な全単射）.** \ref{set:kappa-times-kappa} の補足の通り、順序同型 $J\colon(\kappa\times\kappa,\lhd)\to(\kappa,<)$ がただ一つ存在する。これを固定する（一意なので選ぶ必要はない）。
+
+**Step 2（各 $n$ での単射）.** $n\in\omega$ についての再帰で単射 $j_{n}\colon{}^{n}\kappa\to\kappa$ を定める。$j_{0}$ は ${}^{0}\kappa$ の唯一の元（空列）を $0$ に写す写像とし、$n\in\omega$ について
+$$
+j_{n+1}(s)=J\bigl(j_{n}(s\restr{n}),\ s(n)\bigr)
+$$
+とする。帰納法で各 $j_{n}$ は単射：$j_{n+1}(s)=j_{n+1}(s')$ なら $J$ の単射性で $j_{n}(s\restr{n})=j_{n}(s'\restr{n})$ かつ $s(n)=s'(n)$、帰納法の仮定より $s\restr{n}=s'\restr{n}$、よって $s=s'$。再帰の各段階は $J$ と $j_{n}$ から一意に決まるので、\ref{set:transfinite-recursion} により列 $\langle j_{n}\mid n\in\omega\rangle$ が存在する。
+
+**Step 3（まとめる）.** $s\in\kappa^{<\omega}$ に対し $\Phi(s)=(\dom s,\ j_{\dom s}(s))\in\omega\times\kappa$ とおく。$\Phi(s)=\Phi(s')$ なら $\dom s=\dom s'=n$ かつ $j_{n}(s)=j_{n}(s')$ より $s=s'$。よって $\kappa^{<\omega}\preccurlyeq\omega\times\kappa$ で、\ref{set:cardinal-absorption} より $\lvert\omega\times\kappa\rvert=\omega\otimes\kappa=\kappa$。$\kappa^{<\omega}$ は整列可能な集合への単射をもつので整列可能で（\ref{set:well-orderable-iff-ordinal}）、$\lvert\kappa^{<\omega}\rvert\le\kappa$。
+
+**Step 4（下界）.** $\xi\mapsto\langle\xi\rangle$（長さ 1 の列）は単射 $\kappa\to\kappa^{<\omega}$。よって $\lvert\kappa^{<\omega}\rvert=\kappa$。
+
+**Step 5（一般の $A$）.** $\kappa=\lvert A\rvert$ と全単射 $p\colon\kappa\to A$ をとると、$(\xi,\eta)\mapsto(p(\xi),p(\eta))$ と $s\mapsto p\circ s$ がそれぞれ全単射 $\kappa\times\kappa\to A\times A$, $\kappa^{<\omega}\to A^{<\omega}$ を与える。
+
+::: hypcheck
+- **全単射 $J$**：Step 1。ここでは一つの $J$ を固定するだけでよく（$J$ の一意性は必要ない）、すべての $j_{n}$ はこの $J$ から再帰で一意に決まる。もし各段階で別々の全単射 $\kappa\times\kappa\to\kappa$ を「選ぶ」形で議論すると、可算個の選択が必要になってしまう。
+- **$\omega$ 上の再帰と置換公理**：Step 2 で $\langle j_{n}\rangle$ を作るのに使った。**和集合公理**：$\kappa^{<\omega}=\bigcup_{n}{}^{n}\kappa$ の存在（\ref{set:finite-sequence}）。
+- 選択公理・冪集合の公理は使わない。
+:::
+:::
+
+## ハルトークスの定理 {#set:sec-hartogs}
+
+ここまでに現れた無限基数は $\omega$ だけである。$\omega$ より大きい基数の存在には冪集合の公理を使う。
+
+::: definition ハルトークス数 {#set:hartogs-number keywords="Hartogs number, Hartogs aleph" index="ハルトークス数|はるとーくすすう"}
+集合 $X$ に対し、$X$ に単射できる順序数全体のクラス
+$$
+\aleph(X)=\{\beta\in\mathbf{ON}\mid \beta\preccurlyeq X\}
+$$
+を $X$ の**ハルトークス数**という（次の定理で、これが集合であり順序数であることを示す）。
+:::
+
+::: theorem ハルトークスの定理 {#set:hartogs keywords="Hartogs theorem, existence of arbitrarily large cardinals" index="ハルトークスの定理|はるとーくすのていり"}
+1. 任意の集合 $X$ について、$\aleph(X)$ は集合であり、基数である。さらに $\aleph(X)\not\preccurlyeq X$。
+2. 任意の順序数 $\alpha$ について、$\alpha$ より大きい基数が存在し、その最小のものは $\aleph(\alpha)$ である。
+:::
+
+::: intuition
+$X$ がどんな集合でも（整列できなくても）、$X$ に入りきらない整列集合がある。$X$ に入りきる順序数を全部集めると、それ自体が「入りきらない最初の順序数」になるからである。「全部集める」ところで、$X$ の部分集合上の整列順序を全部考える必要があり、そこで冪集合の公理を使う。
+:::
+
+::: proof
+**Step 1（集合であること）.** 冪集合の公理（\ref{set:ax-power-set}）と分出公理で集合
+$$
+W=\bigl\{(Y,R)\in\mathcal{P}(X)\times\mathcal{P}(X\times X)\ \bigm|\ R\cap(Y\times Y)\text{ は }Y\text{ の整列順序}\bigr\}
+$$
+を作り、置換公理で $T=\{\mathrm{type}(Y,R\cap(Y\times Y))\mid (Y,R)\in W\}$ を作る。$T=\aleph(X)$ を示す。
+- $T\subseteq\aleph(X)$：$\beta=\mathrm{type}(Y,R\cap(Y\times Y))$ なら順序同型 $\beta\to Y$ は単射 $\beta\to X$ を与える。
+- $\aleph(X)\subseteq T$：単射 $f\colon\beta\to X$ があれば、$Y=f[\beta]$, $R=\{(f(\xi),f(\eta))\mid\xi<\eta<\beta\}$ とすると $(Y,R)\in W$ で、$f$ は $(\beta,<)\cong(Y,R)$ を与えるので $\beta\in T$。
+
+**Step 2（順序数であること）.** $\beta\in\aleph(X)$, $\gamma<\beta$ なら $\gamma\subseteq\beta\preccurlyeq X$ なので $\gamma\in\aleph(X)$。よって $\aleph(X)$ は順序数からなる推移的集合であり、順序数である（\ref{set:ordinal-well-ordered} (4)）。
+
+**Step 3（$\aleph(X)\not\preccurlyeq X$）.** $\aleph(X)\preccurlyeq X$ なら定義から $\aleph(X)\in\aleph(X)$ となり、順序数が自分自身の元になって矛盾（\ref{set:ordinal-irreflexive}）。
+
+**Step 4（基数であること）.** $\beta<\aleph(X)$ かつ $\beta\approx\aleph(X)$ とすると、$\beta\in\aleph(X)$ より $\beta\preccurlyeq X$、よって $\aleph(X)\approx\beta\preccurlyeq X$ で Step 3 に反する。
+
+**Step 5（(2)：$\aleph(\alpha)>\alpha$）.** $\beta\le\alpha$ なら $\beta\subseteq\alpha$ なので $\beta\in\aleph(\alpha)$。よって $\alpha+1\subseteq\aleph(\alpha)$、すなわち $\aleph(\alpha)\ge\alpha+1>\alpha$。Step 4 よりこれは $\alpha$ より大きい基数である。
+
+**Step 6（(2)：最小性）.** 基数 $\lambda$ が $\alpha<\lambda<\aleph(\alpha)$ を満たすとする。$\lambda\in\aleph(\alpha)$ より $\lambda\preccurlyeq\alpha$、また $\alpha\subseteq\lambda$ より $\alpha\preccurlyeq\lambda$。\ref{set:schroder-bernstein} より $\lambda\approx\alpha$ で $\alpha<\lambda$、これは $\lambda$ が基数であることに反する。
+
+::: hypcheck
+- **冪集合の公理**：Step 1 で $W$ を作るのに使った。**これが本定理で唯一の本質的な冪集合の使用**であり、Step 2〜6 はクラス $\aleph(X)$ に対してそのまま通用する（下の補足）。
+- **置換公理**：Step 1 で $T$ を作るのに（「$(Y,R)\mapsto$ 順序型」がクラス関数であることは \ref{set:ordinal-type} による）。
+- **シュレーダー＝ベルンシュタインの定理**：Step 6。
+- 使わなかったもの：**選択公理**。$X$ は整列可能でなくてよい。
+:::
+:::
+
+::: supplement
+**冪集合の公理を使う版の比較.**
+
+| 議論 | 使う公理 | 得られるもの |
+|---|---|---|
+| ハルトークス（本証明） | 冪集合・置換 | 任意の $X$ に対し $\aleph(X)\not\preccurlyeq X$、$\alpha^{+}=\aleph(\alpha)$ |
+| Kunen 流：$S=\{\mathrm{type}(\alpha,R)\mid R\text{ は }\alpha\text{ の整列順序}\}$ の $\sup S$ | 冪集合（$R\in\mathcal{P}(\alpha\times\alpha)$）・置換 | 無限の $\alpha$ について $\sup S$ は $\alpha$ より大きい基数（実は $\lvert\alpha\rvert^{+}$） |
+| カントール：$\lvert\mathcal{P}(\alpha)\rvert>\lvert\alpha\rvert$（\ref{set:cantor-strict}） | 冪集合・**選択公理** | $\mathcal{P}(\alpha)$ が整列可能なら $\lvert\mathcal{P}(\alpha)\rvert$ が $\alpha$ より大きい基数 |
+
+Kunen 流の議論は、$S$ が「$\alpha$ と対等な順序数全体」であることを使う：$\kappa=\sup S$ が $\beta<\kappa$ と対等なら、$\beta<\gamma$ となる $\gamma\in S$ をとって $\kappa\preccurlyeq\beta\preccurlyeq\gamma\approx\alpha\preccurlyeq\kappa$ から $\kappa\approx\alpha$、すると $\kappa+1\approx\kappa\approx\alpha$ で $\kappa+1\in S$、$\kappa+1\le\sup S=\kappa$ となり矛盾。一方カントールの方法は $\mathcal{P}(\alpha)$ の濃度を語るために $\mathcal{P}(\alpha)$ の整列可能性（選択公理）が要り、しかも $\alpha^{+}$ そのものではなく $2^{\lvert\alpha\rvert}$ という（大きさの決まらない）基数を与えるだけである。ハルトークスの方法は選択公理を避けつつ最小の基数 $\alpha^{+}$ を直接与える。
+
+**冪集合の公理を使わないと.** クラス $\{\beta\mid\beta\preccurlyeq\alpha\}$ は冪集合なしでも定義でき、上の Step 2〜6 の議論（推移的・自己非所属・基数性）はクラスについてもそのまま成り立つ。したがって冪集合なしで示せるのは「このクラスが集合ならば、それが $\alpha$ より大きい最小の基数である」、あるいは「$\alpha$ より大きい基数が存在しないなら、すべての順序数は $\alpha$ に単射できる」という形までである。この先は本当に進めない：冪集合の公理を除く $\ZFC$ では「無限基数は $\omega$ だけ」（すべての無限順序数が可算）ということと無矛盾であることが知られている（$\ZFC$ の中で、遺伝的可算集合全体 $H(\omega_{1})$ がそのモデルになる。Kunen, *Set Theory*, 第 IV 章）。
+
+**選択公理との関係.** \ref{set:hartogs} (1) を使うと「任意の二つの集合が $\preccurlyeq$ で比較可能 ⇒ 選択公理」が示せる（$X$ と $\aleph(X)$ を比べると $\aleph(X)\not\preccurlyeq X$ なので $X\preccurlyeq\aleph(X)$、よって $X$ は整列可能）。詳しくは \ref{set:ac-equivalences}。
+:::
+
+## 後続基数とアレフ {#set:sec-aleph}
+
+::: definition 後続基数・極限基数 {#set:successor-cardinal keywords="successor cardinal, limit cardinal, α⁺" index="後続基数|こうぞくきすう, 極限基数|きょくげんきすう"}
+順序数 $\alpha$ に対し、$\alpha$ より大きい最小の基数を $\alpha^{+}$ と書く（\ref{set:hartogs} により存在し、$\alpha^{+}=\aleph(\alpha)$）。ある $\alpha$ について $\kappa=\alpha^{+}$ と書ける基数 $\kappa$ を**後続基数**、$\kappa>\omega$ で後続基数でない基数を**極限基数**という。
+:::
+
+::: intuition
+$\alpha^{+}$ は「$\alpha$ の次の大きさ」である。順序数の後続 $\alpha+1$ とは全く別物で、無限の $\alpha$ について $\alpha+1$ は $\alpha$ と同じ大きさにとどまる（\ref{set:infinite-cardinal-limit}）。
+:::
+
+::: proposition {#set:successor-cardinal-basic keywords="properties of successor cardinal"}
+1. $n\in\omega$ ならば $n^{+}=n+1$。$\omega$ は後続基数ではない（したがって後続基数でも極限基数でもない）。
+2. $\alpha\ge\omega$ ならば $\alpha^{+}=\lvert\alpha\rvert^{+}$ であり、$\alpha^{+}=\{\beta\in\mathbf{ON}\mid \lvert\beta\rvert\le\lvert\alpha\rvert\}$。特に無限基数 $\kappa$ について、$\kappa^{+}$ は大きさ $\kappa$ 以下の順序数全体の集合である。
+3. 基数の集合 $S$ の上限 $\sup S$ は基数である。
+:::
+
+::: example
+$\omega^{+}$ は可算順序数（$\lvert\beta\rvert\le\omega$ なる $\beta$）全体の集合であり、$\omega+1,\ \omega\cdot2,\ \omega^{2},\ \omega^{\omega}$（順序数の冪、\ref{set:ordinal-exponentiation}）などはすべてその元である。これが次に定義する $\omega_{1}=\aleph_{1}$ である。
+:::
+
+::: proof
+**Step 1（(1)）.** $n+1\in\omega$ は基数（\ref{set:omega-cardinal}）で $n<n+1$、また $n<\lambda<n+1$ となる順序数はない。よって $n^{+}=n+1$。$\omega=\alpha^{+}$ なら $\alpha<\omega$ なので $\alpha=n\in\omega$、$\omega=n+1\in\omega$ となり矛盾。
+
+**Step 2（(2) の集合表示）.** \ref{set:hartogs} より $\alpha^{+}=\aleph(\alpha)=\{\beta\mid\beta\preccurlyeq\alpha\}$ であり、$\beta\preccurlyeq\alpha\iff\lvert\beta\rvert\le\lvert\alpha\rvert$（\ref{set:cardinality-basic} (3)）。同様に $\lvert\alpha\rvert^{+}=\{\beta\mid\lvert\beta\rvert\le\bigl\lvert\lvert\alpha\rvert\bigr\rvert\}$ で、$\bigl\lvert\lvert\alpha\rvert\bigr\rvert=\lvert\alpha\rvert$ なので両者は一致する。
+
+**Step 3（(3)）.** $\mu=\sup S=\bigcup S$ は順序数で、各 $\kappa\in S$ について $\kappa\le\mu$。$\mu$ が基数でないとし、$\beta<\mu$ で $\beta\approx\mu$ となるものをとる。$\beta<\mu=\bigcup S$ より $\beta<\kappa$ となる $\kappa\in S$ がある。すると $\lvert\mu\rvert\le\beta<\kappa\le\mu$ で、\ref{set:cardinal-between} より $\lvert\kappa\rvert=\lvert\mu\rvert$。$\kappa$ は基数なので $\kappa=\lvert\mu\rvert\le\beta<\kappa$ となり矛盾。
+
+::: hypcheck
+- **冪集合の公理**：(1)(2) で $\alpha^{+}$ の存在（\ref{set:hartogs}）を通じて。(3) は冪集合も選択公理も使わない（和集合公理のみ）。
+:::
+:::
+
+::: definition アレフ {#set:aleph keywords="aleph, omega_alpha, aleph numbers" index="アレフ|あれふ, アレフ数|あれふすう"}
+順序数 $\alpha$ について $\omega_{\alpha}$ を超限再帰（\ref{set:transfinite-recursion}）で
+$$
+\begin{aligned}
+&\omega_{0}=\omega,\qquad \omega_{\alpha+1}=(\omega_{\alpha})^{+},\qquad \omega_{\gamma}=\sup\{\omega_{\alpha}\mid\alpha<\gamma\}\\
+&(\gamma\text{ は極限順序数})
+\end{aligned}
+$$
+と定め、基数として扱うときは $\aleph_{\alpha}=\omega_{\alpha}$ とも書く。
+:::
+
+::: intuition
+無限基数を小さい順に $\aleph_{0}<\aleph_{1}<\aleph_{2}<\cdots<\aleph_{\omega}<\aleph_{\omega+1}<\cdots$ と番号付けしたものである（次の補題）。同じ集合を順序数として見るときは $\omega_{\alpha}$、大きさとして見るときは $\aleph_{\alpha}$ と書き分ける習慣がある。
+:::
+
+::: supplement
+**再帰の正当化.** クラス関数 $G$ を、$x$ が定義域 $\beta+1$ の関数なら $G(x)=(x(\beta))^{+}$、定義域が極限順序数の関数なら $G(x)=\sup\ran x$、それ以外（空関数を含む）なら $G(x)=\omega$ と定める。$(\cdot)^{+}$ は「より大きい最小の基数」として論理式で定義できるクラス関数である。\ref{set:transfinite-recursion} により $\omega_{\alpha}=G(\langle\omega_{\xi}\mid\xi<\alpha\rangle)$ を満たすクラス関数 $\alpha\mapsto\omega_{\alpha}$ が一意に存在する。
+:::
+
+::: theorem アレフの性質 {#set:aleph-properties keywords="properties of alephs, enumeration of infinite cardinals"}
+1. 各 $\omega_{\alpha}$ は無限基数である。
+2. $\alpha<\beta$ ならば $\omega_{\alpha}<\omega_{\beta}$。また任意の $\alpha$ について $\alpha\le\omega_{\alpha}$。
+3. すべての無限基数 $\kappa$ は、ある（ただ一つの）$\alpha$ について $\kappa=\omega_{\alpha}$ と書ける。
+4. $\omega_{\alpha}$ が後続基数 $\iff$ $\alpha$ が後続順序数。$\omega_{\alpha}$ が極限基数 $\iff$ $\alpha$ が極限順序数。
+:::
+
+::: intuition
+$\alpha\mapsto\aleph_{\alpha}$ は順序数全体から無限基数全体への順序同型である。後続基数は後続の番号に、極限基数は極限の番号に対応する。
+:::
+
+::: proof
+**Step 1（(2) の前半）.** $\beta$ についての超限帰納法で「すべての $\alpha<\beta$ について $\omega_{\alpha}<\omega_{\beta}$」を示す。
+- $\beta=0$：主張は空虚に真。
+- $\beta=\delta+1$：$\alpha<\beta$ なら $\alpha\le\delta$ で、帰納法の仮定（$\alpha<\delta$ の場合）または等号から $\omega_{\alpha}\le\omega_{\delta}<(\omega_{\delta})^{+}=\omega_{\beta}$。
+- $\beta$ が極限：$\alpha<\beta$ なら $\alpha+1<\beta$ で、帰納法の仮定から $\omega_{\alpha}<\omega_{\alpha+1}\le\sup\{\omega_{\xi}\mid\xi<\beta\}=\omega_{\beta}$。
+
+**Step 2（(1)）.** $\alpha$ についての超限帰納法。$\omega_{0}=\omega$ は基数（\ref{set:omega-cardinal}）。$\omega_{\alpha+1}$ は定義から基数。$\gamma$ が極限なら、帰納法の仮定で $\{\omega_{\alpha}\mid\alpha<\gamma\}$ は基数の集合（置換公理）なので、その上限は基数（\ref{set:successor-cardinal-basic} (3)）。無限であることは Step 1 から $\omega=\omega_{0}\le\omega_{\alpha}$。
+
+**Step 3（(2) の後半）.** $\alpha$ についての超限帰納法：すべての $\xi<\alpha$ について $\xi\le\omega_{\xi}$ とすると、$\xi\le\omega_{\xi}<\omega_{\alpha}$（Step 1）なので $\xi\in\omega_{\alpha}$。よって $\alpha\subseteq\omega_{\alpha}$、すなわち $\alpha\le\omega_{\alpha}$。
+
+**Step 4（(3)）.** 無限基数 $\kappa$ をとる。Step 3 より $\kappa\le\omega_{\kappa}$ なので、$\kappa\le\omega_{\alpha}$ を満たす最小の $\alpha$ が存在する。$\kappa=\omega_{\alpha}$ を示す。
+- $\alpha=0$：$\omega\le\kappa\le\omega_{0}=\omega$。
+- $\alpha=\delta+1$：最小性より $\omega_{\delta}<\kappa$。$(\omega_{\delta})^{+}$ は $\omega_{\delta}$ より大きい最小の基数なので $(\omega_{\delta})^{+}\le\kappa\le\omega_{\delta+1}=(\omega_{\delta})^{+}$。
+- $\alpha$ が極限：最小性より各 $\xi<\alpha$ で $\omega_{\xi}<\kappa$、したがって $\omega_{\alpha}=\sup_{\xi<\alpha}\omega_{\xi}\le\kappa\le\omega_{\alpha}$。
+
+一意性は Step 1（狭義単調なので単射）から従う。
+
+**Step 5（(4)）.** 順序数 $\alpha$ は $0$・後続・極限のいずれか一つである。
+- $\alpha=\delta+1$ なら $\omega_{\alpha}=(\omega_{\delta})^{+}$ は後続基数で、定義により極限基数ではない。
+- $\alpha=\gamma$ が極限なら、$\omega_{\gamma}>\omega_{0}=\omega$。$\omega_{\gamma}=\mu^{+}$ と仮定すると $\mu<\omega_{\gamma}=\sup_{\xi<\gamma}\omega_{\xi}$ なので $\mu<\omega_{\xi}$ となる $\xi<\gamma$ があり、$\omega_{\xi}$ は $\mu$ より大きい基数だから $\mu^{+}\le\omega_{\xi}<\omega_{\gamma}$ となり矛盾。よって $\omega_{\gamma}$ は極限基数。
+- $\alpha=0$ なら $\omega_{0}=\omega$ はどちらでもない（\ref{set:successor-cardinal-basic} (1)）。
+
+三つの場合が排他的かつ網羅的なので、二つの同値が従う。
+
+::: hypcheck
+- **超限帰納法**：Step 1〜3。**超限再帰**：$\omega_{\alpha}$ の定義。
+- **置換公理**：Step 2 で $\{\omega_{\alpha}\mid\alpha<\gamma\}$ を集合にするのに使った。
+- **冪集合の公理**：$(\cdot)^{+}$ の存在（\ref{set:hartogs}）を通じて、後続段階で使う。
+- **選択公理**は使わない。ただし選択公理がなければ、整列できない集合の大きさはアレフの列のどこにも現れない（$\lvert A\rvert$ が定義されない）。
+:::
+:::
+
+::: supplement
+**不動点.** $\alpha\le\omega_{\alpha}$ の等号は成り立つことがある。$\alpha_{0}=0$, $\alpha_{n+1}=\omega_{\alpha_{n}}$ とし $\alpha=\sup_{n}\alpha_{n}$ とおくと、$\alpha$ は極限順序数で $\omega_{\alpha}=\sup_{n}\omega_{\alpha_{n}}=\sup_{n}\alpha_{n+1}=\alpha$。つまり「自分の番号と等しいアレフ」がある（$\omega,\ \omega_{\omega},\ \omega_{\omega_{\omega}},\dots$ の上限）。
+
+**連続体との関係.** $\aleph_{1}$ が「$\omega$ の次の大きさ」であることは定義から分かるが、実数全体 $\mathcal{P}(\omega)\approx\R$ の大きさがアレフの列のどこにあるか（選択公理のもとで $2^{\aleph_{0}}=\aleph_{1}$ か）は $\ZFC$ から決まらない。これが連続体仮説 \ref{set:ch} である。選択公理なしでも $\mathcal{P}(\omega)$ から $\omega_{1}$ への全射は作れる（$\omega\times\omega$ の部分集合で $\omega$ の部分集合上の整列順序を表すものに、その順序型を対応させる）が、$\omega_{1}$ から $\mathcal{P}(\omega)$ への単射は $\ZF$ だけでは作れない（到達不能基数の存在が無矛盾であることを仮定すれば。\ref{set:surjection-cardinality} の補足）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

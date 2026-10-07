@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ロッサーの定理とタルスキの定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/02-incompleteness/09-rosser-tarski.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ロッサーの定理とタルスキの定理 {#pt:page-rosser-tarski keywords="Rosser's theorem, Rosser sentence, Gödel-Rosser incompleteness, Tarski's undefinability of truth"}
+
+第一不完全性定理（\ref{pt:godel-first}）の後半は ω 無矛盾性を仮定していた。ロッサーは、証明可能性述語を「反証より先に証明が見つかる」という形に変えることで、この仮定を**無矛盾性だけ**に弱めた（**ロッサーの定理**）。また、対角化定理を「真理」に適用すると、算術の真理は算術の論理式で定義できないこと（**タルスキの定理**）がわかる。
+
+## 記法と定義の確認 {#pt:sec-rosser-notation}
+
+::: notation
+- $\mathrm{Pf}$（Δ 論理式）、$\mathrm{Bew}$、その正しさ（\ref{pt:bew-correct}）、$\mathrm{neg}$ は \ref{pt:page-arithmetization}、対角化定理は \ref{pt:diagonal-lemma}、Σ 完全性は \ref{pt:sigma-completeness}、$\PA$ のモデルの標準的な元が始切片をなすことは \ref{pt:standard-part} のとおり。
+- $\PA$ の無矛盾性はメタの仮定であり、$\mathcal{N}\models\PA$ から従う。以下の定理は、その主張が無矛盾性だけに依存することを明示するために、仮定として書く。
+:::
+
+## ロッサーの定理 {#pt:sec-rosser}
+
+::: definition ロッサーの証明可能性述語とロッサー文 {#pt:rosser-sentence keywords="Rosser provability predicate, Rosser sentence" index="ロッサー文|ろっさーぶん"}
+$$
+\mathrm{Bew}^{R}(x)\defeq\exists y\,\bigl(\mathrm{Pf}(y,x)\wedge\forall z<y\,\neg\mathrm{Pf}(z,\mathrm{neg}(x))\bigr)
+$$
+とおく（「$x$ の証明があり、それより小さいコードの $\neg x$ の証明はない」）。これは Σ 論理式である。対角化定理で $\PA\vdash R\leftrightarrow\neg\mathrm{Bew}^{R}(\Godel{R})$ となる文 $R$ を**ロッサー文**という。
+:::
+
+::: theorem ロッサーの定理 {#pt:rosser-theorem keywords="Rosser's incompleteness theorem" index="ロッサーの定理|ろっさーのていり"}
+$\PA$ が無矛盾ならば、$\PA\nvdash R$ かつ $\PA\nvdash\neg R$。
+:::
+
+::: proof
+**Step 1（$\PA\nvdash R$）.** $\PA\vdash R$ とし、その証明のコードを $n$ とする（\ref{pt:bew-correct}。$\mathcal{N}\models\mathrm{Pf}(\underline{n},\Godel{R})$）。$\PA$ は無矛盾なので $\PA\nvdash\neg R$、よってどの $m$ についても $\mathcal{N}\models\neg\mathrm{Pf}(\underline{m},\Godel{\neg R})$。したがって Σ 文 $\mathrm{Bew}^{R}(\Godel{R})$ は（証拠 $y=n$ で）真であり（$\PA\vdash\mathrm{neg}(\Godel{R})=\Godel{\neg R}$ に注意）、Σ 完全性より $\PA\vdash\mathrm{Bew}^{R}(\Godel{R})$。ロッサー文の性質から $\PA\vdash\neg R$ となり、$\PA$ は矛盾する。
+
+**Step 2（$\PA\nvdash\neg R$）.** $\PA\vdash\neg R$ とし、その証明のコードを $n$ とする。ロッサー文の性質から $\PA\vdash\mathrm{Bew}^{R}(\Godel{R})$。一方、$\PA$ の任意のモデル $\mathcal{M}$ で $\neg\mathrm{Bew}^{R}(\Godel{R})$ が成り立つことを示す。
+
+$\mathcal{M}$ で、$y$ が $\mathrm{Pf}(y,\Godel{R})$ かつ $\forall z<y\,\neg\mathrm{Pf}(z,\Godel{\neg R})$ を満たすとする。$\mathrm{Pf}(\underline{n},\Godel{\neg R})$ は真な Δ 文なので $\mathcal{M}$ で成り立つ。よって $\underline{n}<y$ ではありえず、三分律より $y\le\underline{n}^{\mathcal{M}}$。\ref{pt:standard-part} の 4 より、ある $m\le n$ で $y=\underline{m}^{\mathcal{M}}$。ところが $\PA$ は無矛盾なので $\PA\nvdash R$（$\PA\vdash\neg R$ だから）、よって $\mathcal{N}\models\neg\mathrm{Pf}(\underline{m},\Godel{R})$ で、Σ 完全性より $\mathcal{M}\models\neg\mathrm{Pf}(\underline{m},\Godel{R})$。これは矛盾である。
+
+完全性定理より $\PA\vdash\neg\mathrm{Bew}^{R}(\Godel{R})$。よって $\PA$ は矛盾する。
+
+::: hypcheck
+- **無矛盾性**：Step 1 で「$\neg R$ の証明がない」、Step 2 で「$R$ の証明がない」を得るのに使う。ω 無矛盾性は使わない。
+- **標準的な元が始切片をなすこと**：Step 2。$y\le\underline{n}$ から $y$ が標準的であることを導く。これが、ロッサーの工夫（「より小さいコードの反証がない」という有界な条件）が効く理由である。
+- **Σ 完全性**：Step 1 と Step 2 で、具体的な数についての Δ 文を $\PA$ に移すのに使う。
+:::
+:::
+
+::: corollary ゲーデル–ロッサーの不完全性定理 {#pt:godel-rosser keywords="Gödel-Rosser theorem"}
+公理の集合が Δ 論理式で定義できる $\PA$ の無矛盾な拡大 $T$ は、すべて不完全である。
+:::
+
+::: proof
+$\mathrm{Ax}_{\PA}$ を $\mathrm{Ax}_{T}$ に置き換えて $\mathrm{Pf}_{T}$, $\mathrm{Bew}^{R}_{T}$ を定め、ロッサーの定理の証明を $T$ について繰り返す。使ったのは、$T$ が $\PA$ を含むこと（Σ 完全性・対角化・\ref{pt:standard-part}）、$\mathrm{Pf}_{T}$ が Δ であること、$\mathcal{N}$ で $\mathrm{Pf}_{T}$ が $T$ の証明を正しく表すこと、だけである。
+:::
+
+::: remark ロッサー文と D3
+ロッサーの証明可能性述語 $\mathrm{Bew}^{R}$ は、D1 と、上の証明の形の「反証の性質」を満たすが、D2・D3 は一般に満たさないことが知られている、とされる（本サイトでは未確認）。第二不完全性定理（\ref{pt:page-second-incompleteness-lob}）を $\mathrm{Bew}^{R}$ に対して述べると成り立たない（$\PA\vdash\neg\mathrm{Bew}^{R}(\Godel{\bot})$ となる）ことも知られている。第二不完全性定理は、使う証明可能性述語の選び方に敏感である。
+:::
+
+## タルスキの真理定義不可能性定理 {#pt:sec-tarski}
+
+::: theorem タルスキの真理定義不可能性定理 {#pt:tarski-undefinability keywords="Tarski's undefinability theorem" index="タルスキの定理|たるすきのていり, 真理の定義不可能性|しんりのていぎふかのうせい"}
+1. 自由変数が $x$ だけの論理式 $T(x)$ で、すべての文 $\sigma$ について $\mathcal{N}\models\sigma\leftrightarrow T(\Godel{\sigma})$ となるものは存在しない。
+2. $\PA$ が無矛盾ならば、自由変数が $x$ だけの論理式 $T(x)$ で、すべての文 $\sigma$ について $\PA\vdash\sigma\leftrightarrow T(\Godel{\sigma})$ となるものは存在しない。
+:::
+
+::: proof
+対角化定理で $P(y)\defeq\neg T(y)$ とし、$\PA\vdash L\leftrightarrow\neg T(\Godel{L})$ となる文 $L$ をとる。
+
+**1.** $\mathcal{N}\models\PA$ なので $\mathcal{N}\models L\leftrightarrow\neg T(\Godel{L})$。仮定の性質と合わせると $\mathcal{N}\models L\leftrightarrow\neg L$ となり、矛盾する。
+
+**2.** 仮定と合わせて $\PA\vdash L\leftrightarrow\neg L$、したがって $\PA\vdash L$ かつ $\PA\vdash\neg L$ となり、$\PA$ は矛盾する。
+:::
+
+::: intuition
+$L$ は「この文は偽である」という嘘つき文の算術版である。自然言語では嘘つき文はパラドックスを起こすが、算術では「真理を表す論理式 $T$ がある」という仮定の方が否定される。算術の真理は、算術の言語の外（メタ言語）でしか定義できない。
+:::
+
+::: corollary 真理と証明可能性の分離 {#pt:truth-vs-provability}
+「$\mathcal{N}$ で真な文のコード」の集合は、Σ 論理式でも Π 論理式でも定義できない。一方「$\PA$ で証明できる文のコード」の集合は Σ 論理式 $\mathrm{Bew}$ で定義される（\ref{pt:bew-correct}）。したがって両者は異なり、$\PA$ は健全なので（証明できる文は真）、真だが証明できない文がある。
+:::
+
+::: proof
+前半はタルスキの定理の 1 の特別な場合である。後半：証明できる文は真（$\mathcal{N}\models\PA$ と健全性定理）なので、両者が等しければ真理が $\mathrm{Bew}$ で定義されてしまう。
+:::
+
+::: remark
+この系は、第一不完全性定理を「$\PA$ は健全である」という仮定から導く、ゲーデル文を使わない証明になる。ただし、どの文が証明できないかは具体的に示さない。ゲーデル文の構成は、その文を具体的に与え、さらに仮定を無矛盾性（ロッサーの形）にまで弱められる点で強い。
+:::
+
+::: proposition 証明可能性は Δ で表現できない {#pt:provability-not-representable}
+$\PA$ が無矛盾ならば、自由変数が $x$ だけの論理式 $A(x)$ で、すべての文 $\sigma$ について「$\PA\vdash\sigma\Rightarrow\PA\vdash A(\Godel{\sigma})$」かつ「$\PA\nvdash\sigma\Rightarrow\PA\vdash\neg A(\Godel{\sigma})$」となるものは存在しない。
+:::
+
+::: proof
+対角化定理で $\PA\vdash S\leftrightarrow\neg A(\Godel{S})$ となる $S$ をとる。$\PA\vdash S$ なら $\PA\vdash A(\Godel{S})$ と $\PA\vdash\neg A(\Godel{S})$ で矛盾。$\PA\nvdash S$ なら $\PA\vdash\neg A(\Godel{S})$ で、$S$ の性質より $\PA\vdash S$ となり矛盾。
+:::
+
+::: remark
+$\mathrm{Bew}$ は前半の条件（D1）を満たすが、後半を満たさない。Δ 論理式で定義される集合は、Σ 完全性により両方の条件を満たす形で「表現」されるので、この命題は、$\PA$ の定理の集合が Δ 論理式で定義できない（計算論の言葉では決定不能である）ことを意味する。
+:::
+
+## 問題 {#pt:sec-rosser-problems}
+
+::: problem {#pt:prob-rosser-true}
+ロッサー文 $R$ は標準構造で真であることを示せ。
+:::
+
+::: solution
+ロッサーの定理より $R$ の証明はないので、$\mathcal{N}\models\neg\mathrm{Bew}^{R}(\Godel{R})$（$\mathrm{Bew}^{R}(\Godel{R})$ が真なら $\mathrm{Pf}(n,\Godel{R})$ となる $n$ があり、$R$ の証明になる）。$\mathcal{N}\models\PA$ なので $\mathcal{N}\models R$。
+:::
+
+::: problem {#pt:prob-tarski-sigma}
+Σ 文の真理を表す論理式 $\mathrm{True}_{\Sigma}(x)$（すべての Σ 文 $\sigma$ で $\mathcal{N}\models\sigma\leftrightarrow\mathrm{True}_{\Sigma}(\Godel{\sigma})$）は存在することが知られている。これがタルスキの定理に反しない理由を説明せよ。
+:::
+
+::: solution
+タルスキの定理の証明で対角化に使う文 $L$ は $\neg T(\Godel{L})$ と同値である。$T=\mathrm{True}_{\Sigma}$ が Σ 論理式なら、$L$ は Π 文と同値で、一般に Σ 文ではないので、$\mathrm{True}_{\Sigma}$ が $L$ の真理を正しく表す保証はない。したがって矛盾は生じない。真理の定義は、定義される文の複雑さを制限すれば可能で、制限をなくすと不可能になる。
+:::
+
+::: supplement
+**高い視点から：嘘つきのパラドックスの三つの帰結.** 対角化定理に何を入れるかで結論が変わる。真理 $T$ を入れると「真理は定義できない」（タルスキ）、証明可能性 $\mathrm{Bew}$ の否定を入れると「真だが証明できない文がある」（ゲーデル）、ロッサーの述語を入れると「無矛盾なら決定できない文がある」（ロッサー）。パラドックスは、どこかの前提（ここでは定義可能性・完全性）を否定する定理に変わる。証明可能性は「真理の Σ 的な近似」であり、真理そのものとの隔たりが不完全性として現れる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

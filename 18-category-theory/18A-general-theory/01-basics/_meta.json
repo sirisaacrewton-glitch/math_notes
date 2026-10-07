@@ -1,0 +1,14 @@
+{
+  "id": "cat-basics",
+  "title": "圏論の基礎",
+  "en": "Basic Category Theory",
+  "abbr": "圏論",
+  "description": "圏・関手・自然変換、米田の補題、極限と余極限、随伴、圏同値、随伴関手定理。（Mac Lane『Categories for the Working Mathematician』第 I〜V 章に対応）",
+  "msc": "18A",
+  "prereq": [
+    {
+      "dir": "set-basics",
+      "note": "集合・関数・順序数・基数・選択公理"
+    }
+  ]
+}

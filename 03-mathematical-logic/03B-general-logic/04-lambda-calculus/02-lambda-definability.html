@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>チャーチ数とラムダ定義可能性 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/04-lambda-calculus/02-lambda-definability.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# チャーチ数とラムダ定義可能性 {#logic:page-lambda-definability keywords="Church numerals, lambda definability, Church booleans, pairs in lambda calculus, Kleene predecessor, lambda definable functions are computable, computable functions are lambda definable, Turing completeness of lambda calculus"}
+
+ラムダ計算には数も真偽値もないが、それらを項で**表す**ことができる。自然数 $n$ を「関数 $f$ を $n$ 回適用する」項 $\underline{n}\defeq\lambda fx.f^{n}x$（**チャーチ数**、\ref{logic:church-numeral}）で表すと、算術の関数をラムダ項で表せるようになる（**ラムダ定義可能**、\ref{logic:lambda-definable}）。本ページでは、全域的な計算可能関数がすべてラムダ定義可能であること（\ref{logic:computable-lambda}）と、逆にラムダ定義可能な関数が計算可能であること（\ref{logic:lambda-computable}）を示す。前者では、クリーネの標準形（\ref{comp:normal-form}）を使い、原始再帰を対の反復で、最小化を不動点結合子による探索で表す。これで、ラムダ計算が L やチューリング機械と同じ能力をもつ（チューリング完全である）ことが分かる。
+
+## 記法と定義の確認 {#logic:sec-ld-notation}
+
+::: notation
+- ラムダ項、代入、$\to_{\beta}$, $\twoheadrightarrow_{\beta}$, $=_{\beta}$、正規形、チャーチ–ロッサーの定理（\ref{logic:church-rosser}）とその系（\ref{logic:normal-form-unique}）、不動点結合子 $Y$（\ref{logic:fixed-point-combinator}）は \ref{logic:page-lambda-calculus} のとおり。$=_{\beta}$ は適用と抽象と両立する（$M=_{\beta}M'$ なら $MN=_{\beta}M'N$ など）。
+- 原始再帰関数（\ref{comp:primitive-recursive}）、クリーネの標準形（\ref{comp:normal-form}）、計算可能な部分関数は \ref{comp:page-primitive-recursive}, \ref{comp:page-universal-smn} のとおり。
+- $F^{n}x$ は $F(F(\cdots(Fx)))$（$F$ が $n$ 個）、$F^{0}x=x$。
+:::
+
+## 数・真偽値・対 {#logic:sec-ld-encodings}
+
+::: definition チャーチ数 {#logic:church-numeral keywords="Church numerals" index="チャーチ数|ちゃーちすう"}
+$\underline{n}\defeq\lambda f.\lambda x.f^{n}x$。$\underline{n}$ は正規形で、$n\neq m$ なら $\underline{n}\neq\underline{m}$ なので、\ref{logic:normal-form-unique} から $\underline{n}\neq_{\beta}\underline{m}$。また、任意の $F,X$ について $\underline{n}FX\twoheadrightarrow_{\beta}F^{n}X$。
+:::
+
+::: definition 真偽値・条件・対 {#logic:lambda-booleans keywords="Church booleans, conditional, pairing" index="真偽値（ラムダ計算）|しんぎちらむだけいさん"}
+$\mathsf{T}\defeq\lambda xy.x$, $\mathsf{F}\defeq\lambda xy.y$ とすると $\mathsf{T}MN\twoheadrightarrow_{\beta}M$, $\mathsf{F}MN\twoheadrightarrow_{\beta}N$（$\mathsf{T},\mathsf{F}$ を「もし…なら $M$ そうでなければ $N$」に使う）。
+$\mathsf{pair}\defeq\lambda abz.zab$, $\mathsf{fst}\defeq\lambda p.p\mathsf{T}$, $\mathsf{snd}\defeq\lambda p.p\mathsf{F}$ とすると $\mathsf{fst}(\mathsf{pair}MN)\twoheadrightarrow_{\beta}M$, $\mathsf{snd}(\mathsf{pair}MN)\twoheadrightarrow_{\beta}N$。
+:::
+
+::: proposition 算術の基本操作 {#logic:lambda-arith keywords="successor, addition, multiplication, zero test, Kleene predecessor" index="クリーネの前者関数|くりーねのぜんしゃかんすう"}
+次の項は、すべての $n,m$ について右の簡約を満たす。
+1. $\mathsf{succ}\defeq\lambda nfx.f(nfx)$：$\mathsf{succ}\,\underline{n}\twoheadrightarrow_{\beta}\underline{n+1}$。
+2. $\mathsf{add}\defeq\lambda nmfx.nf(mfx)$：$\mathsf{add}\,\underline{n}\,\underline{m}\twoheadrightarrow_{\beta}\underline{n+m}$。
+3. $\mathsf{mult}\defeq\lambda nmf.n(mf)$：$\mathsf{mult}\,\underline{n}\,\underline{m}\twoheadrightarrow_{\beta}\underline{nm}$。
+4. $\mathsf{zero?}\defeq\lambda n.n(\lambda z.\mathsf{F})\mathsf{T}$：$\mathsf{zero?}\,\underline{0}\twoheadrightarrow_{\beta}\mathsf{T}$、$\mathsf{zero?}\,\underline{n+1}\twoheadrightarrow_{\beta}\mathsf{F}$。
+5. $\mathsf{pred}\defeq\lambda n.\mathsf{fst}\bigl(n\,S_{0}\,(\mathsf{pair}\,\underline{0}\,\underline{0})\bigr)$、$S_{0}\defeq\lambda p.\mathsf{pair}(\mathsf{snd}\,p)(\mathsf{succ}(\mathsf{snd}\,p))$：$\mathsf{pred}\,\underline{n}=_{\beta}\underline{n\mathbin{\dot{-}}1}$。
+:::
+
+::: proof
+1. $\mathsf{succ}\,\underline{n}\to_{\beta}\lambda fx.f(\underline{n}fx)\twoheadrightarrow_{\beta}\lambda fx.f(f^{n}x)=\underline{n+1}$。
+2. $\lambda fx.\underline{n}f(\underline{m}fx)\twoheadrightarrow_{\beta}\lambda fx.f^{n}(f^{m}x)=\underline{n+m}$。
+3. $\lambda f.\underline{n}(\underline{m}f)$。$\underline{m}f\twoheadrightarrow_{\beta}\lambda x.f^{m}x$ なので、$(\lambda x.f^{m}x)$ を $n$ 回合成した $\lambda x.f^{nm}x$ に簡約される（$n$ に関する帰納法：$\underline{n}G\twoheadrightarrow_{\beta}\lambda x.G^{n}x$ で、$G=\lambda x.f^{m}x$ のとき $G^{n}x\twoheadrightarrow_{\beta}f^{nm}x$）。
+4. $\underline{0}(\lambda z.\mathsf{F})\mathsf{T}\twoheadrightarrow_{\beta}\mathsf{T}$。$\underline{n+1}(\lambda z.\mathsf{F})\mathsf{T}\twoheadrightarrow_{\beta}(\lambda z.\mathsf{F})(\cdots)\to_{\beta}\mathsf{F}$。
+5. $P_{k}\defeq S_{0}^{k}(\mathsf{pair}\,\underline{0}\,\underline{0})$ とすると、$k$ に関する帰納法で $\mathsf{fst}\,P_{k}=_{\beta}\underline{k\mathbin{\dot{-}}1}$, $\mathsf{snd}\,P_{k}=_{\beta}\underline{k}$：$k=0$ は明らか。$P_{k+1}=S_{0}P_{k}=_{\beta}\mathsf{pair}(\mathsf{snd}\,P_{k})(\mathsf{succ}(\mathsf{snd}\,P_{k}))=_{\beta}\mathsf{pair}\,\underline{k}\,\underline{k+1}$。$\underline{n}S_{0}(\mathsf{pair}\,\underline{0}\,\underline{0})\twoheadrightarrow_{\beta}P_{n}$ なので、$\mathsf{pred}\,\underline{n}=_{\beta}\mathsf{fst}\,P_{n}=_{\beta}\underline{n\mathbin{\dot{-}}1}$。
+:::
+
+## ラムダ定義可能性 {#logic:sec-ld-definability}
+
+::: definition ラムダ定義可能 {#logic:lambda-definable keywords="lambda definable function" index="ラムダ定義可能|らむだていぎかのう"}
+全域的な関数 $f\colon\N^{k}\to\N$ が**ラムダ定義可能**であるとは、ある閉項 $F$ で、すべての $\vec{m}$ について $F\underline{m_{1}}\cdots\underline{m_{k}}=_{\beta}\underline{f(\vec{m})}$ となるものがあることをいう。このとき $F$ は $f$ を**定義する**という。
+:::
+
+::: theorem 全域的な計算可能関数はラムダ定義可能 {#logic:computable-lambda keywords="every total computable function is lambda definable" index="ラムダ定義可能性定理|らむだていぎかのうせいていり"}
+全域的な計算可能関数はラムダ定義可能である。
+:::
+
+::: proof
+**Step 1：原始再帰関数.** 原始再帰関数の構成に関する帰納法で、ラムダ定義可能であることを示す。
+- 初期関数：$Z^{k}$ は $\lambda\vec{x}.\underline{0}$、$S$ は $\mathsf{succ}$、$U^{k}_{i}$ は $\lambda x_{1}\cdots x_{k}.x_{i}$。
+- 合成 $f(\vec{x})=g(h_{1}(\vec{x}),\dots,h_{l}(\vec{x}))$：$G,H_{j}$ が定義するなら $F\defeq\lambda\vec{x}.G(H_{1}\vec{x})\cdots(H_{l}\vec{x})$。$=_{\beta}$ が適用と両立するので $F\underline{\vec{m}}=_{\beta}G\,\underline{h_{1}(\vec{m})}\cdots=_{\beta}\underline{f(\vec{m})}$。
+- 原始再帰 $f(\vec{x},0)=g(\vec{x})$, $f(\vec{x},y+1)=h(\vec{x},y,f(\vec{x},y))$：$G,H$ が定義するとし、
+$$
+\begin{aligned}
+S_{\vec{x}}&\defeq\lambda p.\mathsf{pair}\,(\mathsf{succ}(\mathsf{fst}\,p))\,(H\vec{x}\,(\mathsf{fst}\,p)\,(\mathsf{snd}\,p)),\\
+F&\defeq\lambda\vec{x}y.\mathsf{snd}\bigl(y\,S_{\vec{x}}\,(\mathsf{pair}\,\underline{0}\,(G\vec{x}))\bigr)
+\end{aligned}
+$$
+とする。$\vec{x}$ に $\underline{\vec{m}}$ を代入した $S$ について、$k$ に関する帰納法で $S^{k}(\mathsf{pair}\,\underline{0}\,(G\underline{\vec{m}}))=_{\beta}\mathsf{pair}\,\underline{k}\,\underline{f(\vec{m},k)}$（$\mathsf{pred}$ の証明と同様）。$\underline{n}S(\cdots)\twoheadrightarrow_{\beta}S^{n}(\cdots)$ なので $F\underline{\vec{m}}\,\underline{n}=_{\beta}\underline{f(\vec{m},n)}$。
+
+**Step 2：探索.** 原始再帰関数 $g(\vec{x},t)$ を定義する $G$ について、
+$$
+R\defeq Y\bigl(\lambda r.\lambda\vec{x}t.\ \mathsf{zero?}(G\vec{x}t)\ t\ (r\vec{x}(\mathsf{succ}\,t))\bigr)
+$$
+とする。不動点定理（\ref{logic:fixed-point-combinator}）から $R=_{\beta}\lambda\vec{x}t.\mathsf{zero?}(G\vec{x}t)\,t\,(R\vec{x}(\mathsf{succ}\,t))$。よって、$g(\vec{m},t)=0$ なら $R\underline{\vec{m}}\,\underline{t}=_{\beta}\mathsf{T}\,\underline{t}\,(\cdots)=_{\beta}\underline{t}$、$g(\vec{m},t)\neq0$ なら $R\underline{\vec{m}}\,\underline{t}=_{\beta}R\underline{\vec{m}}\,\underline{t+1}$。$t_{0}$ を $g(\vec{m},t)=0$ となる最小の $t$ とすると、$t_{0}-t$ に関する帰納法で、$t\le t_{0}$ なら $R\underline{\vec{m}}\,\underline{t}=_{\beta}\underline{t_{0}}$。とくに $R\underline{\vec{m}}\,\underline{0}=_{\beta}\underline{t_{0}}$。
+
+**Step 3：標準形.** 全域的な計算可能関数 $f=\varphi^{(k)}_{e}$ は、クリーネの標準形（\ref{comp:normal-form}）により $f(\vec{m})=u(\vec{m},t_{0}(\vec{m}))$、$t_{0}(\vec{m})=\min\{t:g(\vec{m},t)=0\}$（$u$ と $g\defeq1\mathbin{\dot{-}}\chi_{T_{k}}(e,\cdot,\cdot)$ は原始再帰的、$f$ が全域的なので $t_{0}$ は常に存在する）と書ける。Step 1 で $u,g$ を定義する $U',G$ をとり、Step 2 の $R$ について $F\defeq\lambda\vec{x}.U'\vec{x}(R\vec{x}\,\underline{0})$ とすれば $F\underline{\vec{m}}=_{\beta}U'\underline{\vec{m}}\,\underline{t_{0}(\vec{m})}=_{\beta}\underline{f(\vec{m})}$。
+:::
+
+::: theorem ラムダ定義可能な関数は計算可能 {#logic:lambda-computable keywords="lambda definable functions are computable" index="ラムダ定義可能な関数の計算可能性|らむだていぎかのうなかんすうのけいさんかのうせい"}
+ラムダ定義可能な全域的な関数は計算可能である。
+:::
+
+::: proof
+ラムダ項を自然数でコード化する（構文木を組のコードで表す。\ref{comp:tuple-code} と同様）。α 同値類の代表として、束縛変数を出現の位置で決まる名前に付け替えたものをとれば、二つのコードが同じ項を表すかは計算可能に判定できる。一段の簡約 $M\to_{\beta}N$ は、$M$ の基を一つ選んで代入を行う有限の操作なので、関係「$N$ は $M$ から一段で得られる」は決定可能で、$M$ から一段で得られる項は有限個で計算可能に列挙できる。
+
+$F$ が $f$ を定義するとする。入力 $\vec{m}$ について、$F\underline{\vec{m}}$ から $0,1,2,\dots$ 段で得られる項を幅優先で列挙し、チャーチ数 $\underline{n}$ が現れたら $n$ を出力する。$F\underline{\vec{m}}=_{\beta}\underline{f(\vec{m})}$ と \ref{logic:normal-form-unique} の 1 から、共通の簡約先があるが、$\underline{f(\vec{m})}$ は正規形なので、それは $\underline{f(\vec{m})}$ 自身、すなわち $F\underline{\vec{m}}\twoheadrightarrow_{\beta}\underline{f(\vec{m})}$。よって探索は停止する。現れるチャーチ数は $F\underline{\vec{m}}$ と β 等しいので、$\underline{n}=_{\beta}\underline{f(\vec{m})}$ で $n=f(\vec{m})$（\ref{logic:church-numeral}）。この手続きはアルゴリズムで、チャーチ–チューリングの提唱を使わずに L のプログラムとして書ける（コードの上の操作は原始再帰的で、探索は while ループ一つ）。
+:::
+
+::: corollary ラムダ計算のチューリング完全性 {#logic:lambda-turing-complete keywords="lambda calculus is Turing complete" index="ラムダ計算のチューリング完全性|らむだけいさんのちゅーりんぐかんぜんせい"}
+全域的な関数 $f\colon\N^{k}\to\N$ について、$f$ が計算可能であることとラムダ定義可能であることは同値である。
+:::
+
+::: proof
+\ref{logic:computable-lambda} と \ref{logic:lambda-computable}。
+:::
+
+::: remark
+部分関数についても、「$f(\vec{m})\uparrow$ のとき $F\underline{\vec{m}}$ が正規形をもたない」ことを加えた定義で、計算可能な部分関数とラムダ定義可能な部分関数が一致することが知られている（クリーネ）。その証明には、上の Step 3 の項で $R\underline{\vec{m}}\,\underline{0}$ の探索が終わらないとき全体が正規形をもたないことを示す必要があり、それには可解性などの理論（あるいは項の形を工夫すること）が要る。本サイトではこの部分関数版は示していない。チューリング完全性（\ref{comp:turing-complete}）の意味では、全域的な場合に加えて、停止しない計算が停止しない項に対応することも含めて一致する、とされている。
+:::
+
+::: hypcheck
+- **チャーチ–ロッサーの定理**：\ref{logic:lambda-computable} で、β 等式から一方向の簡約を得るのに本質的に使った（等式だけでは探索の手続きが作れない）。また \ref{logic:church-numeral} で異なるチャーチ数が β 等しくないこと（定義の意味が成り立つこと）に使った。
+- **不動点定理**：Step 2 の探索で、再帰的な定義をラムダ項で実現するのに使った。
+- **全域性**：Step 3 で $t_{0}$ が存在することに使った。
+- **標準形定理**：Step 3 で、一般の計算可能関数を「原始再帰関数と一度の探索」に帰着させるのに使った。
+:::
+
+## 問題 {#logic:sec-ld-problems}
+
+::: problem {#logic:prob-church-exp}
+$\mathsf{exp}\defeq\lambda nm.mn$ が $\mathsf{exp}\,\underline{n}\,\underline{m}=_{\beta}\underline{n^{m}}$（$m\ge1$）を満たすことを示せ。
+:::
+
+::: solution
+$\underline{m}\,\underline{n}\twoheadrightarrow_{\beta}\lambda x.\underline{n}^{m}x$（$\underline{n}$ を $m$ 回合成）。$m$ に関する帰納法で $\lambda x.\underline{n}^{m}x=_{\beta}\underline{n^{m}}$ を示す：$m=1$ は η 変換なしでは $\lambda x.\underline{n}x$ で、これは $\lambda x.\lambda y.x^{n}y$ に簡約され、$\underline{n}=\lambda f.\lambda y.f^{n}y$ と α 同値。$m\to m+1$：$\lambda x.\underline{n}(\underline{n}^{m}x)$ で、$\underline{n}^{m}x=_{\beta}\underline{n^{m}}x$（帰納法の仮定の両辺を $x$ に適用）$\twoheadrightarrow_{\beta}\lambda y.x^{n^{m}}y$。$\underline{n}(\lambda y.x^{n^{m}}y)\twoheadrightarrow_{\beta}\lambda z.(\lambda y.x^{n^{m}}y)^{n}z\twoheadrightarrow_{\beta}\lambda z.x^{n^{m}\cdot n}z$。よって $\lambda x.\lambda z.x^{n^{m+1}}z=\underline{n^{m+1}}$。（$m=0$ では $\mathsf{exp}\,\underline{n}\,\underline{0}\twoheadrightarrow_{\beta}\lambda x.x$ で、これは $\underline{1}=\lambda fx.fx$ と β 等しくない。η 等式を認めれば等しい。）
+:::
+
+::: problem {#logic:prob-church-equality}
+$\mathsf{eq}\,\underline{n}\,\underline{m}=_{\beta}\mathsf{T}$（$n=m$）、$=_{\beta}\mathsf{F}$（$n\neq m$）となる項 $\mathsf{eq}$ を作れ。
+:::
+
+::: solution
+$\mathsf{sub}\defeq\lambda nm.m\,\mathsf{pred}\,n$ とすると $\mathsf{sub}\,\underline{n}\,\underline{m}=_{\beta}\underline{n\mathbin{\dot{-}}m}$（$\mathsf{pred}$ を $m$ 回適用）。$\mathsf{and}\defeq\lambda ab.ab\mathsf{F}$ として、$\mathsf{eq}\defeq\lambda nm.\mathsf{and}(\mathsf{zero?}(\mathsf{sub}\,n\,m))(\mathsf{zero?}(\mathsf{sub}\,m\,n))$。$n=m\iff n\mathbin{\dot{-}}m=0=m\mathbin{\dot{-}}n$。
+:::
+
+::: supplement
+**前提の検討.**
+- 本ページのラムダ定義可能性は「β 等しい」で定めた。「$F\underline{\vec{m}}\twoheadrightarrow_{\beta}\underline{f(\vec{m})}$」で定めても、チャーチ–ロッサーの定理により同じ概念になる。
+- 自然数の表し方はチャーチ数でなくてもよい（例えば対による数 $\ulcorner0\urcorner=I$, $\ulcorner n+1\urcorner=\mathsf{pair}\,\mathsf{F}\,\ulcorner n\urcorner$）。表し方によって前者関数の書きやすさが変わる。
+
+**関連する結果.**
+- *歴史.* 前者関数がラムダ定義可能であることはクリーネが見つけたと伝えられ、これがきっかけでチャーチはラムダ定義可能な関数を「計算可能」の定義として提唱した（チャーチの提唱）と一般に言われている。
+- *型付きの場合.* 単純型付きラムダ計算でチャーチ数の型 $(\alpha\to\alpha)\to\alpha\to\alpha$ をもつ項で定義できる関数は、拡張された多項式（シュヴィヒテンベルクの定理）に限られることが知られている。型付けによって停止性が保証される代わりに、能力が大きく制限される。for プログラムと原始再帰関数（\ref{comp:pr-equals-for}）の関係に似ている。
+
+**高い視点から：データは振る舞い.** チャーチ数 $\underline{n}$ は「$n$ という値」ではなく「何かを $n$ 回繰り返す」という**振る舞い**そのもので、$\mathsf{T}$, $\mathsf{F}$ は「二つの選択肢のどちらを選ぶか」、対は「二つのものを関数に渡すこと」である。データ型を、それを使う方法（除去規則）で定義するこの発想は、チャーチ符号化と呼ばれ、型理論では帰納的な型の普遍性（始代数）に当たる。自然数のチャーチ数は、自然数対象の普遍性（\ref{comp:page-primitive-recursive} の補足）を「型のない世界で、任意の $f,x$ についての反復」として書いたものと見ることができる。比喩で言えば、ラムダ計算では「名詞」がなく「動詞」しかないが、動詞の使い方のパターンとして名詞を作れる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

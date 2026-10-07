@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>随伴 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/01-basics/07-adjunctions.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 随伴 {#cat:page-adjunctions keywords="adjunction, adjoint functors, left adjoint, right adjoint, unit, counit, triangle identities, free functor, forgetful functor, Galois connection, uniqueness of adjoints"}
+
+関手 $F\colon\mathbf{X}\to\mathbf{A}$ と $G\colon\mathbf{A}\to\mathbf{X}$ が**随伴**であるとは、$\mathbf{A}(Fx,a)$ と $\mathbf{X}(x,Ga)$ が自然に一対一に対応することである（\ref{cat:adjunction}）。自由群と忘却関手、直積と対角関手、直積と写像空間など、数学のいたるところに随伴が現れる。随伴は、普遍射の族（\ref{cat:adjunction-from-universal}）、単位と余単位と三角等式（\ref{cat:triangle-identities}）など、いくつもの同値な形で与えられる（\ref{cat:adjunction-equivalent-forms}）。本ページではこれらの同値性を示し、随伴が同型を除いて一意であること（\ref{cat:adjoint-unique}）を導く。
+
+> 資料：Mac Lane, *Categories for the Working Mathematician* 第 IV 章 §1–§2, §5。訳語はレンスター『ベーシック圏論』第 2 章。
+
+## 記法と定義の確認 {#cat:sec-adj-notation}
+
+::: notation
+- 普遍射と hom 集合の全単射、米田の補題は \ref{cat:page-yoneda} のとおり（\ref{cat:universal-arrow}, \ref{cat:universal-hom-bijection}, \ref{cat:yoneda-embedding}）。
+- 双関手と変数ごとの自然性、hom 双関手、横の合成とひげ付けは \ref{cat:page-constructions} のとおり（\ref{cat:bifunctor-naturality}, \ref{cat:horizontal-composition}）。
+- 圏はすべて局所小とする。$F\colon\mathbf{X}\to\mathbf{A}$ について、$\mathbf{A}(F-,-)\colon\mathbf{X}^{\mathrm{op}}\times\mathbf{A}\to\mathbf{Set}$ は $(x,a)\mapsto\mathbf{A}(Fx,a)$ の双関手。
+:::
+
+## 随伴の定義 {#cat:sec-adj-definition}
+
+::: definition 随伴 {#cat:adjunction keywords="adjunction, left adjoint, right adjoint, adjoint pair, transpose" index="随伴|ずいはん, 左随伴|ひだりずいはん, 右随伴|みぎずいはん, 転置（随伴の）|てんちずいはんの"}
+関手 $F\colon\mathbf{X}\to\mathbf{A}$, $G\colon\mathbf{A}\to\mathbf{X}$ の間の**随伴**とは、$x\in\mathbf{X}$, $a\in\mathbf{A}$ について自然な全単射
+$$
+\varphi_{x,a}\colon\mathbf{A}(Fx,a)\cong\mathbf{X}(x,Ga)
+$$
+（$x$ と $a$ の両方について自然、すなわち双関手 $\mathbf{X}^{\mathrm{op}}\times\mathbf{A}\to\mathbf{Set}$ の自然同型）をいう。このとき $F$ を $G$ の**左随伴**、$G$ を $F$ の**右随伴**といい、$F\dashv G$ と書く。$\varphi(f)$ を $f$ の**転置**という。
+:::
+
+::: remark
+自然性を具体的に書くと、$k\colon x'\to x$, $h\colon a\to a'$, $f\colon Fx\to a$ について
+$$
+\varphi(h\circ f\circ Fk)=Gh\circ\varphi(f)\circ k
+$$
+（\ref{cat:bifunctor-naturality} により、$x$ と $a$ について別々に確かめればよい）。
+:::
+
+::: example
+1. **自由群.** 集合 $X$ に、$X$ が生成する自由群 $F(X)$ を対応させる関手（射は生成元の行き先で決まる準同型）は、忘却関手 $U\colon\mathbf{Grp}\to\mathbf{Set}$ の左随伴である：$\mathbf{Grp}(F(X),G)\cong\mathbf{Set}(X,UG)$（自由群の普遍性。自由群の存在は群論の事実とする）。自由線形空間 $K^{(X)}$ と $\mathbf{Vect}_{K}\to\mathbf{Set}$、自由モノイドと $\mathbf{Mon}\to\mathbf{Set}$（\ref{cat:free-monoid}）、自由圏と $\mathbf{Cat}\to\mathbf{Grph}$（\ref{cat:free-category}）も同様。
+2. **積と対角関手.** 二つの積をもつ圏 $\mathbf{C}$ では、対角関手 $\Delta\colon\mathbf{C}\to\mathbf{C}\times\mathbf{C}$ は積 $\times\colon\mathbf{C}\times\mathbf{C}\to\mathbf{C}$ の左随伴である：$(\mathbf{C}\times\mathbf{C})((c,c),(a,b))=\mathbf{C}(c,a)\times\mathbf{C}(c,b)\cong\mathbf{C}(c,a\times b)$。双対的に、余積は対角関手の左随伴。
+3. **直積と写像の集合.** 小さい集合 $B$ について、$-\times B\colon\mathbf{Set}\to\mathbf{Set}$ は $\mathbf{Set}(B,-)$ の左随伴である：$\mathbf{Set}(X\times B,Y)\cong\mathbf{Set}(X,\mathbf{Set}(B,Y))$、$f\mapsto(x\mapsto f(x,-))$（カリー化）。
+4. **離散位相と密着位相.** 忘却関手 $U\colon\mathbf{Top}\to\mathbf{Set}$ について、集合に離散位相を入れる関手 $D$ は左随伴 $D\dashv U$、密着位相を入れる関手 $I$ は右随伴 $U\dashv I$ である（離散空間からの写像と、密着空間への写像は、どれも連続）。
+5. **ガロア接続.** 半順序 $P,Q$（を圏とみたもの）の間の単調写像 $f\colon P\to Q$, $g\colon Q\to P$ が $f\dashv g$ であるとは、$f(p)\le q\iff p\le g(q)$ となることである（前順序では hom 集合が高々一点なので、全単射は同値、自然性は自動的）。たとえば $\mathbb{Z}\hookrightarrow\mathbb{R}$ の右随伴は床関数 $\lfloor\cdot\rfloor$（$n\le x\iff n\le\lfloor x\rfloor$）、左随伴は天井関数。
+:::
+
+## 単位と余単位 {#cat:sec-adj-unit}
+
+::: definition 単位と余単位 {#cat:unit-counit keywords="unit and counit of an adjunction" index="単位（随伴の）|たんいずいはんの, 余単位|よたんい"}
+随伴 $(F,G,\varphi)$ について、$\eta_{x}\defeq\varphi(1_{Fx})\colon x\to GFx$ を**単位**、$\varepsilon_{a}\defeq\varphi^{-1}(1_{Ga})\colon FGa\to a$ を**余単位**という。
+:::
+
+::: theorem 単位・余単位と三角等式 {#cat:triangle-identities keywords="unit and counit are natural; triangle identities; transposes via unit and counit" index="三角等式|さんかくとうしき, ジグザグ等式|じぐざぐとうしき"}
+随伴 $(F,G,\varphi)$ について次が成り立つ。
+1. $\eta\colon1_{\mathbf{X}}\Rightarrow GF$, $\varepsilon\colon FG\Rightarrow1_{\mathbf{A}}$ は自然変換である。
+2. $f\colon Fx\to a$, $g\colon x\to Ga$ について $\varphi(f)=Gf\circ\eta_{x}$、$\varphi^{-1}(g)=\varepsilon_{a}\circ Fg$。
+3. （**三角等式**）$G\varepsilon\cdot\eta G=1_{G}$、$\varepsilon F\cdot F\eta=1_{F}$。すなわち、すべての $a,x$ について
+$$
+G\varepsilon_{a}\circ\eta_{Ga}=1_{Ga},\qquad\varepsilon_{Fx}\circ F\eta_{x}=1_{Fx}.
+$$
+:::
+
+::: proof
+**2.** 自然性（$h=f$、$k=1$）で $f=f\circ1_{Fx}$ について $\varphi(f)=\varphi(f\circ1_{Fx})=Gf\circ\varphi(1_{Fx})=Gf\circ\eta_{x}$。$\varphi^{-1}$ の自然性（$\varphi^{-1}(Gh\circ g\circ k)=h\circ\varphi^{-1}(g)\circ Fk$。$\varphi$ の自然性の式に $\varphi^{-1}$ を施したもの）で $g=1_{Ga}\circ g$ について $\varphi^{-1}(g)=\varphi^{-1}(1_{Ga})\circ Fg=\varepsilon_{a}\circ Fg$。
+
+**1.** $k\colon x\to x'$ について、2 と $\varphi$ の自然性から
+$$
+\begin{aligned}
+GFk\circ\eta_{x}&=\varphi(Fk)=\varphi(1_{Fx'}\circ Fk)\\
+&=\varphi(1_{Fx'})\circ k=\eta_{x'}\circ k.
+\end{aligned}
+$$
+$\varepsilon$ も双対的に。
+
+**3.** 2 で $f=\varepsilon_{a}$ とすると $G\varepsilon_{a}\circ\eta_{Ga}=\varphi(\varepsilon_{a})=\varphi(\varphi^{-1}(1_{Ga}))=1_{Ga}$。同様に 2 の後半で $g=\eta_{x}$ とすると $\varepsilon_{Fx}\circ F\eta_{x}=\varphi^{-1}(\eta_{x})=\varphi^{-1}(\varphi(1_{Fx}))=1_{Fx}$。
+
+::: hypcheck
+- **$\varphi$ の自然性**：1, 2 のすべてで使った。自然性がないと、$\varphi$ は一つの元 $\eta_{x}$ で決まらない（\ref{cat:universal-hom-bijection} の hypcheck と同じ理由）。
+:::
+:::
+
+## 随伴の同値な与え方 {#cat:sec-adj-equivalent}
+
+::: theorem 随伴の同値な与え方 {#cat:adjunction-equivalent-forms keywords="adjunctions determined by unit and universality, by counit, by unit and counit with triangle identities" index="随伴の同値な与え方|ずいはんのどうちなあたえかた"}
+関手 $F\colon\mathbf{X}\to\mathbf{A}$, $G\colon\mathbf{A}\to\mathbf{X}$ について、随伴 $F\dashv G$ は次のどれによっても一意に決まり、逆にどれも随伴から得られる。
+1. 自然変換 $\eta\colon1_{\mathbf{X}}\Rightarrow GF$ で、各 $\eta_{x}$ が $x$ から $G$ への普遍射であるもの。このとき $\varphi(f)=Gf\circ\eta_{x}$。
+2. 自然変換 $\varepsilon\colon FG\Rightarrow1_{\mathbf{A}}$ で、各 $\varepsilon_{a}$ が $F$ から $a$ への普遍射であるもの。このとき $\varphi^{-1}(g)=\varepsilon_{a}\circ Fg$。
+3. 自然変換 $\eta\colon1\Rightarrow GF$, $\varepsilon\colon FG\Rightarrow1$ で、三角等式を満たすもの。
+:::
+
+::: proof
+**随伴から 1〜3.** \ref{cat:triangle-identities} の 2 から $\varphi(f)=Gf\circ\eta_{x}$ が全単射なので、各 $\eta_{x}$ は普遍射（\ref{cat:universal-hom-bijection} の 1）。2 も同様。3 は \ref{cat:triangle-identities} の 3。
+
+**1 から随伴.** $\varphi_{x,a}(f)\defeq Gf\circ\eta_{x}$ は、$\eta_{x}$ の普遍性から全単射（\ref{cat:universal-hom-bijection} の 1）。$a$ についての自然性は同命題。$x$ についての自然性：$k\colon x'\to x$ について、$\eta$ の自然性 $GFk\circ\eta_{x'}=\eta_{x}\circ k$ から
+$$
+\varphi(f\circ Fk)=Gf\circ GFk\circ\eta_{x'}=Gf\circ\eta_{x}\circ k=\varphi(f)\circ k.
+$$
+随伴は $\varphi$ の式で決まるので、$\eta$ から一意に決まる。
+
+**2 から随伴.** 1 の双対。
+
+**3 から随伴.** $\varphi(f)\defeq Gf\circ\eta_{x}$, $\psi(g)\defeq\varepsilon_{a}\circ Fg$ とおく。
+$$
+\begin{aligned}
+\psi(\varphi(f))&=\varepsilon_{a}\circ FGf\circ F\eta_{x}=f\circ\varepsilon_{Fx}\circ F\eta_{x}=f,\\
+\varphi(\psi(g))&=G\varepsilon_{a}\circ GFg\circ\eta_{x}=G\varepsilon_{a}\circ\eta_{Ga}\circ g=g.
+\end{aligned}
+$$
+一行目の第 2 の等号は $\varepsilon$ の自然性（射 $f\colon Fx\to a$）、第 3 の等号は三角等式。二行目は $\eta$ の自然性（射 $g\colon x\to Ga$）と三角等式。よって $\varphi$ は全単射で、自然性は「1 から随伴」と同じ計算。
+
+::: hypcheck
+- **1 での普遍性**：$\eta$ の各成分が普遍射であることが全単射性を、$\eta$ の自然性が $x$ についての自然性を与えた。各 $\eta_{x}$ が普遍射でも、$F$ を勝手に選ぶと $\eta$ が自然にならないことがある。次の定理は、普遍射から $F$ を作ると $\eta$ が自動的に自然になることを示す。
+- **3 の三角等式**：$\psi\circ\varphi=1$ に一つ目、$\varphi\circ\psi=1$ に二つ目を使った。
+:::
+:::
+
+::: theorem 普遍射の族から左随伴を作る {#cat:adjunction-from-universal keywords="a functor has a left adjoint iff every object has a universal arrow to it" index="左随伴の存在|ひだりずいはんのそんざい"}
+関手 $G\colon\mathbf{A}\to\mathbf{X}$ について、次は同値である。
+1. $G$ は左随伴をもつ。
+2. 各 $x\in\mathbf{X}$ に、$x$ から $G$ への普遍射 $(F_{0}x,\eta_{x}\colon x\to GF_{0}x)$ がある。
+
+2 のとき、対象関数 $F_{0}$ は、$f\colon x\to x'$ を $GFf\circ\eta_{x}=\eta_{x'}\circ f$ となる唯一の射 $Ff\colon F_{0}x\to F_{0}x'$ に移すことで一意に関手 $F$ に延び、$F\dashv G$ で、$\eta$ がその単位になる。
+:::
+
+::: proof
+**1 ⇒ 2.** \ref{cat:adjunction-equivalent-forms} の 1。
+
+**2 ⇒ 1, Step 1（射の対応）.** $\eta_{x'}\circ f\colon x\to GF_{0}x'$ を普遍射 $\eta_{x}$ で経由させて、$GFf\circ\eta_{x}=\eta_{x'}\circ f$ となる $Ff$ が一意に定まる。
+
+**Step 2（関手性）.** $1_{F_{0}x}$ は $G1\circ\eta_{x}=\eta_{x}\circ1_{x}$ を満たすので、一意性から $F1_{x}=1$。$f\colon x\to x'$, $f'\colon x'\to x''$ について
+$$
+G(Ff'\circ Ff)\circ\eta_{x}=GFf'\circ\eta_{x'}\circ f=\eta_{x''}\circ f'\circ f,
+$$
+一意性から $F(f'\circ f)=Ff'\circ Ff$。
+
+**Step 3.** Step 1 の式は $\eta$ の自然性そのもの。各 $\eta_{x}$ は普遍射なので、\ref{cat:adjunction-equivalent-forms} の 1 から $F\dashv G$。$F$ の一意性：単位が $\eta$ である左随伴では、自然性から $Ff$ は Step 1 の式を満たすので、一意性から決まる。
+
+::: hypcheck
+- **普遍射の選択**：2 は「各 $x$ に普遍射がある」ことしか言っていないので、関手 $F$ を作るには各 $x$ に普遍射を一つ選ぶ必要があり、一般には（大きな $\mathbf{X}$ にわたる）選択公理を使う。普遍射が具体的に構成できる場合（自由群など）は選択は要らない。
+:::
+:::
+
+::: corollary 随伴の一意性 {#cat:adjoint-unique keywords="left adjoints are unique up to natural isomorphism" index="随伴の一意性|ずいはんのいちいせい"}
+$F,F'$ がともに $G$ の左随伴なら、自然同型 $F\cong F'$ がある。右随伴も同様。
+:::
+
+::: proof
+各 $x$ について、$(Fx,\eta_{x})$ と $(F'x,\eta'_{x})$ はともに $x$ から $G$ への普遍射なので、$G\theta_{x}\circ\eta_{x}=\eta'_{x}$ となる同型射 $\theta_{x}\colon Fx\to F'x$ が一意にある（\ref{cat:universal-is-initial} の 2）。自然性：$f\colon x\to x'$ について、$\theta_{x'}\circ Ff$ と $F'f\circ\theta_{x}$ に $G$ を施して $\eta_{x}$ を右から合成すると
+$$
+\begin{aligned}
+G\theta_{x'}\circ GFf\circ\eta_{x}&=G\theta_{x'}\circ\eta_{x'}\circ f=\eta'_{x'}\circ f,\\
+GF'f\circ G\theta_{x}\circ\eta_{x}&=GF'f\circ\eta'_{x}=\eta'_{x'}\circ f.
+\end{aligned}
+$$
+$\eta_{x}$ の普遍性（一意性）から $\theta_{x'}\circ Ff=F'f\circ\theta_{x}$。
+:::
+
+::: proposition 随伴の合成 {#cat:adjunction-composition keywords="composition of adjunctions" index="随伴の合成|ずいはんのごうせい"}
+$F\colon\mathbf{X}\to\mathbf{A}$, $G\colon\mathbf{A}\to\mathbf{X}$ で $F\dashv G$、$F'\colon\mathbf{A}\to\mathbf{B}$, $G'\colon\mathbf{B}\to\mathbf{A}$ で $F'\dashv G'$ なら、$F'F\dashv GG'$。
+:::
+
+::: proof
+二つの自然な全単射を合成する：
+$$
+\mathbf{B}(F'Fx,b)\cong\mathbf{A}(Fx,G'b)\cong\mathbf{X}(x,GG'b).
+$$
+自然な全単射の合成は自然（\ref{cat:vertical-composition}）。
+:::
+
+::: supplement
+**前提を変えると.** 左随伴と右随伴は対称ではない。忘却関手 $U\colon\mathbf{Grp}\to\mathbf{Set}$ は左随伴（自由群）をもつが、右随伴はもたない：右随伴をもつ関手は余極限を保つ（\ref{cat:adjoints-preserve-limits}）が、$U$ は余積を保たない（群の自由積の台集合は台集合の直和ではない）。
+
+**類似の定理.**
+- *普遍代数.* 一般に、代数系（群・環・加群・束など、等式で定義される構造）の忘却関手は左随伴（自由代数）をもつ（Mac Lane 第 V 章 §6）。
+- *ガロア理論.* 体の拡大と部分群の間のガロア対応は、半順序の間の（反変な）ガロア接続で、随伴の特別な場合である。
+
+**高い視点から：随伴は「最良の近似」.** $F\dashv G$ のとき、$\eta_{x}\colon x\to GFx$ は「$x$ を $G$ の像の中で最良に近似する方法」で、$Fx$ はその近似先である。ガロア接続の例でいえば、整数 $\lfloor x\rfloor$ は実数 $x$ を下から近似する最良の整数で、$n\le x\iff n\le\lfloor x\rfloor$ がその「最良」の意味である。比喩で言えば、左随伴は「自由に作る」（必要最小限の関係だけを課して構造を作る）方向、右随伴は「すべてを許す」（条件を満たすものを全部集める）方向で、自由群と密着位相、離散位相と忘却関手のように、同じ忘却関手の両側に二つの近似が並ぶことがある。
+:::
+
+## 問題 {#cat:sec-adj-problems}
+
+::: problem {#cat:prob-galois-connection}
+半順序 $P,Q$ の間の単調写像 $f\colon P\to Q$, $g\colon Q\to P$ が $f\dashv g$（$f(p)\le q\iff p\le g(q)$）なら、$f\circ g\circ f=f$, $g\circ f\circ g=g$ であり、$g\circ f\colon P\to P$ は閉包作用素（単調、$p\le gf(p)$、$gfgf=gf$）であることを示せ。
+:::
+
+::: solution
+単位と余単位は $p\le gf(p)$（$f(p)\le f(p)$ の転置）と $fg(q)\le q$。三角等式は半順序では自明だが、これから：$p\le gf(p)$ に $f$ を施して $f(p)\le fgf(p)$、余単位を $q=f(p)$ に適用して $fgf(p)\le f(p)$、反対称律で $fgf=f$。同様に $gfg=g$。閉包作用素：単調性は合成から、$p\le gf(p)$ は単位、$gfgf=g(fgf)=gf$。
+:::
+
+::: problem {#cat:prob-no-right-adjoint}
+小さい集合 $B$ について、$\mathbf{Set}(B,-)\colon\mathbf{Set}\to\mathbf{Set}$ が右随伴をもつのは $B$ が一点集合のとき（同型を除く）に限ることを示せ。（ヒント：右随伴をもつ関手は始対象を始対象に移す。）
+:::
+
+::: solution
+**ヒントの主張.** $F\dashv G$ で $i$ が始対象なら、$\mathbf{A}(Fi,a)\cong\mathbf{X}(i,Ga)$ は一点なので $Fi$ は始対象。**本題.** $L\defeq\mathbf{Set}(B,-)$ が右随伴をもつなら、$L(\varnothing)=\mathbf{Set}(B,\varnothing)$ は始対象 $\varnothing$ でなければならず、これは $B\neq\varnothing$ を意味する。また、右随伴 $R$ をもつ関手 $L$ は二つの余積を保つ：集合 $X,Y$ と $a$ について、自然な全単射
+$$
+\begin{aligned}
+\mathbf{Set}(L(X\sqcup Y),a)&\cong\mathbf{Set}(X\sqcup Y,Ra)\cong\mathbf{Set}(X,Ra)\times\mathbf{Set}(Y,Ra)\\
+&\cong\mathbf{Set}(LX,a)\times\mathbf{Set}(LY,a)\cong\mathbf{Set}(LX\sqcup LY,a)
+\end{aligned}
+$$
+があり（二つ目と四つ目は余積の普遍性）、米田埋め込みの系（\ref{cat:yoneda-embedding} の 3。全単射の合成は $a$ について自然）から $L(X\sqcup Y)\cong LX\sqcup LY$。$L(\{0\}\sqcup\{1\})=\mathbf{Set}(B,\{0,1\})$ は $2^{\lvert B\rvert}$ 元、$L(\{0\})\sqcup L(\{1\})$ は $2$ 元なので、$2^{\lvert B\rvert}=2$、すなわち $\lvert B\rvert=1$。逆に $B$ が一点なら $L\cong1_{\mathbf{Set}}$ で、恒等関手は自分自身を右随伴にもつ。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

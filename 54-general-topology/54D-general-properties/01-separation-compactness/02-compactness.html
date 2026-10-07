@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>コンパクト空間 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54D-general-properties/01-separation-compactness/02-compactness.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# コンパクト空間 {#top:page-compactness keywords="compact space, open cover, finite subcover, finite intersection property, compactness via nets and ultrafilters, compact subsets of Hausdorff spaces, tube lemma, Heine-Borel theorem, extreme value theorem"}
+
+**コンパクト性**は、「無限のものを有限で押さえられる」性質で、開被覆がつねに有限部分被覆をもつこととして定義される（\ref{top:compact}）。閉区間 $[a,b]$ はコンパクトであり（\ref{top:interval-compact}）、$\R^{n}$ の有界閉集合はコンパクトである（**ハイネ＝ボレルの定理**、\ref{top:heine-borel}）。コンパクト空間上の実数値連続関数は最大値をとる（\ref{top:extreme-value}）。本ページでは、コンパクト性の同値な言い換え（有限交叉性、ネット、超フィルター）と、ハウスドルフ空間との関係（\ref{top:compact-to-hausdorff}, \ref{top:compact-hausdorff-normal}）を示す。無限個の直積についてのチコノフの定理は次ページで扱う。
+
+> 資料：内田伏一『集合と位相』§22–§23。
+
+## 記法と定義の確認 {#top:sec-cpt-notation}
+
+::: notation
+- 位相・閉集合・連続写像・同相・部分空間・直積・ネットと集積点・フィルターと超フィルター・分離公理は前ページまでのとおり（\ref{top:closed-set}, \ref{top:continuous}, \ref{top:homeomorphism}, \ref{top:subspace}, \ref{top:product-topology}, \ref{top:net}, \ref{top:cluster-subnet}, \ref{top:filter-convergence}, \ref{top:ultrafilter-cluster}, \ref{top:hausdorff}, \ref{top:separation-axioms}）。
+- $X$ の部分集合の族 $\mathcal{U}$ が $A$ の**被覆**であるとは $A\subseteq\bigcup\mathcal{U}$ となることをいい、元がすべて開集合なら**開被覆**という。
+- 実数の上限の性質（上に有界な空でない集合は上限をもつ）は既知とする。
+- 議論は $\ZF$ で行い、選択公理を使う箇所は明記する。
+:::
+
+## コンパクト性の定義と言い換え {#top:sec-cpt-definition}
+
+::: definition コンパクト {#top:compact keywords="compact space, compact subset, open cover, finite subcover" index="コンパクト|こんぱくと, 開被覆|かいひふく, 有限部分被覆|ゆうげんぶぶんひふく, 有限交叉性|ゆうげんこうさせい"}
+位相空間 $X$ が**コンパクト**であるとは、$X$ の任意の開被覆が有限部分被覆をもつことをいう。部分集合 $A$ が**コンパクト**であるとは、部分空間 $A$ がコンパクトであること、すなわち $X$ の開集合による $A$ の任意の被覆が有限部分被覆をもつことをいう。集合の族が**有限交叉性**をもつとは、その任意の有限個の元の共通部分が空でないことをいう。
+:::
+
+::: remark
+部分集合についての二つの言い方が同値であることは、$A$ の開集合が $U\cap A$（$U$ は $X$ で開）の形であることから分かる。$U_{\lambda}$ の有限個の和が $A$ を覆うことと、$U_{\lambda}\cap A$ の有限個の和が $A$ を覆うことは同じである（被覆の元から $X$ の開集合を一つ選ぶ必要はない：$X$ の開集合による被覆から出発すればよい）。
+:::
+
+::: theorem コンパクト性の言い換え {#top:compact-equivalents keywords="compact iff closed sets with the finite intersection property have nonempty intersection iff every net has a cluster point iff every ultrafilter converges" index="コンパクト性の言い換え|こんぱくとせいのいいかえ"}
+位相空間 $X$ について次は同値である。
+1. $X$ はコンパクト。
+2. 有限交叉性をもつ閉集合の族は、共通部分が空でない。
+3. $X$ の任意のフィルターは集積点をもつ。
+4. $X$ の任意のネットは集積点をもつ（したがって、収束する部分ネットをもつ）。
+
+さらに、選択公理（超フィルター補題）のもとで次も同値である。
+
+5. $X$ の任意の超フィルターは収束する。
+:::
+
+::: proof
+**1 ⇔ 2.** 閉集合の族 $(F_{\lambda})$ と開集合の族 $(F_{\lambda}^{c})$ は補集合で対応し、「$\bigcap F_{\lambda}=\varnothing$」は「$(F_{\lambda}^{c})$ が開被覆」、「有限交叉性」は「どの有限個も被覆しない」と同値（ド・モルガン）。1 の対偶が 2。
+
+**2 ⇒ 3.** フィルター $\mathcal{F}$ について $\{\overline{F}:F\in\mathcal{F}\}$ は有限交叉性をもつ閉集合の族（$\overline{F_{1}}\cap\cdots\cap\overline{F_{n}}\supseteq F_{1}\cap\cdots\cap F_{n}\neq\varnothing$）。共通部分の点は集積点（\ref{top:filter-convergence}）。
+
+**3 ⇒ 2.** 有限交叉性をもつ閉集合の族 $\mathcal{C}$ の有限共通部分の全体はフィルター基で、それが生成するフィルターの集積点 $x$ は、各 $F\in\mathcal{C}$ について $x\in\overline{F}=F$。
+
+**3 ⇔ 4.** ネットと付随するフィルター（\ref{top:nets-filters-correspondence}）の間で集積点は一致する：$x$ がネットの集積点 $\iff$ $x$ の各近傍にネットが頻繁に入る $\iff$ ネットが最終的に入る各集合 $F$ と $x$ の各近傍が交わる $\iff$ $x$ はフィルターの集積点。ネットからフィルター、フィルターからネットの両方向の対応があるので、3 と 4 は同値。部分ネットについては \ref{top:cluster-subnet}。
+
+**3 ⇒ 5.** 超フィルターの集積点には超フィルターが収束する（\ref{top:ultrafilter-cluster} の 1）。
+
+**5 ⇒ 3（選択公理）.** フィルター $\mathcal{F}$ を含む超フィルター $\mathcal{U}$ をとり（超フィルター補題）、その極限 $x$ は $\mathcal{U}$ の集積点なので、$\mathcal{F}\subseteq\mathcal{U}$ の集積点。
+
+::: hypcheck
+- **1 ⇔ 2 ⇔ 3 ⇔ 4** は $\ZF$ で成り立つ（ネットとフィルターの対応で点の選択をしていない）。
+- **5 ⇒ 3** は超フィルター補題を使う。超フィルター補題がない世界では、「すべての超フィルターが収束する」は自明に近い（単項超フィルターしかないことがありうる）ので、コンパクト性を導かない。
+:::
+:::
+
+## コンパクト性の基本性質 {#top:sec-cpt-basic}
+
+::: proposition コンパクト集合の基本性質 {#top:compact-basic keywords="closed subsets of compact spaces are compact; continuous images of compact spaces are compact; finite unions" index="コンパクト集合の基本性質|こんぱくとしゅうごうのきほんせいしつ"}
+1. コンパクト空間の閉部分集合はコンパクト。
+2. コンパクト空間の連続像はコンパクト。
+3. 有限個のコンパクト部分集合の和はコンパクト。
+:::
+
+::: proof
+**1.** 閉集合 $F$ の開被覆 $\mathcal{U}$ に $F^{c}$ を加えると $X$ の開被覆。有限部分被覆から $F^{c}$ を除いたものが $F$ を覆う。
+
+**2.** $f\colon X\to Y$ 連続、$\mathcal{V}$ を $f[X]$ の（$Y$ の開集合による）被覆とすると、$\{f^{-1}[V]:V\in\mathcal{V}\}$ は $X$ の開被覆で、有限部分被覆 $f^{-1}[V_{1}],\dots,f^{-1}[V_{n}]$ について $V_{1},\dots,V_{n}$ が $f[X]$ を覆う。
+
+**3.** 各コンパクト集合の有限部分被覆をあわせる（有限個なので選択は不要）。
+:::
+
+::: theorem ハウスドルフ空間のコンパクト集合は閉 {#top:compact-hausdorff-closed keywords="compact subsets of Hausdorff spaces are closed; disjoint compact sets can be separated" index="コンパクト集合は閉|こんぱくとしゅうごうはへい"}
+$X$ をハウスドルフ空間とする。
+1. コンパクト集合 $K$ と点 $x\notin K$ は開集合で分離される。とくに $K$ は閉集合。
+2. 交わらない二つのコンパクト集合は開集合で分離される。
+:::
+
+::: proof
+**1.** 各 $y\in K$ について、$x$ と $y$ を分離する開集合の対 $(U,V)$（$x\in U$, $y\in V$, $U\cap V=\varnothing$）を考える。$V$ 側の開集合で、そのような対の一方になれるもの全体 $\mathcal{V}$ は $K$ を覆うので、有限個 $V_{1},\dots,V_{n}$ で $K$ が覆われる。それぞれの相手 $U_{1},\dots,U_{n}$ を（有限個なので）選び、$U\defeq U_{1}\cap\cdots\cap U_{n}\ni x$, $V\defeq V_{1}\cup\cdots\cup V_{n}\supseteq K$ は交わらない開集合。$x\notin K$ ごとに $K$ と交わらない近傍があるので $K^{c}$ は開。
+
+**2.** コンパクト集合 $K,L$ について、1 から各 $x\in L$ に $K$ と分離する開集合の対がある。$L$ の側の開集合で $L$ を有限個で覆い、1 と同じく共通部分と和をとる。
+
+::: hypcheck
+- **ハウスドルフ性**：1 で点と点を分離するのに使った。外すと偽：補有限位相の無限集合では、任意の部分集合がコンパクトだが、閉集合は有限集合と全体だけ。
+- **選択公理**：被覆の有限個の元の「相手」を選ぶだけなので、有限選択で足りる（$\ZF$）。
+:::
+:::
+
+::: corollary コンパクトからハウスドルフへの写像 {#top:compact-to-hausdorff keywords="a continuous bijection from a compact space to a Hausdorff space is a homeomorphism; continuous maps from compact to Hausdorff are closed" index="コンパクトからハウスドルフへの全単射|こんぱくとからはうすどるふへのぜんたんしゃ"}
+$X$ がコンパクト、$Y$ がハウスドルフなら、連続写像 $f\colon X\to Y$ は閉写像である。とくに、連続な全単射は同相写像、連続な単射は埋め込み、連続な全射は商写像である。
+:::
+
+::: proof
+$X$ の閉集合 $F$ はコンパクト（\ref{top:compact-basic} の 1）、$f[F]$ はコンパクト（同 2）、$Y$ はハウスドルフなので $f[F]$ は閉（\ref{top:compact-hausdorff-closed}）。後半は \ref{top:homeomorphism-characterization} と \ref{top:quotient-map-criteria}。
+:::
+
+::: theorem コンパクトハウスドルフ空間は正規 {#top:compact-hausdorff-normal keywords="compact Hausdorff spaces are normal (T4)" index="コンパクトハウスドルフ空間の正規性|こんぱくとはうすどるふくうかんのせいきせい"}
+コンパクトなハウスドルフ空間は $T_{4}$ である。
+:::
+
+::: proof
+交わらない閉集合はコンパクト（\ref{top:compact-basic} の 1）なので、\ref{top:compact-hausdorff-closed} の 2 で分離される。ハウスドルフなので $T_{1}$。
+:::
+
+## 閉区間とハイネ＝ボレルの定理 {#top:sec-cpt-heine-borel}
+
+::: theorem 閉区間はコンパクト {#top:interval-compact keywords="closed bounded intervals are compact" index="閉区間のコンパクト性|へいくかんのこんぱくとせい"}
+実数 $a\le b$ について、閉区間 $[a,b]$（通常の位相）はコンパクトである。
+:::
+
+::: proof
+**Step 1（集合 $S$）.** $\mathcal{U}$ を $[a,b]$ の開被覆（$\R$ の開集合による）とし、$S\defeq\{x\in[a,b]:[a,x]\text{ が }\mathcal{U}\text{ の有限個で覆われる}\}$ とおく。$a\in S$（$a$ を含む元一つ）。$S$ は上に有界なので上限 $s\le b$ がある。
+
+**Step 2（$s\in S$ かつ $s=b$）.** $s\in U\in\mathcal{U}$ となる $U$ をとり、$(s-\varepsilon,s+\varepsilon)\subseteq U$ となる $\varepsilon>0$ をとる。上限の性質から $x\in S$ で $x>s-\varepsilon$ となるものがある。$[a,x]$ を覆う有限個に $U$ を加えると、$[a,\min(s+\varepsilon/2,b)]$ が覆われる。よって $\min(s+\varepsilon/2,b)\in S$ で、これは $s$ 以下なので $s+\varepsilon/2>b$ でなければならず（$s<b$ なら $s+\varepsilon/2$ と $b$ の小さい方が $s$ を超える）、$s=b$ かつ $b\in S$。
+:::
+
+::: lemma チューブ補題 {#top:tube-lemma keywords="tube lemma" index="チューブ補題|ちゅーぶほだい"}
+$Y$ をコンパクトとする。$X\times Y$ の開集合 $W$ が $\{x\}\times Y$ を含むなら、$x$ の開近傍 $U$ で $U\times Y\subseteq W$ となるものがある。
+:::
+
+::: proof
+各 $y\in Y$ について、$(x,y)\in U\times V\subseteq W$ となる基本開集合がある。そのような $V$ の全体は $Y$ を覆うので、有限個 $V_{1},\dots,V_{n}$ で覆われ、相手 $U_{1},\dots,U_{n}$ をとる。$U\defeq\bigcap U_{k}$ について $U\times Y\subseteq\bigcup U_{k}\times V_{k}\subseteq W$。
+:::
+
+::: theorem 有限個の直積とハイネ＝ボレルの定理 {#top:heine-borel keywords="finite products of compact spaces are compact; Heine-Borel theorem: compact subsets of R^n are exactly the closed bounded sets" index="ハイネ＝ボレルの定理|はいねぼれるのていり"}
+1. コンパクト空間 $X,Y$ の直積 $X\times Y$ はコンパクト。したがって有限個のコンパクト空間の直積はコンパクト。
+2. （**ハイネ＝ボレル**）$\R^{n}$ の部分集合がコンパクトであることと、有界な閉集合であることは同値である。
+:::
+
+::: proof
+**1.** $\mathcal{W}$ を $X\times Y$ の開被覆とする。各 $x$ について $\{x\}\times Y$（$Y$ と同相でコンパクト）は $\mathcal{W}$ の有限個で覆われ、その和 $W_{x}$ に \ref{top:tube-lemma} を適用して開近傍 $U_{x}$ で $U_{x}\times Y\subseteq W_{x}$ となるものがとれる。$\{U_{x}\}$ の有限部分被覆 $U_{x_{1}},\dots,U_{x_{m}}$ について、$W_{x_{1}},\dots,W_{x_{m}}$ を構成する $\mathcal{W}$ の有限個の元が全体を覆う。（各 $x$ についての「有限個の元」の選び方は、「$\{x\}\times Y$ を有限個で覆える開集合 $W$ と開近傍 $U$ の組」の全体を考え、$U$ の側の有限部分被覆をとってから有限個だけ選べば、選択公理は要らない。）
+
+**2.** 「⇐」：有界閉集合 $A$ はある $[-r,r]^{n}$ に含まれ、これは 1 と \ref{top:interval-compact} からコンパクトで、$A$ はその閉集合なのでコンパクト。「⇒」：コンパクト集合 $K$ は、$\R^{n}$ がハウスドルフ（\ref{top:metric-normal}）なので閉（\ref{top:compact-hausdorff-closed}）。開球 $B(0,m)$（$m\ge1$）の全体は $K$ の開被覆で、有限部分被覆の最大の $m$ について $K\subseteq B(0,m)$、有界。
+:::
+
+::: corollary 最大値の定理 {#top:extreme-value keywords="extreme value theorem: continuous real functions on compact spaces attain maxima" index="最大値の定理|さいだいちのていり"}
+空でないコンパクト空間 $X$ 上の連続関数 $f\colon X\to\R$ は最大値と最小値をとる。
+:::
+
+::: proof
+$f[X]$ は $\R$ のコンパクト集合なので有界閉集合（\ref{top:heine-borel}）。空でない有界な集合の上限 $\sup f[X]$ は $f[X]$ の閉包に属し（上限の性質から、各 $\varepsilon$ について $\varepsilon$ 以内の元がある）、閉なので $f[X]$ に属する。最小値も同様。
+:::
+
+::: supplement
+**前提を変えると.**
+- *点列コンパクト性.* 「すべての点列が収束する部分列をもつ」（点列コンパクト）は、一般にはコンパクト性と異なる。順序数空間 $\omega_{1}$ は点列コンパクトだがコンパクトでない（\ref{top:omega-one-space}）。逆に、$\{0,1\}^{\R}$ はコンパクト（チコノフの定理）だが点列コンパクトでない。距離空間では二つは一致する（\ref[距離空間のコンパクト性]{top:compact-metric-equivalents}）。
+- *ハウスドルフ性を外すと.* コンパクト集合は閉とは限らず（補有限位相）、二つのコンパクト集合の共通部分がコンパクトとは限らない。
+
+**類似の定理.** 局所コンパクトなハウスドルフ空間は、一点を加えてコンパクトハウスドルフ空間に埋め込める（\ref{top:one-point-compactification}）。無限個の直積についての 1 の一般化がチコノフの定理（\ref{top:tychonoff}）で、選択公理と同値である。
+
+**高い視点から：コンパクト性は「有限性の位相版」.** 有限集合の上では、どんな「局所的な性質」も有限回の確認で全体に広がる。コンパクト性は、無限集合の上でこの議論を可能にする性質である：各点のまわりで成り立つ性質（各点の近傍で関数が有界、など）は、有限個の近傍で全体が覆えるので、全体で成り立つ。比喩で言えば、コンパクト空間は「どれだけ細かく区切っても、有限枚の地図で全土が描ける国」である。命題論理・一階述語論理のコンパクト性定理（\ref{logic:compactness}）は、ストーン空間のコンパクト性として、この意味のコンパクト性と一致する。
+:::
+
+## 問題 {#top:sec-cpt-problems}
+
+::: problem {#top:prob-compact-lindelof}
+コンパクト空間はリンデレーフであることを確かめよ。また、リンデレーフだがコンパクトでない空間の例を挙げよ。
+:::
+
+::: solution
+有限部分被覆は可算部分被覆。$\R$ は第二可算なのでリンデレーフ（\ref{top:second-countable-properties}）だが、開被覆 $\{(-n,n)\}$ は有限部分被覆をもたない。
+:::
+
+::: problem {#top:prob-cofinite-compact}
+補有限位相の空間は、任意の部分集合がコンパクトであることを示せ。
+:::
+
+::: solution
+$A$ の開被覆から、$A$ と交わる空でない元 $U$ を一つとる（$A=\varnothing$ なら自明）。$U^{c}$ は有限なので、$A\setminus U$ の有限個の点をそれぞれ覆う元を加えればよい。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>派生規則と定数の置き換え | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/02-first-order-logic/06-derived-rules.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 派生規則と定数の置き換え {#logic:page-derived-rules keywords="derived rules, existential elimination, generalization on constants, constants and free variables, conservativity"}
+
+自然演繹の原始規則は $\bot,\to,\forall,=$ についてのものだけだった（\ref{logic:deduction-system}）。本ページではまず、略記 $\neg,\wedge,\vee,\exists$ についての導入・除去規則と、等号の対称律・推移律・合同律が**派生規則**として導けることを示す。次に、完全性定理の証明で鍵になる構文的な道具として、「導出の中の定数記号を新しい変数に一斉に置き換えても導出である」という定理を証明し、そこから (1) 新しい定数についての一般化、(2) 新しい定数を言語に加えても導出可能性が変わらないこと、(3) 自由変数を新しい定数に置き換えても導出可能性が変わらないこと、を導く。(3) は完全性定理を自由変数を含む前提に適用するために使う。
+
+## 記法と定義の確認 {#logic:sec-derived-notation}
+
+::: notation
+- 導出、$\mathrm{concl}(D)$、$\mathrm{A}(D)$、$\Sigma\vdash\varphi$ は \ref{logic:deduction-system}, \ref{logic:derivability} のとおり。弱化・演繹定理・カットは \ref{logic:derivability-basic}、矛盾と導出可能性の関係は \ref{logic:consistency-basic} にある。以下ではこれらを断らずに使う。
+- 略記は \ref{logic:abbreviations} のとおり：$\neg\varphi=\varphi\to\bot$, $\varphi\wedge\psi=\neg(\varphi\to\neg\psi)$, $\varphi\vee\psi=\neg\varphi\to\psi$, $\exists x\,\varphi=\neg\forall x\,\neg\varphi$。
+- 代入の性質（\ref{logic:substitution-basic}, \ref{logic:substitution-fv}, \ref{logic:substitution-composition}）と定数の置き換え $\varphi[y/c]$ の性質（\ref{logic:constant-replacement}, \ref{logic:constant-replacement-properties}）を使う。
+- **派生規則**とは、「前提がこれこれの $\Sigma$ から導出可能ならば、結論も（しかるべき集合から）導出可能である」という形の主張のことである。原始規則と違い、導出の定義を拡張するものではない。
+:::
+
+## 命題論理の派生規則 {#logic:sec-derived-propositional}
+
+::: lemma ⊢ の水準での全称導入 {#logic:forall-intro-derivable keywords="universal generalization"}
+$\Sigma\vdash\varphi$ であり、すべての $\psi\in\Sigma$ について $x\notin\mathrm{FV}(\psi)$ ならば、$\Sigma\vdash\forall x\,\varphi$。
+:::
+
+::: proof
+$\mathrm{concl}(D)=\varphi$, $\mathrm{A}(D)\subset\Sigma$ となる導出 $D$ をとる。$\mathrm{A}(D)$ の元は $\Sigma$ の元なので $x$ を自由に含まず、$D$ に $\forall$I を施せる。
+:::
+
+::: proposition 命題論理の派生規則 {#logic:derived-propositional keywords="derived rules for negation, conjunction, disjunction" index="派生規則|はせいきそく"}
+任意の $\Sigma,\varphi,\psi,\chi$ について次が成り立つ。
+1. **（$\neg$I）** $\Sigma\cup\{\varphi\}\vdash\bot$ ならば $\Sigma\vdash\neg\varphi$。**（$\neg$E）** $\Sigma\vdash\varphi$ かつ $\Sigma\vdash\neg\varphi$ ならば $\Sigma\vdash\bot$。
+2. **（二重否定除去）** $\Sigma\vdash\neg\neg\varphi$ ならば $\Sigma\vdash\varphi$。
+3. **（$\wedge$I）** $\Sigma\vdash\varphi$ かつ $\Sigma\vdash\psi$ ならば $\Sigma\vdash\varphi\wedge\psi$。**（$\wedge$E）** $\Sigma\vdash\varphi\wedge\psi$ ならば $\Sigma\vdash\varphi$ かつ $\Sigma\vdash\psi$。
+4. **（$\vee$I）** $\Sigma\vdash\varphi$ または $\Sigma\vdash\psi$ ならば $\Sigma\vdash\varphi\vee\psi$。**（$\vee$E）** $\Sigma\vdash\varphi\vee\psi$、$\Sigma\cup\{\varphi\}\vdash\chi$、$\Sigma\cup\{\psi\}\vdash\chi$ ならば $\Sigma\vdash\chi$。
+5. **（排中律）** $\vdash\varphi\vee\neg\varphi$。
+6. **（含意の否定）** $\{\neg(\varphi\to\psi)\}\vdash\varphi$ かつ $\{\neg(\varphi\to\psi)\}\vdash\neg\psi$。また $\{\neg\varphi\}\vdash\varphi\to\psi$, $\{\psi\}\vdash\varphi\to\psi$。
+:::
+
+::: proof
+**1.** $\neg$I は演繹定理（$\neg\varphi=\varphi\to\bot$）、$\neg$E は \ref{logic:consistency-basic} の 5 である。
+
+**2.** \ref{logic:ex-basic-derivations} の (2) より $\vdash\neg\neg\varphi\to\varphi$。弱化して $\Sigma\vdash\neg\neg\varphi\to\varphi$ とし、$\to$E（二つの導出をつなぐ。以下「$\to$E により」と書く）で $\Sigma\vdash\varphi$。
+
+**6.** 前半の一つ目：\ref{logic:consistency-basic} の 2 より $\{\neg(\varphi\to\psi),\neg\varphi\}\vdash\bot$ を示せばよい。$\{\neg\varphi,\varphi\}\vdash\bot$（$\to$E）なので爆発律（\ref{logic:consistency-basic} の 1）より $\{\neg\varphi,\varphi\}\vdash\psi$、演繹定理より $\{\neg\varphi\}\vdash\varphi\to\psi$（これが後半の一つ目でもある）。これと $\neg(\varphi\to\psi)$ から $\to$E で $\bot$。前半の二つ目：$\{\psi,\varphi\}\vdash\psi$ から演繹定理で $\{\psi\}\vdash\varphi\to\psi$（後半の二つ目）。よって $\{\neg(\varphi\to\psi),\psi\}\vdash\bot$、$\neg$I で $\{\neg(\varphi\to\psi)\}\vdash\neg\psi$。
+
+**3.** $\wedge$I：$\varphi\wedge\psi=\neg(\varphi\to\neg\psi)$ なので、$\neg$I より $\Sigma\cup\{\varphi\to\neg\psi\}\vdash\bot$ を示せばよい。$\Sigma\vdash\varphi$ と $\varphi\to\neg\psi$ から $\to$E で $\neg\psi$、これと $\Sigma\vdash\psi$ から $\bot$。$\wedge$E：6 を $\neg\psi$ の場合に適用すると $\{\neg(\varphi\to\neg\psi)\}\vdash\varphi$ と $\{\neg(\varphi\to\neg\psi)\}\vdash\neg\neg\psi$。カットで $\Sigma\vdash\varphi$、$\Sigma\vdash\neg\neg\psi$、2 で $\Sigma\vdash\psi$。
+
+**4.** $\vee$I：$\varphi\vee\psi=\neg\varphi\to\psi$。$\Sigma\vdash\psi$ なら演繹定理（空な解消）で $\Sigma\vdash\neg\varphi\to\psi$。$\Sigma\vdash\varphi$ なら、$\Sigma\cup\{\neg\varphi\}\vdash\bot$ と爆発律から $\Sigma\cup\{\neg\varphi\}\vdash\psi$、演繹定理で $\Sigma\vdash\neg\varphi\to\psi$。$\vee$E：\ref{logic:consistency-basic} の 2 より、$\Sigma'\defeq\Sigma\cup\{\neg\chi\}$ が矛盾することを示せばよい。$\Sigma'\cup\{\varphi\}\vdash\chi$ と $\Sigma'\cup\{\varphi\}\vdash\neg\chi$ から $\Sigma'\cup\{\varphi\}\vdash\bot$、$\neg$I で $\Sigma'\vdash\neg\varphi$。$\Sigma'\vdash\neg\varphi\to\psi$（弱化）から $\to$E で $\Sigma'\vdash\psi$。$\Sigma'\cup\{\psi\}\vdash\chi$ とカットで $\Sigma'\vdash\chi$、$\neg\chi$ と合わせて $\Sigma'\vdash\bot$。
+
+**5.** $\varphi\vee\neg\varphi=\neg\varphi\to\neg\varphi$ であり、\ref{logic:ex-basic-derivations} の (1) による。
+
+::: hypcheck
+- **RAA**：2（\ref{logic:ex-basic-derivations} の (2)）、6 の前半の一つ目、4 の $\vee$E（\ref{logic:consistency-basic} の 2 を通じて）で使った。3 の $\wedge$E の後半も 2 を通じて RAA に依存する。
+- 5 の排中律が自明になるのは、$\vee$ を $\neg\varphi\to\psi$ で定義したためである。$\vee$ を原始記号とする体系では、排中律の導出に背理法が必要になる。
+:::
+:::
+
+## 量化子の派生規則 {#logic:sec-derived-quantifiers}
+
+::: proposition 量化子の派生規則 {#logic:derived-quantifier keywords="existential introduction, existential elimination, renaming of bound variables" index="存在導入|そんざいどうにゅう, 存在除去|そんざいじょきょ, 束縛変数の付け替え|そくばくへんすうのつけかえ"}
+1. **（$\exists$I）** $t$ が $\varphi$ の中で $x$ に代入可能で $\Sigma\vdash\varphi[t/x]$ ならば、$\Sigma\vdash\exists x\,\varphi$。
+2. **（$\exists$E）** $\Gamma\cup\{\varphi\}\vdash\chi$ であり、$x\notin\mathrm{FV}(\chi)$、かつすべての $\psi\in\Gamma$ について $x\notin\mathrm{FV}(\psi)$ とする。このとき $\Delta\vdash\exists x\,\varphi$ ならば $\Gamma\cup\Delta\vdash\chi$。
+3. **（付け替えを伴う $\forall$I）** $y$ は $\varphi$ の中で $x$ に代入可能で、$y\notin\mathrm{FV}(\forall x\,\varphi)$ であり、すべての $\psi\in\Sigma$ について $y\notin\mathrm{FV}(\psi)$ とする。このとき $\Sigma\vdash\varphi[y/x]$ ならば $\Sigma\vdash\forall x\,\varphi$。
+4. **（束縛変数の付け替え）** $y$ が $\varphi$ の中で $x$ に代入可能で $y\notin\mathrm{FV}(\forall x\,\varphi)$ ならば、$\{\forall x\,\varphi\}\vdash\forall y\,\varphi[y/x]$ かつ $\{\forall y\,\varphi[y/x]\}\vdash\forall x\,\varphi$。
+5. **（量化子の否定）** $\{\neg\forall x\,\varphi\}\vdash\exists x\,\neg\varphi$。
+:::
+
+::: intuition
+2 は「$\exists x\,\varphi$ が分かっているので、そのような $x$ を一つとって $\varphi$ とする。…よって $\chi$」という推論である。とった $x$ について $\varphi$ 以外の何も仮定しておらず（$\Gamma$ に $x$ が自由に現れない）、結論 $\chi$ も $x$ に依存しない、という条件が固有変数条件にあたる。3 は、「任意の $y$ について $\varphi[y/x]$」から「$\forall x\,\varphi$」を導く、変数の名前を替えた全称導入である。
+:::
+
+::: proof
+**1.** $\exists x\,\varphi=\neg\forall x\,\neg\varphi$ なので、$\neg$I より $\Sigma\cup\{\forall x\,\neg\varphi\}\vdash\bot$ を示せばよい。$t$ は $\varphi$ の中で代入可能で、$\bot$ は原子論理式なので、定義より $t$ は $\neg\varphi=(\varphi\to\bot)$ の中でも代入可能である。$\forall$E で $(\neg\varphi)[t/x]=\neg(\varphi[t/x])$ を得て、$\Sigma\vdash\varphi[t/x]$ と $\to$E で $\bot$。
+
+**2.** **Step 1.** $\Gamma\cup\{\varphi\}\vdash\chi$ から演繹定理で $\Gamma\vdash\varphi\to\chi$。$\Gamma$ の元に $x$ は自由に現れないので、\ref{logic:forall-intro-derivable} より $\Gamma\vdash\forall x\,(\varphi\to\chi)$。
+
+**Step 2.** $\Theta\defeq\{\forall x\,(\varphi\to\chi),\neg\chi\}$ とおく。$\forall$E（項 $x$。$x$ は代入可能で $(\varphi\to\chi)[x/x]=\varphi\to\chi$）と $\to$E で $\Theta\cup\{\varphi\}\vdash\chi$。$\neg\chi\in\Theta$ と合わせて $\Theta\cup\{\varphi\}\vdash\bot$、$\neg$I で $\Theta\vdash\neg\varphi$。$x$ は $\forall x\,(\varphi\to\chi)$ に自由に現れず、仮定より $\neg\chi$ にも自由に現れないので、\ref{logic:forall-intro-derivable} より $\Theta\vdash\forall x\,\neg\varphi$。
+
+**Step 3.** Step 2 と $\exists x\,\varphi=\neg\forall x\,\neg\varphi$ から、$\Theta\cup\{\exists x\,\varphi\}\vdash\bot$。すなわち $\{\forall x\,(\varphi\to\chi),\exists x\,\varphi\}\cup\{\neg\chi\}$ は矛盾し、\ref{logic:consistency-basic} の 2 より $\{\forall x\,(\varphi\to\chi),\exists x\,\varphi\}\vdash\chi$。
+
+**Step 4.** Step 1 と $\Delta\vdash\exists x\,\varphi$ を弱化して $\Gamma\cup\Delta$ から両方が導出でき、Step 3 とカットを二回使って $\Gamma\cup\Delta\vdash\chi$。
+
+**3.** $y=x$ なら $\varphi[x/x]=\varphi$ なので \ref{logic:forall-intro-derivable} そのものである。以下 $y\neq x$ とする。
+
+**Step 1.** $y\notin\mathrm{FV}(\forall x\,\varphi)$ と $y\neq x$ から $y\notin\mathrm{FV}(\varphi)$。\ref{logic:forall-intro-derivable} より $\Sigma\vdash\forall y\,\varphi[y/x]$。
+
+**Step 2.** $\{\forall y\,\varphi[y/x]\}\vdash\varphi$ を示す。$x$ は $\varphi$ の中で $x$ に代入可能（\ref{logic:substitutable-sufficient} の 3）なので、\ref{logic:substitution-composition} の 2 より $x$ は $\varphi[y/x]$ の中で $y$ に代入可能であり、同じ命題の 1 より $\varphi[y/x][x/y]=\varphi[x/x]=\varphi$。よって項 $x$ で $\forall$E を施せばよい。
+
+**Step 3.** $x\notin\mathrm{FV}(\forall y\,\varphi[y/x])$ を示す。$x\in\mathrm{FV}(\varphi)$ なら、\ref{logic:substitution-fv} より $\mathrm{FV}(\varphi[y/x])=(\mathrm{FV}(\varphi)\setminus\{x\})\cup\{y\}$ なので、$\mathrm{FV}(\forall y\,\varphi[y/x])=\mathrm{FV}(\varphi)\setminus\{x\}$（$y\notin\mathrm{FV}(\varphi)$ を使う）。$x\notin\mathrm{FV}(\varphi)$ なら $\varphi[y/x]=\varphi$ で、$\mathrm{FV}(\forall y\,\varphi)=\mathrm{FV}(\varphi)\setminus\{y\}$ は $x$ を含まない。
+
+**Step 4.** Step 2, 3 と \ref{logic:forall-intro-derivable} より $\{\forall y\,\varphi[y/x]\}\vdash\forall x\,\varphi$。Step 1 とカットで $\Sigma\vdash\forall x\,\varphi$。
+
+**4.** 前半：項 $y$（代入可能）で $\forall$E を施して $\{\forall x\,\varphi\}\vdash\varphi[y/x]$。$y\notin\mathrm{FV}(\forall x\,\varphi)$ なので \ref{logic:forall-intro-derivable} で $\forall y\,\varphi[y/x]$。後半：$\{\forall y\,\varphi[y/x]\}\vdash\varphi[y/x]$（項 $y$ で $\forall$E、$\varphi[y/x][y/y]=\varphi[y/x]$）であり、$y\notin\mathrm{FV}(\forall y\,\varphi[y/x])$ なので 3 を $\Sigma=\{\forall y\,\varphi[y/x]\}$ に適用する。
+
+**5.** $\exists x\,\neg\varphi=\neg\forall x\,\neg\neg\varphi$ なので、$\neg$I より $\{\neg\forall x\,\varphi,\forall x\,\neg\neg\varphi\}\vdash\bot$ を示せばよい。項 $x$ で $\forall$E を施して $\{\forall x\,\neg\neg\varphi\}\vdash\neg\neg\varphi$、二重否定除去で $\{\forall x\,\neg\neg\varphi\}\vdash\varphi$。$x\notin\mathrm{FV}(\forall x\,\neg\neg\varphi)$ なので \ref{logic:forall-intro-derivable} で $\{\forall x\,\neg\neg\varphi\}\vdash\forall x\,\varphi$。$\neg\forall x\,\varphi$ と $\to$E で $\bot$。
+
+::: hypcheck
+- **2 の $x\notin\mathrm{FV}(\chi)$**：Step 2 の $\forall$I（$\neg\chi$ が未解消の仮定）で使った。外すと偽：$\{\exists x\,P(x)\}\vdash P(x)$ が導けてしまうが、$\{\exists x\,P(x)\}\not\models P(x)$。**$\Gamma$ についての条件**：Step 1 の $\forall$I。外すと偽：$\Gamma=\{\neg P(x)\}$, $\varphi=P(x)$, $\chi=\bot$ とすると $\Gamma\cup\{\varphi\}\vdash\bot$ から $\{\neg P(x),\exists x\,P(x)\}\vdash\bot$ となるが、これは領域 $\{0,1\}$、$P^{\mathcal{M}}=\{1\}$、$v(x)=0$ で充足可能である。
+- **3 の $y\notin\mathrm{FV}(\forall x\,\varphi)$**：Step 1 と Step 3 で使った。外すと偽：$\varphi=(x=y)$, $\Sigma=\varnothing$ とすると $\vdash\varphi[y/x]=(y=y)$ だが、$\forall x\,(x=y)$ は二元以上の構造で偽である。**$y$ の代入可能性**：Step 2 の代入の合成で使った。
+- **5 の二重否定除去（RAA）**：直観主義論理では 5 は成り立たない。
+:::
+:::
+
+::: proposition 等号の派生規則 {#logic:derived-equality keywords="symmetry, transitivity, congruence of equality" index="等号の合同律|とうごうのごうどうりつ"}
+1. $\{s=t\}\vdash t=s$、$\{r=s,s=t\}\vdash r=t$。
+2. $\mathrm{ar}(f)=n$ のとき $\{s_{1}=t_{1},\dots,s_{n}=t_{n}\}\vdash f(s_{1},\dots,s_{n})=f(t_{1},\dots,t_{n})$。
+3. $\mathrm{ar}(P)=n$ のとき $\{s_{1}=t_{1},\dots,s_{n}=t_{n},P(s_{1},\dots,s_{n})\}\vdash P(t_{1},\dots,t_{n})$。
+:::
+
+::: proof
+**1.** \ref{logic:ex-basic-derivations} の (5) と \ref{logic:prob-nd-transitivity}（演繹定理で仮定の形に直す）。
+
+**2.** $\Sigma\defeq\{s_{1}=t_{1},\dots,s_{n}=t_{n}\}$ とし、$k=0,\dots,n$ について $u_{k}\defeq f(t_{1},\dots,t_{k},s_{k+1},\dots,s_{n})$ とおく。$\Sigma\vdash f(\vec{s})=u_{k}$ を $k$ に関する帰納法で示す。$k=0$ は $=$I。$k<n$ で成り立つとし、$s_{i},t_{i}$ のどれにも現れない変数 $z$ をとって（\ref{logic:fresh-variable}）
+$$
+\varphi\defeq\bigl(f(\vec{s})=f(t_{1},\dots,t_{k},z,s_{k+2},\dots,s_{n})\bigr)
+$$
+とおく。$z$ は $\varphi$ の中の一箇所にだけ現れるので $\varphi[s_{k+1}/z]=(f(\vec{s})=u_{k})$, $\varphi[t_{k+1}/z]=(f(\vec{s})=u_{k+1})$ であり、原子論理式なので代入可能性は満たされる。$\Sigma\vdash s_{k+1}=t_{k+1}$ と帰納法の仮定に $=$E を施して $\Sigma\vdash f(\vec{s})=u_{k+1}$。$k=n$ が主張である。
+
+**3.** 2 と同様に、$\varphi\defeq P(t_{1},\dots,t_{k},z,s_{k+2},\dots,s_{n})$ として $=$E を $n$ 回施す。
+:::
+
+## 導出の中の定数の置き換え {#logic:sec-derived-constants}
+
+完全性定理では、「新しい定数記号 $c$ について $\varphi[c/x]$ が導出できたなら、$c$ は何でもよかったのだから $\forall x\,\varphi$ が導出できる」という推論を使う。これを厳密にするため、導出の中の $c$ を新しい変数に置き換える。
+
+::: definition 導出に現れる変数と定数・言語の導出 {#logic:derivation-symbols keywords="variables occurring in a derivation"}
+導出 $D$ に**現れる変数**の集合 $\mathrm{Var}(D)$ を、$D$ に現れるすべての論理式（各部分導出の結論と、$\to$I, RAA で解消する論理式）の $\mathrm{Var}$ と、規則のパラメータ（$\forall$I の変数、$\forall$E の項の変数、$=$E の論理式 $\varphi$ の $\mathrm{Var}$ と変数 $x$）の和集合として、導出に関する再帰で定める。同様に、現れる定数記号の集合 $\mathrm{Con}(D)$、現れる非論理記号の集合を定める。
+
+言語 $\mathcal{L}$ について、現れる非論理記号がすべて $\mathcal{L}$ の記号である導出を **$\mathcal{L}$ の導出**という。$\Sigma\vdash_{\mathcal{L}}\varphi$ を「$\mathrm{concl}(D)=\varphi$, $\mathrm{A}(D)\subset\Sigma$ となる $\mathcal{L}$ の導出 $D$ がある」と定める。これまで $\vdash$ と書いてきたのは、固定した言語での $\vdash_{\mathcal{L}}$ である。$\mathrm{Var}(D)$ は有限集合である（\ref{logic:var-fv-bv} と導出に関する帰納法）。
+
+定数記号 $c$ と変数 $y$ に対し、$D$ に現れるすべての論理式と項（パラメータを含む）に定数の置き換え $[y/c]$（\ref{logic:constant-replacement}）を施したものを $D[y/c]$ と書く。
+:::
+
+::: lemma 定数の置き換えの単射性 {#logic:constant-replacement-injective}
+$y\notin\mathrm{Var}(\varphi)$ ならば $\varphi[y/c][c/y]=\varphi$ である。したがって、$y\notin\mathrm{Var}(\varphi)\cup\mathrm{Var}(\psi)$ で $\varphi[y/c]=\psi[y/c]$ ならば $\varphi=\psi$。
+:::
+
+::: proof
+項について：$y\notin\mathrm{var}(t)$ なら $t[y/c][c/y]=t$。項に関する帰納法で、$t=c$ なら $y[c/y]=c$、$t=z$（$z\neq y$）や $t=d\neq c$ なら両辺 $t$、関数記号は成分ごと。論理式について：論理式に関する帰納法。原子論理式は項の場合から、含意は成分ごと。$\varphi=\forall z\,\alpha$ では $y\notin\mathrm{Var}(\varphi)$ より $z\neq y$ なので $(\forall z\,\alpha[y/c])[c/y]=\forall z\,(\alpha[y/c][c/y])=\forall z\,\alpha$。後半は、両辺に $[c/y]$ を施せば前半から従う。
+:::
+
+::: theorem 導出の中の定数の置き換え {#logic:constant-replacement-derivation keywords="replacing a constant by a fresh variable in a derivation" index="定数の置き換え|ていすうのおきかえ"}
+$D$ を導出、$c$ を定数記号、$y$ を $D$ に現れない変数（$y\notin\mathrm{Var}(D)$）とする。このとき $D[y/c]$ は導出であり、
+$$
+\mathrm{concl}(D[y/c])=\mathrm{concl}(D)[y/c],\qquad \mathrm{A}(D[y/c])=\{\psi[y/c]:\psi\in\mathrm{A}(D)\}.
+$$
+さらに $D[y/c]$ には $c$ が現れない。
+:::
+
+::: proof
+導出に関する帰納法で示す。以下、$\Psi[y/c]\defeq\{\psi[y/c]:\psi\in\Psi\}$ と書く。$D$ に現れる論理式と項はどれも $y$ を含まないので、\ref{logic:constant-replacement-properties} の前提「$y\notin\mathrm{BV}$」と \ref{logic:constant-replacement-injective} の前提は常に満たされる。また $D$ に現れる変数（$\forall$I の変数、$\forall$E で量化されている変数、$=$E の変数など）はすべて $y$ と異なる。
+
+**Step 1（仮定、$=$I）.** $\langle\varphi\rangle[y/c]=\langle\varphi[y/c]\rangle$ は結論 $\varphi[y/c]$、未解消の仮定 $\{\varphi[y/c]\}$ の導出。$=$I の $t=t$ は $t[y/c]=t[y/c]$ になり、これも $=$I である。
+
+**Step 2（$\to$I）.** $D$ は $D'$ に論理式 $\varphi$ で $\to$I を施したもので、$\mathrm{A}(D)=\mathrm{A}(D')\setminus\{\varphi\}$。帰納法の仮定より $D'[y/c]$ は結論 $\mathrm{concl}(D')[y/c]$、未解消の仮定 $\mathrm{A}(D')[y/c]$ の導出である。これに $\varphi[y/c]$ で $\to$I を施すと、結論は $(\varphi\to\mathrm{concl}(D'))[y/c]$、未解消の仮定は $\mathrm{A}(D')[y/c]\setminus\{\varphi[y/c]\}$。\ref{logic:constant-replacement-injective} より $[y/c]$ は $\mathrm{A}(D')\cup\{\varphi\}$ 上で単射なので、これは $(\mathrm{A}(D')\setminus\{\varphi\})[y/c]=\mathrm{A}(D)[y/c]$ に等しい。
+
+**Step 3（RAA）.** Step 2 と同様。$(\neg\varphi)[y/c]=\neg(\varphi[y/c])$ と単射性を使う。
+
+**Step 4（$\to$E）.** $(\varphi\to\psi)[y/c]=(\varphi[y/c]\to\psi[y/c])$ なので、帰納法の仮定から得られる二つの導出に $\to$E が施せる。未解消の仮定は和集合の像である。
+
+**Step 5（$\forall$I）.** $D$ は $D'$（結論 $\varphi$）に変数 $x$ で $\forall$I を施したもので、すべての $\psi\in\mathrm{A}(D')$ について $x\notin\mathrm{FV}(\psi)$ とする。$x\neq y$ である。\ref{logic:constant-replacement-properties} の 5 より $\mathrm{FV}(\psi[y/c])\subset\mathrm{FV}(\psi)\cup\{y\}$ なので $x\notin\mathrm{FV}(\psi[y/c])$。よって $D'[y/c]$ に $x$ で $\forall$I を施せて、結論は $\forall x\,(\varphi[y/c])=(\forall x\,\varphi)[y/c]$。
+
+**Step 6（$\forall$E）.** $D$ は $D'$（結論 $\forall x\,\varphi$）に、$\varphi$ の中で $x$ に代入可能な項 $t$ で $\forall$E を施したもので、結論は $\varphi[t/x]$ とする。$D'[y/c]$ の結論は $\forall x\,(\varphi[y/c])$。$y\notin\mathrm{BV}(\varphi)$, $y\neq x$ なので、\ref{logic:constant-replacement-properties} の 4 より $t[y/c]$ は $\varphi[y/c]$ の中で $x$ に代入可能である。$\forall$E で得られる結論は、同じ命題の 3（$y\neq x$）より
+$$
+\varphi[y/c]\bigl[t[y/c]/x\bigr]=\varphi[t/x][y/c].
+$$
+
+**Step 7（$=$E）.** $D_{1}$ の結論が $s=t$、$D_{2}$ の結論が $\varphi[s/x]$ で、$s,t$ が $\varphi$ の中で $x$ に代入可能とする。置き換えたパラメータ $\varphi[y/c]$, $x$, $s[y/c]$, $t[y/c]$ について、Step 6 と同じく \ref{logic:constant-replacement-properties} の 3, 4 から、$D_{2}[y/c]$ の結論は $\varphi[y/c][s[y/c]/x]$ に等しく、$s[y/c],t[y/c]$ は $\varphi[y/c]$ の中で $x$ に代入可能である。よって $=$E が施せて、結論は $\varphi[y/c][t[y/c]/x]=\varphi[t/x][y/c]$。
+
+**Step 8（$c$ が消えること）.** $[y/c]$ を施した論理式と項に $c$ は現れない（定義から直ちに）。
+
+::: hypcheck
+- **$y\notin\mathrm{Var}(D)$**：Step 2–3 の単射性（元から $y$ を含む論理式があると、置き換え後に別の論理式と一致しうる。すると解消される仮定が変わる。問題 \ref{logic:prob-constant-replacement-fail}）、Step 5 の $x\neq y$（$y$ が固有変数だと固有変数条件が壊れる）、Step 6–7 の代入可能性と交換（$y$ が量化されていると捕獲が起きる）で使った。
+- 定数記号は束縛されないので、変数への代入と違って置き換えの位置に例外がない。これが、変数を直接置き換える場合（ノートの補題 2.9–2.10 が扱おうとした状況）より議論が簡単になる理由である。
+:::
+:::
+
+::: corollary 新しい定数についての一般化 {#logic:generalization-constants keywords="generalization on constants" index="定数についての一般化|ていすうについてのいっぱんか"}
+$\Sigma\vdash\varphi[c/x]$ であり、定数記号 $c$ が $\varphi$ にも $\Sigma$ のどの元にも現れないならば、$\Sigma\vdash\forall x\,\varphi$。
+:::
+
+::: proof
+**Step 1.** $\mathrm{concl}(D)=\varphi[c/x]$, $\mathrm{A}(D)\subset\Sigma$ となる導出 $D$ をとる。有限集合 $\mathrm{Var}(D)\cup\mathrm{Var}(\varphi)\cup\{x\}$ に属さない変数 $y$ をとる。
+
+**Step 2.** \ref{logic:constant-replacement-derivation} より $D[y/c]$ は導出で、結論は $\varphi[c/x][y/c]=\varphi[y/x]$（\ref{logic:constant-replacement-properties} の 2。$c\notin\mathrm{Con}(\varphi)$）、未解消の仮定は $\mathrm{A}(D)[y/c]=\mathrm{A}(D)$（同命題の 1。$c$ は $\Sigma$ の元に現れない）。よって $\mathrm{A}(D)\vdash\varphi[y/x]$。
+
+**Step 3.** $y\notin\mathrm{Var}(\varphi)$ なので $y$ は $\varphi$ の中で $x$ に代入可能で $y\notin\mathrm{FV}(\forall x\,\varphi)$。また $\mathrm{A}(D)$ の元は $D$ に現れる論理式なので $y$ を含まない。\ref{logic:derived-quantifier} の 3 を $\mathrm{A}(D)$ に適用して $\mathrm{A}(D)\vdash\forall x\,\varphi$、弱化で $\Sigma\vdash\forall x\,\varphi$。
+
+::: hypcheck
+- **$c$ が $\Sigma$ に現れないこと**：Step 2 で未解消の仮定が変わらないために使った。外すと偽：$\{P(c)\}\vdash P(c)$ から $\{P(c)\}\vdash\forall x\,P(x)$ は導けない（$P^{\mathcal{M}}=\{c^{\mathcal{M}}\}$ が真部分集合の構造が反例）。
+- **$c$ が $\varphi$ に現れないこと**：Step 2 の $\varphi[c/x][y/c]=\varphi[y/x]$。外すと偽：$\vdash(x=c)[c/x]$ すなわち $\vdash c=c$ から $\vdash\forall x\,(x=c)$ は導けない。
+:::
+:::
+
+::: corollary 定数の追加についての保存性 {#logic:conservativity-constants keywords="conservativity, adding new constants"}
+$\mathcal{L}'$ を $\mathcal{L}$ に新しい定数記号（有限個でも無限個でもよい）を加えた言語とする。$\mathcal{L}$ の論理式の集合 $\Sigma$ と $\mathcal{L}$ の論理式 $\varphi$ について
+$$
+\Sigma\vdash_{\mathcal{L}'}\varphi\iff\Sigma\vdash_{\mathcal{L}}\varphi .
+$$
+とくに、$\Sigma$ が $\mathcal{L}$ で無矛盾であることと $\mathcal{L}'$ で無矛盾であることは同値である。
+:::
+
+::: proof
+($\Leftarrow$) $\mathcal{L}$ の導出は $\mathcal{L}'$ の導出でもある。($\Rightarrow$) $\mathcal{L}'$ の導出 $D$ をとる（$\mathrm{concl}(D)=\varphi$, $\mathrm{A}(D)\subset\Sigma$）。$D$ に現れる新しい定数記号は有限個 $d_{1},\dots,d_{k}$ である。互いに異なり $\mathrm{Var}(D)$ に属さない変数 $y_{1},\dots,y_{k}$ をとり、\ref{logic:constant-replacement-derivation} を順に適用して $D_{k}\defeq D[y_{1}/d_{1}]\cdots[y_{k}/d_{k}]$ を作る（$y_{i}$ は $D[y_{1}/d_{1}]\cdots[y_{i-1}/d_{i-1}]$ に現れない。現れる変数は $\mathrm{Var}(D)\cup\{y_{1},\dots,y_{i-1}\}$ だから）。$d_{i}$ は $\varphi$ にも $\Sigma$ の元にも現れないので、$D_{k}$ の結論は $\varphi$、未解消の仮定は $\mathrm{A}(D)$ のままである。$D_{k}$ には新しい定数記号が現れず、他の記号は $D$ と同じなので $\mathcal{L}$ の導出である。後半は $\varphi=\bot$ の場合である。
+:::
+
+::: theorem 自由変数と定数の交換 {#logic:variables-constants-exchange keywords="replacing free variables by new constants" index="自由変数と定数の交換|じゆうへんすうとていすうのこうかん"}
+$\mathcal{L}$ に、変数ごとに一つずつ、互いに異なる新しい定数記号 $c_{x}$（$x\in\mathrm{Var}$）を加えた言語を $\mathcal{L}_{\mathrm{Var}}$ とする。$\mathcal{L}$ の論理式 $\psi$ について、$\mathrm{FV}(\psi)=\{x_{1},\dots,x_{k}\}$ として
+$$
+\psi^{\ast}\defeq\psi[c_{x_{1}}/x_{1}]\cdots[c_{x_{k}}/x_{k}]
+$$
+と定め、$\Sigma^{\ast}\defeq\{\psi^{\ast}:\psi\in\Sigma\}$ とおく。このとき $\psi^{\ast}$ は文で、$x_{1},\dots,x_{k}$ の並べ方によらない。さらに、$\mathcal{L}$ の論理式の集合 $\Sigma$ と論理式 $\varphi$ について
+$$
+\Sigma\vdash_{\mathcal{L}}\varphi\iff\Sigma^{\ast}\vdash_{\mathcal{L}_{\mathrm{Var}}}\varphi^{\ast}.
+$$
+:::
+
+::: proof
+**Step 1（well-defined であること）.** 異なる変数 $x,y$ と定数記号 $c,d$ について、\ref{logic:substitution-commutation}（$x\neq y$、$x\notin\mathrm{var}(d)=\varnothing$、$y\notin\mathrm{var}(c)=\varnothing$）より $\psi[c/x][d/y]=\psi[d/y][c[d/y]/x]=\psi[d/y][c/x]$。隣り合う二つの代入を入れ替えられるので、並べ方によらない。また、定数を代入しても自由変数は減るだけ（\ref{logic:substitution-fv}）なので、$\mathrm{FV}(\psi)$ を含む互いに異なる変数の任意の有限列 $z_{1},\dots,z_{n}$ についても $\psi^{\ast}=\psi[c_{z_{1}}/z_{1}]\cdots[c_{z_{n}}/z_{n}]$（自由でない変数への代入は何も変えない）。これと代入の定義から $(\psi\to\chi)^{\ast}=\psi^{\ast}\to\chi^{\ast}$。$\psi^{\ast}$ が文であることは \ref{logic:substitution-fv} を繰り返し使えばよい。
+
+**Step 2（$\Rightarrow$）.** $\Sigma\vdash_{\mathcal{L}}\varphi$ なら、有限個の $\psi_{1},\dots,\psi_{m}\in\Sigma$ について $\{\psi_{1},\dots,\psi_{m}\}\vdash\varphi$。演繹定理を $m$ 回使って $\vdash\theta$、ただし $\theta\defeq\psi_{1}\to(\cdots\to(\psi_{m}\to\varphi))$。$\mathrm{FV}(\theta)=\{x_{1},\dots,x_{n}\}$ とする。未解消の仮定がないので $\forall$I を $n$ 回施せて $\vdash\forall x_{1}\cdots\forall x_{n}\,\theta$。定数記号は常に代入可能なので、$c_{x_{1}},\dots,c_{x_{n}}$ で順に $\forall$E を施す（$x_{i}$ は互いに異なるので $(\forall x_{2}\cdots\forall x_{n}\,\theta)[c_{x_{1}}/x_{1}]=\forall x_{2}\cdots\forall x_{n}\,(\theta[c_{x_{1}}/x_{1}])$）と、$\vdash\theta[c_{x_{1}}/x_{1}]\cdots[c_{x_{n}}/x_{n}]=\theta^{\ast}=\psi_{1}^{\ast}\to\cdots\to\psi_{m}^{\ast}\to\varphi^{\ast}$（Step 1）。$\psi_{i}^{\ast}\in\Sigma^{\ast}$ と $\to$E を $m$ 回で $\Sigma^{\ast}\vdash\varphi^{\ast}$。
+
+**Step 3（$\Leftarrow$）.** $\Sigma^{\ast}\vdash\varphi^{\ast}$ なら、有限個の $\psi_{1},\dots,\psi_{m}\in\Sigma$ について $\{\psi_{1}^{\ast},\dots,\psi_{m}^{\ast}\}\vdash\varphi^{\ast}$。Step 2 と同じ $\theta$ について演繹定理で $\vdash\theta^{\ast}$。$\mathrm{FV}(\theta)=\{x_{1},\dots,x_{n}\}$, $c_{i}\defeq c_{x_{i}}$ とし、$\theta_{j}\defeq\theta[c_{1}/x_{1}]\cdots[c_{j}/x_{j}]$（$\theta_{0}=\theta$, $\theta_{n}=\theta^{\ast}$）とおく。$\vdash\theta_{j}$ ならば $\vdash\theta_{j-1}$ を示す。$\theta_{j}=\theta_{j-1}[c_{j}/x_{j}]$ であり、$c_{j}$ は $\theta_{j-1}$ に現れない（$\theta$ は $\mathcal{L}$ の論理式で、$c_{1},\dots,c_{j-1}$ は $c_{j}$ と異なる）。\ref{logic:generalization-constants}（$\Sigma=\varnothing$）より $\vdash\forall x_{j}\,\theta_{j-1}$、項 $x_{j}$ で $\forall$E を施して $\vdash\theta_{j-1}$。これを $j=n,\dots,1$ と繰り返して $\vdash_{\mathcal{L}_{\mathrm{Var}}}\theta$。$\psi_{i}\in\Sigma$ と $\to$E で $\Sigma\vdash_{\mathcal{L}_{\mathrm{Var}}}\varphi$、\ref{logic:conservativity-constants} で $\Sigma\vdash_{\mathcal{L}}\varphi$。
+
+::: hypcheck
+- **定数記号が新しいこと**（$\mathcal{L}$ に属さず、互いに異なる）：Step 3 で \ref{logic:generalization-constants} を使うために必要。$c_{x}=c_{y}$（$x\neq y$）を許すと偽：$\psi=\neg\,x=y$ なら $\psi^{\ast}=\neg\,c=c$ で $\{\psi^{\ast}\}$ は矛盾するが、$\{\neg\,x=y\}$ は無矛盾である。
+- **$\Sigma$ が無限集合でもよいこと**：構文論的コンパクト性（\ref{logic:derivability-basic} の 3）により、使う前提は有限個に限られる。
+- ここでは導出図の中の束縛変数を付け替える操作は一切使っていない。自由変数 $x_{j}$ を戻す操作は、Step 3 の最後の $\forall$E という一つの論理式への代入だけで行った。
+:::
+:::
+
+::: supplement
+**ノートとの対応.** この定理は、片岡「一階述語論理の完全性定理」の補題 2.10 と同じ主張である（そこでは $\vec{x}$ を $\Sigma,\varphi$ の自由変数とし、有限個の定数を使っている。$\Sigma$ が無限個の自由変数をもつ場合も扱えるように、ここでは変数ごとに定数を用意した）。ノートは導出図の中で $\vec{c}$ を直接 $\vec{x}$ に書き戻そうとしたため、導出図の束縛変数を二系列に分けて付け替える必要があった。ここでは、(1) 定数を**新しい**変数に置き換える（捕獲が起きない）、(2) 仮定をすべて解消して $\forall$I で閉じる、(3) 一つの論理式への $\forall$E で元の変数に戻す、という順序にしたので、導出図の中での付け替えは要らない。
+
+**代償.** この方法は、導出の途中に $\to$I と $\to$E の組（回り道）を持ち込む。したがって「導出の形（たとえば回り道のない正規形であること）を保ったまま変数を置き換える」目的には使えない。そのような目的（カット除去の証明など）には、導出図の固有変数と束縛変数を一斉に付け替える補題が必要になり、それは \ref{pt:page-alpha-equivalence} で扱う。
+:::
+
+## 問題 {#logic:sec-derived-problems}
+
+::: problem {#logic:prob-exists-forall}
+$\vdash\exists x\,\forall y\,\varphi\to\forall y\,\exists x\,\varphi$ を、本ページの派生規則を使って示せ（$x\neq y$ とする）。
+:::
+
+::: solution
+**Step 1.** $\{\forall y\,\varphi\}\vdash\varphi$（項 $y$ で $\forall$E。$\varphi[y/y]=\varphi$）と $\exists$I（項 $x$。$\varphi[x/x]=\varphi$）から $\{\forall y\,\varphi\}\vdash\exists x\,\varphi$。
+
+**Step 2.** $\exists$E（\ref{logic:derived-quantifier} の 2）を、$\Gamma=\varnothing$、存在量化される論理式を $\forall y\,\varphi$、$\chi=\exists x\,\varphi$、$\Delta=\{\exists x\,\forall y\,\varphi\}$ として使う。条件 $x\notin\mathrm{FV}(\chi)$ は満たされ、$\Gamma$ についての条件は空虚に満たされる。よって $\Delta\vdash\exists x\,\varphi$。
+
+**Step 3.** $y$ は $\exists x\,\forall y\,\varphi$ に自由に現れないので、\ref{logic:forall-intro-derivable} より $\Delta\vdash\forall y\,\exists x\,\varphi$。演繹定理で主張を得る。
+:::
+
+::: problem {#logic:prob-constant-replacement-fail}
+\ref{logic:constant-replacement-derivation} で、$y$ が $D$ に現れてよいとすると結論が偽になる例を挙げよ。
+:::
+
+::: solution
+$D$ を「仮定 $\langle P(c)\rangle$ に論理式 $P(y)$ で $\to$I を施したもの」とする。$P(y)\neq P(c)$ なので何も解消されず、結論は $P(y)\to P(c)$、未解消の仮定は $\{P(c)\}$ であり、$y\in\mathrm{Var}(D)$ である。$D[y/c]$ は「仮定 $\langle P(y)\rangle$ に $P(y)$ で $\to$I を施したもの」になり、今度は仮定 $P(y)$ が解消されるので、未解消の仮定は $\varnothing$ である。これは $\mathrm{A}(D)[y/c]=\{P(y)\}$ と一致しない。置き換えによって、別々だった論理式 $P(c)$ と $P(y)$ が同じになってしまったためである（\ref{logic:constant-replacement-injective} の前提が崩れている）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

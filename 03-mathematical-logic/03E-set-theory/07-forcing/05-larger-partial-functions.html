@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>大きい部分関数による強制 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/07-forcing/05-larger-partial-functions.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 大きい部分関数による強制 {#set:page-larger-fn keywords="Fn(I,J,lambda), lambda-closed forcing, theta-chain condition, preservation of cardinals above and below, violating GCH at regular cardinals, 2^{aleph_1}"}
+
+前ページの $\mathrm{Fn}(I,J)$ を、定義域の大きさが $\lambda$ 未満の部分関数の半順序 $\mathrm{Fn}(I,J,\lambda)$ に一般化する。これを使うと、CH を壊さずに、より大きな正則基数で GCH を破ることができる。$\lambda>\omega$ では $\mathrm{Fn}(I,J,\lambda)$ はほとんど c.c.c. でないので、基数の保存は二つに分けて示す：$\lambda$ より大きい基数には鎖条件（$\theta$-c.c.）を、$\lambda$ 以下の基数には新しい考え方である**$\lambda$-閉性**を使う。（Kunen 第 VII 章 §6 に対応する。）
+
+## 記法と定義の確認 {#set:sec-larger-fn-notation}
+
+::: notation
+- 本ページを通して $M$ は $\ZFC$ の c.t.m. で固定する。前ページまでの記号（p.o.、ジェネリック、名前、$\Vdash$、強制定理、よい名前など）と、\ref{set:fn-generic-onto}, \ref{set:fn-many-reals}, \ref{set:ccc-approximation}, \ref{set:preserve-cardinals}, \ref{set:preserve-cofinalities}, \ref{set:cof-implies-card}, \ref{set:regular-suffices}, \ref{set:ccc-preserves}, \ref{set:nice-name}, \ref{set:nice-name-exists}, \ref{set:nice-name-count} は \ref{set:page-fn-forcing} のとおり。
+- $\kappa^{<\lambda}$（\ref{set:kappa-below-lambda}）、指数法則（\ref{set:exponent-laws}）、GCH のもとでの冪（\ref{set:gch-exponentiation}）、一般形の Δ システム補題（\ref{set:delta-system-general}）は第 I 章・第 II 章のとおり。
+- 強制の系 \ref{set:forcing-corollary} の 4 と \ref{set:forcing-equivalent} を使う。
+:::
+
+## Fn(I, J, λ) {#set:sec-fn-lambda}
+
+::: definition Fn(I, J, λ) {#set:fn-lambda keywords="Fn(I,J,lambda), partial functions of size less than lambda" index="部分関数の半順序（大きさ λ 未満）|ぶぶんかんすうのはんじゅんじょ"}
+無限基数 $\lambda$ について
+$$
+\mathrm{Fn}(I,J,\lambda)\defeq\{p:\lvert p\rvert<\lambda\land p\text{ は関数}\land\dom(p)\subseteq I\land\ran(p)\subseteq J\}
+$$
+とし、$p\le q\iff q\subseteq p$ と順序を入れる。
+:::
+
+$\mathrm{Fn}(I,J)=\mathrm{Fn}(I,J,\omega)$ である。$\lambda=\omega$ の場合と同様、$\mathrm{Fn}(I,J,\lambda)$ は最大元 $\mathbf{1}=0$ をもつ p.o. である。$\lambda>\omega$ のとき $\mathrm{Fn}(I,J,\lambda)$ は $M$ について絶対的でない（$M$ の中の「$\lambda$ 未満の大きさ」は本当の大きさと異なりうる）。強制では、（$\lambda$ は基数）$^{M}$ として、つねに $\mathrm{Fn}(I,J,\lambda)^{M}$ を使う。興味ある結果が得られるのは（$\lambda$ は正則）$^{M}$ のときだけだが、この制限は初等的な議論には現れない。
+
+\ref{set:fn-generic-onto} と同様に次が成り立つ（証明も同じ：$D_{i}=\{p:i\in\dom(p)\}$ と $\{p:j\in\ran(p)\}$ は稠密で $M$ に属する）。
+
+::: lemma {#set:fn-lambda-generic}
+$I,J,\lambda\in M$、（$\lambda$ は基数）$^{M}$、$J\neq\varnothing$、$(\lvert I\rvert\ge\lambda)^{M}$ で、$G$ が $M$ 上 $\mathrm{Fn}(I,J,\lambda)^{M}$-ジェネリックなら、$\bigcup G$ は $I$ から $J$ の上への関数である。
+:::
+
+（$\ran$ が $J$ 全体になるのに $(\lvert I\rvert\ge\lambda)^{M}$ を使う：$p\in\PP$ に対し $\lvert\dom(p)\rvert<\lambda\le\lvert I\rvert$ なので $I\setminus\dom(p)\neq\varnothing$、そこに $j$ を割り当てられる。）$\S5$ の議論で $\omega$ を $\lambda$ に置き換えると、$I=\kappa\times\lambda$, $J=2$ のとき $\bigcup G$ は $\lambda$ から $2$ への相異なる関数の $\kappa$-列を符号化していると考えられ、\ref{set:fn-many-reals} と同様に次を得る。
+
+::: lemma {#set:fn-lambda-many-subsets}
+（$\lambda$ は基数）$^{M}$、$\kappa\in M$ で、$G$ が $M$ 上 $\mathrm{Fn}(\kappa\times\lambda,2,\lambda)^{M}$-ジェネリックなら、$(2^{\lambda}\ge\lvert\kappa\rvert)^{M[G]}$。
+:::
+
+$\S5$ と同様、難しいのは基数の保存を確かめることである。$\lambda>\omega$ なら、$\mathrm{Fn}(I,J,\lambda)$ が c.c.c. であるのは自明な場合（$\lvert I\rvert<\omega$ か $\lvert J\rvert\le1$）だけなので、新しい考え方が必要になる。議論を二つに分ける。まず c.c.c. の議論を修正して $\lambda$ より大きい基数が保たれることを確かめる。次に、$M$ の $\lambda$ 以下の基数が $M[G]$ でも基数であることを新しい考え方で確かめる（$\lambda=\omega$ のときはこれは自明だった）。最終的に議論には $M$ の中で $\lambda$ が正則で $2^{<\lambda}=\lambda$ であることが必要になる。
+
+## 上と下での保存 {#set:sec-preservation-above-below}
+
+\ref{set:preserve-cardinals}〜\ref{set:regular-suffices} と同様に次を定める。
+
+::: definition 上・下での保存 {#set:preserve-above-below keywords="preserving cardinals above theta, below theta"}
+$\PP\in M$、$\theta$ を $M$ の無限基数とする。
+1. $\PP$ が **$\theta$ 以上（以下）の基数を保つ**とは、$M$ 上 $\PP$-ジェネリックな任意の $G$ と、$\beta\ge\theta$（$\beta\le\theta$）となる任意の $\beta\in o(M)$ について、$(\beta\text{ は基数})^{M}\leftrightarrow(\beta\text{ は基数})^{M[G]}$ となることをいう。
+2. $\PP$ が **$\theta$ 以上（以下）の共終数を保つ**とは、$M$ 上 $\PP$-ジェネリックな任意の $G$ と、$\cf(\gamma)^{M}\ge\theta$（$\cf(\gamma)^{M}\le\theta$）となる $M$ の任意の極限順序数 $\gamma$ について $\cf(\gamma)^{M}=\cf(\gamma)^{M[G]}$ となることをいう。
+:::
+
+::: lemma {#set:preserve-cof-card-above-below}
+\ref{set:preserve-above-below} の仮定のもとで次が成り立つ。
+1. $\PP$ が $\theta$ 以上の共終数を保つなら、$\PP$ は $\theta$ より大きい基数を保つ。さらに（$\theta$ は正則）$^{M}$ なら $\theta$ 以上の基数を保つ。
+2. $\PP$ が $\theta$ 以下の共終数を保つなら、$\PP$ は $\theta$ 以下の基数を保つ。
+:::
+
+::: proof
+\ref{set:cof-implies-card} の証明と同じ考え方による。$M$ の無限基数は正則か極限基数である。
+
+**1.** $\beta\ge\theta$ が $M$ の正則基数なら $\cf(\beta)^{M}=\beta\ge\theta$ なので $\cf(\beta)^{M[G]}=\beta$、よって $\beta$ は $M[G]$ の（正則）基数。$\beta>\theta$ が $M$ の極限基数なら、$\theta$ より大きく $\beta$ より小さい $M$ の後続基数（正則で $\ge\theta$）は $\beta$ で非有界で、$M[G]$ でも基数なので、その上限 $\beta$ も $M[G]$ の基数。$\theta$ が $M$ で正則なら、$\beta=\theta$ は前者の場合に含まれる。
+
+**2.** $\omega<\beta\le\theta$ が $M$ の正則基数なら $\cf(\beta)^{M}=\beta\le\theta$ なので $M[G]$ でも正則。$\beta\le\theta$ が $M$ の極限基数なら、$\beta$ 未満の $M$ の後続基数（正則で $\le\theta$）は $\beta$ で非有界で $M[G]$ でも基数なので、$\beta$ も $M[G]$ の基数。
+:::
+
+::: hypcheck
+Kunen の本文では 1 が「$\theta$ 以上の基数を保つ」、2 が「（$\theta$ は正則）$^{M}$ なら $\theta$ 以下の基数を保つ」と述べられているが、1 で $\theta$ 自身を保つには $\theta$ の正則性が必要であり（$\theta$ が特異なら $\cf(\theta)^{M}<\theta$ で、仮定は $\theta$ について何も言わない）、2 では正則性は不要である。上ではそのように修正して述べた（Kunen の意図は、後で使う $\theta$ が正則な場合であると思われる）。
+:::
+
+::: lemma {#set:regular-suffices-above-below}
+\ref{set:preserve-above-below} の仮定のもとで、$M$ の正則基数 $\kappa\ge\theta$ と $M$ 上 $\PP$-ジェネリックな任意の $G$ について（$\kappa$ は正則）$^{M[G]}$ なら、$\PP$ は $\theta$ 以上の共終数を保つ。$\ge$ を $\le$ に置き換えても同様。
+:::
+
+::: proof
+\ref{set:regular-suffices} の証明と同じ：$\kappa=\cf(\gamma)^{M}$ への狭義増加な共終写像 $f\in M$ をとり、$M[G]$ で $\kappa$ が正則なら $\cf(\gamma)^{M[G]}=\kappa$。$\kappa\ge\theta$（あるいは $\le\theta$）の範囲の $\kappa$ についてだけ仮定を使う。
+:::
+
+c.c.c. の定義の「可算」を「$\theta$ 未満」に弱めると、$\theta$ 以上の共終数が保たれる。
+
+::: definition θ-鎖条件 {#set:kappa-cc keywords="theta-chain condition, theta-c.c." index="θ-鎖条件|しーたさじょうけん"}
+$\PP$ が **$\theta$-鎖条件**（$\theta$-c.c.）をもつとは、$\PP$ のすべての反鎖の濃度が $\theta$ 未満であることをいう。
+:::
+
+c.c.c. は $\omega_{1}$-c.c. である。\ref{set:ccc-approximation} と \ref{set:ccc-preserves} とまったく同様に次が成り立つ（証明は「可算」を「$\theta$ 未満」に置き換えるだけである）。
+
+::: lemma θ-c.c. による近似 {#set:kappa-cc-approximation}
+$\PP\in M$、$A,B\in M$ とし、$M$ の中で $\theta$ は基数で $\PP$ は $\theta$-c.c. とする。$G$ を $M$ 上 $\PP$-ジェネリック、$f\in M[G]$、$f\colon A\to B$ とすると、$F\colon A\to\mathcal{P}(B)$ で、$F\in M$、すべての $a\in A$ について $f(a)\in F(a)$ かつ $(\lvert F(a)\rvert<\theta)^{M}$ となるものがある。
+:::
+
+::: lemma θ-c.c. は θ 以上の共終数を保つ {#set:kappa-cc-preserves}
+$\PP\in M$、$\theta$ を $M$ の基数とし、（$\PP$ は $\theta$-c.c.）$^{M}$ とする。このとき $\PP$ は $\theta$ 以上の共終数を保つ。したがってさらに（$\theta$ は正則）$^{M}$ なら、$\PP$ は $\theta$ 以上の基数を保つ。
+:::
+
+::: proof
+\ref{set:regular-suffices-above-below} より、$\kappa\ge\theta$ が $M$ の正則基数で $M[G]$ で正則でないものがあるとして矛盾を導けばよい。$\alpha<\kappa$ から $\kappa$ への共終写像 $f\in M[G]$ をとり、\ref{set:kappa-cc-approximation} の $F$ をとると、$S\defeq\bigcup_{\xi<\alpha}F(\xi)\in M$ は $\ran(f)$ を含み $\kappa$ で非有界である。一方 $M$ の中では、$S$ は $\lvert\alpha\rvert<\kappa$ 個の、濃度 $\theta$ 未満（したがって $\kappa$ 未満）の集合の和なので、$\kappa$ の正則性と \ref{set:regular-small-union} より $\lvert S\rvert<\kappa$、したがって $S$ は $\kappa$ で有界である。矛盾。後半は \ref{set:preserve-cof-card-above-below} の 1 による。
+:::
+
+実際に現れる鎖条件について注意しておく。$\mathrm{c.c.}(\PP)$ を、$\PP$ が $\theta$-c.c. をもつ最小の $\theta$ とする。タルスキの定理により $\mathrm{c.c.}(\PP)$ は有限か正則である（Kunen 第 VII 章の演習 F4）ので、\ref{set:kappa-cc-preserves} の仮定（$\theta$ は正則）$^{M}$ は外せる。また $\mathrm{c.c.}(\PP)$ は $\omega$ になりえず（演習 F1）、$\mathrm{c.c.}(\PP)<\omega$ なら $\PP$ は強制に使っても面白くない（演習 F2）。$\theta$ が弱到達不能なら、$\mathrm{c.c.}(\PP)=\theta$ となる重要な例としてレヴィの順序がある（Kunen 第 VII 章 §8）。$\theta=\lambda^{+}$ の場合、$\mathrm{Fn}(1,\lambda)$ は $\mathrm{c.c.}=\theta$ の自明な例である。より重要なのは、$\PP=\mathrm{Fn}(I,2,\lambda)$ について、GCH のもとで $\lvert I\rvert\ge\lambda$ なら $\mathrm{c.c.}(\PP)=\lambda^{+}$、GCH なしでは $\mathrm{c.c.}(\PP)=(2^{<\lambda})^{+}$ となることである（これらはいずれも Kunen による。以下では基数の保存に重要な不等号 $\mathrm{c.c.}(\PP)\le(2^{<\lambda})^{+}$ だけを示す）。
+
+::: lemma Fn(I, J, λ) の鎖条件 {#set:fn-lambda-cc keywords="Fn(I,J,lambda) has the (|J|^{<lambda})^+-c.c."}
+（AC）$\mathrm{Fn}(I,J,\lambda)$ は $(\lvert J\rvert^{<\lambda})^{+}$-c.c. をもつ。
+:::
+
+::: proof
+$\theta\defeq(\lvert J\rvert^{<\lambda})^{+}$ とおき、$\{p_{\xi}:\xi<\theta\}$ が相異なる元からなる反鎖であると仮定して矛盾を導く。$\lvert J\rvert\le1$ なら $\mathrm{Fn}(I,J,\lambda)$ の任意の二元は両立するので明らか。以下 $\lvert J\rvert\ge2$ とする。$\theta$ は後続基数なので正則である。
+
+**$\lambda$ が正則な場合.** まず $\mu\defeq\lvert J\rvert^{<\lambda}$ について $\mu^{<\lambda}=\mu$ を確かめる：$\nu<\lambda$ と関数 $h\colon\nu\to\bigcup_{\rho<\lambda}{}^{\rho}J$ について、$\lambda$ の正則性より値の長さはある $\rho<\lambda$ で抑えられ、$h$ は ${}^{\nu}({}^{\le\rho}J)$ の元とみなせる。その個数は $\lvert J\rvert^{\lvert\rho+1\rvert\cdot\lvert\nu\rvert}\le\mu$（$\lvert\rho+1\rvert\cdot\lvert\nu\rvert<\lambda$）で、$\rho<\lambda$ の選び方は $\lambda$ 通り、$\lambda\le2^{<\lambda}\le\mu$ なので、$\mu^{\nu}\le\lambda\cdot\mu=\mu$。したがって $\alpha<\theta$ なら $\lvert\alpha\rvert\le\mu$ で $\lvert{}^{<\lambda}\alpha\rvert\le\mu^{<\lambda}=\mu<\theta$。
+
+定義域の族 $\{\dom(p_{\xi}):\xi<\theta\}$ を考える。ある $d$ が $\theta$ 個の $\xi$ について $\dom(p_{\xi})=d$ となるなら、それらの $p_{\xi}$ の値の組合せは $\lvert J\rvert^{\lvert d\rvert}\le\mu<\theta$ 通りしかないので、二つの相異なる添字で $p_{\xi}=p_{\eta}$ となり、相異なる元という仮定に反する。したがって各定義域は $\theta$ 未満回しか現れず、$\theta$ の正則性より相異なる定義域は $\theta$ 個ある。一般形の Δ システム補題（\ref{set:delta-system-general}、$\kappa=\lambda$）より、$\lvert X\rvert=\theta$ となる $X\subseteq\theta$ で、$\{\dom(p_{\xi}):\xi\in X\}$ が相異なる集合からなり、根 $r$ の Δ システムをなすものがある。$\lvert r\rvert<\lambda$ なので $p_{\xi}\restr r$ の可能性は $\lvert J\rvert^{\lvert r\rvert}\le\mu<\theta$ 通りしかなく、ある $\xi\neq\eta$ in $X$ で $p_{\xi}\restr r=p_{\eta}\restr r$。$\dom(p_{\xi})\cap\dom(p_{\eta})=r$ なので $p_{\xi}\cup p_{\eta}$ は関数で、大きさは $\lambda$ 未満（$\lambda$ は無限）なので共通の拡張になる。これは反鎖であることに反する。
+
+**$\lambda$ が特異な場合.** $\lambda$ は極限基数で、$\lambda$ 未満の正則基数（後続基数）は $\lambda$ で非有界である。各 $\xi$ について $\lvert p_{\xi}\rvert<\lambda$ なので、$\lvert p_{\xi}\rvert<\lambda'$ となる正則基数 $\lambda'<\lambda$ がある。$\theta$ は正則で $\theta>\lambda$ なので、$\lambda$ 個以下の集合 $Y_{\lambda'}\defeq\{\xi:\lvert p_{\xi}\rvert<\lambda'\}$ の和である $\theta$ について、ある $\lambda'$ で $\lvert Y_{\lambda'}\rvert=\theta$。すると $\{p_{\xi}:\xi\in Y_{\lambda'}\}$ は $\mathrm{Fn}(I,J,\lambda')$ の濃度 $\theta$ の反鎖だが、正則な場合より $\mathrm{Fn}(I,J,\lambda')$ は $(\lvert J\rvert^{<\lambda'})^{+}$-c.c. で、$(\lvert J\rvert^{<\lambda'})^{+}\le\theta$。矛盾。
+:::
+
+::: corollary Fn(I, J, λ) は上で保つ {#set:fn-lambda-preserve-above}
+$I,J\in M$ とし、$M$ の中で $\lambda$ は正則、$\lvert J\rvert\le2^{<\lambda}$、$\theta=(2^{<\lambda})^{+}$ とする。このとき $\mathrm{Fn}(I,J,\lambda)^{M}$ は $\theta$ 以上の共終数と基数を保つ。
+:::
+
+::: proof
+$M$ の中で \ref{set:fn-lambda-cc} を適用すると、$(\lvert J\rvert^{<\lambda}=2^{<\lambda})^{M}$（$2\le\lvert J\rvert\le2^{<\lambda}$ なら $(2^{<\lambda})^{<\lambda}=2^{<\lambda}$ は上の証明と同じ）なので $\mathrm{Fn}(I,J,\lambda)^{M}$ は $M$ で $\theta$-c.c.。\ref{set:kappa-cc-preserves} による（$\theta$ は後続基数なので $M$ で正則）。
+:::
+
+## λ-閉性と λ 以下の基数 {#set:sec-lambda-closed}
+
+まったく異なる議論で、$M$ で $\lambda$ が正則なら $\mathrm{Fn}(I,J,\lambda)^{M}$ は $\lambda$ 以下の共終数と基数を保つことを示す。GCH のもとでは $2^{<\lambda}=\lambda$ なので、\ref{set:fn-lambda-preserve-above} と合わせてすべての共終数と基数が保たれる。しかし $M$ に $\lambda^{+}\le\kappa\le2^{<\lambda}$ となる基数 $\kappa$ があると、自明な場合を除いてそのような $\kappa$ は $M[G]$ で濃度 $\lambda$ になり、基数でなくなる（Kunen 第 VII 章の演習 G3）。
+
+::: definition λ-閉 {#set:lambda-closed keywords="lambda-closed partial order" index="λ-閉|らむだへい"}
+p.o. $\PP$ が **$\lambda$-閉**であるとは、$\gamma<\lambda$ と $\PP$ の元の減少列 $\{p_{\xi}:\xi<\gamma\}$（$\xi<\eta\to p_{\eta}\le p_{\xi}$）について、$\exists q\in\PP\,\forall\xi<\gamma\,(q\le p_{\xi})$ となることをいう。
+:::
+
+::: lemma {#set:fn-lambda-closed}
+$\lambda$ が正則なら $\mathrm{Fn}(I,J,\lambda)$ は $\lambda$-閉である。
+:::
+
+::: proof
+$q\defeq\bigcup\{p_{\xi}:\xi<\gamma\}$ とすればよい。減少列の元は包含に関する増大列なので $q$ は関数で、$\lambda$ の正則性より $\lvert q\rvert<\lambda$（$\gamma<\lambda$ 個の、大きさ $\lambda$ 未満の集合の和）。
+:::
+
+$\lambda$ が特異なら $\mathrm{Fn}(\lambda,2,\lambda)$ は $\lambda$-閉でない。また（$\lambda$ は特異）$^{M}$ なら $\mathrm{Fn}(\lambda,2,\lambda)^{M}$ は $\lambda$ を崩壊させる（Kunen 第 VII 章の演習 G5）。$\lambda$ が正則なら、$\mathrm{Fn}(I,J,\lambda)$ の $\lambda$-閉性を使って $\lambda$ 以下の基数が保たれることを示す。次の結果は \ref{set:kappa-cc-approximation} と比べるとよい。\ref{set:kappa-cc-approximation} は鎖条件を使って $M[G]$ の $A$ から $B$ への関数を $M$ の中で近似した。次の定理は、$A$ が十分小さければ、$A$ から $B$ への関数は実際に $M$ に属することを示す。
+
+::: theorem λ-閉な強制は新しい短い列を加えない {#set:closed-no-new-functions keywords="lambda-closed forcing adds no new sequences of length less than lambda" index="新しい短い列を加えない|あたらしいみじかいれつをくわえない"}
+$\PP\in M$、$A,B\in M$ とし、$M$ の中で $\lambda$ は基数、$\PP$ は $\lambda$-閉、$\lvert A\rvert<\lambda$ とする。$G$ を $M$ 上 $\PP$-ジェネリック、$f\in M[G]$、$f\colon A\to B$ とすると、$f\in M$。
+:::
+
+::: proof
+**Step 0（$A$ が順序数の場合に帰着）.** $A=\alpha<\lambda$ の場合に示せば十分である。一般の場合は、$M$ に属する全単射 $j\colon\alpha\to A$（$\alpha=\lvert A\rvert^{M}<\lambda$）をとり、特別な場合を $f\circ j\colon\alpha\to B$ に適用すると $f\circ j\in M$、したがって $f=(f\circ j)\circ j^{-1}\in M$。
+
+**Step 1.** $K\defeq({}^{\alpha}B)^{M}={}^{\alpha}B\cap M$ とおき、$f\in{}^{\alpha}B\cap M[G]$ について $f\in K$ を示す。そうでないとして、$f=\tau_{G}$ となる $\tau\in M^{\PP}$ を固定し、真理補題より
+$$
+p\Vdash\bigl(\tau\text{ は }\check{\alpha}\text{ から }\check{B}\text{ への関数}\land\tau\notin\check{K}\bigr)
+\label{set:eq-closed-assumption}
+$$
+となる $p\in G$ をとる。以下 $f$ と $G$ のことは忘れ、\eqref{set:eq-closed-assumption} から直接矛盾を導く。
+
+**Step 2（$M$ の中の再帰）.** $M$ の中で、超限再帰と AC を使って、$\PP$ の元の列 $\{p_{\eta}:\eta\le\alpha\}$ と $B$ の元の列 $\{z_{\eta}:\eta<\alpha\}$ を次を満たすように選ぶ。
+1. $p_{0}=p$。
+2. $\xi\le\eta$ なら $p_{\eta}\le p_{\xi}$。
+3. $p_{\eta+1}\Vdash\tau(\check{\eta})=\check{z}_{\eta}$。
+
+後続の段階では $p_{\eta}$ が与えられている。$p_{\eta}\le p$ なので $p_{\eta}\Vdash\tau$ は $\check{\alpha}$ から $\check{B}$ への関数、したがって（強制された主張の帰結は強制される：\ref{set:forcing-equivalent} の 1）$p_{\eta}\Vdash\exists x\in\check{B}\,(\tau(\check{\eta})=x)$。\ref{set:forcing-corollary} の 4 より、$z_{\eta}\in B$ と $p_{\eta+1}\le p_{\eta}$ で $p_{\eta+1}\Vdash\tau(\check{\eta})=\check{z}_{\eta}$ となるものがある（$\dom(\check{B})=\{\check{z}:z\in B\}$）。$\eta\le\alpha$ が極限の段階では、$\{p_{\xi}:\xi<\eta\}$ は長さ $\eta\le\alpha<\lambda$ の減少列なので、$\lambda$-閉性より 2 を満たす $p_{\eta}$ がとれる。強制関係の定義可能性より、この再帰は $M$ の中で行える。
+
+**Step 3（矛盾）.** なお $M$ の中で、$g\defeq\langle z_{\eta}:\eta<\alpha\rangle$（$g(\eta)=z_{\eta}$ となる定義域 $\alpha$ の関数）とすると $g\in K$。$p_{\alpha}\in H$ となる $M$ 上ジェネリックな $H$ をとると（\ref{set:generic-exists}）、各 $p_{\eta}$ は $H$ に属し、各 $\eta<\alpha$ について $\tau_{H}(\eta)=z_{\eta}$、したがって $\tau_{H}=g\in K$。しかし $p_{0}=p\in H$ で $p\Vdash\tau\notin\check{K}$ なので $\tau_{H}\notin K$。矛盾。
+:::
+
+::: hypcheck
+- $\lambda$-閉性は Step 2 の極限の段階で、$\lvert A\rvert<\lambda$ は再帰の長さ $\alpha<\lambda$ を保証するのに使った。
+- $\lambda$-閉性は $M$ の中で成り立つ必要がある（再帰は $M$ の中で行う）。
+- $M$ の AC は再帰の各段での選択に使った。
+:::
+
+::: corollary λ-閉な p.o. は λ 以下の共終数を保つ {#set:closed-preserves}
+$\PP\in M$、（$\lambda$ は基数）$^{M}$、（$\PP$ は $\lambda$-閉）$^{M}$ とすると、$\PP$ は $\lambda$ 以下の共終数、したがって $\lambda$ 以下の基数を保つ。
+:::
+
+::: proof
+そうでないとすると、\ref{set:regular-suffices-above-below} より、$\kappa\le\lambda$ で（$\kappa$ は正則）$^{M}$ だが（$\kappa$ は特異）$^{M[G]}$ となるものがある。よって $\alpha<\kappa$ と、$\alpha$ を $\kappa$ に共終に写す $f\in M[G]$ がある。$\lvert\alpha\rvert<\kappa\le\lambda$ なので \ref{set:closed-no-new-functions} より $f\in M$ で、（$\kappa$ は正則）$^{M}$ に反する。基数については \ref{set:preserve-cof-card-above-below} の 2 による。
+:::
+
+::: theorem Fn(I, J, λ) は共終数を保つ {#set:fn-lambda-preserves keywords="Fn(I,J,lambda) preserves cofinalities when lambda is regular and 2^{<lambda}=lambda"}
+$\lambda,I,J\in M$ とし、$M$ の中で $\lambda$ は正則、$2^{<\lambda}=\lambda$、$\lvert J\rvert\le\lambda$ とする。このとき $\mathrm{Fn}(I,J,\lambda)^{M}$ は共終数（したがって基数）を保つ。
+:::
+
+::: proof
+$\lambda$ の正則性より $\mathrm{Fn}(I,J,\lambda)^{M}$ は $M$ で $\lambda$-閉（\ref{set:fn-lambda-closed}）なので、$\lambda$ 以下の共終数を保つ（\ref{set:closed-preserves}）。$2^{<\lambda}=\lambda$ より $\mathrm{Fn}(I,J,\lambda)^{M}$ は $M$ で $\lambda^{+}$-c.c.（\ref{set:fn-lambda-cc}）なので、$(\lambda^{+})^{M}$ 以上の共終数を保つ（\ref{set:fn-lambda-preserve-above}）。$\lambda$ と $(\lambda^{+})^{M}$ の間に $M$ の共終数はないので、すべての共終数が保たれる。
+:::
+
+とくに、$\mathrm{Fn}(\kappa\times\lambda,2,\lambda)^{M}$ の形の順序で強制すれば、$\lambda$ で GCH を望むだけ破ることができる。$\S5$ と同様によい名前を使って、$M[G]$ での $2^{\lambda}$ を正確に計算できる。\ref{set:continuum-kappa} を一般化して次を得る。
+
+::: theorem 2^λ の値 {#set:power-lambda-kappa keywords="2^lambda = kappa in the extension by Fn(kappa x lambda, 2, lambda)"}
+$M$ の中で $\lambda<\kappa$、$\lambda$ は正則、$2^{<\lambda}=\lambda$、$\kappa^{\lambda}=\kappa$ とする。$\PP\defeq\mathrm{Fn}(\kappa\times\lambda,2,\lambda)^{M}$ とすると、$\PP$ は基数を保ち、$G$ が $M$ 上 $\PP$-ジェネリックなら $(2^{\lambda}=\kappa)^{M[G]}$。
+:::
+
+::: proof
+基数の保存は \ref{set:fn-lambda-preserves}、$(2^{\lambda}\ge\kappa)^{M[G]}$ は \ref{set:fn-lambda-many-subsets} による。$(2^{\lambda}\le\kappa)^{M[G]}$ を示す。$M$ の中で、$\lvert\PP\rvert=\kappa^{<\lambda}=\kappa$（$\kappa\le\kappa^{<\lambda}\le\kappa^{\lambda}=\kappa$）で、$\PP$ は $\lambda^{+}$-c.c. なので反鎖は高々 $\kappa^{\lambda}=\kappa$ 個、したがって $\check{\lambda}$ の部分集合のよい名前は高々 $\kappa^{\lambda}=\kappa$ 個である。それらを $M$ の中で $\langle\tau_{\alpha}:\alpha<\kappa\rangle$ と枚挙し、$\pi\defeq\{\langle\mathrm{op}(\check{\alpha},\tau_{\alpha}),\mathbf{1}\rangle:\alpha<\kappa\}$ とする。\ref{set:nice-name-count} の証明と同様に、$M[G]$ で $\pi_{G}$ は定義域 $\kappa$ の関数で $\mathcal{P}(\lambda)\subseteq\ran(\pi_{G})$ なので $2^{\lambda}\le\kappa$。
+:::
+
+\ref{set:power-lambda-kappa} を一般化して、$M[G]$ でのすべての基数の冪（$\lambda$ だけでなく）を $M$ の基数算術で計算することもできるが、最も一般的な結果を覚えるより、つねに \ref{set:power-lambda-kappa} の方法に立ち返る方がよい、と Kunen は述べている。この方法で、任意の正則基数、あるいは有限個の正則基数で望むように GCH を破ることができる。例として次を示す。
+
+::: theorem GCH の破り方の例 {#set:con-gch-violations keywords="Con(ZFC + CH + 2^{aleph_1} = aleph_2 + 2^{aleph_2} = aleph_{omega_3})" index="GCH の破れの無矛盾性|じーしーえいちのやぶれのむむじゅんせい"}
+$\ZFC$ が無矛盾なら、次の理論も無矛盾である。
+1. $\ZFC+\mathrm{CH}+2^{\aleph_{1}}=\aleph_{2}+2^{\aleph_{2}}=\aleph_{\omega_{3}}$。
+2. $\ZFC+\mathrm{CH}+2^{\aleph_{1}}=\aleph_{5}+2^{\aleph_{2}}=\aleph_{7}$。
+3. $\ZFC+2^{\aleph_{0}}=\aleph_{3}+2^{\aleph_{1}}=\aleph_{4}+2^{\aleph_{2}}=\aleph_{6}$。
+:::
+
+::: proof
+いずれの場合も $\ZFC+\mathrm{GCH}$ を満たす $M$ から出発する（\ref{set:con-continuum} の証明のとおり）。
+
+**1.** $\PP\defeq\mathrm{Fn}(\omega_{\omega_{3}}\times\omega_{2},2,\omega_{2})^{M}$ とする。$M$ の中で $\lambda=\omega_{2}$ は正則、$2^{<\omega_{2}}=2^{\omega_{1}}=\omega_{2}$、$\kappa=\omega_{\omega_{3}}$ について $\cf(\kappa)=\omega_{3}>\omega_{2}$ なので GCH より $\kappa^{\omega_{2}}=\kappa$（\ref{set:gch-exponentiation} の 3）。\ref{set:power-lambda-kappa} より $\PP$ は基数を保ち、$(2^{\aleph_{2}}=\aleph_{\omega_{3}})^{M[G]}$。$(2^{\aleph_{1}}=\aleph_{2})^{M[G]}$ は、\ref{set:closed-no-new-functions} より $({}^{\omega_{1}}2)^{M}=({}^{\omega_{1}}2)^{M[G]}$（$\omega_{1}<\lambda$ から $2$ への関数は新たに加わらない）であることから従う：$F\in M$ が $\omega_{2}$ から $({}^{\omega_{1}}2)^{M}$ の上への関数なら、$F$ は $M[G]$ でも $\omega_{2}$ から $({}^{\omega_{1}}2)^{M[G]}$ の上への関数である。同様に $(2^{\aleph_{0}}=\aleph_{1})^{M[G]}$。
+
+**2.** 二回強制する。$\PP\defeq\mathrm{Fn}(\omega_{7}\times\omega_{2},2,\omega_{2})^{M}$、$G$ を $M$ 上 $\PP$-ジェネリック、$N\defeq M[G]$ とすると、1 と同様に
+$$
+(2^{\aleph_{0}}=\aleph_{1}\land2^{\aleph_{1}}=\aleph_{2}\land2^{\aleph_{2}}=\aleph_{7})^{N}.
+$$
+さらに、$N$ の中で $\kappa\ge\omega_{2}$ が正則なら $(\kappa^{\omega_{1}}=\kappa)^{N}$ である：これは $M$ の GCH から $M$ で成り立ち、$({}^{\omega_{1}}\kappa)^{M}=({}^{\omega_{1}}\kappa)^{N}$（\ref{set:closed-no-new-functions}）と基数の保存による。次に $N$ を基礎モデルとして強制を行う。
+$$
+\mathbb{Q}\defeq\mathrm{Fn}(\omega_{5}\times\omega_{1},2,\omega_{1})^{N}
+$$
+とする（Kunen の本文ではこの $\mathbb{Q}$ の定義が我々の参照したテキストで判読できなかったので、証明の他の部分から復元した）。$(2^{<\omega_{1}}=2^{\omega}=\omega_{1})^{N}$ なので、\ref{set:fn-lambda-preserves} より $\mathbb{Q}$ は基数を保つ。$H$ を $N$ 上 $\mathbb{Q}$-ジェネリックとする。$(\mathrm{CH})^{N[H]}$ は 1 と同様（$\omega$ から $2$ への関数が新たに加わらない）。$(\omega_{5}^{\omega_{1}}=\omega_{5})^{N}$ なので、\ref{set:power-lambda-kappa} より $(2^{\aleph_{1}}=\aleph_{5})^{N[H]}$。$(2^{\aleph_{2}}\ge\aleph_{7})^{N[H]}$ は $(2^{\aleph_{2}}\ge\aleph_{7})^{N}$ から従う（$N$ の $\omega_{7}$ 個の相異なる部分集合は $N[H]$ にも残り、基数は保たれる）。$(2^{\aleph_{2}}=\aleph_{7})^{N[H]}$ を見るには \ref{set:power-lambda-kappa} の方法を使う：$N$ の中で $\mathbb{Q}$ は $\omega_{2}$-c.c. で $\lvert\mathbb{Q}\rvert=\omega_{5}^{\omega}=\omega_{5}$ なので、$\omega_{2}$ の部分集合のよい名前は $((\omega_{5})^{\omega_{1}})^{\omega_{2}}=\omega_{5}^{\omega_{2}}\le(2^{\omega_{2}})^{\omega_{2}}=2^{\omega_{2}}=\omega_{7}$ 個しかない。
+
+**3.** 三回強制して $M\subseteq N_{1}\subseteq N_{2}\subseteq N_{3}$ を作る。$N_{1}$ は $2^{\aleph_{0}}=\aleph_{1}\land2^{\aleph_{1}}=\aleph_{2}\land2^{\aleph_{2}}=\aleph_{6}$、$N_{2}$ は $2^{\aleph_{0}}=\aleph_{1}\land2^{\aleph_{1}}=\aleph_{4}\land2^{\aleph_{2}}=\aleph_{6}$、$N_{3}$ は 3 を満たす（2 と同様の議論による。細部は省く）。
+:::
+
+2 と 3 の証明では、最も大きい基数から先に扱うこと、つまり**逆順に**進むことが非常に重要である。たとえば 2 を、$\PP\defeq\mathrm{Fn}(\omega_{5}\times\omega_{1},2,\omega_{1})^{M}$ で $N=M[G]$ を作ってから始めると、$N$ は $2^{\aleph_{1}}=\aleph_{5}$ を満たし、$(2^{<\omega_{2}}\neq\omega_{2})^{N}$ となる。すると $\mathbb{Q}\defeq\mathrm{Fn}(\omega_{7}\times\omega_{2},2,\omega_{2})^{N}$ は基数を保たない。実際、$H$ が $N$ 上 $\mathbb{Q}$-ジェネリックなら、$\omega_{5}^{N}$ は $N[H]$ で濃度 $\omega_{2}$ になり、$N[H]$ は $2^{\aleph_{1}}=\aleph_{2}$ を満たす（Kunen 第 VII 章の演習 G3）。
+
+\ref{set:con-gch-violations} は、任意の有限個の正則基数の冪を扱うように容易に一般化できる（演習 G6）。ここで二つの問いが生じる。
+
+**問い 1：正則基数の冪をどこまで自由にいじれるか.** 答えはイーストンによるもので、単調性（$\lambda<\lambda'\to2^{\lambda}\le2^{\lambda'}$）とケーニッヒの補題（$\cf(2^{\lambda})>\lambda$）の制約のもとで、望むだけ自由である（\ref{set:easton}。第 VIII 章 §4）。ここでは新しい考え方が必要であることだけを注意しておく。たとえば GCH を満たす $M$ から出発して、$M[G]$ で $\forall n\in\omega\,(2^{\omega_{n}}=\omega_{n+3})$ としたいとする。\ref{set:con-gch-violations} の証明の方法では、最も大きい $\omega_{m}$ から始めて $\omega$ 回強制を繰り返すことになるが、これは明らかに無意味である。仮に順序を逆にできたとしても、強制を素朴に $\omega$ 回繰り返して $\ZFC$ のモデルが得られると期待することはできない（Kunen 第 VII 章の演習 B6）。
+
+**問い 2：特異基数についてはどうか.** $M$ で $\lambda$ が特異なら、$\mathrm{Fn}(I,J,\lambda)^{M}$ の形の p.o. はつねに $\lambda$ を崩壊させる（演習 G5）ので、特異基数の冪についての問いは本ページの方法では決まらない。実際、特異基数の冪には単調性とケーニッヒの補題を超える制約がある（\ref{set:silver}。第 VIII 章 §4 の終わり）。
+
+## 問題 {#set:sec-larger-fn-problems}
+
+::: problem {#set:prob-closed-no-new-reals}
+$M$ を GCH を満たす c.t.m.、$\PP\defeq\mathrm{Fn}(\omega_{2}\times\omega_{1},2,\omega_{1})^{M}$ とする。$M[G]$ で CH が成り立ち、$2^{\aleph_{1}}=\aleph_{2}$ であることを示せ。（このとき $\PP$ は新しい実数を加えない。）
+:::
+
+::: solution
+$\PP$ は $M$ で $\omega_{1}$-閉（\ref{set:fn-lambda-closed}）なので、\ref{set:closed-no-new-functions} より $({}^{\omega}2)^{M[G]}=({}^{\omega}2)^{M}$：新しい実数はない。基数は保たれる（\ref{set:fn-lambda-preserves}：$M$ で $2^{<\omega_{1}}=2^{\omega}=\omega_{1}$）ので、$M$ の CH から $(2^{\aleph_{0}}=\aleph_{1})^{M[G]}$。\ref{set:power-lambda-kappa}（$\lambda=\omega_{1}$、$\kappa=\omega_{2}$、$(\omega_{2}^{\omega_{1}}=\omega_{2})^{M}$ は GCH より）で $(2^{\aleph_{1}}=\aleph_{2})^{M[G]}$。（$M$ で $2^{\aleph_{1}}=\aleph_{2}$ だったので、この強制は冪の値を変えないが、新しい $\omega_{1}$ の部分集合を $\aleph_{2}$ 個加える。）
+:::
+
+::: problem {#set:prob-countably-closed-collapse}
+$M$ の中で $\lambda$ を正則とし、$\PP\defeq\mathrm{Fn}(\lambda,\lambda^{+},\lambda)^{M}$ とする。$\PP$ は $\lambda$ 以下の基数を保つが、$(\lambda^{+})^{M}$ を崩壊させる（$M[G]$ で濃度 $\lambda$ になる）ことを示せ。
+:::
+
+::: solution
+$\PP$ は $M$ で $\lambda$-閉なので $\lambda$ 以下の基数を保つ（\ref{set:closed-preserves}）。\ref{set:fn-lambda-generic}（$I=\lambda$, $J=\lambda^{+}$、$\lvert I\rvert\ge\lambda$）より $\bigcup G$ は $\lambda$ から $(\lambda^{+})^{M}$ の上への関数なので、$M[G]$ で $\lvert(\lambda^{+})^{M}\rvert\le\lambda$。
+:::
+
+::: supplement
+**前提の検討.**
+- \ref{set:fn-lambda-preserves} の二つの仮定の役割ははっきり分かれている：$\lambda$ の正則性は $\lambda$-閉性（下での保存）に、$2^{<\lambda}=\lambda$ は $\lambda^{+}$-c.c.（上での保存）に使われる。後者がないと、$\lambda^{+}$ と $2^{<\lambda}$ の間の基数が崩壊しうる。
+- \ref{set:closed-no-new-functions} は「$\lambda$ より短い列を加えない」ことを示し、とくに $\lambda>\omega$ なら新しい実数を加えない。これが CH を保ったまま上で GCH を破れる理由である。
+- \ref{set:fn-lambda-cc} の証明は選択公理と一般形の Δ システム補題に依存する。
+
+**関連する結果.** $\lambda$-閉性より弱い「$\lambda$-分配的」（$\lambda$ 未満の個数の稠密開集合の共通部分が稠密）でも、短い列が加わらないことが示せることが知られている（一般にはこう言われている。本サイトでは扱っていない）。強制の「上では鎖条件、下では閉性」という二分法は、第 VIII 章のイーストンの強制や反復強制でも基本的な道具になる。
+
+**高い視点から：情報の「幅」と「深さ」.** $\theta$-鎖条件は、半順序の「幅」（互いに矛盾する選択肢の数）が $\theta$ 未満であることで、これは大きな基数の間の新しい全射を作れないことを意味する。$\lambda$-閉性は、半順序の「深さ」（長さ $\lambda$ 未満の情報の列が必ず極限をもつ）で、これは短い列について $M$ の住人がすべての情報をあらかじめ集約できる（\ref{set:closed-no-new-functions} の再帰）ことを意味する。幅が狭ければ上の基数が、深さが十分なら下の基数が守られる。$\mathrm{Fn}(\kappa\times\lambda,2,\lambda)$ は、幅が $\lambda^{+}$ 未満（$2^{<\lambda}=\lambda$ のとき）で深さが $\lambda$ という、ちょうど $\lambda$ の部分集合だけを増やすのに都合のよい形をしている。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

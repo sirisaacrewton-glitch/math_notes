@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>濃度と基数 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/01-basics/07-cardinals.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 濃度と基数 {#set:page-cardinals keywords="cardinality, cardinal number, Schröder-Bernstein theorem, finite set, pigeonhole principle"}
+
+二つの集合の「大きさ」を、元を数えることなく**単射と全単射**で比べる。本ページでは、比較の基本定理であるシュレーダー＝ベルンシュタインの定理を選択公理なしで証明し、整列可能な集合の大きさを順序数で測る**濃度** $\lvert A\rvert$ と、その値となる順序数である**基数**を導入する。最後に自然数と $\omega$ が基数であること（その核心が鳩の巣原理）と、有限集合の基本性質を示す。
+
+## 記法と定義の確認 {#set:sec-cardinals-notation}
+
+::: notation
+- 議論は $\ZF$ の中で行い、**選択公理も冪集合の公理（\ref{set:ax-power-set}）も使わない**。冪集合の公理は次のページ \ref{set:page-cantor} で導入する。各証明でどの公理を使ったかは「前提条件の使用箇所」に記す。
+- 関数・単射・全射・全単射は \ref{set:function}, \ref{set:injection-surjection} の意味。$f\colon A\to B$ と $X\subseteq A$ に対し $f[X]=\{f(x)\mid x\in X\}$、$f\restr{X}$ は $f$ の $X$ への制限、$\dom f$, $\ran f$ は定義域・値域。$f[X]$ が集合であることは置換公理（\ref{set:ax-replacement}）による。
+- 順序数（\ref{set:ordinal}）は $\alpha,\beta,\gamma,\delta,\xi,\eta$ などで表し、順序数の間の $<$ は $\in$、$\le$ は $\subseteq$ と同じである（\ref{set:ordinal-basic}）。順序数のクラス $\mathbf{ON}$ は $<$ で整列される（\ref{set:ordinal-well-ordered}）。
+- $S(\alpha)=\alpha+1=\alpha\cup\{\alpha\}$ は後続順序数（\ref{set:successor-ordinal}）、$\omega$ は自然数全体の集合（\ref{set:natural-number}, \ref{set:omega}）。$n\in\omega$ についての帰納法は \ref{set:peano} による。
+- 整列集合 $(A,R)$ はただ一つの順序数と順序同型であり（\ref{set:ordinal-type}）、その順序数を $\mathrm{type}(A,R)$ と書く（\ref{set:order-type}）。
+- 超限帰納法・超限再帰は \ref{set:transfinite-induction}, \ref{set:transfinite-recursion} を用いる。
+:::
+
+## 単射による大きさの比較 {#set:sec-cardinality-order}
+
+::: definition 濃度の大小 {#set:cardinality-order keywords="equinumerous, equipotent, cardinality comparison" index="濃度の大小|のうどのだいしょう, 対等|たいとう"}
+集合 $A,B$ に対して次のように定める。
+- $A\preccurlyeq B$ :⟺ 単射 $A\to B$ が存在する。
+- $A\approx B$ :⟺ 全単射 $A\to B$ が存在する。このとき $A$ と $B$ は**対等**であるという。
+- $A\prec B$ :⟺ $A\preccurlyeq B$ かつ $A\not\approx B$。
+
+これらをそれぞれ $\lvert A\rvert\le\lvert B\rvert$, $\lvert A\rvert=\lvert B\rvert$, $\lvert A\rvert<\lvert B\rvert$ とも書く。この書き方は、記号 $\lvert A\rvert$ 単独に意味（\ref{set:cardinality}）が与えられていない場合にも、上の関係の略記として用いる。
+:::
+
+::: intuition
+「$A$ の元を $B$ の相異なる元に一つずつ割り当てられる」ことを「$A$ は $B$ 以下の大きさ」と読む。有限集合では元の個数の比較と一致するが、個数を数えるという操作を経由しないので、無限集合にもそのまま使える。
+```svg 左：単射（相異なる元を相異なる元へ。値にならない元 4 があってよい）。右：全単射による対等（ℕ と偶数全体は、真部分集合なのに対等）
+<svg viewBox="0 0 600 210" xmlns="http://www.w3.org/2000/svg" font-size="15" xmlns:c2pa="http://c2pa.org/manifest"><metadata><c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYTo5NzdlMzZjOC03NWNhLTQ5NDUtYjY3OC1mZGIwN2UwMDhlMzEAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaBsfipclNbILt1d0kJFsD/AAAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDozNDIxOWZhMS04NDc1LTQ3NmUtOWViYy1iNzU5MDYzNTcxZDFscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNoxSRBDq2Y6XCnK7Zqcxpw0gAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFgga3TyIwj5VdeiFSfZqGuTIdH30j801qiLex8yMJkz07KkZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaDu/T1YN7AF3eeWWvgJ9MIkAAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRNAAAAAAAAAAAAAAAAAGRoYXNoWCCrzmfpCCyq9S5TTfrUc2MLOp5e3eG1/Vgkxpiyr3QQXWRuYW1lbmp1bWJmIG1hbmlmZXN0amV4Y2x1c2lvbnOBomVzdGFydBiMZmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOjk3N2UzNmM4LTc1Y2EtNDk0NS1iNjc4LWZkYjA3ZTAwOGUzMS9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOjk3MDVlNWFmLTk0YTgtNDM2MS05N2FmLTcxZGI5MjEyMjRiMXJjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCBrdPIjCPlV16IVJ9moa5Mh0ffSPzTWqIt7HzIwmTPTsqJjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFggwdgGc37yGNeoceCpWpl/PgKY1Tv+/Jdo395ZTqpDG4WiY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFgg0zBD5pm4S9kD9mOO0G7BMUWRTTwFRAGAvKt9OlVJ5Ip0Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQBLrJh1jO/VI9mNDTWGGQRuA0e5gLqPDtQpOPYQUgjk7IFAiEGRGXOW6aMzoWOaQAmiKqkodmAghIC9SEnoKK2w=</c2pa:manifest></metadata>
+  <defs><marker id="ah1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+  <text x="140" y="20" text-anchor="middle">単射 A → B（A ≼ B）</text>
+  <ellipse cx="70" cy="110" rx="42" ry="72" fill="none" stroke="currentColor"/>
+  <ellipse cx="210" cy="110" rx="42" ry="82" fill="none" stroke="currentColor"/>
+  <text x="70" y="200" text-anchor="middle">A</text><text x="210" y="207" text-anchor="middle">B</text>
+  <text x="70" y="70" text-anchor="middle">a</text><text x="70" y="115" text-anchor="middle">b</text><text x="70" y="160" text-anchor="middle">c</text>
+  <text x="210" y="55" text-anchor="middle">1</text><text x="210" y="95" text-anchor="middle">2</text><text x="210" y="135" text-anchor="middle">3</text>
+  <text x="210" y="175" text-anchor="middle" style="fill: var(--mn-fg-soft)">4</text>
+  <line x1="80" y1="66" x2="198" y2="92" stroke="currentColor" marker-end="url(#ah1)"/>
+  <line x1="80" y1="111" x2="198" y2="51" stroke="currentColor" marker-end="url(#ah1)"/>
+  <line x1="80" y1="156" x2="198" y2="132" stroke="currentColor" marker-end="url(#ah1)"/>
+  <text x="440" y="20" text-anchor="middle">全単射 ℕ → 偶数（対等）</text>
+  <g text-anchor="middle">
+    <text x="330" y="70">0</text><text x="390" y="70">1</text><text x="450" y="70">2</text><text x="510" y="70">3</text><text x="565" y="70">…</text>
+    <text x="330" y="160">0</text><text x="390" y="160">2</text><text x="450" y="160">4</text><text x="510" y="160">6</text><text x="565" y="160">…</text>
+  </g>
+  <g stroke="currentColor" marker-end="url(#ah1)">
+    <line x1="330" y1="78" x2="330" y2="143"/><line x1="390" y1="78" x2="390" y2="143"/>
+    <line x1="450" y1="78" x2="450" y2="143"/><line x1="510" y1="78" x2="510" y2="143"/>
+  </g>
+  <text x="300" y="70" text-anchor="end" style="fill: var(--mn-fg-soft)">ℕ</text>
+  <text x="300" y="160" text-anchor="end" style="fill: var(--mn-fg-soft)">偶数</text>
+  <text x="440" y="200" text-anchor="middle" style="fill: var(--mn-fg-soft)">n ↦ 2n。漏れも重なりもない</text>
+</svg>
+```
+:::
+
+::: lemma {#set:cardinality-order-basic keywords="preorder, equivalence relation"}
+任意の集合 $A,B,C,A',B'$ に対して次が成り立つ。
+1. $A\preccurlyeq A$。$A\preccurlyeq B$ かつ $B\preccurlyeq C$ ならば $A\preccurlyeq C$。
+2. $A\approx A$。$A\approx B$ ならば $B\approx A$。$A\approx B$ かつ $B\approx C$ ならば $A\approx C$。
+3. $A\subseteq B$ ならば $A\preccurlyeq B$。$A\approx B$ ならば $A\preccurlyeq B$。
+4. $A\approx A'$, $B\approx B'$ ならば、$A\preccurlyeq B\iff A'\preccurlyeq B'$。
+:::
+
+::: proof
+**Step 1（1）.** 恒等写像 $\id_{A}$ は単射。単射 $f\colon A\to B$, $g\colon B\to C$ に対し $g\circ f$ は単射である：$g(f(x))=g(f(x'))$ なら $g$ の単射性で $f(x)=f(x')$、$f$ の単射性で $x=x'$。
+
+**Step 2（2）.** 反射律・推移律は Step 1 と同じ議論（全単射の合成は全単射）。対称律：全単射 $f\colon A\to B$ の逆 $f^{-1}=\{(y,x)\mid (x,y)\in f\}\subseteq B\times A$ は、$f$ の全射性から各 $y\in B$ に対応する $x$ が存在し、単射性からそれが一意なので関数であり、全単射である。
+
+**Step 3（3）.** 包含写像 $x\mapsto x$ は単射。全単射は特に単射。
+
+**Step 4（4）.** 全単射 $p\colon A\to A'$, $q\colon B\to B'$ をとる。単射 $f\colon A\to B$ があれば $q\circ f\circ p^{-1}\colon A'\to B'$ は単射、逆に単射 $f'\colon A'\to B'$ があれば $q^{-1}\circ f'\circ p$ が単射 $A\to B$ である。
+
+::: hypcheck
+- **分出公理**（\ref{set:ax-comprehension}）と**直積の存在**（\ref{set:cartesian-product}）：合成 $g\circ f\subseteq A\times C$ と逆写像 $f^{-1}\subseteq B\times A$ を集合として切り出すのに使った。
+- 選択公理は使わない。逆写像は一意に決まるので「選ぶ」必要がない。
+:::
+:::
+
+::: supplement
+$\approx$ は「同値関係」のように振る舞うが、すべての集合の集合は存在しない（\ref{set:no-universal-set}）ので、$\approx$ はある集合上の関係ではなくクラス（\ref{set:class}）上の関係であり、その同値類も（空集合の類を除いて）集合にならない。同値類の代わりに「代表元」を順序数から選ぶのが \ref{set:cardinality} の考え方である。
+:::
+
+## シュレーダー＝ベルンシュタインの定理 {#set:sec-schroder-bernstein}
+
+::: theorem シュレーダー＝ベルンシュタインの定理 {#set:schroder-bernstein keywords="Schröder-Bernstein theorem, Cantor-Bernstein theorem, Cantor-Schröder-Bernstein" index="シュレーダー＝ベルンシュタインの定理|しゅれーだーべるんしゅたいんのていり, カントール＝ベルンシュタインの定理|かんとーるべるんしゅたいんのていり"}
+$A\preccurlyeq B$ かつ $B\preccurlyeq A$ ならば $A\approx B$。
+:::
+
+::: intuition
+単射が両方向にあれば全単射がある、つまり $\preccurlyeq$ は $\approx$ を同一視すれば反対称的である。証明のアイデアは「$A$ のうち $g$ で $B$ から来ていない部分」を出発点として、$g\circ f$ で押し出していった部分 $C$ では $f$ を、それ以外では $g^{-1}$ を使う、というものである。$C$ の外の元は必ず $g$ の像に入っているので $g^{-1}$ が使え、$C$ が $g\circ f$ で閉じていることが二つの規則の衝突を防ぐ。
+:::
+
+::: proof
+単射 $f\colon A\to B$, $g\colon B\to A$ を固定する。
+
+**Step 1（出発点と押し出し）.** $C_{0}=A\setminus g[B]$ とおき、$n\in\omega$ について再帰的に
+$$
+C_{n+1}=g\bigl[f[C_{n}]\bigr]
+\label{set:eq-sb-chain}
+$$
+と定める。写像 $X\mapsto g[f[X\cap A]]$ は置換公理で定まるクラス関数なので、$\omega$ 上の再帰（\ref{set:transfinite-recursion}）により列 $\langle C_{n}\mid n\in\omega\rangle$ が関数（集合）として存在する。各 $C_{n}\subseteq A$ は $n$ についての帰納法で明らか（$C_{0}\subseteq A$、$C_{n+1}\subseteq\ran g\subseteq A$）。置換公理で集合 $\{C_{n}\mid n\in\omega\}$ を作り、和集合公理（\ref{set:ax-union}）で
+$$
+C=\bigcup_{n\in\omega}C_{n}\subseteq A
+$$
+とおく。$C$ の性質として次の二つを使う：(a) $C_{0}\subseteq C$、したがって $x\in A\setminus C$ ならば $x\in g[B]$。(b) $x\in C$ ならば $g(f(x))\in C$（$x\in C_{n}$ なら $g(f(x))\in C_{n+1}$）。
+
+**Step 2（$h$ の定義）.** $x\in A\setminus C$ なら (a) より $x=g(y)$ となる $y\in B$ があり、$g$ の単射性からそのような $y$ はただ一つである。これを $g^{-1}(x)$ と書く。$h\colon A\to B$ を
+$$
+h(x)=\begin{cases} f(x) & (x\in C),\\ g^{-1}(x) & (x\in A\setminus C)\end{cases}
+$$
+で定める。各 $x$ に対して値がただ一つに決まるので、分出公理で $h\subseteq A\times B$ が関数として得られる。
+
+**Step 3（$h$ は単射）.** $x\neq x'$ で $h(x)=h(x')$ と仮定して矛盾を導く。
+- $x,x'\in C$ のとき：$f(x)=f(x')$ となり $f$ の単射性に反する。
+- $x,x'\notin C$ のとき：$g^{-1}(x)=g^{-1}(x')=y$ なら $x=g(y)=x'$ となり矛盾。
+- $x\in C$, $x'\notin C$ のとき（逆も同様）：$f(x)=g^{-1}(x')$ だから両辺に $g$ を施して $x'=g(f(x))$。(b) より $x'\in C$ となり矛盾。
+
+**Step 4（$h$ は全射）.** $y\in B$ を任意にとり、$x=g(y)\in A$ とおく。
+- $x\notin C$ のとき：$h(x)=g^{-1}(x)=y$。
+- $x\in C$ のとき：$x\in C_{n}$ となる $n$ をとる。$x=g(y)\in g[B]$ なので $x\notin C_{0}$、よって $n=m+1$ と書け、\eqref{set:eq-sb-chain} より $x=g(f(z))$ となる $z\in C_{m}\subseteq C$ がある。$g(y)=g(f(z))$ と $g$ の単射性から $y=f(z)$。$z\in C$ なので $h(z)=f(z)=y$。
+
+以上より $h$ は全単射で、$A\approx B$。
+
+::: hypcheck
+- **$f,g$ の単射性**：$g$ の単射性は Step 2（$g^{-1}(x)$ の一意性）・Step 3 第 2 の場合・Step 4 で、$f$ の単射性は Step 3 第 1 の場合で使った。
+- **無限公理**（$\omega$ の存在）と **$\omega$ 上の再帰**：Step 1 で列 $\langle C_{n}\rangle$ を作るのに使った。
+- **置換公理**：$g[f[X]]$ と $\{C_{n}\mid n\in\omega\}$ を集合として作るのに使った。**和集合公理**：$C$ を作るのに使った。**分出公理**：$C_{0}$ と $h$ を切り出すのに使った。
+- 使わなかったもの：**選択公理**（$g^{-1}(x)$ は一意に決まるので選ぶ必要がない）、**冪集合の公理**（$C$ を「最小の閉集合」として $\mathcal{P}(A)$ の中で定義する代わりに、再帰で下から作った）。
+- **排中律**：Step 2 の場合分け $x\in C$ / $x\notin C$ に本質的に使う（下の補足を参照）。
+:::
+:::
+
+::: example
+- $\omega$ と $\omega\setminus\{0\}$：包含写像と $n\mapsto n+1$ がそれぞれ単射なので対等（この場合は $n\mapsto n+1$ 自体が全単射だが、定理はそれを見つけなくても対等性を保証する）。
+- （実数は後の章で扱うが）閉区間 $[0,1]$ と開区間 $(0,1)$：$(0,1)\subseteq[0,1]$ と $x\mapsto\frac{1}{4}+\frac{x}{2}$ が単射なので対等。証明の構成をたどると、$g(x)=x$（$(0,1)\to[0,1]$ の包含）、$f(x)=\frac14+\frac{x}{2}$ として $C_{0}=\{0,1\}$、$C$ はその $f$ による軌道 $\{0,\frac14,\frac38,\dots\}\cup\{1,\frac34,\frac58,\dots\}$ となり、$h$ は $C$ 上で $f$、それ以外で恒等写像になる。
+:::
+
+::: supplement
+**軌道による見方.** $A$ と $B$ を交わらないように並べ、各元から $f$ または $g$ で進む矢印と、逆にたどれるなら戻る矢印を考えると、元は「連鎖」に分かれる：両方向に無限に続くもの・$A\setminus g[B]$ から始まるもの・$B\setminus f[A]$ から始まるもの・有限の輪。Step 1 の $C$ は「$A\setminus g[B]$ から始まる連鎖」に属する $A$ の元全体であり、そこでは $f$ で、残りでは $g^{-1}$ で対応させている。
+
+**冪集合を使う証明.** 写像 $\Phi(X)=A\setminus g\bigl[B\setminus f[X]\bigr]$ は $\mathcal{P}(A)$ 上の単調写像で、その不動点 $X$（たとえば $\bigcap\{X\subseteq A\mid \Phi(X)\subseteq X\}$）をとれば、$X$ 上で $f$、$A\setminus X$ 上で $g^{-1}$ とすると全単射になる（クナスター＝タルスキの不動点定理の特別な場合）。見通しはよいが冪集合の公理を使う。上の証明はそれを避けている。
+
+**前提を変えると.**
+- *全射の場合*：「全射 $A\to B$ と全射 $B\to A$ があれば $A\approx B$」は選択公理のもとでは本定理から従う（全射から単射を作れる：\ref{set:surjection-cardinality}）が、$\ZF$ だけでは証明できない。たとえば $\omega_{1}$（\ref{set:aleph}）から $\mathcal{P}(\omega)$ への単射が存在しない $\ZF$ のモデル（到達不能基数の存在が無矛盾ならば存在する。\ref{set:surjection-cardinality} の補足）では、$A=\mathcal{P}(\omega)$ と $B=\mathcal{P}(\omega)\times\{0\}\cup\omega_{1}\times\{1\}$ の間に両向きの全射がある（$\mathcal{P}(\omega)\approx\mathcal{P}(\omega)\times 2$ と、$\ZF$ で作れる全射 $\mathcal{P}(\omega)\to\omega_{1}$ を使う）が、$A\approx B$ なら $\omega_{1}$ が $\mathcal{P}(\omega)$ に単射されてしまう。
+- *構造を保つ写像の場合*：同型の類似は一般に成り立たない。たとえば $[0,1]$ と $(0,1)$ は互いに相手の部分空間に同相に埋め込めるが同相ではない（$[0,1]$ はコンパクト）。階数 2 と 3 の自由群も互いに相手の部分群として埋め込めるが同型ではない。集合という「構造のない」対象だからこそ、元ごとに $f$ と $g^{-1}$ を継ぎはぎできる。
+- *論理を変えると*：直観主義論理では Step 2 の場合分けができず、本定理は（排中律を含意してしまうため）証明できないことが知られている。
+:::
+
+## 整列可能な集合の濃度 {#set:sec-cardinality}
+
+::: lemma {#set:well-orderable-iff-ordinal keywords="well-orderable"}
+集合 $A$ について、$A$ が整列可能であることと、ある順序数 $\alpha$ について $\alpha\approx A$ となることは同値である。さらに、整列可能な集合 $B$ について $A\preccurlyeq B$ ならば $A$ も整列可能である。
+:::
+
+::: proof
+**Step 1（⇒）.** $R$ が $A$ の整列順序なら、\ref{set:ordinal-type} により順序同型 $(\alpha,\in)\cong(A,R)$ があり、特に全単射 $\alpha\to A$ がある。
+
+**Step 2（⇐）.** 全単射 $f\colon\alpha\to A$ があれば、$R=\{(f(\xi),f(\eta))\mid \xi<\eta<\alpha\}\subseteq A\times A$ とおく。$f$ が全単射なので $(A,R)$ は $(\alpha,<)$ と同型であり、$\alpha$ の整列性（\ref{set:ordinal-well-ordered}）がそのまま移って $R$ は $A$ の整列順序になる。
+
+**Step 3（後半）.** 単射 $i\colon A\to B$ と $B$ の整列順序 $S$ をとり、$R=\{(a,a')\in A\times A\mid (i(a),i(a'))\in S\}$ とおく。$A$ の空でない部分集合 $X$ に対し $i[X]$ の $S$-最小元を $i(a_{0})$ とすれば、$a_{0}$ が $X$ の $R$-最小元である（$i$ の単射性で $a_{0}$ は一意、全順序性も $i$ の単射性から従う）。
+
+::: hypcheck
+- **置換公理**：Step 2 で $R$ を集合として作るのに、また \ref{set:ordinal-type} の中で使う。
+- 選択公理は使わない。整列可能性は仮定として与えられている。
+:::
+:::
+
+::: definition 濃度 {#set:cardinality keywords="cardinality, cardinal of a well-orderable set" index="濃度|のうど"}
+$A$ が整列可能な集合のとき、$\alpha\approx A$ を満たす最小の順序数 $\alpha$ を $A$ の**濃度**といい、$\lvert A\rvert$ で表す。$\lvert A\rvert$ を含む式（たとえば $\lvert A\rvert<\alpha$）を書くときは、$A$ が整列可能であることも主張に含めるものとする。
+:::
+
+::: intuition
+整列可能な集合は順序数と対等なので、「対等な順序数のうち最小のもの」を大きさの代表値にする。対等な集合の同値類はクラスになって扱いにくいが、代表を順序数から一つ選べば大きさを集合として扱える。最小元がとれるのは、$\mathbf{ON}$ が整列されているからである。
+:::
+
+::: supplement
+**定義が正当であること.** \ref{set:well-orderable-iff-ordinal} より $\alpha\approx A$ となる $\alpha$ が少なくとも一つ（$\alpha_{0}$ とする）ある。分出公理で集合 $\{\beta\in\alpha_{0}+1\mid \beta\approx A\}$ を作ると、これは $\alpha_{0}$ を含む空でない順序数の集合なので最小元をもつ。それが $\alpha\approx A$ となる順序数全体（クラス）の最小元でもある（$\beta\approx A$ かつ $\beta>\alpha_{0}$ なる $\beta$ は、最小元より大きい）。
+
+**選択公理との関係.** 選択公理（\ref{set:ax-choice}：任意の集合は整列可能）のもとでは $\lvert A\rvert$ はすべての集合に定義され、$A\mapsto\lvert A\rvert$ は各 $\approx$-同値類から代表を一つずつ選ぶ操作になる。選択公理がなければ整列できない集合があってもよく、そのような $A$ については記号 $\lvert A\rvert$ は（\ref{set:cardinality-order} の略記の中を除き）使わない。
+:::
+
+::: proposition {#set:cardinality-basic keywords="properties of cardinality"}
+$A,B$ を整列可能な集合とする。
+1. $\lvert A\rvert\approx A$。
+2. $A\approx B\iff \lvert A\rvert=\lvert B\rvert$。
+3. $A\preccurlyeq B\iff \lvert A\rvert\le\lvert B\rvert$（右辺は順序数としての大小）。
+4. $A\prec B\iff \lvert A\rvert<\lvert B\rvert$。
+5. $\bigl\lvert\lvert A\rvert\bigr\rvert=\lvert A\rvert$。
+
+したがって整列可能な集合の間では、\ref{set:cardinality-order} の略記 $\lvert A\rvert\le\lvert B\rvert$ などは順序数 $\lvert A\rvert,\lvert B\rvert$ の大小として読んでも同じ意味になる。
+:::
+
+::: proof
+**Step 1（1）.** 定義そのもの。
+
+**Step 2（2）.** $A\approx B$ なら、\ref{set:cardinality-order-basic} (2) により任意の $\alpha$ について $\alpha\approx A\iff\alpha\approx B$。条件を満たす順序数のクラスが同じなので最小元も同じ。逆に $\lvert A\rvert=\lvert B\rvert$ なら $A\approx\lvert A\rvert=\lvert B\rvert\approx B$。
+
+**Step 3（3 の ⇐）.** $\lvert A\rvert\le\lvert B\rvert$ は $\lvert A\rvert\subseteq\lvert B\rvert$ を意味するので $A\approx\lvert A\rvert\preccurlyeq\lvert B\rvert\approx B$、\ref{set:cardinality-order-basic} より $A\preccurlyeq B$。
+
+**Step 4（3 の ⇒）.** $A\preccurlyeq B$ とし、$\lvert B\rvert<\lvert A\rvert$ と仮定する。すると $\lvert A\rvert\approx A\preccurlyeq B\approx\lvert B\rvert$ より $\lvert A\rvert\preccurlyeq\lvert B\rvert$、また $\lvert B\rvert\subseteq\lvert A\rvert$ より $\lvert B\rvert\preccurlyeq\lvert A\rvert$。\ref{set:schroder-bernstein} により $\lvert B\rvert\approx\lvert A\rvert\approx A$。$\lvert B\rvert<\lvert A\rvert$ はこれが $A$ と対等な最小の順序数であることに反する。順序数の三分律から $\lvert A\rvert\le\lvert B\rvert$。
+
+**Step 5（4）.** (2) と (3) を合わせる：$A\preccurlyeq B$ かつ $A\not\approx B$ $\iff$ $\lvert A\rvert\le\lvert B\rvert$ かつ $\lvert A\rvert\neq\lvert B\rvert$。
+
+**Step 6（5）.** (1) の $\lvert A\rvert\approx A$ に (2) を適用する（$\lvert A\rvert$ は順序数なので整列可能）。
+
+::: hypcheck
+- **シュレーダー＝ベルンシュタインの定理**：Step 4 で使った。これにより選択公理なしで (3) が示せる。
+- **順序数の三分律**（\ref{set:ordinal-well-ordered}）：Step 4 の最後。
+:::
+:::
+
+::: supplement
+(3) からわかるように、整列可能な集合の範囲では濃度の比較は全順序である：任意の二つについて $A\preccurlyeq B$ か $B\preccurlyeq A$ が成り立つ。すべての集合についてこの**比較可能性**が成り立つことは選択公理と同値である（\ref{set:ac-equivalences} の周辺で扱う。証明には次々ページのハルトークスの定理 \ref{set:hartogs} を使う）。
+:::
+
+## 基数 {#set:sec-cardinal}
+
+::: definition 基数 {#set:cardinal keywords="cardinal, initial ordinal" index="基数|きすう, 始数|しすう"}
+順序数 $\alpha$ が $\alpha=\lvert\alpha\rvert$ を満たすとき、$\alpha$ を**基数**という。同値な言い換え：$\alpha$ は基数 $\iff$ すべての $\beta<\alpha$ について $\beta\not\approx\alpha$。基数を表すのに $\kappa,\lambda,\mu$ を用いる。
+:::
+
+::: intuition
+基数とは「それより小さい順序数とは対等にならない」順序数、すなわち**同じ大きさの順序数の中で最初のもの**である（そのため始数 initial ordinal ともいう）。$\lvert A\rvert$ の値はつねに基数である（\ref{set:cardinality-basic} (5)）。
+:::
+
+::: example
+- $\omega+1$ は基数ではない：$h(\omega)=0$, $h(n)=n+1$（$n\in\omega$）で全単射 $\omega+1\to\omega$ が得られる。同様に $\omega+\omega$ や $\omega\cdot\omega$ も $\omega$ と対等で、基数ではない（\ref{set:kappa-times-kappa} を参照）。
+- $0,1,2,\dots$ と $\omega$ は基数である（\ref{set:omega-cardinal}）。$\omega$ より大きい基数の存在は \ref{set:hartogs} で示す。
+:::
+
+::: supplement
+**言い換えの確認.** $\alpha=\lvert\alpha\rvert$ とする。$\beta<\alpha$ かつ $\beta\approx\alpha$ なら $\lvert\alpha\rvert\le\beta<\alpha$ で矛盾。逆に、すべての $\beta<\alpha$ が $\beta\not\approx\alpha$ なら、$\alpha\approx\alpha$ より $\lvert\alpha\rvert\le\alpha$ で、$\lvert\alpha\rvert<\alpha$ は $\lvert\alpha\rvert\approx\alpha$ に反するので $\lvert\alpha\rvert=\alpha$。
+:::
+
+::: lemma {#set:cardinal-between keywords="|α| ≤ β ≤ α"}
+$\lvert\alpha\rvert\le\beta\le\alpha$ ならば $\lvert\beta\rvert=\lvert\alpha\rvert$。特に、任意の $\alpha$ について $\lvert\alpha\rvert\le\alpha$ である。
+:::
+
+::: intuition
+ある順序数 $\alpha$ と、その濃度 $\lvert\alpha\rvert$ の間にある順序数はすべて $\alpha$ と同じ大きさである。すなわち順序数の列は、基数から次の基数の手前までが「同じ大きさの区間」に分かれている。
+:::
+
+::: proof
+**Step 1.** $\beta\le\alpha$ は $\beta\subseteq\alpha$ なので $\beta\preccurlyeq\alpha$。
+
+**Step 2.** $\lvert\alpha\rvert\le\beta$ は $\lvert\alpha\rvert\subseteq\beta$ なので $\alpha\approx\lvert\alpha\rvert\preccurlyeq\beta$、よって $\alpha\preccurlyeq\beta$。
+
+**Step 3.** \ref{set:schroder-bernstein} より $\alpha\approx\beta$、\ref{set:cardinality-basic} (2) より $\lvert\beta\rvert=\lvert\alpha\rvert$。
+
+**Step 4（後半）.** $\alpha\approx\alpha$ なので最小性から $\lvert\alpha\rvert\le\alpha$。
+
+::: hypcheck
+- **シュレーダー＝ベルンシュタインの定理**：Step 3。ここでは両方向の単射が包含写像と $\approx$ から自動的に得られている。
+:::
+:::
+
+## 自然数と $\omega$ {#set:sec-natural-cardinals}
+
+::: theorem 鳩の巣原理 {#set:pigeonhole keywords="pigeonhole principle, n < n+1" index="鳩の巣原理|はとのすげんり, 部屋割り論法|へやわりろんぽう"}
+任意の $n\in\omega$ について、単射 $n+1\to n$ は存在しない。したがって $n\prec n+1$ である。
+:::
+
+::: intuition
+$n+1$ 羽の鳩を $n$ 個の巣に入れると、どこかの巣に 2 羽以上入る。$\ZF$ の自然数 $n=\{0,1,\dots,n-1\}$ を使って、これを帰納法で厳密に示す。帰納法の一歩は「最後の巣 $n$ を使う鳩を最後の鳩 $n+1$ と入れ替えておき、その 1 羽と 1 巣を取り除く」という操作である。
+:::
+
+::: proof
+$P(n)$ を「単射 $n+1\to n$ は存在しない」とし、$\{n\in\omega\mid P(n)\}$ に \ref{set:peano} の帰納法を適用する。以下で、自然数 $m$ について $m+1=m\cup\{m\}$ かつ $m\notin m$ なので $(m+1)\setminus\{m\}=m$ であることを繰り返し使う。
+
+**Step 1（$n=0$）.** $0+1=\{0\}\neq\varnothing$ で $0=\varnothing$。空でない集合から空集合への関数は存在しない（$0$ の像が $\varnothing$ に入らなければならない）ので $P(0)$ は成り立つ。
+
+**Step 2（帰納段階の設定）.** $P(n)$ を仮定し、単射 $f\colon n+2\to n+1$ があったとして矛盾を導く。ここで $n+2=(n+1)\cup\{n+1\}$、$n+1=n\cup\{n\}$ である。
+
+**Step 3（$n$ が像に入らない場合）.** $n\notin\ran f$ なら $f$ の値はすべて $(n+1)\setminus\{n\}=n$ に入る。$n+1\subseteq n+2$ への制限 $f\restr{n+1}\colon n+1\to n$ は単射で、$P(n)$ に反する。
+
+**Step 4（$n$ が像に入る場合：入れ替え）.** $f(k)=n$ となる $k\in n+2$ をとる（$f$ の単射性から一意）。$\tau\colon n+2\to n+2$ を $k$ と $n+1$ を入れ替え他を動かさない写像とする（$k=n+1$ なら恒等写像）。$\tau$ は全単射なので $f'=f\circ\tau\colon n+2\to n+1$ は単射で、$f'(n+1)=f(k)=n$ を満たす。
+
+**Step 5（最後の鳩と巣を除く）.** $m\in n+1$ なら $m\neq n+1$ なので、$f'$ の単射性から $f'(m)\neq f'(n+1)=n$、したがって $f'(m)\in(n+1)\setminus\{n\}=n$。よって $f'\restr{n+1}\colon n+1\to n$ は単射となり、$P(n)$ に反する。
+
+**Step 6（結論）.** Step 3・Step 5 のどちらでも矛盾するので $P(n+1)$ が成り立つ。帰納法により全ての $n\in\omega$ で $P(n)$。後半は、$n\subseteq n+1$ から $n\preccurlyeq n+1$、もし $n\approx n+1$ なら逆写像が単射 $n+1\to n$ となり矛盾することから従う。
+
+::: hypcheck
+- **$\omega$ 上の帰納法**（\ref{set:peano}）と**分出公理**（帰納法を適用する集合 $\{n\in\omega\mid P(n)\}$ を作る）。
+- **$m\notin m$**（順序数は自分自身の元でない、\ref{set:ordinal-irreflexive}）：$(m+1)\setminus\{m\}=m$ を導くのに使った。正則性公理は要らない。
+- 選択公理は使わない。$k$ は単射性から一意に定まり、$\tau$ は明示的に定義される。
+:::
+:::
+
+::: corollary {#set:finite-ordinal-comparison keywords="m < n implies no injection"}
+$m<n$ を満たす $m,n\in\omega$ について、単射 $n\to m$ は存在しない。また、任意の順序数 $\alpha$ と $n\in\omega$ について、$\alpha\approx n$ ならば $\alpha=n$。
+:::
+
+::: proof
+**Step 1（前半）.** $m<n$ なら $m+1\le n$、すなわち $m+1\subseteq n$。単射 $n\to m$ があれば $m+1$ への制限が単射 $m+1\to m$ となり、\ref{set:pigeonhole} に反する。
+
+**Step 2（後半、$\alpha<n$ の場合）.** $n$ は推移的なので $\alpha\in n\subseteq\omega$、つまり $\alpha$ は自然数で $\alpha<n$。$\alpha\approx n$ なら単射 $n\to\alpha$ があり Step 1 に反する。
+
+**Step 3（後半、$n<\alpha$ の場合）.** $n+1\le\alpha$ なので $n+1\subseteq\alpha\approx n$ より単射 $n+1\to n$ が得られ、\ref{set:pigeonhole} に反する。
+
+**Step 4.** 順序数の三分律より $\alpha=n$。
+
+::: hypcheck
+- **鳩の巣原理**（\ref{set:pigeonhole}）：Step 1・Step 3。**$n$ の推移性**（自然数は順序数）：Step 2。**順序数の三分律**（\ref{set:ordinal-well-ordered}）：Step 4。
+- 選択公理・冪集合の公理は使わない。
+:::
+:::
+
+::: corollary 自然数と ω は基数である {#set:omega-cardinal keywords="natural numbers are cardinals, omega is a cardinal" index="可算基数|かさんきすう"}
+各 $n\in\omega$ は基数であり、$\omega$ も基数である。
+:::
+
+::: proof
+**Step 1（$n$）.** $\beta<n$ かつ $\beta\approx n$ となる $\beta$ があれば、\ref{set:finite-ordinal-comparison} の後半から $\beta=n$ となり $\beta<n$ に反する。よって $n$ は基数（\ref{set:cardinal} の言い換え）。
+
+**Step 2（$\omega$）.** $\beta<\omega$ とすると $\beta=n$ は自然数。$n\approx\omega$ なら、$n+1\subseteq\omega$ より $n+1\preccurlyeq\omega\approx n$ で単射 $n+1\to n$ が得られ、\ref{set:pigeonhole} に反する。よって $\omega$ は基数。
+
+::: hypcheck
+- **無限公理**：$\omega$ が集合であることに使う（主張の前提）。証明の本体は鳩の巣原理だけに依存する。
+- 選択公理・冪集合の公理は使わない。
+:::
+:::
+
+## 有限集合と可算集合 {#set:sec-finite-sets}
+
+::: definition 有限集合・可算集合 {#set:finite-set keywords="finite set, countable set, infinite set, uncountable set" index="有限集合|ゆうげんしゅうごう, 無限集合|むげんしゅうごう, 可算集合|かさんしゅうごう, 非可算集合|ひかさんしゅうごう"}
+集合 $A$ が $\lvert A\rvert<\omega$（すなわちある $n\in\omega$ について $A\approx n$）のとき $A$ は**有限**であるといい、$\lvert A\rvert\le\omega$（すなわち $A\preccurlyeq\omega$）のとき**可算**であるという。有限でない集合を**無限**、可算でない集合を**非可算**という。$\lvert A\rvert=\omega$ のとき**可算無限**という。
+:::
+
+::: intuition
+有限とは「ある自然数 $n$ で数え尽くせる」こと、可算とは「自然数で番号を付けられる（重複なく）」ことである。どちらの条件も整列可能性を含んでいる（\ref{set:well-orderable-iff-ordinal} の後半）。「無限」「非可算」は否定で定義されるので、選択公理がなければ整列できない無限集合も含む。
+:::
+
+::: supplement
+可算集合の定義で $A\preccurlyeq\omega$ と $\lvert A\rvert\le\omega$ が一致するのは、\ref{set:well-orderable-iff-ordinal} で $A$ が整列可能になり、\ref{set:cardinality-basic} (3) が使えるからである。なお、ここまでの公理（冪集合の公理を除く $\ZF$）からは非可算集合の存在は証明できない：$\ZFC$ の中で、遺伝的に可算な集合全体 $H(\omega_{1})$ は冪集合の公理以外の $\ZFC$ の公理を満たし、その中ではすべての集合が可算である（Kunen, *Set Theory*, 第 IV 章）。非可算集合は次のページで冪集合の公理から得られる（\ref{set:cantor-strict}）。
+:::
+
+::: proposition 有限集合の基本性質 {#set:finite-basic keywords="subset of finite set, Dedekind finite" index="デデキント有限|ででぎんとゆうげん"}
+1. 任意の $n\in\omega$ について、単射 $n\to n$ はすべて全射である。
+2. $A$ が有限集合なら、単射 $A\to A$ はすべて全射である。特に $A$ はその真部分集合と対等でない。
+3. 有限集合の部分集合は有限であり、$B\subseteq A$ なら $\lvert B\rvert\le\lvert A\rvert$、さらに $B\subsetneq A$ なら $\lvert B\rvert<\lvert A\rvert$。
+4. $\omega$ は無限集合である。整列可能な集合 $A$ について、$A$ が無限 $\iff$ $\lvert A\rvert\ge\omega$ $\iff$ $\omega\preccurlyeq A$。
+5. $A$ が有限で $x\notin A$ なら $A\cup\{x\}$ も有限で、$\lvert A\cup\{x\}\rvert=\lvert A\rvert+1$。
+:::
+
+::: proof
+**Step 1（(1)、帰納法）.** $n=0$ では自明（空写像は全射）。$n$ で成り立つとし、単射 $f\colon n+1\to n+1$ をとる。$\sigma\colon n+1\to n+1$ を二つの値 $f(n)$ と $n$ を入れ替え他を動かさない写像（$f(n)=n$ なら恒等写像）とし、$g=\sigma\circ f$ とおく。$\sigma$ は全単射なので $g$ は単射で、$g(n)=\sigma(f(n))=n$。$m<n$ なら $g(m)\neq g(n)=n$ なので $g(m)\in(n+1)\setminus\{n\}=n$、すなわち $g\restr{n}\colon n\to n$ は単射であり、帰納法の仮定より全射。よって $\ran g\supseteq n\cup\{n\}=n+1$ で $g$ は全射、$f=\sigma^{-1}\circ g$ も全射である。
+
+**Step 2（(2)）.** 全単射 $p\colon n\to A$ をとり、単射 $f\colon A\to A$ に対し $p^{-1}\circ f\circ p\colon n\to n$ を考えると単射なので (1) より全射、したがって $f=p\circ(p^{-1}fp)\circ p^{-1}$ も全射。$A$ が真部分集合 $B$ と対等なら、全単射 $A\to B$ は $A\to A$ の全射でない単射になり矛盾。
+
+**Step 3（(3)）.** $B\subseteq A\approx n$ なら $B\preccurlyeq n$。$n$ は整列可能なので \ref{set:well-orderable-iff-ordinal} から $B$ も整列可能で、\ref{set:cardinality-basic} (3) より $\lvert B\rvert\le\lvert A\rvert=n<\omega$。$B\subsetneq A$ なら (2) より $B\not\approx A$ なので \ref{set:cardinality-basic} (4) より $\lvert B\rvert<\lvert A\rvert$。
+
+**Step 4（(4)）.** $\omega$ は基数（\ref{set:omega-cardinal}）なので $\lvert\omega\rvert=\omega\not<\omega$、無限である。整列可能な $A$ について、$A$ が有限でない $\iff$ $\lvert A\rvert\not<\omega$ $\iff$（三分律）$\lvert A\rvert\ge\omega$ $\iff$（\ref{set:cardinality-basic} (3)、$\lvert\omega\rvert=\omega$）$\omega\preccurlyeq A$。
+
+**Step 5（(5)）.** 全単射 $p\colon n\to A$ に対し $q=p\cup\{(n,x)\}$ とおく。$n\notin n$ より $q$ は関数 $n+1\to A\cup\{x\}$、$x\notin A$ より単射、明らかに全射。よって $A\cup\{x\}\approx n+1$ で、$n+1\in\omega$ は基数なので $\lvert A\cup\{x\}\rvert=n+1$。
+
+::: hypcheck
+- **$\omega$ 上の帰納法**：Step 1（鳩の巣原理と同じ「入れ替えて最後の元を除く」操作を使う）。**対の公理・和集合公理**：Step 5 で $q$ を作るのに使った。
+- 選択公理は使わない。Step 2 で全単射 $p$ を一つとるのは「存在する対象を一つ固定する」だけで、選択公理は要らない。
+:::
+:::
+
+::: supplement
+**デデキント有限.** 「真部分集合と対等にならない」集合を**デデキント有限**という。(2) は「有限 ⇒ デデキント有限」を示している。逆「デデキント有限 ⇒ 有限」（無限集合は可算無限部分集合をもつ）は可算選択公理から従うが、$\ZF$ だけでは証明できないことが知られている（無限なのにデデキント有限な集合をもつ $\ZF$ のモデルがある）。ただし整列可能な集合については (4) により選択公理なしで同値になる：$\lvert A\rvert\ge\omega$ なら $\omega\preccurlyeq A$ で、$\omega$ の像の上で $n\mapsto n+1$ とずらせば真部分集合への全単射が作れる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

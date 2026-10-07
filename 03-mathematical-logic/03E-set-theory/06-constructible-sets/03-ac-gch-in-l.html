@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L における AC と GCH | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/06-constructible-sets/03-ac-gch-in-l.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# L における AC と GCH {#set:page-ac-gch-in-l keywords="well-ordering of L, <_L, V = L implies AC, V = L implies GCH, Con(ZF) implies Con(ZFC + GCH), L(kappa) = H(kappa), countable transitive models of V = L, weakly inaccessible cardinals"}
+
+$\ZF$ の中で、$\mathbf{V}=\mathbf{L}$ から AC と GCH が導かれることを示す。前ページの結果と合わせると、$\ZF$ の定理として $\mathrm{AC}^{\mathbf{L}}$ と $\mathrm{GCH}^{\mathbf{L}}$ が成り立ち、$\mathbf{L}$ は $\ZFC+\mathrm{GCH}$ のモデルとなる。AC については、$L_{\alpha}$ の整列順序を再帰で**明示的に**定義する（\ref{set:v-eq-l-implies-ac} とは別の、$\mathbf{HOD}$ に頼らない証明）。GCH は、$\mathbf{V}=\mathbf{L}$ のもとで $\omega$ の部分集合がすべて可算な段階で構成される（$\mathcal{P}(\omega)\subseteq L_{\omega_{1}}$）という事実の一般化から従う。最後に $\mathbf{V}=\mathbf{L}$ の集合モデルの存在を調べる。（Kunen 第 VI 章 §4 に対応する。）
+
+## 記法と定義の確認 {#set:sec-ac-gch-notation}
+
+::: notation
+- 基本の体系は $\ZF$。$\mathcal{D}$、$L_{\alpha}$、$\mathbf{L}$、$\mathbf{L}$-ランク $\rho$ と \ref{set:l-alpha-basic}, \ref{set:l-rank-basic}, \ref{set:l-ordinals}, \ref{set:l-alpha-size}, \ref{set:l-omega} は \ref{set:page-l-basic}、\ref{set:l-model-zf}, \ref{set:l-absolute}, \ref{set:l-satisfies-v-eq-l}, \ref{set:l-minimal-class}, \ref{set:l-in-set-model}, \ref{set:v-eq-l-models-unique}, $o(M)$ は \ref{set:page-zf-in-l} のとおり。
+- $\mathrm{Df}$, $\mathrm{En}$ と \ref{set:df-en}, \ref{set:df-absolute} は \ref{set:page-formalizing-definability} のとおり。
+- 可算推移的モデルへの反映（\ref{set:reflection-transitive}, \ref{set:ctm-exists}）と証明の相対化（\ref{set:relativized-proof}）は \ref{set:page-reflection}、$H(\kappa)$ と \ref{set:h-kappa-zfc-minus-p}, \ref{set:inaccessible-model}, \ref{set:h-kappa-functions}, \ref{set:con-no-inaccessible} は \ref{set:page-h-kappa} のとおり。
+- 後続基数 $\alpha^{+}$（\ref{set:successor-cardinal}。$\alpha\ge\omega$ なら $\alpha^{+}=\{\beta:\lvert\beta\rvert\le\lvert\alpha\rvert\}$：\ref{set:successor-cardinal-basic}）、GCH（\ref{set:gch}）、到達不能基数（\ref{set:inaccessible}, \ref{set:strong-implies-weak}）を使う。
+:::
+
+## L の整列順序 {#set:sec-well-order-of-l}
+
+鍵となる考え方は次のとおりである。$L_{\alpha}$ の整列順序があれば ${}^{n}L_{\alpha}$ に辞書式順序が誘導され、$L_{\alpha+1}=\mathcal{D}(L_{\alpha})$ の元は「$L_{\alpha}$ の有限列 $s$ と、可算個の定義の仕方の一つ」で定まるので、その組を比べることで $L_{\alpha+1}$ を整列できる。厳密には $\mathrm{Df}$ の枚挙 $\mathrm{En}$ を使う。
+
+::: definition $L_{\alpha}$ の整列順序 {#set:l-alpha-well-order keywords="canonical well-ordering of L(alpha)" index="L の整列順序|えるのせいれつじゅんじょ"}
+$\alpha$ に関する再帰で、$L_{\alpha}$ 上の関係 $\lhd_{\alpha}$ を定める。
+
+1. $\lhd_{0}\defeq0$。
+2. $\alpha$ が極限なら、$x,y\in L_{\alpha}$ について
+$$
+x\lhd_{\alpha}y\;:\iff\;\rho(x)<\rho(y)\ \lor\ \bigl(\rho(x)=\rho(y)\land x\lhd_{\rho(x)+1}y\bigr).
+$$
+3. $\lhd_{\alpha}$ が与えられたとき、各 $n$ について ${}^{n}L_{\alpha}$ 上の辞書式順序を $s\lhd_{\alpha}^{n}t:\iff\exists k<n\,(s\restr k=t\restr k\land s(k)\lhd_{\alpha}t(k))$ とする。$X\in L_{\alpha+1}$ について、
+   - $n_{X}$ を、$X=\{x\in L_{\alpha}:s^{\frown}\langle x\rangle\in R\}$ となる $s\in{}^{n}L_{\alpha}$ と $R\in\mathrm{Df}(L_{\alpha},n+1)$ が存在する最小の $n$、
+   - $s_{X}$ を、ある $R\in\mathrm{Df}(L_{\alpha},n_{X}+1)$ で $X=\{x\in L_{\alpha}:s^{\frown}\langle x\rangle\in R\}$ となる $s\in{}^{n_{X}}L_{\alpha}$ のうち $\lhd_{\alpha}^{n_{X}}$-最小のもの、
+   - $m_{X}$ を、$X=\{x\in L_{\alpha}:s_{X}{}^{\frown}\langle x\rangle\in\mathrm{En}(m,L_{\alpha},n_{X}+1)\}$ となる最小の $m\in\omega$
+
+   とし（$m_{X}$ の存在は \ref{set:df-en}）、$X,Y\in L_{\alpha+1}$ について $X\lhd_{\alpha+1}Y$ を次のいずれかと定める。
+   - (a) $X,Y\in L_{\alpha}$ かつ $X\lhd_{\alpha}Y$。
+   - (b) $X\in L_{\alpha}$ かつ $Y\notin L_{\alpha}$。
+   - (c) $X,Y\notin L_{\alpha}$ かつ、$n_{X}<n_{Y}$、または $n_{X}=n_{Y}$ で $s_{X}\lhd_{\alpha}^{n_{X}}s_{Y}$、または $n_{X}=n_{Y}$, $s_{X}=s_{Y}$ で $m_{X}<m_{Y}$。
+
+$\lhd(\alpha)\defeq\lhd_{\alpha}$ とも書く。
+:::
+
+3 の $s_{X}$ の定義は $\lhd_{\alpha}$ が整列順序であることを前提にしているので、定義を進めながら $\lhd_{\alpha}$ が整列順序であることを帰納的に確かめる必要がある。非常に形式的に述べるなら、$\lhd_{\alpha}$ が整列順序でなければ $\lhd_{\alpha+1}\defeq0$ と定めておき、次の補題で $\lhd_{\alpha}$ がつねに整列順序であることを示す。つまり \ref{set:l-alpha-well-order} は定義と補題を兼ねている。
+
+::: lemma ◁_α の性質 {#set:l-alpha-well-order-basic}
+すべての $\alpha$ について次が成り立つ。
+1. $\lhd_{\alpha}$ は $L_{\alpha}$ の整列順序である。
+2. $x,y\in L_{\alpha}$ について $x\lhd_{\alpha}y\iff\rho(x)<\rho(y)\lor(\rho(x)=\rho(y)\land x\lhd_{\rho(x)+1}y)$。
+3. $\beta\le\alpha$ ならば、$L_{\beta}$ は $\lhd_{\alpha}$ に関する $L_{\alpha}$ の始切片で、$\lhd_{\alpha}\cap L_{\beta}^{2}=\lhd_{\beta}$。
+:::
+
+::: proof
+$\alpha$ に関する帰納法で 1, 2 を示し、3 は 2 から導く。
+
+**2.** $\alpha=0$ は自明、極限は定義そのもの。$\alpha=\beta+1$ とし、$x,y\in L_{\alpha}$ とする。両方が $L_{\beta}$ に属するなら、$x\lhd_{\alpha}y\iff x\lhd_{\beta}y$ で、帰納法の仮定（$\beta$ についての 2）より右辺は 2 の条件と同値。$x\in L_{\beta}$, $y\notin L_{\beta}$ なら $\rho(x)<\beta=\rho(y)$ で、両辺とも真。$x\notin L_{\beta}$, $y\in L_{\beta}$ なら両辺とも偽。両方とも $L_{\beta}$ に属さないなら $\rho(x)=\rho(y)=\beta$、$\rho(x)+1=\alpha$ で、両辺は同じ。
+
+**3（2 から）.** $x\in L_{\beta}$, $y\in L_{\alpha}$, $y\lhd_{\alpha}x$ なら 2 より $\rho(y)\le\rho(x)<\beta$ なので $y\in L_{\beta}$（\ref{set:l-rank-basic}）。$x,y\in L_{\beta}$ なら、2 を $\alpha$ と $\beta$ の両方に適用すると、$x\lhd_{\alpha}y$ と $x\lhd_{\beta}y$ はともに同じ条件と同値。
+
+**1.** $\alpha=0$ は自明。
+- **極限 $\alpha$.** 各 $\gamma<\alpha$ について、$\rho$ の値が $\gamma$ である $L_{\alpha}$ の元は $L_{\gamma+1}$ に属し（$\gamma+1<\alpha$）、帰納法の仮定より $\lhd_{\gamma+1}$ で整列される。$\lhd_{\alpha}$ は「まず $\rho$ で比べ、同じなら $\lhd_{\rho+1}$ で比べる」順序なので全順序であり、空でない $Z\subseteq L_{\alpha}$ は、$\gamma\defeq\min\{\rho(z):z\in Z\}$ について $\{z\in Z:\rho(z)=\gamma\}$ の $\lhd_{\gamma+1}$-最小元を最小元にもつ。
+- **$\alpha=\beta+1$.** 帰納法の仮定より $\lhd_{\beta}$ は整列順序なので、各 $\lhd_{\beta}^{n}$ は ${}^{n}L_{\beta}$ を整列し（有限個の整列順序の辞書式順序）、$n_{X},s_{X},m_{X}$ が定まる。写像 $X\mapsto\langle n_{X},s_{X},m_{X}\rangle$ は $L_{\alpha}\setminus L_{\beta}$ 上で単射である（$X=\{x:s_{X}{}^{\frown}\langle x\rangle\in\mathrm{En}(m_{X},L_{\beta},n_{X}+1)\}$ で $X$ が三つ組から復元される）。(c) は三つ組の集合 $\bigcup_{n}(\{n\}\times{}^{n}L_{\beta}\times\omega)$ 上の「$n$、次に $\lhd_{\beta}^{n}$、次に $m$」の辞書式順序を引き戻したもので、この順序は整列順序である。(a), (b) と合わせて、$\lhd_{\alpha}$ は $L_{\beta}$ を $\lhd_{\beta}$ で並べ、その後に新しい元を (c) で並べた整列順序である。
+:::
+
+::: theorem V = L ならば AC（直接の証明） {#set:v-eq-l-ac-direct}
+（$\ZF$）$\mathbf{V}=\mathbf{L}\to\mathrm{AC}$。
+:::
+
+::: proof
+$\mathbf{V}=\mathbf{L}$ のもとで任意の集合 $x$ はある $L_{\alpha}$ に属し、$L_{\alpha}$ の推移性より $x\subseteq L_{\alpha}$。$\lhd_{\alpha}\cap x^{2}$ は $x$ を整列する（\ref{set:l-alpha-well-order-basic} の 1）。
+:::
+
+$\lhd_{\alpha}$ を使って $\mathbf{L}$ 全体も整列できる。
+
+::: definition L の整列順序 {#set:l-well-order keywords="<_L, canonical well-ordering of L" index="<_L|えるのせいれつじゅんじょ"}
+$x<_{L}y$ とは、$x,y\in \mathbf{L}$ であって
+$$
+\rho(x)<\rho(y)\ \lor\ \bigl(\rho(x)=\rho(y)\land x\lhd_{\rho(x)+1}y\bigr)
+$$
+であることをいう。
+:::
+
+::: lemma {#set:l-well-order-basic}
+$<_{L}$ は $\mathbf{L}$ を整列する。各 $L_{\alpha}$ は $<_{L}$ に関する $\mathbf{L}$ の始切片で、$<_{L}\cap L_{\alpha}^{2}=\lhd_{\alpha}$。
+:::
+
+::: proof
+\ref{set:l-alpha-well-order-basic} の 2, 3 より、$x,y\in L_{\alpha}$ について $x<_{L}y\iff x\lhd_{\alpha}y$。始切片であることも同補題の 2 と \ref{set:l-rank-basic} から（$y<_{L}x\in L_{\alpha}$ なら $\rho(y)\le\rho(x)<\alpha$）。整列性：空でない部分クラス $Z\subseteq \mathbf{L}$ の元 $z$ をとり $z\in L_{\alpha}$ とすると、$Z\cap L_{\alpha}$ の $\lhd_{\alpha}$-最小元が $Z$ の $<_{L}$-最小元である（始切片なので）。
+:::
+
+$\mathbf{HOD}$ について得られた整列順序と異なり、$\mathbf{L}$ の整列順序は次の意味で絶対的である。
+
+::: lemma 整列順序の絶対性 {#set:l-well-order-absolute}
+1. 関数 $\alpha\mapsto\lhd_{\alpha}$ は $\ZF-\mathrm{P}$ の推移的なモデルについて絶対的である。
+2. $M$ が $\ZF-\mathrm{P}$ の推移的な真のクラスのモデルなら、$<_{L}$ は $M$ について絶対的である。
+3. $M$ が $\ZF-\mathrm{P}$ の推移的な集合モデルで $x,y\in \mathbf{L}^{M}$ なら、$x<_{L}y\iff(x<_{L}y)^{M}$。
+:::
+
+::: proof
+**1.** $\lhd_{\alpha}$ は $\alpha$ に関する再帰で定義され、各段の操作は絶対的な概念から作られている：$L_{\alpha}$（\ref{set:l-absolute}）とそれから定まる $\rho$、${}^{n}L_{\alpha}$、$\mathrm{Df}$, $\mathrm{En}$（\ref{set:df-absolute}）、辞書式順序（Δ₀）、「最小の $n\in\omega$」「$\lhd_{\alpha}^{n}$-最小の $s$」「最小の $m\in\omega$」（絶対的な集合の上の有界な量化で書ける）。したがって \ref{set:absolute-wf-recursion} より絶対的。**2.** \ref{set:l-minimal-class} より $\mathbf{L}\subseteq M$ なので、$x,y\in \mathbf{L}$ について 1 と $\rho$ の絶対性から。**3.** \ref{set:l-in-set-model} より（$M$ が $\ZF-\mathrm{P}$ の十分な公理を満たすので）$x,y\in \mathbf{L}^{M}=L_{o(M)}$ で、ある $\alpha<o(M)$ について $x,y\in L_{\alpha}$。1 より従う。
+:::
+
+3 で「$<_{L}$ は $M$ について絶対的」とまでは言えない。たとえば第 VII 章では、$\ZF+\mathbf{V}\neq \mathbf{L}$ の任意の有限部分のモデルとなる推移的な $M\in \mathbf{L}$ を作る方法を示す。そのとき $x,y\in M\setminus \mathbf{L}^{M}$ は $<_{L}$ では比べられるが、$(<_{L})^{M}$ では比べられない。同様に、関数 $L_{\alpha}$ は絶対的だが、述語 $x\in \mathbf{L}$ は絶対的でない。$x\in \mathbf{L}$ だが $(x\notin \mathbf{L})^{M}$ なら、$x\in L_{\alpha}$ となる $\alpha$ は $o(M)$ 以上である。
+
+## GCH {#set:sec-gch-in-l}
+
+$\mathbf{V}=\mathbf{L}$ を仮定すると、CH は $\omega$ のすべての部分集合が可算な段階で構成されること、すなわち $\mathcal{P}(\omega)\subseteq L_{\omega_{1}}$ から従う。$\lvert L_{\omega_{1}}\rvert=\omega_{1}$（\ref{set:l-alpha-size}）なので $2^{\omega}\le\omega_{1}$ となるからである。より一般に次が成り立つ。
+
+::: theorem 部分集合は早く構成される {#set:l-subsets-early keywords="if V = L then P(L(alpha)) is a subset of L(alpha^+), Gödel's condensation argument" index="ゲーデルの凝縮論法|げーでるのぎょうしゅくろんぽう"}
+$\mathbf{V}=\mathbf{L}$ ならば、すべての無限順序数 $\alpha$ について $\mathcal{P}(L_{\alpha})\subseteq L_{\alpha^{+}}$。
+:::
+
+::: proof
+**Step 0.** \ref{set:v-eq-l-models-unique} の有限個の連言 $X$ をとる：推移的な集合 $M$ について $X^{M}$ なら $M=L_{o(M)}$。$\mathbf{V}=\mathbf{L}$ を仮定すると、\ref{set:v-eq-l-ac-direct} より AC が使える。
+
+**Step 1.** $A\in\mathcal{P}(L_{\alpha})$ を固定し、$Y\defeq L_{\alpha}\cup\{A\}$ とおく。$L_{\alpha}$ は推移的で $A\subseteq L_{\alpha}$ なので $Y$ は推移的。\ref{set:l-alpha-size}（AC）より $\lvert Y\rvert=\lvert\alpha\rvert$。
+
+**Step 2（凝縮）.** \ref{set:reflection-transitive} を $\mathbf{Z}=\mathbf{V}$、文 $X$、推移的な集合 $Y$ に適用すると、推移的な集合 $M$ で $Y\subseteq M$、$\lvert M\rvert\le\max(\omega,\lvert Y\rvert)=\lvert\alpha\rvert$、$X^{M}\leftrightarrow X$ となるものがある。$X$ は $\ZF-\mathrm{P}+\mathbf{V}=\mathbf{L}$ の公理の連言で、$\mathbf{V}=\mathbf{L}$ のもとで（$\ZF$ の公理とともに）真なので $X^{M}$。よって $M=L_{o(M)}$。
+
+**Step 3.** $o(M)\subseteq M$ より $\lvert o(M)\rvert\le\lvert M\rvert\le\lvert\alpha\rvert$ なので、\ref{set:successor-cardinal-basic} の 2 より $o(M)<\alpha^{+}$。したがって $A\in Y\subseteq M=L_{o(M)}\subseteq L_{\alpha^{+}}$。
+:::
+
+::: hypcheck
+- Step 2 はレーヴェンハイム–スコーレムの議論（\ref{set:reflection-countable}）の後にモストフスキの崩壊を適用するもの（\ref{set:reflection-transitive}）で、崩壊が $Y$ を動かさないのは $Y$ が推移的だからである。これが Step 1 で $Y$ を推移的にとった理由である。
+- $\mathbf{V}=\mathbf{L}$ は、$X$ が $\mathbf{V}$ で真であること（Step 2）と AC（Step 1, 2）に使った。
+- $\alpha$ が無限であることは $\lvert Y\rvert=\lvert\alpha\rvert$ と $\max(\omega,\lvert\alpha\rvert)=\lvert\alpha\rvert$ に使った。
+:::
+
+::: corollary V = L ならば AC と GCH {#set:v-eq-l-gch keywords="V = L implies GCH" index="L における GCH|えるにおけるじーしーえいち"}
+（$\ZF$）$\mathbf{V}=\mathbf{L}\to\mathrm{AC}+\mathrm{GCH}$。
+:::
+
+::: proof
+AC は \ref{set:v-eq-l-ac-direct}。GCH：無限基数 $\kappa$ について、$\kappa\subseteq L_{\kappa}$（\ref{set:l-ordinals}）なので \ref{set:l-subsets-early} より $\mathcal{P}(\kappa)\subseteq\mathcal{P}(L_{\kappa})\subseteq L_{\kappa^{+}}$。よって $2^{\kappa}\le\lvert L_{\kappa^{+}}\rvert=\kappa^{+}$（\ref{set:l-alpha-size}）。カントールの定理より $2^{\kappa}\ge\kappa^{+}$ なので $2^{\kappa}=\kappa^{+}$。
+:::
+
+::: corollary {#set:ac-gch-in-l}
+（$\ZF$）$(\mathrm{AC}+\mathrm{GCH})^{\mathbf{L}}$。
+:::
+
+::: proof
+$\mathbf{L}$ は $\ZF+\mathbf{V}=\mathbf{L}$ のモデル（\ref{set:l-satisfies-v-eq-l}）で、$\mathrm{AC}+\mathrm{GCH}$ は $\ZF+\mathbf{V}=\mathbf{L}$ の有限個の公理から証明できる（\ref{set:v-eq-l-gch}）ので、\ref{set:relativized-proof} より $\mathbf{L}$ で成り立つ。
+:::
+
+::: corollary GCH の相対無矛盾性 {#set:con-zfc-gch keywords="Con(ZF) implies Con(ZFC + GCH), Gödel" index="GCH の無矛盾性|じーしーえいちのむむじゅんせい"}
+$\mathrm{Con}(\ZF)\to\mathrm{Con}(\ZFC+\mathrm{GCH})$。
+:::
+
+::: proof
+\ref{set:l-model-zf}, \ref{set:ac-gch-in-l} と \ref{set:relative-consistency-lemma}。
+:::
+
+GCH や、次ページの $\lozenge$, $\lozenge^{+}$ など、$\mathbf{V}=\mathbf{L}$ からの多くの証明は、プラトン主義者なら「$\mathbf{V}$ の初等部分構造をとる」、すなわちすべての論理式が $W,\mathbf{V}$ について絶対的な集合 $W$ を作り、モストフスキの崩壊で推移的な $M$ を得る、と説明したくなる議論を含む。形式的には、すべての論理式を同時に扱うことを避けるため、これを少し修正する必要がある。上では、与えられた有限個の論理式が絶対的な $W$ をとった。別の方法は、次ページの $\lozenge^{+}$ の証明のように、集合 $N$ についての関係 $W\prec N$（\ref{set:elementary-inclusion}）を使い、$N$ を $\mathbf{L}$ ではなく適当な $L_{\kappa}$ にとることである。
+
+また、ゲーデル（1940）は論理学者でない人に説明するため、$\mathbf{L}$ をもっと組合せ論的に扱う方法を与えた。そこでは $\mathcal{D}$ を繰り返す代わりに、$F_{1}(x,y)=\{x,y\}$, $F_{3}(x,y)=x\setminus y$ のような八つの非常に単純な演算を定め、それらを繰り返し適用して $\mathbf{L}$ を作る。レーヴェンハイム–スコーレムの議論は $F_{1},\dots,F_{8}$ で閉じることに帰着され、$\mathbf{L}$ の扱いから論理の痕跡がすべて取り除かれる（Kunen による。本サイトではこの方法を扱っていない）。
+
+## V = L の集合モデル {#set:sec-set-models-of-v-eq-l}
+
+\ref{set:ctm-exists} では、$\ZFC$ の中で $\ZFC$ の任意の有限部分の可算推移的モデルの存在が証明できることを見た。これは次のように改良できる。
+
+::: theorem V = L の可算推移的モデル {#set:ctm-v-eq-l keywords="countable transitive models of finite fragments of ZF + V = L, provable in ZF"}
+（$\ZF$）$\varphi_{1},\dots,\varphi_{n}$ を $\ZF+\mathbf{V}=\mathbf{L}$ の公理とする。このとき
+$$
+\exists M\;\Bigl(\lvert M\rvert=\omega\land M\text{ は推移的}\land\bigwedge_{i=1}^{n}\varphi_{i}^{M}\Bigr).
+\label{set:eq-ctm-v-eq-l}
+$$
+:::
+
+::: proof
+**Step 1.** $\ZF+\mathbf{V}=\mathbf{L}$ は AC を証明する（\ref{set:v-eq-l-gch}）ので、\ref{set:ctm-exists}（$S=\ZF+\mathbf{V}=\mathbf{L}+\mathrm{AC}$）より $\ZF+\mathbf{V}=\mathbf{L}\vdash$ \eqref{set:eq-ctm-v-eq-l}。したがって $\ZF$ の中で、\eqref{set:eq-ctm-v-eq-l} は $\mathbf{L}$ に相対化して成り立つ（\ref{set:l-satisfies-v-eq-l}, \ref{set:relativized-proof}）。
+
+**Step 2.** $M\in \mathbf{L}$ を、\eqref{set:eq-ctm-v-eq-l} の条件を $\mathbf{L}$ の中で満たすものとする。$(\lvert M\rvert=\omega)^{\mathbf{L}}$ なので、$f\in \mathbf{L}$ で（$f$ は $\omega$ から $M$ への全単射）$^{\mathbf{L}}$ となるものがあり、これは絶対的（\ref{set:absolute-relations-functions}）なので $f$ は本当に全単射、よって $\lvert M\rvert=\omega$。（$M$ は推移的）$^{\mathbf{L}}$ は Δ₀ なので $M$ は推移的。最後に $M\subseteq \mathbf{L}$（$\mathbf{L}$ は推移的）なので、$(\varphi_{i}^{M})^{\mathbf{L}}$ は $\varphi_{i}^{M}$ と同じ論理式に帰着する（$M$ への相対化の量化子 $\exists x\in M$ を $\mathbf{L}$ に相対化しても、$M\subseteq \mathbf{L}$ なので同値）。よって $M$ は $\mathbf{V}$ で \eqref{set:eq-ctm-v-eq-l} の条件を満たす。
+:::
+
+十分多くの公理を並べれば、\ref{set:v-eq-l-models-unique} より $M$ はある $\omega<\delta<\omega_{1}$ についての $L_{\delta}$ の形でなければならない。しかし、この種の反映定理ではいつものように、そのような $\delta$ の簡単な組合せ論的な記述はない。次に、正則な $\kappa>\omega$ についての $L_{\kappa}$ が、冪集合公理を除いて $\ZF+\mathbf{V}=\mathbf{L}$ のすべての公理を満たすことを示す。
+
+::: lemma L(κ) = H(κ) {#set:l-kappa-eq-h-kappa keywords="if V = L then L(kappa) = H(kappa) for regular kappa"}
+$\mathbf{V}=\mathbf{L}$ ならば、$\kappa>\omega$ が正則基数のとき $L_{\kappa}=H(\kappa)$。
+:::
+
+::: proof
+$\mathbf{V}=\mathbf{L}$ より AC が使える。
+
+**（$\subseteq$）** $x\in L_{\kappa}$ なら（$\kappa$ は極限）ある $\alpha<\kappa$ で $x\in L_{\alpha}$、推移性より $\operatorname{trcl}(x)\subseteq L_{\alpha}$。$\lvert L_{\alpha}\rvert\le\max(\omega,\lvert\alpha\rvert)<\kappa$（\ref{set:l-alpha-size}, \ref{set:l-omega}。$\kappa>\omega$ は基数）なので $x\in H(\kappa)$。
+
+**（$\supseteq$）** $H(\kappa)\setminus L_{\kappa}\neq\varnothing$ と仮定し、基礎の公理でその $\in$-極小元 $A$ をとる。$H(\kappa)$ は推移的（\ref{set:h-kappa-basic}）なので $A\subseteq H(\kappa)$、極小性より $A\subseteq L_{\kappa}$。$\lvert A\rvert<\kappa$ で $\kappa$ は正則なので、$\sup\{\rho(a)+1:a\in A\}<\kappa$、すなわちある $\alpha<\kappa$ で $A\subseteq L_{\alpha}$。$\alpha\ge\omega$ としてよい。\ref{set:l-subsets-early} より $A\in L_{\alpha^{+}}$。$\lvert\alpha\rvert<\kappa$ で $\kappa$ は基数なので $\alpha^{+}\le\kappa$、よって $A\in L_{\kappa}$。これは $A$ のとり方に反する。
+:::
+
+Kunen によれば、この補題は $\kappa$ が特異な場合にも成り立つ（Kunen 第 VI 章の演習 4。本サイトでは確かめていない）。
+
+::: corollary L(κ) のモデル {#set:l-kappa-model keywords="L(kappa) is a model of ZF - P + V = L for regular uncountable kappa"}
+（$\ZF$）$\kappa>\omega$ が正則基数なら、$\ZF-\mathrm{P}+\mathbf{V}=\mathbf{L}$ のすべての公理は $L_{\kappa}$ で真である。$\kappa$ が弱到達不能なら、冪集合公理も $L_{\kappa}$ で真である。
+:::
+
+::: proof
+**$\mathbf{V}=\mathbf{L}$ の場合.** \ref{set:l-kappa-eq-h-kappa} より $L_{\kappa}=H(\kappa)$ で、\ref{set:h-kappa-zfc-minus-p} より $\ZFC-\mathrm{P}$ の公理が成り立つ。$(\mathbf{V}=\mathbf{L})^{L_{\kappa}}$：$L_{\kappa}$ は $\ZF-\mathrm{P}$ の推移的なモデルなので、$\alpha<\kappa$ について $L_{\alpha}^{L_{\kappa}}=L_{\alpha}$（\ref{set:l-absolute}）で、$L_{\kappa}$ の各元はある $L_{\alpha}$（$\alpha<\kappa$、$\alpha\in L_{\kappa}$）に属する。$\kappa$ が弱到達不能なら、GCH（\ref{set:v-eq-l-gch}）より強到達不能（\ref{set:strong-implies-weak}）で、\ref{set:inaccessible-model} より冪集合公理も成り立つ。
+
+**$\ZF$ の場合.** \ref{set:ctm-v-eq-l} と同様に $\mathbf{L}$ の中で議論する。$\kappa$ が正則なら（$\kappa$ は正則）$^{\mathbf{L}}$ である：$\mathbf{L}$ の中の共終写像 $f\colon\beta\to\kappa$（$\beta<\kappa$）は本当に共終写像なので、$\mathbf{V}$ で正則なら $\mathbf{L}$ でも正則（基数であることも同様に下に保たれる）。$\kappa$ が弱到達不能なら（$\kappa$ は弱到達不能）$^{\mathbf{L}}$ である：さらに $\lambda<\kappa$ について $(\lambda^{+})^{\mathbf{L}}\le\lambda^{+}<\kappa$（$\mathbf{V}$ の基数は $\mathbf{L}$ でも基数なので、$\mathbf{L}$ の後続基数は $\mathbf{V}$ の後続基数以下）なので、$\kappa$ は $\mathbf{L}$ で極限基数。$\mathbf{L}$ は $\ZF+\mathbf{V}=\mathbf{L}$ を満たすので、前段の結果を $\mathbf{L}$ の中で適用すると、各公理 $\varphi$ について $(\varphi^{L_{\kappa}})^{\mathbf{L}}$。$L_{\kappa}^{\mathbf{L}}=L_{\kappa}\subseteq \mathbf{L}$ なので $(\varphi^{L_{\kappa}})^{\mathbf{L}}\leftrightarrow\varphi^{L_{\kappa}}$。
+:::
+
+::: corollary 弱到達不能基数の非存在の無矛盾性 {#set:con-no-weakly-inaccessible keywords="Con(ZF) implies Con(ZFC + GCH + no weakly inaccessible cardinal)"}
+$\mathrm{Con}(\ZF)\to\mathrm{Con}(\ZFC+\mathrm{GCH}+\lnot\exists\alpha\,(\alpha\text{ は弱到達不能}))$。
+:::
+
+::: proof
+\ref{set:con-no-inaccessible} の改良で、証明もよく似ている。$\mathrm{Wi}(\kappa)$ で「$\kappa$ は弱到達不能」を表し、
+$$
+\mathbf{M}\defeq\{x\in \mathbf{L}:\forall\kappa\,(\mathrm{Wi}(\kappa)^{\mathbf{L}}\to x\in L_{\kappa})\}
+$$
+とおく。$\ZF$ の中では、$\mathbf{M}=\mathbf{L}$ か、$\mathbf{M}=L_{\kappa_{0}}$（$\kappa_{0}$ は $\mathbf{L}$ で弱到達不能な最小の $\kappa$）かは決まらないが、どちらの場合も $\mathbf{M}$ は $\ZFC+\mathrm{GCH}+\lnot\exists\alpha\,\mathrm{Wi}(\alpha)$ を満たすことを示す。
+
+**場合 1：$\mathrm{Wi}(\kappa)^{\mathbf{L}}$ となる $\kappa$ がない.** $\mathbf{M}=\mathbf{L}$ で、\ref{set:ac-gch-in-l} より $\ZFC+\mathrm{GCH}$ を満たし、場合の仮定より $(\lnot\exists\alpha\,\mathrm{Wi}(\alpha))^{\mathbf{L}}$。
+
+**場合 2：そのような $\kappa$ がある.** 最小のものを $\kappa_{0}$ とすると、$\kappa\le\kappa'$ なら $L_{\kappa}\subseteq L_{\kappa'}$ なので $\mathbf{M}=L_{\kappa_{0}}$。$\mathbf{L}$ の中で $\kappa_{0}$ は弱到達不能なので、\ref{set:l-kappa-model} を $\mathbf{L}$ の中で適用して（\ref{set:l-kappa-model} の後半と同じく $L_{\kappa_{0}}^{\mathbf{L}}=L_{\kappa_{0}}$ を使い）、$L_{\kappa_{0}}$ は $\ZF+\mathbf{V}=\mathbf{L}$ を満たす。したがって \ref{set:v-eq-l-gch} と \ref{set:relativized-proof} より $\mathrm{AC}+\mathrm{GCH}$ も満たす。最後に $\alpha<\kappa_{0}$ について $\mathrm{Wi}^{L_{\kappa_{0}}}(\alpha)\leftrightarrow\mathrm{Wi}^{\mathbf{L}}(\alpha)$ を示す。$\mathbf{L}$ の中では GCH より $\kappa_{0}$ は強到達不能で、前段より $L_{\kappa_{0}}=H(\kappa_{0})^{\mathbf{L}}$。$\mathbf{L}$ の中で \ref{set:h-kappa-functions} を使うと、$L_{\kappa_{0}}$ の元の間の関数で $\mathbf{L}$ に属するものはすべて $L_{\kappa_{0}}$ に属するので、「基数である」「正則である」は $L_{\kappa_{0}},\mathbf{L}$ について絶対的（\ref{set:inaccessible-absolute} の証明の Step 1, 2 と同じ）。「極限基数である」は「$\forall\lambda<\alpha\,\exists\mu<\alpha\,(\lambda<\mu\land\mu\text{ は基数})$」なので、有界量化と絶対的な論理式の組み合わせで絶対的。よって $\kappa_{0}$ の最小性から、$L_{\kappa_{0}}$ で弱到達不能な $\alpha$ はない。
+
+いずれの場合も各公理 $\varphi$ について $\varphi^{\mathbf{M}}$ が $\ZF$ で証明でき（場合分けは \ref{set:con-no-inaccessible} の証明と同じ）、$\mathbf{M}\neq\varnothing$ なので \ref{set:relative-consistency-lemma} による。
+:::
+
+## 問題 {#set:sec-ac-gch-problems}
+
+::: problem {#set:prob-ch-in-l}
+$\mathbf{V}=\mathbf{L}$ のもとで $\mathcal{P}(\omega)\subseteq L_{\omega_{1}}$ であることを、\ref{set:l-subsets-early} から導け。また、$\mathcal{P}(\omega)$ の各元はある可算な $\alpha$ について $L_{\alpha}$ に属することを説明せよ。
+:::
+
+::: solution
+$\omega\subseteq L_{\omega}$ なので $\mathcal{P}(\omega)\subseteq\mathcal{P}(L_{\omega})\subseteq L_{\omega^{+}}=L_{\omega_{1}}$。$\omega_{1}$ は極限順序数なので $L_{\omega_{1}}=\bigcup_{\alpha<\omega_{1}}L_{\alpha}$ で、各 $x\subseteq\omega$ はある可算な $\alpha$ について $L_{\alpha}$ に属する。
+:::
+
+::: problem {#set:prob-l-order-type}
+$\mathbf{V}=\mathbf{L}$ のもとで、$<_{L}$ の $L_{\omega_{1}}$ への制限の順序型は $\omega_{1}$ であることを示せ。
+:::
+
+::: solution
+$L_{\omega_{1}}$ は $<_{L}$ の始切片で、$<_{L}\cap L_{\omega_{1}}^{2}=\lhd_{\omega_{1}}$（\ref{set:l-well-order-basic}）。各 $x\in L_{\omega_{1}}$ について、その前者の全体は $L_{\rho(x)+1}$ に含まれ（始切片）、$\rho(x)+1<\omega_{1}$ なので可算（\ref{set:l-alpha-size}, \ref{set:l-omega}）。よって順序型 $\theta$ の各始切片は可算で、$\theta\le\omega_{1}$。一方 $\lvert L_{\omega_{1}}\rvert=\omega_{1}$ なので $\theta\ge\omega_{1}$。よって $\theta=\omega_{1}$。
+:::
+
+::: supplement
+**前提の検討.**
+- \ref{set:l-alpha-well-order} は選択公理を使わずに $L_{\alpha}$ の整列順序を**定義**する。そのため $\mathbf{V}=\mathbf{L}\to\mathrm{AC}$ は $\ZF$ の定理である。
+- \ref{set:l-subsets-early} の証明の核心は、$\mathbf{V}=\mathbf{L}$ の推移的なモデルは $L_{\delta}$ の形に限る（\ref{set:v-eq-l-models-unique}）という一意性と、レーヴェンハイム–スコーレムの議論による大きさの評価である。この議論は**凝縮論法**と呼ばれることがある（一般にはこう言われている）。
+- \ref{set:l-kappa-eq-h-kappa} の（$\supseteq$）で $\kappa$ の正則性を、$A\subseteq L_{\alpha}$ となる $\alpha<\kappa$ をとるのに使った。
+
+**関連する結果.** \ref{set:con-zfc-gch} はゲーデル（1938, 1940）の結果である。GCH の否定の無矛盾性はコーエン（1963）の強制法による（第 VII 章）。\ref{set:l-subsets-early} の議論をより精密にしたものが、ジェンセンの微細構造理論（fine structure）の出発点になったことが知られている（一般にはこう言われている。本サイトでは扱っていない）。
+
+**高い視点から：自己相似性と凝縮.** \ref{set:l-subsets-early} の証明は、$\mathbf{L}$ の「どの断片を切り取って推移的につぶしても、また $\mathbf{L}$ の初めの部分 $L_{\delta}$ が現れる」という自己相似性（凝縮）に基づく。$A\subseteq L_{\alpha}$ を含む小さな初等部分構造をとってつぶすと $L_{\delta}$ になり、$\delta$ は大きさの制約から $\alpha^{+}$ より小さい。したがって $A$ は $\alpha^{+}$ より前に構成済みである。フラクタル図形の任意の部分を拡大すると全体と同じ形が現れるように、$\mathbf{L}$ の小さな模型は $\mathbf{L}$ の始切片そのものになる。この硬さ（剛性）が、$\mathbf{L}$ で連続体の大きさが最小になる（GCH）理由である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

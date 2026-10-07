@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>命題論理のコンパクト性定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/01-propositional-logic/03-compactness.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 命題論理のコンパクト性定理 {#logic:page-prop-compactness keywords="compactness theorem for propositional logic, König's lemma, ultrafilter, Tychonoff"}
+
+論理式の集合が充足可能であるための必要十分条件は、その有限部分集合がすべて充足可能であることである。この**コンパクト性定理**を三つの方法で証明する。(1) 完全性定理から、(2) 命題変数が可算個のときにケーニッヒの補題から（選択公理を使わない）、(3) 一般の場合に超フィルターから（純粋に意味論的に）。三つ目の証明は、一階述語論理の超積とウォシュの定理（\ref[超積とウォシュの定理]{model:page-ultraproducts}）の原型である。最後に、無限グラフの彩色への応用を述べる。
+
+## 記法と定義の確認 {#logic:sec-prop-compactness-notation}
+
+::: notation
+- 論理式、真理値割り当て $v$ と真理値 $\bar{v}$、充足可能性、$\Sigma\models\varphi$ は \ref{logic:prop-formula}, \ref{logic:truth-assignment}, \ref{logic:tautology} のとおり。$\Sigma$ の有限部分集合がすべて充足可能であることを、$\Sigma$ が**有限充足可能**であるという。
+- 完全性定理（\ref{logic:prop-completeness}）、一致補題（\ref{logic:prop-coincidence}）を使う。
+- $2^{<\omega}$ は $\{0,1\}$ の元の有限列全体、$s\in2^{<\omega}$ の長さを $\lvert s\rvert$、始切片の関係を $s\subset t$ と書く。フィルターと超フィルターは \ref{set:filter}, \ref{set:boolean-ultrafilter} のとおり。
+:::
+
+::: theorem コンパクト性定理（命題論理） {#logic:prop-compactness keywords="compactness theorem, propositional compactness" index="コンパクト性定理|こんぱくとせいていり"}
+論理式の集合 $\Sigma$ が充足可能であるための必要十分条件は、$\Sigma$ が有限充足可能であることである。
+:::
+
+必要性は明らかなので、以下で十分性を三通りに示す。
+
+## 証明 1：完全性定理から {#logic:sec-prop-compactness-proof1}
+
+::: proof
+$\Sigma$ が充足可能でなければ $\Sigma\models\bot$、完全性定理より $\Sigma\vdash\bot$。構文論的コンパクト性（\ref{logic:prop-derivability-basic} の 1）より有限の $\Sigma_{0}\subset\Sigma$ で $\Sigma_{0}\vdash\bot$、健全性定理より $\Sigma_{0}$ は充足可能でない。
+
+::: hypcheck
+- 完全性定理を経由するので、$\mathrm{PV}$ が非可算ならツォルンの補題（選択公理）を使う。可算なら使わない。
+- コンパクト性の源は、導出が有限個の前提しか使わないことである。
+:::
+:::
+
+## 証明 2：ケーニッヒの補題から {#logic:sec-prop-compactness-proof2}
+
+::: lemma 二分木のケーニッヒの補題 {#logic:binary-konig keywords="König's lemma for binary trees, weak König's lemma" index="ケーニッヒの補題|けーにっひのほだい"}
+$T\subset2^{<\omega}$ が始切片について閉じた無限集合ならば、写像 $b\colon\omega\to\{0,1\}$ で、すべての $n$ について $b\restr{n}\in T$ となるもの（無限の枝）が存在する。この証明に選択公理は要らない。
+:::
+
+::: proof
+**Step 1.** $s\in2^{<\omega}$ について、$T_{s}\defeq\{t\in T:s\subset t\}$ とおく。$T_{\varnothing}=T$ は無限である。$T_{s}$ が無限ならば $T_{s0}$ か $T_{s1}$ の少なくとも一方は無限である（$T_{s}\subset\{s\}\cup T_{s0}\cup T_{s1}$ で、有限集合の和は有限だから）。
+
+**Step 2.** $b\restr{n}$ を $n$ に関する再帰で定める。$b\restr{0}=\varnothing$。$T_{b\restr{n}}$ が無限であるとき、$T_{(b\restr{n})0}$ が無限なら $b(n)\defeq0$、そうでなければ $b(n)\defeq1$ とする。Step 1 より $T_{b\restr{n+1}}$ は無限である。この定義は「$0$ を優先する」という規則で値が一つに決まるので、選択公理は使わない。
+
+**Step 3.** $T_{b\restr{n}}$ は無限なので空でなく、その元 $t$ は $b\restr{n}\subset t\in T$ を満たす。$T$ は始切片について閉じているので $b\restr{n}\in T$。
+:::
+
+::: proof 証明 2（$\mathrm{PV}$ が可算の場合）
+**Step 1（設定）.** $\mathrm{PV}$ が有限の場合は \ref{logic:prop-compactness-finite-pv} で扱う。以下 $\mathrm{PV}=\{p_{0},p_{1},\dots\}$（互いに異なる）とする。$s\in2^{<\omega}$ を、$p_{i}$（$i<\lvert s\rvert$）に $s(i)$ を割り当てる部分的な割り当てとみなす。
+
+**Step 2（木）.** $\Sigma_{n}\defeq\{\varphi\in\Sigma:\mathrm{Var}(\varphi)\subset\{p_{0},\dots,p_{n-1}\}\}$ とし、
+$$
+\begin{aligned}
+T\defeq\{s\in2^{<\omega}:\ &\Sigma_{\lvert s\rvert}\text{ のどの元も、}s\text{ を延ばした}\\
+&\text{割り当てで真理値 }1\text{ をとる}\}
+\end{aligned}
+$$
+とおく。一致補題より、$\varphi\in\Sigma_{\lvert s\rvert}$ の真理値は $s$ だけで決まるので、この定義は延ばし方によらない。$s\subset t$, $t\in T$ なら $\Sigma_{\lvert s\rvert}\subset\Sigma_{\lvert t\rvert}$ なので $s\in T$：$T$ は始切片について閉じている。
+
+**Step 3（$T$ は無限）.** 各 $n$ について長さ $n$ の元が $T$ にあることを示す。$p_{0},\dots,p_{n-1}$ だけを含む論理式の真理値の振る舞い（$2^{n}$ 個の部分割り当ての上の関数）は有限個（$2^{2^{n}}$ 通り）しかない。論理式全体は可算で数え上げが固定できるので、各振る舞いについて $\Sigma_{n}$ の中で番号最小のものを選ぶと、$\Sigma_{n}$ と同じ部分割り当てで充足される有限集合 $F_{n}\subset\Sigma_{n}$ が選択公理なしに得られる。有限充足可能性より $F_{n}$ を充足する割り当て $w$ があり、その $p_{0},\dots,p_{n-1}$ への制限が $T$ の長さ $n$ の元である。
+
+**Step 4（枝）.** \ref{logic:binary-konig} より $b\colon\omega\to\{0,1\}$ で $b\restr{n}\in T$（すべての $n$）となるものがある。$v(p_{i})\defeq b(i)$ とおく。$\varphi\in\Sigma$ なら、ある $n$ で $\varphi\in\Sigma_{n}$ で、$b\restr{n}\in T$ より $\bar{v}(\varphi)=1$。
+
+::: hypcheck
+- **$\mathrm{PV}$ の可算性**：Step 1 の番号付けと Step 3 の選び方。選択公理を使わずに済むのはこのためである。
+- **有限充足可能性**：Step 3 で $T$ が無限であることに使った。
+- **二分木であること**：\ref{logic:binary-konig} の Step 1（各頂点の子が有限個）。無限に枝分かれする木では、無限の枝がなくても無限でありうる。一般の $\omega$-木のケーニッヒの補題は \ref{set:konig-tree-lemma}（そこでは選択公理を使う）。
+:::
+:::
+
+::: remark 証明 2 の Step 1 の補足 {#logic:prop-compactness-finite-pv}
+$\mathrm{PV}$ が有限個 $\{p_{0},\dots,p_{n-1}\}$ のときは、Step 2–4 を長さ $n$ までで打ち切ればよい。すなわち Step 3 で得た長さ $n$ の元 $s\in T$ がそのまま $\Sigma=\Sigma_{n}$ を充足する割り当てである。
+:::
+
+## 証明 3：超フィルターから {#logic:sec-prop-compactness-proof3}
+
+::: proof 証明 3（一般の場合）
+**Step 1（添字集合と割り当ての族）.** $I$ を $\Sigma$ の有限部分集合全体とする。各 $\Delta\in I$ について、$\Delta$ を充足する割り当て $v_{\Delta}$ を一つずつ選ぶ（選択公理）。
+
+**Step 2（超フィルター）.** $\varphi\in\Sigma$ について $X_{\varphi}\defeq\{\Delta\in I:\varphi\in\Delta\}$ とおく。$X_{\varphi_{1}}\cap\cdots\cap X_{\varphi_{k}}\ni\{\varphi_{1},\dots,\varphi_{k}\}$ なので、族 $\{X_{\varphi}:\varphi\in\Sigma\}$ は有限交叉性をもつ。\ref{set:boolean-ultrafilter}（ブール代数 $\mathcal{P}(I)$ に適用）より、すべての $X_{\varphi}$ を含む $I$ 上の超フィルター $U$ がある。
+
+**Step 3（極限の割り当て）.** $v(p)\defeq1\iff\{\Delta\in I:v_{\Delta}(p)=1\}\in U$ と定める。すべての論理式 $\psi$ について
+$$
+\bar{v}(\psi)=1\iff\{\Delta\in I:\bar{v}_{\Delta}(\psi)=1\}\in U
+$$
+を帰納法で示す。$[\psi]\defeq\{\Delta:\bar{v}_{\Delta}(\psi)=1\}$ と書く。命題変数は定義そのもの。$\bot$：$[\bot]=\varnothing\notin U$ で $\bar{v}(\bot)=0$。含意：$[\alpha\to\beta]=(I\setminus[\alpha])\cup[\beta]$ である。超フィルターについて「$X\cup Y\in U\iff X\in U$ または $Y\in U$」「$I\setminus X\in U\iff X\notin U$」が成り立つので、$[\alpha\to\beta]\in U\iff[\alpha]\notin U$ または $[\beta]\in U$。帰納法の仮定よりこれは $\bar{v}(\alpha)=0$ または $\bar{v}(\beta)=1$、すなわち $\bar{v}(\alpha\to\beta)=1$ と同値である。
+
+**Step 4.** $\varphi\in\Sigma$ なら $[\varphi]\supset X_{\varphi}\in U$ なので $[\varphi]\in U$、Step 3 より $\bar{v}(\varphi)=1$。
+
+::: hypcheck
+- **選択公理**：Step 1 の割り当ての選択と Step 2 の超フィルターの存在。この証明は導出を一切使わない。
+- **超フィルターであること**：Step 3 の含意の場合（和と補集合についての性質）。単なるフィルターでは、$[\alpha]$ も $I\setminus[\alpha]$ も属さないことがありうる。
+- 超フィルターの二つの性質の確認：$X\cup Y\in U$ で $X\notin U$ なら $I\setminus X\in U$ で、$(X\cup Y)\cap(I\setminus X)\subset Y$ より $Y\in U$。補集合の性質は超フィルターの定義（任意の $X$ について $X$ か $I\setminus X$ が属し、$\varnothing\notin U$ なので両方は属さない）による。
+:::
+:::
+
+::: supplement
+**位相的な見方.** 割り当て全体 $\{0,1\}^{\mathrm{PV}}$ に直積位相を入れると、各論理式 $\varphi$ について「$\varphi$ を充足する割り当ての集合」は開かつ閉である（$\varphi$ の真理値は有限個の座標だけで決まる）。有限充足可能性は、これらの閉集合族が有限交叉性をもつことである。$\{0,1\}^{\mathrm{PV}}$ はチコノフの定理（\ref{top:tychonoff}）によりコンパクトなので、交わりは空でない。これが「コンパクト性」という名前の由来である。$\mathrm{PV}$ が可算なら $\{0,1\}^{\omega}$ はカントール空間で、そのコンパクト性の証明が証明 2 のケーニッヒの補題にあたる。
+
+**選択公理との関係.** $\ZF$ のもとで、任意の $\mathrm{PV}$ についての命題論理のコンパクト性定理は、ブール代数の素イデアル定理と同値であることが知られている、とされる（本サイトでは未確認）。
+:::
+
+## 応用 {#logic:sec-prop-compactness-applications}
+
+::: corollary 無限グラフの彩色（ド・ブラーン–エルデシュの定理） {#logic:de-bruijn-erdos keywords="de Bruijn-Erdős theorem, graph coloring" index="ド・ブラーン–エルデシュの定理|どぶらーんえるでしゅのていり"}
+$k\ge1$ とする。グラフ $G=(V,E)$ のすべての有限部分グラフが $k$ 色で塗り分けられるならば、$G$ 全体も $k$ 色で塗り分けられる。$V$ が可算なら選択公理なしに証明できる。
+:::
+
+::: proof
+**Step 1.** 命題変数 $p_{a,i}$（$a\in V$, $1\le i\le k$）を用意する（「$a$ を色 $i$ で塗る」）。$\Sigma$ を次の論理式からなる集合とする。各 $a\in V$ について $p_{a,1}\vee\cdots\vee p_{a,k}$ と、$i\neq j$ について $\neg(p_{a,i}\wedge p_{a,j})$。各辺 $\{a,b\}\in E$ と各 $i$ について $\neg(p_{a,i}\wedge p_{b,i})$。
+
+**Step 2.** $\Sigma$ の有限部分集合 $\Delta$ に現れる頂点の集合 $V_{0}$ は有限で、$V_{0}$ が張る部分グラフの $k$ 色の塗り分け $c$ から、$v(p_{a,i})=1\iff c(a)=i$（$a\in V_{0}$）、それ以外は $0$ とした割り当てが $\Delta$ を充足する。
+
+**Step 3.** コンパクト性定理より $\Sigma$ を充足する $v$ がある。各 $a$ について $v(p_{a,i})=1$ となる $i$ はちょうど一つあり（Step 1 の最初の二種類の論理式）、それを $a$ の色とすると、辺の両端は異なる色になる（三種類目）。$V$ が可算なら $\mathrm{PV}$ は可算で、証明 2 により選択公理は要らない。
+:::
+
+## 問題 {#logic:sec-prop-compactness-problems}
+
+::: problem {#logic:prob-order-extension}
+任意の半順序集合 $(P,\le)$ の順序は全順序に延長できることを、「有限の半順序は全順序に延長できる」ことを使ってコンパクト性定理から示せ。
+:::
+
+::: solution
+命題変数 $r_{a,b}$（$a,b\in P$、「$a\preceq b$」）を用意し、$\Sigma$ を次からなる集合とする：$a\le b$ なら $r_{a,b}$；各 $a,b$ について $r_{a,b}\vee r_{b,a}$；$a\neq b$ について $\neg(r_{a,b}\wedge r_{b,a})$；各 $a,b,c$ について $r_{a,b}\wedge r_{b,c}\to r_{a,c}$。有限部分集合に現れる元の有限集合 $P_{0}$ 上の制限順序を全順序に延長すれば、それが有限部分集合を充足する割り当てを与える。コンパクト性定理から $\Sigma$ を充足する $v$ があり、$a\preceq b\iff v(r_{a,b})=1$ が $\le$ を延長する全順序である。
+:::
+
+::: problem {#logic:prob-konig-infinite-branching}
+\ref{logic:binary-konig} で「二分木」の仮定を外すと結論が偽になる例を挙げよ。
+:::
+
+::: solution
+$\omega^{<\omega}$ の部分木 $T=\{\varnothing\}\cup\{(n):n\in\omega\}\cup\{(n,0,\dots,0):\text{長さ }\le n+1\}$ を考える。根から長さ $n+1$ の枝 $(n,0,\dots,0)$ が各 $n$ について伸びているので $T$ は無限で、任意の長さの元をもつが、各枝は有限で終わるので無限の枝はない。根が無限個の子をもつことが原因である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

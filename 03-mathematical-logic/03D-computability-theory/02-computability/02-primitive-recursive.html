@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>原始再帰関数と for プログラム | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/02-computability/02-primitive-recursive.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 原始再帰関数と for プログラム {#comp:page-primitive-recursive keywords="primitive recursive functions, loop programs, Meyer-Ritchie, bounded minimization, Cantor pairing, simultaneous recursion"}
+
+**原始再帰関数**は、零・後者・射影から、合成と原始再帰（$f(\vec{x},y+1)$ を $f(\vec{x},y)$ から決める定義）だけで作られる関数である（\ref{comp:primitive-recursive}）。本ページでは、原始再帰関数がちょうど L から $\mathtt{while}$ を除いた $\mathrm{L}_{\mathrm{for}}$ で計算できる関数であること（\ref{comp:pr-equals-for}）を示す。一方向（\ref{comp:pr-to-for}）は原始再帰を for ループに直すだけである。他方向（\ref{comp:for-to-pr}）では、for ループが状態の各成分を**同時に**更新することを、組のコード化（\ref{comp:pairing-pr}）で一つの原始再帰にまとめる（\ref{comp:simultaneous-recursion}）。その準備として、有界な量化と有界な最小化についての閉包性（\ref{comp:pr-closure}）を示す。
+
+## 記法と定義の確認 {#comp:sec-pr-notation}
+
+::: notation
+- L、for プログラム $\mathrm{L}_{\mathrm{for}}$、意味 $[\![P]\!]$、入力状態 $\sigma_{\vec{m}}$、for 計算可能な関数は \ref{comp:page-language-L} のとおり。局所性（\ref{comp:L-locality}）、for プログラムの停止性（\ref{comp:for-total}）、略記（\ref{comp:L-macros}）、合成の閉包性（\ref{comp:L-composition}）を使う。
+- $\N^{0}$ は一点集合とし、$0$ 変数の関数 $\N^{0}\to\N$ を自然数と同一視する。$\vec{x}=(x_{1},\dots,x_{k})$ は自然数の組を表す（本ページでは変数名ではなく値）。
+- 関係（集合）$R\subseteq\N^{k}$ の**特性関数** $\chi_{R}$ は、$\vec{x}\in R$ で $1$、そうでなければ $0$ をとる。$R(\vec{x})$ と $\vec{x}\in R$ は同じ意味とする。
+:::
+
+## 原始再帰関数 {#comp:sec-pr-definition}
+
+::: definition 原始再帰関数 {#comp:primitive-recursive keywords="primitive recursive function, primitive recursion scheme" index="原始再帰関数|げんしさいきかんすう"}
+**原始再帰関数**の全体 $\mathrm{PR}$ を、次の 5 条件を満たす最小の関数のクラスとする（関数は $\N^{k}\to\N$ の形で、$k\ge0$）。
+1. （零）各 $k\ge0$ について $Z^{k}(\vec{x})\defeq0$。
+2. （後者）$S(x)\defeq x+1$。
+3. （射影）$1\le i\le k$ について $U^{k}_{i}(x_{1},\dots,x_{k})\defeq x_{i}$。
+4. （合成）$g\colon\N^{l}\to\N$ と $h_{1},\dots,h_{l}\colon\N^{k}\to\N$ が $\mathrm{PR}$ に属すれば、$f(\vec{x})\defeq g(h_{1}(\vec{x}),\dots,h_{l}(\vec{x}))$ も属する。
+5. （原始再帰）$g\colon\N^{k}\to\N$ と $h\colon\N^{k+2}\to\N$ が $\mathrm{PR}$ に属すれば、
+$$
+f(\vec{x},0)\defeq g(\vec{x}),\qquad f(\vec{x},y+1)\defeq h(\vec{x},y,f(\vec{x},y))
+$$
+で定まる $f\colon\N^{k+1}\to\N$ も属する（$y$ に関する帰納法で $f$ はただ一つに定まる）。
+
+関係 $R$ は $\chi_{R}\in\mathrm{PR}$ のとき**原始再帰的**という。
+:::
+
+::: remark
+「最小のクラス」は、5 条件を満たすクラスすべての共通部分である。したがって、$\mathrm{PR}$ のすべての元がある性質をもつことは、「初期関数（1〜3）がその性質をもち、4・5 がその性質を保つ」ことを示せばよい（**原始再帰関数の構成に関する帰納法**）。原始再帰関数はすべて全域的である。
+:::
+
+::: example 基本的な原始再帰関数 {#comp:pr-examples}
+以下はすべて原始再帰的である。各行の右は原始再帰の等式で、$g,h$ が既に得られた原始再帰関数（と射影・合成）で書けることは明らかである。
+1. 加法 $x+0=x$, $x+(y+1)=S(x+y)$。
+2. 乗法 $x\cdot0=0$, $x\cdot(y+1)=x\cdot y+x$。
+3. 前者 $\mathrm{pd}(0)=0$, $\mathrm{pd}(y+1)=y$。切り捨ての引き算 $x\mathbin{\dot{-}}0=x$, $x\mathbin{\dot{-}}(y+1)=\mathrm{pd}(x\mathbin{\dot{-}}y)$。
+4. 符号 $\mathrm{sg}(x)\defeq1\mathbin{\dot{-}}(1\mathbin{\dot{-}}x)$（$x=0$ で $0$、それ以外で $1$）、$\overline{\mathrm{sg}}(x)\defeq1\mathbin{\dot{-}}x$。
+5. $\lvert x-y\rvert=(x\mathbin{\dot{-}}y)+(y\mathbin{\dot{-}}x)$。$\chi_{=}(x,y)=\overline{\mathrm{sg}}(\lvert x-y\rvert)$、$\chi_{<}(x,y)=\mathrm{sg}(y\mathbin{\dot{-}}x)$。
+6. 定数 $c$：$Z^{k}$ に $S$ を $c$ 回合成する。
+
+ここで定数 $1$ を引数に含む合成（例えば $1\mathbin{\dot{-}}x$）は、$1=S(Z^{1}(x))$ を代入した合成として扱う。
+:::
+
+::: proposition 原始再帰関数と原始再帰的関係の閉包性 {#comp:pr-closure keywords="bounded quantifiers, bounded minimization, definition by cases, bounded sums" index="有界最小化|ゆうかいさいしょうか"}
+$R,R'\subseteq\N^{k+1}$ を原始再帰的関係、$g_{1},\dots,g_{r},f\colon\N^{k+1}\to\N$ を原始再帰関数とする。
+1. （ブール演算）$\neg R$, $R\wedge R'$, $R\vee R'$ は原始再帰的である。
+2. （有界な和と積）$\sum_{y<z}f(\vec{x},y)$ と $\prod_{y<z}f(\vec{x},y)$ は $(\vec{x},z)$ の原始再帰関数である（$z=0$ のとき $0$ と $1$）。
+3. （有界な量化）$\exists y<z\,R(\vec{x},y)$ と $\forall y<z\,R(\vec{x},y)$ は $(\vec{x},z)$ の原始再帰的関係である。$y\le z$ の形も同じ。
+4. （有界な最小化）$\mu y<z\,R(\vec{x},y)$（$R(\vec{x},y)$ となる最小の $y<z$、なければ $z$）は原始再帰関数である。
+5. （場合分け）$R_{1},\dots,R_{r}\subseteq\N^{k+1}$ が原始再帰的で、各点でちょうど一つが成り立つなら、「$R_{i}$ のとき $g_{i}$」で定まる関数は原始再帰的である。
+6. 原始再帰関数を原始再帰的関係に代入したもの（$R(h_{1}(\vec{x}),\dots)$）は原始再帰的である。
+:::
+
+::: proof
+1. $\chi_{\neg R}=\overline{\mathrm{sg}}\circ\chi_{R}$、$\chi_{R\wedge R'}=\chi_{R}\cdot\chi_{R'}$、$R\vee R'=\neg(\neg R\wedge\neg R')$。
+2. $s(\vec{x},0)=0$, $s(\vec{x},z+1)=s(\vec{x},z)+f(\vec{x},z)$ は原始再帰。積も同じ（初期値 $1$）。
+3. $\chi_{\exists y<z\,R}(\vec{x},z)=\mathrm{sg}\bigl(\sum_{y<z}\chi_{R}(\vec{x},y)\bigr)$。$\forall y<z\,R=\neg\exists y<z\,\neg R$。$y\le z$ は $y<z+1$。
+4. $m(\vec{x},z)\defeq\sum_{w<z}\prod_{y\le w}\overline{\mathrm{sg}}(\chi_{R}(\vec{x},y))$ とする。$y_{0}$ を $R(\vec{x},y)$ となる最小の $y<z$ とすると、内側の積は $w<y_{0}$ で $1$、$w\ge y_{0}$ で $0$ なので、和は $y_{0}$。そのような $y$ がなければすべての $w<z$ で積が $1$ で、和は $z$。
+5. $\sum_{i}g_{i}\cdot\chi_{R_{i}}$。
+6. $\chi_{R}$ と $h_{j}$ の合成。
+:::
+
+## 組のコード化と同時再帰 {#comp:sec-pr-pairing}
+
+::: proposition カントールの対関数 {#comp:pairing-pr keywords="Cantor pairing function, primitive recursive projections" index="対関数（カントールの）|ついかんすうかんとーるの"}
+$\pi(a,b)\defeq\dfrac{(a+b)(a+b+1)}{2}+b$ は全単射 $\N^{2}\to\N$ で、$\pi$ とその逆の成分 $\pi_{1},\pi_{2}$（$\pi(\pi_{1}(z),\pi_{2}(z))=z$）はすべて原始再帰的である。さらに $a,b\le\pi(a,b)$。
+:::
+
+::: proof
+**全単射.** $t\defeq a+b$ とし、$T(t)\defeq t(t+1)/2$ とおく。$a+b=t$ となる対は $b=0,\dots,t$ の $t+1$ 個で、それらは $T(t),T(t)+1,\dots,T(t)+t$ に写る。$T(t)+t+1=T(t+1)$ なので、$t=0,1,2,\dots$ のブロックが $\N$ を隙間も重なりもなく覆う。
+
+**原始再帰性.** $T(t)$ は、$q(n)\defeq\mu y\le n\,(2y\ge n)$ を使って、$n$ が偶数のとき $q(n)=n/2$ となることから $T(t)=q(t(t+1))$（$t(t+1)$ は偶数）と書ける（\ref{comp:pr-closure} の 4）。よって $\pi$ は原始再帰的。$a,b\le\pi(a,b)$ は $b\le T(t)+b$ と $a\le t\le T(t)$（$t\ge1$ のとき $t\le t(t+1)/2$）から従う。すると
+$$
+\begin{aligned}
+\pi_{1}(z)&=\mu a\le z\,\exists b\le z\,\bigl(\pi(a,b)=z\bigr),\\
+\pi_{2}(z)&=\mu b\le z\,\exists a\le z\,\bigl(\pi(a,b)=z\bigr)
+\end{aligned}
+$$
+（探索の範囲は $a,b\le z$ で十分）は \ref{comp:pr-closure} の 3・4・6 で原始再帰的である。
+:::
+
+::: definition 組のコード {#comp:tuple-code keywords="coding of tuples" index="組のコード|くみのこーど"}
+$n\ge1$ について $\langle a_{0}\rangle\defeq a_{0}$、$\langle a_{0},\dots,a_{n}\rangle\defeq\pi(a_{0},\langle a_{1},\dots,a_{n}\rangle)$ と定め、$(z)_{i}$ を、$z=\langle a_{0},\dots,a_{n}\rangle$ のときの $a_{i}$（$i\le n$、$n$ は固定）とする。具体的には $(z)_{i}=\pi_{1}(\pi_{2}^{\,i}(z))$（$i<n$）、$(z)_{n}=\pi_{2}^{\,n}(z)$（$\pi_{2}^{\,i}$ は $i$ 回の合成）。$n$ を固定するごとに、$\langle\cdots\rangle\colon\N^{n+1}\to\N$ は全単射で、これと $(\cdot)_{i}$ は原始再帰的である（\ref{comp:pairing-pr} と合成）。
+:::
+
+::: lemma 同時原始再帰 {#comp:simultaneous-recursion keywords="simultaneous primitive recursion" index="同時再帰|どうじさいき"}
+$g_{0},\dots,g_{n}\colon\N^{k}\to\N$ と $h_{0},\dots,h_{n}\colon\N^{k+1+(n+1)}\to\N$ が原始再帰的なら、
+$$
+\begin{aligned}
+f_{j}(\vec{x},0)&=g_{j}(\vec{x}),\\
+f_{j}(\vec{x},y+1)&=h_{j}\bigl(\vec{x},y,f_{0}(\vec{x},y),\dots,f_{n}(\vec{x},y)\bigr)\quad(0\le j\le n)
+\end{aligned}
+$$
+で定まる $f_{0},\dots,f_{n}$ はすべて原始再帰的である。
+:::
+
+::: proof
+$F(\vec{x},y)\defeq\langle f_{0}(\vec{x},y),\dots,f_{n}(\vec{x},y)\rangle$ とおくと、
+$$
+\begin{aligned}
+F(\vec{x},0)&=\langle g_{0}(\vec{x}),\dots,g_{n}(\vec{x})\rangle,\\
+F(\vec{x},y+1)&=H(\vec{x},y,F(\vec{x},y)),
+\end{aligned}
+$$
+ただし $H(\vec{x},y,w)\defeq\langle h_{0}(\vec{x},y,(w)_{0},\dots,(w)_{n}),\dots,h_{n}(\vec{x},y,(w)_{0},\dots,(w)_{n})\rangle$。$H$ は原始再帰的（\ref{comp:tuple-code} と合成）なので、$F$ は原始再帰的。$F$ の二つの等式が成り立つことは、両辺の定義からただちに分かり、$y$ に関する帰納法で $F$ はこの等式で一意に定まる。よって $f_{j}=(F)_{j}$ は原始再帰的。
+:::
+
+## 原始再帰関数＝for 計算可能関数 {#comp:sec-pr-equals-for}
+
+::: theorem 原始再帰関数は for 計算可能 {#comp:pr-to-for keywords="primitive recursive functions are loop computable"}
+原始再帰関数はすべて for 計算可能である。
+:::
+
+::: proof
+原始再帰関数の構成に関する帰納法。
+- $Z^{k}$：$x_{0}:=0$。$S$：$x_{0}:=x_{1};\ x_{0}:=x_{0}+1$。$U^{k}_{i}$：$x_{0}:=x_{i}$。
+- 合成：\ref{comp:L-composition}。
+- 原始再帰：$g,h$ を計算する for プログラムがあるとする。新しい変数 $u$ をとり、サブルーチン呼び出し（\ref{comp:L-composition} の証明）を使って
+```python 原始再帰 f(x⃗, 0) = g(x⃗), f(x⃗, y+1) = h(x⃗, y, f(x⃗, y))
+x0 = g(x1, ..., xk)
+u = 0
+for _ in range(x_k1):            # x_{k+1}（= y）回
+    x0 = h(x1, ..., xk, u, x0)
+    u += 1
+```
+とする（表示は \ref{comp:L-python-display} の約束による）。入力状態 $\sigma_{(\vec{x},y)}$ から実行すると、呼び出しは入力変数 $x_{1},\dots,x_{k+1}$ を書き換えないので、ループはちょうど $y$ 周する。$i$ 周後に $u=i$ かつ $x_{0}=f(\vec{x},i)$ であることを $i$ に関する帰納法で示す。$i=0$ は 1 行目による。$i$ 周後にこれが成り立てば、$i+1$ 周目で $x_{0}=h(\vec{x},i,f(\vec{x},i))=f(\vec{x},i+1)$、$u=i+1$。$y$ 周後に $x_{0}=f(\vec{x},y)$。
+:::
+
+::: theorem for 計算可能関数は原始再帰的 {#comp:for-to-pr keywords="loop computable functions are primitive recursive"}
+$P\in\mathrm{L}_{\mathrm{for}}$ とし、$\mathrm{var}(P)\subseteq\{x_{0},\dots,x_{n}\}$ とする。このとき原始再帰関数 $F^{P}_{0},\dots,F^{P}_{n}\colon\N^{n+1}\to\N$ で、すべての状態 $\sigma$ について
+$$
+[\![P]\!](\sigma)(x_{j})=F^{P}_{j}\bigl(\sigma(x_{0}),\dots,\sigma(x_{n})\bigr)\quad(0\le j\le n)
+$$
+となるものがある。とくに、for 計算可能な関数は原始再帰的である。
+:::
+
+::: proof
+$[\![P]\!](\sigma)$ は定義される（\ref{comp:for-total}）。$P$ の構成に関する帰納法で $F^{P}_{j}$ を作る。$\vec{v}=(v_{0},\dots,v_{n})$ と書く。
+- **基本命令.** $x_{i}:=0$ なら $F_{i}(\vec{v})=0$、$x_{i}:=x_{i}+1$ なら $F_{i}(\vec{v})=v_{i}+1$、$x_{i}:=x_{i}\mathbin{\dot{-}}1$ なら $F_{i}(\vec{v})=\mathrm{pd}(v_{i})$、$x_{i}:=x_{l}$ なら $F_{i}(\vec{v})=v_{l}$ で、$j\neq i$ では $F_{j}(\vec{v})=v_{j}$（規則 1〜3）。
+- **逐次実行.** $P=P_{1};P_{2}$ なら、$\mathrm{var}(P_{i})\subseteq\{x_{0},\dots,x_{n}\}$ なので帰納法の仮定が使え、規則 4 から $F^{P}_{j}(\vec{v})=F^{P_{2}}_{j}(F^{P_{1}}_{0}(\vec{v}),\dots,F^{P_{1}}_{n}(\vec{v}))$。
+- **for ループ.** $P=\mathtt{for}\ x_{i}\ \mathtt{do}\ Q\ \mathtt{od}$ とする。同時原始再帰（\ref{comp:simultaneous-recursion}、パラメータ $\vec{v}$、$k=n+1$）で
+$$
+\begin{aligned}
+G_{j}(\vec{v},0)&=v_{j},\\
+G_{j}(\vec{v},t+1)&=F^{Q}_{j}\bigl(G_{0}(\vec{v},t),\dots,G_{n}(\vec{v},t)\bigr)
+\end{aligned}
+$$
+と定めると、$G_{j}(\vec{v},t)$ は「$x_{0},\dots,x_{n}$ の値が $\vec{v}$ の状態から $Q$ を $t$ 回実行した後の $x_{j}$ の値」である（$t$ に関する帰納法と帰納法の仮定）。規則 5 より繰り返し回数は入口の $v_{i}$ なので、$F^{P}_{j}(\vec{v})\defeq G_{j}(\vec{v},v_{i})$ とすればよい。
+
+ここで、状態の $\{x_{0},\dots,x_{n}\}$ の外の値は $P$ の実行に影響せず書き換えられもしない（\ref{comp:L-locality}）ので、$F^{P}_{j}$ は $\sigma$ の $x_{0},\dots,x_{n}$ での値だけの関数としてよい。
+
+**後半.** $P$ が $f\colon\N^{k}\to\N$ を計算するとし、$n\ge k$ かつ $\mathrm{var}(P)\subseteq\{x_{0},\dots,x_{n}\}$ となる $n$ をとる。入力状態では $x_{0}=0$, $x_{i}=m_{i}$（$1\le i\le k$）、$x_{i}=0$（$k<i\le n$）なので、
+$$
+f(\vec{m})=F^{P}_{0}(0,m_{1},\dots,m_{k},0,\dots,0)
+$$
+で、右辺は $F^{P}_{0}$ に零関数と射影を合成したものとして原始再帰的である。
+:::
+
+::: corollary 原始再帰関数＝for 計算可能関数 {#comp:pr-equals-for keywords="PR equals LOOP, Meyer-Ritchie" index="原始再帰関数と for プログラム|げんしさいきかんすうとふぉーぷろぐらむ"}
+関数 $f\colon\N^{k}\to\N$ について、$f$ が原始再帰的であることと for 計算可能であることは同値である。
+:::
+
+::: proof
+\ref{comp:pr-to-for} と \ref{comp:for-to-pr}。
+:::
+
+::: hypcheck
+- **for の回数を入口の値で固定したこと**（\ref{comp:L-semantics} の 5）：\ref{comp:for-to-pr} の for ループの場合に、回数を $v_{i}$ として原始再帰の変数にできることに使った。
+- **同時再帰**：for ループの本体は状態のすべての成分を同時に書き換えるので、成分ごとの原始再帰では足りず、組のコード化（\ref{comp:pairing-pr}）で一つにまとめた。対関数の逆が原始再帰的であることには有界最小化（\ref{comp:pr-closure} の 4）と評価 $a,b\le\pi(a,b)$ を使った。
+- **局所性**：変数を $x_{0},\dots,x_{n}$ に限って有限個の関数で状態変化を表すのに使った。
+- **全域性**：\ref{comp:for-to-pr} は for プログラムが停止すること（\ref{comp:for-total}）を前提にしている。while を許すと $[\![P]\!]$ は部分写像になり、この証明の for ループの場合に当たる構成がない。
+:::
+
+## 問題 {#comp:sec-pr-problems}
+
+::: problem {#comp:prob-pr-div}
+$\lfloor x/y\rfloor$ と $x\bmod y$（$y=0$ のときはそれぞれ $0$ と $x$ と約束する）、および「$y$ は $x$ を割り切る」が原始再帰的であることを示せ。
+:::
+
+::: solution
+$y\ge1$ のとき $\lfloor x/y\rfloor=\mu q\le x\,\bigl(x<(q+1)y\bigr)$：$q\le x$ の範囲に解がある（$q=x$ で $(x+1)y>x$）ので、最小の $q$ は $qy\le x<(q+1)y$ を満たす。場合分け（\ref{comp:pr-closure} の 5）で $y=0$ のとき $0$ とする。$x\bmod y\defeq x\mathbin{\dot{-}}y\lfloor x/y\rfloor$（$y=0$ では $x$）。「$y\mid x$」は $\exists q\le x\,(qy=x)$。
+:::
+
+::: problem {#comp:prob-pr-primes}
+「$x$ は素数」が原始再帰的であること、および $n$ 番目の素数 $p(n)$（$p(0)=2$）が原始再帰関数であることを示せ。
+:::
+
+::: solution
+$\mathrm{Prime}(x)\iff x\ge2\wedge\forall d\le x\,(d\mid x\to d=1\vee d=x)$ は \ref{comp:pr-closure} と問題 \ref{comp:prob-pr-div} による。$p$ は $p(0)=2$、
+$$
+p(n+1)=\mu y\le p(n)!+1\,\bigl(y>p(n)\wedge\mathrm{Prime}(y)\bigr)
+$$
+で定める（$x!$ は $0!=1$, $(x+1)!=x!\cdot(x+1)$ で原始再帰的。上限 $p(n)!+1$ を変数とする有界最小化と合成で $h$ が原始再帰的になる）。上限の中に解があること：$p(n)!+1$ の素因数 $q$ は、$q\le p(n)$ なら $q\mid p(n)!$ と $q\mid p(n)!+1$ から $q\mid1$ となり矛盾するので $q>p(n)$。$p(n)$ が $n$ 番目の素数であることは、この $\mu$ が $p(n)$ より大きい最小の素数を選ぶことから $n$ に関する帰納法で分かる。
+:::
+
+::: problem {#comp:prob-pr-course-of-values}
+$f\colon\N\to\N$ が $f(y)=h(y,\langle\!\langle f(0),\dots,f(y-1)\rangle\!\rangle)$（$h$ は原始再帰的）を満たすとき、$f$ は原始再帰的であることを示せ。ここで $\langle\!\langle a_{0},\dots,a_{l-1}\rangle\!\rangle\defeq\prod_{i<l}p(i)^{a_{i}+1}$（$l=0$ なら $1$）とする。
+:::
+
+::: solution
+$\bar{f}(y)\defeq\langle\!\langle f(0),\dots,f(y-1)\rangle\!\rangle$ とおくと、$\bar{f}(0)=1$、$\bar{f}(y+1)=\bar{f}(y)\cdot p(y)^{h(y,\bar{f}(y))+1}$ は原始再帰（問題 \ref{comp:prob-pr-primes} と指数関数（問題 \ref{comp:prob-L-examples} の (c) と \ref{comp:pr-equals-for}））。$f(y)=h(y,\bar{f}(y))$ も原始再帰的。（この $\bar{f}$ の漸化式が $f$ の定義と整合することは、$y$ に関する強い帰納法による。）
+:::
+
+::: supplement
+**前提の検討.**
+- 初期関数に $Z^{k}$（すべての $k$）を入れたが、$Z^{0}=0$ と射影・合成から $Z^{k}=Z^{0}$（$0$ 変数関数の合成）が作れるので、$Z^{0}$ だけでもよい。逆に、パラメータのない原始再帰（$f(0)=c$, $f(y+1)=h(y,f(y))$）だけに制限しても、組のコード化を使えば同じクラスになることが知られている（ロビンソン）。本サイトでは確かめていない。
+- \ref{comp:pairing-pr} では、カントールの対関数の代わりに $2^{a}(2b+1)-1$ を使ってもよい。必要なのは、全単射であること（または単射で像が原始再帰的であること）と、成分が原始再帰的に取り出せることだけである。
+
+**関連する結果.**
+- *ループの深さの階層.* for ループの入れ子の深さが $n$ 以下の for プログラムで計算できる関数のクラス $\mathcal{L}_{n}$ は、$n$ について真に増大し、$n\ge2$ でグジェゴルチクの階層 $\mathcal{E}^{n+1}$ と一致することが知られている（Meyer–Ritchie 1967）。本サイトでは示していない。
+- *算術での定義可能性.* 原始再帰関数は $\PA$ で Σ 論理式によって定義でき、その再帰の等式は $\PA$ で証明できる（\ref{pt:primitive-recursive-definable}）。この事実は不完全性定理で使った。
+- 原始再帰関数でない計算可能関数がある（アッカーマン関数。\ref{comp:page-ackermann}）。
+
+**高い視点から：自然数の普遍性.** 原始再帰は「$0$ での値と、一歩進める規則を与えると関数がただ一つ決まる」という自然数の性質そのものである。圏論では、終対象 $1$ をもつ圏の**自然数対象** $(\N,0\colon1\to\N,S\colon\N\to\N)$ を「任意の $(A,a\colon1\to A,h\colon A\to A)$ に対し $f\circ0=a$, $f\circ S=h\circ f$ となる $f\colon\N\to A$ がただ一つある」ことで定める（ローヴェア）。これは関手 $X\mapsto1+X$ の始代数ということでもある。パラメータ付きの原始再帰や同時再帰は、$A$ を積 $\N^{k}\times\cdots$ や組にとったものに当たり、\ref{comp:simultaneous-recursion} で組をコード化したのは、$A=\N^{n+1}$ を $\N$ に埋め込んで「一つの数の再帰」にする操作である。for ループは $h$ を $n$ 回適用する $h^{n}$ そのもので、プログラミングでいう「畳み込み（fold）」に当たる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

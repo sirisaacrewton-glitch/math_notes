@@ -1,0 +1,20 @@
+{
+  "id": "set-forcing",
+  "title": "強制法",
+  "en": "Forcing",
+  "abbr": "強制法",
+  "description": "ジェネリック拡大、強制関係、M[G] における ZFC、有限部分関数・大きい部分関数による強制、ブール値モデル。（Kunen 第 VII 章に対応）",
+  "msc": "03E40",
+  "prereq": [
+    {
+      "dir": "set-combinatorics",
+      "from": 1,
+      "to": 6,
+      "note": "Δ システム補題・可算鎖条件・マーティンの公理"
+    },
+    {
+      "dir": "set-consistency",
+      "note": "相対化・絶対性・反映定理・可算推移的モデル"
+    }
+  ]
+}

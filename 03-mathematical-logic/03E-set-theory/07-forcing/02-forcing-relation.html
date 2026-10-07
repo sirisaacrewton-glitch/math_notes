@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>強制関係 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/07-forcing/02-forcing-relation.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 強制関係 {#set:page-forcing-relation keywords="forcing relation, p forces phi, forcing theorem, definability of forcing, truth lemma, forcing language"}
+
+条件 $p\in\PP$ が文 $\varphi$ を**強制する**（$p\Vdash\varphi$）とは、$p$ を含むすべてのジェネリックな $G$ について $\varphi$ が $M[G]$ で真であることをいう。強制法の骨格は次の二つの事実である：(1) $p\Vdash\varphi$ かどうかは $M$ の中で決定できる（**強制関係の定義可能性**）、(2) $\varphi$ が $M[G]$ で真なら、ある $p\in G$ が $\varphi$ を強制する（**真理補題**）。本ページでは、$M$ の中で定義できる関係 $\Vdash^{*}$ を再帰で定め、$p\Vdash\varphi\iff(p\Vdash^{*}\varphi)^{M}$ を示すことでこれらを厳密に証明する（\ref{set:forcing-theorem}）。（Kunen 第 VII 章 §3 に対応する。）
+
+## 記法と定義の確認 {#set:sec-forcing-notation}
+
+::: notation
+- $M$ は $\ZFC$ の c.t.m.、$\langle\PP,\le,\mathbf{1}\rangle\in M$ は p.o.（\ref{set:po-with-one}）。$M$ 上ジェネリック（\ref{set:generic-filter}）、ジェネリックなフィルターの存在（\ref{set:generic-exists}）、$\PP$-名前、$M^{\PP}$、$\tau_{G}=\mathrm{val}(\tau,G)$、$M[G]$、$\check{x}$、$\Gamma$、$\mathrm{op}$（\ref{set:p-name}, \ref{set:m-p-names}, \ref{set:val-name}, \ref{set:check-name}, \ref{set:gamma-name}, \ref{set:up-op-names}）とその性質（\ref{set:check-name-val}, \ref{set:gamma-name-val}, \ref{set:m-g-transitive}）は \ref{set:page-generic-extensions} のとおり。
+- $p$ の下で稠密（\ref{set:dense-below}）と \ref{set:generic-dense-below} を使う。$p\perp q$ は非両立（\ref{set:compatible}）。
+- 絶対性と再帰の絶対性（\ref{set:absolute-wf-recursion}）は第 IV 章のとおり。
+:::
+
+## 例と動機 {#set:sec-forcing-motivation}
+
+まず具体例を考える。$M$ を $\ZFC$ の c.t.m. とし、$\PP=\mathrm{Fn}(\omega,2)$（$\omega$ から $2$ への有限部分関数の全体。$p\le q\iff p\supseteq q$。\ref{set:fn-poset}）、$\mathbf{1}=\varnothing$ とする。その定義は推移的なモデルについて絶対的なので $\langle\PP,\le,\mathbf{1}\rangle\in M$。$G$ がフィルターなら $f_{G}\defeq\bigcup G$ は $\dom(f_{G})\subseteq\omega$ の関数である。$D_{n}\defeq\{p\in\PP:n\in\dom(p)\}$ は稠密で $M$ に属するので、$G$ がジェネリックなら $\dom(f_{G})=\omega$。
+
+$f_{G}\in M[G]$ を直接確かめる。
+$$
+\Phi\defeq\{\langle\mathrm{op}(\check{n},\check{m}),p\rangle:p\in\PP\land n\in\dom(p)\land p(n)=m\}
+$$
+とおくと、$\mathrm{op}(\check{n},\check{m})_{G}=\langle n,m\rangle$（\ref{set:up-op-names-val}, \ref{set:check-name-val}）なので
+$$
+\Phi_{G}=\{\langle n,m\rangle:\exists p\in G\,(n\in\dom(p)\land p(n)=m)\}=f_{G}.
+$$
+よって $f_{G}\in M[G]$。また $f_{G}\notin M$ である（\ref{set:prob-generic-fn}）。
+
+ここで強制の考え方を導入する。第 II 章では、$\PP$ の元を $G$ やそれから作る対象（上の $f_{G}$ など）について何かを述べる「条件」と考えた。この動機を、今度は MA ではなくモデルの文脈で続ける。$M$ の住人は $M$ 上ジェネリックな $G$ を作れないが、自分たちの宇宙 $M$ を可算とみなす存在がいて、その存在はジェネリックな $G$ と $f_{G}$ をもつ、と信じることはできる。$M$ の住人は $G$ や $f_{G}$ が何かを知らないが、それらの名前 $\Gamma$, $\Phi$ はもっている。上の議論を読んで、$f_{G}$ が $\omega$ から $2$ への関数であることなども分かる。$f_{G}(0)$ が何かは $G$ に依存するので分からないが、$\{\langle0,0\rangle\}\in G$ なら $0$、$\{\langle0,1\rangle\}\in G$ なら $1$ であることは分かる。より一般に、$M^{\PP}$ の名前を使って $M[G]$ について何かを主張する文 $\psi$（たとえば $\Phi(\check{0})=\check{1}$）からなる**強制の言語**を考えることができる。$M$ の住人は、$\psi$ が $M[G]$ で真かどうかを一般には知らない（$G$ に依存する）。$p\Vdash\psi$（$p$ は $\psi$ を強制する）を、「$p\in G$ となる $M$ 上ジェネリックなすべての $G$ について $\psi$ が $M[G]$ で真」の意味とする。たとえば
+$$
+\begin{aligned}
+&\{\langle0,0\rangle\}\Vdash\Phi(\check{0})=\check{0},\qquad\{\langle0,1\rangle\}\Vdash\Phi(\check{0})=\check{1},\\
+&\mathbf{1}\Vdash\Phi\text{ は }\check{\omega}\text{ から }\check{2}\text{ への関数},\qquad\mathbf{1}\Vdash\Phi=\textstyle\bigcup\Gamma.
+\end{aligned}
+$$
+$M$ の住人は、ジェネリックな $G$ を一つも見ることなく、これらの強制の事実をすべて見出すことができる。これは次の事実を示唆する。
+
+- **事実 1.** $p\Vdash\psi$ かどうかは $M$ の中で決定できる。
+
+これは、$M[G]$ が $\ZFC$ を満たすことの証明だけでなく、その後の強制法の応用にも非常に重要である。$M$ の住人は、自分たちの組合せ論の技術を使って、望む公理が $M[G]$ で成り立つように強制する複雑な $\PP$ を作らなければならないからである。事実 1 は、$p\Vdash\psi$ がすべてのジェネリックな $G$ についての知識を要求するように見えるので、はじめは驚くべきことである。
+
+$p\in G$ かつ $p\Vdash\psi$ なら $\psi$ は $M[G]$ で真であることは定義から直ちに従う。その逆として次を示す。
+
+- **事実 2.** $G$ が $M$ 上ジェネリックで $\psi$ が $M[G]$ で真なら、ある $p\in G$ が $\psi$ を強制する。
+
+たとえば $\psi$ が $\Phi(\check{0})=\check{0}$ で真（$f_{G}(0)=0$）なら、ある $p\in G$ で $p(0)=0$。この $p$ が別のジェネリックな $H$ に属すれば $f_{H}(0)=0$ で、$\psi$ は $M[H]$ でも真である。よって $p\Vdash\psi$。
+
+## 強制関係の定義 {#set:sec-forcing-definition}
+
+::: definition 強制関係 {#set:forcing keywords="forcing relation, p forces phi, p ||- phi" index="強制関係|きょうせいかんけい, 強制する|きょうせいする"}
+$\varphi(x_{1},\dots,x_{n})$ を自由変数が表示したものだけである論理式、$M$ を $\ZFC$ の c.t.m.、$\PP\in M$ を p.o.、$\tau_{1},\dots,\tau_{n}\in M^{\PP}$、$p\in\PP$ とする。$p\Vdash_{\PP,M}\varphi(\tau_{1},\dots,\tau_{n})$ とは
+$$
+\forall G\;\bigl[(G\text{ は }M\text{ 上 }\PP\text{-ジェネリック}\land p\in G)\to\varphi^{M[G]}(\tau_{1G},\dots,\tau_{nG})\bigr]
+\label{set:eq-forcing-def}
+$$
+のことである。p.o. と基礎モデルが一つしか考えられていないときは単に $p\Vdash\varphi(\vec{\tau})$ と書く。
+:::
+
+直観的には、$\varphi(\tau_{1},\dots,\tau_{n})$ は強制の言語の文である。論理を集合論の中で形式化して、二項関係記号 $\in$ と $M^{\PP}$ の元を定数記号とする一階の言語を強制の言語と定義することでこれを厳密にできるが、ここでは強制の言語そのものは定義しない。形式的には \ref{set:forcing} はメタの理論での定義図式である：各論理式 $\varphi(x_{1},\dots,x_{n})$ について、\eqref{set:eq-forcing-def} と $\langle\PP,\le,\mathbf{1}\rangle\in M$, $p\in\PP$, $\tau_{i}\in M^{\PP}$ を主張する別の論理式 $\mathrm{Force}_{\varphi}(\vec{\tau},\PP,\le,\mathbf{1},M,p)$ を定義している。
+
+::: lemma 強制の基本性質 {#set:forcing-basic}
+\ref{set:forcing} の記号のもとで
+1. $p\Vdash\varphi(\vec{\tau})$ かつ $q\le p$ ならば $q\Vdash\varphi(\vec{\tau})$。
+2. $p\Vdash\varphi(\vec{\tau})$ かつ $p\Vdash\psi(\vec{\tau})$ であることと、$p\Vdash(\varphi(\vec{\tau})\land\psi(\vec{\tau}))$ は同値。
+:::
+
+::: proof
+**1.** $q\in G$ なら、$G$ は上に閉じているので $p\in G$。**2.** 相対化は $\land$ を保つ。
+:::
+
+$p\Vdash\varphi(\vec{\tau})$ は $M$ ではなく $\mathbf{V}$ で定義され、すべてのジェネリックな $G$ の知識を含む。事実 1 により、$p\Vdash\varphi(\vec{\tau})$ かどうかは $M$ の中で決められるはずである。これを厳密にするため、別の関係 $p\Vdash^{*}\varphi(\vec{\tau})$ を定義し、すべての $\varphi$ について
+$$
+p\Vdash\varphi(\vec{\tau})\iff(p\Vdash^{*}\varphi(\vec{\tau}))^{M}
+$$
+を示す。これで $p\Vdash\varphi$ は $M$ に相対化されたある主張と同値になる。本ページの後では $\Vdash^{*}$ の定義の細部に戻ることはほとんどなく、事実 1, 2（\ref{set:forcing-theorem}）とその系（\ref{set:forcing-corollary}）を頻繁に使う。したがって細部に関心のない読者は \ref{set:forcing-theorem} まで飛ばしてよい。$\Vdash^{*}$ の（同値な）定義は集合論の教科書の数だけあると Kunen は述べている。
+
+$\Vdash^{*}$ の定義で最も難しいのは、$\varphi(\tau_{1},\tau_{2})$ が $\tau_{1}=\tau_{2}$ の場合である。簡単な例として $\tau_{1}=\{\langle\pi_{1},s\rangle\}$, $\tau_{2}=\{\langle\pi_{2},s\rangle\}$ とし、$M$ の住人にどの $p$ が $\tau_{1}=\tau_{2}$ を強制するかを説明することを考える。$p\perp s$ なら $p\Vdash\tau_{1}=\tau_{2}$ である：$p\in G$ なら $s\notin G$ で、$\tau_{1G}=0=\tau_{2G}$。$p\le s$ なら、$p\in G$ のとき $\tau_{1G}=\{\pi_{1G}\}$, $\tau_{2G}=\{\pi_{2G}\}$ なので、$p\Vdash\tau_{1}=\tau_{2}\iff p\Vdash\pi_{1}=\pi_{2}$。一般の $p$ について $p\Vdash\tau_{1}=\tau_{2}\iff\forall q\,(q\le p\land q\le s\to q\Vdash\pi_{1}=\pi_{2})$ であることを確かめるのはよい練習である。ここで強調したいのは、$p\Vdash^{*}\tau_{1}=\tau_{2}$ かどうかは、様々な $q\in\PP$ と $\pi_{1}\in\dom(\tau_{1})$, $\pi_{2}\in\dom(\tau_{2})$ について $q\Vdash^{*}\pi_{1}=\pi_{2}$ かどうかに依存しなければならない、ということである。
+
+$\Vdash^{*}$ はまず $\mathbf{V}$ で定義する（モデルには言及しない）。ただし実際に使うのは $M$ に相対化した $(p\Vdash^{*}\varphi(\vec{\tau}))^{M}$ だけである。
+
+::: definition 関係 ⊩* {#set:forcing-star keywords="internal forcing relation, ||-*" index="強制関係（内部の定義）|きょうせいかんけいないぶのていぎ"}
+p.o. $\PP$ を固定する。$\varphi(x_{1},\dots,x_{n})$ を自由変数が表示したものだけである論理式、$p\in\PP$、$\tau_{1},\dots,\tau_{n}\in\mathbf{V}^{\PP}$ として、$p\Vdash^{*}\varphi(\tau_{1},\dots,\tau_{n})$ を次の節で定める。
+1. $p\Vdash^{*}\tau_{1}=\tau_{2}$ とは、次の (α), (β) がともに成り立つことをいう。
+   - (α) すべての $\langle\pi_{1},s_{1}\rangle\in\tau_{1}$ について、集合 $\{q:q\le s_{1}\to\exists\langle\pi_{2},s_{2}\rangle\in\tau_{2}\,(q\le s_{2}\land q\Vdash^{*}\pi_{1}=\pi_{2})\}$ は $p$ の下で稠密。
+   - (β) すべての $\langle\pi_{2},s_{2}\rangle\in\tau_{2}$ について、集合 $\{q:q\le s_{2}\to\exists\langle\pi_{1},s_{1}\rangle\in\tau_{1}\,(q\le s_{1}\land q\Vdash^{*}\pi_{1}=\pi_{2})\}$ は $p$ の下で稠密。
+2. $p\Vdash^{*}\tau_{1}\in\tau_{2}$ とは、$\{q:\exists\langle\pi,s\rangle\in\tau_{2}\,(q\le s\land q\Vdash^{*}\pi=\tau_{1})\}$ が $p$ の下で稠密であることをいう。
+3. $p\Vdash^{*}(\varphi\land\psi)(\vec{\tau})$ とは、$p\Vdash^{*}\varphi(\vec{\tau})$ かつ $p\Vdash^{*}\psi(\vec{\tau})$。
+4. $p\Vdash^{*}\lnot\varphi(\vec{\tau})$ とは、$q\Vdash^{*}\varphi(\vec{\tau})$ となる $q\le p$ が存在しないこと。
+5. $p\Vdash^{*}\exists x\,\varphi(x,\vec{\tau})$ とは、$\{r:\exists\sigma\in\mathbf{V}^{\PP}\,(r\Vdash^{*}\varphi(\sigma,\vec{\tau}))\}$ が $p$ の下で稠密であることをいう。
+:::
+
+（Kunen は 1 の集合を $\{q\le p:\cdots\}$ としているが、$p$ の下で稠密かどうかは $p$ 以下の元だけで決まるので同じことである。）
+
+一見すると定義は循環しているので再帰でなければならないが、その正確な性格には説明が要る。まず節 1 で $p\Vdash^{*}\tau_{1}=\tau_{2}$ を定める。形式的には、関数 $F\colon\mathbf{V}^{\PP}\times\mathbf{V}^{\PP}\to\mathcal{P}(\PP)$、$F(\langle\tau_{1},\tau_{2}\rangle)=\{p\in\PP:p\Vdash^{*}\tau_{1}=\tau_{2}\}$ を、関係
+$$
+\langle\pi_{1},\pi_{2}\rangle\,R\,\langle\tau_{1},\tau_{2}\rangle\;:\iff\;\pi_{1}\in\dom(\tau_{1})\land\pi_{2}\in\dom(\tau_{2})
+$$
+に関する超限再帰で定義する。$R$ は明らかに集合的で、$\langle\pi_{1},\pi_{2}\rangle\,R\,\langle\tau_{1},\tau_{2}\rangle$ なら $\rank(\pi_{1})<\rank(\tau_{1})$ なので整礎である。$p\Vdash^{*}\tau_{1}=\tau_{2}$ が定まれば、節 2 が $p\Vdash^{*}\tau_{1}\in\tau_{2}$ を陽に定める。素論理式について $\Vdash^{*}$ が定まったので、節 3〜5 が論理式の長さに関する帰納法ですべての論理式について $\Vdash^{*}$ を定める。この帰納法は形式的にはメタの理論で行われる：$\Vdash$ と同様、各論理式 $\varphi$ について論理式 $\mathrm{Force}^{*}_{\varphi}(\vec{\tau},\PP,\le,p)$ を定義している。
+
+素論理式については、$\Vdash^{*}$ の定義の再帰は絶対的な概念だけを含むので、$\ZF-\mathrm{P}$ の推移的なモデルについて絶対的である（$R$ の絶対性と、$\{\langle\pi_{1},\pi_{2}\rangle:\langle\pi_{1},\pi_{2}\rangle\,R\,\langle\tau_{1},\tau_{2}\rangle\}=\dom(\tau_{1})\times\dom(\tau_{2})$ の絶対性から、\ref{set:absolute-wf-recursion} による）。しかし一般の $\varphi$ について $\Vdash^{*}$ は絶対的でない：節 5 の $\exists\sigma\in\mathbf{V}^{\PP}$ は、$M$ に相対化すると $\exists\sigma\in M^{\PP}$ になる。いずれにせよ事実 1 を確かめるには $M$ に相対化した $\Vdash^{*}$ だけを見ればよい。
+
+::: remark 節 1〜5 の動機
+$(p\Vdash^{*}\varphi)^{M}$ は、$M$ の住人が $\Vdash$ を決めようとする試みと考えられる。事実 1 は $p\Vdash\varphi\iff(p\Vdash^{*}\varphi)^{M}$ を示すことで証明するので、$\Vdash^{*}$ の帰納的な節には $\Vdash$ 自身が満たす関係を使う。たとえば節 3 は \ref{set:forcing-basic} の 2 である。節 4 については、$q\Vdash\varphi$ となる $q\le p$ がないとして $p\Vdash\lnot\varphi$ を示したい。そうでなければ $p\in G$ で $\varphi$ が $M[G]$ で真となるジェネリックな $G$ があり、事実 2 より $r\Vdash\varphi$ となる $r\in G$ があり、$q\le r$, $q\le p$ となる $q\in G$ は（\ref{set:forcing-basic} の 1 より）$\varphi$ を強制して矛盾する。節 5 については、$D=\{r\le p:\exists\sigma\in M^{\PP}\,(r\Vdash\varphi(\sigma))\}$ が $p$ の下で稠密とすると、事実 1 より $D\in M$ で、$p\in G$ ならある $r\in G\cap D$ と $\sigma$ で $r\Vdash\varphi(\sigma)$、よって $\varphi^{M[G]}(\sigma_{G})$ で $(\exists x\,\varphi)^{M[G]}$。ただしこれらの議論は、まだ証明していない事実 1, 2 に訴えているので、動機としてしか役に立たない。
+:::
+
+以下、事実 1, 2 の厳密な証明に向かう。まず予備的な補題を示す。
+
+::: lemma ⊩* と稠密性 {#set:forcing-star-dense}
+\ref{set:forcing-star} の記号のもとで、次は同値である。
+1. $p\Vdash^{*}\varphi(\vec{\tau})$。
+2. すべての $r\le p$ について $r\Vdash^{*}\varphi(\vec{\tau})$。
+3. $\{r:r\Vdash^{*}\varphi(\vec{\tau})\}$ は $p$ の下で稠密。
+:::
+
+::: proof
+(2 $\Rightarrow$ 1) と (2 $\Rightarrow$ 3) は自明（$p\le p$）。以下 (1 $\Rightarrow$ 2) と (3 $\Rightarrow$ 1) を示す。二つの一般的な観察を使う：
+- (i) $D$ が $p$ の下で稠密で $r\le p$ なら、$D$ は $r$ の下で稠密。
+- (ii) $\{r:D\text{ は }r\text{ の下で稠密}\}$ が $p$ の下で稠密なら、$D$ は $p$ の下で稠密（$q\le p$ に対し、$D$ が $r$ の下で稠密となる $r\le q$ をとり、さらに $D$ の元 $r'\le r\le q$ をとる）。
+
+**素論理式.** $\tau_{1}=\tau_{2}$ と $\tau_{1}\in\tau_{2}$ の定義は、ある集合（$p$ によらない）が $p$ の下で稠密であることの連言なので、(1 $\Rightarrow$ 2) は (i) から、(3 $\Rightarrow$ 1) は (ii) から従う。定義の細部（どの集合か）は使わない。
+
+**帰納法の段階**（論理式の長さに関する帰納法。メタの理論で行う）。
+- **$\land$.** (1 $\Rightarrow$ 2)：$p\Vdash^{*}\varphi$ かつ $p\Vdash^{*}\psi$ なら、帰納法の仮定より各 $r\le p$ が両方を強制する。(3 $\Rightarrow$ 1)：$\{r:r\Vdash^{*}\varphi\land\psi\}\subseteq\{r:r\Vdash^{*}\varphi\}$ なので後者も $p$ の下で稠密で、帰納法の仮定より $p\Vdash^{*}\varphi$。$\psi$ も同様。
+- **$\lnot$.** (1 $\Rightarrow$ 2)：$\varphi$ を強制する $q\le p$ がなければ、$r\le p$ についても $\varphi$ を強制する $q\le r$ はない。(3 $\Rightarrow$ 1)：$\{r:r\Vdash^{*}\lnot\varphi\}$ が $p$ の下で稠密とし、$q\le p$ で $q\Vdash^{*}\varphi$ となるものがあったとする。$r\le q$ で $r\Vdash^{*}\lnot\varphi$ となるものをとる。帰納法の仮定（$\varphi$ についての 1 $\Rightarrow$ 2）より $r\Vdash^{*}\varphi$ で、$r\le r$ は $r\Vdash^{*}\lnot\varphi$ の定義に反する。
+- **$\exists$.** 定義はある集合が $p$ の下で稠密であることなので、素論理式と同じく (i), (ii) による。
+:::
+
+::: hypcheck
+Kunen は帰納法の仮定を使うのは $\land$ の段階だけだと述べているが、上の $\lnot$ の段階の (3 $\Rightarrow$ 1) では $\varphi$ についての (1 $\Rightarrow$ 2) を使った。帰納法として正しいことに変わりはない。
+:::
+
+次に $\Vdash^{*}$ と $M[G]$ での真理の関係を示す。これが $\Vdash^{*}$ と $\Vdash$ を結ぶ鍵である。
+
+::: theorem ⊩* と M[G] での真理 {#set:forcing-star-truth keywords="truth lemma for ||-*"}
+$\varphi(x_{1},\dots,x_{n})$ を自由変数が表示したものだけである論理式、$M$ を $\ZFC$ の推移的なモデル、$\PP\in M$ を p.o.、$\tau_{1},\dots,\tau_{n}\in M^{\PP}$ とし、$G$ を $M$ 上 $\PP$-ジェネリックとする。
+1. $p\in G$ かつ $(p\Vdash^{*}\varphi(\vec{\tau}))^{M}$ ならば $\varphi^{M[G]}(\tau_{1G},\dots,\tau_{nG})$。
+2. $\varphi^{M[G]}(\tau_{1G},\dots,\tau_{nG})$ ならば、ある $p\in G$ について $(p\Vdash^{*}\varphi(\vec{\tau}))^{M}$。
+:::
+
+::: proof
+**素論理式 $\tau_{1}=\tau_{2}$.** $\Vdash^{*}$ の定義を正当化したのと同じ関係 $R$ に関する超限帰納法で、1 と 2 を同時に示す。素論理式の $\Vdash^{*}$ は $M$ について絶対的なので、$M$ への相対化を省く。
+
+*1 の証明.* $p\in G$, $p\Vdash^{*}\tau_{1}=\tau_{2}$ とし、$\tau_{1G}\subseteq\tau_{2G}$ を (α) を使って示す（$\tau_{2G}\subseteq\tau_{1G}$ は (β) を使って同様）。$\tau_{1G}$ の元は、$s_{1}\in G$ となる $\langle\pi_{1},s_{1}\rangle\in\tau_{1}$ についての $\pi_{1G}$ の形である。$r\in G$ を $r\le p$, $r\le s_{1}$ となるようにとる。\ref{set:forcing-star-dense} より $r\Vdash^{*}\tau_{1}=\tau_{2}$ なので、(α) の集合 $E\defeq\{q:q\le s_{1}\to\exists\langle\pi_{2},s_{2}\rangle\in\tau_{2}\,(q\le s_{2}\land q\Vdash^{*}\pi_{1}=\pi_{2})\}$ は $r$ の下で稠密、したがって $E_{r}\defeq\{q\in E:q\le r\}$ も $r$ の下で稠密である。$E_{r}\in M$（絶対性）なので \ref{set:generic-dense-below} の 2 より $q\in G\cap E_{r}$ がとれる。$q\le r\le s_{1}$ なので、$\langle\pi_{2},s_{2}\rangle\in\tau_{2}$ で $q\le s_{2}$, $q\Vdash^{*}\pi_{1}=\pi_{2}$ となるものがある。$s_{2}\in G$（上に閉じている）なので $\pi_{2G}\in\tau_{2G}$。$\langle\pi_{1},\pi_{2}\rangle\,R\,\langle\tau_{1},\tau_{2}\rangle$ なので帰納法の仮定（1）より $\pi_{1G}=\pi_{2G}$。よって $\pi_{1G}\in\tau_{2G}$。
+
+*2 の証明.* $\tau_{1G}=\tau_{2G}$ とする。$D$ を、$r\Vdash^{*}\tau_{1}=\tau_{2}$ であるか、次の (α′) または (β′) を満たす $r\in\PP$ 全体とする。
+- (α′) ある $\langle\pi_{1},s_{1}\rangle\in\tau_{1}$ について $r\le s_{1}$ かつ、すべての $\langle\pi_{2},s_{2}\rangle\in\tau_{2}$ とすべての $q\in\PP$ について、$(q\le s_{2}\land q\Vdash^{*}\pi_{1}=\pi_{2})\to q\perp r$。
+- (β′) ある $\langle\pi_{2},s_{2}\rangle\in\tau_{2}$ について $r\le s_{2}$ かつ、すべての $\langle\pi_{1},s_{1}\rangle\in\tau_{1}$ とすべての $q\in\PP$ について、$(q\le s_{1}\land q\Vdash^{*}\pi_{1}=\pi_{2})\to q\perp r$。
+
+まず、$G$ のどの元も (α′) も (β′) も満たさないことを示す。$r\in G$ が (α′) を $\langle\pi_{1},s_{1}\rangle$ について満たすとする。$s_{1}\in G$ なので $\pi_{1G}\in\tau_{1G}=\tau_{2G}$ で、$s_{2}\in G$ かつ $\pi_{1G}=\pi_{2G}$ となる $\langle\pi_{2},s_{2}\rangle\in\tau_{2}$ がある。帰納法の仮定（2）より $q_{0}\Vdash^{*}\pi_{1}=\pi_{2}$ となる $q_{0}\in G$ がある。$q\le q_{0}$, $q\le s_{2}$ となる $q\in G$ をとると、\ref{set:forcing-star-dense} より $q\Vdash^{*}\pi_{1}=\pi_{2}$ なので (α′) より $q\perp r$。しかし $q,r\in G$ は両立するので矛盾。(β′) も同様。
+
+したがって、$r\Vdash^{*}\tau_{1}=\tau_{2}$ となる $r\in G$ がなければ $D\cap G=\varnothing$。$D\in M$（絶対性）なので、$D$ が稠密であることを示せば証明が終わる。$p\in\PP$ を固定し、$p\Vdash^{*}\tau_{1}=\tau_{2}$ でないとすると (α) か (β) が $p$ について成り立たない。(α) が成り立たないとすると、ある $\langle\pi_{1},s_{1}\rangle\in\tau_{1}$ と $r\le p$ で
+$$
+\forall q\le r\;\bigl(q\le s_{1}\land\forall\langle\pi_{2},s_{2}\rangle\in\tau_{2}\,\lnot(q\le s_{2}\land q\Vdash^{*}\pi_{1}=\pi_{2})\bigr)
+\label{set:eq-alpha-fails}
+$$
+となるものがある。とくに（$q=r$ として）$r\le s_{1}$。$\langle\pi_{2},s_{2}\rangle\in\tau_{2}$, $q\le s_{2}$, $q\Vdash^{*}\pi_{1}=\pi_{2}$ なら $q\perp r$ である：$q,r$ の共通の拡張 $q'$ があれば $q'\le s_{2}$ で、\ref{set:forcing-star-dense} より $q'\Vdash^{*}\pi_{1}=\pi_{2}$ となり \eqref{set:eq-alpha-fails} に反する。よって $r\le p$ は (α′) を満たし、$r\in D$。(β) が成り立たない場合も同様に (β′) を満たす $r\le p$ がある。
+
+**素論理式 $\tau_{1}\in\tau_{2}$.** *1：* $p\in G$, $p\Vdash^{*}\tau_{1}\in\tau_{2}$ とすると、$D\defeq\{q:\exists\langle\pi,s\rangle\in\tau_{2}\,(q\le s\land q\Vdash^{*}\pi=\tau_{1})\}$ は $p$ の下で稠密で $M$ に属するので、$q\in G\cap D$ と $\langle\pi,s\rangle\in\tau_{2}$ で $q\le s$, $q\Vdash^{*}\pi=\tau_{1}$ となるものがある。$s\in G$ なので $\pi_{G}\in\tau_{2G}$。$q\in G$ と、$\pi=\tau_{1}$ についての 1（上で示した）より $\pi_{G}=\tau_{1G}$。よって $\tau_{1G}\in\tau_{2G}$。*2：* $\tau_{1G}\in\tau_{2G}$ とすると、$\tau_{2G}$ の定義より $s\in G$, $\pi_{G}=\tau_{1G}$ となる $\langle\pi,s\rangle\in\tau_{2}$ がある。$\pi=\tau_{1}$ についての 2 より $r\Vdash^{*}\pi=\tau_{1}$ となる $r\in G$ がある。$p\le s$, $p\le r$ となる $p\in G$ をとると、すべての $q\le p$ について $q\le s$ かつ $q\Vdash^{*}\pi=\tau_{1}$（\ref{set:forcing-star-dense}）なので $p\Vdash^{*}\tau_{1}\in\tau_{2}$（定義が要求するより強いことを確かめた）。
+
+**帰納法の段階.** 以上で素論理式について 1, 2 が示された。次に論理式に関する帰納法で、すべての $\varphi$ について 1, 2 を同時に示す（この帰納法はメタの理論で行う）。$\lnot,\land,\exists$ の段階それぞれで 1 と 2 を確かめるので六つの部分がある。量化子を含む $\varphi$ について $\Vdash^{*}$ は絶対的でないので、ここからは $M$ への相対化が重要である。簡単のため $\vec{\tau}$ の記載を省く。
+
+- **(1) $\lnot$.** $\varphi$ について 1, 2 を仮定する。$p\in G$, $(p\Vdash^{*}\lnot\varphi)^{M}$ とし、$\varphi^{M[G]}$ と仮定すると、$\varphi$ についての 2 より $(q\Vdash^{*}\varphi)^{M}$ となる $q\in G$ がある。$r\le p$, $r\le q$ となる $r\in G$ をとると（$M$ の中で \ref{set:forcing-star-dense} を使い）$(r\Vdash^{*}\varphi)^{M}$ で、$(p\Vdash^{*}\lnot\varphi)^{M}$ の定義に反する。よって $(\lnot\varphi)^{M[G]}$。
+- **(2) $\lnot$.** $(\lnot\varphi)^{M[G]}$ とし、$D\defeq\{p:(p\Vdash^{*}\varphi)^{M}\lor(p\Vdash^{*}\lnot\varphi)^{M}\}$ とおく。$D\in M$（$M$ の分出公理）で、$\Vdash^{*}$ の定義を $M$ の中で適用すると $D$ は稠密である（$p$ が $\lnot\varphi$ を強制しなければ、$\varphi$ を強制する $q\le p$ がある）。$p\in D\cap G$ をとる。$(p\Vdash^{*}\varphi)^{M}$ なら $\varphi$ についての 1 より $\varphi^{M[G]}$ となり矛盾するので、$(p\Vdash^{*}\lnot\varphi)^{M}$。
+- **(1) $\land$.** $p\in G$, $(p\Vdash^{*}\varphi\land\psi)^{M}$ なら $(p\Vdash^{*}\varphi)^{M}$ かつ $(p\Vdash^{*}\psi)^{M}$ で、帰納法の仮定より $\varphi^{M[G]}$ かつ $\psi^{M[G]}$。
+- **(2) $\land$.** $(\varphi\land\psi)^{M[G]}$ なら、帰納法の仮定より $(p\Vdash^{*}\varphi)^{M}$, $(q\Vdash^{*}\psi)^{M}$ となる $p,q\in G$ があり、共通の拡張 $r\in G$ について（\ref{set:forcing-star-dense}）$(r\Vdash^{*}\varphi\land\psi)^{M}$。
+- **(1) $\exists$.** $p\in G$, $(p\Vdash^{*}\exists x\,\varphi(x))^{M}$ なら、$\{r:\exists\sigma\in M^{\PP}\,(r\Vdash^{*}\varphi(\sigma))^{M}\}$ は $p$ の下で稠密で $M$ に属するので、$r\in G$ と $\sigma\in M^{\PP}$ で $(r\Vdash^{*}\varphi(\sigma))^{M}$ となるものがある。$\varphi$ についての 1 より $\varphi^{M[G]}(\sigma_{G})$、よって $(\exists x\,\varphi(x))^{M[G]}$。
+- **(2) $\exists$.** $(\exists x\,\varphi(x))^{M[G]}$ なら、$\varphi^{M[G]}(\sigma_{G})$ となる $\sigma\in M^{\PP}$ がある（$M[G]$ の元はすべて $M^{\PP}$ の名前の値）。$\varphi$ についての 2 より $(p\Vdash^{*}\varphi(\sigma))^{M}$ となる $p\in G$ があり、\ref{set:forcing-star-dense} よりすべての $r\le p$ について $(r\Vdash^{*}\varphi(\sigma))^{M}$。よって $(p\Vdash^{*}\exists x\,\varphi(x))^{M}$。
+:::
+
+::: hypcheck
+- ジェネリック性は、素論理式の 1 で \ref{set:generic-dense-below}、2 で稠密集合 $D\in M$ と交わること、$\lnot$ の (2) で稠密集合と交わることに使った。
+- $D\in M$ などの帰属は、素論理式の $\Vdash^{*}$ の絶対性と、$M$ が $\ZFC$（分出・置換）を満たすことに依存する。
+- $M$ の可算性はここでは使っていない。可算性は次の定理で、ジェネリックな $G$ の存在（\ref{set:generic-exists}）を通して使う。
+:::
+
+最後に事実 1, 2 を正式に述べて証明する。
+
+::: theorem 強制定理 {#set:forcing-theorem keywords="forcing theorem, definability lemma, truth lemma" index="強制定理|きょうせいていり, 定義可能性補題|ていぎかのうせいほだい, 真理補題|しんりほだい"}
+$M$ を $\ZFC$ の c.t.m.、$\PP\in M$ を p.o.、$\varphi(x_{1},\dots,x_{n})$ を自由変数が表示したものだけである論理式、$\tau_{1},\dots,\tau_{n}\in M^{\PP}$ とする。
+1. （定義可能性）すべての $p\in\PP$ について $p\Vdash\varphi(\vec{\tau})\iff(p\Vdash^{*}\varphi(\vec{\tau}))^{M}$。
+2. （真理補題）$M$ 上 $\PP$-ジェネリックなすべての $G$ について $\varphi^{M[G]}(\tau_{1G},\dots,\tau_{nG})\iff\exists p\in G\,(p\Vdash\varphi(\vec{\tau}))$。
+:::
+
+::: proof
+**1（$\Leftarrow$）** は \ref{set:forcing-star-truth} の 1 と $\Vdash$ の定義から直ちに従う。**（$\Rightarrow$）** $p\Vdash\varphi(\vec{\tau})$ とする。\ref{set:forcing-star-dense}（$M$ の中で適用）より、$D\defeq\{r:(r\Vdash^{*}\varphi(\vec{\tau}))^{M}\}$ が $p$ の下で稠密であることを示せばよい。そうでないとすると、$r\le q$ となるどの $r$ も $D$ に属さない $q\le p$ がある。$\Vdash^{*}$ の定義 4 より $(q\Vdash^{*}\lnot\varphi(\vec{\tau}))^{M}$ で、（$\Leftarrow$）より $q\Vdash\lnot\varphi(\vec{\tau})$。$q\in G$ となる $M$ 上ジェネリックな $G$ をとる（\ref{set:generic-exists}、$M$ は可算）。すると $(\lnot\varphi)^{M[G]}(\vec{\tau}_{G})$ だが、$p\ge q$ より $p\in G$ なので $\varphi^{M[G]}(\vec{\tau}_{G})$ でもあり、矛盾。
+
+**2（$\Rightarrow$）** は \ref{set:forcing-star-truth} の 2（$\Vdash^{*}$ について同じことを主張する）と 1 から、**（$\Leftarrow$）** は $\Vdash$ の定義から直ちに従う。
+:::
+
+実際には \ref{set:forcing-theorem} の 1 は、$\Vdash$ を使って定義した様々な集合が本当に $M$ に属することを示すのに使われる。たとえば $\tau_{1},\dots,\tau_{n}\in M^{\PP}$ を固定すると
+$$
+\{p\in\PP:p\Vdash\varphi(\tau_{1},\dots,\tau_{n})\}=\{p\in\PP:(p\Vdash^{*}\varphi(\tau_{1},\dots,\tau_{n}))^{M}\}\in M
+$$
+（右辺は $M$ の分出公理で $M$ に属する）。同様に、$\sigma,\tau_{2},\dots,\tau_{n}\in M^{\PP}$ を固定すると $\{\langle p,\tau_{1}\rangle\in\PP\times\dom(\sigma):p\Vdash\varphi(\tau_{1},\dots,\tau_{n})\}\in M$。\ref{set:forcing-theorem} の 2 は $M[G]$ での真理と $\Vdash$ を結ぶので重要である。次の $\Vdash$ についての事実も役に立つ。
+
+::: corollary 強制の性質 {#set:forcing-corollary keywords="properties of forcing: negation, existential quantifier, bounded quantifier"}
+$M$ を $\ZFC$ の c.t.m.、$\PP\in M$ を p.o.、$\sigma,\tau_{1},\dots,\tau_{n}\in M^{\PP}$ とする。
+1. $\{p\in\PP:p\Vdash\varphi(\vec{\tau})\lor p\Vdash\lnot\varphi(\vec{\tau})\}$ は稠密。
+2. $p\Vdash\lnot\varphi(\vec{\tau})\iff\lnot\exists q\le p\,(q\Vdash\varphi(\vec{\tau}))$。
+3. $p\Vdash\exists x\,\varphi(x,\vec{\tau})\iff\{r\le p:\exists\sigma'\in M^{\PP}\,(r\Vdash\varphi(\sigma',\vec{\tau}))\}$ は $p$ の下で稠密。
+4. $p\Vdash\exists x\,(x\in\sigma\land\varphi(x,\vec{\tau}))$ ならば、ある $q\le p$ と $\pi\in\dom(\sigma)$ について $q\Vdash\varphi(\pi,\vec{\tau})$。
+:::
+
+::: proof
+1〜3 は（$M$ に相対化した）$\Vdash^{*}$ について定義から成り立つ（1 は定義 4 から）ので、\ref{set:forcing-theorem} の 1 により $\Vdash$ についても成り立つ。**4.** $p\in G$ となるジェネリックな $G$ をとる。$\Vdash$ の定義より、$a\in\sigma_{G}$ で $\varphi^{M[G]}(a,\vec{\tau}_{G})$ となるものがある。$a=\pi_{G}$ となる $\pi\in\dom(\sigma)$ がある。\ref{set:forcing-theorem} の 2 より $r\Vdash\varphi(\pi,\vec{\tau})$ となる $r\in G$ がある。$p$ と $r$ の共通の拡張 $q$ は $q\le p$ で、\ref{set:forcing-basic} の 1 より $q\Vdash\varphi(\pi,\vec{\tau})$。
+:::
+
+## 問題 {#set:sec-forcing-problems}
+
+::: problem {#set:prob-forcing-check}
+$x,y\in M$ とする。$\mathbf{1}\Vdash\check{x}\in\check{y}$ であるか $\mathbf{1}\Vdash\lnot(\check{x}\in\check{y})$ であるかのいずれかで、前者は $x\in y$ と同値であることを示せ。
+:::
+
+::: solution
+任意のジェネリックな $G$ について $\check{x}_{G}=x$, $\check{y}_{G}=y$（\ref{set:check-name-val}）なので、$(\check{x}_{G}\in\check{y}_{G})^{M[G]}\iff x\in y$（素論理式の相対化は変わらない）。よって $x\in y$ なら $\mathbf{1}\Vdash\check{x}\in\check{y}$、$x\notin y$ なら $\mathbf{1}\Vdash\lnot(\check{x}\in\check{y})$。ジェネリックな $G$ は存在する（\ref{set:generic-exists}）ので両方が同時に成り立つことはない。
+:::
+
+::: problem {#set:prob-forcing-phi-zero}
+冒頭の例で、$p\in\mathrm{Fn}(\omega,2)$ について $p\Vdash\Phi(\check{0})=\check{0}$（「$\langle0,0\rangle\in\Phi$」の意味で $\mathrm{op}(\check{0},\check{0})\in\Phi$ と読む）であることと $p(0)=0$ であることが同値であることを示せ。
+:::
+
+::: solution
+$p(0)=0$ なら、$p\in G$ のとき $\Phi$ の定義より $\langle0,0\rangle\in\Phi_{G}$。逆に $p(0)=0$ でないとする。$0\notin\dom(p)$ なら $q\defeq p\cup\{\langle0,1\rangle\}\le p$ をとり、$0\in\dom(p)$ なら（$p(0)=1$）$q\defeq p$ とする。$q\in G$ となるジェネリックな $G$ について $f_{G}(0)=1$ で、$f_{G}$ は関数なので $\langle0,0\rangle\notin f_{G}=\Phi_{G}$。$p\in G$ なので $p\not\Vdash\mathrm{op}(\check{0},\check{0})\in\Phi$。
+:::
+
+::: supplement
+**前提の検討.**
+- \ref{set:forcing-theorem} の 1 の（$\Rightarrow$）でのみ $M$ の可算性（ジェネリックな $G$ の存在）を使った。$M$ が可算でないと $\Vdash$ は空虚に真になりうる（ジェネリックな $G$ がなければ任意の $p$ が任意の $\varphi$ を強制する）ので、定義可能性は成り立たない。
+- $\Vdash^{*}$ の定義は $M$ にも可算性にも言及しない。このことが、ブール値モデルによる方法やメタ数学的な扱い（Kunen 第 VII 章 §9）で、c.t.m. なしに強制法を展開するときの基礎になる。
+- $\Vdash^{*}$ の具体的な節の選び方は本質的でない。\ref{set:forcing-star-dense} と \ref{set:forcing-star-truth} が成り立つ定義なら何でもよい（Kunen 第 VII 章の演習 B3, B4 に別の定義がある）。
+
+**関連する結果.** 素論理式についての $\Vdash^{*}$ の再帰は、ブール値モデル $\mathbf{V}^{\mathbb{B}}$ での真理値 $\lVert\tau_{1}=\tau_{2}\rVert$ の再帰的な定義と本質的に同じである、と一般に言われている（Kunen 第 VII 章 §7 で扱われる）。
+
+**高い視点から：局所的な知識と大域的な真理.** 条件 $p$ は「$G$ についての有限の部分情報」、$p\Vdash\varphi$ は「その情報だけで $\varphi$ の真偽が確定する」ことである。これは層の理論で、開集合 $U$ の上の切断が、$U$ の各点での振る舞いをすべて決めることに似ている。$p$ の下で稠密な集合が「$U$ の開被覆」、\ref{set:forcing-star-dense} が「真理は局所的な性質で、開被覆の上で真なら全体で真」（張り合わせ）にあたる。実際、強制法は位相空間 $\PP$（あるいはその正則開集合代数）の上の層として定式化でき、$\Vdash$ は層のトポス内部の論理（クリプキ–ジョイアル意味論）の特別な場合であると一般に言われている（本サイトでは扱っていない）。$\lnot\varphi$ の強制（「どこまで情報を足しても $\varphi$ にはならない」）が直観主義論理の否定の意味論と同じ形をしているのは、この対応の表れである。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

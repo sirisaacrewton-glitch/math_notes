@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>コーエンモデル再論 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/08-iterated-forcing/02-cohen-model.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# コーエンモデル再論 {#set:page-cohen-model keywords="Cohen model, factoring Fn(I,2), small support, maximal almost disjoint family of size aleph_1, independent family, maximal independent families in the Cohen model"}
+
+$\mathrm{Fn}(I,2)$ による拡大を**コーエンモデル**と呼ぶ（コーエンが $\lnot\mathrm{CH}$ の無矛盾性の元の証明で使ったもの）。本ページでは積の補題を使ってその性質をさらに調べる。$\mathrm{Fn}(I,2)$ は多くの仕方で積とみなせるので、小さな集合はつねに「小さな部分」による拡大に含まれることが分かる（**小さな台**の補題）。応用として、CH を満たす $M$ から出発すると、$\lnot\mathrm{CH}$ でも大きさ $\aleph_{1}$ の極大概素族が残ること（MA が壊れること）と、極大独立族の大きさはつねに $2^{\aleph_{0}}$ であることを示す。（Kunen 第 VIII 章 §2 に対応する。）
+
+## 記法と定義の確認 {#set:sec-cohen-notation}
+
+::: notation
+- $M$ は $\ZFC$ の c.t.m.。積の補題（\ref{set:product-lemma}）、\ref{set:product-generic-factor} は \ref{set:page-products}、同型な p.o. の拡大（\ref{set:isomorphism-same-extension}）は \ref{set:page-embeddings-bvm}、よい名前（\ref{set:nice-name}, \ref{set:nice-name-exists}）と \ref{set:continuum-kappa}, \ref{set:ccc-preserves}, \ref{set:fn-ccc} は \ref{set:page-fn-forcing}、強制の系（\ref{set:forcing-corollary}）は \ref{set:page-forcing-relation} のとおり。
+- 概素族・極大概素族（m.a.d.f.。\ref{set:almost-disjoint}）、可算な無限概素族は極大でないこと（\ref{set:ad-family-regular}）、MA のもとで大きさ $2^{\omega}$ 未満の概素族は極大でないこと（\ref{set:ma-ad-corollary}）は第 II 章のとおり。
+:::
+
+## Fn(I, 2) の分解と小さな台 {#set:sec-cohen-factor}
+
+$\mathrm{Fn}(I,2)$ は多くの仕方で積とみなせる。すなわち各 $I_{0}\subseteq I$ について、$\mathrm{Fn}(I,2)$ は $\mathrm{Fn}(I_{0},2)\times\mathrm{Fn}(I\setminus I_{0},2)$ と同型である（\ref{set:prob-fn-product}）。この同型を使って前ページの基本的な結果をすべて $\mathrm{Fn}(I,2)$ についての主張に翻訳できる。次の定理は必要な部分を翻訳したものである。
+
+::: theorem コーエン強制の分解 {#set:cohen-factor keywords="factoring Cohen forcing" index="コーエン強制の分解|こーえんきょうせいのぶんかい"}
+$I=I_{0}\cup I_{1}$、$I_{0}\cap I_{1}=\varnothing$、$I_{0},I_{1}\in M$ とし、$G$ を $M$ 上 $\mathrm{Fn}(I,2)$-ジェネリックとする。$G_{0}\defeq G\cap\mathrm{Fn}(I_{0},2)$、$G_{1}\defeq G\cap\mathrm{Fn}(I_{1},2)$ とおく。このとき $G_{0}$ は $M$ 上 $\mathrm{Fn}(I_{0},2)$-ジェネリック、$G_{1}$ は $M[G_{0}]$ 上 $\mathrm{Fn}(I_{1},2)$-ジェネリックで、$M[G]=M[G_{0}][G_{1}]$。
+:::
+
+::: proof
+$j\colon\mathrm{Fn}(I_{0},2)\times\mathrm{Fn}(I_{1},2)\to\mathrm{Fn}(I,2)$ を $j(p_{0},p_{1})\defeq p_{0}\cup p_{1}$ で定めると、$j$ は $M$ に属する同型である（\ref{set:prob-fn-product}）。したがって $H\defeq j^{-1}[G]$ は $M$ 上 $\mathrm{Fn}(I_{0},2)\times\mathrm{Fn}(I_{1},2)$-ジェネリックで、$M[G]=M[H]$（\ref{set:isomorphism-same-extension}）。\ref{set:product-generic-factor} より $H=H_{0}\times H_{1}$、$H_{0}=i_{0}^{-1}[H]$, $H_{1}=i_{1}^{-1}[H]$。積の補題（\ref{set:product-lemma}）より、$H_{0}$ は $M$ 上 $\mathrm{Fn}(I_{0},2)$-ジェネリック、$H_{1}$ は $M[H_{0}]$ 上 $\mathrm{Fn}(I_{1},2)$-ジェネリックで、$M[G]=M[H]=M[H_{0}][H_{1}]$。最後に
+$$
+\begin{aligned}
+H_{0}&=\{p_{0}\in\mathrm{Fn}(I_{0},2):\langle p_{0},\mathbf{1}\rangle\in H\}\\
+&=\{p_{0}\in\mathrm{Fn}(I_{0},2):p_{0}\cup0\in G\}=G_{0}
+\end{aligned}
+$$
+で、同様に $H_{1}=G_{1}$。
+:::
+
+\ref{set:cohen-factor} が有用なのは、$M[G]$ の任意の小さな集合が、小さな $I_{0}$ についての $M[G_{0}]$ に属するからである。より正確には次が成り立つ。
+
+::: lemma 小さな台 {#set:cohen-small-support keywords="every small set in the Cohen extension lies in a small subextension" index="小さな台|ちいさなだい"}
+$I,S\in M$ とし、$G$ を $M$ 上 $\mathrm{Fn}(I,2)$-ジェネリックとする。$X\subseteq S$、$X\in M[G]$ なら、ある $I_{0}\subseteq I$ で $I_{0}\in M$、$(\lvert I_{0}\rvert\le\lvert S\rvert)^{M}$ かつ $X\in M[G\cap\mathrm{Fn}(I_{0},2)]$ となるものがある。
+:::
+
+::: proof
+$\lvert S\rvert<\omega$ なら $X\in M$（$S$ の部分集合は有限個で、すべて $M$ に属する）なので $I_{0}=\varnothing$ でよい。以下 $S$ は無限とする。\ref{set:nice-name-exists} より、$X=\tau_{G}$ となる $\check{S}$ の部分集合のよい名前
+$$
+\tau=\bigcup_{s\in S}\bigl(\{\check{s}\}\times A_{s}\bigr)
+$$
+がある。ここで各 $A_{s}\in M$ は $\mathrm{Fn}(I,2)$ の反鎖である。
+$$
+I_{0}\defeq\bigcup\{\dom(p):\exists s\in S\,(p\in A_{s})\},\qquad G_{0}\defeq G\cap\mathrm{Fn}(I_{0},2)
+$$
+とおく。$M$ の中で c.c.c.（\ref{set:fn-ccc}）より各 $A_{s}$ は可算で、各 $\dom(p)$ は有限なので、$M$ の中で $\lvert I_{0}\rvert\le\lvert S\rvert\cdot\omega=\lvert S\rvert$。各 $A_{s}\subseteq\mathrm{Fn}(I_{0},2)$ で、$\check{s}$ は $\mathrm{Fn}(I_{0},2)$-名前でもある（最大元はどちらも $\varnothing$）ので、$\tau$ は $\mathrm{Fn}(I_{0},2)$-名前であり
+$$
+\begin{aligned}
+\tau_{G}&=\{s\in S:\exists p\in G\,(p\in A_{s})\}=\{s\in S:\exists p\in G_{0}\,(p\in A_{s})\}\\
+&=\tau_{G_{0}}\in M[G_{0}].
+\end{aligned}
+$$
+（$G_{0}$ は \ref{set:cohen-factor} より $M$ 上ジェネリックなので $M[G_{0}]$ は意味をもつ。）
+:::
+
+とくに $M[G]$ の $\omega$ の部分集合はどれも、$M$ で $\mathrm{Fn}(\omega,2)$ と同型な p.o. による $M$ の拡大に属する（$I_{0}$ が $M$ で可算無限なら $\mathrm{Fn}(I_{0},2)\cong\mathrm{Fn}(\omega,2)$、有限なら拡大は $M$ 自身）。$\mathrm{Fn}(\omega,2)$ による拡大は CH を保つ（\ref{set:con-gch-v-neq-l} の証明）ので、\ref{set:cohen-small-support} を使って、CH のある種の帰結が任意の $\mathrm{Fn}(I,2)$ による拡大でも成り立つことを示せる。たとえば、$M$ が CH を満たすなら、$\omega$ の部分集合の大きさ $\omega_{1}$ の極大概素族があることを示す。これは CH が偽なら MA に反する（\ref{set:ma-ad-corollary}）。これらの拡大で MA が成り立たないことのもっと易しい見方は Kunen 第 VII 章の演習 G7 にある。
+
+## 大きさ ℵ₁ の極大概素族 {#set:sec-cohen-mad}
+
+::: theorem コーエンモデルの小さな極大概素族 {#set:cohen-mad-omega-one keywords="maximal almost disjoint family of size aleph_1 in the Cohen model" index="コーエンモデルの極大概素族|こーえんもでるのきょくだいがいそぞく"}
+$I\in M$ で $M$ で CH が成り立つとし、$G$ を $M$ 上 $\mathrm{Fn}(I,2)$-ジェネリックとする。このとき $M[G]$ に大きさ $\omega_{1}$ の極大概素族がある。
+:::
+
+::: proof
+**方針.** $M$ の中で、大きさ $\omega_{1}$ の極大概素族 $\mathcal{A}$ で、すべての $I\in M$ と $M$ 上 $\mathrm{Fn}(I,2)$-ジェネリックなすべての $G$ について $M[G]$ でも極大であり続けるものを定義する。\ref{set:cohen-small-support} より、$M[G]$ の任意の $X\subseteq\omega$ は $M$ で可算なある $I_{0}$ について $M[G\cap\mathrm{Fn}(I_{0},2)]$ に属するので、そのような $I_{0}$ による拡大で $\mathcal{A}$ の極大性を確かめれば十分である。$I_{0}$ が有限なら $M[G_{0}]=M$（$\mathrm{Fn}(I_{0},2)$ は有限で、ジェネリックなフィルターは定義域が $I_{0}$ 全体の元が生成するので $M$ に属する）で、$(\lvert I_{0}\rvert=\omega)^{M}$ なら $\mathrm{Fn}(I_{0},2)$ は $M$ で $\mathrm{Fn}(\omega,2)$ と同型である。同型な p.o. は同じ拡大を与える（\ref{set:isomorphism-same-extension}）ので、$\mathcal{A}$ を、$\mathrm{Fn}(\omega,2)$-ジェネリックな任意の $G$ について $M[G]$ のどの無限な $\omega$ の部分集合も $\mathcal{A}$ のすべての元と概素にはならないように定義すれば十分である。
+
+以下、強制の用語はすべて p.o. $\mathrm{Fn}(\omega,2)$ についてのものとする。
+
+**$M$ の中の構成.** $M$ の中で次を行う。$p\in\mathrm{Fn}(\omega,2)$ と $\check{\omega}$ の部分集合のよい名前 $\tau$ の組 $\langle p,\tau\rangle$ は、CH より高々 $\omega_{1}$ 個である（反鎖は可算なので高々 $2^{\omega}$ 個、よい名前は高々 $(2^{\omega})^{\omega}=2^{\omega}=\omega_{1}$ 個）。それらを $\langle p_{\xi},\tau_{\xi}\rangle$（$\omega\le\xi<\omega_{1}$）と枚挙する。再帰で無限集合 $A_{\xi}\subseteq\omega$ を選ぶ。$A_{n}$（$n<\omega$）は互いに交わらない任意の無限集合とする。$\omega\le\xi<\omega_{1}$ で $A_{\eta}$（$\eta<\xi$）が与えられたとき、$A_{\xi}$ を次を満たすように選ぶ。
+1. $\forall\eta<\xi\,(\lvert A_{\eta}\cap A_{\xi}\rvert<\omega)$。
+2. もし
+$$
+p_{\xi}\Vdash\bigl(\lvert\tau_{\xi}\rvert=\omega\land\forall\eta<\check{\xi}\,(\lvert\tau_{\xi}\cap\check{A}_{\eta}\rvert<\omega)\bigr)
+\label{set:eq-mad-star}
+$$
+ならば、$\forall n\in\omega\,\forall q\le p_{\xi}\,\exists r\le q\,\exists m\ge n\,(m\in A_{\xi}\land r\Vdash\check{m}\in\tau_{\xi})$。
+
+（\eqref{set:eq-mad-star} の式は Kunen の本文で我々の参照したテキストでは判読できなかったので、証明の他の部分から復元した。ここで $\forall\eta<\check{\xi}\,(\cdots\check{A}_{\eta}\cdots)$ は、$M$ の列 $\langle A_{\eta}:\eta<\xi\rangle$ の標準的な名前を使った主張である。）
+
+このように $A_{\xi}$ を選べることを確かめる。\eqref{set:eq-mad-star} が成り立たなければ 1 だけを考えればよく、$\{A_{\eta}:\eta<\xi\}$ は可算な無限概素族なので極大でない（\ref{set:ad-family-regular}）ことを使えばよい。\eqref{set:eq-mad-star} が成り立つとする。$B_{i}$（$i\in\omega$）で $\{A_{\eta}:\eta<\xi\}$ を枚挙し、$\langle n_{i},q_{i}\rangle$（$i\in\omega$）で $\omega\times\{q:q\le p_{\xi}\}$ を枚挙する。\eqref{set:eq-mad-star} より、各 $i$ について
+$$
+q_{i}\Vdash\bigl\lvert\tau_{\xi}\setminus(\check{B}_{0}\cup\cdots\cup\check{B}_{i})\bigr\rvert=\omega
+$$
+（$\tau_{\xi}$ は無限で、各 $B_{j}$ との共通部分は有限）なので、\ref{set:forcing-corollary} の 4 より、$r_{i}\le q_{i}$ と $m_{i}\ge n_{i}$ で $m_{i}\notin B_{0}\cup\cdots\cup B_{i}$ かつ $r_{i}\Vdash\check{m}_{i}\in\tau_{\xi}$ となるものを選べる。$A_{\xi}\defeq\{m_{i}:i\in\omega\}$ とする。各 $n$ は（$q=p_{\xi}$ について）ある $n_{i}$ に等しいので $A_{\xi}$ は非有界、したがって無限である。$A_{\xi}\cap B_{j}\subseteq\{m_{i}:i<j\}$ は有限なので 1 が成り立ち、2 は構成から成り立つ。
+
+$\mathcal{A}\defeq\{A_{\xi}:\xi<\omega_{1}\}$ とする（$M$ の中の大きさ $\omega_{1}$ の概素族）。
+
+**極大性.** $G$ を $M$ 上 $\mathrm{Fn}(\omega,2)$-ジェネリックとし、$\mathcal{A}$ が $M[G]$ で極大でないと仮定する。無限な $X\subseteq\omega$、$X\in M[G]$ で $\mathcal{A}$ のすべての元と概素なものがある。\ref{set:nice-name-exists} より $X=\tau_{G}$ となるよい名前 $\tau$ があり、真理補題より $p\in G$ で $p\Vdash(\lvert\tau\rvert=\omega\land\forall Y\in\check{\mathcal{A}}\,(\lvert\tau\cap Y\rvert<\omega))$ となるものがある。$\langle p,\tau\rangle=\langle p_{\xi},\tau_{\xi}\rangle$ となる $\xi$ をとると、\eqref{set:eq-mad-star} が $\xi$ で成り立つ。また $p_{\xi}\Vdash\lvert\tau_{\xi}\cap\check{A}_{\xi}\rvert<\omega$ なので、\ref{set:forcing-corollary} の 4 より $q\le p_{\xi}$ と $n\in\omega$ で $q\Vdash\tau_{\xi}\cap\check{A}_{\xi}\subseteq\check{n}$ となるものがある。しかし 2 より $r\le q$ と $m\ge n$ で $m\in A_{\xi}$ かつ $r\Vdash\check{m}\in\tau_{\xi}$ となるものがあり、$r\Vdash\check{m}\in\tau_{\xi}\cap\check{A}_{\xi}$ と $r\Vdash\tau_{\xi}\cap\check{A}_{\xi}\subseteq\check{n}$ が矛盾する。
+
+**結論.** 一般の $I$ について、$\mathcal{A}\in M\subseteq M[G]$ は概素族（概素性は絶対的）で、方針の段落より $M[G]$ で極大である。$\mathrm{Fn}(I,2)$ は $M$ で c.c.c. なので $\omega_{1}$ は保たれ（\ref{set:ccc-preserves}）、$M[G]$ で $\lvert\mathcal{A}\rvert=\omega_{1}$。
+:::
+
+::: hypcheck
+- $M$ の CH は、$\langle p,\tau\rangle$ の組を長さ $\omega_{1}$ で枚挙するのに使った。これにより各段階で「$\mathcal{A}$ をすり抜けようとする」名前を一つずつ封じることができる。
+- 小さな台（\ref{set:cohen-small-support}）は、一般の $I$ を $\mathrm{Fn}(\omega,2)$ の場合に帰着するのに使った。
+:::
+
+MA のいくつかの帰結はコーエンモデルでも成り立つ。たとえば、極大独立族はつねに大きさ $2^{\omega}$ をもつ。
+
+::: definition 独立族 {#set:independent-family keywords="independent family, maximal independent family" index="独立族|どくりつぞく, 極大独立族|きょくだいどくりつぞく"}
+$\mathcal{A}\subseteq\mathcal{P}(\omega)$ が**独立族**（i.f.）であるとは、$m,n\in\omega$ と相異なる $a_{1},\dots,a_{m},b_{1},\dots,b_{n}\in\mathcal{A}$ について
+$$
+\bigl\lvert a_{1}\cap\cdots\cap a_{m}\cap(\omega\setminus b_{1})\cap\cdots\cap(\omega\setminus b_{n})\bigr\rvert=\omega
+$$
+となることをいう。**極大独立族**（m.i.f.）とは、この性質について極大な独立族のことである。
+:::
+
+概素族と同様、大きさ $2^{\omega}$ の独立族がつねにあり（Kunen 第 VIII 章の演習 A6）、したがって大きさ $2^{\omega}$ の極大独立族がある（ツォルンの補題）。残る問いは、極大独立族がつねに大きさ $2^{\omega}$ をもつかどうかである。簡単な対角線論法で、極大独立族はつねに大きさ $\omega_{1}$ 以上をもつ（演習 A15）ので、$\lnot\mathrm{CH}$ のモデルを考えることになる。概素族で見たのと同様に、大きさ $\omega_{1}$ の極大独立族があることは $\lnot\mathrm{CH}$ と無矛盾だが、その議論には反復強制による拡大が要る（演習 A13）。次に示すように（\ref{set:cohen-mif}）、コーエンモデルではすべての極大独立族が大きさ $2^{\omega}$ をもつ。
+
+MA からもすべての極大独立族が大きさ $2^{\omega}$ をもつことが従う。これは MA を p.o. $\mathrm{Fn}(\omega,2)$ に適用する易しい演習（A15）で、次の補題の証明とまったく同様である。一般に、コーエンモデルは $\mathrm{Fn}(I,2)$ の形の p.o. だけを使って証明できる MA の帰結を満たす。$\mathrm{MA}+\lnot\mathrm{CH}$ のモデルを得るには（第 VIII 章 §6）、あらゆる c.c.c. な p.o. で強制を反復しなければならない。
+
+::: lemma コーエン実数は分割する {#set:cohen-real-splits keywords="a Cohen real splits every ground model infinite set, independent families are not maximal"}
+$\mathcal{A}\subseteq\mathcal{P}(\omega)$、$\mathcal{A}\in M$、$I\in M$ で $I$ は無限とし、$G$ を $M$ 上 $\mathrm{Fn}(I,2)$-ジェネリックとする。このとき $M[G]$ で $\mathcal{A}$ は極大独立族でない。
+:::
+
+::: proof
+**$I=\omega$ の場合に帰着する.** 一般に、$M$ で $\lvert I_{0}\rvert=\omega$ となる $I_{0}\subseteq I$ をとる。\ref{set:cohen-factor} より $M[G\cap\mathrm{Fn}(I_{0},2)]\subseteq M[G]$ で、同型より $M[G\cap\mathrm{Fn}(I_{0},2)]=M[H]$ となる $M$ 上 $\mathrm{Fn}(\omega,2)$-ジェネリックな $H$ がある。$M[H]$ で $\mathcal{A}\cup\{C\}$ が独立族となる $C\notin\mathcal{A}$ があれば、独立族であることは絶対的なので、$M[G]$ でも $\mathcal{A}$ は極大でない。
+
+**$I=\omega$ の場合.** $\bigcup G\colon\omega\to2$ は集合 $C\defeq\{n\in\omega:(\bigcup G)(n)=1\}$ の特性関数である。$B\in M$ が $\omega$ の無限部分集合なら $B\cap C$ と $B\setminus C$ がともに無限であることを示す。各 $m\in\omega$ について
+$$
+\begin{aligned}
+&\{p:\exists n>m\,(n\in B\land p(n)=1)\}\quad\text{と}\\
+&\{p:\exists n>m\,(n\in B\land p(n)=0)\}
+\end{aligned}
+$$
+は稠密（$B$ は無限なので、$p$ の定義域外の $n>m$, $n\in B$ に値を割り当てられる）で $M$ に属するので、$G$ はそれらと交わる。よって $B\cap C$, $B\setminus C$ は非有界。
+
+$\mathcal{A}$ が $M[G]$ で（したがって $M$ で）独立族なら、$\mathcal{A}\cup\{C\}$ も独立族である：$\mathcal{A}$ の有限個の元とその補集合の共通部分 $B$ は $M$ に属する無限集合なので、$B\cap C$ と $B\setminus C$ は無限。また $C\notin M$（\ref{set:prob-generic-fn}）なので $C\notin\mathcal{A}$。よって $\mathcal{A}$ は $M[G]$ で極大でない。$\mathcal{A}$ が独立族でなければもちろん極大独立族でない。
+:::
+
+::: theorem コーエンモデルの極大独立族 {#set:cohen-mif keywords="every maximal independent family has size continuum in the Cohen model" index="コーエンモデルの極大独立族|こーえんもでるのきょくだいどくりつぞく"}
+$M$ の中で $\kappa$ を無限基数で $\kappa^{\omega}=\kappa$ とし、$G$ を $M$ 上 $\mathrm{Fn}(\kappa,2)$-ジェネリックとする。このとき $M[G]$ で $2^{\omega}=\kappa$ であり、すべての極大独立族は大きさ $\kappa$ をもつ。
+:::
+
+::: proof
+$\mathrm{Fn}(\kappa,2)$ と $\mathrm{Fn}(\kappa\times\omega,2)$ は $M$ で同型なので、\ref{set:continuum-kappa} より $M[G]$ で $2^{\omega}=\kappa$。$\mathcal{A}\in M[G]$ を大きさ $\lambda<\kappa$ の独立族とし、極大でないことを示す。
+
+$M[G]$ の中で $\mathcal{A}=\{A_{\xi}:\xi<\lambda\}$ と枚挙し、$X\defeq\{\langle\xi,n\rangle:n\in A_{\xi}\}\subseteq\lambda\times\omega$ とおく。\ref{set:cohen-small-support}（$S=\lambda\times\omega\in M$）より、$I_{0}\subseteq\kappa$ で $I_{0}\in M$、$(\lvert I_{0}\rvert\le\lvert\lambda\times\omega\rvert)^{M}$ かつ $X\in M[G_{0}]$（$G_{0}\defeq G\cap\mathrm{Fn}(I_{0},2)$）となるものがある。$\kappa^{\omega}=\kappa$ なので $\kappa>\omega$（ケーニッヒの補題）で、$\lvert I_{0}\rvert\le\max(\lambda,\omega)<\kappa$、したがって $I_{1}\defeq\kappa\setminus I_{0}$ は無限である。$G_{1}\defeq G\cap\mathrm{Fn}(I_{1},2)$ とおく。\ref{set:cohen-factor} より $M[G]=M[G_{0}][G_{1}]$ で、$G_{1}$ は $M[G_{0}]$ 上 $\mathrm{Fn}(I_{1},2)$-ジェネリックである。$\mathcal{A}=\{\{n:\langle\xi,n\rangle\in X\}:\xi<\lambda\}\in M[G_{0}]$ なので、\ref{set:cohen-real-splits} を基礎モデル $M[G_{0}]$ と $I_{1}$ に適用すると、$\mathcal{A}$ は $M[G_{0}][G_{1}]=M[G]$ で極大でない。
+:::
+
+## 問題 {#set:sec-cohen-problems}
+
+::: problem {#set:prob-cohen-omega-one-reals}
+$M$ が CH を満たし、$G$ が $M$ 上 $\mathrm{Fn}(\omega_{2},2)$-ジェネリックとする。$M[G]$ の任意の $\omega_{1}$ 個の実数の集合は、$M$ で大きさ $\omega_{1}$ のある $I_{0}\subseteq\omega_{2}$ について $M[G\cap\mathrm{Fn}(I_{0},2)]$ に属することを示せ。
+:::
+
+::: solution
+実数の集合 $\{x_{\xi}:\xi<\omega_{1}\}$ を $X\defeq\{\langle\xi,n\rangle:n\in x_{\xi}\}\subseteq\omega_{1}\times\omega$ で符号化し、\ref{set:cohen-small-support} を $S=\omega_{1}\times\omega$ に適用すると、$(\lvert I_{0}\rvert\le\omega_{1})^{M}$ となる $I_{0}$ で $X\in M[G\cap\mathrm{Fn}(I_{0},2)]$。そこから各 $x_{\xi}$ と列が復元できる。（$\omega_{1}$ は保たれるので $M$ の $\omega_{1}$ と $M[G]$ の $\omega_{1}$ は同じ。）
+:::
+
+::: problem {#set:prob-cohen-not-ma}
+\ref{set:cohen-mad-omega-one} を使って、CH を満たす $M$ から $\mathrm{Fn}(\omega_{2},2)$ で強制した $M[G]$ では MA が成り立たないことを示せ。
+:::
+
+::: solution
+$M[G]$ で $2^{\omega}=\omega_{2}$（\ref{set:continuum-kappa}。$M$ の GCH は不要で、CH と $\omega_{2}^{\omega}=\omega_{2}$（$M$ で CH のもとで成り立つ）から）であり、大きさ $\omega_{1}<2^{\omega}$ の極大概素族がある。MA のもとでは大きさ $2^{\omega}$ 未満の概素族は極大でない（\ref{set:ma-ad-corollary}）ので、MA は偽である。
+:::
+
+::: supplement
+**前提の検討.**
+- 小さな台（\ref{set:cohen-small-support}）は $M$ での c.c.c. とよい名前に依存する。$\mathrm{Fn}(I,2)$ でなく一般の c.c.c. な p.o. でも、よい名前の「台」を考える同様の議論が、p.o. の構造に応じて使える。
+- \ref{set:cohen-mad-omega-one} では $M$ の CH が本質的である。$M$ で CH が偽なら、同じ構成で長さ $\omega_{1}$ の枚挙はできない。
+- \ref{set:prob-cohen-not-ma} の解で $\omega_{2}^{\omega}=\omega_{2}$ を使ったが、CH のもとで $\omega_{2}^{\omega}=\omega_{2}\cdot2^{\omega}=\omega_{2}$（ハウスドルフの公式として一般に知られている。本サイトでは扱っていない）である。
+
+**関連する結果.** 本ページの議論は、コーエンモデルの「基数不変量」（$\mathfrak{a}$：極大概素族の最小の大きさ、$\mathfrak{i}$：極大独立族の最小の大きさなど）を計算する典型的な方法である。コーエンモデルでは $\mathfrak{a}=\aleph_{1}$、$\mathfrak{i}=2^{\aleph_{0}}$ であることが上の結果の内容である（一般にはこう言われている。記号は本サイトの他のページでは使っていない）。
+
+**高い視点から：局所性.** コーエン強制の「小さな台」は、ジェネリックな対象が「局所的には小さな部分からしか決まらない」ことを表す。$M[G]$ の一つの実数を決めるのに使われるのは、$G$ のうち可算個の座標だけである。これは確率論で、無限個の独立な確率変数の積空間の上の可測関数が可算個の座標にしか依存しないことに似ている。コーエン実数は「$M$ のどの無限集合も二分する」（\ref{set:cohen-real-splits}）という意味で $M$ に対して十分にランダムであり、その結果、$M$ で作った小さな極大族は、壊れるもの（独立族）と壊れないもの（CH のもとで作った概素族）に分かれる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

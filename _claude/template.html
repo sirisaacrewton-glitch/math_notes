@@ -1,0 +1,128 @@
+<script type="text/markdown" id="source">
+# ページのタイトル {#pre:page-slug keywords="English title, 別名"}
+
+<!-- ============================================================
+  数学ノート 記事テンプレート（_claude/template.html）
+  * このファイルは「_」で始まるフォルダにあるのでビルド対象外。コピーして使う。
+  * 置き場所：分類フォルダ/NN-english-slug.html（NN = 表示順。節番号 §NN はフォルダ内の順番で自動）
+  * この script 要素の中だけを書く。外枠（head など）は node tools/build.js が自動で付ける。
+  * 番号（定理 3.2 など）は絶対に書かない。参照はすべてラベルで。
+  * HTML タグ・style・クラス名を書かない（見た目は style.css が環境名から決める）。
+  * 「pre:」は分野の接頭辞に置き換える（START.md の接頭辞表）。
+  * このコメント（HTML コメント）は実際の記事では消す。
+  ============================================================ -->
+
+導入文（2〜5 文）。このページで何を示すか、なぜそれが大事か、前のページとのつながり（前ページのラベルで \ref{set:page-cantor} のように書く）。
+
+## 記法と定義の確認 {#pre:sec-slug-notation}
+
+::: notation
+- 前ページまでの定義を \ref で確認する：順序数（\ref{set:ordinal}）、基数（\ref{set:cardinal}）。
+- このページ独自の記号の約束：$X^{Y}$ は $Y$ から $X$ への写像全体。
+- 議論する体系（例：「$\ZF$ で行う。選択公理を使う箇所は明記する」）。
+:::
+
+## 最初の節の見出し {#pre:sec-slug-first}
+
+::: definition 用語の名前 {#pre:term keywords="English name" index="用語の名前|ようごのなまえ"}
+定義の本文。定義される語は **太字** にする（太字の語は自動で索引語になる）。
+:::
+
+::: intuition
+定義を導入する意図・直感（自然言語で短く）。定義の直後に置くと枠の中に小さく表示される。
+:::
+
+::: example
+定義がそのまま理解しにくいときの例。例 1：…。例 2（当てはまらない例）：…。
+:::
+
+::: theorem 定理の名前 {#pre:main-theorem keywords="English name of the theorem" index="定理の名前|ていりのなまえ"}
+主張。長い式や関係演算子が複数ある式はディスプレイにする：
+$$
+\sum_{i<n} a_{i} \le \prod_{i<n} b_{i}
+\label{pre:eq-main}
+$$
+:::
+
+::: intuition
+主張の直感的な意味。なぜこれを考えるのか。
+:::
+
+::: example
+主張に付随する例（証明に付随する例なら proof の後に置く）。
+:::
+
+::: proof
+**Step 1（何をするか）.** 途中式を省略しない。「明らか」で飛ばさない。\eqref{pre:eq-main} の左辺を … と評価する。
+
+**Step 2.** \ref{pre:lemma-a} より …。ここで前提「$\kappa$ は正則」を使う。
+
+**Step 3.** したがって主張が成り立つ。
+
+::: hypcheck
+- **前提「$\kappa$ は正則」**：Step 2 で … に使った。外すと偽（反例：$\kappa=\aleph_{\omega}$ のとき …）。
+- **前提「…」**：使わなかった／本質的でない（弱めて … でもよい）。
+- **公理**：選択公理は Step 1 の … で使う（それ以外は $\ZF$）。
+:::
+:::
+
+::: supplement
+**一般化.** 主張だけ述べ、有名なものは別記事へ：\ref[一般化された定理の名前]{pre:planned-generalization}（未執筆なら「（未執筆）」表示になり、書かれると自動でリンクになる）。
+
+**前提を変えると.** 反例や、成り立たなくなる理由。
+
+**類似の定理.** \nameref{set:cantor} と同じ対角線論法。
+
+**高い視点.** 本質的なときだけ書く（こじつけない）。
+:::
+
+## 補題を経由する定理 {#pre:sec-slug-lemmas}
+
+::: theorem 主定理 {#pre:big-theorem}
+節の最初に主張だけ述べる。
+:::
+
+::: lemma {#pre:lemma-a}
+補題の主張。
+:::
+
+::: proof
+補題の証明。
+
+::: hypcheck
+- …
+:::
+:::
+
+::: restate {ref="pre:big-theorem"}
+:::
+
+::: proof
+\ref{pre:lemma-a} を使って本証明（再掲の後の proof は元の定理の証明として扱われ、番号も元のまま）。
+
+::: hypcheck
+- …
+:::
+:::
+
+::: fact 範囲外の既知の結果 {#pre:known-fact}
+証明を本サイトの範囲外とする結果（出典：確実に知っている標準的な教科書名のみ。不確かなら「〜とされる（未確認）」）。
+:::
+
+::: table 性質の比較 {#pre:table-compare}
+| 性質 | A | B |
+|---|---|---|
+| 閉包性 | :yes: | :no: |
+| 条件付き | :partial: | :open: |
+:::
+
+## 問題 {#pre:sec-slug-problems}
+
+::: problem {#pre:prob-first}
+問題文。
+:::
+
+::: solution
+解答（折りたたみ）。
+:::
+</script>

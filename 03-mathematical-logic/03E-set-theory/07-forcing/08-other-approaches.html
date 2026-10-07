@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>強制法の他の方法と歴史 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/07-forcing/08-other-approaches.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 強制法の他の方法と歴史 {#set:page-forcing-approaches keywords="approaches to forcing, countable transitive models, syntactic forcing, forcing over V, Boolean-valued models, two-valued quotient, Cohen, Scott, Solovay, Shoenfield, weak forcing, strong forcing, Kleene-Post, Rasiowa-Sikorski"}
+
+強制法の提示の仕方はいくつかある。どれもまったく同じ無矛盾性の証明を与えるが、メタ数学的な捉え方が異なる。本ページではそれらを概観し、強制法の歴史を簡単に振り返る。（Kunen 第 VII 章 §9 に対応する。本ページの内容の多くは Kunen の概観の要約であり、証明を与えるのは \ref{set:conservative-ctm-constant} だけである。）
+
+## 記法と定義の確認 {#set:sec-approaches-notation}
+
+::: notation
+- 強制関係 $\Vdash$、$\Vdash^{*}$（\ref{set:forcing}, \ref{set:forcing-star}）、強制定理（\ref{set:forcing-theorem}）は \ref{set:page-forcing-relation}、真理値 $\lVert\varphi\rVert$ と最大原理（\ref{set:truth-value}, \ref{set:maximal-principle}）は \ref{set:page-embeddings-bvm}, \ref{set:page-forcing-further} のとおり。
+- 可算推移的モデル（c.t.m.）の存在（\ref{set:ctm-exists}）、証明の相対化（\ref{set:relativized-proof}）、形式化された充足関係（\ref{set:formalized-semantics}）、定義による拡大と保存性（\ref{set:definitional-extension}）は第 IV 章・第 I 章のとおり。
+:::
+
+## 方法 1：可算推移的モデルによる {#set:sec-approach-ctm}
+
+これは本書の方法であり、論理学者でない人に好まれることが多い。モデルとその拡大をかなり素直な数学的な仕方で扱うからである。ジェネリック拡大と代数学の体の拡大との類比がしばしば語られる：体の拡大でも拡大体の対象の名前（多項式）を使う。\ref{set:page-forcing-relation}, \ref{set:page-zfc-in-mg} の、手順が本当にうまくいくことを示す退屈な細部は、ざっと読むか無視することができる。$\ZFC$ の中で $\ZFC$ の c.t.m. を実際には作れないことに伴う論理的な不快さも同様に無視できる。この不快さは次の三通りのいずれかで扱える。
+
+**(1a) 本書の方法.** $\ZFC+\lnot\mathrm{CH}$ などの任意の有限個の公理 $\varphi_{1},\dots,\varphi_{n}$ について、それらの c.t.m. があることを $\ZFC$ で証明する（\ref{set:forcing-proof-structure}）。その手続きは、（メタの理論で）$\ZFC$ の別の有限個の公理 $\psi_{1},\dots,\psi_{m}$ を見つけ、$\psi_{1},\dots,\psi_{m}$ の c.t.m. $M$ が与えられたら $\varphi_{1},\dots,\varphi_{n}$ を満たすジェネリック拡大 $M[G]$ があることを $\ZFC$ で証明する、というものである。この議論の洗練されていない部分は、$\psi_{1},\dots,\psi_{m}$ を見つける手続きが、素直で完全に実効的で有限的に正しいとはいえ、非常に退屈なことである。$\psi_{1},\dots,\psi_{m}$ には、$\varphi_{1},\dots,\varphi_{n}$ が $M[G]$ で成り立つことを確かめるのに「明らかに」使われる $\ZFC$ の公理（たとえば $\varphi_{1}$ が冪集合公理なら冪集合公理）だけでなく、様々な概念（「有限」「p.o.」など）が $M$ について絶対的であることを確かめるのに必要な公理や、ある数学的な結果（Δ システム補題など）が $M$ で成り立つことを示すのに必要な公理もすべて並べなければならない。もちろん相対無矛盾性の証明 $\mathrm{Con}(\ZFC)\to\mathrm{Con}(\ZFC+\lnot\mathrm{CH})$ のためには $\psi_{1},\dots,\psi_{m}$ を陽に示す必要はなく、それが見つかることを読者に納得させれば十分である。
+
+**(1b) 定数記号を加える方法.** これは、特定されない列 $\psi_{1},\dots,\psi_{m}$ を扱うことを避ける方法で、シェーンフィールドによる。
+
+::: proposition c.t.m. を表す定数の保存性 {#set:conservative-ctm-constant keywords="conservative extension of ZFC by a constant for a countable transitive model" index="c.t.m. を表す定数|しーてぃーえむをあらわすていすう"}
+$\mathcal{L}$ を非論理記号 $\in$ と定数記号 $c$ をもつ言語とし、$T$ を、$\ZFC$（$\in$ だけで書く）と、文「$c$ は可算かつ推移的」と、$\ZFC$ の各公理 $\varphi$ についての文 $\varphi^{c}$ とからなる $\mathcal{L}$ の理論とする。このとき $T$ は $\ZFC$ の保存拡大である：$\in$ だけの文 $\sigma$ について $T\vdash\sigma$ なら $\ZFC\vdash\sigma$。とくに $\mathrm{Con}(\ZFC)\to\mathrm{Con}(T)$。
+:::
+
+::: proof
+$T\vdash\sigma$ とすると、その証明は $T$ の有限個の公理しか使わない：$\ZFC$ の公理と、「$c$ は可算かつ推移的」と、$\varphi_{1}^{c},\dots,\varphi_{k}^{c}$。定数 $c$ を（証明に現れない）新しい変数 $v$ に置き換えると（\ref{logic:conservativity-constants} の方法）、$\ZFC\vdash\forall v\,(v\text{ は可算かつ推移的}\land\varphi_{1}^{v}\land\cdots\land\varphi_{k}^{v}\to\sigma)$（$\sigma$ に $c$ は現れない）。一方、反映定理の系（\ref{set:ctm-exists}）より $\ZFC\vdash\exists v\,(v\text{ は可算かつ推移的}\land\bigwedge_{i}\varphi_{i}^{v})$。よって $\ZFC\vdash\sigma$。$\sigma=\bot$ として $\mathrm{Con}(\ZFC)\to\mathrm{Con}(T)$。この議論は有限的である。
+:::
+
+$T$ の中では、拡大 $c[G]$ を作り、$\ZFC+\lnot\mathrm{CH}$ の各公理 $\varphi$ について $\varphi^{c[G]}$ を証明できる。したがって $\mathrm{Con}(T)\to\mathrm{Con}(\ZFC+\lnot\mathrm{CH})$。
+
+**(1c) 論理を形式化する方法.** $\ZFC$ の中で論理を形式化し、自由変数 $M$ をもつ述語 $M\models\ulcorner\ZFC\urcorner$ を書く（\ref{set:formalized-semantics}）。すると
+$$
+\begin{aligned}
+\forall M\,\bigl(&M\text{ は }\ulcorner\ZFC\urcorner\text{ の c.t.m.}\\
+&\to\exists N\supseteq M\,(N\text{ は }\ulcorner\ZFC+\lnot\mathrm{CH}\urcorner\text{ の c.t.m.})\bigr)
+\end{aligned}
+$$
+が $\ZFC$ の形式的な定理になる。その証明の数学は本章の \ref{set:page-generic-extensions}〜\ref{set:page-fn-forcing} の内容そのものであり、論理的な解釈だけが異なる。この方法は $\mathrm{Con}(\ZFC)\to\mathrm{Con}(\ZFC+\lnot\mathrm{CH})$ の有限的な証明を与えない。$\ZFC$ では $\exists M\,(M$ は $\ulcorner\ZFC\urcorner$ の c.t.m.$)$ を証明できないからである。しかし筋金入りのプラトン主義者には、$\mathrm{Con}(\ZFC+\lnot\mathrm{CH})$ が「真」であることを納得させるはずである。そのような $M$ の存在は「真」だからである（\ref{set:page-reflection} の最後の注意）。
+
+## 方法 2：構文的なモデル、あるいは V 上の強制 {#set:sec-approach-syntactic}
+
+ここでは集合のモデルをまったく論じない。
+
+**(2a) $\Vdash^{*}$ を V で使う.** \ref{set:page-forcing-relation} で補助的な概念 $\Vdash^{*}$ を定義した。$\Vdash^{*}$ の定義はモデルに言及しないが、我々の意図は、それを $M$ に相対化して $(p\Vdash\varphi)\leftrightarrow(p\Vdash^{*}\varphi)^{M}$ を示すことだった。その後は $\Vdash^{*}$ をほとんど忘れ、$p\Vdash\varphi$ が $M$ に相対化されたある論理式と同値であることだけを頻繁に使った。構文的なモデルの方法では、$\Vdash$ を忘れ、$\Vdash^{*}$ を $\mathbf{V}$ で扱い、何にも相対化しない。$\Vdash$ について示したすべての事実が実際に $\mathbf{V}$ で $\Vdash^{*}$ について証明できることを確かめる必要がある（Kunen 第 VII 章の演習 B12–B15）。最終的に、$\varphi$ が $\ZFC$ の公理なら $\mathbf{1}\Vdash^{*}\varphi$ であり、適切な $\PP$ では $\mathbf{1}\Vdash^{*}\lnot\mathrm{CH}$ であることを確かめる。さらに次を確かめる必要がある。
+
+::: fact 強制は論理的帰結で閉じている {#set:forcing-star-closed-deduction}
+$\varphi_{1},\dots,\varphi_{n}\vdash\psi$（$\varphi_{i},\psi$ は強制の言語の文）で、$p\Vdash^{*}\varphi_{i}$（$i=1,\dots,n$）なら $p\Vdash^{*}\psi$。
+:::
+
+（Kunen の本文ではこの補題の主張が我々の参照したテキストで判読できなかったので、前後の文脈から上のように復元した。Kunen はこれを演習に委ねている。）\ref{set:forcing-star-closed-deduction} を使うと、$\ZFC+\lnot\mathrm{CH}$ で矛盾が見つかった場合、たとえば $\ZFC+\lnot\mathrm{CH}$ の公理 $\varphi_{1},\dots,\varphi_{n}$ で $\varphi_{1},\dots,\varphi_{n}\vdash\psi\land\lnot\psi$ となったとすると、$\ZFC$ で $\mathbf{1}\Vdash^{*}(\psi\land\lnot\psi)$ が証明でき、これは $\Vdash^{*}$ の定義に反することが容易に分かる（節 3, 4 より $\mathbf{1}\Vdash^{*}\psi$ と「$\psi$ を強制する $q\le\mathbf{1}$ はない」が同時に成り立つ）。こうして $\ZFC+\lnot\mathrm{CH}$ の矛盾から $\ZFC$ の矛盾を見つける手続きが定義され、$\mathrm{Con}(\ZFC)\to\mathrm{Con}(\ZFC+\lnot\mathrm{CH})$ が得られる。
+
+この方法を好まない人もいる。伝統的な意味での $\ZFC+\lnot\mathrm{CH}$ のモデルが一度も作られないからである。この方法は、我々（$\mathbf{V}$ にいる者）を c.t.m. の方法での $M$ の住人の立場に置くものと考えられる：我々にとってはまったく存在しない $\mathbf{V}$ のジェネリック拡大の対象について、名前を作り、それについて語っているのである。
+
+**(2b) V 上のブール値モデル.** これは (2a) の、完備ブール代数である p.o. だけを考える特別な場合である。\ref{set:page-embeddings-bvm} で見たように、この特別な場合で任意の p.o. を使ってできる独立性証明がすべて得られる。この特別な場合の方が直観的な動機ははっきりしているかもしれない。$\ZFC+\lnot\mathrm{CH}$ のモデル $\mathbf{V}^{\mathbb{B}}$ を本当に作っていると考えられるからである。ただしそのモデルは多値論理のもので、真理値はある完備ブール代数に値をとる。\ref{set:forcing-star-closed-deduction} は次の補題になり、ブール値論理も二値論理と同様に古典的な証明論について健全であることを述べる。
+
+::: fact ブール値論理の健全性 {#set:boolean-soundness keywords="soundness of Boolean-valued logic"}
+$\varphi_{1},\dots,\varphi_{n}\vdash\psi$ なら $\lVert\varphi_{1}\rVert^{*}\wedge\cdots\wedge\lVert\varphi_{n}\rVert^{*}\le\lVert\psi\rVert^{*}$。
+:::
+
+直観的には $\mathbf{V}$ を $\mathbf{V}^{\mathbb{B}}$ の部分クラスと考えられるが、形式的には $\mathbf{V}$ から $\mathbf{V}^{\mathbb{B}}$ への埋め込み $x\mapsto\check{x}$ を定義している。この方法の詳しい展開は Rosser (1969) や Bell (1977) にある（Kunen の文献表による）。
+
+**(2c) 二値のクラスモデル.** これは単なる珍しいものだが、(2b) で $G$ を $\mathbb{B}$ の任意の超フィルターとすると、二値の関係系 $\mathbf{V}^{\mathbb{B}}/G$ を次のように作れる。$\mathbf{V}^{\mathbb{B}}/G$ は $\mathbf{V}^{\mathbb{B}}$ を台のクラスとし、$\in$ を（二値の）二項関係 $E$ で、$=$ を別の二項関係 $\equiv$ で解釈する（モデル論でより一般的な本当の等号としてではなく）。$\tau\,E\,\sigma:\iff\lVert\tau\in\sigma\rVert^{*}\in G$、$\tau\equiv\sigma:\iff\lVert\tau=\sigma\rVert^{*}\in G$ と定める。すると（メタの理論で）$\varphi$ に関する帰納法で
+$$
+\mathbf{V}^{\mathbb{B}}/G\models\varphi(\tau_{1},\dots,\tau_{n})\iff\lVert\varphi(\tau_{1},\dots,\tau_{n})\rVert^{*}\in G
+$$
+が示される（この式も Kunen の本文で判読できなかったので、定義から自然に要求される形に復元した）。帰納法は素直だが、$\exists$ の段階では最大原理（\ref{set:maximal-principle}）が本質的に使われる。したがって適切な $\mathbb{B}$ をとれば、$\mathbf{V}^{\mathbb{B}}/G$ は $\ZFC+\lnot\mathrm{CH}$ の二値のモデルになる。$\mathbf{V}^{\mathbb{B}}/G$ はほとんど決して整礎でなく、したがって集合論の推移的なモデルと同一視することはできない（Kunen 第 VII 章の演習 B18）。
+
+## 歴史 {#set:sec-forcing-history}
+
+以下は Kunen の歴史的な概観の要約である（本サイトでは原論文を確かめていない）。
+
+強制法はコーエンが発明し、$\ZFC+\lnot\mathrm{CH}$、$\ZF+\lnot\mathrm{AC}$、$\ZFC+\mathrm{GCH}+\mathbf{V}\neq \mathbf{L}$ の無矛盾性を示すのに使った。コーエンは強制法を構文的なモデルの方法 (2a) で着想したが、実際のモデルを扱うため、出版した論文では (1a) と (1c) の提示を展開した（Cohen 1963, 1964, 1966）。(1b) の修正はシェーンフィールドによる。
+
+コーエンの元の扱いでは、強制は構成可能階層と非常に強く結びついているように見えた。彼の $M$ はつねに $\mathbf{V}=\mathbf{L}$ のモデルで、$\gamma=o(M)$ として $M=L_{\gamma}$ であり、$M[G]$ を $L_{\gamma,G}$（第 VI 章の演習 6）として定義した。この場合これは実際に同値な定義である（演習 B10）。また彼は抽象的な p.o. で考えるという発想をもたず、条件を形式言語の文の集合に結びつけて考えていた。スコットとソロヴェイは任意の完備ブール代数を使う方法 (2b) を展開し、$L_{\alpha}$ の構成は強制と本当は関係がなく、関係するのは $R(\alpha)$ の構成であることに気づいた。実際 $\mathbf{V}^{\mathbb{B}}$ は $\mathbb{B}$ 値の冪集合演算を繰り返して作られると考えられる（演習 B17）。彼らはまた、任意の p.o. を完備ブール代数に稠密に埋め込めるので、ブール代数の方法が完全に一般的であることにも気づいた。
+
+強制法の現代的な説明はシェーンフィールドに多くを負っている。彼は、スコット–ソロヴェイの構成を、まずブール代数に埋め込むことなく p.o. から直接行えることに気づいた。本書の $\Vdash$ の定義も彼の発明である。それ以前には $\Vdash^{*}$ しかなかった。説明では $\Vdash^{*}$ を定義し、基本的な事実
+$$
+\varphi^{M[G]}\leftrightarrow\exists p\in G\,((p\Vdash^{*}\varphi)^{M})
+$$
+（本書の \ref{set:forcing-star-truth}）を証明した。これが済めば $(p\Vdash^{*}\varphi)^{M}\leftrightarrow\forall\text{ジェネリックな }G\,(p\in G\to\varphi^{M[G]})$ は容易に従うが、$\Vdash$ という概念を導入する必要は本当はない。いつも $\Vdash^{*}$ を参照すればよいからである。本書のように（Shoenfield 1971 に従って）$p\Vdash\varphi$ を定義 $p\Vdash\varphi\leftrightarrow\forall\text{ジェネリックな }G\,(p\in G\to\varphi^{M[G]})$ で先に導入する利点は、$\Vdash^{*}$ の細部に飛び込む前に、読者が何が起きているかの見通しを得られることである。
+
+文献では $\Vdash^{*}$ や $\lVert\varphi\rVert^{*}$ という記法は使われない。したがって $p\Vdash\varphi$ は、文脈によって本書の $p\Vdash\varphi$、$p\Vdash^{*}\varphi$、$(p\Vdash^{*}\varphi)^{M}$ のいずれをも意味しうる。基本が理解されていれば、この曖昧さが混乱を招くことはない。
+
+実は本書の強制 $\Vdash$ は、かつて「弱い強制」と呼ばれたものである。コーエンは**強い強制** $\Vdash_{s}$ を基本概念として定義した。$\Vdash$ と異なり $\Vdash_{s}$ は論理的同値を尊重しない。たとえば $p\Vdash_{s}\lnot\lnot\varphi$ は $p\Vdash_{s}\varphi$ を導かない。弱い強制は $\Vdash_{s}$ を使って $p\Vdash\varphi:\iff p\Vdash_{s}\lnot\lnot\varphi$ と定義された。$\Vdash_{s}$ は今では歴史的な時代錯誤に見えるかもしれないが、$\lnot\lnot\varphi$ が $\varphi$ と同値でない直観主義論理にはいまも関係がある。
+
+現代の強制法の理論には重要な先駆が二つある。一つは再帰理論、もう一つはモデル理論にある。
+
+再帰理論では、多くの古典的な結果が、後から見れば強制の議論とみなせる。たとえば、比較不能なチューリング次数が存在するというクリーネ–ポストの定理を考える。$\PP=\mathrm{Fn}(2\times\omega,2)$ とし、$G$ を $M$ 上 $\PP$-ジェネリックとして、$G$ が $f_{0},f_{1}\in{}^{\omega}2$（$f_{i}(n)=\bigcup G(i,n)$）を符号化していると考える。すると $f_{0}$ と $f_{1}$ は再帰的に比較不能である（Kunen 第 VII 章の演習 G8）。しかも $f_{0},f_{1}$ の再帰的比較不能性を結論するには、$G$ が $M$ 全体の上でジェネリックである必要はなく、$M$ の算術的に定義された稠密集合のわずかなものと交われば十分である。あまりにわずかなので、$G$、したがって $f_{0},f_{1}$ を $0'$ で再帰的にとることさえできる。$0'$ より下に比較不能な次数を作るこの強制の議論は、記法を少し変えれば、実はクリーネ–ポストの元の議論そのものである。強制の再帰理論へのより深い応用と、それ以前の技法との比較は Sacks (1971) を参照（Kunen による）。
+
+モデル理論では、任意のブール代数に値をとる（$\{\mathbf{0},\mathbf{1}\}$ の代わりに）真理値をもつモデルが古典論理について正しい（上の \ref{set:boolean-soundness} の意味で）ことはよく知られていた。実際、ゲーデルの完全性定理のラシオワ–シコルスキ（1963）による証明の一つは、まず理論のブール値モデルを作り、次にラシオワ–シコルスキの定理（Kunen 第 VII 章の演習 D2。\ref{set:ma-omega} と同じ考え方）を適用して、二値のモデルを与える適当に「ジェネリックな」$\{\mathbf{0},\mathbf{1}\}$ への準同型を得るものであった。この方法は、可算長の無限論理式をもつ論理の完全性定理も与える。しかしブール値モデルを使うと、非可算の言語についての類似の完全性定理は成り立たないことが知られていた。たとえば $\varphi$ を無限分配律
+$$
+\bigwedge_{n\in\omega}\bigvee_{i\in2}p_{ni}\;\to\;\bigvee_{f\in{}^{\omega}2}\bigwedge_{n\in\omega}p_{nf(n)}
+$$
+（命題記号 $p_{ni}$ をもつ長さ $2^{\omega}$ の文。Kunen の本文ではこの式が判読できなかったので、説明から復元した）とすると、$\varphi$ は妥当だが通常の無限論理の推論規則では導出できない。$\varphi$ はある適当なブール値の解釈で真理値 $\mathbf{0}$ をとるからである：$2^{\omega}$ の正則開集合代数（$\mathrm{Fn}(\omega,2)$ の完備化。演習 G9）で、$p_{ni}$ に真理値 $\{f\in{}^{\omega}2:f(n)=i\}$ を割り当てればよい。現代的に言えば、$\varphi$ が拡大 $\mathbf{V}^{\mathbb{B}}$ で妥当でないのは、選言 $\bigvee_{f\in{}^{\omega}2}$ の $f$ が $\mathbf{V}$ の関数だけを動くからである（ジェネリックな実数はそのどれとも異なる）。無限論理でのブール値の方法については Karp (1964) を参照（Kunen による）。
+
+皮肉なことに、コーエンは最初これらの先駆を知らず、上で論じた関係は強制法の理論がさらに発展して初めて明らかになった、と Kunen は述べている。
+
+## 問題 {#set:sec-approaches-problems}
+
+::: problem {#set:prob-two-valued-quotient}
+(2c) の $\mathbf{V}^{\mathbb{B}}/G$ で、$\check{x}\equiv\check{y}\iff x=y$ および $\check{x}\,E\,\check{y}\iff x\in y$ を示せ。（したがって $x\mapsto\check{x}$ は $\langle\mathbf{V},\in\rangle$ を $\langle\mathbf{V}^{\mathbb{B}}/G,E\rangle$ に（$\equiv$ を法として）埋め込む。）
+:::
+
+::: solution
+$\lVert\check{x}\in\check{y}\rVert^{*}$ は $x\in y$ なら $\mathbf{1}$、そうでなければ $\mathbf{0}$ である（\ref{set:prob-truth-value-check} を $\mathbf{V}$ で $\Vdash^{*}$ について行ったもの）。$G$ は超フィルターなので $\mathbf{1}\in G$, $\mathbf{0}\notin G$。よって $\check{x}\,E\,\check{y}\iff x\in y$。等号についても同様に $\lVert\check{x}=\check{y}\rVert^{*}$ は $x=y$ なら $\mathbf{1}$、そうでなければ $\mathbf{0}$ である（$\in$-帰納法で示せる）。
+:::
+
+::: problem {#set:prob-weak-strong-forcing}
+強い強制 $\Vdash_{s}$ から弱い強制を $p\Vdash\varphi:\iff p\Vdash_{s}\lnot\lnot\varphi$ で定めることの直観的な意味を、クリプキ意味論（直観主義論理）の言葉で説明せよ。
+:::
+
+::: solution
+直観主義論理のクリプキ意味論では、$p\Vdash\lnot\psi$ は「$p$ のどの拡張 $q$ も $\psi$ を強制しない」、したがって $p\Vdash\lnot\lnot\varphi$ は「$p$ のどの拡張 $q$ についても、$q$ のある拡張 $r$ が $\varphi$ を強制する」、すなわち「$\varphi$ を強制する条件の集合が $p$ の下で稠密」である。これはまさに \ref{set:forcing-star-dense} の 3 の形であり、弱い強制は「強い強制が稠密に成り立つ」ことを表す。二重否定をとることで、直観主義的な強い強制が古典論理（排中律）を満たす関係に変わる（\ref{set:forcing-corollary} の 1）。
+:::
+
+::: supplement
+**前提の検討.** 本ページの (1b) の保存性（\ref{set:conservative-ctm-constant}）の証明は、反映定理の系 \ref{set:ctm-exists} に依存し、これは $\ZFC$（選択公理）を使う。(2a), (2b) は c.t.m. も可算性も使わないが、その代わり $\Vdash^{*}$ についてのすべての事実を $\mathbf{V}$ で直接確かめる必要がある。
+
+**関連する結果.** (2a) の方法は、ジェネリックなフィルターの存在を仮定せずに $\mathbf{V}$ の「ジェネリック拡大 $\mathbf{V}[G]$」について語る現代的な流儀（「$\mathbf{V}$ 上の強制」）として広く使われている（一般にはこう言われている）。
+
+**高い視点から：三つの見方の比較.** 方法 1 は「小さな宇宙 $M$ を外から見て拡大する」、方法 2 は「自分の宇宙の中から、存在しない拡大について語る」見方である。前者は群論で既知の群の中に部分群を見つけるように具体的だが、宇宙全体を扱うには論理の工夫がいる。後者は、代数学で「不定元 $X$」を形式的に扱って多項式環 $K[X]$ を作るのに似ている：$X$ に代入する実際の値がなくても、$X$ を含む式の計算は完全に厳密に行える。ブール値モデル (2b) はその中間で、命題の真偽を「値」として保持し、二値化（超フィルター $G$ による商、あるいはジェネリックな $G$ による評価）を最後まで先延ばしにする。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

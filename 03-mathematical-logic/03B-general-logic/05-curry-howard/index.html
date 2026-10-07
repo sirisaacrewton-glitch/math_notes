@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>カリー＝ハワード同型対応 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/05-curry-howard/index.html" data-kind="dir">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# カリー＝ハワード同型対応（The Curry–Howard Correspondence）
+
+直観主義論理の自然演繹と単純型付きラムダ計算の対応（証明＝項、証明の正規化＝β 簡約）と強正規化、ゲーデルの体系 T（高い型の原始再帰、アッカーマン関数）、System F（二階の型、還元可能性候補、データ型の符号化）。
+
+<p class="mn-msc">MSC2020: 03B40, 03B38, 03F55</p>
+
+## 前提知識
+
+- [一般論理 › ラムダ計算](../../../03-mathematical-logic/03B-general-logic/04-lambda-calculus/index.html)（全体、2 ページ）：単純型付きラムダ計算と正規化
+- [証明論と型理論 › 証明体系とカット除去](../../../03-mathematical-logic/03F-proof-theory/01-sequent-calculus/index.html)（全体、6 ページ）：自然演繹とシーケント計算
+
+## 目次
+
+<ol class="mn-dirtoc">
+<li value="1"><a href="01-simply-typed.html">§1 単純型付きラムダ計算とカリー＝ハワード対応</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 1.1</span> <span class="mn-dirtoc-title">単純型</span></li><li><span class="mn-dirtoc-kind">定義 1.2</span> <span class="mn-dirtoc-title">型付け規則</span></li><li><span class="mn-dirtoc-kind">補題 1.3</span> <span class="mn-dirtoc-title">型付けの基本性質</span></li><li><span class="mn-dirtoc-kind">定理 1.4</span> <span class="mn-dirtoc-title">簡約で型が保たれる</span></li><li><span class="mn-dirtoc-kind">定義 1.5</span> <span class="mn-dirtoc-title">含意の直観主義自然演繹</span></li><li><span class="mn-dirtoc-kind">定理 1.6</span> <span class="mn-dirtoc-title">カリー＝ハワード対応</span></li><li><span class="mn-dirtoc-kind">定義 1.8</span> <span class="mn-dirtoc-title">還元可能な項</span></li><li><span class="mn-dirtoc-kind">補題 1.9</span> <span class="mn-dirtoc-title">還元可能性の性質</span></li><li><span class="mn-dirtoc-kind">補題 1.10</span> <span class="mn-dirtoc-title">抽象の還元可能性</span></li><li><span class="mn-dirtoc-kind">定理 1.11</span> <span class="mn-dirtoc-title">強正規化定理</span></li><li><span class="mn-dirtoc-kind">系 1.12</span> <span class="mn-dirtoc-title">正規化</span></li></ul></li>
+<li value="2"><a href="02-system-t.html">§2 ゲーデルの体系 T</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 2.1</span> <span class="mn-dirtoc-title">体系 T</span></li><li><span class="mn-dirtoc-kind">補題 2.3</span> <span class="mn-dirtoc-title">T の基本性質</span></li><li><span class="mn-dirtoc-kind">命題 2.4</span> <span class="mn-dirtoc-title">T のチャーチ–ロッサー性</span></li><li><span class="mn-dirtoc-kind">定義 2.5</span> <span class="mn-dirtoc-title">T の還元可能性</span></li><li><span class="mn-dirtoc-kind">補題 2.6</span> <span class="mn-dirtoc-title">(CR1)–(CR3)</span></li><li><span class="mn-dirtoc-kind">補題 2.7</span> <span class="mn-dirtoc-title">定数の還元可能性</span></li><li><span class="mn-dirtoc-kind">定理 2.8</span> <span class="mn-dirtoc-title">T の強正規化定理</span></li><li><span class="mn-dirtoc-kind">定義 2.9</span> <span class="mn-dirtoc-title">表現可能な関数</span></li><li><span class="mn-dirtoc-kind">補題 2.10</span> <span class="mn-dirtoc-title">再帰子の計算</span></li><li><span class="mn-dirtoc-kind">定理 2.11</span> <span class="mn-dirtoc-title">原始再帰関数は T で表現可能</span></li><li><span class="mn-dirtoc-kind">定理 2.12</span> <span class="mn-dirtoc-title">アッカーマン関数は T で表現可能</span></li><li><span class="mn-dirtoc-kind">定理 2.14</span> <span class="mn-dirtoc-title">T で表現可能な関数は計算可能な全域関数の真部分集合</span></li></ul></li>
+<li value="3"><a href="03-system-f.html">§3 二階の型と System F</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 3.1</span> <span class="mn-dirtoc-title">System F</span></li><li><span class="mn-dirtoc-kind">定義 3.2</span> <span class="mn-dirtoc-title">還元可能性候補</span></li><li><span class="mn-dirtoc-kind">補題 3.3</span> <span class="mn-dirtoc-title">候補の基本性質</span></li><li><span class="mn-dirtoc-kind">定義 3.4</span> <span class="mn-dirtoc-title">型の解釈</span></li><li><span class="mn-dirtoc-kind">補題 3.5</span> <span class="mn-dirtoc-title">解釈の性質</span></li><li><span class="mn-dirtoc-kind">定理 3.6</span> <span class="mn-dirtoc-title">System F の強正規化定理</span></li><li><span class="mn-dirtoc-kind">命題 3.8</span> <span class="mn-dirtoc-title">System F のデータ型</span></li><li><span class="mn-dirtoc-kind">定義 3.9</span> <span class="mn-dirtoc-title">表現可能</span></li><li><span class="mn-dirtoc-kind">定理 3.10</span> <span class="mn-dirtoc-title">System F で表現可能な関数</span></li></ul></li>
+</ol>
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>除法・最小公倍数と β 関数 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/02-incompleteness/02-beta-function.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 除法・最小公倍数と β 関数 {#pt:page-beta-function keywords="division with remainder, Euclid's lemma, Bezout, least common multiple, Chinese remainder theorem, Gödel's beta function"}
+
+算術の言語には有限列を直接扱う記号がない。ゲーデルは、二つの数 $a,b$ から「$a$ を $1+(i+1)b$ で割った余り」として列の第 $i$ 項を読み出す **β 関数**を考え、任意の有限列がこの形で表せることを中国剰余定理から示した。本ページでは、この事実（**β 関数の補題**）が $\PA$ で証明できることを示す。そのために、除法、素数、互いに素であること、最小公倍数を $\PA$ の中で展開する。
+
+前ページと同じく、$\PA$ の定理であることは、完全性定理により「$\PA$ の任意のモデルで成り立つ」ことを示して確かめる。$\PA$ の中では有限列について直接語れないので、「列」の代わりに**論理式で定義された関数**を使う。
+
+## 記法と定義の確認 {#pt:sec-beta-notation}
+
+::: notation
+- $\PA$、数項 $\underline{n}$、定義可能な集合についての帰納法、強い帰納法と最小元の原理、順序と演算の基本性質、Σ 論理式・Δ 論理式は \ref{pt:page-peano-arithmetic} のとおり。$1\defeq S(0)$ と書く。
+- $\mathcal{M}$ は常に $\PA$ の任意のモデルを表し、$M$ の元を「数」と呼ぶ。$\mathcal{M}$ の中で成り立つ事実として、\ref{pt:pa-addition}, \ref{pt:pa-multiplication}, \ref{pt:pa-order} と問題 \ref{pt:prob-pa-cancellation}（$a\le b\iff$ ある $c$ で $a+c=b$、加法による順序の保存と簡約）を断りなく使う。
+- **定義可能**：$M$ の部分集合や $M^{k}$ から $M$ への写像が、パラメータ（$M$ の元に固定した自由変数）付きの論理式で定義されることをいう。帰納法と最小元の原理は定義可能な集合に対してだけ使える（\ref{pt:model-induction}）。以下で帰納法を使う集合はすべて、それまでに導入した論理式で定義できる。
+:::
+
+::: definition PA で関数的な論理式 {#pt:functional-formula keywords="pterm, provably functional formula" index="関数的な論理式|かんすうてきなろんりしき"}
+論理式 $F(\vec{x},y)$ が **$\PA$ で関数的**であるとは、$\PA\vdash\forall\vec{x}\,\exists y\,\bigl(F(\vec{x},y)\wedge\forall z\,(F(\vec{x},z)\to z=y)\bigr)$ となることをいう（$z$ は新しい変数）。このとき各モデル $\mathcal{M}$ で $F$ は写像 $f^{\mathcal{M}}\colon M^{k}\to M$ を定める。論理式 $\varphi(y)$ に対し $\varphi(f(\vec{x}))\defeq\exists y\,(F(\vec{x},y)\wedge\varphi(y))$ と略記する。これは $\forall y\,(F(\vec{x},y)\to\varphi(y))$ と $\PA$ で同値である。$F$ が Σ 論理式なら、$F$ は Δ 論理式である（$\neg F(\vec{x},y)\leftrightarrow\exists z\,(F(\vec{x},z)\wedge\neg\,z=y)$）。
+:::
+
+::: remark
+Boolos はこれを pterm（擬似項）と呼んでいる。項で書けない関数（たとえば $2^{x}$）も、関数的な論理式で扱える。
+:::
+
+## 引き算と除法 {#pt:sec-division}
+
+::: proposition 切り捨ての引き算 {#pt:monus keywords="cut-off subtraction, monus" index="切り捨ての引き算|きりすてのひきざん"}
+$\mathcal{M}$ の数 $a,b$ について、$b\le a$ なら $a=b+c$ となる $c$ がただ一つある。論理式 $\mathrm{Monus}(x,y,z)\defeq(x=y+z\vee(x<y\wedge z=0))$ は $\PA$ で関数的で Δ 論理式であり、定める関数を $x\dot{-}y$ と書く。
+:::
+
+::: proof
+存在は $b\le a\iff\exists c\,(b+c=a)$、一意性は加法の簡約（\ref{pt:pa-addition} の 4）による。$a<b$ の場合は $c=0$ だけが条件を満たす（$a=b+c$ なら $b\le a$ となり三分律に反する）。Δ であることは、$\PA\vdash\mathrm{Monus}(x,y,z)\leftrightarrow(\exists w<S(x)\,(x=y+w\wedge z=w)\vee(x<y\wedge z=0))$（$x=y+z$ なら $z\le x$）で右辺が有界な論理式であることによる。
+:::
+
+::: theorem 余りのある除法 {#pt:division keywords="division with remainder, quotient, remainder" index="余りのある除法|あまりのあるじょほう"}
+$\mathcal{M}$ の数 $a,d$ で $d\neq0$ なら、$a=q\cdot d+r$ かつ $r<d$ となる $q,r$ がただ一つずつある。
+:::
+
+::: proof
+**Step 1（存在）.** $d$ を固定し、$a$ について帰納法（$\exists q\,\exists r\,(x=q\cdot d+r\wedge r<d)$ で定義される集合）。$a=0$ では $q=r=0$（$d\neq0$ より $0<d$。\ref{pt:pa-order} の 1 と \ref{pt:pa-addition} の 1）。$a=q\cdot d+r$, $r<d$ とすると、\ref{pt:pa-order} の 3 より $S(r)<d$ か $S(r)=d$。前者なら $S(a)=q\cdot d+S(r)$。後者なら $S(a)=q\cdot d+d=S(q)\cdot d+0$（\ref{pt:pa-multiplication}）で $0<d$。
+
+**Step 2（一意性）.** $q\cdot d+r=q'\cdot d+r'$、$r,r'<d$ とする。$q<q'$ なら $q'=q+S(c)$ で、$q'\cdot d+r'=q\cdot d+d+c\cdot d+r'\ge q\cdot d+d>q\cdot d+r$ となり矛盾する。$q'<q$ も同様。よって $q=q'$ で、簡約により $r=r'$。
+:::
+
+::: definition 余りと割り切ること {#pt:remainder keywords="remainder, divisibility" index="剰余|じょうよ, 整除|せいじょ"}
+$\mathrm{Rm}(x,d,r)\defeq(r<d\wedge\exists q<S(x)\,(x=q\cdot d+r))\vee(d=0\wedge r=x)$ とおく。\ref{pt:division} より $\PA$ で関数的で（$q\le q\cdot d\le x$ なので量化子の上限は制限にならない）、有界な論理式なので Δ 論理式である（\ref{pt:sigma-closure}）。定める関数を $\mathrm{rm}(x,d)$ と書く（$\mathrm{rm}(x,0)=x$ と約束している）。$d\mid x\defeq\exists q\,(q\cdot d=x)$ とおく。問題 \ref{pt:prob-sigma-examples} より $d\mid x$ は Δ 論理式である。
+:::
+
+::: proposition 整除の基本性質 {#pt:divisibility-basic}
+$\mathcal{M}$ の数について次が成り立つ。
+1. $d\mid d$、$d\mid0$、$1\mid x$。$d\mid x$ かつ $x\mid y$ なら $d\mid y$。$d\mid x$ かつ $x\neq0$ なら $d\le x$。
+2. $d\mid x$ ならば、$d\mid x+y\iff d\mid y$。また $d\mid x$ なら $d\mid x\cdot y$。
+3. $d\neq0$ なら、$d\mid x\iff\mathrm{rm}(x,d)=0$、および $\mathrm{rm}(x+y\cdot d,d)=\mathrm{rm}(x,d)$。
+:::
+
+::: proof
+**1.** $1\cdot d=d$, $0\cdot d=0$, $x\cdot1=x$。$x=q\cdot d$, $y=q'\cdot x$ なら $y=(q'\cdot q)\cdot d$。$x=q\cdot d\neq0$ なら $q\neq0$, $q=S(q')$ で $x=q'\cdot d+d\ge d$。
+
+**2.** $x=q\cdot d$ とする。$y=q''\cdot d$ なら $x+y=(q+q'')\cdot d$。逆に $x+y=q'\cdot d$ とする。$d=0$ なら $x=0$ で $y=x+y=0$ となり $d\mid y$。$d\neq0$ なら、$q'<q$ とすると $q=q'+S(c)$ で $q\cdot d=q'\cdot d+d+c\cdot d>q'\cdot d$、一方 $q'\cdot d=q\cdot d+y\ge q\cdot d$ となり矛盾する。よって $q\le q'$、$q'=q+c$ と書け、$q\cdot d+c\cdot d=q\cdot d+y$ から簡約で $y=c\cdot d$。最後に $x\cdot y=(q\cdot y)\cdot d$。
+
+**3.** 前半は一意性（$x=q\cdot d+0$ なら余りは $0$）。後半：$x=q\cdot d+r$, $r<d$ なら $x+y\cdot d=(q+y)\cdot d+r$ で、一意性より余りは $r$。
+:::
+
+## 素数と互いに素 {#pt:sec-primes}
+
+::: definition 素数と互いに素 {#pt:prime keywords="prime, relatively prime, coprime" index="素数|そすう, 互いに素|たがいにそ"}
+$\mathrm{Prime}(p)\defeq1<p\wedge\forall d\,(d\mid p\to d=1\vee d=p)$、$\mathrm{RelPrime}(a,b)\defeq\forall d\,(d\mid a\wedge d\mid b\to d=1)$ とおく。\ref{pt:divisibility-basic} の 1 より、$\PA$ で $\mathrm{Prime}(p)\leftrightarrow1<p\wedge\forall d<p\,(d\mid p\to d=1)$、$\mathrm{RelPrime}(a,b)\leftrightarrow\forall d<S(a+b)\,(d\mid a\wedge d\mid b\to d=1)$（$a=b=0$ のときはともに偽）で、右辺は Δ 論理式である。
+:::
+
+::: proposition 素因数の存在 {#pt:prime-divisor}
+$\mathcal{M}$ の数 $x$ が $1<x$ なら、$x$ を割り切る素数がある。したがって、$a,b$ を同時に割り切る素数がなければ $\mathrm{RelPrime}(a,b)$ が成り立つ（$a,b$ の少なくとも一方が $0$ でない場合）。
+:::
+
+::: proof
+$A\defeq\{d:1<d\wedge d\mid x\}$ は $x$ を含み空でない。最小元の原理（\ref{pt:pa-strong-induction}）より最小元 $p$ がある。$e\mid p$ なら、$e=0$ は $p\neq0$ に反し、$e\neq0$ なら $e\le p$ で $e\mid x$（推移性）。$1<e<p$ は最小性に反するので $e=1$ か $e=p$（$e\le p$ と三分律）。よって $p$ は素数。後半：$d\mid a$, $d\mid b$ で $d\neq1$ とすると、$d=0$ なら $a=b=0$ で除外され、$1<d$ なら $d$ の素因数 $p$ が $a,b$ を割り切る。
+:::
+
+::: theorem ベズーの補題の自然数版 {#pt:bezout keywords="Bezout's lemma" index="ベズーの補題|べずーのほだい"}
+$\mathcal{M}$ の数 $a,b$ が $1<a$, $1<b$, $\mathrm{RelPrime}(a,b)$ を満たすなら、$a\cdot x+1=b\cdot y$ となる $x,y$ がある。
+:::
+
+::: proof
+**Step 1.** $G\defeq\{i:\exists x\,\exists y\,(a\cdot x+i=b\cdot y)\}$（「よい数」）とおく。$b\in G$（$x=0,y=1$）、$a\in G$（$x=b\dot{-}1$, $y=a$。$a\cdot(b\dot{-}1)+a=a\cdot b$）。
+
+**Step 2（閉包性）.** (a) $i\in G$ なら任意の $q$ で $q\cdot i\in G$（等式に $q$ を掛ける）。(b) $i,i'\in G$、$i'\le i$ なら $i\dot{-}i'\in G$。実際、$a\cdot x+i=b\cdot y$、$a\cdot x'+i'=b\cdot y'$、$i=i'+j$ とし、
+$$
+x''\defeq x+b\cdot y'+(b\dot{-}1)\cdot x',\qquad y''\defeq y+a\cdot x'+(a\dot{-}1)\cdot y'
+$$
+とおく。$a(b\dot{-}1)+a=ab$、$b(a\dot{-}1)+b=ab$ を使って計算すると
+$$
+\begin{aligned}
+&a x''+j+i'+a x'=by+aby'+abx',\\
+&by''+i'+ax'=by+abx'+b(a\dot{-}1)y'+by'=by+abx'+aby'
+\end{aligned}
+$$
+（第一式は $ax+i=by$、第二式は $ax'+i'=by'$ を使う）なので、簡約により $a x''+j=b y''$。
+
+**Step 3（最小のよい正の数）.** $a\in G$, $0<a$ なので、最小元の原理より $G\setminus\{0\}$ の最小元 $d$ がある。$i\in G$ なら $d\mid i$：\ref{pt:division} で $i=q\cdot d+r$, $r<d$ とすると、(a) より $q\cdot d\in G$、$q\cdot d\le i$ なので (b) より $r=i\dot{-}q\cdot d\in G$、最小性から $r=0$。
+
+**Step 4.** Step 3 より $d\mid a$, $d\mid b$ なので、$\mathrm{RelPrime}(a,b)$ から $d=1$、すなわち $1\in G$。
+:::
+
+::: corollary ユークリッドの補題 {#pt:euclid-lemma keywords="Euclid's lemma" index="ユークリッドの補題|ゆーくりっどのほだい"}
+$\mathcal{M}$ で、$p$ が素数で $p\mid a\cdot b$ なら $p\mid a$ または $p\mid b$。
+:::
+
+::: proof
+$p\nmid a$ とする。$a=0$ なら $p\mid a$ となり除外、$a=1$ なら $a\cdot b=b$ で $p\mid b$。$1<a$ のとき、$d\mid a$, $d\mid p$ なら $d=1$ か $d=p$ で、後者は $p\nmid a$ に反するので $\mathrm{RelPrime}(a,p)$。ベズーの補題より $a\cdot x+1=p\cdot y$、$b$ を掛けて $a\cdot b\cdot x+b=p\cdot b\cdot y$。$p\mid a\cdot b\cdot x$ なので、\ref{pt:divisibility-basic} の 2 より $p\mid b$。
+:::
+
+## 定義可能な関数の最小公倍数 {#pt:sec-lcm}
+
+以下、$m(i)$ は $\PA$ で関数的な論理式（パラメータ付きでよい）が定める関数とする。
+
+::: proposition 最小公倍数 {#pt:lcm keywords="least common multiple of a definable sequence" index="最小公倍数|さいしょうこうばいすう"}
+$\mathcal{M}$ の数 $k$ で、すべての $i<k$ について $0<m(i)$ とする。
+1. $0<l$ かつすべての $i<k$ で $m(i)\mid l$ となる $l$ のうち、最小のものがある。これを $\mathrm{lcm}[m(i):i<k]$ と書く（$k=0$ なら $1$）。
+2. すべての $i<k$ で $m(i)\mid x$ なら、$\mathrm{lcm}[m(i):i<k]\mid x$。
+3. 素数 $p$ が $p\mid\mathrm{lcm}[m(i):i<k]$ なら、ある $i<k$ で $p\mid m(i)$。
+:::
+
+::: proof
+**1.** 「$\forall i<n\,(0<m(i))\to\exists l\,(0<l\wedge\forall i<n\,m(i)\mid l)$」を $n$ についての帰納法で示す。$n=0$ は $l=1$。$n$ で $l$ がとれれば、$n+1$ では $l\cdot m(n)$（$0<m(n)$ なので正）がとれる。あとは最小元の原理。
+
+**2.** $l\defeq\mathrm{lcm}[m(i):i<k]$、$x=q\cdot l+r$, $r<l$ とする。各 $m(i)$ は $x$ と $q\cdot l$ を割り切るので $r$ を割り切る（\ref{pt:divisibility-basic} の 2）。$0<r$ なら $l$ の最小性に反するので $r=0$。
+
+**3.** $n$ についての帰納法。$n=0$ では $\mathrm{lcm}=1$ で素数は割り切らない。$n+1$ のとき：すべての $m(i)$（$i\le n$）は $\mathrm{lcm}[m(i):i<n]\cdot m(n)$ を割り切るので、2 より $\mathrm{lcm}[m(i):i<n+1]$ はそれを割り切る。$p$ が前者を割り切れば後者も割り切り、ユークリッドの補題より $p\mid\mathrm{lcm}[m(i):i<n]$（帰納法の仮定へ）か $p\mid m(n)$。
+:::
+
+::: remark
+最小公倍数は $\PA$ の中で容易に定義できるが、積 $\prod_{i<k}m(i)$ はそうではない（積を定義するには有限列が要り、それを作るのが本ページの目的である）。最小公倍数を使うのはこのためである。
+:::
+
+::: theorem 中国剰余定理 {#pt:chinese-remainder keywords="Chinese remainder theorem" index="中国剰余定理|ちゅうごくじょうよていり"}
+$m(i)$, $h(i)$ を $\PA$ で関数的な論理式が定める関数とする。$\mathcal{M}$ の数 $k$ について、すべての $i<k$ で $1<m(i)$ かつ $h(i)<m(i)$、すべての $i<j<k$ で $\mathrm{RelPrime}(m(i),m(j))$ ならば、$a<\mathrm{lcm}[m(i):i<k]$ かつすべての $i<k$ で $\mathrm{rm}(a,m(i))=h(i)$ となる $a$ がある。
+:::
+
+::: proof
+$n\le k$ についての帰納法で、「$a<l_{n}\defeq\mathrm{lcm}[m(i):i<n]$ かつすべての $i<n$ で $\mathrm{rm}(a,m(i))=h(i)$ となる $a$ がある」を示す。
+
+**Step 1（$n=0$ と $n=1$）.** $n=0$ は $a=0<1$。$n=1$ は $a=h(0)<m(0)=l_{1}$ で、$\mathrm{rm}(h(0),m(0))=h(0)$。
+
+**Step 2（$l_{n}$ と $m(n)$ は互いに素）.** $n\ge1$、$n<k$ とし、$l\defeq l_{n}$, $m\defeq m(n)$ とおく。素数 $p$ が $l$ と $m$ を割り切ったとすると、\ref{pt:lcm} の 3 よりある $i<n$ で $p\mid m(i)$ となり、$\mathrm{RelPrime}(m(i),m)$ に反する。\ref{pt:prime-divisor} より $\mathrm{RelPrime}(l,m)$。また $l\ge m(0)>1$、$m>1$。
+
+**Step 3（新しい解）.** 帰納法の仮定の $a$ をとる。ベズーの補題より $l\cdot x+1=m\cdot y$。$c\defeq a+(l\dot{-}1)\cdot h(n)$ を掛けて $l\cdot x'+c=m\cdot y'$（$x'=x c$, $y'=y c$）。$a^{\ast}\defeq l\cdot(x'+h(n))+a$ とおくと、$l\cdot h(n)=(l\dot{-}1)\cdot h(n)+h(n)$ より
+$$
+a^{\ast}=l\cdot x'+a+(l\dot{-}1)\cdot h(n)+h(n)=m\cdot y'+h(n).
+$$
+$i<n$ なら $m(i)\mid l$ なので、\ref{pt:divisibility-basic} の 3 より $\mathrm{rm}(a^{\ast},m(i))=\mathrm{rm}(a,m(i))=h(i)$。また $\mathrm{rm}(a^{\ast},m)=\mathrm{rm}(h(n),m)=h(n)$（$h(n)<m$）。
+
+**Step 4（大きさの調整）.** $l'\defeq l_{n+1}>0$ とし、$a^{\ast}=q\cdot l'+a^{\ast\ast}$, $a^{\ast\ast}<l'$ と割る。各 $i\le n$ で $m(i)\mid l'$ なので、\ref{pt:divisibility-basic} の 3 より $\mathrm{rm}(a^{\ast\ast},m(i))=\mathrm{rm}(a^{\ast},m(i))=h(i)$。$a^{\ast\ast}$ が $n+1$ の場合の解である。
+
+::: hypcheck
+- **互いに素**：Step 2（ベズーの補題の仮定）。
+- **$h(i)<m(i)$**：Step 1 と Step 3 の $\mathrm{rm}(h(n),m)=h(n)$。
+- **帰納法が使えること**：Step 1–4 の主張は、$m,h$ を定める論理式と $\mathrm{Rm}$、$\mathrm{lcm}$ の定義から論理式で書けるので、\ref{pt:model-induction} が使える。
+:::
+:::
+
+## β 関数の補題 {#pt:sec-beta}
+
+::: definition β 関数 {#pt:beta keywords="Gödel's beta function" index="β 関数|べーたかんすう"}
+$\beta(a,b,i)\defeq\mathrm{rm}(a,1+(i+1)\cdot b)$ とし、これを定める論理式を
+$$
+\mathrm{Beta}(a,b,i,r)\defeq r<S(S(i)\cdot b)\wedge\exists q<S(a)\,\bigl(a=q\cdot S(S(i)\cdot b)+r\bigr)
+$$
+とする（$1+(i+1)b=S(S(i)\cdot b)\neq0$ なので $\mathrm{Rm}$ の第二の場合は起こらない）。$\mathrm{Beta}$ は有界な論理式なので Δ 論理式であり、$\PA$ で関数的である。
+:::
+
+::: theorem β 関数の補題 {#pt:beta-lemma keywords="beta function lemma" index="β 関数の補題|べーたかんすうのほだい"}
+$h(i)$ を $\PA$ で関数的な論理式が定める関数とする。$\mathcal{M}$ の任意の数 $k$ について、すべての $i<k$ で $\beta(a,b,i)=h(i)$ となる $a,b$ がある。さらに、$s$ を「$k<s$ かつすべての $i<k$ で $h(i)<s$」となる最小の数とすると、
+$$
+b=\mathrm{lcm}[i+1:i<s],\qquad a<\mathrm{lcm}[1+(i+1)b:i<k]
+$$
+となるようにとれる。
+:::
+
+::: proof
+**Step 1（$s$ の存在）.** 「ある $t$ で $n<t$ かつすべての $i<n$ で $h(i)<t$」を $n$ について帰納法で示す：$n=0$ は $t=1$、$n$ で $t$ がとれれば $n+1$ では $t+h(n)+1$。最小元の原理で最小の $s$ をとる。
+
+**Step 2（$b$）.** $b\defeq\mathrm{lcm}[i+1:i<s]$。$0<b$ で、$s=(s\dot{-}1)+1$ も割り切るので $s\le b$（$0<s$）。$m(i)\defeq1+(i+1)\cdot b$ とおくと $1<m(i)$、$h(i)<s\le b<m(i)$（$i<k$）。
+
+**Step 3（互いに素）.** $i<j<k$ とし、素数 $p$ が $m(i),m(j)$ を割り切ったとする。差 $m(j)\dot{-}m(i)=(j\dot{-}i)\cdot b$ を割り切る（\ref{pt:divisibility-basic} の 2）。ユークリッドの補題より $p\mid j\dot{-}i$ か $p\mid b$。$1\le j\dot{-}i<k<s$ なので $j\dot{-}i$ は $b$ を割り切り（$j\dot{-}i=((j\dot{-}i)\dot{-}1)+1$ で $(j\dot{-}i)\dot{-}1<s$）、いずれの場合も $p\mid b$、したがって $p\mid(i+1)\cdot b$。$p\mid1+(i+1)\cdot b$ と合わせて $p\mid1$ となり、$1<p$ に反する。よって \ref{pt:prime-divisor} より $\mathrm{RelPrime}(m(i),m(j))$。
+
+**Step 4.** 中国剰余定理（$m$ は $b$ をパラメータとする関数的な論理式で定まる）より、$a<\mathrm{lcm}[m(i):i<k]$ で $\mathrm{rm}(a,m(i))=h(i)$（$i<k$）となる $a$ がある。これは $\beta(a,b,i)=h(i)$ である。
+:::
+
+::: corollary 列の延長 {#pt:beta-extension}
+$\mathcal{M}$ の任意の数 $c,e,k,n$ について、$\beta(a,b,k)=n$ かつすべての $i<k$ で $\beta(a,b,i)=\beta(c,e,i)$ となる $a,b$ がある。
+:::
+
+::: proof
+$h(i)\defeq\beta(c,e,i)$（$i<k$）、$h(i)\defeq n$（$i\ge k$）は、$(i<k\wedge\mathrm{Beta}(c,e,i,y))\vee(\neg\,i<k\wedge y=n)$ で定まる関数的な論理式の関数である。β 関数の補題を $k+1$ に適用する。
+:::
+
+::: intuition
+$(a,b)$ の組が「長さを指定しない有限列のコード」の役割を果たす。β 関数の補題は、どんな長さのどんな列もコード化でき、しかもコードの大きさを列の項と長さから評価できることを主張する。この評価は、後で「$x$ は項（論理式、証明）のコードである」といった概念を**有界な量化子で**、したがって Δ 論理式で書くのに使う（\ref{pt:page-sequence-coding}）。
+:::
+
+## 問題 {#pt:sec-beta-problems}
+
+::: problem {#pt:prob-beta-standard}
+標準構造 $\mathcal{N}$ で、列 $(2,0,1)$ を $\beta(a,b,i)$（$i<3$）で表す $a,b$ を、β 関数の補題の証明の方法で一組求めよ。
+:::
+
+::: solution
+$k=3$、$h=(2,0,1)$ なので、$3<s$ かつ $h(i)<s$ となる最小の $s$ は $4$。$b=\mathrm{lcm}(1,2,3,4)=12$。$m(i)=1+12(i+1)$ は $13,25,37$ で、互いに素である。$a\equiv2\pmod{13}$, $a\equiv0\pmod{25}$, $a\equiv1\pmod{37}$ を解く。$a=25t$ で $25t\equiv2\pmod{13}$、すなわち $12t\equiv2$、$-t\equiv2$、$t\equiv11\pmod{13}$。$a=25(11+13u)=275+325u$。$275+325u\equiv1\pmod{37}$：$275=7\cdot37+16$, $325=8\cdot37+29$ なので $16+29u\equiv1$、$29u\equiv-15\equiv22$。$29\equiv-8$ なので $-8u\equiv22$、$8u\equiv15\pmod{37}$。$8\cdot14=112=3\cdot37+1$ より $8^{-1}\equiv14$、$u\equiv15\cdot14=210\equiv210-185=25$。$a=275+325\cdot25=8400$。検算：$8400=646\cdot13+2$、$8400=336\cdot25$、$8400=227\cdot37+1$。$a<13\cdot25\cdot37=12025$ も満たす。
+:::
+
+::: problem {#pt:prob-infinitely-many-primes}
+$\PA\vdash\forall x\,\exists p\,(x<p\wedge\mathrm{Prime}(p))$ を示せ（ヒント：$\mathrm{lcm}[i+1:i<x+1]+1$ の素因数を考える）。
+:::
+
+::: solution
+$\mathcal{M}$ で $x$ をとり、$l\defeq\mathrm{lcm}[i+1:i<x+1]$（$m(i)=i+1$ は関数的）とする。$l+1>1$ なので素因数 $p$ がある（\ref{pt:prime-divisor}）。$p\le x$ なら $1\le p=(p\dot{-}1)+1$、$p\dot{-}1<x+1$ より $p\mid l$、$p\mid l+1$ と合わせて $p\mid1$ となり矛盾する。よって $x<p$。完全性定理による。
+:::
+
+::: supplement
+**高い視点から：コード化は「埋め込み」である.** β 関数の補題は、「有限列の全体」という $\PA$ の言語にない対象を、数の組 $(a,b)$ の中に埋め込む方法を与える。代数でいえば、中国剰余定理は環の同型 $\mathbb{Z}/(m_{0}\cdots m_{k-1})\cong\prod_{i}\mathbb{Z}/m_{i}$（$m_{i}$ が互いに素）であり、右辺の「列」を左辺の一つの数で表すことに相当する。β 関数の工夫は、法 $m_{i}=1+(i+1)b$ 自体を一つのパラメータ $b$ から作るところにあり、これによって可変長の列を固定個数（二つ）の数で表せる。後で見るように、構文（記号列・導出）を数で表すゲーデル数化は、この埋め込みを通じて $\PA$ の中で語れるようになる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

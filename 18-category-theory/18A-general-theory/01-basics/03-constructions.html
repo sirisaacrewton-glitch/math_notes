@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>双対・積・関手圏 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/01-basics/03-constructions.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 双対・積・関手圏 {#cat:page-constructions keywords="opposite category, duality principle, contravariant functor, product category, bifunctor, hom bifunctor, functor category, horizontal composition, interchange law, Godement product"}
+
+圏から新しい圏を作る基本的な方法を三つ扱う。射の向きを逆にした**反対圏**（\ref{cat:opposite-category}）からは、**双対原理**（\ref{cat:duality-principle}）と**反変関手**（\ref{cat:contravariant-functor}）が得られる。二つの圏の**積**（\ref{cat:product-category}）からは二変数の関手（**双関手**）が得られ、それは一変数ずつの関手の族で決まる（\ref{cat:bifunctor-criterion}）。関手を対象、自然変換を射とする**関手圏**（\ref{cat:functor-category}）では、自然変換の「縦の合成」に加えて「横の合成」があり、両者は**交換法則**で結ばれる（\ref{cat:interchange-law}）。
+
+> 資料：Mac Lane, *Categories for the Working Mathematician* 第 II 章 §1–§5。訳語はレンスター『ベーシック圏論』。
+
+## 記法と定義の確認 {#cat:sec-con-notation}
+
+::: notation
+- 圏・関手・自然変換・縦の合成 $\tau\cdot\sigma$・同型射・モノ射とエピ射・始対象と終対象は \ref{cat:page-categories}, \ref{cat:page-functors} のとおり（\ref{cat:category}, \ref{cat:functor}, \ref{cat:natural-transformation}, \ref{cat:vertical-composition}, \ref{cat:monic-epic}, \ref{cat:initial-terminal}）。
+- 小さい集合、小さい圏、局所小は \ref{cat:universe}, \ref{cat:small-category} のとおり。
+- 自然変換 $\tau\colon S\Rightarrow T$ の成分は $\tau_{c}$ と書く。
+:::
+
+## 反対圏と双対原理 {#cat:sec-con-duality}
+
+::: definition 反対圏 {#cat:opposite-category keywords="opposite category, dual category" index="反対圏|はんたいけん, 双対圏|そうついけん"}
+圏 $\mathbf{C}$ の**反対圏** $\mathbf{C}^{\mathrm{op}}$ は、対象と射の集合が $\mathbf{C}$ と同じで、$\mathbf{C}$ の射 $f\colon a\to b$ を $\mathbf{C}^{\mathrm{op}}$ では $b\to a$ の射とみなし（$f^{\mathrm{op}}$ と書くこともある）、合成を $f^{\mathrm{op}}\circ_{\mathrm{op}}g^{\mathrm{op}}\defeq(g\circ f)^{\mathrm{op}}$ と定めた圏である。恒等射は同じ。
+:::
+
+::: proposition 反対圏の基本性質 {#cat:opposite-basic keywords="the opposite of a category is a category; (C^op)^op = C" index="反対圏の基本性質|はんたいけんのきほんせいしつ"}
+1. $\mathbf{C}^{\mathrm{op}}$ は圏であり、$(\mathbf{C}^{\mathrm{op}})^{\mathrm{op}}=\mathbf{C}$。
+2. $f$ が $\mathbf{C}$ でモノ射であることと、$\mathbf{C}^{\mathrm{op}}$ でエピ射であることは同値。$c$ が $\mathbf{C}$ で始対象であることと、$\mathbf{C}^{\mathrm{op}}$ で終対象であることは同値。同型射は両者で一致する。
+:::
+
+::: proof
+**1.** $\mathbf{C}^{\mathrm{op}}$ の定義域・余域は $\operatorname{dom}^{\mathrm{op}}=\operatorname{cod}$, $\operatorname{cod}^{\mathrm{op}}=\operatorname{dom}$。$f^{\mathrm{op}}\colon b\to a$, $g^{\mathrm{op}}\colon c\to b$（$\mathbf{C}$ で $f\colon a\to b$, $g\colon b\to c$）について、$f^{\mathrm{op}}\circ_{\mathrm{op}}g^{\mathrm{op}}=(g\circ f)^{\mathrm{op}}$ は $c\to a$ で (C1)。結合律：
+$$
+\begin{aligned}
+(f^{\mathrm{op}}\circ_{\mathrm{op}}g^{\mathrm{op}})\circ_{\mathrm{op}}h^{\mathrm{op}}&=(h\circ(g\circ f))^{\mathrm{op}}\\
+&=((h\circ g)\circ f)^{\mathrm{op}}=f^{\mathrm{op}}\circ_{\mathrm{op}}(g^{\mathrm{op}}\circ_{\mathrm{op}}h^{\mathrm{op}}).
+\end{aligned}
+$$
+単位律も $\mathbf{C}$ の単位律から。二回反転すると dom, cod, 合成がすべて元に戻る。
+
+**2.** $f$ が $\mathbf{C}^{\mathrm{op}}$ でエピ射であるとは、$x\circ_{\mathrm{op}}f=y\circ_{\mathrm{op}}f\Rightarrow x=y$、すなわち $\mathbf{C}$ で $f\circ x=f\circ y\Rightarrow x=y$ で、これは $\mathbf{C}$ でモノ射であることにほかならない。$\mathbf{C}^{\mathrm{op}}(d,c)=\mathbf{C}(c,d)$ なので始対象と終対象が入れ替わる。同型射の条件 $g\circ f=1$, $f\circ g=1$ は向きを変えても同じ。
+:::
+
+::: theorem 双対原理 {#cat:duality-principle keywords="duality principle for categories" index="双対原理|そうついげんり"}
+圏の対象・射・dom・cod・恒等射・合成についての（一階の）主張 $\Sigma$ に対し、dom と cod を入れ替え、合成 $g\circ f$ をすべて $f\circ g$ に書き換えた主張を $\Sigma^{*}$（**双対**）とする。$\Sigma$ がすべての圏で成り立つならば、$\Sigma^{*}$ もすべての圏で成り立つ。
+:::
+
+::: proof
+**Step 1（翻訳の補題）.** 主張の構成についての帰納法で、「$\Sigma^{*}$ が圏 $\mathbf{C}$ で成り立つことと、$\Sigma$ が $\mathbf{C}^{\mathrm{op}}$ で成り立つことは同値」（対象・射の変数には同じ値を割り当てる）を示す。原子的な主張は「$\operatorname{dom}f=a$」「$\operatorname{cod}f=a$」「$1_{a}=f$」「$g\circ f=h$」（とその組み合わせとしての等式）である。$\mathbf{C}^{\mathrm{op}}$ で $\operatorname{dom}f=a$ であることは $\mathbf{C}$ で $\operatorname{cod}f=a$、$\mathbf{C}^{\mathrm{op}}$ で $g\circ_{\mathrm{op}}f=h$ であることは $\mathbf{C}$ で $f\circ g=h$ であり、恒等射は同じなので、原子的な主張について同値が成り立つ。論理記号（$\neg,\wedge,\vee,\to,\forall,\exists$）は両辺で同じに働く（対象と射の範囲は $\mathbf{C}$ と $\mathbf{C}^{\mathrm{op}}$ で同じ）ので、帰納法が進む。
+
+**Step 2.** 任意の圏 $\mathbf{C}$ をとる。$\mathbf{C}^{\mathrm{op}}$ も圏（\ref{cat:opposite-basic}）なので、仮定から $\Sigma$ は $\mathbf{C}^{\mathrm{op}}$ で成り立つ。Step 1 から $\Sigma^{*}$ は $\mathbf{C}$ で成り立つ。
+
+::: hypcheck
+- **「すべての圏で」**：Step 2 で $\Sigma$ を $\mathbf{C}^{\mathrm{op}}$ に適用した。特定の圏で成り立つ主張の双対は、その圏で成り立つとは限らない。たとえば $\mathbf{Set}$ では「始対象への射は同型射」が成り立つ（$\varnothing$ への写像の定義域は $\varnothing$）が、双対「終対象からの射は同型射」は成り立たない（$\{0\}\to\{0,1\}$）。
+- **一階の主張であること**：Step 1 の帰納法は、主張が対象・射の上の量化だけからなることを使った。射を「集合の写像」として扱う主張（元をとるなど）は、この意味の主張ではない。
+:::
+:::
+
+::: definition 反変関手 {#cat:contravariant-functor keywords="contravariant functor, presheaf" index="反変関手|はんぺんかんしゅ, 前層|ぜんそう"}
+関手 $F\colon\mathbf{C}^{\mathrm{op}}\to\mathbf{D}$ を、$\mathbf{C}$ から $\mathbf{D}$ への**反変関手**という。具体的には、$f\colon c\to c'$ に $Ff\colon Fc'\to Fc$ を対応させ、$F(g\circ f)=Ff\circ Fg$, $F(1_{c})=1_{Fc}$ を満たすものである。これに対し、ふつうの関手を**共変関手**ともいう。$\mathbf{D}=\mathbf{Set}$ のとき、反変関手 $\mathbf{C}^{\mathrm{op}}\to\mathbf{Set}$ を $\mathbf{C}$ 上の**前層**ともいう。
+:::
+
+::: example
+1. **反変 hom 関手.** 局所小の $\mathbf{C}$ と対象 $b$ について、$\mathbf{C}(-,b)\colon\mathbf{C}^{\mathrm{op}}\to\mathbf{Set}$ は、$c\mapsto\mathbf{C}(c,b)$、$f\colon c\to c'$ に「右から $f$ を合成する」写像 $-\circ f\colon\mathbf{C}(c',b)\to\mathbf{C}(c,b)$ を対応させる。$(-\circ g\circ f)$ の順序から $F(g\circ f)=Ff\circ Fg$。
+2. **逆像による冪集合関手.** $X\mapsto\mathcal{P}(X)$、$f\colon X\to Y$ に逆像 $f^{-1}[\,\cdot\,]\colon\mathcal{P}(Y)\to\mathcal{P}(X)$ を対応させる反変関手 $\mathbf{Set}^{\mathrm{op}}\to\mathbf{Set}$。$(g\circ f)^{-1}[T]=f^{-1}[g^{-1}[T]]$。
+3. **双対空間.** $V\mapsto V^{*}$, $f\mapsto f^{*}$（$f^{*}(\lambda)=\lambda\circ f$）は反変関手 $\mathbf{Vect}_{F}^{\mathrm{op}}\to\mathbf{Vect}_{F}$。\ref{cat:dual-not-natural} で $(f^{-1})^{*}$ を使ったのは、この反変性を同型射の範囲で共変に直すためだった。
+4. **開集合の前層.** 位相空間 $X$ の開集合の包含の半順序を圏 $\mathcal{O}(X)$ とみると、$U\mapsto\{U\text{ 上の連続関数 }U\to\mathbb{R}\}$ と制限写像は前層 $\mathcal{O}(X)^{\mathrm{op}}\to\mathbf{Set}$ である。
+:::
+
+## 積圏と双関手 {#cat:sec-con-product}
+
+::: definition 積圏 {#cat:product-category keywords="product category, projection functors" index="積圏|せきけん, 射影関手|しゃえいかんしゅ"}
+圏 $\mathbf{B},\mathbf{C}$ の**積圏** $\mathbf{B}\times\mathbf{C}$ は、対象を組 $(b,c)$、射 $(b,c)\to(b',c')$ を組 $(f,g)$（$f\colon b\to b'$, $g\colon c\to c'$）とし、合成を成分ごとに $(f',g')\circ(f,g)\defeq(f'\circ f,g'\circ g)$ と定めた圏である。**射影関手** $P\colon\mathbf{B}\times\mathbf{C}\to\mathbf{B}$, $Q\colon\mathbf{B}\times\mathbf{C}\to\mathbf{C}$ を $P(f,g)=f$, $Q(f,g)=g$ で定める。関手 $\mathbf{B}\times\mathbf{C}\to\mathbf{D}$ を**双関手**（二変数の関手）という。
+:::
+
+::: proposition 積圏の普遍性 {#cat:product-category-universal keywords="universal property of the product category" index="積圏の普遍性|せきけんのふへんせい"}
+任意の圏 $\mathbf{D}$ と関手 $R\colon\mathbf{D}\to\mathbf{B}$, $T\colon\mathbf{D}\to\mathbf{C}$ に対し、関手 $F\colon\mathbf{D}\to\mathbf{B}\times\mathbf{C}$ で $P\circ F=R$, $Q\circ F=T$ となるものがちょうど一つある。
+:::
+
+::: proof
+条件から、$F$ は対象では $Fd=(Rd,Td)$、射では $Fh=(Rh,Th)$ でなければならない（一意性）。逆にこう定めると、$F(1_{d})=(1_{Rd},1_{Td})=1_{Fd}$、$F(h'\circ h)=(Rh'\circ Rh,Th'\circ Th)=Fh'\circ Fh$ で関手になる（存在）。
+:::
+
+::: proposition 双関手の判定 {#cat:bifunctor-criterion keywords="a bifunctor is determined by its partial functors satisfying a commutation condition" index="双関手の判定|そうかんしゅのはんてい"}
+圏 $\mathbf{B},\mathbf{C},\mathbf{D}$ と、各 $c\in\mathbf{C}$ について関手 $L_{c}\colon\mathbf{B}\to\mathbf{D}$、各 $b\in\mathbf{B}$ について関手 $M_{b}\colon\mathbf{C}\to\mathbf{D}$ が与えられ、$L_{c}(b)=M_{b}(c)$ とする。双関手 $S\colon\mathbf{B}\times\mathbf{C}\to\mathbf{D}$ で $S(-,c)=L_{c}$, $S(b,-)=M_{b}$ となるもの（ここで $S(-,c)$ は射 $f$ を $S(f,1_{c})$ に移す関手）が存在するための必要十分条件は、すべての $f\colon b\to b'$, $g\colon c\to c'$ について
+$$
+M_{b'}g\circ L_{c}f=L_{c'}f\circ M_{b}g
+$$
+となることである。このとき $S(f,g)$ はこの両辺の値で、$S$ は一意である。
+:::
+
+::: proof
+**必要性.** $\mathbf{B}\times\mathbf{C}$ で、合成の定義から
+$$
+(1_{b'},g)\circ(f,1_{c})=(f,g)=(f,1_{c'})\circ(1_{b},g).
+$$
+$S$ を適用すると $S(1_{b'},g)\circ S(f,1_{c})=S(f,1_{c'})\circ S(1_{b},g)$、すなわち $M_{b'}g\circ L_{c}f=L_{c'}f\circ M_{b}g$。また $S(f,g)$ はこの値に等しいので、$S$ は一意。
+
+**十分性.** $S(b,c)\defeq L_{c}(b)$, $S(f,g)\defeq M_{b'}g\circ L_{c}f$ と定める。
+- *恒等射.* $S(1_{b},1_{c})=M_{b}(1_{c})\circ L_{c}(1_{b})=1\circ1=1$。
+- *合成.* $f\colon b\to b'$, $f'\colon b'\to b''$, $g\colon c\to c'$, $g'\colon c'\to c''$ とする。
+$$
+\begin{aligned}
+S(f',g')\circ S(f,g)&=M_{b''}g'\circ L_{c'}f'\circ M_{b'}g\circ L_{c}f\\
+&=M_{b''}g'\circ M_{b''}g\circ L_{c}f'\circ L_{c}f\\
+&=M_{b''}(g'\circ g)\circ L_{c}(f'\circ f)\\
+&=S(f'\circ f,g'\circ g).
+\end{aligned}
+$$
+二行目は、仮定の等式を $(f',g)$ に適用した $L_{c'}f'\circ M_{b'}g=M_{b''}g\circ L_{c}f'$ による。三行目は $L_{c},M_{b''}$ が関手であることによる。
+- *部分関手.* $S(f,1_{c})=M_{b'}(1_{c})\circ L_{c}f=L_{c}f$, $S(1_{b},g)=M_{b}g\circ L_{c}(1_{b})=M_{b}g$。
+
+::: hypcheck
+- **条件 $L_{c}(b)=M_{b}(c)$**：$S$ の対象関数が二通りの記述で一致するために必要。
+- **交換条件**：十分性の合成の計算の二行目でちょうど一回使った。外すと、一変数ずつは関手でも、二変数をまとめた $S$ が合成を保たない。
+:::
+:::
+
+::: example
+**hom 双関手.** 局所小の $\mathbf{C}$ について、$L_{c}\defeq\mathbf{C}(-,c)$（反変、\ref{cat:contravariant-functor} の例 1）と $M_{b}\defeq\mathbf{C}(b,-)$（共変）は、結合律 $(g\circ h)\circ f=g\circ(h\circ f)$ から交換条件を満たす（$h\in\mathbf{C}(b',c)$ に左から $g$、右から $f$ を合成する順序によらない）。よって双関手
+$$
+\mathbf{C}(-,-)\colon\mathbf{C}^{\mathrm{op}}\times\mathbf{C}\to\mathbf{Set},\quad(f,g)\mapsto g\circ-\circ f
+$$
+が得られる。
+:::
+
+::: proposition 双関手の間の自然変換 {#cat:bifunctor-naturality keywords="naturality in each variable separately" index="変数ごとの自然性|へんすうごとのしぜんせい"}
+双関手 $S,S'\colon\mathbf{B}\times\mathbf{C}\to\mathbf{D}$ と射の族 $\alpha_{b,c}\colon S(b,c)\to S'(b,c)$ について、$\alpha$ が自然変換 $S\Rightarrow S'$ であることと、各 $c$ について $b$ に関して自然（$\alpha_{-,c}\colon S(-,c)\Rightarrow S'(-,c)$ が自然変換）かつ各 $b$ について $c$ に関して自然であることは同値である。
+:::
+
+::: proof
+「⇒」：自然性を射 $(f,1_{c})$, $(1_{b},g)$ に適用すればよい。「⇐」：$(f,g)=(f,1_{c'})\circ(1_{b},g)$ と分解し、二つの自然性の四角形を縦につなげる：
+$$
+\begin{aligned}
+S'(f,g)\circ\alpha_{b,c}&=S'(f,1)\circ S'(1,g)\circ\alpha_{b,c}\\
+&=S'(f,1)\circ\alpha_{b,c'}\circ S(1,g)\\
+&=\alpha_{b',c'}\circ S(f,1)\circ S(1,g)=\alpha_{b',c'}\circ S(f,g).
+\end{aligned}
+$$
+:::
+
+## 関手圏 {#cat:sec-con-functor-category}
+
+::: definition 関手圏 {#cat:functor-category keywords="functor category, category of presheaves, arrow category" index="関手圏|かんしゅけん, 前層の圏|ぜんそうのけん"}
+圏 $\mathbf{C},\mathbf{D}$ について、関手 $\mathbf{C}\to\mathbf{D}$ を対象、自然変換を射、縦の合成（\ref{cat:vertical-composition}）を合成とする圏を**関手圏**といい、$\mathbf{D}^{\mathbf{C}}$ または $[\mathbf{C},\mathbf{D}]$ と書く。$\operatorname{Nat}(S,T)\defeq[\mathbf{C},\mathbf{D}](S,T)$。
+:::
+
+::: proposition 関手圏が局所小になる条件 {#cat:functor-category-size keywords="the functor category from a small category to a locally small category is locally small" index="関手圏の大きさ|かんしゅけんのおおきさ"}
+1. $[\mathbf{C},\mathbf{D}]$ は圏である。
+2. $\mathbf{C}$ が小さく $\mathbf{D}$ が局所小なら、$[\mathbf{C},\mathbf{D}]$ は局所小である。$\mathbf{C},\mathbf{D}$ がともに小さいなら、$[\mathbf{C},\mathbf{D}]$ は小さい。
+:::
+
+::: proof
+**1.** \ref{cat:vertical-composition} の結合律と単位律。自然変換を射として区別するため、射は三つ組 $(S,\tau,T)$ とする（\ref{cat:hom-set-formulation} の hypcheck の注意）。
+
+**2.** 自然変換 $S\Rightarrow T$ は、$\operatorname{Ob}\mathbf{C}$ 上の関数 $c\mapsto\tau_{c}\in\mathbf{D}(Sc,Tc)$ なので、
+$$
+\operatorname{Nat}(S,T)\subseteq\prod_{c\in\operatorname{Ob}\mathbf{C}}\mathbf{D}(Sc,Tc).
+$$
+添字の集合 $\operatorname{Ob}\mathbf{C}$ も各因子も小さい。小さい集合で添字付けられた小さい集合の族の直積は小さい（$\prod_{i\in I}X_{i}\subseteq\mathcal{P}(I\times\bigcup_{i}X_{i})$ で、$\bigcup_{i}X_{i}$ は宇宙の条件 5（$I$ から族の値の集合への全射）と条件 3 から小さく、条件 2, 3 と推移性から直積も小さい）。部分集合も小さい（推移性と冪集合）。後半：$\mathbf{C},\mathbf{D}$ が小さいなら、関手は $\operatorname{Mor}\mathbf{C}$ から $\operatorname{Mor}\mathbf{D}$ への関数（と対象の関数）で決まり、その全体は小さい集合の冪集合の部分集合なので小さい。
+
+::: hypcheck
+- **$\mathbf{C}$ が小さいこと**：直積の添字集合が小さいことに使った。$\mathbf{C}$ が大きいと、この議論は使えず、$\operatorname{Nat}(S,T)$ が小さい集合になる保証はない（宇宙の中で集合ではあるが、小さいとは限らない）。
+:::
+:::
+
+::: example
+1. $[\mathbf{1},\mathbf{D}]\cong\mathbf{D}$（関手 $\mathbf{1}\to\mathbf{D}$ は対象、自然変換は射、問題 \ref{cat:prob-functors-from-ordinals}）。
+2. $[\mathbf{2},\mathbf{D}]$ は**射の圏**：対象は $\mathbf{D}$ の射 $f\colon a\to b$、射 $f\to f'$ は可換な四角形 $f'\circ u=v\circ f$ を作る組 $(u,v)$。
+3. 群 $G$（対象一つの圏）について、$[G,\mathbf{Set}]$ は $G$ 集合（$G$ が作用する集合）と同変写像の圏。自然性は同変性 $\tau(g\cdot x)=g\cdot\tau(x)$ そのもの。
+4. 離散圏 $X$ について、$[X,\mathbf{D}]$ は $X$ で添字付けた $\mathbf{D}$ の対象の族と、成分ごとの射の族の圏（「$\mathbf{D}$ の $X$ 乗」）。
+5. $[\mathbf{C}^{\mathrm{op}},\mathbf{Set}]$ を $\mathbf{C}$ 上の**前層の圏**という。米田の補題（\ref{cat:yoneda-lemma}）で中心的な役割を果たす。
+:::
+
+::: proposition 自然変換と積圏 C × 2 {#cat:natural-transformation-as-functor keywords="natural transformations correspond to functors from C x 2" index="自然変換と積圏|しぜんへんかんとせきけん"}
+関手 $S,T\colon\mathbf{C}\to\mathbf{D}$ の間の自然変換 $\tau\colon S\Rightarrow T$ と、関手 $F\colon\mathbf{C}\times\mathbf{2}\to\mathbf{D}$ で $F(-,0)=S$, $F(-,1)=T$ となるものは一対一に対応する。対応は $\tau_{c}=F(1_{c},u)$（$u\colon0\to1$ は $\mathbf{2}$ の恒等射でない射）。
+:::
+
+::: proof
+$F(-,0)=S$, $F(-,1)=T$ と、$\mathbf{2}$ 上の関手 $M_{c}\colon\mathbf{2}\to\mathbf{D}$（$u\mapsto\tau_{c}$）を \ref{cat:bifunctor-criterion} に当てはめる。$M_{c}$ が関手であるのは \ref{cat:prob-functors-from-ordinals}（$\mathbf{2}$ からの関手は射一つで決まる）から。交換条件は、$f\colon c\to c'$ と $\mathbf{2}$ の射 $g$ について、$g$ が恒等射なら自明、$g=u$ なら $\tau_{c'}\circ Sf=Tf\circ\tau_{c}$、すなわち自然性そのものである。よって $\tau$ が自然変換であることと、$F$ が双関手として存在することは同値で、$F$ は一意。
+:::
+
+## 横の合成と交換法則 {#cat:sec-con-horizontal}
+
+::: definition 横の合成 {#cat:horizontal-composition keywords="horizontal composition of natural transformations, Godement product, whiskering" index="横の合成|よこのごうせい, ゴドマン積|ごどまんせき, ひげ付け|ひげづけ"}
+関手 $S,T\colon\mathbf{C}\to\mathbf{B}$, $S',T'\colon\mathbf{B}\to\mathbf{A}$ と自然変換 $\tau\colon S\Rightarrow T$, $\tau'\colon S'\Rightarrow T'$ について、**横の合成** $\tau'\circ\tau\colon S'S\Rightarrow T'T$ を
+$$
+(\tau'\circ\tau)_{c}\defeq\tau'_{Tc}\circ S'\tau_{c}
+$$
+で定める。$\tau'$ が恒等変換 $1_{S'}$ のとき $S'\tau\defeq1_{S'}\circ\tau$（成分 $S'\tau_{c}$）、$\tau$ が恒等変換のとき $\tau'S\defeq\tau'\circ1_{S}$（成分 $\tau'_{Sc}$）と書き、**ひげ付け**という。
+:::
+
+::: proposition 横の合成の性質と交換法則 {#cat:interchange-law keywords="interchange law for vertical and horizontal composition" index="交換法則|こうかんほうそく"}
+1. $(\tau'\circ\tau)_{c}=\tau'_{Tc}\circ S'\tau_{c}=T'\tau_{c}\circ\tau'_{Sc}$ で、$\tau'\circ\tau$ は自然変換である。
+2. 横の合成は結合的で、恒等関手の恒等変換が単位になる。
+3. （**交換法則**）$\sigma\colon R\Rightarrow S$, $\tau\colon S\Rightarrow T$（$\mathbf{C}\to\mathbf{B}$）、$\sigma'\colon R'\Rightarrow S'$, $\tau'\colon S'\Rightarrow T'$（$\mathbf{B}\to\mathbf{A}$）について
+$$
+(\tau'\cdot\sigma')\circ(\tau\cdot\sigma)=(\tau'\circ\tau)\cdot(\sigma'\circ\sigma).
+$$
+:::
+
+::: proof
+**1.** 二つの式の一致は、$\tau'$ の自然性を射 $\tau_{c}\colon Sc\to Tc$ に適用した $T'\tau_{c}\circ\tau'_{Sc}=\tau'_{Tc}\circ S'\tau_{c}$ そのもの。自然性：$f\colon c\to c'$ について
+$$
+\begin{aligned}
+T'Tf\circ\tau'_{Tc}\circ S'\tau_{c}&=\tau'_{Tc'}\circ S'Tf\circ S'\tau_{c}\\
+&=\tau'_{Tc'}\circ S'(Tf\circ\tau_{c})\\
+&=\tau'_{Tc'}\circ S'(\tau_{c'}\circ Sf)=\tau'_{Tc'}\circ S'\tau_{c'}\circ S'Sf.
+\end{aligned}
+$$
+一行目は $\tau'$ の射 $Tf$ についての自然性、三行目は $\tau$ の自然性。
+
+**2.** $\tau''\colon S''\Rightarrow T''$（$\mathbf{A}\to\mathbf{A}'$）について、1 の第 2 の式を使うと
+$$
+((\tau''\circ\tau')\circ\tau)_{c}=T''T'\tau_{c}\circ T''\tau'_{Sc}\circ\tau''_{S'Sc}=(\tau''\circ(\tau'\circ\tau))_{c}.
+$$
+（右辺は $T''(T'\tau_{c}\circ\tau'_{Sc})\circ\tau''_{S'Sc}$ を関手性で展開したもの。）単位は定義から。
+
+**3.** 成分 $c$ で比べる。左辺は、1 の第 1 の式で
+$$
+\begin{aligned}
+&(\tau'\cdot\sigma')_{Tc}\circ R'(\tau\cdot\sigma)_{c}\\
+&=\tau'_{Tc}\circ\sigma'_{Tc}\circ R'\tau_{c}\circ R'\sigma_{c}.
+\end{aligned}
+$$
+右辺は
+$$
+\begin{aligned}
+&(\tau'\circ\tau)_{c}\circ(\sigma'\circ\sigma)_{c}\\
+&=\tau'_{Tc}\circ S'\tau_{c}\circ\sigma'_{Sc}\circ R'\sigma_{c}.
+\end{aligned}
+$$
+$\sigma'$ の射 $\tau_{c}\colon Sc\to Tc$ についての自然性 $\sigma'_{Tc}\circ R'\tau_{c}=S'\tau_{c}\circ\sigma'_{Sc}$ により、両辺は一致する。
+
+::: hypcheck
+- **交換法則で使ったもの**：$\sigma'$ の自然性を一回だけ。$\tau'$, $\sigma$, $\tau$ の自然性は使っていない（横の合成が自然変換になることには使う）。
+:::
+:::
+
+::: supplement
+**一般化.** 小さい圏・関手・自然変換は、縦と横の二種類の合成をもつ構造をなす。これを **2 圏**といい、$\mathbf{Cat}$ はその典型例である。交換法則は、2 圏の公理の中心である（Mac Lane 第 XII 章）。
+
+**類似の定理.** 積圏の普遍性（\ref{cat:product-category-universal}）は、集合・群・位相空間の直積の普遍性と同じ形をしている。これらを統一するのが、圏の中の積（\ref{cat:product}）である。$\mathbf{Cat}$ の中の積がちょうど積圏である。
+
+**高い視点から：カリー化.** 小さい圏について、関手 $\mathbf{B}\times\mathbf{C}\to\mathbf{D}$ と関手 $\mathbf{B}\to[\mathbf{C},\mathbf{D}]$ は一対一に対応する（\ref{cat:bifunctor-criterion} から、$b\mapsto S(b,-)$, $f\mapsto S(f,-)$ が自然変換になることを確かめればよい。問題 \ref{cat:prob-currying}）。これは、二変数の関数 $X\times Y\to Z$ と、値が関数である一変数の関数 $X\to Z^{Y}$ の対応（カリー化）の圏版であり、$\mathbf{Cat}$ が**デカルト閉圏**（\ref{cat:cartesian-closed}）であることを示している。比喩で言えば、二つのつまみ（$b$ と $c$）をもつ機械は、一つ目のつまみを回すたびに「二つ目のつまみだけをもつ機械」を出す機械と同じである。
+:::
+
+## 問題 {#cat:sec-con-problems}
+
+::: problem {#cat:prob-currying}
+$\mathbf{B},\mathbf{C},\mathbf{D}$ を小さい圏とする。双関手 $S\colon\mathbf{B}\times\mathbf{C}\to\mathbf{D}$ に対し、$\hat{S}(b)\defeq S(b,-)$、$f\colon b\to b'$ について $\hat{S}(f)_{c}\defeq S(f,1_{c})$ と定めると、$\hat{S}\colon\mathbf{B}\to[\mathbf{C},\mathbf{D}]$ が関手になり、$S\mapsto\hat{S}$ が双関手 $\mathbf{B}\times\mathbf{C}\to\mathbf{D}$ と関手 $\mathbf{B}\to[\mathbf{C},\mathbf{D}]$ の間の全単射であることを示せ。
+:::
+
+::: solution
+**$\hat{S}(f)$ が自然変換.** $g\colon c\to c'$ について、$S(b',g)\circ S(f,c)=S(f,g)=S(f,c')\circ S(b,g)$（\ref{cat:bifunctor-criterion} の必要性の式）。これは $\hat{S}(f)$ の自然性。**関手性.** $\hat{S}(f'\circ f)_{c}=S(f'\circ f,1_{c})=S(f',1)\circ S(f,1)$。**逆.** 関手 $H\colon\mathbf{B}\to[\mathbf{C},\mathbf{D}]$ について、$L_{c}(f)\defeq H(f)_{c}$, $M_{b}\defeq H(b)$ とおくと、$H(f)$ の自然性が \ref{cat:bifunctor-criterion} の交換条件そのものなので、双関手 $S$ が一意に定まり $\hat{S}=H$。二つの対応は互いに逆。
+:::
+
+::: problem {#cat:prob-opposite-functor-category}
+$[\mathbf{C},\mathbf{D}]^{\mathrm{op}}\cong[\mathbf{C}^{\mathrm{op}},\mathbf{D}^{\mathrm{op}}]$ を示せ。
+:::
+
+::: solution
+関手 $F\colon\mathbf{C}\to\mathbf{D}$ は、同じ対象関数・射関数で関手 $F^{\mathrm{op}}\colon\mathbf{C}^{\mathrm{op}}\to\mathbf{D}^{\mathrm{op}}$ とみなせる（合成の順序が両側で同時に逆になる）。自然変換 $\tau\colon S\Rightarrow T$ の成分 $\tau_{c}\colon Sc\to Tc$ は $\mathbf{D}^{\mathrm{op}}$ では $Tc\to Sc$ で、自然性の式 $Tf\circ\tau_{c}=\tau_{c'}\circ Sf$ を $\mathbf{D}^{\mathrm{op}}$ で読むと、$\tau^{\mathrm{op}}\colon T^{\mathrm{op}}\Rightarrow S^{\mathrm{op}}$ の自然性になる。$F\mapsto F^{\mathrm{op}}$, $\tau\mapsto\tau^{\mathrm{op}}$ は射の向きを逆にし、対象・射について全単射なので、\ref{cat:isomorphism-of-categories} から圏の同型 $[\mathbf{C},\mathbf{D}]^{\mathrm{op}}\to[\mathbf{C}^{\mathrm{op}},\mathbf{D}^{\mathrm{op}}]$ を与える。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

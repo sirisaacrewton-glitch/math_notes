@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>チューリング機械とその変種 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/02-computability/06-turing-machines.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# チューリング機械とその変種 {#comp:page-turing-machines keywords="Turing machine, configuration, Turing-recognizable, decidable, multitape Turing machine, nondeterministic Turing machine, enumerator, Church-Turing thesis, encoding"}
+
+ここまでは計算可能性をプログラミング言語 L で定義し（\ref{comp:page-language-L}）、部分再帰関数とレジスタ機械がそれと同値であることを見てきた。本ページからは、文字列を直接読み書きする別の計算模型としてチューリング機械を導入する。次のページで、チューリング機械で計算できる部分関数がちょうど L で計算できる部分関数であることを示す（\ref{comp:L-equals-tm}）。それ以降の決定可能性の議論は、言語（文字列の集合）を扱うのに便利なチューリング機械の言葉で行う。
+
+**チューリング機械**は、有限個の状態と、左右に動けるヘッドで読み書きできる無限のテープをもつ機械である（\ref{comp:turing-machine}）。有限オートマトンやプッシュダウンオートマトンと違い、テープに書いた内容を何度でも読み直せ、停止しないこともある。本ページでは、チューリング機械が**認識する**言語と**決定する**言語を定義し、テープを増やしても（\ref{comp:multitape}）、非決定性を許しても（\ref{comp:ntm}）、出力を列挙する形にしても（\ref{comp:enumerator}）、認識できる言語のクラスが変わらないことを示す。この頑健さが、「アルゴリズム」の数学的定義としてチューリング機械を採るチャーチ–チューリングの提唱（\ref{comp:church-turing}）の根拠の一つである。
+
+## 記法と定義の確認 {#comp:sec-tm-notation}
+
+::: notation
+- アルファベット、文字列、言語は \ref{comp:page-finite-automata} のとおり。
+- 本ページの構成（多テープ機械の模倣など）は、チューリング機械の遷移表をすべて書き下す代わりに、各段で機械が行う操作を言葉で述べる**高水準の記述**で与える。各操作が有限個の状態と遷移で実現できることは、操作が「有限の情報を状態に覚え、テープを一定の規則で走査・書き換える」ことの組み合わせであることから従う。この記述の水準は Sipser と同じである。
+:::
+
+## チューリング機械 {#comp:sec-tm}
+
+::: definition チューリング機械 {#comp:turing-machine keywords="Turing machine, tape alphabet, blank symbol, accept state, reject state" index="チューリング機械|ちゅーりんぐきかい, テープ記号|てーぷきごう, 空白記号|くうはくきごう"}
+**チューリング機械**（TM）とは、組 $M=(Q,\Sigma,\Gamma,\delta,q_{0},q_{\mathrm{acc}},q_{\mathrm{rej}})$ で、
+- $Q$ は有限集合（状態）、$q_{0},q_{\mathrm{acc}},q_{\mathrm{rej}}\in Q$ は開始状態・受理状態・拒否状態で $q_{\mathrm{acc}}\neq q_{\mathrm{rej}}$、
+- $\Sigma$ は入力アルファベット、$\Gamma\supseteq\Sigma$ はテープアルファベットで、**空白記号** $\sqcup\in\Gamma\setminus\Sigma$ を含み、
+- $\delta\colon(Q\setminus\{q_{\mathrm{acc}},q_{\mathrm{rej}}\})\times\Gamma\to Q\times\Gamma\times\{\mathrm{L},\mathrm{R}\}$ は遷移関数
+
+であるものをいう。$\delta(q,a)=(r,b,\mathrm{D})$ は「状態 $q$ でヘッドの下の記号が $a$ なら、$b$ を書き、ヘッドを $\mathrm{D}$ の方向に一つ動かし、状態 $r$ に移る」ことを表す。テープは左端をもち右に無限に続く。
+:::
+
+::: definition 時点表示と計算 {#comp:tm-configuration keywords="configuration, yields, accepting configuration, halting" index="時点表示（チューリング機械）|じてんひょうじちゅーりんぐきかい"}
+1. **時点表示**は文字列 $uqv$（$u,v\in\Gamma^{\ast}$, $q\in Q$）で、「テープの内容が $uv$ の後に空白が無限に続き、状態が $q$、ヘッドが $v$ の最初の記号（$v=\varepsilon$ なら空白）の上にある」ことを表す。
+2. 一段の動き $C\vdash C'$ を次で定める（$a,b,c\in\Gamma$）。$\delta(q,b)=(r,c,\mathrm{L})$ なら $uaqbv\vdash urac v$（$c$ を書いて左に動く）。ヘッドが左端にあるとき（$q$ の左に記号がないとき）は $qbv\vdash rcv$（左端では動かない）。$\delta(q,b)=(r,c,\mathrm{R})$ なら $uqbv\vdash ucrv$。ヘッドの下が $v=\varepsilon$ のときは $b=\sqcup$ として扱う。
+3. 入力 $w\in\Sigma^{\ast}$ の**開始時点表示**は $q_{0}w$。状態が $q_{\mathrm{acc}}$（$q_{\mathrm{rej}}$）の時点表示を**受理**（**拒否**）時点表示といい、あわせて**停止**時点表示という。$M$ が $w$ を**受理する**とは、$q_{0}w=C_{0}\vdash C_{1}\vdash\cdots\vdash C_{k}$ で $C_{k}$ が受理時点表示となる列があることをいう（停止時点表示からは動かないので、列は一意である）。拒否も同様。どちらでもないとき $M$ は $w$ の上で**停止しない**（ループする）という。
+:::
+
+::: intuition
+テープは右に無限に続き、ヘッドは一度に一升だけ動く。一段の動きは「今の状態とヘッドの下の記号」だけで決まり、その升を書き換えて左右どちらかに動き、状態を変える。時点表示 $uqv$ は、状態の記号 $q$ をヘッドの位置（$v$ の先頭の升の直前）に書き込んだテープの写しである。
+```svg チューリング機械の一段：状態 q でヘッドの下の 1 を読み、0 を書いて右に動き、状態 r に移る
+<svg viewBox="0 0 650 250" xmlns="http://www.w3.org/2000/svg" font-size="16" xmlns:c2pa="http://c2pa.org/manifest"><metadata><c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYTpmZDdhNTc4OC03MDQ5LTRjM2QtOGM1Yi1iMDQ4ZjRmMTgxYjMAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaL6SJH0TgDQYL7tMdglGR80AAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDo1YTI2ZDZiNi0xOWJlLTQ4NzItYjA1ZC1iOTg1ZjVhMDFiZjhscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNoaUFNh0D+54C39EjO9ieOwwAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFgg2XQR4/FUntA3+EE19XKgTh+dCCMdl5v/esKAxOxuK3OkZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaC/lWERlv0cfW781KAYQqf4AAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRNAAAAAAAAAAAAAAAAAGRoYXNoWCCzHYKoklyPguM/wHqm1D7Dem7uwQLJ25FK9ySCA2AitWRuYW1lbmp1bWJmIG1hbmlmZXN0amV4Y2x1c2lvbnOBomVzdGFydBiMZmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOmZkN2E1Nzg4LTcwNDktNGMzZC04YzViLWIwNDhmNGYxODFiMy9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOjQwYmIzZDJjLTE0MWEtNGRiOC1hZDM5LTJmMzE5YzQxODU4OXJjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCDZdBHj8VSe0Df4QTX1cqBOH50IIx2Xm/96woDE7G4rc6JjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFggDrIaPaFv2azFo+0vt8oJ2y5ZT5Y31Th6DDv60IUtM8+iY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFgggdL8zFk6Mtc+ZtqdkATA6GkTYPeyv301Z/DR4O2rQEt0Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQGwBVYrvFnZml4f+z2pfohC+bRTMBFgl5XaI9ltikG/d/abDRRyAsaUw7iU3FWuHJqRVPSgZZtg7l/UnvN5yipg=</c2pa:manifest></metadata>
+  <defs><marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+  <text x="20" y="40" style="fill: var(--mn-fg-soft)" font-size="13">前</text>
+  <g fill="none" stroke="currentColor">
+    <rect x="50" y="20" width="44" height="36"/><rect x="94" y="20" width="44" height="36"/><rect x="138" y="20" width="44" height="36"/>
+    <rect x="182" y="20" width="44" height="36" style="stroke: var(--mn-accent)" stroke-width="2.5"/><rect x="226" y="20" width="44" height="36"/><rect x="270" y="20" width="44" height="36"/>
+    <rect x="314" y="20" width="44" height="36"/>
+  </g>
+  <g text-anchor="middle"><text x="72" y="44">1</text><text x="116" y="44">1</text><text x="160" y="44">#</text><text x="204" y="44">1</text><text x="248" y="44">1</text><text x="292" y="44">⊔</text><text x="336" y="44">⊔</text><text x="385" y="44">…</text></g>
+  <path d="M204,62 l-9,14 h18 z" style="fill: var(--mn-accent)"/>
+  <rect x="180" y="80" width="48" height="26" rx="13" fill="none" style="stroke: var(--mn-accent)"/><text x="204" y="98" text-anchor="middle">q</text>
+  <text x="440" y="70" font-size="14">δ(q, 1) = (r, 0, R)</text>
+  <text x="440" y="92" font-size="13" style="fill: var(--mn-fg-soft)">「状態 q で 1 を読んだら</text>
+  <text x="440" y="110" font-size="13" style="fill: var(--mn-fg-soft)">0 を書き、右へ動き、r へ」</text>
+  <line x1="204" y1="116" x2="204" y2="140" stroke="currentColor" marker-end="url(#ah2)"/>
+  <text x="20" y="170" style="fill: var(--mn-fg-soft)" font-size="13">後</text>
+  <g fill="none" stroke="currentColor">
+    <rect x="50" y="150" width="44" height="36"/><rect x="94" y="150" width="44" height="36"/><rect x="138" y="150" width="44" height="36"/>
+    <rect x="182" y="150" width="44" height="36"/><rect x="226" y="150" width="44" height="36" style="stroke: var(--mn-accent)" stroke-width="2.5"/><rect x="270" y="150" width="44" height="36"/>
+    <rect x="314" y="150" width="44" height="36"/>
+  </g>
+  <g text-anchor="middle"><text x="72" y="174">1</text><text x="116" y="174">1</text><text x="160" y="174">#</text><text x="204" y="174" font-weight="bold">0</text><text x="248" y="174">1</text><text x="292" y="174">⊔</text><text x="336" y="174">⊔</text><text x="385" y="174">…</text></g>
+  <path d="M248,192 l-9,14 h18 z" style="fill: var(--mn-accent)"/>
+  <rect x="224" y="210" width="48" height="26" rx="13" fill="none" style="stroke: var(--mn-accent)"/><text x="248" y="228" text-anchor="middle">r</text>
+  <text x="440" y="190" font-size="13" style="fill: var(--mn-fg-soft)">時点表示：11#q11 ⊢ 11#0r1</text>
+</svg>
+```
+:::
+
+::: definition 認識可能と決定可能 {#comp:recognizable-decidable keywords="Turing-recognizable, recursively enumerable, decidable, recursive, decider" index="チューリング認識可能|ちゅーりんぐにんしきかのう, 決定可能|けっていかのう, 判定機|はんていき"}
+1. $M$ が受理する文字列全体を $L(M)$ と書き、$M$ が**認識する**言語という。ある TM が認識する言語を**チューリング認識可能**（帰納的可算）という。
+2. すべての入力の上で停止する TM を**判定機**という。判定機が認識する言語を**決定可能**（帰納的）といい、その判定機は言語を**決定する**という。
+:::
+
+::: example
+$\{0^{2^{n}}:n\ge0\}$ は決定可能である。判定機は次の操作を繰り返す：テープの $0$ を左から一つおきに消す。$0$ が一つだけなら受理し、一回の走査で（一つ以上で）奇数個の $0$ が残れば拒否し、それ以外なら左端に戻って繰り返す。各回で $0$ の個数が半分になるので、すべての入力の上で停止する。
+:::
+
+## 変種 {#comp:sec-tm-variants}
+
+::: definition 多テープ機械 {#comp:multitape-tm keywords="multitape Turing machine" index="多テープチューリング機械|たてーぷちゅーりんぐきかい"}
+$k$ **テープ** TM は、$k$ 本のテープとそれぞれのヘッドをもち、遷移関数 $\delta\colon(Q\setminus\{q_{\mathrm{acc}},q_{\mathrm{rej}}\})\times\Gamma^{k}\to Q\times\Gamma^{k}\times\{\mathrm{L},\mathrm{R},\mathrm{S}\}^{k}$（$\mathrm{S}$ は動かない）で、$k$ 個の記号を同時に読み書きする。入力は第 1 テープに置かれ、他のテープは空白で始まる。
+:::
+
+::: theorem 多テープ機械の模倣 {#comp:multitape keywords="every multitape TM has an equivalent single-tape TM" index="多テープ機械の模倣|たてーぷきかいのもほう"}
+任意の多テープ TM $M$ に対し、すべての入力で受理・拒否・ループの振る舞いが同じ単一テープ TM $S$ が存在する。
+:::
+
+::: proof
+$S$ は $M$ の $k$ 本のテープの内容を、区切り記号 $\#$ をはさんで一本のテープに並べ、各ヘッドの位置を、その位置の記号に印（記号 $a$ の代わりに印つきの $\dot{a}$。テープアルファベットに加える）をつけて表す。
+1. 入力 $w=w_{1}\cdots w_{n}$ を $\#\dot{w}_{1}w_{2}\cdots w_{n}\#\dot{\sqcup}\#\cdots\#\dot{\sqcup}\#$ に書き換える。
+2. $M$ の一段を模倣するには、まずテープを左端から右端の $\#$ まで走査して印つきの $k$ 個の記号を読み、状態に覚える（$k$ は固定、$\Gamma$ は有限なので有限の情報）。次にもう一度走査して、$M$ の遷移に従い、各印の位置の記号を書き換え、印を左右に移す。
+3. 印を右の $\#$ の上に移す必要があれば（そのテープの未使用部分にヘッドが進む）、その位置から右の内容を一つずつ右にずらして空白を作り、そこに $\dot{\sqcup}$ を書く。
+4. $M$ が受理（拒否）状態に入れば、$S$ も受理（拒否）する。
+
+$S$ の各模倣の段は有限時間で終わり、模倣の段と $M$ の段が一対一に対応する（$M$ の第 $t$ 段の後の時点表示が、$S$ の第 $t$ 回の模倣の後のテープ内容に上の符号化で対応することが、$t$ に関する帰納法でわかる）。よって振る舞いは同じである。
+:::
+
+::: definition 非決定性チューリング機械 {#comp:ntm-definition keywords="nondeterministic Turing machine" index="非決定性チューリング機械|ひけっていせいちゅーりんぐきかい"}
+**非決定性 TM** は、遷移関数を $\delta\colon(Q\setminus\{q_{\mathrm{acc}},q_{\mathrm{rej}}\})\times\Gamma\to\mathcal{P}(Q\times\Gamma\times\{\mathrm{L},\mathrm{R}\})$ とした機械で、一段の動き $C\vdash C'$ は選択肢のどれか一つに従う。$w$ を**受理する**とは、$q_{0}w$ から受理時点表示に至る列が**一つでも**存在することをいう。すべての枝が停止するとき判定機という。
+:::
+
+::: theorem 非決定性の除去 {#comp:ntm keywords="every nondeterministic TM has an equivalent deterministic TM" index="非決定性の除去|ひけっていせいのじょきょ"}
+任意の非決定性 TM $N$ に対し、$L(D)=L(N)$ となる（決定性）TM $D$ が存在する。$N$ が判定機なら、$D$ も判定機にとれる。
+:::
+
+::: proof
+各時点表示から選べる遷移は高々 $b$ 個（$b$ は $\delta$ の値の濃度の最大値）なので、$N$ の計算は各頂点の子が高々 $b$ 個の木をなす。根から長さ $t$ の枝は、$\{1,\dots,b\}$ の長さ $t$ の列（各段で何番目の選択肢を選ぶか）で指定できる。$D$ は 3 テープ機械（\ref{comp:multitape} で単一テープに直す）として作る：第 1 テープに入力を保存し、第 3 テープに選択の列を短い順（長さが同じなら辞書式）に生成し、各列について第 2 テープに入力を写して、列が指定する選択で $N$ を模倣する（列が選べない選択肢を指せばその列を捨てる）。受理時点表示に達したら $D$ は受理する。
+
+$w\in L(N)$ なら受理に至る有限の列があり、短い順の列挙でいつかそれに達するので $D$ は受理する。$w\notin L(N)$ なら $D$ は受理しない。
+
+$N$ が判定機なら、木の各枝は有限で、各頂点の子は有限個なので、ケーニッヒの補題により木全体が有限である。$D$ を「長さ $t$ のすべての列で模倣が停止または失効したら、受理がなければ拒否する」ように修正すれば、木の高さを超えた $t$ で必ず拒否して停止する。
+:::
+
+::: definition 列挙機 {#comp:enumerator-definition keywords="enumerator" index="列挙機|れっきょき"}
+**列挙機**とは、入力をもたず、作業テープと出力用の「印刷」操作をもつ TM のことである。列挙機 $E$ が計算の途中で印刷する文字列全体（重複・順不同を許す。停止しなくてよい）を $L(E)$ と書く。
+:::
+
+::: theorem 列挙と認識 {#comp:enumerator keywords="a language is Turing-recognizable iff some enumerator enumerates it" index="列挙機と認識可能性|れっきょきとにんしきかのうせい"}
+言語 $A$ がチューリング認識可能であることと、ある列挙機 $E$ で $L(E)=A$ となることは同値である。
+:::
+
+::: proof
+**列挙機 $\Rightarrow$ 認識.** $M$ は入力 $w$ に対し $E$ を模倣し、$E$ が文字列を印刷するたびに $w$ と比較して、一致すれば受理する。$w\in A$ ならいつか印刷されて受理、$w\notin A$ なら受理しない（ループしうる）。
+
+**認識 $\Rightarrow$ 列挙機.** $A=L(M)$ とし、$\Sigma^{\ast}=\{s_{1},s_{2},\dots\}$ を長さ順・辞書式に並べる。$E$ は $i=1,2,\dots$ について、$s_{1},\dots,s_{i}$ のそれぞれの上で $M$ を $i$ 段だけ模倣し、受理したものを印刷する。$s_{j}\in A$ で $M$ が $s_{j}$ を $t$ 段で受理するなら、$i\ge\max(j,t)$ の段で印刷される。$A$ にない文字列は印刷されない。各 $i$ の段は有限時間で終わる（一斉に少しずつ進める「ダブテイル」の方法で、ループする入力に足を取られない）。
+:::
+
+## チャーチ–チューリングの提唱 {#comp:sec-church-turing}
+
+::: remark チャーチ–チューリングの提唱 {#comp:church-turing keywords="Church-Turing thesis" index="チャーチ–チューリングの提唱|ちゃーちちゅーりんぐのていしょう"}
+**チャーチ–チューリングの提唱**とは、「直観的な意味でアルゴリズム（機械的な手続き）によって計算できるもの」は、ちょうどチューリング機械で計算できるものである、という主張である。これは数学的な定理ではなく、直観的な概念を数学的な定義で捉えたという提唱である。根拠として、(1) 上の変種のように、合理的な拡張がすべて同じクラスを与えること、(2) チャーチのラムダ計算（\ref{logic:page-lambda-calculus}）、ゲーデル–エルブランの一般再帰関数、ポストの機械など、独立に提案された計算の定義がすべて同値であると証明されていること（本サイトでは確かめていない）が一般に挙げられる。このうち、プログラミング言語 L・部分再帰関数・レジスタ機械・チューリング機械の同値性は \ref{comp:L-equals-tm} で示した。以下では、アルゴリズムを高水準の記述で与えたとき、それがチューリング機械で実現できることをこの提唱と上の定理によって認める。
+:::
+
+::: definition 対象の符号化 {#comp:encoding keywords="encoding of objects as strings, ⟨M⟩" index="符号化（計算論）|ふごうかけいさんろん"}
+有限の対象（文字列の組、グラフ、DFA、TM など）$O$ を、固定したアルファベット上の文字列 $\langle O\rangle$ に符号化する。たとえば TM $M$ は、状態とテープ記号を番号で表し、遷移表を区切り記号で並べた文字列 $\langle M\rangle$ で表す。符号化は、(1) 単射で、(2) 文字列が正しい符号であるかどうかが決定可能で、(3) 符号から対象の各成分が機械的に取り出せる、ように選ぶ。どの合理的な符号化を選んでも、以下の決定可能性の結果は変わらない（異なる符号化の間の変換が計算可能だから）。
+:::
+
+## 問題 {#comp:sec-tm-problems}
+
+::: problem {#comp:prob-decidable-complement}
+$A$ が決定可能なら $\overline{A}$ も決定可能であることを示せ。また、$A$ と $\overline{A}$ がともにチューリング認識可能なら $A$ は決定可能であることを示せ。
+:::
+
+::: solution
+前半：判定機の受理状態と拒否状態を入れ替える（停止性は変わらない）。後半：$A=L(M_{1})$, $\overline{A}=L(M_{2})$ とし、入力 $w$ に対して $M_{1}$ と $M_{2}$ を一段ずつ交互に模倣する（2 テープ機械と \ref{comp:multitape}）。$w$ はどちらか一方に属するので、どちらかがいつか受理する。$M_{1}$ が受理すれば受理、$M_{2}$ が受理すれば拒否する。これは判定機で $A$ を決定する。
+:::
+
+::: problem {#comp:prob-stay-put}
+遷移の方向に「動かない」$\mathrm{S}$ を許した単一テープ TM も、通常の TM と同じ言語を認識することを示せ。
+:::
+
+::: solution
+$\delta(q,a)=(r,b,\mathrm{S})$ を、新しい状態 $r'$ を使って「$b$ を書いて右に動き $r'$ に移る」と「$r'$ では何も書き換えずに（読んだ記号をそのまま書いて）左に動き $r$ に移る」の二段に分ける。左端で右に動いた後は左に戻れるので、テープの左端の扱いに問題はない。
+:::
+
+::: supplement
+**前提の検討.**
+- テープの左端の扱い（左端で左に動こうとしても動かない）や、テープが両側に無限か、ヘッドが動かない選択肢を許すかなどは、どれも認識できる言語のクラスを変えない（問題 \ref{comp:prob-stay-put} など）。
+- 非決定性の除去（\ref{comp:ntm}）の後半で使ったケーニッヒの補題は、有限分岐の木についてのもので、選択公理を必要としない（木の頂点が可算で明示的に並べられるため）。
+
+**関連する結果.**
+- *計算量.* 多テープ機械の模倣は時間を高々 2 乗にしか増やさないが、非決定性の除去は時間を指数関数的に増やす。後者が本質的かどうかが $\mathrm{P}$ 対 $\mathrm{NP}$ 問題である（Sipser 第 7 章。本サイトでは計算量は扱わない予定）。
+- *再帰関数との関係.* 自然数上の部分関数がチューリング機械で計算可能であることと、μ 再帰的（原始再帰関数から合成・原始再帰・最小化で得られる）であることは同値であることが知られている。不完全性定理の系列の $\Sigma$ 論理式による定義可能性（\ref{pt:page-peano-arithmetic}）とも結びつく。
+
+**高い視点から：有限の規則と無限の記憶.** 有限オートマトンは有限の記憶、プッシュダウンオートマトンはスタックという制限された無限の記憶をもっていた。チューリング機械は、有限の規則（状態と遷移表）と、自由に読み書きできる無限の記憶（テープ）の組で、これ以上の拡張をしても計算できるものは増えない、というのがこのページの結論である。たとえれば、規則を書いた小さなノート（有限制御）と、いくらでも使える紙（テープ）さえあれば、どんな機械的な計算も一人の事務員が実行できる、ということである。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

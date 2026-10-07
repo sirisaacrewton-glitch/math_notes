@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>フレイドの随伴関手定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/01-basics/10-adjoint-functor-theorem.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# フレイドの随伴関手定理 {#cat:page-adjoint-functor-theorem keywords="Freyd adjoint functor theorem, general adjoint functor theorem, solution set condition, existence of initial objects, representability theorem, free groups via adjoint functor theorem"}
+
+右随伴は極限を保存する（\ref{cat:adjoints-preserve-limits}）。逆に、極限を保存する関手はいつ左随伴をもつか。**フレイドの随伴関手定理**（\ref{cat:freyd-aft}）は、定義域が完備のとき、極限の保存に加えて**解集合条件**（\ref{cat:solution-set-condition}）があれば左随伴が存在することを述べる。証明の核心は、完備な圏が「小さい集合から全体へ射が届く」なら始対象をもつという補題（\ref{cat:initial-object-existence}）で、それをコンマ圏に適用する。応用として、自由群を語の構成なしに作る（\ref{cat:free-group-via-aft}）。
+
+> 資料：Mac Lane, *Categories for the Working Mathematician* 第 V 章 §6。
+
+## 記法と定義の確認 {#cat:sec-aft-notation}
+
+::: notation
+- 普遍射とコンマ圏の始対象、普遍射の族からの左随伴の構成は \ref{cat:universal-is-initial}, \ref{cat:adjunction-from-universal} のとおり。表現と普遍元は \ref{cat:representation-universal-element}。
+- 極限・積・等化子・完備、等化子はモノ射であること、積と等化子による極限の構成は \ref{cat:page-limits} のとおり（\ref{cat:limit}, \ref{cat:product}, \ref{cat:equalizer-monic}, \ref{cat:completeness-criterion}）。極限の保存は \ref{cat:preserve-limits}。
+- 「射の集合 $\{f_{i}\}_{i\in I}\subseteq\mathbf{C}(a,b)$ の等化子」とは、すべての $i$ で $f_{i}\circ e$ が等しくなる普遍的な $e\colon v\to a$（$I$ を添字とする平行な射の図式の極限）をいう。$I$ が小さければ、完備な圏はこれをもつ。
+- 圏はすべて局所小とする。
+:::
+
+## 始対象の存在 {#cat:sec-aft-initial}
+
+::: theorem 始対象の存在定理 {#cat:initial-object-existence keywords="a small-complete locally small category with a weakly initial small set has an initial object" index="始対象の存在|したいしょうのそんざい, 弱始集合|じゃくししゅうごう"}
+$\mathbf{D}$ を完備（小さい図式の極限をすべてもつ）な局所小の圏とする。小さい集合 $S\subseteq\operatorname{Ob}\mathbf{D}$ で、任意の $d\in\mathbf{D}$ に対し、ある $s\in S$ から $d$ への射があるもの（**弱始集合**）があれば、$\mathbf{D}$ は始対象をもつ。
+:::
+
+::: proof
+**Step 1（弱始対象）.** $w\defeq\prod_{s\in S}s$ とおく（$S$ は小さいので存在する）。任意の $d$ について、ある $s\in S$ と $f\colon s\to d$ があるので、$f\circ p_{s}\colon w\to d$ が射を与える。すなわち、$w$ からはすべての対象へ射がある。
+
+**Step 2（自己準同型の等化子）.** $\mathbf{D}(w,w)$ は小さい集合なので、そのすべての元の等化子 $e\colon v\to w$ がある。すなわち、すべての $k\colon w\to w$ について $k\circ e=e$（$1_{w}\in\mathbf{D}(w,w)$ との比較）で、この性質について普遍的である。
+
+**Step 3（存在）.** 任意の $d$ について、Step 1 の $w\to d$ と $e$ の合成が $v\to d$ を与える。
+
+**Step 4（一意性）.** $f,g\colon v\to d$ とし、その等化子 $e_{1}\colon u\to v$ をとる。Step 1 から射 $s\colon w\to u$ がある。$e\circ e_{1}\circ s\colon w\to w$ は $w$ の自己準同型なので、Step 2 から
+$$
+e\circ e_{1}\circ s\circ e=e=e\circ1_{v}.
+$$
+$e$ はモノ射（\ref{cat:equalizer-monic}）なので $e_{1}\circ s\circ e=1_{v}$。よって $e_{1}$ は分裂エピで、等化子なのでモノ射でもあり、同型射（\ref{cat:monic-epic-basic} の 4）。$f\circ e_{1}=g\circ e_{1}$ に $e_{1}^{-1}$ を右から合成して $f=g$。
+
+::: hypcheck
+- **完備性**：Step 1 で $S$ で添字付けた積、Step 2 で $\mathbf{D}(w,w)$ で添字付けた等化子、Step 4 で二つの射の等化子に使った。いずれも小さい図式である。
+- **局所小**：Step 2 で $\mathbf{D}(w,w)$ が小さいこと（等化子の図式が小さいこと）に使った。
+- **$S$ が小さいこと**：Step 1 の積が存在するために必要。外すと偽：下の \ref{cat:aft-counterexample} の 1。
+:::
+:::
+
+## 随伴関手定理 {#cat:sec-aft-main}
+
+::: definition 解集合条件 {#cat:solution-set-condition keywords="solution set condition" index="解集合条件|かいしゅうごうじょうけん"}
+関手 $G\colon\mathbf{A}\to\mathbf{X}$ が**解集合条件**を満たすとは、各 $x\in\mathbf{X}$ に、小さい集合 $I$ と射の族 $f_{i}\colon x\to Ga_{i}$（$i\in I$）があって、任意の $h\colon x\to Ga$ が、ある $i$ と $t\colon a_{i}\to a$ により $h=Gt\circ f_{i}$ と書けることをいう。
+:::
+
+::: lemma コンマ圏の極限 {#cat:comma-limits keywords="if G preserves small limits, the comma category (x down G) has small limits created by the projection" index="コンマ圏の完備性|こんまけんのかんびせい"}
+$\mathbf{A}$ が完備で、$G\colon\mathbf{A}\to\mathbf{X}$ が小さい積と等化子を保存するなら、各 $x\in\mathbf{X}$ についてコンマ圏 $(x\downarrow G)$ は完備で、局所小である。
+:::
+
+::: proof
+\ref{cat:completeness-criterion} の 1 から、小さい積と等化子を作ればよい。
+
+**積.** 対象の族 $(a_{j},f_{j}\colon x\to Ga_{j})_{j\in J}$ をとる。$\mathbf{A}$ の積 $p_{j}\colon\prod a_{j}\to a_{j}$ を $G$ で写したものは $\mathbf{X}$ の積なので、$Gp_{j}\circ f=f_{j}$ となる $f\colon x\to G\prod a_{j}$ が一意にある。$(\prod a_{j},f)$ と $p_{j}$ が $(x\downarrow G)$ の積であること：錐 $t_{j}\colon(b,g)\to(a_{j},f_{j})$（$Gt_{j}\circ g=f_{j}$）について、$\mathbf{A}$ で $p_{j}\circ t=t_{j}$ となる $t$ が一意にあり、$Gp_{j}\circ(Gt\circ g)=f_{j}$ なので $f$ の一意性から $Gt\circ g=f$、すなわち $t$ は $(x\downarrow G)$ の射。
+
+**等化子.** $s,t\colon(a,f)\to(b,g)$ とし、$\mathbf{A}$ の等化子 $e\colon c\to a$ をとる。$Ge$ は $Gs,Gt$ の等化子で、$Gs\circ f=g=Gt\circ f$ なので、$Ge\circ h=f$ となる $h\colon x\to Gc$ が一意にある。$e\colon(c,h)\to(a,f)$ は $(x\downarrow G)$ の射で、$s,t$ の等化子：$r\colon(d,k)\to(a,f)$ が $s\circ r=t\circ r$ を満たせば、$\mathbf{A}$ で $r=e\circ r'$ となる $r'$ が一意にあり、$Ge\circ(Gr'\circ k)=Gr\circ k=f$ なので $h$ の一意性から $Gr'\circ k=h$、すなわち $r'$ は $(x\downarrow G)$ の射。
+
+**局所小.** $(x\downarrow G)$ の hom 集合は $\mathbf{A}$ の hom 集合の部分集合。
+:::
+
+::: theorem フレイドの随伴関手定理 {#cat:freyd-aft keywords="Freyd's general adjoint functor theorem" index="随伴関手定理|ずいはんかんしゅていり, フレイドの随伴関手定理|ふれいどのずいはんかんしゅていり"}
+$\mathbf{A}$ を完備な局所小の圏とする。関手 $G\colon\mathbf{A}\to\mathbf{X}$ が左随伴をもつことと、$G$ が小さい極限を保存し、かつ解集合条件を満たすことは同値である。
+:::
+
+::: proof
+**⇒.** 右随伴は極限を保存する（\ref{cat:adjoints-preserve-limits}）。単位 $\eta_{x}\colon x\to GFx$ は普遍射なので、一つの射 $\{\eta_{x}\}$（$I$ は一点）が解集合になる。
+
+**⇐.** \ref{cat:adjunction-from-universal} から、各 $x$ について $x$ から $G$ への普遍射、すなわち $(x\downarrow G)$ の始対象（\ref{cat:universal-is-initial}）を作ればよい。\ref{cat:comma-limits} から $(x\downarrow G)$ は完備で局所小。解集合 $\{(a_{i},f_{i})\}_{i\in I}$ は $(x\downarrow G)$ の弱始集合である：任意の対象 $(a,h)$ について $h=Gt\circ f_{i}$ となる $t$ は射 $(a_{i},f_{i})\to(a,h)$。\ref{cat:initial-object-existence} から始対象がある。
+
+::: hypcheck
+- **完備性**：コンマ圏の完備性（\ref{cat:comma-limits}）を通して、始対象の存在定理に使った。
+- **極限の保存**：\ref{cat:comma-limits} で、コンマ圏の積と等化子を作るのに使った。
+- **解集合条件**：弱始集合として使った。外すと偽：\ref{cat:aft-counterexample}。
+- **選択公理**：各 $x$ に普遍射を選んで $F$ を作るところ（\ref{cat:adjunction-from-universal} の hypcheck）。
+:::
+:::
+
+::: corollary 表現可能性定理 {#cat:representability-theorem keywords="a continuous set-valued functor on a complete category with a solution set is representable" index="表現可能性定理|ひょうげんかのうせいていり"}
+$\mathbf{D}$ を完備な局所小の圏とする。関手 $K\colon\mathbf{D}\to\mathbf{Set}$ が表現可能であることと、$K$ が小さい極限を保存し、小さい集合 $S\subseteq\operatorname{Ob}\mathbf{D}$ で、任意の $d$ と $x\in Kd$ に対し $s\in S$, $y\in Ks$, $f\colon s\to d$ で $(Kf)(y)=x$ となるものがあることは同値である。
+:::
+
+::: proof
+表現は $\{*\}$ から $K$ への普遍射、すなわち $(\{*\}\downarrow K)$ の始対象（\ref{cat:representation-universal-element}, \ref{cat:universal-arrow-element}）。「⇐」：\ref{cat:comma-limits}（$G=K$, $x=\{*\}$）からこのコンマ圏は完備で、$\{(s,y):s\in S,y\in Ks\}$ は小さい弱始集合なので、\ref{cat:initial-object-existence} を適用する。「⇒」：表現可能な関手 $\mathbf{D}(r,-)$ は極限を保存し（\ref{cat:hom-preserves-limits}）、$S=\{r\}$ が条件を満たす（$x\in Kd$ は $(Kf)(e)$ の形、$e$ は普遍元）。
+:::
+
+::: proposition 解集合条件が必要な例 {#cat:aft-counterexample keywords="examples showing the solution set condition is needed" index="解集合条件の必要性|かいしゅうごうじょうけんのひつようせい"}
+1. 小さい順序数全体 $\mathbf{Ord}$（$\mathcal{U}$ の元である順序数の全体を、大小関係で前順序の圏とみたもの）について、$\mathbf{Ord}^{\mathrm{op}}$ は完備で局所小であり、すべての対象を一点集合に移す関手 $K\colon\mathbf{Ord}^{\mathrm{op}}\to\mathbf{Set}$ は連続だが、表現可能でない。
+2. （事実）完備ブール代数の圏から $\mathbf{Set}$ への忘却関手は連続で、定義域は完備だが、左随伴をもたない（可算集合が生成する完備ブール代数がいくらでも大きくなるため：ゲイフマン、ヘイルズ。Mac Lane 第 V 章 §6 はソロヴェイの議論を挙げている）。
+:::
+
+::: proof
+**1.** $\mathbf{Ord}^{\mathrm{op}}$ の小さい族 $(\alpha_{i})$ の積は、$\mathbf{Ord}$ での余積、すなわち上限 $\sup\alpha_{i}$（小さい順序数の小さい集合の上限は小さい：宇宙の条件から $\bigcup\alpha_{i}\in\mathcal{U}$）。前順序なので等化子は自明（平行な射は等しい）。よって完備。$K$ は定数関手 $\{*\}$ で、一点集合の族の積は一点集合、等化子も一点集合なので、連続。$K$ が $\beta$ で表現されれば、すべての $\alpha$ で $\mathbf{Ord}^{\mathrm{op}}(\beta,\alpha)=\mathbf{Ord}(\alpha,\beta)\cong\{*\}$、すなわち $\alpha\le\beta$。$\alpha=\beta+1$ で矛盾（$\beta+1$ も小さい）。解集合条件が満たされないことは、小さい集合 $S$ の上限より大きい順序数があることに当たる。
+:::
+
+## 応用：自由群 {#cat:sec-aft-free}
+
+::: proposition 自由群の存在 {#cat:free-group-via-aft keywords="existence of free groups via the adjoint functor theorem" index="自由群の存在|じゆうぐんのそんざい"}
+（選択公理）忘却関手 $U\colon\mathbf{Grp}\to\mathbf{Set}$ は左随伴をもつ。すなわち、各集合 $X$ に自由群が存在する。
+:::
+
+::: proof
+**Step 1（完備性と連続性）.** $\mathbf{Grp}$ は完備で $U$ は連続（\ref{cat:grp-creates-limits}）。
+
+**Step 2（大きさの評価）.** 写像 $h\colon X\to UG$ について、$h$ の像が生成する部分群 $S_{h}\subseteq G$ の元は、$h(x)^{\pm1}$ の有限個の積なので、$\lvert S_{h}\rvert\le\kappa\defeq\max(\lvert X\rvert,\aleph_{0})$（$X$ が空でも $\kappa=\aleph_{0}$ とする）。
+
+**Step 3（解集合）.** $\kappa$ は小さい集合である（$X$ が小さく、$\omega\in\mathcal{U}$ なので、基数 $\kappa$ も $\mathcal{U}$ の元）。台集合が $\kappa$ の部分集合である群の全体を $\mathcal{G}$ とすると、群の構造は $\mathcal{P}(\kappa\times\kappa\times\kappa)$ などの元で与えられるので、$\mathcal{G}$ は小さい集合。解集合を $\{(G',f'):G'\in\mathcal{G},\ f'\colon X\to UG'\}$ とする（小さい）。任意の $h\colon X\to UG$ について、$\lvert S_{h}\rvert\le\kappa$ から単射 $S_{h}\to\kappa$ があり（選択公理）、その像に構造を移した群 $G'\in\mathcal{G}$ と同型 $\theta\colon S_{h}\to G'$ がある。$f'\defeq\theta\circ h$（値は $S_{h}$ に入る）とおくと、$h=U(\iota\circ\theta^{-1})\circ f'$（$\iota\colon S_{h}\hookrightarrow G$ は包含）。
+
+**Step 4.** \ref{cat:freyd-aft} を適用する。
+
+::: hypcheck
+- **群の公理が等式であること**：Step 1 の完備性（\ref{cat:grp-creates-limits}）に使った。体では成り立たず、実際、自由な体は存在しない（\ref{cat:universal-arrow} の例 4 と同じ理由で、標数が定まらない）。
+- **Step 2 の評価**：解集合を小さくするための本質。生成される部分代数の大きさが生成元の数で押さえられることは、任意の代数系（等式で定義される構造）について同様に成り立つので、同じ証明で自由代数が存在する。
+:::
+:::
+
+::: remark
+この証明は、自由群の元を「簡約された語」として具体的に作る通常の構成を使わない。普遍射の性質だけから、自由群のすべての性質が導かれる。たとえば、生成元の写像 $X\to UF(X)$ が単射であることは、異なる二元をもつ群 $H$ と、$x\neq y$ を異なる元に移す写像 $X\to UH$ が単位を経由することから分かる。
+:::
+
+::: supplement
+**類似の定理.**
+- *特殊随伴関手定理.* 解集合条件の代わりに、「$\mathbf{A}$ は完備で、局所小、部分対象について適当に良く振る舞い（よく冪をもつ）、小さい余生成集合をもつ」を仮定しても、連続な $G$ は左随伴をもつ（Mac Lane 第 V 章 §8）。これを使うと、コンパクトハウスドルフ空間への忘却関手の左随伴としてストーン–チェックのコンパクト化が得られる（チコノフの定理を使う。\ref{top:tychonoff}）。
+- *表現可能性と普遍元.* 表現可能性定理は、「関手が普遍元をもつ」ことの存在定理で、テンソル積の存在などにも使える（双線形写像の関手が表現可能）。
+
+**高い視点から：存在定理としての随伴関手定理.** 随伴関手定理は、具体的な構成を与えずに普遍的な対象の存在を保証する。証明は、「十分大きいが小さい」集合から始めて、全部の積をとり（大きくしすぎ）、余計なものを等化子で削る（ちょうど良くする）という手順である。比喩で言えば、欲しい形の像を彫るために、まず候補をすべて含む大きな石の塊（積）を用意し、すべての「自分自身への写し方」で動かない部分（自己準同型の等化子）だけを残すと、ちょうど求める像（始対象）が現れる。解集合条件は、その石の塊が「小さい」範囲で用意できることを保証する。
+:::
+
+## 問題 {#cat:sec-aft-problems}
+
+::: problem {#cat:prob-aft-ring}
+随伴関手定理を使って、忘却関手 $\mathbf{Ring}\to\mathbf{Set}$ が左随伴をもつことを示せ。（完備性と連続性は、\ref{cat:grp-creates-limits} と同じ議論で示せることを認めてよい。）
+:::
+
+::: solution
+写像 $h\colon X\to UR$ について、$h$ の像と $0,1$ が加法・乗法・加法の逆元で生成する部分環 $S_{h}$ の元は、$h(x)$ の有限個の積の有限個の和と差なので、$\lvert S_{h}\rvert\le\max(\lvert X\rvert,\aleph_{0})=\kappa$。台集合が $\kappa$ の部分集合である環の全体は小さい集合で、\ref{cat:free-group-via-aft} の Step 3 と同じく解集合を与える。随伴関手定理（\ref{cat:freyd-aft}）から左随伴（整数係数の非可換多項式環 $\mathbb{Z}\langle X\rangle$）が存在する。
+:::
+
+::: problem {#cat:prob-weakly-initial-needed}
+\ref{cat:initial-object-existence} の証明の Step 4 で、$w$ からすべての対象への射があること（弱始性）をどこで使ったか。また、弱始集合の存在は始対象の存在のために必要であることを示せ。
+:::
+
+::: solution
+Step 4 で、等化子 $u$ への射 $s\colon w\to u$ をとるのに使った（Step 1）。これにより $e_{1}$ が分裂エピになった。必要性：始対象 $i$ があれば $S=\{i\}$ は小さい弱始集合である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

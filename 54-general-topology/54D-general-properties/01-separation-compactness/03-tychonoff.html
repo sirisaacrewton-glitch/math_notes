@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>チコノフの定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54D-general-properties/01-separation-compactness/03-tychonoff.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# チコノフの定理 {#top:page-tychonoff keywords="Tychonoff theorem, product of compact spaces, ultrafilters, axiom of choice, Kelley's theorem, Cantor space, Hilbert cube, Tychonoff for Hausdorff spaces and the ultrafilter lemma"}
+
+有限個のコンパクト空間の直積がコンパクトであることは前ページで示した（\ref{top:heine-borel}）。**チコノフの定理**（\ref{top:tychonoff}）は、これを任意個の直積に広げる：コンパクト空間の直積は、直積位相についてコンパクトである。証明は、コンパクト性を「超フィルターがすべて収束すること」と言い換えれば一行で済む。チコノフの定理は選択公理を使い、逆に選択公理を導く（**ケリーの定理**、\ref{top:tychonoff-implies-ac}）。応用として、カントール空間 $\{0,1\}^{\N}$ やヒルベルト立方体のコンパクト性が得られる。
+
+> 資料：内田伏一『集合と位相』§23（有限交叉性による証明）。本ページでは超フィルターによる証明を採り、ケリーの定理は J. L. Kelley, The Tychonoff product theorem implies the axiom of choice（*Fundamenta Mathematicae* 37, 1950）の議論を自分の言葉で書いた。
+
+## 記法と定義の確認 {#top:sec-ty-notation}
+
+::: notation
+- コンパクト性とその言い換え（超フィルターの収束）は \ref{top:compact}, \ref{top:compact-equivalents} のとおり。
+- 直積位相、射影、基本開集合は \ref{top:product-topology}, \ref{top:product-base} のとおり。
+- 超フィルター補題は \ref{model:ultrafilter-lemma}、選択公理は \ref{set:ax-choice} のとおり。
+- 写像 $f$ とフィルター $\mathcal{F}$ について、$f_{*}\mathcal{F}\defeq\{B:f^{-1}[B]\in\mathcal{F}\}$ を**像フィルター**という。
+:::
+
+## チコノフの定理 {#top:sec-ty-theorem}
+
+::: lemma 像フィルター {#top:image-filter keywords="image of an (ultra)filter under a map; continuity and convergence" index="像フィルター|ぞうふぃるたー"}
+1. $f\colon X\to Y$ と $X$ 上のフィルター $\mathcal{F}$ について、$f_{*}\mathcal{F}$ は $Y$ 上のフィルターで、$\mathcal{F}$ が超フィルターなら $f_{*}\mathcal{F}$ も超フィルター。
+2. $f$ が連続で $\mathcal{F}\to x$ なら $f_{*}\mathcal{F}\to f(x)$。
+3. 直積空間 $\prod X_{i}$ 上のフィルター $\mathcal{F}$ が $x$ に収束することと、すべての $i$ で $(p_{i})_{*}\mathcal{F}\to x_{i}$ となることは同値。
+:::
+
+::: proof
+**1.** 逆像は共通部分と包含を保ち、$f^{-1}[\varnothing]=\varnothing\notin\mathcal{F}$、$f^{-1}[Y]=X\in\mathcal{F}$。超フィルターなら、$B\subseteq Y$ について $f^{-1}[B]$ と $f^{-1}[B^{c}]=(f^{-1}[B])^{c}$ のどちらかが $\mathcal{F}$ に属する。
+
+**2.** $f(x)$ の近傍 $N$ について $f^{-1}[N]$ は $x$ の近傍なので $\mathcal{F}$ に属し、$N\in f_{*}\mathcal{F}$。
+
+**3.** 「⇒」は 2（射影は連続）。「⇐」：$x$ の近傍は基本開集合 $\bigcap_{k=1}^{n}p_{i_{k}}^{-1}[U_{k}]$ を含む。各 $p_{i_{k}}^{-1}[U_{k}]\in\mathcal{F}$（$U_{k}\in(p_{i_{k}})_{*}\mathcal{F}$）で、有限個の共通部分も $\mathcal{F}$ に属する。
+:::
+
+::: theorem チコノフの定理 {#top:tychonoff keywords="Tychonoff's theorem: arbitrary products of compact spaces are compact" index="チコノフの定理|ちこのふのていり"}
+（選択公理）コンパクト空間の任意の族 $(X_{i})_{i\in I}$ の直積 $\prod_{i\in I}X_{i}$ はコンパクトである。
+:::
+
+::: proof
+\ref{top:compact-equivalents} の 5（超フィルター補題のもとで、コンパクト $\iff$ すべての超フィルターが収束）を使う。$\mathcal{U}$ を $\prod X_{i}$ 上の超フィルターとする。各 $i$ について、$(p_{i})_{*}\mathcal{U}$ は $X_{i}$ 上の超フィルター（\ref{top:image-filter} の 1）で、$X_{i}$ はコンパクトなので収束する。各 $i$ について極限 $x_{i}$ を一つ選び（選択公理）、$x\defeq(x_{i})$ とおくと、\ref{top:image-filter} の 3 から $\mathcal{U}\to x$。よって直積はコンパクト。
+
+::: hypcheck
+- **選択公理の使用箇所**：(a) \ref{top:compact-equivalents} の 5 ⇒ 1 で超フィルター補題を使う。(b) 各座標の極限を一斉に選ぶ。各 $X_{i}$ がハウスドルフなら極限は一意なので (b) は不要になり、使うのは超フィルター補題だけになる（下の \ref{top:tychonoff-hausdorff}）。
+- **直積位相であること**：\ref{top:image-filter} の 3 の「⇐」で、基本開集合が有限個の座標しか制限しないことを使った。箱位相では偽（\ref{top:box-vs-product} の後の補足：$\{0,1\}^{\N}$ の箱位相は無限離散空間）。
+- **空な族・空な因子**：ある $X_{i}$ が空なら直積は空でコンパクト。$I=\varnothing$ なら直積は一点。
+:::
+:::
+
+::: corollary ハウスドルフ空間のチコノフの定理 {#top:tychonoff-hausdorff keywords="Tychonoff for Hausdorff spaces follows from the ultrafilter lemma" index="ハウスドルフ空間のチコノフの定理|はうすどるふくうかんのちこのふのていり"}
+超フィルター補題のもとで、コンパクトなハウスドルフ空間の直積はコンパクトなハウスドルフ空間である。
+:::
+
+::: proof
+ハウスドルフ空間の超フィルターの極限は一意（\ref{top:hausdorff-unique-limits}）なので、$x_{i}$ は「$(p_{i})_{*}\mathcal{U}$ の唯一の極限」として選択なしに定まる。ハウスドルフ性は直積で保たれる（\ref{top:hausdorff-properties}）。
+:::
+
+::: remark
+逆に、「コンパクトなハウスドルフ空間の直積はコンパクト」から超フィルター補題が導かれることが知られている（つまり両者は $\ZF$ 上同値）。超フィルター補題は選択公理より真に弱い（T. Jech, *The Axiom of Choice*）。
+:::
+
+## チコノフの定理は選択公理を導く {#top:sec-ty-kelley}
+
+::: theorem ケリーの定理 {#top:tychonoff-implies-ac keywords="Kelley: Tychonoff's theorem implies the axiom of choice" index="ケリーの定理|けりーのていり"}
+（$\ZF$）チコノフの定理が成り立てば、選択公理が成り立つ。
+:::
+
+::: proof
+**Step 1（空間の準備）.** 空でない集合の族 $(X_{i})_{i\in I}$ をとる。各 $i$ について、新しい点 $\infty_{i}$（たとえば $\infty_{i}\defeq X_{i}$ 自身。正則性公理から $X_{i}\notin X_{i}$）を加えた $Y_{i}\defeq X_{i}\cup\{\infty_{i}\}$ に、開集合を $\varnothing$, $\{\infty_{i}\}$, $Y_{i}$ の三つとする位相を入れる。$Y_{i}$ の開集合は三つしかないので、任意の開被覆は（$Y_{i}$ を含むので）一つの元で覆える：$Y_{i}$ はコンパクト。$X_{i}=Y_{i}\setminus\{\infty_{i}\}$ は閉集合。
+
+**Step 2（閉集合の族）.** チコノフの定理から $Y\defeq\prod_{i}Y_{i}$ はコンパクト。ここで、$Y$ は空でない（$i\mapsto\infty_{i}$ が元）ことに注意：この元は選択なしに定義できる。$F_{i}\defeq p_{i}^{-1}[X_{i}]$ は閉集合。
+
+**Step 3（有限交叉性）.** 有限個の $i_{1},\dots,i_{n}$ について、各 $X_{i_{k}}$ から元 $a_{k}$ を選び（有限個なので $\ZF$ で可能）、$y_{i_{k}}\defeq a_{k}$、他の $i$ では $y_{i}\defeq\infty_{i}$ とすると、$y\in F_{i_{1}}\cap\cdots\cap F_{i_{n}}$。
+
+**Step 4.** コンパクト性（\ref{top:compact-equivalents} の 2）から $\bigcap_{i}F_{i}\neq\varnothing$。その元 $y$ はすべての $i$ で $y_{i}\in X_{i}$ を満たし、選択関数である。
+
+::: hypcheck
+- **位相の選び方**：$Y_{i}$ をコンパクトにし、かつ $X_{i}$ を閉にするために、開集合を極端に少なくした。この $Y_{i}$ はハウスドルフでない。ハウスドルフ空間だけのチコノフの定理からは、選択公理ではなく超フィルター補題しか出ない。
+- **Step 3 の有限選択**：有限個の空でない集合からの選択は、帰納法で $\ZF$ から証明できる。
+:::
+:::
+
+## 応用 {#top:sec-ty-applications}
+
+::: example
+1. **カントール空間** $2^{\N}=\{0,1\}^{\N}$（$\{0,1\}$ は離散）はコンパクトハウスドルフ。これはコンパクトな二点空間の可算個の直積で、可算の場合は選択公理なしでも（直接の議論で）コンパクト性が示せる。カントール集合と同相である。
+2. **ヒルベルト立方体** $[0,1]^{\N}$ はコンパクト。第二可算でもあり、可算個の距離空間の直積として距離化可能（\ref[距離化定理]{top:urysohn-metrization}）。
+3. **$[0,1]^{I}$**（任意の $I$）はコンパクトハウスドルフ。完全正則空間はこの形の空間に埋め込め、それがストーン–チェックのコンパクト化の構成に使われる（\ref[ストーン–チェックのコンパクト化]{top:stone-cech}）。
+4. **命題論理のコンパクト性.** 命題変数の集合 $P$ について、付値の空間 $\{0,1\}^{P}$ はコンパクトで、論理式 $\varphi$ を満たす付値の集合 $[\varphi]$ は閉集合（$\varphi$ に現れる有限個の変数の値だけで決まる）。有限充足可能な論理式の集合 $\Sigma$ について $\{[\varphi]:\varphi\in\Sigma\}$ は有限交叉性をもち、共通部分の元が $\Sigma$ を満たす付値である。これは命題論理のコンパクト性定理（\ref{logic:page-prop-compactness}）の位相的な証明である。
+:::
+
+::: supplement
+**前提を変えると.** 直積位相の代わりに箱位相を使うとチコノフの定理は成り立たない（\ref{top:box-vs-product}）。また、「コンパクト」を「点列コンパクト」に変えると、可算個の直積では成り立つが、非可算個では成り立たない（$\{0,1\}^{\R}$ は点列コンパクトでない）。
+
+**類似の定理.** アレクサンダーの準開基定理：準開基の元からなる任意の被覆が有限部分被覆をもてば、空間はコンパクトである。これを使ってもチコノフの定理が証明できる（R. Engelking, *General Topology*）。
+
+**高い視点から：チコノフの定理は「局所から大域へ」の究極形.** 直積の点を決めるには、無限個の座標を一斉に決める必要がある。チコノフの定理は、各座標ごとに「行き先が収束する」なら全体として収束する点が選べる、と主張する。比喩で言えば、無数の部屋のそれぞれに鍵が少なくとも一つあるとき、全部の部屋を同時に開ける合鍵の束を作れるか、という問いで、それが選択公理そのもの（ケリーの定理）である。コンパクト性は「有限の情報で全体を押さえる」性質なので、無限個の自由度を一度に扱うこの定理は、選択公理と同じ強さをもつ。
+:::
+
+## 問題 {#top:sec-ty-problems}
+
+::: problem {#top:prob-product-compact-iff}
+直積 $\prod X_{i}$（すべての $X_{i}\neq\varnothing$、選択公理を仮定）がコンパクトなら、各 $X_{i}$ がコンパクトであることを示せ。
+:::
+
+::: solution
+射影 $p_{i}$ は連続な全射（直積が空でないので、選択公理から全射）で、コンパクト空間の連続像はコンパクト（\ref{top:compact-basic} の 2）。
+:::
+
+::: problem {#top:prob-cantor-closed-in-hilbert}
+カントール空間 $\{0,1\}^{\N}$ はヒルベルト立方体 $[0,1]^{\N}$ の閉部分空間と同相であることを示せ。
+:::
+
+::: solution
+包含 $\{0,1\}\subseteq[0,1]$ の直積 $\{0,1\}^{\N}\to[0,1]^{\N}$ は連続な単射（普遍性）で、定義域はコンパクト、値域はハウスドルフなので埋め込み（\ref{top:compact-to-hausdorff}）で、像はコンパクトなので閉（\ref{top:compact-hausdorff-closed}）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

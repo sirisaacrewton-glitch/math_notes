@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L における ◇ と ◇⁺ | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/06-constructible-sets/04-diamond-in-l.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# L における ◇ と ◇⁺ {#set:page-diamond-in-l keywords="V = L implies diamond plus, V = L implies diamond, Jensen, Skolem hull, condensation, elementary submodel of L(omega_1)"}
+
+$\mathbf{V}=\mathbf{L}$ が、第 II 章の組合せ論的原理 $\lozenge$（\ref{set:diamond}）と $\lozenge^{+}$（\ref{set:diamond-plus}）を導くことを示す。$\lozenge^{+}\to\lozenge$（\ref{set:diamond-plus-diamond}）なので、$\lozenge^{+}$ だけを示せばよい。証明は GCH の証明（\ref{set:l-subsets-early}）の変形である。そこでは $A\subseteq\omega_{1}$ について $L_{\omega_{1}}\cup\{A\}$ のスコーレム閉包をとって $A\in L_{\omega_{2}}$ を示した。ここでは $\{\omega_{1},A\}$ を含む可算なスコーレム閉包をとり、$A$ が可算順序数の閉非有界集合の上で「捕らえられる」ことを示す。議論には \ref{set:elementary-inclusion} の $\prec$ を使う。（Kunen 第 VI 章 §5 に対応する。）
+
+## 記法と定義の確認 {#set:sec-diamond-l-notation}
+
+::: notation
+- 本ページでは**$\mathbf{V}=\mathbf{L}$ を仮定する**。したがって AC と GCH が成り立つ（\ref{set:v-eq-l-gch}）。
+- $\lozenge^{+}$ 列の定義（\ref{set:diamond-plus}）、閉非有界集合（\ref{set:club}, \ref{set:closed-sup}）、$\lozenge^{+}\to\lozenge$（\ref{set:diamond-plus-diamond}）は第 II 章のとおり。
+- $\mathrm{En}$、$\prec$、スコーレム関数による閉包と \ref{set:downward-lst}, \ref{set:elementary-absolute}, \ref{set:isomorphism-en} は \ref{set:page-formalizing-definability} のとおり。とくに \ref{set:downward-lst} の証明の Step 3 は、$A\subseteq B$ が「$B$ のスコーレム関数」で閉じていることだけを使って $A\prec B$ を示している（整列順序や既定値の選び方によらない）。これを以下で繰り返し使う。
+- $L_{\alpha}$、$\rho$、$<_{L}$ と \ref{set:l-alpha-in-next}, \ref{set:l-alpha-size}, \ref{set:l-well-order-absolute}, \ref{set:v-eq-l-models-unique}, \ref{set:l-kappa-eq-h-kappa}, \ref{set:l-kappa-model} は第 VI 章の前ページまでのとおり。
+- 同型による相対化の保存（\ref{set:isomorphism-relativization}）、モストフスキの崩壊（\ref{set:mostowski-epsilon}, \ref{set:collapse-function}）、閉包補題（\ref{set:closure-lemma}）、$H(\kappa)$ の関数についての \ref{set:h-kappa-functions} を使う。
+:::
+
+## L(ω₁) の初等部分構造 {#set:sec-elementary-l-omega-one}
+
+::: lemma 初等部分構造は非有界に現れる {#set:l-rho-elementary keywords="the set of rho with L(rho) elementary in L(omega_1) is club" index="L(ω₁) の初等部分構造|えるおめがわんのしょとうぶぶんこうぞう"}
+$C_{0}\defeq\{\rho<\omega_{1}:L_{\rho}\prec L_{\omega_{1}}\}$ は $\omega_{1}$ で非有界である（実際、閉非有界集合を含む）。
+:::
+
+::: proof
+$L_{\omega_{1}}$ の整列順序（たとえば $<_{L}$）を一つ固定し、\ref{set:downward-lst} の証明と同じく $B=L_{\omega_{1}}$ のスコーレム関数 $H_{mn}\colon{}^{n}L_{\omega_{1}}\to L_{\omega_{1}}$（$m,n\in\omega$）を定める。$L_{\rho}$ がすべての $H_{mn}$ で閉じていれば、\ref{set:downward-lst} の Step 3 の議論より $L_{\rho}\prec L_{\omega_{1}}$。そこで
+$$
+\begin{aligned}
+C_{1}\defeq\{\rho<\omega_{1}:{}&\rho\text{ は極限順序数で、}\\
+&L_{\rho}\text{ はすべての }H_{mn}\text{ で閉じている}\}
+\end{aligned}
+$$
+が閉非有界であることを示せば十分である（$C_{1}\subseteq C_{0}$）。
+
+**閉.** $\rho_{0}<\rho_{1}<\cdots$ が $C_{1}$ の元で $\rho=\sup_{k}\rho_{k}$ とする。$\rho$ は極限で、$L_{\rho}=\bigcup_{k}L_{\rho_{k}}$。$s\in{}^{n}L_{\rho}$ の有限個の値はある $L_{\rho_{k}}$ に入るので $H_{mn}(s)\in L_{\rho_{k}}\subseteq L_{\rho}$。一般の閉性（$C_{1}\cap\gamma$ が $\gamma$ で非有界な極限 $\gamma<\omega_{1}$）も、$\gamma$ に収束する $C_{1}$ の元の増大列をとって同じ議論で示せる（$\cf(\gamma)=\omega$）。
+
+**非有界.** $\xi<\omega_{1}$ を固定する。$\rho_{0}\defeq\xi$ とし、$\rho_{k+1}$ を、$\rho_{k}<\rho_{k+1}$ かつ、すべての $m,n$ と $s\in{}^{n}L_{\rho_{k}}$ について $H_{mn}(s)\in L_{\rho_{k+1}}$ となる最小の順序数とする。これは $\omega_{1}$ 未満にとれる：$L_{\rho_{k}}$ は可算（\ref{set:l-alpha-size}）なので値 $H_{mn}(s)$ は可算個で、各値の $\mathbf{L}$-ランクは $\omega_{1}$ 未満、$\omega_{1}$ は正則なのでその上限は $\omega_{1}$ 未満。$\rho\defeq\sup_{k}\rho_{k}<\omega_{1}$（同じく正則性）は極限で、$L_{\rho}=\bigcup_{k}L_{\rho_{k}}$ は各 $H_{mn}$ で閉じている。よって $\rho\in C_{1}$、$\rho>\xi$。
+:::
+
+\ref{set:l-kappa-model}（$\omega_{1}$ は正則）より $L_{\omega_{1}}$ は $\ZF-\mathrm{P}+\mathbf{V}=\mathbf{L}$ のすべての公理を満たすので、$L_{\rho}\prec L_{\omega_{1}}$ なら \ref{set:elementary-absolute} より $L_{\rho}$ もそれらを満たす。
+
+## V = L ならば ◇⁺ {#set:sec-v-eq-l-diamond-plus}
+
+::: theorem V = L ならば ◇⁺ {#set:v-eq-l-diamond-plus keywords="V = L implies diamond plus, Jensen" index="L における◇⁺|えるにおけるだいやもんどぷらす"}
+$\mathbf{V}=\mathbf{L}$ ならば $\lozenge^{+}$ が成り立つ（したがって $\lozenge$ も成り立つ）。
+:::
+
+::: proof
+$\alpha<\omega_{1}$ について、$q(\alpha)$ を、$\rho>\alpha$ かつ $L_{\rho}\prec L_{\omega_{1}}$ となる最小の $\rho$ とし（\ref{set:l-rho-elementary} より $q(\alpha)<\omega_{1}$）、
+$$
+\mathcal{A}_{\alpha}\defeq\mathcal{P}(\alpha)\cap L_{q(\alpha)}
+$$
+とおく。$L_{q(\alpha)}$ は可算なので $\mathcal{A}_{\alpha}$ は可算である。$\langle\mathcal{A}_{\alpha}:\alpha<\omega_{1}\rangle$ が $\lozenge^{+}$ 列であることを示す。
+
+**Step 1（$L_{\omega_{2}}$ のスコーレム関数）.** $<_{L}$ を使って $L_{\omega_{2}}$ のスコーレム関数 $K_{nm}\colon{}^{n}L_{\omega_{2}}\to L_{\omega_{2}}$ を定める：$m=2^{i}3^{j}5^{4}$ の形で $s\in\mathrm{En}(m,L_{\omega_{2}},n)$ なら、$K_{nm}(s)$ は $s^{\frown}\langle x\rangle\in\mathrm{En}(i,L_{\omega_{2}},n+1)$ となる $x\in L_{\omega_{2}}$ のうち $<_{L}$-最小のもの、そうでなければ $K_{nm}(s)\defeq0$。$X\subseteq L_{\omega_{2}}$ について、$X\cup\{0\}$ の $\{K_{nm}\}$ による閉包を $\mathrm{cl}(X)$ と書く。
+
+**Step 2（$Y=\mathrm{cl}(X)$ の性質）.** $X\subseteq L_{\omega_{2}}$ を固定し $Y\defeq\mathrm{cl}(X)$ とおく。\ref{set:downward-lst} の Step 3 の議論より $Y\prec L_{\omega_{2}}$。$L_{\omega_{2}}$ は $\ZF-\mathrm{P}+\mathbf{V}=\mathbf{L}$ の公理を満たす（\ref{set:l-kappa-model}、$\omega_{2}$ は正則）ので、$Y$ もそれらを満たす（\ref{set:elementary-absolute}）。とくに外延性より $\in$ は $Y$ 上で外延的で、モストフスキの崩壊 $G\colon Y\to M$（$M$ は推移的）は同型である（\ref{set:mostowski-epsilon}）。
+
+以下 $Y$ の中の順序数を調べる。$L_{\omega_{2}}=H(\omega_{2})$（\ref{set:l-kappa-eq-h-kappa}）で、$H(\omega_{2})$ の元の間の関数はすべて $H(\omega_{2})$ に属する（\ref{set:h-kappa-functions}）ので、「$x$ は可算」「$x$ は最初の非可算順序数」は $L_{\omega_{2}}$ について絶対的である。
+
+- $\varphi(x)$ を「$x$ は最初の非可算順序数」とすると $(\exists x\,\varphi)^{L_{\omega_{2}}}$。$Y\prec L_{\omega_{2}}$ より $(\exists x\,\varphi)^{Y}$、すなわち $\varphi^{Y}(y)$ となる $y\in Y$ があり、再び $Y\prec L_{\omega_{2}}$ より $\varphi^{L_{\omega_{2}}}(y)$、よって $y=\omega_{1}$。したがって $\omega_{1}\in Y$。
+- 同様に $0\in Y$、$\omega\in Y$ で、$Y$ は後続 $S$ で閉じている（$\forall x\,\exists y\,(y=S(x))$ と $S$ の絶対性）。よって $\omega\subseteq Y$。
+- $\zeta\in Y$、$0<\zeta<\omega_{1}$ なら、$(\zeta$ は可算$)^{L_{\omega_{2}}}$ より、$Y$ の中に（$f$ は $\omega$ から $\zeta$ の上への関数）$^{Y}$ となる $f$ があり、これは $L_{\omega_{2}}$ でも成り立ち、絶対性より本当にそうである。各 $n\in\omega\subseteq Y$ について、$f(n)$ は $\langle n,y\rangle\in f$ となるただ一つの $y$ なので同様に $f(n)\in Y$。よって $\zeta\subseteq Y$。
+
+以上より $Y\cap\omega_{1}$ は順序数の推移的な集合、すなわち順序数であり、$Y\cap\omega_{1}=\omega_{1}$ か $Y\cap\omega_{1}\in\omega_{1}$ のいずれかである。
+
+**Step 3（$X$ が可算の場合）.** 以後 $X$ は可算とする。閉包補題（\ref{set:closure-lemma}。演算は可算個）より $Y$ は可算なので、$\alpha\defeq Y\cap\omega_{1}<\omega_{1}$ で、$\alpha$ は $Y$ に属さない最初の可算順序数である。$M$ は $\ZF-\mathrm{P}+\mathbf{V}=\mathbf{L}$ の公理を満たす（$Y$ と同型：\ref{set:isomorphism-relativization}）推移的な集合なので、\ref{set:v-eq-l-models-unique} より $M=L_{\delta}$（$\delta=o(M)$）。$M$ は可算なので $\delta<\omega_{1}$。
+
+崩壊関数の定義 $G(x)=\{G(y):y\in Y\cap x\}$（\ref{set:collapse-function}）より、$\zeta<\alpha$ については $Y\cap\zeta=\zeta$ なので帰納法で $G(\zeta)=\zeta$、そして $G(\omega_{1})=\{G(\zeta):\zeta\in Y\cap\omega_{1}\}=\alpha$。よって $\alpha\in M=L_{\delta}$、$\alpha<\delta$。$\varphi^{Y}(\omega_{1})$ と \ref{set:isomorphism-relativization} より $\varphi^{M}(\alpha)$、すなわち（$\alpha$ は非可算）$^{L_{\delta}}$。一方 $\alpha$ は本当に可算なので、$\omega$ から $\alpha$ の上への関数が $L_{\omega_{1}}=H(\omega_{1})$ に属し、（$\alpha$ は可算）$^{L_{\omega_{1}}}$。$L_{q(\alpha)}\prec L_{\omega_{1}}$ で $\alpha\in L_{q(\alpha)}$ なので（$\alpha$ は可算）$^{L_{q(\alpha)}}$、すなわち $\omega$ から $\alpha$ の上への関数が $L_{q(\alpha)}$ に属する。もし $q(\alpha)\le\delta$ ならその関数は $L_{\delta}$ に属し、（$\alpha$ は非可算）$^{L_{\delta}}$ に反する。よって
+$$
+\alpha<\delta<q(\alpha)<\omega_{1}.
+\label{set:eq-diamond-delta}
+$$
+（$\omega$ から $\alpha$ の上への関数は、段階 $q(\alpha)$ までには構成されるが段階 $\delta$ までには構成されない。）
+
+さらに $A\in Y$ かつ $A\subseteq\omega_{1}$ なら、$G(A)=\{G(x):x\in Y\cap A\}=\{G(\zeta):\zeta\in A\cap\alpha\}=A\cap\alpha$（$Y\cap A\subseteq Y\cap\omega_{1}=\alpha$）。よって $A\cap\alpha=G(A)\in L_{\delta}\subseteq L_{q(\alpha)}$ で、$A\cap\alpha\in\mathcal{A}_{\alpha}$。
+
+**Step 4（閉非有界集合 $C$）.** $A\subseteq\omega_{1}$ を固定し、
+$$
+C\defeq\{\alpha<\omega_{1}:\alpha=\mathrm{cl}(\alpha\cup\{A\})\cap\omega_{1}\}
+$$
+とおく。$C$ は閉である：$\alpha_{k}\in C$ が増大して $\alpha=\sup\alpha_{k}$ なら、閉包は有限項演算によるので $\mathrm{cl}(\alpha\cup\{A\})=\bigcup_{k}\mathrm{cl}(\alpha_{k}\cup\{A\})$ で、$\omega_{1}$ との共通部分は $\bigcup_{k}\alpha_{k}=\alpha$。$C$ は非有界である：$\beta<\omega_{1}$ について $\alpha'\defeq\mathrm{cl}(\beta\cup\{A\})\cap\omega_{1}$ は Step 2, 3 より $\beta\le\alpha'<\omega_{1}$ となる順序数で、$\beta\cup\{A\}\subseteq\alpha'\cup\{A\}\subseteq\mathrm{cl}(\beta\cup\{A\})$ より $\mathrm{cl}(\alpha'\cup\{A\})=\mathrm{cl}(\beta\cup\{A\})$、したがって $\alpha'\in C$。
+
+$\alpha\in C$ を固定する。$Y\defeq\mathrm{cl}(\alpha\cup\{A\})$ に Step 2, 3 を適用すると $Y\cap\omega_{1}=\alpha$ で、$A\in Y$ なので $A\cap\alpha\in\mathcal{A}_{\alpha}$。残りは $C\cap\alpha\in\mathcal{A}_{\alpha}$、すなわち $C\cap\alpha\in L_{q(\alpha)}$ である。（$C\notin Y$ なので $G(C)$ を考えることはできず、$C\cap\alpha\in L_{\delta}$ は示せないが、主張は $C\cap\alpha\in L_{q(\alpha)}$ だけである。）
+
+**Step 5（$C\cap\alpha$ を $L_{\delta}$ で表す）.** $M=L_{\delta}$ 上の演算を二通りに定める。
+- $K^{1}_{nm}\defeq G\circ K_{nm}\circ G^{-1}$（$G$ で移した $K_{nm}$）。$\mathrm{cl}^{1}$ をこれらによる閉包とする。
+- $K^{2}_{nm}\colon{}^{n}L_{\delta}\to L_{\delta}$ を、Step 1 と同じ定義を $L_{\delta}$ と $\mathrm{En}(\cdot,L_{\delta},\cdot)$、$<_{L}$ で行ったものとする。$\mathrm{cl}^{2}$ をこれらによる閉包とする。
+
+$\beta<\alpha$ について $\mathrm{cl}(\beta\cup\{A\})\subseteq Y$ で、$G$ は $\langle Y,K_{nm}\rangle$ から $\langle M,K^{1}_{nm}\rangle$ への同型なので $G[\mathrm{cl}(\beta\cup\{A\})]=\mathrm{cl}^{1}(\beta\cup\{A\cap\alpha\})$（$G[\beta]=\beta$, $G(A)=A\cap\alpha$）。$\mathrm{cl}(\beta\cup\{A\})\cap\omega_{1}\subseteq\alpha$ で $G$ は $\alpha$ の上で恒等、かつ $M\cap\alpha$ の元の $G$ による逆像は自分自身なので、
+$$
+C\cap\alpha=\{\beta<\alpha:\beta=\mathrm{cl}^{1}(\beta\cup\{A\cap\alpha\})\cap\alpha\}.
+$$
+一方
+$$
+C^{2}\defeq\{\beta<\alpha:\beta=\mathrm{cl}^{2}(\beta\cup\{A\cap\alpha\})\cap\alpha\}
+$$
+は $L_{\delta}$, $A\cap\alpha$, $\alpha$ から絶対的な概念（$\mathrm{En}$, $<_{L}$ の $L_{\delta}$ への制限：\ref{set:df-absolute}, \ref{set:l-well-order-absolute}、有限項演算の閉包は $\omega$ 上の再帰）で定義される。$L_{\delta}\in L_{q(\alpha)}$（\ref{set:l-alpha-in-next}, \eqref{set:eq-diamond-delta}）、$A\cap\alpha,\alpha\in L_{q(\alpha)}$ で、$L_{q(\alpha)}\prec L_{\omega_{1}}$ は $\ZF-\mathrm{P}+\mathbf{V}=\mathbf{L}$ の推移的なモデルなので、$L_{q(\alpha)}$ の中で分出公理により同じ定義で作った集合は、絶対性より本当の $C^{2}$ に等しい。よって $C^{2}\in L_{q(\alpha)}$。したがって $K^{1}_{nm}=K^{2}_{nm}$ を示せば $C\cap\alpha=C^{2}\in\mathcal{A}_{\alpha}$ となり、証明が終わる。
+
+**Step 6（$K^{1}=K^{2}$）.** $y_{1},\dots,y_{n}\in Y$、$s\defeq\langle y_{1},\dots,y_{n}\rangle$ について $G(K_{nm}(s))=K^{2}_{nm}(G\circ s)$ を示す。$m=2^{i}3^{j}5^{4}$ かつ $s\in\mathrm{En}(m,L_{\omega_{2}},n)$ の場合を扱う（そうでない場合も同様で易しい：$Y\prec L_{\omega_{2}}$ と \ref{set:isomorphism-en} より $s\notin\mathrm{En}(m,L_{\omega_{2}},n)\iff G\circ s\notin\mathrm{En}(m,L_{\delta},n)$ で、両辺とも値は $0=G(0)$）。
+
+$Y\prec L_{\omega_{2}}$ より $s\in\mathrm{En}(m,Y,n)$。$K_{nm}(s)$ は $Y$ に属し（$Y$ は閉じている）、したがって「$s^{\frown}\langle x\rangle\in\mathrm{En}(i,Y,n+1)$ となる $x\in Y$ のうち $<_{L}$-最小のもの」でもある（$Y$ の元の中の候補は $L_{\omega_{2}}$ の候補の一部で、全体の最小元が $Y$ に属するため）。\ref{set:isomorphism-en} より $G\circ s\in\mathrm{En}(m,L_{\delta},n)$ で、$x\in Y$ について $s^{\frown}\langle x\rangle\in\mathrm{En}(i,Y,n+1)\iff(G\circ s)^{\frown}\langle G(x)\rangle\in\mathrm{En}(i,L_{\delta},n+1)$。したがって $K^{2}_{nm}(G\circ s)$ は、そのような $G(x)$ のうち $<_{L}$-最小のものである。あとは $x,z\in Y$ について $x<_{L}z\iff G(x)<_{L}G(z)$ を示せばよい：
+$$
+\begin{aligned}
+x<_{L}z&\iff(x<_{L}z)^{L_{\omega_{2}}}\iff(x<_{L}z)^{Y}\\
+&\iff(G(x)<_{L}G(z))^{L_{\delta}}\iff G(x)<_{L}G(z).
+\end{aligned}
+$$
+第一と第四の $\iff$ は \ref{set:l-well-order-absolute} の 3（$L_{\omega_{2}}$ と $L_{\delta}$ は $\ZF-\mathrm{P}$ の推移的なモデル）、第二は $Y\prec L_{\omega_{2}}$（\ref{set:elementary-absolute}）、第三は \ref{set:isomorphism-relativization} による。
+:::
+
+::: hypcheck
+- $\mathbf{V}=\mathbf{L}$ は、AC（閉包補題、$\omega_{1},\omega_{2}$ の正則性）、$L_{\omega_{1}}=H(\omega_{1})$ と $L_{\omega_{2}}=H(\omega_{2})$（\ref{set:l-kappa-eq-h-kappa}）、$L_{\omega_{2}}$ の整列順序 $<_{L}$、$M=L_{\delta}$（一意性 \ref{set:v-eq-l-models-unique}）で使った。
+- $X$ の可算性は Step 3 で $Y$ を可算にし、$\alpha<\omega_{1}$, $\delta<\omega_{1}$ を得るのに使った。
+- Step 6 で $<_{L}$ の絶対性が本質的に効く。任意の整列順序から作ったスコーレム関数では、崩壊した側で同じ関数を「内側から」定義できるとは限らない。これが $K^{2}$ を $L_{\delta}$ の中の概念だけで定義でき、$C^{2}\in L_{q(\alpha)}$ が言える理由である。
+:::
+
+$\lozenge$ だけなら、より弱い主張としてもっと直接の証明があり、それはすべての正則基数 $\kappa\ge\omega_{1}$ に一般化される。一方 $\lozenge^{+}$ はそのような基数では成り立つとは限らない（Kunen 第 VI 章の演習 13–17 による。本サイトでは扱っていない）。
+
+::: corollary {#set:con-diamond-plus}
+$\mathrm{Con}(\ZF)\to\mathrm{Con}(\ZFC+\mathrm{GCH}+\lozenge^{+})$。とくに $\mathrm{Con}(\ZF)\to\mathrm{Con}(\ZFC+\lozenge)$、$\mathrm{Con}(\ZF)\to\mathrm{Con}(\ZFC+\lnot\mathrm{SH})$。
+:::
+
+::: proof
+$\ZF+\mathbf{V}=\mathbf{L}\vdash\mathrm{AC}+\mathrm{GCH}+\lozenge^{+}$（\ref{set:v-eq-l-gch}, \ref{set:v-eq-l-diamond-plus}）なので、\ref{set:con-v-eq-l} から従う。$\lozenge$ は \ref{set:diamond-plus-diamond}、$\lnot\mathrm{SH}$ は \ref{set:diamond-not-sh} による。
+:::
+
+## 問題 {#set:sec-diamond-l-problems}
+
+::: problem {#set:prob-q-alpha}
+$\mathbf{V}=\mathbf{L}$ のもとで、$\alpha<q(\alpha)$ かつ $q(\alpha)$ は極限順序数であることを示せ。また $\alpha\le\beta$ なら $q(\alpha)\le q(\beta)$ であることを示せ。
+:::
+
+::: solution
+$q(\alpha)>\alpha$ は定義から。$L_{\rho}\prec L_{\omega_{1}}$ なら $\rho$ は極限である：$L_{\omega_{1}}$ で「最大の順序数はない」（$\forall x\,(x\text{ は順序数}\to\exists y\,(y=S(x)))$）が成り立ち、順序数と $S$ は絶対的なので、$L_{\rho}$ の順序数 $\rho$ 未満の各 $\xi$ について $\xi+1\in L_{\rho}$、すなわち $\xi+1<\rho$。単調性：$\alpha\le\beta$ なら $q(\beta)>\beta\ge\alpha$ で $L_{q(\beta)}\prec L_{\omega_{1}}$ なので、$q(\alpha)$ の最小性より $q(\alpha)\le q(\beta)$。
+:::
+
+::: problem {#set:prob-diamond-sequence-from-plus}
+上の証明の $\mathcal{A}_{\alpha}$ から、$\lozenge$ 列を具体的に（$<_{L}$ を使って）作る方法を \ref{set:diamond-plus-diamond} の証明にならって説明せよ。ここでは証明の要点だけでよい。
+:::
+
+::: solution
+\ref{set:diamond-plus-diamond} は $\lozenge^{+}\to\lozenge^{-}$（\ref{set:diamond-minus-weak}）と $\lozenge^{-}\leftrightarrow\lozenge$（\ref{set:diamond-minus-equiv}）を経由する。$\lozenge^{-}$ 列としては $\mathcal{A}_{\alpha}$ そのもの（可算個の候補）が使える。$\lozenge^{-}$ から $\lozenge$ への変換では各 $\mathcal{A}_{\alpha}$ の枚挙を選ぶ必要があるが、$\mathbf{V}=\mathbf{L}$ のもとでは $<_{L}$ の $\mathcal{A}_{\alpha}$ への制限による枚挙をとれば、選択を使わずに列が具体的に定まる。
+:::
+
+::: supplement
+**前提の検討.**
+- 本ページの証明は $\mathbf{V}=\mathbf{L}$ を仮定したが、主張は $\ZF$ の定理「$\mathbf{V}=\mathbf{L}\to\lozenge^{+}$」である。$\mathbf{V}=\mathbf{L}$ は \ref{set:l-kappa-eq-h-kappa} と \ref{set:v-eq-l-models-unique} を通じて本質的に使われる。
+- 冪集合公理を満たさない $L_{\omega_{1}}$, $L_{\omega_{2}}$ を使ったのは、$\prec$（\ref{set:elementary-inclusion}）が集合についてしか定義されないからである。$\ZF-\mathrm{P}$ の公理で十分な議論なので、$\mathbf{L}$ の代わりに $L_{\omega_{2}}$ で済む。
+- Step 5 の $C\cap\alpha\in L_{q(\alpha)}$ では、$C\cap\alpha\in L_{\delta}$ までは言えない（Kunen 第 VI 章の演習 11）。そのため $\mathcal{A}_{\alpha}$ を $L_{\delta}$ ではなく $L_{q(\alpha)}$ で定義した。
+
+**関連する結果.** $\lozenge$ と $\lozenge^{+}$ はジェンセン（1972）が $\mathbf{L}$ の微細構造の研究の中で導入したとされる（一般にはこう言われている。本サイトでは確かめていない）。$\lozenge$ から、第 II 章でススリン木の存在（\ref{set:diamond-suslin}）、$\lozenge^{+}$ からクレパ木の存在（\ref{set:diamond-plus-kurepa}）が従うので、これらも $\mathbf{L}$ で成り立つ。
+
+**高い視点から：未来を予言する列.** $\lozenge^{+}$ 列は、可算な段階 $\alpha$ ごとに、$\omega_{1}$ のどんな部分集合 $A$ の「ここまでの姿」$A\cap\alpha$ も（ほとんどすべての $\alpha$ で）候補に含んでいる。$\mathbf{L}$ でこれが可能なのは凝縮による：$A$ を含む可算な初等部分構造をつぶすと小さな $L_{\delta}$ が現れ、$A$ の断片 $A\cap\alpha$ はそこに含まれる。つまり $\mathbf{L}$ の中では、$A$ がまだ全体として存在しない段階でも、その断片はすでに「小さな宇宙 $L_{\delta}$」の中に構成済みであり、$\mathcal{A}_{\alpha}$ はそれをすべて集めた予言書になっている。宇宙が「定義できるものだけ」でできているので、予言すべき可能性が可算個に限られるのである。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

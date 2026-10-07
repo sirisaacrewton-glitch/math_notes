@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>順序数 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/01-basics/04-ordinals.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 順序数 {#set:page-ordinals keywords="ordinals, von Neumann ordinals, transitive set, Burali-Forti paradox, order type"}
+
+整列集合は「並べ方」の最も単純で強い形であり、同型な整列集合は（同型写像まで込めて）一意に対応する（\fullref[整列集合の同型写像の一意性]{set:well-order-iso-unique}）。そこで、各「並べ方の型」から代表を一つずつ、しかも集合論の中で明示的に選べると便利である。フォン・ノイマンの**順序数**はその代表であり、「自分より小さい順序数全体の集合」として定義される：$0=\varnothing$, $1=\{0\}$, $2=\{0,1\}$, …。本ページでは順序数の基本性質を公理から証明し、任意の整列集合がただ一つの順序数と同型であること（置換公理の本質的な使い所）を示す。
+
+## 記法と定義の確認 {#set:sec-ordinals-notation}
+
+::: notation
+- 議論は $\ZF$ の、**冪集合の公理・無限公理・選択公理・基礎の公理を除いた**部分で行う。本ページで使う公理は外延性（\fullref[外延性の公理]{set:ax-extensionality}）・分出（\fullref[分出公理]{set:ax-comprehension}）・対（\fullref[対の公理]{set:ax-pairing}）・和集合（\fullref[和集合の公理]{set:ax-union}）・置換（\fullref[置換公理]{set:ax-replacement}）だけであり、どこで何を使ったかを各証明の末尾に記す。基礎の公理（\fullref[基礎の公理]{set:ax-foundation}）は仮定しないので、$x\in x$ となる集合の存在は否定されていない。
+- 順序対（\fullref[順序対]{set:ordered-pair}）は、本ページ以降、見やすさのため $\langle x,y\rangle$ の代わりに $(x,y)$ とも書く。同様に整列集合 $\langle A,R\rangle$ を $(A,R)$ と書く。直積 $A\times B$（\fullref[直積]{set:cartesian-product}）、関係・関数（\fullref[関係]{set:relation}, \fullref[関数]{set:function}）、単射・全射・全単射（\fullref[単射・全射・全単射]{set:injection-surjection}）は既出の意味で用いる。関数 $f$ と集合 $C$ に対し $f[C]=\{f(x)\mid x\in C\cap\dom f\}$、$f\restr{C}=\{(x,y)\in f\mid x\in C\}$ と書く。
+- $(A,R)$ が**全順序**（\fullref[全順序]{set:total-order}）とは、$R$ が $A$ 上で推移的・非反射的で、三分律 $\forall x,y\in A\,(x=y\lor xRy\lor yRx)$ を満たすこと（狭義の順序で考え、$R\subseteq A\times A$ は要求しない）。**整列順序**（\fullref[整列順序]{set:well-order}）とは、さらに $A$ の空でない任意の部分集合 $Y$ が $R$-最小元（$m\in Y$ で $\forall y\in Y\,(y=m\lor mRy)$ となるもの）をもつことである。整列順序の部分集合は（同じ $R$ で）再び整列順序である。
+- 始切片 $\operatorname{pred}(A,a,R)=\{b\in A\mid bRa\}$。順序同型 $(A,R)\cong(B,S)$ は、全単射 $f\colon A\to B$ で $\forall x,y\in A\,(xRy\leftrightarrow f(x)Sf(y))$ となるものの存在（\fullref[順序同型]{set:order-isomorphism}）。
+- 整列集合についての次の二つの事実を用いる：整列集合はその真の始切片と同型にならない（\fullref[整列集合は始切片と同型でない]{set:well-order-no-initial-iso}）；同型写像は存在すれば一意（\fullref[整列集合の同型写像の一意性]{set:well-order-iso-unique}）。
+:::
+
+## 推移的集合 {#set:sec-transitive-sets}
+
+::: definition 推移的集合 {#set:transitive-set keywords="transitive set" index="推移的集合|すいいてきしゅうごう"}
+集合 $x$ が**推移的**であるとは、$x$ の任意の元が $x$ の部分集合であること、すなわち
+$$
+\forall y\in x\;\forall z\in y\;(z\in x)
+$$
+が成り立つことをいう。
+:::
+
+::: intuition
+「元の元は元」という閉包条件。$\in$ を「下にある」と読むと、推移的集合とは $\in$ に関して下に閉じた集合、つまり $\in$ についての「始切片」である。順序数はこの性質を順序の側から見たもので、「自分より小さいものはすべて自分の元」になっている。
+:::
+
+::: example
+- $\varnothing$, $\{\varnothing\}$, $\{\varnothing,\{\varnothing\}\}$, $\{\{\{\varnothing\}\},\{\varnothing\},\varnothing\}$ は推移的。最後のものについて、元 $\{\{\varnothing\}\}$ の元 $\{\varnothing\}$、元 $\{\varnothing\}$ の元 $\varnothing$ がいずれも元になっている。
+- $\{\{\varnothing\}\}$ は推移的でない。元 $\{\varnothing\}$ の元 $\varnothing$ が元でないからである。
+- 基礎の公理を仮定しない場合、$x=\{x\}$ となる集合があればそれは推移的である（唯一の元 $x$ は $x\subseteq x$ を満たす）。
+:::
+
+::: lemma 推移的集合の同値条件と構成 {#set:transitive-set-basic}
+(1) 集合 $x$ について次は同値である：(a) $x$ は推移的；(b) $\bigcup x\subseteq x$。
+
+(2) 推移的集合からなる集合 $\mathcal{F}$ に対し、$\bigcup\mathcal{F}$ は推移的である。$\mathcal{F}\neq\varnothing$ ならば $\bigcap\mathcal{F}$ も推移的である。
+
+(3) $x$ が推移的ならば $x\cup\{x\}$ も推移的である。
+:::
+
+::: proof
+**(1)** (a)⇒(b)：$z\in\bigcup x$ とすると、ある $y\in x$ で $z\in y$。(a) より $y\subseteq x$ なので $z\in x$。(b)⇒(a)：$y\in x$, $z\in y$ ならば $z\in\bigcup x\subseteq x$。
+
+**(2)** $y\in\bigcup\mathcal{F}$, $z\in y$ とする。ある $t\in\mathcal{F}$ で $y\in t$、$t$ は推移的なので $z\in t$、よって $z\in\bigcup\mathcal{F}$。共通部分については $y\in\bigcap\mathcal{F}$, $z\in y$ とすると、任意の $t\in\mathcal{F}$ で $y\in t$、よって $z\in t$。ゆえに $z\in\bigcap\mathcal{F}$。
+
+**(3)** $y\in x\cup\{x\}$, $z\in y$ とする。$y\in x$ なら $x$ の推移性より $z\in x$。$y=x$ なら $z\in x$。いずれにせよ $z\in x\subseteq x\cup\{x\}$。
+
+::: hypcheck
+- **和集合の公理**：$\bigcup x$, $\bigcup\mathcal{F}$ の存在。**対の公理**と和集合の公理：$x\cup\{x\}=\bigcup\{x,\{x\}\}$ の存在。
+- **分出公理**：$\bigcap\mathcal{F}=\{z\in t_{0}\mid\forall t\in\mathcal{F}\,(z\in t)\}$（$t_{0}\in\mathcal{F}$）の存在。$\mathcal{F}\neq\varnothing$ はここで使った。
+:::
+:::
+
+## 順序数の定義 {#set:sec-ordinal-definition}
+
+::: definition 順序数 {#set:ordinal keywords="ordinal, von Neumann ordinal" index="順序数|じゅんじょすう, フォン・ノイマンの順序数|ふぉんのいまんのじゅんじょすう"}
+集合 $x$ が**順序数**であるとは、$x$ が推移的であり、かつ $x$ が $\in$ によって整列されること、すなわち
+$$
+\in_{x}=\{(y,z)\in x\times x\mid y\in z\}
+$$
+について $(x,\in_{x})$ が整列順序であることをいう。
+:::
+
+::: intuition
+順序数 $x$ の元どうしは $\in$ で一列に並び、しかも推移性によって「$x$ の元 $y$ より小さいもの」はすべて $x$ の元になっている。その結果、各元 $y$ は「$x$ の中で $y$ より小さい元全体」に一致する（\ref{set:ordinal-basic} (1)）。順序数とは「自分より前にあるもの全体」を名前にした並びである。
+:::
+
+::: example
+- $0=\varnothing$ は順序数（空な整列集合）。$1=\{0\}$, $2=\{0,1\}=\{\varnothing,\{\varnothing\}\}$, $3=\{0,1,2\}$ も順序数で、$\in$ による順序はそれぞれ $0<1<2$ のように並ぶ（正確な定義は \ref{set:successor} と \fullref[自然数]{set:natural-number}）。
+- $\{\{\{\varnothing\}\},\{\varnothing\},\varnothing\}$ は推移的だが順序数ではない。元 $\varnothing$ と $\{\{\varnothing\}\}$ の間で $\varnothing\notin\{\{\varnothing\}\}$ かつ $\{\{\varnothing\}\}\notin\varnothing$ となり、三分律が破れる。
+- $x=\{x\}$ となる集合があれば、$x$ は推移的だが順序数ではない。$x\in x$ なので $(x,x)\in\in_{x}$ となり、非反射性が破れる。
+:::
+
+::: lemma 順序数は自分自身の元でない {#set:ordinal-irreflexive}
+順序数 $\alpha$ について $\alpha\notin\alpha$。
+:::
+
+::: proof
+$\alpha\in\alpha$ と仮定する。すると $\alpha$ は $\alpha$ の元であり、$(\alpha,\alpha)\in\alpha\times\alpha$ かつ $\alpha\in\alpha$ なので $(\alpha,\alpha)\in\in_{\alpha}$。これは $\in_{\alpha}$ の非反射性（$\alpha$ の元 $y$ について $y\notin y$）に反する。
+
+::: hypcheck
+- **整列順序の非反射性**だけを使った。基礎の公理は使っていない（基礎の公理があればすべての集合について $x\notin x$ だが、ここでは順序数の定義から直接出る）。
+:::
+:::
+
+以下、順序数を $\alpha,\beta,\gamma,\delta,\xi,\eta,\zeta$ などのギリシャ文字で表す。
+
+## 順序数の基本性質 {#set:sec-ordinal-basic}
+
+::: theorem 順序数の基本性質 {#set:ordinal-basic keywords="basic properties of ordinals, trichotomy of ordinals" index="順序数の三分律|じゅんじょすうのさんぶんりつ"}
+$\alpha,\beta,\gamma$ を順序数とする。
+1. $y\in\alpha$ ならば $y$ は順序数であり、$y=\operatorname{pred}(\alpha,y,\in_{\alpha})$。
+2. $\alpha\cong\beta$（$\in$ に関して順序同型）ならば $\alpha=\beta$。
+3. $\alpha\in\beta\iff\alpha\subsetneq\beta$。
+4. （三分律）$\alpha=\beta$, $\alpha\in\beta$, $\beta\in\alpha$ のうちちょうど一つが成り立つ。
+5. $\alpha\in\beta$ かつ $\beta\in\gamma$ ならば $\alpha\in\gamma$。
+:::
+
+::: intuition
+順序数全体の上では、$\in$ と $\subsetneq$ が一致し、それが全順序になる。とくに (1) により各順序数の元はまた順序数で、しかも「$\alpha$ の中で $y$ より小さいもの全体」がちょうど $y$ である。(2) により、順序数は順序型の代表として重複がない。
+:::
+
+証明のため補題を二つ用意する。
+
+::: lemma 順序数の共通部分 {#set:ordinal-intersection}
+順序数 $\alpha,\beta$ に対し、$\alpha\cap\beta$ は順序数である。
+:::
+
+::: proof
+**Step 1（推移性）.** $y\in\alpha\cap\beta$, $z\in y$ とする。$\alpha$ が推移的なので $z\in\alpha$、$\beta$ が推移的なので $z\in\beta$。よって $z\in\alpha\cap\beta$。
+
+**Step 2（整列性）.** $\alpha\cap\beta\subseteq\alpha$ であり、$\in_{\alpha}$ は $\alpha$ を整列するので、その部分集合 $\alpha\cap\beta$ も $\in$ で整列される（$\alpha\cap\beta$ の元どうしの $\in$ の関係は $\alpha$ の元どうしとしての関係と同じだから）。
+
+::: hypcheck
+- **分出公理**：$\alpha\cap\beta=\{z\in\alpha\mid z\in\beta\}$ の存在。
+:::
+:::
+
+::: lemma 推移的な真部分集合は元である {#set:ordinal-transitive-subset}
+$\alpha$ を順序数、$X\subsetneq\alpha$ を推移的集合とすると、$X\in\alpha$。
+:::
+
+::: proof
+**Step 1.** $\alpha\setminus X\neq\varnothing$ なので、その $\in$-最小元 $\xi$ をとる。$\xi=X$ を示せば $X=\xi\in\alpha$ となり終わる。
+
+**Step 2（$\xi\subseteq X$）.** $\eta\in\xi$ とする。$\xi\in\alpha$ と $\alpha$ の推移性から $\eta\in\alpha$。もし $\eta\notin X$ ならば $\eta\in\alpha\setminus X$ かつ $\eta\in\xi$ となり、$\xi$ の最小性に反する。よって $\eta\in X$。
+
+**Step 3（$X\subseteq\xi$）.** $\eta\in X$ とする。$X\subseteq\alpha$ なので $\eta,\xi\in\alpha$ であり、$\in_{\alpha}$ の三分律から $\eta=\xi$, $\eta\in\xi$, $\xi\in\eta$ のいずれか。
+- $\eta=\xi$ は、$\eta\in X$ と $\xi\notin X$ から不可能。
+- $\xi\in\eta$ ならば、$X$ が推移的で $\eta\in X$ なので $\xi\in X$ となり、$\xi\notin X$ に反する。
+
+よって $\eta\in\xi$。
+
+**Step 4.** Step 2, 3 と外延性から $\xi=X$。
+
+::: hypcheck
+- **$X$ の推移性**：Step 3 の第 2 の場合を排除するのに使った。推移的でない真部分集合（例：$\{1\}\subsetneq 2$）は元とは限らない。
+- **$\alpha$ の推移性**：Step 2。**$\alpha$ が $\in$ で整列されること**：Step 1 の最小元と Step 3 の三分律。
+- **分出公理**：$\alpha\setminus X$ の存在。**外延性**：Step 4。
+:::
+:::
+
+::: restate {ref="set:ordinal-basic"}
+:::
+
+::: proof
+**(1)** $y\in\alpha$ とする。
+
+*Step 1a.* $\alpha$ は推移的なので $y\subseteq\alpha$。したがって $\operatorname{pred}(\alpha,y,\in_{\alpha})=\{z\in\alpha\mid z\in y\}=y\cap\alpha=y$。
+
+*Step 1b（$y$ は $\in$ で整列される）.* $y\subseteq\alpha$ であり、整列順序の部分集合は整列順序だから。
+
+*Step 1c（$y$ は推移的）.* $z\in y$, $w\in z$ とする。$z\in y\subseteq\alpha$ なので $z\in\alpha$、$\alpha$ の推移性で $w\in\alpha$。すると $w,z,y$ はすべて $\alpha$ の元で、$w\in z$, $z\in y$ だから、$\in_{\alpha}$ の推移性により $w\in y$。
+
+よって $y$ は順序数。
+
+**(2)** $f\colon\alpha\to\beta$ を順序同型とする。$f(\xi)=\xi$（すべての $\xi\in\alpha$）を示せば、$\beta=\ran f=\alpha$ となる。
+
+*Step 2a.* 反例の集合 $E=\{\xi\in\alpha\mid f(\xi)\neq\xi\}$ が空でないと仮定し、その $\in$-最小元 $\xi$ をとる。
+
+*Step 2b（$f(\xi)=f[\xi]$）.* $f$ は順序同型なので、$\eta\in\alpha$ について $\eta\in\xi\iff f(\eta)\in f(\xi)$。また $f(\xi)\in\beta$ なので、$\beta$ の推移性より $f(\xi)\subseteq\beta$。任意の $\zeta\in f(\xi)$ は $\beta$ の元なので全射性により $\zeta=f(\eta)$ となる $\eta\in\alpha$ があり、$f(\eta)\in f(\xi)$ より $\eta\in\xi$。逆に $\eta\in\xi$ なら $f(\eta)\in f(\xi)$。したがって $f(\xi)=\{f(\eta)\mid\eta\in\xi\}=f[\xi]$。ここで $\xi\subseteq\alpha$（推移性）を使った。
+
+*Step 2c.* $\eta\in\xi$ ならば $\eta\notin E$（最小性）なので $f(\eta)=\eta$。よって $f(\xi)=f[\xi]=\{\eta\mid\eta\in\xi\}=\xi$ となり、$\xi\in E$ に反する。ゆえに $E=\varnothing$。
+
+**(3)** (⇒) $\alpha\in\beta$ とする。$\beta$ は推移的なので $\alpha\subseteq\beta$。もし $\alpha=\beta$ なら $\beta\in\beta$ となり \ref{set:ordinal-irreflexive} に反する。よって $\alpha\subsetneq\beta$。(⇐) $\alpha$ は推移的な集合で $\alpha\subsetneq\beta$ だから、\ref{set:ordinal-transitive-subset} より $\alpha\in\beta$。
+
+**(4)** *少なくとも一つ成り立つこと.* $\gamma_{0}=\alpha\cap\beta$ は \ref{set:ordinal-intersection} より順序数、特に推移的で、$\gamma_{0}\subseteq\alpha$, $\gamma_{0}\subseteq\beta$。もし $\gamma_{0}\neq\alpha$ かつ $\gamma_{0}\neq\beta$ なら、\ref{set:ordinal-transitive-subset} より $\gamma_{0}\in\alpha$ かつ $\gamma_{0}\in\beta$、すなわち $\gamma_{0}\in\alpha\cap\beta=\gamma_{0}$ となり、\ref{set:ordinal-irreflexive} に反する。よって $\gamma_{0}=\alpha$（すなわち $\alpha\subseteq\beta$）または $\gamma_{0}=\beta$（すなわち $\beta\subseteq\alpha$）。前者の場合、$\alpha=\beta$ でなければ $\alpha\subsetneq\beta$ で、(3) より $\alpha\in\beta$。後者も同様に $\alpha=\beta$ または $\beta\in\alpha$。
+
+*高々一つしか成り立たないこと.* $\alpha=\beta$ と $\alpha\in\beta$ が同時に成り立てば $\alpha\in\alpha$。$\alpha\in\beta$ と $\beta\in\alpha$ が同時に成り立てば、$\alpha$ の推移性で $\beta\subseteq\alpha$ なので $\alpha\in\alpha$。$\alpha=\beta$ と $\beta\in\alpha$ も同様。いずれも \ref{set:ordinal-irreflexive} に反する。
+
+**(5)** $\gamma$ は推移的なので $\beta\in\gamma$ から $\beta\subseteq\gamma$、よって $\alpha\in\gamma$。
+
+::: hypcheck
+- **推移性**（順序数の定義の前半）：(1) の Step 1a, 1c、(2) の Step 2b、(3) の (⇒)、(4) の後半、(5)。
+- **$\in$ による整列性**（定義の後半）：(1) の Step 1b, 1c（推移律）、(2) の Step 2a（最小元）、補題 \ref{set:ordinal-transitive-subset}。
+- **分出公理**：$E$, $\alpha\cap\beta$ の存在。**外延性**：(1) の等式、(2) の $\alpha=\beta$。
+- 使わなかったもの：置換・和集合・冪集合・無限・選択・基礎の公理。
+:::
+:::
+
+::: supplement
+**別証の方針.** (4) は、整列集合の比較定理 \fullref[整列集合の三分律]{set:well-order-trichotomy} を $(\alpha,\in)$ と $(\beta,\in)$ に適用しても示せる。どちらかが他方の始切片と同型になり、(1) により始切片 $\operatorname{pred}(\beta,y)$ は $y$ そのものなので、(2) から $\alpha=y\in\beta$ などが出る。ここでは共通部分を使って比較定理を経由しない証明にした。
+
+**基礎の公理を仮定すると.** 基礎の公理のもとでは「順序数 ⇔ 推移的集合で、その元もすべて推移的なもの」となる（$\in$ の整列性が自動的に従う）。本サイトでは基礎の公理なしで理論を展開するため、整列性を定義に含めている。
+
+**$\le$ の記法.** 以後、$\alpha<\beta$ で $\alpha\in\beta$ を、$\alpha\le\beta$ で $\alpha\in\beta\lor\alpha=\beta$ を表す。(3) と (4) から $\alpha\le\beta\iff\alpha\subseteq\beta$ である（$\alpha\subseteq\beta$ なら $\alpha=\beta$ か $\alpha\subsetneq\beta$）。
+:::
+
+::: theorem 順序数は $\in$ で整列される {#set:ordinal-well-ordered keywords="ordinals are well-ordered by membership" index="順序数の整列性|じゅんじょすうのせいれつせい"}
+1. 順序数全体の上で、$<$（すなわち $\in$）は推移的・非反射的で三分律を満たす。
+2. 順序数からなる空でない集合 $C$ は $<$-最小元をもつ。すなわち、ある $\mu\in C$ があって、任意の $\beta\in C$ について $\mu\le\beta$。さらに $\mu\cap C=\varnothing$ であり、$\mu$ は一意である。
+3. 順序数からなる任意の集合 $A$ は $\in$ で整列される。
+4. 順序数からなる推移的集合は順序数である。
+:::
+
+::: intuition
+「順序数全体」は集合にならない（\ref{set:burali-forti}）が、それを除けば順序数全体はそれ自身が一つの巨大な整列集合のように振る舞う。(4) はその「始切片」がまた順序数になることを言っている。クラスについての最小元の原理は \ref{set:transfinite-induction} で述べる。
+:::
+
+::: proof
+**(1)** 推移性は \ref{set:ordinal-basic} (5)、非反射性は \ref{set:ordinal-irreflexive}、三分律は \ref{set:ordinal-basic} (4)。
+
+**(2)** *Step 1.* $C\neq\varnothing$ から $\alpha\in C$ を一つとる。
+
+*Step 2（$\alpha\cap C=\varnothing$ の場合）.* $\mu=\alpha$ とおく。任意の $\beta\in C$ について $\beta\notin\alpha$ なので、三分律より $\alpha=\beta$ または $\alpha\in\beta$、すなわち $\mu\le\beta$。
+
+*Step 3（$\alpha\cap C\neq\varnothing$ の場合）.* $\alpha\cap C$ は $\alpha$ の空でない部分集合なので、$\in_{\alpha}$ に関する最小元 $\mu$ がある。$\mu\cap C=\varnothing$ を示す：$\eta\in\mu\cap C$ があるとすると、$\mu\in\alpha$ と $\alpha$ の推移性より $\eta\in\alpha$、よって $\eta\in\alpha\cap C$ かつ $\eta\in\mu$ となり、$\mu$ の最小性に反する。あとは Step 2 と同じ議論で、任意の $\beta\in C$ について $\beta\notin\mu$ だから $\mu\le\beta$。
+
+*Step 4（$\mu\cap C=\varnothing$ と一意性）.* Step 2 の場合も $\mu\cap C=\alpha\cap C=\varnothing$。$\mu,\mu'$ がともに最小元なら $\mu\le\mu'$ かつ $\mu'\le\mu$ で、三分律の「ちょうど一つ」より $\mu=\mu'$。
+
+**(3)** (1) により $(A,\in_{A})$ は全順序であり、(2) により $A$ の空でない部分集合は最小元をもつ。
+
+**(4)** $A$ を順序数からなる推移的集合とすると、(3) により $A$ は $\in$ で整列されるので、定義により順序数である。
+
+::: hypcheck
+- **分出公理**：$\alpha\cap C$ の存在。
+- \ref{set:ordinal-basic} とその前提だけを使った。置換・和集合・無限・選択は不要。
+:::
+:::
+
+::: theorem ブラリ＝フォルティのパラドックス {#set:burali-forti keywords="Burali-Forti paradox" index="ブラリ＝フォルティのパラドックス|ぶらりふぉるてぃのぱらどっくす"}
+すべての順序数を元とする集合は存在しない：
+$$
+\neg\exists z\;\forall x\,(x\text{ は順序数}\rightarrow x\in z).
+$$
+:::
+
+::: intuition
+もし順序数全体 $\mathbf{ON}$ が集合なら、\ref{set:ordinal-well-ordered} によりそれ自身が順序数になり、「自分自身より大きい順序数はない」のに $\mathbf{ON}\in\mathbf{ON}$ となってしまう。ラッセルのパラドックス（\fullref[ラッセルのパラドックス]{set:russell-paradox}）と同じく、素朴な内包原理の矛盾が ZF では「その集まりは集合でない」という定理に変わる。
+:::
+
+::: proof
+**Step 1.** そのような $z$ があったと仮定し、$O=\{x\in z\mid x\text{ は順序数}\}$ とおく。「$x$ は順序数」は $\in$ と $=$ だけで書ける論理式なので、分出公理により $O$ は集合で、仮定からすべての順序数を元とし、順序数以外を元としない。
+
+**Step 2（$O$ は推移的）.** $\alpha\in O$, $y\in\alpha$ とすると、\ref{set:ordinal-basic} (1) より $y$ は順序数なので $y\in O$。
+
+**Step 3.** $O$ は順序数からなる推移的集合なので、\ref{set:ordinal-well-ordered} (4) により順序数である。
+
+**Step 4.** Step 1 より $O\in O$。これは \ref{set:ordinal-irreflexive} に反する。
+
+::: hypcheck
+- **分出公理**：Step 1。「順序数である」という性質が一階の論理式で書けることも使っている。
+- 置換・和集合・冪集合・無限・選択は使っていない。
+:::
+:::
+
+::: supplement
+**クラスとしての解釈.** 順序数全体は集合ではない「真のクラス」であり、$\mathbf{ON}$ と書いて $\{x\mid x\text{ は順序数}\}$ を表す。クラスの扱いは \ref{set:class} で述べる。
+
+**歴史.** この議論はブラリ＝フォルティの 1897 年の論文に由来し、「すべての順序数の順序型」を考えると矛盾が生じることを示すものとして知られるようになった。ラッセルのパラドックス（1901 年頃）より早い。
+:::
+
+## 整列集合の順序型 {#set:sec-order-type}
+
+::: theorem 整列集合は唯一の順序数と同型 {#set:ordinal-type keywords="every well-ordering is isomorphic to a unique ordinal" index="順序数への同型|じゅんじょすうへのどうけい"}
+$(A,R)$ を整列集合とすると、$(A,R)\cong(\alpha,\in)$ となる順序数 $\alpha$ がただ一つ存在する。
+:::
+
+::: intuition
+整列集合を先頭から順に $0,1,2,\dots$ と「数えて」いくと、その番号付けがちょうど順序数への同型になる。ただし無限の長さの数え上げを一気に行うので、「各 $a\in A$ に、$a$ より前の部分の型（順序数）を対応させる」という写像を集合として作る必要があり、ここで**置換公理**が本質的に使われる。
+:::
+
+::: proof
+**Step 0（一意性）.** $(A,R)\cong\alpha$ かつ $(A,R)\cong\beta$ なら、一方の同型の逆と他方の合成により $\alpha\cong\beta$ なので、\ref{set:ordinal-basic} (2) より $\alpha=\beta$。以下、存在を示す。各 $a\in A$ について $\operatorname{pred}(A,a)=\operatorname{pred}(A,a,R)$ と略す。
+
+**Step 1（写像 $f$ の構成 — 置換公理）.** 論理式 $\varphi(a,x)$ を「$x$ は順序数であり、$(\operatorname{pred}(A,a),R)\cong(x,\in)$」とし、
+$$
+B=\{a\in A\mid\exists x\,\varphi(a,x)\}
+$$
+とおく（分出公理）。Step 0 と同じ理由で、各 $a\in B$ に対し $\varphi(a,x)$ を満たす $x$ はただ一つである。したがって $\forall a\in B\,\exists!x\,\varphi(a,x)$ が成り立ち、**置換公理**により、ある集合 $Y$ があって $\forall a\in B\,\exists x\in Y\,\varphi(a,x)$。そこで分出公理により
+$$
+C=\{x\in Y\mid\exists a\in B\,\varphi(a,x)\},\qquad f=\{(a,x)\in B\times C\mid\varphi(a,x)\}
+$$
+とおくと、$f\colon B\to C$ は全射な関数で、$f(a)$ は $\operatorname{pred}(A,a)$ と同型な唯一の順序数である。
+
+**Step 2（$B$ は下に閉じ、$f$ は順序を保つ）.** $a\in B$, $a'\in A$, $a'Ra$ とし、$a'\in B$ かつ $f(a')\in f(a)$ を示す。$g\colon\operatorname{pred}(A,a)\to f(a)$ を同型とする。
+- $R$ の推移性から $\operatorname{pred}(A,a')\subseteq\operatorname{pred}(A,a)$、また $a'\in\operatorname{pred}(A,a)$ なので $g(a')\in f(a)$ が定まる。
+- $g[\operatorname{pred}(A,a')]=g(a')$ を示す。$b\in\operatorname{pred}(A,a')$ なら $bRa'$ なので $g(b)\in g(a')$。逆に $\zeta\in g(a')$ なら、$f(a)$ の推移性から $\zeta\in f(a)$ で、$g$ の全射性から $\zeta=g(b)$（$b\in\operatorname{pred}(A,a)$）と書け、$g(b)\in g(a')$ と $g$ が同型であることから $bRa'$。
+- よって $g\restr{\operatorname{pred}(A,a')}$ は $\operatorname{pred}(A,a')$ から $g(a')$ への同型で、$g(a')$ は \ref{set:ordinal-basic} (1) により順序数。ゆえに $a'\in B$ かつ $f(a')=g(a')\in f(a)$。
+
+**Step 3（$C$ は順序数）.** $C$ は順序数からなる集合である。推移的であることを示す：$x\in C$, $y\in x$ とし、$x=f(a)$ ($a\in B$) と書き、同型 $g\colon\operatorname{pred}(A,a)\to x$ をとる。$y=g(a')$（$a'Ra$）と書ける。Step 2 の議論により $f(a')=g(a')=y$ なので $y\in C$。\ref{set:ordinal-well-ordered} (4) より $C$ は順序数。
+
+**Step 4（$f\colon(B,R)\to(C,\in)$ は同型）.** 全射は Step 1。$a,a'\in B$ について：
+- $a'Ra\Rightarrow f(a')\in f(a)$ は Step 2。
+- 逆に $f(a')\in f(a)$ とする。$a'=a$ なら $f(a)\in f(a)$ で \ref{set:ordinal-irreflexive} に反し、$aRa'$ なら Step 2 より $f(a)\in f(a')$ で三分律の「ちょうど一つ」に反する。$R$ の三分律より $a'Ra$。
+- 単射性：$a\neq a'$ なら三分律より $aRa'$ か $a'Ra$ で、いずれにせよ $f(a)\neq f(a')$。
+
+**Step 5（$B=A$）.** $B\neq A$ と仮定し、$A\setminus B$ の $R$-最小元 $b$ をとる。
+- $\operatorname{pred}(A,b)\subseteq B$：$aRb$ で $a\notin B$ なら $b$ の最小性に反する。
+- $B\subseteq\operatorname{pred}(A,b)$：$a\in B$ とすると $a\neq b$ で、$bRa$ なら Step 2 より $b\in B$ となり矛盾。三分律より $aRb$。
+
+よって $B=\operatorname{pred}(A,b)$ で、Step 4 より $\operatorname{pred}(A,b)\cong C$。$C$ は順序数なので $b\in B$ となり矛盾。ゆえに $B=A$ で、$(A,R)\cong C$。
+
+::: hypcheck
+- **置換公理**：Step 1 で集合 $Y$（したがって $C$ と $f$）を得るのに**本質的に**使った。各 $a$ に対応する順序数 $f(a)$ はそれぞれ存在するが、それらを一つの集合にまとめる手段は置換公理しかない（下の補足）。
+- **分出公理**：$B$, $C$, $f$ の切り出し。**対・和集合・置換**：直積 $B\times C$ の存在（\fullref[直積]{set:cartesian-product}）。
+- **$R$ の整列性**：Step 5 の最小元。**全順序性**：Step 2（推移律）、Step 4（三分律）。
+- 使わなかったもの：冪集合・無限・選択。
+:::
+:::
+
+::: supplement
+**置換公理を外すと.** 置換公理を除いたツェルメロ集合論 $\mathsf{Z}$ ではこの定理は証明できない。たとえば $V_{\omega+\omega}$（累積階層の第 $\omega+\omega$ 段）は $\mathsf{Z}$ のモデルで、その中には型 $\omega+\omega$ の整列集合（$\omega\times\{0\}\cup\omega\times\{1\}$ に、$\omega\times\{0\}$ の部分を先に並べる順序を入れたもの。\fullref[順序数の和]{set:ordinal-addition}）はあるが、順序数 $\omega+\omega$ そのものは元として含まれない。
+
+**順序型を同値類で定義する方法との比較.** 「互いに同型な整列集合全体」を順序型とする素朴な定義は、各同値類が真のクラスになるので ZF の中では使えない。フォン・ノイマンの順序数は、各同値類から標準的な代表を一つ選ぶ（選択公理なしに！）方法を与えている。
+:::
+
+::: definition 順序型 {#set:order-type keywords="order type, type(A,R)" index="順序型|じゅんじょがた"}
+整列集合 $(A,R)$ に対し、\ref{set:ordinal-type} の唯一の順序数を $(A,R)$ の**順序型**といい、$\operatorname{type}(A,R)$ と書く。
+:::
+
+::: example
+- 順序数 $\alpha$ について $\operatorname{type}(\alpha,\in)=\alpha$（恒等写像が同型）。
+- 3 元集合 $\{a,b,c\}$ に $aRb$, $bRc$, $aRc$ で整列順序を入れると、$a\mapsto 0$, $b\mapsto 1$, $c\mapsto 2$ が同型で、型は $3$。
+- $\{1,3\}\subseteq 4$ の型は $2$（$1\mapsto 0$, $3\mapsto 1$）。
+:::
+
+::: lemma 同型写像の値は始切片の型 {#set:type-of-initial-segment}
+$f\colon(A,R)\to(\gamma,\in)$ を整列集合から順序数への同型とすると、任意の $a\in A$ について
+$$
+f(a)=\operatorname{type}(\operatorname{pred}(A,a,R),R).
+$$
+:::
+
+::: proof
+$P=\operatorname{pred}(A,a,R)$ とおく。
+
+**Step 1（$f[P]\subseteq f(a)$）.** $b\in P$ なら $bRa$ なので、$f$ が同型であることから $f(b)\in f(a)$。
+
+**Step 2（$f(a)\subseteq f[P]$）.** $\zeta\in f(a)$ とする。$\gamma$ は推移的で $f(a)\in\gamma$ なので $\zeta\in\gamma$。$f$ は全射なので $\zeta=f(b)$ となる $b\in A$ があり、$f(b)\in f(a)$ と $f$ が同型であることから $bRa$、すなわち $b\in P$。
+
+**Step 3.** よって $f\restr{P}$ は $P$ から $f(a)$ への全単射で、順序を保ち順序を反映する（$f$ がそうだから）。$f(a)$ は \ref{set:ordinal-basic} (1) により順序数なので、順序型の一意性から $f(a)=\operatorname{type}(P,R)$。
+
+::: hypcheck
+- **$\gamma$ の推移性**：Step 2 で $\zeta\in\gamma$ を得るのに使った。**$f$ が全射かつ順序を反映すること**：Step 2。
+- **順序型の一意性**（\ref{set:ordinal-type} の Step 0）：Step 3。$(P,R)$ が整列集合であることは \ref{set:well-order-basic-lemmas} (1) による。
+- **分出公理**：$P$ と $f\restr{P}$ の存在。置換公理は、$\operatorname{type}(P,R)$ という記号を使うために \ref{set:ordinal-type} を経由する部分でのみ使う（値 $f(a)$ 自体はすでに与えられている）。
+:::
+:::
+
+::: lemma 狭義増加関数は恒等関数以上 {#set:increasing-above-identity}
+$\delta$ を順序数、$f\colon\delta\to\mathbf{ON}$（値が順序数である関数）を狭義増加（$\xi<\eta\Rightarrow f(\xi)<f(\eta)$）とすると、任意の $\xi<\delta$ で $\xi\le f(\xi)$。
+:::
+
+::: proof
+**Step 1.** $E=\{\xi\in\delta\mid f(\xi)<\xi\}$（分出公理）が空でないと仮定し、その最小元 $\xi$ をとる（\ref{set:ordinal-well-ordered} (2)）。
+
+**Step 2.** $\eta=f(\xi)$ とおくと $\eta<\xi<\delta$ なので、$\delta$ の推移性より $\eta\in\delta$。狭義増加性より $f(\eta)<f(\xi)=\eta$ なので $\eta\in E$。しかし $\eta<\xi$ であり、$\xi$ の最小性に反する。よって $E=\varnothing$ で、三分律より各 $\xi$ について $\xi\le f(\xi)$。
+
+::: hypcheck
+- **定義域が順序数（下に閉じている）こと**：Step 2 で $f(\xi)\in\delta$ を保証するのに使った。定義域が一般の順序数の集合だと偽である（$X=\{5\}$, $f(5)=0$）。
+:::
+:::
+
+::: corollary 部分集合の型は元の型以下 {#set:type-subset}
+$X\subseteq\alpha$ ならば $\operatorname{type}(X,\in)\le\alpha$。
+:::
+
+::: proof
+**Step 1.** $X$ は \ref{set:ordinal-well-ordered} (3) により $\in$ で整列されるので、$\gamma=\operatorname{type}(X,\in)$ と同型 $h\colon\gamma\to X$ がある（$\operatorname{type}$ への同型の逆写像）。$h$ は $\gamma$ から $\mathbf{ON}$ への狭義増加関数とみなせる。
+
+**Step 2.** \ref{set:increasing-above-identity} より、任意の $\zeta<\gamma$ で $\zeta\le h(\zeta)$。$h(\zeta)\in X\subseteq\alpha$ なので $h(\zeta)<\alpha$、よって $\zeta<\alpha$（$\zeta=h(\zeta)$ の場合も含め、\ref{set:ordinal-basic} (5)）。
+
+**Step 3.** ゆえに $\gamma\subseteq\alpha$、すなわち $\gamma\le\alpha$（\ref{set:ordinal-basic} の補足）。
+
+::: hypcheck
+- **置換公理**：Step 1 で順序型 $\gamma$ と同型 $h$ を得るのに（\ref{set:ordinal-type} を通して）使った。
+- **$\alpha$ の推移性と $<$ の推移律**：Step 2（\ref{set:ordinal-basic} (5)）。
+- 選択公理は使っていない。
+:::
+:::
+
+## 上限と最小元 {#set:sec-sup-min}
+
+::: definition 上限・最小元 {#set:sup-min-def keywords="supremum of ordinals, minimum" index="順序数の上限|じゅんじょすうのじょうげん"}
+順序数からなる集合 $X$ に対し、$\sup X=\bigcup X$ とおく。$X\neq\varnothing$ のとき $\min X=\bigcap X$ とおく。
+:::
+
+::: theorem 上限と最小元の性質 {#set:sup-ordinals keywords="sup of a set of ordinals, least upper bound" index="上限|じょうげん, 最小上界|さいしょうじょうかい"}
+$X$ を順序数からなる集合とする。
+1. $\sup X$ は順序数であり、$X$ のすべての元以上の順序数のうち最小のものである。
+2. $X\neq\varnothing$ ならば $\min X$ は順序数であり、$X$ の最小元に等しい。
+3. $X$ が最大元 $\mu$ をもてば $\sup X=\mu$。$X$ が最大元をもたなければ $\sup X\notin X$。
+:::
+
+::: intuition
+順序数の大小は包含関係なので、「上限」は和集合、「最小元」は共通部分で与えられる。どんな順序数の**集合**にも上限があるが、順序数全体の「上限」はない（\ref{set:burali-forti}）。
+:::
+
+::: proof
+**(1)** *Step 1（順序数であること）.* $\bigcup X$ の元は $X$ のある元 $\alpha$ の元なので順序数である（\ref{set:ordinal-basic} (1)）。また $\bigcup X$ は推移的集合の和なので推移的（\ref{set:transitive-set-basic} (2)）。\ref{set:ordinal-well-ordered} (4) より順序数。
+
+*Step 2（上界であること）.* $\alpha\in X$ なら $\alpha\subseteq\bigcup X$、すなわち $\alpha\le\sup X$。
+
+*Step 3（最小であること）.* $\beta$ が $X$ のすべての元以上なら、各 $\alpha\in X$ について $\alpha\subseteq\beta$ なので $\bigcup X\subseteq\beta$、すなわち $\sup X\le\beta$。
+
+**(2)** \ref{set:ordinal-well-ordered} (2) により $X$ の最小元 $\mu$ がある。各 $\alpha\in X$ で $\mu\le\alpha$ すなわち $\mu\subseteq\alpha$ なので $\mu\subseteq\bigcap X$。逆に $\mu\in X$ なので $\bigcap X\subseteq\mu$。よって $\bigcap X=\mu$。
+
+**(3)** $\mu$ が最大元なら、$\mu$ は上界で、任意の上界 $\beta$ は $\mu\le\beta$ を満たすので、(1) より $\sup X=\mu$。最大元がないとき、$\sup X\in X$ なら $\sup X$ は $X$ の上界かつ元なので最大元となり矛盾。
+
+::: hypcheck
+- **和集合の公理**：$\bigcup X$ の存在。**分出公理**：$\bigcap X=\{z\in\mu\mid\forall\alpha\in X\,(z\in\alpha)\}$ の存在。
+- 選択公理は不要（最小元・上限は具体的に与えられる）。
+:::
+:::
+
+## 後続順序数と極限順序数 {#set:sec-successor-limit}
+
+::: definition 後者 {#set:successor keywords="successor, S(alpha)" index="後者|こうしゃ"}
+順序数 $\alpha$ に対し、$S(\alpha)=\alpha\cup\{\alpha\}$ を $\alpha$ の**後者**という。
+:::
+
+::: lemma 後者の基本性質 {#set:successor-basic}
+任意の順序数 $\alpha,\beta$ について
+1. $S(\alpha)$ は順序数で、$\alpha<S(\alpha)$。
+2. $\beta<S(\alpha)\iff\beta\le\alpha$。とくに $S(\alpha)$ は $\alpha$ より大きい最小の順序数である。
+3. $S(\alpha)=S(\beta)\Rightarrow\alpha=\beta$。
+4. $\bigcup S(\alpha)=\alpha$。
+:::
+
+::: proof
+**(1)** $S(\alpha)$ の元は $\alpha$ の元か $\alpha$ 自身で、いずれも順序数。$\alpha$ は推移的なので $S(\alpha)$ も推移的（\ref{set:transitive-set-basic} (3)）。\ref{set:ordinal-well-ordered} (4) より $S(\alpha)$ は順序数。$\alpha\in S(\alpha)$ は定義から。
+
+**(2)** $\beta\in S(\alpha)\iff\beta\in\alpha\lor\beta=\alpha\iff\beta\le\alpha$。$\gamma>\alpha$ なら $\alpha\in\gamma$ かつ $\alpha\subseteq\gamma$ なので $S(\alpha)\subseteq\gamma$、すなわち $S(\alpha)\le\gamma$。
+
+**(3)** $\alpha\in S(\alpha)=S(\beta)$ より $\alpha\le\beta$、同様に $\beta\le\alpha$。三分律の「ちょうど一つ」より $\alpha=\beta$。
+
+**(4)** $\bigcup S(\alpha)=\bigcup\alpha\cup\alpha$。$\alpha$ は推移的なので $\bigcup\alpha\subseteq\alpha$（\ref{set:transitive-set-basic} (1)）、よって $\bigcup S(\alpha)=\alpha$。
+
+::: hypcheck
+- **対・和集合の公理**：$S(\alpha)=\bigcup\{\alpha,\{\alpha\}\}$ の存在。
+:::
+:::
+
+::: definition 後続順序数 {#set:successor-ordinal keywords="successor ordinal" index="後続順序数|こうぞくじゅんじょすう"}
+順序数 $\alpha$ が**後続順序数**であるとは、ある順序数 $\beta$ について $\alpha=S(\beta)$ となることをいう。このとき \ref{set:successor-basic} (3) より $\beta$ は一意で、$\beta=\bigcup\alpha$ である。
+:::
+
+::: definition 極限順序数 {#set:limit-ordinal keywords="limit ordinal" index="極限順序数|きょくげんじゅんじょすう"}
+順序数 $\alpha$ が**極限順序数**であるとは、$\alpha\neq 0$ であり、かつ $\alpha$ が後続順序数でないことをいう。
+:::
+
+::: intuition
+順序数を $0$ から順に数えていくと、「直前の数」がある数（後続順序数）と、直前の数がなく、それより小さい数全体の「行き着く先」としてしか到達できない数（極限順序数）がある。どの順序数も $0$、後続順序数、極限順序数のちょうど一つである。
+:::
+
+::: example
+- $1=S(0)$, $2=S(1)$, $3=S(2)$ は後続順序数。
+- ここまでの公理（無限公理なし）では、極限順序数が存在することは証明できない。最小の極限順序数 $\omega$ の存在は無限公理と同値である（\fullref[ω]{set:omega}）。
+:::
+
+::: proposition 極限順序数の特徴づけ {#set:limit-characterization}
+$\alpha\neq 0$ を順序数とすると、次は同値である。
+1. $\alpha$ は極限順序数。
+2. 任意の $\beta<\alpha$ について $S(\beta)<\alpha$。
+3. $\alpha=\sup\alpha\;(=\bigcup\alpha)$。
+
+また、順序数の集合 $X$ が空でなく最大元をもたないならば、$\sup X$ は極限順序数である。
+:::
+
+::: proof
+**(1)⇒(2)** $\beta<\alpha$ とすると、\ref{set:successor-basic} (2) より $S(\beta)\le\alpha$。$\alpha$ は後続順序数でないので $S(\beta)\ne\alpha$、よって $S(\beta)<\alpha$。
+
+**(2)⇒(3)** $\bigcup\alpha\subseteq\alpha$ は推移性。逆に $\beta\in\alpha$ なら $\beta\in S(\beta)\in\alpha$ なので $\beta\in\bigcup\alpha$。
+
+**(3)⇒(1)** $\alpha=S(\beta)$ なら \ref{set:successor-basic} (4) より $\bigcup\alpha=\beta\neq\alpha$（$\beta<\alpha$）。よって (3) のもとで $\alpha$ は後続順序数でなく、$\alpha\neq0$ と合わせて極限順序数。
+
+**後半.** $\sigma=\sup X$ とおく。$X\neq\varnothing$ から元 $\alpha_{0}\in X$ をとる。$X$ に最大元がないので $\alpha_{0}<\alpha_{1}$ なる $\alpha_{1}\in X$ があり、$0\le\alpha_{0}<\alpha_{1}\le\sigma$ から $\sigma\neq 0$。(2) を確かめる：$\beta<\sigma$ なら $\beta\in\bigcup X$ なので、ある $\alpha\in X$ で $\beta<\alpha$。最大元がないので $\alpha<\alpha'$ なる $\alpha'\in X$ がある。$S(\beta)\le\alpha<\alpha'\le\sigma$ より $S(\beta)<\sigma$。$\sigma$ は順序数（\ref{set:sup-ordinals} (1)）で $\sigma\neq0$ なので、(2)⇒(3)⇒(1) により極限順序数である。
+
+::: hypcheck
+- **\ref{set:successor-basic}**：(1)⇒(2) で $S(\beta)\le\alpha$（同 (2)）を、(3)⇒(1) で $\bigcup S(\beta)=\beta$（同 (4)）を使った。
+- **$\alpha$ の推移性**：(2)⇒(3)。**$\alpha\neq0$**：(3)⇒(1)。
+- **和集合の公理**：$\bigcup\alpha$, $\sup X$ の存在。選択公理は使っていない。
+:::
+:::
+
+::: supplement
+**型で見ると.** $\alpha$ が後続順序数であることは、整列集合 $(\alpha,\in)$ が最大元をもつことと同値である（最大元が $\bigcup\alpha$）。極限順序数とは、空でなく最大元をもたない順序数にほかならない。
+
+**超限帰納法の三つの場合.** この三分類（$0$・後続・極限）は、超限帰納法・超限再帰で定義や証明を場合分けする際の基本形になる（\ref{set:transfinite-induction}, \ref{set:transfinite-recursion}）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

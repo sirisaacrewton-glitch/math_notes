@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>位相空間の可算鎖条件 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/02-ccc-spaces.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 位相空間の可算鎖条件 {#set:page-ccc-spaces keywords="countable chain condition, ccc space, c.c.c., separable space, product of ccc spaces, Hewitt–Marczewski–Pondiczery theorem"}
+
+位相空間が「小さい」ことを表す条件はいろいろあるが、そのうち集合論で特に重要なのが**可算鎖条件**（c.c.c.）である：互いに交わらない空でない開集合を非可算個並べることはできない。可分空間は c.c.c. をもつが、逆は成り立たない。本ページの主題は直積との関係である。可分性は直積で保たれるとは限らない（因子が $2^{\aleph_{0}}$ 個までなら保たれ、それを超えると崩れる）のに対し、c.c.c. は「有限個の直積で保たれるなら任意個の直積でも保たれる」という著しい性質をもつ。その証明で前ページの Δ システム補題（\ref{set:delta-system-lemma}）が本質的に働く。一方、2 つの c.c.c. 空間の直積が c.c.c. かどうかは $\ZFC$ からは決まらず、この問題はマーティンの公理やススリン問題（\ref{set:ma-ccc-product}, \ref{set:suslin-square}）につながっていく。
+
+## 記法と定義の確認 {#set:sec-ccc-notation}
+
+::: notation
+- 本章は $\ZFC^{-}$（\ref{set:zf-subsystems}）の中で議論する。選択公理（AC）を使う箇所は各証明の「前提条件の使用箇所」に明記する。
+- 可算・非可算は \ref{set:finite-set} の意味で用いる（$A$ が可算 $\iff$ 単射 $A\to\omega$ がある）。AC のもとでは、$A$ が非可算であることと単射 $\omega_{1}\to A$ があることは同値である（\ref{set:every-set-cardinality}）。可算個の可算集合の和は可算である（\ref{set:union-bound}、AC）。
+- $\omega$ の有限列全体 ${}^{<\omega}\omega$ は可算である（\ref{set:kappa-finite-sequences}）。${}^{B}A$ は $B$ から $A$ への写像全体（\ref{set:function-set}）、$2=\{0,1\}$ である。
+- **位相空間** $X$ の開集合、閉集合、閉包 $\overline{A}$、内部 $\operatorname{int}A$、連続写像、同相写像は通常の意味（\ref{top:topological-space}）。開集合族 $\mathcal{B}$ が $X$ の**開基**であるとは、任意の開集合 $U$ と $x\in U$ に対し $x\in B\subseteq U$ となる $B\in\mathcal{B}$ があることをいう。次の事実を繰り返し使う：**開集合 $V$ が $A$ と交わらなければ $V$ は $\overline{A}$ とも交わらない**（$X\setminus V$ は $A$ を含む閉集合だから）。
+- $D\subseteq X$ が**稠密**であるとは $\overline{D}=X$、すなわち空でない開集合がすべて $D$ と交わることをいう。可算な稠密部分集合をもつ空間を**可分**という（\ref{top:separable-space}）。
+- **直積空間.** 位相空間の族 $\langle X_{i}\mid i\in I\rangle$ の直積 $\prod_{i\in I}X_{i}=\{x\mid x\text{ は写像},\ \dom x=I,\ \forall i\in I\ (x(i)\in X_{i})\}$ に直積位相（\ref{top:product-topology}）を入れる。ここでは次の形で用いる。**有限開条件**とは、$\dom\sigma$ が $I$ の有限部分集合で、各 $i\in\dom\sigma$ について $\sigma(i)$ が $X_{i}$ の空でない開集合であるような写像 $\sigma$ のことであり、
+$$
+[\sigma]=\Bigl\{x\in\prod_{i\in I}X_{i}\Bigm\vert\forall i\in\dom\sigma\ \bigl(x(i)\in\sigma(i)\bigr)\Bigr\}
+$$
+を**基本開集合**、$\dom\sigma$ をその**台**と呼ぶ。基本開集合全体が直積位相の開基である。$I=\varnothing$ のとき $\prod_{i\in\varnothing}X_{i}=\{\varnothing\}$ は 1 点空間である。$r\subseteq I$ に対し $\prod_{i\in r}X_{i}$ にも同様に直積位相を入れ、$x\mapsto x\restr{r}$ を**射影**という。
+- 集合 $I$ に対し、$2$ に離散位相を入れたときの直積 ${}^{I}2=\prod_{i\in I}2$ を**カントール立方体**と呼ぶ。基本開集合は、$I$ の有限部分集合上の写像 $s\colon\dom s\to 2$ を用いて $\{f\in{}^{I}2\mid s\subseteq f\}$ と書ける。
+:::
+
+## 可算鎖条件 {#set:sec-ccc-def}
+
+::: definition 可算鎖条件 {#set:ccc-space keywords="countable chain condition, ccc, c.c.c., Suslin property" index="可算鎖条件（位相空間）|かさんさじょうけんいそうくうかん, c.c.c. 空間|しーしーしーくうかん"}
+位相空間 $X$ が**可算鎖条件**（countable chain condition, **c.c.c.**）をもつとは、$X$ の空でない開集合からなる、どの 2 つも交わらない族がすべて可算であることをいう。すなわち、互いに交わらない空でない開集合の非可算な族が存在しないことである。
+:::
+
+::: intuition
+空間の中に「部屋」（空でない開集合）を互いに重ならないように並べるとき、並べられる個数は高々可算個である、という大きさの制限である。点の個数には何の制限もない（$\R$ は非可算だが c.c.c. をもつ）。制限されるのは「開集合として区別できる、独立な場所」の数である。
+
+名前に「鎖」とあるのは歴史的な事情による。実際に禁じているのは互いに交わらない族（半順序の言葉では反鎖）であり、空でない開集合全体を包含で順序づけた半順序が c.c.c.（\ref{set:ccc-poset}）をもつことと同値である。ただし鎖の言葉による同値な言い換えもある（\ref{set:ccc-closure-chain}）。
+:::
+
+::: example
+- **可算な空間**は c.c.c. をもつ。互いに交わらない空でない開集合の族 $\mathcal{U}$ があれば、単射 $e\colon X\to\omega$ を 1 つとり、$U\in\mathcal{U}$ に $\min e[U]$ を対応させると、族が互いに交わらないのでこれは単射 $\mathcal{U}\to\omega$ になる。
+- **非可算な離散空間** $X$ は c.c.c. をもたない。単集合 $\{x\}$（$x\in X$）が非可算個の、互いに交わらない空でない開集合である。
+- **$\R$** は c.c.c. をもつ。$\Q$ が可算稠密なので、次の \ref{set:separable-ccc} から従う。直接には、互いに交わらない空でない開区間の族の各元に、その中の有理数を 1 つ対応させればよい。
+- **密着空間**（開集合が $\varnothing$ と $X$ だけ）は、点がいくつあっても c.c.c. をもつ。
+:::
+
+c.c.c. は開基だけで判定でき、稠密部分空間・開部分空間・連続像に遺伝する。
+
+::: proposition c.c.c. の基本性質 {#set:ccc-basic keywords="ccc via a base, dense subspace, open subspace, continuous image" index="可算鎖条件の遺伝性|かさんさじょうけんのいでんせい"}
+$X$ を位相空間とする。
+1. （AC）$\mathcal{B}$ を $X$ の開基とする。$X$ が c.c.c. をもつことと、$\mathcal{B}$ の空でない元からなる、互いに交わらない族がすべて可算であることは同値である。
+2. $D\subseteq X$ が稠密ならば、$X$ が c.c.c. をもつことと、部分空間 $D$ が c.c.c. をもつことは同値である。
+3. $X$ が c.c.c. をもてば、$X$ の開集合 $O$ を部分空間とみたものも c.c.c. をもつ。
+4. $X$ が c.c.c. をもち、$f\colon X\to Y$ が連続な全射ならば、$Y$ も c.c.c. をもつ。
+:::
+
+::: proof
+**(1).** $X$ が c.c.c. をもてば、$\mathcal{B}$ の元からなる族はとくに開集合の族なので可算である。逆を対偶で示す。$\mathcal{U}$ を互いに交わらない空でない開集合の非可算な族とする。各 $U\in\mathcal{U}$ は空でないので点 $x\in U$ があり、開基の定義から $x\in B\subseteq U$ となる $B\in\mathcal{B}$ がある。すなわち $\mathcal{B}_{U}=\{B\in\mathcal{B}\mid\varnothing\ne B\subseteq U\}$ は空でない。選択公理により各 $U$ に $B_{U}\in\mathcal{B}_{U}$ を選ぶ。$U\ne U'$ なら $B_{U}\cap B_{U'}\subseteq U\cap U'=\varnothing$ で、$B_{U}\ne\varnothing$ なので $B_{U}\ne B_{U'}$。よって $U\mapsto B_{U}$ は単射であり、$\{B_{U}\mid U\in\mathcal{U}\}$ は $\mathcal{B}$ の空でない元からなる、互いに交わらない非可算な族である。
+
+**(2).** *$X$ が c.c.c. $\Rightarrow$ $D$ が c.c.c.* $\mathcal{W}$ を $D$ の空でない開集合からなる、互いに交わらない族とする。$W\in\mathcal{W}$ に対し
+$$
+V_{W}=\bigcup\{V\subseteq X\mid V\text{ は }X\text{ の開集合で }V\cap D\subseteq W\}
+$$
+とおく。$V_{W}$ は $X$ の開集合で、$V_{W}\cap D\subseteq W$ である。また部分空間位相の定義から $W=V\cap D$ となる $X$ の開集合 $V$ があり、この $V$ は和に含まれるので $W\subseteq V_{W}\cap D$。よって $V_{W}\cap D=W\ne\varnothing$ で、特に $V_{W}\ne\varnothing$。$W\ne W'$ とすると、$V_{W}\cap V_{W'}$ は $X$ の開集合であり、もし空でなければ $D$ の稠密性からある $d\in D$ を含み、$d\in W\cap W'=\varnothing$ となって矛盾する。したがって $\{V_{W}\mid W\in\mathcal{W}\}$ は $X$ の互いに交わらない空でない開集合の族であり、$W\mapsto V_{W}$ は（$W=V_{W}\cap D$ から）単射である。$X$ が c.c.c. をもつのでこの族は可算、よって $\mathcal{W}$ も可算である。
+
+*$D$ が c.c.c. $\Rightarrow$ $X$ が c.c.c.* $\mathcal{V}$ を $X$ の互いに交わらない空でない開集合の族とする。$D$ の稠密性から各 $V\cap D$ は空でなく、$D$ の開集合である。$V\ne V'$ なら $(V\cap D)\cap(V'\cap D)\subseteq V\cap V'=\varnothing$。よって $V\mapsto V\cap D$ は単射（像が空でなく互いに交わらないから）で、像は $D$ の互いに交わらない空でない開集合の族である。$D$ が c.c.c. をもつので可算であり、$\mathcal{V}$ も可算である。
+
+**(3).** $O$ が $X$ の開集合なら、$O$ の部分空間としての開集合はちょうど $X$ の開集合で $O$ に含まれるものである（$V\cap O$ は $X$ の開集合だから）。よって $O$ の互いに交わらない空でない開集合の族は $X$ のそれでもあり、可算である。
+
+**(4).** $\mathcal{V}$ を $Y$ の互いに交わらない空でない開集合の族とする。連続性から $f^{-1}[V]$ は $X$ の開集合、全射性から空でない。$V\ne V'$ なら $f^{-1}[V]\cap f^{-1}[V']=f^{-1}[V\cap V']=\varnothing$。よって $V\mapsto f^{-1}[V]$ は単射で、像は $X$ の互いに交わらない空でない開集合の族なので可算。ゆえに $\mathcal{V}$ も可算である。
+
+::: hypcheck
+- **選択公理**：(1) で各 $U$ に基本開集合 $B_{U}$ を選ぶのに使った。(2)–(4) は選択公理を使わない（(2) では $V_{W}$ を「最大のもの」として一意に定めることで選択を避けた）。
+- **稠密性**：(2) の両方向で、空でない開集合が $D$ と交わることに使った。
+- **全射性・連続性**：(4) で $f^{-1}[V]$ が空でない開集合であることに使った。
+- 分出・和集合の公理：$V_{W}$ や各族を集合として作るのに使う。
+:::
+:::
+
+::: supplement
+**閉部分空間には遺伝しない.** 前ページの \ref{set:ad-family-large} により、$\omega$ 上の概素族 $\mathcal{A}$ で $\lvert\mathcal{A}\rvert=2^{\aleph_{0}}$ のものがある。$\Psi=\omega\cup\mathcal{A}$（$\mathcal{A}$ の元は無限集合なので自然数ではなく、$\omega\cap\mathcal{A}=\varnothing$ である）に、
+$$
+\{\{n\}\mid n\in\omega\}\cup\bigl\{\{a\}\cup(a\setminus F)\bigm\vert a\in\mathcal{A},\ F\subseteq\omega\text{ は有限}\bigr\}
+$$
+を開基とする位相を入れる（マルーカの $\Psi$ 空間）。この族が開基の条件を満たすのは、2 つの元の交わりが、同じ $a$ についてなら $\{a\}\cup(a\setminus(F\cup F'))$、異なる $a,b$ についてなら有限集合 $a\cap b$ の部分集合（単集合 $\{n\}$ の和）になるからである。各 $a\in\mathcal{A}$ は無限集合なので、$a$ のどの基本近傍も $\omega$ の点を含み、$\omega$ は可算稠密である。よって $\Psi$ は可分で、\ref{set:separable-ccc} により c.c.c. をもつ。一方 $\mathcal{A}=\Psi\setminus\omega$ は（$\omega$ が開集合なので）閉集合で、各 $a$ について $\mathcal{A}\cap(\{a\}\cup a)=\{a\}$ だから部分空間として離散である。すなわち $\mathcal{A}$ は非可算な離散閉部分空間であり、c.c.c. をもたない。同じ現象はニェミツキ平面（\ref[ニェミツキ平面]{top:niemytzki-plane}）の $x$ 軸にも見られる。
+
+**任意の部分空間には遺伝しない.** 閉部分空間の例がそのまま任意部分空間の反例である。c.c.c. が開部分空間と稠密部分空間には遺伝するのは、これらの部分空間の開集合が「全体の開集合の跡」として全体の開集合の非交和構造を保つからである。
+:::
+
+「鎖」という名前の由来を説明する同値な言い換えを示しておく。
+
+::: proposition 鎖による言い換え {#set:ccc-closure-chain keywords="ccc via increasing chains of open sets, regular open sets" index="可算鎖条件の言い換え|かさんさじょうけんのいいかえ"}
+（AC）位相空間 $X$ について次は同値である。
+1. $X$ は c.c.c. をもつ。
+2. 開集合の列 $\langle U_{\alpha}\mid\alpha<\omega_{1}\rangle$ で、$\alpha<\beta<\omega_{1}$ ならつねに $\overline{U_{\alpha}}\subsetneq\overline{U_{\beta}}$ となるものは存在しない。
+:::
+
+::: intuition
+「開集合の閉包が長さ $\omega_{1}$ にわたって真に増え続ける」ことは、「増えるたびに新しい部屋が 1 つ現れる」ことと同じである。増分 $U_{\alpha+1}\setminus\overline{U_{\alpha}}$ を集めれば互いに交わらない部屋の族になり、逆に部屋の族 $\langle V_{\xi}\rangle$ があれば、最初の $\alpha$ 個の和をとって真に増える鎖が作れる。閉包をとるのは本質的で、閉包なしの「開集合の真の増大列」は c.c.c. 空間にも存在しうる（\ref{set:cantor-cube-increasing}）。
+:::
+
+::: proof
+**(2) $\Rightarrow$ (1)（対偶）.** $X$ が c.c.c. をもたないとし、$\mathcal{V}$ を互いに交わらない空でない開集合の非可算な族とする。
+
+**Step 1.** 選択公理のもとで $\mathcal{V}$ は非可算なので単射 $\omega_{1}\to\mathcal{V}$ があり、$\xi\mapsto V_{\xi}$ と書く。$\xi\ne\eta$ なら $V_{\xi}\ne V_{\eta}$ なので $V_{\xi}\cap V_{\eta}=\varnothing$。
+
+**Step 2.** $\alpha<\omega_{1}$ に対し $U_{\alpha}=\bigcup_{\xi<\alpha}V_{\xi}$ とおく（開集合の和なので開集合）。$\alpha<\beta$ とする。$U_{\alpha}\subseteq U_{\beta}$ なので $\overline{U_{\alpha}}\subseteq\overline{U_{\beta}}$。
+
+**Step 3（真の包含）.** $\alpha<\beta$ より $V_{\alpha}\subseteq U_{\beta}\subseteq\overline{U_{\beta}}$。一方 $\xi<\alpha$ なら $\xi\ne\alpha$ なので $V_{\alpha}\cap V_{\xi}=\varnothing$、よって $V_{\alpha}\cap U_{\alpha}=\varnothing$。$V_{\alpha}$ は開集合なので $V_{\alpha}\cap\overline{U_{\alpha}}=\varnothing$。$V_{\alpha}\ne\varnothing$ だから $V_{\alpha}$ の点は $\overline{U_{\beta}}\setminus\overline{U_{\alpha}}$ に属し、$\overline{U_{\alpha}}\subsetneq\overline{U_{\beta}}$。したがって (2) が否定される。
+
+**(1) $\Rightarrow$ (2)（対偶）.** $\langle U_{\alpha}\mid\alpha<\omega_{1}\rangle$ が (2) の性質をもつ列とする。
+
+**Step 4.** $\alpha<\omega_{1}$ に対し $W_{\alpha}=U_{\alpha+1}\setminus\overline{U_{\alpha}}=U_{\alpha+1}\cap(X\setminus\overline{U_{\alpha}})$ とおく。これは 2 つの開集合の交わりなので開集合である。
+
+**Step 5（$W_{\alpha}\ne\varnothing$）.** $W_{\alpha}=\varnothing$ なら $U_{\alpha+1}\subseteq\overline{U_{\alpha}}$ であり、右辺は閉集合なので $\overline{U_{\alpha+1}}\subseteq\overline{U_{\alpha}}$。これは $\alpha<\alpha+1$ に対する仮定 $\overline{U_{\alpha}}\subsetneq\overline{U_{\alpha+1}}$ に反する。
+
+**Step 6（互いに交わらない）.** $\alpha<\beta<\omega_{1}$ とする。$\alpha+1\le\beta$ なので、仮定（$\alpha+1<\beta$ の場合）または等号（$\alpha+1=\beta$ の場合）により $\overline{U_{\alpha+1}}\subseteq\overline{U_{\beta}}$。よって $W_{\alpha}\subseteq U_{\alpha+1}\subseteq\overline{U_{\beta}}$。一方 $W_{\beta}\cap\overline{U_{\beta}}=\varnothing$。ゆえに $W_{\alpha}\cap W_{\beta}=\varnothing$。
+
+**Step 7.** Step 5, 6 より $\alpha\mapsto W_{\alpha}$ は単射（空でなく互いに交わらないから）であり、$\{W_{\alpha}\mid\alpha<\omega_{1}\}$ は互いに交わらない空でない開集合の族で、$\omega_{1}$ から単射されるので非可算である（$\omega_{1}$ は非可算）。よって $X$ は c.c.c. をもたない。
+
+::: hypcheck
+- **選択公理**：Step 1 で、非可算な族を $\omega_{1}$ で重複なく番号づけるのに使った。(1) $\Rightarrow$ (2) の方向（Step 4–7）は選択公理を使わない。
+- **閉包の性質**：Step 3 で「開集合が $A$ と交わらなければ $\overline{A}$ とも交わらない」、Step 5 で「閉集合に含まれる集合の閉包もその閉集合に含まれる」を使った。
+- **後続順序数**：Step 4–6 で $\alpha+1<\omega_{1}$ と $\alpha<\beta\Rightarrow\alpha+1\le\beta$（\ref{set:successor-basic}）を使った。
+:::
+:::
+
+::: supplement
+**正則開集合による形.** 開集合 $U$ が $U=\operatorname{int}\overline{U}$ を満たすとき**正則開集合**という。正則開集合 $U,V$ について $U\subsetneq V$ なら $\overline{U}\subsetneq\overline{V}$ である（$\overline{U}=\overline{V}$ なら $U=\operatorname{int}\overline{U}=\operatorname{int}\overline{V}=V$）。また任意の開集合 $U$ について $\operatorname{int}\overline{U}$ は正則開集合で、$\overline{\operatorname{int}\overline{U}}=\overline{U}$ である（$U\subseteq\operatorname{int}\overline{U}\subseteq\overline{U}$ の閉包をとる。正則性は $\operatorname{int}\overline{\operatorname{int}\overline{U}}=\operatorname{int}\overline{U}$ から）。したがって上の証明の $U_{\alpha}$ を $\operatorname{int}\overline{U_{\alpha}}$ に取り替えれば、次が得られる：
+
+> $X$ が c.c.c. をもつ $\iff$ 正則開集合の、包含について真に増大する長さ $\omega_{1}$ の列（非可算な整列鎖）が存在しない。
+
+正則開集合全体は完備ブール代数（\ref{set:complete-boolean-algebra}）をなし、この言い換えはブール代数の c.c.c. の「鎖」による特徴づけの特別な場合である。
+:::
+
+## 可分空間は c.c.c. をもつ {#set:sec-separable-ccc}
+
+::: lemma 可分空間は c.c.c. {#set:separable-ccc keywords="separable implies ccc" index="可分空間と可算鎖条件|かぶんくうかんとかさんさじょうけん"}
+可分な位相空間は c.c.c. をもつ。
+:::
+
+::: intuition
+互いに交わらない部屋のそれぞれに、可算稠密集合 $D$ の点が少なくとも 1 つ入る。部屋が違えば入っている点も違うので、部屋の数は $D$ の点の数（可算）を超えない。
+:::
+
+::: proof
+**Step 1.** $X$ を可分とし、可算な稠密部分集合 $D$ をとる。可算の定義から単射 $e\colon D\to\omega$ がある。これを 1 つ固定する。
+
+**Step 2.** $\mathcal{U}$ を $X$ の互いに交わらない空でない開集合の族とする。$U\in\mathcal{U}$ は空でない開集合なので、稠密性から $U\cap D\ne\varnothing$、よって $e[U\cap D]$ は $\omega$ の空でない部分集合であり、最小元をもつ。そこで
+$$
+g(U)=\min e[U\cap D]\in\omega
+$$
+と定める。
+
+**Step 3（$g$ は単射）.** $U,U'\in\mathcal{U}$ で $g(U)=g(U')=n$ とする。$e$ は単射なので $n=e(d)$ となる $d$ がただ一つあり、$d\in U\cap D$ かつ $d\in U'\cap D$。よって $U\cap U'\ne\varnothing$ であり、$\mathcal{U}$ の相異なる 2 元は交わらないから $U=U'$。
+
+**Step 4.** $g\colon\mathcal{U}\to\omega$ は単射なので、$\mathcal{U}$ は可算である。
+
+::: hypcheck
+- **稠密性**：Step 2 で $U\cap D\ne\varnothing$ に使った。
+- **$D$ が可算であること**：Step 1 の単射 $e$ に使った。
+- **族が互いに交わらないこと**：Step 3 で使った。
+- 選択公理は使わない：点の選択を「$e$ の値が最小の点」として一意に行った（$e$ は 1 つ固定するだけなので選択は要らない）。したがって本補題は $\ZF$ で成り立つ。
+:::
+:::
+
+::: example
+- $\R^{n}$、$[0,1]^{n}$（$\Q^{n}$ が稠密）、カントール空間 ${}^{\omega}2$（最終的に $0$ になる列全体が稠密）、ゾルゲンフライ直線（$\Q$ が稠密）はすべて可分であり、したがって c.c.c. をもつ。
+- 上の $\Psi$ 空間（\ref{set:ccc-basic} の補足）も可分なので c.c.c. をもつ。
+:::
+
+::: supplement
+**逆は成り立たない.** c.c.c. をもつが可分でない空間の例として、$\kappa>2^{\aleph_{0}}$ に対するカントール立方体 ${}^{\kappa}2$ がある（\ref{set:ccc-not-separable}）。これはコンパクト・ハウスドルフでさえある。ススリン直線（\ref{set:suslin-line}）は、存在すれば、c.c.c. だが可分でない全順序空間であり、その存在は $\ZFC$ から独立である。
+
+**距離空間では同値.** （AC）距離化可能な空間では c.c.c. と可分性は同値である。c.c.c. な距離空間 $(X,d)$ をとる。各 $n\ge1$ について、どの 2 点の距離も $1/n$ 以上であるような部分集合（$1/n$-離散集合）は包含で順序づけると鎖の和がまた $1/n$-離散になるので、ツォルンの補題（\ref{set:zorn}）により極大な $1/n$-離散集合 $S_{n}$ がある。$S_{n}$ の各点を中心とする半径 $1/(2n)$ の開球は互いに交わらないので、c.c.c. より $S_{n}$ は可算。極大性から任意の点は $S_{n}$ のある点から距離 $1/n$ 未満にある。よって可算集合 $\bigcup_{n\ge1}S_{n}$（\ref{set:union-bound}）はすべての開球と交わり、稠密である。
+:::
+
+## 直積と可算鎖条件 {#set:sec-ccc-products}
+
+c.c.c. と直積の関係の中心となるのが次の定理である。Δ システム補題により、非可算個の基本開集合の台を「共通の根 $r$ と互いに交わらない花びら」の形にそろえると、交わるかどうかは根 $r$ 上の座標だけで決まることになる。
+
+::: theorem 有限部分積による判定 {#set:ccc-product-finite keywords="product of ccc spaces, ccc is productive iff finitely productive" index="可算鎖条件と直積|かさんさじょうけんとちょくせき"}
+（AC）$\langle X_{i}\mid i\in I\rangle$ を位相空間の族とし、$I$ の任意の有限部分集合 $r$ について $\prod_{i\in r}X_{i}$ が c.c.c. をもつとする。このとき $\prod_{i\in I}X_{i}$ も c.c.c. をもつ。
+:::
+
+::: intuition
+非可算個の互いに交わらない基本開集合 $[\sigma_{\alpha}]$ があったとする。それぞれは有限個の座標 $\dom\sigma_{\alpha}$ しか制約していない。Δ システム補題で非可算個に絞ると、台どうしの交わりがすべて同じ有限集合 $r$ になる。$r$ の外では、2 つの集合が制約する座標は重ならないので、互いに矛盾しようがない。したがって $[\sigma_{\alpha}]$ と $[\sigma_{\beta}]$ が交わらない理由は $r$ 上の座標にしかありえず、$r$ への射影が互いに交わらない非可算族になる。これは有限積 $\prod_{i\in r}X_{i}$ の c.c.c. に反する。
+:::
+
+::: proof
+対偶を示す。$\prod_{i\in I}X_{i}$ が c.c.c. をもたないと仮定し、ある有限 $r\subseteq I$ について $\prod_{i\in r}X_{i}$ が c.c.c. をもたないことを示す。
+
+**Step 1（基本開集合に取り替える）.** 基本開集合全体は開基なので、\ref{set:ccc-basic} (1) により、互いに交わらない空でない基本開集合の非可算な族がある。選択公理により、それを $\omega_{1}$ で重複なく番号づけ（\ref{set:every-set-cardinality}）、さらに各元を表す有限開条件を 1 つずつ選ぶ。こうして有限開条件の列 $\langle\sigma_{\alpha}\mid\alpha<\omega_{1}\rangle$ で、
+$$
+U_{\alpha}=[\sigma_{\alpha}]\ne\varnothing,\qquad \alpha\ne\beta\ \Rightarrow\ U_{\alpha}\cap U_{\beta}=\varnothing
+$$
+となるものを得る。$a_{\alpha}=\dom\sigma_{\alpha}$ とおく。これは $I$ の有限部分集合である。
+
+**Step 2（台を Δ システムにそろえる）.** 次を満たす非可算な $A\subseteq\omega_{1}$ と有限集合 $r\subseteq I$ があることを示す：
+$$
+\alpha,\beta\in A,\ \alpha\ne\beta\ \Longrightarrow\ a_{\alpha}\cap a_{\beta}=r.
+\label{set:eq-ccc-product-root}
+$$
+- *Case A：集合 $\mathcal{S}=\{a_{\alpha}\mid\alpha<\omega_{1}\}$ が可算の場合.* $\omega_{1}=\bigcup_{a\in\mathcal{S}}\{\alpha<\omega_{1}\mid a_{\alpha}=a\}$ である。右辺の各集合がすべて可算なら、可算個の可算集合の和として $\omega_{1}$ が可算になり（\ref{set:union-bound}）矛盾する。よってある $a\in\mathcal{S}$ について $A=\{\alpha\mid a_{\alpha}=a\}$ は非可算である。$r=a$ とおけば、$\alpha,\beta\in A$ について $a_{\alpha}\cap a_{\beta}=a\cap a=a=r$。
+- *Case B：$\mathcal{S}$ が非可算の場合.* $\mathcal{S}$ は有限集合からなる非可算な族なので、Δ システム補題（\ref{set:delta-system-lemma}）により、非可算な Δ システム $\mathcal{T}\subseteq\mathcal{S}$ があり、その根を $r$ とする（$\mathcal{T}$ の元 $b$ について $r\subseteq b$ なので $r$ は有限）。各 $b\in\mathcal{T}$ に対し $\alpha_{b}=\min\{\alpha<\omega_{1}\mid a_{\alpha}=b\}$ とおき、$A=\{\alpha_{b}\mid b\in\mathcal{T}\}$ とする。$b\mapsto\alpha_{b}$ は（$a_{\alpha_{b}}=b$ なので）単射だから $A$ は非可算。$\alpha\ne\beta$ が $A$ の元なら $a_{\alpha}\ne a_{\beta}$ はともに $\mathcal{T}$ の元なので、$a_{\alpha}\cap a_{\beta}=r$。
+
+**Step 3（根への射影）.** $\alpha\in A$ に対し、$\prod_{i\in r}X_{i}$ の部分集合
+$$
+W_{\alpha}=\Bigl\{t\in\prod_{i\in r}X_{i}\Bigm\vert\forall i\in r\ \bigl(t(i)\in\sigma_{\alpha}(i)\bigr)\Bigr\}
+$$
+を考える（$r\subseteq a_{\alpha}=\dom\sigma_{\alpha}$ なので意味をもつ）。これは $\prod_{i\in r}X_{i}$ の基本開集合 $[\sigma_{\alpha}\restr{r}]$ であり、開集合である。$U_{\alpha}\ne\varnothing$ なので点 $y\in U_{\alpha}$ があり、$y\restr{r}\in W_{\alpha}$。よって $W_{\alpha}\ne\varnothing$。
+
+**Step 4（$W_{\alpha}$ は互いに交わらない）.** $\alpha\ne\beta$ を $A$ の元とし、$W_{\alpha}\cap W_{\beta}\ne\varnothing$ と仮定して $s\in W_{\alpha}\cap W_{\beta}$ をとる。また点 $y\in U_{\alpha}$, $z\in U_{\beta}$ をとる。$i\in I$ に対し
+$$
+x(i)=\begin{cases}s(i)&(i\in r),\\ z(i)&(i\in a_{\beta}\setminus r),\\ y(i)&(i\notin a_{\beta}).\end{cases}
+$$
+と定めると、$x\in\prod_{i\in I}X_{i}$ である。$x\in U_{\alpha}\cap U_{\beta}$ を確かめる。
+- $i\in a_{\alpha}$ のとき：$i\in r$ なら $x(i)=s(i)\in\sigma_{\alpha}(i)$（$s\in W_{\alpha}$）。$i\in a_{\alpha}\setminus r$ なら、\eqref{set:eq-ccc-product-root} より $a_{\alpha}\cap a_{\beta}=r$ なので $i\notin a_{\beta}$、よって $x(i)=y(i)\in\sigma_{\alpha}(i)$（$y\in U_{\alpha}$）。ゆえに $x\in[\sigma_{\alpha}]=U_{\alpha}$。
+- $i\in a_{\beta}$ のとき：$i\in r$ なら $x(i)=s(i)\in\sigma_{\beta}(i)$（$s\in W_{\beta}$）。$i\in a_{\beta}\setminus r$ なら $x(i)=z(i)\in\sigma_{\beta}(i)$（$z\in U_{\beta}$）。ゆえに $x\in U_{\beta}$。
+
+これは $U_{\alpha}\cap U_{\beta}=\varnothing$（Step 1）に反する。よって $W_{\alpha}\cap W_{\beta}=\varnothing$。
+
+**Step 5（結論）.** Step 3, 4 より $\alpha\mapsto W_{\alpha}$（$\alpha\in A$）は単射であり、$\{W_{\alpha}\mid\alpha\in A\}$ は $\prod_{i\in r}X_{i}$ の互いに交わらない空でない開集合の非可算な族である。したがって有限集合 $r$ について $\prod_{i\in r}X_{i}$ は c.c.c. をもたない。これで対偶が示された。
+
+（$r=\varnothing$ となることは実際にはない：$\prod_{i\in\varnothing}X_{i}$ は 1 点空間で、その空でない開集合は全体だけなので、互いに交わらない 2 つの空でない開集合は存在しない。上の議論はこの場合も含めて正しく、Step 4 は「台が互いに交わらない 2 つの基本開集合は必ず交わる」ことを示している。）
+
+::: hypcheck
+- **選択公理**：Step 1 で \ref{set:ccc-basic} (1) を使い、族を $\omega_{1}$ で番号づけ、有限開条件を選ぶのに使った。Step 2 の \ref{set:union-bound} と Δ システム補題（\ref{set:delta-system-lemma}）も選択公理に依存する。
+- **Δ システム補題**：Step 2 の Case B。台が有限集合であることがここで効く。
+- **有限部分積の c.c.c.**：Step 5 で使った仮定はこれだけであり、実際に必要なのは根 $r$ に現れる有限集合についてのみである。
+- Step 4 で $x$ を作るのに追加の選択は要らない：点 $y,z,s$ を 1 つずつとるだけで、各座標の値はそこから一意に決まる。
+- 置換・和集合・分出：$W_{\alpha}$ の族や $x$ を集合として作るのに使う。
+:::
+:::
+
+::: supplement
+**2 個の積で決まる.** 次の系により、「任意の 2 つの c.c.c. 空間の積は c.c.c.」が成り立てば、c.c.c. は任意個の直積で保たれる。ところがこの前提自体が $\ZFC$ から独立である。
+- $\mathrm{MA}+\neg\mathrm{CH}$ のもとでは、c.c.c. 空間の積は c.c.c. である（\ref{set:ma-ccc-product}）。
+- ススリン直線 $L$ が存在すれば（\ref{set:suslin-line}）、$L$ は c.c.c. だが $L\times L$ は c.c.c. でない（\ref{set:suslin-square}）。
+- CH のもとでも、積が c.c.c. でない 2 つの c.c.c. 空間が存在する（Kunen, *Set Theory*, 第 VIII 章の演習）。
+
+**半順序の場合.** 同じ証明で、半順序の族の有限台積（\ref{set:ccc-poset}）について「有限個の因子の積がすべて c.c.c. なら全体の有限台積も c.c.c.」が示せる。ただし 2 つの c.c.c. 半順序の積が c.c.c. とは限らない（空間の場合と同じく $\ZFC$ から決まらない）ので、「有限台積が c.c.c. を保つ」わけではない。有限台反復が c.c.c. を保つことは別の議論による。
+
+**台の有限性.** 直積位相の代わりに箱位相（すべての $\prod U_{i}$ を開基とする）を入れると、定理は成り立たない。${}^{\omega}2$ の箱位相は離散位相で、$2^{\aleph_{0}}$ 個の点が互いに交わらない開集合をなすが、有限個の $2$ の積は有限なので c.c.c. である。Δ システム補題が使えるのは台が有限だからである。
+:::
+
+::: corollary {#set:ccc-product-two-to-all keywords="if the product of two ccc spaces is always ccc then all products are ccc" index="可算鎖条件の直積の保存|かさんさじょうけんのちょくせきのほぞん"}
+（AC）「任意の 2 つの c.c.c. 空間 $X,Y$ について $X\times Y$ が c.c.c. をもつ」と仮定する。このとき、c.c.c. 空間の任意の族 $\langle X_{i}\mid i\in I\rangle$ について $\prod_{i\in I}X_{i}$ は c.c.c. をもつ。
+:::
+
+::: proof
+**Step 1（有限積）.** 有限集合 $r\subseteq I$ について $\prod_{i\in r}X_{i}$ が c.c.c. をもつことを、$\lvert r\rvert$ についての帰納法（\ref{set:peano}）で示す。$r=\varnothing$ なら 1 点空間なので c.c.c.。$r\ne\varnothing$ とし、$j\in r$、$r'=r\setminus\{j\}$ とする。写像
+$$
+h\colon\prod_{i\in r}X_{i}\to\Bigl(\prod_{i\in r'}X_{i}\Bigr)\times X_{j},\qquad h(x)=(x\restr{r'},\,x(j))
+$$
+は全単射である（逆写像は $(t,u)\mapsto t\cup\{(j,u)\}$）。$\dom\sigma\subseteq r$ の有限開条件 $\sigma$ について、$h[[\sigma]]=[\sigma\restr{r'}]\times\sigma(j)$（$j\notin\dom\sigma$ のときは $\sigma(j)$ の代わりに $X_{j}$）であり、右辺の形の集合全体は右側の直積空間の開基である。開基を開基に全単射で移すので $h$ は同相写像である。帰納法の仮定により $\prod_{i\in r'}X_{i}$ は c.c.c.、$X_{j}$ も c.c.c. なので、仮定により右辺は c.c.c.、したがって同相な左辺も c.c.c. である。
+
+**Step 2.** Step 1 より有限部分積はすべて c.c.c. なので、\ref{set:ccc-product-finite} より $\prod_{i\in I}X_{i}$ は c.c.c. をもつ。
+
+::: hypcheck
+- **2 つの積についての仮定**：Step 1 の帰納法の各段階で使った。
+- **選択公理**：Step 2 で \ref{set:ccc-product-finite} を使うのに必要。Step 1 は選択公理を使わない。
+- **自然数についての帰納法**：Step 1（有限集合の大きさ $\lvert r\rvert<\omega$ について）。
+:::
+:::
+
+::: corollary 可分空間の直積 {#set:separable-product-ccc keywords="products of separable spaces are ccc, Cantor cube is ccc" index="カントール立方体|かんとーるりっぽうたい"}
+（AC）可分空間の任意個の直積は c.c.c. をもつ。特に任意の集合 $I$ について、カントール立方体 ${}^{I}2$ と $[0,1]^{I}$ は c.c.c. をもつ。
+:::
+
+::: proof
+**Step 1（有限積は可分）.** $r$ を有限集合、各 $X_{i}$（$i\in r$）を可分とする。$r$ が有限なので、有限個の選択（\ref{set:finite-choice}）により可算稠密部分集合 $D_{i}\subseteq X_{i}$ を選べる。$D=\prod_{i\in r}D_{i}$ は可算である：有限個の選択で単射 $e_{i}\colon D_{i}\to\omega$ を選び、全単射 $c\colon m\to r$（$m=\lvert r\rvert$）を 1 つ固定すると、$t\mapsto\langle e_{c(k)}(t(c(k)))\mid k<m\rangle$ は単射 $D\to{}^{m}\omega\subseteq{}^{<\omega}\omega$ であり、${}^{<\omega}\omega$ は可算（\ref{set:kappa-finite-sequences}）。空でない基本開集合 $[\sigma]$（$\dom\sigma\subseteq r$）について、各 $i\in\dom\sigma$ で $\sigma(i)\cap D_{i}\ne\varnothing$、各 $i\in r\setminus\dom\sigma$ で $D_{i}\ne\varnothing$（$X_{i}\ne\varnothing$ のとき。どれかの $X_{i}$ が空なら積は空で自明に可分）なので、再び有限個の選択で $t(i)$ を選べば $t\in[\sigma]\cap D$。よって $D$ は稠密で、有限積は可分である。
+
+**Step 2.** Step 1 と \ref{set:separable-ccc} より有限部分積はすべて c.c.c. なので、\ref{set:ccc-product-finite} により全体の積は c.c.c. である。$2$（有限）と $[0,1]$（$\Q\cap[0,1]$ が稠密）は可分である。
+
+::: hypcheck
+- **有限個の選択**：Step 1（$\ZF$ で証明できる）。
+- **選択公理**：Step 2 で \ref{set:ccc-product-finite} を使うのに必要。
+:::
+:::
+
+::: example 閉包なしの増大列 {#set:cantor-cube-increasing}
+\ref{set:ccc-closure-chain} で閉包を外すと同値性は崩れる。$X={}^{\omega_{1}}2$ は \ref{set:separable-product-ccc} より c.c.c. をもつ。$\alpha<\omega_{1}$ に対し
+$$
+U_{\alpha}=\{f\in{}^{\omega_{1}}2\mid\exists\xi<\alpha\ (f(\xi)=1)\}=\bigcup_{\xi<\alpha}\{f\mid f(\xi)=1\}
+$$
+とおくと、これは基本開集合の和なので開集合である。$\alpha<\beta$ なら $U_{\alpha}\subseteq U_{\beta}$ で、$\alpha$ でだけ値 $1$ をとる $e_{\alpha}$（$e_{\alpha}(\xi)=1\iff\xi=\alpha$）は $\alpha<\beta$ より $e_{\alpha}\in U_{\beta}$、一方 $\xi<\alpha$ で $e_{\alpha}(\xi)=0$ なので $e_{\alpha}\notin U_{\alpha}$。よって開集合の真の増大列 $\langle U_{\alpha}\mid\alpha<\omega_{1}\rangle$ が c.c.c. 空間の中にある。実際、$\alpha\ge\omega$ なら $U_{\alpha}$ は稠密（任意の基本開集合は有限個の座標しか制約しないので、制約されない $n<\omega$ で値 $1$ をとる元を含む）で、閉包は $\alpha\ge\omega$ で $X$ に一致して止まっている。
+:::
+
+## 可分性と直積 {#set:sec-separable-products}
+
+c.c.c. と違い、可分性は任意個の直積で保たれるとは限らない。境目はちょうど因子の個数 $2^{\aleph_{0}}$ にある。
+
+::: theorem ヒューイット＝マルチェフスキ＝ポンディチェリの定理 {#set:hmp-theorem keywords="Hewitt–Marczewski–Pondiczery theorem, product of at most continuum many separable spaces" index="ヒューイット＝マルチェフスキ＝ポンディチェリの定理|ひゅーいっとまるちぇふすきぽんでぃちぇりのていり"}
+（AC）$\lvert I\rvert\le2^{\aleph_{0}}$ とし、各 $X_{i}$（$i\in I$）を可分空間とする。このとき $\prod_{i\in I}X_{i}$ は可分である。
+:::
+
+::: intuition
+座標 $i$ を $0,1$ 列 $e(i)\in{}^{\omega}2$ で名づける。有限個の座標は、十分長い有限の長さ $n$ で切れば名前の頭 $e(i)\restr{n}$ で区別できる。そこで「長さ $n$ の頭ごとに、各因子の稠密集合の何番目の点を置くか」を指定した点を考える。頭は $2^{n}$ 通りしかないので、こうした点は全部で可算個であり、どの基本開集合（有限個の座標の制約）にもそのうちのどれかが入る。
+:::
+
+::: proof
+**Step 1（準備）.** どれかの $X_{i}$ が空なら積は空で、空集合が可算稠密なので自明。以下すべて空でないとする。$\lvert I\rvert\le2^{\aleph_{0}}=\lvert{}^{\omega}2\rvert$ なので単射 $e\colon I\to{}^{\omega}2$ がある。選択公理により各 $i$ について可算稠密部分集合 $D_{i}\subseteq X_{i}$ と全射 $d_{i}\colon\omega\to D_{i}$ を選ぶ（$D_{i}\ne\varnothing$ なので可算集合への全射がある）。
+
+**Step 2（可算集合 $E$ の定義）.** $n<\omega$ と $t\in{}^{({}^{n}2)}\omega$（長さ $n$ の $0,1$ 列から $\omega$ への写像）に対し、点 $\varphi_{n,t}\in\prod_{i\in I}X_{i}$ を
+$$
+\varphi_{n,t}(i)=d_{i}\bigl(t(e(i)\restr{n})\bigr)\qquad(i\in I)
+\label{set:eq-hmp-point}
+$$
+で定め、$E=\{\varphi_{n,t}\mid n<\omega,\ t\in{}^{({}^{n}2)}\omega\}$ とおく。
+
+**Step 3（$E$ は可算）.** 添字の集合 $T=\{(n,t)\mid n<\omega,\ t\in{}^{({}^{n}2)}\omega\}$ が可算であることを示せば、$E$ はその像なので可算である（可算集合 $T$ の単射 $T\to\omega$ を使い、各点に番号が最小の添字を対応させれば単射 $E\to\omega$ が得られる）。${}^{n}2$ を辞書式順序で $u_{0},\dots,u_{2^{n}-1}$ と並べ、$(n,t)$ に長さ $2^{n}$ の列 $\langle t(u_{0}),\dots,t(u_{2^{n}-1})\rangle\in{}^{<\omega}\omega$ を対応させる。列の長さから $n$ が、成分から $t$ が復元できるのでこれは単射であり、${}^{<\omega}\omega$ は可算（\ref{set:kappa-finite-sequences}）なので $T$ も可算である。
+
+**Step 4（$E$ は稠密）.** 空でない基本開集合 $[\sigma]$ をとり、$F=\dom\sigma$（有限）とする。
+- 各 $i\in F$ について $\sigma(i)$ は $X_{i}$ の空でない開集合で $D_{i}$ は稠密なので、$\sigma(i)\cap D_{i}\ne\varnothing$。$d_{i}$ は全射なので $k_{i}=\min\{k<\omega\mid d_{i}(k)\in\sigma(i)\}$ が定まる。
+- $e$ は単射なので、相異なる $i,j\in F$ について $e(i)\ne e(j)$ であり、$e(i)(m)\ne e(j)(m)$ となる最小の $m=m_{ij}$ がある。$F$ は有限なので $n=1+\max\{m_{ij}\mid i,j\in F,\ i\ne j\}$（$\lvert F\rvert\le1$ なら $n=0$）とおけば、相異なる $i,j\in F$ について $e(i)\restr{n}\ne e(j)\restr{n}$。すなわち $i\mapsto e(i)\restr{n}$ は $F$ 上で単射である。
+- そこで $t\in{}^{({}^{n}2)}\omega$ を、$u=e(i)\restr{n}$（$i\in F$）なら $t(u)=k_{i}$、それ以外の $u$ では $t(u)=0$ と定める。前項により $i$ は $u$ から一意に決まるので、$t$ は矛盾なく定義される。
+
+このとき各 $i\in F$ について \eqref{set:eq-hmp-point} より $\varphi_{n,t}(i)=d_{i}(t(e(i)\restr{n}))=d_{i}(k_{i})\in\sigma(i)$。よって $\varphi_{n,t}\in[\sigma]\cap E$。基本開集合は開基をなすので、$E$ はすべての空でない開集合と交わり、稠密である。
+
+::: hypcheck
+- **選択公理**：Step 1 で、$I$ の各元について稠密集合 $D_{i}$ とその数え上げ $d_{i}$ を同時に選ぶのに使った（$I$ は無限でありうる）。
+- **$\lvert I\rvert\le2^{\aleph_{0}}$**：Step 1 の単射 $e$ に使った。Step 4 で $e$ の単射性により有限個の座標を頭で区別した。
+- **各 $X_{i}$ の可分性**：Step 1, 4 で使った。
+- **有限列の可算性**：Step 3 で使った。Step 4 の $k_{i}$ や $n$ は最小元として一意に定めたので、ここでは選択は要らない。
+:::
+:::
+
+::: example
+$\lvert\R\rvert=2^{\aleph_{0}}$ なので、${}^{\R}2$（$\R$ 上の $0,1$ 値関数全体に各点収束の位相を入れたもの）や $\R^{\R}$ は可分である。後者で言えば、$\R$ から $\R$ への関数を「有限個の点での値」で近似するとき、可算個の関数だけで間に合う。
+:::
+
+::: theorem 大きなカントール立方体は可分でない {#set:cantor-cube-not-separable keywords="2^kappa is not separable for kappa > continuum" index="カントール立方体の可分性|かんとーるりっぽうたいのかぶんせい"}
+$\kappa$ を集合とし、単射 $\kappa\to{}^{\omega}2$ が存在しないとする（AC のもとでは $\lvert\kappa\rvert>2^{\aleph_{0}}$）。このとき ${}^{\kappa}2$ は可分でない。
+:::
+
+::: intuition
+可算個の点 $f_{0},f_{1},\dots$ が与えられると、各座標 $\alpha$ にはそれらの点での値の列 $\langle f_{n}(\alpha)\mid n<\omega\rangle\in{}^{\omega}2$ という「指紋」が付く。座標が $2^{\aleph_{0}}$ 個より多ければ、同じ指紋をもつ 2 つの座標 $\alpha\ne\beta$ がある。すると可算集合のどの点も $\alpha$ と $\beta$ で同じ値をとるので、「$\alpha$ で $0$、$\beta$ で $1$」という基本開集合を避けてしまう。
+:::
+
+::: proof
+**Step 1.** 可算集合 $D\subseteq{}^{\kappa}2$ を任意にとり、稠密でないことを示す。$D=\varnothing$ なら（${}^{\kappa}2\ne\varnothing$ なので）稠密でない。$D\ne\varnothing$ なら、可算性から全射 $n\mapsto f_{n}$、$\omega\to D$ を 1 つとる。
+
+**Step 2（指紋写像）.** $\alpha\in\kappa$ に対し $g_{\alpha}\in{}^{\omega}2$ を $g_{\alpha}(n)=f_{n}(\alpha)$ で定める。仮定より $\alpha\mapsto g_{\alpha}$ は単射でないので、$\alpha\ne\beta$ で $g_{\alpha}=g_{\beta}$ となるものがある。すなわち、すべての $n$ について $f_{n}(\alpha)=f_{n}(\beta)$。$f_{n}$ は $D$ を尽くすので、すべての $f\in D$ について $f(\alpha)=f(\beta)$。
+
+**Step 3.** $V=\{f\in{}^{\kappa}2\mid f(\alpha)=0,\ f(\beta)=1\}$ は基本開集合であり、$\alpha$ で $0$、他のすべての座標で $1$ をとる関数を含むので空でない。$V$ の元は $\alpha$ と $\beta$ で値が異なるので、Step 2 より $V\cap D=\varnothing$。よって $D$ は稠密でない。
+
+**Step 4.** $D$ は任意の可算集合だったので、${}^{\kappa}2$ は可分でない。
+
+::: hypcheck
+- **仮定（単射 $\kappa\to{}^{\omega}2$ がない）**：Step 2 で使った。
+- 選択公理は使わない：Step 1 で全射を 1 つ固定するだけで、残りは一意に定義される。
+- 基本開集合 $V$ が空でないことに、座標が 2 つ以上あること（$\alpha\ne\beta$）と $2$ が 2 点をもつことを使った。
+:::
+:::
+
+::: supplement
+**一般化.** 同じ証明で、（AC のもとで）$\lvert I\rvert>2^{\aleph_{0}}$ かつ各 $X_{i}$ が互いに交わらない空でない開集合 $G_{i}^{0},G_{i}^{1}$ をもつ（例えば 2 点以上のハウスドルフ空間）なら、$\prod_{i\in I}X_{i}$ は可分でない。指紋として $g_{i}(n)=0\iff f_{n}(i)\in G_{i}^{0}$ を使う（値は $G_{i}^{0}$ に入るか否かで 2 値化される）と、$g_{\alpha}=g_{\beta}$ から「$\alpha$ 座標が $G_{\alpha}^{0}$、$\beta$ 座標が $G_{\beta}^{1}$」の基本開集合が $D$ を避ける。したがって \ref{set:hmp-theorem} の上限 $2^{\aleph_{0}}$ は最良である。
+:::
+
+::: corollary c.c.c. だが可分でないコンパクト空間 {#set:ccc-not-separable keywords="compact Hausdorff ccc non-separable space" index="可分でない可算鎖条件空間|かぶんでないかさんさじょうけんくうかん"}
+（AC）$\kappa>2^{\aleph_{0}}$ を基数とする（例えば $\kappa=(2^{\aleph_{0}})^{+}$）。カントール立方体 ${}^{\kappa}2$ はコンパクト・ハウスドルフで c.c.c. をもつが、可分でない。
+:::
+
+::: proof
+c.c.c. は \ref{set:separable-product-ccc}、可分でないことは \ref{set:cantor-cube-not-separable} による。コンパクト性は $2$ が（有限なので）コンパクトであることとチコノフの定理（\ref{top:tychonoff}）による。ハウスドルフ性：$f\ne g$ なら $f(\alpha)\ne g(\alpha)$ となる $\alpha$ があり、$\{h\mid h(\alpha)=f(\alpha)\}$ と $\{h\mid h(\alpha)=g(\alpha)\}$ が $f,g$ を分離する互いに交わらない開集合である。$\kappa=(2^{\aleph_{0}})^{+}$ は \ref{set:successor-cardinal} により $2^{\aleph_{0}}$ より大きい基数である。
+
+::: hypcheck
+- **選択公理**：\ref{set:separable-product-ccc}（したがって Δ システム補題）と、チコノフの定理に使う。
+:::
+:::
+
+::: supplement
+**可分性・c.c.c.・直積の比較.**
+
+| | 有限個の積 | $2^{\aleph_{0}}$ 個以下の積 | 任意個の積 |
+|---|---|---|---|
+| 可分空間 | :yes: | :yes:（\ref{set:hmp-theorem}） | :no:（\ref{set:cantor-cube-not-separable}） |
+| 可分空間の積の c.c.c. | :yes: | :yes: | :yes:（\ref{set:separable-product-ccc}） |
+| 一般の c.c.c. 空間の積の c.c.c. | :open:（$\ZFC$ から独立） | 有限の場合に帰着 | 有限の場合に帰着（\ref{set:ccc-product-two-to-all}） |
+
+**強制法との関係.** ${}^{\kappa}2$ の空でない基本開集合を包含で並べた半順序は、$\kappa$ 個のコーエン実数を加える強制の半順序 $\mathrm{Fn}(\kappa,2)$（\ref{set:fn-poset}。有限部分関数を包含の逆で並べたもの）と同型である（$s\mapsto\{f\mid s\subseteq f\}$ により、$s\supseteq t\iff\{f\mid s\subseteq f\}\subseteq\{f\mid t\subseteq f\}$）。その c.c.c. は、上の定理の証明と同じく Δ システム補題から従う。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

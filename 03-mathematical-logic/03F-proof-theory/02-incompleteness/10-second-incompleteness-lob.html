@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第二不完全性定理とレーブの定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/02-incompleteness/10-second-incompleteness-lob.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 第二不完全性定理とレーブの定理 {#pt:page-second-incompleteness-lob keywords="second incompleteness theorem, consistency statement, Löb's theorem, formalized Löb's theorem, Henkin's problem"}
+
+**第二不完全性定理**は、$\PA$ が無矛盾ならば、$\PA$ は自分の無矛盾性を表す文 $\mathrm{Con}\defeq\neg\mathrm{Bew}(\Godel{\bot})$ を証明できないことを主張する。これは第一不完全性定理の証明を $\PA$ の中で形式化することで得られる。さらに**レーブの定理**「$\PA\vdash\mathrm{Bew}(\Godel{S})\to S$ ならば $\PA\vdash S$」とその形式化を示す。証明に使うのは、導出可能性条件 D1–D3 と対角化定理だけである。
+
+## 記法と定義の確認 {#pt:sec-second-notation}
+
+::: notation
+- 導出可能性条件（\ref{pt:d1}, \ref{pt:d2}, \ref{pt:d3}）：任意の文 $\varphi,\psi$ について
+  - (D1) $\PA\vdash\varphi$ ならば $\PA\vdash\mathrm{Bew}(\Godel{\varphi})$、
+  - (D2) $\PA\vdash\mathrm{Bew}(\Godel{\varphi\to\psi})\to(\mathrm{Bew}(\Godel{\varphi})\to\mathrm{Bew}(\Godel{\psi}))$、
+  - (D3) $\PA\vdash\mathrm{Bew}(\Godel{\varphi})\to\mathrm{Bew}(\Godel{\mathrm{Bew}(\Godel{\varphi})})$。
+- 読みやすさのため、文 $\varphi$ について $\mathrm{Bew}(\Godel{\varphi})$ を $\Box\varphi$ と略記する（このページでは $\Box$ は様相記号ではなく、この略記である）。D1 と D2 から、$\PA\vdash\varphi\to\psi$ ならば $\PA\vdash\Box\varphi\to\Box\psi$（\ref{pt:d12-consequences}）。
+- ゲーデル文 $G$（$\PA\vdash G\leftrightarrow\neg\Box G$）と対角化定理は \ref{pt:page-diagonal-first-incompleteness} のとおり。
+:::
+
+::: definition 無矛盾性を表す文 {#pt:consistency-sentence keywords="consistency statement, Con(PA)" index="無矛盾性を表す文|むむじゅんせいをあらわすぶん"}
+$\mathrm{Con}\defeq\neg\mathrm{Bew}(\Godel{\bot})$、すなわち $\neg\Box\bot$ とおく。\ref{pt:bew-correct} より、$\mathcal{N}\models\mathrm{Con}\iff\PA$ は無矛盾。$\mathrm{Con}$ は Π 文（Σ 文の否定）である。
+:::
+
+## 第二不完全性定理 {#pt:sec-second-incompleteness}
+
+::: lemma 形式化された第一不完全性定理 {#pt:formalized-first}
+$\PA\vdash G\leftrightarrow\mathrm{Con}$。とくに $\PA\vdash\mathrm{Con}\to\neg\Box G$。
+:::
+
+::: proof
+**Step 1（$\mathrm{Con}\to G$）.** $G$ の性質から $\PA\vdash G\to\neg\Box G$。これに D1, D2 を使って $\PA\vdash\Box G\to\Box\neg\Box G$。D3 より $\PA\vdash\Box G\to\Box\Box G$。恒真式の代入例 $\Box G\to(\neg\Box G\to\bot)$ に D1, D2 を使って $\PA\vdash\Box\Box G\to(\Box\neg\Box G\to\Box\bot)$。以上から $\PA\vdash\Box G\to\Box\bot$、対偶で $\PA\vdash\neg\Box\bot\to\neg\Box G$、$G$ の性質より $\PA\vdash\mathrm{Con}\to G$。
+
+**Step 2（$G\to\mathrm{Con}$）.** $\bot\to G$ に D1, D2 を使って $\PA\vdash\Box\bot\to\Box G$。$G$ の性質から $\PA\vdash G\to\neg\Box G$ なので、$\PA\vdash G\to\neg\Box\bot$。
+:::
+
+::: theorem ゲーデルの第二不完全性定理 {#pt:godel-second keywords="Gödel's second incompleteness theorem" index="第二不完全性定理|だいにふかんぜんせいていり"}
+1. $\PA$ が無矛盾ならば、$\PA\nvdash\mathrm{Con}$。
+2. $\PA$ が ω 無矛盾ならば、$\PA\nvdash\neg\mathrm{Con}$。
+
+とくに $\mathcal{N}\models\PA$ なので、$\mathrm{Con}$ は真だが $\PA$ で決定できない。
+:::
+
+::: proof
+**1.** $\PA\vdash\mathrm{Con}$ なら、\ref{pt:formalized-first} より $\PA\vdash G$ で、第一不完全性定理（\ref{pt:godel-first} の 1）に反する。**2.** $\PA\vdash\neg\mathrm{Con}$ なら $\PA\vdash\neg G$ で、\ref{pt:godel-first} の 2 に反する。
+:::
+
+::: remark
+- 1 は、$\PA$ より弱い手段で $\PA$ の無矛盾性を示すこと（ヒルベルトのプログラムの素朴な形）ができないことを意味する。$\PA$ の無矛盾性の証明には、$\PA$ で扱えない原理（たとえば $\varepsilon_{0}$ までの超限帰納法、あるいは $\mathcal{N}\models\PA$ を示す集合論的な議論）が要る。
+- $\PA$ が無矛盾なら $\PA+\neg\mathrm{Con}$ も無矛盾で（1 と演繹定理）、この理論は「自分は矛盾している」と主張する無矛盾な理論である。そのモデルは超準モデルで、そこには $\bot$ の超準的な「証明」がある。
+- 証明で使ったのは D1–D3 と対角化定理だけである。したがって、この三条件を満たすどんな証明可能性述語についても同じ結論が成り立つ。ロッサーの述語 $\mathrm{Bew}^{R}$（\ref{pt:rosser-sentence}）はこの条件を満たさない例である。
+:::
+
+## レーブの定理 {#pt:sec-lob}
+
+::: theorem レーブの定理 {#pt:lob-theorem keywords="Löb's theorem" index="レーブの定理|れーぶのていり"}
+任意の文 $S$ について、$\PA\vdash\Box S\to S$ ならば $\PA\vdash S$。
+:::
+
+::: proof
+対角化定理で $P(y)\defeq(\mathrm{Bew}(y)\to S)$ とし、
+$$
+\PA\vdash I\leftrightarrow(\Box I\to S)\tag{1}
+$$
+となる文 $I$ をとる。
+
+**Step 1.** (1) より $\PA\vdash I\to(\Box I\to S)$。D1, D2 より $\PA\vdash\Box I\to\Box(\Box I\to S)$、さらに D2 より $\PA\vdash\Box(\Box I\to S)\to(\Box\Box I\to\Box S)$。よって $\PA\vdash\Box I\to(\Box\Box I\to\Box S)$。
+
+**Step 2.** D3 より $\PA\vdash\Box I\to\Box\Box I$。Step 1 と合わせて
+$$
+\PA\vdash\Box I\to\Box S.\tag{2}
+$$
+
+**Step 3.** 仮定 $\PA\vdash\Box S\to S$ と (2) から $\PA\vdash\Box I\to S$。(1) より $\PA\vdash I$。D1 より $\PA\vdash\Box I$、したがって $\PA\vdash S$。
+
+::: hypcheck
+- **D3**：Step 2。D1, D2 だけでは $\Box I$ から $\Box\Box I$ を得られない。
+- **仮定 $\PA\vdash\Box S\to S$**：Step 3 でだけ使う。Step 1, 2 は任意の $S$ について成り立つ。
+:::
+:::
+
+::: intuition
+レーブの文 $I$ は「$I$ が証明できるなら $S$」と主張する。これはカリーのパラドックス「この文が真なら、サンタクロースは存在する」の証明可能性版である。パラドックスでは「真」を使うので何でも証明できてしまうが、算術では「証明可能」しか使えないので、$\PA\vdash\Box S\to S$ という仮定があるときにだけ $S$ が得られる。$\PA$ は「$S$ が証明できれば $S$ は真」を、$S$ が実際に証明できるときにしか証明しない。
+:::
+
+::: corollary ヘンキンの問題 {#pt:henkin-problem keywords="Henkin sentence" index="ヘンキン文|へんきんぶん"}
+$\PA\vdash H\leftrightarrow\Box H$ となる文 $H$ は、$\PA$ で証明できる。
+:::
+
+::: proof
+$\PA\vdash\Box H\to H$ なので、レーブの定理による。
+:::
+
+::: corollary レーブの定理から第二不完全性定理へ
+$S=\bot$ とすると、$\PA\vdash\mathrm{Con}$、すなわち $\PA\vdash\Box\bot\to\bot$ なら $\PA\vdash\bot$。これは \ref{pt:godel-second} の 1 である。
+:::
+
+::: theorem 形式化されたレーブの定理 {#pt:formalized-lob keywords="formalized Löb's theorem"}
+任意の文 $S$ について、$\PA\vdash\Box(\Box S\to S)\to\Box S$。
+:::
+
+::: proof
+$I$ を (1) の文とする。
+
+**Step 1.** (2) $\PA\vdash\Box I\to\Box S$ に D1, D2 を使うと $\PA\vdash\Box(\Box I\to\Box S)$。恒真式の代入例 $(\Box I\to\Box S)\to((\Box S\to S)\to(\Box I\to S))$ に D1 と D2 を二回使うと、$\PA\vdash\Box(\Box S\to S)\to\Box(\Box I\to S)$。
+
+**Step 2.** (1) より $\PA\vdash(\Box I\to S)\to I$。D1, D2 より $\PA\vdash\Box(\Box I\to S)\to\Box I$。
+
+**Step 3.** Step 1, 2 と (2) より $\PA\vdash\Box(\Box S\to S)\to\Box I\to\Box S$、すなわち $\PA\vdash\Box(\Box S\to S)\to\Box S$。
+:::
+
+::: corollary 形式化された第二不完全性定理 {#pt:formalized-second}
+$\PA\vdash\mathrm{Con}\to\neg\Box\mathrm{Con}$。
+:::
+
+::: proof
+形式化されたレーブの定理で $S=\bot$ とすると $\PA\vdash\Box(\Box\bot\to\bot)\to\Box\bot$、すなわち $\PA\vdash\Box\mathrm{Con}\to\Box\bot$。対偶をとる。
+:::
+
+::: remark 様相論理との対応
+D1, D2, D3 と形式化されたレーブの定理は、それぞれ必然化則、分配公理、公理 4、レーブの公理 $\Box(\Box p\to p)\to\Box p$ の算術版である。したがって $\mathsf{GL}$（\ref{logic:gl}）の定理は、$\Box$ を $\mathrm{Bew}$ と読んだどの算術的な翻訳でも $\PA$ で証明できる（\ref{pt:page-arithmetical-soundness}）。上の証明は、$\mathsf{K4}$ の定理 \ref{logic:lob-argument-formalized} を算術で読んだものにあたる。
+:::
+
+## 問題 {#pt:sec-second-problems}
+
+::: problem {#pt:prob-consistency-extension}
+$\PA$ が無矛盾なら、$\PA+\mathrm{Con}$ は $\mathrm{Con}_{\PA+\mathrm{Con}}$（$\PA+\mathrm{Con}$ の無矛盾性を表す文）を証明しないことを、\ref{pt:first-incompleteness-extensions} の考え方で説明せよ。
+:::
+
+::: solution
+$\PA+\mathrm{Con}$ は、公理の集合が Δ 論理式で定義できる $\PA$ の拡大である（$\mathrm{Ax}_{\PA}(x)\vee x=\underline{\Godel{\mathrm{Con}}}$）。$\PA$ が無矛盾なら $\mathcal{N}\models\mathrm{Con}$ で、$\mathcal{N}\models\PA+\mathrm{Con}$ なので $\PA+\mathrm{Con}$ も無矛盾。その証明可能性述語について D1–D3 と対角化定理が同様に成り立つので、第二不完全性定理を $\PA+\mathrm{Con}$ に適用できる。無矛盾性を公理に加えても、新しい理論の無矛盾性はまた証明できない。
+:::
+
+::: problem {#pt:prob-lob-converse}
+「$\PA\vdash S$ ならば $\PA\vdash\Box S\to S$」は自明であることを確かめ、レーブの定理が「$\PA\vdash\Box S\to S\iff\PA\vdash S$」の形に書けることを述べよ。また、$\PA$ が無矛盾なら $\PA\nvdash\Box\bot\to\bot$ となることを、この形から導け。
+:::
+
+::: solution
+$\PA\vdash S$ なら、恒真式 $S\to(\Box S\to S)$ から $\PA\vdash\Box S\to S$。よって同値である。$S=\bot$ として、$\PA\vdash\Box\bot\to\bot\iff\PA\vdash\bot$。無矛盾なら右辺は成り立たないので左辺も成り立たない。これは第二不完全性定理である。
+:::
+
+::: problem {#pt:prob-reflection-instances}
+$\PA$ が無矛盾なら、$\PA\vdash\Box S\to S$ となる文 $S$ は、ちょうど $\PA$ の定理であることを示せ。とくに、「局所反映原理」$\{\Box S\to S:S\text{ は文}\}$ のうち $\PA$ で証明できるのは、自明なものだけである。
+:::
+
+::: solution
+レーブの定理と問題 \ref{pt:prob-lob-converse} の同値性から直ちに従う。$\PA$ は、自分の健全性を個々の文について主張することを、その文が実際に証明できるときにしかしない。
+:::
+
+::: supplement
+**高い視点から：不完全性は「自己認識の限界」である.** 第二不完全性定理は、十分に強い無矛盾な理論は自分の無矛盾性を知り得ないという、理論の自己認識の限界を述べている。レーブの定理はそれをさらに一般化し、理論が自分の健全性を信じられるのは「すでに知っていること」についてだけだと言う。様相論理の側から見ると、$\Box(\Box p\to p)\to\Box p$ は「到達可能性関係の逆が整礎」という帰納法の原理だった（\ref{logic:gl}）。算術では、証明可能性の「一段深い」層（証明についての証明）への入れ子が無限に下降できない、ということに当たる。実際、この直観を正確にしたのが、$\mathsf{GL}$ が算術の証明可能性の論理として完全であるというソロヴェイの定理（\ref{pt:page-solovay}）である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

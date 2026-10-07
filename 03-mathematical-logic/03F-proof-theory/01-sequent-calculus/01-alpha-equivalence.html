@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>α 同値 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/01-sequent-calculus/01-alpha-equivalence.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# α 同値 {#pt:page-alpha-equivalence keywords="alpha equivalence, alpha conversion, renaming of bound variables, variable swapping, capture-avoiding substitution, nominal techniques"}
+
+$\forall x\,P(x)$ と $\forall y\,P(y)$ は、束縛変数の名前が違うだけで「同じ」論理式である。この同一視を**α 同値**という。本ページでは α 同値を、**変数の入れ替え（互換）**を使って定義し（\ref{pt:alpha-equivalence}）、それが同値関係であることを循環なしに示す（\ref{pt:alpha-equivalence-relation}）。その上で、代入による特徴づけ（\ref{pt:alpha-characterization}）、束縛変数の付け替え（\ref{pt:alpha-renaming}）、代入との両立（\ref{pt:alpha-substitution}）、捕獲を避ける代入（\ref{pt:capture-avoiding-substitution}）を導き、意味論と自然演繹の導出可能性が α 同値で不変であること（\ref{pt:alpha-semantics}, \ref{pt:alpha-derivability}）を示す。本系列（証明体系とカット除去）は参考書によらず本サイトで組み立てたものである。
+
+## 記法と定義の確認 {#pt:sec-alpha-notation}
+
+::: notation
+- 一階の言語、項、論理式（論理記号は $\bot,\to,\forall,=$）、略記、$\mathrm{var}(t)$, $\mathrm{FV}(\varphi)$, $\mathrm{BV}(\varphi)$, $\mathrm{Var}(\varphi)$、論理的複雑さ $c(\varphi)$、新しい変数の存在は \ref{logic:language}, \ref{logic:term}, \ref{logic:formula}, \ref{logic:abbreviations}, \ref{logic:free-variables}, \ref{logic:sentence}, \ref{logic:fresh-variable} のとおり。
+- 代入 $\varphi[s/x]$ とその性質（\ref{logic:substitution}, \ref{logic:substitution-basic}, \ref{logic:substitutable}, \ref{logic:substitutable-sufficient}, \ref{logic:substitution-fv}, \ref{logic:substitution-composition}, \ref{logic:fresh-renaming}, \ref{logic:substitution-commutation}）は \ref{logic:page-substitution} のとおり。
+- 充足関係・一致補題・意味論的代入補題（\ref{logic:satisfaction}, \ref{logic:coincidence}, \ref{logic:semantic-substitution}）、自然演繹（\ref{logic:deduction-system}）は \ref{logic:page-semantics}, \ref{logic:page-natural-deduction} のとおり。
+- 「$z$ は $\varphi_{1},\dots,\varphi_{k}$ について新しい」とは $z\notin\mathrm{Var}(\varphi_{1})\cup\dots\cup\mathrm{Var}(\varphi_{k})$ のことをいう（変数の有限集合 $V$ を加えて $z\notin V$ も要求することがある）。
+:::
+
+## 変数の置換 {#pt:sec-alpha-permutations}
+
+::: definition 変数の置換と作用 {#pt:swap keywords="permutation of variables, swapping, transposition, action on formulas" index="変数の置換|へんすうのちかん, 互換（変数の）|ごかんへんすうの"}
+1. $\mathrm{Var}$ の全単射 $\pi$ で、有限個を除く変数を動かさないものを**変数の置換**という。変数 $a,b$ について、$a$ と $b$ を入れ替え他を動かさない置換を**互換** $(a\ b)$ と書く（$a=b$ なら恒等写像）。
+2. 置換 $\pi$ の項と論理式への作用 $\pi\cdot t$, $\pi\cdot\varphi$ を、すべての変数の出現（束縛変数も、$\forall$ の直後の変数も含む）を $\pi$ で書き換えるものとして、構造的再帰で定める：$\pi\cdot x\defeq\pi(x)$、$\pi\cdot c\defeq c$、$\pi\cdot f(t_{1},\dots,t_{n})\defeq f(\pi\cdot t_{1},\dots,\pi\cdot t_{n})$、原子論理式と $\to$ は成分ごと、
+$$
+\pi\cdot\forall x\,\alpha\defeq\forall\pi(x)\,(\pi\cdot\alpha).
+$$
+:::
+
+::: lemma 置換の作用の基本性質 {#pt:swap-basic}
+置換 $\pi,\sigma$ と論理式 $\varphi$ について次が成り立つ。
+1. $\pi\cdot(\sigma\cdot\varphi)=(\pi\circ\sigma)\cdot\varphi$、$\mathrm{id}\cdot\varphi=\varphi$。とくに $(a\ b)\cdot(a\ b)\cdot\varphi=\varphi$。
+2. $c(\pi\cdot\varphi)=c(\varphi)$、$\mathrm{Var}(\pi\cdot\varphi)=\pi[\mathrm{Var}(\varphi)]$、$\mathrm{FV}(\pi\cdot\varphi)=\pi[\mathrm{FV}(\varphi)]$。
+3. $\pi$ と $\sigma$ が $\mathrm{Var}(\varphi)$ 上で一致すれば $\pi\cdot\varphi=\sigma\cdot\varphi$。とくに $a,b\notin\mathrm{Var}(\varphi)$ なら $(a\ b)\cdot\varphi=\varphi$。
+4. $\pi\circ(a\ b)\circ\pi^{-1}=(\pi(a)\ \pi(b))$。
+:::
+
+::: proof
+1〜3 は項・論理式に関する帰納法で直ちに確かめられる。2 の $\mathrm{FV}$ の $\forall$ の場合だけ書くと、$\pi$ は単射なので
+$$
+\mathrm{FV}(\pi\cdot\forall x\,\alpha)=\pi[\mathrm{FV}(\alpha)]\setminus\{\pi(x)\}=\pi[\mathrm{FV}(\alpha)\setminus\{x\}].
+$$
+4 は変数ごとに確かめる：$\pi(a)\mapsto a\mapsto b\mapsto\pi(b)$、同様に $\pi(b)\mapsto\pi(a)$、それ以外の $v$ は $\pi^{-1}(v)\notin\{a,b\}$ なので動かない。
+:::
+
+## α 同値の定義と同値関係 {#pt:sec-alpha-definition}
+
+::: definition α 同値 {#pt:alpha-equivalence keywords="alpha equivalence" index="α 同値|あるふぁどうち"}
+論理式の二項関係 $\varphi\equiv_{\alpha}\psi$ を、$c(\varphi)$ に関する再帰で次のように定める。
+1. $\varphi$ が原子論理式なら、$\varphi\equiv_{\alpha}\psi\iff\varphi=\psi$（記号列として等しい）。
+2. $(\alpha\to\beta)\equiv_{\alpha}\psi\iff\psi=(\alpha'\to\beta')$ の形で $\alpha\equiv_{\alpha}\alpha'$ かつ $\beta\equiv_{\alpha}\beta'$。
+3. $\forall x\,\alpha\equiv_{\alpha}\psi\iff\psi=\forall y\,\beta$ の形で、$\alpha,\beta$ について新しく $x,y$ と異なる変数 $z$ で
+$$
+(z\ x)\cdot\alpha\equiv_{\alpha}(z\ y)\cdot\beta
+$$
+となるものが**存在する**。
+:::
+
+3 の右辺は $c((z\ x)\cdot\alpha)=c(\alpha)<c(\forall x\,\alpha)$ なので再帰は正当である。以下 $\equiv_{\alpha}$ を単に $\equiv$ と書く。定義から、$\varphi\equiv\psi$ なら $\varphi$ と $\psi$ は同じ「形」（原子・含意・全称）をもち、$c(\varphi)=c(\psi)$（$c$ に関する帰納法）。
+
+3 で「ある新しい $z$」としたのは、選び方によらないことを後で示すためである。「すべての新しい $z$」で定義すると、推移律の証明で新しい変数の取り替えが要り、その取り替えの正当化に推移律を使う、という循環が生じやすい。置換の作用を使うと、この取り替えを推移律なしに行える（\ref{pt:alpha-fresh-independence}）。
+
+::: lemma 置換による不変性 {#pt:alpha-equivariance keywords="equivariance of alpha equivalence"}
+$\varphi\equiv\psi$ なら、任意の置換 $\pi$ について $\pi\cdot\varphi\equiv\pi\cdot\psi$。
+:::
+
+::: proof
+$c(\varphi)$ に関する帰納法。原子論理式なら $\varphi=\psi$ なので $\pi\cdot\varphi=\pi\cdot\psi$。含意は成分ごとに帰納法の仮定から。$\varphi=\forall x\,\alpha$, $\psi=\forall y\,\beta$ とし、$z$ を定義 3 の証拠とする。$\pi\cdot\varphi=\forall\pi(x)\,\pi\cdot\alpha$, $\pi\cdot\psi=\forall\pi(y)\,\pi\cdot\beta$ である。\ref{pt:swap-basic} の 2 より $\pi(z)$ は $\pi\cdot\alpha,\pi\cdot\beta$ について新しく $\pi(x),\pi(y)$ と異なる。帰納法の仮定（$c((z\ x)\cdot\alpha)<c(\varphi)$）より $\pi\cdot((z\ x)\cdot\alpha)\equiv\pi\cdot((z\ y)\cdot\beta)$ で、\ref{pt:swap-basic} の 1, 4 より
+$$
+\pi\cdot((z\ x)\cdot\alpha)=(\pi\circ(z\ x)\circ\pi^{-1})\cdot(\pi\cdot\alpha)=(\pi(z)\ \pi(x))\cdot(\pi\cdot\alpha),
+$$
+$\beta$ の側も同様。よって $\pi(z)$ が $\pi\cdot\varphi\equiv\pi\cdot\psi$ の証拠になる。
+:::
+
+::: lemma 新しい変数の選び方によらない {#pt:alpha-fresh-independence}
+$\forall x\,\alpha\equiv\forall y\,\beta$ なら、$\alpha,\beta$ について新しく $x,y$ と異なる**すべての**変数 $z'$ について $(z'\ x)\cdot\alpha\equiv(z'\ y)\cdot\beta$。
+:::
+
+::: proof
+$z$ を定義 3 の証拠とする。$z'=z$ なら明らか。$z'\neq z$ とし、\ref{pt:alpha-equivariance} を $\pi=(z\ z')$ に適用すると $(z\ z')\cdot(z\ x)\cdot\alpha\equiv(z\ z')\cdot(z\ y)\cdot\beta$。置換として $(z\ z')\circ(z\ x)=(z'\ x)\circ(z\ z')$（\ref{pt:swap-basic} の 4 で $\pi=(z\ z')$, $\pi(x)=x$）であり、$z,z'\notin\mathrm{Var}(\alpha)$ なので $(z\ z')\cdot\alpha=\alpha$（\ref{pt:swap-basic} の 3）。よって左辺は $(z'\ x)\cdot\alpha$、右辺も同様に $(z'\ y)\cdot\beta$ である。
+:::
+
+::: theorem α 同値は同値関係 {#pt:alpha-equivalence-relation keywords="alpha equivalence is an equivalence relation" index="α 同値は同値関係|あるふぁどうちはどうちかんけい"}
+$\equiv$ は論理式全体の上の同値関係である。
+:::
+
+::: proof
+いずれも $c$ に関する帰納法で、原子論理式と含意の場合は明らかなので、全称の場合だけ示す。
+
+**反射律.** $\forall x\,\alpha$ について、$\alpha$ について新しく $x$ と異なる $z$ をとると、帰納法の仮定より $(z\ x)\cdot\alpha\equiv(z\ x)\cdot\alpha$。
+
+**対称律.** 定義 3 の条件は $\alpha,x$ と $\beta,y$ について対称で、帰納法の仮定（$c$ の小さい論理式についての対称律）を使えばよい。
+
+**推移律.** $\forall x\,\alpha\equiv\forall y\,\beta\equiv\forall u\,\gamma$ とする。$\alpha,\beta,\gamma$ について新しく $x,y,u$ と異なる $z$ をとる（\ref{logic:fresh-variable}）。\ref{pt:alpha-fresh-independence} より $(z\ x)\cdot\alpha\equiv(z\ y)\cdot\beta$ かつ $(z\ y)\cdot\beta\equiv(z\ u)\cdot\gamma$。これらは $c$ の小さい論理式なので、帰納法の仮定より $(z\ x)\cdot\alpha\equiv(z\ u)\cdot\gamma$。よって $z$ が $\forall x\,\alpha\equiv\forall u\,\gamma$ の証拠になる。
+:::
+
+::: hypcheck
+推移律の証明で「同じ $z$ を三つの論理式に共通にとる」ことができたのは \ref{pt:alpha-fresh-independence} のおかげであり、その証明は \ref{pt:alpha-equivariance}（定義だけからの帰納法）しか使っていない。推移律そのものを途中で使っていないので循環はない。
+:::
+
+::: lemma 不変量と合同性 {#pt:alpha-invariants}
+1. $\varphi\equiv\psi$ なら $\mathrm{FV}(\varphi)=\mathrm{FV}(\psi)$。
+2. $\alpha\equiv\alpha'$, $\beta\equiv\beta'$ なら $(\alpha\to\beta)\equiv(\alpha'\to\beta')$。
+3. $\alpha\equiv\alpha'$ なら $\forall x\,\alpha\equiv\forall x\,\alpha'$。
+:::
+
+::: proof
+1. $c$ に関する帰納法。全称の場合、$z$ を証拠とすると帰納法の仮定より $\mathrm{FV}((z\ x)\cdot\alpha)=\mathrm{FV}((z\ y)\cdot\beta)$。\ref{pt:swap-basic} の 2 と $z\notin\mathrm{Var}(\alpha)$ より $\mathrm{FV}((z\ x)\cdot\alpha)\setminus\{z\}=\mathrm{FV}(\alpha)\setminus\{x\}=\mathrm{FV}(\forall x\,\alpha)$。$\beta$ の側も同様なので $\mathrm{FV}(\forall x\,\alpha)=\mathrm{FV}(\forall y\,\beta)$。
+2. 定義の 2 そのもの。
+3. $\alpha,\alpha'$ について新しく $x$ と異なる $z$ をとると、\ref{pt:alpha-equivariance} より $(z\ x)\cdot\alpha\equiv(z\ x)\cdot\alpha'$。
+:::
+
+## 代入による特徴づけと束縛変数の付け替え {#pt:sec-alpha-substitution-char}
+
+::: lemma 互換と代入 {#pt:swap-substitution}
+$z\notin\mathrm{Var}(\alpha)$ なら $(z\ x)\cdot\alpha\equiv\alpha[z/x]$。
+:::
+
+::: proof
+$z=x$ なら両辺とも $\alpha$（\ref{logic:substitution-basic} の 2）。$z\neq x$ とし、$c(\alpha)$ に関する帰納法で示す。
+- *原子論理式.* $z$ は現れないので、互換は $x$ を $z$ に書き換えるだけであり、これは代入 $[z/x]$ と同じである（原子論理式には束縛がない）。
+- *含意.* 帰納法の仮定と \ref{pt:alpha-invariants} の 2。
+- *$\alpha=\forall x\,\beta$.* 左辺は $\forall z\,(z\ x)\cdot\beta$、右辺は $\alpha[z/x]=\forall x\,\beta$（$x$ は自由でない）。$\beta$ と $(z\ x)\cdot\beta$ について新しく $z,x$ と異なる $w$ をとると、置換 $(w\ z)\circ(z\ x)$ と $(w\ x)$ は $\mathrm{Var}(\beta)$ の上で一致する（$x\mapsto w$、それ以外の $v\in\mathrm{Var}(\beta)$ は $v\notin\{x,z,w\}$ なので動かない）。\ref{pt:swap-basic} の 1, 3 より $(w\ z)\cdot((z\ x)\cdot\beta)=(w\ x)\cdot\beta$ で、反射律より $w$ が証拠になる。
+- *$\alpha=\forall u\,\beta$, $u\neq x$.* $z\notin\mathrm{Var}(\alpha)$ より $u\neq z$。左辺は $\forall u\,(z\ x)\cdot\beta$、右辺は $\forall u\,\beta[z/x]$。帰納法の仮定 $(z\ x)\cdot\beta\equiv\beta[z/x]$ と \ref{pt:alpha-invariants} の 3。
+:::
+
+::: theorem 代入による特徴づけ {#pt:alpha-characterization keywords="characterization of alpha equivalence by substitution of fresh variables" index="α 同値の特徴づけ|あるふぁどうちのとくちょうづけ"}
+$\forall x\,\alpha\equiv\forall y\,\beta$ であることと、$\alpha,\beta$ について新しく $x,y$ と異なる**ある**（同値なことに**すべての**）変数 $z$ について
+$$
+\alpha[z/x]\equiv\beta[z/y]
+$$
+が成り立つことは同値である。
+:::
+
+::: proof
+そのような $z$ について、\ref{pt:swap-substitution} より $(z\ x)\cdot\alpha\equiv\alpha[z/x]$、$(z\ y)\cdot\beta\equiv\beta[z/y]$。\ref{pt:alpha-equivalence-relation}（推移律・対称律）より、$(z\ x)\cdot\alpha\equiv(z\ y)\cdot\beta$ と $\alpha[z/x]\equiv\beta[z/y]$ は同値である。前者が「ある $z$」で成り立つことが定義、「すべての $z$」で成り立つことは \ref{pt:alpha-fresh-independence} による。
+:::
+
+::: corollary 束縛変数の付け替え {#pt:alpha-renaming keywords="renaming bound variables, alpha conversion" index="束縛変数の付け替え|そくばくへんすうのつけかえ"}
+$y\notin\mathrm{Var}(\alpha)$ なら $\forall x\,\alpha\equiv\forall y\,(\alpha[y/x])$。
+:::
+
+::: proof
+$y=x$ なら明らか。$y\neq x$ とし、$\alpha$ について新しく $x,y$ と異なる $z$ をとる（$\mathrm{Var}(\alpha[y/x])\subseteq\mathrm{Var}(\alpha)\cup\{y\}$ なので $z$ は $\alpha[y/x]$ についても新しい）。\ref{logic:substitution-composition}（$y$ は代入可能で $y\notin\mathrm{FV}(\alpha)$）より $\alpha[y/x][z/y]=\alpha[z/x]$。反射律と \ref{pt:alpha-characterization} より結論を得る。
+:::
+
+::: lemma 束縛変数の回避 {#pt:alpha-clean keywords="clean representative, Barendregt convention"}
+任意の論理式 $\varphi$ と変数の有限集合 $V$ について、$\varphi\equiv\varphi'$ かつ $\mathrm{BV}(\varphi')\cap V=\varnothing$ となる $\varphi'$ がある。
+:::
+
+::: proof
+$c(\varphi)$ に関する帰納法。原子論理式は $\varphi'=\varphi$。含意は成分ごとに帰納法の仮定と \ref{pt:alpha-invariants} の 2。$\varphi=\forall x\,\alpha$ なら、帰納法の仮定で $\alpha\equiv\alpha'$, $\mathrm{BV}(\alpha')\cap V=\varnothing$ をとり、$V$ に属さず $\alpha'$ について新しい $z$ をとる。\ref{pt:alpha-invariants} の 3 と \ref{pt:alpha-renaming} より $\forall x\,\alpha\equiv\forall x\,\alpha'\equiv\forall z\,(\alpha'[z/x])$。$\mathrm{BV}(\alpha'[z/x])=\mathrm{BV}(\alpha')$（\ref{logic:substitution-basic} の 4）なので、$\mathrm{BV}(\forall z\,\alpha'[z/x])=\mathrm{BV}(\alpha')\cup\{z\}$ は $V$ と交わらない。
+:::
+
+## 代入との両立 {#pt:sec-alpha-substitution}
+
+::: lemma 新しい変数への付け替えと代入可能性 {#pt:fresh-renaming-substitutable}
+$s$ が $\alpha$ の中で $x$ に代入可能で、$x\notin\{y,z\}$、$z\notin\mathrm{Var}(\alpha)\cup\mathrm{var}(s)$ なら、$s$ は $\alpha[z/y]$ の中で $x$ に代入可能である。
+:::
+
+::: proof
+$\alpha$ に関する帰納法。原子論理式と含意は明らか。$\alpha=\forall u\,\gamma$ とする。$u=y$ なら $\alpha[z/y]=\alpha$。$u\neq y$ なら $\alpha[z/y]=\forall u\,\gamma[z/y]$。代入可能性の定義より、(a) $x\notin\mathrm{FV}(\forall u\,\gamma)$ であるか、(b) $u\notin\mathrm{var}(s)$ かつ $s$ は $\gamma$ の中で $x$ に代入可能である。(b) なら帰納法の仮定より $s$ は $\gamma[z/y]$ の中で代入可能で、定義の後半が成り立つ。(a) なら、$z$ は $\gamma$ の中で $y$ に代入可能（新しいので）であり、\ref{logic:substitution-fv} より $\mathrm{FV}(\gamma[z/y])\subseteq(\mathrm{FV}(\gamma)\setminus\{y\})\cup\{z\}$。$x\neq y,z$ なので $x\notin\mathrm{FV}(\forall u\,\gamma[z/y])$ で、定義の前半が成り立つ。
+:::
+
+::: theorem α 同値と代入 {#pt:alpha-substitution keywords="alpha equivalence is compatible with substitution"}
+$\varphi\equiv\psi$ で、項 $s$ が $\varphi$ の中でも $\psi$ の中でも $x$ に代入可能なら、$\varphi[s/x]\equiv\psi[s/x]$。
+:::
+
+::: proof
+$c(\varphi)$ に関する帰納法。原子論理式なら $\varphi=\psi$。含意は成分ごとに帰納法の仮定。$\varphi=\forall y\,\alpha$, $\psi=\forall w\,\beta$ とする。
+
+$x\notin\mathrm{FV}(\varphi)$ なら、\ref{pt:alpha-invariants} の 1 より $x\notin\mathrm{FV}(\psi)$ で、両辺とも変わらない（\ref{logic:substitution-basic} の 1）。
+
+$x\in\mathrm{FV}(\varphi)=\mathrm{FV}(\psi)$ とする。すると $x\neq y,w$ で、代入可能性より $y,w\notin\mathrm{var}(s)$、$s$ は $\alpha,\beta$ の中で $x$ に代入可能。$\varphi[s/x]=\forall y\,\alpha[s/x]$, $\psi[s/x]=\forall w\,\beta[s/x]$ である。$\alpha,\beta,s$ について新しく $x,y,w$ と異なる $z$ をとる（$\mathrm{Var}(\alpha[s/x])\subseteq\mathrm{Var}(\alpha)\cup\mathrm{var}(s)$ なので $z$ は $\alpha[s/x],\beta[s/x]$ についても新しい）。
+- \ref{logic:substitution-commutation}（$x\neq y$, $x\notin\mathrm{var}(z)$, $y\notin\mathrm{var}(s)$）より
+$$
+\alpha[s/x][z/y]=\alpha[z/y][s[z/y]/x]=\alpha[z/y][s/x],
+$$
+同様に $\beta[s/x][z/w]=\beta[z/w][s/x]$。
+- \ref{pt:alpha-characterization} より $\alpha[z/y]\equiv\beta[z/w]$ で、$c(\alpha[z/y])=c(\alpha)<c(\varphi)$。\ref{pt:fresh-renaming-substitutable} より $s$ は $\alpha[z/y]$, $\beta[z/w]$ の中で $x$ に代入可能。帰納法の仮定より $\alpha[z/y][s/x]\equiv\beta[z/w][s/x]$。
+
+よって $\alpha[s/x][z/y]\equiv\beta[s/x][z/w]$ で、\ref{pt:alpha-characterization} より $\varphi[s/x]\equiv\psi[s/x]$。
+:::
+
+::: definition 捕獲を避ける代入 {#pt:capture-avoiding-substitution keywords="capture-avoiding substitution" index="捕獲を避ける代入|ほかくをさけるだいにゅう"}
+項 $s$、変数 $x$、論理式 $\varphi$ について、$\varphi\equiv\varphi'$ かつ $\mathrm{BV}(\varphi')\cap\mathrm{var}(s)=\varnothing$ となる $\varphi'$（\ref{pt:alpha-clean}）をとり、
+$$
+\varphi\langle s/x\rangle\defeq\varphi'[s/x]
+$$
+と定める。$\varphi'$ の選び方によらず、$\varphi\langle s/x\rangle$ は α 同値を除いて一意に定まる：$\varphi''$ も同じ条件を満たせば、$s$ は $\varphi',\varphi''$ の中で $x$ に代入可能（\ref{logic:substitutable-sufficient} の 2）なので、\ref{pt:alpha-substitution} より $\varphi'[s/x]\equiv\varphi''[s/x]$。
+:::
+
+$s$ がもともと $\varphi$ の中で $x$ に代入可能なら $\varphi\langle s/x\rangle\equiv\varphi[s/x]$ である（\ref{pt:alpha-substitution} を $\varphi\equiv\varphi'$ に適用）。\ref{logic:page-substitution} の注意にあるとおり、本サイトの基本の代入は捕獲を避けない $\varphi[s/x]$ であり、捕獲を避ける代入は α 同値を除いてしか定まらない。
+
+## 意味論と導出可能性の不変性 {#pt:sec-alpha-invariance}
+
+::: theorem 意味論的な不変性 {#pt:alpha-semantics keywords="alpha equivalent formulas are logically equivalent"}
+$\varphi\equiv\psi$ なら、任意の構造 $\mathcal{M}$ と割り当て $v$ について $\mathcal{M},v\models\varphi\iff\mathcal{M},v\models\psi$。
+:::
+
+::: proof
+$c(\varphi)$ に関する帰納法。原子論理式と含意は明らか。$\varphi=\forall x\,\alpha$, $\psi=\forall y\,\beta$ とし、$\alpha,\beta$ について新しく $x,y$ と異なる $z$ をとる。$a\in M$ について、$z$ は $\alpha$ の中で $x$ に代入可能なので、意味論的代入補題（\ref{logic:semantic-substitution}）より
+$$
+\mathcal{M},v[z\mapsto a]\models\alpha[z/x]\iff\mathcal{M},v[z\mapsto a][x\mapsto a]\models\alpha.
+$$
+右辺の割り当ては $v[x\mapsto a]$ と $z$ でしか異ならず $z\notin\mathrm{FV}(\alpha)$ なので、一致補題（\ref{logic:coincidence}）より $\mathcal{M},v[x\mapsto a]\models\alpha$ と同値。よって
+$$
+\begin{aligned}
+\mathcal{M},v\models\forall x\,\alpha&\iff\forall a\ (\mathcal{M},v[z\mapsto a]\models\alpha[z/x])\\
+&\iff\forall a\ (\mathcal{M},v[z\mapsto a]\models\beta[z/y])\iff\mathcal{M},v\models\forall y\,\beta.
+\end{aligned}
+$$
+中央の同値は、\ref{pt:alpha-characterization} と帰納法の仮定（$c(\alpha[z/x])=c(\alpha)<c(\varphi)$）による。
+:::
+
+::: theorem 導出可能性の不変性 {#pt:alpha-derivability keywords="alpha equivalent formulas are interderivable in natural deduction"}
+$\varphi\equiv\psi$ なら、自然演繹で $\{\varphi\}\vdash\psi$。したがって $\Sigma\vdash\varphi$ と $\Sigma\vdash\psi$ は同値である。
+:::
+
+::: proof
+$c(\varphi)$ に関する帰納法。原子論理式なら $\varphi=\psi$ で仮定そのもの。含意 $(\alpha\to\beta)\equiv(\alpha'\to\beta')$ なら、帰納法の仮定（と対称律）で $\{\alpha'\}\vdash\alpha$, $\{\beta\}\vdash\beta'$ があり、仮定 $\alpha'$ から $\alpha$、$\to$E で $\beta$、$\beta'$ を得て $\to$I で $\alpha'$ を解消する。
+
+$\forall x\,\alpha\equiv\forall y\,\beta$ とし、$\alpha,\beta$ について新しく $x,y$ と異なる $z$ をとる。
+1. 仮定 $\forall x\,\alpha$ から $\forall$E（$z$ は新しいので代入可能）で $\alpha[z/x]$。
+2. 帰納法の仮定（$\alpha[z/x]\equiv\beta[z/y]$）で $\beta[z/y]$。
+3. 未解消の仮定は $\forall x\,\alpha$ だけで、$z\notin\mathrm{FV}(\forall x\,\alpha)$ なので $\forall$I で $\forall z\,\beta[z/y]$。
+4. \ref{logic:fresh-renaming} より $y$ は $\beta[z/y]$ の中で $z$ に代入可能で $\beta[z/y][y/z]=\beta$。$\forall$E で $\beta$。
+5. $y\notin\mathrm{FV}(\forall y\,\beta)=\mathrm{FV}(\forall x\,\alpha)$（\ref{pt:alpha-invariants} の 1）なので $\forall$I で $\forall y\,\beta$。
+
+後半はカット（\ref{logic:derivability-basic} の 5）による。
+:::
+
+::: hypcheck
+- 二つの不変性定理で、定義の「ある $z$」ではなく \ref{pt:alpha-characterization} の「すべての $z$」の形を使ったのは、$z$ を $\alpha$ と $\beta$ の両方について新しくとる必要があるためである。
+- 導出可能性の不変性は自然演繹の固有変数条件（3, 5 の $\forall$I）に依存する。条件 5 で $y\notin\mathrm{FV}(\forall x\,\alpha)$ を保証するのに、α 同値が自由変数を保つこと（\ref{pt:alpha-invariants} の 1）を使った。
+:::
+
+## 問題 {#pt:sec-alpha-problems}
+
+::: problem {#pt:prob-alpha-examples}
+次のうち α 同値なものはどれか。理由をつけて答えよ（$P$ は二項関係記号）。
+1. $\forall x\,\forall y\,P(x,y)$ と $\forall y\,\forall x\,P(y,x)$。
+2. $\forall x\,\forall y\,P(x,y)$ と $\forall y\,\forall x\,P(x,y)$。
+3. $\forall x\,P(x,y)$ と $\forall y\,P(y,y)$。
+:::
+
+::: solution
+1. α 同値。新しい $z,w$ をとり、\ref{pt:alpha-characterization} を二回使うと、どちらも $P(z,w)$ に帰着する（左は $x\mapsto z$, $y\mapsto w$、右は $y\mapsto z$, $x\mapsto w$）。
+2. α 同値でない。同様に帰着させると $P(z,w)$ と $P(w,z)$ になり、原子論理式として異なる。
+3. α 同値でない。$\mathrm{FV}$ が異なる（左は $\{y\}$、右は $\varnothing$）ので \ref{pt:alpha-invariants} の 1 に反する。
+:::
+
+::: problem {#pt:prob-alpha-all-definition}
+定義 3 を「$\alpha,\beta$ について新しく $x,y$ と異なる**すべての** $z$ について $(z\ x)\cdot\alpha\equiv(z\ y)\cdot\beta$」に替えても、同じ関係が定まることを示せ。
+:::
+
+::: solution
+新しい変数は存在する（\ref{logic:fresh-variable}）ので、「すべて」なら「ある」が成り立つ。逆は \ref{pt:alpha-fresh-independence}。ただし、二つの定義が同じ関係を定めることを $c$ に関する帰納法で示す必要がある：$c$ の小さい論理式について二つの関係が一致すると仮定すれば、全称の場合の条件は（右辺が $c$ の小さい論理式の関係なので）同じ関係について述べており、上の議論が適用できる。
+:::
+
+::: supplement
+**前提の検討.**
+- α 同値の定義は互換 $(z\ x)$ を使い、代入を使わない。互換は全単射で、束縛変数も一様に書き換え、自由変数・束縛変数・論理的複雑さをすべて保つので、帰納法がきれいに回る。代入はこれらの性質の一部しかもたない（捕獲、束縛変数の不変）ため、定義に使うと補題の証明で場合分けが増える。
+- 本ページの議論は、変数の集合が無限であること（新しい変数の存在）に本質的に依存する。
+
+**関連する結果.** 互換を使って束縛を扱う方法は、Gabbay–Pitts の**ノミナル技法**として一般に知られている。別の方法として、束縛変数を「何番目の束縛子を指すか」という番号で表す**ド・ブラウン指数**がある、と一般に知られている（本サイトでは扱っていない）。次のページ以降では、シーケント計算の導出図について、固有変数と束縛変数を一斉に付け替えても導出の高さとカットのない形が保たれることを示す。
+
+**高い視点から：名前の対称性.** 束縛変数の名前は「どれを選んでもよい」という対称性をもつ。置換群が論理式全体に作用し、α 同値はこの作用のもとで「束縛変数だけを動かす」軌道に当たる。自由変数は外の世界との接続点なので動かせず、束縛変数は内部の配線なので自由に付け替えられる。電気回路で内部の配線の色を塗り替えても回路の働きは変わらないが、端子の名前を変えれば別の回路になる、という比喩が近い（これは本サイトの比喩である）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

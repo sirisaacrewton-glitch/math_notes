@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>シーケント計算 LK | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/01-sequent-calculus/02-sequent-calculus.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# シーケント計算 LK {#pt:page-sequent-calculus keywords="sequent calculus, LK, G3c, height-preserving admissibility, weakening, contraction, inversion, eigenvariable renaming, substitution in derivations"}
+
+ゲンツェンのシーケント計算 $\mathsf{LK}$ を、構造規則（弱化・縮約）を推論規則に吸収した形（一般に G3 型と呼ばれる形）で定義し、その構造的性質を示す。中心は、導出の高さを増やさずに、(1) 項を代入する（固有変数の一斉付け替えを含む、\ref{pt:lk-substitution}）、(2) 論理式を加える（弱化、\ref{pt:lk-weakening}）、(3) 規則を逆にたどる（反転、\ref{pt:lk-inversion}）、(4) 同じ論理式の重複を除く（縮約、\ref{pt:lk-contraction}）ことができる、という四つの補題である。どれもカットを使わず、カットのない導出はカットのない導出に移る。これらは次のページのカット除去定理の準備である。束縛変数の扱いには α 同値（\ref{pt:page-alpha-equivalence}）を使う。
+
+## 記法と定義の確認 {#pt:sec-lk-notation}
+
+::: notation
+- α 同値 $\equiv$、その特徴づけ・付け替え・代入との両立、捕獲を避ける代入 $\varphi\langle s/x\rangle$、意味論的な不変性は \ref{pt:page-alpha-equivalence} のとおり（\ref{pt:alpha-characterization}, \ref{pt:alpha-renaming}, \ref{pt:alpha-clean}, \ref{pt:alpha-substitution}, \ref{pt:capture-avoiding-substitution}, \ref{pt:alpha-semantics}）。
+- 論理式・代入・充足関係などは \ref{logic:page-syntax} から \ref{logic:page-semantics} までのとおり。
+- 本ページと次のページでは、**等号を扱わない**：$t=s$ は通常の二項関係記号の原子論理式として扱い、等号の規則を置かない。等号は \ref{pt:equivalence-of-systems} で初期シーケントとして加える。
+- $\Gamma,\Delta,\Pi,\Lambda$ は論理式の有限**多重集合**（重複を数える集まり）を表し、$\Gamma,A$ は $\Gamma$ に $A$ を一つ加えた多重集合、$\Gamma,\Pi$ は多重集合の和を表す。$\mathrm{FV}(\Gamma)\defeq\bigcup_{A\in\Gamma}\mathrm{FV}(A)$。$\Gamma\langle s/z\rangle$ は各元に $\langle s/z\rangle$ を施した多重集合（α 同値を除いて定まる）。
+:::
+
+## 捕獲を避ける代入の計算規則 {#pt:sec-lk-cas}
+
+導出の中で代入を扱うため、捕獲を避ける代入の基本的な計算規則をまとめておく。いずれも α 同値を除いた等式である。
+
+::: lemma 捕獲を避ける代入の性質 {#pt:cas-rules}
+項 $s,t$、変数 $x,z$、論理式 $A,B$ について次が成り立つ。
+1. $A\equiv B$ なら $A\langle s/z\rangle\equiv B\langle s/z\rangle$。$z\notin\mathrm{FV}(A)$ なら $A\langle s/z\rangle\equiv A$。$A$ が原子論理式なら $A\langle s/z\rangle=A[s/z]$。
+2. $(A\to B)\langle s/z\rangle\equiv(A\langle s/z\rangle\to B\langle s/z\rangle)$。
+3. $x\notin\mathrm{var}(s)\cup\{z\}$ なら $(\forall x\,A)\langle s/z\rangle\equiv\forall x\,(A\langle s/z\rangle)$。
+4. $\forall x\,A\equiv\forall y\,B$ なら $A\langle t/x\rangle\equiv B\langle t/y\rangle$。
+5. $z\neq x$, $x\notin\mathrm{var}(s)$ なら $A\langle t/x\rangle\langle s/z\rangle\equiv A\langle s/z\rangle\langle t[s/z]/x\rangle$。
+6. $\mathrm{FV}(A\langle s/z\rangle)\subseteq(\mathrm{FV}(A)\setminus\{z\})\cup\mathrm{var}(s)$、等号は $z\in\mathrm{FV}(A)$ のとき。
+:::
+
+::: proof
+以下、「$A$ の代表 $A'$」とは \ref{pt:alpha-clean} で得られる $A'\equiv A$ で、$\mathrm{BV}(A')$ が指定した有限集合と交わらないものをいう。$\mathrm{BV}(A')\cap\mathrm{var}(s)=\varnothing$ なら $s$ は $A'$ の中で代入可能で（\ref{logic:substitutable-sufficient}）、$A\langle s/z\rangle\equiv A'[s/z]$（\ref{pt:capture-avoiding-substitution}）。
+
+1. 前半は定義（$A,B$ に共通の代表をとれる）。$z\notin\mathrm{FV}(A)=\mathrm{FV}(A')$ なら $A'[s/z]=A'\equiv A$。原子論理式には束縛がない。
+2. $A,B$ の代表 $A',B'$ をとれば $(A'\to B')$ は $(A\to B)$ の代表。
+3. $A$ の代表 $A'$（$\mathrm{BV}(A')\cap\mathrm{var}(s)=\varnothing$）をとると、$x\notin\mathrm{var}(s)$ なので $\forall x\,A'$ も代表で、$x\neq z$ より $(\forall x\,A')[s/z]=\forall x\,(A'[s/z])$。\ref{pt:alpha-invariants} の 3 で右辺は $\forall x\,(A\langle s/z\rangle)$ と α 同値。
+4. $A,B$ の代表 $A',B'$（$\mathrm{BV}$ が $\mathrm{var}(t)$ と交わらない）をとり、$A',B'$ について新しく $x,y$ と異なり $\mathrm{var}(t)$ に属さない $z$ をとる。$\forall x\,A'\equiv\forall y\,B'$（\ref{pt:alpha-invariants} の 3 と推移律）なので \ref{pt:alpha-characterization} より $A'[z/x]\equiv B'[z/y]$。$\mathrm{BV}(A'[z/x])=\mathrm{BV}(A')$ は $\mathrm{var}(t)$ と交わらないので $t$ は両辺の中で $z$ に代入可能で、\ref{pt:alpha-substitution} より $A'[z/x][t/z]\equiv B'[z/y][t/z]$。\ref{logic:substitution-composition} より左辺は $A'[t/x]$、右辺は $B'[t/y]$。
+5. $A$ の代表 $A'$ で $\mathrm{BV}(A')$ が $\mathrm{var}(s)\cup\mathrm{var}(t)\cup\{x,z\}$ と交わらないものをとる。左辺は $A'[t/x][s/z]$ と α 同値（$\mathrm{BV}(A'[t/x])=\mathrm{BV}(A')$）。\ref{logic:substitution-commutation}（$x\neq z$, $x\notin\mathrm{var}(s)$, $z\notin\mathrm{BV}(A')$）より $A'[t/x][s/z]=A'[s/z][t[s/z]/x]$。$\mathrm{BV}(A'[s/z])=\mathrm{BV}(A')$ は $\mathrm{var}(t[s/z])\subseteq\mathrm{var}(t)\cup\mathrm{var}(s)$ と交わらないので、これは右辺と α 同値。
+6. \ref{logic:substitution-fv} と \ref{pt:alpha-invariants} の 1。
+:::
+
+## LK の定義 {#pt:sec-lk-definition}
+
+::: definition シーケントと LK {#pt:lk keywords="sequent, LK, G3c, initial sequent, principal formula, eigenvariable" index="シーケント|しーけんと, LK|えるけー, 初期シーケント|しょきしーけんと, 主論理式|しゅろんりしき, 固有変数|こゆうへんすう"}
+**シーケント**とは、論理式の有限多重集合の組 $\langle\Gamma,\Delta\rangle$ のことで $\Gamma\Rightarrow\Delta$ と書く。$\Gamma$ を前件、$\Delta$ を後件という。$\mathsf{LK}$ の**導出**とその**高さ**を、次の規則で帰納的に定める（初期シーケントの高さは $0$、規則の結論の高さは前提の高さの最大値 $+1$）。$P$ は $\bot$ 以外の原子論理式を表す。
+$$
+\begin{aligned}
+&\text{(Ax)}\ \ P,\Gamma\Rightarrow\Delta,P\qquad\qquad(\mathrm{L}\bot)\ \ \bot,\Gamma\Rightarrow\Delta
+\end{aligned}
+$$
+$$
+\frac{\Gamma\Rightarrow\Delta,A\qquad B,\Gamma\Rightarrow\Delta}{A\to B,\Gamma\Rightarrow\Delta}\,(\mathrm{L}{\to})\qquad
+\frac{A,\Gamma\Rightarrow\Delta,B}{\Gamma\Rightarrow\Delta,A\to B}\,(\mathrm{R}{\to})
+$$
+$$
+\frac{C,\forall x\,A,\Gamma\Rightarrow\Delta}{\forall x\,A,\Gamma\Rightarrow\Delta}\,(\mathrm{L}\forall)\qquad
+\frac{\Gamma\Rightarrow\Delta,C}{\Gamma\Rightarrow\Delta,\forall x\,A}\,(\mathrm{R}\forall)
+$$
+- (L$\forall$) の条件：ある項 $t$ について $C\equiv A\langle t/x\rangle$。
+- (R$\forall$) の条件：ある変数 $y$ について $C\equiv A\langle y/x\rangle$ で、$y\notin\mathrm{FV}(\Gamma,\Delta,\forall x\,A)$。$y$ をこの推論の**固有変数**という。
+
+各規則で、結論に新しく現れる論理式（Ax の $P$ 二つ、L$\bot$ の $\bot$、L$\to$ の $A\to B$ など）を**主論理式**、$\Gamma,\Delta$ を**文脈**という。$\mathsf{LK}+\mathrm{Cut}$ は、さらに
+$$
+\frac{\Gamma\Rightarrow\Delta,C\qquad C,\Gamma\Rightarrow\Delta}{\Gamma\Rightarrow\Delta}\,(\mathrm{Cut})
+$$
+を許す体系である（$C$ を**カット論理式**という）。$\vdash_{n}\Gamma\Rightarrow\Delta$ は、カットのない高さ $n$ 以下の導出があることを表す。単に $\vdash\Gamma\Rightarrow\Delta$ と書けばカットのない導出があること、$\vdash_{\mathrm{Cut}}$ はカットを許した導出があることを表す。
+:::
+
+::: remark 定式化についての注意 {#pt:lk-formulation-remark}
+- ゲンツェンの元の $\mathsf{LK}$ は論理式の列を使い、弱化・縮約・交換を明示的な構造規則としてもつ。上の定式化では、多重集合が交換を、初期シーケントと L$\bot$ の文脈 $\Gamma,\Delta$ が弱化を、L$\forall$ の前提に主論理式 $\forall x\,A$ を残すことと L$\to$ の文脈の共有が縮約の多くを、それぞれ吸収している。両者が同じシーケントを導出することは、以下の補題（弱化・縮約の許容性）から従う、と一般に言われている。
+- L$\forall$ と R$\forall$ の条件を $\equiv$ を通して述べたのは、項を代入したとき束縛変数による捕獲が起きても規則が使えるようにするためである。$C$ として $A[t/x]$（$t$ が代入可能なとき）や $A[y/x]$ そのものをとってよい。
+- $\neg,\wedge,\vee,\exists$ は略記なので規則をもたない。たとえば $\neg A=(A\to\bot)$ の右規則は R$\to$ と L$\bot$ から得られる。
+:::
+
+::: example 導出の例 {#pt:lk-example}
+排中律 $A\vee\neg A$ は略記を展開すると $\neg A\to\neg A$、すなわち $(A\to\bot)\to(A\to\bot)$ である。シーケント $\Rightarrow(A\to\bot)\to(A\to\bot)$ は次のように導出できる。
+1. $A\Rightarrow\bot,A$（$A$ が原子論理式なら Ax、一般には次の \ref{pt:lk-identity}）と $\bot,A\Rightarrow\bot$（L$\bot$）から、L$\to$ で $A\to\bot,A\Rightarrow\bot$。
+2. R$\to$ で $A\to\bot\Rightarrow A\to\bot$。
+3. R$\to$ で $\Rightarrow(A\to\bot)\to(A\to\bot)$。
+
+L$\to$ の前提には主論理式 $A\to\bot$ が残らないことに注意する。
+:::
+
+::: lemma 同一律 {#pt:lk-identity}
+任意の論理式 $A$ と $\Gamma,\Delta$ について $\vdash A,\Gamma\Rightarrow\Delta,A$。
+:::
+
+::: proof
+$c(A)$ に関する帰納法。原子論理式なら Ax または L$\bot$。$A=B\to C$ なら、帰納法の仮定より $B,\Gamma\Rightarrow\Delta,C,B$ と $C,B,\Gamma\Rightarrow\Delta,C$ が導出でき、L$\to$ で $B\to C,B,\Gamma\Rightarrow\Delta,C$、R$\to$ で $B\to C,\Gamma\Rightarrow\Delta,B\to C$。$A=\forall x\,B$ なら、$\Gamma,\Delta,B$ について新しく $x$ と異なる $y$ をとる。$B\langle y/x\rangle\equiv B[y/x]$ で $c(B[y/x])=c(B)$ なので、帰納法の仮定より $B[y/x],\forall x\,B,\Gamma\Rightarrow\Delta,B[y/x]$。L$\forall$（$t=y$）で $\forall x\,B,\Gamma\Rightarrow\Delta,B[y/x]$、R$\forall$（固有変数 $y\notin\mathrm{FV}(\Gamma,\Delta,\forall x\,B)$）で結論を得る。
+:::
+
+## 健全性 {#pt:sec-lk-soundness}
+
+::: definition 妥当なシーケント {#pt:valid-sequent}
+シーケント $\Gamma\Rightarrow\Delta$ が**妥当**であるとは、任意の構造 $\mathcal{M}$ と割り当て $v$ について、$\Gamma$ のすべての元を充足するなら $\Delta$ のある元を充足することをいう。
+:::
+
+::: theorem 健全性 {#pt:lk-soundness keywords="soundness of LK" index="LK の健全性|えるけーのけんぜんせい"}
+$\vdash_{\mathrm{Cut}}\Gamma\Rightarrow\Delta$ なら $\Gamma\Rightarrow\Delta$ は妥当である。
+:::
+
+::: proof
+各規則が妥当性を保つことを示せばよい。Ax, L$\bot$, 命題の規則、Cut は充足関係の定義から明らか。意味論的な不変性（\ref{pt:alpha-semantics}）より、$C$ を $A$ の代表 $A'$ についての $A'[t/x]$ に取り替えてよい。
+- *L$\forall$.* $\mathcal{M},v$ が $\forall x\,A'$ を充足すれば、意味論的代入補題（\ref{logic:semantic-substitution}）より $A'[t/x]$ も充足するので、前提の妥当性から結論が従う。
+- *R$\forall$.* $\mathcal{M},v$ が $\Gamma$ のすべての元を充足し、$\Delta$ のどの元も充足しないとする。$a\in M$ を任意にとる。$y\notin\mathrm{FV}(\Gamma,\Delta)$ なので一致補題（\ref{logic:coincidence}）より $v[y\mapsto a]$ も同じ性質をもち、前提の妥当性から $\mathcal{M},v[y\mapsto a]\models A'[y/x]$、代入補題より $\mathcal{M},v[y\mapsto a][x\mapsto a]\models A'$。$y\notin\mathrm{FV}(\forall x\,A')$ なので $y=x$ か $y\notin\mathrm{FV}(A')$ で、いずれにせよ一致補題より $\mathcal{M},v[x\mapsto a]\models A'$。$a$ は任意なので $\mathcal{M},v\models\forall x\,A'$。
+:::
+
+## α 同値と代入 {#pt:sec-lk-substitution}
+
+::: lemma α 同値な論理式への取り替え {#pt:lk-alpha-replacement}
+$\vdash_{n}\Gamma\Rightarrow\Delta$ で、$\Gamma',\Delta'$ が $\Gamma,\Delta$ の各元を α 同値な論理式に取り替えたもの（重複も含めて一対一に）なら、$\vdash_{n}\Gamma'\Rightarrow\Delta'$。
+:::
+
+::: proof
+$n$ に関する帰納法。Ax の主論理式 $P$ は原子論理式で、α 同値な原子論理式は等しいので Ax のまま。L$\bot$ も同様。L$\to$, R$\to$ では、主論理式 $A\to B$ の取り替え $A'\to B'$ は $A\equiv A'$, $B\equiv B'$ を満たすので、帰納法の仮定で前提の $A,B$ と文脈を取り替えて同じ規則を使う。L$\forall$ で主論理式 $\forall x\,A$ が $\forall y\,B$ に取り替えられたとき、前提の $C\equiv A\langle t/x\rangle$ は \ref{pt:cas-rules} の 4 より $C\equiv B\langle t/y\rangle$ を満たすので、帰納法の仮定で前提の $\forall x\,A$ を $\forall y\,B$ に取り替えて L$\forall$ を使う。R$\forall$ も同様で、固有変数の条件は $\mathrm{FV}(\forall x\,A)=\mathrm{FV}(\forall y\,B)$（\ref{pt:alpha-invariants} の 1）より保たれる。
+:::
+
+以下、この補題により、シーケントの論理式を α 同値なものに断りなく取り替える。
+
+::: lemma 代入と固有変数の付け替え {#pt:lk-substitution keywords="substitution lemma for LK derivations, renaming eigenvariables, height-preserving substitution" index="導出への代入|どうしゅつへのだいにゅう, 固有変数の付け替え|こゆうへんすうのつけかえ"}
+$\vdash_{n}\Gamma\Rightarrow\Delta$ なら、任意の項 $s$ と変数 $z$ について $\vdash_{n}\Gamma\langle s/z\rangle\Rightarrow\Delta\langle s/z\rangle$。
+:::
+
+::: proof
+$n$ に関する帰納法で、すべての $s,z,\Gamma,\Delta$ について同時に示す。最後の規則で場合を分ける。
+- *Ax.* $P\langle s/z\rangle=P[s/z]$ が両辺に現れるので Ax。
+- *L$\bot$.* $\bot\langle s/z\rangle=\bot$。
+- *L$\to$, R$\to$.* \ref{pt:cas-rules} の 2 と、前提への帰納法の仮定。
+- *L$\forall$.* 主論理式を $\forall x\,A$、前提を $C,\forall x\,A,\Gamma\Rightarrow\Delta$（$C\equiv A\langle t/x\rangle$）とする。$\forall x\,A$ の代わりに α 同値な $\forall x'\,A''$ で $x'\notin\mathrm{var}(s)\cup\{z\}$ となるものを使ってよい（\ref{pt:alpha-renaming}、\ref{pt:cas-rules} の 4 で $C\equiv A''\langle t/x'\rangle$）。帰納法の仮定で前提に $\langle s/z\rangle$ を施すと
+$$
+C\langle s/z\rangle,(\forall x'\,A'')\langle s/z\rangle,\Gamma\langle s/z\rangle\Rightarrow\Delta\langle s/z\rangle
+$$
+（高さ $\le n-1$）。\ref{pt:cas-rules} の 3, 5 より $(\forall x'\,A'')\langle s/z\rangle\equiv\forall x'\,(A''\langle s/z\rangle)$、$C\langle s/z\rangle\equiv A''\langle s/z\rangle\langle t[s/z]/x'\rangle$。よって L$\forall$（項 $t[s/z]$）で結論を得る。
+- *R$\forall$.* 主論理式を $\forall x\,A$、前提を $\Gamma\Rightarrow\Delta,C$（$C\equiv A\langle y/x\rangle$, 固有変数 $y$）とする。$\Gamma,\Delta,A,s$ について新しく $x,y,z$ と異なる変数 $y'$ をとる。
+ 1. 帰納法の仮定（$\langle y'/y\rangle$）で前提から $\Gamma\langle y'/y\rangle\Rightarrow\Delta\langle y'/y\rangle,C\langle y'/y\rangle$（高さ $\le n-1$）。$y\notin\mathrm{FV}(\Gamma,\Delta)$ なので $\Gamma\langle y'/y\rangle\equiv\Gamma$, $\Delta\langle y'/y\rangle\equiv\Delta$（\ref{pt:cas-rules} の 1）。また $C\langle y'/y\rangle\equiv A\langle y'/x\rangle$（$y\notin\mathrm{FV}(\forall x\,A)$ なので $y=x$ か $y\notin\mathrm{FV}(A)$ で、どちらの場合も \ref{pt:cas-rules} の 1, 5 から従う）。
+ 2. 1 の結果に、もう一度帰納法の仮定（$\langle s/z\rangle$、高さ $\le n-1$）を使い、$\Gamma\langle s/z\rangle\Rightarrow\Delta\langle s/z\rangle,A\langle y'/x\rangle\langle s/z\rangle$。
+ 3. $x$ を必要なら \ref{pt:alpha-renaming} で $\mathrm{var}(s)\cup\{z\}$ に属さない変数に付け替えておくと、\ref{pt:cas-rules} の 3, 5 より $(\forall x\,A)\langle s/z\rangle\equiv\forall x\,(A\langle s/z\rangle)$、$A\langle y'/x\rangle\langle s/z\rangle\equiv A\langle s/z\rangle\langle y'/x\rangle$（$y'\neq z$ なので $y'[s/z]=y'$）。
+ 4. $y'\notin\mathrm{FV}(\Gamma\langle s/z\rangle,\Delta\langle s/z\rangle,(\forall x\,A)\langle s/z\rangle)$（\ref{pt:cas-rules} の 6 と $y'$ の選び方）なので、R$\forall$（固有変数 $y'$）で結論を得る。
+
+どの場合も、使った規則はもとの規則と同じ種類で、高さは増えず、カットは現れない。
+:::
+
+::: hypcheck
+- R$\forall$ の場合の 1 が**固有変数の付け替え**である。代入する項 $s$ が固有変数 $y$ を含むと、そのまま代入すると固有変数の条件が壊れるので、先に $y$ を新しい $y'$ に付け替える。付け替えも同じ補題（高さの小さい導出についての帰納法の仮定）で行うので、高さは増えない。
+- 束縛変数の付け替えは、α 同値への取り替え（\ref{pt:lk-alpha-replacement}）と L$\forall$, R$\forall$ の条件を $\equiv$ で述べたことにより、自動的に処理されている。
+:::
+
+## 弱化・反転・縮約 {#pt:sec-lk-structural}
+
+::: lemma 高さを保つ弱化 {#pt:lk-weakening keywords="height-preserving weakening" index="弱化の許容性|じゃっかのきょようせい"}
+$\vdash_{n}\Gamma\Rightarrow\Delta$ なら、任意の $\Pi,\Lambda$ について $\vdash_{n}\Pi,\Gamma\Rightarrow\Delta,\Lambda$。
+:::
+
+::: proof
+$n$ に関する帰納法。Ax, L$\bot$ は文脈を広げても同じ規則。命題の規則と L$\forall$ は前提に帰納法の仮定を使う。R$\forall$ で固有変数 $y$ が $\mathrm{FV}(\Pi,\Lambda)$ に属するときは、\ref{pt:lk-substitution}（R$\forall$ の場合の 1 と同じ付け替え）で前提の $y$ を $\Pi,\Lambda$ などについて新しい $y'$ に付け替えてから、帰納法の仮定と R$\forall$ を使う。
+:::
+
+::: lemma 高さを保つ反転 {#pt:lk-inversion keywords="height-preserving invertibility of the rules" index="反転補題|はんてんほだい"}
+1. $\vdash_{n}A\to B,\Gamma\Rightarrow\Delta$ なら $\vdash_{n}\Gamma\Rightarrow\Delta,A$ かつ $\vdash_{n}B,\Gamma\Rightarrow\Delta$。
+2. $\vdash_{n}\Gamma\Rightarrow\Delta,A\to B$ なら $\vdash_{n}A,\Gamma\Rightarrow\Delta,B$。
+3. $\vdash_{n}\Gamma\Rightarrow\Delta,\forall x\,A$ なら、任意の項 $t$ について $\vdash_{n}\Gamma\Rightarrow\Delta,A\langle t/x\rangle$。
+4. $\vdash_{n}\forall x\,A,\Gamma\Rightarrow\Delta$ なら、任意の項 $t$ について $\vdash_{n}A\langle t/x\rangle,\forall x\,A,\Gamma\Rightarrow\Delta$。
+5. $\vdash_{n}\Gamma\Rightarrow\Delta,\bot$ なら $\vdash_{n}\Gamma\Rightarrow\Delta$。
+:::
+
+::: proof
+4 は弱化（\ref{pt:lk-weakening}）そのもの。1〜3, 5 は $n$ に関する帰納法で、問題の論理式（$A\to B$, $\forall x\,A$, 後件の $\bot$）が最後の推論の主論理式かどうかで場合を分ける。
+- *主論理式でない場合.* Ax なら、主論理式 $P$ は問題の論理式と異なる原子論理式なので、問題の論理式を除いたり取り替えたりしても Ax のまま（1 の左の場合は $A$ を後件に、3 は $A\langle t/x\rangle$ を加えても、文脈なので Ax）。L$\bot$ も同様。それ以外の規則なら、前提に帰納法の仮定を使って同じ規則を使う。R$\forall$ で固有変数が新しく加わる論理式（$A$ や $A\langle t/x\rangle$）に自由に現れるときは、\ref{pt:lk-substitution} で固有変数を付け替えてから行う。
+- *主論理式の場合.* 1, 2：最後の推論は L$\to$, R$\to$ で、その前提が求めるものである（高さ $\le n-1$、弱化で高さ $n$ 以下に扱える）。3：最後の推論は R$\forall$ で、前提は $\Gamma\Rightarrow\Delta,C$（$C\equiv A\langle y/x\rangle$、固有変数 $y$）。\ref{pt:lk-substitution} で $\langle t/y\rangle$ を施すと $\Gamma\Rightarrow\Delta,C\langle t/y\rangle$ で、$y\notin\mathrm{FV}(\Gamma,\Delta,\forall x\,A)$ より $C\langle t/y\rangle\equiv A\langle t/x\rangle$（\ref{pt:cas-rules} の 1, 5）。5：後件の $\bot$ はどの規則の主論理式にもならない（Ax の $P$ は $\bot$ でない）ので、この場合は起きない。
+:::
+
+::: lemma 高さを保つ縮約 {#pt:lk-contraction keywords="height-preserving contraction" index="縮約の許容性|しゅくやくのきょようせい"}
+$\vdash_{n}A,A,\Gamma\Rightarrow\Delta$ なら $\vdash_{n}A,\Gamma\Rightarrow\Delta$。$\vdash_{n}\Gamma\Rightarrow\Delta,A,A$ なら $\vdash_{n}\Gamma\Rightarrow\Delta,A$。
+:::
+
+::: proof
+$n$ に関する帰納法（すべての $A$ について同時に）。$n=0$ なら、Ax や L$\bot$ から $A$ の一方を除いても Ax・L$\bot$ のまま（主論理式の $P$ が $A$ でも、もう一つの $A$ が残る）。$n>0$ とし、最後の推論を見る。二つの $A$ のどちらも主論理式でないなら、前提に帰納法の仮定を使って同じ規則を使う（R$\forall$ の固有変数は文脈に自由に現れないので、文脈を減らしても条件は保たれる）。一方が主論理式の場合：
+- *前件、$A=B\to C$.* 前提は $A,\Gamma\Rightarrow\Delta,B$ と $C,A,\Gamma\Rightarrow\Delta$（高さ $\le n-1$）。反転（\ref{pt:lk-inversion} の 1）を残りの $A$ に使い、$\Gamma\Rightarrow\Delta,B,B$ と $C,C,\Gamma\Rightarrow\Delta$（高さ $\le n-1$）。帰納法の仮定で縮約し、L$\to$ で $A,\Gamma\Rightarrow\Delta$。
+- *後件、$A=B\to C$.* 前提 $B,\Gamma\Rightarrow\Delta,A,C$ に反転（2）を使って $B,B,\Gamma\Rightarrow\Delta,C,C$、帰納法の仮定で縮約し R$\to$。
+- *前件、$A=\forall x\,B$.* 前提は $D,A,A,\Gamma\Rightarrow\Delta$（$D\equiv B\langle t/x\rangle$）。帰納法の仮定で $D,A,\Gamma\Rightarrow\Delta$ とし L$\forall$。
+- *後件、$A=\forall x\,B$.* 前提 $\Gamma\Rightarrow\Delta,A,C$（$C\equiv B\langle y/x\rangle$、$y$ は $\Gamma,\Delta,A$ に自由に現れない）に反転（3、$t=y$）を使って $\Gamma\Rightarrow\Delta,C,B\langle y/x\rangle$、すなわち（α 同値を除いて）$\Gamma\Rightarrow\Delta,C,C$。帰納法の仮定で縮約し R$\forall$。
+- $A$ が原子論理式なら主論理式になるのは Ax・L$\bot$ だけで、$n>0$ では起きない。
+:::
+
+::: hypcheck
+- 縮約の証明は反転補題に依存し、反転補題は代入補題と弱化に依存する。どれもカットを使わず、高さを増やさない。
+- 「高さを保つ」ことは、次のページのカット除去の帰納法（カット論理式の複雑さと導出の高さに関する二重帰納法）で本質的である。
+:::
+
+## 問題 {#pt:sec-lk-problems}
+
+::: problem {#pt:prob-lk-forall-imp}
+$x\notin\mathrm{FV}(A)$ のとき、$\mathsf{LK}$ で $\forall x\,(A\to B)\Rightarrow A\to\forall x\,B$ を導出せよ。
+:::
+
+::: solution
+$A,B,\forall x\,(A\to B)$ について新しく $x$ と異なる $y$ をとる。$x\notin\mathrm{FV}(A)$ なので $(A\to B)[y/x]=A\to B[y/x]$。同一律（\ref{pt:lk-identity}）より $A,\ \forall x\,(A\to B)\Rightarrow B[y/x],A$ と $B[y/x],A,\forall x\,(A\to B)\Rightarrow B[y/x]$ が導出でき、L$\to$ で $A\to B[y/x],A,\forall x\,(A\to B)\Rightarrow B[y/x]$、L$\forall$（$t=y$）で $A,\forall x\,(A\to B)\Rightarrow B[y/x]$。$y\notin\mathrm{FV}(A,\forall x\,(A\to B),\forall x\,B)$ なので R$\forall$ で $A,\forall x\,(A\to B)\Rightarrow\forall x\,B$、R$\to$ で結論。
+:::
+
+::: problem {#pt:prob-lk-eigen-necessary}
+R$\forall$ の固有変数の条件を外すと、妥当でないシーケント $P(y)\Rightarrow\forall x\,P(x)$ が導出できてしまうことを示せ。
+:::
+
+::: solution
+Ax $P(y)\Rightarrow P(y)$ で $P(y)\equiv P(x)\langle y/x\rangle$ なので、条件なしの R$\forall$ で $P(y)\Rightarrow\forall x\,P(x)$。しかし $M=\{0,1\}$, $P^{\mathcal{M}}=\{0\}$, $v(y)=0$ とすると前件は充足され後件は充足されないので妥当でない。実際には $y\in\mathrm{FV}(P(y))$ なので固有変数の条件に反する。
+:::
+
+::: supplement
+**前提の検討.**
+- 本ページの四つの補題（代入、弱化、反転、縮約）は、すべて導出の高さに関する帰納法で、カットを使わない。高さを保つことが要点である。
+- L$\forall$ の前提に主論理式 $\forall x\,A$ を残す形にしたのは、縮約の許容性のためである（残さない形では L$\forall$ が反転可能でなくなり、縮約を明示的な規則として置く必要が出る）。
+
+**関連する結果.** 本ページの定式化は、Troelstra–Schwichtenberg や Negri–von Plato の教科書で G3c と呼ばれる体系とほぼ同じであると一般に言われている（本サイトでは比較を確かめていない）。直観主義論理の版（後件を高々一つの論理式に制限した LJ）でも同様の構造的性質が成り立つことが知られている。
+
+**高い視点から：構造規則は「資源の管理」.** シーケントの論理式を「使える資源」と見ると、弱化は資源を捨てること、縮約は資源を複製することに当たる。本ページの定式化では、これらを推論規則に組み込んでおき、補題として「捨ててもよい」「複製を一つにまとめてもよい」ことを示した。この見方を推し進め、弱化や縮約を制限した論理が線形論理や関連論理であり、資源の計算や型理論と結びついている、と一般に説明される（これは本サイトの比喩と要約である）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

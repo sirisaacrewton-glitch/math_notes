@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L と NL | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/04-complexity/05-logspace.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# L と NL {#comp:page-logspace keywords="logarithmic space, L, NL, read-only input tape, log-space reduction, log-space transducer, PATH is NL-complete, configuration graph, Immerman-Szelepcsenyi theorem, NL = coNL, inductive counting"}
+
+線形未満の領域を扱うために、入力は**読み取り専用**のテープに置き、作業用テープの升目だけを数える（\ref{comp:logspace-model}）。対数領域 $O(\log n)$ は、入力の位置を指す数（ポインタ）を定数個持てる程度の記憶である。本ページでは、決定性・非決定性の対数領域のクラス L, NL を定め（\ref{comp:class-l-nl}）、$\mathrm{NL}\subseteq\mathrm{P}$（\ref{comp:nl-in-p}）、グラフの到達可能性 PATH が対数領域還元について NL 完全であること（\ref{comp:path-nl-complete}）、そして**イマーマン–セレプチェーニの定理** $\mathrm{NL}=\mathrm{coNL}$（\ref{comp:immerman-szelepcsenyi}）を示す。最後の定理は、到達できる頂点の**個数を数える**ことで、到達できないことの証拠を非決定的に検証するという工夫による。
+
+## 記法と定義の確認 {#comp:sec-logspace-notation}
+
+::: notation
+- TM、非決定性 TM、時点表示、P、PATH とその多項式時間アルゴリズム（\ref{comp:path-in-p}）、領域計算量、サヴィッチの定理（\ref{comp:savitch}）は \ref{comp:page-time-complexity}, \ref{comp:page-space-complexity} のとおり。
+- $\log$ は底 $2$。$n$ 以下の数は $\lceil\log(n+1)\rceil$ ビットで書ける。
+:::
+
+## 対数領域 {#comp:sec-logspace-model}
+
+::: definition 読み取り専用の入力をもつ機械 {#comp:logspace-model keywords="read-only input tape, work tape, sublinear space" index="読み取り専用入力テープ|よみとりせんようにゅうりょくてーぷ"}
+**2 テープの判定機**とは、入力テープ（書き換えできない。入力の両端に端の記号を置き、ヘッドはその間だけを動く）と作業テープ（通常のテープ）をもつ TM である。その**使用領域**を、作業テープでヘッドが訪れる升目の数の最大値とする。この模型で使用領域 $O(f(n))$ の決定性（非決定性）判定機で決定できる言語全体を、改めて $\mathrm{SPACE}(f(n))$（$\mathrm{NSPACE}(f(n))$）と書く（$f(n)\ge n$ では \ref{comp:space-class} と一致する）。
+:::
+
+::: definition L と NL {#comp:class-l-nl keywords="L, NL, logspace" index="L（計算量クラス）|えるけいさんりょうくらす, NL|えぬえる"}
+$\mathrm{L}\defeq\mathrm{SPACE}(\log n)$、$\mathrm{NL}\defeq\mathrm{NSPACE}(\log n)$。補集合が NL に属する言語全体を $\mathrm{coNL}$ と書く。
+:::
+
+::: example
+1. $\{0^{k}1^{k}:k\ge0\}\in\mathrm{L}$：入力が $0^{\ast}1^{\ast}$ の形かを一度の走査で調べ、$0$ と $1$ の個数を作業テープ上の二進の計数器で数えて比べる。計数器は $O(\log n)$ ビット。
+2. $\mathrm{PATH}\in\mathrm{NL}$：「現在の頂点」を作業テープに書き（$O(\log n)$ ビット）、$s$ から始めて、辺で結ばれた次の頂点を非決定的に選ぶことを繰り返し、$t$ に着いたら受理する。選んだ回数を数え、頂点数 $m$ を超えたら拒否する（どの枝も停止する）。$t$ に至る路があれば、長さ $m$ 未満の路をたどる枝が受理する。
+:::
+
+::: theorem 対数領域は多項式時間に含まれる {#comp:nl-in-p keywords="NL subset P, configuration graph" index="時点表示のグラフ|じてんひょうじのぐらふ"}
+$\mathrm{L}\subseteq\mathrm{NL}\subseteq\mathrm{P}$。
+:::
+
+::: proof
+$N$ を使用領域 $f(n)=O(\log n)$ の非決定性判定機とする。入力 $w$ の上の $N$ の**時点表示**は、状態、入力ヘッドの位置（$n+2$ 通り）、作業テープの内容とヘッドの位置で決まる（入力自体は変わらないので含めない）。その個数は高々
+$$
+\lvert Q\rvert\cdot(n+2)\cdot f(n)\cdot\lvert\Gamma\rvert^{f(n)}=n\cdot2^{O(\log n)}=n^{O(1)}.
+$$
+**時点表示のグラフ** $G_{N,w}$（頂点は時点表示、$c\vdash c'$ のとき辺 $c\to c'$）を作り、開始時点表示から受理時点表示（受理状態をもつもの）のどれかへの路があるかを \ref{comp:path-in-p} で判定する。グラフの大きさは $n$ の多項式で、辺の有無は $N$ の遷移表で調べられるので、全体で多項式時間。$w\in L(N)\iff$ そのような路がある。
+:::
+
+## 対数領域還元と NL 完全性 {#comp:sec-nl-complete}
+
+::: definition 対数領域還元 {#comp:logspace-reduction keywords="log-space transducer, log-space reduction" index="対数領域還元|たいすうりょういきかんげん"}
+**対数領域の変換機**とは、読み取り専用の入力テープ、作業テープ、書き込み専用の出力テープ（ヘッドは右にしか動かない）をもつ決定性 TM で、作業テープの使用領域が $O(\log n)$ のものである。停止したとき出力テープに $f(w)$ を残すとき、$f$ を**対数領域で計算可能**という。そのような $f$ で $w\in A\iff f(w)\in B$ となるとき $A\le_{\mathrm{L}}B$ と書く。$B\in\mathrm{NL}$ で、すべての $A\in\mathrm{NL}$ について $A\le_{\mathrm{L}}B$ となるとき、$B$ は **NL 完全**という。
+:::
+
+::: lemma 対数領域還元の合成 {#comp:logspace-composition keywords="composition of log-space reductions, recomputation" index="再計算の技法|さいけいさんのぎほう"}
+$f,g$ が対数領域で計算可能なら $g\circ f$ もそうである。とくに $\le_{\mathrm{L}}$ は推移的で、$A\le_{\mathrm{L}}B$ かつ $B\in\mathrm{L}$（$\mathrm{NL}$）なら $A\in\mathrm{L}$（$\mathrm{NL}$）。
+:::
+
+::: proof
+対数領域の変換機は多項式時間で停止する（時点表示の個数が多項式なので、\ref{comp:nl-in-p} と同様）ので、$\lvert f(w)\rvert\le n^{c}$。$f(w)$ を作業テープに書き出すと領域が多すぎるので、書き出さない。$g$ の変換機 $M_{g}$ を動かし、$M_{g}$ が入力の第 $i$ 記号を読もうとするたびに、$f$ の変換機 $M_{f}$ を $w$ の上で最初から動かし、出力の記号を数えて（出力は捨てる）第 $i$ 記号だけを取り出す。記録するのは $M_{g}$ の作業テープ（$O(\log n^{c})=O(\log n)$）、$i$（$O(\log n)$ ビット）、$M_{f}$ の作業テープ（$O(\log n)$）だけ。後半は、$B$ の判定機と還元を同じように組み合わせればよい。
+:::
+
+::: theorem PATH は NL 完全 {#comp:path-nl-complete keywords="PATH is NL-complete" index="NL 完全|えぬえるかんぜん"}
+PATH は NL 完全である。
+:::
+
+::: proof
+PATH $\in$ NL は例の 2。$A\in\mathrm{NL}$ を使用領域 $O(\log n)$ の非決定性判定機 $N$ が決定するとし、受理時点表示が一つになるようにしておく（受理する前に作業テープを消し、両ヘッドを左端に戻す）。$w\mapsto\langle G_{N,w},c_{\mathrm{start}},c_{\mathrm{acc}}\rangle$（\ref{comp:nl-in-p} の時点表示のグラフ）が対数領域で計算できることを示せばよい。時点表示は $O(\log n)$ ビットの文字列で表せる。変換機は、長さ $O(\log n)$ のすべての文字列を辞書式に作業テープ上で数え上げ、時点表示を表すものを出力して頂点の一覧を書く。次に、すべての対 $(c,c')$ を数え上げ、$c\vdash c'$ なら辺 $(c,c')$ を出力する。$c\vdash c'$ の判定には、$c$ の入力ヘッドの位置の記号を入力テープで読み、$N$ の遷移表（定数）と照合すればよい。使う領域は二つの時点表示と補助の計数器で $O(\log n)$。
+:::
+
+::: corollary
+$\mathrm{NL}\subseteq\mathrm{SPACE}(\log^{2}n)$。
+:::
+
+::: proof
+サヴィッチの定理の証明（\ref{comp:savitch}）は、入力を読み取り専用のテープに置く模型でもそのまま使え、時点表示の長さ $O(\log n)$ について $O(\log^{2}n)$ の領域で済む（$f(n)=\log n$ は領域 $O(\log n)$ で計算できる）。
+:::
+
+## NL = coNL {#comp:sec-immerman}
+
+::: theorem イマーマン–セレプチェーニの定理 {#comp:immerman-szelepcsenyi keywords="Immerman-Szelepcsenyi theorem, NL = coNL, inductive counting" index="イマーマン–セレプチェーニの定理|いまーまんせれぷちぇーにのていり"}
+$\mathrm{NL}=\mathrm{coNL}$。
+:::
+
+::: proof
+PATH は NL 完全なので、$\overline{\mathrm{PATH}}\in\mathrm{NL}$ を示せば十分である（$A\in\mathrm{coNL}$ なら $\overline{A}\le_{\mathrm{L}}\mathrm{PATH}$、すなわち同じ還元で $A\le_{\mathrm{L}}\overline{\mathrm{PATH}}$ となり、\ref{comp:logspace-composition} で $A\in\mathrm{NL}$。逆も同様）。
+
+入力 $\langle G,s,t\rangle$、頂点数 $m$ とし、$R_{i}$ を $s$ から長さ $i$ 以下の路で到達できる頂点の集合、$c_{i}\defeq\lvert R_{i}\rvert$ とする。$R_{0}=\{s\}$, $c_{0}=1$、$R_{m-1}$ は到達できる頂点全体である。非決定性機械は、「受理する枝では必ず正しい値を計算し、正しく計算できない枝は拒否する」という意味で、次の手続きを実行する。
+
+**手続き 1（$v\in R_{i}$ の確認）.** $s$ から長さ $i$ 以下の路を非決定的にたどり（現在の頂点と歩数だけを記録）、$v$ に着いたら成功。これは $v\in R_{i}$ のときに限り成功する枝をもつ。
+
+**手続き 2（$c_{i}$ から $c_{i+1}$ を求める）.** 計数器 $d\gets0$。各頂点 $v$ について、$v\in R_{i+1}$ かどうかを次で決める：計数器 $e\gets0$、フラグ $\mathrm{in}\gets$ 偽。各頂点 $u$ について、非決定的に「$u\in R_{i}$ と推測する」か「推測しない」を選び、推測したら手続き 1 で確認する（失敗したらこの枝を拒否）。確認できたら $e\gets e+1$ とし、$u=v$ または $(u,v)$ が辺なら $\mathrm{in}\gets$ 真。すべての $u$ を調べた後、$e\neq c_{i}$ ならこの枝を拒否する。$\mathrm{in}$ が真なら $d\gets d+1$。すべての $v$ を調べた後の $d$ を $c_{i+1}$ とする。
+*正しさ*：拒否されない枝では $e=c_{i}$ で、確認できた $u$ はすべて $R_{i}$ に属するので、$R_{i}$ の元を**すべて**推測し確認している。したがって $\mathrm{in}$ は「$v\in R_{i}$ か、$R_{i}$ のある元から辺がある」すなわち $v\in R_{i+1}$ と一致し、$d=c_{i+1}$。少なくとも一つの枝（すべての $R_{i}$ の元を正しく推測し確認する枝）は拒否されない。
+
+**手続き 3（$t\notin R_{m-1}$ の確認）.** $c_{0}=1$ から始めて手続き 2 を $m-1$ 回繰り返し $c_{m-1}$ を得る。最後に、手続き 2 と同じ方法で $R_{m-1}$ の元を $c_{m-1}$ 個すべて推測・確認し、その中に $t$ がなく、個数が $c_{m-1}$ に一致すれば受理する。
+*正しさ*：$t$ に到達できないなら、正しく推測する枝が受理する。$t$ に到達できるなら、$R_{m-1}$ の元を $c_{m-1}$ 個すべて確認した枝は $t$ を確認しているので受理しない。他の枝は個数が合わずに拒否する。
+
+**領域.** 記録するのは $c_{i}$, $d$, $e$, $i$, $u$, $v$ と手続き 1 の現在の頂点と歩数で、どれも $m$ 以下の数なので $O(\log n)$ ビット。$R_{i}$ そのものは記録しない。
+:::
+
+::: hypcheck
+- **入力が読み取り専用で数えないこと**：対数領域が意味をもつための模型の約束。入力を作業テープに写すことはできない。
+- **時点表示の個数が多項式**：\ref{comp:nl-in-p} と \ref{comp:logspace-composition}（変換機が多項式時間で止まること）に使った。
+- **再計算**：\ref{comp:logspace-composition} で、中間の出力を記憶する代わりに必要な記号だけを計算し直した。時間は増えるが領域は増えない。
+- **個数 $c_{i}$**：\ref{comp:immerman-szelepcsenyi} の本質で、「$R_{i}$ の元をすべて列挙した」ことを、個数が合うかどうかで検証可能にした。個数を知らなければ、非決定的な推測で一部の元を見落としても気づけない。
+:::
+
+## 問題 {#comp:sec-logspace-problems}
+
+::: problem {#comp:prob-l-in-p-direct}
+$\mathrm{L}\subseteq\mathrm{P}$ を、時点表示のグラフを使わずに直接示せ。
+:::
+
+::: solution
+使用領域 $O(\log n)$ の決定性判定機の時点表示は $n^{O(1)}$ 個（\ref{comp:nl-in-p} の計算）。決定性の判定機の計算は同じ時点表示を二度通らない（通れば停止しない）ので、計算の長さは時点表示の個数以下、すなわち多項式。
+:::
+
+::: problem {#comp:prob-2sat-nl}
+$\overline{\mathrm{2SAT}}$（充足不能な 2CNF）が NL に属することを示し、$\mathrm{2SAT}\in\mathrm{NL}$ を導け。
+:::
+
+::: solution
+問題 \ref{comp:prob-2sat-p} の含意グラフ $G$ について、充足不能 $\iff$ ある変数 $p$ で $p\leadsto\neg p$ かつ $\neg p\leadsto p$（$\leadsto$ は有向路の存在）。非決定性機械は $p$ を推測し、二つの路を例の 2 と同じ方法で（$G$ の辺は入力の節から直接読み取れるので $G$ を書き出さずに）たどる。領域は $O(\log n)$。よって $\overline{\mathrm{2SAT}}\in\mathrm{NL}$。したがって $\mathrm{2SAT}\in\mathrm{coNL}$ で、\ref{comp:immerman-szelepcsenyi} から $\mathrm{2SAT}\in\mathrm{NL}$。（問題 \ref{comp:prob-2sat-p} で認めた主張の (⇒) の詳細は本サイトでは省略しているので、この解答もその主張を前提とする。）
+:::
+
+::: supplement
+**前提の検討.**
+- \ref{comp:immerman-szelepcsenyi} の証明は、$f(n)\ge\log n$ のすべての（領域で計算できる）$f$ について $\mathrm{NSPACE}(f(n))=\mathrm{coNSPACE}(f(n))$ を与える。とくに、文脈依存言語（線形有界オートマトンが認識する言語）は補集合で閉じる。これはクロダの「第二の LBA 問題」の解決として知られている。
+- L と NL が等しいか、NL と P が等しいかは未解決である。
+
+**関連する結果.**
+- *無向グラフの到達可能性.* 無向グラフの PATH は L に属する（ラインゴールド 2005）ことが知られている。
+- *記述計算量.* 順序付きの有限構造の上で、NL は推移閉包を加えた一階論理、P は最小不動点を加えた一階論理で定義できる性質と一致することが知られている（イマーマン、ヴァルディ）。
+
+**高い視点から：数えることの力.** 非決定性の計算は「存在の証拠」は示せても「非存在の証拠」は一般に示せない。NP と coNP の関係が未解決なのはこのためである。イマーマン–セレプチェーニの定理は、対数領域では「到達できる頂点の個数」という小さな情報が「非存在の証拠」の代わりになることを示した。個数さえ分かっていれば、「全部見つけた」ことを確かめられ、そこに $t$ がなければ到達できないと言える。比喩で言えば、出席者の人数が分かっていれば、出席者を全員見つけ出したとき、そこにいない人は欠席だと断言できる。この「数えて閉じる」技法は、帰納的に $c_{i}$ を伸ばしていく点で、最小不動点 $R_{0}\subseteq R_{1}\subseteq\cdots$（\ref{comp:kleene-fixed-point}）を数で追跡することに当たる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

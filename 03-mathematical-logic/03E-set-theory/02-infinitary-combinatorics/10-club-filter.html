@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>フィルター・イデアルと閉非有界集合 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/10-club-filter.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# フィルター・イデアルと閉非有界集合 {#set:page-club-filter keywords="filter, ideal, closed unbounded set, club filter, stationary set"}
+
+概素族（\ref{set:almost-disjoint}）では「ほとんど交わらない」の「ほとんど」を「濃度 $\kappa$ 未満」の意味で使った。測度論の「ほとんど至るところ」や、位相の「第一類集合を除いて」なども同じ種類の言い回しであり、共通の枠組みは**フィルター**と**イデアル**である。「大きい集合」の族がフィルター、「無視できる小さい集合」の族がイデアルで、両者は補集合をとる操作で一対一に対応する。
+
+本ページでは、非可算な共終数をもつ極限順序数 $\mu$ の上に、組合せ論的に最も重要なフィルターである**閉非有界フィルター** $\mathrm{Cub}(\mu)$ を導入する。$\mathrm{Cub}(\mu)$ は $\cf(\mu)$ 個未満の共通部分で閉じており（\ref{set:club-filter-complete}）、その双対イデアルに属さない集合が**定常集合**である。定常集合の最初の例は「共終数が一定値 $\lambda$ の順序数の全体」である（\ref{set:cf-stationary}）。最後に、一般の $\mu$ の閉非有界フィルターが正則基数 $\cf(\mu)$ の上の閉非有界フィルターに帰着することを示す。続くページ（\ref{set:page-ulam-fodor}）では、これらを用いてウラムの定理と押し下げ補題を証明する。
+
+## 記法と定義の確認 {#set:sec-club-notation}
+
+::: notation
+- 順序数（\ref{set:ordinal}）は $\alpha,\beta,\gamma,\delta,\xi,\eta,\zeta$ などで表し、$\xi<\eta\iff\xi\in\eta$。順序数の集合 $Y$ の上限 $\sup Y=\bigcup Y$ は $Y$ のすべての元以上である最小の順序数（\ref{set:sup-ordinals}）。極限順序数・後続順序数は \ref{set:limit-ordinal}, \ref{set:successor-ordinal} の意味。$\delta\neq0$ が極限順序数であることと、任意の $\beta<\delta$ について $\beta+1<\delta$ となることは同値（\ref{set:limit-characterization}）。
+- 順序数の集合 $X$ の順序型 $\operatorname{type}(X)=\operatorname{type}(X,\in)$ は \ref{set:order-type} の意味で、$X\subseteq\alpha$ なら $\operatorname{type}(X)\le\alpha$（\ref{set:type-subset}）。$X$ の**順序枚挙**とは、唯一の順序同型 $e_{X}\colon\operatorname{type}(X)\to X$ のことである（\ref{set:ordinal-type}）。
+- $X\subseteq\beta$ が $\beta$ で**非有界**とは、任意の $\zeta<\beta$ に対し $\zeta\le x$ となる $x\in X$ があること（\ref{set:cofinal-map}）。共終数 $\cf(\beta)$、正則・特異は \ref{set:cofinality}, \ref{set:regular-cardinal} の意味。狭義増加な共終写像 $\cf(\beta)\to\beta$ が存在し（\ref{set:cf-increasing}）、狭義増加な共終写像は共終数を保つ（\ref{set:cf-transfer}）。$\cf(\beta)$ は基数（\ref{set:regular-is-cardinal}）。
+- 濃度 $\lvert X\rvert$、基数、後続基数 $\kappa^{+}$ は \ref{set:cardinality}, \ref{set:cardinal}, \ref{set:successor-cardinal} の意味。AC のもとで後続基数は正則（\ref{set:successor-regular}）。
+- 集合 $A$ の部分集合 $X$ について、$A\setminus X$ を $A$ に関する補集合という。$\mathcal{P}(A)$ は冪集合（\ref{set:power-set}）。
+- 順序数 $\mu$ と正則基数 $\lambda$ について $S^{\mu}_{\lambda}=\{\gamma<\mu\mid\cf(\gamma)=\lambda\}$ と書く。
+:::
+
+::: lemma 短い列は有界 {#set:short-sequence-bounded keywords="sequences shorter than the cofinality are bounded" index="短い列の有界性|みじかいれつのゆうかいせい"}
+$\mu$ を極限順序数とする。
+
+1. $\alpha<\cf(\mu)$ かつ $f\colon\alpha\to\mu$ ならば、ある $\zeta<\mu$ があってすべての $\xi<\alpha$ について $f(\xi)<\zeta$。特に $\sup\ran f<\mu$。
+2. $X\subseteq\mu$ が $\mu$ で非有界ならば、$\lvert X\rvert\ge\cf(\mu)$ かつ $\operatorname{type}(X)\ge\cf(\mu)$。
+:::
+
+::: proof
+**(1)** $\alpha<\cf(\mu)$ なので $f$ は共終写像でない（$\cf$ の最小性）。すなわち、ある $\zeta<\mu$ があって、$\zeta\le f(\xi)$ となる $\xi<\alpha$ が存在しない。順序数は全順序なので、すべての $\xi$ について $f(\xi)<\zeta$。このとき $\zeta$ は $\ran f$ の上界なので $\sup\ran f\le\zeta<\mu$。
+
+**(2)** $X$ は順序数の集合なので整列されていて $\lvert X\rvert$ が ZF で定まり、全単射 $b\colon\lvert X\rvert\to X$ がある。$b$ の値域 $X$ は $\mu$ で非有界なので $b$ は共終写像であり、$\cf(\mu)\le\lvert X\rvert$。同様に順序枚挙 $e_{X}\colon\operatorname{type}(X)\to X$ も共終写像なので $\cf(\mu)\le\operatorname{type}(X)$。
+
+::: hypcheck
+- **$\cf(\mu)$ の最小性**：(1)・(2) の両方の核心。
+- 順序数の集合が整列されていること（\ref{set:ordinal-well-ordered}）で濃度と順序型を定めた。選択公理は使っていない（ZF）。
+:::
+:::
+
+## フィルターとイデアル {#set:sec-filter-ideal}
+
+::: definition フィルター {#set:filter keywords="filter on a set, proper filter" index="フィルター|ふぃるたー"}
+空でない集合 $A$ 上の**フィルター**とは、$\mathcal{F}\subseteq\mathcal{P}(A)$ であって次を満たすものをいう。
+
+1. $A\in\mathcal{F}$ かつ $\varnothing\notin\mathcal{F}$。
+2. $X,Y\in\mathcal{F}$ ならば $X\cap Y\in\mathcal{F}$。
+3. $X\in\mathcal{F}$ かつ $X\subseteq Y\subseteq A$ ならば $Y\in\mathcal{F}$。
+:::
+
+::: intuition
+$\mathcal{F}$ の元を「$A$ の大部分を占める集合」と読む。全体は大きく、空集合は大きくない（1）。大きい集合を 2 つ重ねても大きい（2）。大きい集合を含む集合は大きい（3）。性質 $\varphi$ について $\{a\in A\mid\varphi(a)\}\in\mathcal{F}$ のとき「$\varphi$ は $\mathcal{F}$ に関してほとんど至るところで成り立つ」という。
+:::
+
+::: example
+- **単項フィルター.** $a\in A$ を固定すると $\{X\subseteq A\mid a\in X\}$ はフィルターである。
+- **補有限フィルター.** $A$ が無限集合なら、$\{X\subseteq A\mid A\setminus X\text{ は有限}\}$ はフィルターである（有限集合 2 つの和は有限。$A$ は無限なので $\varnothing$ は入らない）。
+- **測度 1 の集合.** $[0,1]$ 上のルベーグ測度（\ref[ルベーグ測度]{meas:lebesgue-measure}）を $m$ とすると、$\{X\subseteq[0,1]\mid X\text{ は可測で }m(X)=1\}$ はフィルターである。
+:::
+
+::: definition イデアル {#set:ideal keywords="ideal on a set, proper ideal" index="イデアル（集合の）|いであるしゅうごうの"}
+空でない集合 $A$ 上の**イデアル**とは、$\mathcal{I}\subseteq\mathcal{P}(A)$ であって次を満たすものをいう。
+
+1. $\varnothing\in\mathcal{I}$ かつ $A\notin\mathcal{I}$。
+2. $X,Y\in\mathcal{I}$ ならば $X\cup Y\in\mathcal{I}$。
+3. $X\in\mathcal{I}$ かつ $Y\subseteq X$ ならば $Y\in\mathcal{I}$。
+:::
+
+::: intuition
+$\mathcal{I}$ の元を「無視できる小さい集合」と読む。フィルターの定義で $\cap$ と $\cup$、$\subseteq$ と $\supseteq$、$A$ と $\varnothing$ を入れ替えたものである。
+:::
+
+::: example
+- $A$ が無限なら、有限部分集合の全体 $\{X\subseteq A\mid\lvert X\rvert<\omega\}$ はイデアルである。
+- 無限基数 $\kappa$ について $\mathcal{I}_{\kappa}=\{X\subseteq\kappa\mid\lvert X\rvert<\kappa\}$ はイデアルである（\ref{set:bounded-ideal-complete}）。$\kappa$ 上の概素族（\ref{set:almost-disjoint}）とは、$\mathcal{P}(\kappa)\setminus\mathcal{I}_{\kappa}$ の部分集合で、相異なる 2 元の共通部分が $\mathcal{I}_{\kappa}$ に属するもののことである。
+- $[0,1]$ のルベーグ測度 $0$ の集合の全体、第一類集合（\ref[ベールの範疇定理]{top:baire-category}）の全体はイデアルである。
+:::
+
+::: definition 双対フィルター・双対イデアル {#set:dual-filter keywords="dual filter, dual ideal" index="双対フィルター|そうついふぃるたー, 双対イデアル|そうついいである"}
+$A$ 上のイデアル $\mathcal{I}$ に対し、$\mathcal{I}^{*}=\{X\subseteq A\mid A\setminus X\in\mathcal{I}\}$ を $\mathcal{I}$ の**双対フィルター**という。$A$ 上のフィルター $\mathcal{F}$ に対し、$\mathcal{F}^{*}=\{X\subseteq A\mid A\setminus X\in\mathcal{F}\}$ を $\mathcal{F}$ の**双対イデアル**という。
+:::
+
+::: lemma 双対の基本性質 {#set:dual-basic keywords="duality of filters and ideals"}
+$\mathcal{F}$ を $A$ 上のフィルター、$\mathcal{I}$ を $A$ 上のイデアルとする。このとき $\mathcal{F}^{*}$ はイデアル、$\mathcal{I}^{*}$ はフィルターであり、$\mathcal{F}^{**}=\mathcal{F}$、$\mathcal{I}^{**}=\mathcal{I}$。
+:::
+
+::: proof
+以下 $X^{c}=A\setminus X$ と書く。$X\subseteq A$ について $X^{cc}=X$、ド・モルガンの法則 $(X\cup Y)^{c}=X^{c}\cap Y^{c}$、$(X\cap Y)^{c}=X^{c}\cup Y^{c}$、および $X\subseteq Y\iff Y^{c}\subseteq X^{c}$ が外延性の公理から直ちに従う。
+
+**Step 1（$\mathcal{F}^{*}$ はイデアル）.**
+- $\varnothing^{c}=A\in\mathcal{F}$ なので $\varnothing\in\mathcal{F}^{*}$。$A^{c}=\varnothing\notin\mathcal{F}$ なので $A\notin\mathcal{F}^{*}$。
+- $X,Y\in\mathcal{F}^{*}$ なら $X^{c},Y^{c}\in\mathcal{F}$、よって $(X\cup Y)^{c}=X^{c}\cap Y^{c}\in\mathcal{F}$、すなわち $X\cup Y\in\mathcal{F}^{*}$。
+- $X\in\mathcal{F}^{*}$、$Y\subseteq X$ なら $X^{c}\subseteq Y^{c}$ で $X^{c}\in\mathcal{F}$ なので $Y^{c}\in\mathcal{F}$、すなわち $Y\in\mathcal{F}^{*}$。
+
+**Step 2（$\mathcal{I}^{*}$ はフィルター）.** Step 1 で $\cap$ と $\cup$、$\subseteq$ の向きを入れ替えた議論による。$A^{c}=\varnothing\in\mathcal{I}$ より $A\in\mathcal{I}^{*}$、$\varnothing^{c}=A\notin\mathcal{I}$ より $\varnothing\notin\mathcal{I}^{*}$。$X,Y\in\mathcal{I}^{*}$ なら $(X\cap Y)^{c}=X^{c}\cup Y^{c}\in\mathcal{I}$。$X\in\mathcal{I}^{*}$、$X\subseteq Y\subseteq A$ なら $Y^{c}\subseteq X^{c}\in\mathcal{I}$ より $Y^{c}\in\mathcal{I}$。
+
+**Step 3（$\mathcal{F}^{**}=\mathcal{F}$）.** $X\subseteq A$ について $X\in\mathcal{F}^{**}\iff X^{c}\in\mathcal{F}^{*}\iff X^{cc}\in\mathcal{F}\iff X\in\mathcal{F}$。$\mathcal{I}^{**}=\mathcal{I}$ も同様。
+
+::: hypcheck
+- **外延性の公理**（\ref{set:ax-extensionality}）：補集合の計算規則に使った。$\mathcal{F}^{*}$ などは $\mathcal{P}(A)$ からの**分出**で作られる。
+- 選択公理は使っていない（ZF）。
+:::
+:::
+
+::: supplement
+**半順序のフィルターとの関係.** $A$ 上のフィルターは、半順序集合 $(\mathcal{P}(A)\setminus\{\varnothing\},\subseteq)$ のフィルター（\ref{set:poset-filter}）にほかならない。
+
+**超フィルター.** フィルター $\mathcal{F}$ が、任意の $X\subseteq A$ について $X\in\mathcal{F}$ または $A\setminus X\in\mathcal{F}$ を満たすとき**超フィルター**という。これは双対イデアル $\mathcal{F}^{*}$ が $\mathcal{P}(A)=\mathcal{F}\cup\mathcal{F}^{*}$ となること、すなわち「大きくも小さくもない集合」が存在しないことを意味する。
+:::
+
+::: definition $\kappa$-完備性 {#set:kappa-complete keywords="kappa-complete filter, kappa-complete ideal, countably complete" index="κ完備|かっぱかんび, 可算完備|かさんかんび"}
+$\kappa$ を基数とする。$A$ 上のイデアル $\mathcal{I}$ が **$\kappa$-完備**であるとは、任意の $\lambda<\kappa$ と $\mathcal{I}$ の元の列 $\langle X_{\alpha}\mid\alpha<\lambda\rangle$ について $\bigcup_{\alpha<\lambda}X_{\alpha}\in\mathcal{I}$ となることをいう。$A$ 上のフィルター $\mathcal{F}$ が **$\kappa$-完備**であるとは、任意の $\lambda<\kappa$ と $\mathcal{F}$ の元の列 $\langle X_{\alpha}\mid\alpha<\lambda\rangle$ について $A\cap\bigcap_{\alpha<\lambda}X_{\alpha}\in\mathcal{F}$ となることをいう（$\lambda=0$ のとき左辺は $A$ と約束する）。$\omega_{1}$-完備を**可算完備**ともいう。
+:::
+
+::: intuition
+「$\kappa$ 個未満の小さい集合を合わせても小さい」ということ。定義 \ref{set:ideal} (2) は 2 個の和だけを要求しているが、測度 $0$ の集合は可算個合わせても測度 $0$ であるように、多くの自然なイデアルはもっと大きな和で閉じている。AC のもとでは、添字付けの代わりに「$\lvert\mathcal{A}\rvert<\kappa$ となる任意の $\mathcal{A}\subseteq\mathcal{I}$ について $\bigcup\mathcal{A}\in\mathcal{I}$」と言っても同値である（$\mathcal{A}$ を $\lvert\mathcal{A}\rvert$ で添字付ければよい）。
+:::
+
+::: lemma $\kappa$-完備性の基本性質 {#set:kappa-complete-basic keywords="every filter is omega-complete"}
+$\mathcal{I}$ を $A$ 上のイデアルとする。
+
+1. $\mathcal{I}$ が $\kappa$-完備であることと $\mathcal{I}^{*}$ が $\kappa$-完備であることは同値。
+2. すべてのイデアル・フィルターは $\omega$-完備である。
+3. $\kappa\le\kappa'$ で $\mathcal{I}$ が $\kappa'$-完備なら $\kappa$-完備。
+4. $A$ が整列可能で、すべての $a\in A$ について $\{a\}\in\mathcal{I}$ ならば、$\mathcal{I}$ は $\lvert A\rvert^{+}$-完備でない。
+:::
+
+::: proof
+**(1)** $\langle X_{\alpha}\mid\alpha<\lambda\rangle$ を $\mathcal{I}^{*}$ の元の列とすると $\langle A\setminus X_{\alpha}\rangle$ は $\mathcal{I}$ の元の列で、ド・モルガンの法則より $A\setminus\bigl(A\cap\bigcap_{\alpha}X_{\alpha}\bigr)=\bigcup_{\alpha}(A\setminus X_{\alpha})$（$\lambda=0$ でも両辺 $\varnothing$）。よって $\mathcal{I}$ が $\kappa$-完備なら $\mathcal{I}^{*}$ も $\kappa$-完備。逆も同じ等式を逆にたどればよい。
+
+**(2)** $n<\omega$ について「$\mathcal{I}$ の元の任意の列 $\langle X_{i}\mid i<n\rangle$ について $\bigcup_{i<n}X_{i}\in\mathcal{I}$」を $n$ についての帰納法（\ref{set:peano}）で示す。$n=0$ なら和は $\varnothing\in\mathcal{I}$。$n$ で成り立つとすると $\bigcup_{i<n+1}X_{i}=\bigl(\bigcup_{i<n}X_{i}\bigr)\cup X_{n}$ は定義 \ref{set:ideal} (2) より $\mathcal{I}$ に属する。フィルターは (1) と \ref{set:dual-basic} による。
+
+**(3)** $\lambda<\kappa$ なら $\lambda<\kappa'$ なので明らか。
+
+**(4)** $\nu=\lvert A\rvert$ とおき全単射 $b\colon\nu\to A$ をとる。$\langle\{b(\alpha)\}\mid\alpha<\nu\rangle$ は $\mathcal{I}$ の元の長さ $\nu<\nu^{+}$ の列で、和は $A\notin\mathcal{I}$。
+
+::: hypcheck
+- (2) で**帰納法**、(4) で $A$ の**整列可能性**（$\lvert A\rvert$ と全単射 $b$ の存在）を使った。AC のもとでは (4) の整列可能性の仮定は不要になる。
+- 選択公理は使っていない（ZF）。
+:::
+:::
+
+::: proposition 小さい集合のイデアル {#set:bounded-ideal-complete keywords="ideal of small sets, [κ]^{<κ} is κ-complete iff κ regular" index="小さい集合のイデアル|ちいさいしゅうごうのいである"}
+$\kappa$ を無限基数とし、$\mathcal{I}_{\kappa}=\{X\subseteq\kappa\mid\lvert X\rvert<\kappa\}$ とおく。
+
+1. $\mathcal{I}_{\kappa}$ は $\kappa$ 上のイデアルで、すべての単集合を含む。
+2. （AC）$\kappa$ が正則なら $\mathcal{I}_{\kappa}$ は $\kappa$-完備である。
+3. $\kappa$ が特異なら $\mathcal{I}_{\kappa}$ は $\kappa$-完備でない。
+:::
+
+::: proof
+**(1)** $\lvert\varnothing\rvert=0<\kappa$、$\lvert\kappa\rvert=\kappa\not<\kappa$。$Y\subseteq X$ なら $\lvert Y\rvert\le\lvert X\rvert$。$X,Y\in\mathcal{I}_{\kappa}$ とし $\nu=\max(\lvert X\rvert,\lvert Y\rvert)<\kappa$ とおく。$\nu$ が有限なら $X\cup Y$ は有限で $<\kappa$。$\nu$ が無限なら $\lvert X\cup Y\rvert\le\nu\oplus\nu\le\nu\otimes\nu=\nu<\kappa$（\ref{set:cardinal-absorption}, \ref{set:kappa-times-kappa}。いずれも $\kappa$ の部分集合という整列集合の話なので ZF）。$\lvert\{a\}\rvert=1<\kappa$。
+
+**(2)** $\lambda<\kappa$ と $X_{\alpha}\in\mathcal{I}_{\kappa}$（$\alpha<\lambda$）をとり、$Y=\bigcup_{\alpha<\lambda}X_{\alpha}$ とおく。$Y\subseteq\kappa$ なので $\lvert Y\rvert\le\kappa$。$\lvert Y\rvert=\kappa$ と仮定して矛盾を導く。全単射 $e\colon\kappa\to Y$ をとると $\kappa=\bigcup_{\alpha<\lambda}e^{-1}[X_{\alpha}]$ で、$\lvert e^{-1}[X_{\alpha}]\rvert=\lvert X_{\alpha}\rvert<\kappa$。これは $\kappa$ が $\kappa$ 未満の個数の、濃度 $\kappa$ 未満の集合の和であることを意味し、$\kappa$ の正則性と \ref{set:cf-union}（AC）に反する。よって $\lvert Y\rvert<\kappa$、$Y\in\mathcal{I}_{\kappa}$。
+
+**(3)** $\lambda=\cf(\kappa)<\kappa$ と共終写像 $f\colon\lambda\to\kappa$ をとる。$\kappa$ は極限順序数なので、任意の $\zeta<\kappa$ について $\zeta+1\le f(\xi)$ となる $\xi$ があり $\zeta\in f(\xi)$。よって $\kappa=\bigcup_{\xi<\lambda}f(\xi)$ で、$\lvert f(\xi)\rvert\le f(\xi)<\kappa$ より各 $f(\xi)\in\mathcal{I}_{\kappa}$。長さ $\lambda<\kappa$ の列の和が $\kappa\notin\mathcal{I}_{\kappa}$ となるので $\kappa$-完備でない。
+
+::: hypcheck
+- **選択公理**：(2) で \ref{set:cf-union} を通じて使った（$\lambda$ 個の集合 $X_{\alpha}$ の全単射を同時に選ぶ）。(1)・(3) は ZF。
+- **$\kappa$ の正則性**：(2) の矛盾の源。特異なら (3) のとおり結論が崩れる。
+:::
+:::
+
+::: example
+- ルベーグ測度 $0$ の集合のイデアルは可算完備（$\omega_{1}$-完備）だが $(2^{\aleph_{0}})^{+}$-完備でない（単集合は測度 $0$ なので \ref{set:kappa-complete-basic} (4)）。マーティンの公理のもとでは $2^{\aleph_{0}}$-完備になり（\ref{set:ma-measure}）、第一類集合のイデアルも同様である（\ref{set:ma-baire}）。
+- 補有限フィルターは $\omega$-完備だが、無限集合 $A$ 上では可算完備でない：可算無限部分集合 $\{a_{n}\mid n<\omega\}$ をとると $A\setminus\{a_{n}\}$ は補有限だが、その共通部分 $A\setminus\{a_{n}\mid n<\omega\}$ の補集合は無限である。
+:::
+
+## 閉非有界集合 {#set:sec-club}
+
+以下、この節では $\mu$ を極限順序数とする。
+
+::: definition 閉集合・閉非有界集合 {#set:club keywords="closed unbounded set, club, c.u.b." index="閉非有界集合|へいひゆうかいしゅうごう, 閉集合（順序数の）|へいしゅうごうじゅんじょすうの, クラブ集合|くらぶしゅうごう"}
+$C\subseteq\mu$ が $\mu$ で**閉**であるとは、任意の極限順序数 $\delta<\mu$ について、$C\cap\delta$ が $\delta$ で非有界ならば $\delta\in C$ となることをいう。$C$ が $\mu$ で閉かつ非有界であるとき、$C$ は $\mu$ の**閉非有界集合**（club）であるという。
+:::
+
+::: intuition
+「$C$ の元が下から集積していく点 $\delta$（$\mu$ 未満のもの）は、必ず $C$ に入っている」ということ。$\mu$ に順序位相（\ref{top:order-topology}）を入れたときの位相的な閉集合と同じ概念である。閉非有界集合は「$\mu$ の上の方まで伸び、かつ極限をとっても外に出ない」集合で、$\mu$ の中の「太い」集合の典型である。
+:::
+
+::: lemma 閉集合と上限 {#set:closed-sup keywords="closed iff closed under sups" index="上限で閉じる|じょうげんでとじる"}
+$C\subseteq\mu$ が $\mu$ で閉であることと、次は同値である：空でない $Y\subseteq C$ で $\sup Y<\mu$ となるものについて、つねに $\sup Y\in C$。
+:::
+
+::: proof
+**Step 1（予備）.** 空でない順序数の集合 $Y$ が最大元をもたないなら、$\delta=\sup Y$ は極限順序数で、$Y$ は $\delta$ で非有界である。実際、$Y\subseteq\delta$（最大元がないので各 $y$ より大きい $y'\in Y$ があり $y<y'\le\delta$）。$\beta<\delta$ なら $\beta<y$ となる $y\in Y$ があり（さもなくば $\beta$ が上界となり $\delta\le\beta$）、$\beta+1\le y<\delta$ なので $\delta$ は極限（$\delta\ge y>0$ なので $\delta\ne0$）で、$Y$ は $\delta$ で非有界。
+
+**Step 2（$\Rightarrow$）.** $Y\subseteq C$ が空でなく $\sup Y<\mu$ とする。$Y$ に最大元があれば $\sup Y=\max Y\in C$。なければ Step 1 より $\delta=\sup Y<\mu$ は極限順序数で、$Y\subseteq C\cap\delta$ が $\delta$ で非有界なので $C\cap\delta$ も非有界。$C$ は閉なので $\delta\in C$。
+
+**Step 3（$\Leftarrow$）.** 極限順序数 $\delta<\mu$ について $C\cap\delta$ が $\delta$ で非有界とする。$Y=C\cap\delta$ は $\delta>0$ なので空でない。$Y\subseteq\delta$ より $\sup Y\le\delta$。$\sup Y<\delta$ とすると、非有界性より $\sup Y+1\le y$ となる $y\in Y$ があり（$\delta$ が極限なので $\sup Y+1<\delta$）、矛盾。よって $\sup Y=\delta<\mu$ で、仮定より $\delta\in C$。
+
+::: hypcheck
+- **極限順序数の特徴づけ**（\ref{set:limit-characterization}）：Step 1・Step 3 で使った。
+- 選択公理は使っていない（ZF）。
+:::
+:::
+
+::: lemma 閉非有界集合の例 {#set:club-examples keywords="examples of club sets" index="閉非有界集合の例|へいひゆうかいしゅうごうのれい"}
+1. 任意の $\zeta<\mu$ について、末端 $(\zeta,\mu)=\{\eta\mid\zeta<\eta<\mu\}$ は $\mu$ の閉非有界集合である。
+2. $\cf(\mu)>\omega$ ならば、$\mu$ 未満の極限順序数の全体 $\mathrm{Lim}\cap\mu$ は $\mu$ の閉非有界集合である。
+3. $\mu$ が極限基数ならば、$\mu$ 未満の基数の全体は $\mu$ の閉非有界集合である。
+4. $\cf(\mu)=\omega$ ならば、交わらない 2 つの閉非有界集合が存在する。
+:::
+
+::: proof
+**(1)** 非有界：$\xi<\mu$ に対し $\eta=\max(\xi,\zeta+1)$ は $\mu$ が極限なので $\eta<\mu$、$\eta\in(\zeta,\mu)$、$\xi\le\eta$。閉：極限 $\delta<\mu$ で $(\zeta,\mu)\cap\delta$ が非有界なら、特に空でないので $\zeta<\eta<\delta$ となる $\eta$ があり、$\delta\in(\zeta,\mu)$。
+
+**(2)** 閉であることは自明（$\delta$ は極限順序数と仮定されている）。非有界：$\xi<\mu$ をとる。$n\mapsto\xi+n$ は $\omega$ から $\mu$ への写像（$\mu$ は極限なので帰納法で $\xi+n<\mu$）であり、$\omega<\cf(\mu)$ なので \ref{set:short-sequence-bounded} (1) より $\gamma=\sup_{n}(\xi+n)<\mu$。$\{\xi+n\}$ は最大元をもたないので \ref{set:closed-sup} Step 1 より $\gamma$ は極限順序数で、$\xi\le\gamma$。
+
+**(3)** 非有界：$\xi<\mu$ をとり $\nu=\lvert\xi\rvert^{+}$ とおく。$\nu$ は基数で、$\nu\le\xi$ なら $\nu=\lvert\nu\rvert\le\lvert\xi\rvert<\nu$ となって矛盾するので $\xi<\nu$。$\lvert\xi\rvert\le\xi<\mu$ なので $\nu\le\mu$、$\mu$ は後続基数でないので $\nu<\mu$。閉：極限 $\delta<\mu$ で、$\delta$ 未満の基数が $\delta$ で非有界とする。$\lvert\delta\rvert<\delta$ なら、非有界性より $\lvert\delta\rvert<\rho<\delta$ となる基数 $\rho$ があるが（$\lvert\delta\rvert+1\le\rho$ となる $\rho$）、$\rho\subseteq\delta$ より $\rho=\lvert\rho\rvert\le\lvert\delta\rvert$ で矛盾。よって $\delta$ は基数。
+
+**(4)** \ref{set:cf-increasing} より狭義増加な共終写像 $f\colon\omega\to\mu$ がある。$C_{0}=\{f(2n)\mid n<\omega\}$, $C_{1}=\{f(2n+1)\mid n<\omega\}$ とおく。$f$ は単射なので $C_{0}\cap C_{1}=\varnothing$。非有界：$\zeta<\mu$ なら $\zeta\le f(m)$ となる $m$ があり、$f(m)\le f(2m)$, $f(m)\le f(2m+1)$。閉：極限 $\delta<\mu$ をとると、$\delta<f(k)$ となる $k$ があり、$f(n)<\delta$ となる $n$ は $n<k$ に限られる。したがって $C_{i}\cap\delta$ は有限集合で、空なら $\delta>0$ より非有界でなく、空でなければ最大元 $a$ について $a+1<\delta$ を超える元がないので非有界でない。よって閉の条件は空虚に満たされる。
+
+::: hypcheck
+- **$\cf(\mu)>\omega$**：(2) の非有界性（$\xi+\omega$ の形の上限が $\mu$ 未満にとどまること）に使った。$\mu=\omega$ では $\mu$ 未満に極限順序数がない。
+- **$\mu$ が後続基数でないこと**：(3) で $\nu<\mu$ とするのに使った。$\mu=\kappa^{+}$ なら $(\kappa,\kappa^{+})$ に基数はない。
+- 選択公理は使っていない（ZF）。
+:::
+:::
+
+::: supplement
+(4) が示すように、$\cf(\mu)=\omega$ では閉非有界集合が 2 つ交わらないことがあり、閉非有界集合から「大きい集合」の概念（フィルター）を作ることはできない。以下で $\cf(\mu)>\omega$ を仮定するのはこのためである。
+:::
+
+::: definition 閉非有界フィルター {#set:club-filter keywords="club filter, closed unbounded filter, Cub" index="閉非有界フィルター|へいひゆうかいふぃるたー"}
+$\cf(\mu)>\omega$ のとき、
+$$
+\mathrm{Cub}(\mu)=\{X\subseteq\mu\mid\text{ある }\mu\text{ の閉非有界集合 }C\text{ について }C\subseteq X\}
+$$
+を $\mu$ 上の**閉非有界フィルター**という。
+:::
+
+::: intuition
+閉非有界集合そのものは上に閉じていない（閉非有界集合を含む集合は閉とは限らない）ので、「閉非有界集合を含む集合」をすべて集めてフィルターにする。$\mathrm{Cub}(\mu)$ の元が「$\mu$ のほとんどすべて」、その双対イデアルの元が「無視できる集合」である。
+:::
+
+::: example
+$C=\{\gamma<\omega_{1}\mid\gamma\text{ は極限順序数で }\gamma>\omega\}$ とし（AC のもとで $\cf(\omega_{1})=\omega_{1}>\omega$）、$X=C\cup\omega$ とおく。$C$ は閉非有界（\ref{set:club-examples} (1)(2) と次の補題）なので $X\in\mathrm{Cub}(\omega_{1})$。しかし $X\cap\omega=\omega$ は $\omega$ で非有界なのに $\omega\notin X$ なので、$X$ は閉でない。
+:::
+
+::: lemma 閉非有界フィルターの完備性 {#set:club-filter-complete keywords="intersection of fewer than cf many clubs is club, Cub is cf-complete" index="閉非有界集合の共通部分|へいひゆうかいしゅうごうのきょうつうぶぶん"}
+$\cf(\mu)>\omega$ とする。
+
+1. $1\le\lambda<\cf(\mu)$ とし、$\langle C_{\alpha}\mid\alpha<\lambda\rangle$ を $\mu$ の閉非有界集合の列とすると、$D=\bigcap_{\alpha<\lambda}C_{\alpha}$ は $\mu$ の閉非有界集合である。
+2. （AC）$\mathrm{Cub}(\mu)$ は $\mu$ 上の $\cf(\mu)$-完備なフィルターである。
+:::
+
+::: intuition
+閉であることは共通部分で自動的に保たれる。問題は非有界性で、「各 $C_{\alpha}$ の元を 1 つずつ飛び越えていく」操作を $\omega$ 回繰り返すと、その上限ではすべての $C_{\alpha}$ の元が下から集積しているので、閉性からその上限がすべての $C_{\alpha}$ に入る。1 回の操作で $\lambda$ 個の元の上限をとるので $\lambda<\cf(\mu)$ が要り、$\omega$ 回の上限をとるので $\cf(\mu)>\omega$ が要る。
+:::
+
+::: proof
+**(1) Step 1（$D$ は閉）.** 極限 $\delta<\mu$ で $D\cap\delta$ が $\delta$ で非有界とする。各 $\alpha<\lambda$ について $D\cap\delta\subseteq C_{\alpha}\cap\delta$ なので $C_{\alpha}\cap\delta$ も非有界で、$C_{\alpha}$ が閉なので $\delta\in C_{\alpha}$。よって $\delta\in D$。
+
+**Step 2（1 回の飛び越し）.** $\xi<\mu$ と $\alpha<\lambda$ について、$h_{\alpha}(\xi)=\min(C_{\alpha}\setminus(\xi+1))$ とおく。$C_{\alpha}$ は非有界で $\xi+1<\mu$ なので $\xi+1\le c$ となる $c\in C_{\alpha}$ があり、最小元が定まる。$g(\xi)=\sup\{h_{\alpha}(\xi)\mid\alpha<\lambda\}$ とおく。$\alpha\mapsto h_{\alpha}(\xi)$ は $\lambda$ から $\mu$ への写像で $\lambda<\cf(\mu)$ なので、\ref{set:short-sequence-bounded} (1) より $g(\xi)<\mu$。$\lambda\ge1$ なので $g(\xi)\ge h_{0}(\xi)>\xi$。こうして $g\colon\mu\to\mu$ で $\xi<g(\xi)$ となるものが得られた。
+
+**Step 3（$\omega$ 回の反復）.** $\xi<\mu$ を任意にとり、$\omega$ 上の再帰（\ref{set:recursion-on-ordinal}）で $\xi_{0}=\xi$, $\xi_{n+1}=g(\xi_{n})$ と定め、$\gamma=\sup_{n<\omega}\xi_{n}$ とおく。Step 2 より $\xi_{0}<\xi_{1}<\cdots$ で、$\omega<\cf(\mu)$ なので \ref{set:short-sequence-bounded} (1) より $\gamma<\mu$。$\{\xi_{n}\}$ は最大元をもたないので、\ref{set:closed-sup} Step 1 より $\gamma$ は極限順序数で $\{\xi_{n}\}$ は $\gamma$ で非有界。
+
+**Step 4（$\gamma\in D$）.** $\alpha<\lambda$ を固定する。各 $n$ について $h_{\alpha}(\xi_{n})\in C_{\alpha}$ かつ
+$$
+\xi_{n}<h_{\alpha}(\xi_{n})\le g(\xi_{n})=\xi_{n+1}<\gamma.
+$$
+$\zeta<\gamma$ なら $\zeta\le\xi_{n}$ となる $n$ があり、$\zeta<h_{\alpha}(\xi_{n})\in C_{\alpha}\cap\gamma$。よって $C_{\alpha}\cap\gamma$ は $\gamma$ で非有界で、$C_{\alpha}$ は閉なので $\gamma\in C_{\alpha}$。$\alpha$ は任意なので $\gamma\in D$、かつ $\xi<\gamma$。$\xi$ は任意なので $D$ は非有界である。
+
+**(2) Step 5（フィルターの条件）.** $\mu$ 自身は閉非有界なので $\mu\in\mathrm{Cub}(\mu)$。閉非有界集合は $\mu$ で非有界なので空でなく（$\mu>0$）、$\varnothing$ は閉非有界集合を含まないので $\varnothing\notin\mathrm{Cub}(\mu)$。上に閉じていることは定義から明らか。2 元の共通部分で閉じていることは次の Step 6 の $\lambda=2$ の場合である。
+
+**Step 6（$\cf(\mu)$-完備性）.** $\lambda<\cf(\mu)$ と $X_{\alpha}\in\mathrm{Cub}(\mu)$（$\alpha<\lambda$）をとる。$\lambda=0$ なら共通部分は $\mu$ と約束したので成り立つ。$\lambda\ge1$ のとき、**選択公理**により各 $\alpha$ について閉非有界集合 $C_{\alpha}\subseteq X_{\alpha}$ を選ぶ。(1) より $\bigcap_{\alpha}C_{\alpha}$ は閉非有界で、$\bigcap_{\alpha}X_{\alpha}$ に含まれるので $\bigcap_{\alpha}X_{\alpha}\in\mathrm{Cub}(\mu)$。
+
+::: hypcheck
+- **$\lambda<\cf(\mu)$**：Step 2 で $g(\xi)<\mu$ とするのに使った。
+- **$\cf(\mu)>\omega$**：Step 3 で $\gamma<\mu$ とするのに使った。
+- **$\lambda\ge1$**：Step 2 で $g(\xi)>\xi$ とするのに使った（$\lambda=0$ では共通部分は約束により $\mu$）。
+- **選択公理**：(2) の Step 6 で、$\lambda$ 個の $X_{\alpha}$ のそれぞれに含まれる閉非有界集合を**同時に選ぶ**のに使った。$\lambda$ が有限なら有限個の選択（\ref{set:finite-choice}）で足りるので、$\mathrm{Cub}(\mu)$ がフィルターであること自体は ZF で成り立つ。(1) は閉非有界集合の列が与えられているので ZF で成り立つ（$h_{\alpha}$ は最小元として定まり、選択は要らない）。
+:::
+:::
+
+::: supplement
+$\mu=\kappa$ が正則基数のとき、$\mathrm{Cub}(\kappa)$ は $\kappa$-完備で、濃度 $\kappa$ 未満の集合（すなわち有界な集合）はすべて双対イデアルに属する（\ref{set:stationary-basic} (2)）。AC がないと完備性は崩れうる：フェファーマン＝レヴィのモデル（\ref{set:feferman-levy}）のように $\cf(\omega_{1})=\omega$ となれば $\mathrm{Cub}(\omega_{1})$ そのものが定義されない。
+:::
+
+## 定常集合 {#set:sec-stationary}
+
+::: definition 定常集合 {#set:stationary keywords="stationary set, nonstationary ideal, NS" index="定常集合|ていじょうしゅうごう, 非定常イデアル|ひていじょういである"}
+$\cf(\mu)>\omega$ とする。$X\subseteq\mu$ が $\mu$ で**定常**（stationary）であるとは、$X\notin\mathrm{Cub}(\mu)^{*}$ となることをいう。$X\in\mathrm{Cub}(\mu)^{*}$ のとき**非定常**という。$\mathrm{Cub}(\mu)^{*}$ を**非定常イデアル**という。
+:::
+
+::: intuition
+非定常集合は「閉非有界集合で避けられる」無視できる集合、定常集合は「どの閉非有界集合とも交わる」集合である（\ref{set:stationary-basic} (1)）。$\mathrm{Cub}(\mu)$ の元は「ほとんどすべて」、定常集合は「無視できない量」であり、測度論でいえば測度 $1$ の集合と正測度の集合の関係に当たる。
+:::
+
+::: lemma 定常集合の基本性質 {#set:stationary-basic keywords="basic properties of stationary sets"}
+$\cf(\mu)>\omega$ とする。
+
+1. $X\subseteq\mu$ が定常であることと、$\mu$ のすべての閉非有界集合 $C$ について $X\cap C\ne\varnothing$ となることは同値。
+2. $\mu$ で有界な集合は非定常。したがって定常集合は非有界。閉非有界集合は定常。定常集合を含む集合は定常。
+3. $S$ が定常で $C$ が閉非有界なら $S\cap C$ は定常。
+4. （AC）$\lambda<\cf(\mu)$ とし、$X_{\alpha}$（$\alpha<\lambda$）が非定常ならば $\bigcup_{\alpha<\lambda}X_{\alpha}$ は非定常。特に $\mu=\bigcup_{\alpha<\lambda}X_{\alpha}$ ならば、ある $X_{\alpha}$ は定常である。
+:::
+
+::: proof
+**(1)** $X$ が非定常 $\iff$ $\mu\setminus X\in\mathrm{Cub}(\mu)$ $\iff$ ある閉非有界 $C$ について $C\subseteq\mu\setminus X$ $\iff$ ある閉非有界 $C$ について $C\cap X=\varnothing$。両辺の否定をとればよい。
+
+**(2)** $X\subseteq\zeta<\mu$ なら末端 $(\zeta,\mu)$ は閉非有界（\ref{set:club-examples} (1)）で $X$ と交わらないので、(1) より非定常。閉非有界集合 $C$ は、任意の閉非有界 $C'$ と交わる（$C\cap C'$ は \ref{set:club-filter-complete} (1) より閉非有界で、特に空でない）ので定常。$S\subseteq Y$ で $S$ が定常なら、任意の閉非有界 $C$ について $\varnothing\ne S\cap C\subseteq Y\cap C$。
+
+**(3)** 任意の閉非有界 $C'$ について $C\cap C'$ は閉非有界（\ref{set:club-filter-complete} (1)）なので $(S\cap C)\cap C'=S\cap(C\cap C')\ne\varnothing$。(1) より $S\cap C$ は定常。
+
+**(4)** $\mathrm{Cub}(\mu)^{*}$ は $\cf(\mu)$-完備フィルターの双対なので $\cf(\mu)$-完備イデアルである（\ref{set:club-filter-complete} (2), \ref{set:kappa-complete-basic} (1)）。よって和は非定常。$\mu=\bigcup X_{\alpha}$ で全部が非定常なら $\mu$ が非定常となるが、$\mu$ は閉非有界なので (2) に反する。
+
+::: hypcheck
+- (1)〜(3) は \ref{set:club-filter-complete} (1)（ZF）と定義だけを使った。ZF で成り立つ。
+- **選択公理**：(4) で \ref{set:club-filter-complete} (2) を通じて使った。
+:::
+:::
+
+::: lemma 共終数を固定した順序数の集合は定常 {#set:cf-stationary keywords="S^μ_λ is stationary, ordinals of fixed cofinality" index="共終数が一定の順序数の集合|きょうしゅうすうがいっていのじゅんじょすうのしゅうごう"}
+$\lambda$ を正則基数、$\mu$ を $\cf(\mu)>\lambda$ かつ $\cf(\mu)>\omega$ を満たす極限順序数とする。このとき $S^{\mu}_{\lambda}=\{\gamma<\mu\mid\cf(\gamma)=\lambda\}$ は $\mu$ で定常である。
+:::
+
+::: intuition
+閉非有界集合 $C$ を小さい方から並べたとき、その $\lambda$ 番目の元は、それより前の $\lambda$ 個の元の上限になっている（閉だから）。したがってその元には長さ $\lambda$ の増加列で近づけ、共終数がちょうど $\lambda$ になる。どの閉非有界集合にもこういう元があるので、$S^{\mu}_{\lambda}$ はどの閉非有界集合とも交わる。
+:::
+
+::: proof
+\ref{set:stationary-basic} (1) により、任意の閉非有界集合 $C$ について $C\cap S^{\mu}_{\lambda}\ne\varnothing$ を示せばよい。
+
+**Step 1（枚挙）.** $e=e_{C}\colon\operatorname{type}(C)\to C$ を順序枚挙とする。$C$ は非有界なので \ref{set:short-sequence-bounded} (2) より $\operatorname{type}(C)\ge\cf(\mu)>\lambda$。よって $\lambda<\operatorname{type}(C)$ で、$c=e(\lambda)\in C$ が定まる。
+
+**Step 2（$c$ は下の元の上限）.** $\delta=\sup\{e(\xi)\mid\xi<\lambda\}$ とおく。$\lambda$ は正則なので極限順序数であり、$\{e(\xi)\mid\xi<\lambda\}$ は最大元をもたない（$e(\xi)<e(\xi+1)$ で $\xi+1<\lambda$）。\ref{set:closed-sup} Step 1 より $\delta$ は極限順序数。$e$ は狭義増加なので各 $e(\xi)<e(\lambda)=c$ で、$\delta\le c<\mu$。\ref{set:closed-sup} より $\delta\in C$、すなわち $\delta=e(\eta)$ となる $\eta$ がある。すべての $\xi<\lambda$ について $e(\xi)<e(\xi+1)\le\delta=e(\eta)$ なので $\xi<\eta$、よって $\lambda\le\eta$ で $c=e(\lambda)\le e(\eta)=\delta$。以上より $c=\delta$。
+
+**Step 3（$\cf(c)=\lambda$）.** $e\restr{\lambda}\colon\lambda\to c$ は狭義増加であり、Step 2 と \ref{set:closed-sup} Step 1 より値域は $c=\delta$ で非有界、すなわち共終写像である。\ref{set:cf-transfer} より $\cf(c)=\cf(\lambda)=\lambda$。よって $c\in C\cap S^{\mu}_{\lambda}$。
+
+::: hypcheck
+- **$\lambda$ の正則性**：Step 2 で $\lambda$ が極限順序数であること、Step 3 で $\cf(\lambda)=\lambda$ に使った。
+- **$\cf(\mu)>\lambda$**：Step 1 で $C$ の $\lambda$ 番目の元が存在することに使った。
+- **$C$ が閉であること**：Step 2 で $\delta\in C$ とするのに使った。
+- 選択公理は使っていない（ZF）。ただし $\lambda=\omega_{1}$ などの正則性の確認には AC を使う（\ref{set:successor-regular}）。
+:::
+:::
+
+::: corollary 交わらない定常集合の対 {#set:two-disjoint-stationary keywords="Cub is not an ultrafilter" index="閉非有界フィルターは超フィルターでない|へいひゆうかいふぃるたーはちょうふぃるたーでない"}
+（AC）$\cf(\mu)\ge\omega_{2}$ ならば、$S^{\mu}_{\omega}$ と $S^{\mu}_{\omega_{1}}$ は交わらない定常集合である。したがって $\mathrm{Cub}(\mu)$ は超フィルターでない。
+:::
+
+::: proof
+$\omega$ は正則（\ref{set:omega-regular}）、$\omega_{1}$ は AC のもとで正則（\ref{set:successor-regular}）で、$\cf(\mu)\ge\omega_{2}>\omega_{1}>\omega$。\ref{set:cf-stationary} より両者は定常である。共終数は一意なので交わらない。$\mathrm{Cub}(\mu)$ が超フィルターなら $S^{\mu}_{\omega}$ か $\mu\setminus S^{\mu}_{\omega}$ が $\mathrm{Cub}(\mu)$ に属するが、前者なら $\mu\setminus S^{\mu}_{\omega}$ は非定常で、それに含まれる $S^{\mu}_{\omega_{1}}$ も非定常となり矛盾、後者なら $S^{\mu}_{\omega}$ が非定常となり矛盾。
+
+::: hypcheck
+- **選択公理**：$\omega_{1}$ の正則性（\ref{set:successor-regular}）に使った。
+:::
+:::
+
+::: supplement
+$\cf(\mu)=\omega_{1}$ のとき（特に $\mu=\omega_{1}$）は $\omega_{1}$ 未満の正則基数が $\omega$ しかないので、この方法では交わらない定常集合が得られない。それでも $\omega_{1}$ 個の交わらない定常集合が存在することが、ウラムの定理から従う（\ref{set:disjoint-stationary}）。
+:::
+
+## 正則基数への帰着 {#set:sec-club-reduction}
+
+$\mathrm{Cub}(\mu)$ は $\mu$ そのものではなく $\cf(\mu)$ だけで決まる。このことを示して、以降は正則基数 $\kappa>\omega$ 上の $\mathrm{Cub}(\kappa)$ に話を限る根拠とする。
+
+::: lemma 閉非有界集合と連続な枚挙 {#set:club-enumeration keywords="club iff enumeration is continuous" index="連続な枚挙|れんぞくなまいきょ"}
+$\cf(\mu)>\omega$ とし、$C\subseteq\mu$ を非有界、$e=e_{C}\colon\operatorname{type}(C)\to C$ を順序枚挙とする。$C$ が閉であることと、$e$ が**連続**（任意の極限順序数 $\delta<\operatorname{type}(C)$ について $e(\delta)=\sup e[\delta]$）であることは同値である。
+:::
+
+::: proof
+$\theta=\operatorname{type}(C)$ とおく。
+
+**Step 1（$\Rightarrow$）.** 極限 $\delta<\theta$ をとり、$s=\sup e[\delta]$ とおく。$e$ は狭義増加なので $s\le e(\delta)<\mu$。$e[\delta]\subseteq C$ は空でないので \ref{set:closed-sup} より $s\in C$、$s=e(\eta)$ となる $\eta$ がある。$\xi<\delta$ なら $\xi+1<\delta$ で $e(\xi)<e(\xi+1)\le s=e(\eta)$、よって $\xi<\eta$。したがって $\delta\le\eta$ で $e(\delta)\le e(\eta)=s$。以上より $e(\delta)=s$。
+
+**Step 2（$\Leftarrow$）.** 極限 $\delta<\mu$ で $C\cap\delta$ が $\delta$ で非有界とする。$Y=\{\xi<\theta\mid e(\xi)<\delta\}$ は下に閉じている（$e$ は狭義増加）ので、ある順序数 $\eta\le\theta$ に等しい（\ref{set:downward-closed-initial-segment}）。
+- $\eta\ne\theta$：$C$ は $\mu$ で非有界なので $\delta\le e(\xi)$ となる $\xi$ があり、$\xi\notin Y$。
+- $\eta$ は極限順序数：$C\cap\delta\ne\varnothing$ なので $\eta\ne0$。$\eta=\zeta+1$ なら $e(\zeta)$ が $C\cap\delta=e[\eta]$ の最大元で、$e(\zeta)+1<\delta$ を超える元が $C\cap\delta$ にないので非有界性に反する。
+
+$e$ の連続性より $e(\eta)=\sup e[\eta]=\sup(C\cap\delta)$ で、\ref{set:closed-sup} Step 3 と同じ議論によりこれは $\delta$ に等しい。よって $\delta=e(\eta)\in C$。
+
+::: hypcheck
+- 選択公理は使っていない（ZF）。$\cf(\mu)>\omega$ はここでは使っておらず、任意の極限順序数 $\mu$ で成り立つ。
+:::
+:::
+
+::: lemma 型 $\cf(\mu)$ の閉非有界集合 {#set:club-of-type-cf keywords="club subset of order type cf(μ)" index="正規な共終写像|せいきなきょうしゅうしゃぞう"}
+$\cf(\mu)=\kappa>\omega$ とする。狭義増加・連続・共終な写像 $f\colon\kappa\to\mu$ が存在し、その値域 $C=\ran f$ は $\operatorname{type}(C)=\kappa$ の閉非有界集合である。
+:::
+
+::: proof
+**Step 1（構成）.** \ref{set:cf-increasing} より狭義増加な共終写像 $g\colon\kappa\to\mu$ を 1 つとる。超限再帰（\ref{set:recursion-three-clauses}）で
+$$
+\begin{aligned}
+&f(0)=g(0),\qquad f(\xi+1)=\max\bigl(g(\xi+1),\,f(\xi)+1\bigr),\\
+&f(\delta)=\sup f[\delta]\ (\delta\text{ は極限})
+\end{aligned}
+$$
+と定める。
+
+**Step 2（値は $\mu$ 未満）.** $\xi<\kappa$ について帰納法で示す。$0$ と後続の場合は $\mu$ が極限順序数であることから。極限 $\delta<\kappa$ では $f\restr{\delta}\colon\delta\to\mu$ で $\delta<\kappa=\cf(\mu)$ なので \ref{set:short-sequence-bounded} (1) より $f(\delta)<\mu$。
+
+**Step 3（狭義増加・連続・共終）.** $\eta<\xi\Rightarrow f(\eta)<f(\xi)$ を $\xi$ についての帰納法で示す。$\xi=\zeta+1$ なら $\eta\le\zeta$ で $f(\eta)\le f(\zeta)<f(\zeta)+1\le f(\xi)$。$\xi$ が極限なら $\eta+1<\xi$ で $f(\eta)<f(\eta+1)\le\sup f[\xi]=f(\xi)$。連続性は定義そのもの。共終：$\zeta<\mu$ なら $\zeta\le g(\xi)$ となる $\xi$ があり、$g(\xi)\le g(\xi+1)\le f(\xi+1)$。
+
+**Step 4.** $f$ は狭義増加なので $\kappa$ から $C$ への順序同型、すなわち $C$ の順序枚挙であり、$\operatorname{type}(C)=\kappa$。$C$ は非有界で、枚挙 $f$ は連続なので \ref{set:club-enumeration} より閉である。
+
+::: hypcheck
+- **$\cf(\mu)=\kappa$**：Step 2 の極限の場合に使った。
+- 選択公理は使っていない（ZF）。$g$ は存在するものを 1 つとるだけである。
+:::
+:::
+
+::: proposition 閉非有界フィルターの正則基数への帰着 {#set:club-reduction keywords="Cub(μ) reduces to Cub(cf μ)" index="閉非有界フィルターの帰着|へいひゆうかいふぃるたーのきちゃく"}
+$\cf(\mu)=\kappa>\omega$ とし、$f\colon\kappa\to\mu$ を \ref{set:club-of-type-cf} の写像とする。$X\subseteq\mu$ について
+$$
+X\in\mathrm{Cub}(\mu)\iff f^{-1}[X]\in\mathrm{Cub}(\kappa)
+\label{set:eq-club-reduction}
+$$
+が成り立つ。特に、$X$ が $\mu$ で定常であることと $f^{-1}[X]$ が $\kappa$ で定常であることは同値である。
+:::
+
+::: intuition
+$\mu$ の中の閉非有界集合 $C=\ran f$ は長さ $\kappa$ の「背骨」であり、閉非有界集合はすべて（$C$ と交わらせれば）この背骨の上に載せられる。背骨を $f$ で $\kappa$ と同一視すれば、$\mu$ の閉非有界集合と $\kappa$ の閉非有界集合が対応する。
+:::
+
+::: proof
+$C=\ran f$ とおく。まず次に注意する。
+
+**Step 0（連続な狭義増加写像の像）.** $E\subseteq\kappa$ が $\kappa$ の閉非有界集合なら、$f[E]$ は $\mu$ の閉非有界集合である。実際、$E$ の順序枚挙 $e_{E}\colon\kappa\to E$ は \ref{set:club-enumeration} より連続で（$\operatorname{type}(E)=\kappa$ は \ref{set:short-sequence-bounded} (2) と \ref{set:type-subset} から）、$f\circ e_{E}$ は $f[E]$ の順序枚挙である。これは連続である：極限 $\delta<\kappa$ について $e_{E}(\delta)=\sup e_{E}[\delta]$ は極限順序数で $e_{E}[\delta]$ はその中で共終なので、$f$ の連続性と \ref{set:sup-cofinal} から $f(e_{E}(\delta))=\sup f[e_{E}(\delta)]=\sup f[e_{E}[\delta]]$。また $f[E]$ は非有界である（$\zeta<\mu$ なら $\zeta\le f(\xi)$ となる $\xi$ と、$\xi\le\eta$ となる $\eta\in E$ があり、$\zeta\le f(\eta)$）。\ref{set:club-enumeration} より $f[E]$ は閉非有界。
+
+**Step 1（$\Rightarrow$）.** 閉非有界 $D\subseteq X$ をとる。$D\cap C$ は閉非有界（\ref{set:club-filter-complete} (1)）。$E=f^{-1}[D\cap C]=f^{-1}[D]\subseteq f^{-1}[X]$ が $\kappa$ の閉非有界集合であることを示す。
+- 非有界：$\xi<\kappa$ に対し $e'>f(\xi)$ となる $e'\in D\cap C$ があり、$e'=f(\eta)$ とすると $\eta>\xi$（$f$ は狭義増加）、$\eta\in E$。
+- 閉：極限 $\delta<\kappa$ で $E\cap\delta$ が $\delta$ で非有界とする。$f(\delta)=\sup f[\delta]$ は極限順序数で、$f[E\cap\delta]\subseteq D\cap f(\delta)$ は $f(\delta)$ で非有界である（$\zeta<f(\delta)$ なら $\zeta<f(\xi)$ となる $\xi<\delta$ があり、$\xi\le\eta$ となる $\eta\in E\cap\delta$ について $\zeta<f(\eta)$）。$D$ は閉なので $f(\delta)\in D$、よって $\delta\in E$。
+
+したがって $f^{-1}[X]\in\mathrm{Cub}(\kappa)$。
+
+**Step 2（$\Leftarrow$）.** 閉非有界 $E\subseteq f^{-1}[X]$ をとると、Step 0 より $f[E]$ は $\mu$ の閉非有界集合で、$f[E]\subseteq X$。よって $X\in\mathrm{Cub}(\mu)$。
+
+**Step 3（定常性）.** $f^{-1}[\mu\setminus X]=\kappa\setminus f^{-1}[X]$ なので、\eqref{set:eq-club-reduction} を $\mu\setminus X$ に適用すると「$X$ が非定常 $\iff$ $f^{-1}[X]$ が非定常」。
+
+::: hypcheck
+- **$f$ の連続性**：Step 0 と Step 1 の閉性（$f(\delta)=\sup f[\delta]$）の核心。単に狭義増加な共終写像では、極限での値が飛ぶので成り立たない。
+- 選択公理は使っていない（ZF）。
+:::
+:::
+
+::: supplement
+この命題により、$\mathcal{P}(\mu)/\mathrm{Cub}(\mu)^{*}$ と $\mathcal{P}(\kappa)/\mathrm{Cub}(\kappa)^{*}$ はブール代数（\ref{set:boolean-algebra}）として同型である（$[X]\mapsto[f^{-1}[X]]$ が well-defined な同型になる）。以後、閉非有界フィルターは正則基数 $\kappa>\omega$ の上でだけ考える。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

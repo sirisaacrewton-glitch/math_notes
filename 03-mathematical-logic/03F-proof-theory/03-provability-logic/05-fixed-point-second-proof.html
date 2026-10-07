@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>不動点定理の第二証明と様相化の役割 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/03-provability-logic/05-fixed-point-second-proof.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 不動点定理の第二証明と様相化の役割 {#pt:page-fixed-point-second-proof keywords="fixed point theorem, second proof, characters, modal degree of fixed points, Gleit, role of modalization"}
+
+前ページの第一証明では、不動点の様相次数が元の論理式より大きくなることがあった。本ページでは、**キャラクター**（ある深さまでの世界の「型」を記述する論理式）を使う第二証明（Boolos の証明をグライトが意味論的に書き直したもの）により、$A$ の $\Box$ で始まる部分論理式が $n$ 個なら、様相次数 $n$ 以下の不動点があることを示す。後半では、「$p$ について様相化されている」という条件の役割を調べる：様相化されていない論理式で不動点をもたないもの、様相化された論理式と同値でないのに不動点をもつものの例を与える。（Boolos 第 8 章中盤に対応する。）
+
+## 記法と定義の確認 {#pt:sec-second-proof-notation}
+
+::: notation
+- $p$ について様相化されている（\ref{pt:modalized}）、不動点（\ref{pt:fixed-point}）、ゴールドファーブの補題（\ref{pt:goldfarb-reduction}）は \ref{pt:page-fixed-point-theorem} のとおり。
+- 「有限モデル」は有限・推移的・非反射的なクリプキモデルを表し、$\mathsf{GL}$ の健全性と完全性はこれについて使う（\ref{logic:kripke-soundness}, \ref{logic:modal-fmp-decidability}）。生成部分モデル（\ref{logic:generated-submodel}）、様相次数 $d$（\ref{logic:modal-degree}）、ランク $\rho$（\ref{pt:world-rank}）、トレース（\ref{pt:trace}）は既出のとおり。
+- $\pm C$ は $C$ または $\neg C$ のどちらかを表す。空な連言は $\top$。
+- 以下、とくに断らなければ $\vdash$ は $\mathsf{GL}\vdash$ を表す。
+:::
+
+## キャラクター {#pt:sec-characters}
+
+この節と次の節では、$A$ を $p$ について様相化された論理式とし、$A$ に現れる $p$ 以外の命題変数を $q_{1},\dots,q_{s}$（$s\ge0$）、$A$ の $\Box$ で始まる相異なる部分論理式の個数を $n$ とする。
+
+::: definition m-キャラクター {#pt:character keywords="m-character" index="キャラクター|きゃらくたー"}
+$m\ge0$ について **$m$-キャラクター**を次のように定める。
+- $0$-キャラクターは、$\pm q_{1}\wedge\cdots\wedge\pm q_{s}$ の形の $2^{s}$ 個の論理式（$s=0$ なら $\top$ だけ）。
+- $m$-キャラクターが $V_{1},\dots,V_{t}$ のとき、$(m+1)$-キャラクターは $\pm q_{1}\wedge\cdots\wedge\pm q_{s}\wedge\pm\Diamond V_{1}\wedge\cdots\wedge\pm\Diamond V_{t}$ の形の $2^{s+t}$ 個の論理式。
+:::
+
+::: lemma キャラクターの基本性質 {#pt:character-basic}
+1. $m$-キャラクターは有限個で、$p$ を含まず、命題変数は $q_{1},\dots,q_{s}$ の中にあり、様相次数は $m$ 以下である。
+2. 任意のモデルの任意の世界 $w$ で、ちょうど一つの $m$-キャラクターが真である。これを $U(m,w)$ と書く。
+3. $w$ と $x$ を（別のモデルでもよい）世界とし、$U(m,w)=U(m,x)$ とする。このとき $w$ と $x$ は $q_{1},\dots,q_{s}$ の真理値で一致する。さらに $m\ge1$ で、$w$ のモデルの到達可能性関係を $R$、$x$ のモデルのものを $S$ とすると、$wRw'$ ならば $xSx'$ かつ $U(m-1,x')=U(m-1,w')$ となる $x'$ がある。
+:::
+
+::: proof
+**1.** $m$ に関する帰納法（様相次数は $d(\Diamond V)=d(V)+1$）。
+
+**2.** $m$ に関する帰納法。$m=0$：各 $q_{k}$ について $w$ で真なら $q_{k}$、偽なら $\neg q_{k}$ を選んだ連言だけが真で、他の $0$-キャラクターはどれかの連言肢で偽になる。$m+1$：$m$-キャラクター $V_{1},\dots,V_{t}$ について、$q_{k}$ と $\Diamond V_{j}$ の $w$ での真理値に合わせて符号を選んだ連言だけが真である。
+
+**3.** 前半は、$m$-キャラクターが $\pm q_{1}\wedge\cdots\wedge\pm q_{s}$ を連言肢にもつことから。後半：$wRw'$ で $V\defeq U(m-1,w')$ とすると $w\models\Diamond V$ なので、$\Diamond V$ は $U(m,w)$ の否定のつかない連言肢である。$U(m,x)=U(m,w)$ なので $x\models\Diamond V$、すなわち $xSx'$ かつ $x'\models V$ となる $x'$ があり、2 より $U(m-1,x')=V$。
+:::
+
+::: lemma キャラクターの一致 {#pt:character-agreement}
+$\mathcal{M}=(W,R,V)$, $\mathcal{N}=(X,S,Q)$ を有限モデル、$w_{0}\in W$, $x_{0}\in X$ とし、$\mathcal{M},w_{0}\models\boxdot(p\leftrightarrow A)$、$\mathcal{N},x_{0}\models\boxdot(p\leftrightarrow A)$、$U(n,w_{0})=U(n,x_{0})$ とする。このとき $\mathcal{M},w_{0}\models p\iff\mathcal{N},x_{0}\models p$。
+:::
+
+::: proof
+**Step 0（設定）.** 結論を否定し、$w_{0}$ と $x_{0}$ で $p$ の真理値が異なるとする。$0\le i\le n$ について、条件 $P(i,Z,w,x,\Box D)$ を次の六つの連言とする。
+1. $Z$ は $A$ の $\Box$ で始まる部分論理式の $i$ 元集合。
+2. $w=w_{0}$ または $w_{0}Rw$、$x=x_{0}$ または $x_{0}Sx$。
+3. $Z$ のすべての元が $w$ と $x$ の両方で真。
+4. $U(n-i,w)=U(n-i,x)$。
+5. $\Box D$ は $A$ の部分論理式。
+6. $\Box D$ の真理値は $w$ と $x$ で異なる（したがって 3 より $\Box D\notin Z$）。
+
+**Step 1（部分論理式の観察）.** $A$ の部分論理式は、$\bot$, $p$, $q_{k}$ と $A$ の $\Box$ で始まる部分論理式から $\to$ で組み立てられる。$w\in\{w_{0}\}\cup R(w_{0})$, $x\in\{x_{0}\}\cup S(x_{0})$ で $w,x$ が $q_{1},\dots,q_{s}$ で一致しているとき、$A$ のある部分論理式の真理値が $w,x$ で異なるならば、$A$ のある $\Box$ で始まる部分論理式の真理値が $w,x$ で異なる。実際、部分論理式の構成に関する帰納法により、$p$ か、ある $\Box$ で始まる部分論理式で異なる。$p$ で異なるなら、$w\models p\leftrightarrow A$、$x\models p\leftrightarrow A$（仮定の $\boxdot$ と 2）より $A$ の値が異なり、$A$ は $q_{k}$ と $\Box$ で始まる部分論理式の真理関数なので、後者のどれかで異なる。
+
+**Step 2（出発点）.** $U(n,w_{0})=U(n,x_{0})$ より $w_{0},x_{0}$ は $q_{k}$ で一致し（キャラクターの基本性質 3）、$p$ で異なるので、Step 1 より $A$ のある $\Box D$ で異なる。よって $P(0,\emptyset,w_{0},x_{0},\Box D)$。（$n=0$ のときは $\Box D$ が存在しないので、この時点で矛盾する。）
+
+**Step 3（一段進める）.** $i<n$ で $P(i,Z,w,x,\Box D)$ とする。対称性から $w\not\models\Box D$, $x\models\Box D$ としてよい。$wRy$ かつ $y\not\models D$ となる $y$ のうちランク最小のものを $w'$ とすると、$w'Rz$ なら $wRz$ かつ $\rho(z)<\rho(w')$ なので $z\models D$、よって $w'\models\Box D$ かつ $w'\not\models D$。$n-i\ge1$ なので、キャラクターの基本性質 3 より、$xSx'$ かつ $U(n-i-1,x')=U(n-i-1,w')$ となる $x'$ がある。$x\models\Box D$ と推移性より $x'\models D$, $x'\models\Box D$。
+
+$Z'\defeq Z\cup\{\Box D\}$ とすると $i+1$ 元集合（$\Box D\notin Z$）。$Z$ の元 $\Box B$ は $w,x$ で真なので、推移性より $w',x'$ でも真。$\Box D$ も $w',x'$ で真。$w_{0}Rw'$, $x_{0}Sx'$（推移性）。$U(n-(i+1),w')=U(n-(i+1),x')$ より $w',x'$ は $q_{k}$ で一致し、部分論理式 $D$ で異なるので、Step 1 より $A$ のある $\Box D'$ で異なる。以上で $P(i+1,Z',w',x',\Box D')$。
+
+**Step 4（矛盾）.** Step 2, 3 と帰納法より、ある $Z',w',x',\Box D'$ について $P(n,Z',w',x',\Box D')$。このとき $Z'$ は $A$ の $\Box$ で始まる部分論理式の $n$ 元集合、すなわちその全体だが、$\Box D'$ はそれに属さない $A$ の $\Box$ で始まる部分論理式であり、矛盾する。
+
+::: hypcheck
+- **ランク最小の $w'$（逆整礎性）**：Step 3 で、$\Box D$ を $w'$ で成り立たせるのに使った。これにより $Z'$ が毎段一つずつ増える。
+- **推移性**：Step 3 で、$Z$ の元・$\Box D$・「$w_{0}$ から到達可能」を上へ伝えるのに使った。
+- **$\boxdot(p\leftrightarrow A)$**：Step 1 で、$w_{0},x_{0}$ 自身とそこから到達可能な世界で $p\leftrightarrow A$ を使った。
+:::
+:::
+
+## 第二証明 {#pt:sec-second-proof}
+
+::: theorem 様相次数 n 以下の不動点（第二証明） {#pt:fixed-point-second-proof keywords="fixed point of modal degree at most n" index="不動点の様相次数|ふどうてんのようそうじすう"}
+$H\defeq\bigvee\{U:U\text{ は }n\text{-キャラクターで }\vdash\boxdot(p\leftrightarrow A)\wedge U\to p\}$ は $A$ の不動点であり、様相次数は $n$ 以下である。$H$ は $A$ から機械的に計算できる。
+:::
+
+::: proof
+**Step 1（$H$ の性質）.** $n$-キャラクターは有限個なので $H$ は有限の選言で、\ref{pt:character-basic} の 1 より $p$ を含まず、命題変数は $q_{1},\dots,q_{s}$ の中にあり、様相次数は $n$ 以下。各 $U$ について $\vdash\boxdot(p\leftrightarrow A)\wedge U\to p$ かどうかは $\mathsf{GL}$ の決定可能性（\ref{logic:modal-fmp-decidability}）で判定できる。
+
+**Step 2（$\boxdot(p\leftrightarrow A)\to(p\leftrightarrow H)$）.** 有限モデル $\mathcal{M}$ の世界 $w$ で $w\models\boxdot(p\leftrightarrow A)$ とし、$U\defeq U(n,w)$ とする。
+
+- ($H\to p$) $w\models H$ なら、$w$ で真な $H$ の選言肢は $n$-キャラクターなので、\ref{pt:character-basic} の 2 よりそれは $U$ である。よって $\vdash\boxdot(p\leftrightarrow A)\wedge U\to p$ で、健全性より $w\models p$。
+- ($p\to H$) $w\models p$ とする。$U$ が $H$ の選言肢でないとすると $\nvdash\boxdot(p\leftrightarrow A)\wedge U\to p$ で、完全性より有限モデル $\mathcal{N}$ の世界 $x$ で $x\models\boxdot(p\leftrightarrow A)$, $x\models U$, $x\not\models p$。$U(n,x)=U=U(n,w)$ なので \ref{pt:character-agreement} より $w\models p\iff x\models p$ となり矛盾。よって $U$ は $H$ の選言肢で、$w\models U$ より $w\models H$。
+
+完全性より $\vdash\boxdot(p\leftrightarrow A)\to(p\leftrightarrow H)$。
+
+**Step 3.** \ref{pt:goldfarb-reduction} より $H$ は不動点。
+:::
+
+::: corollary 不動点の様相次数の上限
+$p$ について様相化された $A$ は、$A$ の $\Box$ で始まる部分論理式の個数以下の様相次数をもつ不動点をもつ。
+:::
+
+前ページの例 $A=\Box p\to\Box\neg p$ では $n=2$ で、不動点 $\Box^{2}\bot\to\Box\bot$ の次数 $2$ はこの上限に一致し、次数 $1$ の不動点はない（\ref{pt:fixed-point-degree}）。
+
+::: proposition 命題変数がないときのキャラクター {#pt:characters-letterless}
+$s=0$（$A$ の命題変数が $p$ だけ）のとき、各 $m$-キャラクター $U$ は閉様相論理式で、そのトレースは $\emptyset$, $\{0\}$, $\{1\}$, …, $\{m-1\}$, $\{j:j\ge m\}$ のどれかである。後の $m+1$ 個はそれぞれちょうど一つの $m$-キャラクターのトレースとして現れる。
+:::
+
+::: proof
+$m$ に関する帰納法。$m=0$：唯一の $0$-キャラクター $\top$ のトレースは $\N=\{j:j\ge0\}$。$m$ で成り立つとする。\ref{pt:basic-traces} の 3 より $[\![\Diamond V]\!]=\{j:\exists k<j\ (k\in[\![V]\!])\}$ で、$[\![V]\!]$ が空でなくその最小元が $k_{V}$ なら $\{j:j>k_{V}\}$、空なら $\emptyset$。帰納法の仮定より空でないトレースの最小元は $0,1,\dots,m$ で、それぞれちょうど一つの $V$ に対応する。$(m+1)$-キャラクター $\bigwedge_{V}\pm\Diamond V$ のトレースは、トレースが空の $V$ の項（$\Diamond V$ のトレースは $\emptyset$、$\neg\Diamond V$ は $\N$）を除くと、正の符号の $k$ の集合を $P$、負の符号の集合を $N'$ として $\{j:j>\max P\text{ かつ }j\le\min N'\}$（$P=\emptyset$ なら第一の条件なし、$N'=\emptyset$ なら第二の条件なし）である。これが空でないのは $P=\{0,\dots,r-1\}$, $N'=\{r,\dots,m\}$（$0\le r\le m$）のとき $\{r\}$、$P=\{0,\dots,m\}$ のとき $\{j:j\ge m+1\}$ である。
+:::
+
+したがって $s=0$ のとき、第二証明の不動点は「トレースが一点 $\{r\}$（$r<n$）または $\{j:j\ge n\}$ の閉様相論理式」の選言であり、前ページの \ref{pt:fixed-point-special} の $H$（\ref{pt:normal-form-by-trace} の形）と本質的に同じ構成になる。
+
+## 様相化の役割 {#pt:sec-role-of-modalization}
+
+様相化の条件は不動点の存在の十分条件であり、以下で見るように必要条件ではない。まず、条件を外すと不動点が存在しない例がある。
+
+::: proposition 不動点をもたない論理式 {#pt:no-fixed-point}
+$B=p$ と $B=\neg p$ は、$p$ を含まない論理式 $H$ で $\vdash\boxdot(p\leftrightarrow B)\leftrightarrow\boxdot(p\leftrightarrow H)$ となるものをもたない。
+:::
+
+::: proof
+$B=p$：$\boxdot(p\leftrightarrow p)$ は定理なので $\vdash\boxdot(p\leftrightarrow H)$、とくに $\vdash p\leftrightarrow H$。$p\mapsto\neg H$ を代入すると（$H$ は $p$ を含まない）$\vdash\neg H\leftrightarrow H$ で、$\mathsf{GL}$ の無矛盾性（\ref{logic:gl-consistent}）に反する。$B=\neg p$：$p\leftrightarrow\neg p$ は恒真式により $\bot$ と同値なので、$\vdash\neg\boxdot(p\leftrightarrow H)$。$p\mapsto H$ を代入すると $\vdash\neg\boxdot(H\leftrightarrow H)$ だが、$\boxdot(H\leftrightarrow H)$ は定理で、無矛盾性に反する。
+:::
+
+::: proposition 様相化された論理式の性質 {#pt:modalized-p-implies}
+$B$ が $p$ について様相化されているとき、$\vdash p\to B$ ならば $\vdash B$。とくに $p$ は、$p$ について様相化されたどの論理式とも $\mathsf{GL}$ で同値でない。
+:::
+
+::: proof
+$\nvdash B$ とすると、完全性より有限モデル $\mathcal{M}=(W,R,V)$ の世界 $w$ で $w\not\models B$。$V'$ を、$w$ で $p$ を真にし他は $V$ と同じ付値とし、$\mathcal{M}'\defeq(W,R,V')$ とする。$wRx$ となる $x$ から生成された部分モデルは $w$ を含まないので（非反射性・推移性）、そこでの真理は $\mathcal{M}$ と $\mathcal{M}'$ で同じ。$B$ は $\Box D$ の形の論理式と $p$ 以外の命題変数の真理関数なので、$w$ での $B$ の真理値は $\mathcal{M}$ と $\mathcal{M}'$ で同じ（\ref{pt:goldfarb-reduction} の Step 4 と同じ議論）。よって $\mathcal{M}',w\not\models B$, $\mathcal{M}',w\models p$ で、健全性より $\nvdash p\to B$。
+
+後半：$\vdash p\leftrightarrow B$ なら $\vdash p\to B$ より $\vdash B$、したがって $\vdash p$。$p\mapsto\bot$ を代入して $\vdash\bot$ となり矛盾する。
+:::
+
+::: proposition 様相化されていないが不動点をもつ論理式 {#pt:box-p-or-p}
+1. $\Box p\vee p$ は、$p$ について様相化されたどの論理式とも $\mathsf{GL}$ で同値でない。
+2. $\vdash\boxdot(p\leftrightarrow\Box p\vee p)\leftrightarrow\boxdot(p\leftrightarrow\top)$。すなわち $\top$ は $\Box p\vee p$ の不動点の条件を満たす。
+:::
+
+::: proof
+**1.** $\vdash B\leftrightarrow\Box p\vee p$ となる様相化された $B$ があるとすると、$\vdash p\to\Box p\vee p$（恒真式）より $\vdash p\to B$、\ref{pt:modalized-p-implies} より $\vdash B$、したがって $\vdash\Box p\vee p$。$p\mapsto\bot$ を代入すると $\vdash\Box\bot\vee\bot$、恒真式により $\vdash\Box\bot$ となり、\ref{logic:gl-consistent}（たとえば二点のフレーム $1R0$ の世界 $1$ で $\Box\bot$ は偽、健全性）に反する。
+
+**2.**（$\leftarrow$）$\boxdot(p\leftrightarrow\top)$ は恒真式により $\boxdot p$ と同値（正規性 2）。$p\to(p\leftrightarrow\Box p\vee p)$ は恒真式なので、正規性 1 と恒真式により $\vdash\boxdot p\to\boxdot(p\leftrightarrow\Box p\vee p)$。
+
+（$\rightarrow$）$(p\leftrightarrow\Box p\vee p)\to(\Box p\to p)$ は恒真式なので、正規性 1 より $\vdash\Box(p\leftrightarrow\Box p\vee p)\to\Box(\Box p\to p)$、レーブの公理より右辺から $\Box p$。さらに $\boxdot(p\leftrightarrow\Box p\vee p)$ の左の連言肢と $\Box p$ から恒真式により $p$。よって $\vdash\boxdot(p\leftrightarrow\Box p\vee p)\to p\wedge\Box p$、すなわち $\boxdot p$。
+:::
+
+::: remark 開いた問い
+Boolos は、「$B$ が不動点をもつための、興味深い必要十分条件は何か」を問いとして挙げている（Boolos 第 8 章。本ページの執筆時点でその後の解決状況は確認していない）。
+:::
+
+::: remark 算術の論理式との対応
+様相化された $B$ は、多くの自己言及的な算術の文の記述にそのまま対応する。Boolos は、$p$ だけを含む $B$ に対して、自由変数 $x$ を一つもつ算術の論理式 $[B](x)$ を、$p$ を $x$ に、$\Box C$ を「$\{C\}(x)$ が証明可能」に置き換えて定める（$\{C\}(x)$ は、$x$ が文 $S$ のコードのとき $C^{\ast}$（$p^{\ast}=S$）のコードを返す関数の項で、$\to$ のコードの組み立てと「$\mathrm{Bew}(\Godel{F})$ のコード」を返す関数から作る）。すると $p^{\ast}=S$ のとき $\PA\vdash B^{\ast}\leftrightarrow[B](\Godel{S})$ となり、「$\PA\vdash S\leftrightarrow[B](\Godel{S})$ を満たす $S$」は \ref{pt:fixed-point-arith} により分類される。本サイトの算術化（\ref{pt:syntax-predicates}）でも、これらの関数は Δ の関数を表す論理式として定義でき、同じ対応が得られるはずだが、詳細は省略する。
+:::
+
+## 問題 {#pt:sec-second-proof-problems}
+
+::: problem {#pt:prob-characters-small}
+$s=0$ のとき、$1$-キャラクターと $2$-キャラクターを書き出し、それぞれ $\mathsf{GL}$ で閉様相論理式 $\Box\bot$, $\neg\Box\bot$ などのどれと同値かを、トレースで確かめよ。
+:::
+
+::: solution
+$0$-キャラクターは $\top$ だけ。$1$-キャラクターは $\Diamond\top$ と $\neg\Diamond\top$：トレースはそれぞれ $\{j:j\ge1\}$, $\{0\}$ で、$\neg\Box\bot$, $\Box\bot$ と同値。$2$-キャラクターは $\pm\Diamond\Diamond\top\wedge\pm\Diamond\neg\Diamond\top$ の四つ：$[\![\Diamond\Diamond\top]\!]=\{j\ge2\}$、$[\![\Diamond\neg\Diamond\top]\!]=\{j\ge1\}$ なので、$(+,+)$ は $\{j\ge2\}$、$(-,+)$ は $\{1\}$、$(-,-)$ は $\{0\}$、$(+,-)$ は $\emptyset$（矛盾）。
+:::
+
+::: problem {#pt:prob-second-proof-example}
+$A=\neg\Box p$（$s=0$, $n=1$）について第二証明の $H$ を求めよ。
+:::
+
+::: solution
+$1$-キャラクターは $\Diamond\top$（トレース $\{j\ge1\}$）と $\neg\Diamond\top$（$\{0\}$）。不動点 $\neg\Box\bot$（前ページ）とトレース $\N\setminus\{0\}$ を比べると、$\boxdot(p\leftrightarrow A)\wedge\Diamond\top\to p$ は定理（$\boxdot(p\leftrightarrow A)$ の下で $p\leftrightarrow\neg\Box\bot$ で、$\Diamond\top$ と $\neg\Box\bot$ は同値）、$\boxdot(p\leftrightarrow A)\wedge\neg\Diamond\top\to p$ は定理でない（ランク $0$ の世界で $p$ は偽）。よって $H=\Diamond\top$、$\neg\Box\bot$ と同値である。
+:::
+
+::: supplement
+**前提の検討.**
+- 第二証明は、キャラクターの一致（\ref{pt:character-agreement}）のために $\boxdot(p\leftrightarrow A)$ を $w_{0}$ から到達可能な範囲全体で使い、ランク最小の世界を選ぶために逆整礎性を使う。第一証明と違い、帰納法は $A$ の分解ではなく $\Box$ 部分論理式の集合 $Z$ の大きさについて行われる。
+- 不動点の様相次数の上限 $n$ は、$A$ の様相次数ではなく $\Box$ 部分論理式の個数である。\ref{pt:fixed-point-degree} は、上限を $A$ の様相次数にはできないことを示している。
+
+**関連する結果.** キャラクターは、様相論理でいう「深さ $m$ の型」（有限の語彙での $m$ 段の双模倣の同値類を記述する論理式）にあたる。双模倣と様相論理式の関係（深さ $m$ の論理式で区別できないことと $m$ 段の双模倣の存在の同値性）は様相論理の一般論で知られた事実であるが、本サイトではまだ扱っていない。
+
+**高い視点から：有限の観測で決まる自己言及.** キャラクター $U(m,w)$ は、世界 $w$ から「$m$ 段先まで」見える景色の完全な記述である。キャラクターの一致の補題は、$p\leftrightarrow A$ が成り立つ世界では、$p$ の値は $n$ 段先までの景色（$p$ 以外の変数の配置と到達関係）だけで決まる、と言っている：$A$ が $p$ を参照するたびに一段先へ進み、そのたびに $\Box$ 部分論理式が一つ「確定」するので、$n$ 段で参照すべきものが尽きるのである。比喩で言えば、自己言及の方程式の解は、$n$ 手先まで読めば必ず決着するゲームの勝敗表のようなもので、不動点 $H$ はその勝敗表を「勝ちになる $n$ 手先の局面の一覧」として書き下したものである。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>文脈自由言語の反復補題 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/01-automata/05-cfl-pumping.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 文脈自由言語の反復補題 {#comp:page-cfl-pumping keywords="pumping lemma for context-free languages, parse tree, derivation tree, non-context-free languages, closure properties of context-free languages, intersection with regular languages"}
+
+文脈自由文法の導出は木の形をしている。十分長い文字列の導出木には同じ変数が一つの枝の上で二度現れ、その間の部分木を何度でも差し込める。これが文脈自由言語の**反復補題**（\ref{comp:pumping-cfl}）で、正規言語の場合と違い、二か所 $v,y$ を**同時に**繰り返す形になる。応用として $\{a^{n}b^{n}c^{n}\}$ が文脈自由でないことを示し、文脈自由言語が和・連接・スターでは閉じているが、共通部分と補集合では閉じていないこと（\ref{comp:cfl-closure}）、正規言語との共通部分では閉じていること（\ref{comp:cfl-cap-regular}）を述べる。
+
+## 記法と定義の確認 {#comp:sec-cflp-notation}
+
+::: notation
+- CFG、導出 $\Rightarrow^{\ast}$、文脈自由言語、チョムスキー標準形（\ref{comp:chomsky-normal-form}）、PDA と CFG の同値性（\ref{comp:cfg-pda-equivalence}）は \ref{comp:page-context-free} のとおり。
+- 正規言語、DFA、直積構成は \ref{comp:page-finite-automata} のとおり。
+:::
+
+## 導出木 {#comp:sec-parse-tree}
+
+::: definition 導出木 {#comp:parse-tree keywords="parse tree, derivation tree, yield, height" index="導出木|どうしゅつぎ, 構文木|こうぶんぎ"}
+チョムスキー標準形の CFG $G=(V,\Sigma,R,S)$ について、変数 $A$ を根とする**導出木**とその**収穫**（葉を左から読んだ文字列）$\mathrm{yd}$ と**高さ** $h$ を帰納的に定める。
+1. $A\to a\in R$ なら、根 $A$ の下に葉 $a$ を一つもつ木は導出木で、収穫 $a$、高さ $1$。
+2. $A\to BC\in R$ で、$\tau_{B},\tau_{C}$ がそれぞれ $B,C$ を根とする導出木なら、根 $A$ の左右の子を $\tau_{B},\tau_{C}$ とする木は導出木で、収穫 $\mathrm{yd}(\tau_{B})\mathrm{yd}(\tau_{C})$、高さ $1+\max(h(\tau_{B}),h(\tau_{C}))$。
+:::
+
+::: lemma 導出と導出木 {#comp:parse-tree-derivation}
+チョムスキー標準形の $G$、変数 $A$、空でない $w\in\Sigma^{\ast}$ について、$A\Rightarrow^{\ast}w$ であることと、収穫 $w$ の導出木で根が $A$ のものがあることは同値である。また、高さ $h$ の導出木の収穫の長さは $2^{h-1}$ 以下である。
+:::
+
+::: proof
+*木 $\Rightarrow$ 導出*：木の構成に関する帰納法。2 の場合 $A\Rightarrow BC\Rightarrow^{\ast}\mathrm{yd}(\tau_{B})C\Rightarrow^{\ast}\mathrm{yd}(\tau_{B})\mathrm{yd}(\tau_{C})$。
+*導出 $\Rightarrow$ 木*：導出の段数に関する帰納法。最初の段が $A\to a$ なら $w=a$ で 1。$A\to BC$ なら、残りの導出は $B$ から生じる部分と $C$ から生じる部分に分かれ（各段は一つの変数だけを書き換え、文脈によらない）、$w=w_{1}w_{2}$, $B\Rightarrow^{\ast}w_{1}$, $C\Rightarrow^{\ast}w_{2}$（ともに段数は少ない）となる。$\varepsilon$ を生成する規則は $S\to\varepsilon$ だけで、$S$ は右辺に現れないので $w_{1},w_{2}$ は空でない。帰納法の仮定で木を作り、2 で組み合わせる。
+*長さの評価*：高さに関する帰納法。高さ $1$ なら長さ $1=2^{0}$。2 の場合、子の高さは $h-1$ 以下なので収穫の長さは $2\cdot2^{h-2}=2^{h-1}$ 以下。
+:::
+
+## 反復補題 {#comp:sec-cfl-pumping}
+
+::: theorem 文脈自由言語の反復補題 {#comp:pumping-cfl keywords="pumping lemma for context-free languages, Bar-Hillel lemma" index="反復補題（文脈自由言語）|はんぷくほだいぶんみゃくじゆうげんご"}
+$A$ を文脈自由言語とする。ある $p\ge1$ があって、$\lvert s\rvert\ge p$ の任意の $s\in A$ は $s=uvxyz$ と分解でき、
+1. すべての $i\ge0$ について $uv^{i}xy^{i}z\in A$、
+2. $\lvert vy\rvert\ge1$、
+3. $\lvert vxy\rvert\le p$
+
+を満たす。
+:::
+
+::: proof
+チョムスキー標準形の $G=(V,\Sigma,R,S)$ で $A=L(G)$ となるものをとり（\ref{comp:chomsky-normal-form}）、$k\defeq\lvert V\rvert$, $p\defeq2^{k}$ とする。$s\in A$, $\lvert s\rvert\ge p$ とし、収穫 $s$ で根が $S$ の導出木のうち、頂点の数が最小のもの $\tau$ をとる（\ref{comp:parse-tree-derivation}。$s\neq\varepsilon$）。
+
+**Step 1（長い枝）.** $\lvert s\rvert\ge2^{k}>2^{k-1}$ なので、\ref{comp:parse-tree-derivation} より $h(\tau)\ge k+1$。根から最も深い葉に至る枝をとると、葉の直前までに $h(\tau)\ge k+1$ 個の変数が並ぶ。その枝の下から（葉に近い側から）$k+1$ 個の変数を見ると、$V$ は $k$ 個しかないので、同じ変数 $R_{0}$ が二度現れる。上の出現を根とする部分木を $\tau_{1}$、下の出現を根とする部分木を $\tau_{2}$（$\tau_{2}$ は $\tau_{1}$ の真の部分木）とする。
+
+**Step 2（分解）.** $\tau_{1}$ の収穫を $vxy$（$x\defeq\mathrm{yd}(\tau_{2})$、$v,y$ は $\tau_{1}$ の中で $\tau_{2}$ の左と右の部分）、$\tau$ の収穫を $s=u(vxy)z$ と書く。$\tau_{1}$ の根は枝の下から $k+1$ 番目以内にあり、$\tau_{1}$ の中で最も深い枝の長さは選び方から高々 $k+1$ なので $h(\tau_{1})\le k+1$、よって $\lvert vxy\rvert\le2^{k}=p$（条件 3）。
+
+**Step 3（繰り返し）.** $\tau$ の中の $\tau_{1}$ を $\tau_{2}$ に取り替えると収穫 $uxz$ の導出木、$\tau_{2}$ を $\tau_{1}$ に取り替えることを $i-1$ 回繰り返すと収穫 $uv^{i}xy^{i}z$ の導出木が得られる（根の変数がどちらも $R_{0}$ なので取り替えられる）。\ref{comp:parse-tree-derivation} より条件 1。
+
+**Step 4（$vy\neq\varepsilon$）.** $v=y=\varepsilon$ なら、$\tau_{1}$ を $\tau_{2}$ に取り替えた木は収穫が同じ $s$ で頂点が真に少なく、$\tau$ の最小性に反する。
+:::
+
+::: hypcheck
+- **チョムスキー標準形**：導出木が二分木になり、高さと収穫の長さの評価（$2^{h-1}$）が得られた。また $\varepsilon$ を生む変数がないことで、部分木の収穫が空でないことが保証された。
+- **最も深い枝を下から数えたこと**：Step 2 の $\lvert vxy\rvert\le p$ に使った。上から数えると $\tau_{1}$ が大きくなりすぎる。
+- **頂点数の最小性**：Step 4 の $\lvert vy\rvert\ge1$。
+:::
+
+::: example {#comp:ex-anbncn}
+$B\defeq\{a^{n}b^{n}c^{n}:n\ge0\}$ は文脈自由でない。文脈自由とし、反復長 $p$ をとる。$s\defeq a^{p}b^{p}c^{p}=uvxyz$ とする。条件 3 より $vxy$ は長さ $p$ 以下なので、$a$ と $c$ の両方を含むことはない。条件 2 より $vy$ は少なくとも一文字を含む。$v,y$ のどちらかが二種類の文字を含むなら、$uv^{2}xy^{2}z$ は $a,b,c$ の順に並ばない。そうでなければ $vy$ に現れる文字は高々二種類で、$uv^{2}xy^{2}z$ では三種類の文字の個数がそろわない。いずれも $B$ に属さず、条件 1 に反する。
+:::
+
+## 閉包性 {#comp:sec-cfl-closure}
+
+::: proposition 文脈自由言語の閉包性 {#comp:cfl-closure keywords="closure properties of context-free languages" index="文脈自由言語の閉包性|ぶんみゃくじゆうげんごのへいほうせい"}
+1. 文脈自由言語は和・連接・スターで閉じている。
+2. 文脈自由言語は共通部分でも補集合でも閉じていない。
+:::
+
+::: proof
+1. $A_{1},A_{2}$ をそれぞれ開始変数 $S_{1},S_{2}$ の CFG（変数の集合は交わらないとする）で生成する。新しい開始変数 $S$ と、和は $S\to S_{1}\mid S_{2}$、連接は $S\to S_{1}S_{2}$、スターは $S\to SS_{1}\mid\varepsilon$ を加える。導出は $S_{1}$ の部分と $S_{2}$ の部分に分かれるので、生成される言語はそれぞれ $A_{1}\cup A_{2}$, $A_{1}\circ A_{2}$, $A_{1}^{\ast}$ である。
+
+2. $C_{1}\defeq\{a^{n}b^{n}c^{m}\}$ と $C_{2}\defeq\{a^{m}b^{n}c^{n}\}$ は文脈自由（$C_{1}$ は $S\to TU$, $T\to aTb\mid\varepsilon$, $U\to cU\mid\varepsilon$。$C_{2}$ も同様）だが、$C_{1}\cap C_{2}=\{a^{n}b^{n}c^{n}\}$ は文脈自由でない（\ref{comp:ex-anbncn}）。補集合で閉じているとすると、$A_{1}\cap A_{2}=\overline{\overline{A_{1}}\cup\overline{A_{2}}}$ と 1 から共通部分でも閉じることになり、矛盾する。
+:::
+
+::: proposition 正規言語との共通部分 {#comp:cfl-cap-regular}
+$A$ が文脈自由、$D$ が正規なら、$A\cap D$ は文脈自由である。
+:::
+
+::: proof
+$A=L(P)$ となる PDA $P=(Q,\Sigma,\Gamma,\delta,q_{0},F)$（\ref{comp:cfg-pda-equivalence}）と、$D=L(M)$ となる DFA $M=(Q',\Sigma,\delta',q'_{0},F')$ をとる。状態 $Q\times Q'$、開始 $(q_{0},q'_{0})$、受理 $F\times F'$ とし、$(r,b)\in\delta(q,a,c)$ のとき、$a\in\Sigma$ なら $((r,\delta'(q',a)),b)$、$a=\varepsilon$ なら $((r,q'),b)$ を $(q,q')$ の遷移とする PDA を作る。第 2 成分は入力を読むたびに $M$ と同じく動くので、計算の段数に関する帰納法で「$(q_{0},w,\varepsilon)\vdash^{\ast}(q,\varepsilon,\gamma)$ と $\hat{\delta'}(q'_{0},w)=q'$ がともに成り立つことと、積の PDA で $((q_{0},q'_{0}),w,\varepsilon)\vdash^{\ast}((q,q'),\varepsilon,\gamma)$ は同値」がわかる。よって積の PDA は $A\cap D$ を認識する。
+:::
+
+## 問題 {#comp:sec-cflp-problems}
+
+::: problem {#comp:prob-ww-not-cf}
+$\Sigma=\{0,1\}$ について、$E\defeq\{ww:w\in\Sigma^{\ast}\}$ は文脈自由でないことを示せ。（ヒント：$E\cap L(0^{\ast}1^{\ast}0^{\ast}1^{\ast})$ を考える。）
+:::
+
+::: solution
+$E$ が文脈自由なら、\ref{comp:cfl-cap-regular} より $E'\defeq E\cap L(0^{\ast}1^{\ast}0^{\ast}1^{\ast})=\{0^{m}1^{n}0^{m}1^{n}:m,n\ge0\}$ も文脈自由。反復長 $p$ をとり $s\defeq0^{p}1^{p}0^{p}1^{p}=uvxyz$ とする。$\lvert vxy\rvert\le p$ なので、$vxy$ は連続する二つのブロック（$0^{p}$ と $1^{p}$ など）の範囲に収まる。$v$ か $y$ が二種類の文字を含めば $uv^{2}xy^{2}z$ は $0^{\ast}1^{\ast}0^{\ast}1^{\ast}$ の形でない。そうでなければ、$vy$ が触れるのは高々二つの隣り合うブロックで、繰り返すとそれらのブロックだけが伸び、対になるブロック（第 1 と第 3、第 2 と第 4）の長さがそろわなくなる（隣り合う二ブロックは対にならない）。いずれも $E'$ に属さない。
+:::
+
+::: problem {#comp:prob-unary-cfl}
+$\Sigma=\{a\}$（一文字）のとき、$\{a^{n^{2}}:n\ge0\}$ は文脈自由でないことを示せ。
+:::
+
+::: solution
+反復長 $p$ をとり $s\defeq a^{p^{2}}$ とすると、$1\le\lvert vy\rvert\le p$ で $\lvert uv^{2}xy^{2}z\rvert=p^{2}+\lvert vy\rvert$ は $p^{2}$ と $(p+1)^{2}=p^{2}+2p+1$ の間にあり平方数でない。
+:::
+
+::: supplement
+**前提の検討.**
+- 反復補題は必要条件にすぎない。より強いオグデンの補題（指定した位置の文字を必ず繰り返しに含める形）が知られている。
+- 一文字のアルファベットでは、文脈自由言語と正規言語が一致することが知られている（パリクの定理の系）。問題 \ref{comp:prob-unary-cfl} はその特別な場合とも見られる。
+
+**関連する結果.**
+- *パリクの定理.* 文脈自由言語の各文字列を「各文字の出現回数のベクトル」に写した像は、正規言語の像と同じく半線形集合になる。
+- *階層.* 正規 $\subsetneq$ 文脈自由 $\subsetneq$ 文脈依存 $\subsetneq$ 決定可能 $\subsetneq$ 認識可能（チョムスキー階層の一部）。決定可能・認識可能はチューリング機械の系列で定義する。
+
+**高い視点から：木の自己相似.** 正規言語の反復補題は「状態の列（一本の道）」の中の閉路を繰り返すものだったが、文脈自由言語の反復補題は「導出木」の中で同じ変数を根とする部分木を入れ子に差し込むもので、$v$ と $y$ が対になって増える。これは、文脈自由な構造が「一本の線」ではなく「入れ子の木」であることの反映である。たとえれば、正規言語は同じ部屋を何周もできる廊下、文脈自由言語は同じ形の箱を箱の中にいくらでも入れられる入れ子人形である。入れ子人形では外側の殻（$v$ と $y$）が必ず対になって増える。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

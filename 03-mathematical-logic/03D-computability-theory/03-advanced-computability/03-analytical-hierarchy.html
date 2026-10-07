@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>解析的階層と Π¹₁ 標準形 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/03-advanced-computability/03-analytical-hierarchy.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 解析的階層と Π¹₁ 標準形 {#comp:page-analytical-hierarchy keywords="analytical hierarchy, Baire space, functionals, Sigma^1_n, Pi^1_n, Pi^1_1 normal form, well-founded trees, WT, Pi^1_1-complete, enumeration theorem, hierarchy theorem"}
+
+算術的階層（\ref{comp:arithmetical-hierarchy}）は、決定可能な関係に**自然数**についての量化子を付けて得られる関係を分類した。本ページでは、量化子の範囲を**自然数の無限列**（関数 $\N\to\N$）全体、すなわち**ベール空間** $\N^{\N}$ に広げる。関数についての量化子を付けて得られる関係は**解析的階層** $\Sigma^{1}_{n},\Pi^{1}_{n}$ をなす（\ref{comp:analytical-hierarchy}）。最も重要なのは一番下の $\Pi^{1}_{1}$ で、$\Pi^{1}_{1}$ の関係は「ある計算可能な木が**整礎**である（無限の枝をもたない）」という形にまとめられる（**$\Pi^{1}_{1}$ 標準形**、\ref{comp:pi11-normal-form}）。系として、整礎な計算可能木の指数全体 $\mathrm{WT}$ は $\Pi^{1}_{1}$ 完全で、$\Sigma^{1}_{1}$ ではない（\ref{comp:wt-complete}）。
+
+> 主な資料は新井敏康『数学基礎論』第 6 章 §6.5 の前半（定理 6.5.2–6.5.4、定義 6.5.5–6.5.7、定理 6.5.8、系 6.5.9）。関数を引数にもつ計算可能性は、本サイトの神託機械（\ref{comp:oracle-tm}）で定義し直し、使用の原理（\ref{comp:use-principle}）を補って書いた。
+
+## 記法と定義の確認 {#comp:sec-ah-notation}
+
+::: notation
+- 神託機械、チューリング還元、算術的階層、普遍 $\Sigma_{n}$ 関係、階層定理は \ref{comp:page-turing-reducibility} のとおり（\ref{comp:oracle-tm}, \ref{comp:arithmetical-hierarchy}, \ref{comp:hierarchy-basic}, \ref{comp:universal-sigma-n}, \ref{comp:hierarchy-theorem}）。万能機械と s-m-n 定理は \ref{comp:page-universal-smn}（\ref{comp:smn}）。
+- 自然数の有限列は単射的に数で符号化され、列と符号を同一視する。$\N^{<\N}$ は有限列全体、$\lvert s\rvert$ は長さ、$s\subseteq t$ は $s$ が $t$ の始切片であること、$s^{\frown}t$ は連結、$\langle\rangle$ は空列。符号は $s\subsetneq t\Rightarrow s<t$ を満たすとする。
+- $f\in\N^{\N}$ と $n\in\N$ について $\bar{f}(n)\defeq\langle f(0),\dots,f(n-1)\rangle$（長さ $n$ の始切片）。関数の対 $f,g$ はまとめて一つの関数 $\langle f,g\rangle(n)\defeq\langle f(n),g(n)\rangle$ とみなせる。
+- 変数 $x,y,n,\dots$ は $\N$ を、$f,g,h,\dots$ は $\N^{\N}$ を動く。関係 $R\subseteq\N^{k}\times(\N^{\N})^{m}$ を単に**関係**という。
+:::
+
+## 関数を引数にもつ計算可能性 {#comp:sec-ah-functionals}
+
+::: definition 計算可能な関係 {#comp:computable-functional-relation keywords="computable relations on numbers and functions, function oracles" index="計算可能な関係（関数引数）|けいさんかのうなかんけいかんすうひきすう"}
+関数 $f$ のグラフ $G_{f}\defeq\{\langle n,f(n)\rangle:n\in\N\}$ を神託とする。関係 $R(\vec{x},f_{1},\dots,f_{m})$ が**計算可能**であるとは、ある神託機械 $M$ があって、すべての $\vec{x},\vec{f}$ について、$M$ が神託 $G_{f_{1}}\oplus\cdots\oplus G_{f_{m}}$ のもとで入力 $\vec{x}$ に対し必ず停止し、$R(\vec{x},\vec{f})$ なら受理、そうでなければ拒否することをいう（機械 $M$ は $\vec{f}$ によらない）。
+:::
+
+::: lemma 使用の原理 {#comp:use-principle keywords="use principle: computations with function oracles consult only finitely many values" index="使用の原理|しようのげんり"}
+$R(\vec{x},f)$ が計算可能なら、決定可能な関係 $S(\vec{x},s)$（$s\in\N^{<\N}$）で次を満たすものがある。
+1. $R(\vec{x},f)\iff\exists n\,S(\vec{x},\bar{f}(n))$。
+2. （単調性）$S(\vec{x},s)$ かつ $s\subseteq t$ なら $S(\vec{x},t)$。
+
+$\neg R$ についても同じ形の $S'$ がある。
+:::
+
+::: proof
+$M$ を $R$ を決定する神託機械とする。$S(\vec{x},s)$ を「$M$ を入力 $\vec{x}$ で $\lvert s\rvert$ 段まで動かし、問い合わせ『$\langle n,v\rangle\in G_{f}$？』には $n<\lvert s\rvert$ なら $v=s(n)$ かどうかで答え、$n\ge\lvert s\rvert$ の問い合わせがあればその時点で失敗とする。$\lvert s\rvert$ 段以内に受理で停止すれば真」と定める。これは有限の模倣なので決定可能。$s\subseteq t$ なら、$s$ での模倣は $t$ での模倣の最初の部分と一致するので単調性が成り立つ。$R(\vec{x},f)$ なら、$M^{G_{f}}$ の受理までの計算は有限で、問い合わせる $n$ も段数も有限なので、十分大きな $n$ で $S(\vec{x},\bar{f}(n))$。逆に $S(\vec{x},\bar{f}(n))$ なら、模倣は $M^{G_{f}}$ の本当の計算と一致して受理しているので $R(\vec{x},f)$。$\neg R$ は「拒否で停止」について同じ。
+:::
+
+::: remark
+関数を複数もつ場合は対の関数 $\langle f_{1},\dots,f_{m}\rangle$ にまとめればよい。また、算術的階層（\ref{comp:arithmetical-hierarchy}）の定義を、「決定可能な関係」を「関数を引数にもつ計算可能な関係」に替えて繰り返すと、関数を引数にもつ**算術的な関係**が定義される。その基本性質（\ref{comp:hierarchy-basic}）はそのまま成り立つ。
+:::
+
+## 解析的階層 {#comp:sec-ah-hierarchy}
+
+::: definition 解析的階層 {#comp:analytical-hierarchy keywords="analytical hierarchy Sigma^1_n, Pi^1_n, Delta^1_n" index="解析的階層（計算論）|かいせきてきかいそうけいさんろん, Π¹₁ 関係|ぱいわんわんかんけい"}
+$n\ge1$ とする。関係 $A(\vec{x},\vec{f})$ が **$\Sigma^{1}_{n}$** であるとは、算術的な関係 $R$ で
+$$
+A(\vec{x},\vec{f})\iff\exists g_{1}\,\forall g_{2}\,\exists g_{3}\cdots\mathsf{Q}g_{n}\ R(\vec{x},\vec{f},g_{1},\dots,g_{n})
+$$
+（関数についての量化子が $\exists$ から始まり交互に $n$ 個）となるものがあることをいう。$\forall$ から始まるものを **$\Pi^{1}_{n}$**、両方であるものを **$\Delta^{1}_{n}$** という。いずれかの $\Sigma^{1}_{n}$ に属する関係を**解析的**という。
+:::
+
+::: lemma 量化子の吸収 {#comp:quantifier-absorption keywords="number quantifiers can be absorbed into function quantifiers, contraction of function quantifiers" index="量化子の吸収|りょうかしのきゅうしゅう"}
+1. $\exists g_{1}\,\exists g_{2}\,A(g_{1},g_{2})\iff\exists h\,A((h)_{0},(h)_{1})$。ここで $(h)_{i}(x)\defeq h(\langle i,x\rangle)$。
+2. $\exists x\,A(x)\iff\exists g\,A(g(0))$。
+3. $\forall x\,\exists g\,A(x,g)\iff\exists h\,\forall x\,A(x,(h)_{x})$。
+4. したがって、$\Sigma^{1}_{n}$ は $\wedge,\vee$, 数についての $\exists x,\forall x$, 関数についての $\exists g$ で閉じている（$\Pi^{1}_{n}$ は双対的に $\forall g$ で閉じる）。とくに、$\Sigma^{1}_{1}$ の関係は $\exists g\,\forall y\,R(\vec{x},\vec{f},g,y)$（$R$ は計算可能）の形に、$\Pi^{1}_{1}$ の関係は $\forall g\,\exists y\,R(\vec{x},\vec{f},g,y)$ の形に書ける。
+:::
+
+::: proof
+1, 2 は、関数の対の符号化と定数関数による。3 の「$\Leftarrow$」は明らか。「$\Rightarrow$」は、各 $x$ について $A(x,g)$ となる $g$ を一つずつ選んで $(h)_{x}\defeq g_{x}$ とする（可算選択公理を使う）。4：算術的な行列 $R$ を冠頭形 $\mathsf{Q}_{1}y_{1}\cdots R_{0}$ に直し、数の量化子を 2, 3 で関数の量化子に吸収する。例として $\Pi^{1}_{1}$ の場合、$\forall g\,R(g)$（$R$ 算術的）の $R$ を冠頭形にして、$\exists y$ を $\forall$ 型の関数量化子の内側に吸収するには 3 の双対形 $\exists x\,\forall g\,B\iff\forall h\,\exists x\,B(x,(h)_{x})$ を、$\forall y$ は 2 の双対形を使い、最後に 1 で関数の量化子をまとめると $\forall g\,\exists y\,R'$（$R'$ 計算可能）が得られる。（詳細は量化子の個数についての帰納法。）
+:::
+
+::: theorem 解析的枚挙定理と階層定理 {#comp:analytical-enumeration keywords="enumeration theorem and hierarchy theorem for the analytical hierarchy" index="解析的階層定理|かいせきてきかいそうていり"}
+1. 各 $n\ge1$ と $k,m$ について、$\Pi^{1}_{n}$ の関係 $U(e,\vec{x},\vec{f})$ で、任意の $\Pi^{1}_{n}$ 関係 $A(\vec{x},\vec{f})$ に対しある $e$ で $A(\vec{x},\vec{f})\iff U(e,\vec{x},\vec{f})$ となるものがある。$\Sigma^{1}_{n}$ も同様。
+2. 各 $n\ge1$ について、$\Pi^{1}_{n}$ だが $\Sigma^{1}_{n}$ でない $\N$ の部分集合がある。
+:::
+
+::: proof
+**1.** $n=1$ の場合を示す（一般の $n$ も同様）。\ref{comp:quantifier-absorption} の 4 から、$\Pi^{1}_{1}$ 関係は $\forall g\,\exists y\,R(\vec{x},\vec{f},g,y)$（$R$ 計算可能）の形で、$\exists y\,R$ は神託 $\langle\vec{f},g\rangle$ のもとで認識可能な関係である。神託機械を枚挙し、$e$ 番目の神託機械が入力 $\vec{x}$ を神託 $\langle\vec{f},g\rangle$ のもとで受理することを $W(e,\vec{x},\vec{f},g)$ と書くと、$W$ は「$\exists$（停止までの段数）計算可能」の形で、$U(e,\vec{x},\vec{f})\defeq\forall g\,W(e,\vec{x},\vec{f},g)$ が求めるもの。
+
+**2.** \ref{comp:hierarchy-theorem} と同じ対角線論法：$D\defeq\{x:U(x,x)\}$（$U$ は 1 の $\Pi^{1}_{n}$ 普遍関係、$k=1,m=0$）は $\Pi^{1}_{n}$。$D$ が $\Sigma^{1}_{n}$ なら補集合 $\{x:\neg U(x,x)\}$ が $\Pi^{1}_{n}$ で、ある $e$ で $\neg U(x,x)\iff U(e,x)$。$x=e$ で矛盾。
+:::
+
+## 木と Π¹₁ 標準形 {#comp:sec-ah-trees}
+
+::: definition 木と整礎性 {#comp:tree-well-founded keywords="trees on natural numbers, well-founded trees, computable trees, T(e)" index="整礎木|せいそぎ, 計算可能な木|けいさんかのうなき"}
+1. $T\subseteq\N^{<\N}$ が**木**であるとは、$t\in T$, $s\subseteq t$ なら $s\in T$ となることをいう（空集合も木とする）。$f\in\N^{\N}$ がすべての $n$ で $\bar{f}(n)\in T$ を満たすとき、$f$ を $T$ の**枝**（無限の道）という。枝をもたない木を**整礎**という。
+2. $e\in\N$ について、$\varphi_{e}$ が全域的で値が $\{0,1\}$ のとき $T(e)\defeq\{s:\varphi_{e}(s)=1\}$ とおく。$\mathrm{WT}\defeq\{e:\varphi_{e}\text{ は全域的で }\{0,1\}\text{ 値、}T(e)\text{ は整礎な木}\}$。
+:::
+
+::: theorem Π¹₁ 標準形 {#comp:pi11-normal-form keywords="Pi^1_1 normal form via well-founded trees" index="Π¹₁ 標準形|ぱいわんわんひょうじゅんけい"}
+$A(\vec{x},f)$ を $\Pi^{1}_{1}$ 関係とする。決定可能な関係 $S(\vec{x},s,t)$ で次を満たすものがある。
+1. $A(\vec{x},f)\iff\forall g\,\exists n\,S(\vec{x},\bar{f}(n),\bar{g}(n))$。
+2. （単調性）$S(\vec{x},s,t)$ かつ $s\subseteq s'$, $t\subseteq t'$, $\lvert s'\rvert=\lvert t'\rvert$ なら $S(\vec{x},s',t')$。
+
+したがって、$T_{\vec{x},f}\defeq\{t:\neg S(\vec{x},\bar{f}(\lvert t\rvert),t)\}$ は（$f$ について計算可能な）木で、$A(\vec{x},f)\iff T_{\vec{x},f}$ は整礎。
+:::
+
+::: proof
+\ref{comp:quantifier-absorption} の 4 から $A(\vec{x},f)\iff\forall g\,R(\vec{x},f,g)$ で、$R(\vec{x},f,g)\iff\exists y\,R_{0}(\vec{x},f,g,y)$（$R_{0}$ 計算可能）、すなわち $R$ は神託 $\langle f,g\rangle$ のもとで認識可能。使用の原理（\ref{comp:use-principle}）の証明を認識可能な関係に適用すると（「受理で停止」だけを見る）、決定可能で単調な $S_{0}(\vec{x},u)$ で $R(\vec{x},f,g)\iff\exists n\,S_{0}(\vec{x},\overline{\langle f,g\rangle}(n))$ となるものがある。$S(\vec{x},s,t)\defeq$「$\lvert s\rvert=\lvert t\rvert$ で、$S_{0}(\vec{x},\langle s(0),t(0)\rangle,\dots,\langle s(\lvert s\rvert-1),t(\lvert s\rvert-1)\rangle)$」とおけば 1, 2 が成り立つ。
+
+後半：$t\in T_{\vec{x},f}$, $t'\subseteq t$ なら、単調性の対偶から $\neg S(\vec{x},\bar{f}(\lvert t'\rvert),t')$ なので $t'\in T_{\vec{x},f}$。$g$ が $T_{\vec{x},f}$ の枝であることは、すべての $n$ で $\neg S(\vec{x},\bar{f}(n),\bar{g}(n))$ であることなので、1 から $A(\vec{x},f)\iff$ 枝がない。
+:::
+
+::: intuition
+$\Pi^{1}_{1}$ の主張「すべての $g$ について、どこかで $S$ が成り立つ」は、$g$ を一項ずつ決めていく「探索の木」を考えると、「$S$ がまだ成り立たない部分列」の木に無限の枝がない、という主張になる。無限の枝 $g$ があることは $\Sigma^{1}_{1}$（$\exists g$）で、それがないことが $\Pi^{1}_{1}$ である。
+
+```svg Π¹₁ 標準形：t の各段で S がまだ成り立たない列だけを残した木。× の節点で S が成り立ち、その下は切られる。すべての枝が有限で止まる（整礎）ことが A(x, f) の意味
+<svg viewBox="0 0 560 230" xmlns="http://www.w3.org/2000/svg" font-size="14">
+  <g stroke="currentColor" stroke-width="1.5">
+    <line x1="280" y1="25" x2="150" y2="80"/>
+    <line x1="280" y1="25" x2="280" y2="80"/>
+    <line x1="280" y1="25" x2="410" y2="80"/>
+    <line x1="150" y1="80" x2="100" y2="140"/>
+    <line x1="150" y1="80" x2="200" y2="140"/>
+    <line x1="410" y1="80" x2="370" y2="140"/>
+    <line x1="410" y1="80" x2="450" y2="140"/>
+    <line x1="200" y1="140" x2="200" y2="195"/>
+    <line x1="450" y1="140" x2="450" y2="195"/>
+  </g>
+  <g fill="currentColor">
+    <circle cx="280" cy="25" r="5"/><circle cx="150" cy="80" r="5"/><circle cx="410" cy="80" r="5"/>
+    <circle cx="200" cy="140" r="5"/><circle cx="450" cy="140" r="5"/>
+  </g>
+  <g style="fill: var(--mn-accent)" font-size="20" text-anchor="middle">
+    <text x="280" y="88">×</text><text x="100" y="148">×</text><text x="370" y="148">×</text>
+    <text x="200" y="203">×</text><text x="450" y="203">×</text>
+  </g>
+  <text x="300" y="22">⟨⟩</text>
+  <text x="30" y="226" font-size="13" style="fill: var(--mn-fg-soft)">× ：S が成り立ち、そこで枝が終わる。どの g も有限の深さで × に達する</text>
+</svg>
+```
+:::
+
+::: theorem WT は Π¹₁ 完全 {#comp:wt-complete keywords="WT is Pi^1_1-complete and not Sigma^1_1" index="Π¹₁ 完全|ぱいわんわんかんぜん"}
+1. $\mathrm{WT}$ は $\Pi^{1}_{1}$ である。
+2. 任意の $\Pi^{1}_{1}$ 集合 $A\subseteq\N$ に対し、計算可能な全域関数 $w$ で、$x\in A\iff w(x)\in\mathrm{WT}$ となるものがある（$A\le_{\mathrm{m}}\mathrm{WT}$）。
+3. $\mathrm{WT}$ は $\Sigma^{1}_{1}$ でない。
+:::
+
+::: proof
+**1.** 「$\varphi_{e}$ が全域的で $\{0,1\}$ 値」と「$T(e)$ が木」は算術的、「整礎」は $\forall g\,\exists n\,\varphi_{e}(\bar{g}(n))=0$ で、$\Pi^{1}_{1}$（\ref{comp:quantifier-absorption} の 4）。
+
+**2.** \ref{comp:pi11-normal-form}（関数引数なし）で $A$ の決定可能な $S(x,t)$ をとる。$\psi(x,t)\defeq$「$\neg S(x,t)$ なら $1$、そうでなければ $0$」は計算可能な全域関数で、s-m-n 定理（\ref{comp:smn}）から計算可能な $w$ で $\varphi_{w(x)}(t)=\psi(x,t)$。$T(w(x))=T_{x}$ は木で、$x\in A\iff T_{x}$ 整礎 $\iff w(x)\in\mathrm{WT}$。
+
+**3.** \ref{comp:analytical-enumeration} の 2 から、$\Pi^{1}_{1}$ だが $\Sigma^{1}_{1}$ でない集合 $A$ がある。$\mathrm{WT}$ が $\Sigma^{1}_{1}$ なら、2 の $w$ について $A=\{x:w(x)\in\mathrm{WT}\}$ も $\Sigma^{1}_{1}$（$\Sigma^{1}_{1}$ は計算可能な関数の代入で閉じている）となり矛盾する。
+:::
+
+::: remark
+1. **相対化.** 定義の「計算可能」を「集合 $P$ について計算可能」に替えると、$P$ に相対化された解析的階層が得られる。すべての $P\subseteq\N$ にわたる相対化の和を考えたものは記述集合論の**射影的階層** $\boldsymbol{\Sigma}^{1}_{n},\boldsymbol{\Pi}^{1}_{n}$ で、$\boldsymbol{\Sigma}^{1}_{1}$ 集合は古典的に**解析集合**（スースリン）と呼ばれてきた（新井の本は、解析的階層との混同を避けるためにこの呼び名を使わないと述べている）。
+2. **二階算術との関係.** ω モデル $\mathcal{P}(\N)$ で $\Sigma^{1}_{n}$ 論理式（\ref{pt:l2-hierarchy}）で定義される集合は、ちょうど本ページの $\Sigma^{1}_{n}$ 集合である（集合と特性関数を同一視する）。
+:::
+
+::: hypcheck
+- **使用の原理**：\ref{comp:pi11-normal-form} で、関数についての計算を有限の始切片についての決定可能な条件に直すのに使った。
+- **可算選択公理**：\ref{comp:quantifier-absorption} の 3 で、各 $x$ の証拠 $g$ をまとめて一つの関数にするのに使った（メタレベルの数学で）。
+- **単調性**：\ref{comp:pi11-normal-form} の後半で、$T_{\vec{x},f}$ が始切片で閉じる（木になる）ことに使った。
+- **s-m-n 定理**：\ref{comp:wt-complete} の 2 で、$x$ から木の指数を計算可能に作るのに使った。
+- **解析的階層定理**：\ref{comp:wt-complete} の 3 で、$\Sigma^{1}_{1}$ でない $\Pi^{1}_{1}$ 集合の存在に使った。
+:::
+
+## 問題 {#comp:sec-ah-problems}
+
+::: problem {#comp:prob-wo-rec}
+$\mathrm{WO}_{\mathrm{rec}}\defeq\{e:\varphi_{e}\text{ は全域的な }\{0,1\}\text{ 値関数で、}\{(a,b):\varphi_{e}(\langle a,b\rangle)=1\}\text{ は }\N\text{ の部分集合上の整列順序}\}$ が $\Pi^{1}_{1}$ であることを示せ。
+:::
+
+::: solution
+「全域的で $\{0,1\}$ 値」と「線形順序（反射しない・推移的・比較可能）」は算術的。「整礎」は「無限下降列がない」：$\forall g\,\exists n\,\neg(g(n+1)<_{e}g(n))$。これは $\Pi^{1}_{1}$（\ref{comp:quantifier-absorption} の 4）。整列順序は「整礎な線形順序」と同値である（無限下降列があれば最小元をもたない部分集合、逆に最小元をもたない空でない部分集合から従属選択で無限下降列が作れる）。
+:::
+
+::: problem {#comp:prob-sigma11-ill-founded}
+「計算可能な木 $T(e)$ が無限の枝をもつ」$\iff$「ある $g$ について、すべての $n$ で $\varphi_{e}(\bar{g}(n))=1$」は $\Sigma^{1}_{1}$ である。この集合の補集合と $\mathrm{WT}$ の関係を述べ、$\{e:\varphi_{e}\text{ は全域的で }T(e)\text{ は枝をもつ木}\}$ が $\Sigma^{1}_{1}$ だが $\Pi^{1}_{1}$ でないことを示せ。
+:::
+
+::: solution
+$\mathrm{IF}\defeq\{e:\varphi_{e}\text{ は全域的で }\{0,1\}\text{ 値、}T(e)\text{ は木で枝をもつ}\}$ は「算術的 $\wedge\,\exists g\,\forall n\,(\cdots)$」なので $\Sigma^{1}_{1}$。$\mathrm{IF}$ が $\Pi^{1}_{1}$ なら、$\mathrm{WT}=\mathrm{TR}\setminus\mathrm{IF}$（$\mathrm{TR}$ は「全域的で $\{0,1\}$ 値で $T(e)$ が木」という算術的な集合）は $\Sigma^{1}_{1}$ となり、\ref{comp:wt-complete} の 3 に反する。
+:::
+
+::: supplement
+**前提の検討.**
+- 本ページでは $\Pi^{1}_{1}$ 標準形を、計算可能な木の整礎性で述べた。これは「$\forall g\,\exists n$」という量化子の型が、木の言葉では「すべての枝が有限で終わる」ことにちょうど対応するからである。$\Sigma^{1}_{1}$ は「ある枝が無限に続く」に対応する。
+- 可算選択公理は、メタレベル（本当の数学）で関係のクラスの閉包性を示すのに使っただけで、対象としての計算には現れない。
+
+**関連する結果.**
+- *ショーンフィールドの木表示.* $\Sigma^{1}_{2}$ 集合も、$\N\times\omega_{1}$ 上の木の非整礎性で表せる（新井の本の定理 6.5.6）。これが集合論で $\Sigma^{1}_{2}$ の主張が絶対的である理由（ショーンフィールドの絶対性定理）の基礎になる。
+- *整礎木の階数.* 整礎木には順序数の**深さ**（階数）が定まる。計算可能な整礎木の深さの上限は**チャーチ–クリーネの $\omega_{1}^{\mathrm{CK}}$** で、$\Sigma^{1}_{1}$ の整礎木の集合の深さはその手前で有界である（スペクターの有界性定理）。次ページ（\nameref{comp:page-boundedness}）で扱う。
+- *二階算術.* $\Pi^{1}_{1}\text{-}\mathsf{CA}_{0}$（\ref{pt:big-five}）は、$\mathrm{WT}$ のような $\Pi^{1}_{1}$ 完全な集合の存在を認める体系である。
+
+**高い視点から：量化子と探索木.** 算術的階層は「自然数についての問い合わせ」を何回繰り返すかで集合を測ったが、解析的階層の最初の段では、一回の関数量化子が「無限の探索木」全体を一度に見ることに当たる。$\Pi^{1}_{1}$ 標準形は、その問いを「この計算可能な木に無限の枝はあるか」という一つの幾何的な問いにまとめる。比喩で言えば、算術的な問いは「迷路のある分岐点まで行けるか」を有限回尋ねることで、$\Pi^{1}_{1}$ の問いは「迷路のどの道もいずれ行き止まるか」を尋ねることである。後者は道の本数が無限にあるので、どれだけ跳躍（停止問題の神託）を重ねても一般には答えられない。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

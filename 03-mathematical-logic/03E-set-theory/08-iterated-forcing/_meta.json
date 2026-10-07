@@ -1,0 +1,19 @@
+{
+  "id": "set-iterated-forcing",
+  "title": "反復強制法",
+  "en": "Iterated Forcing",
+  "abbr": "反復強制",
+  "description": "積強制、コーエンモデル、クレパ仮説の独立性、イーストン強制、反復強制と MA + ¬CH の無矛盾性。（Kunen 第 VIII 章に対応）",
+  "msc": "03E35, 03E40",
+  "prereq": [
+    {
+      "dir": "set-combinatorics",
+      "from": 1,
+      "to": 9,
+      "note": "マーティンの公理と木（クレパ仮説の独立性に使う）"
+    },
+    {
+      "dir": "set-forcing"
+    }
+  ]
+}

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>随伴と極限の保存 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/01-basics/09-adjoints-limits.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 随伴と極限の保存 {#cat:page-adjoints-limits keywords="preservation of limits, continuous functor, creation of limits, limits in functor categories are pointwise, hom functors preserve limits, right adjoints preserve limits, left adjoints preserve colimits, limit functor right adjoint to diagonal"}
+
+関手が極限をどう扱うかを調べる。関手が極限錐を極限錐に移すとき、極限を**保存する**という（\ref{cat:preserve-limits}）。本ページの主定理は「**右随伴は極限を保存し、左随伴は余極限を保存する**」（\ref{cat:adjoints-preserve-limits}）である。その準備として、hom 関手が極限を保存すること（\ref{cat:hom-preserves-limits}）、関手圏の極限が各点ごとに計算できること（\ref{cat:pointwise-limits}）、群の忘却関手が極限を**創出する**こと（\ref{cat:grp-creates-limits}）を示す。また、極限を対角関手の右随伴として捉え直す（\ref{cat:lim-adjoint-diagonal}）。
+
+> 資料：Mac Lane, *Categories for the Working Mathematician* 第 V 章 §1, §3–§5。
+
+## 記法と定義の確認 {#cat:sec-al-notation}
+
+::: notation
+- 錐・極限・余極限・積・等化子、極限の一意性と「射は成分で決まる」こと、$\mathbf{Set}$ の完備性は \ref{cat:page-limits} のとおり（\ref{cat:cone}, \ref{cat:limit}, \ref{cat:colimit}, \ref{cat:limit-basic}, \ref{cat:set-complete}）。
+- 随伴、転置 $\varphi$、普遍射からの左随伴の構成は \ref{cat:page-adjunctions} のとおり（\ref{cat:adjunction}, \ref{cat:adjunction-from-universal}）。
+- 関手圏 $\mathbf{X}^{\mathbf{P}}$、双関手とカリー化は \ref{cat:page-constructions} のとおり（\ref{cat:functor-category}, \ref{cat:prob-currying}）。
+- 添字の圏 $\mathbf{J}$ は小さく、圏はすべて局所小とする。錐 $\tau\colon\Delta c\Rightarrow F$ を $\tau\colon c\to F$ と略記することがある。
+:::
+
+## 極限の保存と創出 {#cat:sec-al-preserve}
+
+::: definition 極限の保存 {#cat:preserve-limits keywords="preserves limits, continuous functor, reflects limits" index="極限の保存|きょくげんのほぞん, 連続関手|れんぞくかんしゅ"}
+関手 $H\colon\mathbf{C}\to\mathbf{D}$ が図式 $F\colon\mathbf{J}\to\mathbf{C}$ の極限を**保存する**とは、$F$ の任意の極限錐 $\lambda\colon L\to F$ について、$H\lambda\colon HL\to HF$（成分 $H\lambda_{j}$）が $HF$ の極限錐になることをいう。すべての小さい図式の極限を保存する関手を**連続**という。余極限についても同様に定める。
+:::
+
+::: theorem hom 関手は極限を保存する {#cat:hom-preserves-limits keywords="covariant hom functors preserve limits; contravariant hom functors turn colimits into limits" index="hom 関手と極限|ほむかんしゅときょくげん"}
+1. 各 $c\in\mathbf{C}$ について、$\mathbf{C}(c,-)\colon\mathbf{C}\to\mathbf{Set}$ は（存在するすべての）極限を保存する。
+2. 各 $c$ について、$\mathbf{C}(-,c)\colon\mathbf{C}^{\mathrm{op}}\to\mathbf{Set}$ は $\mathbf{C}$ の余極限を $\mathbf{Set}$ の極限に移す。とくに $\mathbf{C}\bigl(\coprod_{i}a_{i},c\bigr)\cong\prod_{i}\mathbf{C}(a_{i},c)$。
+:::
+
+::: proof
+**1.** $\lambda\colon L\to F$ を極限錐とする。$\lambda_{*}\defeq\mathbf{C}(c,\lambda)$ は錐 $\mathbf{C}(c,L)\to\mathbf{C}(c,F-)$ である（関手は錐を錐に移す）。$\mathbf{Set}$ の錐 $\tau\colon X\to\mathbf{C}(c,F-)$ をとる。各 $x\in X$ について $(\tau_{j}(x))_{j}$ は $\mathbf{C}$ の錐 $c\to F$（$Fu\circ\tau_{j}(x)=\tau_{k}(x)$ は $\tau$ が錐であることから）なので、極限の性質から $\lambda_{j}\circ k(x)=\tau_{j}(x)$ となる $k(x)\colon c\to L$ が一意にある。$k\colon X\to\mathbf{C}(c,L)$ は $\lambda_{*j}\circ k=\tau_{j}$ を満たし、$k(x)$ の一意性から $k$ も一意。
+
+**2.** $\mathbf{C}(-,c)=\mathbf{C}^{\mathrm{op}}(c,-)$ で、$\mathbf{C}$ の余極限は $\mathbf{C}^{\mathrm{op}}$ の極限なので、1 を $\mathbf{C}^{\mathrm{op}}$ に適用する。
+:::
+
+::: definition 極限の創出 {#cat:create-limits keywords="creation of limits" index="極限の創出|きょくげんのそうしゅつ"}
+関手 $V\colon\mathbf{A}\to\mathbf{X}$ が図式 $F\colon\mathbf{J}\to\mathbf{A}$ の極限を**創出する**とは、$VF$ の任意の極限錐 $\sigma\colon x\to VF$ に対し、$\mathbf{A}$ の錐 $\tau\colon a\to F$ で $V\tau=\sigma$（$Va=x$, $V\tau_{j}=\sigma_{j}$）となるものがちょうど一つあり、しかもその $\tau$ が極限錐であることをいう。
+:::
+
+::: theorem 群の忘却関手は極限を創出する {#cat:grp-creates-limits keywords="the forgetful functor from groups to sets creates limits; Grp is complete" index="群の圏の完備性|ぐんのけんのかんびせい"}
+忘却関手 $U\colon\mathbf{Grp}\to\mathbf{Set}$ は小さい図式の極限を創出する。とくに $\mathbf{Grp}$ は完備で、$U$ は連続である。
+:::
+
+::: proof
+**Step 1（群構造の一意な持ち上げ）.** $F\colon\mathbf{J}\to\mathbf{Grp}$ と、$UF$ の極限錐 $\sigma\colon X\to UF$ をとる。\ref{cat:set-complete} の 1 の構成により、$X$ は（同型を除いて）両立する族 $(x_{j})_{j}$ の集合 $L$ と射影とみなせるので、まず $X=L$ の場合を示す。$L$ に成分ごとの積 $(x_{j})(y_{j})\defeq(x_{j}y_{j})$、単位 $(1)$、逆元 $(x_{j}^{-1})$ を入れる。各 $Fu$ は準同型なので、$Fu(x_{j}y_{j})=Fu(x_{j})Fu(y_{j})=x_{k}y_{k}$ となり、両立する族の積は両立する。逆元・単位も同様。群の公理は成分ごとに成り立つ。射影 $\sigma_{j}$ は準同型。逆に、$\sigma_{j}$ がすべて準同型になる群構造は、$\sigma_{j}((x)(y))=x_{j}y_{j}$ から積の各成分が決まり、族は成分で決まるので、この構造に限る。一般の極限錐 $X$ は $L$ と全単射 $\theta$ で結ばれる（$\sigma=\sigma^{L}\circ\theta$）ので、群構造を $\theta$ で移せば同じ結論が得られる。
+
+**Step 2（極限錐であること）.** $\tau\colon G\to F$ を群の錐とする。$U\tau$ は集合の錐なので、写像 $t\colon UG\to L$ で $\sigma_{j}\circ t=\tau_{j}$ となるものが一意にある：$t(g)=(\tau_{j}(g))_{j}$。$\tau_{j}$ が準同型なので $t$ も準同型（成分ごと）。一意性は $U$ が忠実であることから。
+
+**Step 3.** $\mathbf{Set}$ は完備（\ref{cat:set-complete}）なので、すべての小さい $F$ について $UF$ の極限があり、Step 1, 2 から $F$ の極限がある。$U$ がそれを保存することは、構成から（$U$ で写した錐が $\mathbf{Set}$ の極限錐）。
+
+::: hypcheck
+- **群の公理が等式だけからなること**：Step 1 で、群構造が成分ごとに定まり、両立性が保たれることに使った。体の圏では逆元の公理が「$x\neq0$ なら」という条件付きで、成分ごとの構造が体にならない（体の積は存在しない）。
+- **余極限は創出しない**：$U$ は余積を保たない（自由積）。創出は極限側だけの性質である。
+:::
+:::
+
+## 関手圏の極限 {#cat:sec-al-pointwise}
+
+::: theorem 関手圏の極限は各点ごと {#cat:pointwise-limits keywords="limits in functor categories are computed pointwise" index="各点ごとの極限|かくてんごとのきょくげん"}
+$S\colon\mathbf{J}\to\mathbf{X}^{\mathbf{P}}$ とし、各 $p\in\mathbf{P}$ について、$E_{p}S\colon\mathbf{J}\to\mathbf{X}$（$j\mapsto(Sj)(p)$）が極限 $L_{p}$ と極限錐 $\tau^{p}\colon L_{p}\to E_{p}S$ をもつとする。このとき、対象関数 $p\mapsto L_{p}$ をもつ関手 $L\colon\mathbf{P}\to\mathbf{X}$ で、$\tau_{j}\colon L\Rightarrow Sj$（成分 $(\tau_{j})_{p}=\tau^{p}_{j}$）が自然変換になるものがちょうど一つあり、$\tau$ は $S$ の極限錐である。とくに、$\mathbf{X}$ が完備なら $\mathbf{X}^{\mathbf{P}}$ も完備である。
+:::
+
+::: proof
+**Step 1（$L$ の射）.** $h\colon p\to q$ について、$(Sj)(h)\circ\tau^{p}_{j}\colon L_{p}\to(Sj)(q)$ は $j$ について錐をなす：$u\colon j\to k$ について、$Su\colon Sj\Rightarrow Sk$ の自然性と $\tau^{p}$ が錐であることから
+$$
+\begin{aligned}
+(Su)_{q}\circ(Sj)(h)\circ\tau^{p}_{j}&=(Sk)(h)\circ(Su)_{p}\circ\tau^{p}_{j}\\
+&=(Sk)(h)\circ\tau^{p}_{k}.
+\end{aligned}
+$$
+よって、$\tau^{q}_{j}\circ Lh=(Sj)(h)\circ\tau^{p}_{j}$（すべての $j$）となる $Lh\colon L_{p}\to L_{q}$ が一意にある。
+
+**Step 2（関手性と自然性）.** $L(1_{p})$ と $1_{L_{p}}$ はどちらも Step 1 の条件を満たすので一致する。$L(h'\circ h)$ と $Lh'\circ Lh$ もどちらも同じ錐を経由させる射なので一致する（極限の射は成分で決まる、\ref{cat:limit-basic} の 2）。Step 1 の式は $\tau_{j}$ の自然性そのもの。一意性：自然性を要求すれば $Lh$ は Step 1 の式を満たさなければならない。
+
+**Step 3（極限錐）.** $\mathbf{X}^{\mathbf{P}}$ の錐 $\sigma\colon M\to S$ をとる。各 $p$ で $\sigma^{p}\defeq((\sigma_{j})_{p})_{j}$ は $M(p)\to E_{p}S$ の錐なので、$\tau^{p}_{j}\circ\theta_{p}=(\sigma_{j})_{p}$ となる $\theta_{p}\colon M(p)\to L_{p}$ が一意にある。$\theta$ の自然性：$h\colon p\to q$ について、$\theta_{q}\circ Mh$ と $Lh\circ\theta_{p}$ に $\tau^{q}_{j}$ を合成すると、どちらも $(Sj)(h)\circ(\sigma_{j})_{p}$（$\sigma_{j}$ の自然性と Step 1）になるので一致する。$\tau_{j}\cdot\theta=\sigma_{j}$ は構成から、一意性は各成分の一意性から。
+:::
+
+::: remark
+双対的に、関手圏の余極限も各点ごとに計算できる。とくに前層の圏 $[\mathbf{C}^{\mathrm{op}},\mathbf{Set}]$ は完備かつ余完備である（\ref{cat:set-complete} による）。
+:::
+
+## 極限関手と対角関手 {#cat:sec-al-lim-adjoint}
+
+::: theorem 極限は対角関手の右随伴 {#cat:lim-adjoint-diagonal keywords="lim is right adjoint to the diagonal functor; colim is left adjoint" index="極限関手|きょくげんかんしゅ"}
+$\mathbf{C}$ がすべての $F\colon\mathbf{J}\to\mathbf{C}$ の極限をもつとする。各 $F$ に極限 $\lim F$ と極限錐を一つずつ選ぶと、$F\mapsto\lim F$ は関手 $\lim\colon\mathbf{C}^{\mathbf{J}}\to\mathbf{C}$ に一意に延び、$\Delta\dashv\lim$ となる。双対的に、余極限をすべてもてば $\operatorname{colim}\dashv\Delta$。
+:::
+
+::: proof
+極限錐 $\lambda^{F}\colon\Delta(\lim F)\Rightarrow F$ は、定義（\ref{cat:limit}）から $\Delta$ から $F$ への普遍射である。\ref{cat:adjunction-from-universal} の双対（各対象 $F$ に $\Delta$ から $F$ への普遍射があれば、右随伴が一意に延びる）を適用する。選択は、各 $F$ に極限を一つずつ選ぶところで使う（具体的に構成できる場合は不要）。
+:::
+
+## 右随伴は極限を保存する {#cat:sec-al-adjoints}
+
+::: theorem 右随伴は極限を保存する {#cat:adjoints-preserve-limits keywords="right adjoints preserve limits, left adjoints preserve colimits (RAPL)" index="右随伴は極限を保存|みぎずいはんはきょくげんをほぞん, 左随伴は余極限を保存|ひだりずいはんはよきょくげんをほぞん"}
+$G\colon\mathbf{A}\to\mathbf{X}$ が左随伴 $F$ をもつなら、$G$ は $\mathbf{A}$ に存在するすべての極限を保存する。双対的に、右随伴をもつ関手はすべての余極限を保存する。
+:::
+
+::: proof
+$\tau\colon a\to T$ を $T\colon\mathbf{J}\to\mathbf{A}$ の極限錐とする。$G\tau\colon Ga\to GT$ は錐である。
+
+**Step 1（錐の転置）.** $\mathbf{X}$ の錐 $\sigma\colon x\to GT$ をとる。転置 $\sigma_{j}^{\flat}\defeq\varphi^{-1}(\sigma_{j})\colon Fx\to Tj$ は錐である：随伴の自然性（\ref{cat:adjunction} の注意）から、$u\colon j\to k$ について $\varphi^{-1}(GTu\circ\sigma_{j})=Tu\circ\varphi^{-1}(\sigma_{j})$ なので、$Tu\circ\sigma_{j}^{\flat}=\varphi^{-1}(\sigma_{k})=\sigma_{k}^{\flat}$。
+
+**Step 2（存在）.** $\tau$ は極限錐なので、$\tau_{j}\circ h=\sigma_{j}^{\flat}$ となる $h\colon Fx\to a$ が一意にある。$h^{\sharp}\defeq\varphi(h)\colon x\to Ga$ とおくと、自然性から
+$$
+G\tau_{j}\circ h^{\sharp}=\varphi(\tau_{j}\circ h)=\varphi(\sigma_{j}^{\flat})=\sigma_{j}.
+$$
+
+**Step 3（一意性）.** $G\tau_{j}\circ k=\sigma_{j}$ となる $k\colon x\to Ga$ について、$\varphi^{-1}$ をとると $\tau_{j}\circ\varphi^{-1}(k)=\sigma_{j}^{\flat}$。$h$ の一意性から $\varphi^{-1}(k)=h$、すなわち $k=h^{\sharp}$。
+
+::: hypcheck
+- **随伴の自然性**：Step 1 で錐の転置が錐になること、Step 2, 3 で転置と合成が交換することに使った。
+- **極限が $\mathbf{A}$ に存在すること**：定理は保存を述べるだけで、極限の存在は仮定である。
+- **逆は成り立たない**：極限を保存しても左随伴をもつとは限らない。左随伴の存在には、さらに「解集合条件」が要る（\ref{cat:freyd-aft}）。
+:::
+:::
+
+::: example
+1. **忘却関手と自由関手.** $U\colon\mathbf{Grp}\to\mathbf{Set}$ は左随伴（自由群）をもつので極限を保存する（\ref{cat:grp-creates-limits} と一致）。自由群関手 $F\colon\mathbf{Set}\to\mathbf{Grp}$ は左随伴なので余極限を保存する：$F(X\sqcup Y)\cong F(X)*F(Y)$（自由積）。しかし $F$ は極限を保存しない：$F(\varnothing)$ は自明群だが、$F$ が終対象 $\{0\}$ を保存するなら $F(\{0\})\cong\mathbb{Z}$ が終対象（自明群）でなければならず、偽。
+2. **直積は余極限を保存する.** $\mathbf{Set}$ で $-\times B$ は右随伴 $\mathbf{Set}(B,-)$ をもつ（\ref{cat:adjunction} の例 3）ので、余極限を保存する：$(\coprod_{i}X_{i})\times B\cong\coprod_{i}(X_{i}\times B)$（分配律）。
+3. **右随伴をもたない関手.** \ref{cat:prob-no-right-adjoint} は、余積を保存しないことから右随伴がないことを示した。同様に、$U\colon\mathbf{Grp}\to\mathbf{Set}$ は余積を保存しない（$U(\mathbb{Z}*\mathbb{Z})$ は可算無限集合だが、$U\mathbb{Z}\sqcup U\mathbb{Z}$ との間の標準的な写像 $U\mathbb{Z}\sqcup U\mathbb{Z}\to U(\mathbb{Z}*\mathbb{Z})$ は全射でない：$ab$ の形の元は像に入らない）ので、右随伴をもたない。
+:::
+
+::: supplement
+**一般化.** 「随伴は関手圏に持ち上がる」：$F\dashv G$ なら、各 $\mathbf{J}$ について $F^{\mathbf{J}}\dashv G^{\mathbf{J}}$（合成で作用させる）。これと $\Delta\dashv\lim$ を合わせると、$G\circ\lim\cong\lim\circ G^{\mathbf{J}}$（随伴の合成の一意性、\ref{cat:adjoint-unique}, \ref{cat:adjunction-composition}）として \ref{cat:adjoints-preserve-limits} の別証明が得られる：左随伴の合成 $\Delta\circ F$ と $F^{\mathbf{J}}\circ\Delta$ は等しいので、その右随伴も同型になる。
+
+**類似の定理.** 極限と余極限は一般には交換しないが、有限の極限と**フィルター余極限**は $\mathbf{Set}$ の中で交換する（Mac Lane 第 IX 章 §2）。代数系の圏の忘却関手がフィルター余極限を保存するのは、このためである。
+
+**高い視点から：RAPL.** 「右随伴は極限を保存する」（Right Adjoints Preserve Limits）は、圏論で最も使われる定理の一つである。具体的な計算では、ある関手が随伴の一方であることが分かれば、その関手と極限・余極限の交換が一斉に分かる。比喩で言えば、随伴は二つの世界の間の「通訳」で、右随伴の通訳は「共通部分をとる」操作（極限）を、左随伴の通訳は「寄せ集める」操作（余極限）を、意味を変えずに訳せる。どちら向きの通訳かによって、正確に訳せる操作の種類が決まっている。
+:::
+
+## 問題 {#cat:sec-al-problems}
+
+::: problem {#cat:prob-continuous-from-products-equalizers}
+$\mathbf{C}$ が完備で、$H\colon\mathbf{C}\to\mathbf{D}$ が小さい積と等化子を保存するなら、$H$ は連続であることを示せ。
+:::
+
+::: solution
+小さい $F\colon\mathbf{J}\to\mathbf{C}$ の極限を、\ref{cat:limits-from-products-equalizers} の方法で積 $\prod_{j}Fj$, $\prod_{u}F(\operatorname{cod}u)$ と等化子 $m\colon L\to\prod_{j}Fj$ から作る（どの極限錐も同型を除いてこれと一致する）。$H$ は積と射影を保存するので、$H(\prod_{j}Fj)$ は $\prod_{j}HFj$ で、$Hf,Hg$ は $HF$ について同じ定理の射 $f,g$ になる（成分が $H$ で写したものになるため）。$H$ は等化子を保存するので、$Hm$ は $Hf,Hg$ の等化子。同定理を $\mathbf{D}$ と $HF$ に適用すると、$H\lambda_{j}=Hp_{j}\circ Hm$ は $HF$ の極限錐である。
+:::
+
+::: problem {#cat:prob-free-abelian-not-continuous}
+集合 $X$ に $X$ が生成する自由可換群 $\mathbb{Z}^{(X)}$ を対応させる関手 $\mathbf{Set}\to\mathbf{Ab}$ は連続でないことを示せ。
+:::
+
+::: solution
+終対象 $\{0\}$（空の積）の行き先は $\mathbb{Z}$ だが、$\mathbf{Ab}$ の終対象は零群なので、空の積を保存しない。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>絶対性 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/04-consistency-proofs/02-absoluteness.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 絶対性 {#set:page-absoluteness keywords="absoluteness, Delta_0 formula, bounded quantifier, absolute function, transitive model, Axiom of Infinity in R(omega), Con(ZF minus) implies Con(ZFC - Inf + not Inf)"}
+
+論理式 $\varphi$ がクラス $\mathbf{M}$ について**絶対的**とは、$\mathbf{M}$ の元について $\varphi$ が $\mathbf{M}$ の中で成り立つことと本当に成り立つことが一致することをいう。推移的なモデルについて絶対的な論理式・関数をたくさん知っていれば、モデルの中で公理や命題が成り立つかを、定義を展開せずに確かめられる。本ページでは、有界量化子だけをもつ論理式（**Δ₀ 論理式**）が推移的なクラスについて絶対的であることを示し、それをもとに集合論の基本的な関係・演算（対、和、共通部分、順序対、直積、関係、関数など）が $\ZF^{-}-\mathrm{P}-\mathrm{Inf}$ の推移的なモデルについて絶対的であることを示す。応用として、$R(\omega)$ で無限公理の否定と選択公理が成り立つことを示し、$\mathrm{Con}(\ZF^{-})\to\mathrm{Con}(\ZFC-\mathrm{Inf}+\lnot\mathrm{Inf})$ を得る。（Kunen 第 IV 章 §3 に対応する。）
+
+## 記法と定義の確認 {#set:sec-absoluteness-notation}
+
+::: notation
+- 相対化 $\varphi^{\mathbf{M}}$、クラスの中で真、モデル、定義された演算の相対化 $F^{\mathbf{M}}$、相対無矛盾性の基本補題（\ref{set:relative-consistency-lemma}）、\ref{set:wf-relativization} は \ref{set:page-relativization} のとおり。
+- 順序対 $\langle x,y\rangle=\{\{x\},\{x,y\}\}$（\ref{set:ordered-pair}）、$S(x)=x\cup\{x\}$、関係・関数・定義域・値域（\ref{set:relation}, \ref{set:function}）、全順序・整列順序（\ref{set:total-order}, \ref{set:well-order}）は \ref{set:page-classes-recursion} までの基礎事項のとおり。$\bigcap x$ は $x\neq0$ のとき \ref{set:intersection-difference} の意味で、本ページでは便宜上 $\bigcap0\defeq0$ とする。
+- $\mathbf{M}\subseteq\mathbf{N}$ はクラスの包含（$\forall x\,(\mathbf{M}(x)\to\mathbf{N}(x))$）。$\mathbf{V}$ は全体のクラス。
+:::
+
+## 絶対性の定義と基本的な閉包性 {#set:sec-absolute-def}
+
+::: definition 絶対的 {#set:absolute keywords="absolute formula" index="絶対的|ぜったいてき, 絶対性|ぜったいせい"}
+$\varphi$ を自由変数が $x_{1},\dots,x_{n}$ の中にある論理式とする。
+1. $\mathbf{M}\subseteq\mathbf{N}$ のとき、$\varphi$ が **$\mathbf{M},\mathbf{N}$ について絶対的**とは $\forall x_{1},\dots,x_{n}\in\mathbf{M}\,(\varphi^{\mathbf{M}}(\vec{x})\leftrightarrow\varphi^{\mathbf{N}}(\vec{x}))$ のことである。
+2. $\varphi$ が **$\mathbf{M}$ について絶対的**とは、$\mathbf{M},\mathbf{V}$ について絶対的、すなわち $\forall\vec{x}\in\mathbf{M}\,(\varphi^{\mathbf{M}}(\vec{x})\leftrightarrow\varphi(\vec{x}))$ のことである。
+:::
+
+$\varphi$ が $\mathbf{M}$ と $\mathbf{N}$ のそれぞれについて絶対的で $\mathbf{M}\subseteq\mathbf{N}$ なら、$\mathbf{M},\mathbf{N}$ についても絶対的である。
+
+::: lemma 命題結合子 {#set:absolute-connectives}
+$\mathbf{M}\subseteq\mathbf{N}$ で $\varphi,\psi$ が $\mathbf{M},\mathbf{N}$ について絶対的なら、$\lnot\varphi$ と $\varphi\land\psi$ もそうである。とくに量化子を含まない論理式は任意の $\mathbf{M}$ について絶対的である。
+:::
+
+::: proof
+相対化の定義 $(\lnot\varphi)^{\mathbf{M}}=\lnot\varphi^{\mathbf{M}}$, $(\varphi\land\psi)^{\mathbf{M}}=\varphi^{\mathbf{M}}\land\psi^{\mathbf{M}}$ による。原子論理式 $x=y$, $x\in y$ は相対化で変わらない。
+:::
+
+量化子を含むと絶対性は一般に失われる。たとえば $\mathbf{M}=\{0,a\}$, $a=\{\{0\}\}$ なら、$(a\subseteq0)^{\mathbf{M}}$ は真（$a$ の元 $\{0\}$ は $\mathbf{M}$ にない）だが $a\not\subseteq0$。推移性がこれを防ぐ。
+
+::: lemma 有界量化子 {#set:absolute-bounded-quantifier}
+$\mathbf{M}\subseteq\mathbf{N}$ がともに推移的で、$\varphi$ が $\mathbf{M},\mathbf{N}$ について絶対的なら、$\exists x\in y\,\varphi$（すなわち $\exists x\,(x\in y\land\varphi)$。$x$ と $y$ は異なる変数）もそうである。
+:::
+
+::: proof
+$\varphi=\varphi(x,y,\vec{z})$ と書く。$y,\vec{z}\in\mathbf{M}$ について
+$$
+\begin{aligned}
+(\exists x\,(x\in y\land\varphi))^{\mathbf{M}}&\iff\exists x\,(x\in y\land\varphi^{\mathbf{M}})\iff\exists x\,(x\in y\land\varphi^{\mathbf{N}})\\
+&\iff(\exists x\,(x\in y\land\varphi))^{\mathbf{N}}.
+\end{aligned}
+$$
+第一の同値は、相対化 $\exists x\,(\mathbf{M}(x)\land x\in y\land\varphi^{\mathbf{M}})$ で、$\mathbf{M}$ が推移的なので $x\in y$ から $\mathbf{M}(x)$ が従うことによる。第二は $\varphi$ の絶対性（$x\in y\in\mathbf{M}$ なので $x\in\mathbf{M}$）。第三は $\mathbf{N}$ の推移性による。
+:::
+
+::: definition Δ₀ 論理式 {#set:delta0 keywords="Delta_0 formula, bounded formula" index="Δ₀ 論理式|でるたぜろろんりしき, 有界論理式|ゆうかいろんりしき"}
+**Δ₀ 論理式**全体を、原子論理式 $x\in y$, $x=y$ を含み、$\varphi,\psi$ を含めば $\lnot\varphi$, $\varphi\land\psi$、および（$x,y$ が異なる変数のとき）$\exists x\,(x\in y\land\varphi)$ を含む最小の集まりとする。
+:::
+
+::: corollary Δ₀ 論理式の絶対性 {#set:delta0-absolute}
+$\mathbf{M}$ が推移的なら、Δ₀ 論理式は $\mathbf{M}$ について絶対的である。$\mathbf{M}\subseteq\mathbf{N}$ がともに推移的なら $\mathbf{M},\mathbf{N}$ についても絶対的。
+:::
+
+::: proof
+構成に関する帰納法で、\ref{set:absolute-connectives} と \ref{set:absolute-bounded-quantifier}（$\mathbf{N}=\mathbf{V}$ も推移的）による。
+:::
+
+::: lemma 同値な論理式への置き換え {#set:absolute-equivalent}
+$\mathbf{M}\subseteq\mathbf{N}$ がともに文の集まり $S$ のモデルで、$S\vdash\forall\vec{x}\,(\varphi\leftrightarrow\psi)$ とする。このとき $\varphi$ が $\mathbf{M},\mathbf{N}$ について絶対的であることと、$\psi$ がそうであることは同値である。
+:::
+
+::: proof
+$S$ の有限個の元 $\sigma_{1},\dots,\sigma_{k}$ から $\forall\vec{x}\,(\varphi\leftrightarrow\psi)$ が証明できる（\ref{set:deduction-finite}）。$\mathbf{M}$ は各 $\sigma_{i}$ のモデルで空でないので、\ref{set:relative-consistency-lemma} の証明と同じ議論（完全性定理と \ref{set:relativization-substructure}）により $(\forall\vec{x}\,(\varphi\leftrightarrow\psi))^{\mathbf{M}}$、すなわち $\forall\vec{x}\in\mathbf{M}\,(\varphi^{\mathbf{M}}\leftrightarrow\psi^{\mathbf{M}})$。$\mathbf{N}$ についても同様。これから主張は明らか。
+:::
+
+とくに $S=\emptyset$ として、論理的に同値な論理式は同時に絶対的である。$\forall x\in y\,\chi$ は $\lnot\exists x\in y\,\lnot\chi$ と論理的に同値なので、有界な全称量化子も（推移的なクラスについて）絶対性を保つ。$x\subseteq y$（$\forall z\,(z\in x\to z\in y)$）は Δ₀ 論理式 $\lnot\exists z\in x\,\lnot(z\in y)$ と論理的に同値なので、推移的な $\mathbf{M}$ について絶対的である。
+
+::: definition 絶対的な関数 {#set:absolute-function}
+$\mathbf{M}\subseteq\mathbf{N}$ とし、$F(x_{1},\dots,x_{n})$ を、$\forall\vec{x}\,\exists!y\,\psi(\vec{x},y)$ のもとで「$\psi(\vec{x},y)$ となる $y$」と定めた演算とする。$\forall\vec{x}\,\exists!y\,\psi$ が $\mathbf{M}$ と $\mathbf{N}$ の中で真であるとき、$F$ が **$\mathbf{M},\mathbf{N}$ について絶対的**とは、論理式 $F(\vec{x})=y$、すなわち $\psi(\vec{x},y)$ が絶対的であることをいう。これは $\forall\vec{x}\in\mathbf{M}\,(F^{\mathbf{M}}(\vec{x})=F^{\mathbf{N}}(\vec{x}))$ と同値である。
+:::
+
+## 基本的な関係と演算の絶対性 {#set:sec-absolute-basic}
+
+::: theorem 基本的な関係と演算 {#set:absolute-basic-notions}
+次の関係と演算は、$\ZF^{-}-\mathrm{P}-\mathrm{Inf}$ のもとで Δ₀ 論理式と同値な論理式で定義できる。したがって $\ZF^{-}-\mathrm{P}-\mathrm{Inf}$ の推移的なモデル $\mathbf{M}$ について絶対的である。
+$$
+\begin{array}{llll}
+\text{(a) }x\in y & \text{(b) }x=y & \text{(c) }x\subseteq y & \text{(d) }\{x,y\}\\
+\text{(e) }\{x\} & \text{(f) }\langle x,y\rangle & \text{(g) }0 & \text{(h) }x\cup y\\
+\text{(i) }x\cap y & \text{(j) }x\setminus y & \text{(k) }S(x) & \text{(l) }x\text{ は推移的}\\
+\text{(m) }\bigcup x & \text{(n) }\bigcap x\ (\bigcap0=0) & &
+\end{array}
+$$
+:::
+
+::: proof
+各演算が $\ZF^{-}-\mathrm{P}-\mathrm{Inf}$ で定義されること（$\forall\vec{x}\,\exists!y\,\psi$ が証明できること）は基礎事項で示した。以下、$\ZF^{-}-\mathrm{P}-\mathrm{Inf}$ のもとで定義の論理式と同値な Δ₀ 論理式（の論理的同値物）を挙げる。$\mathbf{M}$ はこの体系のモデルなので、\ref{set:absolute-equivalent} と \ref{set:delta0-absolute} により絶対性が従う。
+- (a)(b)(c)：上で述べた。
+- (d) $z=\{x,y\}\iff x\in z\land y\in z\land\forall w\in z\,(w=x\lor w=y)$。(e) は $x=y$ の場合。
+- (f) $z=\langle x,y\rangle\iff\exists w\in z\,(w=\{x\})\land\exists w\in z\,(w=\{x,y\})\land\forall w\in z\,(w=\{x\}\lor w=\{x,y\})$ で、$w=\{x\}$, $w=\{x,y\}$ を (d)(e) の Δ₀ 論理式に置き換える。
+- (g) $z=0\iff\forall w\in z\,(w\neq w)$。
+- (h) $z=x\cup y\iff\forall w\in z\,(w\in x\lor w\in y)\land x\subseteq z\land y\subseteq z$。
+- (i) $z=x\cap y\iff\forall w\in x\,(w\in y\to w\in z)\land z\subseteq x\land z\subseteq y$。(j) も同様：$z=x\setminus y\iff\forall w\in x\,(w\notin y\to w\in z)\land z\subseteq x\land\forall w\in z\,(w\notin y)$。
+- (k) $z=S(x)\iff x\in z\land x\subseteq z\land\forall w\in z\,(w=x\lor w\in x)$。
+- (l) $x$ は推移的 $\iff\forall v\in x\,\forall z\in v\,(z\in x)$。
+- (m) $y=\bigcup x\iff\forall v\in x\,(v\subseteq y)\land\forall z\in y\,\exists v\in x\,(z\in v)$。
+- (n) $y=\bigcap x\iff\forall v\in x\,(y\subseteq v)\land\forall v\in x\,\forall z\in v\,(\forall w\in x\,(z\in w)\to z\in y)\land(x=0\to y=0)$。
+
+いずれも右辺の同値は外延性の公理と各演算の定義から示される。
+:::
+
+::: lemma 合成による絶対性 {#set:absolute-composition}
+$\mathbf{M}\subseteq\mathbf{N}$ とし、論理式 $\varphi(x_{1},\dots,x_{n})$、演算 $F(x_{1},\dots,x_{n})$、$G_{i}(y_{1},\dots,y_{m})$（$i=1,\dots,n$）がすべて $\mathbf{M},\mathbf{N}$ について絶対的とする。このとき論理式 $\varphi(G_{1}(\vec{y}),\dots,G_{n}(\vec{y}))$ と演算 $F(G_{1}(\vec{y}),\dots,G_{n}(\vec{y}))$ も $\mathbf{M},\mathbf{N}$ について絶対的である。
+:::
+
+::: proof
+$\vec{y}\in\mathbf{M}$ について $G_{i}^{\mathbf{M}}(\vec{y})=G_{i}^{\mathbf{N}}(\vec{y})\in\mathbf{M}$ なので、
+$$
+(\varphi(\vec{G}(\vec{y})))^{\mathbf{M}}\iff\varphi^{\mathbf{M}}(\vec{G}^{\mathbf{M}}(\vec{y}))\iff\varphi^{\mathbf{N}}(\vec{G}^{\mathbf{N}}(\vec{y}))\iff(\varphi(\vec{G}(\vec{y})))^{\mathbf{N}}.
+$$
+第一・第三の同値は、合成した式の展開 $\exists\vec{u}\,(\bigwedge_{i}u_{i}=G_{i}(\vec{y})\land\varphi(\vec{u}))$ を相対化したものと、$\forall\vec{y}\,\exists!u\,(u=G_{i}(\vec{y}))$ が $\mathbf{M}$, $\mathbf{N}$ の中で真であることによる。演算についても同様。
+:::
+
+以後、このように絶対的な論理式に絶対的な演算を代入し、有界量化子と命題結合子を施して得られる論理式が絶対的であることを「代入による」と言う。
+
+::: theorem 関係と関数の絶対性 {#set:absolute-relations-functions}
+次は $\ZF^{-}-\mathrm{P}-\mathrm{Inf}$ の推移的なモデルについて絶対的である：(a) $z$ は順序対、(b) $A\times B$、(c) $R$ は関係、(d) $\dom(R)$、(e) $\ran(R)$、(f) $R$ は関数、(g) $R(x)$（関数の値。$\langle x,y\rangle\in R$ となる $y$ がただ一つなければ $0$ とする）、(h) $R$ は単射。
+:::
+
+::: proof
+各々を、絶対的な演算の代入・有界量化・命題結合子で書き表す。
+- (a) $z$ は順序対 $\iff\exists x\in\bigcup z\,\exists y\in\bigcup z\,(z=\langle x,y\rangle)$。
+- (b) $C=A\times B\iff\forall x\in A\,\forall y\in B\,(\langle x,y\rangle\in C)\land\forall z\in C\,\exists x\in A\,\exists y\in B\,(z=\langle x,y\rangle)$。
+- (c) $R$ は関係 $\iff\forall z\in R\,(z\text{ は順序対})$。
+- (d) $A=\dom(R)\iff\forall x\in A\,\exists y\in\bigcup\bigcup R\,(\langle x,y\rangle\in R)\land\forall x\in\bigcup\bigcup R\,\forall y\in\bigcup\bigcup R\,(\langle x,y\rangle\in R\to x\in A)$。(e) も同様。（$\langle x,y\rangle\in R$ なら $x,y\in\bigcup\bigcup R$。）
+- (f) $R$ は関数 $\iff R$ は関係 $\land\forall x,y,y'\in\bigcup\bigcup R\,(\langle x,y\rangle\in R\land\langle x,y'\rangle\in R\to y=y')$。
+- (g) $y=R(x)\iff(\theta(x,R)\land\langle x,y\rangle\in R)\lor(\lnot\theta(x,R)\land y=0)$、ここで $\theta(x,R)\defeq\exists v\in\bigcup\bigcup R\,(\langle x,v\rangle\in R\land\forall w\in\bigcup\bigcup R\,(\langle x,w\rangle\in R\to v=w))$。
+- (h) $R$ は単射 $\iff R$ は関数 $\land\forall x,x'\in\dom(R)\,(R(x)=R(x')\to x=x')$。
+
+いずれも \ref{set:absolute-basic-notions} と \ref{set:absolute-composition} による。
+:::
+
+「$f$ は $A$ から $A$ への全射で不動点をもたない」のような同種の性質も同じ方法で絶対的と分かる。以後これを「本ページの方法で絶対的」と言う。
+
+## 無限公理と R(ω) {#set:sec-infinity-r-omega}
+
+::: lemma 無限公理 {#set:infinity-in-transitive}
+$\mathbf{M}$ を $\ZF^{-}-\mathrm{P}-\mathrm{Inf}$ の推移的なモデルとする。$\omega\in\mathbf{M}$ なら、無限公理は $\mathbf{M}$ の中で真である。
+:::
+
+::: proof
+$0$ と $S$ は絶対的（\ref{set:absolute-basic-notions} の (g)(k)）なので、無限公理（\ref{set:ax-infinity}）の相対化は $\exists x\in\mathbf{M}\,(0\in x\land\forall y\in x\,(S(y)\in x))$ と同値で、$x=\omega$ で成り立つ。
+:::
+
+::: corollary {#set:wf-infinity}
+（$\ZF^{-}$）無限公理は $\mathbf{WF}$ の中で真である。
+:::
+
+::: proof
+$\omega\in\mathbf{WF}$（順序数は整礎集合）で、$\mathbf{WF}$ は \ref{set:wf-relativization} より $\ZF-\mathrm{Inf}$ の推移的なモデル。
+:::
+
+::: lemma 整列順序は下に保たれる {#set:well-order-downward}
+（$\ZF^{-}$）$\mathbf{M}$ を $\ZF^{-}-\mathrm{P}-\mathrm{Inf}$ の推移的なモデル、$A,R\in\mathbf{M}$ とし、$R$ が $A$ を整列するとする。このとき（$R$ が $A$ を整列する）$^{\mathbf{M}}$。
+:::
+
+::: proof
+「$R$ は $A$ を全順序付ける」は $A$ の元についての量化と順序対の基本的な性質だけで書けるので、本ページの方法で絶対的。整列性は $\forall X\,\varphi(X,A,R)$、$\varphi\defeq(X\subseteq A\land X\neq0\to\exists y\in X\,\forall z\in X\,(\langle z,y\rangle\notin R))$ で、$\varphi$ は絶対的。$R$ は本当に整列順序なので、すべての $X$、とくにすべての $X\in\mathbf{M}$ で $\varphi$、すなわち $\varphi^{\mathbf{M}}$。
+:::
+
+逆向きは一般には成り立たない：$\mathbf{M}$ の中で整列順序でも、$\mathbf{M}$ に属さない部分集合 $X\subseteq A$ が最小元をもたないかもしれない。「全称的な」概念は $\mathbf{V}$ から $\mathbf{M}$ へ下がるが、上がるとは限らない。（基礎の公理のもとでは整列性は絶対的になる。次ページ。）
+
+::: theorem R(ω) のモデル {#set:r-omega-model}
+（$\ZF^{-}$）$R(\omega)$ は $\ZFC-\mathrm{Inf}+\lnot\mathrm{Inf}$ のモデルである。
+:::
+
+::: proof
+\ref{set:wf-relativization} より $\ZF-\mathrm{Inf}$ の公理は $R(\omega)$ の中で真。
+
+**$\lnot\mathrm{Inf}$.** 無限公理の相対化は（絶対性により）「$0\in x$ かつ $S$ で閉じた $x\in R(\omega)$ がある」と同値。そのような $x$ は帰納法ですべての自然数を含み $\omega\subseteq x$、よって $\rank(x)\ge\omega$（\ref{set:rank-basic}）で、$x\in R(n)$ なら $\rank(x)<n$ に反する。
+
+**選択公理.** 本サイトの選択公理は「$\forall A\,\exists R\,(R$ は $A$ を整列する$)$」の形である（\ref{set:ax-choice}）。$A\in R(\omega)$ は有限集合（\ref{set:r-n-finite}）なので、選択公理なしで整列順序 $R\subseteq A\times A$ がある。$A\in R(n)$ なら $A\times A\subseteq R(n+2)$ で $R\in R(n+3)\subseteq R(\omega)$。\ref{set:well-order-downward} より（$R$ は $A$ を整列する）$^{R(\omega)}$。
+
+::: hypcheck
+- **有限集合の整列**：選択公理を使わない（有限集合の元を一つずつ並べる、長さに関する帰納法）。
+- **$\lnot\mathrm{Inf}$ で使った絶対性**：$0$ と $S$ の絶対性。
+:::
+:::
+
+::: corollary {#set:con-zfc-minus-inf}
+$\mathrm{Con}(\ZF^{-})\to\mathrm{Con}(\ZFC-\mathrm{Inf}+\lnot\mathrm{Inf})$。
+:::
+
+::: proof
+\ref{set:r-omega-model} と \ref{set:relative-consistency-lemma}。
+:::
+
+## 問題 {#set:sec-absoluteness-problems}
+
+::: problem {#set:prob-absolute-function-space}
+「$f$ は $A$ から $B$ への関数」（$f\colon A\to B$）が $\ZF^{-}-\mathrm{P}-\mathrm{Inf}$ の推移的なモデルについて絶対的であることを示せ。
+:::
+
+::: solution
+$f\colon A\to B\iff f$ は関数 $\land\dom(f)=A\land\forall y\in\ran(f)\,(y\in B)$。\ref{set:absolute-relations-functions} の (f)(d)(e) と、有界量化子、\ref{set:absolute-composition} による。
+:::
+
+::: problem {#set:prob-power-not-absolute}
+$\mathbf{M}=\omega$ のとき、$\mathcal{P}$（$y=\mathcal{P}(x)$）の定義の論理式が絶対的でない例を挙げよ。
+:::
+
+::: solution
+$y=\mathcal{P}(x)$ は $\forall z\,(z\subseteq x\leftrightarrow z\in y)$。$x=1$, $y=2$ とすると、$\mathbf{M}=\omega$ の中では $z\in\omega$ で $z\subseteq1$ なのは $0,1$ で、どちらも $2$ の元なので $(y=\mathcal{P}(x))^{\omega}$ は真。$\mathbf{V}$ でも $\mathcal{P}(1)=\{0,1\}=2$ なので真。$x=2$, $y=3$ では、$\omega$ の中で $z\subseteq2$ なのは $0,1,2$ で $3=\{0,1,2\}$ なので真、しかし $\mathcal{P}(2)$ は $\{1\}$ も含み $3$ でないので偽。よって絶対的でない（$\omega$ は $\ZF^{-}-\mathrm{P}-\mathrm{Inf}$ のモデルではないが、定義された論理式の絶対性としての例）。
+:::
+
+::: supplement
+**前提の検討.**
+- 絶対性の結果の多くは「$\ZF^{-}-\mathrm{P}-\mathrm{Inf}$ の推移的なモデル」についてのものである。モデルが公理系全体を満たす前に、弱い部分系の絶対性だけで公理の成立を確かめられる（\ref{set:infinity-in-transitive}）。
+- Δ₀ 関数の合成は Δ₀ で書けるとは限らないが、合成は絶対性を保つ（\ref{set:absolute-composition}）。したがって実用上は「Δ₀ 論理式」より「代入で作られた論理式」が重要である。
+
+**関連する結果.** 冪集合や基数であることのような、本質的に非有界な量化を含む概念は絶対的でない。これが独立性の証明で重要になる：小さなモデル $\mathbf{M}$ の中で「可算」と「非可算」が $\mathbf{V}$ と食い違うこと（スコーレムの逆説、\ref{logic:skolem-paradox}）が、強制法などの議論の出発点となる。
+
+**高い視点から：Δ₀ は「局所的な」性質.** Δ₀ 論理式は、パラメータの元、元の元、… と有限の深さだけを調べる。推移的なクラスはパラメータの元をすべて含むので、その中の住人は Δ₀ の性質を正しく判定できる。これは位相でいう「局所的な性質は開集合への制限で変わらない」ことに似ている：推移的なクラスは所属関係についての「開集合」であり、Δ₀ の性質は「局所的」である。一方、$\mathcal{P}(x)$ のような「大域的な」構成は、世界の大きさに依存して変わる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

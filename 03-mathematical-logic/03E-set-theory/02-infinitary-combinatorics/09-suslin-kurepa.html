@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ススリン木・ススリン線・クレパ木 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/09-suslin-kurepa.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ススリン木・ススリン線・クレパ木 {#set:page-suslin-kurepa keywords="Suslin tree, Suslin line, Suslin hypothesis, Kurepa tree, Kurepa hypothesis, Kurepa family, path through a tree"}
+
+前ページ（\ref{set:page-trees}）で導入した木の言葉を使って、ススリン問題（\ref{set:suslin-hypothesis}）を組合せ論の問題に翻訳する。主定理は「**ススリン木が存在することと、ススリン線が存在することは同値**」である。ススリン木の極大鎖を辞書式に並べるとススリン線ができ、逆にススリン線の開区間を「どんどん細かくなる互いに素な区間の族」として $\omega_{1}$ 段積み上げるとススリン木ができる。この翻訳により、マーティンの公理 $\mathrm{MA}(\omega_{1})$ からススリン仮説が従うことの、木そのものを使ったごく短い証明が得られる。後半では、ススリン木とは逆に「道（頂上まで届く枝）が多すぎる」木である**クレパ木**を定義し、その存在が木を含まない集合族の言葉（**クレパ族**）で言い換えられることを示す。
+
+## 記法と定義の確認 {#set:sec-sk-notation}
+
+::: notation
+- **本ページでは選択公理を仮定する**（$\ZFC$）。各証明の「前提条件の使用箇所」に、どこで選択公理（AC）を使ったかを記す。
+- 木・前者の集合 $\operatorname{pred}_{T}(x)$・高さ $\operatorname{ht}(x,T)$・レベル $\operatorname{Lev}_{\alpha}(T)$・部分木は \ref{set:tree}, \ref{set:tree-height} の意味で用いる。$x\in T$ と $\alpha<\operatorname{ht}(x,T)$ に対し $x\restr{\alpha}$ は $x$ の下にある高さ $\alpha$ のただ一つの元である（\ref{set:tree-basic} (1)）。$y<x$ なら $\operatorname{ht}(y)<\operatorname{ht}(x)$、共通の上界をもつ 2 元は比較可能（\ref{set:tree-basic} (2)(3)）。
+- 木の鎖・反鎖は \ref{set:tree-chain-antichain} の意味。鎖は整列され、高さは鎖の上で狭義増加（\ref{set:tree-chain-well-ordered}）。
+- $\kappa$-木・$\kappa$-ススリン木・$\kappa$-アロンシャイン木・よく刈り込まれた木は \ref{set:kappa-tree}, \ref{set:suslin-tree}, \ref{set:aronszajn-tree}, \ref{set:well-pruned} の意味。$\kappa$-木の濃度は $\kappa$（\ref{set:kappa-tree-size}）、$\kappa$-ススリン木は $\kappa$-木（\ref{set:suslin-is-kappa-tree}）、$\kappa$-木はよく刈り込まれた $\kappa$-部分木をもち（\ref{set:well-pruned-exists}）、よく刈り込まれたアロンシャイン木は任意有限個に枝分かれする（\ref{set:well-pruned-extend}）。
+- 正則基数 $\theta$ の部分集合 $X$ が $\lvert X\rvert<\theta$ なら $X$ は $\theta$ で有界（\ref{set:regular-bounded}）。特に可算個の可算順序数の上限は可算順序数である（$\omega_{1}$ は正則：\ref{set:successor-regular}）。可算個の可算集合の和は可算（\ref{set:union-bound}）、全射 $X\to Y$ があれば $\lvert Y\rvert\le\lvert X\rvert$（\ref{set:surjection-cardinality}）。
+- 半順序（強制法の意味）・両立・反鎖・c.c.c.・稠密集合・フィルター・$\mathrm{MA}(\kappa)$ は \ref{set:forcing-poset}, \ref{set:compatible}, \ref{set:ccc-poset}, \ref{set:dense-set}, \ref{set:poset-filter}, \ref{set:ma} の意味。フィルターの 2 元は両立する（\ref{set:poset-filter-basic}）。
+- **全順序集合の位相.** 全順序 $\langle X,<\rangle$ には順序位相（\ref{top:order-topology}）を入れる。すなわち開区間 $(a,b)=\{x\mid a<x<b\}$、半直線 $(\leftarrow,b)=\{x\mid x<b\}$, $(a,\rightarrow)=\{x\mid a<x\}$、および $X$ 自身を**基本開集合**とし、開集合はその和集合とする。基本開集合はどれも**凸**（$x,z\in B$, $x<y<z\Rightarrow y\in B$）であり（\ref{set:order-topology-basic}）、2 つの基本開集合の共通部分はまた基本開集合か空集合である。閉区間 $[a,b]=\{x\mid a\le x\le b\}$ の補集合 $(\leftarrow,a)\cup(b,\rightarrow)$ は開集合なので $[a,b]$ は閉集合である。$\operatorname{cl}(A)$ は $A$ の閉包。
+- 位相空間が **c.c.c.** をもつとは、互いに素な空でない開集合の族がすべて可算であること（\ref{set:ccc-space}）、**可分**とは可算な稠密部分集合（すべての空でない開集合と交わる集合）をもつことである。部分集合 $A$ の可分性は \ref{set:separable-subset} の意味（$A$ と交わるすべての開集合と交わる可算集合 $D\subseteq A$ がある）で用いる。**ススリン線**とは、順序位相で c.c.c. をもつが可分でない全順序のこと（\ref{set:suslin-line}）、**ススリン仮説** SH とは「ススリン線は存在しない」という主張である（\ref{set:suslin-hypothesis}）。
+:::
+
+## 全順序の区間についての準備 {#set:sec-sk-intervals}
+
+::: lemma c.c.c. は開区間で判定できる {#set:ccc-by-intervals keywords="ccc of a linear order via open intervals" index="全順序の可算鎖条件|ぜんじゅんじょのかさんさじょうけん"}
+全順序 $\langle X,<\rangle$ が順序位相で c.c.c. をもつことと、互いに素な空でない開区間 $(a,b)$ の族がすべて可算であることは同値である。
+:::
+
+::: proof
+開区間は開集合なので、c.c.c. なら後者は明らか。逆を対偶で示す。互いに素な空でない開集合の非可算族 $\mathcal{U}$ があるとする。
+
+**Step 1（基本開集合への縮小）.** 各 $U\in\mathcal{U}$ について、$U$ に含まれる空でない基本開集合 $B_{U}$ を**選択公理**で選ぶ（$U$ は基本開集合の和なので候補がある）。$B_{U}$ たちは互いに素であり、$U\mapsto B_{U}$ は単射（異なる $U$ に対する $B_{U}$ は交わらない空でない集合なので異なる）。よって $\mathcal{B}=\{B_{U}\mid U\in\mathcal{U}\}$ は互いに素な空でない基本開集合の非可算族である。
+
+**Step 2（半直線は高々 2 個）.** 空でない左半直線 $(\leftarrow,b)$, $(\leftarrow,b')$ は、$b\le b'$ なら前者の元が後者にも入るので交わる。よって $\mathcal{B}$ に左半直線は高々 1 個、同様に右半直線も高々 1 個。また $\mathcal{B}$ は 2 個以上の元をもつので、他のすべてと交わる $X$ 自身は $\mathcal{B}$ に入らない。
+
+**Step 3.** $\mathcal{B}$ から高々 2 個を除いた残りは非可算で、すべて開区間 $(a,b)$ の形である。これは後者の条件に反する。
+
+::: hypcheck
+- **選択公理**：Step 1 で $B_{U}$ を同時に選ぶのに使った。
+- 基本開集合の形（順序位相の定義）：Step 2 で使った。
+:::
+:::
+
+以下、**自分自身で稠密**な全順序、すなわち $a<b\Rightarrow(a,b)\ne\varnothing$ となる全順序を考える。このとき
+$$
+\mathcal{I}_{X}=\{(a,b)\mid a,b\in X,\ a<b\}
+$$
+は $X$ の空でない開区間全体である。
+
+::: lemma 稠密な全順序の開区間 {#set:dense-order-intervals keywords="open intervals in a dense linear order"}
+$\langle X,<\rangle$ を 2 点以上をもち自分自身で稠密な全順序とし、$\mathcal{I}=\mathcal{I}_{X}$ とおく。
+1. $a<b$, $a'<b'$ で $(a,b)=(a',b')$ ならば $a=a'$ かつ $b=b'$。
+2. 空でない開集合 $U$ はある $K\in\mathcal{I}$ を含む。
+3. 任意の $I\in\mathcal{I}$ に対し、$K\subseteq I$ かつ $I\setminus\operatorname{cl}(K)\ne\varnothing$ となる $K\in\mathcal{I}$ がある。
+4. $I=(a,b)\in\mathcal{I}$, $K\in\mathcal{I}$ で $a,b\notin K$ ならば、$I\cap K=\varnothing$ または $K\subseteq I$。
+:::
+
+::: proof
+**(1)** $a<a'$ と仮定する。稠密性より $x\in(a,a')$ がある。$(a',b')\ne\varnothing$ の元 $y$ をとると $y\in(a,b)$ なので $a'<y<b$、よって $x<a'<b$ で $x\in(a,b)$。しかし $x<a'$ なので $x\notin(a',b')$ となり矛盾。対称に $a'<a$ もありえず $a=a'$。$b=b'$ も同様。
+
+**(2)** $x\in U$ と、$x\in B\subseteq U$ となる基本開集合 $B$ をとる。
+- *$B$ が $x$ 以外の元 $y$ を含む場合*：$a=\min(x,y)$, $b=\max(x,y)$ とおくと $a<b$ で、$B$ は凸なので $(a,b)\subseteq B\subseteq U$。
+- *$B=\{x\}$ の場合は起こらない*：$B=(c,d)$ なら $c<x$ で、稠密性より $(c,x)$ の元があり、それは $B$ の $x$ 以外の元である。$B=(\leftarrow,d)$ なら $x<d$ で、$(x,d)$ の元が $B$ の $x$ 以外の元。$B=(c,\rightarrow)$ も同様。$B=X$ なら $X$ が 2 点以上をもつことに反する。
+
+**(3)** $I=(a,b)$ とし、稠密性より $c\in(a,b)$ をとって $K=(a,c)\in\mathcal{I}$ とおく。$K\subseteq I$ であり、$[a,c]$ は $K$ を含む閉集合なので $\operatorname{cl}(K)\subseteq[a,c]$。よって $I\setminus\operatorname{cl}(K)\supseteq(c,b)\ne\varnothing$。
+
+**(4)** $I\cap K$ に元 $x$ があるとし、任意の $y\in K$ が $I$ に入ることを示す。$y\le a$ とすると $y\le a<x$ で、$y,x\in K$ と $K$ の凸性より $a\in K$（$y=a$ の場合も含む）となり仮定に反する。同様に $y\ge b$ もありえない。よって $a<y<b$。
+
+::: hypcheck
+- **自分自身で稠密であること**：(1), (2), (3) で区間の元をとるのに使った。**2 点以上**：(2) の最後。
+- **凸性**：(2), (4)。選択公理は使っていない。
+:::
+:::
+
+## ススリン木とススリン線 {#set:sec-suslin-tree-line}
+
+::: theorem ススリン木とススリン線 {#set:suslin-tree-line keywords="Suslin tree iff Suslin line, SH iff no Suslin tree" index="ススリン木とススリン線|すすりんぎとすすりんせん"}
+$\omega_{1}$-ススリン木が存在することと、ススリン線が存在することは同値である。
+:::
+
+::: intuition
+**木から線へ.** 木の極大鎖（根から伸びて途中で終わる「枝」）を、最初に分かれるレベルでの「左右」によって辞書式に並べる。実数を二進展開の辞書式順序で並べるのと同じ発想である。開区間は「ある点を通る枝の全体」を含むので、互いに素な区間の非可算族は木の非可算反鎖を与える。一方、どの可算個の枝もあるレベル $\delta$ より下で終わるので、$\delta$ より上で分かれる枝たちの作る区間を避けてしまい、線は可分になれない。
+
+**線から木へ.** 開区間を「互いに素で全体に稠密な区間の族」の列 $\mathcal{J}_{0},\mathcal{J}_{1},\dots,\mathcal{J}_{\beta},\dots$ として、後の族ほど細かく（前の区間に真に含まれ、しかも閉包ごと縮む）なるよう $\omega_{1}$ 段選び、逆包含で並べる。反鎖は互いに素な区間の族なので c.c.c. から可算、非可算な鎖があれば「真に縮む差分」が互いに素な非可算族を作ってしまう。極限段階で区間を選び続けられることを保証するのが「可分でない」という仮定である。
+:::
+
+証明の準備として、ススリン木の極大鎖を調べる。
+
+::: lemma よく刈り込まれたアロンシャイン木の極大鎖 {#set:maximal-chain-basic keywords="maximal chains in a well-pruned Aronszajn tree" index="極大鎖（木の）|きょくだいさきの"}
+$T$ をよく刈り込まれた $\omega_{1}$-アロンシャイン木とし、$T$ の極大鎖（真に大きい鎖が存在しない鎖）全体を $\mathcal{L}$ とする。
+1. 任意の $x\in T$ に対し、$x$ を含む極大鎖が存在する。
+2. $C\in\mathcal{L}$ は下に閉じている：$x\in C$, $y<x$ ならば $y\in C$。
+3. $C\in\mathcal{L}$ に対し、$\{\operatorname{ht}(x,T)\mid x\in C\}$ はある可算な**極限順序数** $h(C)$ に等しい。各 $\alpha<h(C)$ について $C$ の第 $\alpha$ レベルの元はただ一つで、これを $C(\alpha)$ と書くと $C=\{C(\alpha)\mid\alpha<h(C)\}$。
+4. $C,D\in\mathcal{L}$, $C\ne D$ ならば、$C(\alpha)\ne D(\alpha)$ となる $\alpha<\min(h(C),h(D))$ が存在する。
+:::
+
+::: proof
+**(1)** $x$ を含む鎖の全体を $\mathcal{K}$ とし包含で順序付ける。$\{x\}\in\mathcal{K}$ なので空でない。$\mathcal{K}$ の空でない全順序部分族 $\mathcal{K}'$ の和 $\bigcup\mathcal{K}'$ は $x$ を含み、その 2 元 $u\in K_{1}$, $v\in K_{2}$（$K_{1},K_{2}\in\mathcal{K}'$）は、$K_{1}\subseteq K_{2}$ または $K_{2}\subseteq K_{1}$ なので同じ鎖に入り比較可能である。よって $\bigcup\mathcal{K}'\in\mathcal{K}$ は上界であり、**ツォルンの補題**（\ref{set:zorn}）より $\mathcal{K}$ の極大元 $M$ がある。$M\subseteq C'$ となる鎖 $C'$ は $x$ を含むので $C'\in\mathcal{K}$、極大性より $C'=M$。よって $M\in\mathcal{L}$。
+
+**(2)** $z\in C$ を任意にとる。$z\le x$ なら $y,z$ はともに $\le x$ なので比較可能（\ref{set:tree-basic} (3)）。$x<z$ なら $y<x<z$。よって $C\cup\{y\}$ は鎖であり、極大性から $y\in C$。
+
+**(3)** 高さの集合を $H$ とおく。$\alpha\in H$, $\beta<\alpha$ とし $x\in C$ を高さ $\alpha$ の元とすると、(2) より $x\restr{\beta}\in C$ なので $\beta\in H$。よって $H$ は下に閉じた（すなわち推移的な）順序数の集合であり、$\in$ で整列される（\ref{set:ordinal-well-ordered}）ので順序数である（\ref{set:ordinal}）。これを $h(C)$ とおく。$C$ の同じレベルの 2 元は比較不能（\ref{set:tree-basic} (2)）なので各レベルの元は高々 1 つであり、$C(\alpha)$ が定まる。
+
+- *$h(C)$ は可算*：$\alpha\mapsto C(\alpha)$ は $h(C)$ から $C$ への全単射で、アロンシャイン木の鎖は可算なので $\lvert h(C)\rvert\le\omega$、したがって $h(C)<\omega_{1}$。
+- *$h(C)\ne0$*：$T\ne\varnothing$ なので空な鎖は極大でない（任意の $t\in T$ について $\{t\}$ が真に大きい）。
+- *$h(C)$ は後続順序数でない*：$h(C)=\alpha+1$ とすると $x=C(\alpha)$ は $C$ の最大元である。$\alpha+1<\omega_{1}$ なので、よく刈り込まれていること（\eqref{set:eq-well-pruned}）から $x<y$ となる $y\in\operatorname{Lev}_{\alpha+1}(T)$ がある。$C$ のすべての元は $\le x<y$ なので $C\cup\{y\}$ は鎖で、$y\notin C$（高さ $\alpha+1\notin h(C)$）だから極大性に反する。
+
+**(4)** 否定を仮定し、$h(C)\le h(D)$ としてよい。すると $\alpha<h(C)$ で $C(\alpha)=D(\alpha)$、すなわち $C\subseteq D$。$C$ の極大性より $C=D$ となり矛盾。
+
+::: hypcheck
+- **ツォルンの補題**（AC と同値）：(1) で使った。
+- **アロンシャイン性**（鎖が可算）：(3) で $h(C)<\omega_{1}$ に使った。**よく刈り込まれていること**：(3) で $h(C)$ が後続順序数でないことに使った。
+:::
+:::
+
+::: lemma 極大鎖の辞書式順序 {#set:branch-lex-order keywords="lexicographic order on maximal chains of a tree" index="極大鎖の辞書式順序|きょくだいさのじしょしきじゅんじょ"}
+\ref{set:maximal-chain-basic} の状況で、$T$ 上の（狭義の）全順序 $\prec$ を 1 つ固定する。$C\ne D$ となる $C,D\in\mathcal{L}$ に対し、$C(\alpha)\ne D(\alpha)$ となる最小の $\alpha<\min(h(C),h(D))$ を $d(C,D)$ とおき、
+$$
+C\lhd D\iff C\ne D\ \land\ C(d(C,D))\prec D(d(C,D))
+$$
+と定める。このとき
+1. $\lhd$ は $\mathcal{L}$ 上の全順序である。
+2. $x\in T$ に対し $\mathcal{L}_{x}=\{C\in\mathcal{L}\mid x\in C\}$ は $\lhd$ について凸である：$C\lhd D\lhd E$ で $C,E\in\mathcal{L}_{x}$ ならば $D\in\mathcal{L}_{x}$。
+3. $C,E\in\mathcal{L}$, $C\ne E$, $\delta=d(C,E)$ とし、$\delta<\alpha<h(E)$ とする。このとき $E(\alpha)\in F$ となる $F\in\mathcal{L}$ はすべて、$C\lhd E$ なら $C\lhd F$ を、$E\lhd C$ なら $F\lhd C$ を満たす。
+:::
+
+::: proof
+$d(C,D)$ は \ref{set:maximal-chain-basic} (4) により定義され、$d(C,D)=d(D,C)$ で、$\alpha<d(C,D)$ なら $C(\alpha)=D(\alpha)$ である。
+
+**(1)** *非反射性*は定義による。*比較可能性*：$C\ne D$ なら $C(d)\ne D(d)$（$d=d(C,D)$）で $\prec$ は全順序なので、$C(d)\prec D(d)$ か $D(d)\prec C(d)$ のちょうど一方が成り立つ。*推移性*：$C\lhd D\lhd E$ とし $\delta_{1}=d(C,D)$, $\delta_{2}=d(D,E)$ とおく。
+- *$\delta_{1}<\delta_{2}$ のとき*：$\delta_{1}<\delta_{2}<h(E)$ より $E(\delta_{1})=D(\delta_{1})\ne C(\delta_{1})$、$\alpha<\delta_{1}$ では $C(\alpha)=D(\alpha)=E(\alpha)$。よって $d(C,E)=\delta_{1}$ で、$C(\delta_{1})\prec D(\delta_{1})=E(\delta_{1})$。
+- *$\delta_{2}<\delta_{1}$ のとき*：同様に $d(C,E)=\delta_{2}$ で $C(\delta_{2})=D(\delta_{2})\prec E(\delta_{2})$。
+- *$\delta_{1}=\delta_{2}=\delta$ のとき*：$C(\delta)\prec D(\delta)\prec E(\delta)$ で $\prec$ は推移的なので $C(\delta)\prec E(\delta)$、特に $C(\delta)\ne E(\delta)$。$\alpha<\delta$ では 3 つとも一致するので $d(C,E)=\delta$。
+
+いずれの場合も $C\lhd E$。
+
+**(2)** $\alpha=\operatorname{ht}(x)$ とおく。$C,E$ は $x$ を含み下に閉じているので、$\beta<\alpha$ で $C(\beta)=E(\beta)=x\restr{\beta}$、また $C(\alpha)=E(\alpha)=x$。$D\notin\mathcal{L}_{x}$ と仮定し、$\delta_{1}=d(C,D)$, $\delta_{2}=d(D,E)$ とおく。$\delta_{1}>\alpha$ なら $\alpha<h(D)$ かつ $D(\alpha)=C(\alpha)=x$ で $x\in D$ となるので、$\delta_{1}\le\alpha$、同様に $\delta_{2}\le\alpha$。
+- $\delta_{1}<\delta_{2}$ なら $D(\delta_{1})=E(\delta_{1})=C(\delta_{1})$（$\delta_{1}\le\alpha$ より $E(\delta_{1})=C(\delta_{1})$）となり、$d(C,D)$ の定義に反する。
+- $\delta_{2}<\delta_{1}$ なら同様に $D(\delta_{2})=C(\delta_{2})=E(\delta_{2})$ で $d(D,E)$ の定義に反する。
+- $\delta_{1}=\delta_{2}=\delta$ なら $C(\delta)\prec D(\delta)\prec E(\delta)=C(\delta)$ となり、$\prec$ の推移性から $C(\delta)\prec C(\delta)$、非反射性に反する。
+
+よって $D\in\mathcal{L}_{x}$。
+
+**(3)** $F$ は $E(\alpha)$ を含み下に閉じているので、$\beta\le\alpha$ で $F(\beta)=E(\beta)$。$\delta<\alpha$ なので、$\beta<\delta$ で $C(\beta)=E(\beta)=F(\beta)$、かつ $C(\delta)\ne E(\delta)=F(\delta)$。よって $C\ne F$, $d(C,F)=\delta$ であり、$C(\delta)$ と $F(\delta)=E(\delta)$ の $\prec$ による大小は $C$ と $E$ の比較と同じになる。
+
+::: hypcheck
+- **$\prec$ が全順序であること**：(1) の比較可能性・推移性、(2) の第 3 の場合。
+- \ref{set:maximal-chain-basic} (2)(4)：$d(C,D)$ の定義と (2)(3) の「下に閉じている」ことに使った。選択公理はこの補題では（$\prec$ を固定した後は）使っていない。
+:::
+:::
+
+線から木を作る方向のために、区間の族の列を構成しておく。
+
+::: lemma 細分される区間の族 {#set:suslin-interval-families keywords="refining families of intervals in a Suslin line"}
+$\langle X,<\rangle$ を、自分自身で稠密で、空でない開集合がどれも可分でない（\ref{set:separable-subset}）ススリン線とし、$\mathcal{I}=\mathcal{I}_{X}$ とおく。このとき $\mathcal{I}$ の部分族の列 $\langle\mathcal{J}_{\beta}\mid\beta<\omega_{1}\rangle$ で、すべての $\beta<\omega_{1}$ について次を満たすものが存在する。
+1. $\mathcal{J}_{\beta}$ の元は互いに素である。
+2. $\bigcup\mathcal{J}_{\beta}$ は $X$ で稠密である。
+3. $\alpha<\beta$, $I\in\mathcal{J}_{\alpha}$, $J\in\mathcal{J}_{\beta}$ ならば、(a) $I\cap J=\varnothing$ であるか、(b) $J\subseteq I$ かつ $I\setminus\operatorname{cl}(J)\ne\varnothing$ である。
+:::
+
+::: proof
+**Step 0（準備）.** $X$ は可分でないので可算集合でなく（可算集合はそれ自身が可算な稠密集合）、特に 2 点以上をもつ。よって \ref{set:dense-order-intervals} が使える。**選択公理**（整列可能定理 \ref{set:well-ordering-theorem}）で $\mathcal{I}$ の整列順序 $\sqsubset$ を 1 つ固定する。$\mathcal{X}\subseteq\mathcal{I}$ に対し、$\sqsubset$ に沿った超限再帰で
+$$
+K\in M(\mathcal{X})\iff K\in\mathcal{X}\ \land\ \forall K'\in M(\mathcal{X})\ \bigl(K'\sqsubset K\to K\cap K'=\varnothing\bigr)
+$$
+と定める（$K$ が入るかどうかは $\sqsubset$ で前にある元についての決定だけで決まる）。$M(\mathcal{X})$ は $\mathcal{X}$ の**極大な互いに素な部分族**である：互いに素なのは定義から明らか。$K\in\mathcal{X}$ が $M(\mathcal{X})$ のどの元とも交わらなければ、特に前にある元とも交わらないので $K\in M(\mathcal{X})$ となる。したがって**$K\in\mathcal{X}$ はつねに $M(\mathcal{X})$ のある元と交わる**。
+
+また、互いに素な空でない開区間の族は c.c.c. により可算である。
+
+**Step 1（稠密性の判定）.** $\mathcal{X}\subseteq\mathcal{I}$ が「任意の $J\in\mathcal{I}$ に対し $K\subseteq J$ となる $K\in\mathcal{X}$ がある」を満たせば、$\bigcup M(\mathcal{X})$ は稠密である。実際、空でない開集合 $U$ は \ref{set:dense-order-intervals} (2) によりある $J\in\mathcal{I}$ を含み、$K\subseteq J$ となる $K\in\mathcal{X}$ は Step 0 よりある $K'\in M(\mathcal{X})$ と交わるので、$U\cap K'\supseteq J\cap K'\supseteq K\cap K'\ne\varnothing$。
+
+**Step 2（再帰による定義）.** $\beta$ についての超限再帰（\ref{set:transfinite-recursion}）で次のように定める。
+- $\mathcal{J}_{0}=M(\mathcal{I})$。
+- $\mathcal{J}_{\alpha+1}=\bigcup\{M(\mathcal{X}_{I})\mid I\in\mathcal{J}_{\alpha}\}$、ただし $\mathcal{X}_{I}=\{K\in\mathcal{I}\mid K\subseteq I\land I\setminus\operatorname{cl}(K)\ne\varnothing\}$。
+- 極限順序数 $\gamma$ について $\mathcal{J}_{\gamma}=M(\mathcal{X}^{\gamma})$、ただし
+$$
+\begin{aligned}
+\mathcal{X}^{\gamma}=\bigl\{K\in\mathcal{I}\bigm|{}&\forall\alpha<\gamma\ \forall I\in\mathcal{J}_{\alpha}\\
+&\bigl(I\cap K=\varnothing\lor(K\subseteq I\land I\setminus\operatorname{cl}(K)\ne\varnothing)\bigr)\bigr\}.
+\end{aligned}
+$$
+
+以下、(1)〜(3)（(3) は $\alpha<\beta\le\beta_{0}$ について）が $\beta_{0}$ まで成り立つことを帰納法で示す。
+
+**Step 3（$\beta=0$）.** (1) は $M$ の性質、(3) は空虚。(2)：$\mathcal{X}=\mathcal{I}$ は Step 1 の条件を自明に満たす（$K=J$）。
+
+**Step 4（$\beta=\alpha+1$）.**
+- *(1)*：$K\in M(\mathcal{X}_{I})$, $K'\in M(\mathcal{X}_{I'})$ で $K\ne K'$ とする。$I=I'$ なら $M$ の性質より交わらない。$I\ne I'$ なら (1) より $I\cap I'=\varnothing$ で、$K\subseteq I$, $K'\subseteq I'$ なので交わらない。
+- *(2)*：空でない開集合 $U$ をとる。$\bigcup\mathcal{J}_{\alpha}$ は稠密なので $U\cap I\ne\varnothing$ となる $I\in\mathcal{J}_{\alpha}$ がある。$U\cap I$ は空でない開集合なので \ref{set:dense-order-intervals} (2) より $K_{0}\in\mathcal{I}$, $K_{0}\subseteq U\cap I$ があり、(3) より $K\in\mathcal{I}$, $K\subseteq K_{0}$, $K_{0}\setminus\operatorname{cl}(K)\ne\varnothing$ がある。すると $I\setminus\operatorname{cl}(K)\supseteq K_{0}\setminus\operatorname{cl}(K)\ne\varnothing$ なので $K\in\mathcal{X}_{I}$。Step 0 より $K$ は $M(\mathcal{X}_{I})\subseteq\mathcal{J}_{\alpha+1}$ のある元 $K'$ と交わり、$U\cap K'\supseteq K\cap K'\ne\varnothing$。
+- *(3)*：$\alpha'<\alpha+1$, $I'\in\mathcal{J}_{\alpha'}$, $J\in M(\mathcal{X}_{I})$（$I\in\mathcal{J}_{\alpha}$）とする。$J\subseteq I$ かつ $I\setminus\operatorname{cl}(J)\ne\varnothing$ である。
+  - $\alpha'=\alpha$ のとき：$I'=I$ なら (b)。$I'\ne I$ なら (1) より $I'\cap I=\varnothing$ で $I'\cap J=\varnothing$、(a)。
+  - $\alpha'<\alpha$ のとき：帰納法の仮定の (3) を $I'$ と $I$ に適用する。$I'\cap I=\varnothing$ なら $I'\cap J=\varnothing$。$I\subseteq I'$ かつ $I'\setminus\operatorname{cl}(I)\ne\varnothing$ なら、$J\subseteq I\subseteq I'$ で $\operatorname{cl}(J)\subseteq\operatorname{cl}(I)$ だから $I'\setminus\operatorname{cl}(J)\supseteq I'\setminus\operatorname{cl}(I)\ne\varnothing$、(b)。
+
+**Step 5（$\beta=\gamma$ が極限順序数）.** (1) は $M$ の性質、(3)（$\beta=\gamma$ の場合）は $\mathcal{X}^{\gamma}$ の定義そのものである。(2) を示すには、Step 1 により、任意の $J\in\mathcal{I}$ に対し $K\subseteq J$ となる $K\in\mathcal{X}^{\gamma}$ があることを示せばよい。
+- *端点の集合 $E$*：\ref{set:dense-order-intervals} (1) より各 $I\in\mathcal{I}$ の端点は一意に定まる。$E$ を $\bigcup_{\alpha<\gamma}\mathcal{J}_{\alpha}$ の元の左右の端点全体とする。各 $\mathcal{J}_{\alpha}$ は互いに素な空でない開区間の族なので可算（Step 0）、$\gamma<\omega_{1}$ は可算なので、$\bigcup_{\alpha<\gamma}\mathcal{J}_{\alpha}$ は可算個の可算集合の和として可算（\ref{set:union-bound}）であり、$E$ も可算。
+- *$E$ を避ける区間*：$J$ は空でない開集合なので可分でなく、可算集合 $E\cap J\subseteq J$ は $J$ で稠密でない。よって $U\cap J\ne\varnothing$ かつ $U\cap E\cap J=\varnothing$ となる開集合 $U$ がある。$V=U\cap J$ は空でない開集合で $V\cap E=\varnothing$ であり、\ref{set:dense-order-intervals} (2) より $K_{1}\in\mathcal{I}$, $K_{1}\subseteq V$ がある。
+- *$K$ の選択*：\ref{set:dense-order-intervals} (3) より $K\in\mathcal{I}$, $K\subseteq K_{1}$, $K_{1}\setminus\operatorname{cl}(K)\ne\varnothing$ をとる。$K\subseteq J$ である。
+- *$K\in\mathcal{X}^{\gamma}$*：$\alpha<\gamma$, $I=(a,b)\in\mathcal{J}_{\alpha}$ とする。$a,b\in E$ なので $a,b\notin K_{1}$ であり、\ref{set:dense-order-intervals} (4) より $I\cap K_{1}=\varnothing$ か $K_{1}\subseteq I$。前者なら $I\cap K=\varnothing$。後者なら $K\subseteq I$ かつ $I\setminus\operatorname{cl}(K)\supseteq K_{1}\setminus\operatorname{cl}(K)\ne\varnothing$。
+
+以上で帰納法が完了する。
+
+::: hypcheck
+- **選択公理**：Step 0 の整列順序 $\sqsubset$（これにより再帰の各段で選択を行わずに済む）と、Step 5 の \ref{set:union-bound}（可算個の可算集合の和）で使った。
+- **c.c.c.**：Step 0・Step 5 で各 $\mathcal{J}_{\alpha}$ が可算であることに使った。
+- **空でない開集合が可分でないこと**：Step 5 の核心。これがないと極限段階で $\mathcal{X}^{\gamma}$ が空になりうる。
+- **自分自身で稠密であること**：\ref{set:dense-order-intervals} を通して使った。
+- **超限再帰**（\ref{set:transfinite-recursion}）：Step 2。
+:::
+:::
+
+::: restate {ref="set:suslin-tree-line"}
+:::
+
+::: proof
+**（⇒）ススリン木からススリン線を作る.**
+
+**Step 1（木の整理）.** $T$ を $\omega_{1}$-ススリン木とする。\ref{set:suslin-is-kappa-tree} より $T$ は $\omega_{1}$-木で、鎖はすべて可算なので $\omega_{1}$-アロンシャイン木である。\ref{set:well-pruned-exists} によりよく刈り込まれた $\omega_{1}$-部分木 $T''$ をとると、$T''$ の鎖・反鎖は $T$ の鎖・反鎖なので可算であり、$\lvert T''\rvert=\omega_{1}$（\ref{set:kappa-tree-size}）。よって $T''$ もススリン木であり、はじめから $T$ はよく刈り込まれていると仮定してよい。
+
+**Step 2（線の定義）.** $\mathcal{L}$ を $T$ の極大鎖全体とし、**選択公理**で $T$ 上の全順序 $\prec$（たとえば整列順序）を固定して、\ref{set:branch-lex-order} の全順序 $\lhd$ を入れる。$\langle\mathcal{L},\lhd\rangle$ がススリン線であることを示す。
+
+**Step 3（c.c.c.）.** \ref{set:ccc-by-intervals} により、互いに素な空でない開区間 $(C_{\xi},D_{\xi})$（$\xi<\omega_{1}$、相異なる）の族がないことを示せばよい。あったと仮定し、**選択公理**で各 $\xi$ について $E_{\xi}\in(C_{\xi},D_{\xi})$ を選ぶ。$\delta^{1}_{\xi}=d(C_{\xi},E_{\xi})$, $\delta^{2}_{\xi}=d(E_{\xi},D_{\xi})$ はともに $<h(E_{\xi})$ で、$h(E_{\xi})$ は極限順序数（\ref{set:maximal-chain-basic} (3)）なので $\alpha_{\xi}=\max(\delta^{1}_{\xi},\delta^{2}_{\xi})+1<h(E_{\xi})$。$x_{\xi}=E_{\xi}(\alpha_{\xi})$ とおく。
+- *$\mathcal{L}_{x_{\xi}}\subseteq(C_{\xi},D_{\xi})$*：$F\in\mathcal{L}_{x_{\xi}}$ なら、\ref{set:branch-lex-order} (3) を $(C,E)=(C_{\xi},E_{\xi})$ と $(C,E)=(D_{\xi},E_{\xi})$ に適用して $C_{\xi}\lhd F\lhd D_{\xi}$。
+- *$x_{\xi}$ は互いに比較不能*：$\xi\ne\eta$ で $x_{\xi}\le x_{\eta}$ とする。\ref{set:maximal-chain-basic} (1) より $x_{\eta}$ を含む $F\in\mathcal{L}$ があり、(2) より $x_{\xi}\in F$。すると $F\in(C_{\xi},D_{\xi})\cap(C_{\eta},D_{\eta})$ となり、区間が互いに素であることに反する。
+
+よって $\xi\mapsto x_{\xi}$ は単射で、$\{x_{\xi}\mid\xi<\omega_{1}\}$ は $T$ の非可算反鎖である。これは $T$ がススリン木であることに反する。
+
+**Step 4（可分でない）.** 可算な $\mathcal{S}\subseteq\mathcal{L}$ を任意にとり、$\mathcal{S}$ と交わらない空でない開集合を見つける。
+- *レベル $\delta$*：$\{h(C)\mid C\in\mathcal{S}\}$ は可算個の可算順序数なので、その上限 $\delta$ は可算順序数である（\ref{set:regular-bounded}）。
+- *3 本の枝*：$\operatorname{ht}(T)=\omega_{1}$ なので $x\in\operatorname{Lev}_{\delta}(T)$ がとれる。\ref{set:well-pruned-extend}（$n=3$）より、$\alpha>\delta$ と $x$ より上にある相異なる $y,z,w\in\operatorname{Lev}_{\alpha}(T)$ がある。\ref{set:maximal-chain-basic} (1) により、それぞれを含む極大鎖をとる。1 つの鎖は第 $\alpha$ レベルの元を高々 1 つしか含まないので、これら 3 つの極大鎖は相異なる。$\lhd$ の順に $D\lhd G_{0}\lhd F$ と名付ける。
+- *区間 $(D,F)$*：$G_{0}\in(D,F)$ なのでこれは空でない開区間である。$D,F$ は $x$ より上の元を含み下に閉じているので $x\in D\cap F$。\ref{set:branch-lex-order} (2) より、任意の $G\in(D,F)$ は $x$ を含み、したがって $h(G)>\operatorname{ht}(x)=\delta$。一方 $C\in\mathcal{S}$ は $h(C)\le\delta$ なので、$(D,F)\cap\mathcal{S}=\varnothing$。
+
+よって $\mathcal{L}$ は可分でない。Step 3 と合わせて $\langle\mathcal{L},\lhd\rangle$ はススリン線である。
+
+**（⇐）ススリン線からススリン木を作る.**
+
+**Step 5（線の整理）.** ススリン線が存在すれば、自分自身で稠密で、空でない開集合がどれも可分でないススリン線 $\langle X,<\rangle$ が存在する（\ref{set:suslin-line-nice}）。\ref{set:suslin-interval-families} の $\langle\mathcal{J}_{\beta}\mid\beta<\omega_{1}\rangle$ をとり、$T=\bigcup_{\beta<\omega_{1}}\mathcal{J}_{\beta}$ に
+$$
+I<_{T}J\iff J\subsetneq I
+$$
+で順序を入れる。$\subsetneq$ は非反射的かつ推移的なので、$<_{T}$ は狭義の半順序である。
+
+**Step 6（レベルの分離）.** $I\in\mathcal{J}_{\alpha}$, $J\in\mathcal{J}_{\beta}$ について次を示す。
+$$
+J\subsetneq I\iff\bigl(\alpha<\beta\land I\cap J\ne\varnothing\bigr)
+\label{set:eq-suslin-tree-order}
+$$
+また、$\alpha\ne\beta$ なら $\mathcal{J}_{\alpha}\cap\mathcal{J}_{\beta}=\varnothing$。
+- *族は重ならない*：$I\in\mathcal{J}_{\alpha}\cap\mathcal{J}_{\beta}$, $\alpha<\beta$ とすると、$I\cap I\ne\varnothing$ なので (3) より $I\setminus\operatorname{cl}(I)\ne\varnothing$ となるが、$I\subseteq\operatorname{cl}(I)$ なので矛盾。
+- *⇐*：(3) より $J\subseteq I$ であり、$I\setminus\operatorname{cl}(J)\ne\varnothing$ から $J\ne I$。
+- *⇒*：$J\subsetneq I$ なら $I\cap J=J\ne\varnothing$。$\alpha=\beta$ なら (1) より $I=J$ となり矛盾。$\beta<\alpha$ なら (3) を $J$ と $I$ に適用して $I\subseteq J$ となり矛盾。よって $\alpha<\beta$。
+
+**Step 7（$T$ は木で、$\operatorname{Lev}_{\beta}(T)=\mathcal{J}_{\beta}$）.** $J\in\mathcal{J}_{\beta}$ とする。各 $\alpha<\beta$ について、$\bigcup\mathcal{J}_{\alpha}$ は稠密で $J$ は空でない開集合なので、$J$ と交わる $I_{\alpha}\in\mathcal{J}_{\alpha}$ があり、(1) より $J\subseteq I_{\alpha}$ となる $\mathcal{J}_{\alpha}$ の元はこれ 1 つである（$J\ne\varnothing$ を含む 2 つの元は交わる）。\eqref{set:eq-suslin-tree-order} より
+$$
+\operatorname{pred}_{T}(J)=\{I_{\alpha}\mid\alpha<\beta\},
+$$
+であり、$\alpha<\alpha'<\beta$ なら $I_{\alpha'}\supseteq J\ne\varnothing$ は $I_{\alpha}$ と交わるので再び \eqref{set:eq-suslin-tree-order} より $I_{\alpha}<_{T}I_{\alpha'}$。よって $\alpha\mapsto I_{\alpha}$ は $\beta$ から $\operatorname{pred}_{T}(J)$ への順序同型である。したがって $T$ は木であり、$\operatorname{ht}(J,T)=\beta$、$\operatorname{Lev}_{\beta}(T)=\mathcal{J}_{\beta}$。
+
+**Step 8（反鎖は可算）.** $A\subseteq T$ を反鎖とし、$I\ne J$ を $A$ の元とする。$I\cap J\ne\varnothing$ なら、同じレベルなら (1) に反し、異なるレベルなら \eqref{set:eq-suslin-tree-order} より比較可能になる。よって $A$ は互いに素な空でない開集合の族であり、c.c.c. より可算。
+
+**Step 9（鎖は可算）.** 非可算な鎖 $C$ があったとする。$C$ は整列され（\ref{set:tree-chain-well-ordered}）、その順序型は $\ge\omega_{1}$ なので、$C$ の最初の $\omega_{1}$ 個の元を $I_{0}<_{T}I_{1}<_{T}\cdots<_{T}I_{\xi}<_{T}\cdots$（$\xi<\omega_{1}$）と並べる。$\xi<\eta$ なら $I_{\eta}\subsetneq I_{\xi}$ で、$I_{\xi}$ のレベルは $I_{\eta}$ のレベルより小さい（Step 6）ので、(3)(b) より $I_{\xi}\setminus\operatorname{cl}(I_{\eta})\ne\varnothing$。そこで
+$$
+U_{\xi}=I_{\xi}\setminus\operatorname{cl}(I_{\xi+1})
+$$
+とおくと、開集合から閉集合を除いたものなので開集合で、空でない。$\xi<\eta$ なら $U_{\eta}\subseteq I_{\eta}\subseteq I_{\xi+1}\subseteq\operatorname{cl}(I_{\xi+1})$ なので $U_{\eta}\cap U_{\xi}=\varnothing$。よって $\{U_{\xi}\mid\xi<\omega_{1}\}$ は互いに素な空でない開集合の非可算族で、c.c.c. に反する。
+
+**Step 10（$\lvert T\rvert=\omega_{1}$）.** 各 $\mathcal{J}_{\beta}$ は (2) より空でなく（$X\ne\varnothing$ で稠密）、(1) と c.c.c. より可算。$T$ は $\omega_{1}$ 個の可算集合の和なので $\lvert T\rvert\le\omega_{1}$（\ref{set:union-bound}）。各 $\mathcal{J}_{\beta}$ から 1 元ずつ選べば（AC）、レベルは互いに素なので単射 $\omega_{1}\to T$ が得られ $\lvert T\rvert\ge\omega_{1}$。
+
+Step 8〜10 より $T$ は $\omega_{1}$-ススリン木である。
+
+::: hypcheck
+- **選択公理**：Step 1（\ref{set:well-pruned-exists}, \ref{set:kappa-tree-size}）、Step 2（全順序 $\prec$）、Step 3（$E_{\xi}$ の選択）、Step 5（\ref{set:suslin-interval-families}）、Step 10 で使った。
+- **ススリン木の反鎖が可算であること**：Step 3。**鎖が可算であること**：Step 1（アロンシャイン性。\ref{set:maximal-chain-basic} (3) で $h(C)<\omega_{1}$ を保証し、Step 4 の $\delta<\omega_{1}$ に効く）。
+- **よく刈り込まれていること**：$h(C)$ が極限であること（Step 3 の $\alpha_{\xi}<h(E_{\xi})$）と、Step 4 の枝分かれ \ref{set:well-pruned-extend} に使った。
+- **ススリン線の c.c.c.**：Step 8, 9, 10 と \ref{set:suslin-interval-families}。**可分でないこと**：\ref{set:suslin-interval-families} の極限段階（Step 5 経由）。
+- **$\omega_{1}$ の正則性**：Step 4 で $\delta<\omega_{1}$ を得るのに使った。
+:::
+:::
+
+::: supplement
+**SH の言い換え.** この定理により、ススリン仮説は「$\omega_{1}$-ススリン木は存在しない」と同値である。SH は ZFC から独立であり、$\mathrm{MA}(\omega_{1})$ から従い（\ref{set:ma-sh}、次節も参照）、◇ から否定が従う（\ref{set:diamond-suslin}）。
+
+**アロンシャイン線.** （⇒）の構成はススリン性を 2 か所（反鎖の可算性で c.c.c.、鎖の可算性で $h(C)<\omega_{1}$）でしか使っていない。アロンシャイン木から同様に作った線は一般に c.c.c. ではないが、非可算な全順序で、$\omega_{1}$ とも $\omega_{1}^{*}$（$\omega_{1}$ の逆順序）とも実数直線の非可算部分集合とも同型な部分集合を含まないもの（**アロンシャイン線**）が得られる。Kunen, *Set Theory*, 第 II 章演習 32 は、アロンシャイン木から作った線が「型 $\omega_{1}$ の増加列も減少列ももたず、可分な部分空間はすべて疎である」ことを示させる。
+
+**$\omega_{1}$ 以外では.** （⇐）の構成は $\omega_{1}$ の段数と c.c.c. がちょうど噛み合うことを使っている。より大きい $\kappa$ についての $\kappa$-ススリン木の存在は、線の言葉ではなく木の言葉で論じるのが普通である。
+:::
+
+## MA(ω₁) とススリン木 {#set:sec-ma-suslin-tree}
+
+::: theorem MA(ω₁) のもとでススリン木は存在しない {#set:ma-no-suslin-tree keywords="MA(omega_1) implies there are no Suslin trees" index="MAとススリン木|えむえーとすすりんぎ"}
+$\mathrm{MA}(\omega_{1})$ を仮定すると、$\omega_{1}$-ススリン木は存在しない。
+:::
+
+::: intuition
+ススリン木 $T$ を上下逆にした半順序では、反鎖が木の反鎖そのものなので c.c.c. が成り立つ。「高さ $\alpha$ より上の点に進む」という要請は各 $\alpha<\omega_{1}$ について稠密で、要請の個数は $\omega_{1}$ 個。MA がこれらをすべて満たすフィルターを与えると、フィルターは木の中の鎖で、しかもすべてのレベルを越えていく非可算な鎖になってしまう。木が自分自身の非存在を証明するわけである。
+:::
+
+::: proof
+$\omega_{1}$-ススリン木 $T$ があったとして矛盾を導く。
+
+**Step 1（木の整理）.** 定理 \ref{set:suslin-tree-line} の証明の Step 1 と同様に、$T$ はよく刈り込まれた $\omega_{1}$-木であると仮定してよい。
+
+**Step 2（半順序）.** $\PP=T$ とし、$p\le_{\PP}q\iff q\le_{T}p$（$T$ の順序の逆）と定める。反射律・推移律は $\le_{T}$ から従い、$T\ne\varnothing$ なので $\PP$ は半順序である。\ref{set:tree-compatible-comparable} により $\PP$ の反鎖は $T$ の反鎖と一致し、ススリン木の反鎖は可算なので、$\PP$ は c.c.c. をもつ。
+
+**Step 3（稠密集合）.** $\alpha<\omega_{1}$ に対し $D_{\alpha}=\{x\in T\mid\operatorname{ht}(x,T)>\alpha\}$ とおく。$D_{\alpha}$ は $\PP$ で稠密である：$x\in T$ に対し $\beta=\max(\operatorname{ht}(x),\alpha)+1<\omega_{1}$ とおくと、$\operatorname{ht}(x)<\beta$ なので、よく刈り込まれていること（\eqref{set:eq-well-pruned}）から $x<_{T}y$ となる $y\in\operatorname{Lev}_{\beta}(T)$ がある。$y\le_{\PP}x$ かつ $\operatorname{ht}(y)=\beta>\alpha$ なので $y\in D_{\alpha}$。
+
+**Step 4（MA の適用）.** $\mathcal{D}=\{D_{\alpha}\mid\alpha<\omega_{1}\}$ は濃度 $\le\omega_{1}$ の稠密集合の族なので、$\mathrm{MA}(\omega_{1})$ により、すべての $D_{\alpha}$ と交わるフィルター $G\subseteq\PP$ がある。
+
+**Step 5（$G$ は非可算な鎖）.**
+- *鎖*：$G$ の 2 元は $\PP$ で両立する（\ref{set:poset-filter-basic} (1)）ので、\ref{set:tree-compatible-comparable} より $T$ で比較可能である。
+- *非可算*：各 $\alpha<\omega_{1}$ について $G\cap D_{\alpha}\ne\varnothing$ なので、$H=\{\operatorname{ht}(x)\mid x\in G\}$ は $\omega_{1}$ で非有界である。\ref{set:regular-bounded} より $H$ は非可算であり、$x\mapsto\operatorname{ht}(x)$ は $G$ から $H$ への全射なので $\lvert G\rvert\ge\lvert H\rvert>\omega$。
+
+これはススリン木の鎖が可算であることに反する。
+
+::: hypcheck
+- **$\mathrm{MA}(\omega_{1})$**：Step 4 で本質的に使った。$\omega_{1}$ 個の稠密集合が必要なのは、鎖を $\omega_{1}$ のすべてのレベルの上に伸ばすためである（可算個なら $\mathrm{MA}(\aleph_{0})$ で済むが、得られる鎖は可算にとどまる）。
+- **反鎖が可算であること**：Step 2 の c.c.c.。**鎖が可算であること**：Step 5 の矛盾。
+- **よく刈り込まれていること**：Step 3 の稠密性。刈り込まないと、上に伸びない点 $x$ の下では $D_{\alpha}$ が稠密にならない。
+- **選択公理**：Step 1（\ref{set:well-pruned-exists}）と Step 5（\ref{set:regular-bounded} の背後の $\omega_{1}$ の正則性、全射と濃度）で使った。
+:::
+:::
+
+::: supplement
+**別証明との比較.** 定理 \ref{set:suslin-tree-line} と「$\mathrm{MA}(\omega_{1})$ ならば SH」（\ref{set:ma-sh}）を組み合わせても同じ結論が得られるが、そちらは c.c.c. 空間の積が c.c.c. であること（\ref{set:ma-ccc-product}）を経由する間接的な議論である。逆に、この定理と \ref{set:suslin-tree-line} を組み合わせれば、$\mathrm{MA}(\omega_{1})\Rightarrow\mathrm{SH}$ の直接的な証明になる。
+
+**より強い結論.** $\mathrm{MA}(\omega_{1})$ のもとでは、すべてのアロンシャイン木が特殊（可算個の反鎖の和）になる（Baumgartner–Malitz–Reinhardt。Kunen 第 II 章演習 41 では $\mathrm{MA}+\lnot\mathrm{CH}$ の形で Baumgartner に帰している）。特殊なアロンシャイン木はススリン木でない（\ref{set:aronszajn-exists} の補足）ので、これはこの定理の強化である。
+:::
+
+## 道とクレパ木 {#set:sec-kurepa-tree}
+
+::: definition 木の道 {#set:tree-path keywords="path through a tree, branch, cofinal branch" index="道（木の）|みちきの, 共終な枝|きょうしゅうなえだ"}
+$\kappa$ を正則基数、$T$ を $\kappa$-木とする。$T$ の鎖 $C$ ですべての $\alpha<\kappa$ について $C\cap\operatorname{Lev}_{\alpha}(T)\ne\varnothing$ となるものを、$T$ の**道**（path）という。
+:::
+
+::: intuition
+根から頂上（高さ $\kappa$）まで途切れずに伸びる枝のこと。$\kappa$-アロンシャイン木とは「道をもたない $\kappa$-木」にほかならない（次の補題）。
+:::
+
+::: lemma 道の特徴づけ {#set:path-characterization keywords="a path is a maximal chain of size kappa"}
+$\kappa$ を正則基数、$T$ を $\kappa$-木、$C\subseteq T$ とする。$C$ が道であることと、$C$ が濃度 $\kappa$ の極大鎖であることは同値である。また道は下に閉じており、各レベルとちょうど 1 点で交わる。特に $T$ が $\kappa$-アロンシャイン木であることと、$T$ が道をもたないことは同値である。
+:::
+
+::: proof
+**Step 1（道は各レベルと 1 点で交わる）.** 鎖の同じレベルの 2 元は比較不能なので等しい（\ref{set:tree-basic} (2)）。よって道 $C$ は各 $\operatorname{Lev}_{\alpha}(T)$ とちょうど 1 点 $C(\alpha)$ で交わる。
+
+**Step 2（道 ⇒ 濃度 $\kappa$ の極大鎖）.** $\alpha\mapsto C(\alpha)$ は $\kappa$ から $C$ への単射であり、$C\subseteq T=\bigcup_{\alpha<\kappa}\operatorname{Lev}_{\alpha}(T)$ の各元はいずれかの $C(\alpha)$ なので全単射。よって $\lvert C\rvert=\kappa$。$C\cup\{y\}$ が鎖となる $y$ をとると、$\alpha=\operatorname{ht}(y)<\kappa$ について $y$ と $C(\alpha)$ は比較可能で同じレベルなので $y=C(\alpha)\in C$。よって $C$ は極大である。
+
+**Step 3（極大鎖は下に閉じている）.** \ref{set:maximal-chain-basic} (2) の証明はアロンシャイン性もよく刈り込まれていることも使っていないので、任意の木の極大鎖について成り立つ。
+
+**Step 4（濃度 $\kappa$ の極大鎖 ⇒ 道）.** $C$ を濃度 $\kappa$ の極大鎖とする。Step 3 と \ref{set:maximal-chain-basic} (3) の最初の議論により、$H=\{\operatorname{ht}(x)\mid x\in C\}$ は順序数であり、$x\mapsto\operatorname{ht}(x)$ は $C$ から $H$ への全単射（\ref{set:tree-chain-well-ordered}）。$H\subseteq\kappa$ なので $H\le\kappa$、$\lvert H\rvert=\lvert C\rvert=\kappa$ なので $H\ge\kappa$。よって $H=\kappa$ で、$C$ はすべてのレベルと交わる。
+
+**Step 5（アロンシャイン木）.** 道は濃度 $\kappa$ の鎖なので、アロンシャイン木は道をもたない。逆に濃度 $\kappa$ の鎖 $C$ があれば、\ref{set:maximal-chain-basic} (1) の証明（ツォルンの補題）で $C$ を含む極大鎖 $C'$ がとれ、$\kappa\le\lvert C'\rvert\le\lvert T\rvert=\kappa$（\ref{set:kappa-tree-size}）なので Step 4 より $C'$ は道である。
+
+::: hypcheck
+- **$\operatorname{ht}(T)=\kappa$**：Step 2 で $T$ が $\kappa$ 個のレベルの和であること、Step 4 で $H\subseteq\kappa$ に使った。
+- **選択公理**：Step 5 のツォルンの補題と \ref{set:kappa-tree-size}。Step 1〜4 は ZF で成り立つ。
+:::
+:::
+
+::: example
+- 正則基数 $\kappa$ 自身（各レベル 1 点）は、道をちょうど 1 本（$\kappa$ 全体）もつ。
+- $\kappa>\omega$ を正則基数とし、$T=\{s\in{}^{<\kappa}2\mid\{\alpha\in\dom s\mid s(\alpha)=1\}\text{ は有限}\}$ とする。制限で $1$ の個数は増えないので $T$ は ${}^{<\kappa}2$ の部分木で、$\operatorname{Lev}_{\alpha}(T)$ は「値 $1$ をとる位置の有限集合」で決まるから $\lvert\operatorname{Lev}_{\alpha}(T)\rvert\le\lvert\alpha\rvert+\omega<\kappa$、恒等的に $0$ の関数が各レベルにあるので $T$ は $\kappa$-木である。$T$ の道 $C$ に対し $f=\bigcup C\colon\kappa\to2$ とおくと、$f$ の値 $1$ の位置は有限である：無限なら最初の $\omega$ 個の位置の上限 $\beta$ は $\kappa$ の正則性と $\kappa>\omega$ から $\beta<\kappa$ で、$C(\beta)=f\restr{\beta}\notin T$ となる。逆に有限集合 $F\subseteq\kappa$ の特性関数の制限全体は道である。よって $T$ の道は $\kappa$ の有限部分集合と 1 対 1 に対応し、ちょうど $\kappa$ 本ある（\ref{set:kappa-finite-sequences}）。
+- $\kappa=\omega$ では同じ $T$ は ${}^{<\omega}2$ 全体になり、道は ${}^{\omega}2$ と対応して $2^{\aleph_{0}}$ 本ある。
+:::
+
+::: definition クレパ木・クレパ仮説 {#set:kurepa-tree keywords="Kurepa tree, kappa-Kurepa tree, Kurepa hypothesis, KH" index="クレパ木|くれぱぎ, クレパ仮説|くれぱかせつ, KH|けーえいち"}
+$\kappa$ を正則基数とする。少なくとも $\kappa^{+}$ 本の道をもつ $\kappa$-木を **$\kappa$-クレパ木**という。「$\kappa$-クレパ木が存在する」という主張を $\kappa$-KH と書き、$\omega_{1}$-KH を**クレパ仮説** KH という。
+:::
+
+::: intuition
+$\kappa$-木の元は $\kappa$ 個しかないのに、道は $\kappa$ 本より多い。「元の個数は少ないのに枝がやたらに多い」木であり、「枝が 1 本もない」アロンシャイン木と対極にある。SH が「ススリン木が**ない**」という主張であるのに対し、KH は「クレパ木が**ある**」という主張である点に注意する。
+:::
+
+::: proposition クレパ木が自明に存在する場合 {#set:kurepa-trivial keywords="omega-Kurepa tree, Kurepa trees at strongly inaccessible cardinals" index="自明なクレパ木|じめいなくれぱぎ"}
+$\kappa=\omega$ または $\kappa$ が強到達不能基数（\ref{set:inaccessible}）ならば、完全二分木 ${}^{<\kappa}2$ は $\kappa$-クレパ木である。
+:::
+
+::: proof
+**Step 1（$\kappa$-木）.** ${}^{<\kappa}2$ の第 $\alpha$ レベルは ${}^{\alpha}2$ で、$\operatorname{ht}({}^{<\kappa}2)=\kappa$（\ref{set:tree-height} の例）。$\lvert{}^{\alpha}2\rvert=2^{\lvert\alpha\rvert}$（\ref{set:function-set-bijections}）。$\alpha$ が有限なら $2^{\lvert\alpha\rvert}$ は有限で $<\kappa$。$\alpha$ が無限なら $\kappa$ は強到達不能（$\kappa=\omega$ の場合は無限の $\alpha<\omega$ はない）で $\lvert\alpha\rvert<\kappa$ なので $2^{\lvert\alpha\rvert}<\kappa$。
+
+**Step 2（道の本数）.** $f\in{}^{\kappa}2$ に対し $C_{f}=\{f\restr{\alpha}\mid\alpha<\kappa\}$ は各レベルと交わる鎖、すなわち道である。$f\ne g$ なら $f(\xi)\ne g(\xi)$ となる $\xi$ について $f\restr{(\xi+1)}\ne g\restr{(\xi+1)}$ で、道は第 $\xi+1$ レベルと 1 点でしか交わらない（\ref{set:path-characterization}）ので $C_{f}\ne C_{g}$。よって道は $\lvert{}^{\kappa}2\rvert=2^{\kappa}$ 本以上ある。カントールの定理（\ref{set:cantor-strict}）より $\kappa<2^{\kappa}$ であり、$\kappa^{+}$ は $\kappa$ より大きい最小の基数なので $\kappa^{+}\le2^{\kappa}$。
+
+::: hypcheck
+- **強到達不能性**（$\lambda<\kappa\Rightarrow2^{\lambda}<\kappa$）：Step 1 でレベルの小ささに本質的に使った。弱到達不能でも $2^{\lvert\alpha\rvert}\ge\kappa$ となりうる。
+- **選択公理**：基数の冪 $2^{\lambda}$ の定義（\ref{set:cardinal-exponentiation}）と $\kappa^{+}$ の比較で使った。
+:::
+:::
+
+::: supplement
+**独立性.** KH は $\ZFC+\mathrm{GCH}$ から独立である。◇⁺ から KH が従い（\ref{set:diamond-plus-kurepa}）、◇⁺ は $\mathbf{V}=\mathbf{L}$ のもとで成り立つ。逆に $\lnot\mathrm{KH}$ の無矛盾性は、到達不能基数の存在の無矛盾性を仮定して示され（Silver, 1971：到達不能基数を $\omega_{2}$ に潰すレヴィ崩壊）、しかもこの仮定は除去できない（$\omega_{2}$ が $L$ で到達不能でなければクレパ木が存在する）。
+
+**他の $\kappa$ では.** $\omega_{1}$ 以外の後続基数 $\kappa$ についても、$\mathbf{V}=\mathbf{L}$ での構成と到達不能基数の崩壊という同様の手法で $\kappa$-KH の独立性が論じられる（詳細は本サイトでは未確認）。一方、$\kappa=\omega$ や強到達不能基数 $\kappa$ では、上の命題のとおり $\kappa$-KH は自明に成り立つ。$\omega$ ではケーニッヒの補題（\ref{set:konig-tree-lemma}）により $\omega$-ススリン木も $\omega$-アロンシャイン木も存在しないので、$\omega$ は「道が多すぎる」側に振り切れている。
+:::
+
+## クレパ族 {#set:sec-kurepa-family}
+
+KH は、木を使わない組合せ論的な主張で言い換えられる。集合族 $\mathcal{F}\subseteq\mathcal{P}(I)$ と $X\subseteq I$ に対し
+$$
+\mathcal{F}_{X}=\{A\cap X\mid A\in\mathcal{F}\}
+$$
+と書く（**$\mathcal{F}$ の $X$ へのトレース**）。
+
+::: definition クレパ族 {#set:kurepa-family keywords="Kurepa family, kappa-Kurepa family" index="クレパ族|くれぱぞく, トレース（集合族の）|とれーすしゅうごうぞくの"}
+$\kappa$ を正則基数とする。$\mathcal{F}\subseteq\mathcal{P}(\kappa)$ が **$\kappa$-クレパ族**であるとは、$\lvert\mathcal{F}\rvert\ge\kappa^{+}$ であり、かつすべての $\alpha<\kappa$ について $\lvert\mathcal{F}_{\alpha}\rvert<\kappa$ となることをいう。
+:::
+
+::: intuition
+$\kappa^{+}$ 個以上の $\kappa$ の部分集合からなる族で、どの始切片 $\alpha$ で「切って見て」も $\kappa$ 通り未満の姿しか現れないもの。切り口 $A\cap\alpha$ を $\alpha$ について並べたものが木の枝、各 $\alpha$ での切り口の全体が木のレベルに当たる。
+:::
+
+::: lemma クレパ族は添字集合の順序によらない {#set:kurepa-family-transfer keywords="Kurepa families on arbitrary index sets"}
+$\kappa$ を正則基数とする。
+1. $X\subseteq Y\subseteq I$, $\mathcal{F}\subseteq\mathcal{P}(I)$ ならば $\lvert\mathcal{F}_{X}\rvert\le\lvert\mathcal{F}_{Y}\rvert$。
+2. $\mathcal{F}\subseteq\mathcal{P}(\kappa)$ について、「すべての $\alpha<\kappa$ で $\lvert\mathcal{F}_{\alpha}\rvert<\kappa$」と「$\lvert X\rvert<\kappa$ となるすべての $X\subseteq\kappa$ で $\lvert\mathcal{F}_{X}\rvert<\kappa$」は同値である。
+3. $\kappa$-クレパ族が存在することと、$\lvert I\rvert=\kappa$ となるある（任意の）集合 $I$ について、$\lvert\mathcal{F}\rvert\ge\kappa^{+}$ かつ「$\lvert X\rvert<\kappa$ となるすべての $X\subseteq I$ で $\lvert\mathcal{F}_{X}\rvert<\kappa$」を満たす $\mathcal{F}\subseteq\mathcal{P}(I)$ が存在することは同値である。
+:::
+
+::: proof
+**(1)** $B\in\mathcal{F}_{Y}$ に $B\cap X$ を対応させると、$B=A\cap Y$ なら $B\cap X=A\cap X$ なので、これは $\mathcal{F}_{Y}$ から $\mathcal{F}_{X}$ への全射である（値は $B$ だけで決まる）。\ref{set:surjection-cardinality} より $\lvert\mathcal{F}_{X}\rvert\le\lvert\mathcal{F}_{Y}\rvert$。
+
+**(2)** 後者 ⇒ 前者：$\alpha<\kappa$ なら $\lvert\alpha\rvert\le\alpha<\kappa$。前者 ⇒ 後者：$X\subseteq\kappa$, $\lvert X\rvert<\kappa$ なら、\ref{set:regular-bounded} より $X\subseteq\alpha$ となる $\alpha<\kappa$ があり、(1) より $\lvert\mathcal{F}_{X}\rvert\le\lvert\mathcal{F}_{\alpha}\rvert<\kappa$。
+
+**(3)** 全単射 $e\colon I\to\kappa$ をとり、$\mathcal{F}\subseteq\mathcal{P}(I)$ に $e_{*}\mathcal{F}=\{e[A]\mid A\in\mathcal{F}\}\subseteq\mathcal{P}(\kappa)$ を対応させる。$A\mapsto e[A]$ は単射なので $\lvert e_{*}\mathcal{F}\rvert=\lvert\mathcal{F}\rvert$。$X\subseteq I$ について $e[A]\cap e[X]=e[A\cap X]$ なので、$A\cap X\mapsto e[A\cap X]$ は $\mathcal{F}_{X}$ から $(e_{*}\mathcal{F})_{e[X]}$ への全単射であり、$\lvert e[X]\rvert=\lvert X\rvert$。$X\mapsto e[X]$ は $I$ の部分集合と $\kappa$ の部分集合の全単射なので、「$\lvert X\rvert<\kappa\Rightarrow\lvert\mathcal{F}_{X}\rvert<\kappa$」は $\mathcal{F}$ と $e_{*}\mathcal{F}$ で同値である。(2) と合わせて、$\mathcal{F}$ が (3) の条件を満たすことと $e_{*}\mathcal{F}$ が $\kappa$-クレパ族であることは同値。逆向きは $e^{-1}$ で同じことをすればよい。
+
+::: hypcheck
+- **$\kappa$ の正則性**：(2) で \ref{set:regular-bounded} を使うのに本質的に使った。
+- **選択公理**：(1) の全射と濃度（\ref{set:surjection-cardinality}）と、濃度の比較全般に使った。
+:::
+:::
+
+::: theorem クレパ族とクレパ木 {#set:kurepa-equiv keywords="Kurepa family iff Kurepa tree" index="クレパ族とクレパ木|くれぱぞくとくれぱぎ"}
+$\kappa$ を正則基数とする。$\kappa$-クレパ族が存在することと、$\kappa$-クレパ木が存在することは同値である。
+:::
+
+::: intuition
+クレパ木の道の全体は、木の元の集合 $T$（濃度 $\kappa$）の部分集合の族で、小さな $X\subseteq T$ へのトレースは「$X$ より上のあるレベルの点がどれか」で決まるので少ない。逆にクレパ族からは、切り口 $A\cap\alpha$ の特性関数を並べた ${}^{<\kappa}2$ の部分木が作れ、族の各元が 1 本の道を与える。
+:::
+
+::: proof
+**（⇒ クレパ木からクレパ族）.** $T$ を $\kappa$-クレパ木とし、$\mathcal{F}$ を $T$ の道全体とする。$\mathcal{F}\subseteq\mathcal{P}(T)$, $\lvert\mathcal{F}\rvert\ge\kappa^{+}$ であり、$\lvert T\rvert=\kappa$（\ref{set:kappa-tree-size}）。\ref{set:kurepa-family-transfer} (3) により、$X\subseteq T$, $\lvert X\rvert<\kappa$ ならば $\lvert\mathcal{F}_{X}\rvert<\kappa$ であることを示せばよい。
+
+**Step 1（$X$ の上のレベル）.** $\{\operatorname{ht}(x)\mid x\in X\}$ は濃度 $<\kappa$ の $\kappa$ の部分集合なので、\ref{set:regular-bounded} より、すべての $x\in X$ で $\operatorname{ht}(x)<\alpha$ となる $\alpha<\kappa$ がある。
+
+**Step 2（トレースはレベル $\alpha$ の点で決まる）.** 道 $C$ に対し $z=C(\alpha)$（\ref{set:path-characterization}）とおくと
+$$
+C\cap X=\{x\in X\mid x<z\}.
+$$
+実際、$x\in C\cap X$ なら $x$ と $z$ は鎖 $C$ の元で $\operatorname{ht}(x)<\alpha=\operatorname{ht}(z)$ なので $x<z$。逆に $x\in X$, $x<z$ なら、道は下に閉じている（\ref{set:path-characterization}）ので $x\in C$。
+
+**Step 3.** Step 2 より $z\mapsto\{x\in X\mid x<z\}$ は $\operatorname{Lev}_{\alpha}(T)$ から $\mathcal{F}_{X}$ への全射（$\mathcal{F}_{X}$ の各元はある道 $C$ について $C\cap X$ の形であり、$z=C(\alpha)$ の像である）なので、$\lvert\mathcal{F}_{X}\rvert\le\lvert\operatorname{Lev}_{\alpha}(T)\rvert<\kappa$（\ref{set:surjection-cardinality}）。
+
+**（⇐ クレパ族からクレパ木）.** $\mathcal{F}\subseteq\mathcal{P}(\kappa)$ を $\kappa$-クレパ族とする。$\alpha<\kappa$ と $B\subseteq\alpha$ に対し、$B$ の特性関数を $\chi^{\alpha}_{B}\in{}^{\alpha}2$（$\xi\in B$ なら $1$、$\xi\in\alpha\setminus B$ なら $0$）と書き、
+$$
+T=\bigl\{\chi^{\alpha}_{A\cap\alpha}\bigm|\alpha<\kappa,\ A\in\mathcal{F}\bigr\}\subseteq{}^{<\kappa}2
+$$
+に延長の順序 $s<t\iff s\subsetneq t$ を入れる。
+
+**Step 4（部分木とレベル）.** $\beta<\alpha$ なら $\chi^{\alpha}_{A\cap\alpha}\restr{\beta}=\chi^{\beta}_{A\cap\beta}\in T$ なので、$T$ は完全二分木 ${}^{<\kappa}2$ の部分木であり、\ref{set:tree-basic} (5) と完全二分木の例（\ref{set:tree-height}）より $s\in T$ の高さは $\dom s$、
+$$
+\operatorname{Lev}_{\alpha}(T)=\{\chi^{\alpha}_{B}\mid B\in\mathcal{F}_{\alpha}\}.
+$$
+$B\mapsto\chi^{\alpha}_{B}$ は単射なので $\lvert\operatorname{Lev}_{\alpha}(T)\rvert=\lvert\mathcal{F}_{\alpha}\rvert<\kappa$。
+
+**Step 5（$\kappa$-木）.** $\mathcal{F}\ne\varnothing$（$\lvert\mathcal{F}\rvert\ge\kappa^{+}$）なので各 $\alpha<\kappa$ で $\operatorname{Lev}_{\alpha}(T)\ne\varnothing$。$T\subseteq{}^{<\kappa}2$ なので $\operatorname{Lev}_{\kappa}(T)=\varnothing$。よって $\operatorname{ht}(T)=\kappa$（\ref{set:tree-basic} (4)）で、$T$ は $\kappa$-木である。
+
+**Step 6（道の本数）.** $A\in\mathcal{F}$ に対し $C_{A}=\{\chi^{\alpha}_{A\cap\alpha}\mid\alpha<\kappa\}$ は、互いに延長の関係にある元からなるので鎖であり、各レベルと交わるので道である。$A\ne A'$ なら $\xi\in A\mathbin{\triangle}A'$ をとると $\chi^{\xi+1}_{A\cap(\xi+1)}\ne\chi^{\xi+1}_{A'\cap(\xi+1)}$ で、道は第 $\xi+1$ レベルと 1 点でしか交わらないので $C_{A}\ne C_{A'}$。よって $A\mapsto C_{A}$ は単射で、道は $\lvert\mathcal{F}\rvert\ge\kappa^{+}$ 本以上ある。$T$ は $\kappa$-クレパ木である。
+
+::: hypcheck
+- **$\kappa$ の正則性**：Step 1 で \ref{set:regular-bounded} を使うのに、また \ref{set:kurepa-family-transfer} (3) を通して使った。
+- **各レベルが $\kappa$ 未満であること**（⇒）：Step 3。**$\lvert\mathcal{F}_{\alpha}\rvert<\kappa$**（⇐）：Step 4。
+- **道が下に閉じ各レベルと 1 点で交わること**（\ref{set:path-characterization}）：Step 2, Step 6。
+- **選択公理**：\ref{set:kappa-tree-size}、全射と濃度（\ref{set:surjection-cardinality}）、\ref{set:kurepa-family-transfer} で使った。
+:::
+:::
+
+::: supplement
+**⇐ の構成の副産物.** （⇐）で作った木は ${}^{<\kappa}2$ の部分木である。したがって「$\kappa$-クレパ木が存在すれば、${}^{<\kappa}2$ の部分木である $\kappa$-クレパ木が存在する」（\ref{set:prob-kurepa-subtree}）。ススリン木・アロンシャイン木についても同様の主張が成り立つ（Kunen 第 II 章演習 34）。
+
+**◇⁺ との関係.** ◇⁺ はクレパ族を直接作るのに都合のよい形をしており、\ref{set:diamond-plus-family} と本定理から KH が得られる（\ref{set:diamond-plus-kurepa}）。
+:::
+
+## 問題 {#set:sec-sk-problems}
+
+::: problem {#set:prob-kurepa-subtree}
+$\kappa$ を正則基数とする。$\kappa$-クレパ木が存在すれば、完全二分木 ${}^{<\kappa}2$ の部分木であって $\kappa$-クレパ木であるものが存在することを示せ。
+:::
+
+::: solution
+定理 \ref{set:kurepa-equiv} の（⇒）により $\kappa$-クレパ族 $\mathcal{F}\subseteq\mathcal{P}(\kappa)$ が存在する。これに（⇐）の構成を施して得られる $T=\{\chi^{\alpha}_{A\cap\alpha}\mid\alpha<\kappa,\ A\in\mathcal{F}\}$ は、証明の Step 4 より ${}^{<\kappa}2$ の部分木であり、Step 5・6 より $\kappa$-クレパ木である。
+:::
+
+::: problem {#set:prob-kurepa-paths-bound}
+$\kappa$ を正則基数、$T$ を $\kappa$-木とする。(a) $T$ の道は高々 $2^{\kappa}$ 本であることを示せ。(b) $\kappa$-クレパ木は $\kappa$-アロンシャイン木でないことを示せ。(c) $2^{\kappa}=\kappa^{+}$ のとき、$\kappa$-木 $T$ が $\kappa$-クレパ木であることと、$T$ の道がちょうど $2^{\kappa}$ 本であることは同値であることを示せ。
+:::
+
+::: solution
+(a) 道は $T$ の部分集合なので、道の全体は $\mathcal{P}(T)$ の部分集合であり、$\lvert\mathcal{P}(T)\rvert=2^{\lvert T\rvert}=2^{\kappa}$（\ref{set:kappa-tree-size}）。
+
+(b) $\kappa$-クレパ木は $\kappa^{+}\ge1$ 本以上の道をもち、\ref{set:path-characterization} より道をもつ $\kappa$-木はアロンシャイン木でない。
+
+(c) クレパ木なら道の本数 $N$ は $\kappa^{+}\le N\le2^{\kappa}=\kappa^{+}$（(a)）なので $N=2^{\kappa}$。逆に $N=2^{\kappa}=\kappa^{+}$ なら定義よりクレパ木である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

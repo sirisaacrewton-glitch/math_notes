@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>集合論の言語と ZFC の公理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/01-basics/01-axioms-overview.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 集合論の言語と ZFC の公理 {#set:page-axioms keywords="language of set theory, axioms of ZFC, Zermelo-Fraenkel set theory, first-order logic"}
+
+数学のほとんどすべての対象は集合として表せる。したがって「どの集合が存在するか」を正確に決めておけば、数学の定理がどの原理に依存しているかを問うことができる。本ページでは、集合論を**一階述語論理の言語**で書かれた公理系 $\ZFC$ として定式化するための枠組みを概観し、公理を一覧にする。各公理の意味と、それから導かれる基本的な構成は次ページ以降で一つずつ扱う。
+
+## なぜ公理から始めるのか {#set:sec-why-axioms}
+
+ふだんの数学では、どの原理が疑いなく正しく、どれが未解決の予想なのかを、形式的な公理系なしに区別できている。たとえば連続体仮説 CH（\ref{set:ch}）が「基本原理」ではなく「未解決の主張」であることは誰もが了解している。
+
+しかし「CH は通常の集合論の原理からは証明も反証もできない」という種類の主張を**数学的に**扱うには、
+
+1. 「通常の原理」とは何かを正確に列挙すること、
+2. 「証明できる」とは何かを正確に定義すること
+
+が必要になる。1 を与えるのが公理系 $\ZFC$（本ページの \ref{set:zfc}）であり、2 を与えるのが一階述語論理の形式的証明の概念である。$\ZFC$ が現在の慣習的な数学をすべて展開するのに十分であることは、本分野の各ページで順に確かめていく。もちろん将来、$\ZFC$ から従わない「明らかに正しい」原理が見いだされ、それで CH が決着する可能性は排除されない。
+
+::: supplement
+**「性質」を無制限に許すと困る例.** 「40 語以下の日本語で定義できない最小の正の整数」は、いまちょうど 40 語以下で定義してしまった（ベリーのパラドックス）。「性質 $P(x)$ を満たす元の集合」を作る分出公理（\ref{set:ax-comprehension}）の $P$ として何を許すかを決めるには、日本語ではなく厳密に定義された形式言語が要る。
+:::
+
+## 一階述語論理の言語 {#set:sec-language}
+
+::: definition 集合論の言語 {#set:first-order-language keywords="first-order language, language of set theory, formula" index="集合論の言語|しゅうごうろんのげんご, 論理式|ろんりしき, 一階述語論理|いっかいじゅつごろんり"}
+**集合論の言語**の基本記号は
+$$
+\land,\quad \lnot,\quad \exists,\quad (,\quad ),\quad \in,\quad =,\quad v_{0},\ v_{1},\ v_{2},\ \dots
+$$
+である（$v_{j}$ は**変数**）。基本記号の有限列を**記号列**といい、次の規則で作られる記号列を**論理式**という。
+
+1. 任意の $i,j$ について $v_{i}\in v_{j}$ と $v_{i}=v_{j}$ は論理式である（**原子論理式**）。
+2. $\varphi,\psi$ が論理式ならば、$(\varphi)\land(\psi)$、$\lnot(\varphi)$、および任意の $i$ について $\exists v_{i}(\varphi)$ は論理式である。
+3. 以上の規則を有限回適用して得られるものだけが論理式である。
+:::
+
+::: intuition
+$\land$ は「かつ」、$\lnot$ は「でない」、$\exists$ は「存在する」、$\in$ は所属、$=$ は等号と読む。非論理記号は $\in$ ただ一つであり、集合論で語れることはすべて「所属」と論理記号の組み合わせで書かれる。記号を極端に少なくしてあるのは、論理式についての帰納的な議論（「すべての論理式について…」）を短くするためである。
+:::
+
+::: example
+$\exists v_{0}\bigl(\exists v_{1}((v_{0}\in v_{1})\land(v_{1}\in v_{0}))\bigr)$ は論理式である（「互いに相手の元であるような集合の組がある」）。一方 $v_{0}\in v_{1}\land\lnot(v_{1}\in v_{0})$ は括弧の規則を満たさないので、厳密には論理式ではない（次の略記の約束のもとでは論理式を表す）。
+:::
+
+::: notation 略記 {#set:formula-abbreviations}
+以下は論理式の略記であり、新しい記号を言語に加えるわけではない。
+- $\forall x\,\varphi$ は $\lnot\exists x\,\lnot\varphi$、$\varphi\lor\psi$ は $\lnot(\lnot\varphi\land\lnot\psi)$、$\varphi\to\psi$ は $\lnot\varphi\lor\psi$、$\varphi\leftrightarrow\psi$ は $(\varphi\to\psi)\land(\psi\to\varphi)$ の略。
+- $x\neq y$ は $\lnot(x=y)$、$x\notin y$ は $\lnot(x\in y)$ の略。
+- **有界量化子**：$\forall x\in A\;\varphi$ は $\forall x(x\in A\to\varphi)$、$\exists x\in A\;\varphi$ は $\exists x(x\in A\land\varphi)$ の略。
+- **一意存在**：$\exists!y\,\varphi(y)$ は $\exists y\bigl(\varphi(y)\land\forall y'(\varphi(y')\to y'=y)\bigr)$ の略（$y'$ は $\varphi$ に現れない変数）。
+- 誤解のおそれがなければ括弧を省き、$v_{j}$ の代わりに $x,y,z,A,B,\mathcal{F},\alpha,\dots$ などの文字を変数として使う。
+:::
+
+::: definition 自由変数・束縛変数・文 {#set:free-bound-variable keywords="free variable, bound variable, sentence, universal closure" index="自由変数|じゆうへんすう, 束縛変数|そくばくへんすう, 文|ぶん, 全称閉包|ぜんしょうへいほう"}
+論理式 $\psi$ の中の量化子 $\exists v_{i}$ の出現の**作用域**とは、その $\exists v_{i}$ から始まる $\psi$ の部分論理式（ただ一つに定まる）のことである。変数の出現が、その変数に対する量化子の作用域の中にあるとき**束縛されている**といい、そうでないとき**自由である**という。自由な出現をもたない論理式を**文**という。論理式 $\varphi$ の自由変数をすべて $\forall$ で量化して得られる文を $\varphi$ の**全称閉包**という。
+:::
+
+::: intuition
+論理式は自由変数についての「性質」を表し、束縛変数は「ある集合が存在して…」を言うための仮の名前にすぎない。文は自由変数をもたないので、それ自体で真偽の決まる主張である。数学の慣習どおり、論理式 $\varphi$ を「主張する」ときはその全称閉包を主張していると解釈する。
+:::
+
+::: example
+$\varphi$ を $\exists v_{0}(v_{0}\in v_{1})\land\exists v_{1}(v_{1}\in v_{1})$ とする。$v_{1}$ の最初の出現は自由で、$\exists v_{1}(v_{1}\in v_{1})$ の中の $v_{1}$ の出現はすべて束縛されている。$\varphi$ は「$v_{1}$ は元をもつ、かつ自分自身の元であるような集合がある」を意味する。
+
+$\varphi(x_{1},\dots,x_{n})$ と書いて自由変数を明示したとき、$\varphi(y_{1},\dots,y_{n})$ は各 $x_{i}$ の自由な出現を $y_{i}$ で置き換えたものを表す。ただし置き換えた $y_{i}$ が $\varphi$ の量化子 $\exists y_{i}$ に捕まってはならない（**自由な代入**）。上の $\varphi$ の自由な $v_{1}$ を $v_{0}$ に置き換えると、「$v_{0}$ は元をもつ」と言うはずの部分が $\exists v_{0}(v_{0}\in v_{0})$（「自分自身の元である集合がある」）に化けて意味が変わる。これは代入した $v_{0}$ が量化子 $\exists v_{0}$ に捕まったためである。以下、代入は常に自由なものとする。
+:::
+
+::: definition 形式的証明と無矛盾性 {#set:formal-deduction keywords="formal deduction, provability, consistency, Con" index="形式的証明|けいしきてきしょうめい, 無矛盾|むむじゅん, 証明可能|しょうめいかのう"}
+$S$ を文の集まり、$\varphi$ を文とする。$S$ からの $\varphi$ の**形式的証明**とは、論理式の有限列 $\varphi_{1},\dots,\varphi_{n}$ であって、$\varphi_{n}$ が $\varphi$ であり、各 $\varphi_{i}$ が「$S$ の元」「論理公理」「$\varphi_{1},\dots,\varphi_{i-1}$ から推論規則で得られるもの」のいずれかであるものをいう（論理公理と推論規則は純粋に記号の形だけで定義される。詳しくは \ref{logic:deduction-system}）。そのようなものがあるとき $S\vdash\varphi$ と書く。$\varphi$ が文でない論理式のときは、$S\vdash\varphi$ は $S$ が $\varphi$ の全称閉包を証明することとする。
+
+ある $\varphi$ について $S\vdash\varphi$ かつ $S\vdash\lnot\varphi$ となるとき $S$ は**矛盾する**といい、そうでないとき**無矛盾**であるといって $\mathrm{Con}(S)$ と書く。
+:::
+
+::: intuition
+形式的証明は「記号の意味には一切触れず、規則どおりに記号列を並べたもの」である。これによって「$\ZFC$ から CH は証明できない」が「そのような有限列は存在しない」という、はっきりした主張になる。矛盾する $S$ は（爆発律により）すべての文を証明してしまうので興味の対象にならない。背理法を形式化すると、$S\vdash\varphi$ と「$S\cup\{\lnot\varphi\}$ が矛盾する」とは同値になる。特に「$\ZFC\nvdash\lnot\mathrm{CH}$」は $\mathrm{Con}(\ZFC+\mathrm{CH})$ と同値である。
+:::
+
+::: proposition 証明は有限個の公理しか使わない {#set:deduction-finite keywords="finiteness of proofs"}
+(1) $S\vdash\varphi$ ならば、有限部分集合 $S_{0}\subseteq S$ で $S_{0}\vdash\varphi$ となるものがある。
+(2) $S$ が矛盾するならば、矛盾する有限部分集合 $S_{0}\subseteq S$ がある。
+:::
+
+::: proof
+**(1)** $S$ からの $\varphi$ の形式的証明 $\varphi_{1},\dots,\varphi_{n}$ をとる。$S_{0}$ を、この列に現れる $S$ の元全体とする。列の長さは $n$ なので $S_{0}$ の元は高々 $n$ 個で有限である。同じ列は、各 $\varphi_{i}$ が「$S_{0}$ の元・論理公理・前の項から推論規則で得られるもの」のいずれかになっているので $S_{0}$ からの形式的証明でもある。よって $S_{0}\vdash\varphi$。
+
+**(2)** $S\vdash\psi$ と $S\vdash\lnot\psi$ となる $\psi$ をとる。(1) より有限な $S_{1},S_{2}\subseteq S$ で $S_{1}\vdash\psi$, $S_{2}\vdash\lnot\psi$ となるものがある。$S_{0}=S_{1}\cup S_{2}$ は有限で、$S_{1}$ や $S_{2}$ からの証明はそのまま $S_{0}$ からの証明でもあるので、$S_{0}\vdash\psi$ かつ $S_{0}\vdash\lnot\psi$。
+
+::: hypcheck
+- **形式的証明が有限列であること**：(1) で本質的に使った。集合論の公理は一つも使わない（メタ理論での有限的な議論である）。
+:::
+:::
+
+::: supplement
+$\ZFC$ は分出公理や置換公理が「図式」なので無限個の公理からなる。この命題により、ある矛盾が $\ZFC$ から導かれるなら、それは $\ZFC$ の**有限個**の公理だけから導かれる。後に無矛盾性を示す際、「$\ZFC$ の任意の有限部分が成り立つモデル」を作れば足りるのはこのためである。証明を意味論的に定義する流儀ではこの命題は深い定理（\ref{logic:compactness}）になる。
+:::
+
+## 形式的理論とメタ理論 {#set:sec-metatheory}
+
+数学の哲学の極端な立場を戯画的に並べると次のようになる。
+
+- **プラトン主義**：集合の宇宙は我々と無関係に実在し、CH は（今は分からなくとも）真か偽のどちらかである。$\ZFC$ の公理はその宇宙について明らかに正しい原理を書き出したものにすぎない。
+- **有限主義**：実在するのは有限の対象だけであり、実数全体の集合を考えること自体が正当化されない。
+- **形式主義**：$\ZFC$ の公理は記号の有限列にすぎず、「$\ZFC\vdash\varphi$」は「ある種の有限列が存在する」という有限的に意味のある主張である。
+
+本分野のページでは、説明を簡単にするためにプラトン主義的に書く。すなわち $\ZFC\vdash\varphi$ を示すのに「$\ZFC$ の公理が正しいと仮定して $\varphi$ が正しいことを論証する」。形式論理に慣れた読者は、それを形式的証明に書き直せる。
+
+ここで**形式的理論**（$\ZFC$ そのもの。その定理は $\ZFC$ から証明できる言語の文）と、それについて語る**メタ理論**（形式的理論について実際に成り立つこと）を区別しておく。「実数は非可算個ある」は $\ZFC$ の定理であり、「$\mathrm{Con}(\ZFC)\to\mathrm{Con}(\ZFC+\mathrm{CH})$」はメタ理論の定理である。メタ理論としては有限的な推論が使えることだけを仮定する。
+
+## 解釈と無矛盾性 {#set:sec-interpretation}
+
+::: definition 解釈 {#set:interpretation keywords="interpretation, structure, model" index="解釈|かいしゃく, モデル|もでる"}
+集合論の言語の**解釈**とは、空でない**議論領域** $D$（変数が動く範囲）と、$D$ 上の二項関係 $E$（$\in$ の解釈）の組 $(D,E)$ のことである。$=$ は常に $D$ 上の本当の等号と解釈する。各文 $\varphi$ は $(D,E)$ のもとで真か偽かが決まる。文の集まり $S$ のすべての元が $(D,E)$ で真のとき、$(D,E)$ を $S$ の**モデル**という。
+:::
+
+::: example
+$D=\Z$ とし $x\in y$ を $x<y$ と解釈するのは、ふざけてはいるが正当な解釈である。この解釈では「すべての集合は元をもつ」$\forall x\exists y(y\in x)$ が真になるが、これは $\ZFC$ から反証される（空集合 \ref{set:empty-set}）。もちろんこの解釈では $\ZFC$ の公理の多くが偽になる。
+:::
+
+::: fact 健全性：モデルをもつ理論は無矛盾 {#set:model-consistency keywords="soundness theorem" index="健全性定理|けんぜんせいていり"}
+$S\vdash\varphi$ ならば、$S$ のすべてのモデルで $\varphi$ は真である。したがって $S$ がモデルをもてば $S$ は無矛盾である。逆に、無矛盾な $S$ は（可算な議論領域をもつ）モデルをもつ（**ゲーデルの完全性定理**、\ref{logic:completeness}）。
+:::
+
+::: intuition
+前半は推論規則が「真を真に移す」ように作られていることから従う。あるモデルで $\varphi$ も $\lnot\varphi$ も真になることはないので、$S$ はその両方を証明できない。集合論の独立性証明（たとえば CH の独立性）はすべてこの形で行われる：$\ZFC+\mathrm{CH}$ と $\ZFC+\lnot\mathrm{CH}$ のそれぞれにモデルを作れば、実際の宇宙で CH が真か偽かを決めずに独立性が示せる。
+:::
+
+::: definition 遺伝的集合 {#set:hereditary-set keywords="hereditary set, intended interpretation" index="遺伝的集合|いでんてきしゅうごう, 意図された解釈|いとされたかいしゃく"}
+$x$ が集合であり、$x$ の元がすべて集合であり、$x$ の元の元がすべて集合であり、…というように、どこまで元をたどっても集合しか現れないとき、$x$ を**遺伝的集合**という。和集合（\ref{set:ax-union}）の記号で書けば、$\bigcup^{0}x=x$, $\bigcup^{n+1}x=\bigcup\bigl(\bigcup^{n}x\bigr)$ とおいたとき、すべての $n$ について $\bigcup^{n}x$ の元がすべて集合であることである。
+:::
+
+::: intuition
+集合論を数学の基礎とするなら、変数が牛や豚のような集合でない対象を動く必要はない。$\ZFC$ の**意図された解釈**は、議論領域を遺伝的集合全体とし、$\in$ を本当の所属関係と解釈するものである。遺伝的集合の元はまた遺伝的集合なので、「すべての集合について」は「その元の元の…についても」をもれなく含む。このことが外延性の公理（\ref{set:ax-extensionality}）の正しさの根拠になる。例：$\varnothing$, $\{\varnothing\}$, $\{\varnothing,\{\{\varnothing\}\}\}$ は遺伝的集合である。
+:::
+
+::: supplement
+**弱い体系を調べる理由.** 独立性証明で新しいモデルを作るとき、まず $\ZF$ から冪集合公理・無限公理を除いた弱い体系が成り立つことを確かめると、そのモデルの中で基本的な集合論が使えるようになり、選択公理・冪集合公理・無限公理がそのモデルで何を意味するかが分かりやすくなる。そのため本分野では、各証明の「前提条件の使用箇所」でどの公理を使ったかを明記する。
+:::
+
+## 定義された記号 {#set:sec-defined-notions}
+
+分出公理や置換公理は「言語の論理式 $\varphi$」ごとに立てられる公理図式である。ところが実際には $\subseteq$, $\cap$, $\{x,y\}$, $\omega$ など、後から導入した記号を含む性質にもこれらの公理を適用する。これを正当化するのが次の約束である：**形式言語は決して変わらず、新しい記号はすべて論理式の略記である**。
+
+::: definition 定義された関係と演算 {#set:defined-notions keywords="defined notion, definitional extension" index="定義による拡大|ていぎによるかくだい"}
+1. **定義された関係**は論理式の略記そのものである。たとえば $x\subseteq y$ は $\forall z(z\in x\to z\in y)$ の略、「$x$ は空である」は $\forall z(z\notin x)$ の略である。
+2. 論理式 $\varphi(x_{1},\dots,x_{n},y)$（自由変数はこれらだけ）について、公理系 $S$ が
+$$
+S\vdash\forall x_{1}\cdots\forall x_{n}\,\exists!y\;\varphi(x_{1},\dots,x_{n},y)
+$$
+を証明するとき、$S$ のもとで**演算** $F(x_{1},\dots,x_{n})$ を「$\varphi(x_{1},\dots,x_{n},y)$ を満たす唯一の $y$」として定義してよい（$n=0$ なら**定数**）。$F$ を含む式は $F$ を含まない式の略記とみなす。例えば $\psi(F(\vec{x}))$ は $\exists y(\varphi(\vec{x},y)\land\psi(y))$ の略である（$\forall y(\varphi(\vec{x},y)\to\psi(y))$ と読んでも $S$ のもとで同値である）。
+3. 集合の記法 $\{x\mid\varphi(x,\vec{y})\}$ も演算の定義の特別な場合である：$S$ が外延性の公理を含み $S\vdash\forall\vec{y}\,\exists z\,\forall x\bigl(x\in z\leftrightarrow\varphi(x,\vec{y})\bigr)$ を証明するときに限り、その唯一の $z$ をこう書く。
+4. 部分的にしか意味をもたない演算（例：順序数の和 $\alpha+\beta$）は、本来の定義域の外では値を $\varnothing$ と約束して全域的な演算とする。
+:::
+
+::: example
+$S$ が $\forall x\forall y\exists!z\,\forall v(v\in z\leftrightarrow v\in x\land v\in y)$ を証明するとき（分出と外延性から従う。\ref{set:intersection-difference}）、$x\cap y$ を使ってよい。$x\cap y\in A\cap B$ は、$\varphi(x,y,z)$ を上の $\forall v(\cdots)$ として
+$$
+\exists z\,\exists C\,\bigl(\varphi(x,y,z)\land\varphi(A,B,C)\land z\in C\bigr)
+$$
+の略記である。
+:::
+
+::: fact 定義による拡大は保存的 {#set:definitional-extension keywords="conservative extension, elimination of defined symbols" index="保存拡大|ほぞんかくだい"}
+$S'$ を、$S$ に上のような定義を有限回追加して得られる理論とする。
+1. $S'$ の言語の各論理式 $\psi'$ に対し、元の言語の論理式 $\psi$ で $S'\vdash\psi\leftrightarrow\psi'$ となるものがある。
+2. $S'$ は $S$ の**保存拡大**である：元の言語の文 $\varphi$ について $S'\vdash\varphi$ ならば $S\vdash\varphi$。
+
+（1 は拡大の段数と $\psi'$ の構成についての帰納法で示せる。2 はモデル論的には容易で、$S$ の任意のモデルを定義どおりに記号を解釈して $S'$ のモデルに拡張すればよい。有限的な証明は Shoenfield『Mathematical Logic』(1967) による。）
+:::
+
+::: intuition
+1 により、定義された記号を含む性質に分出公理・置換公理を適用しても、それは元の言語の論理式への適用と同値である。2 により、定義を追加しても新しい定理（元の言語で書ける主張）は増えない。超限再帰（\ref{set:transfinite-recursion}）による関数の定義も、この意味での新しい演算記号の導入と見ることができる。
+:::
+
+## ZFC の公理 {#set:sec-zfc}
+
+以下が $\ZFC$ の公理である。各公理の意味・動機・直接の帰結は右欄のページで扱う。分出公理と置換公理は論理式ごとに一つずつの**公理図式**である。
+
+::: table ZFC の公理 {#set:zfc keywords="ZFC axioms, list of axioms" index="ZFC|ぜっとえふしー, ツェルメロ＝フレンケルの集合論|つぇるめろふれんけるのしゅうごうろん"}
+| | 公理 | 論理式（全称閉包をとる） | 導入箇所 |
+|---|---|---|---|
+| 0 | 集合の存在 | $\exists x\,(x=x)$ | \ref{set:ax-set-existence} |
+| 1 | 外延性 | $\forall x\,\forall y\,\bigl(\forall z(z\in x\leftrightarrow z\in y)\to x=y\bigr)$ | \ref{set:ax-extensionality} |
+| 2 | 基礎（正則性） | $\forall y\,\bigl(\exists x(x\in y)\to\exists x(x\in y\land\lnot\exists z(z\in x\land z\in y))\bigr)$ | \ref{set:ax-foundation} |
+| 3 | 分出（図式） | $\exists y\,\forall x\,(x\in y\leftrightarrow x\in z\land\varphi)$（$y$ は $\varphi$ に自由に現れない） | \ref{set:ax-comprehension} |
+| 4 | 対 | $\forall x\,\forall y\,\exists z\,(x\in z\land y\in z)$ | \ref{set:ax-pairing} |
+| 5 | 和集合 | $\forall\mathcal{F}\,\exists A\,\forall Y\,\forall x\,(x\in Y\land Y\in\mathcal{F}\to x\in A)$ | \ref{set:ax-union} |
+| 6 | 置換（図式） | $\forall x\in A\,\exists!y\,\varphi(x,y)\to\exists Y\,\forall x\in A\,\exists y\in Y\,\varphi(x,y)$（$Y$ は $\varphi$ に自由に現れない） | \ref{set:ax-replacement} |
+| 7 | 無限 | $\exists x\,\bigl(\varnothing\in x\land\forall y\in x\,(y\cup\{y\}\in x)\bigr)$ | \ref{set:ax-infinity} |
+| 8 | 冪集合 | $\forall x\,\exists y\,\forall z\,(z\subseteq x\to z\in y)$ | \ref{set:ax-power-set} |
+| 9 | 選択 | $\forall A\,\exists R\,(R$ は $A$ を整列する$)$ | \ref{set:ax-choice} |
+:::
+
+::: intuition
+公理 4〜8 はどれも「ある集まりが集合になる」ことを言う公理だが、ちょうどその集まりを与えるのではなく「その集まりを**含む**集合がある」という弱い形で述べてある。欲しい集合そのものは分出公理で切り出せるので強さは変わらず、この形のほうが、独立性証明で作るモデルの中で公理を確かめるのが楽になる。無限公理と選択公理は、それぞれ定義された記号（$\varnothing$, $\cup$, 整列順序）を使って書いてあるが、\ref{set:defined-notions} の意味で $\in$ と $=$ だけの論理式の略記である。
+:::
+
+::: notation 部分体系の名前 {#set:zf-subsystems keywords="ZF, ZF minus, subsystems of ZFC" index="ZF|ぜっとえふ"}
+- $\ZFC$ は公理 0〜9 すべて、$\ZF$ は公理 0〜8（選択公理を除く）。
+- $\ZF^{-}$, $\ZFC^{-}$ は、それぞれ $\ZF$, $\ZFC$ から基礎の公理（公理 2）を除いたもの。
+- $\ZF-\mathrm{P}$ は $\ZF$ から冪集合公理を除いたもの、$\ZF^{-}-\mathrm{P}-\mathrm{Inf}$ はさらに基礎の公理と無限公理も除いたもの。他の略号も同様に読む。
+- $\ZF$ の頭文字はツェルメロ（Zermelo）とフレンケル（Fraenkel）、$\mathrm{C}$ は選択（Choice）を表す。
+:::
+
+::: axiom 基礎の公理 {#set:ax-foundation keywords="Axiom of Foundation, Axiom of Regularity" index="基礎の公理|きそのこうり, 正則性公理|せいそくせいこうり"}
+$$
+\forall y\,\bigl(\exists x\,(x\in y)\to\exists x\,(x\in y\land\lnot\exists z\,(z\in x\land z\in y))\bigr).
+$$
+:::
+
+::: intuition
+空でない集合 $y$ は必ず、$y$ と共通の元をもたない元 $x$（$\in$ に関して**極小な元**）をもつ、という主張。これにより $x\in x$ となる集合や、$x_{0}\ni x_{1}\ni x_{2}\ni\cdots$ と無限に降りていく列が排除され、すべての集合が空集合から「段階的に積み上げて」得られるという描像（累積階層）が正当化される。一方で、通常の数学の展開（順序数・基数・実数の構成など）には基礎の公理はまったく使われない。本分野の証明でも基本的に使わず、使うときは明記する。詳しくは \ref{set:cumulative-hierarchy} で扱う。
+:::
+
+::: example
+$y=\{x\}$ に基礎の公理を適用すると、$y$ の元は $x$ だけなので $x\cap\{x\}=\varnothing$、特に $x\notin x$ が従う。同様に $y=\{x,x'\}$ に適用すると、$x\in x'$ と $x'\in x$ が同時に成り立つことはない。
+:::
+
+## 他の集合論 {#set:sec-other-set-theories}
+
+$\ZF$ では「クラス」（$\{x\mid\varphi(x)\}$ のような、集合になるとは限らない集まり）は論理式の言い換えとしてメタ理論の中でしか扱わない（\ref{set:class}）。クラスを形式的な対象として認める体系もある。そこではすべての集合はクラスだが、すべてのクラスが集合とは限らず、「あるクラスの元になれるクラス」を集合と呼ぶ。
+
+::: fact NBG と MK {#set:nbg-mk keywords="von Neumann-Bernays-Gödel set theory, Morse-Kelley set theory, NBG, MK, New Foundations" index="NBG|えぬびーじー, MK|えむけー, フォン・ノイマン＝ベルナイス＝ゲーデルの集合論|ふぉんのいまんべるないすげーでるのしゅうごうろん, モース＝ケリーの集合論|もーすけりーのしゅうごうろん"}
+1. **NBG**（フォン・ノイマン＝ベルナイス＝ゲーデル）は、集合については $\ZF$ の公理を満たし、クラスの内包公理 $\exists X\,\forall y\,(y\in X\leftrightarrow\varphi(y))$ を、$\varphi$ の**束縛変数が集合だけを動く**場合に限って認める体系である。NBG は $\ZF$ の保存拡大であり（集合の変数だけを含む文について NBG $\vdash\varphi\iff\ZF\vdash\varphi$。Wang 1949, Shoenfield 1954）、$\ZF$ と異なり**有限個の公理**で公理化できる。
+2. **MK**（モース＝ケリー）は、クラスの内包公理を任意の $\varphi$ について認める。MK は $\mathrm{Con}(\ZF)$ を証明するので $\ZF$ の保存拡大ではなく、有限公理化もできない。
+:::
+
+::: supplement
+**どれを採るか.** どの体系にも一長一短があり、一つが「正しい」と決まるわけではない。クラスを対象として認めれば $\ZF$ のようにメタ理論で言い換える手間は省けるが、その代わり今度は「クラスの集まり」を扱いたくなり、同じ種類の言い換えが一段上で必要になる。三つの体系で集合について言えることの基本は共通しており、本分野で $\ZF$ を採るのは技術的に最も扱いやすいからにすぎない。
+
+**性質の違う体系.** クワインの **NF**（New Foundations）では、$\{x\mid\varphi(x)\}$ を作ってよいかどうかを $\varphi$ の構文的な形（変数に型を割り振って矛盾なく読める「層化された」論理式か）で判定する。$x=x$ は層化されているので**普遍集合が存在し**、$x\notin x$ は層化されていないのでラッセルの議論は起こらない。NF では選択公理の否定が証明される（Specker 1953）。NF の無矛盾性は長く未解決の問題であった。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

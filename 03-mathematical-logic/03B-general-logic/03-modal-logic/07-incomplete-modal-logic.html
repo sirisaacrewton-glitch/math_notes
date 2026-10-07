@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>不完全な様相論理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/03-modal-logic/07-incomplete-modal-logic.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 不完全な様相論理 {#logic:page-incomplete-modal-logic keywords="Kripke incompleteness, Henkin's axiom, system H, Berk's theorem, Cresswell model, Magari, Lewis's theorem, degree one axioms"}
+
+これまでの体系はどれも、「適切なフレームで妥当な論理式はすべて定理」という意味で**完全**だった。本ページでは、ヘンキンの問題から自然に現れる体系 $\mathsf{H}\defeq\mathsf{K}\oplus\{\Box(A\leftrightarrow\Box A)\to\Box A\}$ が**不完全**であることを示す。$\mathsf{H}$ に適切なフレームは $\mathsf{GL}$ に適切なフレームとちょうど同じ（バークの定理）なのに、$\mathsf{H}$ は $\Box p\to\Box\Box p$ を証明しない（マガリの定理、クレスウェルのモデルによる）。さらに、$\mathsf{H}$ はレーブ規則で閉じていない。最後に、様相次数が $1$ 以下の公理だけで作った体系は必ず完全であること（ルイスの定理）を示し、$\mathsf{H}$ が「最も単純な」不完全な体系であることを見る。
+
+## 記法と定義の確認 {#logic:sec-incomp-notation}
+
+::: notation
+- 正規様相論理、$\mathsf{K}\oplus\mathrm{Ax}$、正規性は \ref{logic:page-normal-modal-logics}、$\mathsf{GL}$ とその不動点の計算は \ref{logic:page-gl-axioms}、クリプキ意味論・フレームの対応・様相次数は \ref{logic:page-kripke-semantics}、極大無矛盾集合とリンデンバウムの補題は \ref{logic:page-canonical-models} のとおり。
+- モデル $\mathcal{M}$ と論理式 $A$ について $[A]\defeq\{w:\mathcal{M},w\models A\}$ と書く。
+:::
+
+::: definition フレームに関する完全性 {#logic:frame-completeness keywords="Kripke completeness, appropriate frame" index="フレームに関する完全性|ふれーむにかんするかんぜんせい"}
+正規様相論理 $L$ のすべての定理が妥当なフレームを、$L$ に**適切**なフレームという。$L$ に適切なすべてのフレームで妥当な論理式がすべて $L$ の定理であるとき、$L$ は（フレームに関して）**完全**であるという。
+:::
+
+::: remark
+「モデル」に関してなら、どの正規様相論理も完全である：定理はちょうどカノニカルモデルで妥当な論理式である（\ref{logic:canonical-fundamental}）。完全性の問題はフレーム（すべての付値）についてである。\ref{logic:page-modal-completeness} で扱った七つの体系は完全である。
+:::
+
+## 体系 H {#logic:sec-system-h}
+
+::: definition 体系 H {#logic:system-h keywords="Henkin's schema, system H" index="体系 H|たいけいえいち"}
+$\mathsf{H}\defeq\mathsf{K}\oplus\{\Box(A\leftrightarrow\Box A)\to\Box A:A\text{ は様相論理式}\}$ とおく。
+:::
+
+::: intuition
+算術では、ヘンキンの問題（\ref{pt:henkin-problem}）の答え「$\PA\vdash S\leftrightarrow\mathrm{Bew}(\Godel{S})$ なら $\PA\vdash S$」を、様相論理の公理として書いたものが $\mathsf{H}$ の公理である。レーブの公理の方が、D1–D3 を使ってヘンキンの答えから導ける強い主張であり、この強さの差が $\mathsf{K}$ の上では本当に現れることを本ページで見る。
+:::
+
+::: proposition H と K, GL の関係 {#logic:h-between}
+$\mathsf{K}\subsetneq\mathsf{H}\subset\mathsf{GL}$。
+:::
+
+::: proof
+$\mathsf{H}\subset\mathsf{GL}$：\ref{logic:gl-four-fixed-points} の 2 より $\mathsf{GL}\vdash\Box(p\leftrightarrow\Box p)\to\Box p$ で、一様代入による。$\mathsf{K}\neq\mathsf{H}$：$\mathcal{M}\defeq(\N,<,\varnothing)$（$p$ はどこでも偽）では、各 $n$ で $\Box p$ も偽（$n<n+1$）なので $p\leftrightarrow\Box p$ はどこでも真、$\Box(p\leftrightarrow\Box p)$ も真、$\Box p$ は偽。よって $\mathsf{H}$ の公理がこのモデルで偽になり、健全性（\ref{logic:kripke-k-sound}）より $\mathsf{K}$ の定理でない。
+:::
+
+::: theorem バークの定理 {#logic:berk-theorem keywords="Berk's theorem" index="バークの定理|ばーくのていり"}
+フレーム $\mathcal{F}$ について、$\mathcal{F}\models\Box(p\leftrightarrow\Box p)\to\Box p\iff\mathcal{F}\models\Box(\Box p\to p)\to\Box p$。したがって $\mathsf{H}$ に適切なフレームは、推移的かつ逆整礎なフレームである。
+:::
+
+::: proof
+**($\Leftarrow$)** $\mathcal{F}$ で妥当な論理式全体は正規様相論理（\ref{logic:kripke-k-sound}）で、レーブの公理を含むので $\mathsf{GL}$ を含み、$\mathsf{H}\subset\mathsf{GL}$ による。
+
+**($\Rightarrow$)** $\mathcal{F}=(W,R)$ 上のモデル $\mathcal{M}$ と $w$ で $\mathcal{M},w\models\Box(\Box p\to p)$ とする。新しい付値 $U\defeq\{(y,p):\text{すべての }k\ge0\text{ で }\mathcal{M},y\models\Box^{k}p\}$ とし、$\mathcal{N}\defeq(W,R,U)$ とおく。$wRy$ となる $y$ について、$\mathcal{M},y\models\Box p\to p$ なので、
+$$
+\begin{aligned}
+\mathcal{N},y\models p&\iff\forall k\ge0\ \mathcal{M},y\models\Box^{k}p\iff\forall k\ge1\ \mathcal{M},y\models\Box^{k}p\\
+&\iff\forall z\,(yRz\Rightarrow\forall k\ge0\ \mathcal{M},z\models\Box^{k}p)\iff\mathcal{N},y\models\Box p.
+\end{aligned}
+$$
+（二番目の同値の $\Leftarrow$ は $k=1$ と $\Box p\to p$、三番目は \ref{logic:kripke-abbreviations}。）よって $\mathcal{N},w\models\Box(p\leftrightarrow\Box p)$、仮定から $\mathcal{N},w\models\Box p$。$wRx$ なら $(x,p)\in U$、とくに $k=0$ で $\mathcal{M},x\models p$。したがって $\mathcal{M},w\models\Box p$。後半は \ref{logic:frame-correspondence} の 5 と、フレームでの妥当性が一様代入で閉じていること。
+:::
+
+## マガリの定理：H は 4 を証明しない {#logic:sec-magari}
+
+::: definition クレスウェルのモデル {#logic:cresswell-model keywords="Cresswell's model, recession frame" index="クレスウェルのモデル|くれすうぇるのもでる"}
+$\N^{\ast}=\{0^{\ast},1^{\ast},2^{\ast},\dots\}$ を $\N$ の互いに素なコピーとし、$W\defeq\N\cup\N^{\ast}$ とする。$R$ を次のいずれかのとき $wRx$ となる関係とする。
+- $w=m^{\ast}$, $x=n^{\ast}$ で $m\le n+1$。
+- $w\in\N^{\ast}$, $x\in\N$。
+- $w,x\in\N$ で $w>x$。
+
+付値は $p$ が $0^{\ast}$ でだけ偽とする。このモデルを $\mathcal{C}$ とする。
+:::
+
+::: lemma R の連結性 {#logic:cresswell-connected}
+任意の $y,z\in W$ について $yRz$, $y=z$, $zRy$ のどれかが成り立つ。また $\N$ の元から $\N^{\ast}$ の元へは到達できない。
+:::
+
+::: proof
+$y,z\in\N$ なら大小関係の三分律。一方が $\N^{\ast}$、他方が $\N$ なら前者が後者を見る。$y=m^{\ast}$, $z=n^{\ast}$ なら、$m\le n+1$ か $n\le m+1$ のどちらかは必ず成り立つ。後半は定義から。
+:::
+
+::: lemma 真理集合は有限か補有限 {#logic:cresswell-finite-cofinite}
+$\mathcal{C}$ で、任意の論理式 $A$ について $[A]$ は有限集合か、補集合が有限な集合（補有限）である。
+:::
+
+::: proof
+$A$ に関する帰納法。$[p]=W\setminus\{0^{\ast}\}$ は補有限、$[q]$（$q\neq p$ は偽とする）と $[\bot]$ は空。$[A\to B]=(W\setminus[A])\cup[B]$ は、$[A]$ が補有限かつ $[B]$ が有限なら有限、それ以外は補有限。$[\Box A]$：
+- ある $n\in\N$ が $n\notin[A]$ のとき：$\N^{\ast}$ の元と $n$ より大きい $\N$ の元は $n$ を見るので $\Box A$ は偽。よって $[\Box A]\subset\{0,\dots,n\}$ で有限。
+- $\N\subset[A]$ のとき：$[A]$ は無限なので帰納法の仮定より補有限で、$W\setminus[A]\subset\N^{\ast}$ は有限。空なら $[\Box A]=W$。そうでなければ、ある $k$ で $W\setminus[A]\subset\{0^{\ast},\dots,k^{\ast}\}$。$w\notin[\Box A]$ なら $w$ は $j^{\ast}$（$j\le k$）を見るので $w=m^{\ast}$ で $m\le j+1\le k+1$。よって $W\setminus[\Box A]$ は有限。
+:::
+
+::: theorem H の公理はクレスウェルのモデルで妥当 {#logic:cresswell-validates-h}
+任意の $A$ について、$\Box(A\leftrightarrow\Box A)\to\Box A$ は $\mathcal{C}$ のすべての世界で真である。したがって $\mathsf{H}$ の定理はすべて $\mathcal{C}$ で妥当である。
+:::
+
+::: proof
+$w\models\Box(A\leftrightarrow\Box A)$ かつ $w\not\models\Box A$ と仮定して矛盾を導く。
+
+**Case 1（ある $n\in\N$ で $n\notin[A]$）.** そのような最小の $n$ をとる。$n$ から見えるのは $n$ より小さい自然数だけで、それらは $[A]$ に属するので $n\models\Box A$、したがって $n\not\models A\leftrightarrow\Box A$。よって $wRn$ でない。また $w\neq n$（$w\not\models\Box A$ だが $n\models\Box A$）。連結性より $nRw$ で、$w\in\N$, $w<n$。$w\not\models\Box A$ より $wRx$, $x\notin[A]$ となる $x$ があり、$x\in\N$, $x<w<n$ で $n$ の最小性に反する。
+
+**Case 2（$\N\subset[A]$）.** \ref{logic:cresswell-finite-cofinite} より $W\setminus[A]$ は有限で、$w\not\models\Box A$ より空でなく、$\N^{\ast}$ に含まれる。その最大の元を $k^{\ast}$ とする。$k^{\ast}\notin[A]$、$(k+1)^{\ast}\in[A]$、$(k+1)^{\ast}Rk^{\ast}$ より $(k+1)^{\ast}\not\models\Box A$、よって $(k+1)^{\ast}\not\models A\leftrightarrow\Box A$。一方 $wRx$, $x\notin[A]$ となる $x=n^{\ast}$（$n\le k$）があり、$\N$ の元は $\N^{\ast}$ を見ないので $w=m^{\ast}$, $m\le n+1\le k+1\le(k+1)+1$。よって $wR(k+1)^{\ast}$ で、$(k+1)^{\ast}\models A\leftrightarrow\Box A$ となり矛盾する。
+
+後半：恒真式と分配公理はすべてのモデルで妥当で、モデルでの妥当性はモーダスポネンスと必然化で保たれる（\ref{logic:kripke-k-sound}）。
+:::
+
+::: theorem マガリの定理 {#logic:magari-theorem keywords="Magari's theorem, incompleteness of H" index="マガリの定理|まがりのていり"}
+$\mathsf{H}\nvdash\Box p\to\Box\Box p$。したがって $\mathsf{H}\subsetneq\mathsf{GL}$ であり、$\mathsf{H}$ は不完全である。
+:::
+
+::: proof
+$\mathcal{C}$ で、$2^{\ast}Rx\iff x\neq0^{\ast}$（$2\le n+1\iff n\ge1$、および $\N$ の元すべて）なので $2^{\ast}\models\Box p$。一方 $2^{\ast}R1^{\ast}$ で、$1^{\ast}R0^{\ast}$（$1\le0+1$）かつ $0^{\ast}\not\models p$ なので $1^{\ast}\not\models\Box p$、よって $2^{\ast}\not\models\Box\Box p$。\ref{logic:cresswell-validates-h} より $\Box p\to\Box\Box p$ は $\mathsf{H}$ の定理でない。不完全性：バークの定理より $\mathsf{H}$ に適切なフレームは推移的なので、$\Box p\to\Box\Box p$ はそれらすべてで妥当（\ref{logic:frame-correspondence} の 2）だが、定理でない。
+:::
+
+::: theorem H はレーブ規則で閉じていない {#logic:h-not-lob-closed}
+$\mathsf{H}\vdash\Box(\Box p\to\Box\Box p)\to(\Box p\to\Box\Box p)$。したがって $A\defeq\Box p\to\Box\Box p$ について $\mathsf{H}\vdash\Box A\to A$ だが $\mathsf{H}\nvdash A$。
+:::
+
+::: proof
+$B\defeq p\wedge\Box p$ とおく。
+
+**Step 1.** $\mathsf{K}\vdash\Box p\wedge\Box(\Box p\to\Box\Box p)\to\Box(B\leftrightarrow\Box B)$ を示す。恒真式により、$p$ と $\Box p\to\Box\Box p$ を仮定すると $B\leftrightarrow\Box p$、また $\Box p\to\Box\Box p$ を仮定すると $\Box p\wedge\Box\Box p\leftrightarrow\Box p$。正規性 3 より $\mathsf{K}\vdash\Box B\leftrightarrow\Box p\wedge\Box\Box p$ で、必然化により $\Box(\Box B\leftrightarrow\Box p\wedge\Box\Box p)$ も $\mathsf{K}$ の定理。以上を $\Box$ の中で組み合わせる（正規性 5）と、$\Box p$（すなわち $\Box$ の中の $p$）と $\Box(\Box p\to\Box\Box p)$ から $\Box(B\leftrightarrow\Box p)$ と $\Box(\Box B\leftrightarrow\Box p)$、したがって $\Box(B\leftrightarrow\Box B)$。
+
+**Step 2.** $\mathsf{H}$ の公理 $\Box(B\leftrightarrow\Box B)\to\Box B$ と正規性 3（$\Box B\to\Box\Box p$）から、$\mathsf{H}\vdash\Box p\wedge\Box(\Box p\to\Box\Box p)\to\Box\Box p$。恒真式で書き換えれば主張。後半はマガリの定理。
+:::
+
+::: remark
+$\mathsf{K}$ はレーブ規則で閉じている（\ref{logic:k-lob-rule}）。$\mathsf{K4}$ にヘンキンの規則（$\vdash A\leftrightarrow\Box A$ なら $\vdash A$）、レーブ規則、ヘンキンの公理、レーブの公理のどれを加えても $\mathsf{GL}$ になる。$\mathsf{K}$ の上では、ヘンキンの公理（$\mathsf{H}$）はレーブの公理（$\mathsf{GL}$）より真に弱い。
+:::
+
+## ルイスの定理：次数 1 の公理は完全 {#logic:sec-lewis}
+
+::: theorem ルイスの定理 {#logic:lewis-theorem keywords="Lewis's theorem, degree one axioms are complete" index="ルイスの定理|るいすのていり"}
+$X$ を様相次数が $1$ 以下の論理式の集合とし、$L\defeq\mathsf{K}\oplus\{D\sigma:D\in X,\ \sigma\text{ は代入}\}$ とする。$L$ は完全である。
+:::
+
+::: proof
+$L\nvdash A$ とする。$L$ に適切で $A$ が妥当でないフレームを作る。
+
+**Step 1（材料）.** $\mathcal{A}\defeq\mathrm{Sub}(A)$、$\mathcal{B}$ を $\mathcal{A}$ の元から $\bot,\to$ で作られる論理式全体とする。$\mathcal{A}$ の各元かその否定を（固定した順序で）一つずつ選んだ連言のうち、$L$-無矛盾なものの全体を $\mathcal{S}$ とする（**状態記述**。有限個）。各 $C\in\mathcal{S}$ について $C$ を含む極大 $L$-無矛盾集合 $w_{C}$ を一つとり（\ref{logic:modal-lindenbaum}）、$W\defeq\{w_{C}:C\in\mathcal{S}\}$、$wRx\defeq$「すべての $B\in\mathcal{B}$ について $\Box B\in w\Rightarrow B\in x$」、$V\defeq\{(w,p):p\in w\}$ とする。$\lvert B\rvert\defeq\{w\in W:B\in w\}$ と書く。
+
+**Step 2（状態記述の性質）.** 異なる $C,C'\in\mathcal{S}$ は恒真式により両立しない。$\mathcal{B}$ の元 $E$ と $C\in\mathcal{S}$ について、恒真式により $C\to E$ か $C\to\neg E$ のどちらかが成り立つ（$C$ は $\mathcal{A}$ の真偽をすべて決める）。
+
+**Step 3（補題）.** 次の形の論理式 $G$ について $[G]=\lvert G\rvert$：$\mathcal{B}$ の元と、$B\in\mathcal{B}$ による $\Box B$ から、$\bot,\to$ で作られるもの。原子の場合 $[p]=\lvert p\rvert$、含意は極大性による。$\Box B$（$B\in\mathcal{B}$、$[B]=\lvert B\rvert$ はすでに示したとする）：$\Box B\in w$, $wRx$ なら $B\in x$ で $x\in[B]$、よって $w\models\Box B$。逆に $\Box B\notin w$ とし、$Y\defeq\{\neg B\}\cup\{C'\in\mathcal{B}:\Box C'\in w\}$ とおく。$Y$ は $L$-無矛盾（矛盾するなら $L\vdash C'_{1}\wedge\cdots\wedge C'_{k}\to B$、正規性 5 で $\Box B\in w$）。$\mathcal{B}$ は恒真式による同値を除いて有限なので、$Y$ はある有限部分 $Y_{0}$ と同値で、$\bigwedge Y_{0}$ はそれと両立する状態記述の選言と同値である。よって $Y\cup\{C\}$ が無矛盾な $C\in\mathcal{S}$ があり、Step 2 より $Y$ の各元 $E$ について $L\vdash C\to E$、したがって $Y\subset w_{C}$。$wRw_{C}$ で $\neg B\in w_{C}$ なので $w_{C}\notin\lvert B\rvert=[B]$、$w\not\models\Box B$。$\mathcal{A}$ の元（その $\Box$ の中身は $\mathcal{A}\subset\mathcal{B}$）について帰納法を回すと、$\mathcal{B}$ の元と $\Box\mathcal{B}$ の組み合わせすべてで $[G]=\lvert G\rvert$。
+
+**Step 4（$A$ は偽）.** $\{\neg A\}$ は無矛盾なので、$\neg A$ を含む状態記述 $C\in\mathcal{S}$ がある。$A\notin w_{C}$、Step 3 より $w_{C}\not\models A$。
+
+**Step 5（$X$ はフレームで妥当）.** $(W,R)$ の上の任意の付値 $V'$ をとり、$[\cdot]'$ をその真理集合とする。各命題変数 $p$ について $E_{p}\defeq\bigvee\{C\in\mathcal{S}:(w_{C},p)\in V'\}\in\mathcal{B}$（空なら $\bot$）とおく。Step 2 より $E_{p}\in w_{C}\iff C$ が選言項、すなわち $\lvert E_{p}\rvert=[p]'$。Step 3 より $[E_{p}]=\lvert E_{p}\rvert=[p]'$。$D\in X$ と代入 $\sigma(p)\defeq E_{p}$ について、$D$ の部分論理式に関する帰納法で $[G]'=[G\sigma]$（同じフレームで、原子の真理集合が一致するので）。$D$ の次数は $1$ 以下なので $D\sigma$ は Step 3 の形の論理式で、$[D\sigma]=\lvert D\sigma\rvert$。$D\sigma$ は $L$ の公理なので、すべての $w\in W$ に属し、$\lvert D\sigma\rvert=W$。よって $[D]'=W$。
+
+**Step 6.** $X$ の元がフレームで妥当なので、フレームでの妥当性が代入・モーダスポネンス・必然化で閉じていること（\ref{logic:kripke-k-sound}）から、$L$ の定理はすべて $(W,R)$ で妥当、すなわち $(W,R)$ は $L$ に適切。Step 4 より $A$ はそこで妥当でない。
+
+::: hypcheck
+- **次数 1 以下**：Step 5 で $D\sigma$ が Step 3 の形（$\Box$ の中が $\mathcal{B}$ の元）になることに使う。次数 2 以上の公理では $\Box\Box E_{p}$ が現れ、Step 3 の補題が使えない。$\mathsf{H}$ の公理 $\Box(p\leftrightarrow\Box p)\to\Box p$ は次数 2 である。
+- **状態記述が有限個**：Step 3 の「$Y$ と両立する状態記述がある」と、Step 5 の $E_{p}$ が $\mathcal{B}$ の元（有限の選言）であること。
+:::
+:::
+
+::: remark
+したがって「命題変数一つ、次数 2」の $\mathsf{H}$ は、次数についても命題変数の個数についても、最も単純な不完全な体系である。マガリの定理以前には、次数 2 で命題変数二つ、または次数 3 で命題変数一つの公理による不完全な体系が知られていた、とされる（Boolos 第 11 章。本サイトでは原典を確認していない）。
+:::
+
+## 問題 {#logic:sec-incomp-problems}
+
+::: problem {#logic:prob-incomp-hk4}
+$\mathsf{H}\oplus4=\mathsf{GL}$（$\mathsf{H}$ に公理 4 を加えると $\mathsf{GL}$ になる）ことを示せ。
+:::
+
+::: solution
+$\mathsf{H}\subset\mathsf{GL}$ と $\mathsf{GL}\vdash4$ から $\mathsf{H}\oplus4\subset\mathsf{GL}$。逆に、レーブの公理を $\mathsf{H}\oplus4$ で導く。$C\defeq\Box(\Box p\to p)$ とおく。(i) 分配公理より $C\to(\Box\Box p\to\Box p)$、公理 4 と合わせて $C\to(\Box p\leftrightarrow\Box\Box p)$。(ii) (i) に正規性 1 を使って $\Box C\to\Box(\Box p\leftrightarrow\Box\Box p)$、公理 4 より $C\to\Box C$ なので $C\to\Box(\Box p\leftrightarrow\Box\Box p)$。(iii) ヘンキンの公理を $A=\Box p$ に使うと $\Box(\Box p\leftrightarrow\Box\Box p)\to\Box\Box p$。(ii), (iii) と (i) の $\Box\Box p\to\Box p$ から $C\to\Box p$。
+:::
+
+::: problem {#logic:prob-incomp-canonical}
+$\mathsf{H}$ のカノニカルモデルが推移的でないことを、マガリの定理を使って示せ。
+:::
+
+::: solution
+推移的なら、カノニカルモデルで $\Box p\to\Box\Box p$ が妥当になり（\ref{logic:frame-correspondence} の 2 の $\Leftarrow$ はモデルでも成り立つ）、\ref{logic:canonical-fundamental} より $\mathsf{H}\vdash\Box p\to\Box\Box p$ となってマガリの定理に反する。
+:::
+
+::: supplement
+**高い視点から：フレームは様相論理の「見え方」を制限する.** モデルに関する完全性は常に成り立つが、フレームに関する完全性は、論理の定理が「関係の性質」として捉えきれるかどうかを問う。$\mathsf{H}$ は、フレームで見るとレーブの公理と区別できない（バークの定理）のに、定理としては弱い。代数的に言えば、様相代数のうち「フレームから来るもの」（冪集合代数）だけでは $\mathsf{H}$ を特徴づけられず、クレスウェルのモデルの真理集合のような「有限または補有限な集合の代数」という一般のフレーム（一般フレーム）が必要になる。完全な論理と不完全な論理の境界が「次数 1」にあるというルイスの定理は、フレームの一階の性質で捉えられる情報の限界を示している。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

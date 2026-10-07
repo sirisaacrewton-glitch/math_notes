@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>整礎関係と推移閉包 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/03-well-founded-sets/03-well-founded-relations.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 整礎関係と推移閉包 {#set:page-well-founded-relations keywords="well-founded relation, transitive closure, trcl, R-minimal element"}
+
+整列順序は「空でないどの部分集合にも最小元がある」全順序であった。この条件から全順序であることを外し、「最小元」を「それより下の元がない元（**極小元**）」に弱めたものが**整礎関係**である。整礎関係は、以降の章で帰納法・再帰・モストフスキの崩壊定理などの土台になる。
+
+本ページでは、まず整礎関係を定義して基本性質を確かめ、それが整礎集合とどう結びつくかを調べる。$A\in\mathbf{WF}$ なら $\in$ は $A$ 上で整礎であるが、逆は一般には成り立たない。逆が成り立つのは $A$ が推移的なときであり、一般の $A$ については、$A$ を含む最小の推移的集合である**推移閉包** $\operatorname{trcl}(A)$ に移って判定すればよい。こうして「$A\in\mathbf{WF}$ $\iff$ $\in$ は $\operatorname{trcl}(A)$ 上で整礎」という、冪集合にも $R(\alpha)$ にも触れない特徴づけが得られる。
+
+$\mathbf{WF}$ の定義は冪集合公理を本質的に使うが、本ページの定義や結果の多くは冪集合公理なしで成り立つ。後の章では冪集合公理が成り立つかわからない構造の中でこれらを使うので、**各結果に、それがどの体系で証明できるかを明記する。**
+
+## 記法と定義の確認 {#set:sec-wfr-notation}
+
+::: notation
+- 体系の略号は \ref{set:zf-subsystems} に従う。$\ZF^{-}$ は $\ZF$ から基礎の公理を除いたもの、$\ZF^{-}-\mathrm{P}$ はさらに冪集合公理を除いたものである。本ページでは基礎の公理も選択公理も使わない。
+- 関係（\ref{set:relation}）$R$ について $xRy$ は $\langle x,y\rangle\in R$ の略記である。$R\subseteq A\times A$ は仮定しない。$\in$ のように論理式で与えられる関係（クラス）についても $x\in y$ を「$x R y$」と読んで同じ定義を用いる。始切片 $\mathrm{pred}(A,x,R)=\{y\in A\mid yRx\}$（\ref{set:initial-segment}）。
+- 全順序（\ref{set:total-order}）と整列順序（\ref{set:well-order}）：$\langle A,R\rangle$ が全順序で、$A$ の空でない任意の部分集合 $X$ が $R$-最小元（$\forall y\in X\,\lnot(yRx)$ を満たす $x\in X$）をもつとき、$R$ は $A$ を整列する。
+- 推移的集合（\ref{set:transitive-set}）：$y\in x\Rightarrow y\subseteq x$。$x$ が推移的 $\iff\bigcup x\subseteq x$（\ref{set:transitive-set-basic}）。
+- 順序数の集合 $X\neq\varnothing$ は最小元 $\min X$ をもつ（\ref{set:sup-ordinals}）。$\omega$ 上の帰納法（\ref{set:peano} (5)）と $\omega$ 上の再帰（\ref{set:recursion-on-ordinal}）を用いる。クラス $\mathbf{C}$ と集合 $a$ に対し $\mathbf{C}\cap a$ は集合、クラス関数による集合の像は集合である（\ref{set:class-basic}）。
+- 累積階層 $R(\alpha)$（\ref{set:cumulative-hierarchy}）、整礎集合のクラス $\mathbf{WF}=\bigcup_{\alpha\in\mathbf{ON}}R(\alpha)$（\ref{set:wf-class}）、ランク $\rank(x)$（\ref{set:rank}）を用いる。これらの定義は冪集合公理を使う（$\ZF^{-}$ の概念）。次の性質を使う：
+  - $R(\alpha)$ は推移的（\ref{set:r-alpha-basic} (1)）。
+  - $x\in\mathbf{WF}$ について $x\in R(\alpha)\iff\rank(x)<\alpha$、特に $x\subseteq R(\rank(x))$（\ref{set:rank-basic} (1)）。
+  - $y\in\mathbf{WF}$ かつ $x\in y$ なら $x\in\mathbf{WF}$ かつ $\rank(x)<\rank(y)$（\ref{set:rank-basic} (2)。$\mathbf{WF}$ は推移的）。
+  - $x\in\mathbf{WF}\iff x\subseteq\mathbf{WF}$、$x\in\mathbf{WF}$ かつ $z\subseteq x$ なら $\rank(z)\le\rank(x)$（\ref{set:wf-subset}）。
+:::
+
+## 整礎関係 {#set:sec-wfr-definition}
+
+::: definition 整礎関係 {#set:well-founded-relation keywords="well-founded relation, R-minimal element" index="整礎な関係|せいそなかんけい, R-極小元|あーるきょくしょうげん"}
+（$\ZF^{-}-\mathrm{P}$）$R$ を関係、$A$ を集合とする。$X\subseteq A$ の元 $y$ が
+$$
+\lnot\exists z\in X\,(zRy)
+$$
+を満たすとき、$y$ を $X$ の **$R$-極小元**という。$A$ の空でない任意の部分集合が $R$-極小元をもつとき、すなわち
+$$
+\forall X\subseteq A\,\bigl[X\neq\varnothing\to\exists y\in X\,\lnot\exists z\in X\,(zRy)\bigr]
+\label{set:eq-well-founded-relation}
+$$
+が成り立つとき、$R$ は $A$ 上で**整礎**（well-founded）であるという。
+:::
+
+::: intuition
+「$zRy$」を「$z$ は $y$ より下にある」と読むと、$X$ の $R$-極小元とは「$X$ の中にそれより下の元がない元」である。整礎性は、どこから始めても $R$ に沿って下へたどっていくと必ず底に着く、という性質を、部分集合の言葉で述べたものである（列の言葉による言い換えは \ref{set:foundation-descending-chains}）。
+
+$R$ が $\in$ のとき、$y$ が $X$ の $\in$-極小元であることは、$y\in X$ かつ $y\cap X=\varnothing$（$y$ の元で $X$ に入るものがない）ことと同じである。したがって基礎の公理（\ref{set:ax-foundation}）は「$\in$ はすべての集合の上で整礎である」と読める。
+
+$R\subseteq A\times A$ を要求しないのは、$\in$ のように $A$ の外にも広がっている関係をそのまま扱うためである。実際に効いてくるのは $R$ の $A$ 上の部分 $R\cap(A\times A)$ だけである（\ref{set:wf-relation-basic} (2)）。
+:::
+
+::: example
+- 空の関係 $\varnothing$ は任意の集合 $A$ 上で整礎である。$X\neq\varnothing$ のどの元も $\varnothing$-極小元になる。このように、極小元は一つとは限らない。
+- $\omega$ 上の通常の順序 $<$（すなわち $\in$）は $\omega$ 上で整礎である（整列順序だから。\ref{set:wf-relation-basic} (3)）。$\omega$ 上の**後者関係** $S=\{\langle n,n+1\rangle\mid n\in\omega\}$ も整礎である（\ref{set:wf-rank-test} で $F(n)=n$ とする）。$S$ は推移的でも全順序でもない。
+- 正の整数上の「真の約数」の関係 $aDb\iff(a\mid b\land a\neq b)$ は整礎である（$aDb\Rightarrow a<b$ なので、\ref{set:wf-rank-test} で $F(n)=n$）。極小元は、$X$ の元のうち $X$ の他の元を約数にもたないものである。たとえば $X=\{4,6,9,12\}$ の $D$-極小元は $4,6,9$ の三つである。
+- $\Z$ 上の $<$ は整礎でない（$\Z$ 自身が極小元をもたない）。$\omega$ 上の $>$ も整礎でない。
+:::
+
+::: lemma 整礎関係の基本性質 {#set:wf-relation-basic keywords="basic properties of well-founded relations" index="整礎関係の基本性質|せいそかんけいのきほんせいしつ"}
+（$\ZF^{-}-\mathrm{P}$）$R$ を関係、$A$ を集合とする。
+
+1. $R$ が $A$ 上で整礎で $B\subseteq A$ ならば、$R$ は $B$ 上で整礎である。
+2. $S$ も関係で、すべての $x,y\in A$ について $xSy\Rightarrow xRy$ が成り立つとする。$R$ が $A$ 上で整礎ならば $S$ も $A$ 上で整礎である。特に、$R$ が $A$ 上で整礎であることと $R\cap(A\times A)$ が $A$ 上で整礎であることは同値である。
+3. $\langle A,R\rangle$ が全順序ならば、$R$ が $A$ 上で整礎であることと $R$ が $A$ を整列することは同値である。
+4. $R$ が $A$ 上で整礎ならば、$A$ の中に $R$ の**輪**はない。すなわち、$n\ge1$ と関数 $c\colon n+1\to A$ で、$c(n)=c(0)$ かつすべての $k<n$ について $c(k)\,R\,c(k+1)$ となるものは存在しない。特に $xRx$ となる $x\in A$ はなく、$xRy$ かつ $yRx$ となる $x,y\in A$ もない。
+:::
+
+::: proof
+**(1)** $X\subseteq B$, $X\neq\varnothing$ とすると、$X\subseteq A$ なので $R$ の $A$ 上の整礎性から $R$-極小元をもつ。
+
+**(2)** $X\subseteq A$, $X\neq\varnothing$ とし、$y$ を $X$ の $R$-極小元とする。$y$ が $S$-極小元でないとすると、$zSy$ となる $z\in X$ がある。$z,y\in A$ なので仮定より $zRy$ となり、$y$ の $R$-極小性に反する。よって $y$ は $X$ の $S$-極小元である。後半：$T=R\cap(A\times A)$ とおくと、$x,y\in A$ について $xTy\iff xRy$ である。前半を $(R,S)=(R,T)$ と $(R,S)=(T,R)$ の両方に適用すればよい。
+
+**(3)** 整列順序の定義（\ref{set:well-order}）における $X$ の $R$-最小元の条件「$\forall y\in X\,\lnot(yRx)$」は、$X$ の $R$-極小元の条件「$\lnot\exists z\in X\,(zRx)$」と論理的に同じ式である。したがって全順序 $\langle A,R\rangle$ について、「$A$ の空でない任意の部分集合が $R$-最小元をもつ」ことと \eqref{set:eq-well-founded-relation} は同じ主張である。
+
+**(4)** そのような $c$ があるとする。分出公理により $X=\{a\in A\mid\exists k\le n\,(c(k)=a)\}$ は集合であり、$c(0)\in X$ なので空でない。$R$ の整礎性より $X$ の $R$-極小元 $y$ があり、$y=c(k)$ となる $k\le n$ をとれる。
+- $k\ge1$ のとき：$k-1<n$ なので $c(k-1)\,R\,c(k)=y$ で、$c(k-1)\in X$。$y$ の極小性に反する。
+- $k=0$ のとき：$y=c(0)=c(n)$ であり、$n-1<n$ なので $c(n-1)\,R\,c(n)=y$、$c(n-1)\in X$。やはり極小性に反する。
+
+$n=1$, $c(0)=c(1)=x$ とすれば $xRx$ の場合、$n=2$, $c=\langle x,y,x\rangle$ とすれば $xRy\land yRx$ の場合になる。
+
+::: hypcheck
+- **分出公理**：(4) で $X$ を作るのに使った。(1)〜(3) は定義を書き換えただけである。
+- 冪集合公理・無限公理・基礎の公理・選択公理は使わない（$\ZF^{-}-\mathrm{P}$ で成り立つ）。
+:::
+:::
+
+::: supplement
+**(4) の逆は成り立たない.** 輪がないことは整礎性より弱い。$\omega$ 上の $>$ には輪がない（$>$ は推移的かつ非反射的だから）が、整礎ではない。整礎性を「無限に下り続ける列がない」ことに言い換えられるのは選択公理（従属選択）を使ったときである（\ref{set:foundation-descending-chains}）。
+
+**全順序でない場合.** (3) から、整列順序は整礎関係の特別な場合である。全順序でない整礎関係では、極小元は複数ありうるし（上の約数の例）、最小元はないこともある。
+:::
+
+## 整礎関係であることの判定と整礎集合 {#set:sec-wfr-wf-sets}
+
+::: proposition 順序数への単調写像による判定 {#set:wf-rank-test keywords="well-foundedness via an ordinal-valued map" index="整礎性の判定|せいそせいのはんてい"}
+（$\ZF^{-}-\mathrm{P}$）$R$ を関係、$A$ を集合、$F$ を $A$ の各元に順序数を対応させるクラス関数（集合である関数でもよい）とする。すべての $x,y\in A$ について
+$$
+xRy\ \Longrightarrow\ F(x)<F(y)
+$$
+が成り立つならば、$R$ は $A$ 上で整礎である。
+:::
+
+::: intuition
+$R$ に沿って一歩下りるたびに順序数の目盛り $F$ が真に下がるなら、下り続けることはできない。順序数の整列性を $R$ に「引き戻す」議論である。
+:::
+
+::: proof
+$X\subseteq A$, $X\neq\varnothing$ とする。
+
+**Step 1.** $F[X]=\{F(x)\mid x\in X\}$ は置換公理により集合であり（\ref{set:class-basic} (3)）、空でない順序数の集合である。よって最小元 $\alpha=\min F[X]$ がある（\ref{set:sup-ordinals} (2)）。
+
+**Step 2.** $F(y)=\alpha$ となる $y\in X$ をとる。$y$ が $X$ の $R$-極小元であることを示す。$zRy$ となる $z\in X$ があれば、$z,y\in A$ なので仮定より $F(z)<F(y)=\alpha$。一方 $F(z)\in F[X]$ なので $\alpha\le F(z)$。矛盾する。
+
+::: hypcheck
+- **置換公理**：Step 1 で像 $F[X]$ を集合にした（$F$ が集合である関数なら、分出公理で $\ran(F\restr{X})$ として作れる）。
+- 順序数の集合が最小元をもつこと（\ref{set:sup-ordinals}）。冪集合公理・基礎の公理・選択公理は使わない（$\ZF^{-}-\mathrm{P}$）。
+:::
+:::
+
+::: supplement
+**逆も成り立つ.** 逆に $R$ が $A$ 上で整礎なら、$xRy\Rightarrow F(x)<F(y)$ を満たす $F\colon A\to\mathbf{ON}$ が存在する。最小のものは整礎再帰で $F(y)=\sup\{F(x)+1\mid x\in A,\ xRy\}$ と定まる $R$ のランク関数である（\ref{set:relation-rank}）。したがって「整礎」とは「順序数値の目盛りで測れる」ことにほかならない。この逆向きには整礎関係上の再帰（\ref{set:wf-recursion}）が要る。
+:::
+
+::: lemma 整礎集合の上で $\in$ は整礎 {#set:wf-epsilon-wellfounded keywords="membership is well-founded on a well-founded set" index="整礎集合と所属関係|せいそしゅうごうとしょぞくかんけい"}
+（$\ZF^{-}$）$A\in\mathbf{WF}$（同値だが $A\subseteq\mathbf{WF}$）ならば、$\in$ は $A$ 上で整礎である。
+:::
+
+::: proof
+**Step 1.** $A\in\mathbf{WF}$ と $A\subseteq\mathbf{WF}$ は同値である（\ref{set:wf-subset} (1)）。以下 $A\subseteq\mathbf{WF}$ とする。すると $\rank$ は $A$ の各元に順序数を対応させるクラス関数である。
+
+**Step 2.** $x,y\in A$ かつ $x\in y$ とすると、$y\in\mathbf{WF}$ なので \ref{set:rank-basic} (2) より $\rank(x)<\rank(y)$。
+
+**Step 3.** \ref{set:wf-rank-test} を $R={\in}$, $F=\rank$ として適用すれば、$\in$ は $A$ 上で整礎である。
+
+具体的には、空でない $X\subseteq A$ に対し、$\alpha=\min\{\rank(y)\mid y\in X\}$ をとり、$\rank(y)=\alpha$ となる $y\in X$ をとると、$y$ の元のランクはすべて $\alpha$ 未満なので $y\cap X=\varnothing$ となる。
+
+::: hypcheck
+- **冪集合公理**：$\mathbf{WF}$ と $\rank$ の定義、\ref{set:rank-basic}, \ref{set:wf-subset} を通して使う。そのため体系は $\ZF^{-}$ である（\ref{set:wf-rank-test} 自体は $\ZF^{-}-\mathrm{P}$）。
+- **置換公理**：\ref{set:wf-rank-test} の Step 1 で $\{\rank(y)\mid y\in X\}$ を集合にするのに使った。
+- 基礎の公理・選択公理は使わない。
+:::
+:::
+
+::: example
+**逆は成り立たない.** $\ZF^{-}$ は、$x=\{y\}$, $y=\{x\}$, $x\neq y$ を満たす集合 $x,y$ の存在を否定できない（そのような集合がある $\ZF^{-}$ のモデルが作れる）。そのような $x,y$ があったとする。
+- $y$ の元は $x$ だけで、$x\in x$ は $x=y$ を意味するので成り立たない。よって $\in$ の $y$ 上の部分 ${\in}\cap(y\times y)$ は空であり、$\in$ は $y$ 上で整礎である（\ref{set:wf-relation-basic} (2) と空の関係の例）。
+- しかし $y\notin\mathbf{WF}$ である。$y\in\mathbf{WF}$ なら $x\in y$ より $x\in\mathbf{WF}$ で $\rank(x)<\rank(y)$、$y\in x$ より $\rank(y)<\rank(x)$ となり矛盾する。
+
+$\in$ が $y$ 上で整礎なのに $y\notin\mathbf{WF}$ となったのは、$y$ の元 $x$ の元 $y$ が $y$ に入っていない（$y$ が推移的でない）ために、$y$ の上だけを見ていては $x\ni y\ni x\ni\cdots$ という下降が見えないからである。この欠点を補うのが次の \ref{set:transitive-wf} と推移閉包である。
+:::
+
+::: lemma 推移的集合上で $\in$ が整礎なら整礎集合 {#set:transitive-wf keywords="transitive set on which membership is well-founded is in WF" index="推移的集合の整礎性|すいいてきしゅうごうのせいそせい"}
+（$\ZF^{-}$）$A$ が推移的集合で、$\in$ が $A$ 上で整礎ならば、$A\in\mathbf{WF}$ である。
+:::
+
+::: intuition
+$A$ が推移的なら、$A$ の元から $\in$ を下へたどっても $A$ の外に出ない。したがって「$\mathbf{WF}$ に入らない元」があれば、その中の $\in$-極小元を考えられる。その元の元はすべて $\mathbf{WF}$ に入っているはずだが、元がすべて整礎なら集合自身も整礎である（\ref{set:wf-subset}）。これが矛盾を生む。$\mathbf{WF}$ についての $\in$-帰納法を、$A$ という集合の中で実行していると見てもよい（\ref{set:wf-induction} を参照）。
+:::
+
+::: proof
+**Step 1（帰着）.** \ref{set:wf-subset} (1) により、$A\subseteq\mathbf{WF}$ を示せば十分である。
+
+**Step 2（反例の集合）.** $A\not\subseteq\mathbf{WF}$ と仮定する。$\mathbf{WF}$ はクラスなので、分出公理により
+$$
+X=A\setminus\mathbf{WF}=\{a\in A\mid a\notin\mathbf{WF}\}
+$$
+は集合であり（\ref{set:class-basic} (1)）、仮定より空でない。$\in$ は $A$ 上で整礎なので、$X$ の $\in$-極小元 $y$ がある。すなわち $y\in X$ かつ $y\cap X=\varnothing$。
+
+**Step 3（$y\subseteq\mathbf{WF}$）.** $z\in y$ とする。$y\in A$ で $A$ は推移的なので $z\in A$。$y\cap X=\varnothing$ より $z\notin X$。$z\in A$ かつ $z\notin X$ なので、$X$ の定義から $z\in\mathbf{WF}$。
+
+**Step 4（矛盾）.** Step 3 と \ref{set:wf-subset} (1) より $y\in\mathbf{WF}$。ところが $y\in X$ なので $y\notin\mathbf{WF}$。矛盾。よって $A\subseteq\mathbf{WF}$ であり、$A\in\mathbf{WF}$。
+
+::: hypcheck
+- **$A$ の推移性**：Step 3 で $z\in A$ を得るのに使った。これがないと $z$ について何もわからない（上の例）。
+- **$\in$ の $A$ 上の整礎性**：Step 2 で極小元 $y$ をとるのに使った。
+- **分出公理**：Step 2 で $X$ を作った。
+- **冪集合公理**：$\mathbf{WF}$ の定義と \ref{set:wf-subset} を通して使う（その証明の置換公理も）。体系は $\ZF^{-}$。基礎の公理・選択公理は使わない。
+:::
+:::
+
+::: example
+- 順序数 $\alpha$ は推移的で、$\in$ で整列される（\ref{set:ordinal-well-ordered}）ので、\ref{set:wf-relation-basic} (3) より $\in$ は $\alpha$ 上で整礎である。したがって本補題から $\alpha\in\mathbf{WF}$。これは \ref{set:rank-ordinal} (1) の前半の別証明である。
+- 仮に $x=\{x\}$ を満たす集合（クワイン原子）があれば、$x$ は推移的だが、$X=x$ の唯一の元 $x$ は $x\cap X=x\neq\varnothing$ なので $\in$-極小でなく、$\in$ は $x$ 上で整礎でない。本補題とは矛盾しない（\ref{set:foundation-equivalents} の補足も参照）。
+:::
+
+## 推移閉包 {#set:sec-transitive-closure}
+
+\ref{set:transitive-wf} を一般の集合に使うため、集合を推移的な集合に広げる。$A$ に、$A$ の元の元、元の元の元、…をすべて付け加えればよい。
+
+::: definition 推移閉包 {#set:transitive-closure keywords="transitive closure, trcl, TC" index="推移閉包|すいいへいほう"}
+（$\ZF^{-}-\mathrm{P}$）集合 $A$ に対し、$\omega$ 上の再帰により
+$$
+{\textstyle\bigcup^{0}}A=A,\qquad {\textstyle\bigcup^{n+1}}A=\bigcup\Bigl({\textstyle\bigcup^{n}}A\Bigr)\quad(n\in\omega)
+$$
+と定め、
+$$
+\operatorname{trcl}(A)=\bigcup\Bigl\{{\textstyle\bigcup^{n}}A\ \Bigm|\ n\in\omega\Bigr\}=A\cup\bigcup A\cup\bigcup\bigcup A\cup\cdots
+$$
+を $A$ の**推移閉包**（transitive closure）という。
+:::
+
+::: intuition
+$\bigcup^{n}A$ は「$A$ から $\in$ をちょうど $n$ 回下りて到達する集合」の全体である：$z\in\bigcup^{n}A$ であることは、$z=z_{n}\in z_{n-1}\in\cdots\in z_{1}\in z_{0}\in A$ となる $z_{0},\dots,z_{n-1}$ があることと同じである（$n$ についての帰納法で確かめられる）。したがって $\operatorname{trcl}(A)$ は「$A$ から $\in$ を有限回（$1$ 回以上）下りて到達できる集合」の全体であり、$\{A\}$ から見れば $A$ の「下にある」集合すべてである。$\operatorname{TC}(A)$ と書く文献も多い。
+:::
+
+::: supplement
+**定義の正当化.** $\omega$ 上の再帰（\ref{set:recursion-on-ordinal} の後半）を $a=A$, $\mathbf{H}(x)=\bigcup x$ として適用すると、$g(0)=A$, $g(n+1)=\bigcup g(n)$ を満たす関数 $g$（定義域 $\omega$ の集合）がただ一つ存在する。$\bigcup^{n}A=g(n)$ とおき、$\operatorname{trcl}(A)=\bigcup\ran g$ とする。$\mathbf{H}$ がクラス関数であることに**和集合の公理**、再帰に**置換公理**、$\omega$ の存在に**無限公理**、$\ran g$ の存在に分出公理（または置換公理）を使う。冪集合公理は使わない。$g$ は $A$ からただ一通りに決まるので、$A\mapsto\operatorname{trcl}(A)$ は論理式で定義されるクラス関数である。
+
+**公理を減らすと.** 無限公理を除いた $\ZF^{-}-\mathrm{P}-\mathrm{Inf}$ では $\omega$ が存在するとは限らず、推移閉包の存在は証明できない（$\in$-帰納法の図式を公理として加えれば証明できる：\ref{set:epsilon-induction} の補足）。また置換公理を除いたツェルメロの体系 Z では、すべての集合が推移的集合に含まれることは証明できないとされている（A. R. D. Mathias, *The strength of Mac Lane set theory*, Ann. Pure Appl. Logic 110 (2001) で扱われている話題。本サイトでは原典の該当箇所を未確認）。推移閉包の存在は、$\omega$ 回の反復をひとまとめにする置換公理に本質的に依存している。
+:::
+
+::: example
+- $A=\{\{\{\varnothing\}\}\}=\{\{1\}\}$ とする（$1=\{\varnothing\}$）。$\bigcup A=\{1\}$, $\bigcup^{2}A=\bigcup\{1\}=1=\{0\}$, $\bigcup^{3}A=\bigcup\{0\}=0=\varnothing$ で、$n\ge3$ なら $\bigcup^{n}A=\varnothing$。よって $\operatorname{trcl}(A)=\{\{1\},1,0\}$。これは推移的だが、$A\notin\operatorname{trcl}(A)$ である。
+- 順序数 $\alpha$ は推移的なので $\operatorname{trcl}(\alpha)=\alpha$、また $\operatorname{trcl}(\{\alpha\})=\{\alpha\}\cup\alpha=\alpha+1$（\ref{set:transitive-closure-basic} (4), (7)）。
+- 順序対 $\langle a,b\rangle=\{\{a\},\{a,b\}\}$ について $\operatorname{trcl}(\langle a,b\rangle)=\{\{a\},\{a,b\}\}\cup\{a,b\}\cup\operatorname{trcl}(a)\cup\operatorname{trcl}(b)$（(6) を二回使う）。
+:::
+
+::: lemma 推移閉包の基本性質 {#set:transitive-closure-basic keywords="basic properties of transitive closure, least transitive superset" index="推移閉包の性質|すいいへいほうのせいしつ, 最小の推移的集合|さいしょうのすいいてきしゅうごう"}
+（$\ZF^{-}-\mathrm{P}$）任意の集合 $A,B,x$ について次が成り立つ。
+
+1. $A\subseteq\operatorname{trcl}(A)$。
+2. $\operatorname{trcl}(A)$ は推移的である。
+3. $A\subseteq T$ かつ $T$ が推移的集合ならば、$\operatorname{trcl}(A)\subseteq T$。
+4. $A$ が推移的ならば $\operatorname{trcl}(A)=A$。
+5. $x\in A$ ならば $\operatorname{trcl}(x)\subseteq\operatorname{trcl}(A)$。
+6. $\operatorname{trcl}(A)=A\cup\bigcup\{\operatorname{trcl}(x)\mid x\in A\}$。
+7. $\operatorname{trcl}(\{x\})=\{x\}\cup\operatorname{trcl}(x)$。
+8. $A\subseteq B$ ならば $\operatorname{trcl}(A)\subseteq\operatorname{trcl}(B)$。
+
+(1)〜(3) をまとめると、$\operatorname{trcl}(A)$ は **$A$ を部分集合として含む最小の推移的集合**である。
+:::
+
+::: intuition
+(1)〜(3) が推移閉包の本質で、「推移的な上界のうち最小のもの」という特徴づけである。(6) は「$A$ の下にある集合は、$A$ の元か、ある元 $x$ の下にある集合」という分解で、推移閉包を $\in$ についての再帰で定義し直す式とも読める（\ref{set:wf-recursion} の補足）。
+:::
+
+::: proof
+**(1)** $\bigcup^{0}A=A$ は $\{\bigcup^{n}A\mid n\in\omega\}$ の元なので、$A\subseteq\operatorname{trcl}(A)$。
+
+**(2)** $y\in\operatorname{trcl}(A)$, $z\in y$ とする。ある $n\in\omega$ で $y\in\bigcup^{n}A$。このとき $z\in y\in\bigcup^{n}A$ なので $z\in\bigcup(\bigcup^{n}A)=\bigcup^{n+1}A\subseteq\operatorname{trcl}(A)$。よって $y\subseteq\operatorname{trcl}(A)$。
+
+**(3)** $A\subseteq T$, $T$ 推移的とする。分出公理で $N=\{n\in\omega\mid\bigcup^{n}A\subseteq T\}$ を作り、$N=\omega$ を $\omega$ 上の帰納法（\ref{set:peano} (5)）で示す。
+- *$0\in N$*：$\bigcup^{0}A=A\subseteq T$。
+- *$n\in N\Rightarrow n+1\in N$*：$z\in\bigcup^{n+1}A$ とすると、ある $y\in\bigcup^{n}A$ で $z\in y$。$n\in N$ より $y\in T$、$T$ は推移的なので $z\in T$。よって $\bigcup^{n+1}A\subseteq T$。
+
+したがってすべての $n$ で $\bigcup^{n}A\subseteq T$ であり、その和 $\operatorname{trcl}(A)\subseteq T$。
+
+**(4)** $T=A$ として (3) を使うと $\operatorname{trcl}(A)\subseteq A$。(1) と合わせて等号。
+
+**(5)** $x\in A$ とする。(1) より $x\in\operatorname{trcl}(A)$、(2) より $x\subseteq\operatorname{trcl}(A)$。$\operatorname{trcl}(A)$ は推移的なので、(3) を $x$ と $T=\operatorname{trcl}(A)$ に適用して $\operatorname{trcl}(x)\subseteq\operatorname{trcl}(A)$。
+
+**(6)** 右辺を $T=A\cup\bigcup\{\operatorname{trcl}(x)\mid x\in A\}$ とおく。$\{\operatorname{trcl}(x)\mid x\in A\}$ はクラス関数 $x\mapsto\operatorname{trcl}(x)$ による $A$ の像なので置換公理により集合であり、$T$ は和集合の公理と対の公理で作れる。
+- *$\operatorname{trcl}(A)\subseteq T$*：$A\subseteq T$ は明らかなので、(3) により $T$ が推移的であることを示せばよい。$y\in T$ とする。$y\in A$ なら (1) より $y\subseteq\operatorname{trcl}(y)$ で、$\operatorname{trcl}(y)\subseteq T$（$y\in A$ だから）。$y\in\operatorname{trcl}(x)$（$x\in A$）なら (2) より $y\subseteq\operatorname{trcl}(x)\subseteq T$。いずれにせよ $y\subseteq T$。
+- *$T\subseteq\operatorname{trcl}(A)$*：(1) より $A\subseteq\operatorname{trcl}(A)$、(5) より各 $x\in A$ で $\operatorname{trcl}(x)\subseteq\operatorname{trcl}(A)$。
+
+**(7)** (6) を $A=\{x\}$ に適用すると $\operatorname{trcl}(\{x\})=\{x\}\cup\bigcup\{\operatorname{trcl}(x)\}=\{x\}\cup\operatorname{trcl}(x)$。
+
+**(8)** $A\subseteq B\subseteq\operatorname{trcl}(B)$（(1)）で、$\operatorname{trcl}(B)$ は推移的（(2)）なので、(3) より $\operatorname{trcl}(A)\subseteq\operatorname{trcl}(B)$。
+
+::: hypcheck
+- **推移閉包の存在**（無限公理・置換公理・和集合の公理。定義の補足）：全体を通して。
+- **分出公理**と **$\omega$ 上の帰納法**：(3)。
+- **置換公理・和集合の公理・対の公理**：(6) で $T$ を作るのに使った。
+- 冪集合公理・基礎の公理・選択公理は使わない（$\ZF^{-}-\mathrm{P}$ で成り立つ）。
+:::
+:::
+
+::: supplement
+**推移的でない集合の場合.** (4) の逆も成り立つ：$\operatorname{trcl}(A)=A$ なら (2) より $A$ は推移的。したがって「$A$ は推移的 $\iff\operatorname{trcl}(A)=A$」。
+
+**推移閉包の共通部分としての特徴づけ.** (1)〜(3) により、$\operatorname{trcl}(A)$ は「$A$ を含む推移的集合すべての共通部分」と言いたくなるが、そのような集合全体は真のクラスなので、このままでは集合の定義にならない。$\operatorname{trcl}(A)$ という推移的集合が一つ存在することが先に分かっていれば、$\operatorname{trcl}(A)=\bigcap\{T\in\mathcal{P}(\operatorname{trcl}(A))\mid A\subseteq T,\ T\text{ は推移的}\}$ と書ける（冪集合公理を使う）。冪集合公理なしで済ませるには、上のように $\omega$ 回の和集合で直接作るのがよい。
+:::
+
+## 推移閉包による整礎集合の特徴づけ {#set:sec-wf-trcl}
+
+::: theorem 整礎集合の同値な条件 {#set:wf-equivalents keywords="A in WF iff membership is well-founded on trcl(A)" index="整礎集合の同値条件|せいそしゅうごうのどうちじょうけん"}
+（$\ZF^{-}$）任意の集合 $A$ について、次は同値である。
+
+1. $A\in\mathbf{WF}$。
+2. $\operatorname{trcl}(A)\in\mathbf{WF}$。
+3. $\in$ は $\operatorname{trcl}(A)$ 上で整礎である。
+
+さらに、これらが成り立つとき $\rank(\operatorname{trcl}(A))=\rank(A)$ である。
+:::
+
+::: intuition
+集合 $A$ が整礎かどうかは、$A$ だけを見ても分からない（\ref{set:wf-epsilon-wellfounded} の後の例）が、$A$ の下にあるものすべて、すなわち $\operatorname{trcl}(A)$ を見れば分かる。(3) は冪集合も累積階層も使わない条件なので、冪集合公理のない体系では (3) を整礎集合の定義として採用できる。
+:::
+
+::: proof
+**Step 1（(1) ⇒ (2) とランク）.** $A\in\mathbf{WF}$ とし、$\rho=\rank(A)$ とおく。\ref{set:rank-basic} (1) より $A\subseteq R(\rho)$ であり、$R(\rho)$ は推移的集合である（\ref{set:r-alpha-basic} (1)）。したがって \ref{set:transitive-closure-basic} (3) より
+$$
+\operatorname{trcl}(A)\subseteq R(\rho).
+\label{set:eq-trcl-in-r-rank}
+$$
+よって $\operatorname{trcl}(A)\in\mathcal{P}(R(\rho))=R(\rho+1)$、すなわち $\operatorname{trcl}(A)\in\mathbf{WF}$。ランクについては、\eqref{set:eq-trcl-in-r-rank} と \ref{set:rank-basic} (1) より $\operatorname{trcl}(A)$ の元はすべてランクが $\rho$ 未満なので、\ref{set:rank-basic} (3) より $\rank(\operatorname{trcl}(A))=\sup\{\rank(x)+1\mid x\in\operatorname{trcl}(A)\}\le\rho$。逆に $A\subseteq\operatorname{trcl}(A)$（\ref{set:transitive-closure-basic} (1)）なので \ref{set:wf-subset} (2) より $\rho=\rank(A)\le\rank(\operatorname{trcl}(A))$。
+
+**Step 2（(2) ⇒ (3)）.** \ref{set:wf-epsilon-wellfounded} を $\operatorname{trcl}(A)$ に適用する。
+
+**Step 3（(3) ⇒ (1)）.** $\operatorname{trcl}(A)$ は推移的（\ref{set:transitive-closure-basic} (2)）で、(3) より $\in$ はその上で整礎なので、\ref{set:transitive-wf} より $\operatorname{trcl}(A)\in\mathbf{WF}$。$\mathbf{WF}$ は推移的なクラスなので（\ref{set:rank-basic} (2)）、$\operatorname{trcl}(A)\subseteq\mathbf{WF}$。$A\subseteq\operatorname{trcl}(A)$ より $A\subseteq\mathbf{WF}$、\ref{set:wf-subset} (1) より $A\in\mathbf{WF}$。
+
+::: hypcheck
+- **冪集合公理**：$R(\alpha)$, $\mathbf{WF}$, $\rank$ の定義と、Step 1 の $R(\rho+1)=\mathcal{P}(R(\rho))$、Step 2・3 で使った \ref{set:wf-epsilon-wellfounded}, \ref{set:transitive-wf} を通して使う。そのため体系は $\ZF^{-}$ である。
+- **推移閉包の存在と性質**（無限公理・置換公理・和集合の公理）：\ref{set:transitive-closure-basic} の (1)〜(3) を使った。
+- **置換公理**：Step 1 のランクの上限（\ref{set:rank-basic} (3)）。
+- 基礎の公理・選択公理は使わない。
+:::
+:::
+
+::: supplement
+**別の証明（Step 1）.** (1) ⇒ (2) は、$\mathbf{WF}$ が $\bigcup$ で閉じていること（\ref{set:wf-closure} (1)）を使い、$n$ についての帰納法で $\bigcup^{n}A\in\mathbf{WF}$ を示してもよい。すると各 $\bigcup^{n}A\subseteq\mathbf{WF}$（$\mathbf{WF}$ の推移性）なので $\operatorname{trcl}(A)\subseteq\mathbf{WF}$、\ref{set:wf-subset} (1) より $\operatorname{trcl}(A)\in\mathbf{WF}$。上の証明は、推移的集合 $R(\rho)$ を上界として使うことで帰納法を省き、ランクの等式も同時に得た。
+
+**$\{A\}$ で判定する形.** \ref{set:transitive-closure-basic} (7) より $\operatorname{trcl}(\{A\})=\{A\}\cup\operatorname{trcl}(A)$。$A\in\mathbf{WF}\iff\{A\}\in\mathbf{WF}$（\ref{set:wf-subset} (1)）なので、本定理を $\{A\}$ に適用して「$A\in\mathbf{WF}\iff\in$ は $\operatorname{trcl}(\{A\})$ 上で整礎」も得られる。$A$ 自身も含めて「$A$ から下にあるものすべて」を見る形で、ランクを $\operatorname{trcl}(\{A\})$ 上の $\in$ のランクとして定義するときに使う（\ref{set:transitive-epsilon-wf} の補足）。
+
+**冪集合公理なしの整礎集合.** $\ZF^{-}-\mathrm{P}$ では $R(\alpha)$ が定義できるとは限らないが、(3) は意味をもつ。そこで $\mathbf{WF}=\{A\mid\in\text{ は }\operatorname{trcl}(A)\text{ 上で整礎}\}$ と定義し直す。本定理により $\ZF^{-}$ ではこれは元の定義と一致し、ランクや $\in$-帰納法の結果のうち $\mathcal{P}$ や $R(\alpha)$ に触れないものは $\ZF^{-}-\mathrm{P}$ でもそのまま成り立つ（Kunen, Ch. III, Exercise 6）。
+
+**基礎の公理との関係.** 基礎の公理は「$\in$ はすべての集合上で整礎」と言っているので、本定理 (3) ⇒ (1) と合わせると $\mathbf{V}=\mathbf{WF}$ が従う（\ref{set:foundation-equivalents}）。
+:::
+
+::: corollary 推移閉包の元のランク {#set:trcl-rank keywords="rank decreases along the transitive closure" index="推移閉包とランク|すいいへいほうとらんく"}
+（$\ZF^{-}$）$y\in\mathbf{WF}$ かつ $x\in\operatorname{trcl}(y)$ ならば、$x\in\mathbf{WF}$ かつ $\rank(x)<\rank(y)$。したがって、関係 $x\,E\,y\iff x\in\operatorname{trcl}(y)$ は、$\mathbf{WF}$ の任意の部分集合上で整礎である。
+:::
+
+::: proof
+**Step 1.** $\rho=\rank(y)$ とおく。\eqref{set:eq-trcl-in-r-rank}（\ref{set:wf-equivalents} の Step 1）より $\operatorname{trcl}(y)\subseteq R(\rho)$。したがって $x\in R(\rho)$ で、$x\in\mathbf{WF}$ かつ（\ref{set:rank-basic} (1)）$\rank(x)<\rho$。
+
+**Step 2.** $A\subseteq\mathbf{WF}$ を集合とする。$x,y\in A$ で $xEy$ なら Step 1 より $\rank(x)<\rank(y)$。\ref{set:wf-rank-test} を $R=E$, $F=\rank$ として適用すれば、$E$ は $A$ 上で整礎である。
+
+::: hypcheck
+- \ref{set:wf-equivalents} の Step 1（したがって冪集合公理）と \ref{set:wf-rank-test}（置換公理）を使った。体系は $\ZF^{-}$。基礎の公理・選択公理は使わない。
+:::
+:::
+
+::: supplement
+$x\in\operatorname{trcl}(y)$ は「$x$ から $\in$ を有限回（$1$ 回以上）上ると $y$ に着く」ことなので、$E$ は $\in$ の**推移閉包としての関係**（$x=z_{0}\in z_{1}\in\cdots\in z_{n}=y$ となる列があること）である。本系は「整礎集合の中では、$\in$ を何段下りてもランクは真に下がる」と言っている。$E$ は $\mathbf{WF}$ 上で集合的（\ref{set:set-like}）でもあり、$E$ についての崩壊関数はランク関数そのものになる（Kunen, Ch. III, Exercise 13）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

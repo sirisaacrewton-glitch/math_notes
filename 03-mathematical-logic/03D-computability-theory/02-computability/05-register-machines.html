@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>レジスタ機械 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/02-computability/05-register-machines.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# レジスタ機械 {#comp:page-register-machines keywords="register machine, counter machine, Shepherdson-Sturgis, Minsky machine, goto program, compilation of structured programs, program counter"}
+
+**レジスタ機械**は、番号の付いた命令の列（足す、引く、$0$ なら飛ぶ）を、**プログラムカウンタ**に従って一つずつ実行する計算模型である（\ref{comp:register-machine}）。L が「構造化されたプログラム」なら、レジスタ機械は goto 文で書いた機械語に近い。本ページでは両者が同じ部分関数を計算すること（\ref{comp:L-equals-rm}）を示す。レジスタ機械を L で模倣するには、プログラムカウンタを変数に持ち、while ループ一つで「一命令ずつ実行する」（\ref{comp:rm-to-L}）。L をレジスタ機械に直すには、for と while をジャンプに**翻訳**する（\ref{comp:L-to-rm}）。
+
+> レジスタ機械は Shepherdson–Sturgis (1963)、Minsky (1967) などで導入された。命令の種類は本によって異なり、本ページの選び方は本サイトのものである。
+
+## 記法と定義の確認 {#comp:sec-rm-notation}
+
+::: notation
+- L、状態、$\langle P,\sigma\rangle\Downarrow\tau$、入力状態 $\sigma_{\vec{m}}$、計算可能な部分関数、局所性（\ref{comp:L-locality}）、略記（\ref{comp:L-macros}）は \ref{comp:page-language-L} のとおり。原始再帰関数と for プログラムの一致（\ref{comp:pr-equals-for}）を使う。
+- レジスタ $R_{0},R_{1},\dots$ を L の変数 $x_{0},x_{1},\dots$ と同一視し、レジスタの値の組を L と同じく状態 $\sigma\colon\mathrm{Var}\to\N$ で表す。
+- 状態 $\sigma,\tau$ と変数の集合 $V$ について、$\sigma=_{V}\tau$ は $V$ 上で一致することを表す。
+:::
+
+## レジスタ機械 {#comp:sec-register-machine}
+
+::: definition レジスタ機械 {#comp:register-machine keywords="register machine program, configuration, step" index="レジスタ機械|れじすたきかい"}
+1. **命令**は次の 3 種類である（$r,l\in\N$）：$\mathtt{inc}(r)$（$R_{r}$ に $1$ を足す）、$\mathtt{dec}(r)$（$R_{r}$ から $1$ を引く。$0$ なら $0$ のまま）、$\mathtt{jz}(r,l)$（$R_{r}=0$ なら $l$ 番の命令に飛ぶ）。
+2. **レジスタ機械**（のプログラム）$M$ とは、命令の有限列 $I_{0},\dots,I_{N-1}$ のこと。$N$ を $M$ の長さという。
+3. **様相**は組 $(p,\sigma)$（$p\in\N$ はプログラムカウンタ、$\sigma$ は状態）。$p\ge N$ の様相は**停止している**。$p<N$ のとき、次の様相 $(p,\sigma)\to_{M}(p',\sigma')$ を次で定める：
+   - $I_{p}=\mathtt{inc}(r)$ なら $(p+1,\sigma[x_{r}\mapsto\sigma(x_{r})+1])$。
+   - $I_{p}=\mathtt{dec}(r)$ なら $(p+1,\sigma[x_{r}\mapsto\sigma(x_{r})\mathbin{\dot{-}}1])$。
+   - $I_{p}=\mathtt{jz}(r,l)$ なら、$\sigma(x_{r})=0$ のとき $(l,\sigma)$、そうでなければ $(p+1,\sigma)$。
+4. $(p,\sigma)$ から $s$ 歩で $(p',\sigma')$ になることを $(p,\sigma)\to_{M}^{s}(p',\sigma')$ と書く。$(0,\sigma)$ から有限歩で停止している様相 $(p',\tau)$ に達するとき、$M$ は $\sigma$ から**停止して** $\tau$ を出すという（$\to_{M}$ は関数なので、$\tau$ は一意）。
+5. $M$ が部分関数 $f\colon\N^{k}\rightharpoonup\N$ を**計算する**とは、すべての $\vec{m}$ について、$M$ が $\sigma_{\vec{m}}$ から停止することと $f(\vec{m})\downarrow$ が同値で、停止したとき出した状態の $x_{0}$ が $f(\vec{m})$ であることをいう。そのような $M$ があるとき $f$ は**レジスタ機械で計算可能**という。
+:::
+
+::: intuition
+レジスタ機械は、番号の付いた命令を上から一つずつ実行し、プログラムカウンタ $p$ が「次に実行する命令の番号」を指す。$\mathtt{jz}$ でだけ $p$ が飛び、範囲の外（$p\ge N$）に出たら止まる。図は問題 \ref{comp:prob-rm-add} の機械の途中の様相である。
+```svg レジスタ機械の様相：プログラムカウンタ p と各レジスタの値
+<svg viewBox="0 0 640 230" xmlns="http://www.w3.org/2000/svg" font-size="15">
+  <text x="150" y="20" text-anchor="middle">プログラム（命令の列）</text>
+  <g font-family="monospace">
+    <rect x="70" y="32" width="170" height="26" rx="4" fill="none" stroke="currentColor"/><text x="80" y="50">0: jz(1, 4)</text>
+    <rect x="70" y="62" width="170" height="26" rx="4" fill="none" style="stroke: var(--mn-accent)" stroke-width="2.5"/><text x="80" y="80">1: dec(1)</text>
+    <rect x="70" y="92" width="170" height="26" rx="4" fill="none" stroke="currentColor"/><text x="80" y="110">2: inc(0)</text>
+    <rect x="70" y="122" width="170" height="26" rx="4" fill="none" stroke="currentColor"/><text x="80" y="140">3: jz(3, 0)</text>
+    <rect x="70" y="152" width="170" height="26" rx="4" fill="none" stroke="currentColor"/><text x="80" y="170">4: jz(2, 8)</text>
+    <text x="80" y="200" style="fill: var(--mn-fg-soft)">  …</text>
+  </g>
+  <text x="18" y="80" style="fill: var(--mn-accent)" font-weight="bold">p = 1 →</text>
+  <text x="440" y="20" text-anchor="middle">レジスタ（自然数を入れる箱）</text>
+  <g text-anchor="middle">
+    <text x="320" y="62">R₀</text><text x="390" y="62">R₁</text><text x="460" y="62">R₂</text><text x="530" y="62">R₃</text>
+    <rect x="295" y="72" width="50" height="50" rx="6" fill="none" stroke="currentColor"/>
+    <rect x="365" y="72" width="50" height="50" rx="6" fill="none" style="stroke: var(--mn-accent)" stroke-width="2.5"/>
+    <rect x="435" y="72" width="50" height="50" rx="6" fill="none" stroke="currentColor"/>
+    <rect x="505" y="72" width="50" height="50" rx="6" fill="none" stroke="currentColor"/>
+    <text x="320" y="103" font-size="20">2</text><text x="390" y="103" font-size="20">3</text><text x="460" y="103" font-size="20">4</text><text x="530" y="103" font-size="20">0</text>
+    <text x="455" y="160" style="fill: var(--mn-fg-soft)" font-size="13">p = 1 の命令 dec(1) で R₁ が 3 → 2 になり、p = 2 に進む</text>
+    <text x="455" y="182" style="fill: var(--mn-fg-soft)" font-size="13">R₃ は常に 0。jz(3, ℓ) は無条件ジャンプ</text>
+  </g>
+</svg>
+```
+:::
+
+::: remark
+$M$ に現れるレジスタは有限個で、それ以外のレジスタは実行中ずっと変わらない。無条件のジャンプ「$l$ へ飛ぶ」は、値が $0$ のまま変わらないレジスタ $z$ を一つ決めておき $\mathtt{jz}(z,l)$ と書く。以下これを $\mathtt{goto}(l)$ と略記する（$z$ を明示する）。
+:::
+
+## レジスタ機械を L で模倣する {#comp:sec-rm-to-L}
+
+::: theorem レジスタ機械で計算できる関数は L で計算可能 {#comp:rm-to-L keywords="simulating register machines in L, program counter" index="プログラムカウンタ|ぷろぐらむかうんた"}
+$M$ を長さ $N$ のレジスタ機械とする。L のプログラム $P_{M}$ で、while ループを一つだけ含み、すべての状態 $\sigma$ について次を満たすものがある：$M$ が $\sigma$ から停止して $\tau$ を出すとき、そのときに限り $[\![P_{M}]\!](\sigma)\downarrow$ で、$[\![P_{M}]\!](\sigma)$ は $M$ のレジスタ上で $\tau$ と一致する。とくに、レジスタ機械で計算可能な部分関数は L で計算可能である。
+:::
+
+::: proof
+$M$ に現れるレジスタを $V$ とし、$V$ にない新しい変数 $p,q,h$ をとる。各 $i<N$ について、命令 $I_{i}$ を実行する for プログラム $J_{i}$ を
+```python 命令 I_i を実行する for プログラム J_i
+# I_i = inc(r) のとき
+x_r += 1
+p += 1
+# I_i = dec(r) のとき
+x_r = max(x_r - 1, 0)
+p += 1
+# I_i = jz(r, l) のとき
+p += 1
+if x_r == 0:
+    p = l
+```
+とする。`if q == i:` は、新しい変数 $u$ に $\chi_{=}(q,i)$ を（for プログラムで）計算してから `if u != 0:` とする略記として、次のプログラムを $P_{M}$ とする（表示は \ref{comp:L-python-display} の約束による）。
+```python レジスタ機械 M を模倣するプログラム P_M
+p = 0
+h = less(p, N)          # χ_<(p, N)：p < N なら 1
+while h != 0:           # 本体 B
+    q = p
+    if q == 0:
+        J_0
+    if q == 1:
+        J_1
+    ...
+    if q == N - 1:
+        J_{N-1}
+    h = less(p, N)
+```
+ここで $q$ は本体の初めの $p$ の値を保持し、どの $J_{i}$ でも書き換えられないので、本体を一度実行すると $J_{q}$ がちょうど一回実行される。したがって、$\sigma'$ が $V$ 上で $\rho$ と一致し $\sigma'(p)=p_{0}<N$ なら、$B$ を $\sigma'$ から実行した結果 $\sigma''$ は、$(p_{0},\rho)\to_{M}(p_{1},\rho_{1})$ について、$V$ 上で $\rho_{1}$ と一致し、$\sigma''(p)=p_{1}$、$\sigma''(h)=1$（$p_{1}<N$ のとき）または $0$（$p_{1}\ge N$ のとき）を満たす。
+
+**停止する場合.** $(0,\sigma)\to_{M}^{s}(p_{s},\rho_{s})$ で $p_{s}\ge N$ が初めて起こるとする。$j\le s$ に関する帰納法で、ループの $j$ 周後の状態は $V$ 上で $\rho_{j}$ と一致し、$p=p_{j}$、$h=[p_{j}<N]$ であることが上の観察から分かる。$j<s$ では $h=1$ でループは続き、$s$ 周後に $h=0$ で止まる（規則 6 を $s$ 周分逆向きに使う）。
+
+**停止しない場合.** $[\![P_{M}]\!](\sigma)\downarrow$ とすると、規則 6 の導出からループはある有限の周回数 $s$ で止まり、そのとき $h=0$、すなわち $p_{s}\ge N$ となって $M$ は $s$ 歩で停止する。
+
+後半：$M$ が $f$ を計算するとき、入力状態 $\sigma_{\vec{m}}$ から $P_{M}$ を実行し、最後に何もしなくても $x_{0}\in V$（$V$ に入っていなければ $x_{0}$ は $0$ のままで、$M$ も同じ）の値が $f(\vec{m})$ になる。
+:::
+
+## L をレジスタ機械に翻訳する {#comp:sec-L-to-rm}
+
+翻訳では、命令の列（**ブロック**）をつなぎ合わせる。長さ $L$ のブロック $B$ が**閉じている**とは、$B$ のすべての $\mathtt{jz}(r,l)$ で $l\le L$ となることとする。つまり $B$ からは「自分の中」か「自分の直後 $L$」にしか飛ばない。$B_{1}$（長さ $L_{1}$）と $B_{2}$ の**連結** $B_{1}B_{2}$ は、$B_{2}$ のすべての飛び先に $L_{1}$ を足して $B_{1}$ の後に並べたものである。閉じたブロックの連結は閉じている。ブロック $B$ の中で、ラベル $\ell$ はその位置の番号を表す（飛び先の数は、ブロックを組み立てた後に決まる）。
+
+::: definition L の翻訳 {#comp:L-to-rm-translation keywords="compilation of L to register machines" index="翻訳（L からレジスタ機械へ）|ほんやくえるかられじすたきかいへ"}
+$P$ を L のプログラム、$z$ と $b$ を $z<b$ かつ $\mathrm{var}(P)\subseteq\{x_{0},\dots,x_{z-1}\}$ となる番号とする（$x_{z}$ はゼロレジスタ、$x_{b},x_{b+1},\dots$ は作業用）。閉じたブロック $C_{z,b}(P)$ を $P$ の構成に関して次で定める。$\mathtt{goto}(\ell)$ は $\mathtt{jz}(z,\ell)$、$\mathrm{END}$ はブロックの長さ（直後）を表す。
+1. $x_{i}:=x_{i}+1$：$\mathtt{inc}(i)$。$x_{i}:=x_{i}\mathbin{\dot{-}}1$：$\mathtt{dec}(i)$。
+2. $x_{i}:=0$：$\mathrm{CLR}(i)\defeq$ 「$\ell_{0}$：$\mathtt{jz}(i,\mathrm{END})$；$\mathtt{dec}(i)$；$\mathtt{goto}(\ell_{0})$」。
+3. $x_{i}:=x_{j}$（$i\neq j$。$i=j$ なら空のブロック）：$t\defeq b$ を作業用として、
+   $\mathrm{CLR}(i)$；$\mathrm{CLR}(t)$；$\ell_{1}$：$\mathtt{jz}(j,\ell_{2})$；$\mathtt{dec}(j)$；$\mathtt{inc}(i)$；$\mathtt{inc}(t)$；$\mathtt{goto}(\ell_{1})$；$\ell_{2}$：$\mathtt{jz}(t,\mathrm{END})$；$\mathtt{dec}(t)$；$\mathtt{inc}(j)$；$\mathtt{goto}(\ell_{2})$。
+   （$\mathrm{CLR}$ の $\mathrm{END}$ は、それ自身の直後を指す。）
+4. $P_{1};P_{2}$：$C_{z,b}(P_{1})C_{z,b}(P_{2})$。
+5. $\mathtt{for}\ x_{i}\ \mathtt{do}\ Q\ \mathtt{od}$：$c\defeq b$ を回数用として、
+   「$x_{c}:=x_{i}$ の翻訳（作業用 $b+1$。すなわち 3 を $b+1$ を作業用として使う）」；$\ell$：$\mathtt{jz}(c,\mathrm{END})$；$C_{z,b+2}(Q)$；$\mathtt{dec}(c)$；$\mathtt{goto}(\ell)$。
+6. $\mathtt{while}\ x_{i}\neq0\ \mathtt{do}\ Q\ \mathtt{od}$：$\ell$：$\mathtt{jz}(i,\mathrm{END})$；$C_{z,b}(Q)$；$\mathtt{goto}(\ell)$。
+
+5 では、$Q$ の翻訳は作業用に $b+2$ 以降を使うので、回数用の $x_{c}$ を書き換えない。
+:::
+
+::: lemma 翻訳の正しさ {#comp:L-to-rm-correct keywords="correctness of compilation"}
+$P$, $z<b$ を \ref{comp:L-to-rm-translation} のとおりとし、$B\defeq C_{z,b}(P)$、その長さを $L$、$V\defeq\{x_{0},\dots,x_{z}\}$ とする。$\sigma(x_{z})=0$ となる状態 $\sigma$ について：
+1. $\langle P,\sigma\rangle\Downarrow\tau$ なら、ある $s$ と $\tau'$ で $(0,\sigma)\to_{B}^{s}(L,\tau')$、$\tau'=_{V}\tau$、かつ $\tau'$ は $\{x_{0},\dots,x_{b-1}\}\setminus V$ 上で $\sigma$ と一致する。
+2. $(0,\sigma)$ から $B$ を実行して停止する（プログラムカウンタが $L$ 以上になる）なら、そのときプログラムカウンタはちょうど $L$ で、$\langle P,\sigma\rangle\Downarrow\tau$ となる $\tau$ があり、1 の $\tau'$ と同じ状態に達する。
+:::
+
+::: proof
+**1** は $\langle P,\sigma\rangle\Downarrow\tau$ の導出に関する帰納法、**2** は $P$ の構成と、停止までの歩数に関する帰納法で示す。どちらの場合も、ブロックが閉じていて、各部分ブロックへは先頭から入り、直後から出ることを使う。作業用レジスタ（$b$ 以上）は各部分で使う前に $\mathrm{CLR}$ で $0$ にするか、上書きしてから使うので、初めの値は結果に影響しない。ゼロレジスタ $x_{z}$ はどの命令でも書き換えられない（翻訳に $\mathtt{inc}(z)$, $\mathtt{dec}(z)$ は現れない）ので、$\mathtt{goto}$ は確かに無条件のジャンプとして働く。
+- **基本命令.** $\mathrm{CLR}(i)$ は $x_{i}$ の値 $n$ について $n$ 周の後 $x_{i}=0$ で $\mathrm{END}$ に飛ぶ。3 は、$x_{i},x_{t}$ を $0$ にした後、$x_{j}$ の値 $n$ を $x_{i}$ と $x_{t}$ に移し（$x_{j}=0$ となる）、次に $x_{t}$ を $x_{j}$ に戻す。終わりに $x_{i}=x_{j}=n$、$x_{t}=0$。いずれも必ず停止し、規則 1〜3 の結果と $V$ 上で一致する。
+- **逐次実行.** $B_{1}$ から出ると $B_{2}$ の先頭に入る。1 は帰納法の仮定を二度使う。2 は、$B_{1}B_{2}$ が停止するなら $B_{1}$ の部分の実行は有限歩で $B_{1}$ の直後に出ていて（$B_{1}$ は閉じているので、出るなら直後へ出る）、その後 $B_{2}$ が停止することから、帰納法の仮定による。
+- **for.** 先頭で $x_{c}=\sigma(x_{i})=n$ となり、$x_{c}$ は $Q$ の翻訳では書き換えられない。1：規則 5 の列 $\sigma_{0},\dots,\sigma_{n}$ について、$Q$ の帰納法の仮定を $n$ 回使うと、$j$ 周後の状態は $V$ 上で $\sigma_{j}$ と一致し $x_{c}=n-j$。$n$ 周後に $\mathtt{jz}(c,\mathrm{END})$ で出る。2：停止するなら各周回の $Q$ の部分は停止していて、帰納法の仮定（2）から規則 5 の列が得られる。
+- **while.** 1：導出の最後が規則 6 の前半なら、$\mathtt{jz}(i,\mathrm{END})$ ですぐ出る。後半なら、$Q$ の帰納法の仮定でブロックの直後（$\mathtt{goto}(\ell)$）まで進み、先頭に戻った状態から、$\langle W,\sigma'\rangle\Downarrow\tau$ の（より短い）導出についての帰納法の仮定を使う。2：停止までの歩数に関する帰納法。先頭で $x_{i}=0$ なら規則 6 の前半。そうでなければ $Q$ の部分は停止して（帰納法の仮定で $\langle Q,\sigma\rangle\Downarrow\sigma'$）、先頭に戻ってから停止までの歩数は真に少ないので、帰納法の仮定で $\langle W,\sigma'\rangle\Downarrow\tau$。規則 6 の後半から $\langle W,\sigma\rangle\Downarrow\tau$。
+:::
+
+::: theorem L で計算可能な関数はレジスタ機械で計算可能 {#comp:L-to-rm keywords="L-computable functions are register machine computable"}
+L で計算可能な部分関数は、レジスタ機械で計算可能である。
+:::
+
+::: proof
+$P$ が $f\colon\N^{k}\rightharpoonup\N$ を計算するとし、$\mathrm{var}(P)\cup\{x_{0},\dots,x_{k}\}\subseteq\{x_{0},\dots,x_{z-1}\}$ となる $z$ をとる。$M\defeq C_{z,z+1}(P)$ とする。入力状態 $\sigma_{\vec{m}}$ では $x_{z}=0$ なので、\ref{comp:L-to-rm-correct} の 1・2 から、$M$ が $\sigma_{\vec{m}}$ から停止することと $[\![P]\!](\sigma_{\vec{m}})\downarrow$ は同値で、停止したときの $x_{0}$ は $[\![P]\!](\sigma_{\vec{m}})(x_{0})=f(\vec{m})$ である。
+:::
+
+::: corollary L とレジスタ機械の同値性 {#comp:L-equals-rm keywords="equivalence of L and register machines" index="レジスタ機械と L の同値性|れじすたきかいとえるのどうちせい"}
+部分関数が L で計算可能であることと、レジスタ機械で計算可能であることは同値である。
+:::
+
+::: proof
+\ref{comp:rm-to-L} と \ref{comp:L-to-rm}。
+:::
+
+::: hypcheck
+- **ゼロレジスタ**：$\mathtt{goto}$ を $\mathtt{jz}(z,\cdot)$ で表すのに使った。入力状態で $x_{z}=0$ となるよう、$z$ を入力・出力・プログラムの変数より大きくとった。
+- **作業用レジスタを入れ子の深さごとに分けたこと**：for の回数用レジスタが本体で壊されないために必要である（\ref{comp:L-to-rm-translation} の 5 で本体を $b+2$ 以降で翻訳した）。L の局所性（\ref{comp:L-locality}）に当たる性質を、翻訳の側で作り込んだことになる。
+- **ブロックが閉じていること**：連結したとき、部分ブロックから出る場所が次のブロックの先頭になることに使った。
+- **\ref{comp:rm-to-L} の $q$**：一周の本体で命令が二つ実行されないように、周回の初めの $p$ を保存した。これを省くと、$J_{i}$ で $p$ が $i+1$ になった直後に $J_{i+1}$ も実行されてしまう。
+:::
+
+## 問題 {#comp:sec-rm-problems}
+
+::: problem {#comp:prob-rm-add}
+$f(m_{1},m_{2})=m_{1}+m_{2}$ を計算する長さ $8$ 以下のレジスタ機械を書け（入力 $x_{1},x_{2}$、出力 $x_{0}$、他のレジスタは初め $0$）。
+:::
+
+::: solution
+ゼロレジスタを $x_{3}$ として、
+$0$：$\mathtt{jz}(1,4)$；$1$：$\mathtt{dec}(1)$；$2$：$\mathtt{inc}(0)$；$3$：$\mathtt{jz}(3,0)$；$4$：$\mathtt{jz}(2,8)$；$5$：$\mathtt{dec}(2)$；$6$：$\mathtt{inc}(0)$；$7$：$\mathtt{jz}(3,4)$。
+$x_{1}$ と $x_{2}$ の値を一つずつ $x_{0}$ に移す。$0$〜$3$ は $m_{1}$ 周して $4$ に飛び、$4$〜$7$ は $m_{2}$ 周して $8$（停止）に飛ぶ。
+:::
+
+::: problem {#comp:prob-rm-decjz}
+命令を $\mathtt{inc}(r)$ と $\mathtt{decjz}(r,l)$（$R_{r}=0$ なら $l$ に飛び、そうでなければ $R_{r}$ から $1$ を引いて次へ）の 2 種類だけにしても、計算できる部分関数は変わらないことを示せ。
+:::
+
+::: solution
+$\mathtt{decjz}(r,l)$ は元の命令で「$\mathtt{jz}(r,l)$；$\mathtt{dec}(r)$」と書けるので、新しい機械は元の機械で模倣できる（飛び先は番号を付け直す）。逆に、元の $\mathtt{dec}(r)$ は「$\mathtt{decjz}(r,\text{次})$」で書ける（$0$ なら次へ飛び、そうでなければ引いて次へ）。$\mathtt{jz}(r,l)$ は「$\mathtt{decjz}(r,l)$；$\mathtt{inc}(r)$」で書ける（$0$ なら $l$ へ。そうでなければ $1$ を引いてすぐ戻す）。どちらの書き換えでも、命令ごとに番号の対応表を作って飛び先を付け替えればよい。
+:::
+
+::: supplement
+**前提の検討.**
+- レジスタの値に上限がないことは本質的である。値に上限のあるレジスタを有限個しかもたない機械は、有限オートマトンと同じ程度の能力しかない（様相が有限個しかない）。
+- 停止の条件を「$p\ge N$」としたので、範囲外へのジャンプはすべて停止を意味する。停止命令を別に設けても同じである。
+
+**関連する結果.**
+- *ミンスキーの 2 カウンタ機械.* レジスタを $2$ 個に制限しても、入力 $m$ を $2^{m}$ として与え、出力 $n$ を $2^{n}$ として受け取る約束にすれば、すべての計算可能関数を計算できることが知られている（Minsky 1967）。レジスタ $\vec{r}$ の値を $2^{r_{0}}3^{r_{1}}5^{r_{2}}\cdots$ という一つの数にまとめ、「$3$ を掛ける」「$3$ で割り切れるか調べて割る」を 2 個目のレジスタを使って行う。本サイトでは示していない。
+- *ランダムアクセス機械（RAM）.* レジスタの番号を別のレジスタの値で指定できる（間接番地指定）機械は、計算できる関数は同じだが、計算時間を測る模型として使われる（\ref{comp:page-time-complexity}）。
+
+**高い視点から：構造化と平坦化.** L からレジスタ機械への翻訳は、入れ子の構文木を「番号の付いた一列の命令」に**平坦化**する操作で、コンパイラが行っていることの原型である。逆向きの \ref{comp:rm-to-L} は、どんなに絡まった goto の流れも「プログラムカウンタという変数を一つ持ち、`while (まだ動いている)` の中で場合分けする」ことで構造化できることを示している。後者はインタプリタ（解釈実行系）の原型でもあり、プログラム自体を数で表してこの構成を一様に行えば万能プログラムになる（\ref{comp:page-universal-smn}）。比喩で言えば、構造化プログラムは「目次付きの本」、レジスタ機械は「ページ番号と『何ページへ飛べ』だけが書かれた本」で、どちらも同じ物語を語れる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

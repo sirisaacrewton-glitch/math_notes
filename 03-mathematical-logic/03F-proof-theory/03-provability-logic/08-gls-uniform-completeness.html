@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GLS の算術的完全性と一様完全性 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/03-provability-logic/08-gls-uniform-completeness.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# GLS の算術的完全性と一様完全性 {#pt:page-gls-uniform-completeness keywords="arithmetical completeness of GLS, uniform arithmetical completeness, Artemov, Avron, Montagna, Visser, provability logic of Sigma sentences, GLV"}
+
+前ページのソロヴェイの構成を三つの方向に発展させる。第一に、**常に真**な様相論理式はちょうど $\mathsf{GLS}$ の定理であること（ソロヴェイ）。これにより $\mathsf{GLS}$ の決定可能性も得られる。第二に、一つの算術的解釈で $\mathsf{GL}$ のすべての非定理を同時に反証できること（**一様な算術的完全性**。アルテモフ、アヴロン、モンターニャ、フィッサー、ブーロス）。第三に、命題変数に Σ 文だけを割り当てる解釈について、証明可能性論理と真理の論理を決定すること（フィッサー）。（Boolos 第 9 章後半に対応する。）
+
+## 記法と定義の確認 {#pt:sec-gls-notation}
+
+::: notation
+- ソロヴェイの構成（有限モデル $\mathcal{M}_{A}=(\{1,\dots,n\},R,V)$、世界 $0$ を加えた $(W',R',V')$、ソロヴェイ文 $S_{0},\dots,S_{n}$、解釈 $p^{\ast}=\bigvee\{S_{i}:i\in W',\ i\text{ で }p\text{ が真（}V'\text{）}\}$）、ソロヴェイ文の基本性質 \ref{pt:solovay-properties} の 1–6、埋め込み補題 \ref{pt:solovay-embedding}、\ref{pt:large-proofs} は \ref{pt:page-solovay} のとおり。$V'$ では世界 $0$ の命題変数の値は世界 $1$ と同じである。
+- $\mathsf{GLS}$ とその健全性（\ref{pt:gls}, \ref{pt:gls-soundness}）は \ref{pt:page-arithmetical-soundness} のとおり。
+- $\PA$、Σ 論理式（\ref{pt:sigma-formula}。$\PA$ で同値な狭義の Σ 論理式があるもの）、形式化された Σ 完全性、D1–D3、一般化された対角化定理、構文の関数は前ページまでのとおり。$\Box S$ で $\mathrm{Bew}(\Godel{S})$ を表すことがある。$\mathcal{M}$ は $\PA$ の任意のモデル。
+:::
+
+## GLS の算術的完全性 {#pt:sec-gls-completeness}
+
+::: definition A^S {#pt:a-s-translation}
+様相論理式 $A$ に対し
+$$
+A^{\mathrm{S}}\defeq\bigwedge\{\Box C\to C:\Box C\text{ は }A\text{ の部分論理式}\}\to A
+$$
+とおく。
+:::
+
+::: theorem GLS の算術的完全性（ソロヴェイ） {#pt:gls-arithmetical-completeness keywords="Solovay's completeness theorem for GLS" index="GLS の算術的完全性|じーえるえすのさんじゅつてきかんぜんせい"}
+様相論理式 $A$ について次は同値である。
+1. $\mathsf{GL}\vdash A^{\mathrm{S}}$。
+2. $\mathsf{GLS}\vdash A$。
+3. $A$ は常に真（すべての算術的解釈 $\ast$ で $\mathcal{N}\models A^{\ast}$）。
+
+とくに $\mathsf{GLS}$ は決定可能である（1 は $\mathsf{GL}$ の決定可能性で判定できる）。
+:::
+
+::: proof
+**1 ⇒ 2.** $\mathsf{GL}$ の定理 $A^{\mathrm{S}}$ と、公理 $\Box C\to C$ たちから、恒真式（$\mathsf{GL}$ の定理）とモーダスポネンスで $A$。
+
+**2 ⇒ 3.** \ref{pt:gls-soundness}。
+
+**3 ⇒ 1（対偶）.** $\mathsf{GL}\nvdash A^{\mathrm{S}}$ とする。前ページと同様に、有限・推移的・非反射的なモデル $\mathcal{M}_{A}=(\{1,\dots,n\},R,V)$ で、$1\not\models A^{\mathrm{S}}$、$2\le i\le n$ なら $1Ri$ となるものをとり、$A^{\mathrm{S}}$ についてソロヴェイの構成を行う。$A$ の部分論理式は $A^{\mathrm{S}}$ の部分論理式なので、埋め込み補題が $A$ の部分論理式について使える。$1\not\models A^{\mathrm{S}}$ より、$A$ のすべての部分論理式 $\Box C$ について $1\models\Box C\to C$、かつ $1\not\models A$。
+
+$A$ の部分論理式 $B$ に関する帰納法で、「$1\models B$ なら $\PA\vdash S_{0}\to B^{\ast}$、$1\not\models B$ なら $\PA\vdash S_{0}\to\neg B^{\ast}$」を示す。
+- **$B=p$**：$1\models p$ なら $V'$ の定義で $0$ でも $p$ が真なので $S_{0}$ は $p^{\ast}$ の選言肢。$1\not\models p$ なら $S_{0}$ は選言肢でなく、\ref{pt:solovay-properties} の 1 より $\PA\vdash S_{0}\to\neg p^{\ast}$。
+- **$\bot$, $\to$** は帰納法の仮定から恒真式による。
+- **$B=\Box C$, $1\models\Box C$**：$2\le i\le n$ で $1Ri$ なので $i\models C$、埋め込み補題より $\PA\vdash S_{i}\to C^{\ast}$。$1\models\Box C\to C$ より $1\models C$、埋め込み補題より $\PA\vdash S_{1}\to C^{\ast}$。帰納法の仮定（$C$ は $B$ より短い）より $\PA\vdash S_{0}\to C^{\ast}$。\ref{pt:solovay-properties} の 3（$\PA\vdash S_{0}\vee\cdots\vee S_{n}$）と合わせて $\PA\vdash C^{\ast}$、D1 より $\PA\vdash\Box C^{\ast}$、とくに $\PA\vdash S_{0}\to(\Box C)^{\ast}$。
+- **$B=\Box C$, $1\not\models\Box C$**：$1Ri$ かつ $i\not\models C$ となる $i$ があり、埋め込み補題より $\PA\vdash S_{i}\to\neg C^{\ast}$、D1, D2 より $\PA\vdash\Box C^{\ast}\to\Box\neg S_{i}$。$0R'i$ なので \ref{pt:solovay-properties} の 4 より $\PA\vdash S_{0}\to\neg\Box C^{\ast}$。
+
+$1\not\models A$ より $\PA\vdash S_{0}\to\neg A^{\ast}$。前ページの Step 2 と同じく $S_{0}$ は真なので、健全性より $A^{\ast}$ は偽。
+
+::: hypcheck
+- **$V'$ で $0$ に $1$ と同じ値を与えたこと**：$B=p$ の場合で使った。前ページでは世界 $0$ の値は使わなかった。
+- **反映原理 $\Box C\to C$ が $1$ で成り立つこと**：$\Box C$ の場合で、$S_{1}$ の下での $C^{\ast}$ を得るのに使った。これにより、$\PA$ の証明可能性（全世界）と $S_{0}$ の下での真理（世界 $1$ の真理）がつながる。
+:::
+:::
+
+## 一様な算術的完全性 {#pt:sec-uniform-completeness}
+
+$\mathsf{GLS}$ については一様な解釈はありえない：$p$ も $\neg p$ も $\mathsf{GLS}$ の定理でない（\ref{pt:gls-soundness} と、$p^{\ast}$ を $\bot$ または $\top$ にする解釈）が、どの $\ast$ でも $p^{\ast}$ か $\neg p^{\ast}$ のどちらかは真である。ところが $\mathsf{GL}$ と証明可能性については一様な解釈がある。
+
+::: theorem 一様な算術的完全性 {#pt:uniform-completeness keywords="uniform arithmetical completeness theorem" index="一様な算術的完全性|いちようなさんじゅつてきかんぜんせい"}
+ある算術的解釈 $\ast$ が存在して、すべての様相論理式 $A$ について、$\PA\vdash A^{\ast}$ ならば $\mathsf{GL}\vdash A$。したがって、この $\ast$ について「$\mathsf{GL}\vdash A\iff\PA\vdash A^{\ast}$」がすべての $A$ で成り立ち、任意の解釈 $\#$ について「$\PA\vdash A^{\ast}$ ならば $\PA\vdash A^{\#}$」。
+:::
+
+証明の考え方：$\mathsf{GL}$ の非定理ごとに有限の反例モデルをとり、それらを交わらない正の整数の集合の上に並べ、全体の上に世界 $0$ を置いた無限のフレームを作って、前ページの構成を行う。$h$ の値が無限に多くなりうるので、ソロヴェイ文を一つの論理式 $S(x)$ で表す。
+
+::: lemma 反例モデルの一様な並び {#pt:uniform-countermodels}
+次を満たす有限モデルの列 $(W_{k},R_{k},V_{k},w_{k},A_{k})_{k\in\N}$ と、Δ 論理式 $R^{\ast}(x,y)$, $\mathrm{Val}(x,e)$ がある。
+1. $A_{0},A_{1},\dots$ は $\mathsf{GL}$ の非定理を（重複を許して）すべて並べたもの。$W_{k}$ は正の整数の有限集合で、$W_{0},W_{1},\dots$ は互いに交わらず、それらの合併は正の整数全体。$(W_{k},R_{k})$ は推移的・非反射的、$W_{k}=\{w_{k}\}\cup\{i:w_{k}R_{k}i\}$、$(W_{k},R_{k},V_{k}),w_{k}\not\models A_{k}$。$iR_{k}j$ なら $j<i$。
+2. $R'\defeq\bigcup_{k}R_{k}\cup\{(0,i):i\ge1\}$ とすると、$R^{\ast}$ は $R'$ を定め、$V'\defeq\bigcup_{k}V_{k}$ について $\mathrm{Val}(i,e)$ は「$i\ge1$ で、$e$ 番目の命題変数 $p_{e}$ が $V'$ で $i$ で真」を定める。
+3. （$\PA$ で証明できる性質）(i) $\PA\vdash R^{\ast}(0,y)\leftrightarrow y\neq0$。(ii) $i\ge1$ なら $\PA\vdash R^{\ast}(\underline{i},y)\leftrightarrow\bigvee_{j:iR'j}y=\underline{j}$（有限の選言）。(iii) $\PA\vdash R^{\ast}(x,y)\wedge R^{\ast}(y,z)\to R^{\ast}(x,z)$。(iv) $\PA\vdash\neg R^{\ast}(x,0)$、$\PA\vdash R^{\ast}(x,y)\wedge x\neq0\to y<x$。(v) 標準的な $i,e$ について $\PA$ は $\mathrm{Val}(\underline{i},\underline{e})$ かその否定を証明する。
+:::
+
+::: proof
+**構成.** $\mathsf{GL}$ は決定可能で、非定理 $A$ には、世界の数が $2^{\lvert\mathrm{Sub}(A)\rvert}$ 以下の有限反例モデルが機械的に見つかる（\ref{logic:modal-fmp-decidability}）。反例の世界 $w$ から生成された部分モデルをとり、世界を、ランクの小さい順（\ref{pt:world-rank}）に、その時点で未使用の最小の正の整数から連続して番号付けする。ランクの小さい世界ほど番号が小さいので、$iR_{k}j$ なら $\rho(j)<\rho(i)$ から $j<i$。これを非定理の列挙の順に行えば 1 を満たす列が得られ（非定理は無限にある：たとえば $\Box^{m}\bot$ はどれも非定理）、各段の計算は原始再帰的である。
+
+**論理式.** ブロックの番号 $\mathrm{blk}(x)$、ブロック $k$ の関係と付値のコードを返す関数は原始再帰的なので Σ 関数として定義できる（\ref{pt:primitive-recursive-definable}）。ブロックのデータを返す関数は、「推移的・非反射的な有限関係のコードでない」入力に対しては空の関係を返すように定義しておく（場合分けは Δ 論理式で書ける）。そのうえで
+$$
+\begin{aligned}
+R^{\ast}(x,y)\defeq{}&(x=0\wedge y\neq0)\\
+&\vee\bigl(x\neq0\wedge y\neq0\wedge y<x\wedge\mathrm{blk}(x)=\mathrm{blk}(y)\\
+&\qquad\wedge\text{「}(x,y)\text{ はブロック }\mathrm{blk}(x)\text{ の関係に属する」}\bigr)
+\end{aligned}
+$$
+とおく。関係への所属は有限列のコードについての有界量化で書けるので $R^{\ast}$ は Δ である。$\mathrm{Val}$ も同様に定める。
+
+**性質.** (i), (iv) は定義から（$\mathcal{M}$ で成り立つ）。(iii)：$x=0$ なら $z\neq0$ から。$x\neq0$ なら三者は同じブロックにあり、$z<y<x$、ブロックの関係は（定義の場合分けにより $\mathcal{M}$ の中でも）推移的である。(ii)：$i$ が標準的なら、$R^{\ast}(\underline{i},y)$ は $y<\underline{i}$ を含意するので $y$ は $\underline{0},\dots,\underline{i-1}$ のどれか（\ref{pt:numeral-computation}）、各 $R^{\ast}(\underline{i},\underline{j})$ は Δ 文として $\PA$ で決定される（\ref{pt:delta-decidable}）。(v) も Δ 文の決定性。
+:::
+
+::: proof 一様な算術的完全性の証明
+**Step 1（ソロヴェイ関数）.** 論理式のコード $y$ と数 $j$ から $\neg\exists c\,\forall a\,(c\le a\to F(a,\mathrm{num}(j)))$（$F$ はコード $y$ の論理式、$b$ に数項を代入）のコードを作る Σ 関数を $\sigma(y,j)$ とし、$\mathrm{ex}(y,x)$ を「$\mathrm{Pf}(x,\sigma(y,j))$ となる $j<x$ があればその $j$、なければ $0$」とする（$\mathrm{Pf}(x,\cdot)$ は関数的で、$\sigma(y,\cdot)$ は単射なので $j$ は高々一つ。$\mathrm{Pf}(x,z)$ なら $z<x$、また $j\le\mathrm{num}(j)<\sigma(y,j)$ なので「$j<x$」は制限にならない）。$\mathrm{ex}$ は Σ 関数である。一般化された対角化定理で、Σ 論理式 $G(a,b)$ で
+$$
+\begin{aligned}
+\PA\vdash G(a,b)\leftrightarrow\exists s\Bigl(&\mathrm{FinSeq}(s)\wedge\mathrm{lh}(s)=a+1\wedge s_{0}=0\wedge s_{a}=b\\
+&\wedge\forall x<a\,\bigl[(R^{\ast}(s_{x},e_{x})\to s_{x+1}=e_{x})\\
+&\qquad\qquad\wedge(\neg R^{\ast}(s_{x},e_{x})\to s_{x+1}=s_{x})\bigr]\Bigr)
+\end{aligned}
+$$
+（$e_{x}\defeq\mathrm{ex}(\Godel{G},x)$）となるものをとり、$S(x)\defeq\exists c\,\forall a\,(c\le a\to G(a,x))$ とおく。標準的な $j$ について $\PA\vdash\sigma(\Godel{G},\underline{j})=\Godel{\neg S(\underline{j})}$（\ref{pt:syntax-provable}）。
+
+\ref{pt:solovay-function} と同様に、$\mathcal{M}$ で $G$ は関数 $h$ を定め、$h(0)=0$、$h(x+1)=\mathrm{ex}(\Godel{G},x)$（$h(x)R^{\ast}\mathrm{ex}(\Godel{G},x)$ のとき）、それ以外は $h(x+1)=h(x)$。(iii) より、$h(x)=i$ なら $x'\ge x$ で $h(x')=i$ または $R^{\ast}(i,h(x'))$。$\neg R^{\ast}(i,0)$ なので、$\mathrm{ex}=0$ のとき $h$ は動かない。
+
+**Step 2（性質）.** 前ページの性質の類似：
+- (2′) $\PA\vdash S(x)\wedge S(y)\to x=y$。
+- (3′) $\PA\vdash G(a,x)\to S(x)\vee\exists y\,(R^{\ast}(x,y)\wedge S(y))$。
+- (4′) $\PA\vdash\exists x\,S(x)$。
+- (5′) $iR'j$ なら $\PA\vdash S(\underline{i})\to\neg\Box\neg S(\underline{j})$。
+- (6′) $i\ge1$ なら $\PA\vdash S(\underline{i})\to\Box\neg S(\underline{i})$。
+- (7′) $i\ge1$ なら $\PA\vdash S(\underline{i})\to\Box\bigvee_{j:iR'j}S(\underline{j})$。
+
+(2′), (5′), (6′), (7′) の証明は \ref{pt:solovay-properties} の 1, 4, 5, 6 と同じである（(5′) では $\mathrm{Pf}(x,\Godel{\neg S(\underline{j})})$ から $\mathrm{ex}(\Godel{G},x)=j$、(7′) では (3′) と (ii) で $\exists y\,(R^{\ast}(\underline{i},y)\wedge S(y))$ を有限の選言に書き換える）。
+
+(3′) は、今度は $\PA$ の**中の**帰納法で示す。$F(x)\defeq\forall a\,(G(a,x)\to S(x)\vee\exists y\,(R^{\ast}(x,y)\wedge S(y)))$ とし、$\mathcal{M}$ で「$R^{\ast}(x,y)$ なるすべての $y$ で $F(y)$ ならば $F(x)$」を示せば、(iv) より $x=0$ 以外は $R^{\ast}$ の後続者が $x$ より小さいので、強い帰納法（\ref{pt:pa-strong-induction}）で $x\ge1$ について、次いで $x=0$ について $F(x)$ が従う。仮定の下で $G(a,x)$ とすると、Step 1 より $d\ge a$ で $h(d)=x$ または $R^{\ast}(x,h(d))$。すべての $d\ge a$ で $h(d)=x$ なら $S(x)$。そうでなければ $h(d)=y$、$R^{\ast}(x,y)$ となる $d\ge a$ があり、$F(y)$ より $S(y)$ か $R^{\ast}(y,z)\wedge S(z)$、(iii) より後者なら $R^{\ast}(x,z)\wedge S(z)$。(4′) は $G(0,0)$ と (3′)。
+
+**Step 3（解釈と埋め込み）.** $p_{e}^{\ast}\defeq\exists x\,(S(x)\wedge\mathrm{Val}(x,\underline{e}))$ とする。各 $k$、$i\in W_{k}$、$A_{k}$ の部分論理式 $B$ について、「$i\models B$ なら $\PA\vdash S(\underline{i})\to B^{\ast}$、$i\not\models B$ なら $\PA\vdash S(\underline{i})\to\neg B^{\ast}$」（真理は $(W_{k},R_{k},V_{k})$ で）。$B=p_{e}$：(v) より $\PA\vdash\mathrm{Val}(\underline{i},\underline{e})$ か $\PA\vdash\neg\mathrm{Val}(\underline{i},\underline{e})$ で、後者なら (2′) より $\PA\vdash S(\underline{i})\to\neg\exists x\,(S(x)\wedge\mathrm{Val}(x,\underline{e}))$。$\Box C$ の場合は埋め込み補題（\ref{pt:solovay-embedding}）の証明で (7′), (5′) を使い、$i\in W_{k}$ の $R'$ の後続者がちょうど $R_{k}$ の後続者で $W_{k}$ に属することに注意する。
+
+**Step 4.** $\mathsf{GL}\nvdash A$ なら、ある $k$ で $A=A_{k}$、$w_{k}\not\models A$ なので $\PA\vdash S(\underline{w_{k}})\to\neg A^{\ast}$、D1, D2 と (5′)（$0R'w_{k}$）より $\PA\vdash S(0)\to\neg\Box A^{\ast}$。(4′) より $\mathcal{N}$ である $i$ で $S(\underline{i})$ が真、$i\ge1$ なら (6′) と健全性で矛盾するので $S(0)$ が真。よって $\PA\nvdash A^{\ast}$。
+
+後半：$\PA\vdash A^{\ast}$ なら $\mathsf{GL}\vdash A$、\ref{pt:gl-arithmetical-soundness} より任意の $\#$ で $\PA\vdash A^{\#}$。
+:::
+
+::: remark
+「$\PA\vdash A^{\ast}\leftrightarrow A^{\#}$ がすべての $A$ で成り立つ」ような二つの解釈の関係は一様にはとれない：$\#_{1}$ で $p^{\#_{1}}=\bot$、$\#_{2}$ で $p^{\#_{2}}=\top$ とすると、一つの $\ast$ で $\PA\vdash p^{\ast}\to\bot$ かつ $\PA\vdash\neg p^{\ast}\to\neg\top$ とはなりえない（両方から $\PA\vdash\bot$）。一様な解釈は「最も証明しにくい」解釈である。
+:::
+
+## Σ 文の証明可能性論理 {#pt:sec-sigma-provability-logic}
+
+Σ 文 $S$ については形式化された Σ 完全性により $\PA\vdash S\to\Box S$ なので、命題変数に Σ 文だけを割り当てる解釈では、$p\to\Box p$ が常に証明可能になる。これを加えた体系を考える。
+
+::: definition Σ 解釈と GLV・GLSV {#pt:glv keywords="Sigma realization, GLV, GLSV" index="GLV|じーえるぶい, Σ 解釈|しぐまかいしゃく"}
+すべての命題変数に Σ 文を割り当てる算術的解釈を **Σ 解釈**という。$\mathsf{GL}$ の公理と、命題変数 $p$ についての $p\to\Box p$ を公理とし、モーダスポネンスと必然化則を推論規則とする体系を $\mathsf{GLV}$ という（一様代入則では閉じていない）。$\mathsf{GLV}$ の定理と $\Box A\to A$ の形の論理式を公理とし、モーダスポネンスだけを規則とする体系を $\mathsf{GLSV}$ という。有限・推移的・非反射的なモデルで、「$wRx$ かつ $w$ で $p$ が真なら $x$ で $p$ が真」（**持続性**）を満たすものを $\mathsf{GLV}$ に**適切なモデル**という。
+:::
+
+::: theorem フィッサーの定理 {#pt:visser-sigma keywords="Visser's theorem, provability logic of Sigma sentences" index="フィッサーの定理|ふぃっさーのていり"}
+様相論理式 $A$ について
+1. $\mathsf{GLV}\vdash A$ $\iff$ $A$ は $\mathsf{GLV}$ に適切なすべてのモデルで妥当 $\iff$ すべての Σ 解釈 $\ast$ で $\PA\vdash A^{\ast}$。
+2. $\mathsf{GLSV}\vdash A$ $\iff$ すべての Σ 解釈 $\ast$ で $\mathcal{N}\models A^{\ast}$。
+:::
+
+::: proof
+**1 の「定理 ⇒ Σ 解釈で証明可能」.** $\mathsf{GLV}$ の証明の長さに関する帰納法。$\mathsf{GL}$ の公理とモーダスポネンス・必然化則は \ref{pt:gl-arithmetical-soundness} の証明と同じ。$p\to\Box p$ の翻訳 $p^{\ast}\to\mathrm{Bew}(\Godel{p^{\ast}})$ は、$p^{\ast}$ が Σ 文なので形式化された Σ 完全性（\ref{pt:formalized-sigma-completeness}）による。
+
+**1 の「定理 ⇒ 適切なモデルで妥当」.** 適切なモデルで妥当な論理式の集合は、$\mathsf{GL}$ の公理（有限・推移的・非反射的なフレームで妥当）と $p\to\Box p$（持続性）を含み、モーダスポネンスと必然化則で閉じている。
+
+**1 の「適切なモデルで妥当 ⇒ 定理」.** $\mathsf{GLV}\nvdash A$ とし、$D\defeq A\wedge\bigwedge_{p}(\Box p\to\Box p)$（$p$ は $A$ に現れる命題変数）とおく。$\mathsf{GLV}\nvdash D$ で、$\mathrm{Sub}(D)$ は $\mathrm{Sub}(A)$ と各 $\Box p$ を含む。\ref{logic:modal-completeness-scheme} と \ref{logic:completeness-gl} の構成を $L=\mathsf{GLV}$, $D$ について行う。それらの証明が $L$ について使うのは、恒真式を含むこと、モーダスポネンスと必然化則で閉じていること（正規性 5 はここから従う）、レーブの公理と公理 4 の代入例を含むことだけなので、$L=\mathsf{GLV}$ でもそのまま成り立ち、$D$ を偽にする有限・推移的・非反射的なモデルが得られる。持続性：$wRx$、$p\in w$ とすると、$\mathsf{GLV}\vdash p\to\Box p$ と $\Box p\in\mathrm{Sub}(D)$ から $\Box p\in w$（\ref{logic:modal-mcs-properties} の 2）、$R$ の定義より $p\in x$。$D$ が偽なので $A$ も偽（$\Box p\to\Box p$ はどこでも真）。
+
+**1 の「Σ 解釈で証明可能 ⇒ 適切なモデルで妥当」（対偶）.** 適切なモデルで $A$ が偽とする。生成部分モデル（持続性は保たれる）に移り、前ページのソロヴェイの構成を行う（世界 $0$ は $1$ と同じ値をとり、持続性は $(W',R')$ でも成り立つ）。$\PA\nvdash A^{\ast}$ である。$\ast$ が Σ 解釈であることを示す：$p^{\ast}=\bigvee\{S_{i}:i\in W',\ i\models p\}$ が、Σ 文 $T\defeq\bigvee\{\exists a\,H(a,\underline{i}):i\in W',\ i\models p\}$ と $\PA$ で同値であることを示せばよい（\ref{pt:sigma-formula} の意味で Σ 文になる）。$\PA\vdash S_{i}\to\exists a\,H(a,\underline{i})$ なので $\PA\vdash p^{\ast}\to T$。逆向き：
+- $1\models p$ のとき、持続性より $1$ の後続者すべてと $0$ で $p$ は真で、$p^{\ast}$ は $S_{0}\vee\cdots\vee S_{n}$、\ref{pt:solovay-properties} の 3 より $\PA\vdash p^{\ast}$。
+- $1\not\models p$ のとき、$0,1$ では偽。$i\models p$ なら、\ref{pt:solovay-properties} の 2 より $\PA\vdash H(a,\underline{i})\to S_{i}\vee\bigvee_{j:iR'j}S_{j}$ で、$iR'j$ なら（$i\ge2$ なので $iRj$）持続性より $j\models p$、$S_{j}$ は $p^{\ast}$ の選言肢。よって $\PA\vdash T\to p^{\ast}$。
+
+**2.**（$\Rightarrow$）$\mathsf{GLV}$ の定理は 1 より $\PA$ で証明でき、したがって真。$\Box B\to B$ の翻訳は \ref{pt:bew-correct} と健全性で真。モーダスポネンスは真理を保つ。（$\Leftarrow$）$\mathsf{GLSV}\nvdash A$ なら、\ref{pt:gls-arithmetical-completeness} の 1 ⇒ 2 と同じ議論で $\mathsf{GLV}\nvdash A^{\mathrm{S}}$。1 より適切なモデルで $A^{\mathrm{S}}$ が偽になり、\ref{pt:gls-arithmetical-completeness} の 3 ⇒ 1 の構成を行うと $A^{\ast}$ は偽で、上と同じく $\ast$ は Σ 解釈である。
+:::
+
+::: example
+$\mathsf{GLV}\vdash p\to\Box p$ なので、真な Σ 文は証明可能である（これは形式化された Σ 完全性の様相的な表現）。一方 $\mathsf{GLV}\nvdash\Box(p\vee q)\to\Box p\vee\Box q$：世界 $1,2,3$、$1R2$, $1R3$、$p$ は $2$ でだけ、$q$ は $3$ でだけ真のモデルは持続性を満たし、世界 $1$ で $\Box(p\vee q)$ は真、$\Box p$ と $\Box q$ は偽。定理より、Σ 文 $S,U$ で $\PA\nvdash\mathrm{Bew}(\Godel{S\vee U})\to\mathrm{Bew}(\Godel{S})\vee\mathrm{Bew}(\Godel{U})$ となるものがある。
+:::
+
+## 問題 {#pt:sec-gls-problems}
+
+::: problem {#pt:prob-gls-decide}
+\ref{pt:gls-arithmetical-completeness} の 1 を使って、$\mathsf{GLS}\vdash\neg\Box\bot$ と $\mathsf{GLS}\nvdash\Box\neg\Box\bot$ を確かめよ。
+:::
+
+::: solution
+$(\neg\Box\bot)^{\mathrm{S}}=(\Box\bot\to\bot)\to\neg\Box\bot$ は恒真式。$(\Box\neg\Box\bot)^{\mathrm{S}}=(\Box\neg\Box\bot\to\neg\Box\bot)\wedge(\Box\bot\to\bot)\to\Box\neg\Box\bot$ は、世界 $2R1$ の二点モデルの世界 $2$ で偽：$2\models\neg\Box\bot$（$1$ を見る）、$2\not\models\Box\neg\Box\bot$（$1\models\Box\bot$）なので前件の第一項は真、第二項 $\Box\bot\to\bot$ も真、結論は偽。よって $\mathsf{GL}\nvdash(\Box\neg\Box\bot)^{\mathrm{S}}$。
+:::
+
+::: problem {#pt:prob-glv-example}
+$\mathsf{GLV}\vdash\Box(p\to q)\wedge p\to\Box q$ を示し、Σ 文についての意味を述べよ。
+:::
+
+::: solution
+$p\to\Box p$ と分配公理 $\Box(p\to q)\to(\Box p\to\Box q)$ から恒真式による。意味：Σ 文 $S$ が真で、$S\to U$ が証明可能なら、$U$ は証明可能。
+:::
+
+::: supplement
+**前提の検討.**
+- \ref{pt:gls-arithmetical-completeness} の証明は、前ページの構成をそのまま使い、世界 $0$ の付値を $1$ と同じにする点だけが新しい。これが「$S_{0}$ の下では世界 $1$ の真理が成り立つ」ことを保証する。
+- 一様な完全性では、無限のフレームを算術の中で扱うため、$R'$ の推移性と逆整礎性を $\PA$ の中で証明できる形（性質 (iii), (iv)）にしておく必要がある。逆整礎性は「$R'$ の後続者は小さい数」という番号付けで強い帰納法に帰着させた。
+- フィッサーの定理で持続性が必要なのは、Σ 解釈の $p^{\ast}$ が Σ 文であることを示す部分だけである。
+
+**関連する結果.** $\mathsf{GLS}$ は正規でなく（\ref{pt:gls-not-normal}）、一様代入でも閉じていないが、$A\mapsto A^{\mathrm{S}}$ によって $\mathsf{GL}$ に還元される。$\mathsf{GLV}$ も一様代入で閉じていない体系の例である。Boolos 第 17, 18 章では、量化子を含む証明可能性論理が決定不能になることが示される（本サイトの量化された証明可能性論理の系列で扱う予定）。
+
+**高い視点から：証明可能性と真理の二つの論理.** $\mathsf{GL}$ は「$\PA$ が自分について証明できること」、$\mathsf{GLS}$ は「実際に成り立つこと」の論理であり、両者の差はちょうど反映原理 $\Box A\to A$ である。$A^{\mathrm{S}}$ への還元は、真理を問う問題が、「有限個の関係する反映原理を仮定したうえでの証明可能性」の問題に変わることを示している。比喩で言えば、$\mathsf{GL}$ は内部の観測者（$\PA$）の知識、$\mathsf{GLS}$ は外部の観測者（標準模型）の知識で、外部の観測者は「内部の観測者の証明は正しい」という一段上の信頼（反映原理）だけを余分に持っている。一様な解釈は、あらゆる可能な反例を一つの算術的世界に並べて同時に演じさせる「万能の舞台」であり、クリプキモデルの非交和（直和）がその骨組みである。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

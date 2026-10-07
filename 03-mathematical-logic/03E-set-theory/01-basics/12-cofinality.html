@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>共終数と正則基数 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/01-basics/12-cofinality.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 共終数と正則基数 {#set:page-cofinality keywords="cofinality, regular cardinal, singular cardinal, inaccessible cardinal"}
+
+順序数 $\beta$ に「下から近づく」には、最低どれだけの長さの列が要るか。この長さが**共終数** $\cf(\beta)$ である。たとえば $\aleph_{\omega}$ は非常に大きな基数だが、$\aleph_{0},\aleph_{1},\aleph_{2},\dots$ という長さ $\omega$ の列で到達できてしまう。共終数は基数の冪の計算（\ref{set:page-konig}）で決定的な役割を果たし、共終数が自分自身に等しい**正則基数**は、基数の中でも「小さな部品の和に分解できない」特別な基数である。本ページでは共終数の基本性質を ZF で示し、選択公理（AC）が必要になる箇所（後続基数の正則性）を明示する。
+
+## 記法と定義の確認 {#set:sec-cof-notation}
+
+::: notation
+- 順序数（\ref{set:ordinal}）は小文字のギリシャ文字 $\alpha,\beta,\gamma,\xi,\eta,\zeta,\dots$ で表す。順序数の間では $\xi<\eta\iff\xi\in\eta$、$\xi\le\eta\iff\xi\subseteq\eta$ であり、順序数全体は $<$ で整列される（\ref{set:ordinal-well-ordered}）。したがって、順序数についての条件を満たす順序数が 1 つでもあれば、その**最小のもの**が選択公理なしに一意に定まる。
+- 順序数の集合 $X$ の上限 $\sup X=\bigcup X$ は順序数であり、$X$ のすべての元以上である最小の順序数である（\ref{set:sup-ordinals}）。$\sup\varnothing=0$。
+- 後続順序数 $\gamma+1=\gamma\cup\{\gamma\}$（\ref{set:successor-ordinal}）。**極限順序数**は $0$ でも後続順序数でもない順序数とする（\ref{set:limit-ordinal}）。極限順序数 $\beta$ と $\xi<\beta$ に対し $\xi+1<\beta$ である。
+- 整列可能な集合 $A$ の濃度 $\lvert A\rvert$ は $A$ と全単射で結ばれる最小の順序数（\ref{set:cardinality}）、**基数**は $\lvert\kappa\rvert=\kappa$ となる順序数 $\kappa$ である（\ref{set:cardinal}）。順序数はそれ自身整列されているので、任意の順序数 $\beta$ について $\lvert\beta\rvert\le\beta$ が ZF で定まる。基数 $\mu,\nu$ について、単射 $\mu\to\nu$ が存在することと $\mu\le\nu$ は同値である（\ref{set:cardinality-basic} (3)。ZF）。
+- 無限基数は極限順序数である（\ref{set:infinite-cardinal-limit}）。基数 $\kappa$ に対し $\kappa^{+}$ は $\kappa$ より大きい最小の基数（\ref{set:successor-cardinal}、存在は \ref{set:hartogs}）。$\omega$ より大きく、後続基数 $\kappa^{+}$ の形でない基数を**極限基数**という。
+- アレフ $\aleph_{\alpha}=\omega_{\alpha}$（\ref{set:aleph}）は $\aleph_{0}=\omega$, $\aleph_{\alpha+1}=\aleph_{\alpha}^{+}$、極限順序数 $\gamma$ に対し $\aleph_{\gamma}=\sup\{\aleph_{\xi}\mid\xi<\gamma\}$ で定まり、$\xi<\eta\Rightarrow\aleph_{\xi}<\aleph_{\eta}$、無限基数はすべてある $\aleph_{\alpha}$ に等しい。また $\aleph_{\alpha}$ が極限基数であることと $\alpha$ が極限順序数であることは同値である（以上 \ref{set:aleph-properties}）。
+- 基数の和・積 $\kappa\oplus\lambda$, $\kappa\otimes\lambda$ は \ref{set:cardinal-sum-product} の意味で用い、無限基数 $\kappa$ に対し $\kappa\otimes\kappa=\kappa$（\ref{set:kappa-times-kappa}）。基数の冪 $2^{\lambda}$ は \ref{set:cardinal-exponentiation} の意味（AC のもとで定義される）。
+- 写像 $f$ と $\eta\subseteq\dom f$ に対し、$f\restr{\eta}$ は $f$ の $\eta$ への制限を表す。
+:::
+
+## 共終写像と共終数 {#set:sec-cof-definition}
+
+::: definition 共終写像 {#set:cofinal-map keywords="cofinal map, unbounded" index="共終写像|きょうしゅうしゃぞう, 非有界|ひゆうかい"}
+順序数 $\beta$ の部分集合 $X$ が $\beta$ で**非有界**（unbounded）であるとは、
+$$
+\forall\zeta<\beta\ \exists x\in X\ (\zeta\le x)
+$$
+が成り立つことをいう。順序数 $\alpha,\beta$ と写像 $f\colon\alpha\to\beta$ について、値域 $\ran f$ が $\beta$ で非有界であるとき、$f$ は $\alpha$ を $\beta$ に**共終に写す**、あるいは $f$ は**共終写像**であるという。
+:::
+
+::: intuition
+$f$ の値の列 $f(0),f(1),\dots$ が $\beta$ の「上の方まで」届いていて、$\beta$ のどの元 $\zeta$ を指定しても、それ以上の値がどこかに現れる、ということ。$\beta$ に最大元 $\gamma$ がある（$\beta=\gamma+1$）ときは「$\gamma$ という値をとる」ことと同じであり、$\beta$ が極限順序数のときは「値が $\beta$ に下から限りなく近づく」ことを意味する。
+:::
+
+::: definition 共終数 {#set:cofinality keywords="cofinality, cf" index="共終数|きょうしゅうすう"}
+順序数 $\beta$ に対し、$\alpha$ から $\beta$ への共終写像が存在するような最小の順序数 $\alpha$ を $\beta$ の**共終数**といい、$\cf(\beta)$ と書く。
+:::
+
+::: intuition
+$\beta$ に下から到達するのに必要な列の最短の長さ。恒等写像 $\beta\to\beta$ は明らかに共終なので、そのような $\alpha$ は少なくとも 1 つ（$\alpha=\beta$）あり、順序数の整列性から最小のものが選択公理なしに定まる。
+:::
+
+::: example
+- $\cf(\omega)=\omega$（\ref{set:omega-regular}）。有限の長さの列では $\omega$ に届かない。
+- $\cf(\omega+\omega)=\omega$：$n\mapsto\omega+n$ は $\omega$ から $\omega+\omega$ への共終写像である（$\zeta<\omega+\omega$ は $\zeta<\omega$ か $\zeta=\omega+m$ の形で、いずれも $\zeta\le\omega+m$ となる $m$ がある）。
+- $\cf(\aleph_{\omega})=\omega$：$n\mapsto\aleph_{n}$ が共終写像である（\ref{set:aleph-omega-singular}）。
+- AC のもとで $\cf(\aleph_{1})=\aleph_{1}$（\ref{set:successor-regular}）。
+:::
+
+::: lemma 共終数の基本性質 {#set:cf-basic keywords="basic properties of cofinality"}
+順序数 $\beta$ について次が成り立つ。
+
+1. $\cf(\beta)\le\beta$。
+2. $\cf(0)=0$。また任意の順序数 $\gamma$ について $\cf(\gamma+1)=1$。
+3. $\beta$ が極限順序数ならば $\omega\le\cf(\beta)$。
+:::
+
+::: proof
+**(1)** 恒等写像 $\id\colon\beta\to\beta$ について、任意の $\zeta<\beta$ は $\zeta\le\id(\zeta)$ を満たすので $\id$ は共終写像である。$\cf(\beta)$ は共終写像をもつ最小の順序数なので $\cf(\beta)\le\beta$。
+
+**(2)** 空写像 $0\to0$ は、$\zeta<0$ となる $\zeta$ が存在しないので条件を空虚に満たし、共終写像である。よって $\cf(0)=0$。
+
+次に $\beta=\gamma+1$ とする。
+- *$\alpha=0$ は不可*：$\gamma<\beta$ であるが、空写像の値域は空なので $\gamma\le x$ となる値 $x$ は存在しない。よって $\cf(\gamma+1)\ne0$。
+- *$\alpha=1$ で可能*：$f\colon1\to\gamma+1$ を $f(0)=\gamma$ で定める。任意の $\zeta<\gamma+1$ は $\zeta\in\gamma\cup\{\gamma\}$ なので $\zeta\le\gamma=f(0)$。よって $f$ は共終写像。
+
+以上より $\cf(\gamma+1)=1$。
+
+**(3)** $\beta$ を極限順序数とし、$n<\omega$ と写像 $f\colon n\to\beta$ が共終でないことを示す。
+
+**Step 1（$n=0$）.** 極限順序数は $0$ でないので $0<\beta$。空写像の値域には $0\le x$ となる $x$ がないので、共終でない。
+
+**Step 2（$n\ge1$：有限個の値には最大値がある）.** 「任意の写像 $g\colon m\to\beta$（$1\le m<\omega$）の値域には最大元がある」ことを $m$ についての帰納法（\ref{set:peano}）で示す。$m=1$ なら $g(0)$ が最大元。$m$ で成り立つとし $g\colon m+1\to\beta$ をとると、$g\restr{m}$ の値域の最大元 $a$ と $g(m)$ のうち大きい方（順序数は全順序）が $g$ の値域の最大元である。
+
+**Step 3.** $f\colon n\to\beta$（$n\ge1$）の値域の最大元を $a$ とする。$a<\beta$ で $\beta$ は極限順序数なので $a+1<\beta$。もし $f$ が共終なら $a+1\le f(\eta)$ となる $\eta<n$ があるが、$f(\eta)\le a<a+1$ なので矛盾。
+
+よって有限の $n$ から $\beta$ への共終写像はなく、$\cf(\beta)\ge\omega$。
+
+::: hypcheck
+- **順序数の整列性**（\ref{set:ordinal-well-ordered}）：$\cf$ の定義そのもの（最小元の存在）と、Step 2 で 2 つの順序数の大小を比べるのに使った。
+- **$\omega$ 上の帰納法**（\ref{set:peano}）：Step 2 で使った。
+- **極限順序数の定義**：(3) の Step 1（$\beta\ne0$）と Step 3（$a+1<\beta$）で使った。後続順序数では (2) のとおり結論が変わる。
+- 選択公理は使っていない（ZF で成り立つ）。
+:::
+:::
+
+::: lemma 狭義増加な共終写像の存在 {#set:cf-increasing keywords="strictly increasing cofinal map" index="狭義増加な共終写像|きょうぎぞうかなきょうしゅうしゃぞう"}
+任意の順序数 $\beta$ に対し、狭義増加（$\xi<\eta\Rightarrow f(\xi)<f(\eta)$）な共終写像 $f\colon\cf(\beta)\to\beta$ が存在する。
+:::
+
+::: intuition
+共終写像は定義上「どんな順番で値をとってもよい」が、長さ $\cf(\beta)$ のまま、値が単調に上がっていく列に取り替えられる。各段階で「これまでの値すべてより真に大きく、かつ元の写像の値以上」を選べばよい。これまでの値が $\beta$ を使い切ってしまうことがないのは、$\cf(\beta)$ の最小性による。
+:::
+
+::: proof
+$\mu=\cf(\beta)$ とおき、共終写像 $g\colon\mu\to\beta$ を 1 つ固定する（存在する写像を 1 つとるだけなので選択公理は要らない）。
+
+**Step 1（再帰による定義）.** 超限再帰（\ref{set:transfinite-recursion}）により、$\eta<\mu$ に対して
+$$
+f(\eta)=\max\Bigl(g(\eta),\ s_{\eta}\Bigr),\qquad s_{\eta}=\sup\{f(\xi)+1\mid\xi<\eta\}
+\label{set:eq-cf-increasing-recursion}
+$$
+と定める。右辺は $f\restr{\eta}$ と $\eta$ だけから決まる（$f\restr{\eta}$ が与えられれば $s_{\eta}$ は置換公理と和集合の公理で得られる順序数）ので、再帰定理により $\mu$ 上の写像 $f$ が一意に定まる。以下、$f$ の値がすべて $\beta$ に入ることを示す。
+
+**Step 2（$f(\eta)<\beta$）.** $\eta<\mu$ について帰納法で示す。すべての $\xi<\eta$ で $f(\xi)<\beta$ と仮定する。
+- *$s_{\eta}\le\beta$*：各 $f(\xi)+1\le\beta$ なので上限も $\le\beta$。
+- *$s_{\eta}\ne\beta$*：$s_{\eta}=\beta$ と仮定する。任意の $\zeta<\beta=s_{\eta}=\bigcup\{f(\xi)+1\mid\xi<\eta\}$ に対し、$\zeta\in f(\xi)+1$、すなわち $\zeta\le f(\xi)$ となる $\xi<\eta$ がある。したがって $f\restr{\eta}\colon\eta\to\beta$ は共終写像である。ところが $\eta<\mu=\cf(\beta)$ なので、これは $\cf(\beta)$ の最小性に反する。
+
+よって $s_{\eta}<\beta$。$g(\eta)<\beta$ でもあるので $f(\eta)=\max(g(\eta),s_{\eta})<\beta$。
+
+**Step 3（狭義増加）.** $\xi<\eta<\mu$ とすると、$s_{\eta}$ の定義より $f(\xi)+1\le s_{\eta}\le f(\eta)$、したがって $f(\xi)<f(\eta)$。
+
+**Step 4（共終）.** 任意の $\zeta<\beta$ に対し、$g$ が共終なので $\zeta\le g(\eta)$ となる $\eta<\mu$ があり、$g(\eta)\le f(\eta)$。よって $f$ は共終写像である。
+
+::: hypcheck
+- **超限再帰**（\ref{set:transfinite-recursion}）：Step 1 で使った。再帰で使う操作は「$\max$」「$\sup$」「$+1$」だけで、各段階で**選択を行っていない**。
+- **置換公理・和集合の公理**：Step 1 で $s_{\eta}$ を集合（順序数）として作るのに使った。
+- **$\cf(\beta)$ の最小性**：Step 2 の核心。長さ $\cf(\beta)$ 未満の途中段階では、それまでの値が $\beta$ で非有界になりえない。
+- 選択公理は使っていない（ZF で成り立つ）。
+:::
+:::
+
+::: lemma 狭義増加な共終写像は共終数を保つ {#set:cf-transfer keywords="cofinality preserved by strictly increasing cofinal maps"}
+順序数 $\alpha,\beta$ と狭義増加な共終写像 $f\colon\alpha\to\beta$ があれば、$\cf(\alpha)=\cf(\beta)$。
+:::
+
+::: intuition
+$\alpha$ を単調に $\beta$ の中へ「非有界に」埋め込めるなら、$\alpha$ に下から近づくことと $\beta$ に下から近づくことは同じことになる。$\alpha$ への近づき方は $f$ で送れば $\beta$ への近づき方になり、逆に $\beta$ への近づき方は「$f$ がそれを追い越す最初の位置」を見ることで $\alpha$ への近づき方に引き戻せる。
+:::
+
+::: proof
+まず、狭義増加な写像は $\xi\le\eta\Rightarrow f(\xi)\le f(\eta)$（単調）を満たすことに注意する。$\alpha$ の形で場合分けする。
+
+**Case 1（$\alpha=0$）.** $f$ は空写像で、共終なので $\zeta<\beta$ となる $\zeta$ はない。よって $\beta=0$、$\cf(\alpha)=\cf(\beta)=0$。
+
+**Case 2（$\alpha=\gamma+1$）.** $f$ は狭義増加なので $f(\gamma)$ は $\ran f$ の最大元である。$f$ が共終なので任意の $\zeta<\beta$ は $\zeta\le f(\gamma)$ を満たし、また $f(\gamma)<\beta$。よって $\beta=f(\gamma)+1$ であり、\ref{set:cf-basic} (2) より $\cf(\alpha)=\cf(\beta)=1$。
+
+**Case 3（$\alpha$ が極限順序数）.**
+
+*Step 1（$\cf(\beta)\le\cf(\alpha)$）.* 共終写像 $g\colon\cf(\alpha)\to\alpha$ をとり、$f\circ g\colon\cf(\alpha)\to\beta$ を考える。任意の $\zeta<\beta$ について、$f$ が共終なので $\zeta\le f(\eta)$ となる $\eta<\alpha$ があり、$g$ が共終なので $\eta\le g(\nu)$ となる $\nu<\cf(\alpha)$ がある。$f$ の単調性より $\zeta\le f(\eta)\le f(g(\nu))$。よって $f\circ g$ は共終で、$\cf(\beta)\le\cf(\alpha)$。
+
+*Step 2（引き戻しの定義）.* 共終写像 $g\colon\cf(\beta)\to\beta$ をとる。各 $\nu<\cf(\beta)$ について、$f(\eta)>g(\nu)$ となる $\eta<\alpha$ が存在する。実際、$f$ が共終なので $g(\nu)\le f(\eta_{0})$ となる $\eta_{0}<\alpha$ があり、$\alpha$ は極限順序数なので $\eta_{0}+1<\alpha$、$f$ は狭義増加なので $f(\eta_{0}+1)>f(\eta_{0})\ge g(\nu)$。そこで
+$$
+h(\nu)=\min\{\eta<\alpha\mid f(\eta)>g(\nu)\}
+$$
+と定める（最小元をとるだけなので選択公理は要らない。分出公理と置換公理で $h\colon\cf(\beta)\to\alpha$ が得られる）。
+
+*Step 3（$h$ は共終）.* 任意の $\eta<\alpha$ をとる。$f(\eta)<\beta$ で $g$ は共終なので、$f(\eta)\le g(\nu)$ となる $\nu<\cf(\beta)$ がある。このとき $f(h(\nu))>g(\nu)\ge f(\eta)$。もし $h(\nu)\le\eta$ なら単調性より $f(h(\nu))\le f(\eta)$ となり矛盾するので、$h(\nu)>\eta$。よって $h$ は共終写像である。
+
+*Step 4（$\cf(\alpha)\le\cf(\beta)$）.* Step 3 より $\cf(\beta)$ から $\alpha$ への共終写像があるので $\cf(\alpha)\le\cf(\beta)$。Step 1 と合わせて $\cf(\alpha)=\cf(\beta)$。
+
+::: hypcheck
+- **$f$ が狭義増加であること**：Case 2 で $f(\gamma)$ が最大であること、Step 1・Step 3 の単調性、Step 2 の $f(\eta_{0}+1)>f(\eta_{0})$ に使った。
+- **$f$ が共終であること**：Case 1・Case 2、Step 1、Step 2 で使った。
+- **$\alpha$ が極限順序数であること**（Case 3）：Step 2 で $\eta_{0}+1<\alpha$ とするのに使った。
+- **分出公理・置換公理**：Step 2 で $h$ を作るのに使った。
+- 選択公理は使っていない（ZF で成り立つ）。
+:::
+:::
+
+::: supplement
+**前提を変えると.** 「狭義増加」を外すと、どちらの不等号も成り立たなくなる。
+- *$\cf(\alpha)\le\cf(\beta)$ が崩れる例*：AC のもとで $f\colon\omega_{1}\to\omega$ を $n<\omega$ では $f(n)=n$、$\omega\le\xi<\omega_{1}$ では $f(\xi)=0$ と定めると共終写像だが、$\cf(\omega_{1})=\omega_{1}>\omega=\cf(\omega)$（\ref{set:successor-regular}, \ref{set:omega-regular}）。
+- *$\cf(\beta)\le\cf(\alpha)$ が崩れる例*：$f\colon\omega+1\to\omega$ を $f(n)=n$、$f(\omega)=0$ と定めると共終写像だが、$\cf(\omega+1)=1<\omega=\cf(\omega)$。
+
+単調性なしで言えるのは「共終写像 $f\colon\alpha\to\beta$ があれば $\cf(\beta)\le\lvert\alpha\rvert$」だけである（全単射 $e\colon\lvert\alpha\rvert\to\alpha$ と合成した $f\circ e$ も共終写像になる。\ref{set:regular-is-cardinal} の証明と同じ議論）。
+:::
+
+::: corollary 共終数の共終数 {#set:cf-idempotent keywords="cf(cf(β)) = cf(β)" index="共終数の冪等性|きょうしゅうすうのべきとうせい"}
+任意の順序数 $\beta$ に対し $\cf(\cf(\beta))=\cf(\beta)$。
+:::
+
+::: proof
+\ref{set:cf-increasing} により狭義増加な共終写像 $f\colon\cf(\beta)\to\beta$ がある。これに \ref{set:cf-transfer} を $\alpha=\cf(\beta)$ として適用すると $\cf(\cf(\beta))=\cf(\beta)$。
+
+::: hypcheck
+- \ref{set:cf-increasing} と \ref{set:cf-transfer} だけを使った。どちらも ZF で示したので、この系も ZF で成り立つ。
+:::
+:::
+
+## 正則順序数と正則基数 {#set:sec-regular}
+
+::: definition 正則・特異 {#set:regular-cardinal keywords="regular ordinal, regular cardinal, singular cardinal" index="正則|せいそく, 正則基数|せいそくきすう, 特異基数|とくいきすう"}
+順序数 $\beta$ が**正則**（regular）であるとは、$\beta$ が極限順序数であって $\cf(\beta)=\beta$ となることをいう。極限順序数で正則でないもの（$\cf(\beta)<\beta$）を**特異**（singular）という。正則な基数を**正則基数**、特異な基数を**特異基数**という。
+:::
+
+::: intuition
+正則とは「自分より短い列では下から到達できない」こと。後で見るとおり（\ref{set:cf-union}）、基数 $\kappa$ が正則であることは「$\kappa$ 未満の個数の、$\kappa$ 未満の大きさの集合の和では $\kappa$ に届かない」ことと同値になる（AC のもと）。
+:::
+
+::: corollary 共終数は正則 {#set:cf-regular keywords="cofinality is regular"}
+$\beta$ が極限順序数ならば、$\cf(\beta)$ は正則である。
+:::
+
+::: proof
+**Step 1.** \ref{set:cf-basic} (3) より $\cf(\beta)\ge\omega$。特に $\cf(\beta)\ne0$。
+
+**Step 2.** $\cf(\beta)$ が後続順序数 $\gamma+1$ だとすると、\ref{set:cf-basic} (2) より $\cf(\cf(\beta))=1$。一方 \ref{set:cf-idempotent} より $\cf(\cf(\beta))=\cf(\beta)\ge\omega>1$ となり矛盾。よって $\cf(\beta)$ は極限順序数。
+
+**Step 3.** \ref{set:cf-idempotent} より $\cf(\cf(\beta))=\cf(\beta)$。Step 2 と合わせて $\cf(\beta)$ は正則。
+
+::: hypcheck
+- **$\beta$ が極限順序数であること**：Step 1 で \ref{set:cf-basic} (3) を使うのに必要。$\beta=\gamma+1$ なら $\cf(\beta)=1$ は極限順序数でなく正則でない。
+- \ref{set:cf-basic} と \ref{set:cf-idempotent} だけを使った。選択公理は使っていない（ZF で成り立つ）。
+:::
+:::
+
+::: lemma 正則順序数は基数 {#set:regular-is-cardinal keywords="regular ordinals are cardinals, cofinality is a cardinal"}
+任意の順序数 $\beta$ について $\cf(\beta)\le\lvert\beta\rvert$ であり、$\cf(\beta)$ は基数である。特に、正則な順序数は基数である。
+:::
+
+::: intuition
+共終写像は値の順番を気にしないので、$\beta$ を並べ替えた列（全単射 $\lvert\beta\rvert\to\beta$）も共終写像になる。したがって共終数は「長さ」でありながら、実は「個数」だけで決まる量であり、基数になる。
+:::
+
+::: proof
+**Step 1（$\cf(\beta)\le\lvert\beta\rvert$）.** $\beta$ は整列集合なので $\lvert\beta\rvert$ が ZF で定まり、全単射 $e\colon\lvert\beta\rvert\to\beta$ がある。$e$ は全射なので、任意の $\zeta<\beta$ に対し $\zeta=e(\eta)$、特に $\zeta\le e(\eta)$ となる $\eta$ がある。よって $e$ は共終写像で、$\cf(\beta)\le\lvert\beta\rvert$。
+
+**Step 2（$\cf(\beta)$ は基数）.** $\mu=\cf(\beta)$ とおき、共終写像 $f\colon\mu\to\beta$ と全単射 $e\colon\lvert\mu\rvert\to\mu$ をとる。$f\circ e\colon\lvert\mu\rvert\to\beta$ の値域は $f$ の値域と同じなので共終写像である。よって $\mu\le\lvert\mu\rvert$。一方 $\lvert\mu\rvert\le\mu$ なので $\lvert\mu\rvert=\mu$、すなわち $\mu$ は基数である。
+
+**Step 3.** $\beta$ が正則なら $\beta=\cf(\beta)$ であり、Step 2 より基数である。
+
+::: hypcheck
+- **順序数の濃度が ZF で定まること**（\ref{set:cardinality}）：Step 1・Step 2 で使った。整列集合なので選択公理は要らない。
+- 選択公理は使っていない（ZF で成り立つ）。
+:::
+:::
+
+::: lemma $\omega$ は正則 {#set:omega-regular keywords="omega is regular" index="ωの正則性|おめがのせいそくせい"}
+$\omega$ は正則である。すなわち $\cf(\omega)=\omega$。
+:::
+
+::: proof
+$\omega$ は極限順序数である（\ref{set:omega}）。\ref{set:cf-basic} (3) より $\cf(\omega)\ge\omega$、(1) より $\cf(\omega)\le\omega$。よって $\cf(\omega)=\omega$。
+
+::: hypcheck
+- \ref{set:cf-basic} だけを使った。**選択公理は使っていない**：有限個の値の最大値をとる操作（\ref{set:cf-basic} の Step 2）は各段で一意に決まる。
+:::
+:::
+
+::: theorem 後続基数は正則 {#set:successor-regular keywords="successor cardinals are regular" index="後続基数の正則性|こうぞくきすうのせいそくせい"}
+（AC）$\kappa$ が無限基数ならば、$\kappa^{+}$ は正則である。特に $\aleph_{\alpha+1}$ はすべて正則であり、$\aleph_{1}$ は正則である。
+:::
+
+::: intuition
+$\kappa^{+}$ 未満の順序数はどれも濃度 $\le\kappa$ しかない。もし $\kappa^{+}$ に長さ $<\kappa^{+}$ の列で届くなら、$\kappa^{+}$ は「$\le\kappa$ 個の、濃度 $\le\kappa$ の集合の和」になり、濃度は $\kappa\otimes\kappa=\kappa$ 以下になってしまう。
+:::
+
+::: proof
+**Step 1（準備）.** $\kappa^{+}$ は無限基数なので極限順序数である（\ref{set:infinite-cardinal-limit}）。また任意の $\delta<\kappa^{+}$ について $\lvert\delta\rvert\le\kappa$ である。実際、$\lvert\delta\rvert$ は基数で $\lvert\delta\rvert\le\delta<\kappa^{+}$ であり、$\kappa^{+}$ は $\kappa$ より大きい最小の基数なので $\lvert\delta\rvert>\kappa$ ではありえず、順序数の全順序性から $\lvert\delta\rvert\le\kappa$。
+
+**Step 2（背理法の仮定）.** $\cf(\kappa^{+})<\kappa^{+}$ と仮定し、$\alpha=\cf(\kappa^{+})$ と共終写像 $f\colon\alpha\to\kappa^{+}$ をとる。Step 1 より $\lvert\alpha\rvert\le\kappa$。
+
+**Step 3（和集合で表す）.**
+$$
+\kappa^{+}=\bigcup_{\xi<\alpha}\bigl(f(\xi)+1\bigr)
+\label{set:eq-successor-union}
+$$
+を示す。$\supseteq$：各 $f(\xi)<\kappa^{+}$ で $\kappa^{+}$ は極限順序数なので $f(\xi)+1<\kappa^{+}$、すなわち $f(\xi)+1\subseteq\kappa^{+}$。$\subseteq$：$\zeta<\kappa^{+}$ なら $f$ の共終性より $\zeta\le f(\xi)$ となる $\xi$ があり、$\zeta\in f(\xi)+1$。
+
+**Step 4（濃度の評価）.** Step 1 より各 $\lvert f(\xi)+1\rvert\le\kappa$、Step 2 より添字集合 $\alpha$ の濃度は $\le\kappa$。**選択公理**を用いた \ref{set:union-bound}（$\le\kappa$ 個の、濃度 $\le\kappa$ の集合の和の濃度は $\le\kappa$）により、\eqref{set:eq-successor-union} の右辺の濃度は $\le\kappa$。
+
+**Step 5（矛盾）.** $\lvert\kappa^{+}\rvert=\kappa^{+}>\kappa$ なので Step 4 と矛盾する。よって $\cf(\kappa^{+})=\kappa^{+}$（$\le$ は \ref{set:cf-basic} (1)）。$\kappa^{+}$ は極限順序数なので正則である。
+
+**Step 6.** $\aleph_{\alpha+1}=\aleph_{\alpha}^{+}$ で $\aleph_{\alpha}$ は無限基数なので、Step 5 より正則。
+
+::: hypcheck
+- **選択公理**：Step 4 の \ref{set:union-bound} で**本質的に**使った。各 $\xi<\alpha$ について単射 $f(\xi)+1\to\kappa$ は存在するが、順序数 $f(\xi)+1$ と $\kappa$ の間に標準的な単射はないので、$\alpha$ 個の単射を**同時に選ぶ**ために選択公理が要る。これに対し、\ref{set:omega-regular} では有限集合の最大値という標準的な操作で済んだので選択公理は要らなかった。
+- **$\kappa$ が無限であること**：Step 1 で $\kappa^{+}$ が極限順序数であることに使った。有限の $n$ については $n^{+}=n+1$ は後続順序数で、正則ではない。
+- **$\kappa^{+}$ の最小性**：Step 1 で $\lvert\delta\rvert\le\kappa$ を導くのに使った。
+:::
+:::
+
+::: fact 選択公理なしでは $\aleph_{1}$ は特異になりうる {#set:omega1-singular-without-ac keywords="Feferman-Levy model, cf(ω1)=ω without choice" index="フェファーマン＝レヴィのモデル|ふぇふぁーまんれゔぃのもでる"}
+$\ZF$ が無矛盾ならば、$\ZF+\text{「}\cf(\aleph_{1})=\omega\text{」}$ も無矛盾である（フェファーマン＝レヴィ、1963）。このモデルでは実数全体の集合が可算個の可算集合の和集合になっている。さらにギティク（M. Gitik, *All uncountable cardinals can be singular*, Israel J. Math. 35 (1980)）は、適当な巨大基数の存在の無矛盾性を仮定して、$\ZF+\text{「すべての非可算基数の共終数が }\omega\text{」}$ の無矛盾性を示した。
+:::
+
+::: supplement
+Kunen（1980）の時点では「ZF で共終数 $>\omega$ の基数の存在が証明できるか」は未解決と書かれていたが、ギティクの結果により（巨大基数の無矛盾性のもとで）否定的に解決された。\ref{set:successor-regular} の選択公理への依存は、この意味で除去できない。
+:::
+
+::: proposition 共終数と和による分解 {#set:cf-union keywords="cofinality as least number of small pieces" index="共終数の特徴付け|きょうしゅうすうのとくちょうづけ"}
+（AC）$\kappa$ を無限基数とする。$\cf(\kappa)$ は、
+$$
+\kappa=\bigcup_{i\in I}A_{i},\qquad\text{各 } i\in I \text{ について } \lvert A_{i}\rvert<\kappa
+$$
+と表せるような添字集合 $I$ の濃度 $\lvert I\rvert$ の最小値に等しい。特に、$\kappa$ が正則であることと、$\kappa$ が $\kappa$ 未満の個数の、濃度 $\kappa$ 未満の集合の和集合として表せないことは同値である。
+:::
+
+::: proof
+条件を満たす $\lvert I\rvert$ の最小値を $\mu$ とおく（AC により各 $\lvert I\rvert$ は基数として定まる。次の Step 1 で候補が存在することもわかる）。
+
+**Step 1（$\mu\le\cf(\kappa)$）.** 共終写像 $f\colon\cf(\kappa)\to\kappa$ をとり、$A_{\xi}=f(\xi)$（$\xi<\cf(\kappa)$）とおく。$\kappa$ は無限基数なので極限順序数であり、任意の $\zeta<\kappa$ について $\zeta+1<\kappa$、共終性より $\zeta+1\le f(\xi)$ となる $\xi$ があって $\zeta\in f(\xi)$。逆に $f(\xi)\subseteq\kappa$。よって $\kappa=\bigcup_{\xi<\cf(\kappa)}A_{\xi}$。また $\lvert A_{\xi}\rvert\le f(\xi)<\kappa$。添字集合 $\cf(\kappa)$ の濃度は $\cf(\kappa)$ 自身（\ref{set:regular-is-cardinal}）なので $\mu\le\cf(\kappa)$。
+
+**Step 2（$\cf(\kappa)\le\mu$）.** $\kappa=\bigcup_{i\in I}A_{i}$, $\lvert A_{i}\rvert<\kappa$, $\lvert I\rvert<\cf(\kappa)$ となる表示があったとして矛盾を導く。$\nu=\lvert I\rvert$ とし全単射 $e\colon\nu\to I$ をとる。
+
+- *大きさの上界*：写像 $\nu\to\kappa$, $\eta\mapsto\lvert A_{e(\eta)}\rvert$ は、$\nu<\cf(\kappa)$ なので共終ではない。よってある $\zeta<\kappa$ について、すべての $\eta<\nu$ で $\lvert A_{e(\eta)}\rvert<\zeta$。基数 $\lvert A_{e(\eta)}\rvert$ は順序数 $\zeta$ の部分集合なので $\lvert A_{e(\eta)}\rvert\le\lvert\zeta\rvert$。
+- *まとめる*：$\rho=\max(\lvert\zeta\rvert,\nu)$ とおくと、$\lvert\zeta\rvert\le\zeta<\kappa$、$\nu<\cf(\kappa)\le\kappa$ より $\rho<\kappa$。**選択公理**により各 $\eta<\nu$ について単射 $g_{\eta}\colon A_{e(\eta)}\to\rho$ を選ぶ。$a\in\kappa$ に対し $a\in A_{e(\eta)}$ となる最小の $\eta$ を $\eta(a)$ として $a\mapsto(\eta(a),g_{\eta(a)}(a))$ と定めると、これは単射 $\kappa\to\rho\times\rho$ である（第 1 成分が一致すれば同じ $g_{\eta}$ の値が一致し、$g_{\eta}$ の単射性から $a$ が一致する）。
+- *矛盾*：$\rho$ が有限なら $\rho\times\rho$ は有限で、無限集合 $\kappa$ がそこへ単射されることはない。$\rho$ が無限なら $\lvert\rho\times\rho\rvert=\rho\otimes\rho=\rho<\kappa$（\ref{set:kappa-times-kappa}）となり、$\lvert\kappa\rvert=\kappa$ に反する。
+
+よって $\lvert I\rvert\ge\cf(\kappa)$ であり、$\mu\ge\cf(\kappa)$。Step 1 と合わせて $\mu=\cf(\kappa)$。
+
+**Step 3（正則性との関係）.** $\kappa$ は無限基数なので極限順序数であり、正則 $\iff\cf(\kappa)=\kappa\iff\mu=\kappa$。$\mu\le\kappa$ は常に成り立つ（Step 1）ので、これは「$\lvert I\rvert<\kappa$ の表示がない」ことと同値である。
+
+::: hypcheck
+- **選択公理**：$\lvert I\rvert$ を基数として定めるのと、Step 2 で単射 $g_{\eta}$ を同時に選ぶのに使った。
+- **$\kappa$ が無限であること**：Step 1（$\kappa$ が極限順序数）と Step 2 の矛盾を導く部分で使った。
+- **\ref{set:kappa-times-kappa}**：Step 2 で $\rho\otimes\rho=\rho$ に使った。
+:::
+:::
+
+## アレフの共終数 {#set:sec-cf-aleph}
+
+::: theorem アレフの共終数 {#set:cf-aleph keywords="cofinality of aleph, cf(aleph_α) = cf(α)" index="アレフの共終数|あれふのきょうしゅうすう"}
+$\alpha$ が極限順序数ならば $\cf(\aleph_{\alpha})=\cf(\alpha)$。
+:::
+
+::: intuition
+$\aleph_{\alpha}$ に下から近づく最も自然な列は $\langle\aleph_{\xi}\mid\xi<\alpha\rangle$ であり、これは添字 $\alpha$ の上を動く狭義増加列である。したがって $\aleph_{\alpha}$ に近づく難しさは、添字 $\alpha$ に近づく難しさとちょうど同じになる。
+:::
+
+::: proof
+**Step 1（写像の定義）.** $f\colon\alpha\to\aleph_{\alpha}$ を $f(\xi)=\aleph_{\xi}$ で定める。$\xi<\alpha$ なら $\aleph_{\xi}<\aleph_{\alpha}$ なので値は $\aleph_{\alpha}$ に入る。
+
+**Step 2（狭義増加）.** $\xi<\eta$ ならば $\aleph_{\xi}<\aleph_{\eta}$（\ref{set:aleph-properties} (2)）。
+
+**Step 3（共終）.** $\alpha$ は極限順序数なので $\aleph_{\alpha}=\sup\{\aleph_{\xi}\mid\xi<\alpha\}=\bigcup_{\xi<\alpha}\aleph_{\xi}$。任意の $\zeta<\aleph_{\alpha}$ について $\zeta\in\aleph_{\xi}$ となる $\xi<\alpha$ があり、$\zeta<f(\xi)$。
+
+**Step 4.** \ref{set:cf-transfer} より $\cf(\alpha)=\cf(\aleph_{\alpha})$。
+
+::: hypcheck
+- **$\alpha$ が極限順序数であること**：Step 3 で $\aleph_{\alpha}$ が上限で与えられることに使った。後続順序数 $\alpha=\gamma+1$ では $\cf(\alpha)=1$ だが、AC のもとで $\aleph_{\gamma+1}$ は正則（\ref{set:successor-regular}）なので結論は成り立たない。
+- 選択公理は使っていない（ZF で成り立つ）。
+:::
+:::
+
+::: corollary $\aleph_{\omega}$ は特異 {#set:aleph-omega-singular keywords="aleph_omega is singular" index="アレフオメガ|あれふおめが"}
+$\cf(\aleph_{\omega})=\omega$ であり、$\aleph_{\omega}$ は特異基数である。
+:::
+
+::: example
+- $\cf(\aleph_{\omega+\omega})=\cf(\omega+\omega)=\omega$、$\cf(\aleph_{\aleph_{\omega}})=\cf(\aleph_{\omega})=\omega$。これらはすべて特異。
+- AC のもとで $\cf(\aleph_{\omega_{1}})=\cf(\omega_{1})=\omega_{1}<\aleph_{\omega_{1}}$。$\aleph_{\omega_{1}}$ は共終数が非可算な特異基数である。
+- AC のもとで、無限基数 $\aleph_{\alpha}$ が正則になるのは、$\alpha=0$、$\alpha$ が後続順序数、または $\aleph_{\alpha}$ が正則な極限基数（次節の弱到達不能基数）のいずれかの場合に限る。
+:::
+
+::: proof
+$\omega$ は極限順序数なので、\ref{set:cf-aleph} と \ref{set:omega-regular} より $\cf(\aleph_{\omega})=\cf(\omega)=\omega$。$\omega=\aleph_{0}<\aleph_{\omega}$ なので $\aleph_{\omega}$ は特異である（$\aleph_{\omega}$ は無限基数なので極限順序数）。
+
+::: hypcheck
+- \ref{set:cf-aleph}（ZF）と \ref{set:omega-regular}（ZF）、および $\aleph_{0}<\aleph_{\omega}$（\ref{set:aleph-properties} (2)）だけを使った。選択公理は使っていない。
+:::
+:::
+
+::: proposition 正則な極限基数はアレフの不動点 {#set:regular-limit-fixed-point keywords="regular limit cardinal is a fixed point of aleph" index="アレフの不動点|あれふのふどうてん"}
+$\aleph_{\alpha}$ が正則な極限基数ならば $\aleph_{\alpha}=\alpha$。
+:::
+
+::: proof
+**Step 1（$\xi\le\aleph_{\xi}$）.** すべての順序数 $\xi$ について $\xi\le\aleph_{\xi}$ を超限帰納法（\ref{set:transfinite-induction}）で示す。$\eta<\xi$ なら帰納法の仮定と狭義増加性より $\eta\le\aleph_{\eta}<\aleph_{\xi}$。よって $\xi$ の元はすべて $\aleph_{\xi}$ の元であり、$\xi\subseteq\aleph_{\xi}$、すなわち $\xi\le\aleph_{\xi}$。
+
+**Step 2（$\alpha$ は極限順序数）.** $\aleph_{\alpha}$ は極限基数なので、$\alpha$ は極限順序数である（\ref{set:aleph-properties} (4)）。
+
+**Step 3.** 正則性、\ref{set:cf-aleph}、\ref{set:cf-basic} (1)、Step 1 を順に使うと
+$$
+\aleph_{\alpha}=\cf(\aleph_{\alpha})=\cf(\alpha)\le\alpha\le\aleph_{\alpha}.
+$$
+よって $\aleph_{\alpha}=\alpha$。
+
+::: hypcheck
+- **正則性**：Step 3 の最初の等号。**極限基数であること**：Step 2 で \ref{set:cf-aleph} を使える形（$\alpha$ が極限順序数）にするのに使った。
+- **超限帰納法**：Step 1。選択公理は使っていない（ZF で成り立つ）。
+:::
+:::
+
+::: supplement
+**逆は成り立たない.** $\sigma_{0}=\omega$, $\sigma_{n+1}=\aleph_{\sigma_{n}}$ とおき、$\alpha=\sup\{\sigma_{n}\mid n<\omega\}$ とする。
+- *$\sigma_{n}$ は狭義増加*：$\sigma_{1}=\aleph_{\omega}>\omega=\sigma_{0}$。$\sigma_{n}<\sigma_{n+1}$ なら $\sigma_{n+1}=\aleph_{\sigma_{n}}<\aleph_{\sigma_{n+1}}=\sigma_{n+2}$。したがって $\alpha$ は極限順序数で、$n\mapsto\sigma_{n}$ は狭義増加な共終写像 $\omega\to\alpha$ なので $\cf(\alpha)=\cf(\omega)=\omega$（\ref{set:cf-transfer}）。
+- *$\aleph_{\alpha}=\alpha$*：$\xi<\alpha$ ならある $n$ で $\xi<\sigma_{n}$、よって $\aleph_{\xi}<\aleph_{\sigma_{n}}=\sigma_{n+1}\le\alpha$。したがって $\aleph_{\alpha}=\sup_{\xi<\alpha}\aleph_{\xi}\le\alpha$。逆向きは上の Step 1。
+- *最初の不動点*：$\beta=\aleph_{\beta}$ なら $\beta\ge\aleph_{0}=\sigma_{0}$ で、$\beta\ge\sigma_{n}$ なら $\beta=\aleph_{\beta}\ge\aleph_{\sigma_{n}}=\sigma_{n+1}$。よって $\beta\ge\alpha$。
+
+このように最初の不動点 $\alpha$ は $\cf(\alpha)=\omega$ で特異である。正則な極限基数があるとすれば、それはこの $\alpha$ よりはるかに大きい。
+:::
+
+## 到達不能基数 {#set:sec-inaccessible}
+
+::: definition 到達不能基数 {#set:inaccessible keywords="weakly inaccessible cardinal, strongly inaccessible cardinal" index="到達不能基数|とうたつふのうきすう, 弱到達不能基数|じゃくとうたつふのうきすう, 強到達不能基数|きょうとうたつふのうきすう"}
+1. 基数 $\kappa$ が**弱到達不能**であるとは、$\kappa$ が正則な極限基数であることをいう。
+2. （AC）基数 $\kappa$ が**強到達不能**であるとは、$\kappa>\omega$、$\kappa$ は正則、かつ任意の基数 $\lambda<\kappa$ について $2^{\lambda}<\kappa$ となることをいう。
+:::
+
+::: intuition
+$\omega$ は「有限の操作では到達できない」基数である：有限個の有限集合の和も、有限集合の冪集合も有限である。到達不能基数はこの性質を $\omega$ より上で再現する基数で、弱到達不能は「和と後続基数をとる操作」で、強到達不能はさらに「冪集合をとる操作」でも下から到達できない。
+:::
+
+::: proposition 強到達不能と弱到達不能 {#set:strong-implies-weak keywords="strongly inaccessible implies weakly inaccessible"}
+（AC）強到達不能基数は弱到達不能である。GCH（\ref{set:gch}）のもとでは逆も成り立つ。
+:::
+
+::: proof
+**Step 1（強 ⇒ 弱）.** $\kappa$ を強到達不能とする。正則なので、$\kappa$ が極限基数であることを示せばよい。$\kappa>\omega$ なので、$\kappa$ が後続基数でないことを示す。$\kappa=\lambda^{+}$ と仮定すると $\lambda<\kappa$ なので $2^{\lambda}<\kappa=\lambda^{+}$。一方カントールの定理 \ref{set:cantor-strict} より $\lambda<2^{\lambda}$ であり、$\lambda^{+}$ は $\lambda$ より大きい最小の基数なので $\lambda^{+}\le2^{\lambda}$。これは矛盾である。
+
+**Step 2（GCH のもとで弱 ⇒ 強）.** $\kappa$ を弱到達不能とする。極限基数なので $\kappa>\omega$、正則でもある。$\lambda<\kappa$ を基数とする。
+- $\lambda$ が有限なら $2^{\lambda}$ は有限（\ref{set:finite-exponentiation}）なので $2^{\lambda}<\omega<\kappa$。
+- $\lambda$ が無限なら GCH より $2^{\lambda}=\lambda^{+}$。$\lambda<\kappa$ より $\lambda^{+}\le\kappa$ であり、$\kappa$ は後続基数でないので $\lambda^{+}\ne\kappa$。よって $2^{\lambda}=\lambda^{+}<\kappa$。
+
+::: hypcheck
+- **選択公理**：$2^{\lambda}$ を基数として定義するのに使った（\ref{set:cardinal-exponentiation}）。
+- **カントールの定理**：Step 1 で使った。
+- **GCH**：Step 2 で使った。GCH がなければ、たとえば $2^{\aleph_{0}}$ が弱到達不能基数でありうる（次の事実）ので、弱到達不能基数は強到達不能とは限らない。
+:::
+:::
+
+::: fact 到達不能基数の存在は ZFC で証明できない {#set:inaccessible-unprovable keywords="existence of inaccessible cardinals is unprovable in ZFC"}
+$\ZFC$ が無矛盾ならば、$\ZFC$ から「弱到達不能基数が存在する」は証明できない。また $\ZFC+$「弱到達不能基数が存在する」が無矛盾ならば、$\ZFC+$「$2^{\aleph_{0}}$ は弱到達不能基数である」も、$\ZFC+$「弱到達不能基数が存在し、$2^{\aleph_{0}}$ は最初の弱到達不能基数より大きい」も無矛盾である（Kunen, *Set Theory* (1980), 第 IV 章・第 VI 章・第 VII 章）。
+:::
+
+::: supplement
+強到達不能基数 $\kappa$ があれば累積階層の $V_{\kappa}$ が $\ZFC$ のモデルになるので、「強到達不能基数が存在する」は $\ZFC$ の無矛盾性を導く。ゲーデルの第二不完全性定理（\ref{pt:godel-second}）により、$\ZFC$ は（無矛盾なら）自身の無矛盾性を証明できないので、強到達不能基数の存在も証明できない。弱到達不能基数の場合は、構成可能集合の宇宙 $\mathbf{L}$ の中では弱到達不能基数が強到達不能になることを組み合わせて同様の結論を得る。このため到達不能基数は、**巨大基数**の階層の最初の段とみなされる。
+:::
+
+## 問題 {#set:sec-cof-problems}
+
+::: problem {#set:prob-cf-unbounded-type}
+順序数 $\beta$ について、$\cf(\beta)$ は $\beta$ の非有界な部分集合 $X$ の順序型 $\operatorname{type}(X)$（\ref{set:order-type}）の最小値に等しいことを示せ。選択公理は使わないこと。
+:::
+
+::: solution
+非有界な部分集合の順序型の最小値を $\tau$ とおく（$\beta$ 自身が非有界なので候補はある）。
+
+**$\cf(\beta)\le\tau$.** $X\subseteq\beta$ を非有界で $\operatorname{type}(X)=\tau$ となるものとし、順序同型 $g\colon\tau\to X$ をとる。$g$ を $\tau\to\beta$ の写像とみると値域 $X$ は非有界なので共終写像であり、$\cf(\beta)\le\tau$。
+
+**$\tau\le\cf(\beta)$.** \ref{set:cf-increasing} の狭義増加な共終写像 $f\colon\cf(\beta)\to\beta$ をとり $X=\ran f$ とおく。$X$ は非有界であり、$f$ は狭義増加なので $\cf(\beta)$ から $X$ への順序同型である。よって $\operatorname{type}(X)=\cf(\beta)$ で、$\tau\le\cf(\beta)$。
+
+どちらも最小元をとる操作と既に構成された写像しか使っていないので、ZF で成り立つ。
+:::
+
+::: problem {#set:prob-cf-examples}
+次を示せ。(a) $\cf(\omega_{1}+\omega)=\omega$。(b)（AC）$\cf(\aleph_{\omega_{1}+1})=\aleph_{\omega_{1}+1}$ かつ $\cf(\aleph_{\omega_{1}})=\aleph_{1}$。(c) 任意の極限順序数 $\beta$ について $\cf(\beta)$ は正則基数である。
+:::
+
+::: solution
+(a) $n\mapsto\omega_{1}+n$ は狭義増加で、$\zeta<\omega_{1}+\omega$ は $\zeta<\omega_{1}$ か $\zeta=\omega_{1}+m$ なので $\zeta\le\omega_{1}+m$ となる $m$ があり、共終である。\ref{set:cf-transfer} より $\cf(\omega_{1}+\omega)=\cf(\omega)=\omega$。
+
+(b) $\aleph_{\omega_{1}+1}$ は後続基数なので \ref{set:successor-regular} より正則。$\omega_{1}$ は極限順序数なので \ref{set:cf-aleph} より $\cf(\aleph_{\omega_{1}})=\cf(\omega_{1})$ で、$\omega_{1}=\aleph_{1}$ は \ref{set:successor-regular} より正則なので $\cf(\omega_{1})=\aleph_{1}$。
+
+(c) \ref{set:cf-regular} より $\cf(\beta)$ は正則、\ref{set:regular-is-cardinal} より基数である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>型と型の省略定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03C-model-theory/02-types-and-countable-models/01-types-omitting.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 型と型の省略定理 {#model:page-types-omitting keywords="type, complete type, realize, omit, isolated type, principal type, omitting types theorem, Henkin construction, type space"}
+
+構造の元の組 $\vec{a}$ が満たす論理式の全体を、$\vec{a}$ の**型**という。型は「元の組がもちうる一階の性質の一覧」で、モデルの違いは、どの型を**実現**しどの型を**省略**するかで測られる。本ページでは、型の基本事項（実現、完全型、孤立型）を整え、可算の言語について**型の省略定理**（\ref{model:omitting-types}）を示す：孤立していない型は、ある可算モデルで省略できる。証明は完全性定理のヘンキン構成（\ref{logic:page-completeness}）に「型を省略する」段を割り込ませるものである。
+
+## 記法と定義の確認 {#model:sec-types-notation}
+
+::: notation
+- 構造・充足・縮小は \ref{logic:page-semantics} のとおり。$\vec{x}=(x_{1},\dots,x_{n})$ は相異なる変数の列で、$\varphi(\vec{x})$ は $\mathrm{FV}(\varphi)\subseteq\{\vec{x}\}$ の論理式を表す。$\mathcal{M}\models\varphi(\vec{a})$ は「$\vec{x}\mapsto\vec{a}$ の割り当てで $\varphi$ が真」の略記である。
+- 新しい定数 $\vec{d}$ について $\varphi(\vec{d})$ は $\varphi[d_{1}/x_{1}]\cdots[d_{n}/x_{n}]$ を表し、その意味は \ref{logic:constant-substitution-semantics} で与えられる。新しい定数の消去（\ref{model:constants-to-variables}）、初等図式（\ref{model:elementary-diagram}, \ref{model:elementary-diagram-lemma}）を使う。
+- コンパクト性定理（\ref{logic:compactness}）、完全性定理（\ref{logic:completeness}）、項モデル定理（\ref{logic:term-model}）、ヘンキン的な理論（\ref{logic:henkin-theory}）を使う。
+- $T$ は $\mathcal{L}$ の理論（文の集合）で、**充足可能**（モデルをもつ）とする。$T$ が**完全**とは、任意の文 $\sigma$ について $T\models\sigma$ または $T\models\neg\sigma$ であることをいう。
+:::
+
+## 型 {#model:sec-types}
+
+::: definition 型・実現・省略 {#model:type keywords="type, n-type, realize, omit, complete type, type space" index="型|かた, 実現する（型を）|じつげんするかたを, 省略する（型を）|しょうりゃくするかたを, 完全型|かんぜんがた"}
+1. 論理式 $\varphi(\vec{x})$ の集合 $p(\vec{x})$ を（$n$ 変数の）**型**という。$p$ が $T$ と**両立する**とは、新しい定数 $\vec{d}$ について $T\cup p(\vec{d})$（$p(\vec{d})\defeq\{\varphi(\vec{d}):\varphi\in p\}$）が充足可能であることをいう。
+2. 構造 $\mathcal{M}$ の元の組 $\vec{a}$ が $p$ を**実現する**とは、すべての $\varphi\in p$ について $\mathcal{M}\models\varphi(\vec{a})$ であることをいう。$p$ を実現する組がないとき、$\mathcal{M}$ は $p$ を**省略する**という。
+3. $\mathcal{M}$ の組 $\vec{a}$ の**型**を $\mathrm{tp}^{\mathcal{M}}(\vec{a})\defeq\{\varphi(\vec{x}):\mathcal{M}\models\varphi(\vec{a})\}$ と定める。$T$ のあるモデルのある組の型であるもの全体を $S_{n}(T)$ と書き、その元を $T$ の（$n$ 変数の）**完全型**という。
+:::
+
+::: lemma 型の基本性質 {#model:type-basic}
+1. 型 $p(\vec{x})$ が $T$ と両立するための必要十分条件は、$T$ のあるモデルが $p$ を実現することである。また、$p$ の有限部分集合がすべて $T$ と両立すれば、$p$ は $T$ と両立する。
+2. 完全型 $q\in S_{n}(T)$ は、各 $\varphi(\vec{x})$ について $\varphi\in q$ と $\neg\varphi\in q$ のちょうど一方を満たす。$T$ と両立する型は、ある完全型に含まれる。
+3. $T$ が完全で $\mathcal{M}\models T$ なら、$T$ と両立する任意の型は、$\mathcal{M}$ のある初等拡大で実現される。
+:::
+
+::: proof
+1. $\mathcal{N}'\models T\cup p(\vec{d})$ なら、\ref{logic:constant-substitution-semantics} より $\mathcal{N}'\restr{\mathcal{L}}$ の組 $\vec{d}^{\,\mathcal{N}'}$ が $p$ を実現する。逆に $\mathcal{N}\models T$ の組 $\vec{a}$ が $p$ を実現するなら、$d_{i}$ を $a_{i}$ と解釈した拡大がモデルである。後半はコンパクト性定理を $T\cup p(\vec{d})$ に使う。
+2. 前半は $\mathrm{tp}^{\mathcal{M}}(\vec{a})$ の定義と \ref{logic:abbreviation-semantics}。後半は 1 で $p$ を実現する組 $\vec{a}$ をとり $\mathrm{tp}^{\mathcal{N}}(\vec{a})\supseteq p$。
+3. $\Sigma\defeq\mathrm{Eldiag}(\mathcal{M})\cup p(\vec{d})$（$\vec{d}$ は $\mathcal{L}_{M}$ にない新しい定数）が充足可能であることを示せば、\ref{model:elementary-diagram-lemma} と 1 の議論で、$\mathcal{M}$ の初等拡大（埋め込みの像を同一視する）が $p$ を実現する。コンパクト性より、有限個の $\varphi_{1},\dots,\varphi_{k}\in p$ と $\delta\in\mathrm{Eldiag}(\mathcal{M})$ について $\{\delta\}\cup\{\varphi_{i}(\vec{d})\}$ が充足可能であることを示せばよい（$\mathrm{Eldiag}(\mathcal{M})$ は連言で閉じている）。$p$ は $T$ と両立するので $T\cup\{\exists\vec{x}\,(\varphi_{1}\wedge\dots\wedge\varphi_{k})\}$ は充足可能で、$T$ は完全なので $T\models\exists\vec{x}\,(\varphi_{1}\wedge\dots\wedge\varphi_{k})$。とくに $\mathcal{M}$ でこの文は真で、証拠 $\vec{b}\in M$ をとり $\vec{d}$ を $\vec{b}$ と解釈した $\mathcal{M}_{M}$ の拡大が求めるモデルである。
+:::
+
+::: definition 孤立した型 {#model:isolated-type keywords="isolated type, principal type, isolating formula" index="孤立した型|こりつしたかた, 孤立させる論理式|こりつさせるろんりしき"}
+論理式 $\theta(\vec{x})$ が $T$ において型 $p(\vec{x})$ を**孤立させる**とは、$T\cup\{\exists\vec{x}\,\theta\}$ が充足可能で、すべての $\varphi\in p$ について $T\models\forall\vec{x}\,(\theta\to\varphi)$ となることをいう。そのような $\theta$ があるとき、$p$ は $T$ で**孤立している**という。
+:::
+
+::: proposition 孤立型はすべてのモデルで実現される {#model:isolated-realized}
+$T$ が完全で、$p$ が $T$ で孤立しているなら、$T$ のすべてのモデルが $p$ を実現する。
+:::
+
+::: proof
+$\theta$ が $p$ を孤立させるとする。$T\cup\{\exists\vec{x}\,\theta\}$ は充足可能で $T$ は完全なので $T\models\exists\vec{x}\,\theta$。$\mathcal{M}\models T$ の組 $\vec{a}$ で $\theta(\vec{a})$ が真なものをとると、各 $\varphi\in p$ について $T\models\forall\vec{x}\,(\theta\to\varphi)$ より $\mathcal{M}\models\varphi(\vec{a})$。
+:::
+
+::: example 孤立していない型 {#model:ex-nonisolated}
+$\mathcal{L}=\{c_{0},c_{1},c_{2},\dots\}$（定数記号だけ）、$T\defeq\{\neg\,c_{m}=c_{n}:m\neq n\}$、$p(x)\defeq\{\neg\,x=c_{n}:n\in\N\}$ とする。
+- $p$ は $T$ と両立する：有限部分 $\{\neg\,x=c_{n}:n\le N\}$ は、領域 $\N$ で $c_{n}\mapsto n+1$ と解釈し $x\mapsto0$ とすれば実現される。\ref{model:type-basic} の 1。
+- $p$ は孤立していない：$\theta(x)$ が $p$ を孤立させたとし、$\theta$ に現れる定数が $c_{0},\dots,c_{N}$ に含まれるとする。$T\cup\{\exists x\,\theta\}$ のモデル $\mathcal{K}$ と $\theta(a)$ を満たす $a$ をとる。$T\models\forall x\,(\theta\to\neg\,x=c_{n})$ がすべての $n$ で成り立つので、$a$ はどの $c_{n}^{\mathcal{K}}$ とも異なる。$\mathcal{K}$ の $c_{N+1}$ の解釈だけを $a$ に取り替えた $\mathcal{K}'$ も $T$ のモデルで（$a$ は他の $c_{n}^{\mathcal{K}}$ と異なる）、$\theta$ に現れる記号の解釈は変わらないので $\mathcal{K}'\models\theta(a)$（\ref{logic:reduct-lemma} の後半）。すると $\mathcal{K}'\models\neg\,a=c_{N+1}$ となるはずだが、$c_{N+1}^{\mathcal{K}'}=a$ で矛盾する。
+- 領域 $\N$、$c_{n}\mapsto n$ のモデルは $p$ を省略し、上の両立性から $p$ を実現するモデルもある。
+:::
+
+## 型の省略定理 {#model:sec-omitting-types}
+
+::: theorem 型の省略定理 {#model:omitting-types keywords="omitting types theorem" index="型の省略定理|かたのしょうりゃくていり"}
+$\mathcal{L}$ を可算の言語、$T$ を充足可能な $\mathcal{L}$ の理論とし、$(p_{k})_{k\in\N}$ を、それぞれ $T$ で孤立していない型（$p_{k}$ は $n_{k}$ 変数）の列とする。このとき、すべての $p_{k}$ を省略する $T$ の可算モデルが存在する。
+:::
+
+::: proof
+**Step 0（準備）.** 新しい定数記号の可算無限集合 $C=\{e_{0},e_{1},\dots\}$ をとり、$\mathcal{K}\defeq\mathcal{L}\cup C$ とする。$\mathcal{K}$ は可算なので、次の三つを列挙できる。
+- $\mathcal{K}$ の文の列 $\sigma_{0},\sigma_{1},\dots$。
+- $\mathrm{FV}(\varphi)\subseteq\{x\}$ である $\mathcal{K}$ の論理式と変数の組の列 $(x_{0},\varphi_{0}),(x_{1},\varphi_{1}),\dots$。
+- 組 $(k,\vec{d})$（$k\in\N$、$\vec{d}$ は $\mathcal{K}$ の定数記号の長さ $n_{k}$ の列）の列 $(k_{0},\vec{d}_{0}),(k_{1},\vec{d}_{1}),\dots$。
+
+$\mathcal{K}$ の文の有限集合 $F_{0}\subseteq F_{1}\subseteq\cdots$ を、各 $T\cup F_{s}$ が（$\mathcal{K}$ 構造として）充足可能となるように帰納的に作る。$F_{0}\defeq\varnothing$ で、$T\cup F_{0}$ は（$C$ を任意に解釈して）充足可能である。$s=3j+r$（$r=0,1,2$）の段で次を行う。
+
+**Step 1（$r=0$：完全化）.** $T\cup F_{s}\cup\{\sigma_{j}\}$ が充足可能なら $F_{s+1}\defeq F_{s}\cup\{\sigma_{j}\}$、そうでなければ $F_{s+1}\defeq F_{s}\cup\{\neg\sigma_{j}\}$。後者の場合、$T\cup F_{s}$ のモデルはすべて $\neg\sigma_{j}$ を満たすので $T\cup F_{s+1}$ は充足可能である。
+
+**Step 2（$r=1$：証拠）.** $F_{s}$ と $\varphi_{j}$ に現れない $e\in C$ をとり（$F_{s}$ は有限）、$F_{s+1}\defeq F_{s}\cup\{\exists x_{j}\,\varphi_{j}\to\varphi_{j}[e/x_{j}]\}$。$T\cup F_{s}$ のモデル $\mathcal{A}$ をとり、$\mathcal{A}\models\exists x_{j}\,\varphi_{j}$ ならその証拠 $b$ に、そうでなければ任意の元に $e$ を解釈し直す。$e$ は $T\cup F_{s}$ と $\varphi_{j}$ に現れないので、縮小の補題と \ref{logic:constant-substitution-semantics} より $T\cup F_{s+1}$ のモデルになる。
+
+**Step 3（$r=2$：型の省略）.** $(k,\vec{d})\defeq(k_{j},\vec{d}_{j})$、$n\defeq n_{k}$、$\theta\defeq$ $F_{s}$ の元の連言（空なら $\top$）とする。$\theta$ または $\vec{d}$ に現れる $C$ の定数を、相異なるものとして $e'_{1},\dots,e'_{m}$ とし、$\theta$ と $\vec{d}$ に現れない新しい相異なる変数 $\vec{w}=(w_{1},\dots,w_{m})$ をとる（$\vec{x}$ とも異なる）。$\theta$ の $e'_{l}$ を $w_{l}$ に置き換えた $\mathcal{L}$ の論理式を $\theta_{0}(\vec{w})$、$d_{i}$ が $e'_{l}$ なら $\tau_{i}\defeq w_{l}$、$d_{i}$ が $\mathcal{L}$ の定数なら $\tau_{i}\defeq d_{i}$ として、$\mathcal{L}$ の論理式
+$$
+\eta(\vec{x})\defeq\exists\vec{w}\,\Bigl(\theta_{0}(\vec{w})\wedge\bigwedge_{i\le n}x_{i}=\tau_{i}\Bigr)
+$$
+を考える。
+- *$T\cup\{\exists\vec{x}\,\eta\}$ は充足可能.* $T\cup F_{s}$ のモデル $\mathcal{A}$ で、$\vec{w}\mapsto\vec{e'}^{\mathcal{A}}$, $\vec{x}\mapsto\vec{d}^{\,\mathcal{A}}$ とすれば（\ref{model:constants-to-variables} の 1）$\eta$ が真になる。
+- *$\neg\varphi(\vec{d})$ を加える.* $p_{k}$ は孤立していないので、$\eta$ は $p_{k}$ を孤立させない。よって $T\not\models\forall\vec{x}\,(\eta\to\varphi)$ となる $\varphi\in p_{k}$ がある。すなわち $T$ のモデル $\mathcal{B}$ と組 $\vec{a}$ で $\mathcal{B}\models\eta(\vec{a})$, $\mathcal{B}\not\models\varphi(\vec{a})$ となるものがある。$\eta$ の証拠 $\vec{b}$（$\vec{w}$ の値）をとり、$e'_{l}$ を $b_{l}$ と解釈し、他の $C$ の定数を任意に解釈して $\mathcal{B}$ を $\mathcal{K}$ 構造 $\mathcal{B}'$ に拡大する。\ref{model:constants-to-variables} の 1 より $\mathcal{B}'\models\theta$、すなわち $\mathcal{B}'\models F_{s}$。また $d_{i}^{\mathcal{B}'}=\tau_{i}^{\mathcal{B},(\vec{w}\mapsto\vec{b})}=a_{i}$ なので、\ref{logic:constant-substitution-semantics} より $\mathcal{B}'\models\neg\varphi(\vec{d})$。$F_{s+1}\defeq F_{s}\cup\{\neg\varphi(\vec{d})\}$ とおけば、$T\cup F_{s+1}$ は充足可能である。
+
+**Step 4（極限）.** $\Gamma\defeq T\cup\bigcup_{s}F_{s}$ とする。有限部分集合はある $T\cup F_{s}$ に含まれるので、コンパクト性定理より $\Gamma$ は充足可能、したがって（健全性定理より）無矛盾である。Step 1 より完全（各文かその否定を含む）、Step 2 よりヘンキン的（ヘンキン公理を元として含む）である。$\mathcal{K}$ は定数をもつので、項モデル定理（\ref{logic:term-model}）より項モデル $\mathcal{M}\models\Gamma$ があり、$M$ は $\mathcal{K}$ の閉項の同値類からなるので可算である。
+
+**Step 5（省略）.** $\mathcal{M}$ の元はすべてある定数の値である：閉項 $t$ について、$\varphi\defeq(x=t)$ のヘンキン公理 $\exists x\,x=t\to e=t$ が $\Gamma$ に属し、$\exists x\,x=t$ は真なので $\mathcal{M}\models e=t$、すなわち $[t]=e^{\mathcal{M}}$。したがって $\mathcal{M}$ の任意の組は $\vec{d}^{\,\mathcal{M}}$（$\vec{d}$ は $\mathcal{K}$ の定数の列）の形である。$(k,\vec{d})$ を扱った Step 3 の段で、ある $\varphi\in p_{k}$ について $\neg\varphi(\vec{d})\in\Gamma$ となったので、$\mathcal{M}\not\models\varphi(\vec{d}^{\,\mathcal{M}})$。よって $\mathcal{M}$ のどの組も $p_{k}$ を実現しない。縮小 $\mathcal{M}\restr{\mathcal{L}}$ は $T$ の可算モデルで、同じ領域なのですべての $p_{k}$ を省略する。
+:::
+
+::: hypcheck
+- **言語の可算性**：Step 0 の列挙。$\mathcal{L}$ が非可算だと、可算個の段ですべての文・すべての組を扱えない。非可算の言語では型の省略定理は一般に成り立たないことが知られている。
+- **孤立していないこと**：Step 3 で、$F_{s}$ を表す論理式 $\eta$ が $p_{k}$ を孤立させないことから、$\neg\varphi(\vec{d})$ を加えられた。孤立型は完全な理論のすべてのモデルで実現される（\ref{model:isolated-realized}）ので、この仮定は（完全な $T$ について）必要でもある。
+- **新しい定数を変数にする操作**：Step 3 で、$F_{s}$ が使う $C$ の定数を $\exists\vec{w}$ で隠し、$\mathcal{L}$ の論理式 $\eta$ にした。孤立の定義は $\mathcal{L}$ の論理式についてのものだからである。
+- **完全化とヘンキン公理**：Step 4 で項モデル定理を使う条件。Step 5 では「すべての元が定数で名指される」ことが要で、これがヘンキン公理（$\varphi=(x=t)$ の場合）から従った。
+- **選択公理**：言語が可算なので、列挙は具体的に与えられ、各段で最初の候補を選べばよい。コンパクト性定理も可算の場合で足りる。
+:::
+
+## 問題 {#model:sec-types-problems}
+
+::: problem {#model:prob-finite-type-space}
+$T$ が完全で $S_{n}(T)$ が有限集合なら、すべての $q\in S_{n}(T)$ は孤立していることを示せ。
+:::
+
+::: solution
+$S_{n}(T)=\{q,q_{1},\dots,q_{k}\}$（相異なる）とする。各 $i$ について $q\neq q_{i}$ なので、\ref{model:type-basic} の 2 より $\psi_{i}\in q$ で $\neg\psi_{i}\in q_{i}$ となるものがある。$\theta\defeq\psi_{1}\wedge\dots\wedge\psi_{k}$（$k=0$ なら $\top$）とする。$q$ を実現する組が $\theta$ を満たすので $T\cup\{\exists\vec{x}\,\theta\}$ は充足可能。$\varphi\in q$ で $T\not\models\forall\vec{x}\,(\theta\to\varphi)$ とすると、$T$ のモデルの組 $\vec{a}$ で $\theta\wedge\neg\varphi$ を満たすものがあり、$r\defeq\mathrm{tp}(\vec{a})\in S_{n}(T)$ は $\neg\varphi$ を含むので $r\neq q$、よって $r=q_{i}$ だが、$\psi_{i}\in r$ と $\neg\psi_{i}\in q_{i}$ が矛盾する。
+:::
+
+::: problem {#model:prob-omit-nonstandard}
+$\mathcal{L}=\{0,S\}$、$T\defeq\mathrm{Th}(\N,0,S)$ とし、$p(x)\defeq\{\neg\,x=S^{n}0:n\in\N\}$（$S^{n}0$ は $S$ を $n$ 回施した項）とする。$p$ は $T$ と両立するが、$T$ のモデル $(\N,0,S)$ は $p$ を省略することを示せ。（$p$ が孤立していないことの証明には $T$ の量化子消去などが要るので、ここでは求めない。）
+:::
+
+::: solution
+有限部分 $\{\neg\,x=S^{n}0:n\le N\}$ は $(\N,0,S)$ で $x\mapsto N+1$ により実現されるので、\ref{model:type-basic} の 1 より両立する。$(\N,0,S)$ の各元 $m$ は $S^{m}0$ の値なので $p$ を実現しない。
+:::
+
+::: supplement
+**前提の検討.**
+- 型の省略定理は $T$ の完全性を仮定しない。$T$ が完全でないときも、孤立していなければ省略できる。逆に、完全でない $T$ では、孤立した型でも省略するモデルがありうる（$\exists\vec{x}\,\theta$ が $T$ の帰結でない場合）。
+- 可算個の型は同時に省略できるが、非可算個の型を同時に省略できるとは限らない（可算モデルが実現する型は高々可算個なので、非可算個の型が省略される状況自体はよく起こるが、どれを省略するかを自由に指定することはできない）と一般に言われている。本サイトでは扱わない。
+
+**関連する結果.**
+- *型空間の位相.* $S_{n}(T)$ に、$[\varphi]\defeq\{q:\varphi\in q\}$ を基本開集合とする位相を入れると、コンパクト性定理から $S_{n}(T)$ はコンパクトなハウスドルフ空間になり、孤立型は孤立点に当たることが知られている。$S_{n}(T)$ は $n$ 変数の論理式の $T$ のもとでの同値類がなすブール代数（リンデンバウム–タルスキ代数）のストーン空間である（\ref{top:stone-representation} の考え方）。
+- *次のページ*では、型の省略定理を使って可算範疇性（ライル–ナルジェフスキの定理）と原子モデル・素モデルを扱う。
+
+**高い視点から：位相空間の中の「穴」.** ストーン空間で見ると、モデル $\mathcal{M}$ は、実現する型の集合 $\{\mathrm{tp}^{\mathcal{M}}(\vec{a})\}$ という $S_{n}(T)$ の点の集まりを選ぶ。孤立点（孤立型）は、どのモデルも避けられない「目立つ点」で、孤立していない点は、近くにいくらでも他の点がある「目立たない点」である。型の省略定理は、可算個の目立たない点ならモデルから一斉に抜き取れる、というベールのカテゴリー定理に似た主張になっている。実際、ストーン空間のベールの性質を使った型の省略定理の証明も知られている（ハルモスの多進代数の枠組みでも、型の省略定理に当たる代数的な結果が論じられていると言われている。本サイトでは確かめていない）。たとえれば、網の目（ヘンキン構成の各段）を細かくしていきながら、指定した可算個の隙間（型）にだけは糸を通さない、という編み方である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

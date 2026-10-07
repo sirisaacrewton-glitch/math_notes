@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>累積階層とランク | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/03-well-founded-sets/01-cumulative-hierarchy.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 累積階層とランク {#set:page-cumulative-hierarchy keywords="cumulative hierarchy, von Neumann hierarchy, well-founded sets, rank, WF, V_alpha"}
+
+空集合から出発して「冪集合をとる」「それまでに得たものを全部集める」という二つの操作を超限回くり返すと、集合の増大列 $R(0)\subseteq R(1)\subseteq\cdots\subseteq R(\alpha)\subseteq\cdots$ が得られる。これが**累積階層**であり、どこかの段階 $R(\alpha)$ に現れる集合を**整礎集合**という。整礎集合には「初めて現れた段階」という順序数の目盛り（**ランク**）が付き、元のランクは集合自身のランクより真に小さい。このため整礎集合の中では $x\in x$ や $x\in y\in x$ のような循環は起こらない。
+
+本ページでは基礎の公理（\ref{set:ax-foundation}）を**仮定せず**、$\ZF^{-}$ の中で累積階層とランクを定義して基本性質を示し、整礎集合全体 $\mathbf{WF}$ が集合論の基本的な操作で閉じていることを確かめる。$\mathbf{WF}$ が通常の数学の対象をすべて含むことは次ページ（\ref{set:page-size-of-wf}）で、基礎の公理が「$\mathbf{V}=\mathbf{WF}$」と同値であることは \ref{set:foundation-equivalents} で扱う。
+
+## 記法と定義の確認 {#set:sec-ch-notation}
+
+::: notation
+- 体系の略号は \ref{set:zf-subsystems} に従う。$\ZF^{-}$ は $\ZF$ から基礎の公理を除いたもの、$\ZF^{-}-\mathrm{P}$ はさらに冪集合の公理を除いたものである。本ページの結果はすべて $\ZF^{-}$ で示す（選択公理は使わない）。累積階層の定義そのものが冪集合の公理（\ref{set:ax-power-set}）を使う。
+- 順序数（\ref{set:ordinal}）は $\alpha,\beta,\gamma,\xi,\eta,\rho,\sigma,\dots$ で表し、$\xi<\eta\iff\xi\in\eta$、$\xi\le\eta\iff\xi\subseteq\eta$ である（\ref{set:ordinal-basic}）。順序数の後者 $\alpha+1=S(\alpha)=\alpha\cup\{\alpha\}$（\ref{set:successor}）について、$\beta<\alpha+1\iff\beta\le\alpha$、$\bigcup(\alpha+1)=\alpha$（\ref{set:successor-basic}）。極限順序数（\ref{set:limit-ordinal}）$\lambda$ は $\lambda=\bigcup\lambda$ を満たし、$\beta<\lambda\Rightarrow\beta+1<\lambda$（\ref{set:limit-characterization}）。
+- 順序数の集合 $X$ の上限 $\sup X=\bigcup X$ は $X$ のすべての元以上の最小の順序数であり、空でない $X$ の最小元 $\min X$ が存在する（\ref{set:sup-ordinals}）。空でない順序数のクラスにも最小元がある（\ref{set:transfinite-induction} (1)）。
+- クラス（\ref{set:class}）$\mathbf{V}=\{x\mid x=x\}$, $\mathbf{ON}=\{x\mid x\text{ は順序数}\}$。クラス $\mathbf{C}$ と集合 $A$ について $\mathbf{C}\cap A$ は集合であり、クラス関数による集合の像は集合である（\ref{set:class-basic}）。
+- 推移的集合（\ref{set:transitive-set}）：$y\in x\Rightarrow y\subseteq x$。$x$ が推移的 $\iff\bigcup x\subseteq x$、推移的集合の族の和集合は推移的（\ref{set:transitive-set-basic}）。
+- $\mathcal{P}(x)$ は冪集合（\ref{set:power-set}）、$\langle x,y\rangle=\{\{x\},\{x,y\}\}$ は順序対（\ref{set:ordered-pair}）、$x\times y$ は直積（\ref{set:cartesian-product}）、${}^{y}x$ は $y$ から $x$ への関数全体（\ref{set:function-set}）。
+- 超限帰納法（\ref{set:transfinite-induction}）と三つの場合による超限再帰（\ref{set:recursion-three-clauses}）を用いる。
+:::
+
+## 累積階層 {#set:sec-cumulative-hierarchy}
+
+::: definition 累積階層 {#set:cumulative-hierarchy keywords="cumulative hierarchy, von Neumann hierarchy, R(alpha), V_alpha" index="累積階層|るいせきかいそう, フォン・ノイマン階層|ふぉんのいまんかいそう"}
+順序数 $\alpha$ に対し、集合 $R(\alpha)$ を超限再帰により
+$$
+\begin{aligned}
+&R(0)=\varnothing,\qquad R(\alpha+1)=\mathcal{P}\bigl(R(\alpha)\bigr),\qquad R(\lambda)=\bigcup_{\xi<\lambda}R(\xi)\\
+&(\lambda\text{ は極限順序数})
+\end{aligned}
+$$
+と定める。クラス関数 $\alpha\mapsto R(\alpha)$ を**累積階層**という。$R(\alpha)$ を $V_{\alpha}$ と書く文献も多い。
+:::
+
+::: intuition
+$R(\alpha+1)$ は「$R(\alpha)$ の元だけを材料にして作れる集合すべて」である。空集合から始めて、材料が増えるたびに作れる集合をすべて作り、極限段階ではそれまでに作ったものをまとめる。「集合とは、すでにある集合を集めて作るもの」という描像を、そのまま超限的な構成として書いたものである。
+:::
+
+::: example
+$R(0)=\varnothing$、$R(1)=\mathcal{P}(\varnothing)=\{0\}=1$、$R(2)=\mathcal{P}(\{0\})=\{0,\{0\}\}=\{0,1\}=2$、
+$$
+R(3)=\mathcal{P}(\{0,1\})=\bigl\{0,\ \{0\},\ \{1\},\ \{0,1\}\bigr\}=\bigl\{0,\ 1,\ \{1\},\ 2\bigr\}.
+$$
+$R(3)$ から初めて順序数でない元 $\{1\}=\{\{\varnothing\}\}$ が現れる。$R(4)$ は $R(3)$ の $16$ 個の部分集合からなる（\ref{set:r-n-finite}）。$R(\omega)=\bigcup_{n<\omega}R(n)$ は**遺伝的有限集合**全体であり、$R(\omega+1)=\mathcal{P}(R(\omega))$ はすでに非可算である。
+:::
+
+::: supplement
+**定義の存在.** \ref{set:recursion-three-clauses} を、$a=\varnothing$、$\mathbf{H}(x)=\mathcal{P}(x)$、$\mathbf{L}(g)=\bigcup\ran g$ として適用する。$\mathbf{H}$ がクラス関数になる（すべての $x$ で $\mathcal{P}(x)$ が存在する）ことに冪集合の公理を、再帰定理そのものに置換公理を使う。
+
+**一つの式での定義.** 次の \ref{set:r-alpha-basic} を使うと、すべての $\alpha$ について
+$$
+R(\alpha)=\bigcup_{\xi<\alpha}\mathcal{P}\bigl(R(\xi)\bigr)
+$$
+が成り立つ。実際、$\alpha=0$ なら両辺は空、$\alpha=\beta+1$ なら単調性 $\mathcal{P}(R(\xi))\subseteq\mathcal{P}(R(\beta))$（$\xi\le\beta$）により右辺は $\mathcal{P}(R(\beta))=R(\alpha)$、$\alpha$ が極限なら右辺は $\bigcup_{\xi<\alpha}R(\xi+1)$ で、$R(\xi)\subseteq R(\xi+1)$ かつ $\xi+1<\alpha$ よりこれは $\bigcup_{\xi<\alpha}R(\xi)=R(\alpha)$。したがって $T(\alpha)=\bigcup_{\xi<\alpha}\mathcal{P}(T(\xi))$ という場合分けのない再帰で定めた $T$ も、$\alpha$ についての帰納法で $T=R$ となる（後者 $S(\alpha)$ との混同を避けて $T$ と書いた）。
+:::
+
+::: definition 整礎集合 {#set:wf-class keywords="well-founded sets, WF" index="整礎集合|せいそしゅうごう, WF|だぶりゅーえふ"}
+ある順序数 $\alpha$ について $x\in R(\alpha)$ となる集合 $x$ を**整礎集合**（well-founded set）という。そのクラスを
+$$
+\mathbf{WF}=\bigcup_{\alpha\in\mathbf{ON}}R(\alpha)=\{x\mid\exists\alpha\,(\alpha\in\mathbf{ON}\land x\in R(\alpha))\}
+$$
+と書く。
+:::
+
+::: intuition
+$\mathbf{WF}$ は「空集合から、集合論の操作を超限回くり返して実際に作れる集合」の全体である。基礎の公理なしの $\ZF^{-}$ では、たとえば $x=\{x\}$ を満たす集合の存在は否定も肯定もできないが、そのような $x$ は $\mathbf{WF}$ には入らない（\ref{set:rank-basic} の補足）。
+:::
+
+::: lemma 累積階層の基本性質 {#set:r-alpha-basic keywords="R(alpha) is transitive and increasing" index="累積階層の単調性|るいせきかいそうのたんちょうせい"}
+（$\ZF^{-}$）任意の順序数 $\alpha$ について次が成り立つ。
+
+1. $R(\alpha)$ は推移的である。
+2. $\xi\le\alpha$ ならば $R(\xi)\subseteq R(\alpha)$。
+3. $\xi<\alpha$ ならば $R(\xi)\in R(\alpha)$。
+:::
+
+::: intuition
+一度作った集合は後の段階でも残り（単調性）、ある段階の元の元はすでにその段階に入っている（推移性）。$R(\xi)$ という集合そのものも、次の段階では材料全体を集めた集合として作られる。
+:::
+
+::: proof
+(1) と (2) をまとめた主張
+$$
+\begin{aligned}
+&\psi(\alpha):\\
+&R(\alpha)\text{ は推移的で、かつすべての }\xi\le\alpha\text{ について }R(\xi)\subseteq R(\alpha)
+\end{aligned}
+$$
+を、三つの場合による超限帰納法（\ref{set:transfinite-induction} (3)）で示す。
+
+**Case 1（$\alpha=0$）.** $R(0)=\varnothing$ は空虚に推移的である。$\xi\le0$ なら $\xi=0$ で $R(0)\subseteq R(0)$。
+
+**Case 2（$\alpha=\beta+1$）.** $\psi(\beta)$ を仮定する。
+
+- *推移性*：$y\in R(\beta+1)=\mathcal{P}(R(\beta))$, $z\in y$ とする。$y\subseteq R(\beta)$ より $z\in R(\beta)$。$R(\beta)$ は推移的なので $z\subseteq R(\beta)$、すなわち $z\in\mathcal{P}(R(\beta))=R(\beta+1)$。
+- *$R(\beta)\subseteq R(\beta+1)$*：$u\in R(\beta)$ なら推移性より $u\subseteq R(\beta)$、すなわち $u\in\mathcal{P}(R(\beta))$。
+- *単調性*：$\xi\le\beta+1$ とする。$\xi=\beta+1$ なら自明。$\xi\le\beta$ なら $\psi(\beta)$ と直前の包含より $R(\xi)\subseteq R(\beta)\subseteq R(\beta+1)$。
+
+**Case 3（$\alpha$ が極限順序数）.** すべての $\beta<\alpha$ で $\psi(\beta)$ を仮定する。
+
+- *推移性*：$R(\alpha)=\bigcup\{R(\xi)\mid\xi<\alpha\}$ は推移的集合の族の和集合なので推移的（\ref{set:transitive-set-basic} (2)）。ここで族 $\{R(\xi)\mid\xi<\alpha\}$ は、クラス関数 $\xi\mapsto R(\xi)$ による集合 $\alpha$ の像なので集合である（\ref{set:class-basic} (3)）。
+- *単調性*：$\xi<\alpha$ なら定義より $R(\xi)\subseteq\bigcup_{\eta<\alpha}R(\eta)=R(\alpha)$。$\xi=\alpha$ なら自明。
+
+**(3)** $\xi<\alpha$ とすると $\xi+1\le\alpha$。$R(\xi)\subseteq R(\xi)$ なので $R(\xi)\in\mathcal{P}(R(\xi))=R(\xi+1)$、(2) より $R(\xi+1)\subseteq R(\alpha)$。よって $R(\xi)\in R(\alpha)$。
+
+::: hypcheck
+- **冪集合の公理**：$R(\beta+1)$ の存在（定義）。**置換公理**：再帰による定義と、Case 3 で族 $\{R(\xi)\mid\xi<\alpha\}$ を集合にするのに使った。**和集合の公理**：極限段階。
+- **超限帰納法**：本証明の骨格。
+- 選択公理・基礎の公理は使っていない（$\ZF^{-}$ で成り立つ）。
+:::
+:::
+
+## ランク {#set:sec-rank}
+
+::: lemma 最初に現れる段階は後続順序数 {#set:wf-least-stage keywords="least stage is a successor"}
+（$\ZF^{-}$）$x\in\mathbf{WF}$ ならば、$x\in R(\alpha)$ となる最小の順序数 $\alpha$ が存在し、それは後続順序数である。
+:::
+
+::: proof
+**Step 1（最小の段階）.** クラス $\{\alpha\in\mathbf{ON}\mid x\in R(\alpha)\}$ は $x\in\mathbf{WF}$ より空でないので、最小元 $\alpha_{0}$ がある（\ref{set:transfinite-induction} (1)）。
+
+**Step 2（$\alpha_{0}\ne0$）.** $R(0)=\varnothing$ なので $x\notin R(0)$。
+
+**Step 3（$\alpha_{0}$ は極限でない）.** $\alpha_{0}$ が極限順序数なら $x\in R(\alpha_{0})=\bigcup_{\xi<\alpha_{0}}R(\xi)$ より、ある $\xi<\alpha_{0}$ で $x\in R(\xi)$ となり、$\alpha_{0}$ の最小性に反する。
+
+以上より、$\alpha_{0}$ は $0$ でも極限でもないので後続順序数である。
+
+::: hypcheck
+- **超限帰納法の最小元の原理**（クラス版）：Step 1。
+- 極限段階の定義（和集合）：Step 3。$\ZF^{-}$ で成り立つ。
+:::
+:::
+
+::: definition ランク {#set:rank keywords="rank, von Neumann rank" index="ランク|らんく, 階数|かいすう"}
+$x\in\mathbf{WF}$ に対し、$x\in R(\beta+1)$ となる最小の順序数 $\beta$ を $x$ の**ランク**（階数）といい、$\rank(x)$ と書く。
+:::
+
+::: intuition
+\ref{set:wf-least-stage} により、$x$ が最初に現れる段階は $\beta+1$ の形をしている。このとき $x\subseteq R(\beta)$ だが $x\notin R(\beta)$：$x$ は段階 $\beta$ までの材料だけで作れるが、段階 $\beta$ にはまだない。ランクはこの「材料がそろった段階」$\beta$ である。
+:::
+
+::: example
+$\rank(\varnothing)=0$（$\varnothing\in R(1)$）、$\rank(\{\varnothing\})=1$、$\rank(\{1\})=\rank(\{\{\varnothing\}\})=2$（$\{1\}\in R(3)\setminus R(2)$）。一般に $\rank(\alpha)=\alpha$（\ref{set:rank-ordinal}）、$\rank(\{x\})=\rank(x)+1$（\ref{set:rank-operations}）。
+:::
+
+::: lemma ランクの基本性質 {#set:rank-basic keywords="basic properties of rank, rank(y) = sup(rank(x)+1)" index="ランクの計算|らんくのけいさん"}
+（$\ZF^{-}$）
+
+1. $x\in\mathbf{WF}$ と順序数 $\alpha$ について、$x\in R(\alpha)\iff\rank(x)<\alpha$。すなわち $R(\alpha)=\{x\in\mathbf{WF}\mid\rank(x)<\alpha\}$。特に $x\subseteq R(\rank(x))$ かつ $x\notin R(\rank(x))$。
+2. $y\in\mathbf{WF}$ ならば、すべての $x\in y$ について $x\in\mathbf{WF}$ かつ $\rank(x)<\rank(y)$。特に $\mathbf{WF}$ は推移的なクラスである。
+3. $y\in\mathbf{WF}$ ならば $\rank(y)=\sup\{\rank(x)+1\mid x\in y\}$。
+:::
+
+::: intuition
+(3) はランクを「元のランクから再帰的に計算する規則」として述べたもので、実際のランクの計算はほとんどこれで行う。$\rank(y)$ は「$y$ のどの元よりも真に大きい最小の順序数」である。
+:::
+
+::: proof
+**(1)** $\rho=\rank(x)$ とおく。\ref{set:wf-least-stage} の最小の段階を $\alpha_{0}$ とすると、$\alpha_{0}=\sigma+1$ の形である。
+
+*Step 1（$\rho=\sigma$）.* $x\in R(\sigma+1)$ なので $\rho\le\sigma$。逆に $x\in R(\rho+1)$ なので、$\alpha_{0}$ の最小性から $\sigma+1\le\rho+1$、よって $\sigma\le\rho$。
+
+*Step 2（同値）.* $\rank(x)<\alpha$ なら $\rho+1\le\alpha$、\ref{set:r-alpha-basic} (2) より $x\in R(\rho+1)\subseteq R(\alpha)$。逆に $x\in R(\alpha)$ なら $\alpha_{0}$ の最小性より $\rho+1=\alpha_{0}\le\alpha$、すなわち $\rho<\alpha$。
+
+*Step 3.* $R(\alpha)$ の元はすべて $\mathbf{WF}$ に属するので、Step 2 より $R(\alpha)=\{x\in\mathbf{WF}\mid\rank(x)<\alpha\}$。$\alpha=\rho$ とすると $x\notin R(\rho)$ が、$x\in R(\rho+1)=\mathcal{P}(R(\rho))$ から $x\subseteq R(\rho)$ が従う。
+
+**(2)** $\rho=\rank(y)$ とおくと (1) より $y\subseteq R(\rho)$。したがって $x\in y$ なら $x\in R(\rho)$、すなわち $x\in\mathbf{WF}$ であり、(1) より $\rank(x)<\rho$。
+
+**(3)** $\rho=\rank(y)$ とし、$\sigma=\sup\{\rank(x)+1\mid x\in y\}$ とおく（(2) より $y$ の元はすべて $\mathbf{WF}$ に属するので、クラス関数 $x\mapsto\rank(x)+1$ による $y$ の像は置換公理により順序数の集合であり、その上限が定まる）。
+
+- *$\sigma\le\rho$*：(2) より各 $x\in y$ で $\rank(x)<\rho$、すなわち $\rank(x)+1\le\rho$。$\sigma$ はこれらの最小上界なので $\sigma\le\rho$。
+- *$\rho\le\sigma$*：各 $x\in y$ について $\rank(x)<\rank(x)+1\le\sigma$ なので、(1) より $x\in R(\sigma)$。よって $y\subseteq R(\sigma)$、すなわち $y\in\mathcal{P}(R(\sigma))=R(\sigma+1)$ で、ランクの定義から $\rho\le\sigma$。
+
+::: hypcheck
+- **\ref{set:r-alpha-basic}**（単調性）：(1) の Step 2。
+- **置換公理**：(3) で $\{\rank(x)+1\mid x\in y\}$ を集合にするのに使った。**和集合の公理**：その上限。
+- **冪集合の公理**：$R(\sigma+1)=\mathcal{P}(R(\sigma))$ を通して。
+- 選択公理・基礎の公理は使っていない（$\ZF^{-}$ で成り立つ）。
+:::
+:::
+
+::: supplement
+**循環の排除.** (2) から、$\mathbf{WF}$ の中では
+- $x\in x$ となる $x$ はない（$\rank(x)<\rank(x)$ になる）；
+- $x\in y\in x$ となる $x,y$ はない（$\rank(x)<\rank(y)<\rank(x)$）；
+- 一般に $x_{0}\ni x_{1}\ni\cdots\ni x_{n}=x_{0}$ となる有限の循環はなく、また $x_{0}\ni x_{1}\ni x_{2}\ni\cdots$ という無限下降列もない（ランクが順序数の無限下降列になる）。
+
+したがって $\ZF^{-}$ で $x=\{x\}$ を満たす集合（**クワイン原子**）があったとしても、それは $\mathbf{WF}$ に属さない。$\mathbf{WF}$ の元の元もまた $\mathbf{WF}$ に属するので（推移性）、$x\notin\mathbf{WF}$ であることは「$x$ から $\in$ を下にたどると、どこかで $\mathbf{WF}$ の外に出る」ことを意味する。$\ZF^{-}$ はクワイン原子の存在を否定も肯定もしない（基礎の公理と独立な公理は、たとえばアクゼルの反基礎の公理 AFA（\ref{set:foundation-equivalents} の補足） として研究されている）。
+:::
+
+::: lemma 順序数のランク {#set:rank-ordinal keywords="rank of an ordinal" index="順序数のランク|じゅんじょすうのらんく"}
+（$\ZF^{-}$）
+
+1. すべての順序数 $\alpha$ について $\alpha\in\mathbf{WF}$ かつ $\rank(\alpha)=\alpha$。
+2. すべての順序数 $\alpha$ について $R(\alpha)\cap\mathbf{ON}=\alpha$。
+:::
+
+::: intuition
+順序数 $\alpha=\{\beta\mid\beta<\alpha\}$ は、それより小さい順序数をすべて材料として必要とするので、ちょうど段階 $\alpha$ で材料がそろう。$R(\alpha)$ に入っている順序数はちょうど $\alpha$ 未満のものであり、累積階層の「背骨」は順序数である。
+:::
+
+::: proof
+**(1)** 超限帰納法（\ref{set:transfinite-induction} (2)）で示す。すべての $\beta<\alpha$ について $\beta\in\mathbf{WF}$ かつ $\rank(\beta)=\beta$ と仮定する。
+
+*Step 1（$\alpha\in\mathbf{WF}$）.* $\beta<\alpha$ なら仮定と \ref{set:rank-basic} (1) より $\beta\in R(\beta+1)$ であり、$\beta+1\le\alpha$ なので $R(\beta+1)\subseteq R(\alpha)$（\ref{set:r-alpha-basic} (2)）。よって $\alpha\subseteq R(\alpha)$、すなわち $\alpha\in\mathcal{P}(R(\alpha))=R(\alpha+1)$ で、$\alpha\in\mathbf{WF}$。
+
+*Step 2（$\rank(\alpha)=\alpha$）.* \ref{set:rank-basic} (3) と仮定より $\rank(\alpha)=\sup\{\beta+1\mid\beta<\alpha\}$。これが $\alpha$ に等しいことを示す。各 $\beta<\alpha$ で $\beta+1\le\alpha$ なので上限は $\le\alpha$。逆に $\beta<\alpha$ なら $\beta<\beta+1\le\sup\{\beta'+1\mid\beta'<\alpha\}$ なので、$\alpha\subseteq\sup\{\beta+1\mid\beta<\alpha\}$。よって等しい。
+
+**(2)** (1) と \ref{set:rank-basic} (1) より、順序数 $\beta$ について $\beta\in R(\alpha)\iff\rank(\beta)<\alpha\iff\beta<\alpha$。したがって $R(\alpha)\cap\mathbf{ON}=\{\beta\in\mathbf{ON}\mid\beta<\alpha\}=\alpha$。
+
+::: hypcheck
+- **超限帰納法**：(1) の骨格。
+- \ref{set:r-alpha-basic}, \ref{set:rank-basic} だけを使った。$\ZF^{-}$ で成り立つ。
+:::
+:::
+
+::: example
+- $\mathbf{ON}\subseteq\mathbf{WF}$ なので、$\mathbf{WF}$ は真のクラスである（$\mathbf{ON}$ は真のクラス：\ref{set:class-basic} (2)）。
+- $\rank(R(\alpha))=\alpha$：$R(\alpha)\subseteq R(\alpha)$ より $R(\alpha)\in R(\alpha+1)$、よって $\rank(R(\alpha))\le\alpha$。一方 $\alpha\subseteq R(\alpha)$（(2)）で、\ref{set:rank-basic} (3) より $\rank(R(\alpha))\ge\sup\{\beta+1\mid\beta<\alpha\}=\alpha$。
+:::
+
+## WF の閉包性 {#set:sec-wf-closure}
+
+::: lemma WF の特徴づけ {#set:wf-subset keywords="x in WF iff x subset of WF" index="整礎集合の特徴づけ|せいそしゅうごうのとくちょうづけ"}
+（$\ZF^{-}$）
+
+1. 任意の集合 $x$ について、$x\in\mathbf{WF}\iff x\subseteq\mathbf{WF}$。
+2. $x\in\mathbf{WF}$ かつ $z\subseteq x$ ならば、$z\in\mathbf{WF}$ かつ $\rank(z)\le\rank(x)$。
+:::
+
+::: intuition
+(1) の「$\Leftarrow$」が本質的：**元がすべて整礎なら、その集合自身も整礎**である。元のランクの上限 $\sigma$ をとれば、元はすべて段階 $\sigma$ までに現れているので、集合自身は段階 $\sigma+1$ で作られる。ここで元が「集合だけある」こと（置換公理で上限がとれること）が効いている。
+:::
+
+::: proof
+**(1)** ($\Rightarrow$) は \ref{set:rank-basic} (2)（$\mathbf{WF}$ の推移性）。
+
+($\Leftarrow$) $x\subseteq\mathbf{WF}$ とする。置換公理により $\sigma=\sup\{\rank(y)+1\mid y\in x\}$ が定まる。各 $y\in x$ について $\rank(y)<\sigma$ なので、\ref{set:rank-basic} (1) より $y\in R(\sigma)$。よって $x\subseteq R(\sigma)$、すなわち $x\in R(\sigma+1)\subseteq\mathbf{WF}$。
+
+**(2)** $z\subseteq x\subseteq\mathbf{WF}$ なので (1) より $z\in\mathbf{WF}$。\ref{set:rank-basic} (3) より
+$$
+\begin{aligned}
+\rank(z)&=\sup\{\rank(w)+1\mid w\in z\}\le\sup\{\rank(w)+1\mid w\in x\}\\
+&=\rank(x)
+\end{aligned}
+$$
+（小さい集合の上限は小さい：右辺は左辺の集合のすべての元以上だから）。
+
+::: hypcheck
+- **置換公理**：(1) で上限 $\sigma$ をとるのに使った。これが「$\Leftarrow$」の要である。
+- $\ZF^{-}$ で成り立つ（選択公理・基礎の公理は使わない）。
+:::
+:::
+
+::: supplement
+**$\mathbf{WF}$ は最小の「閉じた」クラス.** (1) により $\mathbf{WF}$ は「$x\subseteq\mathbf{M}\Rightarrow x\in\mathbf{M}$」という性質をもつ。逆にこの性質をもつクラス $\mathbf{M}$ は必ず $\mathbf{WF}$ を含む：$R(\alpha)\subseteq\mathbf{M}$ を $\alpha$ についての帰納法で示せばよい。$\alpha=0$ は自明、$x\in R(\beta+1)$ なら $x\subseteq R(\beta)\subseteq\mathbf{M}$ より $x\in\mathbf{M}$、極限では和集合をとる。したがって $\mathbf{WF}$ は、この性質をもつ最小のクラスである。これは「$\mathbf{WF}$ 上では $\in$ に関する帰納法（**$\in$-帰納法**）が使える」ことの言い換えである：性質 $\varphi$ について「$x$ の元がすべて $\varphi$ を満たせば $x$ も $\varphi$ を満たす」なら、$\mathbf{M}=\{x\mid\varphi(x)\}$ に上を適用して、すべての $x\in\mathbf{WF}$ が $\varphi$ を満たす。一般の整礎関係への拡張は \ref{set:wf-recursion} で扱う。
+
+**$R(\lambda)$ との違い.** 極限順序数 $\lambda$ に対する $R(\lambda)$ も、次の \ref{set:wf-closure} の操作では閉じている（\ref{set:r-limit-closure}）。しかし (1) の性質はもたない：$R(\lambda)\subseteq R(\lambda)$ だが $R(\lambda)\notin R(\lambda)$（$\rank(R(\lambda))=\lambda$）。(1) は単なる閉包性よりはるかに強い。
+:::
+
+::: proposition ランクの計算 {#set:rank-operations keywords="rank of union, power set, pair, ordered pair" index="ランクの計算規則|らんくのけいさんきそく"}
+（$\ZF^{-}$）$x,y\in\mathbf{WF}$、$\rho=\rank(x)$, $\sigma=\rank(y)$, $\mu=\max(\rho,\sigma)$ とする。以下の集合はすべて $\mathbf{WF}$ に属し、
+
+1. $\rank\bigl(\bigcup x\bigr)=\bigcup\rho$（$\rho$ が後続順序数 $\tau+1$ なら $\tau$、$\rho$ が $0$ か極限なら $\rho$）。
+2. $\rank(\mathcal{P}(x))=\rho+1$、$\rank(\{x\})=\rho+1$。
+3. $\rank(\{x,y\})=\mu+1$、$\rank(\langle x,y\rangle)=\mu+2$。
+4. $\rank(x\cup y)=\mu$。$\rank(x\cap y)\le\min(\rho,\sigma)$、$\rank(x\setminus y)\le\rho$。
+5. $\rank(x\times y)\le\mu+2$、$\rank({}^{y}x)\le\mu+3$。
+:::
+
+::: proof
+**Step 0（所属）.** \ref{set:wf-subset} (1) により、元がすべて $\mathbf{WF}$ に属することを示せば十分である。$\bigcup x$ の元は $x$ の元の元なので $\mathbf{WF}$ の推移性（\ref{set:rank-basic} (2)）により $\mathbf{WF}$ に属する。$\mathcal{P}(x)$ の元は $x$ の部分集合で \ref{set:wf-subset} (2) により $\mathbf{WF}$ に属する。$\{x\}$, $\{x,y\}$, $x\cup y$, $x\cap y$, $x\setminus y$ の元は $x$ か $y$ そのものか、その元である。$\langle x,y\rangle=\{\{x\},\{x,y\}\}$ は、いま示した $\{x\},\{x,y\}\in\mathbf{WF}$ からなる。$x\times y$ の元は $a\in x$, $b\in y$ による $\langle a,b\rangle$ で、$a,b\in\mathbf{WF}$ から同様に $\mathbf{WF}$ に属する。${}^{y}x$ の元は $y\times x$ の部分集合である。以下、ランクは \ref{set:rank-basic} (3) で計算する。
+
+**(1)** $\tau=\sup\{\rank(w)\mid w\in x\}$ とおく。
+- *$\rank(\bigcup x)\le\tau$*：$z\in\bigcup x$ なら $z\in w\in x$ となる $w$ があり、$\rank(z)+1\le\rank(w)\le\tau$。よって上限も $\le\tau$。
+- *$\tau\le\rank(\bigcup x)$*：$w\in x$ なら $w\subseteq\bigcup x$ なので \ref{set:wf-subset} (2) より $\rank(w)\le\rank(\bigcup x)$。
+
+よって $\rank(\bigcup x)=\tau$。次に $\tau=\bigcup\rho$ を示す（$\rho=\sup\{\rank(w)+1\mid w\in x\}$）。$w\in x$ なら $\rank(w)<\rank(w)+1\le\rho$、すなわち $\rank(w)\in\rho$ なので $\rank(w)\le\bigcup\rho$、したがって $\tau\le\bigcup\rho$。逆に $\beta\in\bigcup\rho$ なら $\beta<\gamma<\rho$ となる $\gamma$ があり、$\rho=\bigcup\{\rank(w)+1\mid w\in x\}$ より $\gamma\in\rank(w)+1$、すなわち $\beta<\gamma\le\rank(w)\le\tau$ となる $w$ がある。よって $\bigcup\rho\subseteq\tau$。最後に、$\bigcup(\tau'+1)=\tau'$（\ref{set:successor-basic} (4)）、極限順序数 $\lambda$ について $\bigcup\lambda=\lambda$（\ref{set:limit-characterization}）、$\bigcup0=0$。
+
+**(2)** $z\in\mathcal{P}(x)$ なら \ref{set:wf-subset} (2) より $\rank(z)\le\rho$、すなわち $\rank(z)+1\le\rho+1$。また $x\in\mathcal{P}(x)$ で $\rank(x)+1=\rho+1$。よって上限は $\rho+1$。$\{x\}$ の元は $x$ だけなので $\rank(\{x\})=\rho+1$。
+
+**(3)** $\rank(\{x,y\})=\max(\rho+1,\sigma+1)=\mu+1$。$\langle x,y\rangle=\{\{x\},\{x,y\}\}$ の元のランクは (2) と前半より $\rho+1$ と $\mu+1$ で、$\rho+1\le\mu+1$ なので $\rank(\langle x,y\rangle)=\mu+2$。
+
+**(4)** $\rank(x\cup y)=\sup\bigl(\{\rank(w)+1\mid w\in x\}\cup\{\rank(w)+1\mid w\in y\}\bigr)=\max(\rho,\sigma)$（二つの集合の和の上限は、それぞれの上限の大きい方）。$x\cap y\subseteq x$, $x\cap y\subseteq y$, $x\setminus y\subseteq x$ なので \ref{set:wf-subset} (2) から残りが従う。
+
+**(5)** $a\in x$, $b\in y$ なら $\rank(a)<\rho\le\mu$, $\rank(b)<\sigma\le\mu$ なので $\max(\rank(a),\rank(b))+1\le\mu$、(3) より $\rank(\langle a,b\rangle)=\max(\rank(a),\rank(b))+2\le\mu+1$。よって $\rank(x\times y)\le\mu+2$。$f\in{}^{y}x$ は $f\subseteq y\times x$ なので \ref{set:wf-subset} (2) より $\rank(f)\le\mu+2$、したがって $\rank({}^{y}x)\le\mu+3$。
+
+::: hypcheck
+- **置換公理**（上限の存在）、**和集合の公理・対の公理・冪集合の公理・分出公理**（各集合の存在。${}^{y}x$ の存在には冪集合の公理を使う：\ref{set:function-set}）。
+- $\ZF^{-}$ で成り立つ。選択公理・基礎の公理は使っていない。
+:::
+:::
+
+::: supplement
+**等号にならない例.** (5) の不等号は一般に等号にならない。$x=\varnothing$ なら $x\times y=\varnothing$ でランク $0$。$x,y$ が空でなく $\mu$ が極限順序数なら、$\langle a,b\rangle$ のランク $\max(\rank(a),\rank(b))+2$ はすべて $\mu$ 未満で、しかも $\mu$ に下から限りなく近づくので $\rank(x\times y)=\mu$ となる（例：$x=y=\omega$ なら $\rank(\omega\times\omega)=\omega$）。$x,y$ が空でなく $\mu$ が後続順序数なら $\rank(x\times y)=\mu+2$ である。
+:::
+
+::: theorem WF の閉包性 {#set:wf-closure keywords="WF is closed under set-theoretic operations" index="整礎集合の閉包性|せいそしゅうごうのへいほうせい"}
+（$\ZF^{-}$）
+
+1. $x\in\mathbf{WF}$ ならば $\bigcup x$, $\mathcal{P}(x)$, $\{x\}$ はいずれも $\mathbf{WF}$ に属し、それらのランクは $\rank(x)+\omega$ より小さい。
+2. $x,y\in\mathbf{WF}$ ならば $x\times y$, $x\cup y$, $x\cap y$, $x\setminus y$, $\{x,y\}$, $\langle x,y\rangle$, ${}^{y}x$ はいずれも $\mathbf{WF}$ に属し、それらのランクは $\max(\rank(x),\rank(y))+\omega$ より小さい。
+:::
+
+::: intuition
+集合論で数学の対象を作るときに使う操作（和集合・冪集合・対・直積・関数の集合など）は、$\mathbf{WF}$ から外に出ない。しかもランクは「有限段しか」上がらない。したがって整礎集合から出発して標準的な構成を有限回くり返しても、整礎集合しか得られない。
+:::
+
+::: proof
+所属とランクの値・上界は \ref{set:rank-operations} で示した。そこでの上界はいずれも $\rank(x)+n$ または $\max(\rank(x),\rank(y))+n$（$n\le3$）の形である。順序数の和は右の引数について狭義増加なので（\ref{set:ordinal-addition-laws} (6)）、$n<\omega$ より $\delta+n<\delta+\omega$。(1) の $\bigcup x$ については $\rank(\bigcup x)\le\rank(x)<\rank(x)+\omega$。
+
+::: hypcheck
+- \ref{set:rank-operations} と順序数の和の単調性だけを使った。$\omega$ の存在に**無限公理**を使う。
+- $\ZF^{-}$ で成り立つ。
+:::
+:::
+
+::: supplement
+**他の構成.** 同じ方法で、$\mathbf{WF}$ は定義域・値域 $\dom R$, $\ran R$、逆関係、関数の値 $f(a)$、像 $f[A]$、有限列の集合 $x^{<\omega}$ などについても閉じていることがわかる。いずれも「元が $\mathbf{WF}$ の元から作られる」ことを確かめ、\ref{set:wf-subset} (1) を使えばよい。数の体系 $\Z,\Q,\R,\C$ への応用は \ref{set:number-systems-wf} を参照。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

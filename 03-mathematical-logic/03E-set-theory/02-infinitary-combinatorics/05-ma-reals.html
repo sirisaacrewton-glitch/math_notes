@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MA と実数直線・位相空間 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/05-ma-reals.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# MA と実数直線・位相空間 {#set:page-ma-reals keywords="Martin's axiom and the real line, Baire category, Lebesgue measure zero, compact ccc spaces, productivity of ccc"}
+
+マーティンの公理（\ref{set:ma}）の序文で挙げた問いのうち、残っている 2 つ――「第一類集合を $\kappa$ 個合併しても第一類か」「測度 $0$ の集合を $\kappa$ 個合併しても測度 $0$ か」――に、$\mathrm{MA}(\kappa)$ のもとで肯定的に答える。前者は前ページの概素集合についての主定理（\ref{set:ma-ad}）から直ちに従い、後者には「測度が $\varepsilon$ 未満の開集合」を条件とする新しい半順序を使う。続いて一般の位相空間に目を移し、$\mathrm{MA}(\kappa)$ が「コンパクト c.c.c. ハウスドルフ空間についての $\kappa$ 個版のベールのカテゴリー定理」を導くこと、また $\mathrm{MA}(\aleph_{1})$ のもとでは c.c.c. 空間の直積が常に c.c.c. になることを示す。
+
+## 記法と定義の確認 {#set:sec-mar-notation}
+
+::: notation
+- 本ページでは選択公理を仮定する（$\ZFC$）。各証明の「前提条件の使用箇所」に、選択公理と MA をどこで使ったかを明記する。
+- 半順序・両立・反鎖・c.c.c.・稠密集合・フィルター・$\mathrm{MA}(\kappa)$ は \ref{set:forcing-poset}, \ref{set:compatible}, \ref{set:ccc-poset}, \ref{set:dense-set}, \ref{set:poset-filter}, \ref{set:ma} の意味で用いる。フィルターの有限個の元は $G$ の中に共通の拡張をもつ（\ref{set:poset-filter-basic}）。$\mathrm{MA}(\kappa)$ は $\kappa$ について単調（\ref{set:ma-basic}）、$\mathrm{MA}(\aleph_{0})$ は c.c.c. を仮定しない形で ZFC の定理（\ref{set:ma-omega}）、$\mathrm{MA}(\kappa)$ ならば $\kappa<2^{\aleph_{0}}$（\ref{set:ma-continuum-false}）。
+- 前ページの主定理 \ref{set:ma-ad} を使う：$\mathrm{MA}(\kappa)$ のもとで、$\mathcal{A},\mathcal{C}\subseteq\mathcal{P}(\omega)$ が $\lvert\mathcal{A}\rvert,\lvert\mathcal{C}\rvert\le\kappa$ で「任意の $y\in\mathcal{C}$ と有限な $F\subseteq\mathcal{A}$ について $y\setminus\bigcup F$ は無限」を満たせば、すべての $x\in\mathcal{A}$ と有限にしか交わらず、すべての $y\in\mathcal{C}$ と無限に交わる $d\subseteq\omega$ がある。
+- 位相空間の用語は通常の意味で用いる。$A\subseteq X$ の閉包を $\overline{A}$、内部を $\operatorname{int}A$ と書く。$A$ が**稠密**とは $\overline{A}=X$、すなわち空でない任意の開集合が $A$ と交わること。$N$ が**疎**（nowhere dense）とは $\operatorname{int}\overline{N}=\varnothing$ となること、$M$ が**第一類**（first category, meager）とは可算個の疎集合の和に含まれることをいう（\ref[疎集合と第一類集合]{top:first-category}）。$\overline{N}$ は $N$ が疎なら疎な閉集合なので、$M$ が第一類であることは「可算個の疎な閉集合の和に含まれる」ことと同値である。
+- コンパクト・ハウスドルフ（\ref{top:compact}, \ref{top:hausdorff}）。$X$ がコンパクトであることは、有限交叉性をもつ（有限個の共通部分が常に空でない）閉集合族の共通部分が空でないことと同値である（補集合をとれば開被覆の言い換えになる）。空間 $X$ が**局所コンパクト**であるとは、任意の点 $x$ と $x$ を含む開集合 $W$ に対し、$x\in U$, $\overline{U}\subseteq W$ で $\overline{U}$ がコンパクトとなる開集合 $U$ が存在することとする（ハウスドルフ空間では通常の定義と同値。\ref{top:locally-compact}）。$\R$ は、閉区間がコンパクトである（\ref{top:heine-borel}）ことから局所コンパクトである。
+- 空間 $X$ が **c.c.c.** をもつとは、対ごとに交わらない空でない開集合の族がすべて可算であること（\ref{set:ccc-space}）。$X$ の空でない開集合全体に包含 $\subseteq$ で順序を入れた半順序では「両立 $\iff$ 交わる」であり、この半順序が c.c.c. をもつことと空間 $X$ が c.c.c. をもつことは同値（\ref{set:ccc-poset} の例 3）。可分空間は c.c.c.（\ref{set:separable-ccc}）で、特に $\R$ は c.c.c.。直積空間 $\prod_{i\in I}X_{i}$ は、有限個の添字 $r\subseteq I$ についての部分直積 $\prod_{i\in r}X_{i}$ がすべて c.c.c. ならば c.c.c. である（\ref{set:ccc-product-finite}）。直積位相の開基は、有限個の座標以外は全体であるような開集合の直積（**開箱**）である（\ref{top:product-topology}）。
+- $\mathcal{B}_{\Q}$ は有理数を端点とする空でない開区間 $(a,b)$（$a<b$, $a,b\in\Q$）全体とする。$\mathcal{B}_{\Q}$ は可算無限であり（$(a,b)\mapsto\langle a,b\rangle$ は $\Q\times\Q$ への単射）、$\R$ の開基である：開集合 $W$ と $x\in W$ に対し $(x-\delta,x+\delta)\subseteq W$ となる $\delta>0$ をとり、$x-\delta<a<x<b<x+\delta$ となる有理数 $a,b$ をとれば $x\in(a,b)\subseteq W$。
+- $\omega\times\omega$ から $\omega$ への全単射 $\langle k,m\rangle\mapsto\pi(k,m)$ を 1 つ固定する（\ref{set:kappa-times-kappa}。具体的に書けるので選択公理は要らない）。
+:::
+
+## 実数直線の第一類集合 {#set:sec-ma-baire}
+
+::: lemma 疎な閉集合と稠密開集合 {#set:nowhere-dense-closed-complement keywords="complement of a closed nowhere dense set is dense open" index="疎な閉集合|そなへいしゅうごう, 稠密開集合|ちゅうみつかいしゅうごう"}
+位相空間 $X$ の閉集合 $K$ について、$K$ が疎であることと $X\setminus K$ が稠密であることは同値である。したがって、疎な閉集合の補集合は稠密開集合、稠密開集合の補集合は疎な閉集合である。
+:::
+
+::: proof
+$K$ は閉集合なので $\overline{K}=K$ であり、$K$ が疎 $\iff$ $\operatorname{int}K=\varnothing$ $\iff$ $K$ に含まれる空でない開集合がない。一方、$X\setminus K$ が稠密 $\iff$ 空でない任意の開集合 $W$ が $X\setminus K$ と交わる $\iff$ 空でない開集合 $W$ で $W\subseteq K$ となるものがない。両者は同じ条件である。
+
+::: hypcheck
+- 閉集合・内部・稠密の定義だけを使った。集合論の公理としては分出公理（補集合）のみ。
+:::
+:::
+
+::: theorem MA のもとで第一類集合の $\kappa$ 個の和は第一類 {#set:ma-baire keywords="MA implies the union of kappa meager sets is meager, additivity of the meager ideal" index="第一類集合の和|だいいちるいしゅうごうのわ, 第一類イデアルの加法性|だいいちるいいであるのかほうせい"}
+$\mathrm{MA}(\kappa)$ を仮定する。$\alpha<\kappa$ について $M_{\alpha}\subseteq\R$ が第一類ならば、$\bigcup_{\alpha<\kappa}M_{\alpha}$ も第一類である。
+:::
+
+::: intuition
+$\kappa=\omega$ なら可算個の可算和は可算和なので自明である。問題は非可算個の場合で、$\kappa$ 個の稠密開集合 $U_{\alpha}$ の共通部分の中に、可算個の稠密開集合 $V_{n}$ の共通部分を見つければよい。$V_{n}$ を有理区間の和として作ると決めてしまえば、「どの有理区間を使うか」という $\omega$ の部分集合 $d$ を 1 つ選ぶ問題になる。$d$ は「$U_{\alpha}$ からはみ出す区間」とはほぼ交わらず（$V_{n}\subseteq U_{\alpha}$ のため）、「どの区間 $B_{j}$ の中の区間」とも無限に交わる（$V_{n}$ の稠密性のため）ように選べばよく、これはちょうど \ref{set:ma-ad} の形である。
+:::
+
+::: proof
+**Step 0（$\kappa$ は無限としてよい）.** $\kappa<\omega$ のときは、$\mathrm{MA}(\aleph_{0})$ が ZFC の定理（\ref{set:ma-omega}）なので、$\kappa$ の代わりに $\omega$ をとり、$\alpha\ge\kappa$ に対しては $M_{\alpha}=\varnothing$ とおけばよい。以下 $\kappa\ge\omega$ とする。$\kappa=0$ の場合も和は $\varnothing$ で第一類なので、この扱いに含まれる。
+
+**Step 1（疎な閉集合への帰着）.** 各 $\alpha<\kappa$ について、$M_{\alpha}\subseteq\bigcup_{m<\omega}K_{\alpha,m}$ となる疎な閉集合の列 $\langle K_{\alpha,m}\mid m<\omega\rangle$ を 1 つずつ選ぶ（記法の確認の同値言い換えによる。選択公理）。$\kappa\otimes\omega=\kappa$（\ref{set:cardinal-absorption}）なので全単射 $\kappa\to\kappa\times\omega$ をとって添字を付け替え、疎な閉集合 $K'_{\beta}$（$\beta<\kappa$）で $\bigcup_{\alpha<\kappa}M_{\alpha}\subseteq\bigcup_{\beta<\kappa}K'_{\beta}$ となるものを得る。$U_{\beta}=\R\setminus K'_{\beta}$ とおくと、\ref{set:nowhere-dense-closed-complement} より $U_{\beta}$ は稠密開集合である。
+
+以下、次を示せば十分である：
+$$
+\text{稠密開集合 }V_{n}\ (n<\omega)\text{ で }\bigcap_{n<\omega}V_{n}\subseteq\bigcap_{\beta<\kappa}U_{\beta}\text{ となるものが存在する。}
+\label{set:eq-ma-baire-goal}
+$$
+実際このとき $\bigcup_{\beta}K'_{\beta}=\R\setminus\bigcap_{\beta}U_{\beta}\subseteq\bigcup_{n}(\R\setminus V_{n})$ であり、\ref{set:nowhere-dense-closed-complement} より各 $\R\setminus V_{n}$ は疎な閉集合なので、$\bigcup_{\alpha}M_{\alpha}$ は第一類である。
+
+**Step 2（開基の数え上げ）.** $\mathcal{B}_{\Q}$ を $\langle E_{k}\mid k<\omega\rangle$ と数え上げ、$B_{\pi(k,m)}=E_{k}$ と定める。こうして得た列 $\langle B_{i}\mid i<\omega\rangle$ では、各 $E_{k}$ が無限個の添字 $\pi(k,0),\pi(k,1),\dots$ に現れる。
+
+**Step 3（2 つの集合族）.** $j<\omega$ と $\beta<\kappa$ に対し
+$$
+C_{j}=\{i<\omega\mid B_{i}\subseteq B_{j}\},\qquad a_{\beta}=\{i<\omega\mid B_{i}\not\subseteq U_{\beta}\}
+$$
+とおき、$\mathcal{C}=\{C_{j}\mid j<\omega\}$, $\mathcal{A}=\{a_{\beta}\mid\beta<\kappa\}$ とする。$\lvert\mathcal{C}\rvert\le\omega\le\kappa$、$\lvert\mathcal{A}\rvert\le\kappa$（$\beta\mapsto a_{\beta}$ は $\kappa$ からの全射。\ref{set:surjection-cardinality}）。
+
+**Step 4（\ref{set:ma-ad} の仮定の確認）.** $j<\omega$ と有限な $F\subseteq\mathcal{A}$ をとる。各 $x\in F$ について $x=a_{\beta_{x}}$ となる $\beta_{x}<\kappa$ を 1 つずつ選ぶ（有限個の選択なので選択公理は要らない）。すると
+$$
+C_{j}\setminus{\textstyle\bigcup}F=\Bigl\{i<\omega\Bigm\vert B_{i}\subseteq B_{j}\cap\bigcap_{x\in F}U_{\beta_{x}}\Bigr\}
+$$
+である（$F=\varnothing$ なら右辺の共通部分は $B_{j}$ とする）。$O=B_{j}\cap\bigcap_{x\in F}U_{\beta_{x}}$ は空でない開集合である：$F$ の元の個数についての帰納法で、空でない開集合 $W$ と稠密開集合 $U$ の共通部分 $W\cap U$ は開集合で、$U$ の稠密性より空でない。$O$ は空でない開集合なので、ある $E_{k}\subseteq O$ を含む（$\mathcal{B}_{\Q}$ が開基であることによる）。Step 2 より $i=\pi(k,m)$（$m<\omega$）はすべて $C_{j}\setminus\bigcup F$ に属し、$\pi$ は単射なので、これは無限集合である。
+
+**Step 5（$d$ の取得と $V_{n}$ の定義）.** Step 4 により \ref{set:ma-ad} が適用でき、
+$$
+\forall\beta<\kappa\ (\lvert d\cap a_{\beta}\rvert<\omega),\qquad\forall j<\omega\ (\lvert d\cap C_{j}\rvert=\omega)
+$$
+を満たす $d\subseteq\omega$ が得られる。$n<\omega$ に対し
+$$
+V_{n}=\bigcup\{B_{i}\mid i\in d,\ i\ge n\}
+$$
+とおく。開集合の和なので $V_{n}$ は開集合である。
+
+**Step 6（$V_{n}$ は稠密）.** 空でない開集合 $W$ をとる。$E_{k}\subseteq W$ となる $k$ をとり、$j=\pi(k,0)$ とおくと $B_{j}=E_{k}\subseteq W$。$d\cap C_{j}$ は無限なので $n$ 以上の元 $i$ をもち、$i\in d$ かつ $B_{i}\subseteq B_{j}\subseteq W$。$B_{i}$ は空でなく $B_{i}\subseteq V_{n}$ なので、$W\cap V_{n}\ne\varnothing$。
+
+**Step 7（$V_{n}\subseteq U_{\beta}$ となる $n$ がある）.** $\beta<\kappa$ を固定する。$d\cap a_{\beta}$ は有限なので、そのすべての元より大きい $n<\omega$ がある。$i\in d$, $i\ge n$ ならば $i\notin a_{\beta}$、すなわち $B_{i}\subseteq U_{\beta}$。よって $V_{n}\subseteq U_{\beta}$。
+
+**Step 8（結論）.** Step 7 より、各 $\beta$ について $\bigcap_{n}V_{n}\subseteq V_{n}\subseteq U_{\beta}$ となる $n$ があるので、$\bigcap_{n}V_{n}\subseteq\bigcap_{\beta}U_{\beta}$。Step 5, 6 と合わせて \eqref{set:eq-ma-baire-goal} が示された。
+
+::: hypcheck
+- **$\mathrm{MA}(\kappa)$**：Step 5 で \ref{set:ma-ad} を通じて使った（その証明で c.c.c. 半順序 \ref{set:ad-poset} に $\mathrm{MA}(\kappa)$ を適用している）。Step 0 で $\kappa<\omega$ の場合を ZFC の \ref{set:ma-omega} に帰着した。
+- **選択公理**：Step 1 で $\kappa$ 個の第一類集合それぞれに疎な閉集合の列を選ぶのに使った。吸収則 $\kappa\otimes\omega=\kappa$（\ref{set:cardinal-absorption}）は $\kappa$ が整列された基数なので ZF で成り立ち、選択公理は要らない。
+- **$\R$ が可算開基をもつこと**：Step 2〜7 の全体で使った。$\R$ の順序や距離そのものは使っていない（補足を見よ）。
+- **置換・和集合・分出の公理**：$C_{j}$, $a_{\beta}$, $\mathcal{A}$, $V_{n}$ を集合として作るのに使った。
+:::
+:::
+
+::: supplement
+**一般化.** 証明で使った $\R$ の性質は「可算な開基 $\mathcal{B}$ をもつ」ことだけである（空でない開基元だけを残し、Step 2 のように各元を無限回繰り返して並べればよい。孤立点があっても繰り返しのおかげで Step 4 の無限性が保たれる）。したがって $\mathrm{MA}(\kappa)$ のもとで、可算開基をもつ任意の空間（たとえば可分距離空間）において第一類集合の $\kappa$ 個の和は第一類である。
+
+**前提を変えると.** 可算開基の仮定は外せない。$\omega_{1}$ に離散位相を入れ、直積 $X={}^{\omega}\omega_{1}$ を考える（完備距離空間になる）。$\alpha<\omega_{1}$ について $K_{\alpha}=\{f\in X\mid\forall n\ (f(n)\le\alpha)\}$ とおくと、
+- $K_{\alpha}$ は閉：$f\notin K_{\alpha}$ なら $f(n)>\alpha$ となる $n$ があり、$\{g\mid g(n)=f(n)\}$ は $f$ を含み $K_{\alpha}$ と交わらない開集合である。
+- $K_{\alpha}$ は疎：空でない基本開集合 $[s]=\{g\mid g\restr{\ell}=s\}$（$s\in{}^{\ell}\omega_{1}$）は、$s$ に値 $\alpha+1$ を付け足した $[s^{\frown}\langle\alpha+1\rangle]$ を含み、これは $K_{\alpha}$ と交わらない。
+- $\bigcup_{\alpha<\omega_{1}}K_{\alpha}=X$：$f\in X$ の値域は $\omega_{1}$ の可算部分集合なので有界であり（$\omega_{1}$ の正則性、\ref{set:successor-regular}）、上界 $\alpha$ について $f\in K_{\alpha}$。
+
+したがって $X$ は ZFC で $\aleph_{1}$ 個の疎な閉集合の和であり、しかも $X$ は完備距離空間なのでベールのカテゴリー定理（\ref[ベールのカテゴリー定理]{top:baire-category}）により第一類ではない。
+:::
+
+## 実数直線の測度 0 集合 {#set:sec-ma-measure}
+
+::: fact ルベーグ測度の性質 {#set:lebesgue-facts keywords="basic properties of Lebesgue measure, outer regularity, continuity from below" index="ルベーグ測度の性質|るべーぐそくどのせいしつ"}
+$\R$ 上のルベーグ測度 $\mu$（\ref[ルベーグ測度]{meas:lebesgue-measure}）はすべての開集合（より一般にボレル集合）に $[0,\infty]$ の値を与え、次を満たす。
+1. $\mu((a,b))=b-a$。
+2. 単調性：$A\subseteq B$ ならば $\mu(A)\le\mu(B)$。
+3. 劣加法性：$\mu(A\cup B)\le\mu(A)+\mu(B)$。$A\cap B=\varnothing$ なら等号。
+4. 下からの連続性：$A_{0}\subseteq A_{1}\subseteq\cdots$ ならば $\mu\bigl(\bigcup_{n}A_{n}\bigr)=\sup_{n}\mu(A_{n})$。
+5. 外正則性：$M\subseteq\R$ がルベーグ測度 $0$ であることは、任意の $\varepsilon>0$ に対し $M\subseteq V$, $\mu(V)\le\varepsilon$ となる開集合 $V$ が存在することと同値である。
+
+以下、5 の条件を満たす $M$ を**測度 $0$**（null）という。
+:::
+
+::: theorem MA のもとで測度 0 集合の $\kappa$ 個の和は測度 0 {#set:ma-measure keywords="MA implies the union of kappa null sets is null, additivity of the null ideal, amoeba" index="測度 0 集合の和|そくどぜろしゅうごうのわ, 零集合イデアルの加法性|れいしゅうごういであるのかほうせい"}
+$\mathrm{MA}(\kappa)$ を仮定する。$\alpha<\kappa$ について $M_{\alpha}\subseteq\R$ が測度 $0$ ならば、$\bigcup_{\alpha<\kappa}M_{\alpha}$ も測度 $0$ である。
+:::
+
+::: intuition
+$\varepsilon>0$ を固定し、すべての $M_{\alpha}$ を覆う測度 $\le\varepsilon$ の開集合 $V$ を作りたい。条件 $p$ を「$V$ の一部として約束した、測度 $\varepsilon$ 未満の開集合」とし、情報を増やすことは開集合を大きくすることとする。2 つの約束が両立するのは、和がまだ測度 $\varepsilon$ 未満のときである。$M_{\alpha}$ を覆うという要請は稠密であり（測度 $0$ の集合は、残りの予算がいくら小さくても覆える）、フィルター $G$ の和 $\bigcup G$ が求める $V$ になる。難しいのは c.c.c. で、ここで $\R$ の測度の「可分性」――どの開集合も有理区間の有限和で測度の意味でよく近似できる――を使う。
+:::
+
+::: definition 測度の小さい開集合の半順序 {#set:null-poset keywords="partial order of open sets of small measure, amoeba forcing" index="測度の小さい開集合の半順序|そくどのちいさいかいしゅうごうのはんじゅんじょ"}
+$\varepsilon>0$ に対し
+$$
+\PP_{\varepsilon}=\{p\subseteq\R\mid p\text{ は開集合}\land\mu(p)<\varepsilon\}
+$$
+とおき、$p\le q\iff q\subseteq p$ と順序を入れる。$\PP_{\varepsilon}\subseteq\mathcal{P}(\R)$ なので分出公理により集合であり、$\varnothing\in\PP_{\varepsilon}$ なので空でない。包含の逆なので狭義の意味での半順序である。
+:::
+
+::: lemma $\PP_{\varepsilon}$ の両立性とフィルター {#set:null-poset-basic keywords="compatibility and filters in the null-set partial order"}
+$\varepsilon>0$ とする。
+1. $p,q\in\PP_{\varepsilon}$ が両立する $\iff$ $\mu(p\cup q)<\varepsilon$。このとき $p\cup q$ は共通の拡張である。
+2. $G$ が $\PP_{\varepsilon}$ のフィルターならば、$V_{G}=\bigcup G$ は開集合で $\mu(V_{G})\le\varepsilon$。
+:::
+
+::: proof
+**(1)** ($\Rightarrow$) $r\le p$, $r\le q$ とすると $p\cup q\subseteq r$ で、単調性より $\mu(p\cup q)\le\mu(r)<\varepsilon$。($\Leftarrow$) $p\cup q$ は開集合で $\mu(p\cup q)<\varepsilon$ なので $p\cup q\in\PP_{\varepsilon}$、$p\cup q\le p$, $p\cup q\le q$。
+
+**(2)** *Step 1（有限和は $G$ に属す）.* $p,q\in G$ とすると、共通の拡張 $r\in G$ がある。(1) の議論より $p\cup q\in\PP_{\varepsilon}$ であり、$p\cup q\subseteq r$ すなわち $r\le p\cup q$ なので、フィルターが上に閉じていることから $p\cup q\in G$。個数についての帰納法で、$G$ の空でない有限個の元の和は $G$ に属し、特に測度 $<\varepsilon$ である。
+
+*Step 2（有理区間で書ける）.* $G_{\Q}=G\cap\mathcal{B}_{\Q}$ とおく。$x\in p\in G$ ならば $x\in q\subseteq p$ となる $q\in\mathcal{B}_{\Q}$ があり、$\mu(q)\le\mu(p)<\varepsilon$ より $q\in\PP_{\varepsilon}$、$q\subseteq p$ より $p\le q$ なので $q\in G$。よって $V_{G}=\bigcup G_{\Q}$。
+
+*Step 3（測度の評価）.* $V_{G}$ は開集合の和なので開集合。$G_{\Q}=\varnothing$ なら $V_{G}=\varnothing$ で $\mu(V_{G})=0$。そうでなければ $G_{\Q}$ は可算なので全射 $n\mapsto q_{n}$、$\omega\to G_{\Q}$ がとれる。$W_{n}=q_{0}\cup\dots\cup q_{n}$ とおくと Step 1 より $\mu(W_{n})<\varepsilon$、$W_{0}\subseteq W_{1}\subseteq\cdots$、$\bigcup_{n}W_{n}=V_{G}$。下からの連続性（\ref{set:lebesgue-facts} 4）より $\mu(V_{G})=\sup_{n}\mu(W_{n})\le\varepsilon$。
+
+::: hypcheck
+- **フィルターの 2 条件**：Step 1 で両方使った（共通の拡張の存在と上に閉じていること）。
+- **$\mathcal{B}_{\Q}$ が可算開基であること**：Step 2, 3。非可算な $G$ の和を可算個の和に置き換える要点である。
+- **ルベーグ測度の単調性と下からの連続性**（\ref{set:lebesgue-facts}）。
+- 選択公理は使っていない（$G_{\Q}\subseteq\mathcal{B}_{\Q}$ の数え上げは $\mathcal{B}_{\Q}$ の固定した数え上げから得られる）。
+:::
+:::
+
+::: lemma $\PP_{\varepsilon}$ は c.c.c. {#set:null-poset-ccc keywords="the null-set partial order is ccc"}
+任意の $\varepsilon>0$ について、$\PP_{\varepsilon}$ は c.c.c. をもつ。
+:::
+
+::: proof
+$\mathcal{E}$ を $\mathcal{B}_{\Q}$ の元の有限個の和全体とする。$\mathcal{E}$ は $\mathcal{B}_{\Q}$ の有限部分集合全体の像なので可算である（\ref{set:kappa-finite-sequences}）。
+
+**Step 1（内側からの近似）.** 開集合 $p$ で $\mu(p)<\infty$ なものと $\delta>0$ に対し、$C\subseteq p$, $\mu(p\setminus C)\le\delta$ となる $C\in\mathcal{E}$ が存在する。実際、$\{q\in\mathcal{B}_{\Q}\mid q\subseteq p\}$ は $p$ を覆う（$\mathcal{B}_{\Q}$ が開基）。$p=\varnothing$ なら $C=\varnothing$ でよい。そうでなければこれを $q_{0},q_{1},\dots$ と数え上げ、$C_{n}=q_{0}\cup\dots\cup q_{n}\in\mathcal{E}$ とおくと $C_{n}\subseteq p$ は増大列で和が $p$ なので、下からの連続性より $\sup_{n}\mu(C_{n})=\mu(p)<\infty$。よって $\mu(C_{n})\ge\mu(p)-\delta$ となる $n$ があり、$\mu(p\setminus C_{n})=\mu(p)-\mu(C_{n})\le\delta$（$p$ を交わらない $C_{n}$ と $p\setminus C_{n}$ に分けて加法性を使う）。
+
+**Step 2（非可算反鎖の仮定）.** $\PP_{\varepsilon}$ に非可算な反鎖があると仮定し、単射 $\alpha\mapsto p_{\alpha}$（$\alpha<\omega_{1}$）で相異なる $\alpha,\beta$ について $p_{\alpha}\perp p_{\beta}$ となるものをとる。\ref{set:null-poset-basic} (1) より $\mu(p_{\alpha}\cup p_{\beta})\ge\varepsilon$ である。
+
+**Step 3（一様な余裕 $\delta$）.** $n\ge1$ について $X_{n}=\{\alpha<\omega_{1}\mid\mu(p_{\alpha})\le\varepsilon-2/n\}$ とおく。$\mu(p_{\alpha})<\varepsilon$ なので $\omega_{1}=\bigcup_{n\ge1}X_{n}$。$\omega_{1}$ は可算個の可算集合の和ではない（\ref{set:union-bound}）ので、ある $n$ について $X=X_{n}$ は非可算である。$\delta=1/n$ とおく。
+
+**Step 4（近似の単射性）.** 各 $\alpha\in X$ について、Step 1 の $C$ のうち $\mathcal{E}$ の固定した数え上げで最初のものを $C_{\alpha}$ とする：$C_{\alpha}\subseteq p_{\alpha}$, $\mu(p_{\alpha}\setminus C_{\alpha})\le\delta$。相異なる $\alpha,\beta\in X$ で $C_{\alpha}=C_{\beta}$ と仮定すると、
+- Step 2, 3 と加法性より $\varepsilon\le\mu(p_{\alpha}\cup p_{\beta})=\mu(p_{\alpha})+\mu(p_{\beta}\setminus p_{\alpha})\le\varepsilon-2\delta+\mu(p_{\beta}\setminus p_{\alpha})$、したがって $\mu(p_{\beta}\setminus p_{\alpha})\ge2\delta$。
+- 一方 $C_{\beta}=C_{\alpha}\subseteq p_{\alpha}$ より $p_{\beta}\setminus p_{\alpha}\subseteq p_{\beta}\setminus C_{\beta}$ なので $\mu(p_{\beta}\setminus p_{\alpha})\le\delta$。
+
+$\delta>0$ なので $2\delta\le\delta$ は矛盾。よって $\alpha\mapsto C_{\alpha}$ は非可算集合 $X$ から可算集合 $\mathcal{E}$ への単射となり、矛盾する。
+
+::: hypcheck
+- **ルベーグ測度の加法性・単調性・下からの連続性**（\ref{set:lebesgue-facts}）：Step 1, 4。
+- **$\mathcal{B}_{\Q}$ が可算開基であること**：$\mathcal{E}$ が可算で近似に使えること（測度空間としての $\R$ の可分性）。これが c.c.c. の核心である。
+- **選択公理**：Step 2 で非可算反鎖から $\omega_{1}$ で添字付けされた部分族をとる（非可算集合の濃度の比較）のと、Step 3 の \ref{set:union-bound}（可算個の可算集合の和は可算）に使った。Step 4 の $C_{\alpha}$ の選択は数え上げの最小元なので選択公理は要らない。
+:::
+:::
+
+::: restate {ref="set:ma-measure"}
+:::
+
+::: proof
+$\varepsilon>0$ を固定し、$\bigcup_{\alpha<\kappa}M_{\alpha}\subseteq V$, $\mu(V)\le\varepsilon$ となる開集合 $V$ を見つければよい（\ref{set:lebesgue-facts} 5）。
+
+**Step 1（稠密集合）.** $\alpha<\kappa$ について $D_{\alpha}=\{p\in\PP_{\varepsilon}\mid M_{\alpha}\subseteq p\}$ とおく。$D_{\alpha}$ は稠密である：$q\in\PP_{\varepsilon}$ をとると $\eta=\varepsilon-\mu(q)>0$ で、$M_{\alpha}$ は測度 $0$ なので $M_{\alpha}\subseteq V'$, $\mu(V')\le\eta/2$ となる開集合 $V'$ がある。$p=q\cup V'$ は開集合で $\mu(p)\le\mu(q)+\eta/2<\varepsilon$ なので $p\in\PP_{\varepsilon}$、$q\subseteq p$ より $p\le q$、$M_{\alpha}\subseteq p$ より $p\in D_{\alpha}$。
+
+**Step 2（MA の適用）.** $\PP_{\varepsilon}$ は c.c.c.（\ref{set:null-poset-ccc}）で、$\mathcal{D}=\{D_{\alpha}\mid\alpha<\kappa\}$ は $\lvert\mathcal{D}\rvert\le\kappa$ なので、$\mathrm{MA}(\kappa)$ よりすべての $D_{\alpha}$ と交わるフィルター $G$ がある。
+
+**Step 3（結論）.** $V=V_{G}=\bigcup G$ とおくと、\ref{set:null-poset-basic} (2) より開集合で $\mu(V)\le\varepsilon$。各 $\alpha$ について $p\in G\cap D_{\alpha}$ をとれば $M_{\alpha}\subseteq p\subseteq V$。よって $\bigcup_{\alpha}M_{\alpha}\subseteq V$。
+
+::: hypcheck
+- **$\mathrm{MA}(\kappa)$**：Step 2。$\varepsilon$ ごとに別の半順序 $\PP_{\varepsilon}$ に適用するが、各 $\varepsilon$ について $V$ の存在を言えば足りるので、$\varepsilon$ をまたぐ選択は要らない。
+- **各 $M_{\alpha}$ が測度 $0$ であること**：Step 1 の稠密性。
+- **c.c.c.**：\ref{set:null-poset-ccc}（選択公理を使う）。
+:::
+:::
+
+::: supplement
+**一般化.** 同じ半順序を使うと、$\mathrm{MA}(\kappa)$ のもとで $\kappa$ 個のルベーグ可測集合の和は可測であり、その測度は可算個の部分和の測度に等しいことも示せる（Kunen 第 II 章 演習 25）。\ref{set:ma-baire} と本定理は、第一類集合のイデアルと測度 $0$ 集合のイデアルの**加法性**（それに属さない和を作るのに必要な最小の個数）がともに $2^{\aleph_{0}}$ であることを、MA のもとで主張している。
+:::
+
+## コンパクト c.c.c. 空間とベールのカテゴリー定理 {#set:sec-ma-compact}
+
+::: lemma コンパクト・ハウスドルフ空間の正則性 {#set:compact-hausdorff-regular keywords="compact Hausdorff spaces are regular" index="コンパクト・ハウスドルフ空間の正則性|こんぱくとはうすどるふくうかんのせいそくせい"}
+$X$ をコンパクト・ハウスドルフ空間、$O\subseteq X$ を開集合、$y\in O$ とすると、$y\in p$, $\overline{p}\subseteq O$ となる開集合 $p$ が存在する。
+:::
+
+::: proof
+$F=X\setminus O$ は閉集合で $y\notin F$。$F=\varnothing$ なら $p=X$ とすればよい。
+
+**Step 1.** 各 $z\in F$ について $y\ne z$ なので、ハウスドルフ性により $y\in P_{z}$, $z\in Q_{z}$, $P_{z}\cap Q_{z}=\varnothing$ となる開集合の対を 1 つずつ選ぶ（選択公理）。
+
+**Step 2.** $F$ はコンパクト空間の閉集合なのでコンパクトであり（$F$ の開被覆に $X\setminus F$ を加えると $X$ の開被覆になる）、$F\subseteq Q_{z_{1}}\cup\dots\cup Q_{z_{n}}$ となる有限個の $z_{1},\dots,z_{n}\in F$ がある。
+
+**Step 3.** $p=P_{z_{1}}\cap\dots\cap P_{z_{n}}$, $Q=Q_{z_{1}}\cup\dots\cup Q_{z_{n}}$ とおくと、$p$ は $y$ を含む開集合、$Q\supseteq F$ は開集合で $p\cap Q=\varnothing$。よって $p\subseteq X\setminus Q$ で、$X\setminus Q$ は閉集合なので $\overline{p}\subseteq X\setminus Q\subseteq X\setminus F=O$。
+
+::: hypcheck
+- **ハウスドルフ性**：Step 1。**コンパクト性**：Step 2。
+- **選択公理**：Step 1 で $F$ の各点に開集合の対を選ぶのに使った。
+:::
+:::
+
+::: theorem MA とコンパクト c.c.c. 空間 {#set:ma-compact-ccc keywords="MA implies Baire category theorem for kappa dense open sets in compact ccc spaces" index="コンパクト c.c.c. 空間|こんぱくとしーしーしーくうかん, κ 個版のベールのカテゴリー定理|かっぱこばんのべーるのかてごりーていり"}
+$\mathrm{MA}(\kappa)$ を仮定する。$X$ を空でないコンパクト c.c.c. ハウスドルフ空間とし、$\alpha<\kappa$ について $V_{\alpha}\subseteq X$ を稠密開集合とすると、$\bigcap_{\alpha<\kappa}V_{\alpha}\ne\varnothing$。
+:::
+
+::: intuition
+$X$ の空でない開集合を条件とし、小さい開集合ほど強い条件とする。フィルター $G$ は「どんどん小さくなる開集合の整合的な集まり」であり、コンパクト性によってそれらの閉包の共通部分に点が 1 つは残る。その点が $V_{\alpha}$ に入るという要請は、「閉包が $V_{\alpha}$ に含まれる開集合を $G$ がもつ」という稠密な要請で表せる。空間の c.c.c. は半順序の c.c.c. そのものである。
+:::
+
+::: proof
+**Step 1（半順序）.** $\PP$ を $X$ の空でない開集合全体とし、$p\le q\iff p\subseteq q$ と順序を入れる。$X\ne\varnothing$ なので $X\in\PP$。$p,q$ が両立する $\iff$ $p\cap q\ne\varnothing$ であり（$p\cap q$ が空でなければそれ自身が共通の拡張、共通の拡張 $r\ne\varnothing$ があれば $r\subseteq p\cap q$）、したがって $\PP$ の反鎖は対ごとに交わらない空でない開集合の族である。$X$ は c.c.c. なので $\PP$ は c.c.c. をもつ。
+
+**Step 2（稠密集合）.** $\alpha<\kappa$ について $D_{\alpha}=\{p\in\PP\mid\overline{p}\subseteq V_{\alpha}\}$ とおく。$q\in\PP$ をとると、$V_{\alpha}$ の稠密性より $q\cap V_{\alpha}$ は空でない開集合なので、その点 $y$ をとり、\ref{set:compact-hausdorff-regular} により $y\in p$, $\overline{p}\subseteq q\cap V_{\alpha}$ となる開集合 $p$ をとる。$p\ne\varnothing$ で $p\subseteq q$ なので $p\in D_{\alpha}$, $p\le q$。よって $D_{\alpha}$ は稠密。
+
+**Step 3（MA の適用）.** $\mathrm{MA}(\kappa)$ より、すべての $D_{\alpha}$ と交わるフィルター $G$ がある。
+
+**Step 4（閉包の共通部分）.** 閉集合族 $\{\overline{p}\mid p\in G\}$ は有限交叉性をもつ：$p_{1},\dots,p_{n}\in G$（$n\ge1$）に対し、$G$ の中の共通の拡張 $r$ があり（\ref{set:poset-filter-basic} (2)）、$\varnothing\ne r\subseteq p_{1}\cap\dots\cap p_{n}\subseteq\overline{p_{1}}\cap\dots\cap\overline{p_{n}}$。$X$ はコンパクトなので $x\in\bigcap_{p\in G}\overline{p}$ がとれる（$G=\varnothing$ なら共通部分は $X$ と解釈し、$X\ne\varnothing$ から点がとれる。これは $\kappa=0$ のときにしか起こらない）。
+
+**Step 5（結論）.** 各 $\alpha<\kappa$ について $p\in G\cap D_{\alpha}$ をとると $x\in\overline{p}\subseteq V_{\alpha}$。よって $x\in\bigcap_{\alpha<\kappa}V_{\alpha}$。
+
+::: hypcheck
+- **$X\ne\varnothing$**：Step 1 で $\PP\ne\varnothing$、Step 4 で $G=\varnothing$ の場合に使った。$X=\varnothing$ なら $V_{\alpha}=\varnothing$ で結論は偽。
+- **c.c.c.**：Step 1 で $\PP$ の c.c.c. を得て、Step 3 で $\mathrm{MA}(\kappa)$ を適用するためだけに使った。
+- **ハウスドルフ性**：Step 2 で \ref{set:compact-hausdorff-regular} を通じて使った。**コンパクト性**：Step 2（同じ補題）と Step 4。
+- **選択公理**：\ref{set:compact-hausdorff-regular} の中で使った。
+:::
+:::
+
+::: supplement
+**$\kappa=\omega$ の場合.** c.c.c. は MA を適用するためにだけ使ったので、$\kappa=\omega$ なら \ref{set:ma-omega}（c.c.c. を仮定しない）を使って c.c.c. なしに同じ証明が通る。これはコンパクト・ハウスドルフ空間についてのベールのカテゴリー定理である（\ref{set:baire-compact}）。
+
+**前提を変えると.** $\kappa=\aleph_{1}$ では c.c.c. を外せない。$\omega_{1}+1$ に順序位相（\ref{top:order-topology}）を入れるとコンパクト・ハウスドルフであり、チコノフの定理（\ref{top:tychonoff}）により $X={}^{\omega}(\omega_{1}+1)$ もコンパクト・ハウスドルフである。$\alpha<\omega_{1}$ について
+$$
+K_{\alpha}=\{f\in X\mid\forall n<\omega\ (f(n)\ne\omega_{1}\to f(n)\le\alpha)\}
+$$
+とおく。
+- $K_{\alpha}$ は閉：$f\notin K_{\alpha}$ なら $\alpha<f(n)<\omega_{1}$ となる $n$ があり、開区間 $(\alpha,\omega_{1})$ は $\omega_{1}+1$ の開集合なので、$\{g\mid\alpha<g(n)<\omega_{1}\}$ は $f$ を含み $K_{\alpha}$ と交わらない開集合である。
+- $K_{\alpha}$ は疎：空でない開箱 $W$ は有限個の座標しか制限しないので、制限されない座標 $m$ があり、$W\cap\{g\mid g(m)=\alpha+1\}$ は空でない開集合（$\{\alpha+1\}=(\alpha,\alpha+2)$ は開）で $K_{\alpha}$ と交わらない。
+- $\bigcup_{\alpha<\omega_{1}}K_{\alpha}=X$：$f\in X$ について $\{f(n)\mid f(n)\ne\omega_{1}\}$ は $\omega_{1}$ の可算部分集合で、$\omega_{1}$ の正則性（\ref{set:successor-regular}）により上界 $\alpha<\omega_{1}$ をもち、$f\in K_{\alpha}$。
+
+よって $V_{\alpha}=X\setminus K_{\alpha}$ は $\aleph_{1}$ 個の稠密開集合（\ref{set:nowhere-dense-closed-complement}）で共通部分が空である。$\mathrm{MA}(\aleph_{1})$ が成り立つとしても定理と矛盾しないのは、$X$ が c.c.c. でないからである（実際 $\{g\mid g(0)=\alpha+1\}$（$\alpha<\omega_{1}$）は対ごとに交わらない空でない開集合の非可算族）。
+
+**\ref{set:ma-baire} との違い.** 補集合をとると、定理は「$X$ は $\kappa$ 個の疎な閉集合の和ではない」と言い換えられる。しかし $\R$ のときのように「$\kappa$ 個の第一類集合の和は第一類」とまでは言えない。たとえば $X={}^{\omega_{1}}[0,1]$ はコンパクト c.c.c. ハウスドルフ空間であるが（有限部分直積が可分なので \ref{set:separable-ccc} と \ref{set:ccc-product-finite} による）、ZFC で $\aleph_{1}$ 個の疎な閉集合 $K_{\alpha}=\{f\mid f(\alpha)=0\}$ の和で第一類でないものがある（Kunen 第 II 章 演習 12）。要点は、c.c.c. により任意の稠密開集合が可算個の開箱の和である稠密開集合を含み、したがって可算個の稠密開集合はまとめて可算個の座標 $S\subseteq\omega_{1}$ にしか依存しない稠密開集合にまで縮められる、ということである。$\alpha\notin S$ をとり、${}^{S}[0,1]$ でのベールのカテゴリー定理で得た点を $f(\alpha)=0$ と延長すれば、$\bigcup_{\alpha}K_{\alpha}$ の点で可算個の稠密開集合すべてに属するものが得られる。
+:::
+
+::: corollary MA と局所コンパクト c.c.c. 空間 {#set:ma-locally-compact-ccc keywords="MA for locally compact ccc Hausdorff spaces" index="局所コンパクト c.c.c. 空間|きょくしょこんぱくとしーしーしーくうかん"}
+$\mathrm{MA}(\kappa)$ を仮定する。$X$ を局所コンパクト c.c.c. ハウスドルフ空間とし、$\alpha<\kappa$ について $V_{\alpha}\subseteq X$ を稠密開集合とすると、$\bigcap_{\alpha<\kappa}V_{\alpha}$ は $X$ で稠密である。
+:::
+
+::: proof
+空でない開集合 $W$ をとり、$W\cap\bigcap_{\alpha}V_{\alpha}\ne\varnothing$ を示す。
+
+**Step 1.** $x\in W$ をとり、局所コンパクト性により $x\in U$, $\overline{U}\subseteq W$, $\overline{U}$ がコンパクトとなる開集合 $U$ をとる。$K=\overline{U}$ に部分空間位相を入れると、空でないコンパクト・ハウスドルフ空間である。
+
+**Step 2（$U$ は $K$ で稠密）.** $K$ の空でない開集合 $O$ は $O=O'\cap K$（$O'$ は $X$ の開集合）と書け、$z\in O$ をとると $z\in\overline{U}$ なので $O'\cap U\ne\varnothing$。$O'\cap U\subseteq O$ なので $O\cap U\ne\varnothing$ であり、$O\cap U=O'\cap U$ は $X$ の開集合である。
+
+**Step 3（$K$ は c.c.c.）.** $K$ の対ごとに交わらない空でない開集合の族 $\{O_{i}\}$ があれば、Step 2 より $\{O_{i}\cap U\}$ は $X$ の対ごとに交わらない空でない開集合の族で、$O_{i}\mapsto O_{i}\cap U$ は単射（像が交わらず空でない）である。$X$ は c.c.c. なので族は可算。
+
+**Step 4（$V_{\alpha}\cap K$ は $K$ で稠密開）.** 開であることは部分空間位相の定義から。$K$ の空でない開集合 $O$ について、Step 2 より $O\cap U$ は $X$ の空でない開集合なので $V_{\alpha}$ と交わり、$O\cap(V_{\alpha}\cap K)\ne\varnothing$。
+
+**Step 5.** \ref{set:ma-compact-ccc} を $K$ と $V_{\alpha}\cap K$ に適用して $\bigcap_{\alpha}(V_{\alpha}\cap K)\ne\varnothing$。$K\subseteq W$ なので $W\cap\bigcap_{\alpha}V_{\alpha}\ne\varnothing$。
+
+::: hypcheck
+- **局所コンパクト性**：Step 1。**ハウスドルフ性**：$K$ に遺伝し、\ref{set:ma-compact-ccc} を適用するのに使った。
+- **c.c.c.**：Step 3 で $K$ に遺伝させた。$\mathrm{MA}(\kappa)$ は Step 5 で \ref{set:ma-compact-ccc} を通じて使った。
+- 選択公理は \ref{set:ma-compact-ccc} の中で使われる。
+:::
+:::
+
+::: corollary ベールのカテゴリー定理 {#set:baire-compact keywords="Baire category theorem for compact and locally compact Hausdorff spaces" index="ベールのカテゴリー定理|べーるのかてごりーていり"}
+（ZFC）$X$ を局所コンパクト・ハウスドルフ空間（たとえば空でないコンパクト・ハウスドルフ空間、あるいは $\R$）とすると、可算個の稠密開集合の共通部分は稠密である。特に $X\ne\varnothing$ ならば $X$ は第一類ではない。
+:::
+
+::: proof
+**Step 1.** コンパクト・ハウスドルフ空間 $X$ は局所コンパクトである：$x\in W$（$W$ は開集合）に対し、\ref{set:compact-hausdorff-regular} により $x\in U$, $\overline{U}\subseteq W$ となる開集合 $U$ がとれ、$\overline{U}$ はコンパクト空間の閉集合なのでコンパクトである。
+
+**Step 2.** \ref{set:ma-compact-ccc} と \ref{set:ma-locally-compact-ccc} の証明で c.c.c. を使ったのは、\ref{set:ma-compact-ccc} の Step 3 で $\mathrm{MA}(\kappa)$ を適用する箇所だけである。$\kappa=\omega$ ならそこで \ref{set:ma-omega} を使えば c.c.c. は要らず、MA も仮定しなくてよい。よって可算個の稠密開集合 $V_{n}$ の共通部分は稠密である。
+
+**Step 3.** $X\ne\varnothing$ が可算個の疎集合 $N_{n}$ の和なら、$V_{n}=X\setminus\overline{N_{n}}$ は稠密開集合（\ref{set:nowhere-dense-closed-complement}）で $\bigcap_{n}V_{n}=\varnothing$ となり、Step 2 に反する。
+
+::: hypcheck
+- \ref{set:ma-omega} を使うので選択公理（実際には従属選択公理）を使う。c.c.c. と MA は使っていない。
+:::
+:::
+
+::: supplement
+\ref{set:baire-compact} は一般位相でのベールのカテゴリー定理（\ref[ベールのカテゴリー定理]{top:baire-category}）のうち局所コンパクト空間の場合である。完備距離空間の場合も、条件を「半径 $1/n$ 以下の開球」などに制限すれば同じ半順序の議論で示せる。
+:::
+
+::: corollary MA のもとでの小さい実数の集合 {#set:ma-small-sets-null-meager keywords="MA implies sets of reals of size less than continuum are null and meager, covering numbers" index="連続体より小さい実数の集合|れんぞくたいよりちいさいじっすうのしゅうごう"}
+$\mathrm{MA}(\kappa)$ を仮定する。
+1. $\lvert Y\rvert\le\kappa$ の $Y\subseteq\R$ は測度 $0$ かつ第一類である。
+2. $\R$ は $\kappa$ 個の測度 $0$ 集合の和ではなく、$\kappa$ 個の第一類集合の和でもない。
+
+特に MA のもとでは、$\lvert Y\rvert<2^{\aleph_{0}}$ の $Y\subseteq\R$ はすべて測度 $0$ かつ第一類であり、$\R$ を測度 $0$ 集合（または第一類集合）で覆うには $2^{\aleph_{0}}$ 個が必要である。
+:::
+
+::: proof
+**(1)** 各 $y\in\R$ について $\{y\}$ は測度 $0$（$\varepsilon>0$ に対し $\mu((y-\varepsilon/2,y+\varepsilon/2))=\varepsilon$）で、疎な閉集合（空でない開区間を含まない）なので第一類である。$Y$ を $\kappa$ 以下の添字で $Y=\{y_{\alpha}\mid\alpha<\lambda\}$（$\lambda=\lvert Y\rvert\le\kappa$）と書き、\ref{set:ma-basic} で $\mathrm{MA}(\lambda)$ を得て \ref{set:ma-measure}, \ref{set:ma-baire} を適用する。
+
+**(2)** $\R$ が $\kappa$ 個の測度 $0$ 集合の和なら \ref{set:ma-measure} により $\R$ は測度 $0$ だが、$\R\subseteq V$ となる開集合は $V=\R$ だけで、$\mu(\R)\ge\mu((0,n))=n$（すべての $n$）なので $\mu(\R)=\infty$。矛盾。$\R$ が $\kappa$ 個の第一類集合の和なら \ref{set:ma-baire} により $\R$ は第一類だが、\ref{set:baire-compact} に反する。
+
+最後の主張は、MA が $\kappa<2^{\aleph_{0}}$ に対する $\mathrm{MA}(\kappa)$ であることと、$\R$ が $2^{\aleph_{0}}$ 個の単集合の和であることから従う。
+
+::: hypcheck
+- **$\mathrm{MA}(\kappa)$**：\ref{set:ma-measure}, \ref{set:ma-baire} を通じて使った。
+- **$\R$ が局所コンパクトであること**：(2) で \ref{set:baire-compact} を使うのに必要。
+- 選択公理：$Y$ の添字付け（濃度の存在）と引用した結果の中で使った。
+:::
+:::
+
+::: supplement
+$\R$ は ZFC で $2^{\aleph_{0}}$ 個の単集合（測度 $0$ かつ第一類）の和なので、(2) の「$\kappa<2^{\aleph_{0}}$」は最良である。また (1) より、MA のもとで「どの疎集合とも可算にしか交わらない非可算集合」（ルジンの集合）があれば、その大きさは $2^{\aleph_{0}}$ でなければならない（大きさ $<2^{\aleph_{0}}$ なら第一類なので、可算個の疎集合との共通部分の和として可算になる）。
+:::
+
+## c.c.c. 空間の直積 {#set:sec-ma-ccc-product}
+
+::: lemma $\mathrm{MA}(\aleph_{1})$ と開集合族の有限交叉性 {#set:ma-ccc-fip keywords="MA(aleph_1) implies uncountable subfamily with finite intersection property, precaliber aleph_1" index="有限交叉性をもつ非可算部分族|ゆうげんこうさせいをもつひかさんぶぶんぞく, 前カリバー|ぜんかりばー"}
+$\mathrm{MA}(\aleph_{1})$ を仮定する。$X$ を c.c.c. 空間、$\{U_{\alpha}\mid\alpha<\omega_{1}\}$ を $X$ の空でない開集合の族とすると、非可算な $A\subseteq\omega_{1}$ で $\{U_{\alpha}\mid\alpha\in A\}$ が有限交叉性をもつ（任意の有限個 $\alpha_{1},\dots,\alpha_{n}\in A$ について $U_{\alpha_{1}}\cap\dots\cap U_{\alpha_{n}}\ne\varnothing$）ものが存在する。
+:::
+
+::: intuition
+有限交叉性をもつ族を、空でない開集合の半順序のフィルターとして作る。$A$ が非可算になるには、「$\rho$ より後ろの添字の $U_{\gamma}$ に含まれる条件」たちが稠密であることが必要で、そのためには、どの条件も「後ろの方の $U_{\gamma}$」と交わらなければならない。$X$ 全体ではそれは成り立たないが、c.c.c. を使うと、後ろの方の和 $\bigcup_{\gamma>\rho}U_{\gamma}$ の閉包が $\rho$ によらなくなる地点 $\alpha$ があり、その地点より内側で考えればうまくいく。
+:::
+
+::: proof
+$\alpha<\omega_{1}$ に対し $W_{\alpha}=\bigcup_{\gamma>\alpha}U_{\gamma}$（$\gamma<\omega_{1}$）とおく。$\alpha<\beta$ ならば $W_{\beta}\subseteq W_{\alpha}$、したがって $\overline{W_{\beta}}\subseteq\overline{W_{\alpha}}$。
+
+**Step 1（閉包の安定化）.** 次を満たす $\alpha<\omega_{1}$ が存在することを示す：
+$$
+\forall\beta\ (\alpha<\beta<\omega_{1}\to\overline{W_{\beta}}=\overline{W_{\alpha}}).
+\label{set:eq-ma-ccc-fip-stable}
+$$
+そのような $\alpha$ がないと仮定する。すると任意の $\alpha$ について $\overline{W_{\beta}}\ne\overline{W_{\alpha}}$ となる $\beta>\alpha$ があるので、その最小のものを $s(\alpha)$ とする。超限再帰（\ref{set:transfinite-recursion}）で $\alpha_{0}=0$、$\alpha_{\xi+1}=s(\alpha_{\xi})$、極限順序数 $\lambda<\omega_{1}$ では $\alpha_{\lambda}=\sup_{\xi<\lambda}\alpha_{\xi}$ と定める。$\omega_{1}$ は正則（\ref{set:successor-regular}）なので可算個の可算順序数の上限は $\omega_{1}$ 未満であり、各 $\alpha_{\xi}<\omega_{1}$。$\xi<\eta$ ならば $\alpha_{\xi+1}\le\alpha_{\eta}$ である（$\eta$ についての帰納法）。
+
+$O_{\xi}=W_{\alpha_{\xi}}\setminus\overline{W_{\alpha_{\xi+1}}}$ とおく。
+- *$O_{\xi}$ は空でない開集合*：開集合から閉集合を引いたので開。もし $W_{\alpha_{\xi}}\subseteq\overline{W_{\alpha_{\xi+1}}}$ なら $\overline{W_{\alpha_{\xi}}}\subseteq\overline{W_{\alpha_{\xi+1}}}\subseteq\overline{W_{\alpha_{\xi}}}$ で両者が等しくなり、$s$ の定義に反する。
+- *対ごとに交わらない*：$\xi<\eta$ とすると $O_{\eta}\subseteq W_{\alpha_{\eta}}\subseteq W_{\alpha_{\xi+1}}$（$\alpha_{\xi+1}\le\alpha_{\eta}$）であり、$O_{\xi}\cap\overline{W_{\alpha_{\xi+1}}}=\varnothing$ なので $O_{\xi}\cap O_{\eta}=\varnothing$。
+
+よって $\{O_{\xi}\mid\xi<\omega_{1}\}$ は対ごとに交わらない空でない開集合の非可算族であり（$\xi\mapsto O_{\xi}$ は単射）、$X$ の c.c.c. に反する。
+
+**Step 2（半順序）.** \eqref{set:eq-ma-ccc-fip-stable} を満たす $\alpha$ を固定し、$\PP=\{p\subseteq W_{\alpha}\mid p\text{ は空でない開集合}\}$ に $p\le q\iff p\subseteq q$ と順序を入れる。$U_{\alpha+1}\in\PP$ なので空でない。\ref{set:ma-compact-ccc} の Step 1 と同様、両立 $\iff$ 交わるので、$X$ の c.c.c. から $\PP$ は c.c.c. をもつ。
+
+**Step 3（稠密集合）.** $\alpha\le\rho<\omega_{1}$ について $D_{\rho}=\{p\in\PP\mid\exists\gamma>\rho\ (p\subseteq U_{\gamma})\}$ とおく。$p\in\PP$ をとる。$p\subseteq W_{\alpha}\subseteq\overline{W_{\alpha}}=\overline{W_{\rho}}$（\eqref{set:eq-ma-ccc-fip-stable}、$\rho=\alpha$ なら自明）で、$p$ は空でない開集合なので $W_{\rho}$ と交わる（閉包の点の任意の近傍は $W_{\rho}$ と交わる）。したがって $p\cap U_{\gamma}\ne\varnothing$ となる $\gamma>\rho$ があり、$q=p\cap U_{\gamma}$ は $W_{\alpha}$ に含まれる空でない開集合なので $q\in\PP$、$q\le p$、$q\in D_{\rho}$。よって $D_{\rho}$ は稠密。
+
+**Step 4（MA の適用）.** $\{D_{\rho}\mid\alpha\le\rho<\omega_{1}\}$ は $\aleph_{1}$ 個以下の稠密集合の族なので、$\mathrm{MA}(\aleph_{1})$ よりこれらすべてと交わるフィルター $G$ がある。
+$$
+A=\{\gamma<\omega_{1}\mid\exists p\in G\ (p\subseteq U_{\gamma})\}
+$$
+とおく。
+
+**Step 5（有限交叉性）.** $\gamma_{1},\dots,\gamma_{n}\in A$（$n\ge1$）について、$p_{i}\in G$, $p_{i}\subseteq U_{\gamma_{i}}$ をとる。\ref{set:poset-filter-basic} (2) より共通の拡張 $r\in G$ があり、$\varnothing\ne r\subseteq p_{1}\cap\dots\cap p_{n}\subseteq U_{\gamma_{1}}\cap\dots\cap U_{\gamma_{n}}$。
+
+**Step 6（$A$ は非可算）.** 各 $\rho\ge\alpha$ について $G\cap D_{\rho}$ の元 $p$ があり、$p\subseteq U_{\gamma}$, $\gamma>\rho$ となる $\gamma\in A$ がある。よって $A$ は $\omega_{1}$ で非有界である。$A$ が可算なら $\omega_{1}$ の正則性により有界となるので、$A$ は非可算。
+
+::: hypcheck
+- **$X$ の c.c.c.**：Step 1（閉包の安定化）と Step 2（$\PP$ の c.c.c.）の 2 か所で使った。
+- **$\mathrm{MA}(\aleph_{1})$**：Step 4。
+- **$\omega_{1}$ の正則性**（\ref{set:successor-regular}、選択公理を使う）：Step 1 の再帰が $\omega_{1}$ の中に留まること、Step 6。
+- **超限再帰**：Step 1。各段階は「最小の $\beta$」「上限」で決まるので、再帰自体には選択を使っていない。
+:::
+:::
+
+::: supplement
+同じ議論を半順序に対して行うと、$\mathrm{MA}(\aleph_{1})$ のもとで、任意の c.c.c. 半順序の $\aleph_{1}$ 個の元から、有限個が常に共通の拡張をもつ非可算部分族が選べる（「$\aleph_{1}$ を前カリバーにもつ」。下の問題を見よ）。
+:::
+
+::: theorem MA のもとで c.c.c. は直積で保たれる {#set:ma-ccc-product keywords="MA(aleph_1) implies products of ccc spaces are ccc, productivity of the countable chain condition" index="c.c.c. の直積|しーしーしーのちょくせき"}
+$\mathrm{MA}(\aleph_{1})$ を仮定すると、c.c.c. 空間の任意個の直積は c.c.c. である。
+:::
+
+::: intuition
+2 つの空間 $X,Y$ の直積で、対ごとに交わらない開箱 $U_{\alpha}\times V_{\alpha}$ が非可算個あったとする。前の補題で $U_{\alpha}$ たちの非可算部分族を「互いに交わる」ようにとれば、箱が交わらない理由は $Y$ 側にしかなくなり、$V_{\alpha}$ たちが $Y$ の中で対ごとに交わらない非可算族になってしまう。2 つの場合から任意個の場合へは、c.c.c. の直積が「有限部分直積」だけで決まること（\ref{set:ccc-product-finite}）で移る。
+:::
+
+::: proof
+**Step 1（2 個の直積）.** $X,Y$ を c.c.c. 空間とし、$X\times Y$ が c.c.c. でないと仮定する。対ごとに交わらない空でない開集合 $O_{\alpha}\subseteq X\times Y$（$\alpha<\omega_{1}$）をとり、各 $\alpha$ について空でない開集合 $U_{\alpha}\subseteq X$, $V_{\alpha}\subseteq Y$ で $U_{\alpha}\times V_{\alpha}\subseteq O_{\alpha}$ となるものを選ぶ（開箱が開基をなすことと選択公理）。\ref{set:ma-ccc-fip} により非可算な $A\subseteq\omega_{1}$ で $\{U_{\alpha}\mid\alpha\in A\}$ が有限交叉性をもつものがある。相異なる $\alpha,\beta\in A$ について、$U_{\alpha}\cap U_{\beta}\ne\varnothing$ かつ
+$$
+(U_{\alpha}\cap U_{\beta})\times(V_{\alpha}\cap V_{\beta})=(U_{\alpha}\times V_{\alpha})\cap(U_{\beta}\times V_{\beta})\subseteq O_{\alpha}\cap O_{\beta}=\varnothing
+$$
+なので $V_{\alpha}\cap V_{\beta}=\varnothing$。したがって $\{V_{\alpha}\mid\alpha\in A\}$ は $Y$ の対ごとに交わらない空でない開集合の非可算族であり（$\alpha\mapsto V_{\alpha}$ は $A$ 上で単射）、$Y$ の c.c.c. に反する。
+
+**Step 2（有限個の直積）.** 有限集合 $r$ で添字付けられた c.c.c. 空間の直積 $\prod_{i\in r}X_{i}$ が c.c.c. であることを $\lvert r\rvert$ についての帰納法で示す。$r=\varnothing$ なら直積は 1 点空間で c.c.c.。$r\ne\varnothing$ なら $i_{0}\in r$ をとると、$\prod_{i\in r}X_{i}$ は $\bigl(\prod_{i\in r\setminus\{i_{0}\}}X_{i}\bigr)\times X_{i_{0}}$ と同相であり（$f\mapsto\langle f\restr{r\setminus\{i_{0}\}},f(i_{0})\rangle$）、帰納法の仮定と Step 1 より c.c.c. である。c.c.c. は同相で保たれる。
+
+**Step 3（任意個の直積）.** $X_{i}$（$i\in I$）を c.c.c. 空間とすると、Step 2 より任意の有限な $r\subseteq I$ について $\prod_{i\in r}X_{i}$ は c.c.c. なので、\ref{set:ccc-product-finite} により $\prod_{i\in I}X_{i}$ は c.c.c. である。
+
+::: hypcheck
+- **$\mathrm{MA}(\aleph_{1})$**：Step 1 で \ref{set:ma-ccc-fip} を通じて使った。
+- **$X$ の c.c.c.**：\ref{set:ma-ccc-fip} を適用するのに使った。**$Y$ の c.c.c.**：Step 1 の矛盾を導くのに使った。
+- **選択公理**：Step 1 で各 $O_{\alpha}$ の中の開箱を選ぶのに使った。\ref{set:ccc-product-finite}（Δ システム補題を使う）の中でも使われる。
+:::
+:::
+
+::: supplement
+**独立性.** 2 つの c.c.c. 空間の直積が c.c.c. であるかどうかは ZFC から決まらない。本定理により $\mathrm{MA}(\aleph_{1})$（したがって MA＋¬CH、\ref{set:ma-consistency}）のもとでは常に c.c.c. であるが、CH のもとでは直積が c.c.c. でない 2 つの c.c.c. 空間があり（Kunen 第 VIII 章 演習 8）、ススリン線が存在すればその自分自身との直積は c.c.c. でない（\ref{set:suslin-square}）。
+
+**有限の場合から任意の場合へ.** 「2 個の直積で c.c.c. が保たれれば任意個の直積で保たれる」という奇妙な性質は、ZFC の定理 \ref{set:ccc-product-finite} によるもので、MA は 2 個の場合にだけ使われている。
+:::
+
+## 問題 {#set:sec-mar-problems}
+
+::: problem {#set:prob-ma-precaliber}
+$\mathrm{MA}(\aleph_{1})$ を仮定する。$\PP$ を c.c.c. をもつ半順序とし、$p_{\alpha}\in\PP$（$\alpha<\omega_{1}$）とする。非可算な $A\subseteq\omega_{1}$ で、任意の有限な $s\subseteq A$ についてすべての $\alpha\in s$ に対し $q\le p_{\alpha}$ となる $q\in\PP$ が存在するものがあることを示せ。
+:::
+
+::: solution
+$\PP$ に「下に閉じた集合」全体を開集合とする位相を入れる：$O\subseteq\PP$ が開 $\iff$ $\forall p\in O\ \forall q\le p\ (q\in O)$。空集合・全体・任意の和・有限の共通部分が下に閉じていることは直ちに確かめられるので、これは位相である。
+
+**Step 1（この空間は c.c.c.）.** 空でない開集合 $O,O'$ が交わらなければ、$u\in O$, $u'\in O'$ は両立しない：共通の拡張 $r$ があれば $O,O'$ が下に閉じていることから $r\in O\cap O'$ となる。したがって対ごとに交わらない空でない開集合の非可算族 $\{O_{i}\}$ があれば、各 $O_{i}$ から元を 1 つずつ選ぶ（選択公理）と、それらは相異なり（$O_{i}$ は交わらない）$\PP$ の非可算反鎖をなす。これは $\PP$ の c.c.c. に反する。
+
+**Step 2.** $U_{\alpha}=\{q\in\PP\mid q\le p_{\alpha}\}$ は $p_{\alpha}$ を含む開集合である（推移律で下に閉じる）。\ref{set:ma-ccc-fip} により、非可算な $A$ で $\{U_{\alpha}\mid\alpha\in A\}$ が有限交叉性をもつものがある。有限な $s\subseteq A$ が空でなければ $q\in\bigcap_{\alpha\in s}U_{\alpha}$ が求めるものであり、$s=\varnothing$ なら $q=p_{0}$ でよい。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

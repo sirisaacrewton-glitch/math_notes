@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>閉包・内部・境界 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54A-generalities/01-topological-spaces/02-closure-interior.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 閉包・内部・境界 {#top:page-closure-interior keywords="interior, closure, boundary, exterior, adherent point, accumulation point, derived set, dense, separable, Kuratowski closure axioms"}
+
+部分集合 $A$ を内側から最もよく近似する開集合が**内部**、外側から最もよく近似する閉集合が**閉包**である（\ref{top:interior-closure}）。閉包の点は「$A$ にいくらでも近い点」で、近傍がすべて $A$ と交わることで特徴づけられる（\ref{top:closure-neighborhood}）。閉包をとる操作が満たす四つの性質（**クラトフスキーの閉包公理**）だけから、逆に位相が復元できる（\ref{top:kuratowski-closure}）。後半では、境界・集積点・稠密性・可分性を定義する。
+
+> 資料：内田伏一『集合と位相』§15–§16。
+
+## 記法と定義の確認 {#top:sec-ci-notation}
+
+::: notation
+- 位相空間・開集合・閉集合・近傍・距離位相は \ref{top:page-topologies} のとおり（\ref{top:topological-space}, \ref{top:closed-set}, \ref{top:closed-set-axioms}, \ref{top:neighborhood}, \ref{top:metric-topology}）。
+- 位相空間 $X$ を固定し、$A^{c}\defeq X\setminus A$ と書く。
+- 議論は $\ZF$ で行う。
+:::
+
+## 内部と閉包 {#top:sec-ci-definition}
+
+::: definition 内部と閉包 {#top:interior-closure keywords="interior, closure, interior point, adherent point" index="内部|ないぶ, 開核|かいかく, 内点|ないてん, 閉包|へいほう, 触点|しょくてん"}
+位相空間 $X$ の部分集合 $A$ について、$A$ に含まれる開集合すべての和を $A$ の**内部**（**開核**）といい $A^{\circ}$ または $\operatorname{int}A$ と書く。$A$ を含む閉集合すべての共通部分を $A$ の**閉包**といい $\overline{A}$ または $\operatorname{cl}A$ と書く。$A^{\circ}$ の点を $A$ の**内点**、$\overline{A}$ の点を $A$ の**触点**という。
+:::
+
+::: proposition 内部と閉包の基本性質 {#top:interior-closure-basic keywords="interior is the largest open subset; closure is the smallest closed superset; duality" index="内部と閉包の基本性質|ないぶとへいほうのきほんせいしつ"}
+1. $A^{\circ}$ は $A$ に含まれる最大の開集合、$\overline{A}$ は $A$ を含む最小の閉集合である。
+2. $A$ が開集合 $\iff A=A^{\circ}$。$A$ が閉集合 $\iff A=\overline{A}$。
+3. （双対性）$\overline{A}=\bigl((A^{c})^{\circ}\bigr)^{c}$、$A^{\circ}=\bigl(\overline{A^{c}}\bigr)^{c}$。
+4. $A\subseteq B$ なら $A^{\circ}\subseteq B^{\circ}$, $\overline{A}\subseteq\overline{B}$。
+:::
+
+::: proof
+**1.** $A^{\circ}$ は開集合の和なので (O3) から開集合で、$A$ に含まれ、$A$ に含まれる開集合はすべて $A^{\circ}$ に含まれる。閉包も同様（閉集合の任意個の共通部分は閉集合、\ref{top:closed-set-axioms}。$A$ を含む閉集合には少なくとも $X$ がある）。
+
+**2.** 1 から。
+
+**3.** $U\mapsto U^{c}$ は「$A^{c}$ に含まれる開集合」と「$A$ を含む閉集合」の間の全単射で、和と共通部分を入れ替える（ド・モルガン）。よって $\bigl((A^{c})^{\circ}\bigr)^{c}=\bigcap\{F:F\text{ 閉},A\subseteq F\}=\overline{A}$。後半は前半を $A^{c}$ に適用して補集合をとる。
+
+**4.** $A^{\circ}\subseteq A\subseteq B$ で、$A^{\circ}$ は $B$ に含まれる開集合なので 1 から $A^{\circ}\subseteq B^{\circ}$。閉包も同様。
+:::
+
+::: proposition 閉包の近傍による特徴づけ {#top:closure-neighborhood keywords="a point is in the closure iff every neighbourhood meets the set" index="触点の特徴づけ|しょくてんのとくちょうづけ"}
+$x\in\overline{A}$ であることと、$x$ のすべての近傍（開近傍で十分）が $A$ と交わることは同値である。$x\in A^{\circ}$ であることと、$A$ が $x$ の近傍であることは同値である。
+:::
+
+::: proof
+後半：$x\in A^{\circ}$ なら $A^{\circ}$ は $x\in A^{\circ}\subseteq A$ となる開集合。逆に $x\in U\subseteq A$（$U$ 開）なら $U\subseteq A^{\circ}$。
+
+前半：双対性（\ref{top:interior-closure-basic} の 3）から、$x\notin\overline{A}\iff x\in(A^{c})^{\circ}\iff A^{c}$ が $x$ の近傍 $\iff$ $A$ と交わらない $x$ の近傍がある。開近傍で十分なのは、近傍 $N$ が $A$ と交わらなければ、$N$ に含まれる開近傍も交わらないから。
+:::
+
+::: example
+1. $\R$（通常の位相）で、$\overline{(0,1)}=[0,1]$、$[0,1)^{\circ}=(0,1)$、$\overline{\mathbb{Q}}=\R$、$\mathbb{Q}^{\circ}=\varnothing$（どの開区間も有理数と無理数の両方を含む）。
+2. 補有限位相の無限集合 $X$ で、無限部分集合 $A$ の閉包は $X$（$A$ を含む閉集合は $X$ だけ）。
+3. 距離空間では、$x\in\overline{A}\iff$ すべての $\varepsilon>0$ で $B(x,\varepsilon)\cap A\neq\varnothing\iff d(x,A)\defeq\inf_{a\in A}d(x,a)=0$（$A\neq\varnothing$ のとき）。開球は開近傍で、すべての近傍は開球を含むので、\ref{top:closure-neighborhood} から。
+4. 距離空間の閉球 $\{y:d(x,y)\le r\}$ は閉集合だが、開球 $B(x,r)$ の閉包と一致するとは限らない：離散距離では $B(x,1)=\{x\}$ で閉包も $\{x\}$ だが、閉球 $\{y:d(x,y)\le1\}$ は全体。
+:::
+
+## クラトフスキーの閉包公理 {#top:sec-ci-kuratowski}
+
+::: theorem クラトフスキーの閉包公理 {#top:kuratowski-closure keywords="Kuratowski closure axioms; topologies correspond to closure operators" index="クラトフスキーの閉包公理|くらとふすきーのへいほうこうり, 閉包作用素|へいほうさようそ"}
+1. 位相空間の閉包作用素 $A\mapsto\overline{A}$ は次を満たす。
+   - (K1) $\overline{\varnothing}=\varnothing$。
+   - (K2) $A\subseteq\overline{A}$。
+   - (K3) $\overline{A\cup B}=\overline{A}\cup\overline{B}$。
+   - (K4) $\overline{\overline{A}}=\overline{A}$。
+2. 逆に、写像 $c\colon\mathcal{P}(X)\to\mathcal{P}(X)$ が (K1)〜(K4) を満たすとき、$\mathcal{F}\defeq\{A:c(A)=A\}$ は閉集合の公理 (F1)〜(F3) を満たし、それが定める位相の閉包作用素はちょうど $c$ である。
+:::
+
+::: proof
+**1.** (K1)：$\varnothing$ は閉集合。(K2)：定義。(K4)：$\overline{A}$ は閉集合なので \ref{top:interior-closure-basic} の 2。(K3)：$\overline{A}\cup\overline{B}$ は $A\cup B$ を含む閉集合（(F2)）なので $\overline{A\cup B}\subseteq\overline{A}\cup\overline{B}$。逆は単調性（同命題の 4）から $\overline{A},\overline{B}\subseteq\overline{A\cup B}$。
+
+**2, Step 1（単調性）.** $A\subseteq B$ なら $B=A\cup B$ なので (K3) から $c(B)=c(A)\cup c(B)\supseteq c(A)$。
+
+**2, Step 2（(F1)〜(F3)）.** (F1)：(K1) から $\varnothing\in\mathcal{F}$。(K2) から $X\subseteq c(X)\subseteq X$。(F2)：$c(A)=A$, $c(B)=B$ なら (K3) から $c(A\cup B)=A\cup B$。(F3)：$A_{\lambda}\in\mathcal{F}$, $A\defeq\bigcap_{\lambda}A_{\lambda}$ とする。各 $\lambda$ で $A\subseteq A_{\lambda}$ なので単調性から $c(A)\subseteq c(A_{\lambda})=A_{\lambda}$、よって $c(A)\subseteq A$。(K2) と合わせて $c(A)=A$。（空な族なら $A=X$ で (F1)。）
+
+**2, Step 3（閉包の一致）.** この位相の閉包を $\overline{A}$ とする。(K4) から $c(A)\in\mathcal{F}$ で、(K2) から $A\subseteq c(A)$。よって $c(A)$ は $A$ を含む閉集合で、$\overline{A}\subseteq c(A)$。逆に $F\in\mathcal{F}$, $A\subseteq F$ なら、単調性から $c(A)\subseteq c(F)=F$。$A$ を含む閉集合すべての共通部分をとって $c(A)\subseteq\overline{A}$。
+
+::: hypcheck
+- **(K3)**：Step 1 の単調性と (F2) に使った。単調性だけでは (F2) が出ない。
+- **(K4)**：Step 3 で $c(A)$ が閉集合であることに使った。外すと、$c(A)$ は閉包より大きくなりうる：$X=\{0,1,2\}$ で $c(\varnothing)=\varnothing$, $c(\{0\})=\{0,1\}$, $c(\{1\})=\{1,2\}$, その他は $X$ とすると (K1)〜(K3) を満たすが、$c(c(\{0\}))=X\neq c(\{0\})$。
+- **(K1)**：(F1) の $\varnothing\in\mathcal{F}$ に使った。
+:::
+:::
+
+## 境界・集積点・稠密性 {#top:sec-ci-boundary}
+
+::: definition 境界・外部・集積点・導集合 {#top:boundary keywords="boundary, frontier, exterior, accumulation point, limit point, isolated point, derived set" index="境界|きょうかい, 境界点|きょうかいてん, 外部|がいぶ, 集積点|しゅうせきてん, 孤立点|こりつてん, 導集合|どうしゅうごう"}
+部分集合 $A$ について、$\partial A\defeq\overline{A}\setminus A^{\circ}$ を**境界**、$(A^{c})^{\circ}$ を**外部**という。点 $x$ が $A$ の**集積点**であるとは、$x$ のすべての近傍が $A\setminus\{x\}$ と交わることをいう。$A$ の集積点の全体 $A'$ を**導集合**、$A\setminus A'$ の点を $A$ の**孤立点**という。
+:::
+
+::: proposition 境界と導集合の性質 {#top:boundary-basic keywords="X is the disjoint union of interior, boundary, exterior; closure = A union derived set" index="境界の性質|きょうかいのせいしつ"}
+1. $X$ は $A^{\circ}$, $\partial A$, $(A^{c})^{\circ}$ の三つの交わらない集合の和である。$\partial A=\overline{A}\cap\overline{A^{c}}$ は閉集合で、$\partial A=\partial(A^{c})$。
+2. $\overline{A}=A\cup A'$。
+:::
+
+::: proof
+**1.** 双対性から $\overline{A}=((A^{c})^{\circ})^{c}$ なので、$\overline{A}$ と外部 $(A^{c})^{\circ}$ は互いの補集合。$A^{\circ}\subseteq\overline{A}$ なので、$X=\overline{A}\sqcup(A^{c})^{\circ}=A^{\circ}\sqcup(\overline{A}\setminus A^{\circ})\sqcup(A^{c})^{\circ}$。$A^{\circ}=(\overline{A^{c}})^{c}$ から $\partial A=\overline{A}\cap\overline{A^{c}}$ で、二つの閉集合の共通部分なので閉集合。式は $A$ と $A^{c}$ について対称。
+
+**2.** $A'\subseteq\overline{A}$ は \ref{top:closure-neighborhood} から。逆に $x\in\overline{A}\setminus A$ なら、$x$ の近傍は $A$ と交わり、$x\notin A$ なので $A\setminus\{x\}$ と交わる。
+:::
+
+::: definition 稠密・可分 {#top:separable-space keywords="dense subset, separable space, nowhere dense" index="稠密|ちゅうみつ, 密|みつ, 可分|かぶん, 疎集合|そしゅうごう"}
+部分集合 $D$ が**稠密**であるとは、$\overline{D}=X$ であることをいう。可算な稠密部分集合をもつ空間を**可分**という。$\overline{A}^{\circ}=\varnothing$ となる集合 $A$ を**疎**（いたるところ稠密でない）という。
+:::
+
+::: proposition 稠密性の特徴づけ {#top:dense-characterization keywords="dense iff meets every nonempty open set" index="稠密性の特徴づけ|ちゅうみつせいのとくちょうづけ"}
+$D$ が稠密であることと、$D$ が空でないすべての開集合と交わることは同値である。
+:::
+
+::: proof
+\ref{top:closure-neighborhood} から、$\overline{D}=X\iff$ すべての点のすべての開近傍が $D$ と交わる $\iff$ 空でないすべての開集合が $D$ と交わる（空でない開集合はその点の開近傍）。
+:::
+
+::: example
+1. $\mathbb{Q}^{n}$ は $\R^{n}$ で稠密なので、$\R^{n}$ は可分。
+2. 非可算集合上の離散空間は可分でない（稠密集合は全体だけ）。補有限位相の無限集合は、任意の可算無限部分集合が稠密なので可分。
+3. $\R$ の有限集合や整数 $\mathbb{Z}$ は疎。カントール集合も疎である。
+4. 可分性は部分空間に遺伝しない（\ref[ニェミツキ平面]{top:niemytzki-plane} は可分だが、非可算な離散部分空間をもつ）。距離空間では遺伝する（\ref{top:second-countable}）。
+:::
+
+::: supplement
+**前提を変えると.** クラトフスキーの十四集合定理：一つの集合 $A$ から閉包と補集合を繰り返しとって得られる集合は、高々 $14$ 個しかなく、$\R$ の中で $14$ 個に達する $A$ がある（たとえば $(0,1)\cup(1,2)\cup\{3\}\cup(\mathbb{Q}\cap(4,5))$ とされる）。(K3) と (K4) が、この有限性の理由である。
+
+**類似の概念.** 閉包作用素は、論理学の「帰結作用素」（文の集合 $\Gamma$ に、その帰結の全体を対応させる）と形がよく似ている。帰結作用素は (K2)・(K4)・単調性を満たすが、(K3) は一般に満たさない（$\Gamma\cup\Delta$ から初めて導ける文がある）。(K3) を課さない作用素は「閉包系」と呼ばれ、代数的な閉包（部分群の生成など）もこの形である。
+
+**高い視点から：閉包は随伴.** 部分集合の束 $\mathcal{P}(X)$ と閉集合の束 $\mathcal{F}$ の間で、閉包 $\mathcal{P}(X)\to\mathcal{F}$ は包含 $\mathcal{F}\hookrightarrow\mathcal{P}(X)$ の左随伴である：$\overline{A}\subseteq F\iff A\subseteq F$（$F$ 閉）。すなわち閉集合の全体は反射的な部分圏（\ref{cat:reflective-subcategory}）で、閉包は反射子である。双対的に、内部は開集合の包含の右随伴（余反射）である。比喩で言えば、閉包は「$A$ を閉集合の世界で最もよく近似する外側の殻」で、内部は「開集合の世界で最もよく近似する内側の核」である。
+:::
+
+## 問題 {#top:sec-ci-problems}
+
+::: problem {#top:prob-interior-of-union}
+$(A\cup B)^{\circ}\supseteq A^{\circ}\cup B^{\circ}$ は常に成り立つが、等号は一般に成り立たないことを示せ。また $\overline{A\cap B}\subseteq\overline{A}\cap\overline{B}$ の等号が成り立たない例を挙げよ。
+:::
+
+::: solution
+包含は単調性から。$\R$ で $A=\mathbb{Q}$, $B=\R\setminus\mathbb{Q}$ とすると $A^{\circ}=B^{\circ}=\varnothing$ だが $(A\cup B)^{\circ}=\R$。同じ $A,B$ で $\overline{A\cap B}=\varnothing$、$\overline{A}\cap\overline{B}=\R$。
+:::
+
+::: problem {#top:prob-boundary-open}
+開集合 $U$ について $\partial U$ は疎であることを示せ。
+:::
+
+::: solution
+$\partial U=\overline{U}\setminus U$（$U^{\circ}=U$）は閉集合なので $\overline{\partial U}=\partial U$。$V\defeq(\partial U)^{\circ}$ が空でないとすると、$V\subseteq\overline{U}$ なので（\ref{top:closure-neighborhood} から開集合 $V$ の点の近傍として）$V\cap U\neq\varnothing$。しかし $V\subseteq\partial U$ は $U$ と交わらない。矛盾。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

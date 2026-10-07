@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>論理的理論の決定可能性 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/03-advanced-computability/01-logical-theories.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 論理的理論の決定可能性 {#comp:page-logical-theories keywords="decidable theory, Presburger arithmetic, Th(N,+) decidable, automata on binary columns, Th(N,+,×) undecidable, Tarski's undefinability, arithmetization of Turing machines"}
+
+構造 $\mathcal{M}$ の理論 $\mathrm{Th}(\mathcal{M})$（真な文全体）が決定可能であるとは、文が $\mathcal{M}$ で真かどうかをアルゴリズムで判定できることである。本ページでは、自然数の加法だけの理論 $\mathrm{Th}(\N,+)$ が決定可能であること（\ref{comp:presburger}）を、各論理式を二進表記の列を読む有限オートマトンに翻訳して示す。一方、乗法を加えた $\mathrm{Th}(\N,+,\cdot)$ は決定可能でない（\ref{comp:arithmetic-undecidable}）。こちらは、チューリング機械の計算が算術の $\Sigma$ 論理式で表せること（\ref{comp:tm-sigma-definable}）と、不完全性定理の系列のタルスキの定理（\ref{pt:tarski-undefinability}）から従う。
+
+## 記法と定義の確認 {#comp:sec-lt-notation}
+
+::: notation
+- DFA・NFA、部分集合構成、直積構成は \ref{comp:page-finite-automata} のとおり。TM、決定可能・認識可能、符号化は \ref{comp:page-turing-machines} のとおり。
+- 構造・充足・文・論理式は \ref{logic:page-semantics} のとおり。$\mathrm{Th}(\mathcal{M})\defeq\{\sigma:\mathcal{M}\models\sigma\}$。文は有限の記号列なので、固定したアルファベット上の文字列として符号化でき、$\mathrm{Th}(\mathcal{M})$ を言語とみなして決定可能性を問える。
+- 算術の言語、標準モデル $\mathcal{N}$、$\Sigma$ 論理式、有限列のコード、再帰で定義される関数の $\Sigma$ 定義可能性、タルスキの定理は不完全性定理の系列（\ref{pt:page-peano-arithmetic}, \ref{pt:page-sequence-coding}, \ref{pt:sigma-recursion}, \ref{pt:tarski-undefinability}）のとおり。
+:::
+
+## 加法の理論は決定可能 {#comp:sec-presburger}
+
+言語を、3 項関係記号 $P$ だけからなるものとし、構造 $\mathcal{N}_{+}\defeq(\N,P^{\mathcal{N}_{+}})$, $P^{\mathcal{N}_{+}}\defeq\{(a,b,c):a+b=c\}$ を考える（加法を関数記号で書いた理論は、各原子論理式を $P$ と存在量化子で書き直す計算可能な翻訳によりこれに帰着する）。
+
+::: definition 列の二進表記 {#comp:column-strings}
+$i\ge0$ について、アルファベット $\Sigma_{i}\defeq\{0,1\}^{i}$（$i$ 段の列）上の文字列 $w=c_{0}c_{1}\cdots c_{m-1}$ の第 $j$ 段を**下位の桁から**読んだ数を
+$$
+\mathrm{val}_{j}(w)\defeq\sum_{k<m}c_{k}(j)\,2^{k}
+$$
+とし、$\mathrm{val}(w)\defeq(\mathrm{val}_{1}(w),\dots,\mathrm{val}_{i}(w))\in\N^{i}$ と書く。任意の $\vec{a}\in\N^{i}$ と十分大きい $m$ について、$\mathrm{val}(w)=\vec{a}$ となる長さ $m$ の $w$ がちょうど一つある。$i=0$ のとき $\Sigma_{0}$ は一点（空の列）からなる。
+:::
+
+::: lemma 論理式のオートマトン {#comp:formula-automaton}
+変数 $x_{1},\dots,x_{i}$ の論理式 $\varphi$（$\mathrm{FV}(\varphi)\subseteq\{x_{1},\dots,x_{i}\}$）に対し、$\Sigma_{i}$ 上の DFA $A_{\varphi}$ で、すべての $w\in\Sigma_{i}^{\ast}$ について
+$$
+w\in L(A_{\varphi})\iff\mathcal{N}_{+}\models\varphi(\mathrm{val}(w))
+$$
+となるものが、$\varphi$ から機械的に構成できる。
+:::
+
+::: proof
+$\varphi$ の構成に関する帰納法（基本記号は $\bot$, $=$, $P$, $\to$, $\forall$ で、$\forall x\,\alpha$ は $\neg\exists x\,\neg\alpha$ として扱う）。変数の個数 $i$ は、必要なら使わない段を加えて揃える（段を加えても $\mathrm{val}$ の他の成分は変わらない）。
+
+**原子論理式.** $\bot$ は何も受理しない DFA。$x_{j}=x_{k}$ は「すべての列で第 $j$ 段と第 $k$ 段が等しい」を確かめる 2 状態の DFA。$P(x_{j},x_{k},x_{l})$ は、繰り上がり $e\in\{0,1\}$ を状態にもつ DFA で、列 $c$ を読むと $c(j)+c(k)+e$ の下位ビットが $c(l)$ に等しいかを確かめ（等しくなければ拒否状態に移り、そこに留まる）、新しい繰り上がりを $\lfloor(c(j)+c(k)+e)/2\rfloor$ とする。受理状態は「繰り上がり $0$」。読み終えたとき、下位から $m$ 桁の加算が正しく、最後の繰り上がりが $0$ であることと $\mathrm{val}_{j}+\mathrm{val}_{k}=\mathrm{val}_{l}$ は同値である（桁ごとの加算の性質）。
+
+**$\to$.** $\alpha\to\beta$ は $\neg\alpha\vee\beta$ と同値なので、補集合と直積構成（\ref{comp:dfa-boolean}）。
+
+**$\exists x_{i+1}\,\alpha$（$\alpha$ は $x_{1},\dots,x_{i+1}$ の論理式）.** $A_{\alpha}=(Q,\Sigma_{i+1},\delta,q_{0},F)$ から、$\Sigma_{i}$ 上の NFA $N$ を次のように作る：状態・開始状態は同じで、$c\in\Sigma_{i}$ を読むと、$b\in\{0,1\}$ を推測して $\delta(q,(c,b))$ に移る（$(c,b)$ は $c$ の下に $b$ を付けた $i+1$ 段の列）。受理状態は
+$$
+\begin{aligned}
+F'\defeq\{q\in Q:\ &\text{ある }k\ge0\text{ と }b_{1},\dots,b_{k}\in\{0,1\}\text{ で}\\
+&\hat{\delta}(q,(\vec{0},b_{1})\cdots(\vec{0},b_{k}))\in F\}
+\end{aligned}
+$$
+とする（$\vec{0}$ は $i$ 段の $0$ の列。$F'$ は到達可能性として計算できる）。このとき
+$$
+\begin{aligned}
+w\in L(N)\iff\ &\text{ある }u\in\{0,1\}^{\lvert w\rvert},\ k\ge0,\ v\in\{0,1\}^{k}\text{ で}\\
+&(w,u)(\vec{0}^{k},v)\in L(A_{\alpha})
+\end{aligned}
+$$
+（$(w,u)$ は $w$ の各列の下に $u$ の各ビットを付けたもの）。右辺の文字列の $\mathrm{val}$ は $(\mathrm{val}(w),y)$（$y$ は $uv$ を下位から読んだ数）なので、帰納法の仮定より右辺は「ある $y$ で $\mathcal{N}_{+}\models\alpha(\mathrm{val}(w),y)$」と同値である（逆に、任意の $y$ は長さ $\lvert w\rvert+k$ の二進表記をもつ）。部分集合構成（\ref{comp:nfa-dfa-equivalence}）で DFA にする。
+:::
+
+::: theorem 加法の理論の決定可能性 {#comp:presburger keywords="Th(N,+) is decidable, Presburger arithmetic" index="プレスブルガー算術|ぷれすぶるがーさんじゅつ, 加法の理論の決定可能性|かほうのりろんのけっていかのうせい"}
+$\mathrm{Th}(\mathcal{N}_{+})$ は決定可能である。
+:::
+
+::: proof
+文 $\sigma$（$i=0$）に対し、\ref{comp:formula-automaton} の $A_{\sigma}$ を構成し、空文字列（$\Sigma_{0}$ 上の長さ $0$ の文字列。$\mathrm{val}$ は空の組）を受理するかどうかを調べる。$\varepsilon\in L(A_{\sigma})\iff\mathcal{N}_{+}\models\sigma$。構成と判定はどちらも有限の手続きである。
+:::
+
+::: hypcheck
+- **下位の桁から読むこと**：加算の繰り上がりを左から右へ（読む方向へ）伝えられるので、$P$ の DFA が作れた。
+- **$\exists$ の受理状態 $F'$**：証人 $y$ が他の数より多くの桁を必要とする場合に、$0$ の列を補って読み続ける分を扱うために必要だった。
+- **乗法がないこと**：原子論理式が有限オートマトンで扱える（有限の繰り上がりだけを記憶すればよい）のは加法だからである。乗法 $x\cdot y=z$ の二進表記の組は正規言語でない（実際、下の定理により、乗法を加えると理論は決定可能でなくなる）。
+:::
+
+## 乗法を加えた理論は決定不能 {#comp:sec-arith-undecidable}
+
+::: lemma チューリング機械の計算の Σ 定義可能性 {#comp:tm-sigma-definable keywords="Turing-recognizable sets of numbers are Sigma-definable in arithmetic" index="計算の算術化|けいさんのさんじゅつか"}
+自然数の集合 $D\subseteq\N$ を、各 $n$ の二進表記の文字列 $\mathrm{bin}(n)$ の言語 $\{\mathrm{bin}(n):n\in D\}$ と同一視する。$D$ がチューリング認識可能なら、算術の $\Sigma$ 論理式 $\theta(x)$ で、すべての $n$ について $n\in D\iff\mathcal{N}\models\theta(\underline{n})$ となるものがある。
+:::
+
+::: proof
+（要点を示す。各段は定型的な検証である。）$D=L(M)$ とする。$M$ の時点表示 $uqv$ を、状態とテープ記号に番号を付けて、有限列のコード（\ref{pt:finseq}）で自然数として表す。
+1. 入力 $n$ の開始時点表示のコード $\mathrm{init}(n)$ は、$n$ の二進桁の列を $\mathrm{bin}$ の逆順に並べる再帰で定義される関数なので、$\Sigma$ 定義可能である（\ref{pt:sigma-recursion}）。
+2. 一段の動きを与える関数 $\mathrm{next}(c)$（$c$ が時点表示のコードのとき次の時点表示のコード、停止時点表示なら $c$ 自身）は、コードの成分の取り出し・連結（\ref{pt:sequence-operations}）と、$\delta$ の有限の表による場合分けで書けるので、$\Sigma$ 定義可能である。
+3. $\mathrm{conf}(n,0)\defeq\mathrm{init}(n)$, $\mathrm{conf}(n,t+1)\defeq\mathrm{next}(\mathrm{conf}(n,t))$ は再帰で定義されるので $\Sigma$ 定義可能である（\ref{pt:sigma-recursion}）。
+4. 「$c$ の状態が $q_{\mathrm{acc}}$」は $c$ の成分についての $\Delta$ 論理式で書ける。
+
+$\theta(x)\defeq\exists t\,\exists c\,(\mathrm{conf}(x,t)=c\wedge\text{「}c\text{ の状態が }q_{\mathrm{acc}}\text{」})$ とすればよい（$\Sigma$ 論理式は存在量化子と連言で閉じている、\ref{pt:sigma-closure}）。
+:::
+
+::: theorem 算術の理論の決定不能性 {#comp:arithmetic-undecidable keywords="Th(N,+,×) is undecidable, Church's theorem" index="算術の真理の決定不能性|さんじゅつのしんりのけっていふのうせい"}
+$\mathrm{Th}(\N,0,S,+,\cdot)$ は決定可能でない。
+:::
+
+::: proof
+決定可能とする。算術の文のゲーデル数（不完全性定理の系列の算術化 \ref{pt:page-arithmetization} によるもの）から文の文字列への変換と、その逆は計算可能なので、$T\defeq\{\ulcorner\sigma\urcorner:\mathcal{N}\models\sigma\}$（$\N$ の部分集合）は決定可能になる。$T$ と $\N\setminus T$ はともに認識可能なので、\ref{comp:tm-sigma-definable} より $T$ は算術の論理式 $\theta(x)$ で定義される：$\mathcal{N}\models\theta(\underline{n})\iff n\in T$。これはタルスキの定理（\ref{pt:tarski-undefinability}）に反する。
+:::
+
+::: hypcheck
+- **タルスキの定理**：真な文のゲーデル数の集合が算術で定義できないこと。証明は対角化定理によるもので、計算論を使わないので、循環はない。
+- **\ref{comp:tm-sigma-definable}**：決定可能な集合を算術で定義するために使った。決定可能性のうち「認識可能」の側だけで十分である。
+- **符号化の互換性**：ゲーデル数と文字列の符号化の変換が計算可能であることを使った。
+:::
+
+## 問題 {#comp:sec-lt-problems}
+
+::: problem {#comp:prob-presburger-example}
+2 段の列のアルファベット $\Sigma_{2}$ 上で、$\{w:\mathrm{val}_{2}(w)=2\,\mathrm{val}_{1}(w)\}$（論理式 $P(x_{1},x_{1},x_{2})$ に当たる）を認識する DFA を、\ref{comp:formula-automaton} の一般の構成を使わずに直接作れ。
+:::
+
+::: solution
+下位の桁から読むと、$y=2x$ は「$y$ の第 $0$ 桁は $0$、第 $k$ 桁（$k\ge1$）は $x$ の第 $k-1$ 桁」と同値で、さらに $x$ の最上位（読んだ最後の列）の桁は $0$ でなければならない（そうでないと $y$ の桁が足りない）。状態 $s_{0},s_{1}$（直前に読んだ $x$ の桁が $0$, $1$）と拒否状態 $d$ を用意し、開始 $s_{0}$、受理 $\{s_{0}\}$ とする。$s_{b}$ で列 $(c_{1},c_{2})$ を読んだとき、$c_{2}=b$ なら $s_{c_{1}}$ に、そうでなければ $d$ に移る。$d$ からはどこにも行かない（$d$ に留まる）。読み終えて $s_{0}$ にいることは、各桁で $y_{k}=x_{k-1}$（$x_{-1}\defeq0$）が成り立ち、最後の $x$ の桁が $0$ であることと同値である。
+:::
+
+::: problem {#comp:prob-theory-of-n-successor}
+$\mathrm{Th}(\N,<)$ も決定可能であることを、\ref{comp:presburger} から導け。
+:::
+
+::: solution
+$x<y$ は $\exists z\,(P(x,z,y)\wedge\neg P(z,z,z))$ で表せる（$z\neq0$ は $z+z\neq z$ と同値）。この翻訳は計算可能で真偽を保つので、$\mathrm{Th}(\N,<)$ の文を $\mathrm{Th}(\mathcal{N}_{+})$ の文に変換して \ref{comp:presburger} の判定機に渡せばよい。
+:::
+
+::: supplement
+**前提の検討.**
+- \ref{comp:presburger} の判定手順は、量化子の入れ子ごとに部分集合構成で状態数が指数的に増えるので、非常に遅い。実際、$\mathrm{Th}(\N,+)$ の決定には二重指数時間が必要であることが知られている（フィッシャー–ラビン）。
+- \ref{comp:tm-sigma-definable} の証明は要点だけを示した。Σ 定義可能な関数の再帰による構成（\ref{pt:sigma-recursion}）と列の操作の定義可能性を使えば、各段の論理式を書き下すことができる。
+
+**関連する結果.**
+- *プレスブルガー算術.* 加法の理論はプレスブルガーにより量化子消去で決定可能と示された（1929）。量化子消去には「$k$ で割った余りが $r$」という述語を言語に加える必要がある（モデル理論の量化子消去 \ref{model:page-quantifier-elimination} を参照）。
+- *チャーチの定理.* 一階述語論理の妥当な文の全体（関係記号を十分含む言語で）は決定可能でない。これは \ref{comp:arithmetic-undecidable} と同様の考え方と、有限公理化された算術の部分体系を使って示される。
+- *実閉体.* 実数の順序体の理論 $\mathrm{Th}(\R,+,\cdot,<)$ は決定可能である（タルスキ）。自然数では乗法が加わると決定不能になるのに、実数では決定可能であるという対比は、自然数の離散性（整数性）が算術の難しさの源であることを示している。
+
+**高い視点から：自動的な構造.** \ref{comp:formula-automaton} は、$(\N,+)$ の定義可能な関係がすべて「二進表記の正規言語」であることを示している。このように、領域を文字列で表し、基本関係が有限オートマトンで認識される構造を**自動構造**といい、その理論はつねに決定可能になる。量化子 $\exists$ は射影（一段を忘れること）、論理結合子は和・補集合に対応し、正規言語がこれらで閉じていることが決定可能性の源である。乗法はこの枠に収まらず、そこから計算の全体（チューリング機械）が算術の中に入り込む（\ref{comp:tm-sigma-definable}）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

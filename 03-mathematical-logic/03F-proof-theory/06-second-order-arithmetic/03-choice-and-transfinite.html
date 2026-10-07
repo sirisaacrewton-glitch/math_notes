@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>選択公理・従属選択・超限帰納法と β モデル | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/06-second-order-arithmetic/03-choice-and-transfinite.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 選択公理・従属選択・超限帰納法と β モデル {#pt:page-soa-choice keywords="choice schemes in second-order arithmetic, Sigma1k-AC0, Sigma1k-DC0, Pi1k separation, Delta1k comprehension, transfinite induction, beta-models, ATR0, Kondo-Addison uniformization, Simpson's theorem, Howard-Kreisel"}
+
+集合論の選択公理・従属選択公理・分離原理・超限帰納法には、二階算術の中で対応する公理図式がある。本ページでは、論理式のクラス $\mathcal{C}$ に対して公理図式 $\mathcal{C}\text{-}\mathsf{AC}$（可算選択）、$\mathcal{C}\text{-}\mathsf{DC}$（従属選択）、$\mathcal{C}\text{-}\mathsf{SP}$（分離）、$\mathcal{C}\text{-}\mathsf{TI}$（超限帰納法）を定義し、それらの間の基本的な包含関係（\ref{pt:choice-inclusions}, \ref{pt:dc-induction}）を示す。次に、整列順序の判定が正しい ω モデルである **β モデル**を導入し、β モデルでは超限帰納法がすべて成り立ち（\ref{pt:omega-beta-induction}）、$\mathsf{ATR}_{0}$ のモデルになる（\ref{pt:beta-atr0}）ことを示す。これらから、体系の強さの比較（\ref{pt:choice-landscape}）が得られることを、証明の概略とともに述べる。
+
+> 主な資料は田中一之『逆数学と 2 階算術』第 3 章 §3.1（定義 3.1–3.3、補題 3.1–3.3, 3.7, 3.8、定理 3.5, 3.6, 3.11, 3.12）。近藤–アディソンの一様化定理と、可算 β モデルの存在（ガンディの基底定理による）は本サイトでは証明せず、その旨を明記した。
+
+## 記法と定義の確認 {#pt:sec-soa3-notation}
+
+::: notation
+- 二階算術、$\mathsf{RCA}_{0}$, $\mathsf{ACA}_{0}$, $\mathsf{ATR}_{0}$, $\Pi^{1}_{1}\text{-}\mathsf{CA}_{0}$、論理式の階層 $\Sigma^{1}_{k},\Pi^{1}_{k}$、整列順序の述語 $\mathrm{WO}(X)$ と $\mathsf{ATR}$、ω モデルは \ref{pt:page-soa-subsystems} のとおり（\ref{pt:l2-language}, \ref{pt:l2-hierarchy}, \ref{pt:wkl-atr-axioms}, \ref{pt:big-five}）。
+- 対関数 $(m,n)$ は \ref{pt:rca0-basic} の 3。集合 $Z$ の **$x$ 番目の切り口**を $(Z)_{x}\defeq\{z:(z,x)\in Z\}$ とする。$(Z)_{x}$ は $Z$ から有界な論理式で定義され、$Z$ は集合の列 $((Z)_{x})_{x\in\N}$ を表す。
+- 集合 $X$ を対の集合とみなした二項関係を $<_{X}$（$i<_{X}j:\iff(i,j)\in X$）と書く。
+- $\Delta^{1}_{k}\text{-}\mathsf{CA}$ は、$\Sigma^{1}_{k}$ 論理式 $\varphi$ と $\Pi^{1}_{k}$ 論理式 $\psi$ について「$\forall n\,(\varphi(n)\leftrightarrow\psi(n))\to\exists X\,\forall n\,(n\in X\leftrightarrow\varphi(n))$」とする（\ref{pt:l2-axioms} の 5 と同じ形）。
+- 二つの体系 $T_{1},T_{2}$ について、$T_{2}$ の公理がすべて $T_{1}$ で証明できることを $T_{1}\vdash T_{2}$ と書き、$T_{1}\vdash T_{2}$ かつ $T_{2}\vdash T_{1}$ を $T_{1}\equiv T_{2}$ と書く。
+:::
+
+## 選択・従属選択・分離の公理図式 {#pt:sec-soa3-choice}
+
+::: definition AC・DC・SP {#pt:choice-schemes keywords="countable choice scheme C-AC, dependent choice C-DC, separation C-SP in second-order arithmetic" index="可算選択公理（二階算術）|かさんせんたくこうりにかいさんじゅつ, 従属選択公理（二階算術）|じゅうぞくせんたくこうりにかいさんじゅつ, 分離原理（二階算術）|ぶんりげんりにかいさんじゅつ"}
+$\mathcal{C}$ を $\mathcal{L}_{2}$ の論理式のクラスとする。以下の $\varphi,\psi$ は $\mathcal{C}$ の論理式で、$Z,X$ は（それぞれの図式の結論で新たに導入する変数として）自由に現れないものとする。パラメータは自由に含んでよい。
+1. **可算選択** $\mathcal{C}\text{-}\mathsf{AC}$：$\forall x\,\exists Y\,\varphi(x,Y)\to\exists Z\,\forall x\,\varphi(x,(Z)_{x})$。
+2. **従属選択** $\mathcal{C}\text{-}\mathsf{DC}$：$\forall x\,\forall X\,\exists Y\,\varphi(x,X,Y)\to\exists Z\,\forall x\,\varphi(x,(Z)_{x},(Z)_{x+1})$。
+3. **分離** $\mathcal{C}\text{-}\mathsf{SP}$：$\forall x\,(\varphi(x)\to\neg\psi(x))\to\exists X\,\forall x\,\bigl((\varphi(x)\to x\in X)\wedge(x\in X\to\neg\psi(x))\bigr)$。
+
+$\mathsf{RCA}_{0}$ に公理図式 $\mathcal{C}\text{-}\mathsf{AX}$ を加えた体系を $\mathcal{C}\text{-}\mathsf{AX}_{0}$ と書く（例：$\Sigma^{1}_{1}\text{-}\mathsf{AC}_{0}=\mathsf{RCA}_{0}+\Sigma^{1}_{1}\text{-}\mathsf{AC}$）。
+:::
+
+::: remark
+1. $\mathcal{C}\text{-}\mathsf{AC}$ は、「各 $x$ について条件 $\varphi(x,\cdot)$ を満たす集合がある」なら、それらを一斉に選んだ列 $((Z)_{x})_{x}$ があるという主張で、集合論の可算選択公理に当たる。$\mathcal{C}\text{-}\mathsf{DC}$ は、前の選択 $X$ に依存して次の選択 $Y$ をする操作を可算回続けられるという主張である。
+2. $\mathcal{C}\text{-}\mathsf{SP}$ は、\ref{logic:sigma01-separation} の $\Sigma^{0}_{1}$ 分離原理と同じ形で、そこで $\Sigma^{0}_{1}\text{-}\mathsf{SP}$ が $\mathsf{WKL}$ と同値であることを見た（\ref{logic:wkl-separation}）。
+:::
+
+::: lemma Π¹ₖ-AC と Σ¹ₖ₊₁-AC {#pt:pi-sigma-ac keywords="Pi1k-AC0 is equivalent to Sigma1k+1-AC0" index="可算選択の階層|かさんせんたくのかいそう"}
+$k\ge0$ について、$\Pi^{1}_{k}\text{-}\mathsf{AC}_{0}\equiv\Sigma^{1}_{k+1}\text{-}\mathsf{AC}_{0}$、$\Pi^{1}_{k}\text{-}\mathsf{DC}_{0}\equiv\Sigma^{1}_{k+1}\text{-}\mathsf{DC}_{0}$。（$k=0$ では $\Pi^{1}_{0}$ は算術的論理式のクラスを表す。）
+:::
+
+::: proof
+$\Pi^{1}_{k}\subseteq\Sigma^{1}_{k+1}$ なので、$\Sigma^{1}_{k+1}\text{-}\mathsf{AC}_{0}\vdash\Pi^{1}_{k}\text{-}\mathsf{AC}_{0}$ は明らか。逆を $\mathsf{AC}$ について示す（$\mathsf{DC}$ も同様）。
+
+**Step 1（存在量化子を一つにまとめる）.** $\Sigma^{1}_{k+1}$ 論理式は、集合の対の符号化 $W\mapsto((W)_{0},(W)_{1})$ を使って、$\exists W\,\psi(\dots,W)$（$\psi\in\Pi^{1}_{k}$）の形に直せる（$\exists W_{1}\exists W_{2}$ を $\exists W$ でまとめ、$W_{i}$ を $(W)_{i}$ に置き換える。$(W)_{i}$ への置き換えは $\Pi^{1}_{k}$ の形を保つ）。そこで $\varphi(x,Y)\equiv\exists W\,\psi(x,Y,W)$ とし、$\forall x\,\exists Y\,\varphi(x,Y)$ を仮定する。
+
+**Step 2.** $\mathsf{RCA}_{0}$ で、$\exists Y\,\exists W\,\psi(x,Y,W)\leftrightarrow\exists V\,\psi(x,(V)_{0},(V)_{1})$ が成り立つ（左から右は $V\defeq\{(z,0):z\in Y\}\cup\{(z,1):z\in W\}$ をとり、右から左は $Y\defeq(V)_{0}$, $W\defeq(V)_{1}$ をとる。どちらの集合も有界な論理式で定義されるので存在する）。よって $\forall x\,\exists V\,\psi(x,(V)_{0},(V)_{1})$ で、$\psi(x,(V)_{0},(V)_{1})$ は $\Pi^{1}_{k}$ である。
+
+**Step 3.** $\Pi^{1}_{k}\text{-}\mathsf{AC}$ を適用して、$Z$ で $\forall x\,\psi(x,((Z)_{x})_{0},((Z)_{x})_{1})$ となるものを得る。$Z'\defeq\{(z,x):((z,0),x)\in Z\}$ とおくと、これは有界な論理式（対関数のグラフを使う）で定義され、$(Z')_{x}=\{z:((z,0),x)\in Z\}=((Z)_{x})_{0}$ である。よって$\forall x\,\exists W\,\psi(x,(Z')_{x},W)$（$W\defeq((Z)_{x})_{1}$）、すなわち $\forall x\,\varphi(x,(Z')_{x})$。
+:::
+
+::: lemma 内包・分離・選択・従属選択の包含 {#pt:choice-inclusions keywords="Delta1k-CA0 <= Pi1k-SP0 <= Sigma1k-AC0 <= Sigma1k-DC0" index="選択公理と内包公理の関係|せんたくこうりとないほうこうりのかんけい"}
+$k\ge1$ について、
+$$
+\Sigma^{1}_{k}\text{-}\mathsf{DC}_{0}\vdash\Sigma^{1}_{k}\text{-}\mathsf{AC}_{0}\vdash\Pi^{1}_{k}\text{-}\mathsf{SP}_{0}\vdash\Delta^{1}_{k}\text{-}\mathsf{CA}_{0}.
+$$
+さらに、$\Sigma^{1}_{k}\text{-}\mathsf{AC}_{0}\vdash\mathsf{ACA}_{0}$。
+:::
+
+::: proof
+**$\Pi^{1}_{k}\text{-}\mathsf{SP}\Rightarrow\Delta^{1}_{k}\text{-}\mathsf{CA}$.** $\varphi\in\Sigma^{1}_{k}$, $\psi\in\Pi^{1}_{k}$ で $\forall n\,(\varphi(n)\leftrightarrow\psi(n))$ とする。$\neg\varphi$ は $\Pi^{1}_{k}$ で、$\forall n\,(\psi(n)\to\neg\neg\varphi(n))$。$\Pi^{1}_{k}\text{-}\mathsf{SP}$ を $\Pi^{1}_{k}$ 論理式の対 $(\psi,\neg\varphi)$ に適用して、$\psi(n)\to n\in X$ かつ $n\in X\to\neg\neg\varphi(n)$ となる $X$ を得る。$\varphi\leftrightarrow\psi$ なので $X=\{n:\varphi(n)\}$。
+
+**$\Sigma^{1}_{k}\text{-}\mathsf{AC}\Rightarrow\Pi^{1}_{k}\text{-}\mathsf{SP}$.** $\varphi,\psi\in\Pi^{1}_{k}$ で $\forall x\,(\neg\varphi(x)\vee\neg\psi(x))$ とする。
+$$
+\theta(x,Y)\defeq(\neg\varphi(x)\wedge0\notin Y)\vee(\neg\psi(x)\wedge0\in Y)
+$$
+は $\Sigma^{1}_{k}$（$\neg\varphi,\neg\psi\in\Sigma^{1}_{k}$ で、$\Sigma^{1}_{k}$ は $\wedge,\vee$ と有界な条件で閉じている）で、仮定から $\forall x\,\exists Y\,\theta(x,Y)$（$\neg\varphi(x)$ なら $Y=\varnothing$、そうでなければ $\neg\psi(x)$ なので $Y=\{0\}$）。$\Sigma^{1}_{k}\text{-}\mathsf{AC}$ で $\forall x\,\theta(x,(W)_{x})$ となる $W$ をとり、$X\defeq\{x:0\in(W)_{x}\}$ とおく。$\varphi(x)$ なら $\theta$ の第一の選言肢は偽なので第二が真で $0\in(W)_{x}$、すなわち $x\in X$。$x\in X$ なら $0\in(W)_{x}$ で第一の選言肢が偽なので第二が真で $\neg\psi(x)$。
+
+**$\Sigma^{1}_{k}\text{-}\mathsf{DC}\Rightarrow\Sigma^{1}_{k}\text{-}\mathsf{AC}$.** $\varphi(x,Y)\in\Sigma^{1}_{k}$ で $\forall x\,\exists Y\,\varphi(x,Y)$ とする。$\chi(x,X,Y)\defeq\varphi(x,Y)$（$X$ に依存しない）に $\mathsf{DC}$ を適用すると、$\forall x\,\varphi(x,(Z)_{x+1})$ となる $Z$ を得る。$Z'\defeq\{(z,x):(z,x+1)\in Z\}$ とすれば $(Z')_{x}=(Z)_{x+1}$ で、$\forall x\,\varphi(x,(Z')_{x})$。
+
+**$\Sigma^{1}_{k}\text{-}\mathsf{AC}\Rightarrow\mathsf{ACA}$.** 算術的論理式 $\varphi(x)$ について、$\forall x\,\exists Y\,\bigl((\varphi(x)\wedge0\in Y)\vee(\neg\varphi(x)\wedge0\notin Y)\bigr)$ は自明に成り立ち、括弧の中は算術的（$\subseteq\Sigma^{1}_{k}$）。$\mathsf{AC}$ で $W$ をとり $X\defeq\{x:0\in(W)_{x}\}$ とすれば $X=\{x:\varphi(x)\}$。
+:::
+
+::: lemma 従属選択と帰納法 {#pt:dc-induction keywords="Sigma1k-DC0 proves Sigma1k induction" index="従属選択と帰納法|じゅうぞくせんたくときのうほう"}
+$k\ge1$ について、$\Sigma^{1}_{k}\text{-}\mathsf{DC}_{0}$ で $\Sigma^{1}_{k}$ 論理式すべての帰納法が証明できる。
+:::
+
+::: proof
+$\varphi(x)\equiv\exists X\,\theta(x,X)$（$\theta\in\Pi^{1}_{k-1}$。\ref{pt:pi-sigma-ac} の Step 1 のように存在量化子を一つにまとめる）とし、$\varphi(0)$ と $\forall x\,(\varphi(x)\to\varphi(x+1))$ を仮定する。
+
+**Step 1（選択の条件）.**
+$$
+\psi(x,X,Y)\defeq\bigl(x=0\wedge\theta(0,Y)\bigr)\vee\bigl(x>0\wedge(\theta(x-1,X)\to\theta(x,Y))\bigr)
+$$
+とおく。$\theta$ と $\neg\theta$ は $\Sigma^{1}_{k}$ に含まれる（$\Pi^{1}_{k-1}\cup\Sigma^{1}_{k-1}\subseteq\Sigma^{1}_{k}$）ので、$\psi$ は $\Sigma^{1}_{k}$ である。$\forall x\,\forall X\,\exists Y\,\psi(x,X,Y)$ を示す：$x=0$ なら $\varphi(0)$ から $\theta(0,Y)$ となる $Y$ がある。$x>0$ で $\theta(x-1,X)$ なら $\varphi(x-1)$、仮定から $\varphi(x)$ で、$\theta(x,Y)$ となる $Y$ がある。$\neg\theta(x-1,X)$ なら任意の $Y$ でよい。
+
+**Step 2.** $\Sigma^{1}_{k}\text{-}\mathsf{DC}$ で、$\forall x\,\psi(x,(Z)_{x},(Z)_{x+1})$ となる $Z$ をとる。すなわち
+$$
+\theta(0,(Z)_{1}),\qquad\forall x\,\bigl(\theta(x,(Z)_{x+1})\to\theta(x+1,(Z)_{x+2})\bigr).
+$$
+
+**Step 3.** $W\defeq\{n:\theta(n,(Z)_{n+1})\}$ は $\Pi^{1}_{k-1}$ 論理式で定義され、$\Pi^{1}_{k-1}\subseteq\Delta^{1}_{k}$ なので、\ref{pt:choice-inclusions} の $\Delta^{1}_{k}\text{-}\mathsf{CA}$ で存在する。Step 2 から $0\in W$ かつ $n\in W\to n+1\in W$ なので、帰納法の公理で $\forall n\,(n\in W)$。よってすべての $n$ で $\theta(n,(Z)_{n+1})$、とくに $\varphi(n)$。
+:::
+
+::: theorem 近藤–アディソンの一様化定理と Σ¹₂ の選択 {#pt:sigma12-ac-delta12 keywords="Kondo-Addison uniformization, Delta12-CA0 = Pi12-SP0 = Sigma12-AC0, Sigma12-DC0" index="近藤–アディソンの定理|こんどうあでぃそんのていり"}
+1. （**近藤–アディソンの一様化定理**）任意の $\Pi^{1}_{1}$ 論理式 $\varphi(x,Y)$ に対し、$\Pi^{1}_{1}$ 論理式 $\varphi'(x,Y)$ があって、$\Pi^{1}_{1}\text{-}\mathsf{CA}_{0}$ で次が証明できる：$\varphi'(x,Y)\to\varphi(x,Y)$；$\exists Y\,\varphi(x,Y)\to\exists Y\,\varphi'(x,Y)$；$\varphi'(x,Y)\wedge\varphi'(x,Y')\to Y=Y'$。（$\varphi'$ は $\varphi$ を**一様化**するという。）
+2. 1 を仮定すると、$\Delta^{1}_{2}\text{-}\mathsf{CA}_{0}\equiv\Pi^{1}_{2}\text{-}\mathsf{SP}_{0}\equiv\Sigma^{1}_{2}\text{-}\mathsf{AC}_{0}$。
+:::
+
+::: proof
+1 は本サイトでは証明しない。古典的な記述集合論の定理で、田中の本は、アディソンの証明が $\Pi^{1}_{1}\text{-}\mathsf{CA}_{0}$ でそのまま行えると述べている（証明はショーンフィールドやロジャーズの教科書にあるとされる）。
+
+2 を示す。\ref{pt:choice-inclusions} により $\Delta^{1}_{2}\text{-}\mathsf{CA}_{0}\vdash\Sigma^{1}_{2}\text{-}\mathsf{AC}$ を示せばよい（$\Delta^{1}_{2}\text{-}\mathsf{CA}_{0}\vdash\Pi^{1}_{1}\text{-}\mathsf{CA}_{0}$ であることに注意：$\Pi^{1}_{1}$ 論理式は $\Delta^{1}_{2}$ なので）。\ref{pt:pi-sigma-ac} により $\Pi^{1}_{1}\text{-}\mathsf{AC}$ を示せばよい。$\varphi\in\Pi^{1}_{1}$ で $\forall x\,\exists Y\,\varphi(x,Y)$ とし、1 の $\varphi'$ をとる。すると $\forall x\,\exists!Y\,\varphi'(x,Y)$ で、
+$$
+\begin{aligned}
+\psi_{1}(i,x)&\defeq\exists Y\,(\varphi'(x,Y)\wedge i\in Y)\quad(\Sigma^{1}_{2}),\\
+\psi_{2}(i,x)&\defeq\forall Y\,(\varphi'(x,Y)\to i\in Y)\quad(\Pi^{1}_{2})
+\end{aligned}
+$$
+は、$Y$ の存在と一意性から同値になる。$\Delta^{1}_{2}\text{-}\mathsf{CA}$ で $Z\defeq\{(i,x):\psi_{1}(i,x)\}$ が存在し、$(Z)_{x}$ は $\varphi'(x,\cdot)$ を満たす唯一の $Y$ に等しい。よって $\forall x\,\varphi'(x,(Z)_{x})$、したがって $\forall x\,\varphi(x,(Z)_{x})$。
+:::
+
+::: remark
+同様の議論（一意に定まる有限列の延長を $\Sigma^{1}_{2}$ 帰納法で作る）で、$\Delta^{1}_{2}\text{-}\mathsf{CA}_{0}+\Sigma^{1}_{2}$ 帰納法 $\equiv\Sigma^{1}_{2}\text{-}\mathsf{DC}_{0}$ が示せる（田中の本の定理 3.6）。$\Delta^{1}_{2}\text{-}\mathsf{CA}_{0}$ だけでは $\Sigma^{1}_{2}$ 帰納法は証明できないことが知られている。
+:::
+
+## 超限帰納法と β モデル {#pt:sec-soa3-beta}
+
+::: definition 超限帰納法と β モデル {#pt:ti-beta-model keywords="transfinite induction scheme C-TI, beta-model" index="超限帰納法（二階算術）|ちょうげんきのうほうにかいさんじゅつ, β モデル|べーたもでる"}
+1. **超限帰納法** $\mathcal{C}\text{-}\mathsf{TI}$：$\mathcal{C}$ の論理式 $\varphi$ について
+$$
+\forall X\,\Bigl(\mathrm{WO}(X)\to\bigl(\forall j\,(\forall i<_{X}j\,\varphi(i)\to\varphi(j))\to\forall j\,\varphi(j)\bigr)\Bigr).
+$$
+$\mathcal{C}\text{-}\mathsf{TI}_{0}\defeq\mathsf{ACA}_{0}+\mathcal{C}\text{-}\mathsf{TI}$ とする。$\Sigma^{1}_{\infty}$ は $\mathcal{L}_{2}$ の論理式全体のクラスを表す。
+2. ω モデル $\mathcal{S}\subseteq\mathcal{P}(\N)$ が **β モデル**であるとは、$\mathcal{S}$ の元をパラメータに含む任意の $\Sigma^{1}_{1}$ 文 $\sigma$ について、$\sigma$ が（$\mathcal{P}(\N)$ で）真であることと $\mathcal{S}\models\sigma$ が同値であることをいう。
+:::
+
+::: remark
+1. ω モデルでは、算術的な文の真偽は本当の真偽と一致する（数の領域が $\N$ で、算術的な文は集合量化子を含まない）。$\Sigma^{1}_{1}$ 文 $\exists Y\,\theta(Y)$ は、$\mathcal{S}\models\sigma$ なら $\mathcal{S}$ の中の証拠 $Y$ が本当の証拠でもあるので、つねに真である。β モデルの条件の本質は逆向き：「本当に証拠があるなら $\mathcal{S}$ の中にも証拠がある」である。
+2. 否定をとれば、β モデルでは $\Pi^{1}_{1}$ 文（パラメータ付き）の真偽も正しい。とくに $\mathrm{WO}(X)$（$\Pi^{1}_{1}$）は β モデルで正しく判定される：$\mathcal{S}\models\mathrm{WO}(X)\iff X$ は本当に整列順序。
+:::
+
+::: lemma ω モデルと β モデルの帰納法 {#pt:omega-beta-induction keywords="omega-models satisfy full induction, beta-models satisfy full transfinite induction"}
+1. 任意の ω モデルで、すべての $\mathcal{L}_{2}$ 論理式の帰納法が成り立つ。
+2. 任意の β モデルで、すべての $\mathcal{L}_{2}$ 論理式の超限帰納法（$\Sigma^{1}_{\infty}\text{-}\mathsf{TI}$）が成り立つ。
+:::
+
+::: proof
+**1.** ω モデル $\mathcal{S}$ と論理式 $\varphi(x)$（パラメータは $\mathcal{S}$ の元と数）について、$\mathcal{S}\models\varphi(0)\wedge\forall x\,(\varphi(x)\to\varphi(x+1))$ とする。$A\defeq\{n\in\N:\mathcal{S}\models\varphi(n)\}$ とおくと、$0\in A$ で、$n\in A\Rightarrow n+1\in A$（$\mathcal{S}$ の数の領域が $\N$ で、$n+1$ の解釈が本当の $n+1$ であることを使う）。メタレベルの（本当の）数学的帰納法で $A=\N$、すなわち $\mathcal{S}\models\forall x\,\varphi(x)$。
+
+**2.** β モデル $\mathcal{S}$, $X\in\mathcal{S}$ で $\mathcal{S}\models\mathrm{WO}(X)$ とし、$\mathcal{S}\models\forall j\,(\forall i<_{X}j\,\varphi(i)\to\varphi(j))$ とする。前の注意の 2 により、$<_{X}$ は本当に整列順序である。$A\defeq\{j:\mathcal{S}\models\varphi(j)\}$ とすると、仮定から「$j$ より $<_{X}$ で小さいものがすべて $A$ に属すれば $j\in A$」。$A$ に属さない $<_{X}$ の体の元があれば、その中の $<_{X}$ 最小元 $j$（本当の整列性から存在する）について、$j$ より小さいものはすべて $A$ に属するので $j\in A$ となり矛盾する。よって $\mathcal{S}\models\forall j\,\varphi(j)$。
+:::
+
+::: lemma β モデルは ATR₀ のモデル {#pt:beta-atr0 keywords="every beta-model is a model of ATR0" index="β モデルと ATR₀|べーたもでるとえーてぃーあーるぜろ"}
+任意の β モデル $\mathcal{S}$ について、$\mathcal{S}\models\mathsf{ATR}_{0}$。
+:::
+
+::: proof
+**Step 1（真な $\Pi^{1}_{2}$ 文は成り立つ）.** $\sigma\equiv\forall X\,\exists Y\,\theta(X,Y)$（$\theta$ は算術的で $\mathcal{S}$ の元をパラメータに含んでよい）が真であるとする。任意の $A\in\mathcal{S}$ について、$\exists Y\,\theta(A,Y)$ は真な $\Sigma^{1}_{1}$ 文で、パラメータは $\mathcal{S}$ の元なので、β モデルの定義から $\mathcal{S}\models\exists Y\,\theta(A,Y)$。よって $\mathcal{S}\models\sigma$。$\theta$ が $\Pi^{1}_{1}$ 論理式と算術的論理式の論理結合でも、注意の 2（$\Pi^{1}_{1}$ の正しさ）と合わせて同じ議論が通る。
+
+**Step 2（$\mathsf{ATR}_{0}$ の公理は真な $\Pi^{1}_{2}$ 文）.** $\mathsf{RCA}_{0}$ の基本公理と帰納法の公理は ω モデルで成り立つ。算術的内包公理の各例 $\forall\vec{A}\,\exists X\,\forall n\,(n\in X\leftrightarrow\varphi(n,\vec{A}))$ は $\Pi^{1}_{2}$ 文で、$\mathcal{P}(\N)$ で真である。$\mathsf{ATR}$ の各例
+$$
+\forall X\,\bigl(\neg\mathrm{WO}(X)\vee\exists Y\,H_{\theta}(X,Y)\bigr)
+$$
+（$H_{\theta}(X,Y)$ は「$Y$ は $X$ に沿った $\theta$ の超限階層」という算術的論理式）は、$\neg\mathrm{WO}(X)$ が $\Sigma^{1}_{1}$ なので $\Pi^{1}_{2}$ の形をもち、本当の整列順序に沿った超限再帰で階層が作れるので $\mathcal{P}(\N)$ で真である。Step 1 によりこれらはすべて $\mathcal{S}$ で成り立つ。
+:::
+
+::: theorem 体系の比較 {#pt:choice-landscape keywords="Pi11-CA0 proves existence of countable beta-models, Simpson's theorem Sigma11-TI0 = ATR0 + Sigma11 induction, Howard-Kreisel Pi11-TI0 = Sigma11-DC0" index="シンプソンの定理（Σ¹₁-TI）|しんぷそんのていりしぐまわんわんてぃーあい"}
+次が知られている（田中の本の補題 3.9, 3.10、定理 3.11, 3.12）。
+1. $\Pi^{1}_{1}\text{-}\mathsf{CA}_{0}$ で「可算な β モデル（を符号化する集合）が存在する」ことが証明できる。
+2. $\mathsf{ATR}_{0}+\Sigma^{1}_{\infty}\text{-}\mathsf{TI}\nvdash\Pi^{1}_{1}\text{-}\mathsf{CA}_{0}$。
+3. （シンプソン）$\Sigma^{1}_{1}\text{-}\mathsf{TI}_{0}\equiv\mathsf{ATR}_{0}+\Sigma^{1}_{1}$ 帰納法。
+4. （ハワード–クライゼル）$\Pi^{1}_{1}\text{-}\mathsf{TI}_{0}\equiv\Sigma^{1}_{1}\text{-}\mathsf{DC}_{0}$。
+:::
+
+::: proof
+1 は、普遍的な $\Sigma^{1}_{1}$ 述語の証拠をクリーネの完全 $\Pi^{1}_{1}$ 集合から超算術的に計算できる形で選ぶ（**ガンディの基底定理**）ことで、$\Sigma^{1}_{1}$ 文の証拠をすべて含む可算列を作る。本サイトでは証明しない。
+
+2 の概略：1 で得た可算 β モデル $\mathcal{S}$ は、\ref{pt:beta-atr0} と \ref{pt:omega-beta-induction} の 2 により $\mathsf{ATR}_{0}+\Sigma^{1}_{\infty}\text{-}\mathsf{TI}$ のモデルである。この議論を $\Pi^{1}_{1}\text{-}\mathsf{CA}_{0}$ の中で形式化すると、$\Pi^{1}_{1}\text{-}\mathsf{CA}_{0}\vdash\mathrm{Con}(\mathsf{ATR}_{0}+\Sigma^{1}_{\infty}\text{-}\mathsf{TI})$ が得られる（ここで $\mathcal{S}$ が可算で、その中の真理を算術的に扱えることを使う）。もし $\mathsf{ATR}_{0}+\Sigma^{1}_{\infty}\text{-}\mathsf{TI}\vdash\Pi^{1}_{1}\text{-}\mathsf{CA}_{0}$ なら、$\mathsf{ATR}_{0}+\Sigma^{1}_{\infty}\text{-}\mathsf{TI}$ が自身の無矛盾性を証明することになり、第二不完全性定理（\ref{pt:godel-second} の、十分強い体系への一般化）に反する。
+
+4 のうち $\Sigma^{1}_{1}\text{-}\mathsf{DC}_{0}\vdash\Pi^{1}_{1}\text{-}\mathsf{TI}$ は次のとおり（逆向きと 3 は本サイトでは示さない）。$\mathrm{WO}(X)$ とし、$\Pi^{1}_{1}$ 論理式 $\varphi$ について $\forall j\,(\forall i<_{X}j\,\varphi(i)\to\varphi(j))$ だが $\neg\varphi(j_{0})$ とする。$\neg\varphi(j)\equiv\exists W\,\theta(j,W)$（$\theta$ 算術的）と書く。「$V$ は**良い**」を「$(V)_{0}=\{j\}$ となる $j$ が $<_{X}$ の体にあり $\theta(j,(V)_{1})$」と定め、このとき $j$ を $V$ の**番号**と呼ぶ。仮定の対偶から、$\neg\varphi(j)$ なら $i<_{X}j$ で $\neg\varphi(i)$ となる $i$ がある。
+$$
+\chi(x,U,V)\defeq V\text{ は良い}\wedge\bigl(U\text{ は良い}\to V\text{ の番号}<_{X}U\text{ の番号}\bigr)
+$$
+は算術的で、$\forall x\,\forall U\,\exists V\,\chi(x,U,V)$ が成り立つ（$U$ が良ければ上の対偶で、良くなければ $j_{0}$ を番号とする良い $V$ をとる）。$\Sigma^{1}_{1}\text{-}\mathsf{DC}$ で $\forall x\,\chi(x,(Z)_{x},(Z)_{x+1})$ となる $Z$ をとると、$(Z)_{x+1}$（$x\ge0$）はすべて良く、その番号の列 $f(x)\defeq((Z)_{x+1}\text{ の番号})$ は $f(x+1)<_{X}f(x)$ を満たす。$\Sigma^{1}_{1}\text{-}\mathsf{DC}_{0}\vdash\mathsf{ACA}_{0}$（\ref{pt:choice-inclusions}）なので $f$ の値域が存在し、それは最小元をもたない空でない集合となって $\mathrm{WO}(X)$ に反する。
+:::
+
+::: hypcheck
+- **$k\ge1$**：\ref{pt:choice-inclusions} と \ref{pt:dc-induction} では、$\Sigma^{1}_{k}$ が算術的論理式と $\Pi^{1}_{k-1}$ を含み $\wedge,\vee$ で閉じていることを使った。$k=0$ では $\Sigma^{1}_{0}\text{-}\mathsf{AC}$ は「算術的な選択」で、別に扱う必要がある。
+- **$\Delta^{1}_{k}\text{-}\mathsf{CA}$**：\ref{pt:dc-induction} の Step 3 で、$\Pi^{1}_{k-1}$ 条件で定義される集合 $W$ を作るのに使った（\ref{pt:choice-inclusions} により $\Sigma^{1}_{k}\text{-}\mathsf{DC}_{0}$ で使える）。
+- **一様化定理**：\ref{pt:sigma12-ac-delta12} の 2 で、選択を「一意な選択」に変え、$\Sigma^{1}_{2}$ と $\Pi^{1}_{2}$ の二通りに書くのに使った。本サイトでは一様化定理そのものを証明していないので、2 はこの定理を仮定した結果である。
+- **β モデルの条件**：\ref{pt:omega-beta-induction} の 2 で $\mathrm{WO}$ の正しさ、\ref{pt:beta-atr0} の Step 1 で $\Sigma^{1}_{1}$ の証拠が $\mathcal{S}$ にあることに使った。ω モデルであることだけでは足りない。
+- **メタレベルの帰納法と整列性**：\ref{pt:omega-beta-induction} で、モデルの外側の本当の自然数と本当の整列順序の性質を使った。
+:::
+
+## 問題 {#pt:sec-soa3-problems}
+
+::: problem {#pt:prob-unique-choice}
+$k\ge1$ とし、$\varphi(x,Y)$ を $\Sigma^{1}_{k}$ 論理式とする。$\Delta^{1}_{k}\text{-}\mathsf{CA}_{0}$ で「$\forall x\,\exists!Y\,\varphi(x,Y)\to\exists Z\,\forall x\,\varphi(x,(Z)_{x})$」（一意選択）が証明できることを示せ。
+:::
+
+::: solution
+$\forall x\,\exists!Y\,\varphi(x,Y)$ を仮定し、
+$$
+\psi_{1}(i,x)\defeq\exists Y\,(\varphi(x,Y)\wedge i\in Y),\qquad\psi_{2}(i,x)\defeq\forall Y\,(\varphi(x,Y)\to i\in Y)
+$$
+とおく。$\psi_{1}$ は $\Sigma^{1}_{k}$、$\psi_{2}$ は（$\neg\varphi$ が $\Pi^{1}_{k}$ なので）$\Pi^{1}_{k}$ である。$x$ に対する唯一の $Y_{x}$ をとると、$\psi_{1}(i,x)\iff i\in Y_{x}\iff\psi_{2}(i,x)$（$\Rightarrow$ は一意性、$\Leftarrow$ は存在による）。$\Delta^{1}_{k}\text{-}\mathsf{CA}$ で $Z\defeq\{(i,x):\psi_{1}(i,x)\}$ をとれば $(Z)_{x}=Y_{x}$ で、$\forall x\,\varphi(x,(Z)_{x})$。（\ref{pt:sigma12-ac-delta12} の 2 の証明は、この議論に一様化定理を組み合わせたものである。）
+:::
+
+::: problem {#pt:prob-dc-pi-induction}
+$k\ge1$ について、$\Sigma^{1}_{k}\text{-}\mathsf{DC}_{0}$ で $\Pi^{1}_{k}$ 論理式の帰納法も証明できることを示せ。
+:::
+
+::: solution
+\ref{pt:rca0-basic} の 2（$\Sigma^{0}_{1}$ 帰納法から $\Pi^{0}_{1}$ 帰納法）と同じ議論を使う。$\varphi\in\Pi^{1}_{k}$ で $\varphi(0)$, $\forall n\,(\varphi(n)\to\varphi(n+1))$、ある $a$ で $\neg\varphi(a)$ とする。$\psi(i)\defeq\neg\varphi(a\mathbin{\dot{-}}i)$ は $\Sigma^{1}_{k}$ で、$\psi(0)$ と $\psi(i)\to\psi(i+1)$ が成り立つ（$i<a$ では仮定の対偶、$i\ge a$ では $a\mathbin{\dot{-}}i=0=a\mathbin{\dot{-}}(i+1)$）。\ref{pt:dc-induction} の $\Sigma^{1}_{k}$ 帰納法で $\psi(a)$、すなわち $\neg\varphi(0)$ となり矛盾する。
+:::
+
+::: problem {#pt:prob-full-model-beta}
+完全なモデル $\mathcal{P}(\N)$ は β モデルであることを確かめ、\ref{pt:beta-atr0} から $\mathcal{P}(\N)\models\mathsf{ATR}_{0}$ を結論せよ。一方、$\mathsf{ACA}_{0}$ の最小の ω モデル $\mathrm{ARITH}$（\ref{pt:omega-aca0}）が β モデルでないことを、次の事実から導け：「計算可能な線形順序で、整列順序でないが、算術的な無限下降列をもたないものがある」（ハリソンの順序。本サイトでは示していない）。
+:::
+
+::: solution
+$\mathcal{P}(\N)$ ではすべての集合が領域にあるので、真の $\Sigma^{1}_{1}$ 文の証拠は領域にあり、定義から β モデル。\ref{pt:beta-atr0} から $\mathcal{P}(\N)\models\mathsf{ATR}_{0}$。
+
+ハリソンの順序を $X$（計算可能なので $X\in\mathrm{ARITH}$）とする。$\neg\mathrm{WO}(X)$ は「$X$ の体の空でない部分集合で最小元をもたないものがある」という真な $\Sigma^{1}_{1}$ 文である。$\mathrm{ARITH}$ が β モデルなら、その証拠 $Y$ が $\mathrm{ARITH}$ にとれる。最小元をもたない空でない集合 $Y$ から、無限下降列は $Y$ に関して計算可能に作れる（$Y$ の元から始め、$Y$ の中でより小さい元を探すことを繰り返す）ので、算術的な無限下降列ができて事実に反する。よって $\mathrm{ARITH}$ は β モデルでない。
+:::
+
+::: supplement
+**前提の検討.**
+- 集合論では、選択公理は内包（分出）公理と独立な原理だが、二階算術では $\Sigma^{1}_{k}\text{-}\mathsf{AC}$ が $\mathsf{ACA}$ を導き（\ref{pt:choice-inclusions}）、さらに一様化定理があるレベル（$\Sigma^{1}_{2}$）では $\Delta^{1}_{2}$ 内包公理と同値になる（\ref{pt:sigma12-ac-delta12}）。「選ぶ」ことが「定義する」ことで置き換えられるかどうかが、一様化の可否で決まっている。
+- \ref{pt:omega-beta-induction} の 1 から、ω モデルを使った独立性の証明では、帰納法の強さは区別できない（ω モデルはすべての帰納法を満たす）。帰納法の強さを分けるには超準モデルが必要である。
+
+**関連する結果.**
+- *$\Sigma^{1}_{1}\text{-}\mathsf{AC}_{0}$ の保存性.* $\Sigma^{1}_{1}\text{-}\mathsf{AC}_{0}$ は $\Pi^{1}_{2}$ 文について $\mathsf{ACA}_{0}$ の保存拡大である（バーワイズ–シュリップ）。証明には**再帰的に飽和なモデル**が使われる（田中の本の §3.2）。
+- *β モデルと $\Pi^{1}_{1}\text{-}\mathsf{CA}_{0}$.* $\Pi^{1}_{1}\text{-}\mathsf{CA}_{0}$ は $\mathsf{ACA}_{0}$ 上で「任意の集合を含む可算な β モデルが存在する」と同値であることが知られている（シンプソンの本 VII 章）。
+- *$\mathsf{ATR}_{0}$ の典型的な定理.* 可算整列順序の比較可能性、ルージンの分離定理、ベール空間の非可算閉集合が完全集合を含むことなどが $\mathsf{ATR}_{0}$ と同値である（田中の本の定理群 4。本サイトでは示していない）。
+
+**高い視点から：選ぶことと定義すること、整列性の正しさ.** 二階算術の選択公理は、「各 $x$ に証拠がある」から「証拠の列がある」を導く。これは、存在量化子 $\forall x\,\exists Y$ を関数（スコーレム関数）$x\mapsto(Z)_{x}$ に置き換える操作で、論理の言葉では**スコーレム化**、圏論の言葉では「全射が切断をもつ」ことに当たる。一様化定理は、その切断を**定義可能に**選べる場合があることを言っており、そのとき選択は内包公理（定義による集合の存在）に吸収される。β モデルは、「整列している」という判断を誤らないモデルである。比喩で言えば、ω モデルは「数え間違えない」観測者、β モデルはさらに「無限に下り続ける階段がないことを見誤らない」観測者で、後者の観測者のもとでは超限帰納法がすべて正しく働く。$\mathsf{ATR}_{0}$ の公理はまさに「整列順序に沿って構成を続けてよい」という主張なので、整列性を見誤らない観測者の世界ではいつも成り立つ。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

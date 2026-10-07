@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>時間計算量とクラス P | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/04-complexity/01-time-complexity.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 時間計算量とクラス P {#comp:page-time-complexity keywords="time complexity, running time, big-O, TIME(t(n)), class P, polynomial time, multitape simulation quadratic, nondeterministic time, PATH, RELPRIME, Euclidean algorithm, CYK algorithm"}
+
+計算可能性理論は「計算できるか」を問うが、計算量理論は「どれだけの資源で計算できるか」を問う。本ページでは、チューリング機械（\ref{comp:turing-machine}）の**実行時間**（\ref{comp:running-time}）を定め、多テープ機械を単一テープ機械で模倣すると時間が高々 2 乗になること（\ref{comp:multitape-time}）、非決定性機械を決定性機械で模倣すると指数時間かかること（\ref{comp:ntm-time}）を示す。多項式時間で決定できる言語のクラス **P**（\ref{comp:class-p}）は、合理的な決定性の計算模型の選び方によらない。P に属する問題の例として、グラフの到達可能性（\ref{comp:path-in-p}）、互いに素の判定（\ref{comp:relprime-in-p}）、文脈自由言語（\ref{comp:cfl-in-p}）を扱う。
+
+> 本系列（計算複雑性）は Sipser, *Introduction to the Theory of Computation*（3rd ed.）第 7〜10 章を参考に、自分の言葉で組み立てる。
+
+## 記法と定義の確認 {#comp:sec-time-notation}
+
+::: notation
+- チューリング機械（TM）、時点表示、判定機、多テープ機械とその模倣（\ref{comp:multitape}）、非決定性 TM（\ref{comp:ntm-definition}）とその決定化（\ref{comp:ntm}）、符号化 $\langle\cdot\rangle$（\ref{comp:encoding}）は \ref{comp:page-turing-machines} のとおり。
+- 関数 $f,g\colon\N\to\R_{\ge0}$ について、$f(n)=O(g(n))$ とは、ある $c>0$, $n_{0}$ があり $n\ge n_{0}$ で $f(n)\le c\,g(n)$ となること。$f(n)=o(g(n))$ とは $\lim_{n\to\infty}f(n)/g(n)=0$。$2^{O(g(n))}$ は、ある $c$ で $2^{c\,g(n)}$ 以下（十分大きい $n$ で）となる関数を表す。
+- 数は（断らない限り）二進表記で符号化する。入力 $w$ の長さを $\lvert w\rvert=n$ と書く。
+:::
+
+## 実行時間 {#comp:sec-running-time}
+
+::: definition 実行時間と時間計算量のクラス {#comp:running-time keywords="running time, time complexity, TIME" index="実行時間|じっこうじかん, 時間計算量|じかんけいさんりょう"}
+1. 判定機 $M$（決定性、単一テープまたは多テープ）の**実行時間**とは、関数 $t_{M}\colon\N\to\N$、$t_{M}(n)\defeq$「長さ $n$ の入力の上で $M$ が停止するまでの段数の最大値」のこと。$t_{M}(n)\le t(n)$ がすべての $n$ で成り立つとき、$M$ は**時間 $t(n)$ の機械**という。
+2. $t\colon\N\to\N$ について、$\mathrm{TIME}(t(n))$ を、時間 $O(t(n))$ の**単一テープ**の判定機で決定できる言語全体とする。
+:::
+
+::: example $\{0^{k}1^{k}\}$ の判定 {#comp:ex-0k1k-time}
+$A\defeq\{0^{k}1^{k}:k\ge0\}$ とする。
+1. 単一テープの判定機 $M_{1}$：入力が $0^{\ast}1^{\ast}$ の形か調べる（一度の走査、$O(n)$ 段）。左端の $0$ と右端の $1$ を一つずつ消す往復を、どちらかがなくなるまで繰り返し、両方同時になくなれば受理する。往復は高々 $n/2$ 回で、各往復は $O(n)$ 段なので、全体で $O(n^{2})$。よって $A\in\mathrm{TIME}(n^{2})$。
+2. 2 テープの判定機 $M_{2}$：$0$ を第 2 テープに写し、$1$ を読むごとに第 2 テープの $0$ を一つ消す。全体で $O(n)$ 段。
+:::
+
+::: remark
+単一テープ機械では、$A$ は時間 $O(n\log n)$ で決定できる（残っている $0$ と $1$ を一つおきに消し、各回で個数の偶奇を比べる）。さらに、時間 $o(n\log n)$ の単一テープの判定機が決定する言語は正規言語に限ることが知られている（ハートマニスやヘニーによる）。本サイトでは示していない。このように、テープの本数で時間計算量は変わる。次の定理は、その違いが多項式の範囲に収まることを示す。
+:::
+
+::: theorem 多テープ機械の模倣にかかる時間 {#comp:multitape-time keywords="multitape simulation in quadratic time" index="多テープ機械の模倣の時間|たてーぷきかいのもほうのじかん"}
+$t(n)\ge n$ とする。時間 $t(n)$ の多テープの判定機は、時間 $O(t(n)^{2})$ の単一テープの判定機で模倣できる。
+:::
+
+::: proof
+\ref{comp:multitape} の模倣 $S$ を使う：$k$ 本のテープの内容を区切り記号 $\#$ でつないで一本に並べ、各テープのヘッド位置を印付きの記号で示す。$M$ の一段を模倣するために、$S$ は (a) テープ全体を左から右へ走査して $k$ 個の印の下の記号を読み、(b) もう一度走査して各印の位置で書き換えとヘッドの移動を行う。(b) で、あるテープの部分が右端に達したときは、それより右の内容を一升ずつ右にずらして空白を作る。
+
+**長さの評価.** $M$ は $t(n)$ 段で各テープの $t(n)$ 升より右へは行けないので、$S$ のテープの使用部分の長さは $k\,(t(n)+1)+k=O(t(n))$。
+
+**一段の模倣.** (a)・(b) の走査は $O(t(n))$ 段、ずらす操作は一回 $O(t(n))$ 段で、一段につき高々 $k$ 回なので、一段の模倣は $O(t(n))$ 段。
+
+**全体.** 初めに入力を模倣用の形に整えるのに $O(n)$ 段、$t(n)$ 段の模倣に $t(n)\cdot O(t(n))$ 段。$t(n)\ge n$ なので全体で $O(t(n)^{2})$。
+:::
+
+::: definition 非決定性機械の実行時間 {#comp:ntm-running-time keywords="running time of nondeterministic TM" index="実行時間（非決定性機械の）|じっこうじかんひけっていせいきかいの"}
+非決定性の判定機（すべての計算の枝が停止する NTM）$N$ の実行時間を、長さ $n$ の入力の上の**すべての計算の枝**の長さの最大値 $t_{N}(n)$ とする。
+:::
+
+::: theorem 非決定性機械の決定化にかかる時間 {#comp:ntm-time keywords="deterministic simulation of nondeterministic time, exponential blowup" index="非決定性の除去の時間|ひけっていせいのじょきょのじかん"}
+$t(n)\ge n$ とする。時間 $t(n)$ の非決定性の単一テープの判定機は、時間 $2^{O(t(n))}$ の決定性の単一テープの判定機で模倣できる。
+:::
+
+::: proof
+$N$ の遷移関数の選択肢の数の最大を $b$ とする。\ref{comp:ntm} の模倣 $D$（3 テープ）は、計算木を幅優先で、長さ $1,2,\dots$ の選択の列 $\in\{1,\dots,b\}^{\ast}$ を順に試し、各列について入力から $N$ を最初から模倣する。計算木の深さは $t(n)$ 以下なので、試す列は高々 $\sum_{j\le t(n)}b^{j}\le b^{t(n)+1}$ 個、各列の模倣は $O(t(n))$ 段（列の更新も $O(t(n))$ 段）。よって $D$ の時間は $O(t(n)\,b^{t(n)+1})=2^{O(t(n))}$。受理する枝があれば $D$ は受理し、すべての枝が拒否なら、長さ $t(n)$ までの列を試し終えた時点で拒否する（すべての枝が $t(n)$ 段以内に止まるので、それより長い列は試さなくてよい）。\ref{comp:multitape-time} で単一テープに直すと $(2^{O(t(n))})^{2}=2^{O(t(n))}$。
+:::
+
+## クラス P {#comp:sec-class-p}
+
+::: definition クラス P {#comp:class-p keywords="class P, polynomial time" index="P（計算量クラス）|ぴーけいさんりょうくらす, 多項式時間|たこうしきじかん"}
+$$
+\mathrm{P}\defeq\bigcup_{k\ge1}\mathrm{TIME}(n^{k}).
+$$
+P に属する言語を**多項式時間で決定可能**という。
+:::
+
+::: remark P の頑健性
+\ref{comp:multitape-time} により、P は多テープ機械で定めても変わらない（多項式の 2 乗は多項式）。ランダムアクセス機械など、他の合理的な決定性の模型との間でも、模倣にかかる時間の増加は多項式で抑えられることが知られている。ただし「合理的」には、**数を二進で表すこと**と、**一段で扱える数の大きさに制限があること**が含まれる。例えば L（\ref{comp:page-language-L}）で「一つの基本命令を一段」と数えると、基本命令は $\pm1$ しかしないので、二進で $n$ 桁の入力 $m$ を読み取るだけで（$x_{1}$ を数え下ろすのに）約 $m\approx2^{n}$ 段かかりうる。逆に、任意の大きさの数の掛け算を一段と数える模型では、繰り返し 2 乗で $2^{2^{n}}$ 程度の数が $n$ 段で作れてしまう。計算量を模型によらずに論じるには、このような違いを避ける約束が必要である。
+:::
+
+::: theorem グラフの到達可能性は P に属する {#comp:path-in-p keywords="PATH is in P, breadth-first search" index="PATH|ぱす"}
+$\mathrm{PATH}\defeq\{\langle G,s,t\rangle:G\text{ は有向グラフで、}s\text{ から }t\text{ への有向路がある}\}$ は P に属する。
+:::
+
+::: proof
+頂点数を $m$ とする（符号の長さ $n$ について $m\le n$）。次の判定機を考える：$s$ に印を付け、新しく印の付く頂点がなくなるまで「印の付いた頂点 $a$ から辺 $(a,b)$ がある未印の頂点 $b$ に印を付ける」走査を繰り返す。最後に $t$ に印があれば受理する。
+*正しさ*：印が付くのは $s$ から到達できる頂点に限る（印を付けた回数に関する帰納法）。逆に、$s=v_{0}\to v_{1}\to\cdots\to v_{r}=t$ が有向路なら、各 $v_{j}$ は $j$ 回目の走査までに印が付く（$j$ に関する帰納法）。
+*時間*：走査は高々 $m$ 回（各回で一つ以上の頂点に印が付くか、終わる）、各回は辺の一覧を一度見るので $n$ の多項式の段数。全体で $n$ の多項式。
+:::
+
+::: theorem 互いに素の判定は P に属する {#comp:relprime-in-p keywords="RELPRIME in P, Euclidean algorithm" index="ユークリッドの互除法の時間|ゆーくりっどのごじょほうのじかん"}
+$\mathrm{RELPRIME}\defeq\{\langle x,y\rangle:x,y\ge1\text{ は互いに素}\}$（$x,y$ は二進表記）は P に属する。
+:::
+
+::: proof
+ユークリッドの互除法：$y\neq0$ の間 $(x,y)\gets(y,x\bmod y)$ を繰り返し、最後の $x$ が $1$ なら受理する。$\gcd(x,y)=\gcd(y,x\bmod y)$ なので、最後の $x$ は $\gcd$ である。
+*繰り返しの回数*：二回の更新で第一成分が半分以下になる。実際 $(x,y)$ から二回で $(x\bmod y,\ y\bmod(x\bmod y))$ となり、$x\ge y$ のとき $x\bmod y<x/2$（$y\le x/2$ なら $x\bmod y<y\le x/2$、$y>x/2$ なら $x\bmod y=x-y<x/2$）。最初の一回で $x\ge y$ にそろう。よって回数は $O(\log x)=O(n)$。
+*一回の時間*：二進 $n$ 桁以下の数の剰余は、筆算の割り算で $O(n^{2})$ 段（多テープ機械で）で計算できる。全体で $O(n^{3})$、\ref{comp:multitape-time} で単一テープでも多項式。
+:::
+
+::: theorem 文脈自由言語は P に属する {#comp:cfl-in-p keywords="every context-free language is in P, CYK algorithm, dynamic programming" index="CYK 法|しーわいけーほう"}
+文脈自由言語はすべて P に属する。
+:::
+
+::: proof
+言語 $A$ を生成するチョムスキー標準形の CFG $G=(V,\Sigma,R,S)$ をとる（\ref{comp:chomsky-normal-form}）。$G$ は固定されている（入力に含まれない）。入力 $w=w_{1}\cdots w_{n}$（$n\ge1$。$n=0$ は $S\to\varepsilon\in R$ かどうかで決める）について、$1\le i\le j\le n$ ごとに表
+$$
+T(i,j)\defeq\{B\in V:B\Rightarrow^{\ast}w_{i}\cdots w_{j}\}
+$$
+を $j-i$ の小さい順に計算する（**動的計画法**、CYK 法）。
+- $i=j$：$T(i,i)=\{B:B\to w_{i}\in R\}$。
+- $i<j$：$B\in T(i,j)$ であるのは、ある規則 $B\to CD$ と $i\le k<j$ で $C\in T(i,k)$, $D\in T(k+1,j)$ となるときに限る。
+
+*正しさ*：チョムスキー標準形では、長さ $2$ 以上の文字列を導く導出の最初の規則は $B\to CD$ の形で、残りは $C$ と $D$ から生じる空でない部分に分かれる（\ref{comp:parse-tree-derivation}）。その分かれ目を $k$ とすればよい。長さに関する帰納法で $T(i,j)$ が正しく求まる。$w\in A\iff S\in T(1,n)$。
+*時間*：$T$ の成分は $O(n^{2})$ 個、各成分について $k$ を $O(n)$ 通り、規則を定数個調べるので、$O(n^{3})$ 回の基本操作。各操作は多テープ機械で $n$ の多項式の段数でできるので、全体で多項式時間。
+:::
+
+::: hypcheck
+- **$t(n)\ge n$**：\ref{comp:multitape-time} と \ref{comp:ntm-time} で、入力を読む・整える $O(n)$ 段を $O(t(n))$ に吸収するのに使った。
+- **計算木の深さが $t(n)$ で抑えられること**：\ref{comp:ntm-time} で、試す選択の列の長さを有限に区切り、判定機として停止させるのに使った。
+- **二進表記**：\ref{comp:relprime-in-p} で、入力の長さが $\log x$ に比例すること、したがって互除法の回数が入力の長さについて線形であることに使った。一進表記なら、素朴に $1,\dots,x$ で割ってみる方法でも多項式時間になってしまう。
+- **文法が固定されていること**：\ref{comp:cfl-in-p} で、規則の数を定数として扱った。
+:::
+
+## 問題 {#comp:sec-time-problems}
+
+::: problem {#comp:prob-p-closure}
+P は和集合、補集合、連接で閉じていることを示せ。
+:::
+
+::: solution
+$A,B\in\mathrm{P}$ を判定機 $M_{A},M_{B}$（時間 $O(n^{a})$, $O(n^{b})$）が決定するとする。
+- 和集合：$M_{A}$ を動かし、受理なら受理、拒否なら入力を写しておいたものの上で $M_{B}$ を動かす。$O(n^{a}+n^{b})$。
+- 補集合：$M_{A}$ の受理と拒否を入れ替える。
+- 連接：$w=w_{1}\cdots w_{n}$ の $n+1$ 通りの分け方 $w=uv$ について、$u\in A$ と $v\in B$ を調べる。$O(n\cdot(n^{a}+n^{b}))$ に、分け方を準備する多項式の時間を加えたもの。
+多テープ機械で書いても、\ref{comp:multitape-time} で単一テープでも多項式時間。
+:::
+
+::: problem {#comp:prob-p-star}
+P はスターで閉じていることを示せ。
+:::
+
+::: solution
+$A\in\mathrm{P}$ とし、入力 $w=w_{1}\cdots w_{n}$ について $E(j)$「$w_{1}\cdots w_{j}\in A^{\ast}$」を $j=0,1,\dots,n$ の順に決める（動的計画法）。$E(0)$ は真。$E(j)$ は、ある $i<j$ で $E(i)$ が真かつ $w_{i+1}\cdots w_{j}\in A$ のとき真（$A^{\ast}$ の元の最後の因子を取り出す）。$w\in A^{\ast}\iff E(n)$。$A$ の判定を $O(n^{2})$ 回呼ぶので、全体で多項式時間。（素朴に分け方をすべて試すと $2^{n-1}$ 通りになり、多項式時間にならない。）
+:::
+
+::: supplement
+**前提の検討.**
+- $\mathrm{TIME}(t(n))$ は、$O(\cdot)$ を使っているので定数倍によらない。線形加速定理（記号をまとめて一段で何升分も処理すれば、時間を任意の定数分の一にできる）として知られる結果がその根拠の一つである。
+- \ref{comp:ntm-time} の指数的な増加を多項式に改善できるかどうかが、P と NP の問題（\ref{comp:page-np}）である。
+
+**関連する結果.**
+- *拡張されたチャーチ–チューリングの提唱.* 「物理的に実現可能な合理的な計算模型は、どれも決定性 TM で多項式時間の増加で模倣できる」という主張。量子計算機がこれに反するかどうかは未解決である（\ref{comp:page-probabilistic-quantum}）。
+- *行列の積による CYK の高速化*（ヴァリアント）が知られている。
+
+**高い視点から：多項式という「単位」.** 多項式の全体は、和・積・合成で閉じた最小の「自然な」関数のクラスの一つで、プログラムを部品として組み合わせても多項式時間は保たれる（多項式時間の手続きを多項式回呼んでも多項式時間）。これは、原始再帰関数が合成と原始再帰で閉じていたこと（\ref{comp:page-primitive-recursive}）の計算量版である。比喩で言えば、P は「入力が二倍になっても、かかる時間が定数倍にしか増えない」問題のクラスで、指数時間の問題は「入力が一つ増えるごとに時間が倍になる」。計算模型を取り替えても P が変わらないのは、模型どうしの翻訳が「多項式の通貨交換」で済むからである。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ケーニッヒの定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/01-basics/13-konig.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ケーニッヒの定理 {#set:page-konig keywords="König's theorem, Konig's theorem, Koenig's theorem, cardinal exponentiation"}
+
+カントールの定理 $\lvert X\rvert<2^{\lvert X\rvert}$ は、「$1<2$ を $\lvert X\rvert$ 個並べて足したもの（$\lvert X\rvert$）は、掛けたもの（$2^{\lvert X\rvert}$）より真に小さい」と読むこともできる。**ケーニッヒの定理**はこれを一般化し、各項ごとに $\kappa_{i}<\lambda_{i}$ ならば $\sum_{i}\kappa_{i}<\prod_{i}\lambda_{i}$ であると主張する。証明は対角線論法そのものであり、これと共終数（\ref{set:page-cofinality}）を組み合わせると、連続体濃度 $2^{\aleph_{0}}$ について ZFC で証明できるほぼ唯一の非自明な制約 $\cf(2^{\aleph_{0}})>\aleph_{0}$ が得られる。本ページの後半では、GCH のもとで基数の冪がすべて共終数だけで計算できることを示し、GCH を仮定しない場合に何がいえるか（イーストンの定理・シルバーの定理）を紹介する。
+
+## 記法と定義の確認 {#set:sec-konig-notation}
+
+::: notation
+- 本ページでは、特に断らない限り選択公理を仮定する（$\ZFC$）。ただし各証明の「前提条件の使用箇所」で、選択公理がどこで必要かを明示する。
+- 基数・濃度 $\lvert A\rvert$ は \ref{set:cardinal}, \ref{set:cardinality} の意味。AC のもとではすべての集合が整列可能（\ref{set:well-ordering-theorem}）なので、任意の集合 $A$ の濃度 $\lvert A\rvert$ が基数として定まる。基数 $\mu,\nu$ について、単射 $\mu\to\nu$ があることと $\mu\le\nu$ は同値であり（\ref{set:cardinality-basic} (3)。ZF）、基数どうしは順序数として比較可能である。
+- 集合 $B$ から $A$ への写像全体の集合を ${}^{B}A$ と書く（\ref{set:function-set}）。基数 $\kappa,\lambda$ に対し $\kappa^{\lambda}=\lvert{}^{\lambda}\kappa\rvert$ は基数の冪（\ref{set:cardinal-exponentiation}）であり、順序数の冪（\ref{set:ordinal-exponentiation}）ではない。指数法則 $(\kappa^{\lambda})^{\mu}=\kappa^{\lambda\otimes\mu}$ などは \ref{set:exponent-laws}、$2\le\kappa\le\lambda$, $\lambda\ge\omega$ のとき $\kappa^{\lambda}=2^{\lambda}$ となることは \ref{set:two-to-kappa} を参照。$\lvert\mathcal{P}(X)\rvert=2^{\lvert X\rvert}$（特性関数による同一視）。
+- 基数の和・積 $\kappa\oplus\lambda$, $\kappa\otimes\lambda$ は \ref{set:cardinal-sum-product}。無限基数 $\kappa$ について $\kappa\otimes\kappa=\kappa$（\ref{set:kappa-times-kappa}）。$\le\kappa$ 個の、濃度 $\le\kappa$ の集合の和集合の濃度は $\le\kappa$（\ref{set:union-bound}）。
+- $\kappa^{+}$ は後続基数（\ref{set:successor-cardinal}）、$\aleph_{\alpha}$ はアレフ（\ref{set:aleph}）。無限基数はすべてある $\aleph_{\alpha}$ に等しく、極限順序数である（\ref{set:infinite-cardinal-limit}）。
+- 共終写像・共終数 $\cf$ は \ref{set:cofinal-map}, \ref{set:cofinality}。狭義増加な共終写像 $\cf(\kappa)\to\kappa$ の存在は \ref{set:cf-increasing}、アレフの共終数は \ref{set:cf-aleph}。
+- CH・GCH は \ref{set:ch}, \ref{set:gch}。GCH は「任意の無限基数 $\lambda$ について $2^{\lambda}=\lambda^{+}$」と同じことである（無限基数は $\aleph_{\alpha}$ の形なので）。
+:::
+
+## 無限個の基数の和と積 {#set:sec-infinite-sum-product}
+
+::: definition 無限個の基数の和と積 {#set:cardinal-sum-general keywords="infinite sum of cardinals, infinite product of cardinals" index="基数の無限和|きすうのむげんわ, 基数の無限積|きすうのむげんせき"}
+集合 $I$ と、$I$ で添字付けられた基数の族 $\langle\kappa_{i}\mid i\in I\rangle$（すなわち定義域 $I$ の写像 $i\mapsto\kappa_{i}$）に対し、
+$$
+\begin{aligned}
+&\sum_{i\in I}\kappa_{i}=\Bigl\lvert\bigcup_{i\in I}\{i\}\times\kappa_{i}\Bigr\rvert,\\
+&\prod_{i\in I}\kappa_{i}=\Bigl\lvert\bigl\{h\bigm\vert h\text{ は写像}, \dom h=I, \forall i\in I\ (h(i)\in\kappa_{i})\bigr\}\Bigr\rvert
+\end{aligned}
+$$
+と定め、それぞれ**基数の和**、**基数の積**という。右辺の集合をそれぞれ $\bigsqcup_{i\in I}\kappa_{i}$, $\mathsf{X}_{i\in I}\kappa_{i}$ と書く（$\mathsf{X}_{i\in I}\kappa_{i}$ は \ref{set:ac-equivalences} (3) で $\prod_{i\in I}A_{i}$ と書いた直積集合と同じものである。本ページでは記号 $\prod$ を基数の積に使うので、集合の方は $\mathsf{X}$ で表す）。
+:::
+
+::: intuition
+和は「$\kappa_{i}$ たちを互いに交わらないように（添字 $i$ を付けて）並べて合併したもの」の大きさ、積は「各 $i$ ごとに $\kappa_{i}$ から 1 つずつ元を選ぶ選び方」の総数である。$I=\{0,1\}$ なら $\kappa_{0}\oplus\kappa_{1}$, $\kappa_{0}\otimes\kappa_{1}$ と一致する。
+:::
+
+::: example
+- 集合として存在すること：$\bigsqcup_{i\in I}\kappa_{i}\subseteq I\times\bigcup_{i\in I}\kappa_{i}$、$\mathsf{X}_{i\in I}\kappa_{i}\subseteq\mathcal{P}\bigl(I\times\bigcup_{i\in I}\kappa_{i}\bigr)$ であり、置換公理・和集合の公理・冪集合の公理・分出公理で作れる。濃度が基数として定まるのに AC（整列可能定理）を使う。
+- $\sum_{n<\omega}n=\aleph_{0}$、$\prod_{n<\omega}2=2^{\aleph_{0}}$、$\sum_{n<\omega}\aleph_{n}=\aleph_{\omega}$（\ref{set:prob-sum-product-aleph-omega}）。
+- ある $i$ で $\kappa_{i}=0$ なら $\prod_{i\in I}\kappa_{i}=0$。すべての $\kappa_{i}\ge1$ なら、$h(i)=0$ で定まる $h$ が元になるので、積集合は（選択公理なしに）空でない。
+:::
+
+::: lemma 定数族の和と積 {#set:sum-product-constant keywords="sum and product of a constant family"}
+すべての $i\in I$ について $\kappa_{i}=\kappa$ ならば、$\sum_{i\in I}\kappa=\lvert I\rvert\otimes\kappa$、$\prod_{i\in I}\kappa=\kappa^{\lvert I\rvert}$。
+:::
+
+::: proof
+**Step 1（和）.** $\bigsqcup_{i\in I}\kappa=\bigcup_{i\in I}\{i\}\times\kappa=I\times\kappa$。全単射 $e\colon\lvert I\rvert\to I$ をとると $(\eta,\xi)\mapsto(e(\eta),\xi)$ は全単射 $\lvert I\rvert\times\kappa\to I\times\kappa$ なので、$\lvert I\times\kappa\rvert=\lvert\lvert I\rvert\times\kappa\rvert=\lvert I\rvert\otimes\kappa$。
+
+**Step 2（積）.** 定義より $\mathsf{X}_{i\in I}\kappa={}^{I}\kappa$。同じ $e$ により $h\mapsto h\circ e$ は全単射 ${}^{I}\kappa\to{}^{\lvert I\rvert}\kappa$（逆写像は $k\mapsto k\circ e^{-1}$）なので、$\lvert{}^{I}\kappa\rvert=\kappa^{\lvert I\rvert}$。
+
+::: hypcheck
+- **選択公理**：$\lvert I\rvert$ と全単射 $e$ の存在に使った（$I$ が整列可能であることが必要）。$I$ が順序数ならこの部分は不要。
+:::
+:::
+
+::: lemma 和集合の濃度は和で抑えられる {#set:sum-bound keywords="cardinality of a union is at most the sum"}
+$A=\bigcup_{i\in I}A_{i}$ で、各 $i\in I$ について $\lvert A_{i}\rvert\le\kappa_{i}$ ならば、$\lvert A\rvert\le\sum_{i\in I}\kappa_{i}$。
+:::
+
+::: proof
+**Step 1（単射の選択）.** 各 $i$ について単射 $A_{i}\to\kappa_{i}$ の全体 $E_{i}$ は空でない。**選択公理**により、各 $i$ に対し $g_{i}\in E_{i}$ を選ぶ。
+
+**Step 2（添字の選択）.** **選択公理**（整列可能定理）により $I$ の整列順序 $\prec$ を 1 つ固定する。$a\in A$ に対し、$a\in A_{i}$ となる $i$ のうち $\prec$ で最小のものを $i(a)$ とする。
+
+**Step 3（単射の構成）.** $G\colon A\to\bigsqcup_{i\in I}\kappa_{i}$ を $G(a)=\bigl(i(a),\,g_{i(a)}(a)\bigr)$ で定める。$g_{i(a)}(a)\in\kappa_{i(a)}$ なので値は $\bigsqcup_{i}\kappa_{i}$ に入る。$G(a)=G(b)$ なら第 1 成分より $i(a)=i(b)=:i$、第 2 成分より $g_{i}(a)=g_{i}(b)$ で、$g_{i}$ の単射性より $a=b$。
+
+**Step 4.** $G$ は単射なので $\lvert A\rvert\le\sum_{i\in I}\kappa_{i}$。
+
+::: hypcheck
+- **選択公理**：Step 1（単射 $g_{i}$ の同時選択）と Step 2（$A_{i}$ が交わるとき、どの $A_{i}$ に属させるかを一意に決める）で使った。$A_{i}$ が互いに素で、単射 $g_{i}$ が標準的に与えられていれば不要である。
+:::
+:::
+
+## ケーニッヒの定理 {#set:sec-konig-main}
+
+::: theorem ケーニッヒの定理 {#set:konig keywords="König's theorem, Konig's theorem, Koenig's theorem, sum less than product" index="ケーニッヒの定理|けーにっひのていり, ケーニヒの定理|けーにひのていり"}
+集合 $I$ と基数の族 $\langle\kappa_{i}\mid i\in I\rangle$, $\langle\lambda_{i}\mid i\in I\rangle$ が、すべての $i\in I$ について $\kappa_{i}<\lambda_{i}$ を満たすならば、
+$$
+\sum_{i\in I}\kappa_{i}<\prod_{i\in I}\lambda_{i}.
+\label{set:eq-konig}
+$$
+:::
+
+::: intuition
+左辺の集合 $\bigsqcup_{i}\kappa_{i}$ から右辺の集合 $\mathsf{X}_{i}\lambda_{i}$ への写像 $F$ が与えられたとき、「$i$ 番目の区画 $\{i\}\times\kappa_{i}$ から来る $\kappa_{i}$ 個の関数の $i$ 座標」は $\kappa_{i}$ 個しかなく、$\lambda_{i}$ を埋め尽くせない。そこで各座標 $i$ で「その区画が使わなかった値」を選んで関数 $h$ を作ると、$h$ は $i$ 番目の区画のどの関数とも $i$ 座標で異なるので、$F$ の値域から漏れる。区画ごとに別の座標で差をつける、カントールの対角線論法の「ブロック版」である。
+:::
+
+証明の中心は次の補題で、こちらは選択公理なしに成り立つ。
+
+::: lemma 対角線補題 {#set:konig-diagonal keywords="diagonal lemma for König's theorem"}
+（ZF）集合 $I$ と基数の族 $\langle\kappa_{i}\mid i\in I\rangle$, $\langle\lambda_{i}\mid i\in I\rangle$ がすべての $i$ で $\kappa_{i}<\lambda_{i}$ を満たすとする。$S=\bigsqcup_{i\in I}\kappa_{i}$、$P=\mathsf{X}_{i\in I}\lambda_{i}$ とおく。このとき、任意の写像 $F\colon S\to P$ は全射でない。
+:::
+
+::: proof
+写像 $F\colon S\to P$ を任意にとる。$S$ の元は $(i,\xi)$（$i\in I$, $\xi<\kappa_{i}$）の形で、$F(i,\xi)\in P$ は $I$ 上の写像である。
+
+**Step 1（$i$ 番目の区画が $i$ 座標で使う値）.** 各 $i\in I$ について
+$$
+E_{i}=\bigl\{F(i,\xi)(i)\bigm\vert\xi<\kappa_{i}\bigr\}
+\label{set:eq-konig-used-values}
+$$
+とおく。$F(i,\xi)\in P$ なので $F(i,\xi)(i)\in\lambda_{i}$、すなわち $E_{i}\subseteq\lambda_{i}$。族 $\langle E_{i}\mid i\in I\rangle$ は置換公理で得られる。
+
+**Step 2（$E_{i}\ne\lambda_{i}$）.** ある $i$ で $E_{i}=\lambda_{i}$ と仮定する。すると $\xi\mapsto F(i,\xi)(i)$ は $\kappa_{i}$ から $\lambda_{i}$ への全射である。各 $\zeta<\lambda_{i}$ に、$F(i,\xi)(i)=\zeta$ となる**最小の** $\xi<\kappa_{i}$ を対応させると、これは単射 $\lambda_{i}\to\kappa_{i}$ である（値 $\xi$ から $\zeta=F(i,\xi)(i)$ が復元できる）。基数についての単射の存在と大小の同値性（\ref{set:cardinality-basic} (3)。ZF で成り立つ）より $\lambda_{i}\le\kappa_{i}$ となり、$\kappa_{i}<\lambda_{i}$ に反する。よって各 $i$ で $\lambda_{i}\setminus E_{i}\ne\varnothing$。
+
+**Step 3（対角関数の定義）.** $h\colon I\to\bigcup_{i}\lambda_{i}$ を
+$$
+h(i)=\min\bigl(\lambda_{i}\setminus E_{i}\bigr)
+\label{set:eq-konig-diagonal-function}
+$$
+で定める。Step 2 より右辺の集合は空でない順序数の集合なので最小元が一意に定まり、置換公理で $h$ が集合として得られる。$h(i)\in\lambda_{i}$ なので $h\in P$。
+
+**Step 4（$h$ は値域に入らない）.** 任意の $(i,\xi)\in S$ をとる。$F(i,\xi)(i)\in E_{i}$ であり、$h(i)\notin E_{i}$ なので $h(i)\ne F(i,\xi)(i)$。したがって $h\ne F(i,\xi)$。$(i,\xi)$ は任意だったので $h\notin\ran F$ であり、$F$ は全射でない。
+
+::: hypcheck
+- **$\kappa_{i}<\lambda_{i}$**：Step 2 で $E_{i}\ne\lambda_{i}$ を導くのに使った。これが各 $i$ で成り立つことが本質で、1 つの $i$ でも $\kappa_{i}\ge\lambda_{i}$ だと、その座標で差をつけられない。
+- **$\kappa_{i}$, $\lambda_{i}$ が順序数であること**：Step 2 で最小の逆像をとり、Step 3 で最小元をとるのに使った。どちらも**選択を行っていない**。
+- **置換公理・分出公理・和集合の公理**：Step 1・Step 3 で族 $E_{i}$ と $h$ を作るのに使った。
+- 選択公理は使っていない。添字集合 $I$ には何の構造も仮定していない。
+:::
+:::
+
+::: restate {ref="set:konig"}
+:::
+
+::: proof
+$S=\bigsqcup_{i\in I}\kappa_{i}$、$P=\mathsf{X}_{i\in I}\lambda_{i}$ とおく。定義より $\sum_{i}\kappa_{i}=\lvert S\rvert$、$\prod_{i}\lambda_{i}=\lvert P\rvert$。
+
+**Step 1（濃度が定まること）.** **選択公理**（整列可能定理 \ref{set:well-ordering-theorem}）により $S$ と $P$ は整列可能であり、$\lvert S\rvert$, $\lvert P\rvert$ は基数として定まる。
+
+**Step 2（$P\ne\varnothing$）.** 各 $i$ で $0\le\kappa_{i}<\lambda_{i}$ なので $0\in\lambda_{i}$。よって $h_{0}(i)=0$ で定まる $h_{0}$ は $P$ の元である。
+
+**Step 3（$\lvert P\rvert\le\lvert S\rvert$ と仮定すると矛盾）.** $\lvert P\rvert\le\lvert S\rvert$ なら単射 $j\colon P\to S$ がある（全単射 $P\to\lvert P\rvert$、包含 $\lvert P\rvert\subseteq\lvert S\rvert$、全単射 $\lvert S\rvert\to S$ の合成）。$F\colon S\to P$ を、$s\in\ran j$ なら $F(s)=j^{-1}(s)$（$j$ は単射なので一意）、そうでなければ $F(s)=h_{0}$ と定める。任意の $p\in P$ について $F(j(p))=p$ なので $F$ は全射であり、\ref{set:konig-diagonal} に反する。
+
+**Step 4（結論）.** $\lvert S\rvert$ と $\lvert P\rvert$ は基数（順序数）なので、$\lvert S\rvert<\lvert P\rvert$ か $\lvert P\rvert\le\lvert S\rvert$ のどちらかである。Step 3 より後者は起こらないので $\lvert S\rvert<\lvert P\rvert$、すなわち \eqref{set:eq-konig} が成り立つ。
+
+::: hypcheck
+- **選択公理**：Step 1 で $S$, $P$ を整列し、和と積を基数として定めるのに使った。Step 4 で「$<$ か $\ge$ か」の二者択一ができるのも、両者が基数（順序数）だからである。
+- **対角線補題 \ref{set:konig-diagonal}**：Step 3 の矛盾に使った。この部分は ZF で成り立つ。
+- **$\kappa_{i}<\lambda_{i}$**：Step 2 で $0\in\lambda_{i}$ を得るのにも使った（$\lambda_{i}\ge1$）。
+:::
+:::
+
+::: supplement
+**前提を変えると.**
+- *各項の狭義不等号は外せない*：$\kappa_{i}=\lambda_{i}=1$ とすると $\sum_{i\in I}1=\lvert I\rvert$、$\prod_{i\in I}1=1$ なので、$\lvert I\rvert\ge2$ で \eqref{set:eq-konig} は成り立たない。
+- *「和 < 和」「積 < 積」は一般には成り立たない*：$\kappa_{n}=n<n+1=\lambda_{n}$ でも $\sum_{n<\omega}n=\sum_{n<\omega}(n+1)=\aleph_{0}$。$2<3$ でも $\prod_{n<\omega}2=\prod_{n<\omega}3=2^{\aleph_{0}}$（\ref{set:two-to-kappa}）。ケーニッヒの定理は、小さい側を**和**、大きい側を**積**にしてはじめて狭義の不等号が保たれることを主張している。
+- *集合の濃度の形*：AC のもとで、集合の族 $A_{i}$, $B_{i}$ が各 $i$ で $\lvert A_{i}\rvert<\lvert B_{i}\rvert$ を満たせば $\bigl\lvert\bigcup_{i}A_{i}\bigr\rvert<\bigl\lvert\prod_{i}B_{i}\bigr\rvert$（\ref{set:sum-bound} と本定理から従う）。
+- *選択公理を外すと*：対角線補題は ZF で成り立つので「全射 $S\to P$ は存在しない」までは言える。しかし集合の濃度の形は崩れる。ZF が無矛盾ならば、「2 元集合の可算族 $\langle B_{n}\mid n<\omega\rangle$ で選択関数をもたないもの」が存在するモデルがある（ラッセルの靴下。Jech, *The Axiom of Choice* (1973) 参照）。$A_{n}=\{n\}$ とすると $\lvert A_{n}\rvert=1<2=\lvert B_{n}\rvert$ だが、$\bigcup_{n}A_{n}=\omega$ に対して $\prod_{n}B_{n}=\varnothing$ である。積集合が空でないこと自体が選択公理の一形態（\ref{set:choice-function}）であることを思い出すとよい。
+:::
+
+## 系 {#set:sec-konig-corollaries}
+
+::: corollary カントールの定理はケーニッヒの定理の特殊ケース {#set:konig-cantor keywords="Cantor's theorem as a special case of König's theorem"}
+任意の集合 $X$ に対し $\lvert X\rvert<2^{\lvert X\rvert}$。さらに対角線補題 \ref{set:konig-diagonal} の特殊ケースとして、選択公理なしに、全射 $X\to{}^{X}2$ は存在しない。
+:::
+
+::: proof
+**Step 1（特殊化）.** $I=X$、すべての $x\in X$ について $\kappa_{x}=1$, $\lambda_{x}=2$ とおく。$1<2$ なので仮定は満たされる。
+
+**Step 2（和と積の計算）.** $S=\bigsqcup_{x\in X}1=X\times\{0\}$ で、$x\mapsto(x,0)$ は全単射 $X\to S$。$P=\mathsf{X}_{x\in X}2={}^{X}2$。よって $\sum_{x}1=\lvert X\rvert$、$\prod_{x}2=\lvert{}^{X}2\rvert=2^{\lvert X\rvert}$。
+
+**Step 3.** ケーニッヒの定理 \ref{set:konig} より $\lvert X\rvert<2^{\lvert X\rvert}$。
+
+**Step 4（選択公理を使わない部分）.** 全射 $f\colon X\to{}^{X}2$ があれば、$F(x,0)=f(x)$ は全射 $S\to P$ であり \ref{set:konig-diagonal} に反する。この補題は ZF で示したので、この部分は選択公理を使わない。
+
+::: hypcheck
+- **選択公理**：Step 3（ケーニッヒの定理）で、$\lvert X\rvert$ と $2^{\lvert X\rvert}$ を基数として比べるのに使った。
+- Step 4 は \ref{set:konig-diagonal} だけを使うので ZF で成り立つ。
+:::
+:::
+
+::: supplement
+**対角集合との対応.** Step 4 で対角線補題の証明をたどると、$E_{x}=\{f(x)(x)\}$ であり、対角関数 \eqref{set:eq-konig-diagonal-function} は
+$$
+h(x)=\min\bigl(2\setminus\{f(x)(x)\}\bigr)=1-f(x)(x)
+$$
+となる。$f(x)$ を部分集合 $A_{x}=\{y\mid f(x)(y)=1\}$ の特性関数とみれば、$h$ は $\{x\in X\mid x\notin A_{x}\}$ の特性関数、すなわちカントールの定理 \ref{set:cantor} の対角集合 \eqref{set:eq-cantor-diagonal} そのものである。ケーニッヒの定理の証明は、1 点ずつの対角線を「区画ごと」に広げたものといえる。ただしカントールの定理自体は ZF で成り立つ（\ref{set:cantor}）のに対し、不等式 $\lvert X\rvert<2^{\lvert X\rvert}$ を基数の比較として述べるには、$X$ と $\mathcal{P}(X)$ の整列可能性が要る。
+:::
+
+::: corollary $\kappa^{\cf\kappa}>\kappa$ {#set:konig-cofinality-power keywords="kappa^cf(kappa) > kappa, König's lemma" index="ケーニッヒの補題|けーにっひのほだい"}
+$\kappa$ を無限基数とする。基数 $\lambda\ge\cf(\kappa)$ ならば $\kappa^{\lambda}>\kappa$。特に $\kappa^{\cf(\kappa)}>\kappa$。
+:::
+
+::: intuition
+$\kappa$ は長さ $\cf(\kappa)$ の列で下から到達できるので、「$\kappa$ より小さいもの $\cf(\kappa)$ 個の和」として書ける。これに対し $\kappa^{\cf(\kappa)}$ は「$\kappa$ を $\cf(\kappa)$ 個掛けたもの」なので、項ごとに小さい和と大きい積を比べるケーニッヒの定理がそのまま使える。
+:::
+
+::: example
+- $\kappa=\aleph_{\omega}$：$\cf(\aleph_{\omega})=\aleph_{0}$（\ref{set:aleph-omega-singular}）なので $\aleph_{\omega}^{\aleph_{0}}>\aleph_{\omega}$。これはカントールの対角線論法の変形で直接示すこともできる：写像 $G\colon\aleph_{\omega}\to{}^{\omega}\aleph_{\omega}$ に対し、$h(n)$ を $\{G(\zeta)(n)\mid\zeta<\aleph_{n}\}$ に属さない最小の元とすれば、$h$ は $G$ の値域に入らない。
+- $\kappa$ が正則なら $\cf(\kappa)=\kappa$ で、結論は $\kappa^{\kappa}>\kappa$ となるが、これはカントールの定理 $\kappa<2^{\kappa}\le\kappa^{\kappa}$ から既にわかる。この系が新しい情報をもたらすのは、$\kappa$ が特異な場合である。
+:::
+
+::: proof
+$\mu=\cf(\kappa)$ とおく。
+
+**Step 1.** \ref{set:cf-increasing} により狭義増加な共終写像 $f\colon\mu\to\kappa$ をとる。
+
+**Step 2（$\kappa$ を小さな集合の和で表す）.** $\kappa=\bigcup_{\xi<\mu}f(\xi)$ を示す。$\supseteq$ は $f(\xi)<\kappa$ より $f(\xi)\subseteq\kappa$。$\subseteq$：$\kappa$ は無限基数なので極限順序数であり、$\zeta<\kappa$ なら $\zeta+1<\kappa$。共終性より $\zeta+1\le f(\xi)$ となる $\xi<\mu$ があり、$\zeta\in f(\xi)$。
+
+**Step 3（各部分は小さい）.** $\kappa_{\xi}=\lvert f(\xi)\rvert$ とおくと $\kappa_{\xi}\le f(\xi)<\kappa$。
+
+**Step 4（和と積の比較）.** \ref{set:sum-bound}、ケーニッヒの定理 \ref{set:konig}（各 $\xi$ で $\kappa_{\xi}<\kappa$）、\ref{set:sum-product-constant} を順に使うと
+$$
+\kappa=\Bigl\lvert\bigcup_{\xi<\mu}f(\xi)\Bigr\rvert\le\sum_{\xi<\mu}\kappa_{\xi}<\prod_{\xi<\mu}\kappa=\kappa^{\mu}.
+$$
+
+**Step 5（指数を大きくする）.** $\mu\le\lambda$ とする。$k\in{}^{\mu}\kappa$ を、$\lambda\setminus\mu$ 上で値 $0$ をとるように延長した写像 $\bar{k}\in{}^{\lambda}\kappa$ に写すと、これは単射 ${}^{\mu}\kappa\to{}^{\lambda}\kappa$（$\bar{k}\restr{\mu}=k$ なので $k$ が復元できる）。よって $\kappa^{\mu}\le\kappa^{\lambda}$ であり、Step 4 と合わせて $\kappa<\kappa^{\lambda}$。
+
+::: hypcheck
+- **選択公理**：Step 4 で \ref{set:sum-bound} とケーニッヒの定理を使うところ、および $\kappa^{\lambda}$ を基数として定めるところで使った。
+- **$\kappa$ が無限であること**：Step 2 で $\kappa$ が極限順序数であることに使った。有限の $\kappa=n\ge1$ では $\cf(n)=1$ で、$n^{1}=n$ なので結論は成り立たない。
+- **共終性**：Step 2 で使った。$\lambda<\cf(\kappa)$ では結論が成り立つとは限らない（GCH のもとで $\kappa^{\lambda}=\kappa$ となる。\ref{set:gch-exponentiation} (3)）。
+:::
+:::
+
+::: corollary $\cf(2^{\lambda})>\lambda$ {#set:konig-cf-power keywords="cf(2^lambda) > lambda, cofinality of the continuum" index="連続体濃度の共終数|れんぞくたいのうどのきょうしゅうすう"}
+$\kappa\ge2$ を基数、$\lambda$ を無限基数とすると $\cf(\kappa^{\lambda})>\lambda$。特に $\cf(2^{\lambda})>\lambda$ であり、$\cf(2^{\aleph_{0}})>\aleph_{0}$。
+:::
+
+::: proof
+$\nu=\kappa^{\lambda}$ とおく。
+
+**Step 1（$\nu$ は無限）.** $2\le\kappa$ なので ${}^{\lambda}2\subseteq{}^{\lambda}\kappa$ であり、$\nu\ge2^{\lambda}>\lambda\ge\omega$（\ref{set:cantor-strict}）。
+
+**Step 2（$\nu^{\lambda}=\nu$）.** 指数法則 \ref{set:exponent-laws} と \ref{set:kappa-times-kappa} より
+$$
+\nu^{\lambda}=(\kappa^{\lambda})^{\lambda}=\kappa^{\lambda\otimes\lambda}=\kappa^{\lambda}=\nu.
+$$
+
+**Step 3（背理法）.** $\cf(\nu)\le\lambda$ と仮定すると、$\nu$ は無限基数なので \ref{set:konig-cofinality-power} より $\nu^{\lambda}>\nu$。これは Step 2 と矛盾する。よって $\cf(\nu)>\lambda$。
+
+**Step 4.** $\kappa=2$, $\lambda=\aleph_{0}$ とすれば $\cf(2^{\aleph_{0}})>\aleph_{0}$。
+
+::: hypcheck
+- **選択公理**：\ref{set:konig-cofinality-power} を通じて使った。
+- **$\lambda$ が無限であること**：Step 2 の $\lambda\otimes\lambda=\lambda$ に使った。$\lambda$ が有限なら $\cf(2^{\lambda})=1$（$2^{\lambda}$ は後続順序数）で、$\lambda\ge1$ のとき結論は成り立たない。
+- **$\kappa\ge2$**：Step 1 で $\nu$ が無限であることに使った。
+:::
+:::
+
+::: corollary $2^{\aleph_{0}}\ne\aleph_{\omega}$ {#set:continuum-not-aleph-omega keywords="continuum is not aleph_omega" index="連続体濃度|れんぞくたいのうど"}
+$\alpha$ が $\cf(\alpha)=\omega$ となる極限順序数ならば $2^{\aleph_{0}}\ne\aleph_{\alpha}$。特に $2^{\aleph_{0}}\ne\aleph_{\omega}$, $\aleph_{\omega+\omega}$, $\aleph_{\aleph_{\omega}}$。
+:::
+
+::: proof
+\ref{set:cf-aleph} より $\cf(\aleph_{\alpha})=\cf(\alpha)=\omega$。一方 \ref{set:konig-cf-power} より $\cf(2^{\aleph_{0}})>\aleph_{0}=\omega$。よって $2^{\aleph_{0}}\ne\aleph_{\alpha}$。$\omega$, $\omega+\omega$, $\aleph_{\omega}$ はいずれも共終数 $\omega$ の極限順序数である（\ref{set:page-cofinality} の例）。
+
+::: hypcheck
+- **選択公理**：\ref{set:konig-cf-power} を通じて使った（\ref{set:cf-aleph} は ZF）。
+- **$\cf(\alpha)=\omega$**：$\cf(\aleph_{\alpha})=\omega$ を得るのに使った。$\cf(\alpha)>\omega$ なら結論は成り立つとは限らない（下の補足）。
+:::
+:::
+
+::: supplement
+同様に $2^{\aleph_{1}}$ は共終数が $\aleph_{1}$ 以下の基数（たとえば $\aleph_{\omega}$ や $\aleph_{\omega_{1}}$）にはなりえない。一方、$2^{\aleph_{0}}=\aleph_{\omega_{1}}$ はケーニッヒの定理と矛盾しない（$\cf(\aleph_{\omega_{1}})=\aleph_{1}>\aleph_{0}$）。実際、次節のイーストンの定理により、単調性と $\cf(2^{\kappa})>\kappa$ 以外に ZFC から導ける制約は（正則基数 $\kappa$ については）ない。
+:::
+
+## GCH のもとでの冪の計算 {#set:sec-gch-exponentiation}
+
+::: theorem GCH のもとでの基数の冪 {#set:gch-exponentiation keywords="cardinal exponentiation under GCH" index="GCHのもとでの冪|じーしーえいちのもとでのべき"}
+（AC + GCH）基数 $\kappa,\lambda\ge2$ の少なくとも一方が無限ならば、次が成り立つ。
+
+1. $\kappa\le\lambda$ ならば $\kappa^{\lambda}=\lambda^{+}$。
+2. $\cf(\kappa)\le\lambda<\kappa$ ならば $\kappa^{\lambda}=\kappa^{+}$。
+3. $\lambda<\cf(\kappa)$ ならば $\kappa^{\lambda}=\kappa$。
+:::
+
+::: intuition
+$\cf(\kappa)\le\kappa$ なので 3 つの場合で可能性はすべて尽くされる。GCH のもとでは冪 $\kappa^{\lambda}$ は $\kappa$, $\kappa^{+}$, $\lambda^{+}$ のどれかであり、どれになるかは $\lambda$ と $\kappa$、$\cf(\kappa)$ の大小だけで決まる。(3) は「長さ $\lambda$ の列は $\kappa$ の中で有界」なので $\kappa$ より小さい部分の冪を集めれば済むこと、(2) は「ケーニッヒの定理が冪を押し上げる」ことを表している。
+:::
+
+::: example
+GCH のもとで：
+| 冪 | 場合 | 値 |
+|---|---|---|
+| $\aleph_{0}^{\aleph_{0}}$, $\aleph_{1}^{\aleph_{1}}$ | (1) | $\aleph_{1}$, $\aleph_{2}$ |
+| $\aleph_{1}^{\aleph_{0}}$, $\aleph_{5}^{\aleph_{3}}$ | (3)（後続基数は正則） | $\aleph_{1}$, $\aleph_{5}$ |
+| $\aleph_{\omega}^{\aleph_{0}}$, $\aleph_{\omega}^{\aleph_{1}}$ | (2)（$\cf(\aleph_{\omega})=\aleph_{0}$） | $\aleph_{\omega+1}$ |
+| $\aleph_{\omega_{1}}^{\aleph_{0}}$ | (3)（$\cf(\aleph_{\omega_{1}})=\aleph_{1}>\aleph_{0}$） | $\aleph_{\omega_{1}}$ |
+| $\aleph_{\omega_{1}}^{\aleph_{1}}$ | (2) | $\aleph_{\omega_{1}+1}$ |
+| $\aleph_{\omega}^{n}$（$2\le n<\omega$） | (3) | $\aleph_{\omega}$ |
+:::
+
+::: proof
+3 つの場合は互いに排他的で、$\cf(\kappa)\le\kappa$ よりすべての場合を尽くしている。
+
+**(1).** $\kappa\le\lambda$ で一方が無限なので、$\lambda$ は無限である（$\lambda$ が有限なら $\kappa\le\lambda$ も有限になる）。$2\le\kappa\le\lambda$ なので \ref{set:two-to-kappa} より $\kappa^{\lambda}=2^{\lambda}$。念のため評価を書くと
+$$
+2^{\lambda}\le\kappa^{\lambda}\le\lambda^{\lambda}\le(2^{\lambda})^{\lambda}=2^{\lambda\otimes\lambda}=2^{\lambda}
+$$
+（底を大きくすると写像の集合が包含で大きくなることと、$\lambda<2^{\lambda}$、指数法則、$\lambda\otimes\lambda=\lambda$ による）。GCH より $2^{\lambda}=\lambda^{+}$。
+
+**(2).** *$\kappa$, $\lambda$ は無限*：$\lambda<\kappa$ で一方が無限なので $\kappa$ は無限。$\kappa$ は極限順序数なので \ref{set:cf-basic} (3) より $\cf(\kappa)\ge\omega$、よって $\lambda\ge\cf(\kappa)\ge\omega$。
+
+*下からの評価*：\ref{set:konig-cofinality-power} より $\kappa^{\lambda}>\kappa$、したがって $\kappa^{\lambda}\ge\kappa^{+}$。
+
+*上からの評価*：$\lambda<\kappa$ なので、\ref{set:konig-cofinality-power} の証明の Step 5 と同じ延長の単射により $\kappa^{\lambda}\le\kappa^{\kappa}$。(1) を $\lambda:=\kappa$ に適用すると $\kappa^{\kappa}=\kappa^{+}$。
+
+よって $\kappa^{\lambda}=\kappa^{+}$。
+
+**(3).** *$\kappa$ は極限順序数*：$\cf(\kappa)>\lambda\ge2$。\ref{set:cf-basic} (2) より $\kappa=0$ なら $\cf(\kappa)=0$、$\kappa$ が後続順序数なら $\cf(\kappa)=1$ なので、どちらでもない。よって $\kappa$ は極限順序数で、特に無限基数である。
+
+*Step 1（写像は有界）.* $g\in{}^{\lambda}\kappa$ とする。$\lambda<\cf(\kappa)$ なので $g$ は共終写像ではない。すなわち、ある $\zeta<\kappa$ について、すべての $\eta<\lambda$ で $g(\eta)<\zeta$ となる（「$\forall\zeta<\kappa\ \exists\eta\ \zeta\le g(\eta)$」の否定）。よって $g\in{}^{\lambda}\zeta$。したがって
+$$
+{}^{\lambda}\kappa=\bigcup_{\zeta<\kappa}{}^{\lambda}\zeta.
+\label{set:eq-gch-bounded-union}
+$$
+（$\supseteq$ は ${}^{\lambda}\zeta\subseteq{}^{\lambda}\kappa$ による。）
+
+*Step 2（各項の評価）.* $\zeta<\kappa$ を固定し、$\nu=\lvert\zeta\rvert<\kappa$ とおく。全単射 $\zeta\to\nu$ との合成で $\lvert{}^{\lambda}\zeta\rvert=\nu^{\lambda}$。$\nu^{\lambda}\le\kappa$ を示す。
+- $\nu\le1$ のとき：${}^{\lambda}\nu$ の元は高々 1 つなので $\nu^{\lambda}\le1<\kappa$。
+- $\nu\ge2$ で $\lambda$ が有限のとき：$\nu$ が有限なら $\nu^{\lambda}$ は有限（\ref{set:finite-exponentiation}）で $<\kappa$。$\nu$ が無限なら $\lambda$ についての帰納法で $\nu^{\lambda}=\nu$（$\nu^{1}=\nu$、$\nu^{m+1}=\nu^{m}\otimes\nu=\nu\otimes\nu=\nu$。指数法則と \ref{set:kappa-times-kappa}）なので $\nu^{\lambda}<\kappa$。
+- $\nu\ge2$ で $\lambda$ が無限のとき：$\rho=\max(\nu,\lambda)$ は無限基数で、$\nu<\kappa$ かつ $\lambda<\cf(\kappa)\le\kappa$ より $\rho<\kappa$。底と指数の単調性と (1) より $\nu^{\lambda}\le\rho^{\rho}=\rho^{+}$。$\rho<\kappa$ で $\kappa$ は基数なので $\rho^{+}\le\kappa$。
+
+いずれの場合も $\lvert{}^{\lambda}\zeta\rvert\le\kappa$。
+
+*Step 3（和集合の評価）.* \eqref{set:eq-gch-bounded-union} の右辺は $\kappa$ 個の、濃度 $\le\kappa$ の集合の和集合なので、\ref{set:union-bound} より濃度は $\le\kappa$。よって $\kappa^{\lambda}\le\kappa$。
+
+*Step 4（下からの評価）.* $\lambda\ge1$ なので、$\alpha<\kappa$ に値 $\alpha$ の定値写像 $\lambda\to\kappa$ を対応させる写像は単射 $\kappa\to{}^{\lambda}\kappa$。よって $\kappa\le\kappa^{\lambda}$。以上より $\kappa^{\lambda}=\kappa$。
+
+::: hypcheck
+- **GCH**：(1) の $2^{\lambda}=\lambda^{+}$ で使い、(2)・(3) はそれを通じて使った。
+- **選択公理**：冪を基数として定めるところ、(2) のケーニッヒの定理（\ref{set:konig-cofinality-power}）、(3) Step 3 の \ref{set:union-bound} で使った。
+- **共終数**：(2) では $\cf(\kappa)\le\lambda$ がケーニッヒの定理を適用する条件、(3) では $\lambda<\cf(\kappa)$ が Step 1 で「写像が有界」になる条件として使われた。共終数が冪の計算の分かれ目になっている。
+- **一方が無限であること**：(1) で $\lambda$ の無限性、(2) で $\kappa$ の無限性を導くのに使った。両方有限なら $\kappa^{\lambda}$ は通常の自然数の冪である。
+:::
+:::
+
+::: supplement
+**前提を変えると.** GCH を CH（$2^{\aleph_{0}}=\aleph_{1}$）に弱めても、$1\le n<\omega$ について $\aleph_{n}^{\aleph_{0}}=\aleph_{n}$ は成り立つ（\ref{set:prob-ch-aleph-n}）。一方、GCH を仮定しないと (1) の $2^{\lambda}$ 自体が ZFC では決まらない（次節）。なお ZFC だけでも、$\lambda<\cf(\kappa)$ のとき ${}^{\lambda}\kappa=\bigcup_{\zeta<\kappa}{}^{\lambda}\zeta$（(3) の Step 1）は成り立ち、これが基数の冪を計算する基本的な道具になる。
+:::
+
+## 連続体関数の自由度：イーストンの定理とシルバーの定理 {#set:sec-easton-silver}
+
+ZFC で証明できる $\kappa\mapsto2^{\kappa}$（連続体関数）の性質として、ここまでに次の 2 つを得た。
+- **単調性**：$\kappa\le\lambda\Rightarrow2^{\kappa}\le2^{\lambda}$（${}^{\kappa}2$ を ${}^{\lambda}2$ に延長で埋め込む）。
+- **ケーニッヒの制約**：$\cf(2^{\kappa})>\kappa$（\ref{set:konig-cf-power}）。
+
+正則基数の上では、これで全部であることが知られている。
+
+::: fact イーストンの定理 {#set:easton keywords="Easton's theorem" index="イーストンの定理|いーすとんのていり"}
+$\ZFC+\mathrm{GCH}$ のモデル $M$（たとえば構成可能集合の宇宙 $\mathbf{L}$ から作る可算推移的モデル）と、$M$ の中の、正則基数を定義域とし基数を値とする関数 $F$（適当に定義可能なクラス関数でもよい）で
+
+1. 正則基数 $\kappa\le\lambda$ について $F(\kappa)\le F(\lambda)$、
+2. 各正則基数 $\kappa$ について $\cf(F(\kappa))>\kappa$
+
+を満たすものが与えられると、$M$ の強制拡大で、共終数（したがって基数）を保ち、すべての正則基数 $\kappa$ について $2^{\kappa}=F(\kappa)$ となるものが存在する（W. B. Easton, *Powers of regular cardinals*, Ann. Math. Logic 1 (1970), 139–178。Kunen, *Set Theory* (1980), 第 VIII 章）。
+:::
+
+::: supplement
+特に $2^{\aleph_{0}}$ は、$\cf(\kappa)>\aleph_{0}$ を満たす任意の基数 $\kappa$ になりうる（$\aleph_{1}$, $\aleph_{2}$, $\aleph_{\omega+1}$, $\aleph_{\omega_{1}}$ など。$\aleph_{\omega}$ は \ref{set:continuum-not-aleph-omega} により不可能）。つまり、正則基数における連続体関数について ZFC が言えることは、単調性とケーニッヒの定理でちょうど尽きている。イーストンの定理は特異基数 $\kappa$ での $2^{\kappa}$ については何も主張しない。
+:::
+
+::: fact シルバーの定理 {#set:silver keywords="Silver's theorem, singular cardinals hypothesis" index="シルバーの定理|しるばーのていり, 特異基数問題|とくいきすうもんだい"}
+（ZFC）$\kappa$ を $\cf(\kappa)>\omega$ となる特異基数とする。すべての基数 $\lambda<\kappa$ について $2^{\lambda}=\lambda^{+}$ ならば、$2^{\kappa}=\kappa^{+}$ である（J. Silver, *On the singular cardinals problem*, Proc. Int. Congress of Mathematicians (Vancouver, 1974), Vol. 1, 1975, 265–268）。
+:::
+
+::: supplement
+**特異基数は正則基数と振る舞いが違う.** イーストンの定理が示すとおり、正則基数では GCH を 1 か所だけ崩すことが自由にできる。ところがシルバーの定理によれば、共終数が非可算な特異基数 $\kappa$ では、GCH が $\kappa$ より下で成り立てば $\kappa$ でも自動的に成り立つ。仮定は「$\lambda<\kappa$ のうち"十分多く"（定常集合をなす $\lambda$）で成り立つ」に弱められることが知られている。
+
+**共終数 $\omega$ の場合.** シルバーの定理は $\cf(\kappa)=\omega$（たとえば $\kappa=\aleph_{\omega}$）には適用できない。実際マギドール（M. Magidor, 1977）は、巨大基数の無矛盾性を仮定して、「$n<\omega$ について $2^{\aleph_{n}}=\aleph_{n+1}$ かつ $2^{\aleph_{\omega}}=\aleph_{\omega+2}$」の無矛盾性を示した。他方シェラハの pcf 理論によれば、$\aleph_{\omega}$ が強極限基数（すべての $n$ で $2^{\aleph_{n}}<\aleph_{\omega}$）ならば $2^{\aleph_{\omega}}<\aleph_{\omega_{4}}$ が ZFC で証明できる。特異基数での冪の振る舞いを問う**特異基数問題**は、ケーニッヒの定理から始まる基数算術の現代的な主題である。
+:::
+
+## 問題 {#set:sec-konig-problems}
+
+::: problem {#set:prob-sum-product-aleph-omega}
+（AC）$\sum_{n<\omega}\aleph_{n}=\aleph_{\omega}$ と $\prod_{n<\omega}\aleph_{n}=\aleph_{\omega}^{\aleph_{0}}$ を示せ。これとケーニッヒの定理から、改めて $\aleph_{\omega}<\aleph_{\omega}^{\aleph_{0}}$ を導け。
+:::
+
+::: solution
+**和.** $\aleph_{\omega}=\bigcup_{n<\omega}\aleph_{n}$ なので \ref{set:sum-bound} より $\aleph_{\omega}\le\sum_{n}\aleph_{n}$。一方 $\bigsqcup_{n}\aleph_{n}\subseteq\omega\times\aleph_{\omega}$ なので $\sum_{n}\aleph_{n}\le\aleph_{0}\otimes\aleph_{\omega}=\aleph_{\omega}$（\ref{set:kappa-times-kappa}）。
+
+**積の上界.** $\mathsf{X}_{n}\aleph_{n}\subseteq{}^{\omega}\aleph_{\omega}$ なので $\prod_{n}\aleph_{n}\le\aleph_{\omega}^{\aleph_{0}}$。
+
+**積の下界.** $\omega$ を無限集合の可算族 $\langle A_{k}\mid k<\omega\rangle$ に互いに素に分割する（たとえば $A_{k}=\{2^{k}(2m+1)-1\mid m<\omega\}$）。
+- 制限写像 $h\mapsto\langle h\restr{A_{k}}\mid k<\omega\rangle$ は全単射 $\mathsf{X}_{n<\omega}\aleph_{n}\to\mathsf{X}_{k<\omega}Q_{k}$（$Q_{k}=\mathsf{X}_{n\in A_{k}}\aleph_{n}$）である（逆写像は各部分を貼り合わせる）。
+- 各 $k$ について $\lvert Q_{k}\rvert\ge\aleph_{\omega}$：$m\in A_{k}$ ごとに、$\alpha<\aleph_{m}$ を「$m$ 座標が $\alpha$、他の座標が $0$」の元に送る単射 $\aleph_{m}\to Q_{k}$ があるので $\lvert Q_{k}\rvert\ge\aleph_{m}$。$A_{k}$ は無限なので $m$ はいくらでも大きくとれ、$\lvert Q_{k}\rvert\ge\sup_{m\in A_{k}}\aleph_{m}=\aleph_{\omega}$。
+- **選択公理**で各 $k$ について単射 $u_{k}\colon\aleph_{\omega}\to Q_{k}$ を選ぶと、$g\mapsto\langle u_{k}(g(k))\mid k<\omega\rangle$ は単射 ${}^{\omega}\aleph_{\omega}\to\mathsf{X}_{k}Q_{k}$。
+
+よって $\aleph_{\omega}^{\aleph_{0}}\le\prod_{n}\aleph_{n}$ となり、等号が成り立つ。
+
+**結論.** 各 $n$ で $\aleph_{n}<\aleph_{n+1}$ なので、ケーニッヒの定理より
+$$
+\aleph_{\omega}=\sum_{n<\omega}\aleph_{n}<\prod_{n<\omega}\aleph_{n+1}\le\prod_{n<\omega}\aleph_{\omega}=\aleph_{\omega}^{\aleph_{0}}.
+$$
+:::
+
+::: problem {#set:prob-ch-aleph-n}
+（AC + CH。GCH は仮定しない）$1\le n<\omega$ について $\aleph_{n}^{\aleph_{0}}=\aleph_{n}$ を示せ。
+:::
+
+::: solution
+**補題（ハウスドルフ型の評価）.** 無限基数 $\kappa$ と $\lambda<\kappa^{+}$ について $(\kappa^{+})^{\lambda}\le\kappa^{+}\otimes\kappa^{\lambda}$。
+
+*証明.* $\kappa^{+}$ は正則（\ref{set:successor-regular}）なので $\lambda<\cf(\kappa^{+})$ であり、\ref{set:gch-exponentiation} (3) の Step 1 と同じ議論（GCH は使っていない）で ${}^{\lambda}\kappa^{+}=\bigcup_{\zeta<\kappa^{+}}{}^{\lambda}\zeta$。各 $\zeta<\kappa^{+}$ は $\lvert\zeta\rvert\le\kappa$ なので $\lvert{}^{\lambda}\zeta\rvert\le\kappa^{\lambda}$。$\kappa^{+}$ 個の、濃度 $\le\kappa^{\lambda}$ の集合の和なので、\ref{set:sum-bound} と \ref{set:sum-product-constant} より濃度は $\le\kappa^{+}\otimes\kappa^{\lambda}$。
+
+**本題.** $n$ についての帰納法。
+- $n=1$：$2^{\aleph_{0}}\le\aleph_{1}^{\aleph_{0}}\le(2^{\aleph_{0}})^{\aleph_{0}}=2^{\aleph_{0}}$ で、CH より $2^{\aleph_{0}}=\aleph_{1}$。よって $\aleph_{1}^{\aleph_{0}}=\aleph_{1}$。
+- $n\to n+1$：補題を $\kappa=\aleph_{n}$, $\lambda=\aleph_{0}$ に適用すると $\aleph_{n+1}^{\aleph_{0}}\le\aleph_{n+1}\otimes\aleph_{n}^{\aleph_{0}}=\aleph_{n+1}\otimes\aleph_{n}=\aleph_{n+1}$。逆向き $\aleph_{n+1}\le\aleph_{n+1}^{\aleph_{0}}$ は定値写像による単射から。
+
+なお $n=\omega$ では成り立たない：\ref{set:konig-cofinality-power} より $\aleph_{\omega}^{\aleph_{0}}>\aleph_{\omega}$。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

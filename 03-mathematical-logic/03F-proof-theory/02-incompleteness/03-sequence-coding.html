@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>有限列のコード化 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/02-incompleteness/03-sequence-coding.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 有限列のコード化 {#pt:page-sequence-coding keywords="pairing function, coding of finite sequences, concatenation, exponentiation, primitive recursive functions, Sigma definable functions"}
+
+β 関数の補題（\ref{pt:beta-lemma}）を使って、$\PA$ の中に「順序対」と「有限列」の理論を作る。有限列は、その長さと各項の値で決まる（**有限列の法則**）ように、各列に**一つだけ**のコードを割り当てる。これにより、列の延長・切り出し・連結を $\PA$ の中で扱えるようになり、指数関数やすべての原始再帰関数が Σ 論理式で定義され、その再帰の等式が $\PA$ で証明できることがわかる。次のページで、項・論理式・証明をこの列として $\PA$ の中で表す。
+
+## 記法と定義の確認 {#pt:sec-coding-notation}
+
+::: notation
+- $\PA$ の基本定理、Σ・Δ 論理式は \ref{pt:page-peano-arithmetic}、$\PA$ で関数的な論理式、$x\dot{-}y$、$\mathrm{rm}$、β 関数 $\beta(a,b,i)$ とその補題は \ref{pt:page-beta-function} のとおり。前ページと同じく、$\mathcal{M}$ は $\PA$ の任意のモデルで、その中で示した主張は完全性定理により $\PA$ の定理である。
+- 関数的な論理式 $F(\vec{x},y)$ が Σ 論理式のとき、それが定める関数を **Σ 関数**と呼ぶ。Σ 関数を定める論理式は Δ 論理式である（\ref{pt:functional-formula}）。Σ 関数 $f$ と Σ 論理式 $\varphi(y)$ について $\varphi(f(\vec{x}))$ は Σ 論理式であり、$\varphi$ が Δ なら Δ である（$\varphi(f(\vec{x}))$ は $\forall y\,(F\to\varphi)$ とも同値なので）。有界量化 $\forall i<f(\vec{x})\,\varphi$ も $\exists y\,(F(\vec{x},y)\wedge\forall i<y\,\varphi)$ として同様に扱う。
+:::
+
+## 順序対 {#pt:sec-pairing}
+
+::: definition 対関数 {#pt:pairing keywords="pairing function, Shoenfield pairing" index="対関数|ついかんすう"}
+$(x,y)\defeq2\cdot\bigl((x+y)\cdot(x+y)+x+1\bigr)$ とおく（$2\defeq\underline{2}$）。これは項で書けるので Σ 関数である。
+:::
+
+::: proposition 対関数の性質 {#pt:pairing-basic}
+$\mathcal{M}$ の数について次が成り立つ。
+1. $(x,y)=(x',y')$ ならば $x=x'$ かつ $y=y'$。
+2. $x<(x,y)$ かつ $y<(x,y)$。また $2\le(x,y)$。
+3. $x<x'$ なら $(x,y)<(x',y)$、$y<y'$ なら $(x,y)<(x,y')$。
+:::
+
+::: proof
+$n\defeq x+y$, $n'\defeq x'+y'$、$A\defeq n\cdot n+x+1$, $A'\defeq n'\cdot n'+x'+1$ とおく。$2A=2A'$ なら $A=A'$（$A<A'$ なら $2A<2A'$ で、逆も同様）。
+
+**1.** $n<n'$ とすると、$n'\ge n+1$ で $A\le n\cdot n+n+1\le(n+1)\cdot(n+1)\le n'\cdot n'<A'$ となり $A=A'$ に反する（途中で $(n+1)(n+1)=n\cdot n+2n+1$ を使う）。$n'<n$ も同様。よって $n=n'$ で、$A=A'$ から簡約により $x=x'$、さらに $y=y'$。
+
+**2.** $x<A\le2A$。$n=0$ なら $y=0<2\le(x,y)$。$n\ge1$ なら $n\le n\cdot n$ なので $y\le n<A\le(x,y)$。$A\ge1$ より $(x,y)\ge2$。
+
+**3.** 前半：$n<n+(x'\dot{-}x)=x'+y$ で $n\cdot n<(x'+y)\cdot(x'+y)$（$a<b$ なら $a\cdot a<b\cdot b$：$a\cdot a\le a\cdot b<b\cdot b$、$0<b$）、さらに $x<x'$。後半：$n<x+y'$ から同様。
+:::
+
+::: definition 対の成分 {#pt:pair-components}
+$\mathrm{Fst}(z,w)\defeq\exists y<z\,((w,y)=z)\vee(\neg\exists x<z\,\exists y<z\,((x,y)=z)\wedge w=0)$、$\mathrm{Snd}(z,w)$ を同様に定める。\ref{pt:pairing-basic} の 1, 2 より $\PA$ で関数的で、有界な論理式なので Σ 関数を定める。定める関数を $\mathrm{fst}(z)$, $\mathrm{snd}(z)$ と書く。$\mathrm{fst}((x,y))=x$, $\mathrm{snd}((x,y))=y$ であり、$z$ が対の値でなければ両者は $0$ である。
+:::
+
+## 有限列 {#pt:sec-finite-sequences}
+
+::: definition 有限列のコード {#pt:finseq keywords="finite sequence code, length, value" index="有限列のコード|ゆうげんれつのこーど"}
+$\mathrm{FinSeq}(s)$ を次の論理式とする。
+$$
+\begin{aligned}
+\exists a<s\,\exists b<s\,\exists k<s\,\Bigl(&s=((a,b),k)\wedge\forall c<s\,\forall d<s\\
+&\bigl((c,d)<(a,b)\to\exists i<k\,\beta(c,d,i)\neq\beta(a,b,i)\bigr)\Bigr).
+\end{aligned}
+$$
+$\mathrm{FinSeq}(s)$ のとき $s$ を**有限列**と呼ぶ。$\mathrm{lh}(s)\defeq\mathrm{snd}(s)$（**長さ**）、$s_{i}\defeq\beta(\mathrm{fst}(\mathrm{fst}(s)),\mathrm{snd}(\mathrm{fst}(s)),i)$（**第 $i$ 項**）と定める。$\mathrm{FinSeq}$ は Δ 論理式、$\mathrm{lh}$ と $(s,i)\mapsto s_{i}$ は Σ 関数である。
+:::
+
+::: intuition
+組 $(a,b)$ は β 関数を通じて無限列 $\beta(a,b,0),\beta(a,b,1),\dots$ を表し、長さ $k$ を付けて $((a,b),k)$ とすると長さ $k$ の列を表す。同じ列を表す組はたくさんあるので、そのうち $(a,b)$ の値が**最小**のものだけを正式なコードとする。これが $\mathrm{FinSeq}$ の後半の条件である。量化子の上限 $s$ は \ref{pt:pairing-basic} の 2 により制限にならない。
+:::
+
+::: theorem 有限列の法則 {#pt:finseq-law keywords="law of finite sequences"}
+$\mathcal{M}$ で、$s,s'$ が有限列で $\mathrm{lh}(s)=\mathrm{lh}(s')$ かつすべての $i<\mathrm{lh}(s)$ で $s_{i}=s'_{i}$ ならば、$s=s'$。
+:::
+
+::: proof
+$s=((a,b),k)$, $s'=((a',b'),k)$ とする（長さが等しい）。$(a,b)<(a',b')$ とすると、$s'$ の条件（$c=a$, $d=b$。$a,b<(a,b)<(a',b')<s'$）から、ある $i<k$ で $\beta(a,b,i)\neq\beta(a',b',i)$、すなわち $s_{i}\neq s'_{i}$ となり仮定に反する。逆も同様なので $(a,b)=(a',b')$、よって $s=s'$。
+:::
+
+::: lemma 正規化 {#pt:finseq-normalize}
+$\mathcal{M}$ の任意の数 $a,b,k$ について、$\mathrm{lh}(s)=k$ かつすべての $i<k$ で $s_{i}=\beta(a,b,i)$ となる有限列 $s$ がある。
+:::
+
+::: proof
+$P\defeq\{p:\exists c<p\,\exists d<p\,(p=(c,d)\wedge\forall i<k\,\beta(c,d,i)=\beta(a,b,i))\}$ は $(a,b)$ を含むので、最小元 $p_{0}=(c_{0},d_{0})$ がある。$s\defeq(p_{0},k)$ とおく。$c_{0},d_{0}<p_{0}<s$、$k<s$ で、$(c,d)<p_{0}$ なら $(c,d)\notin P$ なので、ある $i<k$ で $\beta(c,d,i)\neq\beta(a,b,i)=\beta(c_{0},d_{0},i)$。よって $\mathrm{FinSeq}(s)$ で、$\mathrm{lh}(s)=k$、$s_{i}=\beta(c_{0},d_{0},i)=\beta(a,b,i)$。
+:::
+
+::: theorem 定義可能な関数の列 {#pt:finseq-exists keywords="sequences of definable functions"}
+$h(i)$ を $\PA$ で関数的な論理式（パラメータ付き）が定める関数とする。$\mathcal{M}$ の任意の数 $k$ について、$\mathrm{lh}(s)=k$ かつすべての $i<k$ で $s_{i}=h(i)$ となる有限列 $s$ が**ただ一つ**ある。とくに、長さ $0$ の有限列 $[\,]$ がただ一つある。
+:::
+
+::: proof
+存在は β 関数の補題（\ref{pt:beta-lemma}）と正規化、一意性は有限列の法則による。
+:::
+
+::: definition 列の操作 {#pt:sequence-operations keywords="concatenation, truncation, singleton sequence" index="連結（列の）|れんけつれつの"}
+\ref{pt:finseq-exists} により、次の論理式はそれぞれ $\PA$ で関数的で、Σ 関数を定める。
+- **連結** $s\ast s'$：$\mathrm{FinSeq}(u)\wedge\mathrm{lh}(u)=\mathrm{lh}(s)+\mathrm{lh}(s')\wedge\forall i<\mathrm{lh}(s)\,u_{i}=s_{i}\wedge\forall i<\mathrm{lh}(s')\,u_{\mathrm{lh}(s)+i}=s'_{i}$（$u$ が値）。
+- **一項の列** $[n]$：$\mathrm{FinSeq}(u)\wedge\mathrm{lh}(u)=1\wedge u_{0}=n$。
+- **切り出し** $s\restr{[e,j)}$（$e\le j\le\mathrm{lh}(s)$ のとき $s_{e},\dots,s_{j-1}$、それ以外は $[\,]$）。
+
+存在は、$h(i)\defeq s_{i}$（$i<\mathrm{lh}(s)$）, $s'_{i\dot{-}\mathrm{lh}(s)}$（それ以外）などの関数的な論理式に \ref{pt:finseq-exists} を使えばよい。$s$ が有限列でなくても $\mathrm{lh}(s)$ と $s_{i}$ は定義されているので、連結はすべての $s,s'$ について定まる。
+:::
+
+::: proposition 連結の性質 {#pt:concat-basic}
+$\mathcal{M}$ で、有限列 $s,s',s''$ について $[\,]\ast s=s=s\ast[\,]$、$(s\ast s')\ast s''=s\ast(s'\ast s'')$。
+:::
+
+::: proof
+両辺はともに有限列で、長さと各項が等しい（長さは加法の結合性、各項は定義の場合分けと加法の簡約による）。有限列の法則より等しい。
+:::
+
+## 指数関数と原始再帰関数 {#pt:sec-primitive-recursion}
+
+::: theorem 再帰で定義される関数 {#pt:sigma-recursion keywords="primitive recursion in PA, Sigma pterm closure" index="原始再帰関数|げんしさいきかんすう"}
+$f(\vec{x})$ と $g(\vec{x},w,z)$ を Σ 関数とする。
+$$
+\begin{aligned}
+H(\vec{x},w,y)\defeq\exists s\,\bigl(&\mathrm{FinSeq}(s)\wedge\mathrm{lh}(s)=S(w)\wedge s_{0}=f(\vec{x})\\
+&\wedge\forall j<w\,s_{j+1}=g(\vec{x},j,s_{j})\wedge s_{w}=y\bigr)
+\end{aligned}
+$$
+は $\PA$ で関数的な Σ 論理式であり、定める関数 $h$ について $\PA$ で
+$$
+h(\vec{x},0)=f(\vec{x}),\qquad h(\vec{x},w+1)=g(\vec{x},w,h(\vec{x},w))
+$$
+が成り立つ。また、Σ 関数の合成は Σ 関数である。
+:::
+
+::: proof
+**Step 1（Σ）.** 中身は Δ 論理式と Σ 関数の値の比較を有界量化と連言で組み合わせたもので、先頭が $\exists s$ なので Σ 論理式である。
+
+**Step 2（存在）.** $w$ についての帰納法で、条件を満たす $s$（長さ $w+1$）の存在を示す。$w=0$：長さ $1$ の列 $[f(\vec{x})]$。$w$ で $s$ がとれれば、\ref{pt:finseq-exists} を $h'(i)\defeq s_{i}$（$i\le w$）, $g(\vec{x},w,s_{w})$（それ以外）に使って長さ $w+2$ の列をとる。
+
+**Step 3（一意性）.** $s,t$ がともに条件を満たすとき、$j\le w$ についての帰納法で $s_{j}=t_{j}$（$j=0$ は $f(\vec{x})$、$j+1\le w$ は $g$ の値の一意性）。とくに $s_{w}=t_{w}$。
+
+**Step 4（等式）.** $w=0$ は定義から。$h(\vec{x},w+1)$ を与える列 $s$ を長さ $w+1$ に切り出すと $h(\vec{x},w)$ を与える列になるので、$s_{w}=h(\vec{x},w)$ で、$s_{w+1}=g(\vec{x},w,s_{w})$。
+
+**Step 5（合成）.** $F(z_{1},\dots,z_{m},y)$ と $G_{j}(\vec{x},z)$ が Σ 関数を定めるとき、$\exists z_{1}\cdots\exists z_{m}\,(G_{1}(\vec{x},z_{1})\wedge\cdots\wedge G_{m}(\vec{x},z_{m})\wedge F(\vec{z},y))$ は Σ 論理式で、関数的であることは各 $G_{j}$, $F$ の関数性から従う。
+:::
+
+::: corollary 原始再帰関数の定義可能性 {#pt:primitive-recursive-definable keywords="primitive recursive functions are Sigma definable"}
+すべての原始再帰関数 $\phi\colon\N^{n}\to\N$ に対し、$\PA$ で関数的な Σ 論理式 $F_{\phi}(\vec{x},y)$ で、$\mathcal{N}\models F_{\phi}[\vec{m},\phi(\vec{m})]$（すべての $\vec{m}$）となるものがある。したがって $\PA\vdash F_{\phi}(\underline{\vec{m}},\underline{\phi(\vec{m})})$、および $\PA\vdash\forall y\,(F_{\phi}(\underline{\vec{m}},y)\to y=\underline{\phi(\vec{m})})$。
+:::
+
+::: proof
+原始再帰関数の定義（零関数・後者関数・射影から合成と原始再帰で作られる）に関する帰納法。初期関数は $y=0$, $y=S(x_{1})$, $y=x_{i}$ で定める。合成と原始再帰は \ref{pt:sigma-recursion} による。$\mathcal{N}$ で定まる関数 $h^{\mathcal{N}}$ は $\phi$ と同じ再帰の等式を満たすので、自然数の帰納法により $h^{\mathcal{N}}=\phi$。後半は Σ 完全性（\ref{pt:sigma-completeness}）と、$F_{\phi}$ が Δ であること（否定も Σ）から、$\PA\vdash F_{\phi}(\underline{\vec{m}},\underline{\phi(\vec{m})})$ と関数性による。
+:::
+
+::: example 指数関数 {#pt:exponentiation index="指数関数（PA）|しすうかんすうぴーえー"}
+$f(x)\defeq1$、$g(x,w,z)\defeq z\cdot x$ として \ref{pt:sigma-recursion} を使うと、Σ 関数 $x^{w}$ が得られ、$\PA\vdash x^{0}=1\wedge x^{S(w)}=x^{w}\cdot x$。$\mathcal{L}_{\mathrm{ar}}$ の項で表される関数は多項式なので、指数関数を**項**で表すことはできないが、Σ 論理式でなら定義できる。
+:::
+
+::: remark
+Σ 関数全体は原始再帰関数全体より広い。たとえばアッカーマン関数は原始再帰的でないが、二重の列を使えば Σ 論理式で定義でき、$\PA$ で関数的であることも示せる、とされる（Boolos 第 2 章。本サイトでは詳細を確認していない）。一方、Σ 論理式で定義される全域関数のうち $\PA$ で関数的と証明できるものには限りがある（どの $\PA$ で関数的な Σ 関数よりも速く増加する計算可能関数がある）ことが知られている、とされる。
+:::
+
+## 問題 {#pt:sec-coding-problems}
+
+::: problem {#pt:prob-pair-values}
+$\mathcal{N}$ で $(0,0)$, $(1,0)$, $(0,1)$, $(1,1)$ の値を求め、$(x,y)$ がつねに偶数であることを確かめよ。
+:::
+
+::: solution
+$(x,y)=2((x+y)^{2}+x+1)$ より、$(0,0)=2$, $(1,0)=2(1+1+1)=6$, $(0,1)=2(1+0+1)=4$, $(1,1)=2(4+1+1)=12$。定義に因子 $2$ があるので偶数である。
+:::
+
+::: problem {#pt:prob-empty-sequence}
+$[\,]=((0,0),0)$ であることを示せ。
+:::
+
+::: solution
+$s\defeq((0,0),0)$ とする。$a=b=k=0<s$。$(c,d)<(0,0)=2$ となる $c,d$ は、\ref{pt:pairing-basic} の 2（$(c,d)\ge2$）より存在しないので、後半の条件は自明に成り立つ。よって $\mathrm{FinSeq}(s)$ で $\mathrm{lh}(s)=0$。長さ $0$ の有限列は一意（\ref{pt:finseq-exists}）なので $[\,]=s$。
+:::
+
+::: problem {#pt:prob-factorial}
+階乗 $x!$ を \ref{pt:sigma-recursion} で定義し、$\PA\vdash\forall x\,(0<x!)$ を示せ。
+:::
+
+::: solution
+$f\defeq1$、$g(w,z)\defeq z\cdot S(w)$ とすると $0!=1$、$(w+1)!=w!\cdot(w+1)$ が $\PA$ で成り立つ。$\mathcal{M}$ で $w$ についての帰納法：$0<1$、$0<w!$ なら $0<w!\cdot S(w)$（$0<a$, $0<b$ なら $a=S(a')$ で $a\cdot b=a'\cdot b+b\ge b>0$）。
+:::
+
+::: supplement
+**高い視点から：コードの一意性.** β 関数だけでも列を表せるが、同じ列に多くのコードがあると「列の等しさ」と「数の等しさ」が一致せず、列についての帰納法や再帰が扱いにくい。$\mathrm{FinSeq}$ は各同値類から最小の代表元を選ぶことで、有限列の集合を $\N$ の部分集合として**正確に**埋め込む。集合論で商集合から代表元を選ぶのに選択公理が要るのに対し、ここでは $\N$ が整列していること（最小元の原理）が代表元を具体的に与える。その結果、有限列の全体は「連結で閉じた自由モノイド」として $\PA$ の中に実現され、記号列・証明といった構文的対象はすべてこの中で扱える。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

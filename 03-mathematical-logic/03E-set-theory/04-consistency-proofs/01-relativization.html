@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>素朴な無矛盾性証明と相対化 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/04-consistency-proofs/01-relativization.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 素朴な無矛盾性証明と相対化 {#set:page-relativization keywords="relativization, relative consistency, model of set theory, class model, WF is a model of ZF, R(omega), Con(ZF minus) implies Con(ZF)"}
+
+「$\ZF$ は無矛盾である。なぜなら、変数が整礎集合を動くと読めば公理はすべて真だから」という議論は、そのままでは $\mathbf{WF}$ という対象の存在を信じることを要求し、しかもゲーデルの第二不完全性定理により $\ZF$ の中では形式化できない。しかし同じ考え方を**相対化**として定式化すると、「$\ZF^{-}$ が無矛盾なら $\ZF$ も無矛盾」のような**相対無矛盾性**の結果が得られる。本ページでは、論理式のクラスへの相対化を定義し、相対無矛盾性の基本補題を示したうえで、推移的なクラスで各公理が成り立つための簡単な十分条件を与え、$\mathbf{WF}$ と $R(\omega)$ が $\ZF-\mathrm{Inf}$ のモデルであることを示す。無限公理は定義された記号 $0$ と $S$ を含むので、その扱いは絶対性（次ページ）を待つ。（Kunen 第 IV 章 §1–2 に対応する。）
+
+## 記法と定義の確認 {#set:sec-relativization-notation}
+
+::: notation
+- 集合論の言語（\ref{set:first-order-language}）の基本記号は $\land,\lnot,\exists,\in,=$ で、$\forall,\lor,\to$ や有界量化子は略記（\ref{set:formula-abbreviations}）。公理と部分体系の略号は \ref{set:zfc}, \ref{set:zf-subsystems} のとおり。形式的証明と $\mathrm{Con}(S)$ は \ref{set:formal-deduction}、解釈（構造）と健全性は \ref{set:interpretation}, \ref{set:model-consistency}、ゲーデルの完全性定理は \ref{logic:completeness} のとおり。
+- クラスは論理式 $\mathbf{M}(v)$ で与えられる（\ref{set:class}）。$x\in\mathbf{M}$ は $\mathbf{M}(x)$ の略。推移的集合・推移的クラスは \ref{set:transitive-set} と \ref{set:page-mostowski} の記法確認のとおり。推移的なクラスの上で $\in$ は外延的である（\ref{set:transitive-extensional}）。
+- 累積階層 $R(\alpha)$、整礎集合のクラス $\mathbf{WF}$、ランク、$x\in\mathbf{WF}\iff x\subseteq\mathbf{WF}$（\ref{set:wf-subset}）、$\mathbf{WF}$ と $R(\lambda)$ の閉包性（\ref{set:wf-closure}, \ref{set:r-limit-closure}）、$R(n)$ の有限性（\ref{set:r-n-finite}）は \ref{set:page-cumulative-hierarchy}, \ref{set:page-size-of-wf} のとおり。
+- 本ページの議論は、とくに断らなければ $\ZF^{-}$ の中で行う。
+:::
+
+## 三つの素朴な議論 {#set:sec-informal-consistency}
+
+次の三つの例を念頭に置く。いずれも「あるクラスの中で公理が真」という形である。
+
+1. $\mathbf{WF}$ の中では $\ZF$ のすべての公理が真である。したがって（$\ZF^{-}$ が無矛盾なら）$\ZF$ は無矛盾。
+2. $R(\omega)$（遺伝的有限集合）の中では、無限公理以外の $\ZF$ の公理と、無限公理の否定が真である。したがって $\ZF-\mathrm{Inf}\nvdash\mathrm{Inf}$：無限公理は他の公理から独立である。
+3. $\{0\}$ の中では、外延性の公理・分出公理と「すべての集合は空」が真である。したがってこれら二つの公理だけからは空でない集合の存在は導けない。
+
+これらはすべて**相対**無矛盾性の主張であり、議論は有限的である。$\ZF^{-}$ 自身の無矛盾性は、ここでは仮定として残る。
+
+## 相対化 {#set:sec-relativization}
+
+::: definition 相対化 {#set:relativization keywords="relativization of a formula to a class" index="相対化|そうたいか"}
+クラス $\mathbf{M}$（論理式 $\mathbf{M}(v)$）と論理式 $\varphi$ に対し、$\varphi$ の $\mathbf{M}$ への**相対化** $\varphi^{\mathbf{M}}$ を $\varphi$ の構成に関する再帰で定める。
+$$
+\begin{aligned}
+&(x=y)^{\mathbf{M}}\defeq x=y,\quad(x\in y)^{\mathbf{M}}\defeq x\in y,\quad(\varphi\land\psi)^{\mathbf{M}}\defeq\varphi^{\mathbf{M}}\land\psi^{\mathbf{M}},\\
+&(\lnot\varphi)^{\mathbf{M}}\defeq\lnot\varphi^{\mathbf{M}},\quad(\exists x\,\varphi)^{\mathbf{M}}\defeq\exists x\,(\mathbf{M}(x)\land\varphi^{\mathbf{M}}).
+\end{aligned}
+$$
+（束縛変数は $\mathbf{M}(v)$ の変数と衝突しないように取り替えておく。）$\varphi^{\mathbf{M}}$ はメタの理論で定義される、集合論の言語の論理式である。
+:::
+
+略記についても意図どおりの意味になる：$(\varphi\lor\psi)^{\mathbf{M}}$ は $\varphi^{\mathbf{M}}\lor\psi^{\mathbf{M}}$、$(\forall x\,\varphi)^{\mathbf{M}}=\lnot\exists x\,(\mathbf{M}(x)\land\lnot\varphi^{\mathbf{M}})$ は論理的に $\forall x\,(\mathbf{M}(x)\to\varphi^{\mathbf{M}})$ と同値。$\varphi^{\mathbf{M}}$ は $\varphi$ のすべての量化子を $\mathbf{M}$ に制限したものである。$\varphi(x_{1},\dots,x_{n})$ について、$x_{1},\dots,x_{n}\in\mathbf{M}$ のとき $\varphi^{\mathbf{M}}(x_{1},\dots,x_{n})$ は「束縛変数が $\mathbf{M}$ を動くと解釈したとき $x_{1},\dots,x_{n}$ について $\varphi$ が成り立つ」と読める。
+
+::: definition クラスの中で真・モデル {#set:true-in-class keywords="true in M, model of a theory" index="クラスの中で真|くらすのなかでしん, モデル（クラス）|もでるくらす"}
+1. 文 $\varphi$ について「$\varphi$ は $\mathbf{M}$ の中で真」とは、文 $\varphi^{\mathbf{M}}$ のことである。
+2. 文の集まり $S$ について「$S$ は $\mathbf{M}$ の中で真」「$\mathbf{M}$ は $S$ のモデル」とは、各 $\varphi\in S$ について（そのときの公理から）$\varphi^{\mathbf{M}}$ が証明できる、というメタの主張である。
+:::
+
+1 は集合論の一つの文だが、2 は（$S$ が無限なら）無限個の文についてのメタの主張である点で性格が異なる。
+
+::: lemma 部分構造と相対化 {#set:relativization-substructure}
+構造 $\mathfrak{A}=(A,\in^{\mathfrak{A}})$ と、$\mathfrak{A}$ で $\mathbf{M}$ が定める空でない集合 $B\defeq\{a\in A:\mathfrak{A}\models\mathbf{M}[a]\}$ をとり、$\mathfrak{B}\defeq(B,\in^{\mathfrak{A}}\cap B^{2})$ とする。任意の論理式 $\varphi(x_{1},\dots,x_{n})$ と $b_{1},\dots,b_{n}\in B$ について、$\mathfrak{B}\models\varphi[\vec{b}]\iff\mathfrak{A}\models\varphi^{\mathbf{M}}[\vec{b}]$。
+:::
+
+::: proof
+$\varphi$ の構成に関する帰納法。原子論理式は $\mathfrak{B}$ の関係が $\mathfrak{A}$ の制限であることから、$\land,\lnot$ は帰納法の仮定から。$\exists x\,\varphi$ の場合：$\mathfrak{B}\models\exists x\,\varphi[\vec{b}]\iff$ ある $b\in B$ で $\mathfrak{B}\models\varphi[\vec{b},b]\iff$ ある $b\in A$ で $\mathfrak{A}\models\mathbf{M}[b]$ かつ（帰納法の仮定）$\mathfrak{A}\models\varphi^{\mathbf{M}}[\vec{b},b]\iff\mathfrak{A}\models(\exists x\,\varphi)^{\mathbf{M}}[\vec{b}]$。
+:::
+
+::: lemma 相対無矛盾性の基本補題 {#set:relative-consistency-lemma keywords="relative consistency lemma" index="相対無矛盾性|そうたいむむじゅんせい"}
+$S,T$ を集合論の言語の文の集まりとし、クラス $\mathbf{M}$ について、$T$ から $\exists x\,\mathbf{M}(x)$ と、各 $\varphi\in S$ の $\varphi^{\mathbf{M}}$ が証明できるとする。このとき $\mathrm{Con}(T)\to\mathrm{Con}(S)$。
+:::
+
+::: proof
+$T$ が無矛盾なら、完全性定理（\ref{logic:completeness}）より $T$ のモデル $\mathfrak{A}$ がある。健全性より $\mathfrak{A}\models\exists x\,\mathbf{M}(x)$ なので $B$ は空でなく、各 $\varphi\in S$ で $\mathfrak{A}\models\varphi^{\mathbf{M}}$。\ref{set:relativization-substructure} より $\mathfrak{B}\models S$。健全性（\ref{set:model-consistency}）より $S$ は無矛盾。
+
+::: hypcheck
+- **$\mathbf{M}$ が空でないこと**：構造の議論領域は空でない約束なので必要。形式的には $\exists x\,(x=x)$ が論理的に証明できることに対応する（\ref{set:ax-set-existence}）。
+- この証明は完全性定理を使う。Kunen は、$S$ からの証明を $T$ からの（相対化された）証明に書き換える有限的な証明を念頭に置いている（Kunen IV §8。本サイトでは IV-06 で扱う予定）。どちらでも結論は同じだが、有限的な証明なら「$\mathrm{Con}(T)\to\mathrm{Con}(S)$」が算術の中で証明できる。
+:::
+:::
+
+以下、扱うクラス $\mathbf{M}$ は空でないとする（したがって公理 0（\ref{set:ax-set-existence}）は $\mathbf{M}$ の中で真）。
+
+## 各公理が成り立つための条件 {#set:sec-axioms-in-class}
+
+::: lemma 外延性 {#set:extensionality-in-transitive}
+$\mathbf{M}$ が推移的なら、外延性の公理は $\mathbf{M}$ の中で真。
+:::
+
+::: proof
+外延性の公理の相対化は $\forall x,y\in\mathbf{M}\,(\forall z\in\mathbf{M}\,(z\in x\leftrightarrow z\in y)\to x=y)$、すなわち $\in$ が $\mathbf{M}$ の上で外延的であること（\ref{set:extensional-relation}）で、\ref{set:transitive-extensional} による。
+:::
+
+::: lemma 分出 {#set:comprehension-in-class}
+各論理式 $\varphi(x,z,w_{1},\dots,w_{n})$（自由変数はこれだけ）について
+$$
+\forall z,w_{1},\dots,w_{n}\in\mathbf{M}\;\bigl(\{x\in z:\varphi^{\mathbf{M}}(x,z,\vec{w})\}\in\mathbf{M}\bigr)
+$$
+が成り立てば、分出公理のすべての例は $\mathbf{M}$ の中で真である。
+:::
+
+::: proof
+分出公理の $\varphi$ についての例を相対化すると $\forall z,\vec{w}\in\mathbf{M}\,\exists y\in\mathbf{M}\,\forall x\in\mathbf{M}\,(x\in y\leftrightarrow x\in z\land\varphi^{\mathbf{M}})$。$y\defeq\{x\in z:\varphi^{\mathbf{M}}\}$ とすると仮定より $y\in\mathbf{M}$ で、すべての $x$（とくに $x\in\mathbf{M}$）で $x\in y\leftrightarrow x\in z\land\varphi^{\mathbf{M}}$。
+:::
+
+$\mathbf{M}$ が推移的なら、この条件は必要でもある（$y\in\mathbf{M}$ なら $y\subseteq\mathbf{M}$ なので、$\mathbf{M}$ の中の $y$ は本当に $\{x\in z:\varphi^{\mathbf{M}}\}$ に等しい）。
+
+::: corollary {#set:comprehension-power-closed}
+すべての $z\in\mathbf{M}$ で $\mathcal{P}(z)\subseteq\mathbf{M}$ ならば、分出公理は $\mathbf{M}$ の中で真。
+:::
+
+::: theorem 空集合だけのモデル {#set:model-zero}
+（$\ZF^{-}$）$\mathbf{M}=\{0\}$ では、公理 0, 外延性, 分出と、$\forall y\,(y=0)$ の略記する文 $\forall y\,\forall x\,(x\notin y)$ が真である。
+:::
+
+::: proof
+$\forall y\forall x\,(x\notin y)$ の相対化は $\forall y,x\in\{0\}\,(x\notin y)$ で、$0\notin0$ より真。$\{0\}$ は推移的なので外延性（\ref{set:extensionality-in-transitive}）。$\mathcal{P}(0)=\{0\}\subseteq\{0\}$ なので分出（\ref{set:comprehension-power-closed}）。
+:::
+
+::: corollary {#set:con-zero-model}
+$\mathrm{Con}(\ZF^{-})\to\mathrm{Con}(\text{外延性}+\text{分出}+\forall y\,(y=0))$。
+:::
+
+## 定義された記号の相対化 {#set:sec-relativizing-defined}
+
+相対化は基本記号だけの論理式に対して定義した。定義された**関係**（たとえば $z\subseteq x$ は $\forall v\,(v\in z\to v\in x)$ の略）については、略記を展開してから相対化すればよい。$(z\subseteq x)^{\mathbf{M}}$ は $\forall v\in\mathbf{M}\,(v\in z\to v\in x)$、すなわち $z\cap\mathbf{M}\subseteq x$ であり、$\mathbf{M}$ が推移的で $z\in\mathbf{M}$ なら $z\subseteq x$ と同値である。
+
+定義された**演算**や**定数**には注意が要る。$S\vdash\forall\vec{x}\,\exists!y\,\varphi(\vec{x},y)$ のとき $F(\vec{x})$ を「$\varphi(\vec{x},y)$ となる $y$」と定めるが、$F$ を含む式の展開の仕方（たとえば $\psi(F(\vec{x}))$ を $\exists y\,(\varphi\land\psi(y))$ とするか $\forall y\,(\varphi\to\psi(y))$ とするか）は、$S$ のもとでは同値でも、$S$ が成り立たないクラスでは同値とは限らない。
+
+::: example 空集合の二通りの展開
+$\varphi(y)\defeq\forall v\,(v\notin y)$ とし、$0\in z$ を $\psi(z)\defeq\exists y\,(\varphi(y)\land y\in z)$ または $\chi(z)\defeq\forall y\,(\varphi(y)\to y\in z)$ と展開する。$\mathbf{M}=\{a,b,c\}$、$a=0$, $b=\{0\}$, $c=\{\{\{0\}\}\}$ とすると、$\mathbf{M}$ の中で「空」（$\varphi^{\mathbf{M}}$）なのは $a$ と $c$（$c$ の唯一の元 $\{\{0\}\}$ は $\mathbf{M}$ にない）。よって $\psi^{\mathbf{M}}(b)$ は真（$a\in b$）、$\chi^{\mathbf{M}}(b)$ は偽（$c\notin b$）。
+:::
+
+そこで、$F$ を含む式を $\mathbf{M}$ に相対化するのは、$\forall\vec{x}\,\exists!y\,\varphi$ が $\mathbf{M}$ の中で真であることを確かめてからにする。そのとき $F^{\mathbf{M}}(\vec{x})$ を、$\varphi^{\mathbf{M}}(\vec{x},y)$ となるただ一つの $y\in\mathbf{M}$ とする。たとえば $\mathbf{M}=\{1,2\}$ なら $\exists!y\,\forall v\,(v\notin y)$ は $\mathbf{M}$ の中で真で $0^{\mathbf{M}}=1$、$1\in2$ なので $\exists x\,(0\in x)$ は $\mathbf{M}$ の中で真。$\mathbf{M}=\{0\}$ なら $0^{\mathbf{M}}=0$ で、$\exists x\,(0\in x)$ は偽。
+
+::: lemma 冪集合 {#set:power-set-in-transitive}
+$\mathbf{M}$ が推移的なら、冪集合の公理が $\mathbf{M}$ の中で真であることは $\forall x\in\mathbf{M}\,\exists y\in\mathbf{M}\,(\mathcal{P}(x)\cap\mathbf{M}\subseteq y)$ と同値である。
+:::
+
+::: proof
+冪集合の公理（\ref{set:ax-power-set}）の相対化は $\forall x\in\mathbf{M}\,\exists y\in\mathbf{M}\,\forall z\in\mathbf{M}\,((z\subseteq x)^{\mathbf{M}}\to z\in y)$。$\mathbf{M}$ が推移的なので $z\in\mathbf{M}$ について $(z\subseteq x)^{\mathbf{M}}\iff z\subseteq x$。よって $\forall z\in\mathbf{M}\,(z\subseteq x\to z\in y)$、すなわち $\mathcal{P}(x)\cap\mathbf{M}\subseteq y$。
+:::
+
+::: lemma 対と和 {#set:pairing-union-in-class}
+$\forall x,y\in\mathbf{M}\,\exists z\in\mathbf{M}\,(x\in z\land y\in z)$ かつ $\forall x\in\mathbf{M}\,\exists z\in\mathbf{M}\,(\bigcup x\subseteq z)$ ならば、対の公理と和集合の公理は $\mathbf{M}$ の中で真。
+:::
+
+::: proof
+対の公理の相対化は前半そのもの。和集合の公理（\ref{set:ax-union}）の相対化は $\forall\mathcal{F}\in\mathbf{M}\,\exists A\in\mathbf{M}\,\forall Y,x\in\mathbf{M}\,(x\in Y\land Y\in\mathcal{F}\to x\in A)$ で、$\bigcup\mathcal{F}\subseteq A$ なら成り立つ。
+:::
+
+::: lemma 置換 {#set:replacement-in-class}
+$\mathbf{M}$ を推移的とする。各論理式 $\varphi(x,y,A,\vec{w})$ と $A,\vec{w}\in\mathbf{M}$ について、「$\forall x\in A\,\exists!y\in\mathbf{M}\,\varphi^{\mathbf{M}}(x,y,A,\vec{w})$ ならば、ある $Y\in\mathbf{M}$ で $\{y\in\mathbf{M}:\exists x\in A\,\varphi^{\mathbf{M}}(x,y,A,\vec{w})\}\subseteq Y$」が示せるとする。このとき置換公理のすべての例は $\mathbf{M}$ の中で真。
+:::
+
+::: proof
+置換公理（\ref{set:ax-replacement}）の例の相対化は、$A,\vec{w}\in\mathbf{M}$ について $(\forall x\in A\,\exists!y\,\varphi)^{\mathbf{M}}\to\exists Y\in\mathbf{M}\,(\forall x\in A\,\exists y\in Y\,\varphi)^{\mathbf{M}}$。$\mathbf{M}$ は推移的なので、問題 \ref{set:prob-relativize-forall} と同様に、前件は $\forall x\in A\,\exists!y\in\mathbf{M}\,\varphi^{\mathbf{M}}$、後件の括弧の中は（$Y\in\mathbf{M}$ なら）$\forall x\in A\,\exists y\in Y\,\varphi^{\mathbf{M}}$ と同値である。仮定の $Y$ をとれば、各 $x\in A$ に対応する $y\in\mathbf{M}$ は $Y$ に属するので後件が成り立つ。
+:::
+
+::: lemma 基礎の公理 {#set:foundation-in-wf-subclass}
+（$\ZF^{-}$）$\mathbf{M}\subseteq\mathbf{WF}$ ならば、基礎の公理は $\mathbf{M}$ の中で真。
+:::
+
+::: proof
+相対化は $\forall x\in\mathbf{M}\,(\exists y\in\mathbf{M}\,(y\in x)\to\exists y\in\mathbf{M}\,(y\in x\land\lnot\exists z\in\mathbf{M}\,(z\in x\land z\in y)))$。$x\in\mathbf{M}$ で $x\cap\mathbf{M}\neq\emptyset$ とし、$x\cap\mathbf{M}$（$\subseteq\mathbf{WF}$）の元のうちランク最小の $y$ をとる。$z\in x\cap\mathbf{M}$ かつ $z\in y$ なら $\rank(z)<\rank(y)$（\ref{set:rank-basic}）となり最小性に反する。
+:::
+
+## WF と R(ω) {#set:sec-wf-r-omega-models}
+
+::: theorem WF と R(ω) における ZF − Inf の公理 {#set:wf-relativization keywords="WF and R(omega) are models of ZF minus Infinity" index="WF のモデル|だぶりゅーえふのもでる, 遺伝的有限集合のモデル|いでんてきゆうげんしゅうごうのもでる"}
+（$\ZF^{-}$）$\mathbf{N}$ を $\mathbf{WF}$ または $R(\omega)$ とすると、$\ZF-\mathrm{Inf}$ の公理（公理 0 と、無限公理と選択公理を除くすべて）は $\mathbf{N}$ の中で真である。
+:::
+
+::: proof
+$\mathbf{N}$ は推移的（\ref{set:r-alpha-basic}, \ref{set:wf-subset}）で空でない（$0\in\mathbf{N}$）。
+- **外延性**：\ref{set:extensionality-in-transitive}。
+- **分出と冪集合**：$z\in\mathbf{N}$ なら $\mathcal{P}(z)\in\mathbf{N}$（$\mathbf{WF}$ は \ref{set:wf-closure}、$R(\omega)$ は $z\in R(n)$ なら $z\subseteq R(n)$ で $\mathcal{P}(z)\subseteq\mathcal{P}(R(n))=R(n+1)$、よって $\mathcal{P}(z)\in R(n+2)$）。推移性より $\mathcal{P}(z)\subseteq\mathbf{N}$ なので \ref{set:comprehension-power-closed}、また $y\defeq\mathcal{P}(z)$ として \ref{set:power-set-in-transitive}。
+- **対と和**：$\{x,y\}$, $\bigcup x$ は $\mathbf{N}$ に属する（$\mathbf{WF}$ は \ref{set:wf-closure}、$R(\omega)$ は $x,y\in R(n)$ なら $\{x,y\}\in R(n+1)$、$\bigcup x\subseteq R(n)$ で $\bigcup x\in R(n+1)$）。\ref{set:pairing-union-in-class}。
+- **置換**：前件を満たす $\varphi$, $A$ について $Y\defeq\{y\in\mathbf{N}:\exists x\in A\,\varphi^{\mathbf{N}}\}$ は置換公理（$\mathbf{V}$ の中で）により集合で、$Y\subseteq\mathbf{N}$。$\mathbf{N}=\mathbf{WF}$ なら \ref{set:wf-subset} より $Y\in\mathbf{WF}$。$\mathbf{N}=R(\omega)$ なら、$A\in R(n)$ となる $n$ について $A\subseteq R(n)$ は有限（\ref{set:r-n-finite}）で、$Y$ は $A$ の関数による像なので有限。各 $y\in Y$ を含む $R(m_{y})$ の $m_{y}$ の最大値を $m$ とすると $Y\subseteq R(m)$、よって $Y\in R(m+1)$。\ref{set:replacement-in-class}。
+- **基礎**：$\mathbf{N}\subseteq\mathbf{WF}$ なので \ref{set:foundation-in-wf-subclass}。
+
+::: hypcheck
+- **推移性**：外延性・冪集合・置換の補題の適用で使った。
+- **基礎の公理を使わないこと**：議論は $\ZF^{-}$ の中で行い、$\mathbf{WF}$ の中で基礎の公理が成り立つことを**示した**（\ref{set:foundation-in-wf-subclass}）。
+- **$R(\omega)$ の置換**：$Y$ の有限性に $A$ の有限性と「有限集合の像は有限」を使った。選択公理は不要。
+:::
+:::
+
+$\mathbf{WF}$ で無限公理が真、$R(\omega)$ で偽であることは、定義された記号 $0$, $S$ が $\mathbf{WF}$ と $R(\omega)$ でも本来の意味をもつこと（**絶対性**）を確かめる必要があり、次ページ以降で示す。その結果、$\mathrm{Con}(\ZF^{-})\to\mathrm{Con}(\ZF)$ と $\mathrm{Con}(\ZF^{-})\to\mathrm{Con}(\ZF-\mathrm{Inf}+\lnot\mathrm{Inf})$ が得られる。
+
+## 問題 {#set:sec-relativization-problems}
+
+::: problem {#set:prob-relativize-forall}
+$(\forall x\in y\,\varphi)^{\mathbf{M}}$ が、$\mathbf{M}$ が推移的で $y\in\mathbf{M}$ のとき $\forall x\in y\,\varphi^{\mathbf{M}}$ と同値であることを示せ。
+:::
+
+::: solution
+$\forall x\in y\,\varphi$ は $\forall x\,(x\in y\to\varphi)$ の略なので、相対化は $\forall x\,(\mathbf{M}(x)\to(x\in y\to\varphi^{\mathbf{M}}))$。$\mathbf{M}$ が推移的で $y\in\mathbf{M}$ なら $x\in y\Rightarrow x\in\mathbf{M}$ なので、$\mathbf{M}(x)$ の条件は $x\in y$ から従い、$\forall x\,(x\in y\to\varphi^{\mathbf{M}})$ と同値。
+:::
+
+::: problem {#set:prob-omega-plus-one}
+$\mathbf{M}=\omega$（自然数全体）で、外延性と対の公理はそれぞれ真か。
+:::
+
+::: solution
+$\omega$ は推移的なので外延性は真（\ref{set:extensionality-in-transitive}）。対の公理の相対化は「任意の $m,n\in\omega$ について $m,n\in k$ となる $k\in\omega$ がある」で、$k=\max(m,n)+1$ とすれば真（$\omega$ の元は順序数で、$m<k$ は $m\in k$）。分出は偽：$z=2$, $\varphi(x)\defeq x=1$ とすると $\{x\in2:x=1\}=\{1\}\notin\omega$（$\omega$ は推移的なので、\ref{set:comprehension-in-class} の後の注意より分出は成り立たない）。
+:::
+
+::: supplement
+**前提の検討.**
+- \ref{set:relative-consistency-lemma} は $T$ と $S$ の間の関係を問うだけで、$T$ 自身の無矛盾性は仮定である。第二不完全性定理（\ref{pt:godel-second}）により、$\ZF$ が無矛盾なら $\ZF$ の中で $\mathrm{Con}(\ZF)$ は証明できないので、この形の相対化は避けられない。
+- 本ページの補題の多くは推移性を仮定する。推移的でないクラスへの相対化も同じ定義で意味をもつが、$\subseteq$ などの定義された関係の意味が変わりうる（「定義された記号の相対化」）。
+
+**関連する結果.** 相対化は、一階述語論理でいう**部分構造**（定義可能な部分集合への制限）への翻訳である（\ref{set:relativization-substructure}）。$\in$ も読み替える一般の翻訳（相対的解釈）は IV-06 で扱う予定。
+
+**高い視点から：クラスは「内部の宇宙」.** 相対化 $\varphi^{\mathbf{M}}$ は、宇宙 $\mathbf{V}$ の中に住む住人が、クラス $\mathbf{M}$ だけを「世界のすべて」と思い込んだときに見える真理である。$\mathbf{M}$ が推移的なら、住人は自分の世界の元の元を正しく見ている（$x\in\mathbf{M}$ の元はすべて $\mathbf{M}$ にある）ので、「部分集合」「対」などの素朴な概念は $\mathbf{V}$ と同じ意味になる。相対無矛盾性の証明は、住人の宇宙が $S$ を満たすことを示すことで、$S$ に「一つの世界」を与える、というモデル構成の最も素朴な形である。圏論的には、$\mathbf{M}$ への相対化は $\mathbf{V}$ の部分対象への制限で、推移性は「部分対象が元の取り方（$\in$）に関して閉じている」という条件にあたる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NP 完全問題 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/04-complexity/03-np-complete-problems.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# NP 完全問題 {#comp:page-np-complete-problems keywords="NP-complete problems, CLIQUE, independent set, vertex cover, subset sum, reductions from 3SAT, gadgets"}
+
+クック–レヴィンの定理（\ref{comp:cook-levin}）で 3SAT が NP 完全と分かると、他の問題の NP 完全性は「3SAT をその問題に多項式時間で還元する」ことで示せる（\ref{comp:np-complete} の後の系）。本ページでは、グラフの**クリーク**（\ref{comp:clique-complete}）、**独立集合**と**頂点被覆**（\ref{comp:vc-complete}）、数の**部分和**（\ref{comp:subset-sum-complete}）の問題が NP 完全であることを示す。どの還元も、論理式の変数や節を、問題の中の小さな部品（**ガジェット**）に置き換えて作る。
+
+## 記法と定義の確認 {#comp:sec-npc-notation}
+
+::: notation
+- NP、多項式時間還元 $\le_{\mathrm{P}}$、NP 完全、3SAT とその NP 完全性（\ref{comp:3sat-complete}）は \ref{comp:page-np} のとおり。
+- グラフは無向で、ループと多重辺をもたないとする。頂点の集合 $S$ が**クリーク**とは $S$ のどの二頂点も辺で結ばれていること、**独立集合**とはどの二頂点も結ばれていないこと、**頂点被覆**とはどの辺も少なくとも一方の端点が $S$ に属することをいう。
+- 3CNF の論理式は、各節がちょうど $3$ 個のリテラルをもつ形に直せる（同じリテラルを繰り返してよい）。以下ではそう仮定する。
+:::
+
+## クリーク {#comp:sec-clique}
+
+::: theorem CLIQUE は NP 完全 {#comp:clique-complete keywords="CLIQUE is NP-complete" index="CLIQUE|くりーく"}
+$\mathrm{CLIQUE}\defeq\{\langle G,k\rangle:G\text{ は大きさ }k\text{ のクリークをもつ}\}$ は NP 完全である。
+:::
+
+::: proof
+**NP に属する.** 証明書は $k$ 個の頂点の集合で、すべての対が辺かを $O(k^{2})$ 回の照合で調べる。
+
+**3SAT $\le_{\mathrm{P}}$ CLIQUE.** 3CNF $\varphi=C_{1}\wedge\cdots\wedge C_{k}$、$C_{i}=\ell_{i1}\vee\ell_{i2}\vee\ell_{i3}$ から、グラフ $G$ を作る：頂点は $(i,r)$（$1\le i\le k$, $1\le r\le3$、リテラル $\ell_{ir}$ の出現に対応）の $3k$ 個。$(i,r)$ と $(i',r')$ を辺で結ぶのは、$i\neq i'$ かつ $\ell_{ir}$ と $\ell_{i'r'}$ が互いの否定でないときとする。$f(\langle\varphi\rangle)\defeq\langle G,k\rangle$ は多項式時間で計算できる。
+- ($\Rightarrow$) 付値 $v$ が $\varphi$ を充足するなら、各節で真のリテラル $\ell_{ir_{i}}$ を一つ選ぶ。$\{(i,r_{i})\}$ は $k$ 個の頂点で、異なる節に属し、どれも真なので互いの否定でない。よって大きさ $k$ のクリーク。
+- ($\Leftarrow$) 大きさ $k$ のクリーク $S$ があるとする。同じ節の頂点どうしは結ばれていないので、$S$ は各節からちょうど一つずつ頂点を含む。$S$ のリテラルは互いの否定を含まないので、それらをすべて真にする付値がある（残りの変数は任意）。各節に真のリテラルがあるので $\varphi$ は充足される。
+:::
+
+## 独立集合と頂点被覆 {#comp:sec-vc}
+
+::: theorem 独立集合と頂点被覆は NP 完全 {#comp:vc-complete keywords="INDEPENDENT-SET and VERTEX-COVER are NP-complete" index="頂点被覆|ちょうてんひふく, 独立集合|どくりつしゅうごう"}
+$\mathrm{IS}\defeq\{\langle G,k\rangle:G\text{ は大きさ }k\text{ の独立集合をもつ}\}$ と $\mathrm{VC}\defeq\{\langle G,k\rangle:G\text{ は大きさ }k\text{ の頂点被覆をもつ}\}$ は NP 完全である。
+:::
+
+::: proof
+どちらも、証明書を頂点の集合として NP に属する。
+- CLIQUE $\le_{\mathrm{P}}$ IS：$G$ の補グラフ $\overline{G}$（辺の有無を反転したもの）について、$S$ が $G$ のクリーク $\iff$ $S$ が $\overline{G}$ の独立集合。$\langle G,k\rangle\mapsto\langle\overline{G},k\rangle$。
+- IS $\le_{\mathrm{P}}$ VC：頂点が $N$ 個のグラフで、$S$ が独立集合 $\iff$ 補集合 $V\setminus S$ が頂点被覆（辺 $\{a,b\}$ の両端が $S$ に属さない $\iff$ 少なくとも一端が $V\setminus S$ に属する）。$\langle G,k\rangle\mapsto\langle G,N-k\rangle$。
+
+（大きさ「ちょうど $k$」と「$k$ 以下」「$k$ 以上」の違いは、独立集合とクリークは部分集合をとっても性質が保たれ、頂点被覆は頂点を加えても保たれるので、問題にならない。）
+:::
+
+## 部分和 {#comp:sec-subset-sum}
+
+::: theorem SUBSET-SUM は NP 完全 {#comp:subset-sum-complete keywords="SUBSET-SUM is NP-complete" index="部分和問題|ぶぶんわもんだい"}
+$\mathrm{SUBSET\text{-}SUM}\defeq\{\langle x_{1},\dots,x_{r},t\rangle:\text{ある }I\subseteq\{1,\dots,r\}\text{ で }\textstyle\sum_{i\in I}x_{i}=t\}$（数は二進表記）は NP 完全である。
+:::
+
+::: proof
+**NP に属する.** 証明書は $I$。
+
+**3SAT $\le_{\mathrm{P}}$ SUBSET-SUM.** 変数 $p_{1},\dots,p_{l}$、節 $C_{1},\dots,C_{k}$ の 3CNF $\varphi$ から、$l+k$ 桁の**十進数**を作る（桁は左から変数の桁 $1,\dots,l$、節の桁 $1,\dots,k$）。
+- 各変数 $p_{j}$ について二つの数 $y_{j}$, $z_{j}$：どちらも変数の桁 $j$ が $1$。節の桁 $i$ は、$y_{j}$ では $p_{j}$ が $C_{i}$ に（肯定で）現れる回数、$z_{j}$ では $\neg p_{j}$ が現れる回数。他の桁は $0$。
+- 各節 $C_{i}$ について二つの数 $g_{i}$, $h_{i}$：どちらも節の桁 $i$ だけが $1$。
+- 目標 $t$：変数の桁はすべて $1$、節の桁はすべて $3$。
+
+各桁の和は、どの部分集合をとっても $3+2=5$ 以下（節の桁 $i$ には、$C_{i}$ の 3 個のリテラルの出現の分と $g_{i},h_{i}$ の分しか現れない）なので、**繰り上がりは起こらない**。したがって、部分和が $t$ に等しいことは、各桁ごとに和が $t$ の桁に等しいことと同値である。
+- ($\Rightarrow$) 充足する付値 $v$ について、$v(p_{j})$ が真なら $y_{j}$、偽なら $z_{j}$ を選ぶ。変数の桁はすべて $1$。節の桁 $i$ には、$C_{i}$ の真のリテラルの個数 $c_{i}\in\{1,2,3\}$ が入るので、$g_{i},h_{i}$ を $3-c_{i}$ 個加えて $3$ にできる。
+- ($\Leftarrow$) 部分和が $t$ なら、変数の桁 $j$ が $1$ なので $y_{j},z_{j}$ のちょうど一方が選ばれている。$y_{j}$ が選ばれたら $p_{j}$ を真、$z_{j}$ なら偽とする。節の桁 $i$ で $g_{i},h_{i}$ からは高々 $2$ しか来ないので、$y,z$ から $1$ 以上、すなわち $C_{i}$ の真のリテラルが少なくとも一つある。
+
+数の桁数は $l+k$ で、十進から二進への変換を含めて多項式時間で書き出せる。
+:::
+
+::: remark
+SUBSET-SUM は、数を**一進表記**で与えれば P に属する（動的計画法で、到達できる和の集合を $x_{1},x_{2},\dots$ と順に更新する。和は $t$ 以下に限ってよい）。上の還元では数が指数的に大きく（桁数が多項式）、一進表記にすると入力が指数的に長くなるので、矛盾しない。このように数値を含む問題の困難さは表記に依存する（**擬多項式時間**）。
+:::
+
+::: hypcheck
+- **各節がちょうど 3 個のリテラル**：\ref{comp:subset-sum-complete} で節の桁の目標を $3$ とし、補助の数 $g_{i},h_{i}$ を二つにすることに使った。
+- **繰り上がりが起きないこと**：各桁の和を $5\le9$ で抑えて、部分和の等式を桁ごとの等式に分解するのに本質的に使った。十進を使ったのはこのためである（$6$ 進以上なら何でもよい）。
+- **還元の多項式性**：どの還元でも、作るグラフや数の大きさが $\varphi$ の長さの多項式であることを確かめた。
+:::
+
+## 問題 {#comp:sec-npc-problems}
+
+::: problem {#comp:prob-subset-sum-unary}
+SUBSET-SUM で、数をすべて一進表記で与えたものは P に属することを示せ。
+:::
+
+::: solution
+$R_{0}\defeq\{0\}$、$R_{i}\defeq R_{i-1}\cup\{s+x_{i}:s\in R_{i-1},\ s+x_{i}\le t\}$ とすると、$R_{i}$ は $x_{1},\dots,x_{i}$ の部分和で $t$ 以下のもの全体（$i$ に関する帰納法）。$t\in R_{r}$ を調べる。$R_{i}\subseteq\{0,\dots,t\}$ は長さ $t+1$ のビット列で表せ、更新は $O(t)$ 回の操作。全体で $O(rt)$ 回の操作で、一進表記の入力の長さ（$\ge r+t$）の多項式。
+:::
+
+::: problem {#comp:prob-3color}
+$\mathrm{3COLOR}\defeq\{\langle G\rangle:G\text{ の頂点を 3 色で、隣り合う頂点が異なる色になるように塗れる}\}$ が NP に属することを示せ。また、2 色の場合（2COLOR）は P に属することを示せ。
+:::
+
+::: solution
+NP：証明書は色の割り当てで、各辺の両端の色が異なるかを調べる。2COLOR：各連結成分で一つの頂点を色 $1$ にし、幅優先探索で隣を交互の色に塗る。色が衝突する辺があれば（奇数長の閉路があれば）塗れない。衝突しなければその塗り方が条件を満たす。塗り方は各成分で一つ目の頂点の色を決めれば一通りに決まるので、衝突があれば 2 色では塗れない。時間は多項式。（3COLOR は NP 完全であることが知られている。）
+:::
+
+::: supplement
+**前提の検討.**
+- CLIQUE で $k$ を入力に含めたことは本質的である。$k$ を定数に固定した $k$-CLIQUE は、$\binom{N}{k}=O(N^{k})$ 通りの部分集合を調べれば多項式時間で決定できる。
+- 頂点被覆の大きさを「最小」とした最適化問題は、NP 完全な判定問題を使って二分探索で解ける。
+
+**関連する結果.**
+- *ハミルトン路.* HAMPATH も 3SAT からの還元で NP 完全であることが知られている（各変数を「左右どちら向きにたどるか」を選ぶ菱形の部品、各節を寄り道の頂点で表す）。本サイトでは示していない。
+- *カープの 21 の問題.* 1972 年にカープが、多くの組合せ的な問題（集合被覆、ナップサック、彩色など）の NP 完全性を示したことはよく知られている。
+
+**高い視点から：還元は翻訳辞書.** NP 完全問題の還元は、「論理式の言葉」を「グラフの言葉」や「数の言葉」に翻訳する辞書である。変数（どちらかを選ぶ自由）は、二つの数 $y_{j},z_{j}$ のどちらかを選ぶこと、あるいはクリークに入れる頂点の選び方に、節（少なくとも一つが真という制約）は、桁の目標値や「各節から一つ」という構造に翻訳される。比喩で言えば、すべての NP 完全問題は同じ一つの難しさを別々の言葉で言い換えたもので、どれか一つでも速く解ければ、翻訳を通してすべてが速く解ける。圏論的には、多項式時間還元を射とする前順序の中で、NP 完全問題は NP という部分の**最大元**（終対象）にあたる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

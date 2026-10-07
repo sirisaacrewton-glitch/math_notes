@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>自然数と順序数の算術 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/01-basics/05-natural-numbers.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 自然数と順序数の算術 {#set:page-natural-numbers keywords="natural numbers, omega, Peano axioms, ordinal arithmetic, ordinal addition, ordinal multiplication, finite sequences"}
+
+最初のいくつかの順序数 $0,1,2,\dots$ が自然数である。本ページでは自然数を順序数の言葉で定義し、自然数全体の集合 $\omega$ の存在を**無限公理**から導いてペアノの公理を証明する。次に、順序数の和と積を「整列集合を並べる・敷き詰める」操作の順序型として定義し、結合律・再帰的な性質・非可換性・分配律が片側でしか成り立たないことを示す。最後に、冪集合の公理を使わずに有限列の集合 ${}^{n}A$, $A^{<\omega}$ を作る。
+
+## 記法と定義の確認 {#set:sec-natural-notation}
+
+::: notation
+- 公理は $\ZF$ から冪集合・選択・基礎の公理を除いたものを使い、無限公理は本ページで導入する（\ref{set:ax-infinity}）。どこで何を使ったかは各証明の末尾に記す。
+- 順序数（\ref{set:ordinal}）をギリシャ文字で表し、$\alpha<\beta$ は $\alpha\in\beta$、$\alpha\le\beta$ は $\alpha\subseteq\beta$ と同じ意味である（\ref{set:ordinal-basic}）。順序数の集合は $\in$ で整列され（\ref{set:ordinal-well-ordered}）、上限は $\sup X=\bigcup X$（\ref{set:sup-ordinals}）。
+- $S(\alpha)=\alpha\cup\{\alpha\}$（\ref{set:successor}）、後続順序数・極限順序数（\ref{set:successor-ordinal}, \ref{set:limit-ordinal}）とその特徴づけ \ref{set:limit-characterization} を用いる。
+- 整列集合 $(A,R)$ の順序型 $\operatorname{type}(A,R)$（\ref{set:order-type}）。同型 $f\colon(A,R)\to\gamma$ の値は始切片の型である（\ref{set:type-of-initial-segment}）。$X\subseteq\alpha$ なら $\operatorname{type}(X)\le\alpha$（\ref{set:type-subset}）。狭義増加関数 $f\colon\delta\to\mathbf{ON}$ は $\xi\le f(\xi)$ を満たす（\ref{set:increasing-above-identity}）。
+- 順序対 $\langle x,y\rangle$（\ref{set:ordered-pair}）を $(x,y)$ とも書き、整列集合 $\langle A,R\rangle$ を $(A,R)$ と書く（\ref{set:sec-ordinals-notation}）。$\langle\cdots\rangle$ は主に有限列（\ref{set:finite-sequence}）に使う。
+- 順序数 $\alpha$ を整列集合とみるときは $(\alpha,\in)$ を指す。全順序の間の全単射が狭義の順序を保てば、三分律によって順序を反映もするので、順序同型である。この事実を以下で断りなく使う。
+:::
+
+## 自然数 {#set:sec-natural-numbers}
+
+::: definition 自然数 {#set:natural-number keywords="natural number, finite ordinal" index="自然数|しぜんすう"}
+順序数 $\alpha$ が**自然数**であるとは、任意の $\beta\le\alpha$ について、$\beta=0$ または $\beta$ が後続順序数であることをいう。$1=S(0)$, $2=S(1)$, $3=S(2)$, … と書く。
+:::
+
+::: intuition
+$0$ から $S$ を有限回適用して得られる順序数が自然数だ、というのが直感である。しかし「有限回」はまだ定義されていないので、代わりに「自分以下に極限順序数がない」という条件で定義する。$\alpha$ 以下で最初に $S$ の繰り返しで届かないものがあれば、それは極限順序数になるはずだからである。
+:::
+
+::: example
+$0=\varnothing$, $1=\{0\}$, $2=\{0,1\}$, $3=\{0,1,2\}$ は自然数。一般に自然数 $n$ は $n=\{0,1,\dots,n-1\}$ という形をしている（$n$ は自分より小さい順序数全体）。
+:::
+
+::: lemma 自然数の閉包性 {#set:natural-number-closure}
+1. $0$ は自然数である。$n$ が自然数ならば $S(n)$ も自然数である。
+2. $n$ が自然数で $m\le n$ ならば、$m$ は自然数である。とくに自然数の元は自然数である。
+:::
+
+::: proof
+**(1)** $\beta\le0$ なら $\beta=0$。$n$ が自然数で $\beta\le S(n)$ とすると、$\beta<S(n)$ すなわち $\beta\le n$ の場合は仮定より $\beta=0$ か後続順序数、$\beta=S(n)$ の場合は後続順序数。
+
+**(2)** $\beta\le m$ なら $\beta\le n$ なので、$\beta=0$ か後続順序数。後半は、$m\in n$ なら $m<n$、特に $m\le n$ だから。
+
+::: hypcheck
+- **$\beta<S(n)\iff\beta\le n$**（\ref{set:successor-basic} (2)）：(1)。**$\le$ の推移性**（\ref{set:ordinal-basic}）：(2)。
+- **対・和集合の公理**：$S(n)$ の存在。無限公理は使っていない。
+:::
+:::
+
+::: axiom 無限公理 {#set:ax-infinity keywords="Axiom of Infinity" index="無限公理|むげんこうり"}
+$$
+\exists x\,\bigl(0\in x\land\forall y\in x\,(S(y)\in x)\bigr).
+$$
+この条件を満たす $x$ を**帰納的集合**という。
+:::
+
+::: intuition
+ここまでの公理は、与えられた集合から新しい集合を作る操作（対・和・分出・置換）を保証するだけで、無限集合の存在は導けない（実際、遺伝的有限集合全体はそれらの公理をすべて満たす）。無限公理は「$0,1,2,\dots$ をすべて含む集合」を一つ要請する。
+:::
+
+::: lemma 帰納的集合はすべての自然数を含む {#set:inductive-contains-naturals}
+$x$ を帰納的集合とすると、すべての自然数は $x$ の元である。
+:::
+
+::: proof
+自然数 $n$ で $n\notin x$ となるものがあると仮定する。
+
+**Step 1.** $T=\{m\in S(n)\mid m\notin x\}$ とおく（分出公理）。$n\in T$ なので $T\neq\varnothing$。$T$ の最小元 $m$ をとる（\ref{set:ordinal-well-ordered}）。
+
+**Step 2.** $m\le n$ なので、$m$ は $0$ または後続順序数（自然数の定義）。$0\in x$ なので $m\neq0$。よって $m=S(k)$ と書ける。
+
+**Step 3.** $k<m\le n$ より $k\in S(n)$。$m$ の最小性より $k\notin T$、したがって $k\in x$。$x$ は帰納的なので $m=S(k)\in x$ となり、$m\in T$ に反する。
+
+::: hypcheck
+- **分出公理**：Step 1 の $T$。$n$ そのものではなく $S(n)$ の中で考えたのは、$n$ 自身を反例の候補に含めるため。
+- **自然数の定義**：Step 2（「$m\le n$ なら $0$ か後続」）。ここで極限順序数の場合が排除される。
+:::
+:::
+
+::: definition $\omega$ {#set:omega keywords="omega, set of natural numbers" index="ω|おめが, 自然数全体の集合|しぜんすうぜんたいのしゅうごう"}
+帰納的集合 $x$ を一つとり、
+$$
+\omega=\{n\in x\mid n\text{ は自然数}\}
+$$
+とおく。\ref{set:inductive-contains-naturals} により $\omega$ はすべての自然数を元とし自然数以外を元としないので、外延性の公理により $x$ の選び方によらない。$\omega$ を**自然数全体の集合**という。
+:::
+
+::: theorem $\omega$ は最小の極限順序数 {#set:omega-least-limit keywords="omega is the least limit ordinal" index="最小の極限順序数|さいしょうのきょくげんじゅんじょすう"}
+1. $\omega$ は順序数である。
+2. $\omega$ は極限順序数である。
+3. 任意の極限順序数 $\lambda$ について $\omega\le\lambda$。
+4. 任意の極限順序数は帰納的集合である。したがって（他の公理のもとで）無限公理は「極限順序数が存在する」と同値である。
+:::
+
+::: proof
+**(1)** $\omega$ は順序数（自然数）からなる集合で、\ref{set:natural-number-closure} (2) により推移的。\ref{set:ordinal-well-ordered} (4) より順序数。
+
+**(2)** $0\in\omega$ なので $\omega\neq0$。$\omega=S(n)$ と仮定すると $n\in\omega$ なので $n$ は自然数、\ref{set:natural-number-closure} (1) より $S(n)$ も自然数で $S(n)\in\omega$、すなわち $\omega\in\omega$ となり \ref{set:ordinal-irreflexive} に反する。よって $\omega$ は後続順序数でなく、極限順序数。
+
+**(3)** $\lambda<\omega$ なる極限順序数 $\lambda$ があるとすると、$\lambda\in\omega$ は自然数で、$\lambda\le\lambda$ だから $\lambda$ は $0$ か後続順序数でなければならず、矛盾。三分律より $\omega\le\lambda$。
+
+**(4)** $\lambda$ を極限順序数とする。$\lambda\neq0$ より $0\subsetneq\lambda$ なので $0\in\lambda$（\ref{set:ordinal-basic} (3)）。$\beta\in\lambda$ なら \ref{set:limit-characterization} より $S(\beta)\in\lambda$。よって $\lambda$ は帰納的。逆に無限公理のもとでは (2) により極限順序数 $\omega$ が存在する。
+
+::: hypcheck
+- **無限公理**：$\omega$ の定義（帰納的集合 $x$ の存在）。**分出公理**：$\omega$ の切り出し。**外延性**：$x$ によらないこと。
+- 選択・冪集合は使っていない。
+:::
+:::
+
+::: theorem ペアノの公理 {#set:peano keywords="Peano axioms, mathematical induction" index="ペアノの公理|ぺあののこうり, 数学的帰納法|すうがくてききのうほう"}
+1. $0\in\omega$。
+2. $n\in\omega$ ならば $S(n)\in\omega$。
+3. $n\in\omega$ ならば $S(n)\neq0$。
+4. $n,m\in\omega$ かつ $S(n)=S(m)$ ならば $n=m$。
+5. （帰納法）$X\subseteq\omega$ が $0\in X$ かつ $\forall n\in X\,(S(n)\in X)$ を満たせば、$X=\omega$。
+:::
+
+::: intuition
+ペアノの公理は自然数を「$0$ から始めて後者をとることを繰り返す」構造として特徴づける。ここでは自然数を順序数として構成したので、これらは公理ではなく定理になる。とくに (5) の帰納法は、「$\omega$ の空でない部分集合は最小元をもつ」という整列性から従う。
+:::
+
+::: proof
+**(1), (2)** \ref{set:natural-number-closure} (1)。
+
+**(3)** $n\in S(n)$ なので $S(n)\neq\varnothing=0$。
+
+**(4)** \ref{set:successor-basic} (3)。
+
+**(5)** $X$ は帰納的集合なので、\ref{set:inductive-contains-naturals} によりすべての自然数を含む。すなわち $\omega\subseteq X$、$X\subseteq\omega$ と合わせて $X=\omega$。
+
+（別証）$\omega\setminus X\neq\varnothing$ としてその最小元 $\gamma$ をとると、$0\in X$ から $\gamma\neq0$。$\gamma$ は自然数なので $\gamma=S(k)$ と書け、$k<\gamma$ より $k\in X$、よって $\gamma=S(k)\in X$ となり矛盾。
+
+::: hypcheck
+- (5) では分出公理（$\omega\setminus X$）と $\omega$ の整列性、自然数の定義を使った。無限公理は $\omega$ の存在に使っている。
+:::
+:::
+
+::: supplement
+**帰納法の使い方.** 論理式 $\psi(n)$ について「$\psi(0)$ かつ $\forall n\in\omega\,(\psi(n)\to\psi(S(n)))$ ならば $\forall n\in\omega\,\psi(n)$」は、(5) を $X=\{n\in\omega\mid\psi(n)\}$（分出公理）に適用すれば得られる。以下「$n$ についての帰納法」と言えばこの形を指す。
+
+**ペアノ構造の一意性.** $(N,0_{N},s)$ が (1)〜(5) を満たす任意の構造なら、$\omega$ 上の再帰（\ref{set:transfinite-recursion}）で $h(0)=0_{N}$, $h(S(n))=s(h(n))$ と定めた $h$ が同型 $\omega\to N$ になる（デデキント）。
+:::
+
+## 整列集合の和と積 {#set:sec-well-order-sum-product}
+
+::: definition 整列集合の順序和と辞書式積 {#set:well-order-sum-product-def keywords="ordered sum, lexicographic product" index="順序和|じゅんじょわ, 辞書式順序|じしょしきじゅんじょ"}
+$\mathbf{A}=(A,R)$, $\mathbf{B}=(B,S)$ を整列集合とする。
+- **順序和** $\mathbf{A}\oplus\mathbf{B}$ とは、集合 $A\times\{0\}\cup B\times\{1\}$ に、$(x,i)\prec(y,j)$ を「$i<j$、または $i=j=0$ かつ $xRy$、または $i=j=1$ かつ $xSy$」で定めた順序を入れたものである。
+- **辞書式積** $\mathbf{A}\otimes\mathbf{B}$ とは、集合 $A\times B$ に、$(a,b)\prec(a',b')$ を「$aRa'$、または $a=a'$ かつ $bSb'$」で定めた順序を入れたものである。
+:::
+
+::: intuition
+$\mathbf{A}\oplus\mathbf{B}$ は「$\mathbf{A}$ を並べ、その後ろに $\mathbf{B}$ を並べる」こと。$\mathbf{A}\otimes\mathbf{B}$ は「$\mathbf{A}$ の各元の位置に $\mathbf{B}$ のコピーを一つずつ置く」こと、つまり第 1 成分を優先して比べる辞書式順序である。
+:::
+
+::: lemma 順序和・辞書式積の基本性質 {#set:well-order-sum-product}
+$\mathbf{A},\mathbf{B},\mathbf{C},\mathbf{A}',\mathbf{B}'$ を整列集合とする。
+1. $\mathbf{A}\oplus\mathbf{B}$ と $\mathbf{A}\otimes\mathbf{B}$ は整列集合である。
+2. $\mathbf{A}\cong\mathbf{A}'$, $\mathbf{B}\cong\mathbf{B}'$ ならば $\mathbf{A}\oplus\mathbf{B}\cong\mathbf{A}'\oplus\mathbf{B}'$, $\mathbf{A}\otimes\mathbf{B}\cong\mathbf{A}'\otimes\mathbf{B}'$。
+3. $(\mathbf{A}\oplus\mathbf{B})\oplus\mathbf{C}\cong\mathbf{A}\oplus(\mathbf{B}\oplus\mathbf{C})$、$(\mathbf{A}\otimes\mathbf{B})\otimes\mathbf{C}\cong\mathbf{A}\otimes(\mathbf{B}\otimes\mathbf{C})$、$(\mathbf{B}\oplus\mathbf{C})\otimes\mathbf{A}\cong(\mathbf{B}\otimes\mathbf{A})\oplus(\mathbf{C}\otimes\mathbf{A})$。
+:::
+
+::: proof
+**(1) 順序和.** 台集合は対・和集合・直積（\fullref[直積]{set:cartesian-product}）で存在し、$\prec$ は台集合の 2 乗の部分集合として分出公理で存在する。
+- *非反射性*：$(x,i)\prec(x,i)$ なら $i=i$ なので $xRx$ か $xSx$ となり、$R,S$ の非反射性に反する。
+- *推移性*：$(x,i)\prec(y,j)\prec(z,k)$ とする。$i\le j\le k$ である。$i<k$ なら定義から $(x,i)\prec(z,k)$。$i=k$ なら $i=j=k$ で、$xRy$, $yRz$（または $S$ で同様）から $xRz$。
+- *三分律*：$i\neq j$ なら $i<j$ か $j<i$ で比較可能。$i=j=0$ なら $x,y\in A$ で $R$ の三分律、$i=j=1$ なら $S$ の三分律。
+- *最小元*：$Y\neq\varnothing$ を台集合の部分集合とする。$Y_{0}=\{x\in A\mid(x,0)\in Y\}$ が空でなければその $R$-最小元 $x_{0}$ をとると、$(x_{0},0)$ が $Y$ の最小元（$Y$ の他の元は $(x,0)$, $x_{0}Rx$ か $(y,1)$）。$Y_{0}=\varnothing$ なら $Y_{1}=\{y\in B\mid(y,1)\in Y\}$ は空でなく、その $S$-最小元 $y_{0}$ について $(y_{0},1)$ が最小元。
+
+**(1) 辞書式積.**
+- *非反射性*：$(a,b)\prec(a,b)$ なら $aRa$ か $bSb$ で矛盾。
+- *推移性*：$(a,b)\prec(a',b')\prec(a'',b'')$ とする。$aRa'$ または $a=a'$、かつ $a'Ra''$ または $a'=a''$ である。少なくとも一方が $R$ なら $aRa''$。両方とも等号なら $a=a'=a''$ で $bSb'Sb''$ より $bSb''$。
+- *三分律*：$a\neq a'$ なら $R$ の三分律で比較可能。$a=a'$ なら $S$ の三分律。
+- *最小元*：$Y\neq\varnothing$ に対し $D=\{a\in A\mid\exists b\,(a,b)\in Y\}$ の $R$-最小元 $a_{0}$ をとり、$\{b\in B\mid(a_{0},b)\in Y\}$ の $S$-最小元 $b_{0}$ をとると、$(a_{0},b_{0})$ が $Y$ の最小元。実際 $(a,b)\in Y$ なら $a\in D$ で、$a_{0}Ra$ か $a=a_{0}$、後者なら $b_{0}=b$ か $b_{0}Sb$。
+
+**(2)** 同型 $\varphi\colon\mathbf{A}\to\mathbf{A}'$, $\psi\colon\mathbf{B}\to\mathbf{B}'$ をとる。$(x,0)\mapsto(\varphi(x),0)$, $(y,1)\mapsto(\psi(y),1)$ は全単射で、定義の各場合が $\varphi,\psi$ で保たれるので同型。$(a,b)\mapsto(\varphi(a),\psi(b))$ も同様（$a=a'\iff\varphi(a)=\varphi(a')$ を使う）。
+
+**(3)** どの場合も、左辺と右辺の台集合の元は「どのブロック（$A$, $B$, $C$ のどれ）に属するか」と「ブロック内の位置」で決まり、順序は「ブロックの順 → ブロック内の順」になっている。具体的には次の全単射が順序を保つ。
+- 和の結合律：$((a,0),0)\mapsto(a,0)$, $((b,1),0)\mapsto((b,0),1)$, $(c,1)\mapsto((c,1),1)$。左辺でも右辺でも、ブロックが $A<B<C$ の順に並び、同じブロック内では $R,S$ または $\mathbf{C}$ の順序で比べる。
+- 積の結合律：$((a,b),c)\mapsto(a,(b,c))$。どちらの順序も「まず $a$ を比べ、等しければ $b$ を、それも等しければ $c$ を比べる」という三つ組の辞書式順序である。
+- 分配律：$((b,0),a)\mapsto((b,a),0)$, $((c,1),a)\mapsto((c,a),1)$。左辺はまず第 1 成分を $\mathbf{B}\oplus\mathbf{C}$ で比べる（$B$ のブロックが先、ブロック内は $b$ や $c$ の順）、等しければ $a$ を比べる。右辺はまず $B$ のブロックか $C$ のブロックかで比べ、ブロック内で $(b,a)$ または $(c,a)$ を辞書式に比べる。両者は同じ規則である。
+
+いずれも全単射であることは逆写像が明らかに書けることから従い、全順序の間で狭義の順序を保つ全単射なので同型である。
+
+::: hypcheck
+- **対・和集合・置換・分出**：台集合（直積と和集合）と順序関係（直積の部分集合）の存在。
+- **$R,S$ の整列性**：(1) の最小元。選択公理は不要（最小元は一意に決まる）。
+:::
+:::
+
+## 順序数の和 {#set:sec-ordinal-addition}
+
+::: definition 順序数の和 {#set:ordinal-addition keywords="ordinal addition, ordinal sum" index="順序数の和|じゅんじょすうのわ"}
+順序数 $\alpha,\beta$ に対し
+$$
+\alpha+\beta=\operatorname{type}(\alpha\oplus\beta)
+$$
+と定める。すなわち $\alpha+\beta$ は、集合 $\alpha\times\{0\}\cup\beta\times\{1\}$ に「$\alpha$ の部分を先に、$\beta$ の部分を後に」並べた整列順序の順序型である。
+:::
+
+::: intuition
+「$2+3=5$」とは、りんごを 2 個並べた後ろにみかんを 3 個並べると、果物が 5 個の列になるということである。$\alpha+\beta$ は長さ $\alpha$ の列の後ろに長さ $\beta$ の列をつないだ列の長さである。
+:::
+
+\ref{set:well-order-sum-product} (2) と順序型の一意性から、一般の整列集合について $\operatorname{type}(\mathbf{A}\oplus\mathbf{B})=\operatorname{type}\mathbf{A}+\operatorname{type}\mathbf{B}$ が成り立つ。これを以下で繰り返し使う。
+
+::: lemma 和の構造 {#set:ordinal-addition-structure}
+順序数 $\alpha,\beta$ について、$\alpha\oplus\beta$ から $\alpha+\beta$ への同型 $f$ は
+$$
+f(\xi,0)=\xi\quad(\xi<\alpha),\qquad f(\eta,1)=\alpha+\eta\quad(\eta<\beta)
+\label{set:eq-ordinal-addition-iso}
+$$
+で与えられる。したがって
+1. $\alpha+\beta=\alpha\cup\{\alpha+\eta\mid\eta<\beta\}$。
+2. $\eta<\eta'<\beta$ ならば $\alpha+\eta<\alpha+\eta'$。
+3. すべての $\eta<\beta$ について $\alpha\le\alpha+\eta$。とくに $\alpha\le\alpha+\beta$。
+:::
+
+::: proof
+**Step 1.** $f\colon\alpha\oplus\beta\to\alpha+\beta$ を同型とする。\ref{set:type-of-initial-segment} により $f(x)$ は $x$ より前の元全体の型である。
+
+**Step 2（$f(\xi,0)$）.** $(\xi,0)$ より前の元全体は $\xi\times\{0\}=\{(\zeta,0)\mid\zeta<\xi\}$ で、$\zeta\mapsto(\zeta,0)$ は $\xi$ からの同型。よって $f(\xi,0)=\xi$。
+
+**Step 3（$f(\eta,1)$）.** $(\eta,1)$ より前の元全体は $\alpha\times\{0\}\cup\eta\times\{1\}$ で、その上の順序は $\alpha\oplus\eta$ の順序そのものである。よって $f(\eta,1)=\operatorname{type}(\alpha\oplus\eta)=\alpha+\eta$。
+
+**Step 4（帰結）.** (1) は $f$ が全射であることと Step 2, 3。(2) は $(\eta,1)\prec(\eta',1)$ と $f$ が順序を保つこと。(3) は $\xi<\alpha$ について $(\xi,0)\prec(\eta,1)$ なので $\xi=f(\xi,0)<f(\eta,1)=\alpha+\eta$、すなわち $\alpha\subseteq\alpha+\eta$。また (1) より $\alpha\subseteq\alpha+\beta$。
+
+::: hypcheck
+- **\ref{set:type-of-initial-segment}**：Step 1。**順序型の一意性**（\ref{set:ordinal-type}）：Step 2, 3 で始切片の型を決めるところ。
+- **置換公理**：$\alpha+\beta$ などの順序型の存在（\ref{set:ordinal-type} を通して）。**分出公理**：始切片の切り出し。
+- 無限公理・冪集合・選択公理は使っていない。
+:::
+:::
+
+::: theorem 順序数の和の性質 {#set:ordinal-addition-laws keywords="laws of ordinal addition, associativity" index="順序数の和の結合律|じゅんじょすうのわのけつごうりつ"}
+任意の順序数 $\alpha,\beta,\gamma$ について次が成り立つ。
+1. $\alpha+0=\alpha$, $0+\alpha=\alpha$。
+2. $\alpha+1=S(\alpha)$。
+3. （結合律）$(\alpha+\beta)+\gamma=\alpha+(\beta+\gamma)$。
+4. $\alpha+S(\beta)=S(\alpha+\beta)$。
+5. $\beta$ が極限順序数ならば $\alpha+\beta=\sup\{\alpha+\xi\mid\xi<\beta\}$。
+6. （右の引数について狭義増加）$\beta<\gamma\Rightarrow\alpha+\beta<\alpha+\gamma$。とくに左簡約律 $\alpha+\beta=\alpha+\gamma\Rightarrow\beta=\gamma$ が成り立つ。
+7. （左の引数について広義増加）$\alpha\le\beta\Rightarrow\alpha+\gamma\le\beta+\gamma$。
+8. $\alpha\le\alpha+\beta$ かつ $\beta\le\alpha+\beta$。
+9. （引き算）$\alpha\le\beta$ ならば、$\alpha+\delta=\beta$ となる $\delta$ がただ一つ存在する。
+:::
+
+::: intuition
+(4)(5) は $\alpha+\beta$ が「$\alpha$ から出発して $\beta$ 回後者をとり、極限では上限をとる」ことで計算できることを言う（超限再帰による定義との一致は \ref{set:ordinal-recursive-characterization}）。和は右の引数については狭義に増加するが、左の引数については広義にしか増加しない：$0<1$ なのに $0+\omega=1+\omega$（\ref{set:ordinal-arithmetic-counterexamples}）。
+:::
+
+::: proof
+**(1)** $\alpha\oplus0$ の台集合は $\alpha\times\{0\}$ で、$(\xi,0)\mapsto\xi$ は $\alpha$ への同型。$0\oplus\alpha$ の台集合は $\alpha\times\{1\}$ で、$(\xi,1)\mapsto\xi$ が同型。
+
+**(4)** \ref{set:ordinal-addition-structure} (1) を $\alpha+S(\beta)$ に適用し、$\eta<S(\beta)\iff\eta<\beta\lor\eta=\beta$ を使うと
+$$
+\begin{aligned}
+\alpha+S(\beta)&=\alpha\cup\{\alpha+\eta\mid\eta<\beta\}\cup\{\alpha+\beta\}=(\alpha+\beta)\cup\{\alpha+\beta\}\\
+&=S(\alpha+\beta).
+\end{aligned}
+$$
+
+**(2)** $1=S(0)$ なので (4) と (1) から $\alpha+1=S(\alpha+0)=S(\alpha)$。
+
+**(3)** \ref{set:well-order-sum-product} (3) と、型が同型で保たれることから
+$$
+(\alpha+\beta)+\gamma=\operatorname{type}\bigl((\alpha\oplus\beta)\oplus\gamma\bigr)=\operatorname{type}\bigl(\alpha\oplus(\beta\oplus\gamma)\bigr)=\alpha+(\beta+\gamma).
+$$
+ここで第 1 の等号は $\alpha\oplus\beta\cong\alpha+\beta$ と \ref{set:well-order-sum-product} (2)、第 3 の等号は $\beta\oplus\gamma\cong\beta+\gamma$ と (2) による。
+
+**(6)** $\beta<\gamma$ なら、\ref{set:ordinal-addition-structure} を $\alpha+\gamma$ に適用して $\alpha+\beta=f(\beta,1)\in\alpha+\gamma$。簡約律：$\beta\neq\gamma$ なら三分律より $\beta<\gamma$ か $\gamma<\beta$ で、$\alpha+\beta\neq\alpha+\gamma$。
+
+**(5)** $\beta$ を極限順序数とし、$\sigma=\bigcup\{\alpha+\xi\mid\xi<\beta\}$ とおく（置換公理と和集合の公理で存在）。
+- *$\sigma\subseteq\alpha+\beta$*：各 $\xi<\beta$ で (6) より $\alpha+\xi<\alpha+\beta$、よって $\alpha+\xi\subseteq\alpha+\beta$。
+- *$\alpha+\beta\subseteq\sigma$*：$\zeta\in\alpha+\beta$ とする。\ref{set:ordinal-addition-structure} (1) より、$\zeta<\alpha$ か、ある $\eta<\beta$ で $\zeta=\alpha+\eta$。前者なら、$\zeta\in\alpha=\alpha+0$ であり、$\beta\neq0$ より $0<\beta$ なので $\zeta\in\sigma$。後者なら、\ref{set:limit-characterization} より $S(\eta)<\beta$ で、$\zeta=\alpha+\eta\in S(\alpha+\eta)=\alpha+S(\eta)$ なので $\zeta\in\sigma$。
+
+**(7)** $\alpha\le\beta$ なら $\alpha\times\{0\}\cup\gamma\times\{1\}\subseteq\beta\times\{0\}\cup\gamma\times\{1\}$ で、順序も一致する。同型 $F\colon\beta\oplus\gamma\to\beta+\gamma$ の制限により $\alpha\oplus\gamma$ は $X=F[\alpha\times\{0\}\cup\gamma\times\{1\}]\subseteq\beta+\gamma$ と同型なので、\ref{set:type-subset} より $\alpha+\gamma=\operatorname{type}(X)\le\beta+\gamma$。
+
+**(8)** $\alpha\le\alpha+\beta$ は \ref{set:ordinal-addition-structure} (3)。$\eta\mapsto\alpha+\eta$ は $\beta$ 上で狭義増加（同補題 (2)）なので、\ref{set:increasing-above-identity} より $\eta\le\alpha+\eta<\alpha+\beta$、すなわち $\eta\in\alpha+\beta$。よって $\beta\subseteq\alpha+\beta$。
+
+**(9)** *存在.* $D=\beta\setminus\alpha$（分出公理）とし、$\delta=\operatorname{type}(D,\in)$、$g\colon\delta\to D$ を同型とする。$\xi\in\alpha$, $d\in D$ なら $d\notin\alpha$ なので $d\neq\xi$、$d\in\xi$ なら $\alpha$ の推移性で $d\in\alpha$ となるので不可、三分律より $\xi<d$。したがって $(\xi,0)\mapsto\xi$, $(\eta,1)\mapsto g(\eta)$ は $\alpha\oplus\delta$ から $\alpha\cup D=\beta$ への順序を保つ全単射であり、$\alpha+\delta=\beta$。*一意性.* (6) の簡約律。
+
+::: hypcheck
+- **置換公理**：(5) の集合 $\{\alpha+\xi\mid\xi<\beta\}$、および順序型の存在（\ref{set:ordinal-type}）。**和集合の公理**：(5) の上限。**分出公理**：(9) の $D$。
+- **$\beta$ が極限であること**：(5) で $S(\eta)<\beta$ と $0<\beta$ に使った。後続順序数 $\beta=S(\eta)$ では $\sup\{\alpha+\xi\mid\xi<\beta\}=\alpha+\eta\neq\alpha+\beta$。
+- 無限公理・冪集合・選択公理は使っていない（和の定義と性質は $\omega$ の存在と無関係に成り立つ）。
+:::
+:::
+
+## 順序数の積 {#set:sec-ordinal-multiplication}
+
+::: definition 順序数の積 {#set:ordinal-multiplication keywords="ordinal multiplication, ordinal product" index="順序数の積|じゅんじょすうのせき"}
+順序数 $\alpha,\beta$ に対し
+$$
+\alpha\cdot\beta=\operatorname{type}(\beta\otimes\alpha)
+$$
+と定める。すなわち $\alpha\cdot\beta$ は、$\beta\times\alpha$ に第 1 成分を優先する辞書式順序
+$$
+(\xi,\eta)\prec(\xi',\eta')\iff\xi<\xi'\lor(\xi=\xi'\land\eta<\eta')
+$$
+を入れた整列集合の順序型である。
+:::
+
+::: intuition
+$\alpha\cdot\beta$ は「長さ $\alpha$ の列を $\beta$ 回並べた」列の長さである。$\beta\times\alpha$ の元 $(\xi,\eta)$ は「$\xi$ 番目のコピーの $\eta$ 番目」を表す。たとえば $\omega\cdot2=\omega+\omega$（$\omega$ を 2 回）、$2\cdot\omega$ は「$2$ を $\omega$ 回」で $\omega$ になる。
+:::
+
+同様に、一般の整列集合について $\operatorname{type}(\mathbf{B}\otimes\mathbf{A})=\operatorname{type}\mathbf{A}\cdot\operatorname{type}\mathbf{B}$ が成り立つ。
+
+::: lemma 積の構造 {#set:ordinal-multiplication-structure}
+順序数 $\alpha,\beta$ について、$\beta\otimes\alpha$ から $\alpha\cdot\beta$ への同型 $g$ は $g(\xi,\eta)=\alpha\cdot\xi+\eta$ で与えられる。したがって
+$$
+\alpha\cdot\beta=\{\alpha\cdot\xi+\eta\mid\xi<\beta,\ \eta<\alpha\}
+$$
+であり、$(\xi,\eta)\mapsto\alpha\cdot\xi+\eta$ は辞書式順序について狭義増加である。
+:::
+
+::: proof
+**Step 1.** \ref{set:type-of-initial-segment} により、$g(\xi,\eta)$ は $(\xi,\eta)$ より前の元全体
+$$
+P=\{(\xi',\eta')\mid\xi'<\xi,\ \eta'<\alpha\}\cup\{(\xi,\eta')\mid\eta'<\eta\}
+$$
+の型である。
+
+**Step 2.** $P$ から $(\xi\otimes\alpha)\oplus\eta$ への写像 $h$ を、$\xi'<\xi$ のとき $h(\xi',\eta')=((\xi',\eta'),0)$、$h(\xi,\eta')=(\eta',1)$ で定める。$h$ は全単射であり、順序を保つ：前半どうしは同じ辞書式順序、後半どうしは $\eta'$ の順序、前半の元 $(\xi',\eta')$ は $\xi'<\xi$ なので後半の元 $(\xi,\eta'')$ より前で、像でも第 1 ブロックが先。
+
+**Step 3.** よって $g(\xi,\eta)=\operatorname{type}\bigl((\xi\otimes\alpha)\oplus\eta\bigr)=\operatorname{type}(\xi\otimes\alpha)+\eta=\alpha\cdot\xi+\eta$。$g$ は全射で順序を保つので、残りの主張が従う。
+
+::: hypcheck
+- **\ref{set:type-of-initial-segment}**：Step 1。**$\operatorname{type}(\mathbf{A}\oplus\mathbf{B})=\operatorname{type}\mathbf{A}+\operatorname{type}\mathbf{B}$**（\ref{set:well-order-sum-product} (2) と順序型の一意性）：Step 3。
+- **置換公理**：順序型の存在。無限公理・冪集合・選択公理は使っていない。
+:::
+:::
+
+::: theorem 順序数の積の性質 {#set:ordinal-multiplication-laws keywords="laws of ordinal multiplication, left distributive law" index="順序数の積の結合律|じゅんじょすうのせきのけつごうりつ, 分配律|ぶんぱいりつ"}
+任意の順序数 $\alpha,\beta,\gamma$ について次が成り立つ。
+1. $\alpha\cdot0=0\cdot\alpha=0$, $\alpha\cdot1=1\cdot\alpha=\alpha$。
+2. （結合律）$(\alpha\cdot\beta)\cdot\gamma=\alpha\cdot(\beta\cdot\gamma)$。
+3. （左分配律）$\alpha\cdot(\beta+\gamma)=\alpha\cdot\beta+\alpha\cdot\gamma$。
+4. $\alpha\cdot S(\beta)=\alpha\cdot\beta+\alpha$。
+5. $\beta$ が極限順序数ならば $\alpha\cdot\beta=\sup\{\alpha\cdot\xi\mid\xi<\beta\}$。
+6. $\alpha>0$ かつ $\beta<\gamma$ ならば $\alpha\cdot\beta<\alpha\cdot\gamma$。とくに $\alpha>0$ なら左簡約律 $\alpha\cdot\beta=\alpha\cdot\gamma\Rightarrow\beta=\gamma$。
+7. $\alpha\le\alpha'$ ならば $\alpha\cdot\beta\le\alpha'\cdot\beta$。
+8. $\alpha>0$ ならば $\beta\le\alpha\cdot\beta$。
+9. （割り算）$\alpha>0$ ならば、任意の $\gamma$ は $\gamma=\alpha\cdot\xi+\eta$（$\eta<\alpha$）とただ一通りに表せる。
+:::
+
+::: proof
+**(1)** $0\otimes\alpha$ と $\alpha\otimes0$ の台集合は空なので型は $0$。$1\otimes\alpha$ の台集合 $\{0\}\times\alpha$ は $(0,\eta)\mapsto\eta$ で $\alpha$ と同型なので $\alpha\cdot1=\alpha$。$\alpha\otimes1$ の台集合 $\alpha\times\{0\}$ は $(\xi,0)\mapsto\xi$ で $\alpha$ と同型なので $1\cdot\alpha=\alpha$。
+
+**(2)** \ref{set:well-order-sum-product} (2)(3) より
+$$
+(\alpha\cdot\beta)\cdot\gamma=\operatorname{type}\bigl(\gamma\otimes(\beta\otimes\alpha)\bigr)=\operatorname{type}\bigl((\gamma\otimes\beta)\otimes\alpha\bigr)=\alpha\cdot(\beta\cdot\gamma).
+$$
+第 1 の等号は $\beta\otimes\alpha\cong\alpha\cdot\beta$、第 3 の等号は $\gamma\otimes\beta\cong\beta\cdot\gamma$ による。
+
+**(3)** 同様に、分配の同型から
+$$
+\begin{aligned}
+\alpha\cdot(\beta+\gamma)&=\operatorname{type}\bigl((\beta\oplus\gamma)\otimes\alpha\bigr)=\operatorname{type}\bigl((\beta\otimes\alpha)\oplus(\gamma\otimes\alpha)\bigr)\\
+&=\alpha\cdot\beta+\alpha\cdot\gamma.
+\end{aligned}
+$$
+
+**(4)** $S(\beta)=\beta+1$（\ref{set:ordinal-addition-laws} (2)）と (3), (1) から $\alpha\cdot S(\beta)=\alpha\cdot\beta+\alpha\cdot1=\alpha\cdot\beta+\alpha$。
+
+**(6)** $\alpha>0$ なら $0<\alpha$ なので $(\beta,0)\in\gamma\times\alpha$ で、\ref{set:ordinal-multiplication-structure} より $\alpha\cdot\beta=\alpha\cdot\beta+0=g(\beta,0)\in\alpha\cdot\gamma$。簡約律は三分律から。
+
+**(5)** $\alpha=0$ なら両辺とも $0$（$\beta\neq0$ なので右辺は $\bigcup\{0\}=0$）。$\alpha>0$ とし、$\sigma=\bigcup\{\alpha\cdot\xi\mid\xi<\beta\}$ とおく。
+- *$\sigma\subseteq\alpha\cdot\beta$*：(6) より $\alpha\cdot\xi<\alpha\cdot\beta$。
+- *$\alpha\cdot\beta\subseteq\sigma$*：\ref{set:ordinal-multiplication-structure} より $\alpha\cdot\beta$ の元は $\alpha\cdot\xi+\eta$（$\xi<\beta$, $\eta<\alpha$）。$\beta$ は極限なので $S(\xi)<\beta$ で、和の狭義増加性 \ref{set:ordinal-addition-laws} (6) と (4) より $\alpha\cdot\xi+\eta<\alpha\cdot\xi+\alpha=\alpha\cdot S(\xi)$。よって $\alpha\cdot\xi+\eta\in\sigma$。
+
+**(7)** $\beta\otimes\alpha$ は $\beta\otimes\alpha'$ の部分集合で順序も一致する。同型 $G\colon\beta\otimes\alpha'\to\alpha'\cdot\beta$ による像 $G[\beta\times\alpha]$ の型が $\alpha\cdot\beta$ なので、\ref{set:type-subset} より $\alpha\cdot\beta\le\alpha'\cdot\beta$。
+
+**(8)** (6) より $\xi\mapsto\alpha\cdot\xi$ は $S(\beta)$ 上で狭義増加なので、\ref{set:increasing-above-identity} より $\beta\le\alpha\cdot\beta$。
+
+**(9)** *存在.* (8) より $\gamma<S(\gamma)\le\alpha\cdot S(\gamma)$ なので、\ref{set:ordinal-multiplication-structure} により $\gamma=\alpha\cdot\xi+\eta$（$\xi<S(\gamma)$, $\eta<\alpha$）。*一意性.* $\alpha\cdot\xi+\eta=\alpha\cdot\xi'+\eta'$（$\eta,\eta'<\alpha$）なら、$\beta=S(\max\{\xi,\xi'\})$ について $(\xi,\eta),(\xi',\eta')\in\beta\times\alpha$ で、$g$ の単射性から $(\xi,\eta)=(\xi',\eta')$。
+
+::: hypcheck
+- **置換・和集合の公理**：(5) の上限、および順序型の存在。
+- **$\alpha>0$**：(6)(8)(9) で $(\beta,0)$ が $\gamma\times\alpha$ に属するために使った。$\alpha=0$ では $0\cdot\beta=0\cdot\gamma=0$ で簡約律は成り立たない。
+- 無限公理・冪集合・選択公理は使っていない。
+:::
+:::
+
+## 自然数の算術と反例 {#set:sec-ordinal-arithmetic-examples}
+
+::: proposition 自然数の和と積 {#set:natural-arithmetic}
+$n,m\in\omega$ について
+1. $n+m\in\omega$, $n\cdot m\in\omega$。
+2. $n+m=m+n$。
+3. $n\cdot m=m\cdot n$。
+:::
+
+::: proof
+以下すべて \ref{set:peano} (5) による帰納法で、$S(k)=k+1$ と書く。
+
+**(1)** $n$ を固定し、$m$ についての帰納法。$n+0=n\in\omega$、$n+S(m)=S(n+m)\in\omega$（\ref{set:ordinal-addition-laws} (4) と \ref{set:peano} (2)）。積も $n\cdot0=0$、$n\cdot S(m)=n\cdot m+n\in\omega$（\ref{set:ordinal-multiplication-laws} (4) と和の場合）。
+
+**(2)** *Step 1（$S(n)+m=S(n+m)$）.* $m$ についての帰納法。$m=0$：$S(n)+0=S(n)=S(n+0)$。$m\to S(m)$：$S(n)+S(m)=S(S(n)+m)=S(S(n+m))=S(n+S(m))$。
+
+*Step 2.* $m$ についての帰納法で $n+m=m+n$。$m=0$：$n+0=n=0+n$（\ref{set:ordinal-addition-laws} (1)）。$m\to S(m)$：$n+S(m)=S(n+m)=S(m+n)=S(m)+n$（最後は Step 1）。
+
+**(3)** *Step 1（$S(n)\cdot m=n\cdot m+m$）.* $m$ についての帰納法。$m=0$：両辺 $0$。$m\to S(m)$：結合律と (2) を用いて
+$$
+\begin{aligned}
+S(n)\cdot S(m)&=S(n)\cdot m+S(n)=(n\cdot m+m)+(n+1)\\
+&=n\cdot m+\bigl((m+n)+1\bigr)=n\cdot m+(n+S(m))\\
+&=(n\cdot m+n)+S(m)=n\cdot S(m)+S(m).
+\end{aligned}
+$$
+
+*Step 2（$0\cdot m=0$）.* \ref{set:ordinal-multiplication-laws} (1)。
+
+*Step 3.* $n$ についての帰納法で $n\cdot m=m\cdot n$。$n=0$：$0\cdot m=0=m\cdot0$。$n\to S(n)$：$S(n)\cdot m=n\cdot m+m=m\cdot n+m=m\cdot S(n)$（Step 1 と \ref{set:ordinal-multiplication-laws} (4)）。
+
+::: hypcheck
+- **$\omega$ 上の帰納法**（\ref{set:peano} (5) と、それを論理式に適用する形。分出公理を使う）：(1)〜(3) のすべて。**無限公理**：$\omega$ の存在。
+- **和・積の再帰的な等式と結合律**（\ref{set:ordinal-addition-laws} (1)(3)(4)、\ref{set:ordinal-multiplication-laws} (1)(4)）：各帰納法の段。
+- 冪集合・選択公理は使っていない。
+:::
+:::
+
+::: counterexample 順序数の算術の非可換性と分配律の片側性 {#set:ordinal-arithmetic-counterexamples keywords="non-commutativity of ordinal arithmetic" index="順序数の和の非可換性|じゅんじょすうのわのひかかんせい"}
+1. $1+\omega=\omega\neq\omega+1$。より一般に $n\in\omega$ なら $n+\omega=\omega$。
+2. $2\cdot\omega=\omega\neq\omega\cdot2=\omega+\omega$。
+3. 右分配律は成り立たない：$(1+1)\cdot\omega=\omega\neq\omega+\omega=1\cdot\omega+1\cdot\omega$。
+4. 和の右簡約律・積の左の引数についての狭義増加性は成り立たない：$0+\omega=1+\omega$、$1\cdot\omega=2\cdot\omega$。
+:::
+
+::: intuition
+和・積は「並べる」操作なので、何を後ろに置くかで結果が変わる。$1+\omega$ では先頭に 1 個足しても、後ろに $\omega$ 個続くのでそれに吸収されて見分けがつかない。$\omega+1$ では最後尾に最大元ができる。$2\cdot\omega$ は「$0,1$」という 2 個組を $\omega$ 回並べた $0,1,0,1,\dots$ で、並べてしまえば $\omega$ と同じ形になる。$\omega\cdot2$ は $\omega$ を 2 回並べたもので、2 つ目のブロックの先頭には直前の元がない。
+:::
+
+::: proof
+**(1)** $\omega$ は極限なので \ref{set:ordinal-addition-laws} (5) より $n+\omega=\bigcup\{n+k\mid k<\omega\}$。\ref{set:natural-arithmetic} (1) より各 $n+k\in\omega$、よって $n+k\subseteq\omega$ で $n+\omega\le\omega$。また \ref{set:ordinal-addition-laws} (8) より $\omega\le n+\omega$。ゆえに $n+\omega=\omega$。一方 $\omega+1=S(\omega)\neq\omega$（$\omega<S(\omega)$）。
+
+**(2)** $2\cdot\omega=\bigcup\{2\cdot k\mid k<\omega\}$ で、同様に各 $2\cdot k\in\omega$ から $2\cdot\omega\le\omega$、\ref{set:ordinal-multiplication-laws} (8) から $\omega\le2\cdot\omega$。一方 $\omega\cdot2=\omega\cdot1+\omega=\omega+\omega$（同 (4), (1)）で、\ref{set:ordinal-addition-laws} (6) より $\omega=\omega+0<\omega+\omega$。
+
+**(3)** $1+1=2$ なので左辺は (2) より $\omega$、右辺は $\omega+\omega$。
+
+**(4)** (1) と (2)、および $1\cdot\omega=\omega$。
+
+::: hypcheck
+- **$\omega$ が極限順序数であること**（\ref{set:omega-least-limit}）：(1), (2) で和・積の極限での等式（\ref{set:ordinal-addition-laws} (5)、\ref{set:ordinal-multiplication-laws} (5)）を使うため。
+- **自然数の和・積が自然数であること**（\ref{set:natural-arithmetic} (1)）：(1), (2) の上からの評価。
+:::
+:::
+
+::: supplement
+**有限の場合との対比.** \ref{set:natural-arithmetic} により、$\omega$ の上では和も積も可換で、分配律は両側で成り立つ（可換性から）。非可換性は無限順序数に固有の現象である。
+
+**基数の算術との違い.** 基数の和・積（\fullref[基数の和と積]{set:cardinal-sum-product}）は可換である。順序数の和・積は「並べ方」を、基数の和・積は「個数」だけを見ているためで、$\omega+1$ と $1+\omega$ は順序型としては異なるが濃度は等しい。
+:::
+
+## 有限列 {#set:sec-finite-sequences}
+
+::: definition 有限列 {#set:finite-sequence keywords="finite sequence, A^n, A^{<omega}" index="有限列|ゆうげんれつ, 列|れつ"}
+集合 $A$ と $n\in\omega$ に対し、$n$ から $A$ への関数全体の集合を ${}^{n}A$ と書き（関数の集合の一般の記法 ${}^{B}A$ は \ref{set:function-set} に合わせた。文献によっては $A^{n}$ とも書く）、その元を長さ $n$ の $A$ の元の**有限列**という。さらに
+$$
+A^{<\omega}=\bigcup\{{}^{n}A\mid n\in\omega\}
+$$
+とおく。${}^{n}A$ と $A^{<\omega}$ が集合として存在することは次の定理で示す。$x_{0},\dots,x_{n-1}$ に対し、$s(i)=x_{i}$ となる $s\in {}^{n}A$ を $\langle x_{0},\dots,x_{n-1}\rangle$ と書く。一般に定義域が順序数 $\alpha$ である関数 $s$ を長さ $\alpha$ の列とよび、$s(\xi)$ を $s_{\xi}$ とも書く。
+:::
+
+::: intuition
+長さ $n$ の列は「$0$ 番目, $1$ 番目, …, $n-1$ 番目の成分」を並べたものであり、それを関数 $n\to A$ として表す。長さ $2$ の列 $\langle x,y\rangle=\{(0,x),(1,y)\}$ は順序対 $(x,y)=\{\{x\},\{x,y\}\}$（\ref{set:ordered-pair}。そこでは同じ記号 $\langle x,y\rangle$ で書いた）とは別の集合だが、$\langle x,y\rangle\mapsto(x,y)$ は ${}^{2}A$ から $A\times A$ への全単射である。どちらの定義を使っているかが問題になるときは明示する。
+:::
+
+::: theorem 有限列の集合の存在 {#set:finite-sequence-exists}
+冪集合の公理を使わずに、次が示せる。任意の集合 $A$ について
+1. 各 $n\in\omega$ に対し、$n$ から $A$ への関数全体からなる集合 ${}^{n}A$ が存在する。
+2. 集合 $\{{}^{n}A\mid n\in\omega\}$ が存在し、したがって $A^{<\omega}$ が存在する。
+:::
+
+::: intuition
+冪集合の公理があれば、${}^{n}A$ は $\mathcal{P}(n\times A)$ の部分集合として分出公理で一挙に作れる。それを使わない場合は、${}^{n+1}A$ を「${}^{n}A$ の各列の末尾に $A$ の元を一つ付け足したもの全体」として、${}^{n}A\times A$ の置換公理による像として作る。これを帰納法で繰り返す。
+:::
+
+::: proof
+論理式 $\Phi(n,y)$ を「任意の $s$ について、$s\in y\iff s$ は $n$ から $A$ への関数」とする（$A$ はパラメータ）。外延性により、$\Phi(n,y)$ を満たす $y$ は高々一つである。
+
+**Step 1（$n=0$）.** $0=\varnothing$ から $A$ への関数は空集合 $\varnothing$ だけである（空な関係で、定義域は $\varnothing$）。よって $y=\{\varnothing\}$（対の公理）が $\Phi(0,y)$ を満たす。
+
+**Step 2（$n\to S(n)$）.** $y$ が $\Phi(n,y)$ を満たすとする。$p\in y\times A$ に対し、$p=(s,a)$ と書いて $t_{p}=s\cup\{(n,a)\}$ とおく。対応 $p\mapsto t_{p}$ は論理式で書け、各 $p$ に対して値はただ一つなので、**置換公理**（と分出公理）により集合 $y'=\{t_{p}\mid p\in y\times A\}$ が存在する。$\Phi(S(n),y')$ を示す。
+- *$y'$ の元は $S(n)\to A$ の関数*：$s\colon n\to A$ で $n\notin n=\dom s$（\ref{set:ordinal-irreflexive}）なので、$s\cup\{(n,a)\}$ は関数で、定義域は $n\cup\{n\}=S(n)$、値域は $A$ に含まれる。
+- *$S(n)\to A$ の関数はすべて $y'$ に属する*：$t\colon S(n)\to A$ とし、$s=t\restr{n}=\{(i,b)\in t\mid i\in n\}$（分出公理）とおくと、$s$ は $n\to A$ の関数なので $s\in y$。$a=t(n)\in A$ とすると、$t=s\cup\{(n,a)\}=t_{(s,a)}\in y'$。
+
+**Step 3（帰納法）.** $X=\{n\in\omega\mid\exists y\,\Phi(n,y)\}$（分出公理）は Step 1, 2 により $0\in X$ かつ $n\in X\Rightarrow S(n)\in X$ を満たすので、\ref{set:peano} (5) より $X=\omega$。これで (1) が示された。
+
+**Step 4（(2)）.** Step 3 と一意性から $\forall n\in\omega\,\exists!y\,\Phi(n,y)$。**置換公理**により、ある集合 $Z$ で $\forall n\in\omega\,\exists y\in Z\,\Phi(n,y)$ となるものがあり、分出公理で $\{y\in Z\mid\exists n\in\omega\,\Phi(n,y)\}=\{{}^{n}A\mid n\in\omega\}$ が得られる。和集合の公理でその和 $A^{<\omega}$ が存在する。
+
+::: hypcheck
+- **置換公理**：Step 2（$y\times A$ の像としての ${}^{S(n)}A$）と Step 4（$\{{}^{n}A\mid n\in\omega\}$）。直積 $y\times A$ の存在にも使う。
+- **無限公理**：$\omega$ の存在と帰納法（Step 3）。**対・和集合・分出・外延性**：各所。
+- **冪集合の公理は使っていない。** 選択公理も使っていない。
+:::
+:::
+
+::: supplement
+**無限の長さの列.** 同じ方法で ${}^{\omega}A$（$A$ が 2 元以上）を作ることはできない。長さ $\omega$ の列は有限列の「極限」だが、それら全体を一つの集合に集める操作は置換公理からは得られない。実際、冪集合の公理を除いた $\ZFC$ のモデル（遺伝的可算集合全体 $H(\omega_{1})$ など）では、$\omega\to\omega$ の関数はどれも集合として存在するが、それら全体の集合 ${}^{\omega}\omega$ は存在しない。関数全体の集合 ${}^{B}A$ は冪集合の公理のもとで \fullref[関数の集合]{set:function-set} で扱う。
+:::
+
+::: definition 列の連結 {#set:concatenation keywords="concatenation of sequences" index="連結|れんけつ"}
+$s,t$ を長さ $\alpha,\beta$ の列とする。長さ $\alpha+\beta$ の列 $s^{\frown}t$ を
+$$
+(s^{\frown}t)(\xi)=s(\xi)\quad(\xi<\alpha),\qquad(s^{\frown}t)(\alpha+\eta)=t(\eta)\quad(\eta<\beta)
+$$
+で定め、$s$ と $t$ の**連結**という。
+:::
+
+::: intuition
+$s$ の後ろに $t$ をつなげた列。\ref{set:ordinal-addition-structure} により $\alpha+\beta$ の元は「$\xi<\alpha$」か「$\alpha+\eta$（$\eta<\beta$）」のどちらか一方の形にただ一通りに書けるので、この定義で値がちょうど一つずつ決まる。
+:::
+
+::: proposition 連結の性質 {#set:concatenation-basic}
+長さ $\alpha,\beta,\gamma$ の列 $s,t,u$ について
+1. $s^{\frown}t$ は長さ $\alpha+\beta$ の列として well-defined である。
+2. $(s^{\frown}t)^{\frown}u=s^{\frown}(t^{\frown}u)$。
+3. $s\in {}^{n}A$, $t\in {}^{m}A$（$n,m\in\omega$）ならば $s^{\frown}t\in {}^{n+m}A$ であり、$A^{<\omega}$ は連結で閉じている。
+:::
+
+::: example
+長さ $1$ の列 $s=\langle a\rangle$ と長さ $\omega$ の列 $t$ について、$s^{\frown}t$ は長さ $1+\omega=\omega$ の列 $\langle a,t_{0},t_{1},\dots\rangle$、$t^{\frown}s$ は長さ $\omega+1$ の列で、$t$ の全成分の「後ろ」に $a$ がある。前者は再び $\omega$ 列だが、後者はそうではない。
+:::
+
+::: proof
+**(1)** \ref{set:ordinal-addition-structure} の同型 $f\colon\alpha\oplus\beta\to\alpha+\beta$ により、$\alpha+\beta$ の各元は $f(\xi,0)=\xi$ か $f(\eta,1)=\alpha+\eta$ のどちらか一方としてただ一通りに表される（$f$ は全単射）。よって $s^{\frown}t=\{(f(\xi,0),s(\xi))\mid\xi<\alpha\}\cup\{(f(\eta,1),t(\eta))\mid\eta<\beta\}$ は置換公理で得られる集合で、定義域 $\alpha+\beta$ の関数である。
+
+**(2)** 定義域はどちらも $(\alpha+\beta)+\gamma=\alpha+(\beta+\gamma)$（結合律）。\ref{set:ordinal-addition-structure} を 2 回使うと、この順序数の元は $\xi$（$\xi<\alpha$）、$\alpha+\eta$（$\eta<\beta$）、$(\alpha+\beta)+\zeta=\alpha+(\beta+\zeta)$（$\zeta<\gamma$）のいずれかの形に書ける。各場合に値を比べる。
+- $\xi<\alpha$：左辺は $(s^{\frown}t)(\xi)=s(\xi)$（$\xi<\alpha+\beta$ だから）、右辺も $s(\xi)$。
+- $\alpha+\eta$：左辺は $\alpha+\eta<\alpha+\beta$ なので $(s^{\frown}t)(\alpha+\eta)=t(\eta)$。右辺は $\eta<\beta+\gamma$ なので $(t^{\frown}u)(\eta)=t(\eta)$。
+- $\alpha+(\beta+\zeta)$：左辺は $u(\zeta)$。右辺は $(t^{\frown}u)(\beta+\zeta)=u(\zeta)$。
+
+**(3)** 定義域 $n+m$ は \ref{set:natural-arithmetic} (1) より $\omega$ の元で、値は $A$ に属する。
+
+::: hypcheck
+- **\ref{set:ordinal-addition-structure}**：(1) で $\alpha+\beta$ の元の表し方が一意であること、(2) で値の比較に使った。**和の結合律**（\ref{set:ordinal-addition-laws} (3)）：(2) の定義域の一致。
+- **置換・和集合の公理**：(1) で $s^{\frown}t$ を集合として作るのに使った。
+:::
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>モストフスキの崩壊定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/03-well-founded-sets/06-mostowski.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# モストフスキの崩壊定理 {#set:page-mostowski keywords="Mostowski collapse, Mostowski collapsing theorem, collapsing function, extensional relation, transitive collapse"}
+
+整列集合はただ一つの順序数と同型であった（\ref{set:ordinal-type}）。そこで同型写像は、各元 $a$ に「$a$ より前にある元の像の全体」を対応させる写像として再帰的に書ける。この再帰は全順序性を使わず、整礎性と集合的という条件だけで意味をもつ（\ref{set:wf-recursion}）。こうして得られるのが**モストフスキの崩壊関数**である。本ページでは、崩壊関数が整礎な関係を推移的なクラス上の $\in$ に写すことを示し、関係が**外延的**であるときにはそれが同型写像になること（**モストフスキの崩壊定理**）を証明する。基礎の公理のもとでは、$\in$ が外延的であるような任意のクラスが推移的なクラスに $\in$-同型に「つぶせる」ことが系として従う。主定理とその補題は $\ZF^{-}-\mathrm{P}$ で、ランクとの関係を述べる部分だけが $\ZF^{-}$ で、最後の系が $\ZF-\mathrm{P}$ で示される。
+
+## 記法と定義の確認 {#set:sec-mostowski-notation}
+
+::: notation
+- 公理系の略号は \ref{set:zf-subsystems} に従う。$\ZF^{-}-\mathrm{P}$ は $\ZF$ から基礎の公理と冪集合公理を除いたもの、$\ZF-\mathrm{P}$ は冪集合公理だけを除いたもの（基礎の公理を含む）である。
+- クラス（\ref{set:class}）とクラス関数（\ref{set:class-function}）は太字で書く。クラス関数 $\mathbf{G}$ と集合 $a\subseteq\dom\mathbf{G}$ に対し、制限 $\mathbf{G}\restr{a}$ と像 $\mathbf{G}[a]=\{\mathbf{G}(y)\mid y\in a\}$ は集合である（\ref{set:class-basic} (3)。置換公理）。
+- クラス $\mathbf{R}$ がクラス $\mathbf{A}$ 上で**整礎**・**集合的**であることは \ref{set:well-founded-class-relation}, \ref{set:set-like} の意味で用い、$\mathrm{pred}(\mathbf{A},x,\mathbf{R})=\{y\in\mathbf{A}\mid y\mathbf{R}x\}$ は \ref{set:pred-closure} の記号である。文脈から明らかなときは $\mathrm{pred}(x)$ と略す。
+- 整礎かつ集合的な関係については、部分クラスの極小元の存在（\ref{set:wf-minimal-element}）、それに基づく帰納法（\ref{set:wf-induction}）、再帰による定義（\ref{set:wf-recursion}）が $\ZF^{-}-\mathrm{P}$ で使える。$\rank(x,\mathbf{A},\mathbf{R})$ は整礎関係のランク（\ref{set:relation-rank}）で、$\rank(x,\mathbf{A},\mathbf{R})=\sup\{\rank(y,\mathbf{A},\mathbf{R})+1\mid y\in\mathrm{pred}(x)\}$ を満たす（\ref{set:relation-rank-basic}）。
+- クラス $\mathbf{M}$ が**推移的**であるとは、$x\in\mathbf{M}$ ならば $x\subseteq\mathbf{M}$ となることをいう（集合の場合は \ref{set:transitive-set}）。
+- 順序数（\ref{set:ordinal}）は推移的で $\in$ により整列される集合であり、順序数全体の上で $\in$ は三分律を満たし、順序数からなる推移的集合は順序数である（\ref{set:ordinal-well-ordered}）。整列集合 $(A,R)$ の順序型 $\operatorname{type}(A,R)$ は \ref{set:order-type} の意味、同型写像は \ref{set:order-isomorphism} の意味で用いる（クラスの間の同型写像も同じ条件で定める）。
+- $\ZF^{-}$ の部分では、整礎集合のクラス $\mathbf{WF}$（\ref{set:wf-class}）、ランク $\rank(x)$（\ref{set:rank}）、$x\in\mathbf{WF}\iff x\subseteq\mathbf{WF}$（\ref{set:wf-subset}）、$\rank(y)=\sup\{\rank(x)+1\mid x\in y\}$（\ref{set:rank-basic}）を用いる。
+:::
+
+## 崩壊定理の主張 {#set:sec-mostowski-statement}
+
+::: theorem モストフスキの崩壊定理 {#set:mostowski keywords="Mostowski collapsing theorem, transitive collapse" index="モストフスキの崩壊定理|もすとふすきのほうかいていり, 推移的崩壊|すいいてきほうかい"}
+$\ZF^{-}-\mathrm{P}$ において、$\mathbf{R}$ がクラス $\mathbf{A}$ 上で整礎・集合的・外延的（\ref{set:extensional-relation}）であるとする。このとき、推移的なクラス $\mathbf{M}$ と全単射 $\mathbf{G}\colon\mathbf{A}\to\mathbf{M}$ で
+$$
+\forall x,y\in\mathbf{A}\;\bigl(x\mathbf{R}y\leftrightarrow\mathbf{G}(x)\in\mathbf{G}(y)\bigr)
+\label{set:eq-mostowski-iso}
+$$
+を満たすものが存在する。しかも $\mathbf{M}$ と $\mathbf{G}$ はただ一つであり、$\mathbf{G}$ はモストフスキの崩壊関数（\ref{set:collapse-function}）、$\mathbf{M}$ はその値域である。$\mathbf{A}$ が集合ならば $\mathbf{M}$ も集合である。
+:::
+
+::: intuition
+整礎で外延的な関係は、どんなものでも「本物の所属関係 $\in$」の写しとして実現できる、という定理である。関係 $\mathbf{R}$ の図（点と矢印）を与えられたとき、下から順に「各点を、その下にある点たちの集合で置き換える」と、推移的なクラスとその上の $\in$ が得られる。外延性は、この置き換えで別々の点が同じ集合につぶれないための条件である。整列集合を順序数で表す \ref{set:ordinal-type} は、全順序の場合にあたる。
+:::
+
+::: example
+- $\mathbf{R}$ が集合 $A$ の整列順序なら、$\mathbf{M}$ は $(A,\mathbf{R})$ の順序型である順序数になり、$\mathbf{G}$ は $A$ からその順序数への同型写像である（\ref{set:collapse-well-order}）。
+- 相異なる 3 元の集合 $A=\{a,b,c\}$ に $aRb$, $bRc$ だけを入れる（$aRc$ は入れない）。これは整礎・外延的で（\ref{set:extensional-relation} の例）、崩壊すると $a\mapsto\varnothing$, $b\mapsto\{\varnothing\}$, $c\mapsto\{\{\varnothing\}\}$、$\mathbf{M}=\{\varnothing,\{\varnothing\},\{\{\varnothing\}\}\}$ となる。$\mathbf{M}$ は推移的だが順序数ではない。これは $R$ が推移的でないことに対応する。
+:::
+
+証明は、崩壊関数を定義してその基本性質を調べ（\ref{set:collapse-basic}）、外延性があれば単射になることを示してから（\ref{set:collapse-iso}）、節 \ref{set:sec-mostowski-proof} で与える。
+
+## 崩壊関数 {#set:sec-collapse-function}
+
+::: definition モストフスキの崩壊関数 {#set:collapse-function keywords="Mostowski collapsing function, Mostowski collapse" index="崩壊関数|ほうかいかんすう, モストフスキの崩壊|もすとふすきのほうかい"}
+$\mathbf{R}$ がクラス $\mathbf{A}$ 上で整礎かつ集合的であるとする。$\mathbf{A},\mathbf{R}$ の**モストフスキの崩壊関数** $\mathbf{G}\colon\mathbf{A}\to\mathbf{V}$ を
+$$
+\mathbf{G}(x)=\{\mathbf{G}(y)\mid y\in\mathbf{A}\land y\mathbf{R}x\}
+\label{set:eq-collapse-function}
+$$
+で定め、その値域 $\mathbf{M}=\ran\mathbf{G}=\{\mathbf{G}(x)\mid x\in\mathbf{A}\}$ を $\mathbf{A},\mathbf{R}$ の**モストフスキの崩壊**（推移的崩壊）という。形式的には、\ref{set:wf-recursion} を
+$$
+\mathbf{F}(x,h)=\ran h=\{v\mid\exists u\,((u,v)\in h)\}
+$$
+に適用して得られるクラス関数を $\mathbf{G}$ とする。$\mathbf{G}(x)=\mathbf{F}(x,\mathbf{G}\restr{\mathrm{pred}(x)})=\ran(\mathbf{G}\restr{\mathrm{pred}(x)})=\mathbf{G}[\mathrm{pred}(x)]$ であり、これが \eqref{set:eq-collapse-function} の右辺である。
+:::
+
+::: intuition
+$\mathbf{G}(x)$ は「$x$ の下にある元たちを、すでにつぶした結果の集合」である。関係 $\mathbf{R}$ における「$y$ は $x$ の下にある」を、集合論の「$\mathbf{G}(y)$ は $\mathbf{G}(x)$ の元である」に翻訳している。整礎性があるので下から順に値が決まり、集合的であるので右辺はいつも集合になる。
+:::
+
+::: example
+- $\mathbf{R}=\varnothing$ なら、すべての $x$ で $\mathrm{pred}(x)=\varnothing$ なので $\mathbf{G}(x)=\varnothing=0$。$\mathbf{A}\neq\varnothing$ なら $\mathbf{M}=\{0\}=1$。$\mathbf{A}$ が 2 元以上なら $\mathbf{G}$ は単射でない。
+- 相異なる 4 元の集合 $A=\{a,b,c,d\}$ に $aRb$, $bRd$, $cRd$ だけを入れると、$\mathbf{G}(a)=\mathbf{G}(c)=0$, $\mathbf{G}(b)=\{0\}=1$, $\mathbf{G}(d)=\{\mathbf{G}(b),\mathbf{G}(c)\}=\{1,0\}=2$。$a$ と $c$ は同じ $0$ につぶれる。
+- 相異なる 3 元 $a,b,c$ に $aRb$, $bRc$ だけを入れると、$\mathbf{G}(a)=0$, $\mathbf{G}(b)=1$, $\mathbf{G}(c)=\{1\}=\{\{\varnothing\}\}$。値は順序数とは限らない。
+:::
+
+::: lemma 崩壊関数の基本性質 {#set:collapse-basic keywords="basic properties of the Mostowski collapse" index="崩壊関数の性質|ほうかいかんすうのせいしつ"}
+$\mathbf{R}$ が $\mathbf{A}$ 上で整礎かつ集合的であるとし、$\mathbf{G},\mathbf{M}$ を $\mathbf{A},\mathbf{R}$ の崩壊関数と崩壊とする。
+
+1. （$\ZF^{-}-\mathrm{P}$）$x,y\in\mathbf{A}$ で $x\mathbf{R}y$ ならば $\mathbf{G}(x)\in\mathbf{G}(y)$。
+2. （$\ZF^{-}-\mathrm{P}$）$\mathbf{M}$ は推移的である。より詳しく、$v\in\mathbf{G}(y)$ ならば、ある $x\in\mathrm{pred}(y)$ について $v=\mathbf{G}(x)$。
+3. （$\ZF^{-}-\mathrm{P}$）$\mathbf{A}$ が集合ならば、$\mathbf{G}$ は集合（関数）であり、$\mathbf{M}$ は推移的な集合である。
+4. （$\ZF^{-}$）$\mathbf{M}\subseteq\mathbf{WF}$。
+5. （$\ZF^{-}$）任意の $x\in\mathbf{A}$ について $\rank(x,\mathbf{A},\mathbf{R})=\rank(\mathbf{G}(x))$。
+:::
+
+::: intuition
+(1)(2) は、崩壊関数が $\mathbf{R}$ を $\in$ に写し、しかも像の元の元はまた像に入っていることをいう。(4)(5) は、崩壊の結果は整礎集合であり、各元の「深さ」（ランク）は崩壊しても変わらないことをいう。崩壊関数は単射とは限らないが、深さの情報だけは失われない。
+:::
+
+::: proof
+以下 $\mathrm{pred}(x)=\mathrm{pred}(\mathbf{A},x,\mathbf{R})$ と書く。\ref{set:collapse-function} により、すべての $x\in\mathbf{A}$ で $\mathbf{G}(x)=\{\mathbf{G}(y)\mid y\in\mathrm{pred}(x)\}$ である。
+
+**(1)** $x\mathbf{R}y$, $x\in\mathbf{A}$ なので $x\in\mathrm{pred}(y)$。よって $\mathbf{G}(x)\in\{\mathbf{G}(z)\mid z\in\mathrm{pred}(y)\}=\mathbf{G}(y)$。
+
+**(2)** $u\in\mathbf{M}$ とし、$u=\mathbf{G}(y)$（$y\in\mathbf{A}$）と書く。$v\in u$ なら $v\in\{\mathbf{G}(x)\mid x\in\mathrm{pred}(y)\}$ なので、ある $x\in\mathrm{pred}(y)$ で $v=\mathbf{G}(x)$。$x\in\mathbf{A}$ なので $v\in\mathbf{M}$。したがって $u\subseteq\mathbf{M}$ であり、$\mathbf{M}$ は推移的である。
+
+**(3)** $\mathbf{A}=A$ が集合なら、\ref{set:class-basic} (3) により $\mathbf{G}\restr{A}=\mathbf{G}$ と $\mathbf{G}[A]=\mathbf{M}$ は集合である。$\mathbf{M}$ の推移性は (2)。
+
+**(4)** \ref{set:wf-induction} により、$\varphi(x)$：「$\mathbf{G}(x)\in\mathbf{WF}$」を $x\in\mathbf{A}$ について帰納法で示す。$y\mathbf{R}x$ となるすべての $y\in\mathbf{A}$ で $\mathbf{G}(y)\in\mathbf{WF}$ と仮定する。$\mathbf{G}(x)$ の元はすべてこのような $\mathbf{G}(y)$ なので $\mathbf{G}(x)\subseteq\mathbf{WF}$ であり、\ref{set:wf-subset} (1) より $\mathbf{G}(x)\in\mathbf{WF}$。よってすべての $x\in\mathbf{A}$ で $\mathbf{G}(x)\in\mathbf{WF}$、すなわち $\mathbf{M}\subseteq\mathbf{WF}$。
+
+**(5)** $x\in\mathbf{A}$ についての帰納法で示す。$y\mathbf{R}x$ となるすべての $y\in\mathbf{A}$ で $\rank(y,\mathbf{A},\mathbf{R})=\rank(\mathbf{G}(y))$ と仮定する。(4) より $\mathbf{G}(x)\in\mathbf{WF}$ なので \ref{set:rank-basic} (3) が使え、
+$$
+\rank(\mathbf{G}(x))=\sup\{\rank(v)+1\mid v\in\mathbf{G}(x)\}.
+$$
+$\mathbf{G}(x)$ の元は $\mathbf{G}(y)$（$y\in\mathrm{pred}(x)$）の形の集合にちょうど一致するので、集合として
+$$
+\begin{aligned}
+\{\rank(v)+1\mid v\in\mathbf{G}(x)\}&=\{\rank(\mathbf{G}(y))+1\mid y\in\mathrm{pred}(x)\}\\
+&=\{\rank(y,\mathbf{A},\mathbf{R})+1\mid y\in\mathrm{pred}(x)\}
+\end{aligned}
+$$
+（2 つ目の等号は帰納法の仮定）。したがって \ref{set:relation-rank-basic} (1) より
+$$
+\rank(\mathbf{G}(x))=\sup\{\rank(y,\mathbf{A},\mathbf{R})+1\mid y\in\mathrm{pred}(x)\}=\rank(x,\mathbf{A},\mathbf{R}).
+$$
+
+::: hypcheck
+- **整礎性・集合的であること**：$\mathbf{G}$ の定義（\ref{set:wf-recursion}）と、(4)(5) の帰納法（\ref{set:wf-induction}）に使った。
+- **置換公理**：(3) で $\mathbf{G}[A]$ を集合にするのに、また (5) で順序数の集合 $\{\rank(\mathbf{G}(y))+1\mid y\in\mathrm{pred}(x)\}$ を作るのに使った。
+- **冪集合公理**：(4)(5) だけで、$\mathbf{WF}$ と $\rank$（\ref{set:wf-subset}, \ref{set:rank-basic}）を通して使った。そのため (4)(5) は $\ZF^{-}$、(1)〜(3) は $\ZF^{-}-\mathrm{P}$ で成り立つ。
+- 基礎の公理・選択公理は使っていない。
+:::
+:::
+
+::: example
+**推移閉包についての崩壊はランク.**（$\ZF^{-}$）$\mathbf{WF}$ 上の関係 $\mathbf{R}$ を $x\mathbf{R}y\iff x\in\operatorname{trcl}(y)$ で定める（$\operatorname{trcl}$ は \ref{set:transitive-closure}）。このとき $\mathbf{R}$ は $\mathbf{WF}$ 上で整礎かつ集合的で、崩壊関数は $\mathbf{G}(x)=\rank(x)$ である（Kunen, Ch. III, Exercise 13）。
+
+*$x\mathbf{R}y\Rightarrow\rank(x)<\rank(y)$.* $y\in\mathbf{WF}$ とし $\alpha=\rank(y)$ とおく。$y\subseteq R(\alpha)$（\ref{set:rank-basic} (1)）で $R(\alpha)$ は推移的（\ref{set:r-alpha-basic}）なので、推移閉包の最小性（\ref{set:transitive-closure-basic} (3)）より $\operatorname{trcl}(y)\subseteq R(\alpha)$。よって $x\in\operatorname{trcl}(y)$ なら $x\in R(\alpha)$、すなわち $\rank(x)<\alpha$（\ref{set:rank-basic} (1)）。
+
+*整礎・集合的.* $X\subseteq\mathbf{WF}$ が空でない集合なら、ランクが最小の元 $x\in X$ をとれば（順序数の最小値なので選択は要らない）、$z\mathbf{R}x$ となる $z\in X$ は $\rank(z)<\rank(x)$ となって存在しない。また $\{x\in\mathbf{WF}\mid x\mathbf{R}y\}=\operatorname{trcl}(y)\cap\mathbf{WF}$ は集合である（上の議論より $\operatorname{trcl}(y)\subseteq R(\alpha)\subseteq\mathbf{WF}$ なので、これは $\operatorname{trcl}(y)$ そのもの）。
+
+*$\mathbf{G}(x)=\rank(x)$.* 帰納法で示す。$\mathbf{R}$-前者 $y$ すなわち $y\in\operatorname{trcl}(x)$ について $\mathbf{G}(y)=\rank(y)$ と仮定すると、$\mathbf{G}(x)=\{\rank(y)\mid y\in\operatorname{trcl}(x)\}$。これが $\rank(x)=\{\beta\mid\beta<\rank(x)\}$ に等しいことを示す。$\subseteq$ は上で示した $\rank(y)<\rank(x)$ による。$\supseteq$：$\beta<\rank(x)=\sup\{\rank(z)+1\mid z\in x\}$（\ref{set:rank-basic} (3)）なら、ある $z\in x$ で $\beta<\rank(z)+1$、すなわち $\beta\le\rank(z)$。$\beta=\rank(z)$ なら $z\in x\subseteq\operatorname{trcl}(x)$ なので $\beta\in\mathbf{G}(x)$。$\beta<\rank(z)$ なら、帰納法の仮定より $\beta\in\rank(z)=\mathbf{G}(z)=\{\rank(y)\mid y\in\operatorname{trcl}(z)\}$ で、$\operatorname{trcl}(z)\subseteq\operatorname{trcl}(x)$（\ref{set:transitive-closure-basic} (5)）なので $\beta\in\mathbf{G}(x)$。
+
+順序数 $\alpha$ は $\rank(\alpha)=\alpha$ を満たす（\ref{set:rank-ordinal}）ので、この例では値域 $\mathbf{M}=\mathbf{ON}$ で、$\mathbf{G}$ は著しく単射でない（ランクの等しい集合はすべて同じ順序数につぶれる）。
+:::
+
+::: supplement
+**冪集合公理なしで.** (4)(5) は $\mathbf{WF}$ とランクの定義に冪集合公理を使っているため $\ZF^{-}$ の結果として述べた。$\ZF^{-}-\mathrm{P}$ でも、$\mathbf{WF}$ を「$\in$ が $\operatorname{trcl}(x)$ 上で整礎な $x$ の全体」と定義し直し、ランクを $\in$ についての整礎関係のランクで定義すれば（\ref{set:transitive-epsilon-wf} の後の補足、\ref{set:wf-equivalents}）、同じ証明で (4)(5) が成り立つ（Kunen, Ch. III, Exercise 6）。
+:::
+
+## 外延的な関係 {#set:sec-extensional}
+
+::: definition 外延的な関係 {#set:extensional-relation keywords="extensional relation" index="外延的|がいえんてき, 外延的な関係|がいえんてきなかんけい"}
+クラス $\mathbf{R}$ がクラス $\mathbf{A}$ 上で**外延的**であるとは、
+$$
+\forall x,y\in\mathbf{A}\;\bigl[\forall z\in\mathbf{A}\,(z\mathbf{R}x\leftrightarrow z\mathbf{R}y)\to x=y\bigr]
+$$
+が成り立つことをいう。$\mathbf{R}$ が $\mathbf{A}$ 上で集合的なら、これは「$x,y\in\mathbf{A}$, $x\neq y$ ならば $\mathrm{pred}(\mathbf{A},x,\mathbf{R})\neq\mathrm{pred}(\mathbf{A},y,\mathbf{R})$」と同値である。
+:::
+
+::: intuition
+$\mathbf{A}$ を「集合の宇宙」、$\mathbf{R}$ を「所属関係」と読み替えたとき、そこで外延性の公理（\ref{set:ax-extensionality}）が成り立つ、という条件である。「元が同じなら同じもの」という性質がなければ、崩壊関数は元が同じ 2 点を同じ集合に写してしまう。外延性はまさにそれを防ぐ条件になる（\ref{set:collapse-iso}）。
+:::
+
+::: example
+- **全順序は外延的.** $\mathbf{R}$ が $\mathbf{A}$ の（狭義の）全順序（\ref{set:total-order}）で $x\neq y$ とする。三分律より $x\mathbf{R}y$ または $y\mathbf{R}x$。前者なら $x\in\mathrm{pred}(y)$ だが、非反射律より $x\notin\mathrm{pred}(x)$ なので $\mathrm{pred}(x)\neq\mathrm{pred}(y)$。後者も同様。
+- 相異なる 3 元 $a,b,c$ に $aRb$, $bRc$ だけを入れた関係は外延的である：$\mathrm{pred}(a)=\varnothing$, $\mathrm{pred}(b)=\{a\}$, $\mathrm{pred}(c)=\{b\}$ はどの 2 つも異なる。
+- $\mathbf{A}$ が 2 元以上なら、空関係は外延的でない（すべての元の前者の集合が $\varnothing$）。
+- $\in$ は推移的でないクラスの上では外延的とは限らない。$A=\{0,\{1\}\}$ なら $\{1\}\cap A=\varnothing=0\cap A$（$1=\{0\}\notin A$）なので $\mathrm{pred}(A,0,\in)=\mathrm{pred}(A,\{1\},\in)$ で、$0\neq\{1\}$。
+:::
+
+::: proof
+（言い換えの同値性）$\mathbf{R}$ が集合的なら、$x,y\in\mathbf{A}$ について「$\forall z\in\mathbf{A}\,(z\mathbf{R}x\leftrightarrow z\mathbf{R}y)$」は、集合 $\mathrm{pred}(x)$ と $\mathrm{pred}(y)$ が同じ元をもつこと、すなわち外延性の公理により $\mathrm{pred}(x)=\mathrm{pred}(y)$ と同値である。定義の条件はその対偶をとれば言い換えの形になる。
+
+::: hypcheck
+- **外延性の公理**：$\mathrm{pred}(x)=\mathrm{pred}(y)$ への言い換え。**集合的であること**：$\mathrm{pred}(x)$ が集合として存在すること。$\ZF^{-}-\mathrm{P}$ で足りる。
+:::
+:::
+
+::: lemma 推移的なクラス上の $\in$ は外延的 {#set:transitive-extensional keywords="membership is extensional on a transitive class" index="推移的クラス上の所属関係|すいいてきくらすじょうのしょぞくかんけい"}
+$\ZF^{-}-\mathrm{P}$ において、$\mathbf{N}$ が推移的なクラスならば、$\in$ は $\mathbf{N}$ 上で外延的である。
+:::
+
+::: proof
+$x\in\mathbf{N}$ とする。$\mathbf{N}$ が推移的なので $x\subseteq\mathbf{N}$、よって
+$$
+\mathrm{pred}(\mathbf{N},x,\in)=\{z\in\mathbf{N}\mid z\in x\}=x\cap\mathbf{N}=x.
+$$
+$x,y\in\mathbf{N}$ で $\mathrm{pred}(\mathbf{N},x,\in)=\mathrm{pred}(\mathbf{N},y,\in)$ なら $x=y$。\ref{set:extensional-relation} の言い換えにより $\in$ は $\mathbf{N}$ 上で外延的である（$\in$ は集合的：$x\cap\mathbf{N}$ は集合、\ref{set:class-basic} (1)）。
+
+::: hypcheck
+- **$\mathbf{N}$ の推移性**：$x\cap\mathbf{N}=x$ に使った。**分出公理**：$x\cap\mathbf{N}$ が集合であること。**外延性の公理**：言い換えを通して。
+- 冪集合公理・基礎の公理・選択公理は使っていない。
+:::
+:::
+
+::: supplement
+**逆は成り立たない.** $\in$ が外延的でも $\mathbf{N}$ は推移的とは限らない。たとえば $\mathbf{N}=\{\{0\}\}$ は 1 元なので $\in$ は自明に外延的だが、$0\in\{0\}$ かつ $0\notin\mathbf{N}$ なので推移的でない。$\mathbf{N}$ を推移的なクラスに取り替える操作が崩壊定理の系 \ref{set:mostowski-epsilon} であり、この例では $\{0\}\mapsto0$ と崩壊する。
+:::
+
+## 外延性と単射性 {#set:sec-collapse-injective}
+
+::: lemma 外延的なら崩壊関数は同型 {#set:collapse-iso keywords="collapsing function is an isomorphism for extensional relations" index="崩壊関数の単射性|ほうかいかんすうのたんしゃせい"}
+$\ZF^{-}-\mathrm{P}$ において、$\mathbf{R}$ が $\mathbf{A}$ 上で整礎かつ集合的であるとし、$\mathbf{G},\mathbf{M}$ を崩壊関数と崩壊とする。次は同値である。
+
+1. $\mathbf{R}$ は $\mathbf{A}$ 上で外延的である。
+2. $\mathbf{G}$ は単射である。
+3. $\mathbf{G}$ は $(\mathbf{A},\mathbf{R})$ から $(\mathbf{M},\in)$ への同型写像である。すなわち $\mathbf{G}\colon\mathbf{A}\to\mathbf{M}$ は全単射で、\eqref{set:eq-mostowski-iso} が成り立つ。
+:::
+
+::: intuition
+崩壊関数が 2 点を同じ集合に写すとすれば、それは下にある点の像が同じだからである。極小な「衝突」を考えると、下の点では衝突がないので、2 点の前者の集合そのものが一致してしまう。外延性はこれを禁じる。逆に、崩壊関数が単射なら前者の集合が同じ 2 点は同じ像をもつので、一致するしかない。
+:::
+
+::: proof
+**(1)⇒(2).** $\mathbf{G}$ が単射でないと仮定する。クラス
+$$
+\mathbf{X}=\{x\in\mathbf{A}\mid\exists y\in\mathbf{A}\,(x\neq y\land\mathbf{G}(x)=\mathbf{G}(y))\}
+$$
+は空でないので、\ref{set:wf-minimal-element} により $\mathbf{R}$-極小元 $x\in\mathbf{X}$ をとり、$y\in\mathbf{A}$ を $y\neq x$ かつ $\mathbf{G}(x)=\mathbf{G}(y)$ となるようにとる。$\mathbf{R}$ は外延的で $x\neq y$ なので、$\mathrm{pred}(x)\neq\mathrm{pred}(y)$ であり、次のどちらかが起こる。
+
+*場合 1：ある $z\in\mathbf{A}$ で $z\mathbf{R}x$ かつ $\lnot(z\mathbf{R}y)$.* \ref{set:collapse-basic} (1) より $\mathbf{G}(z)\in\mathbf{G}(x)=\mathbf{G}(y)$。同 (2) より、ある $w\in\mathrm{pred}(y)$ で $\mathbf{G}(z)=\mathbf{G}(w)$。$w\mathbf{R}y$ かつ $\lnot(z\mathbf{R}y)$ なので $w\neq z$。よって $z\in\mathbf{X}$（証拠は $w$）であり、しかも $z\mathbf{R}x$。これは $x$ の極小性に反する。
+
+*場合 2：ある $w\in\mathbf{A}$ で $w\mathbf{R}y$ かつ $\lnot(w\mathbf{R}x)$.* 同様に $\mathbf{G}(w)\in\mathbf{G}(y)=\mathbf{G}(x)$ なので、ある $z\in\mathrm{pred}(x)$ で $\mathbf{G}(z)=\mathbf{G}(w)$。$z\mathbf{R}x$ かつ $\lnot(w\mathbf{R}x)$ なので $z\neq w$。よって $z\in\mathbf{X}$ かつ $z\mathbf{R}x$ で、やはり $x$ の極小性に反する。
+
+いずれも矛盾なので、$\mathbf{G}$ は単射である。
+
+**(2)⇒(3).** $\mathbf{G}\colon\mathbf{A}\to\mathbf{M}$ は $\mathbf{M}=\ran\mathbf{G}$ の定義から全射で、仮定より単射。$x,y\in\mathbf{A}$ について、$x\mathbf{R}y\Rightarrow\mathbf{G}(x)\in\mathbf{G}(y)$ は \ref{set:collapse-basic} (1)。逆に $\mathbf{G}(x)\in\mathbf{G}(y)$ なら、同 (2) よりある $z\in\mathrm{pred}(y)$ で $\mathbf{G}(x)=\mathbf{G}(z)$。単射性から $x=z$ なので $x\mathbf{R}y$。
+
+**(3)⇒(1).** $x,y\in\mathbf{A}$ で $\mathrm{pred}(x)=\mathrm{pred}(y)$ とする。$\mathbf{G}(x)=\mathbf{G}[\mathrm{pred}(x)]=\mathbf{G}[\mathrm{pred}(y)]=\mathbf{G}(y)$ で、$\mathbf{G}$ は単射なので $x=y$。よって $\mathbf{R}$ は外延的である（\ref{set:extensional-relation} の言い換え）。
+
+::: hypcheck
+- **整礎性・集合的であること**：(1)⇒(2) で部分**クラス** $\mathbf{X}$ の極小元をとるのに \ref{set:wf-minimal-element} を使った（$\mathbf{X}$ は集合とは限らないので、集合的という仮定がここで効く）。また $\mathbf{G}$ の存在そのものに使っている。
+- **外延性（$\mathbf{R}$ の）**：(1)⇒(2) の場合分け。**外延性の公理**：言い換え（\ref{set:extensional-relation}）を通して。
+- \ref{set:collapse-basic} は (1)(2) だけを使ったので、冪集合公理は不要。基礎の公理・選択公理も使っていない。
+:::
+:::
+
+::: supplement
+(3)⇒(1) は \ref{set:transitive-extensional} を移したものとも見られる：$\mathbf{M}$ は推移的なので $\in$ は $\mathbf{M}$ 上で外延的であり、同型写像は外延性を保つ。したがって崩壊関数が同型になるのは、$\mathbf{R}$ が外延的であるときに限る。
+:::
+
+## 崩壊定理の証明 {#set:sec-mostowski-proof}
+
+::: restate {ref="set:mostowski"}
+:::
+
+::: proof
+$\mathbf{G},\mathbf{M}$ を $\mathbf{A},\mathbf{R}$ の崩壊関数と崩壊（\ref{set:collapse-function}）とする。
+
+**Step 1（存在）.** $\mathbf{M}$ は推移的である（\ref{set:collapse-basic} (2)）。$\mathbf{R}$ が外延的なので、\ref{set:collapse-iso} より $\mathbf{G}\colon\mathbf{A}\to\mathbf{M}$ は全単射で \eqref{set:eq-mostowski-iso} を満たす。$\mathbf{A}$ が集合なら $\mathbf{M}$ も集合である（\ref{set:collapse-basic} (3)）。
+
+**Step 2（一意性：$\mathbf{G}'=\mathbf{G}$）.** 推移的なクラス $\mathbf{M}'$ と全単射 $\mathbf{G}'\colon\mathbf{A}\to\mathbf{M}'$ も \eqref{set:eq-mostowski-iso} を満たすとする。$\mathbf{G}'(x)=\mathbf{G}(x)$ を $x\in\mathbf{A}$ についての帰納法（\ref{set:wf-induction}）で示す。$y\mathbf{R}x$ となるすべての $y\in\mathbf{A}$ で $\mathbf{G}'(y)=\mathbf{G}(y)$ と仮定する。まず
+$$
+\mathbf{G}'(x)=\{\mathbf{G}'(y)\mid y\in\mathrm{pred}(x)\}
+$$
+を示す。$\supseteq$：$y\in\mathrm{pred}(x)$ なら $y\mathbf{R}x$ なので、\eqref{set:eq-mostowski-iso} より $\mathbf{G}'(y)\in\mathbf{G}'(x)$。$\subseteq$：$u\in\mathbf{G}'(x)$ とする。$\mathbf{G}'(x)\in\mathbf{M}'$ で $\mathbf{M}'$ は推移的なので $u\in\mathbf{M}'$。$\mathbf{G}'$ は $\mathbf{M}'$ への全射なので、ある $y\in\mathbf{A}$ で $u=\mathbf{G}'(y)$。$\mathbf{G}'(y)\in\mathbf{G}'(x)$ なので、\eqref{set:eq-mostowski-iso} より $y\mathbf{R}x$、すなわち $y\in\mathrm{pred}(x)$。
+
+帰納法の仮定と \eqref{set:eq-collapse-function} により
+$$
+\mathbf{G}'(x)=\{\mathbf{G}'(y)\mid y\in\mathrm{pred}(x)\}=\{\mathbf{G}(y)\mid y\in\mathrm{pred}(x)\}=\mathbf{G}(x).
+$$
+よってすべての $x\in\mathbf{A}$ で $\mathbf{G}'(x)=\mathbf{G}(x)$。
+
+**Step 3（一意性：$\mathbf{M}'=\mathbf{M}$）.** $\mathbf{G}'$ は $\mathbf{M}'$ への全射なので $\mathbf{M}'=\{\mathbf{G}'(x)\mid x\in\mathbf{A}\}=\{\mathbf{G}(x)\mid x\in\mathbf{A}\}=\mathbf{M}$。
+
+::: hypcheck
+- **整礎性・集合的であること**：崩壊関数の定義（\ref{set:wf-recursion}）と Step 2 の帰納法（\ref{set:wf-induction}）。
+- **外延的であること**：Step 1 で \ref{set:collapse-iso} を適用するのに使った。一意性（Step 2, 3）には使っていない。
+- **$\mathbf{M}'$ の推移性と $\mathbf{G}'$ の全射性**：Step 2 の $\subseteq$ で使った。
+- **置換公理**：$\mathbf{A}$ が集合のとき $\mathbf{M}$ が集合であること、および \ref{set:wf-recursion} を通して。
+- 冪集合公理・基礎の公理・選択公理は使っていない。したがって定理は $\ZF^{-}-\mathrm{P}$ で成り立つ（$\mathbf{A},\mathbf{R}$ を定める論理式ごとの定理図式として。一意性は「同じ条件を満たす論理式で定まる $\mathbf{G}',\mathbf{M}'$ はそれぞれ $\mathbf{G},\mathbf{M}$ と一致する」という図式）。
+:::
+:::
+
+::: supplement
+**3 つの仮定はすべて必要.** 逆に、推移的なクラス $\mathbf{M}$ と、\eqref{set:eq-mostowski-iso} を満たす全単射 $\mathbf{G}\colon\mathbf{A}\to\mathbf{M}$ があるとする。
+
+- **外延的**：\ref{set:transitive-extensional} により $\in$ は $\mathbf{M}$ 上で外延的で、$\mathbf{G}$ で引き戻すと $\mathbf{R}$ も外延的になる（$\mathrm{pred}(x)=\mathrm{pred}(y)$ なら $\mathbf{G}(x)$ と $\mathbf{G}(y)$ の $\mathbf{M}$ 内の元が一致し、$\mathbf{M}$ の推移性から $\mathbf{G}(x)=\mathbf{G}(y)$、よって $x=y$）。
+- **集合的**：$x\in\mathbf{A}$ について $\mathrm{pred}(x)=\mathbf{G}^{-1}[\mathbf{G}(x)]$ である（$\mathbf{G}(x)\subseteq\mathbf{M}$ で、$\mathbf{G}(y)\in\mathbf{G}(x)\iff y\mathbf{R}x$）。$\mathbf{G}(x)$ は集合なので、置換公理（逆写像 $\mathbf{G}^{-1}$ に適用）より $\mathrm{pred}(x)$ は集合。たとえば辞書式順序の $2\times\mathbf{ON}$ は整礎・外延的だが集合的でなく（\ref{set:set-like} の例）、「型 $\mathbf{ON}+\mathbf{ON}$」の推移的クラスは存在しない。
+- **整礎**：基礎の公理のもとでは（あるいは $\mathbf{M}\subseteq\mathbf{WF}$ なら）$\in$ は $\mathbf{M}$ 上で整礎なので、$\mathbf{R}$ も整礎でなければならない。たとえば $(\mathbb{Z},<)$ は全順序なので外延的で集合的だが、整礎でないので、基礎の公理のもとでは推移的集合の $\in$ と同型にならない。
+
+**反基礎公理.** 基礎の公理の代わりにアクゼルの反基礎公理 AFA を採ると、整礎とは限らない任意のグラフ（集合上の関係）に崩壊関数に相当する「装飾」がただ一つ存在し、強い意味で外延的なグラフでは装飾が単射になる（P. Aczel, *Non-Well-Founded Sets*, 1988）。本ページの崩壊定理は、その整礎な場合と見ることもできる。
+
+**応用.** 崩壊定理は、集合論のモデルを扱うときに基本的な道具となる。たとえば $(M,E)$ が外延性の公理を満たす整礎なモデルなら、崩壊によって推移的な集合 $M'$ 上の真の $\in$ をもつモデル $(M',\in)$ に取り替えられる。推移的なモデルでは多くの概念が $\mathbf{V}$ での意味と一致するので扱いやすい。
+:::
+
+## 全順序の場合と基礎の公理のもとでの系 {#set:sec-mostowski-corollaries}
+
+::: proposition 整列順序の崩壊 {#set:collapse-well-order keywords="collapse of a well-ordering, order type as Mostowski collapse" index="整列順序の崩壊|せいれつじゅんじょのほうかい"}
+$\ZF^{-}-\mathrm{P}$ において、$\mathbf{R}$ がクラス $\mathbf{A}$ 上の（狭義の）全順序で、$\mathbf{A}$ 上で整礎かつ集合的であるとし、$\mathbf{G},\mathbf{M}$ を崩壊関数と崩壊とする。
+
+1. 各 $x\in\mathbf{A}$ について $\mathbf{G}(x)$ は順序数で、$\mathbf{G}(x)=\operatorname{type}(\mathrm{pred}(x),\mathbf{R})=\rank(x,\mathbf{A},\mathbf{R})$。
+2. $\mathbf{A}$ が集合ならば、$\mathbf{M}$ は順序数 $\operatorname{type}(\mathbf{A},\mathbf{R})$ であり、$\mathbf{G}$ は $(\mathbf{A},\mathbf{R})$ から $(\mathbf{M},\in)$ への同型写像である。
+3. $\mathbf{A}$ が真のクラスならば、$\mathbf{M}=\mathbf{ON}$ である。
+:::
+
+::: intuition
+整列順序を崩壊させると、各元はそれより前にある部分の長さ（順序数）につぶれる。全体が集合なら全体の長さ、真のクラスなら $\mathbf{ON}$ 全体が値域になる。集合的という条件は、各元の前にある部分が集合であることを保証し、「$\mathbf{ON}$ より長い」整列を排除している。
+:::
+
+::: proof
+**Step 0（$\mathbf{G}$ は同型）.** 全順序は外延的である（\ref{set:extensional-relation} の例）。よって \ref{set:collapse-iso} により、$\mathbf{G}\colon\mathbf{A}\to\mathbf{M}$ は全単射で、$x\mathbf{R}y\iff\mathbf{G}(x)\in\mathbf{G}(y)$。
+
+**Step 1（$\mathbf{G}(x)$ は推移的）.** $u\in v\in\mathbf{G}(x)$ とする。\ref{set:collapse-basic} (2) より $v=\mathbf{G}(y)$（$y\mathbf{R}x$）、さらに $u=\mathbf{G}(z)$（$z\mathbf{R}y$）と書ける。$\mathbf{R}$ は推移的なので $z\mathbf{R}x$、よって $u=\mathbf{G}(z)\in\mathbf{G}(x)$。
+
+**Step 2（$\mathbf{G}(x)$ は $\in$ で整列される）.** $\mathbf{G}(x)=\mathbf{G}[\mathrm{pred}(x)]$ なので、$g=\mathbf{G}\restr{\mathrm{pred}(x)}$ は $\mathrm{pred}(x)$ から $\mathbf{G}(x)$ への全単射で、Step 0 より $y\mathbf{R}y'\iff g(y)\in g(y')$。すなわち $g$ は $(\mathrm{pred}(x),\mathbf{R})$ から $(\mathbf{G}(x),\in)$ への同型写像である。$(\mathrm{pred}(x),\mathbf{R})$ は整列順序である：全順序の制限は全順序で、空でない部分集合 $X$ は整礎性から $\mathbf{R}$-極小元 $m$ をもち、三分律より $m$ は $X$ の $\mathbf{R}$-最小元（\ref{set:well-order}）になる。同型写像で移すと、$(\mathbf{G}(x),\in)$ も整列順序である（非反射律・推移律・三分律は $g$ で移り、$Y\subseteq\mathbf{G}(x)$ が空でなければ $g^{-1}[Y]$ の最小元の像が $Y$ の最小元）。
+
+**Step 3（(1)）.** Step 1, 2 と順序数の定義（\ref{set:ordinal}）により $\mathbf{G}(x)$ は順序数で、Step 2 より $(\mathrm{pred}(x),\mathbf{R})\cong(\mathbf{G}(x),\in)$ なので、順序型の一意性（\ref{set:ordinal-type}）から $\mathbf{G}(x)=\operatorname{type}(\mathrm{pred}(x),\mathbf{R})$。
+
+ランクとの一致を帰納法で示す。$y\mathbf{R}x$ なるすべての $y$ で $\mathbf{G}(y)=\rank(y,\mathbf{A},\mathbf{R})$ と仮定する。$\alpha=\mathbf{G}(x)$ とおくと $\alpha=\{\mathbf{G}(y)\mid y\in\mathrm{pred}(x)\}=\{\rank(y,\mathbf{A},\mathbf{R})\mid y\in\mathrm{pred}(x)\}$ なので、\ref{set:relation-rank-basic} (1) より
+$$
+\rank(x,\mathbf{A},\mathbf{R})=\sup\{\beta+1\mid\beta\in\alpha\}.
+$$
+これが $\alpha$ に等しいことを示す。各 $\beta\in\alpha$ について $\beta+1\le\alpha$（$\beta<\alpha$ だから）なので上限は $\alpha$ 以下。逆に $\beta\in\alpha$ なら $\beta<\beta+1\le\sup\{\beta'+1\mid\beta'\in\alpha\}$ なので $\alpha\subseteq\sup\{\beta+1\mid\beta\in\alpha\}$、すなわち上限は $\alpha$ 以上。よって $\rank(x,\mathbf{A},\mathbf{R})=\alpha=\mathbf{G}(x)$。
+
+**Step 4（(2)）.** $\mathbf{A}=A$ が集合なら、$\mathbf{M}=\mathbf{G}[A]$ は集合で（\ref{set:collapse-basic} (3)）、推移的（同 (2)）であり、(1) より順序数からなる。\ref{set:ordinal-well-ordered} (4) より $\mathbf{M}$ は順序数である。Step 0 より $(A,\mathbf{R})\cong(\mathbf{M},\in)$ なので $\mathbf{M}=\operatorname{type}(A,\mathbf{R})$。
+
+**Step 5（(3)）.** $\mathbf{A}$ が真のクラスとする。まず $\mathbf{M}$ は集合でない：もし集合なら、全単射 $\mathbf{G}$ の逆写像 $\mathbf{G}^{-1}\colon\mathbf{M}\to\mathbf{A}$ に置換公理を適用して $\mathbf{A}=\mathbf{G}^{-1}[\mathbf{M}]$ が集合になり、矛盾。次に $\mathbf{ON}\subseteq\mathbf{M}$ を示す。順序数 $\alpha\notin\mathbf{M}$ があったとする。$\beta\in\mathbf{M}$ を任意にとると、$\beta$ は順序数（(1)）で $\beta\neq\alpha$。$\alpha\in\beta$ なら $\mathbf{M}$ の推移性から $\alpha\in\mathbf{M}$ となり矛盾。よって三分律（\ref{set:ordinal-well-ordered} (1)）から $\beta\in\alpha$。したがって $\mathbf{M}\subseteq\alpha$ であり、$\mathbf{M}=\mathbf{M}\cap\alpha$ は集合（\ref{set:class-basic} (1)）となって矛盾。ゆえに $\mathbf{ON}\subseteq\mathbf{M}$、(1) と合わせて $\mathbf{M}=\mathbf{ON}$。
+
+::: hypcheck
+- **全順序であること**：Step 0（外延性）、Step 1（推移律）、Step 2（三分律で極小元が最小元になる）で使った。
+- **整礎性・集合的であること**：崩壊関数の存在と Step 3 の帰納法。Step 5 は集合的であることを、$\mathbf{G}(x)$ が集合であることを通して使っている。
+- **置換公理**：Step 4（$\mathbf{G}[A]$）と Step 5（$\mathbf{G}^{-1}[\mathbf{M}]$）。**分出公理**：Step 5 の $\mathbf{M}\cap\alpha$。
+- \ref{set:ordinal-type} は $\mathbf{G}(x)$ を順序型と**同定する**ためだけに使い（一意性の部分）、$\mathbf{G}(x)$ が順序数であることの証明には使っていない。冪集合公理・基礎の公理・選択公理は使っていない。
+:::
+:::
+
+::: supplement
+**順序型の存在の別証明.** (2) は、整列集合 $(A,R)$ が順序数と同型であること（\ref{set:ordinal-type} の存在の部分）の別証明を与えている。崩壊関数は整礎再帰（\ref{set:wf-recursion}）で作られ、その証明は \ref{set:ordinal-type} に依存しないからである。
+
+**木の高さ.** 木 $T$（\ref{set:tree}）の順序 $<$ は $T$ 上で整礎かつ集合的で、崩壊関数は各点の高さ $\operatorname{ht}(x,T)$（\ref{set:tree-height}）に等しい（Kunen, Ch. III, Exercise 10）。実際、整礎性：空でない $X\subseteq T$ と $x\in X$ について、$\mathrm{pred}_{T}(x)\cap X=\varnothing$ なら $x$ が極小、そうでなければ整列集合 $\mathrm{pred}_{T}(x)$ における $\mathrm{pred}_{T}(x)\cap X$ の最小元 $m$ が $X$ で極小である（$z<m$, $z\in X$ なら推移律から $z\in\mathrm{pred}_{T}(x)\cap X$ で、最小性に反する）。高さとの一致：$\mathbf{G}(x)$ は $x$ の前者だけで決まり、$\mathrm{pred}_{T}(x)$ は下に閉じているので、$T$ での崩壊関数を $\mathrm{pred}_{T}(x)\cup\{x\}$ に制限したものは、この整列集合の崩壊関数と一致する（再帰式が同じで、一意性 \ref{set:wf-recursion}）。この整列集合に (1) を適用すると $\mathbf{G}(x)=\operatorname{type}(\mathrm{pred}_{T}(x),<)=\operatorname{ht}(x,T)$。ランクも同じ理由で制限によって変わらないので、(1) より $\rank(x,T,<)$ にも等しい。
+:::
+
+::: corollary 基礎の公理のもとでの崩壊 {#set:mostowski-epsilon keywords="Mostowski collapse for extensional classes under Foundation" index="外延的クラスの崩壊|がいえんてきくらすのほうかい"}
+$\ZF-\mathrm{P}$ において、$\mathbf{A}$ をクラスとし、$\in$ が $\mathbf{A}$ 上で外延的であるとする。
+
+1. 推移的なクラス $\mathbf{M}$ と全単射 $\mathbf{G}\colon\mathbf{A}\to\mathbf{M}$ で
+$$
+\forall x,y\in\mathbf{A}\;\bigl(x\in y\leftrightarrow\mathbf{G}(x)\in\mathbf{G}(y)\bigr)
+$$
+を満たすものがただ一つ存在する。$\mathbf{G}(x)=\{\mathbf{G}(y)\mid y\in x\cap\mathbf{A}\}$ である。
+2. $\mathbf{T}\subseteq\mathbf{A}$ が推移的なクラスならば、すべての $x\in\mathbf{T}$ で $\mathbf{G}(x)=x$。特に $\mathbf{A}$ 自身が推移的なら $\mathbf{G}$ は恒等写像で $\mathbf{M}=\mathbf{A}$。
+:::
+
+::: intuition
+基礎の公理のもとでは $\in$ はいつでも整礎なので、外延性さえあれば崩壊定理が使える。つまり、所属関係が外延性を満たすようなクラスは、推移的なクラスに「つぶして」取り替えられる。そのとき、もともと推移的だった部分は動かない。
+:::
+
+::: proof
+**Step 1（$\in$ は $\mathbf{A}$ 上で整礎かつ集合的）.** 集合的：$\mathrm{pred}(\mathbf{A},x,\in)=x\cap\mathbf{A}$ は集合（\ref{set:class-basic} (1)）。整礎：$X\subseteq\mathbf{A}$ が空でない集合なら、基礎の公理（\ref{set:ax-foundation}）より $y\in X$ で $y\cap X=\varnothing$ となるものがあり、これは $X$ の $\in$-極小元である。
+
+**Step 2（(1)）.** Step 1 と仮定により、$\in$ は $\mathbf{A}$ 上で整礎・集合的・外延的である。\ref{set:mostowski} を $\mathbf{R}=\in$ に適用すればよい。$\mathrm{pred}(\mathbf{A},x,\in)=x\cap\mathbf{A}$ なので、崩壊関数の式は $\mathbf{G}(x)=\{\mathbf{G}(y)\mid y\in x\cap\mathbf{A}\}$ となる。
+
+**Step 3（(2)）.** $x\in\mathbf{T}$ について \ref{set:wf-induction} で示す（$\mathbf{R}=\in$ を $\mathbf{T}$ 上に制限したものも整礎かつ集合的）。$y\in x$ となるすべての $y\in\mathbf{T}$ で $\mathbf{G}(y)=y$ と仮定する。$\mathbf{T}$ は推移的なので $x\subseteq\mathbf{T}\subseteq\mathbf{A}$、よって $x\cap\mathbf{A}=x$ で、$x$ の元はすべて $\mathbf{T}$ に属する。したがって
+$$
+\mathbf{G}(x)=\{\mathbf{G}(y)\mid y\in x\}=\{y\mid y\in x\}=x.
+$$
+$\mathbf{A}$ が推移的なら $\mathbf{T}=\mathbf{A}$ として $\mathbf{G}=\id$、$\mathbf{M}=\ran\mathbf{G}=\mathbf{A}$。
+
+::: hypcheck
+- **基礎の公理**：Step 1 で $\in$ の整礎性を得るのに**本質的に**使った。そのため体系は $\ZF^{-}-\mathrm{P}$ ではなく $\ZF-\mathrm{P}$ である。
+- **分出公理**：Step 1 の $x\cap\mathbf{A}$。**$\in$ の外延性**：Step 2 で \ref{set:mostowski} を適用するため。**$\mathbf{T}$ の推移性**：Step 3。
+- 冪集合公理・選択公理は使っていない。
+:::
+:::
+
+::: example
+- $\mathbf{A}=\{\{0\}\}$ なら $\in$ は $\mathbf{A}$ 上で外延的で、$\mathbf{G}(\{0\})=\varnothing$、$\mathbf{M}=\{0\}$。
+- $\mathbf{A}=\{0,2,\{2\}\}$ とする（$2=\{0,1\}$）。$\mathrm{pred}(0)=\varnothing$, $\mathrm{pred}(2)=2\cap\mathbf{A}=\{0\}$, $\mathrm{pred}(\{2\})=\{2\}$ はすべて異なるので外延的。崩壊すると $0\mapsto0$, $2\mapsto\{0\}=1$, $\{2\}\mapsto\{1\}$ で、$\mathbf{M}=\{0,1,\{1\}\}$。$\mathbf{A}$ の推移的な部分 $\{0\}$ は動かないが、$2$ は $1$ に動く（$2$ の元 $1$ が $\mathbf{A}$ にないため）。
+:::
+
+::: supplement
+**基礎の公理を外すと.** $\ZF^{-}-\mathrm{P}$ では $\in$ が整礎であるとは限らないので、$\in$ が $\mathbf{A}$ 上で整礎であることを仮定に加える必要がある（そのときは \ref{set:mostowski} そのもの）。整礎でなければ、そもそも崩壊関数が再帰で定義できない。
+
+**よく使われる形.** 集合 $N$ で $(N,\in)$ が外延性の公理を満たすもの（たとえば $\ZF$ の有限個の公理を満たす構造の初等部分構造）は、この系により推移的な集合 $M$ と $\in$-同型になり、$N$ の推移的な部分は動かない。可算推移的モデルを作るときの標準的な手順である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

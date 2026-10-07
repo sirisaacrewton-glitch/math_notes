@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>極限と余極限 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/01-basics/06-limits.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 極限と余極限 {#cat:page-limits keywords="limit, colimit, cone, cocone, diagonal functor, product, coproduct, equalizer, coequalizer, pullback, pushout, kernel, complete category, completeness of Set, limits from products and equalizers"}
+
+積・等化子・引き戻しなど、「図式を一番良く近似する対象」をまとめた概念が**極限**である（\ref{cat:limit}）。極限は、対角関手から図式への普遍射として定義され（前ページの普遍射の特別な場合）、同型を除いて一意に定まる。双対の概念が**余極限**で（\ref{cat:colimit}）、余積・余等化子・押し出しを含む。本ページでは極限と余極限の定義と基本的な例を述べ、$\mathbf{Set}$ が小さい図式の極限と余極限をすべてもつこと（\ref{cat:set-complete}）、極限は積と等化子から作れること（\ref{cat:limits-from-products-equalizers}）を示す。
+
+> 資料：Mac Lane, *Categories for the Working Mathematician* 第 III 章 §3–§4、第 V 章 §1–§2。訳語はレンスター『ベーシック圏論』第 5 章。
+
+## 記法と定義の確認 {#cat:sec-lim-notation}
+
+::: notation
+- 普遍射、普遍元、表現可能関手、米田の補題は \ref{cat:page-yoneda} のとおり（\ref{cat:universal-arrow}, \ref{cat:universal-is-initial}, \ref{cat:representable-functor}）。
+- 関手圏 $\mathbf{C}^{\mathbf{J}}=[\mathbf{J},\mathbf{C}]$、自然変換、反対圏は \ref{cat:page-constructions} のとおり。モノ射・始対象・終対象は \ref{cat:monic-epic}, \ref{cat:initial-terminal}。
+- 本ページで添字の圏 $\mathbf{J}$ は（とくに断らない限り）小さい圏とする。関手 $F\colon\mathbf{J}\to\mathbf{C}$ を**図式**ともいう。
+:::
+
+## 錐と極限 {#cat:sec-lim-definition}
+
+::: definition 対角関手と錐 {#cat:cone keywords="diagonal functor, constant functor, cone, cocone" index="対角関手|たいかくかんしゅ, 定数関手|ていすうかんしゅ, 錐|すい, 余錐|よすい"}
+圏 $\mathbf{C}$, $\mathbf{J}$ について、**対角関手** $\Delta\colon\mathbf{C}\to\mathbf{C}^{\mathbf{J}}$ を、対象 $c$ に**定数関手** $\Delta c$（すべての $j$ を $c$ に、すべての射を $1_{c}$ に移す）を、射 $f\colon c\to c'$ に成分がすべて $f$ の自然変換 $\Delta f$ を対応させて定める。図式 $F\colon\mathbf{J}\to\mathbf{C}$ について、自然変換 $\tau\colon\Delta c\Rightarrow F$ を、頂点 $c$ から $F$ への**錐**という。具体的には射の族 $\tau_{j}\colon c\to Fj$ で、$\mathbf{J}$ のすべての射 $u\colon j\to k$ について $Fu\circ\tau_{j}=\tau_{k}$ となるものである。双対的に、$\sigma\colon F\Rightarrow\Delta c$ を $F$ から頂点 $c$ への**余錐**という（$\sigma_{k}\circ Fu=\sigma_{j}$）。
+:::
+
+::: definition 極限 {#cat:limit keywords="limit of a diagram, limiting cone, inverse limit, projective limit" index="極限|きょくげん, 極限錐|きょくげんすい, 逆極限|ぎゃくきょくげん, 射影極限|しゃえいきょくげん"}
+図式 $F\colon\mathbf{J}\to\mathbf{C}$ の**極限**とは、$\Delta$ から $F$ への普遍射 $(L,\lambda)$（\ref{cat:universal-arrow}）、すなわち錐 $\lambda\colon\Delta L\Rightarrow F$ で、任意の錐 $\tau\colon\Delta c\Rightarrow F$ に対し、$\lambda_{j}\circ t=\tau_{j}$（すべての $j$）となる射 $t\colon c\to L$ がちょうど一つあるものをいう。$\lambda$ を**極限錐**、$L$ を $\lim F$ と書く。$\mathbf{C}$ がすべての（小さい）図式の極限をもつとき、$\mathbf{C}$ は**完備**であるという。
+:::
+
+::: definition 余極限 {#cat:colimit keywords="colimit of a diagram, colimiting cocone, direct limit, inductive limit, cocomplete" index="余極限|よきょくげん, 帰納極限|きのうきょくげん, 直極限|ちょくきょくげん, 余完備|よかんび"}
+図式 $F$ の**余極限**とは、$F$ から $\Delta$ への普遍射 $(L,\mu)$、すなわち余錐 $\mu\colon F\Rightarrow\Delta L$ で、任意の余錐 $\sigma\colon F\Rightarrow\Delta c$ に対し $t\circ\mu_{j}=\sigma_{j}$ となる $t\colon L\to c$ がちょうど一つあるものをいう。$L$ を $\operatorname{colim}F$ と書く。すべての小さい図式の余極限をもつ圏を**余完備**という。
+:::
+
+::: proposition 極限の基本性質 {#cat:limit-basic keywords="uniqueness of limits, limits as representing objects of the cone functor, maps into a limit are determined by their components" index="極限の一意性|きょくげんのいちいせい"}
+1. 極限は同型を除いて一意である：$(L,\lambda)$, $(L',\lambda')$ がともに $F$ の極限なら、$\lambda'_{j}\circ h=\lambda_{j}$ となる同型射 $h\colon L\to L'$ がちょうど一つある。
+2. （**射は成分で決まる**）$(L,\lambda)$ が極限なら、$t,t'\colon c\to L$ がすべての $j$ で $\lambda_{j}\circ t=\lambda_{j}\circ t'$ を満たせば $t=t'$。
+3. $\mathbf{C}$ が局所小のとき、錐の集合を $\operatorname{Cone}(c,F)\defeq\operatorname{Nat}(\Delta c,F)$ とおくと、$(L,\lambda)$ が極限であることと、$t\mapsto\lambda\cdot\Delta t$ が $c$ について自然な全単射 $\mathbf{C}(c,L)\cong\operatorname{Cone}(c,F)$ であることは同値。すなわち、極限は反変関手 $\operatorname{Cone}(-,F)\colon\mathbf{C}^{\mathrm{op}}\to\mathbf{Set}$ の表現である。
+:::
+
+::: proof
+**1.** 普遍射の一意性（\ref{cat:universal-is-initial} の 2）を、$\Delta$ から $F$ への普遍射（双対版）に適用する。
+
+**2.** $\tau_{j}\defeq\lambda_{j}\circ t$ は錐（$Fu\circ\lambda_{j}\circ t=\lambda_{k}\circ t$）で、$t$ と $t'$ はどちらもこの錐を経由させる射なので、一意性から $t=t'$。
+
+**3.** \ref{cat:universal-hom-bijection} の双対版。$\lambda\cdot\Delta t$ の成分は $\lambda_{j}\circ t$。
+:::
+
+## 基本的な極限 {#cat:sec-lim-special}
+
+::: definition 積・等化子・引き戻し {#cat:product keywords="product, projections, equalizer, pullback, fibered product, terminal object as empty limit, power" index="積（圏の）|せきけんの, 射影|しゃえい, 等化子|とうかし, 引き戻し|ひきもどし, ファイバー積|ふぁいばーせき, 冪（圏の）|べきけんの"}
+1. **積.** $\mathbf{J}$ が離散圏 $I$（小さい集合）のとき、図式は対象の族 $(a_{i})_{i\in I}$ で、その極限を**積** $\prod_{i\in I}a_{i}$、極限錐の成分 $p_{i}\colon\prod a_{i}\to a_{i}$ を**射影**という。射の族 $f_{i}\colon c\to a_{i}$ から極限の性質で定まる射を $(f_{i})_{i}\colon c\to\prod a_{i}$ と書く。二つの対象の積を $a\times b$、すべての $a_{i}$ が同じ $b$ のとき $b^{I}$（**冪**）と書く。$I=\varnothing$ のとき、積は終対象である。
+2. **等化子.** $\mathbf{J}$ が平行な射の対 $\bullet\rightrightarrows\bullet$ のとき、図式は射の対 $f,g\colon a\to b$ で、その極限は対象 $e$ と射 $m\colon e\to a$（もう一方の成分は $f\circ m=g\circ m$ で決まる）で、$f\circ m=g\circ m$ を満たし、$f\circ h=g\circ h$ となる任意の $h\colon c\to a$ が一意に $m$ を経由するものである。$(e,m)$ を $f,g$ の**等化子**という。
+3. **引き戻し.** $\mathbf{J}$ が $\bullet\to\bullet\leftarrow\bullet$ のとき、図式は射の対 $f\colon a\to c$, $g\colon b\to c$ で、その極限は対象 $p$ と射 $p_{1}\colon p\to a$, $p_{2}\colon p\to b$ で $f\circ p_{1}=g\circ p_{2}$ を満たし、同じ条件を満たす任意の $(h_{1},h_{2})$ が一意に経由するものである。$p$ を $a\times_{c}b$ と書き、**引き戻し**（**ファイバー積**）という。
+:::
+
+::: definition 余積・余等化子・押し出し {#cat:coequalizer keywords="coproduct, injections, coequalizer, pushout, initial object as empty colimit" index="余積|よせき, 入射（余積の）|にゅうしゃよせきの, 余等化子|よとうかし, 押し出し|おしだし"}
+上の三つの双対を、それぞれ**余積** $\coprod_{i}a_{i}$（成分 $\iota_{i}\colon a_{i}\to\coprod a_{i}$ を**入射**という。空の余積は始対象）、**余等化子**（$f,g\colon a\to b$ について、$q\circ f=q\circ g$ となる普遍的な $q\colon b\to e$）、**押し出し** $b\sqcup_{a}c$（$f\colon a\to b$, $g\colon a\to c$ について、$u\circ f=v\circ g$ となる普遍的な $u\colon b\to r$, $v\colon c\to r$）という。
+:::
+
+::: example
+1. **$\mathbf{Set}$.** 積は直積集合と射影、余積は直和（交わらない和）$\coprod_{i}a_{i}=\bigcup_{i}\{i\}\times a_{i}$。$f,g\colon a\to b$ の等化子は部分集合 $\{x\in a:f(x)=g(x)\}$ とその包含、余等化子は $b$ を「$f(x)$ と $g(x)$ を同一視する最小の同値関係」で割った商集合への射影。引き戻しは $\{(x,y)\in a\times b:f(x)=g(y)\}$。
+2. **$\mathbf{Grp}$, $\mathbf{Ab}$.** 積は直積群。$\mathbf{Ab}$ の有限の余積は直和 $A\oplus B$（積と同じ対象）。$\mathbf{Ab}$ で $f,g$ の等化子は $\ker(f-g)$、余等化子は $B/\operatorname{im}(f-g)$。$\mathbf{Grp}$ の余積は自由積（存在は随伴関手定理などから。ここでは扱わない）。
+3. **$\mathbf{Top}$.** 積は直積位相、余積は直和位相、等化子は部分空間位相、余等化子は商位相で、いずれも $\mathbf{Set}$ の構成に位相を付けたもの。
+4. **半順序.** 積は下限（最大下界）、余積は上限。極限は「錐の頂点のうち最大のもの」で、存在するとは限らない。
+5. **零対象をもつ圏の核.** 零対象 $0$ をもつ圏で、$f\colon a\to b$ と零射 $0_{ab}\colon a\to0\to b$ の等化子を $f$ の**核**、余等化子を**余核**という。$\mathbf{Ab}$ では通常の核と余核（$B/f[A]$）。
+:::
+
+::: proposition 等化子はモノ射 {#cat:equalizer-monic keywords="equalizers are monic; pullbacks of monics are monic" index="等化子はモノ射|とうかしはものしゃ"}
+1. 等化子 $m\colon e\to a$ はモノ射である。
+2. 引き戻しの図式で、$g\colon b\to c$ がモノ射なら、$p_{1}\colon a\times_{c}b\to a$ もモノ射である。
+:::
+
+::: proof
+**1.** $m\circ h=m\circ h'$ とする。$h,h'$ はどちらも、射 $m\circ h$（$f\circ(m\circ h)=g\circ(m\circ h)$ を満たす）を $m$ で経由させる射なので、等化子の一意性から $h=h'$。
+
+**2.** $p_{1}\circ h=p_{1}\circ h'$ とする。$g\circ p_{2}\circ h=f\circ p_{1}\circ h=f\circ p_{1}\circ h'=g\circ p_{2}\circ h'$ で、$g$ はモノ射なので $p_{2}\circ h=p_{2}\circ h'$。両成分が一致するので、\ref{cat:limit-basic} の 2 から $h=h'$。
+:::
+
+## Set の完備性と余完備性 {#cat:sec-lim-set}
+
+::: theorem Set は完備かつ余完備 {#cat:set-complete keywords="completeness and cocompleteness of Set" index="Set の完備性|せっとのかんびせい"}
+$\mathbf{J}$ を小さい圏、$F\colon\mathbf{J}\to\mathbf{Set}$ を関手とする。
+1. $L\defeq\bigl\{(x_{j})_{j}\in\prod_{j\in\operatorname{Ob}\mathbf{J}}Fj:\text{すべての }u\colon j\to k\text{ で }(Fu)(x_{j})=x_{k}\bigr\}$ と射影の制限 $\lambda_{j}\colon L\to Fj$ は $F$ の極限である。
+2. $\coprod_{j}Fj$ 上で $(j,x)\sim_{0}(k,(Fu)(x))$（$u\colon j\to k$）が生成する同値関係を $\sim$ とすると、商集合 $\coprod_{j}Fj/{\sim}$ と $\mu_{j}(x)\defeq[(j,x)]$ は $F$ の余極限である。
+:::
+
+::: proof
+**1, Step 1（小ささと錐）.** $\mathbf{J}$ が小さく各 $Fj$ が小さいので、直積は小さく（\ref{cat:functor-category-size} の証明と同じ宇宙の議論）、部分集合 $L$ も小さい。$u\colon j\to k$ について $(Fu)(\lambda_{j}(x))=x_{k}=\lambda_{k}(x)$ なので $\lambda$ は錐。
+
+**1, Step 2（普遍性）.** 錐 $\tau\colon\Delta c\Rightarrow F$ をとる。$t(z)\defeq(\tau_{j}(z))_{j}$ とおくと、錐の条件 $Fu\circ\tau_{j}=\tau_{k}$ から $t(z)\in L$ で、$\lambda_{j}\circ t=\tau_{j}$。逆に $\lambda_{j}\circ t'=\tau_{j}$ なら $t'(z)$ の各成分は $\tau_{j}(z)$ なので $t'=t$。
+
+**2, Step 1（余錐）.** $\mu_{k}((Fu)(x))=[(k,(Fu)x)]=[(j,x)]=\mu_{j}(x)$ なので、$\mu_{k}\circ Fu=\mu_{j}$。商集合は小さい集合の商なので小さい。
+
+**2, Step 2（普遍性）.** 余錐 $\sigma\colon F\Rightarrow\Delta c$ をとる。$\bar{\sigma}(j,x)\defeq\sigma_{j}(x)$ は $\coprod Fj$ 上の写像で、$\bar{\sigma}(k,(Fu)x)=\sigma_{k}((Fu)x)=\sigma_{j}(x)$ から $\sim_{0}$ を保つ。「$\bar{\sigma}$ の値が等しい」は $\sim_{0}$ を含む同値関係なので、最小性から $\sim$ も含む。よって $t([(j,x)])\defeq\sigma_{j}(x)$ は代表元によらず、$t\circ\mu_{j}=\sigma_{j}$。一意性は $\mu_{j}$ の値全体が商集合全体を覆う（$\mu$ の値の和が全射）ことから。
+
+::: hypcheck
+- **$\mathbf{J}$ が小さいこと**：1, 2 の Step 1 で、直積・直和が小さい集合になる（$\mathbf{Set}$ の対象になる）ために使った。大きな図式の極限は、$\mathbf{Set}$ にあるとは限らない。
+- **公理**：選択公理は使っていない（直積の元は具体的な族で、空でないことも主張していない）。
+:::
+:::
+
+::: theorem 積と等化子による極限の構成 {#cat:limits-from-products-equalizers keywords="a category with products and equalizers has all limits" index="積と等化子による極限|せきととうかしによるきょくげん"}
+$\mathbf{J}$ を小さい圏とし、$\mathbf{C}$ が $\operatorname{Ob}\mathbf{J}$ と $\operatorname{Mor}\mathbf{J}$ で添字付けた積と、すべての等化子をもつとする。このとき任意の $F\colon\mathbf{J}\to\mathbf{C}$ は極限をもつ。具体的には、射 $f,g\colon\prod_{j}Fj\to\prod_{u\colon j\to k}Fk$ を、$u$ 成分がそれぞれ
+$$
+p_{u}\circ f=p_{\operatorname{cod}u},\qquad p_{u}\circ g=Fu\circ p_{\operatorname{dom}u}
+$$
+となるものとし、$m\colon L\to\prod_{j}Fj$ を $f,g$ の等化子とすると、$\lambda_{j}\defeq p_{j}\circ m$ が極限錐である。
+:::
+
+::: proof
+**Step 1（錐）.** $u\colon j\to k$ について、$f\circ m=g\circ m$ に $p_{u}$ を合成すると $p_{k}\circ m=Fu\circ p_{j}\circ m$、すなわち $\lambda_{k}=Fu\circ\lambda_{j}$。
+
+**Step 2（存在）.** 錐 $\tau\colon\Delta c\Rightarrow F$ をとり、$h\defeq(\tau_{j})_{j}\colon c\to\prod_{j}Fj$ とする。各 $u\colon j\to k$ について
+$$
+p_{u}\circ f\circ h=p_{k}\circ h=\tau_{k}=Fu\circ\tau_{j}=p_{u}\circ g\circ h,
+$$
+積の射は成分で決まる（\ref{cat:limit-basic} の 2）ので $f\circ h=g\circ h$。等化子の性質から $h=m\circ t$ となる $t\colon c\to L$ がある。$\lambda_{j}\circ t=p_{j}\circ h=\tau_{j}$。
+
+**Step 3（一意性）.** $\lambda_{j}\circ t'=\tau_{j}$（すべての $j$）なら、$p_{j}\circ m\circ t'=p_{j}\circ m\circ t$ なので $m\circ t'=m\circ t$、等化子はモノ射（\ref{cat:equalizer-monic}）なので $t'=t$。
+
+::: hypcheck
+- **二種類の積**：対象で添字付けた積は錐の成分をまとめるため、射で添字付けた積は錐の条件（射ごとの等式）をまとめて一つの等式にするために使った。
+- **等化子がモノ射**：Step 3 の一意性で使った。
+:::
+:::
+
+::: corollary 完備性の判定 {#cat:completeness-criterion keywords="complete iff small products and equalizers; finitely complete iff terminal object and pullbacks" index="完備性の判定|かんびせいのはんてい, 有限完備|ゆうげんかんび"}
+1. $\mathbf{C}$ が完備であることと、小さい集合で添字付けた積と等化子をすべてもつことは同値である。
+2. $\mathbf{C}$ が有限の図式（対象と射が有限個の $\mathbf{J}$）の極限をすべてもつこと（**有限完備**）と、終対象と引き戻しをもつことは同値である。
+:::
+
+::: proof
+**1.** 「⇒」は積・等化子が極限の特別な場合であることから。「⇐」は \ref{cat:limits-from-products-equalizers}。
+
+**2.** 「⇒」は明らか。「⇐」：1 と同じ構成で、有限の図式の極限は有限の積と等化子から作れるので、それらが終対象と引き戻しから作れることを示せばよい。二つの積 $a\times b$ は、終対象 $t$ への唯一の射 $a\to t$, $b\to t$ の引き戻しである（引き戻しの条件 $!_{a}\circ h_{1}=!_{b}\circ h_{2}$ は常に成り立つので、積の普遍性と同じ）。有限の積は二つの積の繰り返しと終対象（空の積）から。$f,g\colon a\to b$ の等化子は、$(1_{a},f),(1_{a},g)\colon a\to a\times b$ の引き戻し $p$ の射 $p_{1}$ である：引き戻しの条件 $(1,f)\circ h_{1}=(1,g)\circ h_{2}$ は、成分ごとに $h_{1}=h_{2}$ かつ $f\circ h_{1}=g\circ h_{2}$ であり、$h\defeq h_{1}$ について $f\circ h=g\circ h$ と同値だからである。
+:::
+
+::: supplement
+**前提を変えると.**
+- *小さい圏の完備性.* 完備性は小さい図式についての条件だが、それでも小さい圏にとっては強すぎる：小さい圏で完備なものは前順序に限られる（フレイド。問題 \ref{cat:prob-freyd-large-products}）。$\mathbf{Set}$ や $\mathbf{Grp}$ のような完備な圏が大きいのは、このためである。
+- *有限完備と完備.* 有限集合と写像の圏 $\mathbf{Fin}$ は有限完備だが、無限の積をもたないので完備でない。
+
+**類似の定理.** 双対原理（\ref{cat:duality-principle}）により、本ページの命題は余極限について双対の形で成り立つ：余積と余等化子から余極限が作れ、余等化子はエピ射で、$\mathbf{Set}$ は余完備である（\ref{cat:set-complete} の 2 は直接示した）。
+
+**高い視点から：極限は「錐の関手の表現」.** \ref{cat:limit-basic} の 3 のとおり、極限は前層 $c\mapsto\operatorname{Cone}(c,F)$ の表現対象である。米田の補題の考え方で言えば、極限 $L$ とは「$L$ への射を与えることが、$F$ のすべての部分へ両立する射を与えることと同じ」になる対象である。比喩で言えば、極限は図式の各部分からの「共通の見張り台」で、図式を見張るどの方法（錐）も、極限という一つの見張り台を経由して一意に得られる。集合の場合、極限の元は「各 $Fj$ の元を一つずつ、図式の射と矛盾しないように選んだもの」であり、これは連立方程式の解の集合と同じ形をしている。
+:::
+
+## 問題 {#cat:sec-lim-problems}
+
+::: problem {#cat:prob-coproduct-pushout}
+余積と余等化子をもつ圏は押し出しをもつことを示せ。
+:::
+
+::: solution
+$f\colon a\to b$, $g\colon a\to c$ について、$\iota_{b}\circ f,\iota_{c}\circ g\colon a\to b\sqcup c$ の余等化子 $q\colon b\sqcup c\to r$ をとり、$u\defeq q\circ\iota_{b}$, $v\defeq q\circ\iota_{c}$ とおく。$u\circ f=q\circ\iota_{b}\circ f=q\circ\iota_{c}\circ g=v\circ g$。$h\circ f=k\circ g$ となる $h\colon b\to s$, $k\colon c\to s$ が与えられたとき、余積の射 $[h,k]\colon b\sqcup c\to s$ は $[h,k]\circ\iota_{b}\circ f=h\circ f=k\circ g=[h,k]\circ\iota_{c}\circ g$ を満たすので、余等化子の性質から $[h,k]=t\circ q$ となる $t$ が一意にある。$t\circ u=h$, $t\circ v=k$。一意性は、余積の射が成分で決まることと余等化子がエピ射であること（\ref{cat:equalizer-monic} の双対）から。
+:::
+
+::: problem {#cat:prob-freyd-large-products}
+（フレイド）$\mathbf{C}$ が小さい圏で、$\operatorname{Mor}\mathbf{C}$ で添字付けた積（小さい積）をすべてもつなら、$\mathbf{C}$ は前順序であることを示せ。
+:::
+
+::: solution
+ある $a,b$ について異なる二つの射 $f\neq g\colon a\to b$ があるとする。$M\defeq\operatorname{Mor}\mathbf{C}$ とおき、$b^{M}$（$b$ の $M$ 個の積）をとる。射 $a\to b^{M}$ は族 $(h_{m})_{m\in M}$（各 $h_{m}\in\{f,g\}$ を選ぶものに限っても）と一対一に対応するので、$\mathbf{C}(a,b^{M})$ は少なくとも $2^{\lvert M\rvert}$ 個の元をもつ。一方 $\mathbf{C}(a,b^{M})\subseteq M$ なので、$\lvert\mathbf{C}(a,b^{M})\rvert\le\lvert M\rvert<2^{\lvert M\rvert}$（カントールの定理、\ref{set:page-cantor}）。矛盾。よって平行な射は高々一つで、$\mathbf{C}$ は前順序。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

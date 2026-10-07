@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>オートマトンと形式言語 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/01-automata/index.html" data-kind="dir">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# オートマトンと形式言語（Automata and Formal Languages）
+
+決定性・非決定性有限オートマトン、正規表現とクリーネの定理（アーデンの補題と言語方程式による）、反復補題と非正規言語、文脈自由文法とプッシュダウンオートマトン、文脈自由言語の反復補題、言語方程式と不動点定理。（Sipser 第 1・2 章を参考にする。本文は自分の言葉で組み立てる）
+
+<p class="mn-msc">MSC2020: 03D05</p>
+
+## 目次
+
+<ol class="mn-dirtoc">
+<li value="1"><a href="01-finite-automata.html">§1 有限オートマトンと非決定性</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 1.1</span> <span class="mn-dirtoc-title">決定性有限オートマトン</span></li><li><span class="mn-dirtoc-kind">定義 1.2</span> <span class="mn-dirtoc-title">正規言語</span></li><li><span class="mn-dirtoc-kind">補題 1.3</span> <span class="mn-dirtoc-title">拡張遷移関数の性質</span></li><li><span class="mn-dirtoc-kind">命題 1.4</span> <span class="mn-dirtoc-title">補集合・和・共通部分</span></li><li><span class="mn-dirtoc-kind">定義 1.5</span> <span class="mn-dirtoc-title">非決定性有限オートマトン</span></li><li><span class="mn-dirtoc-kind">定義 1.6</span> <span class="mn-dirtoc-title">ε 閉包と到達集合</span></li><li><span class="mn-dirtoc-kind">補題 1.7</span> <span class="mn-dirtoc-title">到達集合の再帰</span></li><li><span class="mn-dirtoc-kind">定理 1.8</span> <span class="mn-dirtoc-title">NFA と DFA の同値性（部分集合構成）</span></li><li><span class="mn-dirtoc-kind">定理 1.9</span> <span class="mn-dirtoc-title">正規言語の閉包性</span></li></ul></li>
+<li value="2"><a href="02-regular-expressions.html">§2 正規表現</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 2.1</span> <span class="mn-dirtoc-title">正規表現</span></li><li><span class="mn-dirtoc-kind">補題 2.2</span> <span class="mn-dirtoc-title">アーデンの補題</span></li><li><span class="mn-dirtoc-kind">定義 2.3</span> <span class="mn-dirtoc-title">言語の連立一次方程式</span></li><li><span class="mn-dirtoc-kind">定理 2.4</span> <span class="mn-dirtoc-title">連立一次方程式の解</span></li><li><span class="mn-dirtoc-kind">補題 2.5</span> <span class="mn-dirtoc-title">DFA の状態方程式</span></li><li><span class="mn-dirtoc-kind">定理 2.6</span> <span class="mn-dirtoc-title">クリーネの定理</span></li></ul></li>
+<li value="3"><a href="03-nonregular.html">§3 反復補題と非正規言語</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定理 3.1</span> <span class="mn-dirtoc-title">正規言語の反復補題</span></li><li><span class="mn-dirtoc-kind">定義 3.2</span> <span class="mn-dirtoc-title">区別可能性</span></li><li><span class="mn-dirtoc-kind">補題 3.3</span> <span class="mn-dirtoc-title">同値関係の性質</span></li><li><span class="mn-dirtoc-kind">定理 3.4</span> <span class="mn-dirtoc-title">マイヒル–ネローデの定理</span></li><li><span class="mn-dirtoc-kind">系 3.5</span> <span class="mn-dirtoc-title">最小 DFA の一意性</span></li></ul></li>
+<li value="4"><a href="04-context-free.html">§4 文脈自由文法とプッシュダウンオートマトン</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 4.1</span> <span class="mn-dirtoc-title">文脈自由文法</span></li><li><span class="mn-dirtoc-kind">補題 4.2</span> <span class="mn-dirtoc-title">最左導出</span></li><li><span class="mn-dirtoc-kind">定義 4.3</span> <span class="mn-dirtoc-title">チョムスキー標準形</span></li><li><span class="mn-dirtoc-kind">定理 4.4</span> <span class="mn-dirtoc-title">チョムスキー標準形</span></li><li><span class="mn-dirtoc-kind">定義 4.5</span> <span class="mn-dirtoc-title">プッシュダウンオートマトン</span></li><li><span class="mn-dirtoc-kind">補題 4.6</span> <span class="mn-dirtoc-title">スタックの下は触られない</span></li><li><span class="mn-dirtoc-kind">定理 4.7</span> <span class="mn-dirtoc-title">CFG から PDA へ</span></li><li><span class="mn-dirtoc-kind">補題 4.8</span> <span class="mn-dirtoc-title">PDA の正規化</span></li><li><span class="mn-dirtoc-kind">定理 4.9</span> <span class="mn-dirtoc-title">PDA から CFG へ</span></li><li><span class="mn-dirtoc-kind">系 4.10</span> <span class="mn-dirtoc-title">CFG と PDA の同値性</span></li></ul></li>
+<li value="5"><a href="05-cfl-pumping.html">§5 文脈自由言語の反復補題</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 5.1</span> <span class="mn-dirtoc-title">導出木</span></li><li><span class="mn-dirtoc-kind">補題 5.2</span> <span class="mn-dirtoc-title">導出と導出木</span></li><li><span class="mn-dirtoc-kind">定理 5.3</span> <span class="mn-dirtoc-title">文脈自由言語の反復補題</span></li><li><span class="mn-dirtoc-kind">命題 5.4</span> <span class="mn-dirtoc-title">文脈自由言語の閉包性</span></li><li><span class="mn-dirtoc-kind">命題 5.5</span> <span class="mn-dirtoc-title">正規言語との共通部分</span></li></ul></li>
+<li value="6"><a href="06-fixed-points.html">§6 言語方程式と不動点定理</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 6.1</span> <span class="mn-dirtoc-title">単調・連続</span></li><li><span class="mn-dirtoc-kind">定理 6.2</span> <span class="mn-dirtoc-title">クナスター–タルスキの定理</span></li><li><span class="mn-dirtoc-kind">定理 6.3</span> <span class="mn-dirtoc-title">クリーネの不動点定理</span></li><li><span class="mn-dirtoc-kind">定義 6.4</span> <span class="mn-dirtoc-title">言語の距離</span></li><li><span class="mn-dirtoc-kind">定理 6.6</span> <span class="mn-dirtoc-title">縮小写像の不動点定理</span></li><li><span class="mn-dirtoc-kind">系 6.7</span> <span class="mn-dirtoc-title">不動点定理から見たアーデンの補題</span></li><li><span class="mn-dirtoc-kind">補題 6.9</span> <span class="mn-dirtoc-title">導出の分解</span></li><li><span class="mn-dirtoc-kind">定理 6.10</span> <span class="mn-dirtoc-title">文脈自由言語は方程式の最小解</span></li></ul></li>
+</ol>
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

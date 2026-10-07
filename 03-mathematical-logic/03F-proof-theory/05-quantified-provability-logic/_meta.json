@@ -1,0 +1,16 @@
+{
+  "id": "pt-quantified",
+  "title": "量化された証明可能性論理",
+  "en": "Quantified Provability Logic",
+  "abbr": "量化証明可能性",
+  "description": "量化様相論理の算術的解釈、常に証明可能な論理式の集合と常に真な論理式の集合の決定不能性の程度、1 項述語 1 つの場合。（Boolos 第 17・18 章に対応）",
+  "msc": "03F45, 03B45, 03D55",
+  "prereq": [
+    {
+      "dir": "pt-provability"
+    },
+    {
+      "dir": "logic-fol"
+    }
+  ]
+}

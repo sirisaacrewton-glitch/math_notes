@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>分離公理・コンパクト性・連結性 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54D-general-properties/01-separation-compactness/index.html" data-kind="dir">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 分離公理・コンパクト性・連結性（Separation, Compactness and Connectedness）
+
+分離公理、コンパクト空間、チコノフの定理、局所コンパクトと一点コンパクト化、連結性、ウリゾーンの補題とティーツェの拡張定理、ストーン–チェックのコンパクト化、パラコンパクト性と 1 の分割。（内田『集合と位相』§21–§25、小山『位相空間論』第 7 章を参考）
+
+<p class="mn-msc">MSC2020: 54D10, 54D15, 54D30, 54D35, 54D45, 54D05, 54D20</p>
+
+## 前提知識
+
+- [位相空間の基本的な構成 › 部分空間・直積・商](../../../54-general-topology/54B-basic-constructions/01-constructions/index.html)（全体、3 ページ）
+
+## 目次
+
+<ol class="mn-dirtoc">
+<li value="1"><a href="01-separation-axioms.html">§1 分離公理</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 1.1</span> <span class="mn-dirtoc-title">分離公理</span></li><li><span class="mn-dirtoc-kind">定義 1.2</span> <span class="mn-dirtoc-title">ハウスドルフ空間</span></li><li><span class="mn-dirtoc-kind">命題 1.3</span> <span class="mn-dirtoc-title">T₁ の言い換えと公理の強弱</span></li><li><span class="mn-dirtoc-kind">定理 1.4</span> <span class="mn-dirtoc-title">ハウスドルフ性の言い換え</span></li><li><span class="mn-dirtoc-kind">命題 1.5</span> <span class="mn-dirtoc-title">ハウスドルフ空間の性質</span></li><li><span class="mn-dirtoc-kind">命題 1.6</span> <span class="mn-dirtoc-title">正則性・正規性の言い換え</span></li><li><span class="mn-dirtoc-kind">命題 1.7</span> <span class="mn-dirtoc-title">正則性の遺伝</span></li><li><span class="mn-dirtoc-kind">定理 1.9</span> <span class="mn-dirtoc-title">距離空間は正規</span></li></ul></li>
+<li value="2"><a href="02-compactness.html">§2 コンパクト空間</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 2.1</span> <span class="mn-dirtoc-title">コンパクト</span></li><li><span class="mn-dirtoc-kind">定理 2.3</span> <span class="mn-dirtoc-title">コンパクト性の言い換え</span></li><li><span class="mn-dirtoc-kind">命題 2.4</span> <span class="mn-dirtoc-title">コンパクト集合の基本性質</span></li><li><span class="mn-dirtoc-kind">定理 2.5</span> <span class="mn-dirtoc-title">ハウスドルフ空間のコンパクト集合は閉</span></li><li><span class="mn-dirtoc-kind">系 2.6</span> <span class="mn-dirtoc-title">コンパクトからハウスドルフへの写像</span></li><li><span class="mn-dirtoc-kind">定理 2.7</span> <span class="mn-dirtoc-title">コンパクトハウスドルフ空間は正規</span></li><li><span class="mn-dirtoc-kind">定理 2.8</span> <span class="mn-dirtoc-title">閉区間はコンパクト</span></li><li><span class="mn-dirtoc-kind">補題 2.9</span> <span class="mn-dirtoc-title">チューブ補題</span></li><li><span class="mn-dirtoc-kind">定理 2.10</span> <span class="mn-dirtoc-title">有限個の直積とハイネ＝ボレルの定理</span></li><li><span class="mn-dirtoc-kind">系 2.11</span> <span class="mn-dirtoc-title">最大値の定理</span></li></ul></li>
+<li value="3"><a href="03-tychonoff.html">§3 チコノフの定理</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">補題 3.1</span> <span class="mn-dirtoc-title">像フィルター</span></li><li><span class="mn-dirtoc-kind">定理 3.2</span> <span class="mn-dirtoc-title">チコノフの定理</span></li><li><span class="mn-dirtoc-kind">系 3.3</span> <span class="mn-dirtoc-title">ハウスドルフ空間のチコノフの定理</span></li><li><span class="mn-dirtoc-kind">定理 3.5</span> <span class="mn-dirtoc-title">ケリーの定理</span></li></ul></li>
+<li value="4"><a href="04-local-compactness.html">§4 局所コンパクト空間と一点コンパクト化</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 4.1</span> <span class="mn-dirtoc-title">局所コンパクト</span></li><li><span class="mn-dirtoc-kind">命題 4.2</span> <span class="mn-dirtoc-title">局所コンパクトハウスドルフ空間の近傍</span></li><li><span class="mn-dirtoc-kind">定義 4.3</span> <span class="mn-dirtoc-title">一点コンパクト化</span></li><li><span class="mn-dirtoc-kind">定理 4.4</span> <span class="mn-dirtoc-title">一点コンパクト化の性質</span></li><li><span class="mn-dirtoc-kind">命題 4.5</span> <span class="mn-dirtoc-title">一点コンパクト化の一意性</span></li></ul></li>
+<li value="5"><a href="05-connectedness.html">§5 連結性</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 5.1</span> <span class="mn-dirtoc-title">連結</span></li><li><span class="mn-dirtoc-kind">命題 5.2</span> <span class="mn-dirtoc-title">連結性の言い換え</span></li><li><span class="mn-dirtoc-kind">定理 5.3</span> <span class="mn-dirtoc-title">ℝ の連結集合は区間</span></li><li><span class="mn-dirtoc-kind">命題 5.4</span> <span class="mn-dirtoc-title">連結性の保存</span></li><li><span class="mn-dirtoc-kind">系 5.5</span> <span class="mn-dirtoc-title">中間値の定理</span></li><li><span class="mn-dirtoc-kind">定義 5.6</span> <span class="mn-dirtoc-title">連結成分</span></li><li><span class="mn-dirtoc-kind">命題 5.7</span> <span class="mn-dirtoc-title">連結成分の性質</span></li><li><span class="mn-dirtoc-kind">定義 5.8</span> <span class="mn-dirtoc-title">弧状連結</span></li><li><span class="mn-dirtoc-kind">命題 5.9</span> <span class="mn-dirtoc-title">弧状連結なら連結</span></li><li><span class="mn-dirtoc-kind">命題 5.10</span> <span class="mn-dirtoc-title">ℝⁿ の開連結集合は弧状連結</span></li></ul></li>
+<li value="6"><a href="06-urysohn-tietze.html">§6 ウリゾーンの補題とティーツェの拡張定理</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 6.1</span> <span class="mn-dirtoc-title">関数で分離される</span></li><li><span class="mn-dirtoc-kind">定理 6.2</span> <span class="mn-dirtoc-title">ウリゾーンの補題</span></li><li><span class="mn-dirtoc-kind">系 6.3</span> <span class="mn-dirtoc-title">T₄ 空間の点は関数で分離される</span></li><li><span class="mn-dirtoc-kind">補題 6.4</span> <span class="mn-dirtoc-title">連続関数の一様極限は連続</span></li><li><span class="mn-dirtoc-kind">補題 6.5</span> <span class="mn-dirtoc-title">ティーツェの近似補題</span></li><li><span class="mn-dirtoc-kind">定理 6.6</span> <span class="mn-dirtoc-title">ティーツェの拡張定理</span></li><li><span class="mn-dirtoc-kind">系 6.7</span> <span class="mn-dirtoc-title">ℝⁿ 値の延長</span></li></ul></li>
+</ol>
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

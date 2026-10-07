@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>証明体系とカット除去 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/01-sequent-calculus/index.html" data-kind="dir">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 証明体系とカット除去（Proof Systems and Cut Elimination）
+
+α 同値、導出図の固有変数・束縛変数の付け替え（高さとカットのない形を保つ代入）、シーケント計算 LK、自然演繹・LK・ヒルベルト流の同値性、ゲンツェンのカット除去定理、前原の方法による補間定理、ベートの定義可能性定理。（参考書なし。順序数解析の系列はこの後に置く）
+
+<p class="mn-msc">MSC2020: 03F05, 03F03</p>
+
+## 前提知識
+
+- [一般論理 › 一階述語論理](../../../03-mathematical-logic/03B-general-logic/02-first-order-logic/index.html)（全体、9 ページ）：構文・証明体系・完全性定理
+
+## 目次
+
+<ol class="mn-dirtoc">
+<li value="1"><a href="01-alpha-equivalence.html">§1 α 同値</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 1.1</span> <span class="mn-dirtoc-title">変数の置換と作用</span></li><li><span class="mn-dirtoc-kind">補題 1.2</span> <span class="mn-dirtoc-title">置換の作用の基本性質</span></li><li><span class="mn-dirtoc-kind">定義 1.3</span> <span class="mn-dirtoc-title">α 同値</span></li><li><span class="mn-dirtoc-kind">補題 1.4</span> <span class="mn-dirtoc-title">置換による不変性</span></li><li><span class="mn-dirtoc-kind">補題 1.5</span> <span class="mn-dirtoc-title">新しい変数の選び方によらない</span></li><li><span class="mn-dirtoc-kind">定理 1.6</span> <span class="mn-dirtoc-title">α 同値は同値関係</span></li><li><span class="mn-dirtoc-kind">補題 1.7</span> <span class="mn-dirtoc-title">不変量と合同性</span></li><li><span class="mn-dirtoc-kind">補題 1.8</span> <span class="mn-dirtoc-title">互換と代入</span></li><li><span class="mn-dirtoc-kind">定理 1.9</span> <span class="mn-dirtoc-title">代入による特徴づけ</span></li><li><span class="mn-dirtoc-kind">系 1.10</span> <span class="mn-dirtoc-title">束縛変数の付け替え</span></li><li><span class="mn-dirtoc-kind">補題 1.11</span> <span class="mn-dirtoc-title">束縛変数の回避</span></li><li><span class="mn-dirtoc-kind">補題 1.12</span> <span class="mn-dirtoc-title">新しい変数への付け替えと代入可能性</span></li></ul></li>
+<li value="2"><a href="02-sequent-calculus.html">§2 シーケント計算 LK</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">補題 2.1</span> <span class="mn-dirtoc-title">捕獲を避ける代入の性質</span></li><li><span class="mn-dirtoc-kind">定義 2.2</span> <span class="mn-dirtoc-title">シーケントと LK</span></li><li><span class="mn-dirtoc-kind">補題 2.4</span> <span class="mn-dirtoc-title">同一律</span></li><li><span class="mn-dirtoc-kind">定義 2.5</span> <span class="mn-dirtoc-title">妥当なシーケント</span></li><li><span class="mn-dirtoc-kind">定理 2.6</span> <span class="mn-dirtoc-title">健全性</span></li><li><span class="mn-dirtoc-kind">補題 2.7</span> <span class="mn-dirtoc-title">α 同値な論理式への取り替え</span></li><li><span class="mn-dirtoc-kind">補題 2.8</span> <span class="mn-dirtoc-title">代入と固有変数の付け替え</span></li><li><span class="mn-dirtoc-kind">補題 2.9</span> <span class="mn-dirtoc-title">高さを保つ弱化</span></li><li><span class="mn-dirtoc-kind">補題 2.10</span> <span class="mn-dirtoc-title">高さを保つ反転</span></li><li><span class="mn-dirtoc-kind">補題 2.11</span> <span class="mn-dirtoc-title">高さを保つ縮約</span></li></ul></li>
+<li value="3"><a href="03-cut-elimination.html">§3 カット除去定理</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定理 3.1</span> <span class="mn-dirtoc-title">カットの許容性</span></li><li><span class="mn-dirtoc-kind">定理 3.2</span> <span class="mn-dirtoc-title">カット除去定理（ゲンツェン）</span></li><li><span class="mn-dirtoc-kind">定義 3.3</span> <span class="mn-dirtoc-title">部分論理式の代入例</span></li><li><span class="mn-dirtoc-kind">定理 3.4</span> <span class="mn-dirtoc-title">部分論理式性</span></li><li><span class="mn-dirtoc-kind">系 3.5</span> <span class="mn-dirtoc-title">LK の無矛盾性</span></li></ul></li>
+<li value="4"><a href="04-equivalence-of-systems.html">§4 自然演繹・LK・ヒルベルト流の同値性</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 4.1</span> <span class="mn-dirtoc-title">ヒルベルト流の体系 H</span></li><li><span class="mn-dirtoc-kind">定義 4.2</span> <span class="mn-dirtoc-title">等号つきの LK</span></li><li><span class="mn-dirtoc-kind">補題 4.3</span> <span class="mn-dirtoc-title">LK の補題の拡張</span></li><li><span class="mn-dirtoc-kind">補題 4.4</span> <span class="mn-dirtoc-title">H の演繹定理</span></li><li><span class="mn-dirtoc-kind">補題 4.5</span> <span class="mn-dirtoc-title">等号の置き換え</span></li><li><span class="mn-dirtoc-kind">補題 4.6</span> <span class="mn-dirtoc-title">全称と α 同値</span></li><li><span class="mn-dirtoc-kind">定理 4.7</span> <span class="mn-dirtoc-title">三つの体系の同値性</span></li></ul></li>
+<li value="5"><a href="05-maehara-interpolation.html">§5 前原の方法による補間定理</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">補題 5.1</span> <span class="mn-dirtoc-title">関係記号の不変性</span></li><li><span class="mn-dirtoc-kind">補題 5.2</span> <span class="mn-dirtoc-title">略記の派生規則</span></li><li><span class="mn-dirtoc-kind">定義 5.3</span> <span class="mn-dirtoc-title">シーケントの分割と補間式</span></li><li><span class="mn-dirtoc-kind">定理 5.4</span> <span class="mn-dirtoc-title">前原の補題</span></li><li><span class="mn-dirtoc-kind">系 5.5</span> <span class="mn-dirtoc-title">クレイグの補間定理（LK）</span></li></ul></li>
+<li value="6"><a href="06-beth-definability.html">§6 ベートの定義可能性定理</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 6.1</span> <span class="mn-dirtoc-title">暗に定義される・明示的に定義される</span></li><li><span class="mn-dirtoc-kind">命題 6.2</span> <span class="mn-dirtoc-title">明示的なら暗に定義される</span></li><li><span class="mn-dirtoc-kind">補題 6.3</span> <span class="mn-dirtoc-title">記号の付け替え</span></li><li><span class="mn-dirtoc-kind">定理 6.4</span> <span class="mn-dirtoc-title">ベートの定義可能性定理</span></li></ul></li>
+</ol>
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

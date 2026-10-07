@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>閉様相論理式の標準形 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/03-provability-logic/02-letterless-normal-form.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 閉様相論理式の標準形 {#pt:page-letterless-normal-form keywords="letterless sentence, normal form theorem, constant sentence, rank, trace, Friedman's problem, Goldfarb"}
+
+命題変数を含まない様相論理式（閉様相論理式、\ref{logic:modal-formula} の後）は、翻訳が算術的解釈によらず、「$\PA$ は無矛盾」「無矛盾性の無矛盾性」などの証明可能性と無矛盾性だけについての算術の文を表す。本ページでは、閉様相論理式は $\mathsf{GL}$ の中で $\Box^{n}\bot$ たちの真理関数的な組み合わせと同値であること（**標準形定理**）を示す。さらに、有限・推移的・非反射的なフレームの世界の**ランク**と閉様相論理式の**トレース**を導入し、閉様相論理式の真理はランクだけで決まることを示す。これにより、閉様相論理式に対してはソロヴェイの定理（\ref{pt:page-solovay}）の特別な場合が簡単に証明でき、ハーヴェイ・フリードマンが提起した「定数文の真偽の判定」の問題が解ける。（Boolos 第 7 章前半に対応する。）
+
+## 記法と定義の確認 {#pt:sec-letterless-notation}
+
+::: notation
+- 様相論理式、閉様相論理式、恒真式、正規性（\ref{logic:normality}）、恒真式による推論（\ref{logic:modal-tf-closure}）、置換定理（\ref{logic:replacement-theorem}）は \ref{logic:page-normal-modal-logics} のとおり。$\Box^{0}A\defeq A$, $\Box^{i+1}A\defeq\Box\Box^{i}A$、$\Diamond^{i}A$ も同様。空な連言は $\top$、空な選言は $\bot$ とする。
+- クリプキモデル、$\mathcal{M},w\models A$、略記の真理（\ref{logic:kripke-abbreviations}）、様相次数 $d(A)$（\ref{logic:modal-degree}）は \ref{logic:page-kripke-semantics} のとおり。
+- $\mathsf{GL}$ の完全性は、有限フレームに関する形 \ref{logic:modal-fmp-decidability}（$L=\mathsf{GL}$）で使う。$\mathsf{GL}$ に適切な有限フレームとは、有限・推移的・逆整礎なフレーム、すなわち（\ref{logic:finite-transitive-cwf}）有限・推移的・非反射的なフレームである。
+- 算術的解釈 $\ast$、翻訳 $A^{\ast}$、$\mathsf{GLS}$ と健全性（\ref{pt:gl-arithmetical-soundness}, \ref{pt:gls-soundness}）は \ref{pt:page-arithmetical-soundness} のとおり。$\mathrm{Bew}$ の正しさ \ref{pt:bew-correct}（$\mathcal{N}\models\mathrm{Bew}(\Godel{S})\iff\PA\vdash S$）とレーブの定理 \ref{pt:lob-theorem} を使う。
+- $\N=\{0,1,2,\dots\}$。$\N$ の部分集合 $X$ は、$\N\setminus X$ が有限のとき**補有限**という。$[0,n)\defeq\{m\in\N:m<n\}$。
+- 以下、とくに断らなければ $\vdash$ は $\mathsf{GL}\vdash$ を表す。
+:::
+
+## 標準形定理 {#pt:sec-normal-form}
+
+::: definition 標準形 {#pt:letterless-normal-form-def keywords="normal form for letterless sentences" index="標準形（閉様相論理式）|ひょうじゅんけいへいようそうろんりしき"}
+閉様相論理式が**標準形**であるとは、$\Box^{n}\bot$（$n\ge0$）の形の論理式から $\bot$ と $\to$（したがって $\neg,\top,\wedge,\vee,\leftrightarrow$）だけで組み立てられることをいう。
+:::
+
+$\Box^{0}\bot=\bot$ なので、$\bot$ と $\top=\neg\bot$ は標準形である。まず二つの基本的な事実を用意する。
+
+::: lemma 箱の列の単調性 {#pt:box-bot-monotone}
+$i\le j$ ならば $\mathsf{K}\vdash\Box^{i}\bot\to\Box^{j}\bot$。
+:::
+
+::: proof
+$j-i$ に関する帰納法で、$\mathsf{K}\vdash\Box^{i}\bot\to\Box^{i+k}\bot$ を $i$ について一斉に示せば十分である。$k=0$ は恒真式 $A\to A$。$k=1$：$i$ に関する帰納法。$i=0$ なら $\bot\to\Box\bot$ は恒真式。$\vdash\Box^{i}\bot\to\Box^{i+1}\bot$ なら正規性 1（\ref{logic:normality}）より $\vdash\Box^{i+1}\bot\to\Box^{i+2}\bot$。$k\ge2$ は $k=1$ の場合を $k$ 回つなぎ、恒真式による推論（\ref{logic:modal-tf-closure}）で推移律を使う。
+:::
+
+::: lemma 箱の列についてのレーブの公理 {#pt:box-bot-lob}
+$m>n$ ならば $\vdash\Box(\Box^{m}\bot\to\Box^{n}\bot)\leftrightarrow\Box^{n+1}\bot$。
+:::
+
+::: proof
+**Step 1（$\to$）.** $n+1\le m$ なので \ref{pt:box-bot-monotone} より $\vdash\Box^{n+1}\bot\to\Box^{m}\bot$。恒真式により $\vdash(\Box^{m}\bot\to\Box^{n}\bot)\to(\Box^{n+1}\bot\to\Box^{n}\bot)$。正規性 1 より
+$$
+\vdash\Box(\Box^{m}\bot\to\Box^{n}\bot)\to\Box(\Box\Box^{n}\bot\to\Box^{n}\bot).
+$$
+レーブの公理 $\Box(\Box A\to A)\to\Box A$ の $A=\Box^{n}\bot$ の場合により、右辺から $\Box\Box^{n}\bot=\Box^{n+1}\bot$ が従う。ここで $\mathsf{GL}$ の公理 $\mathrm{L}$ を使った。
+
+**Step 2（$\leftarrow$）.** $\Box^{n}\bot\to(\Box^{m}\bot\to\Box^{n}\bot)$ は恒真式なので、正規性 1 より $\vdash\Box^{n+1}\bot\to\Box(\Box^{m}\bot\to\Box^{n}\bot)$。
+:::
+
+::: theorem 閉様相論理式の標準形定理 {#pt:letterless-normal-form keywords="normal form theorem for letterless sentences" index="標準形定理（閉様相論理式）|ひょうじゅんけいていりへいようそうろんりしき"}
+任意の閉様相論理式 $B$ に対して、標準形の閉様相論理式 $C$ で $\vdash B\leftrightarrow C$ となるものがある。しかも $C$ は $B$ から機械的に計算できる。
+:::
+
+::: proof
+**Step 0（帰着）.** $B$ の構成に関する帰納法。$B=\bot$ なら $C=\bot$。$B=B_{1}\to B_{2}$ で $\vdash B_{i}\leftrightarrow C_{i}$（$C_{i}$ は標準形）なら、恒真式により $\vdash B\leftrightarrow(C_{1}\to C_{2})$ で、$C_{1}\to C_{2}$ は標準形。$B=\Box B_{1}$ で $\vdash B_{1}\leftrightarrow C_{1}$ なら、正規性 2 より $\vdash\Box B_{1}\leftrightarrow\Box C_{1}$。したがって次を示せばよい：
+
+> ($\dagger$) 標準形の $C$ に対し、標準形の $C'$ で $\vdash\Box C\leftrightarrow C'$ となるものが計算できる。
+
+**Step 1（連言標準形）.** $\Box^{n}\bot$ の形の論理式を一つの命題変数とみなすと、$C$ は命題論理の論理式である。命題論理の連言標準形により、$\Box^{n}\bot$ と $\neg\Box^{m}\bot$ の形の論理式（**リテラル**）の選言 $D_{1},\dots,D_{k}$ で、$C\leftrightarrow D_{1}\wedge\cdots\wedge D_{k}$ が恒真式になるものが計算できる。正規性 2 と 4 より
+$$
+\vdash\Box C\leftrightarrow\Box D_{1}\wedge\cdots\wedge\Box D_{k}
+$$
+であり、標準形の連言は標準形なので、各 $\Box D_{i}$ について ($\dagger$) を示せば十分である（$k=0$ なら $\Box\top$ は正規性 4 より $\top$ と同値）。
+
+**Step 2（選言の整理）.** $D$ をリテラルの選言とする。$D\leftrightarrow(\Box^{0}\bot\vee D)$ は恒真式なので（$\Box^{0}\bot=\bot$）、否定のつかないリテラルが少なくとも一つあるとしてよい。否定のつかないリテラルを $\Box^{n_{1}}\bot,\dots,\Box^{n_{p}}\bot$（$p\ge1$）、否定のついたリテラルを $\neg\Box^{m_{1}}\bot,\dots,\neg\Box^{m_{q}}\bot$（$q\ge0$）とし、$n\defeq\max_{i}n_{i}$ とおく。\ref{pt:box-bot-monotone} より各 $i$ で $\vdash\Box^{n_{i}}\bot\to\Box^{n}\bot$ なので、恒真式により $\vdash(\Box^{n_{1}}\bot\vee\cdots\vee\Box^{n_{p}}\bot)\leftrightarrow\Box^{n}\bot$。$q\ge1$ のときは $m\defeq\min_{j}m_{j}$ とおくと、同様に各 $j$ で $\vdash\neg\Box^{m_{j}}\bot\to\neg\Box^{m}\bot$（\ref{pt:box-bot-monotone} の対偶）なので $\vdash(\neg\Box^{m_{1}}\bot\vee\cdots\vee\neg\Box^{m_{q}}\bot)\leftrightarrow\neg\Box^{m}\bot$。よって
+$$
+\vdash D\leftrightarrow\Box^{n}\bot\quad(q=0),\qquad\vdash D\leftrightarrow(\Box^{m}\bot\to\Box^{n}\bot)\quad(q\ge1)
+$$
+（後者は恒真式 $(\neg X\vee Y)\leftrightarrow(X\to Y)$ による）。正規性 2 より $\Box D$ はそれぞれ $\Box^{n+1}\bot$、$\Box(\Box^{m}\bot\to\Box^{n}\bot)$ と同値である。
+
+**Step 3（場合分け）.**
+- $q=0$ のとき：$C'=\Box^{n+1}\bot$。
+- $q\ge1$, $m\le n$ のとき：\ref{pt:box-bot-monotone} より $\vdash\Box^{m}\bot\to\Box^{n}\bot$、必然化則で $\vdash\Box(\Box^{m}\bot\to\Box^{n}\bot)$。よって $\Box D$ は $\top$ と同値で、$C'=\top$。
+- $q\ge1$, $m>n$ のとき：\ref{pt:box-bot-lob} より $C'=\Box^{n+1}\bot$。
+
+いずれの段階も有限の計算であり、$C$ は $B$ から機械的に得られる。
+
+::: hypcheck
+- **レーブの公理が本質的に使われる場所**：Step 3 の $m>n$ の場合（\ref{pt:box-bot-lob}）だけである。他の段階は $\mathsf{K}$ で成り立つ。
+- **閉であること**：Step 1 で、$C$ が $\Box^{n}\bot$ たちだけの真理関数であることを使った。命題変数があると $\Box$ の中にリテラル $p$ が残り、この整理はできない。
+:::
+:::
+
+::: example
+$\Box\neg\Box\bot$（「無矛盾性が証明可能」）：$\neg\Box\bot=(\Box^{1}\bot\to\Box^{0}\bot)$ で $m=1>n=0$ なので、$\vdash\Box\neg\Box\bot\leftrightarrow\Box\bot$。これは \ref{logic:gl-second-incompleteness} の一方の向きである。
+:::
+
+## 定数文とフリードマンの問題 {#pt:sec-constant-sentences}
+
+閉様相論理式 $B$ の翻訳 $B^{\ast}$ は $\ast$ によらない（\ref{pt:realization}）。以下、これを $B^{\ast}$ と書く。
+
+::: definition 定数文 {#pt:constant-sentence keywords="constant sentence" index="定数文|ていすうぶん"}
+$\bot$ を含み、$S,S'$ を含めば $(S\to S')$ と $\mathrm{Bew}(\Godel{S})$ を含む、$\mathcal{L}_{\mathrm{ar}}$ の文の最小の集合の元を**定数文**という。
+:::
+
+::: lemma 定数文は閉様相論理式の翻訳 {#pt:constant-sentence-translation}
+任意の定数文 $S$ に対して、閉様相論理式 $B$ で $B^{\ast}=S$（記号列として一致）となるものがある。
+:::
+
+::: proof
+定数文の構成に関する帰納法。$\bot=\bot^{\ast}$。$S=B^{\ast}$, $S'=B'^{\ast}$ なら、翻訳の定義（\ref{pt:realization}）より $(S\to S')=(B\to B')^{\ast}$、$\mathrm{Bew}(\Godel{S})=(\Box B)^{\ast}$。
+:::
+
+定数文には、$\mathrm{Con}=(\neg\Box\bot)^{\ast}$、「$\mathrm{Con}$ は証明できない」$=(\neg\Box\neg\Box\bot)^{\ast}$、形式化された第二不完全性定理 $(\neg\Box\bot\to\neg\Box\neg\Box\bot)^{\ast}$ などが含まれる。フリードマンは、定数文の真偽を判定する機械的な方法があるかを問うた（Friedman, “One hundred and two problems in mathematical logic” の問題 35。Boolos 第 7 章の注による）。答えは肯定的である。Boolos の注によれば、最初の解答は Boolos 自身が標準形定理（1973 年）を使って与えたもので、Bernardi と Montagna も独立に解いた。
+
+::: lemma 箱の列の翻訳はすべて偽 {#pt:box-bot-false}
+すべての $n$ について $\mathcal{N}\not\models(\Box^{n}\bot)^{\ast}$。
+:::
+
+::: proof
+$n$ に関する帰納法。$(\Box^{0}\bot)^{\ast}=\bot$ は偽。$(\Box^{n+1}\bot)^{\ast}=\mathrm{Bew}(\Godel{(\Box^{n}\bot)^{\ast}})$ が真なら、\ref{pt:bew-correct} より $\PA\vdash(\Box^{n}\bot)^{\ast}$、$\mathcal{N}\models\PA$ と健全性定理より $(\Box^{n}\bot)^{\ast}$ は真となり、帰納法の仮定に反する。
+:::
+
+::: corollary 定数文の真偽の判定 {#pt:constant-truth-decidable keywords="Friedman's problem 35" index="フリードマンの問題|ふりーどまんのもんだい"}
+定数文 $S$ の真偽は機械的に判定できる：\ref{pt:constant-sentence-translation} の $B$ をとり、\ref{pt:letterless-normal-form} の標準形 $C$ を計算する。$C$ の中の $\Box^{n}\bot$（$n\ge0$）をすべて $\bot$ で置き換えた命題論理の論理式を $C_{0}$（$\bot$ と $\to$ だけからなる）とすると、$S$ が真であることと $C_{0}$ の値が真であることは同値である。
+:::
+
+::: proof
+$\vdash B\leftrightarrow C$ と \ref{pt:gl-arithmetical-soundness} より $\PA\vdash B^{\ast}\leftrightarrow C^{\ast}$、健全性より $S=B^{\ast}$ と $C^{\ast}$ の真理値は等しい。$C^{\ast}$ は $(\Box^{n}\bot)^{\ast}$ たちから $\bot,\to$ で組み立てられ、\ref{pt:box-bot-false} よりそれらはすべて偽なので、$C^{\ast}$ の真理値は $C_{0}$ の値に等しい。
+:::
+
+証明可能性の判定は、下の \ref{pt:letterless-gl-pa} で与える（$\PA\vdash S$ は $\mathsf{GL}\vdash B$ と同値で、$\mathsf{GL}$ は決定可能）。
+
+## ランクとトレース {#pt:sec-rank-trace}
+
+::: definition 世界のランク {#pt:world-rank keywords="rank of a world, height" index="ランク（世界の）|らんくせかいの"}
+$(W,R)$ を有限・推移的・非反射的なフレームとする。$w\in W$ に対し、$w=w_{n}Rw_{n-1}R\cdots Rw_{1}Rw_{0}$ となる $w_{n-1},\dots,w_{0}\in W$ が存在するような $n\ge0$ の最大値を $w$ の**ランク** $\rho(w)$ という。
+:::
+
+最大値の存在：$n=0$（列は $w$ だけ）は常に条件を満たす。また、そのような列の元は互いに異なる（$j>i$ なら推移性より $w_{j}Rw_{i}$、非反射性より $w_{j}\neq w_{i}$）ので、$n+1\le\lvert W\rvert$。よって条件を満たす $n$ は $\{0,\dots,\lvert W\rvert-1\}$ の空でない部分集合をなし、最大値がある。定義から、$wRx$ ならば $\rho(w)\ge\rho(x)+1$（$x$ からの最長の列の前に $w$ をつなげる）。$wRx$ となる $x$ がないことと $\rho(w)=0$ は同値である。
+
+::: lemma ランクの中間値 {#pt:rank-intermediate}
+$\rho(w)>i$ ならば、$wRx$ かつ $\rho(x)=i$ となる $x$ がある。
+:::
+
+::: proof
+$\rho(w)=n>i$ とし、$w=w_{n}R\cdots Rw_{1}Rw_{0}$ をとる。$x\defeq w_{i}$ とすると、推移性より $wRx$（$n>i$ なので $w=w_{n}Rw_{n-1}R\cdots Rw_{i}$）。列 $w_{i}R\cdots Rw_{0}$ から $\rho(x)\ge i$。$\rho(x)=j>i$ と仮定し、$x=x_{j}R\cdots Rx_{0}$ をとると、
+$$
+w=w_{n}R\cdots Rw_{i+1}Rw_{i}=x_{j}Rx_{j-1}R\cdots Rx_{0}
+$$
+は長さ $(n-i)+j>n$ の列になり、$\rho(w)=n$ に反する。よって $\rho(x)=i$。
+:::
+
+::: definition トレース {#pt:trace keywords="trace of a letterless sentence" index="トレース（閉様相論理式の）|とれーすへいようそうろんりしきの"}
+閉様相論理式 $B$ の**トレース** $[\![B]\!]\subset\N$ を構造的再帰（\ref{logic:modal-unique-readability}）で
+$$
+\begin{aligned}
+&[\![\bot]\!]\defeq\emptyset,\qquad[\![B\to C]\!]\defeq(\N\setminus[\![B]\!])\cup[\![C]\!],\\
+&[\![\Box B]\!]\defeq\{n\in\N:[0,n)\subset[\![B]\!]\}
+\end{aligned}
+$$
+で定める。
+:::
+
+::: lemma トレースは有限か補有限 {#pt:trace-finite-cofinite}
+任意の閉様相論理式 $B$ について、$[\![B]\!]$ は有限か補有限である。
+:::
+
+::: proof
+$B$ の構成に関する帰納法。$[\![\bot]\!]=\emptyset$ は有限。
+
+**$B\to C$ の場合.** $[\![B]\!]$ が有限なら $\N\setminus[\![B]\!]$ は補有限で、それを含む $[\![B\to C]\!]$ も補有限（補集合が有限集合の部分集合）。$[\![C]\!]$ が補有限なら同様に $[\![B\to C]\!]$ は補有限。残りは $[\![B]\!]$ が補有限かつ $[\![C]\!]$ が有限の場合で、このとき $\N\setminus[\![B]\!]$ と $[\![C]\!]$ はともに有限なので、合併 $[\![B\to C]\!]$ も有限。
+
+**$\Box B$ の場合.** $[\![B]\!]=\N$ なら $[\![\Box B]\!]=\N$ で補有限。$[\![B]\!]\neq\N$ なら、$[\![B]\!]$ に属さない最小の $k$ があり、$[0,n)\subset[\![B]\!]\iff n\le k$。よって $[\![\Box B]\!]=[0,k+1)$ で有限。
+:::
+
+::: lemma 閉様相論理式の真理はランクで決まる {#pt:truth-by-rank}
+$\mathcal{M}=(W,R,V)$ を有限・推移的・非反射的なモデル、$w\in W$、$B$ を閉様相論理式とすると、
+$$
+\mathcal{M},w\models B\iff\rho(w)\in[\![B]\!].
+$$
+:::
+
+::: proof
+$B$ の構成に関する帰納法で、すべての $w$ について一斉に示す。$B=\bot$：両辺とも偽。$B=C\to D$：$w\models C\to D\iff w\not\models C$ または $w\models D\iff\rho(w)\notin[\![C]\!]$ または $\rho(w)\in[\![D]\!]\iff\rho(w)\in[\![C\to D]\!]$。
+
+$B=\Box C$ の場合。（$\Rightarrow$ の対偶）$\rho(w)\notin[\![\Box C]\!]$ とすると、$i<\rho(w)$ で $i\notin[\![C]\!]$ となるものがある。\ref{pt:rank-intermediate} より $wRx$, $\rho(x)=i$ となる $x$ があり、帰納法の仮定より $x\not\models C$。よって $w\not\models\Box C$。（$\Leftarrow$ の対偶）$w\not\models\Box C$ とすると、$wRx$, $x\not\models C$ となる $x$ がある。帰納法の仮定より $\rho(x)\notin[\![C]\!]$、また $\rho(x)<\rho(w)$ なので $[0,\rho(w))\not\subset[\![C]\!]$、すなわち $\rho(w)\notin[\![\Box C]\!]$。
+
+::: hypcheck
+- **閉であること**：命題変数の場合がないので、付値 $V$ は一度も使われない。命題変数 $p$ があると、ランク $0$ の二つの世界で $p$ の真理値が異なりうるので、この補題は成り立たない。
+- **有限・推移的・非反射的**：ランクの定義（最大値の存在）と \ref{pt:rank-intermediate}（推移性）で使った。
+:::
+:::
+
+::: lemma 鎖のモデル {#pt:chain-model}
+$n\ge0$ について $W_{n}\defeq\{0,1,\dots,n\}$, $iR_{n}j\defeq(i>j)$ とすると、$(W_{n},R_{n})$ は有限・推移的・非反射的で、各 $i\in W_{n}$ のランクは $i$ である。
+:::
+
+::: proof
+$>$ は推移的・非反射的。$i=i\,R_{n}\,(i-1)\,R_{n}\cdots R_{n}\,0$ より $\rho(i)\ge i$。$i=w_{k}R_{n}\cdots R_{n}w_{0}$ なら $w_{k}>\cdots>w_{0}\ge0$ で $w_{k}=i$ なので $k\le i$。よって $\rho(i)=i$。
+:::
+
+::: theorem GL での証明可能性とトレース {#pt:trace-provability}
+閉様相論理式 $B$ について、$\vdash B\iff[\![B]\!]=\N$。したがって閉様相論理式 $B,C$ について、$\vdash B\to C\iff[\![B]\!]\subset[\![C]\!]$、$\vdash B\leftrightarrow C\iff[\![B]\!]=[\![C]\!]$。
+:::
+
+::: proof
+（$\Rightarrow$）$\vdash B$ とし、$n\in\N$ を任意にとる。\ref{pt:chain-model} の $(W_{n},R_{n})$ 上の任意のモデルを考えると、健全性定理（\ref{logic:kripke-soundness} の 3）より世界 $n$ で $B$ は真、\ref{pt:truth-by-rank} より $n=\rho(n)\in[\![B]\!]$。
+
+（$\Leftarrow$ の対偶）$\nvdash B$ とすると、\ref{logic:modal-fmp-decidability}（$L=\mathsf{GL}$ の 3 ⇒ 1）より、有限・推移的・逆整礎、したがって（\ref{logic:finite-transitive-cwf}）非反射的なフレーム上のモデルと世界 $w$ で $w\not\models B$ となるものがある。\ref{pt:truth-by-rank} より $\rho(w)\notin[\![B]\!]$。
+
+（後半）トレースの定義から $[\![B\to C]\!]=\N\iff[\![B]\!]\subset[\![C]\!]$。また、略記のトレースは対応する集合演算で計算される：$\neg B=B\to\bot$ より $[\![\neg B]\!]=\N\setminus[\![B]\!]$、同様に $\wedge,\vee$ は $\cap,\cup$ に対応する（\ref{pt:truth-by-rank} を鎖のモデルに適用し、\ref{logic:kripke-abbreviations} を使ってもよい）。したがって $[\![B\leftrightarrow C]\!]=\N\iff[\![B]\!]=[\![C]\!]$。
+:::
+
+::: proposition 基本的なトレース {#pt:basic-traces}
+すべての $n\ge0$ について
+1. $[\![\Box^{n}\bot]\!]=[0,n)$、$[\![\neg\Box^{n}\bot]\!]=[\![\Diamond^{n}\top]\!]=\{m:m\ge n\}$。
+2. $[\![\Box^{n+1}\bot\wedge\neg\Box^{n}\bot]\!]=\{n\}$、$[\![\Box^{n+1}\bot\to\Box^{n}\bot]\!]=\N\setminus\{n\}$。
+3. $[\![\Diamond B]\!]=\{m:\exists k<m\ (k\in[\![B]\!])\}$。
+:::
+
+::: proof
+**1.** $n$ に関する帰納法。$[\![\bot]\!]=\emptyset=[0,0)$。$[\![\Box^{n}\bot]\!]=[0,n)$ なら $[\![\Box^{n+1}\bot]\!]=\{m:[0,m)\subset[0,n)\}=\{m:m\le n\}=[0,n+1)$。補集合をとって $[\![\neg\Box^{n}\bot]\!]$。$\Diamond^{n}\top$ については、$[\![\Diamond B]\!]=[\![\neg\Box\neg B]\!]$ に 3 を使い、$n$ に関する帰納法で $[\![\Diamond^{n}\top]\!]=\{m:m\ge n\}$（$\{m:\exists k<m,\ k\ge n\}=\{m:m\ge n+1\}$）。
+**2.** 1 から $[0,n+1)\cap\{m:m\ge n\}=\{n\}$、その補集合。
+**3.** $[\![\neg\Box\neg B]\!]=\N\setminus\{m:[0,m)\subset\N\setminus[\![B]\!]\}=\{m:[0,m)\cap[\![B]\!]\neq\emptyset\}$。
+:::
+
+::: theorem 標準形の具体形 {#pt:normal-form-by-trace}
+閉様相論理式 $B$ について、
+1. $[\![B]\!]$ が有限なら $\vdash B\leftrightarrow\bigvee_{n\in[\![B]\!]}(\Box^{n+1}\bot\wedge\neg\Box^{n}\bot)$。
+2. $[\![B]\!]$ が補有限なら $\vdash B\leftrightarrow\bigwedge_{n\notin[\![B]\!]}(\Box^{n+1}\bot\to\Box^{n}\bot)$。
+
+これで標準形定理（\ref{pt:letterless-normal-form}）の別証明が得られる（\ref{pt:trace-finite-cofinite} よりどちらかが適用できる）。
+:::
+
+::: proof
+右辺を $C$ とする（有限個の選言・連言なので意味をもつ）。\ref{pt:basic-traces} の 2 と、選言・連言のトレースが合併・共通部分であることから、1 では $[\![C]\!]=\bigcup_{n\in[\![B]\!]}\{n\}=[\![B]\!]$（$[\![B]\!]=\emptyset$ なら空な選言 $\bot$ で $[\![C]\!]=\emptyset$）、2 では $[\![C]\!]=\bigcap_{n\notin[\![B]\!]}(\N\setminus\{n\})=[\![B]\!]$。\ref{pt:trace-provability} より $\vdash B\leftrightarrow C$。
+:::
+
+::: proposition トレースは様相次数以上で一定 {#pt:trace-stable}
+閉様相論理式 $B$ と $n\ge d(B)$ について、$n\in[\![B]\!]\iff d(B)\in[\![B]\!]$。したがって、$[\![B]\!]$ が補有限であることと $d(B)\in[\![B]\!]$ は同値であり、$[\![B]\!]=\N$ であることと $[0,d(B)]\subset[\![B]\!]$ は同値である。$[\![B]\!]\cap[0,d(B)]$ は $B$ から有限の計算で求まる。
+:::
+
+::: proof
+$B$ の構成に関する帰納法で「すべての $n\ge d(B)$ で $n\in[\![B]\!]\iff d(B)\in[\![B]\!]$」を示す。$\bot$ は明らか。$B=C\to D$：$d=d(B)=\max(d(C),d(D))$ とし、$n\ge d$ とする。帰納法の仮定より $n\in[\![C]\!]\iff d(C)\in[\![C]\!]\iff d\in[\![C]\!]$（$n,d\ge d(C)$）、$D$ についても同様なので、$n\in[\![B]\!]\iff d\in[\![B]\!]$。$B=\Box C$：$e=d(C)$, $d(B)=e+1$ とし、$n\ge e+1$ とする。帰納法の仮定より $i\ge e$ なら $i\in[\![C]\!]\iff e\in[\![C]\!]$ なので、
+$$
+[0,n)\subset[\![C]\!]\iff[0,e]\subset[\![C]\!]
+$$
+（右辺 $\Rightarrow$ 左辺：$i<n$ で $i\le e$ なら右辺より、$i>e$ なら $e\in[\![C]\!]$ より $i\in[\![C]\!]$。左辺 $\Rightarrow$ 右辺：$e<n$ より）。右辺は $n$ によらないので主張が従う。
+
+後半：$n\ge d(B)$ のすべてが同時に $[\![B]\!]$ に属するか属さないかなので、$d(B)\in[\![B]\!]$ なら補有限、そうでなければ $[\![B]\!]\subset[0,d(B))$ で有限（\ref{pt:trace-finite-cofinite} とも整合する）。最後の主張は、定義に従って $m\le d(B)$ についての所属を再帰的に計算すればよい（$[\![\Box C]\!]$ の $m$ での値は $C$ の $[0,m)$ での値だけで決まる）。
+:::
+
+## 閉様相論理式に対するソロヴェイの定理 {#pt:sec-letterless-solovay}
+
+::: theorem GLS と算術的真理（閉様相論理式の場合） {#pt:letterless-gls-truth}
+閉様相論理式 $B$ について、$\mathsf{GLS}\vdash B\iff\mathcal{N}\models B^{\ast}\iff[\![B]\!]$ は補有限。
+:::
+
+::: proof
+**Step 1.** $\mathsf{GLS}\vdash B\Rightarrow\mathcal{N}\models B^{\ast}$ は \ref{pt:gls-soundness}。
+
+**Step 2（真なら補有限）.** $[\![B]\!]$ が有限とすると、\ref{pt:normal-form-by-trace} の 1 より $\vdash B\leftrightarrow C$、$C=\bigvee_{n\in[\![B]\!]}(\Box^{n+1}\bot\wedge\neg\Box^{n}\bot)$。\ref{pt:gl-arithmetical-soundness} と健全性より $B^{\ast}$ と $C^{\ast}$ の真理値は等しい。各選言肢の翻訳は、\ref{pt:box-bot-false} より $(\Box^{n+1}\bot)^{\ast}$ が偽なので偽であり、$C^{\ast}$ は偽（空な選言 $\bot$ の場合も偽）。よって $B^{\ast}$ は偽。\ref{pt:trace-finite-cofinite} と合わせて、$B^{\ast}$ が真なら $[\![B]\!]$ は補有限。
+
+**Step 3（補有限なら GLS の定理）.** \ref{pt:normal-form-by-trace} の 2 より $\vdash B\leftrightarrow\bigwedge_{n\notin[\![B]\!]}(\Box^{n+1}\bot\to\Box^{n}\bot)$。各連言肢は $\Box A\to A$（$A=\Box^{n}\bot$）の形なので $\mathsf{GLS}$ の公理、$\mathsf{GL}$ の定理 $B\leftrightarrow\cdots$ も $\mathsf{GLS}$ の公理（\ref{pt:gls}）であり、恒真式 $(X_{1}\to(\cdots\to(X_{k}\to X_{1}\wedge\cdots\wedge X_{k})))$ と $((B\leftrightarrow X)\to(X\to B))$ はともに $\mathsf{GL}$ の定理なので、モーダスポネンスで $\mathsf{GLS}\vdash B$。
+:::
+
+::: theorem GL と PA での証明可能性（閉様相論理式の場合） {#pt:letterless-gl-pa}
+閉様相論理式 $B$ について、$\mathsf{GL}\vdash B\iff\PA\vdash B^{\ast}\iff[\![B]\!]=\N$。とくに、定数文が $\PA$ で証明できるかどうかは機械的に判定できる。
+:::
+
+::: proof
+$\mathsf{GL}\vdash B\iff[\![B]\!]=\N$ は \ref{pt:trace-provability}。$\mathsf{GL}\vdash B\Rightarrow\PA\vdash B^{\ast}$ は \ref{pt:gl-arithmetical-soundness}。
+
+（$\PA\vdash B^{\ast}\Rightarrow[\![B]\!]=\N$ の対偶）$n\notin[\![B]\!]$ とする。$[\![B]\!]\subset\N\setminus\{n\}=[\![\Box^{n+1}\bot\to\Box^{n}\bot]\!]$（\ref{pt:basic-traces} の 2）なので、\ref{pt:trace-provability} より $\vdash B\to(\Box^{n+1}\bot\to\Box^{n}\bot)$。$\PA\vdash B^{\ast}$ と仮定すると、\ref{pt:gl-arithmetical-soundness} とモーダスポネンスより、$S\defeq(\Box^{n}\bot)^{\ast}$ について $\PA\vdash\mathrm{Bew}(\Godel{S})\to S$。レーブの定理（\ref{pt:lob-theorem}）より $\PA\vdash S$、健全性より $S$ は真で、\ref{pt:box-bot-false} に反する。
+
+判定可能性は \ref{pt:constant-sentence-translation} と \ref{pt:trace-stable}（$[0,d(B)]\subset[\![B]\!]$ を調べる）による。
+
+::: hypcheck
+- **$\mathcal{N}\models\PA$**：\ref{pt:box-bot-false} と最後の「健全性より」で使う。これは $\PA$ の無矛盾性より強い仮定だが、本系列では $\PA$ の公理の真理を前提としている（\ref{pt:page-peano-arithmetic}）。
+- **ソロヴェイの定理を使っていないこと**：この証明はレーブの定理と \ref{pt:box-bot-false} だけで済む。命題変数を含む一般の場合（\ref{pt:page-solovay}）では、反例のクリプキモデルを算術の中に埋め込む必要がある。
+:::
+:::
+
+## 閉様相論理式についての帰結 {#pt:sec-letterless-consequences}
+
+以下 $B$ は閉様相論理式とし、\ref{pt:letterless-gl-pa} により $\mathsf{GL}$ の定理と $\PA$ の定理を行き来する。$\neg\Box\bot$ の翻訳は $\mathrm{Con}$、$\neg\Box\Box\bot$（$\mathsf{GL}$ で $\Diamond\Diamond\top$ と同値。\ref{pt:basic-traces} の 1 と \ref{pt:trace-provability}）の翻訳は「$\PA+\mathrm{Con}$ は無矛盾」にあたる。
+
+::: theorem ゴールドファーブの定理 {#pt:goldfarb keywords="Goldfarb's theorem" index="ゴールドファーブの定理|ごーるどふぁーぶのていり"}
+$\vdash(\neg\Box B\wedge\neg\Box\neg B)\to\neg\Box\Box\bot$。算術では、任意の定数文 $S$ について「$S$ が決定不能ならば $\neg\mathrm{Con}$ は証明できない」が $\PA$ で証明できる：
+$$
+\PA\vdash\bigl(\neg\mathrm{Bew}(\Godel{S})\wedge\neg\mathrm{Bew}(\Godel{\neg S})\bigr)\to\neg\mathrm{Bew}(\Godel{\mathrm{Bew}(\Godel{\bot})}).
+$$
+:::
+
+::: proof
+トレースを計算する。\ref{pt:basic-traces} の 3 と同様に、$[\![\neg\Box B]\!]=\{m:\exists k<m\ (k\notin[\![B]\!])\}$、$[\![\neg\Box\neg B]\!]=\{m:\exists k<m\ (k\in[\![B]\!])\}$。
+- $m=0$ はどちらにも属さない（$k<0$ がない）。
+- $m=1$ では $k=0$ だけが候補で、$0\in[\![B]\!]$ と $0\notin[\![B]\!]$ は同時には成り立たないので、共通部分に属さない。
+
+よって左辺のトレースは $\{m:m\ge2\}=[\![\neg\Box^{2}\bot]\!]$（\ref{pt:basic-traces} の 1）に含まれ、\ref{pt:trace-provability} より主張が従う。算術の形は \ref{pt:gl-arithmetical-soundness}（$S=B^{\ast}$、\ref{pt:constant-sentence-translation}）。
+:::
+
+::: corollary 無矛盾性から定数文の決定不能性は証明できない {#pt:con-not-imply-undecidable}
+$\nvdash\neg\Box\bot\to(\neg\Box B\wedge\neg\Box\neg B)$。したがって、どの定数文 $S$ についても $\PA\nvdash\mathrm{Con}\to(\neg\mathrm{Bew}(\Godel{S})\wedge\neg\mathrm{Bew}(\Godel{\neg S}))$。
+:::
+
+::: proof
+証明できたとすると、\ref{pt:goldfarb} と合わせて $\vdash\neg\Box\bot\to\neg\Box\Box\bot$。しかしトレースは $\{m:m\ge1\}\not\subset\{m:m\ge2\}$（$m=1$）なので、\ref{pt:trace-provability} に反する。後半は \ref{pt:letterless-gl-pa}。
+:::
+
+::: remark
+ゲーデル文 $G$ は $\PA\vdash G\leftrightarrow\mathrm{Con}$ を満たす（\ref{pt:formalized-first}）。D1, D2 より $\PA\vdash\mathrm{Bew}(\Godel{\neg G})\leftrightarrow\mathrm{Bew}(\Godel{\neg\mathrm{Con}})$ なので、$\PA\vdash\mathrm{Con}\to\neg\mathrm{Bew}(\Godel{\neg G})$ は $(\neg\Box\bot\to\neg\Box\Box\bot)^{\ast}$ の証明可能性と同値で、\ref{pt:con-not-imply-undecidable} の証明のトレース計算と \ref{pt:letterless-gl-pa} より成り立たない。一方 $\PA\vdash\mathrm{Con}\to\neg\mathrm{Bew}(\Godel{G})$（第一不完全性定理の前半の形式化）は成り立つ。
+:::
+
+::: theorem 無矛盾性より真に弱い定数文はない {#pt:nothing-strictly-weaker-than-con}
+$\vdash\neg\Box\bot\to B$ かつ $\nvdash B$ ならば、$\vdash B\leftrightarrow\neg\Box\bot$。算術では：定数文 $S$ が $\PA\vdash\mathrm{Con}\to S$ かつ $\PA\nvdash S$ を満たすなら $\PA\vdash S\leftrightarrow\mathrm{Con}$。
+:::
+
+::: proof
+\ref{pt:trace-provability} と \ref{pt:basic-traces} の 1 より $\N\setminus\{0\}\subset[\![B]\!]\neq\N$。よって $[\![B]\!]=\N\setminus\{0\}=[\![\neg\Box\bot]\!]$ で、\ref{pt:trace-provability} より同値。算術の形は \ref{pt:letterless-gl-pa}。
+:::
+
+::: theorem すべての反復無矛盾性を含意する無矛盾な定数文はない {#pt:no-constant-implies-all-iterated-con}
+$\nvdash\neg B$ ならば、ある $n$ で $\nvdash B\to\neg\Box^{n}\bot$。算術では：$\PA+S$ が無矛盾な定数文 $S$ は、ある $n$ について $(\neg\Box^{n}\bot)^{\ast}$（$n$ 回反復した無矛盾性の主張）を $\PA$ 上で含意しない。
+:::
+
+::: proof
+すべての $n$ で $\vdash B\to\neg\Box^{n}\bot$ なら、\ref{pt:trace-provability} と \ref{pt:basic-traces} の 1 より $[\![B]\!]\subset\bigcap_{n}\{m:m\ge n\}=\emptyset$。よって $[\![\neg B]\!]=\N$ で $\vdash\neg B$。算術の形は \ref{pt:letterless-gl-pa}（$\PA+S$ が無矛盾 $\iff\PA\nvdash\neg S$）。
+:::
+
+## 問題 {#pt:sec-letterless-problems}
+
+::: problem {#pt:prob-letterless-normal-form-example}
+$B=\Box(\Box\Box\bot\to\Box\bot)$ のトレースを計算し、標準形を求めよ。\ref{pt:letterless-normal-form} の証明の手順でも同じ結果になることを確かめよ。
+:::
+
+::: solution
+$[\![\Box\Box\bot\to\Box\bot]\!]=(\N\setminus[0,2))\cup[0,1)=\N\setminus\{1\}$。$[\![B]\!]=\{n:[0,n)\subset\N\setminus\{1\}\}=\{0,1\}=[\![\Box^{2}\bot]\!]$。よって $\vdash B\leftrightarrow\Box^{2}\bot$。証明の手順では、$D=\Box^{2}\bot\to\Box^{1}\bot$ で $m=2>n=1$ なので Step 3 の第三の場合、$C'=\Box^{2}\bot$ となり一致する。
+:::
+
+::: problem {#pt:prob-con-conc}
+定数文「$\mathrm{Con}$ ならば『$\mathrm{Con}$ は反証できない』」、すなわち $(\neg\Box\bot\to\neg\Box\Box\bot)^{\ast}$ は真だが $\PA$ で証明できないことを示せ。
+:::
+
+::: solution
+トレースは $(\N\setminus\{m:m\ge1\})\cup\{m:m\ge2\}=\N\setminus\{1\}$。補有限なので \ref{pt:letterless-gls-truth} より真、$\neq\N$ なので \ref{pt:letterless-gl-pa} より $\PA$ で証明できない。
+:::
+
+::: problem {#pt:prob-trace-diamond-box}
+閉様相論理式 $B$ について $\vdash\Box B\vee\Box\neg B\vee\Diamond\Diamond\top$ を示し、その算術的意味を述べよ。
+:::
+
+::: solution
+\ref{pt:goldfarb} の対偶を恒真式で書き直したもの（$\neg\Box\Box\bot$ と $\Diamond\Diamond\top$ は同値）。意味：任意の定数文 $S$ について、「$S$ が証明可能」「$\neg S$ が証明可能」「$\PA+\mathrm{Con}$ が無矛盾」のどれかが成り立つことが $\PA$ で証明できる。
+:::
+
+::: supplement
+**前提の検討.**
+- 本ページの結果はすべて「閉」であることに依存する。\ref{pt:truth-by-rank} は命題変数があると成り立たず、$\mathsf{GL}$ の一般の論理式の真理は、ランクだけでなく付値に依存する。命題変数を含む場合の算術的完全性（\ref{pt:page-solovay}）は、この節の議論よりはるかに難しい。
+- \ref{pt:trace-provability} は $\mathsf{GL}$ の完全性（有限フレーム）を使うが、標準形定理そのもの（\ref{pt:letterless-normal-form}）は構文的な証明で完全性を使わない。逆に、トレースを使うと標準形の具体形（\ref{pt:normal-form-by-trace}）と証明可能性の判定（\ref{pt:trace-stable}）まで得られる。
+- \ref{pt:box-bot-false} と \ref{pt:letterless-gl-pa} は $\mathcal{N}\models\PA$ を使う。$\PA$ の代わりに、$\mathcal{N}$ で真な公理をもつ再帰的に公理化された理論 $T$ で D1–D3 と形式化されたレーブの定理が成り立つもの（$\mathrm{Bew}$ を $T$ の証明可能性述語に取り替える）でも、同じ証明が通る（$\PA$ について使ったのはこれらの性質だけである。ただし D1–D3 とレーブの定理を $T$ について確かめる必要がある）。
+
+**関連する結果.** 二つの証明可能性演算子をもつ結合証明可能性論理 $\mathsf{GLB}$ でも閉様相論理式の標準形が研究されている（Boolos 第 16 章。本サイトでは結合証明可能性論理の系列で扱う予定）。
+
+**高い視点から：ランクはフレームから $\omega$ への有界射である.** \ref{pt:rank-intermediate} と「$wRx\Rightarrow\rho(w)>\rho(x)$」は、ランク写像 $\rho\colon(W,R)\to(\N,>)$ が、様相論理でいう**有界射**（p-morphism：前進条件「$wRx\Rightarrow\rho(w)>\rho(x)$」と後退条件「$\rho(w)>i\Rightarrow\exists x\,(wRx\wedge\rho(x)=i)$」を満たす写像）であることを述べている。有界射は様相論理式の真理を保つので、閉様相論理式の真理はフレーム $(\N,>)$ の点、すなわち自然数で決まり、それがトレースである。比喩で言えば、閉様相論理式は「命題変数」という色を持たないので、世界の区別として「自分の下にあと何段の階段があるか」（ランク）しか見えない。$\Box^{n}\bot$ は「下にある階段は $n$ 段未満」という主張であり、閉様相論理式の世界全体は、この階段の高さについての有限または補有限の条件の代数（$\N$ の有限・補有限部分集合のなすブール代数に、演算 $X\mapsto\{n:[0,n)\subset X\}$ を加えたもの）と同型になる：トレース写像は、閉様相論理式の $\mathsf{GL}$ 同値類のなすリンデンバウム代数からこの代数への同型である（単射は \ref{pt:trace-provability}、全射は有限集合・補有限集合がそれぞれ \ref{pt:normal-form-by-trace} の形の論理式のトレースとして実現されることによる）。算術の側では、$\Box^{n}\bot$ は「$n$ 回反復した矛盾性」であり、$\PA$ から見た世界の高さは、$\PA$、$\PA+\mathrm{Con}$、$\PA+\mathrm{Con}+\mathrm{Con}(\PA+\mathrm{Con})$、… と無矛盾性を積み上げていける段数に対応する。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

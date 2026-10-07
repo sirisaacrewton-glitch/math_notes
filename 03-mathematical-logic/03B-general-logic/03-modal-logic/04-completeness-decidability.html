@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>健全性・完全性・決定可能性 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/03-modal-logic/04-completeness-decidability.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 健全性・完全性・決定可能性 {#logic:page-modal-completeness keywords="completeness of modal logics, finite model property, finite frame property, decidability, GL completeness, finite trees"}
+
+$\mathsf{K},\mathsf{K4},\mathsf{T},\mathsf{B},\mathsf{S4},\mathsf{S5},\mathsf{GL}$ のそれぞれについて、**有限の**適切なフレームに関する完全性定理を証明する：定理でない論理式 $D$ には、それを偽にする有限のモデルがある。構成は、$D$ の部分論理式とその否定だけからなる「小さな」極大無矛盾集合を世界とし、到達可能性関係を体系ごとに工夫して定める。モデルの大きさが $D$ から計算できる上限で抑えられるので、各体系は**決定可能**である。最後に、$\mathsf{GL}$ は有限の**木**についても完全であることを示す。
+
+## 記法と定義の確認 {#logic:sec-mcomp-notation}
+
+::: notation
+- 正規様相論理・代表的な体系・正規性（\ref{logic:normality}）・恒真式による推論（\ref{logic:modal-tf-closure}）・$\mathsf{GL}$ の基本定理は \ref{logic:page-normal-modal-logics}, \ref{logic:page-gl-axioms} のとおり。
+- クリプキフレーム・モデル・真理・妥当性、関係の性質、健全性定理、有限な推移的フレームについて非反射的と逆整礎が同値であること（\ref{logic:finite-transitive-cwf}）は \ref{logic:page-kripke-semantics} のとおり。
+- **適切なフレーム**：$\mathsf{K}$ にはすべてのフレーム、$\mathsf{K4}$ には推移的、$\mathsf{T}$ には反射的、$\mathsf{B}$ には反射的かつ対称的、$\mathsf{S4}$ には反射的かつ推移的、$\mathsf{S5}$ には反射的かつユークリッド的（同値関係と同じ）、$\mathsf{GL}$ には推移的かつ逆整礎なフレームが**適切**であるという。健全性定理（\ref{logic:kripke-soundness}）は「定理は適切なフレームで妥当」と言い換えられる。
+- 有限集合 $X$ の元の連言を $\bigwedge X$ と書く（順序はどれでもよい。恒真式により同値）。$\bigwedge\varnothing=\top$。
+:::
+
+## 有限の極大無矛盾集合 {#logic:sec-mcomp-mcs}
+
+以下、$L$ を七つの体系のどれか、$D$ を $L$ の定理でない様相論理式とする。$\Phi\defeq\mathrm{Sub}(D)\cup\{\neg B:B\in\mathrm{Sub}(D)\}$ とおく（$\mathrm{Sub}$ は \ref{logic:modal-substitution}）。$\Phi$ は有限集合である。
+
+::: definition 無矛盾・極大 {#logic:modal-mcs keywords="maximal consistent set relative to a formula" index="極大無矛盾集合（様相論理）|きょくだいむむじゅんしゅうごうようそうろんり"}
+$X\subset\Phi$ が **$L$-無矛盾**であるとは $L\nvdash\neg\bigwedge X$ であることをいう。$L$-無矛盾で、各 $B\in\mathrm{Sub}(D)$ について $B\in X$ または $\neg B\in X$ となる $X$ を**極大**という。極大な集合全体を $W$ とする。
+:::
+
+::: lemma 極大な集合の性質 {#logic:modal-mcs-properties}
+$w\in W$ とする。
+1. $B\in\mathrm{Sub}(D)$ について、$B\in w$ と $\neg B\in w$ のちょうど一方が成り立つ。とくに $\bot\notin w$。
+2. $A_{1},\dots,A_{n}\in w$、$L\vdash A_{1}\wedge\cdots\wedge A_{n}\to B$、$B\in\Phi$ ならば $B\in w$。
+3. $(B\to C)\in\mathrm{Sub}(D)$ なら、$(B\to C)\in w\iff B\notin w$ または $C\in w$。
+4. $L$-無矛盾な $X\subset\Phi$ は、ある $w\in W$ に含まれる。
+:::
+
+::: proof
+**1.** 極大性から少なくとも一方が属する。両方属すると $\bigwedge w$ から恒真式により $\bot$ が従い、$L\vdash\neg\bigwedge w$ となり無矛盾性に反する。$\bot\in w$ も同様に矛盾する（$L\vdash\neg\bot$）。
+
+**2.** $B\in\Phi$ で $B\notin w$ とする。$B\in\mathrm{Sub}(D)$ なら 1 より $\neg B\in w$。$B=\neg B'$（$B'\in\mathrm{Sub}(D)$）なら、$B\notin w$ と極大性から $B'\in w$。いずれの場合も、$w$ の中に $L$ で $\neg B$ と同値な元がある。仮定と合わせて恒真式により $L\vdash\neg\bigwedge w$ となり矛盾する。
+
+**3.** $(B\to C)\in w$ かつ $B\in w$ なら、2（$L\vdash(B\to C)\wedge B\to C$）より $C\in w$。逆に $B\notin w$ なら $\neg B\in w$ で、$L\vdash\neg B\to(B\to C)$ と 2 より $(B\to C)\in w$。$C\in w$ なら $L\vdash C\to(B\to C)$ と 2。
+
+**4.** $\mathrm{Sub}(D)$ の元を $B_{1},\dots,B_{k}$ と並べ、$X_{0}\defeq X$、$X_{i}\cup\{B_{i}\}$ が無矛盾なら $X_{i+1}\defeq X_{i}\cup\{B_{i}\}$、そうでなければ $X_{i+1}\defeq X_{i}\cup\{\neg B_{i}\}$ とする。両方とも矛盾するなら $L\vdash\neg(\bigwedge X_{i}\wedge B_{i})$ と $L\vdash\neg(\bigwedge X_{i}\wedge\neg B_{i})$ から恒真式により $L\vdash\neg\bigwedge X_{i}$ となるので、帰納法で各 $X_{i}$ は無矛盾。$X_{k}$ が求める極大な集合である。
+:::
+
+::: lemma 真理補題 {#logic:modal-finite-truth-lemma keywords="truth lemma for finite canonical models"}
+$W$ 上の関係 $R$ が、すべての $\Box B\in\mathrm{Sub}(D)$ と $w\in W$ について
+$$
+\Box B\in w\iff wRx\text{ となるすべての }x\in W\text{ で }B\in x\tag{$\ast$}
+$$
+を満たすとする。付値を $V\defeq\{(w,p):p\in w\}$ とし $\mathcal{M}\defeq(W,R,V)$ とおく。このとき、すべての $A\in\mathrm{Sub}(D)$ と $w\in W$ について $A\in w\iff\mathcal{M},w\models A$。
+:::
+
+::: proof
+$A$ に関する帰納法（部分論理式の部分論理式は $\mathrm{Sub}(D)$ に属する）。命題変数は $V$ の定義、$\bot$ は \ref{logic:modal-mcs-properties} の 1、含意は同じ 3 と帰納法の仮定、$\Box B$ は $(\ast)$ と帰納法の仮定（各 $x$ で $B\in x\iff x\models B$）による。
+:::
+
+::: theorem 完全性定理の枠組み {#logic:modal-completeness-scheme}
+$W$ 上の関係 $R$ が $(\ast)$ を満たし、$(W,R)$ が $L$ に適切ならば、$D$ は有限の $L$ に適切なフレーム $(W,R)$ の上のモデルで偽になる。$\lvert W\rvert\le2^{k}$（$k=\lvert\mathrm{Sub}(D)\rvert$）である。
+:::
+
+::: proof
+$L\nvdash D$ なので $\{\neg D\}$ は無矛盾（$L\vdash\neg\neg D$ なら $L\vdash D$）。\ref{logic:modal-mcs-properties} の 4 で $y\in W$、$\neg D\in y$ をとる。1 より $D\notin y$、真理補題より $\mathcal{M},y\not\models D$。極大な集合は各 $B\in\mathrm{Sub}(D)$ について $B$ か $\neg B$ のどちらを含むかで決まるので、$\lvert W\rvert\le2^{k}$。
+:::
+
+## 各体系の到達可能性関係 {#logic:sec-mcomp-relations}
+
+以下、$\Box B$ などは常に $\mathrm{Sub}(D)$ の元を表す（$\Box B\in w$ と書けば $\Box B\in\mathrm{Sub}(D)$ も意味する）。$(\ast)$ の $\Rightarrow$ を「前半」、$\Leftarrow$ を「後半」と呼ぶ。後半は、$\Box B\notin w$ のとき $B\notin x$ かつ $wRx$ となる $x$ を作ることで示す。
+
+::: theorem K と T の完全性 {#logic:completeness-k-t}
+$wRx\defeq$「すべての $\Box B\in w$ で $B\in x$」とすると、$L=\mathsf{K}$ でも $L=\mathsf{T}$ でも $(\ast)$ が成り立つ。$L=\mathsf{T}$ なら $R$ は反射的である。
+:::
+
+::: proof
+**前半**は $R$ の定義そのもの。**後半.** $\Box B\notin w$ とし、$X\defeq\{\neg B\}\cup\{C:\Box C\in w\}\subset\Phi$ とおく。$X$ が矛盾するなら、$w$ の $\Box$ の付く元を $\Box C_{1},\dots,\Box C_{n}$ として $L\vdash C_{1}\wedge\cdots\wedge C_{n}\to B$、正規性 5 より $L\vdash\Box C_{1}\wedge\cdots\wedge\Box C_{n}\to\Box B$、\ref{logic:modal-mcs-properties} の 2 より $\Box B\in w$ となり矛盾する。よって $X$ を含む $x\in W$ があり、$\neg B\in x$ より $B\notin x$、また $wRx$。**反射性（$\mathsf{T}$）.** $\Box B\in w$ なら $\mathsf{T}\vdash\Box B\to B$ と 2 より $B\in w$。
+:::
+
+::: theorem K4 と S4 の完全性 {#logic:completeness-k4-s4}
+$wRx\defeq$「すべての $\Box B\in w$ で $B\in x$ かつ $\Box B\in x$」とすると、$L=\mathsf{K4}$ でも $\mathsf{S4}$ でも $(\ast)$ が成り立ち、$R$ は推移的。$L=\mathsf{S4}$ なら $R$ は反射的でもある。
+:::
+
+::: proof
+**推移性.** $wRx$, $xRy$、$\Box B\in w$ なら $\Box B\in x$、よって $B,\Box B\in y$。**前半**は定義から。**後半.** $\Box B\notin w$、$X\defeq\{\neg B\}\cup\{C,\Box C:\Box C\in w\}$。矛盾するなら $L\vdash\bigwedge_{i}(C_{i}\wedge\Box C_{i})\to B$、正規性 5 より $L\vdash\bigwedge_{i}(\Box C_{i}\wedge\Box\Box C_{i})\to\Box B$。公理 4 より $\Box C_{i}\to\Box\Box C_{i}$ なので $L\vdash\bigwedge_{i}\Box C_{i}\to\Box B$、$\Box B\in w$ となり矛盾。$X\subset x$ となる $x$ で $wRx$、$B\notin x$。**反射性（$\mathsf{S4}$）.** $\Box B\in w$ なら公理 $\mathrm{T}$ で $B\in w$、$\Box B\in w$ は仮定。
+:::
+
+::: theorem B の完全性 {#logic:completeness-b}
+$wRx\defeq$「すべての $\Box B\in w$ で $B\in x$、かつすべての $\Box B\in x$ で $B\in w$」とすると、$L=\mathsf{B}$ で $(\ast)$ が成り立ち、$R$ は反射的かつ対称的である。
+:::
+
+::: proof
+対称性は定義から、反射性は公理 $\mathrm{T}$ による。**前半**は定義から。**後半.** $\Box B\notin w$ とし、
+$$
+X\defeq\{\neg B\}\cup\{C:\Box C\in w\}\cup\{\neg\Box E:\Box E\in\mathrm{Sub}(D),\ \neg E\in w\}
+$$
+とおく。矛盾するなら、$\mathsf{B}\vdash\bigwedge_{i}C_{i}\wedge\bigwedge_{j}\neg\Box E_{j}\to B$、正規性 5 より $\mathsf{B}\vdash\bigwedge_{i}\Box C_{i}\wedge\bigwedge_{j}\Box\neg\Box E_{j}\to\Box B$。公理 $\mathrm{B}$ の代入例 $\neg E\to\Box\Diamond\neg E$ と $\Diamond\neg E\leftrightarrow\neg\Box E$（正規性 10）から $\mathsf{B}\vdash\neg E_{j}\to\Box\neg\Box E_{j}$。$\Box C_{i},\neg E_{j}\in w$ なので、\ref{logic:modal-mcs-properties} の 2 より $\Box B\in w$ となり矛盾。$X\subset x$ となる $x$ をとると、$B\notin x$、$\Box C\in w$ なら $C\in x$。$\Box E\in x$ で $E\notin w$ とすると $\neg E\in w$ で $\neg\Box E\in X\subset x$ となり矛盾するので、$\Box E\in x$ なら $E\in w$。よって $wRx$。
+:::
+
+::: theorem S5 の完全性 {#logic:completeness-s5}
+$wRx\defeq$「すべての $\Box B\in\mathrm{Sub}(D)$ について $\Box B\in w\iff\Box B\in x$」とすると、$L=\mathsf{S5}$ で $(\ast)$ が成り立ち、$R$ は同値関係（反射的かつユークリッド的）である。
+:::
+
+::: proof
+同値関係であることは定義から。**前半.** $\Box B\in w$、$wRx$ なら $\Box B\in x$、公理 $\mathrm{T}$ で $B\in x$。**後半.** $\Box B\notin w$ とし、$X\defeq\{\neg B\}\cup\{\Box C:\Box C\in w\}\cup\{\neg\Box E:\neg\Box E\in w\}$。矛盾するなら $\mathsf{S5}\vdash\bigwedge\Box C_{i}\wedge\bigwedge\neg\Box E_{j}\to B$、正規性 5 より $\mathsf{S5}\vdash\bigwedge\Box\Box C_{i}\wedge\bigwedge\Box\neg\Box E_{j}\to\Box B$。$\mathsf{S5}\vdash\Box C\to\Box\Box C$（\ref{logic:s5-alternative}）と $\mathsf{S5}\vdash\neg\Box E\to\Box\neg\Box E$（公理 5 の代入例 $\Diamond\neg E\to\Box\Diamond\neg E$ と正規性 10）から $\Box B\in w$ となり矛盾。$X\subset x$ となる $x$ で、$\Box B'\in w$ なら $\Box B'\in x$、$\Box B'\notin w$ なら $\neg\Box B'\in w$ なので $\neg\Box B'\in x$、すなわち $\Box B'\notin x$。よって $wRx$、$B\notin x$。
+:::
+
+::: theorem GL の完全性 {#logic:completeness-gl keywords="completeness of GL, finite frame property of GL" index="GL の完全性定理|じーえるのかんぜんせいていり"}
+$wRx\defeq$「すべての $\Box B\in w$ で $B,\Box B\in x$、かつある $\Box E\in\mathrm{Sub}(D)$ で $\Box E\in x$, $\Box E\notin w$」とすると、$L=\mathsf{GL}$ で $(\ast)$ が成り立ち、$(W,R)$ は有限・推移的・非反射的、したがって推移的かつ逆整礎である。
+:::
+
+::: proof
+**推移性.** $wRx$, $xRy$ なら、第一の条件は \ref{logic:completeness-k4-s4} と同じ。第二の条件：$\Box E\in x$, $\Box E\notin w$ となる $E$ をとると、$xRy$ より $\Box E\in y$ で、$\Box E\notin w$。**非反射性.** $wRw$ なら $\Box E\in w$ かつ $\Box E\notin w$ となる $E$ があり不可能。有限なので \ref{logic:finite-transitive-cwf} より逆整礎。
+
+**前半**は定義から。**後半.** $\Box B\notin w$ とし、$X\defeq\{\neg B,\Box B\}\cup\{C,\Box C:\Box C\in w\}$ とおく。矛盾するなら
+$$
+\mathsf{GL}\vdash\bigwedge_{i}(C_{i}\wedge\Box C_{i})\to(\Box B\to B),
+$$
+正規性 5 より $\mathsf{GL}\vdash\bigwedge_{i}(\Box C_{i}\wedge\Box\Box C_{i})\to\Box(\Box B\to B)$、レーブの公理と公理 4（\ref{logic:gl-four}）で $\mathsf{GL}\vdash\bigwedge_{i}\Box C_{i}\to\Box B$ となり、$\Box B\in w$ に矛盾する。$X\subset x$ となる $x$ をとると、$B\notin x$、第一の条件は $X$ の定義から、第二の条件は $E\defeq B$（$\Box B\in x$, $\Box B\notin w$）で満たされる。よって $wRx$。
+
+::: hypcheck
+- **レーブの公理**：後半で $X$ に $\Box B$ を入れても無矛盾であることを保証する。これにより $x$ でも $\Box B$ が成り立ち、$w$ から $x$ に進むと「$\Box$ の付いた論理式が真に増える」。これが非反射性と、有限なので上昇列が止まることの源である。
+:::
+:::
+
+::: corollary 有限フレームに関する完全性と決定可能性 {#logic:modal-fmp-decidability keywords="finite model property, decidability of modal logics" index="有限モデル性|ゆうげんもでるせい, 決定可能性（様相論理）|けっていかのうせいようそうろんり"}
+$L$ を七つの体系のどれかとする。様相論理式 $A$ について次は同値である。
+1. $L\vdash A$。
+2. $A$ は $L$ に適切なすべてのフレームで妥当。
+3. $A$ は $L$ に適切なすべての有限フレームで妥当。
+4. $A$ は、$L$ に適切で世界の数が $2^{\lvert\mathrm{Sub}(A)\rvert}$ 以下のすべてのフレームで妥当。
+
+とくに $L\vdash A$ かどうかは、有限個の有限モデルを調べることで機械的に判定できる（$L$ は**決定可能**）。
+:::
+
+::: proof
+1 ⇒ 2 は健全性定理、2 ⇒ 3 ⇒ 4 は明らか、4 ⇒ 1 は各体系の完全性定理（$D=A$ として、定理でなければ世界の数が $2^{k}$ 以下の適切なフレーム上のモデルで偽）。判定：$\{1,\dots,n\}$（$n\le2^{k}$）上の関係と、$A$ に現れる命題変数への付値は有限個で、各々について $L$ に適切か（推移性などは有限の確認、$\mathsf{GL}$ では有限なので非反射性で足りる）、$A$ がすべての世界で真かを計算できる。
+:::
+
+::: remark
+これで、\ref{logic:s4-fourteen} の 14 個の様相、\ref{logic:s5-six} の 6 個の様相が、それぞれ互いに同値でないこと、また \ref{logic:modal-proper-inclusions} の真の包含が、有限モデルの計算で確かめられる。
+:::
+
+## GL と有限の木 {#logic:sec-gl-trees}
+
+::: definition 木 {#logic:transitive-tree keywords="transitive tree" index="木（フレーム）|きふれーむ"}
+推移的フレーム $(W,R)$ が**木**であるとは、$wRy$ かつ $xRy$ なら $wRx$, $w=x$, $xRw$ のどれかが成り立つことをいう（各点の「祖先」全体が $R$ で全順序になる）。
+:::
+
+::: theorem GL は有限の木について完全 {#logic:gl-tree-completeness}
+$\mathsf{GL}\vdash A$ であるための必要十分条件は、$A$ がすべての有限・推移的・非反射的な木で妥当であることである。
+:::
+
+::: proof
+必要性は健全性定理。十分性：有限・推移的・非反射的なモデル $\mathcal{M}=(W,R,V)$ と世界 $w_{0}$ で $A$ が偽とする（\ref{logic:completeness-gl}）。
+
+**Step 1（展開）.** $X$ を、$w_{0}Ra_{1}R\cdots Ra_{m}$（$m\ge0$）となる有限列 $(w_{0},a_{1},\dots,a_{m})$ 全体とする。非反射的・推移的なので列の項は互いに異なり（\ref{logic:finite-transitive-cwf} の証明）、長さは $\lvert W\rvert$ 以下、$X$ は有限。$sSt\defeq$「$t$ は $s$ を真に延長した列」、$U\defeq\{(s,p):(\mathrm{last}(s),p)\in V\}$ とする。$(X,S)$ は推移的・非反射的で、$tSs$ と $t'Ss$ なら $t,t'$ はともに $s$ の始切片なので比較可能、すなわち木である。
+
+**Step 2（真理の保存）.** $B$ に関する帰納法で $\mathcal{N},s\models B\iff\mathcal{M},\mathrm{last}(s)\models B$（$\mathcal{N}\defeq(X,S,U)$）。$\Box$ の場合：$sSt$ なら $\mathrm{last}(s)R\mathrm{last}(t)$（推移性。延長部分の各段が $R$）。逆に $\mathrm{last}(s)Rz$ なら $s$ に $z$ を付け加えた列 $t$ が $X$ に属し $sSt$、$\mathrm{last}(t)=z$。よって $s$ から見える世界の $\mathrm{last}$ 全体は、$\mathrm{last}(s)$ から見える世界全体と一致し、帰納法の仮定から主張が従う。
+
+**Step 3.** $\mathcal{N},(w_{0})\models A\iff\mathcal{M},w_{0}\models A$ で、後者は偽。
+:::
+
+## 問題 {#logic:sec-mcomp-problems}
+
+::: problem {#logic:prob-mcomp-s4-modalities}
+$\mathsf{S4}$ で $\Box\Diamond p\to\Diamond\Box p$ が定理でないことを、有限モデルを作って示せ。
+:::
+
+::: solution
+$W=\{0,1,2\}$、$R$ を反射的閉包に $0R1$, $0R2$, $1R2$, $2R1$ を加えたものとし、$p$ を $1$ でだけ真とする。$R$ は反射的で、推移的でもある（$0R1R2$ に対して $0R2$、$1R2R1$ に対して $1R1$ など、すべての組を確かめる）。$1,2$ は互いに見るので $1\models\Diamond p$, $2\models\Diamond p$, $0\models\Diamond p$、よって $0\models\Box\Diamond p$。一方 $\Box p$ は $1$ でも偽（$1$ は $2$ を見る）、$2$ でも $0$ でも偽なので $0\not\models\Diamond\Box p$。よって $0$ で $\Box\Diamond p\to\Diamond\Box p$ は偽で、健全性定理より $\mathsf{S4}$ の定理でない。
+:::
+
+::: problem {#logic:prob-mcomp-gl-box-bot}
+$\mathsf{GL}\vdash\Box\Box\bot\to\Box\bot$ でないことを、有限の木で示せ。
+:::
+
+::: solution
+$W=\{0,1\}$、$0R1$ だけとする（有限・推移的・非反射的な木）。$1$ は何も見ないので $1\models\Box\bot$、よって $0\models\Box\Box\bot$。$0$ は $1$ を見て $1\not\models\bot$ なので $0\not\models\Box\bot$。
+:::
+
+::: supplement
+**高い視点から：フィルトレーションとしての構成.** 本ページの構成は、極大無矛盾集合全体という無限の「カノニカルモデル」（\ref{logic:page-canonical-models}）を、$D$ の部分論理式だけを見る「窓」で割って有限にしたもの（**フィルトレーション**）とみることができる。$\mathsf{GL}$ ではカノニカルモデルそのものは逆整礎でないとされ（Boolos 第 6 章で扱われる）、この有限化が本質的である（\ref{logic:page-canonical-models}）。有限モデル性は「定理でないことの有限の証拠」があることを意味し、定理であることの証拠（証明）の探索と並行して調べることで決定可能性が得られる。算術の側では、$\mathsf{GL}$ の決定可能性は、ソロヴェイの定理を通じて「どの様相論理式の翻訳が常に証明可能か」が決定可能であることを意味する。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

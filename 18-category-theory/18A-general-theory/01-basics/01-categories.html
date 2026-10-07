@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>圏 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/01-basics/01-categories.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 圏 {#cat:page-categories keywords="category, objects and morphisms, composition, identity, small category, locally small, Grothendieck universe, large categories, isomorphism, groupoid, hom-sets"}
+
+**圏**は、「対象」と、対象から対象への「射」と、射の合成からなる構造である（\ref{cat:category}）。集合と写像、群と準同型、位相空間と連続写像のように、数学の多くの分野は「ある種の構造をもつ対象と、構造を保つ写像」を扱っており、圏はその共通の骨組みを取り出したものである。本ページでは圏の定義と基本的な例を述べ、「すべての集合の圏」のような大きな圏を集合論の中でどう扱うかを決める（\ref{cat:universe}）。最後に、同型射（\ref{cat:isomorphism}）と、射の集合（hom 集合）による圏の言い換え（\ref{cat:hom-set-formulation}）を述べる。
+
+> 資料：S. Mac Lane, *Categories for the Working Mathematician*, 2nd ed.（Springer GTM 5, 1998）第 I 章 §1, §2, §6–§8。訳語は T. レンスター『ベーシック圏論』（斎藤恭司監修・土岡俊介訳）で確かめた。Mac Lane は大きさの問題を「宇宙を一つ仮定する」方法で扱っており、本サイトもそれに従う。
+
+## 記法と定義の確認 {#cat:sec-cat-notation}
+
+::: notation
+- 集合論の基本（関係、関数、単射・全射、半順序、順序数、累積階層 $R(\alpha)$ とランク、到達不能基数）は集合論の系列のとおり（\ref{set:relation}, \ref{set:function}, \ref{set:injection-surjection}, \ref{set:total-order}, \ref{set:ordinal}, \ref{set:cumulative-hierarchy}, \ref{set:rank}, \ref{set:inaccessible}）。
+- 関数 $f$ は、定義域 $X$・終わりの集合 $Y$ を指定した組として扱い、$f\colon X\to Y$ と書く。$f$ の値の全体（値域、\ref{set:relation}）は $Y$ と一致するとは限らない。
+- **議論する体系**：$\ZFC$ に「宇宙 $\mathcal{U}$ が一つ存在する」（\ref{cat:universe}）を加えたもので議論する。この仮定は大きな圏（すべての小さい集合の圏など）を集合として扱うためだけに使い、個々の定理の証明では使わないことが多い。
+- 圏の記号は太字で書く（$\mathbf{Set}$, $\mathbf{Grp}$, $\mathbf{Top}$ など）。
+:::
+
+## 圏の定義 {#cat:sec-cat-definition}
+
+::: definition 圏 {#cat:category keywords="category, object, morphism, arrow, domain, codomain, composition, identity morphism, associativity, unit law" index="圏|けん, 対象|たいしょう, 射|しゃ, 恒等射|こうとうしゃ, 合成（射の）|ごうせいしゃの, 定義域（射の）|ていぎいきしゃの, 余域|よいき"}
+**圏** $\mathbf{C}$ は次のデータからなる。
+1. 集合 $\operatorname{Ob}\mathbf{C}$（その元を**対象**という）と集合 $\operatorname{Mor}\mathbf{C}$（その元を**射**という）。
+2. 関数 $\operatorname{dom},\operatorname{cod}\colon\operatorname{Mor}\mathbf{C}\to\operatorname{Ob}\mathbf{C}$。$\operatorname{dom}f=a$, $\operatorname{cod}f=b$ のとき $f\colon a\to b$ と書き、$a$ を $f$ の**定義域**、$b$ を $f$ の**余域**という。
+3. 各対象 $a$ に射 $1_{a}\colon a\to a$ を対応させる関数（$1_{a}$ を $a$ の**恒等射**という）。
+4. **合成**：$\operatorname{dom}g=\operatorname{cod}f$ となる射の組 $(g,f)$ に射 $g\circ f$ を対応させる関数。$g\circ f$ を $gf$ とも書く。
+
+これらは次を満たす。
+- (C1) $f\colon a\to b$, $g\colon b\to c$ なら $g\circ f\colon a\to c$。
+- (C2)（**結合律**）$f\colon a\to b$, $g\colon b\to c$, $h\colon c\to d$ なら $h\circ(g\circ f)=(h\circ g)\circ f$。
+- (C3)（**単位律**）$f\colon a\to b$ なら $f\circ1_{a}=f=1_{b}\circ f$。
+
+対象 $a,b$ について $\mathbf{C}(a,b)\defeq\{f\in\operatorname{Mor}\mathbf{C}:f\colon a\to b\}$ とおき、**hom 集合**という（$\operatorname{Hom}_{\mathbf{C}}(a,b)$ とも書く）。$a\in\mathbf{C}$ は $a\in\operatorname{Ob}\mathbf{C}$ の、$f\in\mathbf{C}$ は $f\in\operatorname{Mor}\mathbf{C}$ の略記とする。
+:::
+
+::: intuition
+射は「構造を保つ写像」の抽象化であるが、定義には「写像」も「元」も出てこない。圏で意味をもつのは、射がどの対象からどの対象へ行くかと、射をつなげたときに何になるかだけである。結合律と単位律は、写像の合成が満たす二つの性質をそのまま公理にしたものである。
+:::
+
+::: example
+1. **$\mathbf{0}$, $\mathbf{1}$, $\mathbf{2}$, $\mathbf{3}$.** $\mathbf{0}$ は対象も射もない圏。$\mathbf{1}$ は対象が一つで射が恒等射だけの圏。$\mathbf{2}$ は対象 $0,1$ と、恒等射以外に射 $0\to1$ を一つだけもつ圏。$\mathbf{3}$ は対象 $0,1,2$ と、恒等射以外に $0\to1$, $1\to2$, $0\to2$ を一つずつもつ圏（$0\to1\to2$ の合成は $0\to2$）。いずれも合成の決め方は一通りしかない。
+2. **平行な射の対.** 対象 $a,b$ と、恒等射以外に二つの射 $f,g\colon a\to b$ をもつ圏。合成できる射の組は恒等射を含むものだけである。
+3. **離散圏.** すべての射が恒等射である圏。任意の集合 $X$ に対し、$\operatorname{Ob}=X$, $\operatorname{Mor}=\{1_{x}:x\in X\}$ とする離散圏がある（$1_{x}\defeq x$ と置いてよい）。
+4. **モノイド.** 対象が一つの圏は、射の集合 $M$ と、結合的で単位元 $1$ をもつ演算 $\circ$ を与えることと同じである（どの二つの射も合成できるため）。すなわちモノイド（単位元をもつ半群）と同じものである。どの圏でも、各対象 $a$ について $\mathbf{C}(a,a)$ は合成についてモノイドをなす。
+5. **群.** 対象が一つの圏で、すべての射が逆射（\ref{cat:isomorphism}）をもつもの。
+6. **前順序.** 集合 $P$ 上の反射的かつ推移的な関係 $\le$（前順序）に対し、$\operatorname{Ob}=P$, $\operatorname{Mor}=\{(p,q):p\le q\}$, $\operatorname{dom}(p,q)=p$, $\operatorname{cod}(p,q)=q$, $(q,r)\circ(p,q)=(p,r)$, $1_{p}=(p,p)$ とすると圏になる。推移律が合成の存在、反射律が恒等射の存在に当たる。逆に、どの二つの対象の間にも射が高々一つしかない圏は、$p\le q\iff\mathbf{C}(p,q)\neq\varnothing$ によって前順序を定める。半順序（\ref{set:total-order}）や順序数（\ref{set:ordinal}）もこの意味で圏である。
+7. **行列.** 可換環 $K$ について、対象を正の整数、射 $n\to m$ を $K$ 成分の $m\times n$ 行列、合成を行列の積とすると圏 $\mathbf{Mat}_{K}$ になる（単位行列が恒等射）。射は写像ではない。
+8. **関係の圏.** 対象を集合、射 $X\to Y$ を部分集合 $R\subseteq X\times Y$ とし、$S\circ R\defeq\{(x,z):\exists y\,((x,y)\in R\land(y,z)\in S)\}$ を合成とする（関係の合成、\ref{set:relation-composition}）。恒等射は対角集合。ただし $\operatorname{dom},\operatorname{cod}$ を定めるため、射は三つ組 $(X,R,Y)$ とする。
+:::
+
+::: lemma 恒等射の一意性 {#cat:identity-unique keywords="uniqueness of identity morphisms" index="恒等射の一意性|こうとうしゃのいちいせい"}
+圏 $\mathbf{C}$ の対象 $b$ について、射 $u\colon b\to b$ が、「$f\colon a\to b$ なら $u\circ f=f$、$g\colon b\to c$ なら $g\circ u=g$」を満たすならば $u=1_{b}$。
+:::
+
+::: proof
+$u$ の性質を $g=1_{b}$ に適用すると $1_{b}\circ u=1_{b}$。単位律（C3）を $f=u$ に適用すると $1_{b}\circ u=u$。よって $u=1_{b}$。
+
+::: hypcheck
+- 使ったのは、$u$ についての右からの性質（$g\circ u=g$）と、$1_{b}$ についての左からの単位律だけである。片側の性質だけをもつ $u$ は一意とは限らない（問題 \ref{cat:prob-one-sided-unit}）。
+:::
+:::
+
+::: definition 部分圏 {#cat:subcategory keywords="subcategory, full subcategory" index="部分圏|ぶぶんけん, 充満部分圏|じゅうまんぶぶんけん"}
+圏 $\mathbf{C}$ の**部分圏** $\mathbf{S}$ とは、部分集合 $\operatorname{Ob}\mathbf{S}\subseteq\operatorname{Ob}\mathbf{C}$, $\operatorname{Mor}\mathbf{S}\subseteq\operatorname{Mor}\mathbf{C}$ で、$\mathbf{S}$ の射の定義域・余域が $\mathbf{S}$ の対象であり、$\mathbf{S}$ の対象の恒等射と、合成できる $\mathbf{S}$ の射の合成が $\mathbf{S}$ に属するものをいう（$\mathbf{C}$ の演算を制限して圏になる）。さらに、$\mathbf{S}$ の任意の対象 $a,b$ について $\mathbf{S}(a,b)=\mathbf{C}(a,b)$ となるとき、**充満部分圏**という。
+:::
+
+::: example
+可換群の圏は群の圏の充満部分圏で（可換群の間の準同型は群の準同型そのもの）、集合と単射の圏は集合の圏の部分圏だが充満ではない。
+:::
+
+## 大きさの問題と宇宙 {#cat:sec-cat-universe}
+
+「すべての集合を対象とする圏」の対象の全体は集合ではない（真のクラス、\ref{set:class}）。そこで、ふつうの数学をその中で行えるほど大きい集合 $\mathcal{U}$ を一つ固定し、$\mathcal{U}$ の元だけを「小さい」集合とみなす。
+
+::: definition 宇宙 {#cat:universe keywords="Grothendieck universe, small set" index="宇宙（グロタンディーク）|うちゅうぐろたんでぃーく, 小さい集合|ちいさいしゅうごう"}
+集合 $\mathcal{U}$ が**宇宙**であるとは、次を満たすことをいう。
+1. $x\in u\in\mathcal{U}$ なら $x\in\mathcal{U}$（推移的）。
+2. $u,v\in\mathcal{U}$ なら $\{u,v\}$, $(u,v)$, $u\times v\in\mathcal{U}$。
+3. $u\in\mathcal{U}$ なら $\mathcal{P}(u)\in\mathcal{U}$ かつ $\bigcup u\in\mathcal{U}$。
+4. $\omega\in\mathcal{U}$。
+5. $a\in\mathcal{U}$, $b\subseteq\mathcal{U}$ で、全射 $a\to b$ があるなら $b\in\mathcal{U}$。
+
+宇宙 $\mathcal{U}$ を一つ固定し、$\mathcal{U}$ の元を**小さい集合**という。
+:::
+
+::: intuition
+条件 1〜5 は、集合論の基本的な操作（対、直積、冪集合、和集合、無限集合、置換による像）で $\mathcal{U}$ の外に出ないことを言っている。したがって、実数・群・位相空間など通常の構成はすべて $\mathcal{U}$ の中で行え、$\mathcal{U}$ を「ふつうの数学の世界」とみなせる。$\mathcal{U}$ 自身は小さくない（下の \ref{cat:universe-from-inaccessible} の 2）ので、$\mathcal{U}$ の部分集合を使って大きな圏が作れる。
+:::
+
+::: proposition 宇宙の存在と到達不能基数 {#cat:universe-from-inaccessible keywords="R(kappa) for an inaccessible kappa is a universe" index="宇宙の存在|うちゅうのそんざい"}
+1. $\kappa$ が強到達不能基数（\ref{set:inaccessible}）ならば、$R(\kappa)$ は宇宙である。
+2. 宇宙 $\mathcal{U}$ について $\mathcal{U}\notin\mathcal{U}$。
+:::
+
+::: proof
+**1.** $U\defeq R(\kappa)$ とおく。$\kappa$ は極限順序数なので、$x\in U\iff\rank(x)<\kappa$（\ref{set:rank-basic} の 1）。
+- 条件 1：$R(\kappa)$ は推移的（\ref{set:r-alpha-basic} の 1）。
+- 条件 2：$u,v\in U$ で $\mu=\max(\rank u,\rank v)<\kappa$ なら、$\{u,v\}$, $(u,v)$, $u\times v$ のランクは $\mu+2$ 以下（\ref{set:rank-operations} の 3, 5）で、$\kappa$ は極限なので $\mu+2<\kappa$。
+- 条件 3：$\rank\mathcal{P}(u)=\rank u+1<\kappa$、$\rank\bigcup u\le\rank u$（同命題の 1, 2）。
+- 条件 4：$\rank\omega=\omega<\kappa$（\ref{set:rank-ordinal}、$\kappa>\omega$）。
+- 条件 5：$a\in U$、$b\subseteq U$、全射 $a\to b$ があるとする。\ref{set:inaccessible-model} の 2 より $U=H(\kappa)$ なので $\lvert a\rvert<\kappa$、全射から（選択公理を使って）$\lvert b\rvert\le\lvert a\rvert<\kappa$。$b$ の各元のランクは $\kappa$ 未満で、$\kappa$ は正則なので、$\lvert b\rvert$ 個の $\kappa$ 未満の順序数の上限は $\kappa$ 未満。よって $\rank b=\sup\{\rank y+1:y\in b\}<\kappa$（\ref{set:rank-basic} の 3）。
+
+**2.** $\mathcal{U}\in\mathcal{U}$ なら $\{\mathcal{U}\}$ は元 $\mathcal{U}$ について $\mathcal{U}\in\mathcal{U}\cap\{\mathcal{U}\}$ となり、基礎の公理（$\{\mathcal{U}\}$ は $\in$ 極小元をもつ）に反する。
+
+::: hypcheck
+- **「強到達不能」の各条件**：$\kappa$ が極限であることは条件 2 に、$\kappa>\omega$ は条件 4 に、正則性は条件 5 に使った。強極限性（$2^{\lambda}<\kappa$）は、$R(\kappa)=H(\kappa)$（\ref{set:inaccessible-model}）を経由して条件 5 の $\lvert a\rvert<\kappa$ に使った。
+- **公理**：条件 5 で選択公理を使った。
+- **宇宙の存在は ZFC では証明できない**：$\ZFC$ が無矛盾なら、$\ZFC$ から強到達不能基数の存在は証明できない（\ref{set:con-no-inaccessible}）。宇宙の存在を仮定に加えるのはこのためである。
+:::
+:::
+
+::: definition 小さい圏・局所小の圏 {#cat:small-category keywords="small category, large category, locally small category" index="小さい圏|ちいさいけん, 大きい圏|おおきいけん, 局所小|きょくしょしょう"}
+圏 $\mathbf{C}$ が**小さい**とは、$\operatorname{Ob}\mathbf{C}$ と $\operatorname{Mor}\mathbf{C}$ がともに小さい集合であることをいう。小さくない圏を**大きい**という。任意の対象 $a,b$ について $\mathbf{C}(a,b)$ が小さい集合であるとき、$\mathbf{C}$ を**局所小**という。
+:::
+
+::: example
+1. **$\mathbf{Set}$.** 対象をすべての小さい集合、射をそれらの間の関数とする圏。$\operatorname{Ob}\mathbf{Set}=\mathcal{U}$ は小さくない（\ref{cat:universe-from-inaccessible} の 2）ので、$\mathbf{Set}$ は大きい圏である。小さい集合 $X,Y$ について、関数 $X\to Y$ の全体は $\mathcal{P}(X\times Y)$ の部分集合なので（宇宙の条件 2, 3 と推移性から）小さく、$\mathbf{Set}$ は局所小である。
+2. **代数系・位相空間の圏.** 台集合が小さい群とその準同型の圏 $\mathbf{Grp}$、同じく可換群 $\mathbf{Ab}$、単位元をもつ環 $\mathbf{Ring}$、可換環 $\mathbf{CRing}$、環 $R$ 上の左加群 $R\text{-}\mathbf{Mod}$、体 $F$ 上の線形空間 $\mathbf{Vect}_{F}$、位相空間と連続写像 $\mathbf{Top}$。どれも大きく局所小である。
+3. **基点付きの圏.** 基点を指定した小さい集合と、基点を保つ関数の圏 $\mathbf{Set}_{*}$。同様に $\mathbf{Top}_{*}$。
+4. **小さい圏.** 例 1 の $\mathbf{0},\mathbf{1},\mathbf{2},\mathbf{3}$、小さいモノイド、小さい前順序はすべて小さい圏である。
+5. **射が写像でない大きな圏.** 対象を小さい位相空間、射をホモトピー類とする圏 $\mathbf{hTop}$ では、射は写像の同値類である。
+:::
+
+::: remark
+1. 小さい圏とその間の関手（次ページ）からなる圏 $\mathbf{Cat}$ は大きく局所小である。大きな圏を対象とする圏 $\mathbf{CAT}$（たとえば対象を $\mathcal{U}$ の部分集合で作られる圏とする）も、宇宙を一つ固定する方法では集合として作れる。ただし $\mathbf{CAT}$ は局所小ではない。
+2. 宇宙を使わず、大きな圏を真のクラス（\ref{set:class}）として扱う方法もある。その場合、「すべての大きな圏の圏」のような対象は作れない。本サイトは、Mac Lane に従って宇宙を一つ仮定する方法をとる。
+:::
+
+## 同型射 {#cat:sec-cat-isomorphism}
+
+::: definition 同型射 {#cat:isomorphism keywords="isomorphism, inverse morphism, isomorphic objects" index="同型射|どうけいしゃ, 逆射|ぎゃくしゃ, 同型（対象の）|どうけいたいしょうの"}
+射 $f\colon a\to b$ が**同型射**であるとは、射 $g\colon b\to a$ で $g\circ f=1_{a}$ かつ $f\circ g=1_{b}$ となるものがあることをいう。$g$ を $f$ の**逆射**という。$a$ から $b$ への同型射があるとき、$a$ と $b$ は**同型**であるといい、$a\cong b$ と書く。
+:::
+
+::: proposition 同型射の基本性質 {#cat:isomorphism-basic keywords="uniqueness of inverses, composition of isomorphisms" index="逆射の一意性|ぎゃくしゃのいちいせい"}
+1. 同型射の逆射は一意である（$f^{-1}$ と書く）。
+2. 恒等射は同型射で、$1_{a}^{-1}=1_{a}$。
+3. $f\colon a\to b$, $g\colon b\to c$ が同型射なら $g\circ f$ も同型射で、$(g\circ f)^{-1}=f^{-1}\circ g^{-1}$。$f^{-1}$ も同型射で、$(f^{-1})^{-1}=f$。
+4. したがって、$\cong$ は対象の上の同値関係である。
+:::
+
+::: proof
+**1.** $g,g'$ がともに $f$ の逆射なら、結合律と単位律から
+$$
+g=g\circ1_{b}=g\circ(f\circ g')=(g\circ f)\circ g'=1_{a}\circ g'=g'.
+$$
+
+**2.** 単位律から $1_{a}\circ1_{a}=1_{a}$。
+
+**3.** 結合律から $(f^{-1}\circ g^{-1})\circ(g\circ f)=f^{-1}\circ(g^{-1}\circ g)\circ f=f^{-1}\circ f=1_{a}$。逆向きの合成も同様に $1_{c}$。$f^{-1}$ については、定義の二つの等式が $f^{-1}$ の逆射が $f$ であることをそのまま言っている。
+
+**4.** 反射律は 2、対称律は 3 の後半、推移律は 3 の前半。
+
+::: hypcheck
+- **1 で使った等式**：$g$ が左逆射（$g\circ f=1_{a}$）で、$g'$ が右逆射（$f\circ g'=1_{b}$）であることだけを使った。したがって、左逆射と右逆射が両方あれば、それらは一致して逆射になる。片方だけでは一意性は成り立たない（問題 \ref{cat:prob-one-sided-inverse}）。
+:::
+:::
+
+::: example
+1. $\mathbf{Set}$ の同型射は全単射、$\mathbf{Grp}$ の同型射は群の同型写像（全単射な準同型の逆写像は準同型）。
+2. $\mathbf{Top}$ では、全単射な連続写像は同型射（同相写像）とは限らない。たとえば、離散位相の二点集合から密着位相の二点集合への恒等写像は連続で全単射だが、逆写像は連続でない。
+3. 半順序（例 6）では、同型射は恒等射だけである（$p\le q$ かつ $q\le p$ なら $p=q$）。前順序では、$p\le q\le p$ となる異なる $p,q$ の間に同型射がある。
+:::
+
+::: definition 亜群 {#cat:groupoid keywords="groupoid" index="亜群|あぐん"}
+すべての射が同型射である圏を**亜群**という。対象が一つの亜群は群である。
+:::
+
+::: example
+位相空間 $X$ について、対象を $X$ の点、射 $x\to y$ を $x$ から $y$ への道のホモトピー類（端点を固定）とすると亜群になる（**基本亜群**）。点 $x$ での $\mathbf{C}(x,x)$ は基本群である。
+:::
+
+## hom 集合による言い換え {#cat:sec-cat-hom-sets}
+
+::: proposition hom 集合による圏の定義 {#cat:hom-set-formulation keywords="definition of a category via hom-sets and composition maps" index="hom 集合による圏の定義|ほむしゅうごうによるけんのていぎ"}
+次のデータ (H) が与えられたとする。
+- 集合 $O$。
+- $O$ の元の各組 $(a,b)$ に集合 $H(a,b)$ を対応させる関数で、$(a,b)\neq(a',b')$ なら $H(a,b)\cap H(a',b')=\varnothing$ となるもの。
+- 各三つ組 $(a,b,c)$ に関数 $\circ_{a,b,c}\colon H(b,c)\times H(a,b)\to H(a,c)$。
+- 各 $a$ に元 $1_{a}\in H(a,a)$。
+
+これらが結合律と単位律（$\circ$ を適切な添字で読む）を満たすとき、$\operatorname{Ob}\defeq O$, $\operatorname{Mor}\defeq\bigcup_{a,b}H(a,b)$、$f\in H(a,b)$ について $\operatorname{dom}f\defeq a$, $\operatorname{cod}f\defeq b$、$g\circ f\defeq\circ_{a,b,c}(g,f)$ と定めれば圏になり、$\mathbf{C}(a,b)=H(a,b)$。逆に、圏 $\mathbf{C}$ からは $H(a,b)\defeq\mathbf{C}(a,b)$ と合成の制限によってデータ (H) が得られ、二つの対応は互いに逆である。
+:::
+
+::: proof
+**Step 1（dom, cod が関数になること）.** $f\in\operatorname{Mor}$ は、交わらないという条件から、ちょうど一つの組 $(a,b)$ について $f\in H(a,b)$。よって $\operatorname{dom}f$, $\operatorname{cod}f$ は一意に定まる。
+
+**Step 2（合成と公理）.** $\operatorname{dom}g=\operatorname{cod}f$ なら、$f\in H(a,b)$, $g\in H(b,c)$ となる $a,b,c$ が Step 1 から一意に定まり、$g\circ f\in H(a,c)$。これが (C1)。(C2), (C3) は仮定した結合律・単位律そのもの。
+
+**Step 3（hom 集合の一致）.** $f\in\mathbf{C}(a,b)$、すなわち $\operatorname{dom}f=a$, $\operatorname{cod}f=b$ であることは、Step 1 から $f\in H(a,b)$ と同値。
+
+**Step 4（逆の対応）.** 圏 $\mathbf{C}$ の hom 集合は、$\operatorname{dom},\operatorname{cod}$ が関数であることから互いに交わらない。この (H) から上の方法で作った圏は、対象・射・dom・cod・合成・恒等射がすべて元の $\mathbf{C}$ と一致する。逆に (H) から作った圏の hom 集合は Step 3 から $H(a,b)$ に戻る。
+
+::: hypcheck
+- **「hom 集合が交わらない」という条件**：Step 1 で dom, cod を定めるのに使った。外すと、同じ元 $f$ が $H(a,b)$ と $H(a',b')$ の両方に入り、射の定義域が決まらない。実際の構成で交わらない条件が満たされないとき（たとえば $\emptyset$ から任意の集合への関数を、終わりの集合を記録しない「グラフだけの集合」で表すと、すべて $\varnothing$ になる）は、射を $(a,f,b)$ のような三つ組に置き換えて交わらないようにする。関係の圏（例 8）で射を三つ組にしたのはこのためである。
+:::
+:::
+
+::: supplement
+**別の定式化.** 対象を使わず、射と「合成できる組」だけで圏を公理化することもできる。恒等射を「合成で何も変えない射」として定義し直すと、元の定義と同値になる（問題 \ref{cat:prob-arrows-only}）。対象は恒等射と同一視される。
+
+**一階の理論として.** 圏の公理は、対象と射の二種類の変数をもつ一階述語論理の理論として書ける。この見方では、大きさの問題は現れない（Mac Lane はこれを「メタ圏」と呼んでいる）。すべての集合の「圏」を一階の理論として公理化したものが初等トポスであり、圏論による集合論の基礎づけの一つになる（\ref[トポス]{cat:page-elementary-topos}）。
+
+**高い視点から：圏は「多対象のモノイド」.** 例 4 のとおり、対象が一つの圏はモノイドである。一般の圏は「合成できるかどうかが型（定義域と余域）で制限されたモノイド」とみなせる。群に対する亜群、前順序に対する圏（射が高々一つ）も同じ関係にある。比喩で言えば、モノイドが「一つの部屋の中での動き方」なら、圏は「部屋（対象）がたくさんあり、ある部屋から別の部屋へのドア（射）が並んでいる建物」で、ドアは出口と入口が合うときだけ続けて通れる。
+:::
+
+## 問題 {#cat:sec-cat-problems}
+
+::: problem {#cat:prob-one-sided-unit}
+「片側だけの恒等射」は一意とは限らないことを示せ。すなわち、集合 $M$ 上の結合的な演算で、$e\cdot x=x$（すべての $x$）を満たす $e$（左単位元）が二つ以上あるものの例を挙げよ。また、左単位元 $e$ と右単位元 $e'$ があれば $e=e'$ であることを示せ。
+:::
+
+::: solution
+$M=\{e_{1},e_{2}\}$ に $x\cdot y\defeq y$ と演算を定めると、$(x\cdot y)\cdot z=z=x\cdot(y\cdot z)$ で結合的で、$e_{1},e_{2}$ はどちらも左単位元。後半：$e=e\cdot e'$（$e'$ が右単位元）$=e'$（$e$ が左単位元）。これは \ref{cat:identity-unique} の証明と同じ議論である。
+:::
+
+::: problem {#cat:prob-one-sided-inverse}
+$\mathbf{Set}$ において、左逆射をもつ（$g\circ f=1$ となる $g$ がある）射 $f$ で、左逆射が一意でないものの例を挙げよ。また、左逆射も右逆射ももつ射は同型射であることを示せ。
+:::
+
+::: solution
+$f\colon\{0,1\}\to\{0,1,2\}$, $f(i)=i$ とする。$g\colon\{0,1,2\}\to\{0,1\}$ が左逆射であるための条件は $g(0)=0$, $g(1)=1$ だけで、$g(2)$ は $0$ でも $1$ でもよいので、左逆射は二つある。後半は \ref{cat:isomorphism-basic} の 1 の証明：左逆射 $g$ と右逆射 $g'$ について $g=g\circ f\circ g'=g'$ なので、$g$ は両側の逆射である。
+:::
+
+::: problem {#cat:prob-arrows-only}
+集合 $A$ と、部分集合 $P\subseteq A\times A$（**合成できる組**）、関数 $\cdot\colon P\to A$ が与えられたとする。$u\in A$ が**単位**であるとは、$(f,u)\in P$ なら $f\cdot u=f$、$(u,g)\in P$ なら $u\cdot g=g$ となることとする。次の三つを仮定する。
+- (i) $(k,g)\in P$ かつ $(k\cdot g,f)\in P$ であることと、$(g,f)\in P$ かつ $(k,g\cdot f)\in P$ であることは同値で、そのとき $(k\cdot g)\cdot f=k\cdot(g\cdot f)$。
+- (ii) $(k,g)\in P$ かつ $(g,f)\in P$ なら、$(k\cdot g,f)\in P$。
+- (iii) 各 $g\in A$ に、単位 $u,u'$ で $(g,u)\in P$, $(u',g)\in P$ となるものがある。
+
+このとき、対象を単位の全体、射を $A$ とし、$\operatorname{dom}g$ を (iii) の $u$、$\operatorname{cod}g$ を (iii) の $u'$ とすると、圏が得られることを示せ。
+:::
+
+::: solution
+**Step 1（(iii) の $u,u'$ の一意性）.** $u_{1},u_{2}$ がともに単位で $(g,u_{1}),(g,u_{2})\in P$ とする。$g\cdot u_{1}=g$ なので $(g\cdot u_{1},u_{2})=(g,u_{2})\in P$。(i)（$k=g$, $g=u_{1}$, $f=u_{2}$）から $(u_{1},u_{2})\in P$。単位の定義から $u_{1}\cdot u_{2}=u_{2}$（$u_{1}$ が単位）かつ $u_{1}\cdot u_{2}=u_{1}$（$u_{2}$ が単位）なので $u_{1}=u_{2}$。$u'$ も同様。よって dom, cod は関数として定まる。
+
+**Step 2（合成できる組と dom = cod）.** $(g,f)\in P$ なら $\operatorname{dom}g=\operatorname{cod}f$ を示す。$u\defeq\operatorname{dom}g$ とすると $(g,u)\in P$ で $g=g\cdot u$。$(g\cdot u,f)=(g,f)\in P$ なので (i) から $(u,f)\in P$。$u$ は単位で $(u,f)\in P$ なので、$\operatorname{cod}f$ の一意性（Step 1 と同様の議論で、$(u',f)\in P$ となる単位 $u'$ は一つ）から $\operatorname{cod}f=u$。逆に $\operatorname{dom}g=\operatorname{cod}f=u$ なら、$(g,u)\in P$, $(u,f)\in P$ と (ii) から $(g\cdot u,f)=(g,f)\in P$。
+
+**Step 3（合成の定義域と余域）.** $(g,f)\in P$ のとき $\operatorname{dom}(g\cdot f)=\operatorname{dom}f$：$u=\operatorname{dom}f$ とすると $(f,u)\in P$、(ii) で $(g\cdot f,u)\in P$。同様に $\operatorname{cod}(g\cdot f)=\operatorname{cod}g$。
+
+**Step 4（恒等射と公理）.** 単位 $u$ について $(u,u)\in P$：(iii) で $(u,v)\in P$ となる単位 $v$ をとると $u\cdot v=u$ かつ $u\cdot v=v$ なので $v=u$。よって $\operatorname{dom}u=\operatorname{cod}u=u$ で、$1_{u}\defeq u$ とおけば単位律は単位の定義そのもの。結合律は (i)。以上で圏の公理がすべて成り立つ。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

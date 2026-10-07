@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>初等部分構造とレーヴェンハイム–スコーレムの定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/02-first-order-logic/11-elementary-substructures.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 初等部分構造とレーヴェンハイム–スコーレムの定理 {#model:page-elementary-substructures keywords="substructure, embedding, elementary substructure, elementary embedding, Tarski-Vaught test, downward Löwenheim-Skolem theorem, upward Löwenheim-Skolem theorem, elementary diagram"}
+
+\ref{logic:ls-downward-weak} は「小さいモデルが**ある**」ことだけを主張した。本ページでは、与えられた構造 $\mathcal{M}$ の**内部に**、$\mathcal{M}$ と「同じことが同じ元について成り立つ」小さい部分構造（**初等部分構造**）を見つける。判定法は**タルスキ–ヴォートの判定法**で、構成の道具は、存在量化子の証拠を選ぶ**スコーレム関数**と、集合論の閉包補題（\ref{set:closure-lemma}）である。最後に、コンパクト性と組み合わせて、大きい**初等拡大**を作る上昇版を示す。
+
+## 記法と定義の確認 {#model:sec-elementary-notation}
+
+::: notation
+- 構造・割り当て・充足・縮小と拡大・同型写像は \ref{logic:structure}, \ref{logic:assignment}, \ref{logic:satisfaction}, \ref{logic:reduct-lemma}, \ref{logic:isomorphism-invariance} のとおり。論理式の基本記号は $\bot,=,P,\to,\forall$ で、$\neg,\wedge,\vee,\exists$ は略記（\ref{logic:abbreviation-semantics}）。
+- $N\subset M$ で $v$ が $N$ に値をとる割り当てのとき、$v$ を $M$ に値をとる割り当てともみなす。
+- 変数は $\mathrm{Var}=\{v_{0},v_{1},\dots\}$ と番号付けられている（\ref{logic:language} の直後）。有限個の変数を「番号の順に並べる」とはこの番号の順のことである。
+- 初等的同値 $\mathcal{M}\equiv\mathcal{N}$ と $\mathrm{Th}(\mathcal{M})$ は \ref{model:elementary-equivalence} のとおり。
+- 有限項演算とその閉包は \ref{set:finitary-closure} の意味で、$0$ 項演算は元そのものである。閉包補題（\ref{set:closure-lemma}, AC）：$\kappa$ を無限基数、$\lvert B\rvert\le\kappa$、演算の集合 $\mathcal{F}$ が $\lvert\mathcal{F}\rvert\le\kappa$ なら、$B$ の $\mathcal{F}$ による閉包の濃度は $\le\kappa$。
+- **公理.** $\ZFC$ で議論する。選択公理の使用箇所は明記する。
+:::
+
+## 部分構造と埋め込み {#model:sec-substructures}
+
+::: definition 部分構造 {#model:substructure keywords="substructure, extension" index="部分構造|ぶぶんこうぞう, 拡大構造|かくだいこうぞう"}
+$\mathcal{L}$ 構造 $\mathcal{N},\mathcal{M}$ について、$\mathcal{N}$ が $\mathcal{M}$ の**部分構造**である（$\mathcal{N}\subset\mathcal{M}$ と書く）とは、$N\subset M$ であり、
+- 各定数記号 $c$ について $c^{\mathcal{N}}=c^{\mathcal{M}}$、
+- 項数 $n$ の各関数記号 $f$ について $f^{\mathcal{N}}=f^{\mathcal{M}}\restr{N^{n}}$（とくに $N$ は $f^{\mathcal{M}}$ で閉じている）、
+- 項数 $n$ の各関係記号 $P$ について $P^{\mathcal{N}}=P^{\mathcal{M}}\cap N^{n}$
+
+となることをいう。逆に、空でない $N\subset M$ が各 $c^{\mathcal{M}}$ を含み各 $f^{\mathcal{M}}$ で閉じていれば、上の式で $\mathcal{N}$ を定めると部分構造になる。
+:::
+
+::: definition 埋め込みと初等埋め込み {#model:elementary-embedding keywords="embedding, elementary embedding" index="埋め込み|うめこみ, 初等埋め込み|しょとううめこみ"}
+$\mathcal{L}$ 構造 $\mathcal{N},\mathcal{M}$ の間の単射 $h\colon N\to M$ が**埋め込み**であるとは、\ref{logic:isomorphism-invariance} の同型写像の三つの条件（定数・関数・関係の保存）を満たすことをいう（全射は要求しない）。$h$ が**初等埋め込み**であるとは、任意の論理式 $\varphi$ と $\mathcal{N}$ の割り当て $v$ について $\mathcal{N},v\models\varphi\iff\mathcal{M},h\circ v\models\varphi$ となることをいう。
+:::
+
+::: definition 初等部分構造 {#model:elementary-substructure keywords="elementary substructure, elementary extension" index="初等部分構造|しょとうぶぶんこうぞう, 初等拡大|しょとうかくだい"}
+$\mathcal{N}\subset\mathcal{M}$ が**初等部分構造**である（$\mathcal{N}\preccurlyeq\mathcal{M}$ と書き、$\mathcal{M}$ を $\mathcal{N}$ の**初等拡大**という）とは、包含写像が初等埋め込みであること、すなわち任意の論理式 $\varphi$ と $N$ に値をとる割り当て $v$ について
+$$
+\mathcal{N},v\models\varphi\iff\mathcal{M},v\models\varphi
+$$
+となることをいう。
+:::
+
+::: intuition
+部分構造は「元と演算と関係を制限した」ものにすぎず、$\mathcal{N}$ の元についての主張が $\mathcal{N}$ と $\mathcal{M}$ で同じ真偽をもつとは限らない。量化子が $\mathcal{N}$ の中だけを動くか $\mathcal{M}$ 全体を動くかで答えが変わりうるからである。初等部分構造は、$\mathcal{N}$ の元をパラメータとするどんな主張についても、$\mathcal{N}$ の中から見ても $\mathcal{M}$ の中から見ても同じ答えが出る部分構造である。$\mathcal{N}\preccurlyeq\mathcal{M}$ なら（文に適用して）$\mathcal{N}\equiv\mathcal{M}$ である。
+:::
+
+::: example 部分構造であり初等的同値だが初等部分構造でない {#model:ex-not-elementary}
+関係記号 $<$ だけの言語で、$\mathcal{M}=(\N,<)$、$\mathcal{N}=(\N\setminus\{0\},<)$ とする。$\mathcal{N}\subset\mathcal{M}$ であり、$n\mapsto n-1$ は $\mathcal{N}$ から $\mathcal{M}$ への同型写像なので \ref{logic:isomorphism-invariance} より $\mathcal{N}\equiv\mathcal{M}$。しかし論理式 $\varphi\defeq\neg\exists y\,y<x$ と $v(x)=1$ について、$\mathcal{N},v\models\varphi$（$\mathcal{N}$ で $1$ は最小）だが $\mathcal{M},v\not\models\varphi$（$0<1$）。よって $\mathcal{N}\not\preccurlyeq\mathcal{M}$。初等部分構造であることは、「部分構造かつ初等的同値」より真に強い。
+:::
+
+::: example 超冪への対角写像
+超冪への対角写像 $d\colon M\to M^{I}/U$ は初等埋め込みである（\ref{model:ultrapower-diagonal}）。
+:::
+
+::: lemma 部分構造は量化子のない論理式を保つ {#model:substructure-qf keywords="quantifier-free formulas are preserved by substructures"}
+$\mathcal{N}\subset\mathcal{M}$ とし、$v$ を $N$ に値をとる割り当てとする。
+1. 任意の項 $t$ について $t^{\mathcal{N},v}=t^{\mathcal{M},v}$。
+2. $\forall$ を含まない論理式 $\varphi$ について $\mathcal{N},v\models\varphi\iff\mathcal{M},v\models\varphi$。
+:::
+
+::: proof
+**1.** 項に関する帰納法（\ref{logic:term-induction}）。変数では両辺 $v(x)$、定数では $c^{\mathcal{N}}=c^{\mathcal{M}}$。$t=f(t_{1},\dots,t_{n})$ では、帰納法の仮定より成分の値が一致し、それらは $N$ の元なので $f^{\mathcal{N}}=f^{\mathcal{M}}\restr{N^{n}}$ から値が一致する。
+
+**2.** $\forall$ を含まない論理式は $\bot$ と原子論理式から $\to$ だけで作られる。$\bot$ は両辺偽。$t=s$ は 1 から。$P(t_{1},\dots,t_{n})$ は、1 より両辺で同じ組 $(a_{1},\dots,a_{n})\in N^{n}$ が現れ、$P^{\mathcal{N}}=P^{\mathcal{M}}\cap N^{n}$ から従う。$\to$ は帰納法の仮定と充足の定義 4 による。
+:::
+
+## タルスキ–ヴォートの判定法 {#model:sec-tarski-vaught}
+
+::: theorem タルスキ–ヴォートの判定法 {#model:tarski-vaught keywords="Tarski-Vaught test, Tarski-Vaught criterion" index="タルスキ–ヴォートの判定法|たるすきゔぉーとのはんていほう"}
+$\mathcal{N}\subset\mathcal{M}$ とする。次は同値である。
+1. $\mathcal{N}\preccurlyeq\mathcal{M}$。
+2. 任意の論理式 $\varphi$、変数 $x$、$N$ に値をとる割り当て $v$ について、ある $a\in M$ で $\mathcal{M},v[x\mapsto a]\models\varphi$ となるならば、ある $b\in N$ で $\mathcal{M},v[x\mapsto b]\models\varphi$ となる。
+:::
+
+::: intuition
+条件 2 は「$\mathcal{M}$ の中で存在が主張される証拠は、（パラメータが $N$ にある限り）$N$ の中にも見つかる」ということである。注目すべきは、条件 2 が $\mathcal{M}$ での充足しか使わず、$\mathcal{N}$ での充足を一切参照しないことである。そのため、$\mathcal{N}$ をまだ知らない段階で「証拠を $N$ に入れる」構成（下降レーヴェンハイム–スコーレムの定理）に使える。
+:::
+
+::: proof
+**Step 1（1 ⇒ 2）.** $\mathcal{M},v[x\mapsto a]\models\varphi$ とすると、\ref{logic:abbreviation-semantics} の 5 より $\mathcal{M},v\models\exists x\,\varphi$。1 より $\mathcal{N},v\models\exists x\,\varphi$ で、同じく 5 よりある $b\in N$ で $\mathcal{N},v[x\mapsto b]\models\varphi$。$v[x\mapsto b]$ は $N$ に値をとるので、1 より $\mathcal{M},v[x\mapsto b]\models\varphi$。
+
+**Step 2（2 ⇒ 1, 帰納法の設定）.** 論理式 $\varphi$ に関する構造的帰納法で、「$N$ に値をとる**すべての**割り当て $v$ について $\mathcal{N},v\models\varphi\iff\mathcal{M},v\models\varphi$」を示す。$\bot$ と原子論理式は \ref{model:substructure-qf}、$\to$ は帰納法の仮定と充足の定義 4 による。
+
+**Step 3（全称）.** $\varphi=\forall x\,\alpha$ とする。充足の定義 5 と帰納法の仮定（$N$ に値をとる割り当て $v[x\mapsto b]$ に適用）より
+$$
+\mathcal{N},v\models\forall x\,\alpha\iff\text{すべての }b\in N\text{ について }\mathcal{M},v[x\mapsto b]\models\alpha .
+$$
+右辺が「すべての $a\in M$ について $\mathcal{M},v[x\mapsto a]\models\alpha$」（すなわち $\mathcal{M},v\models\forall x\,\alpha$）と同値であることを示せばよい。$N\subset M$ なので後者から前者が従う。逆に、後者が偽で、ある $a\in M$ について $\mathcal{M},v[x\mapsto a]\not\models\alpha$、すなわち $\mathcal{M},v[x\mapsto a]\models\neg\alpha$ とする。2 を論理式 $\neg\alpha$ に適用すると、ある $b\in N$ で $\mathcal{M},v[x\mapsto b]\models\neg\alpha$ となり、前者も偽である。
+
+::: hypcheck
+- **部分構造であること**：Step 2 の原子論理式の場合（\ref{model:substructure-qf}）。
+- **条件 2 がすべての論理式について成り立つこと**：Step 3 で $\neg\alpha$ に適用した。$\alpha$ 自身の形は問わないので、帰納法は論理式の複雑さについて回る。
+- **帰納法の形**：「すべての割り当て」を帰納法の仮定に含めることが Step 3 で必要である。
+:::
+:::
+
+## 下降レーヴェンハイム–スコーレムの定理 {#model:sec-downward-ls}
+
+::: theorem 下降レーヴェンハイム–スコーレムの定理 {#model:downward-lowenheim-skolem keywords="downward Löwenheim-Skolem theorem, Löwenheim-Skolem-Tarski theorem, Skolem functions" index="下降レーヴェンハイム–スコーレムの定理|かこうれーゔぇんはいむすこーれむのていり, スコーレム関数|すこーれむかんすう"}
+（AC）$\mathcal{M}$ を $\mathcal{L}$ 構造、$A\subset M$ とし、$\kappa\defeq\lvert A\rvert+\lvert\mathcal{L}\rvert+\aleph_{0}$ とおく。このとき $A\subset N$ かつ $\lvert N\rvert\le\kappa$ となる初等部分構造 $\mathcal{N}\preccurlyeq\mathcal{M}$ が存在する。
+:::
+
+::: proof
+**Step 1（スコーレム関数）.** 元 $m_{0}\in M$ を一つ固定する。論理式 $\varphi$ と変数 $x$ の組ごとに、$\mathrm{FV}(\varphi)\setminus\{x\}$ の元を番号の順に $y_{1},\dots,y_{n}$ と並べる。$\bar{a}=(a_{1},\dots,a_{n})\in M^{n}$ に対し、$y_{k}$ で $a_{k}$、他の変数で $m_{0}$ をとる割り当てを $v_{\bar{a}}$ とし、
+$$
+W_{\varphi,x}(\bar{a})\defeq\{a\in M:\mathcal{M},v_{\bar{a}}[x\mapsto a]\models\varphi\}
+$$
+とおく。選択公理により、$M$ の空でない部分集合全体上の選択関数 $\mathrm{ch}$ を一つとり、$n$ 項演算 $F_{\varphi,x}\colon M^{n}\to M$ を
+$$
+F_{\varphi,x}(\bar{a})\defeq\begin{cases}\mathrm{ch}\bigl(W_{\varphi,x}(\bar{a})\bigr)&(W_{\varphi,x}(\bar{a})\neq\varnothing)\\ m_{0}&(W_{\varphi,x}(\bar{a})=\varnothing)\end{cases}
+$$
+で定める（$n=0$ のときは $M$ の元、すなわち $0$ 項演算である）。これを**スコーレム関数**という。
+
+**Step 2（演算の集合と濃度）.** $\mathcal{F}$ を、すべてのスコーレム関数 $F_{\varphi,x}$、各定数記号の解釈 $c^{\mathcal{M}}$（$0$ 項演算）、各関数記号の解釈 $f^{\mathcal{M}}$ からなる $M$ 上の有限項演算の集合とする。$\mathcal{L}$ の論理式は $\lvert\mathcal{L}\rvert+\aleph_{0}\le\kappa$ 個の記号上の有限列なので、その全体の濃度は $\le\kappa$（\ref{set:kappa-finite-sequences}）、変数は可算個なので、組 $(\varphi,x)$ は $\le\kappa$ 個である。よって $\lvert\mathcal{F}\rvert\le\kappa$。$B\defeq A\cup\{m_{0}\}$ とすると $\lvert B\rvert\le\kappa$。
+
+**Step 3（閉包）.** $N$ を $B$ の $\mathcal{F}$ による閉包とする。閉包補題（\ref{set:closure-lemma}）より $\lvert N\rvert\le\kappa$。$N$ は $m_{0}$ を含むので空でなく、各 $c^{\mathcal{M}}$ を含み各 $f^{\mathcal{M}}$ で閉じているので、\ref{model:substructure} の後半により部分構造 $\mathcal{N}\subset\mathcal{M}$ が定まる。$A\subset N$ である。
+
+**Step 4（タルスキ–ヴォートの条件）.** $\varphi$, $x$, $N$ に値をとる割り当て $v$、$a\in M$ で $\mathcal{M},v[x\mapsto a]\models\varphi$ とする。Step 1 の $y_{1},\dots,y_{n}$ について $\bar{a}\defeq(v(y_{1}),\dots,v(y_{n}))\in N^{n}$ とおく。割り当て $v[x\mapsto a]$ と $v_{\bar{a}}[x\mapsto a]$ は $\mathrm{FV}(\varphi)\subset\{x,y_{1},\dots,y_{n}\}$ 上で一致するので、一致補題（\ref{logic:coincidence}）より $a\in W_{\varphi,x}(\bar{a})$、とくに $W_{\varphi,x}(\bar{a})\neq\varnothing$。よって $b\defeq F_{\varphi,x}(\bar{a})\in W_{\varphi,x}(\bar{a})$ で、$N$ は $F_{\varphi,x}$ で閉じているので $b\in N$。再び一致補題より $\mathcal{M},v[x\mapsto b]\models\varphi$。
+
+**Step 5.** タルスキ–ヴォートの判定法（\ref{model:tarski-vaught}）より $\mathcal{N}\preccurlyeq\mathcal{M}$。
+
+::: hypcheck
+- **選択公理**：Step 1 の選択関数、Step 2 の有限列全体の濃度の評価、Step 3 の閉包補題。
+- **$\kappa\ge\lvert\mathcal{L}\rvert$**：Step 2。これは外せない。たとえば $\lvert\mathcal{L}\rvert$ 個の定数記号が $\mathcal{M}$ で相異なる元を表すなら、どの部分構造もそれらをすべて含む。
+- **$\kappa\ge\aleph_{0}$**：閉包補題は無限基数についての主張である。有限の $A$ から出発しても、閉包は一般に無限になる。
+- **$m_{0}$**：$A=\varnothing$ で定数記号がない場合にも $N\neq\varnothing$ とするため、および $W=\varnothing$ のときの既定値として使った。
+:::
+:::
+
+::: corollary 指定された濃度の初等部分構造 {#model:downward-ls-exact}
+（AC）$\mathcal{M}$ を $\mathcal{L}$ 構造とし、$\lvert\mathcal{L}\rvert+\aleph_{0}\le\kappa\le\lvert M\rvert$ とする。このとき $\lvert N\rvert=\kappa$ となる $\mathcal{N}\preccurlyeq\mathcal{M}$ が存在する。とくに、可算な言語の無限構造は可算な初等部分構造をもつ。
+:::
+
+::: proof
+$\kappa\le\lvert M\rvert$ より、濃度 $\kappa$ の $A\subset M$ がとれる（選択公理のもとで基数は比較可能で、単射 $\kappa\to M$ の像をとる）。\ref{model:downward-lowenheim-skolem} で得られる $\mathcal{N}$ は $\kappa=\lvert A\rvert\le\lvert N\rvert\le\lvert A\rvert+\lvert\mathcal{L}\rvert+\aleph_{0}=\kappa$ を満たす（カントール–ベルンシュタインの定理）。
+:::
+
+::: remark 選択公理の使い方について {#model:downward-ls-choice-remark}
+可算な言語と可算な $A$ の場合、上の証明は「可算個の選択」ではなく $M$ の部分集合全体の選択関数を使っている。この場合の主張（可算な初等部分構造の存在）は、選択公理の代わりに従属選択公理 $\mathrm{DC}$ で証明できるとされる（本サイトでは未確認）。一方、\ref{logic:ls-downward-weak} のように「どこかに可算なモデルがある」だけなら、選択公理は要らない。
+:::
+
+::: remark スコーレムのパラドックス（強い形） {#model:skolem-paradox-strong}
+\ref{logic:skolem-paradox} では、$\ZFC$ が無矛盾なら可算なモデルがあることを述べた。下降レーヴェンハイム–スコーレムの定理を使うと、$\ZFC$ の任意のモデル $(M,E)$ について、その**初等部分構造**で可算なものがとれる。とくに、$M$ で「非可算」と判定される集合 $a$ を $A$ に入れておけば、$a$ を含む可算な初等部分構造 $\mathcal{N}$ があり、$\mathcal{N}$ でも $a$ は「非可算」だが、$\mathcal{N}$ の中にある $a$ の $E$-元は可算個しかない。集合論では同様の議論が、推移的モデルとモストフスキ崩壊を組み合わせて使われる。
+:::
+
+## 上昇レーヴェンハイム–スコーレムの定理 {#model:sec-upward-ls}
+
+::: definition 初等図式 {#model:elementary-diagram keywords="elementary diagram" index="初等図式|しょとうずしき"}
+$\mathcal{M}$ を $\mathcal{L}$ 構造とする。各 $a\in M$ について新しい定数記号 $c_{a}$（相異なる）を $\mathcal{L}$ に加えた言語を $\mathcal{L}_{M}$ とし、$c_{a}$ を $a$ と解釈した $\mathcal{L}_{M}$ への拡大を $\mathcal{M}_{M}$ とする。$\mathrm{Th}(\mathcal{M}_{M})$ を $\mathcal{M}$ の**初等図式**といい、$\mathrm{Eldiag}(\mathcal{M})$ と書く。
+:::
+
+::: lemma 初等図式のモデルは初等拡大を与える {#model:elementary-diagram-lemma}
+$\mathcal{N}'$ を $\mathrm{Eldiag}(\mathcal{M})$ のモデルである $\mathcal{L}_{M}$ 構造とし、$h(a)\defeq c_{a}^{\mathcal{N}'}$ とおく。このとき $h$ は $\mathcal{M}$ から縮小 $\mathcal{N}'\restr{\mathcal{L}}$ への初等埋め込みである。
+:::
+
+::: proof
+**Step 1.** $\varphi$ を $\mathcal{L}$ の論理式、$v$ を $\mathcal{M}$ の割り当てとし、$\mathrm{FV}(\varphi)$ の元を $x_{1},\dots,x_{n}$、$a_{k}\defeq v(x_{k})$ とする。文 $\sigma\defeq\varphi[c_{a_{1}}/x_{1}]\cdots[c_{a_{n}}/x_{n}]$ を考える。定数の代入の補題（\ref{logic:constant-substitution-semantics}）と一致補題より
+$$
+\mathcal{M}_{M}\models\sigma\iff\mathcal{M}_{M},v\models\varphi\iff\mathcal{M},v\models\varphi
+$$
+（最後は \ref{logic:reduct-lemma}）。同様に $\mathcal{N}'\models\sigma\iff\mathcal{N}',h\circ v\models\varphi\iff\mathcal{N}'\restr{\mathcal{L}},h\circ v\models\varphi$（$x_{k}$ の値が $c_{a_{k}}^{\mathcal{N}'}=h(a_{k})$ であることを使う）。
+
+**Step 2.** $\mathcal{M}_{M}\models\sigma$ なら $\sigma\in\mathrm{Eldiag}(\mathcal{M})$ で $\mathcal{N}'\models\sigma$。$\mathcal{M}_{M}\not\models\sigma$ なら $\neg\sigma\in\mathrm{Eldiag}(\mathcal{M})$ で $\mathcal{N}'\not\models\sigma$。よって $\mathcal{M}_{M}\models\sigma\iff\mathcal{N}'\models\sigma$ で、Step 1 と合わせて $\mathcal{M},v\models\varphi\iff\mathcal{N}'\restr{\mathcal{L}},h\circ v\models\varphi$。単射性は $\varphi\defeq\neg\,x_{1}=x_{2}$ に適用すれば従う。
+:::
+
+::: theorem 上昇レーヴェンハイム–スコーレムの定理 {#model:upward-lowenheim-skolem keywords="upward Löwenheim-Skolem theorem, Löwenheim-Skolem-Tarski theorem" index="上昇レーヴェンハイム–スコーレムの定理|じょうしょうれーゔぇんはいむすこーれむのていり"}
+（AC）$\mathcal{M}$ を無限の $\mathcal{L}$ 構造とし、$\kappa\ge\lvert M\rvert+\lvert\mathcal{L}\rvert$ を基数とする。このとき濃度がちょうど $\kappa$ の $\mathcal{L}$ 構造 $\mathcal{N}$ と、初等埋め込み $h\colon\mathcal{M}\to\mathcal{N}$ が存在する（$\mathcal{N}$ の元の名前を付け替えれば $\mathcal{M}\preccurlyeq\mathcal{N}$ とできる）。
+:::
+
+::: proof
+**Step 1.** 濃度 $\kappa$ の集合 $J$ で添字付けた新しい定数記号 $e_{j}$ を $\mathcal{L}_{M}$ に加えた言語を $\mathcal{L}'$ とし、
+$$
+\Sigma\defeq\mathrm{Eldiag}(\mathcal{M})\cup\{\neg\,e_{j}=e_{k}:j,k\in J,\ j\neq k\}
+$$
+とおく。$\lvert\mathcal{L}'\rvert=\lvert\mathcal{L}\rvert+\lvert M\rvert+\kappa=\kappa$（$\kappa$ は無限）。
+
+**Step 2（有限部分）.** 有限部分集合に現れる $e_{j}$ は有限個 $e_{j_{1}},\dots,e_{j_{m}}$ である。$M$ は無限なので相異なる $b_{1},\dots,b_{m}\in M$ をとり、$\mathcal{M}_{M}$ を $e_{j_{k}}\mapsto b_{k}$（他の $e_{j}$ は任意の元）で拡大すると、\ref{logic:reduct-lemma} よりこの有限部分集合を満たす。
+
+**Step 3（コンパクト性）.** コンパクト性定理（\ref{logic:compactness} または \ref{model:compactness-via-los}）より $\Sigma$ のモデル $\mathcal{N}_{0}$ がある。下降レーヴェンハイム–スコーレムの定理（\ref{model:downward-lowenheim-skolem}）を $\mathcal{N}_{0}$ と $A\defeq\{e_{j}^{\mathcal{N}_{0}}:j\in J\}$ に適用し、$\lvert N_{1}\rvert\le\kappa$ の $\mathcal{N}_{1}\preccurlyeq\mathcal{N}_{0}$ を得る。$\mathcal{N}_{1}\equiv\mathcal{N}_{0}$ なので $\mathcal{N}_{1}\models\Sigma$ で、$j\mapsto e_{j}^{\mathcal{N}_{1}}$ は単射なので $\lvert N_{1}\rvert\ge\kappa$。よって $\lvert N_{1}\rvert=\kappa$。
+
+**Step 4.** $\mathcal{N}_{1}$ の $\mathcal{L}_{M}$ への縮小は $\mathrm{Eldiag}(\mathcal{M})$ のモデルなので、\ref{model:elementary-diagram-lemma} より $h(a)\defeq c_{a}^{\mathcal{N}_{1}}$ は $\mathcal{M}$ から $\mathcal{N}\defeq\mathcal{N}_{1}\restr{\mathcal{L}}$ への初等埋め込みである。
+
+::: hypcheck
+- **$\mathcal{M}$ が無限**：Step 2。有限構造は、初等拡大しても元の数が変わらない（元の個数を正確に述べる文がある）。
+- **$\kappa\ge\lvert M\rvert+\lvert\mathcal{L}\rvert$**：Step 1 の言語の濃度の評価と、Step 3 の下降定理の上限。$\kappa<\lvert M\rvert$ では $M$ を $N$ に埋め込めない。
+- **選択公理**：コンパクト性（一般の言語）、下降定理、基数の計算。
+:::
+:::
+
+::: remark
+\ref{logic:ls-upward-weak} は「$\Sigma$ に濃度 $\kappa$ のモデルがある」だけだったが、ここでは「与えられた $\mathcal{M}$ の初等拡大で濃度 $\kappa$ のもの」が得られる。下降・上昇の二つを合わせると、無限構造 $\mathcal{M}$ の理論 $\mathrm{Th}(\mathcal{M})$ は、$\lvert\mathcal{L}\rvert+\aleph_{0}$ 以上のすべての濃度のモデルをもつ。したがって、無限構造を同型の違いを除いて一意に特定する一階の文の集合は存在しない（濃度の異なるモデルは同型でない）。
+:::
+
+## 問題 {#model:sec-elementary-problems}
+
+::: problem {#model:prob-elementary-chain}
+$\mathcal{N}\preccurlyeq\mathcal{M}$ かつ $\mathcal{N}\subset\mathcal{K}\subset\mathcal{M}$ で $\mathcal{K}\preccurlyeq\mathcal{M}$ ならば、$\mathcal{N}\preccurlyeq\mathcal{K}$ であることを示せ。
+:::
+
+::: solution
+$\mathcal{N}\subset\mathcal{K}$ は仮定。$N$ に値をとる割り当て $v$ は $K$ にも値をとるので、$\mathcal{N},v\models\varphi\iff\mathcal{M},v\models\varphi\iff\mathcal{K},v\models\varphi$（前者は $\mathcal{N}\preccurlyeq\mathcal{M}$、後者は $\mathcal{K}\preccurlyeq\mathcal{M}$）。
+:::
+
+::: problem {#model:prob-rationals-reals}
+関係記号 $<$ だけの言語で、$(\mathbb{Q},<)\preccurlyeq(\mathbb{R},<)$ を、タルスキ–ヴォートの判定法と「有限個の点を固定する順序自己同型」を使って示せ。
+:::
+
+::: solution
+条件 2 を確かめる。$v$ は $\mathbb{Q}$ に値をとり、$\mathrm{FV}(\varphi)\setminus\{x\}$ の値を $q_{1}<\cdots<q_{n}$（有理数）とし、$a\in\mathbb{R}$ で $(\mathbb{R},<),v[x\mapsto a]\models\varphi$ とする。$a$ がある $q_{k}$ に等しければ $b=a$ でよい。そうでなければ $a$ はある区間 $(q_{k},q_{k+1})$（あるいは $(-\infty,q_{1})$, $(q_{n},\infty)$）に属する。同じ区間の有理数 $b$ をとり、$q_{1},\dots,q_{n}$ を固定して $a$ を $b$ に移す $\mathbb{R}$ の順序自己同型 $\pi$（その区間上の区分線形写像、他は恒等）を作る。\ref{logic:isomorphism-invariance} より $(\mathbb{R},<),\pi\circ v[x\mapsto a]\models\varphi$ で、$\pi\circ v[x\mapsto a]$ は $\mathrm{FV}(\varphi)$ 上で $v[x\mapsto b]$ と一致する。一致補題より $(\mathbb{R},<),v[x\mapsto b]\models\varphi$。$(\mathbb{Q},<)$ は明らかに部分構造なので、判定法より $(\mathbb{Q},<)\preccurlyeq(\mathbb{R},<)$。
+:::
+
+::: problem {#model:prob-countable-elementary-real-field}
+順序体 $(\mathbb{R},0,1,+,\times,<)$ は、可算な初等部分構造をもつことを示せ。また、それは完備（上に有界な部分集合が上限をもつ）でないことを示し、完備性が一階の文の集合で表せないことを結論せよ。
+:::
+
+::: solution
+言語は可算で $\mathbb{R}$ は無限なので、\ref{model:downward-ls-exact} より可算な $\mathcal{K}\preccurlyeq\mathbb{R}$ がある。順序体の公理は文なので、$\mathcal{K}\equiv\mathbb{R}$ より $\mathcal{K}$ は順序体である。$\mathcal{K}$ が完備なら、完備な順序体は $\mathbb{R}$ と同型である（実数の特徴づけ。解析の標準的な定理で、本ページでは証明しない）ので $\mathcal{K}$ は非可算となり、矛盾する。よって $\mathcal{K}$ は完備でない。完備性を表す文の集合 $\Sigma$ があれば、$\mathbb{R}\models\Sigma$ と $\mathcal{K}\equiv\mathbb{R}$ より $\mathcal{K}\models\Sigma$ となり矛盾する。（完備性は「すべての部分集合」についての主張で、二階の性質である。）
+:::
+
+::: supplement
+**高い視点から.** 初等部分構造は、「$\mathcal{L}$ で表せる性質」だけを通して見たときに区別できない部分である。タルスキ–ヴォートの判定法は、この大域的な条件（すべての論理式）を、存在量化子についての局所的な閉包条件に帰着させる。スコーレム関数をすべて演算として言語に加えると（**スコーレム化**）、初等部分構造はちょうど「すべての演算で閉じた部分集合」、すなわち代数的な部分構造になる。これは、ベクトル空間の部分空間が「演算で閉じた部分集合」であるのと同じ種類の対象に、論理の問題を翻訳したものといえる。その閉包の大きさを数えるのが \ref{set:closure-lemma} であり、下降定理の本質は「有限項の演算は、可算回適用しても集合を $\kappa$ より大きくしない」という組合せ論的事実にある。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

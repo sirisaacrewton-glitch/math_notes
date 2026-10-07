@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>算術的内包公理と同値な定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/06-reverse-mathematics/03-aca0.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 算術的内包公理と同値な定理 {#logic:page-rm-aca0 keywords="ACA0, arithmetical comprehension, Sigma01 comprehension, range of one-to-one functions, Bolzano-Weierstrass theorem, Cauchy completeness, least upper bound, monotone convergence theorem, Konig's lemma, Specker sequence, reverse mathematics"}
+
+$\mathsf{ACA}_{0}$ は、$\mathsf{RCA}_{0}$ に算術的論理式についての内包公理を加えた体系である（\ref{pt:big-five}）。本ページでは、まず算術的内包公理が $\Sigma^{0}_{1}$ 論理式だけの内包公理、さらに「単射の値域が存在する」という一見ずっと弱い主張と同値であることを示す（\ref{logic:aca-equivalents}）。これを足がかりに、実数の**完備性**に関する定理――ボルツァーノ–ワイエルシュトラスの定理、コーシー列の収束、上限の存在、単調収束定理――が、どれも $\mathsf{RCA}_{0}$ の上で $\mathsf{ACA}_{0}$ と同値であることを示す（\ref{logic:aca-analysis}）。最後に、（有限分岐の）**ケーニッヒの補題**が $\mathsf{ACA}_{0}$ と同値であることを示し（\ref{logic:konig-aca}）、二分木に限った弱ケーニッヒの補題（\ref{logic:page-rm-wkl0}）との違いがどこにあるかを見る。
+
+> 主な資料は田中一之『逆数学と 2 階算術』第 2 章 §2.4 前半（定理 2.20, 2.23–2.25）。証明は自分の言葉で組み立て直し、有界 $\Sigma^{0}_{1}$ 内包公理、単射の値域から $\Sigma^{0}_{1}$ 内包公理を導く部分、および $\mathsf{ACA}_{0}$ から各定理を導く部分は補って書いた。
+
+## 記法と定義の確認 {#logic:sec-rm3-notation}
+
+::: notation
+- 二階算術、$\mathsf{RCA}_{0}$, $\mathsf{WKL}_{0}$, $\mathsf{ACA}_{0}$、論理式の階層 $\Sigma^{0}_{n},\Pi^{0}_{n}$ は \ref{pt:page-soa-subsystems} のとおり（\ref{pt:l2-hierarchy}, \ref{pt:l2-axioms}, \ref{pt:big-five}）。$\mathsf{RCA}_{0}$ で使える基本的な議論（有界な論理式の内包公理、$\Pi^{0}_{1}$ 帰納法、有限列の符号化、原始再帰）は \ref{pt:rca0-basic} を参照する。
+- 実数、$=_{\mathbb{R}},<_{\mathbb{R}}$、実数列とその極限は \ref{logic:page-rm-rca0} のとおり（\ref{logic:rm-real}, \ref{logic:rm-real-order}, \ref{logic:rm-sequence-limit}）。添字を明示しないときは $<,\le$ を実数の大小の意味で使う。$x_{n}$ が実数のとき、その $k$ 番目の有理数近似を $(x_{n})_{k}$ と書く。
+- 「集合 $Y$ が有限である」とは、ある $b$ で $Y\subseteq\{0,\dots,b-1\}$ となることとし、有限集合は数（符号）で表せる（\ref{pt:rca0-basic} の 3）。$\lvert Y\rvert$ は有限集合 $Y$ の元の個数。
+- $\N^{<\N}$ は自然数の有限列（の符号）全体、$\sigma^{\frown}m$ は $\sigma$ の後に $m$ を付けた列、$\sigma\subseteq\tau$ は始切片の関係、$f\restr n\defeq(f(0),\dots,f(n-1))$。
+:::
+
+## 算術的内包公理の言い換え {#logic:sec-rm3-aca}
+
+まず、$\mathsf{RCA}_{0}$ の中で使える内包公理の「有界版」を示しておく。後で木が無限であることを示すのに使う。
+
+::: lemma 有界 Σ⁰₁ 内包公理 {#logic:bounded-sigma01-ca keywords="bounded Sigma01 comprehension in RCA0" index="有界 Σ⁰₁ 内包公理|ゆうかいしぐまぜろわんないほうこうり"}
+$\mathsf{RCA}_{0}$ で次が証明できる：$\Sigma^{0}_{1}$ 論理式 $\varphi(n)$ と数 $k$ について、有限集合 $Y\subseteq\{0,\dots,k-1\}$ で、$\forall n<k\,(n\in Y\leftrightarrow\varphi(n))$ となるものが存在する。
+:::
+
+::: proof
+**Step 1（論理式の準備）.** $\varphi(n)\equiv\exists m\,\theta_{0}(m,n)$（$\theta_{0}$ は有界）と書く。$\theta(j)$ を「対の有限集合 $Z$ で、$Z$ の元 $(n,m)$ はすべて $n<k$ かつ $\theta_{0}(m,n)$ を満たし、第一成分の集合 $Y_{Z}\defeq\{n:\exists m\,(n,m)\in Z\}$ が $j$ 個以上の元をもつものが存在する」とする。$Z$ の元についての量化子と $Y_{Z}$ の元の個数は、有限集合の符号についての有界な条件なので、$\theta$ は（$\exists Z$ だけを非有界にもつ）$\Sigma^{0}_{1}$ 論理式である。$Z$ は $Y_{Z}$ の各元が $\varphi$ を満たす証拠を一緒に記録したものである。
+
+**Step 2（極大の個数をとる）.** $\theta(0)$ は空集合で成り立つ。$\theta(k+1)$ は成り立たない（$\{0,\dots,k-1\}$ の部分集合は高々 $k$ 個の元をもつ）。もしすべての $j$ で $\theta(j)\to\theta(j+1)$ なら、$\Sigma^{0}_{1}$ 帰納法により $\theta(k+1)$ となって矛盾する。よって、ある $j_{0}$ で $\theta(j_{0})\wedge\neg\theta(j_{0}+1)$ である。
+
+**Step 3（その集合が求めるもの）.** $\theta(j_{0})$ の証拠 $Z$ をとり、$Y\defeq Y_{Z}$（有限集合）とする。$n<k$ について、$n\in Y$ なら $Z$ の元 $(n,m)$ が $\theta_{0}(m,n)$ を満たすので $\varphi(n)$。逆に $\varphi(n)$ かつ $n\notin Y$ なら、$\theta_{0}(m,n)$ となる $m$ をとって $Z\cup\{(n,m)\}$ を作ると $\theta(j_{0}+1)$ の証拠になって矛盾する。よって $\forall n<k\,(n\in Y\leftrightarrow\varphi(n))$。
+:::
+
+::: lemma 単射の値域と Σ⁰₁ 内包公理 {#logic:range-injection-sigma01 keywords="range of one-to-one function implies Sigma01 comprehension" index="単射の値域（逆数学）|たんしゃのちいきぎゃくすうがく"}
+$\mathsf{RCA}_{0}$ の上で、「任意の単射 $f\colon\N\to\N$ の値域 $\mathrm{rng}(f)\defeq\{n:\exists m\,f(m)=n\}$ が存在する」から $\Sigma^{0}_{1}$ 内包公理が導ける。
+:::
+
+::: proof
+$\varphi(n)\equiv\exists m\,\theta(m,n)$（$\theta$ は有界な論理式）を任意の $\Sigma^{0}_{1}$ 論理式とする（$\Sigma^{0}_{1}$ 論理式はこの形に書けるとしてよい。\ref{pt:l2-hierarchy}）。
+
+**Step 1（単射を作る）.** 対 $(m,n)$ で番号付けされた数 $k=(m,n)$ について
+$$
+f(k)\defeq
+\begin{cases}
+2n+1 & \theta(m,n)\wedge\forall m'<m\,\neg\theta(m',n)\text{ のとき},\\
+2k & \text{それ以外}
+\end{cases}
+$$
+と定める。場合分けの条件は有界な論理式なので、$f$ のグラフは有界な論理式で定義でき、\ref{pt:rca0-basic} の 1 で存在する。
+
+**Step 2（単射であること）.** $f(k)=f(k')$ とする。値が奇数 $2n+1$ なら、$k=(m,n)$, $k'=(m',n)$ で $m,m'$ はどちらも $\theta(\cdot,n)$ を満たす最小の数なので $m=m'$、よって $k=k'$。値が偶数なら $2k=2k'$ から $k=k'$。
+
+**Step 3（値域から集合を作る）.** 仮定により $R\defeq\mathrm{rng}(f)$ が存在する。$X\defeq\{n:2n+1\in R\}$ は（$R$ をパラメータとする）有界な論理式で定義でき存在する。$n\in X\iff\exists k\,f(k)=2n+1\iff$ ある $m$ が $\theta(\cdot,n)$ を満たす最小の数 $\iff\exists m\,\theta(m,n)$。最後の「$\Leftarrow$」は、$\theta(m,n)$ を満たす $m$ があれば最小のものがあることで、これは有界な論理式についての最小元の原理（$\Sigma^{0}_{0}$ 帰納法から従う）による。よって $X=\{n:\varphi(n)\}$。
+:::
+
+::: theorem ACA₀ の言い換え {#logic:aca-equivalents keywords="ACA0 is equivalent to Sigma01 comprehension and to existence of ranges of injections" index="ACA₀ の同値な言い換え|えーしーえーぜろのどうちないいかえ"}
+$\mathsf{RCA}_{0}$ の上で次は同値である。
+1. 算術的内包公理（すなわち $\mathsf{ACA}_{0}$）。
+2. $\Sigma^{0}_{1}$ 内包公理。
+3. 任意の単射 $f\colon\N\to\N$ の値域が存在する。
+:::
+
+::: proof
+**1 ⇒ 2.** $\Sigma^{0}_{1}$ 論理式は算術的論理式である。
+
+**2 ⇒ 3.** $n\in\mathrm{rng}(f)\iff\exists m\,f(m)=n$ は（$f$ をパラメータとする）$\Sigma^{0}_{1}$ 論理式。単射であることは使わない。
+
+**3 ⇒ 2.** \ref{logic:range-injection-sigma01}。
+
+**2 ⇒ 1.** 算術的論理式 $\varphi$ の構成についての（メタレベルの）帰納法で、次を示す：$\varphi$ の自由な数変数を $x_{1},\dots,x_{r}$（ほかに集合パラメータがあってよい）とすると、
+$$
+\exists X\,\forall x_{1}\cdots\forall x_{r}\,\bigl((x_{1},\dots,x_{r})\in X\leftrightarrow\varphi(x_{1},\dots,x_{r})\bigr)
+$$
+が導ける（$(x_{1},\dots,x_{r})$ は対関数を繰り返した符号）。$r=1$ の場合が算術的内包公理である。有界な量化子 $\forall m<t$, $\exists m<t$ は $\forall m\,(m<t\to\cdots)$, $\exists m\,(m<t\wedge\cdots)$ の略記とみなす。
+
+*原子論理式.* $t=s$, $t<s$, $t\in Y$ は有界な論理式なので、\ref{pt:rca0-basic} の 1 で集合が存在する。
+
+*$\neg\psi$.* 帰納法の仮定で $\psi$ に対応する集合 $Y$ をとり、補集合（の符号の範囲での）$\{p:p\text{ は }r\text{ 個組の符号で }p\notin Y\}$ をとる。これは有界な論理式で定義される。
+
+*$\psi\wedge\chi$.* 対応する集合の共通部分をとる（自由変数の組が違うときは、使わない変数を加えた組の集合に、有界な論理式で直してから共通部分をとる）。
+
+*$\exists m\,\psi(m,\vec{x})$.* 帰納法の仮定で $Y=\{(m,\vec{x}):\psi(m,\vec{x})\}$ をとる。$\exists m\,((m,\vec{x})\in Y)$ は $Y$ をパラメータとする $\Sigma^{0}_{1}$ 論理式なので、2 で $X=\{\vec{x}:\exists m\,((m,\vec{x})\in Y)\}$ が存在する。
+
+$\vee,\to,\forall$ は $\neg,\wedge,\exists$ で表せるので、これで帰納法が完了し、1 が従う。この証明では冠頭標準形への変形を使っていない（有界な量化子を非有界な量化子の外に出す操作は、$\Sigma^{0}_{1}$ 帰納法だけでは一般にできないので、構成についての帰納法にした）。
+:::
+
+::: remark
+1. **ジャンプとの関係.** 計算可能性理論の言葉では、2 は「任意の集合 $X$ について $X$ のジャンプ $X'$（\ref{pt:omega-aca0}）が存在する」と $\mathsf{RCA}_{0}$ の上で同値であることが知られている（ジャンプの定義と、相対化した枚挙定理の $\mathsf{RCA}_{0}$ での形式化が必要になるので、本サイトでは示していない）。\ref{pt:omega-aca0} で、$\mathsf{ACA}_{0}$ の ω モデルがジャンプで閉じたチューリングイデアルであることを見たが、上の定理はその「体系の中での」版である。
+2. **$\mathsf{WKL}_{0}\subseteq\mathsf{ACA}_{0}$.** 2 から $\Sigma^{0}_{1}$ 分離原理（\ref{logic:sigma01-separation}）は直ちに従う（$X=\{n:\varphi_{0}(n)\}$ をとればよい）ので、\ref{logic:wkl-separation} により $\mathsf{ACA}_{0}$ は $\mathsf{WKL}$ を証明する。逆は成り立たない：計算可能な無限二分木はすべて低い道をもつ（**低基底定理**、ヨックシュ–ソーア）ことを繰り返し使うと、$\varnothing'$ を含まない $\mathsf{WKL}_{0}$ の ω モデルが作れることが知られている（田中の本の定理 2.22 の注、本サイトでは示していない）。
+3. **帰納法.** $\mathsf{ACA}_{0}$ では、算術的論理式すべてについての帰納法が証明できる（\ref{pt:big-five} の後の注意）。以下の証明ではこれを断らずに使う。
+:::
+
+## 実数の完備性と ACA₀ {#logic:sec-rm3-analysis}
+
+::: definition 有界列・単調列・コーシー列・上限 {#logic:rm-analysis-defs keywords="bounded sequence, increasing sequence, Cauchy sequence, subsequence, supremum in RCA0" index="コーシー列（二階算術）|こーしーれつにかいさんじゅつ, 上限（二階算術）|じょうげんにかいさんじゅつ"}
+$(x_{n})$ を実数列とする（\ref{logic:rm-sequence-limit}）。
+1. **有界**：ある有理数 $b$ で、すべての $n$ について $\lvert x_{n}\rvert\le b$。
+2. **増加列**：すべての $n$ について $x_{n}\le x_{n+1}$。
+3. **コーシー列**：$\forall k\,\exists n\,\forall i,j\,\bigl(\lvert x_{n+i}-x_{n+j}\rvert\le2^{-k}\bigr)$。
+4. **部分列**：狭義単調増加な関数 $k\mapsto n_{k}$ を使った実数列 $(x_{n_{k}})_{k}$。
+5. 実数 $s$ が $(x_{n})$ の**上限**であるとは、すべての $n$ で $x_{n}\le s$ であり、かつ $\forall k\,\exists n\,(x_{n}>s-2^{-k})$ となることをいう。
+:::
+
+::: theorem 実数の完備性と ACA₀ {#logic:aca-analysis keywords="Bolzano-Weierstrass, Cauchy completeness, supremum, monotone convergence are equivalent to ACA0" index="ボルツァーノ–ワイエルシュトラスの定理（逆数学）|ぼるつぁーのわいえるしゅとらすのていりぎゃくすうがく, 単調収束定理（逆数学）|たんちょうしゅうそくていりぎゃくすうがく"}
+$\mathsf{RCA}_{0}$ の上で次は同値である。
+1. $\mathsf{ACA}_{0}$（算術的内包公理）。
+2. **ボルツァーノ–ワイエルシュトラスの定理**：有界な実数列は収束する部分列をもつ。
+3. **コーシー列の収束**：実数のコーシー列は極限をもつ。
+4. **上限の存在**：有界な実数列は上限をもつ。
+5. **単調収束定理**：有界な増加列は極限をもつ。
+:::
+
+::: intuition
+$\mathsf{RCA}_{0}$ では、実数（有理数の速い収束列）は「近似値を計算する手順」とみなせる（\ref{logic:rm-real}）。単調増加で有界な有理数列でも、どこまで進めば極限に $2^{-k}$ 以内に近づくかは、一般に計算できない。たとえば単射 $f$ の値を順に使って
+$$
+c_{n}\defeq\sum_{i\le n}2^{-f(i)}
+$$
+とすると、$c_{n}$ は計算できる増加列だが、その極限 $c$ の $n$ 桁目付近を正確に知ることは、「$n$ が $f$ の値域にいずれ現れるか」を知ることと同じである。$f$ を停止問題の枚挙にとれば、極限 $c$ は計算可能な実数でない（これは**スペッカー列**として 1949 年に知られた現象である）。$5\Rightarrow1$ の証明は、この観察をそのまま形式化したものである。
+:::
+
+::: proof
+証明の構成は $1\Rightarrow4$, $1\Rightarrow3$, $1\Rightarrow2$ を示し、次に $4\Rightarrow5$, $2\Rightarrow5$, $3\Rightarrow5$ を示し、最後に $5\Rightarrow1$ を示す。$1$ からの各証明では \ref{logic:aca-equivalents} により $\Sigma^{0}_{1}$ 内包公理と算術的内包公理を自由に使う。
+
+**1 ⇒ 4（上限の存在）.** $(x_{n})$ を有界とし、すべての $n$ で $\lvert x_{n}\rvert\le b$（$b$ は自然数としてよい）とする。
+
+*Step 1.* 整数 $j$ と $k$ について、$\Sigma^{0}_{1}$ 論理式「$\exists n\,(x_{n}>j2^{-k})$」で定まる集合
+$$
+S\defeq\{(k,j):\exists n\,(x_{n}>j2^{-k})\}
+$$
+が存在する（$<_{\mathbb{R}}$ は $\Sigma^{0}_{1}$。\ref{logic:rm-real}）。
+
+*Step 2.* 各 $k$ について、$j=-(b+1)2^{k}$ は $S$ に属し（$x_{0}\ge-b>-(b+1)$）、$j\ge b2^{k}$ は属さない（すべての $x_{n}\le b$）。そこで
+$$
+a_{k}\defeq\max\{j2^{-k}:-(b+1)2^{k}\le j\le b2^{k},\ (k,j)\in S\}
+$$
+とおく。最大値は有限個の候補から $S$ を見て選ぶので、関数 $k\mapsto a_{k}$ は存在する。$a_{k}=j2^{-k}$ のとき、$(k,j)\in S$ かつ $(k,j+1)\notin S$ なので
+$$
+\exists n\,(x_{n}>a_{k}),\qquad\forall n\,(x_{n}\le a_{k}+2^{-k}).\tag{*}
+$$
+
+*Step 3（$(a_{k})$ は実数）.* $i\ge0$ とする。$a_{k}=j2^{-k}=(2^{i}j)2^{-k-i}$ で $(k+i,2^{i}j)\in S$ なので $a_{k+i}\ge a_{k}$。また $(*)$ の左の式（$k+i$ について）からある $n$ で $a_{k+i}<x_{n}$、右の式（$k$ について）から $x_{n}\le a_{k}+2^{-k}$。よって $0\le a_{k+i}-a_{k}\le2^{-k}$ で、$s\defeq(a_{k})_{k}$ は実数である。
+
+*Step 4（$s$ は上限）.* \ref{logic:rm-real-order} の 3 から $\lvert s-a_{k}\rvert\le2^{-k}$。上界であること：$(*)$ の右の式から $x_{n}\le a_{k}+2^{-k}\le s+2^{-k+1}$ がすべての $k$ で成り立つので $x_{n}\le s$（$x_{n}>s$ なら $x_{n}-s>2^{-k+1}$ となる $k$ があり矛盾）。最小性：$k$ に対し、$(*)$ の左の式（$k+1$ について）から $x_{n}>a_{k+1}\ge s-2^{-k-1}>s-2^{-k}$ となる $n$ がある。
+
+**1 ⇒ 3（コーシー列の収束）.** $(x_{n})$ をコーシー列とする。
+
+*Step 1.* 集合 $C\defeq\{(k,n):\forall i,j\,(\lvert x_{n+i}-x_{n+j}\rvert\le2^{-k})\}$ は $\Pi^{0}_{1}$ 論理式で定まり（$\le$ は $\Pi^{0}_{1}$）存在する。コーシー列であることから各 $k$ について $(k,n)\in C$ となる $n$ があり、最小のものを $N(k)$ とすると、関数 $N$ は存在する（\ref{pt:rca0-basic} の 5 の最小化）。$C$ の定義から、$m,m'\ge N(k)$ なら $\lvert x_{m}-x_{m'}\rvert\le2^{-k}$。
+
+*Step 2.* $M(k)\defeq\max_{i\le k}N(i)$ とおき（$M$ は単調で $M(k)\ge N(k)$）、有理数 $c_{k}\defeq(x_{M(k+2)})_{k+2}$ と定める。$i\ge0$ について、$M(k+2)\le M(k+i+2)$ はどちらも $N(k+2)$ 以上なので
+$$
+\begin{aligned}
+\lvert c_{k}-c_{k+i}\rvert&\le\lvert c_{k}-x_{M(k+2)}\rvert+\lvert x_{M(k+2)}-x_{M(k+i+2)}\rvert+\lvert x_{M(k+i+2)}-c_{k+i}\rvert\\
+&\le2^{-k-2}+2^{-k-2}+2^{-k-i-2}<2^{-k}.
+\end{aligned}
+$$
+ここで最初と最後の評価は \ref{logic:rm-real-order} の 3 による。よって $c\defeq(c_{k})_{k}$ は実数である。
+
+*Step 3.* $m\ge M(k+2)$ なら、
+$$
+\lvert c-x_{m}\rvert\le\lvert c-c_{k}\rvert+\lvert c_{k}-x_{M(k+2)}\rvert+\lvert x_{M(k+2)}-x_{m}\rvert\le2^{-k}+2^{-k-2}+2^{-k-2}<2^{-k+1}.
+$$
+$k$ を $k+1$ に置き換えれば、$m\ge M(k+3)$ で $\lvert c-x_{m}\rvert<2^{-k}$ となり、$c=\lim_{n}x_{n}$。
+
+**1 ⇒ 2（ボルツァーノ–ワイエルシュトラス）.** $(x_{n})$ を有界とし、$\lvert x_{n}\rvert\le b$ とする。二進の閉区間 $I_{k,j}\defeq[j2^{-k},(j+1)2^{-k}]$ を考える。
+
+*Step 1.* 「区間 $I$ に無限個の $x_{n}$ が入る」は $\forall m\,\exists n>m\,(x_{n}\in I)$ で、$x_{n}\in I$ は $\Pi^{0}_{1}$ なので、これは算術的論理式である。算術的内包公理で
+$$
+W\defeq\{(k,j):\forall m\,\exists n>m\,(x_{n}\in I_{k,j})\}
+$$
+が存在する。
+
+*Step 2（区間の選び方）.* 次の事実を使う：「区間 $I$ が二つの閉区間 $I',I''$ の和で、$I$ に無限個の $x_{n}$ が入るなら、$I'$ か $I''$ のどちらかに無限個入る」。実際、どちらも有限個（ある $m',m''$ より先には入らない）なら、$m=\max(m',m'')$ より先の $x_{n}\in I$ は、\ref{logic:rm-real-order} の 2 により中点以下か中点以上かのどちらかで、$I'$ か $I''$ に入り、矛盾する。$[-b,b]$ は有限個の $I_{0,j}$（$-b\le j<b$）の和なので、同じ議論を有限回（算術的帰納法で）繰り返して、ある $j_{0}$ で $(0,j_{0})\in W$ となる。以下、$j_{k+1}$ を $\{2j_{k},2j_{k}+1\}$ のうち $(k+1,j)\in W$ となる最小の $j$ と定める（上の事実から存在する）。$W$ をパラメータとする原始再帰なので、関数 $k\mapsto j_{k}$ は存在する。
+
+*Step 3（部分列）.* $n_{0}$ を $x_{n}\in I_{0,j_{0}}$ となる最小の $n$、$n_{k+1}$ を $n>n_{k}$ かつ $x_{n}\in I_{k+1,j_{k+1}}$ となる最小の $n$ とする（$(k+1,j_{k+1})\in W$ なので存在する）。「$x_{n}\in I_{k,j}$」の集合は $\Pi^{0}_{1}$ 内包公理で存在するので、最小化と原始再帰で関数 $k\mapsto n_{k}$ は存在し、狭義単調増加である。
+
+*Step 4（収束）.* 区間 $I_{k,j_{k}}$ は縮小していく（$I_{k+1,j_{k+1}}\subseteq I_{k,j_{k}}$）ので、区間縮小法（\ref{logic:rm-nested-intervals}）から、すべての区間に属する実数 $c$ がある。$i\ge0$ について $x_{n_{k+i}}\in I_{k+i,j_{k+i}}\subseteq I_{k,j_{k}}$ なので $\lvert c-x_{n_{k+i}}\rvert\le2^{-k}$。よって $\lim_{k}x_{n_{k}}=c$。
+
+**4 ⇒ 5.** $(x_{n})$ を有界な増加列とし、4 で上限 $s$ をとる。$k$ に対し $x_{n}>s-2^{-k}$ となる $n$ をとると、すべての $i$ で $s-2^{-k}<x_{n}\le x_{n+i}\le s$（増加列であることは $\Pi^{0}_{1}$ 帰納法で $x_{n}\le x_{n+i}$ に延ばす）なので $\lvert s-x_{n+i}\rvert<2^{-k}$。よって $s=\lim x_{n}$。
+
+**2 ⇒ 5.** $(x_{n})$ を有界な増加列とし、2 で収束部分列 $x_{n_{k}}\to c$ をとる。まず、すべての $m$ で $x_{m}\le c$ である：$n_{k}\ge m$ となる $k$ 以降で $x_{m}\le x_{n_{k+i}}$ であり、$x_{m}>c$ なら $x_{m}-c>2^{-l}$ となる $l$ について、極限の定義に反する。次に、$k$ に対し、極限の定義から $K$ を $\lvert c-x_{n_{K}}\rvert<2^{-k}$ ととる。$m\ge n_{K}$ なら $x_{n_{K}}\le x_{m}\le c$ なので $\lvert c-x_{m}\rvert\le c-x_{n_{K}}<2^{-k}$。よって $c=\lim x_{n}$。
+
+**3 ⇒ 5.** 有界な増加列がコーシー列であることを $\mathsf{RCA}_{0}$ で示せばよい。これは問題 \ref{logic:prob-cauchy-monotone} とする。
+
+**5 ⇒ 1.** \ref{logic:aca-equivalents} により、任意の単射 $f\colon\N\to\N$ の値域が存在することを示せばよい。
+
+*Step 1（増加列）.* 有理数 $c_{n}\defeq\sum_{i\le n}2^{-f(i)}$ の列は（原始再帰で）存在し、増加列である。有界であること：$f(0),\dots,f(n)$ は互いに異なるので、$L\defeq\max_{i\le n}f(i)$ とすると
+$$
+c_{n}\le\sum_{j\le L}2^{-j}<2.
+$$
+（左の不等式は、和の項が $\{2^{-j}:j\le L\}$ の相異なる項の一部であることから、$n$ についての帰納法で示せる。）5 により極限 $c$ がある。上の 2 ⇒ 5 の議論と同様に、すべての $m$ で $c_{m}\le c$ である。
+
+*Step 2（値域の二通りの記述）.* 次を示す：
+$$
+\exists m\,(f(m)=n)\iff\forall k\,\bigl(\lvert c_{k}-c\rvert<2^{-n}\to\exists m\le k\,(f(m)=n)\bigr).
+$$
+（$\Leftarrow$）極限の定義から $\lvert c-c_{k}\rvert<2^{-n}$ となる $k$ があり、右辺からある $m\le k$ で $f(m)=n$。
+（$\Rightarrow$）$f(m)=n$ とし、$\lvert c_{k}-c\rvert<2^{-n}$ とする。$m>k$ と仮定すると、$c_{m}-c_{k}=\sum_{k<i\le m}2^{-f(i)}\ge2^{-f(m)}=2^{-n}$ なので、$c-c_{k}\ge c_{m}-c_{k}\ge2^{-n}$ となり矛盾する。よって $m\le k$。
+
+*Step 3.* 左辺は $\Sigma^{0}_{1}$、右辺は $\Pi^{0}_{1}$ である（$\lvert c_{k}-c\rvert<2^{-n}$ は $\Sigma^{0}_{1}$ で、含意の前件にあるので全体は $\Pi^{0}_{1}$ になる。$\exists m\le k$ は有界）。$\Delta^{0}_{1}$ 内包公理（\ref{pt:l2-axioms}）で $\mathrm{rng}(f)$ が存在する。
+:::
+
+## ケーニッヒの補題 {#logic:sec-rm3-konig}
+
+::: definition 有限分岐木とケーニッヒの補題 {#logic:konig-lemma-def keywords="tree on natural numbers, finitely branching tree, Konig's lemma" index="ケーニッヒの補題|けーにっひのほだい, 有限分岐木|ゆうげんぶんきぎ"}
+1. $T\subseteq\N^{<\N}$ で、始切片で閉じている（$\tau\in T$, $\sigma\subseteq\tau$ なら $\sigma\in T$）ものを**木**という。$T$ の**道**とは、関数 $g\colon\N\to\N$ で、すべての $n$ で $g\restr n\in T$ となるもの。
+2. 木 $T$ が**有限分岐**であるとは、各 $\sigma\in T$ の子 $\{m:\sigma^{\frown}m\in T\}$ が有限集合であることをいう。
+3. **ケーニッヒの補題**（$\mathsf{KL}$）：無限個の元をもつ有限分岐木は道をもつ。
+:::
+
+::: remark
+二分木（\ref{pt:wkl-atr-axioms}）は子が高々 $\{0,1\}$ の有限分岐木なので、$\mathsf{WKL}$ は $\mathsf{KL}$ の特別な場合である。違いは「子の個数が有限である」ことしか言っていない点にある：$\{m:\sigma^{\frown}m\in T\}$ が有限であっても、その上界を計算する方法は木から与えられない。次の定理の 3 は、子が高々二つでも、子の**番号**が有界でなければ $\mathsf{ACA}_{0}$ の強さになることを示している。
+:::
+
+::: theorem ケーニッヒの補題と ACA₀ {#logic:konig-aca keywords="Konig's lemma is equivalent to ACA0" index="ケーニッヒの補題と ACA₀|けーにっひのほだいとえーしーえーぜろ"}
+$\mathsf{RCA}_{0}$ の上で次は同値である。
+1. $\mathsf{ACA}_{0}$。
+2. ケーニッヒの補題 $\mathsf{KL}$。
+3. 各元の子が高々二つである無限木は道をもつ。
+:::
+
+::: intuition
+$3\Rightarrow1$ の証明では、単射 $f$ から次のような木 $T$ を作る。長さ $n+1$ の節点の最後の値 $\sigma(n)$ は、「$n$ が $f$ の値域に入らない」と予想するなら $0$、「$n=f(m)$ である」と主張するならその証拠 $m$ に $1$ を足した $m+1$ である。証拠つきの主張は $f$ を見れば正しいかすぐ確かめられるので、子は「$0$」と「正しい証拠 $m+1$」の高々二つ。一方「$0$」という予想は、後で $f(m)=n$ となる $m$ が見つかった時点で誤りとわかり、その枝はそこで途切れる。無限に延びる道は、すべての $n$ について正しく答えた列、すなわち $\mathrm{rng}(f)$ そのものである。
+
+```svg 単射 f（f(0)=2, f(1)=0, …）から作った木の先頭部分。各段 n の値は「0（n は値域にない）」か「m+1（n = f(m)）」。段 0 で 0 を選んだ枝は、f(1)=0 が見えた時点で途切れる
+<svg viewBox="0 0 560 250" xmlns="http://www.w3.org/2000/svg" font-size="14">
+  <text x="20" y="34" style="fill: var(--mn-fg-soft)">段 0</text>
+  <text x="20" y="104" style="fill: var(--mn-fg-soft)">段 1</text>
+  <text x="20" y="174" style="fill: var(--mn-fg-soft)">段 2</text>
+  <circle cx="300" cy="20" r="6" fill="currentColor"/>
+  <text x="312" y="16">空列</text>
+  <line x1="300" y1="20" x2="190" y2="90" stroke="currentColor" stroke-dasharray="5 4"/>
+  <line x1="300" y1="20" x2="410" y2="90" style="stroke: var(--mn-accent)" stroke-width="2.5"/>
+  <circle cx="190" cy="90" r="6" fill="currentColor"/>
+  <text x="120" y="80">(0)</text>
+  <circle cx="410" cy="90" r="6" style="fill: var(--mn-accent)"/>
+  <text x="422" y="80">(2)</text>
+  <text x="430" y="100" font-size="12" style="fill: var(--mn-fg-soft)">0 = f(1)</text>
+  <line x1="190" y1="90" x2="190" y2="160" stroke="currentColor" stroke-dasharray="5 4"/>
+  <circle cx="190" cy="160" r="6" fill="currentColor"/>
+  <text x="100" y="164">(0, 0)</text>
+  <text x="172" y="214" font-size="22" style="fill: var(--mn-accent)">×</text>
+  <text x="80" y="240" font-size="12" style="fill: var(--mn-fg-soft)">f(1)=0 なのに 0 と答えた</text>
+  <line x1="410" y1="90" x2="410" y2="160" style="stroke: var(--mn-accent)" stroke-width="2.5"/>
+  <circle cx="410" cy="160" r="6" style="fill: var(--mn-accent)"/>
+  <text x="422" y="164">(2, 0)</text>
+  <line x1="410" y1="160" x2="410" y2="225" style="stroke: var(--mn-accent)" stroke-width="2.5"/>
+  <circle cx="410" cy="225" r="6" style="fill: var(--mn-accent)"/>
+  <text x="422" y="230">(2, 0, 1)</text>
+  <text x="422" y="246" font-size="12" style="fill: var(--mn-fg-soft)">2 = f(0)</text>
+</svg>
+```
+:::
+
+::: proof
+**1 ⇒ 2.** $T$ を無限の有限分岐木とする。
+
+*Step 1.* 「$\sigma$ の延長が $T$ に無限個ある」は $\forall l\,\exists\tau\,(\tau\in T\wedge\sigma\subseteq\tau\wedge\lvert\tau\rvert\ge l)$ と書ける。（有限分岐なので、延長が無限個あることと、任意に長い延長があることは同値である。前者から後者：長さ $<l$ の延長は、有限分岐なので有限個しかない（長さについての算術的帰納法）。後者から前者は明らか。）これは算術的論理式なので
+$$
+T'\defeq\{\sigma\in T:\forall l\,\exists\tau\in T\,(\sigma\subseteq\tau\wedge\lvert\tau\rvert\ge l)\}
+$$
+が存在する。
+
+*Step 2.* 空列は $T'$ に属する（$T$ は無限で、上の注意から任意に長い元をもつ）。$\sigma\in T'$ なら、$\sigma$ のある子 $\sigma^{\frown}m$ が $T'$ に属する：子の集合 $\{m_{0},\dots,m_{r}\}$ は有限で、どの子も $T'$ に属さなければ、各 $m_{i}$ について長さ $l_{i}$ 以上の延長がなく、$l=\max_{i}l_{i}$ 以上の長さの $\sigma$ の延長がないことになり矛盾する（$\lvert\sigma\rvert<l$ としてよい）。
+
+*Step 3.* $g$ を原始再帰で、$g\restr0=$ 空列、$g(n)\defeq$「$(g\restr n)^{\frown}m\in T'$ となる最小の $m$」と定める（Step 2 で存在する）。$T'$ をパラメータとする原始再帰と（全域性の保証された）最小化なので $g$ は存在し（\ref{pt:rca0-basic} の 5）、帰納法で $g\restr n\in T'\subseteq T$。よって $g$ は $T$ の道である。
+
+**2 ⇒ 3.** 子が高々二つの木は有限分岐木である。
+
+**3 ⇒ 1.** \ref{logic:aca-equivalents} により、単射 $f$ の値域が存在することを示す。
+
+*Step 1（木の定義）.* $\sigma\in T$ を、次の二条件で定める：
+$$
+\begin{aligned}
+&\text{(a)}\ \forall m,n<\lvert\sigma\rvert\,\bigl(f(m)=n\to\sigma(n)=m+1\bigr),\\
+&\text{(b)}\ \forall n<\lvert\sigma\rvert\,\bigl(\sigma(n)>0\to f(\sigma(n)-1)=n\bigr).
+\end{aligned}
+$$
+有界な論理式なので $T$ は存在し、条件は始切片に受け継がれるので $T$ は木である。
+
+*Step 2（子は高々二つ）.* $\sigma\in T$, $\lvert\sigma\rvert=n$ とし、$\sigma^{\frown}k\in T$ とする。(b) から、$k=0$ であるか、$k>0$ で $f(k-1)=n$ である。後者の $k$ は $f$ が単射なので高々一つ（$k-1$ は $f^{-1}(n)$ の唯一の元）。よって子は高々 $0$ と $f^{-1}(n)+1$ の二つ。
+
+*Step 3（$T$ は無限）.* 各 $k$ について長さ $k$ の元があることを示す。有界 $\Sigma^{0}_{1}$ 内包公理（\ref{logic:bounded-sigma01-ca}）で、有限集合 $Y=\{n<k:\exists m\,f(m)=n\}$ をとる。長さ $k$ の列 $\sigma$ を
+$$
+\sigma(n)\defeq
+\begin{cases}
+0 & n\notin Y,\\
+m+1 & n\in Y\text{ かつ }f(m)=n
+\end{cases}
+\quad(n<k)
+$$
+と定める（$n\in Y$ のときの $m$ は単射性から一意である。$Y$ の元すべてについて $m$ を並べた有限列が存在することは、$Y$ の元の個数についての $\Sigma^{0}_{1}$ 帰納法（「最初の $i$ 個の元について $m$ を並べた列が存在する」）で示せる）。(a)：$m,n<k$, $f(m)=n$ なら $n\in Y$ で $\sigma(n)=m+1$。(b)：$\sigma(n)=m+1>0$ なら $f(m)=n$。よって $\sigma\in T$。
+
+*Step 4（道から値域）.* 3 により $T$ は道 $g$ をもつ。$X\defeq\{n:g(n)>0\}$ は存在する。$X=\mathrm{rng}(f)$ を示す。$f(m)=n$ なら、$l>\max(m,n)$ について $g\restr l\in T$ の (a) から $g(n)=m+1>0$、よって $n\in X$。逆に $g(n)>0$ なら、$g\restr(n+1)\in T$ の (b) から $f(g(n)-1)=n$、よって $n\in\mathrm{rng}(f)$。
+:::
+
+::: remark
+3 の木で、子の番号 $m+1$ に木全体で一様な上界（関数 $h$ で、$\sigma^{\frown}k\in T\Rightarrow k\le h(\lvert\sigma\rvert)$）を課すと、主張は $\mathsf{WKL}$ と同値になる（問題 \ref{logic:prob-bounded-konig-wkl}、および田中の本の定理 2.25 の注）。上の木 $T$ では、子 $f^{-1}(n)+1$ の大きさが $n$ から計算で抑えられないことが本質である。
+:::
+
+::: hypcheck
+- **$\Sigma^{0}_{1}$ 帰納法**：\ref{logic:bounded-sigma01-ca} の Step 2 で、$\theta(j)\to\theta(j+1)$ がすべての $j$ で成り立つと仮定して $\theta(k+1)$ を導くのに使った。$\theta$ が $\Sigma^{0}_{1}$ になることには、有界収集の原理（$\mathrm{I}\Sigma_{1}$ で成り立つ）を使った。
+- **$f$ が単射であること**：\ref{logic:range-injection-sigma01} の Step 2 では作った $f$ が単射であることを確かめ、$5\Rightarrow1$ の Step 1（$c_{n}<2$）、Step 2（$c_{m}-c_{k}\ge2^{-n}$ の項が一つだけ）と、\ref{logic:konig-aca} の $3\Rightarrow1$ の Step 2（子が高々二つ）で使った。単射でない関数の値域でも $\Sigma^{0}_{1}$ で定義できるが、上の議論はどれも単射性に依存する。
+- **算術的内包公理**：$1\Rightarrow2,3,4$ と $1\Rightarrow\mathsf{KL}$ で、「無限個の項が入る」「延長が無限個ある」のような $\Pi^{0}_{2}$ 以上の条件の集合を作るのに使った。$\Sigma^{0}_{1}$ 内包公理で足りる箇所（上限の存在の $S$）と、真に高い階層を使う箇所（ボルツァーノ–ワイエルシュトラスの $W$）があるが、\ref{logic:aca-equivalents} により区別は不要である。
+- **$\Delta^{0}_{1}$ 内包公理**：$5\Rightarrow1$ の Step 3 で、値域の $\Sigma^{0}_{1}$ と $\Pi^{0}_{1}$ の二通りの記述から集合を作るのに使った。極限 $c$ が与えられた後は、$\mathsf{RCA}_{0}$ の公理だけで値域が作れる。
+- **区間縮小法**：$1\Rightarrow2$ の Step 4 で、選んだ区間の共通部分の点を得るのに使った（$\mathsf{RCA}_{0}$ で成り立つ。\ref{logic:rm-nested-intervals}）。
+- **有限分岐性**：$1\Rightarrow2$ の Step 1, 2 で、無限個の延長をもつ節点の子のうち一つが同じ性質をもつことを示すのに使った。
+:::
+
+## 問題 {#logic:sec-rm3-problems}
+
+::: problem {#logic:prob-cauchy-monotone}
+$\mathsf{RCA}_{0}$ で、有界な増加列 $(x_{n})$ はコーシー列であることを示せ。（これで \ref{logic:aca-analysis} の $3\Rightarrow5$ が完成する。）
+:::
+
+::: solution
+$\lvert x_{n}\rvert\le b$ とする。コーシー列でないと仮定すると、ある $k$ で $\forall n\,\exists i,j\,(\lvert x_{n+i}-x_{n+j}\rvert>2^{-k})$。増加列なので、これは $\forall n\,\exists i\,(x_{n+i}-x_{n}>2^{-k})$ と同値である。$\Sigma^{0}_{1}$ 論理式
+$$
+\psi(l)\defeq\exists n\,\bigl(x_{n}-x_{0}>l\cdot2^{-k}\bigr)
+$$
+について、$\psi(0)$ は仮定（$n=0$ の場合）から成り立ち、$\psi(l)$ の証拠 $n$ に仮定を適用して $x_{n+i}-x_{n}>2^{-k}$ となる $i$ をとれば $x_{n+i}-x_{0}>(l+1)2^{-k}$ で $\psi(l+1)$。$\Sigma^{0}_{1}$ 帰納法で $\forall l\,\psi(l)$。$l=2b\cdot2^{k}+1$ とすると $x_{n}-x_{0}>2b$ となり、$\lvert x_{n}\rvert,\lvert x_{0}\rvert\le b$ に反する。（$<_{\mathbb{R}}$ が $\Sigma^{0}_{1}$ であることから、$\psi$ は $\Sigma^{0}_{1}$ 論理式になる。）
+:::
+
+::: problem {#logic:prob-bounded-konig-wkl}
+$\mathsf{WKL}_{0}$ で次を示せ：木 $T\subseteq\N^{<\N}$ と関数 $h$ があり、$\sigma^{\frown}k\in T$ なら $k\le h(\lvert\sigma\rvert)$ であるとする。$T$ が無限なら $T$ は道をもつ。
+:::
+
+::: solution
+値 $k\le h(n)$ を長さ $h(n)+1$ の二進列 $e_{n}(k)\defeq0^{k}10^{h(n)-k}$ で表し、$\sigma\in T$ を $e(\sigma)\defeq e_{0}(\sigma(0))^{\frown}\cdots^{\frown}e_{\lvert\sigma\rvert-1}(\sigma(\lvert\sigma\rvert-1))$ に写す。二分木 $T^{\ast}$ を「$\tau\in T^{\ast}\iff$ ある $\sigma\in T$ で $\tau\subseteq e(\sigma)$」と定める。$\tau$ が与えられると、$\tau$ を先頭からブロック長 $h(0)+1,h(1)+1,\dots$ で区切ったとき、完全なブロックがすべて $0^{k}10^{h(i)-k}$ の形で列 $\sigma_{0}$ を表し、$\sigma_{0}\in T$ であり、残りの不完全なブロック（あれば）が、ある $k\le h(\lvert\sigma_{0}\rvert)$ で $\sigma_{0}^{\frown}k\in T$ となる $e_{\lvert\sigma_{0}\rvert}(k)$ の始切片であること、と同値になる。これは有界な論理式なので $T^{\ast}$ は存在し、$T$ が始切片で閉じているので $T^{\ast}$ も木である。$T$ が無限で分岐が $h$ で抑えられるので、$T$ は各長さの元をもつ（長さ $L$ の元がなければ、$T$ の元はすべて長さ $<L$ で値が $h$ で抑えられ、有限個になる）。したがって $T^{\ast}$ も各長さの元をもち無限である。$\mathsf{WKL}$ で $T^{\ast}$ の道 $p$ をとる。$p$ はブロック $e_{0}(k_{0}),e_{1}(k_{1}),\dots$ に分かれ（各ブロックにちょうど一つの $1$ がある）、$g(n)\defeq k_{n}$ とすると、$g\restr n\in T$ が $T^{\ast}$ の定義からわかる。
+:::
+
+::: problem {#logic:prob-konig-tree-rec}
+$f$ を、停止問題の集合 $K$（\ref{comp:halting-L}）を値域にもつ計算可能な単射とする。\ref{logic:konig-aca} の $3\Rightarrow1$ の木 $T$ は計算可能で、各元の子が高々二つであるが、計算可能な道をもたないことを示せ。このことから、ω モデル $\mathrm{REC}$（\ref{pt:omega-rca0}）で 3 が成り立たないことを結論せよ。
+:::
+
+::: solution
+$T$ は $f$ に関する有界な条件で定義されるので計算可能。子が高々二つであることは定理の証明の Step 2 による（$f$ の単射性のみを使った）。$g$ を $T$ の道とすると、Step 4 により $K=\{n:g(n)>0\}$ なので、$g$ が計算可能なら $K$ も計算可能となり矛盾する。$T$ は $\mathrm{REC}$ に属し、$\mathrm{REC}$ で無限（Step 3 の証明は $\mathrm{REC}$ の中で通る：$\mathrm{REC}$ は $\mathsf{RCA}_{0}$ のモデル）だが、$\mathrm{REC}$ に道がない。したがって $\mathrm{REC}\not\models3$。$\mathrm{REC}\models\mathsf{RCA}_{0}$ なので、3 は $\mathsf{RCA}_{0}$ で証明できない。
+:::
+
+::: supplement
+**前提の検討.**
+- \ref{logic:aca-equivalents} の 3 で「単射」を「任意の関数」に変えても同値のままである（2 ⇒ 3 で単射性を使わなかった）。単射に制限した形の方が、$5\Rightarrow1$ や $\mathsf{KL}$ の証明で使いやすい。
+- \ref{logic:aca-analysis} の 2〜5 は、すべて「数列」についての主張である。有界な実数の**集合**の上限は、集合を二階算術で表す方法（列の値域や $\Pi^{0}_{1}$ 定義など）に依存し、議論が変わる。
+- $1\Rightarrow2$ では算術的帰納法を使った（有限個の区間のうち一つに無限個の項が入る）。$\mathsf{ACA}_{0}$ では帰納法の公理と算術的内包公理から算術的帰納法が出るので問題ない。
+
+**関連する結果.**
+- *保存性.* $\mathsf{ACA}_{0}$ は一階算術の文についてペアノ算術 $\mathsf{PA}$ の保存拡大である（田中の本の定理 2.21）。$\mathsf{PA}$ のモデルに、定義可能な部分集合全体を集合の領域として付け加えると $\mathsf{ACA}_{0}$ のモデルになることによる。これは \ref{pt:page-soa-aca0} で扱う予定である。
+- *ラムゼーの定理.* 無限ラムゼーの定理 $\mathrm{RT}^{3}_{2}$（三つ組の二色塗り分け）は $\mathsf{RCA}_{0}$ の上で $\mathsf{ACA}_{0}$ と同値である（田中の本の定理 2.26, 2.27）。$\mathrm{RT}^{2}_{2}$ は $\mathsf{ACA}_{0}$ より真に弱く、$\mathsf{WKL}_{0}$ とは比較不能であることが知られている（シータプン、リュー）。\ref{logic:page-rm-ramsey} で扱う予定である。
+- *$\mathsf{ACA}_{0}^{+}$.* 「任意の $X$ について $\omega$ 回のジャンプ $X^{(\omega)}$ が存在する」を加えた体系 $\mathsf{ACA}_{0}^{+}$ は、すべての $k$ についてのラムゼーの定理 $\forall k\,\mathrm{RT}^{k}$ を証明する。$\mathsf{ACA}_{0}$ は各 $k$ の $\mathrm{RT}^{k}$ を証明するが、$\forall k\,\mathrm{RT}^{k}$ は証明しないことが知られている。
+
+**高い視点から：完備性はジャンプ一回分.** \ref{logic:aca-equivalents} と \ref{logic:aca-analysis} を合わせると、「実数の完備性」は計算可能性の言葉で「停止問題（ジャンプ）を一回使える」ことに当たる。単調収束定理は、計算できる増加列の極限という一つの実数の中に、停止問題の答え全体を二進展開の形で詰め込めることを言っている。対比すると、$\mathsf{WKL}_{0}$ の定理（コンパクト性）は「行き止まりにならない道がある」と存在だけを主張し、その道は停止問題より真に弱い（低い）次数でとれる。比喩で言えば、コンパクト性は「迷路に出口があることは保証するが、地図はくれない」のに対し、完備性は「迷路のすべての分かれ道について、その先が行き止まりかどうかを教えてくれる神託」を一回分くれる。ケーニッヒの補題で子の番号が有界かどうかが $\mathsf{WKL}_{0}$ と $\mathsf{ACA}_{0}$ を分けるのは、有界なら分かれ道の候補を有限に列挙でき神託が要らず、非有界なら「次の子がまだ現れるか」を問う神託が必要になるからである。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

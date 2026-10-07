@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>強制法とハーリントンの定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/06-second-order-arithmetic/04-harrington-forcing.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 強制法とハーリントンの定理 {#pt:page-soa-wkl0-conservation keywords="Harrington's theorem, WKL0 is Pi11-conservative over RCA0, forcing with infinite binary trees, generic filter, generic path, Sigma01 induction preserved, conservation, I Sigma1"}
+
+弱ケーニッヒの補題は非構成的な原理である（計算可能な無限二分木が計算可能な道をもたないことがある。\ref{logic:wkl-not-rca}）。それにもかかわらず、**$\mathsf{WKL}_{0}$ で証明できる $\Pi^{1}_{1}$ 文は、すでに $\mathsf{RCA}_{0}$ で証明できる**（ハーリントンの定理、\ref{pt:harrington}）。本ページではこれを、集合論で開発された**強制法**を二階算術の可算モデルに適用して証明する。要点は、$\mathsf{RCA}_{0}$ の可算モデル $(M,\mathcal{S})$ の無限二分木に「ジェネリックな」道 $G$ を付け加えても、$\Sigma^{0}_{1}$ 帰納法が壊れないこと（\ref{pt:generic-path-induction}）である。これを可算回繰り返すと、数の部分 $M$ を変えずに $\mathsf{WKL}_{0}$ のモデルに広げられる（\ref{pt:wkl0-extension}）。系として、$\mathsf{WKL}_{0}$ は一階算術の文について $\mathrm{I}\Sigma_{1}$ の保存拡大である（\ref{pt:wkl0-isigma1}）。
+
+> 主な資料は田中一之『逆数学と 2 階算術』第 3 章 §3.3（命題 3.19、補題 3.20–3.24、定理 3.25）。証明は自分の言葉で組み立て直し、稠密集合 $E_{k}$ の稠密性、$\Sigma^{0}_{1}$ 論理式の正規形、$D_{b}$ の稠密性の証明の細部を補って書いた。
+
+## 記法と定義の確認 {#pt:sec-soa4-notation}
+
+::: notation
+- 二階算術、$\mathcal{L}_{2}$ 構造、$\mathsf{RCA}_{0}$, $\mathsf{WKL}_{0}$、二分木と道は \ref{pt:page-soa-subsystems} のとおり（\ref{pt:l2-language}, \ref{pt:wkl-atr-axioms}, \ref{pt:big-five}）。本ページでは $\mathcal{L}_{2}$ 構造を $\mathfrak{M}=(M,\mathcal{S})$ と略記する（演算は省略する）。$\mathcal{S}\subseteq\mathcal{P}(M)$ である。
+- $M$ の元が超準的でありうることに注意する。$\{0,1\}^{k}$, $2^{<\N}$, 「有限」「無限」などはすべて $\mathfrak{M}$ の中で解釈する。たとえば「$T$ は $\mathfrak{M}$ で無限」とは $\mathfrak{M}\models\forall n\,\exists t\in T\,(\lvert t\rvert=n)$ のことである。
+- 有界 $\Sigma^{0}_{1}$ 内包公理（$\{a<b:\varphi(a)\}$ が有限集合として存在する）は \ref{logic:bounded-sigma01-ca} のとおり $\mathsf{RCA}_{0}$ で成り立つ。
+- 半順序集合、稠密集合、フィルター、ジェネリックなフィルターは集合論の強制法（\ref{set:generic-filter}）と同じ考え方だが、本ページで必要な形をあらためて定義する。
+- 完全性定理（\ref{logic:completeness}）と下降レーヴェンハイム–スコーレムの定理（\ref{model:downward-lowenheim-skolem}）により、可算な言語の無矛盾な理論は可算モデルをもつ。
+:::
+
+## 強制条件とジェネリックな道 {#pt:sec-soa4-forcing}
+
+::: definition 強制条件・稠密集合・ジェネリックなフィルター {#pt:tree-forcing keywords="forcing conditions infinite subtrees, dense sets, generic filter, definable dense sets" index="強制法（二階算術）|きょうせいほうにかいさんじゅつ, ジェネリックな道|じぇねりっくなみち"}
+$\mathfrak{M}=(M,\mathcal{S})\models\mathsf{RCA}_{0}$ とする。
+1. **強制条件**の集合を $P\defeq\{T\in\mathcal{S}:\mathfrak{M}\models\text{「}T\text{ は }2^{<\N}\text{ の無限部分木」}\}$ とし、$T'\le T:\iff T'\subseteq T$ で半順序を入れる（$T'$ の方が「強い」条件）。
+2. $D\subseteq P$ が**稠密**であるとは、任意の $T\in P$ に対し $T'\le T$ となる $T'\in D$ があることをいう。
+3. $D\subseteq P$ が $\mathfrak{M}$ で**定義可能**であるとは、$\mathcal{L}_{2}$ 論理式 $\varphi(X)$（$M\cup\mathcal{S}$ の元をパラメータに含んでよい）があって $D=\{T\in P:\mathfrak{M}\models\varphi(T)\}$ となることをいう。定義可能な $P$ の部分集合全体を $\mathrm{Def}(\mathfrak{M})$ と書く。
+4. $F\subseteq P$ が**フィルター**であるとは、(i) $T\in F$, $T\le T'\in P$ なら $T'\in F$、(ii) $T_{1},T_{2}\in F$ なら $T_{3}\le T_{1}$, $T_{3}\le T_{2}$ となる $T_{3}\in F$ があること、をいう。$\mathrm{Def}(\mathfrak{M})$ に属するすべての稠密集合と交わるフィルターを **$\mathfrak{M}$ ジェネリックなフィルター**という。
+5. $M$ 上の関数 $G\colon M\to\{0,1\}$ が **$\mathfrak{M}$ ジェネリックな道**であるとは、$\mathrm{Def}(\mathfrak{M})$ に属する任意の稠密集合 $D$ に対し、$G$ を道にもつ（すべての $n\in M$ で $G\restr n\in T$）木 $T\in D$ があることをいう。
+:::
+
+::: remark
+$\mathfrak{M}$ が可算なら、$\mathcal{L}_{2}$ の論理式とパラメータの組は可算個しかないので、$\mathrm{Def}(\mathfrak{M})$ は可算である。$G$ は一般に $\mathcal{S}$ に属さない「外から付け加える」集合で、ジェネリック性は「$\mathfrak{M}$ で記述できるどんな稠密な要求も、どこかで満たしている」ことを表す。
+:::
+
+::: lemma ジェネリックなフィルターの存在 {#pt:generic-filter-exists keywords="Rasiowa-Sikorski lemma for countably many dense sets"}
+$\mathfrak{M}$ が可算なら、任意の $T\in P$ に対し、$T$ を含む $\mathfrak{M}$ ジェネリックなフィルターが存在する。
+:::
+
+::: proof
+$\mathrm{Def}(\mathfrak{M})$ に属する稠密集合を $D_{0},D_{1},\dots$（$i\in\N$、本当の自然数で番号付ける）と並べる。$T_{0}\defeq T$ とし、$T_{i+1}$ を $T_{i+1}\le T_{i}$ かつ $T_{i+1}\in D_{i}$ となるものに選ぶ（$D_{i}$ の稠密性）。$F\defeq\{T'\in P:\exists i\,(T_{i}\le T')\}$ は、(i) は定義から、(ii) は $T_{i},T_{j}$ のうち添字の大きい方が共通の下界になることから、フィルターである。各 $D_{i}$ と $T_{i+1}$ で交わり、$T\in F$。
+:::
+
+::: lemma ジェネリックなフィルターは道を定める {#pt:generic-filter-path keywords="generic filter determines a common path"}
+$F$ が $\mathfrak{M}$ ジェネリックなフィルターなら、$F$ のすべての木に共通の道 $G\colon M\to\{0,1\}$ がある。この $G$ は $\mathfrak{M}$ ジェネリックな道である。
+:::
+
+::: proof
+**Step 1（稠密集合 $E_{k}$）.** $k\in M$ について
+$$
+E_{k}\defeq\{T\in P:\exists s\in\{0,1\}^{k}\,\forall t\in T\,(t\subseteq s\vee s\subseteq t)\}
+$$
+（$T$ の元がすべて一つの長さ $k$ の列 $s$ と比較可能）とする。$E_{k}$ は定義可能である。稠密であることを示す。$T\in P$ をとり、$s\in\{0,1\}^{k}$ について $T^{s}\defeq\{t\in T:t\subseteq s\vee s\subseteq t\}$ とおく（有界な論理式で定義され $\mathcal{S}$ に属する木）。ある $s$ で $T^{s}$ が無限なら、$T^{s}\le T$, $T^{s}\in E_{k}$ でよい。どの $s$ でも $T^{s}$ が有限だとする。$\{0,1\}^{k}$ の元を $s_{0},\dots,s_{2^{k}-1}$ と並べ、$\Sigma^{0}_{1}$ 論理式
+$$
+\chi(j)\defeq\exists N\,\forall i<j\,\neg\exists t\in T\,(s_{i}\subseteq t\wedge\lvert t\rvert=N)
+$$
+（$\exists t$ は長さ $N$ の列についての有界な量化子）を考える。$\chi(0)$ は自明。$\chi(j)$ の証拠 $N$ と、$T^{s_{j}}$ が有限であることから得られる長さ $N_{j}$（$s_{j}$ の延長で長さ $N_{j}$ の元が $T$ にない）について、$T$ が木なので長さ $\max(N,N_{j})$ の延長もなく、$\chi(j+1)$。$\Sigma^{0}_{1}$ 帰納法で $\chi(2^{k})$：ある $N$ で、どの $s_{i}$ も $T$ に長さ $N$ の延長をもたない。$N'\defeq\max(N,k)$ について $T$ は長さ $N'$ の元 $t$ をもつ（$T$ は無限）が、$t\restr k$ はある $s_{i}$ で、$t\restr N\in T$ は $s_{i}$ の長さ $N$ の延長になり矛盾する。
+
+**Step 2（道を作る）.** $F$ はジェネリックなので、各 $k$ について $T_{k}\in F\cap E_{k}$ と、対応する $s_{k}\in\{0,1\}^{k}$ がある。$k<k'$ なら $s_{k}\subseteq s_{k'}$：$T_{k},T_{k'}$ の $F$ の中の共通の下界 $T''$ は無限なので長さ $k'$ の元 $t$ をもち、$t$ は $s_{k}$ とも $s_{k'}$ とも比較可能なので $t=s_{k'}$, $s_{k}=t\restr k$。そこで $G(n)\defeq s_{n+1}(n)$ とおくと $G\restr k=s_{k}$。
+
+**Step 3（共通の道）.** $T\in F$ と $k$ について、$T$ と $T_{k}$ の $F$ の中の共通の下界 $T''$ は長さ $k$ の元をもち、それは $s_{k}$ と比較可能なので $s_{k}$ である。よって $G\restr k=s_{k}\in T''\subseteq T$。
+
+**Step 4（ジェネリック性）.** 定義可能な稠密集合 $D$ について $T\in F\cap D$ をとれば、Step 3 から $G$ は $T$ の道である。
+:::
+
+::: corollary
+$\mathfrak{M}$ が可算なら、任意の $T\in P$ は $\mathfrak{M}$ ジェネリックな道をもつ。
+:::
+
+::: proof
+\ref{pt:generic-filter-exists} で $T$ を含むジェネリックなフィルター $F$ をとり、\ref{pt:generic-filter-path} の $G$ をとる。$G$ は $T\in F$ の道である。
+:::
+
+::: intuition
+強制法の考え方は、道 $G$ を一度に与えるのではなく、「$G$ はこの無限部分木の中を通る」という**近似**（強制条件）を少しずつ強めて決めていく、というものである。各段階で、$\mathfrak{M}$ で記述できる要求（稠密集合）を一つずつ満たすように木を細らせる。可算個の要求しかないので、すべてを満たす極限の道が得られる。
+
+```svg 強制条件の列 T ⊇ T₁ ⊇ T₂ ⊇ … は、道 G の近似を順に強めていく。各段で一つの稠密集合の要求を満たすように木を細らせる
+<svg viewBox="0 0 560 260" xmlns="http://www.w3.org/2000/svg" font-size="14">
+  <polygon points="280,20 40,240 520,240" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <polygon points="280,20 120,240 420,240" style="fill: var(--mn-accent-soft)" stroke="currentColor" stroke-dasharray="5 4"/>
+  <polygon points="280,20 200,240 340,240" style="fill: var(--mn-accent-soft); stroke: var(--mn-accent)" stroke-width="1.5"/>
+  <polyline points="280,20 270,80 285,140 262,200 270,240" fill="none" style="stroke: var(--mn-accent)" stroke-width="3"/>
+  <text x="60" y="230">T</text>
+  <text x="138" y="230">T₁</text>
+  <text x="212" y="230">T₂</text>
+  <text x="290" y="200" style="fill: var(--mn-accent)">G</text>
+  <text x="400" y="60" font-size="13" style="fill: var(--mn-fg-soft)">各 Tᵢ は 𝔐 の中で</text>
+  <text x="400" y="78" font-size="13" style="fill: var(--mn-fg-soft)">無限な二分木</text>
+</svg>
+```
+:::
+
+## Σ⁰₁ 帰納法の保存 {#pt:sec-soa4-induction}
+
+::: lemma Σ⁰₁ 論理式の正規形 {#pt:sigma01-string-normal-form keywords="normal form of Sigma01 formulas with a set parameter via finite initial segments"}
+$\mathsf{RCA}_{0}$ で次が成り立つ：集合変数 $X$ を含む $\Sigma^{0}_{1}$ 論理式 $\varphi(a,X)$（他のパラメータを含んでよい）に対し、有限の二進列 $s$ についての有界な論理式 $\psi(a,s)$ で、
+1. （単調性）$\psi(a,s)\wedge s\subseteq s'\to\psi(a,s')$、
+2. $\varphi(a,X)\leftrightarrow\exists n\,\psi(a,X\restr n)$（$X\restr n$ は $X$ の特性関数の長さ $n$ の始切片）
+
+となるものがある。
+:::
+
+::: proof
+$\varphi(a,X)\equiv\exists j\,\theta(a,j,X)$（$\theta$ は有界）と書く。$\theta$ の有界な量化子の上界はすべて $a,j$ と他の数パラメータの項なので、$\theta$ に現れる $t\in X$ の項 $t$ の値は、ある項 $u(a,j)$ 未満に収まるようにできる（必要なら $\theta$ を $u$ を大きくとって書き直す）。$\theta^{s}(a,j)$ を、$\theta$ の中の $t\in X$ を「$t<\lvert s\rvert\wedge s(t)=1$」で置き換えたものとし、
+$$
+\psi(a,s)\defeq\exists j<\lvert s\rvert\,\bigl(u(a,j)\le\lvert s\rvert\wedge\theta^{s}(a,j)\bigr)
+$$
+とおく。$u(a,j)\le\lvert s\rvert$ のもとでは、$\theta^{s}(a,j)$ の真偽は $s$ の長さ $u(a,j)$ の始切片だけで決まるので、1 が成り立つ。2 は、$\theta(a,j,X)$ なら $n\defeq\max(j+1,u(a,j))$ について $\psi(a,X\restr n)$、逆も同様である。
+:::
+
+::: lemma ジェネリックな道は Σ⁰₁ 帰納法を保つ {#pt:generic-path-induction keywords="adding a generic path preserves Sigma01 induction" index="Σ⁰₁ 帰納法の保存|しぐまぜろわんきのうほうのほぞん"}
+$\mathfrak{M}=(M,\mathcal{S})$ を $\mathsf{RCA}_{0}$ の可算モデル、$G$ を $\mathfrak{M}$ ジェネリックな道とする。$(M,\mathcal{S}\cup\{G\})$ で（$\mathcal{S}\cup\{G\}$ の元と $M$ の元をパラメータとする）$\Sigma^{0}_{1}$ 帰納法が成り立つ。
+:::
+
+::: proof
+$\Sigma^{0}_{1}$ 論理式は集合パラメータを有限個しか含まず、$\mathcal{S}$ の有限個の集合は対の符号化で一つにまとめられるので、パラメータとして $G$ と $\mathcal{S}$ の元・$M$ の元を含む $\varphi(a,G)$ を考えれば十分である。\ref{pt:sigma01-string-normal-form} により $\varphi(a,X)\leftrightarrow\exists n\,\psi(a,X\restr n)$（$\psi$ 有界・単調）とする。$(M,\mathcal{S}\cup\{G\})$ で $\varphi(0,G)$ と $\forall a\,(\varphi(a,G)\to\varphi(a+1,G))$ を仮定し、任意の $b\in M$ で $\varphi(b,G)$ を示す。
+
+**Step 1（帰着）.** 有限集合 $X_{b}\defeq\{a\le b:\varphi(a,G)\}$ が $\mathcal{S}$ に（有限集合の符号として）属することを示せば十分である。実際、そのとき $Y\defeq X_{b}\cup\{a:a>b\}$ は $\mathcal{S}$ に属し、$0\in Y$, $\forall m\,(m\in Y\to m+1\in Y)$（$m<b$ なら仮定から、$m\ge b$ なら $m+1>b$）なので、$\mathfrak{M}$ の帰納法の公理から $Y=M$、とくに $b\in X_{b}$、すなわち $\varphi(b,G)$。
+
+**Step 2（稠密集合 $D_{b}$）.** $T\in P$ と $a$ について
+$$
+\begin{aligned}
+&(1)_{a}[T]\defeq\forall t\in T\,\neg\psi(a,t),\\
+&(2)_{a}[T]\defeq\exists k\,\forall t\in T\,(\lvert t\rvert=k\to\psi(a,t))
+\end{aligned}
+$$
+とし、$D_{b}\defeq\{T\in P:\forall a\le b\,((1)_{a}[T]\vee(2)_{a}[T])\}$ とおく。$D_{b}$ は定義可能で、$T\in D_{b}$, $T'\le T$ なら $T'\in D_{b}$（どちらの条件も部分木に受け継がれる。$(2)$ では $T'$ の長さ $k$ の元も $T$ の元であることを使う）。$D_{b}$ が稠密であることは Step 4 で示す。
+
+**Step 3（$X_{b}$ の定義）.** $G$ はジェネリックな道なので、$G$ を道にもつ $T_{0}\in D_{b}$ がある。$a\le b$ について：
+- $(1)_{a}[T_{0}]$ なら $\neg\varphi(a,G)$：$\varphi(a,G)$ なら $\psi(a,G\restr n)$ となる $n$ があり、$G\restr n\in T_{0}$ に反する。
+- $(2)_{a}[T_{0}]$ なら $\varphi(a,G)$：その $k$ について $G\restr k\in T_{0}$ なので $\psi(a,G\restr k)$。
+
+各 $a\le b$ で $(1)_{a}$ か $(2)_{a}$ が成り立つので、$a\le b$ について $\varphi(a,G)\iff(2)_{a}[T_{0}]$。$(2)_{a}[T_{0}]$ は（$T_{0}\in\mathcal{S}$ をパラメータとする）$\Sigma^{0}_{1}$ 論理式（長さ $k$ の $t\in T_{0}$ についての $\forall$ は、長さ $k$ の列についての有界な量化子）なので、有界 $\Sigma^{0}_{1}$ 内包公理（\ref{logic:bounded-sigma01-ca}）により $X_{b}=\{a\le b:(2)_{a}[T_{0}]\}$ は $\mathcal{S}$ に属する。
+
+**Step 4（$D_{b}$ の稠密性）.** $T\in P$ をとる。長さ $\le b+1$ の二進列 $\sigma$ について、$T$ の部分木
+$$
+T_{\sigma}\defeq\{t\in T:\forall a<\lvert\sigma\rvert\,(\sigma(a)=0\to\neg\psi(a,t))\}
+$$
+を定める（有界な論理式で一様に定義され、$\psi$ の単調性から始切片で閉じているので木。$\mathcal{S}$ に属する）。$\sigma(a)=0$ は「$a$ について、$\varphi$ の証拠を決して与えない枝だけを残す」ことを、$\sigma(a)=1$ は「何もしない」ことを表す。$\Pi^{0}_{1}$ 条件「$T_{\sigma}$ は無限」についての有界内包（\ref{logic:bounded-sigma01-ca} を否定に適用）により、有限集合
+$$
+S_{b}\defeq\{\sigma\in\{0,1\}^{b+1}:T_{\sigma}\text{ は無限}\}
+$$
+が存在する。$\sigma=1^{b+1}$ では $T_{\sigma}=T$ なので $S_{b}\neq\varnothing$。$S_{b}$ の辞書式順序（$0<1$）で最小の元を $\sigma_{0}$ とする。$T_{\sigma_{0}}\le T$ は無限なので $P$ に属する。$T_{\sigma_{0}}\in D_{b}$ を示す。$a\le b$ をとる。
+- $\sigma_{0}(a)=0$ なら、定義から $T_{\sigma_{0}}$ の元はすべて $\neg\psi(a,t)$ を満たし、$(1)_{a}[T_{\sigma_{0}}]$。
+- $\sigma_{0}(a)=1$ なら、$\tau\defeq(\sigma_{0}\restr a)^{\frown}0^{\frown}1^{b-a}$ は辞書式で $\sigma_{0}$ より小さいので $S_{b}$ に属さず、$T_{\tau}$ は有限、すなわちある $k$ で長さ $k$ の元をもたない。$T_{\sigma_{0}}\subseteq T_{\sigma_{0}\restr a}$ の長さ $k$ の元 $t$ は、$T_{\tau}$ に属さず、$T_{\tau}$ と $T_{\sigma_{0}\restr a}$ の違いは「$\neg\psi(a,t)$」の条件だけなので $\psi(a,t)$。よって $(2)_{a}[T_{\sigma_{0}}]$。
+
+以上で $T_{\sigma_{0}}\in D_{b}$ となり、$D_{b}$ は稠密である。
+:::
+
+## ハーリントンの定理 {#pt:sec-soa4-harrington}
+
+::: lemma 一つの木に道を加える {#pt:add-one-path keywords="extension of a countable model of RCA0 adding a path to a given tree"}
+$\mathfrak{M}=(M,\mathcal{S})$ を $\mathsf{RCA}_{0}$ の可算モデル、$T\in P$ とし、$G$ を $T$ の $\mathfrak{M}$ ジェネリックな道とする。
+$$
+\mathcal{S}_{T}\defeq\{X\subseteq M:X\text{ は }(M,\mathcal{S}\cup\{G\})\text{ で }\Delta^{0}_{1}\text{ 定義可能}\}
+$$
+（パラメータは $M\cup\mathcal{S}\cup\{G\}$ の元）とおくと、$\mathcal{S}\cup\{G\}\subseteq\mathcal{S}_{T}$, $\mathcal{S}_{T}$ は可算で、$(M,\mathcal{S}_{T})\models\mathsf{RCA}_{0}$ であり、$(M,\mathcal{S}_{T})$ で $T$ は道 $G$ をもつ。
+:::
+
+::: proof
+**Step 1（パラメータの消去）.** $\mathcal{S}_{T}$ の元をパラメータとする $\Sigma^{0}_{1}$ 論理式は、$(M,\mathcal{S}_{T})$ で、$\mathcal{S}\cup\{G\}$ の元だけをパラメータとする $\Sigma^{0}_{1}$ 論理式と同値である。実際、パラメータ $X\in\mathcal{S}_{T}$ は $n\in X\leftrightarrow\chi_{1}(n)\leftrightarrow\neg\chi_{2}(n)$（$\chi_{1},\chi_{2}$ は $\mathcal{S}\cup\{G\}$ をパラメータとする $\Sigma^{0}_{1}$）と書けるので、$t\in X$ の正の出現を $\chi_{1}(t)$、負の出現を $\neg\chi_{2}(t)$ で置き換えると、$\Sigma^{0}_{1}$ 論理式を $\wedge,\vee$, 有界量化子、存在量化子で組み合わせた形になる。有界な全称量化子を存在量化子の外に出すには有界収集原理 $\mathrm{B}\Sigma^{0}_{1}$ が要るが、これは $\Sigma^{0}_{1}$ 帰納法から従うことが知られており（本サイトでは示していない）、\ref{pt:generic-path-induction} により $(M,\mathcal{S}\cup\{G\})$ で $\Sigma^{0}_{1}$ 帰納法が成り立つので使える。
+
+**Step 2（公理）.** 基本公理は $M$ だけで決まり成り立つ。$\Sigma^{0}_{1}$ 帰納法は、Step 1 で $\mathcal{S}\cup\{G\}$ をパラメータとする場合に帰着し、\ref{pt:generic-path-induction} で成り立つ。$\Delta^{0}_{1}$ 内包公理：$\mathcal{S}_{T}$ の元をパラメータとする $\Sigma^{0}_{1}$ と $\Pi^{0}_{1}$ の論理式が同値なら、Step 1 によりその集合は $(M,\mathcal{S}\cup\{G\})$ で $\Delta^{0}_{1}$ 定義可能で、$\mathcal{S}_{T}$ に属する。帰納法の公理は $\Sigma^{0}_{1}$ 帰納法の特別な場合。
+
+**Step 3.** $\mathcal{S}$ の元 $A$ は $n\in A$ で、$G$ は $n\in G$ で定義されるので $\mathcal{S}\cup\{G\}\subseteq\mathcal{S}_{T}$。論理式とパラメータは可算個なので $\mathcal{S}_{T}$ は可算。$G$ は $T$ の道なので、$(M,\mathcal{S}_{T})$ で $T$ は道 $G$ をもつ。
+:::
+
+::: lemma WKL₀ のモデルへの拡大 {#pt:wkl0-extension keywords="every countable model of RCA0 extends to a model of WKL0 with the same first-order part" index="WKL₀ のモデルへの拡大|だぶりゅけーえるぜろのもでるへのかくだい"}
+$(M,\mathcal{S})$ を $\mathsf{RCA}_{0}$ の可算モデルとする。$\mathcal{S}\subseteq\mathcal{S}_{\infty}\subseteq\mathcal{P}(M)$ で、$(M,\mathcal{S}_{\infty})\models\mathsf{WKL}_{0}$ となるものが存在する。
+:::
+
+::: proof
+$\mathcal{S}_{0}\defeq\mathcal{S}$ とし、$\mathsf{RCA}_{0}$ の可算モデル $(M,\mathcal{S}_{i})$ を帰納的に作る。各 $\mathcal{S}_{n}$ の無限二分木を $T_{n,0},T_{n,1},\dots$ と並べておく。$i=(n,m)$（本当の自然数の対の符号。$(n,m)\ge n$ なので $\mathcal{S}_{n}$ はすでにある）について、$T_{n,m}\in\mathcal{S}_{n}\subseteq\mathcal{S}_{i}$ は $(M,\mathcal{S}_{i})$ でも無限（無限であることは算術的な条件で、$M$ と $T_{n,m}$ だけで決まる）なので、\ref{pt:add-one-path} で $\mathcal{S}_{i+1}\defeq(\mathcal{S}_{i})_{T_{n,m}}$ とする。$\mathcal{S}_{\infty}\defeq\bigcup_{i}\mathcal{S}_{i}$ とおく。
+
+$(M,\mathcal{S}_{\infty})\models\mathsf{RCA}_{0}$：各公理の例は有限個のパラメータしか含まず、それらはある $\mathcal{S}_{i}$ に属する。$\Sigma^{0}_{1}$ 帰納法と $\Delta^{0}_{1}$ 内包公理の各例は（集合量化子を内包の結論の $\exists X$ だけに含む形で）、仮定部分が算術的なので $(M,\mathcal{S}_{i})$ と $(M,\mathcal{S}_{\infty})$ で真偽が一致し、$(M,\mathcal{S}_{i})$ で得られる集合は $\mathcal{S}_{\infty}$ に属する。
+
+$\mathsf{WKL}$：$(M,\mathcal{S}_{\infty})$ の無限二分木 $T$ はある $\mathcal{S}_{n}$ に属し、$T=T_{n,m}$ と書ける。段階 $i=(n,m)$ で道が $\mathcal{S}_{i+1}\subseteq\mathcal{S}_{\infty}$ に加えられた。
+:::
+
+::: theorem ハーリントンの定理 {#pt:harrington keywords="Harrington's theorem: WKL0 is Pi11-conservative over RCA0" index="ハーリントンの定理|はーりんとんのていり"}
+任意の $\Pi^{1}_{1}$ 文 $\sigma$ について、$\mathsf{WKL}_{0}\vdash\sigma$ ならば $\mathsf{RCA}_{0}\vdash\sigma$。
+:::
+
+::: proof
+対偶を示す。$\mathsf{RCA}_{0}\nvdash\sigma$ とし、$\sigma\equiv\forall X\,\varphi(X)$（$\varphi$ 算術的）と書く。完全性定理と下降レーヴェンハイム–スコーレムの定理により、可算モデル $(M,\mathcal{S})\models\mathsf{RCA}_{0}+\neg\sigma$ がある。$\neg\sigma\leftrightarrow\exists X\,\neg\varphi(X)$ なので、$A\in\mathcal{S}$ で $(M,\mathcal{S})\models\neg\varphi(A)$。\ref{pt:wkl0-extension} で $(M,\mathcal{S}_{\infty})\models\mathsf{WKL}_{0}$ をとる。$\varphi(A)$ は算術的なので、その真偽は $M$ と $A$ だけで決まり、$A\in\mathcal{S}_{\infty}$ なので $(M,\mathcal{S}_{\infty})\models\neg\varphi(A)$、したがって $(M,\mathcal{S}_{\infty})\models\mathsf{WKL}_{0}+\neg\sigma$。健全性から $\mathsf{WKL}_{0}\nvdash\sigma$。
+:::
+
+::: corollary WKL₀ と IΣ₁ {#pt:wkl0-isigma1 keywords="WKL0 is conservative over I Sigma1 for first-order sentences"}
+$\mathsf{WKL}_{0}$ は一階算術の文について $\mathrm{I}\Sigma_{1}$ の保存拡大である。
+:::
+
+::: proof
+一階算術の文は（集合量化子のない）$\Pi^{1}_{1}$ 文なので、\ref{pt:harrington} により $\mathsf{WKL}_{0}\vdash\sigma\Rightarrow\mathsf{RCA}_{0}\vdash\sigma$。$\mathsf{RCA}_{0}$ は一階算術の文について $\mathrm{I}\Sigma_{1}$ の保存拡大である（問題 \ref{pt:prob-rca0-isigma1}）ので $\mathrm{I}\Sigma_{1}\vdash\sigma$。逆向きは $\mathrm{I}\Sigma_{1}\subseteq\mathsf{RCA}_{0}\subseteq\mathsf{WKL}_{0}$ による。
+:::
+
+::: remark
+1. **$\Pi^{1}_{1}$ は最適.** $\Pi^{1}_{2}$ 文には保存性は成り立たない：$\mathsf{WKL}$ そのものが $\Pi^{1}_{2}$ 文で、$\mathsf{RCA}_{0}$ では証明できない（\ref{logic:wkl-not-rca}）。
+2. **ω モデルではない.** 構成した $(M,\mathcal{S}_{\infty})$ は、$M$ が標準的でも、ジェネリックな道を使うので $\mathcal{S}_{\infty}$ の元は一般に計算可能でない。ω モデルで同様のことをするには、**低基底定理**（計算可能な無限二分木は跳躍が $\varnothing'$ で計算できる道をもつ）を使うのが標準的である。
+3. **証明の形式化.** 上の証明はモデル（したがって完全性定理）を使う非構成的な証明である。$\mathsf{WKL}_{0}$ の証明を $\mathsf{RCA}_{0}$ の証明に変換する手続き（したがって $\mathsf{PRA}$ 程度で形式化できる証明）もあることが知られている（本サイトでは示していない）。
+:::
+
+::: hypcheck
+- **$\mathfrak{M}$ の可算性**：\ref{pt:generic-filter-exists} で稠密集合を本当の自然数で番号付けるのに使った。非可算モデルでは、ジェネリックなフィルターは一般に存在しない。
+- **$\mathfrak{M}\models\mathsf{RCA}_{0}$（とくに $\Sigma^{0}_{1}$ 帰納法）**：\ref{pt:generic-filter-path} の Step 1（$E_{k}$ の稠密性）、\ref{pt:generic-path-induction} の Step 1（帰納法の公理）、Step 3, 4（有界内包公理）で使った。
+- **ジェネリック性**：\ref{pt:generic-path-induction} の Step 3 で、$G$ を道にもつ $D_{b}$ の木 $T_{0}$ をとるのに使った。これにより、$\varphi(a,G)$ の真偽が $\mathcal{S}$ の元 $T_{0}$ を使って $\Sigma^{0}_{1}$ で表せた。
+- **$\psi$ の単調性**：$T_{\sigma}$ が木であること、Step 3 と Step 4 の議論で使った。
+- **辞書式最小の $\sigma_{0}$**：Step 4 で、「$a$ で $0$ を選べなかった（枝を残せなかった）」ことから $(2)_{a}$ を導くのに使った。最小の元の存在は、有限集合 $S_{b}$ についての議論（$\Sigma^{0}_{0}$ 帰納法）による。
+- **$\varphi$ が算術的であること**：\ref{pt:harrington} で、$\neg\varphi(A)$ がモデルの拡大で保たれることに使った。
+:::
+
+## 問題 {#pt:sec-soa4-problems}
+
+::: problem {#pt:prob-incompatible-trees}
+\ref{pt:tree-forcing} の強制条件 $T_{1},T_{2}\in P$ について、共通の下界（$T_{3}\le T_{1}$, $T_{3}\le T_{2}$ となる $T_{3}\in P$）が存在しないことは、$T_{1}\cap T_{2}$ が $\mathfrak{M}$ で有限であることと同値であることを示せ。
+:::
+
+::: solution
+$T_{1}\cap T_{2}$ は有界な論理式で定義される集合として $\mathcal{S}$ に属し、二つの木の共通部分なので始切片で閉じた木である。$\mathfrak{M}$ で無限なら $T_{1}\cap T_{2}\in P$ で、これ自身が共通の下界になる。逆に共通の下界 $T_{3}$ があれば、$T_{3}\subseteq T_{1}\cap T_{2}$ で $T_{3}$ は無限なので、$T_{1}\cap T_{2}$ も無限である（各長さ $n$ について $T_{3}$ の長さ $n$ の元が $T_{1}\cap T_{2}$ に属する）。対偶をとれば主張が従う。
+:::
+
+::: problem {#pt:prob-wkl0-con-isigma1}
+$\mathrm{I}\Sigma_{1}$ が無矛盾であることを認めて、$\mathsf{WKL}_{0}$ は $\mathrm{I}\Sigma_{1}$ の無矛盾性 $\mathrm{Con}(\mathrm{I}\Sigma_{1})$ を証明しないことを示せ。ただし、第二不完全性定理（\ref{pt:godel-second}）が $\mathrm{I}\Sigma_{1}$ にも同じ形で成り立つことは既知としてよい。
+:::
+
+::: solution
+$\mathrm{Con}(\mathrm{I}\Sigma_{1})$ は一階算術の文である。$\mathsf{WKL}_{0}\vdash\mathrm{Con}(\mathrm{I}\Sigma_{1})$ なら、\ref{pt:wkl0-isigma1} により $\mathrm{I}\Sigma_{1}\vdash\mathrm{Con}(\mathrm{I}\Sigma_{1})$ となり、$\mathrm{I}\Sigma_{1}$ についての第二不完全性定理に反する。（同じ理由で $\mathsf{RCA}_{0}$ も $\mathrm{Con}(\mathrm{I}\Sigma_{1})$ を証明しない。一方 $\mathsf{ACA}_{0}$ は、$\PA$ の保存拡大で $\PA\vdash\mathrm{Con}(\mathrm{I}\Sigma_{1})$ であることが知られているので、これを証明する。）
+:::
+
+::: supplement
+**前提の検討.**
+- 強制条件を無限部分木にしたのは、$\Pi^{0}_{1}$ 集合（木の道全体）による強制法が、$\Sigma^{0}_{1}$ 帰納法を保つのにちょうどよい精度をもつからである。条件を有限列（コーエン強制）にしても $\Sigma^{0}_{1}$ 帰納法は保たれるが、得られる $G$ は与えられた木の道にはならない。
+- \ref{pt:generic-path-induction} の証明の核心は、$\varphi(a,G)$ という「$G$ 全体に依存する」主張を、一つの条件 $T_{0}\in\mathcal{S}$ で決め、それを $\mathcal{S}$ の中の $\Sigma^{0}_{1}$ 条件 $(2)_{a}[T_{0}]$ で表したことである。$b$ ごとに別の $T_{0}$ を使ってよいことに注意する。
+
+**関連する結果.**
+- *フリードマンの定理.* $\mathsf{WKL}_{0}$ は $\Pi^{0}_{2}$ 文について $\mathsf{PRA}$ の保存拡大である（田中の本の定理 3.29、半正則切断を使う証明）。\ref{pt:wkl0-isigma1} と、「$\mathrm{I}\Sigma_{1}$ は $\Pi_{2}$ 文について $\mathsf{PRA}$ の保存拡大である」（パーソンズ、ミンツ、竹内による）ことを合わせても得られる。これは、$\mathsf{WKL}_{0}$ で証明できる $\Pi^{0}_{2}$ 文（たとえば多くの解析学の定理の算術的な帰結）は有限の立場で正当化できることを意味し、**ヒルベルトのプログラムの部分的な実現**と呼ばれる（シンプソン）。
+- *集合論の強制法との関係.* 集合論のジェネリックなフィルター（\ref{set:generic-filter}）と同じく、本ページの強制法も「可算個の稠密集合と交わる」ことでジェネリック性を定義した。集合論では $\mathsf{ZFC}$ のモデルに新しい集合を加えても $\mathsf{ZFC}$ が保たれることを示すのが中心で、ここでは $\mathsf{RCA}_{0}$（とくに $\Sigma^{0}_{1}$ 帰納法）が保たれることを示した。
+
+**高い視点から：非構成的な道具は数についての事実を増やさない.** ハーリントンの定理は、弱ケーニッヒの補題という「存在は保証するが構成は与えない」道具を使っても、「すべての集合 $X$ について算術的な性質が成り立つ」という形の主張について新しい定理は得られないことを示す。モデル論的には、$\mathsf{RCA}_{0}$ のどの可算モデルも、数の部分と既存の集合を変えずに $\mathsf{WKL}_{0}$ のモデルに広げられる、ということで、これは代数で「どの体も代数閉包に埋め込める」ことに似ている：方程式の解（木の道）を外から付け加えても、もとの体（数の世界）の性質は変わらない。強制法は、その解を「十分に一般的な位置」（ジェネリック）にとることで、付け加えた解が余計な情報（たとえば停止問題）を持ち込まないように調整する方法である。比喩で言えば、迷路の出口までの道を一本描き加えるとき、ジェネリックな道は「迷路の中で描けるどんな規則にも従わない、ありふれた道」であり、ありふれているからこそ、もとの世界の帰納法を乱さない。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

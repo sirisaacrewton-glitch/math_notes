@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>コンマ圏・自由圏・商圏 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/01-basics/04-comma-free-quotient.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# コンマ圏・自由圏・商圏 {#cat:page-comma-free-quotient keywords="comma category, slice category, coslice category, category of objects under, graph, free category, free monoid, path category, quotient category, congruence, generators and relations"}
+
+本ページでは、圏を作る方法をさらに三つ扱う。**コンマ圏**（\ref{cat:comma-category}）は、二つの関手の間の射を対象とする圏で、「$b$ の下の対象」の圏（\ref{cat:slice-category}）を特別な場合として含む。次ページ以降の普遍射・随伴は、コンマ圏の始対象として述べられる。**自由圏**（\ref{cat:free-category}）は、有向グラフの道を射とする圏で、グラフから圏への「最も自由な」作り方である。**商圏**（\ref{cat:quotient-category}）は、射の間に関係を課して作る圏で、自由圏と合わせると、圏を生成元と関係で表示できる。
+
+> 資料：Mac Lane, *Categories for the Working Mathematician* 第 II 章 §6–§8。
+
+## 記法と定義の確認 {#cat:sec-cfq-notation}
+
+::: notation
+- 圏・関手・自然変換・関手圏・射の圏 $[\mathbf{2},\mathbf{C}]$・始対象・終対象は \ref{cat:page-functors}, \ref{cat:page-constructions} のとおり（\ref{cat:functor}, \ref{cat:natural-transformation}, \ref{cat:functor-category}, \ref{cat:initial-terminal}）。
+- 圏 $\mathbf{C}$ の対象 $c$ を、関手 $\mathbf{1}\to\mathbf{C}$（唯一の対象を $c$ に移す）と同一視する（\ref{cat:prob-functors-from-ordinals}）。
+- 小さい圏の圏 $\mathbf{Cat}$、圏の同型は \ref{cat:functor-basic}, \ref{cat:full-faithful} のとおり。
+:::
+
+## コンマ圏 {#cat:sec-cfq-comma}
+
+::: definition コンマ圏 {#cat:comma-category keywords="comma category (T down S), projection functors of a comma category" index="コンマ圏|こんまけん"}
+関手 $T\colon\mathbf{E}\to\mathbf{C}$, $S\colon\mathbf{D}\to\mathbf{C}$ について、**コンマ圏** $(T\downarrow S)$ は次の圏である。
+- 対象：三つ組 $(e,d,f)$。$e\in\mathbf{E}$, $d\in\mathbf{D}$, $f\colon Te\to Sd$ は $\mathbf{C}$ の射。
+- 射 $(e,d,f)\to(e',d',f')$：組 $(k,h)$。$k\colon e\to e'$, $h\colon d\to d'$ で、$f'\circ Tk=Sh\circ f$（四角形が可換）。
+- 合成：$(k',h')\circ(k,h)\defeq(k'\circ k,h'\circ h)$。恒等射は $(1_{e},1_{d})$。
+
+**射影関手** $P\colon(T\downarrow S)\to\mathbf{E}$, $Q\colon(T\downarrow S)\to\mathbf{D}$ を $P(k,h)=k$, $Q(k,h)=h$ で定める。
+:::
+
+::: proposition コンマ圏は圏 {#cat:comma-is-category keywords="comma categories are categories" index="コンマ圏の公理|こんまけんのこうり"}
+$(T\downarrow S)$ は圏で、$P,Q$ は関手である。
+:::
+
+::: proof
+合成が射になること：$(k,h)\colon(e,d,f)\to(e',d',f')$, $(k',h')\colon(e',d',f')\to(e'',d'',f'')$ について、関手性と二つの可換性から
+$$
+\begin{aligned}
+f''\circ T(k'\circ k)&=f''\circ Tk'\circ Tk=Sh'\circ f'\circ Tk\\
+&=Sh'\circ Sh\circ f=S(h'\circ h)\circ f.
+\end{aligned}
+$$
+恒等射が射になることは $f\circ T1_{e}=f=S1_{d}\circ f$。結合律と単位律は $\mathbf{E}\times\mathbf{D}$ の成分ごとの合成から。$P,Q$ は成分をとる対応なので関手。
+
+::: hypcheck
+- 射の比較は組 $(k,h)$ としての相等で行う。射を区別するため、厳密には射を $((e,d,f),(k,h),(e',d',f'))$ の形の組にする（\ref{cat:hom-set-formulation} の hypcheck）。
+:::
+:::
+
+::: definition 下の対象・上の対象の圏 {#cat:slice-category keywords="category of objects under b (coslice), category of objects over a (slice), objects S-under b" index="スライス圏|すらいすけん, 下の対象の圏|したのたいしょうのけん, 上の対象の圏|うえのたいしょうのけん"}
+1. $b\in\mathbf{C}$ と関手 $S\colon\mathbf{D}\to\mathbf{C}$ について、$(b\downarrow S)$（$T=b\colon\mathbf{1}\to\mathbf{C}$）を、**$b$ の下の $S$ 対象の圏**という。対象は組 $(d,f\colon b\to Sd)$、射 $(d,f)\to(d',f')$ は $f'=Sh\circ f$ となる $h\colon d\to d'$ である。
+2. $S=1_{\mathbf{C}}$ のとき $(b\downarrow\mathbf{C})$ を **$b$ の下の対象の圏**、双対的に $(\mathbf{C}\downarrow a)$ を **$a$ の上の対象の圏**（**スライス圏** $\mathbf{C}/a$）という。$(\mathbf{C}\downarrow a)$ の対象は射 $f\colon c\to a$、射 $f\to f'$ は $f'\circ h=f$ となる $h\colon c\to c'$。
+:::
+
+::: example
+1. $\{0\}$ を一点集合とすると、$(\{0\}\downarrow\mathbf{Set})$ は基点付き集合の圏 $\mathbf{Set}_{*}$ と同型である（関数 $\{0\}\to X$ は点 $x\in X$ の選択）。
+2. $\mathbf{Set}$ の終対象 $\{0\}$ について $(\mathbf{Set}\downarrow\{0\})\cong\mathbf{Set}$（各 $X$ からの射 $X\to\{0\}$ は一つ）。一般に $t$ が終対象なら $(\mathbf{C}\downarrow t)\cong\mathbf{C}$（問題 \ref{cat:prob-slice-terminal}）。
+3. 可換環 $K$ について、$(K\downarrow\mathbf{CRing})$ は可換 $K$ 代数（構造射 $K\to A$ をもつ可換環）とその準同型の圏である。
+4. 忘却関手 $U\colon\mathbf{Grp}\to\mathbf{Set}$ と集合 $X$ について、$(X\downarrow U)$ の対象は、集合 $X$ から群 $G$ の台集合への写像 $X\to UG$ である。$X$ が生成する自由群への埋め込みはその一つで、実は始対象になる（自由群の普遍性。\ref{cat:universal-arrow}）。
+5. $T=S=1_{\mathbf{C}}$ なら $(\mathbf{C}\downarrow\mathbf{C})$ は射の圏 $[\mathbf{2},\mathbf{C}]$ と同型。$T=b$, $S=a$（ともに対象）なら $(b\downarrow a)$ は射 $b\to a$ の全体を対象とする離散圏。
+:::
+
+::: proposition 自然変換とコンマ圏への関手 {#cat:natural-transformation-as-comma keywords="natural transformations as sections of comma categories (Huq)" index="自然変換とコンマ圏|しぜんへんかんとこんまけん"}
+関手 $T,S\colon\mathbf{D}\to\mathbf{C}$ について、自然変換 $\tau\colon T\Rightarrow S$ と、関手 $\hat{\tau}\colon\mathbf{D}\to(T\downarrow S)$ で $P\circ\hat{\tau}=Q\circ\hat{\tau}=1_{\mathbf{D}}$ となるものは一対一に対応する。
+:::
+
+::: proof
+$P\hat{\tau}=Q\hat{\tau}=1$ なら、対象 $d$ について $\hat{\tau}(d)=(d,d,\tau_{d})$ と書け（$\tau_{d}\colon Td\to Sd$）、射 $h\colon d\to d'$ について $\hat{\tau}(h)=(h,h)$。これが $(T\downarrow S)$ の射であることは $\tau_{d'}\circ Th=Sh\circ\tau_{d}$、すなわち自然性そのもの。関手性は $(h,h)$ の成分ごとの合成から自動的に成り立つ。逆に自然変換 $\tau$ からこの式で $\hat{\tau}$ を定めれば関手になる。
+:::
+
+## グラフと自由圏 {#cat:sec-cfq-free}
+
+::: definition グラフ {#cat:graph keywords="directed graph, quiver, morphism of graphs, underlying graph" index="グラフ（有向）|ぐらふゆうこう, 箙|えびら, 下部グラフ|かぶぐらふ"}
+**（有向）グラフ** $G$ は、集合 $O$（頂点）、集合 $A$（辺）、関数 $\partial_{0},\partial_{1}\colon A\to O$（始点・終点）からなる。グラフの**射** $D\colon G\to G'$ は、関数 $D_{O}\colon O\to O'$, $D_{A}\colon A\to A'$ で $\partial_{i}D_{A}=D_{O}\partial_{i}$（$i=0,1$）を満たす組である。小さいグラフとその射は圏 $\mathbf{Grph}$ をなす。圏 $\mathbf{C}$ から、合成と恒等射を忘れて得られるグラフを $U\mathbf{C}$ と書く。関手 $F$ はグラフの射 $UF$ を与え、$U\colon\mathbf{Cat}\to\mathbf{Grph}$ は関手である。
+:::
+
+::: theorem 自由圏 {#cat:free-category keywords="free category generated by a graph, path category, universal property" index="自由圏|じゆうけん, 道の圏|みちのけん"}
+小さいグラフ $G=(O,A,\partial_{0},\partial_{1})$ に対し、小さい圏 $\mathcal{F}G$（$\operatorname{Ob}\mathcal{F}G=O$）とグラフの射 $P\colon G\to U\mathcal{F}G$ で、次を満たすものがある：任意の圏 $\mathbf{B}$ とグラフの射 $D\colon G\to U\mathbf{B}$ に対し、関手 $D'\colon\mathcal{F}G\to\mathbf{B}$ で $UD'\circ P=D$ となるものがちょうど一つある。
+:::
+
+::: proof
+**Step 1（道の圏）.** 頂点 $a$ から $b$ への**道**を、列 $(a_{0},f_{1},a_{1},f_{2},\dots,f_{n},a_{n})$（$n\ge0$、$a_{0}=a$, $a_{n}=b$, $f_{i}\in A$, $\partial_{0}f_{i}=a_{i-1}$, $\partial_{1}f_{i}=a_{i}$）と定める。$\mathcal{F}G$ の射 $a\to b$ を $a$ から $b$ への道とし、合成を連結
+$$
+(b,g_{1},\dots,g_{m},c)\circ(a,f_{1},\dots,f_{n},b)\defeq(a,f_{1},\dots,f_{n},b,g_{1},\dots,g_{m},c)
+$$
+（共通の端点 $b$ を一つにまとめる）、恒等射を長さ $0$ の道 $(a)$ とする。連結は結合的で、長さ $0$ の道は単位なので、$\mathcal{F}G$ は圏である。$O,A$ が小さいので、有限列の集合も小さい。
+
+**Step 2（生成）.** $P$ を、頂点は恒等、辺 $f\colon a\to b$ は長さ $1$ の道 $(a,f,b)$ に移すものとする。長さ $n\ge1$ の道は長さ $1$ の道の合成として
+$$
+(a_{0},f_{1},\dots,f_{n},a_{n})=Pf_{n}\circ\cdots\circ Pf_{1}
+$$
+と書ける（$n$ についての帰納法で、連結の定義から）。
+
+**Step 3（一意性）.** $D'$ が条件を満たせば、対象で $D'a=D_{O}a$、長さ $1$ の道で $D'(Pf)=D_{A}f$、恒等射で $D'(a)=1_{Da}$ でなければならず、Step 2 と関手性から $D'(a_{0},f_{1},\dots,a_{n})=Df_{n}\circ\cdots\circ Df_{1}$ に決まる。
+
+**Step 4（存在）.** この式で $D'$ を定める（$n=0$ のときは $1_{Da_{0}}$）。$Df_{i}$ の定義域・余域は $D$ がグラフの射であることから合い、合成できる。連結に対しては、合成の結合律から $D'(q\circ p)=D'q\circ D'p$。恒等射は定義から保たれる。$UD'\circ P=D$ は長さ $1$ の道での値から。
+
+::: hypcheck
+- **$G$ が小さいこと**：Step 1 で $\mathcal{F}G$ を小さい圏（$\mathbf{Cat}$ の対象）にするのに使った。普遍性の議論自体には使わない。
+- **結合律**：Step 4 で、長い合成の括弧の付け方によらず値が定まることに使った。
+:::
+:::
+
+::: corollary 自由モノイド {#cat:free-monoid keywords="free monoid on a set, words" index="自由モノイド|じゆうものいど, 語|ご"}
+集合 $X$ に対し、モノイド $M$（$X$ の元の有限列（語）全体、連結を積、空列を単位）と写像 $p\colon X\to M$ で、任意のモノイド $L$ と写像 $h\colon X\to L$ に対し、モノイドの準同型 $h'\colon M\to L$ で $h'\circ p=h$ となるものがちょうど一つあるものが存在する。
+:::
+
+::: proof
+頂点が一つ、辺の集合が $X$ のグラフに \ref{cat:free-category} を適用する。対象が一つの圏はモノイドで（\ref{cat:category} の例 4）、その間の関手はモノイドの準同型（\ref{cat:functor} の例 5）、グラフの射 $G\to UL$ は写像 $X\to L$ と同じである。
+:::
+
+::: example
+1. 辺一つのループ（頂点 $a$、辺 $f\colon a\to a$）の自由圏は、射 $1_{a},f,f^{2},\dots$ をもつ、加法モノイド $(\N,+)$ と同型な圏。
+2. 辺 $0\to1\to2$ のグラフの自由圏は $\mathbf{3}$。有限順序数 $n$（圏とみたもの）は、辺 $0\to1\to\cdots\to n-1$ の自由圏である。
+3. 頂点 $a,b$ と平行な二辺 $a\rightrightarrows b$ の自由圏は、\ref{cat:category} の例 2 の圏（恒等射以外に射が二つ）。
+:::
+
+## 商圏 {#cat:sec-cfq-quotient}
+
+::: definition 合同関係 {#cat:congruence keywords="congruence on a category" index="合同関係（圏の）|ごうどうかんけいけんの"}
+圏 $\mathbf{C}$ の**合同関係** $\sim$ とは、各 hom 集合 $\mathbf{C}(a,b)$ 上の同値関係 $\sim_{a,b}$ の族で、$f\sim f'\colon a\to b$ なら、任意の $g\colon b\to c$, $h\colon x\to a$ について $g\circ f\circ h\sim g\circ f'\circ h$ となるものをいう。
+:::
+
+::: lemma 生成される合同関係 {#cat:generated-congruence keywords="the congruence generated by a family of relations on hom-sets" index="生成される合同関係|せいせいされるごうどうかんけい"}
+各 hom 集合 $\mathbf{C}(a,b)$ 上の二項関係 $R_{a,b}$ の族 $R$ に対し、$R$ を含む最小の合同関係 $\sim_{R}$ が存在する。
+:::
+
+::: proof
+$\mathbf{C}(a,b)\times\mathbf{C}(a,b)$ 全体の族（すべての射を同値とする関係）は $R$ を含む合同関係である。$R$ を含む合同関係すべての共通部分（各 $(a,b)$ ごとの共通部分）をとる。同値関係の共通部分は同値関係で、合成で閉じる条件も共通部分で保たれるので、これは $R$ を含む合同関係で、最小である。
+:::
+
+::: theorem 商圏 {#cat:quotient-category keywords="quotient category by relations, universal property" index="商圏|しょうけん"}
+圏 $\mathbf{C}$ と、各 hom 集合上の関係の族 $R$ に対し、圏 $\mathbf{C}/R$ と関手 $Q\colon\mathbf{C}\to\mathbf{C}/R$ で次を満たすものがある。
+1. $f\mathrel{R_{a,b}}f'$ なら $Qf=Qf'$。
+2. 関手 $H\colon\mathbf{C}\to\mathbf{D}$ が「$f\mathrel{R}f'$ なら $Hf=Hf'$」を満たすなら、関手 $H'\colon\mathbf{C}/R\to\mathbf{D}$ で $H'\circ Q=H$ となるものがちょうど一つある。
+3. $Q$ は対象について全単射（恒等）で、射について全射である。
+:::
+
+::: proof
+**Step 1（構成）.** $\sim\defeq\sim_{R}$（\ref{cat:generated-congruence}）とし、$\mathbf{C}/R$ の対象を $\mathbf{C}$ の対象、射 $a\to b$ を同値類 $[f]$（$f\in\mathbf{C}(a,b)$）、合成を $[g]\circ[f]\defeq[g\circ f]$、恒等射を $[1_{a}]$ とする。合成が代表元によらないこと：$f\sim f'$, $g\sim g'$ なら、合同関係の条件から $g\circ f\sim g\circ f'$（$g$ を左から）と $g\circ f'\sim g'\circ f'$（$f'$ を右から）なので、推移律で $g\circ f\sim g'\circ f'$。結合律・単位律は代表元で計算すれば $\mathbf{C}$ のそれから。$Q$ を $a\mapsto a$, $f\mapsto[f]$ と定めると関手で、3 が成り立つ。1 は $R\subseteq\sim$ から。
+
+**Step 2（普遍性）.** $H$ が 2 の仮定を満たすとする。$f\approx f'\defeq(Hf=Hf')$ は各 hom 集合上の同値関係で、$H(gfh)=Hg\,Hf\,Hh$ から合同関係であり、$R$ を含む。よって最小性から $\sim\subseteq\approx$。したがって $H'[f]\defeq Hf$ は代表元によらず定まり、$H'a\defeq Ha$ とすると関手で $H'Q=H$。一意性は $Q$ が対象と射について全射であることから。
+
+::: hypcheck
+- **合同関係にとること**：Step 1 で合成が well-defined になるために、$R$ をそのまま使わず、合成で閉じた同値関係に広げた。
+- **最小性**：Step 2 で $\sim\subseteq\approx$ を得るのに使った。最小でない合同関係で割ると、普遍性の「一意」ではなく「存在」が崩れる（$H$ が $R$ を潰しても、より大きい関係は潰さないかもしれない）。
+:::
+:::
+
+::: example
+1. **ホモトピー圏.** $\mathbf{Top}$ で $R$ を「ホモトピック」とすると、ホモトピーは合成と両立する同値関係なのですでに合同関係で、$\mathbf{Top}/R=\mathbf{hTop}$（\ref{cat:small-category} の例 5）。
+2. **生成元と関係による表示.** グラフ $G$ の自由圏 $\mathcal{F}G$ を道の間の関係で割ると、「$G$ を生成元とし、指定した関係を満たす最も自由な圏」が得られる。たとえば、頂点 $a$ とループ $f$ の自由圏を関係 $f\circ f\sim1_{a}$ で割ると、位数 $2$ の巡回群（を対象一つの圏としたもの）になる。また、$a\xrightarrow{f}b\xrightarrow{g}c$ と $a\xrightarrow{h}c$ の自由圏を $g\circ f\sim h$ で割ると $\mathbf{3}$ になる。
+:::
+
+::: supplement
+**一般化.** 自由圏の普遍性は、「関手 $\mathcal{F}\colon\mathbf{Grph}\to\mathbf{Cat}$ が忘却関手 $U$ の左随伴である」ことを意味する（\ref{cat:adjunction}）：
+$$
+\mathbf{Cat}(\mathcal{F}G,\mathbf{B})\cong\mathbf{Grph}(G,U\mathbf{B}).
+$$
+同じく、商圏の普遍性は「$R$ を潰す関手」についての普遍性で、余等化子（\ref{cat:coequalizer}）の一種である。
+
+**類似の定理.** 自由群・自由加群・多項式環など、「生成元から最も自由に作る」構成はすべて同じ形の普遍性をもつ（\ref{cat:universal-arrow}）。自由モノイド（\ref{cat:free-monoid}）はその最も単純な例で、自由群は「生成元とその逆元」の語を簡約したもの、すなわち自由モノイドの商として作られる。
+
+**高い視点から：コンマ圏は「射をはさんだ積」.** コンマ圏 $(T\downarrow S)$ は、積圏 $\mathbf{E}\times\mathbf{D}$ の各点 $(e,d)$ に $\mathbf{C}$ の射の集合 $\mathbf{C}(Te,Sd)$ を付け加えたものである。比喩で言えば、積圏が「二つの圏の対象を組にしたもの」なら、コンマ圏は「組の間に、$\mathbf{C}$ の中での橋を一本かけたもの」で、橋の架け方まで含めて対象とみなす。$T$ と $S$ の一方を一点の圏にすると、「$b$ から出る橋」や「$a$ に入る橋」の圏になる。普遍的な構成（自由群など）は、この「橋の圏」の中で最も始点に近い（始対象である）橋として特徴づけられる。
+:::
+
+## 問題 {#cat:sec-cfq-problems}
+
+::: problem {#cat:prob-slice-terminal}
+$t$ が $\mathbf{C}$ の終対象なら、$(\mathbf{C}\downarrow t)$ と $\mathbf{C}$ は圏として同型であることを示せ。
+:::
+
+::: solution
+$(\mathbf{C}\downarrow t)$ の対象は射 $f\colon c\to t$ で、各 $c$ についてちょうど一つ（$!_{c}$ と書く）。射 $!_{c}\to\,!_{c'}$ は $!_{c'}\circ h=!_{c}$ となる $h\colon c\to c'$ だが、この等式は $\mathbf{C}(c,t)$ が一点なので常に成り立つ。よって射影 $(\mathbf{C}\downarrow t)\to\mathbf{C}$（$!_{c}\mapsto c$, $h\mapsto h$）は対象・射について全単射で、\ref{cat:isomorphism-of-categories} から同型。
+:::
+
+::: problem {#cat:prob-free-groupoid}
+グラフ $G$ に対し、亜群 $\mathcal{G}$ とグラフの射 $P\colon G\to U\mathcal{G}$ で、任意の亜群 $\mathbf{B}$ とグラフの射 $D\colon G\to U\mathbf{B}$ に対し $UD'\circ P=D$ となる関手 $D'$ がちょうど一つあるもの（**自由亜群**）を構成せよ。
+:::
+
+::: solution
+グラフ $\bar{G}$ を、頂点は $G$ と同じ、辺は $G$ の各辺 $f\colon a\to b$ と、その「形式的な逆」$\bar{f}\colon b\to a$ とする。自由圏 $\mathcal{F}\bar{G}$ を、関係 $\bar{f}\circ f\sim1_{a}$, $f\circ\bar{f}\sim1_{b}$（各辺 $f$）で割った商圏を $\mathcal{G}$ とする（\ref{cat:quotient-category}）。$\mathcal{G}$ で各 $[f]$ は逆射 $[\bar{f}]$ をもち、同型射の合成は同型射（\ref{cat:isomorphism-basic}）で、すべての射は $[f]$, $[\bar{f}]$ の合成なので、$\mathcal{G}$ は亜群。普遍性：亜群 $\mathbf{B}$ への $D$ に対し、$\bar{D}\colon\bar{G}\to U\mathbf{B}$ を $\bar{f}\mapsto(Df)^{-1}$ で延ばすと、自由圏の普遍性で関手 $\mathcal{F}\bar{G}\to\mathbf{B}$ が一意に定まり、それは関係を潰すので、商圏の普遍性で $D'\colon\mathcal{G}\to\mathbf{B}$ が一意に定まる。一意性：$D'$ は $[f]$ の値で決まり、$[\bar{f}]$ の値は逆射 $(Df)^{-1}$ でなければならない（関手は逆射を保つ、\ref{cat:functor-basic}）。頂点が一つのとき、自由群が得られる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

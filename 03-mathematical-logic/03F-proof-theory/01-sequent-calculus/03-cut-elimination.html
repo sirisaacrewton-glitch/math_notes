@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>カット除去定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/01-sequent-calculus/03-cut-elimination.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# カット除去定理 {#pt:page-cut-elimination keywords="cut elimination, Hauptsatz, Gentzen, admissibility of cut, subformula property, consistency"}
+
+ゲンツェンの**基本定理**（カット除去定理）：$\mathsf{LK}+\mathrm{Cut}$ で導出できるシーケントは、カットを使わずに $\mathsf{LK}$ で導出できる（\ref{pt:cut-elimination}）。証明は、カット規則が $\mathsf{LK}$ で**許容的**であること（\ref{pt:cut-admissibility}）を、カット論理式の複雑さと前提の導出の高さに関する二重帰納法で示すことによる。前のページで示した高さを保つ代入・弱化・反転・縮約がそのまま道具になる。帰結として、カットのない導出の部分論理式性（\ref{pt:subformula-property}）と、$\mathsf{LK}+\mathrm{Cut}$ の構文論的な無矛盾性（\ref{pt:lk-consistency}）を得る。
+
+## 記法と定義の確認 {#pt:sec-cut-notation}
+
+::: notation
+- シーケント、$\mathsf{LK}$, $\mathsf{LK}+\mathrm{Cut}$、主論理式、固有変数、$\vdash_{n}$（カットのない高さ $n$ 以下の導出）、$\vdash_{\mathrm{Cut}}$ は \ref{pt:lk} のとおり。
+- 道具：同一律（\ref{pt:lk-identity}）、α 同値な論理式への取り替え（\ref{pt:lk-alpha-replacement}）、代入（\ref{pt:lk-substitution}）、弱化（\ref{pt:lk-weakening}）、反転（\ref{pt:lk-inversion}）、縮約（\ref{pt:lk-contraction}）。どれも高さを保ちカットを使わない。捕獲を避ける代入の計算規則は \ref{pt:cas-rules}。
+- 等号は扱わない（$t=s$ は通常の原子論理式）。$c(C)$ は論理的複雑さ（\ref{logic:sentence}）で、α 同値で不変、$c(A\langle t/x\rangle)=c(A)$。
+:::
+
+## カットの許容性 {#pt:sec-cut-admissibility}
+
+::: theorem カットの許容性 {#pt:cut-admissibility keywords="admissibility of cut in LK" index="カットの許容性|かっとのきょようせい"}
+$\vdash\Gamma\Rightarrow\Delta,C$ かつ $\vdash C,\Gamma\Rightarrow\Delta$ なら $\vdash\Gamma\Rightarrow\Delta$（いずれもカットのない導出）。
+:::
+
+::: proof
+カット論理式 $C$ の複雑さ $c(C)$ に関する帰納法、同じ $c(C)$ の中では二つの前提の導出の高さの和 $n+m$ に関する帰納法で示す。左の前提 $\Gamma\Rightarrow\Delta,C$ の導出を $\mathcal{D}_{1}$（高さ $n$）、右の前提 $C,\Gamma\Rightarrow\Delta$ の導出を $\mathcal{D}_{2}$（高さ $m$）とする。帰納法の仮定は「$c$ がより小さいカット論理式、または同じ $c$ で高さの和がより小さいカットはすべて除ける」である。以下、反転・弱化・縮約・代入は高さを増やさないので、帰納法の仮定を適用するときの高さの比較は前提の高さで行える。
+
+**場合 1：一方が初期シーケント.**
+- (1a) $\mathcal{D}_{1}$ が Ax で主論理式が $P$。$P$ が $\Gamma$ と $\Delta$ の両方に属するなら $\Gamma\Rightarrow\Delta$ は Ax。そうでなければ $C=P$ で $P\in\Gamma$。$\mathcal{D}_{2}$ は $P,\Gamma\Rightarrow\Delta$ の導出で、$\Gamma$ はもう一つの $P$ を含むので、縮約（\ref{pt:lk-contraction}）で $\Gamma\Rightarrow\Delta$。
+- (1b) $\mathcal{D}_{1}$ が L$\bot$ なら $\bot\in\Gamma$ で、$\Gamma\Rightarrow\Delta$ も L$\bot$。
+- (1c) $\mathcal{D}_{2}$ が Ax で主論理式が $P$。$P\in\Gamma$ なら $\Gamma\Rightarrow\Delta$ は Ax。そうでなければ $C=P\in\Delta$ で、$\mathcal{D}_{1}$ の結論 $\Gamma\Rightarrow\Delta,P$ を縮約して $\Gamma\Rightarrow\Delta$。
+- (1d) $\mathcal{D}_{2}$ が L$\bot$。$\bot\in\Gamma$ なら L$\bot$。そうでなければ $C=\bot$ で、$\mathcal{D}_{1}$ の結論 $\Gamma\Rightarrow\Delta,\bot$ に反転（\ref{pt:lk-inversion} の 5）を使って $\Gamma\Rightarrow\Delta$。
+
+以下、どちらも初期シーケントでないとする。
+
+**場合 2：$C$ が $\mathcal{D}_{1}$ の最後の推論の主論理式でない.** 最後の推論の主論理式は文脈 $\Gamma$ または $\Delta$ の中にある。カットを上に持ち上げる。
+- *L$\to$、主論理式 $A\to B\in\Gamma$*（$\Gamma=A\to B,\Gamma'$）。$\mathcal{D}_{1}$ の前提は $\Gamma'\Rightarrow\Delta,C,A$ と $B,\Gamma'\Rightarrow\Delta,C$（高さ $\le n-1$）。$\mathcal{D}_{2}$ の結論 $C,A\to B,\Gamma'\Rightarrow\Delta$ を反転（1）して $C,\Gamma'\Rightarrow\Delta,A$ と $B,C,\Gamma'\Rightarrow\Delta$（高さ $\le m$）。それぞれ $C$ でカット（高さの和が小さい）して $\Gamma'\Rightarrow\Delta,A$ と $B,\Gamma'\Rightarrow\Delta$、L$\to$ で $\Gamma\Rightarrow\Delta$。
+- *R$\to$、主論理式 $A\to B\in\Delta$*（$\Delta=\Delta',A\to B$）。$\mathcal{D}_{1}$ の前提は $A,\Gamma\Rightarrow\Delta',B,C$。$\mathcal{D}_{2}$ を反転（2）して $A,C,\Gamma\Rightarrow\Delta',B$。$C$ でカットして $A,\Gamma\Rightarrow\Delta',B$、R$\to$。
+- *L$\forall$、主論理式 $\forall x\,A\in\Gamma$*（$\Gamma=\forall x\,A,\Gamma'$）。$\mathcal{D}_{1}$ の前提は $D,\forall x\,A,\Gamma'\Rightarrow\Delta,C$（$D\equiv A\langle t/x\rangle$）。$\mathcal{D}_{2}$ を弱化して $D,C,\forall x\,A,\Gamma'\Rightarrow\Delta$。$C$ でカットして $D,\forall x\,A,\Gamma'\Rightarrow\Delta$、L$\forall$。
+- *R$\forall$、主論理式 $\forall x\,A\in\Delta$*（$\Delta=\Delta',\forall x\,A$）。$\mathcal{D}_{1}$ の前提は $\Gamma\Rightarrow\Delta',D,C$（$D\equiv A\langle y/x\rangle$）で、固有変数の条件より $y\notin\mathrm{FV}(\Gamma,\Delta',C,\forall x\,A)$（$C$ も $\mathcal{D}_{1}$ の結論の文脈なので）。$\mathcal{D}_{2}$ の結論 $C,\Gamma\Rightarrow\Delta',\forall x\,A$ を反転（3、$t=y$）して $C,\Gamma\Rightarrow\Delta',D$。$C$ でカットして $\Gamma\Rightarrow\Delta',D$、R$\forall$（固有変数 $y$）。
+
+**場合 3：$C$ は $\mathcal{D}_{1}$ の主論理式だが、$\mathcal{D}_{2}$ の最後の推論の主論理式でない.** 場合 2 と対称に、カットを右の前提に持ち上げる。
+- *L$\to$、主論理式 $A\to B\in\Gamma$*。$\mathcal{D}_{2}$ の前提は $C,\Gamma'\Rightarrow\Delta,A$ と $B,C,\Gamma'\Rightarrow\Delta$。$\mathcal{D}_{1}$ の結論 $A\to B,\Gamma'\Rightarrow\Delta,C$ を反転して $\Gamma'\Rightarrow\Delta,C,A$ と $B,\Gamma'\Rightarrow\Delta,C$。カットして L$\to$。
+- *R$\to$、主論理式 $A\to B\in\Delta$*。$\mathcal{D}_{2}$ の前提 $A,C,\Gamma\Rightarrow\Delta',B$、$\mathcal{D}_{1}$ を反転して $A,\Gamma\Rightarrow\Delta',B,C$。カットして R$\to$。
+- *L$\forall$*。$\mathcal{D}_{2}$ の前提 $D,C,\forall x\,A,\Gamma'\Rightarrow\Delta$、$\mathcal{D}_{1}$ を弱化して $D,\forall x\,A,\Gamma'\Rightarrow\Delta,C$。カットして L$\forall$。
+- *R$\forall$*。$\mathcal{D}_{2}$ の前提 $C,\Gamma\Rightarrow\Delta',D$（$y\notin\mathrm{FV}(C,\Gamma,\Delta',\forall x\,A)$）、$\mathcal{D}_{1}$ を反転（3、$t=y$）して $\Gamma\Rightarrow\Delta',D,C$。カットして R$\forall$。
+
+**場合 4：$C$ が両方の最後の推論の主論理式.** $C$ は前件と後件の両方で主論理式なので、$C=A\to B$（R$\to$ と L$\to$）か $C=\forall x\,A$（R$\forall$ と L$\forall$）である（$C$ が原子論理式なら場合 1、$\bot$ は後件で主論理式にならない）。
+- *$C=A\to B$.* $\mathcal{D}_{1}$ の前提は $A,\Gamma\Rightarrow\Delta,B$、$\mathcal{D}_{2}$ の前提は $\Gamma\Rightarrow\Delta,A$ と $B,\Gamma\Rightarrow\Delta$。後者の一つ目を弱化して $\Gamma\Rightarrow\Delta,B,A$ とし、$A,\Gamma\Rightarrow\Delta,B$ と $A$ でカット（$c(A)<c(C)$）して $\Gamma\Rightarrow\Delta,B$。これと $B,\Gamma\Rightarrow\Delta$ を $B$ でカット（$c(B)<c(C)$）して $\Gamma\Rightarrow\Delta$。
+- *$C=\forall x\,A$.* $\mathcal{D}_{1}$ の前提は $\Gamma\Rightarrow\Delta,D$（$D\equiv A\langle y/x\rangle$、$y\notin\mathrm{FV}(\Gamma,\Delta,\forall x\,A)$）、$\mathcal{D}_{2}$ の前提は $E,\forall x\,A,\Gamma\Rightarrow\Delta$（$E\equiv A\langle t/x\rangle$、高さ $\le m-1$）。
+ 1. $\mathcal{D}_{1}$ の結論を弱化して $E,\Gamma\Rightarrow\Delta,\forall x\,A$（高さ $\le n$）。これと $\mathcal{D}_{2}$ の前提を $\forall x\,A$ でカット（同じ $c$ で高さの和 $\le n+m-1$）して $E,\Gamma\Rightarrow\Delta$。
+ 2. $\mathcal{D}_{1}$ の前提に代入（\ref{pt:lk-substitution}、$\langle t/y\rangle$）を施すと、$y\notin\mathrm{FV}(\Gamma,\Delta)$ より $\Gamma\Rightarrow\Delta,D\langle t/y\rangle$ で、$D\langle t/y\rangle\equiv A\langle t/x\rangle\equiv E$（\ref{pt:cas-rules} の 1, 5）。
+ 3. 2 と 1 を $E$ でカット（$c(E)=c(A)<c(C)$）して $\Gamma\Rightarrow\Delta$。
+
+以上ですべての場合を尽くした。
+:::
+
+::: hypcheck
+- 帰納法の順序（まず $c(C)$、次に高さの和）は、場合 4 の $\forall$ で本質的である：1 のカットは $c$ が同じで高さの和が小さく、3 のカットは $c$ が小さいが高さには制限がない（代入後の導出の高さは $n-1$ 以下だが、1 の結果の高さは大きくなりうる）。
+- 場合 2・3 で反転・弱化を前提に使えたのは、それらが高さを保つからである（\ref{pt:lk-inversion}, \ref{pt:lk-weakening}）。高さを保たない補題だと、高さの和に関する帰納法が使えない。
+- R$\forall$ の場合に固有変数 $y$ がカット論理式 $C$ に自由に現れないことは、$C$ が最後の推論の文脈に含まれることから従った。これが場合 2・3 の R$\forall$ でカットを持ち上げられる理由である。
+- 場合 4 の $\forall$ で代入補題を使った。代入補題の証明は固有変数の付け替え（\ref{pt:lk-substitution}）を含む。
+:::
+
+::: theorem カット除去定理（ゲンツェン） {#pt:cut-elimination keywords="cut elimination theorem, Hauptsatz" index="カット除去定理|かっとじょきょていり, 基本定理（ゲンツェン）|きほんていりげんつぇん"}
+$\vdash_{\mathrm{Cut}}\Gamma\Rightarrow\Delta$ なら $\vdash\Gamma\Rightarrow\Delta$。
+:::
+
+::: proof
+導出の中のカットの個数に関する帰納法。カットがあれば、その上にカットのない最上位のカット（前提の導出がどちらもカットを含まないもの）をとり、\ref{pt:cut-admissibility} で、それを根とする部分導出をカットのない導出に取り替える。取り替えた導出の結論は同じなので、下の推論はそのまま使え、カットの個数が一つ減る。
+:::
+
+## 帰結 {#pt:sec-cut-consequences}
+
+::: definition 部分論理式の代入例 {#pt:subformula-instance}
+論理式 $B$ が論理式 $A$ の**部分論理式の代入例**であるとは、$A$ のある部分論理式 $A_{0}$、変数 $x_{1},\dots,x_{k}$、項 $t_{1},\dots,t_{k}$ について $B\equiv A_{0}\langle t_{1}/x_{1}\rangle\cdots\langle t_{k}/x_{k}\rangle$（$k=0$ も許す）となることをいう。
+:::
+
+::: theorem 部分論理式性 {#pt:subformula-property keywords="subformula property of cut-free derivations" index="部分論理式性|ぶぶんろんりしきせい"}
+カットのない導出に現れるすべての論理式は、結論のシーケントのある論理式の部分論理式の代入例である。
+:::
+
+::: proof
+各規則について、前提に現れる論理式は結論のある論理式の部分論理式の代入例であることを確かめればよい（「部分論理式の代入例の部分論理式の代入例」はまた部分論理式の代入例である：$A_{0}\langle\vec{t}/\vec{x}\rangle$ の部分論理式は、\ref{pt:alpha-clean} で束縛変数を代入と干渉しない代表をとれば、$A_{0}$ の部分論理式に同じ代入を施したものと α 同値である）。文脈は前提と結論で共通。主論理式については、L$\to$, R$\to$ の $A,B$ は $A\to B$ の部分論理式、L$\forall$, R$\forall$ の $C\equiv A\langle t/x\rangle$ は $\forall x\,A$ の部分論理式 $A$ の代入例である。L$\forall$ の前提の $\forall x\,A$ は結論の主論理式そのものである。
+:::
+
+::: corollary LK の無矛盾性 {#pt:lk-consistency keywords="syntactic consistency proof via cut elimination" index="LK の無矛盾性|えるけーのむむじゅんせい"}
+空のシーケント $\Rightarrow$ と $\Rightarrow\bot$ は $\mathsf{LK}+\mathrm{Cut}$ で導出できない。
+:::
+
+::: proof
+カット除去定理より、カットのない導出があるとしてよい。そのような導出の最後の推論を考える。Ax と L$\bot$ は前件に論理式を含む。L$\to$, L$\forall$ も前件に主論理式をもつ。R$\to$, R$\forall$ は後件に $\to$ か $\forall$ で始まる論理式をもつ。$\Rightarrow$ や $\Rightarrow\bot$ はどれの結論にもならない。
+:::
+
+この無矛盾性の証明は、意味論（モデルの存在）を使わない純粋に構文論的なものである。ただし、カットを除くと導出の大きさは一般に超指数関数的に増えうるので、この議論を算術の中で形式化するには、そのような増加をする関数が全域的であることを使う必要がある、と一般に言われている（本サイトでは確かめていない）。
+
+::: example カットのない導出による非導出性の判定 {#pt:cut-free-nonderivability}
+$P,Q$ を異なる一項関係記号、$x$ を変数とすると、$\Rightarrow P(x)\to Q(x)$ は導出できない。カットのない導出があるとすると、最後の推論は R$\to$ しかありえず、前提は $P(x)\Rightarrow Q(x)$。これは Ax でも L$\bot$ でもなく、主論理式になりうる複合論理式もないので、どの規則の結論にもならない。部分論理式性により、探索すべきシーケントは有限個に限られる（量化子がない場合）。
+:::
+
+## 問題 {#pt:sec-cut-problems}
+
+::: problem {#pt:prob-cut-peirce}
+パースの法則 $((A\to B)\to A)\to A$ の $\mathsf{LK}$ でのカットのない導出を与えよ（$A,B$ は原子論理式）。後件に二つの論理式が必要になる箇所を指摘せよ。
+:::
+
+::: solution
+R$\to$ で $(A\to B)\to A\Rightarrow A$ に帰着。L$\to$ で $\Rightarrow A,A\to B$ と $A\Rightarrow A$（Ax）に分かれる。前者は R$\to$ で $A\Rightarrow A,B$（Ax）。後件に $A$ と $A\to B$ の二つが並ぶ $\Rightarrow A,A\to B$ が、古典論理に固有の箇所である（後件を一つに制限した直観主義の体系では、この導出はできない）。
+:::
+
+::: problem {#pt:prob-cut-forall-not}
+$P$ を一項関係記号とする。$\forall x\,P(x)$ の否定から $\exists$ を導く $\neg\forall x\,P(x)\Rightarrow\exists x\,\neg P(x)$ の導出を与えよ（$\exists x\,\neg P(x)=\neg\forall x\,\neg\neg P(x)$）。
+:::
+
+::: solution
+略記を展開すると $\forall x\,P(x)\to\bot\Rightarrow\forall x\,((P(x)\to\bot)\to\bot)\to\bot$。R$\to$ で $\forall x\,((P(x)\to\bot)\to\bot),\ \forall x\,P(x)\to\bot\Rightarrow\bot$。L$\to$ で、(i) $\forall x\,((P(x)\to\bot)\to\bot)\Rightarrow\bot,\forall x\,P(x)$ と (ii) $\bot,\dots\Rightarrow\bot$（L$\bot$）に分かれる。(i) は新しい $y$ について R$\forall$ で $\dots\Rightarrow\bot,P(y)$ に帰着し、L$\forall$（$t=y$）で $(P(y)\to\bot)\to\bot$ を前件に出し、L$\to$ で $\dots\Rightarrow\bot,P(y),P(y)\to\bot$ と $\bot,\dots\Rightarrow\dots$（L$\bot$）。前者は R$\to$ で $P(y),\dots\Rightarrow\bot,P(y),\bot$（Ax）。
+:::
+
+::: supplement
+**前提の検討.**
+- 本ページの証明は等号のない一階論理の $\mathsf{LK}$ についてのものである。等号を規則として加えた体系でもカット除去が成り立つ定式化（Negri–von Plato の等号の左規則など）があることが一般に知られている。本サイトでは、等号を初期シーケントとして加えた体系（\ref{pt:equivalence-of-systems}）を、カットを許した形で使う。
+- 二重帰納法の外側（$c(C)$）は、論理式が有限の構文をもつことに依存する。算術の帰納法のような無限の規則を加えるとこの議論は直接は通らず、ゲンツェンの算術の無矛盾性証明では $\varepsilon_{0}$ までの超限帰納法が使われることが知られている。
+
+**関連する結果.** カット除去の帰結として、クレイグの補間定理（前原の方法、\ref{pt:maehara-interpolation}）、エルブランの定理、中間シーケント定理などが得られることが一般に知られている。本系列では補間定理を扱う。
+
+**高い視点から：回り道の除去.** カットは「補題 $C$ を証明してから使う」ことに当たる。カット除去定理は、どんな補題も原理的には不要で、結論の部分から直接組み立てられることを主張する。代償は導出の大きさで、カットを除くと導出は一般に（指数関数の塔の程度に）大きくなりうることが知られている。数学の証明で補題が果たす役割は、この意味で「圧縮」である。自然演繹での回り道（導入の直後の除去）の除去（正規化）と、型付きラムダ計算の計算（ベータ簡約）が同じ構造をもつことは、カリー–ハワード対応として一般に知られている（これは本サイトの要約である）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

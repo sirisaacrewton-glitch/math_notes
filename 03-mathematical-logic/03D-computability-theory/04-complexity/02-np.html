@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NP とクック–レヴィンの定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/04-complexity/02-np.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# NP とクック–レヴィンの定理 {#comp:page-np keywords="class NP, verifier, certificate, nondeterministic polynomial time, coNP, polynomial-time reduction, NP-complete, satisfiability, SAT, 3SAT, Cook-Levin theorem, Tseitin transformation, P versus NP"}
+
+**NP** は、答えが「はい」のとき、その証拠（**証明書**）が与えられれば多項式時間で検証できる問題のクラスである（\ref{comp:class-np}）。これは非決定性 TM が多項式時間で決定できる言語のクラスと一致する（\ref{comp:np-ntm}）。本ページでは、多項式時間の写像還元（\ref{comp:poly-reduction}）を定め、NP の中で最も難しい問題である **NP 完全**問題（\ref{comp:np-complete}）を導入する。主定理は、命題論理の充足可能性問題 SAT が NP 完全であるという**クック–レヴィンの定理**（\ref{comp:cook-levin}）である。さらに、論理式を節の長さ 3 以下の連言標準形に直す変換（\ref{comp:tseitin}）で、3SAT も NP 完全であることを示す（\ref{comp:3sat-complete}）。
+
+## 記法と定義の確認 {#comp:sec-np-notation}
+
+::: notation
+- 実行時間、$\mathrm{TIME}$、P、多テープ機械の模倣の時間（\ref{comp:multitape-time}）、非決定性機械の実行時間（\ref{comp:ntm-running-time}）は \ref{comp:page-time-complexity} のとおり。
+- 命題論理の論理式、付値、充足は \ref{logic:page-prop-syntax} のとおり。リテラルは変数かその否定、**節**はリテラルの選言、**連言標準形**（CNF）は節の連言。各節のリテラルが $3$ 個以下の CNF を **3CNF** という。
+- TM の時点表示 $uqv$ と一段の動き $\vdash$ は \ref{comp:tm-configuration} のとおり。
+:::
+
+## NP {#comp:sec-np}
+
+::: definition 検証機と NP {#comp:class-np keywords="verifier, certificate, NP" index="NP（計算量クラス）|えぬぴーけいさんりょうくらす, 検証機|けんしょうき, 証明書（計算量）|しょうめいしょけいさんりょう"}
+1. 言語 $A$ の**検証機**とは、すべての入力の上で停止する決定性 TM $V$ で、
+$$
+A=\{w:\text{ある文字列 }c\text{ について }V\text{ が }\langle w,c\rangle\text{ を受理する}\}
+$$
+となるもののこと。$c$ を $w$ の**証明書**という。$V$ が**多項式時間の検証機**であるとは、$V$ の実行時間が $\lvert w\rvert$ の多項式で抑えられることをいう（したがって $V$ が読める $c$ の長さも $\lvert w\rvert$ の多項式で抑えられる）。
+2. 多項式時間の検証機をもつ言語全体を **NP** という。
+3. 補集合が NP に属する言語全体を **coNP** という。
+:::
+
+::: example
+1. $\mathrm{HAMPATH}\defeq\{\langle G,s,t\rangle:$ 有向グラフ $G$ に、$s$ から $t$ へのすべての頂点をちょうど一度ずつ通る有向路がある$\}$ は NP に属する。証明書は頂点の並び $v_{1},\dots,v_{m}$ で、検証機は、それが頂点の並べ替えであること、$v_{1}=s$, $v_{m}=t$、隣り合う頂点が辺で結ばれていることを調べる。
+2. $\mathrm{COMPOSITES}\defeq\{x:x=pq,\ p,q\ge2\}$（二進表記）は NP に属する。証明書は $p$ で、検証機は $1<p<x$ かつ $p\mid x$ を調べる。
+3. $\mathrm{SAT}\defeq\{\langle\varphi\rangle:\varphi\text{ は充足可能な命題論理の論理式}\}$ は NP に属する。証明書は充足する付値で、検証機は論理式の値を計算する。
+:::
+
+::: theorem NP と非決定性多項式時間 {#comp:np-ntm keywords="NP equals nondeterministic polynomial time, NTIME" index="NTIME|えぬたいむ"}
+$\mathrm{NTIME}(t(n))$ を、時間 $O(t(n))$ の非決定性の単一テープ判定機で決定できる言語全体とすると、
+$$
+\mathrm{NP}=\bigcup_{k\ge1}\mathrm{NTIME}(n^{k}).
+$$
+:::
+
+::: proof
+**$\subseteq$.** $A$ に時間 $n^{k}$ の検証機 $V$ があるとする（定数倍は省く）。非決定性機械 $N$：入力 $w$ に対し、長さ $n^{k}$ 以下の文字列 $c$ を非決定的に選んで書き、$V$ を $\langle w,c\rangle$ の上で動かして、その答えを出す。$w\in A$ なら証明書 $c$ を選ぶ枝が受理する。$w\notin A$ ならどの枝も拒否する。時間は $O(n^{k})$（多テープで書いた場合は \ref{comp:multitape-time} で単一テープに直しても多項式）。
+
+**$\supseteq$.** $A$ を時間 $n^{k}$ の非決定性判定機 $N$ が決定するとする。証明書を「各段でどの選択肢をとったかの列」（長さ $n^{k}$ 以下）とし、検証機 $V$ は $\langle w,c\rangle$ について、$c$ の選択に従って $N$ を $w$ の上で決定的に動かし、受理状態に達したら受理する。$w\in A$ なら受理する枝の選択の列が証明書になる。$w\notin A$ ならどの選択の列でも受理しない。$V$ の時間は $O(n^{k})$ の多項式。
+:::
+
+::: remark
+$\mathrm{P}\subseteq\mathrm{NP}$（証明書を無視する検証機）。\ref{comp:ntm-time} から $\mathrm{NP}\subseteq\bigcup_{k}\mathrm{TIME}(2^{n^{k}})\eqdef\mathrm{EXPTIME}$。$\mathrm{P}=\mathrm{NP}$ かどうかは未解決である（**P 対 NP 問題**）。
+:::
+
+## 多項式時間の還元と NP 完全性 {#comp:sec-np-complete}
+
+::: definition 多項式時間の写像還元 {#comp:poly-reduction keywords="polynomial-time computable function, polynomial-time many-one reduction, Karp reduction" index="多項式時間還元|たこうしきじかんかんげん"}
+関数 $f\colon\Sigma^{\ast}\to\Sigma^{\ast}$ が**多項式時間で計算可能**とは、時間が入力の長さの多項式で抑えられ、停止したときテープに $f(w)$ だけを残す TM があることをいう。言語 $A,B$ について、多項式時間で計算可能な $f$ で $w\in A\iff f(w)\in B$ となるものがあるとき、$A\le_{\mathrm{P}}B$ と書く。
+:::
+
+::: proposition 多項式時間還元の性質 {#comp:poly-reduction-basic}
+1. $\le_{\mathrm{P}}$ は反射的かつ推移的である。
+2. $A\le_{\mathrm{P}}B$ かつ $B\in\mathrm{P}$ なら $A\in\mathrm{P}$。$B\in\mathrm{NP}$ なら $A\in\mathrm{NP}$。
+:::
+
+::: proof
+1. 推移性：$f$（時間 $n^{a}$）、$g$（時間 $n^{b}$）について、$f(w)$ の長さは $\lvert w\rvert^{a}$ 以下（一段で一升しか書けない）なので、$g(f(w))$ の計算は $(n^{a})^{b}$ 段程度。合計は多項式。
+2. $f(w)$ を計算し（多項式時間、長さも多項式）、$B$ の判定機（または検証機）を $f(w)$ の上で動かす。多項式の合成は多項式。
+:::
+
+::: definition NP 完全 {#comp:np-complete keywords="NP-hard, NP-complete" index="NP 完全|えぬぴーかんぜん, NP 困難|えぬぴーこんなん"}
+言語 $B$ が **NP 困難**とは、すべての $A\in\mathrm{NP}$ について $A\le_{\mathrm{P}}B$ となることをいう。NP 困難で NP に属する言語を **NP 完全**という。
+:::
+
+::: corollary
+NP 完全な言語 $B$ について、$B\in\mathrm{P}$ であることと $\mathrm{P}=\mathrm{NP}$ は同値である。また、$B$ が NP 完全で、$C\in\mathrm{NP}$ かつ $B\le_{\mathrm{P}}C$ なら、$C$ も NP 完全である。
+:::
+
+::: proof
+\ref{comp:poly-reduction-basic} の 2 と 1。
+:::
+
+## クック–レヴィンの定理 {#comp:sec-cook-levin}
+
+$N=(Q,\Sigma,\Gamma,\delta,q_{0},q_{\mathrm{acc}},q_{\mathrm{rej}})$ を、時間 $n^{k}$（$n\ge2$ で）の非決定性の単一テープ判定機とする。ここで $\delta(q,a)$ は $Q\times\Gamma\times\{\mathrm{L},\mathrm{R}\}$ の部分集合で、その元を（$q,a$ とあわせて）**遷移**と呼ぶ。遷移全体の集合 $\Delta$ は有限である。入力 $w$（$\lvert w\rvert=n$）を固定し、$T\defeq n^{k}$, $m\defeq T+2$ とする。
+
+**表.** 時点表示 $uqv$（$\lvert uv\rvert\le T+1$）を、長さ $m$ の記号列 $c_{1}\cdots c_{m}$（$c_{j}\in C\defeq Q\cup\Gamma$）で、$uqv$ の後に空白を補ったものとして表す。さらに位置 $0$ に左端を表す新しい記号 $\triangleright$ を、位置 $m+1,m+2$ に空白を置く。$T$ 段以内の計算では、ヘッドは位置 $T+1$ より右へ行かないので、状態の記号は位置 $1,\dots,m-1$ にあり、この長さで時点表示を表せる。
+
+::: lemma 一段の動きは局所的 {#comp:local-step keywords="locality of TM steps, windows" index="局所性（TM の一段の）|きょくしょせいてぃーえむのいちだんの"}
+各 $\tau\in\Delta$ について、写像 $g_{\tau}\colon(C\cup\{\triangleright\})^{4}\to C$ があり、次が成り立つ：時点表示 $c$ の状態が $q$、ヘッドの下の記号が $a$ で、$\tau$ が $(q,a)$ の遷移なら、$\tau$ による次の時点表示 $c'$ は、すべての $1\le j\le m$ について
+$$
+c'_{j}=g_{\tau}(c_{j-1},c_{j},c_{j+1},c_{j+2}).
+$$
+:::
+
+::: proof
+状態の記号 $q$ が位置 $p$ にあり、ヘッドの下の記号 $a$ が位置 $p+1$ にあるとする。一段の動き（\ref{comp:tm-configuration} の 2）で変わりうるのは位置 $p-1,p,p+1$ だけである。$\tau=(q,a\to r,b,D)$ について：
+- $D=\mathrm{R}$：位置 $p,p+1$ が $q\,a$ から $b\,r$ に変わる。
+- $D=\mathrm{L}$ で $p\ge2$：位置 $p-1,p,p+1$ が $e\,q\,a$ から $r\,e\,b$ に変わる（$e$ は位置 $p-1$ の記号）。
+- $D=\mathrm{L}$ で $p=1$（左端）：位置 $1,2$ が $q\,a$ から $r\,b$ に変わる。
+
+位置 $j$ の新しい記号は、近くの状態の記号の位置で次のように決まる：$c_{j}$ が状態なら（$j=p$）、R では $b$、L では $e$（$p\ge2$）か $r$（$p=1$。$c_{j-1}=\triangleright$ で分かる）。$c_{j+1}$ が状態なら（$j=p-1$）、L では $r$、R では $c_{j}$ のまま。$c_{j-1}$ が状態なら（$j=p+1$）、R では $r$、L では $b$。$c_{j+2}$ が状態なら（$j=p-2$）、どちらでも $c_{j}$ のまま（L でも位置 $p-1$ より左は変わらない）。それ以外は $c_{j}$ のまま。どの場合も、$(c_{j-1},c_{j},c_{j+1},c_{j+2})$ の中に状態の記号がどこにあるか（あるいはないか）と、その周辺の記号だけで決まるので、$g_{\tau}$ をこの規則で定めればよい（状態の記号が二つ以上ある組や、$\tau$ に合わない組では、値は何でもよい）。
+:::
+
+::: theorem クック–レヴィンの定理 {#comp:cook-levin keywords="Cook-Levin theorem, SAT is NP-complete, tableau" index="クック–レヴィンの定理|くっくれゔぃんのていり"}
+SAT は NP 完全である。
+:::
+
+::: proof
+SAT $\in$ NP は例の 3。$A\in\mathrm{NP}$ を時間 $n^{k}$ の非決定性判定機 $N$ が決定するとし（\ref{comp:np-ntm}）、上の記号を使う。$w$ から論理式 $\varphi_{w}$ を作る。
+
+**変数.** $x_{i,j,s}$（$0\le i\le T$, $1\le j\le m$, $s\in C$）：「表の第 $i$ 行の位置 $j$ が $s$」。$y_{i,\tau}$（$0\le i<T$, $\tau\in\Delta\cup\{\mathrm{stay}\}$）：「第 $i$ 行から第 $i+1$ 行へ $\tau$ で進む」（$\mathrm{stay}$ は停止した後に行をそのまま写すこと）。
+
+**論理式.** $\varphi_{w}\defeq\varphi_{\mathrm{cell}}\wedge\varphi_{\mathrm{choice}}\wedge\varphi_{\mathrm{start}}\wedge\varphi_{\mathrm{step}}\wedge\varphi_{\mathrm{acc}}$。
+- $\varphi_{\mathrm{cell}}$：各 $(i,j)$ で $x_{i,j,s}$ のちょうど一つが真（「どれかが真」の選言と、$s\neq s'$ ごとの $\neg x_{i,j,s}\vee\neg x_{i,j,s'}$）。
+- $\varphi_{\mathrm{choice}}$：各 $i$ で $y_{i,\tau}$ のちょうど一つが真。
+- $\varphi_{\mathrm{start}}$：第 $0$ 行が $q_{0}w_{1}\cdots w_{n}\sqcup\cdots\sqcup$ であることを、$x_{0,j,s}$ の連言で書く。
+- $\varphi_{\mathrm{step}}$：各 $i<T$ について、
+  - 遷移 $\tau=(q,a\to\cdots)$ が選ばれたら、それが使えること：$y_{i,\tau}\to\bigvee_{j<m}(x_{i,j,q}\wedge x_{i,j+1,a})$。$\mathrm{stay}$ が選ばれたら行が停止状態を含むこと：$y_{i,\mathrm{stay}}\to\bigvee_{j}(x_{i,j,q_{\mathrm{acc}}}\vee x_{i,j,q_{\mathrm{rej}}})$。
+  - 次の行が局所的に決まること：各 $j$、各 $\tau\in\Delta$、各 $(s_{-1},s_{0},s_{1},s_{2})$ について
+  $$
+  \bigl(y_{i,\tau}\wedge\textstyle\bigwedge_{l=-1}^{2}x_{i,j+l,s_{l}}\bigr)\to x_{i+1,j,g_{\tau}(s_{-1},s_{0},s_{1},s_{2})}.
+  $$
+  ここで $x_{i,0,\triangleright}$ と $x_{i,m+1,\sqcup}$, $x_{i,m+2,\sqcup}$ は常に真の定数、他の記号の場合は常に偽の定数として扱う。$\mathrm{stay}$ については $(y_{i,\mathrm{stay}}\wedge x_{i,j,s})\to x_{i+1,j,s}$。
+- $\varphi_{\mathrm{acc}}$：$\bigvee_{i,j}x_{i,j,q_{\mathrm{acc}}}$。
+
+**大きさと計算時間.** 変数は $O(Tm)=O(n^{2k})$ 個。各 $(i,j)$ につき、定数個（$\lvert C\rvert$, $\lvert\Delta\rvert$ だけで決まる個数）の定数の大きさの論理式があるので、$\varphi_{w}$ の長さは $O(n^{2k})$ に（変数の添字を書く）$O(\log n)$ を掛けた程度で、$w$ から多項式時間で書き出せる。
+
+**正しさ.** ($\Rightarrow$) $N$ の受理する計算の枝 $C_{0}\vdash C_{1}\vdash\cdots\vdash C_{r}$（$r\le T$, $C_{r}$ は受理）があれば、$i\le r$ で第 $i$ 行を $C_{i}$、$i>r$ で $C_{r}$ とし、$y_{i,\tau}$ を使った遷移（$i\ge r$ では $\mathrm{stay}$）とする付値が $\varphi_{w}$ を充足する（\ref{comp:local-step}）。
+($\Leftarrow$) 充足する付値から、$\varphi_{\mathrm{cell}}$ で各行の記号列 $R_{i}$ が、$\varphi_{\mathrm{choice}}$ で各段の選択 $\tau_{i}$ が決まる。$i$ に関する帰納法で $R_{i}$ は $N$ の時点表示で、$R_{i+1}$ は $R_{i}$ から $\tau_{i}$ で一段進めたもの（$\tau_{i}=\mathrm{stay}$ なら $R_{i}$ は停止時点表示で $R_{i+1}=R_{i}$）であることが分かる：$R_{0}$ は開始時点表示、$\tau_{i}$ は $R_{i}$ で使える遷移で、\ref{comp:local-step} により $R_{i+1}$ の各位置は $\tau_{i}$ による次の時点表示と一致する。$\varphi_{\mathrm{acc}}$ から、ある $R_{i}$ は受理状態を含む。停止した後は $\mathrm{stay}$ しか使えない（停止状態の遷移はない）ので、最初に停止した行が受理時点表示であり、$N$ は $w$ を受理する。
+
+よって $w\in A\iff\varphi_{w}\in\mathrm{SAT}$ で、$A\le_{\mathrm{P}}\mathrm{SAT}$。
+:::
+
+## 3SAT {#comp:sec-3sat}
+
+::: lemma ツァイティン変換 {#comp:tseitin keywords="Tseitin transformation, equisatisfiable 3CNF" index="ツァイティン変換|つぁいてぃんへんかん"}
+命題論理の論理式 $\varphi$（結合子 $\neg,\wedge,\vee$ を使うとする）から、多項式時間で 3CNF の論理式 $\psi$ を作り、$\varphi$ が充足可能であることと $\psi$ が充足可能であることを同値にできる。
+:::
+
+::: proof
+$\varphi$ の各部分論理式 $\theta$ に新しい変数 $z_{\theta}$ を割り当てる（変数 $p$ そのものには $z_{p}\defeq p$）。各部分論理式について、$z_{\theta}$ が $\theta$ の値と等しいことを表す節を作る：
+- $\theta=\neg\alpha$：$(z_{\theta}\vee z_{\alpha})\wedge(\neg z_{\theta}\vee\neg z_{\alpha})$。
+- $\theta=\alpha\wedge\beta$：$(\neg z_{\theta}\vee z_{\alpha})\wedge(\neg z_{\theta}\vee z_{\beta})\wedge(z_{\theta}\vee\neg z_{\alpha}\vee\neg z_{\beta})$。
+- $\theta=\alpha\vee\beta$：$(z_{\theta}\vee\neg z_{\alpha})\wedge(z_{\theta}\vee\neg z_{\beta})\wedge(\neg z_{\theta}\vee z_{\alpha}\vee z_{\beta})$。
+
+各組の節は、$z_{\theta}\leftrightarrow\neg z_{\alpha}$ などと同値である（真理表で確かめられる）。$\psi$ を、これらすべての節と一つの節 $z_{\varphi}$ の連言とする。部分論理式の個数は $\varphi$ の長さ以下なので、$\psi$ の長さは多項式。
+($\Rightarrow$) $\varphi$ を充足する付値 $v$ を、$z_{\theta}\defeq$「$v$ での $\theta$ の値」で延長すれば $\psi$ を充足する。($\Leftarrow$) $\psi$ を充足する付値 $v'$ について、部分論理式の構成に関する帰納法で $v'(z_{\theta})=$「$v'$ の元の変数への制限での $\theta$ の値」。$z_{\varphi}$ が真なので、制限は $\varphi$ を充足する。
+:::
+
+::: corollary 3SAT は NP 完全 {#comp:3sat-complete keywords="3SAT is NP-complete" index="3SAT|すりーさっと"}
+$\mathrm{3SAT}\defeq\{\langle\psi\rangle:\psi\text{ は充足可能な 3CNF}\}$ は NP 完全である。
+:::
+
+::: proof
+3SAT $\in$ NP は SAT と同じ。\ref{comp:tseitin} は $\mathrm{SAT}\le_{\mathrm{P}}\mathrm{3SAT}$ を与え、\ref{comp:cook-levin} と推移性による。
+:::
+
+::: hypcheck
+- **時間の多項式の上限 $n^{k}$**：\ref{comp:cook-levin} で、表の大きさ（$T\times m$）を多項式にするのに使った。これがヘッドの到達範囲と行数を同時に抑える。
+- **一段の局所性**（\ref{comp:local-step}）：$\varphi_{\mathrm{step}}$ が定数の大きさの論理式の連言で書けることに本質的に使った。TM の一段が「ヘッドの近くだけを変える」ことが鍵である。
+- **選択の変数 $y_{i,\tau}$**：非決定性を、付値の自由度として表すのに使った。$\varphi_{\mathrm{choice}}$ がなければ、二つの遷移を同時に「選んで」矛盾する行を作ることはできないが、どちらも使えないのに行を写す付値が残るおそれがある。
+- **ツァイティン変換の新しい変数**：単純に分配法則で CNF に直すと長さが指数的に増えうるので、充足可能性だけを保つ（論理的に同値ではない）変換を使った。
+:::
+
+## 問題 {#comp:sec-np-problems}
+
+::: problem {#comp:prob-np-closure}
+NP は和集合と連接で閉じていることを示せ。
+:::
+
+::: solution
+$A,B\in\mathrm{NP}$ の多項式時間の検証機を $V_{A},V_{B}$ とする。和集合：証明書 $\langle i,c\rangle$（$i\in\{1,2\}$）について、$i=1$ なら $V_{A}$ を、$i=2$ なら $V_{B}$ を $\langle w,c\rangle$ の上で動かす。連接：証明書 $\langle k,c_{1},c_{2}\rangle$ について、$w=w_{1}\cdots w_{k}\cdot w_{k+1}\cdots w_{n}$ と分け、$V_{A}$ を $\langle w_{1}\cdots w_{k},c_{1}\rangle$、$V_{B}$ を残りと $c_{2}$ の上で動かし、両方受理なら受理。いずれも多項式時間。
+:::
+
+::: problem {#comp:prob-2sat-p}
+$\mathrm{2SAT}$（各節のリテラルが $2$ 個以下の CNF の充足可能性）は P に属することを示せ。
+:::
+
+::: solution
+節 $\ell_{1}\vee\ell_{2}$ を二つの含意 $\neg\ell_{1}\to\ell_{2}$, $\neg\ell_{2}\to\ell_{1}$ と見て、リテラルを頂点、含意を辺とする有向グラフ $G$ を作る（一つのリテラルの節 $\ell$ は $\ell\vee\ell$ とする）。**主張**：論理式が充足不能であることと、ある変数 $p$ について $p$ から $\neg p$ へ、かつ $\neg p$ から $p$ への有向路があることは同値。
+(⇐) 付値で $p$ が真なら $p\to\cdots\to\neg p$ の路に沿って真が伝わり（辺は含意で、充足する付値では真から真へ）、$\neg p$ も真となり矛盾。$p$ が偽でも逆の路で同様。
+(⇒) どの変数もそうでないとする。まだ値の決まっていない変数 $p$ を選び、$p$ から $\neg p$ への路がないなら $p$ を、あるなら $\neg p$ を真とし（このとき $\neg p$ から $p$ への路はない）、真としたリテラルから到達できるリテラルをすべて真に（その否定を偽に）する。これで矛盾（あるリテラルとその否定が両方真）が起きないことは、$G$ の対称性（$\ell\to\ell'$ があれば $\neg\ell'\to\neg\ell$ もある）から示せ、繰り返すとすべての節が充足される。到達可能性は P に属する（\ref{comp:path-in-p}）ので、判定は多項式時間。（(⇒) の矛盾が起きないことの詳細は、本サイトでは省略した。）
+:::
+
+::: supplement
+**前提の検討.**
+- クック–レヴィンの定理の還元は、$N$ を固定して $w$ を入力とする。$N$ の大きさ（$\lvert C\rvert$, $\lvert\Delta\rvert$）は定数として扱った。
+- NP は「はい」の答えに短い証拠がある問題で、「いいえ」の答えに短い証拠があるとは限らない。NP $=$ coNP かどうかも未解決である。
+
+**関連する結果.**
+- *ラドナーの定理.* $\mathrm{P}\neq\mathrm{NP}$ なら、P に属さず NP 完全でもない NP の言語があることが知られている。
+- *相対化の壁.* P 対 NP 問題は、神託を付けても成り立つような議論（対角線論法など）だけでは解決できないことが知られている（ベイカー–ギル–ソロヴェイ。\ref{comp:page-hierarchy}）。
+- *記述計算量.* NP は、有限構造の上で存在的二階論理で定義できる性質のクラスと一致する（フェイギンの定理）ことが知られている。
+
+**高い視点から：検証と発見の非対称.** 表現可能性定理（\ref{comp:page-representability}）では、「計算が停止する」ことが「ある有限の計算記録が存在する（$\exists t$）」という Σ₁ の形で書けた。NP はその計算量版で、「ある**多項式の長さの**証拠が存在し、その検査は**多項式時間**で済む」という形をしている。算術的階層での Σ₁ と Δ₁（決定可能）の差は対角線論法で示せたが、NP と P の差は、同じ方法では示せないことが知られている。クック–レヴィンの定理の証明は、「計算が正しいこと」を「表の各升目の局所的な条件の連言」として書き下すもので、計算を論理式に翻訳する点で、算術化（\ref{pt:page-arithmetization}）とまったく同じ発想である。比喩で言えば、数独の答えを確かめるのはやさしいが見つけるのは難しい。クック–レヴィンの定理は、あらゆる「確かめやすい問題」が一つのパズル（SAT）に翻訳できることを述べている。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>可算台反復 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/08-iterated-forcing/07-countable-iterations.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 可算台反復 {#set:page-countable-iterations keywords="countable support iteration, full for omega-sequences, omega_1-closed, omega_2-cc, almost disjoint sets partial order on omega_1, maximal almost disjoint families on omega_1, P_1, CH + 2^{omega_1} large"}
+
+有限台以外の台をもつ反復強制は文献に多く現れるが、MA のような「引用しやすい」一つの公理はなく、議論はより個別的になる。その見本として可算台反復を扱う。可算台の拡大が c.c.c. になるのは自明な場合だけなので、基数を保つには別の性質が要る。最も易しい（唯一ではない）方法は、$\omega_{2}$-c.c. かつ $\omega_{1}$-閉な p.o. で強制することである。本ページでは、(i) 名前が「$\omega$ 列について充満」なら可算台反復は $\omega_{1}$-閉であること（\ref{set:cs-iteration-closed}）、(ii) $\omega_{1}$ 上の概素集合の p.o. を標準的な名前で反復すると $\omega_{2}$-c.c. が保たれること（\ref{set:cs-ad-cc}）を示し、応用として、CH のもとで $2^{\omega_{1}}$ を大きくしつつ、大きさが $\omega_{1}$ と $2^{\omega_{1}}$ の真に間にある $\omega_{1}$ 上の極大概素族が存在しないモデルを作る（\ref{set:cs-p1-theorem}）。（Kunen 第 VIII 章 §7 に対応する。）
+
+## 記法と定義の確認 {#set:sec-cs-notation}
+
+::: notation
+- $M$ は $\ZFC$ の c.t.m.。p.o. の名前、反復強制の構成、台、可算台反復、段階間の埋め込み $i_{\xi\eta}$、$G_{\xi}$、$H_{\xi}$ は \ref{set:po-name}, \ref{set:iteration-construction}, \ref{set:iteration-support-types}, \ref{set:iteration-embedding}, \ref{set:iteration-models} のとおり。反復の順序論的性質 \ref{set:iteration-basic}、小さい集合は途中の段階に現れること \ref{set:iteration-small-sets}、帳簿付けの関数 \ref{set:prob-bookkeeping} と MA の証明の型 \ref{set:solovay-tennenbaum} を使う。
+- $\lambda$-閉（\ref{set:lambda-closed}）、$\lambda$-閉な強制は長さ $<\lambda$ の新しい列を加えない（\ref{set:closed-no-new-functions}）、$\lambda$ 以下の共終数を保つ（\ref{set:closed-preserves}）、$\theta$-c.c. は $\theta$ 以上の共終数を保つ（\ref{set:kappa-cc-preserves}）。
+- 名前 $\mathrm{op}(\sigma,\tau)$（\ref{set:up-op-names}）は値が $\langle\sigma_{G},\tau_{G}\rangle$ となる名前、最大原理（\ref{set:maximal-principle}）、よい名前（\ref{set:nice-name}, \ref{set:nice-name-exists}）、名前の翻訳（\ref{set:name-translation-basic}）。
+- $\kappa$ 上の概素族・極大概素族（\ref{set:almost-disjoint}）、$\omega_{1}$ 上の大きさ $\omega_{1}$ の概素族は極大でないこと（\ref{set:ad-family-regular}）、$2^{<\kappa}=\kappa$ なら大きさ $2^{\kappa}$ の概素族があること（\ref{set:ad-family-large}）、Δ システム補題（\ref{set:delta-system-general}）。
+- $[X]^{\le\omega}$ は $X$ の可算部分集合全体。CH のもとで $\lvert[\omega_{1}]^{\le\omega}\rvert=\omega_{1}^{\omega}=2^{\omega}=\omega_{1}$ である。
+:::
+
+## ω 列について充満な名前と閉性 {#set:sec-cs-closed}
+
+$\omega_{1}$-閉性は可算台反復で保たれないことがある（Kunen の演習 E2。本サイトでは確かめていない）が、p.o. の名前に追加の条件を課せば保たれる。
+
+::: definition ω 列について充満 {#set:full-name keywords="name full for omega-sequences" index="ω 列について充満|おめがれつについてじゅうまん"}
+$\pi$ を p.o. の $\PP$-名前とする。$\pi$ が **$\omega$ 列について充満**（full for $\le\omega$-sequences）であるとは、$p\in\PP$ と $\rho_{n}\in\dom(\pi)$（$n\in\omega$）が、各 $n$ について
+$$
+p\Vdash(\rho_{n}\in\pi\land\rho_{n+1}\le_{\pi}\rho_{n})
+$$
+を満たすならば、ある $\sigma\in\dom(\pi)$ で、$p\Vdash\sigma\in\pi$ かつ各 $n$ について $p\Vdash\sigma\le_{\pi}\rho_{n}$ となるものがあることをいう。
+:::
+
+（Kunen の定義 7.1 の仮定の式は OCR で欠落しているため、証明（\ref{set:cs-iteration-closed}）での使われ方から上の形に復元した。）
+
+$\omega$ 列について充満であることは名前 $\pi$ の性質であり、名指される p.o. の性質ではない。$\mathbf{1}\Vdash(\pi$ は $\omega_{1}$-閉$)$ なら、$\mathbf{1}\Vdash\pi=\pi'$ で $\omega$ 列について充満な名前 $\pi'$ を作る標準的な手続きがある、と Kunen は述べている（演習 D1, D2。本サイトでは確かめていない）。逆向きの易しい方向は \ref{set:prob-full-closed} とする。また、$\omega_{1}$-閉な p.o. の有限回の反復は $\omega_{1}$-閉であるが、無限回の反復では名前が充満でないと失敗しうる、とも述べられている（演習 E2, E3）。
+
+::: lemma 可算台反復と閉性 {#set:cs-iteration-closed keywords="countable support iteration of full names is omega_1-closed" index="可算台反復と閉性|かさんだいはんぷくとへいせい"}
+$M$ で $\langle\langle\PP_{\xi}:\xi\le\alpha\rangle,\langle\pi_{\xi}:\xi<\alpha\rangle\rangle$ を可算台の反復強制の構成とし、各 $\xi<\alpha$ について $\PP_{\xi}$-名前 $\pi_{\xi}$ は $\omega$ 列について充満とする。このとき $\PP_{\alpha}$ は $M$ で $\omega_{1}$-閉である。
+:::
+
+::: proof
+まず、$\omega_{1}$-閉を示すには長さ $\omega$ の減少列だけを考えればよい。実際、長さ $\gamma<\omega_{1}$ の減少列について、$\gamma$ が後続なら最後の項が下界であり、$\gamma$ が極限なら共終な $\omega$ 列 $\xi_{0}<\xi_{1}<\cdots$ をとり、部分列 $\langle p_{\xi_{n}}\rangle$ の下界は（列が減少なので）全体の下界である。$\gamma=0$ なら $\mathbf{1}$ が下界である。
+
+$M$ の中で、$p^{n}\in\PP_{\alpha}$（$n<\omega$）が $p^{n+1}\le p^{n}$ を満たすとし、各 $n$ について $p^{\omega}\le p^{n}$ となる $p^{\omega}$ を見つける。$p^{n}=\langle p^{n}_{\mu}:\mu<\alpha\rangle$ とし、$p^{\omega}=\langle p^{\omega}_{\mu}:\mu<\alpha\rangle$ を $\mu$ についての再帰で定め（$M$ の中の AC で選択を行う）、各 $\xi\le\alpha$ について
+$$
+p^{\omega}\restr{\xi}\in\PP_{\xi}\land\forall n\in\omega\,(p^{\omega}\restr{\xi}\le p^{n}\restr{\xi})\tag{$*$}
+$$
+を帰納的に確かめる。同時に $\mathrm{supt}(p^{\omega})\subseteq\bigcup_{n}\mathrm{supt}(p^{n})$ となるようにする。
+
+**$\xi=0$** は自明。
+
+**極限 $\xi$.** すべての $\eta<\xi$ で $(*)$ が成り立つとする。$\mathrm{supt}(p^{\omega}\restr{\xi})\subseteq\bigcup_{n}\mathrm{supt}(p^{n})$ は可算集合の可算和なので（$M$ の AC）可算であり、可算台のイデアルに属する（**ここで可算台を使う**）。極限段階の定義（\ref{set:iteration-construction} の 3）より $p^{\omega}\restr{\xi}\in\PP_{\xi}$ で、順序も各 $\eta<\xi$ への制限で判定されるので $(*)$ が成り立つ。
+
+**後続 $\xi+1$.** $(*)$ が $\xi$ で成り立つとし、$p^{\omega}_{\xi}$ を定める。各 $n$ について $p^{n+1}\restr{(\xi+1)}\le p^{n}\restr{(\xi+1)}$（\ref{set:iteration-basic} の 3）なので、$\PP_{\xi+1}$ の順序の定義より
+$$
+p^{n+1}\restr{\xi}\Vdash(p^{n+1}_{\xi}\in\pi_{\xi}\land p^{n+1}_{\xi}\le p^{n}_{\xi}).
+$$
+また $p^{0}\restr{\xi}\Vdash p^{0}_{\xi}\in\pi_{\xi}$。$\xi$ での $(*)$ より $p^{\omega}\restr{\xi}\le p^{n+1}\restr{\xi}$, $p^{0}\restr{\xi}$ なので、各 $n$ について
+$$
+p^{\omega}\restr{\xi}\Vdash(p^{n}_{\xi}\in\pi_{\xi}\land p^{n+1}_{\xi}\le p^{n}_{\xi}).
+$$
+$\pi_{\xi}$ は $\omega$ 列について充満なので（**ここで充満性を使う**）、$p^{\omega}\restr{\xi}\Vdash p^{\omega}_{\xi}\in\pi_{\xi}$ かつ各 $n$ について $p^{\omega}\restr{\xi}\Vdash p^{\omega}_{\xi}\le p^{n}_{\xi}$ となる $p^{\omega}_{\xi}\in\dom(\pi_{\xi})$ を選べる。ただし $\xi\notin\bigcup_{n}\mathrm{supt}(p^{n})$、すなわちすべての $p^{n}_{\xi}=\mathbf{1}_{\pi_{\xi}}$ のときは $p^{\omega}_{\xi}\defeq\mathbf{1}_{\pi_{\xi}}$ とする（これも条件を満たし、$\xi\notin\mathrm{supt}(p^{\omega})$）。後続段階の定義（\ref{set:iteration-construction} の 2）より $(*)$ が $\xi+1$ で成り立つ。
+
+$\xi=\alpha$ とすれば $p^{\omega}\in\PP_{\alpha}$ はすべての $p^{n}$ の下界である。
+:::
+
+::: hypcheck
+- 可算台は極限段階で $p^{\omega}$ の台（可算個の可算集合の和）を許すために使った。有限台では $\bigcup_{n}\mathrm{supt}(p^{n})$ が無限になりうるので、この議論は成り立たない（実際、有限台の無限反復は、非自明な成分をもつなら $\omega_{1}$-閉にならないのが普通である。本サイトでは一般には確かめていない）。
+- 充満性は後続段階でだけ使った。$\PP_{\xi}$ 自身の閉性はこの証明では仮定していない。
+:::
+
+## ω₂-c.c. の保存の問題 {#set:sec-cs-cc-problem}
+
+GCH を満たす $M$ から、$\omega_{1}$-閉で $\omega_{2}$-c.c. な p.o. を充満な名前で可算台反復して、$\mathrm{CH}+2^{\omega_{1}}>\omega_{2}+\mathrm{MA}_{1}$ のモデルを得たくなるかもしれない。ここで $\mathrm{MA}_{1}$ は「$\PP$ が $\omega_{1}$-閉で $\omega_{2}$-c.c. な p.o. で、$\mathcal{D}$ が $\PP$ の $<2^{\omega_{1}}$ 個の稠密集合の族なら、$\mathcal{D}$ のすべてと交わるフィルターがある」という主張である。細部は \ref{set:solovay-tennenbaum} とよく似たものになるはずだが、残念ながらこのような反復で $\omega_{2}$-c.c. は保たれない、と Kunen は述べている（演習 E6。本サイトでは確かめていない）。また $\mathrm{MA}_{1}$ は $\neg\mathrm{CH}$ や $2^{\omega_{1}}=\omega_{2}$ からは容易に従う（演習 J2）が、$\mathrm{CH}+2^{\omega_{1}}>\omega_{2}+\mathrm{MA}_{1}$ の無矛盾性は執筆時点で未解決とされ、校正時の追記で「Stanley と Shelah の最近の結果により、無矛盾ではない」と記されている（本サイトでは確かめていない）。
+
+$\mathrm{MA}_{1}$ の弱い形（$\PP$ にさらに制限を課したもの）は Baumgartner, Laver, Shelah により無矛盾性が示された、と Kunen は述べている。ここでは $\mathrm{MA}_{1}$ の帰結の一つの無矛盾性を示す。このような議論はいずれも、必要な特定の p.o. を反復するときに $\omega_{2}$-c.c. が保たれることの確認を含む。
+
+**ω₁ 上の極大概素族の大きさ.** CH と $2^{\omega_{1}}>\omega_{2}$ を仮定し、$\omega_{1}$ の部分集合の極大概素族の可能な大きさを考える。
+- $1\le\lambda\le\omega$ なら、$\omega_{1}$ を $\lambda$ 個の非可算な集合に分割したものは大きさ $\lambda$ の極大概素族である（\ref{set:prob-partition-mad}）。
+- CH（$2^{<\omega_{1}}=\omega_{1}$）のもとで大きさ $2^{\omega_{1}}$ の概素族があり（\ref{set:ad-family-large}）、それを極大に拡大（\ref{set:ad-family-regular} の (b)）すれば大きさ $2^{\omega_{1}}$ の極大概素族が得られる。
+- 大きさ $\omega_{1}$ の極大概素族はない（\ref{set:ad-family-regular} の (a)）。
+
+したがって残るのは大きさ $\lambda$（$\omega_{1}<\lambda<2^{\omega_{1}}$）の極大概素族である。$\mathrm{CH}+2^{\omega_{1}}>\omega_{2}$ と大きさ $\omega_{2}$ の極大概素族の存在の無矛盾性は、コーエンモデルの小さな極大概素族（\ref{set:cohen-mad-omega-one}）の証明を修正すれば容易に示せる、と Kunen は述べている（演習 A8）。同様に $\mathrm{CH}+\mathrm{MA}_{1}$ のもとでは、MA からの類似の証明（\ref{set:ma-ad}）の明らかな修正により、$\omega_{1}<\lambda<2^{\omega_{1}}$ の大きさの極大概素族はない、とも述べられている。本ページでは、概素集合の p.o. を反復することで、$\mathrm{CH}+2^{\omega_{1}}>\omega_{2}$ が「大きさが $\omega_{1}$ と $2^{\omega_{1}}$ の真に間にある極大概素族は存在しない」と両立することを示す。
+
+## ω₁ 上の概素集合の p.o. {#set:sec-cs-ad-poset}
+
+\ref{set:ad-poset} の類似として次を定義する。
+
+::: definition ω₁ 上の概素集合の p.o. {#set:ad-poset-omega-one keywords="almost disjoint sets partial order on omega_1, Q_A" index="概素集合の半順序（ω₁ 上）|がいそしゅうごうのはんじゅんじょおめがいちじょう"}
+$\mathcal{A}\subseteq\mathcal{P}(\omega_{1})$ について、**概素集合の p.o.** $\mathbb{Q}_{\mathcal{A}}$ を
+$$
+\mathbb{Q}_{\mathcal{A}}\defeq\{\langle s,F\rangle:s\subseteq\omega_{1}\land\lvert s\rvert<\omega_{1}\land F\subseteq\mathcal{A}\land\lvert F\rvert<\omega_{1}\}
+$$
+とし、
+$$
+\langle s',F'\rangle\le\langle s,F\rangle\iff s\subseteq s'\land F\subseteq F'\land\forall x\in F\,(x\cap s'\subseteq s)
+$$
+で順序付け、$\mathbf{1}\defeq\langle0,0\rangle$ とする。
+:::
+
+直観的には、$\langle s,F\rangle$ は作ろうとする集合 $d$ の可算な近似 $s$ と、「これ以降 $d$ に $x$ の元を加えない」という約束の集合 $F$ である。反射律は明らか、推移律は $\langle s'',F''\rangle\le\langle s',F'\rangle\le\langle s,F\rangle$ なら $x\in F$ について $x\in F'$ より $x\cap s''\subseteq s'$、よって $x\cap s''\subseteq x\cap s'\subseteq s$ となることから従う。
+
+::: lemma {#set:ad-omega-one-compat}
+$\mathbb{Q}_{\mathcal{A}}$ で $\langle s_{1},F_{1}\rangle$ と $\langle s_{2},F_{2}\rangle$ が両立することは
+$$
+\forall x\in F_{1}\,(x\cap s_{2}\subseteq s_{1})\land\forall x\in F_{2}\,(x\cap s_{1}\subseteq s_{2})
+$$
+と同値であり、そのとき $\langle s_{1}\cup s_{2},F_{1}\cup F_{2}\rangle$ は共通の拡張である。
+:::
+
+::: proof
+（⇒）$\langle s,F\rangle$ を共通の拡張とすると $s_{1}\cup s_{2}\subseteq s$ で、$x\in F_{1}$ なら $x\cap s\subseteq s_{1}$ なので $x\cap s_{2}\subseteq s_{1}$。$F_{2}$ についても同様。
+
+（⇐）$\langle s_{1}\cup s_{2},F_{1}\cup F_{2}\rangle$ は可算集合の和なので $\mathbb{Q}_{\mathcal{A}}$ に属する。$x\in F_{1}$ について $x\cap(s_{1}\cup s_{2})=(x\cap s_{1})\cup(x\cap s_{2})\subseteq s_{1}$（前者は自明、後者は仮定）なので $\langle s_{1}\cup s_{2},F_{1}\cup F_{2}\rangle\le\langle s_{1},F_{1}\rangle$。$\langle s_{2},F_{2}\rangle$ についても同様。
+:::
+
+::: lemma {#set:ad-omega-one-closed-cc}
+$\mathbb{Q}_{\mathcal{A}}$ は $\omega_{1}$-閉であり、CH のもとで $\omega_{2}$-c.c. である。
+:::
+
+::: proof
+**$\omega_{1}$-閉.** $\gamma<\omega_{1}$ と減少列 $\langle\langle s_{\xi},F_{\xi}\rangle:\xi<\gamma\rangle$ をとり、$s\defeq\bigcup_{\xi}s_{\xi}$, $F\defeq\bigcup_{\xi}F_{\xi}$ とおく（可算個の可算集合の和なので可算）。$\langle s,F\rangle\le\langle s_{\xi},F_{\xi}\rangle$ を示す。$s_{\xi}\subseteq s$, $F_{\xi}\subseteq F$ は明らか。$x\in F_{\xi}$ について $x\cap s=\bigcup_{\eta}(x\cap s_{\eta})$ で、$\eta\ge\xi$ なら $\langle s_{\eta},F_{\eta}\rangle\le\langle s_{\xi},F_{\xi}\rangle$ より $x\cap s_{\eta}\subseteq s_{\xi}$、$\eta<\xi$ なら $s_{\eta}\subseteq s_{\xi}$。よって $x\cap s\subseteq s_{\xi}$。
+
+**$\omega_{2}$-c.c.** $\{\langle s_{\gamma},F_{\gamma}\rangle:\gamma<\omega_{2}\}$ を $\omega_{2}$ 個の元とする。CH より可算な $s\subseteq\omega_{1}$ は $\omega_{1}$ 個しかないので、$\omega_{2}$ の正則性から、ある $s$ について $s_{\gamma}=s$ となる $\gamma$ が $\omega_{2}$ 個ある（**ここで CH を使う**）。そのような $\gamma,\delta$ について、\ref{set:ad-omega-one-compat} の条件は $x\cap s\subseteq s$ となって自明に成り立つので、$\langle s,F_{\gamma}\rangle$ と $\langle s,F_{\delta}\rangle$ は両立する。よって大きさ $\omega_{2}$ の反鎖はない。
+:::
+
+::: lemma 概素集合の p.o. のジェネリック {#set:ad-omega-one-generic}
+$M$ で $\mathcal{A}\subseteq\mathcal{P}(\omega_{1})$、$\mathbb{Q}=\mathbb{Q}_{\mathcal{A}}$ とし、
+$$
+\forall F\subseteq\mathcal{A}\,(\lvert F\rvert<\omega_{1}\to\lvert\omega_{1}\setminus\textstyle\bigcup F\rvert=\omega_{1})\tag{$\dagger$}
+$$
+とする。$G$ を $M$ 上 $\mathbb{Q}$-ジェネリックとし、$d\defeq\bigcup\{s:\exists F\,(\langle s,F\rangle\in G)\}$ とおく。このとき $M[G]$ で $\lvert d\rvert=\omega_{1}$ かつ $\forall x\in\mathcal{A}\,(\lvert d\cap x\rvert<\omega_{1})$。
+:::
+
+::: proof
+$\mathbb{Q}$ は $M$ で $\omega_{1}$-閉なので（\ref{set:ad-omega-one-closed-cc}）、\ref{set:closed-preserves} より $\omega_{1}^{M}=\omega_{1}^{M[G]}$。
+
+**$d\cap x$ は可算.** $x\in\mathcal{A}$ について $D_{x}\defeq\{\langle s,F\rangle:x\in F\}$ は $M$ に属し稠密である：$\langle s,F\rangle$ に対し $\langle s,F\cup\{x\}\rangle\le\langle s,F\rangle$（$y\in F$ について $y\cap s\subseteq s$）。$\langle s,F\rangle\in G\cap D_{x}$ をとる。$\alpha\in d\cap x$ なら $\alpha\in s'$, $\langle s',F'\rangle\in G$ となるものがあり、$G$ の中の共通の拡張 $\langle s'',F''\rangle$ について $x\in F$ より $x\cap s''\subseteq s$、$\alpha\in s'\subseteq s''$ かつ $\alpha\in x$ なので $\alpha\in s$。よって $d\cap x\subseteq s$ で、$s$ は $M$ で可算なので $M[G]$ でも可算。
+
+**$d$ は非可算.** $\delta<\omega_{1}$ について $E_{\delta}\defeq\{\langle s,F\rangle:s\not\subseteq\delta\}$ は $M$ に属し稠密である：$\langle s,F\rangle$ に対し、（$\dagger$）（**ここで使う**）より $\omega_{1}\setminus\bigcup F$ は非可算なので $\beta\ge\delta$ となる元 $\beta$ があり、$\langle s\cup\{\beta\},F\rangle$ は $\mathbb{Q}$ に属し、$x\in F$ について $\beta\notin x$ より $x\cap(s\cup\{\beta\})=x\cap s\subseteq s$ なので $\langle s\cup\{\beta\},F\rangle\le\langle s,F\rangle$。$G\cap E_{\delta}\neq\varnothing$ より $d\not\subseteq\delta$。よって $d$ は $\omega_{1}$ で非有界で、$\omega_{1}$ は正則なので $\lvert d\rvert=\omega_{1}$。
+:::
+
+特に、$M$ で $\mathcal{A}$ が大きさ $\ge\omega_{1}$ の概素族なら（$\dagger$）が成り立つ：可算な $F\subseteq\mathcal{A}$ について $y\in\mathcal{A}\setminus F$ をとると、$y\cap\bigcup F=\bigcup_{x\in F}(y\cap x)$ は可算で $\lvert y\rvert=\omega_{1}$ なので $y\setminus\bigcup F\subseteq\omega_{1}\setminus\bigcup F$ は非可算。このとき $d$ は $\mathcal{A}$ のすべての元と概素な大きさ $\omega_{1}$ の集合で、$\mathcal{A}$ は $M[G]$ で極大概素族でない。したがって $\mathbb{Q}_{\mathcal{A}}$ のような p.o. を反復して、小さい極大概素族のないモデルを作ることが期待できる。可算台反復は p.o. の名前の選び方に敏感なので、次に名前を指定する。
+
+::: definition 標準的な名前 {#set:ad-standard-name keywords="standard P-name for Q_tau" index="概素集合の p.o. の標準的な名前|がいそしゅうごうのはんじゅんじょのひょうじゅんてきななまえ"}
+$\PP\in M$、（$\PP$ は $\omega_{1}$-閉）$^{M}$、$\mathbf{1}\Vdash_{\PP}\tau\subseteq\mathcal{P}(\check{\omega}_{1})$ とする。$\mathbb{Q}_{\tau}$ の**標準的な $\PP$-名前**とは $\langle\pi,\le_{\pi},\mathbf{1}_{\pi}\rangle$ で、
+$$
+\begin{aligned}
+\pi\defeq\{\langle\mathrm{op}(\check{s},\sigma),\mathbf{1}_{\PP}\rangle:{}&s\subseteq\omega_{1}\land\lvert s\rvert<\omega_{1}\\
+&\land\mathbf{1}\Vdash(\sigma\subseteq\tau\land\lvert\sigma\rvert<\check{\omega}_{1})\\
+&\land\sigma\text{ は }\tau\text{ の部分集合のよい }\PP\text{-名前}\},
+\end{aligned}
+$$
+$\mathbf{1}_{\pi}\defeq\mathrm{op}(0,0)$ とし、$\le_{\pi}$ は $\mathbf{1}$ により（\ref{set:ad-poset-omega-one} の意味で）正しい順序であることが強制される任意の $\PP$-名前とする。
+:::
+
+$\le_{\pi}$ の名前としての具体的な形は重要でない。$\mathbf{1}_{\pi}=\mathrm{op}(\check{\varnothing},0)$（$\check{\varnothing}=0$）は $s=\varnothing$ と、すべての反鎖が空のよい名前 $0$ に対応するので $\dom(\pi)$ に属する。
+
+::: lemma 標準的な名前の値 {#set:ad-standard-name-value}
+\ref{set:ad-standard-name} の記号のもとで、$G$ を $M$ 上 $\PP$-ジェネリック、$\mathcal{A}\defeq\tau_{G}$ とすると、$M[G]$ で $\pi_{G}=\mathbb{Q}_{\mathcal{A}}$。特に $\langle\pi,\le_{\pi},\mathbf{1}_{\pi}\rangle$ は p.o. の名前である。
+:::
+
+::: proof
+**$\pi_{G}\subseteq\mathbb{Q}_{\mathcal{A}}$.** $\pi_{G}$ の元は $\mathrm{op}(\check{s},\sigma)_{G}=\langle s,\sigma_{G}\rangle$ で、$s\subseteq\omega_{1}$ は $M$ で可算なので $M[G]$ でも可算、$\sigma_{G}\subseteq\mathcal{A}$ は $M[G]$ で可算（$\mathbf{1}$ が強制する）。
+
+**$\mathbb{Q}_{\mathcal{A}}\subseteq\pi_{G}$.** $\langle s,F\rangle\in\mathbb{Q}_{\mathcal{A}}$（$M[G]$ で）とする。$\PP$ は $M$ で $\omega_{1}$-閉なので $\omega_{1}^{M[G]}=\omega_{1}^{M}$ で（\ref{set:closed-preserves}）、$s$ の $M[G]$ での枚挙 $\omega\to\omega_{1}$ は \ref{set:closed-no-new-functions} より $M$ に属するので、$s\in M$ で $M$ で可算（**ここで $\PP$ の $\omega_{1}$-閉性を使う**）。$F=\mu_{G}$ となる名前 $\mu$ をとる。$\mathbf{1}\Vdash(\mu\subseteq\tau\land\lvert\mu\rvert<\check{\omega}_{1})$ とは限らないが、最大原理より
+$$
+\mathbf{1}\Vdash\bigl[(\mu\subseteq\tau\land\lvert\mu\rvert<\check{\omega}_{1})\to\mu'=\mu\bigr]\land\bigl[\neg(\mu\subseteq\tau\land\lvert\mu\rvert<\check{\omega}_{1})\to\mu'=0\bigr]
+$$
+となる $\mu'$ がある（右辺の $\exists x$ 形は自明に $\mathbf{1}$ で強制される）。すると $\mathbf{1}\Vdash(\mu'\subseteq\tau\land\lvert\mu'\rvert<\check{\omega}_{1})$ で、\ref{set:nice-name-exists} より $\mathbf{1}\Vdash\mu'=\mu''$ となる $\tau$ の部分集合のよい名前 $\mu''$ がある。$\mathbf{1}\Vdash(\mu''\subseteq\tau\land\lvert\mu''\rvert<\check{\omega}_{1})$ なので $\langle\mathrm{op}(\check{s},\mu''),\mathbf{1}\rangle\in\pi$ で、$M[G]$ で $F\subseteq\mathcal{A}$ は可算なので $\mu'_{G}=\mu_{G}=F$、よって $\mathrm{op}(\check{s},\mu'')_{G}=\langle s,F\rangle\in\pi_{G}$。
+
+後半：任意の $G$ で $\pi_{G}=\mathbb{Q}_{\tau_{G}}$ で、$(\le_{\pi})_{G}$ はその順序、$(\mathbf{1}_{\pi})_{G}=\langle\varnothing,\varnothing\rangle$ は最大元なので、強制定理より $\mathbf{1}$ はそれを強制する。
+:::
+
+::: lemma 標準的な名前は充満 {#set:ad-standard-name-full}
+\ref{set:ad-standard-name} の記号のもとで、$\pi$ は $\omega$ 列について充満である。
+:::
+
+::: proof
+$p\in\PP$ と $\rho_{n}=\mathrm{op}(\check{s}_{n},\sigma_{n})\in\dom(\pi)$ が、各 $n$ について $p\Vdash\langle\check{s}_{n+1},\sigma_{n+1}\rangle\le_{\pi}\langle\check{s}_{n},\sigma_{n}\rangle$ を満たすとする。$p$ を含むジェネリックの中で $s_{n}\subseteq s_{n+1}$ が成り立ち、これは $M$ の集合についての $\Delta_{0}$ の主張なので $M$ でも成り立つ。$s\defeq\bigcup_{n}s_{n}$ は $M$ で可算である。
+
+$\mu\defeq\bigcup_{n}\sigma_{n}$（名前としての和：$\mu_{G}=\bigcup_{n}(\sigma_{n})_{G}$）とすると、$\mathbf{1}\Vdash\mu\subseteq\tau$ で、$M[G]$ で可算集合の可算和は可算なので $\mathbf{1}\Vdash\lvert\mu\rvert<\check{\omega}_{1}$。\ref{set:nice-name-exists} より $\mathbf{1}\Vdash\mu=\sigma$ となる $\tau$ の部分集合のよい名前 $\sigma$ をとる。すると $\mathrm{op}(\check{s},\sigma)\in\dom(\pi)$ で $\mathbf{1}\Vdash\mathrm{op}(\check{s},\sigma)\in\pi$。
+
+$p\Vdash\langle\check{s},\sigma\rangle\le_{\pi}\langle\check{s}_{n},\sigma_{n}\rangle$ を示す。$p\in G$ として $M[G]$ で考える。$s_{n}\subseteq s$、$(\sigma_{n})_{G}\subseteq\sigma_{G}$ は明らか。$x\in(\sigma_{n})_{G}$ について $x\cap s=\bigcup_{m}(x\cap s_{m})$ で、$m\ge n$ なら $\langle s_{m},(\sigma_{m})_{G}\rangle\le\langle s_{n},(\sigma_{n})_{G}\rangle$（推移律）より $x\cap s_{m}\subseteq s_{n}$、$m<n$ なら $s_{m}\subseteq s_{n}$。よって $x\cap s\subseteq s_{n}$。
+:::
+
+$\pi$ の定義で $\check{s}$ の形の名前の代わりに、$\omega_{1}$ の可算部分集合の任意のよい名前を使う方が自然に見えるかもしれない。実際、その別定義でも \ref{set:ad-standard-name-value} と \ref{set:ad-standard-name-full} は成り立ち、$\PP$ の $M$ での $\omega_{1}$-閉性も不要になる、と Kunen は述べている。$\check{s}$ の形に制限するのは、超限の反復で $\omega_{2}$-c.c. が保たれることの確認に便利だからである（次の補題の証明で、第一成分が $M$ の対象であることを鳩の巣論法に使う）。別定義でも $\omega_{2}$-c.c. は保たれるが、それを示すには標準的な反復が別の反復に稠密に埋め込まれることをまず示す必要がある、とされている（演習 D5。本サイトでは確かめていない）。
+
+::: lemma 標準的な名前の可算台反復は ω₂-c.c. {#set:cs-ad-cc keywords="countable support iteration of Q_tau with standard names is omega_2-cc" index="可算台反復とω₂-c.c.|かさんだいはんぷくとおめがにしーしー"}
+$M$ で CH を仮定し、$\langle\langle\PP_{\xi}:\xi\le\alpha\rangle,\langle\pi_{\xi}:\xi<\alpha\rangle\rangle$ を可算台の反復強制の構成とする。各 $\xi$ について $\tau_{\xi}$ を $\mathbf{1}\Vdash\tau_{\xi}\subseteq\mathcal{P}(\check{\omega}_{1})$ となる $\PP_{\xi}$-名前とし、$\pi_{\xi}$ は $\mathbb{Q}_{\tau_{\xi}}$ の標準的な $\PP_{\xi}$-名前とする。このとき $\PP_{\alpha}$ は $\omega_{2}$-c.c. をもつ。
+:::
+
+標準的な名前の定義には $\PP_{\xi}$ の $\omega_{1}$-閉性が要るが、これは $\xi$ についての帰納法で成り立つ：$\mu<\xi$ で $\PP_{\mu}$ が $\omega_{1}$-閉なら $\pi_{\mu}$ は充満（\ref{set:ad-standard-name-full}）で、\ref{set:cs-iteration-closed}（長さ $\xi$ に切った構成に適用）より $\PP_{\xi}$ は $\omega_{1}$-閉である。
+
+::: proof
+$M$ で $p^{\gamma}\in\PP_{\alpha}$（$\gamma<\omega_{2}$）とし、相異なる $\gamma,\delta$ で $p^{\gamma}$ と $p^{\delta}$ が両立するものがあることを示す。
+
+**段階 1：Δ システム.** 各 $\mathrm{supt}(p^{\gamma})$ は可算である。$\omega_{2}$ は正則で、$\beta<\omega_{2}$ について $\lvert{}^{<\omega_{1}}\beta\rvert\le\omega_{1}^{\omega}=2^{\omega}=\omega_{1}<\omega_{2}$（**ここで CH を使う**）なので、\ref{set:delta-system-general}（$\kappa=\omega_{1}$, $\theta=\omega_{2}$）が使える。\ref{set:fs-iteration-cc} の証明と同様に（ある台が $\omega_{2}$ 回現れる場合と、そうでなく像が大きさ $\omega_{2}$ になる場合に分けて）、大きさ $\omega_{2}$ の $X\subseteq\omega_{2}$ と可算集合 $r$ で、$\gamma\neq\delta\in X$ なら $\mathrm{supt}(p^{\gamma})\cap\mathrm{supt}(p^{\delta})=r$ となるものがとれる。
+
+**段階 2：第一成分をそろえる.** $p^{\gamma}_{\xi}\in\dom(\pi_{\xi})$ なので $p^{\gamma}_{\xi}=\mathrm{op}(\check{s}^{\gamma}_{\xi},\sigma^{\gamma}_{\xi})$ と書ける（$s^{\gamma}_{\xi}\in M$ は $\omega_{1}$ の可算部分集合）。写像 $\xi\mapsto s^{\gamma}_{\xi}$（$\xi\in r$）は、$r$ から $[\omega_{1}]^{\le\omega}$ への関数であり、そのような関数は CH のもとで高々 $\omega_{1}^{\lvert r\rvert}\le\omega_{1}^{\omega}=\omega_{1}$ 個である（**ここで CH と $\check{s}$ の形を使う**）。$\omega_{2}$ の正則性より、大きさ $\omega_{2}$ の $Y\subseteq X$ と $\langle s_{\xi}:\xi\in r\rangle$ で、すべての $\gamma\in Y$, $\xi\in r$ について $s^{\gamma}_{\xi}=s_{\xi}$ となるものがある。
+
+**段階 3：共通の拡張.** $\gamma\neq\delta\in Y$ とし、長さ $\alpha$ の列 $q$ を
+$$
+q_{\xi}\defeq\begin{cases}p^{\gamma}_{\xi}&(\xi\notin\mathrm{supt}(p^{\delta})),\\p^{\delta}_{\xi}&(\xi\notin\mathrm{supt}(p^{\gamma})),\\\mathrm{op}(\check{s}_{\xi},\sigma_{\xi})&(\xi\in r)\end{cases}
+$$
+で定める。ここで $\sigma_{\xi}$ は $\mathbf{1}\Vdash\sigma_{\xi}=\sigma^{\gamma}_{\xi}\cup\sigma^{\delta}_{\xi}$ となる $\tau_{\xi}$ の部分集合のよい名前である（\ref{set:nice-name-exists}）。場合分けは整合的である：最初の二つが重なるのは $\xi$ がどちらの台にも属さないときで、どちらも $\mathbf{1}_{\pi_{\xi}}$ を与え、$\xi\in r$ はどちらの台にも属するので最初の二つには当たらない。$\mathbf{1}\Vdash(\sigma_{\xi}\subseteq\tau_{\xi}\land\lvert\sigma_{\xi}\rvert<\check{\omega}_{1})$ なので $\mathrm{op}(\check{s}_{\xi},\sigma_{\xi})\in\dom(\pi_{\xi})$。
+
+$\eta\le\alpha$ についての帰納法で $q\restr{\eta}\in\PP_{\eta}$, $q\restr{\eta}\le p^{\gamma}\restr{\eta}$, $q\restr{\eta}\le p^{\delta}\restr{\eta}$ を示す。極限段階では $\mathrm{supt}(q\restr{\eta})\subseteq\mathrm{supt}(p^{\gamma})\cup\mathrm{supt}(p^{\delta})$ は可算なので定義の 3 から従う。後続段階 $\eta+1$：
+- $\eta\notin\mathrm{supt}(p^{\delta})$ なら $q_{\eta}=p^{\gamma}_{\eta}$。$p^{\gamma}\restr{\eta}\Vdash p^{\gamma}_{\eta}\in\pi_{\eta}$ と $q\restr{\eta}\le p^{\gamma}\restr{\eta}$ より $q\restr{\eta}\Vdash p^{\gamma}_{\eta}\in\pi_{\eta}$。$q\restr{\eta}\Vdash p^{\gamma}_{\eta}\le p^{\gamma}_{\eta}$ と $q\restr{\eta}\Vdash p^{\gamma}_{\eta}\le\mathbf{1}_{\pi_{\eta}}=p^{\delta}_{\eta}$ で順序も成り立つ。$\eta\notin\mathrm{supt}(p^{\gamma})$ の場合は対称。
+- $\eta\in r$ なら、$\mathbf{1}\Vdash\mathrm{op}(\check{s}_{\eta},\sigma_{\eta})\in\pi_{\eta}$ で、\ref{set:ad-omega-one-compat}（$s_{1}=s_{2}=s_{\eta}$ の場合で条件は自明）と \ref{set:ad-standard-name-value} より
+$$
+\mathbf{1}\Vdash\langle\check{s}_{\eta},\sigma_{\eta}\rangle\le_{\pi_{\eta}}\langle\check{s}_{\eta},\sigma^{\gamma}_{\eta}\rangle\land\langle\check{s}_{\eta},\sigma_{\eta}\rangle\le_{\pi_{\eta}}\langle\check{s}_{\eta},\sigma^{\delta}_{\eta}\rangle.
+$$
+
+$\eta=\alpha$ とすれば $q$ は $p^{\gamma}$ と $p^{\delta}$ の共通の拡張である。したがって $\{p^{\gamma}:\gamma\in Y\}$ は互いに両立し、$\PP_{\alpha}$ に大きさ $\omega_{2}$ の反鎖はない。
+:::
+
+::: hypcheck
+- 段階 2 で、第一成分が $\check{s}$ の形（$M$ の対象）であることが本質的である。一般のよい名前だと、各条件の第一成分は名前であり、CH で数を抑えられるのは「値」でなく名前の方なので、同じ鳩の巣論法は直接には使えない。
+- CH は段階 1（Δ システム補題の仮定）と段階 2（第一成分の組の数）で使った。
+- 共通の拡張 $q$ の $r$ 上の成分が $\mathbf{1}$ で強制される形で作れたので、$q\restr{\eta}$ の性質は $r$ 上では使っていない。これは概素集合の p.o. では「第一成分が同じなら両立」（\ref{set:ad-omega-one-compat}）が $\mathbf{1}$ で強制されるからである。
+:::
+
+## 応用：小さい極大概素族の非存在 {#set:sec-cs-application}
+
+::: definition {#set:p1-statement keywords="P_1, almost disjoint sets principle on omega_1" index="P₁（ω₁ 上の概素集合原理）|ぴーいち"}
+$\mathrm{P}_{1}$ とは次の主張である：$\mathcal{A}\subseteq\mathcal{P}(\omega_{1})$、$\lvert\mathcal{A}\rvert<2^{\omega_{1}}$ で
+$$
+\forall F\subseteq\mathcal{A}\,(\lvert F\rvert<\omega_{1}\to\lvert\omega_{1}\setminus\textstyle\bigcup F\rvert=\omega_{1})
+$$
+ならば、ある $d\subseteq\omega_{1}$ で $\lvert d\rvert=\omega_{1}$ かつ $\forall x\in\mathcal{A}\,(\lvert d\cap x\rvert<\omega_{1})$ となるものがある。
+:::
+
+（Kunen の定義 7.11 の式は OCR で欠落しているため、\ref{set:ad-omega-one-generic} と後述の $\mathrm{SL}_{1}$ の記述から上の形に復元した。）
+
+::: lemma {#set:p1-mad}
+$\mathrm{P}_{1}$ のもとで、$\mathcal{A}$ が $\omega_{1}$ 上の極大概素族で $\lvert\mathcal{A}\rvert\ge\omega_{1}$ なら、$\lvert\mathcal{A}\rvert=2^{\omega_{1}}$。
+:::
+
+::: proof
+$\lvert\mathcal{A}\rvert\le\lvert\mathcal{P}(\omega_{1})\rvert=2^{\omega_{1}}$ なので、$\lvert\mathcal{A}\rvert<2^{\omega_{1}}$ と仮定して矛盾を導く。$\mathcal{A}$ は大きさ $\ge\omega_{1}$ の概素族なので、\ref{set:ad-omega-one-generic} の直後の注意と同じ議論で（$\dagger$）の条件が成り立つ。$\mathrm{P}_{1}$ より $\lvert d\rvert=\omega_{1}$ で $\mathcal{A}$ のすべての元と概素な $d\subseteq\omega_{1}$ がある。$d\notin\mathcal{A}$（$d\in\mathcal{A}$ なら $\lvert d\cap d\rvert=\omega_{1}$）なので $\mathcal{A}\cup\{d\}$ は $\mathcal{A}$ を真に含む概素族であり、極大性に矛盾する。
+:::
+
+::: theorem {#set:cs-p1-theorem keywords="Con(CH + 2^{omega_1} = kappa + P_1)" index="可算台反復の応用|かさんだいはんぷくのおうよう"}
+$M$ で CH を仮定し、$\kappa>\omega_{1}$ は正則で $2^{<\kappa}=\kappa$ とする。このとき $\PP\in M$ で、$M$ で $\PP$ は $\omega_{1}$-閉かつ $\omega_{2}$-c.c. であり、$G$ が $M$ 上 $\PP$-ジェネリックならつねに $M[G]$ で $\mathrm{CH}$, $2^{\omega_{1}}=\kappa$, $\mathrm{P}_{1}$ が成り立つものがある。
+:::
+
+::: proof
+\ref{set:solovay-tennenbaum} と同様に、$M$ の中で反復強制の構成 $\langle\langle\PP_{\xi}:\xi\le\kappa\rangle,\langle\pi_{\xi}:\xi<\kappa\rangle\rangle$ を作るが、今度は可算台を使う。Kunen は細部を「MA の証明と同様」として省いているので、以下では大きさの見積もりを含めて補う（名前 $\tau^{\gamma}_{\eta}$ の具体的な選び方は、見積もりのために本ページで選んだものである）。
+
+**段階 1：構成.** 帳簿付けの関数 $f\colon\kappa\to\kappa\times\kappa$（\ref{set:prob-bookkeeping}）を固定する。$\PP_{\eta}$ が構成されたら、$M$ の中で、全射（繰り返しを許す）$\gamma\mapsto\langle\lambda^{\gamma}_{\eta},\sigma^{\gamma}_{\eta}\rangle$（$\gamma<\kappa$）を、$\lambda<\kappa$ が基数で $\sigma$ が $(\lambda\times\omega_{1})\check{}$ の部分集合のよい $\PP_{\eta}$-名前であるような組全体の上に選ぶ（段階 3 で大きさ $\le\kappa$ を確かめる）。$\sigma=\sigma^{\gamma}_{\eta}=\bigcup\{\{(\mu,\nu)\check{}\}\times A_{\mu\nu}:\mu<\lambda,\nu<\omega_{1}\}$ と書くとき、$\mu<\lambda$ ごとに「切り口」の名前 $\rho_{\mu}\defeq\bigcup_{\nu<\omega_{1}}\{\check{\nu}\}\times A_{\mu\nu}$ をとり、
+$$
+\tau^{\gamma}_{\eta}\defeq\{\langle\rho_{\mu},\mathbf{1}\rangle:\mu<\lambda\}
+$$
+とおく。すると $\mathbf{1}\Vdash\tau^{\gamma}_{\eta}=\{x\subseteq\omega_{1}:\exists\mu<\check{\lambda}\,(x=\{\nu:\langle\mu,\nu\rangle\in\sigma\})\}$ で、$\lvert\dom(\tau^{\gamma}_{\eta})\rvert\le\lambda$。段階 $\xi$ で $f(\xi)=\langle\eta,\gamma\rangle$（$\eta\le\xi$）なら、$\tau_{\xi}\defeq i_{\eta\xi}^{*}(\tau^{\gamma}_{\eta})$ とし、$\pi_{\xi}$ を $\mathbb{Q}_{\tau_{\xi}}$ の標準的な $\PP_{\xi}$-名前とする。$\mathbf{1}\Vdash\tau_{\xi}\subseteq\mathcal{P}(\check{\omega}_{1})$ は、$i_{\eta\xi}(\mathbf{1})=\mathbf{1}$ より $i_{\eta\xi}^{*}(\check{\omega}_{1})=\check{\omega}_{1}$ で、「各元は $\omega_{1}$ の部分集合」が $\Delta_{0}$ であることと \ref{set:name-translation-basic} の 2 から従う。選択の正当化は \ref{set:solovay-tennenbaum} の段階 6 と同様である。
+
+**段階 2：閉性と鎖条件.** \ref{set:cs-ad-cc} の直前の注意より各 $\PP_{\xi}$ は $\omega_{1}$-閉（したがって標準的な名前が定義できる）で、\ref{set:cs-ad-cc}（**CH を使う**）より $\PP\defeq\PP_{\kappa}$ は $\omega_{2}$-c.c.。\ref{set:closed-preserves} と \ref{set:kappa-cc-preserves} より $\PP$ は基数と共終数を保つ。また $\omega_{1}$-閉なので実数を加えず（\ref{set:closed-no-new-functions}）、$M[G]$ で CH が成り立つ。
+
+**段階 3：大きさの見積もり.** $M$ で、$\lambda<\kappa$ について $\kappa^{\lambda}=\kappa$（\ref{set:solovay-tennenbaum} の段階 3 と同じ計算。$\kappa$ は正則で $2^{<\kappa}=\kappa$）。特に $\kappa^{\omega}=\kappa^{\omega_{1}}=\kappa$（$\omega_{1}<\kappa$）。$\xi\le\kappa$ についての帰納法で $\lvert\PP_{\xi}\rvert\le\kappa$ を示す。$\lvert\PP_{\xi}\rvert\le\kappa$ なら、$\PP_{\xi}$ の反鎖は大きさ $\le\omega_{1}$（$\omega_{2}$-c.c.）なので高々 $\kappa^{\omega_{1}}=\kappa$ 個、$\tau_{\xi}$ の部分集合のよい名前は $\dom(\tau_{\xi})$（大きさ $\le\lambda<\kappa$）から反鎖全体への関数で決まるので高々 $\kappa^{\lambda}=\kappa$ 個、よって $\lvert\dom(\pi_{\xi})\rvert\le\omega_{1}\cdot\kappa=\kappa$ で、$\lvert\PP_{\xi+1}\rvert\le\kappa\cdot\kappa=\kappa$。極限 $\xi$ では、条件は可算な台とその上の成分で決まるので $\lvert\PP_{\xi}\rvert\le\lvert[\xi]^{\le\omega}\rvert\cdot\kappa^{\omega}\le\kappa^{\omega}=\kappa$。同様に、$(\lambda\times\omega_{1})\check{}$ の部分集合のよい $\PP_{\eta}$-名前は高々 $\kappa^{\lambda\cdot\omega_{1}}=\kappa$ 個なので、段階 1 の列挙は可能である。さらに、$\omega_{1}$ の部分集合のよい $\PP$-名前は高々 $\kappa^{\omega_{1}}=\kappa$ 個なので、\ref{set:nice-name-exists} より $M[G]$ で $2^{\omega_{1}}\le\kappa$。
+
+**段階 4：$\mathrm{P}_{1}$ の小さい場合.** $M[G]$ で $\mathcal{A}\subseteq\mathcal{P}(\omega_{1})$、$\lvert\mathcal{A}\rvert=\lambda<\kappa$ で（$\dagger$）が成り立つとし、$\lvert d\rvert=\omega_{1}$ で $\mathcal{A}$ のすべての元と概素な $d$ を見つける（$\mathcal{A}=\varnothing$ なら $d=\omega_{1}$）。$\mathcal{A}=\{x_{\mu}:\mu<\lambda\}$ と枚挙し、$X\defeq\{\langle\mu,\nu\rangle\in\lambda\times\omega_{1}:\nu\in x_{\mu}\}$ とおく。$\lambda$ は $M[G]$ の、したがって $M$ の基数である。可算台のイデアルの元は $\kappa$ で有界（$\cf(\kappa)>\omega$）で、$M[G]$ で $\lvert\lambda\times\omega_{1}\rvert<\kappa=\cf(\kappa)$ なので、\ref{set:iteration-small-sets} よりある $\eta<\kappa$ で $X\in M[G_{\eta}]$。よい $\PP_{\eta}$-名前 $\sigma$ で $X=\mathrm{val}(\sigma,G_{\eta})$ となるものをとると $\langle\lambda,\sigma\rangle=\langle\lambda^{\gamma}_{\eta},\sigma^{\gamma}_{\eta}\rangle$ となる $\gamma$ があり、$f(\xi)=\langle\eta,\gamma\rangle$ となる $\xi\ge\eta$ がある。$\mathrm{val}(\tau^{\gamma}_{\eta},G_{\eta})=\{x_{\mu}:\mu<\lambda\}=\mathcal{A}$ で、\ref{set:name-translation-basic} の 1 より $\mathrm{val}(\tau_{\xi},G_{\xi})=\mathcal{A}$。\ref{set:ad-standard-name-value}（$\PP_{\xi}$ は $\omega_{1}$-閉）より $\mathbb{Q}_{\xi}\defeq\mathrm{val}(\pi_{\xi},G_{\xi})$ は $M[G_{\xi}]$ で計算した $\mathbb{Q}_{\mathcal{A}}$ である。
+
+$M[G_{\xi}]$ でも（$\dagger$）が成り立つ：$F\subseteq\mathcal{A}$ が $M[G_{\xi}]$ で可算なら $M[G]$ でも可算で、$\omega_{1}\setminus\bigcup F$ は $M[G]$ で非可算なので $M[G_{\xi}]$ でも非可算である。\ref{set:iteration-models} より $H_{\xi}\in M[G_{\xi+1}]$ は $M[G_{\xi}]$ 上 $\mathbb{Q}_{\xi}$-ジェネリックで、$M[G_{\xi}]$ を基礎モデルとして \ref{set:ad-omega-one-generic} を適用すると、$d\defeq\bigcup\{s:\exists F\,(\langle s,F\rangle\in H_{\xi})\}$ は $M[G_{\xi}][H_{\xi}]$ で $\lvert d\rvert=\omega_{1}$ かつ $\forall x\in\mathcal{A}\,(\lvert d\cap x\rvert<\omega_{1})$ を満たす。$M\subseteq M[G_{\xi}][H_{\xi}]\subseteq M[G]$ で $\omega_{1}^{M}=\omega_{1}^{M[G]}$ なので三つのモデルの $\omega_{1}$ は等しく、「$d$ は $\omega_{1}$ で非有界」と「$d\cap x$ は可算（全単射が存在）」は $M[G]$ に遺伝する。
+
+**段階 5：まとめ.** $M[G]$ で $2^{\omega_{1}}\ge\kappa$ を示す。$2^{\omega_{1}}<\kappa$ とすると、CH（$2^{<\omega_{1}}=\omega_{1}$）と \ref{set:ad-family-large}, \ref{set:ad-family-regular} の (b) より $M[G]$ に大きさ $2^{\omega_{1}}<\kappa$ の極大概素族 $\mathcal{A}$ があり、（$\dagger$）を満たす（\ref{set:ad-omega-one-generic} の直後の注意）。段階 4 より $\mathcal{A}$ のすべての元と概素な大きさ $\omega_{1}$ の $d$ があり、極大性に矛盾する。よって段階 3 と合わせて $2^{\omega_{1}}=\kappa$ で、段階 4 は $\lvert\mathcal{A}\rvert<2^{\omega_{1}}$ のすべての場合を尽くすので $\mathrm{P}_{1}$ が成り立つ。
+:::
+
+::: hypcheck
+- $M$ の CH：\ref{set:cs-ad-cc}（$\omega_{2}$-c.c.）と、$M[G]$ で CH を保つこと（段階 2）、大きな概素族の存在（段階 5）。
+- $\kappa$ の正則性と $2^{<\kappa}=\kappa$：段階 3 の見積もりと段階 4 の \ref{set:iteration-small-sets} の適用。$\kappa>\omega_{1}$ は $\kappa^{\omega_{1}}=\kappa$ と $\lambda\times\omega_{1}$ の大きさ $<\kappa$ に使った。
+- 可算台：$\omega_{1}$-閉性（\ref{set:cs-iteration-closed}）に本質的。有限台だと $\omega_{1}$-閉性が失われ、実数が加わって CH が壊れうる。
+:::
+
+$\mathrm{P}_{1}$ の強化として、$\mathrm{SL}_{1}$（ソロヴェイの補題）がある：さらに $\mathcal{B}\subseteq\mathcal{P}(\omega_{1})$ で $\lvert\mathcal{B}\rvert<2^{\omega_{1}}$ かつ
+$$
+\forall y\in\mathcal{B}\;\forall F\subseteq\mathcal{A}\,(\lvert F\rvert<\omega_{1}\to\lvert y\setminus\textstyle\bigcup F\rvert=\omega_{1})
+$$
+なら、$d\subseteq\omega_{1}$ で $\forall x\in\mathcal{A}\,(\lvert d\cap x\rvert<\omega_{1})$ かつ $\forall y\in\mathcal{B}\,(\lvert d\cap y\rvert=\omega_{1})$ となるものがある、という主張である。$\omega$ 上の類似 $\mathrm{SL}_{0}$ は MA のもとで成り立つ（第 II 章。\ref{set:ma-ad} を参照）。\ref{set:cs-p1-theorem} の $M[G]$ が $\mathrm{SL}_{1}$ を満たすことも直接確かめられるが、van Douwen の結果により CH のもとで $\mathrm{P}_{1}\leftrightarrow\mathrm{SL}_{1}$ である、と Kunen は述べている（演習 A2。本サイトでは確かめていない）。
+
+## 問題 {#set:sec-cs-problems}
+
+::: problem {#set:prob-full-closed}
+$\PP$ が $M$ で $\omega_{1}$-閉で、p.o. の $\PP$-名前 $\pi$ が $\omega$ 列について充満なら、$\mathbf{1}\Vdash(\pi$ は $\omega_{1}$-閉$)$ であることを示せ。
+:::
+
+::: solution
+$G$ を $M$ 上 $\PP$-ジェネリックとし、$M[G]$ で $\pi_{G}$ の減少列を考える。\ref{set:cs-iteration-closed} の証明の冒頭と同じく長さ $\omega$ の列 $\langle x_{n}:n\in\omega\rangle$ だけを考えればよい。$M[G]$ の中で、各 $n$ について $x_{n}=(\rho_{n})_{G}$ となる $\rho_{n}\in\dom(\pi)$ を選ぶ（$\dom(\pi)\in M$ で、名前の値の定義から存在する）。$\langle\rho_{n}:n\in\omega\rangle$ は $M[G]$ に属する $\omega$ から $\dom(\pi)\in M$ への関数なので、\ref{set:closed-no-new-functions}（**$\PP$ の $\omega_{1}$-閉性を使う**）より $M$ に属する。名前 $\theta\defeq\{\langle\mathrm{op}(\check{n},\rho_{n}),\mathbf{1}\rangle:n\in\omega\}\in M$ の値は列 $\langle x_{n}\rangle$ なので、強制定理より $p\in G$ で $p\Vdash$「$\theta$ は $\pi$ の減少列」となるものがあり、したがって各 $n$ について $p\Vdash(\rho_{n}\in\pi\land\rho_{n+1}\le_{\pi}\rho_{n})$。充満性より $\sigma\in\dom(\pi)$ で $p\Vdash\sigma\in\pi$ かつ $p\Vdash\sigma\le_{\pi}\rho_{n}$（各 $n$）となるものがあり、$\sigma_{G}$ は $\langle x_{n}\rangle$ の下界である。$G$ は任意なので強制定理より $\mathbf{1}\Vdash(\pi$ は $\omega_{1}$-閉$)$。
+:::
+
+::: problem {#set:prob-partition-mad}
+$1\le\lambda\le\omega$ とし、$\omega_{1}$ を $\lambda$ 個の互いに素な非可算集合 $x_{i}$（$i<\lambda$）に分割する。$\{x_{i}:i<\lambda\}$ は $\omega_{1}$ 上の極大概素族であることを示せ。
+:::
+
+::: solution
+各 $x_{i}$ は大きさ $\omega_{1}$ で、相異なる二元の交わりは空なので概素族である。極大性：$y\subseteq\omega_{1}$、$\lvert y\rvert=\omega_{1}$ とする。$y=\bigcup_{i<\lambda}(y\cap x_{i})$ で、$\lambda\le\omega$ なので、すべての $y\cap x_{i}$ が可算なら $y$ は可算個の可算集合の和として可算になり矛盾する。よってある $i$ で $\lvert y\cap x_{i}\rvert=\omega_{1}$ で、$y$ は $x_{i}$ と概素でない。したがって $\{x_{i}\}\cup\{y\}$ は（$y\notin\{x_{i}\}$ なら）概素族でなく、$\{x_{i}\}$ は極大である。
+:::
+
+::: problem {#set:prob-cs-model-mad}
+\ref{set:cs-p1-theorem} で $\kappa=\omega_{3}$（$M\models\mathrm{GCH}$）としたモデル $M[G]$ で、$\omega_{1}$ 上の極大概素族の大きさとして可能なものをすべて求めよ。
+:::
+
+::: solution
+$M\models\mathrm{GCH}$ なら $\kappa=\omega_{3}$ は正則で $2^{<\omega_{3}}=2^{\omega_{2}}=\omega_{3}$、CH も成り立つので \ref{set:cs-p1-theorem} が使え、$M[G]\models\mathrm{CH}+2^{\omega_{1}}=\omega_{3}+\mathrm{P}_{1}$（基数は保たれるので $\omega_{3}^{M[G]}=\omega_{3}^{M}$）。$\omega_{1}$ 上の極大概素族の大きさ $\lambda$ について：$1\le\lambda\le\omega$ はすべて実現され（\ref{set:prob-partition-mad}）、$\lambda=\omega_{1}$ は不可能（\ref{set:ad-family-regular} の (a)）、$\lambda=\omega_{2}$ は \ref{set:p1-mad} より不可能、$\lambda=\omega_{3}=2^{\omega_{1}}$ は実現される（CH と \ref{set:ad-family-large}, \ref{set:ad-family-regular} の (b)）。$\lambda=0$ は（$\omega_{1}$ 自身と概素でないので極大でなく）除く。よって可能な大きさは $1,2,\dots,\omega$ と $\omega_{3}$ である。
+:::
+
+::: supplement
+**前提の検討.**
+- 可算台反復の $\omega_{1}$-閉性（\ref{set:cs-iteration-closed}）には、名前の充満性が本質的である（充満でない名前では失敗しうる、と Kunen は述べている）。
+- \ref{set:cs-ad-cc} は「概素集合の p.o. を標準的な名前で反復する」という特定の状況でしか示していない。一般の $\omega_{1}$-閉 $\omega_{2}$-c.c. な p.o. の可算台反復では $\omega_{2}$-c.c. は保たれない、とされる。ここで使ったのは、条件の「計数可能な部分」（第一成分 $s$）が一致すれば $\mathbf{1}$ で両立が強制されるという、概素集合の p.o. 特有の性質である。
+- \ref{set:cs-p1-theorem} の見積もり（段階 3）は Kunen が省略した部分を本ページで補ったものであり、そのために名前 $\tau^{\gamma}_{\eta}$ の定義域を小さく選んだ。
+
+**関連する結果.** 可算台反復は、Shelah の**固有強制**（proper forcing）の理論で本格的に展開され、固有な p.o. の可算台反復は固有であり $\omega_{1}$ を保つことが知られている。これにより、ボレル予想の無矛盾性（ラヴァー）や PFA の無矛盾性などが得られることが一般に知られている（本サイトでは扱っていない）。
+
+**高い視点から：有限台と可算台——直和と「可算直積」.** 有限台反復は「有限個の座標しか動かさない」ので鎖条件（横方向の狭さ）を保ち、閉性（縦方向の深さ）を失う。可算台反復は可算個の座標を同時に動かせるので閉性を保つが、鎖条件は一般に失う。これは位相空間の直積で、箱位相と積位相がそれぞれ別の性質を保つことに似ている。本ページの議論は、失われがちな側（ここでは $\omega_{2}$-c.c.）を、反復する p.o. の特殊な構造（第一成分が基礎モデルにあり、それがそろえば両立する）で補うものであり、この「各段階の p.o. の構造を反復全体に伝える」という発想が、固有強制の理論における保存定理の原型になっている、と一般に説明される（これは本サイトの比喩と要約である）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

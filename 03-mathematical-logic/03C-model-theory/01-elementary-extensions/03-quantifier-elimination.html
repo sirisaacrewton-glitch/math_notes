@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>量化子消去とモデル完全性 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03C-model-theory/01-elementary-extensions/03-quantifier-elimination.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 量化子消去とモデル完全性 {#model:page-quantifier-elimination keywords="quantifier elimination, model completeness, Robinson's test, dense linear order, DLO, completeness of DLO"}
+
+理論 $T$ が**量化子消去**をもつとは、どの論理式も $T$ のもとで量化子のない論理式と同値になることである（\ref{model:quantifier-elimination}）。量化子のない論理式は部分構造で保たれる（\ref{model:substructure-qf}）ので、量化子消去は理論のモデルの間の関係について強い帰結をもつ：モデルの包含はつねに初等的になり（**モデル完全性**、\ref{model:qe-model-complete}）、言語に定数がなければ理論は完全になる。本ページでは、量化子消去を「一つの存在量化子を連言から消す」問題に帰着し（\ref{model:qe-reduction}）、端点のない稠密線形順序の理論 $\mathrm{DLO}$ に適用する（\ref{model:dlo-qe}）。最後に、モデル完全性をモデルの間の埋め込みで特徴づけるロビンソンの判定法（\ref{model:robinson-test}）を、前のページの初等鎖の方法で示す。
+
+## 記法と定義の確認 {#model:sec-qe-notation}
+
+::: notation
+- 量化子のない論理式、全称・存在論理式、理論、$\mathrm{Mod}(T)$ は \ref{model:page-elementary-chains} のとおり。
+- 部分構造 $\subset$、初等部分構造 $\preccurlyeq$ は \ref{model:page-elementary-substructures} のとおり。部分構造は量化子のない論理式を保つ（\ref{model:substructure-qf}）。$\mathcal{N}\preccurlyeq\mathcal{M}$, $\mathcal{N}\subset\mathcal{K}\subset\mathcal{M}$, $\mathcal{K}\preccurlyeq\mathcal{M}$ なら $\mathcal{N}\preccurlyeq\mathcal{K}$（問題 \ref{model:prob-elementary-chain}）。
+- 図式 $\mathrm{Diag}(\mathcal{M})$、初等鎖の定理（\ref{model:elementary-chain}）、存在文を反映する拡大の埋め込み（\ref{model:ec-amalgamation}）は \ref{model:page-elementary-chains} のとおり。
+- **リテラル**とは原子論理式かその否定のことである。
+- **$T$ のもとで同値.** 論理式 $\varphi,\psi$ が $T$ のもとで同値であるとは、$T$ の任意のモデル $\mathcal{M}$ と任意の割り当て $v$ について $\mathcal{M},v\models\varphi\iff\mathcal{M},v\models\psi$ となることをいい、$\varphi\sim_{T}\psi$ と書く。$T=\varnothing$ のときは単に同値という。$\sim_{T}$ は同値関係で、$\to$ と $\forall x$ について合同である（充足の定義から明らか）。
+- 命題論理の選言標準形（\ref{logic:normal-forms}）を使う。
+:::
+
+## 量化子消去 {#model:sec-qe}
+
+::: definition 量化子消去 {#model:quantifier-elimination keywords="quantifier elimination" index="量化子消去|りょうかしじょうきょ"}
+$\mathcal{L}$ の理論 $T$ が**量化子消去**をもつとは、任意の論理式 $\varphi$ について、量化子のない論理式 $\psi$ で $\mathrm{FV}(\psi)\subseteq\mathrm{FV}(\varphi)$ かつ $\varphi\sim_{T}\psi$ となるものが存在することをいう。
+:::
+
+::: lemma 量化子のない論理式の選言標準形 {#model:qf-dnf}
+量化子のない論理式 $\psi$ は、$\bot$、$\top$、またはリテラルの連言の選言のいずれかで、$\psi$ に現れる原子論理式だけを使うものと同値である。
+:::
+
+::: proof
+$\psi$ に現れる $\bot$ 以外の相異なる原子論理式を $\alpha_{1},\dots,\alpha_{n}$ とする。$\psi$ の $\alpha_{i}$ を命題変数 $p_{i}$ に置き換えた命題論理の論理式を $\hat{\psi}$ とし、構造 $\mathcal{M}$ と割り当て $v$ について真理値割り当て $w(p_{i})\defeq1\iff\mathcal{M},v\models\alpha_{i}$ を定める。$\psi$ の構成（$\bot$ と $\to$ だけ）に関する帰納法で、$\mathcal{M},v\models\psi\iff\bar{w}(\hat{\psi})=1$ がわかる。\ref{logic:normal-forms} で $\hat{\psi}$ と真理値の等しい選言標準形 $\hat{\delta}$（または $\bot,\top$）をとり、$p_{i}$ を $\alpha_{i}$ に戻したものを $\delta$ とすると、同じ帰納法で $\mathcal{M},v\models\delta\iff\bar{w}(\hat{\delta})=1=\bar{w}(\hat{\psi})\iff\mathcal{M},v\models\psi$ が従う。
+:::
+
+::: lemma 一つの存在量化子への帰着 {#model:qe-reduction keywords="reduction of quantifier elimination to one existential quantifier over a conjunction of literals"}
+$T$ について次を仮定する：リテラルの連言 $\chi$（空の連言 $\top$ を含む）と変数 $y$ について、量化子のない $\psi$ で $\mathrm{FV}(\psi)\subseteq\mathrm{FV}(\exists y\,\chi)$ かつ $\exists y\,\chi\sim_{T}\psi$ となるものがある。このとき $T$ は量化子消去をもつ。
+:::
+
+::: proof
+論理式 $\varphi$ の構成に関する帰納法。原子論理式はそのまま。$\varphi=\alpha\to\beta$ なら、帰納法の仮定の $\alpha_{0},\beta_{0}$ について $\alpha_{0}\to\beta_{0}$ をとる（合同性）。
+
+$\varphi=\forall y\,\alpha$ とする。帰納法の仮定で量化子のない $\alpha_{0}\sim_{T}\alpha$（$\mathrm{FV}(\alpha_{0})\subseteq\mathrm{FV}(\alpha)$）をとると $\varphi\sim_{T}\forall y\,\alpha_{0}\sim_{T}\neg\exists y\,\neg\alpha_{0}$（\ref{logic:abbreviation-semantics}）。\ref{model:qf-dnf} で $\neg\alpha_{0}$ を $\bot$ か $\top$ かリテラルの連言の選言 $\chi_{1}\vee\dots\vee\chi_{k}$ と同値なものに取り替える。$\bot$ なら $\exists y\,\bot\sim\bot$、$\top$ なら $\exists y\,\top\sim\top$（領域は空でない）。選言なら、$\exists$ の意味から
+$$
+\exists y\,(\chi_{1}\vee\dots\vee\chi_{k})\sim(\exists y\,\chi_{1})\vee\dots\vee(\exists y\,\chi_{k}),
+$$
+で、仮定により各 $\exists y\,\chi_{j}$ を量化子のない $\psi_{j}$ に取り替える。$\varphi\sim_{T}\neg(\psi_{1}\vee\dots\vee\psi_{k})$ は量化子がなく、$\mathrm{FV}(\psi_{j})\subseteq\mathrm{FV}(\chi_{j})\setminus\{y\}\subseteq\mathrm{FV}(\alpha_{0})\setminus\{y\}\subseteq\mathrm{FV}(\varphi)$。
+:::
+
+::: remark 連言の整理 {#model:qe-tidy}
+上の仮定を確かめるとき、$\chi$ の連言肢のうち $y$ を含まないもの $\chi'$ は外に出せる：$y\notin\mathrm{FV}(\chi')$ なら $\exists y\,(\chi'\wedge\chi'')\sim\chi'\wedge\exists y\,\chi''$。また $T$ のもとで同値な取り替え（たとえば否定リテラルを正のリテラルの選言に）をしてから選言を $\exists$ の外に出してよい。
+:::
+
+## 稠密線形順序 {#model:sec-dlo}
+
+::: definition 端点のない稠密線形順序 {#model:dlo keywords="dense linear order without endpoints, DLO" index="稠密線形順序|ちゅうみつせんけいじゅんじょ, 端点のない稠密線形順序|たんてんのないちゅうみつせんけいじゅんじょ"}
+言語 $\{<\}$（2 項関係記号）の理論 $\mathrm{DLO}$ を次の文からなるものとする。
+1. $\forall x\,\neg\,x<x$、$\forall x\,\forall y\,\forall z\,(x<y\wedge y<z\to x<z)$。
+2. $\forall x\,\forall y\,(x<y\vee x=y\vee y<x)$。
+3. $\forall x\,\forall y\,(x<y\to\exists z\,(x<z\wedge z<y))$（稠密）。
+4. $\forall x\,\exists y\,y<x$、$\forall x\,\exists y\,x<y$（端点がない）。
+
+$(\mathbb{Q},<)$ と $(\R,<)$ は $\mathrm{DLO}$ のモデルである。
+:::
+
+::: theorem DLO の量化子消去 {#model:dlo-qe keywords="quantifier elimination for dense linear orders" index="DLO の量化子消去|でぃーえるおーのりょうかしじょうきょ"}
+$\mathrm{DLO}$ は量化子消去をもつ。
+:::
+
+::: proof
+\ref{model:qe-reduction} の仮定を確かめる。$\chi$ をリテラルの連言、$y$ を変数とする。言語は関係記号だけなので項は変数であり、原子論理式は $\bot$, $s=t$, $s<t$（$s,t$ は変数）である。
+
+**Step 1（否定を除く）.** $\mathrm{DLO}$ の公理 1, 2 より
+$$
+\neg\,s<t\ \sim_{\mathrm{DLO}}\ (t<s\vee s=t),\qquad\neg\,s=t\ \sim_{\mathrm{DLO}}\ (s<t\vee t<s),
+$$
+また $\neg\bot\sim\top$。これで $\chi$ を、原子論理式の連言の選言と同値なものに取り替え、\ref{model:qe-tidy} の後半で選言を外に出す。以下 $\chi$ は原子論理式の連言とする。
+
+**Step 2（自明な連言肢）.** $\bot$ を含むなら $\exists y\,\chi\sim\bot$。$y=y$ は $\top$ なので除く。$y<y$ を含むなら、公理 1 より $\exists y\,\chi\sim_{\mathrm{DLO}}\bot$。$y$ を含まない連言肢は \ref{model:qe-tidy} で外に出す。
+
+**Step 3（等式がある場合）.** $y$ と異なる変数 $z$ について $y=z$ または $z=y$ が連言肢なら、$\exists y\,\chi\sim\chi[z/y]$。実際、$\mathcal{M},v\models\exists y\,\chi$ なら証拠 $b$ は $v(z)$ に等しく、意味論的代入補題（\ref{logic:semantic-substitution}、$\chi$ は量化子がないので $z$ は代入可能）より $\mathcal{M},v\models\chi[z/y]$。逆も同じ補題で $b\defeq v(z)$ を証拠にとる。$\mathrm{FV}(\chi[z/y])\subseteq\mathrm{FV}(\exists y\,\chi)$。
+
+**Step 4（不等式だけの場合）.** 残るのは、$y$ と異なる変数 $z_{1},\dots,z_{p}$, $w_{1},\dots,w_{q}$（$p,q\ge0$）について
+$$
+\chi=\bigwedge_{i\le p}z_{i}<y\ \wedge\ \bigwedge_{j\le q}y<w_{j}
+$$
+の場合である。このとき
+$$
+\exists y\,\chi\ \sim_{\mathrm{DLO}}\ \bigwedge_{i\le p}\bigwedge_{j\le q}z_{i}<w_{j}
+\tag{1}
+$$
+（右辺の空の連言は $\top$）を示す。$\mathcal{M}\models\mathrm{DLO}$ と割り当て $v$ をとり、$a_{i}\defeq v(z_{i})$, $b_{j}\defeq v(w_{j})$ とする。
+- ($\Rightarrow$) 証拠 $c$ について $a_{i}<c<b_{j}$ なので、推移律で $a_{i}<b_{j}$。
+- ($\Leftarrow$) $a_{i}<b_{j}$ がすべての $i,j$ で成り立つとする。公理 1, 2 より $<$ は全順序なので、$p\ge1$ なら $a_{i}$ の最大 $a^{\ast}$、$q\ge1$ なら $b_{j}$ の最小 $b^{\ast}$ がある。
+  - $p,q\ge1$：$a^{\ast}<b^{\ast}$ で、公理 3 より $a^{\ast}<c<b^{\ast}$ となる $c$ がある。
+  - $p\ge1$, $q=0$：公理 4 より $a^{\ast}<c$ となる $c$ がある。$p=0$, $q\ge1$ も同様。
+  - $p=q=0$：領域は空でないので任意の $c$。
+
+  いずれの場合も $c$ は推移律によりすべての $z_{i}<y<w_{j}$ を満たす。
+
+(1) の右辺は量化子がなく、自由変数は $\exists y\,\chi$ のものに含まれる。
+:::
+
+::: hypcheck
+- **公理 1, 2**（狭義全順序）：Step 1 の否定の除去、Step 2、Step 4 の最大・最小。
+- **公理 3**（稠密）：Step 4 の $p,q\ge1$ の場合。
+- **公理 4**（端点がない）：Step 4 の片側だけの場合。端点があると、たとえば $\exists y\,x<y$ は「$x$ が最大元でない」ことを表し、量化子のない論理式 $\top$ と同値でなくなる。
+- **言語に関数記号がないこと**：項が変数だけなので、原子論理式の形が限られた（Step 1〜4 の場合分け）。
+:::
+
+::: corollary DLO の完全性 {#model:dlo-complete keywords="completeness of DLO" index="DLO の完全性|でぃーえるおーのかんぜんせい"}
+$\mathrm{DLO}$ は完全である：言語 $\{<\}$ の任意の文 $\sigma$ について、$\mathrm{DLO}\models\sigma$ または $\mathrm{DLO}\models\neg\sigma$。とくに $\mathrm{DLO}$ の任意の二つのモデルは初等的同値である。
+:::
+
+::: proof
+\ref{model:dlo-qe} より、量化子のない $\psi$ で $\mathrm{FV}(\psi)=\varnothing$ かつ $\sigma\sim_{\mathrm{DLO}}\psi$ となるものがある。言語に定数がないので、変数を含まない原子論理式は $\bot$ だけであり、$\psi$ は $\bot$ と $\to$ だけからなる。その真偽は構造によらず一定（$\bot$ が偽であることから $\psi$ の構成に関する帰納法で決まる）なので、$\psi$ はすべての構造で真か、すべての構造で偽である。前者なら $\mathrm{DLO}\models\sigma$、後者なら $\mathrm{DLO}\models\neg\sigma$。$\mathrm{DLO}$ にはモデル $(\mathbb{Q},<)$ があるので、両方が同時に成り立つことはない。
+:::
+
+## モデル完全性 {#model:sec-model-completeness}
+
+::: definition モデル完全 {#model:model-complete keywords="model complete theory" index="モデル完全|もでるかんぜん"}
+理論 $T$ が**モデル完全**であるとは、$T$ のモデル $\mathcal{M},\mathcal{N}$ について $\mathcal{M}\subset\mathcal{N}$ ならばつねに $\mathcal{M}\preccurlyeq\mathcal{N}$ となることをいう。
+:::
+
+::: proposition 量化子消去ならモデル完全 {#model:qe-model-complete}
+$T$ が量化子消去をもつなら、$T$ はモデル完全である。
+:::
+
+::: proof
+$\mathcal{M}\subset\mathcal{N}$ を $T$ のモデル、$\varphi$ を論理式、$v$ を $M$ に値をとる割り当てとする。量化子のない $\psi\sim_{T}\varphi$ をとると、\ref{model:substructure-qf} より
+$$
+\mathcal{M},v\models\varphi\iff\mathcal{M},v\models\psi\iff\mathcal{N},v\models\psi\iff\mathcal{N},v\models\varphi .
+$$
+:::
+
+::: example 有理数と実数
+$(\mathbb{Q},<)\subset(\R,<)$ はともに $\mathrm{DLO}$ のモデルなので、\ref{model:dlo-qe} と \ref{model:qe-model-complete} より $(\mathbb{Q},<)\preccurlyeq(\R,<)$。たとえば、有理数をパラメータとする $\{<\}$ の論理式で表せる性質は、$\mathbb{Q}$ の中で調べても $\R$ の中で調べても同じ答えになる。
+:::
+
+::: theorem ロビンソンの判定法 {#model:robinson-test keywords="Robinson's test for model completeness" index="ロビンソンの判定法|ろびんそんのはんていほう"}
+（AC）理論 $T$ について次は同値である。
+1. $T$ はモデル完全である。
+2. $T$ のモデル $\mathcal{M}\subset\mathcal{N}$ について、$\mathcal{N}_{M}$ で真な $\mathcal{L}_{M}$ の存在文はすべて $\mathcal{M}_{M}$ でも真である。
+:::
+
+::: proof
+**1 $\Rightarrow$ 2.** $\mathcal{M}\preccurlyeq\mathcal{N}$ なら、$\mathcal{L}_{M}$ の任意の文の真偽が $\mathcal{M}_{M}$ と $\mathcal{N}_{M}$ で一致する（\ref{logic:constant-substitution-semantics} で文を割り当てつきの論理式に直す）。
+
+**2 $\Rightarrow$ 1.** $\mathcal{M}\subset\mathcal{N}$ を $T$ のモデルとする。埋め込みの像を元の構造と同一視しながら（\ref{model:embedding-image}）、次の鎖を作る：
+$$
+\mathcal{M}_{0}\subset\mathcal{N}_{0}\subset\mathcal{M}_{1}\subset\mathcal{N}_{1}\subset\mathcal{M}_{2}\subset\cdots,\qquad\mathcal{M}_{0}=\mathcal{M},\ \mathcal{N}_{0}=\mathcal{N},
+$$
+ただし $\mathcal{M}_{n}\preccurlyeq\mathcal{M}_{n+1}$, $\mathcal{N}_{n}\preccurlyeq\mathcal{N}_{n+1}$ で、すべての項が $T$ のモデルとする。
+- *$\mathcal{M}_{n+1}$ の構成.* $\mathcal{M}_{n}\subset\mathcal{N}_{n}$ はともに $T$ のモデルなので、2 より \ref{model:ec-amalgamation} の仮定が満たされ、$\mathcal{M}_{n}\preccurlyeq\mathcal{M}_{n+1}$ と $\mathcal{N}_{n}\subset\mathcal{M}_{n+1}$ を満たす $\mathcal{M}_{n+1}$ がある。$\mathcal{M}_{n+1}\equiv\mathcal{M}_{n}$ なので $\mathcal{M}_{n+1}\models T$。
+- *$\mathcal{N}_{n+1}$ の構成.* $\mathcal{N}_{n}\subset\mathcal{M}_{n+1}$ はともに $T$ のモデルなので、同様に $\mathcal{N}_{n}\preccurlyeq\mathcal{N}_{n+1}$, $\mathcal{M}_{n+1}\subset\mathcal{N}_{n+1}$, $\mathcal{N}_{n+1}\models T$ となる $\mathcal{N}_{n+1}$ がある。
+
+二つの鎖は互いに挟まれているので、和 $\mathcal{U}\defeq\bigcup_{n}\mathcal{M}_{n}=\bigcup_{n}\mathcal{N}_{n}$ は一致する。初等鎖の定理（\ref{model:elementary-chain}）より $\mathcal{M}\preccurlyeq\mathcal{U}$ かつ $\mathcal{N}\preccurlyeq\mathcal{U}$。$\mathcal{M}\subset\mathcal{N}\subset\mathcal{U}$ なので、問題 \ref{model:prob-elementary-chain} より $\mathcal{M}\preccurlyeq\mathcal{N}$。
+:::
+
+::: hypcheck
+- **2 の仮定**：鎖の各段で \ref{model:ec-amalgamation} を使うために、$\mathcal{M}_{n}\subset\mathcal{N}_{n}$ と $\mathcal{N}_{n}\subset\mathcal{M}_{n+1}$ の両方に使った。後者のために、2 を $T$ の**すべての**モデルの組について仮定している。
+- **初等鎖の定理**：和 $\mathcal{U}$ を経由して $\mathcal{M}$ と $\mathcal{N}$ を比べた。
+- **選択公理**：\ref{model:ec-amalgamation} のコンパクト性と、鎖の各段の選択（従属選択）。
+:::
+
+## 問題 {#model:sec-qe-problems}
+
+::: problem {#model:prob-z-no-qe}
+$(\Z,<)$ の理論 $\mathrm{Th}(\Z,<)$ は量化子消去をもたないことを示せ。（ヒント：$\varphi(x,z)\defeq\exists y\,(x<y\wedge y<z)$ を考える。）
+:::
+
+::: solution
+$x,z$ だけを自由変数にもつ量化子のない論理式は、原子論理式 $x<z$, $z<x$, $x=z$, $x=x$, $z=z$, $x<x$, $z<z$, $\bot$ の組み合わせである。割り当て $v_{1}\colon x\mapsto0,z\mapsto1$ と $v_{2}\colon x\mapsto0,z\mapsto2$ はこれらの原子論理式の真偽がすべて一致するので、\ref{model:qf-dnf} の証明の帰納法より、量化子のないどの $\psi(x,z)$ についても $(\Z,<),v_{1}\models\psi\iff(\Z,<),v_{2}\models\psi$。しかし $\varphi$ は $v_{1}$ で偽、$v_{2}$ で真である（$y=1$）。
+:::
+
+::: problem {#model:prob-dlo-endpoints}
+$\mathrm{DLO}$ の公理 4 を除いた理論（稠密線形順序で、端点があってもよい）は完全でないことを示せ。
+:::
+
+::: solution
+$([0,1]\cap\mathbb{Q},<)$ と $(\mathbb{Q},<)$ はともにモデルだが、文 $\exists x\,\forall y\,\neg\,y<x$（最小元の存在）は前者で真、後者で偽である。
+:::
+
+::: problem {#model:prob-qe-elimination-example}
+$\mathrm{DLO}$ のもとで、$\exists y\,(x<y\wedge y<z\wedge\neg\,y=w)$ と同値な量化子のない論理式を \ref{model:dlo-qe} の手順で求めよ。
+:::
+
+::: solution
+Step 1 で $\neg\,y=w$ を $y<w\vee w<y$ に取り替え、選言を外に出すと $\exists y\,(x<y\wedge y<z\wedge y<w)\vee\exists y\,(x<y\wedge y<z\wedge w<y)$。Step 4 より、前者は $x<z\wedge x<w$、後者は $x<z\wedge w<z$ と同値。よって $x<z\wedge(x<w\vee w<z)$ を得る。これはさらに $x<z$ と同値である：$x<z$ のとき、全順序性より $x<w$ か $w=x$ か $w<x$ で、後の二つの場合は $w<z$（推移律）。直観的には、開区間 $(x,z)$ が空でなければ $w$ 以外の点を含む（稠密性）ということである。
+:::
+
+::: supplement
+**前提の検討.**
+- 量化子消去の定義は言語に依存する。たとえば $\mathrm{Th}(\Z,<)$ も、後者関数の記号を加えた言語では量化子消去をもつことが知られている（本サイトでは確かめていない）。言語に定義可能な関係・関数を加えれば量化子消去はいつでも作れる（モーリー化）ので、どの言語で量化子消去が成り立つかに意味がある。
+- \ref{model:dlo-complete} では「言語に定数がない」ことを使った。定数があると量化子のない文が多くなり、量化子消去だけでは完全性は従わない。
+- モデル完全性は量化子消去より真に弱いことが知られている。たとえば実閉体の理論は、順序の記号を含まない環の言語ではモデル完全だが量化子消去をもたない（順序 $x\ge0$ が $\exists y\,x=y^{2}$ で表されるが量化子なしでは表せない）とされる。本サイトでは確かめていない。
+
+**関連する結果.**
+- 量化子消去のモデル論的な判定法（共通の部分構造の上で、量化子のない型が等しい元の組の拡張可能性に帰着するもの）が知られている。本系列では、型（\ref[型と型の省略定理]{model:page-types-omitting}）を導入した後に扱う。
+- $\mathrm{DLO}$ の可算モデルは $(\mathbb{Q},<)$ と同型である（カントールの定理。往復論法による）。これと \ref{model:dlo-complete} は、ヴォートの判定法（可算範疇的で有限モデルをもたない理論は完全、問題 \ref{model:prob-infinite-set-categorical}）の典型例である（\ref{model:cantor-dlo}）。
+- 代数的閉体の理論も量化子消去をもち（次のページ）、ヒルベルトの零点定理の一形がそこから従う。
+
+**高い視点から：射影の像が閉じている.** 論理式 $\varphi(\vec{x},y)$ が定める集合を $D_{\varphi}\subseteq M^{n+1}$ とすると、$\exists y\,\varphi$ が定める集合は $D_{\varphi}$ の射影 $\pi[D_{\varphi}]\subseteq M^{n}$ である。量化子消去は「量化子のない論理式で定まる集合の族が射影で閉じている」という主張にほかならない。代数幾何では、代数的閉体上の構成可能集合の射影が構成可能集合になるというシュヴァレーの定理がこれに当たり、実代数幾何では半代数的集合の射影が半代数的であるというタルスキ–ザイデンベルクの定理が当たる。比喩で言えば、量化子消去は「影をとっても、もとと同じ言葉で描ける図形しか現れない」世界である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

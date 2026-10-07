@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>計算複雑性 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/04-complexity/index.html" data-kind="dir">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 計算複雑性（Computational Complexity）
+
+時間計算量とクラス P・NP、クック–レヴィンの定理と NP 完全問題、領域計算量（サヴィッチの定理、PSPACE、L と NL、NL = coNL）、階層定理と相対化、確率的計算と量子計算。（Sipser 第 7〜10 章を参考にする。量子計算は資料なし）
+
+<p class="mn-msc">MSC2020: 68Q15, 68Q17, 68Q12</p>
+
+## 前提知識
+
+- [計算理論 › 計算可能性理論](../../../03-mathematical-logic/03D-computability-theory/02-computability/index.html)（全体、12 ページ）：チューリング機械と決定可能性、写像還元
+
+## 目次
+
+<ol class="mn-dirtoc">
+<li value="1"><a href="01-time-complexity.html">§1 時間計算量とクラス P</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 1.1</span> <span class="mn-dirtoc-title">実行時間と時間計算量のクラス</span></li><li><span class="mn-dirtoc-kind">定理 1.3</span> <span class="mn-dirtoc-title">多テープ機械の模倣にかかる時間</span></li><li><span class="mn-dirtoc-kind">定義 1.4</span> <span class="mn-dirtoc-title">非決定性機械の実行時間</span></li><li><span class="mn-dirtoc-kind">定理 1.5</span> <span class="mn-dirtoc-title">非決定性機械の決定化にかかる時間</span></li><li><span class="mn-dirtoc-kind">定義 1.6</span> <span class="mn-dirtoc-title">クラス P</span></li><li><span class="mn-dirtoc-kind">定理 1.8</span> <span class="mn-dirtoc-title">グラフの到達可能性は P に属する</span></li><li><span class="mn-dirtoc-kind">定理 1.9</span> <span class="mn-dirtoc-title">互いに素の判定は P に属する</span></li><li><span class="mn-dirtoc-kind">定理 1.10</span> <span class="mn-dirtoc-title">文脈自由言語は P に属する</span></li></ul></li>
+<li value="2"><a href="02-np.html">§2 NP とクック–レヴィンの定理</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 2.1</span> <span class="mn-dirtoc-title">検証機と NP</span></li><li><span class="mn-dirtoc-kind">定理 2.2</span> <span class="mn-dirtoc-title">NP と非決定性多項式時間</span></li><li><span class="mn-dirtoc-kind">定義 2.4</span> <span class="mn-dirtoc-title">多項式時間の写像還元</span></li><li><span class="mn-dirtoc-kind">命題 2.5</span> <span class="mn-dirtoc-title">多項式時間還元の性質</span></li><li><span class="mn-dirtoc-kind">定義 2.6</span> <span class="mn-dirtoc-title">NP 完全</span></li><li><span class="mn-dirtoc-kind">補題 2.8</span> <span class="mn-dirtoc-title">一段の動きは局所的</span></li><li><span class="mn-dirtoc-kind">定理 2.9</span> <span class="mn-dirtoc-title">クック–レヴィンの定理</span></li><li><span class="mn-dirtoc-kind">補題 2.10</span> <span class="mn-dirtoc-title">ツァイティン変換</span></li><li><span class="mn-dirtoc-kind">系 2.11</span> <span class="mn-dirtoc-title">3SAT は NP 完全</span></li></ul></li>
+<li value="3"><a href="03-np-complete-problems.html">§3 NP 完全問題</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定理 3.1</span> <span class="mn-dirtoc-title">CLIQUE は NP 完全</span></li><li><span class="mn-dirtoc-kind">定理 3.2</span> <span class="mn-dirtoc-title">独立集合と頂点被覆は NP 完全</span></li><li><span class="mn-dirtoc-kind">定理 3.3</span> <span class="mn-dirtoc-title">SUBSET-SUM は NP 完全</span></li></ul></li>
+<li value="4"><a href="04-space-complexity.html">§4 領域計算量とサヴィッチの定理</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 4.1</span> <span class="mn-dirtoc-title">領域計算量</span></li><li><span class="mn-dirtoc-kind">補題 4.2</span> <span class="mn-dirtoc-title">領域と時間</span></li><li><span class="mn-dirtoc-kind">定理 4.3</span> <span class="mn-dirtoc-title">サヴィッチの定理</span></li><li><span class="mn-dirtoc-kind">定義 4.5</span> <span class="mn-dirtoc-title">PSPACE</span></li><li><span class="mn-dirtoc-kind">定義 4.6</span> <span class="mn-dirtoc-title">量化記号付きの命題論理式</span></li><li><span class="mn-dirtoc-kind">定理 4.7</span> <span class="mn-dirtoc-title">TQBF は PSPACE 完全</span></li></ul></li>
+<li value="5"><a href="05-logspace.html">§5 L と NL</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 5.1</span> <span class="mn-dirtoc-title">読み取り専用の入力をもつ機械</span></li><li><span class="mn-dirtoc-kind">定義 5.2</span> <span class="mn-dirtoc-title">L と NL</span></li><li><span class="mn-dirtoc-kind">定理 5.3</span> <span class="mn-dirtoc-title">対数領域は多項式時間に含まれる</span></li><li><span class="mn-dirtoc-kind">定義 5.4</span> <span class="mn-dirtoc-title">対数領域還元</span></li><li><span class="mn-dirtoc-kind">補題 5.5</span> <span class="mn-dirtoc-title">対数領域還元の合成</span></li><li><span class="mn-dirtoc-kind">定理 5.6</span> <span class="mn-dirtoc-title">PATH は NL 完全</span></li><li><span class="mn-dirtoc-kind">定理 5.8</span> <span class="mn-dirtoc-title">イマーマン–セレプチェーニの定理</span></li></ul></li>
+<li value="6"><a href="06-hierarchy.html">§6 階層定理と相対化</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 6.1</span> <span class="mn-dirtoc-title">領域構成可能</span></li><li><span class="mn-dirtoc-kind">定理 6.2</span> <span class="mn-dirtoc-title">領域階層定理</span></li><li><span class="mn-dirtoc-kind">定義 6.3</span> <span class="mn-dirtoc-title">時間構成可能</span></li><li><span class="mn-dirtoc-kind">定理 6.4</span> <span class="mn-dirtoc-title">時間階層定理</span></li><li><span class="mn-dirtoc-kind">系 6.5</span> <span class="mn-dirtoc-title">階層定理による分離</span></li><li><span class="mn-dirtoc-kind">定義 6.6</span> <span class="mn-dirtoc-title">神託付きの計算量クラス</span></li><li><span class="mn-dirtoc-kind">定理 6.7</span> <span class="mn-dirtoc-title">神託 A で P と NP が一致する</span></li><li><span class="mn-dirtoc-kind">定理 6.8</span> <span class="mn-dirtoc-title">神託 B で P と NP が異なる</span></li></ul></li>
+<li value="7"><a href="07-probabilistic-quantum.html">§7 確率的計算と量子計算</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 7.1</span> <span class="mn-dirtoc-title">確率的チューリング機械</span></li><li><span class="mn-dirtoc-kind">定義 7.3</span> <span class="mn-dirtoc-title">BPP</span></li><li><span class="mn-dirtoc-kind">補題 7.4</span> <span class="mn-dirtoc-title">誤りの縮小</span></li><li><span class="mn-dirtoc-kind">定理 7.5</span> <span class="mn-dirtoc-title">BPP は PSPACE に含まれる</span></li><li><span class="mn-dirtoc-kind">補題 7.6</span> <span class="mn-dirtoc-title">シュワルツ–ジッペルの補題</span></li><li><span class="mn-dirtoc-kind">定義 7.7</span> <span class="mn-dirtoc-title">量子ビットと量子回路</span></li><li><span class="mn-dirtoc-kind">定義 7.9</span> <span class="mn-dirtoc-title">BQP</span></li><li><span class="mn-dirtoc-kind">定理 7.10</span> <span class="mn-dirtoc-title">BPP は BQP に含まれる</span></li><li><span class="mn-dirtoc-kind">定理 7.11</span> <span class="mn-dirtoc-title">BQP は PSPACE に含まれる</span></li></ul></li>
+</ol>
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

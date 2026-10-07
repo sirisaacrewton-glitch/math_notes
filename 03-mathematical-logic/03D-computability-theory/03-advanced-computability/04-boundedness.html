@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>計算可能順序数とスペクターの有界性定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/03-advanced-computability/04-boundedness.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 計算可能順序数とスペクターの有界性定理 {#comp:page-boundedness keywords="computable ordinals, recursive ordinals, Church-Kleene ordinal, omega_1^CK, rank of well-founded trees, Kleene-Brouwer order, Spector boundedness theorem, Sigma^1_1 boundedness, Delta^1_1"}
+
+前ページ（\ref{comp:page-analytical-hierarchy}）で、整礎な計算可能木の指数の集合 $\mathrm{WT}$ が $\Pi^{1}_{1}$ 完全であり、$\Sigma^{1}_{1}$ でないことを示した（\ref{comp:wt-complete}）。本ページでは整礎木に順序数の**深さ**を付け、計算可能な整礎木の深さとして現れる順序数（**計算可能順序数**）全体がなす可算順序数 $\omega_{1}^{\mathrm{CK}}$（チャーチ–クリーネ順序数）を導入する。計算可能順序数は「計算可能な整列順序の順序型」としても特徴づけられる（\ref{comp:computable-ordinal-wo}）。主定理は**スペクターの有界性定理**（\ref{comp:spector-boundedness}）である：$\mathrm{WT}$ の $\Sigma^{1}_{1}$ 部分集合に属する木の深さは、ある計算可能順序数で上から押さえられる。系として、$\Pi^{1}_{1}$ 集合は $\omega_{1}^{\mathrm{CK}}$ 個の $\Delta^{1}_{1}$ 集合の増大和に分かれ、$\Pi^{1}_{1}$ 集合が $\Delta^{1}_{1}$ であるのは、ちょうどその層が途中で尽きるときであることがわかる（\ref{comp:delta11-criterion}）。
+
+> 主な資料は新井敏康『数学基礎論』第 6 章 §6.5（定義 6.5.15、定理 6.5.16 とその前後）。新井の本は正の帰納的定義を経由して有界性定理を示しているが、本ページでは前ページの木の言葉だけで、木の比較補題（\ref{comp:tree-comparison}）を軸に組み立て直した。クリーネ–ブラウワー順序による整列順序との対応（\ref{comp:computable-ordinal-wo}）は新井の本の該当箇所にはなく、標準的な議論を補って書いた。
+
+## 記法と定義の確認 {#comp:sec-bd-notation}
+
+::: notation
+- 有限列とその符号、$\bar{g}(n)$、木、枝、整礎、$T(e)$、$\mathrm{WT}$ は \ref{comp:tree-well-founded} のとおり。$s\subsetneq t$ は $s$ が $t$ の真の始切片であること。$s^{\frown}\langle m\rangle$ を $s$ の**子**という。
+- $\mathrm{TR}\defeq\{e:\varphi_{e}\text{ は全域的で }\{0,1\}\text{ 値で、}T(e)\text{ は木}\}$ とおく。これは算術的な集合で、$\mathrm{WT}\subseteq\mathrm{TR}$。$e\in\mathrm{TR}$ のとき「$s\in T(e)$」は $\varphi_{e}(s)=1$ で、$e,s$ について算術的である。
+- 解析的階層とその閉包性（$\wedge,\vee$、数の量化子 $\exists x,\forall x$、計算可能な関数の代入）は \ref{comp:analytical-hierarchy}, \ref{comp:quantifier-absorption} のとおり。$\Sigma^{1}_{1}$ の定義の行列は算術的な関係でよいので、「$\exists f\,(\text{算術的})$」の形の関係は定義から $\Sigma^{1}_{1}$ である。
+- 順序数、上限、順序型、整礎関係のランク、整礎関係上の帰納法は集合論の系列のとおり（\ref{set:ordinal}, \ref{set:sup-ordinals}, \ref{set:order-type}, \ref{set:relation-rank}, \ref{set:relation-rank-basic}, \ref{set:wf-induction}）。
+- メタレベルの議論は $\ZF$ で行う。前ページと同じく、$\Sigma^{1}_{1}$ が数の量化子 $\forall x$ で閉じること（\ref{comp:quantifier-absorption} の 3）にだけ可算選択公理を使う。それ以外の箇所で選択公理を使わないことは、各証明の hypcheck に書く。
+:::
+
+## 整礎木のランクと深さ {#comp:sec-bd-rank}
+
+::: lemma 整礎木の子関係は整礎 {#comp:tree-relation-wf keywords="the child relation on a well-founded tree is well-founded" index="子関係|こかんけい"}
+$T$ を木とし、$T$ 上の関係 $R_{T}$ を
+$$
+t\mathrel{R_{T}}s\iff\exists m\ \bigl(t=s^{\frown}\langle m\rangle\bigr)
+$$
+で定める（$t$ は $s$ の子）。$T$ が整礎（枝をもたない）ならば、$R_{T}$ は $T$ 上の整礎関係である（\ref{set:well-founded-relation}）。また $R_{T}$ は集合的である。
+:::
+
+::: proof
+**Step 1（集合的であること）.** $T\subseteq\N^{<\N}$ は集合なので、各 $s$ の $R_{T}$ 前者の全体 $\{t\in T:t\mathrel{R_{T}}s\}$ は $T$ の部分集合として集合である。
+
+**Step 2（極小元の存在）.** $X\subseteq T$ を空でない部分集合とし、$X$ が $R_{T}$ 極小元をもたないと仮定して矛盾を導く。極小元がないとは、各 $s\in X$ に、$X$ に属する子 $s^{\frown}\langle m\rangle$ があることである。列 $x_{0},x_{1},\dots$ を次で定める（選択公理は使わない）。
+
+- $x_{0}$ は $X$ の元のうち符号が最小のもの。
+- $x_{k+1}$ は、$X$ に属する $x_{k}$ の子のうち符号が最小のもの（仮定から存在する）。
+
+これは $\N$ 上の通常の再帰による定義である。$\lvert x_{k}\rvert=\lvert x_{0}\rvert+k$ で、$x_{0}\subsetneq x_{1}\subsetneq\cdots$。
+
+**Step 3（枝の構成）.** $g(i)\defeq x_{k}(i)$（$k$ は $\lvert x_{k}\rvert>i$ となる任意のもの）とおく。$x_{k}$ は互いに始切片の関係にあるので、値は $k$ の選び方によらない。各 $n$ について、$\lvert x_{k}\rvert\ge n$ となる $k$ をとれば $\bar{g}(n)\subseteq x_{k}\in T$ で、$T$ は木なので $\bar{g}(n)\in T$。よって $g$ は $T$ の枝で、$T$ が整礎であることに反する。
+
+::: hypcheck
+- **前提「$T$ は整礎」**：Step 3 の矛盾に使った。外すと偽：$T=\N^{<\N}$ では $X=T$ が極小元をもたない。
+- **前提「$T$ は木」**：Step 3 で $\bar{g}(n)\in T$ を得るのに使った。
+- **公理**：Step 2 で「符号最小」の元を選ぶので、従属選択公理は要らない（$T\subseteq\N^{<\N}$ が $\N$ と同一視できる整列集合だからである）。一般の集合上の関係では、「無限下降列をもたない」から「整礎」を導くには従属選択公理が要る。
+:::
+:::
+
+::: definition 整礎木のランクと深さ {#comp:tree-rank keywords="rank of a node in a well-founded tree, height (depth) of a well-founded tree" index="木のランク|きのらんく, 木の深さ|きのふかさ"}
+$T$ を整礎な木とする。$s\in T$ の**ランク** $\rho_{T}(s)$ を、整礎で集合的な関係 $R_{T}$（\ref{comp:tree-relation-wf}）についてのランク $\rank(s,T,R_{T})$（\ref{set:relation-rank}）と定める。すなわち
+$$
+\rho_{T}(s)=\sup\bigl\{\rho_{T}(s^{\frown}\langle m\rangle)+1\bigm|s^{\frown}\langle m\rangle\in T\bigr\}
+$$
+で、子のない $s$ では $\rho_{T}(s)=0$。木の**深さ**を、$T\neq\varnothing$ なら $\lvert T\rvert\defeq\rho_{T}(\langle\rangle)$、$T=\varnothing$ なら $\lvert T\rvert\defeq0$ と定める。
+:::
+
+::: intuition
+ランクは「その節点から下に、あと何段（超限回も含めて）降りられるか」を測る。有限の木では、葉からの最長の道の長さである。深さが $\omega$ 以上になるのは、根の下に、いくらでも長い（しかし有限の）道が伸びている場合である。
+:::
+
+::: example
+1. 長さ $n$ 以下の列全体 $T_{n}\defeq\{s\in\N^{<\N}:\lvert s\rvert\le n\}$ では、$\rho_{T_{n}}(s)=n-\lvert s\rvert$（長さについての下向きの帰納法）なので $\lvert T_{n}\rvert=n$。
+2. 狭義減少列の木 $T_{\mathrm{dec}}\defeq\{\langle a_{0},\dots,a_{k-1}\rangle:a_{0}>a_{1}>\cdots>a_{k-1}\}$ は整礎である（枝は自然数の無限下降列になる）。末項が $a$ の列のランクは $a$ である。実際、その子は末尾に $b<a$ を足したもので、$a$ についての帰納法により $\sup\{b+1:b<a\}=a$。よって $\lvert T_{\mathrm{dec}}\rvert=\sup\{a+1:a\in\N\}=\omega$。
+3. 深さ $0$ の木は $\varnothing$ と $\{\langle\rangle\}$ の二つである。この約束のせいで、後の補題では「木が空でない」という前提がときどき要る。
+:::
+
+::: lemma ランクと深さの基本性質 {#comp:tree-rank-basic keywords="basic properties of ranks in well-founded trees, subtrees, adding a root" index="部分木|ぶぶんぎ"}
+$T$ を整礎な木とする。
+1. $s,t\in T$, $s\subsetneq t$ ならば $\rho_{T}(t)<\rho_{T}(s)$。
+2. $s\in T$ と $\gamma\le\rho_{T}(s)$ に対し、$s\subseteq t$ となる $t\in T$ で $\rho_{T}(t)=\gamma$ となるものがある。
+3. $\lvert T\rvert$ は可算順序数である。
+4. $s\in T$ について $T_{s}\defeq\{t:s^{\frown}t\in T\}$ は整礎な木で、$\rho_{T_{s}}(t)=\rho_{T}(s^{\frown}t)$。とくに $\lvert T_{s}\rvert=\rho_{T}(s)$。
+5. $T^{+}\defeq\{\langle\rangle\}\cup\{\langle0\rangle^{\frown}t:t\in T\}$ は整礎な木で、$T\neq\varnothing$ なら $\lvert T^{+}\rvert=\lvert T\rvert+1$。
+:::
+
+::: proof
+**1.** $t=s^{\frown}u$, $u\neq\langle\rangle$ とし、$\lvert u\rvert$ についての帰納法で示す。$\lvert u\rvert=1$ なら $t$ は $s$ の子で、ランクの定義式から $\rho_{T}(t)+1\le\rho_{T}(s)$。$\lvert u\rvert>1$ なら $t$ の親 $t'$（最後の項を除いた列）は $s\subsetneq t'$ を満たし $T$ に属する（$T$ は木）ので、帰納法の仮定と前の場合から $\rho_{T}(t)<\rho_{T}(t')<\rho_{T}(s)$。
+
+**2.** 整礎関係 $R_{T}$ 上の帰納法（\ref{set:wf-induction}）で、「すべての $\gamma\le\rho_{T}(s)$ が $s$ を延長する元のランクとして現れる」ことを示す。$\gamma=\rho_{T}(s)$ なら $t=s$ でよい。$\gamma<\rho_{T}(s)$ とする。$\rho_{T}(s)$ は $\rho_{T}(s^{\frown}\langle m\rangle)+1$ たちの上限なので（\ref{set:sup-ordinals} の 1）、$\gamma<\rho_{T}(s^{\frown}\langle m\rangle)+1$、すなわち $\gamma\le\rho_{T}(s^{\frown}\langle m\rangle)$ となる子 $s^{\frown}\langle m\rangle\in T$ がある。帰納法の仮定から、$s^{\frown}\langle m\rangle$ を延長する $t\in T$ で $\rho_{T}(t)=\gamma$ となるものがある。この $t$ は $s$ も延長する。
+
+**3.** $T=\varnothing$ なら $0$。$T\neq\varnothing$ なら、2 を $s=\langle\rangle$ に適用して、$\lvert T\rvert+1=\{\gamma:\gamma\le\lvert T\rvert\}$ の各元が $\rho_{T}$ の値として現れる。よって $\rho_{T}:T\to\lvert T\rvert+1$ は全射である。$T\subseteq\N^{<\N}$ は（符号によって）$\N$ の部分集合とみなせるので、各 $\gamma$ に値 $\gamma$ をとる $t$ のうち符号最小のものを対応させれば、$\lvert T\rvert+1$ から $\N$ への単射が得られる（選択公理は要らない）。よって $\lvert T\rvert$ は可算である。
+
+**4.** $t'\subseteq t$, $s^{\frown}t\in T$ なら $s^{\frown}t'\subseteq s^{\frown}t$ なので $s^{\frown}t'\in T$。よって $T_{s}$ は木。$T_{s}$ の枝 $g$ があれば、$s^{\frown}g$（$s$ の後に $g$ を続けた関数）は $T$ の枝になるので、$T_{s}$ は整礎。$t$ の $T_{s}$ での子 $t^{\frown}\langle m\rangle$ と、$s^{\frown}t$ の $T$ での子 $s^{\frown}t^{\frown}\langle m\rangle$ は一対一に対応するので、$R_{T_{s}}$ 上の帰納法により $\rho_{T_{s}}(t)=\rho_{T}(s^{\frown}t)$。$s\in T$ より $\langle\rangle\in T_{s}$ なので、$\lvert T_{s}\rvert=\rho_{T_{s}}(\langle\rangle)=\rho_{T}(s)$。
+
+**5.** 木であることと整礎性は 4 と同様（$T^{+}$ の枝は $g(0)=0$ で、$n\mapsto g(n+1)$ が $T$ の枝になる）。$\langle0\rangle^{\frown}t$ の子は $\langle0\rangle^{\frown}t^{\frown}\langle m\rangle$（$t^{\frown}\langle m\rangle\in T$）だけなので、4 と同じ帰納法で $\rho_{T^{+}}(\langle0\rangle^{\frown}t)=\rho_{T}(t)$。$T\neq\varnothing$ なら $\langle\rangle\in T$ で、$T^{+}$ の根の子は $\langle0\rangle$ だけなので
+$$
+\lvert T^{+}\rvert=\rho_{T}(\langle\rangle)+1=\lvert T\rvert+1.
+$$
+
+::: hypcheck
+- **前提「$T$ は整礎」**：ランク $\rho_{T}$ が定義されるために全体で使う（\ref{comp:tree-relation-wf}）。
+- **前提「$T$ は木」**：1 で親 $t'$ が $T$ に属すること、4 で $T_{s}$ が木であることに使った。
+- **5 の前提「$T\neq\varnothing$」**：外すと偽：$T=\varnothing$ では $T^{+}=\{\langle\rangle\}$ で、$\lvert T^{+}\rvert=0\neq0+1$。
+- **公理**：3 の単射は符号最小の元で選ぶので $\ZF$ で足りる。
+:::
+:::
+
+## 木の比較 {#comp:sec-bd-comparison}
+
+::: definition 木の埋め込み {#comp:tree-embedding keywords="embedding of trees, strict-extension-preserving map, S below T" index="木の埋め込み|きのうめこみ"}
+木 $S,T$ について、関数 $f:\N^{<\N}\to\N^{<\N}$ が **$S$ から $T$ への埋め込み**であるとは、次の二つが成り立つことをいう。
+- $s\in S$ ならば $f(s)\in T$。
+- $s,s'\in S$, $s\subsetneq s'$ ならば $f(s)\subsetneq f(s')$。
+
+埋め込みが存在することを $S\preceq T$ と書く。（列と符号を同一視するので、$f$ は $\N\to\N$ の関数とみなせる。）
+:::
+
+::: lemma 木の比較補題 {#comp:tree-comparison keywords="comparison of trees by embeddings and ranks" index="木の比較補題|きのひかくほだい"}
+$S,T$ を木とする。
+1. $S\preceq T$ かつ $T$ が整礎ならば、$S$ も整礎で、埋め込み $f$ について $\rho_{S}(s)\le\rho_{T}(f(s))$（$s\in S$）。とくに $\lvert S\rvert\le\lvert T\rvert$。
+2. $T$ が枝をもつならば、任意の木 $S$ について $S\preceq T$。
+3. $S,T$ が整礎で、$T\neq\varnothing$ かつ $\lvert S\rvert\le\lvert T\rvert$ ならば、$S\preceq T$。
+
+したがって、$S$ が整礎で $T\neq\varnothing$ のとき、次が成り立つ。
+$$
+S\preceq T\iff T\text{ が枝をもつ、または }\lvert S\rvert\le\lvert T\rvert
+$$
+:::
+
+::: proof
+**1, Step 1（$S$ は整礎）.** $S$ が枝 $g$ をもつとする。$f$ は真の延長を保つので
+$$
+f(\bar{g}(0))\subsetneq f(\bar{g}(1))\subsetneq f(\bar{g}(2))\subsetneq\cdots
+$$
+は $T$ の元の真の延長の鎖で、長さは狭義に増加する。\ref{comp:tree-relation-wf} の Step 3 と同じく、$h(i)\defeq f(\bar{g}(n))(i)$（$\lvert f(\bar{g}(n))\rvert>i$ となる任意の $n$）とおけば、$h$ は $T$ の枝になる。これは $T$ が整礎であることに反する。
+
+**1, Step 2（ランクの比較）.** $S$ は整礎なので $\rho_{S}$ が定義される。$R_{S}$ 上の帰納法（\ref{set:wf-induction}）で $\rho_{S}(s)\le\rho_{T}(f(s))$ を示す。$s$ の任意の子 $s^{\frown}\langle m\rangle\in S$ について、帰納法の仮定から $\rho_{S}(s^{\frown}\langle m\rangle)\le\rho_{T}(f(s^{\frown}\langle m\rangle))$。一方 $f(s)\subsetneq f(s^{\frown}\langle m\rangle)$ なので、\ref{comp:tree-rank-basic} の 1 より $\rho_{T}(f(s^{\frown}\langle m\rangle))<\rho_{T}(f(s))$。よって
+$$
+\rho_{S}(s^{\frown}\langle m\rangle)+1\le\rho_{T}(f(s)).
+$$
+左辺の上限をとって $\rho_{S}(s)\le\rho_{T}(f(s))$。
+
+**1, Step 3（深さ）.** $S=\varnothing$ なら $\lvert S\rvert=0$。$S\neq\varnothing$ なら $f(\langle\rangle)\in T$ なので $T\neq\varnothing$ で、$\langle\rangle\subseteq f(\langle\rangle)$ と \ref{comp:tree-rank-basic} の 1 から $\rho_{T}(f(\langle\rangle))\le\rho_{T}(\langle\rangle)$。よって
+$$
+\lvert S\rvert=\rho_{S}(\langle\rangle)\le\rho_{T}(f(\langle\rangle))\le\lvert T\rvert.
+$$
+
+**2.** $g$ を $T$ の枝とし、$f(s)\defeq\bar{g}(\lvert s\rvert)$ とおく。$f(s)\in T$ で、$s\subsetneq s'$ なら $\lvert s\rvert<\lvert s'\rvert$ なので $\bar{g}(\lvert s\rvert)\subsetneq\bar{g}(\lvert s'\rvert)$。
+
+**3, Step 1（構成）.** $S=\varnothing$ なら任意の $f$ が埋め込みである。$S\neq\varnothing$ とする。$s\in S$ に対する $f(s)$ を、$\lvert s\rvert$ についての再帰で、次の不変条件を保つように定める。
+$$
+f(s)\in T,\quad\lvert f(s)\rvert=\lvert s\rvert,\quad\rho_{S}(s)\le\rho_{T}(f(s))
+$$
+- $f(\langle\rangle)\defeq\langle\rangle$。$T\neq\varnothing$ なので $\langle\rangle\in T$ で、$\rho_{S}(\langle\rangle)=\lvert S\rvert\le\lvert T\rvert=\rho_{T}(\langle\rangle)$。
+- $s\in S$ で $f(s)$ が不変条件を満たすとし、子 $s^{\frown}\langle m\rangle\in S$ を考える。\ref{comp:tree-rank-basic} の 1 と不変条件から
+$$
+\rho_{S}(s^{\frown}\langle m\rangle)<\rho_{S}(s)\le\rho_{T}(f(s)).
+$$
+$\rho_{T}(f(s))$ は $\rho_{T}(f(s)^{\frown}\langle k\rangle)+1$ たちの上限なので、$\rho_{S}(s^{\frown}\langle m\rangle)\le\rho_{T}(f(s)^{\frown}\langle k\rangle)$ となる子 $f(s)^{\frown}\langle k\rangle\in T$ がある。そのような $k$ の最小値を $k_{0}$ とし、$f(s^{\frown}\langle m\rangle)\defeq f(s)^{\frown}\langle k_{0}\rangle$ とおく。不変条件が保たれる。
+
+$S$ の外の列では $f(s)\defeq\langle\rangle$ とする。
+
+**3, Step 2（埋め込みであること）.** $f(s)\in T$ は不変条件。$s\subsetneq s'$（ともに $S$ の元）なら、$s'$ は $s$ から子をとることを $\lvert s'\rvert-\lvert s\rvert\ge1$ 回繰り返して得られ、$S$ は木なので途中の列もすべて $S$ に属する。構成から $f$ の値はそのたびに一項延びるので、$f(s)\subsetneq f(s')$。
+
+**最後の同値.** 「$\Rightarrow$」：$T$ が枝をもたなければ $T$ は整礎で、1 から $\lvert S\rvert\le\lvert T\rvert$。「$\Leftarrow$」：$T$ が枝をもてば 2、そうでなければ $T$ は整礎で 3。
+
+::: hypcheck
+- **1 の前提「$T$ は整礎」**：Step 1 の矛盾と Step 2 のランク $\rho_{T}$ の存在に使った。外すと 1 は偽：$T=\N^{<\N}$ には任意の木が埋め込まれる（2）。
+- **3 の前提「$T\neq\varnothing$」**：Step 1 で $f(\langle\rangle)=\langle\rangle\in T$ に使った。外すと偽：$S=\{\langle\rangle\}$, $T=\varnothing$ では $\lvert S\rvert=0=\lvert T\rvert$ だが、$S\preceq T$ でない。
+- **3 の前提「$\lvert S\rvert\le\lvert T\rvert$」**：Step 1 の根での不変条件に使った。1 により必要条件でもある。
+- **公理**：3 の再帰で選ぶ $k_{0}$ は最小値として定まるので、選択公理は要らない。
+:::
+:::
+
+::: lemma 埋め込み可能性は Σ¹₁ {#comp:tree-embedding-sigma11 keywords="embeddability of computable trees is Sigma^1_1" index="埋め込み可能性|うめこみかのうせい"}
+$\{(e,e'):e,e'\in\mathrm{TR},\ T(e)\preceq T(e')\}$ は $\Sigma^{1}_{1}$ である。より一般に、算術的な関係 $P(\vec{x},s)$, $Q(\vec{x},s)$ で定まる木 $S_{\vec{x}}=\{s:P(\vec{x},s)\}$, $T_{\vec{x}}=\{s:Q(\vec{x},s)\}$ について、$S_{\vec{x}}\preceq T_{\vec{x}}$ は $\vec{x}$ について $\Sigma^{1}_{1}$ である。
+:::
+
+::: proof
+$S_{\vec{x}}\preceq T_{\vec{x}}$ は
+$$
+\exists f\ \forall s\ \forall s'\ \bigl[\,\Phi(\vec{x},f,s,s')\,\bigr]
+$$
+と書ける。ここで $\Phi$ は「$P(\vec{x},s)\to Q(\vec{x},f(s))$、かつ $P(\vec{x},s)\wedge P(\vec{x},s')\wedge s\subsetneq s'\to f(s)\subsetneq f(s')$」で、$\subsetneq$ は符号について決定可能、$f(s)$ は関数の値なので、$\forall s\,\forall s'\,\Phi$ は（関数引数 $f$ をもつ）算術的な関係である。よって定義（\ref{comp:analytical-hierarchy}）から $\Sigma^{1}_{1}$。前半は $P(e,s)\defeq\varphi_{e}(s)=1$ などとした場合で、$\mathrm{TR}$ は算術的なので $\wedge$ で閉じることを使う（\ref{comp:quantifier-absorption} の 4）。
+:::
+
+## 計算可能順序数 {#comp:sec-bd-ordinals}
+
+::: definition 計算可能順序数とチャーチ–クリーネ順序数 {#comp:computable-ordinal keywords="computable ordinal, recursive ordinal, Church-Kleene ordinal, omega_1^CK" index="計算可能順序数|けいさんかのうじゅんじょすう, 帰納的順序数|きのうてきじゅんじょすう, 再帰的順序数|さいきてきじゅんじょすう, チャーチ–クリーネ順序数|ちゃーちくりーねじゅんじょすう"}
+ある $e\in\mathrm{WT}$ について $\alpha=\lvert T(e)\rvert$ と表される順序数 $\alpha$ を**計算可能順序数**という。計算可能順序数全体を $\omega_{1}^{\mathrm{CK}}$ と書き、**チャーチ–クリーネ順序数**という（下の定理で、これが順序数であることを示す）。
+:::
+
+::: theorem 計算可能順序数の基本性質 {#comp:omega1ck-basic keywords="computable ordinals form a countable limit ordinal omega_1^CK" index="ω₁^CK の基本性質|おめがわんしーけーのきほんせいしつ"}
+1. 計算可能順序数より小さい順序数は計算可能である。
+2. 計算可能順序数 $\alpha$ について、$\alpha+1$ も計算可能である。
+3. $\omega$ は計算可能である。
+4. $\omega_{1}^{\mathrm{CK}}$ は可算な極限順序数で、$\omega<\omega_{1}^{\mathrm{CK}}$。$\omega_{1}^{\mathrm{CK}}$ は計算可能でない最小の順序数である。
+:::
+
+::: proof
+**1.** $\alpha=\lvert T(e)\rvert$（$e\in\mathrm{WT}$）とし、$\beta<\alpha$ とする。$\alpha>0$ なので $T\defeq T(e)\neq\varnothing$ で $\beta<\rho_{T}(\langle\rangle)$。\ref{comp:tree-rank-basic} の 2 から、$\rho_{T}(s)=\beta$ となる $s\in T$ がある。同じ補題の 4 から $\lvert T_{s}\rvert=\beta$ で、$T_{s}=\{t:\varphi_{e}(s^{\frown}t)=1\}$ は決定可能な整礎木なので、その特性関数の指数 $e'$ をとれば $e'\in\mathrm{WT}$, $\lvert T(e')\rvert=\beta$。
+
+**2.** $\alpha=\lvert T(e)\rvert$ とする。$T(e)\neq\varnothing$ なら、$T(e)^{+}$（\ref{comp:tree-rank-basic} の 5）は決定可能な整礎木で深さ $\alpha+1$。$T(e)=\varnothing$ なら $\alpha=0$ で、決定可能な木 $\{\langle\rangle,\langle0\rangle\}$ の深さが $1$。
+
+**3.** 狭義減少列の木 $T_{\mathrm{dec}}$（\ref{comp:tree-rank} の例 2）は決定可能で深さ $\omega$。
+
+**4, Step 1（集合であること・可算性）.** $\omega_{1}^{\mathrm{CK}}=\{\lvert T(e)\rvert:e\in\mathrm{WT}\}$ は、集合 $\mathrm{WT}\subseteq\N$ の像として置換公理により集合である。各元に、それを深さにもつ $e$ の最小値を対応させれば $\N$ への単射なので可算。
+
+**4, Step 2（順序数であること）.** $C\defeq\omega_{1}^{\mathrm{CK}}$ とおく。$0\in C$（空の木）で、2 から $C$ は最大元をもたない。$\sigma\defeq\sup C$ とおくと、\ref{set:sup-ordinals} の 3 から $\sigma\notin C$ なので、$C$ の各元は $\sigma$ より小さい。逆に $\gamma<\sigma$ なら、$\sigma$ が上限であることから $\gamma<\delta$ となる $\delta\in C$ があり、1 から $\gamma\in C$。よって $C=\{\gamma:\gamma<\sigma\}=\sigma$ で、$C$ は順序数である。$C$ は空でなく最大元をもたないので極限順序数。3 から $\omega\in C$。
+
+**4, Step 3（最小性）.** $C$ の元はちょうど $C$ より小さい順序数なので、$C$ より小さい順序数はすべて計算可能で、$C\notin C$（\ref{set:ordinal-irreflexive}）より $C$ 自身は計算可能でない。
+
+::: hypcheck
+- **深さの定義の約束（空の木は深さ 0）**：2 で場合分けが要った。
+- **\ref{comp:tree-rank-basic} の 2・4**：1 で深さ $\beta$ の部分木を作るのに使った。これが「計算可能順序数の全体が始切片をなす」ことの核心である。
+- **公理**：Step 1 で置換公理、可算性で最小の指数を使ったので $\ZF$ で足りる。
+:::
+:::
+
+::: supplement
+**計算可能でない可算順序数.** $\omega_{1}^{\mathrm{CK}}$ は可算なので、$\omega_{1}^{\mathrm{CK}}$ 型の整列順序は $\N$ 上に存在するが、計算可能なものはない（下の \ref{comp:computable-ordinal-wo}）。$\omega_{1}^{\mathrm{CK}}\le\alpha<\omega_{1}$ の順序数は、$\N$ 上の整列順序で実現できるのに、どの実現も計算可能でない。
+
+**閉包性.** 計算可能順序数は加法・乗法・べき（順序数のべき）で閉じている（加法と乗法は問題 \ref{comp:prob-ordinal-arithmetic}）。とくに $\varepsilon_{0}$ は計算可能で（カントール標準形による表記、\ref{pt:page-epsilon0}）、PA の証明論的順序数（\ref{pt:pa-proof-theoretic-ordinal}）は $\omega_{1}^{\mathrm{CK}}$ よりずっと小さい。
+:::
+
+## 計算可能な整列順序 {#comp:sec-bd-wellorders}
+
+::: definition 計算可能な整列順序 {#comp:computable-well-order keywords="computable well-ordering, recursive well-ordering" index="計算可能な整列順序|けいさんかのうなせいれつじゅんじょ"}
+決定可能な集合 $D\subseteq\N$ と決定可能な関係 ${\prec}\subseteq D\times D$ の組 $(D,\prec)$ が、狭義の整列順序（狭義全順序で、$D$ の空でない部分集合が $\prec$ 最小元をもつ）であるとき、**計算可能な整列順序**という。その順序型（\ref{set:order-type}）を $\operatorname{otp}(D,\prec)$ と書く。
+:::
+
+::: definition クリーネ–ブラウワー順序 {#comp:kleene-brouwer keywords="Kleene-Brouwer order, Lusin-Sierpinski order" index="クリーネ–ブラウワー順序|くりーねぶらうわーじゅんじょ"}
+$s,t\in\N^{<\N}$ について、$s<_{\mathrm{KB}}t$ を次のいずれかが成り立つことと定める。
+- (a) $t\subsetneq s$（$s$ は $t$ の真の延長）。
+- (b) ある $i<\min(\lvert s\rvert,\lvert t\rvert)$ で、$i$ 未満では $s,t$ が一致し、$s(i)<t(i)$。
+
+この関係を**クリーネ–ブラウワー順序**という。符号について決定可能である。
+:::
+
+::: intuition
+辞書式順序に似ているが、「延長は元の列より前（小さい）」とする点が違う。したがって空列 $\langle\rangle$ が最大元で、木を「子を左から順に、親を子のすべての後に」並べることになる（後行順）。この並べ方では、木の枝をたどることが下降列をたどることになる。
+:::
+
+::: lemma クリーネ–ブラウワー順序の性質 {#comp:kb-order keywords="Kleene-Brouwer order is linear; well-ordered on a tree iff the tree is well-founded" index="クリーネ–ブラウワー順序の整列性|くりーねぶらうわーじゅんじょのせいれつせい"}
+1. $<_{\mathrm{KB}}$ は $\N^{<\N}$ 上の狭義全順序である。
+2. 木 $T$ について、$(T,<_{\mathrm{KB}})$ が整列順序であることと、$T$ が整礎であることは同値である。
+3. $T$ が整礎で空でないとき、$o:T\to\operatorname{otp}(T,<_{\mathrm{KB}})$ を順序同型とすると、$\rho_{T}(s)\le o(s)$（$s\in T$）。とくに $\lvert T\rvert<\operatorname{otp}(T,<_{\mathrm{KB}})$。
+:::
+
+::: proof
+**1, Step 1（非反射性）.** $s<_{\mathrm{KB}}s$ は (a) $s\subsetneq s$ も (b) $s(i)<s(i)$ も満たさない。
+
+**1, Step 2（推移性）.** $s<_{\mathrm{KB}}t$, $t<_{\mathrm{KB}}u$ とし、それぞれが (a), (b) のどちらで成り立つかで場合分けする。$s\restriction i$ は長さ $i$ の始切片を表す。
+- (a)(a)：$t\subsetneq s$, $u\subsetneq t$ なので $u\subsetneq s$、すなわち (a) で $s<_{\mathrm{KB}}u$。
+- (a)(b)：$t\subsetneq s$ で、$j$ において $t(j)<u(j)$、$t\restriction j=u\restriction j$。$j<\lvert t\rvert$ なので $s\restriction(j+1)=t\restriction(j+1)$、よって $s\restriction j=u\restriction j$, $s(j)=t(j)<u(j)$ で (b)。
+- (b)(a)：$i$ において $s(i)<t(i)$、$s\restriction i=t\restriction i$ で、$u\subsetneq t$。$i<\lvert u\rvert$ なら $u\restriction(i+1)=t\restriction(i+1)$ なので $s\restriction i=u\restriction i$, $s(i)<t(i)=u(i)$ で (b)。$i\ge\lvert u\rvert$ なら $u=t\restriction\lvert u\rvert=s\restriction\lvert u\rvert$ で、$\lvert s\rvert>i\ge\lvert u\rvert$ なので $u\subsetneq s$、(a)。
+- (b)(b)：$i$ で $s(i)<t(i)$、$j$ で $t(j)<u(j)$ とする。$i<j$ なら $s\restriction i=t\restriction i=u\restriction i$ で $s(i)<t(i)=u(i)$。$j<i$ なら $s\restriction j=u\restriction j$ で $s(j)=t(j)<u(j)$。$i=j$ なら $s(i)<t(i)<u(i)$。いずれも (b)。
+
+**1, Step 3（全順序性）.** $s\neq t$ とする。一方が他方の真の始切片なら (a) で比較できる。そうでなければ $s\restriction i\neq t\restriction i$ となる最小の $i\le\min(\lvert s\rvert,\lvert t\rvert)$ があり、$i\ge1$ で $s(i-1)\neq t(i-1)$ なので、(b) で比較できる。
+
+**2, 「⇒」.** $T$ が枝 $g$ をもてば、$\bar{g}(n+1)$ は $\bar{g}(n)$ の真の延長なので (a) から
+$$
+\bar{g}(0)>_{\mathrm{KB}}\bar{g}(1)>_{\mathrm{KB}}\bar{g}(2)>_{\mathrm{KB}}\cdots
+$$
+で、集合 $\{\bar{g}(n):n\in\N\}\subseteq T$ は最小元をもたない。
+
+**2, 「⇐」, Step 1（下降列への帰着）.** $T$ を整礎とし、空でない $X\subseteq T$ が $<_{\mathrm{KB}}$ 最小元をもたないとする。$s_{0}$ を $X$ の符号最小の元、$s_{n+1}$ を $s_{n}$ より $<_{\mathrm{KB}}$ 小さい $X$ の元のうち符号最小のものとすると（$s_{n}$ は最小元でなく、$<_{\mathrm{KB}}$ は全順序なので存在する）、$s_{0}>_{\mathrm{KB}}s_{1}>_{\mathrm{KB}}\cdots$ は $T$ の無限下降列である。
+
+**2, 「⇐」, Step 2（枝の構成）.** $k=0,1,2,\dots$ について順に、数 $a_{k}$ と番号 $N_{k}$ を、次を満たすように定める。
+$$
+n\ge N_{k}\ \Longrightarrow\ \langle a_{0},\dots,a_{k}\rangle\subseteq s_{n}
+$$
+$u\defeq\langle a_{0},\dots,a_{k-1}\rangle$ とし（$k=0$ なら $u=\langle\rangle$、$N_{-1}\defeq0$）、$n\ge N_{k-1}$ で $u\subseteq s_{n}$ が成り立っているとする。
+- 下降列は単射なので、$s_{n}=u$ となる $n\ge N_{k-1}$ は高々一つ。よって $M\defeq N_{k-1}+1$ とおくと、$n\ge M$ で $u\subsetneq s_{n}$、とくに $s_{n}(k)$ が定義される。
+- $n\ge M$ について $s_{n+1}<_{\mathrm{KB}}s_{n}$ で、両者は $k$ 未満で一致する。(a) なら $s_{n+1}(k)=s_{n}(k)$。(b) で異なる位置が $k$ なら $s_{n+1}(k)<s_{n}(k)$、$k$ より後なら等しい。よって $(s_{n}(k))_{n\ge M}$ は単調非増加な自然数列で、ある番号から先は一定である。その値を $a_{k}$、一定になる最初の番号を $N_{k}$（$\ge M$）とする。
+
+$g(k)\defeq a_{k}$ とおくと、各 $k$ で $\bar{g}(k+1)\subseteq s_{N_{k}}\in T$、$T$ は木なので $\bar{g}(k+1)\in T$。$g$ は $T$ の枝で、整礎性に反する。
+
+**3.** $R_{T}$ 上の帰納法で示す。子 $s^{\frown}\langle m\rangle\in T$ は (a) から $s^{\frown}\langle m\rangle<_{\mathrm{KB}}s$ なので $o(s^{\frown}\langle m\rangle)<o(s)$。帰納法の仮定 $\rho_{T}(s^{\frown}\langle m\rangle)\le o(s^{\frown}\langle m\rangle)$ と合わせて $\rho_{T}(s^{\frown}\langle m\rangle)+1\le o(s)$。上限をとって $\rho_{T}(s)\le o(s)$。最後に $\lvert T\rvert=\rho_{T}(\langle\rangle)\le o(\langle\rangle)<\operatorname{otp}(T,<_{\mathrm{KB}})$。
+
+::: hypcheck
+- **2 の前提「$T$ は木」**：「⇐」Step 2 で $\bar{g}(k+1)\in T$ を得るのに使った。始切片で閉じない集合 $Y$ では、「枝がない」の意味を「すべての $n$ で $\bar{g}(n)\in Y$ となる $g$ がない」としても 2 は偽になる：$Y=\{\langle0\rangle^{n}:n\text{ は偶数}\}$（$\langle0\rangle^{n}$ は $0$ が $n$ 個の列）は奇数長の列を含まないので、この意味の枝をもたないが、$\langle0\rangle^{0}>_{\mathrm{KB}}\langle0\rangle^{2}>_{\mathrm{KB}}\langle0\rangle^{4}>_{\mathrm{KB}}\cdots$ は無限下降列である。
+- **整礎性**：3 でランク $\rho_{T}$ の存在に使った。
+- **公理**：「⇐」Step 1 の下降列も Step 2 の $a_{k},N_{k}$ も、符号最小・最初の番号として定まるので、選択公理は使っていない。
+:::
+:::
+
+::: theorem 計算可能順序数と計算可能な整列順序 {#comp:computable-ordinal-wo keywords="computable ordinals are exactly the order types of computable well-orderings" index="計算可能順序数の特徴づけ|けいさんかのうじゅんじょすうのとくちょうづけ"}
+順序数 $\alpha$ について、次は同値である。
+1. $\alpha$ は計算可能順序数である。
+2. $\alpha$ はある計算可能な整列順序の順序型である。
+:::
+
+::: proof
+**2 ⇒ 1.** $(D,\prec)$ を順序型 $\alpha$ の計算可能な整列順序、$o:D\to\alpha$ を順序同型とする。
+$$
+T_{\prec}\defeq\{\langle a_{0},\dots,a_{k-1}\rangle:a_{i}\in D,\ a_{0}\succ a_{1}\succ\cdots\succ a_{k-1}\}
+$$
+（空列を含む）は決定可能な木である。枝があれば $D$ の無限下降列が得られ、その値の集合は最小元をもたないので、$T_{\prec}$ は整礎。空でない $t\in T_{\prec}$ について $\rho_{T_{\prec}}(t)=o(\mathrm{last}(t))$（$\mathrm{last}(t)$ は末項）を $R_{T_{\prec}}$ 上の帰納法で示す。$t$ の子は末尾に $b\prec\mathrm{last}(t)$ を足した列なので
+$$
+\rho_{T_{\prec}}(t)=\sup\{o(b)+1:b\prec\mathrm{last}(t)\}.
+$$
+$o$ は順序同型なので $\{o(b):b\prec\mathrm{last}(t)\}=o(\mathrm{last}(t))$（$o(\mathrm{last}(t))$ 未満の順序数全体）で、右辺は $o(\mathrm{last}(t))$ に等しい。同様に根では $\rho_{T_{\prec}}(\langle\rangle)=\sup\{o(a)+1:a\in D\}=\alpha$。よって $\lvert T_{\prec}\rvert=\alpha$（$D=\varnothing$ なら $T_{\prec}=\{\langle\rangle\}$ で $\alpha=0$）。
+
+**1 ⇒ 2.** $\alpha=\lvert T(e)\rvert$, $e\in\mathrm{WT}$ とする。$T(e)=\varnothing$ なら空の順序でよい。$T(e)\neq\varnothing$ なら、\ref{comp:kb-order} の 2 から $(T(e),<_{\mathrm{KB}})$ は計算可能な整列順序（$T(e)$ も $<_{\mathrm{KB}}$ も決定可能）で、その順序型 $\beta$ は 3 から $\alpha<\beta$ を満たす。順序同型 $o$ について $o(x)=\alpha$ となる $x\in T(e)$ をとれば、$D'\defeq\{y\in T(e):y<_{\mathrm{KB}}x\}$ は決定可能で、$(D',<_{\mathrm{KB}})$ の順序型は $\alpha$（\ref{set:type-of-initial-segment}）。
+
+::: hypcheck
+- **2 ⇒ 1 の前提「整列順序」**：$T_{\prec}$ の整礎性に使った。全順序であることは、子の末項が $\prec$ 小さい元すべてを動くこと（ランクの計算）に使った。
+- **1 ⇒ 2**：\ref{comp:kb-order} は順序型が $\alpha$ 以上であることしか与えないので、始切片に切り詰めた。ここで「整列順序の始切片の順序型は値の順序数」（\ref{set:type-of-initial-segment}）を使った。
+:::
+:::
+
+## スペクターの有界性定理 {#comp:sec-bd-spector}
+
+::: theorem スペクターの有界性定理 {#comp:spector-boundedness keywords="Spector's Sigma^1_1 boundedness theorem" index="有界性定理|ゆうかいせいていり, スペクターの有界性定理|すぺくたーのゆうかいせいていり, Σ¹₁ 有界性|しぐまわんわんゆうかいせい"}
+$X\subseteq\mathrm{WT}$ が $\Sigma^{1}_{1}$ ならば、計算可能順序数 $\alpha$ で、すべての $e\in X$ について $\lvert T(e)\rvert<\alpha$ となるものがある。同じことだが、次が成り立つ。
+$$
+\sup\{\lvert T(e)\rvert:e\in X\}<\omega_{1}^{\mathrm{CK}}
+$$
+:::
+
+::: intuition
+$\mathrm{WT}$ は $\Sigma^{1}_{1}$ でない（\ref{comp:wt-complete}）。もし $\Sigma^{1}_{1}$ の集合 $X\subseteq\mathrm{WT}$ がすべての計算可能順序数の高さに届いていれば、「$T(e)$ は $X$ のどれかの木に埋め込める」という $\Sigma^{1}_{1}$ の条件で $\mathrm{WT}$ 全体を捕まえられてしまう。有界性定理は、この「$\Sigma^{1}_{1}$ では整礎性を確かめられない」という事実を、「$\Sigma^{1}_{1}$ では高い木を集められない」という順序数の言葉に言い換えたものである。
+:::
+
+::: proof
+**Step 0（二つの言い方の同値）.** 上限 $\sigma<\omega_{1}^{\mathrm{CK}}$ なら、$\alpha\defeq\sigma+1$ は計算可能（\ref{comp:omega1ck-basic} の 1, 2）で上界になる。逆に計算可能な $\alpha$ が上界なら $\sigma\le\alpha<\omega_{1}^{\mathrm{CK}}$。
+
+**Step 1（背理法の仮定）.** 結論を否定し、すべての計算可能順序数 $\alpha$ について、ある $e\in X$ で $\lvert T(e)\rvert\ge\alpha$ となると仮定する。このとき
+$$
+\mathrm{WT}=\bigl\{e\in\mathrm{TR}:T(e)=\varnothing\ \lor\ \exists e'\,(e'\in X\land T(e)\preceq T(e'))\bigr\}
+$$
+であることを示す。
+
+**Step 2（⊆）.** $e\in\mathrm{WT}$, $T(e)\neq\varnothing$ とする。$\alpha\defeq\lvert T(e)\rvert+1$ は計算可能（\ref{comp:omega1ck-basic} の 2）なので、仮定から $e'\in X$ で $\lvert T(e')\rvert\ge\lvert T(e)\rvert+1>0$ となるものがある。$\lvert T(e')\rvert>0$ より $T(e')\neq\varnothing$。$X\subseteq\mathrm{WT}$ より $T(e')$ は整礎で、$\lvert T(e)\rvert\le\lvert T(e')\rvert$ なので、比較補題（\ref{comp:tree-comparison} の 3）から $T(e)\preceq T(e')$。
+
+**Step 3（⊇）.** $e\in\mathrm{TR}$ とする。$T(e)=\varnothing$ なら整礎なので $e\in\mathrm{WT}$。$T(e)\preceq T(e')$, $e'\in X\subseteq\mathrm{WT}$ なら、\ref{comp:tree-comparison} の 1 から $T(e)$ は整礎で、$e\in\mathrm{WT}$。
+
+**Step 4（右辺は Σ¹₁）.** $\mathrm{TR}$ と「$T(e)=\varnothing$」（$\varphi_{e}(\langle\rangle)=0$）は算術的、$e'\in X$ は仮定から $\Sigma^{1}_{1}$、$T(e)\preceq T(e')$ は \ref{comp:tree-embedding-sigma11} から $\Sigma^{1}_{1}$。$\Sigma^{1}_{1}$ は $\wedge,\vee$ と数の量化子 $\exists e'$ で閉じている（\ref{comp:quantifier-absorption} の 4）ので、右辺は $\Sigma^{1}_{1}$。
+
+**Step 5（矛盾）.** Step 1〜4 から $\mathrm{WT}$ は $\Sigma^{1}_{1}$ となり、\ref{comp:wt-complete} の 3 に反する。
+
+::: hypcheck
+- **前提「$X$ は $\Sigma^{1}_{1}$」**：Step 4 だけで使った。外すと偽：$X=\mathrm{WT}$（$\Pi^{1}_{1}$）では上限はちょうど $\omega_{1}^{\mathrm{CK}}$（\ref{comp:omega1ck-basic} の 4 で $\omega_{1}^{\mathrm{CK}}$ は極限なので、どの計算可能な $\alpha$ も上界にならない）。
+- **前提「$X\subseteq\mathrm{WT}$」**：Step 2 で $T(e')$ が整礎であること（比較補題 3 の前提）と、Step 3 で $T(e)$ の整礎性を引き継ぐことに使った。外すと、たとえば $X$ が枝をもつ木の指数を一つ含めば、Step 3 が崩れる（主張もそもそも意味をもたない）。
+- **比較補題の前提「$T(e')\neq\varnothing$」**：Step 2 で $\lvert T(e)\rvert$ ではなく $\lvert T(e)\rvert+1$ を使ったのはこのためである。
+- **核心の事実**：$\mathrm{WT}$ が $\Sigma^{1}_{1}$ でないこと（\ref{comp:wt-complete} の 3）。これは解析的階層定理（\ref{comp:analytical-enumeration}）の対角線論法に帰着している。有界性定理は、それ以外には木の比較補題しか使わない。
+- **公理**：Step 4 の閉包性で可算選択公理（\ref{comp:quantifier-absorption} の 3）を使う。それ以外は $\ZF$。
+:::
+:::
+
+::: corollary Σ¹₁ の整礎木の深さ {#comp:boundedness-sigma11-trees keywords="Sigma^1_1 well-founded trees have height below omega_1^CK" index="Σ¹₁ 整礎木|しぐまわんわんせいそぎ"}
+$T\subseteq\N^{<\N}$ が（符号の集合として）$\Sigma^{1}_{1}$ な整礎木ならば、$\lvert T\rvert<\omega_{1}^{\mathrm{CK}}$。とくに、算術的な整礎木の深さも計算可能順序数である。
+:::
+
+::: proof
+$\lvert T\rvert\ge\omega_{1}^{\mathrm{CK}}$ と仮定する。とくに $\lvert T\rvert>0$ なので $T\neq\varnothing$。このとき
+$$
+\mathrm{WT}=\{e\in\mathrm{TR}:T(e)=\varnothing\lor T(e)\preceq T\}
+$$
+となる。⊆：$e\in\mathrm{WT}$, $T(e)\neq\varnothing$ なら $\lvert T(e)\rvert<\omega_{1}^{\mathrm{CK}}\le\lvert T\rvert$ で、比較補題（\ref{comp:tree-comparison} の 3）から $T(e)\preceq T$。⊇：同補題の 1 から $T(e)$ は整礎。右辺の $T(e)\preceq T$ は
+$$
+\exists f\,\forall s\,\forall s'\,\bigl[(\varphi_{e}(s)=1\to f(s)\in T)\land\cdots\bigr]
+$$
+の形で、「$f(s)\in T$」は $\Sigma^{1}_{1}$ の関係に $f(s)$ を代入したもので、含意の後件（正の位置）にだけ現れる。$\Sigma^{1}_{1}$ は $\wedge,\vee$、$\forall s,\forall s'$、$\exists f$ で閉じる（\ref{comp:quantifier-absorption} の 4）ので、右辺は $\Sigma^{1}_{1}$。これは \ref{comp:wt-complete} の 3 に反する。
+
+::: hypcheck
+- **前提「$T$ は $\Sigma^{1}_{1}$」**：右辺の計算にだけ使った。「$f(s)\in T$」が正の位置にしか現れないので、$T$ の補集合の複雑さは問題にならない。
+- **公理**：$\forall s$ についての閉包に可算選択公理を使う。
+:::
+:::
+
+::: corollary 深さ α 未満の整礎木の指数 {#comp:wt-below-delta11 keywords="WT below a computable ordinal is Delta^1_1" index="WT_{<α}|だぶりゅーてぃーあるふぁみまん"}
+計算可能順序数 $\alpha$ について、$\mathrm{WT}_{<\alpha}\defeq\{e\in\mathrm{WT}:\lvert T(e)\rvert<\alpha\}$ は $\Delta^{1}_{1}$ である。
+:::
+
+::: proof
+$\alpha=0$ なら空集合。$\alpha>0$ とし、$\lvert T_{\alpha}\rvert=\alpha$ となる決定可能な整礎木 $T_{\alpha}$ を固定する（$\alpha>0$ なので $T_{\alpha}\neq\varnothing$）。
+
+**Step 1（Σ¹₁ であること）.** 次を示す。
+$$
+e\in\mathrm{WT}_{<\alpha}\iff e\in\mathrm{TR}\land\bigl(T(e)=\varnothing\lor T(e)^{+}\preceq T_{\alpha}\bigr)
+$$
+「⇒」：$T(e)\neq\varnothing$ なら $T(e)^{+}$ は整礎で $\lvert T(e)^{+}\rvert=\lvert T(e)\rvert+1\le\alpha$（\ref{comp:tree-rank-basic} の 5）なので、比較補題の 3 から $T(e)^{+}\preceq T_{\alpha}$。「⇐」：$T(e)=\varnothing$ なら $e\in\mathrm{WT}$ で深さ $0<\alpha$。$T(e)\neq\varnothing$ で $T(e)^{+}\preceq T_{\alpha}$ なら、比較補題の 1 から $T(e)^{+}$ は整礎で（したがって $T(e)$ も整礎：$T(e)$ の枝 $g$ から $T(e)^{+}$ の枝 $\langle0\rangle^{\frown}g$ ができる）、$\lvert T(e)\rvert+1\le\alpha$、すなわち $\lvert T(e)\rvert<\alpha$。$T(e)^{+}$ の元であることは $e$ について算術的なので、右辺は \ref{comp:tree-embedding-sigma11} から $\Sigma^{1}_{1}$。
+
+**Step 2（Π¹₁ であること）.** 次を示す。
+$$
+e\in\mathrm{WT}_{<\alpha}\iff e\in\mathrm{WT}\land\neg\bigl(T_{\alpha}\preceq T(e)\bigr)
+$$
+「⇒」：$T_{\alpha}\preceq T(e)$ なら比較補題の 1 から $\alpha\le\lvert T(e)\rvert$ で矛盾。「⇐」：$T(e)=\varnothing$ なら深さ $0<\alpha$。$T(e)\neq\varnothing$ で $\alpha\le\lvert T(e)\rvert$ なら比較補題の 3 から $T_{\alpha}\preceq T(e)$ となるので、否定から $\lvert T(e)\rvert<\alpha$。右辺は $\Pi^{1}_{1}$ の集合と、$\Sigma^{1}_{1}$ の関係の否定（$\Pi^{1}_{1}$）の共通部分なので $\Pi^{1}_{1}$。
+
+::: hypcheck
+- **$T(e)^{+}$ を使う理由**：「$\lvert T(e)\rvert<\alpha$」を埋め込みで表すには、比較補題が $\le$ しか表さないので、深さを 1 上げた木を比べた。
+- **比較補題 3 の前提「行き先が空でない」**：Step 1 では $T_{\alpha}\neq\varnothing$、Step 2 では $T(e)\neq\varnothing$ の場合に分けて満たした。
+:::
+:::
+
+::: theorem Π¹₁ 集合が Δ¹₁ であるための条件 {#comp:delta11-criterion keywords="a Pi^1_1 set is Delta^1_1 iff its ranks are bounded below omega_1^CK; stratification of Pi^1_1 sets" index="Π¹₁ 集合の層別|ぱいわんわんしゅうごうのそうべつ"}
+$A\subseteq\N$ を $\Pi^{1}_{1}$ 集合とし、$w$ を \ref{comp:wt-complete} の 2 の証明で作った計算可能な全域関数とする（各 $x$ で $w(x)\in\mathrm{TR}$、かつ $x\in A\iff w(x)\in\mathrm{WT}$）。
+1. $A=\bigcup_{\alpha<\omega_{1}^{\mathrm{CK}}}A_{\alpha}$、ただし $A_{\alpha}\defeq\{x:w(x)\in\mathrm{WT}_{<\alpha}\}$ は $\Delta^{1}_{1}$ で、$\alpha\le\beta$ なら $A_{\alpha}\subseteq A_{\beta}$。
+2. $A$ が $\Delta^{1}_{1}$ であるのは、ある $\alpha<\omega_{1}^{\mathrm{CK}}$ で $A=A_{\alpha}$ となるとき、かつそのときに限る。
+:::
+
+::: proof
+**1.** $x\in A$ なら $\lvert T(w(x))\rvert$ は計算可能順序数 $\gamma$ で、$\gamma+1<\omega_{1}^{\mathrm{CK}}$ について $x\in A_{\gamma+1}$。逆は $\mathrm{WT}_{<\alpha}\subseteq\mathrm{WT}$ から。$A_{\alpha}$ が $\Delta^{1}_{1}$ なのは、$\mathrm{WT}_{<\alpha}$ が $\Delta^{1}_{1}$（\ref{comp:wt-below-delta11}）で、$\Sigma^{1}_{1}$ と $\Pi^{1}_{1}$ が計算可能な関数の代入で閉じているからである。単調性は定義から。
+
+**2, 「⇐」.** $A=A_{\alpha}$ は 1 から $\Delta^{1}_{1}$。
+
+**2, 「⇒」.** $A$ が $\Sigma^{1}_{1}$ なら、$X\defeq\{e:\exists x\,(x\in A\land w(x)=e)\}$ は $\Sigma^{1}_{1}$（\ref{comp:quantifier-absorption} の 4）で、$X\subseteq\mathrm{WT}$。有界性定理（\ref{comp:spector-boundedness}）から、計算可能な $\alpha$ で $X$ の木の深さがすべて $\alpha$ 未満となるものがある。すると $x\in A$ なら $w(x)\in\mathrm{WT}_{<\alpha}$、すなわち $A\subseteq A_{\alpha}$。逆の包含は 1 から。
+
+::: hypcheck
+- **有界性定理**：2 の「⇒」の核心。$\Sigma^{1}_{1}$ であることは、$X$ を $\Sigma^{1}_{1}$ にするのにだけ使った。
+- **$w(x)\in\mathrm{TR}$**：$\mathrm{WT}_{<\alpha}$ の $\Sigma^{1}_{1}$ 側の表示（\ref{comp:wt-below-delta11} の Step 1）で $e\in\mathrm{TR}$ を要求しているが、それは $w(x)$ について自動的に満たされる。
+- **使わなかった前提**：$w$ が特定の作り方であることは本質的でない。$x\in A\iff w(x)\in\mathrm{WT}$ となる計算可能な全域関数 $w$ で $w(x)\in\mathrm{TR}$ を満たすものなら何でもよい。
+:::
+:::
+
+::: fact 超算術的集合とクリーネの O {#comp:hyperarithmetic-fact keywords="hyperarithmetical sets, Kleene's O, Kleene's theorem Delta^1_1 = HYP" index="超算術的集合|ちょうさんじゅつてきしゅうごう, クリーネの O|くりーねのおー"}
+1. 順序数表記の体系であるクリーネの $\mathcal{O}$ を使い、計算可能順序数 $\alpha$ に沿って停止問題の跳躍（\ref{comp:arithmetical-hierarchy} の神託）を超限回繰り返して得られる集合 $H_{a}$（$a\in\mathcal{O}$）を考える。$H_{a}$ のどれかに計算可能な集合を**超算術的**という。
+2. （クリーネ）$\N$ の部分集合が $\Delta^{1}_{1}$ であることと、超算術的であることは同値である。本サイトでは、整列順序に沿った H 集合で定義し直したものについて \ref{comp:kleene-hyp-theorem} で証明する。
+3. $\mathcal{O}$ は $\Pi^{1}_{1}$ 完全である。
+
+出典：H. Rogers, *Theory of Recursive Functions and Effective Computability*；G. E. Sacks, *Higher Recursion Theory*。
+:::
+
+::: supplement
+**前提を変えると.**
+- *$\Pi^{1}_{1}$ の部分集合.* 有界性定理は $\Pi^{1}_{1}$ の $X\subseteq\mathrm{WT}$ では成り立たない（$X=\mathrm{WT}$）。$\mathrm{WT}$ の部分集合で深さが非有界なものは、どれも $\Sigma^{1}_{1}$ でない。
+- *$\Sigma^{1}_{1}$ の「ほとんど整列順序」.* 計算可能な全順序で、整列順序ではないが、どの超算術的な列も無限下降列にならないものがある（ハリソン順序。順序型は $\omega_{1}^{\mathrm{CK}}(1+\eta)$、$\eta$ は有理数の順序型とされる）。これは有界性定理の裏側である：整列順序であることは $\Pi^{1}_{1}$ の性質で、超算術的な（$\Delta^{1}_{1}$ の）証拠では反証しきれない。
+
+**類似の定理.**
+- *ボールド体の有界性定理.* 相対化（前ページの注意）して $P\subseteq\N$ を任意に許すと、「$\N$ 上の整列順序の符号の集合 $\mathrm{WO}\subseteq\mathcal{P}(\N\times\N)$ の解析集合（$\boldsymbol{\Sigma}^{1}_{1}$）な部分集合では、順序型が可算順序数で押さえられる」という記述集合論の有界性定理になる（A. S. Kechris, *Classical Descriptive Set Theory*）。$\omega_{1}^{\mathrm{CK}}$ の役を $\omega_{1}$ が担う。
+- *許容順序数.* $\omega_{1}^{\mathrm{CK}}$ は $\omega$ より大きい最小の許容順序数（$L_{\alpha}$ がクリプキ–プラテクの集合論のモデルになる最小の $\alpha>\omega$）である（Sacks, *Higher Recursion Theory*）。
+- *証明論的順序数.* 計算可能な整列順序の整列性を体系の中で証明できるかどうかで、体系の強さを測るのが順序数解析である（\ref{pt:page-gentzen-wellordering}）。$\Pi^{1}_{1}$ の文としての整列性の主張と、有界性定理は同じ現象の二つの面になっている。
+
+**高い視点から：Π¹₁ 集合の層と「コンパクトさ」.** \ref{comp:delta11-criterion} は、$\Pi^{1}_{1}$ 集合が $\Delta^{1}_{1}$ の層 $A_{\alpha}$ の、長さ $\omega_{1}^{\mathrm{CK}}$ の増大和であることを述べている。各点 $x\in A$ は「整礎性の証拠の高さ」によってどこかの層に入る。有界性定理は、$\Sigma^{1}_{1}$ の集合はこの層をすべて登りきることができず、どこかの層に収まると言っている。比喩で言えば、$\Sigma^{1}_{1}$ の集合は位相空間の**コンパクト集合**に似ている。開集合の増大列で覆われたコンパクト集合は、そのうちの一つに収まる。ここでは「増大する開集合の列」が「$\Delta^{1}_{1}$ の層」、「列の長さ $\omega$」が「$\omega_{1}^{\mathrm{CK}}$」に当たる。これは比喩であって、$\Sigma^{1}_{1}$ 集合に文字通りのコンパクト性があるわけではない。ただ、この見方は記述集合論で「$\boldsymbol{\Sigma}^{1}_{1}$ 集合は、前整列（ランク）の非有界な $\boldsymbol{\Pi}^{1}_{1}$ 集合の中に、有界な部分としてしか入れない」という形で繰り返し使われる。
+:::
+
+## 問題 {#comp:sec-bd-problems}
+
+::: problem {#comp:prob-wo-complete}
+$\mathrm{WO}$ を、組 $\langle d,e\rangle$ で、$\varphi_{d},\varphi_{e}$ が全域的で $\{0,1\}$ 値、$D=\{x:\varphi_{d}(x)=1\}$, $a\prec b\iff\varphi_{e}(\langle a,b\rangle)=1\land a,b\in D$ が計算可能な整列順序になるものの全体とする。$\mathrm{WO}$ が $\Pi^{1}_{1}$ 完全であることを示せ。また、$\Sigma^{1}_{1}$ の部分集合 $Y\subseteq\mathrm{WO}$ に属する順序の順序型が、ある計算可能順序数で上から押さえられることを示せ。
+:::
+
+::: solution
+**$\Pi^{1}_{1}$ であること.** 全域性と「$\prec$ が $D$ 上の狭義全順序」は算術的。整列性は「$D$ の無限下降列がない」すなわち $\forall g\,\exists n\,\neg(g(n+1)\prec g(n))$ で $\Pi^{1}_{1}$。無限下降列がないことから整列性が出ることは、\ref{comp:kb-order} の「⇐」Step 1 と同じく、符号最小の元をとって下降列を作ればよい（選択公理は要らない）。
+
+**完全性.** $\Pi^{1}_{1}$ 集合 $A$ と \ref{comp:delta11-criterion} の $w$ をとる。s-m-n 定理（\ref{comp:smn}）で、$x$ から $T(w(x))$ の特性関数の指数 $d(x)$ と、$<_{\mathrm{KB}}$ を $T(w(x))$ に制限した関係の指数 $e(x)$ を計算可能に作る（どちらも全域的）。\ref{comp:kb-order} の 2 から、$x\in A\iff T(w(x))$ が整礎 $\iff\langle d(x),e(x)\rangle\in\mathrm{WO}$。
+
+**有界性.** $Y\subseteq\mathrm{WO}$ を $\Sigma^{1}_{1}$ とする。各 $\langle d,e\rangle$ に、\ref{comp:computable-ordinal-wo} の証明の下降列の木 $T_{\prec}$ の指数 $t(d,e)$ を s-m-n 定理で計算可能に対応させる（定義から $t(d,e)\in\mathrm{TR}$）。$X\defeq\{t(d,e):\langle d,e\rangle\in Y\}$ は $\Sigma^{1}_{1}$ で $X\subseteq\mathrm{WT}$、深さは順序型に等しい。有界性定理（\ref{comp:spector-boundedness}）を $X$ に適用すればよい。
+:::
+
+::: problem {#comp:prob-ordinal-arithmetic}
+$\alpha,\beta$ が計算可能順序数ならば、$\alpha+\beta$ と $\alpha\cdot\beta$ も計算可能であることを、計算可能な整列順序（\ref{comp:computable-ordinal-wo}）を使って示せ。
+:::
+
+::: solution
+$(D_{1},\prec_{1})$, $(D_{2},\prec_{2})$ を順序型 $\alpha,\beta$ の計算可能な整列順序とする。
+
+**和.** $D\defeq\{2a:a\in D_{1}\}\cup\{2b+1:b\in D_{2}\}$ とし、偶数どうしは $\prec_{1}$、奇数どうしは $\prec_{2}$ で比べ、偶数を奇数より前に置く。$D$ と順序は決定可能で、順序型は $\alpha+\beta$（$\alpha$ の後に $\beta$ を並べた順序型）。
+
+**積.** $D\defeq\{\langle a,b\rangle:a\in D_{1},b\in D_{2}\}$ とし、$\langle a,b\rangle\prec\langle a',b'\rangle\iff b\prec_{2}b'\lor(b=b'\land a\prec_{1}a')$（後ろの成分を優先する辞書式順序）とする。これは決定可能な整列順序で、順序型は $\alpha\cdot\beta$（$\alpha$ を $\beta$ 回並べたもの）。整列性：空でない部分集合 $Z$ について、$Z$ の元の第 2 成分の $\prec_{2}$ 最小値 $b_{0}$ をとり、次に第 2 成分が $b_{0}$ の元の第 1 成分の $\prec_{1}$ 最小値をとれば、それが $Z$ の最小元である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

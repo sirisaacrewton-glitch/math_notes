@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>超積とウォシュの定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/02-first-order-logic/10-ultraproducts.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 超積とウォシュの定理 {#model:page-ultraproducts keywords="ultrafilter, ultraproduct, ultrapower, Łoś's theorem, semantic proof of compactness"}
+
+構造の族から「添字の大多数で成り立つことが成り立つ」ような一つの構造を作る方法が**超積**である。「大多数」を測る道具が**超フィルター**で、**ウォシュの定理**は、論理式が超積で成り立つことと、成り立つ添字の集合が超フィルターに属することが同値であることを主張する。これを使うと、コンパクト性定理（\ref{logic:compactness}）を、証明体系も完全性定理も使わずに、意味論だけで証明できる。命題論理での同じ議論（\ref{logic:page-prop-compactness} の証明 3）の一階版である。
+
+## 記法と定義の確認 {#model:sec-ultraproducts-notation}
+
+::: notation
+- 構造、割り当て $v$ と書き換え $v[x\mapsto a]$、項の値 $t^{\mathcal{M},v}$、充足関係 $\mathcal{M},v\models\varphi$ は \ref{logic:structure}, \ref{logic:assignment}, \ref{logic:term-value}, \ref{logic:satisfaction} のとおり。論理式の基本記号は $\bot$, $=$, 関係記号, $\to$, $\forall$ で、$\neg,\wedge,\vee,\exists$ は略記である（\ref{logic:abbreviation-semantics}）。
+- $\mathcal{P}(I)$ は $I$ の部分集合全体。空でない集合 $I$ 上の**フィルター** $\mathcal{F}\subset\mathcal{P}(I)$ は \ref{set:filter} のとおり（$I\in\mathcal{F}$, $\varnothing\notin\mathcal{F}$, 共通部分と上方について閉じる）。
+- 族 $S\subset\mathcal{P}(I)$ が**有限交叉性**をもつとは、任意の $n\ge1$ と $X_{1},\dots,X_{n}\in S$ について $X_{1}\cap\cdots\cap X_{n}\neq\varnothing$ となることをいう。
+- 集合族 $(M_{i})_{i\in I}$ の直積 $\prod_{i\in I}M_{i}$ は、各 $i$ で $g(i)\in M_{i}$ となる写像 $g$（定義域 $I$）全体とする。
+- **公理.** 本ページは $\ZFC$ で議論する。選択公理を使う箇所はそのつど明記する。
+:::
+
+## 超フィルター {#model:sec-ultrafilters}
+
+::: definition 超フィルター {#model:ultrafilter keywords="ultrafilter, principal ultrafilter, nonprincipal ultrafilter, free ultrafilter" index="超フィルター|ちょうふぃるたー, 単項超フィルター|たんこうちょうふぃるたー, 非単項超フィルター|ひたんこうちょうふぃるたー"}
+$I$ 上のフィルター $U$ が、任意の $X\subset I$ について $X\in U$ または $I\setminus X\in U$ を満たすとき、$U$ を $I$ 上の**超フィルター**という（\ref{set:dual-filter} の直後の定義と同じである）。$i_{0}\in I$ について $\{X\subset I:i_{0}\in X\}$ は超フィルターであり、これを $i_{0}$ で生成される**単項超フィルター**という。単項でない超フィルターを**非単項超フィルター**という。
+:::
+
+::: intuition
+超フィルター $U$ は、$I$ の部分集合を「大きい（$U$ に属する）」と「小さい（補集合が $U$ に属する）」にちょうど二分する規則である。「大きい」集合の共通部分はまた大きく、大きい集合を含む集合は大きい。単項超フィルターは「$i_{0}$ を含むかどうか」だけで判定する、いわば独裁者のいる多数決である。
+:::
+
+::: lemma 超フィルターの基本性質 {#model:ultrafilter-basic}
+$U$ を $I$ 上の超フィルターとし、$X,Y\subset I$ とする。
+1. $X\notin U\iff I\setminus X\in U$。
+2. $X\cap Y\in U\iff X\in U$ かつ $Y\in U$。
+3. $X\cup Y\in U\iff X\in U$ または $Y\in U$。
+:::
+
+::: proof
+**1.** $X\notin U$ なら、超フィルターの定義より $I\setminus X\in U$。逆に $X$ と $I\setminus X$ がともに $U$ に属すると、共通部分 $\varnothing$ が $U$ に属し、フィルターの条件 $\varnothing\notin U$ に反する。よって $I\setminus X\in U$ なら $X\notin U$。
+
+**2.** $\Leftarrow$ は共通部分について閉じていること、$\Rightarrow$ は $X\cap Y\subset X$, $X\cap Y\subset Y$ と上方について閉じていることによる。
+
+**3.** $\Leftarrow$ は上方について閉じていることによる。$\Rightarrow$：$X\cup Y\in U$ かつ $X\notin U$ とすると、1 より $I\setminus X\in U$、2 より $(X\cup Y)\cap(I\setminus X)\in U$ で、これは $Y$ に含まれるので $Y\in U$。
+
+::: hypcheck
+- **超フィルターであること**：1 の $\Rightarrow$ と、それを使う 3 の $\Rightarrow$。2 と 3 の $\Leftarrow$ は任意のフィルターで成り立つ。
+:::
+:::
+
+::: theorem 超フィルター補題 {#model:ultrafilter-lemma keywords="ultrafilter lemma, finite intersection property" index="超フィルター補題|ちょうふぃるたーほだい, 有限交叉性|ゆうげんこうさせい"}
+（AC）空でない集合 $I$ 上の族 $S\subset\mathcal{P}(I)$ が有限交叉性をもつならば、$S\subset U$ となる $I$ 上の超フィルター $U$ が存在する。
+:::
+
+::: proof
+**Step 1（生成されるフィルター）.** $\mathcal{F}_{S}$ を、ある $n\ge0$ と $X_{1},\dots,X_{n}\in S$ について $X_{1}\cap\cdots\cap X_{n}\subset Y$ となる $Y\subset I$ 全体とする（$n=0$ のとき左辺は $I$ と約束する）。$I\in\mathcal{F}_{S}$（$n=0$）、共通部分と上方について閉じていることは定義から直ちに従い、$\varnothing\notin\mathcal{F}_{S}$ は $S$ の有限交叉性による（$n\ge1$ なら左辺は空でなく、$n=0$ なら左辺は $I\neq\varnothing$）。よって $\mathcal{F}_{S}$ は $S$ を含むフィルターである。
+
+**Step 2（ツォルンの補題）.** $\mathbb{P}$ を、$\mathcal{F}_{S}$ を含む $I$ 上のフィルター全体とし、包含関係で順序付ける。$\mathcal{F}_{S}\in\mathbb{P}$。空でない鎖 $\mathcal{C}\subset\mathbb{P}$ の和集合 $\bigcup\mathcal{C}$ はフィルターである：$I$ を含み $\varnothing$ を含まないことと上方について閉じていることは各元から従い、$X,Y\in\bigcup\mathcal{C}$ なら $X\in\mathcal{F}_{1}$, $Y\in\mathcal{F}_{2}$（$\mathcal{F}_{1},\mathcal{F}_{2}\in\mathcal{C}$）で、鎖なので大きい方が $X,Y$ をともに含み、$X\cap Y$ も含む。よって上界をもち、ツォルンの補題（\ref{set:zorn}）より極大元 $U$ がある。
+
+**Step 3（極大なフィルターは超フィルター）.** $X\subset I$ で $X\notin U$ とする。族 $U\cup\{X\}$ が有限交叉性をもつなら、Step 1 をこの族に適用して得られるフィルターは $U$ と $X$ を含み、$\mathbb{P}$ に属し $U$ より真に大きく、極大性に反する。よって $U\cup\{X\}$ のある有限個の元の共通部分が空である。$U$ は共通部分について閉じていて $\varnothing\notin U$ なので、その有限個には $X$ が含まれ、残りの元の共通部分 $Y$（残りがなければ $Y=I$）は $U$ に属し $Y\cap X=\varnothing$ を満たす。すると $Y\subset I\setminus X$ なので $I\setminus X\in U$。よって $U$ は超フィルターである。
+
+::: hypcheck
+- **有限交叉性**：Step 1 の $\varnothing\notin\mathcal{F}_{S}$。有限交叉性がなければ $S$ を含むフィルターは存在しない。
+- **$I\neq\varnothing$**：Step 1 の $n=0$ の場合。
+- **選択公理**：Step 2 のツォルンの補題。
+:::
+:::
+
+::: remark
+ブール代数 $\mathcal{P}(I)$（演算は $\cap,\cup$, 補集合）に \ref{set:boolean-ultrafilter} を適用しても同じ結論を得る。超フィルター補題は $\ZF$ のもとで選択公理より真に弱い（ブール代数の素イデアル定理と同値である）ことが知られている、とされる（本サイトでは未確認）。
+:::
+
+::: corollary 非単項超フィルターの存在 {#model:nonprincipal-ultrafilter}
+（AC）$I$ が無限集合ならば、補集合が有限な $I$ の部分集合をすべて含む超フィルター $U$ が存在し、それは非単項である。
+:::
+
+::: proof
+補集合が有限な部分集合全体 $S$ は有限交叉性をもつ：$X_{1},\dots,X_{n}\in S$ なら $I\setminus(X_{1}\cap\cdots\cap X_{n})=\bigcup_{k}(I\setminus X_{k})$ は有限で、$I$ は無限なので $X_{1}\cap\cdots\cap X_{n}\neq\varnothing$。超フィルター補題より $S\subset U$ となる超フィルター $U$ がある。任意の $i_{0}\in I$ について $I\setminus\{i_{0}\}\in S\subset U$ なので、\ref{model:ultrafilter-basic} の 1 より $\{i_{0}\}\notin U$。単項超フィルターなら $\{i_{0}\}$ を含むので、$U$ は単項でない。
+:::
+
+## 超積 {#model:sec-ultraproducts}
+
+::: lemma 超フィルターによる同値関係 {#model:ultraproduct-equivalence}
+$(M_{i})_{i\in I}$ を空でない集合の族、$U$ を $I$ 上の超フィルターとする。$g,h\in\prod_{i}M_{i}$ について
+$$
+g\sim_{U}h\ :\iff\ \{i\in I:g(i)=h(i)\}\in U
+$$
+と定めると、$\sim_{U}$ は $\prod_{i}M_{i}$ 上の同値関係である。また（AC）$\prod_{i}M_{i}\neq\varnothing$。
+:::
+
+::: proof
+反射律は $\{i:g(i)=g(i)\}=I\in U$、対称律は集合が同じであることによる。推移律：$\{i:g(i)=k(i)\}\supset\{i:g(i)=h(i)\}\cap\{i:h(i)=k(i)\}$ で、右辺はフィルターの条件より $U$ に属するので左辺も属する。$\prod_{i}M_{i}\neq\varnothing$ は選択公理（各 $M_{i}$ は空でない）による。
+:::
+
+::: definition 超積 {#model:ultraproduct keywords="ultraproduct, ultrapower, diagonal embedding" index="超積|ちょうせき, 超冪|ちょうべき"}
+$(\mathcal{M}_{i})_{i\in I}$ を $\mathcal{L}$ 構造の族、$U$ を $I$ 上の超フィルターとする。$g\in\prod_{i}M_{i}$ の $\sim_{U}$ による同値類を $[g]$ と書き、商集合を $\prod_{i}M_{i}/U$ と書く。$\mathcal{L}$ 構造 $\mathcal{M}^{U}=\prod_{i}\mathcal{M}_{i}/U$ を、領域 $\prod_{i}M_{i}/U$ と次の解釈で定める。
+$$
+c^{\mathcal{M}^{U}}\defeq\bigl[\,i\mapsto c^{\mathcal{M}_{i}}\,\bigr],\qquad f^{\mathcal{M}^{U}}([g_{1}],\dots,[g_{n}])\defeq\bigl[\,i\mapsto f^{\mathcal{M}_{i}}(g_{1}(i),\dots,g_{n}(i))\,\bigr],
+$$
+$$
+([g_{1}],\dots,[g_{n}])\in P^{\mathcal{M}^{U}}\ :\iff\ \{i\in I:(g_{1}(i),\dots,g_{n}(i))\in P^{\mathcal{M}_{i}}\}\in U .
+$$
+これを $(\mathcal{M}_{i})$ の $U$ による**超積**という。すべての $\mathcal{M}_{i}$ が同じ構造 $\mathcal{M}$ のとき**超冪**といい、$\mathcal{M}^{I}/U$ と書く。
+:::
+
+::: lemma 超積の解釈の well-definedness {#model:ultraproduct-well-defined}
+上の $f^{\mathcal{M}^{U}}$, $P^{\mathcal{M}^{U}}$ は代表元の選び方によらない。
+:::
+
+::: proof
+$g_{k}\sim_{U}h_{k}$（$k=1,\dots,n$）とし、$E\defeq\bigcap_{k}\{i:g_{k}(i)=h_{k}(i)\}$ とおく。フィルターの条件より $E\in U$。
+
+**関数記号.** $\{i:f^{\mathcal{M}_{i}}(g_{1}(i),\dots)=f^{\mathcal{M}_{i}}(h_{1}(i),\dots)\}\supset E$ なので $U$ に属し、二つの値は $\sim_{U}$ で等しい。
+
+**関係記号.** $A_{g}\defeq\{i:(g_{1}(i),\dots,g_{n}(i))\in P^{\mathcal{M}_{i}}\}$, $A_{h}$ も同様とする。$A_{g}\cap E\subset A_{h}$ なので、$A_{g}\in U$ なら $A_{h}\in U$。$g,h$ の役割を入れ替えれば逆も成り立つ。
+:::
+
+::: intuition
+超積の元は「添字ごとの元の列」を、大多数の添字で一致するものどうし同一視したものである。関係が成り立つかどうかも、大多数の添字で成り立つかどうかで決める。直積 $\prod_{i}\mathcal{M}_{i}$ そのものでは「$P$ が成り立つ」か「成り立たない」かを決められない添字の集合が残るが、超フィルターはどんな集合についても「大きい」か「小さい」かを決めるので、$\neg$ と $\vee$ が正しく振る舞う。これが次の定理の核心である。
+:::
+
+割り当てについて、次の記法を使う。$w\colon\mathrm{Var}\to\prod_{i}M_{i}$ に対し、$w_{i}(x)\defeq w(x)(i)$ で $\mathcal{M}_{i}$ の割り当て $w_{i}$ を、$[w](x)\defeq[w(x)]$ で $\mathcal{M}^{U}$ の割り当て $[w]$ を定める。$g\in\prod_{i}M_{i}$ について、$w[x\mapsto g]$ は $x$ で $g$、他の変数 $y$ で $w(y)$ をとる写像とする。定義から直ちに
+$$
+\bigl(w[x\mapsto g]\bigr)_{i}=w_{i}[x\mapsto g(i)],\qquad [\,w[x\mapsto g]\,]=[w][x\mapsto[g]] \tag{$\ast$}
+$$
+である。論理式 $\varphi$ について $\lVert\varphi\rVert_{w}\defeq\{i\in I:\mathcal{M}_{i},w_{i}\models\varphi\}$ とおく。
+
+::: lemma 超積における項の値 {#model:ultraproduct-terms}
+任意の項 $t$ と $w\colon\mathrm{Var}\to\prod_{i}M_{i}$ について $t^{\mathcal{M}^{U},[w]}=\bigl[\,i\mapsto t^{\mathcal{M}_{i},w_{i}}\,\bigr]$。
+:::
+
+::: proof
+項に関する帰納法（\ref{logic:term-induction}）。$t=x$ なら左辺は $[w(x)]$ で、$w(x)=(i\mapsto w_{i}(x))$ なので右辺と等しい。$t=c$ なら両辺は $c^{\mathcal{M}^{U}}$ の定義そのもの。$t=f(t_{1},\dots,t_{n})$ なら、帰納法の仮定より $t_{k}^{\mathcal{M}^{U},[w]}=[g_{k}]$（$g_{k}(i)=t_{k}^{\mathcal{M}_{i},w_{i}}$）で、$f^{\mathcal{M}^{U}}$ の定義（代表元によらないことは \ref{model:ultraproduct-well-defined}）より左辺は $[i\mapsto f^{\mathcal{M}_{i}}(g_{1}(i),\dots,g_{n}(i))]=[i\mapsto t^{\mathcal{M}_{i},w_{i}}]$。
+:::
+
+## ウォシュの定理 {#model:sec-los}
+
+::: theorem ウォシュの定理 {#model:los-theorem keywords="Łoś's theorem, fundamental theorem of ultraproducts" index="ウォシュの定理|うぉしゅのていり, 超積の基本定理|ちょうせきのきほんていり"}
+（AC）$(\mathcal{M}_{i})_{i\in I}$ を $\mathcal{L}$ 構造の族、$U$ を $I$ 上の超フィルターとする。任意の論理式 $\varphi$ と $w\colon\mathrm{Var}\to\prod_{i}M_{i}$ について
+$$
+\prod_{i}\mathcal{M}_{i}/U,\ [w]\models\varphi\iff\{i\in I:\mathcal{M}_{i},w_{i}\models\varphi\}\in U .
+$$
+とくに文 $\sigma$ について、$\prod_{i}\mathcal{M}_{i}/U\models\sigma\iff\{i:\mathcal{M}_{i}\models\sigma\}\in U$。
+:::
+
+::: proof
+$\varphi$ に関する構造的帰納法で、「**すべての** $w$ について主張が成り立つ」ことを示す（全称の場合に、書き換えた $w[x\mapsto g]$ について帰納法の仮定を使うため）。$\mathcal{M}^{U}=\prod_{i}\mathcal{M}_{i}/U$ と書く。
+
+**Step 1（$\bot$）.** 左辺は偽（\ref{logic:satisfaction} の 1）、右辺の集合は $\varnothing\notin U$。
+
+**Step 2（等式）.** \ref{model:ultraproduct-terms} より、$\mathcal{M}^{U},[w]\models t=s$ は $[i\mapsto t^{\mathcal{M}_{i},w_{i}}]=[i\mapsto s^{\mathcal{M}_{i},w_{i}}]$、すなわち $\{i:t^{\mathcal{M}_{i},w_{i}}=s^{\mathcal{M}_{i},w_{i}}\}\in U$ と同値であり、この集合は $\lVert t=s\rVert_{w}$ である。
+
+**Step 3（関係記号）.** \ref{model:ultraproduct-terms} と $P^{\mathcal{M}^{U}}$ の定義より、$\mathcal{M}^{U},[w]\models P(t_{1},\dots,t_{n})$ は $\{i:(t_{1}^{\mathcal{M}_{i},w_{i}},\dots,t_{n}^{\mathcal{M}_{i},w_{i}})\in P^{\mathcal{M}_{i}}\}=\lVert P(t_{1},\dots,t_{n})\rVert_{w}\in U$ と同値である。
+
+**Step 4（含意）.** 充足の定義 4 より $\lVert\alpha\to\beta\rVert_{w}=(I\setminus\lVert\alpha\rVert_{w})\cup\lVert\beta\rVert_{w}$。\ref{model:ultrafilter-basic} の 3, 1 より
+$$
+\lVert\alpha\to\beta\rVert_{w}\in U\iff\lVert\alpha\rVert_{w}\notin U\ \text{または}\ \lVert\beta\rVert_{w}\in U .
+$$
+帰納法の仮定より右辺は「$\mathcal{M}^{U},[w]\not\models\alpha$ または $\mathcal{M}^{U},[w]\models\beta$」、すなわち $\mathcal{M}^{U},[w]\models\alpha\to\beta$ と同値である。
+
+**Step 5（全称, 左辺の書き換え）.** $\mathcal{M}^{U}$ の元はすべて、ある $g\in\prod_{i}M_{i}$ の同値類 $[g]$ である（同値類は空でないので、その元を一つとればよい。一つの元を選ぶだけなので選択公理は要らない）。よって $(\ast)$ と帰納法の仮定（割り当て $w[x\mapsto g]$ に適用）より
+$$
+\mathcal{M}^{U},[w]\models\forall x\,\alpha\iff\text{すべての }g\in\textstyle\prod_{i}M_{i}\text{ について }\mathcal{M}^{U},[\,w[x\mapsto g]\,]\models\alpha\iff\text{すべての }g\text{ について }\lVert\alpha\rVert_{w[x\mapsto g]}\in U .
+$$
+
+**Step 6（全称, $\Leftarrow$）.** $\lVert\forall x\,\alpha\rVert_{w}\in U$ とし、$g$ を任意にとる。$i\in\lVert\forall x\,\alpha\rVert_{w}$ なら、充足の定義 5 を $a=g(i)$ に使い $(\ast)$ から $\mathcal{M}_{i},(w[x\mapsto g])_{i}\models\alpha$。よって $\lVert\forall x\,\alpha\rVert_{w}\subset\lVert\alpha\rVert_{w[x\mapsto g]}$ で、右辺も $U$ に属する。
+
+**Step 7（全称, $\Rightarrow$）.** 対偶を示す。$A\defeq\lVert\forall x\,\alpha\rVert_{w}\notin U$ とする。$i\notin A$ については、$B_{i}\defeq\{a\in M_{i}:\mathcal{M}_{i},w_{i}[x\mapsto a]\not\models\alpha\}$ は空でない。選択公理により、$i\notin A$ では $g(i)\in B_{i}$、$i\in A$ では $g(i)=w(x)(i)$ となる $g\in\prod_{i}M_{i}$ をとる。すると $i\notin A$ について $\mathcal{M}_{i},(w[x\mapsto g])_{i}\not\models\alpha$ なので $\lVert\alpha\rVert_{w[x\mapsto g]}\subset A$。$\lVert\alpha\rVert_{w[x\mapsto g]}\in U$ なら上方について閉じていることから $A\in U$ となり矛盾するので、$\lVert\alpha\rVert_{w[x\mapsto g]}\notin U$。Step 5 より $\mathcal{M}^{U},[w]\not\models\forall x\,\alpha$。
+
+**Step 8（文）.** $\sigma$ が文なら、一致補題（\ref{logic:coincidence}）より両辺とも割り当てによらない。$w$ として任意のもの（たとえば値がすべて $\prod_{i}M_{i}$ の一つの元である写像）をとればよい。
+
+::: hypcheck
+- **超フィルターであること**：Step 4 の含意（補集合と和についての \ref{model:ultrafilter-basic} の 1, 3）。ただのフィルター $\mathcal{F}$ で作った**被約積** $\prod_{i}\mathcal{M}_{i}/\mathcal{F}$ では、Step 1–3 と、Step 6 の上方への閉包は成り立つが、Step 4 が崩れ、否定を含む論理式で定理が成り立たない。
+- **選択公理**：Step 7 の $g$ の選択と、直積が空でないこと（\ref{model:ultraproduct-equivalence}）。
+- **帰納法の形**：「すべての $w$ について」を帰納法の仮定に含めることが Step 5 で本質的である。
+- 基本記号は $\bot,=,P,\to,\forall$ なので、この 5 つの場合で全論理式を尽くす（略記 $\neg,\wedge,\vee,\exists$ はこれらで定義されている）。
+:::
+:::
+
+::: corollary 任意の割り当てについてのウォシュの定理 {#model:los-any-assignment}
+（AC）$\mathcal{M}^{U}$ の任意の割り当て $v$ はある $w\colon\mathrm{Var}\to\prod_{i}M_{i}$ で $v=[w]$ と書け、$\mathcal{M}^{U},v\models\varphi\iff\lVert\varphi\rVert_{w}\in U$ である。
+:::
+
+::: proof
+選択公理により各変数 $x$ について代表元 $w(x)\in v(x)$ を選べば $[w]=v$。あとは \ref{model:los-theorem} による。
+:::
+
+::: definition 初等的同値 {#model:elementary-equivalence keywords="elementary equivalence, complete theory of a structure" index="初等的同値|しょとうてきどうち, 構造の理論|こうぞうのりろん"}
+$\mathcal{L}$ 構造 $\mathcal{M}$ について、$\mathcal{M}$ で真な $\mathcal{L}$ の文全体を $\mathrm{Th}(\mathcal{M})$ と書く。$\mathcal{L}$ 構造 $\mathcal{M},\mathcal{N}$ が**初等的同値**であるとは、$\mathrm{Th}(\mathcal{M})=\mathrm{Th}(\mathcal{N})$ となることをいい、$\mathcal{M}\equiv\mathcal{N}$ と書く。
+:::
+
+::: corollary 超冪と対角写像 {#model:ultrapower-diagonal keywords="diagonal embedding, ultrapower is elementarily equivalent"}
+（AC）$\mathcal{M}$ を $\mathcal{L}$ 構造、$U$ を $I$ 上の超フィルターとし、$d\colon M\to M^{I}/U$ を $d(a)\defeq[\,i\mapsto a\,]$ と定める。任意の論理式 $\varphi$ と $\mathcal{M}$ の割り当て $v$ について
+$$
+\mathcal{M},v\models\varphi\iff\mathcal{M}^{I}/U,\ d\circ v\models\varphi .
+$$
+とくに $\mathcal{M}^{I}/U\equiv\mathcal{M}$ であり、$d$ は単射である。
+:::
+
+::: proof
+$w(x)\defeq(i\mapsto v(x))$ とおくと、すべての $i$ で $w_{i}=v$、また $[w]=d\circ v$。よって $\lVert\varphi\rVert_{w}$ は、$\mathcal{M},v\models\varphi$ なら $I$、そうでなければ $\varnothing$ である。$I\in U$, $\varnothing\notin U$ とウォシュの定理から主張が従う。文については一致補題による。単射性：$a\neq b$ なら $\{i:a=b\}=\varnothing\notin U$ なので $d(a)\neq d(b)$。
+:::
+
+## コンパクト性定理の意味論的な証明 {#model:sec-compactness-semantic}
+
+::: theorem コンパクト性定理（ウォシュの定理による証明） {#model:compactness-via-los keywords="semantic proof of the compactness theorem, compactness via ultraproducts"}
+（AC）$\mathcal{L}$ を任意の言語とする。$\mathcal{L}$ の論理式の集合 $\Sigma$ のすべての有限部分集合が充足可能ならば、$\Sigma$ は充足可能である。
+:::
+
+::: proof
+**Step 1（添字集合）.** $I$ を $\Sigma$ の有限部分集合全体とする（$\varnothing\in I$ なので $I\neq\varnothing$）。仮定と選択公理により、各 $\Delta\in I$ について $\mathcal{M}_{\Delta},v_{\Delta}\models\Delta$ となる構造と割り当てを選ぶ。
+
+**Step 2（超フィルター）.** $\psi\in\Sigma$ について $X_{\psi}\defeq\{\Delta\in I:\psi\in\Delta\}$ とおく。$\psi_{1},\dots,\psi_{n}\in\Sigma$ について $\{\psi_{1},\dots,\psi_{n}\}\in X_{\psi_{1}}\cap\cdots\cap X_{\psi_{n}}$ なので、族 $\{X_{\psi}:\psi\in\Sigma\}$ は有限交叉性をもつ。超フィルター補題（\ref{model:ultrafilter-lemma}）より、すべての $X_{\psi}$ を含む $I$ 上の超フィルター $U$ がある（$\Sigma=\varnothing$ なら族は空で、任意の超フィルター、たとえば単項のものでよい）。
+
+**Step 3（割り当て）.** $w\colon\mathrm{Var}\to\prod_{\Delta}M_{\Delta}$ を $w(x)(\Delta)\defeq v_{\Delta}(x)$ で定める。すると $w_{\Delta}=v_{\Delta}$ である。
+
+**Step 4（ウォシュの定理）.** $\psi\in\Sigma$ とする。$\Delta\in X_{\psi}$ なら $\psi\in\Delta$ なので $\mathcal{M}_{\Delta},v_{\Delta}\models\psi$。よって $X_{\psi}\subset\lVert\psi\rVert_{w}$ で、$X_{\psi}\in U$ より $\lVert\psi\rVert_{w}\in U$。ウォシュの定理（\ref{model:los-theorem}）より $\prod_{\Delta}\mathcal{M}_{\Delta}/U,[w]\models\psi$。$\psi$ は任意なので、この構造と割り当てが $\Sigma$ を充足する。
+
+::: hypcheck
+- **有限部分集合の充足可能性**：Step 1 の $\mathcal{M}_{\Delta},v_{\Delta}$ の存在と、Step 4 の $X_{\psi}\subset\lVert\psi\rVert_{w}$。
+- **$X_{\psi}$ の有限交叉性**：Step 2。ここで $I$ を「有限部分集合全体」にとったことが効いている。
+- **選択公理**：Step 1 の構造の選択、Step 2 の超フィルター補題、Step 4 で使うウォシュの定理。導出・無矛盾性・完全性定理はまったく使っていない。
+:::
+:::
+
+::: supplement
+**二つの証明の比較.** \ref{logic:compactness} の証明は「充足可能でない $\Rightarrow$ 矛盾が導ける（完全性）$\Rightarrow$ 導出は有限の前提しか使わない」と、構文論を経由する。ここでの証明は、有限部分のモデルたちを「多数決」で貼り合わせて直接モデルを作る。前者はモデルの濃度の上限 $\lvert\mathcal{L}\rvert+\aleph_{0}$ も同時に与えるが、後者で作られる超積は一般に大きい。濃度を小さくするには、下降レーヴェンハイム–スコーレムの定理（\ref{logic:downward-lowenheim-skolem}）を後から適用すればよい。
+
+**命題論理との対応.** 命題論理の証明 3（\ref{logic:page-prop-compactness}）では、$\bar{v}(p)=1\iff\{\Delta:\bar{v}_{\Delta}(p)=1\}\in U$ で付値を定めた。これは「真理値の集合 $\{0,1\}$ の超冪」をとったことにあたり、有限集合の超冪は元の集合と同じ（問題 \ref{model:prob-ultrapower-finite}）なので、商をとる手間が要らなかった。一階の場合は領域が無限になりうるので、元の同一視（$\sim_{U}$）と、量化子の場合（Step 7 の選択）が新しく必要になる。
+:::
+
+## 例 {#model:sec-ultraproducts-examples}
+
+::: example 自然数の超冪 {#model:ex-nonstandard-ultrapower}
+$U$ を $\N$ 上の非単項超フィルター（\ref{model:nonprincipal-ultrafilter}）とし、算術の標準構造 $\mathcal{N}$ の超冪 $\mathcal{N}^{\N}/U$ を考える。\ref{model:ultrapower-diagonal} より $\mathcal{N}^{\N}/U\equiv\mathcal{N}$ である。恒等写像 $\mathrm{id}\colon\N\to\N$ の類 $[\mathrm{id}]$ は、各 $n$ について $\{i:n<i\}$ の補集合が有限で $U$ に属するので、ウォシュの定理より $d(n)<[\mathrm{id}]$ を満たす。よって $[\mathrm{id}]$ はどの $d(n)$ とも異なる「無限大の自然数」であり、$\mathcal{N}^{\N}/U$ は \ref{logic:ex-nonstandard-arithmetic} の意味で超準モデルである。こちらはコンパクト性定理を経由せず、具体的に作られている。
+:::
+
+::: example 標数の極限 {#model:ex-ultraproduct-char-zero}
+体の言語 $\{0,1,+,\times,-\}$ で考える。素数全体を $I$、$U$ を $I$ 上の非単項超フィルターとし、有限体 $\mathbb{F}_{p}$ の超積 $K\defeq\prod_{p\in I}\mathbb{F}_{p}/U$ をとる。体の公理は各 $\mathbb{F}_{p}$ で真なので $K$ でも真（ウォシュの定理, 集合 $I\in U$）で、$K$ は体である。素数 $q$ について文 $\chi_{q}\defeq\neg(1+\cdots+1=0)$（$1$ が $q$ 個）は $p\neq q$ のすべての $\mathbb{F}_{p}$ で真であり、$I\setminus\{q\}\in U$ なので $K\models\chi_{q}$。よって $K$ は標数 $0$ の体である。各成分の標数は正なのに、極限では標数 $0$ になる。
+:::
+
+## 問題 {#model:sec-ultraproducts-problems}
+
+::: problem {#model:prob-principal-ultraproduct}
+$U$ を $i_{0}\in I$ で生成される単項超フィルターとする。$\prod_{i}\mathcal{M}_{i}/U$ は $\mathcal{M}_{i_{0}}$ と同型であることを示せ。
+:::
+
+::: solution
+$h([g])\defeq g(i_{0})$ と定める。$g\sim_{U}g'\iff i_{0}\in\{i:g(i)=g'(i)\}\iff g(i_{0})=g'(i_{0})$ なので、$h$ は well-defined かつ単射である。全射性：$a\in M_{i_{0}}$ について、$g(i_{0})=a$ となる $g\in\prod_{i}M_{i}$ がある（他の成分は選択公理で選ぶ）。定数・関数記号の保存は定義から $h(c^{\mathcal{M}^{U}})=c^{\mathcal{M}_{i_{0}}}$, $h(f^{\mathcal{M}^{U}}([g_{1}],\dots))=f^{\mathcal{M}_{i_{0}}}(g_{1}(i_{0}),\dots)$。関係記号：$([g_{1}],\dots)\in P^{\mathcal{M}^{U}}\iff i_{0}\in\{i:(g_{1}(i),\dots)\in P^{\mathcal{M}_{i}}\}\iff(g_{1}(i_{0}),\dots)\in P^{\mathcal{M}_{i_{0}}}$。よって $h$ は同型写像である（\ref{logic:isomorphism-invariance} の意味）。単項超フィルターの超積は何も新しいものを作らない。
+:::
+
+::: problem {#model:prob-finite-index-principal}
+有限集合 $I$ 上の超フィルターはすべて単項であることを示せ。
+:::
+
+::: solution
+$U$ が単項でないとすると、各 $i\in I$ について $\{i\}\notin U$ である（$\{i\}\in U$ なら $U$ は $i$ で生成される単項超フィルターを含み、超フィルターどうしの包含は一致を意味する：$X\in U'$, $X\notin U$ なら $I\setminus X\in U\subset U'$ で矛盾）。\ref{model:ultrafilter-basic} の 1 より $I\setminus\{i\}\in U$。$I$ は有限なので、有限個の共通部分 $\bigcap_{i\in I}(I\setminus\{i\})=\varnothing$ が $U$ に属し、矛盾である。
+:::
+
+::: problem {#model:prob-ultrapower-finite}
+$\mathcal{M}$ を有限構造とする。任意の超フィルター $U$ について $d\colon M\to M^{I}/U$（\ref{model:ultrapower-diagonal}）は全射であり、$\mathcal{M}^{I}/U\cong\mathcal{M}$ であることを示せ。
+:::
+
+::: solution
+$M=\{a_{1},\dots,a_{n}\}$ とし、$g\in M^{I}$ について $Y_{k}\defeq\{i:g(i)=a_{k}\}$ とおく。$Y_{1}\cup\cdots\cup Y_{n}=I\in U$ なので、\ref{model:ultrafilter-basic} の 3 を繰り返し使って、ある $k$ で $Y_{k}\in U$。これは $g\sim_{U}(i\mapsto a_{k})$、すなわち $[g]=d(a_{k})$ を意味する。よって $d$ は全単射である。定数・関数記号の保存は定義から、関係記号の保存は \ref{model:ultrapower-diagonal}（原子論理式に適用）から従うので、$d$ は同型写像である。
+:::
+
+::: problem {#model:prob-ultraproduct-infinite}
+$U$ を $\N$ 上の非単項超フィルターとし、各 $n$ について $\mathcal{M}_{n}$ を少なくとも $n$ 個の元をもつ有限構造とする。$\prod_{n}\mathcal{M}_{n}/U$ は無限であることを示し、これから \ref{logic:ex-finiteness} の結論（有限構造全体は一階の文の集合で公理化できない）を再証明せよ。
+:::
+
+::: solution
+$\lambda_{k}$ を「少なくとも $k$ 個の元がある」という文（\ref{logic:ex-finiteness}）とする。$\{n:\mathcal{M}_{n}\models\lambda_{k}\}\supset\{n:n\ge k\}$ で、右辺は補集合が有限なので $U$ に属する（\ref{model:nonprincipal-ultrafilter} の構成、あるいは問題 \ref{model:prob-finite-index-principal} と同様の議論で、非単項超フィルターは補集合が有限な集合をすべて含む）。ウォシュの定理より超積は $\lambda_{k}$ をすべての $k$ で満たし、無限である。文の集合 $\Sigma$ のモデルがちょうど有限構造全体なら、各 $\mathcal{M}_{n}$ は $\Sigma$ のモデルで、ウォシュの定理より超積も $\Sigma$ のモデル、すなわち有限でなければならず、矛盾する。
+
+（補足：非単項超フィルター $U$ が補集合が有限な集合 $X$ を含むこと。$I\setminus X=\{i_{1},\dots,i_{m}\}$ とすると、各 $\{i_{k}\}\notin U$ なので $I\setminus\{i_{k}\}\in U$、その共通部分 $X$ も $U$ に属する。）
+:::
+
+::: supplement
+**高い視点から：超積は「大きい集合への制限」の余極限である.** フィルター $\mathcal{F}$ の元 $X$ ごとに部分積 $\prod_{i\in X}\mathcal{M}_{i}$ を考え、$X\supset Y$ のとき制限写像 $\prod_{i\in X}\to\prod_{i\in Y}$ をとると、$\mathcal{F}$ は逆包含について有向なので有向系ができる。集合として、被約積 $\prod_{i}M_{i}/\mathcal{F}$ はこの有向系の余極限（有向和）と一致する：二つの列が同一視されるのは「ある大きい集合 $X$ 上で一致する」ときだからである。直観的には、超積は「無視できる添字の集合を捨てるたびに得られる積」の極限であり、$\mathcal{F}$ が超フィルターのとき、この極限はあらゆる性質について「成り立つ」か「成り立たない」かを決めるほど細かい。
+
+**位相的な見方.** $I$ 上の超フィルター全体は、$I$ の（離散位相についての）ストーン–チェックのコンパクト化 $\beta I$ と同一視され、単項超フィルターが $I$ の点、非単項超フィルターが「無限遠の点」にあたる。超積 $\prod_{i}\mathcal{M}_{i}/U$ は、族 $i\mapsto\mathcal{M}_{i}$ の、点 $U\in\beta I$ での「極限」とみなせる。ウォシュの定理は「真理値はこの極限操作と可換である」という連続性の主張であり、コンパクト性定理の名前との関係（\ref{logic:compactness} の後の補足）もこの見方から理解できる。これらは一般的な見方として述べられるもので、本サイトでは圏論的な定式化の詳細は扱わない。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

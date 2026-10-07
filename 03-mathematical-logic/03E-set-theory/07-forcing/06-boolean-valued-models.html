@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>埋め込み・同型・ブール値モデル | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/07-forcing/06-boolean-valued-models.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 埋め込み・同型・ブール値モデル {#set:page-embeddings-bvm keywords="complete embedding, dense embedding, completely contained, reduction, isomorphic posets give the same extensions, Boolean-valued models, truth value, very nice names"}
+
+$\PP,\mathbb{Q}\in M$ を p.o.、$i\in M$ を $\PP$ を $\mathbb{Q}$ の部分順序として埋め込む写像とする。$i$ に適当な制限を課すと、$i$ を使って $\PP$ による強制の仕組み全体を $\mathbb{Q}$ による強制の仕組みに埋め込める。この一つの考え方には、一見無関係な多くの応用がある。$\PP=\mathbb{Q}$ の場合は $\ZF+\lnot\mathrm{AC}$ のモデルの構成の鍵になる（Kunen 第 VII 章の演習 E1–E5）。$i$ が同型なら、（$M$ に属する同型で）同型な p.o. は同じジェネリック拡大を与える。$\PP\subseteq\mathbb{Q}$ で $i$ が包含なら、大きい p.o. はより大きい拡大を与えると考えられ、これは第 VIII 章の反復強制で決定的に重要になる。最後に、これらの考え方を使って強制をブール値モデルと結びつける。（Kunen 第 VII 章 §7 に対応する。）
+
+## 記法と定義の確認 {#set:sec-embeddings-notation}
+
+::: notation
+- 本ページを通して $M$ は $\ZFC$ の c.t.m. で固定する。p.o.、ジェネリック、名前、$\tau_{G}$、$M[G]$ と \ref{set:m-g-minimal}, \ref{set:generic-dense-below} は \ref{set:page-generic-extensions}、強制関係と強制定理（\ref{set:forcing-theorem}）、その系（\ref{set:forcing-basic}, \ref{set:forcing-corollary}）は \ref{set:page-forcing-relation}、\ref{set:mg-model-zfc}, \ref{set:forcing-equivalent} は \ref{set:page-zfc-in-mg}、よい名前（\ref{set:nice-name}, \ref{set:nice-name-exists}）は \ref{set:page-fn-forcing} のとおり。
+- ブール代数（\ref{set:boolean-algebra}。補元は $-a$、$\mathbb{B}^{+}=\mathbb{B}\setminus\{\mathbf{0}\}$）、完備ブール代数（\ref{set:complete-boolean-algebra}）、ブール完備化（\ref{set:boolean-completion}）は第 II 章のとおり。
+- $\mathrm{Fn}(I,J,\lambda)$ は \ref{set:fn-lambda} のとおり。
+:::
+
+## 完全な埋め込み {#set:sec-complete-embedding}
+
+まず上の三つ目の応用を調べる。$\PP$ が $\mathbb{Q}$ の部分順序、すなわち $\PP\subseteq\mathbb{Q}$ かつ $\le_{\PP}=\le_{\mathbb{Q}}\cap(\PP\times\PP)$ とする。このとき $\mathbb{Q}$ は「より大きい」拡大を与える「はず」である：$H$ が $M$ 上 $\mathbb{Q}$-ジェネリックなら、$H\cap\PP$ は $M$ 上 $\PP$-ジェネリックで $M[H\cap\PP]\subseteq M[H]$ となる「はず」である。しかし、$\PP$ と $\mathbb{Q}$ にさらに制限を課さなければこれは偽である。
+
+必要な制限の一つを見るため、$p_{1},p_{2}\in\PP$ が $\PP$ で両立しないが $\mathbb{Q}$ で両立するとし、$q\in\mathbb{Q}$, $q\le p_{1}$, $q\le p_{2}$ とする。$H$ が $\mathbb{Q}$-ジェネリックで $q\in H$ なら $p_{1},p_{2}\in H$ で、$H\cap\PP$ は $\PP$ のフィルターですらない。したがって、$\PP$ で両立しない $p_{1},p_{2}$ は $\mathbb{Q}$ でも両立しないことを要求しなければならない。
+
+二つ目の制限を得るため、$q\in\mathbb{Q}$ を固定し $D\defeq\{p\in\PP:p\perp q\}$ とおく。$H$ が $\mathbb{Q}$-ジェネリックで $q\in H$ なら $H\cap D=\varnothing$ なので、$H\cap\PP$ が $\PP$-ジェネリックであってほしいなら、$D$ が $\PP$ で稠密でないことを要求すべきである。すなわち、ある $p\in\PP$ で
+$$
+\forall p'\in\PP\;(p'\le p\to p'\text{ と }q\text{ は }\mathbb{Q}\text{ で両立})
+$$
+となるものがなければならない。これら二つの制限が成り立つとき、$\PP$ は $\mathbb{Q}$ に**完全に含まれる**（$\PP\subseteq_{c}\mathbb{Q}$）ということにする。\ref{set:complete-embedding-generic} で見るように、これらの制限で十分である。ここでは、一つの p.o. から別の p.o. への埋め込みというもう少し一般的な枠組みで形式的に展開する。
+
+::: definition 完全な埋め込み {#set:complete-embedding keywords="complete embedding, reduction" index="完全な埋め込み|かんぜんなうめこみ, 縮約（条件の）|しゅくやく"}
+$\langle\PP,\le_{\PP},\mathbf{1}_{\PP}\rangle$, $\langle\mathbb{Q},\le_{\mathbb{Q}},\mathbf{1}_{\mathbb{Q}}\rangle$ を p.o.、$i\colon\PP\to\mathbb{Q}$ とする。$i$ が**完全な埋め込み**であるとは、次を満たすことをいう。
+1. $\forall p,p'\in\PP\,(p'\le p\to i(p')\le i(p))$。
+2. $\forall p_{1},p_{2}\in\PP\,(p_{1}\perp p_{2}\leftrightarrow i(p_{1})\perp i(p_{2}))$。
+3. $\forall q\in\mathbb{Q}\,\exists p\in\PP\,\forall p'\in\PP\,(p'\le p\to i(p')\text{ と }q\text{ は }\mathbb{Q}\text{ で両立})$。
+
+3 の $p$ を $q$ の $\PP$ への**縮約**という。
+:::
+
+\ref{set:complete-embedding} では、どの順序を指すかは文脈から明らかなので、$\le_{\PP}$, $\le_{\mathbb{Q}}$ の添字はすぐに省く。$\perp$ にも形式的には添字が要る。3 の縮約 $p$ は一意ではない：$p_{1}\le p$ なら $p_{1}$ も縮約である。
+
+::: definition 完全に含まれる {#set:completely-contained keywords="P is completely contained in Q" index="完全に含まれる|かんぜんにふくまれる"}
+$\PP\subseteq_{c}\mathbb{Q}$（$\PP$ は $\mathbb{Q}$ に完全に含まれる）とは、$\le_{\PP}=\le_{\mathbb{Q}}\cap(\PP\times\PP)$ で、包含（恒等）写像 $\PP\to\mathbb{Q}$ が完全な埋め込みであることをいう。
+:::
+
+$i$ が包含なら、\ref{set:complete-embedding} の 1 は自明に成り立ち、2 と 3 はちょうど上で論じた二つの制限である。一般の枠組みでは、1 を $\forall p,p'\,(p'\le p\leftrightarrow i(p')\le i(p))$ とし、$i$ の単射性や $i(\mathbf{1}_{\PP})=\mathbf{1}_{\mathbb{Q}}$ を加えることを期待するかもしれない。興味ある場合の多く（すべてではない）でこれらは成り立つ（Kunen 第 VII 章の演習 C2）が、一般論は \ref{set:complete-embedding} のままで同じように易しく、後で見るように、ブール値モデルの理論ではこの一般性が必要になる。なお 2 の右から左は 1 から従う（$p$ が $p_{1},p_{2}$ の共通の拡張なら $i(p)$ は $i(p_{1}),i(p_{2})$ の共通の拡張）が、左から右は新しい条件である。
+
+自明な例として、$\PP$ のすべての元が両立し、すべての $p$ について $i(p)=\mathbf{1}_{\mathbb{Q}}$ なら、$i$ は完全な埋め込みである。より有用な例は次のとおり。
+
+::: lemma 完全な埋め込みの例 {#set:complete-embedding-examples}
+1. $i$ が $\PP$ から $\mathbb{Q}$ の上への同型なら、$i$ は完全な埋め込みである。
+2. $I\subseteq I'$ なら $\mathrm{Fn}(I,J,\lambda)\subseteq_{c}\mathrm{Fn}(I',J,\lambda)$。
+:::
+
+::: proof
+**1.** 1, 2 は同型であることから、3 は $q$ の縮約として $i^{-1}(q)$ をとればよい（$p'\le i^{-1}(q)$ なら $i(p')\le q$）。**2.** 1 と 2 は明らか（両立性はどちらの半順序でも「和が関数」で判定される）。3：$q\in\mathrm{Fn}(I',J,\lambda)$ について $q\restr I$ が縮約である。実際、$p'\in\mathrm{Fn}(I,J,\lambda)$, $p'\supseteq q\restr I$ なら、$p'$ と $q$ は $\dom(p')\cap\dom(q)\subseteq I\cap\dom(q)=\dom(q\restr I)$ で一致するので $p'\cup q$ は関数で、大きさは $\lambda$ 未満（$\lambda$ は無限）。
+:::
+
+「自然に現れる」包含がすべて完全な包含だと思ってはいけない。たとえば $\mathrm{Fn}(\kappa,2)\subseteq\mathrm{Fn}(\kappa,2,\omega_{1})$ だが、$\kappa\ge\omega$ ならこの包含は完全でない：\ref{set:complete-embedding} の 1, 2 は成り立つが、定義域が無限の $q\in\mathrm{Fn}(\kappa,2,\omega_{1})$ は $\mathrm{Fn}(\kappa,2)$ への縮約をもたない（有限の $p$ を $q$ と矛盾するように延長できる）。さらに c.t.m. $M$ に相対化すると、$\mathrm{Fn}(\kappa,2,\omega_{1})^{M}$ は $\mathrm{Fn}(\kappa,2)$ より大きい拡大を与えるとは考えられない：$\mathrm{Fn}(\kappa,2)$ は $\omega$ の新しい部分集合を加えるが、$\mathrm{Fn}(\kappa,2,\omega_{1})^{M}$ は加えない（\ref{set:closed-no-new-functions}）。
+
+次に、$\PP\subseteq_{c}\mathbb{Q}$ なら $\mathbb{Q}$ が本当により大きい拡大を与えることを示す。いつものように、関係する順序論的な概念はすべて $M$ に相対化すると予想されるが、「完全な埋め込み」と「$\subseteq_{c}$」の定義は $M$ について絶対的であることが容易に分かるので、これらを相対化する必要はない。準備として次を示す。
+
+::: lemma ジェネリック性の判定 {#set:generic-criterion}
+$\PP\in M$、$G\subseteq\PP$ とする。$G$ が $M$ 上 $\PP$-ジェネリックであることは、次の三条件と同値である。
+1. $\forall p,q\in G\,\exists r\in\PP\,(r\le p\land r\le q)$。
+2. $\forall p\in G\,\forall q\in\PP\,(q\ge p\to q\in G)$。
+3. $\forall D\subseteq\PP\,((D\in M\land D\text{ は }\PP\text{ で稠密})\to G\cap D\neq\varnothing)$。
+:::
+
+::: proof
+ジェネリックの定義との違いは、$G$ がフィルターであることを要求していた点、すなわち 1 の $r$ が $G$ に属することを要求していた点だけである（\ref{set:poset-filter}）。そこで $G$ が 1〜3 を満たすとし、$p,q\in G$ を固定して $\exists r\in G\,(r\le p\land r\le q)$ を示す。
+$$
+D\defeq\{r\in\PP:r\perp p\lor r\perp q\lor(r\le p\land r\le q)\}
+$$
+は稠密（$s\in\PP$ に対し、$s\perp p$ なら $s\in D$、そうでなければ $s,p$ の共通の拡張 $s'$ をとり、$s'\perp q$ なら $s'\in D$、そうでなければ $s',q$ の共通の拡張が $D$ に属する）で $M$ に属するので、3 より $r\in G\cap D$ がとれる。1 より $G$ の元は互いに両立するので $r\le p\land r\le q$。
+:::
+
+::: theorem 完全な埋め込みとジェネリック {#set:complete-embedding-generic keywords="complete embeddings pull back generic filters" index="完全な埋め込みとジェネリック|かんぜんなうめこみとじぇねりっく"}
+$i,\PP,\mathbb{Q}\in M$、$i\colon\PP\to\mathbb{Q}$ を完全な埋め込みとし、$H$ を $M$ 上 $\mathbb{Q}$-ジェネリックとする。このとき $i^{-1}[H]$ は $M$ 上 $\PP$-ジェネリックで、$M[i^{-1}[H]]\subseteq M[H]$。
+:::
+
+::: proof
+**ジェネリック性.** \ref{set:generic-criterion} の三条件を確かめる。1：$p,q\in i^{-1}[H]$ なら $i(p),i(q)\in H$ は両立するので、\ref{set:complete-embedding} の 2 より $p,q$ は両立する。2：$p\in i^{-1}[H]$, $q\ge p$ なら \ref{set:complete-embedding} の 1 より $i(q)\ge i(p)\in H$ なので $i(q)\in H$。3：$D\in M$ を $\PP$ で稠密とし、$i^{-1}[H]\cap D=\varnothing$ と仮定する。すると $H\cap i[D]=\varnothing$ で、$i[D]\in M$ なので、\ref{set:generic-dense-below} の 1 より $q\in H$ で $\forall q'\in i[D]\,(q'\perp q)$、すなわち $\forall p'\in D\,(i(p')\perp q)$ となるものがある。$q$ の $\PP$ への縮約 $p$ をとると、すべての $p'\le p$ について $i(p')$ と $q$ は両立するので $p'\notin D$。これは $D$ の稠密性に反する。
+
+**包含.** $i\in M\subseteq M[H]$, $H\in M[H]$ なので $i^{-1}[H]\in M[H]$（$M[H]$ は $\ZFC$ のモデル）。\ref{set:m-g-minimal} より $M[i^{-1}[H]]\subseteq M[H]$。
+:::
+
+逆に、$M$ 上 $\PP$-ジェネリックな $G$ が与えられれば、$G=i^{-1}[H]$ となる $\mathbb{Q}$-ジェネリックな $H$ がつねに見つかる。さらに、ある p.o. $\mathbb{R}\in M[G]$ と $M[G]$ 上 $\mathbb{R}$-ジェネリックな $K$ で $M[H]=M[G][K]$ となるものがある（Kunen 第 VII 章の演習 D3–D6）。完全な埋め込みと反復強制による拡大の関係は第 VIII 章で再び取り上げる。
+
+$i\colon\PP\to\mathbb{Q}$ が同型なら、\ref{set:complete-embedding-generic} を $i$ とその逆写像の両方に適用して、$M$ に属する同型で同型な p.o. は同じ拡大を与えることが分かる。
+
+::: corollary 同型な p.o. は同じ拡大を与える {#set:isomorphism-same-extension}
+\ref{set:complete-embedding-generic} で、さらに $i$ が同型であるとし、$G\subseteq\PP$ とする。$G$ が $M$ 上 $\PP$-ジェネリックであることと $i[G]$ が $M$ 上 $\mathbb{Q}$-ジェネリックであることは同値で、そのとき $M[G]=M[i[G]]$。
+:::
+
+::: proof
+$i^{-1}\in M$ も同型で完全な埋め込み（\ref{set:complete-embedding-examples}）であり、$i[G]=(i^{-1})^{-1}[G]$。\ref{set:complete-embedding-generic} を $i^{-1}$ に適用すると、$G$ がジェネリックなら $i[G]$ もジェネリックで $M[i[G]]\subseteq M[G]$。$i$ に適用すると逆向きと $M[G]=M[i^{-1}[i[G]]]\subseteq M[i[G]]$。
+:::
+
+たとえば $\kappa\ge\omega$、$\kappa\in M$ なら、$(\lvert\kappa\rvert=\lvert\kappa\times\omega\rvert)^{M}$ なので $\mathrm{Fn}(\kappa,2)$ と $\mathrm{Fn}(\kappa\times\omega,2)$ は $M$ の中で同型であり（$M$ に属する全単射 $j\colon\kappa\times\omega\to\kappa$ が $p\mapsto p\circ j$ で同型を誘導する）、同じ拡大を与える。前ページで $\mathrm{Fn}(\kappa\times\omega,2)$ を使ったのは、付け加えられる ${}^{\omega}2$ の元の $\kappa$-列を記述しやすかったからだが、$\mathrm{Fn}(\kappa,2)$ の方が書くのが速く、文献で通常参照されるのはこちらである。$(\kappa\ge\omega_{1})^{M}$ なら、$\mathrm{Fn}(\kappa,2)$ と $\mathrm{Fn}(\omega,2)$ は $\mathbf{V}$ では同型だが $M$ では同型でなく、同じ拡大を与えるとは限らない：一方の拡大では CH が成り立ち、他方では偽になりうる。
+
+$\mathrm{Fn}(\omega,2)$, $\mathrm{Fn}(\omega,3)$, $\mathrm{Fn}(\omega,\omega)$ は $M$ でも $\mathbf{V}$ でも同型でないが、同じ拡大を与える。これは次の稠密な埋め込みの概念を使って示せる（Kunen 第 VII 章の演習 C3）。
+
+## 稠密な埋め込み {#set:sec-dense-embedding}
+
+::: definition 稠密な埋め込み {#set:dense-embedding keywords="dense embedding" index="稠密な埋め込み|ちゅうみつなうめこみ"}
+p.o. $\PP,\mathbb{Q}$ と $i\colon\PP\to\mathbb{Q}$ について、$i$ が**稠密な埋め込み**であるとは次を満たすことをいう。
+1. $\forall p,p'\in\PP\,(p'\le p\to i(p')\le i(p))$。
+2. $\forall p_{1},p_{2}\in\PP\,(p_{1}\perp p_{2}\to i(p_{1})\perp i(p_{2}))$。
+3. $i[\PP]$ は $\mathbb{Q}$ で稠密。
+:::
+
+::: lemma {#set:dense-is-complete}
+稠密な埋め込みは完全な埋め込みである。
+:::
+
+::: proof
+\ref{set:complete-embedding} の 2 の右から左は 1 から従う（上の注意）。3：$q\in\mathbb{Q}$ について、$i(p)\le q$ となる $p\in\PP$（稠密性より存在）は $q$ の縮約である：$p'\le p$ なら $i(p')\le i(p)\le q$ なので $i(p')$ と $q$ は両立する。
+:::
+
+重要な特別な場合として次がある。
+
+::: corollary {#set:dense-suborder}
+$\PP$ が $\mathbb{Q}$ の部分順序で $\PP$ が $\mathbb{Q}$ で稠密なら、$\PP$ 上の恒等写像は $\mathbb{Q}$ への稠密な埋め込みである。
+:::
+
+::: proof
+1 は部分順序であることから。2：$p_{1},p_{2}$ が $\mathbb{Q}$ で共通の拡張 $q$ をもてば、稠密性より $p\le q$ となる $p\in\PP$ があり、$p$ は $\PP$ での共通の拡張。3 は仮定。
+:::
+
+$i\colon\PP\to\mathbb{Q}$ が稠密な埋め込みなら $\PP$ と $\mathbb{Q}$ は同じジェネリック拡大を与えることを、予備的な補題の後に示す。
+
+::: lemma {#set:generic-subset-equal}
+$\PP\in M$、$G_{1},G_{2}$ を $M$ 上 $\PP$-ジェネリックとし、$G_{1}\subseteq G_{2}$ とする。このとき $G_{1}=G_{2}$。
+:::
+
+::: proof
+$p\in G_{2}$ だが $p\notin G_{1}$ とする。$G_{1}\cap\{p\}=\varnothing$ なので、\ref{set:generic-dense-below} の 1（$E=\{p\}$）より $q\perp p$ となる $q\in G_{1}$ がある。$q,p\in G_{2}$ で $G_{2}$ はフィルターなので、これはありえない。
+:::
+
+::: theorem 稠密な埋め込みは同じ拡大を与える {#set:dense-embedding-same-extension keywords="dense embeddings give the same generic extensions" index="稠密な埋め込みと拡大|ちゅうみつなうめこみとかくだい"}
+$i,\PP,\mathbb{Q}\in M$、$i\colon\PP\to\mathbb{Q}$ を稠密な埋め込みとする。$G\subseteq\PP$ に対し $\hat{\imath}(G)\defeq\{q\in\mathbb{Q}:\exists p\in G\,(i(p)\le q)\}$ とおく。
+1. $H\subseteq\mathbb{Q}$ が $M$ 上 $\mathbb{Q}$-ジェネリックなら、$i^{-1}[H]$ は $M$ 上 $\PP$-ジェネリックで、$H=\hat{\imath}(i^{-1}[H])$。
+2. $G\subseteq\PP$ が $M$ 上 $\PP$-ジェネリックなら、$\hat{\imath}(G)$ は $M$ 上 $\mathbb{Q}$-ジェネリックで、$G=i^{-1}[\hat{\imath}(G)]$。
+3. 1 または 2 において、$G=i^{-1}[H]$（同値だが $H=\hat{\imath}(G)$）なら $M[G]=M[H]$。
+:::
+
+::: proof
+**ジェネリック性.** 1 の $i^{-1}[H]$ のジェネリック性は、稠密な埋め込みは完全な埋め込みなので（\ref{set:dense-is-complete}）\ref{set:complete-embedding-generic} から従う。2：$\hat{\imath}(G)$ はフィルターである：上に閉じていることは定義から、$q_{1},q_{2}\in\hat{\imath}(G)$ で $q_{k}\ge i(p_{k})$、$p_{k}\in G$ なら、$p\le p_{1},p_{2}$ となる $p\in G$ をとると $i(p)\le q_{1},q_{2}$ で $i(p)\in\hat{\imath}(G)$。ジェネリック性：$D\in M$ を $\mathbb{Q}$ で稠密とし、$D^{*}\defeq\{p\in\PP:\exists q\in D\,(i(p)\le q)\}\in M$ とおく。$D^{*}\cap G\neq\varnothing$ なら $D\cap\hat{\imath}(G)\neq\varnothing$ なので、$D^{*}$ が $\PP$ で稠密であることを示せばよい。$p\in\PP$ を固定し、$q\le i(p)$ となる $q\in D$、$i(p')\le q$ となる $p'\in\PP$ をとる。$i(p')\le i(p)$ なので $i(p')$ と $i(p)$ は両立し、稠密な埋め込みの 2 の対偶より $p'$ と $p$ は両立する。共通の拡張 $p''\le p,p'$ をとると $i(p'')\le i(p')\le q\in D$ なので $p''\in D^{*}$、$p''\le p$。
+
+**等式.** 2 で、$\hat{\imath}(G)$ が $\mathbb{Q}$-ジェネリックであることを見たので、$i^{-1}[\hat{\imath}(G)]$ は $\PP$-ジェネリック（\ref{set:complete-embedding-generic}）。$G\subseteq i^{-1}[\hat{\imath}(G)]$ は定義から明らかなので、\ref{set:generic-subset-equal} より等号が成り立つ。同様に 1 で、$\hat{\imath}(i^{-1}[H])\subseteq H$ は定義から直ちに従い（$q\ge i(p)\in H$ なら $q\in H$）、両辺ともジェネリックなので \ref{set:generic-subset-equal} より等しい。
+
+**3.** $M[G]\subseteq M[H]$ は \ref{set:complete-embedding-generic}。同じ証明で $M[H]\subseteq M[G]$：$H=\hat{\imath}(G)\in M[G]$（$i\in M$）かつ $M\subseteq M[G]$ なので、\ref{set:m-g-minimal} より $M[H]\subseteq M[G]$。
+:::
+
+$i\colon\PP\to\mathbb{Q}$ を使って、各 $\PP$-名前に同じ対象を指す $\mathbb{Q}$-名前を対応させることもできる。
+
+::: definition 名前の翻訳 {#set:name-translation keywords="translation of names along an embedding, i*"}
+$i\colon\PP\to\mathbb{Q}$ について、$\tau\in\mathbf{V}^{\PP}$ に関する再帰で
+$$
+i^{*}(\tau)\defeq\{\langle i^{*}(\sigma),i(p)\rangle:\langle\sigma,p\rangle\in\tau\}
+$$
+と定める。
+:::
+
+$i^{*}(\tau)\in\mathbf{V}^{\mathbb{Q}}$ であり、$i^{*}$ の定義が $M$ について絶対的であることは容易に分かるので、$\PP,\mathbb{Q},i\in M$ なら $i^{*}\colon M^{\PP}\to M^{\mathbb{Q}}$。
+
+::: lemma 名前の翻訳と強制 {#set:name-translation-basic}
+$i,\PP,\mathbb{Q}\in M$、$i\colon\PP\to\mathbb{Q}$ を完全な埋め込みとする。
+1. $H$ が $M$ 上 $\mathbb{Q}$-ジェネリックなら、各 $\tau\in M^{\PP}$ について $\mathrm{val}(\tau,i^{-1}[H])=\mathrm{val}(i^{*}(\tau),H)$。
+2. $\varphi(x_{1},\dots,x_{n})$ が $\ZFC$ の推移的なモデルについて絶対的な論理式なら、$p\Vdash_{\PP}\varphi(\tau_{1},\dots,\tau_{n})\iff i(p)\Vdash_{\mathbb{Q}}\varphi(i^{*}(\tau_{1}),\dots,i^{*}(\tau_{n}))$。
+3. $i$ が稠密な埋め込みなら、任意の論理式 $\varphi$ について $p\Vdash_{\PP}\varphi(\vec{\tau})\iff i(p)\Vdash_{\mathbb{Q}}\varphi(i^{*}(\vec{\tau}))$。
+:::
+
+::: proof
+**1.** $\tau$ に関する帰納法：
+$$
+\begin{aligned}
+\mathrm{val}(i^{*}(\tau),H)&=\{\mathrm{val}(i^{*}(\sigma),H):\exists p\,(\langle\sigma,p\rangle\in\tau\land i(p)\in H)\}\\
+&=\{\mathrm{val}(\sigma,i^{-1}[H]):\exists p\in i^{-1}[H]\,(\langle\sigma,p\rangle\in\tau)\}.
+\end{aligned}
+$$
+これは $H$ のジェネリック性も $i$ の完全性も使わない。
+
+**2, 3 の左から右.** $p\Vdash_{\PP}\varphi(\vec{\tau})$ とし、$H\subseteq\mathbb{Q}$ を $i(p)\in H$ となる $M$ 上ジェネリックなものとする。$p\in i^{-1}[H]$ で、$i^{-1}[H]$ はジェネリック（\ref{set:complete-embedding-generic}）なので、$\Vdash_{\PP}$ の定義より $\varphi^{M[i^{-1}[H]]}(\mathrm{val}(\tau_{1},i^{-1}[H]),\dots)$。1 より値は $\mathrm{val}(i^{*}(\tau_{k}),H)$ に等しく、$M[i^{-1}[H]]\subseteq M[H]$ はともに $\ZFC$ の推移的なモデルなので、2 では $\varphi$ の絶対性（両方とも $\mathbf{V}$ と一致する）により、3 では $M[i^{-1}[H]]=M[H]$（\ref{set:dense-embedding-same-extension}）により、$\varphi^{M[H]}(\mathrm{val}(i^{*}(\vec{\tau}),H))$。$\Vdash_{\mathbb{Q}}$ の定義より $i(p)\Vdash_{\mathbb{Q}}\varphi(i^{*}(\vec{\tau}))$。
+
+**2, 3 の右から左.** $\lnot(p\Vdash_{\PP}\varphi(\vec{\tau}))$ とすると、\ref{set:forcing-corollary} の 1, 2 より $p'\Vdash_{\PP}\lnot\varphi(\vec{\tau})$ となる $p'\le p$ がある。$\lnot\varphi$ も（2 の場合）絶対的なので、左から右より $i(p')\Vdash_{\mathbb{Q}}\lnot\varphi(i^{*}(\vec{\tau}))$。$i(p')\le i(p)$ なので、$i(p)\Vdash_{\mathbb{Q}}\varphi(i^{*}(\vec{\tau}))$ なら $i(p')$ は $\varphi$ と $\lnot\varphi$ の両方を強制し、$i(p')\in H$ となるジェネリックな $H$ で矛盾する。よって $\lnot(i(p)\Vdash_{\mathbb{Q}}\varphi(i^{*}(\vec{\tau})))$。
+:::
+
+## ブール値モデル {#set:sec-boolean-valued-models}
+
+ブール値モデルに移る。議論は第 II 章の MA とブール代数の関係の扱い（\ref{set:page-ma-equivalents}）と並行する。
+
+$\mathbb{B}$ がブール代数のとき、第 II 章と同様に記法を少し濫用し、本当は $\mathbb{B}^{+}=\mathbb{B}\setminus\{\mathbf{0}\}$ を意味するときに強制の用語を $\mathbb{B}$ に適用する。したがって $M^{\mathbb{B}}$ は本当は $\PP=\mathbb{B}^{+}$（最大元 $\mathbf{1}$）についての $M^{\PP}$ であり、$p\Vdash\varphi$ は $p\neq\mathbf{0}$ のときだけ定義されている。しかし、どのフィルターも $\mathbf{0}$ を含まないので、$\mathbf{0}\Vdash\varphi$ はつねに（空虚に）真とするのがこの用語と整合的である。
+
+\ref{set:boolean-completion} により、任意の p.o. $\PP$ にはある完備ブール代数 $\mathbb{B}$ への稠密な埋め込み $i$ がある。$\mathbb{B}$ を $\PP$ の**完備化**といい、同型を除いて一意である（Kunen 第 II 章の演習 18）。$i$ は一般に単射でない。\ref{set:boolean-completion} を $M$ に相対化し、\ref{set:dense-embedding-same-extension} と合わせると、$M$ の任意のジェネリック拡大は、（$\mathbb{B}$ は完備ブール代数）$^{M}$ となる $\mathbb{B}\in M$ による $M$ 上の強制で得られることが分かる。これは強制法の別の説明の仕方を示唆する：$\S$2–4 の抽象的な展開を、$M$ の完備ブール代数による強制という非常に特別な場合についてだけ行う。この場合、基本的な定義の多くはより簡単で、何が起きているかを直観的に把握しやすい。そして $\S$5–6 のように特定の p.o. $\PP$（おそらくブール代数ではない）を使いたいときは、$\PP$ そのものではなく、（$\mathbb{B}$ は $\PP$ の完備化）$^{M}$ となる $\mathbb{B}\in M$ で強制する。
+
+Kunen がこの方法をとらなかったのは、ブール代数に慣れていることを強制法の理解の前提にしたくなかったからである。また強制の一般論は、$\ZF-\mathrm{P}$ やもっと弱い理論のモデルのジェネリック拡大を作るように容易に修正でき（演習 B10）、これはモデル理論や再帰理論に応用がある（Keisler 1973、Sacks 1971）。完備化の構成は冪集合公理を必要とするので、そのようなモデル上の強制では一般論を $M$ の完備ブール代数による強制に帰着できない。
+
+以下、$M$ の完備ブール代数で強制するときにどんな簡単化が起きるかをより具体的に述べる。
+
+::: definition 真理値 {#set:truth-value keywords="Boolean truth value, ||phi||" index="真理値（ブール値）|しんりちぶーるち, ブール値モデル|ぶーるちもでる"}
+$\mathbb{B}\in M$、（$\mathbb{B}$ は完備ブール代数）$^{M}$、$\tau_{1},\dots,\tau_{n}\in M^{\mathbb{B}}$ とする。
+$$
+\lVert\varphi(\tau_{1},\dots,\tau_{n})\rVert\defeq\bigvee\{p\in\mathbb{B}:p\Vdash\varphi(\tau_{1},\dots,\tau_{n})\}
+$$
+を $\varphi(\tau_{1},\dots,\tau_{n})$ の**真理値**という（上限は $M$ の中の $\mathbb{B}$ でとる）。
+:::
+
+もちろん「完備」は絶対的でなく、$\mathbb{B}$ は $\mathbf{V}$ では完備でないことが多い。実際、可算な完備ブール代数はすべて有限である（Kunen 第 VII 章の演習 F6）。それでも $\lVert\varphi\rVert$ の定義は強制関係の定義可能性により意味をもつ：$\{p\in\mathbb{B}:p\Vdash\varphi\}\in M$ なので、その上限が（$M$ の中で）存在する。
+
+直観的には、$M$ の住人は集合論の**ブール値モデル**を定義していると考えられる。そこでは真理値 $\lVert\varphi\rVert$ は $\mathbf{1}$（真）や $\mathbf{0}$（偽）でありうるが、$\mathbb{B}$ のそれらの中間の値でもありうる。$\varphi$ がすべての $\mathbb{B}$-ジェネリック拡大で真なら $\mathbf{1}\Vdash\varphi$ なので $\lVert\varphi\rVert=\mathbf{1}$。すべてで偽なら $\mathbf{0}$ だけが $\varphi$ を強制するので $\lVert\varphi\rVert=\mathbf{0}$。ある拡大で真で他で偽なら $\mathbf{0}<\lVert\varphi\rVert<\mathbf{1}$。強制関係の定義可能性により、$M$ の住人は、本当の（二値の）ジェネリックなフィルターを一つも作れないまま、$\varphi$ のブール真理値を定義できる。
+
+次の補題の 1 は、$\lVert\varphi\rVert$ が $\varphi$ を強制する最大の条件であることを述べる。
+
+::: lemma 真理値の性質 {#set:truth-value-basic keywords="truth values mirror logical operations"}
+\ref{set:truth-value} の仮定のもとで（$\vec{\tau}$ の記載を省く）
+1. すべての $p\in\mathbb{B}$ について $p\Vdash\varphi\iff p\le\lVert\varphi\rVert$。
+2. $\lVert\varphi\land\psi\rVert=\lVert\varphi\rVert\wedge\lVert\psi\rVert$。
+3. $\lVert\lnot\varphi\rVert=-\lVert\varphi\rVert$。
+4. $\lVert\exists x\,\varphi(x)\rVert=\bigvee\{\lVert\varphi(\sigma)\rVert:\sigma\in M^{\mathbb{B}}\}$。
+:::
+
+::: proof
+まず、ブール代数についての初等的な事実を使う：$q\wedge s=\mathbf{0}$ がすべての $s\in S$ で成り立つなら $q\wedge\bigvee S=\mathbf{0}$（各 $s\le-q$ なので $\bigvee S\le-q$）。また、$a\neq b$ なら、$a\wedge-b\neq\mathbf{0}$ か $b\wedge-a\neq\mathbf{0}$ なので、$\{p\in\mathbb{B}^{+}:p\le a\}\neq\{p\in\mathbb{B}^{+}:p\le b\}$。
+
+**1.** $p\Vdash\varphi$ なら定義より $p\le\lVert\varphi\rVert$。逆に $p\le\lVert\varphi\rVert$ で $p\neq\mathbf{0}$ とし、$p\Vdash\varphi$ でないとすると、$q\Vdash\lnot\varphi$ となる $\mathbf{0}\neq q\le p$ がある（\ref{set:forcing-corollary} の 2）。$r\Vdash\varphi$ なら $q\wedge r=\mathbf{0}$（両立すれば共通の拡張が $\varphi$ と $\lnot\varphi$ を強制する）なので、上の事実より $q\wedge\lVert\varphi\rVert=\mathbf{0}$。しかし $\mathbf{0}<q\le p\le\lVert\varphi\rVert$ なので $q\wedge\lVert\varphi\rVert=q\neq\mathbf{0}$。矛盾。
+
+**2.** 1 より $\lVert\varphi\rVert\Vdash\varphi$ で、$\lVert\varphi\rVert\wedge\lVert\psi\rVert\le\lVert\varphi\rVert$ なので $\lVert\varphi\rVert\wedge\lVert\psi\rVert\Vdash\varphi$（\ref{set:forcing-basic}）。同様に $\Vdash\psi$ なので $\Vdash\varphi\land\psi$、よって $\lVert\varphi\rVert\wedge\lVert\psi\rVert\le\lVert\varphi\land\psi\rVert$。また $\lVert\varphi\land\psi\rVert\Vdash\varphi\land\psi$ で $\ZFC\vdash\varphi\land\psi\to\varphi$ なので $\lVert\varphi\land\psi\rVert\Vdash\varphi$（\ref{set:forcing-equivalent}）、よって $\lVert\varphi\land\psi\rVert\le\lVert\varphi\rVert$。同様に $\le\lVert\psi\rVert$ なので $\lVert\varphi\land\psi\rVert\le\lVert\varphi\rVert\wedge\lVert\psi\rVert$。
+
+**3.** $p\in\mathbb{B}^{+}$ について、$p\Vdash\lnot\varphi\iff$ $\varphi$ を強制する $q\le p$ がない（\ref{set:forcing-corollary} の 2）$\iff p\wedge\lVert\varphi\rVert=\mathbf{0}$（$p\wedge\lVert\varphi\rVert\neq\mathbf{0}$ なら $q\defeq p\wedge\lVert\varphi\rVert\le\lVert\varphi\rVert$ は 1 より $\varphi$ を強制し、逆に $q\le p$ が $\varphi$ を強制すれば $\mathbf{0}\neq q\le p\wedge\lVert\varphi\rVert$）$\iff p\le-\lVert\varphi\rVert$。1 を $\lnot\varphi$ に適用すると、$p\le\lVert\lnot\varphi\rVert\iff p\le-\lVert\varphi\rVert$ がすべての $p\in\mathbb{B}^{+}$ で成り立ち、上の事実より $\lVert\lnot\varphi\rVert=-\lVert\varphi\rVert$。
+
+**4.** 右辺の集合は、強制関係の定義可能性より $M$ に属するので上限 $b$ が存在する。$\ZFC\vdash\varphi(\sigma)\to\exists x\,\varphi(x)$ なので $\lVert\varphi(\sigma)\rVert\Vdash\exists x\,\varphi$、よって $\lVert\varphi(\sigma)\rVert\le\lVert\exists x\,\varphi\rVert$ で、$b\le\lVert\exists x\,\varphi\rVert$。逆に $c\defeq\lVert\exists x\,\varphi\rVert\wedge-b\neq\mathbf{0}$ とすると $c\Vdash\exists x\,\varphi$ なので、\ref{set:forcing-corollary} の 3 より $\mathbf{0}\neq r\le c$ と $\sigma$ で $r\Vdash\varphi(\sigma)$ となるものがある。1 より $r\le\lVert\varphi(\sigma)\rVert\le b$ で、$r\le c\le-b$ なので $r=\mathbf{0}$。矛盾。よって $\lVert\exists x\,\varphi\rVert\le b$。
+:::
+
+\ref{set:truth-value-basic} の 2〜4 は、ブール真理値の計算で論理演算がそれに対応するブール演算に写されることを述べる。1 により、$\Vdash$ は $\lVert\cdots\rVert$ で定義できる。
+
+**$\Vdash^{*}$ の簡単化.** \ref{set:truth-value-basic} は、\ref{set:page-forcing-relation} の $\Vdash^{*}$ の扱いの大幅な簡単化を示唆する。完備ブール代数 $\mathbb{B}$ が与えられたとき、$\Vdash^{*}$ を補助的な概念とみなし、$p\Vdash^{*}\varphi(\vec{\tau}):\iff p\le\lVert\varphi(\vec{\tau})\rVert^{*}$ で定義する。すなわち $\lVert\cdots\rVert^{*}$ を基本概念とみなし、その定義は \ref{set:forcing-star} に似ているがずっと簡単である。$\land,\lnot,\exists$ の帰納的な段階では \ref{set:truth-value-basic} の 2〜4 を定義として使う（たとえば $\lVert\lnot\varphi\rVert^{*}\defeq-\lVert\varphi\rVert^{*}$）。素論理式の二つの帰納的な節も簡単になる（Kunen 第 VII 章の演習 D7）。$\lVert\cdots\rVert^{*}$ の定義のすべての場合で、論理演算は自然な仕方でブール演算に反映され、「$p$ の下で稠密」のような補助的な概念の使用が避けられる。$\Vdash^{*}$ と同様、$\lVert\cdots\rVert^{*}$ の定義は $\mathbf{V}$ の中で行われると考えてよいが、ジェネリック拡大を論じるときは（$\mathbb{B}$ は完備ブール代数）$^{M}$ となる $\mathbb{B}\in M$ を使って $M$ に相対化する。
+
+::: remark とてもよい名前 {#set:very-nice-name}
+ブール値モデルはよい名前（\ref{set:nice-name}）の扱いも簡単にする。ここでは名前の第二成分に $\mathbf{0}$ を許すのが便利である。すなわち $\tau\in\mathbf{V}^{\mathbb{B}}\iff\tau\subseteq\mathbf{V}^{\mathbb{B}}\times\mathbb{B}$ と定義し直す（$\mathbb{B}^{+}$ で強制するなら $\mathbf{V}^{\mathbb{B}}\times\mathbb{B}^{+}$ となるところである）。これで $\S$2–4 の展開に本質的な変更が生じないことは容易に分かり、$\mathbb{B}$ のすべての元を平等に扱える方が自然である。$\tau=\bigcup\{\{\pi\}\times A_{\pi}:\pi\in\dom(\sigma)\}$ が $\sigma$ の部分集合のよい名前なら、$b_{\pi}\defeq\bigvee A_{\pi}$（$A_{\pi}=\varnothing$ なら $b_{\pi}=\mathbf{0}$）とおき、$\hat{\tau}\defeq\{\langle\pi,b_{\pi}\rangle:\pi\in\dom(\sigma)\}$ とする。$\hat{\tau}$ は $\dom(\sigma)$ から $\mathbb{B}$ への関数である。このような $\hat{\tau}$ を**とてもよい名前**と呼ぶ。$\lVert\tau=\hat{\tau}\rVert=\mathbf{1}$ であることが容易に分かるので、\ref{set:nice-name-exists} に対応して、$M[G]$ の $\sigma$ の部分集合はすべてとてもよい名前で表される（Kunen による。本サイトでは細部を確かめていない）。反鎖のやや場当たり的な導入を省けるだけでなく、このような名前を使うと $M[G]$ の元が「何であるか」が直観的に分かりやすくなる。たとえば $\check{\omega}$ の部分集合のとてもよい名前は $\{\check{n}:n\in\omega\}$ から $\mathbb{B}$ への関数で、それを関数 $f\colon\omega\to\mathbb{B}$ と同一視できる。$f$ は $\omega$ の**ブール値部分集合**の特性関数と考えられる。
+:::
+
+完全な埋め込みの概念も簡単になる。場当たり的に見える定義の代わりに、この概念は完備ブール代数に制限すると、完備な単射準同型という自然な概念に帰着される（Kunen 第 VII 章の演習 C7）。
+
+以上のように、p.o. を $M$ の完備ブール代数に制限すると抽象的な理論はいくらか簡単で自然になるが、その代わりに、任意の p.o. を完備ブール代数に埋め込むという追加の段階を経る必要がある。ブール値モデルについては Kunen 第 VII 章 §9 でさらに扱われる。
+
+## 問題 {#set:sec-embeddings-problems}
+
+::: problem {#set:prob-fn-omega-2-3}
+包含 $\mathrm{Fn}(\omega,2)\subseteq\mathrm{Fn}(\omega,\omega)$ は \ref{set:complete-embedding} の 1, 2 を満たすが、完全な埋め込みではないことを示せ。
+:::
+
+::: solution
+包含は \ref{set:complete-embedding} の 1, 2 を満たす（両立性は和が関数であるかで決まる）。しかし 3 が成り立たない：$q\defeq\{\langle0,2\rangle\}\in\mathrm{Fn}(\omega,\omega)$ の縮約 $p\in\mathrm{Fn}(\omega,2)$ があったとすると、$p'\defeq p\cup\{\langle0,0\rangle\}$（$0\in\dom(p)$ なら $p'\defeq p$）は $p'\le p$ で、$p'(0)\in\{0,1\}$ なので $q$ と両立しない。よって完全でなく、とくに稠密でもない（\ref{set:dense-is-complete}）。（それでも $\mathrm{Fn}(\omega,2)$ と $\mathrm{Fn}(\omega,\omega)$ が同じ拡大を与えることは、別の稠密な埋め込みを使って示される：Kunen 第 VII 章の演習 C3。）
+:::
+
+::: problem {#set:prob-truth-value-check}
+$\mathbb{B}\in M$ を $M$ の完備ブール代数、$x,y\in M$ とする。$\lVert\check{x}\in\check{y}\rVert$ は $x\in y$ なら $\mathbf{1}$、そうでなければ $\mathbf{0}$ であることを示せ。
+:::
+
+::: solution
+\ref{set:prob-forcing-check} より、$x\in y$ なら $\mathbf{1}\Vdash\check{x}\in\check{y}$ なので $\lVert\check{x}\in\check{y}\rVert=\mathbf{1}$。$x\notin y$ なら $\mathbf{1}\Vdash\lnot(\check{x}\in\check{y})$ なので $\lVert\lnot(\check{x}\in\check{y})\rVert=\mathbf{1}$、\ref{set:truth-value-basic} の 3 より $\lVert\check{x}\in\check{y}\rVert=-\mathbf{1}=\mathbf{0}$。
+:::
+
+::: supplement
+**前提の検討.**
+- \ref{set:complete-embedding-generic} の証明は、ジェネリック性の判定（\ref{set:generic-criterion}）で縮約（\ref{set:complete-embedding} の 3）を本質的に使った。縮約がないと、$H$ の引き戻しは稠密集合と交わらないことがある（$\mathrm{Fn}(\kappa,2)\subseteq\mathrm{Fn}(\kappa,2,\omega_{1})$ の例）。
+- \ref{set:name-translation-basic} の 2 で $\varphi$ の絶対性を仮定したのは、$M[i^{-1}[H]]\subsetneq M[H]$ でありうるからである。稠密な埋め込みなら拡大が一致するので任意の $\varphi$ でよい（3）。
+- ブール完備化の存在は冪集合公理を使うので、$\ZF-\mathrm{P}$ のモデル上の強制ではブール値の方法に帰着できない。
+
+**関連する結果.** 完備ブール代数 $\mathbb{B}$ の真理値の体系 $\langle M^{\mathbb{B}},\lVert\cdot\rVert\rangle$ は、スコット、ソロヴェイ、ヴォペンカらによるブール値モデルの方法として知られ、c.t.m. を使わずに相対無矛盾性を示す方法を与える（Kunen 第 VII 章 §9。一般にはこう言われている）。
+
+**高い視点から：強制は位相の上の論理.** 完備ブール代数 $\mathbb{B}$ は、半順序 $\PP$ の正則開集合代数として得られる（\ref{set:boolean-completion}）。真理値 $\lVert\varphi\rVert$ は「$\varphi$ が成り立つ条件の集まり」を位相空間の正則開集合として表したもので、$\lnot$ が補元（正則開集合では「閉包の補集合の内部」）、$\exists$ が上限（和の正則化）に対応する。二値の論理では命題は真か偽のどちらかだが、ブール値モデルでは命題は $\mathbb{B}$ の値をとり、ジェネリックなフィルター $G$（$\mathbb{B}$ の $M$ 上の超フィルター）は「どの値を真とみなすか」を一つ選んで二値化する操作である。完全な埋め込み $\PP\to\mathbb{Q}$ は、粗い情報の空間から細かい情報の空間への射であり、細かい側で二値化すれば粗い側も自動的に二値化される（\ref{set:complete-embedding-generic}）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

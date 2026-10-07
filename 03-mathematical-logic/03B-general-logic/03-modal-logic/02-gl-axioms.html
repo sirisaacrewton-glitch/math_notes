@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GL の公理系と基本定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/03-modal-logic/02-gl-axioms.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# GL の公理系と基本定理 {#logic:page-gl-axioms keywords="provability logic, GL, Löb's axiom, Löb rule, de Jongh-Kripke-Sambin, fixed points"}
+
+**証明可能性論理** $\mathsf{GL}$ は、$\mathsf{K}$ にレーブの公理 $\Box(\Box\varphi\to\varphi)\to\Box\varphi$ を加えた正規様相論理である。$\Box$ を「ペアノ算術で証明可能」と読むと、$\mathsf{GL}$ の定理はちょうど「どの算術的解釈でも算術で証明できる」様相論理式であることが知られている（ソロヴェイの定理。\ref{pt:page-solovay}）。本ページでは、その準備として $\mathsf{GL}$ の純粋に構文論的な基本定理を示す。中心は、公理 4 がレーブの公理から導けること（ド・ヨング、クリプキ、サンビンによる）と、いくつかの「不動点」の計算である。
+
+## 記法と定義の確認 {#logic:sec-gl-notation}
+
+::: notation
+- 様相論理式、正規様相論理、公理による体系 $\mathsf{K}\oplus\mathrm{Ax}$、代表的な体系、恒真式による推論、正規性、置換定理、$\boxdot\varphi=\varphi\wedge\Box\varphi$ は \ref{logic:page-normal-modal-logics} のとおり。「正規性により」は \ref{logic:normality} の各項と恒真式による推論をまとめて指す。
+- $\top$ 解釈 $\varphi\mapsto\varphi^{t}$ と消去解釈 $\varphi\mapsto\varphi^{e}$ は \ref{logic:modal-translations} のとおり。
+:::
+
+## GL の定義と無矛盾性 {#logic:sec-gl-definition}
+
+::: definition GL {#logic:gl keywords="GL, Gödel-Löb logic, Löb's axiom" index="GL|じーえる, レーブの公理|れーぶのこうり, 証明可能性論理|しょうめいかのうせいろんり"}
+形 $\Box(\Box\varphi\to\varphi)\to\Box\varphi$ の様相論理式全体を公理図式 $\mathrm{L}$（**レーブの公理**）といい、$\mathsf{GL}\defeq\mathsf{K}\oplus\mathrm{L}$ と定める。
+:::
+
+::: intuition
+算術の読みでは、$\mathrm{L}$ は「『$\varphi$ が証明できれば $\varphi$ は真』が証明できるなら、$\varphi$ は証明できる」というレーブの定理を形式化したものである。$\Box\varphi\to\varphi$（証明できるものは真）は正しい主張だが、算術はそれを一般には証明できない。証明できるのは $\varphi$ 自身がすでに証明できる場合に限る、というのがレーブの定理の内容である。
+:::
+
+::: proposition GL の無矛盾性と T との両立不能性 {#logic:gl-consistent}
+1. $\mathsf{GL}\vdash\varphi$ ならば $\varphi^{t}$ は恒真式である。とくに $\mathsf{GL}$ は無矛盾で、$\mathsf{GL}\nvdash\Box p\to p$。
+2. $\mathsf{GL}$ と $\mathsf{T}$ をともに含む正規様相論理 $\Lambda$ は矛盾する（$\Lambda\vdash\bot$）。
+:::
+
+::: proof
+**1.** \ref{logic:modal-translations} の Step 1, 2 と同じ議論で、公理 $\mathrm{L}$ の $\top$ 解釈 $\top\to\top$ が恒真式であることを確かめればよい。$\bot^{t}=\bot$ と $(\Box p\to p)^{t}=\top\to p$ は恒真式でない。
+
+**2.** 公理 $\mathrm{T}$ の代入例 $\Box\bot\to\bot$ が $\Lambda$ に属し、必然化則で $\Box(\Box\bot\to\bot)\in\Lambda$。公理 $\mathrm{L}$ の代入例 $\Box(\Box\bot\to\bot)\to\Box\bot$ とモーダスポネンスで $\Box\bot\in\Lambda$、再び $\Box\bot\to\bot$ で $\bot\in\Lambda$。
+
+::: hypcheck
+- **必然化則**：2 で $\Box\bot\to\bot$ を $\Box$ の中に入れるのに使う。算術の読みでは、これが「反映原理 $\Box\bot\to\bot$（無矛盾性）を算術が証明できるなら算術は矛盾する」、すなわち第二不完全性定理にあたる。
+:::
+:::
+
+::: remark
+1 から $\mathsf{GL}\nvdash\neg\Box\bot$ もわかる（$\neg\Box\bot$ の $\top$ 解釈は $\neg\top$ で、恒真式でない）。$\mathsf{GL}$ は無矛盾だが、無矛盾性を表す $\neg\Box\bot$ を定理にもたない。一方 $\mathsf{GL}\nvdash\Box\bot$ は $\top$ 解釈では示せない（$(\Box\bot)^{t}=\top$）。これは問題 \ref{logic:prob-gl-not-box-diamond} で別の翻訳を使って示す。
+:::
+
+## 公理 4 の導出 {#logic:sec-gl-four}
+
+::: theorem GL は K4 を含む {#logic:gl-four keywords="de Jongh, Kripke, Sambin, GL proves 4" index="ド・ヨング–クリプキ–サンビンの定理|どよんぐくりぷきさんびんのていり"}
+$\mathsf{GL}\vdash\Box\varphi\to\Box\Box\varphi$。したがって $\mathsf{K4}\subset\mathsf{GL}$ であり、\ref{logic:k4-boxdot}, \ref{logic:second-substitution}, \ref{logic:second-substitution-corollary}, \ref{logic:k4-bdbd} は $\mathsf{GL}$ でも成り立つ。
+:::
+
+::: proof
+**Step 1.** $\psi\defeq\varphi\wedge\Box\varphi$ とおく。正規性 3 より $\vdash\Box\psi\to\Box\varphi$ なので、恒真式により
+$$
+\mathsf{K}\vdash\varphi\to(\Box\psi\to\psi)
+$$
+（$\varphi$ と $\Box\psi$ を仮定すると $\Box\varphi$ が従い、$\psi=\varphi\wedge\Box\varphi$ が成り立つ）。
+
+**Step 2.** 正規性 1 より $\mathsf{K}\vdash\Box\varphi\to\Box(\Box\psi\to\psi)$。公理 $\mathrm{L}$ の代入例 $\Box(\Box\psi\to\psi)\to\Box\psi$ と合わせて $\mathsf{GL}\vdash\Box\varphi\to\Box\psi$。
+
+**Step 3.** 正規性 3 より $\vdash\Box\psi\to\Box\Box\varphi$（$\Box\psi=\Box(\varphi\wedge\Box\varphi)$ の後ろの成分）。Step 2 と合わせて $\mathsf{GL}\vdash\Box\varphi\to\Box\Box\varphi$。後半は \ref{logic:modal-hilbert-normal} による。
+
+::: hypcheck
+- **レーブの公理**：Step 2 で、$\varphi$ でなく $\psi=\varphi\wedge\Box\varphi$ に適用するのが要点である。$\Box$ の中で「$\varphi$ だけでなく $\Box\varphi$ も」成り立つことを、レーブの公理の帰納法的な力で引き出している。
+:::
+:::
+
+::: intuition
+レーブの公理は、後で見るように「逆向きに整礎な関係に沿った帰納法」の原理である（\ref{logic:page-kripke-semantics}）。帰納法で「$\varphi$」を示す代わりに、帰納法の仮定を強めて「$\varphi$ かつ $\Box\varphi$」を示す、という強化の技法が Step 1–2 にあたる。
+:::
+
+::: corollary GL の基本同値 {#logic:gl-basic-equivalences}
+$\mathsf{GL}\vdash\Box(\Box\varphi\to\varphi)\leftrightarrow\Box\varphi$、および $\mathsf{GL}\vdash\Box\varphi\leftrightarrow\Box\boxdot\varphi$。
+:::
+
+::: proof
+前半の $\to$ は公理 $\mathrm{L}$、$\leftarrow$ は恒真式 $\varphi\to(\Box\varphi\to\varphi)$ に正規性 1 を使う。後半は \ref{logic:gl-four} と \ref{logic:k4-boxdot} の 1。
+:::
+
+## レーブ規則 {#logic:sec-lob-rule}
+
+::: theorem レーブ規則 {#logic:lob-rule keywords="Löb rule, formalized Löb rule" index="レーブ規則|れーぶきそく"}
+1. $\mathsf{GL}\vdash\Box\psi\to\psi$ ならば $\mathsf{GL}\vdash\psi$（したがって $\mathsf{GL}\vdash\Box\psi$）。
+2. より一般に、$\mathsf{GL}\vdash\boxdot\varphi_{1}\wedge\cdots\wedge\boxdot\varphi_{n}\wedge\Box\psi\to\psi$ ならば、$\mathsf{GL}\vdash\Box\varphi_{1}\wedge\cdots\wedge\Box\varphi_{n}\to\Box\psi$。
+:::
+
+::: proof
+**Step 1（2）.** $\alpha\defeq\varphi_{1}\wedge\cdots\wedge\varphi_{n}$ とおく。正規性 4 と恒真式により $\vdash\boxdot\alpha\leftrightarrow\boxdot\varphi_{1}\wedge\cdots\wedge\boxdot\varphi_{n}$（$\boxdot\alpha=\alpha\wedge\Box\alpha$ で、$\Box\alpha$ は $\Box\varphi_{1}\wedge\cdots\wedge\Box\varphi_{n}$ と同値）。よって仮定から、恒真式により $\vdash\boxdot\alpha\to(\Box\psi\to\psi)$。\ref{logic:gl-four} により \ref{logic:k4-boxdot} の 4 が $\mathsf{GL}$ で使えるので、$\vdash\Box\alpha\to\Box(\Box\psi\to\psi)$。公理 $\mathrm{L}$ と合わせて $\vdash\Box\alpha\to\Box\psi$。再び正規性 4 で $\Box\alpha$ を $\Box\varphi_{1}\wedge\cdots\wedge\Box\varphi_{n}$ に置き換える。
+
+**Step 2（1）.** $n=0$ の場合（$\alpha=\top$）、Step 1 より $\vdash\Box\top\to\Box\psi$、正規性 4 より $\vdash\Box\top$ なので $\vdash\Box\psi$。仮定 $\vdash\Box\psi\to\psi$ から $\vdash\psi$。
+
+::: hypcheck
+- **仮定の $\boxdot$**：Step 1 で \ref{logic:k4-boxdot} の 4 を使うため。$\boxdot\varphi_{i}$ を $\varphi_{i}$ に弱めた形では $\Box$ の中に持ち込めない。
+- **公理 4（\ref{logic:gl-four}）**：Step 1。
+:::
+:::
+
+## 無矛盾性の非証明可能性 {#logic:sec-gl-consistency}
+
+::: theorem 第二不完全性定理の様相的な形 {#logic:gl-second-incompleteness keywords="second incompleteness theorem in GL" index="第二不完全性定理（様相論理）|だいにふかんぜんせいていりようそうろんり"}
+$\mathsf{GL}\vdash\Box\bot\leftrightarrow\Box\Diamond p$。とくに（$p$ に $\top$ を代入して）$\mathsf{GL}\vdash\neg\Box\bot\leftrightarrow\neg\Box\neg\Box\bot$。
+:::
+
+::: proof
+**Step 1（$\to$）.** $\bot\to\Diamond p$ は恒真式なので、正規性 1 より $\vdash\Box\bot\to\Box\Diamond p$。
+
+**Step 2（$\leftarrow$）.** $p\to\top$ は恒真式なので正規性 6 より $\vdash\Diamond p\to\Diamond\top$。$\Diamond\top=\neg\Box\neg\top$ で、恒真式 $\neg\top\leftrightarrow\bot$ に正規性 2 を使うと $\vdash\Diamond\top\leftrightarrow\neg\Box\bot$。よって $\vdash\Diamond p\to(\Box\bot\to\bot)$。正規性 1 より $\vdash\Box\Diamond p\to\Box(\Box\bot\to\bot)$、公理 $\mathrm{L}$ の代入例で右辺から $\Box\bot$ が従う。
+
+**Step 3（とくに）.** 一様代入則で $p$ に $\top$ を代入すると $\vdash\Box\bot\leftrightarrow\Box\Diamond\top$。Step 2 の $\vdash\Diamond\top\leftrightarrow\neg\Box\bot$ に正規性 2 を使って $\vdash\Box\Diamond\top\leftrightarrow\Box\neg\Box\bot$。恒真式により否定をとる。
+:::
+
+::: intuition
+$\neg\Box\bot$ は「理論は無矛盾である」、$\neg\Box\neg\Box\bot$ は「『理論は矛盾する』は証明できない」、すなわち「理論の無矛盾性と『理論は矛盾する』という主張が両立する」と読める。$\to$ 向きは「無矛盾ならば、無矛盾性を証明できない」（$\neg\Box\neg\Box\bot$ は $\Diamond\Box\bot$ であり、$\Box\neg\Box\bot\to\Box\bot$ の対偶）で、第二不完全性定理そのものが $\mathsf{GL}$ の定理として表されている。前半の $\Box\bot\leftrightarrow\Box\Diamond p$ は「理論が矛盾することと、ある文 $p$ について『$p$ は無矛盾』が証明できることは同値」と読める。
+:::
+
+::: corollary 無矛盾性を公理に加えると矛盾する {#logic:gl-plus-consistency}
+$\neg\Box\bot$ を含む正規様相論理 $\Lambda\supset\mathsf{GL}$ は矛盾する。
+:::
+
+::: proof
+必然化則で $\Box\neg\Box\bot\in\Lambda$。\ref{logic:gl-second-incompleteness} の後半より $\Lambda\vdash\neg\Box\bot\to\neg\Box\neg\Box\bot$ なので $\Lambda\vdash\neg\Box\neg\Box\bot$。よって $\Lambda\vdash\bot$。
+:::
+
+::: remark
+この系は、$\neg\Box\bot$ を必然化則の対象となる公理として加えることを禁じているだけである。$\neg\Box\bot$ を「真であるが証明可能とは限らない」原理として、必然化則なしで加えた体系 $\mathsf{GLS}$ は無矛盾で、算術で真な様相論理式の論理になる（\ref{pt:page-arithmetical-soundness}）。
+:::
+
+## レーブの定理の議論の形式化 {#logic:sec-lob-formalized}
+
+::: theorem レーブの議論の形式化 {#logic:lob-argument-formalized keywords="formalization of the proof of Löb's theorem"}
+$\mathsf{K4}\vdash\Box(q\leftrightarrow(\Box q\to p))\to(\Box(\Box p\to p)\to\Box p)$。
+:::
+
+::: proof
+$D\defeq q\leftrightarrow(\Box q\to p)$ とおく。
+
+**Step 1.** 恒真式 $D\to(q\to(\Box q\to p))$ に正規性 1 を使い、分配公理を二回適用すると $\vdash\Box D\to(\Box q\to(\Box\Box q\to\Box p))$。公理 4 の $\Box q\to\Box\Box q$ と合わせ、恒真式により
+$$
+\mathsf{K4}\vdash\Box D\to(\Box q\to\Box p).\tag{1}
+$$
+
+**Step 2.** 恒真式 $\boxdot D\to\Box D$ と (1) から $\vdash\boxdot D\to(\Box q\to\Box p)$。\ref{logic:k4-boxdot} の 4 より
+$$
+\mathsf{K4}\vdash\Box D\to\Box(\Box q\to\Box p).\tag{2}
+$$
+
+**Step 3.** 恒真式 $(\Box q\to\Box p)\wedge(\Box p\to p)\to(\Box q\to p)$ に正規性 5 を使い $\vdash\Box(\Box q\to\Box p)\wedge\Box(\Box p\to p)\to\Box(\Box q\to p)$。(2) と合わせて
+$$
+\mathsf{K4}\vdash\Box D\wedge\Box(\Box p\to p)\to\Box(\Box q\to p).\tag{3}
+$$
+
+**Step 4.** 恒真式 $D\to((\Box q\to p)\to q)$ に正規性 1 と分配公理を使い $\vdash\Box D\to(\Box(\Box q\to p)\to\Box q)$。(3) と合わせて $\vdash\Box D\wedge\Box(\Box p\to p)\to\Box q$、さらに (1) と合わせて $\vdash\Box D\wedge\Box(\Box p\to p)\to\Box p$。恒真式により結論を得る。
+
+::: hypcheck
+- **公理 4**：Step 1 の $\Box q\to\Box\Box q$ と、Step 2 の \ref{logic:k4-boxdot} の 4。レーブの公理は使っていない。
+:::
+:::
+
+::: intuition
+算術では、対角化定理（\ref{pt:page-diagonal-first-incompleteness}）により、任意の文 $p$ に対して $q\leftrightarrow(\Box q\to p)$ を証明できる文 $q$ がとれる。すると $\Box D$ が（必然化により）証明でき、この定理から $\Box(\Box p\to p)\to\Box p$ が得られる。これがレーブの定理の証明であり、上の証明は、算術の中で行う推論のうち「導出可能性条件」だけを使う部分を様相論理の言葉で書き出したものである。算術の側でこの定理を使うと、「$\mathsf{GL}$ の定理はどの算術的解釈でも証明できる」ことの別証明が得られる（\ref{pt:page-arithmetical-soundness}）。
+:::
+
+## 不動点の計算 {#logic:sec-gl-fixed-points}
+
+::: theorem 四つの不動点 {#logic:gl-four-fixed-points keywords="fixed points in GL, Gödel sentence, Henkin sentence" index="不動点（GL）|ふどうてんじーえる"}
+$\mathsf{GL}$ で次が成り立つ。
+1. $\vdash\Box(p\leftrightarrow\neg\Box p)\leftrightarrow\Box(p\leftrightarrow\neg\Box\bot)$。
+2. $\vdash\Box(p\leftrightarrow\Box p)\leftrightarrow\Box(p\leftrightarrow\top)$。
+3. $\vdash\Box(p\leftrightarrow\Box\neg p)\leftrightarrow\Box(p\leftrightarrow\Box\bot)$。
+4. $\vdash\Box(p\leftrightarrow\neg\Box\neg p)\leftrightarrow\Box(p\leftrightarrow\bot)$。
+:::
+
+::: proof
+**Step 1（1 の $\to$）.** $F\defeq p\leftrightarrow\neg\Box p$ とする。恒真式と正規性 1、分配公理より $\vdash\Box F\to(\Box p\to\Box\neg\Box p)$。公理 4 より $\vdash\Box p\to\Box\Box p$。恒真式 $\Box p\wedge\neg\Box p\to\bot$ に正規性 5 を使い $\vdash\Box\Box p\wedge\Box\neg\Box p\to\Box\bot$。以上から $\vdash\Box F\to(\Box p\to\Box\bot)$。一方 $\bot\to p$ に正規性 1 を使い $\vdash\Box\bot\to\Box p$。よって $\vdash\Box F\to(\Box p\leftrightarrow\Box\bot)$。これと $F$ から、恒真式により $\vdash\boxdot F\to(p\leftrightarrow\neg\Box\bot)$。\ref{logic:k4-boxdot} の 4 より $\vdash\Box F\to\Box(p\leftrightarrow\neg\Box\bot)$。
+
+**Step 2（1 の $\leftarrow$）.** $G\defeq p\leftrightarrow\neg\Box\bot$ とする。恒真式と正規性 1、分配公理より $\vdash\Box G\to(\Box p\to\Box\neg\Box\bot)$。$\neg\Box\bot=(\Box\bot\to\bot)$ なので、公理 $\mathrm{L}$ の代入例より $\vdash\Box\neg\Box\bot\to\Box\bot$。よって $\vdash\Box G\to(\Box p\to\Box\bot)$、Step 1 と同様に $\vdash\Box G\to(\Box p\leftrightarrow\Box\bot)$。これと $G$ から $\vdash\boxdot G\to(p\leftrightarrow\neg\Box p)$、\ref{logic:k4-boxdot} の 4 より $\vdash\Box G\to\Box F$。
+
+**Step 3（2）.** $p\leftrightarrow\top$ と $p$ は恒真式により同値なので、正規性 2 より右辺は $\Box p$ と同値である。$\to$：恒真式 $(p\leftrightarrow\Box p)\to(\Box p\to p)$ に正規性 1 を使い、公理 $\mathrm{L}$ で $\vdash\Box(p\leftrightarrow\Box p)\to\Box p$。$\leftarrow$：公理 4 と正規性 3 より $\vdash\Box p\to\Box(p\wedge\Box p)$、恒真式 $p\wedge\Box p\to(p\leftrightarrow\Box p)$ に正規性 1 を使えば $\vdash\Box p\to\Box(p\leftrightarrow\Box p)$。
+
+**Step 4（3）.** 1 に一様代入 $p\mapsto\neg p$ をすると $\vdash\Box(\neg p\leftrightarrow\neg\Box\neg p)\leftrightarrow\Box(\neg p\leftrightarrow\neg\Box\bot)$。恒真式 $(\neg\alpha\leftrightarrow\neg\beta)\leftrightarrow(\alpha\leftrightarrow\beta)$ に正規性 2 を使って両辺を書き換えると 3 を得る。
+
+**Step 5（4）.** 2 に一様代入 $p\mapsto\neg p$ をすると $\vdash\Box(\neg p\leftrightarrow\Box\neg p)\leftrightarrow\Box(\neg p\leftrightarrow\top)$。恒真式 $(\neg p\leftrightarrow\beta)\leftrightarrow(p\leftrightarrow\neg\beta)$ と $\neg\top\leftrightarrow\bot$ を正規性 2（と置換定理）で使って 4 を得る。
+
+::: hypcheck
+- **レーブの公理**：Step 2（$\Box\neg\Box\bot\to\Box\bot$）と Step 3 の $\to$。Step 1 と Step 3 の $\leftarrow$ は $\mathsf{K4}$ で成り立つ。
+- **公理 4**：Step 1 と Step 3 の $\leftarrow$、および \ref{logic:k4-boxdot} の 4（\ref{logic:gl-four} により $\mathsf{GL}$ で使える）。
+:::
+:::
+
+::: intuition
+算術の読みでは、1 は「自分の証明不可能性を主張する文（ゲーデル文）は、無矛盾性の主張 $\neg\Box\bot$ と同値であることが証明できる」、2 は「自分の証明可能性を主張する文（ヘンキン文）は、証明可能（$\top$ と同値）」、3 は「自分の反証可能性を主張する文は $\Box\bot$（矛盾する）と同値」、4 は「自分の無矛盾性を主張する文は反証可能（$\bot$ と同値）」を表す。いずれも、$p$ についての自己言及的な方程式 $p\leftrightarrow\chi(p)$ の「解」が閉様相論理式で一意に与えられることの例であり、これは一般の不動点定理（\ref{pt:page-fixed-point-theorem}）の特別な場合である。
+:::
+
+## 問題 {#logic:sec-gl-problems}
+
+::: problem {#logic:prob-gl-last-point}
+$\mathsf{GL}\vdash\Diamond p\to\Diamond(p\wedge\Box\neg p)$ を示せ。
+:::
+
+::: solution
+対偶 $\Box\neg(p\wedge\Box\neg p)\to\Box\neg p$ を示す。$\neg(p\wedge\Box\neg p)\leftrightarrow(\Box\neg p\to\neg p)$ は恒真式なので、正規性 2 より左辺は $\Box(\Box\neg p\to\neg p)$ と同値で、公理 $\mathrm{L}$ の代入例により $\Box\neg p$ が従う。恒真式により対偶をとる。（クリプキ意味論では「$p$ が成り立つ点が先にあれば、$p$ が成り立つ『最後の』点がある」と読め、逆向きの整礎性を表す。）
+:::
+
+::: problem {#logic:prob-gl-not-box-diamond}
+様相論理式から命題論理の論理式への写像 $\varphi\mapsto\varphi^{a}$ を、$\Psi_{0}$ の元と $\to$ はそのまま写し、$(\Box\psi)^{a}\defeq\psi^{t}$（$t$ は $\top$ 解釈）と定める。
+1. $\mathsf{GL}\vdash\varphi$ ならば $\varphi^{a}$ は恒真式であることを示し、$\mathsf{GL}\nvdash\Box\bot$ を結論せよ。
+2. $p\to\Box\Diamond p$ と $\Diamond p\to\Box\Diamond p$ は $\mathsf{GL}$ の定理でないことを示せ。
+:::
+
+::: solution
+**1.** 証明の長さに関する帰納法で、定理 $\varphi$ について「$\varphi^{a}$ と $\varphi^{t}$ がともに恒真式」を示す。恒真式：命題的付値 $V(p)=v(p)$, $V(\Box\psi)=\bar{v}(\psi^{t})$ をとると $\bar{V}(\varphi)=\bar{v}(\varphi^{a})$（帰納法）なので、恒真式の $a$ 翻訳は恒真式（$t$ 翻訳は \ref{logic:gl-consistent}）。分配公理の $a$ 翻訳は $(\varphi^{t}\to\psi^{t})\to(\varphi^{t}\to\psi^{t})$。公理 $\mathrm{L}$ の $a$ 翻訳は $(\top\to\varphi^{t})\to\varphi^{t}$。いずれも恒真式。モーダスポネンスは両翻訳とも $\to$ を保つので保たれる。必然化則：$(\Box\varphi)^{a}=\varphi^{t}$ は帰納法の仮定より恒真式で、$(\Box\varphi)^{t}=\top$。よって主張が成り立つ。$(\Box\bot)^{a}=\bot^{t}=\bot$ は恒真式でないので $\mathsf{GL}\nvdash\Box\bot$。
+
+**2.** 一様代入で $p$ に $\top$ を代入すると、それぞれ $\top\to\Box\Diamond\top$ と $\Diamond\top\to\Box\Diamond\top$。\ref{logic:gl-second-incompleteness} の証明より $\vdash\Diamond\top\leftrightarrow\neg\Box\bot$、$\vdash\Box\Diamond\top\leftrightarrow\Box\bot$ なので、二つはそれぞれ $\Box\bot$、$\neg\Box\bot\to\Box\bot$ と同値で、いずれも恒真式により $\Box\bot$ と同値である。どちらかが定理なら $\mathsf{GL}\vdash\Box\bot$ となり 1 に反する。
+
+（補足：$a$ 翻訳は、二点 $a\to b$ からなるクリプキフレームの点 $a$ での真理にあたり、$t$ 翻訳は行き止まりの点 $b$ での真理にあたる。）
+:::
+
+::: problem {#logic:prob-gl-henkin-unique}
+$\mathsf{GL}\vdash\Box(p\leftrightarrow\Box p)\wedge\Box(q\leftrightarrow\Box q)\to\Box(p\leftrightarrow q)$ を示せ（ヘンキン文の一意性）。
+:::
+
+::: solution
+\ref{logic:gl-four-fixed-points} の 2 より、$\Box(p\leftrightarrow\Box p)$ から $\Box p$、$\Box(q\leftrightarrow\Box q)$ から $\Box q$ が従う（右辺 $\Box(p\leftrightarrow\top)$ は $\Box p$ と同値）。正規性 3 より $\Box(p\wedge q)$、恒真式 $p\wedge q\to(p\leftrightarrow q)$ に正規性 1 を使い $\Box(p\leftrightarrow q)$。
+:::
+
+::: supplement
+**高い視点から：レーブの公理は帰納法である.** 自然数の強い帰納法「すべての $n$ について（$m<n$ なるすべての $m$ で $P(m)$ ならば $P(n)$）ならば、すべての $n$ で $P(n)$」を、$\Box$ を「より小さいすべての点で」と読んで書くと、$\Box(\Box P\to P)\to\Box P$ の形になる。レーブの公理は、「到達可能な点」に沿って帰納法ができる、すなわち到達可能性関係の逆が整礎であることを要求する原理であり、$\mathsf{GL}$ のクリプキフレームはちょうど推移的で逆向きに整礎なものである（\ref{logic:page-kripke-semantics}）。\ref{logic:gl-four} は、帰納法の原理から推移性（公理 4）が出てくることを示している。
+
+**不動点と縮小写像.** 不動点の計算は、$\Box$ の内側に $p$ が現れる方程式 $p\leftrightarrow\chi(p)$ が一意の解をもつという現象の例である。$\Box$ は「一段深いところだけを見る」演算で、$\Box$ の中に閉じ込められた $p$ は解の決定に一段遅れて効く。これは、距離空間で縮小写像がただ一つの不動点をもつこと（バナッハの不動点定理）の類比としてしばしば説明される。これは直観的な比喩であり、厳密な対応を主張するものではない。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

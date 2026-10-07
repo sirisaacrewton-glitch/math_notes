@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>外延性・分出と基本的な構成 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/01-basics/02-extensionality-comprehension.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 外延性・分出と基本的な構成 {#set:page-extensionality-comprehension keywords="Axiom of Extensionality, Comprehension Scheme, Separation, Pairing, Union, Replacement, ordered pair, cartesian product"}
+
+$\ZFC$ の公理（\ref{set:zfc}）のうち、集合の同一性を決める**外延性**と、既にある集合から部分集合を切り出す**分出**をまず導入し、空集合の存在とラッセルの議論を確かめる。続いて対・和集合・置換の公理を導入し、共通部分・差集合・順序対・直積を構成する。冪集合公理（\ref{set:ax-power-set}）を使わずに直積が作れることが一つの要点である。
+
+## 記法と定義の確認 {#set:sec-ext-notation}
+
+::: notation
+- 論理式・自由変数・略記 $\forall x\in A$, $\exists!y$ などは \ref{set:first-order-language}, \ref{set:formula-abbreviations}, \ref{set:free-bound-variable} の意味で用いる。定義された記号は \ref{set:defined-notions} の約束に従い、すべて $\in$ と $=$ だけの論理式の略記である。
+- 議論はプラトン主義的に行う（\ref{set:sec-metatheory}）。各証明の「前提条件の使用箇所」に、使った公理を明記する。本ページの結果はどれも基礎の公理・無限公理・冪集合公理・選択公理を使わず、$\ZF^{-}-\mathrm{P}-\mathrm{Inf}$（\ref{set:zf-subsystems}）で成り立つ。
+:::
+
+## 集合の存在と外延性 {#set:sec-extensionality}
+
+::: axiom 集合の存在 {#set:ax-set-existence keywords="Set Existence Axiom" index="集合の存在公理|しゅうごうのそんざいこうり"}
+$$
+\exists x\,(x=x).
+$$
+:::
+
+::: intuition
+「集合が少なくとも一つある」、つまり議論の宇宙が空でないことを言う。通常の一階述語論理では解釈の議論領域を空でないと約束する（\ref{set:interpretation}）ので、この文は論理公理だけから証明でき（$x=x$ は論理的に正しく、そこから $\exists x(x=x)$ が推論される）、公理として立てるのは冗長である。それでもあえて書くのは、空集合の存在（\ref{set:empty-set}）がどこから来るのかを見えやすくするためである。議論領域が空でもよい論理（自由論理）を採る場合や、この点を気にしない場合でも、無限公理（\ref{set:ax-infinity}）は具体的な集合の存在を主張するので、$\ZF$ 全体では結論は変わらない。
+:::
+
+::: axiom 外延性の公理 {#set:ax-extensionality keywords="Axiom of Extensionality" index="外延性の公理|がいえんせいのこうり"}
+$$
+\forall x\,\forall y\,\bigl(\forall z\,(z\in x\leftrightarrow z\in y)\to x=y\bigr).
+$$
+:::
+
+::: intuition
+**集合はその元によって決まる**。同じ元をもつ二つの集合は等しい。逆向き「$x=y$ ならば同じ元をもつ」は等号の論理的性質なので公理として述べる必要がない。意図された解釈（遺伝的集合、\ref{set:hereditary-set}）でこの公理が正しいのは、$z$ が遺伝的集合を動き、$x,y$ の元がすべて遺伝的集合であるので、「$x$ と $y$ は同じ遺伝的集合を元にもつ」が「同じ元をもつ」と一致するからである。
+:::
+
+::: definition 包含 {#set:subset keywords="subset, inclusion" index="部分集合|ぶぶんしゅうごう, 包含|ほうがん"}
+$A\subseteq B$ は $\forall x\,(x\in A\to x\in B)$ の略記とし、$A$ は $B$ の**部分集合**であるという。$A\subseteq B$ かつ $A\neq B$ のとき $A\subsetneq B$ と書く。
+:::
+
+::: intuition
+外延性の公理は「$A\subseteq B$ かつ $B\subseteq A$ ならば $A=B$」と言い換えられる。二つの集合が等しいことを示すときの標準的な手順（両方向の包含を示す）はこの公理に基づく。また論理だけから $A\subseteq A$ と、$A\subseteq B\land B\subseteq C\to A\subseteq C$ が従う。
+:::
+
+## 分出公理 {#set:sec-comprehension}
+
+素朴には「性質 $\varphi(x)$ を満たす $x$ 全体の集合 $\{x\mid\varphi(x)\}$」をいつでも作りたい。すなわち各論理式 $\varphi$ について
+$$
+\exists y\,\forall x\,\bigl(x\in y\leftrightarrow\varphi\bigr)
+\label{set:eq-naive-comprehension}
+$$
+を公理にしたい。しかしこれは矛盾する（\ref{set:russell-paradox} の補足）。数学で実際に必要なのは**既に与えられた集合の部分集合**を性質で切り出すことだけなので、次の形に制限する。
+
+::: axiom 分出公理（図式） {#set:ax-comprehension keywords="Comprehension Scheme, Separation Axiom, Aussonderung" index="分出公理|ぶんしゅつこうり, 分出公理図式|ぶんしゅつこうりずしき, 内包公理|ないほうこうり"}
+$y$ を自由変数として含まない各論理式 $\varphi$ について、次の論理式の全称閉包が公理である：
+$$
+\exists y\,\forall x\,\bigl(x\in y\leftrightarrow x\in z\land\varphi\bigr).
+$$
+$\varphi$ は $x$, $z$ 以外の自由変数（**パラメータ**）をいくつ含んでもよい。
+:::
+
+::: intuition
+集合 $z$ と性質 $\varphi$ が与えられれば、$z$ の元のうち $\varphi$ を満たすもの全体が集合になる。これは一つの考え方を表すが、論理式 $\varphi$ ごとに一つの公理なので、無限個の公理からなる**図式**である。
+
+**$y$ が $\varphi$ に現れてはいけない理由.** これを許すと自己言及的な「定義」ができてしまう。たとえば $\varphi$ として $x\notin y$ をとると、公理は $\exists y\,\forall x\,(x\in y\leftrightarrow x\in z\land x\notin y)$ となる。$z$ が元 $a$ をもつとき、$x=a$ を代入すると $a\in y\leftrightarrow a\notin y$ となって矛盾する。したがってこの「公理」は、空でない集合の存在と矛盾する。
+:::
+
+::: definition 分出による集合の記法 {#set:separation-notation keywords="set-builder notation" index="集合の内包的記法|しゅうごうのないほうてききほう"}
+分出公理が存在を保証する $y$ は外延性の公理によりただ一つである（二つあれば同じ元をもつ）。これを
+$$
+\{x\in z\mid\varphi\}\quad\text{または}\quad\{x\mid x\in z\land\varphi\}
+$$
+と書く。より一般に、ある集合 $z$ について $\forall x(\varphi\to x\in z)$ が示されているとき、$\{x\mid\varphi\}$ は $\{x\in z\mid\varphi\}$ を表す（$z$ の選び方によらない。外延性による）。
+:::
+
+::: example
+$z=\{1,2,3,4\}$（このような集合の存在は後の公理で保証される）と $\varphi(x)\equiv$「$x$ は偶数」から $\{x\in z\mid\varphi(x)\}=\{2,4\}$ が得られる。パラメータ $w$ を含む $\varphi(x,w)\equiv x\in w$ なら $\{x\in z\mid x\in w\}$ は $z$ と $w$ の共通部分である（\ref{set:intersection-difference}）。
+:::
+
+## 空集合とラッセルの議論 {#set:sec-empty-russell}
+
+::: theorem 空集合の存在と一意性 {#set:empty-set keywords="empty set" index="空集合|くうしゅうごう"}
+元を一つももたない集合 $y$、すなわち $\forall x\,(x\notin y)$ を満たす $y$ がただ一つ存在する。これを $\varnothing$（または $0$）と書く。
+:::
+
+::: proof
+**Step 1（何か集合がある）.** 集合の存在（\ref{set:ax-set-existence}）により、ある集合 $z$ がとれる。
+
+**Step 2（切り出す）.** 論理式 $\varphi(x)\equiv x\neq x$ に分出公理を適用して $y=\{x\in z\mid x\neq x\}$ を作る。任意の $x$ について $x\in y\leftrightarrow x\in z\land x\neq x$ であるが、$x\neq x$ は論理的に偽なので右辺は偽、したがって $x\notin y$。よって $y$ は元をもたない。
+
+**Step 3（一意性）.** $y,y'$ がともに元をもたないなら、任意の $x$ について $x\in y$ と $x\in y'$ はともに偽なので $x\in y\leftrightarrow x\in y'$。外延性の公理より $y=y'$。
+
+::: hypcheck
+- **集合の存在**（\ref{set:ax-set-existence}）：Step 1。これがなければ分出公理を適用する $z$ がない。ただし上の直感欄で述べたとおり、通常の一階述語論理ではこの文は論理的に証明できる。
+- **分出公理**：Step 2（$\varphi\equiv x\neq x$ の場合）。
+- **外延性の公理**：Step 3。
+:::
+:::
+
+::: supplement
+$\varnothing\subseteq A$ は任意の $A$ について成り立つ（$x\in\varnothing$ は常に偽なので $x\in\varnothing\to x\in A$ は常に真）。
+
+**これまでの公理では $\varnothing$ しか作れない.** 集合の存在・外延性・分出の三つの公理からは、$\varnothing$ 以外の集合の存在は証明できない。実際、議論領域を 1 点 $\{d\}$ とし、$\in$ を空関係（何も何の元でもない）と解釈すると、
+- 集合の存在は議論領域が空でないので真、
+- 外延性は議論領域の任意の 2 元が等しいので真、
+- 分出公理は、どの $z$ とパラメータに対しても $y=d$ が $\forall x(x\in y\leftrightarrow x\in z\land\varphi)$ を満たす（両辺とも常に偽）ので真、
+
+となり、さらに $\forall y\,(y=\varnothing)$ に当たる文 $\forall y\,\forall x\,(x\notin y)$ も真になる。健全性（\ref{set:model-consistency}）により、三つの公理からは「元をもつ集合がある」を証明できない。そこで以下の公理が要る。
+:::
+
+::: theorem ラッセルの議論：すべての集合を含む集合はない {#set:russell-paradox keywords="Russell's paradox, no universal set" index="ラッセルのパラドックス|らっせるのぱらどっくす, 普遍集合|ふへんしゅうごう"}
+任意の集合 $A$ に対し、$R_{A}=\{x\in A\mid x\notin x\}$ とおくと $R_{A}\notin A$ である。特に、すべての集合を元とする集合は存在しない：
+$$
+\lnot\,\exists z\,\forall x\,(x\in z).
+$$
+:::
+
+::: intuition
+どんな集合 $A$ にも、$A$ に入っていない集合が具体的に作れる。素朴集合論では $\{x\mid x\notin x\}$ そのものを集合と認めて矛盾したが、分出公理では「$A$ の中から」しか切り出さないので、矛盾の代わりに「$R_{A}$ は $A$ の外にある」という結論になる。
+:::
+
+::: proof
+**Step 1（$R_{A}$ の存在）.** 分出公理を $z=A$, $\varphi(x)\equiv x\notin x$ に適用すると $R_{A}$ が集合として存在し、任意の $x$ について
+$$
+x\in R_{A}\leftrightarrow x\in A\land x\notin x
+\label{set:eq-russell-set}
+$$
+が成り立つ。
+
+**Step 2（背理法の仮定）.** $R_{A}\in A$ と仮定する。
+
+**Step 3（$R_{A}$ 自身について場合分け）.** \eqref{set:eq-russell-set} に $x=R_{A}$ を代入すると、Step 2 の仮定 $R_{A}\in A$ から
+$$
+R_{A}\in R_{A}\leftrightarrow R_{A}\notin R_{A}
+$$
+を得る。$R_{A}\in R_{A}$ なら右辺より $R_{A}\notin R_{A}$、$R_{A}\notin R_{A}$ なら左辺へ戻って $R_{A}\in R_{A}$ となり、どちらも矛盾する。よって $R_{A}\notin A$。
+
+**Step 4（普遍集合の非存在）.** $z$ がすべての集合を元にもつとすると、特に $R_{z}\in z$ となり、Step 3 に反する。
+
+::: hypcheck
+- **分出公理**：Step 1 で $R_{A}$ を作るのに使った（$\varphi\equiv x\notin x$ は $y$ を含まないので許される）。
+- 外延性・その他の公理は使わない。基礎の公理（\ref{set:ax-foundation}）を仮定すれば $x\notin x$ が常に成り立つので $R_{A}=A$ となり「$A\notin A$」という主張になるが、上の証明は基礎の公理なしで通る。
+:::
+:::
+
+::: supplement
+**素朴な内包公理の矛盾.** \eqref{set:eq-naive-comprehension} を $\varphi\equiv x\notin x$ に適用すると $\forall x(x\in y\leftrightarrow x\notin x)$ を満たす $y$ が得られ、$x=y$ として $y\in y\leftrightarrow y\notin y$ となり矛盾する。これがラッセルのパラドックスである。上の証明はこの議論を「$y$ は $A$ の元ではありえない」という形に読み替えたものにほかならない。
+
+**別証明.** カントールの定理を使った証明が \ref{set:no-universal-set} にある。その証明の対角集合は、仮定した普遍集合 $V$ に対する $R_{V}$ にほかならない。
+
+**クラスとして.** $\{x\mid x=x\}$ や $\{x\mid x\notin x\}$ は集合ではないが、論理式が定める「集まり」（クラス、\ref{set:class}）としては語ることができる。本定理は、「集合として存在するには大きすぎる集まりがある」ことを示している。
+:::
+
+## 対・和集合・置換の公理 {#set:sec-pairing-union-replacement}
+
+以下の公理は「ある集まりを**含む**集合がある」という形で述べ、ちょうどその集まりは分出公理で切り出す（\ref{set:zfc} の直感欄）。
+
+::: axiom 対の公理 {#set:ax-pairing keywords="Axiom of Pairing" index="対の公理|ついのこうり"}
+$$
+\forall x\,\forall y\,\exists z\,(x\in z\land y\in z).
+$$
+:::
+
+::: definition 非順序対・単集合 {#set:unordered-pair keywords="unordered pair, singleton" index="非順序対|ひじゅんじょつい, 単集合|たんしゅうごう, 一元集合|いちげんしゅうごう"}
+集合 $x,y$ に対し、対の公理で $x\in z\land y\in z$ となる $z$ をとり
+$$
+\{x,y\}=\{v\in z\mid v=x\lor v=y\}
+$$
+とおく。これは元がちょうど $x$ と $y$ である集合で、外延性により $z$ の選び方によらず一意に定まる。**非順序対**という。$\{x\}=\{x,x\}$ を**単集合**という。
+:::
+
+::: example
+$\{\varnothing\}$ は $\varnothing$ だけを元とする集合で、$\varnothing\neq\{\varnothing\}$（左辺は元をもたず右辺は元をもつ）。したがって対の公理から初めて 2 つ目の集合が得られ、$\{\varnothing,\{\varnothing\}\}$ は 2 元集合である。$\{x,y\}=\{y,x\}$ は外延性から直ちに従う。
+:::
+
+::: axiom 和集合の公理 {#set:ax-union keywords="Axiom of Union" index="和集合の公理|わしゅうごうのこうり"}
+$$
+\forall\mathcal{F}\,\exists A\,\forall Y\,\forall x\,\bigl(x\in Y\land Y\in\mathcal{F}\to x\in A\bigr).
+$$
+:::
+
+::: definition 和集合 {#set:union keywords="union" index="和集合|わしゅうごう, 合併|がっぺい"}
+集合族 $\mathcal{F}$ に対し、和集合の公理で得られる $A$ をとり
+$$
+\bigcup\mathcal{F}=\{x\in A\mid\exists Y\in\mathcal{F}\,(x\in Y)\}
+$$
+と定める。これは $\mathcal{F}$ のいずれかの元に属する $x$ 全体であり、外延性により $A$ の選び方によらない。$A\cup B=\bigcup\{A,B\}$ と書く。
+:::
+
+::: intuition
+$\mathcal{F}$ を集合の族と考え、その「中身を全部ぶちまけた」集合である。公理 5 は、$\mathcal{F}$ のどの元も部分集合として含むような集合 $A$ があることを言う。
+:::
+
+::: example
+$\bigcup\varnothing=\varnothing$、$\bigcup\{A\}=A$、$\bigcup\{\{a,b\},\{b,c\}\}=\{a,b,c\}$。$x\in A\cup B\iff x\in A\lor x\in B$。対の公理と組み合わせると $\{x,y,z\}=\{x,y\}\cup\{z\}$ など、任意の有限個（具体的に書き出した個数）の元からなる集合が作れる。
+:::
+
+::: definition 共通部分・差集合 {#set:intersection-difference keywords="intersection, set difference" index="共通部分|きょうつうぶぶん, 差集合|さしゅうごう"}
+$\mathcal{F}\neq\varnothing$ のとき、$\mathcal{F}$ の元 $B$ を一つとり
+$$
+\bigcap\mathcal{F}=\{x\in B\mid\forall Y\in\mathcal{F}\,(x\in Y)\}
+$$
+と定める。$A\cap B=\bigcap\{A,B\}$、$A\setminus B=\{x\in A\mid x\notin B\}$ と書く。
+:::
+
+::: intuition
+$\bigcap\mathcal{F}$ は $\mathcal{F}$ のすべての元に共通に属する $x$ 全体である。$\mathcal{F}$ の元 $B$ の中から切り出すので、和集合の公理は使わない。$B$ の選び方によらないことは外延性から従う：どの $B\in\mathcal{F}$ をとっても、得られる集合の元は「すべての $Y\in\mathcal{F}$ に属する $x$」であり（そういう $x$ は特に $B$ に属する）、元が同じだからである。また「$\mathcal{F}$ の元を一つとる」のは、$\mathcal{F}\neq\varnothing$ という存在命題から一つの元を取り出すだけ（存在例化）なので、選択公理は要らない。
+:::
+
+::: supplement
+**$\bigcap\varnothing$ は定義しない.** 条件「すべての $Y\in\varnothing$ について $x\in Y$」はすべての $x$ について（空虚に）真なので、$\{x\mid\forall Y\in\varnothing(x\in Y)\}$ は「すべての集合の集まり」になってしまい、\ref{set:russell-paradox} により集合ではない。したがって $\bigcap\mathcal{F}$ は $\mathcal{F}\neq\varnothing$ のときに限って定義する（\ref{set:defined-notions} の約束に従えば、形式的には $\bigcap\varnothing=\varnothing$ と置く）。一方 $\bigcup\varnothing=\varnothing$ は問題なく定義される。
+:::
+
+::: axiom 置換公理（図式） {#set:ax-replacement keywords="Replacement Scheme, Axiom of Replacement" index="置換公理|ちかんこうり, 置換公理図式|ちかんこうりずしき"}
+$Y$ を自由変数として含まない各論理式 $\varphi$ について、次の論理式の全称閉包が公理である：
+$$
+\forall x\in A\;\exists!y\,\varphi(x,y)\;\to\;\exists Y\,\forall x\in A\;\exists y\in Y\,\varphi(x,y).
+$$
+:::
+
+::: intuition
+$\varphi(x,y)$ が $A$ 上で「$x$ に $y$ をただ一つ対応させる規則」を定めているなら、対応先をすべて含む集合 $Y$ がある。対応先の集まり $\{y\mid\exists x\in A\,\varphi(x,y)\}$ の「大きさ」は $A$ 以下なので、集合として存在してよいはずだ、というのが動機である。分出公理と同じく、論理式ごとに一つの公理からなる図式である。
+:::
+
+::: proposition 像集合 {#set:replacement-image keywords="image of a set under a class function" index="像集合|ぞうしゅうごう"}
+$\forall x\in A\;\exists!y\,\varphi(x,y)$ が成り立つとき、
+$$
+\{y\mid\exists x\in A\,\varphi(x,y)\}
+$$
+は集合として存在し、一意である。$\varphi(x,y)$ が $y=F(x)$（$F$ は定義された演算）の形のとき、これを $\{F(x)\mid x\in A\}$ と書く。
+:::
+
+::: example
+$A$ の各元 $x$ に単集合 $\{x\}$ を対応させると $\{\{x\}\mid x\in A\}$ が得られる。$\varphi(x,y)\equiv y=\{x\}$ で、$\{x\}$ の一意性は \ref{set:unordered-pair} による。
+:::
+
+::: proof
+**Step 1.** 置換公理により、$\forall x\in A\;\exists y\in Y\,\varphi(x,y)$ を満たす $Y$ がとれる。
+
+**Step 2.** 分出公理で $W=\{y\in Y\mid\exists x\in A\,\varphi(x,y)\}$ を作る。
+
+**Step 3（$W$ が求める集まりであること）.** $y\in W$ なら定義より $\exists x\in A\,\varphi(x,y)$。逆に $x\in A$ かつ $\varphi(x,y)$ とする。Step 1 より $\varphi(x,y')$ となる $y'\in Y$ があり、$\exists!$ の一意性より $y'=y$、したがって $y\in Y$ で、$y\in W$。よって任意の $y$ について $y\in W\leftrightarrow\exists x\in A\,\varphi(x,y)$。
+
+**Step 4（一意性）.** 同じ条件を満たす集合は同じ元をもつので、外延性の公理により一意である。
+
+::: hypcheck
+- **置換公理**：Step 1。
+- **分出公理**：Step 2。置換公理は「対応先を含む集合」しか与えないので、ちょうどの像を得るには分出が要る。
+- **一意性 $\exists!$**：Step 3 で、$Y$ の中の対応先と与えられた $y$ が一致することに使った。
+- **外延性の公理**：Step 4。
+:::
+:::
+
+::: supplement
+**置換公理の強さ.** 置換公理は、順序数の構成（\ref{set:ordinal-type}）や超限再帰（\ref{set:transfinite-recursion}）で本質的に使われる。置換公理を除いた体系（ツェルメロの集合論）では、たとえば $\{\omega,\mathcal{P}(\omega),\mathcal{P}(\mathcal{P}(\omega)),\dots\}$ が集合であることが証明できない。
+
+**置換から分出を導く.** 置換公理を「像そのものが存在する」形（$\exists Y\,\forall y\,(y\in Y\leftrightarrow\exists x\in A\,\varphi(x,y))$）で採り、空集合の存在を別に仮定すると、分出公理はそこから導ける。$\{x\in A\mid\psi(x)\}$ を作るには、$\psi$ を満たす $A$ の元がなければ $\varnothing$ をとり、ひとつ $a$ があれば「$\psi(x)$ なら $y=x$、そうでなければ $y=a$」という対応 $\varphi(x,y)$ の像をとればよい。本分野では Kunen にならい、置換公理を弱い形で述べて分出と組み合わせて使う。
+:::
+
+## 順序対 {#set:sec-ordered-pair}
+
+::: definition 順序対 {#set:ordered-pair keywords="ordered pair, Kuratowski pair" index="順序対|じゅんじょつい, クラトフスキーの順序対|くらとふすきーのじゅんじょつい"}
+集合 $x,y$ に対し
+$$
+\langle x,y\rangle=\{\{x\},\{x,y\}\}
+$$
+を $x$ と $y$ の**順序対**という（クラトフスキーの定義）。
+:::
+
+::: intuition
+順序対に求められる性質は「成分が順序も込めて復元できる」こと、つまり次の定理の $\langle x,y\rangle=\langle x',y'\rangle\Rightarrow x=x'\land y=y'$ だけである。この定義は非順序対 $\{\,\cdot\,,\,\cdot\,\}$ だけを使ってそれを実現する一つの工夫で、「単集合になっている方が第 1 成分」と読める。対の公理を 3 回使えば存在する。
+:::
+
+::: example
+$\langle x,x\rangle=\{\{x\},\{x,x\}\}=\{\{x\}\}$。$\langle 0,1\rangle=\{\{0\},\{0,1\}\}$ と $\langle 1,0\rangle=\{\{1\},\{0,1\}\}$ は異なる（前者は $\{0\}$ を元にもつが後者はもたない）。
+:::
+
+::: lemma 非順序対の相等 {#set:unordered-pair-equality}
+集合 $a,b,c,d$ について
+1. $\{a,b\}=\{c\}$ ならば $a=b=c$。
+2. $\{a,b\}=\{c,d\}$ ならば、$a=c\land b=d$ または $a=d\land b=c$。
+:::
+
+::: proof
+**1.** $a\in\{a,b\}=\{c\}$ なので $a=c$。同様に $b\in\{c\}$ より $b=c$。
+
+**2.** $a\in\{a,b\}=\{c,d\}$ より $a=c$ または $a=d$。
+
+- *$a=c$ の場合.* $b\in\{c,d\}$ より $b=c$ または $b=d$。$b=d$ ならば $a=c\land b=d$ で結論が成り立つ。$b=c$ ならば $b=a$ なので $\{a,b\}=\{a\}$ であり、$d\in\{c,d\}=\{a\}$ より $d=a$。このとき $a=c$ かつ $b=a=d$ で、やはり $a=c\land b=d$。
+- *$a=d$ の場合.* $b\in\{c,d\}$ より $b=c$ または $b=d$。$b=c$ ならば $a=d\land b=c$ で結論が成り立つ。$b=d$ ならば $b=a$ なので $\{a,b\}=\{a\}$ であり、$c\in\{a\}$ より $c=a$。このとき $a=c$ かつ $b=a=d$ で、$a=c\land b=d$。
+
+::: hypcheck
+- **非順序対の元の特徴付け**（\ref{set:unordered-pair}：$v\in\{x,y\}\leftrightarrow v=x\lor v=y$）：各段で使った。これは対の公理・分出公理・外延性から来る。
+:::
+:::
+
+::: theorem 順序対の特徴付け {#set:ordered-pair-characterization keywords="characteristic property of ordered pairs" index="順序対の基本性質|じゅんじょついのきほんせいしつ"}
+任意の集合 $x,y,x',y'$ について
+$$
+\langle x,y\rangle=\langle x',y'\rangle\;\Longrightarrow\;x=x'\land y=y'.
+$$
+:::
+
+::: intuition
+順序対は成分を順序込みで一意に記憶する。逆向き（$x=x'\land y=y'$ なら等しい）は等号の論理から明らかなので、この定理と合わせて「$\langle x,y\rangle=\langle x',y'\rangle\iff x=x'\land y=y'$」となる。以後、順序対の具体的な作り方は忘れて、この性質だけを使う。
+:::
+
+::: proof
+$\langle x,y\rangle=\langle x',y'\rangle$、すなわち $\{\{x\},\{x,y\}\}=\{\{x'\},\{x',y'\}\}$ とする。
+
+**Step 1（第 1 成分）.** \ref{set:unordered-pair-equality} の 2 を $a=\{x\}$, $b=\{x,y\}$, $c=\{x'\}$, $d=\{x',y'\}$ に適用すると、$\{x\}=\{x'\}$ または $\{x\}=\{x',y'\}$ が成り立つ。前者なら $x\in\{x'\}$ より $x=x'$。後者なら同補題の 1（$\{x',y'\}=\{x\}$）より $x'=y'=x$。いずれにせよ $x=x'$。
+
+**Step 2（場合分け：$x=y$ のとき）.** $\langle x,y\rangle=\{\{x\},\{x,x\}\}=\{\{x\}\}$。仮定より $\{\{x'\},\{x',y'\}\}=\{\{x\}\}$ なので、補題の 1 から $\{x',y'\}=\{x\}$、さらに補題の 1 から $y'=x$。よって $y'=x=y$。
+
+**Step 3（場合分け：$x\neq y$ のとき）.** $\{x,y\}\in\langle x',y'\rangle$ なので、$\{x,y\}=\{x'\}$ または $\{x,y\}=\{x',y'\}$。
+- $\{x,y\}=\{x'\}$ ならば補題の 1 より $x=y=x'$ となり、$x\neq y$ に反する。
+- したがって $\{x,y\}=\{x',y'\}$。補題の 2 より「$x=x'\land y=y'$」または「$x=y'\land y=x'$」。後者なら Step 1 の $x=x'$ と合わせて $y=x'=x$ となり $x\neq y$ に反する。よって $y=y'$。
+
+**Step 4.** Step 1〜3 より $x=x'$ かつ $y=y'$。
+
+::: hypcheck
+- **非順序対の相等**（\ref{set:unordered-pair-equality}）：Step 1〜3 のすべて。
+- **排中律**：Step 2, 3 の $x=y$ か否かの場合分け。
+- 使った公理は非順序対の存在に要る対・分出・外延性だけで、基礎の公理は使わない。
+:::
+:::
+
+::: supplement
+**他の定義.** 性質「成分が復元できる」さえ満たせば定義は何でもよい。ウィーナーの定義 $\{\{\{x\},\varnothing\},\{\{y\}\}\}$ も同じ性質をもつ。より簡単な $\{x,\{x,y\}\}$ も、基礎の公理（\ref{set:ax-foundation}）を仮定すれば順序対として働く（証明では $x\in\{x,y\}\in x$ となる事態を基礎の公理で排除する）。後で有限列（\ref{set:finite-sequence}）を関数として定義すると、長さ 2 の列 $\langle x_{0},x_{1}\rangle$ は上の順序対とは別物になるが、両者の間には自然な 1 対 1 対応がある。
+
+**順序三つ組.** $\langle x,y,z\rangle=\langle\langle x,y\rangle,z\rangle$ と定めれば、本定理を 2 回使って $\langle x,y,z\rangle=\langle x',y',z'\rangle\Rightarrow x=x'\land y=y'\land z=z'$ が従う。
+:::
+
+## 直積 {#set:sec-cartesian-product}
+
+::: definition 直積 {#set:cartesian-product keywords="cartesian product, direct product" index="直積|ちょくせき, デカルト積|でかるとせき"}
+集合 $A,B$ に対し
+$$
+A\times B=\{\langle x,y\rangle\mid x\in A\land y\in B\}
+$$
+を $A$ と $B$ の**直積**という。すなわち $A\times B$ は、ある $x\in A$, $y\in B$ によって $z=\langle x,y\rangle$ と書ける $z$ 全体である。
+:::
+
+::: intuition
+右辺の集まりが集合であることは自明ではない：それを含む集合がまだ見つかっていないからである。次の命題で、冪集合公理を使わずに置換公理と和集合の公理だけから存在を示す。
+:::
+
+::: proposition 直積の存在 {#set:cartesian-product-existence keywords="existence of cartesian product without power set"}
+任意の集合 $A,B$ に対し、$A\times B$ は集合として存在する。しかも冪集合公理を使わずに示せる。
+:::
+
+::: intuition
+まず $y$ を固定して「$A$ の元を第 1 成分、$y$ を第 2 成分とする対」を集めた横一列 $\mathrm{prod}(A,y)$ を置換で作り、次に $y$ を $B$ 全体で動かして横一列たちの族を再び置換で作り、最後にその和集合をとる。
+:::
+
+::: proof
+**Step 1（横一列）.** $y$ を固定する。各 $x\in A$ に対し $z=\langle x,y\rangle$ を満たす $z$ はただ一つである（順序対は対の公理・分出・外延性で一意に定まる）。つまり $\forall x\in A\;\exists!z\,(z=\langle x,y\rangle)$。$y$ をパラメータとして像集合 \ref{set:replacement-image} を適用すると
+$$
+\mathrm{prod}(A,y)=\{\langle x,y\rangle\mid x\in A\}=\{z\mid\exists x\in A\,(z=\langle x,y\rangle)\}
+$$
+が集合として存在する。
+
+**Step 2（横一列の族）.** Step 1 と外延性により、各 $y$ に対し $\mathrm{prod}(A,y)$ はただ一つに定まり、$\mathrm{prod}(A,y)$ は \ref{set:defined-notions} の意味で定義された演算である。よって $\forall y\in B\;\exists!w\,(w=\mathrm{prod}(A,y))$ であり、再び \ref{set:replacement-image} により
+$$
+\mathcal{P}_{A,B}=\{\mathrm{prod}(A,y)\mid y\in B\}
+$$
+が集合として存在する。
+
+**Step 3（和集合）.** 和集合 $\bigcup\mathcal{P}_{A,B}$（\ref{set:union}）を考える。
+
+**Step 4（$\bigcup\mathcal{P}_{A,B}=A\times B$ の確認）.** 任意の $z$ について
+$$
+\begin{aligned}
+z\in\bigcup\mathcal{P}_{A,B}
+&\iff\exists w\in\mathcal{P}_{A,B}\,(z\in w)\\
+&\iff\exists y\in B\,\bigl(z\in\mathrm{prod}(A,y)\bigr)\\
+&\iff\exists y\in B\,\exists x\in A\,\bigl(z=\langle x,y\rangle\bigr).
+\end{aligned}
+$$
+1 行目は和集合の定義、2 行目は Step 2 の像集合の元の特徴付け、3 行目は Step 1 の像集合の元の特徴付けである。最後の条件はちょうど $A\times B$ の元であることなので、$\bigcup\mathcal{P}_{A,B}$ が求める集合であり、外延性より一意である。
+
+::: hypcheck
+- **置換公理**：Step 1 と Step 2 で 2 回（それぞれ \ref{set:replacement-image} を通して。分出公理もそこで使う）。
+- **対の公理**：Step 1 で順序対 $\langle x,y\rangle$ を作るのに使う。
+- **和集合の公理**：Step 3。
+- **外延性の公理**：Step 2 で $\mathrm{prod}(A,y)$ が一意に定まることと、Step 4 の一意性。
+- **冪集合公理は使っていない**。
+:::
+:::
+
+::: supplement
+**冪集合を使う構成.** 冪集合公理（\ref{set:ax-power-set}）を認めれば置換は要らない。$x\in A$, $y\in B$ のとき $\{x\}\subseteq A\cup B$ と $\{x,y\}\subseteq A\cup B$ より $\{x\},\{x,y\}\in\mathcal{P}(A\cup B)$、したがって $\langle x,y\rangle\subseteq\mathcal{P}(A\cup B)$、すなわち $\langle x,y\rangle\in\mathcal{P}(\mathcal{P}(A\cup B))$。よって
+$$
+A\times B=\{z\in\mathcal{P}(\mathcal{P}(A\cup B))\mid\exists x\in A\,\exists y\in B\,(z=\langle x,y\rangle)\}
+$$
+と分出で切り出せる。こちらは対・和集合・冪集合・分出・外延性を使い、置換は使わない。
+
+**冪集合を避ける理由.** 冪集合公理が成り立たないモデル（$\ZF-\mathrm{P}$ のモデル）でも直積が使えることは、独立性証明で作るモデルを調べるときに重要になる（\ref{set:sec-interpretation} の補足）。
+
+**例.** $A=\varnothing$ または $B=\varnothing$ なら $A\times B=\varnothing$。$A\times B$ と $B\times A$ は一般に異なる（$\langle a,b\rangle\neq\langle b,a\rangle$、ただし $a\neq b$）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

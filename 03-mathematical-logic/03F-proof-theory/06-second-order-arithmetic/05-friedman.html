@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>半正則切断とフリードマンの定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/06-second-order-arithmetic/05-friedman.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 半正則切断とフリードマンの定理 {#pt:page-soa-friedman keywords="Friedman's theorem, WKL0 is Pi02-conservative over PRA, semi-regular cuts, Kirby-Paris, M-finite sets, coded sets, Hilbert's program, partial realization, standard system, Parsons theorem"}
+
+$\mathsf{WKL}_{0}$ で証明できる $\Pi^{0}_{2}$ 文（「任意の $y$ に対しある $z$ があって有界な性質が成り立つ」の形の数についての主張）は、**原始再帰的算術 $\mathsf{PRA}$ で証明できる**（フリードマンの定理、\ref{pt:friedman}）。$\mathsf{PRA}$ はヒルベルトの「有限の立場」を形式化したものとされるので、この定理は、弱ケーニッヒの補題という非構成的な原理を使った多くの解析学の議論が、その算術的な帰結については有限の立場で正当化できることを意味する。本ページでは、パリスとその周辺で開発された**半正則切断**の方法でこれを証明する。$\mathsf{PRA}$ の可算モデル $M$ の中に、適当な始切片 $I$（半正則切断）をとると、$I$ と「$M$ の有限集合と $I$ の共通部分」全体が $\mathsf{WKL}_{0}$ のモデルになる（\ref{pt:semiregular-wkl0}）。
+
+> 主な資料は田中一之『逆数学と 2 階算術』第 3 章 §3.4（定義 3.7–3.9、定理 3.26、補題 3.27, 3.28、定理 3.29）。証明は自分の言葉で組み立て直し、切断が原始再帰的関数で閉じることの議論、$\Sigma^{0}_{1}$ 帰納法と分離原理の確認、半正則切断の構成の細部を補って書いた。原始再帰的関数の上からの評価（\ref{pt:majorization}）は本サイトでは証明していない。
+
+## 記法と定義の確認 {#pt:sec-soa5-notation}
+
+::: notation
+- **原始再帰的算術** $\mathsf{PRA}$ は \ref{pt:weak-arithmetics} のとおり：すべての原始再帰的関数（の定義）に関数記号をもち、その定義式と、量化子を含まない論理式（あるいは有界な論理式。強さは変わらない）の帰納法を公理とする。$\mathsf{PRA}$ のモデルを $(M,\mathcal{F})$（$\mathcal{F}$ は関数記号の解釈 $f^{M}$ の全体）と書く。
+- $\mathsf{WKL}_{0}$, $\mathsf{RCA}_{0}$ は \ref{pt:big-five}。$\mathsf{RCA}_{0}$ では原始再帰的関数が定義できる（\ref{pt:rca0-basic} の 5）ので、$\mathsf{PRA}$ の言語の文は $\mathcal{L}_{2}$ の文に翻訳して扱う。
+- $\Sigma^{0}_{1}$ 分離原理 $\Sigma^{0}_{1}\text{-}\mathsf{SEP}$ と、$\mathsf{RCA}_{0}$ 上での $\mathsf{WKL}\Leftrightarrow\Sigma^{0}_{1}\text{-}\mathsf{SEP}$ は \ref{logic:sigma01-separation}, \ref{logic:wkl-separation}。
+- $p(n)$ は $n$ 番目の素数（$p(0)=2,p(1)=3,\dots$）を表す原始再帰的関数。
+- コンパクト性定理（\ref{logic:compactness}）と下降レーヴェンハイム–スコーレムの定理（\ref{model:downward-lowenheim-skolem}）を使う。
+:::
+
+## M 有限集合と半正則切断 {#pt:sec-soa5-cuts}
+
+::: definition M 有限集合と切断 {#pt:m-finite-cut keywords="M-finite sets, codes, cuts, semi-regular cuts" index="M 有限集合|えむゆうげんしゅうごう, 切断（算術のモデル）|せつだんさんじゅつのもでる, 半正則切断|はんせいそくせつだん"}
+$(M,\mathcal{F})\models\mathsf{PRA}$ とする。
+1. $c\in M$ について $X_{c}\defeq\{n\in M:M\models\exists e<c\,(c=p(n)\cdot e)\}$（$p(n)$ が $c$ を割る $n$ 全体）とし、$c$ を $X_{c}$ の**符号**という。ある符号をもつ集合を **$M$ 有限集合**という。元の個数 $\lvert X_{c}\rvert$ と最大元 $\max X_{c}$ は $c$ の原始再帰的関数で与えられる（$M$ の中で計算される）。
+2. $I\subsetneq M$ が**切断**であるとは、始切片（$a<b\in I\Rightarrow a\in I$）で後者関数で閉じている（$a\in I\Rightarrow a+1\in I$）ことをいう。$I\subsetneq_{e}M$ と書く。
+3. 切断 $I$ が**半正則**であるとは、$\lvert X\rvert\in I$ となる任意の $M$ 有限集合 $X$ について、$X\cap I$ が $I$ の中で有界である（ある $e\in I$ で $X\cap I\subseteq\{x:x<e\}$）ことをいう。
+4. $I$ の部分集合で、ある $M$ 有限集合 $X$ によって $X\cap I$ と書けるものを **$M$ 符号化集合**といい、その全体を $\mathcal{S}_{I}$ と書く。
+:::
+
+::: remark
+半正則性は、集合論の**正則基数**の類似である：正則基数 $\kappa$ では「$\kappa$ より少ない個数の、$\kappa$ 未満の順序数の集合は $\kappa$ の中で有界」である。半正則切断では「$I$ の中の個数しかない $M$ 有限集合は、$I$ の中で有界」である。
+:::
+
+::: proposition 原始再帰的関数の評価 {#pt:majorization keywords="majorization of primitive recursive functions by the hierarchy g_n" index="原始再帰的関数の階層|げんしさいきてきかんすうのかいそう"}
+1 変数関数 $g_{n}$ を $g_{0}(x)\defeq x+1$, $g_{n+1}(x)\defeq g_{n}^{(x+2)}(x)$（$g_{n}$ を $x+2$ 回合成）で定める。各原始再帰的関数 $f$ に対し、ある $n\in\N$ で
+$$
+\mathsf{PRA}\vdash f(x_{1},\dots,x_{k})<g_{n}(\max\{x_{1},\dots,x_{k},2\})
+$$
+となることが知られている（アッカーマン関数による評価 \ref{comp:ackermann-not-pr} と同様の議論。本サイトでは $\mathsf{PRA}$ での形式化は示していない）。また、$\mathsf{PRA}\vdash x<g_{n}(x)$ で、$g_{n}$ は狭義単調増加である（$n$ についてのメタレベルの帰納法と、$\mathsf{PRA}$ の帰納法による）。
+:::
+
+::: theorem カービー–パリスの定理 {#pt:kirby-paris keywords="semi-regular cuts are models of PRA" index="カービー–パリスの定理|かーびーぱりすのていり"}
+$(M,\mathcal{F})\models\mathsf{PRA}$ とし、$I\subsetneq_{e}M$ を半正則切断とする。$I$ はすべての $f^{M}$ で閉じており、$(I,\mathcal{F}\restr I)\models\mathsf{PRA}$。ここで $\mathcal{F}\restr I$ は各 $f^{M}$ の定義域を $I$ に制限したもの全体。
+:::
+
+::: proof
+**Step 1（$g_{n}$ で閉じること）.** $n\in\N$ についてのメタレベルの帰納法で、$I$ が $g_{n}$ で閉じていることを示す。$n=0$ は切断の定義。$I$ が $g_{n}$ で閉じているとし、$a\in I$ で $g_{n+1}(a)\notin I$ と仮定する。$y_{i}\defeq g_{n}^{(i)}(a)$（$1\le i\le a+2$）とし、$M$ 有限集合
+$$
+X\defeq\{y_{1},y_{2},\dots,y_{a+2}\}
+$$
+をとる（$M$ の中で原始再帰的に符号が作れる）。$g_{n}$ は狭義増加で $x<g_{n}(x)$ なので $y_{i}$ は相異なり、$\lvert X\rvert=a+2\in I$。半正則性から、$e\in I$ で $X\cap I\subseteq[0,e)$ となるものがある。$y_{1}=g_{n}(a)\in I$ なので $y_{1}<e$。$M$ 有限集合 $\{x\in X:x<e\}$ は空でなく、その最大元を $b=y_{j}$ とする。$b<e$ なので $b\in I$。$y_{a+2}=g_{n+1}(a)\notin I$ なので $j<a+2$ で、$y_{j+1}=g_{n}(b)\in I$（帰納法の仮定）。すると $y_{j+1}\in X\cap I$ なので $y_{j+1}<e$ だが、$y_{j+1}>y_{j}=b$ は $b$ の最大性に反する。
+
+**Step 2（すべての $f^{M}$ で閉じること）.** $f$ を原始再帰的とすると、\ref{pt:majorization} により $f(\vec{x})<g_{n}(\max\{\vec{x},2\})$ で、$\vec{x}\in I$ なら右辺は Step 1 により $I$ に属し、$I$ は始切片なので $f^{M}(\vec{x})\in I$。
+
+**Step 3（$\mathsf{PRA}$ の公理）.** Step 2 から $(I,\mathcal{F}\restr I)$ は $(M,\mathcal{F})$ の部分構造である。定義式は量化子のない論理式の全称閉包なので、部分構造で成り立つ。有界な論理式の真偽も、$I$ が始切片なので（有界量化子の範囲が $I$ に収まる）二つの構造で一致する。帰納法：有界な論理式 $\varphi(x)$（パラメータは $I$ の元）について $(I,\mathcal{F}\restr I)\models\varphi(0)\wedge\forall x\,(\varphi(x)\to\varphi(x+1))$ とし、$c\in I$ を任意にとる。$\psi(x)\defeq\varphi(x)\vee c<x$ は有界な論理式で、$M$ で $\psi(0)$ と $\forall x\,(\psi(x)\to\psi(x+1))$ が成り立つ（$x<c$ なら $x,x+1\in I$ で仮定から、$x\ge c$ なら $c<x+1$）。$M$ の帰納法で $M\models\psi(c)$、すなわち $\varphi(c)$ で、これは $I$ でも成り立つ。$c$ は任意なので $(I,\mathcal{F}\restr I)\models\forall x\,\varphi(x)$。
+:::
+
+## 半正則切断は WKL₀ のモデルを与える {#pt:sec-soa5-wkl0}
+
+::: lemma 半正則切断と WKL₀ {#pt:semiregular-wkl0 keywords="(I, S_I) is a model of WKL0 for a semi-regular cut I" index="半正則切断と WKL₀|はんせいそくせつだんとだぶりゅけーえるぜろ"}
+$(M,\mathcal{F})\models\mathsf{PRA}$, $I\subsetneq_{e}M$ が半正則切断なら、$(I,\mathcal{S}_{I})\models\mathsf{WKL}_{0}$。ここで $I$ の $+,\cdot$ などは $M$ の対応する原始再帰的関数を $I$ に制限したもの。
+:::
+
+::: proof
+**Step 0（翻訳）.** $I\cup\mathcal{S}_{I}$ の元をパラメータとする $\mathcal{L}_{2}$ の算術的論理式 $\varphi$ について、各集合パラメータ $B=X_{c}\cap I$ の出現 $t\in B$ を「$p(t)$ が $c$ を割る」で置き換えた論理式を $\varphi^{\ast}$ とする（$\varphi^{\ast}$ はパラメータ $c\in M$ をもつ一階の論理式）。$\varphi$ が有界な論理式なら、$a\in I$ について
+$$
+(I,\mathcal{S}_{I})\models\varphi(a)\iff(M,\mathcal{F})\models\varphi^{\ast}(a).
+$$
+（\ref{pt:kirby-paris} の Step 3 と同じく、有界な論理式の真偽は始切片で一致し、$t\in I$ について $t\in B\iff t\in X_{c}$。）
+
+基本公理は \ref{pt:kirby-paris} による。$\Sigma^{0}_{1}$ 帰納法、$\Sigma^{0}_{1}$ 分離原理の順に示す。$\Sigma^{0}_{1}$ 分離原理から $\Delta^{0}_{1}$ 内包公理が従い（$\varphi\leftrightarrow\psi$ のとき $\varphi$ と $\neg\psi$ を分離した集合が $\{n:\varphi(n)\}$）、$\mathsf{RCA}_{0}$ の上で $\Sigma^{0}_{1}\text{-}\mathsf{SEP}$ は $\mathsf{WKL}$ を導く（\ref{logic:wkl-separation}）ので、これで十分である。
+
+**Step 1（有界な論理式の帰納法）.** Step 0 と \ref{pt:kirby-paris} の Step 3 と同じ議論（$M$ の帰納法をパラメータ $c$ 付きで使う）による。
+
+**Step 2（$\Sigma^{0}_{1}$ 帰納法）.** $\varphi(x)\equiv\exists y\,\theta(x,y)$（$\theta$ 有界）とし、$(I,\mathcal{S}_{I})\models\varphi(0)\wedge\forall x\,(\varphi(x)\to\varphi(x+1))$ とする。$c\in I$ を任意にとり、$d\in M\setminus I$ を一つ固定する。$M$ 有限集合
+$$
+Z\defeq\{(a,b):a\le c,\ b<d,\ \theta^{\ast}(a,b)\wedge\forall x<b\,\neg\theta^{\ast}(a,x)\}
+$$
+（各 $a$ について最小の証拠 $b$ だけを集めたもの）をとる。各 $a$ に $b$ は高々一つなので $\lvert Z\rvert\le c+1\in I$。半正則性から、$e\in I$ で $Z\cap I\subseteq[0,e)$ となるものがある。$a\le c$ について
+$$
+(I,\mathcal{S}_{I})\models\varphi(a)\iff M\models\exists y<e\,\theta^{\ast}(a,y)
+$$
+を示す。（$\Rightarrow$）$b\in I$ で $\theta^{\ast}(a,b)$ なら、最小の証拠 $b_{0}\le b$ も $I$ に属し、$(a,b_{0})\in Z$。$I$ は対関数（原始再帰的）で閉じているので $(a,b_{0})\in I$、よって $(a,b_{0})<e$ で $b_{0}\le(a,b_{0})<e$。（$\Leftarrow$）$y<e$ なら $y\in I$。
+
+右辺 $\chi(a)\defeq\exists y<e\,\theta^{\ast}(a,y)$ は有界な論理式で、$M$ で $\chi(0)$ と、$a<c$ について $\chi(a)\to\chi(a+1)$ が成り立つ。$\chi(a)\vee c<a$ に $M$ の帰納法を使って $M\models\chi(c)$、すなわち $(I,\mathcal{S}_{I})\models\varphi(c)$。$c\in I$ は任意。
+
+**Step 3（$\Sigma^{0}_{1}$ 分離原理）.** $\varphi_{i}(x)\equiv\exists y\,\theta_{i}(x,y)$（$i=0,1$, $\theta_{i}$ 有界）が $(I,\mathcal{S}_{I})$ で互いに素であるとする。$d\in M\setminus I$ をとり、$M$ 有限集合
+$$
+Y\defeq\{a<d:\exists b<d\,(\theta_{0}^{\ast}(a,b)\wedge\forall x<b\,\neg\theta_{1}^{\ast}(a,x))\}
+$$
+（「$\varphi_{0}$ の証拠が $\varphi_{1}$ の証拠より先に見つかる」$a$）をとり、$B\defeq Y\cap I\in\mathcal{S}_{I}$ とする。$a\in I$ について：
+- $\varphi_{0}(a)$ なら $a\in B$：証拠 $b\in I$ をとると $b<d$。$x<b$ で $\theta_{1}^{\ast}(a,x)$ なら $x\in I$ で $\varphi_{1}(a)$ となり、互いに素であることに反する。
+- $a\in B$ なら $\neg\varphi_{1}(a)$：$\varphi_{1}(a)$ の証拠 $x\in I$ があるとする。$Y$ の定義の $b$ は $\forall x'<b\,\neg\theta_{1}^{\ast}(a,x')$ を満たすので $b\le x$、よって $b\in I$ で $\varphi_{0}(a)$ となり矛盾。
+
+よって $B$ は $\varphi_{0}$ と $\varphi_{1}$ を分離する。
+:::
+
+::: intuition
+半正則切断 $I$ は、モデル $M$ の中の「十分に閉じた」始切片である。$I$ から見ると、$I$ より大きな数 $d\in M\setminus I$ は「無限大」に見える。$\Sigma^{0}_{1}$ 論理式の証拠探しを $d$ までで打ち切っても、$I$ の中の証拠はすべて見つかる。$M$ 有限集合は $I$ から見ると無限集合でありうるが、それでも $M$ の中では有限なので、$M$ の帰納法がそのまま使える。この「外から見ると有限、内から見ると無限」という二重性が、弱ケーニッヒの補題（コンパクト性）を有限的な道具で実現する鍵になっている：$I$ の中の無限二分木は $M$ では有限の高さ $d$ まで延びた木の一部で、高さ $d$ の節点の一つをとれば、それが $I$ から見た「道」になる。
+:::
+
+## フリードマンの定理 {#pt:sec-soa5-friedman}
+
+::: lemma 半正則切断の存在 {#pt:semiregular-exists keywords="existence of semi-regular cuts between c and d" index="半正則切断の存在|はんせいそくせつだんのそんざい"}
+$(M,\mathcal{F})$ を $\mathsf{PRA}$ の可算モデルとし、$c,d\in M$, $c\ge2$ で、すべての原始再帰的関数 $f$ について $f^{M}(c,\dots,c)<d$ とする。このとき、$c\in I$, $d\notin I$ となる半正則切断 $I\subsetneq_{e}M$ が存在する。
+:::
+
+::: proof
+**Step 1（述語 $B$）.** 原始再帰的述語 $B(x,y,z)$ を $x$ についての再帰で定める：$B(0,y,z):\iff y<z$。$B(x+1,y,z):\iff$「$\lvert X\rvert<y$ となる任意の $M$ 有限集合 $X\subseteq[y,z)$ について、$[y',z')\subseteq[y,z)$ で $B(x,y',z')$ かつ $[y',z')\cap X=\varnothing$ となるものがある」。量化子はすべて $z$ の原始再帰的関数で抑えられる範囲を動くので、$B$ は原始再帰的である。$B(x,y,z)$ なら $y<z$（$X=\varnothing$ をとり、$x$ についての帰納法）。
+
+**Step 2（$g_{n}$ との関係）.** 各 $n\in\N$ について $\mathsf{PRA}\vdash g_{n}(y)\le z\to B(n,y,z)$（$y\ge1$）を、$n$ についてのメタレベルの帰納法で示す。$n=0$ は $y<y+1\le z$。$n+1$ のとき：$y_{0}\defeq y$, $y_{i+1}\defeq g_{n}(y_{i})$ とすると、$y_{y+1}\le g_{n}^{(y+2)}(y)=g_{n+1}(y)\le z$ なので、$y+1$ 個の互いに交わらない区間 $[y_{i},y_{i+1})$（$i\le y$）が $[y,z)$ に含まれる。$\lvert X\rvert<y$ なら、有限の鳩の巣原理により $X$ と交わらない区間 $[y_{i},y_{i+1})$ があり、帰納法の仮定から $B(n,y_{i},y_{i+1})$（$y_{i}\ge y\ge1$）。
+
+**Step 3（超準的な深さ）.** 仮定から各 $n\in\N$ で $g_{n}(c)<d$ なので $B(n,c,d)$。$d$ は超準的である（定数関数も原始再帰的なので、$d$ はすべての標準的な数より大きい）。$M$ で $\neg B(x,c,d)$ となる $x\le d$ があればその最小のものを $x_{0}$ とし（有界な論理式の最小元の原理）、$b\defeq x_{0}-1$、なければ $b\defeq d$ とする。$x_{0}$ は標準的でないので、$b$ は超準的で $B(b,c,d)$。
+
+**Step 4（区間の縮小列）.** $M$ は可算なので、$M$ 有限集合を、各集合が無限回現れるように $X_{0},X_{1},\dots$（$n\in\N$）と並べる。区間 $[c_{n},d_{n})$ を、$[c_{0},d_{0})\defeq[c,d)$ とし、$B(b-n,c_{n},d_{n})$ を保つように作る（$b-n$ は超準的なので $\ge1$）。$X\defeq X_{n}\cap[c_{n},d_{n})$ が $\lvert X\rvert<c_{n}$ を満たすならこの $X$、そうでなければ $X\defeq\varnothing$ について、$B(b-n,c_{n},d_{n})$ の定義から $[c_{n+1},d_{n+1})\subseteq[c_{n},d_{n})$ を $B(b-n-1,c_{n+1},d_{n+1})$ かつ $[c_{n+1},d_{n+1})\cap X=\varnothing$ となるように選ぶ。
+
+**Step 5（切断の定義）.** $I\defeq\{a\in M:\exists n\in\N\,(a<c_{n})\}$ とする。
+- $c_{n}\in I$（したがって $c=c_{0}\in I$）：ある $m\ge n$ で $X_{m}=\{c_{n}\}$ となる。$c_{n}\le c_{m}$ である。$c_{n}<c_{m}$ ならそれで $c_{n}\in I$。$c_{n}=c_{m}$ なら、$X\defeq\{c_{m}\}$ は $\lvert X\rvert=1<c_{m}$（$c_{m}\ge c\ge2$）なので、$[c_{m+1},d_{m+1})\subseteq[c_{m},d_{m})$ は $c_{m}$ を含まず、$c_{m+1}\ge c_{m}$ と合わせて $c_{m+1}>c_{m}=c_{n}$。
+- $I$ は始切片で、後者で閉じる：$a<c_{n}$ なら $a+1\le c_{n}\in I$。
+- $a\in I$ ならすべての $m$ で $a<d_{m}$（$a<c_{n}$ として、$m\ge n$ なら $c_{n}\le c_{m}<d_{m}$、$m<n$ なら $c_{n}<d_{n}\le d_{m}$）。とくに $d=d_{0}\notin I$ で、$I\neq M$。
+
+**Step 6（半正則性）.** $X$ を $M$ 有限集合で $\lvert X\rvert\in I$ とし、$\lvert X\rvert<c_{n}$ とする。$X=X_{m}$ となる $m\ge n$ をとると、$\lvert X\cap[c_{m},d_{m})\rvert\le\lvert X\rvert<c_{n}\le c_{m}$ なので $[c_{m+1},d_{m+1})\cap X=\varnothing$。$x\in X\cap I$ なら $x<d_{m+1}$（Step 5）で $x\notin[c_{m+1},d_{m+1})$ なので $x<c_{m+1}\in I$。よって $X\cap I$ は $I$ の中で有界。
+:::
+
+::: theorem フリードマンの定理 {#pt:friedman keywords="Friedman's theorem: WKL0 is Pi02-conservative over PRA" index="フリードマンの定理|ふりーどまんのていり"}
+任意の $\Pi^{0}_{2}$ 文 $\sigma$ について、$\mathsf{WKL}_{0}\vdash\sigma$ ならば $\mathsf{PRA}\vdash\sigma$。
+:::
+
+::: proof
+対偶を示す。$\sigma\equiv\forall y\,\exists z\,\theta(y,z)$（$\theta$ 有界）で $\mathsf{PRA}\nvdash\sigma$ とする。
+
+**Step 1（モデル）.** 新しい定数 $c,d$ を加えた理論
+$$
+\begin{aligned}
+&\mathsf{PRA}\cup\{\neg\exists z\,\theta(c,z),\ c\ge2\}\\
+&\quad\cup\{f(c,\dots,c)<d:f\text{ は原始再帰的関数の記号}\}
+\end{aligned}
+$$
+は有限充足可能である：$\mathsf{PRA}\nvdash\sigma$ なので、完全性定理から $\mathsf{PRA}$ のモデル $M_{0}$ と $c_{0}\in M_{0}$ で $M_{0}\models\neg\exists z\,\theta(c_{0},z)$ となるものがある（$c_{0}\ge2$ は、$\theta$ を $y\ge2$ の場合に帰着させる通常の書き換えで仮定してよい）。有限個の $f_{1},\dots,f_{r}$ については $d_{0}\defeq\max_{i}f_{i}(c_{0},\dots,c_{0})+1$ をとればよい。コンパクト性定理と下降レーヴェンハイム–スコーレムの定理により、可算モデル $(M,\mathcal{F},c,d)$ がある。
+
+**Step 2（切断）.** \ref{pt:semiregular-exists} により、$c\in I$, $d\notin I$ となる半正則切断 $I$ がある。\ref{pt:semiregular-wkl0} により $(I,\mathcal{S}_{I})\models\mathsf{WKL}_{0}$。
+
+**Step 3（$\neg\sigma$ の保存）.** $\neg\exists z\,\theta(c,z)$ は $\forall z\,\neg\theta(c,z)$ で、$\theta$ は有界なので、$M$ で成り立てば部分構造 $I$（始切片）でも成り立つ（各 $z\in I$ について $\neg\theta(c,z)$ の真偽は $M$ と $I$ で一致）。$\mathsf{WKL}_{0}$ の中で $\sigma$ に現れる原始再帰的関数は原始再帰で定義された関数と読むが、その $(I,\mathcal{S}_{I})$ での値は $f^{M}\restr I$ と一致する（計算列の符号は引数の原始再帰的関数で抑えられ、\ref{pt:kirby-paris} により $I$ に属する）。したがって $(I,\mathcal{S}_{I})\models\mathsf{WKL}_{0}+\neg\sigma$ で、健全性により $\mathsf{WKL}_{0}\nvdash\sigma$。
+:::
+
+::: remark
+1. **ヒルベルトのプログラムの部分的な実現.** $\mathsf{PRA}$ は有限の立場の形式化とされる（テイトの分析による。これは哲学的な主張で、異論もある）。フリードマンの定理は、$\mathsf{WKL}_{0}$ で展開できる数学（連続関数の最大値の定理、ハイネ–ボレルの定理など。\ref{logic:page-rm-wkl0}）の $\Pi^{0}_{2}$ の帰結が有限の立場で正当化できることを意味し、シンプソンはこれを「ヒルベルトのプログラムの部分的な実現」と呼んだ。
+2. **別の道筋.** ハーリントンの定理の系 \ref{pt:wkl0-isigma1}（$\mathsf{WKL}_{0}$ は $\mathrm{I}\Sigma_{1}$ の保存拡大）と、パーソンズの定理（$\mathrm{I}\Sigma_{1}$ は $\Pi^{0}_{2}$ 文について $\mathsf{PRA}$ の保存拡大）を合わせても、フリードマンの定理が得られる。逆に、フリードマンの定理からパーソンズの定理が従う（問題 \ref{pt:prob-parsons}）。
+:::
+
+::: hypcheck
+- **半正則性**：\ref{pt:kirby-paris} の Step 1（$X\cap I$ の有界性）、\ref{pt:semiregular-wkl0} の Step 2（$Z\cap I$ の有界性）で使った。単なる切断では $\Sigma^{0}_{1}$ 帰納法は一般に成り立たない。
+- **$I\ne M$**：\ref{pt:semiregular-wkl0} の Step 2, 3 で、$I$ の外の数 $d$ を探索の打ち切りに使った。
+- **$M\models\mathsf{PRA}$ の帰納法**：有界な論理式の帰納法を、パラメータ（符号 $c$ や $e$）付きで $M$ の中で使った（\ref{pt:kirby-paris} の Step 3、\ref{pt:semiregular-wkl0} の Step 2）。
+- **$M$ の可算性**：\ref{pt:semiregular-exists} の Step 4 で、$M$ 有限集合を本当の自然数で並べるのに使った。
+- **$f(c,\dots,c)<d$ がすべての $f$ で成り立つこと**：\ref{pt:semiregular-exists} の Step 3 で、$B(n,c,d)$ をすべての標準的な $n$ について得るのに使った。
+- **\ref{pt:majorization}**：本サイトでは証明していない事実で、\ref{pt:kirby-paris} の Step 2 と \ref{pt:semiregular-exists} の Step 3 の前提になっている。
+- **$\sigma$ が $\Pi^{0}_{2}$ であること**：\ref{pt:friedman} の Step 3 で、$\neg\sigma$ の証拠 $c$ が $I$ に入り、$\forall z\,\neg\theta(c,z)$ が $I$ に下りることに使った。
+:::
+
+## 問題 {#pt:sec-soa5-problems}
+
+::: problem {#pt:prob-standard-cut}
+$(M,\mathcal{F})$ を $\mathsf{PRA}$ の超準モデル（$\N\subsetneq M$）とする。$\N$ は $M$ の半正則切断であることを示し、$\mathcal{S}_{\N}$（$M$ の**標準系**）が $\mathsf{WKL}_{0}$ の ω モデルであることを結論せよ。
+:::
+
+::: solution
+$\N$ は $M$ の始切片で後者で閉じ、$M$ が超準的なので $\N\ne M$。$X$ を $M$ 有限集合で $\lvert X\rvert=k\in\N$ とすると、$X$ はちょうど $k$ 個の元をもつ（$M$ の中で元を小さい順に並べると $k$ 個）ので、$X\cap\N$ は高々 $k$ 個の元をもつ本当の有限集合で、$\N$ の中で有界。よって半正則。\ref{pt:semiregular-wkl0} から $(\N,\mathcal{S}_{\N})\models\mathsf{WKL}_{0}$ で、数の部分が $\N$ なので ω モデル。
+:::
+
+::: problem {#pt:prob-parsons}
+フリードマンの定理から、**パーソンズの定理**「$\mathrm{I}\Sigma_{1}$ で証明できる $\Pi^{0}_{2}$ 文は $\mathsf{PRA}$ で証明できる」を導け。（$\mathrm{I}\Sigma_{1}$ の言語に原始再帰的関数の記号を加えてもよいとする。）
+:::
+
+::: solution
+$\mathrm{I}\Sigma_{1}\vdash\sigma$（$\sigma\in\Pi^{0}_{2}$）とする。$\mathsf{RCA}_{0}$ は集合パラメータなしの $\Sigma^{0}_{1}$ 帰納法を含むので $\mathrm{I}\Sigma_{1}\subseteq\mathsf{RCA}_{0}\subseteq\mathsf{WKL}_{0}$ で、$\mathsf{WKL}_{0}\vdash\sigma$。\ref{pt:friedman} から $\mathsf{PRA}\vdash\sigma$。
+:::
+
+::: problem {#pt:prob-provably-total}
+$\theta(x,y)$ を有界な論理式とし、$\mathsf{WKL}_{0}\vdash\forall x\,\exists y\,\theta(x,y)$ とする。原始再帰的関数 $f$ で、すべての $n\in\N$ について $\theta(n,f(n))$ が（標準モデルで）成り立つものがあることを示せ。ただし、「$\mathsf{PRA}\vdash\forall x\,\exists y\,\theta(x,y)$ なら、そのような原始再帰的関数がある」こと（エルブランの定理などによる）は既知としてよい。
+:::
+
+::: solution
+$\forall x\,\exists y\,\theta(x,y)$ は $\Pi^{0}_{2}$ 文なので、\ref{pt:friedman} により $\mathsf{PRA}\vdash\forall x\,\exists y\,\theta(x,y)$。既知の事実から求める $f$ が得られる。つまり、弱ケーニッヒの補題を使って「解 $y$ が存在する」ことを示しただけでも、その解は原始再帰的に計算できる。
+:::
+
+::: supplement
+**前提の検討.**
+- \ref{pt:semiregular-wkl0} では、$\mathcal{S}_{I}$ を「$M$ 有限集合と $I$ の共通部分」に限った。$M$ で定義可能な集合と $I$ の共通部分まで許すと、一般に $\Sigma^{0}_{1}$ 帰納法が成り立たなくなる。
+- \ref{pt:semiregular-exists} の条件「すべての $f$ で $f(c,\dots,c)<d$」は、$c$ から $d$ までの間に、原始再帰的関数で閉じた切断が入る余地があることを保証する。$c$ を含み原始再帰的関数で閉じた**最小の**切断 $J=\{a:\exists n\in\N\,a<g_{n}(c)\}$ は、$c$ が超準的なら半正則でないことが知られている（田中の本の補題 3.28 の後の注意）。半正則切断はそれより「ずっと上」でとる必要がある。
+
+**関連する結果.**
+- *カービー–パリスの理論.* 半正則切断より強い条件をもつ切断も研究されており、たとえば**強切断**は $\PA$ のモデルを与え、パリス–ハーリントンの定理の証明に使われることが知られている。切断に課す「正則性」の強さが、得られる帰納法の強さに対応していると言われている。
+- *ハーリントンの定理との比較.* ハーリントンの定理（\ref{pt:harrington}）は、数の部分 $M$ を変えずに集合を付け加える（強制法）。フリードマンの定理の証明は、集合を付け加える代わりに、数の部分を $M$ から切断 $I$ に**縮める**。縮めることで、$M$ の有限集合が $I$ から見て無限集合になり、集合の領域が自然に得られる。
+
+**高い視点から：無限を有限の内側に見る.** 半正則切断の方法は、「十分大きな有限は、内側から見ると無限と区別できない」という考えを形式化したものである。$M$ の有限集合 $X$ は、$I$ の住人には $X\cap I$ という無限集合に見え、$I$ の外の大きな数 $d$ は無限大に見える。弱ケーニッヒの補題の道も、$M$ の中では高さ $d$ の有限の枝にすぎない。このように、非構成的な原理（無限の道の存在）を、超準的な有限（$M$ の大きな有限）で置き換えることが、有限の立場での正当化につながる。比喩で言えば、地図の上で地平線の向こうまで続く道を描くには、地球全体を描く必要はなく、地平線（切断 $I$）より少し先まで描いた地図（$M$ の有限の木）があれば十分である。超準解析で無限小を超準的な数として扱う発想とも共通している。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

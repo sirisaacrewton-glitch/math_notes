@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ω 規則と無限導出のカット除去 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/07-ordinal-analysis/02-omega-logic.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ω 規則と無限導出のカット除去 {#pt:page-omega-logic keywords="omega-rule, omega-logic, infinitary sequent calculus, Tait calculus, cut elimination for infinitary derivations, inversion lemma, reduction lemma, ordinal bounds 2^alpha"}
+
+順序数解析の基本的な道具は、**ω 規則**
+$$
+\frac{A(0)\quad A(1)\quad A(2)\quad\cdots}{\forall x\,A(x)}
+$$
+をもつ**無限のシーケント計算**である。ω 規則のもとでは導出は無限に分岐する木になり、その高さは順序数で測られる。本ページでは、自由変数をもたない算術の論理式についての片側シーケント計算 $\mathbf{G}_{\omega}$ を定義し、高さ $\alpha$ でカットの深さが $c+1$ 未満の導出を、高さ $2^{\alpha}$ でカットの深さが $c$ 未満の導出に変換できること（\ref{pt:omega-cut-elimination}）を示す。カットを一段ずつ除くたびに高さが指数的に増えるが、出発点の高さが $\varepsilon_{0}$ 未満なら、結果も $\varepsilon_{0}$ 未満にとどまる（\ref{pt:epsilon0-basic}）。これが次ページでペアノ算術を解析する仕組みになる。
+
+> 主な資料は新井敏康『数学基礎論』第 8 章 §8.3–8.4.1（深さ評価付きカット消去と ω 論理）。本サイトでは導出可能性の記号 $\vdash^{\alpha}_{c}$ と各補題を自分で定式化し直し、証明を補った。
+
+## 記法と定義の確認 {#pt:sec-oa2-notation}
+
+::: notation
+- 順序数とその算術、$2^{\alpha}$ は集合論の系列のとおり（\ref{set:ordinal-exponentiation}, \ref{set:ordinal-exponentiation-basic}, \ref{set:ordinal-exponentiation-laws}）。$\beta<\alpha$ なら $2^{\beta}<2^{\alpha}$、$2^{\beta}+2^{\beta}=2^{\beta}\cdot2=2^{\beta+1}$。$\varepsilon_{0}$ とその閉包性は \ref{pt:epsilon0-basic}。
+- 本ページのシーケント計算は、\ref{pt:lk} の両側シーケント計算 $\mathsf{LK}$ と違い、論理式の**有限集合** $\Gamma$ を「$\Gamma$ のどれかが成り立つ」と読む**片側**の形（テイト流）をとる。否定は論理記号として使わず、否定標準形で考える。
+- 原始再帰関数は \ref{comp:page-primitive-recursive}、原始再帰的算術 $\mathsf{PRA}$ の言語は \ref{pt:weak-arithmetics} のとおり。
+:::
+
+::: definition 言語と論理式 {#pt:omega-language keywords="language L_PA(X), negation normal form, literals, depth of formulas" index="否定標準形（算術）|ひていひょうじゅんけいさんじゅつ, 論理式の深さ|ろんりしきのふかさ"}
+1. 言語 $\mathcal{L}(X)$ は、各原始再帰関数の定義に対応する関数記号（定数 $0$ と後者 $S$ を含む）、等号 $=$ とその否定 $\neq$、一変数の関係記号 $X$ とその否定 $\bar{X}$ からなる。$X(t)$, $\bar{X}(t)$ を $t\in X$, $t\notin X$ と書く。
+2. **リテラル**は $s=t$, $s\neq t$, $t\in X$, $t\notin X$ の形の論理式。**論理式**はリテラルから $\wedge,\vee,\forall x,\exists x$ で作る。
+3. 否定 $\neg A$ は略記で、ド・モルガンの法則で定める：$\neg(s=t)\defeq s\neq t$, $\neg(t\in X)\defeq t\notin X$（逆も）、$\neg(A\wedge B)\defeq\neg A\vee\neg B$, $\neg\forall x\,A\defeq\exists x\,\neg A$ など。$\neg\neg A\equiv A$ である。$A\to B$ は $\neg A\vee B$ の略記。
+4. **深さ** $\mathrm{dp}(A)$：リテラルは $0$、$\mathrm{dp}(A\wedge B)=\mathrm{dp}(A\vee B)=\max(\mathrm{dp}(A),\mathrm{dp}(B))+1$、$\mathrm{dp}(\forall x\,A)=\mathrm{dp}(\exists x\,A)=\mathrm{dp}(A)+1$。$\mathrm{dp}(\neg A)=\mathrm{dp}(A)$。
+5. 閉項 $t$ の（標準モデルでの）値を $\mathrm{val}(t)$ と書く。本ページでは、閉論理式の中の閉項をその値の数項 $\underline{n}$ で置き換えたものを同じ論理式とみなし、$\underline{n}$ を単に $n$ と書く。閉じた等号リテラル $s=t$ は $\mathrm{val}(s)=\mathrm{val}(t)$ のとき**真**、$s\neq t$ は値が異なるとき**真**で、そうでないとき**偽**という。$n\in X$, $n\notin X$ は真でも偽でもない（$X$ は未定の集合を表す）。
+:::
+
+## 無限シーケント計算 Gω {#pt:sec-oa2-system}
+
+::: definition Gω と導出可能性 {#pt:g-omega keywords="infinitary sequent calculus G_omega, omega-rule, derivability with height and cut rank" index="ω 規則|おめがきそく, ω 論理|おめがろんり"}
+**シーケント**は閉論理式の有限集合 $\Gamma$ である。$\Gamma,A$ は $\Gamma\cup\{A\}$ を表す。順序数 $\alpha$ と自然数 $c$ について、**$\vdash^{\alpha}_{c}\Gamma$**（$\Gamma$ は高さ $\alpha$ 以下・カットの深さ $c$ 未満で導出できる）を、次の規則で帰納的に定める。
+1. **（始件）** $\Gamma$ が真な等号リテラルを含むか、ある $n$ について $n\notin X$ と $n\in X$ の両方を含むなら、すべての $\alpha$ で $\vdash^{\alpha}_{c}\Gamma$。
+2. **（$\wedge$）** $A_{0}\wedge A_{1}\in\Gamma$ で、$\vdash^{\beta_{i}}_{c}\Gamma,A_{i}$, $\beta_{i}<\alpha$（$i=0,1$）なら $\vdash^{\alpha}_{c}\Gamma$。
+3. **（$\vee$）** $A_{0}\vee A_{1}\in\Gamma$ で、ある $i$ について $\vdash^{\beta}_{c}\Gamma,A_{i}$, $\beta<\alpha$ なら $\vdash^{\alpha}_{c}\Gamma$。
+4. **（ω 規則）** $\forall x\,A(x)\in\Gamma$ で、すべての $n\in\N$ について $\vdash^{\beta_{n}}_{c}\Gamma,A(n)$, $\beta_{n}<\alpha$ なら $\vdash^{\alpha}_{c}\Gamma$。
+5. **（$\exists$）** $\exists x\,A(x)\in\Gamma$ で、ある $n$ について $\vdash^{\beta}_{c}\Gamma,A(n)$, $\beta<\alpha$ なら $\vdash^{\alpha}_{c}\Gamma$。
+6. **（カット）** $\mathrm{dp}(C)<c$ で、$\vdash^{\beta_{0}}_{c}\Gamma,C$, $\vdash^{\beta_{1}}_{c}\Gamma,\neg C$, $\beta_{i}<\alpha$ なら $\vdash^{\alpha}_{c}\Gamma$。$C$ を**カット論理式**という。
+
+規則 2–5 の結論に含まれる $A_{0}\wedge A_{1}$ などを**主論理式**、前提で加わる $A_{i}$, $A(n)$ を**副論理式**という。主論理式は結論に属する（前提にも残る）。始件の真な等号リテラル、および $n\notin X$, $n\in X$ を始件の主論理式という。
+:::
+
+::: remark
+1. ω 規則は無限個の前提をもつので、導出は可算分岐の整礎な木であり、その高さは一般に可算順序数である。定義の「$\beta<\alpha$」は、帰納的定義が整礎な木を与え、高さが順序数で測られることを表している。
+2. 主論理式を前提に残す形にしたので、縮約（同じ論理式を二度使うこと）は自動的に許される。シーケントが集合なので、交換も不要である。
+3. $\mathbf{G}_{\omega}$ は**健全**である：$\vdash^{\alpha}_{c}\Gamma$ なら、任意の $X\subseteq\N$ について、$(\N,X)$ で $\Gamma$ のどれかの論理式が真になる（導出についての帰納法。ω 規則は「すべての $n$ で $A(n)$ が真なら $\forall x\,A(x)$ が真」による）。
+:::
+
+::: intuition
+ω 規則は、「すべての自然数 $n$ について $A(n)$ を個別に示せば、$\forall x\,A(x)$ が示せた」とする、有限の存在には許されない無限の推論である。たとえば、ゲーデル文のような「各 $n$ については計算で確かめられるが、一様な証明がない」主張も、ω 規則なら導ける。その代わり、導出の高さが順序数になり、この高さが「どれだけ無限な推論を重ねたか」を測る。
+
+```svg ω 規則：無限個の前提 A(0), A(1), A(2), … から ∀x A(x) を導く。前提の高さ β₀, β₁, … がすべて α 未満なら、結論の高さは α
+<svg viewBox="0 0 560 170" xmlns="http://www.w3.org/2000/svg" font-size="15">
+  <g text-anchor="middle">
+    <text x="80" y="40">Γ, A(0)</text>
+    <text x="190" y="40">Γ, A(1)</text>
+    <text x="300" y="40">Γ, A(2)</text>
+    <text x="400" y="40">⋯</text>
+    <text x="490" y="40">Γ, A(n)  ⋯</text>
+    <text x="80" y="18" font-size="12" style="fill: var(--mn-fg-soft)">高さ β₀</text>
+    <text x="190" y="18" font-size="12" style="fill: var(--mn-fg-soft)">高さ β₁</text>
+    <text x="300" y="18" font-size="12" style="fill: var(--mn-fg-soft)">高さ β₂</text>
+    <text x="490" y="18" font-size="12" style="fill: var(--mn-fg-soft)">高さ βₙ</text>
+  </g>
+  <g style="stroke: var(--mn-accent)" stroke-width="1.5">
+    <line x1="80" y1="50" x2="280" y2="120"/>
+    <line x1="190" y1="50" x2="280" y2="120"/>
+    <line x1="300" y1="50" x2="280" y2="120"/>
+    <line x1="490" y1="50" x2="280" y2="120"/>
+  </g>
+  <line x1="40" y1="125" x2="540" y2="125" stroke="currentColor"/>
+  <text x="280" y="150" text-anchor="middle">Γ（∀x A(x) ∈ Γ）　高さ α（すべての βₙ &lt; α）</text>
+</svg>
+```
+:::
+
+## 構造的な補題 {#pt:sec-oa2-lemmas}
+
+::: lemma 単調性 {#pt:omega-monotone keywords="monotonicity and weakening in G_omega"}
+$\vdash^{\alpha}_{c}\Gamma$, $\alpha\le\alpha'$, $c\le c'$, $\Gamma\subseteq\Gamma'$ なら $\vdash^{\alpha'}_{c'}\Gamma'$。
+:::
+
+::: proof
+導出についての帰納法。始件の条件は $\Gamma'$ でも成り立つ。規則の場合、主論理式は $\Gamma'$ にも属し、前提に帰納法の仮定を適用すれば（$\Gamma',A_{i}\supseteq\Gamma,A_{i}$）、高さ $\beta_{i}<\alpha\le\alpha'$ の条件も、カットの $\mathrm{dp}(C)<c\le c'$ も保たれる。
+:::
+
+以下の補題では、ある論理式 $F$ を「取り除く」操作を扱う。前提に $F$ が副論理式として現れる場合のため、次の一般的な形で述べる。
+
+::: lemma 偽なリテラルの除去 {#pt:false-literal-elimination keywords="elimination of false literals"}
+$L$ を偽な等号リテラルとする。$\vdash^{\alpha}_{c}\Gamma$ なら $\vdash^{\alpha}_{c}\Gamma\setminus\{L\}$。
+:::
+
+::: proof
+導出についての帰納法。始件なら、その主論理式は真な等号リテラルか $n\notin X,n\in X$ で、$L$ ではないので $\Gamma\setminus\{L\}$ も始件。規則の場合、主論理式は複合論理式なので $L$ ではなく、$\Gamma\setminus\{L\}$ に属する。前提 $\Gamma,G$（$G$ は副論理式またはカット論理式）に帰納法の仮定を適用して $\vdash^{\beta}_{c}(\Gamma\cup\{G\})\setminus\{L\}$ を得る。$G\neq L$ ならこれは $(\Gamma\setminus\{L\}),G$ で、同じ規則を適用できる。$G=L$ なら、これは $\Gamma\setminus\{L\}$ そのもので、単調性（\ref{pt:omega-monotone}）から高さを $\alpha$ に上げればよい。
+:::
+
+::: lemma 反転 {#pt:omega-inversion keywords="inversion lemma for and, or, forall in G_omega" index="反転補題|はんてんほだい"}
+$\vdash^{\alpha}_{c}\Gamma$ とする。
+1. $A_{0}\wedge A_{1}\in\Gamma$ なら、$i=0,1$ について $\vdash^{\alpha}_{c}(\Gamma\setminus\{A_{0}\wedge A_{1}\}),A_{i}$。
+2. $\forall x\,A(x)\in\Gamma$ なら、すべての $n$ について $\vdash^{\alpha}_{c}(\Gamma\setminus\{\forall x\,A(x)\}),A(n)$。
+3. $A_{0}\vee A_{1}\in\Gamma$ なら $\vdash^{\alpha}_{c}(\Gamma\setminus\{A_{0}\vee A_{1}\}),A_{0},A_{1}$。
+:::
+
+::: proof
+1 を示す（2, 3 も同様）。$F\defeq A_{0}\wedge A_{1}$, $\Gamma^{-}\defeq\Gamma\setminus\{F\}$ とおき、導出についての帰納法で $\vdash^{\alpha}_{c}\Gamma^{-},A_{i}$ を示す。
+- **始件**：始件の主論理式はリテラルで $F$ ではないので、$\Gamma^{-}$ に属し、$\Gamma^{-},A_{i}$ も始件。
+- **$F$ が主論理式**：前提は $\vdash^{\beta_{i}}_{c}\Gamma,A_{i}$（$\beta_{i}<\alpha$）。帰納法の仮定を $\Gamma\cup\{A_{i}\}$ に適用すると $\vdash^{\beta_{i}}_{c}(\Gamma\cup\{A_{i}\})\setminus\{F\}\cup\{A_{i}\}=\Gamma^{-},A_{i}$（$A_{i}\neq F$ は深さから）。単調性で高さを $\alpha$ に上げる。
+- **それ以外の規則（カットを含む）**：主論理式（あれば）は $\Gamma^{-}$ に属する。各前提 $\Gamma,G$ に帰納法の仮定を適用して $\vdash^{\beta}_{c}((\Gamma\cup\{G\})\setminus\{F\}),A_{i}$。$G\neq F$ なら、これは $\Gamma^{-},A_{i},G$ で、同じ規則（主論理式は $\Gamma^{-},A_{i}$ に属する。カットなら同じカット論理式）を適用して $\vdash^{\alpha}_{c}\Gamma^{-},A_{i}$。$G=F$ となる前提があれば、その結果は $\Gamma^{-},A_{i}$ そのもので、単調性から直ちに従う。
+
+2 では主論理式の場合、前提 $\Gamma,A(m)$（すべての $m$）のうち $m=n$ のものを使う。3 では主論理式の場合、前提 $\Gamma,A_{j}$ から帰納法の仮定で $\Gamma^{-},A_{0},A_{1}$ を得る。
+:::
+
+::: remark
+$\exists$ には反転は成り立たない：$\vdash^{1}_{0}\exists x\,(x=0)$（$0=0$ は真）だが、$1=0$ は導出できない（健全性）。どの数が証拠になるかは導出を見なければわからないからである。カット除去の証明では、反転が成り立つ側（$\wedge,\forall$）と成り立たない側（$\vee,\exists$）の役割の違いが鍵になる。
+:::
+
+## カット除去 {#pt:sec-oa2-cut-elimination}
+
+::: lemma 簡約補題 {#pt:omega-reduction keywords="reduction lemma: cutting a formula of maximal depth" index="簡約補題|かんやくほだい"}
+$C$ を、$A_{0}\vee A_{1}$, $\exists x\,A(x)$, $n\notin X$, または等号リテラルのいずれかの形の閉論理式で、$\mathrm{dp}(C)\le c$ とする。$\vdash^{\alpha}_{c}\Gamma,\neg C$ かつ $\vdash^{\beta}_{c}\Delta$, $C\in\Delta$ なら、$\vdash^{\alpha+\beta}_{c}\Gamma,(\Delta\setminus\{C\})$。
+:::
+
+::: proof
+$\Delta$ の導出についての帰納法。$\Delta^{-}\defeq\Delta\setminus\{C\}$ とおく。
+
+**Case 1（$\Delta$ が始件）.** 主論理式が $C$ でなければ、それは $\Delta^{-}$ に属し、$\Gamma,\Delta^{-}$ も始件。主論理式が $C$ の場合：
+- $C$ が真な等号リテラルなら、$\neg C$ は偽なリテラル。\ref{pt:false-literal-elimination} で $\vdash^{\alpha}_{c}(\Gamma\cup\{\neg C\})\setminus\{\neg C\}$ を得て、単調性で $\Gamma,\Delta^{-}$、高さ $\alpha+\beta$ に広げる。
+- $C=n\notin X$ なら、もう一つの主論理式 $n\in X=\neg C$ が $\Delta^{-}$ に属する。$\vdash^{\alpha}_{c}\Gamma,\neg C$ を単調性で $\Gamma,\Delta^{-}$ に広げればよい（$\neg C\in\Delta^{-}$）。
+
+**Case 2（最後の規則の主論理式が $C$ でない、またはカット）.** 前提 $\Delta,G$（高さ $\beta'<\beta$）に帰納法の仮定を適用して $\vdash^{\alpha+\beta'}_{c}\Gamma,((\Delta\cup\{G\})\setminus\{C\})$。$G\neq C$ なら、これは $\Gamma,\Delta^{-},G$ で、主論理式は $\Delta^{-}$ に属するので同じ規則を適用でき、$\alpha+\beta'<\alpha+\beta$（和の右の引数についての狭義単調性）から $\vdash^{\alpha+\beta}_{c}\Gamma,\Delta^{-}$。$G=C$ なら結果はすでに $\Gamma,\Delta^{-}$ である。
+
+**Case 3（$C=A_{0}\vee A_{1}$ が主論理式）.** 前提は $\vdash^{\beta'}_{c}\Delta,A_{i}$（$\beta'<\beta$）。帰納法の仮定から $\vdash^{\alpha+\beta'}_{c}\Gamma,\Delta^{-},A_{i}$（$A_{i}\neq C$）。一方 $\neg C=\neg A_{0}\wedge\neg A_{1}$ なので、反転（\ref{pt:omega-inversion} の 1）と単調性から $\vdash^{\alpha}_{c}\Gamma,\neg A_{i}$。$\mathrm{dp}(A_{i})<\mathrm{dp}(C)\le c$ なので $A_{i}$ でカットでき、二つの前提の高さ $\alpha+\beta'$ と $\alpha$ はどちらも $\alpha+\beta$ 未満（$\beta>\beta'\ge0$ なので $\beta\ge1$）。よって $\vdash^{\alpha+\beta}_{c}\Gamma,\Delta^{-}$。
+
+**Case 4（$C=\exists x\,A(x)$ が主論理式）.** 前提 $\vdash^{\beta'}_{c}\Delta,A(n)$ について、Case 3 と同様に、帰納法の仮定と反転（\ref{pt:omega-inversion} の 2。$\neg C=\forall x\,\neg A(x)$）から $\vdash^{\alpha+\beta'}_{c}\Gamma,\Delta^{-},A(n)$ と $\vdash^{\alpha}_{c}\Gamma,\neg A(n)$ を得て、$A(n)$ でカットする。
+
+$C$ がリテラルのとき、$C$ は規則 2–5 の主論理式にならないので、Case 1, 2 で尽くされる。
+:::
+
+::: theorem 無限導出のカット除去 {#pt:omega-cut-elimination keywords="cut elimination for G_omega with bound 2^alpha" index="カット除去（無限導出）|かっとじょきょむげんどうしゅつ"}
+$\vdash^{\alpha}_{c+1}\Gamma$ なら $\vdash^{2^{\alpha}}_{c}\Gamma$。したがって、$2_{0}(\alpha)\defeq\alpha$, $2_{k+1}(\alpha)\defeq2^{2_{k}(\alpha)}$ とおくと、$\vdash^{\alpha}_{c+k}\Gamma$ なら $\vdash^{2_{k}(\alpha)}_{c}\Gamma$。とくに $\vdash^{\alpha}_{k}\Gamma$ なら $\vdash^{2_{k}(\alpha)}_{0}\Gamma$（カットのない導出）。
+:::
+
+::: proof
+前半を $\vdash^{\alpha}_{c+1}\Gamma$ の導出についての帰納法で示す。
+- **始件**：$\vdash^{2^{\alpha}}_{c}\Gamma$。
+- **カット以外の規則、または $\mathrm{dp}(C)<c$ のカット**：前提に帰納法の仮定を適用し（高さ $\beta_{i}<\alpha$ が $2^{\beta_{i}}<2^{\alpha}$ になる）、同じ規則を適用する。
+- **$\mathrm{dp}(C)=c$ のカット**：前提は $\vdash^{\alpha_{0}}_{c+1}\Gamma,C$, $\vdash^{\alpha_{1}}_{c+1}\Gamma,\neg C$（$\alpha_{i}<\alpha$）。$C$ と $\neg C$ の一方は \ref{pt:omega-reduction} の形（$\vee,\exists$, $n\notin X$, 等号リテラル）なので、必要なら入れ替えて $C$ がその形とする。帰納法の仮定から $\vdash^{2^{\alpha_{0}}}_{c}\Gamma,C$, $\vdash^{2^{\alpha_{1}}}_{c}\Gamma,\neg C$。\ref{pt:omega-reduction}（$\Delta\defeq\Gamma\cup\{C\}$, $\mathrm{dp}(C)=c\le c$）から $\vdash^{2^{\alpha_{1}}+2^{\alpha_{0}}}_{c}\Gamma$（$\Gamma\cup(\Delta\setminus\{C\})\subseteq\Gamma$ を単調性で調整）。$\gamma\defeq\max(\alpha_{0},\alpha_{1})<\alpha$ とすると
+$$
+2^{\alpha_{1}}+2^{\alpha_{0}}\le2^{\gamma}+2^{\gamma}=2^{\gamma+1}\le2^{\alpha}.
+$$
+単調性で $\vdash^{2^{\alpha}}_{c}\Gamma$。
+
+後半は前半を $k$ 回使う。
+:::
+
+::: corollary
+$\alpha<\varepsilon_{0}$ で $\vdash^{\alpha}_{k}\Gamma$ なら、ある $\alpha'<\varepsilon_{0}$ でカットのない導出 $\vdash^{\alpha'}_{0}\Gamma$ がある。
+:::
+
+::: proof
+$\alpha'\defeq2_{k}(\alpha)$ で、\ref{pt:epsilon0-basic} の 3（$\varepsilon_{0}$ は $\beta\mapsto2^{\beta}$ で閉じている）を $k$ 回使う。
+:::
+
+::: hypcheck
+- **主論理式を前提に残す形**：\ref{pt:omega-inversion} と \ref{pt:omega-reduction} の Case 2 で、前提の副論理式が取り除く論理式と一致する場合を一様に扱えた。
+- **反転（$\wedge,\forall$）**：\ref{pt:omega-reduction} の Case 3, 4 で、$\neg C$ の側の導出を、主論理式の成分ごとの導出に分解するのに使った。高さが変わらないことが、評価 $\alpha+\beta$ に効いている。
+- **$\mathrm{dp}(C)\le c$**：Case 3, 4 で新たに作るカットの論理式 $A_{i}$, $A(n)$ の深さが $c$ 未満になることに使った。
+- **偽なリテラルの除去**：Case 1 で、$C$ が真な等号リテラルの場合に使った。$n\in X$ は偽でも真でもないので除去できないが、そのときは $C=n\notin X$ の側で帰納法を行い、$n\in X$ が $\Delta^{-}$ にあることで処理した。
+- **$2^{\gamma}+2^{\gamma}\le2^{\alpha}$**：\ref{pt:omega-cut-elimination} で、二つの前提を簡約で合成した高さを抑えるのに使った（$\gamma<\alpha$ から $\gamma+1\le\alpha$）。
+:::
+
+## 問題 {#pt:sec-oa2-problems}
+
+::: problem {#pt:prob-omega-complete}
+$X$ を含まない閉論理式 $A$ が標準モデル $\N$ で真なら、$\vdash^{\mathrm{dp}(A)}_{0}A$ であることを示せ。（ω 規則をもつ体系は真の算術について完全である。）
+:::
+
+::: solution
+$A$ の構成についての帰納法で、$A$ が真なら $\vdash^{\mathrm{dp}(A)}_{0}A$ を示す。リテラルなら真な等号リテラルなので始件（高さ $0$）。$A=A_{0}\wedge A_{1}$ が真なら両方真で、帰納法の仮定と単調性から $\vdash^{\mathrm{dp}(A)-1}_{0}A,A_{i}$、（$\wedge$）で $\vdash^{\mathrm{dp}(A)}_{0}A$。$A_{0}\vee A_{1}$ なら真な方について（$\vee$）。$\forall x\,B(x)$ なら、すべての $n$ で $B(n)$ が真で $\mathrm{dp}(B(n))=\mathrm{dp}(A)-1$ なので、ω 規則で高さ $\mathrm{dp}(A)$。$\exists x\,B(x)$ なら真にする $n$ をとって（$\exists$）。
+（ゲーデルの不完全性定理と対比すると、真な算術の文が有限の証明で導けないのは、ω 規則を有限の規則で置き換えられないことによる。）
+:::
+
+::: problem {#pt:prob-tower-bound}
+$m<\omega$ について、$2_{k}(\omega+m)<\omega_{k+2}$ を示せ（$\omega_{n}$ は \ref{pt:epsilon0} のとおり）。これから、$\vdash^{\omega+m}_{k}\Gamma$ ならカットのない導出の高さを $\omega_{k+2}$ 未満にとれることを結論せよ。
+:::
+
+::: solution
+$k$ についての帰納法。$k=0$：$\omega+m<\omega\cdot2\le\omega^{\omega}=\omega_{2}$。$k\Rightarrow k+1$：$2_{k+1}(\omega+m)=2^{2_{k}(\omega+m)}\le\omega^{2_{k}(\omega+m)}<\omega^{\omega_{k+2}}=\omega_{k+3}$（底についての単調性と $\omega^{\cdot}$ の狭義単調性）。後半は \ref{pt:omega-cut-elimination} と単調性による。
+:::
+
+::: problem {#pt:prob-omega-soundness}
+\ref{pt:g-omega} の後の注意の 3（$\mathbf{G}_{\omega}$ の健全性）を、導出についての帰納法で確かめよ。とくに、空のシーケント $\varnothing$ は（どんな $\alpha,c$ でも）導出できないことを結論せよ。
+:::
+
+::: solution
+$X\subseteq\N$ を固定し、「$\vdash^{\alpha}_{c}\Gamma$ なら $\Gamma$ のある元が $(\N,X)$ で真」を導出についての帰納法で示す。始件：真な等号リテラル、または $n\notin X,n\in X$ のどちらかが真。（$\wedge$）：主論理式 $A_{0}\wedge A_{1}\in\Gamma$ が偽なら、ある $A_{i}$ が偽で、前提 $\Gamma,A_{i}$ について帰納法の仮定から $\Gamma$ の元か $A_{i}$ が真、よって $\Gamma$ の元が真。（$\vee$）（$\exists$）：前提 $\Gamma,A_{i}$ の真な元が $A_{i}$ なら主論理式が真。（ω 規則）：$\forall x\,A(x)$ が偽なら $A(n)$ が偽な $n$ があり、その前提から $\Gamma$ の元が真。（カット）：$C$ と $\neg C$ の一方は偽なので、その前提から $\Gamma$ の元が真。空のシーケントは真な元をもたないので導出できない。
+:::
+
+::: supplement
+**前提の検討.**
+- 本ページの体系は、カットの深さ $c$ を論理式の深さで測った。論理記号の個数で測る流儀もあるが、カット除去で一段ごとに $2^{\alpha}$ になる議論は同じである。
+- 等号リテラルを始件で「真なもの」として扱ったのは、閉項の値が計算できるからである。$X$ のリテラルは真偽が決まらないので、$n\notin X,n\in X$ の対だけを始件にした。この非対称性が、次ページで超限帰納法の限界を測るのに使われる（$X$ が「任意の集合」を表す）。
+
+**関連する結果.**
+- *より強い体系.* 実数の集合やより強い帰納法を含む体系の順序数解析では、ω 規則に加えて、**崩壊関数**（大きな順序数の情報を可算順序数に圧縮する関数）を使ったカット除去が必要になる（新井、ポーラース）。$\varepsilon_{0}$ を超える順序数表記系が、そこで初めて本質的に使われる。
+- *有限の証明への埋め込み.* 次ページ（\ref{pt:page-gentzen-bound}）では、$\PA$ の有限の証明が、高さ $\omega+m$ の $\mathbf{G}_{\omega}$ の導出に埋め込めることを示す。カット除去で高さは $\varepsilon_{0}$ 未満にとどまる。
+
+**高い視点から：無限の証明を有限の深さで評価する.** ω 規則をもつ体系は真の算術について完全で（問題 \ref{pt:prob-omega-complete}）、カットも除去できる：論理としては理想的だが、証明が無限の対象になる。順序数解析の考え方は、この無限の証明に「高さ」という順序数の尺度を与え、有限の体系の証明が埋め込まれる範囲を測ることである。カット除去が高さを $\alpha\mapsto2^{\alpha}$ と増やすことは、論理の言葉では「回り道（カット）を除くと証明が指数的に長くなる」ことの超限版である。比喩で言えば、カットは途中で補題を立てる近道で、近道を使わずに直接証明すると道のりは指数的に長くなるが、出発点が $\varepsilon_{0}$ 未満の道のりなら、どれほど遠回りしても $\varepsilon_{0}$ の向こうには行かない。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

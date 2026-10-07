@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>整礎関係上の帰納法と再帰 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/03-well-founded-sets/05-wf-recursion.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 整礎関係上の帰納法と再帰 {#set:page-wf-recursion keywords="well-founded induction, well-founded recursion, set-like relation, rank of a well-founded relation"}
+
+順序数上の超限帰納法・超限再帰（\ref{set:transfinite-induction}, \ref{set:transfinite-recursion}）は、「$\in$ が順序数を整列する」という事実だけを使っていた。実は全順序である必要はなく、**整礎**でありさえすれば、帰納法も再帰も同じように行える。本ページでは、集合とは限らないクラス $\mathbf{A}$ 上の関係 $\mathbf{R}$ について、整礎性に加えて「各元の $\mathbf{R}$-前者の全体が集合になる」という**集合的**（set-like）の条件を課し、その下で最小元の原理・帰納法・再帰定理を証明する。応用として整礎関係のランクを定義し、$\in$ の場合には前ページまでのランクと一致することを示す。本ページの結果は、$\ZF$ で示す \ref{set:wf-minimal-element-zf}（集合的でない場合の補足的な結果）と、$\ZF^{-}$ で示す最後の \ref{set:transitive-epsilon-wf} を除いて、すべて $\ZF^{-}-\mathrm{P}$（冪集合公理も基礎の公理も使わない）で証明できる。
+
+## 記法と定義の確認 {#set:sec-wf-recursion-notation}
+
+::: notation
+- 公理系の略号は \ref{set:zf-subsystems} に従う。$\ZF^{-}-\mathrm{P}$ は $\ZF$ から基礎の公理と冪集合公理を除いたもの（無限公理・置換公理は含む）である。
+- クラス（\ref{set:class}）は太字 $\mathbf{A},\mathbf{R},\mathbf{X},\dots$ で表し、クラス関数（\ref{set:class-function}）も $\mathbf{F},\mathbf{G}$ のように太字で書く。クラスについての主張は論理式についての主張の略記であり、「任意のクラスについて」という主張は定理の図式である。クラス $\mathbf{C}$ と集合 $a$ に対し $\mathbf{C}\cap a$ は集合である（\ref{set:class-basic} (1)）。クラス関数の集合への制限 $\mathbf{F}\restr{a}$ と像 $\mathbf{F}[a]$ は集合である（\ref{set:class-basic} (3)。置換公理）。
+- 関係 $R$ とクラス $\mathbf{A}$、$x\in\mathbf{A}$ に対し、始切片 $\mathrm{pred}(\mathbf{A},x,R)=\{y\in\mathbf{A}\mid yRx\}$ の記法（\ref{set:initial-segment}）を関係がクラスの場合にもそのまま用いる。
+- 集合 $A$ 上の関係 $R$ が**整礎**であるとは、$A$ の空でない任意の部分集合 $X$ が **$R$-極小元**（$y\in X$ で $\lnot\exists z\in X\,(zRy)$ となるもの）をもつことである（\ref{set:well-founded-relation}）。
+- 順序数の上限 $\sup X=\bigcup X$（\ref{set:sup-ordinals}）、$\omega$ 上の帰納法と再帰（\ref{set:peano}, \ref{set:recursion-on-ordinal}）、順序数の整列性（\ref{set:ordinal-well-ordered}）を用いる。
+- \ref{set:transitive-epsilon-wf} では、整礎集合のクラス $\mathbf{WF}$（\ref{set:wf-class}）、ランク $\rank(x)$（\ref{set:rank}）とその性質 $\rank(y)=\sup\{\rank(x)+1\mid x\in y\}$（\ref{set:rank-basic}）、および $x\subseteq\mathbf{WF}\iff x\in\mathbf{WF}$（\ref{set:wf-subset}）を用いる。これらは冪集合公理を使う $\ZF^{-}$ の概念・結果である。推移閉包 $\operatorname{trcl}(x)=\bigcup_{n\in\omega}\bigcup^{n}x$ は \ref{set:transitive-closure} の意味で用いる。
+:::
+
+## クラス上の整礎関係と集合的関係 {#set:sec-wf-class-relations}
+
+::: definition クラス上の整礎関係 {#set:well-founded-class-relation keywords="well-founded relation on a class" index="整礎関係|せいそかんけい, 極小元|きょくしょうげん"}
+$\mathbf{A}$, $\mathbf{R}$ をクラスとする（$\mathbf{R}$ は順序対からなるクラスで、$x\mathbf{R}y$ は $(x,y)\in\mathbf{R}$ を表す）。$\mathbf{R}$ が $\mathbf{A}$ 上で**整礎**であるとは、
+$$
+\forall X\subseteq\mathbf{A}\;\bigl[X\neq\varnothing\to\exists y\in X\;\lnot\exists z\in X\;(z\mathbf{R}y)\bigr]
+\label{set:eq-wf-class-relation}
+$$
+が成り立つことをいう。ここで $X$ は**集合**を動く変数である。$y$ を $X$ の **$\mathbf{R}$-極小元**という。
+:::
+
+::: intuition
+字面は集合の場合の定義（\ref{set:well-founded-relation}）とまったく同じである。違いは形式上のもので、集合の場合は「$R$ は $A$ 上で整礎」が変数 $R,A$ についての**一つの論理式**であるのに対し、クラスの場合は $\mathbf{A},\mathbf{R}$ を定める論理式ごとに \eqref{set:eq-wf-class-relation} を書き下した**論理式の図式**である。$\ZF$ ではクラスを量化できないので、$X$ は集合しか動けない。そのため、この定義からただちに「空でない**部分クラス**は極小元をもつ」とは言えず、これが帰納法を正当化する上での障害になる。
+:::
+
+::: example
+- 基礎の公理は、「$\in$ は $\mathbf{V}$ 上で整礎」という一つの文と同値である（\ref{set:foundation-equivalents}）。
+- $\in$ は $\mathbf{ON}$ 上で整礎である：順序数の空でない集合は最小元をもち（\ref{set:ordinal-well-ordered} (2)）、全順序の最小元は極小元である。
+- 空関係 $\varnothing$ はどんなクラス上でも整礎で、空でない集合 $X$ の任意の元が $\varnothing$-極小元になる。整礎関係の極小元は一般に一つとは限らない。
+:::
+
+::: definition 集合的関係 {#set:set-like keywords="set-like relation" index="集合的|しゅうごうてき, 集合的関係|しゅうごうてきかんけい"}
+クラス $\mathbf{R}$ がクラス $\mathbf{A}$ 上で**集合的**（set-like）であるとは、任意の $x\in\mathbf{A}$ について $\{y\in\mathbf{A}\mid y\mathbf{R}x\}$ が集合であることをいう。
+:::
+
+::: intuition
+各元の「すぐ下にある元」全体が集合に収まっている、という条件。再帰で $\mathbf{G}(x)$ を「$x$ の下にある元での $\mathbf{G}$ の値」から決めるとき、その値の集まり $\mathbf{G}\restr{\mathrm{pred}(x)}$ が集合でなければ、次の値を決める規則 $\mathbf{F}$ に渡すことすらできない。集合的という条件は、そのための最低限の要請である。
+:::
+
+::: example
+- 集合 $A$ 上の関係 $R$ は集合的である：$\{y\in A\mid yRx\}$ は分出公理で $A$ から切り出せる。
+- $\in$ は任意のクラス $\mathbf{A}$ 上で集合的である：$\{y\in\mathbf{A}\mid y\in x\}=x\cap\mathbf{A}$ は集合（\ref{set:class-basic} (1)）。
+- $\mathbf{ON}$ 上の関係 $\mathbf{R}$ を「$\alpha\mathbf{R}\beta\iff\beta=0<\alpha$」で定めると、$\mathbf{R}$ は整礎だが（$0$ でない元は極小、$X\setminus\{0\}$ が空なら $0$ が極小）、$\{\alpha\mid\alpha\mathbf{R}0\}=\mathbf{ON}\setminus\{0\}$ は真のクラスなので集合的でない。
+- 辞書式順序を入れた $2\times\mathbf{ON}$（$(i,\alpha)<(j,\beta)\iff i<j\lor(i=j\land\alpha<\beta)$）は整礎な全順序だが、$(1,0)$ の下には $\{0\}\times\mathbf{ON}$ があり、集合的でない。
+:::
+
+::: definition 前者・閉包 {#set:pred-closure keywords="predecessors, closure under predecessors" index="前者|ぜんしゃ, 閉包|へいほう"}
+$\mathbf{R}$ が $\mathbf{A}$ 上で集合的であるとし、$x\in\mathbf{A}$ とする。
+
+1. $\mathrm{pred}(\mathbf{A},x,\mathbf{R})=\{y\in\mathbf{A}\mid y\mathbf{R}x\}$。
+2. $\omega$ 上の再帰で
+$$
+\begin{aligned}
+&\mathrm{pred}^{0}(\mathbf{A},x,\mathbf{R})=\mathrm{pred}(\mathbf{A},x,\mathbf{R}),\\
+&\mathrm{pred}^{n+1}(\mathbf{A},x,\mathbf{R})=\bigcup\bigl\{\mathrm{pred}(\mathbf{A},y,\mathbf{R})\bigm|y\in\mathrm{pred}^{n}(\mathbf{A},x,\mathbf{R})\bigr\}.
+\end{aligned}
+$$
+3. $\mathrm{cl}(\mathbf{A},x,\mathbf{R})=\bigcup\{\mathrm{pred}^{n}(\mathbf{A},x,\mathbf{R})\mid n\in\omega\}$。
+
+$\mathbf{A},\mathbf{R}$ が文脈から明らかなときは、それぞれ $\mathrm{pred}(x)$, $\mathrm{pred}^{n}(x)$, $\mathrm{cl}(x)$ と略記する。
+:::
+
+::: intuition
+$\mathrm{pred}^{n}(x)$ は「$x$ から $\mathbf{R}$ に沿ってちょうど $n+1$ 歩下りて到達できる元」の全体、$\mathrm{cl}(x)$ は「$x$ から有限回（1 回以上）下りて到達できる元」の全体である。$\mathrm{cl}(x)$ は、$x$ の値を再帰で決めるときに参照される可能性のある元をすべて集めたものであり、推移閉包の一般化になっている（\ref{set:pred-closure-basic} (5)）。
+:::
+
+::: proof
+（これらが集合として定まること）$\mathrm{pred}(x)$ は集合的という仮定から集合である。$\mathrm{pred}^{n}$ を定めるため、クラス関数 $\mathbf{H}\colon\mathbf{V}\to\mathbf{V}$ を
+$$
+\mathbf{H}(u)=\bigcup\bigl\{\mathrm{pred}(y)\bigm|y\in u\cap\mathbf{A}\bigr\}
+$$
+で定める。$u\cap\mathbf{A}$ は集合（分出公理）、各 $y\in u\cap\mathbf{A}$ に対し $\mathrm{pred}(y)$ はただ一つの集合なので、置換公理により $\{\mathrm{pred}(y)\mid y\in u\cap\mathbf{A}\}$ は集合であり、和集合の公理で $\mathbf{H}(u)$ が得られる。$\omega$ 上の再帰（\ref{set:recursion-on-ordinal}）を $a=\mathrm{pred}(x)$ と $\mathbf{H}$ に適用すると、列 $\langle\mathrm{pred}^{n}(x)\mid n\in\omega\rangle$ が集合として一意に定まる（$\mathrm{pred}^{n}(x)\subseteq\mathbf{A}$ が $n$ についての帰納法でわかるので、$u\cap\mathbf{A}=u$ となり、定義 2 の式と一致する）。$\mathrm{cl}(x)$ はこの列の値域の和集合である。
+
+::: hypcheck
+- **集合的であること**：$\mathrm{pred}(y)$ が集合であることに使った。
+- **分出公理・置換公理・和集合の公理**：$\mathbf{H}$ の値を作るのに使った。**無限公理**と $\omega$ 上の再帰（置換公理を使う）：列 $\langle\mathrm{pred}^{n}(x)\rangle$ と $\mathrm{cl}(x)$。
+- 整礎性・冪集合公理・基礎の公理・選択公理は使っていない。
+:::
+:::
+
+::: lemma 前者の閉包の基本性質 {#set:pred-closure-basic keywords="basic properties of the predecessor closure" index="前者の閉包|ぜんしゃのへいほう"}
+$\mathbf{R}$ が $\mathbf{A}$ 上で集合的であるとし、$x\in\mathbf{A}$ とする。
+
+1. $\mathrm{pred}(x)\subseteq\mathrm{cl}(x)\subseteq\mathbf{A}$。
+2. $y\in\mathrm{cl}(x)$ ならば $\mathrm{pred}(y)\subseteq\mathrm{cl}(x)$。
+3. $y\in\mathrm{pred}^{m}(x)$ ならば、すべての $n$ で $\mathrm{pred}^{n}(y)\subseteq\mathrm{pred}^{m+n+1}(x)$。特に $y\in\mathrm{cl}(x)$ ならば $\mathrm{cl}(y)\subseteq\mathrm{cl}(x)$。
+4. $n\ge1$ かつ $z\in\mathrm{pred}^{n}(x)$ ならば、ある $y\in\mathrm{pred}(x)$ について $z\in\mathrm{pred}^{n-1}(y)$。したがって
+$$
+\mathrm{cl}(x)=\bigcup\bigl\{\{y\}\cup\mathrm{cl}(y)\bigm|y\in\mathrm{pred}(x)\bigr\}.
+\label{set:eq-cl-decomposition}
+$$
+5. $\mathbf{R}$ が $\in$ で $\mathbf{A}$ が推移的なら、$\mathrm{pred}(x)=x$, $\mathrm{pred}^{n}(x)=\bigcup^{n}x$, $\mathrm{cl}(x)=\operatorname{trcl}(x)$。
+6. さらに $\mathbf{R}$ が $\mathbf{A}$ 上で整礎ならば、$x\notin\mathrm{cl}(x)$。
+:::
+
+::: intuition
+(2) は「$\mathrm{cl}(x)$ は下に閉じている」こと、すなわち推移閉包が推移的であることの一般化である。(3)(4) は「$x$ から下りて行ける元」を「まず 1 歩下りて $y$ に行き、そこから下りて行ける元」に分解する式で、再帰定理の証明で近似を貼り合わせるときに使う。(6) は、整礎な関係では $x$ から下りていって $x$ 自身に戻ってくることはない、ということである。
+:::
+
+::: proof
+**(1)** $\mathrm{pred}(x)=\mathrm{pred}^{0}(x)\subseteq\mathrm{cl}(x)$。$\mathrm{pred}^{n}(x)\subseteq\mathbf{A}$ は $n$ についての帰納法で示せる（$n=0$ は定義から。$\mathrm{pred}^{n+1}(x)$ は $\mathbf{A}$ の部分集合 $\mathrm{pred}(y)$ の和集合）。よって $\mathrm{cl}(x)\subseteq\mathbf{A}$。
+
+**(2)** $y\in\mathrm{cl}(x)$ なら、ある $n$ で $y\in\mathrm{pred}^{n}(x)$。定義から $\mathrm{pred}(y)\subseteq\mathrm{pred}^{n+1}(x)\subseteq\mathrm{cl}(x)$。
+
+**(3)** $y\in\mathrm{pred}^{m}(x)$ を固定し、$n$ についての帰納法で示す。$n=0$：(2) の証明と同じく $\mathrm{pred}^{0}(y)=\mathrm{pred}(y)\subseteq\mathrm{pred}^{m+1}(x)$。$n$ で成り立つとすると
+$$
+\begin{aligned}
+\mathrm{pred}^{n+1}(y)&=\bigcup\{\mathrm{pred}(w)\mid w\in\mathrm{pred}^{n}(y)\}\\
+&\subseteq\bigcup\{\mathrm{pred}(w)\mid w\in\mathrm{pred}^{m+n+1}(x)\}=\mathrm{pred}^{m+n+2}(x).
+\end{aligned}
+$$
+後半は、$\mathrm{cl}(y)=\bigcup_{n}\mathrm{pred}^{n}(y)\subseteq\bigcup_{n}\mathrm{pred}^{m+n+1}(x)\subseteq\mathrm{cl}(x)$ による。
+
+**(4)** 前半を $n$ についての帰納法で示す。$n=1$：$z\in\mathrm{pred}^{1}(x)$ なら、ある $y\in\mathrm{pred}(x)$ で $z\in\mathrm{pred}(y)=\mathrm{pred}^{0}(y)$。$n$ で成り立つとし、$z\in\mathrm{pred}^{n+1}(x)$ とすると、ある $w\in\mathrm{pred}^{n}(x)$ で $z\in\mathrm{pred}(w)$。帰納法の仮定より、ある $y\in\mathrm{pred}(x)$ で $w\in\mathrm{pred}^{n-1}(y)$。よって $z\in\mathrm{pred}(w)\subseteq\mathrm{pred}^{n}(y)$。
+
+\eqref{set:eq-cl-decomposition} を示す。右辺を $D$ とおく。*$D\subseteq\mathrm{cl}(x)$*：$y\in\mathrm{pred}(x)$ なら $y\in\mathrm{cl}(x)$ で、(3) より $\mathrm{cl}(y)\subseteq\mathrm{cl}(x)$。*$\mathrm{cl}(x)\subseteq D$*：$z\in\mathrm{pred}^{n}(x)$ とする。$n=0$ なら $z\in\mathrm{pred}(x)$ で、$z\in\{z\}\subseteq D$。$n\ge1$ なら前半より $z\in\mathrm{pred}^{n-1}(y)\subseteq\mathrm{cl}(y)$ となる $y\in\mathrm{pred}(x)$ があり、$z\in D$。
+
+**(5)** $\mathbf{A}$ が推移的なので $x\subseteq\mathbf{A}$、よって $\mathrm{pred}(x)=x\cap\mathbf{A}=x$。$\mathrm{pred}^{n}(x)=\bigcup^{n}x$ を帰納法で示す。$n=0$ は今示した。$\mathrm{pred}^{n}(x)=\bigcup^{n}x$ とすると、その元 $y$ も $\mathbf{A}$ の元なので $\mathrm{pred}(y)=y$ で、$\mathrm{pred}^{n+1}(x)=\bigcup\{y\mid y\in\bigcup^{n}x\}=\bigcup^{n+1}x$。したがって $\mathrm{cl}(x)=\bigcup_{n}\bigcup^{n}x=\operatorname{trcl}(x)$（\ref{set:transitive-closure}）。
+
+**(6)** $x\in\mathrm{cl}(x)$ と仮定する。分出公理で
+$$
+Y=\{z\in\mathrm{cl}(x)\mid x\in\mathrm{cl}(z)\}
+$$
+をつくると、$x\in Y$ なので $Y\neq\varnothing$。$Y\subseteq\mathbf{A}$ は集合なので、整礎性から $\mathbf{R}$-極小元 $z\in Y$ がある。$x\in\mathrm{cl}(z)$ なので、ある $n$ で $x\in\mathrm{pred}^{n}(z)$。
+- $n=0$ のとき：$x\mathbf{R}z$ で、$x\in Y$ なので $z$ の極小性に反する。
+- $n\ge1$ のとき：(4) より、ある $y\in\mathrm{pred}(z)$ で $x\in\mathrm{pred}^{n-1}(y)\subseteq\mathrm{cl}(y)$。また $z\in\mathrm{cl}(x)$ なので (2) より $y\in\mathrm{pred}(z)\subseteq\mathrm{cl}(x)$。よって $y\in Y$ かつ $y\mathbf{R}z$ となり、$z$ の極小性に反する。
+
+いずれも矛盾なので $x\notin\mathrm{cl}(x)$。
+
+::: hypcheck
+- **集合的であること**：すべての項で $\mathrm{pred}(y)$ が集合であることを通して使った。
+- **$\omega$ 上の帰納法**（\ref{set:peano}）：(1), (3), (4), (5)。
+- **分出公理**：(6) の $Y$。**整礎性**：(6) だけで使った。(1)〜(5) は整礎性を使わない。
+- 冪集合公理・基礎の公理・選択公理は使っていない（$\ZF^{-}-\mathrm{P}$）。
+:::
+:::
+
+## 最小元の原理と帰納法 {#set:sec-wf-induction}
+
+::: theorem 部分クラスの極小元 {#set:wf-minimal-element keywords="minimal element principle for well-founded set-like relations" index="極小元の原理|きょくしょうげんのげんり"}
+$\ZF^{-}-\mathrm{P}$ において、$\mathbf{R}$ が $\mathbf{A}$ 上で整礎かつ集合的ならば、$\mathbf{A}$ の空でない任意の部分クラス $\mathbf{X}$ は $\mathbf{R}$-極小元をもつ。すなわち、ある $y\in\mathbf{X}$ があって、$z\mathbf{R}y$ となる $z\in\mathbf{X}$ は存在しない。
+:::
+
+::: intuition
+整礎性は**集合**についてしか極小元を保証しない。部分クラス $\mathbf{X}$ から一つ元 $x$ をとり、$x$ の下にある元の集合 $\mathrm{cl}(x)$ に制限して考えれば、問題は集合の上の問題になる。$\mathrm{cl}(x)$ が下に閉じているので、そこで見つかった極小元は $\mathbf{X}$ 全体でも極小になる。これは順序数の場合の \ref{set:transfinite-induction} (1) の証明と同じ考え方で、そこでは $\mathrm{cl}(\alpha)=\alpha$ であった。
+:::
+
+::: proof
+**Step 1.** $\mathbf{X}\neq\varnothing$ から $x\in\mathbf{X}$ をとる。$x$ が $\mathbf{X}$ の $\mathbf{R}$-極小元なら証明は終わる。以下、そうでないとする。
+
+**Step 2（集合への制限）.** $x$ は極小でないので、$y_{0}\mathbf{R}x$ となる $y_{0}\in\mathbf{X}$ がある。$y_{0}\in\mathrm{pred}(x)\subseteq\mathrm{cl}(x)$（\ref{set:pred-closure-basic} (1)）。そこで
+$$
+X_{0}=\mathbf{X}\cap\mathrm{cl}(x)
+$$
+とおくと、これは集合（分出公理）で、$y_{0}\in X_{0}$ なので空でなく、$X_{0}\subseteq\mathbf{A}$。
+
+**Step 3.** $\mathbf{R}$ は $\mathbf{A}$ 上で整礎なので、$X_{0}$ は $\mathbf{R}$-極小元 $y$ をもつ。
+
+**Step 4（$y$ は $\mathbf{X}$ で極小）.** $z\in\mathbf{X}$ かつ $z\mathbf{R}y$ と仮定する。$y\in\mathrm{cl}(x)$ なので、\ref{set:pred-closure-basic} (2) より $z\in\mathrm{pred}(y)\subseteq\mathrm{cl}(x)$。よって $z\in X_{0}$ かつ $z\mathbf{R}y$ となり、$y$ の $X_{0}$ での極小性に反する。したがって $y$ は $\mathbf{X}$ の $\mathbf{R}$-極小元である。
+
+::: hypcheck
+- **集合的であること**：Step 2 で $\mathrm{cl}(x)$ が集合であることに使った。これがなければ $X_{0}$ を集合にできない。
+- **整礎性**：Step 3。
+- **分出公理**：Step 2（$\mathbf{X}$ は論理式で与えられる）。**無限公理・置換公理**：$\mathrm{cl}(x)$ の構成（\ref{set:pred-closure}）を通して。
+- 冪集合公理・基礎の公理・選択公理は使っていない。
+:::
+:::
+
+::: supplement
+**集合的でない場合.** $\ZF$（冪集合公理と基礎の公理を含む）では、集合的という仮定なしでも同じ結論が成り立つ（次の \ref{set:wf-minimal-element-zf}）。その証明は基礎の公理と冪集合公理（累積階層 $R(\alpha)$）を使うので $\ZF^{-}-\mathrm{P}$ では使えない。以下の帰納法・再帰では集合的という仮定を保つ。
+:::
+
+::: proposition 集合的でない整礎関係の極小元 {#set:wf-minimal-element-zf keywords="minimal elements for well-founded relations that are not set-like"}
+$\ZF$ において、$\mathbf{R}$ が $\mathbf{A}$ 上で整礎ならば（集合的とは限らない）、$\mathbf{A}$ の空でない任意の部分クラス $\mathbf{X}$ は $\mathbf{R}$-極小元をもつ。
+:::
+
+::: proof
+基礎の公理のもとで $\mathbf{V}=\bigcup_{\alpha}R(\alpha)$ なので（\ref{set:foundation-equivalents}）、すべての集合はある $R(\alpha)$ に属し、ランクをもつ。$R(\alpha)$ は $\alpha$ について単調増加である（\ref{set:r-alpha-basic}）。
+
+**Step 1（反映する順序数の構成）.** 順序数 $\beta$ に対し、$\mathbf{X}\cap R(\beta)$ は集合である（分出公理）。$x\in\mathbf{X}\cap R(\beta)$ で $\mathbf{X}$ の中に $\mathbf{R}$-前者をもつもの（$\exists y\in\mathbf{X}\,(y\mathbf{R}x)$）について、そのような前者 $y$ のランクの最小値 $\rho(x)$ をとる（順序数の最小元なので選択は要らない）。置換公理により $\{\rho(x)\mid x\in\mathbf{X}\cap R(\beta)\text{ は前者をもつ}\}$ は順序数の集合なので、
+$$
+\mathbf{K}(\beta)=\max\Bigl(\beta,\ \sup\{\rho(x)+1\mid x\in\mathbf{X}\cap R(\beta)\text{ は }\mathbf{X}\text{ に前者をもつ}\}\Bigr)
+$$
+は順序数である。定義から、$x\in\mathbf{X}\cap R(\beta)$ が $\mathbf{X}$ に前者をもてば、ランク $\rho(x)$ の前者 $y$ があり、$y\in R(\rho(x)+1)\subseteq R(\mathbf{K}(\beta))$。
+
+**Step 2.** $\mathbf{X}\neq\varnothing$ から $x_{0}\in\mathbf{X}$ をとり、$\beta_{0}=\rank(x_{0})+1$、$\beta_{n+1}=\mathbf{K}(\beta_{n})$ と $\omega$ 上の再帰で定め、$\gamma=\sup_{n}\beta_{n}$ とおく。$\beta_{n}\le\beta_{n+1}$ なので $R(\beta_{n})\subseteq R(\gamma)$。
+
+**Step 3.** $X_{0}=\mathbf{X}\cap R(\gamma)$ は集合で、$x_{0}\in R(\beta_{0})\subseteq R(\gamma)$ より空でない。$\mathbf{R}$ の整礎性から $X_{0}$ の $\mathbf{R}$-極小元 $y$ をとる。
+
+**Step 4（$y$ は $\mathbf{X}$ で極小）.** $y$ が $\mathbf{X}$ に前者をもつと仮定する。$y\in R(\gamma)=\bigcup_{n}R(\beta_{n})$（$\gamma$ が極限の場合。$\gamma$ が後続順序数なら数列はある番号から一定値 $\gamma$ で、やはり $y\in R(\beta_{n})$ となる $n$ がある）より、ある $n$ で $y\in\mathbf{X}\cap R(\beta_{n})$。Step 1 より、$\mathbf{X}$ に属する前者 $z$ で $z\in R(\beta_{n+1})\subseteq R(\gamma)$ となるものがある。すると $z\in X_{0}$ かつ $z\mathbf{R}y$ で、$y$ の極小性に反する。
+
+::: hypcheck
+- **基礎の公理と冪集合公理**：すべての集合がランクをもち、$R(\beta)$ が集合であること（Step 1〜4 全体）。
+- **置換公理**：Step 1 で $\sup$ をとる集合、Step 2 の $\omega$ 上の再帰。**分出公理**：$\mathbf{X}\cap R(\beta)$。
+- 選択公理は使っていない：前者を「選ぶ」代わりに、最小ランクという**順序数**を置換公理で集めた。
+:::
+:::
+
+::: supplement
+**反映原理として.** この証明は、「$\mathbf{X}$ に前者をもつかどうか」という性質を、ある集合 $R(\gamma)$ が正しく反映するように $\gamma$ を $\omega$ 回押し上げている。これはレヴィ＝モンタギューの**反映原理**の典型的な使い方の一例である（Kunen, Ch. III, Exercise 17）。
+:::
+
+::: corollary 整礎関係上の帰納法 {#set:wf-induction keywords="well-founded induction, transfinite induction on a well-founded relation" index="整礎帰納法|せいそきのうほう"}
+$\ZF^{-}-\mathrm{P}$ において、$\mathbf{R}$ が $\mathbf{A}$ 上で整礎かつ集合的であるとし、$\varphi(x)$ を論理式とする。任意の $x\in\mathbf{A}$ について
+$$
+\forall y\in\mathbf{A}\,\bigl(y\mathbf{R}x\to\varphi(y)\bigr)\to\varphi(x)
+\label{set:eq-wf-induction-step}
+$$
+が成り立つならば、$\forall x\in\mathbf{A}\;\varphi(x)$ である。
+:::
+
+::: proof
+$\mathbf{X}=\{x\in\mathbf{A}\mid\lnot\varphi(x)\}$ が空でないと仮定し、\ref{set:wf-minimal-element} によりその $\mathbf{R}$-極小元 $x$ をとる。$y\in\mathbf{A}$, $y\mathbf{R}x$ なら、極小性より $y\notin\mathbf{X}$、すなわち $\varphi(y)$。\eqref{set:eq-wf-induction-step} より $\varphi(x)$ となり、$x\in\mathbf{X}$ に反する。
+
+::: hypcheck
+- \ref{set:wf-minimal-element}（整礎性・集合的であること・分出・置換・無限公理）だけを使った。冪集合公理・基礎の公理・選択公理は使っていない。
+:::
+:::
+
+::: example
+- $\mathbf{A}=\mathbf{ON}$, $\mathbf{R}=\in$ のとき、これは順序数上の累積帰納法（\ref{set:transfinite-induction} (2)）である。
+- $\mathbf{A}=\mathbf{V}$, $\mathbf{R}=\in$ のとき、基礎の公理のもとでこれは $\in$-帰納法（\ref{set:epsilon-induction}）である。実際、$\in$ は $\mathbf{V}$ 上で集合的で、基礎の公理により整礎である。
+- 推移的集合 $A$ 上で $\in$ が整礎なら $A\subseteq\mathbf{WF}$ であること（\ref{set:transitive-wf}）の証明は、「$x$ の元がすべて $\mathbf{WF}$ に入れば $x\in\mathbf{WF}$」を帰納法の一歩 \eqref{set:eq-wf-induction-step} とする $\in$ についての帰納法と見られる。
+:::
+
+## 整礎関係上の再帰 {#set:sec-wf-recursion}
+
+::: theorem 整礎関係上の超限再帰 {#set:wf-recursion keywords="well-founded recursion, transfinite recursion on a well-founded relation" index="整礎再帰|せいそさいき, 超限再帰|ちょうげんさいき"}
+$\ZF^{-}-\mathrm{P}$ において、$\mathbf{R}$ が $\mathbf{A}$ 上で整礎かつ集合的であるとし、$\mathbf{F}\colon\mathbf{A}\times\mathbf{V}\to\mathbf{V}$ をクラス関数とする。このとき、クラス関数 $\mathbf{G}\colon\mathbf{A}\to\mathbf{V}$ で
+$$
+\forall x\in\mathbf{A}\;\bigl[\mathbf{G}(x)=\mathbf{F}\bigl(x,\ \mathbf{G}\restr{\mathrm{pred}(\mathbf{A},x,\mathbf{R})}\bigr)\bigr]
+\label{set:eq-wf-recursion}
+$$
+を満たすものがただ一つ存在する。
+:::
+
+::: intuition
+$\mathbf{G}(x)$ の値を、$x$ の $\mathbf{R}$-前者での値の全体 $\mathbf{G}\restr{\mathrm{pred}(x)}$ から規則 $\mathbf{F}$ で決める。整礎性により「下へ下へとたどる」過程は必ず底に着くので、この規則で値がすべて矛盾なく決まる。集合的という条件は、$\mathbf{G}\restr{\mathrm{pred}(x)}$ が $\mathbf{F}$ に渡せる集合であるために要る。証明は順序数の場合（\ref{set:transfinite-recursion}）と同じく「部分的な解（近似）」を作って貼り合わせるが、順序数の始切片 $\delta$ の代わりに、下に閉じた集合を近似の定義域にする。
+:::
+
+以下、この節では $\mathbf{A},\mathbf{R},\mathbf{F}$ を定理のとおりとし、$\mathrm{pred}(x)=\mathrm{pred}(\mathbf{A},x,\mathbf{R})$, $\mathrm{cl}(x)=\mathrm{cl}(\mathbf{A},x,\mathbf{R})$ と略記する。
+
+::: definition 閉集合と近似 {#set:wf-recursion-approximation keywords="closed set, approximation"}
+1. 集合 $d\subseteq\mathbf{A}$ が**閉じている**とは、$\forall x\in d\,(\mathrm{pred}(x)\subseteq d)$ が成り立つことをいう。
+2. 閉じた集合 $d$ に対し、集合 $g$ が **$d$-近似**であるとは、$g$ が定義域 $d$ の関数で、
+$$
+\forall x\in d\;\bigl[g(x)=\mathbf{F}\bigl(x,\ g\restr{\mathrm{pred}(x)}\bigr)\bigr]
+$$
+を満たすことをいう（$d$ が閉じているので $\mathrm{pred}(x)\subseteq\dom g$）。
+3. $x\in\mathbf{A}$ に対し $d_{x}=\{x\}\cup\mathrm{cl}(x)$ とおく。
+:::
+
+::: lemma 近似の基本性質 {#set:wf-recursion-approximation-basic}
+1. $x\in\mathbf{A}$ ならば $d_{x}$ は閉じている。$y\in d_{x}$ ならば $d_{y}\subseteq d_{x}$。
+2. 閉じた集合 $d,d'$ について $d\cap d'$ は閉じている。$d$-近似 $g$ と閉じた $d_{0}\subseteq d$ について、$g\restr{d_{0}}$ は $d_{0}$-近似である。
+3. $g$ が $d$-近似、$g'$ が $d'$-近似ならば、すべての $x\in d\cap d'$ で $g(x)=g'(x)$。特に、各閉集合 $d$ に対し $d$-近似は高々一つである。
+4. 任意の $x\in\mathbf{A}$ に対し、$d_{x}$-近似が存在する。
+:::
+
+::: proof
+**(1)** $y\in d_{x}$ をとる。$y=x$ なら $\mathrm{pred}(x)\subseteq\mathrm{cl}(x)\subseteq d_{x}$（\ref{set:pred-closure-basic} (1)）。$y\in\mathrm{cl}(x)$ なら $\mathrm{pred}(y)\subseteq\mathrm{cl}(x)\subseteq d_{x}$（同 (2)）。よって $d_{x}$ は閉じている。後半：$y=x$ なら自明。$y\in\mathrm{cl}(x)$ なら $\mathrm{cl}(y)\subseteq\mathrm{cl}(x)$（同 (3)）なので $d_{y}=\{y\}\cup\mathrm{cl}(y)\subseteq\mathrm{cl}(x)\subseteq d_{x}$。
+
+**(2)** $x\in d\cap d'$ なら $\mathrm{pred}(x)\subseteq d$ かつ $\mathrm{pred}(x)\subseteq d'$。後半：$h=g\restr{d_{0}}$ は定義域 $d_{0}$ の関数で、$x\in d_{0}$ なら $\mathrm{pred}(x)\subseteq d_{0}$ なので $h\restr{\mathrm{pred}(x)}=g\restr{\mathrm{pred}(x)}$、よって $h(x)=g(x)=\mathbf{F}(x,g\restr{\mathrm{pred}(x)})=\mathbf{F}(x,h\restr{\mathrm{pred}(x)})$。
+
+**(3)** $E=\{x\in d\cap d'\mid g(x)\neq g'(x)\}$（分出公理）が空でないと仮定する。$E\subseteq\mathbf{A}$ は集合なので、整礎性から $\mathbf{R}$-極小元 $x\in E$ がある。$y\in\mathrm{pred}(x)$ なら、(2) より $d\cap d'$ は閉じているので $y\in d\cap d'$、極小性より $y\notin E$、すなわち $g(y)=g'(y)$。よって $g\restr{\mathrm{pred}(x)}=g'\restr{\mathrm{pred}(x)}$ であり、
+$$
+g(x)=\mathbf{F}\bigl(x,g\restr{\mathrm{pred}(x)}\bigr)=\mathbf{F}\bigl(x,g'\restr{\mathrm{pred}(x)}\bigr)=g'(x).
+$$
+これは $x\in E$ に反する。後半：$d=d'$ なら $g,g'$ は定義域が等しく値がすべて一致するので、外延性より $g=g'$。
+
+**(4)** $d_{x}$-近似をもたない $x\in\mathbf{A}$ のクラス $\mathbf{X}$ が空でないと仮定し、\ref{set:wf-minimal-element} によりその $\mathbf{R}$-極小元 $x$ をとる。
+
+*Step 1（下の近似を集める）.* $y\in\mathrm{pred}(x)$ なら、極小性より $y\notin\mathbf{X}$ なので $d_{y}$-近似があり、(3) よりそれはただ一つである。それを $g_{y}$ と書く。「$g$ は $d_{y}$-近似」は $y,g$ の論理式なので、置換公理により
+$$
+\mathcal{G}=\{g_{y}\mid y\in\mathrm{pred}(x)\}
+$$
+は集合である。$h=\bigcup\mathcal{G}$ とおく（和集合の公理）。
+
+*Step 2（$h$ は関数で $\dom h=\mathrm{cl}(x)$）.* $(z,v),(z,v')\in h$ なら、ある $y,y'\in\mathrm{pred}(x)$ で $(z,v)\in g_{y}$, $(z,v')\in g_{y'}$。$z\in d_{y}\cap d_{y'}$ なので (3) より $v=g_{y}(z)=g_{y'}(z)=v'$。よって $h$ は関数である。定義域は $\bigcup\{d_{y}\mid y\in\mathrm{pred}(x)\}=\mathrm{cl}(x)$（\eqref{set:eq-cl-decomposition}）。
+
+*Step 3（$h$ は $\mathrm{cl}(x)$-近似）.* $\mathrm{cl}(x)$ は閉じている（\ref{set:pred-closure-basic} (2)）。$z\in\mathrm{cl}(x)$ をとり、$z\in d_{y}$ となる $y\in\mathrm{pred}(x)$ を選ぶ。$d_{y}$ は閉じているので $\mathrm{pred}(z)\subseteq d_{y}$ で、$g_{y}\subseteq h$ かつ $h$ は関数なので $h\restr{\mathrm{pred}(z)}=g_{y}\restr{\mathrm{pred}(z)}$。よって
+$$
+h(z)=g_{y}(z)=\mathbf{F}\bigl(z,g_{y}\restr{\mathrm{pred}(z)}\bigr)=\mathbf{F}\bigl(z,h\restr{\mathrm{pred}(z)}\bigr).
+$$
+
+*Step 4（$x$ での値を付け加える）.* \ref{set:pred-closure-basic} (6) より $x\notin\mathrm{cl}(x)=\dom h$ なので、
+$$
+g=h\cup\bigl\{\bigl(x,\ \mathbf{F}(x,h\restr{\mathrm{pred}(x)})\bigr)\bigr\}
+$$
+（対・和集合の公理）は定義域 $d_{x}$ の関数である。$g$ が $d_{x}$-近似であることを確かめる。
+- $z\in\mathrm{cl}(x)$ のとき：$\mathrm{pred}(z)\subseteq\mathrm{cl}(x)$ なので $g\restr{\mathrm{pred}(z)}=h\restr{\mathrm{pred}(z)}$ で、Step 3 より $g(z)=h(z)=\mathbf{F}(z,g\restr{\mathrm{pred}(z)})$。
+- $z=x$ のとき：$\mathrm{pred}(x)\subseteq\mathrm{cl}(x)$ なので $g\restr{\mathrm{pred}(x)}=h\restr{\mathrm{pred}(x)}$ で、$g(x)=\mathbf{F}(x,g\restr{\mathrm{pred}(x)})$。
+
+よって $x$ は $d_{x}$-近似をもち、$x\in\mathbf{X}$ に反する。
+
+::: hypcheck
+- **整礎性**：(3) で $E$ の極小元をとるのに、(4) で \ref{set:wf-minimal-element} と \ref{set:pred-closure-basic} (6) を通して使った。
+- **集合的であること**：$\mathrm{cl}(x)$、$d_{x}$ が集合であること、および \ref{set:wf-minimal-element} を通して使った。
+- **置換公理**：(4) の Step 1 で $\mathcal{G}$ を集合にするのに**本質的に**使った。**和集合・対の公理**：Step 1, 4。**分出公理**：(3) の $E$。**外延性**：(3) の後半。
+- 冪集合公理・基礎の公理・選択公理は使っていない。
+:::
+:::
+
+::: restate {ref="set:wf-recursion"}
+:::
+
+::: proof
+**Step 1（$\mathbf{G}$ の定義）.** 論理式 $\chi(x,v)$ を「$x\in\mathbf{A}$ であり、ある $d_{x}$-近似 $g$ について $g(x)=v$」とする。\ref{set:wf-recursion-approximation-basic} (4) により $d_{x}$-近似は存在し、(3) によりただ一つなので、各 $x\in\mathbf{A}$ に対し $\chi(x,v)$ を満たす $v$ はただ一つである。これを $\mathbf{G}(x)$ と書く。
+
+**Step 2（近似との一致）.** $x\in\mathbf{A}$ と $d_{x}$-近似 $g_{x}$ をとる。$y\in d_{x}$ なら $d_{y}\subseteq d_{x}$（\ref{set:wf-recursion-approximation-basic} (1)）で、(2) より $g_{x}\restr{d_{y}}$ は $d_{y}$-近似、(3) よりそれが唯一の $d_{y}$-近似である。したがって $\mathbf{G}(y)=g_{x}(y)$。特に $\mathbf{G}\restr{\mathrm{pred}(x)}=g_{x}\restr{\mathrm{pred}(x)}$ であり、これは集合である。
+
+**Step 3（再帰式）.** Step 2 より
+$$
+\mathbf{G}(x)=g_{x}(x)=\mathbf{F}\bigl(x,g_{x}\restr{\mathrm{pred}(x)}\bigr)=\mathbf{F}\bigl(x,\mathbf{G}\restr{\mathrm{pred}(x)}\bigr).
+$$
+
+**Step 4（一意性）.** $\mathbf{G}'\colon\mathbf{A}\to\mathbf{V}$ も \eqref{set:eq-wf-recursion} を満たすとする。$\mathbf{G}(x)\neq\mathbf{G}'(x)$ となる $x\in\mathbf{A}$ のクラスが空でなければ、\ref{set:wf-minimal-element} でその $\mathbf{R}$-極小元 $x$ をとる。$y\in\mathrm{pred}(x)$ では $\mathbf{G}(y)=\mathbf{G}'(y)$ なので $\mathbf{G}\restr{\mathrm{pred}(x)}=\mathbf{G}'\restr{\mathrm{pred}(x)}$、よって $\mathbf{G}(x)=\mathbf{F}(x,\mathbf{G}\restr{\mathrm{pred}(x)})=\mathbf{F}(x,\mathbf{G}'\restr{\mathrm{pred}(x)})=\mathbf{G}'(x)$ となり矛盾。
+
+::: hypcheck
+- **置換公理**：\ref{set:wf-recursion-approximation-basic} (4) の中で（近似を集めるため）使った。$\mathbf{G}\restr{\mathrm{pred}(x)}$ が集合であること（Step 2）もこれに依存する。
+- **整礎性・集合的であること**：\ref{set:wf-recursion-approximation-basic} と Step 4 の \ref{set:wf-minimal-element}。
+- **無限公理**：$\mathrm{cl}(x)$ の構成（\ref{set:pred-closure}）で $\omega$ を使った。
+- 冪集合公理・基礎の公理・選択公理は使っていない。したがって定理は $\ZF^{-}-\mathrm{P}$ で成り立つ（クラス関数 $\mathbf{F}$ ごとの定理図式として）。
+:::
+:::
+
+::: supplement
+**集合的でない場合.** $\mathbf{R}$ が集合的でなければ、\eqref{set:eq-wf-recursion} の右辺の $\mathbf{G}\restr{\mathrm{pred}(x)}$ が集合にならず、式そのものが意味をもたない。
+
+**特別な場合.** $\mathbf{A}=\mathbf{ON}$, $\mathbf{R}=\in$ とし、$\mathbf{F}(x,h)$ が $h$ だけに依存するときが \ref{set:transfinite-recursion} である（$\mathrm{pred}(\alpha)=\alpha$）。基礎の公理のもとでは $\mathbf{A}=\mathbf{V}$, $\mathbf{R}=\in$ として「$\in$ についての再帰」が使え、たとえば推移閉包を $\operatorname{trcl}(x)=x\cup\bigcup\{\operatorname{trcl}(y)\mid y\in x\}$ と再帰的に定義し直すこともできる（\ref{set:transitive-closure-basic} と比較せよ）。ただし $\mathrm{cl}(x)$ の構成自体に推移閉包と同じ $\omega$ 回の和を使っているので、これで推移閉包の存在が新たに示されるわけではない。
+
+**無限公理を除くと.** $\ZF^{-}-\mathrm{P}-\mathrm{Inf}$ では $\mathrm{cl}(x)$ が作れないため、この証明は通らない。$\in$-帰納法の図式を公理として採れば、$\in$ についての再帰は無限公理なしでも正当化できる（Kunen, Ch. III, Exercise 19）。
+:::
+
+## 整礎関係のランク {#set:sec-relation-rank}
+
+::: definition 整礎関係のランク {#set:relation-rank keywords="rank function of a well-founded relation" index="ランク関数|らんくかんすう, 整礎関係のランク|せいそかんけいのらんく"}
+$\mathbf{R}$ が $\mathbf{A}$ 上で整礎かつ集合的であるとき、$x\in\mathbf{A}$ の**ランク** $\rank(x,\mathbf{A},\mathbf{R})$ を
+$$
+\rank(x,\mathbf{A},\mathbf{R})=\sup\bigl\{\rank(y,\mathbf{A},\mathbf{R})+1\bigm|y\in\mathbf{A}\land y\mathbf{R}x\bigr\}
+\label{set:eq-relation-rank}
+$$
+で定める。形式的には、\ref{set:wf-recursion} を
+$$
+\mathbf{F}(x,h)=\begin{cases}\sup\{\alpha+1\mid\alpha\in\ran h\}&(h\text{ が関数で }\ran h\subseteq\mathbf{ON}),\\ 0&(\text{それ以外})\end{cases}
+$$
+に適用して得られるクラス関数 $\mathbf{G}$ を $\rank(\cdot,\mathbf{A},\mathbf{R})$ と書く。
+:::
+
+::: intuition
+$x$ のランクは「$x$ から $\mathbf{R}$ に沿って下りていける深さ」を順序数で測ったものである。極小元のランクは $0$、極小元の上にしかないものは $1$、…というように、前者のランクすべてより真に大きい最小の順序数を割り当てていく。
+:::
+
+::: example
+- 空関係 $\varnothing$ のもとでは、すべての元のランクが $0$ である。
+- $\mathbf{R}$ が集合 $A$ の整列順序なら、$\rank(\cdot,A,R)$ は $(A,R)$ からその順序型への同型写像である（\ref{set:relation-rank-basic} (3) と \ref{set:collapse-well-order} を参照）。
+- $A=\{a,b,c,d\}$（相異なる 4 元）に $aRb$, $bRd$, $cRd$ だけを入れると、$\rank(a)=\rank(c)=0$, $\rank(b)=1$, $\rank(d)=\sup\{2,1\}=2$。ランクは最長の下降路の長さで決まる。
+:::
+
+::: lemma ランクの基本性質 {#set:relation-rank-basic keywords="basic properties of the rank of a well-founded relation"}
+$\ZF^{-}-\mathrm{P}$ において、$\mathbf{R}$ が $\mathbf{A}$ 上で整礎かつ集合的であるとし、$\rank(x)=\rank(x,\mathbf{A},\mathbf{R})$ と略記する。
+
+1. 任意の $x\in\mathbf{A}$ について $\rank(x)$ は順序数であり、\eqref{set:eq-relation-rank} が成り立つ。
+2. $x,y\in\mathbf{A}$ で $y\mathbf{R}x$ ならば $\rank(y)<\rank(x)$。
+3. $\mathbf{A}$ が集合 $A$ ならば、$\{\rank(x)\mid x\in A\}$ は順序数である。
+:::
+
+::: proof
+**(1)** \ref{set:wf-induction} により $x$ について帰納法で示す。$y\mathbf{R}x$ となるすべての $y\in\mathbf{A}$ で $\rank(y)$ が順序数だと仮定する。$h=\mathbf{G}\restr{\mathrm{pred}(x)}$ は関数で $\ran h\subseteq\mathbf{ON}$ なので、$\mathbf{F}$ の定義の第一の場合が適用され、
+$$
+\rank(x)=\mathbf{F}(x,h)=\sup\{\rank(y)+1\mid y\in\mathrm{pred}(x)\}.
+$$
+これは順序数の集合（置換公理）の上限なので順序数である（\ref{set:sup-ordinals}）。したがって帰納法によりすべての $x$ で $\rank(x)$ は順序数で、\eqref{set:eq-relation-rank} が成り立つ。
+
+**(2)** $y\in\mathrm{pred}(x)$ なら $\rank(y)+1$ は (1) の上限をとる集合の元なので $\rank(y)+1\le\rank(x)$、すなわち $\rank(y)<\rank(x)$。
+
+**(3)** $S=\{\rank(x)\mid x\in A\}$ は置換公理により順序数の集合である。$S$ が推移的であることを示せば、\ref{set:ordinal-well-ordered} (4) より $S$ は順序数である。そのために「任意の $x\in A$ と $\beta<\rank(x)$ について $\beta\in S$」を $x$ についての帰納法で示す。$\beta<\rank(x)=\sup\{\rank(y)+1\mid y\mathbf{R}x\}$ なら、上限の定義から $\beta<\rank(y)+1$、すなわち $\beta\le\rank(y)$ となる $y\in\mathrm{pred}(x)$ がある。$\beta=\rank(y)$ なら $\beta\in S$。$\beta<\rank(y)$ なら帰納法の仮定（$y\mathbf{R}x$）より $\beta\in S$。
+
+::: hypcheck
+- **整礎関係上の帰納法**（\ref{set:wf-induction}）と**再帰**（\ref{set:wf-recursion}）：(1), (3)。
+- **置換公理**：(1) と (3) で順序数の集合を作るのに使った。
+- **順序数の集合の性質**（\ref{set:sup-ordinals}, \ref{set:ordinal-well-ordered}）：これらは基礎の公理を使わない。
+- 冪集合公理・基礎の公理・選択公理は使っていない。
+:::
+:::
+
+::: supplement
+**ランクの値域.** (3) の順序数を $(A,R)$ の**高さ**という。$A$ の濃度を $\kappa$ とすると、高さは $\kappa^{+}$ より小さい（ランク関数の値域は $A$ の像なので、濃度が $\kappa$ 以下の順序数になる。この議論には $A$ が整列可能であることを使う）。木 $T$ の高さ（\ref{set:tree-height}）は、木の順序についてのランクにほかならない（Kunen, Ch. III, Exercise 10）。
+:::
+
+::: lemma 推移的集合上の $\in$ のランク {#set:transitive-epsilon-wf keywords="rank of membership on a transitive class" index="推移的クラス|すいいてきくらす"}
+$\ZF^{-}$ において、$\mathbf{A}$ が推移的なクラスで、$\in$ が $\mathbf{A}$ 上で整礎ならば、$\mathbf{A}\subseteq\mathbf{WF}$ であり、すべての $x\in\mathbf{A}$ について $\rank(x,\mathbf{A},\in)=\rank(x)$。
+:::
+
+::: intuition
+推移的なクラスの上で $\in$ が整礎なら、そこでの $\in$ についてのランク（\ref{set:relation-rank}）は、累積階層で測ったランク（\ref{set:rank}）と一致する。$\mathbf{A}$ が推移的なので、$\mathbf{A}$ の元の元はすべて $\mathbf{A}$ の中にあり、$\mathbf{A}$ の中で見た「$x$ の下」は本物の $x$ の下と同じだからである。
+:::
+
+::: proof
+$\in$ は $\mathbf{A}$ 上で集合的なので（$\mathrm{pred}(\mathbf{A},x,\in)=x\cap\mathbf{A}$）、\ref{set:wf-minimal-element} と \ref{set:wf-induction} が使える。また $\mathbf{A}$ が推移的なので、$x\in\mathbf{A}$ ならば $x\subseteq\mathbf{A}$、したがって $\mathrm{pred}(\mathbf{A},x,\in)=x$。
+
+**Step 1（$\mathbf{A}\subseteq\mathbf{WF}$）.** クラス $\mathbf{A}\setminus\mathbf{WF}$ が空でないと仮定し、\ref{set:wf-minimal-element} によりその $\in$-極小元 $x$ をとる。$y\in x$ なら $y\in\mathbf{A}$（推移性）で、極小性より $y\notin\mathbf{A}\setminus\mathbf{WF}$、よって $y\in\mathbf{WF}$。したがって $x\subseteq\mathbf{WF}$ で、\ref{set:wf-subset} より $x\in\mathbf{WF}$。これは $x\in\mathbf{A}\setminus\mathbf{WF}$ に反する。
+
+**Step 2（ランクの一致）.** $x\in\mathbf{A}$ についての帰納法（\ref{set:wf-induction}）で示す。$y\in x$ となるすべての $y\in\mathbf{A}$ で $\rank(y,\mathbf{A},\in)=\rank(y)$ と仮定する。$\mathrm{pred}(\mathbf{A},x,\in)=x$ と \ref{set:relation-rank-basic} (1)、および \ref{set:rank-basic}（$x\in\mathbf{WF}$ は Step 1）により
+$$
+\begin{aligned}
+\rank(x,\mathbf{A},\in)&=\sup\{\rank(y,\mathbf{A},\in)+1\mid y\in x\}\\
+&=\sup\{\rank(y)+1\mid y\in x\}=\rank(x).
+\end{aligned}
+$$
+
+::: hypcheck
+- **冪集合公理**：$\mathbf{WF}$ と $\rank$ の定義、\ref{set:wf-subset}, \ref{set:rank-basic} を通して使った。そのため体系は $\ZF^{-}$ である。
+- **$\mathbf{A}$ の推移性**：Step 1 で $y\in\mathbf{A}$ を、Step 2 で $\mathrm{pred}(\mathbf{A},x,\in)=x$ を得るのに使った。
+- **$\in$ の整礎性**：\ref{set:wf-minimal-element} と \ref{set:wf-induction} を通して。基礎の公理・選択公理は使っていない。
+:::
+:::
+
+::: supplement
+**冪集合公理なしのランク.** $\ZF^{-}-\mathrm{P}$ でも、$\mathbf{WF}$ を「$\in$ が $\operatorname{trcl}(x)$ 上で整礎であるような $x$ の全体」と定義し直し（\ref{set:wf-equivalents} により $\ZF^{-}$ では元の定義と一致する）、$x$ のランクを $\operatorname{trcl}(\{x\})$ 上の $\in$ についてのランク \eqref{set:eq-relation-rank} で定義すれば、\ref{set:rank-basic} の $\rank(y)=\sup\{\rank(x)+1\mid x\in y\}$ など、$\mathcal{P}$ や $R(\alpha)$ に触れない結果はそのまま成り立つ（Kunen, Ch. III, Exercise 6）。これは、冪集合公理が成り立つかどうかわからない構造の中で整礎集合を扱うときに役に立つ。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

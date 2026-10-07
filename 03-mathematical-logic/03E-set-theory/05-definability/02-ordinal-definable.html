@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>順序数定義可能集合 OD と HOD | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/05-definability/02-ordinal-definable.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 順序数定義可能集合 OD と HOD {#set:page-ordinal-definable keywords="ordinal definable sets, OD, hereditarily ordinal definable sets, HOD, Enon, Enod, Con(ZF) implies Con(ZFC), Gödel"}
+
+集合 $a$ が**順序数定義可能**であるとは、直観的には、ある性質 $P(y_{1},\dots,y_{n},x)$ と順序数 $\alpha_{1},\dots,\alpha_{n}$ について $a$ が $P(\alpha_{1},\dots,\alpha_{n},x)$ を満たすただ一つの $x$ であることをいう。各順序数 $\alpha$ は性質 $y_{1}=x$ と $\alpha$ 自身で定義されるので、順序数はすべて順序数定義可能である。一見「定義可能」と同じく怪しい概念だが、ゲーデルによる工夫でこれを $\ZF$ の中で正当に定義できる。そのクラス $\mathbf{OD}$ の元のうち「遺伝的に」順序数定義可能なもの全体 $\mathbf{HOD}$ は、$\ZF$ だけから $\ZFC$ のモデルであることが示せる。こうして $\mathrm{Con}(\ZF)\to\mathrm{Con}(\ZFC)$ が得られる。本ページの議論はすべて $\ZF$ の中で行い、選択公理は使わない。（Kunen 第 V 章 §2 に対応する。技術的な詳細の扱いは Myhill–Scott (1971) による、と Kunen は述べている。）
+
+## 記法と定義の確認 {#set:sec-od-notation}
+
+::: notation
+- 基本の体系は $\ZF$（基礎の公理を含む）で、**選択公理は使わない**。
+- $\mathrm{Df}(A,n)$、$\mathrm{En}(m,A,n)$、$s^{\frown}\langle x\rangle$、${}^{n}A$ と、\ref{set:df-contains-definable}, \ref{set:df-en} は \ref{set:page-formalizing-definability} のとおり。
+- 反映定理（\ref{set:reflection}）は \ref{set:page-reflection}、相対化とクラスのモデルの判定法（\ref{set:extensionality-in-transitive}, \ref{set:foundation-in-wf-subclass}, \ref{set:comprehension-in-class}, \ref{set:pairing-union-in-class}, \ref{set:replacement-in-class}, \ref{set:power-set-in-transitive}, \ref{set:relative-consistency-lemma}）は \ref{set:page-relativization}、\ref{set:infinity-in-transitive}, \ref{set:well-order-downward} は \ref{set:page-absoluteness} のとおり。
+- 累積階層 $R(\alpha)$ とランク（\ref{set:rank-basic}：$x\in R(\alpha)\iff\rank(x)<\alpha$、$\rank(\alpha)=\alpha$）、推移閉包（\ref{set:transitive-closure-basic}）、整列順序の崩壊（\ref{set:collapse-well-order}）を使う。
+- 順序数の有限列全体のクラスを $\mathbf{ON}^{<\omega}\defeq\bigcup_{n\in\omega}{}^{n}\mathbf{ON}$ とする。$t\in\mathbf{ON}^{<\omega}$ について $\mu(t)\defeq\bigcup\ran(t)$（$t\neq\varnothing$ なら $\ran(t)$ の最大元、$t=\varnothing$ なら $0$）とおく。
+:::
+
+## OD の定義 {#set:sec-od-definition}
+
+鍵となる考え方は（まだ直観的な議論だが）次のとおりである：$a$ が順序数定義可能であることは、**ある $R(\beta)$ の中で**順序数定義可能であること、すなわちある性質 $P$、順序数 $\alpha_{1},\dots,\alpha_{n}$ と $\beta>\max(\alpha_{1},\dots,\alpha_{n},\rank(a))$ について
+$$
+\bigl(\forall x\,(P(\alpha_{1},\dots,\alpha_{n},x)\leftrightarrow x=a)\bigr)^{R(\beta)}
+\label{set:eq-od-in-r-beta}
+$$
+となることと同値である。実際、$a$ が $P$ と $\vec{\alpha}$ で定義されるなら、反映定理で $P$ が $R(\beta)$ について絶対的になる $\beta$ をとれば \eqref{set:eq-od-in-r-beta} が成り立つ。逆に \eqref{set:eq-od-in-r-beta} なら、$a$ は $\mathbf{V}$ の中で順序数 $\alpha_{1},\dots,\alpha_{n}$ と $\beta$ から定義される。この $\beta$ を加えることこそ、「順序数定義可能」を「定義可能」に置き換えると議論が壊れる点である。「ある $R(\beta)$ の中で定義可能」は \ref{set:page-formalizing-definability} の $\mathrm{Df}$ を使って $\ZF$ の中で表せるので、これを正式な定義とする。
+
+::: definition OD {#set:od keywords="OD, ordinal definable sets" index="順序数定義可能|じゅんじょすうていぎかのう, OD|おーでぃー"}
+$\mathbf{OD}$ を、次を満たす集合 $a$ 全体のクラスとする：
+$$
+\begin{aligned}
+&\exists\beta>\rank(a)\;\exists n\in\omega\;\exists s\in{}^{n}\beta\;\exists R\in\mathrm{Df}(R(\beta),n+1)\\
+&\qquad\forall x\in R(\beta)\;\bigl(s^{\frown}\langle x\rangle\in R\leftrightarrow x=a\bigr).
+\end{aligned}
+$$
+$\mathbf{OD}$ の元を**順序数定義可能**な集合という。
+:::
+
+$s\in{}^{n}\beta$ で $\beta\subseteq R(\beta)$ なので、$s^{\frown}\langle x\rangle\in{}^{n+1}R(\beta)$ であることに注意する。
+
+::: theorem 順序数から定義される集合は OD に属する {#set:od-from-formula keywords="every set definable from ordinals is ordinal definable"}
+自由変数が表示したものだけである各論理式 $\varphi(y_{1},\dots,y_{n},x)$ について
+$$
+\ZF\vdash\forall\alpha_{1},\dots,\alpha_{n}\in\mathbf{ON}\;\forall a\;\Bigl[\forall x\,\bigl(\varphi(\alpha_{1},\dots,\alpha_{n},x)\leftrightarrow x=a\bigr)\to a\in\mathbf{OD}\Bigr].
+$$
+:::
+
+::: proof
+$\alpha_{1},\dots,\alpha_{n}$ と $a$ を固定し、$\forall x\,(\varphi(\vec{\alpha},x)\leftrightarrow x=a)$ とする。
+
+**Step 1（反映）.** 反映定理（\ref{set:reflection}、$\alpha\defeq\max(\alpha_{1},\dots,\alpha_{n},\rank(a))$）より、$\beta>\alpha$ で $\varphi$ が $R(\beta)$ について絶対的なものをとる。$\alpha_{i}<\beta$ なので $\alpha_{i}\in R(\beta)$、$\rank(a)<\beta$ なので $a\in R(\beta)$。
+
+**Step 2（関係 $R$）.**
+$$
+R\defeq\{t\in{}^{n+1}R(\beta):\varphi^{R(\beta)}(t(0),\dots,t(n-1),t(n))\}
+$$
+とおく（$y_{1},\dots,y_{n},x$ に $t(0),\dots,t(n)$ を割り当てる）。\ref{set:df-contains-definable}（変数の列 $y_{1},\dots,y_{n},x$）より $R\in\mathrm{Df}(R(\beta),n+1)$。
+
+**Step 3.** $s\defeq\langle\alpha_{1},\dots,\alpha_{n}\rangle\in{}^{n}\beta$ とする。$x\in R(\beta)$ について
+$$
+s^{\frown}\langle x\rangle\in R\iff\varphi^{R(\beta)}(\vec{\alpha},x)\iff\varphi(\vec{\alpha},x)\iff x=a.
+$$
+第二の $\iff$ は $\varphi$ の絶対性（$\vec{\alpha},x\in R(\beta)$）、第三は仮定による。$\beta>\rank(a)$ なので、\ref{set:od} の条件が満たされ、$a\in\mathbf{OD}$。
+:::
+
+::: hypcheck
+- 反映定理は $\ZF$ の定理図式であり、選択公理を使わない（\ref{set:reflection}）。したがってこの定理も $\ZF$ の定理図式である。
+- $\beta>\max(\vec{\alpha})$ は $s\in{}^{n}\beta$ に、$\beta>\rank(a)$ は \ref{set:od} の条件と $a\in R(\beta)$ に使った。
+:::
+
+::: corollary 順序数は OD に属する {#set:on-in-od}
+$\mathbf{ON}\subseteq\mathbf{OD}$。
+:::
+
+::: proof
+\ref{set:od-from-formula} を $\varphi(y_{1},x)\defeq(y_{1}=x)$、$\alpha_{1}=\alpha$ に適用する：$\forall x\,(\alpha=x\leftrightarrow x=\alpha)$。
+:::
+
+## OD の枚挙 {#set:sec-od-enumeration}
+
+\ref{set:od-from-formula} の逆は「$a\in\mathbf{OD}$ なら $a$ を順序数から定義する論理式がある」と述べるべきだが、これを $\ZF$ で述べようとすると \ref{set:df-contains-definable} の逆と同じ問題に出会う。しかし実際には、ある**一つの**論理式 $\varphi(y,x)$ を作って
+$$
+\forall a\;\bigl(a\in\mathbf{OD}\leftrightarrow\exists\alpha\in\mathbf{ON}\;\forall x\,(\varphi(\alpha,x)\leftrightarrow x=a)\bigr)
+$$
+を証明できる。$\varphi$ は $\mathbf{ON}$ から $\mathbf{OD}$ の上への関数を定める。$a\in\mathbf{OD}$ は \ref{set:od} により有限個の順序数（$s$, $n$, $\beta$ と、$R=\mathrm{En}(m,R(\beta),n+1)$ となる $m$）で $\mathbf{OD}$ に入るので、$\mathbf{ON}^{<\omega}$ から $\mathbf{OD}$ への全射が得られる。さらに $\mathbf{ON}$ から $\mathbf{ON}^{<\omega}$ への全単射を、選択公理なしに作ることができる。
+
+::: definition ON^{<ω} の整列順序 {#set:on-finite-sequence-order keywords="canonical well-ordering of finite sequences of ordinals" index="順序数の有限列の整列順序|じゅんじょすうのゆうげんれつのせいれつじゅんじょ"}
+$s,t\in\mathbf{ON}^{<\omega}$ について $s\lhd t$ を、次のいずれかが成り立つことと定める。
+1. $\mu(s)<\mu(t)$。
+2. $\mu(s)=\mu(t)$ かつ $\dom(s)<\dom(t)$。
+3. $\mu(s)=\mu(t)$ かつ $\dom(s)=\dom(t)$ かつ、ある $k\in\dom(s)$ で $s\restr k=t\restr k$ かつ $s(k)<t(k)$。
+:::
+
+すなわち、まず最大値で、次に長さで比べ、最大値と長さが等しければ辞書式に比べる。
+
+::: lemma ◁ は集合的な整列順序 {#set:on-finite-sequence-well-order}
+$\lhd$ は $\mathbf{ON}^{<\omega}$ 上の狭義の全順序で、整礎かつ集合的である。
+:::
+
+::: proof
+**全順序.** 非反射性と推移性は各段の比較（順序数の $<$ と辞書式順序）が非反射的・推移的であることから、場合を分けて確かめられる。比較可能性：$s\neq t$ とする。$\mu$ か長さが異なれば 1 か 2 で比較できる。両方とも等しければ、$s\neq t$ なので $s(k)\neq t(k)$ となる最小の $k$ があり、$s\restr k=t\restr k$ で $s(k)<t(k)$ か $t(k)<s(k)$。
+
+**集合的.** $s\lhd t$ なら $\mu(s)\le\mu(t)$ なので $\ran(s)\subseteq\mu(t)+1$、すなわち $s\in(\mu(t)+1)^{<\omega}$。$(\mu(t)+1)^{<\omega}$ は集合（\ref{set:finite-sequence-exists}）なので、$\{s:s\lhd t\}$ は集合である。
+
+**整礎.** $X\subseteq\mathbf{ON}^{<\omega}$ を空でない集合とする。$\mu_{0}\defeq\min\{\mu(s):s\in X\}$、$X_{1}\defeq\{s\in X:\mu(s)=\mu_{0}\}$、$l\defeq\min\{\dom(s):s\in X_{1}\}$、$X_{2}\defeq\{s\in X_{1}:\dom(s)=l\}$ とおく。$X_{2}$ の中の辞書式最小元を、$k<l$ に関する再帰で $c_{k}\defeq\min\{s(k):s\in X_{2},\ s\restr k=\langle c_{0},\dots,c_{k-1}\rangle\}$ と定めて作る（各段の集合は空でない：帰納的に、$s\restr k=\langle c_{0},\dots,c_{k-1}\rangle$ となる $s\in X_{2}$ が存在する）。$c\defeq\langle c_{0},\dots,c_{l-1}\rangle\in X_{2}$ は $X$ の $\lhd$-最小元である。$\lhd$ は全順序なので、集合について最小元をもつことから（集合的であることと合わせて）クラスの空でない部分クラスも最小元をもつ（\ref{set:wf-minimal-element}）。
+:::
+
+::: definition Enon {#set:enon keywords="Enon, enumeration of finite sequences of ordinals" index="Enon|いーのん"}
+$\gamma\in\mathbf{ON}$ について、$\mathrm{Enon}(\gamma)$ を順序 $\lhd$ に関する $\mathbf{ON}^{<\omega}$ の $\gamma$ 番目の元とする。正確には、$\langle\mathbf{ON}^{<\omega},\lhd\rangle$ の崩壊関数 $G$（\ref{set:collapse-well-order}）の逆関数を $\mathrm{Enon}$ とする。
+:::
+
+::: lemma Enon は全単射 {#set:enon-bijection}
+$\mathrm{Enon}$ は $\mathbf{ON}$ から $\mathbf{ON}^{<\omega}$ への全単射で、$\gamma<\delta\iff\mathrm{Enon}(\gamma)\lhd\mathrm{Enon}(\delta)$。
+:::
+
+::: proof
+\ref{set:on-finite-sequence-well-order} より \ref{set:collapse-well-order} が使える。$\mathbf{ON}^{<\omega}$ は真のクラス（各順序数 $\alpha$ について $\langle\alpha\rangle\in\mathbf{ON}^{<\omega}$）なので、同命題の 3 より崩壊は $\mathbf{ON}$ であり、$G$ は $\langle\mathbf{ON}^{<\omega},\lhd\rangle$ から $\langle\mathbf{ON},\in\rangle$ への同型である。$\mathrm{Enon}=G^{-1}$。
+:::
+
+::: example
+$\omega^{<\omega}$ は $\lhd$ に関する $\mathbf{ON}^{<\omega}$ の始切片で、その順序型は $\omega^{2}$ である。実際、$\mu(t)=k$ となる $t\in\omega^{<\omega}$ の全体は、長さごとに有限個（長さ $l$ なら $(k+1)^{l}$ 個以下）で、長さは $0,1,2,\dots$ と無限に続くので、順序型 $\omega$ のブロックをなす。$k=0,1,2,\dots$ のブロックが順に並ぶので全体は $\omega\cdot\omega=\omega^{2}$。一般に、非可算な基数 $\kappa$ について $\kappa^{<\omega}$ は $\mathbf{ON}^{<\omega}$ の始切片で順序型は $\kappa$ である（無限の $\alpha$ について $\lvert(\alpha+1)^{<\omega}\rvert=\lvert\alpha\rvert$ となることによる：\ref{set:kappa-finite-sequences}）。
+:::
+
+::: definition Enod {#set:enod keywords="Enod, enumeration of OD" index="Enod|いーのっど"}
+$\gamma\in\mathbf{ON}$ について $\mathrm{Enod}(\gamma)$ を次で定める。
+1. $\mathrm{Enon}(\gamma)=s^{\frown}\langle\beta,n,m\rangle$ で、$n,m\in\omega$、$s\in{}^{n}\beta$ であり、ある $a\in R(\beta)$ について
+$$
+\forall x\in R(\beta)\;\bigl(s^{\frown}\langle x\rangle\in\mathrm{En}(m,R(\beta),n+1)\leftrightarrow x=a\bigr)
+$$
+となるなら、$\mathrm{Enod}(\gamma)\defeq a$（このような $a$ は一意である）。
+2. 1 の仮定が成り立たないなら $\mathrm{Enod}(\gamma)\defeq0$。
+:::
+
+長さ 3 以上の列は、最後の三項とそれ以前の部分に一意に分解されるので、1 の $s,\beta,n,m$ は $\mathrm{Enon}(\gamma)$ から一意に定まる。
+
+::: lemma OD の枚挙 {#set:od-enumeration}
+$\mathbf{OD}=\{\mathrm{Enod}(\gamma):\gamma\in\mathbf{ON}\}$。
+:::
+
+::: proof
+**$0\in\mathbf{OD}$.** \ref{set:on-in-od} より（$0$ は順序数）。
+
+**（$\supseteq$）** 1 の場合、$R\defeq\mathrm{En}(m,R(\beta),n+1)\in\mathrm{Df}(R(\beta),n+1)$（\ref{set:df-en}）、$a\in R(\beta)$ より $\rank(a)<\beta$ で、$\beta,n,s,R$ が \ref{set:od} の条件を満たす。2 の場合は $0\in\mathbf{OD}$。
+
+**（$\subseteq$）** $a\in\mathbf{OD}$ とし、\ref{set:od} の $\beta,n,s,R$ をとる。\ref{set:df-en} より $R=\mathrm{En}(m,R(\beta),n+1)$ となる $m\in\omega$ がある。$t\defeq s^{\frown}\langle\beta,n,m\rangle\in\mathbf{ON}^{<\omega}$（$n,m\in\omega$ も順序数）で、$\gamma\defeq\mathrm{Enon}^{-1}(t)$ とおくと、定義の 1 が $a$ について成り立ち（$\rank(a)<\beta$ より $a\in R(\beta)$）、$\mathrm{Enod}(\gamma)=a$。
+:::
+
+これで約束した \ref{set:od-from-formula} の逆が得られた。$\varphi(y,x)$ を $y\in\mathbf{ON}\land x=\mathrm{Enod}(y)$ とすれば
+$$
+\forall a\in\mathbf{OD}\;\exists\alpha\;\forall x\,\bigl(\varphi(\alpha,x)\leftrightarrow x=a\bigr).
+$$
+
+\ref{set:od-from-formula} と \ref{set:od-enumeration} を使うと、$\mathbf{OD}$ がすべての順序数を含み、定義可能なあらゆる集合演算で閉じていることが示せる。
+
+::: lemma OD の閉包性 {#set:od-closure}
+1. $\mathbf{ON}\subseteq\mathbf{OD}$。
+2. $w,z\in\mathbf{OD}$ ならば $\{w,z\}\in\mathbf{OD}$。
+3. $w\in\mathbf{OD}$ ならば $\bigcup w\in\mathbf{OD}$ かつ $\mathcal{P}(w)\in\mathbf{OD}$。
+:::
+
+::: proof
+1 は \ref{set:on-in-od}。**2.** \ref{set:od-enumeration} より $w=\mathrm{Enod}(\alpha_{1})$, $z=\mathrm{Enod}(\alpha_{2})$ となる $\alpha_{1},\alpha_{2}$ をとる。$\varphi(y_{1},y_{2},x)\defeq y_{1}\in\mathbf{ON}\land y_{2}\in\mathbf{ON}\land x=\{\mathrm{Enod}(y_{1}),\mathrm{Enod}(y_{2})\}$ とすると、$\{w,z\}$ は $\varphi(\alpha_{1},\alpha_{2},x)$ を満たすただ一つの $x$ なので、\ref{set:od-from-formula} より $\{w,z\}\in\mathbf{OD}$。**3.** 同様に、$\varphi(y,x)$ をそれぞれ $y\in\mathbf{ON}\land x=\bigcup\mathrm{Enod}(y)$、$y\in\mathbf{ON}\land x=\mathcal{P}(\mathrm{Enod}(y))$ とする。
+:::
+
+$\mathbf{OD}$ は $\ZF$ のモデルであると予想したくなる（対・和・冪集合の公理は \ref{set:od-closure} で確かめられる）。しかし $\mathbf{OD}$ は推移的とは限らず、外延性の公理が問題になる。実際、$\mathbf{V}=\mathbf{OD}$ でない限り外延性は $\mathbf{OD}$ で偽になる（Kunen 第 V 章の演習 5。本サイトでは証明していない）。$\mathbf{V}=\mathbf{OD}$ は無矛盾だが、成り立ちそうにない状況である。そこで $\mathbf{OD}$ の代わりに、**遺伝的に**順序数定義可能な集合、すなわち自分自身だけでなく元、元の元、……もすべて $\mathbf{OD}$ に属する集合のクラスを使う。
+
+## HOD は ZFC のモデル {#set:sec-hod}
+
+::: definition HOD {#set:hod keywords="HOD, hereditarily ordinal definable sets" index="遺伝的に順序数定義可能|いでんてきにじゅんじょすうていぎかのう, HOD|えいちおーでぃー"}
+$\mathbf{HOD}\defeq\{x\in\mathbf{OD}:\operatorname{trcl}(x)\subseteq\mathbf{OD}\}$。$\mathbf{HOD}$ の元を**遺伝的に順序数定義可能**な集合という。
+:::
+
+::: lemma HOD の基本性質 {#set:hod-basic}
+1. $\mathbf{ON}\subseteq\mathbf{HOD}\subseteq\mathbf{OD}$ で、$\mathbf{HOD}$ は推移的である。
+2. $a\in\mathbf{OD}$ かつ $a\subseteq\mathbf{HOD}$ ならば $a\in\mathbf{HOD}$。
+3. 各順序数 $\alpha$ について $R(\alpha)\cap\mathbf{HOD}\in\mathbf{HOD}$。
+:::
+
+::: proof
+**1.** $\mathbf{HOD}\subseteq\mathbf{OD}$ は定義から。順序数 $\alpha$ は推移的なので $\operatorname{trcl}(\alpha)=\alpha\subseteq\mathbf{ON}\subseteq\mathbf{OD}$（\ref{set:transitive-closure-basic} の 4, \ref{set:on-in-od}）、よって $\alpha\in\mathbf{HOD}$。推移性：$y\in x\in\mathbf{HOD}$ なら $y\in x\subseteq\operatorname{trcl}(x)\subseteq\mathbf{OD}$ で、$\operatorname{trcl}(y)\subseteq\operatorname{trcl}(x)\subseteq\mathbf{OD}$（\ref{set:transitive-closure-basic} の 5）、よって $y\in\mathbf{HOD}$。
+
+**2.** \ref{set:transitive-closure-basic} の 6 より $\operatorname{trcl}(a)=a\cup\bigcup\{\operatorname{trcl}(y):y\in a\}$。$a\subseteq\mathbf{HOD}\subseteq\mathbf{OD}$、各 $y\in a$ は $\mathbf{HOD}$ に属するので $\operatorname{trcl}(y)\subseteq\mathbf{OD}$。よって $\operatorname{trcl}(a)\subseteq\mathbf{OD}$ で、$a\in\mathbf{OD}$ と合わせて $a\in\mathbf{HOD}$。
+
+**3.** $R(\alpha)\cap\mathbf{HOD}\subseteq\mathbf{HOD}$ なので、2 より $R(\alpha)\cap\mathbf{HOD}\in\mathbf{OD}$ を示せばよい。$\varphi(y,x)\defeq y\in\mathbf{ON}\land x=R(y)\cap\mathbf{HOD}$（$\mathbf{HOD}$ はそれを定義する論理式で書く）とすると、$R(\alpha)\cap\mathbf{HOD}$ は $\varphi(\alpha,x)$ を満たすただ一つの $x$ で、\ref{set:od-from-formula} による。
+:::
+
+::: theorem HOD は ZFC のモデル {#set:hod-model-zfc keywords="HOD is a model of ZFC, provable in ZF" index="HOD のモデル|えいちおーでぃーのもでる"}
+（$\ZF$）$\ZFC$ のすべての公理は $\mathbf{HOD}$ の中で真である。
+:::
+
+::: proof
+公理を一つずつ確かめる（各公理について $\ZF\vdash\varphi^{\mathbf{HOD}}$ を示す図式である）。$\mathbf{HOD}\neq\varnothing$（$0\in\mathbf{HOD}$）。
+
+- **外延性.** $\mathbf{HOD}$ は推移的（\ref{set:hod-basic} の 1）なので \ref{set:extensionality-in-transitive}。
+- **基礎.** 基礎の公理のもとで $\mathbf{HOD}\subseteq\mathbf{WF}$ なので \ref{set:foundation-in-wf-subclass}。
+- **分出.** \ref{set:comprehension-in-class} より、各論理式 $\psi(v,z,w_{1},\dots,w_{n})$ と $z,\vec{w}\in\mathbf{HOD}$ について $a\defeq\{v\in z:\psi^{\mathbf{HOD}}(v,z,\vec{w})\}\in\mathbf{HOD}$ を示せばよい。\ref{set:od-enumeration} より $z=\mathrm{Enod}(\alpha_{0})$, $w_{i}=\mathrm{Enod}(\alpha_{i})$ となる順序数をとる。
+$$
+\begin{aligned}
+\varphi(y_{0},\dots,y_{n},x)\defeq{}&\bigwedge_{i\le n}y_{i}\in\mathbf{ON}\land x=\{v\in\mathrm{Enod}(y_{0}):\\
+&\psi^{\mathbf{HOD}}(v,\mathrm{Enod}(y_{0}),\mathrm{Enod}(y_{1}),\dots,\mathrm{Enod}(y_{n}))\}
+\end{aligned}
+$$
+とすると $a$ は $\varphi(\alpha_{0},\dots,\alpha_{n},x)$ を満たすただ一つの $x$ なので、\ref{set:od-from-formula} より $a\in\mathbf{OD}$。$a\subseteq z\in\mathbf{HOD}$ で $\mathbf{HOD}$ は推移的なので $a\subseteq\mathbf{HOD}$、\ref{set:hod-basic} の 2 より $a\in\mathbf{HOD}$。
+- **対.** \ref{set:pairing-union-in-class} より、$x,y\in\mathbf{HOD}$ について $x,y\in W$ となる $W\in\mathbf{HOD}$ があればよい。$\alpha>\max(\rank(x),\rank(y))$ として $W\defeq R(\alpha)\cap\mathbf{HOD}$（\ref{set:hod-basic} の 3）。
+- **和.** $x\in\mathbf{HOD}$ について $\bigcup x\subseteq W\in\mathbf{HOD}$ となる $W$ があればよい。$\bigcup x$ の元は $x$ の元の元なので $\mathbf{HOD}$ に属し（推移性）、ランクは $\rank(x)$ 未満。よって $W\defeq R(\rank(x))\cap\mathbf{HOD}$ でよい。
+- **置換.** \ref{set:replacement-in-class} より、$A,\vec{w}\in\mathbf{HOD}$ で $\forall x\in A\,\exists!y\in\mathbf{HOD}\,\varphi^{\mathbf{HOD}}(x,y,A,\vec{w})$ のとき、$Y\defeq\{y\in\mathbf{HOD}:\exists x\in A\,\varphi^{\mathbf{HOD}}(x,y,A,\vec{w})\}$ を含む $W\in\mathbf{HOD}$ があればよい。$Y$ は $\mathbf{V}$ の置換公理で集合なので、$\alpha\defeq\sup\{\rank(y)+1:y\in Y\}$ とおくと $Y\subseteq R(\alpha)\cap\mathbf{HOD}\defeq W$。
+- **冪集合.** \ref{set:power-set-in-transitive} より、$x\in\mathbf{HOD}$ について $\mathcal{P}(x)\cap\mathbf{HOD}\subseteq W$ となる $W\in\mathbf{HOD}$ があればよい。$x$ の部分集合のランクは $\rank(x)$ 以下なので $W\defeq R(\rank(x)+1)\cap\mathbf{HOD}$。
+- **無限.** ここまでで $\mathbf{HOD}$ は $\ZF-\mathrm{Inf}$ の推移的なモデルで、$\omega\in\mathbf{HOD}$（\ref{set:hod-basic} の 1）なので \ref{set:infinity-in-transitive}。
+- **選択.** 各 $A\in\mathbf{HOD}$ について、$A$ を整列する $R\in\mathbf{HOD}$ があればよい（そのとき \ref{set:well-order-downward} より（$R$ は $A$ を整列する）$^{\mathbf{HOD}}$）。$A=\mathrm{Enod}(\alpha)$ とする。$A\subseteq\mathbf{HOD}\subseteq\mathbf{OD}$ なので、各 $x\in A$ について $\rho(x)\defeq\min\{\xi:\mathrm{Enod}(\xi)=x\}$ が定まり、$\rho$ は単射である。
+$$
+R\defeq\{\langle x,y\rangle\in A\times A:\rho(x)<\rho(y)\}
+$$
+は、$\rho$ で $A$ を順序数の中へ移した順序なので $A$ を整列する。$R$ は $\alpha$ から定義される（$\varphi(y,x)\defeq y\in\mathbf{ON}\land x=\{\langle u,v\rangle\in\mathrm{Enod}(y)^{2}:\rho(u)<\rho(v)\}$）ので、\ref{set:od-from-formula} より $R\in\mathbf{OD}$。また $x,y\in A\subseteq\mathbf{HOD}$ について、\ref{set:od-closure} の 2 と \ref{set:hod-basic} の 2 を繰り返し使うと $\{x\},\{x,y\},\langle x,y\rangle=\{\{x\},\{x,y\}\}\in\mathbf{HOD}$。よって $R\subseteq\mathbf{HOD}$ で、\ref{set:hod-basic} の 2 より $R\in\mathbf{HOD}$。
+:::
+
+::: hypcheck
+- 選択公理は $\mathbf{V}$ では一度も使っていない。$\mathbf{HOD}$ の中の整列順序は、$\mathrm{Enod}$ が $\mathbf{ON}$ で添字付けられていることから**定義**された。これが $\ZF$ だけで $\mathbf{HOD}$ の選択公理が示せる理由である。
+- 外延性・基礎・対・和・置換・冪集合・無限は、$\mathbf{HOD}$ の具体的な定義ではなく、「推移的」「$\mathbf{ON}$ を含む」「各 $R(\alpha)\cap\mathbf{HOD}$ を元にもつ」という一般的な性質だけから従った。$\mathbf{HOD}$ の定義に固有の性質（\ref{set:od-from-formula}）を使ったのは分出と選択だけである。
+- 置換公理の検証で $\mathbf{V}$ の置換公理を、冪集合公理の検証で $\mathbf{V}$ の冪集合公理（$R(\alpha)$ の存在）を使った。
+:::
+
+::: corollary 選択公理の相対無矛盾性 {#set:con-zf-zfc keywords="Con(ZF) implies Con(ZFC)" index="選択公理の相対無矛盾性|せんたくこうりのそうたいむむじゅんせい"}
+$\mathrm{Con}(\ZF)\to\mathrm{Con}(\ZFC)$。
+:::
+
+::: proof
+\ref{set:hod-model-zfc} と \ref{set:relative-consistency-lemma}（$T=\ZF$, $S=\ZFC$, $\mathbf{M}=\mathbf{HOD}$）。$\ZF^{-}$ から出発する場合も、\ref{set:con-foundation} と合わせて $\mathrm{Con}(\ZF^{-})\to\mathrm{Con}(\ZFC)$。
+:::
+
+## OD と HOD の非構成的な性格 {#set:sec-od-remarks}
+
+$\mathbf{OD}$ と $\mathbf{HOD}$ の定義は非常に非構成的であり、以下の事実が知られている（いずれも Kunen の本文と演習による。本サイトでは証明していない）。
+
+- ある $x\subseteq\omega$ が順序数定義可能だが、最初の強到達不能基数より小さいどの $\beta$ についても $R(\beta)$ の中で順序数から定義できない、ということが無矛盾である（Kunen 第 VIII 章の演習 113）。したがって $x\in\mathbf{OD}$ は、多くの「妥当な」述語と異なり、強到達不能な $\kappa$ についての $R(\kappa)$ に関して絶対的とは限らない。$x\in\mathbf{OD}$ を決めるには $\mathbf{V}$ のすべての集合を知る必要がある。
+- $\mathbf{HOD}$ についての興味ある問いの多くは $\ZFC$ から独立である。たとえば $\mathbf{HOD}$ が CH を満たすかどうかは $\ZFC+\mathrm{GCH}$ では決まらない（演習 VIII 114）。
+- $\mathbf{V}=\mathbf{OD}$ は $\ZFC+\mathrm{GCH}$ と無矛盾（第 VI 章）かつ独立（演習 VII E5）である。
+- $x\in\mathbf{HOD}$ なら $x\in\mathbf{OD}$ だが、\ref{set:od} は絶対的とは限らないので $(x\in\mathbf{OD})^{\mathbf{HOD}}$ とは限らない。$(\mathbf{V}=\mathbf{OD})^{\mathbf{HOD}}$ は $\ZFC+\mathrm{GCH}$ では決まらない（演習 VIII 114）。
+
+$\ZF$ の中で $\mathbf{HOD}$ が $\ZFC$ のモデルであることは示せたが、それ以上のことは $\ZF$（あるいは $\ZFC+\mathrm{GCH}$）の中では $\mathbf{HOD}$ について証明できないので、$\mathbf{HOD}$ からはこれ以上の相対無矛盾性の結果は得られない。第 VI 章では、同じく定義可能性を使うがはるかに構成的なモデル $\mathbf{L}$ を定義し、$\mathbf{L}$ で $\ZFC$ だけでなく GCH や $\lozenge^{+}$ も成り立つことを示す。
+
+## 問題 {#set:sec-od-problems}
+
+::: problem {#set:prob-od-omega-reals}
+$\mathcal{P}(\omega)\in\mathbf{OD}$、$\omega_{1}\in\mathbf{HOD}$、$\{\omega,\omega_{1}\}\in\mathbf{HOD}$ を示せ。
+:::
+
+::: solution
+$\omega\in\mathbf{ON}\subseteq\mathbf{OD}$ なので \ref{set:od-closure} の 3 より $\mathcal{P}(\omega)\in\mathbf{OD}$。$\omega_{1}$ は順序数なので \ref{set:hod-basic} の 1 より $\mathbf{HOD}$ に属する。$\{\omega,\omega_{1}\}\in\mathbf{OD}$（\ref{set:od-closure} の 2）で $\{\omega,\omega_{1}\}\subseteq\mathbf{HOD}$ なので \ref{set:hod-basic} の 2 より $\in\mathbf{HOD}$。（$\mathcal{P}(\omega)\in\mathbf{HOD}$ とは限らない：それには実数がすべて $\mathbf{OD}$ に属する必要がある。）
+:::
+
+::: problem {#set:prob-od-countable-real}
+選択公理を仮定せずに、集合 $\mathbf{OD}\cap\mathcal{P}(\omega)$ を整列する順序を一つ具体的に定義せよ。また、この方法で $\mathcal{P}(\omega)$ 全体を整列できるとは限らない理由を述べよ。
+:::
+
+::: solution
+$x\in\mathbf{OD}\cap\mathcal{P}(\omega)$ に $\rho(x)\defeq\min\{\xi:\mathrm{Enod}(\xi)=x\}$ を対応させる（\ref{set:od-enumeration} より定まる）。$\rho$ は単射なので、$x\prec y:\iff\rho(x)<\rho(y)$ はこの集合を整列する（\ref{set:hod-model-zfc} の選択公理の検証と同じ）。この順序は $\mathrm{Enod}$ という一つのクラス関数で定義されている。一方、すべての実数が $\mathbf{OD}$ に属するとは限らない（Kunen によれば $\mathbf{V}=\mathbf{OD}$ は $\ZFC$ から独立であり、実数がすべて $\mathbf{OD}$ に属さないモデルもあると一般に言われている。本サイトでは示していない）ので、$\rho$ は $\mathcal{P}(\omega)$ 全体では定義されない。
+:::
+
+::: supplement
+**前提の検討.**
+- 本ページでは選択公理を一度も使っていない。\ref{set:od-from-formula} で使った反映定理も、\ref{set:page-formalizing-definability} の $\mathrm{Df}$, $\mathrm{En}$ も選択公理を使わない。これが $\mathrm{Con}(\ZF)\to\mathrm{Con}(\ZFC)$ を与える。
+- \ref{set:od} で「$R(\beta)$ の中で定義可能」とした点が本質的である。$\beta$ を定義に使うことが許されるので、順序数をパラメータに許すことが必要になる。パラメータなしの「定義可能」では $\beta$ を定義に使えず、議論が壊れる（冒頭の逆説）。
+- $\mathbf{HOD}$ の代わりに $\mathbf{OD}$ を使うと外延性が問題になる。推移性が本質的である。
+
+**関連する結果.** Kunen は $\mathbf{OD}$ を $\ZF$ の中で定義する工夫をゲーデルによるものとし、技術的な詳細の出典として Myhill–Scott (1971) を挙げている（歴史の詳細は本サイトでは確かめていない）。$\mathrm{Con}(\ZF)\to\mathrm{Con}(\ZFC)$ の標準的な証明は第 VI 章の構成可能集合 $\mathbf{L}$ によるものである。$\mathbf{L}$ の元はすべて順序数から定義でき、$\mathbf{L}$ は推移的なので $\mathbf{L}\subseteq\mathbf{HOD}$ であることが知られている（一般にはこう言われている。第 VI 章の内容から確かめられるはずだが、本サイトではまだ示していない）。
+
+**高い視点から：名前をもつものだけの宇宙.** $\mathbf{OD}$ は「順序数という普遍的な座標を使って名指しできる集合」の全体であり、$\mathrm{Enod}$ はその名前（順序数）による一覧表である。一覧表があれば、どの集合の集まりも「一覧表で最初に現れる順」に並べられるので、選択公理が自動的に成り立つ。これは、すべての対象に番号が振られた世界では「任意に一つ選ぶ」必要がなく「番号が最小のものを選ぶ」で済む、ということである。ただし名前をもつ集合の元が名前をもつとは限らないので、宇宙として閉じた世界を得るには「元も、元の元も名前をもつ」集合に限る必要がある。これが $\mathbf{HOD}$ である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

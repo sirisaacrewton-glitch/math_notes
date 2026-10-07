@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>二階算術の言語と部分体系 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/06-second-order-arithmetic/01-language-and-subsystems.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 二階算術の言語と部分体系 {#pt:page-soa-subsystems keywords="second-order arithmetic, Z2, language L2, omega-models, arithmetical formulas, analytical hierarchy, comprehension axiom, RCA0, WKL0, ACA0, ATR0, Pi11-CA0, big five, Turing ideal, REC, ARITH"}
+
+**二階算術**は、自然数と、自然数の**集合**の二種類の対象を扱う理論である。実数・連続関数・可算な代数的構造などは自然数の集合で符号化できるので、通常の数学の多くの部分（解析学、可算代数、組合せ論）がこの言語で表せる。本ページでは、二階算術の言語と構造（\ref{pt:l2-language}）、論理式の階層（\ref{pt:l2-hierarchy}）を定め、集合の存在を主張する**内包公理**の強さに応じて、五つの部分体系 $\mathsf{RCA}_{0}$, $\mathsf{WKL}_{0}$, $\mathsf{ACA}_{0}$, $\mathsf{ATR}_{0}$, $\Pi^{1}_{1}\text{-}\mathsf{CA}_{0}$（\ref{pt:big-five}）を導入する。これらは**逆数学**（\ref{logic:page-rm-rca0}）で、定理を証明するのに必要十分な公理を測る物差しとして使われる。後半では、最も弱い $\mathsf{RCA}_{0}$ の中での基本的な議論（\ref{pt:rca0-basic}）と、標準的な自然数をもつモデル（**ω モデル**）が計算可能性の言葉で特徴づけられること（\ref{pt:omega-rca0}, \ref{pt:omega-aca0}）を示す。
+
+> 主な資料は田中一之『逆数学と 2 階算術』（数学基礎論シリーズ）の第 2 章 §2.1〜2.2 と第 3 章である。文章は写さず、記号は現代の標準（Simpson『Subsystems of Second Order Arithmetic』で使われる形）に合わせた。
+
+## 記法と定義の確認 {#pt:sec-soa-notation}
+
+::: notation
+- 一階述語論理の構文・構造・充足・完全性定理は \ref{logic:page-syntax} 以降のとおり。二階算術は、二種類の変数をもつ一階の理論として扱う（集合変数を「第二の種類の対象」を動く変数とみなす）。
+- 算術の言語、数項、有界量化子、ロビンソン算術 $\mathsf{Q}$、$\mathrm{I}\Sigma_{1}$ と $\mathsf{PRA}$ の位置づけは \ref{pt:page-peano-arithmetic}, \ref{comp:page-representability} のとおり。
+- 神託機械、チューリング還元 $\le_{\mathrm{T}}$、跳躍 $X'$、算術的階層は \ref{comp:page-turing-reducibility} のとおり。集合 $X,Y\subseteq\N$ の**結合**を $X\oplus Y\defeq\{2n:n\in X\}\cup\{2n+1:n\in Y\}$ とする。
+:::
+
+## 言語と構造 {#pt:sec-l2}
+
+::: definition 二階算術の言語と構造 {#pt:l2-language keywords="language of second-order arithmetic, L2-structure, omega-model, full model" index="二階算術の言語|にかいさんじゅつのげんご, ω モデル|おめがもでる"}
+1. **二階算術の言語** $\mathcal{L}_{2}$ は、**数変数** $i,j,k,m,n,x,y,\dots$（自然数を動く）と**集合変数** $X,Y,Z,\dots$（自然数の集合を動く）、定数 $0,1$、二項演算 $+,\cdot$、関係 $<$, $=$（数の間）と $\in$（数と集合の間）からなる。**項**は数変数と $0,1$ から $+,\cdot$ で作り、**原子論理式**は $t=s$, $t<s$, $t\in X$ の形とする。論理式は原子論理式から命題結合子、**数量化子** $\forall n,\exists n$、**集合量化子** $\forall X,\exists X$ で作る。集合の等号 $X=Y$ は $\forall n\,(n\in X\leftrightarrow n\in Y)$ の略記とする。
+2. **$\mathcal{L}_{2}$ 構造**は組 $\mathcal{M}=(M,\mathcal{S}_{M},+_{M},\cdot_{M},0_{M},1_{M},<_{M})$ で、$M$ は数の領域、$\mathcal{S}_{M}\subseteq\mathcal{P}(M)$ は集合の領域、$\in$ は本当の帰属関係と解釈する。
+3. $M=\N$ で演算が通常のものである構造を **ω モデル**といい、集合の領域 $\mathcal{S}\subseteq\mathcal{P}(\N)$ だけで指定する。$\mathcal{S}=\mathcal{P}(\N)$ のものを**完全なモデル**という。
+:::
+
+::: remark
+集合の領域を $\mathcal{P}(M)$ の部分集合に限ったことで、集合量化子は「$\mathcal{S}_{M}$ に属する集合すべて」を動く。完全性定理（\ref{logic:completeness}）は二種類の変数をもつ一階の理論についても同じ形で成り立つので、二階算術の理論 $T$ について「$T\vdash\varphi$」は「$T$ のすべての $\mathcal{L}_{2}$ 構造（集合の領域は任意）で $\varphi$ が真」と同値である。完全なモデルだけで意味論を考える「真の二階論理」では完全性定理が成り立たない。
+:::
+
+::: definition 論理式の階層 {#pt:l2-hierarchy keywords="bounded formulas, arithmetical formulas, Sigma0n, Pi0n, Sigma1n, Pi1n, analytical hierarchy" index="算術的論理式|さんじゅつてきろんりしき, 解析的階層|かいせきてきかいそう"}
+1. 原子論理式から命題結合子と有界数量化子 $\forall n<t$, $\exists n<t$（$n$ は $t$ に現れない）だけで作る論理式を**有界な論理式**、または $\Sigma^{0}_{0}$（$=\Pi^{0}_{0}$）論理式という。集合変数は自由に（パラメータとして）現れてよい。
+2. $\varphi$ が $\Pi^{0}_{n}$ のとき $\exists m_{1}\cdots\exists m_{k}\,\varphi$ を $\Sigma^{0}_{n+1}$、$\Sigma^{0}_{n}$ のとき $\forall m_{1}\cdots\forall m_{k}\,\varphi$ を $\Pi^{0}_{n+1}$ 論理式という。集合量化子を含まない論理式を**算術的**という。
+3. $\varphi$ が算術的なら $\Sigma^{1}_{0}=\Pi^{1}_{0}$ とし、$\Pi^{1}_{n}$ の $\varphi$ について $\exists X_{1}\cdots\exists X_{k}\,\varphi$ を $\Sigma^{1}_{n+1}$、$\Sigma^{1}_{n}$ の $\varphi$ について $\forall X_{1}\cdots\forall X_{k}\,\varphi$ を $\Pi^{1}_{n+1}$ という。
+
+この形に当てはまらない論理式も、論理的に同値な変形でどれかの形に直せることが多く、その場合も同じ名前で呼ぶ（例：$\Sigma^{0}_{1}$ の否定は $\Pi^{0}_{1}$ と呼ぶ）。
+:::
+
+::: remark
+上付きの $0$ は数量化子、$1$ は集合量化子の交替の数を表す。ω モデル $\mathcal{P}(\N)$ で $\Sigma^{0}_{n}$ 論理式（集合パラメータなし）で定義できる $\N$ の部分集合は、算術的階層の $\Sigma_{n}$ 集合（\ref{comp:arithmetical-hierarchy}）であり、$\Sigma^{1}_{n}$ で定義できるものは**解析的階層**の $\Sigma^{1}_{n}$ 集合である。
+:::
+
+## 内包公理と五つの体系 {#pt:sec-big-five}
+
+::: definition 基本公理・帰納法・内包公理 {#pt:l2-axioms keywords="basic axioms, induction, comprehension scheme" index="内包公理|ないほうこうり, 算術的内包公理|さんじゅつてきないほうこうり"}
+1. **基本公理**：$n+1\neq0$, $n+1=m+1\to n=m$, $n+0=n$, $n+(m+1)=(n+m)+1$, $n\cdot0=0$, $n\cdot(m+1)=n\cdot m+n$, $\neg\,n<0$, $n<m+1\leftrightarrow(n<m\vee n=m)$（すべて全称閉包をとる）。
+2. **帰納法の公理**：$\bigl(0\in X\wedge\forall n\,(n\in X\to n+1\in X)\bigr)\to\forall n\,(n\in X)$。
+3. 論理式の集合 $\Gamma$ について、**$\Gamma$ 帰納法**：$\varphi\in\Gamma$ について $\varphi(0)\wedge\forall n\,(\varphi(n)\to\varphi(n+1))\to\forall n\,\varphi(n)$。
+4. **$\Gamma$ 内包公理**（$\Gamma\text{-}\mathsf{CA}$）：$\varphi(n)\in\Gamma$（$X$ は自由に現れない）について $\exists X\,\forall n\,(n\in X\leftrightarrow\varphi(n))$。
+5. **$\Delta^{0}_{1}$ 内包公理**（$\Delta^{0}_{1}\text{-}\mathsf{CA}$）：$\Sigma^{0}_{1}$ 論理式 $\varphi(n)$ と $\Pi^{0}_{1}$ 論理式 $\psi(n)$（$X$ は自由に現れない）について
+$$
+\forall n\,(\varphi(n)\leftrightarrow\psi(n))\to\exists X\,\forall n\,(n\in X\leftrightarrow\varphi(n)).
+$$
+
+どの公理図式でも、論理式は他の数変数・集合変数を**パラメータ**として含んでよい。
+:::
+
+::: definition 木と弱ケーニッヒの補題、整列順序と算術的超限再帰 {#pt:wkl-atr-axioms keywords="binary tree, weak Konig's lemma, well-ordering, arithmetical transfinite recursion" index="弱ケーニッヒの補題|じゃくけーにっひのほだい, 算術的超限再帰|さんじゅつてきちょうげんさいき"}
+有限列は数で符号化されているとし（\ref{pt:rca0-basic} の 3）、$\{0,1\}$ の有限列全体を $2^{<\N}$、$\sigma$ の長さを $\lvert\sigma\rvert$、$\tau$ が $\sigma$ の延長であることを $\sigma\subseteq\tau$ と書く。
+1. **二分木**とは、$T\subseteq2^{<\N}$ で、$\tau\in T$ かつ $\sigma\subseteq\tau$ なら $\sigma\in T$ となるもの。$T$ の**道**とは、関数 $f\colon\N\to\{0,1\}$ で、すべての $n$ で $f\restr n\in T$ となるもの。
+2. **弱ケーニッヒの補題**（$\mathsf{WKL}$）：無限の二分木は道をもつ。
+3. 集合 $X$ を対の集合とみなした二項関係 $<_{X}$ が**整列順序**であるとは、全順序で、空でない部分集合（の集合）に最小元があること。$\mathrm{WO}(X)$ は「$X$ が整列順序である」を表す $\Pi^{1}_{1}$ 論理式（$\forall Y$（$Y\cap\mathrm{field}(X)\neq\varnothing$ なら最小元がある））とする。
+4. **算術的超限再帰**（$\mathsf{ATR}$）：算術的論理式 $\theta(n,Y)$ について、$\mathrm{WO}(X)$ なら、集合 $Y$ で、$X$ の体（$X$ に現れる数全体）の各元 $j$ について
+$$
+\begin{aligned}
+&Y_{j}=\{n:\theta(n,Y^{j})\},\\
+&Y_{j}\defeq\{n:(n,j)\in Y\},\quad Y^{j}\defeq\{(m,i)\in Y:i<_{X}j\}
+\end{aligned}
+$$
+となるものが存在する（$X$ に沿って $\theta$ を超限回反復した階層が存在する）。
+:::
+
+::: definition 五つの部分体系 {#pt:big-five keywords="RCA0, WKL0, ACA0, ATR0, Pi11-CA0, Z2, big five" index="RCA₀|あーるしーえーぜろ, WKL₀|だぶりゅけーえるぜろ, ACA₀|えーしーえーぜろ, ATR₀|えーてぃーあーるぜろ, Π¹₁-CA₀|ぱいわんわんしーえーぜろ"}
+1. $\mathsf{RCA}_{0}$（再帰的内包公理）＝ 基本公理 ＋ $\Sigma^{0}_{1}$ 帰納法 ＋ $\Delta^{0}_{1}\text{-}\mathsf{CA}$。
+2. $\mathsf{WKL}_{0}$ ＝ $\mathsf{RCA}_{0}$ ＋ $\mathsf{WKL}$。
+3. $\mathsf{ACA}_{0}$（算術的内包公理）＝ $\mathsf{RCA}_{0}$ ＋ 算術的論理式についての内包公理。
+4. $\mathsf{ATR}_{0}$ ＝ $\mathsf{ACA}_{0}$ ＋ $\mathsf{ATR}$。
+5. $\Pi^{1}_{1}\text{-}\mathsf{CA}_{0}$ ＝ $\mathsf{ACA}_{0}$ ＋ $\Pi^{1}_{1}$ 内包公理。
+6. $\mathsf{Z}_{2}$ ＝ 基本公理 ＋ すべての論理式の帰納法 ＋ すべての論理式の内包公理。
+
+添字の $0$ は、帰納法を（全論理式でなく）帰納法の公理（集合についての帰納法）と $\Sigma^{0}_{1}$ 帰納法に制限していることを表す。
+:::
+
+::: remark
+$\mathsf{ACA}_{0}$ 以上の体系では、算術的内包公理と集合についての帰納法の公理から、算術的論理式すべての帰納法が従う（論理式 $\varphi$ が定める集合をとって帰納法の公理を使う）。体系の名前と典型的な定理の対応（\ref{logic:page-rm-rca0} で扱う）は、一般に次のように言われている。$\mathsf{RCA}_{0}$：計算可能な数学（中間値の定理など）。$\mathsf{WKL}_{0}$：コンパクト性（$[0,1]$ のハイネ–ボレルの定理、連続関数の最大値）。$\mathsf{ACA}_{0}$：完備性・列のコンパクト性（ボルツァーノ–ワイエルシュトラスの定理）。$\mathsf{ATR}_{0}$：可算整列順序の比較可能性、記述集合論の一部。$\Pi^{1}_{1}\text{-}\mathsf{CA}_{0}$：カントール–ベンディクソンの定理など。
+:::
+
+## RCA₀ の基本 {#pt:sec-rca0-basic}
+
+::: proposition RCA₀ の中の基本的な議論 {#pt:rca0-basic keywords="basic facts in RCA0, Sigma00 comprehension, Pi01 induction, pairing, functions, primitive recursion" index="RCA₀ の基本性質|あーるしーえーぜろのきほんせいしつ"}
+$\mathsf{RCA}_{0}$ で次が証明できる。
+1. 有界な論理式についての内包公理（$\Sigma^{0}_{0}\text{-}\mathsf{CA}$）。
+2. $\Pi^{0}_{1}$ 帰納法。
+3. 対関数 $(m,n)\defeq\frac{(m+n)(m+n+1)}{2}+m$ と、集合の直積 $X\times Y$、関数 $f\colon X\to Y$（対の集合として）。有限列の数による符号化。
+4. $X\oplus Y$ の存在。
+5. 全域関数の全体は、合成・原始再帰・（全域性が保証された）最小化で閉じている。
+:::
+
+::: proof
+1. 有界な論理式は $\Sigma^{0}_{1}$ でも $\Pi^{0}_{1}$ でもある（空の量化子を付けたものとみなす）ので、$\Delta^{0}_{1}\text{-}\mathsf{CA}$ の特別な場合。
+
+2. $\varphi(n)$ を $\Pi^{0}_{1}$ とし、$\varphi(0)$ と $\forall n\,(\varphi(n)\to\varphi(n+1))$ を仮定する。ある $a$ で $\neg\varphi(a)$ とする。$\psi(i)\defeq\neg\varphi(a\mathbin{\dot{-}}i)$ は $\Sigma^{0}_{1}$ で（$a\mathbin{\dot{-}}i$ は有界な論理式で定義される）、$\psi(0)$ が成り立つ。$\psi(i)\to\psi(i+1)$：$i<a$ なら $a\mathbin{\dot{-}}i=(a\mathbin{\dot{-}}(i+1))+1$ なので、仮定の対偶から $\neg\varphi(a\mathbin{\dot{-}}(i+1))$。$i\ge a$ なら $a\mathbin{\dot{-}}i=a\mathbin{\dot{-}}(i+1)=0$。$\Sigma^{0}_{1}$ 帰納法で $\forall i\,\psi(i)$、とくに $\psi(a)$、すなわち $\neg\varphi(0)$ となり矛盾。
+
+3. 対関数の値と成分は有界な論理式で定義でき、全単射であることは $\Sigma^{0}_{0}$ 帰納法（$\Sigma^{0}_{1}$ 帰納法に含まれる）による通常の算術で示せる（\ref{comp:pairing-pr} と同じ計算）。$X\times Y=\{n:\exists m\le n\,\exists k\le n\,(n=(m,k)\wedge m\in X\wedge k\in Y)\}$ は 1 で存在する。有限列の符号化と、それについての基本的な性質は、$\mathsf{RCA}_{0}$ の一階の部分が $\mathrm{I}\Sigma_{1}$ を含むこと（$\Sigma^{0}_{1}$ 帰納法を集合パラメータなしで使う）から、$\mathrm{I}\Sigma_{1}$ で知られている方法（β 関数 \ref{pt:beta} による符号化と、その性質の $\Sigma_{1}$ 帰納法による証明）で得られる。
+
+4. $X\oplus Y=\{n:\exists m\le n\,((n=2m\wedge m\in X)\vee(n=2m+1\wedge m\in Y))\}$ は 1 で存在する。
+
+5. 関数 $f$ のグラフ（対の集合）が存在し、$\forall\vec{x}\,\exists!y\,((\vec{x},y)\in f)$ のとき $f$ を全域関数という。合成：$h(\vec{x})=y\iff\exists\vec{z}\,(\bigwedge_{j}g_{j}(\vec{x})=z_{j}\wedge f(\vec{z})=y)\iff\forall\vec{z}\,(\bigwedge_{j}g_{j}(\vec{x})=z_{j}\to f(\vec{z})=y)$ で、$\Sigma^{0}_{1}$ と $\Pi^{0}_{1}$ の両方の形をもつので $\Delta^{0}_{1}\text{-}\mathsf{CA}$ でグラフが存在する（全域性は明らか）。原始再帰：3 の有限列を使い、「長さ $y+1$ の列 $\sigma$ で $\sigma(0)=g(\vec{x})$, $\sigma(i+1)=h(\vec{x},i,\sigma(i))$（$i<y$）」の存在で $f(\vec{x},y)=z$ を $\Sigma^{0}_{1}$ に、そのような列すべてで $\sigma(y)=z$ として $\Pi^{0}_{1}$ に書き、$\Delta^{0}_{1}\text{-}\mathsf{CA}$ を使う。両者が同値であることと、$f$ が全域的であること（そのような列が各 $y$ に存在すること）は、$y$ に関する $\Sigma^{0}_{1}$ 帰納法による（列を一つ延ばす）。最小化：$f(\vec{x})=\mu y\,[g(\vec{x},y)=0]$ で、$\forall\vec{x}\,\exists y\,g(\vec{x},y)=0$ のとき、$f(\vec{x})=y\iff g(\vec{x},y)=0\wedge\forall z<y\,g(\vec{x},z)\neq0$ は有界な論理式（$g$ のグラフをパラメータに）で、1 で存在する。最小の $y$ の存在は、$\Pi^{0}_{1}$ 帰納法（2）を使った最小元の原理による。
+:::
+
+::: remark
+5 の「全域性が保証された」最小化について：$\mathsf{RCA}_{0}$ で全域性が証明できる関数（$\forall\vec{x}\,\exists y$ が $\mathsf{RCA}_{0}$ の定理となるもの）は、ちょうど原始再帰関数であることが知られている（\ref{pt:weak-arithmetics} の $\mathrm{I}\Sigma_{1}$ についての結果と、$\mathsf{RCA}_{0}$ が $\mathrm{I}\Sigma_{1}$ の保存拡大であることによる）。したがって、アッカーマン関数（\ref{comp:ackermann}）のグラフの存在は $\mathsf{RCA}_{0}$ で示せても、それが全域的であることは示せない。
+:::
+
+## ω モデル {#pt:sec-omega-models}
+
+::: theorem RCA₀ の ω モデル {#pt:omega-rca0 keywords="omega-models of RCA0 are Turing ideals, REC" index="チューリングイデアル|ちゅーりんぐいであある, REC|れっく"}
+$\mathcal{S}\subseteq\mathcal{P}(\N)$ を空でないとする。ω モデル $\mathcal{S}$ が $\mathsf{RCA}_{0}$ のモデルであることと、$\mathcal{S}$ が**チューリングイデアル**であること——(i) $X,Y\in\mathcal{S}$ なら $X\oplus Y\in\mathcal{S}$、(ii) $X\in\mathcal{S}$ かつ $Z\le_{\mathrm{T}}X$ なら $Z\in\mathcal{S}$——は同値である。とくに、計算可能な集合全体 $\mathrm{REC}$ は $\mathsf{RCA}_{0}$ の最小の ω モデルである。
+:::
+
+::: proof
+ω モデルでは数の領域が $\N$ なので、基本公理と、すべての論理式の帰納法（とくに $\Sigma^{0}_{1}$ 帰納法）が成り立つ。よって $\Delta^{0}_{1}\text{-}\mathsf{CA}$ だけを考えればよい。次の事実を使う（\ref{comp:sigma1-recognizable} を神託付きにしたもので、同じ証明が通る）：集合パラメータ $X_{1},\dots,X_{k}$ をもつ $\Sigma^{0}_{1}$ 論理式で $\N$ において定義できる関係は、ちょうど $X_{1}\oplus\cdots\oplus X_{k}$ を神託とする半決定可能な関係であり、したがって $\Sigma^{0}_{1}$ と $\Pi^{0}_{1}$ の両方で定義できる関係は、ちょうど $X_{1}\oplus\cdots\oplus X_{k}$ から計算可能な関係である。
+
+($\Leftarrow$) $\Delta^{0}_{1}\text{-}\mathsf{CA}$ の仮定（パラメータ $X_{i}\in\mathcal{S}$）が成り立つなら、定義される集合 $Z$ は $X_{1}\oplus\cdots\oplus X_{k}\in\mathcal{S}$（(i)）から計算可能なので、(ii) で $Z\in\mathcal{S}$。
+($\Rightarrow$) (i) は \ref{pt:rca0-basic} の 4 を $\mathcal{S}$ で解釈したもの。(ii)：$Z\le_{\mathrm{T}}X$ なら $Z$ は $X$ をパラメータとする $\Sigma^{0}_{1}$ と $\Pi^{0}_{1}$ の両方の論理式で定義できるので、$\Delta^{0}_{1}\text{-}\mathsf{CA}$ から $Z\in\mathcal{S}$。
+最後の主張：$\mathrm{REC}$ は計算可能な集合の結合と、それから計算可能な集合で閉じている。空でないチューリングイデアルは $\varnothing$ を（$X\in\mathcal{S}$ から計算可能なので）含み、したがって $\varnothing$ から計算可能な集合、すなわち $\mathrm{REC}$ を含む。
+:::
+
+::: theorem ACA₀ の ω モデル {#pt:omega-aca0 keywords="omega-models of ACA0 are jump ideals, ARITH" index="ARITH|ありす"}
+空でない $\mathcal{S}\subseteq\mathcal{P}(\N)$ について、ω モデル $\mathcal{S}$ が $\mathsf{ACA}_{0}$ のモデルであることと、$\mathcal{S}$ がチューリングイデアルで跳躍について閉じている（$X\in\mathcal{S}$ なら $X'\in\mathcal{S}$）ことは同値である。とくに、算術的な集合（ある $n$ で $\emptyset^{(n)}$ から計算可能な集合）全体 $\mathrm{ARITH}$ は $\mathsf{ACA}_{0}$ の最小の ω モデルである。
+:::
+
+::: proof
+($\Rightarrow$) $\mathsf{ACA}_{0}\supseteq\mathsf{RCA}_{0}$ なので \ref{pt:omega-rca0} からチューリングイデアル。$X'=\{e:\varphi^{X}_{e}(e)\downarrow\}$ は $X$ をパラメータとする $\Sigma^{0}_{1}$ 論理式で定義されるので、算術的内包公理で $X'\in\mathcal{S}$。
+($\Leftarrow$) 算術的論理式（パラメータ $X_{1},\dots,X_{k}\in\mathcal{S}$）で定義される集合は、$X\defeq X_{1}\oplus\cdots\oplus X_{k}$ について、ある $n$ で $X^{(n)}$ から計算可能である（算術的階層の相対化：\ref{comp:hierarchy-theorem} の神託付きの形）。$X\in\mathcal{S}$、跳躍で閉じているので $X^{(n)}\in\mathcal{S}$、チューリングイデアルなのでその集合も $\mathcal{S}$ に属する。
+最後の主張：$\mathrm{ARITH}$ はチューリングイデアルで跳躍で閉じている。逆にそのような $\mathcal{S}$ は $\varnothing$ と、その反復した跳躍 $\emptyset^{(n)}$、それから計算可能な集合をすべて含む。
+:::
+
+::: corollary 体系の包含と分離 {#pt:big-five-inclusions keywords="strictness of RCA0 < ACA0" index="部分体系の包含|ぶぶんたいけいのほうがん"}
+$\mathsf{RCA}_{0}\subseteq\mathsf{WKL}_{0}\subseteq\mathsf{ACA}_{0}\subseteq\mathsf{ATR}_{0}$, $\mathsf{ACA}_{0}\subseteq\Pi^{1}_{1}\text{-}\mathsf{CA}_{0}$ で、$\mathsf{RCA}_{0}\subsetneq\mathsf{ACA}_{0}$。
+:::
+
+::: proof
+$\mathsf{RCA}_{0}\subseteq\mathsf{WKL}_{0}$, $\mathsf{ACA}_{0}\subseteq\mathsf{ATR}_{0}$, $\mathsf{ACA}_{0}\subseteq\Pi^{1}_{1}\text{-}\mathsf{CA}_{0}$ は定義から。
+
+**$\mathsf{ACA}_{0}\vdash\mathsf{WKL}$.** $T$ を無限の二分木とする。$T$ の**延長可能な**節点の集合 $E\defeq\{\sigma\in T:\forall k\,\exists\tau\in T\,(\sigma\subseteq\tau\wedge\lvert\tau\rvert=k)\}$ は算術的に定義されるので存在する。$T$ が無限なので空列 $\in E$（長さ $k$ の節点は有限個なので、$T$ が無限ならすべての長さに節点がある）。$\sigma\in E$ なら $\sigma0\in E$ または $\sigma1\in E$：そうでなければ、ある $k_{0},k_{1}$ で $\sigma0,\sigma1$ を延長する長さ $k_{0},k_{1}$ の節点がなく、長さ $\max(k_{0},k_{1})+\lvert\sigma\rvert+1$ の $\sigma$ の延長がなくなり矛盾。そこで「最も左の延長可能な道」
+$$
+\begin{aligned}
+f(n)=b\iff\exists\sigma\,\bigl(&\lvert\sigma\rvert=n+1\wedge\sigma(n)=b\\
+&\wedge\forall i\le n\,(\sigma\restr i+1\in E\wedge(\sigma(i)=1\to(\sigma\restr i)0\notin E))\bigr)
+\end{aligned}
+$$
+は算術的に定義される。$n$ に関する（算術的論理式の）帰納法で、そのような $\sigma$ が各 $n$ にちょうど一つあり、$f\restr n\in E\subseteq T$ となる。
+
+**$\mathsf{RCA}_{0}\subsetneq\mathsf{ACA}_{0}$.** $\mathrm{REC}$ は $\mathsf{RCA}_{0}$ の ω モデルだが（\ref{pt:omega-rca0}）、$\varnothing'=K$ は計算可能でないので跳躍で閉じておらず、$\mathsf{ACA}_{0}$ のモデルでない（\ref{pt:omega-aca0}）。
+:::
+
+::: remark
+他の包含も真の包含であることが知られている：$\mathsf{RCA}_{0}\subsetneq\mathsf{WKL}_{0}$（$\mathrm{REC}$ では $\mathsf{WKL}$ が成り立たない。計算可能な道をもたない計算可能な無限二分木がある、クリーネ）、$\mathsf{WKL}_{0}\subsetneq\mathsf{ACA}_{0}$（低基底定理による $\mathsf{WKL}_{0}$ の ω モデルで $\varnothing'$ を含まないものがある、ヨックシュ–ソーア）、$\mathsf{ACA}_{0}\subsetneq\mathsf{ATR}_{0}$、そして $\mathsf{ATR}_{0}\subsetneq\Pi^{1}_{1}\text{-}\mathsf{CA}_{0}$（包含 $\mathsf{ATR}_{0}\subseteq\Pi^{1}_{1}\text{-}\mathsf{CA}_{0}$ も自明ではない）。これらは逆数学の系列と、次のページ以降で扱う予定である。
+:::
+
+::: hypcheck
+- **$\Delta^{0}_{1}\text{-}\mathsf{CA}$ の仮定**：$\forall n\,(\varphi\leftrightarrow\psi)$ が成り立つ範囲でしか集合を作らないので、ω モデルでは「相対的に計算可能な集合」に対応した（\ref{pt:omega-rca0}）。$\Sigma^{0}_{1}$ 内包公理にすると $\mathsf{ACA}_{0}$ と同値になることが知られている。
+- **$\Sigma^{0}_{1}$ 帰納法**：\ref{pt:rca0-basic} の 2・3・5 で使った。帰納法の公理（集合についてのもの）だけからは、$\Sigma^{0}_{1}$ 論理式の帰納法は（その論理式が集合を定めるとは限らないので）出てこない。
+- **ω モデルの数の領域が $\N$ であること**：\ref{pt:omega-rca0} で帰納法がすべて成り立つこと、$\Sigma^{0}_{1}$ 論理式の意味が本当の計算可能性と一致することに使った。超準的な数をもつモデルでは、この対応は成り立たない。
+- **算術的帰納法**：$\mathsf{ACA}_{0}\vdash\mathsf{WKL}$ の最後で、算術的論理式の帰納法を使った（\ref{pt:big-five} の後の注意）。
+:::
+
+## 問題 {#pt:sec-soa-problems}
+
+::: problem {#pt:prob-aca0-jump}
+$\mathsf{ACA}_{0}$ で「任意の $X$ について跳躍 $X'$ が存在する」ことを示し、逆に $\mathsf{RCA}_{0}$ に「任意の $X$ について $X'$ が存在する」を加えた体系で算術的内包公理が証明できることを、$\Sigma^{0}_{1}$ 論理式の場合について示せ。
+:::
+
+::: solution
+前半は \ref{pt:omega-aca0} の証明と同じ：$X'$ は $X$ をパラメータとする $\Sigma^{0}_{1}$ 論理式（万能な $\Sigma^{0}_{1}$ 論理式）で定義される。後半：$\Sigma^{0}_{1}$ 論理式 $\exists m\,\theta(n,m,X)$（$\theta$ は有界）について、万能性から、ある $e$（$n$ に依存し、原始再帰的に求まる）で $\exists m\,\theta(n,m,X)\iff e(n)\in X'$ となる（smn 定理 \ref{comp:smn} の神託付きの形を、$\mathsf{RCA}_{0}$ で形式化したもの）。すると $\{n:\exists m\,\theta\}=\{n:e(n)\in X'\}$ は $X'$ をパラメータとする有界な論理式で定義され、\ref{pt:rca0-basic} の 1 で存在する。（形式化の細部、とくに $\mathsf{RCA}_{0}$ の中での万能性の証明は省略した。）
+:::
+
+::: problem {#pt:prob-rec-not-aca}
+$\mathrm{REC}$ が $\mathsf{ACA}_{0}$ のモデルでないことを、\ref{pt:omega-aca0} を使わずに、算術的内包公理の具体的な例で示せ。
+:::
+
+::: solution
+停止集合 $K=\{e:\exists t\,T_{1}(e,e,t)\}$ は、パラメータのない $\Sigma^{0}_{1}$ 論理式（クリーネの $T$ 述語を表現する論理式 \ref{comp:representability} を使う）で定義される。算術的内包公理はその集合の存在を要求するが、$K$ は計算可能でない（\ref{comp:halting-L}）ので $\mathrm{REC}$ に属さない。$\mathrm{REC}$ で論理式を解釈すると数の領域が $\N$ なので、論理式は本当に $K$ を定義し、$\mathrm{REC}$ にはその集合がない。
+:::
+
+::: problem {#pt:prob-pi01-induction-needed}
+$\mathsf{RCA}_{0}$ で、「$X$ が有界（$\exists k\,\forall n\in X\,n<k$）で空でないなら、$X$ は最大元をもつ」ことを示せ。
+:::
+
+::: solution
+$\varphi(m)\defeq\exists n\in X\,(m\le n)$ は $\Sigma^{0}_{1}$（実際は $n<k$ で有界にできる）で、$X\neq\varnothing$ から $\varphi(0)$、$\varphi(k)$ は偽。$\varphi(m)\wedge\neg\varphi(m+1)$ となる $m$ があれば、それが最大元である（$m\le n\in X$ かつ $m+1\le n$ となる $n\in X$ はないので $n=m\in X$、他の元は $m$ 以下）。そのような $m$ がなければ $\forall m\,(\varphi(m)\to\varphi(m+1))$ で、$\Sigma^{0}_{1}$ 帰納法から $\varphi(k)$ となり矛盾。
+:::
+
+::: supplement
+**前提の検討.**
+- 本サイトの言語は $<$ を基本記号にもつ形にしたが、田中の本と同様に $<$ を $\exists k\,(k\neq0\wedge n+k=m)$ で定義する形でも、体系の強さは変わらない。
+- $\mathsf{RCA}_{0}$ の $\Sigma^{0}_{1}$ 帰納法を集合についての帰納法の公理だけに弱めた体系 $\mathsf{RCA}^{\ast}_{0}$（指数関数の全域性を加える）なども研究されていることが知られている。
+
+**関連する結果（本サイトでは示していない、または次のページ以降で扱う予定のもの）.**
+- *保存性.* $\mathsf{ACA}_{0}$ は一階の算術の文について $\PA$ の保存拡大であり、$\mathsf{RCA}_{0}$ と $\mathsf{WKL}_{0}$ は $\mathrm{I}\Sigma_{1}$ の、したがって $\Pi^{0}_{2}$ 文について $\mathsf{PRA}$ の保存拡大である（ハーリントン、フリードマン）。
+- *証明論的順序数.* $\mathsf{RCA}_{0}$, $\mathsf{WKL}_{0}$ は $\omega^{\omega}$、$\mathsf{ACA}_{0}$ は $\varepsilon_{0}$、$\mathsf{ATR}_{0}$ は $\Gamma_{0}$ を証明論的順序数にもつと言われている（\ref{pt:page-epsilon0}、予定）。
+
+**高い視点から：集合の宇宙を細かく刻む.** 集合論 $\mathsf{ZFC}$ が「すべての集合」を一度に与えるのに対し、二階算術の部分体系は「どの集合が存在すると認めるか」を段階的に増やす。$\mathsf{RCA}_{0}$ は「計算できる集合」、$\mathsf{ACA}_{0}$ は「算術的に定義できる集合」（停止問題を何度でも解ける神託を使える世界）、$\Pi^{1}_{1}\text{-}\mathsf{CA}_{0}$ は「整列順序かどうかを判定できる世界」に当たる。ω モデルの特徴づけ（\ref{pt:omega-rca0}, \ref{pt:omega-aca0}）は、この段階がそのまま計算可能性の階層（チューリング還元、跳躍）と対応していることを示している。比喩で言えば、$\mathsf{RCA}_{0}$ は「手で計算できる道具だけを持った数学者」、$\mathsf{ACA}_{0}$ は「無限回の問い合わせに答えてくれる神託を持った数学者」で、逆数学は、ある定理を証明するのにどの道具が本当に必要だったかを測る。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

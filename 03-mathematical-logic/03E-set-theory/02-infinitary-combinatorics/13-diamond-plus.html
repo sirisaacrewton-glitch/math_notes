@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>◇⁺・クレパ木・◇⁻ | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/13-diamond-plus.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ◇⁺・クレパ木・◇⁻ {#set:page-diamond-plus keywords="diamond plus, diamond minus, Kurepa tree from diamond plus, Kurepa family"}
+
+前ページでは ◇（\ref{set:diamond}）を使ってススリン木を構成した。本ページでは同じ考え方でクレパ木（\ref{set:kurepa-tree}）を構成する。クレパ木は $\omega_{2}$ 本以上の道をもつ $\omega_{1}$-木であり、その存在（クレパ仮説 KH）は（到達不能基数の無矛盾性を仮定すると）◇ だけからは導けないことが知られている。そこで ◇ を強めた原理 **◇⁺** を導入する。◇⁺ は各段階で 1 つではなく**可算個**の予想を許すかわりに、予想の的中を「定常集合上」ではなく「閉非有界集合上」で要求し、しかもその閉非有界集合自身も予想に含めることを要求する。◇⁺ から、始切片のトレースが可算しかない $\omega_{1}$ の部分集合の大きな族（クレパ族, \ref{set:kurepa-family}）が直接構成でき、KH が従う（\ref{set:diamond-plus-kurepa}）。
+
+後半では、◇ を「可算個の予想を定常集合上で的中させる」形に弱めた **◇⁻** を考え、それが実は ◇ と同値であることを示す（\ref{set:diamond-minus-equiv}）。その結果として ◇⁺ は ◇ を導く。
+
+## 記法と定義の確認 {#set:sec-diamond-plus-notation}
+
+::: notation
+- ◇ と ◇ 列は \ref{set:diamond} の意味。◇ は CH を導く（\ref{set:diamond-ch}）。
+- 閉集合・閉非有界集合（\ref{set:club}）、定常集合（\ref{set:stationary}）は $\omega_{1}$ 上で用いる。閉非有界集合は定常で、定常集合と閉非有界集合の共通部分は定常、可算個の非定常集合の和は非定常である（\ref{set:stationary-basic}）。可算個の有限項演算で閉じた順序数の全体は閉非有界（\ref{set:closure-club}）。$C\subseteq\omega_{1}$ が閉であることは、空でない $Y\subseteq C$ で $\sup Y<\omega_{1}$ となるものについてつねに $\sup Y\in C$ となることと同値（\ref{set:closed-sup}）。
+- $X\subseteq\omega_{1}$ が可算であることと有界であることは同値である（\ref{set:regular-bounded}, \ref{set:successor-regular}）。
+- 木・レベル・$\omega_{1}$-木は \ref{set:page-trees} の意味。$\kappa$-木の**道**とはすべてのレベルと交わる鎖のこと（\ref{set:tree-path}）、**$\omega_{1}$-クレパ木**とは $\omega_{2}$ 本以上の道をもつ $\omega_{1}$-木のこと（\ref{set:kurepa-tree}）。
+- 集合族 $\mathcal{F}$ と集合 $X$ について $\mathcal{F}_{X}=\{A\cap X\mid A\in\mathcal{F}\}$（トレース）。$\mathcal{F}\subseteq\mathcal{P}(\omega_{1})$ が **$\omega_{1}$-クレパ族**であるとは、$\lvert\mathcal{F}\rvert\ge\omega_{2}$ かつすべての $\alpha<\omega_{1}$ で $\mathcal{F}_{\alpha}$ が可算であること（\ref{set:kurepa-family}）。クレパ族が存在することとクレパ木が存在することは同値（\ref{set:kurepa-equiv}）。
+- $\omega_{1}$ 上の概素族・極大概素族は \ref{set:almost-disjoint} の意味（元はすべて濃度 $\omega_{1}$、相異なる 2 元の共通部分は可算）。$2^{<\kappa}=\kappa$ なら $\kappa$ 上に濃度 $2^{\kappa}$ の概素族がある（\ref{set:ad-family-large}）。
+- 本ページの結果はすべて ZFC で示す（◇⁺ などの仮定は各主張に明記する）。
+:::
+
+## ◇⁺ {#set:sec-diamond-plus-def}
+
+::: definition ◇⁺ {#set:diamond-plus keywords="diamond plus, diamond-plus sequence" index="ダイヤモンドプラス|だいやもんどぷらす, ◇⁺|だいやもんどぷらす, ◇⁺列|だいやもんどぷらすれつ"}
+**◇⁺** とは、次の主張である：集合の列 $\langle\mathcal{A}_{\alpha}\mid\alpha<\omega_{1}\rangle$ で、各 $\mathcal{A}_{\alpha}\subseteq\mathcal{P}(\alpha)$ は可算であり、任意の $A\subseteq\omega_{1}$ について、ある閉非有界集合 $C\subseteq\omega_{1}$ が存在して
+$$
+\forall\alpha\in C\ \bigl(A\cap\alpha\in\mathcal{A}_{\alpha}\ \text{かつ}\ C\cap\alpha\in\mathcal{A}_{\alpha}\bigr)
+\label{set:eq-diamond-plus}
+$$
+となるものが存在する。この条件を満たす列を **◇⁺ 列**という。
+:::
+
+::: intuition
+◇ では各段階の予想は 1 つで、的中は定常集合上でしか保証されなかった。◇⁺ では各段階で可算個の「候補」を許し、そのかわりに的中を**閉非有界集合上**、すなわち「ほとんどすべての段階」で要求する。さらに、的中する段階の集合 $C$ の始切片 $C\cap\alpha$ も候補に入っていることを要求する。これにより、段階 $\alpha$ で「$A$ のここまでの姿」だけでなく「$A$ がここまでどの段階で捕らえられてきたか」まで候補の中から読み取れる。この 2 つ目の条件が、クレパ族の構成でトレースを可算に抑える鍵になる。
+:::
+
+::: supplement
+**予想を 1 つにすると矛盾する.** ◇ の定義で「定常」を「閉非有界集合を含む」に置き換えた主張（**◇!**：$A_{\alpha}\subseteq\alpha$ で、任意の $A\subseteq\omega_{1}$ について $\{\alpha\mid A\cap\alpha=A_{\alpha}\}$ が閉非有界集合を含む）は偽である。実際、$A\ne B$ とし $\delta=\min((A\setminus B)\cup(B\setminus A))$ とおくと、$\alpha>\delta$ では $A\cap\alpha\ne B\cap\alpha$ なので、$\{\alpha\mid A\cap\alpha=A_{\alpha}\}\cap\{\alpha\mid B\cap\alpha=A_{\alpha}\}\subseteq\delta+1$ は有界である。一方、両者がそれぞれ閉非有界集合 $C_{A},C_{B}$ を含むなら、$C_{A}\cap C_{B}$ は閉非有界（\ref{set:club-filter-complete}）で、特に非有界であり、矛盾する。◇⁺ はこの不可能な原理を、各段階の予想を可算個に増やすことで無矛盾なものに弱めたものである。
+
+**無矛盾性.** ◇⁺ は $\mathbf{V}=\mathbf{L}$ から従う（Kunen, *Set Theory* (1980), 第 VI 章 §5）。したがって $\ZFC$ が無矛盾なら $\ZFC+\Diamond^{+}$ も無矛盾である。一方、到達不能基数の存在が無矛盾なら $\mathrm{GCH}+\Diamond+\lnot\mathrm{KH}$ も無矛盾であるとされ（到達不能基数を $\omega_{2}$ に潰すレヴィ崩壊による。本サイトでは出典未確認）、\ref{set:diamond-plus-kurepa} と合わせると、◇ は ◇⁺ を導かない。$\lnot\mathrm{KH}$ の無矛盾性には到達不能基数が必要である（\ref{set:kurepa-trivial} の後の補足）。
+:::
+
+::: lemma ◇⁺ は CH を導く {#set:diamond-plus-ch keywords="diamond plus implies CH" index="◇⁺とCH|だいやもんどぷらすとしーえいち"}
+◇⁺ ならば CH である。
+:::
+
+::: proof
+$\langle\mathcal{A}_{\alpha}\mid\alpha<\omega_{1}\rangle$ を ◇⁺ 列とする。
+
+**Step 1.** $A\subseteq\omega$ をとり、\eqref{set:eq-diamond-plus} を満たす閉非有界集合 $C$ をとる。$C$ は非有界なので $\omega\le\alpha$ となる $\alpha\in C$ があり、$A=A\cap\alpha\in\mathcal{A}_{\alpha}$。よって $\mathcal{P}(\omega)\subseteq\bigcup_{\alpha<\omega_{1}}\mathcal{A}_{\alpha}$。
+
+**Step 2.** 右辺は $\omega_{1}$ 個の可算集合の和なので、\ref{set:union-bound}（AC）より濃度 $\le\aleph_{1}$。よって $2^{\aleph_{0}}\le\aleph_{1}$ であり、カントールの定理（\ref{set:cantor-strict}）と合わせて $2^{\aleph_{0}}=\aleph_{1}$（\ref{set:diamond-ch} の Step 3 と同じ）。
+
+::: hypcheck
+- **◇⁺**：Step 1 で、$A\subseteq\omega$ がある $\mathcal{A}_{\alpha}$ に現れることに使った。条件 \eqref{set:eq-diamond-plus} の後半（$C\cap\alpha\in\mathcal{A}_{\alpha}$）は使っていない。
+- **選択公理**：Step 2 の \ref{set:union-bound}。各段階の候補が 1 つでない分だけ、\ref{set:diamond-ch} と違って和の濃度評価に選択公理が要る。
+:::
+:::
+
+## ◇⁺ とクレパ族 {#set:sec-diamond-plus-kurepa}
+
+クレパ族の構成に使う補助的な記法を導入する。
+
+::: definition 閉集合による区切りと代表点 {#set:diamond-plus-representatives keywords="representatives X(A,C) in the diamond plus construction"}
+$C\subseteq\omega_{1}$ と $\xi<\omega_{1}$ に対し
+$$
+s(C,\xi)=\sup\bigl((C\cup\{0\})\cap(\xi+1)\bigr)
+$$
+とおく。さらに $A\subseteq\omega_{1}$ に対し
+$$
+X(A,C)=\bigl\{\xi\in A\ \big\vert\ \text{$s(C,\xi)\le\eta<\xi$ となる $\eta\in A$ は存在しない}\bigr\}
+$$
+とおく。
+:::
+
+::: intuition
+閉非有界集合 $C$ の点で $\omega_{1}$ を区間 $[\gamma,\gamma')$（$\gamma,\gamma'$ は $C\cup\{0\}$ の隣り合う点）に区切ると、$s(C,\xi)$ は $\xi$ を含む区間の左端である（次の補題）。$X(A,C)$ は、各区間から $A$ の最初の元を 1 つずつ代表として取り出した集合である。$A$ が非可算なら区間は非可算個あり、代表も非可算個とれる。一方、$X(A,C)$ の始切片 $X(A,C)\cap\beta$ は、「$\beta$ を含む区間の左端 $\gamma$ までの部分」と「その区間の代表（$1$ 点以下）」に分かれ、前者は $A\cap\gamma$ と $C\cap\gamma$ だけで決まる。◇⁺ はこの 2 つを段階 $\gamma$ の可算個の候補の中に入れてくれる。
+:::
+
+::: lemma 区切りと代表点の性質 {#set:diamond-plus-representatives-basic keywords="properties of s(C,ξ) and X(A,C)"}
+$C\subseteq\omega_{1}$ を閉集合とし、$A\subseteq\omega_{1}$ とする。
+1. 各 $\xi<\omega_{1}$ について $s(C,\xi)$ は、$C\cup\{0\}$ の元で $\xi$ 以下のもののうち最大のものである。特に $s(C,\xi)\le\xi$ かつ $s(C,\xi)\in C\cup\{0\}$。
+2. $\xi\in X(A,C)$ であることと、$\xi=\min\bigl(A\setminus s(C,\xi)\bigr)$ であることは同値である。特に $X(A,C)\subseteq A$。
+3. $C$ が閉非有界で $\lvert A\rvert=\omega_{1}$ ならば、$\lvert X(A,C)\rvert=\omega_{1}$。
+:::
+
+::: proof
+**(1)** $Y=(C\cup\{0\})\cap(\xi+1)$ は $0$ を含む空でない順序数の集合で、すべての元は $\le\xi$ なので $s(C,\xi)=\sup Y\le\xi$。$Y$ が最大元をもてば、それが $\sup Y$ である。$Y$ が最大元をもたなければ $Y\setminus\{0\}=C\cap(\xi+1)$ も最大元をもたない空でない集合で、$\sup(C\cap(\xi+1))=\sup Y\le\xi<\omega_{1}$ なので、$C$ の閉性（\ref{set:closed-sup}）より $\sup Y\in C$。さらに $\sup Y\le\xi$ なので $\sup Y\in Y$ となり、$Y$ が最大元をもたないことに反する。よって $Y$ はつねに最大元 $s(C,\xi)$ をもつ。
+
+**(2)** $\sigma=s(C,\xi)$ とおく。(1) より $\sigma\le\xi$。$\xi\in X(A,C)$ は「$\xi\in A$ かつ $[\sigma,\xi)\cap A=\varnothing$」を意味し、$\sigma\le\xi$ なのでこれは「$\xi$ は $A\setminus\sigma$ の元で、それより小さい $A\setminus\sigma$ の元がない」、すなわち $\xi=\min(A\setminus\sigma)$ と同値である。
+
+**(3)** $X(A,C)$ が $\omega_{1}$ で非有界であることを示せばよい（非有界な部分集合は非可算）。$\beta<\omega_{1}$ を任意にとる。$C$ は非有界なので $\beta\le\gamma$ となる $\gamma\in C$ があり、$A$ は非可算なので非有界で、$\xi=\min(A\setminus\gamma)$ が存在する。$\sigma=s(C,\xi)$ とおくと、$\gamma\in C$, $\gamma\le\xi$ なので (1) より $\gamma\le\sigma\le\xi$。$\xi'=\min(A\setminus\sigma)$ とおくと、$\xi\in A\setminus\sigma$ より $\xi'\le\xi$、また $\xi'\ge\sigma\ge\gamma$ なので $\xi'\in A\setminus\gamma$ で $\xi\le\xi'$。よって $\xi=\min(A\setminus s(C,\xi))$ であり、(2) より $\xi\in X(A,C)$。$\xi\ge\gamma\ge\beta$ なので、$X(A,C)$ は非有界である。
+
+::: hypcheck
+- **$C$ が閉であること**：(1) で $\sup Y\in C$ を導くのに使った。$C$ が閉でなければ $s(C,\xi)$ は $C\cup\{0\}$ に入るとは限らない。
+- **$C$ の非有界性と $\lvert A\rvert=\omega_{1}$**：(3) で使った。
+- (1)(2) は ZF で成り立つ。(3) の「非有界なら非可算」には $\omega_{1}$ の正則性（AC）を使った。
+:::
+:::
+
+::: theorem ◇⁺ のもとでのクレパ族の構成 {#set:diamond-plus-family keywords="diamond plus gives a Kurepa family capturing all uncountable sets" index="◇⁺とクレパ族|だいやもんどぷらすとくれぱぞく"}
+◇⁺ ならば、族 $\mathcal{K}\subseteq\mathcal{P}(\omega_{1})$ で次の 2 条件を満たすものが存在する。
+1. すべての $\beta<\omega_{1}$ について $\mathcal{K}_{\beta}=\{X\cap\beta\mid X\in\mathcal{K}\}$ は可算。
+2. 任意の $A\subseteq\omega_{1}$ について、$\lvert A\rvert=\omega_{1}$ ならば、$\lvert X\rvert=\omega_{1}$ かつ $X\subseteq A$ となる $X\in\mathcal{K}$ が存在する。
+:::
+
+::: intuition
+条件 (2) は「$\mathcal{K}$ は非可算集合の中に必ず自分の元を含むほど豊富」、条件 (1) は「$\mathcal{K}$ のトレースはどの始切片でも可算しかないほど貧弱」という、相反する要求である。◇⁺ 列が非可算集合 $A$ を閉非有界集合 $C$ 上で捕らえるとき、代表点の集合 $X(A,C)$ を $\mathcal{K}$ に入れる。すると $X(A,C)\cap\beta$ は、段階 $s(C,\beta)$ の可算個の候補から作れる形に限られるので、(1) の可算性が保たれる。
+:::
+
+::: proof
+$\langle\mathcal{A}_{\alpha}\mid\alpha<\omega_{1}\rangle$ を ◇⁺ 列とする。$\mathcal{K}$ を、次の (a)〜(c) を満たす $A,C$ についての $X(A,C)$ の全体とする。
+- (a) すべての $\alpha\in C$ について $A\cap\alpha\in\mathcal{A}_{\alpha}$。
+- (b) すべての $\alpha\in C$ について $C\cap\alpha\in\mathcal{A}_{\alpha}$。
+- (c) $A,C\subseteq\omega_{1}$、$\lvert A\rvert=\omega_{1}$ であり、$C$ は閉非有界。
+
+**Step 1（(2) の証明）.** $A\subseteq\omega_{1}$, $\lvert A\rvert=\omega_{1}$ とする。◇⁺ より \eqref{set:eq-diamond-plus} を満たす閉非有界集合 $C$ があり、$A,C$ は (a)〜(c) を満たす。$X=X(A,C)\in\mathcal{K}$ は \ref{set:diamond-plus-representatives-basic} (2)(3) より $X\subseteq A$ かつ $\lvert X\rvert=\omega_{1}$。
+
+**Step 2（(1) の鍵となる主張）.** $\beta<\omega_{1}$ を固定する。(a)〜(c) を満たす任意の $A,C$ について、次のいずれかが成り立つことを示す。
+$$
+\begin{aligned}
+&\lvert X(A,C)\cap\beta\rvert\le1,\quad\text{または}\\
+&\exists\alpha\le\beta\ \exists B,D\in\mathcal{A}_{\alpha}\ \exists x\subseteq\beta\ \bigl(\lvert x\rvert\le1\ \land\ X(A,C)\cap\beta=X(B,D)\cup x\bigr).
+\end{aligned}
+\label{set:eq-diamond-plus-trace}
+$$
+$\alpha=s(C,\beta)$ とおく。\ref{set:diamond-plus-representatives-basic} (1) より、$\alpha\le\beta$ は $C\cup\{0\}$ の元で $\beta$ 以下のもののうち最大のものである。
+
+*Case 1（$\alpha=0$）.* $\xi<\beta$ について、$C\cup\{0\}$ の元で $\xi$ 以下のものは $\beta$ 以下でもあるので $\alpha=0$ 以下、すなわち $s(C,\xi)=0$。よって \ref{set:diamond-plus-representatives-basic} (2) より、$\xi\in X(A,C)\cap\beta$ なら $\xi=\min A$。したがって $X(A,C)\cap\beta\subseteq\{\min A\}$ であり、前者が成り立つ。
+
+*Case 2（$\alpha>0$）.* $\alpha\in C$ である。$B=A\cap\alpha$, $D=C\cap\alpha$ とおくと、(a)(b) より $B,D\in\mathcal{A}_{\alpha}$。$\xi<\beta$ を 2 つの場合に分ける。
+- *$\xi<\alpha$ のとき*：$\xi+1\le\alpha$ なので $(C\cup\{0\})\cap(\xi+1)=(D\cup\{0\})\cap(\xi+1)$、よって $s(C,\xi)=s(D,\xi)$。これを $\sigma$ とおくと $\sigma\le\xi<\alpha$ で、$\sigma\le\eta<\xi$ となる $\eta$ はすべて $<\alpha$ なので、「$\eta\in A$」と「$\eta\in B$」は同値である。また $\xi\in A\iff\xi\in B$。したがって $\xi\in X(A,C)\iff\xi\in X(B,D)$。
+- *$\alpha\le\xi<\beta$ のとき*：$C\cup\{0\}$ の元で $\xi$ 以下のものは $\beta$ 以下なので $\alpha$ 以下であり、$\alpha$ 自身は $\xi$ 以下なので、$s(C,\xi)=\alpha$。よって $\xi\in X(A,C)\iff\xi=\min(A\setminus\alpha)$（\ref{set:diamond-plus-representatives-basic} (2)）。
+
+$X(B,D)\subseteq B\subseteq\alpha$ であることに注意すると、$\zeta=\min(A\setminus\alpha)$（$A$ は非有界なので存在する）として
+$$
+X(A,C)\cap\beta=X(B,D)\cup x,\qquad x=\{\zeta\}\cap\beta
+$$
+が得られ、$\lvert x\rvert\le1$。よって後者が成り立つ。
+
+**Step 3（(1) の証明）.** Step 2 より
+$$
+\begin{aligned}
+\mathcal{K}_{\beta}\subseteq{}&\{y\subseteq\beta\mid\lvert y\rvert\le1\}\\
+&\cup\bigl\{X(B,D)\cup x\ \big\vert\ \alpha\le\beta,\ B,D\in\mathcal{A}_{\alpha},\ x\subseteq\beta,\ \lvert x\rvert\le1\bigr\}.
+\end{aligned}
+$$
+$\beta$ は可算なので、$\beta$ の $1$ 元以下の部分集合の全体 $\{\varnothing\}\cup\{\{\xi\}\mid\xi<\beta\}$ は可算である。後者の集合は、可算個の $\alpha\le\beta$ のそれぞれについて、可算集合 $\mathcal{A}_{\alpha}\times\mathcal{A}_{\alpha}\times\{x\subseteq\beta\mid\lvert x\rvert\le1\}$ の像の和なので、\ref{set:union-bound}（AC）より可算である。よって $\mathcal{K}_{\beta}$ は可算。
+
+::: hypcheck
+- **◇⁺ の前半（$A\cap\alpha\in\mathcal{A}_{\alpha}$）**：Step 1 で $\mathcal{K}$ に十分な元があることと、Step 2 の Case 2 で $B\in\mathcal{A}_{\alpha}$ に使った。
+- **◇⁺ の後半（$C\cap\alpha\in\mathcal{A}_{\alpha}$）**：Step 2 の Case 2 で $D\in\mathcal{A}_{\alpha}$ に使った。これがないと、$X(A,C)\cap\beta$ を決める $C\cap\alpha$ が段階 $\alpha$ の候補に入らず、トレースを数えられない。
+- **各 $\mathcal{A}_{\alpha}$ が可算であること**：Step 3 で使った。
+- **$C$ が閉であること**：Step 2 で \ref{set:diamond-plus-representatives-basic} (1)（$\alpha\in C$）を使うのに使った。
+- **選択公理**：Step 3 の \ref{set:union-bound} と、\ref{set:diamond-plus-representatives-basic} (3) を通じて使った。
+:::
+:::
+
+::: corollary ◇⁺ はクレパ木の存在を導く {#set:diamond-plus-kurepa keywords="diamond plus implies KH, Kurepa tree with 2^{aleph_1} paths" index="◇⁺とクレパ木|だいやもんどぷらすとくれぱぎ"}
+◇⁺ ならば、ちょうど $2^{\aleph_{1}}$ 本の道をもつ $\omega_{1}$-クレパ木が存在する。特に ◇⁺ は KH を導く。
+:::
+
+::: intuition
+\ref{set:diamond-plus-family} の族 $\mathcal{K}$ はトレースが小さいので、あとは $\mathcal{K}$ が十分大きいことを示せばよい。CH のもとで $\omega_{1}$ 上には $2^{\aleph_{1}}$ 個の概素な非可算集合があり、その各々の中に $\mathcal{K}$ の非可算な元がとれる。概素なので、とれた元は互いに異なる。
+:::
+
+::: proof
+$\mathcal{K}$ を \ref{set:diamond-plus-family} の族とする。
+
+**Step 1（CH と大きな概素族）.** \ref{set:diamond-plus-ch} より CH が成り立つ。すると \ref{set:kappa-below-lambda-sup} より $2^{<\omega_{1}}=2^{\aleph_{0}}=\aleph_{1}$ であり、\ref{set:ad-family-large} より $\omega_{1}$ 上の概素族 $\mathcal{B}$ で $\lvert\mathcal{B}\rvert=2^{\aleph_{1}}$ となるものがある。
+
+**Step 2（$\mathcal{K}$ の大きな部分族）.** 各 $B\in\mathcal{B}$ は $\lvert B\rvert=\omega_{1}$ なので、\ref{set:diamond-plus-family} (2) より $X\subseteq B$, $\lvert X\rvert=\omega_{1}$ となる $X\in\mathcal{K}$ がある。**選択公理**により、各 $B$ についてそのような $X_{B}$ を 1 つ選ぶ。$B\ne B'$ なら $X_{B}\ne X_{B'}$ である：$X_{B}=X_{B'}$ なら $X_{B}\subseteq B\cap B'$ で、$\lvert X_{B}\rvert=\omega_{1}$ は $\lvert B\cap B'\rvert<\omega_{1}$ に反する。よって $\mathcal{K}_{1}=\{X_{B}\mid B\in\mathcal{B}\}$ は $\lvert\mathcal{K}_{1}\rvert=2^{\aleph_{1}}$ を満たし、$\mathcal{K}_{1}\subseteq\mathcal{K}$ なので、各 $\beta<\omega_{1}$ で $(\mathcal{K}_{1})_{\beta}\subseteq\mathcal{K}_{\beta}$ は可算である。
+
+**Step 3（クレパ族）.** カントールの定理（\ref{set:cantor-strict}）より $2^{\aleph_{1}}>\aleph_{1}$ なので $2^{\aleph_{1}}\ge\aleph_{2}$。よって $\mathcal{K}_{1}$ は $\omega_{1}$-クレパ族である。
+
+**Step 4（クレパ木と道の本数）.** \ref{set:kurepa-equiv} の（⇐）の構成により、
+$$
+T=\bigl\{\chi^{\alpha}_{X\cap\alpha}\bigm|\alpha<\omega_{1},\ X\in\mathcal{K}_{1}\bigr\}\subseteq{}^{<\omega_{1}}2
+$$
+（$\chi^{\alpha}_{Y}\in{}^{\alpha}2$ は $Y\subseteq\alpha$ の特性関数）は $\omega_{1}$-木であり、$X\mapsto C_{X}=\{\chi^{\alpha}_{X\cap\alpha}\mid\alpha<\omega_{1}\}$ は $\mathcal{K}_{1}$ から $T$ の道の全体への単射である。よって $T$ は $2^{\aleph_{1}}\ge\aleph_{2}$ 本以上の道をもつクレパ木である。一方、道は $T$ の部分集合で、$\lvert T\rvert=\aleph_{1}$（\ref{set:kappa-tree-size}）なので、道の本数は $\lvert\mathcal{P}(T)\rvert=2^{\aleph_{1}}$ 以下である。よって道はちょうど $2^{\aleph_{1}}$ 本ある。
+
+::: hypcheck
+- **◇⁺**：\ref{set:diamond-plus-family} と \ref{set:diamond-plus-ch} を通じて使った。
+- **CH**：Step 1 で $2^{<\omega_{1}}=\omega_{1}$ を得て \ref{set:ad-family-large} を適用するのに使った。
+- **選択公理**：Step 2 で $X_{B}$ を同時に選ぶのに使った。また基数の計算全般と \ref{set:kurepa-equiv} で使っている。
+- **概素性**：Step 2 で $B\mapsto X_{B}$ の単射性に使った。
+:::
+:::
+
+::: supplement
+**CH だけでは足りない.** 完全二分木 ${}^{<\omega_{1}}2$ は $2^{\aleph_{1}}$ 本の道をもつが、第 $\omega$ レベルが非可算なので $\omega_{1}$-木ではない。GCH のもとでもクレパ木が存在するとは限らない（KH は $\ZFC+\mathrm{GCH}$ から独立である。\ref{set:kurepa-tree} の後の補足を参照）。◇⁺ の役割は、道の本数を $2^{\aleph_{1}}$ まで増やしつつ、各レベルを可算に保つことである。
+:::
+
+::: corollary 極大概素なクレパ族 {#set:diamond-plus-mad-kurepa keywords="diamond plus gives a maximal almost disjoint Kurepa family" index="極大概素なクレパ族|きょくだいがいそなくれぱぞく"}
+◇⁺ ならば、$\omega_{1}$ 上の極大概素族であって $\omega_{1}$-クレパ族でもあるもの $\mathcal{G}$ が存在する。
+:::
+
+::: intuition
+\ref{set:diamond-plus-family} の族 $\mathcal{K}$ の中で、概素性を保ちながらできるだけ多くの元を集める。$\mathcal{K}$ はどの非可算集合の中にも元をもつので、$\mathcal{K}$ の中で極大な概素族は、$\mathcal{P}(\omega_{1})$ 全体の中でも極大になる。トレースの可算性は部分族に遺伝する。
+:::
+
+::: proof
+$\mathcal{K}$ と $\mathcal{K}_{1}$ を \ref{set:diamond-plus-family} と \ref{set:diamond-plus-kurepa} の証明のとおりとする。$\mathcal{K}_{1}=\{X_{B}\mid B\in\mathcal{B}\}$ は概素族である：各元は濃度 $\omega_{1}$ で、$B\ne B'$ なら $X_{B}\cap X_{B'}\subseteq B\cap B'$ は可算。
+
+**Step 1（ツォルンの補題）.** $\mathcal{P}$ を、$\mathcal{K}_{1}\subseteq\mathcal{G}\subseteq\mathcal{K}$ であって、相異なる任意の 2 元の共通部分が可算であるような $\mathcal{G}$ の全体とし、包含で半順序付ける。$\mathcal{K}_{1}\in\mathcal{P}$。$\mathcal{P}$ の空でない鎖 $\mathcal{C}$ について $\bigcup\mathcal{C}\in\mathcal{P}$ である（その相異なる 2 元は、鎖であることから $\mathcal{C}$ の 1 つの元にともに属し、共通部分は可算）。空の鎖の上界は $\mathcal{K}_{1}$ である。**ツォルンの補題**（\ref{set:zorn}）により、$\mathcal{P}$ は極大元 $\mathcal{G}$ をもつ。
+
+**Step 2（$\mathcal{G}$ は概素族）.** $\mathcal{K}$ の元はすべて $X(A,C)$ の形で、$\lvert A\rvert=\omega_{1}$ と $C$ の閉非有界性から濃度 $\omega_{1}$ をもつ（\ref{set:diamond-plus-representatives-basic} (3)）。よって $\mathcal{G}$ の元はすべて濃度 $\omega_{1}$ であり、$\mathcal{G}$ は概素族である。
+
+**Step 3（$\mathcal{G}$ は極大）.** $\mathcal{G}\subsetneq\mathcal{G}'$ となる概素族 $\mathcal{G}'$ があるとして矛盾を導く。$D\in\mathcal{G}'\setminus\mathcal{G}$ をとると、$\lvert D\rvert=\omega_{1}$ で、すべての $G\in\mathcal{G}$ について $D\cap G$ は可算である。\ref{set:diamond-plus-family} (2) より $X\subseteq D$, $\lvert X\rvert=\omega_{1}$ となる $X\in\mathcal{K}$ がある。
+- *$X\notin\mathcal{G}$*：$X\in\mathcal{G}$ なら、$D\notin\mathcal{G}$ より $D\ne X$ なので $D\cap X=X$ は可算のはずだが、$\lvert X\rvert=\omega_{1}$ に反する。
+- *$\mathcal{G}\cup\{X\}\in\mathcal{P}$*：任意の $G\in\mathcal{G}$ について $X\cap G\subseteq D\cap G$ は可算。
+
+これは $\mathcal{G}$ の $\mathcal{P}$ における極大性に反する。よって $\mathcal{G}$ は極大概素族である。
+
+**Step 4（クレパ族）.** $\mathcal{G}\subseteq\mathcal{K}$ なので各 $\mathcal{G}_{\beta}\subseteq\mathcal{K}_{\beta}$ は可算（\ref{set:diamond-plus-family} (1)）、また $\lvert\mathcal{G}\rvert\ge\lvert\mathcal{K}_{1}\rvert=2^{\aleph_{1}}\ge\aleph_{2}$。よって $\mathcal{G}$ は $\omega_{1}$-クレパ族である。
+
+::: hypcheck
+- **ツォルンの補題**（AC）：Step 1。
+- **\ref{set:diamond-plus-family} (2)**：Step 3 で $\mathcal{P}(\omega_{1})$ 全体での極大性を導く核心。$\mathcal{K}$ の中での極大性だけでは、一般に全体での極大性は出ない。
+- **\ref{set:diamond-plus-family} (1)**：Step 4。**$\mathcal{K}_{1}\subseteq\mathcal{G}$**：Step 4 で $\mathcal{G}$ の大きさを保証するのに使った。
+:::
+:::
+
+::: supplement
+\ref{set:ad-family-regular} により、$\omega_{1}$ 上の濃度 $\omega_{1}$ の概素族は極大でなく、濃度 $\ge\aleph_{2}$ の極大概素族が ZFC で存在する。この系は、濃度 $2^{\aleph_{1}}$ の極大概素族を、トレースが可算という強い制約のもとで作れることを示している。
+:::
+
+## ◇⁻ と ◇ の同値性 {#set:sec-diamond-minus}
+
+::: definition ◇⁻ {#set:diamond-minus keywords="diamond minus, weak diamond with countably many guesses" index="ダイヤモンドマイナス|だいやもんどまいなす, ◇⁻|だいやもんどまいなす"}
+**◇⁻** とは、次の主張である：集合の列 $\langle\mathcal{A}_{\alpha}\mid\alpha<\omega_{1}\rangle$ で、各 $\mathcal{A}_{\alpha}\subseteq\mathcal{P}(\alpha)$ は可算であり、任意の $A\subseteq\omega_{1}$ について
+$$
+\{\alpha<\omega_{1}\mid A\cap\alpha\in\mathcal{A}_{\alpha}\}\text{ が定常}
+\label{set:eq-diamond-minus}
+$$
+となるものが存在する。この条件を満たす列を **◇⁻ 列**という。
+:::
+
+::: intuition
+◇ と ◇⁺ の中間の形で、各段階で可算個の候補を許し（◇⁺ と同じ）、的中は定常集合上でよい（◇ と同じ）。明らかに ◇ と ◇⁺ のどちらからも従う弱い原理だが、実は ◇ と同値である。可算個の候補を 1 つにまとめるには、$\omega_{1}$ の部分集合を $\omega\times\omega_{1}$ の部分集合として符号化し、「$n$ 番目の候補の $n$ 列目」を読むという対角線論法を使う。
+:::
+
+::: lemma ◇ と ◇⁺ は ◇⁻ を導く {#set:diamond-minus-weak keywords="diamond and diamond plus imply diamond minus"}
+◇ ならば ◇⁻ であり、◇⁺ ならば ◇⁻ である。
+:::
+
+::: proof
+**Step 1（◇ ⇒ ◇⁻）.** ◇ 列 $\langle A_{\alpha}\rangle$ に対し $\mathcal{A}_{\alpha}=\{A_{\alpha}\}$ とおくと、$\{\alpha\mid A\cap\alpha\in\mathcal{A}_{\alpha}\}=\{\alpha\mid A\cap\alpha=A_{\alpha}\}$ は定常。
+
+**Step 2（◇⁺ ⇒ ◇⁻）.** ◇⁺ 列 $\langle\mathcal{A}_{\alpha}\rangle$ をとる。$A\subseteq\omega_{1}$ について \eqref{set:eq-diamond-plus} の閉非有界集合 $C$ をとると、$C\subseteq\{\alpha\mid A\cap\alpha\in\mathcal{A}_{\alpha}\}$ であり、閉非有界集合は定常で、定常集合を含む集合は定常（\ref{set:stationary-basic} (2)）。よって同じ列が ◇⁻ 列である。
+
+::: hypcheck
+- 定義と \ref{set:stationary-basic} (2) だけを使った。
+:::
+:::
+
+::: theorem ◇⁻ と ◇ は同値 {#set:diamond-minus-equiv keywords="diamond minus is equivalent to diamond" index="◇⁻と◇の同値性|だいやもんどまいなすとだいやもんどのどうちせい"}
+◇⁻ と ◇ は同値である。
+:::
+
+::: intuition
+◇⁻ 列の候補 $\mathcal{A}_{\alpha}=\{B^{\alpha}_{k}\mid k<\omega\}$ を番号付けしても、各 $A$ が「何番目の候補で」当たるかは $A$ ごと・段階ごとに異なるので、1 つの番号 $k$ を固定した列 $\langle B^{\alpha}_{k}\rangle$ が ◇ 列になるとは限らない。そこで $\omega$ 個の集合 $B_{n}\subseteq\omega_{1}$ をまとめて 1 つの集合 $\bigcup_{n}\{n\}\times B_{n}\subseteq\omega\times\omega_{1}$ とみなして予想させる。どの番号 $n$ の列もうまくいかないとすると、各 $n$ について「$n$ 番目の候補の $n$ 列目」で予想に失敗し続ける $B_{n}$ があるが、それらを束ねた集合はどの番号の候補でもほとんど当たらず、◇⁻ に反する。
+:::
+
+::: proof
+◇ ⇒ ◇⁻ は \ref{set:diamond-minus-weak} で示した。◇⁻ を仮定し、◇⁻ 列 $\langle\mathcal{A}_{\alpha}\mid\alpha<\omega_{1}\rangle$ をとる。
+
+**Step 1（$\omega\times\omega_{1}$ との対応）.** $\lvert\omega\times\omega_{1}\rvert=\aleph_{0}\otimes\aleph_{1}=\aleph_{1}$（\ref{set:kappa-times-kappa}）なので、全単射 $f\colon\omega_{1}\to\omega\times\omega_{1}$ がとれる。$A\subseteq\omega_{1}$ に対し $A'=f[A]$、$B\subseteq\omega\times\omega_{1}$ に対し $B^{*}=f^{-1}[B]$ とおくと、$f$ が全単射なので $(A')^{*}=A$, $(B^{*})'=B$。
+
+**Step 2（整合する段階の閉非有界集合）.** $\omega_{1}$ 上の 1 項演算 $p$ と $q_{n}$（$n<\omega$）を、$f(\xi)=\langle m,\eta\rangle$ のとき $p(\xi)=\eta$、$q_{n}(\eta)=f^{-1}(\langle n,\eta\rangle)$ で定める。これら可算個の演算で閉じた $\alpha$ の全体 $E$ は閉非有界である（\ref{set:closure-club}）。$\alpha\in E$ について $f[\alpha]=\omega\times\alpha$ となる：
+- *$\subseteq$*：$\xi<\alpha$ で $f(\xi)=\langle m,\eta\rangle$ なら $\eta=p(\xi)<\alpha$。
+- *$\supseteq$*：$n<\omega$, $\eta<\alpha$ なら $q_{n}(\eta)<\alpha$ で、$f(q_{n}(\eta))=\langle n,\eta\rangle$。
+
+したがって $\alpha\in E$ のとき、$A\subseteq\alpha$ ならば $A'\subseteq\omega\times\alpha$、$B\subseteq\omega\times\alpha$ ならば $B^{*}\subseteq\alpha$ であり、任意の $B\subseteq\omega\times\omega_{1}$ について
+$$
+(B^{*}\cap\alpha)'=f\bigl[f^{-1}[B]\cap\alpha\bigr]=B\cap f[\alpha]=B\cap(\omega\times\alpha)
+\label{set:eq-diamond-minus-transfer}
+$$
+（2 つ目の等号は $f$ が全単射であることによる）。
+
+**Step 3（$\omega\times\omega_{1}$ の部分集合の予想）.** $\alpha\in E$ なら $\mathcal{B}_{\alpha}=\{A'\mid A\in\mathcal{A}_{\alpha}\}$、$\alpha\notin E$ なら $\mathcal{B}_{\alpha}=\varnothing$ とおく。各 $\mathcal{B}_{\alpha}$ は可算で、その元は $\omega\times\alpha$ の部分集合である。任意の $B\subseteq\omega\times\omega_{1}$ について
+$$
+\{\alpha<\omega_{1}\mid B\cap(\omega\times\alpha)\in\mathcal{B}_{\alpha}\}\text{ は定常}
+\label{set:eq-diamond-minus-product}
+$$
+であることを示す。◇⁻ より $S=\{\alpha\mid B^{*}\cap\alpha\in\mathcal{A}_{\alpha}\}$ は定常であり、$S\cap E$ も定常（\ref{set:stationary-basic} (3)）。$\alpha\in S\cap E$ なら、\eqref{set:eq-diamond-minus-transfer} より $B\cap(\omega\times\alpha)=(B^{*}\cap\alpha)'\in\mathcal{B}_{\alpha}$。よって \eqref{set:eq-diamond-minus-product} の集合は定常集合 $S\cap E$ を含み、定常である。
+
+**Step 4（候補の番号付け）.** **選択公理**により、各 $\alpha$ について、$\mathcal{B}_{\alpha}\ne\varnothing$ なら全射 $k\mapsto B^{\alpha}_{k}$（$\omega\to\mathcal{B}_{\alpha}$）を選び、$\mathcal{B}_{\alpha}=\varnothing$ なら $B^{\alpha}_{k}=\varnothing$ とおく。いずれの場合も $\mathcal{B}_{\alpha}\subseteq\{B^{\alpha}_{k}\mid k<\omega\}$ で、$B^{\alpha}_{k}\subseteq\omega\times\alpha$。さらに
+$$
+B^{\alpha}_{k,n}=\{\xi\mid\langle n,\xi\rangle\in B^{\alpha}_{k}\}\subseteq\alpha
+$$
+とおく（$B^{\alpha}_{k}$ の「第 $n$ 列」）。
+
+**Step 5（対角線論法）.** ある $n<\omega$ について $\langle B^{\alpha}_{n,n}\mid\alpha<\omega_{1}\rangle$ が ◇ 列であることを示す。各 $B^{\alpha}_{n,n}\subseteq\alpha$ なので、示すべきは \eqref{set:eq-diamond} である。そうでないと仮定すると、各 $n<\omega$ について、$N_{n}=\{\alpha<\omega_{1}\mid B_{n}\cap\alpha=B^{\alpha}_{n,n}\}$ が非定常となる $B_{n}\subseteq\omega_{1}$ が存在する。**選択公理**によりそのような $B_{n}$ を各 $n$ について選び、
+$$
+B=\bigcup_{n<\omega}\bigl(\{n\}\times B_{n}\bigr)\subseteq\omega\times\omega_{1}
+$$
+とおく。$\alpha<\omega_{1}$ で $B\cap(\omega\times\alpha)\in\mathcal{B}_{\alpha}$ となるものをとると、Step 4 より $B\cap(\omega\times\alpha)=B^{\alpha}_{k}$ となる $k$ がある。その第 $k$ 列を比べると
+$$
+B^{\alpha}_{k,k}=\{\xi\mid\langle k,\xi\rangle\in B\cap(\omega\times\alpha)\}=\{\xi<\alpha\mid\xi\in B_{k}\}=B_{k}\cap\alpha
+$$
+なので $\alpha\in N_{k}$。したがって
+$$
+\{\alpha<\omega_{1}\mid B\cap(\omega\times\alpha)\in\mathcal{B}_{\alpha}\}\subseteq\bigcup_{k<\omega}N_{k}.
+$$
+右辺は可算個の非定常集合の和なので非定常であり（\ref{set:stationary-basic} (4)）、その部分集合である左辺も非定常である。これは \eqref{set:eq-diamond-minus-product} に反する。
+
+よってある $n$ について $\langle B^{\alpha}_{n,n}\mid\alpha<\omega_{1}\rangle$ は ◇ 列であり、◇ が成り立つ。
+
+::: hypcheck
+- **◇⁻**：Step 3 で \eqref{set:eq-diamond-minus-product} を導くのに使った。
+- **各 $\mathcal{A}_{\alpha}$ が可算であること**：Step 4 で候補を $\omega$ で番号付けするのに本質的に使った。Step 5 の対角線論法は、番号の集合が $\omega$ であり、$\omega$ 個の非定常集合の和が非定常であることに依存している。候補が $\omega_{1}$ 個あると、この議論は $\omega_{1}$ 個の非定常集合の和をとることになり破綻する。
+- **\ref{set:closure-club}**（AC）：Step 2。符号化 $f$ が「ほとんどすべての段階 $\alpha$ で $\alpha$ と $\omega\times\alpha$ を対応させる」ことを保証する。
+- **選択公理**：Step 4 の番号付けと Step 5 の $B_{n}$ の選択、および \ref{set:stationary-basic} (4)（非定常集合の可算和）に使った。
+:::
+:::
+
+::: corollary ◇⁺ は ◇ を導く {#set:diamond-plus-diamond keywords="diamond plus implies diamond" index="◇⁺と◇|だいやもんどぷらすとだいやもんど"}
+◇⁺ ならば ◇ である。
+:::
+
+::: proof
+\ref{set:diamond-minus-weak} より ◇⁺ ⇒ ◇⁻、\ref{set:diamond-minus-equiv} より ◇⁻ ⇒ ◇。
+
+::: hypcheck
+- \ref{set:diamond-minus-weak} と \ref{set:diamond-minus-equiv}（AC）だけを使った。
+:::
+:::
+
+::: supplement
+**符号化の技法.** 証明の Step 1〜3 で用いた「$\omega_{1}$ の部分集合で $\omega\times\omega_{1}$ の部分集合を符号化し、閉非有界集合上で段階が整合するようにする」技法は標準的なもので、同様にして ◇ 列や ◇⁺ 列に $\omega_{1}\times\omega_{1}$ の部分集合や関数 $\omega_{1}\to\omega_{1}$ を予想させることができる。たとえば ◇ は次の各主張と同値である（Kunen 第 II 章演習 51）。
+- $A_{\alpha}\subseteq\alpha\times\alpha$（$\alpha<\omega_{1}$）で、任意の $A\subseteq\omega_{1}\times\omega_{1}$ について $\{\alpha\mid A\cap(\alpha\times\alpha)=A_{\alpha}\}$ が定常となる列が存在する。
+- 関数 $f_{\alpha}\colon\alpha\to\alpha$（$\alpha<\omega_{1}$）で、任意の $f\colon\omega_{1}\to\omega_{1}$ について $\{\alpha\mid f\restr{\alpha}=f_{\alpha}\}$ が定常となる列が存在する。
+
+**一般の正則基数.** 正則基数 $\kappa>\omega$ について、$\Diamond_{\kappa}$（\ref{set:diamond-ch} の補足）は、「$\mathcal{A}_{\alpha}\subseteq\mathcal{P}(\alpha)$, $\lvert\mathcal{A}_{\alpha}\rvert\le\lvert\alpha\rvert$ で、任意の $A\subseteq\kappa$ について $\{\alpha<\kappa\mid A\cap\alpha\in\mathcal{A}_{\alpha}\}$ が定常」という主張と同値である（Kunen 第 II 章演習 53）。候補の個数が段階ごとに $\lvert\alpha\rvert$ まで増えるので、上の証明の「$\omega$ 個の非定常集合の和」の部分は、そのままでは使えず修正が要る。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

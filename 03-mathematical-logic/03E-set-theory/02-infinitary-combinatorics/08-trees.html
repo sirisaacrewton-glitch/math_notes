@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>木とアロンシャイン木 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/08-trees.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 木とアロンシャイン木 {#set:page-trees keywords="tree, Aronszajn tree, Suslin tree, kappa-tree, König's lemma, well-pruned tree"}
+
+ススリン仮説（\ref{set:suslin-hypothesis}）をはじめ、無限組合せ論の多くの主張は「木」についての主張として述べると見通しがよくなる。木とは、各元の「下」が整列している半順序であり、根から上に向かって枝分かれしながら超限的に伸びていく構造である。本ページでは木の基本概念（高さ・レベル・鎖・反鎖）を整え、正則基数 $\kappa$ について $\kappa$-木・$\kappa$-ススリン木・$\kappa$-アロンシャイン木を定義する。$\omega$ では**ケーニッヒの補題**により高さ $\omega$ の「細い」木には必ず無限の鎖がある一方、$\omega_{1}$ では ZFC だけで**アロンシャイン木**（非可算の鎖をもたない $\omega_{1}$-木）が作れる、という対照がこのページの中心である。最後に、次ページ（\ref{set:page-suslin-kurepa}）で使う「よく刈り込まれた木」を準備する。
+
+## 記法と定義の確認 {#set:sec-trees-notation}
+
+::: notation
+- 半順序は**狭義**のもの（\ref{set:total-order}：非反射的かつ推移的）を用いる。$x\le y$ は「$x<y$ または $x=y$」の略記である。整列順序・順序型 $\operatorname{type}$ は \ref{set:well-order}, \ref{set:order-type} の意味で用い、整列集合はただ一つの順序数と同型である（\ref{set:ordinal-type}）。
+- 順序数は $\alpha,\beta,\gamma,\delta,\xi,\eta,\dots$ で表す。$\cf$, 正則基数は \ref{set:cofinality}, \ref{set:regular-cardinal} の意味。AC のもとで、正則基数 $\kappa$ について「$\kappa$ 未満の個数の、濃度 $\kappa$ 未満の集合の和集合の濃度は $\kappa$ 未満」であり（\ref{set:cf-union}）、特に濃度 $<\kappa$ の順序数の集合 $X\subseteq\kappa$ は $\kappa$ で有界（ある $\alpha<\kappa$ で $X\subseteq\alpha$）である。$\omega_{1}$ は正則（\ref{set:successor-regular}）なので、可算個の可算順序数の上限は可算順序数である。
+- 集合 $I$ と順序数 $\alpha$ に対し ${}^{\alpha}I$ は $\alpha$ から $I$ への関数の集合（\ref{set:function-set}）、${}^{<\delta}I=\bigcup_{\alpha<\delta}{}^{\alpha}I$（\ref{set:kappa-below-lambda}）。関数 $s$ と $\xi\subseteq\dom s$ について $s\restr{\xi}$ は制限である。
+- 和集合の濃度の評価 \ref{set:union-bound}、有限列全体の濃度 \ref{set:kappa-finite-sequences} を用いる。
+- **本ページの結果は、明記しない限り ZFC で示す**。どこで選択公理（AC）を使うかは各証明の「前提条件の使用箇所」に記す。
+:::
+
+## 木・高さ・レベル {#set:sec-tree-definition}
+
+::: definition 木 {#set:tree keywords="tree, set-theoretic tree" index="木|き, 木（集合論）|きしゅうごうろん"}
+（狭義の）半順序 $\langle T,<\rangle$（$<\subseteq T\times T$）が**木**であるとは、各 $x\in T$ について、$x$ の**前者の集合**
+$$
+\operatorname{pred}_{T}(x)=\{y\in T\mid y<x\}
+$$
+が $<$ で整列されることをいう。記法を乱用して、$\langle T,<\rangle$ を単に $T$ と書く。
+:::
+
+::: intuition
+根を下にして描いた（上に向かって枝分かれする）木を思い浮かべるとよい。各点から下を見ると一本道で、しかもその一本道は整列している（下に向かって無限に降りていけない）。逆に上を見ると、何本にも枝分かれしていてよい。「前者の集合が全順序」というだけでなく「整列」を要求するのは、高さを順序数で測るためである。
+:::
+
+::: definition 高さ・レベル・部分木 {#set:tree-height keywords="height of a node, level of a tree, height of a tree, subtree" index="高さ（木の）|たかさきの, レベル（木の）|れべるきの, 部分木|ぶぶんぎ"}
+$T$ を木とする。
+1. $x\in T$ の $T$ における**高さ**を $\operatorname{ht}(x,T)=\operatorname{type}(\operatorname{pred}_{T}(x),<)$ と定める。
+2. 順序数 $\alpha$ に対し、$T$ の**第 $\alpha$ レベル**を $\operatorname{Lev}_{\alpha}(T)=\{x\in T\mid\operatorname{ht}(x,T)=\alpha\}$ と定める。
+3. $\operatorname{Lev}_{\alpha}(T)=\varnothing$ となる最小の順序数 $\alpha$ を $T$ の**高さ**といい $\operatorname{ht}(T)$ と書く。
+4. $T'\subseteq T$ に $T$ の順序を制限したものが $T$ の**部分木**であるとは、$T'$ が下に閉じていること、すなわち $\forall x\in T'\ \forall y\in T\ (y<x\to y\in T')$ をいう。
+:::
+
+::: intuition
+高さは「根からの距離」であり、第 $\alpha$ レベルは「根からちょうど $\alpha$ 段上にある点」の全体である。木の高さは、空でないレベルがどこまで続くかを表す。部分木は「下を切り落とさずに」取り出した部分である。
+:::
+
+::: example
+- 任意の集合 $T$ に空の順序を入れると木になり、すべての元の高さは $0$、$\operatorname{ht}(T)=1$（$T\ne\varnothing$ のとき）。
+- 順序数 $\delta$ に通常の順序を入れると木であり、$\operatorname{ht}(\alpha,\delta)=\alpha$、$\operatorname{ht}(\delta)=\delta$。
+- **完全 $I$ 分木**：集合 $I$ と順序数 $\delta$ に対し ${}^{<\delta}I$ に「$s<t\iff s\subsetneq t$（$t$ は $s$ の真の延長）」で順序を入れる。$t\in{}^{\alpha}I$ の前者は $t\restr{\xi}$（$\xi<\alpha$）の全体で、$\xi\mapsto t\restr{\xi}$ が $\alpha$ からの同型なので $\operatorname{ht}(t)=\alpha$。よって $\alpha<\delta$ について $\operatorname{Lev}_{\alpha}({}^{<\delta}I)={}^{\alpha}I$ であり、$I\ne\varnothing$ なら $\operatorname{ht}({}^{<\delta}I)=\delta$。$I=2$ のとき**完全二分木**という。
+:::
+
+::: lemma 木の基本性質 {#set:tree-basic keywords="basic properties of trees" index="木の基本性質|きのきほんせいしつ"}
+$T$ を木とする。
+1. $x\in T$ とし、$f_{x}\colon\operatorname{ht}(x,T)\to\operatorname{pred}_{T}(x)$ を順序同型とする。このとき各 $\alpha<\operatorname{ht}(x,T)$ について $\operatorname{ht}(f_{x}(\alpha),T)=\alpha$。したがって、各 $\alpha<\operatorname{ht}(x,T)$ に対し、$y<x$ かつ $\operatorname{ht}(y,T)=\alpha$ となる $y$ が**ただ一つ**存在する。これを $x\restr{\alpha}$ と書く。
+2. $y<x$ ならば $\operatorname{ht}(y,T)<\operatorname{ht}(x,T)$。特に同じレベルの相異なる 2 元は比較不能である。
+3. $x\le z$ かつ $y\le z$ ならば $x$ と $y$ は比較可能（$x\le y$ または $y\le x$）である。
+4. $\operatorname{ht}(T)$ は存在し、$\operatorname{ht}(T)=\sup\{\operatorname{ht}(x,T)+1\mid x\in T\}$。また、$\operatorname{Lev}_{\alpha}(T)\ne\varnothing\iff\alpha<\operatorname{ht}(T)$。
+5. $T'$ が $T$ の部分木ならば、$x\in T'$ について $\operatorname{ht}(x,T')=\operatorname{ht}(x,T)$、したがって $\operatorname{Lev}_{\alpha}(T')=\operatorname{Lev}_{\alpha}(T)\cap T'$。
+:::
+
+::: proof
+**(1)** $\alpha<\operatorname{ht}(x,T)$ とし $y=f_{x}(\alpha)$ とおく。$w<y$ ならば $w<y<x$ より $w\in\operatorname{pred}_{T}(x)$ である（推移律）。したがって
+$$
+\operatorname{pred}_{T}(y)=\{w\in\operatorname{pred}_{T}(x)\mid w<y\}=\{f_{x}(\xi)\mid\xi<\alpha\}
+$$
+（後の等号は $f_{x}$ が順序同型であることによる）。$f_{x}\restr{\alpha}$ は $\alpha$ からこの集合への順序同型なので、$\operatorname{ht}(y,T)=\alpha$。一意性：$y,y'<x$ がともに高さ $\alpha$ なら、$y=f_{x}(\beta)$, $y'=f_{x}(\beta')$ と書け、今示したことから $\beta=\operatorname{ht}(y)=\alpha=\beta'$、よって $y=y'$。
+
+**(2)** $y<x$ なら $y\in\operatorname{pred}_{T}(x)$ なので $y=f_{x}(\alpha)$ となる $\alpha<\operatorname{ht}(x,T)$ があり、(1) より $\operatorname{ht}(y,T)=\alpha<\operatorname{ht}(x,T)$。同じ高さの 2 元 $x\ne y$ が比較可能なら $x<y$ か $y<x$ で、高さが異なることになり矛盾。
+
+**(3)** $x=z$ または $y=z$ なら明らか。$x,y<z$ なら $x,y\in\operatorname{pred}_{T}(z)$ で、これは整列（特に全順序）なので比較可能。
+
+**(4)** 置換公理により $H=\{\operatorname{ht}(x,T)\mid x\in T\}$ は順序数の集合であり、$\rho=\sup\{\eta+1\mid\eta\in H\}$ は順序数である（\ref{set:sup-ordinals}）。$\alpha\ge\rho$ なら $\operatorname{Lev}_{\alpha}(T)=\varnothing$。逆に $\alpha<\rho$ なら $\alpha<\eta+1$、すなわち $\alpha\le\eta=\operatorname{ht}(x,T)$ となる $x$ があり、$\alpha=\eta$ なら $x\in\operatorname{Lev}_{\alpha}(T)$、$\alpha<\eta$ なら (1) より $x\restr{\alpha}\in\operatorname{Lev}_{\alpha}(T)$。よって空なレベルの最小の番号は $\rho$ であり、$\operatorname{ht}(T)=\rho$。後半も同じ議論で示された。
+
+**(5)** $T'$ は下に閉じているので $\operatorname{pred}_{T'}(x)=\operatorname{pred}_{T}(x)$ であり、順序も同じなので順序型が一致する。
+
+::: hypcheck
+- **置換公理・和集合の公理**：(4) で高さの集合と上限を作るのに使った。
+- **前者の集合が整列されること**（木の定義）：(1) で $f_{x}$ の存在（\ref{set:ordinal-type}）に、(3) で比較可能性に使った。
+- 選択公理は使っていない（ZF で成り立つ）。
+:::
+:::
+
+## 鎖と反鎖 {#set:sec-tree-chains}
+
+::: definition 鎖・反鎖 {#set:tree-chain-antichain keywords="chain in a tree, antichain in a tree" index="鎖（木の）|くさりきの, 反鎖（木の）|はんさきの"}
+$T$ を木とする。$C\subseteq T$ が $<$ で全順序付けられるとき $C$ を $T$ の**鎖**という。$A\subseteq T$ の相異なる任意の 2 元が比較不能（$x\ne y\to x\not<y\land y\not<x$）であるとき $A$ を $T$ の**反鎖**という。
+:::
+
+::: intuition
+鎖は「一本の枝の一部」、反鎖は「互いに上下関係のない点の集まり」である。\ref{set:tree-basic} (2) より各レベルは反鎖である。
+:::
+
+::: lemma 木の鎖は整列される {#set:tree-chain-well-ordered keywords="chains in trees are well-ordered"}
+木 $T$ の鎖 $C$ は $<$ で整列され、写像 $x\mapsto\operatorname{ht}(x,T)$ は $C$ 上で狭義増加（特に単射）である。
+:::
+
+::: proof
+**Step 1（狭義増加）.** $x,y\in C$, $x<y$ なら \ref{set:tree-basic} (2) より $\operatorname{ht}(x)<\operatorname{ht}(y)$。
+
+**Step 2（整列）.** $\varnothing\ne S\subseteq C$ とし、順序数の集合 $\{\operatorname{ht}(x)\mid x\in S\}$ の最小元をとり、それを高さとする $x\in S$ をとる（Step 1 より一意）。任意の $s\in S$, $s\ne x$ について、$C$ は鎖なので $s<x$ か $x<s$ であるが、$s<x$ なら $\operatorname{ht}(s)<\operatorname{ht}(x)$ で最小性に反する。よって $x<s$ であり、$x$ は $S$ の最小元である。
+
+::: hypcheck
+- \ref{set:tree-basic} (2) と順序数の整列性（\ref{set:ordinal-well-ordered}）だけを使った。ZF で成り立つ。
+:::
+:::
+
+::: lemma 両立性と比較可能性 {#set:tree-compatible-comparable keywords="compatible iff comparable in a tree" index="両立と比較可能（木）|りょうりつとひかくかのうき"}
+木 $T$ の 2 元 $x,y$ について、ある $z\in T$ で $x\le z$ かつ $y\le z$ となることと、$x,y$ が比較可能であることは同値である。したがって、$T$ の順序を逆にした半順序 $\langle T,\ge\rangle$ を強制半順序（\ref{set:forcing-poset}）とみなすと、「両立」（\ref{set:compatible}）は $T$ での比較可能性と一致し、$\langle T,\ge\rangle$ の反鎖は $T$ の反鎖と一致する。
+:::
+
+::: proof
+比較可能なら、$x\le y$ のとき $z=y$、$y\le x$ のとき $z=x$ とすればよい。逆は \ref{set:tree-basic} (3) である。逆順序 $\ge$ では「$z$ が $x$ と $y$ の共通の拡大」が「$x\le z$ かつ $y\le z$」を意味するので、後半が従う。
+
+::: hypcheck
+- \ref{set:tree-basic} (3) だけを使った。ZF で成り立つ。
+:::
+:::
+
+::: supplement
+一般の半順序では「両立」と「比較可能」は異なる（たとえば $\{0,1\}$ 上の有限部分関数の全体を逆包含で並べると、$\{\langle0,0\rangle\}$ と $\{\langle1,0\rangle\}$ は比較不能だが両立する）。木では各点の下が一本道なので、共通の上界をもつ 2 点は同じ一本道の上にあり、比較可能になる。このため木の「反鎖」はマーティンの公理の文脈の反鎖と一致し、ススリン木についての議論に MA を直接適用できる（\ref{set:ma-no-suslin-tree}）。
+:::
+
+## κ-木とススリン木 {#set:sec-kappa-trees}
+
+::: definition ススリン木 {#set:suslin-tree keywords="Suslin tree, kappa-Suslin tree, Souslin tree" index="ススリン木|すすりんぎ, κ-ススリン木|かっぱすすりんぎ"}
+無限基数 $\kappa$ について、木 $T$ が **$\kappa$-ススリン木**であるとは、$\lvert T\rvert=\kappa$ であり、$T$ のすべての鎖とすべての反鎖の濃度が $\kappa$ 未満であることをいう。$\omega_{1}$-ススリン木を単に**ススリン木**という。
+:::
+
+::: intuition
+濃度 $\kappa$ の木なのに、「縦にも（鎖）横にも（反鎖）」$\kappa$ 個並ばない。ススリン線（\ref{set:suslin-line}）の「可算鎖条件をみたすのに可分でない」という性質を木に翻訳したものであり、実際 $\omega_{1}$ では両者の存在は同値になる（\ref{set:suslin-tree-line}）。
+:::
+
+::: supplement
+**$\kappa$ が特異なとき.** $\kappa$ が特異基数なら $\kappa$-ススリン木は ZFC で存在し、面白みがない。実際、$\mu=\cf(\kappa)<\kappa$ とし共終写像 $f\colon\mu\to\kappa$ をとって
+$$
+T=\{\langle i,\xi\rangle\mid i<\mu,\ \xi<f(i)\},\qquad\langle i,\xi\rangle<\langle j,\eta\rangle\iff i=j\land\xi<\eta
+$$
+とする（順序数 $f(i)$ を $\mu$ 個「横に並べた」木）。$\langle i,\xi\rangle$ の前者は $\langle i,\zeta\rangle$（$\zeta<\xi$）で整列しているので木である。
+- *$\lvert T\rvert=\kappa$*：$T\subseteq\mu\times\kappa$ より $\lvert T\rvert\le\kappa$。任意の基数 $\lambda<\kappa$ について、$f$ の共終性から $\lambda\le f(i)$ となる $i$ があり、$\xi\mapsto\langle i,\xi\rangle$ は $\lambda$ から $T$ への単射なので $\lvert T\rvert\ge\lambda$。$\kappa$ は極限基数（特異基数は後続基数でない：\ref{set:successor-regular}）なので $\lvert T\rvert\ge\sup_{\lambda<\kappa}\lambda=\kappa$。
+- *鎖*：異なる $i$ をもつ 2 元は比較不能なので、鎖は 1 つの $\{i\}\times f(i)$ に含まれ、濃度 $\le\lvert f(i)\rvert<\kappa$。
+- *反鎖*：同じ $i$ をもつ 2 元は比較可能なので、反鎖は各 $i$ から高々 1 元しか含まず、濃度 $\le\mu<\kappa$。
+
+このため以下では $\kappa$ が**正則**の場合だけを考える。
+:::
+
+::: definition κ-木 {#set:kappa-tree keywords="kappa-tree" index="κ-木|かっぱぎ"}
+$\kappa$ を正則基数とする。木 $T$ が **$\kappa$-木**であるとは、$\operatorname{ht}(T)=\kappa$ であり、すべての $\alpha<\kappa$ について $\lvert\operatorname{Lev}_{\alpha}(T)\rvert<\kappa$ となることをいう。
+:::
+
+::: intuition
+高さはちょうど $\kappa$ で、各レベルは「細い」（$\kappa$ 未満）木。高さの方向には $\kappa$ 段あるので、全体の大きさはちょうど $\kappa$ になる（次の補題）。
+:::
+
+::: example
+- 正則基数 $\kappa$ 自身（通常の順序）は $\kappa$-木で、各レベルは 1 点である。
+- $\omega$-木とは、高さ $\omega$ で各レベルが有限の木のことである。完全二分木 ${}^{<\omega}2$ は $\omega$-木である。
+- 完全二分木 ${}^{<\omega_{1}}2$ は $\omega_{1}$-木ではない：$\operatorname{Lev}_{\omega}={}^{\omega}2$ は非可算である。
+:::
+
+::: lemma κ-木の濃度 {#set:kappa-tree-size keywords="a kappa-tree has cardinality kappa"}
+（AC）$\kappa$ が正則基数で $T$ が $\kappa$-木ならば $\lvert T\rvert=\kappa$。
+:::
+
+::: proof
+**Step 1（$\le$）.** \ref{set:tree-basic} (4) より $T=\bigcup_{\alpha<\kappa}\operatorname{Lev}_{\alpha}(T)$ で、各レベルの濃度は $<\kappa\le\kappa$ である。\ref{set:union-bound} より $\lvert T\rvert\le\kappa$。
+
+**Step 2（$\ge$）.** \ref{set:tree-basic} (4) より各 $\alpha<\kappa$ で $\operatorname{Lev}_{\alpha}(T)\ne\varnothing$。選択公理により各 $\alpha$ について $x_{\alpha}\in\operatorname{Lev}_{\alpha}(T)$ を選ぶと、レベルは互いに素なので $\alpha\mapsto x_{\alpha}$ は単射 $\kappa\to T$。よって $\lvert T\rvert\ge\kappa$。
+
+::: hypcheck
+- **選択公理**：Step 1 の \ref{set:union-bound} と Step 2 の選択で使った。
+:::
+:::
+
+::: lemma κ-ススリン木は κ-木 {#set:suslin-is-kappa-tree keywords="every kappa-Suslin tree is a kappa-tree"}
+（AC）$\kappa$ を正則基数とする。任意の $\kappa$-ススリン木は $\kappa$-木である。
+:::
+
+::: intuition
+高さが $\kappa$ を超えると、第 $\kappa$ レベルの点の下に長さ $\kappa$ の鎖ができてしまう。高さが $\kappa$ に満たないと、「細い」レベルが $\kappa$ 個未満しかなく、正則性から全体が $\kappa$ 個に届かない。
+:::
+
+::: proof
+$T$ を $\kappa$-ススリン木とする。
+
+**Step 1（$\operatorname{Lev}_{\kappa}(T)=\varnothing$）.** $x\in\operatorname{Lev}_{\kappa}(T)$ があったとすると、$\operatorname{pred}_{T}(x)$ は $\kappa$ と順序同型な鎖であり、濃度 $\kappa$ をもつ。これは鎖の濃度が $<\kappa$ であることに反する。
+
+**Step 2（$\operatorname{ht}(T)\le\kappa$）.** $\operatorname{ht}(T)>\kappa$ なら \ref{set:tree-basic} (4) より $\operatorname{Lev}_{\kappa}(T)\ne\varnothing$ となり Step 1 に反する。
+
+**Step 3（各レベルは小さい）.** \ref{set:tree-basic} (2) より各 $\operatorname{Lev}_{\alpha}(T)$ は反鎖なので、$\lvert\operatorname{Lev}_{\alpha}(T)\rvert<\kappa$。
+
+**Step 4（$\operatorname{ht}(T)=\kappa$）.** $\rho=\operatorname{ht}(T)<\kappa$ と仮定する。$T=\bigcup_{\alpha<\rho}\operatorname{Lev}_{\alpha}(T)$ は、$\lvert\rho\rvert<\kappa$ 個の、濃度 $<\kappa$ の集合の和集合なので、$\kappa$ の正則性と \ref{set:cf-union} より $\lvert T\rvert<\kappa$。これは $\lvert T\rvert=\kappa$ に反する。Step 2 と合わせて $\operatorname{ht}(T)=\kappa$。
+
+::: hypcheck
+- **反鎖の小ささ**：Step 3 で使った。**鎖の小ささ**：Step 1 で使った。
+- **$\kappa$ の正則性**と**選択公理**：Step 4 で \ref{set:cf-union} を適用するのに使った。
+:::
+:::
+
+## ケーニッヒの補題 {#set:sec-konig-lemma}
+
+::: lemma ケーニッヒの補題 {#set:konig-tree-lemma keywords="König's lemma, Konig's infinity lemma" index="ケーニッヒの補題|けーにっひのほだい, 無限補題|むげんほだい"}
+（AC）$T$ が $\omega$-木ならば、$T$ は無限の鎖をもつ。特に $\omega$-ススリン木は存在しない。
+:::
+
+::: intuition
+各レベルが有限なので、根の方から「上に無限個の点が残っている」点を選び続けることができる。有限個に分けた無限集合のどれかは無限だからである。こうして選んだ点の列が無限の枝になる。
+:::
+
+::: proof
+$x\in T$ に対し $U(x)=\{y\in T\mid x\le y\}$ とおく。
+
+**Step 1（$T$ は無限）.** \ref{set:tree-basic} (4) より各 $n<\omega$ で $\operatorname{Lev}_{n}(T)\ne\varnothing$ であり、レベルは互いに素なので $T$ は無限集合である。
+
+**Step 2（分割）.** 各 $n<\omega$ と $x\in\operatorname{Lev}_{n}(T)$ について
+$$
+U(x)=\{x\}\cup\bigcup\{U(z)\mid z\in\operatorname{Lev}_{n+1}(T),\ x<z\}
+\label{set:eq-konig-split}
+$$
+が成り立つ。$\supseteq$ は明らか。$y\in U(x)$, $y\ne x$ とすると $x<y$ で、\ref{set:tree-basic} (2) より $\operatorname{ht}(y)>n$、すなわち $\operatorname{ht}(y)\ge n+1$。$\operatorname{ht}(y)=n+1$ なら $z=y$、そうでなければ $z=y\restr{(n+1)}$（\ref{set:tree-basic} (1)）とおくと $z\le y$ かつ $z\in\operatorname{Lev}_{n+1}(T)$。$x$ と $z$ はともに $\le y$ なので比較可能（\ref{set:tree-basic} (3)）で、高さが $n<n+1$ なので $x<z$。よって $y\in U(z)$。同様に、$T=\bigcup\{U(z)\mid z\in\operatorname{Lev}_{0}(T)\}$（各 $y$ は $\operatorname{Lev}_{0}$ の元 $y\restr{0}$ または自分自身の上にある）。
+
+**Step 3（無限の上方をもつ点の選択）.** 有限個の有限集合の和は有限である（\ref{set:finite-basic}）。Step 1 と Step 2 の最後の式、および $\operatorname{Lev}_{0}(T)$ が有限であることから、$U(x_{0})$ が無限となる $x_{0}\in\operatorname{Lev}_{0}(T)$ がある。$x_{n}\in\operatorname{Lev}_{n}(T)$ で $U(x_{n})$ が無限なものが与えられたとき、\eqref{set:eq-konig-split} の右辺は有限集合 $\{x_{n}\}$ と有限個（$\operatorname{Lev}_{n+1}(T)$ は有限）の $U(z)$ の和なので、$U(z)$ が無限となる $z\in\operatorname{Lev}_{n+1}(T)$, $z>x_{n}$ がある。**選択公理**（$T$ の整列順序を 1 つ固定し、その中で最小のものをとる）によってそのような $z$ を 1 つ選び $x_{n+1}$ とする。$\omega$ 上の再帰（\ref{set:recursion-on-ordinal}）により列 $\langle x_{n}\mid n<\omega\rangle$ が得られる。
+
+**Step 4（無限の鎖）.** 作り方から $x_{0}<x_{1}<x_{2}<\cdots$ であり、推移律より $m<n\Rightarrow x_{m}<x_{n}$。よって $C=\{x_{n}\mid n<\omega\}$ は鎖である。$x_{n}$ は高さが $n$ で互いに異なるので $C$ は無限である。
+
+**Step 5（後半）.** $\omega$-ススリン木 $T$ があれば、\ref{set:suslin-is-kappa-tree}（$\omega$ は正則：\ref{set:omega-regular}）より $\omega$-木であり、前半より無限の鎖をもつ。これは鎖が有限であることに反する。
+
+::: hypcheck
+- **各レベルが有限であること**：Step 3 の「有限個の和」で本質的に使った。レベルが無限なら、無限の上方をもつ点がないこともありうる（補足）。
+- **選択公理**：Step 3 で $x_{n+1}$ を選ぶのに使った。$T$ にあらかじめ整列順序が与えられていれば（たとえば $T\subseteq{}^{<\omega}\omega$ のとき）不要である。
+- **$\omega$ 上の再帰**：Step 3 で使った。
+:::
+:::
+
+::: supplement
+**前提を変えると.** レベルの有限性は外せない。$T=\{\varnothing\}\cup\{\langle n,0,0,\dots,0\rangle\text{（長さ }k\le n+1)\}$、すなわち根の上に長さ $1,2,3,\dots$ の枝を 1 本ずつ無限個生やした ${}^{<\omega}\omega$ の部分木は高さ $\omega$ だが、$\operatorname{Lev}_{1}$ が無限で、無限の鎖をもたない（各枝は有限）。
+
+**$\omega$ と $\omega_{1}$ の違い.** \ref{set:konig-tree-lemma} は反鎖について何も仮定していないので、「$\omega$-アロンシャイン木は存在しない」というより強い主張を示している（次節）。ところが $\omega_{1}$ ではこの類似は成り立たない（\ref{set:aronszajn-exists}）。
+:::
+
+## アロンシャイン木 {#set:sec-aronszajn}
+
+::: definition アロンシャイン木 {#set:aronszajn-tree keywords="Aronszajn tree, kappa-Aronszajn tree" index="アロンシャイン木|あろんしゃいんぎ, κ-アロンシャイン木|かっぱあろんしゃいんぎ"}
+$\kappa$ を正則基数とする。$\kappa$-木 $T$ のすべての鎖の濃度が $\kappa$ 未満であるとき、$T$ を **$\kappa$-アロンシャイン木**という。$\omega_{1}$-アロンシャイン木を単に**アロンシャイン木**という。
+:::
+
+::: intuition
+高さ $\kappa$ で各レベルが細いのに、根から頂上まで届く枝が 1 本もない木。\ref{set:suslin-is-kappa-tree} より $\kappa$-ススリン木は $\kappa$-アロンシャイン木であり、\ref{set:konig-tree-lemma} は $\omega$-アロンシャイン木が存在しないことを述べている。
+:::
+
+::: theorem アロンシャイン木の存在 {#set:aronszajn-exists keywords="existence of an Aronszajn tree, Aronszajn's theorem" index="アロンシャイン木の存在|あろんしゃいんぎのそんざい"}
+（AC）$\omega_{1}$-アロンシャイン木が存在する。
+:::
+
+::: intuition
+長さ可算の**単射**な自然数列 $s\colon\alpha\to\omega$ を延長で並べた木 $T$ には、非可算の枝がない（あれば $\omega_{1}$ から $\omega$ への単射ができる）。しかし $T$ は各レベルが非可算なので $\omega_{1}$-木ではない。そこで各レベル $\alpha$ から、ある代表 $s_{\alpha}$ と「有限個の値しか違わない」ものだけを残す。有限個の修正の仕方は可算通りしかないのでレベルは可算になる。代表の列 $\langle s_{\alpha}\rangle$ を互いに整合的に（有限の違いを除いて延長になるように）作れるかが鍵であり、極限段階で「値域の外に無限個の自然数を残しておく」という工夫が要る。
+:::
+
+::: proof
+**Step 1（大きな木 $T$）.** $T=\{s\in{}^{<\omega_{1}}\omega\mid s\text{ は単射}\}$ に延長の順序（$s<t\iff s\subsetneq t$）を入れる。単射の制限は単射なので $T$ は完全 $\omega$ 分木 ${}^{<\omega_{1}}\omega$ の部分木であり、\ref{set:tree-basic} (5) と完全分木の例より $s\in T$ の高さは $\dom s$、$\operatorname{Lev}_{\alpha}(T)=\{s\in{}^{\alpha}\omega\mid s\text{ は単射}\}$ である。
+
+**Step 2（$T$ の鎖は可算）.** $C\subseteq T$ を鎖とし、$u=\bigcup C$ とおく。$C$ の任意の 2 元は一方が他方の延長なので、$u$ は関数であり（$\langle\xi,a\rangle,\langle\xi,b\rangle\in u$ なら両者を含む共通の $t\in C$ があり $a=b$）、同様に $u$ は単射である（$u(\xi)=u(\eta)$ なら $\xi,\eta\in\dom t$ となる共通の $t\in C$ があり $t$ の単射性から $\xi=\eta$）。$C$ が非可算とすると、\ref{set:tree-chain-well-ordered} より $\{\dom t\mid t\in C\}$ は $\omega_{1}$ の非可算部分集合であり、$\omega_{1}$ の正則性から $\omega_{1}$ で非有界、したがって $\dom u=\bigcup_{t\in C}\dom t=\omega_{1}$。すると $u$ は $\omega_{1}$ から $\omega$ への単射となり、$\omega_{1}$ が非可算であることに反する。よって $T$ の鎖はすべて可算である。
+
+**Step 3（有限差の関係）.** $s,t\in{}^{\alpha}\omega$ について、$\{\xi<\alpha\mid s(\xi)\ne t(\xi)\}$ が有限のとき $s\equiv^{*}t$ と書く。有限集合の和は有限なので $\equiv^{*}$ は同値関係であり、$\xi\le\alpha$ について $s\equiv^{*}t\Rightarrow s\restr{\xi}\equiv^{*}t\restr{\xi}$。
+
+**Step 4（代表の列の性質）.** 次の (i)〜(iii) を満たす $s_{\alpha}$（$\alpha<\omega_{1}$）を後の Step 7〜9 で構成する。
+- (i) $s_{\alpha}\in{}^{\alpha}\omega$ で、$s_{\alpha}$ は単射。
+- (ii) $\alpha<\beta<\omega_{1}$ ならば $s_{\alpha}\equiv^{*}s_{\beta}\restr{\alpha}$。
+- (iii) $\omega\setminus\ran s_{\alpha}$ は無限集合。
+
+そのうえで
+$$
+T^{*}=\bigcup_{\alpha<\omega_{1}}\{t\in\operatorname{Lev}_{\alpha}(T)\mid t\equiv^{*}s_{\alpha}\}
+$$
+とおく。
+
+**Step 5（$T^{*}$ は $\omega_{1}$-木）.**
+- *部分木*：$t\in T^{*}\cap\operatorname{Lev}_{\beta}(T)$, $\alpha<\beta$ とする。$t\restr{\alpha}$ は単射で、Step 3 と (ii) より $t\restr{\alpha}\equiv^{*}s_{\beta}\restr{\alpha}\equiv^{*}s_{\alpha}$。よって $t\restr{\alpha}\in T^{*}$。$T^{*}$ は $T$ の部分木であり、\ref{set:tree-basic} (5) より $\operatorname{Lev}_{\alpha}(T^{*})=\{t\in\operatorname{Lev}_{\alpha}(T)\mid t\equiv^{*}s_{\alpha}\}$。
+- *高さ*：(i) より $s_{\alpha}\in\operatorname{Lev}_{\alpha}(T^{*})$ なので、すべての $\alpha<\omega_{1}$ でレベルは空でない。$T^{*}\subseteq{}^{<\omega_{1}}\omega$ なので $\operatorname{Lev}_{\omega_{1}}(T^{*})=\varnothing$。よって \ref{set:tree-basic} (4) より $\operatorname{ht}(T^{*})=\omega_{1}$。
+- *レベルは可算*：$t\equiv^{*}s_{\alpha}$ となる $t\in{}^{\alpha}\omega$ は、有限集合 $D_{t}=\{\xi\mid t(\xi)\ne s_{\alpha}(\xi)\}$ 上の制限 $t\restr{D_{t}}$ から $t=(s_{\alpha}\restr{(\alpha\setminus D_{t})})\cup t\restr{D_{t}}$ として復元できる。したがって $t\mapsto t\restr{D_{t}}$ は、$\alpha\times\omega$ の有限部分集合全体への単射である。$\alpha\times\omega$ は可算であり（$\alpha<\omega_{1}$）、可算集合の有限部分集合全体は可算である（有限部分集合をその元の列挙に対応させれば有限列全体 \ref{set:kappa-finite-sequences} に単射される）。よって $\lvert\operatorname{Lev}_{\alpha}(T^{*})\rvert\le\omega$。
+
+**Step 6（$T^{*}$ はアロンシャイン木）.** $T^{*}$ の鎖は $T$ の鎖なので、Step 2 より可算である。Step 5 と合わせて $T^{*}$ は $\omega_{1}$-アロンシャイン木である。
+
+残るのは (i)〜(iii) を満たす $s_{\alpha}$ の構成である。**選択公理**により、各可算極限順序数 $\gamma$ について狭義増加で $\sup_{n}\alpha^{\gamma}_{n}=\gamma$ となる列 $\langle\alpha^{\gamma}_{n}\mid n<\omega\rangle$ を 1 つずつ選んでおく（$\cf(\gamma)=\omega$ と \ref{set:cf-increasing}）。以下、$s_{\alpha}$ を $\alpha$ についての超限再帰（\ref{set:transfinite-recursion}）で定め、(i)〜(iii)（(ii) は $\beta$ 以下の添字について）が保たれることを帰納法で確かめる。
+
+**Step 7（$\alpha=0$ と後続段階）.** $s_{0}=\varnothing$ とおく。(i)(iii) は明らかで (ii) は空虚に成り立つ。$s_{\alpha}$ が与えられたとき、$n=\min(\omega\setminus\ran s_{\alpha})$（(iii) より存在）として $s_{\alpha+1}=s_{\alpha}\cup\{\langle\alpha,n\rangle\}$ とおく。
+- (i)：$n\notin\ran s_{\alpha}$ なので単射。
+- (iii)：$\omega\setminus\ran s_{\alpha+1}=(\omega\setminus\ran s_{\alpha})\setminus\{n\}$ は無限。
+- (ii)：$\xi<\alpha+1$ について、$\xi=\alpha$ なら $s_{\alpha+1}\restr{\alpha}=s_{\alpha}$、$\xi<\alpha$ なら $s_{\alpha+1}\restr{\xi}=s_{\alpha}\restr{\xi}\equiv^{*}s_{\xi}$（帰納法の仮定）。
+
+**Step 8（極限段階：まず整合的な単射 $t$ を作る）.** $\gamma$ を可算極限順序数とし、$\alpha<\beta<\gamma$ について (i)〜(iii) が成り立つとする。$\alpha_{n}=\alpha^{\gamma}_{n}$ と書く。$n$ についての再帰で、単射 $t_{n}\colon\alpha_{n}\to\omega$ で $t_{n}\equiv^{*}s_{\alpha_{n}}$ かつ $t_{n+1}\restr{\alpha_{n}}=t_{n}$ となるものを作る。
+
+$t_{0}=s_{\alpha_{0}}$ とする。$t_{n}$ が与えられたとし、$u=s_{\alpha_{n+1}}$ とおく。(ii) より $u\restr{\alpha_{n}}\equiv^{*}s_{\alpha_{n}}\equiv^{*}t_{n}$ なので、$F=\{\xi<\alpha_{n}\mid t_{n}(\xi)\ne u(\xi)\}$ は有限である。
+- *衝突する点*：$G=\{\xi\in[\alpha_{n},\alpha_{n+1})\mid u(\xi)\in t_{n}[F]\}$ とおく。$u$ は単射なので $\lvert G\rvert\le\lvert F\rvert$ で、$G$ は有限。
+- *新しい値*：$\ran t_{n}=u[\alpha_{n}\setminus F]\cup t_{n}[F]$ なので $\ran t_{n}\cup\ran u\subseteq\ran u\cup t_{n}[F]$ であり、(iii) より $\omega\setminus(\ran u\cup\ran t_{n})$ は無限。その小さい方から $\lvert G\rvert$ 個の元を、$G$ の元に小さい順に割り当てる単射 $g\colon G\to\omega\setminus(\ran u\cup\ran t_{n})$ をとる（最小元をとるだけなので選択は要らない）。
+- *定義*：$t_{n+1}=t_{n}\cup g\cup u\restr{([\alpha_{n},\alpha_{n+1})\setminus G)}$。
+
+$t_{n+1}$ が単射であることを確かめる。3 つの部分はそれぞれ単射である。$g$ の値は $\ran t_{n}\cup\ran u$ に入らないので他の部分の値と重ならない。$\xi\in[\alpha_{n},\alpha_{n+1})\setminus G$ での値 $u(\xi)$ は、$u$ の単射性から $u[\alpha_{n}\setminus F]$ に入らず、$G$ の定義から $t_{n}[F]$ にも入らないので、$\ran t_{n}$ と重ならない。また $t_{n+1}$ と $u$ が異なるのは $F\cup G$ 上だけなので $t_{n+1}\equiv^{*}u=s_{\alpha_{n+1}}$ であり、$t_{n+1}\restr{\alpha_{n}}=t_{n}$。
+
+$t=\bigcup_{n}t_{n}$ とおくと、$t_{n}$ は互いに延長の関係にある単射なので、$t$ は $\sup_{n}\alpha_{n}=\gamma$ から $\omega$ への単射であり、$t\restr{\alpha_{n}}=t_{n}$。任意の $\alpha<\gamma$ について $\alpha\le\alpha_{n}$ となる $n$ があり、
+$$
+t\restr{\alpha}=t_{n}\restr{\alpha}\equiv^{*}s_{\alpha_{n}}\restr{\alpha}\equiv^{*}s_{\alpha}
+$$
+（Step 3 と (ii)）。よって $t$ は (i) と (ii) を満たす。しかし (iii) は成り立つとは限らない（たとえば $\ran t=\omega$ となりうる）。
+
+**Step 9（極限段階：値域の外を空ける）.** $A=\{\alpha_{n}\mid n<\omega\}$ とし、
+$$
+s_{\gamma}(\alpha_{n})=t(\alpha_{2n})\quad(n<\omega),\qquad s_{\gamma}(\xi)=t(\xi)\quad(\xi\in\gamma\setminus A)
+$$
+と定める。
+- (i)：$\ran s_{\gamma}=t[\gamma\setminus A]\cup\{t(\alpha_{2n})\mid n<\omega\}$ であり、$t$ の単射性から、$n\mapsto t(\alpha_{2n})$ は単射でその値は $t[\gamma\setminus A]$ に入らない。$s_{\gamma}\restr{(\gamma\setminus A)}=t\restr{(\gamma\setminus A)}$ も単射なので、$s_{\gamma}$ は単射である。
+- (iii)：$t$ の単射性から、値 $t(\alpha_{2n+1})$（$n<\omega$）は互いに異なり、$t[\gamma\setminus A]$ にも $\{t(\alpha_{2m})\mid m<\omega\}$ にも入らない。よって $\omega\setminus\ran s_{\gamma}$ は無限集合 $\{t(\alpha_{2n+1})\mid n<\omega\}$ を含む。
+- (ii)：$\alpha<\gamma$ とする。$\alpha_{n}$ は狭義増加で $\gamma$ に共終なので、$\alpha_{n}<\alpha$ となる $n$ は有限個しかない。$s_{\gamma}\restr{\alpha}$ と $t\restr{\alpha}$ が異なるのは $A\cap\alpha$ 上だけなので $s_{\gamma}\restr{\alpha}\equiv^{*}t\restr{\alpha}\equiv^{*}s_{\alpha}$（Step 8）。
+
+以上で $s_{\gamma}$ についても (i)〜(iii) が成り立ち、構成が完了する。
+
+::: hypcheck
+- **選択公理**：Step 8 の前で、各可算極限順序数 $\gamma$ に共終列 $\langle\alpha^{\gamma}_{n}\rangle$ を**同時に選ぶ**のに使った。また Step 2 の「$\omega_{1}$ の正則性」（\ref{set:successor-regular}）と Step 5 の可算性の評価（$\alpha$ と $\omega$ の間の全単射の選択）にも使っている。再帰の各段階（Step 7〜9）自体は、最小元をとる操作だけで選択を行っていない。
+- **(iii) の役割**：Step 7 で新しい値 $n$ をとるのと、Step 8 で衝突点 $G$ に新しい値を割り当てるのに使った。(iii) を保つために Step 9 の修正が必要になる。
+- **$\omega_{1}$ が非可算であること**：Step 2 の核心（$\omega_{1}$ から $\omega$ への単射はない）。
+- **超限再帰**（\ref{set:transfinite-recursion}）と **$\omega$ 上の再帰**：Step 7〜9 と Step 8 の $t_{n}$ の構成で使った。
+:::
+:::
+
+::: supplement
+**この構成で得られる木はススリン木ではない.** $\{s\in{}^{<\omega_{1}}\omega\mid s\text{ は単射}\}$ の部分木であるアロンシャイン木 $S$ は、決してススリン木にならない。実際、$n<\omega$ について $A_{n}=\{s\in S\mid\dom s=\alpha+1\text{ となる }\alpha\text{ があり }s(\alpha)=n\}$ は反鎖である：$s\subsetneq t$ がともに $A_{n}$ に入り $\dom s=\alpha+1$, $\dom t=\beta+1$ とすると $\alpha<\beta$ で $t(\alpha)=s(\alpha)=n=t(\beta)$ となり $t$ の単射性に反する。一方、後続順序数のレベルは非可算個あって空でないので $\bigcup_{n}A_{n}$ は非可算であり、可算個の可算集合の和は可算（\ref{set:union-bound}）なので、ある $A_{n}$ は非可算の反鎖である。
+
+**特殊アロンシャイン木.** 可算個の反鎖の和で表せるアロンシャイン木を**特殊**（special）という。上の議論は $S$ が特殊であることを示しており、特殊なアロンシャイン木は明らかにススリン木ではない。MA $+\lnot$CH のもとではすべてのアロンシャイン木が特殊になる（Baumgartner の定理。Kunen, *Set Theory*, 第 II 章演習 41）。
+
+**より大きな $\kappa$.** $\kappa=\lambda^{+}$ で $\lambda$ が正則かつ $2^{<\lambda}=\lambda$ ならば、上の証明の $\omega$ を $\lambda$ に置き換え、(iii) の代わりに「各 $s_{\alpha}$ の値域が $\lambda$ の非定常集合（\ref{set:stationary}）である」ことを要求する修正により $\kappa$-アロンシャイン木が構成できる（Specker。Kunen 第 II 章演習 37）。特に CH のもとで $\omega_{2}$-アロンシャイン木が存在する。一方、$\omega_{2}$-アロンシャイン木が存在しないことは、弱コンパクト基数の存在の無矛盾性を仮定すれば ZFC と無矛盾である（Mitchell, 1972）。強到達不能基数 $\kappa$ について $\kappa$-アロンシャイン木が存在しないことは、$\kappa$ が弱コンパクト基数であることと同値である（Kunen 第 II 章演習 49 参照）。
+:::
+
+## よく刈り込まれた木 {#set:sec-well-pruned}
+
+::: definition よく刈り込まれた κ-木 {#set:well-pruned keywords="well-pruned kappa-tree, normal tree" index="よく刈り込まれた木|よくかりこまれたき"}
+$\kappa$ を正則基数とする。$\kappa$-木 $T$ が**よく刈り込まれている**とは、$\lvert\operatorname{Lev}_{0}(T)\rvert=1$ であり、かつ
+$$
+\forall x\in T\ \forall\alpha\ \bigl(\operatorname{ht}(x,T)<\alpha<\kappa\to\exists y\in\operatorname{Lev}_{\alpha}(T)\ (x<y)\bigr)
+\label{set:eq-well-pruned}
+$$
+が成り立つことをいう。
+:::
+
+::: intuition
+根がただ一つで、どの点からも「上に伸びる余地」がすべてのレベルに残っている木。実を結ばない枝（途中で止まる枝）を刈り取った木である。$\operatorname{Lev}_{0}(T)=\{r\}$ なら、\ref{set:tree-basic} (1) より $r$ はすべての元の $\le$ に位置する（$r$ は $\langle T,\ge\rangle$ の最大元）。
+:::
+
+::: lemma よく刈り込まれた部分木の存在 {#set:well-pruned-exists keywords="every kappa-tree has a well-pruned kappa-subtree"}
+（AC）$\kappa$ が正則基数で $T$ が $\kappa$-木ならば、$T$ はよく刈り込まれた $\kappa$-木である部分木をもつ。
+:::
+
+::: intuition
+上に $\kappa$ 個の点をもつ点だけを残す。$\kappa$ 個の点が上にあれば、それを「細い」レベルで分けたどこかに再び $\kappa$ 個が集まるので、残した点からはすべてのレベルへ伸びていける。
+:::
+
+::: proof
+$x\in T$ に対し $T_{>x}=\{z\in T\mid x<z\}$ とおき、$T'=\{x\in T\mid\lvert T_{>x}\rvert=\kappa\}$ とする。\ref{set:kappa-tree-size} より $\lvert T\rvert=\kappa$ なので、$\lvert T_{>x}\rvert\le\kappa$ は常に成り立つ。
+
+**Step 0（小さな部分の評価）.** $\alpha<\kappa$ について $T_{\le\alpha}=\bigcup_{\beta\le\alpha}\operatorname{Lev}_{\beta}(T)$ は $\lvert\alpha+1\rvert<\kappa$ 個の、濃度 $<\kappa$ の集合の和なので、$\kappa$ の正則性と \ref{set:cf-union} より $\lvert T_{\le\alpha}\rvert<\kappa$。
+
+**Step 1（$T'$ は部分木）.** $x\in T'$, $y<x$ とすると、推移律より $T_{>x}\subseteq T_{>y}$ なので $\lvert T_{>y}\rvert\ge\kappa$、よって $y\in T'$。
+
+**Step 2（$T'$ で \eqref{set:eq-well-pruned} が成り立つ）.** $x\in T'$ と $\operatorname{ht}(x,T)<\alpha<\kappa$ をとり、$Y=\{y\in\operatorname{Lev}_{\alpha}(T)\mid x<y\}$、$Z=\{z\in T_{>x}\mid\operatorname{ht}(z,T)>\alpha\}$ とおく。
+- *$\lvert Z\rvert=\kappa$*：$T_{>x}\setminus Z\subseteq T_{\le\alpha}$ は Step 0 より濃度 $<\kappa$。$\lvert Z\rvert<\kappa$ なら、$\kappa$ 未満の濃度の 2 つの集合の和 $T_{>x}$ も濃度 $<\kappa$（\ref{set:cf-union}）となり $x\in T'$ に反する。
+- *$Z\subseteq\bigcup_{y\in Y}T_{>y}$*：$z\in Z$ について $y=z\restr{\alpha}$（\ref{set:tree-basic} (1)）とおく。$x$ と $y$ はともに $<z$ なので比較可能で、高さは $\operatorname{ht}(x)<\alpha=\operatorname{ht}(y)$ だから $x<y$。よって $y\in Y$ かつ $z\in T_{>y}$。
+- *結論*：$\lvert Y\rvert\le\lvert\operatorname{Lev}_{\alpha}(T)\rvert<\kappa$ なので、すべての $y\in Y$ で $\lvert T_{>y}\rvert<\kappa$ なら、\ref{set:cf-union} より $\lvert Z\rvert<\kappa$ となって矛盾する。よって $\lvert T_{>y}\rvert=\kappa$ となる $y\in Y$、すなわち $y\in T'\cap\operatorname{Lev}_{\alpha}(T)$ で $x<y$ となるものがある。\ref{set:tree-basic} (5) より $y\in\operatorname{Lev}_{\alpha}(T')$。
+
+**Step 3（根の選択）.** \ref{set:tree-basic} (1) より $T=\bigcup_{r\in\operatorname{Lev}_{0}(T)}(\{r\}\cup T_{>r})$。$\lvert\operatorname{Lev}_{0}(T)\rvert<\kappa$ で $\lvert T\rvert=\kappa$ なので、Step 2 と同じ議論から $\lvert T_{>r}\rvert=\kappa$ となる $r\in\operatorname{Lev}_{0}(T)$ がある。そのような $r$ を 1 つとり、$T''=\{y\in T'\mid r\le y\}$ とおく。
+
+**Step 4（$T''$ はよく刈り込まれた $\kappa$-木）.**
+- *部分木*：$y\in T''$, $w<y$ とする。Step 1 より $w\in T'$。$r$ と $w$ はともに $\le y$ なので比較可能で、$\operatorname{ht}(r)=0$ だから $w<r$ はありえず、$r\le w$。よって $w\in T''$。
+- *根*：$\operatorname{Lev}_{0}(T'')$ の元 $w$ は $r\le w$ かつ高さ $0$ なので $w=r$（\ref{set:tree-basic} (2)）。よって $\operatorname{Lev}_{0}(T'')=\{r\}$。
+- *\eqref{set:eq-well-pruned}*：$x\in T''$, $\operatorname{ht}(x)<\alpha<\kappa$ なら、Step 2 より $x<y$ となる $y\in T'\cap\operatorname{Lev}_{\alpha}(T)$ があり、$r\le x<y$ なので $y\in T''$。
+- *$\kappa$-木*：$r$ に \eqref{set:eq-well-pruned} を適用すると、すべての $0<\alpha<\kappa$ で $\operatorname{Lev}_{\alpha}(T'')\ne\varnothing$。$\operatorname{Lev}_{\alpha}(T'')\subseteq\operatorname{Lev}_{\alpha}(T)$ なので $\operatorname{Lev}_{\kappa}(T'')=\varnothing$ であり各レベルは濃度 $<\kappa$。よって $\operatorname{ht}(T'')=\kappa$ で、$T''$ は $\kappa$-木である。
+
+::: hypcheck
+- **$\kappa$ の正則性**：Step 0 と Step 2・3 で \ref{set:cf-union} を使うのに本質的に使った。
+- **各レベルが $\kappa$ 未満であること**（$\kappa$-木）：Step 0, Step 2 の結論, Step 3 で使った。
+- **選択公理**：\ref{set:kappa-tree-size} と \ref{set:cf-union} を通して使った。
+:::
+:::
+
+::: supplement
+部分木の鎖・反鎖はもとの木の鎖・反鎖なので、$T$ が $\kappa$-ススリン木（または $\kappa$-アロンシャイン木）ならその $\kappa$-部分木 $T''$ も $\kappa$-ススリン木（$\kappa$-アロンシャイン木）である（$\lvert T''\rvert=\kappa$ は \ref{set:kappa-tree-size}）。したがってススリン木・アロンシャイン木の存在を論じるときは、はじめからよく刈り込まれていると仮定してよい。
+:::
+
+::: lemma よく刈り込まれたアロンシャイン木の枝分かれ {#set:well-pruned-extend keywords="branching in well-pruned Aronszajn trees"}
+$\kappa$ を正則基数、$T$ をよく刈り込まれた $\kappa$-アロンシャイン木、$x\in T$ とする。このとき、任意の $n<\omega$ に対し、$\alpha>\operatorname{ht}(x,T)$ で
+$$
+\bigl\lvert\{y\in\operatorname{Lev}_{\alpha}(T)\mid y>x\}\bigr\rvert\ge n
+$$
+となるものが存在する。
+:::
+
+::: intuition
+アロンシャイン木では $x$ の上が 1 本の枝であり続けることはできない（そうなると長さ $\kappa$ の鎖ができる）ので、どこかで必ず枝分かれする。枝分かれした各枝の上でも同じことが起こり、しかもよく刈り込まれているので枝は途中で消えない。これを繰り返せば、1 つのレベルに $x$ の上の点をいくらでも多く（有限個）並べられる。
+:::
+
+::: proof
+$n$ についての帰納法で示す。
+
+**Step 1（$n\le1$）.** $n=0$ は自明。$n=1$ は $\alpha=\operatorname{ht}(x)+1<\kappa$（$\kappa$ は極限順序数）として \eqref{set:eq-well-pruned} を使えばよい。
+
+**Step 2（$n=2$）.** $S=\{y\in T\mid y>x\}$ とおく。\eqref{set:eq-well-pruned} より $S$ は $\operatorname{ht}(x)<\alpha<\kappa$ のすべてのレベルと交わり、レベルは互いに素なので $\lvert S\rvert\ge\kappa$（$\alpha\mapsto$「$S\cap\operatorname{Lev}_{\alpha}$ の元」の選択は AC による。あるいは、$S$ が鎖なら $\{\operatorname{ht}(y)\mid y\in S\}$ への全単射 \ref{set:tree-chain-well-ordered} があり、この集合は $\kappa$ の非有界部分集合なので濃度 $\kappa$）。いずれにせよ $S$ が鎖なら濃度 $\kappa$ の鎖となり、$T$ がアロンシャイン木であることに反する。よって比較不能な $y,z\in S$ がある。$\operatorname{ht}(y)\le\operatorname{ht}(z)=\alpha$ としてよい。
+- $\operatorname{ht}(y)=\alpha$ なら $y,z$ は $\operatorname{Lev}_{\alpha}(T)$ の相異なる 2 元で、ともに $>x$。
+- $\operatorname{ht}(y)<\alpha$ なら \eqref{set:eq-well-pruned} より $y<y'$ となる $y'\in\operatorname{Lev}_{\alpha}(T)$ がある。$y'=z$ なら $y<z$ となり比較不能性に反するので $y'\ne z$。$x<y<y'$ なので $y',z$ が求める 2 元である。
+
+いずれの場合も $\alpha>\operatorname{ht}(x)$（$z>x$ より）。
+
+**Step 3（$n\to n+1$, $n\ge2$）.** $\alpha>\operatorname{ht}(x)$ と、$x$ より上にある相異なる $y_{1},\dots,y_{n}\in\operatorname{Lev}_{\alpha}(T)$ をとる。Step 2 を $y_{n}$ に適用して、$\beta>\alpha$ と $y_{n}$ より上にある相異なる $z_{n},z_{n+1}\in\operatorname{Lev}_{\beta}(T)$ をとる。$i<n$ については \eqref{set:eq-well-pruned} により $y_{i}<z_{i}$ となる $z_{i}\in\operatorname{Lev}_{\beta}(T)$ をとる。
+- *相異なる*：$i\ne j$ で $z_{i}=z_{j}$ となるのは、$\{i,j\}=\{n,n+1\}$ 以外では $z_{i}$ の第 $\alpha$ レベルの前者 $z_{i}\restr{\alpha}$ が $y_{i}$ と $y_{j}$（あるいは $y_{i}$ と $y_{n}$）の両方になることを意味し、\ref{set:tree-basic} (1) の一意性と $y_{i}\ne y_{j}$ に反する。$z_{n}\ne z_{n+1}$ は選び方による。
+- *$x$ より上*：$x<y_{i}<z_{i}$（$i\le n$）、$x<y_{n}<z_{n+1}$。
+
+よって $z_{1},\dots,z_{n+1}$ が $n+1$ の場合を与える。
+
+::: hypcheck
+- **アロンシャイン性**（濃度 $\kappa$ の鎖がない）：Step 2 で枝分かれを得るのに本質的に使った。
+- **よく刈り込まれていること**：Step 1, Step 2 の $y'$, Step 3 の $z_{i}$ の存在に使った。刈り込まれていないと、枝分かれしたあと一方の枝が途中で止まってしまうことがある。
+- **\ref{set:tree-basic} (1) の一意性**：Step 3 の相異性に使った。
+- 各段階で有限個の選択しかしていないが、Step 2 の $\lvert S\rvert\ge\kappa$ の評価では鎖の整列性を使えば選択公理は要らない。全体として ZF で成り立つ。
+:::
+:::
+
+::: supplement
+**一般化.** 同じ仮定のもとで、有限の $n$ の代わりに任意の基数 $\lambda<\kappa$ についても、$\alpha>\operatorname{ht}(x)$ で $x$ の上にある第 $\alpha$ レベルの点が $\lambda$ 個以上となるものが存在する（Kunen 第 II 章演習 38）。証明には、$\lambda$ 未満の枝分かれしか起こらないと仮定すると、$\cf(\alpha)=\lambda$ となる各レベル $\alpha$ の手前に「そこから $\alpha$ まで枝分かれしない」段 $q(\alpha)<\alpha$ が見つかることを示し、押し下げ補題（\ref{set:fodor}）で矛盾を導く。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

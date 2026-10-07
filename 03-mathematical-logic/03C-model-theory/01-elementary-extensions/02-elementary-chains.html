@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>初等鎖と保存定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03C-model-theory/01-elementary-extensions/02-elementary-chains.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 初等鎖と保存定理 {#model:page-elementary-chains keywords="diagram, embedding, chain of structures, elementary chain, preservation theorem, Łoś-Tarski theorem, Chang-Łoś-Suszko theorem, universal sentence, universal-existential sentence"}
+
+理論のモデル全体が「部分構造をとる」「鎖の和をとる」といった構成で閉じていることと、その理論が特定の形の文で公理化できることは同値である。本ページでは、図式（\ref{model:atomic-diagram}）とコンパクト性定理を道具に、次の二つの**保存定理**を示す。
+- **ウォシュ–タルスキの定理**（\ref{model:los-tarski}）：部分構造で閉じる $\iff$ 全称文で公理化できる。
+- **チャン–ウォシュ–スシコの定理**（\ref{model:chang-los-suszko}）：鎖の和で閉じる $\iff$ 全称存在文で公理化できる。
+
+途中で、初等鎖の和は各項の初等拡大であるというタルスキ–ヴォートの定理（\ref{model:elementary-chain}）も示す。
+
+## 記法と定義の確認 {#model:sec-chains-notation}
+
+::: notation
+- 部分構造 $\mathcal{N}\subset\mathcal{M}$、埋め込み・初等埋め込み、初等部分構造 $\preccurlyeq$、初等的同値 $\equiv$、言語 $\mathcal{L}_{M}$ と拡大 $\mathcal{M}_{M}$、初等図式 $\mathrm{Eldiag}(\mathcal{M})$ は \ref{model:page-elementary-substructures} のとおり（\ref{model:substructure}, \ref{model:elementary-embedding}, \ref{model:elementary-substructure}, \ref{model:elementary-diagram}）。部分構造は量化子のない論理式を保つ（\ref{model:substructure-qf}）。初等図式のモデルは初等埋め込みを与える（\ref{model:elementary-diagram-lemma}）。
+- 基本記号は $\bot,=,P,\to,\forall$ で、$\neg,\wedge,\vee,\exists$ は略記である（その意味は \ref{logic:abbreviation-semantics}）。**量化子のない論理式**とは $\forall$ を含まない論理式をいう（略記を展開した形で。したがって $\exists$ も含まない）。
+- **全称論理式**とは $\forall x_{1}\cdots\forall x_{n}\,\psi$（$\psi$ は量化子のない論理式、$n\ge0$）の形の論理式、**存在論理式**とは $\exists x_{1}\cdots\exists x_{n}\,\psi$ の形の論理式、**全称存在論理式**とは $\forall x_{1}\cdots\forall x_{m}\,\exists y_{1}\cdots\exists y_{n}\,\psi$ の形の論理式をいう。文であるものをそれぞれ全称文などという。
+- **理論**とは文の集合のことで、$\mathrm{Mod}(T)$ は $T$ のモデル（$\mathcal{L}$ 構造）全体を表す。$T$ が文の集合 $S$ と**同値**であるとは $\mathrm{Mod}(T)=\mathrm{Mod}(S)$ のことをいう。
+- コンパクト性定理（\ref{logic:compactness}）、定数の代入の意味（\ref{logic:constant-substitution-semantics}）、定数の置き換え（\ref{logic:constant-replacement}, \ref{logic:constant-replacement-properties}, \ref{logic:constant-replacement-injective}）、縮小の補題（\ref{logic:reduct-lemma}）、同型は充足を保つこと（\ref{logic:isomorphism-invariance}）を使う。
+- **公理.** $\ZFC$ で議論する。一般の言語のコンパクト性定理は選択公理を使う。
+:::
+
+## 図式と埋め込み {#model:sec-diagram}
+
+::: lemma 埋め込みは量化子のない論理式を保つ {#model:embedding-qf keywords="embeddings preserve quantifier-free formulas"}
+$h\colon\mathcal{M}\to\mathcal{N}$ を埋め込み、$v$ を $\mathcal{M}$ の割り当てとする。
+1. 任意の項 $t$ について $h(t^{\mathcal{M},v})=t^{\mathcal{N},h\circ v}$。
+2. 量化子のない論理式 $\psi$ について $\mathcal{M},v\models\psi\iff\mathcal{N},h\circ v\models\psi$。
+3. 全称論理式 $\varphi$ について、$\mathcal{N},h\circ v\models\varphi$ ならば $\mathcal{M},v\models\varphi$。存在論理式 $\varphi$ について、$\mathcal{M},v\models\varphi$ ならば $\mathcal{N},h\circ v\models\varphi$。
+:::
+
+::: proof
+1. 項に関する帰納法。変数は $h(v(x))=(h\circ v)(x)$、定数と関数記号は埋め込みの条件（定数と関数を保つ）から。
+2. 論理式に関する帰納法。$\bot$ は両辺とも偽。$t=s$ は、1 と $h$ の単射性より $t^{\mathcal{M},v}=s^{\mathcal{M},v}\iff h(t^{\mathcal{M},v})=h(s^{\mathcal{M},v})\iff t^{\mathcal{N},h\circ v}=s^{\mathcal{N},h\circ v}$。$P(\vec{t})$ は、1 と埋め込みの条件（関係について $\iff$）から。$\to$ は帰納法の仮定。
+3. 前半：$\varphi=\forall\vec{x}\,\psi$ とする。$\vec{a}\in M$ を任意にとり、$v'\defeq v[\vec{x}\mapsto\vec{a}]$ とすると $h\circ v'=(h\circ v)[\vec{x}\mapsto h(\vec{a})]$。仮定より $\mathcal{N},h\circ v'\models\psi$、2 より $\mathcal{M},v'\models\psi$。後半：$\varphi=\exists\vec{x}\,\psi$ で $\mathcal{M},v[\vec{x}\mapsto\vec{a}]\models\psi$ なら、2 より $\mathcal{N},(h\circ v)[\vec{x}\mapsto h(\vec{a})]\models\psi$（$\exists$ の意味は \ref{logic:abbreviation-semantics}）。
+:::
+
+::: lemma 埋め込みの像 {#model:embedding-image}
+$h\colon\mathcal{M}\to\mathcal{N}$ が埋め込みなら、$h[M]$ は $\mathcal{N}$ の部分構造の領域であり、その部分構造を $h[\mathcal{M}]$ と書くと、$h$ は $\mathcal{M}$ から $h[\mathcal{M}]$ への同型写像である。
+:::
+
+::: proof
+$h[M]$ は空でなく、$c^{\mathcal{N}}=h(c^{\mathcal{M}})\in h[M]$、$f^{\mathcal{N}}(h(a_{1}),\dots,h(a_{n}))=h(f^{\mathcal{M}}(\vec{a}))\in h[M]$ なので、\ref{model:substructure} の後半により部分構造 $h[\mathcal{M}]$ が定まる。$h\colon M\to h[M]$ は全単射で、定数と関数の条件は上の式、関係の条件は $P^{h[\mathcal{M}]}=P^{\mathcal{N}}\cap h[M]^{n}$ と埋め込みの条件から従う。
+:::
+
+::: definition 図式 {#model:atomic-diagram keywords="diagram, atomic diagram, universal diagram" index="図式|ずしき, 原子図式|げんしずしき"}
+$\mathcal{M}$ を $\mathcal{L}$ 構造とする。$\mathcal{M}_{M}$ で真な $\mathcal{L}_{M}$ の文のうち、原子文と原子文の否定からなるもの全体を $\mathrm{Diag}(\mathcal{M})$ と書き、$\mathcal{M}$ の**図式**（原子図式）という。$\mathcal{M}_{M}$ で真な全称文全体を $\mathrm{Diag}_{\forall}(\mathcal{M})$ と書く。原子文とその否定は量化子のない文なので $\mathrm{Diag}(\mathcal{M})\subseteq\mathrm{Diag}_{\forall}(\mathcal{M})$ である（$n=0$ の全称文）。
+:::
+
+::: lemma 図式のモデルは埋め込みを与える {#model:diagram-lemma keywords="diagram lemma" index="図式の補題|ずしきのほだい"}
+$\mathcal{N}'$ を $\mathrm{Diag}(\mathcal{M})$ のモデルである $\mathcal{L}_{M}$ 構造とし、$h(a)\defeq c_{a}^{\mathcal{N}'}$ とおく。このとき $h$ は $\mathcal{M}$ から $\mathcal{N}'\restr{\mathcal{L}}$ への埋め込みである。
+:::
+
+::: proof
+- 単射性：$a\neq b$ なら $\neg\,c_{a}=c_{b}\in\mathrm{Diag}(\mathcal{M})$ なので $h(a)\neq h(b)$。
+- 定数：$c^{\mathcal{M}}=a$ なら $c=c_{a}\in\mathrm{Diag}(\mathcal{M})$ なので $c^{\mathcal{N}'}=h(a)$。
+- 関数：$f^{\mathcal{M}}(a_{1},\dots,a_{n})=b$ なら $f(c_{a_{1}},\dots,c_{a_{n}})=c_{b}\in\mathrm{Diag}(\mathcal{M})$ なので $f^{\mathcal{N}'}(h(a_{1}),\dots,h(a_{n}))=h(b)$。
+- 関係：$\vec{a}\in P^{\mathcal{M}}$ なら $P(c_{a_{1}},\dots,c_{a_{n}})$ が、そうでなければその否定が $\mathrm{Diag}(\mathcal{M})$ に属するので、$\vec{a}\in P^{\mathcal{M}}\iff h(\vec{a})\in P^{\mathcal{N}'}$。
+
+$\mathcal{N}'$ と $\mathcal{N}'\restr{\mathcal{L}}$ は $\mathcal{L}$ の記号の解釈が同じなので、これらは $\mathcal{N}'\restr{\mathcal{L}}$ についての条件でもある。
+:::
+
+次の補題は、図式などの有限部分集合を「パラメータを変数にした論理式」に書き直す操作をまとめたものである。
+
+::: lemma 新しい定数の消去 {#model:constants-to-variables}
+$T$ を $\mathcal{L}$ の文の集合、$\delta$ を $\mathcal{L}\cup\{d_{1},\dots,d_{n}\}$ の文（$d_{k}$ は $\mathcal{L}$ にない相異なる定数記号）とし、$x_{1},\dots,x_{n}$ を $\delta$ に現れない相異なる変数とする。$\delta_{0}\defeq\delta[x_{1}/d_{1}]\cdots[x_{n}/d_{n}]$ とおくと、$\delta_{0}$ は $\mathcal{L}$ の論理式で $\mathrm{FV}(\delta_{0})\subseteq\{x_{1},\dots,x_{n}\}$ であり、次が成り立つ。
+1. 任意の $\mathcal{L}\cup\{\vec{d}\}$ 構造 $\mathcal{K}$ と割り当て $v$ で $v(x_{k})=d_{k}^{\mathcal{K}}$ となるものについて、$\mathcal{K}\models\delta\iff\mathcal{K},v\models\delta_{0}$。
+2. $T\cup\{\delta\}$（$\mathcal{L}\cup\{\vec{d}\}$ 構造について）にモデルがないなら、$T\models\forall\vec{x}\,\neg\delta_{0}$。
+:::
+
+::: proof
+$\delta_{0}$ が $\mathcal{L}$ の論理式で自由変数が $\vec{x}$ に含まれることは \ref{logic:constant-replacement-properties} の 1, 5 から。$x_{k}$ は置き換えの前の論理式に現れないので、置き換えの単射性（\ref{logic:constant-replacement-injective}）を $k=n,\dots,1$ と使って $\delta_{0}[d_{n}/x_{n}]\cdots[d_{1}/x_{1}]=\delta$。
+
+1. \ref{logic:constant-substitution-semantics} より $\mathcal{K}\models\delta\iff\mathcal{K},v[x_{n}\mapsto d_{n}^{\mathcal{K}}]\cdots[x_{1}\mapsto d_{1}^{\mathcal{K}}]\models\delta_{0}$ で、右辺の割り当ては $v$ と $\vec{x}$ 上で一致する。
+2. $\mathcal{K}_{0}\models T$ と割り当て $v$ を任意にとる。$\mathcal{K}_{0},v\models\delta_{0}$ と仮定すると、$d_{k}$ を $v(x_{k})$ と解釈した拡大 $\mathcal{K}$ は、縮小の補題より $T$ のモデルで、1 と縮小の補題より $\mathcal{K}\models\delta$ となり、仮定に反する。よって $\mathcal{K}_{0},v\models\neg\delta_{0}$。$v$ は任意なので $\mathcal{K}_{0}\models\forall\vec{x}\,\neg\delta_{0}$。
+:::
+
+## ウォシュ–タルスキの定理 {#model:sec-los-tarski}
+
+::: theorem ウォシュ–タルスキの定理 {#model:los-tarski keywords="Łoś-Tarski preservation theorem, universal theories, substructures" index="ウォシュ–タルスキの定理|うぉしゅたるすきのていり, 保存定理|ほぞんていり"}
+（AC）$\mathcal{L}$ の理論 $T$ について次は同値である。
+1. $T$ は全称文の集合と同値である。
+2. $\mathrm{Mod}(T)$ は部分構造をとる操作で閉じている：$\mathcal{M}\models T$, $\mathcal{N}\subset\mathcal{M}$ なら $\mathcal{N}\models T$。
+:::
+
+::: proof
+**1 $\Rightarrow$ 2.** $T$ が全称文の集合 $S$ と同値で、$\mathcal{M}\models S$, $\mathcal{N}\subset\mathcal{M}$ とする。包含写像は埋め込みなので、\ref{model:embedding-qf} の 3 より $S$ の各文は $\mathcal{N}$ で真。
+
+**2 $\Rightarrow$ 1.** $T_{\forall}\defeq\{\sigma:\sigma\text{ は全称文で }T\models\sigma\}$ とする。$\mathrm{Mod}(T)\subseteq\mathrm{Mod}(T_{\forall})$ は明らか。逆を示すため、$\mathcal{M}\models T_{\forall}$ とする。
+
+*Step 1（$T\cup\mathrm{Diag}(\mathcal{M})$ はモデルをもつ）.* もたないとすると、コンパクト性定理より有限の $\Delta_{0}\subseteq\mathrm{Diag}(\mathcal{M})$ で $T\cup\Delta_{0}$ がモデルをもたないものがある。$\delta$ を $\Delta_{0}$ の元の連言とし（$\Delta_{0}=\varnothing$ なら $\delta=\top$）、$\delta$ に現れる $c_{a}$ を $c_{a_{1}},\dots,c_{a_{n}}$（$a_{k}$ は相異なる）とする。$\mathcal{L}_{M}$ の残りの定数は $T\cup\Delta_{0}$ に現れないので、$T\cup\{\delta\}$ は $\mathcal{L}\cup\{c_{a_{1}},\dots,c_{a_{n}}\}$ 構造としてもモデルをもたない（あれば、残りの定数を任意に解釈して拡大できる）。\ref{model:constants-to-variables} の 2 より $T\models\forall\vec{x}\,\neg\delta_{0}$ で、$\delta_{0}$ は量化子のない論理式なので $\forall\vec{x}\,\neg\delta_{0}\in T_{\forall}$。よって $\mathcal{M}\models\forall\vec{x}\,\neg\delta_{0}$。一方 $\mathcal{M}_{M}\models\delta$ なので、\ref{model:constants-to-variables} の 1（$v(x_{k})=a_{k}$）と縮小の補題より $\mathcal{M},v\models\delta_{0}$ となり、矛盾する。
+
+*Step 2.* Step 1 のモデル $\mathcal{N}'$ をとり、$\mathcal{N}\defeq\mathcal{N}'\restr{\mathcal{L}}$ とする。縮小の補題より $\mathcal{N}\models T$。\ref{model:diagram-lemma} より $h(a)\defeq c_{a}^{\mathcal{N}'}$ は埋め込み $\mathcal{M}\to\mathcal{N}$ で、\ref{model:embedding-image} より $h[\mathcal{M}]\subset\mathcal{N}$ は $\mathcal{M}$ と同型である。2 より $h[\mathcal{M}]\models T$、同型は充足を保つので $\mathcal{M}\models T$。
+:::
+
+::: hypcheck
+- **コンパクト性定理**：Step 1。$\mathcal{L}_{M}$ は $M$ と同じ数の定数をもつので、一般にはコンパクト性定理の非可算版（選択公理）を使う。
+- **2 の閉包性**：Step 2 の最後の一行だけで使った。Step 1 は $T$ が何であっても成り立つ。
+- **構造の領域が空でないこと**：部分構造の定義（\ref{model:substructure}）と、Step 1 で余った定数を任意に解釈する箇所。
+:::
+
+## 鎖の和 {#model:sec-chains}
+
+::: definition 鎖と初等鎖 {#model:chain keywords="chain of structures, union of a chain, elementary chain" index="構造の鎖|こうぞうのくさり, 初等鎖|しょとうさ"}
+$(I,\le)$ を空でない全順序集合とする。$\mathcal{L}$ 構造の族 $(\mathcal{M}_{i})_{i\in I}$ が**鎖**であるとは、$i\le j$ ならば $\mathcal{M}_{i}\subset\mathcal{M}_{j}$ となることをいい、さらに $i\le j$ ならば $\mathcal{M}_{i}\preccurlyeq\mathcal{M}_{j}$ のとき**初等鎖**という。
+:::
+
+::: lemma 鎖の和 {#model:chain-union}
+$(\mathcal{M}_{i})_{i\in I}$ を鎖とし、$M\defeq\bigcup_{i}M_{i}$ とする。次の解釈で $\mathcal{L}$ 構造 $\mathcal{M}=\bigcup_{i}\mathcal{M}_{i}$ が定まり、すべての $i$ について $\mathcal{M}_{i}\subset\mathcal{M}$ である。
+- $c^{\mathcal{M}}\defeq c^{\mathcal{M}_{i}}$（$i$ によらない）。
+- $a_{1},\dots,a_{n}\in M$ について、それらをすべて含む $M_{i}$ をとり、$f^{\mathcal{M}}(\vec{a})\defeq f^{\mathcal{M}_{i}}(\vec{a})$。
+- $P^{\mathcal{M}}\defeq\bigcup_{i}P^{\mathcal{M}_{i}}$。
+:::
+
+::: proof
+有限個の元 $a_{1},\dots,a_{n}\in M$ は、それぞれある $M_{i_{k}}$ に属し、$I$ は全順序なので $i\defeq\max_{k}i_{k}$ について $M_{i}$ がすべてを含む（$n=0$ なら任意の $i$）。$i\le j$ なら $\mathcal{M}_{i}\subset\mathcal{M}_{j}$ なので、$c^{\mathcal{M}_{i}}=c^{\mathcal{M}_{j}}$、$f^{\mathcal{M}_{i}}(\vec{a})=f^{\mathcal{M}_{j}}(\vec{a})$ で、上の定義は $i$ の選び方によらない。$\mathcal{M}_{i}\subset\mathcal{M}$ の確認：定数と関数は定義から。関係については、$\vec{a}\in M_{i}^{n}$ が $P^{\mathcal{M}_{j}}$ に属するとき、$j\le i$ なら $P^{\mathcal{M}_{j}}=P^{\mathcal{M}_{i}}\cap M_{j}^{n}\subseteq P^{\mathcal{M}_{i}}$、$i\le j$ なら $P^{\mathcal{M}_{i}}=P^{\mathcal{M}_{j}}\cap M_{i}^{n}\ni\vec{a}$。よって $P^{\mathcal{M}}\cap M_{i}^{n}=P^{\mathcal{M}_{i}}$。
+:::
+
+::: theorem 初等鎖の定理（タルスキ–ヴォート） {#model:elementary-chain keywords="elementary chain theorem, Tarski-Vaught" index="初等鎖の定理|しょとうさのていり"}
+$(\mathcal{M}_{i})_{i\in I}$ が初等鎖なら、すべての $i$ について $\mathcal{M}_{i}\preccurlyeq\bigcup_{j}\mathcal{M}_{j}$。
+:::
+
+::: proof
+$\mathcal{M}\defeq\bigcup_{j}\mathcal{M}_{j}$ とする。論理式 $\varphi$ に関する帰納法で「すべての $i$ と $M_{i}$ に値をとる割り当て $v$ について $\mathcal{M}_{i},v\models\varphi\iff\mathcal{M},v\models\varphi$」を示す。
+- 原子論理式：$\mathcal{M}_{i}\subset\mathcal{M}$ と \ref{model:substructure-qf}。
+- $\alpha\to\beta$：帰納法の仮定。
+- $\forall x\,\alpha$：($\Leftarrow$) $\mathcal{M},v\models\forall x\,\alpha$ なら、$a\in M_{i}$ について $\mathcal{M},v[x\mapsto a]\models\alpha$ で、帰納法の仮定（同じ $i$）より $\mathcal{M}_{i},v[x\mapsto a]\models\alpha$。($\Rightarrow$) $\mathcal{M}_{i},v\models\forall x\,\alpha$ とし、$b\in M$ を任意にとる。$b\in M_{j}$ となる $j$ と $k\defeq\max(i,j)$ をとる。$\mathcal{M}_{i}\preccurlyeq\mathcal{M}_{k}$ なので $\mathcal{M}_{k},v\models\forall x\,\alpha$、とくに $\mathcal{M}_{k},v[x\mapsto b]\models\alpha$。帰納法の仮定（添字 $k$）より $\mathcal{M},v[x\mapsto b]\models\alpha$。
+:::
+
+::: hypcheck
+- **初等鎖であること**：$\forall$ の ($\Rightarrow$) で、$\mathcal{M}_{i}$ から $\mathcal{M}_{k}$ へ $\forall x\,\alpha$ を持ち上げるのに使った。単なる鎖ではこれができない（問題 \ref{model:prob-chain-not-elementary}）。
+- **帰納法の主張がすべての $i$ についてであること**：$\forall$ の場合に、帰納法の仮定を別の添字 $k$ で使う。
+- **$I$ が全順序**：$\max(i,j)$ をとるのに使った。上に有向な順序集合でも同じ証明が通る。
+:::
+
+::: proposition 全称存在文は鎖の和で保たれる {#model:forall-exists-chain}
+$\sigma$ が全称存在文で、鎖 $(\mathcal{M}_{i})$ のすべての項で真なら、$\bigcup_{i}\mathcal{M}_{i}$ でも真である。
+:::
+
+::: proof
+$\sigma=\forall\vec{x}\,\exists\vec{y}\,\psi$ とし、$\vec{a}\in M$ とする。\ref{model:chain-union} の証明と同様に $\vec{a}$ をすべて含む $M_{i}$ がある。$\mathcal{M}_{i}\models\sigma$ より $\vec{b}\in M_{i}$ で $\mathcal{M}_{i},v\models\psi$（$v$ は $\vec{x}\mapsto\vec{a}$, $\vec{y}\mapsto\vec{b}$）となるものがある。$\psi$ は量化子がないので \ref{model:substructure-qf} より $\mathcal{M},v\models\psi$。よって $\mathcal{M}\models\sigma$（$\exists$ の意味は \ref{logic:abbreviation-semantics}）。
+:::
+
+## チャン–ウォシュ–スシコの定理 {#model:sec-chang-los-suszko}
+
+::: lemma 全称存在帰結のモデルの拡大 {#model:ae-extension}
+（AC）$T$ を理論、$T_{\forall\exists}\defeq\{\sigma:\sigma\text{ は全称存在文で }T\models\sigma\}$ とし、$\mathcal{M}\models T_{\forall\exists}$ とする。このとき $T\cup\mathrm{Diag}_{\forall}(\mathcal{M})$（$\mathcal{L}_{M}$ の文の集合）はモデルをもつ。
+:::
+
+::: proof
+もたないとすると、コンパクト性定理より有限個の $\sigma_{1},\dots,\sigma_{k}\in\mathrm{Diag}_{\forall}(\mathcal{M})$ で $T\cup\{\sigma_{1},\dots,\sigma_{k}\}$ がモデルをもたないものがある。$\sigma_{j}=\forall\vec{y}_{j}\,\chi_{j}$（$\chi_{j}$ は量化子がない）と書き、束縛変数を取り替えて（α 同値、\ref{pt:alpha-semantics}）、$\vec{y}_{1},\dots,\vec{y}_{k}$ が互いに異なる変数の列であるとしてよい。$\sigma_{1}\wedge\dots\wedge\sigma_{k}$ に現れる $c_{a}$ を $c_{a_{1}},\dots,c_{a_{n}}$ とし、\ref{model:constants-to-variables} と同じく $\vec{y}_{j}$ と異なる新しい変数 $\vec{x}$ で置き換えたものを $\chi_{j}^{0}$ とする（$\chi_{j}$ の置き換え）。全称存在文
+$$
+\theta\defeq\forall\vec{x}\,\exists\vec{y}_{1}\cdots\exists\vec{y}_{k}\,\bigl(\neg\chi_{1}^{0}\vee\dots\vee\neg\chi_{k}^{0}\bigr)
+$$
+を考える。
+
+*$T\models\theta$.* $\mathcal{K}\models T$ と $\vec{x}$ の値 $\vec{e}$ をとる。$c_{a_{i}}$ を $e_{i}$ と解釈した拡大は $T$ のモデルなので、ある $\sigma_{j}$ を満たさない。すなわち $\vec{y}_{j}$ のある値で $\chi_{j}$ が偽で、\ref{model:constants-to-variables} の 1 と同様に（$\vec{x}\mapsto\vec{e}$ のもとで）$\neg\chi_{j}^{0}$ が真になる。他の $\vec{y}_{l}$ の値は任意にとれば（領域は空でない）、$\exists$ 以下が真になる。
+
+*矛盾.* $\theta\in T_{\forall\exists}$ なので $\mathcal{M}\models\theta$。$\vec{x}\mapsto\vec{a}$ として、ある $j$ と $\vec{y}_{j}$ の値で $\mathcal{M}$ において $\neg\chi_{j}^{0}$ が真になる。これは $\mathcal{M}_{M}\models\sigma_{j}$ に反する。
+:::
+
+::: lemma 存在文を反映する拡大の初等拡大への埋め込み {#model:ec-amalgamation}
+（AC）$\mathcal{M}\subset\mathcal{N}$ で、$\mathcal{N}_{M}$（$c_{a}$ を $a\in M$ と解釈した $\mathcal{L}_{M}$ への拡大）で真な $\mathcal{L}_{M}$ の存在文はすべて $\mathcal{M}_{M}$ でも真であるとする。このとき $\mathcal{L}$ 構造 $\mathcal{M}^{\ast}$、初等埋め込み $g\colon\mathcal{M}\to\mathcal{M}^{\ast}$、埋め込み $k\colon\mathcal{N}\to\mathcal{M}^{\ast}$ で、$k\restr{M}=g$ となるものが存在する。
+:::
+
+::: proof
+$\mathcal{L}_{N}$ の定数のうち $a\in M$ に対応するものは $\mathcal{L}_{M}$ のものと同じとする。$\mathrm{Eldiag}(\mathcal{M})\cup\mathrm{Diag}(\mathcal{N})$（$\mathcal{L}_{N}$ の文）がモデルをもつことを示す。もたないとすると、コンパクト性定理より $\mathrm{Diag}(\mathcal{N})$ の有限部分の連言 $\delta$ で $\mathrm{Eldiag}(\mathcal{M})\cup\{\delta\}$ がモデルをもたないものがある（有限部分集合のうち $\mathrm{Diag}(\mathcal{N})$ に属する部分の連言をとればよい）。$\delta$ に現れる $N\setminus M$ の元の定数を $d_{1},\dots,d_{n}$ とし、新しい変数 $\vec{y}$ で置き換えたものを $\delta_{0}$ とする。$\mathcal{L}_{N}$ の他の定数は任意に解釈して拡大できるので、$\mathrm{Eldiag}(\mathcal{M})\cup\{\delta\}$ は $\mathcal{L}_{M}\cup\{\vec{d}\}$ 構造としてもモデルをもたない。$d_{k}$ は $\mathrm{Eldiag}(\mathcal{M})$ に現れないので、\ref{model:constants-to-variables} の 2（言語 $\mathcal{L}_{M}$、理論 $\mathrm{Eldiag}(\mathcal{M})$）より $\mathrm{Eldiag}(\mathcal{M})\models\forall\vec{y}\,\neg\delta_{0}$。$\mathcal{M}_{M}$ は $\mathrm{Eldiag}(\mathcal{M})$ のモデルなので $\mathcal{M}_{M}\models\neg\exists\vec{y}\,\delta_{0}$。一方、$\delta$ は $\mathcal{N}_{N}$ で真なので、\ref{model:constants-to-variables} の 1 より $\mathcal{N}_{M}\models\exists\vec{y}\,\delta_{0}$（$\vec{y}$ の値として $d_{k}$ の指す元をとる）。これは量化子のない $\delta_{0}$ の存在文なので、仮定より $\mathcal{M}_{M}\models\exists\vec{y}\,\delta_{0}$ となり、矛盾する。
+
+モデル $\mathcal{M}''$ をとり、$\mathcal{M}^{\ast}\defeq\mathcal{M}''\restr{\mathcal{L}}$、$k(b)\defeq c_{b}^{\mathcal{M}''}$（$b\in N$）、$g\defeq k\restr{M}$ とする。\ref{model:diagram-lemma} より $k$ は埋め込み、\ref{model:elementary-diagram-lemma}（$\mathcal{M}''\restr{\mathcal{L}_{M}}$ に適用）より $g$ は初等埋め込みである。
+:::
+
+::: theorem チャン–ウォシュ–スシコの定理 {#model:chang-los-suszko keywords="Chang-Łoś-Suszko theorem, preservation under unions of chains, universal-existential theories" index="チャン–ウォシュ–スシコの定理|ちゃんうぉしゅすしこのていり"}
+（AC）$\mathcal{L}$ の理論 $T$ について次は同値である。
+1. $T$ は全称存在文の集合と同値である。
+2. $\mathrm{Mod}(T)$ は鎖の和で閉じている：$T$ のモデルからなる鎖の和は $T$ のモデルである。
+:::
+
+::: proof
+**1 $\Rightarrow$ 2** は \ref{model:forall-exists-chain}。
+
+**2 $\Rightarrow$ 1.** $\mathrm{Mod}(T)\subseteq\mathrm{Mod}(T_{\forall\exists})$ は明らか。$\mathcal{M}\models T_{\forall\exists}$ とし、$\mathcal{M}\models T$ を示す。以下、埋め込みの像を元の構造と同一視する（\ref{model:embedding-image} と同型の下での名前の付け替え。付け替えた後の構造は元と同型で、同じ文を満たす）。
+
+*Step 1（一段の構成）.* $\mathcal{A}\models T_{\forall\exists}$ について、$\mathcal{B}\models T$ と $\mathcal{A}^{+}$ で、$\mathcal{A}\subset\mathcal{B}\subset\mathcal{A}^{+}$ かつ $\mathcal{A}\preccurlyeq\mathcal{A}^{+}$ となるものを作る。\ref{model:ae-extension} のモデル $\mathcal{B}'$ をとり $\mathcal{B}\defeq\mathcal{B}'\restr{\mathcal{L}}$ とすると、$\mathcal{B}\models T$ で、\ref{model:diagram-lemma} より $\mathcal{A}$ は $\mathcal{B}$ に埋め込まれる（$\mathcal{A}\subset\mathcal{B}$ とする）。さらに $\mathcal{B}_{A}$ で真な $\mathcal{L}_{A}$ の存在文 $\exists\vec{y}\,\psi$ は $\mathcal{A}_{A}$ でも真である。実際、$\mathcal{A}_{A}\not\models\exists\vec{y}\,\psi$ なら $\mathcal{A}_{A}\models\forall\vec{y}\,\neg\psi$ で、これは全称文なので $\mathrm{Diag}_{\forall}(\mathcal{A})$ に属し、$\mathcal{B}'$ で真、すなわち $\mathcal{B}_{A}\not\models\exists\vec{y}\,\psi$。よって \ref{model:ec-amalgamation} が使え、$\mathcal{A}\preccurlyeq\mathcal{A}^{+}$ と $\mathcal{B}\subset\mathcal{A}^{+}$ を得る。
+
+*Step 2（鎖）.* $\mathcal{A}_{0}\defeq\mathcal{M}$ とし、Step 1 を繰り返して
+$$
+\mathcal{A}_{0}\subset\mathcal{B}_{0}\subset\mathcal{A}_{1}\subset\mathcal{B}_{1}\subset\mathcal{A}_{2}\subset\cdots
+$$
+（$\mathcal{A}_{n}\preccurlyeq\mathcal{A}_{n+1}$, $\mathcal{B}_{n}\models T$）を作る。Step 1 を $\mathcal{A}_{n}$ に使えるのは、$\mathcal{A}_{n}\equiv\mathcal{M}$（初等埋め込みの合成）で $\mathcal{A}_{n}\models T_{\forall\exists}$ だからである。各段の構成で選択を繰り返すので、従属選択の原理（選択公理から従う）を使う。
+
+*Step 3.* $\mathcal{U}\defeq\bigcup_{n}\mathcal{A}_{n}=\bigcup_{n}\mathcal{B}_{n}$（二つの鎖は互いに挟まれているので領域も解釈も一致する）。$(\mathcal{B}_{n})$ は $T$ のモデルの鎖なので、2 より $\mathcal{U}\models T$。$(\mathcal{A}_{n})$ は初等鎖なので、\ref{model:elementary-chain} より $\mathcal{M}=\mathcal{A}_{0}\preccurlyeq\mathcal{U}$。よって $\mathcal{M}\models T$。
+:::
+
+::: hypcheck
+- **2 の閉包性**：Step 3 で $(\mathcal{B}_{n})$ に使った。
+- **初等鎖の定理**：Step 3 で、$\mathcal{U}$ の性質を $\mathcal{M}$ に引き戻すのに使った。$\mathcal{M}$ 自身は $T$ のモデルとは限らないので、$\mathcal{M}$ を含む $T$ のモデルの鎖と、$\mathcal{M}$ の初等鎖を「互い違いに」作る必要がある。
+- **$\mathcal{M}\models T_{\forall\exists}$**：\ref{model:ae-extension} の矛盾の箇所。全称文だけでなく全称存在文の帰結が要るのは、図式 $\mathrm{Diag}_{\forall}$ が全称文からなり、その否定が存在文になるためである。
+- **コンパクト性と選択**：\ref{model:ae-extension}, \ref{model:ec-amalgamation}, Step 2。
+:::
+
+## 問題 {#model:sec-chains-problems}
+
+::: problem {#model:prob-chain-not-elementary}
+$\mathcal{L}=\{<\}$ とし、$\mathcal{M}_{n}\defeq(\{0,1,\dots,n\},<)$（$n\in\N$）とする。$(\mathcal{M}_{n})$ は鎖だが初等鎖でないこと、和 $\bigcup_{n}\mathcal{M}_{n}=(\N,<)$ で偽になり、すべての $\mathcal{M}_{n}$ で真な文があることを示せ。その文は全称存在文と同値でありえないことも説明せよ。
+:::
+
+::: solution
+$\sigma\defeq\exists x\,\forall y\,(y<x\vee y=x)$（最大元の存在）はすべての $\mathcal{M}_{n}$ で真（$x=n$）、$(\N,<)$ で偽である。$\mathcal{M}_{n}\models\forall y\,(y<x\vee y=x)$（$x\mapsto n$）だが $\mathcal{M}_{n+1}$ では偽なので、$\mathcal{M}_{n}\not\preccurlyeq\mathcal{M}_{n+1}$。$\sigma$ が全称存在文の集合と同値なら、\ref{model:forall-exists-chain} より和でも真になるはずで矛盾する。
+:::
+
+::: problem {#model:prob-fields-chains}
+環の言語 $\{0,1,+,-,\cdot\}$ で、体の理論 $T_{\mathrm{field}}$ について次を示せ。
+1. $T_{\mathrm{field}}$ は全称存在文で公理化できる。したがって体の鎖の和は体である。
+2. $T_{\mathrm{field}}$ は全称文の集合と同値でない。
+:::
+
+::: solution
+1. 可換環の公理は全称文、$0\neq1$ は量化子のない文、逆元の存在 $\forall x\,\exists y\,(x=0\vee x\cdot y=1)$ は全称存在文である。後半は \ref{model:forall-exists-chain}（または \ref{model:chang-los-suszko}）。
+2. $\Z$ は $\mathbb{Q}$ の部分構造（$0,1$ を含み $+,-,\cdot$ で閉じる）だが体でない。全称文の集合と同値なら、\ref{model:los-tarski} の 1 $\Rightarrow$ 2 より体の部分構造は体になるはずである。
+:::
+
+::: problem {#model:prob-universal-finite}
+$T$ が全称文の集合と同値で、$\mathcal{L}$ が有限個の関係記号だけからなる（定数・関数記号なし）とする。$T$ のモデル $\mathcal{M}$ の空でない任意の部分集合が、$T$ のモデルである部分構造の領域になることを示せ。
+:::
+
+::: solution
+定数・関数記号がないので、空でない任意の $N\subseteq M$ に \ref{model:substructure} の後半を使って部分構造が定まる。\ref{model:los-tarski} より $T$ のモデルである。（有限性は使わない。）
+:::
+
+::: supplement
+**前提の検討.**
+- 両定理とも、2 $\Rightarrow$ 1 の向きでコンパクト性定理を使う。コンパクト性の成り立たない論理（たとえば有限構造だけを考える場合）では、ウォシュ–タルスキの定理が成り立たないことが知られている（タイトの例。本サイトでは確かめていない）。
+- 鎖の添字は全順序（あるいは上に有向）なら何でもよいが、チャン–ウォシュ–スシコの定理の証明では $\omega$ 型の鎖しか使わない。したがって「$\omega$ 型の鎖の和で閉じる」だけで 1 が従う。
+- \ref{model:los-tarski} の閉包性は、同型で閉じていることを込めて使った（$h[\mathcal{M}]$ と $\mathcal{M}$ の同一視）。$\mathrm{Mod}(T)$ はつねに同型で閉じているので問題はない。
+
+**関連する結果.**
+- *準同型と正の文.* 全射準同型で保たれる理論は正の文（$\neg,\to$ を使わず $\wedge,\vee,\forall,\exists$ だけで作る文）で公理化できる、というリンドンの準同型保存定理が知られている。
+- *普遍代数.* 等式で公理化できるクラス（多様体）は、準同型像・部分代数・直積で閉じたクラスと一致する（バーコフの HSP 定理）。Burris–Sankappanavar『A Course in Universal Algebra』の主題の一つで、本サイトでは普遍代数の系列で扱う予定である。ウォシュ–タルスキの定理はその「S」の部分の一階論理版とみなせる。
+
+**高い視点から：文の形と構成の対応.** 文の集合から構造のクラスへの $\mathrm{Mod}$ と、構造のクラスから文の集合への $\mathrm{Th}$ は、包含を逆にするガロア対応をなす。保存定理は、この対応の上で「文の形の制限」と「クラスの閉包性」が対になることを主張する：全称 $\leftrightarrow$ 部分構造、全称存在 $\leftrightarrow$ 鎖の和、等式 $\leftrightarrow$ HSP。たとえるなら、地図の凡例に「道路」しか使ってはいけないと決めると、地図で描ける土地の性質は「切り取っても変わらない性質」に限られる、という対応である。量化子 $\forall$ は「中を全部調べる」ので部分に受け継がれ、$\forall\exists$ は「どの点にも近くに証人がいる」ので、だんだん大きくなる構造の極限に受け継がれる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

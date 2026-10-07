@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>クラスと超限帰納・超限再帰 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/01-basics/06-classes-recursion.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# クラスと超限帰納・超限再帰 {#set:page-classes-recursion keywords="classes, proper class, transfinite induction, transfinite recursion, ordinal exponentiation, normal function"}
+
+順序数全体 $\mathbf{ON}$ や集合全体 $\mathbf{V}$ は集合ではない（\ref{set:burali-forti}, \fullref[ラッセルのパラドックス]{set:russell-paradox}）。それでも「すべての順序数について帰納法で示す」「すべての順序数に対して再帰的に値を定める」という議論は集合論の中心的な道具である。本ページでは、こうした集まりを**クラス**として論理式の略記と解釈し、その枠組みで超限帰納法と超限再帰定理を証明する。応用として順序数の冪 $\alpha^{\beta}$ を再帰的に定義し、その基本性質を示す。
+
+## 記法と定義の確認 {#set:sec-classes-notation}
+
+::: notation
+- 公理は $\ZF$ から冪集合・選択・基礎の公理を除いたものを使う（無限公理は $\omega$ を使う箇所でのみ使う）。
+- 順序数（\ref{set:ordinal}）の間の $<$ は $\in$、$\le$ は $\subseteq$。順序数の集合の最小元（\ref{set:ordinal-well-ordered}）と上限 $\sup X=\bigcup X$（\ref{set:sup-ordinals}）、後者 $S(\alpha)$（\ref{set:successor}）、極限順序数とその特徴づけ（\ref{set:limit-ordinal}, \ref{set:limit-characterization}）を用いる。
+- 順序数の和と積（\ref{set:ordinal-addition}, \ref{set:ordinal-multiplication}）とその性質（\ref{set:ordinal-addition-laws}, \ref{set:ordinal-multiplication-laws}）、$\omega$ と帰納法（\ref{set:omega}, \ref{set:peano}）。
+- 順序対 $\langle x,y\rangle$ を $(x,y)$ とも書く（\ref{set:sec-ordinals-notation}）。$\langle g(\beta)\mid\beta<\alpha\rangle$ は定義域 $\alpha$ で値 $g(\beta)$ をとる関数（列）を表す。
+- 関数 $g$ と集合 $C$ に対し $g\restr{C}=\{(x,y)\in g\mid x\in C\}$、$g[C]=\{g(x)\mid x\in C\cap\dom g\}$。
+:::
+
+## クラス {#set:sec-classes}
+
+::: definition クラス {#set:class keywords="class, proper class, V, ON" index="クラス|くらす, 真のクラス|しんのくらす"}
+論理式 $\varphi(x,p_{1},\dots,p_{k})$（$p_{i}$ はパラメータ）に対し、非形式的に
+$$
+\mathbf{C}=\{x\mid\varphi(x,p_{1},\dots,p_{k})\}
+$$
+と書いて**クラス**とよぶ。クラスについての記述は、すべて論理式についての記述の略記と約束する：
+- $a\in\mathbf{C}$ は $\varphi(a,\vec{p})$ の略記。
+- $\mathbf{C}\subseteq\mathbf{D}$ は $\forall x\,(x\in\mathbf{C}\to x\in\mathbf{D})$、$\mathbf{C}=\mathbf{D}$ は $\forall x\,(x\in\mathbf{C}\leftrightarrow x\in\mathbf{D})$ の略記。
+- 集合 $a$ はクラス $\{x\mid x\in a\}$ と同一視する。クラス $\mathbf{C}$ が**集合である**とは $\exists a\,\forall x\,(x\in a\leftrightarrow x\in\mathbf{C})$ のことで、集合でないクラスを**真のクラス**という。
+
+とくに
+$$
+\mathbf{V}=\{x\mid x=x\},\qquad\mathbf{ON}=\{x\mid x\text{ は順序数}\}
+$$
+とおく。
+:::
+
+::: intuition
+ZF の対象（変数の動く範囲）は集合だけであり、クラスは形式的には存在しない。しかし「性質 $\varphi$ を満たすもの全体」を一つのものとして語ると議論が見やすくなる。クラスはそのための言葉づかいで、クラスを含む文はいつでもクラスを含まない文に書き戻せる。「すべてのクラス $\mathbf{C}$ について…」という主張は、「すべての論理式 $\varphi$ について…」という**定理の図式**（無限個の定理の集まり）を意味する。
+:::
+
+::: supplement
+**定義された記号との関係.** クラスの記法は、$\subseteq$, $\bigcup$, $\alpha+\beta$ などの定義された記号（\ref{set:defined-notions}）と同じく、元の言語（$\in$ と $=$ だけ）の論理式の略記である。クラス関数 $\mathbf{F}$ も、定義された演算記号と同様に「$\psi(x,y)$ を満たす唯一の $y$」の略記として扱う。こうした略記を導入しても新しい定理は増えない（\ref{set:definitional-extension}）。
+
+**クラスを対象とする体系.** クラスを形式的な対象として扱う体系に $\mathsf{NBG}$ や $\mathsf{MK}$ がある（\ref{set:nbg-mk}）。
+:::
+
+::: definition クラス関数 {#set:class-function keywords="class function" index="クラス関数|くらすかんすう"}
+論理式 $\psi(x,y,\vec{p})$ とクラス $\mathbf{A}$ について $\forall x\in\mathbf{A}\,\exists!y\,\psi(x,y,\vec{p})$ が成り立つとき、$\psi$ は $\mathbf{A}$ 上の**クラス関数** $\mathbf{F}$ を定めるといい、$x\in\mathbf{A}$ に対し $\psi(x,y,\vec{p})$ を満たす唯一の $y$ を $\mathbf{F}(x)$ と書く。$\mathbf{F}\colon\mathbf{A}\to\mathbf{B}$ は、さらに $\mathbf{F}(x)\in\mathbf{B}$（$x\in\mathbf{A}$）であることを表す。集合 $A\subseteq\mathbf{A}$ に対し $\mathbf{F}\restr{A}=\{(x,\mathbf{F}(x))\mid x\in A\}$, $\mathbf{F}[A]=\{\mathbf{F}(x)\mid x\in A\}$ とおく。
+:::
+
+::: example
+- $x\mapsto\bigcup x$ は $\mathbf{V}\to\mathbf{V}$ のクラス関数で、$\psi(x,y)$ は $\forall z\,(z\in y\leftrightarrow\exists w\in x\,(z\in w))$。
+- $\alpha\mapsto S(\alpha)$ は $\mathbf{ON}\to\mathbf{ON}$ のクラス関数。パラメータ $\alpha$ を固定した $\beta\mapsto\alpha+\beta$ も $\mathbf{ON}\to\mathbf{ON}$ のクラス関数である。
+:::
+
+::: proposition クラスの基本性質 {#set:class-basic}
+1. クラス $\mathbf{C}$ と集合 $A$ に対し、$\mathbf{C}\cap A=\{x\in A\mid x\in\mathbf{C}\}$ は集合である。したがってクラスが集合であることと、ある集合に含まれることは同値である。
+2. $\mathbf{V}$ と $\mathbf{ON}$ は真のクラスである。
+3. $\mathbf{F}$ が $\mathbf{A}$ 上のクラス関数で $A\subseteq\mathbf{A}$ が集合ならば、$\mathbf{F}\restr{A}$ と $\mathbf{F}[A]$ は集合である。
+:::
+
+::: proof
+**(1)** 分出公理を論理式 $\varphi(x,\vec{p})$ に適用する。後半：$\mathbf{C}\subseteq a$ なら $\mathbf{C}=\mathbf{C}\cap a$ は集合。逆は自明。
+
+**(2)** $\mathbf{V}$ が集合 $v$ だとすると、分出公理で $r=\{x\in v\mid x\notin x\}$ が作れ、$r\in r\iff r\notin r$ となって矛盾（\fullref[ラッセルのパラドックス]{set:russell-paradox}）。$\mathbf{ON}$ が集合でないことは \ref{set:burali-forti} そのものである。
+
+**(3)** $x\in A$ に対し $(x,\mathbf{F}(x))$ はただ一つに定まるので、**置換公理**により、ある集合 $Y$ があって各 $x\in A$ について $(x,\mathbf{F}(x))\in Y$。分出公理で $\mathbf{F}\restr{A}=\{z\in Y\mid\exists x\in A\,(z=(x,\mathbf{F}(x)))\}$ が得られる。$\mathbf{F}[A]=\ran(\mathbf{F}\restr{A})$ も同様（または分出公理で $\bigcup\bigcup(\mathbf{F}\restr{A})$ から切り出す）。
+
+::: hypcheck
+- **分出公理**：(1), (2), (3)。**置換公理**：(3)。(3) が置換公理の内容そのものであり、以下の超限再帰で繰り返し使う。
+:::
+:::
+
+## 超限帰納法 {#set:sec-transfinite-induction}
+
+::: theorem 超限帰納法 {#set:transfinite-induction keywords="transfinite induction" index="超限帰納法|ちょうげんきのうほう"}
+1. （最小元の原理）$\mathbf{C}\subseteq\mathbf{ON}$ が空でないクラスならば、$\mathbf{C}$ は最小元をもつ。
+2. （累積帰納法）論理式 $\psi(\alpha)$ について、任意の $\alpha$ で「$\forall\beta<\alpha\,\psi(\beta)$ ならば $\psi(\alpha)$」が成り立つならば、すべての順序数 $\alpha$ で $\psi(\alpha)$。
+3. （三つの場合による帰納法）$\psi(0)$；任意の $\beta$ で $\psi(\beta)\to\psi(S(\beta))$；任意の極限順序数 $\lambda$ で $(\forall\beta<\lambda\,\psi(\beta))\to\psi(\lambda)$；が成り立つならば、すべての $\alpha$ で $\psi(\alpha)$。
+:::
+
+::: intuition
+(1) は、$\in$ が順序数の**集合**を整列するという事実（\ref{set:ordinal-well-ordered}）を、集合でない集まり（クラス）にまで広げたものである。これが成り立つので、「成り立たない最小の順序数」をとって矛盾を導く議論ができる。(2)(3) はそれを帰納法の形に言い換えたもので、$\omega$ 上の数学的帰納法の超限版である。
+:::
+
+::: proof
+**(1)** $\mathbf{C}=\{x\mid\varphi(x,\vec{p})\}$ とする。
+
+*Step 1.* $\mathbf{C}\neq\varnothing$ から $\alpha\in\mathbf{C}$ をとる。
+
+*Step 2.* $\alpha\cap\mathbf{C}=\{\beta\in\alpha\mid\varphi(\beta,\vec{p})\}$ は分出公理で集合になる。これが空ならば、任意の $\beta\in\mathbf{C}$ について $\beta\notin\alpha$ なので三分律より $\alpha\le\beta$、よって $\alpha$ が最小元。
+
+*Step 3.* $\alpha\cap\mathbf{C}\neq\varnothing$ ならば、それは順序数の空でない**集合**なので最小元 $\mu$ をもつ（\ref{set:ordinal-well-ordered} (2)）。$\beta\in\mathbf{C}$ とし、$\beta<\mu$ と仮定すると、$\mu<\alpha$ より $\beta<\alpha$、よって $\beta\in\alpha\cap\mathbf{C}$ で $\beta<\mu$ となり $\mu$ の最小性に反する。三分律より $\mu\le\beta$。$\mu$ が $\mathbf{C}$ の最小元である。
+
+**(2)** $\mathbf{C}=\{\alpha\in\mathbf{ON}\mid\neg\psi(\alpha)\}$ が空でないと仮定し、(1) でその最小元 $\alpha$ をとる。$\beta<\alpha$ ならば最小性より $\beta\notin\mathbf{C}$、すなわち $\psi(\beta)$。仮定より $\psi(\alpha)$ となり、$\alpha\in\mathbf{C}$ に反する。
+
+**(3)** (2) の仮定を確かめる。$\alpha$ について $\forall\beta<\alpha\,\psi(\beta)$ とする。$\alpha$ は $0$、後続順序数、極限順序数のどれかである。$\alpha=0$ なら仮定より $\psi(0)$。$\alpha=S(\beta)$ なら $\beta<\alpha$ より $\psi(\beta)$、仮定より $\psi(S(\beta))$。$\alpha$ が極限なら仮定がそのまま $\psi(\alpha)$ を与える。
+
+::: hypcheck
+- **分出公理**：(1) の Step 2 で $\alpha\cap\mathbf{C}$ を集合にするのに使った。ここで「クラス」の問題が「集合」の問題に帰着される。
+- **集合版の最小元の存在**（\ref{set:ordinal-well-ordered}）：(1) の Step 3。
+- 置換・和集合・無限・冪集合・選択は使っていない。
+:::
+:::
+
+::: supplement
+**図式としての意味.** (1) は一つの文ではなく、論理式 $\varphi(x,z_{1},\dots,z_{n})$ ごとに一つずつの定理
+$$
+\begin{aligned}
+\forall z_{1}\dots\forall z_{n}\Bigl(&\bigl[\forall x\,(\varphi\to x\in\mathbf{ON})\land\exists x\,\varphi\bigr]\\
+&\to\exists x\,\bigl[\varphi\land\forall y\,(\varphi(y,\vec{z})\to x\le y)\bigr]\Bigr)
+\end{aligned}
+$$
+の集まり（定理図式）である。$\varphi(x,z)$ として $x\in z$ をとれば、パラメータ $z$ についての全称文として \ref{set:ordinal-well-ordered} (2) が得られる。集合版は一つの定理、クラス版は無限個の定理であり、数学的な内容は似ていても形式的には大きく違う。
+
+**一般化.** 同じ議論は、整礎かつ集合的（各元の「前者」全体が集合）な関係 $\mathbf{R}$ 上の帰納法に一般化される。基礎の公理のもとでは $\in$ 自身がそのような関係であり、「$\in$-帰納法」が使える（\ref{set:cumulative-hierarchy}）。
+:::
+
+## 超限再帰定理 {#set:sec-transfinite-recursion}
+
+::: theorem 超限再帰定理 {#set:transfinite-recursion keywords="transfinite recursion theorem" index="超限再帰|ちょうげんさいき, 超限再帰定理|ちょうげんさいきていり"}
+$\mathbf{F}\colon\mathbf{V}\to\mathbf{V}$ をクラス関数とする。このとき、クラス関数 $\mathbf{G}\colon\mathbf{ON}\to\mathbf{V}$ で
+$$
+\forall\alpha\;\bigl[\mathbf{G}(\alpha)=\mathbf{F}(\mathbf{G}\restr{\alpha})\bigr]
+\label{set:eq-transfinite-recursion}
+$$
+を満たすものが存在し、しかもそのような $\mathbf{G}$ は一意である（\eqref{set:eq-transfinite-recursion} を満たす二つのクラス関数は、すべての順序数で値が一致する）。
+:::
+
+::: intuition
+$\mathbf{G}(\alpha)$ を決めるには、それより前の値全体 $\mathbf{G}\restr{\alpha}=\langle\mathbf{G}(\beta)\mid\beta<\alpha\rangle$ を $\mathbf{F}$ に渡せばよい、という「前の値から次の値を決める規則」が一つあれば、全順序数上の関数がただ一つ決まる。証明は、各順序数 $\delta$ の手前までの「部分的な解」（$\delta$-近似）が互いに矛盾せず、どの $\delta$ についても存在することを示し、それらを貼り合わせる。
+:::
+
+::: definition 近似 {#set:recursion-approximation}
+順序数 $\delta$ に対し、集合 $g$ が **$\delta$-近似**であるとは、$g$ が定義域 $\delta$ の関数で、
+$$
+\forall\alpha<\delta\;\bigl[g(\alpha)=\mathbf{F}(g\restr{\alpha})\bigr]
+$$
+を満たすことをいう。これは $g,\delta$（と $\mathbf{F}$ のパラメータ）についての論理式である。
+:::
+
+::: lemma 近似の整合性 {#set:recursion-approximation-agree}
+$g$ が $\delta$-近似、$g'$ が $\delta'$-近似ならば、すべての $\alpha<\min\{\delta,\delta'\}$ で $g(\alpha)=g'(\alpha)$。とくに $\delta$-近似は高々一つである。また $\delta$-近似 $g$ と $\gamma\le\delta$ について、$g\restr{\gamma}$ は $\gamma$-近似である。
+:::
+
+::: proof
+**Step 1.** $\varepsilon=\min\{\delta,\delta'\}=\delta\cap\delta'$ とし、$E=\{\alpha\in\varepsilon\mid g(\alpha)\neq g'(\alpha)\}$（分出公理）が空でないと仮定して、最小元 $\alpha$ をとる。
+
+**Step 2.** $\beta<\alpha$ なら $\beta\in\varepsilon$（推移性）かつ $\beta\notin E$ なので $g(\beta)=g'(\beta)$。よって集合として $g\restr{\alpha}=\{(\beta,g(\beta))\mid\beta<\alpha\}=\{(\beta,g'(\beta))\mid\beta<\alpha\}=g'\restr{\alpha}$。
+
+**Step 3.** $\alpha<\delta$, $\alpha<\delta'$ なので、近似の条件から $g(\alpha)=\mathbf{F}(g\restr{\alpha})=\mathbf{F}(g'\restr{\alpha})=g'(\alpha)$。これは $\alpha\in E$ に反する。
+
+**Step 4（一意性）.** $\delta=\delta'$ なら $g,g'$ は定義域が同じで値がすべて一致するので、外延性より $g=g'$。
+
+**Step 5（制限）.** $h=g\restr{\gamma}$ は定義域 $\gamma$ の関数で、$\alpha<\gamma$ なら $h\restr{\alpha}=g\restr{\alpha}$（$\alpha\subseteq\gamma$ だから）なので $h(\alpha)=g(\alpha)=\mathbf{F}(g\restr{\alpha})=\mathbf{F}(h\restr{\alpha})$。
+
+::: hypcheck
+- **$\mathbf{F}$ がクラス関数であること**（値が一意）：Step 3 の $\mathbf{F}(g\restr{\alpha})=\mathbf{F}(g'\restr{\alpha})$。
+- **分出公理**：$E$ と $g\restr{\alpha}$。**外延性**：Step 2, 4。**順序数の整列性**：Step 1。
+:::
+:::
+
+::: lemma 近似の存在 {#set:recursion-approximation-exists}
+すべての順序数 $\delta$ について、$\delta$-近似が（ただ一つ）存在する。
+:::
+
+::: proof
+\ref{set:transfinite-induction} (1) により、$\delta$-近似が存在しない順序数 $\delta$ があれば最小のものがとれる。そのような最小の $\delta$ をとって矛盾を導く。
+
+**Step 1（下の近似を集める）.** $\gamma<\delta$ なら最小性と \ref{set:recursion-approximation-agree} により、$\gamma$-近似 $g_{\gamma}$ がただ一つある。「$g$ は $\gamma$-近似」は $\gamma,g$ の論理式で、$\forall\gamma\in\delta\,\exists!g$ なので、**置換公理**により集合
+$$
+\mathcal{G}=\{g_{\gamma}\mid\gamma<\delta\}
+$$
+が存在する。
+
+**Step 2（$\delta=0$ の場合）.** 空関数 $\varnothing$ は定義域 $0$ の関数で、条件は空虚に満たされるので $0$-近似である。矛盾。
+
+**Step 3（$\delta=S(\gamma)$ の場合）.** $g=g_{\gamma}\cup\{(\gamma,\mathbf{F}(g_{\gamma}))\}$ とおく（対・和集合の公理）。$\gamma\notin\gamma=\dom g_{\gamma}$ なので $g$ は定義域 $S(\gamma)=\delta$ の関数である。$\alpha<\delta$ を確かめる：
+- $\alpha<\gamma$ なら $g\restr{\alpha}=g_{\gamma}\restr{\alpha}$ で、$g(\alpha)=g_{\gamma}(\alpha)=\mathbf{F}(g_{\gamma}\restr{\alpha})=\mathbf{F}(g\restr{\alpha})$。
+- $\alpha=\gamma$ なら $g\restr{\gamma}=g_{\gamma}$ で、$g(\gamma)=\mathbf{F}(g_{\gamma})=\mathbf{F}(g\restr{\gamma})$。
+
+よって $g$ は $\delta$-近似で、矛盾。
+
+**Step 4（$\delta$ が極限の場合）.** $h=\bigcup\mathcal{G}$ とおく（和集合の公理）。
+- *$h$ は関数*：$(\alpha,y),(\alpha,y')\in h$ なら、ある $\gamma,\gamma'<\delta$ で $(\alpha,y)\in g_{\gamma}$, $(\alpha,y')\in g_{\gamma'}$。\ref{set:recursion-approximation-agree} より $y=g_{\gamma}(\alpha)=g_{\gamma'}(\alpha)=y'$。
+- *$\dom h=\delta$*：$\dom h=\bigcup_{\gamma<\delta}\gamma=\bigcup\delta=\delta$（\ref{set:limit-characterization}）。
+- *近似の条件*：$\alpha<\delta$ とすると、$\delta$ は極限なので $\gamma=S(\alpha)<\delta$。$g_{\gamma}\subseteq h$ で $h$ は関数なので $h\restr{\alpha}=g_{\gamma}\restr{\alpha}$、したがって $h(\alpha)=g_{\gamma}(\alpha)=\mathbf{F}(g_{\gamma}\restr{\alpha})=\mathbf{F}(h\restr{\alpha})$。
+
+よって $h$ は $\delta$-近似で、矛盾。
+
+**Step 5.** どの場合も矛盾するので、すべての $\delta$ に $\delta$-近似が存在する。一意性は \ref{set:recursion-approximation-agree}。
+
+::: hypcheck
+- **置換公理**：Step 1 で $\mathcal{G}$ を集合にするのに**本質的に**使った（極限の場合に貼り合わせるため）。
+- **和集合の公理**：Step 4 の $\bigcup\mathcal{G}$。**対・和集合の公理**：Step 3 の $g$。
+- **超限帰納法**（\ref{set:transfinite-induction} (1)、クラス版）：最小の反例をとるのに使った。「$\delta$-近似が存在しない」はクラスを定める論理式である。
+:::
+:::
+
+::: restate {ref="set:transfinite-recursion"}
+:::
+
+::: proof
+**Step 1（$\mathbf{G}$ の定義）.** 論理式 $\chi(\alpha,y)$ を
+$$
+\alpha\in\mathbf{ON}\land\exists\delta\,\exists g\,\bigl(g\text{ は }\delta\text{-近似}\land\alpha\in\delta\land g(\alpha)=y\bigr)
+$$
+とする。各 $\alpha$ について、\ref{set:recursion-approximation-exists} により $S(\alpha)$-近似があるので $\chi(\alpha,y)$ を満たす $y$ が存在し、\ref{set:recursion-approximation-agree} によりそれは近似の選び方によらず一つである。よって $\chi$ は $\mathbf{ON}$ 上のクラス関数 $\mathbf{G}$ を定める。
+
+**Step 2（$\mathbf{G}$ は近似と一致する）.** $g$ が $\delta$-近似なら、$\alpha<\delta$ について $\mathbf{G}(\alpha)=g(\alpha)$（Step 1 の定義と \ref{set:recursion-approximation-agree}）。したがって $\alpha<\delta$ なら $\mathbf{G}\restr{\alpha}=g\restr{\alpha}$。とくに $\mathbf{G}\restr{\alpha}$ は集合である。
+
+**Step 3（再帰式）.** $\alpha$ を任意にとり、$g$ を $S(\alpha)$-近似とする。Step 2 より
+$$
+\mathbf{G}(\alpha)=g(\alpha)=\mathbf{F}(g\restr{\alpha})=\mathbf{F}(\mathbf{G}\restr{\alpha}).
+$$
+
+**Step 4（一意性）.** $\mathbf{G}'$ も \eqref{set:eq-transfinite-recursion} を満たすとする。$\mathbf{G}(\alpha)\neq\mathbf{G}'(\alpha)$ となる $\alpha$ があれば、\ref{set:transfinite-induction} (1) で最小のものをとる。$\beta<\alpha$ で $\mathbf{G}(\beta)=\mathbf{G}'(\beta)$ なので $\mathbf{G}\restr{\alpha}=\mathbf{G}'\restr{\alpha}$、よって $\mathbf{G}(\alpha)=\mathbf{F}(\mathbf{G}\restr{\alpha})=\mathbf{F}(\mathbf{G}'\restr{\alpha})=\mathbf{G}'(\alpha)$ となり矛盾。
+
+::: hypcheck
+- **置換公理**：\ref{set:recursion-approximation-exists} の中で使った。$\mathbf{G}\restr{\alpha}$ が集合であること（Step 2）も、近似 $g$ の存在を経由して置換公理に依存している。
+- **超限帰納法**：\ref{set:recursion-approximation-exists} と Step 4。
+- 無限公理・冪集合・選択公理は使っていない。$\mathbf{F}$ は任意のクラス関数でよく、パラメータを含んでよい。
+:::
+:::
+
+::: supplement
+**図式としての正確な形.** この定理も図式である。$\mathbf{F}$ を定める論理式 $\varphi_{\mathbf{F}}(x,y)$（パラメータ可）ごとに、上の Step 1 のように論理式 $\chi(\alpha,y)$ を具体的に書き下すことができ、
+$$
+\begin{aligned}
+&\forall x\,\exists!y\,\varphi_{\mathbf{F}}(x,y)\;\rightarrow\;\Bigl[\forall\alpha\,\exists!y\,\chi(\alpha,y)\\
+&\qquad\land\forall\alpha\,\exists x\,\exists y\,\bigl(\chi(\alpha,y)\land\varphi_{\mathbf{F}}(x,y)\land x=\mathbf{G}\restr{\alpha}\bigr)\Bigr]
+\end{aligned}
+$$
+が定理になる。ここで $x=\mathbf{G}\restr{\alpha}$ は「$x$ は定義域 $\alpha$ の関数で $\forall\beta\in\alpha\,\chi(\beta,x(\beta))$」の略記である。一意性は、同じ性質をもつ任意の論理式 $\chi'$ について $\forall\alpha\,\forall y\,(\chi(\alpha,y)\leftrightarrow\chi'(\alpha,y))$ が定理になる、という形で述べられる。
+
+**置換公理の役割.** 置換公理を除いた体系では超限再帰定理は一般には成り立たない。たとえば $\mathbf{G}(n)=\omega+n$ ($n\in\omega$) のような簡単な再帰でも、値の集合 $\{\omega+n\mid n\in\omega\}$ の存在は置換公理なしには保証されない（\ref{set:ordinal-type} の補足の $V_{\omega+\omega}$ を参照）。
+
+**整礎関係上の再帰.** 整礎かつ集合的な関係上でも同様の再帰定理が成り立ち、ランク関数や累積階層の定義に使われる（\ref{set:cumulative-hierarchy}）。
+:::
+
+::: corollary 順序数上・$\omega$ 上の再帰 {#set:recursion-on-ordinal}
+$\mathbf{F}\colon\mathbf{V}\to\mathbf{V}$ をクラス関数、$\delta$ を順序数とすると、定義域 $\delta$ の関数（集合）$g$ で $\forall\alpha<\delta\,[g(\alpha)=\mathbf{F}(g\restr{\alpha})]$ を満たすものがただ一つ存在する。とくに $\delta=\omega$ として、集合 $a$ とクラス関数 $\mathbf{H}$ に対し、$g(0)=a$, $g(n+1)=\mathbf{H}(g(n))$ を満たす列 $g=\langle g(n)\mid n\in\omega\rangle$ がただ一つ存在する。
+:::
+
+::: proof
+**前半.** 条件を満たす $g$ は $\delta$-近似にほかならないので、存在と一意性は \ref{set:recursion-approximation-exists}, \ref{set:recursion-approximation-agree} による（あるいは $g=\mathbf{G}\restr{\delta}$ で、\ref{set:class-basic} (3) により集合）。
+
+**後半.** $\mathbf{F}(x)$ を「$x=\varnothing$ なら $a$、$x$ が定義域 $n+1$（$n\in\omega$）の関数なら $\mathbf{H}(x(n))$、それ以外は $\varnothing$」と定める（$n=\bigcup\dom x$ として $n$ は $x$ から決まるので、これは論理式で書けるクラス関数である）。前半を $\delta=\omega$ に適用して得た $g$ について、$\omega$ の元は $0$ か後続順序数（自然数の定義 \ref{set:natural-number}）なので、$g(0)=\mathbf{F}(\varnothing)=a$, $g(n+1)=\mathbf{F}(g\restr{n+1})=\mathbf{H}(g(n))$。逆にこの二式を満たす列は $\omega$-近似なので一意である。
+
+::: hypcheck
+- **置換公理**：\ref{set:recursion-approximation-exists} を通して（$\delta$-近似の存在）。
+- **無限公理**：後半で $\omega$ の存在に使う。**自然数の定義**：後半で極限の場合が現れないこと。
+- 冪集合・選択公理は使っていない。
+:::
+:::
+
+::: corollary 三つの場合による再帰 {#set:recursion-three-clauses}
+集合 $a$ とクラス関数 $\mathbf{H}\colon\mathbf{V}\to\mathbf{V}$, $\mathbf{L}\colon\mathbf{V}\to\mathbf{V}$ に対し、クラス関数 $\mathbf{G}\colon\mathbf{ON}\to\mathbf{V}$ で
+$$
+\mathbf{G}(0)=a,\qquad\mathbf{G}(S(\beta))=\mathbf{H}(\mathbf{G}(\beta)),\qquad\mathbf{G}(\lambda)=\mathbf{L}(\mathbf{G}\restr{\lambda})\quad(\lambda\text{ は極限})
+$$
+を満たすものがただ一つ存在する。$a,\mathbf{H},\mathbf{L}$ はパラメータを含んでよい。
+:::
+
+::: proof
+**Step 1.** クラス関数 $\mathbf{F}\colon\mathbf{V}\to\mathbf{V}$ を次のように定める：
+- $x=\varnothing$ なら $\mathbf{F}(x)=a$；
+- $x$ が定義域 $S(\beta)$ の関数なら $\mathbf{F}(x)=\mathbf{H}(x(\beta))$（$\beta=\bigcup\dom x$ として $\beta$ は $x$ から決まる。\ref{set:successor-basic} (4)）；
+- $x$ が定義域が極限順序数の関数なら $\mathbf{F}(x)=\mathbf{L}(x)$；
+- それ以外なら $\mathbf{F}(x)=\varnothing$。
+
+四つの場合は互いに排他的で、どれか一つが必ず成り立つので、$\mathbf{F}$ は論理式で定まるクラス関数である。
+
+**Step 2.** \ref{set:transfinite-recursion} の $\mathbf{G}$ をとる。$\mathbf{G}\restr{\alpha}$ は定義域 $\alpha$ の関数なので、$\mathbf{G}(0)=\mathbf{F}(\varnothing)=a$、$\mathbf{G}(S(\beta))=\mathbf{F}(\mathbf{G}\restr{S(\beta)})=\mathbf{H}(\mathbf{G}(\beta))$、極限 $\lambda$ で $\mathbf{G}(\lambda)=\mathbf{L}(\mathbf{G}\restr{\lambda})$。
+
+**Step 3（一意性）.** 三つの式を満たす $\mathbf{G}'$ は、場合分けにより $\mathbf{G}'(\alpha)=\mathbf{F}(\mathbf{G}'\restr{\alpha})$ をすべての $\alpha$ で満たすので、\ref{set:transfinite-recursion} の一意性より $\mathbf{G}'=\mathbf{G}$。
+
+::: hypcheck
+- **超限再帰定理**（\ref{set:transfinite-recursion}。置換公理を使う）：Step 2, 3。
+- **順序数の三分類**（$0$・後続・極限。\ref{set:limit-ordinal}）と **$\bigcup S(\beta)=\beta$**（\ref{set:successor-basic} (4)）：Step 1 で $\mathbf{F}$ が矛盾なく定まることに使った。
+:::
+:::
+
+::: proposition 和と積の再帰的特徴づけ {#set:ordinal-recursive-characterization}
+順序数 $\alpha$ を固定する。
+1. $\beta\mapsto\alpha+\beta$ は、$\mathbf{G}(0)=\alpha$、$\mathbf{G}(S(\beta))=S(\mathbf{G}(\beta))$、極限 $\lambda$ で $\mathbf{G}(\lambda)=\sup\ran(\mathbf{G}\restr{\lambda})$ を満たす唯一のクラス関数である。
+2. $\beta\mapsto\alpha\cdot\beta$ は、$\mathbf{G}(0)=0$、$\mathbf{G}(S(\beta))=\mathbf{G}(\beta)+\alpha$、極限 $\lambda$ で $\mathbf{G}(\lambda)=\sup\ran(\mathbf{G}\restr{\lambda})$ を満たす唯一のクラス関数である。
+:::
+
+::: example
+- **階乗**：$\omega$ 上の再帰（\ref{set:recursion-on-ordinal}）で $0!=1$, $(n+1)!=n!\cdot(n+1)$ と定めると、列 $\langle n!\mid n\in\omega\rangle$ がただ一つ定まる。形式的には $\mathbf{F}(x)$ を「$x=\varnothing$ なら $1$、$x$ が定義域 $n+1$ の関数なら $x(n)\cdot(n+1)$、それ以外は $\varnothing$」とする。$\mathbf{H}$ が $n$ にも依存するので、\ref{set:recursion-three-clauses} の形ではなく \ref{set:transfinite-recursion} の形を直接使う。
+- **和の再帰的定義**：「$\alpha+0=\alpha$、$\alpha+S(\beta)=S(\alpha+\beta)$、極限では上限」を和の**定義**として採用することもでき、\ref{set:ordinal-recursive-characterization} によりそれは \ref{set:ordinal-addition} と同じものを定める。
+:::
+
+::: proof
+\ref{set:recursion-three-clauses} を、(1) では $a=\alpha$, $\mathbf{H}(x)=S(x)$（$x$ が順序数でなければ $\varnothing$）, $\mathbf{L}(x)=\bigcup\ran x$ として、(2) では $a=0$, $\mathbf{H}(x)=x+\alpha$, 同じ $\mathbf{L}$ として適用すると、条件を満たすクラス関数は一意である。一方 $\beta\mapsto\alpha+\beta$ は \ref{set:ordinal-addition-laws} (1)(4)(5) により、$\beta\mapsto\alpha\cdot\beta$ は \ref{set:ordinal-multiplication-laws} (1)(4)(5) により条件を満たす（極限 $\lambda$ では $\sup\ran(\mathbf{G}\restr{\lambda})=\sup\{\mathbf{G}(\xi)\mid\xi<\lambda\}$）。よって両者は一致する。
+
+::: hypcheck
+- **\ref{set:recursion-three-clauses} の一意性**：両者の一致。
+- **置換公理**：$\mathbf{G}\restr{\lambda}$ が集合であること（\ref{set:class-basic} (3)）。
+:::
+:::
+
+## 正規関数 {#set:sec-normal-functions}
+
+::: definition 正規関数 {#set:normal-function keywords="normal function" index="正規関数|せいきかんすう"}
+クラス関数 $\mathbf{f}\colon\mathbf{ON}\to\mathbf{ON}$ が**正規**であるとは、狭義増加（$\beta<\gamma\Rightarrow\mathbf{f}(\beta)<\mathbf{f}(\gamma)$）であり、かつ連続（任意の極限順序数 $\lambda$ について $\mathbf{f}(\lambda)=\sup\{\mathbf{f}(\xi)\mid\xi<\lambda\}$）であることをいう。
+:::
+
+::: intuition
+和・積・冪を右の引数について見た関数 $\beta\mapsto\alpha+\beta$, $\alpha\cdot\beta$, $\alpha^{\beta}$ は、極限では「それまでの値の上限」で定義されるので連続であり、（$\alpha$ が小さすぎなければ）狭義増加である。正規関数の一般論を一度示しておけば、冪の法則の証明の極限の場合が機械的に処理できる。
+:::
+
+::: lemma 上限と共終な部分集合 {#set:sup-cofinal}
+$\lambda$ を順序数、$g\colon\lambda\to\mathbf{ON}$ を広義増加（$\xi\le\eta\Rightarrow g(\xi)\le g(\eta)$）とし、$Y\subseteq\lambda$ が $\lambda$ で共終（任意の $\xi<\lambda$ に対し $\xi\le y$ となる $y\in Y$ がある）とする。このとき $\sup\{g(\xi)\mid\xi<\lambda\}=\sup\{g(y)\mid y\in Y\}$。
+:::
+
+::: proof
+$Y\subseteq\lambda$ なので右辺 $\le$ 左辺。逆に $\xi<\lambda$ に対し $\xi\le y\in Y$ をとると $g(\xi)\le g(y)\le$ 右辺。左辺は $g(\xi)$ たちの最小の上界なので、左辺 $\le$ 右辺（\ref{set:sup-ordinals}）。
+
+::: hypcheck
+- **置換公理**（\ref{set:replacement-image}）：集合 $\{g(\xi)\mid\xi<\lambda\}$, $\{g(y)\mid y\in Y\}$ の存在。**和集合の公理**：上限。
+- **$g$ の広義増加性と $Y$ の共終性**：左辺 $\le$ 右辺。
+:::
+:::
+
+::: lemma 正規関数の性質 {#set:normal-function-basic}
+$\mathbf{f}$ を正規関数とする。
+1. すべての $\xi$ で $\xi\le\mathbf{f}(\xi)$。
+2. $\lambda$ が極限順序数なら $\mathbf{f}(\lambda)$ も極限順序数。
+3. 順序数からなる空でない集合 $X$ について $\mathbf{f}(\sup X)=\sup\mathbf{f}[X]$。
+:::
+
+::: proof
+**(1)** $\mathbf{f}\restr{S(\xi)}$ は $S(\xi)$ 上の狭義増加関数（\ref{set:class-basic} (3) より集合）なので、\ref{set:increasing-above-identity} より $\xi\le\mathbf{f}(\xi)$。
+
+**(2)** $\mathbf{f}(\lambda)=\sup Z$, $Z=\{\mathbf{f}(\xi)\mid\xi<\lambda\}$。$0<\lambda$ なので $Z\neq\varnothing$。$Z$ は最大元をもたない：$\xi<\lambda$ なら $S(\xi)<\lambda$（\ref{set:limit-characterization}）で $\mathbf{f}(\xi)<\mathbf{f}(S(\xi))\in Z$。\ref{set:limit-characterization} の後半より $\sup Z$ は極限順序数。
+
+**(3)** $\sigma=\sup X$ とおく。
+- *$\sigma\in X$ の場合*：$\sigma$ は $X$ の最大元で、$\mathbf{f}$ は増加なので $\mathbf{f}(\sigma)$ は $\mathbf{f}[X]$ の最大元。\ref{set:sup-ordinals} (3) より $\sup\mathbf{f}[X]=\mathbf{f}(\sigma)$。
+- *$\sigma\notin X$ の場合*：\ref{set:sup-ordinals} (3) より $X$ は最大元をもたず、\ref{set:limit-characterization} より $\sigma$ は極限順序数。各 $x\in X$ は $x\le\sigma$, $x\neq\sigma$ なので $X\subseteq\sigma$。$X$ は $\sigma$ で共終：$\xi<\sigma=\bigcup X$ なら $\xi<x$ となる $x\in X$ がある。\ref{set:sup-cofinal} より $\mathbf{f}(\sigma)=\sup\{\mathbf{f}(\xi)\mid\xi<\sigma\}=\sup\mathbf{f}[X]$。
+
+::: hypcheck
+- **狭義増加性**：(1), (2)。**連続性**：(2), (3) の第 2 の場合。
+- **置換公理**：$\mathbf{f}[X]$ などの集合の存在。
+:::
+:::
+
+::: proposition 和と積は右の引数について正規 {#set:arithmetic-normal}
+1. 任意の $\alpha$ について $\beta\mapsto\alpha+\beta$ は正規関数である。
+2. $\alpha>0$ ならば $\beta\mapsto\alpha\cdot\beta$ は正規関数である。
+3. したがって、極限順序数 $\lambda$ について $\alpha+\lambda$ は極限順序数、$\alpha>0$ なら $\alpha\cdot\lambda$ も極限順序数であり、空でない集合 $X$ について $\alpha+\sup X=\sup\{\alpha+x\mid x\in X\}$, $\alpha\cdot\sup X=\sup\{\alpha\cdot x\mid x\in X\}$。後者は $\alpha=0$ でも成り立つ。
+:::
+
+::: proof
+(1) は \ref{set:ordinal-addition-laws} (5)(6)、(2) は \ref{set:ordinal-multiplication-laws} (5)(6)。(3) は \ref{set:normal-function-basic} (2)(3)。$\alpha=0$ なら両辺とも $0$。
+
+::: hypcheck
+- **$\alpha>0$**：(2) で積の狭義増加性（\ref{set:ordinal-multiplication-laws} (6)）を使うため。
+- **$X\neq\varnothing$**：(3) の等式（\ref{set:normal-function-basic} (3)）。$X=\varnothing$ なら左辺は $\alpha+0=\alpha$、右辺は $0$。
+:::
+:::
+
+## 順序数の冪 {#set:sec-ordinal-exponentiation}
+
+::: definition 順序数の冪 {#set:ordinal-exponentiation keywords="ordinal exponentiation" index="順序数の冪|じゅんじょすうのべき"}
+順序数 $\alpha$ を固定し、$\beta\mapsto\alpha^{\beta}$ を \ref{set:recursion-three-clauses} により次で定める：
+$$
+\begin{aligned}
+&\alpha^{0}=1,\qquad\alpha^{S(\beta)}=\alpha^{\beta}\cdot\alpha,\qquad\alpha^{\lambda}=\begin{cases}\sup\{\alpha^{\xi}\mid\xi<\lambda\}&(\alpha\neq0)\\ 0&(\alpha=0)\end{cases}\\
+&(\lambda\text{ は極限}).
+\end{aligned}
+$$
+すなわち $a=1$, $\mathbf{H}(x)=x\cdot\alpha$, $\mathbf{L}(x)=\bigcup\ran x$（$\alpha\neq0$ のとき）または $0$（$\alpha=0$ のとき）とする。
+:::
+
+::: intuition
+$\alpha^{\beta}$ は「$\alpha$ を $\beta$ 回掛ける」ことを、極限では上限をとって超限に続けたものである。$\omega^{2}=\omega\cdot\omega$ は「$\omega$ を $\omega$ 回並べたもの」、$\omega^{\omega}=\sup\{\omega^{n}\mid n<\omega\}$ はそれらすべての上限である。組合せ的に直接定義することもできる（有限個を除いて $0$ の関数 $\beta\to\alpha$ に逆辞書式順序を入れた型）が、再帰的定義のほうが性質の証明が容易である。
+:::
+
+::: lemma 冪の基本性質 {#set:ordinal-exponentiation-basic}
+順序数 $\alpha,\alpha',\beta,\gamma$ について
+1. $\alpha^{1}=\alpha$, $\alpha^{2}=\alpha\cdot\alpha$, $1^{\beta}=1$。$\beta\ge1$ なら $0^{\beta}=0$。
+2. $\alpha\ge1$ ならば $\alpha^{\beta}\ge1$。
+3. $\alpha\ge1$ かつ $\beta\le\gamma$ ならば $\alpha^{\beta}\le\alpha^{\gamma}$。$\alpha\ge2$ かつ $\beta<\gamma$ ならば $\alpha^{\beta}<\alpha^{\gamma}$。したがって $\alpha\ge2$ なら $\beta\mapsto\alpha^{\beta}$ は正規関数で、$\beta\le\alpha^{\beta}$。
+4. $\alpha\le\alpha'$ ならば $\alpha^{\beta}\le\alpha'^{\beta}$。
+:::
+
+::: proof
+以下で積の単調性を次の形で使う：$x\cdot\beta\le x\cdot\gamma$（$\beta\le\gamma$。$x>0$ なら \ref{set:ordinal-multiplication-laws} (6)、$x=0$ なら両辺 $0$）；$x\le x'\Rightarrow x\cdot\beta\le x'\cdot\beta$（同 (7)）。
+
+**(1)** $\alpha^{1}=\alpha^{0}\cdot\alpha=1\cdot\alpha=\alpha$、$\alpha^{2}=\alpha^{1}\cdot\alpha=\alpha\cdot\alpha$。$1^{\beta}=1$ は $\beta$ についての帰納法（\ref{set:transfinite-induction} (3)）：$1^{0}=1$；$1^{S(\beta)}=1\cdot1=1$；極限 $\lambda$ で $1^{\lambda}=\sup\{1\}=1$。$0^{\beta}$ は、$\beta=S(\gamma)$ なら $0^{\gamma}\cdot0=0$、$\beta$ が極限なら定義により $0$。
+
+**(2)** 帰納法。$\alpha^{0}=1$。$\alpha^{S(\beta)}=\alpha^{\beta}\cdot\alpha\ge\alpha^{\beta}\cdot1=\alpha^{\beta}\ge1$。極限 $\lambda$ では $\alpha^{\lambda}\ge\alpha^{0}=1$（$0<\lambda$）。
+
+**(3)** *Step 1.* $\alpha\ge1$ なら $\alpha^{\delta}\le\alpha^{\delta}\cdot\alpha=\alpha^{S(\delta)}$（$1\le\alpha$ と単調性）。$\alpha\ge2$ なら、$\alpha^{\delta}\ge1>0$ と $1<\alpha$ から \ref{set:ordinal-multiplication-laws} (6) で $\alpha^{\delta}=\alpha^{\delta}\cdot1<\alpha^{\delta}\cdot\alpha$。
+
+*Step 2.* $\gamma$ についての帰納法で「すべての $\beta<\gamma$ で $\alpha^{\beta}\le\alpha^{\gamma}$（$\alpha\ge2$ なら $<$）」を示す。$\gamma=0$ は空虚。$\gamma=S(\delta)$：$\beta<\gamma$ なら $\beta\le\delta$ で、帰納法の仮定（$\beta<\delta$ の場合）または等号から $\alpha^{\beta}\le\alpha^{\delta}$、Step 1 と合わせて $\alpha^{\beta}\le\alpha^{\gamma}$（$\alpha\ge2$ なら $<$）。$\gamma$ が極限：$\alpha^{\beta}\le\sup=\alpha^{\gamma}$。$\alpha\ge2$ なら $S(\beta)<\gamma$ で $\alpha^{\beta}<\alpha^{S(\beta)}\le\alpha^{\gamma}$。
+
+*Step 3.* $\alpha\ge2$ なら狭義増加で、連続性は定義そのものなので正規。$\beta\le\alpha^{\beta}$ は \ref{set:normal-function-basic} (1)。
+
+**(4)** $\beta$ についての帰納法。$\beta=0$：$1\le1$。$\beta\to S(\beta)$：$\alpha^{\beta}\cdot\alpha\le\alpha'^{\beta}\cdot\alpha\le\alpha'^{\beta}\cdot\alpha'$。極限 $\lambda$：$\alpha=0$ なら $0^{\lambda}=0$。$\alpha\ge1$ なら $\alpha'\ge1$ で、各 $\xi<\lambda$ について $\alpha^{\xi}\le\alpha'^{\xi}\le\alpha'^{\lambda}$ なので $\alpha^{\lambda}\le\alpha'^{\lambda}$。
+
+::: hypcheck
+- **超限帰納法**（\ref{set:transfinite-induction} (3)）：(1)〜(4) の帰納法。**冪の定義**（超限再帰）：各段の値。
+- **積の単調性**（\ref{set:ordinal-multiplication-laws} (6)(7)）：(2)〜(4)。**\ref{set:normal-function-basic} (1)**：(3) の $\beta\le\alpha^{\beta}$。
+- **$\alpha\ge1$, $\alpha\ge2$**：(2), (3) で積が狭義増加・広義増加になることに使った。$\alpha=1$ では $1^{\beta}=1$ なので狭義増加にならない。
+- **置換・和集合の公理**：極限での上限の存在。選択公理・冪集合の公理は使っていない。
+:::
+:::
+
+::: theorem 順序数の冪の法則 {#set:ordinal-exponentiation-laws keywords="laws of ordinal exponentiation" index="指数法則|しすうほうそく"}
+任意の順序数 $\alpha,\beta,\gamma$ について
+1. $\alpha^{\beta+\gamma}=\alpha^{\beta}\cdot\alpha^{\gamma}$。
+2. $(\alpha^{\beta})^{\gamma}=\alpha^{\beta\cdot\gamma}$。
+3. $\alpha\ge2$ かつ $\lambda$ が極限順序数ならば、$\alpha^{\lambda}$ は極限順序数。
+:::
+
+::: intuition
+自然数の指数法則のうち、「指数の和・積」についての二つは超限でもそのまま成り立つ。これは冪が指数について再帰的に（したがって帰納法で扱いやすく）定義されているからである。一方「底の積」についての法則 $(\alpha\cdot\beta)^{\gamma}=\alpha^{\gamma}\cdot\beta^{\gamma}$ は、積の非可換性のため一般には成り立たない（下の例）。
+:::
+
+::: example
+- **$2^{\omega}=\omega$**：帰納法で $2^{n}\in\omega$（$2^{n+1}=2^{n}\cdot2$ と \ref{set:natural-arithmetic}）なので $2^{\omega}=\sup\{2^{n}\mid n<\omega\}\le\omega$。\ref{set:ordinal-exponentiation-basic} (3) より $\omega\le2^{\omega}$。基数の冪 $2^{\aleph_{0}}=\lvert\mathcal{P}(\omega)\rvert>\aleph_{0}$（\fullref[基数の冪]{set:cardinal-exponentiation}）と混同してはならない。
+- **指数の和の非可換性**：$2^{1+\omega}=2^{\omega}=\omega$ だが $2^{\omega+1}=2^{\omega}\cdot2=\omega\cdot2$。
+- **底の積の法則は成り立たない**：$(\omega\cdot2)^{2}=(\omega\cdot2)\cdot(\omega\cdot2)=\omega\cdot(2\cdot\omega)\cdot2=\omega\cdot\omega\cdot2=\omega^{2}\cdot2$（結合律と $2\cdot\omega=\omega$、\ref{set:ordinal-arithmetic-counterexamples}）。一方 $\omega^{2}\cdot2^{2}=\omega^{2}\cdot4$ で、$\omega^{2}>0$ と $2<4$ から $\omega^{2}\cdot2<\omega^{2}\cdot4$。
+:::
+
+::: proof
+**$\alpha=0$ の場合.** (1)：$\beta=\gamma=0$ なら両辺 $1$。$\beta=0<\gamma$ なら両辺 $0^{\gamma}$。$\beta>0$ なら $\beta+\gamma>0$ で両辺 $0$。(2)：$\gamma=0$ なら両辺 $1$。$\beta=0<\gamma$ なら左辺 $1^{\gamma}=1$、右辺 $0^{0}=1$。$\beta,\gamma>0$ なら $\beta\cdot\gamma>0$（\ref{set:ordinal-multiplication-laws} (6)）で両辺 $0$。
+
+以下 $\alpha\ge1$ とし、\ref{set:ordinal-exponentiation-basic} (3) の広義単調性を使う。
+
+**(1)** $\beta$ を固定し、$\gamma$ についての帰納法（\ref{set:transfinite-induction} (3)）。
+- *$\gamma=0$*：$\alpha^{\beta+0}=\alpha^{\beta}=\alpha^{\beta}\cdot1=\alpha^{\beta}\cdot\alpha^{0}$。
+- *$\gamma=S(\delta)$*：和の性質 \ref{set:ordinal-addition-laws} (4)、帰納法の仮定、積の結合律から
+$$
+\alpha^{\beta+S(\delta)}=\alpha^{S(\beta+\delta)}=\alpha^{\beta+\delta}\cdot\alpha=(\alpha^{\beta}\cdot\alpha^{\delta})\cdot\alpha=\alpha^{\beta}\cdot(\alpha^{\delta}\cdot\alpha)=\alpha^{\beta}\cdot\alpha^{S(\delta)}.
+$$
+- *$\gamma$ が極限*：\ref{set:arithmetic-normal} より $\beta+\gamma$ は極限で、$\beta+\gamma=\sup\{\beta+\xi\mid\xi<\gamma\}$。よって $Y=\{\beta+\xi\mid\xi<\gamma\}$ は $\beta+\gamma$ で共終（$\zeta<\beta+\gamma$ ならある $\xi<\gamma$ で $\zeta<\beta+\xi$）。\ref{set:sup-cofinal}、帰納法の仮定、$\alpha^{\beta}\ge1$ のもとでの $x\mapsto\alpha^{\beta}\cdot x$ の正規性（\ref{set:arithmetic-normal} (3)）から
+$$
+\alpha^{\beta+\gamma}=\sup_{\zeta<\beta+\gamma}\alpha^{\zeta}=\sup_{\xi<\gamma}\alpha^{\beta+\xi}=\sup_{\xi<\gamma}\bigl(\alpha^{\beta}\cdot\alpha^{\xi}\bigr)=\alpha^{\beta}\cdot\sup_{\xi<\gamma}\alpha^{\xi}=\alpha^{\beta}\cdot\alpha^{\gamma}.
+$$
+
+**(2)** $\beta$ を固定し、$\gamma$ についての帰納法。
+- *$\gamma=0$*：両辺 $1$。
+- *$\gamma=S(\delta)$*：(1) と \ref{set:ordinal-multiplication-laws} (4) から
+$$
+(\alpha^{\beta})^{S(\delta)}=(\alpha^{\beta})^{\delta}\cdot\alpha^{\beta}=\alpha^{\beta\cdot\delta}\cdot\alpha^{\beta}=\alpha^{\beta\cdot\delta+\beta}=\alpha^{\beta\cdot S(\delta)}.
+$$
+- *$\gamma$ が極限*：$\beta=0$ なら左辺 $1^{\gamma}=1$、右辺 $\alpha^{0}=1$。$\beta\ge1$ なら \ref{set:arithmetic-normal} より $\beta\cdot\gamma$ は極限で $\{\beta\cdot\xi\mid\xi<\gamma\}$ はそこで共終。$\alpha^{\beta}\ge1$ なので $(\alpha^{\beta})^{\gamma}$ は上限で定義され、
+$$
+\alpha^{\beta\cdot\gamma}=\sup_{\zeta<\beta\cdot\gamma}\alpha^{\zeta}=\sup_{\xi<\gamma}\alpha^{\beta\cdot\xi}=\sup_{\xi<\gamma}(\alpha^{\beta})^{\xi}=(\alpha^{\beta})^{\gamma}.
+$$
+
+**(3)** \ref{set:ordinal-exponentiation-basic} (3) より正規なので、\ref{set:normal-function-basic} (2)。
+
+::: hypcheck
+- **超限帰納法**（\ref{set:transfinite-induction} (3)）：(1), (2)。**超限再帰**：冪の定義。
+- **置換・和集合の公理**：上限の存在。
+- **$\alpha\ge1$**：極限の場合で冪が上限で定義されることと、広義単調性に使った。$\alpha=0$ は別に確かめた。
+- 選択公理・冪集合の公理は使っていない。
+:::
+:::
+
+::: supplement
+**$0$ の極限冪についての約束.** 極限の場合を $\alpha=0$ にも $\sup$ で定義すると、$0^{\omega}=\sup\{0^{n}\mid n<\omega\}=\sup\{1,0\}=1$ となり、$0^{1}=0<0^{\omega}$ という不自然な値になる。Kunen は極限の場合を底によらず $\sup$ で定義しており、その流儀では $0^{\omega}=1$ となる。本ページでは $\beta\ge1$ で $0^{\beta}=0$ となるよう極限の場合の $\alpha=0$ を別扱いにした。$\alpha\ge1$ では両者の定義は一致する。
+
+**カントールの標準形.** 任意の順序数 $\alpha>0$ は、$\beta_{1}>\beta_{2}>\dots>\beta_{k}$ と $0<n_{i}<\omega$ を用いて $\alpha=\omega^{\beta_{1}}\cdot n_{1}+\dots+\omega^{\beta_{k}}\cdot n_{k}$ とただ一通りに表せることが知られている。本ページの冪の法則と割り算（\ref{set:ordinal-multiplication-laws} (9)）を $\omega^{\beta}$ で繰り返し使って示せる。
+
+**不動点.** $\beta\mapsto\omega^{\beta}$ は正規関数なので不動点をもつ。最小の不動点は $\varepsilon_{0}=\sup\{\omega,\omega^{\omega},\omega^{\omega^{\omega}},\dots\}$ で、$\omega^{\varepsilon_{0}}=\varepsilon_{0}$ を満たす。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

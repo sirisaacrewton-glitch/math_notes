@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>言語・項・論理式 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/02-first-order-logic/01-syntax.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 言語・項・論理式 {#logic:page-syntax keywords="first-order language, terms, formulas, unique readability, structural recursion, free variables, sentences, 一階の言語"}
+
+この系列では一階述語論理を、構文（記号列としての論理式）・意味論（構造における真偽）・証明（自然演繹）の三つの面から組み立て、完全性定理・コンパクト性定理・クレイグの補間定理まで示す。本ページはその土台で、項と論理式を**記号列**として定義し、**読み方の一意性**（どの論理式もただ一通りにしか組み立てられないこと）を証明する。以後の自由変数・代入（\ref{logic:page-substitution}）・充足関係（\ref{logic:page-semantics}）などはすべて「論理式の形に関する再帰」で定義するので、それらが本当に定義になっていることは本ページの結果に依存している。
+
+## 記法と定義の確認 {#logic:sec-syntax-notation}
+
+::: notation
+- **メタ理論.** 本系列の定義と証明は通常の数学の中で行う。基礎としては $\ZFC$ を想定するが、このページで使うのは自然数に関する帰納法と $\omega$ 上の再帰（\ref{set:recursion-on-ordinal}）、有限列（\ref{set:finite-sequence}）の基本的な操作だけで、選択公理は使わない。
+- **記号列.** 集合 $A$ に対し、$A$ の元の有限列 $w=(a_{0},a_{1},\dots,a_{n-1})$ を $A$ 上の**記号列**（語）という。$n$ を $w$ の長さといい $\lvert w\rvert$ と書く。長さ $0$ の列（空列）を $\varepsilon$ と書く。
+- **連結と始切片.** 記号列 $u,v$ を続けて並べた記号列を $uv$ と書く（連結）。$w=uv$ となる $v$ があるとき $u$ を $w$ の**始切片**といい、さらに $v\neq\varepsilon$ のとき**真の始切片**という。記号列は記号を横に並べて書く。たとえば $f\,\mathtt{(}\,x\,\mathtt{)}$ は長さ $3$ の記号列である。
+- **記号列の一致.** 二つの記号列が（長さも含めて）同じ列であることを $=$ で表す。「$\varphi=\psi$」は論理式としての同値ではなく、記号列として同じという意味である。
+- $\#_{a}(w)$ は記号列 $w$ の中に記号 $a$ が現れる回数を表す。
+- **始切片についての二つの事実**（以後断らずに使う）。(i) 同じ記号列 $w$ の二つの始切片 $u,u'$ は比較可能である。すなわち、どちらかが他方の始切片である（短い方が長い方の始切片）。(ii) $w=b_{1}b_{2}\cdots b_{m}$ と記号列の連結で書けているとき、$w$ の任意の始切片 $u$ は、ある $j$ と $b_{j}$ の始切片 $w'$ によって $u=b_{1}\cdots b_{j-1}w'$ と書ける。どちらも有限列の長さに関する帰納法で直ちに確かめられる。
+:::
+
+## 記号と言語 {#logic:sec-syntax-symbols}
+
+::: definition 一階の言語 {#logic:language keywords="first-order language, signature, vocabulary" index="言語|げんご, 一階の言語|いっかいのげんご, 語彙|ごい, 定数記号|ていすうきごう, 関数記号|かんすうきごう, 関係記号|かんけいきごう, 項数|こうすう"}
+**一階の言語**（語彙ともいう）$\mathcal{L}$ とは、三つの集合 $\mathrm{Con}_{\mathcal{L}}$, $\mathrm{Fun}_{\mathcal{L}}$, $\mathrm{Rel}_{\mathcal{L}}$ と写像
+$$
+\mathrm{ar}\colon\mathrm{Fun}_{\mathcal{L}}\cup\mathrm{Rel}_{\mathcal{L}}\to\{1,2,3,\dots\}
+$$
+の組である。$\mathrm{Con}_{\mathcal{L}}$ の元を**定数記号**、$\mathrm{Fun}_{\mathcal{L}}$ の元を**関数記号**、$\mathrm{Rel}_{\mathcal{L}}$ の元を**関係記号**（述語記号）といい、$\mathrm{ar}(s)$ を記号 $s$ の**項数**（アリティ）という。
+
+言語 $\mathcal{L}$ に対し、次の記号を**論理記号・補助記号**としてすべての言語に共通に用意する。
+- **変数**：可算無限集合 $\mathrm{Var}=\{v_{0},v_{1},v_{2},\dots\}$ の元（$v_{i}$ はすべて異なる）。
+- **論理記号**：$\bot$（矛盾）、$\to$（含意）、$\forall$（全称量化子）、$=$（等号）。
+- **補助記号**：左括弧 $\mathtt{(}$、右括弧 $\mathtt{)}$、コンマ $\mathtt{,}$。
+
+ただし、$\mathrm{Var}$, $\mathrm{Con}_{\mathcal{L}}$, $\mathrm{Fun}_{\mathcal{L}}$, $\mathrm{Rel}_{\mathcal{L}}$ と、論理記号・補助記号の集合 $\{\bot,\to,\forall,=,\mathtt{(},\mathtt{)},\mathtt{,}\}$ は互いに素であるとする。これらすべての和集合を $\mathcal{L}$ の**アルファベット** $A_{\mathcal{L}}$ という。
+:::
+
+::: intuition
+言語は「どんな記号を使ってよいか」の宣言であり、その記号が何を意味するかはまだ決まっていない（意味は \ref{logic:page-semantics} で構造が与える）。等号は関係記号の一つとしてではなく論理記号として扱う。どの構造でも「本当に等しい」と解釈される特別な記号だからである。
+:::
+
+::: example
+- **群の言語** $\mathcal{L}_{\mathrm{grp}}$：定数記号 $e$、項数 $2$ の関数記号 $\cdot$、項数 $1$ の関数記号 ${}^{-1}$。関係記号はない。
+- **算術の言語** $\mathcal{L}_{\mathrm{ar}}$：定数記号 $0$、項数 $1$ の関数記号 $S$、項数 $2$ の関数記号 $+,\times$、項数 $2$ の関係記号 $<$。
+- **集合論の言語** $\mathcal{L}_{\in}$：項数 $2$ の関係記号 $\in$ だけ（\ref{set:page-axioms}）。
+:::
+
+以後、$x,y,z,u,w$（添字付きも）は変数を、$c,d$ は定数記号を、$f,g$ は関数記号を、$P,Q$ は関係記号を表すメタ変数として使う。メタ変数 $x,y$ が異なる文字で書かれていても、同じ変数を表すことがある。異なることを要求するときは $x\neq y$ と明記する。
+
+## 項 {#logic:sec-syntax-terms}
+
+::: definition 項 {#logic:term keywords="term, closed term, ground term" index="項|こう, 閉項|へいこう"}
+$A_{\mathcal{L}}$ 上の記号列の集合 $T_{k}$（$k\in\omega$）を次のように再帰的に定める（\ref{set:recursion-on-ordinal}）。
+- $T_{0}$ は、長さ $1$ の記号列 $x$（$x\in\mathrm{Var}$）と $c$（$c\in\mathrm{Con}_{\mathcal{L}}$）全体の集合とする。
+- $T_{k+1}$ は、$T_{k}$ に、$\mathrm{ar}(f)=n$ である関数記号 $f$ と $t_{1},\dots,t_{n}\in T_{k}$ から作られる記号列
+$$
+f\,\mathtt{(}\,t_{1}\,\mathtt{,}\,t_{2}\,\mathtt{,}\,\cdots\,\mathtt{,}\,t_{n}\,\mathtt{)}
+$$
+をすべて付け加えた集合とする。以後これを $f(t_{1},\dots,t_{n})$ と書く。
+
+$\mathrm{Term}_{\mathcal{L}}\defeq\bigcup_{k\in\omega}T_{k}$ の元を $\mathcal{L}$ の**項**という。項 $t$ に対し $t\in T_{k}$ となる最小の $k$ を $t$ の**高さ** $\mathrm{ht}(t)$ という。変数を含まない項を**閉項**という。
+:::
+
+::: intuition
+項は「ものの名前」である。変数と定数記号から出発して、関数記号を当てはめる操作を有限回繰り返して得られる記号列だけが項である。$T_{k}$ は「関数記号の入れ子が $k$ 段以下の項」全体と思えばよい。
+:::
+
+::: example
+$\mathcal{L}_{\mathrm{ar}}$ では $+(S(0),x)$ は項で、高さは $2$ である（$0,x\in T_{0}$、$S(0)\in T_{1}$、$+(S(0),x)\in T_{2}$）。記号列としては長さ $9$ の列
+$$
++\;\mathtt{(}\;S\;\mathtt{(}\;0\;\mathtt{)}\;\mathtt{,}\;x\;\mathtt{)}
+$$
+である。日常的には $S0+x$ のように中置記法で書くが、それは上の記号列の略記とみなす。$+(x$ や $S(0,0)$ は項ではない（後者は $\mathrm{ar}(S)=1$ に反する）。
+:::
+
+::: lemma 項に関する帰納法 {#logic:term-induction keywords="induction on terms" index="項に関する帰納法|こうにかんするきのうほう"}
+項についての性質 $\Phi$ が次の二条件を満たすならば、すべての項が $\Phi$ をもつ。
+1. すべての変数と定数記号（長さ $1$ の項）は $\Phi$ をもつ。
+2. $\mathrm{ar}(f)=n$ で、項 $t_{1},\dots,t_{n}$ がすべて $\Phi$ をもつならば、$f(t_{1},\dots,t_{n})$ も $\Phi$ をもつ。
+
+また、すべての項は、変数・定数記号であるか、ある関数記号 $f$ と項 $t_{1},\dots,t_{\mathrm{ar}(f)}$ によって $f(t_{1},\dots,t_{\mathrm{ar}(f)})$ と書けるかのいずれかである。
+:::
+
+::: proof
+**Step 1（帰納法）.** 「$T_{k}$ のすべての元が $\Phi$ をもつ」を $k$ に関する帰納法で示す。$k=0$ は条件 1 である。$T_{k}$ の元がすべて $\Phi$ をもつとし、$t\in T_{k+1}$ をとる。定義より $t\in T_{k}$ であるか、$t=f(t_{1},\dots,t_{n})$ で $t_{i}\in T_{k}$ である。前者なら帰納法の仮定、後者なら帰納法の仮定と条件 2 によって $t$ は $\Phi$ をもつ。$\mathrm{Term}_{\mathcal{L}}=\bigcup_{k}T_{k}$ なので主張が従う。
+
+**Step 2（形の分類）.** 性質「$t$ は変数・定数記号であるか、$f(t_{1},\dots,t_{n})$（$t_{i}$ は項）の形である」は、条件 1 を明らかに満たし、条件 2 も明らかに満たす（$f(t_{1},\dots,t_{n})$ はその形をしている）。Step 1 より全項がこの性質をもつ。
+
+::: hypcheck
+- ここでは読み方の一意性は使っていない。「$t$ の成分 $t_{i}$ が一通りに決まる」ことは主張していない（それは \ref{logic:unique-readability-terms}）。
+- 選択公理は使っていない。$T_{k}$ の列の存在は $\omega$ 上の再帰による。
+:::
+:::
+
+## 論理式 {#logic:sec-syntax-formulas}
+
+::: definition 論理式 {#logic:formula keywords="formula, atomic formula, well-formed formula" index="論理式|ろんりしき, 原子論理式|げんしろんりしき"}
+$\mathcal{L}$ の**原子論理式**とは、次の形の記号列である。
+- $\bot$（長さ $1$ の記号列）。
+- $t\,{=}\,s$（$t,s$ は項。項 $t$、記号 $=$、項 $s$ をこの順に連結したもの）。
+- $P(t_{1},\dots,t_{n})$（$\mathrm{ar}(P)=n$、$t_{i}$ は項。項のときと同様に、$P$, $\mathtt{(}$, $t_{1}$, $\mathtt{,}$, $\dots$, $t_{n}$, $\mathtt{)}$ の連結）。
+
+記号列の集合 $F_{k}$ を再帰的に定める。$F_{0}$ は原子論理式全体とし、$F_{k+1}$ は $F_{k}$ に
+$$
+\mathtt{(}\,\varphi\to\psi\,\mathtt{)}\quad(\varphi,\psi\in F_{k}),\qquad \forall x\,\varphi\quad(x\in\mathrm{Var},\ \varphi\in F_{k})
+$$
+をすべて付け加えた集合とする。$\mathrm{Form}_{\mathcal{L}}\defeq\bigcup_{k}F_{k}$ の元を $\mathcal{L}$ の**論理式**といい、$\varphi\in F_{k}$ となる最小の $k$ を $\varphi$ の高さ $\mathrm{ht}(\varphi)$ という。$\mathtt{(}\,\varphi\to\psi\,\mathtt{)}$ を $(\varphi\to\psi)$ と書く。
+:::
+
+::: definition 略記 {#logic:abbreviations keywords="abbreviations, negation, conjunction, disjunction, existential quantifier" index="否定|ひてい, 連言|れんげん, 選言|せんげん, 存在量化子|そんざいりょうかし, 同値記号|どうちきごう"}
+次の記号列を、右辺の論理式の**略記**として使う。
+$$
+\neg\varphi\defeq(\varphi\to\bot),\qquad \top\defeq\neg\bot,\qquad (\varphi\wedge\psi)\defeq\neg(\varphi\to\neg\psi),
+$$
+$$
+\begin{aligned}
+&(\varphi\vee\psi)\defeq(\neg\varphi\to\psi),\qquad (\varphi\leftrightarrow\psi)\defeq((\varphi\to\psi)\wedge(\psi\to\varphi)),\\
+&\exists x\,\varphi\defeq\neg\forall x\,\neg\varphi,
+\end{aligned}
+$$
+$$
+t\neq s\defeq\neg\,t\,{=}\,s .
+$$
+括弧は、誤解のおそれがない範囲で省く。一番外側の括弧は省き、$\to$ は右に結合する（$\varphi\to\psi\to\chi$ は $\varphi\to(\psi\to\chi)$）。$\neg,\forall,\exists$ が最も強く結び付き、次に $\wedge,\vee$、最後に $\to,\leftrightarrow$ が結び付くとする。
+:::
+
+::: intuition
+原始記号を $\bot,\to,\forall,=$ に絞るのは、論理式の形による場合分けを少なくするためである。以後の証明（代入の補題、健全性定理、真理補題など）はすべて論理式の形に関する帰納法で行い、場合の数は原始記号の数で決まる。$\neg,\wedge,\vee,\exists$ が期待どおりの意味をもつことは \ref{logic:page-semantics} で、それらに対する自然演繹の規則が導けることは \ref{logic:page-derived-rules} で確かめる。
+:::
+
+::: example
+$\mathcal{L}_{\mathrm{ar}}$ の論理式の例：$\forall x\,\neg\,x\,{=}\,S(x)$ は、略記を展開すると記号列 $\forall x\,\mathtt{(}\,x\,{=}\,S\mathtt{(}x\mathtt{)}\to\bot\,\mathtt{)}$ である。高さは $2$ である（原子論理式 $x=S(x)$ と $\bot$ が $F_{0}$、含意が $F_{1}$、全称が $F_{2}$）。一方、$\forall x$ や $(x=0\to)$ は論理式ではない。
+:::
+
+::: lemma 論理式に関する帰納法 {#logic:formula-induction keywords="induction on formulas, structural induction" index="論理式に関する帰納法|ろんりしきにかんするきのうほう, 構造的帰納法|こうぞうてききのうほう"}
+論理式についての性質 $\Phi$ が、(1) すべての原子論理式について成り立ち、(2) $\varphi,\psi$ について成り立てば $(\varphi\to\psi)$ について成り立ち、(3) $\varphi$ について成り立てば任意の変数 $x$ について $\forall x\,\varphi$ について成り立つならば、すべての論理式について成り立つ。また、すべての論理式は、原子論理式であるか、論理式 $\varphi,\psi$ によって $(\varphi\to\psi)$ と書けるか、変数 $x$ と論理式 $\varphi$ によって $\forall x\,\varphi$ と書けるかのいずれかである。
+:::
+
+::: proof
+\ref{logic:term-induction} の証明で $T_{k}$ を $F_{k}$ に替えたものと同じである。「$F_{k}$ のすべての元が $\Phi$ をもつ」を $k$ に関する帰納法で示せばよい。$\varphi\in F_{k+1}$ は、$F_{k}$ に属するか、$\varphi=(\alpha\to\beta)$ または $\varphi=\forall x\,\alpha$（$\alpha,\beta\in F_{k}$）である。後半の分類は性質「これらのいずれかの形である」に前半を適用すれば得られる。
+:::
+
+## 読み方の一意性 {#logic:sec-syntax-readability}
+
+論理式を「形に関する再帰」で扱うには、一つの論理式がただ一通りにしか組み立てられないことが必要である（その必要性は \ref{logic:structural-recursion} の後の補足で見る）。そのための道具として、記号列 $w$ の**括弧の差**を
+$$
+\lambda(w)\defeq\#_{\mathtt{(}}(w)-\#_{\mathtt{)}}(w)
+$$
+と定める。$\lambda(uv)=\lambda(u)+\lambda(v)$ であり、$\mathtt{(}$ でも $\mathtt{)}$ でもない記号 $a$ については $\lambda(a)=0$ である。
+
+::: lemma 項の括弧のつり合い {#logic:term-balance keywords="parenthesis balance" index="括弧のつり合い|かっこのつりあい"}
+任意の項 $t$ について次が成り立つ。
+1. $\lambda(t)=0$。
+2. $t$ の任意の始切片 $u$ について $\lambda(u)\ge 0$。
+3. $t$ が長さ $1$ でないならば、$2\le\lvert u\rvert<\lvert t\rvert$ を満たす $t$ の任意の始切片 $u$ について $\lambda(u)\ge 1$。
+:::
+
+::: proof
+項に関する帰納法（\ref{logic:term-induction}）で示す。
+
+**Step 1（長さ $1$ の項）.** $t$ が変数または定数記号のとき、$\lambda(t)=0$ である。始切片は $\varepsilon$ と $t$ だけで、どちらも $\lambda=0$。3 は仮定を満たす $u$ がないので空虚に成り立つ。
+
+**Step 2（$t=f(t_{1},\dots,t_{n})$、1）.** 帰納法の仮定より各 $t_{i}$ は 1–3 を満たす。$t$ は記号列 $f$, $\mathtt{(}$, $t_{1}$, $\mathtt{,}$, $t_{2}$, $\dots$, $\mathtt{,}$, $t_{n}$, $\mathtt{)}$ の連結なので
+$$
+\begin{aligned}
+\lambda(t)&=\lambda(f)+\lambda(\mathtt{(})+\sum_{i=1}^{n}\lambda(t_{i})+(n-1)\lambda(\mathtt{,})+\lambda(\mathtt{)})\\
+&=0+1+0+0-1=0 .
+\end{aligned}
+$$
+
+**Step 3（$t=f(t_{1},\dots,t_{n})$、3）.** $u$ を $2\le\lvert u\rvert<\lvert t\rvert$ である $t$ の始切片とする。$\lvert u\rvert\ge 2$ なので $u$ は $f\,\mathtt{(}$ で始まり、$\lvert u\rvert<\lvert t\rvert$ なので最後の $\mathtt{)}$ を含まない。記号列の連結の始切片についての事実（記法の (ii)）より、ある $i\in\{1,\dots,n\}$ と $t_{i}$ の始切片 $w'$（$\varepsilon$ でも $t_{i}$ 全体でもよい）によって
+$$
+u=f\,\mathtt{(}\,t_{1}\,\mathtt{,}\,\cdots\,\mathtt{,}\,t_{i-1}\,\mathtt{,}\,w'
+$$
+と書ける（$i=1$ のときは $u=f\,\mathtt{(}\,w'$）。したがって、帰納法の仮定 1, 2 を $t_{1},\dots,t_{i}$ に使って
+$$
+\lambda(u)=0+1+\sum_{j<i}\lambda(t_{j})+\lambda(w')=1+\lambda(w')\ge 1 .
+$$
+
+**Step 4（$t=f(t_{1},\dots,t_{n})$、2）.** 始切片 $u$ は、$\varepsilon$、$f$（どちらも $\lambda=0$）、Step 3 の範囲のもの（$\lambda\ge 1$）、$t$ 自身（$\lambda=0$）のいずれかである。よって $\lambda(u)\ge 0$。
+
+::: hypcheck
+- **補助記号が他の記号と異なること**（言語の定義の互いに素の仮定）：Step 2 で $\lambda(f)=0$, $\lambda(\mathtt{,})=0$ とした。関数記号がたまたま括弧と同じ記号だと 1 が崩れる。
+- **2 は 3 の証明に使う**（Step 3 で $\lambda(w')\ge 0$）。そのため 2 と 3 を同時に帰納法で示している。
+:::
+:::
+
+::: lemma 項の始切片 {#logic:term-prefix keywords="prefix property" index="始切片|しせっぺん"}
+項 $s,t$ について、$s$ が $t$ の始切片ならば $s=t$ である。すなわち、項は他の項の真の始切片にならない。
+:::
+
+::: proof
+$s$ が $t$ の始切片で $s\neq t$ と仮定して矛盾を導く。
+
+**Step 1.** 項は空でないので、$s$ と $t$ の最初の記号は同じである。$t$ が長さ $1$ なら、その始切片で空でないものは $t$ だけなので $s=t$ となり矛盾する。よって、\ref{logic:term-induction} の後半より $t=f(t_{1},\dots,t_{n})$ の形である。
+
+**Step 2.** $s$ の最初の記号は $f$ である。関数記号は変数とも定数記号とも異なるので、$s$ は長さ $1$ の項ではなく、$s=g(s_{1},\dots,s_{m})$ の形である。とくに $\lvert s\rvert\ge 2$ である。
+
+**Step 3.** $s$ は $t$ の真の始切片なので $2\le\lvert s\rvert<\lvert t\rvert$ である。\ref{logic:term-balance} の 3 を $t$ に適用すると $\lambda(s)\ge 1$。一方、同じ補題の 1 を $s$ に適用すると $\lambda(s)=0$。これは矛盾である。
+
+::: hypcheck
+- **\ref{logic:term-balance} の 3**：Step 3 で本質的に使った。括弧のない記法（たとえば $f\,t_{1}\,t_{2}$ を括弧なしで並べる記法）では、この議論は別の数え方に置き換える必要がある（問題 \ref{logic:prob-polish}）。
+:::
+:::
+
+::: theorem 項の読み方の一意性 {#logic:unique-readability-terms keywords="unique readability of terms" index="読み方の一意性|よみかたのいちいせい"}
+任意の項 $t$ は、(a) 変数、(b) 定数記号、(c) ある関数記号 $f$ と項 $t_{1},\dots,t_{\mathrm{ar}(f)}$ による $f(t_{1},\dots,t_{\mathrm{ar}(f)})$、のちょうど一つに当てはまる。さらに (c) の場合、$f$ と $t_{1},\dots,t_{\mathrm{ar}(f)}$ は $t$ から一通りに決まる。すなわち $f(t_{1},\dots,t_{n})=g(s_{1},\dots,s_{m})$ ならば $f=g$, $n=m$ であり、すべての $i$ について $t_{i}=s_{i}$ である。
+:::
+
+::: proof
+**Step 1（ちょうど一つ）.** \ref{logic:term-induction} の後半により少なくとも一つに当てはまる。最初の記号は (a) では変数、(b) では定数記号、(c) では関数記号であり、これらの集合は互いに素なので、二つ以上に当てはまることはない。
+
+**Step 2（$f=g$, $n=m$）.** 最初の記号を比べて $f=g$ である。項数は記号ごとに一つに決まっているので $n=\mathrm{ar}(f)=\mathrm{ar}(g)=m$ である。
+
+**Step 3（成分の一致）.** $i$ に関する帰納法で $t_{i}=s_{i}$ を示す。$j<i$ について $t_{j}=s_{j}$ が示されているとする。このとき二つの記号列は、共通の始切片
+$$
+p\defeq f\,\mathtt{(}\,t_{1}\,\mathtt{,}\,\cdots\,\mathtt{,}\,t_{i-1}\,\mathtt{,}\quad(i=1\text{ のときは }p=f\,\mathtt{(})
+$$
+で始まり、$p$ を除いた残りの記号列 $r$ は、一方では $t_{i}$ で始まり、他方では $s_{i}$ で始まる。$t_{i}$ と $s_{i}$ はともに同じ記号列 $r$ の始切片なので、どちらかが他方の始切片である（記法の (i)）。\ref{logic:term-prefix} より $t_{i}=s_{i}$ である。
+
+::: hypcheck
+- **記号の集合が互いに素であること**：Step 1 と Step 2。
+- **項数が記号ごとに一つに決まること**（$\mathrm{ar}$ が写像であること）：Step 2。同じ記号を異なる項数で使うことを許すと、$f(x)$ と $f(x,y)$ の区別は括弧の中身を読まないとつかない。それでも一意性自体は保てるが、項数の決定を別に論じる必要がある。
+- **\ref{logic:term-prefix}**：Step 3 の本質。
+:::
+:::
+
+::: lemma 論理式の括弧のつり合い {#logic:formula-balance keywords="parenthesis balance of formulas"}
+任意の論理式 $\varphi$ について次が成り立つ。
+1. $\lambda(\varphi)=0$。
+2. $\varphi$ の任意の始切片 $u$ について $\lambda(u)\ge 0$。
+3. $\varphi=(\alpha\to\beta)$ の形ならば、$1\le\lvert u\rvert<\lvert\varphi\rvert$ を満たす任意の始切片 $u$ について $\lambda(u)\ge 1$。$\varphi=P(t_{1},\dots,t_{n})$ の形ならば、$2\le\lvert u\rvert<\lvert\varphi\rvert$ を満たす任意の始切片 $u$ について $\lambda(u)\ge 1$。
+:::
+
+::: proof
+論理式に関する帰納法（\ref{logic:formula-induction}）で示す。
+
+**Step 1（$\bot$）.** 長さ $1$ で $\lambda=0$。始切片は $\varepsilon,\bot$ だけである。3 は該当しない。
+
+**Step 2（$t=s$）.** $\lambda(t=s)=\lambda(t)+0+\lambda(s)=0$（\ref{logic:term-balance} の 1）。始切片 $u$ は、$t$ の始切片であるか、$u=t\,{=}\,w'$（$w'$ は $s$ の始切片）である。前者は \ref{logic:term-balance} の 2 より $\lambda(u)\ge 0$、後者は $\lambda(u)=0+\lambda(w')\ge 0$。3 は該当しない。
+
+**Step 3（$P(t_{1},\dots,t_{n})$）.** 1–3 の証明は \ref{logic:term-balance} の Step 2–4 で $f$ を $P$ に替えたものと同じである。
+
+**Step 4（$(\alpha\to\beta)$）.** 帰納法の仮定より $\alpha,\beta$ は 1, 2 を満たす。$\lambda((\alpha\to\beta))=1+0+0+0-1=0$。$1\le\lvert u\rvert<\lvert\varphi\rvert$ の始切片 $u$ は、$u=\mathtt{(}\,w'$（$w'$ は $\alpha$ の始切片）であるか、$u=\mathtt{(}\,\alpha\to w''$（$w''$ は $\beta$ の始切片）である。それぞれ $\lambda(u)=1+\lambda(w')\ge 1$、$\lambda(u)=1+0+0+\lambda(w'')\ge 1$。よって 3 が成り立ち、$\varepsilon$ と $\varphi$ 自身を加えれば 2 も成り立つ。
+
+**Step 5（$\forall x\,\alpha$）.** $\lambda(\forall x\,\alpha)=\lambda(\alpha)=0$。始切片は $\varepsilon$, $\forall$, $\forall x$, $\forall x\,w'$（$w'$ は $\alpha$ の始切片）のいずれかで、どれも $\lambda\ge 0$ である。3 は該当しない。
+:::
+
+::: lemma 論理式の始切片 {#logic:formula-prefix keywords="prefix property of formulas"}
+論理式 $\psi,\varphi$ について、$\psi$ が $\varphi$ の始切片ならば $\psi=\varphi$ である。
+:::
+
+::: proof
+「$F_{k}$ の任意の元 $\varphi$ と任意の論理式 $\psi$ について、$\psi$ が $\varphi$ の始切片ならば $\psi=\varphi$」を $k$ に関する帰納法で示す。以下、$\psi$ を $\varphi$ の始切片とする。$\psi$ は空でないので、$\psi$ と $\varphi$ の最初の記号は一致する。
+
+**Step 0（最初の記号による分類）.** 論理式の最初の記号は、$\bot$ なら $\varphi=\bot$、変数・定数記号・関数記号なら等式 $t=s$（項の最初の記号はこのいずれか）、関係記号なら $P(\dots)$、$\mathtt{(}$ なら含意、$\forall$ なら全称である。記号の集合が互いに素なので、この五つの場合は重ならない。
+
+**Step 1（$\varphi=\bot$）.** 長さ $1$ なので $\psi=\varphi$。
+
+**Step 2（$\varphi=(t=s)$）.** Step 0 より $\psi$ も等式 $t'=s'$ である。項には記号 $=$ が現れないので、$\varphi$ の中の $=$ は位置 $\lvert t\rvert$ の一つだけである。$\psi$ は位置 $\lvert t'\rvert$ に $=$ をもち、$\psi$ は $\varphi$ の始切片なので $\varphi$ も位置 $\lvert t'\rvert$ に $=$ をもつ。よって $\lvert t'\rvert=\lvert t\rvert$ であり、$t'$ と $t$ はともに $\varphi$ の同じ長さの始切片なので $t'=t$。すると $s'$ は $s$ の始切片となり、\ref{logic:term-prefix} より $s'=s$。よって $\psi=\varphi$。
+
+**Step 3（$\varphi=P(t_{1},\dots,t_{n})$ または $\varphi=(\alpha\to\beta)$）.** Step 0 より $\psi$ も同じ形であり、とくに $\lvert\psi\rvert\ge 2$ である。もし $\lvert\psi\rvert<\lvert\varphi\rvert$ なら、\ref{logic:formula-balance} の 3 を $\varphi$ に適用して $\lambda(\psi)\ge 1$ となるが、同じ補題の 1 を $\psi$ に適用すると $\lambda(\psi)=0$ であり矛盾する。よって $\lvert\psi\rvert=\lvert\varphi\rvert$、すなわち $\psi=\varphi$。
+
+**Step 4（$\varphi=\forall x\,\alpha$、$\varphi\in F_{k+1}\setminus F_{k}$ とし $\alpha\in F_{k}$）.** Step 0 より $\psi=\forall y\,\gamma$ の形である。2 番目の記号を比べて $y=x$。すると $\gamma$ は $\alpha$ の始切片であり、$\alpha\in F_{k}$ なので帰納法の仮定から $\gamma=\alpha$。よって $\psi=\varphi$。なお $\forall x\,\alpha$ から $\alpha$ を取り出すことは「最初の 2 記号を除く」操作なので、ここでは読み方の一意性を前提にしていない。
+
+**Step 5（$k$ に関する帰納法のまとめ）.** $k=0$ は Step 1–3 で済む（原子論理式）。$F_{k}$ で成り立つとすると、$\varphi\in F_{k+1}$ は $F_{k}$ に属する（帰納法の仮定）か、含意（Step 3）か、$\alpha\in F_{k}$ による全称（Step 4）である。
+
+::: hypcheck
+- **等号が項に現れないこと**：Step 2。項の中に $=$ が現れうる言語（たとえば $=$ と同じ記号を関数記号にする）では、区切りの位置が一つに決まらない。
+- **含意を括弧で囲むこと**：Step 3 で \ref{logic:formula-balance} の 3 を使うために必要である。括弧を外すと一意性そのものが壊れる（\ref{logic:structural-recursion} の後の補足）。
+- **全称量化子に括弧が不要なこと**：Step 4 のとおり、$\forall x$ は常に長さ $2$ の接頭部なので括弧なしでも区切りが決まる。
+:::
+:::
+
+::: theorem 論理式の読み方の一意性 {#logic:unique-readability-formulas keywords="unique readability, unique readability of formulas, unique parsing" index="読み方の一意性|よみかたのいちいせい, 一意可読性|いちいかどくせい"}
+任意の論理式は、$\bot$、$t=s$、$P(t_{1},\dots,t_{n})$、$(\alpha\to\beta)$、$\forall x\,\alpha$ の五つの形のちょうど一つに当てはまり、その成分（$t,s$、$P,t_{1},\dots,t_{n}$、$\alpha,\beta$、$x,\alpha$）は一通りに決まる。さらに次が成り立つ。
+$$
+\mathrm{ht}((\alpha\to\beta))=\max(\mathrm{ht}(\alpha),\mathrm{ht}(\beta))+1,\qquad \mathrm{ht}(\forall x\,\alpha)=\mathrm{ht}(\alpha)+1 .
+$$
+項についても同様に $\mathrm{ht}(f(t_{1},\dots,t_{n}))=\max_{i}\mathrm{ht}(t_{i})+1$ である。
+:::
+
+::: proof
+**Step 1（ちょうど一つの形）.** \ref{logic:formula-induction} の後半によりいずれかの形であり、\ref{logic:formula-prefix} の Step 0 のとおり最初の記号によって形は一つに決まる。
+
+**Step 2（成分の一意性）.**
+- $t=s$ と $t'=s'$ が一致するとき：\ref{logic:formula-prefix} の Step 2 と同じく、$=$ の位置が一つなので $t=t'$, $s=s'$。
+- $P(t_{1},\dots,t_{n})=Q(s_{1},\dots,s_{m})$ のとき：\ref{logic:unique-readability-terms} の Step 2, 3 と同じ議論（\ref{logic:term-prefix} を使う）で $P=Q$, $n=m$, $t_{i}=s_{i}$。
+- $(\alpha\to\beta)=(\gamma\to\delta)$ のとき：最初の $\mathtt{(}$ を除いた記号列の始切片として $\alpha$ と $\gamma$ は比較可能であり、\ref{logic:formula-prefix} より $\alpha=\gamma$。その次の記号はどちらも $\to$ で、残りは $\beta\,\mathtt{)}=\delta\,\mathtt{)}$ である。最後の記号を除いて $\beta=\delta$。
+- $\forall x\,\alpha=\forall y\,\gamma$ のとき：2 番目の記号から $x=y$、3 番目以降から $\alpha=\gamma$。
+
+**Step 3（高さ）.** $\varphi=(\alpha\to\beta)$ とし、$h=\mathrm{ht}(\varphi)$ とおく。$\varphi$ は原子論理式ではない（Step 1）ので $h\ge 1$ であり、$\varphi\in F_{h}\setminus F_{h-1}$ だから、定義より $\varphi=(\alpha'\to\beta')$、$\alpha',\beta'\in F_{h-1}$ と書ける。Step 2 より $\alpha'=\alpha$, $\beta'=\beta$ なので $\max(\mathrm{ht}(\alpha),\mathrm{ht}(\beta))\le h-1$。逆に $m=\max(\mathrm{ht}(\alpha),\mathrm{ht}(\beta))$ とすると、$F_{k}\subset F_{k+1}$ なので $\alpha,\beta\in F_{m}$、したがって $\varphi\in F_{m+1}$、すなわち $h\le m+1$。以上で $h=m+1$。全称と項の場合も同様である。
+
+::: hypcheck
+- **\ref{logic:formula-prefix}**：Step 2 の含意の場合の本質。
+- **Step 3 の高さの等式**：Step 2（一意性）を使っている。一意性がないと、$\varphi$ が高い段で別の分解をもつ可能性を排除できない。
+:::
+:::
+
+::: supplement
+**別の記法.** 括弧を使わないポーランド記法（関数記号・結合子を前に置く記法。$(\varphi\to\psi)$ の代わりに $\to\varphi\psi$ と書く）でも読み方は一意である。その証明は括弧の差の代わりに「記号の重み」を数える（問題 \ref{logic:prob-polish}）。この記法は計算機による構文解析や、論理式を自然数でコード化するとき（\ref{pt:page-arithmetization}）に便利である。
+
+**高い視点.** 読み方の一意性は、項全体が関数記号を演算とする「自由な代数」（変数と定数記号から、関数記号を当てはめる以外の関係を一切課さずに作った代数）になっている、という主張である。次の構造的再帰の定理は、その代数の普遍性（どんな代数への写像も、生成元での値を決めればただ一つに延びる）の言い換えにあたる。
+:::
+
+## 構造的帰納法と構造的再帰 {#logic:sec-syntax-recursion}
+
+::: theorem 構造的再帰 {#logic:structural-recursion keywords="structural recursion, recursion on formulas, definition by recursion" index="構造的再帰|こうぞうてきさいき, 論理式に関する再帰|ろんりしきにかんするさいき"}
+$X$ を集合とし、写像
+$$
+\begin{aligned}
+&G_{\mathrm{at}}\colon F_{0}\to X,\qquad G_{\to}\colon\mathrm{Form}_{\mathcal{L}}\times\mathrm{Form}_{\mathcal{L}}\times X\times X\to X,\\
+&G_{\forall}\colon\mathrm{Var}\times\mathrm{Form}_{\mathcal{L}}\times X\to X
+\end{aligned}
+$$
+が与えられているとする。このとき、写像 $F\colon\mathrm{Form}_{\mathcal{L}}\to X$ で、原子論理式 $\varphi$ について $F(\varphi)=G_{\mathrm{at}}(\varphi)$、かつ任意の $\alpha,\beta,x$ について
+$$
+F((\alpha\to\beta))=G_{\to}(\alpha,\beta,F(\alpha),F(\beta)),\qquad F(\forall x\,\alpha)=G_{\forall}(x,\alpha,F(\alpha))
+$$
+を満たすものがただ一つ存在する。項についても、長さ $1$ の項での値と、$f(t_{1},\dots,t_{n})$ での値を $f$, $t_{i}$, $F(t_{i})$ から定める規則を与えれば、同様の写像がただ一つ存在する。
+:::
+
+::: intuition
+「$F$ を原子論理式で決め、$(\alpha\to\beta)$ での値を $\alpha,\beta$ での値から、$\forall x\,\alpha$ での値を $\alpha$ での値から決める」という定義の仕方が正当であることを保証する定理である。$G_{\to}$ が $F(\alpha),F(\beta)$ だけでなく $\alpha,\beta$ そのものも引数にとれるようにしてあるのは、代入可能性（\ref{logic:page-substitution}）のように、成分の値だけでなく成分の形も見る定義があるからである。
+:::
+
+::: proof
+**Step 1（段階ごとの構成）.** 次の条件 $(\ast_{k})$ を満たす写像 $F_{k}\colon F_{k}\to X$ の列を、$k$ に関する再帰で構成する（記号の衝突を避けるため、写像を $\Phi_{k}$ と書く）。
+
+$(\ast_{k})$：$\Phi_{k}$ は原子論理式上で $G_{\mathrm{at}}$ に一致し、$F_{k}$ に属する含意 $(\alpha\to\beta)$ と全称 $\forall x\,\alpha$ について（\ref{logic:unique-readability-formulas} よりその成分は $F_{k-1}\subset F_{k}$ に属する）
+$$
+\Phi_{k}((\alpha\to\beta))=G_{\to}(\alpha,\beta,\Phi_{k}(\alpha),\Phi_{k}(\beta)),\qquad\Phi_{k}(\forall x\,\alpha)=G_{\forall}(x,\alpha,\Phi_{k}(\alpha))
+$$
+が成り立つ。
+
+$\Phi_{0}\defeq G_{\mathrm{at}}$ とする。$(\ast_{0})$ は明らかである（$F_{0}$ に含意・全称はない）。$\Phi_{k}$ が $(\ast_{k})$ を満たすとき、$\varphi\in F_{k+1}$ に対して
+- $\varphi\in F_{k}$ なら $\Phi_{k+1}(\varphi)\defeq\Phi_{k}(\varphi)$、
+- $\varphi\notin F_{k}$ で $\varphi=(\alpha\to\beta)$（$\alpha,\beta\in F_{k}$）なら $\Phi_{k+1}(\varphi)\defeq G_{\to}(\alpha,\beta,\Phi_{k}(\alpha),\Phi_{k}(\beta))$、
+- $\varphi\notin F_{k}$ で $\varphi=\forall x\,\alpha$（$\alpha\in F_{k}$）なら $\Phi_{k+1}(\varphi)\defeq G_{\forall}(x,\alpha,\Phi_{k}(\alpha))$
+
+と定める。\ref{logic:unique-readability-formulas} より、$\varphi$ がどの場合に当たるか、およびその成分 $\alpha,\beta,x$ は一通りに決まるので、$\Phi_{k+1}$ は写像として定まる。
+
+**Step 2（$(\ast_{k+1})$ の確認）.** 原子論理式では $\Phi_{k+1}=\Phi_{k}=G_{\mathrm{at}}$。含意 $\varphi=(\alpha\to\beta)\in F_{k+1}$ を考える。$\alpha,\beta\in F_{k}$ なので $\Phi_{k+1}(\alpha)=\Phi_{k}(\alpha)$, $\Phi_{k+1}(\beta)=\Phi_{k}(\beta)$ である。$\varphi\notin F_{k}$ なら定義そのもの、$\varphi\in F_{k}$ なら $(\ast_{k})$ によって等式が成り立つ。全称も同様である。
+
+**Step 3（貼り合わせ）.** Step 1 の定義から $\Phi_{k+1}$ は $\Phi_{k}$ の拡張なので、$F\defeq\bigcup_{k}\Phi_{k}$ は $\mathrm{Form}_{\mathcal{L}}$ 上の写像である。任意の含意・全称 $\varphi$ はある $F_{k}$ に属し、$(\ast_{k})$ により $F$ は $\varphi$ で要求される等式を満たす。
+
+**Step 4（一意性）.** $F,F'$ がともに条件を満たすとする。性質「$F(\varphi)=F'(\varphi)$」は原子論理式で成り立ち、$\alpha,\beta$ で成り立てば $(\alpha\to\beta)$ と $\forall x\,\alpha$ でも（等式の右辺が一致するので）成り立つ。\ref{logic:formula-induction} より $F=F'$。項の場合も同じ証明である。
+
+::: hypcheck
+- **読み方の一意性**（\ref{logic:unique-readability-formulas}）：Step 1 の $\Phi_{k+1}$ が写像として定まること、Step 1 の $(\ast_{k})$ で成分が $F_{k-1}$ に属すること。これが本質的な前提である。
+- **列 $(\Phi_{k})$ の存在**：メタ理論での $\omega$ 上の再帰（\ref{set:recursion-on-ordinal}）。選択公理は使わない。
+- 一意性（Step 4）には読み方の一意性は要らない。
+:::
+:::
+
+::: supplement
+**一意性がないと何が起こるか.** 含意を括弧なしで $\varphi\to\psi$ と書く記法を採ったとする。すると命題記号 $p,q,r$ から作られる記号列 $p\to q\to r$ は、$(p\to q)\to r$ としても $p\to(q\to r)$ としても組み立てられる。真理値を「$F(\alpha\to\beta)$ は $F(\alpha)$ が真で $F(\beta)$ が偽のときだけ偽」と再帰的に定めようとすると、$p,q,r$ がすべて偽のとき、前者の読み方では偽、後者の読み方では真となる。したがって、この「定義」を満たす写像は存在しない。構造的再帰の定理は、読み方の一意性を失うと成り立たない。
+
+**類似の定理.** 自然数上の再帰（\ref{set:recursion-on-ordinal}）、整礎関係上の再帰（\ref{set:wf-recursion}）はいずれも同じ型の定理である。実際、「$\alpha$ は $\varphi$ の直接の成分である」という関係は論理式全体の上の整礎関係であり、構造的再帰はその特別な場合とみることもできる。
+:::
+
+## 自由変数・束縛変数・文 {#logic:sec-syntax-free}
+
+::: definition 自由変数と束縛変数 {#logic:free-variables keywords="free variables, bound variables, variables of a term" index="自由変数|じゆうへんすう, 束縛変数|そくばくへんすう"}
+項 $t$ に現れる変数の集合 $\mathrm{var}(t)$ を、$\mathrm{var}(x)=\{x\}$, $\mathrm{var}(c)=\varnothing$, $\mathrm{var}(f(t_{1},\dots,t_{n}))=\bigcup_{i}\mathrm{var}(t_{i})$ と再帰的に定める。論理式 $\varphi$ の**自由変数**の集合 $\mathrm{FV}(\varphi)$ と**束縛変数**の集合 $\mathrm{BV}(\varphi)$ を、構造的再帰（\ref{logic:structural-recursion}）で次のように定める。
+$$
+\begin{aligned}
+&\mathrm{FV}(\bot)=\varnothing,\quad \mathrm{FV}(t=s)=\mathrm{var}(t)\cup\mathrm{var}(s),\\
+&\mathrm{FV}(P(t_{1},\dots,t_{n}))=\textstyle\bigcup_{i}\mathrm{var}(t_{i}),
+\end{aligned}
+$$
+$$
+\mathrm{FV}((\alpha\to\beta))=\mathrm{FV}(\alpha)\cup\mathrm{FV}(\beta),\qquad \mathrm{FV}(\forall x\,\alpha)=\mathrm{FV}(\alpha)\setminus\{x\},
+$$
+$$
+\begin{aligned}
+&\mathrm{BV}(\text{原子論理式})=\varnothing,\qquad \mathrm{BV}((\alpha\to\beta))=\mathrm{BV}(\alpha)\cup\mathrm{BV}(\beta),\\
+&\mathrm{BV}(\forall x\,\alpha)=\mathrm{BV}(\alpha)\cup\{x\}.
+\end{aligned}
+$$
+また、$\varphi$ の記号列の中に記号として現れる変数の集合を $\mathrm{Var}(\varphi)$、定数記号の集合を $\mathrm{Con}(\varphi)$ と書く（項 $t$ についても同様に $\mathrm{Con}(t)$）。
+:::
+
+::: intuition
+$\mathrm{FV}(\varphi)$ は「$\varphi$ の真偽を決めるために値を指定しなければならない変数」、$\mathrm{BV}(\varphi)$ は「$\varphi$ の中で量化子に使われている変数」である。同じ変数が両方に属しうることに注意する。
+:::
+
+::: example
+$\varphi=(\forall x\,P(x,y)\to Q(x))$ とすると、
+$$
+\mathrm{FV}(\varphi)=(\{x,y\}\setminus\{x\})\cup\{x\}=\{x,y\},\qquad \mathrm{BV}(\varphi)=\{x\}.
+$$
+$x$ は、前半では $\forall x$ に束縛され、後半では自由に現れている。$\mathrm{FV}(\varphi)\cap\mathrm{BV}(\varphi)=\{x\}\neq\varnothing$ である。また $\forall x\,\forall x\,P(x)$ のように同じ変数を二重に量化することも許される。このとき $\mathrm{FV}=\varnothing$, $\mathrm{BV}=\{x\}$ である（意味論での扱いは \ref{logic:page-semantics}）。
+:::
+
+::: lemma 現れる変数の分解 {#logic:var-fv-bv keywords="variables occurring in a formula"}
+任意の項 $t$ について $\mathrm{var}(t)$ は $t$ に記号として現れる変数全体に等しい。任意の論理式 $\varphi$ について
+$$
+\mathrm{Var}(\varphi)=\mathrm{FV}(\varphi)\cup\mathrm{BV}(\varphi)
+$$
+であり、これは有限集合である。
+:::
+
+::: proof
+**Step 1（項）.** 項に関する帰納法。$t=x$ なら両辺 $\{x\}$、$t=c$ なら両辺 $\varnothing$。$t=f(t_{1},\dots,t_{n})$ なら、$t$ に現れる変数は $t_{i}$ のどれかに現れる変数（$f$ と補助記号は変数でない）なので、帰納法の仮定より $\bigcup_{i}\mathrm{var}(t_{i})=\mathrm{var}(t)$ に一致する。
+
+**Step 2（原子論理式）.** $\bot$ には変数が現れない。$t=s$ と $P(t_{1},\dots,t_{n})$ に現れる変数は項の部分に現れる変数なので、Step 1 より $\mathrm{Var}=\mathrm{FV}$、また $\mathrm{BV}=\varnothing$。
+
+**Step 3（含意）.** $(\alpha\to\beta)$ に現れる変数は $\alpha$ か $\beta$ に現れる変数なので、帰納法の仮定より
+$$
+\begin{aligned}
+\mathrm{Var}((\alpha\to\beta))&=\mathrm{FV}(\alpha)\cup\mathrm{BV}(\alpha)\cup\mathrm{FV}(\beta)\cup\mathrm{BV}(\beta)\\
+&=\mathrm{FV}((\alpha\to\beta))\cup\mathrm{BV}((\alpha\to\beta)).
+\end{aligned}
+$$
+
+**Step 4（全称）.** $\forall x\,\alpha$ に現れる変数は $x$ と $\alpha$ に現れる変数なので、帰納法の仮定より
+$$
+\mathrm{Var}(\forall x\,\alpha)=\{x\}\cup\mathrm{FV}(\alpha)\cup\mathrm{BV}(\alpha)=(\mathrm{FV}(\alpha)\setminus\{x\})\cup(\mathrm{BV}(\alpha)\cup\{x\}).
+$$
+最後の等号は、$\{x\}\cup\mathrm{FV}(\alpha)=(\mathrm{FV}(\alpha)\setminus\{x\})\cup\{x\}$ による。右辺は $\mathrm{FV}(\forall x\,\alpha)\cup\mathrm{BV}(\forall x\,\alpha)$ である。
+
+**Step 5（有限性）.** 記号列は有限なので、そこに現れる変数は有限個である。
+:::
+
+::: corollary 新しい変数の存在 {#logic:fresh-variable keywords="fresh variable" index="新しい変数|あたらしいへんすう"}
+有限個の論理式 $\varphi_{1},\dots,\varphi_{m}$ と項 $t_{1},\dots,t_{l}$ に対し、そのどれにも現れない変数が（無限に多く）存在する。
+:::
+
+::: proof
+\ref{logic:var-fv-bv} より、それらに現れる変数全体は有限集合 $\bigcup_{i}\mathrm{Var}(\varphi_{i})\cup\bigcup_{j}\mathrm{var}(t_{j})$ に含まれる。$\mathrm{Var}$ は無限集合なので、その補集合は無限集合である。
+
+::: hypcheck
+- **変数が無限個あること**（言語の定義）：本質的である。以後、束縛変数の付け替えや固有変数の選び直しでこの系を何度も使う。変数が有限個しかないと、たとえば「$n$ 個の異なるものがある」を $n$ 個の異なる変数なしに書けなくなる。
+:::
+:::
+
+::: definition 文と論理的複雑さ {#logic:sentence keywords="sentence, closed formula, logical complexity" index="文|ぶん, 閉論理式|へいろんりしき, 論理的複雑さ|ろんりてきふくざつさ"}
+$\mathrm{FV}(\varphi)=\varnothing$ である論理式 $\varphi$ を**文**（閉論理式）という。$\mathcal{L}$ の文全体を $\mathrm{Sent}_{\mathcal{L}}$ と書く。論理式の**論理的複雑さ** $c(\varphi)$ を
+$$
+\begin{aligned}
+&c(\text{原子論理式})=0,\qquad c((\alpha\to\beta))=c(\alpha)+c(\beta)+1,\\
+&c(\forall x\,\alpha)=c(\alpha)+1
+\end{aligned}
+$$
+で定める。$c(\varphi)$ は $\varphi$ に現れる $\to$ と $\forall$ の個数に等しい（論理式に関する帰納法で確かめられる）。
+:::
+
+::: intuition
+文は、変数に値を割り当てなくても真偽が決まる論理式である（\ref{logic:page-semantics}）。論理的複雑さは、高さと違って項の形を無視する。後で「項を代入しても $c$ は変わらない」ことを使って、代入した論理式に帰納法の仮定を適用する（完全性定理の真理補題など）。
+:::
+
+## 問題 {#logic:sec-syntax-problems}
+
+::: problem {#logic:prob-commas}
+任意の項 $t$ について、$t$ に現れるコンマの個数は、$t$ に現れる関数記号の各出現 $f$ についての $\mathrm{ar}(f)-1$ の和に等しいことを示せ。
+:::
+
+::: solution
+項に関する帰納法。$t$ が長さ $1$ ならどちらも $0$。$t=f(t_{1},\dots,t_{n})$ のとき、$t$ のコンマは $t_{i}$ の中のコンマと、成分を区切る $n-1$ 個である。帰納法の仮定より $t_{i}$ の中のコンマの個数は $t_{i}$ に現れる関数記号についての $\mathrm{ar}-1$ の和に等しい。$t$ に現れる関数記号は、先頭の $f$ と各 $t_{i}$ の中のものなので、$t$ についての和は「$n-1$」と「各 $t_{i}$ についての和」の合計に等しく、これはコンマの個数に一致する。
+:::
+
+::: problem ポーランド記法 {#logic:prob-polish}
+関数記号だけからなる項をポーランド記法で書く。すなわち $T'_{0}$ を変数と定数記号とし、$T'_{k+1}$ を $T'_{k}$ に記号列 $f\,t_{1}\,t_{2}\cdots t_{n}$（$\mathrm{ar}(f)=n$、$t_{i}\in T'_{k}$、括弧もコンマも使わない）を加えたものとする。記号の重みを $\mathrm{w}(f)=\mathrm{ar}(f)-1$、$\mathrm{w}(x)=\mathrm{w}(c)=-1$ とし、記号列の重みを各記号の重みの和と定める。
+1. 任意の項 $t$ について、$\mathrm{w}(t)=-1$ であり、$t$ の任意の真の始切片 $u$ について $\mathrm{w}(u)\ge 0$ であることを示せ。
+2. これを使って、ポーランド記法の項の読み方の一意性を示せ。
+:::
+
+::: solution
+1. 項に関する帰納法。長さ $1$ の項は重み $-1$ で、真の始切片は $\varepsilon$（重み $0$）だけである。$t=f\,t_{1}\cdots t_{n}$ のとき、$\mathrm{w}(t)=(n-1)+n\cdot(-1)=-1$。真の始切片 $u$ は $u=f\,t_{1}\cdots t_{i-1}\,w'$（$0\le i-1<n$、$w'$ は $t_{i}$ の真の始切片）の形であり、帰納法の仮定より $\mathrm{w}(w')\ge 0$ なので
+$$
+\mathrm{w}(u)=(n-1)-(i-1)+\mathrm{w}(w')\ge n-i\ge 0 .
+$$
+ただし $u=\varepsilon$ の場合は $\mathrm{w}(u)=0$ である。
+2. 1 より、どの項も他の項の真の始切片にならない（真の始切片の重みは $\ge 0$、項の重みは $-1$）。あとは \ref{logic:unique-readability-terms} の Step 3 と同じく、成分を左から順に比べればよい。
+:::
+
+::: problem {#logic:prob-fv}
+次の論理式の $\mathrm{FV}$ と $\mathrm{BV}$ を求めよ。ただし略記は展開してから考えること。
+1. $\exists x\,(x=y\wedge\forall y\,P(y))$
+2. $\forall x\,(P(x)\to\exists y\,Q(x,y))\to Q(y,x)$
+:::
+
+::: solution
+1. 略記を展開すると量化子は $\forall x$ と $\forall y$ だけで、原子論理式は $x=y$, $P(y)$, $\bot$ である。$\forall y\,P(y)$ の自由変数は $\varnothing$、$x=y\wedge\forall y\,P(y)$ の自由変数は $\{x,y\}$、$\exists x$ で $x$ が束縛されて $\mathrm{FV}=\{y\}$。$\mathrm{BV}=\{x,y\}$。
+2. 前件 $\forall x\,(P(x)\to\exists y\,Q(x,y))$ の自由変数は $\varnothing$（$y$ は $\exists y$、$x$ は $\forall x$ に束縛）、後件 $Q(y,x)$ の自由変数は $\{x,y\}$。よって $\mathrm{FV}=\{x,y\}$, $\mathrm{BV}=\{x,y\}$。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

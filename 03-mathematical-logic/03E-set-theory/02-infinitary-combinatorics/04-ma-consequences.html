@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MA の帰結：概素族と 2^κ | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/04-ma-consequences.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# MA の帰結：概素族と 2^κ {#set:page-ma-consequences keywords="consequences of Martin's axiom, almost disjoint sets partial order, 2^kappa = 2^omega, maximal almost disjoint family, dominating family"}
+
+マーティンの公理（\ref{set:ma}）の最初の応用として、$\omega$ の部分集合の**概素族**に関する半順序を導入する。この半順序の条件は「これから作る集合 $d\subseteq\omega$ の有限部分と、$d$ と概素にすべき集合の有限リスト」からなり、$\mathrm{MA}(\kappa)$ を適用すると、大きさ $\kappa$ の族の各元と概素で、別の大きさ $\kappa$ の族の各元とは無限に交わる集合 $d$ が得られる（\ref{set:ma-ad}）。ここから、序文の問い 2（大きさ $\kappa<2^{\aleph_{0}}$ の概素族は極大でない）と問い 1（$2^{\kappa}=2^{\aleph_{0}}$）への肯定的な答えが導かれ、さらに MA のもとで $2^{\aleph_{0}}$ が正則基数であることがわかる。同じ主定理は次ページで実数直線のカテゴリーの問題にも使われる（\ref{set:ma-baire}）。
+
+## 記法と定義の確認 {#set:sec-mac-notation}
+
+::: notation
+- 本ページでは選択公理を仮定する（$\ZFC$）。各証明の「前提条件の使用箇所」に、選択公理と MA をどこで使ったかを明記する。
+- 半順序・両立・反鎖・c.c.c.・稠密集合・フィルター・$\mathrm{MA}(\kappa)$ は \ref{set:forcing-poset}, \ref{set:compatible}, \ref{set:ccc-poset}, \ref{set:dense-set}, \ref{set:poset-filter}, \ref{set:ma} の意味で用いる。フィルターの 2 元は両立し、有限個の元は $G$ の中に共通の拡張をもつ（\ref{set:poset-filter-basic}）。$\mathrm{MA}(\kappa)$ は $\kappa$ について単調で（\ref{set:ma-basic}）、$\mathrm{MA}(\aleph_{0})$ は ZFC の定理（\ref{set:ma-omega}）、$\mathrm{MA}(\kappa)$ ならば $\kappa<2^{\aleph_{0}}$（\ref{set:ma-continuum-false}）。
+- $x,y\subseteq\omega$ が**概素**（almost disjoint）であるとは $\lvert x\cap y\rvert<\omega$ となることをいい、**概素族**とは $\omega$ の無限部分集合からなり、相異なる 2 元が概素であるような族、**極大概素族**とはそれを真に含む概素族がないものをいう（\ref{set:almost-disjoint}。$\kappa=\omega$ の場合）。可算無限な概素族は極大でない（\ref{set:ad-family-regular}）こと、大きさ $2^{\aleph_{0}}$ の概素族 $\mathcal{B}\subseteq\mathcal{P}(\omega)$ が存在すること（\ref{set:ad-family-large}）を使う。
+- $[\omega]^{<\omega}$ は $\omega$ の有限部分集合全体で、可算である（$s\mapsto\sum_{m\in s}2^{m}$ が単射 $[\omega]^{<\omega}\to\omega$）。有限個の有限集合の和は有限（\ref{set:finite-basic}）。
+- 基数の和・積 $\oplus$, $\otimes$ と吸収則（\ref{set:cardinal-absorption}）、$\lvert\mathcal{P}(X)\rvert=2^{\lvert X\rvert}$（\ref{set:cardinal-exponentiation}）、全射と濃度（\ref{set:surjection-cardinality}）、共終数（\ref{set:cofinality}）と正則基数（\ref{set:regular-cardinal}）、$\cf(2^{\lambda})>\lambda$（\ref{set:konig-cf-power}）を使う。
+- ${}^{\omega}\omega$ は $\omega$ から $\omega$ への関数全体（\ref{set:function-set}）。
+:::
+
+## 主定理と概素集合の半順序 {#set:sec-ad-poset}
+
+::: theorem 概素集合についての MA の帰結 {#set:ma-ad keywords="Solovay's lemma, almost disjoint forcing, MA and almost disjoint sets" index="ソロヴェイの補題|そろゔぇいのほだい, 概素強制|がいそきょうせい"}
+$\mathrm{MA}(\kappa)$ を仮定する。$\mathcal{A},\mathcal{C}\subseteq\mathcal{P}(\omega)$ は $\lvert\mathcal{A}\rvert\le\kappa$, $\lvert\mathcal{C}\rvert\le\kappa$ を満たし、
+$$
+\forall y\in\mathcal{C}\ \ \forall F\subseteq\mathcal{A}\ \bigl(\lvert F\rvert<\omega\to\bigl\lvert y\setminus{\textstyle\bigcup}F\bigr\rvert=\omega\bigr)
+\label{set:eq-ma-ad-hyp}
+$$
+とする。このとき $d\subseteq\omega$ で
+$$
+\forall x\in\mathcal{A}\ (\lvert d\cap x\rvert<\omega)\quad\text{かつ}\quad\forall y\in\mathcal{C}\ (\lvert d\cap y\rvert=\omega)
+$$
+を満たすものが存在する。
+:::
+
+::: intuition
+$d$ を $\mathcal{A}$ のすべての元と「ほぼ交わらず」、$\mathcal{C}$ のすべての元とは「たくさん交わる」ように作りたい。仮定 \eqref{set:eq-ma-ad-hyp} は明らかに必要である：$y\in\mathcal{C}$ が有限個の $x\in\mathcal{A}$ の和でほとんど覆われてしまえば、$d$ はそれらの $x$ とほぼ交わらないので $y$ とも無限には交われない。定理はこの自明な障害が唯一の障害であることを、$\lvert\mathcal{A}\rvert,\lvert\mathcal{C}\rvert\le\kappa$ の範囲で主張する。$\kappa=\omega$ なら ZFC の定理である（\ref{set:ma-omega}）。
+:::
+
+::: definition 概素集合の半順序 {#set:ad-poset keywords="almost disjoint sets partial order, almost disjoint forcing, P_A" index="概素集合の半順序|がいそしゅうごうのはんじゅんじょ"}
+$\mathcal{A}\subseteq\mathcal{P}(\omega)$ に対し、
+$$
+\PP_{\mathcal{A}}=\bigl\{\langle s,F\rangle\bigm\vert s\subseteq\omega,\ \lvert s\rvert<\omega,\ F\subseteq\mathcal{A},\ \lvert F\rvert<\omega\bigr\}
+$$
+とおき、
+$$
+\langle s',F'\rangle\le\langle s,F\rangle\iff s\subseteq s'\ \land\ F\subseteq F'\ \land\ \forall x\in F\ (x\cap s'\subseteq s)
+\label{set:eq-ad-poset-order}
+$$
+と定める。これを**概素集合の半順序**という。
+:::
+
+::: intuition
+条件 $\langle s,F\rangle$ は、作りたい集合 $d$ について「$s\subseteq d$」と「$F$ の各元 $x$ について、$x$ の元のうち $d$ に入るのは $s$ に既に入っているものだけ（$d\cap x\subseteq s$）」を約束するものである。拡張するときは $s$ と $F$ を大きくしてよいが、既に $F$ の元 $x$ に属していて $s$ に入っていない数、すなわち「$d$ に入らないと約束した数」を新たに $s'$ に入れてはいけない。これが条件 $x\cap s'\subseteq s$ である。
+:::
+
+::: lemma 概素集合の半順序の基本性質 {#set:ad-poset-basic keywords="compatibility in the almost disjoint partial order"}
+$\mathcal{A}\subseteq\mathcal{P}(\omega)$ とする。
+1. $\langle\PP_{\mathcal{A}},\le\rangle$ は狭義の意味での半順序である。
+2. $\langle s_{1},F_{1}\rangle,\langle s_{2},F_{2}\rangle\in\PP_{\mathcal{A}}$ が両立するための必要十分条件は
+   $$
+   \forall x\in F_{1}\ (x\cap s_{2}\subseteq s_{1})\quad\land\quad\forall x\in F_{2}\ (x\cap s_{1}\subseteq s_{2})
+   \label{set:eq-ad-compatible}
+   $$
+   であり、このとき $\langle s_{1}\cup s_{2},F_{1}\cup F_{2}\rangle$ は共通の拡張である。
+3. 特に $s_{1}=s_{2}$ ならば $\langle s_{1},F_{1}\rangle$ と $\langle s_{2},F_{2}\rangle$ は両立する。
+:::
+
+::: proof
+**(1)** $\langle\varnothing,\varnothing\rangle\in\PP_{\mathcal{A}}$ なので $\PP_{\mathcal{A}}\ne\varnothing$。
+- *反射律*：$s\subseteq s$, $F\subseteq F$ で、$x\in F$ について $x\cap s\subseteq s$。
+- *推移律*：$\langle s'',F''\rangle\le\langle s',F'\rangle\le\langle s,F\rangle$ とする。$s\subseteq s'\subseteq s''$, $F\subseteq F'\subseteq F''$。$x\in F$ なら $x\in F'$ なので $x\cap s''\subseteq s'$、したがって $x\cap s''=x\cap(x\cap s'')\subseteq x\cap s'\subseteq s$。
+- *反対称律*：$\langle s',F'\rangle\le\langle s,F\rangle\le\langle s',F'\rangle$ なら $s=s'$, $F=F'$ で、順序対の特徴付け（\ref{set:ordered-pair-characterization}）より両者は等しい。
+
+**(2)** ($\Rightarrow$) 共通の拡張 $\langle s,F\rangle$ をとる。$s_{1}\cup s_{2}\subseteq s$ であり、$x\in F_{1}$ なら $\langle s,F\rangle\le\langle s_{1},F_{1}\rangle$ より $x\cap s\subseteq s_{1}$、特に $x\cap s_{2}\subseteq x\cap s\subseteq s_{1}$。$x\in F_{2}$ についても同様。
+
+($\Leftarrow$) \eqref{set:eq-ad-compatible} を仮定し、$r=\langle s_{1}\cup s_{2},F_{1}\cup F_{2}\rangle$ とおく。$s_{1}\cup s_{2}$, $F_{1}\cup F_{2}$ は有限なので $r\in\PP_{\mathcal{A}}$。$r\le\langle s_{1},F_{1}\rangle$ を示す：$s_{1}\subseteq s_{1}\cup s_{2}$, $F_{1}\subseteq F_{1}\cup F_{2}$ であり、$x\in F_{1}$ について
+$$
+x\cap(s_{1}\cup s_{2})=(x\cap s_{1})\cup(x\cap s_{2})\subseteq s_{1}\cup s_{1}=s_{1}
+$$
+（第 2 項に \eqref{set:eq-ad-compatible} の前半を使った）。$r\le\langle s_{2},F_{2}\rangle$ も対称的に示される。
+
+**(3)** $s_{1}=s_{2}=s$ なら $x\cap s\subseteq s$ は自明なので \eqref{set:eq-ad-compatible} が成り立つ。
+
+::: hypcheck
+- **有限性**：(2) で $r\in\PP_{\mathcal{A}}$ となるのに、$s_{i}$, $F_{i}$ が有限であることを使った。
+- **外延性・対・和集合の公理**：$s_{1}\cup s_{2}$ などを作るのと、反対称律に使った。選択公理は使っていない。
+:::
+:::
+
+::: lemma 概素集合の半順序は c.c.c. {#set:ad-poset-ccc keywords="almost disjoint partial order is ccc, sigma-centered"}
+任意の $\mathcal{A}\subseteq\mathcal{P}(\omega)$ について、$\PP_{\mathcal{A}}$ は c.c.c. をもつ。
+:::
+
+::: proof
+$A\subseteq\PP_{\mathcal{A}}$ を反鎖とする。写像 $\pi\colon A\to[\omega]^{<\omega}$ を $\pi(\langle s,F\rangle)=s$ で定めると、\ref{set:ad-poset-basic} (3) より、$A$ の相異なる 2 元の第 1 成分は異なる（同じなら両立してしまう）。よって $\pi$ は単射で、$[\omega]^{<\omega}$ は可算なので $A$ は可算である。
+
+::: hypcheck
+- \ref{set:ad-poset-basic} (3) と $[\omega]^{<\omega}$ の可算性だけを使った。選択公理は使っていない。
+- $\mathcal{A}$ の大きさには何の仮定もない。実際には、$\PP_{\mathcal{A}}$ は第 1 成分が等しい条件の集合 $\{\langle s,F\rangle\mid F\}$（$s\in[\omega]^{<\omega}$）の可算個に分割され、それぞれの中の有限個は共通の拡張をもつ（**σ 中心的**という）。これは c.c.c. よりずっと強い性質である。
+:::
+:::
+
+::: definition ジェネリックな集合 $d_{G}$ {#set:ad-generic-set keywords="generic almost disjoint set d_G"}
+$G$ を $\PP_{\mathcal{A}}$ のフィルターとするとき、
+$$
+d_{G}=\bigcup\{s\mid\exists F\ (\langle s,F\rangle\in G)\}
+$$
+とおく。
+:::
+
+::: lemma 条件は $d_{G}$ についての約束を守る {#set:ad-filter-trace keywords="conditions in a filter determine d_G"}
+$G$ を $\PP_{\mathcal{A}}$ のフィルターとし、$\langle s,F\rangle\in G$ とする。
+1. $s\subseteq d_{G}$。
+2. すべての $x\in F$ について $x\cap d_{G}\subseteq s$。特に $x\cap d_{G}$ は有限である。
+:::
+
+::: proof
+(1) は $d_{G}$ の定義から明らか。
+
+(2) $x\in F$, $n\in x\cap d_{G}$ とする。$d_{G}$ の定義より $n\in s'$ となる $\langle s',F'\rangle\in G$ がある。$G$ の 2 元は両立する（\ref{set:poset-filter-basic} (1)）ので、\ref{set:ad-poset-basic} (2) の条件 \eqref{set:eq-ad-compatible} より $x\cap s'\subseteq s$。$n\in x\cap s'$ なので $n\in s$。$s$ は有限なので $x\cap d_{G}$ も有限。
+
+::: hypcheck
+- **$G$ がフィルターであること**：(2) で $G$ の 2 元の両立性を使った。
+- 選択公理は使っていない。
+:::
+:::
+
+::: lemma 稠密集合 {#set:ad-dense-sets keywords="dense sets in the almost disjoint partial order"}
+$\mathcal{A}\subseteq\mathcal{P}(\omega)$ とする。
+1. $x\in\mathcal{A}$ について $D_{x}=\{\langle s,F\rangle\in\PP_{\mathcal{A}}\mid x\in F\}$ は稠密であり、フィルター $G$ が $D_{x}$ と交われば $\lvert d_{G}\cap x\rvert<\omega$。
+2. $y\subseteq\omega$ がすべての有限 $F\subseteq\mathcal{A}$ について $\lvert y\setminus\bigcup F\rvert=\omega$ を満たすとする。$n<\omega$ について
+   $$
+   E^{y}_{n}=\{\langle s,F\rangle\in\PP_{\mathcal{A}}\mid s\cap y\not\subseteq n\}
+   $$
+   は稠密である。フィルター $G$ がすべての $E^{y}_{n}$（$n<\omega$）と交われば $\lvert d_{G}\cap y\rvert=\omega$。
+:::
+
+::: proof
+**(1)** $\langle s,F\rangle\in\PP_{\mathcal{A}}$ に対し、$\langle s,F\cup\{x\}\rangle\in D_{x}$ であり、$\langle s,F\cup\{x\}\rangle\le\langle s,F\rangle$ である（$s\subseteq s$, $F\subseteq F\cup\{x\}$、$x'\in F$ について $x'\cap s\subseteq s$）。$\langle s,F\rangle\in G\cap D_{x}$ なら $x\in F$ なので、\ref{set:ad-filter-trace} (2) より $d_{G}\cap x$ は有限。
+
+**(2)** *稠密性*：$\langle s,F\rangle\in\PP_{\mathcal{A}}$ をとる。仮定より $y\setminus\bigcup F$ は無限なので、$m>n$ となる $m\in y\setminus\bigcup F$ がある（$n+1=\{0,\dots,n\}$ は有限なので、無限集合 $y\setminus\bigcup F$ は $n+1$ に含まれない）。$s'=s\cup\{m\}$ とおくと $\langle s',F\rangle\in\PP_{\mathcal{A}}$ であり、
+- $\langle s',F\rangle\le\langle s,F\rangle$：$x\in F$ について $m\notin x$（$m\notin\bigcup F$）なので $x\cap s'=x\cap s\subseteq s$。
+- $\langle s',F\rangle\in E^{y}_{n}$：$m\in s'\cap y$ で $m\notin n$。
+
+*結論*：$G$ がすべての $E^{y}_{n}$ と交わるとする。$d_{G}\cap y$ が有限と仮定すると、ある $n$ で $d_{G}\cap y\subseteq n$ となる（有限集合の最大元 $+1$ をとる。空なら $n=0$）。$\langle s,F\rangle\in G\cap E^{y}_{n}$ をとると $s\subseteq d_{G}$（\ref{set:ad-filter-trace} (1)）より $s\cap y\subseteq d_{G}\cap y\subseteq n$ で、$E^{y}_{n}$ の定義に反する。
+
+::: hypcheck
+- **\eqref{set:eq-ma-ad-hyp} 型の仮定**：(2) の稠密性で $m$ をとるのに使った。仮定がなければ $E^{y}_{n}$ は稠密とは限らない（たとえば $y\subseteq x\in\mathcal{A}$ なら、$\langle\varnothing,\{x\}\rangle$ の拡張 $\langle s',F'\rangle$ は $s'\cap y\subseteq x\cap s'\subseteq\varnothing$ を満たす）。
+- 選択公理は使っていない（$m$ は最小のものをとればよい）。
+:::
+:::
+
+::: restate {ref="set:ma-ad"}
+:::
+
+::: proof
+**Step 1（MA の準備）.** $\lambda=\max(\kappa,\aleph_{0})$ とおく。$\kappa$ が無限なら仮定より $\mathrm{MA}(\lambda)=\mathrm{MA}(\kappa)$、$\kappa$ が有限なら \ref{set:ma-omega} より $\mathrm{MA}(\lambda)=\mathrm{MA}(\aleph_{0})$ が成り立つ。いずれにせよ $\mathrm{MA}(\lambda)$ が成り立つ。
+
+**Step 2（半順序と稠密集合の族）.** $\PP_{\mathcal{A}}$ は c.c.c. をもつ（\ref{set:ad-poset-ccc}）。
+$$
+\mathcal{D}=\{D_{x}\mid x\in\mathcal{A}\}\cup\{E^{y}_{n}\mid y\in\mathcal{C},\ n<\omega\}
+$$
+とおくと、\ref{set:ad-dense-sets} (1) と、仮定 \eqref{set:eq-ma-ad-hyp} のもとでの (2) により、$\mathcal{D}$ の元はすべて稠密である。
+
+**Step 3（族の大きさ）.** 前半は $\mathcal{A}$ からの全射の像、後半は $\mathcal{C}\times\omega$ からの全射の像なので、\ref{set:surjection-cardinality} より
+$$
+\lvert\mathcal{D}\rvert\le\lvert\mathcal{A}\rvert\oplus\lvert\mathcal{C}\rvert\otimes\aleph_{0}\le\lambda\oplus\lambda\otimes\lambda=\lambda
+$$
+（\ref{set:cardinal-absorption}。$\lambda$ は無限）。
+
+**Step 4（MA の適用）.** $\mathrm{MA}(\lambda)$ により、すべての $D\in\mathcal{D}$ と交わるフィルター $G$ がある。$d=d_{G}$ とおく。
+- $x\in\mathcal{A}$ なら $G\cap D_{x}\ne\varnothing$ なので、\ref{set:ad-dense-sets} (1) より $\lvert d\cap x\rvert<\omega$。
+- $y\in\mathcal{C}$ なら $G$ はすべての $E^{y}_{n}$ と交わるので、\ref{set:ad-dense-sets} (2) より $\lvert d\cap y\rvert=\omega$。
+
+::: hypcheck
+- **$\mathrm{MA}(\kappa)$**：Step 4 で使った。$\kappa$ が有限の場合は $\mathrm{MA}(\aleph_{0})$（ZFC の定理）に置き換えた（Step 1）。
+- **$\lvert\mathcal{A}\rvert,\lvert\mathcal{C}\rvert\le\kappa$**：Step 3 で稠密集合の個数を $\le\lambda$ に抑えるのに使った。
+- **仮定 \eqref{set:eq-ma-ad-hyp}**：Step 2 で $E^{y}_{n}$ の稠密性に使った。
+- **選択公理**：Step 3 の \ref{set:surjection-cardinality} と基数算術。
+- **c.c.c.**：$\PP_{\mathcal{A}}$ が c.c.c. をもつことを \ref{set:ad-poset-ccc} で確かめたので MA が適用できた。
+:::
+:::
+
+::: supplement
+**有名な帰結.** 主定理は多くの MA の応用の出発点になる。
+- 次ページでは $\mathcal{A}$, $\mathcal{C}$ を実数直線の開集合から作って、$\mathrm{MA}(\kappa)$ のもとで $\kappa$ 個の第一類集合の和が第一類であることを示す（\ref{set:ma-baire}）。
+- 主定理の結論の「$y\in\mathcal{C}$ なら $\lvert d\cap y\rvert=\omega$」を「$y\setminus d$ は有限（$y$ は $d$ にほぼ含まれる）」に強めた類似も考えられるが、\ref{set:ma-ad-code} の状況でこれを要求すると一般には成り立たない（下の \ref{set:ma-ad-code} の補足を参照）。
+:::
+
+## 概素族は極大でない {#set:sec-ma-mad}
+
+::: corollary 小さい概素族は極大でない {#set:ma-ad-corollary keywords="MA implies mad families have size continuum" index="極大概素族の大きさ|きょくだいがいそぞくのおおきさ"}
+$\mathrm{MA}(\kappa)$ を仮定し、$\mathcal{A}\subseteq\mathcal{P}(\omega)$ を $\omega\le\lvert\mathcal{A}\rvert\le\kappa$ の概素族とする。このとき $\mathcal{A}$ は極大ではない。したがって MA のもとで、無限な極大概素族の濃度はすべて $2^{\aleph_{0}}$ である。
+:::
+
+::: intuition
+主定理を $\mathcal{C}=\{\omega\}$ として使う。$\mathcal{A}$ が無限な概素族なら、有限個の元の和で $\omega$ がほとんど覆われることはない（覆われていない別の元が無限に残る）ので、仮定 \eqref{set:eq-ma-ad-hyp} が成り立つ。得られる $d$ は無限で $\mathcal{A}$ の各元と概素なので、$\mathcal{A}$ に付け加えられる。
+:::
+
+::: proof
+**Step 1（仮定の確認）.** $\mathcal{C}=\{\omega\}$ とし、有限な $F\subseteq\mathcal{A}$ をとる。$\mathcal{A}$ は無限なので $x\in\mathcal{A}\setminus F$ がある。
+$$
+x\cap{\textstyle\bigcup}F=\bigcup_{z\in F}(x\cap z)
+$$
+は、$x$ と各 $z\in F$ が相異なる概素族の元なので有限集合の有限個の和であり、有限である。$x$ は無限なので $x\setminus\bigcup F$ は無限であり（有限集合 $x\cap\bigcup F$ との和が無限集合 $x$ になるから）、$x\setminus\bigcup F\subseteq\omega\setminus\bigcup F$ より $\lvert\omega\setminus\bigcup F\rvert=\omega$。よって \eqref{set:eq-ma-ad-hyp} が成り立つ。
+
+**Step 2（主定理の適用）.** $\lvert\mathcal{A}\rvert\le\kappa$, $\lvert\mathcal{C}\rvert=1\le\kappa$ なので、\ref{set:ma-ad} より $d\subseteq\omega$ で、すべての $x\in\mathcal{A}$ について $\lvert d\cap x\rvert<\omega$、かつ $\lvert d\cap\omega\rvert=\lvert d\rvert=\omega$ となるものがある。
+
+**Step 3（$\mathcal{A}$ は極大でない）.** $d\notin\mathcal{A}$ である：$d\in\mathcal{A}$ なら $\lvert d\cap d\rvert<\omega$ となり、$d$ が無限であることに反する。したがって $\mathcal{A}\cup\{d\}$ は $\omega$ の無限部分集合からなり、相異なる 2 元が概素であるので概素族であり、$\mathcal{A}$ を真に含む。
+
+**Step 4（MA のもとで）.** $\mathrm{MA}$ を仮定し、$\mathcal{A}$ を無限な極大概素族とする。$\mathcal{A}\subseteq\mathcal{P}(\omega)$ なので $\lvert\mathcal{A}\rvert\le2^{\aleph_{0}}$。$\kappa=\lvert\mathcal{A}\rvert<2^{\aleph_{0}}$ なら $\mathrm{MA}(\kappa)$ が成り立つので Step 3 に反する。よって $\lvert\mathcal{A}\rvert=2^{\aleph_{0}}$。
+
+::: hypcheck
+- **$\mathcal{A}$ が無限であること**：Step 1 で $x\in\mathcal{A}\setminus F$ をとるのに使った。有限な概素族 $\{x_{0},\dots,x_{k}\}$ で $\bigcup_{i}x_{i}=\omega$ となるもの（たとえば $\omega$ の有限個への分割）は極大である。
+- **概素性**：Step 1 で $x\cap z$ が有限であること。
+- **$\mathrm{MA}(\kappa)$**：Step 2 で \ref{set:ma-ad} を通じて使った。$\lvert\mathcal{A}\rvert=\omega$ の場合は $\mathrm{MA}(\aleph_{0})$ で足り、ZFC の定理である（\ref{set:ad-family-regular} とも一致する）。
+- **選択公理**：\ref{set:ma-ad} を通じて使った。
+:::
+:::
+
+::: supplement
+**極大概素族の最小の大きさ.** 無限な極大概素族の濃度の最小値を $\mathfrak{a}$ と書く。ZFC で $\aleph_{1}\le\mathfrak{a}\le2^{\aleph_{0}}$ であり（下限は \ref{set:ad-family-regular}、無限な極大概素族の存在はツォルンの補題 \ref{set:zorn} による）、この系は $\mathrm{MA}\Rightarrow\mathfrak{a}=2^{\aleph_{0}}$ を意味する。逆に $\aleph_{1}=\mathfrak{a}<2^{\aleph_{0}}$ も無矛盾である（Kunen, *Set Theory*, 第 VIII 章 §2）。
+:::
+
+::: lemma 概素族の部分族の符号化 {#set:ma-ad-code keywords="Solovay's coding lemma, coding subsets of an almost disjoint family" index="ソロヴェイの符号化|そろゔぇいのふごうか"}
+$\mathrm{MA}(\kappa)$ を仮定し、$\mathcal{B}\subseteq\mathcal{P}(\omega)$ を $\lvert\mathcal{B}\rvert\le\kappa$ の概素族とする。任意の $\mathcal{A}\subseteq\mathcal{B}$ に対し、$d\subseteq\omega$ で
+$$
+\forall x\in\mathcal{A}\ (\lvert d\cap x\rvert<\omega)\quad\text{かつ}\quad\forall x\in\mathcal{B}\setminus\mathcal{A}\ (\lvert d\cap x\rvert=\omega)
+$$
+を満たすものが存在する。
+:::
+
+::: intuition
+$\mathcal{B}$ の部分族 $\mathcal{A}$ は、$\mathcal{B}$ の元のうち「$d$ とほぼ交わらないもの」として 1 つの実数 $d\subseteq\omega$ で符号化できる。これにより、大きさ $\kappa$ の集合の部分集合（$2^{\kappa}$ 個ある）が $\omega$ の部分集合（$2^{\aleph_{0}}$ 個）で表されることになる。
+:::
+
+::: proof
+$\mathcal{C}=\mathcal{B}\setminus\mathcal{A}$ とおき、\ref{set:ma-ad} を $\mathcal{A}$, $\mathcal{C}$ に適用する。$\lvert\mathcal{A}\rvert,\lvert\mathcal{C}\rvert\le\lvert\mathcal{B}\rvert\le\kappa$ である。仮定 \eqref{set:eq-ma-ad-hyp} を確かめる：$y\in\mathcal{C}$、有限な $F\subseteq\mathcal{A}$ をとる。$y\notin\mathcal{A}$ なので $y\notin F$ であり、各 $z\in F$ は $y$ と異なる $\mathcal{B}$ の元なので $y\cap z$ は有限。よって $y\cap\bigcup F=\bigcup_{z\in F}(y\cap z)$ は有限で、$y$ は無限なので $y\setminus\bigcup F$ は無限である。\ref{set:ma-ad} により求める $d$ が得られる。
+
+::: hypcheck
+- **$\mathcal{B}$ が概素族であること**：$y\cap z$ が有限であることと $y$ が無限であることに使った。
+- **$\mathrm{MA}(\kappa)$**：\ref{set:ma-ad} を通じて使った。
+:::
+:::
+
+::: supplement
+**強めることはできない.** 結論に「$x\in\mathcal{B}\setminus\mathcal{A}$ なら $x\setminus d$ は有限」（$x$ が $d$ にほぼ含まれる）を要求する強化は、$\mathcal{A}$ と $\mathcal{B}\setminus\mathcal{A}$ の一方が可算なら $\mathrm{MA}(\kappa)$ のもとで成り立つが、両方が大きさ $\aleph_{1}$ のときには ZFC で反例がある（ハウスドルフ、ルジン。Kunen, *Set Theory*, 第 II 章演習 9, 10）。この反例は**ルジンの隙間**と呼ばれる。
+:::
+
+## $2^{\kappa}=2^{\aleph_{0}}$ と連続体の正則性 {#set:sec-ma-two-kappa}
+
+::: theorem MA のもとで $2^{\kappa}=2^{\aleph_{0}}$ {#set:ma-two-kappa keywords="MA(kappa) implies 2^kappa = 2^omega" index="2^κ=2^ω|にのかっぱじょうとにのおめがじょう"}
+$\kappa$ を無限基数とし、$\mathrm{MA}(\kappa)$ を仮定する。このとき $2^{\kappa}=2^{\aleph_{0}}$。
+:::
+
+::: intuition
+大きさ $\kappa$ の概素族 $\mathcal{B}$ を 1 つ固定すると、\ref{set:ma-ad-code} により $\mathcal{B}$ の各部分族は $\omega$ の部分集合で符号化される。したがって $\mathcal{B}$ の部分族（$2^{\kappa}$ 個）は $\omega$ の部分集合（$2^{\aleph_{0}}$ 個）より多くはない。
+:::
+
+::: proof
+**Step 1（大きさ $\kappa$ の概素族）.** \ref{set:ma-continuum-false} より $\kappa<2^{\aleph_{0}}$。\ref{set:ad-family-large} により $\lvert\mathcal{B}_{0}\rvert=2^{\aleph_{0}}$ の概素族 $\mathcal{B}_{0}\subseteq\mathcal{P}(\omega)$ があるので、$\kappa\le2^{\aleph_{0}}$ より単射 $\kappa\to\mathcal{B}_{0}$ がとれ、その像 $\mathcal{B}$ は $\lvert\mathcal{B}\rvert=\kappa$ の概素族である（概素族の部分族は概素族）。
+
+**Step 2（符号化写像）.** $\Phi\colon\mathcal{P}(\omega)\to\mathcal{P}(\mathcal{B})$ を
+$$
+\Phi(d)=\{x\in\mathcal{B}\mid\lvert d\cap x\rvert<\omega\}
+\label{set:eq-ma-coding-map}
+$$
+で定める（分出公理と置換公理により集合として定まる）。$\Phi$ は全射である：任意の $\mathcal{A}\subseteq\mathcal{B}$ について、\ref{set:ma-ad-code} の $d$ をとると、$x\in\mathcal{A}$ なら $\lvert d\cap x\rvert<\omega$ なので $x\in\Phi(d)$、$x\in\mathcal{B}\setminus\mathcal{A}$ なら $\lvert d\cap x\rvert=\omega$ なので $x\notin\Phi(d)$。よって $\Phi(d)=\mathcal{A}$。
+
+**Step 3（濃度の比較）.** \ref{set:surjection-cardinality} より $\lvert\mathcal{P}(\mathcal{B})\rvert\le\lvert\mathcal{P}(\omega)\rvert$、すなわち $2^{\kappa}\le2^{\aleph_{0}}$。一方 $\omega\le\kappa$ より $2^{\aleph_{0}}\le2^{\kappa}$（$\mathcal{P}(\omega)\subseteq\mathcal{P}(\kappa)$）。基数の順序の反対称性より $2^{\kappa}=2^{\aleph_{0}}$。
+
+::: hypcheck
+- **$\mathrm{MA}(\kappa)$**：Step 2 で \ref{set:ma-ad-code} を使うのと、Step 1 で $\kappa<2^{\aleph_{0}}$ を得るのに使った。
+- **$\kappa$ が無限であること**：Step 3 で $2^{\aleph_{0}}\le2^{\kappa}$ に使った。有限の $n$ では $2^{n}<\omega<2^{\aleph_{0}}$ であり、$\mathrm{MA}(n)$ は ZFC の定理なので結論は成り立たない。
+- **大きさ $2^{\aleph_{0}}$ の概素族の存在**（\ref{set:ad-family-large}）：Step 1。これは ZFC の定理である。
+- **選択公理**：Step 1 の単射、Step 3 の \ref{set:surjection-cardinality}。
+:::
+:::
+
+::: supplement
+- **GCH の破れ.** $\mathrm{MA}+\lnot\mathrm{CH}$ のもとでは $2^{\aleph_{0}}\ge\aleph_{2}>\aleph_{0}^{+}$ なので GCH は $\aleph_{0}$ で破れる。さらに無限基数 $\kappa<2^{\aleph_{0}}$ について $2^{\kappa}=2^{\aleph_{0}}$ なので、関数 $\kappa\mapsto2^{\kappa}$ は $\aleph_{0}\le\kappa<2^{\aleph_{0}}$ の範囲で定数であり、これは $2^{<2^{\aleph_{0}}}=2^{\aleph_{0}}$ と書ける。たとえば $2^{\aleph_{0}}=\aleph_{2}$ なら $2^{\aleph_{1}}=\aleph_{2}=\aleph_{1}^{+}$ で、GCH は $\aleph_{1}$ では成り立っている。
+- **ソロヴェイの考え.** \ref{set:ma-ad}〜\ref{set:ma-ad-code} はソロヴェイによる（Kunen, *Set Theory*, 第 II 章 §2）。ソロヴェイは \ref{set:ma-ad-code} を $\kappa$ の部分集合を $\omega$ の部分集合で符号化する手段として用いた。概素族による「大きさ $\kappa$ の集合の部分集合の実数による符号化」は、強制法で集合を実数に符号化する標準的な手法（概素符号化）の原型である。
+:::
+
+::: corollary MA のもとで $2^{\aleph_{0}}$ は正則 {#set:ma-continuum-regular keywords="MA implies the continuum is regular" index="連続体濃度の正則性|れんぞくたいのうどのせいそくせい"}
+$\mathrm{MA}$ ならば $2^{\aleph_{0}}$ は正則基数である。
+:::
+
+::: intuition
+$2^{\aleph_{0}}$ の共終数を $\lambda$ とする。もし $\lambda<2^{\aleph_{0}}$ なら、MA により $2^{\lambda}=2^{\aleph_{0}}$ であり、ケーニッヒの定理の帰結 $\cf(2^{\lambda})>\lambda$ から $\cf(2^{\aleph_{0}})>\lambda$ となって矛盾する。
+:::
+
+::: proof
+**Step 1.** $\lambda=\cf(2^{\aleph_{0}})$ とおく。$2^{\aleph_{0}}$ は無限基数なので極限順序数であり（\ref{set:infinite-cardinal-limit}）、\ref{set:cf-basic} より $\omega\le\lambda\le2^{\aleph_{0}}$。
+
+**Step 2.** $\lambda<2^{\aleph_{0}}$ と仮定する。MA より $\mathrm{MA}(\lambda)$ が成り立ち、$\lambda$ は無限基数（\ref{set:regular-is-cardinal}）なので、\ref{set:ma-two-kappa} より $2^{\lambda}=2^{\aleph_{0}}$。\ref{set:konig-cf-power} より $\cf(2^{\lambda})>\lambda$、すなわち $\cf(2^{\aleph_{0}})>\lambda=\cf(2^{\aleph_{0}})$。これは矛盾である。
+
+**Step 3.** よって $\cf(2^{\aleph_{0}})=2^{\aleph_{0}}$ であり、$2^{\aleph_{0}}$ は極限順序数なので正則である。
+
+::: hypcheck
+- **MA**：Step 2 で $\mathrm{MA}(\lambda)$ を得るのに、$\lambda<2^{\aleph_{0}}$ という仮定と組み合わせて使った。
+- **ケーニッヒの定理**（\ref{set:konig-cf-power}）：Step 2。選択公理はここと \ref{set:ma-two-kappa} で使っている。
+:::
+:::
+
+::: supplement
+**MA がなければ.** ZFC だけでは $2^{\aleph_{0}}$ は特異になりうる。たとえば $2^{\aleph_{0}}=\aleph_{\omega_{1}}$ は無矛盾である（共終数 $\aleph_{1}>\aleph_{0}$ なので \ref{set:konig-cf-power} と矛盾しない。Kunen, *Set Theory*, 第 VII 章 5.16）。一方 $2^{\aleph_{0}}=\aleph_{\omega}$ は ZFC で否定される（\ref{set:continuum-not-aleph-omega}）。
+:::
+
+## 支配する関数 {#set:sec-ma-dominating}
+
+MA の応用の典型をもう 1 つ示す。これは \ref{set:ma-ad} を経由せず、条件の形を直接設計する例である。
+
+::: definition 最終的な支配 {#set:eventual-domination keywords="eventual domination, f <* g, dominating function" index="最終的な支配|さいしゅうてきなしはい, 支配関数|しはいかんすう"}
+$f,g\in{}^{\omega}\omega$ について、$f<^{*}g$ を
+$$
+\exists n<\omega\ \forall m>n\ \bigl(f(m)<g(m)\bigr)
+$$
+で定め、「$g$ は $f$ を**最終的に支配する**」という。
+:::
+
+::: theorem MA のもとでの支配関数 {#set:ma-dominating keywords="MA implies every small family of functions is dominated, bounding number, Hechler forcing" index="ヘクラーの半順序|へくらーのはんじゅんじょ"}
+$\mathrm{MA}(\kappa)$ を仮定し、$\mathcal{F}\subseteq{}^{\omega}\omega$ を $\lvert\mathcal{F}\rvert\le\kappa$ とする。このとき、すべての $f\in\mathcal{F}$ について $f<^{*}g$ となる $g\in{}^{\omega}\omega$ が存在する。
+:::
+
+::: intuition
+条件 $\langle p,F\rangle$ は、作りたい $g$ の有限個の値 $p$ と、「これから決める値はすべて $F$ の各関数より大きくする」という約束 $F$ からなる。$F$ を大きくするのは常に可能で、$p$ に新しい値を付け加えるときは $F$ の有限個の関数の値より大きくすればよい。$p$ が同じ条件は両立するので c.c.c. である。
+:::
+
+::: proof
+**Step 1（半順序）.** $\PP$ を $\langle p,F\rangle$ で $p\in\operatorname{Fn}(\omega,\omega)$（\ref{set:fn-poset}）、$F\subseteq\mathcal{F}$ が有限であるもの全体とし、
+$$
+\begin{aligned}
+\langle p',F'\rangle\le\langle p,F\rangle\iff{}&p\subseteq p'\land F\subseteq F'\\
+&\land\forall f\in F\ \forall n\in\dom p'\setminus\dom p\ \bigl(p'(n)>f(n)\bigr)
+\end{aligned}
+$$
+と定める。$\langle\varnothing,\varnothing\rangle\in\PP$。反射律は $\dom p\setminus\dom p=\varnothing$ から明らか。推移律：$\langle p'',F''\rangle\le\langle p',F'\rangle\le\langle p,F\rangle$ とし、$f\in F$, $n\in\dom p''\setminus\dom p$ をとる。$n\in\dom p'$ なら $n\in\dom p'\setminus\dom p$ なので $p''(n)=p'(n)>f(n)$（$p'\subseteq p''$）。$n\notin\dom p'$ なら $n\in\dom p''\setminus\dom p'$ で $f\in F\subseteq F'$ なので $p''(n)>f(n)$。$p\subseteq p''$, $F\subseteq F''$ も明らか。
+
+**Step 2（c.c.c.）.** $\langle p,F_{1}\rangle$ と $\langle p,F_{2}\rangle$ は、$\langle p,F_{1}\cup F_{2}\rangle$ が共通の拡張なので両立する（$\dom p\setminus\dom p=\varnothing$ なので第 3 条件は空虚）。よって反鎖 $A$ の元の第 1 成分は相異なり、$\langle p,F\rangle\mapsto p$ は $A$ から $\operatorname{Fn}(\omega,\omega)$ への単射である。$\operatorname{Fn}(\omega,\omega)$ は可算である（$p$ を有限集合 $\{2^{n}3^{p(n)}\mid n\in\dom p\}\subseteq\omega$ に対応させる写像は、素因数分解の一意性により単射で、$[\omega]^{<\omega}$ は可算）。したがって $A$ は可算。
+
+**Step 3（稠密集合）.** $f\in\mathcal{F}$ について $D_{f}=\{\langle p,F\rangle\mid f\in F\}$、$n<\omega$ について $E_{n}=\{\langle p,F\rangle\mid n\in\dom p\}$ とおく。
+- $D_{f}$ は稠密：$\langle p,F\cup\{f\}\rangle\le\langle p,F\rangle$（第 3 条件は空虚）。
+- $E_{n}$ は稠密：$\langle p,F\rangle$ で $n\notin\dom p$ のとき、$k=1+\max\{f(n)\mid f\in F\}$（$F=\varnothing$ なら $k=0$）とおき $p'=p\cup\{\langle n,k\rangle\}$ とすると、$\dom p'\setminus\dom p=\{n\}$ で $p'(n)=k>f(n)$（$f\in F$）なので $\langle p',F\rangle\le\langle p,F\rangle$。
+
+**Step 4（MA の適用）.** $\mathcal{D}=\{D_{f}\mid f\in\mathcal{F}\}\cup\{E_{n}\mid n<\omega\}$ は $\lvert\mathcal{D}\rvert\le\kappa\oplus\aleph_{0}$ を満たす。$\kappa$ が無限なら $\mathrm{MA}(\kappa)$、有限なら \ref{set:ma-omega} を適用して（\ref{set:ma-ad} の証明の Step 1 と同様）、すべての $D\in\mathcal{D}$ と交わるフィルター $G$ を得る。
+
+**Step 5（$g$ の構成）.** $g=\bigcup\{p\mid\exists F\ (\langle p,F\rangle\in G)\}$ とおく。$G$ の 2 元 $\langle p,F\rangle,\langle p',F'\rangle$ は共通の拡張 $\langle p'',F''\rangle$ をもち、$p,p'\subseteq p''$ なので $p,p'$ は共通の定義域上で一致する。よって $g$ は関数であり（\ref{set:fn-poset-basic} (2) と同じ議論）、$G$ がすべての $E_{n}$ と交わるので $\dom g=\omega$、すなわち $g\in{}^{\omega}\omega$。
+
+**Step 6（支配）.** $f\in\mathcal{F}$ とし、$\langle p,F\rangle\in G\cap D_{f}$ をとる。$n=\max(\dom p\cup\{0\})$ とおき、$m>n$ とする。$m\notin\dom p$ である。$g(m)=p'(m)$ となる $\langle p',F'\rangle\in G$ をとり、$\langle p,F\rangle$ と $\langle p',F'\rangle$ の共通の拡張 $\langle p'',F''\rangle\in G$ をとる。$p'\subseteq p''$ より $p''(m)=g(m)$ であり、$m\in\dom p''\setminus\dom p$, $f\in F$ と $\langle p'',F''\rangle\le\langle p,F\rangle$ から $p''(m)>f(m)$。よって $g(m)>f(m)$ がすべての $m>n$ で成り立ち、$f<^{*}g$。
+
+::: hypcheck
+- **$\mathrm{MA}(\kappa)$**：Step 4。**$\lvert\mathcal{F}\rvert\le\kappa$**：Step 4 で稠密集合の個数を抑えるのに使った。
+- **c.c.c.**（Step 2）：MA を適用するために必要。ここでも \ref{set:ad-poset-ccc} と同じく、第 1 成分が可算個しかないことが効いている。
+- **選択公理**：Step 4 の濃度の評価と MA の適用（\ref{set:ma-omega}）。
+:::
+:::
+
+::: supplement
+- **可算の場合.** $\mathcal{F}=\{f_{k}\mid k<\omega\}$ が可算なら、$g(m)=1+\max_{k\le m}f_{k}(m)$ と直接定めればよい（$m\ge k$ で $g(m)>f_{k}(m)$）。定理はこの対角線論法の「$\kappa$ 個版」である。
+- **基数不変量.** ${}^{\omega}\omega$ の部分族で、ある 1 つの $g$ に支配されないものの最小の大きさを $\mathfrak{b}$（有界数）という。上の注意から $\mathfrak{b}\ge\aleph_{1}$、また ${}^{\omega}\omega$ 全体はどの $g$ にも支配されない（$g+1$ を支配できない）ので $\mathfrak{b}\le2^{\aleph_{0}}$。定理は $\mathrm{MA}\Rightarrow\mathfrak{b}=2^{\aleph_{0}}$ を意味する。
+- この定理は \ref{set:ma-ad} から導くこともできる（Kunen, *Set Theory*, 第 VIII 章演習 A3）。
+:::
+
+## 問題 {#set:sec-mac-problems}
+
+::: problem {#set:prob-ma-ad-infinite-partition}
+$\mathrm{MA}(\kappa)$ を仮定し、$\mathcal{A}$ を $\lvert\mathcal{A}\rvert\le\kappa$ の概素族、$y\subseteq\omega$ を「どの有限な $F\subseteq\mathcal{A}$ についても $y\setminus\bigcup F$ が無限」を満たす集合とする。$y$ の無限部分集合 $d$ で、$\mathcal{A}$ のすべての元と概素なものが存在することを示せ。
+:::
+
+::: solution
+\ref{set:ma-ad} を $\mathcal{A}$ と $\mathcal{C}=\{y\}$ に適用すると、$\mathcal{A}$ の各元と概素で $\lvert d'\cap y\rvert=\omega$ となる $d'$ が得られる。$d=d'\cap y$ とおけば $d\subseteq y$ は無限で、$x\in\mathcal{A}$ について $d\cap x\subseteq d'\cap x$ は有限。
+:::
+
+::: problem {#set:prob-ma-two-aleph-one}
+$\mathrm{MA}+\lnot\mathrm{CH}$ のもとで $2^{\aleph_{1}}=2^{\aleph_{0}}$ であること、および $2^{\aleph_{0}}\ne\aleph_{\omega_{1}}$ であることを示せ。
+:::
+
+::: solution
+$\lnot\mathrm{CH}$ より $\aleph_{1}<2^{\aleph_{0}}$ なので MA から $\mathrm{MA}(\aleph_{1})$ が成り立ち、\ref{set:ma-two-kappa} より $2^{\aleph_{1}}=2^{\aleph_{0}}$。また \ref{set:ma-continuum-regular} より $2^{\aleph_{0}}$ は正則だが、$\cf(\aleph_{\omega_{1}})=\cf(\omega_{1})=\aleph_{1}<\aleph_{\omega_{1}}$（\ref{set:cf-aleph}, \ref{set:successor-regular}）なので $\aleph_{\omega_{1}}$ は特異である。よって $2^{\aleph_{0}}\ne\aleph_{\omega_{1}}$。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

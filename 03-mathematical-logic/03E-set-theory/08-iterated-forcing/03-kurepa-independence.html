@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>クレパ仮説の独立性 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/08-iterated-forcing/03-kurepa-independence.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# クレパ仮説の独立性 {#set:page-kurepa-independence keywords="independence of Kurepa's hypothesis, Silver, countably closed Levy collapse, Lv'(kappa), no new paths through omega_1-trees, not KH"}
+
+$\mathrm{Con}(\ZFC)\to\mathrm{Con}(\ZFC+\mathrm{KH})$ はすでに見た：KH は $\mathbf{L}$ で成り立つ（\ref{set:v-eq-l-diamond-plus}, \ref{set:diamond-plus-kurepa}）。また KH は任意の c.t.m. $M$ のジェネリック拡大で真にできる（Kunen 第 VII 章の演習 H19）し、レヴィ拡大でも真になる（\ref{set:levy-kh}。ただし $M$ に強到達不能基数が要る）。本ページでは、シルヴァーによる証明で、$M$ が強到達不能基数を含むなら $M$ のあるジェネリック拡大で $\lnot\mathrm{KH}$ が成り立つことを示す。ここで到達不能基数は必要である：$\lnot\mathrm{KH}$ は $\omega_{2}$ が $\mathbf{L}$ で到達不能であることを導く（Kunen 第 VII 章の演習）。したがって
+$$
+\mathrm{Con}(\ZFC+\lnot\mathrm{KH})\leftrightarrow\mathrm{Con}(\ZFC+\exists\kappa\,(\kappa\text{ は強到達不能}))
+$$
+となる。（Kunen 第 VIII 章 §3 に対応する。）
+
+## 記法と定義の確認 {#set:sec-kurepa-notation}
+
+::: notation
+- $M$ は $\ZFC$ の c.t.m.。レヴィ崩壊とその議論（\ref{set:levy-collapse}, \ref{set:levy-cc}, \ref{set:levy-collapse-omega-one}）は \ref{set:page-forcing-further}、閉性・鎖条件による保存（\ref{set:lambda-closed}, \ref{set:closed-no-new-functions}, \ref{set:closed-preserves}, \ref{set:kappa-cc-preserves}）は \ref{set:page-larger-fn}、積の補題（\ref{set:product-lemma}）と \ref{set:cohen-factor}, \ref{set:cohen-small-support} の議論は \ref{set:page-products}, \ref{set:page-cohen-model}、よい名前（\ref{set:nice-name}, \ref{set:nice-name-exists}）、強制の系（\ref{set:forcing-corollary}）は前章のとおり。
+- 木、$\omega_{1}$-木、道、クレパ木（\ref{set:tree}, \ref{set:kappa-tree}, \ref{set:kappa-tree-size}, \ref{set:tree-path}, \ref{set:path-characterization}, \ref{set:kurepa-tree}）は第 II 章のとおり。$\operatorname{Lev}_{\alpha}(T)$ は $T$ のレベル $\alpha$。$\omega_{1}$-木の道は、各レベルとちょうど一点で交わる下に閉じた鎖である。
+- Δ システム補題（\ref{set:delta-system-general}）、正則基数の和（\ref{set:regular-small-union}）を使う。
+:::
+
+シルヴァーの p.o. はレヴィの p.o. とまったく同じだが、有限部分関数の代わりに可算部分関数を使う。まずそのような拡大の初等的な事実を述べる。これは第 VII 章の $\mathrm{Lv}(\kappa)$ の扱いとほとんど同じである。
+
+## 可算条件のレヴィ崩壊 {#set:sec-countable-levy}
+
+::: definition Lv′(κ) {#set:levy-countable keywords="Lv'(kappa), countably closed Levy collapse, Col(omega_1, <kappa)" index="可算条件のレヴィ崩壊|かさんじょうけんのれゔぃほうかい"}
+$$
+\begin{aligned}
+\mathrm{Lv}'(\kappa)\defeq\{p:{}&\lvert p\rvert\le\omega\land p\text{ は関数}\land\dom(p)\subseteq\kappa\times\omega_{1}\\
+&\land\forall\langle\alpha,\xi\rangle\in\dom(p)\,(p(\alpha,\xi)\in\alpha)\}
+\end{aligned}
+$$
+とし、包含の逆で順序付ける。
+:::
+
+::: lemma {#set:levy-countable-basic}
+$\mathrm{Lv}'(\kappa)$ は $\omega_{1}$-閉である。$\kappa$ が強到達不能なら、$\mathrm{Lv}'(\kappa)$ は $\kappa$-c.c. をもつ。
+:::
+
+::: proof
+**$\omega_{1}$-閉.** 可算な減少列の和は可算な関数で、$\mathrm{Lv}'(\kappa)$ の元である。
+
+**$\kappa$-c.c.** \ref{set:levy-cc} の Δ システムの議論とまったく同じである。$\{p_{\mu}:\mu<\kappa\}$ を相異なる元の族とする。定義域は可算で、$\alpha<\kappa$ について $\lvert{}^{<\omega_{1}}\alpha\rvert\le\lvert\alpha\rvert^{\omega}\cdot\omega_{1}\le2^{\lvert\alpha\rvert\cdot\omega}<\kappa$（強到達不能）なので、Δ システム補題（\ref{set:delta-system-general}、$\theta=\kappa$、定義域の大きさは $\omega_{1}$ 未満）が使える。同じ定義域が $\kappa$ 回現れる場合は、その定義域 $d$ 上の関数の可能性は、$\mu\defeq\sup\{\lvert\alpha\rvert:\langle\alpha,\xi\rangle\in d\}$（$d$ は可算なので $\kappa$ の正則性より $\mu<\kappa$）について $\prod_{\langle\alpha,\xi\rangle\in d}\lvert\alpha\rvert\le\mu^{\omega}\le2^{\mu\cdot\omega}<\kappa$ 通りなので、相異なるという仮定に反する。そうでなければ根 $r$ の Δ システム $\{\dom(p_{\mu}):\mu\in B\}$、$\lvert B\rvert=\kappa$ がとれ、$p_{\mu}\restr r$ の可能性は（$r$ は可算）$\kappa$ 未満なので、$\kappa$ の正則性から $p_{\mu}\restr r$ が一致する二つの $\mu$ があり、それらは両立する。
+:::
+
+::: lemma {#set:levy-countable-collapse}
+$\kappa$ が $M$ で強到達不能で、$G$ が $M$ 上 $\mathrm{Lv}'(\kappa)$-ジェネリックなら、$\omega_{1}^{M[G]}=\omega_{1}^{M}$ かつ $\omega_{2}^{M[G]}=\kappa$。
+:::
+
+::: proof
+$M$ で $\omega_{1}$-閉な p.o. は $\omega_{1}$ を保ち（\ref{set:closed-preserves}）、$M$ で $\kappa$-c.c. な p.o. は $\kappa$ 以上の基数を保つ（\ref{set:kappa-cc-preserves}、$\kappa$ は正則）ので、$\omega_{1}$ と $\kappa$ は $M[G]$ の基数である。一方 \ref{set:levy-collapse-omega-one} と同様の稠密性の議論で、$0<\alpha<\kappa$ なら $(\bigcup G)_{\alpha}(\xi)\defeq(\bigcup G)(\alpha,\xi)$ で定まる写像は $\omega_{1}$ から $\alpha$ の上への写像である。よって $\omega_{1}$ と $\kappa$ の間の順序数はすべて $M[G]$ で濃度 $\le\omega_{1}$ となり、$\kappa=\omega_{2}^{M[G]}$。
+:::
+
+さて $T$ を $M$ の $\omega_{1}$-木とする。$T$ は $M$ でクレパ木かもしれないが、$M$ の中で $T$ の道は高々 $(2^{\omega_{1}})^{M}$ 本で、$(2^{\omega_{1}})^{M}<\kappa=\omega_{2}^{M[G]}$ である。次の補題（シルヴァーの証明の核心）は、$T$ が $M[G]$ で新しい道を得ないことを示す。したがって $T$ は $M[G]$ でクレパ木でない。
+
+## 閉な強制は新しい道を加えない {#set:sec-no-new-paths}
+
+::: lemma シルヴァーの補題 {#set:silver-no-new-paths keywords="countably closed forcing adds no new branches to omega_1-trees, Silver" index="シルヴァーの補題|しるゔぁーのほだい"}
+$M$ の中で $T$ を $\omega_{1}$-木、$\PP$ を $\omega_{1}$-閉な p.o. とする。$G$ を $M$ 上 $\PP$-ジェネリックとし、$M[G]$ の中で $C$ が $T$ の道であるとする。このとき $C\in M$。
+:::
+
+::: proof
+そうでないとして矛盾を導く。$\mathfrak{B}\defeq\mathcal{P}(T)^{M}=\mathcal{P}(T)\cap M$ とおくと $C\notin\mathfrak{B}$。$C=\tau_{G}$ となる $\tau$ と、
+$$
+p\Vdash\bigl[(\tau\text{ は }\check{T}\text{ の道})\land\tau\notin\check{\mathfrak{B}}\bigr]
+\label{set:eq-silver-assumption}
+$$
+となる $p\in G$ を固定する。ここからは完全に $M$ の中で議論し、\eqref{set:eq-silver-assumption} から直接矛盾を導く。
+
+$\alpha<\omega_{1}$ と $q\in\PP$ について、$q\parallel\tau_{\alpha}$（$q$ は $\tau_{\alpha}$ を**決定する**）を
+$$
+\exists b\in\operatorname{Lev}_{\alpha}(T)\;(q\Vdash\check{b}\in\tau)
+$$
+の略記とする。道は $T$ の各レベルからちょうど一つの元を含むので、（非形式的には）$\tau_{\alpha}$ を「$\tau$ が名指す道のレベル $\alpha$ の元」と考えている。$\tau_{\alpha}$ はジェネリックなフィルターに依存しうるので、$q$ はそれを決定することもしないこともある。
+
+**(2)** 一方で、$p\Vdash\exists x\,(x\in\operatorname{Lev}_{\alpha}(T)\check{}\land x\in\tau)$ なので、\ref{set:forcing-corollary} の 4 より
+$$
+\{q\le p:q\parallel\tau_{\alpha}\}\text{ は }p\text{ の下で稠密}.
+$$
+
+**(3)** 他方で、
+$$
+q\le p\to\exists\alpha\,\lnot(q\parallel\tau_{\alpha}).
+$$
+実際、すべての $\alpha$ で $q\parallel\tau_{\alpha}$ とすると、各 $\alpha$ について $q\Vdash\check{b}_{\alpha}\in\tau$ となる $b_{\alpha}\in\operatorname{Lev}_{\alpha}(T)$ をとり（$M$ の AC と強制関係の定義可能性）、$B\defeq\{b_{\alpha}:\alpha<\omega_{1}\}\in M$ とおく。$q$ の下では $\tau$ は各レベルからちょうど一つの元を含む道で、$\check{B}\subseteq\tau$ なので $q\Vdash\tau=\check{B}$、したがって $q\Vdash\tau\in\check{\mathfrak{B}}$。これは $p\Vdash\tau\notin\check{\mathfrak{B}}$ に反する。
+
+**(4)** さらに、
+$$
+(q\le p\land q\parallel\tau_{\beta}\land\alpha<\beta)\to q\parallel\tau_{\alpha}.
+$$
+実際、$b\in\operatorname{Lev}_{\beta}(T)$ で $q\Vdash\check{b}\in\tau$ とし、$a$ を $b$ の下のレベル $\alpha$ の元とすると、$q\Vdash(\tau$ は道$)$ で道は下に閉じているので $q\Vdash\check{a}\in\tau$。
+
+(3), (4) より、$q\le p$ なら $\{\alpha:q\parallel\tau_{\alpha}\}$ は $\omega_{1}$ の真の始切片である。
+$$
+\delta(q)\defeq\{\alpha:q\parallel\tau_{\alpha}\}=\min\{\alpha:\lnot(q\parallel\tau_{\alpha})\}
+$$
+とおく。$\alpha\ge\delta(q)$ なら $\lnot(q\parallel\tau_{\alpha})$ で、これは $q$ と両立する $\tau_{\alpha}$ の可能性が二つ以上あることを意味するはずである。形式的には：
+
+**(5)**
+$$
+\begin{aligned}
+(q\le p\land\alpha\ge\delta(q))\to{}&\exists q_{0},q_{1}\le q\;\exists a_{0},a_{1}\in\operatorname{Lev}_{\alpha}(T)\\
+&\bigl[q_{0}\Vdash\check{a}_{0}\in\tau\land q_{1}\Vdash\check{a}_{1}\in\tau\land a_{0}\neq a_{1}\bigr].
+\end{aligned}
+$$
+実際、(2) より $q_{0}\le q$ と $a_{0}\in\operatorname{Lev}_{\alpha}(T)$ で $q_{0}\Vdash\check{a}_{0}\in\tau$ となるものがある。$\lnot(q\parallel\tau_{\alpha})$ なので $\lnot(q\Vdash\check{a}_{0}\in\tau)$ で、$r\le q$ で $r\Vdash\check{a}_{0}\notin\tau$ となるものがある（\ref{set:forcing-corollary} の 2）。再び (2) より $q_{1}\le r$ と $a_{1}\in\operatorname{Lev}_{\alpha}(T)$ で $q_{1}\Vdash\check{a}_{1}\in\tau$ となるものがある。$q_{1}\Vdash\check{a}_{0}\notin\tau$ なので $a_{0}\neq a_{1}$。
+
+**二分木の構成.** (5) を $\omega$ 回適用して、$p$ の拡張の（高さ $\omega$ の）木を作る。すなわち $s\in{}^{<\omega}2$ について $p_{s}$, $a_{s}$ と、$n\in\omega$ について $\alpha_{n}$ を次を満たすように定める。
+- (a) $\alpha_{0}<\alpha_{1}<\alpha_{2}<\cdots$。
+- (b) $\alpha_{n}\ge\max\{\delta(p_{s}):\dom(s)=n\}$。
+- (c) $p_{\varnothing}=p$。
+- (d) $a_{s^{\frown}\langle0\rangle}\neq a_{s^{\frown}\langle1\rangle}$ で、$i=0,1$ について $p_{s^{\frown}\langle i\rangle}\le p_{s}$、$a_{s^{\frown}\langle i\rangle}\in\operatorname{Lev}_{\alpha_{n}}(T)$、$p_{s^{\frown}\langle i\rangle}\Vdash\check{a}_{s^{\frown}\langle i\rangle}\in\tau$（$\dom(s)=n$）。
+
+長さ $n$ の $s$ は有限個なので (b) の最大値は存在し、(a), (b) を満たす $\alpha_{n}$ を選んでから各 $p_{s}$ に (5) を $\alpha=\alpha_{n}$ で適用すればよい。
+
+$\gamma\defeq\sup\{\alpha_{n}:n<\omega\}<\omega_{1}$ とおく。$\lvert\operatorname{Lev}_{\gamma}(T)\rvert\ge2^{\omega}$ を示し、$T$ が $\omega_{1}$-木であること（レベルは可算）に矛盾させる。$f\in{}^{\omega}2$ について
+$$
+p\ge p_{\langle f(0)\rangle}\ge p_{\langle f(0),f(1)\rangle}\ge\cdots
+$$
+である。$\PP$ は $\omega_{1}$-閉なので、すべての $n$ で $q_{f}\le p_{f\restr n}$ となる $q_{f}$ をとり、(2) より $r_{f}\le q_{f}$ と $b_{f}\in\operatorname{Lev}_{\gamma}(T)$ で $r_{f}\Vdash\check{b}_{f}\in\tau$ となるものをとる（$M$ の AC で $f\mapsto b_{f}$ を $M$ の中で選ぶ）。すべての $n\ge1$ について $r_{f}\Vdash\check{a}_{f\restr n}\in\tau$ でもあるので、$\tau$ が道であることから $a_{f\restr n}<b_{f}$（木の順序）。$f\neq g$ なら、$f\restr n=g\restr n$ かつ $f(n)\neq g(n)$ となる $n$ があり、(d) より $a_{f\restr(n+1)}\neq a_{g\restr(n+1)}$ はともにレベル $\alpha_{n}$ の元である。木ではある点の下にある各レベルの元は一つなので、$b_{f}=b_{g}$ なら $a_{f\restr(n+1)}=a_{g\restr(n+1)}$ となり矛盾する。したがって $b_{f}$（$f\in{}^{\omega}2$）は相異なり、$M$ の中で $\lvert\operatorname{Lev}_{\gamma}(T)\rvert\ge2^{\omega}>\omega$。これは矛盾。
+:::
+
+::: hypcheck
+- $\omega_{1}$-閉性は、各 $f$ について $q_{f}$ をとるところでだけ使った（長さ $\omega$ の減少列の下界）。
+- $T$ のレベルが可算であることは最後の矛盾に使った。$T$ が $\omega_{1}$-木でなくレベルが大きければ、新しい道が加わりうる。
+- \eqref{set:eq-silver-assumption} の $\tau\notin\check{\mathfrak{B}}$ は (3) でだけ使った。
+:::
+
+\ref{set:silver-no-new-paths} で、$M[G]$ が $\omega_{1}$ から $(2^{\omega_{1}})^{M}$ の上への写像を含むなら、$T$ は $M[G]$ でクレパ木になりえない。しかしこれは $M[G]$ で $\lnot\mathrm{KH}$ が成り立つことを意味しない。$M[G]$ のクレパ木 $T$ は $M$ に属するとは限らないからである。$\mathrm{Lv}'(\kappa)$ による拡大で $\lnot\mathrm{KH}$ が成り立つ理由は、その拡大を反復
+$$
+M\subseteq M[G_{0}]\subseteq M[G_{0}][G_{1}]=M[G]
+$$
+とみなせることにある。ここで $T\in M[G_{0}]$、$G_{0}$ は $G$ の「小さな」部分で、$G_{1}$ は $M[G_{0}]$ の $2^{\omega_{1}}$ を崩壊させる。そこで \ref{set:silver-no-new-paths} を $M[G_{0}]$ に適用して、$T$ が $M[G]$ でクレパ木でないことを示す。議論の細部は \ref{set:cohen-factor}, \ref{set:cohen-small-support} に似ている。
+
+::: theorem 到達不能基数からの ¬KH {#set:not-kh-from-inaccessible keywords="Silver: Con(ZFC + inaccessible) implies Con(ZFC + not KH)" index="クレパ仮説の否定|くれぱかせつのひてい"}
+$M$ の中で $\kappa$ を強到達不能とし、$\PP\defeq\mathrm{Lv}'(\kappa)$、$G$ を $M$ 上 $\PP$-ジェネリックとする。このとき $M[G]$ で $\lnot\mathrm{KH}$ が成り立つ。
+:::
+
+::: proof
+$M[G]$ の中で $T$ を $\omega_{1}$-木とし、$T$ の道が高々 $\omega_{1}$ 本であることを示す。$T$ は大きさ $\omega_{1}$（\ref{set:kappa-tree-size}）なので $\langle\omega_{1},W\rangle$（$W$ は可算順序数の上のある木の順序）の形の木と同型であり、同型な木は同じ数の道をもつので、$T=\langle\omega_{1},W\rangle$ としてよい。
+
+**$T$ の台.** $W\subseteq\omega_{1}\times\omega_{1}$ なので、$(\omega_{1}\times\omega_{1})\check{}$ の部分集合のよい名前 $\sigma$ で $W=\sigma_{G}$ となるものがある（\ref{set:nice-name-exists}）。$M$ の中で
+$$
+\sigma=\bigcup_{s\in\omega_{1}\times\omega_{1}}\bigl(\{\check{s}\}\times A_{s}\bigr)
+$$
+（各 $A_{s}$ は $\PP$ の反鎖。この式は Kunen の本文で判読できなかったので、よい名前の定義から復元した）。$\PP$ は $\kappa$-c.c. なので各 $\lvert A_{s}\rvert<\kappa$。$\kappa$ は正則で、$A_{s}$ の元の定義域は可算なので（\ref{set:regular-small-union}）、基数 $\theta<\kappa$ で $\theta\ge\omega_{1}$ かつ
+$$
+\forall s\in\omega_{1}\times\omega_{1}\;\forall p\in A_{s}\;(\dom(p)\subseteq\theta\times\omega_{1})
+$$
+となるものがある。
+$$
+\begin{aligned}
+&\PP_{0}\defeq\{p\in\PP:\dom(p)\subseteq\theta\times\omega_{1}\},\\
+&\PP_{1}\defeq\{p\in\PP:\dom(p)\subseteq(\kappa\setminus\theta)\times\omega_{1}\}
+\end{aligned}
+$$
+とおくと、\ref{set:cohen-factor} と同様に $p\mapsto\langle p\restr{(\theta\times\omega_{1})},p\restr{((\kappa\setminus\theta)\times\omega_{1})}\rangle$ により $\PP$ は $\PP_{0}\times\PP_{1}$ と（$M$ の中で）同型である。$G_{0}\defeq G\cap\PP_{0}$, $G_{1}\defeq G\cap\PP_{1}$ とおくと、\ref{set:cohen-factor} と同様に $M[G]=M[G_{0}][G_{1}]$、$G_{0}$ は $M$ 上 $\PP_{0}$-ジェネリック、$G_{1}$ は $M[G_{0}]$ 上 $\PP_{1}$-ジェネリックである。\ref{set:cohen-small-support} と同様に、各 $A_{s}\subseteq\PP_{0}$ なので $\sigma$ は $\PP_{0}$-名前で $W=\sigma_{G}=\sigma_{G_{0}}$、したがって $T\in M[G_{0}]$。
+
+**$\PP_{1}$ は $M[G_{0}]$ でも $\omega_{1}$-閉.** $\PP_{1}$ は $M$ で可算閉である。さらに $\langle p_{n}:n\in\omega\rangle\in M[G_{0}]$ が $\PP_{1}$ の元の列なら、$\PP_{0}$ は $M$ で可算閉なので、\ref{set:closed-no-new-functions}（$A=\omega$, $B=\PP_{1}$）より $\langle p_{n}:n\in\omega\rangle\in M$。したがって減少列の下界が $M$ にあり、$\PP_{1}$ は $M[G_{0}]$ でも可算閉（$\omega_{1}$-閉）である。
+
+**道の数え上げ.** \ref{set:silver-no-new-paths} を $M[G_{0}]$ と $\PP_{1}$ に適用すると、$M[G_{0}][G_{1}]=M[G]$ の $T$ の道はすべてすでに $M[G_{0}]$ に属する。$\lambda\defeq(2^{\omega_{1}})^{M[G_{0}]}$ とおくと、
+$$
+\bigl(\lvert\{C:C\text{ は }T\text{ の道}\}\rvert\le\lambda\bigr)^{M[G]}.
+$$
+$\omega_{2}^{M[G]}=\kappa$（\ref{set:levy-countable-collapse}）なので、$\lambda<\kappa$ を示せば、道は $M[G]$ で高々 $\omega_{1}$ 本である。
+
+$M[G_{0}]$ の $\omega_{1}$ の部分集合は、$\PP_{0}$ に関する $\check{\omega}_{1}$ の部分集合のよい名前 $\tau$ について $\tau_{G_{0}}$ の形である。$M$ の中で $\lvert\PP_{0}\rvert\le\lvert(\theta\times\omega_{1})\times\theta\rvert^{\omega}\le2^{\theta}$ なので、$\PP_{0}$ の反鎖（$\PP_{0}$ の部分集合）は高々 $2^{2^{\theta}}$ 個、よい名前は高々 $(2^{2^{\theta}})^{\omega_{1}}=2^{2^{\theta}}$ 個である。よって $\lambda\le2^{2^{\theta}}$ で、$\kappa$ は $M$ で強到達不能なので $2^{2^{\theta}}<\kappa$。
+:::
+
+::: hypcheck
+- $\kappa$ の強到達不能性は、$\kappa$-c.c.（\ref{set:levy-countable-basic}）と最後の評価 $2^{2^{\theta}}<\kappa$ で使った。正則性だけでは $\lambda<\kappa$ が保証されない。
+- $\PP_{0}$ の可算閉性は、$\PP_{1}$ が $M[G_{0}]$ でも可算閉であることを示すのに使った。これがシルヴァーの補題を $M[G_{0}]$ に適用する鍵である。
+:::
+
+## 問題 {#set:sec-kurepa-problems}
+
+::: problem {#set:prob-kurepa-ch}
+\ref{set:not-kh-from-inaccessible} の $M[G]$ で CH が成り立つことを示せ。（$M$ の CH は仮定しない。）
+:::
+
+::: solution
+$\mathrm{Lv}'(\kappa)$ は $M$ で $\omega_{1}$-閉なので $\omega$ の新しい部分集合を加えない（\ref{set:closed-no-new-functions}）。$\alpha\defeq(2^{\omega})^{M}<\kappa$（強到達不能）で、\ref{set:levy-countable-collapse} より $M[G]$ で $\lvert\alpha\rvert\le\omega_{1}$。$\mathcal{P}(\omega)^{M[G]}=\mathcal{P}(\omega)^{M}$ は $M$ で $\alpha$ と対等なので、$M[G]$ で $2^{\omega}\le\omega_{1}$。
+:::
+
+::: problem {#set:prob-silver-finite}
+\ref{set:silver-no-new-paths} は、$\PP$ が $\omega_{1}$-閉でなく c.c.c. な場合には成り立たないことを、$M$ のススリン木 $T$ と、$T$ を逆さにした p.o.（\ref{set:destroy-suslin-tree}）を使って説明せよ。
+:::
+
+::: solution
+$T$ を $M$ のススリン木とすると、$T$ は $M$ で $\omega_{1}$-木で、$M$ に長さ $\omega_{1}$ の鎖（道）をもたない。\ref{set:destroy-suslin-tree} の $\PP$（$T$ のよく刈り込まれた部分木 $T'$ を逆さにしたもの）は $M$ で c.c.c. であり、ジェネリックな $G$ は $T'$ の長さ $\omega_{1}$ の鎖で、その下方閉包は $T$ の道である。この道は $M$ に属さない（$M$ には $T$ の道がない）。$\PP$ は $\omega_{1}$-閉でない（よく刈り込まれた $\omega_{1}$-ススリン木は $\omega_{1}$-閉になりえない：\ref{set:page-forcing-further} の注意）ので、シルヴァーの補題と矛盾しない。
+:::
+
+::: supplement
+**前提の検討.**
+- \ref{set:silver-no-new-paths} は $\omega_{1}$-閉性と、$T$ のレベルが可算であることを本質的に使う。一般に、$\PP$ が $\omega_{1}$-閉なら、レベルの大きさが $2^{\omega}$ 未満の $\omega_{1}$-木に新しい道は加わらない（同じ証明）。
+- \ref{set:not-kh-from-inaccessible} の分解の議論は、よい名前の反鎖が $\kappa$ 未満の大きさであること（$\kappa$-c.c.）に依存する。
+
+**関連する結果.** $\lnot\mathrm{KH}$ と $\omega_{2}$ の到達不能性の関係のように、小さな基数の組合せ論的性質の無矛盾性の強さが大きな基数で測られる例は多い（たとえば $\omega_{2}$ に木の性質があることは $\omega_{2}$ が $\mathbf{L}$ で弱コンパクトであることと等無矛盾であることが知られている。一般にはこう言われている。本サイトでは扱っていない）。
+
+**高い視点から：二分木の埋め込み.** シルヴァーの補題の証明の核心は、「新しい道の名前 $\tau$ は、どの条件の下でもある段階から先は決まらない（(3), (5)）」ことを使って、条件の二分木 $\langle p_{s}:s\in{}^{<\omega}2\rangle$ を作り、そこから $T$ の一つのレベルに $2^{\omega}$ 個の点を埋め込むことである。これはカントール集合 ${}^{\omega}2$ をある空間に埋め込んで「連続体濃度の部分集合をもつ」ことを示す、完全集合の議論（完全集合性質の証明など）と同じ形である。閉性は「二分木の枝ごとに極限の条件がとれる」ことを保証し、レベルの可算性が $2^{\omega}$ 個の点を受け入れられないことで矛盾が生じる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

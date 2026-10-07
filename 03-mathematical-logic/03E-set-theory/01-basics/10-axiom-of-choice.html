@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>選択公理と基数 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/01-basics/10-axiom-of-choice.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 選択公理と基数 {#set:page-choice keywords="axiom of choice, Zorn's lemma, well-ordering theorem, cardinality under AC"}
+
+選択公理（AC）には多くの言い換えがある。本ページではまず、ZF の中で「任意の集合は整列可能」「選択関数の存在」「直積の非空性」「ツォルンの補題」「ハウスドルフの極大原理」が互いに同値であることを、省略なしに証明する。そのあと AC を仮定し、基数の理論で AC が効いてくる場面（任意の集合が濃度をもつこと、全射と濃度、和集合の濃度の評価、閉包補題）を扱う。どこで AC を使い、どこは ZF で済むかを毎回はっきりさせる。
+
+## 記法と定義の確認 {#set:sec-choice-notation}
+
+::: notation
+- 特に断らない限り $\ZF$（選択公理なし）の中で議論する。選択公理を使う主張には見出しに（AC）と書く。
+- 選択公理 \ref{set:ax-choice} は「任意の集合は整列可能である」という形で導入した。整列順序は \ref{set:well-order} の意味の**狭義**の順序（非反射的・推移的・三分律を満たし、空でない部分集合が最小元をもつ関係）である。
+- 順序数・順序数のクラス $\mathbf{ON}$ は \ref{set:ordinal}、$\mathbf{ON}$ が $\in$ で整列されることは \ref{set:ordinal-well-ordered}、$\mathbf{ON}$ が集合でないこと（ブラリ＝フォルティ）は \ref{set:burali-forti} による。超限再帰 \ref{set:transfinite-recursion} は「任意のクラス関数 $G$ に対し、すべての $\alpha\in\mathbf{ON}$ で $F(\alpha)=G(F\restr{\alpha})$ を満たすクラス関数 $F$ がただ一つ存在する」という形で使う。$F[\alpha]=\{F(\xi)\mid\xi<\alpha\}$ は置換公理により集合である。
+- 単射・全射は \ref{set:injection-surjection}。$A\preccurlyeq B$（単射 $A\to B$ がある）、$A\approx B$（全単射がある）は \ref{set:cardinality-order}、カントール＝ベルンシュタインの定理は \ref{set:schroder-bernstein}。
+- 整列可能な集合 $A$ の濃度 $\lvert A\rvert$ は $A\approx\alpha$ となる最小の順序数 $\alpha$（\ref{set:cardinality}）、基数は \ref{set:cardinal}。$\kappa\otimes\lambda=\lvert\kappa\times\lambda\rvert$ などの基数演算は \ref{set:cardinal-sum-product}、無限基数 $\kappa$ について $\kappa\times\kappa\approx\kappa$ であること（ヘッセンベルク）は \ref{set:kappa-times-kappa} による。
+- $\omega$ は \ref{set:omega}、有限集合は \ref{set:finite-set}。$n$ 項の列の集合（$n$ から $A$ への関数全体）${}^{n}A$ と有限列全体 $A^{<\omega}=\bigcup_{n<\omega}{}^{n}A$ は \ref{set:finite-sequence} の意味で用いる（基数の冪を導入する \ref{set:page-cardinal-exponentiation} 以降は、関数の集合を ${}^{n}A$ と書く）。無限基数 $\kappa$ について $\kappa^{<\omega}\approx\kappa$（ZF。\ref{set:kappa-finite-sequences}）。
+- 写像 $f$ と集合 $S$ に対し $f[S]=\{f(s)\mid s\in S\}$、$f^{-1}[S]=\{x\in\dom f\mid f(x)\in S\}$ と書く。
+:::
+
+## 選択関数 {#set:sec-choice-function}
+
+::: definition 選択関数 {#set:choice-function keywords="choice function" index="選択関数|せんたくかんすう"}
+集合族 $\mathcal{F}$ に対し、関数 $c\colon\mathcal{F}\to\bigcup\mathcal{F}$ で、空でないすべての $Y\in\mathcal{F}$ について $c(Y)\in Y$ を満たすものを $\mathcal{F}$ の**選択関数**という。特に $\varnothing\notin\mathcal{F}$ のときは、すべての $Y\in\mathcal{F}$ について $c(Y)\in Y$ である。
+:::
+
+::: intuition
+空でない集合がたくさん与えられたとき、それぞれから元を 1 つずつ「同時に」選んだ結果を 1 つの関数としてまとめたもの。1 つの空でない集合から元を 1 つとることは論理（存在の除去）だけでできるが、無限個の選択を一度に行って結果を集合にする操作は、ZF の公理からは一般には出てこない。
+:::
+
+::: example
+- $\mathcal{F}$ が $\omega$ の空でない部分集合からなるなら、$c(Y)=\min Y$ が選択関数である。規則が明示できるので選択公理は要らない。
+- 一般に、$\bigcup\mathcal{F}$ の整列順序が 1 つ与えられていれば「最小元をとる」が選択関数になる。
+- ラッセルのたとえ：無限個の靴の組からは「左の靴」を選べば済むが、無限個の靴下の組からは区別の規則がないので、選択関数の存在を言うには選択公理が要る。
+:::
+
+::: proposition 有限個の選択 {#set:finite-choice keywords="finite choice" index="有限選択|ゆうげんせんたく"}
+（ZF）$\mathcal{F}$ が有限集合で $\varnothing\notin\mathcal{F}$ ならば、$\mathcal{F}$ は選択関数をもつ。
+:::
+
+::: proof
+$n\in\omega$ についての次の主張 $\varphi(n)$ を $n$ に関する帰納法で示す：「$\mathcal{F}\approx n$ かつ $\varnothing\notin\mathcal{F}$ である任意の集合族 $\mathcal{F}$ は選択関数をもつ」。$\mathcal{F}$ が有限なら、ある $n\in\omega$ について $\mathcal{F}\approx n$ なので（\ref{set:finite-set}）、これで十分である。
+
+**Step 1（$n=0$）.** $\mathcal{F}\approx 0$ なら $\mathcal{F}=\varnothing$ であり、空関数 $c=\varnothing$ が条件を（空虚に）満たす。
+
+**Step 2（$n\to n+1$）.** $\mathcal{F}\approx n+1$、$\varnothing\notin\mathcal{F}$ とし、全単射 $g\colon n+1\to\mathcal{F}$ をとる。$\mathcal{F}'=\mathcal{F}\setminus\{g(n)\}$ とおくと $g\restr{n}$ は $n$ から $\mathcal{F}'$ への全単射なので $\mathcal{F}'\approx n$、また $\varnothing\notin\mathcal{F}'$。帰納法の仮定から $\mathcal{F}'$ の選択関数 $c'$ がある。$g(n)\neq\varnothing$ なので元 $y\in g(n)$ が存在し、それを 1 つとる。$c=c'\cup\{(g(n),y)\}$ とおくと、$g(n)\notin\dom c'=\mathcal{F}'$ なので $c$ は関数で、$\dom c=\mathcal{F}$、各 $Y\in\mathcal{F}$ で $c(Y)\in Y$ である。
+
+::: hypcheck
+- **$\omega$ 上の帰納法**（\ref{set:peano}）：$\varphi(n)$ の証明全体。$\varphi(n)$ は「選択関数が存在する」という存在命題なので、各段階で「既にある選択関数に 1 つ付け足す」だけで済む。
+- **対・和集合の公理**：Step 2 で $c'\cup\{(g(n),y)\}$ を作るのに使った。
+- **選択公理は使わない**：Step 2 で行う選択は 1 回だけで、これは存在量化子の除去という論理の規則である。
+:::
+:::
+
+::: supplement
+**無限の場合.** 同じ帰納法を $\omega$ まで延ばそうとしても、各 $n$ で得られる選択関数 $c_{n}$ の間に整合性がなく、全体を 1 つの関数にまとめられない。まとめるには「各段階でどの $c_{n}$ を使うか」を同時に選ぶ必要があり、そこで選択公理（あるいはその弱い形）が要る。実際、可算個の 2 元集合の族であっても選択関数をもたないことが ZF と無矛盾であることが知られている（\ref{set:feferman-levy} の補足を参照）。
+:::
+
+## 選択公理の同値な言い換え {#set:sec-ac-equivalences}
+
+::: definition 鎖・上界・極大元 {#set:chain-maximal keywords="chain, upper bound, maximal element, partially ordered set" index="鎖|くさり, 上界|じょうかい, 極大元|きょくだいげん, 半順序集合|はんじゅんじょしゅうごう"}
+$(P,<)$ を（狭義の）半順序（\ref{set:total-order}。非反射的かつ推移的）とし、$<\subseteq P\times P$ とする。このとき $(P,<)$ を**半順序集合**という。$x\le y$ は「$x<y$ または $x=y$」の略記とする。
+- $C\subseteq P$ が**鎖**であるとは、任意の $x,y\in C$ について $x<y$, $x=y$, $y<x$ のいずれかが成り立つこと。
+- $b\in P$ が $S\subseteq P$ の**上界**であるとは、すべての $s\in S$ について $s\le b$ となること。
+- $m\in P$ が**極大元**であるとは、$m<x$ となる $x\in P$ が存在しないこと。
+:::
+
+::: example
+- $P$ を集合 $X$ の部分集合からなる族とし、$<$ を真の包含 $\subsetneq$ とすると半順序集合である。鎖とは包含で一列に並ぶ部分族であり、鎖 $\mathcal{C}$ の和集合 $\bigcup\mathcal{C}$ は、それが $P$ に属すれば $\mathcal{C}$ の上界である。
+- 空集合 $\varnothing$ は常に鎖であり、そのすべての元が上界である。したがって「$\varnothing$ が上界をもつ」ことは「$P\neq\varnothing$」と同じである。
+- $(\omega,\in)$ は鎖 $\omega$ 自身が上界をもたず、極大元もない。
+:::
+
+::: theorem 選択公理の同値な形 {#set:ac-equivalences keywords="equivalents of the axiom of choice, Zermelo, Zorn, Hausdorff maximal principle" index="選択公理の同値な形|せんたくこうりのどうちなかたち"}
+ZF において、次の 5 つは同値である。
+1. **（整列可能性）** 任意の集合は整列可能である（\ref{set:ax-choice} の形の選択公理）。
+2. **（選択関数）** $\varnothing$ を元にもたない任意の集合族は選択関数をもつ。
+3. **（直積）** 集合 $I$ で添字づけられた空でない集合の族 $(A_{i})_{i\in I}$ に対し、直積 $\prod_{i\in I}A_{i}=\{f\mid f\text{ は関数},\ \dom f=I,\ \forall i\in I\ (f(i)\in A_{i})\}$ は空でない。
+4. **（ツォルンの補題）** 半順序集合 $(P,<)$ のすべての鎖が $P$ に上界をもつならば、$P$ は極大元をもつ。
+5. **（ハウスドルフの極大原理）** 任意の半順序集合 $(P,<)$ は、包含に関して極大な鎖をもつ。すなわち鎖 $M$ で、$M\subsetneq M'$ となる鎖 $M'$ が存在しないものがある。
+:::
+
+::: intuition
+(1)(2)(3) は「無限個の選択を一度に行える」ことの直接的な言い換えで、(4)(5) は「超限回の選択を積み重ねる議論（超限再帰）を、選択の手順を書かずに一言で済ませる」ための道具である。どれも同じ強さをもつので、場面に応じて使いやすいものを使えばよい。証明は次の順に行う：
+$$
+(1)\Rightarrow(2)\Rightarrow(1),\qquad (2)\Leftrightarrow(3),\qquad (2)\Rightarrow(4)\Rightarrow(1),\qquad (4)\Leftrightarrow(5).
+$$
+$(2)\Rightarrow(1)$ がツェルメロの整列可能定理、$(2)\Rightarrow(4)$ がツォルンの補題の証明で、どちらも超限再帰で「まだ選ばれていないものから 1 つ選ぶ」ことを繰り返す。$(4)\Rightarrow(1)$ は整列順序の「延長」のなす半順序にツォルンの補題を適用する。
+:::
+
+以下の証明で繰り返し使う小さな事実を先に述べておく。任意の集合 $X$ に対し
+$$
+r(X)=\{x\in X\mid x\notin x\}
+\label{set:eq-russell-outside}
+$$
+は分出公理により集合であり、$r(X)\notin X$ である。実際 $r(X)\in X$ なら、$r(X)\in r(X)\iff r(X)\notin r(X)$ となり矛盾する（\ref{set:russell-paradox} と同じ議論）。これで基礎の公理を使わずに「$X$ に属さない対象」を 1 つ明示的に作れる。
+
+::: lemma 集合への単射な超限列はない {#set:no-injection-on-ord}
+（ZF）$X$ を集合、$F$ を $\mathbf{ON}$ 上のクラス関数とする。すべての $\alpha$ について $F(\alpha)\in X$ であり、$\alpha\neq\beta\Rightarrow F(\alpha)\neq F(\beta)$ であるということはありえない。
+:::
+
+::: proof
+そのような $F$ があったとする。
+
+**Step 1.** $x\in X$ に対し、$F(\alpha)=x$ となる $\alpha$ があればそれを $H(x)$、なければ $H(x)=0$ とおく。$F$ の単射性から $\alpha$ はあればただ一つなので、$H$ は $X$ 上のクラス関数として論理式で定義される。
+
+**Step 2.** 置換公理により $H[X]$ は集合である。任意の順序数 $\alpha$ について $F(\alpha)\in X$ かつ $H(F(\alpha))=\alpha$ なので $\alpha\in H[X]$。したがって $\mathbf{ON}=\{\alpha\in H[X]\mid\alpha\text{ は順序数}\}$ は分出公理により集合となり、\ref{set:burali-forti} に反する。
+
+::: hypcheck
+- **置換公理**：Step 2 で $H[X]$ を作るのに使った。
+- **分出公理**：Step 2 で $\mathbf{ON}$ を切り出すのに使った。
+:::
+:::
+
+::: lemma 局所的な整列可能定理 {#set:wo-choice-local keywords="well-orderable iff choice function on power set"}
+（ZF）集合 $X$ について、次は同値である。
+1. $X$ は整列可能である。
+2. $\mathcal{P}(X)\setminus\{\varnothing\}$ は選択関数をもつ。
+:::
+
+::: proof
+**(1)⇒(2).** $R$ を $X$ の整列順序とする。空でない $Y\subseteq X$ は $R$ に関する最小元をただ一つもつので、
+$$
+c=\{(Y,y)\in(\mathcal{P}(X)\setminus\{\varnothing\})\times X\mid y\in Y\ \wedge\ \forall z\in Y\ \neg(z\mathrel{R}y)\}
+$$
+（分出公理で作れる）は関数で、$c(Y)$ は $Y$ の $R$-最小元、特に $c(Y)\in Y$ である。
+
+**(2)⇒(1).** $c$ を $\mathcal{P}(X)\setminus\{\varnothing\}$ の選択関数とし、$p=r(X)$（\eqref{set:eq-russell-outside}）とおく。$p\notin X$ である。
+
+**Step 1（超限再帰）.** クラス関数 $G$ を、$s$ が関数で $X\setminus\ran s\neq\varnothing$ のとき $G(s)=c(X\setminus\ran s)$、それ以外のとき $G(s)=p$ で定める。超限再帰により、すべての $\alpha$ で $F(\alpha)=G(F\restr{\alpha})$ となる $F$ がある。$\ran(F\restr{\alpha})=F[\alpha]$ なので
+$$
+F(\alpha)=\begin{cases}c(X\setminus F[\alpha]) & (X\setminus F[\alpha]\neq\varnothing),\\ p & (X\setminus F[\alpha]=\varnothing).\end{cases}
+$$
+$c$ の値は $X$ に属し $p\notin X$ なので、$F(\alpha)=p\iff X\subseteq F[\alpha]$ である。
+
+**Step 2（一度 $p$ になったら以後ずっと $p$）.** $\alpha<\beta$ かつ $F(\alpha)=p$ ならば、$X\subseteq F[\alpha]\subseteq F[\beta]$ なので $F(\beta)=p$。
+
+**Step 3（$p$ になる前は単射）.** $\alpha<\beta$ かつ $F(\beta)\neq p$ とする。Step 2 の対偶から $F(\alpha)\neq p$ なので $F(\alpha)\in X$。また $F(\beta)=c(X\setminus F[\beta])\notin F[\beta]$ で $F(\alpha)\in F[\beta]$ だから $F(\alpha)\neq F(\beta)$。
+
+**Step 4（いつかは $p$ になる）.** すべての $\alpha$ で $F(\alpha)\neq p$ なら、Step 3 より $F$ は $\mathbf{ON}$ から $X$ への単射なクラス関数となり、\ref{set:no-injection-on-ord} に反する。よって $F(\alpha)=p$ となる $\alpha$ があり、その最小のものを $\delta$ とする（\ref{set:ordinal-well-ordered}）。
+
+**Step 5（全単射）.** Step 3 と $\delta$ の最小性より $F\restr{\delta}$ は $\delta$ から $X$ への単射。$F(\delta)=p$ より $X\subseteq F[\delta]$ なので全射でもある。
+
+**Step 6（整列順序の移送）.** $e=(F\restr{\delta})^{-1}\colon X\to\delta$ とし、$x\mathrel{R}y\iff e(x)\in e(y)$ と定める。$e$ は $(X,R)$ から $(\delta,\in)$ への順序同型であり、$(\delta,\in)$ は整列順序なので $R$ も整列順序である。
+
+::: hypcheck
+- **冪集合の公理・分出公理**：$\mathcal{P}(X)\setminus\{\varnothing\}$ と (1)⇒(2) の $c$、および $r(X)$ の構成。
+- **超限再帰**（\ref{set:transfinite-recursion}、置換公理を含む）：Step 1。
+- **置換公理**：$F[\alpha]$ が集合であること（Step 1）と \ref{set:no-injection-on-ord}（Step 4）。
+- **選択公理は使わない**：選択はすべて与えられた $c$ に任せている。
+- $p\notin X$：Step 1 の「$F(\alpha)=p\iff X\subseteq F[\alpha]$」に使った。$p$ として $X$ の元をとると、選ばれた元と「終了の合図」が区別できなくなる。
+:::
+:::
+
+::: theorem ツェルメロの整列可能定理 {#set:well-ordering-theorem keywords="well-ordering theorem, Zermelo" index="整列可能定理|せいれつかのうていり, ツェルメロの整列可能定理|つぇるめろのせいれつかのうていり"}
+（ZF）$\varnothing$ を元にもたない任意の集合族が選択関数をもつならば、任意の集合は整列可能である。
+:::
+
+::: intuition
+選択関数があれば、「まだ並べていない元の中から 1 つ選んで次に並べる」という操作を超限回繰り返せる。集合は順序数全体より「小さい」ので、この操作はどこかで尽き、そこまでの並びが整列順序になる。
+:::
+
+::: proof
+任意の集合 $X$ をとる。仮定を集合族 $\mathcal{P}(X)\setminus\{\varnothing\}$（$\varnothing$ を元にもたない）に適用すると選択関数が得られるので、\ref{set:wo-choice-local} の (2)⇒(1) より $X$ は整列可能である。
+
+::: hypcheck
+- **冪集合の公理**：$\mathcal{P}(X)$ の存在。
+- 仮定の選択関数の存在を、$X$ ごとに 1 回だけ使った。
+:::
+:::
+
+::: supplement
+ツェルメロ（1904）は、選択関数の存在を明示的な公理として置くことで、カントールが予想していた「任意の集合は整列可能である」を証明した。この証明によって選択公理が数学の表舞台に現れた。ただしこれは整列順序の**存在**を示すだけで、たとえば $\R$ の整列順序を具体的に定義することは ZFC でもできない（ZFC と「$\R$ の整列順序で定義可能なものはない」が無矛盾であることが知られている）。
+:::
+
+::: theorem ツォルンの補題 {#set:zorn keywords="Zorn's lemma, Kuratowski-Zorn" index="ツォルンの補題|つぉるんのほだい"}
+（AC）半順序集合 $(P,<)$ のすべての鎖が $P$ の中に上界をもつならば、$P$ は極大元をもつ。
+:::
+
+::: intuition
+「どこまで伸ばしても頭打ちにならない（上界がある）なら、伸ばしきった先（極大元）がある」という主張。証明では、上界を超える元を選んでは鎖を 1 段ずつ伸ばし、極限では上界をとって続ける。この操作が永遠には続かない（集合の大きさは順序数全体に届かない）ので、どこかで「真に上の元がない」ところ、すなわち極大元に行き着く。
+:::
+
+::: example
+- \ref[ベクトル空間の基底の存在]{lin:basis-existence}：一次独立な部分集合の族を包含で順序づけると、鎖の和集合は一次独立（一次関係は有限個の元しか含まないため）なので上界になり、極大な一次独立集合が基底になる。
+- \ref[極大イデアルの存在]{ring:maximal-ideal-existence}：単位元をもつ環の真のイデアルの族で、鎖の和集合は $1$ を含まない真のイデアルになる。
+- 有限の場合の直観：有限集合 $P\neq\varnothing$ では、元を 1 つとって真に上の元へ進むことを繰り返すと、推移性と非反射性から同じ元に戻れないので有限回で止まる。無限の場合にこの「繰り返し」を超限回に延ばしたのが下の証明である。
+:::
+
+::: proof
+**Step 0（準備）.** 選択公理により $P$ に整列順序があるので、\ref{set:wo-choice-local} の (1)⇒(2) より $\mathcal{P}(P)\setminus\{\varnothing\}$ の選択関数 $c$ がある。また $p=r(P)$（\eqref{set:eq-russell-outside}）とおくと $p\notin P$。
+
+**Step 1（超限再帰）.** 関数 $s$ に対し $U(s)=\{x\in P\mid\forall y\in\ran s\ (y<x)\}$（$\ran s$ のすべての元より真に大きい元の集合）とおき、$U(s)\neq\varnothing$ なら $G(s)=c(U(s))$、そうでなければ $G(s)=p$ とする（$s$ が関数でないときも $G(s)=p$）。超限再帰で $F(\alpha)=G(F\restr{\alpha})$ となる $F$ をとり、$U_{\alpha}=\{x\in P\mid\forall\xi<\alpha\ (F(\xi)<x)\}$ とおくと
+$$
+F(\alpha)=\begin{cases}c(U_{\alpha}) & (U_{\alpha}\neq\varnothing),\\ p & (U_{\alpha}=\varnothing).\end{cases}
+$$
+$c$ の値は $P$ に属するので、$F(\alpha)\neq p\iff U_{\alpha}\neq\varnothing$ である。
+
+**Step 2（$F$ は $p$ になるまで狭義単調増加）.** $\alpha<\beta$ かつ $F(\beta)\neq p$ とする。$F(\beta)=c(U_{\beta})\in U_{\beta}$ なので、$U_{\beta}$ の定義で $\xi=\alpha$ とすると $F(\alpha)<F(\beta)$。$<$ は $P$ 上の関係なので特に $F(\alpha)\in P$ である。
+
+**Step 3（いつかは $p$ になる）.** すべての $\alpha$ で $F(\alpha)\neq p$ なら、Step 2 より $\alpha<\beta\Rightarrow F(\alpha)<F(\beta)$ で、非反射性から $F(\alpha)\neq F(\beta)$。よって $F$ は $\mathbf{ON}$ から集合 $P$ への単射なクラス関数となり、\ref{set:no-injection-on-ord} に反する。したがって $F(\delta)=p$ となる最小の $\delta$ がある。
+
+**Step 4（鎖をつくる）.** $C=F[\delta]$ とおく。$\xi<\eta<\delta$ なら $F(\eta)\neq p$（$\delta$ の最小性）なので Step 2 より $F(\xi)<F(\eta)$。よって $C$ の任意の 2 元は比較可能で、$C\subseteq P$ は鎖である。
+
+**Step 5（上界が極大元）.** 仮定より $C$ は上界 $b\in P$ をもつ。$b$ が極大でないとして $b<x$ となる $x\in P$ をとる。任意の $\xi<\delta$ について $F(\xi)\le b$ かつ $b<x$ なので、推移性から $F(\xi)<x$（$F(\xi)=b$ の場合は直接 $F(\xi)<x$）。よって $x\in U_{\delta}$ となり $U_{\delta}\neq\varnothing$、すなわち $F(\delta)\neq p$ となって $\delta$ の選び方に反する。ゆえに $b$ は極大元である。
+
+::: hypcheck
+- **選択公理**：Step 0 で $\mathcal{P}(P)\setminus\{\varnothing\}$ の選択関数 $c$ を得るためだけに使った。以下の議論は $c$ があれば ZF で進むので、この証明は実際には \ref{set:ac-equivalences} の (2)⇒(4) を与えている。
+- **超限再帰**（置換公理を含む）：Step 1。
+- **置換公理**：\ref{set:no-injection-on-ord} を通じて Step 3 で使った。
+- **「すべての鎖が上界をもつ」**：Step 5 で鎖 $C$ に使った。$\delta=0$ なら $C=\varnothing$ であり、そのときは $P\neq\varnothing$ であることを使っている。
+- **推移性**：Step 5 で $F(\xi)\le b<x\Rightarrow F(\xi)<x$ に使った。**非反射性**：Step 3 の単射性に使った。
+:::
+:::
+
+::: supplement
+**名前について.** この主張はハウスドルフ（1914）、クラトフスキ（1922）らによって様々な形で用いられ、ツォルン（1935）が代数学への応用とともに広めた。
+
+**前提を変えると.**
+- *鎖に上界がある、を外す*：$(\omega,\in)$ は極大元をもたない。
+- *整列順序で済む場合*：$P$ が整列可能であることが最初からわかっていれば（たとえば $P$ が可算集合、あるいは順序数からなる集合）、Step 0 は ZF で行えるので、選択公理なしにその $P$ について結論が成り立つ。
+- *可算版*：極大元の代わりに「空でない半順序集合は、極大元をもつか、狭義増加の無限列 $x_{0}<x_{1}<\cdots$ をもつ」程度の主張なら、従属選択公理 DC で十分である（実はこの主張は DC と同値である）。
+:::
+
+次の補題が $(4)\Rightarrow(1)$ の鍵である。集合 $X$ に対し
+$$
+\mathcal{W}_{X}=\{(A,R)\mid A\subseteq X,\ R\subseteq A\times A,\ R\text{ は }A\text{ の整列順序}\}
+$$
+とおく（$\mathcal{P}(X)\times\mathcal{P}(X\times X)$ の部分集合として分出公理で作れる）。$(A,R),(B,S)\in\mathcal{W}_{X}$ について、$(A,R)\sqsubset(B,S)$ を
+$$
+A\subsetneq B,\qquad R=S\cap(A\times A),\qquad \forall a\in A\ \forall b\in B\setminus A\ (a\mathrel{S}b)
+$$
+で定める（$(B,S)$ は $(A,R)$ を「上に延長」したもの。$A$ は $(B,S)$ の真の始切片である）。
+
+::: lemma 整列順序の延長の鎖 {#set:chain-well-orders keywords="union of a chain of well-orders"}
+（ZF）任意の集合 $X$ について次が成り立つ。
+1. $(\mathcal{W}_{X},\sqsubset)$ は半順序集合である。
+2. $\mathcal{W}_{X}$ の任意の鎖 $\mathcal{C}$ は上界をもつ。実際 $U=\bigcup\{A\mid(A,R)\in\mathcal{C}\}$, $R_{U}=\bigcup\{R\mid(A,R)\in\mathcal{C}\}$ とおくと $(U,R_{U})\in\mathcal{W}_{X}$ であり、これが上界である。
+3. $(A,R)\in\mathcal{W}_{X}$ かつ $A\neq X$ ならば、$(A,R)\sqsubset(A',R')$ となる $(A',R')\in\mathcal{W}_{X}$ がある。
+:::
+
+::: proof
+**(1).** 非反射性は $A\subsetneq A$ が偽であることから従う。推移性：$(A,R)\sqsubset(B,S)\sqsubset(C,T)$ とする。
+- $A\subsetneq B\subsetneq C$ より $A\subsetneq C$。
+- $R=S\cap(A\times A)=\bigl(T\cap(B\times B)\bigr)\cap(A\times A)=T\cap(A\times A)$（$A\subseteq B$ を使った）。
+- $a\in A$, $c\in C\setminus A$ とする。$c\in B\setminus A$ なら $a\mathrel{S}c$ で、$S\subseteq T$ より $a\mathrel{T}c$。$c\in C\setminus B$ なら $a\in B$ なので $a\mathrel{T}c$。
+
+**(2).** $\mathcal{C}$ を鎖とし、$U$, $R_{U}$ を上のように定める（和集合の公理と置換公理）。$\mathcal{C}$ の元を「区間」と呼ぶことにし、$\sqsubseteq$ を「$\sqsubset$ または $=$」とする。鎖なので、$\mathcal{C}$ の有限個の元の中には $\sqsubseteq$ に関する最大のものがある（個数に関する帰納法）。また $(A,R)\sqsubseteq(B,S)$ なら $A\subseteq B$, $R\subseteq S$ である。
+
+*Step 1（有限個の元は 1 つの区間に入る）.* $u_{1},\dots,u_{k}\in U$ と $(v_{1},w_{1}),\dots,(v_{l},w_{l})\in R_{U}$ が与えられれば、それぞれを含む区間の $\sqsubseteq$-最大元 $(B,S)$ をとると、$u_{j}\in B$ かつ $v_{j}\mathrel{S}w_{j}$ である。
+
+*Step 2（各区間は $U$ の始切片で、順序は $R_{U}$ の制限）.* $(A,R)\in\mathcal{C}$ とする。
+- $x\in A$, $y\in U$, $y\mathrel{R_{U}}x$ ならば $y\in A$：Step 1 で $(A,R)$, $y$ を含む区間, $(y,x)$ を含む区間の最大元 $(B,S)$ をとると $y\mathrel{S}x$。$(B,S)=(A,R)$ なら $y\in A$。そうでなく $(A,R)\sqsubset(B,S)$ で $y\notin A$ なら、$y\in B\setminus A$ なので $x\mathrel{S}y$ となり、$y\mathrel{S}x$ と合わせて推移性から $x\mathrel{S}x$、非反射性に反する。よって $y\in A$。
+- $R_{U}\cap(A\times A)=R$：$\supseteq$ は明らか。$(u,v)\in R_{U}$, $u,v\in A$ なら、$(A,R)$ と $(u,v)$ を含む区間の最大元 $(B,S)$ をとると $u\mathrel{S}v$ で、$S\cap(A\times A)=R$（$(B,S)=(A,R)$ の場合も含む）より $u\mathrel{R}v$。
+
+*Step 3（$R_{U}$ は $U$ の狭義全順序）.* 非反射性・推移性・三分律は、関係する高々 3 元と高々 2 組を Step 1 で 1 つの区間 $(B,S)$ に入れ、Step 2 より $R_{U}\cap(B\times B)=S$ なので、$S$ の性質に帰着する。
+
+*Step 4（整礎性）.* $\varnothing\neq Y\subseteq U$ とし、$y\in Y$ と $y\in A$ となる区間 $(A,R)$ をとる。$Y\cap A$ は空でないので $R$-最小元 $m$ をもつ。$z\in Y$, $z\mathrel{R_{U}}m$ なら Step 2 の前半で $z\in A$、後半で $z\mathrel{R}m$ となり、$m$ の最小性に反する。よって $m$ は $Y$ の $R_{U}$-最小元である。
+
+*Step 5（上界）.* Step 3, 4 より $(U,R_{U})\in\mathcal{W}_{X}$。$(A,R)\in\mathcal{C}$ について、$A=U$ なら Step 2 より $R=R_{U}$ で $(A,R)=(U,R_{U})$。$A\subsetneq U$ なら、$a\in A$, $u\in U\setminus A$ に対し、$u\mathrel{R_{U}}a$ とすると Step 2 前半で $u\in A$ となり矛盾、$u\neq a$ なので三分律より $a\mathrel{R_{U}}u$。Step 2 後半と合わせて $(A,R)\sqsubset(U,R_{U})$。
+
+**(3).** $x\in X\setminus A$ をとり、$A'=A\cup\{x\}$, $R'=R\cup(A\times\{x\})$ とおく（$x$ を最後に付け足す）。$x\notin A$ なので $R'$ は非反射的で、推移性・三分律も場合分けで確かめられる。空でない $Y\subseteq A'$ について、$Y\cap A\neq\varnothing$ ならその $R$-最小元が $Y$ の $R'$-最小元（$x$ は $A$ のすべての元より大きい）、$Y\cap A=\varnothing$ なら $Y=\{x\}$。よって $(A',R')\in\mathcal{W}_{X}$ で、定義から $(A,R)\sqsubset(A',R')$。
+
+::: hypcheck
+- **冪集合の公理・分出公理**：$\mathcal{W}_{X}$ が集合であること。
+- **和集合の公理・置換公理**：(2) の $U$, $R_{U}$ の構成。
+- **$\mathcal{C}$ が鎖であること**：(2) Step 1 の最大元の存在。
+- **選択公理は使わない**：(3) の $x$ は 1 つとるだけである。
+:::
+:::
+
+::: restate {ref="set:ac-equivalences"}
+:::
+
+::: proof
+**(1)⇒(2).** $\mathcal{F}$ を $\varnothing\notin\mathcal{F}$ の集合族とする。(1) により $\bigcup\mathcal{F}$ の整列順序 $R$ がある。$c(Y)$ を $Y$ の $R$-最小元とすると（\ref{set:wo-choice-local} の (1)⇒(2) と同様に分出公理で作れる）、$c$ は $\mathcal{F}$ の選択関数である。
+
+**(2)⇒(1).** \ref{set:well-ordering-theorem}。
+
+**(2)⇒(3).** $(A_{i})_{i\in I}$ を空でない集合の族とする。$\mathcal{F}=\{A_{i}\mid i\in I\}$ は置換公理により集合で、$\varnothing\notin\mathcal{F}$。(2) による選択関数 $c$ をとり $f(i)=c(A_{i})$ とおくと、$f\in\prod_{i\in I}A_{i}$。
+
+**(3)⇒(2).** $\varnothing\notin\mathcal{F}$ とする。$I=\mathcal{F}$、$A_{Y}=Y$（$Y\in\mathcal{F}$）として (3) を適用すると、$f\in\prod_{Y\in\mathcal{F}}Y$ が得られる。$f$ は $\mathcal{F}$ 上の関数で $f(Y)\in Y$ なので、$\mathcal{F}$ の選択関数である。
+
+**(2)⇒(4).** \ref{set:zorn} の証明で選択公理を使ったのは Step 0 で $\mathcal{P}(P)\setminus\{\varnothing\}$ の選択関数を得るところだけであり、これは (2) から直接得られる。
+
+**(4)⇒(1).** 任意の集合 $X$ をとる。\ref{set:chain-well-orders} (1)(2) より $(\mathcal{W}_{X},\sqsubset)$ はすべての鎖が上界をもつ半順序集合なので、(4) により極大元 $(A,R)$ がある。$A\neq X$ なら \ref{set:chain-well-orders} (3) により $(A,R)$ より真に大きい元があって極大性に反する。よって $A=X$ で、$R$ は $X$ の整列順序である。
+
+**(4)⇒(5).** $(P,<)$ を半順序集合とし、$\mathcal{K}$ を $P$ の鎖全体（$\mathcal{P}(P)$ の部分集合）とする。$(\mathcal{K},\subsetneq)$ は半順序集合である。$\mathfrak{L}\subseteq\mathcal{K}$ を鎖とし、$K=\bigcup\mathfrak{L}$ とおく。$x,y\in K$ なら $x\in K_{1}$, $y\in K_{2}$ となる $K_{1},K_{2}\in\mathfrak{L}$ があり、$\mathfrak{L}$ は包含で比較可能なので大きい方に $x,y$ が共に入り、そこで比較可能である。よって $K\in\mathcal{K}$ で、$K$ は $\mathfrak{L}$ の上界（$\mathfrak{L}=\varnothing$ なら $K=\varnothing$）。(4) により $\mathcal{K}$ は $\subsetneq$ に関する極大元 $M$ をもち、これが極大な鎖である。
+
+**(5)⇒(4).** $(P,<)$ のすべての鎖が上界をもつとし、(5) で極大な鎖 $M$ をとり、その上界 $b$ をとる。$b<x$ となる $x\in P$ があったとする。すべての $m\in M$ で $m\le b<x$ より $m<x$。特に $x\notin M$（$x\in M$ なら $x<x$）で、$M\cup\{x\}$ は鎖となり $M\subsetneq M\cup\{x\}$、$M$ の極大性に反する。よって $b$ は極大元である。
+
+::: hypcheck
+- **置換公理**：(2)⇒(3) の $\mathcal{F}$。**和集合の公理**：(1)⇒(2) の $\bigcup\mathcal{F}$、(4)⇒(5) の $\bigcup\mathfrak{L}$。**冪集合の公理**：(4)⇒(5) の $\mathcal{K}$、(4)⇒(1) の $\mathcal{W}_{X}$。
+- **超限再帰**：(2)⇒(1) と (2)⇒(4) の両方で、補題を通じて使った。
+- この証明全体は ZF の中で行われ、選択公理（のどの形も）前提として使っていない。各矢印で使った「選択の原理」は矢印の左側の仮定だけである。
+:::
+:::
+
+::: supplement
+**他の同値物.** ZF において、次もそれぞれ選択公理と同値であることが知られている。
+- **テューキーの補題**：有限的性格をもつ（$Y\in\mathcal{F}\iff Y$ の有限部分集合がすべて $\mathcal{F}$ に属する）空でない族 $\mathcal{F}$ は、包含に関する極大元をもつ。(4) から族 $(\mathcal{F},\subsetneq)$ に適用して示せ、逆は「部分的な選択関数」の族に適用して (2) を得る。
+- **濃度の比較可能性**：任意の集合 $A,B$ について $A\preccurlyeq B$ または $B\preccurlyeq A$（\ref{set:every-set-cardinality} の補足で証明する）。
+- **チコノフの定理**（\ref{top:tychonoff}）：コンパクト空間の任意の直積はコンパクト（ケリー 1950）。なお、ハウスドルフ空間に限った版は選択公理より真に弱い（ハルパーン＝レヴィ）。
+- **ベクトル空間の基底の存在**：任意の体上の任意のベクトル空間が基底をもつ（ブラス 1984）。
+- **極大イデアルの存在**：単位元をもつ任意の環が極大イデアルをもつ（ホッジス 1979）。
+
+**選択公理の独立性.** ゲーデル（1938）は ZF が無矛盾なら ZFC も無矛盾であることを、コーエン（1963）は ZF が無矛盾なら ZF $+\neg$AC も無矛盾であることを示した。したがって上の同値物はどれも ZF からは証明も反証もできない。
+:::
+
+## 選択公理のもとでの濃度 {#set:sec-choice-cardinality}
+
+::: corollary 任意の集合は濃度をもつ {#set:every-set-cardinality keywords="every set has a cardinality, comparability of cardinals" index="濃度の比較可能性|のうどのひかくかのうせい"}
+（AC）任意の集合 $A$ に対し $\lvert A\rvert$ が定義され、$A\approx\lvert A\rvert$ である。さらに任意の集合 $A,B$ について
+1. $A\approx B\iff\lvert A\rvert=\lvert B\rvert$、
+2. $A\preccurlyeq B\iff\lvert A\rvert\le\lvert B\rvert$、
+3. $A\preccurlyeq B$ または $B\preccurlyeq A$ である。
+:::
+
+::: intuition
+選択公理があれば、どの集合も順序数で「数え上げ」られ、濃度は基数という一つの整列したものさしで測れる。$\lvert\cdot\rvert$ は、互いに全単射で結ばれる集合の同値類から、代表として一つの基数を選び出す操作になる。
+:::
+
+::: proof
+**Step 0.** AC（\ref{set:ax-choice}）により $A$ は整列可能なので、\ref{set:cardinality} により $\lvert A\rvert$ が定義され $A\approx\lvert A\rvert$。
+
+**Step 1（基数の間では $\preccurlyeq$ と $\le$ が一致する）.** 基数 $\kappa,\lambda$ について $\kappa\le\lambda\iff\kappa\preccurlyeq\lambda$ を示す。$\kappa\le\lambda$ なら $\kappa\subseteq\lambda$ なので包含写像が単射。逆に $\kappa\preccurlyeq\lambda$ で $\lambda<\kappa$ だとすると、$\lambda\subseteq\kappa$ より $\lambda\preccurlyeq\kappa$ でもあるので、カントール＝ベルンシュタイン（\ref{set:schroder-bernstein}）により $\kappa\approx\lambda$。これは $\kappa$ が基数である（$\kappa$ より小さい順序数とは対等でない）ことに反する。順序数は三分律を満たすので $\kappa\le\lambda$。
+
+**Step 2.** $A\approx\lvert A\rvert$, $B\approx\lvert B\rvert$ なので、合成により $A\preccurlyeq B\iff\lvert A\rvert\preccurlyeq\lvert B\rvert$、$A\approx B\iff\lvert A\rvert\approx\lvert B\rvert$。Step 1 から 2 が従う。1 は、$\lvert A\rvert\approx\lvert B\rvert$ なら Step 1 を両向きに使って $\lvert A\rvert\le\lvert B\rvert\le\lvert A\rvert$ となることから従う。
+
+**Step 3.** 順序数の三分律より $\lvert A\rvert\le\lvert B\rvert$ または $\lvert B\rvert\le\lvert A\rvert$ なので、2 から 3 が従う。
+
+::: hypcheck
+- **選択公理**：Step 0 で $A$, $B$ の整列可能性に使った。これ以外では使わない（Step 1 は ZF の定理）。
+- **カントール＝ベルンシュタインの定理**（ZF）：Step 1。
+:::
+:::
+
+::: supplement
+**比較可能性は選択公理と同値.** 逆に「任意の $A,B$ について $A\preccurlyeq B$ または $B\preccurlyeq A$」を仮定すると AC が従う（ZF）。
+
+*証明.* 集合 $X$ に対し、ハルトークス数 $\aleph(X)$（\ref{set:hartogs-number}）は順序数で $\aleph(X)\not\preccurlyeq X$ である（\ref{set:hartogs}）。比較可能性から $X\preccurlyeq\aleph(X)$ となり、単射 $e\colon X\to\aleph(X)$ で $x\mathrel{R}y\iff e(x)\in e(y)$ と順序を引き戻せば、$R$ は $X$ の整列順序である（$(X,R)$ は整列集合 $(e[X],\in)$ と同型）。冪集合の公理はハルトークスの定理の中で使われるが、選択公理はどこにも使わない。
+
+**AC がないと.** $\lvert A\rvert$ は一般の集合には定義できない。濃度を扱うには $A\approx B$ に関する同値類を使いたいが、同値類は真のクラスになるので、「スコットのトリック」（同値類のうち階数最小の元だけを集める。\ref{set:scott-trick}）で集合の代表を作る。
+:::
+
+::: lemma 全射と濃度 {#set:surjection-cardinality keywords="surjection implies cardinality inequality" index="全射と濃度|ぜんしゃとのうど"}
+（AC）全射 $f\colon X\to Y$ が存在するならば $\lvert Y\rvert\le\lvert X\rvert$ である。
+:::
+
+::: intuition
+全射は $Y$ の各元に少なくとも 1 つの「逆像の代表」があることを意味する。各 $y$ の逆像 $f^{-1}[\{y\}]$ から代表を 1 つずつ選べば、それが $Y$ から $X$ への単射になる。代表を選ぶところで選択公理を使う。
+:::
+
+::: proof
+**Step 1.** AC により $X$ の整列順序 $R$ をとる。
+
+**Step 2.** $y\in Y$ について $f^{-1}[\{y\}]$ は $f$ が全射なので空でない $X$ の部分集合であり、$R$-最小元をもつ。それを $g(y)$ とする（分出公理で $g\subseteq Y\times X$ として作れる）。
+
+**Step 3.** $f(g(y))=y$ なので、$g(y)=g(y')$ なら $y=f(g(y))=f(g(y'))=y'$。よって $g$ は単射で $Y\preccurlyeq X$、\ref{set:every-set-cardinality} より $\lvert Y\rvert\le\lvert X\rvert$。
+
+::: hypcheck
+- **選択公理**：Step 1 の $X$ の整列順序、および最後に $\lvert X\rvert$, $\lvert Y\rvert$ を定義するところ。**$X$ が最初から整列可能なら**（たとえば $X$ が順序数なら）Step 1–3 は ZF で行え、$Y\preccurlyeq X$ が ZF で成り立つ。
+- **全射性**：Step 2 で $f^{-1}[\{y\}]\neq\varnothing$ に使った。
+:::
+:::
+
+::: supplement
+**ZF で言えること.** 全射 $f\colon X\to Y$ があれば、$y\mapsto f^{-1}[\{y\}]$ は $Y$ から $\mathcal{P}(X)$ への単射（各ファイバーは空でなく互いに交わらない）なので、ZF でも $Y\preccurlyeq\mathcal{P}(X)$ は成り立つ。
+
+**ZF では逆向きの単射が作れない例.** ZF で全射 $\mathcal{P}(\omega)\to\omega_{1}$ が作れる：$\omega\times\omega\approx\omega$（\ref{set:kappa-times-kappa}、$\omega$ の場合は明示的な全単射がある）により $\mathcal{P}(\omega)\approx\mathcal{P}(\omega\times\omega)$ なので、$\mathcal{P}(\omega\times\omega)$ からの全射を作ればよい。$R\subseteq\omega\times\omega$ が $\{m\mid\exists n\ ((m,n)\in R\vee(n,m)\in R)\}$ の整列順序なら $R\mapsto\mathrm{type}(R)$、そうでなければ $R\mapsto 0$ とする。可算順序数 $\alpha$ はすべて $\omega$ のある部分集合上の整列順序の型として現れる（$\alpha\preccurlyeq\omega$ の単射で $\in$ を移す）ので、これは $\omega_{1}$ への全射である。一方、「単射 $\omega_{1}\to\mathcal{P}(\omega)$ が存在しない」ことは、ZFC $+$「到達不能基数が存在する」が無矛盾ならば ZF と無矛盾である（ソロヴェイのモデルでは、$\R$ の非可算部分集合はすべて完全集合を含み、濃度 $\aleph_{1}$ の実数の集合がない。Solovay, *Ann. of Math.* 92 (1970)）。
+
+**分割原理.** 「全射 $X\to Y$ があれば単射 $Y\to X$ がある」は分割原理と呼ばれ、AC から従う（本補題）。逆に分割原理から AC が従うかは、長く未解決の問題として知られている。
+:::
+
+::: theorem 和集合の濃度 {#set:union-bound keywords="union of kappa many sets of size at most kappa" index="和集合の濃度|わしゅうごうののうど, 可算個の可算集合の和|かさんこのかさんしゅうごうのわ"}
+（AC）$\kappa$ を無限基数、$I$ を $\lvert I\rvert\le\kappa$ の集合とし、各 $i\in I$ について $\lvert X_{i}\rvert\le\kappa$ とする。このとき
+$$
+\Bigl\lvert\bigcup_{i\in I}X_{i}\Bigr\rvert\le\kappa.
+$$
+特に $\lvert X_{\alpha}\rvert\le\kappa$（$\alpha<\kappa$）ならば $\bigl\lvert\bigcup_{\alpha<\kappa}X_{\alpha}\bigr\rvert\le\kappa$。
+:::
+
+::: intuition
+各 $X_{i}$ の元に $\kappa$ の中の「番号」を振っておけば、和集合の元 $x$ には「どの $X_{i}$ に入っているか」と「その中での番号」の 2 つ組で名前が付き、2 つ組の個数は $\kappa\otimes\kappa=\kappa$ である。問題は、各 $X_{i}$ への番号付け（単射 $X_{i}\to\kappa$）が「存在する」だけで、それらを一斉に 1 つ選ぶ規則がないことで、ここで選択公理が要る。
+:::
+
+::: example
+- **可算個の可算集合の和は可算**（$\kappa=\omega$）。たとえば $\Q=\bigcup_{n\ge 1}\{m/n\mid m\in\Z\}$。ただしこの例では各 $\{m/n\}$ の数え方が明示的に書けるので、実は選択公理は要らない。
+- 有理数係数の多項式の根となる複素数（代数的数）全体は、各次数・各係数ごとに高々有限個の根の和なので可算。ここでも、複素数を辞書式順序で並べるなど根に明示的な順番を付けられるので ZF で示せる。本定理の選択公理が効くのは、各 $X_{i}$ の数え方に標準的なものがない場合である。
+:::
+
+::: proof
+$U=\bigcup_{i\in I}X_{i}$ とおく（置換公理と和集合の公理で集合になる）。
+
+**Step 1（番号付けを一斉に選ぶ）.** $\lvert I\rvert\le\kappa$ なので単射 $h\colon I\to\kappa$ をとる。各 $i\in I$ について、$X_{i}$ から $\kappa$ への単射全体
+$$
+\mathrm{Inj}_{i}=\{e\in\mathcal{P}(X_{i}\times\kappa)\mid e\text{ は }X_{i}\text{ から }\kappa\text{ への単射}\}
+$$
+は $\lvert X_{i}\rvert\le\kappa$ より空でない。族 $\{\mathrm{Inj}_{i}\mid i\in I\}$（置換公理）は $\varnothing$ を元にもたないので、選択公理（\ref{set:ac-equivalences} の (2)）によりその選択関数 $c$ がとれる。$f_{i}=c(\mathrm{Inj}_{i})$ とおくと、各 $f_{i}$ は単射 $X_{i}\to\kappa$ である。
+
+**Step 2（各元の「所属」を 1 つに決める）.** $x\in U$ に対し $\{h(i)\mid i\in I,\ x\in X_{i}\}$ は空でない順序数の集合なので最小元をもち、$h$ の単射性からそれを与える $i$ はただ一つである。これを $i(x)$ とする。
+
+**Step 3（単射を作る）.** $g\colon U\to\kappa\times\kappa$ を $g(x)=\bigl(h(i(x)),\,f_{i(x)}(x)\bigr)$ で定める（$x\in X_{i(x)}$ なので $f_{i(x)}(x)$ は定義される）。$g(x)=g(y)$ なら第 1 成分から $h(i(x))=h(i(y))$、$h$ の単射性より $i(x)=i(y)=:i$、第 2 成分から $f_{i}(x)=f_{i}(y)$、$f_{i}$ の単射性より $x=y$。よって $g$ は単射。
+
+**Step 4.** \ref{set:kappa-times-kappa} より $\kappa\times\kappa\approx\kappa$ なので $U\preccurlyeq\kappa$、すなわち $\lvert U\rvert\le\kappa$。後半の主張は $I=\kappa$ の場合である。
+
+::: hypcheck
+- **選択公理**：Step 1 で $\lvert I\rvert$ 個の単射 $f_{i}$ を同時に選ぶところ**だけ**で使った。$\kappa=\omega$ で $I$ が可算なら、選ぶのは可算個なので**可算選択公理** $\mathrm{AC}_{\omega}$（可算個の空でない集合の族は選択関数をもつ）で足りる。単射の族 $(f_{i})_{i\in I}$ が最初から与えられていれば（たとえば各 $X_{i}\subseteq\kappa$ なら $f_{i}$ は包含写像）、Step 2–4 は ZF で行える。
+- **$\kappa$ が無限であること**：Step 4 の $\kappa\times\kappa\approx\kappa$。
+- **置換公理・和集合の公理**：$U$ と $\{\mathrm{Inj}_{i}\}$ の構成。**冪集合の公理**：$\mathrm{Inj}_{i}\subseteq\mathcal{P}(X_{i}\times\kappa)$。
+- $h$ を使って $I$ を整列したので、Step 2 は選択なしで $i(x)$ を決められる。
+:::
+:::
+
+::: supplement
+**一般形.** AC のもとで、$\lvert I\rvert\le\lambda$、各 $\lvert X_{i}\rvert\le\mu$ なら $\bigl\lvert\bigcup_{i}X_{i}\bigr\rvert\le\lambda\otimes\mu$（同じ証明で $g$ の値域を $\lambda\times\mu$ にすればよい）。無限基数どうしなら $\lambda\otimes\mu=\max(\lambda,\mu)$ である（\ref{set:cardinal-absorption}）。
+
+**共終数への応用.** この定理から、後続基数 $\kappa^{+}$ は $\kappa$ 個以下の $\kappa$ 以下の濃度の集合の和では書けないこと、すなわち正則であることが従う（\ref{set:successor-regular}）。
+
+**AC なしで何が起こるか.** 次の \ref{set:feferman-levy} のように、選択公理を外すとこの定理は $\kappa=\omega$ の場合ですら成り立たないことがある。
+:::
+
+::: fact フェファーマン＝レヴィのモデル {#set:feferman-levy keywords="Feferman-Levy model, countable union of countable sets" index="フェファーマン＝レヴィのモデル|ふぇふぁーまんれゔぃのもでる"}
+ZF が無矛盾ならば、ZF $+$「$\R$ は可算個の可算集合の和集合である」も無矛盾である。このモデルでは $\omega_{1}$ も可算個の可算集合の和集合であり、特に $\cf(\omega_{1})=\omega$（共終数は \ref{set:cofinality}）となる。（Feferman–Levy, *Notices AMS* 10 (1963)。詳しくは T. Jech, *The Axiom of Choice*, North-Holland 1973 を参照。）
+:::
+
+::: supplement
+このモデルでは、各可算集合 $X_{n}$ は $\omega$ への単射を**もつ**が、それらを $n$ について一斉に選ぶことができない。したがって \ref{set:union-bound} の証明の Step 1 が本当に必要だったことがわかる。また $\R$ が可算個の可算集合の和であっても、カントールの定理（\ref{set:cantor-strict}）により $\R$ 自身は可算ではない。同様に、可算個の 2 元集合の族で選択関数をもたないものが存在することも ZF と無矛盾である（Jech 前掲書を参照）。
+:::
+
+## 閉包補題 {#set:sec-closure-lemma}
+
+::: definition 有限項演算と閉包 {#set:finitary-closure keywords="finitary function, closure under operations" index="有限項演算|ゆうげんこうえんざん, 閉包|へいほう"}
+集合 $A$ と $n\in\omega$ について、$A$ 上の **$n$ 項演算**とは、$n\ge 1$ なら関数 $f\colon {}^{n}A\to A$、$n=0$ なら $A$ の元 $f$ のことである。項数 $n_{f}$ を指定した $n$ 項演算を**有限項演算**という。
+
+$B\subseteq A$ が $f$ で**閉じている**とは、$n_{f}\ge 1$ なら $f[B^{n_{f}}]\subseteq B$、$n_{f}=0$ なら $f\in B$ となることをいう。有限項演算の集合 $\mathcal{F}$ と $B\subseteq A$ について、$B\subseteq C\subseteq A$ かつ $\mathcal{F}$ のすべての元で閉じている $C$ のうち包含に関して最小のものを、$B$ の $\mathcal{F}$ による**閉包**という。
+:::
+
+::: intuition
+$B$ から出発して、$\mathcal{F}$ の演算を何度でも施して得られるものをすべて付け加えた集合。たとえば群 $G$ の部分集合 $B$ の、積・逆元・単位元による閉包は、$B$ で生成される部分群である。
+:::
+
+::: example
+閉包は必ず存在する。$\mathcal{D}=\{D\in\mathcal{P}(A)\mid B\subseteq D,\ D\text{ は }\mathcal{F}\text{ の各元で閉じている}\}$ は $A\in\mathcal{D}$ なので空でなく、$C=\bigcap\mathcal{D}$ とおくと、$n_{f}\ge 1$ なら各 $D\in\mathcal{D}$ で $f[C^{n_{f}}]\subseteq f[D^{n_{f}}]\subseteq D$ なので $f[C^{n_{f}}]\subseteq C$、$n_{f}=0$ なら $f\in D$（すべての $D$）なので $f\in C$。よって $C\in\mathcal{D}$ で、これが最小元である（一意性は外延性）。
+:::
+
+::: theorem 閉包補題 {#set:closure-lemma keywords="closure lemma, downward Lowenheim-Skolem, combinatorial" index="閉包補題|へいほうほだい"}
+（AC）$\kappa$ を無限基数とする。$B\subseteq A$, $\lvert B\rvert\le\kappa$ とし、$\mathcal{F}$ を $A$ 上の有限項演算の集合で $\lvert\mathcal{F}\rvert\le\kappa$ とする。このとき $B$ の $\mathcal{F}$ による閉包 $C$ は $\lvert C\rvert\le\kappa$ を満たす。
+:::
+
+::: intuition
+閉包は「$B$ から有限回の演算で作れるもの」の全体で、1 回の演算で増える元は「演算の選び方 $\le\kappa$ 通り」×「引数の選び方 $\le\kappa$ 通り」しかない。これを可算回繰り返しても $\kappa$ を超えない。演算が有限項であること（引数が有限個）が本質で、無限項の演算を許すと成り立たない。
+:::
+
+::: example
+- **無限群の可算部分群.** $G$ を無限群とする。AC のもとで $\omega\preccurlyeq G$（$G$ を整列すると $\lvert G\rvert\ge\omega$）なので、可算無限部分集合 $B\subseteq G$ がとれる。$\mathcal{F}$ を積（2 項）・逆元（1 項）・単位元（0 項）とすると、閉包は $B$ で生成される部分群 $H$ で、$\omega=\lvert B\rvert\le\lvert H\rvert\le\omega$。よって任意の無限群は可算無限部分群をもつ。同様に、$\omega\le\mu\le\lvert G\rvert$ となる任意の基数 $\mu$ について、濃度 $\mu$ の部分群がある。
+- **体.** 体 $K$ の部分集合 $B$ で生成される部分体（和・積・加法の逆元・$0$ 以外での乗法の逆元・$0$・$1$ による閉包。乗法の逆元は $0$ で $0$ を返す 1 項演算とみなす）の濃度は $\max(\lvert B\rvert,\omega)$ 以下である。
+:::
+
+::: proof
+各 $f\in\mathcal{F}$ と $D\subseteq A$ に対し、$n_{f}\ge 1$ なら $\hat{f}(D)=f[D^{n_{f}}]$、$n_{f}=0$ なら $\hat{f}(D)=\{f\}$ とおく。
+
+**Step 1（段階的な構成）.** $\omega$ 上の再帰により
+$$
+C_{0}=B,\qquad C_{k+1}=C_{k}\cup\bigcup_{f\in\mathcal{F}}\hat{f}(C_{k})
+\label{set:eq-closure-stages}
+$$
+と定め、$C_{\omega}=\bigcup_{k<\omega}C_{k}$ とおく。各 $C_{k}\subseteq A$ で、$k\le l\Rightarrow C_{k}\subseteq C_{l}$ である。
+
+**Step 2（$C_{\omega}\supseteq C$）.** $C_{\omega}\supseteq B$ であり、$C_{\omega}$ は $\mathcal{F}$ の各元で閉じている：$n=n_{f}\ge 1$ と $s\in(C_{\omega})^{n}$ をとると、各 $j<n$ に $s(j)\in C_{k_{j}}$ となる $k_{j}$ があり（有限個なので最小のものを選べばよく、選択は要らない）、$k=\max_{j<n}k_{j}$ とすると単調性から $s\in(C_{k})^{n}$、したがって $f(s)\in\hat{f}(C_{k})\subseteq C_{k+1}\subseteq C_{\omega}$。$n_{f}=0$ なら $f\in\hat{f}(C_{0})\subseteq C_{1}$。閉包 $C$ の最小性より $C\subseteq C_{\omega}$。
+
+**Step 3（$C_{\omega}\subseteq C$）.** $k$ についての帰納法で $C_{k}\subseteq C$ を示す。$C_{0}=B\subseteq C$。$C_{k}\subseteq C$ なら各 $f$ について $\hat{f}(C_{k})\subseteq\hat{f}(C)\subseteq C$（$C$ は $f$ で閉じている）なので $C_{k+1}\subseteq C$。よって $C=C_{\omega}$。
+
+**Step 4（各段階の濃度）.** $k$ についての帰納法で $\lvert C_{k}\rvert\le\kappa$ を示す。$k=0$ は仮定。$\lvert C_{k}\rvert\le\kappa$ とする。各 $f\in\mathcal{F}$ について $(C_{k})^{n_{f}}\preccurlyeq\kappa$ である：単射 $e\colon C_{k}\to\kappa$ をとると $s\mapsto e\circ s$ は単射 $(C_{k})^{n_{f}}\to\kappa^{n_{f}}$ で、$\kappa^{n_{f}}\subseteq\kappa^{<\omega}\approx\kappa$（\ref{set:kappa-finite-sequences}）。そして $f$ は $(C_{k})^{n_{f}}$ から $\hat{f}(C_{k})$ への全射なので、\ref{set:surjection-cardinality} より $\lvert\hat{f}(C_{k})\rvert\le\kappa$（$n_{f}=0$ なら 1 元集合）。$\mathcal{F}=\varnothing$ なら $C_{k+1}=C_{k}$。そうでなければ $X_{f}=C_{k}\cup\hat{f}(C_{k})$ とおくと $C_{k+1}=\bigcup_{f\in\mathcal{F}}X_{f}$ で、$\lvert X_{f}\rvert\le\kappa$（2 つの $\le\kappa$ の集合の和、\ref{set:union-bound}）、$\lvert\mathcal{F}\rvert\le\kappa$ なので \ref{set:union-bound} より $\lvert C_{k+1}\rvert\le\kappa$。
+
+**Step 5.** $C=C_{\omega}=\bigcup_{k<\omega}C_{k}$ は $\omega\le\kappa$ 個の $\le\kappa$ の集合の和なので、\ref{set:union-bound} より $\lvert C\rvert\le\kappa$。
+
+::: hypcheck
+- **選択公理**：Step 4, 5 で \ref{set:union-bound} を使うところ（各段階で単射 $\hat{f}(C_{k})\to\kappa$ を $f$ について一斉に選ぶ）と、Step 4 の \ref{set:surjection-cardinality}。なお Step 4 の全射の部分は、$(C_{k})^{n_{f}}\preccurlyeq\kappa$ が整列可能なので ZF でも済む（\ref{set:surjection-cardinality} の前提の使用箇所を参照）。
+- **有限項であること**：Step 2 で $k=\max_{j<n}k_{j}$ をとるのに引数が有限個であることを使った。
+- **$\kappa$ が無限であること**：Step 4 の $\kappa^{<\omega}\approx\kappa$ と \ref{set:union-bound}、および Step 5 の $\omega\le\kappa$。
+- **$\omega$ 上の再帰・帰納法**：Step 1, 3, 4。**置換公理・和集合の公理**：$C_{k+1}$, $C_{\omega}$ の構成。
+:::
+:::
+
+::: supplement
+**モデル理論との関係.** 閉包補題は下降レーヴェンハイム＝スコーレムの定理（\ref[下降レーヴェンハイム–スコーレムの定理]{model:downward-lowenheim-skolem}）の組合せ論的な核である。構造 $\mathfrak{A}$ の中でスコーレム関数（有限項演算）の族を固定し、その閉包をとると $\le\max(\lvert B\rvert,\lvert\mathcal{L}\rvert,\omega)$ の濃度の初等部分構造が得られる。
+
+**前提を変えると.**
+- *$\kappa$ を有限にする*：$A=\omega$, $B=\{0\}$, $\mathcal{F}=\{n\mapsto n+1\}$ とすると $\lvert B\rvert=\lvert\mathcal{F}\rvert=1$ だが閉包は $\omega$ 全体になる。したがって結論は一般に $\lvert C\rvert\le\max(\lvert B\rvert,\lvert\mathcal{F}\rvert,\omega)$ としか言えない。
+- *無限項の演算を許す*：$A=\omega_{1}$、$\mathcal{F}$ を後続 $\alpha\mapsto\alpha+1$ と「可算列の上限」$s\mapsto\sup_{n}s(n)$（$\omega$ 項）とすると、$\{0\}$ の閉包は $\omega_{1}$ 全体になる（可算な極限順序数は可算列の上限であることを、$\alpha<\omega_{1}$ についての帰納法で使う）。$\lvert B\rvert=1$, $\lvert\mathcal{F}\rvert=2$ でも閉包は非可算である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>強制法の概観とジェネリック拡大 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/07-forcing/01-generic-extensions.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 強制法の概観とジェネリック拡大 {#set:page-generic-extensions keywords="forcing, ground model, generic filter, generic extension, P-names, M[G], check names, canonical name for the generic filter, countable transitive model"}
+
+強制法（forcing）は、$\ZF+\mathbf{V}\neq \mathbf{L}$ や $\ZFC+\lnot\mathrm{CH}$ などの無矛盾性を示すための方法である。本ページでは、まずその理解の妨げとなるメタ数学的な問題と、それを回避する証明の構造を述べ、次に基礎モデル $M$ と $M$ 上ジェネリックなフィルター $G$ から**ジェネリック拡大** $M[G]$ を定義する。$M[G]$ の元はすべて $M$ の中の「名前」をもち、$M[G]$ は $M$ を含み $G$ を含む最小の推移的なモデルとなる（それが $\ZFC$ のモデルであることは次々ページで示す）。（Kunen 第 VII 章 §1–2 に対応する。）
+
+## 記法と定義の確認 {#set:sec-generic-notation}
+
+::: notation
+- 基本の体系は $\ZFC$。
+- 半順序（強制法の意味で）$\langle\PP,\le\rangle$（反射律と推移律を満たし、反対称律は要求しない）、両立・非両立 $p\perp q$、稠密集合、フィルターは \ref{set:forcing-poset}, \ref{set:compatible}, \ref{set:dense-set}, \ref{set:poset-filter} のとおり。$\mathrm{MA}(\aleph_{0})$（\ref{set:ma-omega}）とフィルターの基本性質（\ref{set:poset-filter-basic}）を使う。
+- 可算推移的モデル（c.t.m.）の存在（\ref{set:ctm-exists}, \ref{set:ctm-v-eq-l}）は \ref{set:page-reflection} と \ref{set:page-ac-gch-in-l}、$\mathbf{L}$ の最小性（\ref{set:l-in-set-model}）は \ref{set:page-zf-in-l}、絶対性とその方法（\ref{set:absolute}, \ref{set:absolute-wf-recursion}, \ref{set:absolute-rank-trcl}, \ref{set:finite-fragment-absoluteness}）は第 IV 章のとおり。
+- 推移閉包 $\operatorname{trcl}$ と、$\operatorname{trcl}$ に沿った $\in$ の整礎性（\ref{set:trcl-rank}）、ランク（\ref{set:rank-basic}）を使う。
+:::
+
+## 概観：メタ数学的な注意 {#set:sec-forcing-overview}
+
+強制法の理解には二つの障害がある。一つは数学的なもので、半順序・稠密集合・フィルターの扱いに習熟する必要がある。マーティンの公理（\ref{set:page-martin-axiom}）に慣れた読者はすでにかなりの部分を身につけているが、今度はこれらの概念の様々なモデルへの相対化を考える必要がある。もう一つはメタ数学的なものである。
+
+$\ZF+\mathbf{V}\neq \mathbf{L}$（あるいは $\ZFC+\lnot\mathrm{CH}$ のようなより強い理論）の無矛盾性を示すのに、これまでのように $\ZF$ や $\ZFC$ の中で推移的なモデルを定義することはできない。実際、$\ZFC$ の中で推移的な真のクラス $N$ を定義し、$\ZF+\mathbf{V}\neq \mathbf{L}$ の各公理が $N$ で真であることを証明できたとする。$\mathbf{L}$ の最小性（\ref{set:l-minimal-class}）より $\mathbf{L}\subseteq N$ で、$\mathbf{L}$ では $\mathbf{V}=\mathbf{L}$ が真、$N$ では偽なので $\mathbf{L}\neq N$。すると $\ZFC$ の中で $\mathbf{L}$ の真の拡大の存在が証明でき、$\ZFC\vdash\mathbf{V}\neq \mathbf{L}$ となる。これは $\ZFC+\mathbf{V}=\mathbf{L}$ が無矛盾（\ref{set:con-v-eq-l}）であることに反する（$\mathrm{Con}(\ZFC)$ を仮定する）。
+
+素朴な回避策は $\ZF+\mathbf{V}\neq \mathbf{L}$ の推移的な**集合**モデル $N$ を作ることである。集合モデルについての $\mathbf{L}$ の最小性（\ref{set:l-in-set-model}）からは $L_{o(N)}\subseteq N$ かつ $L_{o(N)}\neq N$ しか出ず、これは $\mathbf{V}=\mathbf{L}$ と矛盾しない（$x\in N\setminus L_{o(N)}$ でも $x\in \mathbf{L}$ でありえ、そのとき $\rho(x)\ge o(N)$）。
+
+さらに素朴に、次のような一般的な手順を考える。$\ZFC$ の任意の可算推移的モデル $M$ から出発する（$M$ を**基礎モデル**という）。$M\subseteq N$ かつ $o(M)=o(N)$ となる $\ZFC$ の可算推移的モデル $N$ を見つける一般的な手順を与え、それで得られる $N$ を $M$ の**ジェネリック拡大**と呼ぶ。$M\neq N$ となるようにできれば、\ref{set:l-in-set-model} より
+$$
+\mathbf{L}^{N}=L_{o(N)}=L_{o(M)}=\mathbf{L}^{M}\subseteq M\subsetneq N
+$$
+なので $N$ は $\mathbf{V}\neq \mathbf{L}$ を満たす。構成の細部を変えることで、$N$ に $\lnot\mathrm{CH}$ や $\mathrm{CH}+2^{\aleph_{1}}=\aleph_{3}$ など様々な主張を満たさせることができる。
+
+残念ながらこの素朴な方法は正確ではない。不完全性定理に関わる理由で、$\ZFC$ の中では $\ZFC$ の集合モデルを一つも作ることはできない（\ref{set:page-reflection}, \ref{set:page-consistency-appendices}）。しかし幸い、$\ZFC$ の中で、$\ZFC$（あるいは $\ZFC+\mathbf{V}=\mathbf{L}$）の任意に指定した有限個の公理の可算推移的モデルを作ることはできる（\ref{set:ctm-exists}, \ref{set:ctm-v-eq-l}）。強制法は、$\ZFC+\mathbf{V}\neq \mathbf{L}$（や $\ZFC+\lnot\mathrm{CH}$ など）の任意に与えた有限個の公理のモデル $N$ を作る方法を与える。そのような $N$ は、$\ZFC$ の十分多くの公理のモデル $M$ のジェネリック拡大である。
+
+::: remark 無矛盾性証明の形式的な構造 {#set:forcing-proof-structure}
+$\mathrm{Con}(\ZFC)\to\mathrm{Con}(\ZFC+\mathbf{V}\neq \mathbf{L})$ の証明は次の構造をもつ。$\ZFC+\mathbf{V}\neq \mathbf{L}$ から矛盾が導けたとすると、その有限個の公理 $\varphi_{1},\dots,\varphi_{n}$ で、ある（任意の）$\psi$ について $\varphi_{1},\dots,\varphi_{n}\vdash\psi\land\lnot\psi$ となる。一方、強制法によって
+$$
+\ZFC\vdash\exists N\,(\varphi_{1}^{N}\land\cdots\land\varphi_{n}^{N})
+$$
+を示す。証明の相対化（\ref{set:relativized-proof}）より $\ZFC\vdash\exists N\,(\psi^{N}\land\lnot\psi^{N})$ となり、$\ZFC$ は矛盾する。この方法は、$\ZFC+\mathbf{V}\neq \mathbf{L}$ の矛盾から $\ZFC$ の矛盾を具体的に作る手続きなので、完全に有限的な相対無矛盾性証明を与える（\ref{set:relative-consistency-formal}）。
+:::
+
+この方法の利点は、強制法を学ぶ間はこれらのメタ数学的な細部をいったん忘れ、素朴に $\ZFC$（あるいは $\ZFC+\mathbf{V}=\mathbf{L}$）全体を満たす可算推移的モデル $M$ があると仮定してよいことである。そうすればジェネリック拡大 $N$ の構成という数学的な問題に集中できる。構成が理解できれば、上の remark により有限的な証明が得られることを確かめられる。Kunen 第 VII 章 §9 でメタ数学に戻る。それまで「$M$ を $\ZFC$ の可算推移的モデルとする」は「$M$ を、当面の議論を実行するのに十分な $\ZFC$ の公理の可算推移的モデルとする」の略記と考えてよい。
+
+## ジェネリックなフィルター {#set:sec-generic-filter}
+
+$M$ を $\ZFC$ の可算推移的モデルとする。半順序 $\langle\PP,\le\rangle\in M$ から $M$ のジェネリック拡大 $N$（これも $\ZFC$ のモデル）を得る方法を与え、$\PP$ を変えることで様々な相対無矛盾性の結果を得る。技術的な理由から、最大元をもつ半順序に限る。この制限なしでも強制法は行えるが少し面倒で、得られる無矛盾性の結果は増えない（Kunen 第 VII 章の演習 B1, B2）。自然に現れる半順序（第 II 章の MA の応用など）の多くは最大元をもつ。
+
+::: definition p.o. と c.t.m. {#set:po-with-one keywords="p.o., partial order with a largest element, 1, countable transitive model, c.t.m." index="p.o.|ぴーおー, 最大元（半順序の）|さいだいげん, 可算推移的モデル|かさんすいいてきもでる"}
+**p.o.** とは三つ組 $\langle\PP,\le,\mathbf{1}\rangle$ で、$\langle\PP,\le\rangle$ が半順序（\ref{set:forcing-poset}）であり、$\mathbf{1}\in\PP$ が最大元（$\forall p\in\PP\,(p\le\mathbf{1})$）であるものをいう。**c.t.m.** は countable transitive model（可算推移的モデル）の略である。
+:::
+
+慣習に従い、$\langle\PP,\le,\mathbf{1}\rangle$ を単に $\PP$ と書くことが多い。$\PP\in M$ は $\PP,\le,\mathbf{1}\in M$ を意味する（$\mathbf{1}\in M$ は $M$ の推移性から従う）。二つの p.o. を扱うときは $\langle\PP,\le_{\PP},\mathbf{1}_{\PP}\rangle$, $\langle\mathbb{Q},\le_{\mathbb{Q}},\mathbf{1}_{\mathbb{Q}}\rangle$ のように書く。形式的には、集合 $\PP$ は順序 $\le_{\PP}$ を決めず、反対称律を要求しないので $\langle\PP,\le_{\PP}\rangle$ も $\mathbf{1}_{\PP}$ を決めない（最大元が複数ありうる）。
+
+::: definition ジェネリックなフィルター {#set:generic-filter keywords="P-generic over M, generic filter" index="ジェネリック|じぇねりっく, M 上ジェネリック|えむじょうじぇねりっく"}
+$\PP$ を p.o. とする。$G$ が **$M$ 上 $\PP$-ジェネリック**であるとは、$G$ が $\PP$ のフィルターであって、$\PP$ の稠密部分集合 $D$ で $D\in M$ となるものすべてについて $G\cap D\neq\varnothing$ となることをいう。
+:::
+
+::: lemma ジェネリックなフィルターの存在 {#set:generic-exists keywords="existence of generic filters over countable models"}
+$M$ が可算で $p\in\PP$ なら、$p\in G$ となる $M$ 上 $\PP$-ジェネリックな $G$ が存在する。
+:::
+
+::: proof
+$M$ は可算なので、$\PP$ の稠密部分集合で $M$ に属するものも可算個であり、$D_{n}$（$n\in\omega$）と枚挙できる（稠密集合がなければ $D_{n}\defeq\PP$ とする）。再帰で $q_{0}\defeq p$、$q_{n+1}\in D_{n}$ で $q_{n+1}\le q_{n}$ となるものをとる（$D_{n}$ の稠密性より存在する）。$G\defeq\{q\in\PP:\exists n\,(q_{n}\le q)\}$ は $p$ を含むフィルターで（\ref{set:poset-filter-basic} の 3）、各 $D_{n}$ と $q_{n+1}$ で交わる。これは \ref{set:ma-omega} の証明と同じである。
+:::
+
+どの概念が $M$ について絶対的でどれがそうでないかに注意を払うことが重要である。$M$ が $\ZFC$ の c.t.m. で $\PP\in M$ なら、第 IV 章の方法で「p.o. である」「稠密である」などは $M$ について絶対的であることが容易に確かめられる。しかし上の証明の $D_{n}$ の枚挙は $M$ の外で行われる。絶対性より
+$$
+\{D\in M:D\text{ は }\PP\text{ で稠密}\}=\{D:D\text{ は }\PP\text{ で稠密}\}^{M}
+$$
+だが、この集合は通常 $M$ の中では可算でない（可算性は絶対的でない）。
+
+\ref{set:generic-filter}, \ref{set:generic-exists} は $M$ が何かのモデルであることを要求しなかった。しかし以下では、構成する様々な稠密集合が実際に $M$ に属することを保証するため、$M$ が $\ZFC$ の少なくとも一部を満たすことが重要になる。次の補題がその例で、たいていの場合 $G\notin M$ であることを示す。
+
+::: lemma ジェネリックなフィルターは M に属さない {#set:generic-not-in-m keywords="generic filter is not in the ground model"}
+$M$ を $\ZF-\mathrm{P}$ の推移的なモデル、$\PP\in M$ を p.o. で
+$$
+\forall p\in\PP\;\exists q,r\in\PP\;(q\le p\land r\le p\land q\perp r)
+\label{set:eq-splitting}
+$$
+を満たすものとし、$G$ を $M$ 上 $\PP$-ジェネリックとする。このとき $G\notin M$。
+:::
+
+::: proof
+$G\in M$ と仮定すると、差集合は絶対的なので $D\defeq\PP\setminus G\in M$。$D$ は稠密である：$p\in\PP$ について \eqref{set:eq-splitting} の $q,r$ をとると、$G$ はフィルターで両立しない二元を含まない（\ref{set:poset-filter-basic} の 1）ので、$q,r$ の少なくとも一方は $G$ に属さず、$D$ に属する $p$ の拡張になる。しかし $G\cap D=\varnothing$ で、ジェネリック性に反する。
+:::
+
+この証明が $M$ に要求したのは $\ZF-\mathrm{P}$ のごく弱い部分だけだが、各段階で $\ZFC$ のどの有限個の公理が必要かを正確に追跡する理由はない。なお \eqref{set:eq-splitting} が $\PP$ で成り立たないなら、$\PP$ のすべての稠密部分集合と交わるフィルター $G$ があり、$\PP\in M$ なら $G\in M$ となる（Kunen 第 VII 章の演習 A1）。そのような $\PP$ に MA や強制法を適用しても自明な結果しか得られないので、第 II 章・第 VII 章・第 VIII 章で考える半順序のほとんどは \eqref{set:eq-splitting} を満たす（ただし抽象的な理論では \eqref{set:eq-splitting} は必要ない）。
+
+これから、$M$ を $\ZFC$ の c.t.m.、$\PP\in M$ を p.o.、$G$ を $M$ 上 $\PP$-ジェネリックとして、$\ZFC$ の別の c.t.m. $M[G]$ を作る。$M[G]$ は $M\subseteq M[G]$、$o(M)=o(M[G])$、$G\in M[G]$ を満たし、$G$ を含む $M$ の $\ZFC$ の c.t.m. としての最小の拡大になる。$G\in M[G]$ と \ref{set:generic-not-in-m} より、たいていの場合 $M\neq M[G]$。
+
+$M[G]$ が $\ZFC$ 以外にどんな公理を満たすかは、$M$ の中で $\PP$ が満たす組合せ論的性質に非常に敏感であり、その性質の多くは絶対的でない。たとえば c.c.c.（\ref{set:ccc-poset}）を考える。$M$ が c.t.m. で $\PP\in M$ なら、$\mathbf{V}$ では $\PP$ は可算なので自明に c.c.c. だが、$M$ の中では c.c.c. でないことがありうる。$M$ の中では第 II 章の様々な c.c.c. な半順序や、c.c.c. でない多くの半順序を作ることができ、そのどれもジェネリック拡大に使える。
+
+## 名前と M[G] {#set:sec-names}
+
+以下の基本理論は $M$ の中のどの p.o. についても同様に成り立つ。$M[G]$ の構成は最初は複雑に見えるかもしれないが、この山を越えれば、望む無矛盾性の結果を得るための $\PP$ の工夫は、半順序の組合せ論の（ときに非常に難しい）問題に帰着される。
+
+おおまかに言えば、$M[G]$ は $M$ の中で定義できる集合論的な手続きを $G$ に適用して作れる集合の全体である。$M[G]$ の各元は $M$ の中に**名前**をもち、名前はそれが $G$ からどのように作られるかを表す。名前を $\tau,\sigma,\pi$ で表す。$M$ の住人は $M[G]$ の対象の名前 $\tau$ を理解できるが、それが指す対象 $\tau_{G}$ を決めるには $G$ を知る必要があるので、一般には決められない。
+
+::: definition P-名前 {#set:p-name keywords="P-name, name" index="名前|なまえ, P-名前|ぴーなまえ"}
+$\tau$ が **$\PP$-名前**であるとは、$\tau$ が関係（順序対の集合）であって、
+$$
+\forall\langle\sigma,p\rangle\in\tau\;\bigl(\sigma\text{ は }\PP\text{-名前}\land p\in\PP\bigr)
+$$
+となることをいう。
+:::
+
+この定義はモデルにも $\PP$ の順序にも言及しない。$\PP\neq\varnothing$ なら $\PP$-名前全体は真のクラスである。定義 \ref{set:p-name} は超限再帰による定義と理解しなければならない。形式的には、$\PP$-名前の特性関数 $H(\PP,\tau)$ を
+$$
+\begin{aligned}
+&H(\PP,\tau)=1\iff\tau\text{ は関係で }\forall\langle\sigma,p\rangle\in\tau\,\bigl(H(\PP,\sigma)=1\land p\in\PP\bigr),\\
+&\text{そうでなければ }H(\PP,\tau)=0
+\end{aligned}
+$$
+で定め、$\tau$ が $\PP$-名前であるとは $H(\PP,\tau)=1$ のこととする。$\langle\sigma,p\rangle\in\tau$ なら $\sigma\in\operatorname{trcl}(\tau)$ なので、$\PP$ を固定すると $H(\PP,\tau)$ は $H\restr{\operatorname{trcl}(\tau)}$ から定まり、これは関係 $x\,E\,y\iff x\in\operatorname{trcl}(y)$（整礎：\ref{set:trcl-rank}）に関する再帰である。各段の概念は $\ZF-\mathrm{P}$ の推移的なモデルについて絶対的なので、\ref{set:absolute-wf-recursion} より $H$ は絶対的で、「$\tau$ は $\PP$-名前」も $\ZF-\mathrm{P}$ の推移的なモデルについて絶対的である。
+
+::: definition V^P と M^P {#set:m-p-names keywords="V^P, M^P, class of P-names" index="VP|ぶいぴー, MP|えむぴー"}
+$\mathbf{V}^{\PP}$ を $\PP$-名前全体のクラスとする。$M$ が $\ZFC$ の推移的なモデルで $\PP\in M$ なら $M^{\PP}\defeq\mathbf{V}^{\PP}\cap M$。絶対性より $M^{\PP}=\{\tau\in M:(\tau\text{ は }\PP\text{-名前})^{M}\}$。
+:::
+
+$M$ 上で強制法を行うときは、$M^{\PP}$ の $\PP$-名前、すなわち $M$ の中で定義されると考えてよい名前だけを使う。
+
+::: definition 名前の値と M[G] {#set:val-name keywords="value of a name, tau_G, val(tau,G), generic extension M[G]" index="名前の値|なまえのあたい, ジェネリック拡大|じぇねりっくかくだい"}
+1. $\mathrm{val}(\tau,G)\defeq\{\mathrm{val}(\sigma,G):\exists p\in G\,(\langle\sigma,p\rangle\in\tau)\}$ と（$\tau$ に関する再帰で）定め、$\tau_{G}$ とも書く。
+2. $M$ が $\ZFC$ の推移的なモデル、$\PP\in M$、$G\subseteq\PP$ のとき、$M[G]\defeq\{\tau_{G}:\tau\in M^{\PP}\}$。
+:::
+
+$\dom(\tau)=\{\sigma:\exists p\,(\langle\sigma,p\rangle\in\tau)\}$ は通常の定義域である（$\tau$ は一般に関数ではない）。絶対性より $M$ の住人は $\dom(\tau)$ を知っており、$\dom(\tau)$ を $\tau_{G}$ の元になりうる対象の名前の集合と考えることができる。$\mathrm{val}(\tau,G)$ も「$\tau$ は $\PP$-名前」と同じ理由で $\ZF-\mathrm{P}$ の推移的なモデルについて絶対的である。$G\in M$ でなければ（通常そうである）これは $M$ について何も言わないが、次を与える。
+
+::: lemma M[G] の最小性 {#set:m-g-minimal keywords="M[G] is the least extension containing G"}
+\ref{set:val-name} の記号のもとで、$N$ が $\ZFC$ の推移的なモデルで $M\subseteq N$ かつ $G\in N$ なら、$M[G]\subseteq N$。
+:::
+
+::: proof
+各 $\tau\in M^{\PP}$ について $\tau\in N$、$G\in N$ なので、絶対性より $\mathrm{val}(\tau,G)=\mathrm{val}(\tau,G)^{N}\in N$。
+:::
+
+したがって、$M[G]$ が $M$ の推移的な拡大で $G$ を含み $\ZFC$ を満たすことを確かめれば、それはそのような拡大の中で最小である。
+
+::: example
+$M$ を c.t.m.、$\PP\in M$ とする。$0$ は $\PP$-名前（定義を自明に満たす）で、任意の $G$ について $0_{G}=0$。$p\in\PP$ なら $\{\langle0,p\rangle\}\in M^{\PP}$ で
+$$
+\mathrm{val}(\{\langle0,p\rangle\},G)=\begin{cases}\{0\}&(p\in G),\\0&(p\notin G).\end{cases}
+$$
+$p\in G$ となるジェネリックな $G$ はいつもあり（\ref{set:generic-exists}）、$q\perp p$ となる $q$ があれば $p\notin G$ となるジェネリックな $G$ もある（$q\in G$ ととれば、$G$ の二元は両立するので $p\notin G$）。したがって $\tau_{G}$ は $G$ に依存しうる。一方、フィルターは空でなければ $\mathbf{1}$ を含むので、$\mathrm{val}(\{\langle0,\mathbf{1}\rangle\},G)=\{0\}$ はジェネリックな $G$ によらない。より一般に $\mathrm{val}(\{\langle a_{i},\mathbf{1}\rangle:i\in I\},G)=\{\mathrm{val}(a_{i},G):i\in I\}$。
+:::
+
+この観察から、$M$ の各元 $x$ が $\check{x}$ という標準的な名前で表されることが分かる。
+
+::: definition 標準的な名前 x̌ {#set:check-name keywords="check name, canonical name of a ground model element" index="標準的な名前|ひょうじゅんてきななまえ, チェック名前|ちぇっくなまえ"}
+p.o. $\PP$ について、$\PP$-名前 $\check{x}$ を $\in$ に関する再帰で $\check{x}\defeq\{\langle\check{y},\mathbf{1}\rangle:y\in x\}$ と定める。
+:::
+
+形式的には $\check{x}$ は $x$ だけでなく $\mathbf{1}_{\PP}$ にも依存するが、p.o. はつねに文脈から明らかである。これも再帰による定義で、$\ZF-\mathrm{P}$ の推移的なモデルについて絶対的であることが容易に確かめられるので、$x\in M$ なら $\check{x}\in M$。たとえば $\check{0}=0$、$\check{1}=\{\langle0,\mathbf{1}\rangle\}$、$\check{2}=\{\langle\check{0},\mathbf{1}\rangle,\langle\check{1},\mathbf{1}\rangle\}$。上で見たように $\mathrm{val}(\check{0},G)=0$, $\mathrm{val}(\check{1},G)=1$ である。
+
+::: lemma M ⊆ M[G] {#set:check-name-val}
+$M$ を $\ZFC$ の推移的なモデル、$\PP\in M$ を p.o.、$G$ を $\PP$ の空でないフィルターとする。
+1. すべての $x\in M$ について $\check{x}\in M^{\PP}$ かつ $\mathrm{val}(\check{x},G)=x$。
+2. $M\subseteq M[G]$。
+:::
+
+::: proof
+**1.** $\check{x}\in M^{\PP}$ は上の絶対性による。$\mathrm{val}(\check{x},G)=x$ は $x$ に関する $\in$-帰納法による：$G$ は空でないフィルターなので $\mathbf{1}\in G$（上に閉じている）であり、
+$$
+\mathrm{val}(\check{x},G)=\{\mathrm{val}(\check{y},G):y\in x\}=\{y:y\in x\}=x.
+$$
+**2.** 1 から直ちに従う。
+:::
+
+$G$ を表す名前を作ることで、$G\in M[G]$ が分かる。
+
+::: definition G の標準的な名前 {#set:gamma-name keywords="canonical name for the generic filter, Gamma" index="ジェネリックフィルターの名前|じぇねりっくふぃるたーのなまえ"}
+p.o. $\PP$ について $\Gamma\defeq\{\langle\check{p},p\rangle:p\in\PP\}$。
+:::
+
+$\Gamma$ はもちろん $\PP$ に依存する。$\check{x}$ の形の名前と異なり、$\Gamma$ が指す対象は $G$ に依存する。絶対性より、$\PP\in M$ なら $\Gamma\in M$。
+
+::: lemma G ∈ M[G] {#set:gamma-name-val}
+\ref{set:check-name-val} の仮定のもとで $\Gamma_{G}=G$。したがって $G\in M[G]$。
+:::
+
+::: proof
+$\Gamma_{G}=\{\check{p}_{G}:p\in G\}=\{p:p\in G\}=G$（\ref{set:check-name-val} の 1）。
+:::
+
+::: lemma M[G] の推移性と高さ {#set:m-g-transitive keywords="M[G] is transitive, o(M[G]) = o(M)"}
+\ref{set:check-name-val} の仮定のもとで
+1. $M[G]$ は推移的である。
+2. すべての $\tau\in M^{\PP}$ について $\rank(\tau_{G})\le\rank(\tau)$。
+3. $o(M[G])=o(M)$。
+:::
+
+::: proof
+**1.** $\tau_{G}$ の元は $\sigma_{G}$（$\sigma\in\dom(\tau)$）の形で、$M$ の推移性より $\sigma\in M$ は $\PP$-名前なので $\sigma\in M^{\PP}$、よって $\sigma_{G}\in M[G]$。
+
+**2.** $\tau$ に関する（$\operatorname{trcl}$ に沿った）帰納法。$\tau_{G}$ の元 $\sigma_{G}$ について $\langle\sigma,p\rangle\in\tau$ なので $\rank(\sigma)<\rank(\langle\sigma,p\rangle)<\rank(\tau)$、帰納法の仮定より $\rank(\sigma_{G})\le\rank(\sigma)<\rank(\tau)$。\ref{set:rank-basic} の 3 より $\rank(\tau_{G})=\sup\{\rank(\sigma_{G})+1\}\le\rank(\tau)$。
+
+**3.** $\alpha\in M[G]\cap\mathbf{ON}$ とし、$\alpha=\tau_{G}$ とする。2 より $\alpha=\rank(\alpha)\le\rank(\tau)$ で、$\rank(\tau)\in M$（ランクの絶対性：\ref{set:absolute-rank-trcl}）。$M$ は推移的なので $\alpha\in M$。よって $M[G]\cap\mathbf{ON}\subseteq M\cap\mathbf{ON}$、逆は $M\subseteq M[G]$ から。
+:::
+
+名前の作り方の例として、$M[G]$ が $\ZFC$ のやさしい公理のいくつかを満たすことを確かめる。たとえば対の公理が成り立つのは、$\sigma,\tau\in M^{\PP}$ に対し、つねに $\{\sigma_{G},\tau_{G}\}$ を指す名前 $\mathrm{up}(\sigma,\tau)\in M^{\PP}$ を定義できるからである。
+
+::: definition 対と順序対の名前 {#set:up-op-names keywords="names for unordered and ordered pairs, up, op"}
+1. $\mathrm{up}(\sigma,\tau)\defeq\{\langle\sigma,\mathbf{1}\rangle,\langle\tau,\mathbf{1}\rangle\}$。
+2. $\mathrm{op}(\sigma,\tau)\defeq\mathrm{up}(\mathrm{up}(\sigma,\sigma),\mathrm{up}(\sigma,\tau))$。
+:::
+
+::: lemma {#set:up-op-names-val}
+\ref{set:check-name-val} の仮定のもとで、$\sigma,\tau\in M^{\PP}$ なら
+1. $\mathrm{up}(\sigma,\tau)\in M^{\PP}$ かつ $\mathrm{up}(\sigma,\tau)_{G}=\{\sigma_{G},\tau_{G}\}$。
+2. $\mathrm{op}(\sigma,\tau)\in M^{\PP}$ かつ $\mathrm{op}(\sigma,\tau)_{G}=\langle\sigma_{G},\tau_{G}\rangle$。
+:::
+
+::: proof
+**1.** $\mathrm{up}(\sigma,\tau)$ は $\PP$-名前の組と $\mathbf{1}\in\PP$ からなるので $\PP$-名前で、$M$ の中で作れる。$\mathbf{1}\in G$ なので値は $\{\sigma_{G},\tau_{G}\}$。**2.** 1 を三回使うと $\{\{\sigma_{G}\},\{\sigma_{G},\tau_{G}\}\}=\langle\sigma_{G},\tau_{G}\rangle$。
+:::
+
+::: lemma M[G] のやさしい公理 {#set:m-g-easy-axioms keywords="extensionality, foundation, pairing, union in M[G]"}
+\ref{set:check-name-val} の仮定のもとで、外延性・基礎・対・和集合の公理は $M[G]$ で真である。
+:::
+
+::: proof
+**外延性**は $M[G]$ の推移性（\ref{set:m-g-transitive}）と \ref{set:extensionality-in-transitive}、**基礎**は任意のクラスで真（\ref{set:foundation-in-wf-subclass}）、**対**は \ref{set:up-op-names-val} の 1 と \ref{set:pairing-union-in-class} による。
+
+**和集合**：\ref{set:pairing-union-in-class} より、$a\in M[G]$ について $\bigcup a\subseteq b$ となる $b\in M[G]$ があればよい。$a=\tau_{G}$（$\tau\in M^{\PP}$）とし、$\pi\defeq\bigcup\dom(\tau)$ とおく。$\pi$ の元は、ある $\sigma\in\dom(\tau)$ の元 $\langle\rho,p\rangle$（$\rho$ は $\PP$-名前、$p\in\PP$）なので $\pi$ は $\PP$-名前で、$\bigcup$ と $\dom$ の絶対性より $\pi\in M$。$b\defeq\pi_{G}\in M[G]$ とする。$c\in a$ なら、ある $\sigma\in\dom(\tau)$ で $c=\sigma_{G}$。$\sigma\subseteq\pi$ なので、値の定義 \ref{set:val-name} から $\sigma_{G}\subseteq\pi_{G}$。よって $c\subseteq b$ で、$\bigcup a\subseteq b$。
+:::
+
+::: hypcheck
+- 上の六つの補題（\ref{set:check-name-val} から \ref{set:m-g-easy-axioms} まで）は、ジェネリック性を一度も使っていない。使ったのは $\mathbf{1}\in G$ だけであり、$\mathbf{1}\in G$ となる任意の $G\subseteq\PP$ について成り立つ。
+- $\bigcup a$ そのものが $M[G]$ に属することは示していない。これは $M[G]$ が分出公理を満たすことが分かれば従う（直接の証明は Kunen 第 VII 章の演習 A6）。
+- ジェネリック性は、次ページの強制関係の理論で本質的になり、それを使って $M[G]$ が $\ZFC$ を満たすことを示す（その次のページ）。
+:::
+
+最後に、ジェネリックなフィルターが稠密でない集合と交わることを示すのに後で役立つ技術的な事実を述べる。
+
+::: definition ある条件の下で稠密 {#set:dense-below keywords="dense below p" index="p の下で稠密|ぴーのしたでちゅうみつ"}
+$E\subseteq\PP$、$p\in\PP$ とする。$E$ が **$p$ の下で稠密**であるとは、$\forall q\le p\,\exists r\le q\,(r\in E)$ となることをいう。
+:::
+
+::: lemma {#set:generic-dense-below}
+$M$ を $\ZFC$ の推移的なモデル、$\PP\in M$、$E\subseteq\PP$、$E\in M$ とし、$G$ を $M$ 上 $\PP$-ジェネリックとする。
+1. $G\cap E\neq\varnothing$ であるか、ある $q\in G$ ですべての $r\in E$ について $r\perp q$ となる。
+2. $p\in G$ で $E$ が $p$ の下で稠密なら $G\cap E\neq\varnothing$。
+:::
+
+::: proof
+**1.** $D\defeq\{p:\exists r\in E\,(p\le r)\}\cup\{q:\forall r\in E\,(r\perp q)\}$ とおく。$D\in M$（$E,\PP\in M$ と分出）。$D$ は稠密である：$q\in\PP$, $q\notin D$ なら、$q$ と両立する $r\in E$ があり、$p\le r$, $p\le q$ となる $p$ は $D$ に属する $q$ の拡張である。よって $G\cap D\neq\varnothing$。$p\in G\cap D$ が前半の集合に属するなら、$p\le r\in E$ で $r\in G$（上に閉じている）、後半なら 1 の後者が成り立つ。
+
+**2.** $G\cap E=\varnothing$ なら、1 より $q\in G$ ですべての $r\in E$ について $r\perp q$ となるものがある。$q,p\in G$ の共通の拡張 $q'\in G$ をとり、$E$ が $p$ の下で稠密なので $r\le q'$ となる $r\in E$ をとると、$r\le q$ で $r\perp q$ に反する。
+:::
+
+## 問題 {#set:sec-generic-problems}
+
+::: problem {#set:prob-generic-fn}
+$\PP=\mathrm{Fn}(\omega,2)$（\ref{set:fn-poset}。$\mathbf{1}=\varnothing$、$p\le q\iff p\supseteq q$）は \eqref{set:eq-splitting} を満たすことを示せ。$M$ を c.t.m.、$G$ を $M$ 上 $\PP$-ジェネリックとするとき、$\bigcup G$ は $\omega$ から $2$ への関数で、$M$ に属さないことを示せ。
+:::
+
+::: solution
+$p\in\PP$ について、$n\notin\dom(p)$ をとり（$p$ は有限）、$q\defeq p\cup\{\langle n,0\rangle\}$, $r\defeq p\cup\{\langle n,1\rangle\}$ とすると $q,r\le p$ かつ $q\perp r$。$f\defeq\bigcup G$：$G$ の元は互いに両立するので $f$ は関数（\ref{set:fn-poset-basic}）。各 $n$ について $D_{n}\defeq\{p:n\in\dom(p)\}\in M$ は稠密なので $n\in\dom(f)$。よって $f\colon\omega\to2$。$G=\{p\in\PP:p\subseteq f\}$ である：$\subseteq$ は $f$ の定義から。逆に $p\subseteq f$ なら、$p$ の有限個の対 $\langle n,f(n)\rangle$ はそれぞれ $G$ のある元に含まれ、それらの共通の拡張 $r\in G$（\ref{set:poset-filter-basic} の 2）は $p\subseteq r$、すなわち $r\le p$ を満たすので、上に閉じていることから $p\in G$。したがって $f\in M$ なら $G\in M$ となり、\ref{set:generic-not-in-m} に反する。
+:::
+
+::: problem {#set:prob-names-examples}
+$\sigma,\tau\in M^{\PP}$ に対し、$\sigma\cup\tau$ は $\PP$-名前で、任意の $G$ について $(\sigma\cup\tau)_{G}=\sigma_{G}\cup\tau_{G}$ であることを示せ。
+:::
+
+::: solution
+$\sigma\cup\tau$ の元は $\sigma$ か $\tau$ の元で、どちらも（$\PP$-名前, $\PP$ の元）の組なので $\sigma\cup\tau$ は $\PP$-名前で、$M$ で作れる。値の定義より $(\sigma\cup\tau)_{G}=\{\rho_{G}:\exists p\in G\,(\langle\rho,p\rangle\in\sigma\cup\tau)\}=\sigma_{G}\cup\tau_{G}$。
+:::
+
+::: supplement
+**前提の検討.**
+- \ref{set:generic-exists} は $M$ の可算性を本質的に使う。$M$ が非可算だと、$M$ に属する稠密集合すべてと交わるフィルターは一般に存在しない（たとえば $M=\mathbf{V}$ なら、\eqref{set:eq-splitting} を満たす $\PP$ について \ref{set:generic-not-in-m} と同じ議論で存在しない）。
+- \ref{set:generic-not-in-m} は \eqref{set:eq-splitting} を本質的に使う。
+- 名前の理論は $\PP$ の順序を使わない。順序は次ページの強制関係で初めて効いてくる。
+
+**関連する結果.** 強制法はコーエン（1963）が CH の独立性を示すために導入した（一般にはこう言われている）。本ページの「名前による $M[G]$」の定義は、シェーンフィールドらによる整理を経た標準的な形で、Kunen の本もこれに従っている（歴史の詳細は Kunen 第 VII 章 §9 にある）。可算推移的モデルを使わない方法としてブール値モデルによる方法があり、Kunen 第 VII 章 §7, §9 で扱われる。
+
+**高い視点から：未知数を含む式としての名前.** $\PP$-名前は、$M$ の住人にとって「未知数 $G$ を含む式」である。代数学で体 $K$ 上の多項式 $f(X)\in K[X]$ は、$X$ に値を代入するまで具体的な数を表さないが、$K$ の中で書き下せる。同様に名前 $\tau\in M^{\PP}$ は $M$ の中で書き下せ、ジェネリックな $G$ を「代入」して初めて $\tau_{G}$ という集合になる。$M[G]$ は $K[X]$ に $X=a$ を代入して得られる拡大体 $K(a)$ の類似であり、$\check{x}$ は定数多項式、$\Gamma$ は未知数 $X$ そのものにあたる。ジェネリック性は、$a$ が $K$ 上「超越的」（どんな $K$ 係数の方程式も満たさない）であることに似ていて、$G$ は $M$ の中のどんな稠密な「要請」も満たすが、$M$ の中のどの特定の集合でもない（\ref{set:generic-not-in-m}）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

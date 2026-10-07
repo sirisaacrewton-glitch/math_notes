@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>半順序の積 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/08-iterated-forcing/01-products.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 半順序の積 {#set:page-products keywords="product forcing, product lemma, M[G0 x G1] = M[G0][G1], two-step iteration"}
+
+二つの p.o. の積で強制することは、一方で強制してから、その拡大の上でもう一方で強制することと同じである（**積の補題**）。これは反復強制の最も簡単な場合であり、次ページ以降でコーエンのモデルの性質を調べるのに使う。（Kunen 第 VIII 章 §1 に対応する。）
+
+## 記法と定義の確認 {#set:sec-products-notation}
+
+::: notation
+- $M$ は $\ZFC$ の c.t.m.。p.o.、ジェネリック、$M[G]$、\ref{set:m-g-minimal}, \ref{set:generic-dense-below} は \ref{set:page-generic-extensions}、強制関係と \ref{set:forcing-corollary} は \ref{set:page-forcing-relation}、\ref{set:mg-model-zfc} は \ref{set:page-zfc-in-mg}、完全な埋め込みと \ref{set:complete-embedding-generic} は \ref{set:page-embeddings-bvm} のとおり。
+- $M[G]$ も $\ZFC$ の c.t.m. なので、$M[G]$ を基礎モデルとして強制を行える。$M[G_{0}][G_{1}]$ は、$G_{1}$ が $M[G_{0}]$ 上ジェネリックなときの $M[G_{0}]$ のジェネリック拡大を表す。
+:::
+
+## 積 {#set:sec-product-definition}
+
+::: definition 積 p.o. {#set:product-po keywords="product of partial orders" index="積（半順序の）|せきはんじゅんじょの"}
+p.o. $\langle\PP_{0},\le_{0},\mathbf{1}_{0}\rangle$, $\langle\PP_{1},\le_{1},\mathbf{1}_{1}\rangle$ の**積**を $\langle\PP_{0}\times\PP_{1},\le,\mathbf{1}\rangle$ とする。ここで
+$$
+\langle p_{0},p_{1}\rangle\le\langle q_{0},q_{1}\rangle\;:\iff\;p_{0}\le_{0}q_{0}\land p_{1}\le_{1}q_{1},\qquad\mathbf{1}\defeq\langle\mathbf{1}_{0},\mathbf{1}_{1}\rangle.
+$$
+さらに $i_{0}\colon\PP_{0}\to\PP_{0}\times\PP_{1}$, $i_{1}\colon\PP_{1}\to\PP_{0}\times\PP_{1}$ を $i_{0}(p_{0})\defeq\langle p_{0},\mathbf{1}_{1}\rangle$, $i_{1}(p_{1})\defeq\langle\mathbf{1}_{0},p_{1}\rangle$ で定める。
+:::
+
+$\PP_{0},\PP_{1}$ を論じるときは、それぞれの $\le$ や $\mathbf{1}$ の添字を通常省く。p.o. が最大元をもつという制限が本当に役立つのはここである。第 VII 章ではこの制限は、定義を少し変えれば避けられた。ここでも避けられるが、$i_{0},i_{1}$ を定義するのに $\mathbf{1}_{0},\mathbf{1}_{1}$ が要るので、もっと手間がかかる。
+
+::: lemma {#set:product-embeddings}
+$i_{0},i_{1}$ は完全な埋め込みである。
+:::
+
+::: proof
+\ref{set:complete-embedding} の 1, 2 は直ちに確かめられる（$\langle p_{0},\mathbf{1}\rangle$ と $\langle p_{0}',\mathbf{1}\rangle$ が両立するのは $p_{0}$ と $p_{0}'$ が両立するときに限る）。3 を $i_{0}$ について確かめる：$\langle p_{0},p_{1}\rangle\in\PP_{0}\times\PP_{1}$ について $p_{0}$ が $\PP_{0}$ への縮約である。実際 $p_{0}'\le p_{0}$ なら $\langle p_{0}',p_{1}\rangle$ は $i_{0}(p_{0}')=\langle p_{0}',\mathbf{1}\rangle$ と $\langle p_{0},p_{1}\rangle$ の共通の拡張である。$i_{1}$ も同様。
+:::
+
+::: lemma ジェネリックな積の分解 {#set:product-generic-factor}
+$\PP_{0},\PP_{1}\in M$ とし、$G$ を $M$ 上 $\PP_{0}\times\PP_{1}$-ジェネリックとする。このとき $i_{0}^{-1}[G]$ は $M$ 上 $\PP_{0}$-ジェネリック、$i_{1}^{-1}[G]$ は $M$ 上 $\PP_{1}$-ジェネリックで、$G=i_{0}^{-1}[G]\times i_{1}^{-1}[G]$。
+:::
+
+::: proof
+ジェネリック性は $i_{0},i_{1}$ の完全性（\ref{set:product-embeddings}）と \ref{set:complete-embedding-generic} から従う。$\langle p_{0},p_{1}\rangle\in G$ なら、$G$ は上に閉じているので $\langle p_{0},\mathbf{1}\rangle,\langle\mathbf{1},p_{1}\rangle\in G$、よって $\langle p_{0},p_{1}\rangle\in i_{0}^{-1}[G]\times i_{1}^{-1}[G]$。逆に $\langle p_{0},p_{1}\rangle\in i_{0}^{-1}[G]\times i_{1}^{-1}[G]$ なら、$\langle p_{0},\mathbf{1}\rangle$ と $\langle\mathbf{1},p_{1}\rangle$ はともに $G$ に属するので $G$ の中に共通の拡張 $\langle q_{0},q_{1}\rangle$ があり、$\langle q_{0},q_{1}\rangle\le\langle p_{0},p_{1}\rangle$ なので $\langle p_{0},p_{1}\rangle\in G$。
+:::
+
+したがって $\PP_{0}\times\PP_{1}$-ジェネリックなフィルターはすべて $G_{0}\times G_{1}$（$G_{0},G_{1}$ は $M$ 上ジェネリック）の形である。しかし、そのような積がすべてジェネリックなわけではない。たとえば $\PP\times\PP$ で $G\times G$ の形の積は通常ジェネリックでない（Kunen 第 VIII 章の演習 J1）。$G_{0}\times G_{1}$ がジェネリックであるためには、$G_{1}$ が $M[G_{0}]$ 上ジェネリックであることが必要である。次の定理がそれを示し、$\PP_{0}\times\PP_{1}$ による強制を二段階の反復強制と結びつける。
+
+::: theorem 積の補題 {#set:product-lemma keywords="product lemma, product forcing equals two-step iteration" index="積の補題|せきのほだい"}
+$\PP_{0},\PP_{1}\in M$、$G_{0}\subseteq\PP_{0}$、$G_{1}\subseteq\PP_{1}$ とする。次は同値である。
+1. $G_{0}\times G_{1}$ は $M$ 上 $\PP_{0}\times\PP_{1}$-ジェネリック。
+2. $G_{0}$ は $M$ 上 $\PP_{0}$-ジェネリックで、$G_{1}$ は $M[G_{0}]$ 上 $\PP_{1}$-ジェネリック。
+3. $G_{1}$ は $M$ 上 $\PP_{1}$-ジェネリックで、$G_{0}$ は $M[G_{1}]$ 上 $\PP_{0}$-ジェネリック。
+
+さらに 1〜3 が成り立つなら、$M[G_{0}\times G_{1}]=M[G_{0}][G_{1}]=M[G_{1}][G_{0}]$。
+:::
+
+::: proof
+1 $\iff$ 2 を示す。1 $\iff$ 3 も同じである。
+
+**（1 $\Rightarrow$ 2）** 1 を仮定する。\ref{set:product-generic-factor} より $G_{0}=i_{0}^{-1}[G_{0}\times G_{1}]$ は $M$ 上 $\PP_{0}$-ジェネリック。$G_{1}$ が $M[G_{0}]$ 上 $\PP_{1}$-ジェネリックであることを示すため、$D\in M[G_{0}]$ を $\PP_{1}$ で稠密とする。$D=\tau_{G_{0}}$ となる $\tau\in M^{\PP_{0}}$ と、
+$$
+p_{0}\Vdash(\tau\text{ は }\check{\PP}_{1}\text{ で稠密})
+\label{set:eq-product-dense}
+$$
+となる $p_{0}\in G_{0}$ をとる（真理補題）。
+$$
+D'\defeq\{\langle q_{0},q_{1}\rangle:q_{0}\le p_{0}\land q_{0}\Vdash\check{q}_{1}\in\tau\}\subseteq\PP_{0}\times\PP_{1}
+$$
+とおく。強制関係の定義可能性より $D'\in M$。
+
+まず $D'$ が $\langle p_{0},\mathbf{1}\rangle$ の下で稠密であることを示す。$\langle r_{0},r_{1}\rangle\le\langle p_{0},\mathbf{1}\rangle$ を固定する。$r_{0}\le p_{0}$ なので、\eqref{set:eq-product-dense} より
+$$
+r_{0}\Vdash\exists x\in\check{\PP}_{1}\,(x\in\tau\land x\mathrel{\check{\le}_{1}}\check{r}_{1}).
+$$
+\ref{set:forcing-corollary} の 4 より、$q_{1}\in\PP_{1}$ と $q_{0}\le r_{0}$ で $q_{0}\Vdash(\check{q}_{1}\in\tau\land\check{q}_{1}\mathrel{\check{\le}_{1}}\check{r}_{1})$ となるものがある。後半は $M$ で判定される主張なので $q_{1}\le r_{1}$ である。よって $\langle q_{0},q_{1}\rangle\le\langle r_{0},r_{1}\rangle$ かつ $\langle q_{0},q_{1}\rangle\in D'$。
+
+$\langle p_{0},\mathbf{1}\rangle\in G_{0}\times G_{1}$ なので、\ref{set:generic-dense-below} の 2 より $\langle q_{0},q_{1}\rangle\in(G_{0}\times G_{1})\cap D'$ がとれる。$q_{0}\Vdash\check{q}_{1}\in\tau$ で $q_{0}\in G_{0}$ なので $q_{1}\in\tau_{G_{0}}=D$。また $q_{1}\in G_{1}$ なので $G_{1}\cap D\neq\varnothing$。
+
+**（2 $\Rightarrow$ 1）** 2 を仮定する。$G_{0}\times G_{1}$ がフィルターであることは容易に分かる（成分ごとに共通の拡張をとり、上に閉じていることも成分ごと）。ジェネリック性を示すため、$D\subseteq\PP_{0}\times\PP_{1}$ を稠密で $M$ に属するものとし、
+$$
+D^{*}\defeq\{p_{1}:\exists p_{0}\in G_{0}\,(\langle p_{0},p_{1}\rangle\in D)\}\subseteq\PP_{1}
+$$
+とおく。$D^{*}\in M[G_{0}]$ であり、$D^{*}\cap G_{1}\neq\varnothing\to D\cap(G_{0}\times G_{1})\neq\varnothing$ なので、$D^{*}$ が $\PP_{1}$ で稠密であることを示せばよい。$r_{1}\in\PP_{1}$ を固定すると、
+$$
+D_{0}\defeq\{p_{0}:\exists p_{1}\le r_{1}\,(\langle p_{0},p_{1}\rangle\in D)\}
+$$
+は $\PP_{0}$ で稠密（$q_{0}\in\PP_{0}$ に対し、$\langle q_{0},r_{1}\rangle$ の拡張 $\langle p_{0},p_{1}\rangle\in D$ をとればよい）で $M$ に属する。$p_{0}\in D_{0}\cap G_{0}$ をとり、$p_{1}\le r_{1}$ で $\langle p_{0},p_{1}\rangle\in D$ となるものをとると、$p_{1}$ は $D^{*}$ に属する $r_{1}$ の拡張である。
+
+**拡大の一致.** 最小性（\ref{set:m-g-minimal}）による。$M\subseteq M[G_{0}][G_{1}]$ かつ $G_{0}\times G_{1}\in M[G_{0}][G_{1}]$ なので $M[G_{0}\times G_{1}]\subseteq M[G_{0}][G_{1}]$。逆に $M\subseteq M[G_{0}\times G_{1}]$ かつ $G_{0}\in M[G_{0}\times G_{1}]$ なので $M[G_{0}]\subseteq M[G_{0}\times G_{1}]$。さらに $G_{1}\in M[G_{0}\times G_{1}]$ なので $M[G_{0}][G_{1}]\subseteq M[G_{0}\times G_{1}]$。
+:::
+
+::: hypcheck
+上の議論にはいくつかの記法の濫用がある。\eqref{set:eq-product-dense} の $\Vdash$ は本当は $\Vdash_{\PP_{0}}$ である。またどのモデルを基礎モデルとみなしているかを文脈から判断しなければならない：\eqref{set:eq-product-dense} では $M[G_{1}]$ ではなく $M$ の上で強制している。$M[G_{1}]$ から $M[G_{1}][G_{0}]$ への拡大を論じているなら、$p_{0}\Vdash\varphi$ は $M[G_{1}]$ の上の強制を指す。さらに $\check{\le}_{1}$ は $M$ の対象 $\le_{1}$ の標準的な名前である。
+:::
+
+以上で積の理論は終わりである。次ページ以降でいくつかの応用を与える。反復強制の一般論（第 VIII 章 §5）と異なり、積の応用では通常、$\PP_{0}$ と $\PP_{1}$ から出発して $\PP_{0}\times\PP_{1}$ を作るのではない。むしろ、ある明示的な定義で最初から与えられた一つの $\PP$（たとえば次ページでは $\PP=\mathrm{Fn}(I,2)$）から出発し、$\PP$ を様々な仕方で積 $\PP_{0}\times\PP_{1}$ に分解することで、通常の $\PP$ による拡大 $M[G]$ についてさらなる結果を証明する。
+
+## 問題 {#set:sec-products-problems}
+
+::: problem {#set:prob-fn-product}
+$I=I_{0}\sqcup I_{1}$（交わらない和）のとき、$\mathrm{Fn}(I,J)$ は $\mathrm{Fn}(I_{0},J)\times\mathrm{Fn}(I_{1},J)$ と（$M$ の中で）同型であることを示せ。
+:::
+
+::: solution
+$p\mapsto\langle p\restr{I_{0}},p\restr{I_{1}}\rangle$ が同型である。逆写像は $\langle p_{0},p_{1}\rangle\mapsto p_{0}\cup p_{1}$（定義域が交わらないので関数で、有限）。順序（包含の逆）は成分ごとの包含の逆に対応し、$\mathbf{1}=\varnothing\mapsto\langle\varnothing,\varnothing\rangle$。この同型は $I_{0},I_{1}\in M$ なら $M$ に属する。
+:::
+
+::: problem {#set:prob-product-not-generic}
+$\PP=\mathrm{Fn}(\omega,2)$、$G$ を $M$ 上ジェネリックとする。$G\times G$ は $M$ 上 $\PP\times\PP$-ジェネリックでないことを示せ。
+:::
+
+::: solution
+$D\defeq\{\langle p,q\rangle:\exists n\in\dom(p)\cap\dom(q)\,(p(n)\neq q(n))\}$ は $\PP\times\PP$ で稠密で $M$ に属する（$\langle p,q\rangle$ に対し、両方の定義域にない $n$ で異なる値を割り当てる）。$\langle p,q\rangle\in G\times G$ なら $p,q\in G$ は両立するので、共通の定義域では値が一致する。よって $(G\times G)\cap D=\varnothing$。
+:::
+
+::: supplement
+**前提の検討.**
+- 積の補題の 1 $\Rightarrow$ 2 では、$\PP_{1}\in M$（$\PP_{1}$ が基礎モデルに属する）ことが本質的である。一般の二段階反復（第 VIII 章 §5）では、第二段階の p.o. は $M[G_{0}]$ に属する名前 $\dot{\mathbb{Q}}$ で与えられ、$\PP_{0}\times\PP_{1}$ はその特別な場合（$\dot{\mathbb{Q}}=\check{\PP}_{1}$）である。
+- 積の補題は $\PP_{0}$ と $\PP_{1}$ について対称である。これが「どちらから先に強制しても同じ拡大」を与え、次ページで要素を並べ替えて議論する鍵になる。
+
+**関連する結果.** 積の補題から、$\PP_{1}\in M$ の性質が $M[G_{0}]$ でも保たれるかどうか（たとえば c.c.c. や閉性）が問題になる。一般に c.c.c. な p.o. の積は c.c.c. とは限らないが、$\mathrm{MA}(\omega_{1})$ のもとでは c.c.c. な p.o. の積は c.c.c. であることが知られている（一般にはこう言われている。本サイトでは扱っていない）。
+
+**高い視点から：直積と逐次的な構成.** 積の補題は、テンソル積 $A\otimes B$ を「まず $A$ を係数に拡大し、その上で $B$ を拡大する」$(A\otimes_{K}K')\otimes\cdots$ と見る代数学の状況に似ている。$\PP_{0}\times\PP_{1}$ による強制は二つの独立な情報を同時に付け加えるが、それは一方を付け加えた世界 $M[G_{0}]$ から見て、もう一方を付け加えることと同じである。独立であることは、$\PP_{1}$ が $M$ に属し、$G_{0}$ によって「変形されない」ことに表れている。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

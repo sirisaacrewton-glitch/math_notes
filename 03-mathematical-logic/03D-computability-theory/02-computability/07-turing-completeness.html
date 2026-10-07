@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>チューリング機械との同値性とチューリング完全性 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/02-computability/07-turing-completeness.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# チューリング機械との同値性とチューリング完全性 {#comp:page-turing-completeness keywords="Turing machines compute the same functions as L, Turing completeness, Turing equivalent, halting problem for L, two-stack machine, Minsky machine, Rule 110"}
+
+本ページでは、チューリング機械（\ref{comp:turing-machine}）で計算できる部分関数が、ちょうど L で計算できる部分関数であること（\ref{comp:L-equals-tm}）を示す。チューリング機械の様相を数で表すと一歩の動きが原始再帰的になるので、L で while ループ一つで模倣できる（\ref{comp:tm-to-L}）。逆に、レジスタ機械のレジスタを多テープ機械のテープに一つずつ割り当てれば、チューリング機械で模倣できる（\ref{comp:L-to-tm}）。これで、L・部分再帰関数・レジスタ機械・チューリング機械の四つが同じ部分関数を計算することが示されたことになる。この共通の能力をもつことを**チューリング完全**という（\ref{comp:turing-complete}）。チューリング完全な体系では停止問題が決定不能になる（後のページの \ref{comp:halting-L} による）。
+
+## 記法と定義の確認 {#comp:sec-tc-notation}
+
+::: notation
+- チューリング機械（TM）、時点表示、一段の動き $\vdash$、多テープ機械とその模倣（\ref{comp:multitape}）、チャーチ–チューリングの提唱（\ref{comp:church-turing}）は \ref{comp:page-turing-machines} のとおり。TM の動作は、同ページと同じく、テープ上の操作を有限状態の制御で行うことを高水準に記述して与える。
+- L、計算可能な部分関数、レジスタ機械、$\varphi_{e}$、万能関数 $\Phi_{1}$ は \ref{comp:page-language-L}, \ref{comp:page-register-machines}, \ref{comp:page-universal-smn} のとおり。L とレジスタ機械の同値性（\ref{comp:L-equals-rm}）、原始再帰関数の閉包性（\ref{comp:pr-closure}）を使う。
+:::
+
+## チューリング機械が計算する関数 {#comp:sec-tm-functions}
+
+::: definition チューリング機械が計算する部分関数 {#comp:tm-computes-function keywords="Turing computable partial function, unary representation" index="チューリング機械で計算可能|ちゅーりんぐきかいでけいさんかのう"}
+入力アルファベットを $\Sigma=\{1,\#\}$ とし、$\vec{m}\in\N^{k}$ を文字列 $1^{m_{1}}\#1^{m_{2}}\#\cdots\#1^{m_{k}}$ で表す（**一進表記**）。TM $M$ が部分関数 $f\colon\N^{k}\rightharpoonup\N$ を**計算する**とは、すべての $\vec{m}$ について、$M$ がこの入力の上で停止する（受理または拒否の状態に達する）ことと $f(\vec{m})\downarrow$ が同値で、停止したとき、テープの左端から続く $1$ の個数が $f(\vec{m})$ であることをいう。そのような TM があるとき $f$ は **TM で計算可能**という。
+:::
+
+::: remark
+出力を「左端から続く $1$ の個数」としたのは、停止時にテープの残りを消去する手間を省くためである。消去を要求しても（TM が最後に消去すればよいので）計算可能な関数は変わらない。
+:::
+
+## チューリング機械を L で模倣する {#comp:sec-tm-to-L}
+
+::: theorem TM で計算可能な関数は L で計算可能 {#comp:tm-to-L keywords="simulating Turing machines in L" index="チューリング機械の模倣（L で）|ちゅーりんぐきかいのもほうえるで"}
+TM で計算可能な部分関数は L で計算可能である。
+:::
+
+::: proof
+$M=(Q,\Sigma,\Gamma,\delta,q_{0},q_{\mathrm{acc}},q_{\mathrm{rej}})$ とし、$Q=\{0,\dots,|Q|-1\}$（$q_{0}=0$）、$\Gamma=\{0,\dots,g-1\}$（空白 $\sqcup=0$、$1=1$、$\#=2$、$g\ge3$）と番号付ける。
+
+**様相のコード.** テープの内容 $a_{0}a_{1}a_{2}\cdots$（有限個を除いて空白）を数 $w\defeq\sum_{h}a_{h}g^{h}$ で表す。$h$ 番目の升目の記号は $\mathrm{rd}(w,h)\defeq\lfloor w/g^{h}\rfloor\bmod g$ で、$h$ 番目を $b$ に書き換えたテープは $\mathrm{wr}(w,h,b)\defeq w-\mathrm{rd}(w,h)g^{h}+bg^{h}$ である。時点表示（状態 $q$、ヘッドの位置 $h$、テープ $w$）を三つの数 $(q,h,w)$ で表す。
+
+**一歩.** $q\notin\{q_{\mathrm{acc}},q_{\mathrm{rej}}\}$ のとき、$a\defeq\mathrm{rd}(w,h)$、$\delta(q,a)=(r,b,D)$ として、次の様相は
+$$
+\bigl(r,\ h',\ \mathrm{wr}(w,h,b)\bigr),\qquad h'\defeq\begin{cases}h+1&(D=\mathrm{R})\\ h\mathbin{\dot{-}}1&(D=\mathrm{L})\end{cases}
+$$
+（左端 $h=0$ で左に動くときは $h'=0$。\ref{comp:tm-configuration} の 2）。$\delta$ は有限の表なので、$(q,a)$ の組についての有限個の場合分けで、$r,b,h'$ は $(q,h,w)$ の原始再帰関数になる（\ref{comp:pr-closure} の 5。$g^{h}$ と $\lfloor\cdot\rfloor$, $\bmod$ は原始再帰的）。
+
+**プログラム.** 入力のテープ $\mathrm{in}(\vec{m})$（$1^{m_{1}}\#\cdots\#1^{m_{k}}$ を表す数）は $\vec{m}$ の原始再帰関数である（位置 $h$ の記号が $h$ と $m_{1},\dots,m_{k}$ から有界な和で決まるので、$\sum_{h<\ell}a_{h}g^{h}$、$\ell=m_{1}+\dots+m_{k}+k-1$）。L のプログラム
+```python チューリング機械 M を模倣するプログラム
+q, h, w = 0, 0, inp(x1, ..., xk)     # 状態・ヘッドの位置・テープを表す数
+while not_halted(q):                  # 特性関数を変数に入れて while の条件にする
+    q, h, w = step(q, h, w)           # 一歩の関数（原始再帰的）の三成分を同時に代入
+x0 = leading_ones(w)                  # 左端から続く 1 の個数
+```
+を作る（表示は \ref{comp:L-python-display} の約束による）。条件は特性関数を変数に入れて while の条件にし、一歩の三成分は同時に計算する（新しい変数に計算してから写す）。最後の行は $\mu i\le w\,[\mathrm{rd}(w,i)\neq1]$ で原始再帰的（左端から続く $1$ の個数は、テープの内容を表す数 $w$ 以下）。これらの原始再帰関数の呼び出しは for プログラムで書ける（\ref{comp:pr-equals-for}）。周回の回数に関する帰納法で、$j$ 周後の $(q,h,w)$ は $M$ の $j$ 段後の時点表示のコードであり、ループが止まるのは $M$ が停止したときに限る（\ref{comp:rm-to-L} の証明と同じ議論）。
+:::
+
+## L をチューリング機械で模倣する {#comp:sec-L-to-tm}
+
+::: theorem L で計算可能な関数は TM で計算可能 {#comp:L-to-tm keywords="simulating register machines by Turing machines" index="レジスタ機械の模倣（TM で）|れじすたきかいのもほうてぃーえむで"}
+L で計算可能な部分関数は TM で計算可能である。
+:::
+
+::: proof
+\ref{comp:L-equals-rm} により、$f$ を計算するレジスタ機械 $R=(I_{0},\dots,I_{N-1})$ がある。$R$ に現れるレジスタを $x_{0},\dots,x_{n}$（$n\ge k$）とする。$n+2$ 本のテープをもつ多テープ機械 $M$ を作る：テープ $0$ は入力用、テープ $1+j$ はレジスタ $x_{j}$ 用で、値 $v$ を $1^{v}$ として左端から書き、ヘッドは左端に置いておく。$M$ の状態は、$R$ のプログラムカウンタ $p\in\{0,\dots,N\}$ と、命令を実行する途中の段階を表す有限個の情報の組とする。
+1. **入力の読み込み.** テープ $0$ の $1^{m_{1}}\#\cdots\#1^{m_{k}}$ を左から読み、$i$ 番目の $1$ の並びをテープ $1+i$ に写す。各テープのヘッドを左端に戻す。
+2. **命令の実行.** $p<N$ のとき、$I_{p}$ に応じて次を行い $p$ を更新する。
+   - $\mathtt{inc}(r)$：テープ $1+r$ のヘッドを最初の空白まで右に動かして $1$ を書き、左端に戻る。$p:=p+1$。
+   - $\mathtt{dec}(r)$：テープ $1+r$ の左端が空白なら何もしない。そうでなければ最初の空白まで右に動き、一つ左の $1$ を空白に書き換え、左端に戻る。$p:=p+1$。
+   - $\mathtt{jz}(r,l)$：テープ $1+r$ の左端の記号が空白なら $p:=l$、そうでなければ $p:=p+1$。
+
+   左端に戻る操作は、各テープの左端に最初に印の記号を置いておけば有限状態で行える。
+3. **出力.** $p\ge N$ になったら、テープ $1$（$x_{0}$）の内容 $1^{v}$ をテープ $0$ の左端に写し（テープ $0$ の残りを空白にする）、受理状態に入る。
+
+各命令の実行は有限の段数で終わり、レジスタの値とテープの内容の対応を保つので、$R$ の $s$ 歩目の様相と $M$ の対応する時点表示が対応する（$s$ に関する帰納法）。よって $M$ は $f(\vec{m})\downarrow$ のときに限り停止し、テープ $0$ の左端から $1$ が $f(\vec{m})$ 個続く。最後に \ref{comp:multitape} で単一テープの TM に直す。その模倣では、多テープ機械の各テープの内容を区切り記号でつないで一本のテープに並べるので、停止する直前に「テープ $0$ の部分の $1$ の並びを左端に寄せ、残りを空白にする」段階を加えれば、\ref{comp:tm-computes-function} の出力の形になる。
+:::
+
+::: corollary 計算模型の同値性 {#comp:L-equals-tm keywords="equivalence of computational models, L, partial recursive, register machines, Turing machines" index="計算模型の同値性|けいさんもけいのどうちせい"}
+部分関数 $f\colon\N^{k}\rightharpoonup\N$ について、次は同値である：(1) L で計算可能、(2) 部分再帰関数、(3) レジスタ機械で計算可能、(4) TM で計算可能。
+:::
+
+::: proof
+(1)⇔(2) は \ref{comp:L-equals-recursive}、(1)⇔(3) は \ref{comp:L-equals-rm}、(1)⇔(4) は \ref{comp:tm-to-L} と \ref{comp:L-to-tm}。
+:::
+
+::: remark
+この同値性により、チャーチ–チューリングの提唱（\ref{comp:church-turing}）の根拠として挙げた「独立な定義の一致」のうち、L・部分再帰関数・レジスタ機械・TM の四つについては、本サイトで確かめたことになる。ラムダ計算との一致は \ref{logic:page-lambda-calculus} で扱う予定である。文字列の言語についての「決定可能」「認識可能」（\ref{comp:recognizable-decidable}）も、文字列を数に符号化すれば、ここでの決定可能な集合・計算可能な部分関数の定義域と一致する。
+:::
+
+## チューリング完全性 {#comp:sec-turing-complete}
+
+::: definition チューリング完全 {#comp:turing-complete keywords="Turing complete, Turing equivalent, universal computation" index="チューリング完全|ちゅーりんぐかんぜん"}
+**計算体系**とは、プログラム（機械、規則の集まりなど）の集合 $\mathcal{S}$ と、各 $S\in\mathcal{S}$ が「入力から出力を（停止すれば）定める」部分的な動作の組で、入力と出力が何らかの対象（文字列、配置、項など）であるものとする。$\mathcal{S}$ が**チューリング完全**であるとは、自然数の組と入力の対象の間の符号化 $\mathrm{enc}$、出力の対象から自然数への復号 $\mathrm{dec}$ を、どちらも計算可能なもの（文字列などを数で表せば L で計算できるもの）として固定したとき、L で計算可能なすべての部分関数 $f$ について、$f(\vec{m})\simeq\mathrm{dec}(S(\mathrm{enc}(\vec{m})))$ となる $S\in\mathcal{S}$ があることをいう。さらに、$\mathcal{S}$ のどのプログラムの動作も（符号化を通して）L で計算できるとき、$\mathcal{S}$ は**チューリング同値**であるという。
+:::
+
+::: remark
+「符号化が計算可能」という条件は、符号化自体に計算をさせないための約束である。この定義は形式的に厳密なものではなく、どこまでを「合理的な符号化」と認めるかは体系ごとに判断する。チューリング完全な体系では、停止するかどうかを一般に判定できない（\ref{comp:halting-L} を、プログラムの翻訳を通して移せばよい）。
+:::
+
+::: proposition 二本のスタックをもつ機械 {#comp:two-stack keywords="two-stack machine is Turing complete" index="二本のスタックをもつ機械|にほんのすたっくをもつきかい"}
+有限状態の制御に二本のスタック（一番上の記号を見る・取り除く・積むことだけができる記憶）を付けた機械は、TM を模倣できる。したがってチューリング完全である。一本のスタックだけでは（プッシュダウンオートマトン、\ref{comp:pda}）チューリング完全でない。
+:::
+
+::: proof
+TM の時点表示 $uqv$ を、左のスタックに $u$（一番上が $u$ の最後の記号）、右のスタックに $v$（一番上が $v$ の最初の記号。$v$ が空なら空白を一つ積む）を積んだものと、状態 $q$ で表す。$\delta(q,b)=(r,c,\mathrm{R})$ なら、右のスタックから $b$ を取り除き、左のスタックに $c$ を積み、右のスタックが空になったら空白を積む。$\delta(q,b)=(r,c,\mathrm{L})$ なら、右のスタックの $b$ を $c$ に取り替え、左のスタックが空でなければその一番上の記号 $a$ を取り除いて右のスタックに積む（空なら左端なので動かない）。いずれも有限の操作で、時点表示の対応が保たれる。入力を右のスタックに積み直す準備（入力を一度左のスタックに積んでから右に移すと順序が正しくなる）を加えれば、TM が計算する部分関数を計算できる。
+後半：プッシュダウンオートマトンが認識する言語は文脈自由言語で（\ref{comp:cfg-pda-equivalence}）、$\{a^{n}b^{n}c^{n}\}$ のような決定可能な言語でも文脈自由でないものがある（\ref{comp:ex-anbncn}）。
+:::
+
+::: remark チューリング完全な体系の例 {#comp:turing-complete-examples}
+本サイトで示したもの：L、while と基本命令だけの L（\ref{comp:L-macros} の 6）、部分再帰関数、レジスタ機械、TM、二本のスタックの機械。示していないが一般に知られているもの：
+- レジスタ $2$ 個のレジスタ機械（ミンスキー。入出力を $2^{m}$ で符号化する）。
+- ラムダ計算（チャーチ、クリーネ、チューリング）、組合せ子論理（$S$, $K$）。
+- タグ系、ポストの正準系、セル・オートマトンのルール 110（クック 2004）、コンウェイのライフゲーム。
+- 無制限の整数（または無制限のメモリ）をもつ通常のプログラミング言語。
+
+チューリング完全で**ない**ものの例：for プログラム（\ref{comp:for-proper}）、有限オートマトン、プッシュダウンオートマトン。どれも、すべてのプログラムが停止するか、または記憶が本質的に制限されている。
+:::
+
+::: hypcheck
+- **一歩の原始再帰性**：\ref{comp:tm-to-L} で、遷移関数が有限の表であること（有限個の場合分け）を使った。テープが「有限個を除いて空白」であることが、テープを一つの数で表せる理由である。
+- **レジスタの有限性**：\ref{comp:L-to-tm} で、現れるレジスタが有限個なのでテープの本数が有限になることを使った。値に上限がないことは、テープが右に無限に続くことに対応する。
+- **多テープ機械の模倣**（\ref{comp:multitape}）：単一テープの TM に直すのに使い、出力の形を整える段階を加えた。
+:::
+
+## 問題 {#comp:sec-tc-problems}
+
+::: problem {#comp:prob-while-only}
+L から for ループを除いた体系（基本命令、逐次実行、while ループだけのプログラム）がチューリング完全であることを示せ。
+:::
+
+::: solution
+\ref{comp:L-macros} の 6 により、$\mathtt{for}\ x\ \mathtt{do}\ P\ \mathtt{od}$ は、$P$ に現れない新しい変数 $u$ を使った $u:=x;\ \mathtt{while}\ u\neq0\ \mathtt{do}\ P;\ u:=u\mathbin{\dot{-}}1\ \mathtt{od}$ と、$u$ 以外で同じ状態を与える。プログラムの構成に関する帰納法で、すべての for を内側から順にこの形に置き換えれば（置き換えのたびに新しい変数を選ぶ）、同じ部分関数を計算する for のないプログラムが得られる。L はチューリング完全（\ref{comp:L-equals-tm}）なので、この体系もチューリング完全である（符号化は恒等写像でよい）。
+:::
+
+::: supplement
+**前提の検討.**
+- \ref{comp:tm-computes-function} で一進表記を使ったが、二進表記でも計算可能な関数は変わらない（変換が TM でも L でも計算できる）。ただし計算時間は表記に強く依存する（一進表記の入力の長さは数の大きさに比例し、二進表記では対数に比例する）。計算量を扱うときはこの違いが重要になる（\ref{comp:page-time-complexity}）。
+- チューリング完全性の定義の「符号化が計算可能」を外すと、符号化に停止問題の答えを埋め込むことで、何でも計算できるように見せかけられる。
+
+**関連する結果.**
+- *ブラム（Blum）の公理*など、計算模型によらない計算の資源（時間・領域）の扱い方がある。
+- *実数上の計算.* BSS 機械など、実数そのものを値にもつ計算模型では、チューリング完全性とは別の能力の比較が行われる。
+
+**高い視点から：模倣の圏.** 計算体系を対象とし、「$\mathcal{S}$ のプログラムを $\mathcal{S}'$ のプログラムに計算可能に翻訳し、動作を保つ」ことを射とすると、チューリング同値な体系はすべて互いに同型な対象のようにふるまう。本ページの四つの模型は、翻訳 L $\to$ レジスタ機械 $\to$ TM $\to$ L（一歩の関数を経て）で輪になっている。チューリング完全性は、この輪の中に入れるかどうかを問う性質で、「自分の中で万能プログラムを書けるかどうか」と言い換えられる。比喩で言えば、チューリング完全な体系は「どんな言語の本でも、辞書を引きながら訳せる翻訳者」で、語彙（命令の種類）が貧しくても、時間さえかければ同じ内容を表せる。逆に、for プログラムのように「必ず終わる」ことが保証された体系は、その保証と引き換えに万能性を失う（\ref{comp:prob-no-total-enumeration} の対角線論法が、その理由である）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

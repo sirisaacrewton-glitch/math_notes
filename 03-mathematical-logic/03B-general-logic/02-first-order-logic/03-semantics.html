@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>構造と充足関係 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/02-first-order-logic/03-semantics.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 構造と充足関係 {#logic:page-semantics keywords="structure, model, assignment, satisfaction, Tarski semantics, logical consequence, 意味論"}
+
+論理式に意味を与えるのは**構造**である。構造は議論の対象となる集合（領域）と、各記号の解釈からなる。本ページでは、構造と変数への値の割り当てのもとで論理式が**充足される**という関係 $\mathcal{M},v\models\varphi$ を論理式の形に関する再帰で定義し、その基本性質を示す。とくに、自由変数の値だけが真偽に効くという**一致補題**と、代入と値の書き換えが対応するという**意味論的代入補題**は、健全性定理（\ref{logic:page-soundness}）と完全性定理（\ref{logic:completeness}）の両方で使う。最後に、自由変数を含む論理式についての**論理的帰結**の定義を定め、別の定義（大域的な帰結）との違いを見る。
+
+## 記法と定義の確認 {#logic:sec-semantics-notation}
+
+::: notation
+- 言語・項・論理式・略記・自由変数は \ref{logic:language}, \ref{logic:term}, \ref{logic:formula}, \ref{logic:abbreviations}, \ref{logic:free-variables} のとおり。定義は構造的再帰（\ref{logic:structural-recursion}）、証明は項・論理式に関する帰納法による。
+- 代入 $\varphi[s/x]$ と代入可能性は \ref{logic:substitution}, \ref{logic:substitutable} のとおり。
+- 集合 $M$ と自然数 $n\ge 1$ に対し、$M^{n}$ は $M$ の元の $n$ 個組全体を表す。
+- メタ理論は通常の数学（$\ZFC$）で、このページでは選択公理を使わない。
+:::
+
+## 構造 {#logic:sec-semantics-structures}
+
+::: definition 構造 {#logic:structure keywords="structure, L-structure, interpretation, domain, universe" index="構造|こうぞう, 領域|りょういき, 解釈|かいしゃく"}
+言語 $\mathcal{L}$ の**構造**（$\mathcal{L}$ 構造）$\mathcal{M}$ とは、空でない集合 $M$ と、
+- 各定数記号 $c$ に対する元 $c^{\mathcal{M}}\in M$、
+- 項数 $n$ の各関数記号 $f$ に対する写像 $f^{\mathcal{M}}\colon M^{n}\to M$、
+- 項数 $n$ の各関係記号 $P$ に対する部分集合 $P^{\mathcal{M}}\subset M^{n}$
+
+の組である。$M$ を $\mathcal{M}$ の**領域**（台集合）といい、$c^{\mathcal{M}},f^{\mathcal{M}},P^{\mathcal{M}}$ を記号の**解釈**という。領域を $\lvert\mathcal{M}\rvert$ と書くこともある。
+:::
+
+::: intuition
+構造は「記号をこう読む」という約束である。群の言語 $\mathcal{L}_{\mathrm{grp}}$ の構造は、集合と、その上の二項演算・一項演算・特定の元の組にすぎず、群である必要はない。群であることは、群の公理（文）が構造の中で真であること（\ref{logic:model}）として後で表す。
+:::
+
+::: example
+- $\mathcal{L}_{\mathrm{ar}}$ の構造 $\mathcal{N}$：領域 $\N$、$0^{\mathcal{N}}=0$、$S^{\mathcal{N}}(n)=n+1$、$+^{\mathcal{N}},\times^{\mathcal{N}}$ は通常の和と積、$<^{\mathcal{N}}$ は通常の大小関係。これを算術の**標準構造**という。
+- 同じ言語で、領域 $\{0,1\}$、$0^{\mathcal{M}}=0$、$S^{\mathcal{M}}(a)=1-a$、和と積は $2$ を法とする演算、$<^{\mathcal{M}}=\varnothing$ としたものも $\mathcal{L}_{\mathrm{ar}}$ 構造である。
+:::
+
+::: remark 領域が空でないこと {#logic:nonempty-domain}
+領域を空でないと要求するのは慣習的な選択であるが、以後の定義と定理はこれに依存する。たとえば \ref{logic:prob-drinker} の論理式は、空な領域を許すと妥当でなくなる。また、自然演繹の規則（\ref{logic:page-natural-deduction}）もこの約束に合わせて作られている（$\forall x\,\varphi\vdash\varphi$ から $\forall x\,\varphi\vdash\exists x\,\varphi$ が導けてしまう）。
+:::
+
+## 割り当てと項の値 {#logic:sec-semantics-terms}
+
+::: definition 割り当て {#logic:assignment keywords="assignment, valuation, variable assignment" index="割り当て|わりあて, 付値|ふち"}
+構造 $\mathcal{M}$ における**割り当て**とは、写像 $v\colon\mathrm{Var}\to M$ のことである。割り当て $v$、変数 $x$、元 $a\in M$ に対し、$v[x\mapsto a]$ を、$x$ で値 $a$ をとり、それ以外の変数 $y$ では $v(y)$ をとる割り当てとする。
+:::
+
+::: lemma 割り当ての書き換え {#logic:assignment-update keywords="update of assignments"}
+任意の割り当て $v$、変数 $x,y$、元 $a,b\in M$ について次が成り立つ。
+1. $v[x\mapsto a][x\mapsto b]=v[x\mapsto b]$。
+2. $x\neq y$ ならば $v[x\mapsto a][y\mapsto b]=v[y\mapsto b][x\mapsto a]$。
+3. $v[x\mapsto v(x)]=v$。
+:::
+
+::: proof
+写像として等しいことを、各変数 $z$ での値を比べて確かめる。1：$z=x$ なら両辺 $b$、$z\neq x$ なら両辺 $v(z)$。2：$z=x$ なら両辺 $a$（$x\neq y$ より右辺で最後に $y$ を書き換えても $x$ の値は $a$）、$z=y$ なら両辺 $b$、それ以外は両辺 $v(z)$。3：$z=x$ なら両辺 $v(x)$、それ以外は両辺 $v(z)$。
+:::
+
+::: definition 項の値 {#logic:term-value keywords="value of a term, interpretation of terms" index="項の値|こうのあたい"}
+構造 $\mathcal{M}$ と割り当て $v$ に対し、項 $t$ の**値** $t^{\mathcal{M},v}\in M$ を構造的再帰で
+$$
+x^{\mathcal{M},v}=v(x),\qquad c^{\mathcal{M},v}=c^{\mathcal{M}},\qquad f(t_{1},\dots,t_{n})^{\mathcal{M},v}=f^{\mathcal{M}}\bigl(t_{1}^{\mathcal{M},v},\dots,t_{n}^{\mathcal{M},v}\bigr)
+$$
+と定める。閉項 $t$ の値は $v$ によらない（\ref{logic:coincidence}）ので、$t^{\mathcal{M}}$ とも書く。
+:::
+
+## 充足関係 {#logic:sec-semantics-satisfaction}
+
+::: definition 充足関係 {#logic:satisfaction keywords="satisfaction relation, Tarski's definition of truth" index="充足|じゅうそく, 充足関係|じゅうそくかんけい, 真|しん"}
+構造 $\mathcal{M}$、割り当て $v$、論理式 $\varphi$ に対し、「$\mathcal{M}$ と $v$ が $\varphi$ を**充足する**」$\mathcal{M},v\models\varphi$ を、$\varphi$ に関する構造的再帰で次のように定める（$\mathcal{M},v\not\models\varphi$ はその否定）。
+1. $\mathcal{M},v\not\models\bot$（$\bot$ はどの $\mathcal{M},v$ でも充足されない）。
+2. $\mathcal{M},v\models t=s\iff t^{\mathcal{M},v}=s^{\mathcal{M},v}$。
+3. $\mathcal{M},v\models P(t_{1},\dots,t_{n})\iff\bigl(t_{1}^{\mathcal{M},v},\dots,t_{n}^{\mathcal{M},v}\bigr)\in P^{\mathcal{M}}$。
+4. $\mathcal{M},v\models(\alpha\to\beta)\iff\mathcal{M},v\not\models\alpha$ または $\mathcal{M},v\models\beta$。
+5. $\mathcal{M},v\models\forall x\,\alpha\iff$ すべての $a\in M$ について $\mathcal{M},v[x\mapsto a]\models\alpha$。
+:::
+
+::: intuition
+量化子の節 5 が要点で、「$\forall x\,\alpha$ が成り立つ」とは「$x$ の値だけを任意に取り替えても $\alpha$ が成り立つ」ことである。この定義は、構造的再帰の定理（\ref{logic:structural-recursion}）を、値の集合 $X$ として「割り当て全体から $\{\text{真},\text{偽}\}$ への写像の全体」をとって適用したものである。節 5 では $\alpha$ の真偽を**すべての**割り当てについて知っている必要があるので、$\varphi$ ごとに「真にする割り当ての集合」を再帰的に定めている、と考えるとよい。
+:::
+
+::: proposition 略記の意味 {#logic:abbreviation-semantics keywords="semantics of defined connectives"}
+任意の $\mathcal{M},v,\varphi,\psi,x$ について次が成り立つ。
+1. $\mathcal{M},v\models\neg\varphi\iff\mathcal{M},v\not\models\varphi$。また $\mathcal{M},v\models\top$。
+2. $\mathcal{M},v\models\varphi\wedge\psi\iff\mathcal{M},v\models\varphi$ かつ $\mathcal{M},v\models\psi$。
+3. $\mathcal{M},v\models\varphi\vee\psi\iff\mathcal{M},v\models\varphi$ または $\mathcal{M},v\models\psi$。
+4. $\mathcal{M},v\models\varphi\leftrightarrow\psi\iff$（$\mathcal{M},v\models\varphi\iff\mathcal{M},v\models\psi$）。
+5. $\mathcal{M},v\models\exists x\,\varphi\iff$ ある $a\in M$ について $\mathcal{M},v[x\mapsto a]\models\varphi$。
+:::
+
+::: proof
+**1.** $\neg\varphi=(\varphi\to\bot)$ なので、定義 4 より「$\mathcal{M},v\not\models\varphi$ または $\mathcal{M},v\models\bot$」であり、定義 1 より後者は起こらない。$\top=\neg\bot$ は定義 1 と今示したことから充足される。
+
+**2.** $\varphi\wedge\psi=\neg(\varphi\to\neg\psi)$。1 より、これが充足されるのは $\mathcal{M},v\not\models(\varphi\to\neg\psi)$ のときであり、定義 4 よりそれは「$\mathcal{M},v\models\varphi$ かつ $\mathcal{M},v\not\models\neg\psi$」、1 よりさらに「$\mathcal{M},v\models\varphi$ かつ $\mathcal{M},v\models\psi$」と同値である。
+
+**3.** $\varphi\vee\psi=(\neg\varphi\to\psi)$。定義 4 と 1 より「$\mathcal{M},v\not\models\neg\varphi$ または $\mathcal{M},v\models\psi$」、すなわち「$\mathcal{M},v\models\varphi$ または $\mathcal{M},v\models\psi$」。
+
+**4.** 2 と定義 4 から直ちに従う。
+
+**5.** $\exists x\,\varphi=\neg\forall x\,\neg\varphi$。1 より、充足されるのは $\mathcal{M},v\not\models\forall x\,\neg\varphi$ のとき、定義 5 よりそれは「ある $a$ について $\mathcal{M},v[x\mapsto a]\not\models\neg\varphi$」、1 よりそれは「ある $a$ について $\mathcal{M},v[x\mapsto a]\models\varphi$」と同値である。
+
+::: hypcheck
+- メタ理論の論理（「〜でない」「または」「ある」）が古典論理であることを使っている。たとえば 2 で「$\mathcal{M},v\not\models\neg\psi$ ならば $\mathcal{M},v\models\psi$」、5 で「すべての $a$ について〜でない、ではない」を「ある $a$ について〜」とする箇所である。直観主義的なメタ理論では、略記 $\exists x\,\varphi\defeq\neg\forall x\,\neg\varphi$ はこの意味をもたない。
+:::
+:::
+
+## 一致補題 {#logic:sec-semantics-coincidence}
+
+::: lemma 一致補題 {#logic:coincidence keywords="coincidence lemma, agreement lemma" index="一致補題|いっちほだい"}
+$\mathcal{M}$ を構造、$v_{1},v_{2}$ を割り当てとする。
+1. $v_{1}$ と $v_{2}$ が $\mathrm{var}(t)$ 上で一致するならば、$t^{\mathcal{M},v_{1}}=t^{\mathcal{M},v_{2}}$。
+2. $v_{1}$ と $v_{2}$ が $\mathrm{FV}(\varphi)$ 上で一致するならば、$\mathcal{M},v_{1}\models\varphi\iff\mathcal{M},v_{2}\models\varphi$。
+
+とくに、$\varphi$ が文ならば、$\mathcal{M},v\models\varphi$ が成り立つかどうかは $v$ によらない。
+:::
+
+::: proof
+**Step 1（項）.** 項に関する帰納法。$t=x$ なら $x\in\mathrm{var}(t)$ なので $v_{1}(x)=v_{2}(x)$。$t=c$ なら両辺 $c^{\mathcal{M}}$。$t=f(t_{1},\dots,t_{n})$ なら $\mathrm{var}(t_{i})\subset\mathrm{var}(t)$ なので帰納法の仮定より各成分の値が一致し、$f^{\mathcal{M}}$ を施した値も一致する。
+
+**Step 2（原子論理式）.** $\bot$ は両辺とも偽。$t=s$ と $P(t_{1},\dots,t_{n})$ は、現れる項の変数が $\mathrm{FV}(\varphi)$ に含まれるので、Step 1 より各項の値が $v_{1},v_{2}$ で一致し、定義 2, 3 の右辺が一致する。
+
+**Step 3（含意）.** $\mathrm{FV}(\alpha),\mathrm{FV}(\beta)\subset\mathrm{FV}((\alpha\to\beta))$ なので、帰納法の仮定より $\alpha,\beta$ それぞれの充足が $v_{1},v_{2}$ で一致し、定義 4 の右辺が一致する。
+
+**Step 4（全称）.** $\varphi=\forall x\,\alpha$ とし、$a\in M$ を任意にとる。$v_{1}'=v_{1}[x\mapsto a]$, $v_{2}'=v_{2}[x\mapsto a]$ は $\mathrm{FV}(\alpha)$ 上で一致する。実際、$y\in\mathrm{FV}(\alpha)$ について、$y=x$ なら $v_{1}'(y)=a=v_{2}'(y)$、$y\neq x$ なら $y\in\mathrm{FV}(\alpha)\setminus\{x\}=\mathrm{FV}(\varphi)$ なので $v_{1}'(y)=v_{1}(y)=v_{2}(y)=v_{2}'(y)$。帰納法の仮定より $\mathcal{M},v_{1}'\models\alpha\iff\mathcal{M},v_{2}'\models\alpha$。これがすべての $a$ で成り立つので、定義 5 の右辺が一致する。
+
+**Step 5（文）.** $\mathrm{FV}(\varphi)=\varnothing$ なら、任意の二つの割り当ては $\mathrm{FV}(\varphi)$ 上で（空虚に）一致するので、2 から従う。
+
+::: hypcheck
+- **一致させる範囲 $\mathrm{FV}(\varphi)$**：Step 4 で、$x$ 自身は一致を要求せず（$a$ に上書きされる）、$x$ 以外の $\mathrm{FV}(\alpha)$ の元だけを使った。これが自由変数の定義 $\mathrm{FV}(\forall x\,\alpha)=\mathrm{FV}(\alpha)\setminus\{x\}$ の意味論的な裏付けである。
+- 束縛変数の値は一致していなくてよい（例：$\forall x\,P(x)$ の真偽は $v(x)$ によらない）。
+:::
+:::
+
+::: example 空虚な量化 {#logic:ex-vacuous}
+$\forall x\,\forall x\,P(x)$ を考える。定義 5 を二度使うと、$\mathcal{M},v\models\forall x\,\forall x\,P(x)$ は「すべての $a$ とすべての $b$ について $\mathcal{M},v[x\mapsto a][x\mapsto b]\models P(x)$」と同値である。\ref{logic:assignment-update} の 1 より $v[x\mapsto a][x\mapsto b]=v[x\mapsto b]$ なので、これは $a$ によらず、「すべての $b$ について $(b)\in P^{\mathcal{M}}$」すなわち $\mathcal{M},v\models\forall x\,P(x)$ と同値である。外側の $\forall x$ は真偽に寄与しない。一般に $x\notin\mathrm{FV}(\alpha)$ ならば、一致補題より $\mathcal{M},v\models\forall x\,\alpha\iff\mathcal{M},v\models\alpha$（領域が空でないことを使う）。
+:::
+
+::: lemma 記号についての一致と縮小 {#logic:reduct-lemma keywords="reduct, expansion, symbol agreement" index="縮小|しゅくしょう, 拡大|かくだい"}
+$\mathcal{L}\subset\mathcal{L}'$ を言語（$\mathcal{L}'$ は $\mathcal{L}$ の各記号を同じ項数で含む）とし、$\mathcal{M}'$ を $\mathcal{L}'$ 構造とする。$\mathcal{M}'$ から $\mathcal{L}'\setminus\mathcal{L}$ の記号の解釈を忘れた $\mathcal{L}$ 構造を $\mathcal{M}'\restr{\mathcal{L}}$ と書き、$\mathcal{M}'$ の $\mathcal{L}$ への**縮小**という（逆に $\mathcal{M}'$ を $\mathcal{M}'\restr{\mathcal{L}}$ の**拡大**という）。このとき、任意の $\mathcal{L}$ の論理式 $\varphi$ と割り当て $v$ について
+$$
+\mathcal{M}',v\models\varphi\iff\mathcal{M}'\restr{\mathcal{L}},v\models\varphi .
+$$
+より一般に、同じ領域をもつ二つの構造が $\varphi$ に現れる非論理記号の解釈で一致するなら、$\varphi$ の充足は一致する。
+:::
+
+::: proof
+後半を示せば前半は特別な場合である。$\mathcal{M}_{1},\mathcal{M}_{2}$ を同じ領域 $M$ をもち、項 $t$（論理式 $\varphi$）に現れる記号の解釈が一致する構造とする。項の値 $t^{\mathcal{M}_{1},v}=t^{\mathcal{M}_{2},v}$ は項に関する帰納法で直ちに従う（各段で使う解釈が一致する）。論理式についても帰納法で、原子論理式は項の値と $P^{\mathcal{M}_{1}}=P^{\mathcal{M}_{2}}$ から、含意は帰納法の仮定から、全称は領域が同じなので「すべての $a\in M$」が同じ範囲を動くことと帰納法の仮定から従う。
+:::
+
+::: proposition 同型は充足を保つ {#logic:isomorphism-invariance keywords="isomorphism, isomorphism invariance" index="同型|どうけい"}
+$\mathcal{L}$ 構造 $\mathcal{M},\mathcal{N}$ の間の**同型写像**とは、全単射 $h\colon M\to N$ で、すべての定数記号 $c$、関数記号 $f$、関係記号 $P$ と $a_{1},\dots,a_{n}\in M$ について
+$$
+\begin{aligned}
+&h(c^{\mathcal{M}})=c^{\mathcal{N}},\quad h(f^{\mathcal{M}}(a_{1},\dots,a_{n}))=f^{\mathcal{N}}(h(a_{1}),\dots,h(a_{n})),\\
+&(a_{1},\dots,a_{n})\in P^{\mathcal{M}}\iff(h(a_{1}),\dots,h(a_{n}))\in P^{\mathcal{N}}
+\end{aligned}
+$$
+を満たすもののことである。このとき任意の論理式 $\varphi$ と $\mathcal{M}$ の割り当て $v$ について、$\mathcal{M},v\models\varphi\iff\mathcal{N},h\circ v\models\varphi$ が成り立つ。
+:::
+
+::: proof
+**Step 1.** 項に関する帰納法で $h(t^{\mathcal{M},v})=t^{\mathcal{N},h\circ v}$：変数では $h(v(x))=(h\circ v)(x)$、定数・関数記号では同型写像の条件による。
+
+**Step 2.** 論理式に関する帰納法。等式は Step 1 と $h$ の単射性、関係記号は Step 1 と同型写像の条件、含意は帰納法の仮定による。全称では、$\mathcal{M},v\models\forall x\,\alpha$ は「すべての $a\in M$ について $\mathcal{M},v[x\mapsto a]\models\alpha$」であり、帰納法の仮定と $h\circ(v[x\mapsto a])=(h\circ v)[x\mapsto h(a)]$ より「すべての $a\in M$ について $\mathcal{N},(h\circ v)[x\mapsto h(a)]\models\alpha$」と同値である。$h$ は全射なので $h(a)$ は $N$ 全体を動き、これは $\mathcal{N},h\circ v\models\forall x\,\alpha$ と同値である。
+
+::: hypcheck
+- **単射性**：Step 2 の等式の場合（$h(a)=h(b)\Rightarrow a=b$）。単射でない準同型では等式が保たれない。
+- **全射性**：Step 2 の全称の場合。全射でない埋め込みでは全称文は一般に保たれない（$\N\subset\Z$ で「最小元がある」）。
+:::
+:::
+
+## 意味論的代入補題 {#logic:sec-semantics-substitution}
+
+::: theorem 意味論的代入補題 {#logic:semantic-substitution keywords="substitution lemma, semantic substitution lemma" index="意味論的代入補題|いみろんてきだいにゅうほだい, 代入補題|だいにゅうほだい"}
+$\mathcal{M}$ を構造、$v$ を割り当て、$s$ を項、$x$ を変数とし、$b=s^{\mathcal{M},v}$ とおく。
+1. 任意の項 $t$ について $\bigl(t[s/x]\bigr)^{\mathcal{M},v}=t^{\mathcal{M},v[x\mapsto b]}$。
+2. $s$ が $\varphi$ の中で $x$ に代入可能ならば、$\mathcal{M},v\models\varphi[s/x]\iff\mathcal{M},v[x\mapsto b]\models\varphi$。
+:::
+
+::: intuition
+「$x$ に $s$ を代入した論理式が成り立つ」ことと「$x$ の値を $s$ の値にしたとき元の論理式が成り立つ」ことが一致する。構文の操作（代入）と意味の操作（割り当ての書き換え）が対応する、というのがこの定理の内容であり、代入可能性はまさにこの対応が崩れない条件である。
+:::
+
+::: proof
+**Step 1（項）.** 項に関する帰納法。$t=x$ なら、左辺は $s^{\mathcal{M},v}=b$、右辺は $v[x\mapsto b](x)=b$。$t=y\neq x$ なら両辺 $v(y)$。$t=c$ なら両辺 $c^{\mathcal{M}}$。$t=f(t_{1},\dots,t_{n})$ なら成分ごとに帰納法の仮定を使う。
+
+**Step 2（原子論理式と含意）.** 原子論理式では、代入は各項への代入なので、Step 1 と充足の定義 2, 3 から従う。含意では、代入可能性は成分に引き継がれるので、帰納法の仮定と定義 4 から従う。
+
+**Step 3（全称、$x\notin\mathrm{FV}(\varphi)$）.** $\varphi=\forall y\,\alpha$ で $x\notin\mathrm{FV}(\varphi)$ とする。\ref{logic:substitution-basic} の 1 より $\varphi[s/x]=\varphi$。また $v$ と $v[x\mapsto b]$ は $x$ 以外で一致するので $\mathrm{FV}(\varphi)$ 上で一致し、一致補題（\ref{logic:coincidence}）より両辺が一致する。
+
+**Step 4（全称、$x\in\mathrm{FV}(\varphi)$）.** このとき $y\neq x$ であり、代入可能性の定義より $y\notin\mathrm{var}(s)$ かつ $s$ は $\alpha$ の中で $x$ に代入可能である。$\varphi[s/x]=\forall y\,(\alpha[s/x])$ なので、
+$$
+\mathcal{M},v\models\varphi[s/x]\iff\text{すべての }a\in M\text{ について }\mathcal{M},v[y\mapsto a]\models\alpha[s/x].
+$$
+各 $a$ について帰納法の仮定を割り当て $v[y\mapsto a]$ に適用すると、右辺の各条件は
+$$
+\mathcal{M},v[y\mapsto a]\bigl[x\mapsto s^{\mathcal{M},v[y\mapsto a]}\bigr]\models\alpha
+$$
+と同値である。$y\notin\mathrm{var}(s)$ なので、一致補題の 1 より $s^{\mathcal{M},v[y\mapsto a]}=s^{\mathcal{M},v}=b$。さらに $x\neq y$ なので \ref{logic:assignment-update} の 2 より $v[y\mapsto a][x\mapsto b]=v[x\mapsto b][y\mapsto a]$。したがって右辺は「すべての $a$ について $\mathcal{M},v[x\mapsto b][y\mapsto a]\models\alpha$」、すなわち $\mathcal{M},v[x\mapsto b]\models\forall y\,\alpha$ と同値である。
+
+::: hypcheck
+- **代入可能性**：Step 4 の $y\notin\mathrm{var}(s)$（$s$ の値が $y$ の書き換えで変わらないこと）で使った。外すと偽：\ref{logic:ex-capture} の $\varphi=\exists y\,(x<y)$、$s=y$、標準構造 $\mathcal{N}$ では、$\mathcal{N},v[x\mapsto v(y)]\models\varphi$（$v(y)$ より大きい数がある）は常に真だが、$\mathcal{N},v\models\varphi[y/x]=\exists y\,(y<y)$ は偽である。
+- **$x\neq y$**：Step 4 の割り当ての交換。$x=y$ の場合は Step 3 に含まれる（$x\notin\mathrm{FV}(\forall x\,\alpha)$）。
+- **一致補題**：Step 3 と Step 4 の両方で使った。
+:::
+:::
+
+::: corollary 定数の代入 {#logic:constant-substitution-semantics keywords="substituting constants"}
+$x_{1},\dots,x_{n}$ を互いに異なる変数、$c_{1},\dots,c_{n}$ を定数記号とする。任意の論理式 $\varphi$ と割り当て $v$ について
+$$
+\mathcal{M},v\models\varphi[c_{1}/x_{1}]\cdots[c_{n}/x_{n}]\iff\mathcal{M},v[x_{1}\mapsto c_{1}^{\mathcal{M}}]\cdots[x_{n}\mapsto c_{n}^{\mathcal{M}}]\models\varphi .
+$$
+とくに $\mathrm{FV}(\varphi)\subset\{x_{1},\dots,x_{n}\}$ ならば、左辺の論理式は文であり、その真偽は右辺の割り当てのもとでの $\varphi$ の真偽に等しい。
+:::
+
+::: proof
+$n$ に関する帰納法。$n=0$ は自明。$\psi=\varphi[c_{1}/x_{1}]\cdots[c_{n-1}/x_{n-1}]$ とおく。定数記号は変数を含まないので、$c_{n}$ は $\psi$ の中で $x_{n}$ に代入可能である（\ref{logic:substitutable-sufficient} の 2）。\ref{logic:semantic-substitution} より $\mathcal{M},v\models\psi[c_{n}/x_{n}]\iff\mathcal{M},v[x_{n}\mapsto c_{n}^{\mathcal{M}}]\models\psi$。右辺に帰納法の仮定を割り当て $v[x_{n}\mapsto c_{n}^{\mathcal{M}}]$ で適用すると、$\mathcal{M},v[x_{n}\mapsto c_{n}^{\mathcal{M}}][x_{1}\mapsto c_{1}^{\mathcal{M}}]\cdots[x_{n-1}\mapsto c_{n-1}^{\mathcal{M}}]\models\varphi$ と同値である。$x_{n}$ は $x_{1},\dots,x_{n-1}$ と異なるので、\ref{logic:assignment-update} の 2 を繰り返し使って $[x_{n}\mapsto c_{n}^{\mathcal{M}}]$ を最後に移せる。後半は \ref{logic:substitution-fv} を繰り返し使えば $\varphi[c_{1}/x_{1}]\cdots[c_{n}/x_{n}]$ の自由変数が空になることから従う。
+:::
+
+## モデルと論理的帰結 {#logic:sec-semantics-consequence}
+
+::: definition モデルと論理的帰結 {#logic:model keywords="model, logical consequence, validity, satisfiable, semantic consequence" index="モデル|もでる, 論理的帰結|ろんりてききけつ, 妥当|だとう, 充足可能|じゅうそくかのう, 恒真|こうしん"}
+$\Sigma$ を論理式の集合とする。
+1. $\mathcal{M},v\models\Sigma$ とは、すべての $\psi\in\Sigma$ について $\mathcal{M},v\models\psi$ であることをいう。
+2. $\varphi$ が文のとき、$\mathcal{M},v\models\varphi$ は $v$ によらない（\ref{logic:coincidence}）ので、これを $\mathcal{M}\models\varphi$ と書き、「$\varphi$ は $\mathcal{M}$ で**真**である」という。文の集合 $\Sigma$ のすべての元が $\mathcal{M}$ で真のとき、$\mathcal{M}$ を $\Sigma$ の**モデル**といい $\mathcal{M}\models\Sigma$ と書く。
+3. $\varphi$ が $\Sigma$ の**論理的帰結**である（$\Sigma\models\varphi$）とは、任意の構造 $\mathcal{M}$ と任意の割り当て $v$ について、$\mathcal{M},v\models\Sigma$ ならば $\mathcal{M},v\models\varphi$ であることをいう。$\varnothing\models\varphi$ を $\models\varphi$ と書き、$\varphi$ は**妥当**（恒真）であるという。
+4. ある $\mathcal{M},v$ について $\mathcal{M},v\models\Sigma$ となるとき、$\Sigma$ は**充足可能**であるという。
+:::
+
+::: intuition
+$\Sigma\models\varphi$ は、「前提と結論の自由変数の値を**同時に**同じように定めたとき、前提がすべて成り立てば結論も成り立つ」という意味である。自由変数は、前提と結論に共通の「任意に固定された値」として扱われる。数学で「$x$ を実数とし、$x>0$ とする。このとき $x^{2}>0$」と書くときの $x$ の扱いにあたる。
+:::
+
+::: proposition 論理的帰結の基本性質 {#logic:consequence-basic keywords="basic properties of logical consequence"}
+1. $\Sigma\models\varphi$ かつ $\Sigma\subset\Sigma'$ ならば $\Sigma'\models\varphi$。
+2. $\Sigma\cup\{\varphi\}\models\psi\iff\Sigma\models\varphi\to\psi$。
+3. $\Sigma\models\varphi\iff\Sigma\cup\{\neg\varphi\}$ は充足可能でない。
+:::
+
+::: proof
+**1.** $\mathcal{M},v\models\Sigma'$ なら $\mathcal{M},v\models\Sigma$ なので $\mathcal{M},v\models\varphi$。
+
+**2.** ($\Rightarrow$) $\mathcal{M},v\models\Sigma$ とする。$\mathcal{M},v\not\models\varphi$ なら充足の定義 4 より $\mathcal{M},v\models\varphi\to\psi$。$\mathcal{M},v\models\varphi$ なら $\mathcal{M},v\models\Sigma\cup\{\varphi\}$ なので仮定より $\mathcal{M},v\models\psi$、よって $\mathcal{M},v\models\varphi\to\psi$。($\Leftarrow$) $\mathcal{M},v\models\Sigma\cup\{\varphi\}$ なら仮定より $\mathcal{M},v\models\varphi\to\psi$、これと $\mathcal{M},v\models\varphi$ から定義 4 により $\mathcal{M},v\models\psi$。
+
+**3.** $\Sigma\cup\{\neg\varphi\}$ が充足可能 $\iff$ ある $\mathcal{M},v$ で $\mathcal{M},v\models\Sigma$ かつ $\mathcal{M},v\not\models\varphi$（\ref{logic:abbreviation-semantics} の 1）$\iff\Sigma\not\models\varphi$。
+:::
+
+::: remark 大域的な帰結との違い {#logic:global-consequence}
+自由変数を含む論理式について、別の定義 $\Sigma\models_{\mathrm{gl}}\varphi$ :「任意の構造 $\mathcal{M}$ について、すべての割り当て $v$ で $\mathcal{M},v\models\Sigma$ ならば、すべての割り当て $v$ で $\mathcal{M},v\models\varphi$」を考えることもできる。二つは次の点で異なる。
+- $\Sigma\models\varphi$ ならば $\Sigma\models_{\mathrm{gl}}\varphi$ である（すべての $v$ で前提が成り立つなら、各 $v$ で結論が成り立つ）。
+- 逆は成り立たない。$\{P(x)\}\models_{\mathrm{gl}}\forall x\,P(x)$ である（すべての割り当てで $P(x)$ が成り立つなら、領域のすべての元が $P^{\mathcal{M}}$ に属する）。しかし $\{P(x)\}\not\models\forall x\,P(x)$ である。領域 $\{0,1\}$、$P^{\mathcal{M}}=\{0\}$、$v(x)=0$ とすると、$\mathcal{M},v\models P(x)$ だが $\mathcal{M},v\not\models\forall x\,P(x)$。
+- $\Sigma$ と $\varphi$ がすべて文なら、一致補題より二つは一致する。
+
+本系列では 3 の $\models$（局所的な帰結）を採用する。自然演繹の $\forall$ 導入規則の固有変数条件（\ref{logic:page-natural-deduction}）はこの定義に合わせたものであり、$P(x)$ から $\forall x\,P(x)$ は導けない。大域的な帰結を採る流儀（たとえば、自由変数を含む論理式を全称閉包と同一視する流儀。\ref{set:page-axioms} の約束もこれにあたる）では、証明体系の側も「$\varphi$ から $\forall x\,\varphi$ を常に導ける」ように作る必要がある。
+:::
+
+## 問題 {#logic:sec-semantics-problems}
+
+::: problem 酒場の論理式 {#logic:prob-drinker}
+$\varphi=\exists x\,(P(x)\to\forall y\,P(y))$ が妥当であることを示せ。また、領域として空集合を許すと妥当でなくなることを確かめよ。
+:::
+
+::: solution
+$\mathcal{M},v$ を任意にとる（領域 $M\neq\varnothing$）。\ref{logic:abbreviation-semantics} の 5 より、ある $a\in M$ について $\mathcal{M},v[x\mapsto a]\models P(x)\to\forall y\,P(y)$ を示せばよい。
+- $P^{\mathcal{M}}=M$ の場合：任意の $a\in M$ をとる（$M\neq\varnothing$ を使う）。$\mathcal{M},v[x\mapsto a]\models\forall y\,P(y)$ なので含意も充足される。
+- $P^{\mathcal{M}}\neq M$ の場合：$a\in M\setminus P^{\mathcal{M}}$ をとる。$\mathcal{M},v[x\mapsto a]\not\models P(x)$ なので含意は充足される。
+
+領域が空だと「ある $a\in M$」が満たされえないので、$\exists x$ で始まる論理式はどれも充足されない。
+:::
+
+::: problem {#logic:prob-order-of-quantifiers}
+$\forall x\,\exists y\,Q(x,y)\models\exists y\,\forall x\,Q(x,y)$ は成り立たないことを、反例となる構造を挙げて示せ。逆向きは成り立つことを示せ。
+:::
+
+::: solution
+反例：領域 $\N$、$Q^{\mathcal{M}}=\{(m,n):m<n\}$。任意の $m$ に $m+1$ があるので前提は真。しかし、すべての $m$ について $m<n$ となる $n$ はない（$m=n$ で偽）ので結論は偽。逆向き：$\mathcal{M},v\models\exists y\,\forall x\,Q(x,y)$ とし、$b$ をその証拠とする（すべての $a$ について $\mathcal{M},v[y\mapsto b][x\mapsto a]\models Q(x,y)$）。任意の $a$ に対し、同じ $b$ をとれば、\ref{logic:assignment-update} の 2 より $\mathcal{M},v[x\mapsto a][y\mapsto b]\models Q(x,y)$ なので、$\mathcal{M},v[x\mapsto a]\models\exists y\,Q(x,y)$。よって $\mathcal{M},v\models\forall x\,\exists y\,Q(x,y)$。
+:::
+
+::: problem {#logic:prob-substitution-fails}
+$s$ が $\varphi$ の中で $x$ に代入可能でなくても、$\models\forall x\,\varphi\to\varphi[s/x]$ が成り立つことがある。例を挙げよ。また、成り立たない例も挙げよ。
+:::
+
+::: solution
+成り立つ例：$\varphi=\forall y\,(x=x)$, $s=y$。$y$ は代入可能でないが、$\varphi[s/x]=\forall y\,(y=y)$ は妥当なので、含意は妥当。成り立たない例：$\varphi=\exists y\,\neg\,x=y$, $s=y$。$\forall x\,\exists y\,\neg\,x=y$ は二元以上の領域で真だが、$\varphi[y/x]=\exists y\,\neg\,y=y$ はどの構造でも偽である。代入可能性は十分条件であって、必要条件ではない。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

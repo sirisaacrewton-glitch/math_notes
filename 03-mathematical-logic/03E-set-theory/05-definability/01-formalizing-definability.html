@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>定義可能性の形式化 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/05-definability/01-formalizing-definability.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 定義可能性の形式化 {#set:page-formalizing-definability keywords="definable relations, Df, En, projection, diagonal relation, elementary submodel, downward Lowenheim-Skolem-Tarski theorem, elementary equivalence, Berry paradox"}
+
+「英語（や日本語）の性質でただ一つ定まる集合」を定義可能と呼ぶと、定義可能な集合は可算個しかないので定義可能でない最小の順序数 $\delta$ があるが、いまそれを定義してしまった、という逆説が生じる。これは \ref{set:page-axioms} で触れたベリーの逆説と同じ種類のもので、「性質」という不正確な概念を無造作に使ったことによる。性質を論理式に限ると、「$x$ はある論理式で定義される」を表す論理式は書けないので、この議論は $\ZF$ の中では行えない。
+
+本ページでは代わりに、**集合 $A$ に相対化した論理式**で定義される $A$ 上の関係の全体 $\mathrm{Df}(A,n)$ を、$\ZF$ の中の一つの演算として定義する。構文論を形式化する代わりに、基本的な関係から出発して、補集合・共通部分・射影（$\lnot$, $\land$, $\exists$ に対応）で閉じた最小の集まりとして定めるのである。さらにその枚挙 $\mathrm{En}$ を定め、それらが推移的なモデルについて絶対的であることを示す。これは次ページの順序数定義可能集合と、第 VI 章の構成可能集合の土台になる。本ページの議論はすべて $\ZF-\mathrm{P}$ の中で行い、選択公理は（明記した \ref{set:downward-lst} を除いて）使わない。（Kunen 第 V 章冒頭と §1 に対応する。）
+
+## 記法と定義の確認 {#set:sec-df-notation}
+
+::: notation
+- 基礎の公理を断りなく仮定する（\ref{set:page-more-absoluteness}）。本ページの結果は（\ref{set:downward-lst} を除き）$\ZF-\mathrm{P}$ で証明される。
+- $n\in\omega$ と集合 $A$ について、${}^{n}A$ は $n$ から $A$ への関数（長さ $n$ の列）全体（\ref{set:finite-sequence}）。${}^{0}A=\{\varnothing\}=1$ である。$s\in{}^{n}A$ と $x$ に対し、$s^{\frown}\langle x\rangle\defeq s\cup\{\langle n,x\rangle\}\in{}^{n+1}A$。$t\in{}^{n+1}A$ の $n$ への制限を $t\restr n$ と書く。
+- 論理式はもとの言語の論理式で、$\in$, $=$ から $\lnot$, $\land$, $\exists$ で作られる（\ref{set:relativization}）。集合 $A$ への相対化 $\varphi^{A}$ はクラス $\{x:x\in A\}$ への相対化である。
+- 絶対性（\ref{set:absolute}）、\ref{set:absolute-basic-notions}, \ref{set:absolute-relations-functions}, \ref{set:absolute-composition} は \ref{set:page-absoluteness}、有限性と ${}^{n}A$ の絶対性（\ref{set:absolute-finite}）、順序数の冪の絶対性（\ref{set:absolute-rank-trcl}）、再帰の絶対性（\ref{set:absolute-wf-recursion}）は \ref{set:page-more-absoluteness}、有限項演算と閉包補題（\ref{set:finitary-closure}, \ref{set:closure-lemma}）は基礎事項のとおり。
+- 自然数の算術（和・積・冪）は $\omega$ 上の順序数の算術と一致する。$2^{i}3^{j}5^{k}$ の形の数についての**素因数分解の一意性**（初等整数論。$\ZF-\mathrm{P}$ で $\omega$ について証明できる）を使う。
+:::
+
+## Df の定義 {#set:sec-df-definition}
+
+::: definition 射影・対角関係・Df {#set:df keywords="Proj, Diag, Df, definable relations on A" index="Df|でぃーえふ, 射影（関係の）|しゃえいかんけいの, 対角関係|たいかくかんけい"}
+$n\in\omega$、$i,j<n$、集合 $A$ と $R$ について次のように定める。
+
+1. $\mathrm{Proj}(A,R,n)\defeq\{s\in{}^{n}A:\exists t\in R\,(t\restr n=s)\}$。
+2. $\mathrm{Diag}_{\in}(A,n,i,j)\defeq\{s\in{}^{n}A:s(i)\in s(j)\}$。
+3. $\mathrm{Diag}_{=}(A,n,i,j)\defeq\{s\in{}^{n}A:s(i)=s(j)\}$。
+4. $k\in\omega$ に関する再帰で、すべての $n$ について同時に $\mathrm{Df}'(k,A,n)$ を定める：
+$$
+\begin{aligned}
+\mathrm{Df}'(0,A,n)\defeq{}&\{\mathrm{Diag}_{\in}(A,n,i,j):i,j<n\}\\
+&\cup\{\mathrm{Diag}_{=}(A,n,i,j):i,j<n\},
+\end{aligned}
+$$
+$$
+\begin{aligned}
+\mathrm{Df}'(k+1,A,n)\defeq{}&\mathrm{Df}'(k,A,n)\cup\{{}^{n}A\setminus R:R\in\mathrm{Df}'(k,A,n)\}\\
+&\cup\{R\cap S:R,S\in\mathrm{Df}'(k,A,n)\}\\
+&\cup\{\mathrm{Proj}(A,R,n):R\in\mathrm{Df}'(k,A,n+1)\}.
+\end{aligned}
+$$
+5. $\mathrm{Df}(A,n)\defeq\bigcup\{\mathrm{Df}'(k,A,n):k\in\omega\}$。
+:::
+
+::: intuition
+${}^{n}A$ の部分集合は「$A$ 上の $n$ 項関係」である。$\mathrm{Diag}_{\in}$, $\mathrm{Diag}_{=}$ は素論理式 $x_{i}\in x_{j}$, $x_{i}=x_{j}$ が定める関係、補集合・共通部分は $\lnot$, $\land$、射影 $\mathrm{Proj}$ は最後の変数 $x_{n}$ を $\exists x_{n}$ で消すことにあたる。$\mathrm{Df}(A,n)$ は「$A$ に相対化した論理式で定義される $n$ 項関係の全体」になるように作られている（\ref{set:df-contains-definable}）。
+:::
+
+4 の再帰では、$\mathrm{Df}'(k+1,A,n)$ が $\mathrm{Df}'(k,A,n)$ と $\mathrm{Df}'(k,A,n+1)$ に依存するので、$A$ を固定して、各 $k$ に関数 $n\mapsto\mathrm{Df}'(k,A,n)$（$\omega$ 上の関数）を対応させる再帰と読む。各段の集合は置換公理で作られるので、冪集合公理は使わない。
+
+::: lemma Df の閉包性 {#set:df-closure}
+$R,S\in\mathrm{Df}(A,n)$ ならば ${}^{n}A\setminus R\in\mathrm{Df}(A,n)$ かつ $R\cap S\in\mathrm{Df}(A,n)$。$R\in\mathrm{Df}(A,n+1)$ ならば $\mathrm{Proj}(A,R,n)\in\mathrm{Df}(A,n)$。
+:::
+
+::: proof
+$\mathrm{Df}'(k,A,n)$ は $k$ について単調増加（定義の第一項）である。$R\in\mathrm{Df}'(k_{1},A,n)$, $S\in\mathrm{Df}'(k_{2},A,n)$ なら $k\defeq\max(k_{1},k_{2})$ で両方とも $\mathrm{Df}'(k,A,n)$ に属し、${}^{n}A\setminus R$, $R\cap S\in\mathrm{Df}'(k+1,A,n)$。射影も同様。
+:::
+
+次の補題は、意図どおり $\mathrm{Df}(A,n)$ が $A$ に相対化した論理式で定義されるすべての関係を含むことを示す。変数の名前の扱いを明確にするため、次の形で述べる。
+
+::: lemma Df は定義可能な関係を含む {#set:df-contains-definable keywords="every relation definable over A belongs to Df(A,n)"}
+$\varphi$ を論理式、$v_{0},\dots,v_{n-1}$ を相異なる変数で $\varphi$ の自由変数をすべて含むものとする。このとき
+$$
+\forall A\;\Bigl[\{s\in{}^{n}A:\varphi^{A}(s(0),\dots,s(n-1))\}\in\mathrm{Df}(A,n)\Bigr].
+\label{set:eq-df-definable}
+$$
+ここで $\varphi^{A}(s(0),\dots,s(n-1))$ は、$\varphi^{A}$ の自由変数 $v_{i}$ に $s(i)$ を割り当てたものである。これは論理式 $\varphi$ と変数の列ごとに一つの $\ZF-\mathrm{P}$ の定理を与える**補題図式**である。
+:::
+
+::: proof
+$\varphi$ の長さに関する帰納法で、**すべての** $n$ と変数の列について \eqref{set:eq-df-definable} を示す。$A$ を固定し、$D_{\varphi}\defeq\{s\in{}^{n}A:\varphi^{A}(\vec{s})\}$ と書く。
+
+- **$\varphi$ が $v_{i}\in v_{j}$（または $v_{i}=v_{j}$）.** $D_{\varphi}=\mathrm{Diag}_{\in}(A,n,i,j)$（または $\mathrm{Diag}_{=}(A,n,i,j)$）$\in\mathrm{Df}'(0,A,n)$。
+- **$\varphi$ が $\lnot\psi$ または $\psi\land\chi$.** $\psi,\chi$ の自由変数も $v_{0},\dots,v_{n-1}$ に含まれるので、帰納法の仮定より $D_{\psi},D_{\chi}\in\mathrm{Df}(A,n)$。$D_{\lnot\psi}={}^{n}A\setminus D_{\psi}$、$D_{\psi\land\chi}=D_{\psi}\cap D_{\chi}$ なので \ref{set:df-closure}。
+- **$\varphi$ が $\exists y\,\psi$ で、$y$ が $v_{0},\dots,v_{n-1}$ のどれでもないとき.** $\psi$ の自由変数は $v_{0},\dots,v_{n-1},y$ に含まれ、これらは相異なる。帰納法の仮定（$n+1$ と列 $v_{0},\dots,v_{n-1},y$）より
+$$
+R\defeq\{t\in{}^{n+1}A:\psi^{A}(t(0),\dots,t(n-1),t(n))\}\in\mathrm{Df}(A,n+1).
+$$
+$s\in{}^{n}A$ について、$s\in\mathrm{Proj}(A,R,n)\iff\exists x\in A\,(s^{\frown}\langle x\rangle\in R)\iff\exists x\in A\,\psi^{A}(\vec{s},x)\iff\varphi^{A}(\vec{s})$（${}^{n+1}A$ の元 $t$ で $t\restr n=s$ となるのは $t=s^{\frown}\langle t(n)\rangle$ だけ）。よって $D_{\varphi}=\mathrm{Proj}(A,R,n)\in\mathrm{Df}(A,n)$。
+- **$\varphi$ が $\exists v_{j}\,\psi$（$j<n$）のとき.** $v_{j}$ は $\varphi$ で自由でない。$\psi$ にも $v_{0},\dots,v_{n-1}$ にも現れない変数 $w$ をとり、列 $v_{0},\dots,v_{j-1},w,v_{j+1},\dots,v_{n-1},v_{j}$（相異なる $n+1$ 個）を考えると、$\psi$ の自由変数はこれに含まれる。帰納法の仮定より、$j$ 番目を $w$、$n$ 番目を $v_{j}$ に割り当てた
+$$
+R\defeq\{t\in{}^{n+1}A:\psi^{A}[v_{i}\mapsto t(i)\ (i\neq j),\ v_{j}\mapsto t(n)]\}\in\mathrm{Df}(A,n+1)
+$$
+（$w$ は $\psi$ に現れないので $t(j)$ は条件に効かない）。$s\in{}^{n}A$ について $s\in\mathrm{Proj}(A,R,n)\iff\exists x\in A\,\psi^{A}[v_{i}\mapsto s(i)\ (i\neq j),\ v_{j}\mapsto x]\iff\varphi^{A}(\vec{s})$（$v_{j}$ は $\varphi$ で自由でないので、$\varphi^{A}(\vec{s})$ は $s(j)$ によらない）。よって $D_{\varphi}\in\mathrm{Df}(A,n)$。
+:::
+
+::: hypcheck
+- 帰納法を「すべての $n$ と変数の列について」行ったのは、$\exists$ の段で $n+1$ 個の変数の場合を使うためである。
+- 最後の場合で新しい変数 $w$ を使うことで、束縛変数の名前の取り替え（論理的同値性の議論）を避けた。Kunen は代わりに束縛変数を取り替えた論理式に移っている。
+- $A=\varnothing$ でも議論はそのまま成り立つ（$n\ge1$ なら ${}^{n}A=\varnothing$、$n=0$ なら ${}^{0}A=\{\varnothing\}$）。
+:::
+
+逆向き、すなわち「$\mathrm{Df}(A,n)$ の元はすべて論理式で定義される」は、直観的には正しい（$k$ に関する帰納法で、$\mathrm{Df}'(k+1,A,n)$ に新しい関係が入る仕方が論理式の作り方に対応する）。しかしすべての論理式について同時に述べる必要があるので、$\ZF$ の一つの文としては書けない。それでも「$\mathrm{Df}(A,n)$ は $A$ 上で定義可能な関係の全体」という直観は、成り立つ「はず」の事実を示唆する点で有用である。たとえば論理式は可算個なので $\mathrm{Df}(A,n)$ は可算である「はず」であり、推移的なモデル $M$ が $A$ を含めば $A$ への相対化の意味は $M$ の中でも $\mathbf{V}$ の中でも同じなので、$\mathrm{Df}$ は絶対的である「はず」である。これらを以下で厳密に示す。構文論と充足関係を $\ZF$ の中で形式化すれば両者の定義は一致することが確かめられる（Kunen 第 V 章の演習 10）。
+
+## 枚挙 En と可算性 {#set:sec-en}
+
+次ページと第 VI 章では、$\mathrm{Df}$ だけでなくその $\omega$ による枚挙も絶対的であることが重要になる。そこで可算性を明示的に示す。
+
+::: definition En {#set:en keywords="En, enumeration of Df(A,n), Gödel numbering shortcut" index="En|いーえぬ"}
+$m\in\omega$ に関する再帰で、すべての $n$ について同時に $\mathrm{En}(m,A,n)$ を次で定める（$i,j<n$ の条件は (a), (b) でのみ課す）。
+
+- (a) $m=2^{i}\cdot3^{j}$ で $i,j<n$ なら $\mathrm{En}(m,A,n)\defeq\mathrm{Diag}_{\in}(A,n,i,j)$。
+- (b) $m=2^{i}\cdot3^{j}\cdot5$ で $i,j<n$ なら $\mathrm{En}(m,A,n)\defeq\mathrm{Diag}_{=}(A,n,i,j)$。
+- (c) $m=2^{i}\cdot3^{j}\cdot5^{2}$ なら $\mathrm{En}(m,A,n)\defeq{}^{n}A\setminus\mathrm{En}(i,A,n)$。
+- (d) $m=2^{i}\cdot3^{j}\cdot5^{3}$ なら $\mathrm{En}(m,A,n)\defeq\mathrm{En}(i,A,n)\cap\mathrm{En}(j,A,n)$。
+- (e) $m=2^{i}\cdot3^{j}\cdot5^{4}$ なら $\mathrm{En}(m,A,n)\defeq\mathrm{Proj}(A,\mathrm{En}(i,A,n+1),n)$。
+- (f) 以上のいずれでもなければ $\mathrm{En}(m,A,n)\defeq0$。
+:::
+
+素因数分解の一意性より、各 $m$ は (a)〜(e) のたかだか一つの形に、ただ一通りの $i,j$ で書ける。また $m=2^{i}3^{j}5^{k}$ なら $i<2^{i}\le m$, $j<3^{j}\le m$ なので、右辺は $m$ より小さい番号の値だけを使う。したがってこれは $m$ に関する（累積的な）再帰として正しい定義であり、$A$ を固定して各 $m$ に関数 $n\mapsto\mathrm{En}(m,A,n)$ を対応させる再帰と読む。
+
+::: lemma Df は En で尽くされる {#set:df-en}
+任意の $n$ と $A$ について $\mathrm{Df}(A,n)=\{\mathrm{En}(m,A,n):m\in\omega\}$。
+:::
+
+::: proof
+**（$\supseteq$）** $m$ に関する帰納法で「すべての $n$ について $\mathrm{En}(m,A,n)\in\mathrm{Df}(A,n)$」を示す。(a), (b) は $\mathrm{Df}'(0,A,n)$ の元。(c)〜(e) は帰納法の仮定（(e) では $n+1$ について）と \ref{set:df-closure}。(f) の $0$ について：$0\in\mathrm{Df}(A,n)$ を示せばよい。$n\ge1$ なら $\mathrm{Diag}_{=}(A,n,0,0)={}^{n}A\in\mathrm{Df}(A,n)$ で、その補集合 $0$ も属する。$n=0$ のときは、$\mathrm{Diag}_{=}(A,1,0,0)={}^{1}A$ の補集合 $0$ が $\mathrm{Df}(A,1)$ に属し、$\mathrm{Proj}(A,0,0)=0$ なので $0\in\mathrm{Df}(A,0)$。
+
+**（$\subseteq$）** $k$ に関する帰納法で「すべての $n$ について $\mathrm{Df}'(k,A,n)\subseteq\{\mathrm{En}(m,A,n):m\in\omega\}$」を示す。$k=0$：$\mathrm{Diag}_{\in}(A,n,i,j)=\mathrm{En}(2^{i}3^{j},A,n)$, $\mathrm{Diag}_{=}(A,n,i,j)=\mathrm{En}(2^{i}3^{j}5,A,n)$。$k\to k+1$：$R=\mathrm{En}(i,A,n)$, $S=\mathrm{En}(j,A,n)$ なら ${}^{n}A\setminus R=\mathrm{En}(2^{i}5^{2},A,n)$、$R\cap S=\mathrm{En}(2^{i}3^{j}5^{3},A,n)$。$R=\mathrm{En}(i,A,n+1)$ なら $\mathrm{Proj}(A,R,n)=\mathrm{En}(2^{i}5^{4},A,n)$。
+:::
+
+::: corollary Df は可算 {#set:df-countable}
+任意の $n$ と $A$ について $\lvert\mathrm{Df}(A,n)\rvert\le\omega$。
+:::
+
+::: proof
+\ref{set:df-en} より $m\mapsto\mathrm{En}(m,A,n)$ は $\omega$ から $\mathrm{Df}(A,n)$ への全射である。各 $R\in\mathrm{Df}(A,n)$ に、$\mathrm{En}(m,A,n)=R$ となる最小の $m$ を対応させると単射 $\mathrm{Df}(A,n)\to\omega$ が得られる（$\omega$ は整列されているので選択公理は要らない）。
+:::
+
+::: lemma Df と En の絶対性 {#set:df-absolute keywords="absoluteness of Df and En for transitive models of ZF - P"}
+演算 $\mathrm{Proj}$, $\mathrm{Diag}_{\in}$, $\mathrm{Diag}_{=}$, $\mathrm{Df}'$, $\mathrm{Df}$, $\mathrm{En}$ は $\ZF-\mathrm{P}$ の推移的なモデルについて絶対的である。
+:::
+
+::: proof
+$M$ を $\ZF-\mathrm{P}$ の推移的なモデルとし、順に確かめる。以下の各演算の存在（一意性条件）は $\ZF-\mathrm{P}$ で証明されるので $M$ の中でも成り立つ。
+
+**Step 1（基本的な部品）.** ${}^{n}A$ は絶対的（\ref{set:absolute-finite}）。「$t\restr n=s$」は、$s,t$ が関数で $\dom(s)=n$ かつ $s\subseteq t$ と同値（$t\in{}^{n+1}A$ のとき）なので絶対的（\ref{set:absolute-relations-functions}, \ref{set:absolute-basic-notions}）。関数の値 $s(i)$ も絶対的。
+
+**Step 2（$\mathrm{Proj}$, $\mathrm{Diag}$）.** $y=\mathrm{Proj}(A,R,n)$ は
+$$
+\begin{aligned}
+&\forall s\in y\,\bigl(s\in{}^{n}A\land\exists t\in R\,(t\restr n=s)\bigr)\\
+&\land\forall s\in{}^{n}A\,\bigl(\exists t\in R\,(t\restr n=s)\to s\in y\bigr)
+\end{aligned}
+$$
+と同値で、これは Step 1 の絶対的な演算と有界量化子の組み合わせなので絶対的（\ref{set:absolute-composition}）。$\mathrm{Diag}_{\in}$, $\mathrm{Diag}_{=}$ も同様。
+
+**Step 3（像）.** 絶対的な演算 $F$ について、$y=\{F(x):x\in X\}$ は $\forall x\in X\,\exists z\in y\,(z=F(x))\land\forall z\in y\,\exists x\in X\,(z=F(x))$ と同値で絶対的（$M$ の中で置換公理によりこの $y$ が存在する）。したがって $\{{}^{n}A\setminus R:R\in X\}$, $\{R\cap S:R,S\in X\}$, $\{\mathrm{Proj}(A,R,n):R\in X\}$ は絶対的。
+
+**Step 4（再帰）.** $A$ を固定すると、$k\mapsto(n\mapsto\mathrm{Df}'(k,A,n))$ は $\omega$ 上の $\in$ に関する再帰で、各段の演算は Step 2, 3 と $\cup$ から作られるので絶対的。\ref{set:absolute-wf-recursion}（$\mathbf{R}=\in$, $\mathbf{A}=\omega$。$\omega$ の絶対性は \ref{set:absolute-ordinals}）より $\mathrm{Df}'$ は絶対的で、$\mathrm{Df}(A,n)=\bigcup\{\mathrm{Df}'(k,A,n):k\in\omega\}$ も絶対的。
+
+**Step 5（$\mathrm{En}$）.** $\mathrm{En}$ も $\omega$ 上の累積的な再帰で、場合分けの条件「$m=2^{i}3^{j}5^{k}$」は $\omega$ 上の順序数の冪と積で書け、それらは絶対的（\ref{set:absolute-rank-trcl} の (a), \ref{set:absolute-ordinal-arithmetic}）。$i,j$ は $m$ 未満の範囲を動く有界量化で探せる。よって \ref{set:absolute-wf-recursion} より絶対的。
+:::
+
+::: hypcheck
+- $M$ が $\ZF-\mathrm{P}$ のモデルであることは、再帰（\ref{set:absolute-wf-recursion} の前提）、置換公理による像の存在、$\omega\in M$ で使った。実際には \ref{set:finite-fragment-absoluteness} のとおり、その有限個の公理で足りる。
+- 冪集合公理は使っていない。$\mathrm{Df}(A,n)$ は ${}^{n}A$ の部分集合の集合だが、$\mathcal{P}({}^{n}A)$ を経由せず置換公理だけで作っている。
+:::
+
+論理学者は、$\mathrm{Df}$ は $\ZF$ の中で論理の構文と充足関係を形式化することの近道であり、$\mathrm{En}$ はゲーデル数付けの近道であると見るだろう。$\mathrm{En}$ を使うと、\ref{set:df-contains-definable} を次のように改良できる（証明はほとんど同じである）。
+
+::: lemma 論理式の番号 {#set:en-formula-number}
+$\varphi$ を論理式、$v_{0},\dots,v_{n-1}$ を相異なる変数で $\varphi$ の自由変数をすべて含むものとする。このとき、ある $m\in\omega$ について
+$$
+\ZF-\mathrm{P}\vdash\forall A\;\Bigl[\{s\in{}^{n}A:\varphi^{A}(s(0),\dots,s(n-1))\}=\mathrm{En}(m,A,n)\Bigr].
+\label{set:eq-en-formula}
+$$
+:::
+
+::: proof
+\ref{set:df-contains-definable} と同じ帰納法で、$\varphi$ から $m$ を具体的に作る。素論理式 $v_{i}\in v_{j}$ には $m=2^{i}3^{j}$、$v_{i}=v_{j}$ には $m=2^{i}3^{j}5$。$\lnot\psi$ には、$\psi$ の番号を $i$ として $m=2^{i}5^{2}$。$\psi\land\chi$ には $m=2^{i}3^{j}5^{3}$（$i,j$ は $\psi,\chi$ の番号）。$\exists$ の二つの場合には、$R$ を与える $\psi$ の番号（$n+1$ 変数の列について）を $i$ として $m=2^{i}5^{4}$。各段の等式は \ref{set:df-contains-definable} の証明の等式そのものである。
+:::
+
+これはメタの理論での主張であり、各 $\varphi$ ごとに \eqref{set:eq-en-formula} が証明できるような $m$ が見つかることを述べる。直観的には $\varphi$ は $n$ 変数の論理式の枚挙 $\mathrm{En}$ における $m$ 番目の論理式である。
+
+## 初等部分構造と下降レーヴェンハイム–スコーレム–タルスキの定理 {#set:sec-elementary-submodel}
+
+$\mathrm{En}$ を使うと、「$A\subseteq B$ で、すべての論理式が $A,B$ について絶対的」を一つの論理式で表せる。これはモデル論の初等部分構造の概念の特別な場合である。以下の内容は本書の大部分では使わないが、構成可能集合についての進んだ議論（第 VI 章の $\lozenge^{+}$ の証明など）で重要になる。
+
+::: definition 初等的な包含 {#set:elementary-inclusion keywords="elementary submodel, A is elementarily included in B" index="初等部分構造（集合論）|しょとうぶぶんこうぞうしゅうごうろん"}
+集合 $A,B$ について、$A\prec B$（$A$ は $B$ に**初等的に含まれる**）とは、$A\subseteq B$ かつ
+$$
+\forall n,m\in\omega\;\bigl[\mathrm{En}(m,A,n)=\mathrm{En}(m,B,n)\cap{}^{n}A\bigr]
+$$
+であることをいう。
+:::
+
+::: lemma 初等的な包含と絶対性 {#set:elementary-absolute}
+各論理式 $\varphi(v_{0},\dots,v_{n-1})$ について、$\ZF-\mathrm{P}\vdash\forall A,B\,[A\prec B\to\varphi\text{ は }A,B\text{ について絶対的}]$。
+:::
+
+::: proof
+\ref{set:en-formula-number} より $m$ をとる。$A\prec B$、$s\in{}^{n}A$ とすると
+$$
+\varphi^{A}(\vec{s})\iff s\in\mathrm{En}(m,A,n)\iff s\in\mathrm{En}(m,B,n)\cap{}^{n}A\iff\varphi^{B}(\vec{s}).
+$$
+第一と第三の $\iff$ は \eqref{set:eq-en-formula}（$A$ と $B$ に適用）、第二は $A\prec B$ による。
+:::
+
+次は下降レーヴェンハイム–スコーレム–タルスキの定理である。これは \ref{set:reflection-countable} とほぼ同じだが、与えられた有限個ではなく**すべての**論理式が $A,B$ について絶対的な $A$ を与える点で強い。一方 \ref{set:reflection-countable} は $B$ が真のクラスであることを許す点で強い（$B$ が真のクラスだと $\mathrm{En}(m,B,n)$ は定義されない）。
+
+::: theorem 下降レーヴェンハイム–スコーレム–タルスキの定理 {#set:downward-lst keywords="downward Lowenheim-Skolem-Tarski theorem, countable elementary submodel" index="下降レーヴェンハイム–スコーレム–タルスキの定理|かこうれーゔぇんはいむすこーれむたるすきのていり"}
+（AC）
+$$
+\forall B\;\forall X\subseteq B\;\exists A\;\bigl[X\subseteq A\subseteq B\land A\prec B\land\lvert A\rvert\le\max(\omega,\lvert X\rvert)\bigr].
+$$
+:::
+
+::: proof
+$B=\varnothing$ なら $A=\varnothing$ でよい。以下 $B\neq\varnothing$ とし、**AC** により $B$ の整列順序 $\lhd$ を固定する。
+
+**Step 1（スコーレム関数）.** 各 $m,n\in\omega$ について $H_{mn}\colon{}^{n}B\to B$ を定める。$m=2^{i}3^{j}5^{4}$ の形で $s\in\mathrm{En}(m,B,n)$ なら（「$n$ 変数の $m$ 番目の論理式は存在量化で、$s$ について真」）、$s^{\frown}\langle x\rangle\in\mathrm{En}(i,B,n+1)$ となる $x\in B$ のうち $\lhd$-最小のものを $H_{mn}(s)$ とする（$s\in\mathrm{Proj}(B,\mathrm{En}(i,B,n+1),n)$ なのでそのような $x$ は存在する）。そうでなければ $H_{mn}(s)$ は $B$ の $\lhd$-最小元とする。$n=0$ のとき $H_{m0}$ は $B$ の元（0 項演算）とみなす。
+
+**Step 2（閉包）.** $A$ を $X$ の $\{H_{mn}:m,n\in\omega\}$ による閉包（\ref{set:finitary-closure}）とする。演算は $\omega\times\omega$ で添字付けられ可算個なので、閉包補題（\ref{set:closure-lemma}、**AC**）より $\lvert A\rvert\le\max(\omega,\lvert X\rvert)$。
+
+**Step 3（$A\prec B$）.** $m$ に関する帰納法で「すべての $n$ について $\mathrm{En}(m,A,n)=\mathrm{En}(m,B,n)\cap{}^{n}A$」を示す。
+
+- (a), (b)：$\{s\in{}^{n}A:s(i)\in s(j)\}=\{s\in{}^{n}B:s(i)\in s(j)\}\cap{}^{n}A$。$=$ も同様。
+- (c)：${}^{n}A\setminus\mathrm{En}(i,A,n)={}^{n}A\setminus(\mathrm{En}(i,B,n)\cap{}^{n}A)=({}^{n}B\setminus\mathrm{En}(i,B,n))\cap{}^{n}A$。
+- (d)：$(\mathrm{En}(i,B,n)\cap{}^{n}A)\cap(\mathrm{En}(j,B,n)\cap{}^{n}A)=(\mathrm{En}(i,B,n)\cap\mathrm{En}(j,B,n))\cap{}^{n}A$。
+- (e)：$m=2^{i}3^{j}5^{4}$ とする。帰納法の仮定（$n+1$ について）より $\mathrm{En}(m,A,n)=\mathrm{Proj}(A,\mathrm{En}(i,B,n+1)\cap{}^{n+1}A,n)$。$\subseteq\mathrm{En}(m,B,n)\cap{}^{n}A$ は明らか。逆に $s\in{}^{n}A$ かつ $s\in\mathrm{En}(m,B,n)$ なら、$x\defeq H_{mn}(s)$ は $A$ に属し（$A$ は $H_{mn}$ で閉じている）、$s^{\frown}\langle x\rangle\in\mathrm{En}(i,B,n+1)\cap{}^{n+1}A$ なので $s\in\mathrm{En}(m,A,n)$。
+- (f)：$0=0\cap{}^{n}A$。
+:::
+
+::: hypcheck
+- AC は整列順序 $\lhd$（スコーレム関数の選択）と閉包補題で使った。
+- (e) の場合で、$A$ がスコーレム関数で閉じていることが本質的に使われた。他の場合は $A\subseteq B$ だけから従う。
+- 帰納法は「すべての $n$ について同時に」行う必要がある。(e) で $n+1$ についての仮定を使うからである。
+:::
+
+$n=0$ の場合の意味を確認しておく。${}^{0}A=\{0\}$ なので、${}^{0}A$ の部分集合は $0$ と $1=\{0\}$ だけである。$n=0$ では $\varphi(s(0),\dots,s(n-1))$ は文 $\varphi$ そのものなので、\ref{set:en-formula-number} は、各文 $\varphi$ についてある $m$ で、すべての $A$ について $\mathrm{En}(m,A,0)=1\iff\varphi^{A}$、$\mathrm{En}(m,A,0)=0\iff\lnot\varphi^{A}$ となることを述べる。そして \ref{set:elementary-absolute} は、$A\prec B$ なら各文 $\varphi$ について $\varphi^{A}\leftrightarrow\varphi^{B}$ であることを述べる。
+
+::: definition 初等的同値 {#set:elementary-equivalence keywords="elementarily equivalent" index="初等的同値|しょとうてきどうち"}
+集合 $A,B$ が**初等的に同値**（$A\equiv B$）であるとは、$\forall m\in\omega\,(\mathrm{En}(m,A,0)=\mathrm{En}(m,B,0))$ であることをいう。
+:::
+
+直観的には $A\equiv B$ は「$A$ と $B$ は同じ文を満たす」ことである。同型なら初等的に同値であると期待される。
+
+::: lemma 同型と En {#set:isomorphism-en}
+$G\colon A\to B$ を $\in$ に関する同型（全単射で、$x\in y\leftrightarrow G(x)\in G(y)$）とする。このとき
+1. $\forall m,n\in\omega\;\forall s\in{}^{n}A\;\bigl(s\in\mathrm{En}(m,A,n)\leftrightarrow G\circ s\in\mathrm{En}(m,B,n)\bigr)$。
+2. $A\equiv B$。
+:::
+
+::: proof
+**1.** $m$ に関する帰納法で、すべての $n$ について同時に示す。$s\mapsto G\circ s$ は ${}^{n}A$ から ${}^{n}B$ への全単射であることに注意する。(a)：$s(i)\in s(j)\iff G(s(i))\in G(s(j))$。(b)：$G$ の単射性。(c), (d)：帰納法の仮定と、$s\mapsto G\circ s$ が全単射であること。(e)：
+$$
+\begin{aligned}
+s\in\mathrm{En}(m,A,n)&\iff\exists x\in A\,\bigl(s^{\frown}\langle x\rangle\in\mathrm{En}(i,A,n+1)\bigr)\\
+&\iff\exists x\in A\,\bigl((G\circ s)^{\frown}\langle G(x)\rangle\in\mathrm{En}(i,B,n+1)\bigr)\\
+&\iff\exists y\in B\,\bigl((G\circ s)^{\frown}\langle y\rangle\in\mathrm{En}(i,B,n+1)\bigr),
+\end{aligned}
+$$
+第二の $\iff$ は帰納法の仮定（$n+1$ について。$G\circ(s^{\frown}\langle x\rangle)=(G\circ s)^{\frown}\langle G(x)\rangle$）、第三は $G$ の全射性による。最後の条件は $G\circ s\in\mathrm{En}(m,B,n)$ である。(f) は両辺とも偽。
+
+**2.** 1 で $n=0$ とすると、${}^{0}A=\{0\}$, $G\circ0=0$ より $0\in\mathrm{En}(m,A,0)\iff0\in\mathrm{En}(m,B,0)$。$\mathrm{En}(m,\cdot,0)\subseteq\{0\}$ なので $\mathrm{En}(m,A,0)=\mathrm{En}(m,B,0)$。
+:::
+
+$A\prec B$ なら $A\equiv B$ である（$n=0$ の場合）。しかし $A\equiv B$ は $A\subseteq B$ も $B\subseteq A$ も意味しない。たとえば $A=\{a\}$, $B=\{b\}$ なら $a\mapsto b$ は同型なので、\ref{set:isomorphism-en} より $A\equiv B$。$G$ をモストフスキの崩壊同型にとる、より本格的な応用は、第 VI 章の $\lozenge^{+}$ の証明で現れる。
+
+## 問題 {#set:sec-df-problems}
+
+::: problem {#set:prob-df-example}
+$\{s\in{}^{1}A:s(0)\cap A=\varnothing\}\in\mathrm{Df}(A,1)$ を、\ref{set:df-contains-definable} を使わずに $\mathrm{Df}'$ の定義から直接示せ。また $A$ が推移的なら、この集合は $\{s\in{}^{1}A:s(0)=\varnothing\}$ に等しいことを示せ。
+:::
+
+::: solution
+$R\defeq\mathrm{Diag}_{\in}(A,2,1,0)=\{t\in{}^{2}A:t(1)\in t(0)\}\in\mathrm{Df}'(0,A,2)$。$P\defeq\mathrm{Proj}(A,R,1)=\{s\in{}^{1}A:\exists x\in A\,(x\in s(0))\}\in\mathrm{Df}'(1,A,1)$。よって ${}^{1}A\setminus P=\{s\in{}^{1}A:s(0)\cap A=\varnothing\}\in\mathrm{Df}'(2,A,1)$。$A$ が推移的なら、$s(0)\in A$ より $s(0)\subseteq A$ なので $s(0)\cap A=s(0)$ であり、条件は $s(0)=\varnothing$ と同値である。（これは論理式 $\lnot\exists x_{1}\,(x_{1}\in x_{0})$ に対応する。$A$ が推移的でないと、$A$ の中で「空に見える」元は本当に空とは限らない：たとえば $A=\{\{\{0\}\}\}$ の唯一の元は $A$ と交わらない。）
+:::
+
+::: problem {#set:prob-elementary-chain}
+集合 $A\subseteq B\subseteq C$ について次を示せ。
+1. $A\prec B$ かつ $B\prec C$ ならば $A\prec C$。
+2. $A\prec C$ かつ $B\prec C$ ならば $A\prec B$。
+:::
+
+::: solution
+**1.** ${}^{n}A\subseteq{}^{n}B$ なので $\mathrm{En}(m,A,n)=\mathrm{En}(m,B,n)\cap{}^{n}A=\mathrm{En}(m,C,n)\cap{}^{n}B\cap{}^{n}A=\mathrm{En}(m,C,n)\cap{}^{n}A$。**2.** $\mathrm{En}(m,A,n)=\mathrm{En}(m,C,n)\cap{}^{n}A=(\mathrm{En}(m,C,n)\cap{}^{n}B)\cap{}^{n}A=\mathrm{En}(m,B,n)\cap{}^{n}A$。
+:::
+
+::: supplement
+**前提の検討.**
+- 本ページの結果は \ref{set:downward-lst} を除いて選択公理を使わず、冪集合公理も使わない。これは第 V 章 §2 と第 VI 章で、$\ZF$ の中で $\ZFC$ のモデルを作るために重要である。
+- \ref{set:df-absolute} は $M$ が推移的であることを本質的に使う（Step 1 で ${}^{n}A$ の絶対性に $A\subseteq M$ を使う）。
+- 素因数分解の一意性は $\mathrm{En}$ の定義の場合分けが互いに排反であるために使った。任意の単射な符号化（たとえば $\omega\times\omega\to\omega$ の全単射）で代用できる。
+
+**関連する結果.** $\mathrm{Df}(A,n)$ は、モデル論でいう構造 $\langle A,\in\rangle$ 上で（パラメータなしで）定義可能な $n$ 項関係の全体にあたる。構成可能集合の定義では、パラメータを許した定義可能部分集合の集まり $\mathcal{D}(A)$ を $\mathrm{Df}$ から作る（第 VI 章）。\ref{set:downward-lst} はモデル論の下降レーヴェンハイム–スコーレムの定理（\ref{model:downward-lowenheim-skolem}）の集合論の言語での特別な場合である。
+
+**高い視点から：論理式を使わずに論理を書く.** $\mathrm{Df}$ は、論理式という「名前」の体系を経由せずに、名前が指す「意味」（定義可能な関係）の集まりを直接、演算で閉じた最小の集まりとして作る。これは代数学で、生成元と演算から部分代数を「最小の閉じた集まり」として定める手法と同じである。論理式の構文を作る代わりに、定義可能な関係のなす**円柱代数**（補集合・共通部分・射影で閉じた関係の集まり）を直接作っていると言える（円柱代数はタルスキらが一階論理の代数化として導入した概念であると一般に言われている。本サイトでは扱っていない）。$\mathrm{En}$ はその代数の「生成の履歴」を自然数で記録したもので、ゲーデル数付けの役割を果たす。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

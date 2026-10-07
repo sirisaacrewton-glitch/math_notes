@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>計算可能性の発展 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/03-advanced-computability/index.html" data-kind="dir">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 計算可能性の発展（Advanced Topics in Computability）
+
+計算可能性理論の応用と発展：論理的理論の決定可能性（プレスブルガー算術の決定可能性、算術の決定不能性）、チューリング還元と神託機械、跳躍、算術的階層、解析的階層と Π¹₁ 標準形、計算可能順序数とスペクターの有界性定理。（Sipser 第 6 章を参考。算術的階層以降は Sipser にないので、新井『数学基礎論』第 6 章で補う）
+
+<p class="mn-msc">MSC2020: 03D20, 03D25, 03D32, 03D55, 03D60</p>
+
+## 前提知識
+
+- [計算理論 › 計算可能性理論](../../../03-mathematical-logic/03D-computability-theory/02-computability/index.html)（全体、12 ページ）：チューリング機械、決定可能性、還元、再帰定理
+
+## 目次
+
+<ol class="mn-dirtoc">
+<li value="1"><a href="01-logical-theories.html">§1 論理的理論の決定可能性</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 1.1</span> <span class="mn-dirtoc-title">列の二進表記</span></li><li><span class="mn-dirtoc-kind">補題 1.2</span> <span class="mn-dirtoc-title">論理式のオートマトン</span></li><li><span class="mn-dirtoc-kind">定理 1.3</span> <span class="mn-dirtoc-title">加法の理論の決定可能性</span></li><li><span class="mn-dirtoc-kind">補題 1.4</span> <span class="mn-dirtoc-title">チューリング機械の計算の Σ 定義可能性</span></li><li><span class="mn-dirtoc-kind">定理 1.5</span> <span class="mn-dirtoc-title">算術の理論の決定不能性</span></li></ul></li>
+<li value="2"><a href="02-turing-reducibility.html">§2 チューリング還元と算術的階層</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 2.1</span> <span class="mn-dirtoc-title">神託機械</span></li><li><span class="mn-dirtoc-kind">命題 2.2</span> <span class="mn-dirtoc-title">チューリング還元の基本性質</span></li><li><span class="mn-dirtoc-kind">定義 2.3</span> <span class="mn-dirtoc-title">ジャンプ</span></li><li><span class="mn-dirtoc-kind">定理 2.4</span> <span class="mn-dirtoc-title">ジャンプの性質</span></li><li><span class="mn-dirtoc-kind">定義 2.5</span> <span class="mn-dirtoc-title">算術的階層</span></li><li><span class="mn-dirtoc-kind">補題 2.6</span> <span class="mn-dirtoc-title">階層の基本性質</span></li><li><span class="mn-dirtoc-kind">定理 2.7</span> <span class="mn-dirtoc-title">$\Sigma_{1}$ と認識可能性（クリーネの標準形）</span></li><li><span class="mn-dirtoc-kind">補題 2.8</span> <span class="mn-dirtoc-title">普遍集合</span></li><li><span class="mn-dirtoc-kind">定理 2.9</span> <span class="mn-dirtoc-title">階層定理</span></li></ul></li>
+<li value="3"><a href="03-analytical-hierarchy.html">§3 解析的階層と Π¹₁ 標準形</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 3.1</span> <span class="mn-dirtoc-title">計算可能な関係</span></li><li><span class="mn-dirtoc-kind">補題 3.2</span> <span class="mn-dirtoc-title">使用の原理</span></li><li><span class="mn-dirtoc-kind">定義 3.4</span> <span class="mn-dirtoc-title">解析的階層</span></li><li><span class="mn-dirtoc-kind">補題 3.5</span> <span class="mn-dirtoc-title">量化子の吸収</span></li><li><span class="mn-dirtoc-kind">定理 3.6</span> <span class="mn-dirtoc-title">解析的枚挙定理と階層定理</span></li><li><span class="mn-dirtoc-kind">定義 3.7</span> <span class="mn-dirtoc-title">木と整礎性</span></li><li><span class="mn-dirtoc-kind">定理 3.8</span> <span class="mn-dirtoc-title">Π¹₁ 標準形</span></li><li><span class="mn-dirtoc-kind">定理 3.9</span> <span class="mn-dirtoc-title">WT は Π¹₁ 完全</span></li></ul></li>
+<li value="4"><a href="04-boundedness.html">§4 計算可能順序数とスペクターの有界性定理</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">補題 4.1</span> <span class="mn-dirtoc-title">整礎木の子関係は整礎</span></li><li><span class="mn-dirtoc-kind">定義 4.2</span> <span class="mn-dirtoc-title">整礎木のランクと深さ</span></li><li><span class="mn-dirtoc-kind">補題 4.3</span> <span class="mn-dirtoc-title">ランクと深さの基本性質</span></li><li><span class="mn-dirtoc-kind">定義 4.4</span> <span class="mn-dirtoc-title">木の埋め込み</span></li><li><span class="mn-dirtoc-kind">補題 4.5</span> <span class="mn-dirtoc-title">木の比較補題</span></li><li><span class="mn-dirtoc-kind">補題 4.6</span> <span class="mn-dirtoc-title">埋め込み可能性は Σ¹₁</span></li><li><span class="mn-dirtoc-kind">定義 4.7</span> <span class="mn-dirtoc-title">計算可能順序数とチャーチ–クリーネ順序数</span></li><li><span class="mn-dirtoc-kind">定理 4.8</span> <span class="mn-dirtoc-title">計算可能順序数の基本性質</span></li><li><span class="mn-dirtoc-kind">定義 4.9</span> <span class="mn-dirtoc-title">計算可能な整列順序</span></li><li><span class="mn-dirtoc-kind">定義 4.10</span> <span class="mn-dirtoc-title">クリーネ–ブラウワー順序</span></li><li><span class="mn-dirtoc-kind">補題 4.11</span> <span class="mn-dirtoc-title">クリーネ–ブラウワー順序の性質</span></li><li><span class="mn-dirtoc-kind">定理 4.12</span> <span class="mn-dirtoc-title">計算可能順序数と計算可能な整列順序</span></li></ul></li>
+<li value="5"><a href="05-pi11-prewellordering.html">§5 Π¹₁ の前整列性：縮小・分離・一様化と基底定理</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 5.1</span> <span class="mn-dirtoc-title">Π¹₁ ノルム</span></li><li><span class="mn-dirtoc-kind">補題 5.2</span> <span class="mn-dirtoc-title">WT の標準ノルム</span></li><li><span class="mn-dirtoc-kind">定理 5.3</span> <span class="mn-dirtoc-title">Π¹₁ の前整列性</span></li><li><span class="mn-dirtoc-kind">定理 5.4</span> <span class="mn-dirtoc-title">Π¹₁ の縮小性</span></li><li><span class="mn-dirtoc-kind">系 5.5</span> <span class="mn-dirtoc-title">Σ¹₁ の分離定理</span></li><li><span class="mn-dirtoc-kind">系 5.6</span> <span class="mn-dirtoc-title">被覆定理</span></li><li><span class="mn-dirtoc-kind">定理 5.8</span> <span class="mn-dirtoc-title">Δ¹₁ で分離できない Π¹₁ 集合の対</span></li><li><span class="mn-dirtoc-kind">定理 5.9</span> <span class="mn-dirtoc-title">Π¹₁ 関係の数についての一様化</span></li><li><span class="mn-dirtoc-kind">系 5.10</span> <span class="mn-dirtoc-title">Δ¹₁ 選択</span></li><li><span class="mn-dirtoc-kind">定理 5.11</span> <span class="mn-dirtoc-title">クリーネの基底定理</span></li></ul></li>
+<li value="6"><a href="06-hyperarithmetic.html">§6 超算術的階層とクリーネの定理</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 6.1</span> <span class="mn-dirtoc-title">H 集合</span></li><li><span class="mn-dirtoc-kind">補題 6.2</span> <span class="mn-dirtoc-title">H 集合の存在と一意性</span></li><li><span class="mn-dirtoc-kind">補題 6.3</span> <span class="mn-dirtoc-title">H 集合であることは算術的</span></li><li><span class="mn-dirtoc-kind">定義 6.4</span> <span class="mn-dirtoc-title">超算術的集合</span></li><li><span class="mn-dirtoc-kind">定理 6.5</span> <span class="mn-dirtoc-title">超算術的集合は Δ¹₁</span></li><li><span class="mn-dirtoc-kind">補題 6.6</span> <span class="mn-dirtoc-title">深さ β 未満の節点の再帰的特徴づけ</span></li><li><span class="mn-dirtoc-kind">補題 6.7</span> <span class="mn-dirtoc-title">神託機械の構成の一様性</span></li><li><span class="mn-dirtoc-kind">定理 6.8</span> <span class="mn-dirtoc-title">Δ¹₁ 集合は超算術的</span></li><li><span class="mn-dirtoc-kind">定理 6.9</span> <span class="mn-dirtoc-title">クリーネの定理</span></li><li><span class="mn-dirtoc-kind">系 6.10</span> <span class="mn-dirtoc-title">超算術的集合の閉包性</span></li></ul></li>
+</ol>
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

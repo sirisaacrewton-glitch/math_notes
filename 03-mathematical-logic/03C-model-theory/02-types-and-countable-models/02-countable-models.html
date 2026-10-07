@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>原子モデル・素モデル・可算範疇性 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03C-model-theory/02-types-and-countable-models/02-countable-models.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 原子モデル・素モデル・可算範疇性 {#model:page-countable-models keywords="atomic model, prime model, back-and-forth, omega-categorical, Ryll-Nardzewski theorem, Cantor's theorem on dense linear orders, countable type spaces"}
+
+完全な理論 $T$ の可算モデルを、実現する型で比べる。すべての組の型が孤立している**原子モデル**は、可算なら同型を除いて一つで、$T$ のすべてのモデルに初等的に埋め込まれる（**素モデル**、\ref{model:atomic-prime}, \ref{model:atomic-unique}）。型空間が可算なら可算原子モデルが存在する（\ref{model:atomic-existence}）。これらを組み合わせると、可算モデルが同型を除いて一つしかない理論（$\omega$ **範疇的**な理論）が、型空間が有限であることで特徴づけられる（**ライル–ナルジェフスキの定理**、\ref{model:ryll-nardzewski}）。例として、端点のない稠密線形順序の可算モデルが $(\mathbb{Q},<)$ だけであること（カントールの定理）を、前々ページの量化子消去から導く。
+
+## 記法と定義の確認 {#model:sec-countable-notation}
+
+::: notation
+- 型、実現・省略、$\mathrm{tp}^{\mathcal{M}}(\vec{a})$、完全型 $S_{n}(T)$、孤立した型、型の基本性質（\ref{model:type-basic}）、孤立型はすべてのモデルで実現されること（\ref{model:isolated-realized}）、型の省略定理（\ref{model:omitting-types}）は \ref{model:page-types-omitting} のとおり。
+- 下降レーヴェンハイム–スコーレムの定理（\ref{model:downward-lowenheim-skolem}）、初等埋め込み（\ref{model:elementary-embedding}）は \ref{model:page-elementary-substructures} のとおり。
+- 本ページでは、$\mathcal{L}$ は**可算**、$T$ は**完全**で**有限モデルをもたない**理論とする。組 $\vec{a}$ に元 $a$ を付け加えた組を $\vec{a}a$ と書く。$n=0$ の組（空の組）の型は $\mathcal{M}$ で真な文全体 $\mathrm{Th}(\mathcal{M})$ で、$T$ が完全なので $T$ のモデルすべてで同じである。
+:::
+
+::: lemma 孤立した完全型 {#model:isolated-complete-type}
+$q\in S_{n}(T)$ を $\theta$ が孤立させるとする。
+1. $\theta\in q$。
+2. $r\in S_{n}(T)$ が $\theta$ を含めば $r=q$。とくに、$\mathcal{M}\models\theta(\vec{a})$ なら $\mathrm{tp}^{\mathcal{M}}(\vec{a})=q$。
+:::
+
+::: proof
+1. $\theta\notin q$ なら $\neg\theta\in q$（\ref{model:type-basic} の 2）で、$T\models\forall\vec{x}\,(\theta\to\neg\theta)$、すなわち $T\models\neg\exists\vec{x}\,\theta$ となり、孤立の定義（$T\cup\{\exists\vec{x}\,\theta\}$ が充足可能）に反する。
+2. $\varphi\in q$ なら $T\models\forall\vec{x}\,(\theta\to\varphi)$ で、$r$ を実現する組は $\theta$ を満たすので $\varphi$ も満たす。よって $q\subseteq r$。$\varphi\in r\setminus q$ があれば $\neg\varphi\in q\subseteq r$ となり、$r$ を実現する組が $\varphi,\neg\varphi$ を満たすことになる。よって $r=q$。
+:::
+
+::: lemma 型を保つ写像は初等的 {#model:type-preserving-elementary}
+$\mathcal{M},\mathcal{N}$ を構造、$h\colon M\to N$ を、すべての有限の組 $\vec{a}$ について $\mathrm{tp}^{\mathcal{N}}(h(\vec{a}))=\mathrm{tp}^{\mathcal{M}}(\vec{a})$ となる写像とする。このとき $h$ は初等埋め込みである。
+:::
+
+::: proof
+論理式 $\varphi$ と $\mathcal{M}$ の割り当て $v$ について、$\mathrm{FV}(\varphi)=\{x_{1},\dots,x_{n}\}$、$\vec{a}\defeq(v(x_{1}),\dots,v(x_{n}))$ とすると、一致補題より $\mathcal{M},v\models\varphi\iff\varphi\in\mathrm{tp}^{\mathcal{M}}(\vec{a})\iff\varphi\in\mathrm{tp}^{\mathcal{N}}(h(\vec{a}))\iff\mathcal{N},h\circ v\models\varphi$。単射性は $\neg\,x_{1}=x_{2}$ に適用すれば従う。
+:::
+
+## 原子モデルと素モデル {#model:sec-atomic}
+
+::: definition 原子モデル・素モデル {#model:atomic-model keywords="atomic model, prime model" index="原子モデル|げんしもでる, 素モデル|そもでる"}
+1. $\mathcal{M}\models T$ が**原子的**であるとは、$\mathcal{M}$ のすべての有限の組の型が孤立していることをいう。
+2. $\mathcal{M}\models T$ が**素モデル**であるとは、$T$ の任意のモデル $\mathcal{N}$ への初等埋め込み $\mathcal{M}\to\mathcal{N}$ が存在することをいう。
+:::
+
+::: lemma 往復の一歩 {#model:back-and-forth-step}
+$\mathcal{M},\mathcal{N}\models T$、$\vec{a}\in M^{n}$, $\vec{b}\in N^{n}$ で $\mathrm{tp}^{\mathcal{M}}(\vec{a})=\mathrm{tp}^{\mathcal{N}}(\vec{b})$ とし、$a\in M$ について $\mathrm{tp}^{\mathcal{M}}(\vec{a}a)$ が孤立しているとする。このとき $b\in N$ で $\mathrm{tp}^{\mathcal{N}}(\vec{b}b)=\mathrm{tp}^{\mathcal{M}}(\vec{a}a)$ となるものがある。
+:::
+
+::: proof
+$\theta(\vec{x},y)$ が $q\defeq\mathrm{tp}^{\mathcal{M}}(\vec{a}a)$ を孤立させるとする。\ref{model:isolated-complete-type} の 1 より $\mathcal{M}\models\theta(\vec{a},a)$、よって $\exists y\,\theta\in\mathrm{tp}^{\mathcal{M}}(\vec{a})=\mathrm{tp}^{\mathcal{N}}(\vec{b})$ で、$\mathcal{N}\models\theta(\vec{b},b)$ となる $b$ がある。\ref{model:isolated-complete-type} の 2 より $\mathrm{tp}^{\mathcal{N}}(\vec{b}b)=q$。
+:::
+
+::: theorem 可算原子モデルは素モデル {#model:atomic-prime}
+$T$ の可算原子モデル $\mathcal{M}$ は素モデルである。
+:::
+
+::: proof
+$\mathcal{N}\models T$ とし、$M=\{m_{0},m_{1},\dots\}$ と並べる。$b_{0},b_{1},\dots\in N$ を、各 $k$ で $\mathrm{tp}^{\mathcal{N}}(b_{0},\dots,b_{k-1})=\mathrm{tp}^{\mathcal{M}}(m_{0},\dots,m_{k-1})$ となるように帰納的に選ぶ。$k=0$ では両辺とも $T$（$T$ は完全）。$k\to k+1$ は、$\mathcal{M}$ が原子的なので $\mathrm{tp}^{\mathcal{M}}(m_{0},\dots,m_{k})$ が孤立し、\ref{model:back-and-forth-step} が使える。$h(m_{k})\defeq b_{k}$ とすると、$\mathcal{M}$ の任意の有限の組は $(m_{0},\dots,m_{k-1})$ の成分を並べ替え・重複させたものなので、その型も保たれる（型の等しさは変数の名前の付け替えで移る）。\ref{model:type-preserving-elementary} より $h$ は初等埋め込みである。
+:::
+
+::: theorem 可算原子モデルの一意性 {#model:atomic-unique}
+$\mathcal{M},\mathcal{N}$ が $T$ の可算原子モデルなら、$\mathcal{M}\cong\mathcal{N}$。
+:::
+
+::: proof
+$M=\{m_{0},m_{1},\dots\}$, $N=\{n_{0},n_{1},\dots\}$ と並べ、有限の組 $\vec{a}_{k}\in M^{k}$, $\vec{b}_{k}\in N^{k}$ で $\mathrm{tp}^{\mathcal{M}}(\vec{a}_{k})=\mathrm{tp}^{\mathcal{N}}(\vec{b}_{k})$ となり、$\vec{a}_{k+1}$ は $\vec{a}_{k}$ を延ばしたもの（$\vec{b}$ も同様）を帰納的に作る（**往復論法**）。$\vec{a}_{0},\vec{b}_{0}$ は空の組。
+- $k=2j$（行き）：$\vec{a}_{k+1}\defeq\vec{a}_{k}m_{j}$ とし、\ref{model:back-and-forth-step}（$\mathcal{M}$ は原子的）で $b$ をとり $\vec{b}_{k+1}\defeq\vec{b}_{k}b$。
+- $k=2j+1$（帰り）：$\vec{b}_{k+1}\defeq\vec{b}_{k}n_{j}$ とし、$\mathcal{M}$ と $\mathcal{N}$ の役を入れ替えて（$\mathcal{N}$ は原子的）$a$ をとる。
+
+$\vec{a}_{k}$ の第 $i$ 成分を $\vec{b}_{k}$ の第 $i$ 成分に送る対応 $h$ は、型に $x_{i}=x_{j}$ と $\neg\,x_{i}=x_{j}$ が含まれる様子が等しいので well-defined な単射で、行きの段ですべての $m_{j}$ が、帰りの段ですべての $n_{j}$ が現れるので全単射である。型を保つので初等埋め込み（\ref{model:type-preserving-elementary}）で、全射だから同型である。
+:::
+
+## 原子モデルの存在 {#model:sec-atomic-existence}
+
+::: definition 孤立型の稠密性 {#model:isolated-dense}
+$T$ で**孤立型が稠密**であるとは、各 $n$ と、$T\cup\{\exists\vec{x}\,\varphi\}$ が充足可能な任意の $\varphi(\vec{x})$ について、$\varphi$ を含む孤立した $q\in S_{n}(T)$ が存在することをいう。
+:::
+
+::: theorem 原子モデルの存在 {#model:atomic-existence keywords="existence of countable atomic models" index="原子モデルの存在|げんしもでるのそんざい"}
+1. $T$ で孤立型が稠密なら、$T$ の可算原子モデルが存在する。
+2. すべての $n$ で $S_{n}(T)$ が可算なら、$T$ で孤立型は稠密である。したがって $T$ は可算原子モデル（素モデル）をもつ。
+:::
+
+::: proof
+**1.** 各 $n\ge1$ について型
+$$
+\Sigma_{n}(\vec{x})\defeq\{\neg\theta:\theta(\vec{x})\text{ はある }q\in S_{n}(T)\text{ を孤立させる}\}
+$$
+を考える。$\Sigma_{n}$ は孤立していない：$\psi(\vec{x})$ が $\Sigma_{n}$ を孤立させたとすると、$T\cup\{\exists\vec{x}\,\psi\}$ は充足可能なので、稠密性より $\psi$ を含む孤立型 $q$ があり、それを孤立させる $\theta$ をとる。$\neg\theta\in\Sigma_{n}$ より $T\models\forall\vec{x}\,(\psi\to\neg\theta)$ だが、$q$ を実現する組は $\psi$ と $\theta$（\ref{model:isolated-complete-type} の 1）を満たし、矛盾する。型の省略定理（\ref{model:omitting-types}）で、すべての $\Sigma_{n}$ を省略する可算モデル $\mathcal{M}$ をとる。$\mathcal{M}$ は無限で（$T$ は有限モデルをもたない）、任意の組 $\vec{a}$ はある $\neg\theta\in\Sigma_{n}$ を満たさない、すなわち $\theta(\vec{a})$ が真で、\ref{model:isolated-complete-type} の 2 より $\mathrm{tp}(\vec{a})$ は $\theta$ が孤立させる型である。よって $\mathcal{M}$ は原子的。
+
+**2.** 孤立型が稠密でないとし、$\varphi_{\varnothing}(\vec{x})$ を、$T\cup\{\exists\vec{x}\,\varphi_{\varnothing}\}$ は充足可能だが $\varphi_{\varnothing}$ を含む孤立型がないものとする。
+
+*主張.* $T\cup\{\exists\vec{x}\,\psi\}$ が充足可能で $T\models\forall\vec{x}\,(\psi\to\varphi_{\varnothing})$ となる $\psi$ について、$\chi$ で $\psi\wedge\chi$ と $\psi\wedge\neg\chi$ の両方が（$T$ のもとで $\exists\vec{x}$ をつけて）充足可能なものがある。実際、そうでなければ、どの $\chi$ についても $T\models\forall\vec{x}\,(\psi\to\chi)$ か $T\models\forall\vec{x}\,(\psi\to\neg\chi)$ である。$\psi$ を満たす組 $\vec{a}$ の型 $q\defeq\mathrm{tp}(\vec{a})$ をとると、$\chi\in q$ なら後者は起こらないので前者が成り立ち、$\psi$ は $q$ を孤立させる。$\varphi_{\varnothing}\in q$ なので、これは $\varphi_{\varnothing}$ の選び方に反する。
+
+*二分木.* 主張を繰り返して、有限の $0,1$ 列 $s$ ごとに論理式 $\varphi_{s}$ を、$\varphi_{s0}\defeq\varphi_{s}\wedge\chi_{s}$, $\varphi_{s1}\defeq\varphi_{s}\wedge\neg\chi_{s}$（$\chi_{s}$ は $\psi=\varphi_{s}$ に対する主張の $\chi$）で定める。各 $\varphi_{s}$ は $\exists$ をつけて充足可能で $\varphi_{\varnothing}$ を含意する。無限列 $f\in2^{\N}$ について、$\{\varphi_{f\restr{k}}:k\in\N\}$ の有限部分は一つの $\varphi_{f\restr{k}}$ に含意されるので $T$ と両立し、\ref{model:type-basic} の 2 より完全型 $q_{f}\supseteq\{\varphi_{f\restr{k}}\}$ がある。$f\neq g$ なら最初に異なる位置 $k$ で、一方は $\chi_{s}$、他方は $\neg\chi_{s}$（$s=f\restr{k}$）を含むので $q_{f}\neq q_{g}$。よって $\lvert S_{n}(T)\rvert\ge2^{\aleph_{0}}$ となり、仮定に反する。後半は 1 と \ref{model:atomic-prime}。
+:::
+
+::: hypcheck
+- **言語の可算性**：型の省略定理（1）と、可算原子モデルの議論（往復論法の列挙）で使った。
+- **$T$ の完全性**：\ref{model:atomic-prime} の $k=0$ の段と、往復論法の出発点（空の組の型が等しい）。
+- **有限モデルをもたないこと**：1 で得たモデルが無限であることにだけ使った。有限モデルがあっても原子モデルの存在の議論は通るが、本ページでは可算＝可算無限として扱うためにこの仮定を置いた。
+- **2 の二分木**：各段の $\chi_{s}$ の選択は、可算個の論理式の列挙の中で最初のものをとれば選択公理なしで済む。
+:::
+
+## 可算範疇性 {#model:sec-omega-categorical}
+
+::: definition ω 範疇的 {#model:omega-categorical keywords="omega-categorical, aleph_0-categorical, countably categorical" index="ω 範疇的|おめがはんちゅうてき, 可算範疇的|かさんはんちゅうてき"}
+$T$ が **$\omega$ 範疇的**（$\aleph_{0}$ 範疇的）であるとは、$T$ の可算（無限）モデルがすべて同型であることをいう。
+:::
+
+::: theorem ライル–ナルジェフスキの定理 {#model:ryll-nardzewski keywords="Ryll-Nardzewski theorem, Engeler, Svenonius" index="ライル–ナルジェフスキの定理|らいるなるじぇふすきのていり"}
+（AC）$\mathcal{L}$ を可算、$T$ を有限モデルをもたない完全な理論とする。次は同値である。
+1. $T$ は $\omega$ 範疇的である。
+2. すべての $n$ で $S_{n}(T)$ は有限である。
+3. すべての $n$ で、すべての $q\in S_{n}(T)$ が孤立している。
+:::
+
+::: proof
+**2 $\Rightarrow$ 3.** 問題 \ref{model:prob-finite-type-space}。
+
+**3 $\Rightarrow$ 1.** $T$ のすべてのモデルは原子的なので、可算モデルどうしは \ref{model:atomic-unique} より同型である。
+
+**1 $\Rightarrow$ 3.** 孤立していない $q\in S_{n}(T)$ があるとする。型の省略定理より $q$ を省略する可算モデル $\mathcal{M}_{1}$ がある。一方 $q$ を実現する $T$ のモデル $\mathcal{N}$ と組 $\vec{a}$ をとり、下降レーヴェンハイム–スコーレムの定理で $\vec{a}$ を含む可算な $\mathcal{M}_{2}\preccurlyeq\mathcal{N}$ をとると、$\mathcal{M}_{2}$ は $q$ を実現する（初等部分構造なので $\vec{a}$ の型は変わらない）。どちらも無限（有限モデルがない）で可算である。同型写像は型を保つ（\ref{logic:isomorphism-invariance}）ので、$\mathcal{M}_{1}\not\cong\mathcal{M}_{2}$ となり 1 に反する。
+
+**3 $\Rightarrow$ 2.** ある $n$ で $S_{n}(T)$ が無限とする。各 $q\in S_{n}(T)$ を孤立させる $\theta_{q}$ を一つずつ選び、$\Sigma(\vec{x})\defeq\{\neg\theta_{q}:q\in S_{n}(T)\}$ とする。$\Sigma$ が $T$ と両立すると、$\Sigma$ を含む完全型 $r$ があり（\ref{model:type-basic} の 2）、$\neg\theta_{r}\in r$ と $\theta_{r}\in r$（\ref{model:isolated-complete-type} の 1）が矛盾する。よって $\Sigma$ は両立せず、\ref{model:type-basic} の 1（コンパクト性）より有限個の $q_{1},\dots,q_{k}$ で $\{\neg\theta_{q_{1}},\dots,\neg\theta_{q_{k}}\}$ が両立しないものがある。すなわち $T\models\forall\vec{x}\,(\theta_{q_{1}}\vee\dots\vee\theta_{q_{k}})$。任意の $r\in S_{n}(T)$ を実現する組はある $\theta_{q_{i}}$ を満たすので、\ref{model:isolated-complete-type} の 2 より $r=q_{i}$。よって $S_{n}(T)=\{q_{1},\dots,q_{k}\}$ は有限で、矛盾する。
+:::
+
+::: corollary カントールの定理 {#model:cantor-dlo keywords="Cantor's theorem: countable dense linear orders without endpoints are isomorphic" index="カントールの定理（稠密線形順序）|かんとーるのていりちゅうみつせんけいじゅんじょ"}
+（AC）端点のない可算な稠密線形順序はすべて $(\mathbb{Q},<)$ と同型である。
+:::
+
+::: proof
+$\mathrm{DLO}$ は完全（\ref{model:dlo-complete}）で、有限モデルをもたない（端点がないので、どの元より大きい元がある）。$\vec{a}$ の型 $\mathrm{tp}(\vec{a})$ は、量化子消去（\ref{model:dlo-qe}）より、それに含まれる量化子のない論理式で決まる：任意の $\varphi\in\mathrm{tp}(\vec{a})$ と同値な量化子のない $\psi$ がある。量化子のない論理式の真偽は、原子論理式 $x_{i}<x_{j}$, $x_{i}=x_{j}$ の真偽で決まる（\ref{model:qf-dnf} の証明）。その組み合わせは高々 $2^{2n^{2}}$ 通りなので、$S_{n}(\mathrm{DLO})$ は有限である。\ref{model:ryll-nardzewski} の 2 $\Rightarrow$ 1。
+:::
+
+## 問題 {#model:sec-countable-problems}
+
+::: problem {#model:prob-infinite-set-categorical}
+空の言語（等号だけ）で、無限集合の理論 $T_{\infty}\defeq\{\exists x_{1}\cdots\exists x_{n}\bigwedge_{i<j}\neg\,x_{i}=x_{j}:n\ge2\}$ は完全で $\omega$ 範疇的であることを、$\omega$ 範疇性を直接確かめ、ヴォートの判定法（可算範疇的で有限モデルをもたない可算言語の理論は完全）を使って示せ。ヴォートの判定法も証明せよ。
+:::
+
+::: solution
+*$\omega$ 範疇的.* 可算無限集合の間には全単射があり、言語が空なので全単射は同型である。
+
+*ヴォートの判定法.* $T$ を有限モデルをもたない可算言語の理論で $\omega$ 範疇的なものとし、$T$ が完全でないとする。文 $\sigma$ で $T\cup\{\sigma\}$ と $T\cup\{\neg\sigma\}$ がともに充足可能なものがある。それぞれのモデルは無限で、下降レーヴェンハイム–スコーレムの定理により可算（無限）な初等部分モデル $\mathcal{M}_{1}\models\sigma$, $\mathcal{M}_{2}\models\neg\sigma$ がとれる。$\omega$ 範疇性より $\mathcal{M}_{1}\cong\mathcal{M}_{2}$ だが、同型は文の真偽を保つので矛盾。
+
+*結論.* $T_{\infty}$ のモデルは無限集合なので有限モデルはない。よって $T_{\infty}$ は完全である。
+:::
+
+::: problem {#model:prob-z-not-categorical}
+$\mathrm{Th}(\Z,<)$ は $\omega$ 範疇的でないことを、$(\Z,<)$ と $(\Z\times\Z,<_{\mathrm{lex}})$（辞書式順序）を比べて示せ。（$(\Z\times\Z,<_{\mathrm{lex}})\equiv(\Z,<)$ は認めてよい。）
+:::
+
+::: solution
+$(\Z,<)$ では任意の $a<b$ の間の元は有限個だが、$(\Z\times\Z,<_{\mathrm{lex}})$ では $(0,0)<(1,0)$ の間に $(0,k)$（$k>0$）が無限個ある。同型写像は順序を保ち、間の元を間の元に写すので、二つは同型でない。どちらも可算で、仮定より同じ完全な理論のモデルである。（ライル–ナルジェフスキの定理の側から言えば、$x<y$ の間に元がちょうど $k$ 個ある、という $2$ 変数の型が $k$ ごとに異なり、$S_{2}$ が無限である。）
+:::
+
+::: supplement
+**前提の検討.**
+- \ref{model:ryll-nardzewski} の 1 $\Rightarrow$ 3 で型の省略定理を、3 $\Rightarrow$ 2 でコンパクト性を使った。2 $\Rightarrow$ 3 $\Rightarrow$ 1 は型の省略定理を使わない（往復論法だけ）。
+- 素モデルの逆：可算な素モデルは原子的であることが知られている（孤立していない型の実現を、それを省略するモデルへの初等埋め込みが許さないため）。したがって可算言語の完全な理論では「可算な素モデル」と「可算な原子モデル」は一致する。
+
+**関連する結果.**
+- *ヴォートの定理.* 可算言語の完全な理論の可算モデルの同型類の個数は、ちょうど $2$ にはならないことが知られている（$\mathrm{DLO}$ に定数の増加列を加えた理論はちょうど $3$ 個の例になる）。
+- *ヴォート予想.* 可算モデルの同型類の個数は、$\aleph_{0}$ 以下か $2^{\aleph_{0}}$ のどちらかであろう、という予想で、未解決と言われている（2026 年時点の状況は本サイトでは確かめていない）。
+- *飽和モデル*（次のページ）は、原子モデルと逆に「できるだけ多くの型を実現する」モデルである。
+
+**高い視点から：最小のモデルと型空間の点.** 原子モデルは、孤立点（どのモデルも実現する型）だけを実現する「最も痩せた」モデルで、素モデルとして他のすべてのモデルの中に初等的に住んでいる。圏論的には、$T$ のモデルと初等埋め込みの圏の**弱い始対象**に当たる（埋め込みは一意とは限らない）。ライル–ナルジェフスキの定理は、型空間が有限の離散空間なら、痩せたモデルと太ったモデルの区別がなくなり、可算モデルが一つしかない、という主張である。往復論法は、二つの国の地図を交互に一筆ずつ写し合いながら最後に完全に重ね合わせる手続きで、各段で「次の一筆を写せる」ことを保証するのが孤立型（一つの論理式で特定できる形）である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

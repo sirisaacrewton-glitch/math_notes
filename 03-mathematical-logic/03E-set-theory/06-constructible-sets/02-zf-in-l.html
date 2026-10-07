@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L における ZF と構成可能性公理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/06-constructible-sets/02-zf-in-l.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# L における ZF と構成可能性公理 {#set:page-zf-in-l keywords="L is a model of ZF, axiom of constructibility, V = L, absoluteness of L(alpha), minimality of L, o(M), V = L implies V = HOD, V = L implies AC"}
+
+$\ZF$ の中で、$\mathbf{L}$ で $\ZF$ のすべての公理が成り立つことを示す。さらに $L_{\alpha}$ という関数が絶対的であることから、$\mathbf{L}$ では**構成可能性公理** $\mathbf{V}=\mathbf{L}$ も成り立つ。こうして $\mathrm{Con}(\ZF)\to\mathrm{Con}(\ZF+\mathbf{V}=\mathbf{L})$ が得られる。また $\mathbf{L}$ は $\mathbf{ON}$ を含む推移的なモデルの中で最小であり、その帰結として $\mathbf{V}=\mathbf{L}\to\mathbf{V}=\mathbf{HOD}$、したがって $\mathbf{V}=\mathbf{L}\to\mathrm{AC}$ が従う。（Kunen 第 VI 章 §2–3 に対応する。）
+
+## 記法と定義の確認 {#set:sec-zf-in-l-notation}
+
+::: notation
+- 基本の体系は $\ZF$（基礎の公理を含む）で、選択公理は使わない。
+- $\mathcal{D}(A)$、$L_{\alpha}$、$\mathbf{L}$、$\mathbf{L}$-ランク $\rho$ と、\ref{set:definable-subset-formula}, \ref{set:l-alpha-basic}, \ref{set:l-rank-basic}, \ref{set:l-ordinals}, \ref{set:l-alpha-in-next} は \ref{set:page-l-basic} のとおり。
+- 相対化とクラスのモデルの判定法（\ref{set:extensionality-in-transitive}, \ref{set:foundation-in-wf-subclass}, \ref{set:comprehension-in-class}, \ref{set:pairing-union-in-class}, \ref{set:replacement-in-class}, \ref{set:power-set-in-transitive}, \ref{set:relative-consistency-lemma}）は \ref{set:page-relativization}、絶対性（\ref{set:absolute}, \ref{set:absolute-composition}, \ref{set:absolute-relations-functions}, \ref{set:infinity-in-transitive}）は \ref{set:page-absoluteness}、順序数・再帰・ランクの絶対性（\ref{set:absolute-ordinals}, \ref{set:absolute-wf-recursion}, \ref{set:absolute-rank-trcl}）と、クラス・関数の絶対性の用語は \ref{set:page-more-absoluteness} のとおり。
+- 反映定理（一般形 \ref{set:reflection-general}）と \ref{set:finite-fragment-absoluteness} は \ref{set:page-reflection}、$\mathrm{Df}$ の絶対性（\ref{set:df-absolute}）は \ref{set:page-formalizing-definability}、$\mathbf{HOD}$ と \ref{set:hod-model-zfc} は \ref{set:page-ordinal-definable} のとおり。
+:::
+
+## L は ZF のモデル {#set:sec-l-model-zf}
+
+::: theorem L は ZF のモデル {#set:l-model-zf keywords="L is a model of ZF" index="L のモデル|えるのもでる"}
+（$\ZF$）$\ZF$ のすべての公理は $\mathbf{L}$ の中で真である。
+:::
+
+::: proof
+$\mathbf{L}$ は推移的な集合 $L_{\alpha}$ の和なので推移的であり（\ref{set:l-alpha-basic}）、$0\in \mathbf{L}$ なので空でない。
+
+- **外延性・基礎.** $\mathbf{L}$ は推移的なので \ref{set:extensionality-in-transitive}、$\mathbf{L}\subseteq\mathbf{WF}$ なので \ref{set:foundation-in-wf-subclass}。
+- **分出.** \ref{set:comprehension-in-class} より、各論理式 $\psi(x,z,v_{1},\dots,v_{n})$ と $z,\vec{v}\in \mathbf{L}$ について $\{x\in z:\psi^{\mathbf{L}}(x,z,\vec{v})\}\in \mathbf{L}$ を示せばよい。$\mathcal{D}(L_{\alpha})$ の定義は $L_{\alpha}$ への相対化を扱うので、$\mathbf{L}$ への相対化とつなぐために反映定理を使う。$z,\vec{v}\in L_{\alpha}$ となる $\alpha$ をとる。\ref{set:reflection-general} を $\mathbf{Z}=\mathbf{L}$, $\mathbf{Z}(\alpha)=L_{\alpha}$ に適用する（条件 1 は \ref{set:l-alpha-basic} の 2、条件 2 は $L_{\alpha}$ の定義、条件 3 は $\mathbf{L}$ の定義）と、$\beta>\alpha$ で $\psi$ が $L_{\beta},\mathbf{L}$ について絶対的なものがある。$\varphi\defeq x\in z\land\psi$ とすると、$z\subseteq L_{\beta}$（推移性）なので
+$$
+\begin{aligned}
+\{x\in z:\psi^{\mathbf{L}}(x,z,\vec{v})\}&=\{x\in L_{\beta}:x\in z\land\psi^{L_{\beta}}(x,z,\vec{v})\}\\
+&=\{x\in L_{\beta}:\varphi^{L_{\beta}}(x,z,\vec{v})\}.
+\end{aligned}
+$$
+\ref{set:definable-subset-formula}（パラメータ $z,\vec{v}\in L_{\beta}$）より、これは $\mathcal{D}(L_{\beta})=L_{\beta+1}\subseteq \mathbf{L}$ の元である。
+- **対・和.** $x,y\in L_{\alpha}$ なら $x,y\in L_{\alpha}\in \mathbf{L}$（\ref{set:l-alpha-in-next}）。$x\in L_{\alpha}$ なら $\bigcup x\subseteq L_{\alpha}\in \mathbf{L}$（推移性）。\ref{set:pairing-union-in-class}。
+- **置換.** \ref{set:replacement-in-class} より、$A,\vec{w}\in \mathbf{L}$ で $\forall x\in A\,\exists!y\in \mathbf{L}\,\varphi^{\mathbf{L}}(x,y,A,\vec{w})$ のとき、$Y\defeq\{y\in \mathbf{L}:\exists x\in A\,\varphi^{\mathbf{L}}(x,y,A,\vec{w})\}$（$\mathbf{V}$ の置換公理で集合）を含む $\mathbf{L}$ の元があればよい。$\alpha\defeq\sup\{\rho(y)+1:y\in Y\}$ とすると、\ref{set:l-rank-basic} より $Y\subseteq L_{\alpha}\in \mathbf{L}$。
+- **冪集合.** \ref{set:power-set-in-transitive} より、$x\in \mathbf{L}$ について $\mathcal{P}(x)\cap \mathbf{L}\subseteq y$ となる $y\in \mathbf{L}$ があればよい。$\mathcal{P}(x)\cap \mathbf{L}$ は（$\mathbf{V}$ の冪集合公理と分出で）集合なので、$\alpha\defeq\sup\{\rho(u)+1:u\in\mathcal{P}(x)\cap \mathbf{L}\}$ とすると $\mathcal{P}(x)\cap \mathbf{L}\subseteq L_{\alpha}\in \mathbf{L}$。
+- **無限.** 以上で $\mathbf{L}$ は $\ZF-\mathrm{Inf}$ の推移的なモデルで、$\omega\in \mathbf{L}$（\ref{set:l-ordinals}）なので \ref{set:infinity-in-transitive}。
+:::
+
+::: hypcheck
+- 本当に手間がかかるのは分出だけである。他の公理は「$\mathbf{L}$ が十分大きな集合を含む」ことしか主張せず、推移性と $L_{\alpha}\in \mathbf{L}$ から従う（この状況の抽象的な定式化は Kunen 第 V 章の演習 6 にある）。
+- 分出で反映定理の**一般形**（$\mathbf{Z}=\mathbf{L}$）を使った。$R(\beta)$ への反映（\ref{set:reflection}）では $\mathbf{L}$ への相対化とつながらない。
+- 置換・冪集合の検証で $\mathbf{V}$ の置換公理・冪集合公理を使った。選択公理は使っていない。
+:::
+
+## 構成可能性公理 {#set:sec-axiom-of-constructibility}
+
+$\mathbf{L}$ についてのこれまでの議論では、$\mathbf{L}$ が $\mathbf{V}$ の真部分クラスであることは示していない。実際、$\mathbf{V}=\mathbf{L}$ はありそうにない主張だが、$\ZF$ と無矛盾であることを本節で示す。第 VII 章では $\mathbf{V}\neq \mathbf{L}$ も $\ZF$ と無矛盾であることを示す。
+
+::: definition 構成可能性公理 {#set:axiom-v-eq-l keywords="axiom of constructibility, V = L" index="構成可能性公理|こうせいかのうせいこうり, V = L|ぶいいこーるえる"}
+**構成可能性公理**とは文 $\mathbf{V}=\mathbf{L}$、すなわち $\forall x\,\exists\alpha\,(\alpha\in\mathbf{ON}\land x\in L_{\alpha})$ である。
+:::
+
+$\mathbf{L}$ が $\mathbf{V}=\mathbf{L}$ を満たすことは $1=1$ ほど自明ではない。$\forall x\in \mathbf{L}\,\exists\alpha\,(x\in L_{\alpha})$ は明らかだが、$(\mathbf{V}=\mathbf{L})^{\mathbf{L}}$ は $\forall x\in \mathbf{L}\,\exists\alpha\in \mathbf{L}\,(\alpha\in\mathbf{ON}\land x\in L_{\alpha})^{\mathbf{L}}$ であり、これを示すには論理式 $x\in L_{\alpha}$ の絶対性を確かめる必要がある。$\mathbf{HOD}$ の場合と対比すると、$\ZF$ で $(\mathbf{V}=\mathbf{HOD})^{\mathbf{HOD}}$ は証明できない（\ref{set:page-ordinal-definable} の最後の節）。明らかに見える「証明」は $\mathbf{HOD}$ が絶対的でないために失敗する。
+
+::: lemma $L_{\alpha}$ の絶対性 {#set:l-absolute keywords="absoluteness of L(alpha) for transitive models of ZF - P" index="L(α) の絶対性|えるあるふぁのぜったいせい"}
+関数 $\alpha\mapsto L_{\alpha}$ は $\ZF-\mathrm{P}$ の推移的なモデルについて絶対的である。すなわち $M$ をそのようなモデルとすると、すべての $\alpha\in M\cap\mathbf{ON}$ について $L_{\alpha}^{M}=L_{\alpha}$。
+:::
+
+::: proof
+**Step 1（$\mathcal{D}$ の絶対性）.** $\mathcal{D}(A)$ は、集合 $T_{A}\defeq\{\langle s,R\rangle:\exists n\in\omega\,(s\in{}^{n}A\land R\in\mathrm{Df}(A,n+1))\}$ の、演算 $F(A,s,R)\defeq\{x\in A:s^{\frown}\langle x\rangle\in R\}$ による像である。$\omega$, ${}^{n}A$, $\mathrm{Df}$ は絶対的（\ref{set:absolute-ordinals}, \ref{set:absolute-finite}, \ref{set:df-absolute}）で、$s^{\frown}\langle x\rangle=s\cup\{\langle\dom(s),x\rangle\}$ も絶対的（\ref{set:absolute-relations-functions}）。したがって $F$ は（$A$ を範囲とする分出で定まり）絶対的で、$T_{A}$ も（$\omega$ を範囲とする有界な量化と絶対的な演算で書けるので）絶対的。像をとる操作は $M$ の置換公理のもとで絶対的（\ref{set:df-absolute} の証明の Step 3 と同じ）なので、$\mathcal{D}$ は絶対的である。
+
+**Step 2（再帰）.** $L_{\alpha}$ は $\mathbf{ON}$ 上の $\in$ に関する再帰で、$\mathbf{F}(\alpha,g)\defeq\mathcal{D}(g(\beta))$（$\alpha=\beta+1$ のとき）、$\bigcup\ran(g)$（$\alpha$ が極限のとき）、$0$（$\alpha=0$ のとき）で定まる。場合分けの条件（後続・極限）は絶対的（\ref{set:absolute-ordinals}）で、各場合の演算も Step 1 と \ref{set:absolute-relations-functions} により絶対的なので $\mathbf{F}$ は絶対的。$\mathbf{ON}$ は $M$ について絶対的で、$\mathrm{pred}(\mathbf{ON},\alpha,\in)=\alpha\in M$。\ref{set:absolute-wf-recursion} より $L_{\alpha}$ は絶対的。
+:::
+
+::: theorem L は V = L を満たす {#set:l-satisfies-v-eq-l keywords="L satisfies V = L"}
+（$\ZF$）$\mathbf{L}$ は $\ZF+\mathbf{V}=\mathbf{L}$ のモデルである。
+:::
+
+::: proof
+$\ZF$ については \ref{set:l-model-zf}。$(\mathbf{V}=\mathbf{L})^{\mathbf{L}}$、すなわち
+$$
+\forall x\in \mathbf{L}\;\exists\alpha\in \mathbf{L}\;\bigl((\alpha\in\mathbf{ON})^{\mathbf{L}}\land(x\in L_{\alpha})^{\mathbf{L}}\bigr)
+$$
+を示す。$x\in \mathbf{L}$ を固定し、$x\in L_{\alpha}$ となる $\alpha$ をとる。$\mathbf{ON}\subseteq \mathbf{L}$（\ref{set:l-ordinals}）なので $\alpha\in \mathbf{L}$。$\mathbf{L}$ は $\ZF$ の推移的なモデルなので、順序数であることは絶対的（\ref{set:absolute-ordinals}）で、\ref{set:l-absolute} より $L_{\alpha}^{\mathbf{L}}=L_{\alpha}$、したがって $(x\in L_{\alpha})^{\mathbf{L}}$。
+:::
+
+::: corollary 構成可能性公理の相対無矛盾性 {#set:con-v-eq-l keywords="Con(ZF) implies Con(ZF + V = L)"}
+$\mathrm{Con}(\ZF)\to\mathrm{Con}(\ZF+\mathbf{V}=\mathbf{L})$。
+:::
+
+::: proof
+\ref{set:l-satisfies-v-eq-l} と \ref{set:relative-consistency-lemma}（$\mathbf{L}\neq\varnothing$）。
+:::
+
+構成可能性公理 $\mathbf{V}=\mathbf{L}$ と基礎の公理 $\mathbf{V}=\mathbf{WF}$ の無矛盾性の証明（\ref{set:page-more-absoluteness}）にはよく似た構造があるが、重要な違いがある。$\ZF^{-}$ の中で $\mathbf{WF}$ を定義し、それが $\ZF^{-}+\mathbf{V}=\mathbf{WF}$ のモデルであることを示して $\mathrm{Con}(\ZF^{-})\to\mathrm{Con}(\ZF^{-}+\mathbf{V}=\mathbf{WF})$ を得たが、同時に、数学はすべて $\mathbf{WF}$ の中で行われるという議論も与え、$\mathbf{V}=\mathbf{WF}$ を公理として加えて $\ZF$ を基本の体系とした。一方、すべての数学的対象が、あるいは $\omega$ のすべての部分集合でさえ、$\mathbf{L}$ に属すると信じる理由はない。そこで $\mathbf{V}=\mathbf{L}$ はもっともらしい基本の公理とは考えず、相対無矛盾性の結果を得るための道具としてだけ使う。その有用性は、$\ZF+\mathbf{V}=\mathbf{L}$ から証明できる文はすべて $\ZF$ と無矛盾であり、$\mathbf{L}$ で真であるという点にある。ある程度複雑な文 $\varphi$ について、$\varphi^{\mathbf{L}}$ を直接示すより、$\mathbf{V}=\mathbf{L}$ を仮定して $\varphi$ を証明する方が、議論の途中ですべてを $\mathbf{L}$ に相対化する心配をしなくてよいので、たいてい易しい。次ページで AC と GCH について、その次のページで $\lozenge$ と $\lozenge^{+}$ についてこれを行う。
+
+## L の最小性 {#set:sec-l-minimality}
+
+$L_{\alpha}$ の絶対性の他の帰結として、モデル $\mathbf{L}$ の最小性に関する性質を述べる。
+
+::: theorem L は最小の推移的な真のクラスのモデル {#set:l-minimal-class keywords="L is the smallest transitive proper class model of ZF - P" index="L の最小性|えるのさいしょうせい"}
+$M$ を $\ZF-\mathrm{P}$ の推移的な真のクラスのモデルとすると、$\mathbf{L}=\mathbf{L}^{M}\subseteq M$。
+:::
+
+::: proof
+**Step 1（$\mathbf{ON}\subseteq M$）.** $\alpha\in\mathbf{ON}$ を固定する。$M$ は真のクラスなので $M\not\subseteq R(\alpha)$（$M\subseteq R(\alpha)$ なら $M$ は集合 $R(\alpha)$ の部分クラスで、分出により集合になる）。$\rank(x)\ge\alpha$ となる $x\in M$ をとる。ランクは $M$ について絶対的（\ref{set:absolute-rank-trcl} の (b)）なので $\rank(x)\in M$。$\alpha\le\rank(x)$ で $M$ は推移的なので $\alpha\in M$（$\alpha=\rank(x)$ か $\alpha\in\rank(x)$）。
+
+**Step 2.** $L_{\alpha}$ と $\mathbf{ON}$ の絶対性（\ref{set:l-absolute}, \ref{set:absolute-ordinals}）と Step 1 より
+$$
+\begin{aligned}
+\mathbf{L}^{M}&=\{x\in M:(\exists\alpha\,(\alpha\in\mathbf{ON}\land x\in L_{\alpha}))^{M}\}=\bigcup_{\alpha\in M\cap\mathbf{ON}}L_{\alpha}^{M}\\
+&=\bigcup_{\alpha\in\mathbf{ON}}L_{\alpha}=\mathbf{L}.
+\end{aligned}
+$$
+（二つ目の等号の $\subseteq$：$x\in L_{\alpha}^{M}=L_{\alpha}$。$\supseteq$：$x\in L_{\alpha}$ なら、$L_{\alpha}=L_{\alpha}^{M}\in M$ と推移性より $x\in M$ で、$(x\in L_{\alpha})^{M}$。）$\mathbf{L}^{M}\subseteq M$ は定義から明らか。
+:::
+
+真のクラスについてはいつものように注意が要る。より形式的には、\ref{set:finite-fragment-absoluteness} より、順序数・ランク・$L_{\alpha}$ の概念がそのモデルについて絶対的になるような $\ZF-\mathrm{P}$ の公理の有限個の連言 $\Phi$ がある。\ref{set:l-minimal-class} は、各クラス（論理式）$M$ について
+$$
+M\text{ は推移的な真のクラス}\land\Phi^{M}\to \mathbf{L}\subseteq M
+$$
+が証明できる、という図式である。次に集合のモデルについて類似の結果を述べる。
+
+::: definition o(M) {#set:o-m keywords="o(M), ordinal height of a transitive set" index="o(M)|おーえむ"}
+$o(M)\defeq M\cap\mathbf{ON}$。
+:::
+
+::: lemma {#set:o-m-ordinal}
+$M$ が推移的な集合なら、$o(M)$ は順序数で、$M$ に属さない最小の順序数である。
+:::
+
+::: proof
+$o(M)$ は順序数の集合で、推移的である（$\alpha\in o(M)$, $\beta\in\alpha$ なら $M$ の推移性で $\beta\in M$、よって $\beta\in o(M)$）。推移的な順序数の集合は順序数である。$o(M)\in M$ なら $o(M)\in o(M)$ となり基礎の公理に反するので $o(M)\notin M$。$\alpha<o(M)$ なら $\alpha\in o(M)\subseteq M$。
+:::
+
+::: theorem 推移的な集合モデルの中の L {#set:l-in-set-model keywords="L^M = L(o(M)) for transitive set models"}
+$\ZF-\mathrm{P}$ の公理の有限個の連言 $\Psi$ で、次を満たすものがある：
+$$
+\forall M\;\bigl(M\text{ は推移的な集合}\land\Psi^{M}\to L_{o(M)}=\mathbf{L}^{M}\subseteq M\bigr).
+$$
+:::
+
+::: proof
+$\Psi$ を、\ref{set:l-minimal-class} の直後の $\Phi$ に、公理 0（集合の存在）と、最大の順序数がないこと（$\forall\alpha\,\exists\beta\,(\alpha\in\beta)$）を証明するのに十分な公理を加えたものとする。$M$ を推移的な集合で $\Psi^{M}$ とする。公理 0 より $M\neq\varnothing$ で、$M$ の $\in$-極小元は（推移性より）$0$ なので $0\in M$。$\alpha\in M$ なら $M$ の中で $\alpha$ より大きい順序数があり、順序数であることの絶対性より $o(M)$ に最大元はない。よって $o(M)$ は極限順序数で、$L_{o(M)}=\bigcup_{\alpha\in o(M)}L_{\alpha}$。一方 $L_{\alpha}$ の絶対性より
+$$
+\mathbf{L}^{M}=\{x\in M:(\exists\alpha\,(x\in L_{\alpha}))^{M}\}=\bigcup_{\alpha\in M\cap\mathbf{ON}}L_{\alpha}=L_{o(M)},
+$$
+（\ref{set:l-minimal-class} の Step 2 と同じ理由）で、$\mathbf{L}^{M}\subseteq M$。
+:::
+
+最小性と同様に、$\ZF+\mathbf{V}=\mathbf{L}$ の推移的なモデルについての一意性がある：そのようなモデルは、真のクラスなら $\mathbf{L}$、集合ならある $L_{\delta}$ である。いつものように有限個の公理で足りる。
+
+::: theorem ZF + V = L の推移的なモデルの一意性 {#set:v-eq-l-models-unique}
+$\ZF-\mathrm{P}+\mathbf{V}=\mathbf{L}$ の公理の有限個の連言 $X$ で、次を満たすものがある。
+1. $M$ が推移的な真のクラスで $X^{M}$ なら、$M=\mathbf{L}$。
+2. $\forall M\,(M\text{ は推移的な集合}\land X^{M}\to M=L_{o(M)})$。
+:::
+
+::: proof
+$X\defeq\Psi\land\Phi\land(\mathbf{V}=\mathbf{L})$ とする（$\Phi,\Psi$ は上のもの）。$M$ が推移的で $X^{M}$ なら $(\forall x\,(x\in \mathbf{L}))^{M}$ なので $M=\mathbf{L}^{M}$。1 は \ref{set:l-minimal-class} より $\mathbf{L}^{M}=\mathbf{L}$、2 は \ref{set:l-in-set-model} より $\mathbf{L}^{M}=L_{o(M)}$ による。
+:::
+
+$\ZF-\mathrm{P}+\mathbf{V}=\mathbf{L}$ の推移的な集合モデルの例として、正則な $\kappa>\omega$ についての $L_{\kappa}$ がある（次ページで示す）。
+
+$\mathbf{L}$ の最小性から $\mathbf{V}=\mathbf{HOD}$ の無矛盾性が得られる。
+
+::: theorem V = L ならば V = HOD {#set:v-eq-l-implies-hod keywords="V = L implies V = HOD"}
+（$\ZF$）$\mathbf{V}=\mathbf{L}\to\mathbf{V}=\mathbf{HOD}$。
+:::
+
+::: proof
+$\mathbf{HOD}$ は $\ZF$ の推移的なモデル（\ref{set:hod-model-zfc}）で、$\mathbf{ON}\subseteq\mathbf{HOD}$ なので真のクラスである。\ref{set:l-minimal-class} より $\mathbf{L}\subseteq\mathbf{HOD}$。$\mathbf{V}=\mathbf{L}$ なら $\mathbf{V}\subseteq\mathbf{HOD}$。
+:::
+
+::: corollary {#set:con-v-eq-hod}
+$\mathrm{Con}(\ZF)\to\mathrm{Con}(\ZF+\mathbf{V}=\mathbf{HOD})$。
+:::
+
+::: proof
+\ref{set:v-eq-l-implies-hod} より $\ZF+\mathbf{V}=\mathbf{HOD}$ の各公理は $\ZF+\mathbf{V}=\mathbf{L}$ で証明できるので、$\mathrm{Con}(\ZF+\mathbf{V}=\mathbf{L})\to\mathrm{Con}(\ZF+\mathbf{V}=\mathbf{HOD})$。\ref{set:con-v-eq-l} と合わせる。
+:::
+
+::: corollary V = L ならば AC {#set:v-eq-l-implies-ac}
+（$\ZF$）$\mathbf{V}=\mathbf{L}\to\mathrm{AC}$。
+:::
+
+::: proof
+$\mathbf{V}=\mathbf{L}$ なら \ref{set:v-eq-l-implies-hod} より $\mathbf{HOD}=\mathbf{V}$。\ref{set:hod-model-zfc} より $\mathrm{AC}^{\mathbf{HOD}}$ で、$\mathbf{HOD}=\mathbf{V}$ のとき相対化は何も変えない（すべての量化子の制限 $x\in\mathbf{HOD}$ が真）ので $\mathrm{AC}$。
+:::
+
+次ページでは、$\mathbf{HOD}$ の理論に頼らない $\mathbf{V}=\mathbf{L}\to\mathrm{AC}$ の直接の証明を与える。
+
+## 問題 {#set:sec-zf-in-l-problems}
+
+::: problem {#set:prob-l-of-l}
+$(\mathbf{L})^{\mathbf{L}}=\mathbf{L}$、すなわち $\mathbf{L}$ の中で定義した構成可能集合のクラスは $\mathbf{L}$ 自身であることを示せ。また $\mathbf{HOD}$ について同じ議論が使えない理由を述べよ。
+:::
+
+::: solution
+$\mathbf{L}^{\mathbf{L}}=\{x\in \mathbf{L}:(\exists\alpha\,(x\in L_{\alpha}))^{\mathbf{L}}\}$ で、\ref{set:l-satisfies-v-eq-l} の証明より、すべての $x\in \mathbf{L}$ についてこの条件が成り立つので $\mathbf{L}^{\mathbf{L}}=\mathbf{L}$。これは \ref{set:l-absolute}（$L_{\alpha}$ の絶対性）による。$\mathbf{HOD}$ の定義は $\mathbf{OD}$ を通して $\mathrm{Df}(R(\beta),\cdot)$ を使うが、$R(\beta)$ は絶対的でない（\ref{set:power-rank-relativized}：$R(\beta)^{M}=R(\beta)\cap M$）ので、$\mathbf{HOD}^{\mathbf{HOD}}=\mathbf{HOD}$ を同じ方法では示せない。
+:::
+
+::: problem {#set:prob-l-alpha-model}
+$\mathbf{V}=\mathbf{L}$ を仮定する。$M$ が推移的な真のクラスで $\Phi^{M}$（\ref{set:l-minimal-class} の直後の $\Phi$）を満たすなら $M=\mathbf{V}$ であることを示せ。また、この主張は「$\mathbf{V}=\mathbf{L}$ のもとでは、$\mathbf{V}$ の真の内部モデルは存在しない」と言い換えられることを説明せよ。
+:::
+
+::: solution
+\ref{set:l-minimal-class} より $\mathbf{L}\subseteq M\subseteq\mathbf{V}=\mathbf{L}$ なので $M=\mathbf{V}$。ここで「内部モデル」を、$\mathbf{ON}$ を含む（あるいは真のクラスである）推移的なクラスで $\ZF$ の十分な有限部分を満たすものとすれば、$\mathbf{V}=\mathbf{L}$ のもとではそのようなクラスは $\mathbf{V}$ しかない。
+:::
+
+::: supplement
+**前提の検討.**
+- \ref{set:l-model-zf} と \ref{set:l-satisfies-v-eq-l} は選択公理を使わない。これが $\mathrm{Con}(\ZF)\to\mathrm{Con}(\ZF+\mathbf{V}=\mathbf{L})$ を与え、次ページの $\mathbf{V}=\mathbf{L}\to\mathrm{AC}+\mathrm{GCH}$ と合わせて $\mathrm{Con}(\ZF)\to\mathrm{Con}(\ZFC+\mathrm{GCH})$ となる。
+- \ref{set:l-absolute} は $M$ が推移的で $\ZF-\mathrm{P}$（実際はその有限部分）のモデルであることを使う。冪集合公理は要らないので、$H(\kappa)$ などの冪集合公理を満たさないモデルにも使える。
+- \ref{set:l-minimal-class} の Step 1 で、$M$ が真のクラスであることを本質的に使った。集合のモデルでは $o(M)$ より先の $L_{\alpha}$ は $M$ に入らない（\ref{set:l-in-set-model}）。
+
+**関連する結果.** \ref{set:l-minimal-class} は「$\mathbf{L}$ は $\mathbf{ON}$ を含む $\ZF$ の推移的なモデルのうち最小」とも言い換えられる（$\mathbf{ON}\subseteq M$ なら真のクラスである）。$\mathbf{V}\neq \mathbf{L}$ の無矛盾性は第 VII 章の強制法で示す。また、ある大きな基数の存在（たとえば可測基数）は $\mathbf{V}\neq \mathbf{L}$ を導くことが知られている（スコットの定理として一般に知られている。本サイトでは扱っていない）。
+
+**高い視点から：L は「始対象」.** $\mathbf{L}$ は、$\mathbf{ON}$ を含む推移的なモデルの中で包含について最小であり、しかもどのモデルの中で作っても同じものになる（$\mathbf{L}^{M}=\mathbf{L}$）。これは代数学で、素体（$\mathbb{Q}$ や $\mathbb{F}_{p}$）がその標数の体すべてに含まれ、どの体の中で作っても同じ素体になることに似ている。素体が「$0$ と $1$ から四則演算で作れるものだけ」でできているように、$\mathbf{L}$ は「順序数の段階ごとに定義できるものだけ」でできており、どのモデルの住人も同じ手順で同じものを作る。これが絶対性（\ref{set:l-absolute}）の直観的な意味である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

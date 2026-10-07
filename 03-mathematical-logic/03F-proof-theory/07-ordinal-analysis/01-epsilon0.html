@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ε₀ とカントール標準形 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/07-ordinal-analysis/01-epsilon0.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ε₀ とカントール標準形 {#pt:page-epsilon0 keywords="epsilon_0, Cantor normal form, epsilon numbers, ordinal notation system, standard epsilon_0 ordering, additively principal ordinals, ordinal analysis"}
+
+**順序数解析**は、算術の体系 $T$ が「どれだけ長い整列順序について超限帰納法を証明できるか」を順序数で測る。ペアノ算術 $\PA$ の場合、その限界は**$\varepsilon_{0}$**（$\omega,\omega^{\omega},\omega^{\omega^{\omega}},\dots$ の上限）である（ゲンツェン、\ref{pt:page-gentzen-bound}）。本ページでは、その準備として、順序数の**カントール標準形**（\ref{pt:cantor-normal-form}）を示し、$\varepsilon_{0}$ を定義してその基本性質（\ref{pt:epsilon0-basic}）を調べる。最後に、$\varepsilon_{0}$ 未満の順序数を自然数で符号化し、$\varepsilon_{0}$ と同型な**原始再帰的な整列順序**（**標準的な $\varepsilon_{0}$ 順序**）を作る（\ref{pt:notation-system}）。
+
+> 主な資料は新井敏康『数学基礎論』第 8 章 §8.4.2 で、そこで「標準的な $\varepsilon_{0}$ 順序」に課される条件（\ref{pt:standard-epsilon0-properties}）を本ページで具体的な符号化から導く。カントール標準形の証明は集合論の系列の順序数の算術（\ref{set:ordinal-addition-laws}, \ref{set:ordinal-multiplication-laws}, \ref{set:ordinal-exponentiation-laws}）から自分で組み立てた。
+
+## 記法と定義の確認 {#pt:sec-oa1-notation}
+
+::: notation
+- 順序数、極限順序数、順序数の和・積・冪とその法則は集合論の系列のとおり（\ref{set:ordinal}, \ref{set:limit-ordinal}, \ref{set:ordinal-addition-laws}, \ref{set:ordinal-multiplication-laws}, \ref{set:ordinal-exponentiation}, \ref{set:ordinal-exponentiation-basic}, \ref{set:ordinal-exponentiation-laws}）。とくに次を断りなく使う：和は右の引数について狭義増加；積の左分配律 $\alpha\cdot(\beta+\gamma)=\alpha\cdot\beta+\alpha\cdot\gamma$；割り算（$\delta>0$ なら $\gamma=\delta\cdot\xi+\eta$, $\eta<\delta$ と一意に書ける）；引き算（$\alpha\le\beta$ なら $\alpha+\delta=\beta$ となる $\delta$ が一意）；指数法則 $\omega^{\beta+\gamma}=\omega^{\beta}\cdot\omega^{\gamma}$；$\beta\mapsto\omega^{\beta}$ は**正規関数**（狭義増加で連続。\ref{set:normal-function}, \ref{set:normal-function-basic}）で、$\beta\le\omega^{\beta}$。
+- $\omega^{\alpha}\cdot n$（$n<\omega$）は $\omega^{\alpha}$ を $n$ 個足したものである（$\omega^{\alpha}\cdot(n+1)=\omega^{\alpha}\cdot n+\omega^{\alpha}$）。
+- 原始再帰関数、累積再帰（値の列についての原始再帰）は \ref{comp:page-primitive-recursive}, \ref{pt:course-of-values} のとおり。有限列 $\langle a_{1},\dots,a_{k}\rangle$ は数で符号化され、符号は各成分より大きく、空列の符号は $0$ とする。
+:::
+
+## カントール標準形 {#pt:sec-oa1-cnf}
+
+::: lemma ω の冪の吸収 {#pt:omega-power-absorb keywords="absorption omega^alpha + omega^beta = omega^beta, additively principal" index="加法的に閉じた順序数|かほうてきにとじたじゅんじょすう"}
+1. $\gamma\ge\omega$ なら $1+\gamma=\gamma$。
+2. $\alpha<\beta$ なら $\omega^{\alpha}+\omega^{\beta}=\omega^{\beta}$。
+3. $\xi,\eta<\omega^{\beta}$ なら $\xi+\eta<\omega^{\beta}$（$\omega^{\beta}$ は**加法的に閉じている**）。
+:::
+
+::: proof
+**1.** 引き算で $\gamma=\omega+\gamma'$ と書くと、結合律と $1+\omega=\sup\{1+n\mid n<\omega\}=\omega$（和の右の引数についての連続性）から $1+\gamma=(1+\omega)+\gamma'=\omega+\gamma'=\gamma$。
+
+**2.** 引き算で $\beta=\alpha+\delta$（$\delta\ge1$）と書く。$\omega^{\delta}\ge\omega^{1}=\omega$ なので 1 から $1+\omega^{\delta}=\omega^{\delta}$。指数法則と左分配律から
+$$
+\omega^{\alpha}+\omega^{\beta}=\omega^{\alpha}\cdot1+\omega^{\alpha}\cdot\omega^{\delta}=\omega^{\alpha}\cdot(1+\omega^{\delta})=\omega^{\alpha}\cdot\omega^{\delta}=\omega^{\beta}.
+$$
+
+**3.** $\beta$ についての超限帰納法で示す。$\beta=0$ なら $\xi=\eta=0$。$\beta=\beta'+1$ のとき：$\omega^{\beta}=\omega^{\beta'}\cdot\omega$ で、$\xi<\omega^{\beta'}\cdot\omega$ は割り算から $\xi<\omega^{\beta'}\cdot m$（ある $m<\omega$）を意味する（$\xi=\omega^{\beta'}\cdot\zeta+\rho$ で $\zeta<\omega$）。同様に $\eta<\omega^{\beta'}\cdot m'$ とすると、$\xi+\eta<\omega^{\beta'}\cdot m+\omega^{\beta'}\cdot m'=\omega^{\beta'}\cdot(m+m')<\omega^{\beta}$。$\beta$ が極限のとき：連続性から $\omega^{\beta}=\sup_{\beta'<\beta}\omega^{\beta'}$ なので、$\xi,\eta<\omega^{\beta'}$ となる $\beta'<\beta$ があり、帰納法の仮定から $\xi+\eta<\omega^{\beta'}\le\omega^{\beta}$。
+:::
+
+::: lemma 標準形の和の評価 {#pt:cnf-bound keywords="bound for sums in Cantor normal form"}
+$\alpha_{1}\ge\alpha_{2}\ge\cdots\ge\alpha_{k}$（$k\ge1$）なら
+$$
+\omega^{\alpha_{1}}\le\omega^{\alpha_{1}}+\omega^{\alpha_{2}}+\cdots+\omega^{\alpha_{k}}<\omega^{\alpha_{1}+1}.
+$$
+:::
+
+::: proof
+左の不等式は和が右の引数について増加することから。右：$\omega^{\alpha_{i}}\le\omega^{\alpha_{1}}$ なので、和は $\omega^{\alpha_{1}}\cdot k$ 以下（和の左の引数についての単調性を $k$ 回使う）で、$\omega^{\alpha_{1}}\cdot k<\omega^{\alpha_{1}}\cdot\omega=\omega^{\alpha_{1}+1}$（積の右の引数についての狭義単調性）。
+:::
+
+::: theorem カントール標準形 {#pt:cantor-normal-form keywords="Cantor normal form theorem" index="カントール標準形|かんとーるひょうじゅんけい"}
+任意の順序数 $\alpha>0$ は、
+$$
+\alpha=\omega^{\alpha_{1}}+\omega^{\alpha_{2}}+\cdots+\omega^{\alpha_{k}},\qquad\alpha_{1}\ge\alpha_{2}\ge\cdots\ge\alpha_{k}\tag{CNF}
+$$
+（$k\ge1$）の形にただ一通りに書ける。これを $\alpha$ の**カントール標準形**という（$\alpha=0$ は $k=0$ の空の和とみなす）。
+:::
+
+::: proof
+**Step 1（最大の指数）.** $\alpha>0$ とする。$B\defeq\{\beta:\omega^{\beta}\le\alpha\}$ は $0$ を含み、$\beta\le\omega^{\beta}$ なので $B\subseteq\alpha+1$ で集合である。$\beta_{0}\defeq\sup B$ とおくと、$\omega^{\cdot}$ の連続性（\ref{set:normal-function-basic} の 3）から $\omega^{\beta_{0}}=\sup\{\omega^{\beta}:\beta\in B\}\le\alpha$。よって $\beta_{0}$ は $B$ の最大元で、$\omega^{\beta_{0}}\le\alpha<\omega^{\beta_{0}+1}$。
+
+**Step 2（存在）.** $\alpha$ についての超限帰納法。Step 1 の $\beta_{0}$ について、割り算で $\alpha=\omega^{\beta_{0}}\cdot\xi+\rho$（$\rho<\omega^{\beta_{0}}$）と書く。$\xi\ge\omega$ なら $\alpha\ge\omega^{\beta_{0}}\cdot\omega=\omega^{\beta_{0}+1}$ となり Step 1 に反するので $\xi=n<\omega$。$\xi=0$ なら $\alpha=\rho<\omega^{\beta_{0}}\le\alpha$ で矛盾するので $n\ge1$。$\rho<\omega^{\beta_{0}}\le\alpha$ なので、$\rho>0$ なら帰納法の仮定から $\rho$ の標準形 $\omega^{\rho_{1}}+\cdots$ があり、\ref{pt:cnf-bound} から $\omega^{\rho_{1}}\le\rho<\omega^{\beta_{0}}$、すなわち $\rho_{1}<\beta_{0}$。よって
+$$
+\alpha=\underbrace{\omega^{\beta_{0}}+\cdots+\omega^{\beta_{0}}}_{n}+\omega^{\rho_{1}}+\cdots
+$$
+は (CNF) の形である。
+
+**Step 3（一意性）.** $\alpha=\omega^{\alpha_{1}}+\cdots+\omega^{\alpha_{k}}$ を (CNF) の形とする。\ref{pt:cnf-bound} から $\omega^{\alpha_{1}}\le\alpha<\omega^{\alpha_{1}+1}$ なので、$\alpha_{1}$ は Step 1 の $\beta_{0}$ に等しい（$\beta\mapsto\omega^{\beta}$ は狭義増加）。$\alpha_{1}=\cdots=\alpha_{n}>\alpha_{n+1}$ とすると、$\alpha=\omega^{\alpha_{1}}\cdot n+\rho$, $\rho\defeq\omega^{\alpha_{n+1}}+\cdots$ で、\ref{pt:cnf-bound} から $\rho<\omega^{\alpha_{n+1}+1}\le\omega^{\alpha_{1}}$。割り算の一意性から $n$ と $\rho$ は $\alpha$ だけで決まり、$\rho$ についての帰納法で残りの項も一意である。
+:::
+
+::: corollary 標準形の比較 {#pt:cnf-comparison keywords="comparison of Cantor normal forms is lexicographic"}
+$\alpha=\omega^{\alpha_{1}}+\cdots+\omega^{\alpha_{k}}$, $\beta=\omega^{\beta_{1}}+\cdots+\omega^{\beta_{l}}$ を標準形とする。$\alpha<\beta$ であるのは、次のどちらかが成り立つときに限る：(i) $k<l$ かつ $i\le k$ で $\alpha_{i}=\beta_{i}$；(ii) ある $i\le\min(k,l)$ で、$j<i$ について $\alpha_{j}=\beta_{j}$ かつ $\alpha_{i}<\beta_{i}$。（指数の列の辞書式比較。）
+:::
+
+::: proof
+共通の先頭部分の和を $\gamma$ とし、和の左簡約律と右の引数についての狭義単調性から、残りの部分を比べればよい。(i) なら $\alpha=\gamma<\gamma+\omega^{\beta_{k+1}}+\cdots=\beta$。(ii) なら、残りは $\omega^{\alpha_{i}}+\cdots<\omega^{\alpha_{i}+1}\le\omega^{\beta_{i}}\le\omega^{\beta_{i}}+\cdots$（\ref{pt:cnf-bound}）。(i), (ii) とその $\alpha,\beta$ を入れ替えたものと、列が一致する場合（一意性から $\alpha=\beta$）で、すべての場合が尽くされるので、逆も成り立つ。
+:::
+
+::: intuition
+$\omega^{2}$ までの順序数は、自然数の列を $\omega$ 本つなげたものとして描ける。$\omega\cdot n+m$ は「$n$ 本目の列の $m$ 番目」である。$\omega^{3}$ は $\omega^{2}$ を $\omega$ 個つなげたもの、$\omega^{\omega}$ はそれらの上限、と続けていく。カントール標準形は、順序数を「どの段の列を何本つなげたか」で読む位取り記数法に当たる。
+
+```svg ω² までの順序数。各行は自然数と同じ型の列で、行の番号 n に応じて ω·n, ω·n+1, ω·n+2, … と並ぶ。すべての行の後に ω² が来る
+<svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg" font-size="14">
+  <g fill="currentColor">
+    <circle cx="90" cy="30" r="4"/><circle cx="130" cy="30" r="4"/><circle cx="170" cy="30" r="4"/><circle cx="210" cy="30" r="4"/><circle cx="250" cy="30" r="4"/>
+    <circle cx="90" cy="75" r="4"/><circle cx="130" cy="75" r="4"/><circle cx="170" cy="75" r="4"/><circle cx="210" cy="75" r="4"/><circle cx="250" cy="75" r="4"/>
+    <circle cx="90" cy="120" r="4"/><circle cx="130" cy="120" r="4"/><circle cx="170" cy="120" r="4"/><circle cx="210" cy="120" r="4"/><circle cx="250" cy="120" r="4"/>
+  </g>
+  <text x="275" y="35">…</text><text x="275" y="80">…</text><text x="275" y="125">…</text>
+  <text x="20" y="35">0, 1, 2</text>
+  <text x="20" y="80">ω, ω+1</text>
+  <text x="20" y="125">ω·2, …</text>
+  <text x="90" y="165">⋮</text><text x="170" y="165">⋮</text>
+  <circle cx="400" cy="195" r="6" style="fill: var(--mn-accent)"/>
+  <text x="414" y="200" style="fill: var(--mn-accent)">ω² = ω·ω</text>
+  <text x="320" y="35" font-size="13" style="fill: var(--mn-fg-soft)">上限は ω</text>
+  <text x="320" y="80" font-size="13" style="fill: var(--mn-fg-soft)">上限は ω·2</text>
+  <text x="320" y="125" font-size="13" style="fill: var(--mn-fg-soft)">上限は ω·3</text>
+</svg>
+```
+:::
+
+## ε₀ {#pt:sec-oa1-epsilon0}
+
+::: definition ε₀ {#pt:epsilon0 keywords="epsilon_0, epsilon numbers, omega towers" index="ε₀|いぷしろんぜろ, ε 数|いぷしろんすう"}
+$\omega_{0}\defeq1$, $\omega_{n+1}\defeq\omega^{\omega_{n}}$ とし、$\varepsilon_{0}\defeq\sup\{\omega_{n}:n<\omega\}$ とおく。$\omega^{\alpha}=\alpha$ を満たす順序数 $\alpha$ を **ε 数**という。
+:::
+
+::: proposition ε₀ の基本性質 {#pt:epsilon0-basic keywords="epsilon_0 is the least epsilon number, closure properties"}
+1. $\omega_{n}<\omega_{n+1}$ で、$\varepsilon_{0}$ は極限順序数である。
+2. $\varepsilon_{0}$ は最小の ε 数である。
+3. $\alpha,\beta<\varepsilon_{0}$ なら $\alpha+\beta$, $\omega^{\alpha}$, $2^{\alpha}$ はいずれも $\varepsilon_{0}$ 未満である。
+4. $0<\alpha<\varepsilon_{0}$ の標準形 $\omega^{\alpha_{1}}+\cdots+\omega^{\alpha_{k}}$ では、すべての $i$ で $\alpha_{i}<\alpha$。
+:::
+
+::: proof
+**1.** $\omega_{0}=1<\omega=\omega_{1}$。$\omega_{n}<\omega_{n+1}$ なら $\omega^{\cdot}$ の狭義単調性から $\omega_{n+1}<\omega_{n+2}$。最大元のない増加列の上限なので極限順序数。
+
+**2.** $\omega^{\cdot}$ の連続性と 1 から $\omega^{\varepsilon_{0}}=\sup_{n}\omega^{\omega_{n}}=\sup_{n}\omega_{n+1}=\varepsilon_{0}$。逆に $\omega^{\alpha}=\alpha$ なら、帰納法で $\omega_{n}\le\alpha$（$\omega_{0}=1\le\omega^{\alpha}=\alpha$；$\omega_{n}\le\alpha$ なら $\omega_{n+1}=\omega^{\omega_{n}}\le\omega^{\alpha}=\alpha$）なので $\varepsilon_{0}\le\alpha$。
+
+**3.** $\alpha,\beta<\omega_{n}$ となる $n$ をとる。$\omega^{\alpha}<\omega^{\omega_{n}}=\omega_{n+1}<\varepsilon_{0}$。$2^{\alpha}\le\omega^{\alpha}$（底についての単調性 \ref{set:ordinal-exponentiation-basic} の 4）。$\alpha+\beta<\varepsilon_{0}=\omega^{\varepsilon_{0}}$ は \ref{pt:omega-power-absorb} の 3。
+
+**4.** $\alpha_{i}\le\alpha_{1}\le\omega^{\alpha_{1}}\le\alpha$。$\alpha_{1}=\alpha$ なら $\omega^{\alpha}\le\alpha\le\omega^{\alpha}$ で $\alpha$ は ε 数となり、2 から $\alpha\ge\varepsilon_{0}$ で矛盾する。
+:::
+
+## 標準的な ε₀ 順序 {#pt:sec-oa1-notation-system}
+
+\ref{pt:epsilon0-basic} の 4 により、$\varepsilon_{0}$ 未満の順序数は、標準形の指数を再び標準形で書くことを繰り返して、有限の記号列で表せる。これを自然数で符号化する。
+
+::: definition 順序数表記の符号 {#pt:notation-codes keywords="ordinal notations below epsilon_0, codes, OT" index="順序数表記|じゅんじょすうひょうき"}
+自然数の集合 $\mathrm{OT}$ と、その上の二項関係 $\prec$ を、符号の大きさについての累積再帰で同時に定める。
+1. $0\in\mathrm{OT}$（空列の符号。順序数 $0$ を表す）。
+2. $a=\langle a_{1},\dots,a_{k}\rangle$（$k\ge1$）が $\mathrm{OT}$ に属するのは、すべての $a_{i}\in\mathrm{OT}$ で、$a_{i+1}\preceq a_{i}$（$i<k$）のとき（$a_{i}<a$ なので、これは $a$ より小さい数についての $\mathrm{OT}$ と $\preceq$ で決まる）。
+3. $a=\langle a_{1},\dots,a_{k}\rangle$, $b=\langle b_{1},\dots,b_{l}\rangle\in\mathrm{OT}$（$k,l\ge0$）について $a\prec b$ は、(i) $k<l$ かつ $i\le k$ で $a_{i}=b_{i}$、または (ii) ある $i\le\min(k,l)$ で、$j<i$ について $a_{j}=b_{j}$ かつ $a_{i}\prec b_{i}$、のとき。$a\preceq b$ は $a\prec b\vee a=b$。
+
+$a\in\mathrm{OT}$ の**値** $o(a)$ を $o(0)\defeq0$, $o(\langle a_{1},\dots,a_{k}\rangle)\defeq\omega^{o(a_{1})}+\cdots+\omega^{o(a_{k})}$ で定める。
+:::
+
+::: theorem 標準的な ε₀ 順序 {#pt:notation-system keywords="the notation system is a primitive recursive well-ordering of type epsilon_0" index="標準的な ε₀ 順序|ひょうじゅんてきないぷしろんぜろじゅんじょ"}
+1. $\mathrm{OT}$ と $\prec$ は原始再帰的である。
+2. $o$ は $(\mathrm{OT},\prec)$ から $(\varepsilon_{0},<)$ への順序同型である。とくに $\prec$ は $\mathrm{OT}$ 上の整列順序で、順序型は $\varepsilon_{0}$。
+:::
+
+::: proof
+**1.** 定義の各条件は、成分 $a_{i},b_{j}$（$a,b$ より小さい数）についての $\mathrm{OT}$ と $\prec$ の値と、有界な量化子だけを使って書けるので、特性関数の組（$\mathrm{OT}$ と、対 $(a,b)$ についての $\prec$ を一つの関数にまとめる）は累積再帰で定義され、原始再帰的である（\ref{pt:course-of-values}）。
+
+**2.** $a,b\in\mathrm{OT}$ について、符号の大きさについての帰納法で次を同時に示す：(A) $o(a)<\varepsilon_{0}$ で、$o(a)$ の右辺は (CNF) の形（指数が広義減少）；(B) $a\prec b\iff o(a)<o(b)$；(C) $a=b\iff o(a)=o(b)$。
+
+(A)：成分 $a_{i}$ について帰納法の仮定から $o(a_{i})<\varepsilon_{0}$、$a_{i+1}\preceq a_{i}$ と (B)(C) から $o(a_{i+1})\le o(a_{i})$。\ref{pt:epsilon0-basic} の 3 から和は $\varepsilon_{0}$ 未満。
+
+(B)(C)：(A) により $o(a),o(b)$ はその表示が標準形である。\ref{pt:cnf-comparison} と、成分についての (B)(C)（帰納法の仮定）から、$a\prec b$ の定義 (i)(ii) はちょうど $o(a)<o(b)$ の条件に一致する。標準形の一意性から、$o(a)=o(b)$ なら成分の列が値として一致し、成分について (C) から $a=b$。
+
+全射性：$\alpha<\varepsilon_{0}$ についての超限帰納法。$\alpha=0$ なら $o(0)=0$。$\alpha>0$ なら標準形 $\omega^{\alpha_{1}}+\cdots+\omega^{\alpha_{k}}$ をとり、\ref{pt:epsilon0-basic} の 4 から $\alpha_{i}<\alpha$ なので $o(a_{i})=\alpha_{i}$ となる $a_{i}$ がある。$a\defeq\langle a_{1},\dots,a_{k}\rangle$ は (B)(C) から $\mathrm{OT}$ に属し、$o(a)=\alpha$。
+
+よって $o$ は順序を保つ全単射で、順序同型である。
+:::
+
+::: definition 符号の演算 {#pt:notation-operations keywords="addition and omega exponentiation on notations"}
+$a=\langle a_{1},\dots,a_{k}\rangle$, $b=\langle b_{1},\dots,b_{l}\rangle\in\mathrm{OT}$ と $n<\omega$ について：
+1. $a\mathbin{\hat{+}}b\defeq\langle a_{1},\dots,a_{j},b_{1},\dots,b_{l}\rangle$。ただし $l=0$ なら $a$ とし、$l\ge1$ なら $j$ は $b_{1}\preceq a_{j}$ となる最大の $j$（なければ $j=0$）。
+2. $\hat{\omega}^{a}\cdot n\defeq\langle a,a,\dots,a\rangle$（$a$ を $n$ 個並べた列）。$\hat{\omega}^{a}\defeq\hat{\omega}^{a}\cdot1$。
+:::
+
+::: proposition 演算の値 {#pt:notation-operations-values}
+上の演算は原始再帰的で、$o(a\mathbin{\hat{+}}b)=o(a)+o(b)$, $o(\hat{\omega}^{a}\cdot n)=\omega^{o(a)}\cdot n$。
+:::
+
+::: proof
+原始再帰性は、有限列の操作と $\preceq$ の有界な探索で書けることから。値について：$o(a)+o(b)=\omega^{o(a_{1})}+\cdots+\omega^{o(a_{k})}+\omega^{o(b_{1})}+\cdots$ で、$i>j$ の項 $\omega^{o(a_{i})}$ は $o(a_{i})<o(b_{1})$ なので、\ref{pt:omega-power-absorb} の 2 を右から順に使って $\omega^{o(a_{i})}+\omega^{o(b_{1})}=\omega^{o(b_{1})}$ と吸収される（結合律を使い、$i=k,k-1,\dots,j+1$ の順に）。残りは指数が広義減少する列で、$a\mathbin{\hat{+}}b$ の値に一致する。$\hat{\omega}^{a}\cdot n$ は定義から。
+:::
+
+::: proposition 標準的な ε₀ 順序の性質 {#pt:standard-epsilon0-properties keywords="properties (a)-(g) of the standard epsilon_0 ordering provable in PA"}
+以下、$\alpha,\beta,\gamma$ は $\mathrm{OT}$ の元を、$<$ は $\prec$ を、$+$ は $\hat{+}$ を、$\omega^{\alpha}\cdot n$ は $\hat{\omega}^{\alpha}\cdot n$ を表すとする。次の性質は（標準モデルで）成り立つ。
+1. $<$ は $\mathrm{OT}$ 上の線形順序で、$0$ はその最小元。
+2. $(\alpha+\beta)+\gamma=\alpha+(\beta+\gamma)$, $\alpha+0=0+\alpha=\alpha$。
+3. $\omega^{\alpha}\cdot0=0$, $\omega^{\alpha}\cdot(n+1)=\omega^{\alpha}\cdot n+\omega^{\alpha}$。
+4. $\alpha<\beta+\omega^{0}\iff\alpha\le\beta$。
+5. $\alpha>0$ かつ $\gamma<\beta+\omega^{\alpha}$ なら、ある $\alpha'<\alpha$ と $n$ で $\gamma<\beta+\omega^{\alpha'}\cdot n$。
+
+さらに、これらはすべて $\PA$ で（$\mathrm{OT}$, $\prec$, $\hat{+}$, $\hat{\omega}^{\cdot}\cdot n$ を表す原始再帰的関数・関係の記号を使って）証明できることが知られている（新井の本の §8.4.2 は、これらを標準的な $\varepsilon_{0}$ 順序が満たすべき条件として課している。本サイトでは $\PA$ での形式化は示していない）。
+:::
+
+::: proof
+標準モデルで成り立つことは、\ref{pt:notation-system} と \ref{pt:notation-operations-values} により順序数の性質に帰着する。1：順序数の順序と $o(0)=0$。2：順序数の和の結合律と $0$ の性質。3：定義。4：$o(\alpha)<o(\beta)+1\iff o(\alpha)\le o(\beta)$。5：$\gamma<\beta+\omega^{\alpha}$ で $\gamma\ge\beta$ の場合（$\gamma<\beta$ なら $\alpha'=0$, $n=1$ でよい）、引き算で $\gamma=\beta+\delta$, $\delta<\omega^{\alpha}$。$\delta=0$ なら $\alpha'=0,n=1$。$\delta>0$ なら $\delta$ の標準形の先頭の指数を $\alpha'$、先頭の $\omega^{\alpha'}$ の個数を $m$ とすると、\ref{pt:cnf-bound} から $\alpha'<\alpha$ で $\delta<\omega^{\alpha'}\cdot(m+1)$。$n\defeq m+1$ とすればよい（和の右の引数についての狭義単調性）。
+:::
+
+::: hypcheck
+- **$\omega^{\cdot}$ の連続性**：\ref{pt:cantor-normal-form} の Step 1（最大の指数の存在）と \ref{pt:epsilon0-basic} の 2（$\varepsilon_{0}$ が ε 数であること）で使った。
+- **割り算の一意性**：\ref{pt:cantor-normal-form} の存在（係数が有限であること）と一意性で使った。
+- **$\alpha<\varepsilon_{0}$**：\ref{pt:epsilon0-basic} の 4 で、標準形の指数が $\alpha$ より小さいことに使った。ε 数 $\alpha$ では $\alpha=\omega^{\alpha}$ が標準形で、指数が $\alpha$ 自身になる。これが、$\varepsilon_{0}$ 以上の順序数をこの方法では表記できない理由である。
+- **累積再帰**：\ref{pt:notation-system} の 1 で、$\mathrm{OT}$ と $\prec$ を同時に定義するのに使った。
+:::
+
+## 問題 {#pt:sec-oa1-problems}
+
+::: problem {#pt:prob-cnf-examples}
+次の順序数の標準形を求め、大小を比べよ：$\alpha\defeq\omega+\omega^{2}+3$, $\beta\defeq\omega^{2}\cdot2+\omega^{\omega}$, $\gamma\defeq(\omega+1)\cdot\omega$。
+:::
+
+::: solution
+$\alpha$：$\omega+\omega^{2}=\omega^{2}$（\ref{pt:omega-power-absorb} の 2）なので $\alpha=\omega^{2}+\omega^{0}+\omega^{0}+\omega^{0}$。$\beta$：$\omega^{2}+\omega^{\omega}=\omega^{\omega}$ を二回使って $\beta=\omega^{\omega}$。$\gamma$：$(\omega+1)\cdot\omega=\sup_{n}(\omega+1)\cdot n$ で、$(\omega+1)\cdot n=\omega\cdot n+1$（帰納法：$(\omega\cdot n+1)+(\omega+1)=\omega\cdot n+(1+\omega)+1=\omega\cdot(n+1)+1$）なので $\gamma=\sup_{n}(\omega\cdot n+1)=\omega^{2}$。指数の列 $(2,0,0,0)$, $(\omega)$, $(2)$ を辞書式に比べて $\gamma<\alpha<\beta$。
+:::
+
+::: problem {#pt:prob-epsilon0-codes}
+\ref{pt:notation-codes} の符号で、$\omega$, $\omega^{\omega}$, $\omega+1$ を表す符号を書け。また、$\langle\langle0\rangle,\langle\langle0\rangle\rangle\rangle$ が $\mathrm{OT}$ に属さない理由を述べよ。
+:::
+
+::: solution
+$1=\omega^{0}$ の符号は $\langle0\rangle$。$\omega=\omega^{1}$ の符号は $\langle\langle0\rangle\rangle$。$\omega^{\omega}$ の符号は $\langle\langle\langle0\rangle\rangle\rangle$。$\omega+1=\omega^{1}+\omega^{0}$ の符号は $\langle\langle0\rangle,0\rangle$。$\langle\langle0\rangle,\langle\langle0\rangle\rangle\rangle$ は値 $\omega^{1}+\omega^{\omega}$ を表そうとしているが、二番目の成分 $\langle\langle0\rangle\rangle$（$\omega$）が一番目 $\langle0\rangle$（$1$）より大きく、指数が広義減少でないので $\mathrm{OT}$ に属さない（その値は $\omega^{\omega}$ に等しく、標準形の表示はただ一つ $\langle\langle\langle0\rangle\rangle\rangle$ である）。
+:::
+
+::: problem {#pt:prob-descending-epsilon0}
+$\varepsilon_{0}$ 未満の順序数の無限下降列がないことは、整列性からすぐわかる。具体例として、$\omega^{\omega}$ から始めて「標準形の最後の項 $\omega^{\alpha_{k}}$ を、$\alpha_{k}$ が後者 $\delta+1$ なら $\omega^{\delta}\cdot n$ に、$\alpha_{k}=0$ ならその項を除く」という操作を、$n=1,2,3,\dots$ と増やしながら繰り返すと有限回で $0$ に達することを、$\omega^{2}$ から始めた場合について確かめよ。（極限の指数 $\omega$ は、$n$ 番目の操作で $n$ に置き換える。）
+:::
+
+::: solution
+$\omega^{2}$ → （$n=1$）$\omega^{1}\cdot1=\omega$ → （$n=2$）$\omega^{0}\cdot2=2$ → （$n=3$）$1$ → （$n=4$）$0$。一般には、各操作で値が真に減少する（$\omega^{\delta}\cdot n<\omega^{\delta+1}$、また項を除くと減る）ので、整列性から有限回で止まる。$\omega^{\omega}$ から始めると、最初の操作で指数 $\omega$ が $1$ に置き換わり $\omega^{1}$ になる、などと進む。これは**グッドスタインの定理**の証明と同じ構造で、グッドスタインの定理は $\PA$ で証明できないことが知られている（カービー–パリス）。
+:::
+
+::: supplement
+**前提の検討.**
+- カントール標準形の存在と一意性は、任意の順序数で成り立ち、$\varepsilon_{0}$ に限らない。$\varepsilon_{0}$ に制限が必要なのは、表記を有限の記号列にする（\ref{pt:epsilon0-basic} の 4）ためだけである。
+- 標準形を「係数付き」$\omega^{\alpha_{1}}\cdot n_{1}+\cdots$（$\alpha_{1}>\alpha_{2}>\cdots$）で書く流儀もある。本ページでは係数を繰り返しで表し、符号化を簡単にした。
+
+**関連する結果.**
+- *より大きな表記系.* $\varepsilon_{0}$ を超える順序数も、ε 数を数え上げる関数 $\varepsilon_{\alpha}$ やヴェブレン関数 $\varphi_{\alpha}(\beta)$ を使って表記できる。$0$ からヴェブレン関数と和を有限回使って表せない最小の順序数 $\Gamma_{0}$ はフェファーマン–シュッテの順序数と呼ばれ、$\mathsf{ATR}_{0}$ の証明論的順序数であると言われている。
+- *自然な和.* 順序数解析では、可換で狭義単調な**自然な和**（ヘッセンベルク和）$\alpha\#\beta$ もよく使われる。本サイトの系列では、通常の和と $2^{\alpha}$ だけで足りる形で議論する。
+
+**高い視点から：位取り記数法としての標準形.** カントール標準形は、十進法の位取り記数法を超限に拡張したものと見られる：位の重み $10^{k}$ の代わりに $\omega^{\alpha}$ を使い、位そのもの（指数）がまた順序数であるため、記数法が入れ子になる。$\varepsilon_{0}$ は、この入れ子を有限回で打ち切れる順序数の上限、すなわち「有限の深さの入れ子で書ける限界」である。比喩で言えば、$\varepsilon_{0}$ 未満の順序数は有限の木（入れ子の構造）で表され、比較は木の辞書式比較で計算できる。この「計算できる整列順序」が、$\PA$ の強さを測る物差しになる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

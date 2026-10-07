@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>概素族と Δ システム補題 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/01-almost-disjoint.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 概素族と Δ システム補題 {#set:page-almost-disjoint keywords="almost disjoint family, maximal almost disjoint family, delta-system lemma, quasi-disjoint family, sunflower lemma"}
+
+互いに素な集合族は、無限の世界ではあまり多くとれない。$\kappa$ の空でない部分集合を互いに素に並べれば、高々 $\kappa$ 個しかない。ところが「交わりが小さい」（濃度 $\kappa$ 未満）ことだけを要求すると、$\kappa$ の部分集合を $\kappa$ 個よりずっと多く、ときには $2^{\kappa}$ 個も並べることができる。これが**概素族**である。後半では逆向きの現象、すなわち「小さい集合をたくさん集めると、その中に、どの 2 つの交わりも同じ集合になる大きな部分族が必ず含まれる」という **Δ システム補題**を示す。Δ システム補題は、次のページの可算鎖条件の直積の議論（\ref{set:ccc-product-finite}）や、強制法で半順序が可算鎖条件をもつことを示すときの基本的な道具である。
+
+## 記法と定義の確認 {#set:sec-ad-notation}
+
+::: notation
+- 本章は $\ZFC^{-}$（$\ZFC$ から基礎の公理を除いたもの。\ref{set:zf-subsystems}）の中で議論する。基礎の公理（\ref{set:ax-foundation}）は一度も使わない。選択公理（AC）を使う箇所は各証明の「前提条件の使用箇所」に明記する。
+- $\kappa,\lambda,\theta$ は基数（\ref{set:cardinal}）、$\alpha,\beta,\xi,\eta,\zeta,\mu,\nu,\rho$ は順序数を表す。AC のもとでは任意の集合 $A$ の濃度 $\lvert A\rvert$ が基数として定まる（\ref{set:every-set-cardinality}）。$\kappa^{+}$ は $\kappa$ の次の基数（\ref{set:successor-cardinal}）で、無限基数 $\kappa$ について $\kappa^{+}$ は正則である（\ref{set:successor-regular}、AC）。
+- 順序数 $\beta$ の部分集合 $X$ が**非有界**であることの定義、共終数 $\cf(\beta)$、正則基数は \ref{set:cofinal-map}, \ref{set:cofinality}, \ref{set:regular-cardinal} の意味で用いる。**有界**とは非有界でないこと、すなわち $\forall x\in X\ (x<\zeta)$ となる $\zeta<\beta$ があることである。
+- 無限基数 $\kappa$ と $I$ が $\lvert I\rvert\le\kappa$、各 $\lvert X_{i}\rvert\le\kappa$ ならば $\bigl\lvert\bigcup_{i\in I}X_{i}\bigr\rvert\le\kappa$（\ref{set:union-bound}、AC）。特に可算個の可算集合の和は可算である。
+- 無限基数 $\kappa$ について $\kappa\otimes\kappa=\kappa$（\ref{set:kappa-times-kappa}）、$\kappa\oplus\kappa=\kappa$（\ref{set:cardinal-absorption}）。
+- $2^{\kappa}=\lvert{}^{\kappa}2\rvert=\lvert\mathcal{P}(\kappa)\rvert$（\ref{set:cardinal-exponentiation}, \ref{set:two-to-kappa}）。集合 $A$ と順序数 $\beta$ に対し ${}^{<\beta}A=\bigcup_{\alpha<\beta}{}^{\alpha}A$、$2^{<\kappa}=\lvert{}^{<\kappa}2\rvert=\sup\{2^{\theta}\mid\theta<\kappa\text{ は基数}\}$（\ref{set:kappa-below-lambda}, \ref{set:kappa-below-lambda-sup}）。
+- 順序数の集合 $x$ は $\in$ で整列されるので、順序型 $\operatorname{type}(x)$（\ref{set:order-type}）と、順序同型 $\operatorname{type}(x)\to x$ がただ一つ定まる（\ref{set:ordinal-type}, \ref{set:well-order-iso-unique}）。この同型による $\xi$ の像を $x$ の **$\xi$ 番目の元** と呼び $x(\xi)$ と書く（$0$ 番目が最小元）。
+- 半順序、鎖、上界、極大元は \ref{set:chain-maximal}、ツォルンの補題は \ref{set:zorn}（AC）。
+- 写像 $f$ と集合 $A$ に対し $f[A]=\{f(a)\mid a\in A\}$、$f^{-1}[B]=\{a\in\dom f\mid f(a)\in B\}$ と書く。
+:::
+
+本ページで何度も使う、正則基数についての 2 つの補題を先に示しておく。
+
+::: lemma 正則基数の小さい部分集合は有界 {#set:regular-bounded keywords="small subsets of a regular cardinal are bounded" index="正則基数の有界性|せいそくきすうのゆうかいせい"}
+順序数 $\beta$ と $X\subseteq\beta$ について、$\lvert X\rvert<\cf(\beta)$ ならば $X$ は $\beta$ で有界である。特に、$\theta$ が正則基数で $X\subseteq\theta$, $\lvert X\rvert<\theta$ ならば $\sup X<\theta$ である。
+:::
+
+::: proof
+**Step 1.** $X$ は順序数の集合なので整列可能であり、$\lvert X\rvert$ が ZF で定まり、全単射 $e\colon\lvert X\rvert\to X$ がある。
+
+**Step 2.** $X$ が非有界だとすると、$e$ の値域は $X$ なので、$e$ は $\lvert X\rvert$ から $\beta$ への共終写像である。$\cf(\beta)$ は共終写像をもつ最小の順序数なので $\cf(\beta)\le\lvert X\rvert$ となり、仮定に反する。よって $X$ は有界である。
+
+**Step 3.** $\theta$ が正則なら $\cf(\theta)=\theta$ なので、Step 2 より $\forall x\in X\ (x<\zeta)$ となる $\zeta<\theta$ がある。$\sup X=\bigcup X\subseteq\zeta$ なので $\sup X\le\zeta<\theta$。
+
+::: hypcheck
+- **共終数の最小性**（\ref{set:cofinality}）：Step 2 で使った。
+- 選択公理は使っていない（ZF で成り立つ）。
+:::
+:::
+
+::: lemma 正則基数は小さい和で尽くせない {#set:regular-small-union keywords="union of fewer than kappa sets of size less than kappa" index="正則基数と和集合|せいそくきすうとわしゅうごう"}
+（AC）$\theta$ を正則基数とし、$\lvert I\rvert<\theta$、各 $i\in I$ について $\lvert X_{i}\rvert<\theta$ とする。このとき $\bigl\lvert\bigcup_{i\in I}X_{i}\bigr\rvert<\theta$。
+
+対偶の形で述べると：濃度 $\theta$ 以上の集合 $A$ を $\theta$ 未満の個数の部分集合 $A=\bigcup_{i\in I}A_{i}$ に分けると、ある $i$ について $\lvert A_{i}\rvert\ge\theta$ となる。
+:::
+
+::: intuition
+\ref{set:cf-union} は「$\theta$ 自身は $\theta$ 未満個の小さい集合の和にならない」ことを述べていた。ここではそれを任意の集合に移しただけである。後者の形は「$\theta$ 個のものを $\theta$ 未満の箱に分けると、どれかの箱に $\theta$ 個入る」という、無限版の鳩の巣原理として使う。
+:::
+
+::: proof
+**Step 1.** $U=\bigcup_{i\in I}X_{i}$ とおく。AC により $\lvert U\rvert$ は基数である。$\lvert U\rvert\ge\theta$ と仮定して矛盾を導く。このとき単射 $h\colon\theta\to U$ がある。
+
+**Step 2.** $B_{i}=h^{-1}[X_{i}]\subseteq\theta$ とおく。任意の $\zeta<\theta$ について $h(\zeta)\in U$ なので $h(\zeta)\in X_{i}$ となる $i$ があり、$\zeta\in B_{i}$。よって $\theta=\bigcup_{i\in I}B_{i}$。
+
+**Step 3.** $h\restr{B_{i}}$ は $B_{i}$ から $X_{i}$ への単射なので $\lvert B_{i}\rvert\le\lvert X_{i}\rvert<\theta$。また $\lvert I\rvert<\theta$。したがって $\theta$ は $\theta$ 未満の個数の、濃度 $\theta$ 未満の集合の和集合として表されたことになり、$\theta$ が正則であることと \ref{set:cf-union} に反する。
+
+**Step 4（対偶の形）.** $\lvert A\rvert\ge\theta$、$A=\bigcup_{i\in I}A_{i}$、$\lvert I\rvert<\theta$ で、すべての $i$ について $\lvert A_{i}\rvert<\theta$ なら、前半より $\lvert A\rvert<\theta$ となり矛盾。
+
+::: hypcheck
+- **選択公理**：Step 1 で $\lvert U\rvert$ が基数として定まることに使い、また \ref{set:cf-union} 自体が AC を使う。
+- **$\theta$ の正則性**：Step 3 で使った。$\theta=\aleph_{\omega}$（特異）なら、$\aleph_{\omega}=\bigcup_{n<\omega}\aleph_{n}$ が反例になる（\ref{set:aleph-omega-singular}）。
+:::
+:::
+
+## 概素族 {#set:sec-almost-disjoint}
+
+::: definition 概素族 {#set:almost-disjoint keywords="almost disjoint, a.d. family, maximal almost disjoint family, m.a.d. family, MAD family" index="概素|がいそ, 概素族|がいそぞく, 極大概素族|きょくだいがいそぞく"}
+$\kappa$ を無限基数とする。
+- $x,y\subseteq\kappa$ が**概素**（almost disjoint, a.d.）であるとは、$\lvert x\cap y\rvert<\kappa$ となることをいう。
+- $\mathcal{A}\subseteq\mathcal{P}(\kappa)$ が（$\kappa$ 上の）**概素族**であるとは、すべての $x\in\mathcal{A}$ について $\lvert x\rvert=\kappa$ であり、$\mathcal{A}$ の相異なる 2 元がつねに概素であることをいう。
+- 概素族 $\mathcal{A}$ が**極大概素族**（maximal almost disjoint family, m.a.d. 族）であるとは、$\mathcal{A}\subsetneq\mathcal{B}$ となる概素族 $\mathcal{B}$ が存在しないことをいう。
+:::
+
+::: intuition
+「互いに素」を「交わりが（全体の大きさ $\kappa$ に比べて）小さい」に弱めたもの。$\kappa=\omega$ なら、概素とは「共通部分が有限」ということである。各元が大きさ $\kappa$ であることを要求するのは、小さな集合を入れると条件が意味をなさなくなる（小さい集合は何とでも概素になる）からである。
+
+極大性は「どんな $X\subseteq\kappa$（$\lvert X\rvert=\kappa$）も、$\mathcal{A}$ のどれかの元と大きく（濃度 $\kappa$ で）交わる」と言い換えられる。実際、$X\notin\mathcal{A}$ がすべての元と概素なら $\mathcal{A}\cup\{X\}$ はより大きい概素族であり、逆も同様である（$X\in\mathcal{A}$ なら $X$ 自身と濃度 $\kappa$ で交わる）。
+:::
+
+::: example
+- $\omega$ を偶数全体と奇数全体に分けた $\{E,O\}$ は $\omega$ 上の概素族である（互いに素）。これは極大でもある：無限集合 $X\subseteq\omega$ は $X\cap E$, $X\cap O$ のどちらかが無限である。
+- 素数 $p$ ごとに $x_{p}=\{p^{k}\mid k\ge1\}$ とおくと、$\{x_{p}\mid p\text{ は素数}\}$ は互いに素な概素族である。$\{x_{p}\cup\{0\}\mid p\text{ は素数}\}$ は互いに素ではないが、どの 2 つも共通部分は $\{0\}$ で有限なので概素族である。
+:::
+
+互いに素な族については、次の意味で「$\kappa$ 個」が限界である。
+
+::: lemma 互いに素な部分集合族の大きさ {#set:disjoint-subsets-kappa keywords="disjoint families of subsets of kappa" index="互いに素な部分集合族|たがいにそなぶぶんしゅうごうぞく"}
+$\kappa$ を無限基数とする。
+1. 互いに素な空でない $\kappa$ の部分集合からなる族 $\mathcal{D}$ は $\lvert\mathcal{D}\rvert\le\kappa$ を満たす。
+2. 互いに素な $\kappa$ の部分集合の族 $\{P_{\xi}\mid\xi<\kappa\}$ で、各 $\lvert P_{\xi}\rvert=\kappa$ かつ $\bigcup_{\xi<\kappa}P_{\xi}=\kappa$ となるものが存在する。特に $\kappa$ 上の概素族で濃度 $\kappa$ のものが存在する。
+:::
+
+::: proof
+**(1)** 各 $D\in\mathcal{D}$ は空でない順序数の集合なので最小元 $\min D$ をもつ。$m\colon\mathcal{D}\to\kappa$, $D\mapsto\min D$ と定める（最小元をとるだけなので選択は要らない）。$D\ne D'$ なら $D\cap D'=\varnothing$ なので $\min D\ne\min D'$。よって $m$ は単射であり、$\lvert\mathcal{D}\rvert\le\kappa$。
+
+**(2)** \ref{set:kappa-times-kappa} により全単射 $J\colon\kappa\times\kappa\to\kappa$ がある（その補足の通り標準的な $J$ が一意に定まる）。$P_{\xi}=J[\{\xi\}\times\kappa]$ とおく。
+- $J$ は単射なので、$\xi\ne\xi'$ なら $P_{\xi}\cap P_{\xi'}=J[(\{\xi\}\times\kappa)\cap(\{\xi'\}\times\kappa)]=\varnothing$。
+- $J\restr{\{\xi\}\times\kappa}$ は単射なので $\lvert P_{\xi}\rvert=\lvert\{\xi\}\times\kappa\rvert=\kappa$。
+- $J$ は全射なので $\bigcup_{\xi}P_{\xi}=J[\kappa\times\kappa]=\kappa$。
+
+$\xi\mapsto P_{\xi}$ は（$P_{\xi}$ が空でなく互いに素なので）単射であり、$\{P_{\xi}\mid\xi<\kappa\}$ は濃度 $\kappa$ の概素族である。
+
+::: hypcheck
+- **順序数の整列性**：(1) で最小元をとるのに使った。
+- **ヘッセンベルクの定理**（\ref{set:kappa-times-kappa}）：(2) で使った。
+- 選択公理は使っていない（ZF で成り立つ）。
+:::
+:::
+
+(2) の族は互いに素で和が $\kappa$ 全体なので、「互いに素な族」としては極大である（新しい空でない集合を加えれば必ずどれかと交わる）。ところが概素族としては極大にならない。これが次の定理の (a) である。
+
+::: theorem 正則基数上の概素族 {#set:ad-family-regular keywords="almost disjoint families on regular cardinals, no MAD family of size kappa" index="極大概素族の大きさ|きょくだいがいそぞくのおおきさ"}
+（AC）$\kappa$ を無限正則基数とする。
+- (a) $\mathcal{A}\subseteq\mathcal{P}(\kappa)$ が概素族で $\lvert\mathcal{A}\rvert=\kappa$ ならば、$\mathcal{A}$ は極大でない。より詳しく、すべての $A\in\mathcal{A}$ と概素な $D\subseteq\kappa$（$\lvert D\rvert=\kappa$）が存在する。
+- (b) 濃度 $\kappa^{+}$ 以上の極大概素族 $\mathcal{B}\subseteq\mathcal{P}(\kappa)$ が存在する。より一般に、任意の概素族は極大概素族に拡大できる。
+:::
+
+::: intuition
+(a) はカントールの対角線論法の変形である。$\mathcal{A}$ を $A_{0},A_{1},\dots$ と $\kappa$ 個に並べ、$\xi$ 番目の段階で「$A_{\xi}$ の元で、それ以前の $A_{\eta}$ のどれにも入っていないもの」を 1 つずつ拾う。拾った集合 $D$ は、各 $A_{\eta}$ とは「$\eta$ 番目までに拾った分」しか共有しない。$\kappa$ が正則であることは、$A_{\xi}$ から以前の $A_{\eta}$ たちとの（小さな）交わりを取り除いてもまだ元が残る、という点で効く。
+:::
+
+::: proof
+**(a)** $\mathcal{A}=\{A_{\xi}\mid\xi<\kappa\}$ と全単射で並べる（$\lvert\mathcal{A}\rvert=\kappa$ なので全単射 $\kappa\to\mathcal{A}$ が存在し、それを 1 つ固定する）。
+
+**Step 1（新しい元が残る）.** $\xi<\kappa$ に対し
+$$
+B_{\xi}=A_{\xi}\setminus\bigcup_{\eta<\xi}A_{\eta}
+$$
+とおく。$B_{\xi}\ne\varnothing$ を示す。
+$$
+A_{\xi}\cap\bigcup_{\eta<\xi}A_{\eta}=\bigcup_{\eta<\xi}(A_{\xi}\cap A_{\eta})
+$$
+であり、$\eta<\xi$ なら $A_{\eta}\ne A_{\xi}$（並べ方は単射）なので、概素性より $\lvert A_{\xi}\cap A_{\eta}\rvert<\kappa$。添字集合 $\xi$ の濃度は $\lvert\xi\rvert\le\xi<\kappa$。$\kappa$ は正則なので \ref{set:regular-small-union} より右辺の濃度は $<\kappa$ である。一方 $\lvert A_{\xi}\rvert=\kappa$ なので、$A_{\xi}\subseteq\bigcup_{\eta<\xi}(A_{\xi}\cap A_{\eta})$ ではありえず、$B_{\xi}\ne\varnothing$。
+
+**Step 2（元を拾う）.** $\beta_{\xi}=\min B_{\xi}$ とおく（最小元をとるだけなので選択は要らない）。
+
+**Step 3（$B_{\xi}$ は互いに素）.** $\eta<\xi$ とする。$B_{\eta}\subseteq A_{\eta}$ で、$B_{\xi}$ は $A_{\eta}$ と交わらないので $B_{\eta}\cap B_{\xi}=\varnothing$。したがって $\beta_{\eta}\ne\beta_{\xi}$、すなわち $\xi\mapsto\beta_{\xi}$ は単射であり、$D=\{\beta_{\xi}\mid\xi<\kappa\}$ は $\lvert D\rvert=\kappa$ を満たす。
+
+**Step 4（$D$ は各 $A_{\eta}$ と概素）.** $\eta<\kappa$ を固定する。$\beta_{\xi}\in A_{\eta}$ ならば $\xi\le\eta$ であることを示す：$\xi>\eta$ なら $\beta_{\xi}\in B_{\xi}\subseteq\kappa\setminus A_{\eta}$ だからである。よって
+$$
+D\cap A_{\eta}\subseteq\{\beta_{\xi}\mid\xi\le\eta\}
+$$
+であり、右辺は $\eta+1$ の像なので濃度は $\le\lvert\eta+1\rvert$。$\kappa$ は無限基数なので極限順序数であり（\ref{set:infinite-cardinal-limit}）、$\eta+1<\kappa$、したがって $\lvert\eta+1\rvert<\kappa$。よって $\lvert D\cap A_{\eta}\rvert<\kappa$。
+
+**Step 5（極大でない）.** $D\notin\mathcal{A}$ である。実際 $D=A_{\eta}$ なら $\lvert D\cap A_{\eta}\rvert=\lvert D\rvert=\kappa$ となり Step 4 に反する。よって $\mathcal{A}\cup\{D\}$ は $\mathcal{A}$ を真に含む概素族であり、$\mathcal{A}$ は極大でない。
+
+**(b)** 概素族 $\mathcal{A}_{0}$ を 1 つ固定し、$\mathcal{A}_{0}$ を含む概素族全体を $P$ とする（$P\subseteq\mathcal{P}(\mathcal{P}(\kappa))$ なので冪集合の公理と分出公理で集合）。$P$ を真の包含 $\subsetneq$ で半順序集合とみる。
+
+**Step 6（鎖の上界）.** $\mathcal{C}\subseteq P$ を鎖とする。$\mathcal{C}=\varnothing$ なら $\mathcal{A}_{0}\in P$ が上界である。$\mathcal{C}\ne\varnothing$ なら $\mathcal{U}=\bigcup\mathcal{C}$ とおく。
+- $\mathcal{U}$ の各元は $\mathcal{C}$ のある元に属するので濃度 $\kappa$ である。
+- $x\ne y$ を $\mathcal{U}$ の元とし、$x\in\mathcal{F}$, $y\in\mathcal{G}$（$\mathcal{F},\mathcal{G}\in\mathcal{C}$）とする。$\mathcal{C}$ は鎖なので $\mathcal{F}\subseteq\mathcal{G}$ または $\mathcal{G}\subseteq\mathcal{F}$ であり、大きい方に $x,y$ がともに入る。それは概素族なので $\lvert x\cap y\rvert<\kappa$。
+- $\mathcal{A}_{0}\subseteq\mathcal{U}$。
+
+よって $\mathcal{U}\in P$ であり、$\mathcal{C}$ の上界である。
+
+**Step 7（ツォルンの補題）.** \ref{set:zorn} により $P$ は極大元 $\mathcal{B}$ をもつ。$\mathcal{B}$ は極大概素族である：$\mathcal{B}\subsetneq\mathcal{B}'$ となる概素族 $\mathcal{B}'$ があれば $\mathcal{A}_{0}\subseteq\mathcal{B}'$ なので $\mathcal{B}'\in P$ となり、$\mathcal{B}$ の極大性に反する。これで後半の主張が示された。
+
+**Step 8（濃度）.** \ref{set:disjoint-subsets-kappa} (2) により $\lvert\mathcal{A}_{0}\rvert=\kappa$ の概素族がとれる。これを含む極大概素族 $\mathcal{B}$ は $\lvert\mathcal{B}\rvert\ge\kappa$ を満たし、(a) より $\lvert\mathcal{B}\rvert\ne\kappa$。AC により $\lvert\mathcal{B}\rvert$ は基数なので $\lvert\mathcal{B}\rvert>\kappa$、すなわち $\lvert\mathcal{B}\rvert\ge\kappa^{+}$。
+
+::: hypcheck
+- **$\kappa$ の正則性**：Step 1 で \ref{set:regular-small-union} を使うのに必要。
+- **選択公理**：(a) では \ref{set:regular-small-union} の中で、(b) ではツォルンの補題（Step 7）と濃度の比較（Step 8）で使った。$\beta_{\xi}$ を拾う Step 2 では選択を使っていない。
+- **$\lvert\mathcal{A}\rvert=\kappa$**：(a) で $\mathcal{A}$ を長さ $\kappa$ の列に並べるのに使った。$\lvert\mathcal{A}\rvert<\kappa$ の場合については補足を参照。
+- **冪集合の公理・分出公理**：(b) で $P$ を集合として作るのに使った。
+:::
+:::
+
+::: supplement
+**族が小さいと極大になりうる.** (a) の「$\lvert\mathcal{A}\rvert=\kappa$」は外せない。$\kappa$ を正則とし、$\lambda<\kappa$ を $0$ でない基数、$\{P_{\xi}\mid\xi<\lambda\}$ を $\kappa$ の互いに素な分割で各 $\lvert P_{\xi}\rvert=\kappa$ のものとする（\ref{set:disjoint-subsets-kappa} (2) の分割の最初の $\lambda$ 個をとり、残りを $P_{0}$ に合併すればよい）。このとき $\{P_{\xi}\mid\xi<\lambda\}$ は極大概素族である。実際 $X\subseteq\kappa$, $\lvert X\rvert=\kappa$ なら $X=\bigcup_{\xi<\lambda}(X\cap P_{\xi})$ で $\lambda<\kappa$ なので、\ref{set:regular-small-union} より $\lvert X\cap P_{\xi}\rvert=\kappa$ となる $\xi$ がある。たとえば $\{\omega\}$ や偶数・奇数の分割は $\omega$ 上の極大概素族である。したがって (a) から言えるのは「**濃度 $\kappa$ 以上の**極大概素族は濃度 $\kappa^{+}$ 以上」ということである。$\kappa=\omega$ ならこれは「無限の極大概素族は非可算」と同じだが、$\kappa>\omega$ では上の構成で $\lambda=\omega$ とすれば、濃度 $\aleph_{0}$（$<\kappa$）の無限の極大概素族が得られる。
+
+**$\kappa=\omega$ の場合.** 無限の極大概素族 $\mathcal{A}\subseteq\mathcal{P}(\omega)$ の濃度の最小値を $\mathfrak{a}$ と書くことが多い。上の定理と \ref{set:ad-family-large}（$\kappa=\omega$）から $\aleph_{1}\le\mathfrak{a}\le 2^{\aleph_{0}}$ であり、CH のもとでは $\mathfrak{a}=\aleph_{1}=2^{\aleph_{0}}$ である。$2^{\aleph_{0}}>\aleph_{1}$ のときに濃度 $\aleph_{1}$ の極大概素族があるかどうかは $\ZFC$ から決まらない：マーティンの公理のもとでは、濃度 $2^{\aleph_{0}}$ 未満の無限概素族は極大でない（\ref{set:ma-ad-corollary}）ので $\mathfrak{a}=2^{\aleph_{0}}$ となる。逆に $2^{\aleph_{0}}$ が大きく、かつ濃度 $\aleph_{1}$ の極大概素族が存在するモデルも強制法で作れる（Kunen 第 VIII 章 2.3）。
+:::
+
+\ref{set:ad-family-regular} から極大概素族は $\kappa^{+}$ 個以上の元をもつが、GCH を仮定しなければ $\kappa^{+}<2^{\kappa}$ でありうる。では $\mathcal{P}(\kappa)$ 全体と同じ $2^{\kappa}$ 個の元をもつ概素族はあるか。$\kappa=\omega$ なら答えは肯定的である。
+
+::: theorem 濃度 $2^{\kappa}$ の概素族 {#set:ad-family-large keywords="almost disjoint family of size 2^kappa, 2^{<kappa}=kappa" index="大きな概素族|おおきながいそぞく"}
+（AC）$\kappa$ を無限基数とし、$2^{<\kappa}=\kappa$ と仮定する。このとき $\kappa$ 上の概素族 $\mathcal{A}$ で $\lvert\mathcal{A}\rvert=2^{\kappa}$ となるものが存在する。特に（$2^{<\omega}=\omega$ なので）$\omega$ 上には濃度 $2^{\aleph_{0}}$ の概素族が存在する。
+:::
+
+::: intuition
+$\kappa$ を直接扱う代わりに、$\kappa$ の**有界な**部分集合全体 $I$ を「土台」にする。$2^{<\kappa}=\kappa$ はちょうど $\lvert I\rvert=\kappa$ を意味するので、$I$ は $\kappa$ と同一視できる。$X\subseteq\kappa$ に対し、その「始切片」$X\cap\alpha$ を全部集めた $A_{X}\subseteq I$ を考えると、異なる $X,Y$ の始切片は、$X$ と $Y$ が初めて食い違う点より先では一致しえない。$\kappa=\omega$ で $X$ を 0-1 列とみれば、$I$ は有限 0-1 列の全体（二分木）、$A_{X}$ は二分木の中の 1 本の枝であり、異なる 2 本の枝は根元の有限部分しか共有しない。
+:::
+
+::: proof
+**Step 1（土台 $I$）.** $I=\{x\subseteq\kappa\mid\exists\alpha<\kappa\ (x\subseteq\alpha)\}=\bigcup_{\alpha<\kappa}\mathcal{P}(\alpha)$ とおく。$\lvert I\rvert=\kappa$ を示す。
+- *$\le$*：$\alpha<\kappa$ について $\lvert\mathcal{P}(\alpha)\rvert=2^{\lvert\alpha\rvert}$（$\alpha\approx\lvert\alpha\rvert$ なので $\mathcal{P}(\alpha)\approx\mathcal{P}(\lvert\alpha\rvert)$）であり、$\lvert\alpha\rvert<\kappa$ は基数なので \ref{set:kappa-below-lambda-sup} より $2^{\lvert\alpha\rvert}\le 2^{<\kappa}=\kappa$。$\kappa$ 個の、濃度 $\le\kappa$ の集合の和なので、\ref{set:union-bound} より $\lvert I\rvert\le\kappa$。
+- *$\ge$*：$\alpha\mapsto\{\alpha\}$ は $\kappa$ から $I$ への単射である（$\{\alpha\}\subseteq\alpha+1$ で、$\kappa$ は極限順序数なので $\alpha+1<\kappa$）。
+
+シュレーダー＝ベルンシュタインの定理（\ref{set:schroder-bernstein}）より $\lvert I\rvert=\kappa$。
+
+**Step 2（$A_{X}$ の定義）.** $X\subseteq\kappa$ に対し $A_{X}=\{X\cap\alpha\mid\alpha<\kappa\}$ とおく。$X\cap\alpha\subseteq\alpha$ なので $A_{X}\subseteq I$。
+
+**Step 3（$\lvert X\rvert=\kappa$ なら $\lvert A_{X}\rvert=\kappa$）.** $A_{X}\subseteq I$ なので $\lvert A_{X}\rvert\le\kappa$。逆に、$X\to A_{X}$, $\alpha\mapsto X\cap\alpha$ は $X$ 上で単射である：$\alpha<\beta$ がともに $X$ の元なら $\alpha\in X\cap\beta$ だが $\alpha\notin X\cap\alpha$ なので $X\cap\alpha\ne X\cap\beta$。よって $\lvert A_{X}\rvert\ge\lvert X\rvert=\kappa$。
+
+**Step 4（$X\ne Y$ なら $A_{X}$ と $A_{Y}$ は概素）.** $X\ne Y$ とし、$\beta\in X\mathbin{\triangle}Y$（対称差）を 1 つとる（たとえば最小のもの）。
+$$
+A_{X}\cap A_{Y}\subseteq\{X\cap\alpha\mid\alpha\le\beta\}
+\label{set:eq-ad-branches}
+$$
+を示す。$z\in A_{X}\cap A_{Y}$ とし、$z=X\cap\alpha=Y\cap\alpha'$ と書く。$\alpha\le\beta$ なら示すことはないので $\alpha>\beta$ とする。
+- *$\beta\in X\setminus Y$ の場合*：$\beta\in X\cap\alpha=z=Y\cap\alpha'\subseteq Y$ となり矛盾。この場合は起こらない。
+- *$\beta\in Y\setminus X$ の場合*：$\beta\notin X$ より $\beta\notin z$。もし $\alpha'>\beta$ なら $\beta\in Y\cap\alpha'=z$ となり矛盾するので $\alpha'\le\beta$、よって $z\subseteq\alpha'\subseteq\beta$。一方 $\beta<\alpha$ より $X\cap\beta\subseteq X\cap\alpha=z$。また $z\subseteq X$ かつ $z\subseteq\beta$ なので $z\subseteq X\cap\beta$。よって $z=X\cap\beta$ であり、$z$ は \eqref{set:eq-ad-branches} の右辺に属する。
+
+\eqref{set:eq-ad-branches} の右辺は $\beta+1$ の像なので濃度 $\le\lvert\beta+1\rvert<\kappa$（$\kappa$ は極限順序数）。よって $\lvert A_{X}\cap A_{Y}\rvert<\kappa$。
+
+**Step 5（$I$ 上の概素族）.** $\mathcal{S}=\{X\subseteq\kappa\mid\lvert X\rvert=\kappa\}$ とし、$\mathcal{A}'=\{A_{X}\mid X\in\mathcal{S}\}$ とおく。Step 3・4 より、$\mathcal{A}'$ の元はどれも濃度 $\kappa$ で、相異なる 2 元の交わりは濃度 $<\kappa$ である。また $X\mapsto A_{X}$ は $\mathcal{S}$ 上で単射である：$X\ne Y$ なら $\lvert A_{X}\cap A_{Y}\rvert<\kappa=\lvert A_{X}\rvert$ なので $A_{X}\ne A_{Y}$。
+
+**Step 6（$\lvert\mathcal{S}\rvert=2^{\kappa}$）.** $\mathcal{S}\subseteq\mathcal{P}(\kappa)$ なので $\lvert\mathcal{S}\rvert\le 2^{\kappa}$。逆向きには、\ref{set:disjoint-subsets-kappa} (2) の分割から $P_{0},P_{1}$ をとる（互いに素で濃度 $\kappa$）。$Z\subseteq P_{0}$ に $Z\cup P_{1}\in\mathcal{S}$ を対応させると、$(Z\cup P_{1})\cap P_{0}=Z$ なので単射であり、$\lvert\mathcal{S}\rvert\ge\lvert\mathcal{P}(P_{0})\rvert=2^{\kappa}$。よって $\lvert\mathcal{S}\rvert=2^{\kappa}$、Step 5 より $\lvert\mathcal{A}'\rvert=2^{\kappa}$。
+
+**Step 7（$\kappa$ へ移す）.** Step 1 より全単射 $f\colon I\to\kappa$ があるので 1 つ固定し、$\mathcal{A}=\{f[A]\mid A\in\mathcal{A}'\}$ とおく。$f$ は全単射なので $\lvert f[A]\rvert=\lvert A\rvert$、$f[A]\cap f[A']=f[A\cap A']$ であり、$A\mapsto f[A]$ は単射である。よって $\mathcal{A}$ は $\kappa$ 上の概素族で $\lvert\mathcal{A}\rvert=2^{\kappa}$。
+
+**Step 8（$\kappa=\omega$）.** $\theta<\omega$ なら $2^{\theta}$ は有限なので $2^{<\omega}=\sup\{2^{n}\mid n<\omega\}=\omega$ であり（\ref{set:kappa-below-lambda-sup} の例）、仮定が満たされる。
+
+::: hypcheck
+- **$2^{<\kappa}=\kappa$**：Step 1 で $\lvert I\rvert\le\kappa$ を示すのに使った。これが本質的な仮定である（補足を参照）。
+- **選択公理**：Step 1 の \ref{set:union-bound}、$2^{<\kappa}$ や $2^{\kappa}$ を基数として扱うこと（\ref{set:kappa-below-lambda}, \ref{set:cardinal-exponentiation}）に使った。
+- **冪集合の公理**：$I$, $\mathcal{S}$, $\mathcal{A}'$ を集合として作るのに使った。
+- **$\kappa$ の正則性は使っていない**。$2^{<\kappa}=\kappa$ は特異基数でも成り立ちうる（たとえば $\kappa=\beth_{\omega}$。\ref{set:beth}）。
+:::
+:::
+
+::: example
+- CH（\ref{set:ch}）のもとでは $2^{<\aleph_{1}}=2^{\aleph_{0}}=\aleph_{1}$ なので、$\omega_{1}$ 上に濃度 $2^{\aleph_{1}}$ の概素族がある（$2^{\aleph_{1}}$ 自身の値は CH からは決まらない）。
+- GCH（\ref{set:gch}）のもとでは、すべての無限基数 $\kappa$ について $2^{<\kappa}=\kappa$ である。実際、$\kappa=\lambda^{+}$ なら $2^{<\kappa}=2^{\lambda}=\lambda^{+}=\kappa$、$\kappa$ が極限基数なら $2^{<\kappa}=\sup\{\theta^{+}\mid\theta<\kappa\}=\kappa$。したがって GCH のもとでは、すべての無限基数 $\kappa$ 上に濃度 $2^{\kappa}$ の概素族がある。
+:::
+
+::: supplement
+**仮定 $2^{<\kappa}=\kappa$ は外せない.** Kunen（第 VIII 章演習 B5）によれば、$2^{\aleph_{0}}=2^{\aleph_{1}}=\aleph_{3}$（したがって $2^{<\aleph_{1}}=2^{\aleph_{0}}>\aleph_{1}$）という仮定からは、$\omega_{1}$ 上の濃度 $2^{\aleph_{1}}$ の概素族の存在は証明も反証もできない（そのようなモデルは強制法で作る）。
+
+**$\kappa=\omega$ の場合の具体例.** 実数 $r$ ごとに有理数列 $q_{n}\to r$（相異なる項からなるもの）を 1 つずつとって $x_{r}=\{q_{n}\mid n<\omega\}\subseteq\Q$ とおくと、異なる $r,s$ について $x_{r}\cap x_{s}$ は有限である（両方に無限に多く属する点があれば、それは $r$ にも $s$ にも収束する列をなす）。$\Q\approx\omega$ なので、これも濃度 $2^{\aleph_{0}}$ の $\omega$ 上の概素族を与える。
+:::
+
+## Δ システム {#set:sec-delta-system}
+
+::: definition Δ システム {#set:delta-system keywords="delta-system, Δ-system, quasi-disjoint family, sunflower, root" index="Δシステム|でるたしすてむ, 準素族|じゅんそぞく, 根|ね"}
+集合族 $\mathcal{A}$ が **Δ システム**（準素族、quasi-disjoint family）であるとは、ある集合 $r$ があって、$\mathcal{A}$ の相異なる任意の 2 元 $a,b$ について $a\cap b=r$ となることをいう。この $r$ を Δ システムの**根**（root）という。
+:::
+
+::: intuition
+ひまわりの花のように、すべての花びら $a\setminus r$ が互いに素で、共通の芯 $r$ にだけつながっている形である（英語では sunflower とも呼ぶ）。芯を取り除けば互いに素な族になる：$\mathcal{A}$ が根 $r$ の Δ システムなら $\{a\setminus r\mid a\in\mathcal{A}\}$ は互いに素である。「どの 2 つも同じ仕方で交わる」という強い一様性が、組合せ論的な議論で扱いやすさを生む。
+
+$\lvert\mathcal{A}\rvert\ge2$ なら、根は任意の相異なる $a,b\in\mathcal{A}$ に対する $a\cap b$ として一意に決まる。$\lvert\mathcal{A}\rvert\le1$ なら条件は空虚で、どんな $r$ も根の役を果たす。
+:::
+
+::: example
+- 互いに素な集合族は、根 $\varnothing$ の Δ システムである。
+- $\{\{0,n\}\mid 1\le n<\omega\}$ は根 $\{0\}$ の Δ システムである。
+- $\{\{0,1\},\{1,2\},\{0,2\}\}$ は Δ システムでない：$\{0,1\}\cap\{1,2\}=\{1\}\ne\{0\}=\{0,1\}\cap\{0,2\}$。ただし、このうち 2 つを選べば Δ システムになる。
+:::
+
+Δ システムについての基本定理が **Δ システム補題**である。まず最もよく引用される特別な場合を述べ、直接の証明を与える。一般形は \ref{set:delta-system-general} で示す。
+
+::: theorem Δ システム補題 {#set:delta-system-lemma keywords="delta-system lemma, Δ-system lemma, sunflower lemma for uncountable families" index="Δシステム補題|でるたしすてむほだい"}
+（AC）$\mathcal{A}$ を有限集合からなる非可算な族とする。このとき、非可算な $\mathcal{B}\subseteq\mathcal{A}$ で Δ システムをなすものが存在する。
+:::
+
+::: intuition
+非可算個の有限集合があれば、そのうち非可算個は「ひまわり」の形に並んでいる。証明の考え方は単純である。すべての集合の大きさが同じ $n$ だとしてよい。ある点 $p$ が非可算個の集合に共通して現れるなら、$p$ を芯に加えて $p$ を取り除けば、大きさ $n-1$ の場合に帰着する。どの点も可算個の集合にしか現れないなら、「それまでに選んだ集合と交わらない集合」を次々に選べて、互いに素な（根 $\varnothing$ の）非可算族が作れる。
+:::
+
+::: proof
+**Step 1（大きさをそろえる）.** $n<\omega$ に対し $\mathcal{A}_{n}=\{x\in\mathcal{A}\mid\lvert x\rvert=n\}$ とおく。$\mathcal{A}$ の元は有限集合なので $\mathcal{A}=\bigcup_{n<\omega}\mathcal{A}_{n}$。すべての $\mathcal{A}_{n}$ が可算なら、\ref{set:union-bound} より $\mathcal{A}$ は可算となり仮定に反する。よってある $n$ について $\mathcal{A}_{n}$ は非可算である。したがって次の主張を示せば十分である。
+
+> **主張 $(\ast)_{n}$**：大きさ $n$ の集合からなる任意の非可算な族は、非可算な Δ システムを部分族として含む。
+
+$n$ についての帰納法（\ref{set:peano}）で示す。
+
+**Step 2（$n=0$）.** 大きさ $0$ の集合は $\varnothing$ だけなので、そのような族は $\{\varnothing\}$ の部分集合であり非可算ではない。$(\ast)_{0}$ は空虚に成り立つ。
+
+**Step 3（$n\ge1$、帰納法の仮定）.** $(\ast)_{n-1}$ を仮定し、$\mathcal{F}$ を大きさ $n$ の集合からなる非可算な族とする。各点 $p$ に対し $\mathcal{F}_{p}=\{x\in\mathcal{F}\mid p\in x\}$ とおく。次の 2 つの場合に分ける。
+
+**Step 4（Case A：ある点 $p$ について $\mathcal{F}_{p}$ が非可算）.** $\mathcal{F}'=\{x\setminus\{p\}\mid x\in\mathcal{F}_{p}\}$ とおく。$x\in\mathcal{F}_{p}$ なら $x=(x\setminus\{p\})\cup\{p\}$ なので、$x\mapsto x\setminus\{p\}$ は $\mathcal{F}_{p}$ 上で単射であり、$\mathcal{F}'$ は非可算である。また $\mathcal{F}'$ の元は大きさ $n-1$ である。帰納法の仮定 $(\ast)_{n-1}$ により、非可算な Δ システム $\mathcal{B}'\subseteq\mathcal{F}'$ があり、その根を $r'$ とする。$\mathcal{B}=\{y\cup\{p\}\mid y\in\mathcal{B}'\}\subseteq\mathcal{F}_{p}\subseteq\mathcal{F}$ とおく。$y\mapsto y\cup\{p\}$ は（$p\notin y$ なので）$\mathcal{B}'$ 上で単射であり、$\mathcal{B}$ は非可算である。相異なる $y,z\in\mathcal{B}'$ について、$p\notin y$, $p\notin z$ より
+$$
+(y\cup\{p\})\cap(z\cup\{p\})=(y\cap z)\cup\{p\}=r'\cup\{p\}.
+$$
+よって $\mathcal{B}$ は根 $r'\cup\{p\}$ の Δ システムである。
+
+（なお $n=1$ のときは $\mathcal{F}_{p}\subseteq\{\{p\}\}$ なので Case A は起こらない。したがって帰納法の仮定 $(\ast)_{0}$ が空虚であっても問題はない。）
+
+**Step 5（Case B：すべての点 $p$ について $\mathcal{F}_{p}$ が可算）.** 選択公理（整列可能定理 \ref{set:well-ordering-theorem}）により $\mathcal{F}$ の整列順序 $\lhd$ を 1 つ固定する。超限再帰（\ref{set:transfinite-recursion}）により、$\xi<\omega_{1}$ に対して
+$$
+\begin{aligned}
+&x_{\xi}=\bigl(\lhd\text{ に関して最小の }x\in\mathcal{F}\text{ で、}x\cap S_{\xi}=\varnothing\text{ となるもの}\bigr),\\
+&S_{\xi}=\bigcup_{\eta<\xi}x_{\eta}
+\end{aligned}
+$$
+と定める。そのような $x$ が存在することを示す。$\xi<\omega_{1}$ は可算なので、$S_{\xi}$ は可算個の有限集合の和であり、\ref{set:union-bound} より可算。$S_{\xi}$ と交わる $x\in\mathcal{F}$ の全体は $\bigcup_{p\in S_{\xi}}\mathcal{F}_{p}$ であり、Case B の仮定より可算個の可算集合の和なので可算。$\mathcal{F}$ は非可算なので、$S_{\xi}$ と交わらない $x\in\mathcal{F}$ が存在する。
+
+**Step 6（Case B の結論）.** $\eta<\xi<\omega_{1}$ なら $x_{\eta}\subseteq S_{\xi}$ で $x_{\xi}\cap S_{\xi}=\varnothing$ なので $x_{\eta}\cap x_{\xi}=\varnothing$。$n\ge1$ より $x_{\xi}\ne\varnothing$ なので、$x_{\eta}\ne x_{\xi}$ でもある。よって $\mathcal{B}=\{x_{\xi}\mid\xi<\omega_{1}\}$ は濃度 $\aleph_{1}$（非可算）の互いに素な族、すなわち根 $\varnothing$ の Δ システムである。
+
+以上で $(\ast)_{n}$ が示され、定理が従う。
+
+::: hypcheck
+- **選択公理**：Step 1・Step 5 の \ref{set:union-bound}（可算個の可算集合の和が可算であること）と、Step 5 で $\mathcal{F}$ を整列して $x_{\xi}$ を一意に指定することに使った。
+- **各元が有限集合であること**：Step 1 で大きさ $n<\omega$ ごとに分け、帰納法を使うのに使った。
+- **$\mathcal{A}$ が非可算であること**：Step 1、Step 4（$\mathcal{F}_{p}$ の非可算性）、Step 5（交わらない元の存在）で使った。
+- **超限再帰**：Step 5 で使った。
+:::
+:::
+
+::: supplement
+**別証明.** \ref{set:delta-system-lemma} は次の一般形 \ref{set:delta-system-general} の $\kappa=\omega$, $\theta=\omega_{1}$ の場合である。このとき $\theta=\aleph_{1}$ は正則（\ref{set:successor-regular}）で、$\alpha<\omega_{1}$ なら ${}^{<\omega}\alpha\subseteq{}^{<\omega}\omega$ は可算（\ref{set:kappa-finite-sequences}）なので $\lvert{}^{<\omega}\alpha\rvert<\omega_{1}$ となり、仮定が満たされる。
+
+**非可算性は外せない.** 可算な族については、無限の Δ 部分系すら存在しないことがある。$x_{n}=\{0,1,\dots,n\}=n+1$（$n<\omega$）とおくと、$m<n$ なら $x_{m}\cap x_{n}=x_{m}$ なので、3 つ以上の元からなる部分族は Δ システムでない（$x_{0}\cap x_{1}=x_{0}\ne x_{1}=x_{1}\cap x_{2}$ のように交わりが一致しない）。
+:::
+
+::: theorem Δ システム補題（一般形） {#set:delta-system-general keywords="general delta-system lemma, Erdős–Rado delta-system" index="Δシステム補題（一般形）|でるたしすてむほだいいっぱんけい"}
+（AC）$\kappa$ を無限基数、$\theta>\kappa$ を正則基数とし、すべての $\alpha<\theta$ について $\lvert{}^{<\kappa}\alpha\rvert<\theta$ と仮定する。$\mathcal{A}$ が $\lvert\mathcal{A}\rvert\ge\theta$ を満たし、すべての $x\in\mathcal{A}$ について $\lvert x\rvert<\kappa$ ならば、$\lvert\mathcal{B}\rvert=\theta$ かつ Δ システムをなす $\mathcal{B}\subseteq\mathcal{A}$ が存在する。
+:::
+
+::: intuition
+集合を $\theta$ の中の順序数の集合とみなし、大きさ（順序型）$\rho$ をそろえてから、各集合を「$0$ 番目の元、$1$ 番目の元、…」と成分に分けて見る。最初のいくつかの成分（$\xi_{0}$ 番目より前）は $\theta$ の中で有界な範囲 $\alpha_{0}$ に収まり、$\xi_{0}$ 番目の成分は $\theta$ の中でいくらでも大きくなれる。そこで、$\xi_{0}$ 番目の成分がそれまでに選んだ集合全体より上にくるように $\theta$ 個の集合を選べば、どの 2 つも $\alpha_{0}$ より下でしか交わらない。最後に「$\alpha_{0}$ より下の部分」が一致するものを $\theta$ 個集めれば、それが Δ システムになる。仮定 $\lvert{}^{<\kappa}\alpha\rvert<\theta$ は、$\alpha$ より下に収まる集合の種類が $\theta$ 未満しかないことを保証する。
+:::
+
+::: proof
+**Step 1（大きさ $\theta$ に縮める）.** $\lvert\mathcal{A}\rvert\ge\theta$ なので単射 $\theta\to\mathcal{A}$ があり、その値域を改めて $\mathcal{A}$ とすれば $\lvert\mathcal{A}\rvert=\theta$ としてよい（部分族の部分族は元の族の部分族である）。
+
+**Step 2（台を $\theta$ に移す）.** $\bigcup\mathcal{A}$ は $\theta$ 個の、濃度 $<\kappa<\theta$ の集合の和なので、\ref{set:union-bound} より $\lvert\bigcup\mathcal{A}\rvert\le\theta$。単射 $g\colon\bigcup\mathcal{A}\to\theta$ を 1 つ固定し、$\tilde{\mathcal{A}}=\{g[x]\mid x\in\mathcal{A}\}$ とおく。$g$ は単射なので
+- $x\mapsto g[x]$ は単射であり（$x=g^{-1}[g[x]]$）、$\lvert\tilde{\mathcal{A}}\rvert=\theta$、
+- $\lvert g[x]\rvert=\lvert x\rvert<\kappa$、
+- $g[x]\cap g[y]=g[x\cap y]$。
+
+したがって $\tilde{\mathcal{B}}\subseteq\tilde{\mathcal{A}}$ が根 $\tilde{r}$ の Δ システムで $\lvert\tilde{\mathcal{B}}\rvert=\theta$ なら、$\mathcal{B}=\{x\in\mathcal{A}\mid g[x]\in\tilde{\mathcal{B}}\}$ は $\lvert\mathcal{B}\rvert=\theta$ で、相異なる $x,y\in\mathcal{B}$ について $g[x\cap y]=\tilde{r}$、すなわち $x\cap y=g^{-1}[\tilde{r}]$ となり、根 $g^{-1}[\tilde{r}]$ の Δ システムである。よって以下 $\bigcup\mathcal{A}\subseteq\theta$ と仮定してよい。
+
+**Step 3（順序型をそろえる）.** 各 $x\in\mathcal{A}$ は順序数の集合なので順序型 $\operatorname{type}(x)$ をもち、$\lvert\operatorname{type}(x)\rvert=\lvert x\rvert<\kappa$。$\kappa$ は基数なので $\operatorname{type}(x)<\kappa$（$\operatorname{type}(x)\ge\kappa$ なら $\lvert\operatorname{type}(x)\rvert\ge\kappa$ となる）。$\rho<\kappa$ に対し $\mathcal{A}^{\rho}=\{x\in\mathcal{A}\mid\operatorname{type}(x)=\rho\}$ とおくと $\mathcal{A}=\bigcup_{\rho<\kappa}\mathcal{A}^{\rho}$ であり、$\kappa<\theta$ 個の部分に分けたことになる。$\theta$ は正則なので、\ref{set:regular-small-union} より $\lvert\mathcal{A}^{\rho}\rvert=\theta$ となる $\rho<\kappa$ がある。そのような $\rho$ を 1 つ固定し（たとえば最小のもの）、$\mathcal{A}_{1}=\mathcal{A}^{\rho}$ とおく。以下 $x\in\mathcal{A}_{1}$ と $\xi<\rho$ に対し、$x(\xi)$ は $x$ の $\xi$ 番目の元を表す。
+
+**Step 4（$\bigcup\mathcal{A}_{1}$ は非有界）.** まず、各 $\alpha<\theta$ について $\{x\in\mathcal{A}_{1}\mid x\subseteq\alpha\}$ の濃度が $<\theta$ であることを示す。$x\subseteq\alpha$ なら、$x$ を数え上げる順序同型 $\xi\mapsto x(\xi)$ は ${}^{\rho}\alpha$ の元であり、その値域が $x$ なので、$x\mapsto(\xi\mapsto x(\xi))$ は単射
+$$
+\{x\in\mathcal{A}_{1}\mid x\subseteq\alpha\}\to{}^{\rho}\alpha\subseteq{}^{<\kappa}\alpha
+$$
+である。仮定より $\lvert{}^{<\kappa}\alpha\rvert<\theta$。
+
+次に、$\bigcup\mathcal{A}_{1}$ が $\theta$ で有界だとすると、ある $\alpha<\theta$ についてすべての $x\in\mathcal{A}_{1}$ が $x\subseteq\alpha$ を満たし、上で示したことから $\lvert\mathcal{A}_{1}\rvert<\theta$ となって矛盾する。よって $\bigcup\mathcal{A}_{1}$ は $\theta$ で非有界である。
+
+**Step 5（非有界になる最初の成分 $\xi_{0}$）.** $\xi<\rho$ に対し $S_{\xi}=\{x(\xi)\mid x\in\mathcal{A}_{1}\}\subseteq\theta$ とおく。$\bigcup\mathcal{A}_{1}=\bigcup_{\xi<\rho}S_{\xi}$ である。ある $\xi<\rho$ について $S_{\xi}$ が非有界であることを示す。すべての $S_{\xi}$ が有界なら $\gamma_{\xi}=\sup\{s+1\mid s\in S_{\xi}\}<\theta$ である（有界性から $S_{\xi}\subseteq\zeta$ となる $\zeta<\theta$ があり、$\gamma_{\xi}\le\zeta$）。$\{\gamma_{\xi}\mid\xi<\rho\}$ は濃度 $\le\lvert\rho\rvert<\kappa<\theta$ の $\theta$ の部分集合なので、\ref{set:regular-bounded} より $\gamma=\sup_{\xi<\rho}\gamma_{\xi}<\theta$。すると $\bigcup\mathcal{A}_{1}\subseteq\gamma$ となり、Step 4 に反する。
+
+そこで $S_{\xi}$ が非有界となる最小の $\xi<\rho$ を $\xi_{0}$ とする（$\xi_{0}=0$ でもよい）。
+
+**Step 6（下の成分を抑える $\alpha_{0}$）.**
+$$
+\alpha_{0}=\sup\{x(\eta)+1\mid x\in\mathcal{A}_{1},\ \eta<\xi_{0}\}
+$$
+とおく。$\xi_{0}$ の最小性より $\eta<\xi_{0}$ なら $S_{\eta}$ は有界で、Step 5 と同様に $\gamma_{\eta}<\theta$。$\alpha_{0}=\sup_{\eta<\xi_{0}}\gamma_{\eta}$ であり、$\xi_{0}<\kappa<\theta$ なので \ref{set:regular-bounded} より $\alpha_{0}<\theta$。定義から、すべての $x\in\mathcal{A}_{1}$ と $\eta<\xi_{0}$ について $x(\eta)<\alpha_{0}$。
+
+**Step 7（上に積み上げる選び方）.** 選択公理により $\mathcal{A}_{1}$ の整列順序 $\lhd$ を 1 つ固定する。超限再帰により、$\mu<\theta$ に対して
+$$
+\begin{aligned}
+&\delta_{\mu}=\sup\Bigl(\bigcup_{\nu<\mu}\{s+1\mid s\in x_{\nu}\}\Bigr),\\
+&x_{\mu}=\bigl(\lhd\text{ に関して最小の }x\in\mathcal{A}_{1}\text{ で、}x(\xi_{0})\ge\delta_{\mu}\text{ となるもの}\bigr)
+\end{aligned}
+\label{set:eq-delta-recursion}
+$$
+と定める。そのような $x$ が存在することを示す。$\bigcup_{\nu<\mu}x_{\nu}$ は $\lvert\mu\rvert<\theta$ 個の、濃度 $<\kappa<\theta$ の集合の和なので、\ref{set:regular-small-union} より濃度 $<\theta$ であり、\ref{set:regular-bounded} より有界、したがって $\delta_{\mu}<\theta$。$S_{\xi_{0}}$ は非有界なので $x(\xi_{0})\ge\delta_{\mu}$ となる $x\in\mathcal{A}_{1}$ がある。
+
+**Step 8（交わりは $\alpha_{0}$ より下）.** $\nu<\mu<\theta$ とし、$x_{\nu}\cap x_{\mu}\subseteq\alpha_{0}$ を示す。$x_{\mu}$ の元 $x_{\mu}(\eta)$（$\eta<\rho$）をとる。
+- $\eta<\xi_{0}$ なら Step 6 より $x_{\mu}(\eta)<\alpha_{0}$。
+- $\eta\ge\xi_{0}$ なら、$x_{\mu}$ の数え上げは順序を保つので $x_{\mu}(\eta)\ge x_{\mu}(\xi_{0})\ge\delta_{\mu}$。一方 $x_{\nu}$ の任意の元 $s$ は $s+1\le\delta_{\mu}$、すなわち $s<\delta_{\mu}$ を満たす。よって $x_{\mu}(\eta)\notin x_{\nu}$。
+
+したがって $x_{\nu}\cap x_{\mu}$ の元はすべて $\alpha_{0}$ より小さい。また、$x_{\nu}(\xi_{0})<\delta_{\mu}\le x_{\mu}(\xi_{0})$ なので $x_{\nu}\ne x_{\mu}$。よって $\mu\mapsto x_{\mu}$ は単射で、$\mathcal{A}_{2}=\{x_{\mu}\mid\mu<\theta\}$ は $\lvert\mathcal{A}_{2}\rvert=\theta$ を満たし、その相異なる 2 元の交わりは $\alpha_{0}$ に含まれる。
+
+**Step 9（下の部分をそろえる）.** $x\in\mathcal{A}_{2}$ に $x\cap\alpha_{0}$ を対応させる。$x\cap\alpha_{0}$ は $\alpha_{0}$ の部分集合で濃度 $<\kappa$ である。$\alpha_{0}$ の部分集合で濃度 $<\kappa$ のものの全体を $T$ とすると、各 $t\in T$ の数え上げ $\operatorname{type}(t)\to t$ は ${}^{<\kappa}\alpha_{0}$ の元であり（Step 3 と同様に $\operatorname{type}(t)<\kappa$）、$t$ はその値域として復元できるので、$\lvert T\rvert\le\lvert{}^{<\kappa}\alpha_{0}\rvert<\theta$。$\mathcal{A}_{2}=\bigcup_{t\in T}\{x\in\mathcal{A}_{2}\mid x\cap\alpha_{0}=t\}$ は $\theta$ 未満の部分への分割なので、\ref{set:regular-small-union} より、ある $r\in T$ について
+$$
+\mathcal{B}=\{x\in\mathcal{A}_{2}\mid x\cap\alpha_{0}=r\}
+$$
+は $\lvert\mathcal{B}\rvert=\theta$ を満たす。
+
+**Step 10（結論）.** 相異なる $x,y\in\mathcal{B}$ について、Step 8 より $x\cap y\subseteq\alpha_{0}$ なので
+$$
+x\cap y=(x\cap\alpha_{0})\cap(y\cap\alpha_{0})=r\cap r=r.
+$$
+よって $\mathcal{B}$ は根 $r$ の Δ システムで、$\lvert\mathcal{B}\rvert=\theta$。
+
+::: hypcheck
+- **選択公理**：Step 1・Step 2（単射の存在、\ref{set:union-bound}）、Step 3・7・9（\ref{set:regular-small-union}）、Step 7（$\mathcal{A}_{1}$ の整列）で使った。
+- **$\theta$ の正則性**：Step 3・9（\ref{set:regular-small-union} による「$\theta$ 個を $\theta$ 未満の箱に分ける」論法）と Step 5・6・7（\ref{set:regular-bounded} による有界性）で使った。
+- **$\theta>\kappa$**：Step 3（$\kappa$ 個の箱）と Step 5・6（$\rho,\xi_{0}<\kappa<\theta$）で使った。
+- **$\lvert x\rvert<\kappa$**：Step 3 で順序型が $\kappa$ 未満になることに使った。
+- **$\lvert{}^{<\kappa}\alpha\rvert<\theta$**：Step 4（$\alpha$ に収まる集合は $\theta$ 未満）と Step 9（根の候補は $\theta$ 未満）の 2 か所で使った。
+- **超限再帰**：Step 7 で使った。
+:::
+:::
+
+::: supplement
+**特別な場合.** $\kappa=\omega$ とすると、$\alpha<\theta$ について $\lvert{}^{<\omega}\alpha\rvert\le\max(\lvert\alpha\rvert,\aleph_{0})<\theta$（$\theta$ が非可算の場合。\ref{set:kappa-finite-sequences}）なので、**任意の非可算正則基数 $\theta$ について、$\theta$ 個以上の有限集合からなる族は、濃度 $\theta$ の Δ 部分系をもつ**。$\theta=\aleph_{1}$ が \ref{set:delta-system-lemma} である。また CH のもとでは $\lvert{}^{<\omega_{1}}\alpha\rvert\le\aleph_{1}^{\aleph_{0}}=\aleph_{1}<\aleph_{2}$（$\alpha<\omega_{2}$）なので、$\aleph_{2}$ 個の可算集合からなる族は濃度 $\aleph_{2}$ の Δ 部分系をもつ。
+
+**$\theta$ の正則性は外せない.** $n<\omega$ と $\alpha<\omega_{n}$ に対し $x_{n,\alpha}=\{n,\ \omega+\alpha\}$ とおき、$\mathcal{A}=\{x_{n,\alpha}\mid n<\omega,\ \alpha<\omega_{n}\}$ とする。$\omega+\alpha\ge\omega>n$ なので $x_{n,\alpha}=x_{m,\beta}$ は $n=m$, $\alpha=\beta$ のときに限り、$\lvert\mathcal{A}\rvert=\sum_{n<\omega}\aleph_{n}=\aleph_{\omega}$ である。この $\mathcal{A}$ は大きさ 2 の有限集合からなるが、濃度 $\aleph_{\omega}$ の Δ 部分系をもたない。
+- $\mathcal{B}\subseteq\mathcal{A}$ が $\lvert\mathcal{B}\rvert=\aleph_{\omega}$ の Δ システムで根 $r$ をもつとする。$\mathcal{B}$ の元の「第 1 成分」$n$ がすべて異なれば $\mathcal{B}$ は $\omega$ に単射され可算になるので、ある $n$ と $\alpha\ne\beta$ について $x_{n,\alpha},x_{n,\beta}\in\mathcal{B}$。その交わりは $\{n\}$ なので $r=\{n\}$。
+- すると $\mathcal{B}$ のすべての元は $n$ を含む。$n\in x_{m,\gamma}=\{m,\omega+\gamma\}$ と $n<\omega\le\omega+\gamma$ から $m=n$。よって $\mathcal{B}\subseteq\{x_{n,\alpha}\mid\alpha<\omega_{n}\}$ で $\lvert\mathcal{B}\rvert\le\aleph_{n}<\aleph_{\omega}$ となり矛盾。
+
+$\aleph_{\omega}$ は $\cf(\aleph_{\omega})=\omega$ の特異基数であり（\ref{set:aleph-omega-singular}）、この族はその特異性を「$\omega$ 個の小さな塊」として写し取っている。
+
+**仮定 $\lvert{}^{<\kappa}\alpha\rvert<\theta$ は外せない.** $f\in{}^{\omega}2$ に対し $x_{f}=\{f\restr{n}\mid n<\omega\}\subseteq{}^{<\omega}2$ とおく。$x_{f}$ は可算集合で、$f\mapsto x_{f}$ は単射である（$f=\bigcup x_{f}$）。相異なる 3 つの $f,g,h$ をとると、$x_{f}\cap x_{g}$ は $f,g$ が初めて食い違う位置 $k$ までの $\{f\restr{n}\mid n\le k\}$ である。3 つの対の交わりがすべて等しいなら 3 つは同じ位置 $k$ で初めて食い違うことになるが、$f(k),g(k),h(k)\in\{0,1\}$ のうち 2 つは一致するので不可能である。したがって $\{x_{f}\mid f\in{}^{\omega}2\}$ の部分族で 3 元以上の Δ システムはない。
+いま CH が成り立たない（$2^{\aleph_{0}}\ge\aleph_{2}$）とし、$\kappa=\omega_{1}$, $\theta=\aleph_{2}$ とする。$\theta$ は正則で $\theta>\kappa$ であり、上の族から $\aleph_{2}$ 個をとれば、可算集合（濃度 $<\kappa$）の $\theta$ 個の族で濃度 $\theta$ の Δ 部分系をもたないものが得られる。このとき仮定は $\alpha=\omega$ で崩れている：$\lvert{}^{<\omega_{1}}\omega\rvert\ge\lvert{}^{\omega}\omega\rvert=2^{\aleph_{0}}\ge\aleph_{2}=\theta$。これは、上で述べた CH のもとでの主張（$\aleph_{2}$ 個の可算集合の族は濃度 $\aleph_{2}$ の Δ 部分系をもつ）が CH なしでは成り立たないことも示している。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

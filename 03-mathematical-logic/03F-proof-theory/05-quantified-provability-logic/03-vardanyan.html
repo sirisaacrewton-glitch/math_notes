@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ヴァルダニャンの定理と常に真な文の完全性 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/05-quantified-provability-logic/03-vardanyan.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ヴァルダニャンの定理と常に真な文の完全性 {#pt:page-vardanyan keywords="Vardanyan's theorem, always provable sentences are Pi_2-complete, not axiomatizable, McGee-Vardanyan-Boolos theorem, always true sentences are Pi_1-complete in the truth set, approximation of truth"}
+
+前のページの道具（算術の書き直し $\{\cdot\}$、文 $\{T\}$ と $D$、表現関係 $R$、アルテモフの補題 \ref{pt:artemov-lemma}）に 1 項述語記号 $G$ を加えると、QML の二つの集合の複雑さが正確に決まる。
+- **ヴァルダニャンの定理**（\ref{pt:vardanyan-theorem}）：常に証明可能な文の集合は $\Pi^{0}_{2}$ 完全である。とくに認識可能でなく、どんな公理系でも公理化できない。
+- **マッギー–ヴァルダニャン–ブーロスの定理**（\ref{pt:mvb-theorem}）：常に真な文の集合は真理集合 $V$ で $\Pi^{0}_{1}$ 完全である。
+
+どちらも、\ref{pt:qml-upper-bounds} の上界が最良であることを示している。
+
+## 記法と定義の確認 {#pt:sec-vard-notation}
+
+::: notation
+- QML、実現、翻訳、常に証明可能・常に真、上界（\ref{pt:qml-upper-bounds}）、相対化された階層・$T^{A}$ とその基本性質（\ref{pt:relative-t-basic}）・完全集合（\ref{pt:relative-hierarchy}, \ref{pt:complete-not-sigma}）、$V$ と $V_{r}$（\ref{pt:truth-set-facts}）は \ref{pt:page-quantified-provability-logic} のとおり。
+- $\{F\}$, $T$, $D$, $R$ と補題（\ref{pt:artemov-lemma-1}, \ref{pt:artemov-lemma-8}, \ref{pt:artemov-lemma}）は \ref{pt:page-artemov} のとおり。$\mathcal{L}^{+}=\mathcal{L}_{\mathrm{ar}}\cup\{G\}$ の論理式についても $\{F\}$ は同じく定まり（$Gu$ はそのまま）、\ref{pt:artemov-lemma} の証明は、$G$ の現れる原子論理式を扱う段（下の \ref{pt:mvb-lemma-10}）を除いて変わらない。
+- **標準的な実現**：$Z,E,S,A,M$ に $0=v_{0}$, $v_{0}=v_{1}$, $Sv_{0}=v_{1}$, $v_{0}+v_{1}=v_{2}$, $v_{0}\cdot v_{1}=v_{2}$ を割り当てる実現を「$Z,\dots,M$ が標準的」という。このとき $\{T\}^{\ast}$, $D^{\ast}$ は真で（\ref{pt:artemov-theorem} の証明）、$R(a,b)\iff a=b$。
+- $H(v,z)$ は「符号 $v$ のチューリング機械は入力 $z$ の上で停止する」を表す Σ 論理式（\ref{pt:artemov-lemma-8} の $C$ で $\exists y\,C(v,z,y)$）。
+:::
+
+## 常に証明可能な文 {#pt:sec-vardanyan}
+
+::: lemma $\Pi^{0}_{2}$ 集合の言い換え {#pt:pi2-infinitely-often}
+集合 $S\subseteq\N$ が $\Pi^{0}_{2}$ であるための必要十分条件は、決定可能な関係 $P$ で
+$$
+S=\{n:\forall i\,\exists j\,(j>i\wedge P(n,j))\}
+$$
+（$P(n,j)$ となる $j$ が無限個ある $n$ の集合）となるものがあることである。
+:::
+
+::: proof
+*十分性*：右辺は $\forall\exists$ に決定可能な関係を付けた形。*必要性*：$S=\{n:\forall e\,\exists m\,Q(n,e,m)\}$（$Q$ は決定可能）とする。$P(n,j)\defeq$「$j$ は有限列の符号で、長さ未満のすべての $e$ について $j_{e}$ は $Q(n,e,m)$ となる最小の $m$」とすると $P$ は決定可能（最小性は $j_{e}$ 未満の有限個の $m$ を調べればよい）。$n\in S$ なら、各長さの列が一つずつあり、$P(n,\cdot)$ を満たす $j$ は無限個ある。逆に無限個あれば、長さはいくらでも大きく（同じ長さの列は成分が一意なので一つしかない）、各 $e$ について長さ $>e$ の列 $j$ があって $Q(n,e,j_{e})$。
+:::
+
+::: theorem ヴァルダニャンの定理 {#pt:vardanyan-theorem keywords="Vardanyan's theorem: the set of always provable sentences of QML is Pi_2-complete" index="ヴァルダニャンの定理|ゔぁるだにゃんのていり"}
+常に証明可能な QML の文のゲーデル数の集合は $\Pi^{0}_{2}$ 完全である。したがって認識可能でなく、常に証明可能な文をちょうど定理とする（認識可能な公理系の）体系は存在しない。
+:::
+
+::: proof
+上界は \ref{pt:qml-upper-bounds}。$S$ を $\Pi^{0}_{2}$ 集合とし、\ref{pt:pi2-infinitely-often} の $P$ をとり、$P$ を定義する Σ 論理式を $Q(n,y)$、$Q_{n}(y)\defeq Q(\underline{n},y)$ とする。QML の文
+$$
+\begin{aligned}
+&\mathcal{E}\defeq\forall z\,\forall z'\,(Ezz'\to(\Box Gz\leftrightarrow\Box Gz')),\\
+&\phi_{n}\defeq\{T\}\wedge D\wedge\mathcal{E}\to\exists v\,\exists w\,\bigl(v\{<\}w\wedge\{Q_{n}\}(w)\\
+&\hphantom{\phi_{n}\defeq\{T\}\wedge D\wedge\mathcal{E}\to\exists v\,\exists w\,\bigl(}\wedge\forall z\,(\Box Gz\leftrightarrow\{H\}(v,z))\bigr)
+\end{aligned}
+$$
+を考える（$n\mapsto\phi_{n}$ は計算可能）。$n\in S\iff\phi_{n}$ は常に証明可能、を示す。
+
+**$\Rightarrow$.** $n\in S$ とし、実現 $\ast$ を任意にとる。
+
+(1) ある数 $x$ で $\PA\vdash D^{\ast}\to\bigl(\exists z\,(R(z_{0},z)\wedge\mathrm{Bew}[G^{\ast}(z)])\leftrightarrow H(\underline{x},z_{0})\bigr)$。実際、$\PA$ の中で $D^{\ast}$ を仮定すると、\ref{pt:artemov-lemma-7} の証明のとおり、$Z^{\ast}(i)$ は「$Z^{\ast}(i)$ の証明が $\neg Z^{\ast}(i)$ のどの証明より小さい符号をもつ」と同値で、これは Σ 論理式である（$E^{\ast},\dots,M^{\ast}$ とその否定も同様）。よって $R(z_{0},z)$ も Σ と同値で、$\mathrm{Bew}[G^{\ast}(z)]$ は Σ なので、左辺は（$D^{\ast}$ のもとで）Σ 論理式 $\Psi(z_{0})$ と同値になる。Σ 論理式 $\Psi$ に対しては、その証拠を探す機械 $x$ があって $\PA\vdash\Psi(z_{0})\leftrightarrow H(\underline{x},z_{0})$ となる（狭義の Σ 論理式の構成に関する帰納法で定型的に示される、と Boolos は述べている）。
+
+(2) $\PA\vdash\{T\}^{\ast}\wedge D^{\ast}\wedge\mathcal{E}^{\ast}\wedge R(z_{0},z)\to(\mathrm{Bew}[G^{\ast}(z)]\leftrightarrow H(\underline{x},z_{0}))$。$\Rightarrow$ は (1)。$\Leftarrow$：(1) より $R(z_{0},z')$ かつ $\mathrm{Bew}[G^{\ast}(z')]$ となる $z'$ があり、\ref{pt:artemov-lemma-1} の 3 で $E^{\ast}(z,z')$、$\mathcal{E}^{\ast}$ で $\mathrm{Bew}[G^{\ast}(z)]$。
+
+(3) アルテモフの補題より $\PA\vdash\{T\}^{\ast}\wedge D^{\ast}\wedge R(\underline{x},v)\wedge R(z_{0},z)\to(H(\underline{x},z_{0})\leftrightarrow\{H\}^{\ast}(v,z))$。
+
+(4) (2), (3) と、\ref{pt:artemov-lemma-8}（すべての $z$ はある $z_{0}$ を表す）から
+$$
+\PA\vdash\{T\}^{\ast}\wedge D^{\ast}\wedge\mathcal{E}^{\ast}\wedge R(\underline{x},v)\to\forall z\,(\mathrm{Bew}[G^{\ast}(z)]\leftrightarrow\{H\}^{\ast}(v,z)).
+$$
+
+(5) $n\in S$ なので、$x<y$ かつ $P(n,y)$ となる $y$ がある。$\underline{x}<\underline{y}\wedge Q_{n}(\underline{y})$ は真な Σ 文なので証明可能（Σ 完全性）。アルテモフの補題より
+$$
+\PA\vdash\{T\}^{\ast}\wedge D^{\ast}\wedge R(\underline{x},v)\wedge R(\underline{y},w)\to(v\{<\}^{\ast}w\wedge\{Q_{n}\}^{\ast}(w)).
+$$
+
+(6) (4), (5) を合わせ、$\exists v\,R(\underline{x},v)$, $\exists w\,R(\underline{y},w)$（\ref{pt:artemov-lemma-1} の 1）を使えば、$\PA\vdash\phi_{n}^{\ast}$。
+
+**$\Leftarrow$.** すべての実現で $\PA\vdash\phi_{n}^{\ast}$ とする。各 $i$ について、$Z,\dots,M$ が標準的で $G^{\ast_{i}}\defeq(v_{0}=\underline{i})$ の実現 $\ast_{i}$ を考える。$\{T\}^{\ast_{i}}$, $D^{\ast_{i}}$ は真で、$\mathcal{E}^{\ast_{i}}$ も真（$E^{\ast_{i}}$ は等号）。$\PA$ の定理は真なので、$\phi_{n}^{\ast_{i}}$ の後件が真：自然数 $v<w$ で $P(n,w)$ かつ、すべての $z$ について「$\PA\vdash\underline{z}=\underline{i}$」と「$v$ は $z$ の上で停止する」が同値になるものがある。$\PA$ は健全かつ Σ 完全なので、前者は $z=i$ と同値。よって機械 $v$ はちょうど $i$ の上でだけ停止し、$i$ が異なれば $v$ も異なる。したがって、$v<w$ かつ $P(n,w)$ となる $w$ をもつ $v$ が無限個あり、任意の $x$ に対してそれより大きい $v$ をとれば $x<v<w$, $P(n,w)$。よって $n\in S$。
+
+**結論.** $n\mapsto\phi_{n}$ は $S$ を常に証明可能な文の集合に還元するので、後者は $\Pi^{0}_{2}$ 完全。後半は \ref{pt:complete-not-sigma} の 1。公理系の定理の集合は認識可能だからである。
+:::
+
+::: hypcheck
+- **$\mathcal{E}$**：$\Box G$ が $E^{\ast}$ について不変であることを保証し、(2) の $\Leftarrow$ で使った。
+- **$\Box G$ の働き**：$\forall z\,(\Box Gz\leftrightarrow\{H\}(v,z))$ は、「$G^{\ast}$ の証明可能な事例の集合」（Σ 集合）を、模型の中の機械 $v$ の停止集合として名指す。実現を動かすと、この Σ 集合がすべての $\{i\}$ を動く（$\Leftarrow$）。
+- **常に証明可能 vs 常に真**：$\Rightarrow$ では各実現についての $\PA$ での証明が要るので、議論を $\PA$ の中で行うアルテモフの補題が必要だった。
+:::
+
+## 常に真な文 {#pt:sec-mvb}
+
+::: definition 集合で成り立つ・近似 {#pt:holds-at keywords="formula holding at a set, approximation of the truth set" index="真理集合の近似|しんりしゅうごうのきんじ"}
+1. $\mathcal{L}^{+}$ の論理式 $F(\vec{x})$ が数の組 $\vec{a}$ について**集合 $A\subseteq\N$ で成り立つ**とは、$G$ を $A$ と解釈した標準モデルで $F(\vec{a})$ が真なことをいう。
+2. 集合 $A$ が **$m$ で $V$ を近似する**とは、次が成り立つことをいう：$m$ が算術の文のゲーデル数でなければ $m\notin A$。$m$ が文のゲーデル数なら、$m$ の部分文（$m$ から成分と、量化された文の数項による代入例を繰り返しとって得られる文）$n$ のすべてについて：$n$ が原子文なら $n\in A\iff n\in V_{0}$（$V_{0}$ は真な原子文の集合、決定可能）、$n=\Godel{\bot}$ なら $n\notin A$、$n=\Godel{F\to F'}$ なら $n\in A\iff(\Godel{F}\in A\Rightarrow\Godel{F'}\in A)$、$n=\Godel{\forall x\,F}$ なら $n\in A\iff$ すべての $i$ で $\Godel{F(\underline{i})}\in A$。
+:::
+
+::: lemma 近似の性質 {#pt:approximation-basic}
+$A$ が $m$ で $V$ を近似するなら、$m\in A\iff m\in V$。したがって、すべての $m$ で $V$ を近似する集合は $V$ に等しい。
+:::
+
+::: proof
+$m$ が文でなければ $m\notin A$, $m\notin V$。文なら、部分文 $n$ について「$n\in A\iff n\in V$」を $n$ の論理記号の個数に関する帰納法で示す（部分文の部分文は部分文で、代入例は論理記号の個数を変えない）：各場合の条件は $V$ が満たす真理の条件と同じ形である。
+:::
+
+::: lemma 実現と集合 {#pt:mvb-lemma-10}
+$\mathcal{I}\defeq\{T\}\wedge D\wedge\forall x\,\forall x'\,(Gx'\wedge Exx'\to Gx)$ とし、実現 $\ast$ で $\mathcal{I}^{\ast}$ が真なものと、$A\defeq\{a:\text{ある }b\text{ で }R(a,b)\text{ と }G^{\ast}(b)\text{ が真}\}$ をとる。$\mathcal{L}^{+}$ の論理式 $F(\vec{x})$ と、$R(a_{i},b_{i})$ が真な数 $\vec{a},\vec{b}$ について、$F(\vec{a})$ が $A$ で成り立つ $\iff$ $\{F\}^{\ast}(\vec{b})$ が真。とくに文 $F$ について、$F$ が $A$ で成り立つ $\iff\{F\}^{\ast}$ が真。
+:::
+
+::: proof
+$\PA$ の定理は真なので、\ref{pt:artemov-lemma-1}, \ref{pt:artemov-terms}, \ref{pt:artemov-lemma-8} の主張は（$\{T\}^{\ast}\wedge D^{\ast}$ が真なので）真である。$\hat{F}$ の構成に関する帰納法で \ref{pt:artemov-lemma-4} と同様に示す。新しいのは $Gu$ の場合だけである：$R(a,b)$ とし、$a\in A$ なら $R(a,b')$, $G^{\ast}(b')$ となる $b'$ があり、\ref{pt:artemov-lemma-1} の 3 で $E^{\ast}(b,b')$、$\mathcal{I}^{\ast}$ の第 3 連言肢で $G^{\ast}(b)$。逆は $A$ の定義から。量化子の場合は、すべての数が表され（\ref{pt:artemov-lemma-1} の 1）、すべての元が数を表す（\ref{pt:artemov-lemma-8}）ことを使う。
+:::
+
+::: lemma 近似で止まる計算 {#pt:mvb-lemma-14}
+$e,i$ について、$\mathcal{L}^{+}$ の論理式 $F_{e,i}$ を「$\forall m\,(\forall j<m\,\neg T^{G}(\underline{e},\underline{i},j)\to G\text{ は }m\text{ で }V\text{ を近似する})$」を表すもの（$T^{G}$ は神託として $G$ を使う $T$ 述語を算術化したもの）とし、QML の文 $\psi_{e,i}\defeq\mathcal{I}\wedge\{F_{e,i}\}$ とする。このとき
+$$
+\exists k\,T^{V}(e,i,k)\iff\text{ある実現 }\ast\text{ で }\psi_{e,i}^{\ast}\text{ が真}.
+$$
+:::
+
+::: proof
+**$\Rightarrow$.** $T^{V}(e,i,k)$ とする。$r$ を、ゲーデル数が $k$ 以下の文の論理記号の個数より大きくとり、$A\defeq V_{r}$（論理記号が $r$ 個未満の真な文の集合）とする。$A$ は算術的（\ref{pt:truth-set-facts} の 2）で、$k$ 以下で $V$ と一致する（$k$ 以下の符号の文は論理記号が $r$ 個未満）ので $k+1$ 未満で一致し、\ref{pt:relative-t-basic} の 2 より $T^{A}(e,i,k)$。$F_{e,i}$ は $A$ で成り立つ：$\forall j<m\,\neg T^{A}(e,i,j)$ なら $m\le k$ で、$m$ が文なら $m$ の部分文はすべて論理記号が $r$ 個未満なので、それらについて $A$ は $V$ と一致し、$A$ は $m$ で $V$ を近似する。$A$ を定義する論理式 $B(v_{0})$ をとり、$Z,\dots,M$ が標準的で $G^{\ast}\defeq B$ の実現 $\ast$ をとると、$\mathcal{I}^{\ast}$ は真で（第 3 連言肢は $E^{\ast}$ が等号なので自明）、$R(a,b)\iff a=b$ より \ref{pt:mvb-lemma-10} の $A$ はこの $A$ である。よって $\{F_{e,i}\}^{\ast}$ は真で、$\psi_{e,i}^{\ast}$ は真。
+
+**$\Leftarrow$.** $\psi_{e,i}^{\ast}$ が真とし、$A$ を \ref{pt:mvb-lemma-10} のとおりとする。$R$ と $G^{\ast}$ は算術の論理式なので $A$ は算術的で、\ref{pt:mvb-lemma-10} より $F_{e,i}$ は $A$ で成り立つ。ある $k$ で $T^{A}(e,i,k)$：そうでなければ、すべての $m$ で $A$ は $V$ を近似し、\ref{pt:approximation-basic} より $A=V$ となり、$V$ が算術的になってタルスキの定理に反する。そのような最小の $k$ をとる。$m\le k$ なら $\forall j<m\,\neg T^{A}(e,i,j)$ なので $A$ は $m$ で $V$ を近似し、\ref{pt:approximation-basic} より $m\in A\iff m\in V$。よって $A$ と $V$ は $k+1$ 未満で一致し、\ref{pt:relative-t-basic} の 2 より $T^{V}(e,i,k)$。
+:::
+
+::: theorem マッギー–ヴァルダニャン–ブーロスの定理 {#pt:mvb-theorem keywords="the set of always true sentences of QML is Pi_1-complete in the truth set" index="常に真な文の完全性|つねにしんなぶんのかんぜんせい"}
+常に真な QML の文のゲーデル数の集合は $V$ で $\Pi^{0}_{1}$ 完全である。とくに $V$ で決定可能でなく、算術的でない。
+:::
+
+::: proof
+上界は \ref{pt:qml-upper-bounds}。$S$ を $V$ で $\Pi^{0}_{1}$ の集合とすると、$\N\setminus S$ は $V$ で $\Sigma^{0}_{1}$、すなわち $V$ で認識可能で、クリーネの枚挙定理（\ref{pt:relative-t-basic} の 3）より $\N\setminus S=\{i:\exists k\,T^{V}(e,i,k)\}$ となる $e$ がある。\ref{pt:mvb-lemma-14} より
+$$
+i\in S\iff\text{どの実現でも }\psi_{e,i}^{\ast}\text{ は偽}\iff\neg\psi_{e,i}\text{ は常に真}.
+$$
+$i\mapsto\neg\psi_{e,i}$ は計算可能なので、$S$ は常に真な文の集合に還元される。後半は \ref{pt:complete-not-sigma} の 2。
+:::
+
+::: hypcheck
+- **$G$ の役割**：$\{F_{e,i}\}$ の中で、$G$ は「神託の集合」と「真理の近似」を同時に表す。実現 $\ast$ が $G$ に与える算術的な集合 $A$ が神託の候補で、$A$ が算術的であることから $A\neq V$（タルスキ）となり、近似の失敗する点、すなわち計算の停止する点が必ずある（\ref{pt:mvb-lemma-14} の $\Leftarrow$）。
+- **神託の局所性**：\ref{pt:relative-t-basic} の 2（計算 $k$ は $k$ 未満の数についてしか問い合わせない）が、$V$ と一致する範囲を有限に抑えることを可能にした。
+- **再構成の注記**：Boolos の $\Rightarrow$ では「ゲーデル数が $k$ 未満」と書かれているが、$m=k$ の場合も扱うために「$k$ 以下」とした。
+:::
+
+## 問題 {#pt:sec-vard-problems}
+
+::: problem {#pt:prob-qgl-incomplete}
+ヴァルダニャンの定理から、$\mathsf{GL}$ に一階述語論理の公理と規則を加えた体系 $\mathsf{QGL}$ が、常に証明可能な文をすべては証明しないことを結論せよ（$\mathsf{QGL}$ の定理が常に証明可能であることは認めてよい）。
+:::
+
+::: solution
+$\mathsf{QGL}$ は認識可能な公理と規則をもつので、その定理の集合は認識可能（$\Sigma^{0}_{1}$）。常に証明可能な文の集合は $\Pi^{0}_{2}$ 完全で $\Sigma^{0}_{1}$ でない（\ref{pt:complete-not-sigma}）ので、両者は一致しない。$\mathsf{QGL}$ の定理は常に証明可能なので、常に証明可能だが $\mathsf{QGL}$ で証明できない文がある。
+:::
+
+::: problem {#pt:prob-always-provable-not-pi1}
+常に証明可能な文の集合は $\Pi^{0}_{1}$ でもないことを示せ。
+:::
+
+::: solution
+$\Pi^{0}_{1}\subseteq\Sigma^{0}_{2}$（\ref{comp:hierarchy-basic} の 2）で、$\Pi^{0}_{2}$ 完全な集合は $\Sigma^{0}_{2}$ でない（\ref{pt:complete-not-sigma}）。
+:::
+
+::: supplement
+**前提の検討.**
+- ヴァルダニャンの定理の (1) では、Σ 論理式の定義する集合を停止集合とする機械の存在を、$\PA$ で証明可能な形で使った。これは計算論の基本事実（\ref{comp:sigma1-recognizable} の形式化）である。
+- 二つの定理は、QML が 2 項・3 項の述語記号を含むことを使っている。次のページでは、1 項述語記号ただ一つ（しかも $\Box$ の入れ子なし）でも同じ結果が成り立つというヴァルダニャンの結果を扱う。
+
+**関連する結果.**
+- Boolos 第 17 章は、等号だけを述語記号とする量化様相論理の断片が決定可能であること、常に証明可能な文についてクレイグの補間定理が成り立たないこと（ヴァルダニャン）も示している。本サイトでは扱っていない。
+- *算術以外の理論.* $\PA$ を他の十分強い理論に変えた場合の量化された証明可能性論理の複雑さについても研究がある、と言われている。
+
+**高い視点から：$\Pi^{0}_{2}$ の正体.** 「常に証明可能」は「すべての実現について、証明が存在する」という $\forall\exists$ の形をしている。ヴァルダニャンの定理は、この $\forall\exists$ が見かけ倒しでなく、本当に $\Pi^{0}_{2}$ の全体を表現できることを述べる。実現の「すべて」が、$G$ に一点集合 $\{i\}$ を割り当てる実現を通じて「すべての $i$」を、証明の「存在」が「$i$ より大きい $w$ の存在」を担う。常に真の場合は、証明可能性の代わりに真理を問うので、$\Pi^{0}_{1}$ の外側に真理集合 $V$ そのものが神託として入り込む。たとえれば、量化された証明可能性論理は、算術の真理と計算の難しさを測る物差しの目盛りを、そのまま写し取る鏡になっている。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

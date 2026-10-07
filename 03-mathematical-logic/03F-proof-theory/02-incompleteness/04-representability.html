@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>表現可能性定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/02-incompleteness/04-representability.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 表現可能性定理 {#comp:page-representability keywords="representability theorem, Robinson arithmetic Q, primitive recursive arithmetic PRA, I Sigma_1, representable functions, numeralwise representable, Sigma_1 completeness of Q, Kleene's class of mu-recursive functions without primitive recursion, beta function, recursively enumerable sets are Sigma_1, Church's theorem"}
+
+前のページまでで、原始再帰関数が $\PA$ の Σ 論理式で定義できることを見た（\ref{pt:primitive-recursive-definable}）。本ページでは、これを**すべての全域的な計算可能関数**に広げ、しかもそれが帰納法の公理をまったく含まない非常に弱い有限公理系 **$\mathsf{Q}$**（ロビンソン算術、\ref{pt:robinson-q}）ですでに成り立つことを示す（**表現可能性定理**、\ref{comp:representability}）：全域的な計算可能関数 $f$ のそれぞれに、狭義の Σ 論理式 $F(\vec{x},y)$ があって、すべての $\vec{m}$ について
+$$
+\mathsf{Q}\vdash\forall y\,\bigl(F(\underline{\vec{m}},y)\leftrightarrow y=\underline{f(\vec{m})}\bigr).
+$$
+証明は二段に分かれる。まず計算論の側で、全域的な計算可能関数は、和・積・大小の特性関数から**合成と（正則な）最小化だけで**作れることを示す（\ref{pt:kleene-class-computable}）。原始再帰は、ゲーデルの β 関数（\ref{pt:beta}）で最小化に置き換えられる。次に算術の側で、この二つの操作が $\mathsf{Q}$ での表現可能性を保つことを示す（\ref{comp:representability}）。ここで使う $\mathsf{Q}$ の性質は、数項の計算と、数項より小さい元が数項であること（\ref{pt:q-numerals}）と、大小の三分律だけである。最後に、$\N$ で Σ 論理式によって定義できる関係がちょうど半決定可能な関係であること（\ref{comp:sigma-semidecidable}）を示す。原始再帰的算術 **$\mathsf{PRA}$** など、$\mathsf{Q}$ と $\PA$ の間の体系についても述べる（\ref{pt:weak-arithmetics}）。
+
+## 記法と定義の確認 {#comp:sec-rep-notation}
+
+::: notation
+- 算術の言語 $\mathcal{L}_{\mathrm{ar}}=\{0,S,+,\cdot,<\}$、標準構造 $\mathcal{N}$、数項 $\underline{n}$、有界量化子、**狭義の Σ 論理式**（\ref{pt:sigma-formula} の 1）、$\PA$ の公理 (S1)〜(O2) と帰納法の公理は \ref{pt:page-peano-arithmetic} のとおり。理論 $T$（文の集合）について $T\vdash\varphi$ は、完全性定理により「$T$ のすべてのモデルで $\varphi$ が成り立つ」ことと同値である。この方針で、以下の「$T\vdash$」はモデルの中の推論で示す。
+- β 関数 $\beta(a,b,i)=\mathrm{rm}(a,1+(i+1)b)$ と β 関数の補題（\ref{pt:beta}, \ref{pt:beta-lemma}）を、標準構造 $\mathcal{N}$ で使う。
+- 計算論の側：原始再帰関数（\ref{comp:primitive-recursive}）、部分再帰関数と最小化（\ref{comp:partial-recursive}）、クリーネの標準形（\ref{comp:normal-form}）、停止集合 $K$ とその決定不能性（\ref{comp:halting-L}）は \ref{comp:page-recursive-functions}, \ref{comp:page-universal-smn} のとおり。関係 $R\subseteq\N^{k}$ が**半決定可能**とは、ある計算可能な部分関数の定義域であることをいう。
+- 関数 $g\colon\N^{k+1}\to\N$ の最小化 $\mu y\,[g(\vec{x},y)=0]$ が**正則**とは、$g$ が全域的で、すべての $\vec{x}$ に $g(\vec{x},y)=0$ となる $y$ があることをいう（このとき最小化の結果は全域的）。
+:::
+
+## 弱い算術 {#pt:sec-weak-arithmetic}
+
+::: definition ロビンソン算術 Q {#pt:robinson-q keywords="Robinson arithmetic, Q, finitely axiomatized arithmetic without induction" index="ロビンソン算術|ろびんそんさんじゅつ, Q（ロビンソン算術）|きゅーろびんそんさんじゅつ"}
+$\mathsf{Q}$ を、$\PA$ の公理のうち帰納法の公理を除いた (S1), (S2), (A1), (A2), (M1), (M2), (O1), (O2) の 8 個に、
+$$
+(\mathrm{O3})\quad\forall x\forall y\,(x<y\vee x=y\vee y<x)
+$$
+を加えた 9 個の文からなる理論とする。(O3) は $\PA$ の定理である（\ref{pt:pa-order} の 5）ので、$\mathsf{Q}$ の定理はすべて $\PA$ の定理である。
+:::
+
+::: remark
+文献でロビンソン算術と呼ばれる体系は、$<$ を言語に含めず $x\le y\defeq\exists z\,(z+x=y)$ と定義し、(O1)〜(O3) の代わりに「$0$ でない数は後者である」$\forall x\,(x=0\vee\exists y\,x=S(y))$ を公理とするものが多い。その体系では (O1)〜(O3) に当たる性質のうち、本ページで使う形（数項についてのもの）が定理として導けることが知られている。本サイトでは $<$ を記号にもつ言語に合わせて上の形をとった。$\mathsf{Q}$ は帰納法をもたないので非常に弱く、文献の形の $\mathsf{Q}$ は $\forall x\,(0+x=x)$ や $x+y=y+x$ を証明できない（それらが偽になるモデルがある）ことが知られている。本ページの形の $\mathsf{Q}$ でも同様と考えられるが、本サイトでは確かめていない。
+:::
+
+::: lemma Q での数項の計算 {#pt:q-numerals keywords="numerals in Q, standard part of models of Q is an initial segment" index="数項の計算（Q での）|すうこうのけいさんきゅーでの"}
+$\mathcal{M}\models\mathsf{Q}$ とし、$d(n)\defeq\underline{n}^{\mathcal{M}}$ とする。任意の $n,m\in\N$ について次が成り立つ。
+1. $d(n+m)=d(n)+d(m)$、$d(nm)=d(n)\cdot d(m)$。
+2. $n\neq m$ なら $d(n)\neq d(m)$。
+3. $\mathcal{M}\models\forall x\,\bigl(x<\underline{n}\leftrightarrow x=\underline{0}\vee\cdots\vee x=\underline{n-1}\bigr)$（$n=0$ のとき右辺は $\bot$）。
+4. $n<m\iff d(n)<d(m)$。
+5. $a\in M$ が $a<d(n)$ を満たせば、ある $k<n$ で $a=d(k)$。
+
+したがって、$n,m\in\N$ と閉項 $t$ について、$\mathsf{Q}\vdash t=\underline{t^{\mathcal{N}}}$、$\mathsf{Q}\vdash\neg\,\underline{n}=\underline{m}$（$n\neq m$）、$\mathsf{Q}\vdash\underline{n}<\underline{m}$（$n<m$）、$\mathsf{Q}\vdash\neg\,\underline{n}<\underline{m}$（$n\ge m$）。
+:::
+
+::: proof
+**1・3** は \ref{pt:standard-part} の 1・2 の証明と同じで、(A1), (A2), (M1), (M2), (O1), (O2) しか使わない。
+
+**2.** $n<m$ としてよい。$n$ に関する（メタの）帰納法。$n=0$：$d(m)=S(d(m-1))\neq0=d(0)$（(S1)）。$n+1<m$：$d(n+1)=d(m)$ なら $S(d(n))=S(d(m-1))$ で、(S2) から $d(n)=d(m-1)$、帰納法の仮定（$n<m-1$）に反する。
+
+**4.** $n<m$ なら 3 から $d(n)<d(m)$。$n\ge m$ で $d(n)<d(m)$ なら、3 から $d(n)=d(k)$（ある $k<m\le n$）となり 2 に反する。（\ref{pt:standard-part} の 3 の証明では $\neg\,a<a$ を使ったが、ここでは 2 で置き換えた。）
+
+**5** は 3 から。後半は、完全性定理と、閉項 $t$ について $t^{\mathcal{M}}=d(t^{\mathcal{N}})$（項に関する帰納法と 1）による。
+:::
+
+::: theorem Q の Σ 完全性 {#pt:q-sigma-completeness keywords="Sigma_1 completeness of Q" index="Σ 完全性（Q の）|しぐまかんぜんせいきゅーの"}
+$\varphi(\vec{x})$ を狭義の Σ 論理式とする。$\mathcal{N}\models\varphi[\vec{n}]$ ならば $\mathsf{Q}\vdash\varphi(\underline{\vec{n}})$。
+:::
+
+::: proof
+\ref{pt:sigma-upward}（Σ 論理式は上に保たれる）の証明は、\ref{pt:standard-part} の 1・3・4（項の値の保存、単射性と順序、始切片）だけを使っている。$\mathcal{M}\models\mathsf{Q}$ についても、\ref{pt:q-numerals} の 1・4・5 が同じ性質を与えるので、同じ証明により $\mathcal{M}\models\varphi[d(\vec{n})]$。$\mathcal{M}$ は任意なので、完全性定理（と代入補題）から $\mathsf{Q}\vdash\varphi(\underline{\vec{n}})$。
+:::
+
+::: remark 原始再帰的算術と算術の部分体系 {#pt:weak-arithmetics keywords="primitive recursive arithmetic, PRA, I Sigma_n, fragments of arithmetic, finitism" index="原始再帰的算術|げんしさいきてきさんじゅつ, PRA|ぴーあーるえー, IΣ1|あいしぐまわん"}
+$\mathsf{Q}$ と $\PA$ の間には、次のような体系がよく使われる。以下の主張のうち、定義以外は一般に知られている結果で、本サイトでは示していない。
+- **$\mathrm{I}\Sigma_{n}$**：$\mathsf{Q}$ に、Σₙ 論理式（$n$ 個の量化子の交替をもつ論理式）$\varphi$ についての帰納法の公理だけを加えた体系。$\PA=\bigcup_{n}\mathrm{I}\Sigma_{n}$ で、$\mathrm{I}\Sigma_{n}\subsetneq\mathrm{I}\Sigma_{n+1}$。$\mathrm{I}\Sigma_{0}$（有界な論理式の帰納法）は $\mathrm{I}\Delta_{0}$ とも書かれる。
+- **原始再帰的算術 $\mathsf{PRA}$**：言語にすべての原始再帰関数の記号をもち、それらの定義の等式（\ref{comp:primitive-recursive} の 1〜5 を等式として書いたもの）と、量化子を含まない論理式についての帰納法の推論規則「$\varphi(0)$ と $\varphi(x)\to\varphi(S(x))$ から $\varphi(x)$」をもつ、量化子を使わない体系。スコーレム（1923）に始まり、テイトは「有限の立場の数学」の形式化とみなせると論じた。
+- $\mathrm{I}\Sigma_{1}$ で全域性が証明できる関数はちょうど原始再帰関数で、$\mathrm{I}\Sigma_{1}$ は $\Pi_{2}$ 文について $\mathsf{PRA}$ の保存拡大である（パーソンズ、ミンツ、竹内）。とくに \ref{pt:primitive-recursive-definable} の「原始再帰関数が Σ 関数として定義でき、再帰の等式が証明できる」ことは、$\PA$ でなく $\mathrm{I}\Sigma_{1}$ で足りる。
+- 本ページの表現可能性定理は $\mathsf{Q}$ で成り立つので、これらのどの体系（の、言語 $\mathcal{L}_{\mathrm{ar}}$ への翻訳）でも成り立つ。一方、表現する論理式 $F$ について「$\forall\vec{x}\,\exists!y\,F(\vec{x},y)$」（関数としての全域性）まで証明できるかどうかは体系の強さによる。
+:::
+
+## 表現可能性 {#comp:sec-representable}
+
+::: definition 表現可能 {#comp:representable keywords="representable function, numeralwise representable relation" index="表現可能（算術の理論で）|ひょうげんかのうさんじゅつのりろんで"}
+$T$ を $\mathcal{L}_{\mathrm{ar}}$ の理論とする。
+1. 関数 $f\colon\N^{k}\to\N$ が論理式 $F(\vec{x},y)$ によって $T$ で**表現される**とは、すべての $\vec{m}\in\N^{k}$ について
+$$
+T\vdash\forall y\,\bigl(F(\underline{\vec{m}},y)\leftrightarrow y=\underline{f(\vec{m})}\bigr)
+$$
+となることをいう（$\underline{\vec{m}}$ は $\underline{m_{1}},\dots,\underline{m_{k}}$ を代入すること）。
+2. 関係 $R\subseteq\N^{k}$ が論理式 $\varphi(\vec{x})$ によって $T$ で**表現される**とは、すべての $\vec{m}$ について、$R(\vec{m})$ なら $T\vdash\varphi(\underline{\vec{m}})$、そうでなければ $T\vdash\neg\varphi(\underline{\vec{m}})$ となることをいう。
+
+$T\subseteq T'$ なら、$T$ で表現されるものは同じ論理式で $T'$ でも表現される。$\mathcal{N}\models T$ なら、$f$ を $T$ で表現する論理式は $\mathcal{N}$ で $f$ のグラフを定義する。
+:::
+
+::: remark
+1 は、各入力の数項について「$F$ の値がちょうど一つ $\underline{f(\vec{m})}$ である」ことの証明を要求するが、変数のままの $\forall\vec{x}\,\exists!y\,F(\vec{x},y)$ までは要求しない（\ref{pt:weak-arithmetics} の最後）。
+:::
+
+## 原始再帰を使わない計算可能関数 {#pt:sec-kleene-class}
+
+::: definition クラス 𝒞 {#pt:kleene-class keywords="mu-recursive functions without primitive recursion, Kleene's basis" index="クラス 𝒞（表現可能性）|くらすしーひょうげんかのうせい"}
+$\mathcal{C}$ を、零関数 $Z^{k}$、後者 $S$、射影 $U^{k}_{i}$、和 $x+y$、積 $x\cdot y$、大小の特性関数 $\chi_{<}$ を含み、合成と**正則な**最小化で閉じた最小の関数のクラスとする（原始再帰は含めない）。$\chi_{R}\in\mathcal{C}$ となる関係 $R$ を **$\mathcal{C}$ 関係**という。
+:::
+
+::: lemma 𝒞 の閉包性 {#pt:kleene-class-closure keywords="closure properties of the class C"}
+1. $x\mathbin{\dot{-}}y$、$\overline{\mathrm{sg}}(x)=1\mathbin{\dot{-}}x$、$\chi_{=}$ は $\mathcal{C}$ に属する。
+2. $\mathcal{C}$ 関係は $\neg,\wedge,\vee$ と、$\mathcal{C}$ の関数の代入で閉じている。
+3. $R$ が $\mathcal{C}$ 関係なら、$\mu z<y\,R(\vec{x},z)$（なければ $y$）は $\mathcal{C}$ に属し、$\exists z<y\,R(\vec{x},z)$, $\forall z<y\,R(\vec{x},z)$ は $\mathcal{C}$ 関係である。
+4. $\lfloor x/y\rfloor$ と剰余 $\mathrm{rm}(x,y)$（$y\ge1$。$y=0$ では任意の値に約束する）、したがって $\beta(a,b,i)$ は $\mathcal{C}$ に属する。
+5. $J(a,b)\defeq(a+b)\cdot(a+b)+a$ は単射で $a,b\le J(a,b)$、その逆の成分 $J_{1},J_{2}$（$J(J_{1}(c),J_{2}(c))=c$ となる $c$ で）は $\mathcal{C}$ に属する。
+:::
+
+::: proof
+1. $x\mathbin{\dot{-}}y=\mu z\,[\chi_{<}(y+z,x)=0]$：$\chi_{<}(y+z,x)=0\iff x\le y+z$ で、最小の $z$ は $x\ge y$ なら $x-y$、$x<y$ なら $0$。$z=x$ で成り立つので正則。$\chi_{=}(x,y)=\overline{\mathrm{sg}}((x\mathbin{\dot{-}}y)+(y\mathbin{\dot{-}}x))$。
+2. $\chi_{\neg R}=\overline{\mathrm{sg}}\circ\chi_{R}$、$\chi_{R\wedge R'}=\chi_{R}\cdot\chi_{R'}$、$R\vee R'=\neg(\neg R\wedge\neg R')$。代入は合成。
+3. $\mu z<y\,R(\vec{x},z)=\mu z\,[\overline{\mathrm{sg}}(\chi_{R}(\vec{x},z)+\chi_{=}(z,y))=0]$：$R(\vec{x},z)$ または $z=y$ となる最小の $z$ で、$z=y$ で成り立つので正則。$\exists z<y\,R\iff\mu z<y\,R<y$、$\forall z<y\,R\iff\neg\exists z<y\,\neg R$。
+4. $\lfloor x/y\rfloor=\mu q<x+1\,\bigl[x<(q+1)\cdot y\bigr]$（$y\ge1$ なら $q=x$ で成り立つ）、$\mathrm{rm}(x,y)=x\mathbin{\dot{-}}y\lfloor x/y\rfloor$。
+5. $s\defeq a+b$ について $J$ の値は $s^{2},\dots,s^{2}+s$ で、$(s+1)^{2}>s^{2}+s$ なので異なる $s$ の値の範囲は重ならず、$s$ を固定すれば $a$ で決まるので単射。$a\le J$ は明らか、$b\le s\le s^{2}$（$s\ge1$）。$J_{1}(c)=\mu a<c+1\,[\exists b<c+1\,J(a,b)=c]$, $J_{2}$ も同様（3 と 2）。
+:::
+
+::: theorem 全域的な計算可能関数は 𝒞 に属する {#pt:kleene-class-computable keywords="every total computable function is in C, elimination of primitive recursion by the beta function" index="β 関数による原始再帰の消去|べーたかんすうによるげんしさいきのしょうきょ"}
+1. 原始再帰関数は $\mathcal{C}$ に属する。
+2. 全域的な計算可能関数は $\mathcal{C}$ に属する。
+:::
+
+::: proof
+**1.** 原始再帰関数の構成に関する帰納法。初期関数と合成は定義から。原始再帰 $f(\vec{x},0)=g(\vec{x})$, $f(\vec{x},y+1)=h(\vec{x},y,f(\vec{x},y))$（$g,h\in\mathcal{C}$）とする。関係
+$$
+\begin{aligned}
+B(\vec{x},y,c)\ :\iff\ &\beta(J_{1}c,J_{2}c,0)=g(\vec{x})\\
+&\wedge\forall i<y\ \beta(J_{1}c,J_{2}c,i+1)=h\bigl(\vec{x},i,\beta(J_{1}c,J_{2}c,i)\bigr)
+\end{aligned}
+$$
+は $\mathcal{C}$ 関係である（\ref{pt:kleene-class-closure}）。各 $(\vec{x},y)$ について、β 関数の補題（\ref{pt:beta-lemma} を $\mathcal{N}$ で、有限列 $f(\vec{x},0),\dots,f(\vec{x},y)$ に使う）から $\beta(a,b,i)=f(\vec{x},i)$（$i\le y$）となる $a,b$ があり、$c\defeq J(a,b)$ で $B(\vec{x},y,c)$。よって $w(\vec{x},y)\defeq\mu c\,[\overline{\mathrm{sg}}(\chi_{B}(\vec{x},y,c))=0]$ は正則な最小化で $\mathcal{C}$ に属する。$B(\vec{x},y,c)$ なら、$i\le y$ に関する帰納法で $\beta(J_{1}c,J_{2}c,i)=f(\vec{x},i)$。よって $f(\vec{x},y)=\beta(J_{1}w,J_{2}w,y)$ で、$f\in\mathcal{C}$。
+
+**2.** $f=\varphi^{(k)}_{e}$ が全域的なら、クリーネの標準形（\ref{comp:normal-form}）から $f(\vec{m})=U(e,\vec{m},\mu t\,T_{k}(e,\vec{m},t))$。$U$ と $\chi_{T_{k}}$ は原始再帰的で 1 により $\mathcal{C}$ に属し、$f$ が全域的なので最小化 $\mu t\,[\overline{\mathrm{sg}}(\chi_{T_{k}}(e,\vec{m},t))=0]$ は正則。
+:::
+
+::: remark
+「$\beta$ 関数の補題を $\mathcal{N}$ で使う」とは、$\mathcal{N}\models\PA$ であることを通して、\ref{pt:beta-lemma} の主張を自然数そのものについて使うことである（有限列 $a_{0},\dots,a_{y}$ を値とする関数は、$i=\underline{0}\wedge z=\underline{a_{0}}$ などの選言で $\PA$ で関数的な論理式として書ける）。ここで使っているのは自然数についての中国剰余定理だけで、$\mathsf{Q}$ の強さとは関係しない。
+:::
+
+## 表現可能性定理 {#pt:sec-representability}
+
+::: theorem 表現可能性定理 {#comp:representability keywords="representability theorem, every computable function is representable in Q" index="表現可能性定理|ひょうげんかのうせいていり"}
+全域的な計算可能関数はすべて、ある狭義の Σ 論理式によって $\mathsf{Q}$ で表現される。したがって、$\mathsf{Q}$ を含むどの理論（たとえば $\PA$）でも表現される。
+:::
+
+::: proof
+\ref{pt:kleene-class-computable} により、$\mathcal{C}$ の関数が狭義の Σ 論理式で $\mathsf{Q}$ で表現されることを、$\mathcal{C}$ の構成に関する帰納法で示せばよい。以下、$\mathcal{M}\models\mathsf{Q}$ を任意にとり、$\mathcal{M}$ で成り立つことを示す（完全性定理）。数項の性質は \ref{pt:q-numerals} による。
+
+**初期関数.** $Z^{k}$：$y=0$。$S$：$y=S(x)$。$U^{k}_{i}$：$y=x_{i}$。和：$y=x_{1}+x_{2}$、積：$y=x_{1}\cdot x_{2}$。いずれも $\mathcal{M}$ で $\underline{\vec{m}}$ を代入した右辺の値が $d(f(\vec{m}))$ に等しい（\ref{pt:q-numerals} の 1）ので、$y$ がそれに等しいことと同値。$\chi_{<}$：
+$$
+F_{<}(x_{1},x_{2},y)\defeq(x_{1}<x_{2}\wedge y=\underline{1})\vee(\neg\,x_{1}<x_{2}\wedge y=\underline{0}).
+$$
+$m_{1}<m_{2}$ なら $\mathcal{M}\models\underline{m_{1}}<\underline{m_{2}}$、そうでなければ $\mathcal{M}\models\neg\,\underline{m_{1}}<\underline{m_{2}}$（\ref{pt:q-numerals} の 4）なので、$F_{<}(\underline{m_{1}},\underline{m_{2}},y)$ は $y=\underline{\chi_{<}(m_{1},m_{2})}$ と同値。これらは狭義の Σ 論理式（原子論理式とその否定の $\wedge,\vee$）である。
+
+**合成.** $f(\vec{x})=g(h_{1}(\vec{x}),\dots,h_{l}(\vec{x}))$ で、$g,h_{j}$ を $G,H_{j}$ が表現するとする。
+$$
+F(\vec{x},y)\defeq\exists z_{1}\cdots\exists z_{l}\,\bigl(H_{1}(\vec{x},z_{1})\wedge\cdots\wedge H_{l}(\vec{x},z_{l})\wedge G(z_{1},\dots,z_{l},y)\bigr).
+$$
+$\mathcal{M}\models F(\underline{\vec{m}},b)$ なら、証拠 $c_{j}$ は $H_{j}$ の表現から $c_{j}=d(h_{j}(\vec{m}))$、すると $G$ の表現から $b=d(g(h_{1}(\vec{m}),\dots))=d(f(\vec{m}))$。逆に $b=d(f(\vec{m}))$ なら $c_{j}\defeq d(h_{j}(\vec{m}))$ が証拠になる。
+
+**正則な最小化.** $f(\vec{x})=\mu y\,[g(\vec{x},y)=0]$（正則）で、$g$ を $G$ が表現するとする。
+$$
+F(\vec{x},y)\defeq G(\vec{x},y,\underline{0})\wedge\forall w<y\,\exists z\,\bigl(G(\vec{x},w,z)\wedge\neg\,z=\underline{0}\bigr).
+$$
+これは狭義の Σ 論理式である。$\vec{m}$ を固定し $n\defeq f(\vec{m})$ とする（$g(\vec{m},n)=0$、$k<n$ で $g(\vec{m},k)\neq0$）。
+- ($\Leftarrow$) $\mathcal{M}\models G(\underline{\vec{m}},\underline{n},\underline{0})$ は $G$ の表現から。$w<d(n)$ なら \ref{pt:q-numerals} の 5 で $w=d(k)$（$k<n$）で、$z\defeq d(g(\vec{m},k))$ が証拠：$G$ の表現と、$g(\vec{m},k)\neq0$ から $z\neq d(0)$（\ref{pt:q-numerals} の 2）。
+- ($\Rightarrow$) $\mathcal{M}\models F(\underline{\vec{m}},b)$ とする。(O3) から $b<d(n)$, $b=d(n)$, $d(n)<b$ のいずれか。$b<d(n)$ なら $b=d(k)$（$k<n$）で、第一成分 $G(\underline{\vec{m}},\underline{k},\underline{0})$ と $G$ の表現から $d(0)=d(g(\vec{m},k))$、\ref{pt:q-numerals} の 2 に反する。$d(n)<b$ なら、第二成分を $w=d(n)$ に使うと、$G(\underline{\vec{m}},\underline{n},z)$ かつ $z\neq d(0)$ となる $z$ があるが、$G$ の表現から $z=d(g(\vec{m},n))=d(0)$ で矛盾。よって $b=d(n)$。
+:::
+
+::: corollary 決定可能な関係の表現 {#comp:decidable-representable keywords="decidable relations are representable in Q" index="決定可能な関係の表現|けっていかのうなかんけいのひょうげん"}
+決定可能な関係 $R\subseteq\N^{k}$ は、狭義の Σ 論理式によって $\mathsf{Q}$ で表現される。
+:::
+
+::: proof
+$\chi_{R}$ を表現する $F$ について $\varphi(\vec{x})\defeq F(\vec{x},\underline{1})$。$R(\vec{m})$ なら $\mathsf{Q}\vdash F(\underline{\vec{m}},\underline{1})$。そうでなければ $\mathsf{Q}\vdash\forall y\,(F(\underline{\vec{m}},y)\leftrightarrow y=\underline{0})$ と $\mathsf{Q}\vdash\neg\,\underline{1}=\underline{0}$ から $\mathsf{Q}\vdash\neg F(\underline{\vec{m}},\underline{1})$。
+:::
+
+## Σ 論理式で定義できる関係 {#comp:sec-sigma-definable}
+
+::: lemma Σ 論理式の標準形 {#comp:sigma-normal-form keywords="normal form for Sigma_1 relations, existential over primitive recursive" index="Σ 論理式の標準形|しぐまろんりしきのひょうじゅんけい"}
+狭義の Σ 論理式 $\varphi(\vec{x})$ のそれぞれに対し、原始再帰的な関係 $\theta(\vec{x},w)$ で、すべての $\vec{m}$ について $\mathcal{N}\models\varphi[\vec{m}]\iff\exists w\,\theta(\vec{m},w)$ となるものがある。
+:::
+
+::: proof
+狭義の Σ 論理式の構成に関する帰納法。項の値は多項式なので原始再帰関数である。$\pi,\pi_{1},\pi_{2}$ はカントールの対関数（\ref{comp:pairing-pr}）、$\exp(v,s)$ は素因数分解での指数（\ref{comp:prime-sequence-code}）。
+- 原子論理式とその否定：定める関係は原始再帰的で、$\theta$ はそれ自身（$w$ は使わない）。
+- $\varphi_{1}\wedge\varphi_{2}$：$\exists w\,\theta_{1}(\vec{x},\pi_{1}(w))\wedge\theta_{2}(\vec{x},\pi_{2}(w))$。$\vee$ も同様。
+- $\exists y\,\varphi$：$\exists y\,\exists w\,\theta(\vec{x},y,w)\iff\exists v\,\theta(\vec{x},\pi_{1}(v),\pi_{2}(v))$。
+- $\forall s<t\,\varphi$（$t$ は項）：各 $s<t$ に証拠 $w_{s}$ を選び $v\defeq\prod_{s<t}p(s)^{w_{s}}$ とすれば $\exp(v,s)=w_{s}$ なので、
+$$
+\forall s<t\,\exists w\,\theta(\vec{x},s,w)\iff\exists v\,\forall s<t\,\theta\bigl(\vec{x},s,\exp(v,s)\bigr).
+$$
+右辺の $\exists v$ の中は原始再帰的（\ref{comp:pr-closure}）。
+:::
+
+::: theorem Σ 定義可能性と半決定可能性 {#comp:sigma-semidecidable keywords="Sigma_1 definable iff semidecidable, graph characterization of computable functions" index="Σ 定義可能と半決定可能|しぐまていぎかのうとはんけっていかのう"}
+1. 関係 $R\subseteq\N^{k}$ について、$R$ が $\mathcal{N}$ で狭義の Σ 論理式により定義できることと、$R$ が半決定可能であることは同値である。
+2. 部分関数 $f$ が計算可能であることと、そのグラフが $\mathcal{N}$ で狭義の Σ 論理式により定義できることは同値である。
+3. 全域的な関数 $f$ について、(a) $f$ は計算可能、(b) $f$ のグラフは $\mathcal{N}$ で狭義の Σ 論理式により定義できる、(c) $f$ はある論理式によって $\mathsf{Q}$ で表現される、は同値である。
+:::
+
+::: proof
+1. ($\Rightarrow$) \ref{comp:sigma-normal-form} の $\theta$ について $g(\vec{x})\simeq\mu w\,[\overline{\mathrm{sg}}(\chi_{\theta}(\vec{x},w))=0]$ は計算可能で定義域は $R$。($\Leftarrow$) $R=\mathrm{dom}(\varphi^{(k)}_{e})$ なら $R(\vec{m})\iff\exists t\,T_{k}(e,\vec{m},t)$（\ref{comp:normal-form}）。$\chi_{T_{k}}(e,\cdot,\cdot)$ を $\mathsf{Q}$ で表現する狭義の Σ 論理式 $G$（\ref{comp:representability}）は $\mathcal{N}$ でそのグラフを定義するので（$\mathcal{N}\models\mathsf{Q}$）、$\exists t\,G(\vec{x},t,\underline{1})$ が $R$ を定義する。
+2. ($\Rightarrow$) $f=\varphi^{(k)}_{e}$ なら $f(\vec{m})=n$ は「$\exists t$（$t$ が $T_{k}(e,\vec{m},\cdot)$ を満たす最小の数で $U(e,\vec{m},t)=n$）」と同値で、1 の証明と同様に表現する論理式を組み合わせれば狭義の Σ 論理式になる（最小性は \ref{comp:representability} の最小化の場合の論理式の形で書ける）。($\Leftarrow$) \ref{comp:sigma-normal-form} の $\theta(\vec{x},y,w)$ について $f(\vec{x})\simeq\pi_{1}\bigl(\mu v\,[\overline{\mathrm{sg}}(\chi_{\theta}(\vec{x},\pi_{1}(v),\pi_{2}(v)))=0]\bigr)$（グラフの点は一つしかないので $\pi_{1}(v)=f(\vec{x})$）。
+3. (a)⇒(c) は \ref{comp:representability}、(a)⇔(b) は 2。(c)⇒(a)：$F$ が $f$ を表現するなら、$f(\vec{m})$ は「$\mathsf{Q}\vdash F(\underline{\vec{m}},\underline{n})$ となる $n$」として、$\mathsf{Q}$ の証明を数え上げて探せば求まる（$\mathsf{Q}$ の公理は有限個なので、証明であるかどうかは決定可能。構文の算術化は \ref{pt:page-arithmetization}）。$\mathcal{N}\models\mathsf{Q}$ なので見つかる $n$ は $f(\vec{m})$ だけである。
+:::
+
+::: hypcheck
+- **公理の使い分け**：(S1), (S2) は異なる数項が異なること（\ref{pt:q-numerals} の 2）に、(A1)〜(M2) は数項の計算（1）に、(O1), (O2) は数項より小さい元が数項であること（3・5）に、(O3) は最小化の場合の「$b$ と $d(n)$ を比べる」ことに使った。帰納法の公理は一度も使っていない。
+- **正則性**：最小化の場合で $n=f(\vec{m})$ が存在することに使った。部分関数の最小化では、表現の定義そのものが意味をもたない。
+- **原始再帰の消去**：$\mathsf{Q}$ では原始再帰で定めた関数の再帰の等式を変数のまま証明できないので、β 関数で原始再帰を最小化に置き換え（\ref{pt:kleene-class-computable}）、表現の議論を数項だけで済ませた。
+- **標準形定理**：一般の計算可能関数を原始再帰関数と一度の正則な最小化に帰着させるのに使った。
+- **$\mathcal{N}\models\mathsf{Q}$**：表現する論理式が $\mathcal{N}$ でグラフを定義すること、\ref{comp:sigma-semidecidable} の 3 で見つかる値が正しいことに使った。
+:::
+
+## 問題 {#comp:sec-rep-problems}
+
+::: problem {#comp:prob-pa-undecidable}
+（チャーチの定理の算術版）$T$ を $\mathsf{Q}\subseteq T$ かつ $\mathcal{N}\models T$ となる理論とする。$T$ で証明できる文のゲーデル数全体は決定不能であることを示せ。ただし、論理式に数項を代入する操作 $(\ulcorner\varphi(x)\urcorner,m)\mapsto\ulcorner\varphi(\underline{m})\urcorner$ が計算可能であること（\ref{pt:page-arithmetization}）を認めてよい。
+:::
+
+::: solution
+$K$ は半決定可能なので、\ref{comp:sigma-semidecidable} の 1 より狭義の Σ 論理式 $\kappa(x)$ で $\mathcal{N}$ で定義できる。$m\in K$ なら、$\mathsf{Q}$ の Σ 完全性（\ref{pt:q-sigma-completeness}）から $T\vdash\kappa(\underline{m})$。$m\notin K$ なら $\mathcal{N}\not\models\kappa[m]$ で、$\mathcal{N}\models T$ なので $T\nvdash\kappa(\underline{m})$。よって $m\in K\iff T\vdash\kappa(\underline{m})$。$T$ の定理全体が決定可能なら $K$ も決定可能になり、\ref{comp:halting-L} に矛盾する。
+:::
+
+::: problem {#comp:prob-complement-k-not-sigma}
+$\N\setminus K$ は $\mathcal{N}$ で狭義の Σ 論理式によって定義できないことを示せ。
+:::
+
+::: solution
+定義できれば、\ref{comp:sigma-semidecidable} の 1 から $K$ と $\N\setminus K$ はともに半決定可能である。$K=\mathrm{dom}(\varphi_{a})$, $\N\setminus K=\mathrm{dom}(\varphi_{b})$ として、$t=0,1,2,\dots$ の順に $T_{1}(a,m,t)$ と $T_{1}(b,m,t)$ を調べ、先に成り立った方で答えるプログラムは $\chi_{K}$ を計算する。これは \ref{comp:halting-L} に矛盾する。
+:::
+
+::: problem {#pt:prob-representable-decidable}
+$T$ を、定理全体が半決定可能で、無矛盾な $\mathcal{L}_{\mathrm{ar}}$ の理論とする。関係 $R$ がある論理式 $\varphi$ によって $T$ で表現されるなら、$R$ は決定可能であることを示せ。
+:::
+
+::: solution
+入力 $\vec{m}$ について、$T$ の定理を数え上げ、$\varphi(\underline{\vec{m}})$ か $\neg\varphi(\underline{\vec{m}})$ のどちらかが現れるまで待ち、前者なら $1$、後者なら $0$ を出力する。表現の定義からどちらかは $T$ の定理なので停止する。$T$ が無矛盾なので両方が定理になることはなく、出力は $\chi_{R}(\vec{m})$ に等しい。（したがって、$\mathsf{Q}$ を含む無矛盾で定理が半決定可能な理論について、そこで表現される関係はちょうど決定可能な関係である。）
+:::
+
+::: supplement
+**前提の検討.**
+- (O3) を外した体系でも、表現する論理式を工夫すれば表現可能性定理が成り立つことが知られている。さらに、タルスキ–モストフスキ–ロビンソンの体系 $\mathsf{R}$（数項についての等式・不等式と「$x<\underline{n}$ なら $x$ は $\underline{0},\dots,\underline{n-1}$ のどれか」などを公理図式として並べた、普遍量化の公理を含まない体系）でも成り立つ。本ページの証明が数項の性質（\ref{pt:q-numerals}）しか使っていないことがその理由である。
+- $\mathsf{Q}$ は有限公理系であり、表現可能性定理から、$\mathsf{Q}$ と無矛盾などの理論も決定不能である（**本質的決定不能性**）ことが従う。これと問題 \ref{comp:prob-pa-undecidable} の議論を組み合わせると、一階述語論理の恒真な文の集合も決定不能であるというチャーチの定理が得られる（$\mathsf{Q}$ が有限公理系なので、$\mathsf{Q}\vdash\varphi$ は「$\bigwedge\mathsf{Q}\to\varphi$ が恒真」と同値）。
+- 後のページの算術化（\ref{pt:page-arithmetization}）と第一不完全性定理（\ref{pt:godel-first}）は、本ページを使わずに、原始再帰関数の定義可能性（\ref{pt:primitive-recursive-definable}）だけで進む。本ページはそれらを「計算可能性」の言葉で見直すためのもので、不完全性定理の計算論的な証明（\ref{comp:prob-pa-undecidable} の議論を少し変えたもの）にもつながる。
+
+**関連する結果.**
+- *算術的階層.* Σ 論理式で定義できる関係（$\Sigma_{1}$）の否定・射影を繰り返すと算術的階層 $\Sigma_{n}$, $\Pi_{n}$ が得られ、$\Sigma_{n+1}$ は「$\emptyset^{(n)}$ を神託とした半決定可能」と一致する（\ref{comp:arithmetical-hierarchy}, \ref{comp:sigma1-recognizable}）。
+- *MRDP の定理.* Σ 論理式で定義できる関係は、有界量化子すら使わない「多項式の等式 $\exists\vec{w}\,(p(\vec{x},\vec{w})=q(\vec{x},\vec{w}))$」の形で定義できる（マチャセヴィッチ、ロビンソン、デイヴィス、パトナム）。これからヒルベルトの第 10 問題の否定的解決が従う。本サイトでは示していない。
+
+**高い視点から：計算は Σ₁、検証は Δ₀.** 表現可能性定理の核心は、「計算が停止して値 $n$ を出す」ことが「ある有限の計算記録が存在し、その記録が正しいことは有界な検査で確かめられる」という形に書けることである。そして、有界な検査が正しいことを確かめるには、帰納法すら要らず、数項についての有限個の計算規則（$\mathsf{Q}$）で足りる。比喩で言えば、$\mathsf{Q}$ は「電卓」で、具体的な数についての計算は何でも確かめられるが、「すべての数について」の一般的な法則（$x+y=y+x$ など）は何も知らない。表現可能性定理は、計算可能性にとっては電卓で十分であることを言っており、一般的な法則を扱う帰納法は、不完全性定理のような「理論が自分自身について語る」場面で初めて必要になる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

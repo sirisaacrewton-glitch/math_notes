@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>反映定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/04-consistency-proofs/05-reflection.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 反映定理 {#set:page-reflection keywords="reflection theorem, Tarski-Vaught criterion, subformula closed, ZFC is not finitely axiomatizable, Skolem functions, countable transitive model, Mostowski collapse, Skolem paradox"}
+
+$\ZFC$ の全体を満たす集合のモデルを $\ZFC$ の中で作ることはできない（第二不完全性定理による。Kunen 第 IV 章 §10）。しかし**有限個**の公理だけなら話は別で、$\ZFC$ の任意の有限個の公理 $\varphi_{1},\dots,\varphi_{n}$ について、それらを満たす推移的な集合 $M$ の存在が $\ZFC$ で証明できる。$M$ としては適当な $R(\beta)$ も、可算な推移的集合もとれる。本ページでは、タルスキ–ヴォートの判定法から反映定理を導き、その系として $\ZF$ が有限公理化できないこと、有限個の公理の可算推移的モデルが存在することを示す。可算推移的モデルは第 VII 章の強制法で基本的な役割を果たす。（Kunen 第 IV 章 §7 に対応する。）
+
+## 記法と定義の確認 {#set:sec-reflection-notation}
+
+::: notation
+- 基礎の公理を断りなく仮定する（\ref{set:page-more-absoluteness}）。とくにすべての集合はある $R(\alpha)$ に属する。累積階層の性質は \ref{set:r-alpha-basic}, \ref{set:rank-basic} のとおり。
+- 論理式は集合論の**もとの言語**の論理式で、素論理式 $x\in y$, $x=y$ から $\lnot$, $\land$, $\exists$ で作られるとする（\ref{set:relativization} と同じ）。$\lor$, $\to$, $\forall$ などは略記である。
+- 相対化 $\varphi^{\mathbf{M}}$（\ref{set:relativization}）、「クラスの中で真」（\ref{set:true-in-class}）、\ref{set:relative-consistency-lemma}、\ref{set:relativization-substructure} は \ref{set:page-relativization}、絶対性（\ref{set:absolute}：$\mathbf{M}\subseteq\mathbf{N}$ について「$\mathbf{M},\mathbf{N}$ について絶対的」）とその閉包性（\ref{set:absolute-connectives}, \ref{set:absolute-equivalent}, \ref{set:absolute-composition}）は \ref{set:page-absoluteness}、再帰の絶対性（\ref{set:absolute-wf-recursion}）と \ref{set:power-rank-relativized} は \ref{set:page-more-absoluteness} のとおり。
+- モストフスキの崩壊（\ref{set:mostowski}, \ref{set:mostowski-epsilon}）、外延的な関係（\ref{set:extensional-relation}）は \ref{set:page-mostowski}、有限項演算と閉包補題（\ref{set:finitary-closure}, \ref{set:closure-lemma}）は基礎事項のとおり。
+- 健全性定理（\ref{logic:soundness}）と完全性定理（\ref{logic:completeness}）を使う。$\bigwedge_{i=1}^{n}\varphi_{i}$ は $\varphi_{1}\land\cdots\land\varphi_{n}$ の略記である。
+:::
+
+## メタの理論についての注意 {#set:sec-reflection-meta}
+
+「$M$ は $\ZFC$ のモデルである」を表す集合論の論理式は（今の段階では）ない。\ref{set:true-in-class} で約束したように、「$H(\kappa)$ は $\ZFC-\mathrm{P}$ のモデル」（\ref{set:h-kappa-zfc-minus-p}）とは、$\ZFC-\mathrm{P}$ の各公理 $\varphi$ について
+$$
+\ZFC\vdash\forall\kappa\,\bigl(\kappa>\omega\land\kappa\text{ は正則}\to\varphi^{H(\kappa)}\bigr)
+$$
+が成り立つ、という無限個の主張の図式であった。直観的には「$\ZFC$ のすべての公理を満たす集合 $M$ がある」を $\exists M\,\bigwedge_{i\in\omega}\varphi_{i}^{M}$（$\varphi_{i}$ は $\ZFC$ の公理の枚挙）と書きたくなるが、これは有限の長さの論理式ではない。
+
+この制約は実際にはあまり妨げにならない。$\ZFC\vdash\psi$ ならその証明が使う公理は有限個 $\varphi_{1},\dots,\varphi_{n}$ であり、$\varphi_{1},\dots,\varphi_{n}\vdash\psi$ となるからである。同様に、これまでの絶対性の結果も「十分大きな有限個の公理」の推移的なモデルについて成り立っていた。
+
+::: lemma 有限個の公理で足りる絶対性 {#set:finite-fragment-absoluteness keywords="absoluteness for transitive models of finite fragments"}
+\ref{set:page-absoluteness} と \ref{set:page-more-absoluteness} で「$\ZF-\mathrm{P}$ の推移的なモデルについて絶対的」と示した各論理式 $\chi$ について、$\ZF-\mathrm{P}$ の有限個の公理 $\varphi_{1},\dots,\varphi_{n}$ で
+$$
+\ZF-\mathrm{P}\vdash\forall M\,\Bigl(M\text{ は推移的}\land\bigwedge_{i=1}^{n}\varphi_{i}^{M}\to\chi\text{ は }M\text{ について絶対的}\Bigr)
+$$
+となるものがある。定義された関数についても同様である。
+:::
+
+::: proof
+これは個々の証明を見直すことで確かめられるメタの主張であり、以下はその見直しの要点である（一つの形式的な証明ではない）。
+
+- 関数の絶対性は、それを定義する論理式の絶対性に帰着する。関数 $F$ を $M$ に相対化するときは、定義式 $\chi(x_{1},\dots,x_{m},y)$ について一意性条件 $\forall\vec{x}\,\exists!y\,\chi$ が $M$ で成り立つことを確かめていた。一意性条件は毎回 $\ZF-\mathrm{P}$ の定理であり、したがってその有限個の公理から証明できる。その有限個の公理が $M$ で成り立てば、\ref{set:relativized-proof} により一意性条件も $M$ で成り立つ。
+- Δ₀ 論理式と同値であることから絶対性を示した場合（\ref{set:absolute-equivalent}）、同値性の証明は $\ZF-\mathrm{P}$ の有限個の公理しか使わない。\ref{set:absolute-equivalent} は $S$ としてその有限個の公理をとっても成り立つ。
+- 合成（\ref{set:absolute-composition}）は $M$ に新たな条件を課さない。再帰（\ref{set:absolute-wf-recursion}）は、その再帰を正当化するのに必要な $\ZF-\mathrm{P}$ の有限個の公理が $M$ で成り立つことしか使わない。
+
+以上より、各 $\chi$ の絶対性の証明全体で使われる公理は有限個である。
+:::
+
+上の証明で使った「証明の相対化」を述べておく。
+
+::: lemma 証明の相対化 {#set:relativized-proof keywords="relativization of proofs"}
+$\varphi_{1},\dots,\varphi_{n},\psi$ を文とし、$\varphi_{1},\dots,\varphi_{n}\vdash\psi$ とする。クラス $\mathbf{M}$ を定める論理式 $\mathbf{M}(v,\vec{p})$（パラメータ $\vec{p}$ を含んでよい）について
+$$
+\vdash\forall\vec{p}\,\Bigl(\exists v\,\mathbf{M}(v,\vec{p})\land\bigwedge_{i=1}^{n}\varphi_{i}^{\mathbf{M}}\to\psi^{\mathbf{M}}\Bigr).
+$$
+:::
+
+::: proof
+完全性定理（\ref{logic:completeness}）より、右辺の文がすべての構造で真であることを示せばよい。構造 $\mathfrak{A}=(A,\in^{\mathfrak{A}})$ とパラメータの値 $\vec{a}\in A$ を固定し、$\mathfrak{A}\models\exists v\,\mathbf{M}[v,\vec{a}]$ かつ各 $\mathfrak{A}\models\varphi_{i}^{\mathbf{M}}[\vec{a}]$ とする。$B\defeq\{b\in A:\mathfrak{A}\models\mathbf{M}[b,\vec{a}]\}$ は空でなく、$\mathfrak{B}\defeq(B,\in^{\mathfrak{A}}\cap B^{2})$ とおくと、\ref{set:relativization-substructure}（パラメータ $\vec{a}$ を固定して同じ議論を行う）より $\mathfrak{B}\models\varphi_{i}$。健全性定理（\ref{logic:soundness}）より $\mathfrak{B}\models\psi$、再び \ref{set:relativization-substructure} より $\mathfrak{A}\models\psi^{\mathbf{M}}[\vec{a}]$。
+:::
+
+::: hypcheck
+- $\exists v\,\mathbf{M}$（$B\neq\varnothing$）は、$\mathfrak{B}$ が構造であるために必要である（構造の台集合は空でない）。
+- \ref{set:relativization-substructure} はパラメータのない形で述べてあるが、その証明は論理式の構成に関する帰納法で、$\mathbf{M}$ の定義に含まれるパラメータの値を固定しても変わらない。
+:::
+
+## タルスキ–ヴォートの判定法 {#set:sec-tarski-vaught}
+
+以下の議論は \ref{set:finite-fragment-absoluteness} とは独立である。これまでの絶対性は特別な形の論理式についてのものだったが、ここでは**すべての**（与えられた有限個の）論理式が絶対的になるような $M$ を作りたい。$\varphi$ が文で $M$ について絶対的なら $\varphi^{M}\leftrightarrow\varphi$ なので、$\varphi$ が $\ZFC$ の公理なら $\varphi^{M}$ が成り立つ。
+
+::: definition 部分論理式で閉じた列 {#set:subformula-closed keywords="subformula, subformula closed list" index="部分論理式|ぶぶんろんりしき, 部分論理式で閉じた|ぶぶんろんりしきでとじた"}
+論理式 $\varphi$ の**部分論理式**を再帰で定める：$\varphi$ 自身は部分論理式であり、$\lnot\psi$ の部分論理式は $\psi$ の部分論理式を、$\psi\land\chi$ の部分論理式は $\psi$ と $\chi$ の部分論理式を、$\exists x\,\psi$ の部分論理式は $\psi$ の部分論理式を含む。論理式の有限列 $\varphi_{1},\dots,\varphi_{n}$ が**部分論理式で閉じている**とは、列の各論理式の部分論理式がすべて列に現れることをいう。
+:::
+
+部分論理式で閉じた列の各 $\varphi_{i}$ は、素論理式であるか、ある $j,k$ について $\lnot\varphi_{j}$, $\varphi_{j}\land\varphi_{k}$, $\exists x\,\varphi_{j}$ のいずれかの形であり、しかも $\varphi_{j},\varphi_{k}$ は $\varphi_{i}$ より短い。各論理式の部分論理式は有限個なので、**任意の有限列は、部分論理式で閉じた有限列に拡大できる**。
+
+::: lemma タルスキ–ヴォートの判定法 {#set:tarski-vaught keywords="Tarski-Vaught criterion, Tarski-Vaught test" index="タルスキ–ヴォートの判定法|たるすきゔぉーとのはんていほう"}
+$\mathbf{M}\subseteq\mathbf{N}$ をクラスとし、$\varphi_{1},\dots,\varphi_{n}$ を部分論理式で閉じた列とする。次は同値である。
+
+1. $\varphi_{1},\dots,\varphi_{n}$ はいずれも $\mathbf{M},\mathbf{N}$ について絶対的である。
+2. $\varphi_{i}$ が $\exists x\,\varphi_{j}(x,y_{1},\dots,y_{l})$（$\varphi_{j}$ の自由変数を $x,y_{1},\dots,y_{l}$ の中に表示した）の形であるとき、
+$$
+\forall y_{1},\dots,y_{l}\in\mathbf{M}\;\Bigl[\exists x\in\mathbf{N}\,\varphi_{j}^{\mathbf{N}}(x,\vec{y})\to\exists x\in\mathbf{M}\,\varphi_{j}^{\mathbf{N}}(x,\vec{y})\Bigr].
+$$
+:::
+
+::: intuition
+条件 2 は「$\mathbf{N}$ の中に証人がいるなら、$\mathbf{M}$ の中にも（$\mathbf{N}$ の目で見て正しい）証人がいる」という $\mathbf{M}$ の閉包条件である。右辺に現れる相対化はすべて $\mathbf{N}$ への相対化であり、$\mathbf{M}$ での真偽は現れない。これが判定法の使いやすさの理由である。
+:::
+
+::: proof
+**（1 $\Rightarrow$ 2）** $\vec{y}\in\mathbf{M}$ を固定し、$\exists x\in\mathbf{N}\,\varphi_{j}^{\mathbf{N}}(x,\vec{y})$、すなわち $\varphi_{i}^{\mathbf{N}}(\vec{y})$ とする。$\varphi_{i}$ の絶対性より $\varphi_{i}^{\mathbf{M}}(\vec{y})$、すなわち $\exists x\in\mathbf{M}\,\varphi_{j}^{\mathbf{M}}(x,\vec{y})$。このような $x\in\mathbf{M}$ について、$\varphi_{j}$ の絶対性（$\varphi_{j}$ は列に現れる）より $\varphi_{j}^{\mathbf{N}}(x,\vec{y})$。
+
+**（2 $\Rightarrow$ 1）** 列の論理式の長さに関する帰納法で、各 $\varphi_{i}$ が絶対的であることを示す。$\varphi_{i}$ より短い列の論理式はすべて絶対的だと仮定する。
+
+- $\varphi_{i}$ が素論理式なら、相対化で変わらないので絶対的。
+- $\varphi_{i}$ が $\lnot\varphi_{j}$ または $\varphi_{j}\land\varphi_{k}$ なら、帰納法の仮定と \ref{set:absolute-connectives}。
+- $\varphi_{i}$ が $\exists x\,\varphi_{j}(x,\vec{y})$ なら、$\vec{y}\in\mathbf{M}$ について
+$$
+\begin{aligned}
+\varphi_{i}^{\mathbf{M}}(\vec{y})&\iff\exists x\in\mathbf{M}\,\varphi_{j}^{\mathbf{M}}(x,\vec{y})\iff\exists x\in\mathbf{M}\,\varphi_{j}^{\mathbf{N}}(x,\vec{y})\\
+&\iff\exists x\in\mathbf{N}\,\varphi_{j}^{\mathbf{N}}(x,\vec{y})\iff\varphi_{i}^{\mathbf{N}}(\vec{y}).
+\end{aligned}
+$$
+第一と第四の $\iff$ は相対化の定義、第二は $\varphi_{j}$ の絶対性（帰納法の仮定。$x\in\mathbf{M}$ なので使える）、第三の $\Rightarrow$ は $\mathbf{M}\subseteq\mathbf{N}$、$\Leftarrow$ は条件 2 である。
+:::
+
+::: hypcheck
+- 部分論理式で閉じていることは、（2 $\Rightarrow$ 1）の帰納法で $\varphi_{j},\varphi_{k}$ が列に現れ、帰納法の仮定が使えることに、（1 $\Rightarrow$ 2）で $\varphi_{j}$ の絶対性を使うことに必要である。
+- $\mathbf{M}$ や $\mathbf{N}$ の推移性は使っていない。絶対性の定義は $\mathbf{M}\subseteq\mathbf{N}$ だけを要求する。
+:::
+
+## 反映定理 {#set:sec-reflection-theorem}
+
+最初の応用では $\mathbf{N}=\mathbf{V}$ とし、$\varphi_{1},\dots,\varphi_{n}$ が絶対的になる $M=R(\beta)$ を探す。$R(\alpha)$ の構造はほとんど使わないので、一般の形で証明する（一般形は第 VI 章でも使う）。
+
+::: theorem 反映定理（一般形） {#set:reflection-general keywords="general reflection theorem, reflection for filtrations" index="反映定理|はんえいていり"}
+クラス $\mathbf{Z}$ と、各順序数 $\alpha$ に集合 $\mathbf{Z}(\alpha)$ を対応させるクラス関数が
+1. $\alpha<\beta\to\mathbf{Z}(\alpha)\subseteq\mathbf{Z}(\beta)$,
+2. 極限順序数 $\gamma$ について $\mathbf{Z}(\gamma)=\bigcup_{\alpha<\gamma}\mathbf{Z}(\alpha)$,
+3. $\mathbf{Z}=\bigcup_{\alpha\in\mathbf{ON}}\mathbf{Z}(\alpha)$
+
+を満たすとする。このとき任意の論理式 $\varphi_{1},\dots,\varphi_{n}$ について
+$$
+\forall\alpha\;\exists\beta>\alpha\;\bigl(\varphi_{1},\dots,\varphi_{n}\text{ は }\mathbf{Z}(\beta),\mathbf{Z}\text{ について絶対的}\bigr).
+\label{set:eq-reflection}
+$$
+正確には：$\varphi_{1},\dots,\varphi_{n}$ と $\mathbf{Z}$, $\mathbf{Z}(\alpha)$ の定義式を与えるごとに、「条件 1〜3 ならば \eqref{set:eq-reflection}」という文が $\ZF$ で証明できる、という図式である。
+:::
+
+::: proof
+**Step 0（準備）.** 列を拡大すると絶対性の主張は強くなるだけなので、列は部分論理式で閉じているとしてよい。\ref{set:tarski-vaught}（$\mathbf{M}=\mathbf{Z}(\beta)$, $\mathbf{N}=\mathbf{Z}$）の条件 2 を満たす $\beta$ を見つければよい。
+
+**Step 1（関数 $F_{i}$）.** 各 $i$ について $F_{i}\colon\mathbf{ON}\to\mathbf{ON}$ を次のように定める。$\varphi_{i}$ が $\exists x\,\varphi_{j}(x,y_{1},\dots,y_{l})$ の形のとき、$y_{1},\dots,y_{l}\in\mathbf{Z}$ に対し
+$$
+G_{i}(\vec{y})\defeq\begin{cases}\min\{\eta:\exists x\in\mathbf{Z}(\eta)\,\varphi_{j}^{\mathbf{Z}}(x,\vec{y})\}&(\exists x\in\mathbf{Z}\,\varphi_{j}^{\mathbf{Z}}(x,\vec{y})\text{ のとき}),\\0&(\text{そうでないとき})\end{cases}
+$$
+とおく。前者の場合、証人 $x\in\mathbf{Z}$ は条件 3 によりある $\mathbf{Z}(\eta)$ に属するので、最小の $\eta$ が存在する。そして
+$$
+F_{i}(\xi)\defeq\sup\{G_{i}(\vec{y}):y_{1},\dots,y_{l}\in\mathbf{Z}(\xi)\}
+$$
+とする。$\mathbf{Z}(\xi)$ は集合なので ${}^{l}\mathbf{Z}(\xi)$ も集合で、**置換公理**により右辺の集合が存在し、上限（和集合）がとれる。$\varphi_{i}$ が存在量化の形でなければ $F_{i}(\xi)\defeq0$ とする。条件 1 より
+$$
+\xi<\xi'\to F_{i}(\xi)\le F_{i}(\xi')
+\label{set:eq-reflection-monotone}
+$$
+である（$\mathbf{Z}(\xi)\subseteq\mathbf{Z}(\xi')$ なので上限をとる集合が大きくなる）。
+
+**Step 2（十分条件）.** $\beta$ が極限順序数で、すべての $i$ とすべての $\xi<\beta$ について $F_{i}(\xi)<\beta$ ならば、\ref{set:tarski-vaught} の条件 2 が成り立つことを示す。$\varphi_{i}=\exists x\,\varphi_{j}(x,\vec{y})$ とし、$y_{1},\dots,y_{l}\in\mathbf{Z}(\beta)$ で $\exists x\in\mathbf{Z}\,\varphi_{j}^{\mathbf{Z}}(x,\vec{y})$ とする。条件 2 より各 $y_{k}$ はある $\mathbf{Z}(\xi_{k})$（$\xi_{k}<\beta$）に属し、$\xi\defeq\max_{k}\xi_{k}$（$l=0$ なら $\xi\defeq0$。$\beta$ は極限なので $0<\beta$）とおくと条件 1 より $\vec{y}\in\mathbf{Z}(\xi)$。$\eta\defeq G_{i}(\vec{y})\le F_{i}(\xi)<\beta$ で、ある $x\in\mathbf{Z}(\eta)\subseteq\mathbf{Z}(\beta)$ について $\varphi_{j}^{\mathbf{Z}}(x,\vec{y})$。よって $\exists x\in\mathbf{Z}(\beta)\,\varphi_{j}^{\mathbf{Z}}(x,\vec{y})$。
+
+**Step 3（$\beta$ の構成）.** $\alpha$ を固定する。$\omega$ 上の再帰で
+$$
+\beta_{0}\defeq\alpha,\qquad\beta_{p+1}\defeq\max\{\beta_{p}+1,F_{1}(\beta_{p}),\dots,F_{n}(\beta_{p})\}
+$$
+と定め、$\beta\defeq\sup_{p\in\omega}\beta_{p}$ とする（再帰と上限に**置換公理**と**無限公理**を使う）。$\alpha=\beta_{0}<\beta_{1}<\beta_{2}<\cdots$ なので $\beta$ は $\alpha$ より大きい極限順序数である。$\xi<\beta$ なら、ある $p$ で $\xi<\beta_{p}$ となり、\eqref{set:eq-reflection-monotone} より $F_{i}(\xi)\le F_{i}(\beta_{p})\le\beta_{p+1}<\beta$。Step 2 より $\varphi_{1},\dots,\varphi_{n}$ は $\mathbf{Z}(\beta),\mathbf{Z}$ について絶対的である。
+:::
+
+::: hypcheck
+- 条件 1 は Step 1 の単調性と Step 2（$\vec{y}$ を一つの $\mathbf{Z}(\xi)$ に集める）で、条件 2 は Step 2 で $\mathbf{Z}(\beta)$ の元がより前の段階に現れることに、条件 3 は $G_{i}$ の定義（最小の $\eta$ の存在）で使った。
+- $\mathbf{Z}(\xi)$ が**集合**であることは、$F_{i}$ の定義で置換公理を使うために必要である。
+- 選択公理は使っていない。冪集合公理は、この一般形では（$\mathbf{Z}(\alpha)$ が集合であるという仮定に吸収されて）直接は使っていない。基礎の公理も使っていない。
+:::
+
+::: theorem 反映定理 {#set:reflection keywords="Levy-Montague reflection theorem, reflection principle" index="反映原理|はんえいげんり"}
+任意の論理式 $\varphi_{1},\dots,\varphi_{n}$ について
+$$
+\ZF\vdash\forall\alpha\;\exists\beta>\alpha\;\bigl(\varphi_{1},\dots,\varphi_{n}\text{ は }R(\beta)\text{ について絶対的}\bigr).
+$$
+:::
+
+::: proof
+\ref{set:reflection-general} を $\mathbf{Z}=\mathbf{V}$, $\mathbf{Z}(\alpha)=R(\alpha)$ に適用する。$R(\alpha)$ は集合で（冪集合公理と置換公理）、条件 1 は \ref{set:r-alpha-basic} の 2、条件 2 は累積階層の定義（\ref{set:cumulative-hierarchy}）、条件 3 は**基礎の公理**（すべての集合はランクをもつ：\ref{set:rank-basic}）による。
+:::
+
+とくに $\varphi_{i}$ がすべて文なら、絶対性は $\varphi_{i}^{R(\beta)}\leftrightarrow\varphi_{i}$ のことなので
+$$
+\ZF\vdash\forall\alpha\;\exists\beta>\alpha\;\Bigl(\bigwedge_{i=1}^{n}\bigl(\varphi_{i}^{R(\beta)}\leftrightarrow\varphi_{i}\bigr)\Bigr).
+\label{set:eq-reflection-sentences}
+$$
+$\varphi_{i}$ が $\ZF$ の公理なら $\ZF\vdash\varphi_{i}$ なので $\ZF\vdash\forall\alpha\,\exists\beta>\alpha\,\bigwedge_{i}\varphi_{i}^{R(\beta)}$ である。$R(\beta)$ に選択公理を満たさせたければ、$\ZFC$ から議論して $\mathbf{V}$ で選択公理が成り立つことを使う（$\ZF$ だけからは、$\mathrm{AC}^{R(\beta)}\leftrightarrow\mathrm{AC}$ となる $\beta$ が得られるだけである）。一般に次が成り立つ。
+
+::: corollary 有限個の公理の R(β) モデル {#set:reflection-axioms keywords="every finite fragment of ZFC has a model R(beta)"}
+$S$ を $\ZF$ を含む公理の集まりとし、$\varphi_{1},\dots,\varphi_{n}$ を $S$ の公理とする。このとき
+$$
+S\vdash\forall\alpha\;\exists\beta>\alpha\;\Bigl(\bigwedge_{i=1}^{n}\varphi_{i}^{R(\beta)}\Bigr).
+$$
+:::
+
+::: proof
+$S\supseteq\ZF$ なので $S$ から \eqref{set:eq-reflection-sentences} が証明でき、各 $i$ で $S\vdash\varphi_{i}$。
+:::
+
+この系は純粋な存在定理であり、うまくいく $\beta$ の簡単な記述は与えない。
+
+::: corollary ZF は有限公理化できない {#set:not-finitely-axiomatizable keywords="ZF and ZFC are not finitely axiomatizable" index="有限公理化不可能性|ゆうげんこうりかふかのうせい"}
+$S$ を $\ZF$ を含む公理の集まりとし、$\varphi_{1},\dots,\varphi_{n}$ を $S$ の公理とする。$\varphi_{1},\dots,\varphi_{n}$ から $S$ のすべての公理が証明できるならば、$S$ は矛盾する。とくに $\ZF$ や $\ZFC$ が無矛盾なら、それらと同値な有限個の公理の集まりは存在しない。
+:::
+
+::: proof
+$\varphi_{1},\dots,\varphi_{n}$ から $S$ のすべての公理が証明できるとし、$S$ から矛盾を導く。公理 0（集合の存在。$S\supseteq\ZF$ の公理である）を列に加えても仮定は保たれるので、$\varphi_{1}$ は公理 0 であるとしてよい。$\Phi\defeq\bigwedge_{i=1}^{n}\varphi_{i}$ とおき、以下 $S$ の中で議論する。
+
+**Step 1.** \ref{set:reflection-axioms} より $\Phi^{R(\beta)}$ となる順序数 $\beta$ が存在するので、その最小のもの $\beta$ をとる。$\varphi_{1}^{R(\beta)}$ は $\exists x\,(x\in R(\beta)\land x=x)$ なので $R(\beta)\neq\varnothing$。
+
+**Step 2（$R(\beta)$ は $S$ のモデル）.** $S$ の各公理 $\psi$ について $\varphi_{1},\dots,\varphi_{n}\vdash\psi$ なので、\ref{set:relativized-proof}（$\mathbf{M}=R(\beta)$、パラメータ $\beta$）と Step 1 より $\psi^{R(\beta)}$。
+
+**Step 3（$R(\alpha)$ の絶対性）.** Step 2 と $S\supseteq\ZF$ より、$R(\beta)$ は $\ZF$ の推移的なモデルである（ここでの「モデル」は、以下で使う有限個の公理について $\psi^{R(\beta)}$ が示されたという意味）。したがって $\alpha\in R(\beta)$ について、\ref{set:power-rank-relativized} の 2 より $R(\alpha)^{R(\beta)}=R(\alpha)\cap R(\beta)=R(\alpha)$（$\alpha<\beta$ なので $R(\alpha)\subseteq R(\beta)$）。また $R(\beta)$ の順序数はちょうど $\beta$ 未満の順序数で（$\rank(\alpha)=\alpha$）、順序数であることは絶対的（\ref{set:absolute-ordinals}）。
+
+**Step 4（矛盾）.** $S$ は \ref{set:reflection-axioms} により文 $\theta\defeq\exists\alpha\,(\alpha\text{ は順序数}\land\Phi^{R(\alpha)})$ を証明する。$\theta$ の証明は $\varphi_{1},\dots,\varphi_{n}$ から得られる（$S$ の各公理がそれらから証明できるので）ので、Step 2 と同様に $\theta^{R(\beta)}$ が成り立つ。$\theta^{R(\beta)}$ は
+$$
+\exists\alpha\in R(\beta)\;\bigl((\alpha\text{ は順序数})^{R(\beta)}\land(\Phi^{R(\alpha)})^{R(\beta)}\bigr)
+$$
+である。$(\Phi^{R(\alpha)})^{R(\beta)}$ は、$\Phi$ の量化子をクラス $\{x\in R(\beta):(x\in R(\alpha))^{R(\beta)}\}=R(\alpha)^{R(\beta)}$ に制限したものなので、Step 3 より $\Phi^{R(\alpha)}$ と同値である。よってある $\alpha<\beta$ で $\Phi^{R(\alpha)}$ となり、$\beta$ の最小性に矛盾する。
+:::
+
+::: hypcheck
+- Step 4 の「二重の相対化」$(\Phi^{R(\alpha)})^{R(\beta)}$ の書き換えは、相対化の定義（\ref{set:relativization}）の量化子の段階を $\Phi$ の構成に関する帰納法でたどったものである。$R(\alpha)$ は論理式 $x\in R(\alpha)$（ランクを使って $\rank(x)<\alpha$ と書く）で定義されている。
+- $R(\alpha)^{R(\beta)}=R(\alpha)$ に \ref{set:power-rank-relativized} を使ったが、これは $R(\beta)$ で $\ZF$ の十分大きな有限部分が成り立つことだけを要する（\ref{set:finite-fragment-absoluteness}）。
+- 結論は「$S\vdash\bot$」であり、議論はすべて $S$ の中で行った。
+:::
+
+プラトン主義的には、以上の議論をすべての論理式について同時に行えば $\forall\alpha\,\exists\beta>\alpha\,\bigwedge_{i\in\omega}\varphi_{i}^{R(\beta)}$（$\varphi_{i}$ は $\ZFC$ の公理の枚挙）が「成り立つ」と考えられるが、この議論は $\ZFC$ の中では形式化できない。実際、\ref{set:not-finitely-axiomatizable} の証明は、$\varphi_{1},\dots,\varphi_{n}$ を満たす最初の $R(\beta)$ が $\ZFC$ のモデルでないことを、$\ZFC$ の定理 $\exists\alpha\,\Phi^{R(\alpha)}$ がそこで偽になるという形で具体的に示している。
+
+## 可算なモデルと推移的崩壊 {#set:sec-countable-reflection}
+
+反映定理の証明を少し変えると、与えられた論理式が絶対的になる**可算な**集合 $A$ が得られる。ただし $A$ はもはや $R(\beta)$ ではありえず、推移的でもありえない（\ref{set:prob-reflection-not-transitive}）。そこでモストフスキの崩壊で推移的なモデルに取り替える。
+
+::: theorem 可算な部分モデルへの反映 {#set:reflection-countable keywords="downward Lowenheim-Skolem for classes, countable elementary submodel, Skolem functions" index="スコーレム関数|すこーれむかんすう"}
+（AC）$\mathbf{Z}$ を任意のクラス、$\varphi_{1},\dots,\varphi_{n}$ を任意の論理式とする。このとき
+$$
+\begin{aligned}
+\forall X\subseteq\mathbf{Z}\;\exists A\;\bigl[&X\subseteq A\subseteq\mathbf{Z}\land(\varphi_{1},\dots,\varphi_{n}\text{ は }A,\mathbf{Z}\text{ について絶対的})\\
+&\land\lvert A\rvert\le\max(\omega,\lvert X\rvert)\bigr].
+\end{aligned}
+$$
+（$X$ は集合を動く。）
+:::
+
+::: proof
+列は部分論理式で閉じているとしてよい。
+
+**Step 1（まず集合 $\mathbf{Z}(\beta)$ に反映させる）.** $\mathbf{Z}(\alpha)\defeq\mathbf{Z}\cap R(\alpha)$ とおく。これは集合（$R(\alpha)$ の部分集合）で、\ref{set:reflection-general} の条件 1, 2 は $R(\alpha)$ の性質から、条件 3 は基礎の公理から従う。$X\subseteq\mathbf{Z}$ を固定し、$X\subseteq R(\alpha)$ となる $\alpha$（たとえば $\alpha\defeq\sup\{\rank(x)+1:x\in X\}$）をとると $X\subseteq\mathbf{Z}(\alpha)$。\ref{set:reflection-general} より $\beta>\alpha$ で $\varphi_{1},\dots,\varphi_{n}$ が $\mathbf{Z}(\beta),\mathbf{Z}$ について絶対的となるものをとる。$\mathbf{Z}(\beta)=\varnothing$ なら $X=\varnothing$ で、$A\defeq\varnothing$ とすればよい。以下 $\mathbf{Z}(\beta)\neq\varnothing$ とする。
+
+**Step 2（スコーレム関数）.** **AC** により $\mathbf{Z}(\beta)$ の整列順序 $\lhd$ を固定する。$\varphi_{i}$ の自由変数を $y_{1},\dots,y_{l_{i}}$ として、$H_{i}\colon{}^{l_{i}}\mathbf{Z}(\beta)\to\mathbf{Z}(\beta)$ を次で定める。$\varphi_{i}$ が $\exists x\,\varphi_{j}(x,\vec{y})$ の形で $\exists x\in\mathbf{Z}(\beta)\,\varphi_{j}^{\mathbf{Z}(\beta)}(x,\vec{y})$ なら、そのような $x$ のうち $\lhd$-最小のものを $H_{i}(\vec{y})$ とする。そうでないとき（または $\varphi_{i}$ が存在量化の形でないとき）は $\mathbf{Z}(\beta)$ の $\lhd$-最小元を $H_{i}(\vec{y})$ とする。$l_{i}=0$ なら $H_{i}$ は $\mathbf{Z}(\beta)$ の元（0 項演算）とみなす。$H_{i}$ を $\varphi_{i}$ の**スコーレム関数**という。
+
+**Step 3（閉包）.** $A$ を $X$ の $\{H_{1},\dots,H_{n}\}$ による閉包（\ref{set:finitary-closure}。$\mathbf{Z}(\beta)$ 上の有限項演算）とする。$X\subseteq A\subseteq\mathbf{Z}(\beta)\subseteq\mathbf{Z}$。
+
+**Step 4（絶対性）.** \ref{set:tarski-vaught}（$\mathbf{M}=A$, $\mathbf{N}=\mathbf{Z}(\beta)$）の条件 2 を確かめる。$\varphi_{i}=\exists x\,\varphi_{j}(x,\vec{y})$、$\vec{y}\in A$ で $\exists x\in\mathbf{Z}(\beta)\,\varphi_{j}^{\mathbf{Z}(\beta)}(x,\vec{y})$ なら、$H_{i}(\vec{y})\in A$（$A$ は $H_{i}$ で閉じている）がその証人である。よって $\varphi_{1},\dots,\varphi_{n}$ は $A,\mathbf{Z}(\beta)$ について絶対的。$\vec{y}\in A$ について $\varphi_{i}^{A}(\vec{y})\leftrightarrow\varphi_{i}^{\mathbf{Z}(\beta)}(\vec{y})\leftrightarrow\varphi_{i}^{\mathbf{Z}}(\vec{y})$ なので、$A,\mathbf{Z}$ についても絶対的。
+
+**Step 5（濃度）.** $\kappa\defeq\max(\omega,\lvert X\rvert)$ とおくと、$\lvert X\rvert\le\kappa$、演算は $n\le\kappa$ 個なので、閉包補題（\ref{set:closure-lemma}、**AC**）より $\lvert A\rvert\le\kappa$。
+:::
+
+::: hypcheck
+- **AC** は Step 2 の整列順序 $\lhd$（スコーレム関数を一意に定めるため）と、Step 5 の閉包補題で使った。
+- Step 1 で先に $\mathbf{Z}(\beta)$ に反映させたのは、$\mathbf{Z}$ が真のクラスでありうるからである。$\mathbf{Z}$ 自体の整列順序を直接とる議論は $\ZFC$ では行えない（AC は「すべての**集合**が整列可能」と述べるだけで、クラスの整列可能性は $\ZFC$ の言語では主張すらできない）。
+- 基礎の公理は Step 1 の条件 3（$\mathbf{Z}=\bigcup_{\alpha}\mathbf{Z}\cap R(\alpha)$）で使った。
+:::
+
+同型写像はすべての性質を保つ。
+
+::: lemma 同型は相対化を保つ {#set:isomorphism-relativization keywords="isomorphism preserves relativized formulas"}
+$G$ を集合 $A$ から $M$ への全単射で、$\forall x,y\in A\,(x\in y\leftrightarrow G(x)\in G(y))$ を満たすものとする。このとき任意の論理式 $\varphi(x_{1},\dots,x_{n})$ について
+$$
+\forall x_{1},\dots,x_{n}\in A\;\bigl[\varphi^{A}(x_{1},\dots,x_{n})\leftrightarrow\varphi^{M}(G(x_{1}),\dots,G(x_{n}))\bigr].
+$$
+とくに文 $\varphi$ について $\varphi^{A}\leftrightarrow\varphi^{M}$。
+:::
+
+::: proof
+$\varphi$ の構成に関する帰納法。$x\in y$ は $G$ の仮定そのもの、$x=y$ は $G$ の単射性による。$\lnot$, $\land$ は帰納法の仮定から直ちに従う。$\varphi=\exists x\,\psi(x,\vec{x})$ のとき、
+$$
+\begin{aligned}
+\varphi^{A}(\vec{x})&\iff\exists x\in A\,\psi^{A}(x,\vec{x})\iff\exists x\in A\,\psi^{M}(G(x),G(\vec{x}))\\
+&\iff\exists z\in M\,\psi^{M}(z,G(\vec{x}))\iff\varphi^{M}(G(\vec{x})).
+\end{aligned}
+$$
+第二の $\iff$ は帰納法の仮定、第三は $G$ の全射性（$\Leftarrow$ で $z=G(x)$ となる $x\in A$ をとる）による。
+:::
+
+::: corollary 可算推移的モデルへの反映 {#set:reflection-transitive keywords="countable transitive model reflecting finitely many sentences, Mostowski collapse"}
+（AC）$\mathbf{Z}$ を推移的なクラス、$\varphi_{1},\dots,\varphi_{n}$ を文とする。このとき
+$$
+\begin{aligned}
+\forall X\subseteq\mathbf{Z}\;\Bigl[&X\text{ は推移的}\to\exists M\,\Bigl(X\subseteq M\land\bigwedge_{i=1}^{n}(\varphi_{i}^{M}\leftrightarrow\varphi_{i}^{\mathbf{Z}})\\
+&\land M\text{ は推移的}\land\lvert M\rvert\le\max(\omega,\lvert X\rvert)\Bigr)\Bigr].
+\end{aligned}
+$$
+:::
+
+::: proof
+**Step 1.** 列に外延性の公理が含まれるとしてよい（なければ加える）。\ref{set:reflection-countable} で得られる $A$（$X\subseteq A\subseteq\mathbf{Z}$, $\lvert A\rvert\le\max(\omega,\lvert X\rvert)$）をとると、各 $i$ で $\varphi_{i}^{A}\leftrightarrow\varphi_{i}^{\mathbf{Z}}$。
+
+**Step 2（$\in$ は $A$ 上で外延的）.** $\mathbf{Z}$ は推移的なので外延性は $\mathbf{Z}$ の中で真（\ref{set:extensionality-in-transitive}）、したがって $A$ の中でも真である。外延性の $A$ への相対化は $\forall x,y\in A\,[\forall z\in A\,(z\in x\leftrightarrow z\in y)\to x=y]$ であり、これは $\in$ が $A$ 上で外延的（\ref{set:extensional-relation}）であることにほかならない。
+
+**Step 3（崩壊）.** \ref{set:mostowski-epsilon} の 1 より、推移的な集合 $M$（$A$ が集合なので $M$ も集合：\ref{set:mostowski}）と $\in$ に関する同型 $G\colon A\to M$ がある。$\lvert M\rvert=\lvert A\rvert\le\max(\omega,\lvert X\rvert)$。\ref{set:isomorphism-relativization} より $\varphi_{i}^{M}\leftrightarrow\varphi_{i}^{A}\leftrightarrow\varphi_{i}^{\mathbf{Z}}$。
+
+**Step 4（$X\subseteq M$）.** $X\subseteq A$ は推移的なので、\ref{set:mostowski-epsilon} の 2 よりすべての $x\in X$ で $G(x)=x$。よって $X=G[X]\subseteq M$。
+:::
+
+::: hypcheck
+- $\mathbf{Z}$ の推移性は Step 2 で外延性を $\mathbf{Z}$ の中で成り立たせるのに、$X$ の推移性は Step 4 で崩壊が $X$ を動かさないために使った。
+- 基礎の公理は、\ref{set:mostowski-epsilon}（$\in$ の整礎性）を通して Step 3 で使った。
+:::
+
+$\mathbf{Z}=\mathbf{V}$, $X=\omega$ とすると次を得る。
+
+::: corollary 可算推移的モデルの存在 {#set:ctm-exists keywords="existence of countable transitive models of finite fragments of ZFC" index="可算推移的モデル|かさんすいいてきもでる"}
+$S$ を $\ZFC$ を含む公理の集まりとし、$\varphi_{1},\dots,\varphi_{n}$ を $S$ の公理とする。このとき
+$$
+S\vdash\exists M\,\Bigl(\lvert M\rvert=\omega\land M\text{ は推移的}\land\bigwedge_{i=1}^{n}\varphi_{i}^{M}\Bigr).
+$$
+:::
+
+::: proof
+$S$ の中で議論する（$S\supseteq\ZFC$ なので AC が使える）。\ref{set:reflection-transitive} を $\mathbf{Z}=\mathbf{V}$（推移的）、$X=\omega$（推移的）に適用すると、推移的な $M\supseteq\omega$ で $\lvert M\rvert\le\omega$、かつ $\varphi_{i}^{M}\leftrightarrow\varphi_{i}$ となるものがある。$\omega\subseteq M$ より $\lvert M\rvert=\omega$。$S\vdash\varphi_{i}$ なので $\varphi_{i}^{M}$。
+:::
+
+とくに $\ZFC$ の中で、$\ZFC$ の任意の有限部分の**可算推移的モデル**（countable transitive model、しばしば c.t.m. と略される）の存在が証明できる。十分多くの公理を列に加えれば、\ref{set:page-absoluteness}, \ref{set:page-more-absoluteness} の絶対性の結果がすべて $M$ で成り立ち（\ref{set:finite-fragment-absoluteness}）、$\mathcal{P}^{M}(x)$ や $\omega_{1}^{M}$ も定義される。しかしこれらは絶対的でない。$\omega_{1}^{M}$ は、$M$ が非可算と「思っている」可算順序数である。これは単に、$\omega$ から $\omega_{1}^{M}$ への全射が $M$ に属さないということである。同様に $\mathcal{P}^{M}(\omega)=\mathcal{P}(\omega)\cap M$（\ref{set:power-rank-relativized}）は本当は可算だが、$M$ の住人にとっては非可算である。「可算」が絶対的でないというこの現象は**スコーレムのパラドックス**（\ref{logic:skolem-paradox}）と呼ばれる。
+
+## 問題 {#set:sec-reflection-problems}
+
+::: problem {#set:prob-reflection-club}
+$\varphi_{1},\dots,\varphi_{n}$ を部分論理式で閉じた列とし、$C\defeq\{\beta\in\mathbf{ON}:\varphi_{1},\dots,\varphi_{n}\text{ は }R(\beta)\text{ について絶対的}\}$ とする。$C$ は閉じている、すなわち $C$ の元の増大列 $\beta_{0}<\beta_{1}<\cdots$ の上限 $\gamma$ は $C$ に属することを示せ。（反映定理とあわせて、$C$ は $\mathbf{ON}$ の中で閉かつ非有界である。）
+:::
+
+::: solution
+\ref{set:tarski-vaught}（$\mathbf{M}=R(\gamma)$, $\mathbf{N}=\mathbf{V}$）の条件 2 を確かめる。$\varphi_{i}=\exists x\,\varphi_{j}(x,\vec{y})$、$\vec{y}\in R(\gamma)$ で $\exists x\,\varphi_{j}(x,\vec{y})$ とする。$\gamma$ は極限順序数なので $R(\gamma)=\bigcup_{k}R(\beta_{k})$ で、$\vec{y}$ は有限個なので、ある $k$ で $\vec{y}\in R(\beta_{k})$。$\varphi_{i}$ は $R(\beta_{k})$ について絶対的なので $\varphi_{i}^{R(\beta_{k})}(\vec{y})$、すなわちある $x\in R(\beta_{k})$ で $\varphi_{j}^{R(\beta_{k})}(x,\vec{y})$。$\varphi_{j}$ も $R(\beta_{k})$ について絶対的なので $\varphi_{j}(x,\vec{y})$。$x\in R(\beta_{k})\subseteq R(\gamma)$ なので条件 2 が成り立ち、$\gamma\in C$。
+:::
+
+::: problem {#set:prob-reflection-not-transitive}
+（AC）\ref{set:reflection-countable} を $\mathbf{Z}=\mathbf{V}$, $X=\varnothing$ に適用する。論理式の列に $\chi(x)$「$x=\omega_{1}$」（もとの言語に書き直したもの）と $\exists x\,\chi(x)$ を含めると、得られる可算な $A$ は推移的でないことを示せ。
+:::
+
+::: solution
+$\exists x\,\chi(x)$ は $\mathbf{V}$ で真なので、絶対性より $(\exists x\,\chi)^{A}$、すなわちある $a\in A$ で $\chi^{A}(a)$。$\chi$ の絶対性より $\chi(a)$、すなわち $a=\omega_{1}$。よって $\omega_{1}\in A$。もし $A$ が推移的なら $\omega_{1}\subseteq A$ となり、$A$ が可算であることに反する。
+:::
+
+::: problem {#set:prob-ctm-omega-one}
+$M$ を \ref{set:ctm-exists} で得られる可算推移的モデルとし、列には「$\omega_{1}$ が存在する」ことを証明するのに十分な公理が含まれているとする。$\omega_{1}^{M}$ は順序数であって、$\omega_{1}^{M}<\omega_{1}$ であることを示せ。
+:::
+
+::: solution
+$\omega_{1}^{M}\in M$ は $M$ の中で「順序数」を満たし、順序数であることは絶対的（列に十分な公理を含めれば \ref{set:absolute-ordinals} が $M$ で使える）なので本当の順序数である。$M$ は推移的なので $\omega_{1}^{M}\subseteq M$、$M$ は可算なので $\omega_{1}^{M}$ は可算な順序数、すなわち $\omega_{1}^{M}<\omega_{1}$。
+:::
+
+::: supplement
+**前提の検討.**
+- 反映定理（\ref{set:reflection-general}, \ref{set:reflection}）は選択公理を使わない。AC は可算な $A$ を得る段階（\ref{set:reflection-countable}）で、スコーレム関数の選択と閉包補題に使った。
+- 置換公理は $F_{i}$ の定義と $\beta_{p}$ の再帰で本質的に使った。実際、「反映定理の図式」は $\ZF$ の置換公理の代わりになるほど強いことが知られている（$\ZF$ の他の公理のもとで、反映原理の図式は置換公理の図式と同値であると一般に言われている。本サイトでは証明していない）。
+- \ref{set:reflection} で $R(\beta)$ に反映させるには基礎の公理（$\mathbf{V}=\bigcup R(\alpha)$）が必要だが、一般形 \ref{set:reflection-general} は基礎の公理を使わない。
+- Kunen は演習として、$\ZF$ の有限個の公理で「反映する $\beta$ は $\beta=\omega_{\beta}$ を満たす」ことを強制できるものがあると述べている（Kunen 第 IV 章演習 10 による。本サイトでは確かめていない）。
+
+**関連する結果.** \ref{set:reflection-countable} は、モデル理論の下降レーヴェンハイム–スコーレム–タルスキの定理を $\mathbf{V}$ に適用したものにあたる（\ref{model:downward-lowenheim-skolem}）。\ref{set:not-finitely-axiomatizable} は $\ZF$ が有限公理化できないことを示すが、クラスを対象に含むフォン・ノイマン–ベルナイス–ゲーデルの集合論 $\mathrm{NBG}$ は有限公理化でき、$\ZF$ の保存拡大であることが知られている（一般にはこう言われている。本サイトでは扱っていない）。
+
+**高い視点から：宇宙の縮図.** 反映定理は「集合の宇宙 $\mathbf{V}$ は、どんな有限個の言明についても、ある段階 $R(\beta)$ に縮図として映っている」と述べる。$\mathbf{V}$ 全体を一つの集合で表すことはできないが、有限の言明は有限の情報しか要求しないので、十分遠くまで累積階層を登れば、その言明に必要な証人がすべてそろった段階に行き着く。証明の構造は、各言明の証人の現れる段階を関数 $F_{i}$ で測り、その「不動点」$\beta$ を $\omega$ 回の反復で作るという、順序数上の正規関数の不動点の構成と同じ形である（\ref{set:prob-reflection-club} は、その不動点全体が閉非有界集合をなすことに対応する）。モデル理論の言葉では、$R(\beta)$ や可算な $A$ は、与えられた有限個の論理式について $\mathbf{V}$ の「初等部分構造」にあたり、可算推移的モデルはその推移的な写し絵である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

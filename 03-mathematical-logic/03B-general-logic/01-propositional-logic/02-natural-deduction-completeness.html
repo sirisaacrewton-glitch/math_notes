@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>命題論理の自然演繹と完全性 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/01-propositional-logic/02-natural-deduction-completeness.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 命題論理の自然演繹と完全性 {#logic:page-prop-completeness keywords="propositional natural deduction, soundness, completeness of propositional logic, Kalmár, Lindenbaum"}
+
+命題論理の自然演繹を定め、導出可能性 $\Sigma\vdash\varphi$ が真理値による論理的帰結 $\Sigma\models\varphi$（\ref{logic:tautology}）と一致すること、すなわち**健全性**と**完全性**を示す。完全性は二通りに証明する。一つは極大無矛盾集合から真理値割り当てを読み取る**リンデンバウムの方法**で、無限個の前提についても成り立つ（強い完全性）。もう一つは、恒真式に対して導出を具体的に組み立てる**カルマールの方法**で、有限の前提についての完全性（弱い完全性）を構成的に示す。どちらも一階述語論理の完全性定理（\ref{logic:page-completeness}）の原型である。
+
+## 記法と定義の確認 {#logic:sec-prop-nd-notation}
+
+::: notation
+- 論理式・略記・真理値割り当て・$\Sigma\models\varphi$ は \ref{logic:prop-formula}, \ref{logic:truth-assignment}, \ref{logic:tautology} のとおり。$\neg\varphi=\varphi\to\bot$。
+- $\Sigma,\Gamma,\Delta$ は論理式の集合、$\Sigma\cup\{\varphi\}$ を $\Sigma,\varphi$ とも書く。
+- 可算性を使う箇所（リンデンバウムの補題の数え上げ）以外では、命題変数の集合 $\mathrm{PV}$ の大きさを問わない。
+:::
+
+## 自然演繹 {#logic:sec-prop-nd}
+
+::: definition 命題論理の自然演繹 {#logic:prop-deduction keywords="natural deduction for propositional logic" index="自然演繹|しぜんえんえき, 導出|どうしゅつ"}
+導出 $D$ と、その結論 $\mathrm{concl}(D)$、未解消の仮定の集合 $\mathrm{A}(D)$ を次の規則で帰納的に定める。
+- **(仮定)** 一点の木 $\langle\varphi\rangle$：結論 $\varphi$、$\mathrm{A}=\{\varphi\}$。
+- **($\to$I)** $D$（結論 $\psi$）と論理式 $\varphi$ から：結論 $\varphi\to\psi$、$\mathrm{A}=\mathrm{A}(D)\setminus\{\varphi\}$（仮定 $\varphi$ を解消する）。
+- **($\to$E)** $D_{1}$（結論 $\varphi\to\psi$）と $D_{2}$（結論 $\varphi$）から：結論 $\psi$、$\mathrm{A}=\mathrm{A}(D_{1})\cup\mathrm{A}(D_{2})$。
+- **(RAA)** $D$（結論 $\bot$）と論理式 $\varphi$ から：結論 $\varphi$、$\mathrm{A}=\mathrm{A}(D)\setminus\{\neg\varphi\}$（仮定 $\neg\varphi$ を解消する）。
+
+$\mathrm{concl}(D)=\varphi$ かつ $\mathrm{A}(D)\subset\Sigma$ となる導出があるとき $\Sigma\vdash\varphi$ と書く。$\Sigma\vdash\bot$ のとき $\Sigma$ は**矛盾する**、そうでないとき**無矛盾**であるという。これは一階述語論理の自然演繹（\ref{logic:deduction-system}）から量化子と等号の規則を除いたものである。
+:::
+
+::: proposition 導出可能性の基本性質（命題論理） {#logic:prop-derivability-basic}
+1. **（弱化・有限性（構文論的コンパクト性））** $\Sigma\vdash\varphi$, $\Sigma\subset\Sigma'$ なら $\Sigma'\vdash\varphi$。$\Sigma\vdash\varphi$ なら有限の $\Sigma_{0}\subset\Sigma$ で $\Sigma_{0}\vdash\varphi$。
+2. **（演繹定理・カット）** $\Sigma,\varphi\vdash\psi\iff\Sigma\vdash\varphi\to\psi$。$\Sigma\vdash\varphi$ かつ $\Sigma,\varphi\vdash\psi$ なら $\Sigma\vdash\psi$。
+3. **（矛盾）** $\Sigma\vdash\bot$ なら任意の $\varphi$ で $\Sigma\vdash\varphi$。$\Sigma\vdash\varphi\iff\Sigma,\neg\varphi$ は矛盾する。$\Sigma$ が無矛盾なら $\Sigma,\varphi$ と $\Sigma,\neg\varphi$ の一方は無矛盾。
+4. **（含意の派生規則）** $\{\neg\varphi\}\vdash\varphi\to\psi$、$\{\psi\}\vdash\varphi\to\psi$、$\{\varphi,\neg\psi\}\vdash\neg(\varphi\to\psi)$。
+:::
+
+::: proof
+**1.** 同じ導出がそのまま使える。有限性は $\mathrm{A}(D)$ が有限集合であること（導出に関する帰納法）による。
+
+**2.** 演繹定理の ($\Rightarrow$) は $\to$I（未解消の仮定は $\mathrm{A}(D)\setminus\{\varphi\}\subset\Sigma$）、($\Leftarrow$) は仮定 $\langle\varphi\rangle$ との $\to$E。カットは演繹定理で $\Sigma\vdash\varphi\to\psi$ とし、$\Sigma\vdash\varphi$ と $\to$E でつなぐ。
+
+**3.** 一つ目は $\bot$ を結論とする導出に RAA を施す。二つ目の ($\Rightarrow$) は $\Sigma,\neg\varphi$ から $\varphi$ と $\neg\varphi$ が導けて $\to$E で $\bot$、($\Leftarrow$) は $\Sigma,\neg\varphi\vdash\bot$ に RAA を施して $\neg\varphi$ を解消する。三つ目：両方矛盾するなら、演繹定理で $\Sigma\vdash\neg\varphi$、二つ目で $\Sigma\vdash\varphi$、$\to$E で $\Sigma\vdash\bot$。
+
+**4.** 一つ目：仮定 $\varphi$ と $\neg\varphi$ に $\to$E を施して $\bot$、RAA で $\psi$（解消する $\neg\psi$ は仮定されていない）、$\to$I で $\varphi$ を解消して $\varphi\to\psi$（未解消 $\{\neg\varphi\}$）。二つ目：仮定 $\psi$ に $\to$I（$\varphi$ は仮定されていないので何も解消しない）。三つ目：仮定 $\varphi\to\psi$ と $\varphi$ から $\to$E で $\psi$、$\neg\psi$ と $\to$E で $\bot$、$\to$I で $\varphi\to\psi$ を解消して $\neg(\varphi\to\psi)$（未解消 $\{\varphi,\neg\psi\}$）。
+:::
+
+## 健全性 {#logic:sec-prop-soundness}
+
+::: theorem 健全性定理（命題論理） {#logic:prop-soundness keywords="soundness of propositional logic" index="健全性定理|けんぜんせいていり"}
+任意の導出 $D$ について $\mathrm{A}(D)\models\mathrm{concl}(D)$。したがって $\Sigma\vdash\varphi$ ならば $\Sigma\models\varphi$。
+:::
+
+::: proof
+導出に関する帰納法。$\bar{v}$ が $\mathrm{A}(D)$ のすべての元を $1$ にするとして、結論が $1$ になることを示す。
+- 仮定：明らか。
+- $\to$I：$\bar{v}(\varphi)=0$ なら $\bar{v}(\varphi\to\psi)=1$。$\bar{v}(\varphi)=1$ なら $\bar{v}$ は $\mathrm{A}(D)$ を満たすので帰納法の仮定より $\bar{v}(\psi)=1$。
+- $\to$E：帰納法の仮定より $\bar{v}(\varphi\to\psi)=\bar{v}(\varphi)=1$ なので $\bar{v}(\psi)=1$。
+- RAA：$\bar{v}(\varphi)=0$ なら $\bar{v}(\neg\varphi)=1$ なので $\bar{v}$ は $\mathrm{A}(D)$ を満たし、帰納法の仮定より $\bar{v}(\bot)=1$ となって矛盾する。よって $\bar{v}(\varphi)=1$。
+:::
+
+## リンデンバウムの方法による完全性 {#logic:sec-prop-lindenbaum}
+
+::: theorem 完全性定理（命題論理） {#logic:prop-completeness keywords="completeness theorem for propositional logic, strong completeness" index="完全性定理|かんぜんせいていり"}
+任意の論理式の集合 $\Sigma$ と論理式 $\varphi$ について、$\Sigma\models\varphi$ ならば $\Sigma\vdash\varphi$。同値な言い方として、無矛盾な集合は充足可能である。$\mathrm{PV}$ が可算なら選択公理を使わずに証明でき、一般の場合はツォルンの補題を使う。
+:::
+
+::: proof
+**Step 0（言い換え）.** $\Sigma\not\vdash\varphi$ なら $\Sigma\cup\{\neg\varphi\}$ は無矛盾（\ref{logic:prop-derivability-basic} の 3）で、それを充足する $v$ は $\Sigma$ を充足し $\varphi$ を充足しないので $\Sigma\not\models\varphi$。よって「無矛盾な $\Gamma$ は充足可能」を示せばよい。
+
+**Step 1（極大無矛盾集合）.** 無矛盾な $\Gamma$ を、無矛盾で、任意の論理式 $\sigma$ について $\sigma\in\Gamma^{\ast}$ か $\neg\sigma\in\Gamma^{\ast}$ である集合 $\Gamma^{\ast}\supset\Gamma$ に拡大する。$\mathrm{PV}$ が可算なら論理式を $\sigma_{0},\sigma_{1},\dots$ と数え上げ、$\Delta_{0}=\Gamma$、$\Delta_{n+1}=\Delta_{n}\cup\{\sigma_{n}\}$（無矛盾なら）または $\Delta_{n}\cup\{\neg\sigma_{n}\}$ として $\Gamma^{\ast}=\bigcup\Delta_{n}$ とする。\ref{logic:prop-derivability-basic} の 3 より各 $\Delta_{n}$ は無矛盾で、$\Gamma^{\ast}$ が矛盾すれば使われる有限個の前提がある $\Delta_{n}$ に含まれるので、$\Gamma^{\ast}$ も無矛盾である。一般の場合は、$\Gamma$ を含む無矛盾な集合全体を包含で順序付けると、鎖の和は（同じ有限性の議論で）無矛盾なので、ツォルンの補題（\ref{set:zorn}）により極大元 $\Gamma^{\ast}$ がある。極大元は、任意の $\sigma$ について $\Gamma^{\ast},\sigma$ と $\Gamma^{\ast},\neg\sigma$ の無矛盾な方（\ref{logic:prop-derivability-basic} の 3）に等しいので、$\sigma$ か $\neg\sigma$ を含む。
+
+**Step 2（性質）.** $\Gamma^{\ast}$ について：(a) $\Gamma^{\ast}\vdash\sigma\iff\sigma\in\Gamma^{\ast}$、(b) $\neg\sigma\in\Gamma^{\ast}\iff\sigma\notin\Gamma^{\ast}$、(c) $(\alpha\to\beta)\in\Gamma^{\ast}\iff\alpha\notin\Gamma^{\ast}$ または $\beta\in\Gamma^{\ast}$。(a) の ($\Rightarrow$)：$\sigma\notin\Gamma^{\ast}$ なら $\neg\sigma\in\Gamma^{\ast}$ で、$\Gamma^{\ast}$ が矛盾してしまう。(b)：両方属すれば矛盾し、どちらも属さないことはない。(c) の ($\Rightarrow$)：$\alpha\in\Gamma^{\ast}$ なら $\to$E と (a) で $\beta\in\Gamma^{\ast}$。($\Leftarrow$)：$\neg\alpha\in\Gamma^{\ast}$ または $\beta\in\Gamma^{\ast}$ から \ref{logic:prop-derivability-basic} の 4 で $\Gamma^{\ast}\vdash\alpha\to\beta$、(a) で属する。
+
+**Step 3（割り当て）.** $v(p)\defeq1\iff p\in\Gamma^{\ast}$ と定める。すべての論理式 $\sigma$ について $\bar{v}(\sigma)=1\iff\sigma\in\Gamma^{\ast}$ を帰納法で示す。命題変数は定義から。$\bot$：$\bar{v}(\bot)=0$ で、$\Gamma^{\ast}$ は無矛盾なので $\bot\notin\Gamma^{\ast}$。含意：帰納法の仮定と (c) から。よって $v$ は $\Gamma^{\ast}\supset\Gamma$ を充足する。
+
+::: hypcheck
+- **RAA**：Step 1 の「一方は無矛盾」（\ref{logic:prop-derivability-basic} の 3）と Step 2 の (c)（4 の一つ目）を通じて使った。直観主義論理の自然演繹は真理値の意味論に対して完全でない（パースの法則や $p\vee\neg p$ は恒真式だが導出できない）。
+- **選択公理**：$\mathrm{PV}$ が非可算のときの Step 1。
+:::
+:::
+
+## カルマールの方法 {#logic:sec-prop-kalmar}
+
+リンデンバウムの方法は、導出が「存在する」ことを示すだけである。恒真式に対して導出を実際に組み立てる方法を示す。
+
+::: lemma カルマールの補題 {#logic:kalmar-lemma keywords="Kalmár's lemma" index="カルマールの補題|かるまーるのほだい"}
+割り当て $v$ と論理式 $\varphi$ について、$\varphi^{v}\defeq\varphi$（$\bar{v}(\varphi)=1$ のとき）、$\varphi^{v}\defeq\neg\varphi$（$\bar{v}(\varphi)=0$ のとき）とおく。$\mathrm{Var}(\varphi)\subset\{p_{1},\dots,p_{n}\}$ ならば
+$$
+\{p_{1}^{v},\dots,p_{n}^{v}\}\vdash\varphi^{v}.
+$$
+:::
+
+::: proof
+$\Gamma_{v}\defeq\{p_{1}^{v},\dots,p_{n}^{v}\}$ とおき、論理式に関する帰納法で示す。
+
+**Step 1（原子論理式）.** $\varphi=p_{i}$ なら $\varphi^{v}=p_{i}^{v}\in\Gamma_{v}$。$\varphi=\bot$ なら $\bar{v}(\bot)=0$ で $\varphi^{v}=\neg\bot=\bot\to\bot$、これは $\to$I で導出できる。
+
+**Step 2（含意 $\varphi=\alpha\to\beta$）.** $\mathrm{Var}(\alpha),\mathrm{Var}(\beta)\subset\{p_{1},\dots,p_{n}\}$ なので、帰納法の仮定より $\Gamma_{v}\vdash\alpha^{v}$, $\Gamma_{v}\vdash\beta^{v}$。
+- $\bar{v}(\alpha)=0$ のとき：$\bar{v}(\varphi)=1$ で、$\Gamma_{v}\vdash\neg\alpha$ と \ref{logic:prop-derivability-basic} の 4（一つ目）とカットで $\Gamma_{v}\vdash\alpha\to\beta$。
+- $\bar{v}(\beta)=1$ のとき：$\bar{v}(\varphi)=1$ で、$\Gamma_{v}\vdash\beta$ と 4（二つ目）で $\Gamma_{v}\vdash\alpha\to\beta$。
+- $\bar{v}(\alpha)=1$, $\bar{v}(\beta)=0$ のとき：$\bar{v}(\varphi)=0$ で、$\Gamma_{v}\vdash\alpha$, $\Gamma_{v}\vdash\neg\beta$ と 4（三つ目）で $\Gamma_{v}\vdash\neg(\alpha\to\beta)$。
+:::
+
+::: theorem 弱い完全性定理（カルマール） {#logic:weak-completeness-kalmar keywords="weak completeness, Kalmár's proof" index="弱い完全性|よわいかんぜんせい"}
+$\varphi$ が恒真式ならば $\vdash\varphi$。さらに、$\Sigma$ が有限集合なら $\Sigma\models\varphi$ から $\Sigma\vdash\varphi$。証明から、導出を $\varphi$ の真理値表に沿って具体的に構成できる。
+:::
+
+::: proof
+**Step 1.** $\mathrm{Var}(\varphi)=\{p_{1},\dots,p_{n}\}$ とする。$k=n,n-1,\dots,0$ について「$p_{1},\dots,p_{k}$ への任意の割り当て $v$ について $\{p_{1}^{v},\dots,p_{k}^{v}\}\vdash\varphi$」を示す。$k=n$：$\varphi$ は恒真式なので $\varphi^{v}=\varphi$ で、カルマールの補題による。
+
+**Step 2（変数を一つ消す）.** $k$ で成り立つとし、$p_{1},\dots,p_{k-1}$ への割り当て $v$ を固定する。$\Gamma\defeq\{p_{1}^{v},\dots,p_{k-1}^{v}\}$ とおくと、$v$ を $p_{k}$ で $1$ と $0$ に延ばしたものについての仮定から $\Gamma,p_{k}\vdash\varphi$ かつ $\Gamma,\neg p_{k}\vdash\varphi$。$\Gamma\vdash\varphi$ を示す。\ref{logic:prop-derivability-basic} の 3 より $\Gamma,\neg\varphi$ が矛盾することを示せばよい。$\Gamma,\neg\varphi,p_{k}\vdash\varphi$ と $\neg\varphi$ から $\Gamma,\neg\varphi,p_{k}\vdash\bot$、演繹定理で $\Gamma,\neg\varphi\vdash\neg p_{k}$。これと $\Gamma,\neg p_{k}\vdash\varphi$ をカットでつないで $\Gamma,\neg\varphi\vdash\varphi$、$\neg\varphi$ と合わせて $\Gamma,\neg\varphi\vdash\bot$。
+
+**Step 3.** $k=0$ で $\vdash\varphi$。有限集合 $\Sigma=\{\psi_{1},\dots,\psi_{m}\}$ で $\Sigma\models\varphi$ なら、$\psi_{1}\to\cdots\to\psi_{m}\to\varphi$ は恒真式なので導出でき、$\to$E を $m$ 回使って $\Sigma\vdash\varphi$。
+
+::: hypcheck
+- **排中律にあたる議論（RAA）**：Step 2 の $p_{k}$ と $\neg p_{k}$ による場合分け。
+- **$\Sigma$ の有限性**：Step 3 で前提を一つの含意にまとめた。無限の $\Sigma$ については、この方法だけでは強い完全性は得られない。コンパクト性定理（\ref{logic:page-prop-compactness}）と合わせると得られる。
+- 選択公理も $\mathrm{PV}$ の可算性も使っていない。
+:::
+:::
+
+::: supplement
+**二つの方法の比較.** リンデンバウムの方法は、無矛盾な集合を極大に延ばしてそこから真理値割り当てを読み取る。無限の前提も一度に扱えるが、構成的でない（どの論理式を加えるかの判定に「矛盾するかどうか」という一般には決定の問題を含む判断を使う）。カルマールの方法は、真理値表の $2^{n}$ 行それぞれについて導出を作り、場合分けで貼り合わせる。導出の長さは変数の個数について指数的になるが、完全に機械的である。
+
+**一階述語論理へ.** 一階述語論理の完全性定理（\ref{logic:page-completeness}）はリンデンバウムの方法の拡張であり、量化子に対してヘンキン公理を追加する点だけが新しい。また \ref{logic:page-completeness-alternative} では、一階述語論理のモデルの存在を、本ページの完全性定理と命題論理のコンパクト性定理に帰着させる。
+:::
+
+## 問題 {#logic:sec-prop-nd-problems}
+
+::: problem {#logic:prob-prop-derive-contraposition}
+$\vdash(\varphi\to\psi)\to(\neg\psi\to\neg\varphi)$ を導出せよ（RAA を使わずに導出できることを確かめよ）。
+:::
+
+::: solution
+仮定 $\varphi\to\psi$, $\neg\psi$, $\varphi$ から $\to$E で $\psi$、$\neg\psi$ と $\to$E で $\bot$。$\to$I で $\varphi$ を解消して $\neg\varphi$、$\to$I で $\neg\psi$、$\to$I で $\varphi\to\psi$ を解消する。RAA は使っていない。
+:::
+
+::: problem {#logic:prob-kalmar-example}
+カルマールの方法で $\vdash p\vee\neg p$（$=\neg p\to\neg p$）の導出を作る手順を、$v(p)=1,0$ の二つの場合について書け。
+:::
+
+::: solution
+$\varphi=\alpha\to\beta$、$\alpha=\beta=\neg p$ とする。
+- $v(p)=1$：$\Gamma_{v}=\{p\}$。$\bar{v}(\alpha)=0$ なので補題の Step 2 の最初の場合にあたる。帰納法で $\{p\}\vdash\alpha^{v}=\neg\neg p$（$p$ と仮定 $\neg p$ から $\bot$、$\to$I）、\ref{logic:prop-derivability-basic} の 4（一つ目）で $\{p\}\vdash\neg p\to\neg p$。
+- $v(p)=0$：$\Gamma_{v}=\{\neg p\}$。$\bar{v}(\beta)=1$ なので二番目の場合にあたり、$\{\neg p\}\vdash\neg p$ から 4（二つ目）で $\{\neg p\}\vdash\neg p\to\neg p$。
+
+最後に定理の Step 2 で $p$ と $\neg p$ の場合を合わせる。もちろん、この論理式は $\to$I 一回で直接導出できる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

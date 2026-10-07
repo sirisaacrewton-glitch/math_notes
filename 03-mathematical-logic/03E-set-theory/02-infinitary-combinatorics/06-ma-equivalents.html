@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MA の同値な言い換え | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/06-ma-equivalents.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# MA の同値な言い換え {#set:page-ma-equivalents keywords="equivalents of Martin's axiom, Boolean completion, regular open algebra, Stone space"}
+
+マーティンの公理 $\mathrm{MA}(\kappa)$（\ref{set:ma}）は「任意の c.c.c. 半順序」についての主張である。本ページでは、この「任意の」を大きく絞っても同じ強さの主張になることを示す。すなわち、$\mathrm{MA}(\kappa)$ は (b) 濃度 $\le\kappa$ の半順序だけについての主張とも、(c) 完備ブール代数から来る半順序だけについての主張とも同値であり、さらに (d) 「コンパクト c.c.c. ハウスドルフ空間の $\kappa$ 個の稠密開集合の共通部分は空でない」という純粋に位相的な主張とも同値である（\ref{set:ma-equivalents}）。(b) は MA の無矛盾性の証明で「考えるべき半順序を小さく抑える」ために、(c) と (d) はフォーシングとブール値モデルの関係を理解するために重要になる。
+
+そのための道具として、ブール代数・正則開集合代数・半順序のブール完備化をこのページで導入する。
+
+## 記法と定義の確認 {#set:sec-maeq-notation}
+
+::: notation
+- **半順序** $\langle\PP,\le\rangle$ は \ref{set:forcing-poset} の意味で用いる：$\PP\ne\varnothing$ で、$\le$ は $\PP$ 上の反射的かつ推移的な関係である（反対称律は仮定しない）。$p\le q$ を「$p$ は $q$ の拡大」と読む。
+- $p,q\in\PP$ が**両立する**とは $r\le p$ かつ $r\le q$ となる $r\in\PP$ があることをいい、両立しないことを $p\perp q$ と書く。**反鎖**は相異なる 2 元がつねに両立しない部分集合である（\ref{set:compatible}）。反射律より $p$ は $p$ 自身と両立するので、$p\perp p$ となることはない。
+- $\PP$ が **c.c.c.** であるとは、$\PP$ の反鎖がすべて可算であることをいう（\ref{set:ccc-poset}）。
+- $D\subseteq\PP$ が**稠密**とは $\forall p\in\PP\ \exists q\in D\ (q\le p)$ となることをいう（\ref{set:dense-set}）。
+- $G\subseteq\PP$ が**フィルター**であるとは、(a) $\forall p,q\in G\ \exists r\in G\ (r\le p\land r\le q)$ かつ (b) $\forall p\in G\ \forall q\in\PP\ (p\le q\to q\in G)$ となることをいう（\ref{set:poset-filter}）。
+- $\mathrm{MA}(\kappa)$ は「任意の c.c.c. 半順序 $\PP$ と、$\PP$ の稠密部分集合からなる濃度 $\le\kappa$ の族 $\mathcal{D}$ に対し、すべての $D\in\mathcal{D}$ と交わるフィルター $G$ が存在する」という主張、$\mathrm{MA}$ は「すべての $\kappa<2^{\aleph_{0}}$ について $\mathrm{MA}(\kappa)$」である（\ref{set:ma}）。$\kappa<\kappa'$ なら $\mathrm{MA}(\kappa')\to\mathrm{MA}(\kappa)$（\ref{set:ma-basic}）、$\mathrm{MA}(\aleph_{0})$ は $\ZFC$ の定理（\ref{set:ma-omega}）、$\mathrm{MA}(2^{\aleph_{0}})$ は偽（\ref{set:ma-continuum-false}）である。
+- 位相空間の c.c.c. は \ref{set:ccc-space} の意味（互いに素な空でない開集合の族はすべて可算）。$\mathrm{MA}(\kappa)$ のもとで、空でないコンパクト c.c.c. ハウスドルフ空間の $\kappa$ 個の稠密開集合の共通部分は空でない（\ref{set:ma-compact-ccc}）。コンパクト・ハウスドルフ・開基などの位相の基本用語は通常の意味で用いる（\ref{top:compact}, \ref{top:hausdorff}）。位相空間 $X$ の部分集合 $A$ の内部を $\operatorname{int}A$、閉包を $\operatorname{cl}A$ と書く。
+- 本ページでは $\kappa$ はつねに**無限基数**とする。有限の $n$ については $\mathrm{MA}(n)$ は $\mathrm{MA}(\aleph_{0})$ から従う $\ZFC$ の定理なので、同値性の問題は生じない。
+:::
+
+::: definition MA の制限 {#set:ma-restricted keywords="Martin's axiom restricted to a class of posets" index="MAの制限|えむえーのせいげん"}
+半順序のクラス $\mathcal{K}$ に対し、「$\mathcal{K}$ に制限した $\mathrm{MA}(\kappa)$」とは、$\mathrm{MA}(\kappa)$ の主張の「任意の c.c.c. 半順序 $\PP$」を「$\mathcal{K}$ に属する任意の c.c.c. 半順序 $\PP$」に置き換えた主張をいう。
+:::
+
+::: intuition
+$\mathcal{K}$ を小さくするほど主張は弱くなるので、「$\mathrm{MA}(\kappa)\Rightarrow$ 制限版」は常に自明である。本ページの定理はすべて、逆向き「制限版 $\Rightarrow\mathrm{MA}(\kappa)$」が成り立つという主張である。
+:::
+
+## 小さな半順序への帰着 {#set:sec-maeq-small}
+
+::: lemma 濃度 $\le\kappa$ の半順序への帰着 {#set:ma-small-posets keywords="MA(κ) for posets of size at most κ, downward Löwenheim-Skolem" index="MAの小さい半順序への帰着|えむえーのちいさいはんじゅんじょへのきちゃく"}
+（AC）$\mathrm{MA}(\kappa)$ は、濃度 $\le\kappa$ の半順序に制限した $\mathrm{MA}(\kappa)$ と同値である。
+:::
+
+::: intuition
+与えられた大きな c.c.c. 半順序 $\PP$ と $\le\kappa$ 個の稠密集合から、「議論に必要な元だけ」を集めた濃度 $\le\kappa$ の部分順序 $\PP_{0}$ を切り出す。必要なのは、(i) 各稠密集合 $D$ への拡大と、(ii) 両立する 2 元の共通拡大が $\PP_{0}$ の中で見つかることである。(ii) により $\PP_{0}$ での両立性は $\PP$ での両立性と一致し、$\PP_{0}$ も c.c.c. になる。これはモデル理論の下降レーヴェンハイム＝スコーレムの定理の組合せ論版（閉包補題 \ref{set:closure-lemma}）そのものである。
+:::
+
+::: proof
+$\mathrm{MA}(\kappa)$ から制限版が従うのは自明なので、制限版を仮定して $\mathrm{MA}(\kappa)$ を示す。$\PP$ を任意の c.c.c. 半順序、$\mathcal{D}$ を $\PP$ の稠密部分集合からなる族で $\lvert\mathcal{D}\rvert\le\kappa$ とする。
+
+**Step 1（演算の選択）.** 各 $D\in\mathcal{D}$ について、$D$ が稠密なので、**選択公理**により写像 $f_{D}\colon\PP\to\PP$ で
+$$
+\forall p\in\PP\ \bigl(f_{D}(p)\in D\ \land\ f_{D}(p)\le p\bigr)
+$$
+を満たすものを選ぶ（$\mathcal{D}$ の各元について同時に選ぶので、$D\mapsto f_{D}$ という 1 つの写像を選択公理で得る）。さらに写像 $g\colon\PP\times\PP\to\PP$ を、$p,q$ が両立するときは $g(p,q)\le p$ かつ $g(p,q)\le q$ を満たし、両立しないときは $g(p,q)=p$ となるように選ぶ（これも選択公理）。
+
+**Step 2（閉包をとる）.** $\PP\ne\varnothing$ なので $p_{0}\in\PP$ を 1 つ固定する。$\mathcal{F}=\{f_{D}\mid D\in\mathcal{D}\}\cup\{g\}$ は $\PP$ 上の有限項演算（1 項と 2 項）の集合で、$\lvert\mathcal{F}\rvert\le\kappa$（$\kappa$ は無限なので $\kappa\oplus1=\kappa$）。$\{p_{0}\}$ の $\mathcal{F}$ による閉包（\ref{set:finitary-closure}）を $\PP_{0}$ とすると、閉包補題 \ref{set:closure-lemma} より $\lvert\PP_{0}\rvert\le\kappa$。$\PP_{0}$ に $\le$ の制限 $\le\cap(\PP_{0}\times\PP_{0})$ を与えると、反射律・推移律はそのまま遺伝し、$p_{0}\in\PP_{0}$ なので空でない。よって $\PP_{0}$ は半順序である。
+
+**Step 3（$\PP_{0}$ の性質）.**
+- *(i) $D\cap\PP_{0}$ は $\PP_{0}$ で稠密*：$p\in\PP_{0}$ なら $\PP_{0}$ は $f_{D}$ で閉じているので $f_{D}(p)\in D\cap\PP_{0}$ で、$f_{D}(p)\le p$。
+- *(ii) 両立性の一致*：$p,q\in\PP_{0}$ が $\PP_{0}$ で両立すれば、共通拡大は $\PP$ の元でもあるので $\PP$ で両立する。逆に $\PP$ で両立すれば、$g(p,q)\in\PP_{0}$ が $\PP_{0}$ における共通拡大である。
+- *(iii) $\PP_{0}$ は c.c.c.*：$A\subseteq\PP_{0}$ が $\PP_{0}$ の反鎖なら、(ii) より $A$ の相異なる 2 元は $\PP$ でも両立しないので、$A$ は $\PP$ の反鎖であり、$\PP$ が c.c.c. なので可算である。
+
+**Step 4（制限版の適用）.** $\mathcal{D}_{0}=\{D\cap\PP_{0}\mid D\in\mathcal{D}\}$ は (i) より $\PP_{0}$ の稠密部分集合の族で、$D\mapsto D\cap\PP_{0}$ が $\mathcal{D}$ から $\mathcal{D}_{0}$ への全射なので $\lvert\mathcal{D}_{0}\rvert\le\lvert\mathcal{D}\rvert\le\kappa$（\ref{set:surjection-cardinality}）。$\lvert\PP_{0}\rvert\le\kappa$ で (iii) より c.c.c. なので、制限版の $\mathrm{MA}(\kappa)$ により、$\PP_{0}$ のフィルター $G_{0}$ で、すべての $D\in\mathcal{D}$ について $G_{0}\cap D\cap\PP_{0}\ne\varnothing$ となるものがある。
+
+**Step 5（$\PP$ のフィルターへの持ち上げ）.** $\mathcal{D}=\varnothing$ のときは $G=\{q\in\PP\mid p_{0}\le q\}$ が求めるフィルターである（(a) は $r=p_{0}$ で、(b) は推移律で成り立つ）。$\mathcal{D}\ne\varnothing$ のときは $G_{0}\ne\varnothing$ であり、
+$$
+G=\{q\in\PP\mid\exists p\in G_{0}\ (p\le q)\}
+$$
+とおく。
+- *(b)*：$q\in G$, $q\le q'$ なら、$p\le q$ となる $p\in G_{0}$ があり、推移律より $p\le q'$ なので $q'\in G$。
+- *(a)*：$q_{1},q_{2}\in G$ とし、$p_{1}\le q_{1}$, $p_{2}\le q_{2}$ となる $p_{1},p_{2}\in G_{0}$ をとる。$G_{0}$ は $\PP_{0}$ のフィルターなので、$r\le p_{1}$, $r\le p_{2}$ となる $r\in G_{0}$ がある。反射律より $r\in G$ で、推移律より $r\le q_{1}$, $r\le q_{2}$。
+- *稠密集合と交わる*：$G_{0}\subseteq G$（反射律）なので、$G\cap D\supseteq G_{0}\cap D\cap\PP_{0}\ne\varnothing$。
+
+よって $G$ はすべての $D\in\mathcal{D}$ と交わる $\PP$ のフィルターであり、$\mathrm{MA}(\kappa)$ が成り立つ。
+
+::: hypcheck
+- **選択公理**：Step 1 で $f_{D}$ と $g$ を選ぶのに使った。また Step 2 の閉包補題 \ref{set:closure-lemma} 自体が選択公理を使う（\ref{set:union-bound} を経由する）。
+- **$\kappa$ が無限であること**：Step 2 で閉包補題を適用するのに使った。
+- **$\PP$ が c.c.c. であること**：Step 3 (iii) で $\PP_{0}$ が c.c.c. であることを導くのにだけ使った。
+- **演算 $g$ で閉じていること**：Step 3 (ii)。これがないと $\PP_{0}$ の中で両立しない 2 元が $\PP$ では両立しうるので、$\PP_{0}$ の反鎖が $\PP$ の反鎖にならず、$\PP_{0}$ が c.c.c. かどうかわからない。
+- **分出公理・置換公理**：$\PP_{0}$, $\mathcal{D}_{0}$, $G$ を集合として作るのに使った。
+:::
+:::
+
+::: supplement
+**応用上の意味.** MA の応用で「自然に」使う半順序は、しばしば濃度が $\kappa$ より大きい（ルベーグ測度についての \ref{set:ma-measure} やコンパクト空間についての \ref{set:ma-compact-ccc} など）。それでも \ref{set:ma-small-posets} により、MA の無矛盾性を示す側（反復強制法）では濃度 $\le\kappa$ の c.c.c. 半順序だけを相手にすればよい。特に $\mathrm{MA}(\kappa)$ は「濃度 $\le\kappa$ の c.c.c. 半順序（の同型類）」という**集合**についての主張に書き直せる。
+:::
+
+## ブール代数 {#set:sec-maeq-boolean}
+
+::: definition ブール代数 {#set:boolean-algebra keywords="Boolean algebra" index="ブール代数|ぶーるだいすう, 補元|ほげん"}
+集合 $\mathbb{B}$ と $\mathbb{B}$ 上の（反射的・反対称的・推移的な）順序 $\le$ の組 $\langle\mathbb{B},\le\rangle$ が次を満たすとき、**ブール代数**という。
+1. 任意の $a,b\in\mathbb{B}$ に上限 $a\vee b$（**結び**）と下限 $a\wedge b$（**交わり**）が存在する。
+2. 最小元 $\mathbf{0}$ と最大元 $\mathbf{1}$ が存在し、$\mathbf{0}\ne\mathbf{1}$。
+3. **分配律**：$a\wedge(b\vee c)=(a\wedge b)\vee(a\wedge c)$。
+4. 各 $a\in\mathbb{B}$ に**補元**、すなわち $a\wedge c=\mathbf{0}$ かつ $a\vee c=\mathbf{1}$ となる $c$ が存在する。補元は一意であり（\ref{set:boolean-algebra-basic}）、$-a$ と書く。
+
+$\mathbb{B}^{+}=\mathbb{B}\setminus\{\mathbf{0}\}$ と書く。
+:::
+
+::: intuition
+集合の包含・共通部分・和集合・補集合の抽象化である。「命題を含意で並べたもの」と見れば、$\wedge,\vee,-$ は論理積・論理和・否定にあたる。$\mathbf{0}\ne\mathbf{1}$ は、1 元だけの退化した代数を除くための約束で、これにより $\mathbb{B}^{+}\ne\varnothing$ となる。
+:::
+
+::: example
+- 空でない集合 $X$ の冪集合 $\mathcal{P}(X)$ は $\subseteq$ についてブール代数で、$a\wedge b=a\cap b$, $a\vee b=a\cup b$, $-a=X\setminus a$, $\mathbf{0}=\varnothing$, $\mathbf{1}=X$。
+- $\omega$ の有限部分集合と補有限部分集合の全体 $\mathrm{FC}$ も $\subseteq$ についてブール代数である（演算は上と同じで、有限・補有限の集合は $\cap,\cup$, 補集合で閉じている）。
+- $\mathbf{2}=\{0,1\}$（$0<1$）は最小のブール代数である。
+:::
+
+::: lemma ブール代数の基本性質 {#set:boolean-algebra-basic keywords="uniqueness of complements"}
+ブール代数 $\mathbb{B}$ と $a,b,u\in\mathbb{B}$ について次が成り立つ。
+1. 補元は一意である。
+2. $u\wedge b=\mathbf{0}\iff u\le -b$。
+3. $a\le b$ ならば、任意の $c$ について $a\wedge c\le b\wedge c$ かつ $a\vee c\le b\vee c$。
+:::
+
+::: proof
+**(1)** $c,d$ がともに $a$ の補元であるとする。分配律より
+$$
+c=c\wedge\mathbf{1}=c\wedge(a\vee d)=(c\wedge a)\vee(c\wedge d)=\mathbf{0}\vee(c\wedge d)=c\wedge d,
+$$
+よって $c\le d$。$c,d$ を入れ替えて $d\le c$。反対称律より $c=d$。
+
+**(2)** $\Leftarrow$：$u\le -b$ なら $u\wedge b\le(-b)\wedge b=\mathbf{0}$（(3) の前半）。$\Rightarrow$：$u\wedge b=\mathbf{0}$ なら、分配律より
+$$
+u=u\wedge\mathbf{1}=u\wedge(b\vee -b)=(u\wedge b)\vee(u\wedge -b)=u\wedge -b,
+$$
+よって $u\le -b$。
+
+**(3)** $a\wedge c\le a\le b$ かつ $a\wedge c\le c$ なので、$a\wedge c$ は $b,c$ の下界であり、下限の定義より $a\wedge c\le b\wedge c$。結びも同様（$a\le b\le b\vee c$, $c\le b\vee c$）。
+
+::: hypcheck
+- **分配律**：(1) と (2) の $\Rightarrow$ で使った。
+- **反対称律**：(1) で使った（補元の一意性は順序が反対称であることに依存する）。
+- 選択公理は使っていない。
+:::
+:::
+
+::: definition 完備ブール代数 {#set:complete-boolean-algebra keywords="complete Boolean algebra" index="完備ブール代数|かんびぶーるだいすう"}
+ブール代数 $\mathbb{B}$ が**完備**であるとは、任意の部分集合 $S\subseteq\mathbb{B}$ に上限 $\bigvee S$ と下限 $\bigwedge S$ が存在することをいう。
+:::
+
+::: example
+- $\mathcal{P}(X)$ は完備で、$\bigvee S=\bigcup S$, $\bigwedge S=\bigcap S$（$S=\varnothing$ なら $\bigwedge\varnothing=X$）。
+- $\mathrm{FC}$ は完備でない。$S=\{\{2n\}\mid n<\omega\}$ の上界は偶数をすべて含む集合、すなわち補有限集合 $c$ であって偶数全体を含むものである。そのような $c$ から偶数でない元 $m\in c$ を 1 つ除いた $c\setminus\{m\}$ も上界なので、最小の上界は存在しない。
+:::
+
+::: definition ブール代数の c.c.c.・フィルター・超フィルター {#set:boolean-ccc-filter keywords="c.c.c. Boolean algebra, filter, ultrafilter on a Boolean algebra" index="超フィルター|ちょうふぃるたー"}
+ブール代数 $\mathbb{B}$ について、$\mathbb{B}^{+}$ を $\mathbb{B}$ の順序の制限によって半順序とみなす（$\mathbf{0}\ne\mathbf{1}$ より空でない）。
+1. $\mathbb{B}$ が **c.c.c.** であるとは、半順序 $\mathbb{B}^{+}$ が c.c.c. であることをいう。$\mathbb{B}$ の**反鎖**とは $\mathbb{B}^{+}$ の反鎖のことである。
+2. $\mathbb{B}$ 上の**フィルター**とは、半順序 $\mathbb{B}^{+}$ のフィルター（\ref{set:poset-filter}）のことである。
+3. 空でないフィルターのうち、包含について極大なものを**超フィルター**という。
+4. 「完備ブール代数に制限した $\mathrm{MA}(\kappa)$」とは、$\mathcal{K}=\{\mathbb{B}^{+}\mid\mathbb{B}\text{ は完備ブール代数}\}$ に制限した $\mathrm{MA}(\kappa)$（\ref{set:ma-restricted}）のことである。
+:::
+
+::: lemma ブール代数の両立性とフィルター {#set:boolean-filter-basic keywords="compatibility in Boolean algebras"}
+ブール代数 $\mathbb{B}$ について次が成り立つ。
+1. $p,q\in\mathbb{B}^{+}$ が $\mathbb{B}^{+}$ で両立する $\iff p\wedge q\ne\mathbf{0}$。したがって $A\subseteq\mathbb{B}^{+}$ が反鎖であることは、$A$ の相異なる 2 元の交わりがつねに $\mathbf{0}$ であることと同値。
+2. $G\subseteq\mathbb{B}^{+}$ がフィルターであることは、次の 2 条件と同値：(i) $p\in G$, $p\le q$ ならば $q\in G$；(ii) $p,q\in G$ ならば $p\wedge q\in G$。
+3. 超フィルター $U$ と $b\in\mathbb{B}$ について、$b\in U$ と $-b\in U$ のちょうど一方が成り立つ。
+:::
+
+::: proof
+**(1)** $r\in\mathbb{B}^{+}$, $r\le p$, $r\le q$ なら $r\le p\wedge q$ で、$r\ne\mathbf{0}$ より $p\wedge q\ne\mathbf{0}$。逆に $p\wedge q\ne\mathbf{0}$ なら $p\wedge q\in\mathbb{B}^{+}$ が共通拡大である。
+
+**(2)** $G$ をフィルターとする。(i)：$p\le q$ なら $q\ge p\ne\mathbf{0}$ より $q\in\mathbb{B}^{+}$ で、フィルターの条件 (b) より $q\in G$。(ii)：条件 (a) で $r\le p$, $r\le q$ となる $r\in G$ をとると $r\le p\wedge q$ なので、(i) より $p\wedge q\in G$。逆に (i), (ii) を仮定すると、(a) は $r=p\wedge q$ で、(b) は (i) で成り立つ。
+
+**(3)** *両方は成り立たない*：両方 $U$ に入れば (ii) より $b\wedge -b=\mathbf{0}\in U$ となり、$U\subseteq\mathbb{B}^{+}$ に反する。
+
+*どちらかは成り立つ*：$b\notin U$ とする。まず、ある $u\in U$ で $u\wedge b=\mathbf{0}$ となることを示す。そうでないとして、
+$$
+U^{*}=\{c\in\mathbb{B}\mid\exists u\in U\ (u\wedge b\le c)\}
+$$
+とおく。$u\wedge b\ne\mathbf{0}$ なので $U^{*}\subseteq\mathbb{B}^{+}$。(i) は推移律から明らか。(ii)：$u_{1}\wedge b\le c_{1}$, $u_{2}\wedge b\le c_{2}$ なら $u=u_{1}\wedge u_{2}\in U$ で $u\wedge b\le c_{1}\wedge c_{2}$。よって $U^{*}$ はフィルターである。$u\in U$ なら $u\wedge b\le u$ なので $U\subseteq U^{*}$。$U\ne\varnothing$ なので $u\in U$ をとると $u\wedge b\le b$ より $b\in U^{*}\setminus U$。これは $U$ の極大性に反する。
+
+そこで $u\wedge b=\mathbf{0}$ となる $u\in U$ をとると、\ref{set:boolean-algebra-basic} (2) より $u\le -b$、(i) より $-b\in U$。
+
+::: hypcheck
+- **$U$ の極大性と $U\ne\varnothing$**：(3) で使った。
+- **分配律**：(3) で \ref{set:boolean-algebra-basic} (2) を通じて使った。
+- 選択公理は使っていない。
+:::
+:::
+
+::: supplement
+(2) により、ここでのフィルターは、ブール代数の通常のフィルター（$\mathbf{0}$ を含まず、上に閉じ、$\wedge$ で閉じた集合）と、空集合を許すかどうかの違いを除いて一致する。(3) の性質をもつ空でないフィルターは超フィルターである（真に大きいフィルターがあれば、それに入る $b\notin U$ について $-b\in U$ となり、$b\wedge -b=\mathbf{0}$ がそのフィルターに入ってしまう）。
+:::
+
+::: lemma 超フィルターの存在 {#set:boolean-ultrafilter keywords="ultrafilter lemma for Boolean algebras" index="超フィルター補題|ちょうふぃるたーほだい"}
+（AC）ブール代数 $\mathbb{B}$ の部分集合 $S$ が**有限交叉性**（$S$ の任意の有限個 $s_{1},\dots,s_{n}$（$n\ge1$）について $s_{1}\wedge\dots\wedge s_{n}\ne\mathbf{0}$）をもてば、$S\subseteq U$ となる超フィルター $U$ が存在する。特に、任意の $b\in\mathbb{B}^{+}$ について $b\in U$ となる超フィルター $U$ が存在する。
+:::
+
+::: proof
+**Step 1（生成されるフィルター）.**
+$$
+F_{0}=\{c\in\mathbb{B}\mid\exists n\ge0\ \exists s_{1},\dots,s_{n}\in S\ (s_{1}\wedge\dots\wedge s_{n}\le c)\}
+$$
+とおく（$n=0$ のときの空の交わりは $\mathbf{1}$ と約束する）。有限交叉性と $\mathbf{0}\ne\mathbf{1}$ より $F_{0}\subseteq\mathbb{B}^{+}$、$\mathbf{1}\in F_{0}$、$S\subseteq F_{0}$。\ref{set:boolean-filter-basic} (2) の (i) は推移律から、(ii) は 2 つの有限列をつなげればよい。よって $F_{0}$ は空でないフィルターである。
+
+**Step 2（ツォルンの補題）.** $F_{0}$ を含むフィルター全体の集合 $\Phi\subseteq\mathcal{P}(\mathbb{B})$ を包含で順序づける。$\Phi$ の空でない鎖 $\mathcal{C}$ について $\bigcup\mathcal{C}$ は $\Phi$ に属する：$\mathbb{B}^{+}$ に含まれ、(i) は明らか、(ii) は $p\in F_{1}$, $q\in F_{2}$（$F_{1},F_{2}\in\mathcal{C}$）なら大きい方の $F_{i}$ に両方が入るので $p\wedge q\in F_{i}$。空の鎖の上界は $F_{0}$。ツォルンの補題 \ref{set:zorn} より $\Phi$ に極大元 $U$ がある。
+
+**Step 3.** $U$ は超フィルターである：$U\supseteq F_{0}\ne\varnothing$ で、$U\subseteq F$ となるフィルター $F$ は $F_{0}$ を含むので $F\in\Phi$、極大性より $F=U$。
+
+**Step 4.** $b\in\mathbb{B}^{+}$ なら $S=\{b\}$ は有限交叉性をもつ（$b\wedge\dots\wedge b=b\ne\mathbf{0}$）。
+
+::: hypcheck
+- **選択公理**：Step 2 でツォルンの補題 \ref{set:zorn} として使った。
+- **冪集合の公理・分出公理**：$\Phi$ を集合として作るのに使った。
+:::
+:::
+
+## 正則開集合代数 {#set:sec-maeq-regular-open}
+
+::: definition 正則開集合 {#set:regular-open keywords="regular open set, regular open algebra, ro(X)" index="正則開集合|せいそくかいしゅうごう, 正則開集合代数|せいそくかいしゅうごうだいすう"}
+位相空間 $X$ の部分集合 $b$ が**正則開集合**であるとは、$b=\operatorname{int}\operatorname{cl}b$ となることをいう。正則開集合全体を $\mathrm{ro}(X)$ と書き、包含 $\subseteq$ で順序づける。
+:::
+
+::: intuition
+開集合 $U$ は一般に $\operatorname{int}\operatorname{cl}U$ より小さい。たとえば $\R$ で $U=(0,1)\cup(1,2)$ なら $\operatorname{int}\operatorname{cl}U=(0,2)$ であり、$U$ は「点 $1$ という細い裂け目」をもつ。正則開集合とは、このような「閉包をとると埋まってしまう裂け目」をもたない開集合である。開集合全体は補集合をうまく定義できないが、正則開集合に限るとブール代数になる。
+:::
+
+::: lemma 正則開集合の基本性質 {#set:regular-open-basic keywords="properties of regular open sets"}
+位相空間 $X$ の開集合 $U,V$ について次が成り立つ。
+1. $U\subseteq\operatorname{int}\operatorname{cl}U$ であり、$\operatorname{int}\operatorname{cl}U$ は正則開集合である。
+2. $U\subseteq V$ ならば $\operatorname{int}\operatorname{cl}U\subseteq\operatorname{int}\operatorname{cl}V$。
+3. $U\cap V=\varnothing$ ならば $\operatorname{int}\operatorname{cl}U\cap V=\varnothing$、さらに $\operatorname{int}\operatorname{cl}U\cap\operatorname{int}\operatorname{cl}V=\varnothing$。
+4. $U\cap\operatorname{int}\operatorname{cl}V\subseteq\operatorname{int}\operatorname{cl}(U\cap V)$。
+5. $X\setminus\operatorname{cl}U$ は正則開集合である。
+6. $U,V$ が正則開集合ならば $U\cap V$ も正則開集合である。
+:::
+
+::: proof
+以下、$\operatorname{int}(X\setminus A)=X\setminus\operatorname{cl}A$ と $\operatorname{cl}(X\setminus A)=X\setminus\operatorname{int}A$（内部と閉包の定義から直ちに従う）、および $\operatorname{int}$, $\operatorname{cl}$ が包含を保つことを用いる。
+
+**(1)** $U$ は開集合で $U\subseteq\operatorname{cl}U$ なので $U\subseteq\operatorname{int}\operatorname{cl}U$。$W=\operatorname{int}\operatorname{cl}U$ とおく。$W$ は開集合なので同じ理由で $W\subseteq\operatorname{int}\operatorname{cl}W$。逆に $W\subseteq\operatorname{cl}U$ より $\operatorname{cl}W\subseteq\operatorname{cl}U$、よって $\operatorname{int}\operatorname{cl}W\subseteq\operatorname{int}\operatorname{cl}U=W$。したがって $W=\operatorname{int}\operatorname{cl}W$。
+
+**(2)** $\operatorname{cl}$ と $\operatorname{int}$ が包含を保つことから。
+
+**(3)** $V$ は開集合で $U\cap V=\varnothing$ なので $U\subseteq X\setminus V$（閉集合）、よって $\operatorname{cl}U\subseteq X\setminus V$、すなわち $\operatorname{cl}U\cap V=\varnothing$。特に $\operatorname{int}\operatorname{cl}U\cap V=\varnothing$。次に $U'=\operatorname{int}\operatorname{cl}U$ は開集合で $U'\cap V=\varnothing$ なので、今示したことを $V,U'$ に適用すると $\operatorname{int}\operatorname{cl}V\cap U'=\varnothing$。
+
+**(4)** $W=U\cap\operatorname{int}\operatorname{cl}V$ は開集合である。$W\subseteq\operatorname{cl}(U\cap V)$ を示せば、$W$ が開集合であることから $W\subseteq\operatorname{int}\operatorname{cl}(U\cap V)$ が従う。$y\in W$ と $y$ の開近傍 $N$ をとる。$N\cap W$ は $y$ の開近傍で、$y\in\operatorname{cl}V$ なので $N\cap W\cap V\ne\varnothing$。$N\cap W\cap V\subseteq N\cap(U\cap V)$ なので $N$ は $U\cap V$ と交わる。よって $y\in\operatorname{cl}(U\cap V)$。
+
+**(5)** $b=X\setminus\operatorname{cl}U$ とおく。まず $\operatorname{cl}\operatorname{int}\operatorname{cl}U=\operatorname{cl}U$ である：$\subseteq$ は $\operatorname{int}\operatorname{cl}U\subseteq\operatorname{cl}U$ から、$\supseteq$ は (1) の $U\subseteq\operatorname{int}\operatorname{cl}U$ から。これを使うと
+$$
+\operatorname{int}\operatorname{cl}b=\operatorname{int}\bigl(X\setminus\operatorname{int}\operatorname{cl}U\bigr)=X\setminus\operatorname{cl}\operatorname{int}\operatorname{cl}U=X\setminus\operatorname{cl}U=b.
+$$
+
+**(6)** (1) より $U\cap V\subseteq\operatorname{int}\operatorname{cl}(U\cap V)$。(2) より $\operatorname{int}\operatorname{cl}(U\cap V)\subseteq\operatorname{int}\operatorname{cl}U\cap\operatorname{int}\operatorname{cl}V=U\cap V$。
+
+::: hypcheck
+- **$U,V$ が開集合であること**：(1) の最初の包含、(3)（$V$ が開集合なので補集合が閉集合）、(4)（$W$ が開集合）で使った。
+- 選択公理は使っていない。
+:::
+:::
+
+::: theorem 正則開集合代数は完備ブール代数 {#set:regular-open-algebra keywords="the regular open algebra is a complete Boolean algebra" index="正則開集合代数の完備性|せいそくかいしゅうごうだいすうのかんびせい"}
+$X$ を空でない位相空間とする。$\langle\mathrm{ro}(X),\subseteq\rangle$ は完備ブール代数であり、演算は次で与えられる。
+$$
+\begin{aligned}
+&b\wedge c=b\cap c,\quad b\vee c=\operatorname{int}\operatorname{cl}(b\cup c),\quad -b=X\setminus\operatorname{cl}b,\\
+&\bigvee S=\operatorname{int}\operatorname{cl}\Bigl(\bigcup S\Bigr),\quad \bigwedge S=\operatorname{int}\Bigl(\bigcap S\Bigr).
+\end{aligned}
+$$
+ただし $\bigcap\varnothing=X$ と約束する。$\mathbf{0}=\varnothing$, $\mathbf{1}=X$ である。
+:::
+
+::: proof
+$\mathrm{ro}(X)\subseteq\mathcal{P}(X)$ は分出公理で集合になり、$\subseteq$ は順序（反射・反対称・推移）である。
+
+**Step 1（最小元・最大元）.** $\varnothing$ と $X$ は開かつ閉なので $\operatorname{int}\operatorname{cl}\varnothing=\varnothing$, $\operatorname{int}\operatorname{cl}X=X$ で、どちらも正則開集合。明らかに最小元・最大元で、$X\ne\varnothing$ より $\varnothing\ne X$。
+
+**Step 2（任意の上限）.** $S\subseteq\mathrm{ro}(X)$ とし $s=\operatorname{int}\operatorname{cl}(\bigcup S)$ とおく。$\bigcup S$ は開集合なので、\ref{set:regular-open-basic} (1) より $s\in\mathrm{ro}(X)$。*上界*：$b\in S$ なら $b\subseteq\bigcup S$ なので (2) より $b=\operatorname{int}\operatorname{cl}b\subseteq s$。*最小*：$c\in\mathrm{ro}(X)$ が $S$ の上界なら $\bigcup S\subseteq c$ なので $s\subseteq\operatorname{int}\operatorname{cl}c=c$。$S=\{b,c\}$ とすれば $b\vee c$ の式を得る。
+
+**Step 3（任意の下限）.** $S\subseteq\mathrm{ro}(X)$ とし $t=\operatorname{int}(\bigcap S)$ とおく。*正則性*：$t$ は開集合なので (1) より $t\subseteq\operatorname{int}\operatorname{cl}t$。一方 $b\in S$ なら $t\subseteq b$ なので (2) より $\operatorname{int}\operatorname{cl}t\subseteq\operatorname{int}\operatorname{cl}b=b$。よって $\operatorname{int}\operatorname{cl}t\subseteq\bigcap S$ で、左辺は開集合なので $\operatorname{int}\operatorname{cl}t\subseteq\operatorname{int}(\bigcap S)=t$。*下界*：$t\subseteq\bigcap S\subseteq b$。*最大*：$c\in\mathrm{ro}(X)$ が下界なら $c\subseteq\bigcap S$ で $c$ は開集合なので $c\subseteq t$。$S=\{b,c\}$ のときは \ref{set:regular-open-basic} (6) より $b\cap c$ 自身が正則開集合なので $t=b\cap c$。
+
+**Step 4（補元）.** $b\in\mathrm{ro}(X)$ に対し $c=X\setminus\operatorname{cl}b$ は (5) より正則開集合。$b\cap c\subseteq\operatorname{cl}b\cap(X\setminus\operatorname{cl}b)=\varnothing$。また $\operatorname{cl}(b\cup c)\supseteq\operatorname{cl}b\cup c=\operatorname{cl}b\cup(X\setminus\operatorname{cl}b)=X$ なので $b\vee c=\operatorname{int}X=X$。
+
+**Step 5（分配律）.** $a,b,c\in\mathrm{ro}(X)$ とする。$\ge$ はどの束でも成り立つ：$a\wedge b\le a\wedge(b\vee c)$ と $a\wedge c\le a\wedge(b\vee c)$（\ref{set:boolean-algebra-basic} (3)。この証明は分配律を使わない）から、上限の定義により $(a\wedge b)\vee(a\wedge c)\le a\wedge(b\vee c)$。$\le$ は \ref{set:regular-open-basic} (4) を $U=a$, $V=b\cup c$ に使って
+$$
+\begin{aligned}
+a\wedge(b\vee c)&=a\cap\operatorname{int}\operatorname{cl}(b\cup c)\subseteq\operatorname{int}\operatorname{cl}\bigl(a\cap(b\cup c)\bigr)\\
+&=\operatorname{int}\operatorname{cl}\bigl((a\cap b)\cup(a\cap c)\bigr)=(a\wedge b)\vee(a\wedge c).
+\end{aligned}
+$$
+
+以上で $\mathrm{ro}(X)$ は完備ブール代数であり、補元は一意なので $-b=X\setminus\operatorname{cl}b$。
+
+::: hypcheck
+- **$X\ne\varnothing$**：Step 1 で $\mathbf{0}\ne\mathbf{1}$ に使った。
+- **\ref{set:regular-open-basic}**：Step 2〜5 の各所で使った。
+- **分出公理**（と冪集合の公理）：$\mathrm{ro}(X)$ を集合として作るのに使った。選択公理は使っていない（ZF で成り立つ）。
+:::
+:::
+
+::: supplement
+$\bigvee S$ が単なる和集合 $\bigcup S$ でないことに注意する。$\R$ で $S=\{(0,1),(1,2)\}$ なら $\bigvee S=(0,2)$ である。また $\mathrm{ro}(X)$ で $b\wedge -b=\varnothing$ だが、$b\cup -b$ は一般に $X$ ではない（$X\setminus(b\cup -b)$ は $b$ の境界）。
+:::
+
+## 半順序のブール完備化 {#set:sec-maeq-completion}
+
+::: theorem ブール完備化 {#set:boolean-completion keywords="Boolean completion of a poset, regular open algebra of a poset" index="ブール完備化|ぶーるかんびか, 完備化|かんびか"}
+任意の半順序 $\PP$ に対し、完備ブール代数 $\mathbb{B}$ と写像 $i\colon\PP\to\mathbb{B}^{+}$ で次を満たすものが存在する。
+1. $i[\PP]$ は $\mathbb{B}^{+}$ で稠密：$\forall b\in\mathbb{B}^{+}\ \exists p\in\PP\ (i(p)\le b)$。
+2. $\forall p,q\in\PP\ (p\le q\to i(p)\le i(q))$。
+3. $\forall p,q\in\PP\ (p\perp q\leftrightarrow i(p)\wedge i(q)=\mathbf{0})$。
+
+このような $\mathbb{B}$（と $i$）を $\PP$ の**ブール完備化**という。
+:::
+
+::: intuition
+$\mathbb{B}$ の元は「$\PP$ の元の形式的な上限」と考えられる。$i(p)$ は「$p$ という条件」、$i(p)\wedge i(q)$ は「$p$ と $q$ を同時に満たす」、$\mathbf{0}$ は「不可能」を表す。(3) は「両立しない $\iff$ 同時には満たせない」を、(1) は「$\mathbb{B}$ のどんな非零元も $\PP$ のある条件で強められる」を意味する。構成には、$\PP$ に「$p$ 以下の元全体」を基本開集合とする位相を入れ、その正則開集合代数を使う。
+:::
+
+::: proof
+**Step 1（$\PP$ 上の位相）.** $p\in\PP$ に対し $N_{p}=\{q\in\PP\mid q\le p\}$ とおく。$U\subseteq\PP$ が**下に閉じている**（$q\in U$, $r\le q$ ならば $r\in U$）とき $U$ を開集合と呼ぶ。下に閉じた集合の任意個の和集合と有限個の共通部分は下に閉じているので、これは $\PP$ 上の位相である。推移律より $N_{p}$ は開集合で、反射律より $p\in N_{p}$。また開集合 $U$ が $p$ を含めば $N_{p}\subseteq U$ である。したがって $N_{p}$ は $p$ を含む最小の開集合である。
+
+**Step 2（定義）.** $\mathbb{B}=\mathrm{ro}(\PP)$ とする。$\PP\ne\varnothing$ なので \ref{set:regular-open-algebra} より $\mathbb{B}$ は完備ブール代数である。$i(p)=\operatorname{int}\operatorname{cl}N_{p}$ と定める。\ref{set:regular-open-basic} (1) より $i(p)\in\mathrm{ro}(\PP)$ で、$p\in N_{p}\subseteq i(p)$ より $i(p)\ne\varnothing$、すなわち $i(p)\in\mathbb{B}^{+}$。
+
+**Step 3（(1) 稠密性）.** $b\in\mathbb{B}^{+}$ をとり、$p\in b$ を 1 つとる。$b$ は $p$ を含む開集合なので $N_{p}\subseteq b$、\ref{set:regular-open-basic} (2) より $i(p)\subseteq\operatorname{int}\operatorname{cl}b=b$。
+
+**Step 4（(2) 順序の保存）.** $p\le q$ なら推移律より $N_{p}\subseteq N_{q}$、\ref{set:regular-open-basic} (2) より $i(p)\subseteq i(q)$。
+
+**Step 5（(3) 両立性）.** *両立するとき*：$r\le p$, $r\le q$ とすると Step 4 より $i(r)\subseteq i(p)\cap i(q)=i(p)\wedge i(q)$ で、$i(r)\ne\varnothing$ なので $i(p)\wedge i(q)\ne\mathbf{0}$。*$p\perp q$ のとき*：$N_{p}\cap N_{q}$ の元は $p,q$ の共通拡大なので $N_{p}\cap N_{q}=\varnothing$。$N_{p},N_{q}$ は開集合なので \ref{set:regular-open-basic} (3) より $i(p)\cap i(q)=\varnothing$。
+
+::: hypcheck
+- **反射律・推移律**：Step 1（$p\in N_{p}$, $N_{p}$ が開集合）、Step 4 で使った。反対称律は使っていない（\ref{set:forcing-poset} の意味の一般の半順序で成り立つ）。
+- **$\PP\ne\varnothing$**：Step 2 で $\mathbf{0}\ne\mathbf{1}$ を保証するのに使った。
+- Step 3 の $p\in b$ は 1 つの元をとるだけで、写像を作るわけではないので選択公理は要らない。$i$ は明示的に定義されている。**選択公理は使っていない**（ZF で成り立つ）。
+:::
+:::
+
+::: example
+- **すべての元が両立する場合.** $\PP$ の任意の 2 元が両立するとする。空でない開集合 $U$ と任意の $q\in\PP$ について、$u\in U$ と $q$ の共通拡大 $r$ は（$U$ が下に閉じているので）$U\cap N_{q}$ に入る。$N_{q}$ は $q$ を含む最小の開集合なので、$q$ のすべての開近傍が $U$ と交わり、$q\in\operatorname{cl}U$。よって $\operatorname{int}\operatorname{cl}U=\PP$ で、$\mathrm{ro}(\PP)=\{\varnothing,\PP\}$ は 2 元のブール代数、$i(p)=\mathbf{1}$（すべての $p$）となる。たとえば $\PP=\omega_{1}$（通常の順序）はそうである。このとき $i$ は単射でも順序を反映するものでもない。
+- **有限部分関数.** $\PP$ を $\omega$ から $2$ への有限部分関数全体とし、$p\le q\iff q\subseteq p$ とする。このとき次の「分離的」の性質をもつので、\ref{set:separative-completion} により $i$ は単射で順序を反映する。
+:::
+
+::: definition 分離的半順序 {#set:separative keywords="separative partial order" index="分離的|ぶんりてき"}
+半順序 $\PP$ が**分離的**であるとは、$\le$ が反対称的であり、かつ $p\not\le q$ ならば $r\le p$ かつ $r\perp q$ となる $r\in\PP$ が存在することをいう。
+:::
+
+::: intuition
+「$p$ が $q$ を強めていない」ことが、「$p$ をさらに強めると $q$ と矛盾させられる」ことで必ず目撃できる、という条件。完備化の中に $\PP$ が順序ごと忠実に埋め込まれるための条件である。
+:::
+
+::: proposition 分離的半順序の埋め込み {#set:separative-completion keywords="separative posets embed into their completion"}
+\ref{set:boolean-completion} の $\mathbb{B}$, $i$ について、$\PP$ が分離的であることと、$i$ が単射で $\forall p,q\in\PP\ (p\le q\leftrightarrow i(p)\le i(q))$ を満たすことは同値である。
+:::
+
+::: proof
+\ref{set:boolean-completion} の性質 (1)〜(3) だけを使う。
+
+**($\Rightarrow$).** *順序の反映*：$p\not\le q$ とすると分離性より $r\le p$, $r\perp q$ となる $r$ がある。(2) より $i(r)\le i(p)$、(3) より $i(r)\wedge i(q)=\mathbf{0}$。もし $i(p)\le i(q)$ なら $i(r)\le i(p)\wedge i(q)\le i(q)$ となり、$i(r)=i(r)\wedge i(q)=\mathbf{0}$ で $i(r)\in\mathbb{B}^{+}$ に反する。よって $i(p)\not\le i(q)$。逆向き $p\le q\Rightarrow i(p)\le i(q)$ は (2)。*単射*：$i(p)=i(q)$ なら今示したことから $p\le q$ かつ $q\le p$、反対称律より $p=q$。
+
+**($\Leftarrow$).** *反対称律*：$p\le q$, $q\le p$ なら (2) より $i(p)=i(q)$、単射性より $p=q$。*分離性*：$p\not\le q$ とすると仮定より $i(p)\not\le i(q)$、\ref{set:boolean-algebra-basic} (2) より $c=i(p)\wedge -i(q)\ne\mathbf{0}$（もし $\mathbf{0}$ なら $i(p)\le -(-i(q))=i(q)$。ここで $-(-x)=x$ は補元の一意性から）。(1) より $i(r_{0})\le c$ となる $r_{0}$ がある。$i(r_{0})\wedge i(p)=i(r_{0})\ne\mathbf{0}$ なので (3) より $r_{0}$ と $p$ は両立し、共通拡大 $r\le r_{0}$, $r\le p$ がとれる。(2) より $i(r)\le i(r_{0})\le -i(q)$ なので $i(r)\wedge i(q)=\mathbf{0}$（\ref{set:boolean-algebra-basic} (2)）、(3) より $r\perp q$。
+
+::: hypcheck
+- \ref{set:boolean-completion} の (1)〜(3) と \ref{set:boolean-algebra-basic} だけを使った。選択公理は使っていない。
+:::
+:::
+
+::: example
+$\omega$ から $2$ への有限部分関数の半順序は分離的である。$p\not\le q$、すなわち $q\not\subseteq p$ とすると、ある $n\in\dom q$ で $n\notin\dom p$ または $p(n)\ne q(n)$。前者なら $r=p\cup\{\langle n,1-q(n)\rangle\}$、後者なら $r=p$ とおけば $r\le p$ で、$r$ と $q$ は $n$ で値が食い違うので共通拡大をもたない。
+:::
+
+::: supplement
+**一意性.** ブール完備化は同型を除いて一意である：$\langle\mathbb{B}_{1},i_{1}\rangle$ と $\langle\mathbb{B}_{2},i_{2}\rangle$ がともに \ref{set:boolean-completion} の (1)〜(3) を満たせば、ブール代数の同型 $h\colon\mathbb{B}_{1}\to\mathbb{B}_{2}$ で $h\circ i_{1}=i_{2}$ となるものがある（Kunen, *Set Theory* (1980), 第 II 章 演習 18）。同型は $h(b)=\bigvee\{i_{2}(p)\mid i_{1}(p)\le b\}$ で与えられる。完備化を「$\PP$ の部分集合の形式的上限」の同値類として代数的に構成することもできる（同 演習 19）。
+
+**フォーシングとの関係.** $\PP$ によるフォーシングと、その完備化 $\mathbb{B}$ によるブール値モデルは同じ拡大を与える。このため \ref{set:boolean-completion} は、フォーシングを半順序で扱うかブール代数で扱うかを自由に切り替えるための基本的な道具になる。
+:::
+
+## 完備ブール代数への制限 {#set:sec-maeq-cba}
+
+::: theorem 完備ブール代数に制限した MA {#set:ma-size-kappa keywords="MA(κ) restricted to complete Boolean algebras" index="完備ブール代数に制限したMA|かんびぶーるだいすうにせいげんしたえむえー"}
+（AC）$\mathrm{MA}(\kappa)$ は、完備ブール代数に制限した $\mathrm{MA}(\kappa)$（\ref{set:boolean-ccc-filter} (4)）と同値である。
+:::
+
+::: intuition
+与えられた半順序 $\PP$ をブール完備化 $\mathbb{B}$ に埋め込み、$\mathbb{B}^{+}$ で見つけたフィルターを $\PP$ に引き戻す。難点は、引き戻した集合の 2 元が両立はするものの、共通拡大が引き戻しの中にあるとは限らないことである。そこで「$p,q$ の共通拡大であるか、どちらかと両立しない」元からなる稠密集合 $D_{pq}$ を追加で満たしておく。追加する稠密集合は $\lvert\PP\rvert^{2}$ 個なので、先に \ref{set:ma-small-posets} で $\lvert\PP\rvert\le\kappa$ にしておく必要がある。
+:::
+
+::: lemma 両立性を強制する稠密集合 {#set:dense-pq keywords="dense set D_pq"}
+半順序 $\PP$ と $p,q\in\PP$ に対し
+$$
+D_{pq}=\{r\in\PP\mid (r\le p\land r\le q)\lor r\perp p\lor r\perp q\}
+$$
+は $\PP$ で稠密である。
+:::
+
+::: proof
+$r_{0}\in\PP$ を任意にとる。
+
+**Case 1.** $r_{0}$ の拡大 $r\le r_{0}$ で、$r\perp p$ または $r\perp q$ となるものがあれば、$r\in D_{pq}$ で $r\le r_{0}$。
+
+**Case 2.** そうでなければ、$r_{0}$ のすべての拡大は $p$ とも $q$ とも両立する。特に $r_{0}$ 自身（反射律）は $p$ と両立するので、$r_{1}\le r_{0}$, $r_{1}\le p$ となる $r_{1}$ がある。$r_{1}$ は $r_{0}$ の拡大なので $q$ と両立し、$r_{2}\le r_{1}$, $r_{2}\le q$ となる $r_{2}$ がある。推移律より $r_{2}\le p$, $r_{2}\le r_{0}$ なので、$r_{2}\in D_{pq}$ が $r_{0}$ の拡大である。
+
+::: hypcheck
+- **反射律・推移律** だけを使った。Case の場合分けは排中律によるもので、選択公理は要らない（$r_{1},r_{2}$ は存在する元を 1 つずつとるだけ）。
+:::
+:::
+
+::: restate {ref="set:ma-size-kappa"}
+:::
+
+::: proof
+**Step 0.** $\mathrm{MA}(\kappa)$ から制限版が従うのは自明である（完備ブール代数 $\mathbb{B}$ について $\mathbb{B}^{+}$ は半順序である）。以下、完備ブール代数に制限した $\mathrm{MA}(\kappa)$ を仮定する。\ref{set:ma-small-posets} により、濃度 $\le\kappa$ の半順序に制限した $\mathrm{MA}(\kappa)$ を示せば十分である。そこで $\PP$ を $\lvert\PP\rvert\le\kappa$ の c.c.c. 半順序、$\mathcal{D}$ を $\PP$ の稠密部分集合からなる族で $\lvert\mathcal{D}\rvert\le\kappa$ とする。
+
+**Step 1（稠密集合を追加する）.** $\mathcal{D}'=\mathcal{D}\cup\{D_{pq}\mid p,q\in\PP\}$ とおく。\ref{set:dense-pq} より各元は稠密で、$\lvert\PP\times\PP\rvert\le\kappa\otimes\kappa=\kappa$（\ref{set:kappa-times-kappa}）なので $\lvert\mathcal{D}'\rvert\le\kappa\oplus\kappa=\kappa$。
+
+**Step 2（完備化へ移す）.** \ref{set:boolean-completion} の完備ブール代数 $\mathbb{B}$ と $i\colon\PP\to\mathbb{B}^{+}$ をとる。
+
+- *$\mathbb{B}$ は c.c.c.*：$A\subseteq\mathbb{B}^{+}$ を反鎖とする。(1) より、各 $b\in A$ について $i(p_{b})\le b$ となる $p_{b}\in\PP$ を**選択公理**で選ぶ。$b\ne c$ ($b,c\in A$) なら $i(p_{b})\wedge i(p_{c})\le b\wedge c=\mathbf{0}$ なので、(3) より $p_{b}\perp p_{c}$。特に $p_{b}\ne p_{c}$（$p\perp p$ はありえない）。よって $b\mapsto p_{b}$ は $A$ から $\PP$ の反鎖 $\{p_{b}\mid b\in A\}$ への単射で、$\PP$ が c.c.c. なので $A$ は可算である。
+- *稠密集合の像は稠密*：$D\in\mathcal{D}'$ と $b\in\mathbb{B}^{+}$ をとる。(1) より $i(p)\le b$ となる $p$ があり、$D$ の稠密性より $q\le p$, $q\in D$ となる $q$ がある。(2) より $i(q)\le i(p)\le b$ で $i(q)\in i[D]$。よって $i[D]$ は $\mathbb{B}^{+}$ で稠密。
+
+**Step 3（仮定の適用）.** $\{i[D]\mid D\in\mathcal{D}'\}$ は濃度 $\le\kappa$ の、$\mathbb{B}^{+}$ の稠密部分集合の族である。仮定により、$\mathbb{B}^{+}$ のフィルター $G$ で、すべての $D\in\mathcal{D}'$ について $G\cap i[D]\ne\varnothing$ となるものがある。$H=i^{-1}[G]=\{p\in\PP\mid i(p)\in G\}$ とおく。
+
+**Step 4（$H$ は稠密集合と交わる）.** $D\in\mathcal{D}'$ について $i(q)\in G$ となる $q\in D$ があり、$q\in H\cap D$。特に $H\ne\varnothing$（$\mathcal{D}'\ne\varnothing$ なので）。
+
+**Step 5（$H$ は上に閉じている）.** $p\in H$, $p\le q$ なら (2) より $i(p)\le i(q)$、$G$ はフィルターなので $i(q)\in G$、すなわち $q\in H$。
+
+**Step 6（$H$ の元は $H$ の中に共通拡大をもつ）.** $p,q\in H$ とする。Step 4 より $r\in H\cap D_{pq}$ がとれる。$i(p),i(r)\in G$ で、$G$ はフィルターなので $s\le i(p)$, $s\le i(r)$ となる $s\in G\subseteq\mathbb{B}^{+}$ がある。よって $i(p)\wedge i(r)\ge s\ne\mathbf{0}$ で、(3) より $p$ と $r$ は両立する。同様に $q$ と $r$ も両立する。$r\in D_{pq}$ なので、残る可能性は $r\le p$ かつ $r\le q$ である。
+
+Step 5, 6 より $H$ は $\PP$ のフィルターで、Step 4 よりすべての $D\in\mathcal{D}\subseteq\mathcal{D}'$ と交わる。よって濃度 $\le\kappa$ の半順序に制限した $\mathrm{MA}(\kappa)$ が成り立ち、\ref{set:ma-small-posets} より $\mathrm{MA}(\kappa)$ が成り立つ。
+
+::: hypcheck
+- **選択公理**：Step 2 で $p_{b}$ を選ぶのに使った。また \ref{set:ma-small-posets} も選択公理を使う。
+- **$\lvert\PP\rvert\le\kappa$**：Step 1 で追加する稠密集合の個数を $\le\kappa$ に抑えるのに使った。このために \ref{set:ma-small-posets} を経由した。
+- **$\PP$ が c.c.c. であること**：Step 2 で $\mathbb{B}$ が c.c.c. であることを示すのに使った。
+- **\ref{set:boolean-completion} の (1)〜(3)**：(1) は Step 2 の両方、(2) は Step 2・Step 5、(3) は Step 2・Step 6 で使った。
+- **\ref{set:dense-pq}**：Step 6。これがなければ $H$ は条件 (b) しか満たさない。
+:::
+:::
+
+::: supplement
+Step 6 の困難は本質的である。$\mathbb{B}^{+}$ のフィルター $G$ の引き戻し $i^{-1}[G]$ は、一般にはフィルターにならない。たとえば $\PP=\{a,b,c\}$ で $c\le a$, $c\le b$（と反射律）のみとすると、すべての元が両立するので完備化は 2 元代数で $i$ は定数 $\mathbf{1}$、$G=\{\mathbf{1}\}$ の引き戻しは $\PP$ 全体になる。これはフィルターである。しかし $\PP=\{a,b,c,d\}$ で $c\le a$, $c\le b$, $d\le a$, $d\le b$ のみ（$c,d$ は両立しない）とすると、$i(a)=i(b)=\mathbf{1}$, $i(c)=\{c\}$, $i(d)=\{d\}$ となり（$\mathrm{ro}(\PP)=\{\varnothing,\{c\},\{d\},\PP\}$）、$G=\{\mathbf{1}\}$ の引き戻しは $\{a,b\}$ である。$a,b$ は $\PP$ で両立するが、共通拡大 $c,d$ はどちらも $\{a,b\}$ に入らないので、これはフィルターではない。共通拡大の選び方が $c$ か $d$ で分かれてしまうのである。$D_{pq}$ を満たすことで、$G$ がどちらか一方に「決める」ことが保証される。
+:::
+
+## 位相的な言い換え {#set:sec-maeq-topological}
+
+::: lemma ストーン空間 {#set:stone-space keywords="Stone space of a Boolean algebra, Stone representation" index="ストーン空間|すとーんくうかん"}
+（AC）ブール代数 $\mathbb{B}$ の超フィルター全体を $\mathrm{St}(\mathbb{B})$ と書き、$b\in\mathbb{B}$ に対し $N_{b}=\{U\in\mathrm{St}(\mathbb{B})\mid b\in U\}$ とおく。
+1. $N_{b}\cap N_{c}=N_{b\wedge c}$、$N_{\mathbf{1}}=\mathrm{St}(\mathbb{B})$、$N_{\mathbf{0}}=\varnothing$、$\mathrm{St}(\mathbb{B})\setminus N_{b}=N_{-b}$。
+2. $N_{b}\ne\varnothing\iff b\ne\mathbf{0}$。特に $\mathrm{St}(\mathbb{B})\ne\varnothing$。
+3. $\{N_{b}\mid b\in\mathbb{B}\}$ を開基とする位相により、$\mathrm{St}(\mathbb{B})$ はコンパクト・ハウスドルフ空間になる。この空間を $\mathbb{B}$ の**ストーン空間**という。
+4. $\mathbb{B}$ が c.c.c. ならば、$\mathrm{St}(\mathbb{B})$ は c.c.c. である。
+:::
+
+::: proof
+$X=\mathrm{St}(\mathbb{B})\subseteq\mathcal{P}(\mathbb{B})$ は分出公理と冪集合の公理で集合になる。
+
+**(1)** 超フィルター $U$ について、$b,c\in U\Rightarrow b\wedge c\in U$ と $b\wedge c\in U\Rightarrow b,c\in U$ は \ref{set:boolean-filter-basic} (2) の (ii), (i) である。$U\ne\varnothing$ で上に閉じているので $\mathbf{1}\in U$、$U\subseteq\mathbb{B}^{+}$ なので $\mathbf{0}\notin U$。最後の式は \ref{set:boolean-filter-basic} (3)。
+
+**(2)** $b\ne\mathbf{0}$ なら \ref{set:boolean-ultrafilter} より $b\in U$ となる超フィルターがある。$b=\mathbf{0}$ なら (1) より $N_{b}=\varnothing$。$\mathbf{1}\ne\mathbf{0}$ なので $X=N_{\mathbf{1}}\ne\varnothing$。
+
+**(3)** *開基*：(1) より $\{N_{b}\}$ は $X$ を覆い（$N_{\mathbf{1}}=X$）、2 つの共通部分がまた $N_{b\wedge c}$ の形なので、これらの和集合全体は位相になる。
+
+*ハウスドルフ*：$U\ne V$ を超フィルターとする。対称性から $b\in U\setminus V$ となる $b$ があるとしてよい（$U\subseteq V$ なら、極大性より $U=V$ となってしまうので $V\setminus U\ne\varnothing$ で、役割を入れ替える）。\ref{set:boolean-filter-basic} (3) より $-b\in V$。$U\in N_{b}$, $V\in N_{-b}$ で、(1) より $N_{b}\cap N_{-b}=N_{\mathbf{0}}=\varnothing$。
+
+*コンパクト*：開被覆は基本開集合による被覆で細分できるので、$\{N_{b}\mid b\in S\}$（$S\subseteq\mathbb{B}$）が $X$ を覆うとき有限部分被覆があることを示せばよい。有限部分被覆がないと仮定する。$T=\{-b\mid b\in S\}$ が有限交叉性をもつことを示す。$b_{1},\dots,b_{n}\in S$（$n\ge1$）で $(-b_{1})\wedge\dots\wedge(-b_{n})=\mathbf{0}$ とすると、任意の超フィルター $U$ は $b_{1},\dots,b_{n}$ のどれかを含む（どれも含まなければ \ref{set:boolean-filter-basic} (3) より $-b_{1},\dots,-b_{n}\in U$、その交わり $\mathbf{0}$ も $U$ に入り矛盾）。すなわち $N_{b_{1}},\dots,N_{b_{n}}$ が $X$ を覆い、仮定に反する。よって $T$ は有限交叉性をもち、\ref{set:boolean-ultrafilter} より $T\subseteq U$ となる超フィルター $U$ がある。各 $b\in S$ について $-b\in U$ なので $b\notin U$、すなわち $U\notin N_{b}$。これは $\{N_{b}\mid b\in S\}$ が被覆であることに反する。
+
+**(4)** $\mathcal{W}$ を $X$ の互いに素な空でない開集合の族とする。各 $W\in\mathcal{W}$ は空でない基本開集合を含むので、**選択公理**により $N_{b_{W}}\subseteq W$, $N_{b_{W}}\ne\varnothing$ となる $b_{W}$ を選ぶ。(2) より $b_{W}\in\mathbb{B}^{+}$。$W\ne W'$ なら $N_{b_{W}\wedge b_{W'}}=N_{b_{W}}\cap N_{b_{W'}}\subseteq W\cap W'=\varnothing$ なので、(2) より $b_{W}\wedge b_{W'}=\mathbf{0}$。特に $b_{W}\ne b_{W'}$（$b_{W}\wedge b_{W}=b_{W}\ne\mathbf{0}$）。よって $W\mapsto b_{W}$ は $\mathcal{W}$ から $\mathbb{B}$ の反鎖（\ref{set:boolean-filter-basic} (1)）への単射で、$\mathbb{B}$ が c.c.c. なので $\mathcal{W}$ は可算。
+
+::: hypcheck
+- **選択公理**：\ref{set:boolean-ultrafilter}（ツォルンの補題）を (2)・(3) で、また (4) で $b_{W}$ を選ぶのに使った。
+- **分出公理・冪集合の公理**：$\mathrm{St}(\mathbb{B})$ を集合として作るのに使った。
+:::
+:::
+
+::: supplement
+$b\mapsto N_{b}$ は $\mathbb{B}$ から $X$ の開かつ閉な集合全体のなすブール代数への同型であり（(1) と、$N_{b}$ の補集合 $N_{-b}$ が開集合であること、およびコンパクト性から開かつ閉な集合が有限個の $N_{b}$ の和で書けることによる）、これが**ストーンの表現定理**である（\ref[ストーンの表現定理]{top:stone-representation}）。ここでは (1)〜(4) しか使わない。
+:::
+
+::: theorem MA の同値な言い換え {#set:ma-equivalents keywords="equivalents of Martin's axiom, MA topological form" index="マーティンの公理の同値な言い換え|まーてぃんのこうりのどうちなかいいかえ"}
+（AC）無限基数 $\kappa$ について、次は同値である。
+- (a) $\mathrm{MA}(\kappa)$。
+- (b) 濃度 $\le\kappa$ の半順序に制限した $\mathrm{MA}(\kappa)$。
+- (c) 完備ブール代数に制限した $\mathrm{MA}(\kappa)$。
+- (d) $X$ が空でないコンパクト c.c.c. ハウスドルフ空間で、$V_{\alpha}$（$\alpha<\kappa$）が $X$ の稠密開集合ならば、$\bigcap_{\alpha<\kappa}V_{\alpha}\ne\varnothing$。
+:::
+
+::: intuition
+(d) で $V_{\alpha}$ の補集合をとると、「空でないコンパクト c.c.c. ハウスドルフ空間は、$\kappa$ 個の閉な疎集合の和集合にはならない」となる。$\kappa=\aleph_{0}$ ならこれはベールのカテゴリー定理そのもの（c.c.c. は不要）であり、MA はベールの定理を「可算個」から「$2^{\aleph_{0}}$ 未満個」へ延ばす主張と読める。(d) から (c) への証明は、ブール代数 $\mathbb{B}$ をそのストーン空間に写し、「$\mathbb{B}$ の稠密集合と交わる超フィルター」を「対応する稠密開集合すべてに属する点」として見つける。
+:::
+
+::: proof
+**Step 1（(a)⇔(b)⇔(c)）.** (a)⇔(b) は \ref{set:ma-small-posets}、(a)⇔(c) は \ref{set:ma-size-kappa}。
+
+**Step 2（(a)⇒(d)）.** \ref{set:ma-compact-ccc} そのものである。
+
+**Step 3（(d)⇒(c)）.** (d) を仮定する。$\mathbb{B}$ を c.c.c. ブール代数（完備でなくてよい）、$\mathcal{D}$ を $\mathbb{B}^{+}$ の稠密部分集合からなる族で $\lvert\mathcal{D}\rvert\le\kappa$ とし、すべての $D\in\mathcal{D}$ と交わる $\mathbb{B}$ 上のフィルターを作る。
+
+*Step 3.1（空間）.* $X=\mathrm{St}(\mathbb{B})$ とすると、\ref{set:stone-space} より $X$ は空でないコンパクト c.c.c. ハウスドルフ空間である。$\mathcal{D}=\varnothing$ なら任意の $U\in X$ がフィルターとして求めるものなので、以下 $\mathcal{D}\ne\varnothing$ とする。
+
+*Step 3.2（稠密開集合）.* $D\in\mathcal{D}$ に対し $W_{D}=\bigcup_{b\in D}N_{b}$ とおく。基本開集合の和なので開集合である。*稠密*：$X$ の空でない開集合は空でない $N_{c}$ を含み、\ref{set:stone-space} (2) より $c\in\mathbb{B}^{+}$。$D$ は $\mathbb{B}^{+}$ で稠密なので $b\le c$ となる $b\in D$ があり、$N_{b}=N_{b\wedge c}=N_{b}\cap N_{c}\subseteq N_{c}$ かつ $N_{b}\ne\varnothing$。よって $N_{c}\cap W_{D}\supseteq N_{b}\ne\varnothing$。
+
+*Step 3.3（添字づけ）.* $\lvert\mathcal{D}\rvert\le\kappa$ で $\mathcal{D}\ne\varnothing$ なので、全射 $\alpha\mapsto D_{\alpha}$（$\kappa\to\mathcal{D}$）がある（単射 $e\colon\mathcal{D}\to\kappa$ と $D^{*}\in\mathcal{D}$ を 1 つ固定し、$\alpha\in\ran e$ なら $D_{\alpha}=e^{-1}(\alpha)$、そうでなければ $D_{\alpha}=D^{*}$）。$V_{\alpha}=W_{D_{\alpha}}$ とおく。
+
+*Step 3.4（(d) の適用）.* (d) より $U\in\bigcap_{\alpha<\kappa}V_{\alpha}$ がとれる。$U$ は超フィルターなので $\mathbb{B}$ 上のフィルターである。各 $D\in\mathcal{D}$ は $D=D_{\alpha}$ と書け、$U\in W_{D}$ なので $U\in N_{b}$、すなわち $b\in U$ となる $b\in D$ がある。よって $U\cap D\ne\varnothing$。
+
+特に、完備な c.c.c. ブール代数に対してこれを適用すれば (c) を得る。
+
+::: hypcheck
+- **選択公理**：\ref{set:ma-small-posets}, \ref{set:ma-size-kappa}, \ref{set:stone-space} を通じて使った。(a)⇒(d) の \ref{set:ma-compact-ccc} でもコンパクト空間の議論に使う。
+- **(d) の「空でない」**：Step 3 では $X=\mathrm{St}(\mathbb{B})\ne\varnothing$ が \ref{set:stone-space} (2) で保証されるので、この条件を満たす空間にだけ (d) を適用している。
+- **c.c.c.**：Step 3.1 で \ref{set:stone-space} (4) を通じて使った。
+- **完備性**：Step 3 では使っていない。したがって (d) は「すべての c.c.c. ブール代数に制限した MA$(\kappa)$」も導く。
+:::
+:::
+
+::: supplement
+**言い換えの系.** \ref{set:ma-equivalents} と \ref{set:ma-continuum-false} から、$\mathrm{MA}$ は「空でないコンパクト c.c.c. ハウスドルフ空間は、$2^{\aleph_{0}}$ 個未満の閉な疎集合の和集合にならない」と同値である。これが MA の最も簡潔な言い表し方だが、応用するには半順序の形の方が使いやすい。
+
+**局所コンパクト版.** (d) から、局所コンパクト c.c.c. ハウスドルフ空間でも $\kappa$ 個の稠密開集合の共通部分は稠密であることがわかる（空でない開集合 $O$ の中にコンパクトな閉包をもつ空でない開集合 $O'$ をとり、$\operatorname{cl}O'$ に (d) を適用する）。
+
+**前提を変えると.** c.c.c. を外した (d) は $\kappa=\aleph_{1}$ ですでに偽である。$\omega_{1}+1$ に順序位相を入れた空間の可算積 $(\omega_{1}+1)^{\omega}$ はコンパクト・ハウスドルフだが、$\aleph_{1}$ 個の閉な疎集合の和集合である（Kunen, 前掲書, 第 II 章 演習 11）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

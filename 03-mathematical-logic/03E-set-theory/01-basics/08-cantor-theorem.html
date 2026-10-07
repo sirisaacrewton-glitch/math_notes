@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>カントールの定理 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/01-basics/08-cantor-theorem.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# カントールの定理 {#set:page-cantor keywords="Cantor's theorem, diagonal argument"}
+
+集合 $X$ からその冪集合 $\mathcal{P}(X)$ への全射は存在しない。この一行の定理が「無限にも大小がある」ことの出発点であり、ラッセルのパラドックス・停止問題・不完全性定理に共通する**対角線論法**の原型でもある。
+
+## 冪集合の公理 {#set:sec-cantor-notation}
+
+::: notation
+- 議論は $\ZF$（選択公理なし）の中で行う。本ページの証明はどれも選択公理を使わない。
+- 単射・全射・全単射は \ref{set:injection-surjection}、濃度の比較 $\lvert X\rvert\le\lvert Y\rvert$, $\lvert X\rvert=\lvert Y\rvert$ は \ref{set:cardinality-order} の意味で用いる。
+- 写像 $f\colon X\to Y$ と $A\subseteq X$ に対し $f[A]=\{f(a)\mid a\in A\}$ と書く。$Y^{X}$ は $X$ から $Y$ への写像全体の集合、$2=\{0,1\}$。
+:::
+
+::: axiom 冪集合の公理 {#set:ax-power-set keywords="Power Set Axiom" index="冪集合の公理|べきしゅうごうのこうり"}
+$$
+\forall x\,\exists y\,\forall z\,(z\subseteq x\rightarrow z\in y).
+$$
+:::
+
+::: intuition
+与えられた集合の部分集合を「すべて」集めた集合がある、という主張。分出公理（\ref{set:ax-comprehension}）と組み合わせると、ちょうど部分集合だけからなる集合が切り出せる（次の定義）。ここまでの公理だけでは、たとえば $\omega$ の部分集合全体が集合になることは導けない。
+:::
+
+::: definition 冪集合 {#set:power-set keywords="power set" index="冪集合|べきしゅうごう"}
+集合 $X$ に対し、$X$ の部分集合全体の集合
+$$
+\mathcal{P}(X)=\{A\mid A\subseteq X\}
+$$
+を $X$ の**冪集合**という。冪集合の公理で得られる $y$ から分出公理で $\{z\in y\mid z\subseteq X\}$ を切り出せば存在がいえ、外延性の公理（\ref{set:ax-extensionality}）により一意に定まる。
+:::
+
+::: intuition
+「$X$ からいくつかの元を選ぶ選び方」をすべて集めたもの。各元について「入れる／入れない」を決めることと同じなので、$\mathcal{P}(X)$ は $X$ 上の $\{0,1\}$ 値関数の集合 $2^{X}$ と自然に同一視できる（$A\mapsto$ 特性関数 $\chi_{A}$）。
+:::
+
+::: example
+$\mathcal{P}(\varnothing)=\{\varnothing\}$、$\mathcal{P}(\{0,1\})=\{\varnothing,\{0\},\{1\},\{0,1\}\}$。元が $n$ 個の集合の冪集合は $2^{n}$ 個の元をもつ。
+:::
+
+## カントールの定理 {#set:sec-cantor-main}
+
+::: theorem カントールの定理 {#set:cantor keywords="Cantor's theorem, Cantor diagonal" index="カントールの定理|かんとーるのていり, 対角線論法|たいかくせんろんぽう"}
+任意の集合 $X$ に対し、全射 $f\colon X\to\mathcal{P}(X)$ は存在しない。
+:::
+
+::: intuition
+どんなやり方で $X$ の各元に部分集合を 1 つずつ割り当てても、割り当てから漏れる部分集合が必ずある。つまり部分集合の「種類」は元の「個数」より真に多い。漏れる部分集合は「割り当てられた集合に自分自身が入っていない元」を集めて具体的に作れる。$X$ が可算なら、表の対角線を反転させる操作として描ける：$D=\{x:x\notin f(x)\}$ は、どの $f(x_{i})$ とも $x_{i}$ のところで食い違うので、どの行とも異なる。
+```svg 対角線論法：f(xᵢ) を i 行目に並べ、対角線の 0 と 1 を入れ替えたものが D
+<svg viewBox="0 0 470 300" xmlns="http://www.w3.org/2000/svg" font-size="15" xmlns:c2pa="http://c2pa.org/manifest"><metadata><c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYToyOWFlNzQ4Yy0yYjFjLTQ1YTctYmMzZS0zMWY5YWE3NDViODYAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaAk2nVt6uG76wuuOyS4wkjMAAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDoxNTM1ZmE1OC1kMjQzLTQwYzgtYWM4Yi0zOTQzOGI3NTc5NWNscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNofHIL9VTJJ5njTrIwxvWojQAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFgg2qS+CjfdhNImPZd2Q4jKrIjINtsYzEsx5zVf2E2DSDGkZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaD+9z7Lg+cg+e6LsDm/drWoAAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRNAAAAAAAAAAAAAAAAAGRoYXNoWCBdErKqv19qVwlkKXlHuhaE4vvHWmJdF8R3qkZz4Z7Eq2RuYW1lbmp1bWJmIG1hbmlmZXN0amV4Y2x1c2lvbnOBomVzdGFydBiMZmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOjI5YWU3NDhjLTJiMWMtNDVhNy1iYzNlLTMxZjlhYTc0NWI4Ni9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOjAwNDA1YWY4LWQ1M2EtNDBjYS04NTVkLTAwZTcwNTMyNGVjZnJjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCDapL4KN92E0iY9l3ZDiMqsiMg22xjMSzHnNV/YTYNIMaJjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFggYcV3UKpRQtIrcesYTPM40gkRzk8HY0bVk7eYKGcgrjOiY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFggZwmUzwrfIbaA5hTbMC2Lb6D9PBecDYXNKy38nDENJ1J0Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQD2rDvJLXMCFLjuCp7oBz1dVLvCCpo3GFVstQ+3WuSP8JWBujy30UI+0YnAF/bZrPKL5dFXsuU8MfC4aez6aZFM=</c2pa:manifest></metadata>
+  <g text-anchor="middle">
+    <text x="130" y="28">x₀</text><text x="190" y="28">x₁</text><text x="250" y="28">x₂</text><text x="310" y="28">x₃</text><text x="370" y="28">…</text>
+  </g>
+  <g text-anchor="end">
+    <text x="90" y="62">f(x₀)</text><text x="90" y="102">f(x₁)</text><text x="90" y="142">f(x₂)</text><text x="90" y="182">f(x₃)</text><text x="90" y="222" style="fill: var(--mn-fg-soft)">⋮</text>
+  </g>
+  <g fill="none" style="stroke: var(--mn-accent)" stroke-width="2">
+    <rect x="110" y="40" width="40" height="32" rx="5"/><rect x="170" y="80" width="40" height="32" rx="5"/>
+    <rect x="230" y="120" width="40" height="32" rx="5"/><rect x="290" y="160" width="40" height="32" rx="5"/>
+  </g>
+  <g text-anchor="middle">
+    <text x="130" y="62">1</text><text x="190" y="62">0</text><text x="250" y="62">1</text><text x="310" y="62">1</text>
+    <text x="130" y="102">0</text><text x="190" y="102">0</text><text x="250" y="102">1</text><text x="310" y="102">0</text>
+    <text x="130" y="142">1</text><text x="190" y="142">1</text><text x="250" y="142">1</text><text x="310" y="142">0</text>
+    <text x="130" y="182">0</text><text x="190" y="182">1</text><text x="250" y="182">0</text><text x="310" y="182">1</text>
+  </g>
+  <line x1="100" y1="236" x2="400" y2="236" stroke="currentColor" stroke-dasharray="4 4"/>
+  <text x="90" y="262" text-anchor="end" style="fill: var(--mn-accent)">D</text>
+  <g text-anchor="middle" style="fill: var(--mn-accent)" font-weight="bold">
+    <text x="130" y="262">0</text><text x="190" y="262">1</text><text x="250" y="262">0</text><text x="310" y="262">0</text><text x="370" y="262">…</text>
+  </g>
+  <text x="250" y="292" text-anchor="middle" style="fill: var(--mn-fg-soft)" font-size="13">i 行 j 列の 1 は xⱼ ∈ f(xᵢ)、0 は xⱼ ∉ f(xᵢ)。D は対角線を反転した集合</text>
+</svg>
+```
+:::
+
+::: proof
+任意の写像 $f\colon X\to\mathcal{P}(X)$ をとり、$f$ が全射でないことを示す。
+
+**Step 1（対角集合の定義）.**
+$$
+D=\{x\in X\mid x\notin f(x)\}
+\label{set:eq-cantor-diagonal}
+$$
+とおく。$D$ は $X$ の元のうち論理式 $x\notin f(x)$ を満たすものを集めたものなので、\index{分出公理|ぶんしゅつこうり}分出公理により集合として存在し、$D\subseteq X$ である。したがって $D\in\mathcal{P}(X)$。
+
+**Step 2（背理法の仮定）.** $D$ が $f$ の像に入ると仮定し、$f(d)=D$ となる $d\in X$ をとる。
+
+**Step 3（$d$ について場合分け）.**
+- $d\in D$ ならば、$D$ の定義 \eqref{set:eq-cantor-diagonal} より $d\notin f(d)$。$f(d)=D$ なので $d\notin D$ となり矛盾。
+- $d\notin D$ ならば、$d\in X$ かつ $D$ の定義の条件を満たさないので $d\in f(d)$。$f(d)=D$ なので $d\in D$ となり矛盾。
+
+**Step 4（結論）.** どちらの場合も矛盾するので、$f(d)=D$ となる $d$ は存在しない。すなわち $D\in\mathcal{P}(X)\setminus f[X]$ であり、$f$ は全射ではない。$f$ は任意だったので、全射 $X\to\mathcal{P}(X)$ は存在しない。
+
+::: hypcheck
+- **冪集合の公理**（\ref{set:ax-power-set}）：主張の $\mathcal{P}(X)$ の存在に使う。
+- **分出公理**：Step 1 で $D$ を集合として作るのに使う。ここがこの証明の本質である（素朴な内包公理では同じ議論が矛盾を生む。\ref{set:no-universal-set} と \ref{set:russell-paradox} を参照）。
+- **$f$ が写像であること**：Step 2 で「$f(d)$ がただ一つの集合 $D$ に等しい」とした部分。
+- **排中律**：Step 3 の場合分けに使ったが本質的ではない。「$d\in D$ と仮定すると矛盾 ⇒ $d\notin D$ ⇒ 再び矛盾」と組めば否定の導入だけで済み、証明は直観主義論理でも通る。しかも漏れる部分集合 $D$ が明示的に作られている。
+- 使わなかったもの：選択公理・無限公理・正則性公理。$X$ は有限でも空でもよい（$X=\varnothing$ のとき $\mathcal{P}(\varnothing)=\{\varnothing\}$ で、空集合からの写像は全射になりえない）。
+:::
+:::
+
+::: supplement
+**一般形.** 集合 $Y$ が不動点をもたない写像 $\sigma\colon Y\to Y$ をもつとき、任意の集合 $X$ について全射 $F\colon X\to Y^{X}$ は存在しない。
+
+*証明.* $F$ に対し $g(x)=\sigma\bigl(F(x)(x)\bigr)$ とおく。$F(d)=g$ なら $F(d)(d)=\sigma\bigl(F(d)(d)\bigr)$ となって $\sigma$ が不動点をもち矛盾。$Y=2$、$\sigma(i)=1-i$ とし $\mathcal{P}(X)$ を $2^{X}$ と同一視すると、本定理そのもの（$g$ は $D$ の特性関数）になる。
+
+**ローヴェアの不動点定理.** デカルト閉圏において、射 $A\to B^{A}$ が点全射ならば $B$ のすべての自己射は不動点をもつ。上の一般形はその対偶を集合の圏で述べたものである。詳しくは \ref{cat:lawvere-fixed-point}。
+
+**同じ論法の仲間.** ラッセルのパラドックス（\ref{set:no-universal-set}）、\ref{comp:halting-problem}、\ref{pt:godel-first} は、どれも「自分自身を引数として評価し、結果をずらす」という $g(x)=\sigma(F(x)(x))$ の形に帰着する。逆に不動点が**存在する**側の結果（λ計算の不動点コンビネータ、クリーネの再帰定理、ゲーデルの対角化補題）も、同じ図式を裏から読んだものである。
+
+**前提を変えると.**
+- *全射を単射に替える*：単射 $X\to\mathcal{P}(X)$ は常に存在する（\ref{set:cantor-strict} の $x\mapsto\{x\}$）。
+- *写像を関係に替える*：$X\neq\varnothing$ なら関係 $X\times\mathcal{P}(X)$ はすべての部分集合を「覆う」。Step 2 で $f(d)$ が一つに決まることを使っていたのがここに当たる。
+- *一般形で $Y$ を 1 点集合にする*：$Y^{X}$ も 1 点集合なので、$X\neq\varnothing$ なら定値写像が全射になる。不動点のない $\sigma$ という仮定は外せない（$Y\neq\varnothing$ ならこの仮定は「$Y$ が 2 元以上」と同値）。
+:::
+
+## 系 {#set:sec-cantor-corollaries}
+
+::: corollary {#set:cantor-strict keywords="|X| < |P(X)|" index="非可算|ひかさん"}
+任意の集合 $X$ に対し $\lvert X\rvert<\lvert\mathcal{P}(X)\rvert$。
+:::
+
+::: example
+- **有限集合**：$X=\{1,\dots,n\}$ なら $\lvert\mathcal{P}(X)\rvert=2^{n}$ で、系は $n<2^{n}$ にほかならない。
+- **自然数の部分集合全体は非可算**：$X=\N$ とすると $\lvert\N\rvert<\lvert\mathcal{P}(\N)\rvert=\lvert 2^{\N}\rvert$。$f\colon\N\to 2^{\N}$ に対する対角集合 \eqref{set:eq-cantor-diagonal} は、特性関数で書くと $\chi_{D}(n)=1-f(n)(n)$ となり、「$n$ 番目の列の $n$ 番目の桁を反転する」という実数の非可算性の証明でおなじみの対角線論法そのものである。
+- **無限の階段**：$\N,\ \mathcal{P}(\N),\ \mathcal{P}(\mathcal{P}(\N)),\dots$ の濃度は真に増大し続ける。
+:::
+
+::: proof
+**Step 1（$\le$）.** $\iota\colon X\to\mathcal{P}(X)$, $\iota(x)=\{x\}$ は、$\{x\}=\{x'\}$ ならば外延性より $x=x'$ となるので単射である。よって $\lvert X\rvert\le\lvert\mathcal{P}(X)\rvert$。
+
+**Step 2（$\neq$）.** 全単射 $X\to\mathcal{P}(X)$ があれば特に全射であり、\ref{set:cantor} に反する。
+:::
+
+::: corollary 冪集合から元の集合への単射は存在しない {#set:no-injection-power keywords="no injection P(X) to X"}
+任意の集合 $X$ に対し、単射 $\mathcal{P}(X)\to X$ は存在しない。
+:::
+
+::: proof
+単射 $i\colon\mathcal{P}(X)\to X$ があったとして矛盾を導く。
+
+**Step 1.** $i$ は単射なので、各 $x\in i[\mathcal{P}(X)]$ に対し $i(A)=x$ となる $A$ はただ一つである。これを $i^{-1}(x)$ と書く。
+
+**Step 2.** $g\colon X\to\mathcal{P}(X)$ を、$x\in i[\mathcal{P}(X)]$ なら $g(x)=i^{-1}(x)$、それ以外なら $g(x)=\varnothing$ で定める。各場合で値がただ一つに決まるので、分出公理で $X\times\mathcal{P}(X)$ の部分集合として $g$ が得られる。
+
+**Step 3.** 任意の $A\in\mathcal{P}(X)$ に対し $g(i(A))=A$ なので $g$ は全射。これは \ref{set:cantor} に反する。
+
+::: hypcheck
+- **単射性**：Step 1 で $i^{-1}(x)$ を一意に決めるのに使った。一意だから**選択公理が要らない**。
+- **$\mathcal{P}(X)\neq\varnothing$**（$\varnothing\in\mathcal{P}(X)$）：Step 2 の「それ以外」の枝に $\varnothing$ を置くのに使った。
+:::
+:::
+
+::: supplement
+「単射 $Y\to X$ があれば全射 $X\to Y$ がある（$Y\neq\varnothing$）」は ZF で成り立つ（上の Step 2 と同じ作り方）が、逆向き「全射 $X\to Y$ があれば単射 $Y\to X$ がある」は ZF だけでは証明できないことが知られている（選択公理の弱い形を要する）。なお、この系は \ref{set:cantor-strict} とカントール＝ベルンシュタインの定理 \ref{set:schroder-bernstein}（ZF で証明できる）からも従うが、ここではそれを使わずに直接示した。
+:::
+
+::: corollary すべての集合の集合は存在しない {#set:no-universal-set keywords="universal set" index="普遍集合|ふへんしゅうごう, ラッセルのパラドックス|らっせるのぱらどっくす"}
+すべての集合を元とする集合 $\mathbf{V}$ は存在しない。
+:::
+
+::: proof
+$\mathbf{V}$ がそのような集合だとする。
+
+**Step 1.** $\mathbf{V}$ の任意の元 $x$ は集合なので、$x$ の元もすべて $\mathbf{V}$ の元である。よって $x\subseteq \mathbf{V}$、つまり $x\in\mathcal{P}(\mathbf{V})$。
+
+**Step 2.** したがって $g\colon \mathbf{V}\to\mathcal{P}(\mathbf{V})$, $g(x)=x$ は well-defined。
+
+**Step 3.** 逆に $A\in\mathcal{P}(\mathbf{V})$ は集合なので $A\in \mathbf{V}$ であり、$g(A)=A$。よって $g$ は全射で、\ref{set:cantor} に反する。
+:::
+
+::: supplement
+上の証明で $g=\mathrm{id}$ として対角集合 \eqref{set:eq-cantor-diagonal} を作ると $D=\{x\in \mathbf{V}\mid x\notin x\}$ となり、これが**ラッセルの集合**である。素朴集合論では「$\{x\mid x\notin x\}$ が集合である」と仮定したことが矛盾の原因だった。ZF では分出公理が「既にある集合の中から」しか切り出さないので、この矛盾は「$\mathbf{V}$ は集合ではない」という結論に変わる。
+:::
+
+## 問題 {#set:sec-cantor-problems}
+
+::: problem {#set:prob-surjection-from-power}
+$X\neq\varnothing$ のとき、全射 $\mathcal{P}(X)\to X$ が存在することを示せ。選択公理は使わないこと。
+:::
+
+::: solution
+$X\neq\varnothing$ なので元 $x_{0}\in X$ を 1 つとる（存在する元を 1 つ固定するだけなので選択公理は要らない）。$s\colon\mathcal{P}(X)\to X$ を、$A$ がある $x$ について $A=\{x\}$ の形ならば $s(A)=x$、そうでなければ $s(A)=x_{0}$ と定める。$\{x\}=\{x'\}\Rightarrow x=x'$ なので値は一意に決まり、$s(\{x\})=x$ より $s$ は全射である。
+
+\ref{set:no-injection-power} と合わせると、$\mathcal{P}(X)$ と $X$ の間には「$\mathcal{P}(X)$ から $X$ へは全射はあるが単射はない」という非対称性がある。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

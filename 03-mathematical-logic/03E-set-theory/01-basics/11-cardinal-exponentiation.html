@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>基数の冪 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/01-basics/11-cardinal-exponentiation.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 基数の冪 {#set:page-cardinal-exponentiation keywords="cardinal exponentiation, continuum hypothesis, generalized continuum hypothesis, beth numbers"}
+
+基数の和と積は、無限基数どうしでは $\kappa\oplus\lambda=\kappa\otimes\lambda=\max(\kappa,\lambda)$ となってしまい、新しい大きさを生まない。新しい大きさを生むのは冪 $\kappa^{\lambda}$ であり、その代表が $2^{\aleph_{0}}=\lvert\mathcal{P}(\omega)\rvert$ である。本ページでは関数の集合 ${}^{B}A$ と基数の冪を定義し、指数法則、$\kappa^{\lambda}=2^{\lambda}$ となる条件、連続体仮説（CH）と一般連続体仮説（GCH）、ベート数を扱う。指数法則に現れる関数の集合の間の全単射はすべて ZF で作れ、そこでは選択公理は「その濃度を基数として名指す」ところにだけ使われることを見る。
+
+## 記法と定義の確認 {#set:sec-exponentiation-notation}
+
+::: notation
+- 冪集合 $\mathcal{P}(X)$ は \ref{set:power-set}、カントールの定理 $\lvert X\rvert<\lvert\mathcal{P}(X)\rvert$ は \ref{set:cantor-strict}、直積 $A\times B$ は \ref{set:cartesian-product}。
+- $A\preccurlyeq B$, $A\approx B$ は \ref{set:cardinality-order}、カントール＝ベルンシュタインの定理は \ref{set:schroder-bernstein}。
+- 基数の和・積 $\kappa\oplus\lambda=\lvert\kappa\times\{0\}\cup\lambda\times\{1\}\rvert$, $\kappa\otimes\lambda=\lvert\kappa\times\lambda\rvert$ は \ref{set:cardinal-sum-product}、無限基数 $\kappa$ について $\kappa\times\kappa\approx\kappa$ は \ref{set:kappa-times-kappa}、吸収則 $\kappa\oplus\lambda=\kappa\otimes\lambda=\max(\kappa,\lambda)$（少なくとも一方が無限、他方が $0$ でない）は \ref{set:cardinal-absorption}。
+- 後続基数 $\kappa^{+}$ は \ref{set:successor-cardinal}、アレフ $\aleph_{\alpha}=\omega_{\alpha}$ は \ref{set:aleph}、基数の集合の上限が基数であることは \ref{set:successor-cardinal-basic}、すべての無限基数がアレフであることは \ref{set:aleph-properties}。
+- 選択公理のもとで任意の集合が濃度をもち、$A\approx B\iff\lvert A\rvert=\lvert B\rvert$, $A\preccurlyeq B\iff\lvert A\rvert\le\lvert B\rvert$ となること（\ref{set:every-set-cardinality}）、和集合の濃度の評価 \ref{set:union-bound} を使う。
+- 順序数の冪は \ref{set:ordinal-exponentiation}。本ページでは、特に断らない限り $\kappa^{\lambda}$ は**基数の冪**を表す。
+:::
+
+## 関数の集合 {#set:sec-function-set}
+
+::: definition 関数の集合 {#set:function-set keywords="set of functions, exponential set, A^B" index="関数の集合|かんすうのしゅうごう"}
+集合 $A,B$ に対し、$B$ から $A$ への関数全体を
+$$
+{}^{B}A=\{f\mid f\text{ は関数},\ \dom f=B,\ \ran f\subseteq A\}
+$$
+と書く。${}^{B}A\subseteq\mathcal{P}(B\times A)$ なので、冪集合の公理と分出公理によりこれは集合である。文献によっては $A^{B}$ とも書く（\ref{set:page-cantor} では $Y^{X}$、\ref{set:finite-sequence} では有限列の集合を ${}^{n}A$, $A^{<\omega}$ と書いた）が、本ページ以降では基数の冪 $\kappa^{\lambda}$ と区別するため ${}^{B}A$ を用いる。したがって \ref{set:finite-sequence} の $A^{n}$, $A^{<\omega}$ は、本ページ以降の記法ではそれぞれ ${}^{n}A$, ${}^{<\omega}A$（\ref{set:kappa-below-lambda}）である。
+:::
+
+::: intuition
+${}^{B}A$ の元は「$B$ の各元に $A$ の元を 1 つずつ割り当てる仕方」であり、$B$ で添字づけた $A$ の元の列と思ってよい。$A$ が $a$ 個、$B$ が $b$ 個の元をもつ有限集合なら、割り当て方は $a$ を $b$ 回掛けた $a^{b}$ 通りある。
+:::
+
+::: example
+- ${}^{\varnothing}A=\{\varnothing\}$（空関数だけ）。特に ${}^{\varnothing}\varnothing=\{\varnothing\}$ は 1 元集合。
+- $B\neq\varnothing$ なら ${}^{B}\varnothing=\varnothing$（$B$ の元の行き先がない）。
+- ${}^{1}A=\{\{(0,a)\}\mid a\in A\}\approx A$、${}^{B}1=\{B\times\{0\}\}$ は 1 元集合。
+- ${}^{\omega}2$ は $0,1$ からなる無限列全体（カントール空間）、${}^{\omega}\omega$ は自然数列全体（ベール空間）。
+:::
+
+::: lemma 関数の集合の間の全単射 {#set:function-set-bijections keywords="exponential laws for sets, currying" index="カリー化|かりーか"}
+（ZF）集合 $A,A',B,B',C$ について次が成り立つ。
+1. $A\approx A'$ かつ $B\approx B'$ ならば ${}^{B}A\approx{}^{B'}A'$。
+2. $A\preccurlyeq A'$ ならば ${}^{B}A\preccurlyeq{}^{B}A'$。$B\preccurlyeq B'$ かつ $A\neq\varnothing$ ならば ${}^{B}A\preccurlyeq{}^{B'}A$。
+3. $B\cap C=\varnothing$ ならば ${}^{B\cup C}A\approx{}^{B}A\times{}^{C}A$。
+4. ${}^{C}({}^{B}A)\approx{}^{B\times C}A$。
+5. ${}^{C}(A\times B)\approx{}^{C}A\times{}^{C}B$。
+6. $\mathcal{P}(B)\approx{}^{B}2$。
+:::
+
+::: proof
+各項で写像を明示し、逆写像を与えて全単射であることを確かめる。写像はいずれも関数の集合の直積の部分集合として分出公理で作れる。
+
+**(1).** 全単射 $\alpha\colon A\to A'$, $\beta\colon B\to B'$ をとり、$\Phi(f)=\alpha\circ f\circ\beta^{-1}$ とおく。$f\colon B\to A$ なら $\Phi(f)\colon B'\to A'$。$\Psi(g)=\alpha^{-1}\circ g\circ\beta$ とすると $\Psi(\Phi(f))=\alpha^{-1}\circ\alpha\circ f\circ\beta^{-1}\circ\beta=f$、同様に $\Phi(\Psi(g))=g$。
+
+**(2).** 単射 $\alpha\colon A\to A'$ に対し $f\mapsto\alpha\circ f$ は単射：$\alpha\circ f=\alpha\circ f'$ なら各 $b$ で $\alpha(f(b))=\alpha(f'(b))$、$\alpha$ の単射性から $f(b)=f'(b)$。
+後半：単射 $\beta\colon B\to B'$ と $a_{0}\in A$ をとる。$f\in{}^{B}A$ に対し $\tilde{f}\in{}^{B'}A$ を、$b'=\beta(b)$ なら $\tilde{f}(b')=f(b)$（$\beta$ の単射性から $b$ は一意）、$b'\notin\beta[B]$ なら $\tilde{f}(b')=a_{0}$ で定める。$\tilde{f}\circ\beta=f$ なので $\tilde{f}=\tilde{f'}$ なら $f=f'$。
+
+**(3).** $\Phi(f)=(f\restr{B},\ f\restr{C})$ とおく。逆写像は $\Psi(g,h)=g\cup h$：$\dom g\cap\dom h=B\cap C=\varnothing$ なので $g\cup h$ は関数で、定義域は $B\cup C$。$\Psi(\Phi(f))=f\restr{B}\cup f\restr{C}=f$、$\Phi(\Psi(g,h))=(g,h)$。
+
+**(4).** $F\in{}^{C}({}^{B}A)$ に対し $\Phi(F)\in{}^{B\times C}A$ を $\Phi(F)(b,c)=F(c)(b)$ で定める。逆に $g\in{}^{B\times C}A$ に対し、各 $c\in C$ について $g_{c}(b)=g(b,c)$ で $g_{c}\in{}^{B}A$ を定め、$\Psi(g)(c)=g_{c}$ とおく。$\Psi(\Phi(F))(c)(b)=\Phi(F)(b,c)=F(c)(b)$ より $\Psi(\Phi(F))=F$、$\Phi(\Psi(g))(b,c)=g_{c}(b)=g(b,c)$ より $\Phi(\Psi(g))=g$。
+
+**(5).** $\pi_{1},\pi_{2}$ を $A\times B$ の射影とし、$\Phi(f)=(\pi_{1}\circ f,\ \pi_{2}\circ f)$。逆は $\Psi(g,h)(c)=(g(c),h(c))$。順序対の特徴づけ（\ref{set:ordered-pair-characterization}）から互いに逆である。
+
+**(6).** $X\subseteq B$ に特性関数 $\chi_{X}$（$b\in X$ なら $1$、そうでなければ $0$）を対応させる。逆は $g\mapsto g^{-1}[\{1\}]$。$\chi_{X}^{-1}[\{1\}]=X$ で、$g\in{}^{B}2$ の値は $0$ か $1$ なので $\chi_{g^{-1}[\{1\}]}=g$。
+
+::: hypcheck
+- **冪集合の公理・分出公理**：関数の集合 ${}^{B}A$ と各写像 $\Phi,\Psi$ の構成。(6) の $\mathcal{P}(B)$。
+- **和集合の公理**：(3) の $g\cup h$。**対の公理・順序対**：(4)(5)。
+- **$A\neq\varnothing$**：(2) 後半で $a_{0}$ をとるのに使った。$A=\varnothing$ だと ${}^{\varnothing}\varnothing=\{\varnothing\}\not\preccurlyeq{}^{1}\varnothing=\varnothing$ で成り立たない。
+- **選択公理は使わない**：どの写像も与えられた全単射・単射と元 $a_{0}$ だけから明示的に作った。
+:::
+:::
+
+## 基数の冪と指数法則 {#set:sec-cardinal-exponentiation}
+
+::: definition 基数の冪 {#set:cardinal-exponentiation keywords="cardinal exponentiation, kappa^lambda, 2^kappa" index="基数の冪|きすうのべき"}
+（AC）基数 $\kappa,\lambda$ に対し、$\kappa$ の $\lambda$ **乗**を
+$$
+\kappa^{\lambda}=\bigl\lvert{}^{\lambda}\kappa\bigr\rvert
+$$
+で定める。
+:::
+
+::: intuition
+「$\lambda$ 個の場所それぞれに $\kappa$ 通りの選択肢がある」ときの選び方の総数。和と積が「並べる」「組にする」だったのに対し、冪は「すべての割り当てを集める」操作で、冪集合と同じく集合の大きさを真に増やしうる。
+:::
+
+::: supplement
+**AC の役割.** ${}^{\lambda}\kappa$ は ZF でも集合として存在するが、整列可能とは限らない（たとえば ${}^{\omega}2\approx\mathcal{P}(\omega)$ が整列可能であることは ZF では証明できない）。そのため $\lvert{}^{\lambda}\kappa\rvert$ を基数として定義するのに選択公理を使う。ZF では、${}^{\lambda}\kappa$ が整列可能なとき（たとえば $\kappa,\lambda$ が有限のとき、次の命題）に限って $\kappa^{\lambda}$ が意味をもつ。
+
+**順序数の冪との違い.** 順序数の冪（\ref{set:ordinal-exponentiation}）では $2^{\omega}=\sup_{n<\omega}2^{n}=\omega$ だが、基数の冪では $2^{\omega}=\lvert\mathcal{P}(\omega)\rvert>\omega$ である。同じ記号が別のものを表すので、文脈で区別する。次の命題の通り、有限の場合には両者は一致する。
+:::
+
+::: proposition 有限の場合の冪 {#set:finite-exponentiation keywords="finite cardinal exponentiation agrees with ordinal exponentiation"}
+（ZF）$m,n\in\omega$ について、${}^{m}n$ は有限集合であり、その濃度は順序数の冪 $n^{m}$（これは自然数）に等しい。したがって有限の場合、基数の冪と順序数の冪は一致する。
+:::
+
+::: proof
+$m$ に関する帰納法で「${}^{m}n\approx n^{m}$（順序数の冪）」を示す。$n^{m}\in\omega$ は自然数なので、これで ${}^{m}n$ は有限、濃度は $n^{m}$ となる（自然数は基数である：\ref{set:omega-cardinal}）。
+
+**Step 1（$m=0$）.** ${}^{0}n=\{\varnothing\}\approx 1=n^{0}$。
+
+**Step 2（$m\to m+1$）.** $m+1=m\cup\{m\}$ で $m\cap\{m\}=\varnothing$ なので、\ref{set:function-set-bijections} (3) より ${}^{m+1}n\approx{}^{m}n\times{}^{\{m\}}n$。${}^{\{m\}}n\approx n$（(1) と ${}^{1}n\approx n$）と帰納法の仮定 ${}^{m}n\approx n^{m}$ から ${}^{m+1}n\approx n^{m}\times n$。$\lvert n^{m}\times n\rvert=n^{m}\otimes n$ は、有限基数の算術（\ref{set:finite-cardinal-arithmetic}）により順序数の積 $n^{m}\cdot n$ に等しく、これは順序数の冪の定義から $n^{m+1}$ である。
+
+::: hypcheck
+- **$\omega$ 上の帰納法**：Step 1, 2。主張は「全単射が存在する」なので各段階で 1 つとるだけでよく、選択公理は要らない。
+- **有限基数の算術**：Step 2 で基数の積と順序数の積の一致に使った。
+:::
+:::
+
+::: theorem 指数法則 {#set:exponent-laws keywords="laws of exponents for cardinals" index="指数法則|しすうほうそく"}
+（AC）$\kappa,\kappa',\lambda,\lambda',\sigma$ を基数とする。
+1. $\kappa^{\lambda\oplus\sigma}=\kappa^{\lambda}\otimes\kappa^{\sigma}$。
+2. $(\kappa^{\lambda})^{\sigma}=\kappa^{\lambda\otimes\sigma}$。
+3. $(\kappa\otimes\lambda)^{\sigma}=\kappa^{\sigma}\otimes\lambda^{\sigma}$。
+4. $\kappa^{0}=1$、$\kappa^{1}=\kappa$、$1^{\lambda}=1$、$\lambda\ge 1$ なら $0^{\lambda}=0$。また $2^{\lambda}=\lvert\mathcal{P}(\lambda)\rvert>\lambda$。
+5. $\kappa\le\kappa'$ ならば $\kappa^{\lambda}\le\kappa'^{\lambda}$。$\lambda\le\lambda'$ かつ $\kappa\ge 1$ ならば $\kappa^{\lambda}\le\kappa^{\lambda'}$。
+:::
+
+::: intuition
+有限の自然数でおなじみの指数法則が、そのまま無限基数でも成り立つ。理由は、\ref{set:function-set-bijections} の全単射（割り当てを分ける・カリー化する・成分に分ける）が大きさに関係なく定義できるからである。
+:::
+
+::: example
+- $2^{\aleph_{0}}\otimes 2^{\aleph_{0}}=2^{\aleph_{0}\oplus\aleph_{0}}=2^{\aleph_{0}}$（吸収則 $\aleph_{0}\oplus\aleph_{0}=\aleph_{0}$）。$\lvert\R\rvert=2^{\aleph_{0}}$（\ref[実数全体の濃度]{calc:reals-cardinality}）と合わせると $\lvert\R\times\R\rvert=\lvert\R\rvert$：平面と直線は同じ個数の点をもつ。
+- $(2^{\aleph_{0}})^{\aleph_{0}}=2^{\aleph_{0}\otimes\aleph_{0}}=2^{\aleph_{0}}$：実数列全体 ${}^{\omega}\R$ も $\R$ と対等。
+- $\aleph_{0}^{\,n}=\aleph_{0}$（$1\le n<\omega$）：(1) を使って $n$ についての帰納法で $\aleph_{0}^{\,n+1}=\aleph_{0}^{\,n}\otimes\aleph_{0}=\aleph_{0}\otimes\aleph_{0}=\aleph_{0}$。
+:::
+
+::: proof
+**Step 0（集合の濃度への言い換え）.** 任意の集合 $X,Y$ について $\lvert{}^{Y}X\rvert=\lvert X\rvert^{\lvert Y\rvert}$ であることを示す。AC により $X\approx\lvert X\rvert$, $Y\approx\lvert Y\rvert$（\ref{set:every-set-cardinality}）なので、\ref{set:function-set-bijections} (1) より ${}^{Y}X\approx{}^{\lvert Y\rvert}\lvert X\rvert$、したがって $\lvert{}^{Y}X\rvert=\lvert{}^{\lvert Y\rvert}\lvert X\rvert\rvert=\lvert X\rvert^{\lvert Y\rvert}$。同様に $\lvert X\times Y\rvert=\lvert X\rvert\otimes\lvert Y\rvert$（全単射の直積 $X\times Y\approx\lvert X\rvert\times\lvert Y\rvert$ による）。
+
+**Step 1（(1)）.** $L=\lambda\times\{0\}$, $S=\sigma\times\{1\}$ とおくと $L\cap S=\varnothing$ で、定義から $\lambda\oplus\sigma=\lvert L\cup S\rvert$。Step 0 と \ref{set:function-set-bijections} (3) より
+$$
+\kappa^{\lambda\oplus\sigma}=\lvert{}^{L\cup S}\kappa\rvert=\lvert{}^{L}\kappa\times{}^{S}\kappa\rvert=\lvert{}^{L}\kappa\rvert\otimes\lvert{}^{S}\kappa\rvert=\kappa^{\lambda}\otimes\kappa^{\sigma}.
+$$
+最後の等号は $L\approx\lambda$, $S\approx\sigma$ と Step 0 による。
+
+**Step 2（(2)）.** Step 0 を $X={}^{\lambda}\kappa$（$\lvert X\rvert=\kappa^{\lambda}$）に適用し、\ref{set:function-set-bijections} (4) を使うと
+$$
+(\kappa^{\lambda})^{\sigma}=\lvert{}^{\sigma}({}^{\lambda}\kappa)\rvert=\lvert{}^{\lambda\times\sigma}\kappa\rvert=\kappa^{\lvert\lambda\times\sigma\rvert}=\kappa^{\lambda\otimes\sigma}.
+$$
+
+**Step 3（(3)）.** \ref{set:function-set-bijections} (5) と Step 0 より $(\kappa\otimes\lambda)^{\sigma}=\lvert{}^{\sigma}(\kappa\times\lambda)\rvert=\lvert{}^{\sigma}\kappa\times{}^{\sigma}\lambda\rvert=\kappa^{\sigma}\otimes\lambda^{\sigma}$。
+
+**Step 4（(4)）.** ${}^{0}\kappa=\{\varnothing\}$、${}^{1}\kappa\approx\kappa$、${}^{\lambda}1=\{\lambda\times\{0\}\}$、$\lambda\neq 0$ なら ${}^{\lambda}0=\varnothing$（\ref{set:function-set} の例）。$2^{\lambda}=\lvert{}^{\lambda}2\rvert=\lvert\mathcal{P}(\lambda)\rvert$ は \ref{set:function-set-bijections} (6)、$\lvert\mathcal{P}(\lambda)\rvert>\lambda$ は \ref{set:cantor-strict}。
+
+**Step 5（(5)）.** $\kappa\le\kappa'$ なら $\kappa\subseteq\kappa'$ なので \ref{set:function-set-bijections} (2) 前半で ${}^{\lambda}\kappa\preccurlyeq{}^{\lambda}\kappa'$。$\lambda\le\lambda'$, $\kappa\neq 0$ なら (2) 後半で ${}^{\lambda}\kappa\preccurlyeq{}^{\lambda'}\kappa$。\ref{set:every-set-cardinality} により濃度の不等式になる。
+
+::: hypcheck
+- **選択公理**：Step 0 で ${}^{Y}X$ などの濃度 $\lvert\cdot\rvert$ を定義するところ**だけ**に使った。全単射そのものはすべて ZF で作れる（\ref{set:function-set-bijections}）ので、各等式は「対応する集合が対等である」という形なら ZF の定理である。たとえば (2) は ZF で ${}^{\sigma}({}^{\lambda}\kappa)\approx{}^{\lambda\times\sigma}\kappa$ を意味する。
+- **$\kappa\ge 1$**：(5) 後半。$0^{0}=1>0=0^{1}$ なので外せない。
+- **冪集合の公理**：関数の集合の存在（\ref{set:function-set}）と (4) の $\mathcal{P}(\lambda)$。
+:::
+:::
+
+::: supplement
+**狭義の単調性は成り立たない.** $\kappa<\kappa'$ でも $\kappa^{\lambda}<\kappa'^{\lambda}$ とは限らない。たとえば次の \ref{set:two-to-kappa} により $2^{\aleph_{0}}=3^{\aleph_{0}}=\aleph_{0}^{\aleph_{0}}$。同様に $\lambda<\lambda'$ から $2^{\lambda}<2^{\lambda'}$ も ZFC では証明できない（$2^{\aleph_{0}}=2^{\aleph_{1}}$ は ZFC と無矛盾であることが知られている。\ref{set:easton}）。
+
+**無限個の和と積.** 基数の族 $(\kappa_{i})_{i\in I}$ に対する和 $\sum_{i}\kappa_{i}$・積 $\prod_{i}\kappa_{i}$ も定義でき、$\prod_{i\in I}\kappa=\kappa^{\lvert I\rvert}$ となる。和と積の大小を比べる一般形がケーニッヒの定理（\ref{set:konig}）である。
+:::
+
+## $\kappa^{\lambda}=2^{\lambda}$ となる場合 {#set:sec-two-to-kappa}
+
+::: lemma {#set:two-to-kappa keywords="kappa^lambda = 2^lambda, 2 <= kappa <= lambda" index="冪の計算|べきのけいさん"}
+（ZF）$\lambda$ を無限基数、$\kappa$ を $2\le\kappa\le\lambda$ の基数とする。このとき
+$$
+{}^{\lambda}\kappa\approx{}^{\lambda}2\approx\mathcal{P}(\lambda).
+$$
+特に（AC のもとで）$\kappa^{\lambda}=2^{\lambda}$。
+:::
+
+::: intuition
+指数が底以上に大きいと、底の大きさの違いは効かなくなる。$\lambda$ 個の場所に $\lambda$ 通りの値を割り当てることは、値を 2 進で符号化すれば「$\lambda\times\lambda=\lambda$ 個の場所に $0,1$ を割り当てる」ことに置き換えられるからである。
+:::
+
+::: proof
+**Step 1（下からの評価）.** $2\subseteq\kappa\subseteq\lambda$ なので、\ref{set:function-set-bijections} (2) 前半より ${}^{\lambda}2\preccurlyeq{}^{\lambda}\kappa\preccurlyeq{}^{\lambda}\lambda$。
+
+**Step 2（上からの評価）.** $\xi\mapsto\{\xi\}$ は単射 $\lambda\to\mathcal{P}(\lambda)$ なので、再び (2) 前半より ${}^{\lambda}\lambda\preccurlyeq{}^{\lambda}\mathcal{P}(\lambda)$。さらに
+$$
+{}^{\lambda}\mathcal{P}(\lambda)\approx{}^{\lambda}({}^{\lambda}2)\approx{}^{\lambda\times\lambda}2\approx{}^{\lambda}2
+$$
+である。最初は \ref{set:function-set-bijections} (6) と (1)、次は (4)、最後は $\lambda\times\lambda\approx\lambda$（\ref{set:kappa-times-kappa}）と (1) による。
+
+**Step 3（カントール＝ベルンシュタイン）.** Step 1, 2 から ${}^{\lambda}2\preccurlyeq{}^{\lambda}\kappa\preccurlyeq{}^{\lambda}2$。\ref{set:schroder-bernstein} により ${}^{\lambda}\kappa\approx{}^{\lambda}2$、(6) より $\approx\mathcal{P}(\lambda)$。AC のもとでは両辺の濃度をとって $\kappa^{\lambda}=2^{\lambda}$。
+
+::: hypcheck
+- **$\lambda$ が無限であること**：Step 2 の $\lambda\times\lambda\approx\lambda$。$\lambda$ が有限だと $2^{2}=4<9=3^{2}$ のように成り立たない。
+- **$2\le\kappa$**：Step 1 の ${}^{\lambda}2\preccurlyeq{}^{\lambda}\kappa$。$\kappa=1$ なら $1^{\lambda}=1$。
+- **$\kappa\le\lambda$**：Step 1 の ${}^{\lambda}\kappa\preccurlyeq{}^{\lambda}\lambda$。
+- **カントール＝ベルンシュタインの定理**（ZF）：Step 3。
+- **選択公理**：最後の「$\kappa^{\lambda}=2^{\lambda}$」という基数の等式を書くためだけに使う。対等性 ${}^{\lambda}\kappa\approx\mathcal{P}(\lambda)$ 自体は ZF の定理である。
+:::
+:::
+
+::: corollary {#set:kappa-le-two-lambda keywords="kappa^lambda = 2^lambda when kappa <= 2^lambda"}
+（AC）$\lambda$ を無限基数、$\kappa$ を $2\le\kappa\le 2^{\lambda}$ の基数とすると $\kappa^{\lambda}=2^{\lambda}$。
+:::
+
+::: example
+- $\aleph_{1}^{\aleph_{0}}=2^{\aleph_{0}}$：$2^{\aleph_{0}}$ は $\aleph_{0}$ より大きい基数（\ref{set:cantor-strict}）なので $\aleph_{1}=\aleph_{0}^{+}\le 2^{\aleph_{0}}$ であり、系が使える。
+- より一般に、$\aleph_{0}<\kappa\le 2^{\aleph_{0}}$ なら $\kappa^{\aleph_{0}}=2^{\aleph_{0}}$。一方 $\kappa>2^{\lambda}$ のときは $\kappa^{\lambda}$ は $\kappa$ の性質（共終数）に依存する：つねに $\aleph_{\omega}^{\aleph_{0}}>\aleph_{\omega}$ である（\ref{set:konig-cofinality-power}）のに対し、GCH のもとでは $\aleph_{\omega+1}^{\aleph_{0}}=\aleph_{\omega+1}$ となる（\ref{set:gch-exponentiation}）。
+:::
+
+::: proof
+\ref{set:exponent-laws} の (5), (2) と $\lambda\otimes\lambda=\lambda$（\ref{set:kappa-times-kappa}）より
+$$
+2^{\lambda}\le\kappa^{\lambda}\le(2^{\lambda})^{\lambda}=2^{\lambda\otimes\lambda}=2^{\lambda}.
+$$
+
+::: hypcheck
+- **選択公理**：$2^{\lambda}$, $\kappa^{\lambda}$ を基数として扱い、\ref{set:exponent-laws} を使うところ。
+- **$\kappa\ge 2$**：左の不等号（(5) 前半）。**$\kappa\le 2^{\lambda}$**：中央の不等号。**$\lambda$ が無限**：$\lambda\otimes\lambda=\lambda$。
+:::
+:::
+
+::: table 有限・可算の場合の冪の計算 {#set:tab-exponent-examples}
+| 冪 | 値 | 理由 |
+|---|---|---|
+| $n^{m}$（$m,n<\omega$） | 自然数の冪 | \ref{set:finite-exponentiation} |
+| $0^{0}$ | $1$ | ${}^{0}0=\{\varnothing\}$ |
+| $0^{\aleph_{0}}$, $1^{\aleph_{0}}$ | $0$, $1$ | \ref{set:exponent-laws} (4) |
+| $\aleph_{0}^{\,n}$（$1\le n<\omega$） | $\aleph_{0}$ | 指数法則と $\aleph_{0}\otimes\aleph_{0}=\aleph_{0}$ |
+| $n^{\aleph_{0}}$（$2\le n<\omega$） | $2^{\aleph_{0}}$ | \ref{set:two-to-kappa} |
+| $\aleph_{0}^{\aleph_{0}}$ | $2^{\aleph_{0}}$ | \ref{set:two-to-kappa} |
+| $\aleph_{1}^{\aleph_{0}}$ | $2^{\aleph_{0}}$ | \ref{set:kappa-le-two-lambda} |
+| $(2^{\aleph_{0}})^{n}$（$1\le n<\omega$）, $(2^{\aleph_{0}})^{\aleph_{0}}$ | $2^{\aleph_{0}}$ | $2^{\aleph_{0}\otimes n}$, $2^{\aleph_{0}\otimes\aleph_{0}}$ |
+| $\aleph_{0}^{\aleph_{1}}$, $(2^{\aleph_{0}})^{\aleph_{1}}$ | $2^{\aleph_{1}}$ | \ref{set:kappa-le-two-lambda}（$\lambda=\aleph_{1}$） |
+| $(2^{\aleph_{0}})^{2^{\aleph_{0}}}$ | $2^{2^{\aleph_{0}}}$ | \ref{set:two-to-kappa}（$\lambda=2^{\aleph_{0}}$） |
+| $2^{<\omega}$, $\aleph_{0}^{<\omega}$ | $\aleph_{0}$ | \ref{set:kappa-below-lambda-sup} |
+| $2^{<\omega_{1}}$ | $2^{\aleph_{0}}$ | \ref{set:kappa-below-lambda-sup} |
+:::
+
+::: example
+表の値を具体的な集合で読むと次のようになる（$\lvert\R\rvert=2^{\aleph_{0}}$ は \ref[実数全体の濃度]{calc:reals-cardinality}）。
+- 自然数列全体 ${}^{\omega}\omega$ と 2 進列全体 ${}^{\omega}2$ と $\R$ はすべて対等（$\aleph_{0}^{\aleph_{0}}=2^{\aleph_{0}}$）。
+- 関数 $\R\to\R$ 全体の濃度は $(2^{\aleph_{0}})^{2^{\aleph_{0}}}=2^{2^{\aleph_{0}}}=\lvert\mathcal{P}(\R)\rvert$。
+- 連続関数 $\R\to\R$ 全体の濃度は $2^{\aleph_{0}}$：連続関数は $\Q$ 上の値で決まる（$\Q$ は $\R$ で稠密）ので、$f\mapsto f\restr{\Q}$ は単射 $C(\R,\R)\to{}^{\Q}\R$ で、$\lvert{}^{\Q}\R\rvert=(2^{\aleph_{0}})^{\aleph_{0}}=2^{\aleph_{0}}$。定数関数だけで $2^{\aleph_{0}}$ 個あるので等号が成り立つ。
+- $\omega$ の有限部分集合全体は可算（$2^{<\omega}=\aleph_{0}$ と同様。特性関数を有限列で表す）だが、$\omega$ の部分集合全体は $2^{\aleph_{0}}$ 個。
+:::
+
+## 小さい指数の冪 $\kappa^{<\lambda}$ {#set:sec-kappa-below-lambda}
+
+::: definition {#set:kappa-below-lambda keywords="kappa^(<lambda), sequences of length less than lambda" index="小さい指数の冪|ちいさいしすうのべき"}
+（AC）集合 $A$ と順序数 $\beta$ に対し ${}^{<\beta}A=\bigcup_{\alpha<\beta}{}^{\alpha}A$（長さ $\beta$ 未満の $A$ の元の超限列全体）とおき、基数 $\kappa,\lambda$ に対し $\kappa^{<\lambda}=\lvert{}^{<\lambda}\kappa\rvert$ と定める。
+:::
+
+::: intuition
+長さが $\lambda$ 未満の列をすべて数えたもの。$\lambda=\omega$ なら ${}^{<\omega}\kappa$ は有限列全体（\ref{set:kappa-finite-sequences} で $\kappa^{<\omega}$ と書いた集合）であり、無限基数 $\kappa$ について基数 $\kappa^{<\omega}$ はその濃度 $\kappa$ に等しい。集合 ${}^{<\lambda}\kappa$ と基数 $\kappa^{<\lambda}$ を区別すること。$\lambda$ が後続基数 $\mu^{+}$ なら $\kappa^{<\lambda}=\kappa^{\mu}$ となる（次の命題）ので、この記号が役に立つのは主に $\lambda$ が極限基数のときである。
+:::
+
+::: proposition {#set:kappa-below-lambda-sup keywords="kappa^(<lambda) = sup kappa^theta"}
+（AC）$\lambda$ を無限基数、$\kappa\ge 2$ を基数とすると
+$$
+\kappa^{<\lambda}=\sup\{\kappa^{\theta}\mid\theta<\lambda,\ \theta\text{ は基数}\}.
+$$
+:::
+
+::: example
+- $\kappa$ が無限なら $\kappa^{<\omega}=\sup_{n<\omega}\kappa^{n}=\kappa$（\ref{set:kappa-finite-sequences} と一致）。$2\le n<\omega$ なら $n^{<\omega}=\sup_{m}n^{m}=\aleph_{0}$。
+- $\lambda=\mu^{+}$ が後続基数なら、$\lambda$ 未満の基数の最大は $\mu$ なので $\kappa^{<\mu^{+}}=\kappa^{\mu}$。特に $2^{<\omega_{1}}=2^{\aleph_{0}}$。
+- $\lambda=\aleph_{\omega}$ なら $2^{<\aleph_{\omega}}=\sup_{n}2^{\aleph_{n}}$。
+:::
+
+::: proof
+右辺を $S$ とおく。$\{\kappa^{\theta}\mid\theta<\lambda\}$ は置換公理で集合になる基数の集合なので、$S$ は基数である（\ref{set:successor-cardinal-basic}）。
+
+**Step 1（$S\le\kappa^{<\lambda}$）.** 基数 $\theta<\lambda$ について ${}^{\theta}\kappa\subseteq{}^{<\lambda}\kappa$ なので $\kappa^{\theta}\le\kappa^{<\lambda}$。上限をとって $S\le\kappa^{<\lambda}$。
+
+**Step 2（$S\ge\lambda$）.** $\alpha<\lambda$ を任意にとり $\theta=\lvert\alpha\rvert$ とおくと、$\theta\le\alpha<\lambda$ で $\theta$ は基数。$\kappa\ge 2$ より $\kappa^{\theta}\ge 2^{\theta}>\theta$（\ref{set:exponent-laws} (4)(5)）なので、$\kappa^{\theta}\ge\theta^{+}$。$\alpha\ge\theta^{+}$ なら $\theta^{+}\subseteq\alpha$ より $\theta^{+}\preccurlyeq\alpha\approx\theta$ となり、$\theta<\theta^{+}$ とカントール＝ベルンシュタインから $\theta^{+}\approx\theta$、$\theta^{+}$ が基数であることに反する。よって $\alpha<\theta^{+}\le\kappa^{\theta}\le S$。$\alpha<\lambda$ は任意なので $\lambda\le S$。特に $S$ は無限基数。
+
+**Step 3（$\kappa^{<\lambda}\le S$）.** 各 $\alpha<\lambda$ について、$\alpha\approx\lvert\alpha\rvert$ と \ref{set:function-set-bijections} (1) から $\lvert{}^{\alpha}\kappa\rvert=\kappa^{\lvert\alpha\rvert}\le S$（$\lvert\alpha\rvert<\lambda$ は基数）。${}^{<\lambda}\kappa=\bigcup_{\alpha<\lambda}{}^{\alpha}\kappa$ は、濃度 $\le S$ の集合の $\lambda$ 個（$\lambda\le S$ 個）の和なので、\ref{set:union-bound}（無限基数 $S$ に適用）より $\kappa^{<\lambda}\le S$。
+
+::: hypcheck
+- **選択公理**：$\kappa^{\theta}$, $\kappa^{<\lambda}$ の定義と、Step 3 の \ref{set:union-bound}（$\lambda$ 個の単射 ${}^{\alpha}\kappa\to S$ を同時に選ぶ）。
+- **$\kappa\ge 2$**：Step 2 で $S\ge\lambda$ を示すのに使った。$\kappa=1$ なら ${}^{<\lambda}1$ は $\lambda$ 個の元をもち（各長さに 1 つ）、右辺は $1$ なので等式は成り立たない。
+- **$\lambda$ が基数であること**：Step 2, 3 で $\lvert\alpha\rvert<\lambda$ に使った。
+:::
+:::
+
+## 連続体仮説と一般連続体仮説 {#set:sec-ch-gch}
+
+カントールは $2^{\aleph_{0}}>\aleph_{0}$ を示し（\ref{set:cantor-strict}）、$\aleph_{0}$ と $2^{\aleph_{0}}$ の間の基数を作る方法を見出せなかった。そこで次を予想した。
+
+::: definition 連続体仮説 {#set:ch keywords="continuum hypothesis, CH" index="連続体仮説|れんぞくたいかせつ"}
+（AC）**連続体仮説**（CH）とは、$2^{\aleph_{0}}=\aleph_{1}$ という主張である。
+:::
+
+::: definition 一般連続体仮説 {#set:gch keywords="generalized continuum hypothesis, GCH" index="一般連続体仮説|いっぱんれんぞくたいかせつ"}
+（AC）**一般連続体仮説**（GCH）とは、すべての順序数 $\alpha$ について $2^{\aleph_{\alpha}}=\aleph_{\alpha+1}$ という主張である。
+:::
+
+::: intuition
+$2^{\aleph_{0}}$ は実数の個数である。CH は「実数の集合は、可算であるか実数全体と同じ大きさであるかのどちらかで、中間はない」と言っている（次の命題）。GCH はこれをすべての無限基数に広げ、「冪をとると必ずちょうど次の基数になる」と主張する。
+:::
+
+::: proposition CH と GCH の言い換え {#set:ch-gch-equivalents keywords="equivalent forms of CH and GCH"}
+（AC）
+1. $\aleph_{1}\le 2^{\aleph_{0}}$ は常に成り立つ。
+2. CH $\iff$ $\aleph_{0}<\mu<2^{\aleph_{0}}$ となる基数 $\mu$ が存在しない $\iff$ $\mathcal{P}(\omega)$ の任意の部分集合 $Y$ は、可算であるか $Y\approx\mathcal{P}(\omega)$ である。
+3. GCH $\iff$ すべての無限基数 $\kappa$ について $2^{\kappa}=\kappa^{+}$ $\iff$ $\kappa<\mu<2^{\kappa}$ となる無限基数 $\kappa$ と基数 $\mu$ は存在しない。
+:::
+
+::: proof
+**(1).** $2^{\aleph_{0}}$ は基数で、\ref{set:cantor-strict} より $2^{\aleph_{0}}>\aleph_{0}$。$\aleph_{1}=\aleph_{0}^{+}$ は $\aleph_{0}$ より大きい最小の基数なので $\aleph_{1}\le 2^{\aleph_{0}}$。
+
+**(2) 前半.** より一般に、無限基数 $\kappa$ について「$2^{\kappa}=\kappa^{+}$ $\iff$ $\kappa<\mu<2^{\kappa}$ となる基数 $\mu$ がない」を示す。$2^{\kappa}>\kappa$ なので $\kappa^{+}\le 2^{\kappa}$。$\kappa^{+}<2^{\kappa}$ なら $\mu=\kappa^{+}$ が間の基数。逆に間の基数 $\mu$ があれば $\kappa^{+}\le\mu<2^{\kappa}$。$\kappa=\aleph_{0}$ とすれば (2) の最初の同値。
+
+**(2) 後半.** $Y\subseteq\mathcal{P}(\omega)$ なら $\lvert Y\rvert\le 2^{\aleph_{0}}$。CH を仮定すると $\lvert Y\rvert\le\aleph_{1}$ で、$\lvert Y\rvert\le\aleph_{0}$（可算）か $\lvert Y\rvert=\aleph_{1}=2^{\aleph_{0}}$（$Y\approx\mathcal{P}(\omega)$）のどちらか（$\aleph_{0}<\lvert Y\rvert<\aleph_{1}$ となる基数はない）。逆に後者の性質を仮定する。(1) より単射 $e\colon\aleph_{1}\to\mathcal{P}(\omega)$ があり、$Y=e[\aleph_{1}]$ は $\aleph_{1}$ と対等なので非可算、よって $Y\approx\mathcal{P}(\omega)$、すなわち $2^{\aleph_{0}}=\aleph_{1}$。
+
+**(3).** すべての無限基数はある $\aleph_{\alpha}$ に等しく（\ref{set:aleph-properties}）、$\aleph_{\alpha+1}=\aleph_{\alpha}^{+}$（\ref{set:aleph}）なので、GCH は「すべての無限基数 $\kappa$ で $2^{\kappa}=\kappa^{+}$」と同じ。後半は (2) 前半の一般形による。
+
+::: hypcheck
+- **選択公理**：$2^{\aleph_{0}}$ を基数として扱うこと、(2) 後半で $\lvert Y\rvert$ を考えること。
+- **カントールの定理**：(1) と (2) 前半の $2^{\kappa}>\kappa$。
+:::
+:::
+
+::: fact 連続体仮説の独立性 {#set:ch-independence keywords="independence of the continuum hypothesis, Gödel, Cohen" index="連続体仮説の独立性|れんぞくたいかせつのどくりつせい"}
+ZF が無矛盾ならば、ZFC $+$ GCH も ZFC $+\neg$CH も無矛盾である。前者はゲーデル（1938, 1940）が構成可能集合のクラス $\mathbf{L}$ を用いて、後者はコーエン（1963, 1964）が強制法を用いて示した。したがって CH は ZFC から証明も反証もできない。（Kunen, *Set Theory*, 第 VI 章・第 VII 章。）
+:::
+
+::: supplement
+**ZFC で決まること.** ZFC は $2^{\aleph_{0}}$ の値をほとんど決めないが、制約はある：ケーニッヒの定理から $\cf(2^{\aleph_{0}})>\aleph_{0}$（\ref{set:konig-cf-power}）なので $2^{\aleph_{0}}\neq\aleph_{\omega}$。正則基数上の関数 $\kappa\mapsto 2^{\kappa}$ については、単調性とこの制約以外に ZFC から従う制約がないことがイーストンの定理（\ref{set:easton}）で知られている。特異基数では状況が異なる（特異基数問題）。
+
+**GCH と AC.** 集合の形で「任意の無限集合 $X$ について、$X\prec Y\prec\mathcal{P}(X)$ となる $Y$ はない」と述べた GCH は、ZF において選択公理を導く（シェルピンスキ 1947）。
+
+**GCH の下の計算.** GCH のもとでは任意の基数の冪 $\kappa^{\lambda}$ が共終数だけで決まる（\ref{set:gch-exponentiation}）。
+:::
+
+## ベート数 {#set:sec-beth}
+
+::: definition ベート数 {#set:beth keywords="beth numbers, beth_alpha" index="ベート数|べーとすう"}
+（AC）順序数 $\alpha$ について $\beth_{\alpha}$ を超限再帰（\ref{set:transfinite-recursion}）で
+$$
+\beth_{0}=\omega,\qquad \beth_{\alpha+1}=2^{\beth_{\alpha}},\qquad \beth_{\gamma}=\sup\{\beth_{\alpha}\mid\alpha<\gamma\}\quad(\gamma\text{ は極限順序数})
+$$
+と定める。
+:::
+
+::: intuition
+アレフが「次の基数」をとって無限基数を漏れなく数えるのに対し、ベートは「冪をとる」ことで無限の階段を上る。$\beth_{1}=2^{\aleph_{0}}$ は実数の個数、$\beth_{2}=2^{2^{\aleph_{0}}}$ は実数の部分集合（あるいは関数 $\R\to\R$）の個数である。
+:::
+
+::: proposition ベート数の性質 {#set:beth-properties keywords="properties of beth numbers, strong limit"}
+（AC）
+1. 各 $\beth_{\alpha}$ は無限基数である。
+2. $\alpha<\beta$ ならば $\beth_{\alpha}<\beth_{\beta}$。
+3. すべての $\alpha$ について $\aleph_{\alpha}\le\beth_{\alpha}$。
+4. CH $\iff\beth_{1}=\aleph_{1}$。GCH $\iff$ すべての $\alpha$ について $\beth_{\alpha}=\aleph_{\alpha}$。
+:::
+
+::: proof
+**Step 1（(1)）.** $\alpha$ についての超限帰納法。$\beth_{0}=\omega$ は無限基数（\ref{set:omega-cardinal}）。$\beth_{\alpha}$ が無限基数なら、$\beth_{\alpha+1}=2^{\beth_{\alpha}}$ は基数で、\ref{set:cantor-strict} より $>\beth_{\alpha}\ge\omega$。$\gamma$ が極限なら $\{\beth_{\alpha}\mid\alpha<\gamma\}$ は（置換公理で）基数の集合なので、その上限 $\beth_{\gamma}$ は基数（\ref{set:successor-cardinal-basic}）で、$\ge\beth_{0}=\omega$。
+
+**Step 2（(2)）.** $\beta$ についての超限帰納法で「すべての $\alpha<\beta$ で $\beth_{\alpha}<\beth_{\beta}$」を示す。$\beta=0$ は空虚に真。$\beta=\delta+1$ なら、$\alpha<\beta$ は $\alpha\le\delta$ を意味し、帰納法の仮定または等号から $\beth_{\alpha}\le\beth_{\delta}<2^{\beth_{\delta}}=\beth_{\beta}$。$\beta$ が極限なら、$\alpha<\beta$ に対し $\alpha+1<\beta$ で、$\beth_{\alpha}<\beth_{\alpha+1}\le\beth_{\beta}$。
+
+**Step 3（(3)）.** 基数 $\mu\le\nu$ について $\mu^{+}\le\nu^{+}$ であることに注意する（$\nu^{+}$ は $\nu\ge\mu$ より大きい基数なので、$\mu$ より大きい最小の基数 $\mu^{+}$ 以上）。また基数 $\nu$ について $2^{\nu}$ は $\nu$ より大きい基数なので $\nu^{+}\le 2^{\nu}$。$\alpha$ についての超限帰納法：$\aleph_{0}=\beth_{0}$。$\aleph_{\alpha}\le\beth_{\alpha}$ なら $\aleph_{\alpha+1}=\aleph_{\alpha}^{+}\le\beth_{\alpha}^{+}\le 2^{\beth_{\alpha}}=\beth_{\alpha+1}$。$\gamma$ が極限なら $\aleph_{\gamma}=\sup_{\alpha<\gamma}\aleph_{\alpha}\le\sup_{\alpha<\gamma}\beth_{\alpha}=\beth_{\gamma}$。
+
+**Step 4（(4)）.** CH は $2^{\aleph_{0}}=\aleph_{1}$、すなわち $\beth_{1}=\aleph_{1}$ そのものである。GCH を仮定すると $\alpha$ についての帰納法で $\beth_{\alpha}=\aleph_{\alpha}$：$\alpha=0$ は定義、後続では $\beth_{\alpha+1}=2^{\beth_{\alpha}}=2^{\aleph_{\alpha}}=\aleph_{\alpha+1}$、極限では両辺とも上限。逆にすべての $\alpha$ で $\beth_{\alpha}=\aleph_{\alpha}$ なら $2^{\aleph_{\alpha}}=2^{\beth_{\alpha}}=\beth_{\alpha+1}=\aleph_{\alpha+1}$。
+
+::: hypcheck
+- **選択公理**：$2^{\beth_{\alpha}}$ を基数として定義するのに使った（再帰の後続段階）。
+- **超限再帰・超限帰納法**：定義と Step 1〜4。**置換公理**：極限段階の上限をとる集合。
+- **カントールの定理**：Step 1, 2, 3 の $2^{\nu}>\nu$。
+:::
+:::
+
+::: supplement
+**累積階層との関係.** $\lvert V_{\omega+\alpha}\rvert=\beth_{\alpha}$ が成り立つ（\ref{set:cumulative-hierarchy}）。すなわちベート数は、累積階層の各段階の大きさである。
+
+**強極限基数.** $\gamma$ が極限順序数なら $\beth_{\gamma}$ は**強極限基数**（任意の $\mu<\beth_{\gamma}$ で $2^{\mu}<\beth_{\gamma}$）である：$\mu<\beth_{\gamma}$ なら $\mu<\beth_{\alpha}$ となる $\alpha<\gamma$ があり、$2^{\mu}\le 2^{\beth_{\alpha}}=\beth_{\alpha+1}<\beth_{\gamma}$。逆に無限の強極限基数は $\omega$ か、極限順序数 $\gamma$ についての $\beth_{\gamma}$ の形をしている。これは強到達不能基数（\ref{set:inaccessible}）の定義に現れる。
+
+**不動点.** $\alpha\le\beth_{\alpha}$ はつねに成り立つ（\ref{set:beth-properties} (3) と $\alpha\le\aleph_{\alpha}$）が、$\beth_{\kappa}=\kappa$ となる $\kappa$ も存在する：$\kappa_{0}=\omega$, $\kappa_{n+1}=\beth_{\kappa_{n}}$ とし $\kappa=\sup_{n}\kappa_{n}$ とおくと、$\beth_{\kappa}=\sup_{n}\beth_{\kappa_{n}}=\sup_{n}\kappa_{n+1}=\kappa$（$\kappa_{0}=\omega<\beth_{\omega}=\kappa_{1}$ から始めて (2) を使う帰納法で $\kappa_{n}$ は狭義増加なので、$\kappa$ は極限順序数で、任意の $\alpha<\kappa$ はある $\kappa_{n}$ より小さい。極限での定義と (2) から $\beth_{\kappa}=\sup_{n}\beth_{\kappa_{n}}$）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

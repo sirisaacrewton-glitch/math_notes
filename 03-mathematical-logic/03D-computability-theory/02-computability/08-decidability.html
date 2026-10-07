@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>決定可能性と停止問題 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/02-computability/08-decidability.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 決定可能性と停止問題 {#comp:page-decidability keywords="decidable languages, A_DFA, E_DFA, EQ_DFA, A_CFG, universal Turing machine, diagonalization, A_TM undecidable, halting problem, Turing-unrecognizable language"}
+
+有限オートマトンや文脈自由文法についての基本的な問い（与えられた文字列を受理するか、受理する文字列があるか、二つが同じ言語を認識するか）は、アルゴリズムで答えられる（\ref{comp:dfa-decidable}, \ref{comp:cfg-decidable}）。一方、チューリング機械についての「与えられた入力を受理するか」という問い $A_{\mathsf{TM}}$ は、チューリング機械では決定できない（\ref{comp:atm-undecidable}）。証明は、カントールの対角線論法を機械に適用するものである。帰結として、**停止問題**（\ref{comp:halting-problem}）も決定不能で、チューリング認識可能でない言語が具体的に得られる（\ref{comp:co-atm-unrecognizable}）。同じことは、後のページで L のプログラムの指数を使って数の言葉でも示す（\ref{comp:halting-L}）。
+
+## 記法と定義の確認 {#comp:sec-dec-notation}
+
+::: notation
+- チューリング機械、受理・拒否・ループ、認識可能・決定可能、判定機、チャーチ–チューリングの提唱と高水準の記述、対象の符号化 $\langle O\rangle$ は \ref{comp:page-turing-machines} のとおり（\ref{comp:recognizable-decidable}, \ref{comp:church-turing}, \ref{comp:encoding}）。
+- DFA、正規表現、CFG、チョムスキー標準形は \ref{comp:page-finite-automata}, \ref{comp:page-context-free} のとおり。
+- 判定機の記述で「入力が正しい符号でなければ拒否する」という段は省略する（符号であるかどうかは決定可能）。
+:::
+
+## 正規言語と文脈自由言語についての決定可能な問題 {#comp:sec-dec-problems}
+
+::: theorem DFA についての決定可能な問題 {#comp:dfa-decidable keywords="A_DFA, E_DFA, EQ_DFA are decidable" index="A_DFA|えーでぃーえふえー, E_DFA|いーでぃーえふえー"}
+次の言語は決定可能である。
+1. $A_{\mathsf{DFA}}\defeq\{\langle B,w\rangle:B\text{ は DFA で }w\in L(B)\}$。
+2. $E_{\mathsf{DFA}}\defeq\{\langle B\rangle:B\text{ は DFA で }L(B)=\varnothing\}$。
+3. $EQ_{\mathsf{DFA}}\defeq\{\langle B,C\rangle:B,C\text{ は DFA で }L(B)=L(C)\}$。
+:::
+
+::: proof
+1. $B$ を $w$ の上で $\lvert w\rvert$ 段模倣し、最後の状態が受理状態かどうかで受理・拒否する。
+2. 開始状態から遷移でたどれる状態を、新しい状態が増えなくなるまで印をつけていく（高々 $\lvert Q\rvert$ 回）。受理状態に印がつかなければ受理する。$L(B)\neq\varnothing\iff$ 開始状態から受理状態に到達できる、による。
+3. 対称差 $(L(B)\cap\overline{L(C)})\cup(\overline{L(B)}\cap L(C))$ を認識する DFA $D$ を直積構成（\ref{comp:dfa-boolean}）で作り、2 の判定機で $L(D)=\varnothing$ かどうかを判定する。
+:::
+
+::: theorem CFG についての決定可能な問題 {#comp:cfg-decidable keywords="A_CFG, E_CFG decidable, every context-free language is decidable" index="A_CFG|えーしーえふじー"}
+1. $A_{\mathsf{CFG}}\defeq\{\langle G,w\rangle:G\text{ は CFG で }w\in L(G)\}$ は決定可能である。
+2. $E_{\mathsf{CFG}}\defeq\{\langle G\rangle:L(G)=\varnothing\}$ は決定可能である。
+3. 任意の文脈自由言語は決定可能である。
+:::
+
+::: proof
+1. $G$ をチョムスキー標準形に直す（\ref{comp:chomsky-normal-form} の変換は機械的に実行できる）。チョムスキー標準形の文法では、長さ $n\ge1$ の文字列の導出はちょうど $2n-1$ 段である（$A\to BC$ が $n-1$ 回、$A\to a$ が $n$ 回。導出木 \ref{comp:parse-tree-derivation} の内部頂点の数から）。長さ $2n-1$ の導出は有限個なので、すべて調べて $w$ が得られるかを判定する。$w=\varepsilon$ なら規則 $S\to\varepsilon$ があるかどうかを見る。
+2. 終端記号の文字列を導出できる変数に印をつける：まず終端記号に印をつけ、規則 $A\to U_{1}\cdots U_{k}$ の右辺がすべて印つきなら $A$ に印をつける、を新しい印が増えなくなるまで繰り返す。開始変数に印がつかなければ受理する。
+3. 文脈自由言語 $A=L(G)$ について、$G$ を固定し、入力 $w$ に対して 1 の判定機を $\langle G,w\rangle$ の上で動かす。
+:::
+
+## 万能チューリング機械と対角線論法 {#comp:sec-universal}
+
+::: proposition 万能チューリング機械 {#comp:universal-tm keywords="universal Turing machine, A_TM is Turing-recognizable" index="万能チューリング機械|ばんのうちゅーりんぐきかい"}
+$A_{\mathsf{TM}}\defeq\{\langle M,w\rangle:M\text{ は TM で }M\text{ は }w\text{ を受理する}\}$ はチューリング認識可能である。
+:::
+
+::: proof
+$U$ は入力 $\langle M,w\rangle$ に対し、$M$ の時点表示をテープに書き、$\langle M\rangle$ の遷移表を参照して一段ずつ $M$ を模倣する。$M$ が受理状態に入れば受理、拒否状態に入れば拒否する。$M$ が $w$ の上でループすれば $U$ もループする。$U$ を**万能チューリング機械**という。
+:::
+
+::: theorem $A_{\mathsf{TM}}$ の決定不能性 {#comp:atm-undecidable keywords="A_TM is undecidable, diagonalization" index="A_TM の決定不能性|えーてぃーえむのけっていふのうせい"}
+$A_{\mathsf{TM}}$ は決定可能でない。
+:::
+
+::: proof
+判定機 $H$ が $A_{\mathsf{TM}}$ を決定するとする：
+$$
+H(\langle M,w\rangle)=\begin{cases}\text{受理}&M\text{ が }w\text{ を受理する},\\\text{拒否}&\text{そうでない}.\end{cases}
+$$
+TM $D$ を、入力 $\langle M\rangle$（$M$ は TM）に対して「$H$ を $\langle M,\langle M\rangle\rangle$ の上で動かし、$H$ が受理すれば拒否し、拒否すれば受理する」ものとする。$H$ は判定機なので $D$ も判定機である。$D$ を自分自身の符号 $\langle D\rangle$ の上で動かすと、
+$$
+\begin{aligned}
+D\text{ が }\langle D\rangle\text{ を受理する}&\iff H\text{ が }\langle D,\langle D\rangle\rangle\text{ を拒否する}\\
+&\iff D\text{ が }\langle D\rangle\text{ を受理しない}
+\end{aligned}
+$$
+となり、矛盾する。
+:::
+
+::: hypcheck
+- **$H$ が判定機であること**：$D$ が必ず停止し、「受理しない $\iff$ 拒否する」と言い換えられることに使った。$A_{\mathsf{TM}}$ を認識するだけの $U$ では、$D$ がループする場合があり矛盾は生じない。
+- **符号化**：機械が自分の符号を入力として受け取れること（$\langle D\rangle$）。これが対角線論法の「対角線」である。
+:::
+
+::: remark 対角線論法との関係 {#comp:diagonalization-remark}
+TM は有限の文字列で符号化されるので可算個しかないが、言語（$\Sigma^{\ast}$ の部分集合）は非可算個ある（カントールの定理、\ref{set:cantor}）。したがって、チューリング認識可能でない言語が**存在する**。上の証明は、TM を行、入力（TM の符号）を列とする受理の表の対角線を反転させた機械 $D$ が、どの行とも異なることを示すもので、カントールの議論と同じ形をしている。
+:::
+
+## 停止問題と認識不能な言語 {#comp:sec-halting}
+
+::: theorem 停止問題の決定不能性 {#comp:halting-problem keywords="halting problem is undecidable, HALT_TM" index="停止問題|ていしもんだい"}
+$\mathit{HALT}_{\mathsf{TM}}\defeq\{\langle M,w\rangle:M\text{ は TM で }M\text{ は }w\text{ の上で停止する}\}$ は決定可能でない。
+:::
+
+::: proof
+判定機 $R$ が $\mathit{HALT}_{\mathsf{TM}}$ を決定するとする。$A_{\mathsf{TM}}$ の判定機 $S$ を次のように作る：入力 $\langle M,w\rangle$ に対し、$R$ を動かす。$R$ が拒否すれば（$M$ は $w$ の上でループする）拒否する。$R$ が受理すれば、$M$ を $w$ の上で停止するまで模倣し（必ず停止する）、$M$ が受理すれば受理、拒否すれば拒否する。$S$ は判定機で $A_{\mathsf{TM}}$ を決定し、\ref{comp:atm-undecidable} に反する。
+:::
+
+::: theorem 補集合の認識不能性 {#comp:co-atm-unrecognizable keywords="complement of A_TM is not Turing-recognizable" index="認識不能な言語|にんしきふのうなげんご"}
+$\overline{A_{\mathsf{TM}}}$ はチューリング認識可能でない。
+:::
+
+::: proof
+認識可能なら、$A_{\mathsf{TM}}$（\ref{comp:universal-tm}）とその補集合がともに認識可能となり、問題 \ref{comp:prob-decidable-complement} より $A_{\mathsf{TM}}$ は決定可能になり、\ref{comp:atm-undecidable} に反する。
+:::
+
+## 問題 {#comp:sec-dec-problems-exercises}
+
+::: problem {#comp:prob-infinite-dfa}
+$\mathit{INF}_{\mathsf{DFA}}\defeq\{\langle B\rangle:L(B)\text{ は無限集合}\}$ は決定可能であることを示せ。
+:::
+
+::: solution
+$B$ の状態数を $k$ とする。$L(B)$ が無限であることと、長さが $k$ 以上 $2k$ 未満の文字列を $B$ が受理することは同値である。$\Leftarrow$：長さ $\ge k$ の受理される文字列は反復補題（\ref{comp:pumping-regular}、反復長 $k$）で繰り返せるので無限個ある。$\Rightarrow$：長さ $\ge k$ の受理される文字列のうち最短のものを $s$ とする。$\lvert s\rvert\ge2k$ なら、$s$ の最初の $k$ 文字を読む間に状態が繰り返すので、その間の長さ $\le k$ の部分を除いた文字列も受理され（反復補題の $i=0$）、長さは $\ge k$ でより短く、最短性に反する。長さ $k$ 以上 $2k$ 未満の文字列は有限個なので、すべて調べればよい。
+:::
+
+::: problem {#comp:prob-etm-co-recognizable}
+$E_{\mathsf{TM}}\defeq\{\langle M\rangle:L(M)=\varnothing\}$ の補集合はチューリング認識可能であることを示せ。（$E_{\mathsf{TM}}$ 自身が決定不能であることは次のページで示す。）
+:::
+
+::: solution
+入力 $\langle M\rangle$ に対し、$i=1,2,\dots$ について、文字列 $s_{1},\dots,s_{i}$ の上で $M$ を $i$ 段ずつ模倣し、どれかが受理すれば受理する（\ref{comp:enumerator} の証明のダブテイル）。$L(M)\neq\varnothing$ ならいつか受理し、$L(M)=\varnothing$ なら受理しない。
+:::
+
+::: supplement
+**前提の検討.**
+- \ref{comp:atm-undecidable} の証明はチャーチ–チューリングの提唱を使わない：$D$ は $H$ から具体的に作れる TM である。一方、「$A_{\mathsf{TM}}$ はどんなアルゴリズムでも決定できない」と読むには提唱を使う。
+- $A_{\mathsf{TM}}$ は認識可能だが決定可能でなく、$\overline{A_{\mathsf{TM}}}$ は認識可能でもない。決定可能 $\subsetneq$ 認識可能 であり、認識可能な言語のクラスは補集合で閉じていない。
+
+**関連する結果.**
+- *不完全性定理との関係.* 「算術の真な文全体」が決定不能であることや、ゲーデルの第一不完全性定理も、停止問題から導けることが知られている（$M$ が $w$ の上で停止することは算術の $\Sigma_{1}$ 文で表せるので、算術の健全で完全な認識可能な公理系があれば $\mathit{HALT}_{\mathsf{TM}}$ が決定可能になる）。本サイトの不完全性定理の系列（\ref{pt:page-diagonal-first-incompleteness}）は対角化定理による証明で、こちらとは独立である。
+- *ローヴェアの不動点定理.* 対角線論法の共通の形は、圏論のローヴェアの不動点定理（\ref{cat:lawvere-fixed-point}）として抽象化される。
+
+**高い視点から：自己言及の禁止.** $D$ は「自分についての予言を必ず裏切る」機械である。もし完全な予言者 $H$ がいれば、予言を聞いてから逆のことをする天邪鬼 $D$ を作れるので、予言者は存在しえない。この論法は、カントールの定理（集合はその冪集合と対応しない）、ラッセルの逆理、ゲーデルの不完全性定理、タルスキの真理の定義不能性と同じ骨格をもつ。決定不能性は、機械の能力不足ではなく、「自分自身を入力として扱える」ほど強い体系が必然的に抱える限界である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

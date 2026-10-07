@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>反復強制法の一般論 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/08-iterated-forcing/05-iterated-forcing.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 反復強制法の一般論 {#set:page-iterated-forcing keywords="iterated forcing, two-step iteration, P * pi, name for a partial order, finite support iteration, countable support iteration, full limit, support, iteration preserves ccc"}
+
+$\PP$ で $M$ を拡大し、さらに $M[G]$ の中の p.o. $\mathbb{Q}$ で拡大する——この二段階の拡大を、$M$ の中の一つの p.o. $\PP*\pi$ による一段階の拡大として実現する。$\mathbb{Q}\notin M$ でもよい点が積（\ref{set:page-products}）との違いである。これを超限回繰り返したものが**反復強制**であり、極限段階では条件の「台」を指定されたイデアルに制限する。主な結果は、二段階反復の分解定理（\ref{set:two-step-factor}）、κ-c.c. の二段階での保存（\ref{set:two-step-cc}）と有限台反復での保存（\ref{set:fs-iteration-cc}）、および「小さい集合は途中の段階に現れる」こと（\ref{set:iteration-small-sets}）である。（Kunen 第 VIII 章 §5 に対応する。）
+
+## 記法と定義の確認 {#set:sec-iteration-notation}
+
+::: notation
+- $M$ は $\ZFC$ の c.t.m.。p.o.（強制法の意味の半順序、\ref{set:forcing-poset}）は狭義でなくてよい：$p\le p'\le p$ でも $p=p'$ とは限らない。
+- $M^{\PP}$ は $\PP$-名前の全体、$\tau_{G}$ または $\mathrm{val}(\tau,G)$ は名前の値、$\check{x}$ は標準的な名前（\ref{set:m-p-names}, \ref{set:check-name}）。$\Vdash$ は強制関係で、強制定理（\ref{set:forcing-theorem}）を断りなく使う：$M[G]\models\varphi(\tau_{G})$ であることと、ある $p\in G$ で $p\Vdash\varphi(\tau)$ となることは同値で、$\Vdash$（固定した $\varphi$ について）は $M$ で定義可能である。
+- 最大原理（\ref{set:maximal-principle}）、完全な埋め込みと縮約（\ref{set:complete-embedding}）、完全な埋め込みでジェネリックを引き戻せること（\ref{set:complete-embedding-generic}）、同型な p.o. は同じ拡大を与えること（\ref{set:isomorphism-same-extension}）は第 VII 章のとおり。
+- $M[G]$ の最小性（\ref{set:m-g-minimal}）、条件の下で稠密な集合とジェネリック（\ref{set:dense-below}, \ref{set:generic-dense-below}）、ジェネリックなフィルターの存在（\ref{set:generic-exists}）。
+- $\theta$-c.c.（\ref{set:kappa-cc}）と、$\theta$-c.c. は $\theta$ 以上の共終数を保つこと（\ref{set:kappa-cc-preserves}）。Δ システム補題（\ref{set:delta-system-general}）、イデアル（\ref{set:ideal}）。
+- 積 p.o. $\PP\times\mathbb{Q}$ と積の補題（\ref{set:product-po}, \ref{set:product-lemma}）。
+- $\tau\le_{\pi}\sigma$ は「$\langle\tau,\sigma\rangle$（の標準的な順序対の名前）が $\le_{\pi}$ に属する」ことの略記である。
+:::
+
+## p.o. の名前と二段階反復 {#set:sec-two-step}
+
+$\PP$ を $M$ の p.o.、$G$ を $M$ 上 $\PP$-ジェネリック、$\mathbb{Q}$ を $M[G]$ の p.o. とする。$M$ の p.o. $\mathbb{R}$ で、$M$ を $\mathbb{R}$ で拡大したものが $M[G]$ を $\mathbb{Q}$ で拡大したものと同じになるものを探す。$\mathbb{Q}\in M$ なら $\mathbb{R}=\PP\times\mathbb{Q}$ でよいが、$\mathbb{Q}\notin M$ なら $\PP\times\mathbb{Q}\notin M$ である。そこで $\PP$ と、$\mathbb{Q}$ の $M$ の中の $\PP$-名前から $\mathbb{R}$ を作る。
+
+扱う名前は制限してよい。$\varphi(x)$ を「$x$ は $\alpha$ の半順序で最大元 $0$ をもつ」の略とする（$\mathbb{Q}$ は $M[G]$ でこの形の p.o. と同型であり、同型な p.o. は同じ拡大を与える）。$\mathbb{Q}$ の順序の名前 $\rho$ について $\mathbf{1}\Vdash\varphi(\rho)$ とは限らないが、
+$$
+\mathbf{1}\Vdash\exists x\,(\varphi(x)\land(\varphi(\rho)\to x=\rho))
+$$
+であり、最大原理より $\mathbf{1}\Vdash\varphi(\sigma)\land(\varphi(\rho)\to\sigma=\rho)$ となる名前 $\sigma$ がある。$\varphi(\rho_{G})$ は $M[G]$ で真なので $\sigma_{G}=\rho_{G}$ である。このように、「$\mathbf{1}$ によって p.o. であることが強制され、最大元の名前も指定された」名前だけを考えてよい。台集合が順序数であることは何も単純にしないので、公式の定義には次だけを含める。
+
+::: definition p.o. の名前 {#set:po-name keywords="P-name for a partial order" index="p.o. の名前|ぴーおーのなまえ"}
+$\PP$ を $M$ の p.o. とする。**p.o. の $\PP$-名前**とは、$\PP$-名前の三つ組 $\langle\pi,\pi',\pi''\rangle\in M$ で、$\pi''\in\dom(\pi)$ かつ
+$$
+\mathbf{1}_{\PP}\Vdash_{\PP}\bigl[\pi''\in\pi\land(\pi'\text{ は }\pi\text{ の半順序で最大元 }\pi''\text{ をもつ})\bigr]
+$$
+を満たすものをいう。$\langle\pi,\pi',\pi''\rangle$ を単に $\pi$ と書き、$\pi'$ を $\le_{\pi}$、$\pi''$ を $\mathbf{1}_{\pi}$ と書く。
+:::
+
+::: definition 二段階反復 {#set:two-step-iteration keywords="two-step iteration, P * pi" index="二段階反復|にだんかいはんぷく, 反復強制|はんぷくきょうせい"}
+$\PP$ を $M$ の p.o.、$\pi$ を p.o. の $\PP$-名前とする。$\PP*\pi$ は、台集合
+$$
+\{\langle p,\tau\rangle:p\in\PP\land\tau\in\dom(\pi)\land p\Vdash\tau\in\pi\}
+$$
+と順序
+$$
+\langle p,\tau\rangle\le\langle q,\sigma\rangle\iff p\le_{\PP}q\land p\Vdash\tau\le_{\pi}\sigma
+$$
+をもち、$\mathbf{1}_{\PP*\pi}\defeq\langle\mathbf{1}_{\PP},\mathbf{1}_{\pi}\rangle$ とする p.o. である。$i\colon\PP\to\PP*\pi$ を $i(p)\defeq\langle p,\mathbf{1}_{\pi}\rangle$ で定める。
+:::
+
+$\PP*\pi$ が p.o. であることの確認は \ref{set:prob-two-step-po} とする。$\PP*\pi\in M$ であることは、$\Vdash$ が $M$ で定義可能であることから従う。
+
+**積との関係.** $\mathbb{Q}\in M$ が p.o. で $\pi=\check{\mathbb{Q}}$（正確には $\langle\check{\mathbb{Q}},(\le_{\mathbb{Q}})\check{},(\mathbf{1}_{\mathbb{Q}})\check{}\rangle$）なら、$\PP*\pi$ は $\PP\times\mathbb{Q}$ と同型である（\ref{set:prob-two-step-product}）。この意味で積は二段階反復の特別な場合である。
+
+**狭義でない p.o. が自然に現れる例.** Kunen は次の例を挙げている。$\PP$ が基数を保つとし、$\mathbb{Q}=\mathrm{Fn}(\kappa,2,\omega_{1})^{M[G]}$ とする。$\mathbb{Q}$ を順序数の半順序として表すこともできるが、より自然なのは、$M$ で
+$$
+S\defeq\{\tau:(\mathbf{1}\Vdash_{\PP}\tau\in\mathrm{Fn}(\check{\kappa},2,\omega_{1}))\land\dom(\tau)\subseteq\dom((\kappa\times2)\check{})\}
+$$
+と定義して $\pi=S\times\{\mathbf{1}_{\PP}\}$ とすることである（テキストの OCR が一部崩れているため、$S$ の第二の条件は文脈から復元した。この条件は $S$ が集合になることを保証するためのものと読める）。このとき $\mathbf{1}_{\pi}$ は名前 $0$（空集合の名前で、値は $\mathrm{Fn}$ の最大元 $\varnothing$）である。$S=\dom(\pi)$ には、ある $p$ について $p\Vdash\tau=0$ となる $\tau\neq0$ があり、そのとき $\langle p,\tau\rangle\le\langle p,\mathbf{1}_{\pi}\rangle\le\langle p,\tau\rangle$ だが $\langle p,\tau\rangle\neq\langle p,\mathbf{1}_{\pi}\rangle$ である。p.o. を狭義に限らなかった（\ref{set:forcing-poset}）のでこれは問題にならない。MA からの証明や第 VII 章の通常の強制で「自然に」現れる p.o. は狭義だが、反復強制で「自然に」現れる p.o. はそうとは限らない。
+
+::: lemma 二段階反復の基本性質 {#set:two-step-basic}
+\ref{set:two-step-iteration} の記号のもとで次が成り立つ。
+1. $\forall p,p'\in\PP\,(p\le p'\to\langle p,\mathbf{1}_{\pi}\rangle\le\langle p',\mathbf{1}_{\pi}\rangle)$。
+2. $i(\mathbf{1}_{\PP})=\mathbf{1}_{\PP*\pi}$。
+3. $\forall\langle p,\tau\rangle,\langle p',\tau'\rangle\in\PP*\pi\,(p\perp p'\to\langle p,\tau\rangle\perp\langle p',\tau'\rangle)$。
+4. $\forall\langle p,\tau\rangle\in\PP*\pi\;\forall p'\in\PP\,(p\perp p'\leftrightarrow\langle p,\tau\rangle\perp\langle p',\mathbf{1}_{\pi}\rangle)$。
+5. $\forall p,p'\in\PP\,(p\perp p'\leftrightarrow i(p)\perp i(p'))$。
+6. $i\colon\PP\to\PP*\pi$ は完全な埋め込みである。
+:::
+
+::: proof
+まず、p.o. の名前の定義より、すべての $p\in\PP$ について $p\Vdash\mathbf{1}_{\pi}\in\pi$ であり、$p\Vdash\tau\in\pi$ なら $p\Vdash\tau\le_{\pi}\tau$ かつ $p\Vdash\tau\le_{\pi}\mathbf{1}_{\pi}$ である（$\mathbf{1}\Vdash$「$\le_{\pi}$ は反射的で $\mathbf{1}_{\pi}$ は最大元」と、強制の単調性による）。特に $\langle p,\mathbf{1}_{\pi}\rangle\in\PP*\pi$ なので $i$ は well-defined である。
+
+1. $p\le p'$ で、$p\Vdash\mathbf{1}_{\pi}\le_{\pi}\mathbf{1}_{\pi}$。定義より $\langle p,\mathbf{1}_{\pi}\rangle\le\langle p',\mathbf{1}_{\pi}\rangle$。
+2. 定義そのものである。
+3. 対偶を示す。$\langle q,\rho\rangle$ が $\langle p,\tau\rangle$ と $\langle p',\tau'\rangle$ の共通の拡張なら、順序の定義の第一成分より $q\le p$ かつ $q\le p'$ なので $p$ と $p'$ は両立する。
+4. 左から右は 3 で $\tau'=\mathbf{1}_{\pi}$ としたもの。右から左を対偶で示す。$p''$ が $p$ と $p'$ の共通の拡張とする。$p''\le p$ と $p\Vdash\tau\in\pi$ より $p''\Vdash\tau\in\pi$ なので $\langle p'',\tau\rangle\in\PP*\pi$。$p''\Vdash\tau\le_{\pi}\tau$ より $\langle p'',\tau\rangle\le\langle p,\tau\rangle$、$p''\Vdash\tau\le_{\pi}\mathbf{1}_{\pi}$ より $\langle p'',\tau\rangle\le\langle p',\mathbf{1}_{\pi}\rangle$。したがって両立する。
+5. 4 で $\tau=\mathbf{1}_{\pi}$ としたもの。
+6. \ref{set:complete-embedding} の 1 は本補題の 1、2 は 5 である。3（縮約の存在）について：$\langle p,\tau\rangle\in\PP*\pi$ に対し $p$ が縮約である。実際 $p'\le p$ なら $p'$ と $p$ は両立する（$p'$ 自身が共通の拡張）ので、4 より $i(p')=\langle p',\mathbf{1}_{\pi}\rangle$ と $\langle p,\tau\rangle$ は両立する。
+:::
+
+積と同様、主結果は「$\PP*\pi$ で拡大すること」が「$\PP$ で拡大し、次に $\pi$ が名指す p.o. で拡大すること」と同値であることである。積と違って $\PP$ と $\pi$ の間に対称性はない。$\PP\times\mathbb{Q}$ と $\mathbb{Q}\times\PP$ は同型だが、$\pi*\PP$ は定義されず、$\pi$ で先に拡大するという考えは意味をなさない。
+
+::: definition {#set:two-step-product-filter}
+\ref{set:two-step-iteration} の記号のもとで、$G$ が $M$ 上 $\PP$-ジェネリックで $H\subseteq\pi_{G}$ のとき
+$$
+G*H\defeq\{\langle p,\tau\rangle\in\PP*\pi:p\in G\land\tau_{G}\in H\}.
+$$
+:::
+
+::: theorem 二段階反復の分解 {#set:two-step-factor keywords="two-step iteration factor theorem, M[K] = M[G][H]" index="二段階反復の分解|にだんかいはんぷくのぶんかい"}
+$\PP$ を $M$ の p.o.、$\pi$ を p.o. の $\PP$-名前、$K$ を $M$ 上 $\PP*\pi$-ジェネリックとする。$G\defeq i^{-1}[K]$、
+$$
+H\defeq\{\tau_{G}:\tau\in\dom(\pi)\land\exists q\,(\langle q,\tau\rangle\in K)\}
+$$
+とおく。このとき $G$ は $M$ 上 $\PP$-ジェネリック、$H$ は $M[G]$ 上 $\pi_{G}$-ジェネリックで、$K=G*H$ かつ $M[K]=M[G][H]$。
+:::
+
+::: proof
+以下、$K$ がフィルターであること（上に閉じ、任意の二元が $K$ の中に共通の拡張をもつ）を繰り返し使う。また $\langle q,\tau\rangle\in K$ なら $q\in G$ である：$\langle q,\tau\rangle\le\langle q,\mathbf{1}_{\pi}\rangle=i(q)$（$q\Vdash\tau\le_{\pi}\mathbf{1}_{\pi}$）で $K$ は上に閉じているからである。
+
+**段階 1：$G$ のジェネリック性.** $i$ は完全な埋め込み（\ref{set:two-step-basic} の 6）なので、\ref{set:complete-embedding-generic} より $G$ は $M$ 上 $\PP$-ジェネリックである。
+
+**段階 2：$H\subseteq\pi_{G}$ かつ $\mathbf{1}_{\pi_{G}}\in H$.** $\langle q,\tau\rangle\in K$ なら $q\in G$ かつ $q\Vdash\tau\in\pi$ なので $\tau_{G}\in\pi_{G}$。また $\mathbf{1}_{\PP*\pi}\in K$ なので $(\mathbf{1}_{\pi})_{G}\in H$。
+
+**段階 3：$H$ は上に閉じている.** $\tau_{G}\in H$ とし、$\langle q,\tau\rangle\in K$ を固定する。$\sigma\in\dom(\pi)$ で $\sigma_{G}\in\pi_{G}$ かつ $\tau_{G}\le\sigma_{G}$（$\pi_{G}$ の順序 $(\le_{\pi})_{G}$ で）とする。強制定理より $p\in G$ で $p\Vdash\tau\le_{\pi}\sigma$ となるものがある。$i(p)=\langle p,\mathbf{1}_{\pi}\rangle\in K$ と $\langle q,\tau\rangle\in K$ の $K$ の中の共通の拡張 $\langle r,\rho\rangle$ をとる。このとき $r\le p$ より $r\Vdash\tau\le_{\pi}\sigma$、$\langle r,\rho\rangle\le\langle q,\tau\rangle$ より $r\Vdash\rho\le_{\pi}\tau$。$\mathbf{1}\Vdash$「$\le_{\pi}$ は $\pi$ 上の推移的な関係」なので、$r\Vdash\rho\le_{\pi}\sigma$ かつ $r\Vdash\sigma\in\pi$（$\le_{\pi}$ は $\pi\times\pi$ の部分集合であることが強制されている）。よって $\langle r,\sigma\rangle\in\PP*\pi$ で、$r\le r$ と $r\Vdash\rho\le_{\pi}\sigma$ より $\langle r,\rho\rangle\le\langle r,\sigma\rangle$。$K$ は上に閉じているので $\langle r,\sigma\rangle\in K$、したがって $\sigma_{G}\in H$。
+
+**段階 4：$H$ の任意の二元は $H$ の中に共通の拡張をもつ.** （Kunen は省略している。）$\tau_{G},\sigma_{G}\in H$ とし、$\langle q,\tau\rangle,\langle q',\sigma\rangle\in K$ を固定する。$K$ の中の共通の拡張 $\langle r,\rho\rangle$ をとると、$\rho_{G}\in H$、$r\in G$、$r\Vdash\rho\le_{\pi}\tau\land\rho\le_{\pi}\sigma$ なので、$M[G]$ で $\rho_{G}\le\tau_{G}$ かつ $\rho_{G}\le\sigma_{G}$。
+
+**段階 5：$H$ は $M[G]$ の稠密集合と交わる.** （\ref{set:product-lemma} の証明と同様。）$D\in M[G]$ を $\pi_{G}$ で稠密とする。$D=\delta_{G}$ となる $\delta\in M^{\PP}$ と、$p\Vdash$「$\delta$ は $\pi$ で稠密」（すなわち $\delta\subseteq\pi\land\forall x\in\pi\,\exists y\in\delta\,(y\le_{\pi}x)$）となる $p\in G$ をとる。
+$$
+D'\defeq\{\langle q,\tau\rangle\in\PP*\pi:q\Vdash\tau\in\delta\}
+$$
+とおくと $D'\in M$（$\Vdash$ の定義可能性）。$D'$ が $\langle p,\mathbf{1}_{\pi}\rangle$ の下で稠密であることを示す（Kunen は「容易」としている）。$\langle p_{0},\tau_{0}\rangle\le\langle p,\mathbf{1}_{\pi}\rangle$ とすると $p_{0}\le p$ なので
+$$
+p_{0}\Vdash\exists y\in\pi\,(y\in\delta\land y\le_{\pi}\tau_{0}).
+$$
+$p_{0}\in G'$ となる $M$ 上 $\PP$-ジェネリックな $G'$ をとる（\ref{set:generic-exists}。$M$ は可算）。$M[G']$ で $y\in\pi_{G'}$, $y\in\delta_{G'}$, $y\le\tau_{0,G'}$ となる $y$ があり、名前の値の定義より $y=\rho_{G'}$ となる $\rho\in\dom(\pi)$ がある。強制定理より $q_{1}\in G'$ で $q_{1}\Vdash\rho\in\delta\land\rho\le_{\pi}\tau_{0}$ となるものがあり、$G'$ はフィルターなので $q_{1}$ と $p_{0}$ の共通の拡張 $q\in G'$ がとれる。$q\Vdash\rho\in\delta$ と $q\Vdash\delta\subseteq\pi$（$q\le p$）より $q\Vdash\rho\in\pi$、よって $\langle q,\rho\rangle\in\PP*\pi$ であり、$\langle q,\rho\rangle\le\langle p_{0},\tau_{0}\rangle$ かつ $\langle q,\rho\rangle\in D'$。
+$\langle p,\mathbf{1}_{\pi}\rangle=i(p)\in K$ なので、\ref{set:generic-dense-below} より $\langle q,\tau\rangle\in K\cap D'$ がとれる。$q\in G$ と $q\Vdash\tau\in\delta$ より $\tau_{G}\in D$、定義より $\tau_{G}\in H$。よって $H\cap D\neq\varnothing$。
+
+**段階 6：$K=G*H$.** $\langle p,\tau\rangle\in K$ なら、冒頭の注意より $p\in G$、$H$ の定義より $\tau_{G}\in H$ なので $\langle p,\tau\rangle\in G*H$。逆に $\langle p,\tau\rangle\in G*H$ とする。$p\in G$ より $\langle p,\mathbf{1}_{\pi}\rangle\in K$。$\tau_{G}\in H$ なので、$\langle q,\sigma\rangle\in K$ かつ $\sigma_{G}=\tau_{G}$ となる $\sigma\in\dom(\pi)$ がある（Kunen は $\sigma=\tau$ として書いているが、$H$ は値で定義されているので一般には $\sigma\neq\tau$ でありうる。ここではその点を補う）。$\sigma_{G}=\tau_{G}$ より $s\Vdash\sigma=\tau$ となる $s\in G$ がある。$\langle p,\mathbf{1}_{\pi}\rangle$, $\langle q,\sigma\rangle$, $\langle s,\mathbf{1}_{\pi}\rangle$ はすべて $K$ に属するので、$K$ の中の共通の拡張 $\langle r,\rho\rangle$ がある（二つずつ二回とる）。このとき $r\le p$、$r\le s$ より $r\Vdash\sigma=\tau$、$r\Vdash\rho\le_{\pi}\sigma$ なので $r\Vdash\rho\le_{\pi}\tau$。よって $\langle r,\rho\rangle\le\langle p,\tau\rangle$ で、$K$ は上に閉じているから $\langle p,\tau\rangle\in K$。
+
+**段階 7：$M[K]=M[G][H]$.** $G=i^{-1}[K]$ と $H$ は $K$ と $M$ の元（$i$, $\pi$）から $M[K]$ の中で定義されるので $G,H\in M[K]$。$M[K]$ は $\ZFC$ の推移的なモデルで $M\subseteq M[K]$、$G\in M[K]$ なので、\ref{set:m-g-minimal} より $M[G]\subseteq M[K]$。再び \ref{set:m-g-minimal}（$M[G]$ を基礎モデルとして）より $M[G][H]\subseteq M[K]$。逆に、段階 6 より $K=G*H$ は $G$, $H$, $\PP*\pi$ から $M[G][H]$ の中で定義されるので $K\in M[G][H]$ で、$M[K]\subseteq M[G][H]$。
+:::
+
+::: hypcheck
+- 段階 3〜5 と段階 6 で、$\pi$ が p.o. の名前であること（$\mathbf{1}$ が半順序性と最大元を強制すること）を使った。これがないと $\langle p,\mathbf{1}_{\pi}\rangle\in\PP*\pi$ すら言えない。
+- 段階 5 でジェネリックなフィルター $G'$ の存在（$M$ の可算性）を使ったが、これは「$p_{0}\Vdash\exists y\in\pi\,\psi(y)$ なら $q\le p_{0}$ と $\rho\in\dom(\pi)$ で $q\Vdash\psi(\rho)$ となるものがある」ことを得るための便宜であり、強制関係の定義から直接示すこともできる（本ページでは行わない）。
+:::
+
+この定理の逆（$G$ が $\PP$-ジェネリックで $H$ が $\pi_{G}$-ジェネリックなら $G*H$ は $\PP*\pi$-ジェネリック）も成り立つが、以下では使わないので Kunen は演習としている（本サイトでは証明していない）。積の場合は逆も \ref{set:product-lemma} で示したが、\ref{set:page-cohen-model}〜\ref{set:page-easton-forcing} の応用では実は使っていない。
+
+## 二段階反復と鎖条件 {#set:sec-two-step-cc}
+
+MA + ¬CH の無矛盾性（\ref{set:page-ma-consistency}）で重要になるのは、c.c.c. な p.o. を反復した結果が c.c.c. であることである。まず補題を示す。
+
+::: lemma 小さい集合は有界 {#set:cc-bounded-name}
+$M$ で $\kappa$ は正則、$\PP$ は $\kappa$-c.c.、$\sigma$ は $\PP$-名前で
+$$
+\mathbf{1}\Vdash(\sigma\subseteq\check{\kappa}\land\lvert\sigma\rvert<\check{\kappa})
+$$
+とする。このとき、ある $\beta<\kappa$ で $\mathbf{1}\Vdash\sigma\subseteq\check{\beta}$ となる。
+:::
+
+::: proof
+$M$ の中で
+$$
+E\defeq\{\alpha<\kappa:\exists p\in\PP\,(p\Vdash\check{\alpha}=\textstyle\bigcup\sigma)\}
+$$
+とおき（$\bigcup\sigma$ は $\sigma$ の上限）、各 $\alpha\in E$ について $p_{\alpha}\Vdash\check{\alpha}=\bigcup\sigma$ となる $p_{\alpha}$ を選ぶ（$M$ の中の AC）。$\alpha\neq\alpha'$ なら $p_{\alpha}\perp p_{\alpha'}$：共通の拡張があれば、それは $\check{\alpha}=\bigcup\sigma=\check{\alpha}'$ を強制するが、$\alpha\neq\alpha'$ なので $\check{\alpha}\neq\check{\alpha}'$ はどの条件でも強制されており矛盾である。よって $\{p_{\alpha}:\alpha\in E\}$ は反鎖で、$\alpha\mapsto p_{\alpha}$ は単射なので、$\kappa$-c.c. より $\lvert E\rvert<\kappa$。$\kappa$ は正則なので $E\subseteq\beta$ となる $\beta<\kappa$ がある。
+
+$G$ を $M$ 上 $\PP$-ジェネリックとする。\ref{set:kappa-cc-preserves} より $\kappa$ は $M[G]$ でも正則であり（**ここで $\kappa$ の正則性と $\kappa$-c.c. を使う**）、仮定より $M[G]$ で $\sigma_{G}\subseteq\kappa$ かつ $\lvert\sigma_{G}\rvert<\kappa$ なので、$\alpha\defeq\bigcup\sigma_{G}<\kappa$。強制定理より $p\in G$ で $p\Vdash\check{\alpha}=\bigcup\sigma$ となるものがあるので $\alpha\in E$、よって $\alpha<\beta$。$\sigma_{G}$ の元はすべて $\alpha$ 以下なので $\sigma_{G}\subseteq\alpha+1\subseteq\beta$。
+
+$G$ は任意だったので、強制定理より $\mathbf{1}\Vdash\sigma\subseteq\check{\beta}$（そうでなければ $p\Vdash\neg(\sigma\subseteq\check{\beta})$ となる $p$ があり、$p$ を含むジェネリックで矛盾する）。
+:::
+
+::: lemma 二段階反復は κ-c.c. を保つ {#set:two-step-cc keywords="two-step iteration preserves kappa-cc" index="二段階反復と鎖条件|にだんかいはんぷくとさじょうけん"}
+$\PP$ を $M$ の p.o.、$\pi$ を p.o. の $\PP$-名前、$\kappa$ を $M$ の正則基数とし、（$\PP$ は $\kappa$-c.c.）$^{M}$ かつ $\mathbf{1}\Vdash(\pi\text{ は }\check{\kappa}\text{-c.c.})$ とする。このとき（$\PP*\pi$ は $\kappa$-c.c.）$^{M}$。
+:::
+
+::: proof
+背理法。$M$ に $\PP*\pi$ の反鎖 $\{\langle p_{\xi},\tau_{\xi}\rangle:\xi<\kappa\}$（添字について単射）があるとする。$\sigma\defeq\{\langle\check{\xi},p_{\xi}\rangle:\xi<\kappa\}$ とおくと $\sigma\in M^{\PP}$ で $\mathbf{1}\Vdash\sigma\subseteq\check{\kappa}$。
+
+$G$ を $M$ 上 $\PP$-ジェネリックとすると $\sigma_{G}=\{\xi<\kappa:p_{\xi}\in G\}$。$M[G]$ で、$\xi\in\sigma_{G}$ について $(\tau_{\xi})_{G}\in\pi_{G}$（$p_{\xi}\in G$ と $p_{\xi}\Vdash\tau_{\xi}\in\pi$）であり、$\xi\neq\eta$ が $\sigma_{G}$ に属するなら $(\tau_{\xi})_{G}\perp(\tau_{\eta})_{G}$（$\pi_{G}$ で）であることを示す。共通の拡張があったとすると、それは $\rho_{G}$（$\rho\in\dom(\pi)$）の形で、強制定理より $q\in G$ で $q\Vdash\rho\le_{\pi}\tau_{\xi}\land\rho\le_{\pi}\tau_{\eta}$ となるものがあり、$G$ はフィルターなので $q\le p_{\xi}$, $q\le p_{\eta}$ としてよい。$q\Vdash\rho\in\pi$ なので $\langle q,\rho\rangle\in\PP*\pi$ で、これは $\langle p_{\xi},\tau_{\xi}\rangle$ と $\langle p_{\eta},\tau_{\eta}\rangle$ の共通の拡張となり、反鎖であることに矛盾する。特に $\xi\mapsto(\tau_{\xi})_{G}$ は $\sigma_{G}$ 上単射（両立しない元は相異なる）で、像は $\pi_{G}$ の反鎖である。
+
+$M[G]$ で $\pi_{G}$ は $\kappa$-c.c. なので $\lvert\sigma_{G}\rvert<\kappa$。$G$ は任意なので $\mathbf{1}\Vdash\lvert\sigma\rvert<\check{\kappa}$。\ref{set:cc-bounded-name}（**$\PP$ の $\kappa$-c.c. と $\kappa$ の正則性を使う**）より、$\mathbf{1}\Vdash\sigma\subseteq\check{\beta}$ となる $\beta<\kappa$ がある。しかし $\langle\check{\beta},p_{\beta}\rangle\in\sigma$ より $p_{\beta}\Vdash\check{\beta}\in\sigma$ であり、$p_{\beta}\Vdash\check{\beta}\in\check{\beta}$ となって矛盾する。
+:::
+
+特別な場合として $\mathbb{Q}\in M$、$\pi=\check{\mathbb{Q}}$ とすると、\ref{set:two-step-cc} は「$\PP$ が $M$ で c.c.c. で $\mathbf{1}\Vdash(\check{\mathbb{Q}}$ は c.c.c.$)$ なら $\PP\times\mathbb{Q}$ は $M$ で c.c.c.」を与える。これは「c.c.c. な p.o. の積は c.c.c.」を**言っていない**：$\mathbb{Q}$ は $M$ で c.c.c. でも、$\PP$-ジェネリック拡大で c.c.c. でなくなることがありうる（c.c.c. は絶対的でない）。たとえばススリン木 $T$（を逆順にした p.o.）は $M$ で c.c.c. だが、$T$ 自身で強制した拡大では $T$ に共終な枝ができ、枝の各点の枝に属さない直後の点を集めると非可算反鎖が得られる（\ref{set:destroy-suslin-tree}）。したがって $\PP=\mathbb{Q}=T$ では \ref{set:two-step-cc} の仮定が満たされない。
+
+## 超限回の反復 {#set:sec-transfinite-iteration}
+
+$\alpha$ 段階の反復を考える。$\alpha=1$ は通常の強制、$\alpha=2$ は上の $\PP*\pi$ である。$\alpha=3$ なら、$\PP_{1}\in M$ と p.o. の $\PP_{1}$-名前 $\pi_{1}$ から $\PP_{2}=\PP_{1}*\pi_{1}$、さらに $\PP_{2}$-名前 $\pi_{2}$ から $\PP_{3}=\PP_{2}*\pi_{2}$ を作り、$\PP_{3}$ の元は $\langle\langle p_{0},p_{1}\rangle,p_{2}\rangle$ の形になる。表記を簡単にするため、$\PP_{n}$ の元を長さ $n$ の列 $\langle p_{0},\dots,p_{n-1}\rangle$ とみなし、$\PP_{0}=\{0\}$（空列だけからなる一元の順序）とする。すると $p\in\PP_{n}$ なら各 $i<n$ で $p\restr{i}\in\PP_{i}$ かつ $p\restr{i}\Vdash_{\PP_{i}}p_{i}\in\pi_{i}$ である。$\pi_{0}$ は $\PP_{0}$-名前なので $\check{\mathbb{Q}}$（$\mathbb{Q}\in M$）の形であり、$\PP_{1}$ は同型を除いて任意である。
+
+極限段階の選び方がいくつかある。$\PP_{\omega}$ として、各 $p\restr{n}\in\PP_{n}$ となる列 $p=\langle p_{n}:n\in\omega\rangle$ をすべてとる（**完全極限**）か、さらに有限個を除く $i$ で $p_{i}=\mathbf{1}$ を要求する（**有限台反復**。MA + ¬CH に使う）か、非可算な極限 $\gamma$ では可算な台をもつ列をとるか、などである。これらを一度に扱うため、極限段階での台がある イデアル に属することを要求する。
+
+::: definition 反復強制の構成 {#set:iteration-construction keywords="alpha-stage iterated forcing construction, support, supports in an ideal" index="反復強制の構成|はんぷくきょうせいのこうせい, 台（条件の）|だいじょうけんの"}
+$M$ の中で、$\alpha$ を順序数、$\mathcal{J}\subseteq\mathcal{P}(\alpha)$ を $\alpha+1$ 上のイデアルで $\alpha$ のすべての有限部分集合を含むものとする。**$\mathcal{J}$ に台をもつ $\alpha$ 段階の反復強制の構成**とは、$M$ の対象
+$$
+\bigl\langle\langle\langle\PP_{\xi},\le_{\PP_{\xi}},\mathbf{1}_{\PP_{\xi}}\rangle:\xi\le\alpha\rangle,\;\langle\langle\pi_{\xi},\le_{\pi_{\xi}},\mathbf{1}_{\pi_{\xi}}\rangle:\xi<\alpha\rangle\bigr\rangle
+$$
+であって、次を満たすものをいう。各 $\PP_{\xi}$ は p.o. で、その元は長さ $\xi$ の列である。$p\in\PP_{\eta}$、$\xi<\eta$ なら $p\restr{\xi}\in\PP_{\xi}$。各 $\pi_{\xi}$ は p.o. の $\PP_{\xi}$-名前である。$\langle p_{\mu}:\mu<\xi\rangle\in\PP_{\xi}$ なら各 $p_{\mu}\in\dom(\pi_{\mu})$。$\mathbf{1}_{\PP_{\xi}}$ は各成分が $\mathbf{1}_{\pi_{\mu}}$ の列 $\langle\mathbf{1}_{\pi_{\mu}}:\mu<\xi\rangle$ である。$p=\langle p_{\mu}:\mu<\xi\rangle$ の**台**を
+$$
+\mathrm{supt}(p)\defeq\{\mu<\xi:p_{\mu}\neq\mathbf{1}_{\pi_{\mu}}\}
+$$
+と定める。さらに次を要求する。
+1. **基底.** $\PP_{0}=\{0\}$。
+2. **後続.** $p=\langle p_{\mu}:\mu\le\xi\rangle$ について、$p\in\PP_{\xi+1}$ であることは、$p\restr{\xi}\in\PP_{\xi}$、$p_{\xi}\in\dom(\pi_{\xi})$、$p\restr{\xi}\Vdash_{\PP_{\xi}}p_{\xi}\in\pi_{\xi}$ と同値である。$p'=\langle p'_{\mu}:\mu\le\xi\rangle$ も $\PP_{\xi+1}$ の元なら、$p\le p'$ は $p\restr{\xi}\le p'\restr{\xi}$ かつ $p\restr{\xi}\Vdash p_{\xi}\le_{\pi_{\xi}}p'_{\xi}$ と同値である。
+3. **極限.** $\eta$ が極限順序数で $p=\langle p_{\mu}:\mu<\eta\rangle$ なら、$p\in\PP_{\eta}$ であることは
+$$
+\forall\xi<\eta\,(p\restr{\xi}\in\PP_{\xi})\land\mathrm{supt}(p)\in\mathcal{J}
+$$
+と同値である。$p,p'\in\PP_{\eta}$ なら、$p\le p'$ は $\forall\xi<\eta\,(p\restr{\xi}\le p'\restr{\xi})$ と同値である。
+:::
+
+添字の $\le_{\PP_{\xi}}$ 等はしばしば省き、$\PP_{\xi}$, $\pi_{\xi}$ と書く。
+
+::: definition 有限台・可算台・完全極限 {#set:iteration-support-types keywords="finite support iteration, countable support iteration, full limits" index="有限台反復|ゆうげんだいはんぷく, 可算台反復|かさんだいはんぷく, 完全極限|かんぜんきょくげん"}
+\ref{set:iteration-construction} で、$\mathcal{J}=\{X\subseteq\alpha:\lvert X\rvert<\omega\}$ のとき**有限台反復**、$\mathcal{J}=\{X\subseteq\alpha:\lvert X\rvert\le\omega\}^{M}$ のとき**可算台反復**、$\mathcal{J}=\mathcal{P}(\alpha)^{M}$ のとき**完全極限の反復**という。
+:::
+
+$\alpha<\omega$ ならこの三つは同じである。$\mathcal{J}$ を「$\alpha+1$ 上の」イデアルとしたのは、$\mathcal{P}(\alpha)$ 自身は $\alpha$ 上の（真の）イデアルでないという技術的理由による（\ref{set:ideal} の 1 は $A\notin\mathcal{I}$ を要求する）。
+
+$\mathcal{J}$ はイデアルで有限集合を含むので、すべての $\xi$ と $p\in\PP_{\xi}$ について $\mathrm{supt}(p)\in\mathcal{J}$ である（極限段階でしか定義に含めていないが）。実際 $\xi$ についての帰納法で、後続段階では $\mathrm{supt}(p)\subseteq\mathrm{supt}(p\restr{\xi})\cup\{\xi\}$ で、$\{\xi\}\in\mathcal{J}$（$\xi<\alpha$ の有限集合）とイデアルの和と部分集合についての閉性を使えばよい。
+
+\ref{set:iteration-construction} は反復強制の構成の処方箋とみるべきである。応用では、何らかの帳簿付けの工夫で $\pi_{\xi}$ が指定された種類のすべての p.o. の名前を動くようにする（MA の構成なら、すべての c.c.c. な p.o.）。$\pi_{\xi}$ の選び方が与えられれば、\ref{set:iteration-construction} により $\PP_{\xi}$ が帰納的に構成される。2 は $\PP_{\xi+1}$ を $\PP_{\xi}*\pi_{\xi}$ と同型にし（$p\mapsto\langle p\restr{\xi},p_{\xi}\rangle$）、3 は $\mathcal{J}$ で極限を扱う。
+
+::: definition 段階間の埋め込み {#set:iteration-embedding}
+\ref{set:iteration-construction} の記号のもとで、$\xi\le\eta\le\alpha$ について $i_{\xi\eta}\colon\PP_{\xi}\to\PP_{\eta}$ を、$i_{\xi\eta}(p)$ が $p'\restr{\xi}=p$ かつ $\xi\le\mu<\eta$ で $p'_{\mu}=\mathbf{1}_{\pi_{\mu}}$ となる $p'$ であるように定める。
+:::
+
+$p'\in\PP_{\eta}$ であることは $\eta$ についての帰納法で確かめられる：後続段階 $\mu+1$ では $p'\restr{\mu}\in\PP_{\mu}$、$\mathbf{1}_{\pi_{\mu}}\in\dom(\pi_{\mu})$、$p'\restr{\mu}\Vdash\mathbf{1}_{\pi_{\mu}}\in\pi_{\mu}$（p.o. の名前の定義）であり、極限段階では $\mathrm{supt}(p')=\mathrm{supt}(p)\in\mathcal{J}$（上の注意）である。
+
+次の補題は反復強制の構成の抽象的な順序論的性質をまとめたものである。
+
+::: lemma 反復強制の順序論的性質 {#set:iteration-basic}
+\ref{set:iteration-construction}, \ref{set:iteration-embedding} の記号のもとで、$\xi\le\eta\le\zeta\le\alpha$ とする。
+1. $i_{\xi\zeta}=i_{\eta\zeta}\circ i_{\xi\eta}$。
+2. $i_{\xi\eta}(\mathbf{1}_{\PP_{\xi}})=\mathbf{1}_{\PP_{\eta}}$。
+3. $\forall p,p'\in\PP_{\eta}\,(p\le p'\to p\restr{\xi}\le p'\restr{\xi})$。
+4. $\forall p,p'\in\PP_{\xi}\,(p\le p'\to i_{\xi\eta}(p)\le i_{\xi\eta}(p'))$。
+5. $\forall p,p'\in\PP_{\eta}\,(p\restr{\xi}\perp p'\restr{\xi}\to p\perp p')$。
+6. $\forall p,p'\in\PP_{\eta}\,[\mathrm{supt}(p)\cap\mathrm{supt}(p')\subseteq\xi\to(p\restr{\xi}\perp p'\restr{\xi}\leftrightarrow p\perp p')]$。
+7. $\forall p,p'\in\PP_{\xi}\,(p\perp p'\to i_{\xi\eta}(p)\perp i_{\xi\eta}(p'))$。
+8. $i_{\xi\eta}$ は完全な埋め込みである。
+:::
+
+::: proof
+1 と 2 は定義から直ちに従う。
+
+3. $\eta$ についての帰納法（$\xi$ は固定、$\xi\le\eta$）。$\eta=\xi$ は自明。$\eta=\gamma+1>\xi$ なら、定義の 2 より $p\le p'$ から $p\restr{\gamma}\le p'\restr{\gamma}$、帰納法の仮定より $p\restr{\xi}\le p'\restr{\xi}$。$\eta$ が極限なら定義の 3 そのものである。
+
+4. $\eta$ についての帰納法。$\eta=\xi$ は自明。$\eta=\gamma+1$ なら $i_{\xi\eta}(p)\restr{\gamma}=i_{\xi\gamma}(p)\le i_{\xi\gamma}(p')$（帰納法の仮定）で、$\gamma$ 成分はともに $\mathbf{1}_{\pi_{\gamma}}$ で $i_{\xi\gamma}(p)\Vdash\mathbf{1}_{\pi_{\gamma}}\le\mathbf{1}_{\pi_{\gamma}}$。$\eta$ が極限なら、$\zeta'<\eta$ について、$\zeta'\ge\xi$ なら $i_{\xi\eta}(p)\restr{\zeta'}=i_{\xi\zeta'}(p)\le i_{\xi\zeta'}(p')$（帰納法の仮定）、$\zeta'<\xi$ なら $p\restr{\zeta'}\le p'\restr{\zeta'}$（3）。
+
+5. $p''$ が $p$, $p'$ の共通の拡張なら、3 より $p''\restr{\xi}$ は $p\restr{\xi}$, $p'\restr{\xi}$ の共通の拡張である。
+
+6. 左から右は 5 に含まれる。右から左を対偶で示す：$\mathrm{supt}(p)\cap\mathrm{supt}(p')\subseteq\xi$ で、$p''\in\PP_{\xi}$ が $p\restr{\xi}$ と $p'\restr{\xi}$ の共通の拡張とする。長さ $\eta$ の列 $p^{*}$ を、$p^{*}\restr{\xi}=p''$、$\xi\le\mu<\eta$ では
+$$
+p^{*}_{\mu}\defeq\begin{cases}p_{\mu}&(\mu\in\mathrm{supt}(p)),\\p'_{\mu}&(\mu\in\mathrm{supt}(p')),\\\mathbf{1}_{\pi_{\mu}}&(\mu\notin\mathrm{supt}(p)\cup\mathrm{supt}(p'))\end{cases}
+$$
+で定める（**台の仮定より** $\xi$ 以上では $\mathrm{supt}(p)$ と $\mathrm{supt}(p')$ は交わらないので well-defined）。$\xi\le\gamma\le\eta$ についての帰納法で
+$$
+p^{*}\restr{\gamma}\in\PP_{\gamma}\land p^{*}\restr{\gamma}\le p\restr{\gamma}\land p^{*}\restr{\gamma}\le p'\restr{\gamma}
+$$
+を示す。$\gamma=\xi$ は $p''$ の選び方そのもの。$\gamma+1$（$\gamma\ge\xi$）：$\gamma\in\mathrm{supt}(p)$ の場合、$p^{*}_{\gamma}=p_{\gamma}$ で $p'_{\gamma}=\mathbf{1}_{\pi_{\gamma}}$。$p\restr{\gamma}\Vdash p_{\gamma}\in\pi_{\gamma}$ と $p^{*}\restr{\gamma}\le p\restr{\gamma}$ より $p^{*}\restr{\gamma}\Vdash p_{\gamma}\in\pi_{\gamma}$ なので $p^{*}\restr{(\gamma+1)}\in\PP_{\gamma+1}$。また $p^{*}\restr{\gamma}\Vdash p_{\gamma}\le p_{\gamma}$ と $p^{*}\restr{\gamma}\Vdash p_{\gamma}\le\mathbf{1}_{\pi_{\gamma}}$ より順序の二つの主張も成り立つ。$\gamma\in\mathrm{supt}(p')$ の場合は対称で、どちらにも属さない場合はすべて $\mathbf{1}_{\pi_{\gamma}}$ である。極限 $\gamma$：各 $\zeta'<\gamma$ について $p^{*}\restr{\zeta'}\in\PP_{\zeta'}$（$\zeta'\ge\xi$ なら帰納法の仮定、$\zeta'<\xi$ なら $p''\in\PP_{\xi}$ の制限）で、$\mathrm{supt}(p^{*}\restr{\gamma})\subseteq\mathrm{supt}(p'')\cup\mathrm{supt}(p)\cup\mathrm{supt}(p')\in\mathcal{J}$（イデアルの性質）なので $p^{*}\restr{\gamma}\in\PP_{\gamma}$。順序は、各 $\zeta'<\gamma$ で $\zeta'\ge\xi$ なら帰納法の仮定、$\zeta'<\xi$ なら $p''\le p\restr{\xi}$ と 3 による。$\gamma=\eta$ とすれば $p^{*}$ は $p$ と $p'$ の共通の拡張である。
+
+7. $\mathrm{supt}(i_{\xi\eta}(p))\cup\mathrm{supt}(i_{\xi\eta}(p'))\subseteq\xi$ で $i_{\xi\eta}(p)\restr{\xi}=p$ なので、6 の特別な場合である。
+
+8. \ref{set:complete-embedding} の 1 は 4 である。2 は、左から右が 7、右から左は 4 から従う（$q$ が $p$, $p'$ の共通の拡張なら $i_{\xi\eta}(q)$ は $i_{\xi\eta}(p)$, $i_{\xi\eta}(p')$ の共通の拡張）。3：$q\in\PP_{\eta}$ に対し $q\restr{\xi}$ が縮約である。実際 $p'\le q\restr{\xi}$ なら、$\mathrm{supt}(i_{\xi\eta}(p'))\cap\mathrm{supt}(q)\subseteq\xi$ で、$i_{\xi\eta}(p')\restr{\xi}=p'$ と $q\restr{\xi}$ は両立する（$p'$ 自身が共通の拡張）ので、6 より $i_{\xi\eta}(p')$ と $q$ は両立する。
+:::
+
+\ref{set:iteration-basic} の 6 により、台に Δ システムの議論を使って有限台反復で c.c.c. が保たれることを示せる。これは \ref{set:page-ma-consistency} の MA の構成で決定的に重要である。
+
+::: theorem 有限台反復は κ-c.c. を保つ {#set:fs-iteration-cc keywords="finite support iteration preserves kappa-cc, finite support iteration of ccc is ccc" index="有限台反復と鎖条件|ゆうげんだいはんぷくとさじょうけん"}
+$M$ で、$\kappa$ は $\omega$ より大きい正則基数、$\langle\langle\PP_{\xi}:\xi\le\alpha\rangle,\langle\pi_{\xi}:\xi<\alpha\rangle\rangle$ は $\alpha$ 段階の有限台反復強制の構成で、各 $\xi<\alpha$ について
+$$
+\mathbf{1}\Vdash_{\PP_{\xi}}(\pi_{\xi}\text{ は }\check{\kappa}\text{-c.c.})
+$$
+とする。このとき各 $\xi\le\alpha$ について $\PP_{\xi}$ は $M$ で $\kappa$-c.c. である。
+:::
+
+::: proof
+$\xi$ についての帰納法。$\xi=0$ なら $\PP_{0}$ は一元なので自明。
+
+**後続.** $\PP_{\xi+1}$ は $p\mapsto\langle p\restr{\xi},p_{\xi}\rangle$ により $\PP_{\xi}*\pi_{\xi}$ と同型であり（定義の 2 と \ref{set:two-step-iteration} を見比べよ）、同型は反鎖を反鎖に移す。帰納法の仮定と仮定 $\mathbf{1}\Vdash(\pi_{\xi}$ は $\check{\kappa}$-c.c.$)$、$\kappa$ の正則性から、\ref{set:two-step-cc} より $\PP_{\xi}*\pi_{\xi}$ は $\kappa$-c.c.。
+
+**極限.** $\xi$ を極限とし、$\zeta<\xi$ について $\PP_{\zeta}$ は $M$ で $\kappa$-c.c. だが、$M$ に $\PP_{\xi}$ の反鎖 $\{p^{\beta}:\beta<\kappa\}$（相異なる元）があるとする。各 $\mathrm{supt}(p^{\beta})$ は有限である（有限台）。大きさ $\kappa$ の $X\subseteq\kappa$ と有限集合 $r$ で、$\beta\neq\gamma\in X$ なら $\mathrm{supt}(p^{\beta})\cap\mathrm{supt}(p^{\gamma})=r$ となるものがあることを示す。
+- ある有限集合 $s$ が $\kappa$ 個の $\beta$ の台であれば、そのような $\beta$ 全体を $X$、$r=s$ とすればよい。
+- そうでなければ、写像 $\beta\mapsto\mathrm{supt}(p^{\beta})$ の各ファイバーは大きさ $<\kappa$ であり、$\kappa$ は正則なので像 $\mathcal{A}$ の大きさは $\kappa$ である（像が $<\kappa$ なら $\kappa$ が $<\kappa$ 個の $<\kappa$ 集合の和になる）。各像の元から添字を一つずつ選べば単射な部分族が得られ、\ref{set:delta-system-general}（有限集合の族、$\kappa$ は非可算正則で、$\alpha<\kappa$ について $\lvert{}^{<\omega}\alpha\rvert\le\max(\lvert\alpha\rvert,\omega)<\kappa$。**ここで $\kappa>\omega$ を使う**）より大きさ $\kappa$ の Δ システムの部分族がとれる。その根を $r$ とし、対応する添字全体を $X$ とする。
+
+$r$ は $\xi$ の有限部分集合で $\xi$ は極限なので、$r\subseteq\zeta$ となる $\zeta<\xi$ がある。$\beta\neq\gamma\in X$ なら $\mathrm{supt}(p^{\beta})\cap\mathrm{supt}(p^{\gamma})=r\subseteq\zeta$ かつ $p^{\beta}\perp p^{\gamma}$ なので、\ref{set:iteration-basic} の 6 より $p^{\beta}\restr{\zeta}\perp p^{\gamma}\restr{\zeta}$。特にこれらは相異なり、$\{p^{\beta}\restr{\zeta}:\beta\in X\}$ は $\PP_{\zeta}$ の大きさ $\kappa$ の反鎖で、帰納法の仮定に矛盾する。
+:::
+
+::: hypcheck
+- 有限台は極限段階で本質的である。$\mathbf{1}\Vdash(\pi_{n}$ は c.c.c. でない$)$ が各 $n<\omega$ で成り立つなら、完全極限の $\PP_{\omega}$ は c.c.c. でないばかりか $\omega_{1}$ を崩壊させる、と Kunen は述べている（演習。本サイトでは確かめていない）。
+- 可算台で $\kappa=\omega_{2}$、$M\models\mathrm{CH}$ としても同じ議論はうまくいかない：Δ システム補題は同様に使えるが、根が $\xi$ で共終なとき $r\subseteq\zeta<\xi$ がとれない。実際 $\xi=\omega$ で反例があると Kunen は述べている（演習。本サイトでは確かめていない）。
+- $\kappa>\omega$ は Δ システム補題に使った。$\kappa=\omega$（「すべての反鎖が有限」）では \ref{set:delta-system-general} が使えない。
+:::
+
+$i_{\xi\eta}$ は $\PP_{\xi}$ を $\PP_{\eta}$ の部分順序として完全に埋め込むので、$\langle\PP_{\xi}:\xi\le\alpha\rangle$ を $\subseteq_{c}$（\ref{set:completely-contained}）についての上昇列と同一視することもできるが、ここではそうせず $i_{\xi\eta}$ をそのまま扱う。ただし、$\PP_{\alpha}$ による拡大が、$\pi_{\xi}$ による拡大を反復して得られるモデルの上昇列を与えることは示しておく。
+
+::: lemma 反復とモデルの上昇列 {#set:iteration-models}
+$M$ で $\langle\langle\PP_{\xi}:\xi\le\alpha\rangle,\langle\pi_{\xi}:\xi<\alpha\rangle\rangle$ を $\alpha$ 段階の反復強制の構成とし、$G$ を $M$ 上 $\PP_{\alpha}$-ジェネリックとする。各 $\xi\le\alpha$ について $G_{\xi}\defeq i_{\xi\alpha}^{-1}[G]$ とおく。このとき $G_{\xi}$ は $M$ 上 $\PP_{\xi}$-ジェネリックで、
+$$
+\xi\le\eta\to M[G_{\xi}]\subseteq M[G_{\eta}].
+$$
+さらに $\mathbb{Q}_{\xi}\defeq\mathrm{val}(\pi_{\xi},G_{\xi})$、
+$$
+H_{\xi}\defeq\{\mathrm{val}(\rho,G_{\xi}):\rho\in\dom(\pi_{\xi})\land\exists p\,(p^{\frown}\langle\rho\rangle\in G_{\xi+1})\}
+$$
+とおくと、$H_{\xi}\in M[G_{\xi+1}]$ で、$H_{\xi}$ は $M[G_{\xi}]$ 上 $\mathbb{Q}_{\xi}$-ジェネリックである。
+:::
+
+::: proof
+$i_{\xi\alpha}$ は完全な埋め込み（\ref{set:iteration-basic} の 8）なので、\ref{set:complete-embedding-generic} より $G_{\xi}$ は $M$ 上 $\PP_{\xi}$-ジェネリックである。$\xi\le\eta$ なら、\ref{set:iteration-basic} の 1 より $i_{\xi\alpha}=i_{\eta\alpha}\circ i_{\xi\eta}$ なので
+$$
+p\in G_{\xi}\iff i_{\eta\alpha}(i_{\xi\eta}(p))\in G\iff i_{\xi\eta}(p)\in G_{\eta},
+$$
+すなわち $G_{\xi}=i_{\xi\eta}^{-1}[G_{\eta}]$。$G_{\eta}$ は $M$ 上 $\PP_{\eta}$-ジェネリックで $i_{\xi\eta}$ は完全な埋め込みなので、再び \ref{set:complete-embedding-generic} より $M[G_{\xi}]\subseteq M[G_{\eta}]$。
+
+後半：$j\colon\PP_{\xi+1}\to\PP_{\xi}*\pi_{\xi}$、$j(p)\defeq\langle p\restr{\xi},p_{\xi}\rangle$ は $M$ の中の同型で、$j\circ i_{\xi,\xi+1}=i$（\ref{set:two-step-iteration} の $i$）である。$K\defeq j[G_{\xi+1}]$ は $M$ 上 $\PP_{\xi}*\pi_{\xi}$-ジェネリックで $M[K]=M[G_{\xi+1}]$（同型写像による、\ref{set:isomorphism-same-extension}）、$i^{-1}[K]=i_{\xi,\xi+1}^{-1}[G_{\xi+1}]=G_{\xi}$。\ref{set:two-step-factor} の $H$ はちょうど $H_{\xi}$ であり、$H_{\xi}$ は $M[G_{\xi}]$ 上 $\mathbb{Q}_{\xi}$-ジェネリックで $H_{\xi}\in M[K]=M[G_{\xi+1}]$。
+:::
+
+各 $M[G_{\xi}]=M[\langle H_{\mu}:\mu<\xi\rangle]$ も成り立つと Kunen は述べている（演習。本サイトでは確かめていない）。
+
+$\PP_{\xi}$ を上昇列とみなすと、有限台反復では極限の $\PP_{\eta}$ は前の $\PP_{\xi}$ の和、すなわち $\PP_{\eta}=\bigcup_{\xi<\eta}i_{\xi\eta}[\PP_{\xi}]$ である（\ref{set:prob-fs-union}）。しかしごく単純な場合でも $M[G_{\eta}]=\bigcup_{\xi<\eta}M[G_{\xi}]$ は偽である（\ref{set:prob-fs-union} の解答の注意を見よ）。それでも、$M[G_{\eta}]$ の「小さい」集合は途中の段階に現れる。
+
+::: lemma 小さい集合は途中の段階に現れる {#set:iteration-small-sets keywords="small sets appear at an earlier stage of the iteration" index="反復強制と小さい集合|はんぷくきょうせいとちいさいしゅうごう"}
+$M$ で、$\alpha$ は極限順序数、$\langle\langle\PP_{\xi}:\xi\le\alpha\rangle,\langle\pi_{\xi}:\xi<\alpha\rangle\rangle$ は $\mathcal{J}$ に台をもつ $\alpha$ 段階の反復強制の構成で、$\mathcal{J}$ の各元は $\alpha$ で有界とする。$G$ を $M$ 上 $\PP_{\alpha}$-ジェネリック、$S\in M$、$X\subseteq S$、$X\in M[G]$ で、$(\lvert S\rvert<\cf(\alpha))^{M[G]}$ とする。このとき、ある $\eta<\alpha$ で $X\in M[G_{\eta}]$ となる（$G_{\eta}=i_{\eta\alpha}^{-1}[G]$）。
+:::
+
+::: proof
+$X=\sigma_{G}$ となる $\PP_{\alpha}$-名前 $\sigma$ をとる。強制定理より、$s\in S$ について $s\in X\iff\exists p\in G\,(p\Vdash_{\PP_{\alpha}}\check{s}\in\sigma)$。
+
+**$\mathcal{J}$ についての仮定の使用.** $p\in\PP_{\alpha}$ なら $\mathrm{supt}(p)\in\mathcal{J}$ は $\alpha$ で有界なので、$\mathrm{supt}(p)\subseteq\xi$ となる $\xi<\alpha$ があり、このとき $p=i_{\xi\alpha}(p\restr{\xi})$（$\xi$ 以上の成分はすべて $\mathbf{1}$）。よって $\PP_{\alpha}=\bigcup_{\xi<\alpha}i_{\xi\alpha}[\PP_{\xi}]$。さらに $p\in G$ なら $p\restr{\xi}\in G_{\xi}$ なので $G=\bigcup_{\xi<\alpha}i_{\xi\alpha}[G_{\xi}]$。
+
+$M[G]$ の中で、各 $s\in X$ について、ある $p\in G_{\xi_{s}}$ で $i_{\xi_{s}\alpha}(p)\Vdash\check{s}\in\sigma$ となる $\xi_{s}<\alpha$ を選ぶ（上の分解による）。$\eta\defeq\sup\{\xi_{s}:s\in X\}$ とおくと、$M[G]$ で $\lvert X\rvert\le\lvert S\rvert<\cf(\alpha)$ なので、共終数の定義より $\eta<\alpha$（**ここで $\lvert S\rvert<\cf(\alpha)$ を使う**）。
+
+このとき
+$$
+X=\{s\in S:\exists p\in G_{\eta}\,(i_{\eta\alpha}(p)\Vdash\check{s}\in\sigma)\}
+$$
+である。$\supseteq$：$p\in G_{\eta}$ なら $i_{\eta\alpha}(p)\in G$ なので、強制定理より $s\in\sigma_{G}=X$。$\subseteq$：$s\in X$ なら $\xi_{s}\le\eta$ で、$p\in G_{\xi_{s}}$ と $i_{\xi_{s}\alpha}(p)\Vdash\check{s}\in\sigma$ をとり $p'\defeq i_{\xi_{s}\eta}(p)$ とおくと、$i_{\eta\alpha}(p')=i_{\xi_{s}\alpha}(p)\in G$（\ref{set:iteration-basic} の 1）なので $p'\in G_{\eta}$ で、$i_{\eta\alpha}(p')\Vdash\check{s}\in\sigma$。
+
+関係 $\{\langle p,s\rangle\in\PP_{\eta}\times S:i_{\eta\alpha}(p)\Vdash\check{s}\in\sigma\}$ は $M$ で定義可能なので $M$ に属し、$X$ はそれと $G_{\eta}$ から $M[G_{\eta}]$ の中で分出公理で定義される。よって $X\in M[G_{\eta}]$。
+:::
+
+有限台反復で $\cf(\alpha)>\omega$ なら、この補題は「$M[G_{\alpha}]$ の実数（$\omega$ の部分集合）はすべて途中の段階に現れる」を与える（$\omega$ は $\cf(\alpha)$ 未満で、$M[G]$ で $\cf(\alpha)$ が保たれていれば）。これが \ref{set:page-ma-consistency} で使われる形である。
+
+## 補足：例と注意 {#set:sec-iteration-remarks}
+
+以下は \ref{set:page-ma-consistency} の MA の証明には必要ない。いずれも Kunen の記述の要約であり、演習に委ねられた主張は本サイトでは確かめていない。
+
+**積の構成の再解釈.** 最も単純な反復は、各 $\pi_{\xi}$ が $\mathbb{Q}_{\xi}\in M$ の標準的な名前の場合である。これは積の理論の方が扱いやすいが、\ref{set:page-cohen-model}〜\ref{set:page-easton-forcing} の構成は次のように反復とみなせる。
+- コーエンの p.o. $\mathrm{Fn}(\alpha,2)$ は、3 元の順序 $\mathrm{Fn}(1,2)$ を $\alpha$ 回有限台で反復したものと同型である。
+- 通常のレヴィ崩壊 $\mathrm{Lv}(\alpha)$（\ref{set:levy-collapse}）は、$\mathbb{Q}_{\xi}=\mathrm{Fn}(\omega,\xi)$ を有限台で反復したもの、可算条件のレヴィ崩壊（\ref{set:levy-countable}）は $\mathbb{Q}_{\xi}=\mathrm{Fn}(\omega_{1},\xi,\omega_{1})^{M}$ を可算台で反復したものである。
+- イーストン強制 $\PP(E)$（\ref{set:easton-po}）は、$\dom(E)=\{\kappa_{\xi}:\xi<\alpha\}$ を増加列挙として、$\mathbb{Q}_{\xi}=\mathrm{Fn}(E(\kappa_{\xi}),2,\kappa_{\xi})^{M}$ をイデアル
+$$
+\mathcal{J}=\{X\subseteq\alpha:\forall\lambda\,(\lambda\text{ 正則}\to\lvert\lambda\cap\{\kappa_{\xi}:\xi\in X\}\rvert<\lambda)\}
+$$
+で反復したものと同型である。
+
+**逆イーストン強制.** $\pi_{\xi}$ を $M$ の $\mathrm{Fn}(E(\kappa_{\xi}),2,\kappa_{\xi})$ の名前でなく、$\PP_{\xi}$ による拡大の中の $\mathrm{Fn}(E(\kappa_{\xi}),2,\kappa_{\xi})$ の名前とすると、いわゆる**逆（backwards）イーストン強制**が得られる（\ref{set:page-easton-forcing} のものは**順（forwards）イーストン強制**と呼ばれる）。これは本ページの一般論を本当に必要とし、$M$ が GCH を満たしても基数を崩壊させることが多い。その重要性は、シルヴァーが弱コンパクト基数以上の大きな基数での GCH の破れについての無矛盾性の結果を得るのに使ったことにあり、そのような結果は順イーストン強制では得られないことが知られている、と Kunen は述べている。
+
+**有限台反復の「標準性」.** 同じ p.o. を表す名前は多数ある。$\mathbf{1}\Vdash\pi=\pi'$（最大元と順序の一致も含めて）でも $\PP*\pi$ と $\PP*\pi'$ は同型とは限らないが、同型な完備化をもつ（同じ完備ブール代数に稠密に埋め込める、\ref{set:dense-embedding}）。これを $\PP\approx\mathbb{Q}$ と書くと、$\mathbf{1}\Vdash\pi=\pi'$ なら $M$ で $\PP*\pi\approx\PP*\pi'$ であり、無限の反復でも有限台なら同様である。一方、各 $\pi_{n}$ が $\mathrm{Fn}(\omega,2)$ に等しいことが $\mathbf{1}$ で強制されるが、$\pi_{n}$ の可算台反復が $\mathrm{Fn}(\omega,2)^{\check{}}$ の $\omega$ 個のコピーの可算台反復と $\approx$ でない例がある。完備化についても、有限台なら極限の完備化は前の完備化の和の完備化だが、可算台では $\PP_{\omega}$ の完備化は列 $\langle\PP_{n}:n<\omega\rangle$ の完備化からは定まらない。以上は Kunen の演習 K1〜K8 の内容として述べられており、本サイトでは確かめていない。
+
+**より一般の反復.** 可換な完全な埋め込み $i_{\xi\eta}\colon\PP_{\xi}\to\PP_{\eta}$（$i_{\xi\zeta}=i_{\eta\zeta}\circ i_{\xi\eta}$）をもつ任意の列 $\langle\PP_{\xi}:\xi\le\alpha\rangle$ も反復強制の構成とみなすことができ、$G$ が $\PP_{\alpha}$-ジェネリックなら $\langle M[i_{\xi\alpha}^{-1}[G]]:\xi\le\alpha\rangle$ は $M$ のジェネリック拡大の上昇列をなす（\ref{set:iteration-models} の前半の証明はこの一般性で通る）。この一般性では完全な埋め込みの性質から明らかなこと以上はほとんど何も証明できないが、本ページの枠組みに入らない重要な例（代表例は反復ランダム実数強制）もある、と Kunen は述べている。
+
+## 問題 {#set:sec-iteration-problems}
+
+::: problem {#set:prob-two-step-po}
+$\PP*\pi$（\ref{set:two-step-iteration}）が p.o. であり、$\mathbf{1}_{\PP*\pi}$ が最大元であることを示せ。
+:::
+
+::: solution
+**反射律.** $\langle p,\tau\rangle\in\PP*\pi$ なら $p\Vdash\tau\in\pi$ で、$\mathbf{1}\Vdash$「$\le_{\pi}$ は $\pi$ 上反射的」なので $p\Vdash\tau\le_{\pi}\tau$。$p\le p$ と合わせて $\langle p,\tau\rangle\le\langle p,\tau\rangle$。
+
+**推移律.** $\langle p,\tau\rangle\le\langle q,\sigma\rangle\le\langle r,\rho\rangle$ とする。$p\le q\le r$ より $p\le r$。$p\Vdash\tau\le_{\pi}\sigma$、$q\Vdash\sigma\le_{\pi}\rho$ と $p\le q$ より $p\Vdash\sigma\le_{\pi}\rho$。$\mathbf{1}\Vdash$「$\le_{\pi}$ は推移的」なので $p\Vdash\tau\le_{\pi}\rho$。
+
+**最大元.** $\langle\mathbf{1}_{\PP},\mathbf{1}_{\pi}\rangle\in\PP*\pi$（$\mathbf{1}_{\pi}\in\dom(\pi)$ と $\mathbf{1}\Vdash\mathbf{1}_{\pi}\in\pi$）。任意の $\langle p,\tau\rangle$ について $p\le\mathbf{1}_{\PP}$ で、$p\Vdash\tau\in\pi$ と $\mathbf{1}\Vdash$「$\mathbf{1}_{\pi}$ は最大元」より $p\Vdash\tau\le_{\pi}\mathbf{1}_{\pi}$。
+
+各段階で使ったのは、強制の単調性（$p\le q$, $q\Vdash\varphi$ なら $p\Vdash\varphi$）と「$p\Vdash\varphi$, $p\Vdash\psi$, $\mathbf{1}\Vdash(\varphi\land\psi\to\chi)$ なら $p\Vdash\chi$」であり、どちらも強制定理から従う。
+:::
+
+::: problem {#set:prob-two-step-product}
+$\mathbb{Q}=\langle\mathbb{Q},\le_{\mathbb{Q}},\mathbf{1}_{\mathbb{Q}}\rangle\in M$ を p.o. とし、$\pi\defeq\langle\check{\mathbb{Q}},(\le_{\mathbb{Q}})\check{},(\mathbf{1}_{\mathbb{Q}})\check{}\rangle$ とする。$\pi$ は p.o. の $\PP$-名前であり、$\PP*\pi$ は $\PP\times\mathbb{Q}$ と同型であることを示せ。
+:::
+
+::: solution
+任意のジェネリック $G$ について $\check{x}_{G}=x$ なので、$\pi$ の値は $\mathbb{Q}$ 自身であり、「$\mathbb{Q}$ は最大元 $\mathbf{1}_{\mathbb{Q}}$ をもつ半順序」は $\Delta_{0}$ で $M$ と $M[G]$ の間で絶対的である。よって $\mathbf{1}$ がそれを強制し、$(\mathbf{1}_{\mathbb{Q}})\check{}\in\dom(\check{\mathbb{Q}})=\{\check{q}:q\in\mathbb{Q}\}$ なので $\pi$ は p.o. の名前である。
+
+$\dom(\pi)=\{\check{q}:q\in\mathbb{Q}\}$ で、すべての $p$ について $p\Vdash\check{q}\in\check{\mathbb{Q}}$ なので、$\PP*\pi=\{\langle p,\check{q}\rangle:p\in\PP,q\in\mathbb{Q}\}$。写像 $\langle p,\check{q}\rangle\mapsto\langle p,q\rangle$ は全単射である（$\check{q}_{G}=q$ より $q\mapsto\check{q}$ は単射）。順序について：$\langle q,q'\rangle\in\le_{\mathbb{Q}}$ なら $\mathbf{1}\Vdash\check{q}\le_{\pi}\check{q}'$ でありすべての $p$ がこれを強制する。$\langle q,q'\rangle\notin\le_{\mathbb{Q}}$ なら $\mathbf{1}\Vdash\neg(\check{q}\le_{\pi}\check{q}')$ で、どの $p$ も $\check{q}\le_{\pi}\check{q}'$ を強制しない（$p$ を含むジェネリックで矛盾）。よって $p\Vdash\check{q}\le_{\pi}\check{q}'\iff q\le_{\mathbb{Q}}q'$ で、
+$$
+\langle p,\check{q}\rangle\le\langle p',\check{q}'\rangle\iff p\le p'\land q\le q'.
+$$
+これは \ref{set:product-po} の積の順序であり、最大元も対応する。
+:::
+
+::: problem {#set:prob-fs-union}
+有限台反復強制の構成で $\eta\le\alpha$ が極限なら、$\PP_{\eta}=\bigcup_{\xi<\eta}i_{\xi\eta}[\PP_{\xi}]$ であることを示せ。また、完全極限の反復ではこれが一般には成り立たないことを、$\alpha=\omega$、各 $\pi_{n}=\check{\mathbb{Q}}$（$\mathbb{Q}=\mathrm{Fn}(1,2)$）の例で確かめよ。
+:::
+
+::: solution
+**有限台.** $\supseteq$ は $i_{\xi\eta}$ の値域が $\PP_{\eta}$ に含まれることから。$\subseteq$：$p\in\PP_{\eta}$ なら $\mathrm{supt}(p)$ は有限、$\eta$ は極限なので $\mathrm{supt}(p)\subseteq\xi$ となる $\xi<\eta$ がある（$\mathrm{supt}(p)$ の最大元 $+1$、空なら $0$）。$p\restr{\xi}\in\PP_{\xi}$ で、$\xi\le\mu<\eta$ では $p_{\mu}=\mathbf{1}_{\pi_{\mu}}$ なので $p=i_{\xi\eta}(p\restr{\xi})$。
+
+**完全極限.** $\mathbb{Q}=\mathrm{Fn}(1,2)=\{\varnothing,\{\langle0,0\rangle\},\{\langle0,1\rangle\}\}$ とする。完全極限の $\PP_{\omega}$ には、すべての成分が $\check{\{\langle0,0\rangle\}}$ である列 $p$ が属する（各 $p\restr{n}\in\PP_{n}$ で、$\mathcal{J}=\mathcal{P}(\omega)$ なので台 $\omega$ も許される）。$\mathrm{supt}(p)=\omega$ はどの $n$ にも含まれないので、$p$ はどの $i_{n\omega}[\PP_{n}]$ にも属さない。
+
+**注意（$M[G_{\eta}]\neq\bigcup_{\xi<\eta}M[G_{\xi}]$ の例）.** 有限台で同じ $\mathbb{Q}_{n}=\mathrm{Fn}(1,2)$ を $\omega$ 回反復すると、$\PP_{n}$ は有限の p.o. $\mathrm{Fn}(n,2)$ と、$\PP_{\omega}$ は $\mathrm{Fn}(\omega,2)$ と同型である。有限の p.o. では極小元（全域関数 $n\to2$）の集合が $M$ に属する稠密集合なので、$G_{n}$ はある極小元 $s$ を含み、$G_{n}=\{q:s\le q\}\in M$、よって $M[G_{n}]=M$。したがって $\bigcup_{n}M[G_{n}]=M$ だが、$G_{\omega}$ は $M$ に属さない（\ref{set:generic-not-in-m}。$\mathrm{Fn}(\omega,2)$ はどの元の下にも両立しない二元をもつ）ので $M[G_{\omega}]\neq M$。なお $\cf(\omega)=\omega$ なので \ref{set:iteration-small-sets} の仮定 $\lvert\omega\rvert<\cf(\omega)$ は満たされず、矛盾しない。
+:::
+
+::: supplement
+**前提の検討.**
+- \ref{set:po-name} で $\mathbf{1}$ が「p.o. であり最大元が $\mathbf{1}_{\pi}$」を強制することを要求したのは、$i(p)=\langle p,\mathbf{1}_{\pi}\rangle$ がつねに $\PP*\pi$ に属し、$\PP*\pi$ が p.o. になるためである。最大原理（\ref{set:maximal-principle}）により、これは一般性を失わない。
+- \ref{set:two-step-factor} では $M$ の可算性をジェネリックの存在（段階 5）の便宜にだけ使った。
+- \ref{set:two-step-cc} と \ref{set:cc-bounded-name} では $\kappa$ の正則性が本質的である（$E$ の有界性と、$\kappa$ が $M[G]$ でも正則であること）。
+- \ref{set:fs-iteration-cc} では、後続段階は \ref{set:two-step-cc} だけで済み、有限台と $\kappa>\omega$ は極限段階の Δ システム議論にだけ使った。
+- \ref{set:iteration-small-sets} では「$\mathcal{J}$ の元は有界」を $\PP_{\alpha}=\bigcup_{\xi<\alpha}i_{\xi\alpha}[\PP_{\xi}]$ を得るのに、$\lvert S\rvert<\cf(\alpha)$ を $\eta<\alpha$ を得るのに使った。可算台で $\cf(\alpha)=\omega_{1}$ の場合も（$\mathcal{J}$ の可算集合は有界なので）適用できる。
+
+**関連する結果.** 二段階反復の分解定理の逆（$G*H$ のジェネリック性）も成り立つ（Kunen の演習）。$\PP*\pi$ の完備化はブール代数の言葉では $\mathbb{B}*\dot{\mathbb{C}}$ として記述され、多くの教科書（たとえば Jech の *Set Theory*）ではブール値モデルの枠組みで反復を扱うと一般に言われている（本サイトでは確かめていない）。非 c.c.c. な p.o. の反復には可算台反復（本章 §7 に対応するページで扱う予定）や、さらに「固有強制」（proper forcing）の理論が用いられることが知られている。
+
+**高い視点から：ファイバー束としての二段階反復.** $\PP*\pi$ は「底空間 $\PP$ の上に、各点ごとに（名前として）変化するファイバー $\pi$ を載せた全空間」とみなせる。積 $\PP\times\mathbb{Q}$ はファイバーが一定の自明束であり、$\PP*\pi$ は一般のファイバー束である。射影 $\PP*\pi\to\PP$ に当たるのが完全な埋め込み $i$ の「縮約」で、\ref{set:two-step-factor} は「全空間のジェネリック点は、底空間のジェネリック点と、その上のファイバーのジェネリック点の組である」と読める。超限回の反復は、この束を繰り返し積み重ねた塔であり、極限では「台」を制限することで塔の極限（逆極限の部分空間）を選ぶ。有限台は「有限個の座標しか動かさない」という意味で直和的、完全極限は直積的な極限に当たる、という比喩が成り立つ（これは本サイトの比喩であり、厳密な圏論的対応を主張するものではない）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>相対化とモデル論（補遺） | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/04-consistency-proofs/06-appendices.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 相対化とモデル論（補遺） {#set:page-consistency-appendices keywords="relative interpretation, finitistic relative consistency proof, model theory in the metatheory, formalized model theory, CON(ZFC), inaccessible cardinal consistency, omega-model, nonstandard natural numbers"}
+
+本章でこれまで行った相対無矛盾性の証明を、三つの見方から見直す。第一は相対化をより形式的に扱うもので、相対無矛盾性の証明が**有限的**（finitistic）に行えることを示す。第二はメタの理論でモデル論を自由に使う見方、第三はモデル論を $\ZF$ の**中で**形式化する見方である。第三の見方から、$\mathrm{Con}(\ZFC)\to\mathrm{Con}(\ZFC+\text{到達不能基数が存在する})$ に有限的な証明がありえないことが分かる。（Kunen 第 IV 章 §8–10 に対応する。）
+
+本ページは、形式化された構文論（ゲーデル数・証明可能性の形式化）について、本サイトの集合論の部ではまだ扱っていない事実を引用する。引用した事実には「事実」と明記し、出典を示す。
+
+## 記法と定義の確認 {#set:sec-appendices-notation}
+
+::: notation
+- 相対化 $\varphi^{\mathbf{M}}$、\ref{set:relativization-substructure}、\ref{set:relative-consistency-lemma} は \ref{set:page-relativization}、証明の相対化（\ref{set:relativized-proof}）と反映定理（\ref{set:reflection}, \ref{set:reflection-axioms}）は \ref{set:page-reflection}、$H(\kappa)$ と \ref{set:inaccessible-model}, \ref{set:con-no-inaccessible} は \ref{set:page-h-kappa} のとおり。
+- 形式的証明と無矛盾性 $\mathrm{Con}(S)$（\ref{set:formal-deduction}）、健全性（\ref{set:model-consistency}）、定義による拡大の保存性（\ref{set:definitional-extension}）は \ref{set:page-axioms} のとおり。
+- 完全性定理（\ref{logic:completeness}）、コンパクト性定理（\ref{logic:compactness}）、健全性定理（\ref{logic:soundness}）を使う。構造 $\mathfrak{A}=\langle A,E\rangle$ は集合 $A\neq\varnothing$ と二項関係 $E\subseteq A\times A$ の組で、集合論の言語の $\in$ を $E$ で解釈する。
+- $\PA$ についての第二不完全性定理（\ref{pt:godel-second}）と ω 無矛盾性（\ref{pt:omega-consistent}）は証明論の部のとおり。
+- 本ページでは、メタの理論の $\mathrm{Con}(S)$ と、集合論の中の論理式 $\mathrm{CON}(\ulcorner S\urcorner)$（下で導入する）を区別する。
+:::
+
+## 相対化の形式的な扱い {#set:sec-relative-interpretation}
+
+::: definition 相対解釈 {#set:relative-interpretation keywords="relative interpretation, interpretation of set theory in itself" index="相対解釈|そうたいかいしゃく"}
+集合論の自分自身への**相対解釈**とは、自由変数が表示したものだけである二つの論理式 $M(x,v)$, $E(x,y,v)$ の組である。$v$ はパラメータで、クラス $\{x:M(x,v)\}$ と、その上の二項関係 $\{\langle x,y\rangle:E(x,y,v)\}$ を定めると考える。論理式 $\varphi$ に対し、$\varphi^{M,E}$ を、$\varphi$ の $x\in y$ をすべて $E(x,y,v)$ で置き換え、束縛変数を $M$ に制限して得られる論理式とする。すなわち構成に関する再帰で
+$$
+\begin{aligned}
+&(x\in y)^{M,E}\defeq E(x,y,v),\quad(x=y)^{M,E}\defeq x=y,\\
+&(\lnot\varphi)^{M,E}\defeq\lnot\varphi^{M,E},\quad(\varphi\land\psi)^{M,E}\defeq\varphi^{M,E}\land\psi^{M,E},
+\end{aligned}
+$$
+$$
+(\exists x\,\varphi)^{M,E}\defeq\exists x\,(M(x,v)\land\varphi^{M,E})
+$$
+と定める（束縛変数は $v$ と衝突しないように取り替えておく）。
+:::
+
+これまでの節では $E(x,y,v)$ はつねに $x\in y$ であった。$\mathbf{WF}$ のように一つのクラスを扱うときはパラメータ $v$ は現れない。集合のモデルを扱うときは $M(x,v)$ は形式的には $x\in v$ であり、\ref{set:page-reflection} の $\exists M\,(\varphi^{M})$ という形の結果は、この記法では $\exists v\,(\varphi^{x\in v,\,x\in y})$ と書かれる。
+
+::: lemma 相対解釈と部分構造 {#set:interpretation-structure}
+構造 $\mathfrak{A}=\langle A,\in^{\mathfrak{A}}\rangle$ とパラメータの値 $p\in A$ を固定し、$B\defeq\{a\in A:\mathfrak{A}\models M[a,p]\}$ が空でないとする。$E^{\mathfrak{B}}\defeq\{\langle a,b\rangle\in B^{2}:\mathfrak{A}\models E[a,b,p]\}$、$\mathfrak{B}\defeq\langle B,E^{\mathfrak{B}}\rangle$ とおく。このとき任意の論理式 $\varphi(x_{1},\dots,x_{n})$ と $b_{1},\dots,b_{n}\in B$ について
+$$
+\mathfrak{B}\models\varphi[\vec{b}]\iff\mathfrak{A}\models\varphi^{M,E}[\vec{b},p].
+$$
+:::
+
+::: proof
+$\varphi$ の構成に関する帰納法。$x\in y$ は $E^{\mathfrak{B}}$ の定義そのもの、$x=y$ は両辺とも $b_{i}=b_{j}$。$\lnot$, $\land$ は帰納法の仮定から。$\exists x\,\varphi$ の場合、$\mathfrak{B}\models\exists x\,\varphi[\vec{b}]\iff$ ある $b\in B$ で $\mathfrak{B}\models\varphi[\vec{b},b]\iff$ ある $b\in A$ で $\mathfrak{A}\models M[b,p]$ かつ $\mathfrak{A}\models\varphi^{M,E}[\vec{b},b,p]\iff\mathfrak{A}\models(\exists x\,\varphi)^{M,E}[\vec{b},p]$。（\ref{set:relativization-substructure} は $E$ が $\in$ でパラメータのない場合である。）
+:::
+
+::: lemma 証明の相対解釈 {#set:interpretation-proof keywords="relativization of proofs for relative interpretations"}
+$\varphi_{1},\dots,\varphi_{n},\psi$ を文とし、$\varphi_{1},\dots,\varphi_{n}\vdash\psi$ とする。$M,E$ を上のとおりとすると
+$$
+\vdash\forall v\,\Bigl[\exists x\,M(x,v)\land\varphi_{1}^{M,E}\land\cdots\land\varphi_{n}^{M,E}\to\psi^{M,E}\Bigr].
+$$
+:::
+
+::: proof
+\ref{set:relativized-proof} の証明と同じである。完全性定理より、右辺がすべての構造 $\mathfrak{A}$ とすべての $p\in A$ で真であることを示せばよい。前件が $\mathfrak{A}$ で $p$ について真なら、$B\neq\varnothing$ で \ref{set:interpretation-structure} より $\mathfrak{B}\models\varphi_{i}$。健全性定理より $\mathfrak{B}\models\psi$、再び \ref{set:interpretation-structure} より $\mathfrak{A}\models\psi^{M,E}[p]$。
+:::
+
+::: remark 有限的な証明
+上の証明は完全性定理を使うので有限的ではない。Kunen はこの補題を「ゲーデルの完全性定理のやさしい方向（健全性）と同様」に示せると述べている。すなわち、$\varphi_{1},\dots,\varphi_{n}$ からの $\psi$ の導出の各段階を相対化した導出に書き換える、導出の長さに関する帰納法である。この書き換えは導出を入力とする具体的な記号操作であり、有限的に行える（Kunen による。本サイトでは導出の書き換えを細部まで書き下していない）。
+:::
+
+\ref{set:relative-consistency-lemma} のより形式的な形は次のとおりである。
+
+::: lemma 相対無矛盾性の基本補題（形式的な形） {#set:relative-consistency-formal keywords="finitistic relative consistency proof" index="有限的な相対無矛盾性証明|ゆうげんてきなそうたいむむじゅんせいしょうめい"}
+$S,T$ を集合論の言語の文の集まりとし、ある相対解釈 $M,E$ について、$S$ の公理の任意の有限列 $\varphi_{1},\dots,\varphi_{n}$ に対し
+$$
+T\vdash\exists v\,\bigl[\exists x\,M(x,v)\land\varphi_{1}^{M,E}\land\cdots\land\varphi_{n}^{M,E}\bigr]
+$$
+が成り立つとする。このとき $\mathrm{Con}(T)\to\mathrm{Con}(S)$。
+:::
+
+::: proof
+対偶を示す。$S$ が矛盾するとすると、ある $\varphi_{1},\dots,\varphi_{n}\in S$ と文 $\chi$ で $\varphi_{1},\dots,\varphi_{n}\vdash\chi\land\lnot\chi$ となる。\ref{set:interpretation-proof} と仮定より
+$$
+T\vdash\exists v\,\bigl[(\chi\land\lnot\chi)^{M,E}\bigr].
+$$
+$(\chi\land\lnot\chi)^{M,E}$ は $\chi^{M,E}\land\lnot(\chi^{M,E})$ なので、$T$ は矛盾する。
+:::
+
+::: hypcheck
+- 仮定は「$S$ の有限個の公理ごと」に $T$ で証明できることだけを要求し、パラメータ $v$ は有限列ごとに異なってよい。\ref{set:page-reflection} の結果（$R(\beta)$ や可算推移的集合）はこの形で使える。\ref{set:relative-consistency-lemma} はパラメータのない $M$ が $S$ 全体について働く場合である。
+- 証明は、\ref{set:interpretation-proof} を有限的に示しておけば全体として有限的である。したがって $S,T$ が実効的に与えられていれば、$S,T$ が無限集合を扱う理論であっても、相対無矛盾性の証明は完全に有限的に行える（「$T$ の矛盾の導出」を「$S$ の矛盾の導出」から具体的に作る手続きになる）。
+:::
+
+**定義された記号の相対化.** $S$ を集合論の言語の公理の集まり、$S'$ を $S$ の定義による拡大とする（\ref{set:definitional-extension}）。$S'$ の言語の論理式 $\varphi'$ には、元の言語の論理式 $\varphi$ で $S'\vdash\varphi\leftrightarrow\varphi'$ となるものがあり、$\varphi'^{M,E}\defeq\varphi^{M,E}$ と定める。これは $\varphi$ の選び方に依存しうる：別の $\psi$ で $S'\vdash\psi\leftrightarrow\varphi'$ となるものがあっても、$\psi^{M,E}$ と $\varphi^{M,E}$ が同値とは限らない。しかし $\varphi$ と $\psi$ は $S'$ で、したがって保存性より $S$ で同値であり（その証明に使う $S$ の有限個の公理を $\varphi_{1},\dots,\varphi_{k}$ とする）、$M,E$ が $\varphi_{1},\dots,\varphi_{k}$ のモデルなら \ref{set:interpretation-proof} より $\varphi^{M,E}\leftrightarrow\psi^{M,E}$ である。本章では、$M,E$ が定義の基礎となる有限部分のモデルであることを確かめた場合にだけ $\varphi'^{M,E}$ を論じてきたので、その意味は定義された記号の消去の仕方によらない。
+
+## メタの理論でのモデル論 {#set:sec-metatheory-model-theory}
+
+メタの理論で無限的な方法を認めるなら、$\ZF$ などの理論にモデル論を適用するのは有益である。完全性定理（\ref{logic:completeness}）によれば
+$$
+\mathrm{Con}(S)\iff\text{ある構造 }\mathfrak{A}\text{ について }\mathfrak{A}\models S.
+$$
+この見方では、無矛盾性の証明の一部の証明論がモデル論に置き換わる。
+
+::: example 基礎の公理の無矛盾性の意味論的証明 {#set:ex-semantic-foundation}
+$\mathrm{Con}(\ZF^{-})\to\mathrm{Con}(\ZF)$（\ref{set:con-foundation}）は次のように見られる。$\mathrm{Con}(\ZF^{-})$ を仮定し、$\mathfrak{A}=\langle A,E\rangle\models\ZF^{-}$ をとる。
+$$
+B\defeq\{a\in A:\mathfrak{A}\models\text{「}a\text{ は整礎集合」}\}=\{a\in A:\mathfrak{A}\models\mathbf{WF}[a]\}
+$$
+とおくと、\ref{set:wf-model-zf} の各公理 $\varphi$ について $\ZF^{-}\vdash\varphi^{\mathbf{WF}}$ なので $\mathfrak{A}\models\varphi^{\mathbf{WF}}$、\ref{set:relativization-substructure} より $\langle B,E\cap B^{2}\rangle\models\ZF$（$0\in\mathbf{WF}$ なので $B\neq\varnothing$）。よって $\ZF$ は無矛盾である。これは \ref{set:relative-consistency-lemma} の証明を具体的に展開したものにほかならない。
+:::
+
+メタの理論では、これまで $\ZF$ の中で形式化して考えてきた構造の分析を、そのまま行うことができる。たとえば $\mathfrak{A}$ が**整礎**であるとは、$A$ の空でない部分集合がすべて $E$-極小元をもつことをいう。$\mathfrak{A}$ が整礎かつ外延的なら、モストフスキの崩壊（\ref{set:mostowski}）により $\mathfrak{A}$ は本当の $\in$ をもつある推移的な集合 $\langle M,\in\rangle$ と同型である。
+
+$\ZF$ を含む無矛盾な理論がいつも整礎なモデルをもつとは限らない（\ref{set:no-omega-model}）。しかし $\ZFC$ は $\mathbf{V}$ で真なので、おそらく $\ZFC$ は整礎なモデルをもつ。すなわち \ref{set:page-reflection} の議論をメタの理論で**すべての論理式について同時に**行えば、$\ZFC$ のモデルである $R(\beta)$ が得られる（Kunen はこの議論を「プラトン主義的」と呼んでいる）。
+
+この議論を受け入れない読者でも、無限集合の存在を認めるなら集合 $R(\omega)$ の存在は認めるだろう。$R(\omega)$ は $\ZFC-\mathrm{Inf}$ の整礎なモデルである（\ref{set:r-omega-model}）。Kunen によれば、直観主義者（有限主義者ではない）も $\mathrm{Con}(\ZFC-\mathrm{Inf})$ を認める。$\ZFC-\mathrm{Inf}$ はペアノ算術の中で解釈でき（Kunen 第 IV 章の演習 30）、ペアノ算術は直観主義的に無矛盾だからである（Kleene 1952 による。本サイトでは確かめていない）。$\mathrm{Con}(\ZF)$ の直観主義的に受け入れられる証明がありうるかどうかは、直観主義の原則の述べ方があいまいなので明らかでない、と Kunen は述べている。
+
+有限主義者でも、有限モデルをもつ理論は無矛盾だと認める。たとえば $S\defeq$ 外延性 $+$ 分出 $+\forall y\,(y=0)$ は $\{0\}$ をモデルにもつ（\ref{set:model-zero}）ので、$\mathrm{Con}(S)$ は有限的に正しい。\ref{set:con-zero-model} のように $\mathrm{Con}(\ZF^{-})$ を仮定する必要はない。
+
+## 形式的な理論の中でのモデル論 {#set:sec-formal-model-theory}
+
+\ref{set:sec-metatheory-model-theory} とは別の方向として、基本的なモデル論を $\ZF$ の**中で**形式化し（より深い結果の多くは $\ZFC$ を要する）、メタの理論は有限的なものに保つこともできる。
+
+::: fact 形式化された構文論と意味論 {#set:formalized-semantics keywords="formalized syntax, CON(X), formalized satisfaction relation, formalized completeness theorem"}
+集合論の言語の論理式を $\omega$ の元（あるいは $R(\omega)$ の元）で符号化すると、次の論理式を書くことができる（Kunen 第 I 章 §14 と第 IV 章 §10 による）。
+
+1. 自由変数 $X$ をもつ論理式 $\mathrm{CON}(X)$：「$X$ は集合論の言語の文の集合で、$X$ から矛盾は導出できない」。
+2. 三つの自由変数をもつ論理式 $\mathfrak{M}\models\chi[s]$：「$\mathfrak{M}$ は組 $\langle M,E\rangle$、$\chi$ は論理式（の符号）、$s\in M^{<\omega}$ で、$s$ で自由変数に値を割り当てると $\chi$ が $\mathfrak{M}$ で真」。$\chi$ が文のときは $[s]$ を省き、$\mathfrak{M}\models X$ で $\forall\chi\in X\,(\mathfrak{M}\models\chi)$ を表す。
+
+さらに、完全性定理 $\forall X\,(\mathrm{CON}(X)\leftrightarrow\exists\mathfrak{M}\,(\mathfrak{M}\models X))$ は $\ZF$ で証明できる（言語が可算なので選択公理は避けられる）。
+:::
+
+こうして真理について二つの異なる概念が現れる。論理式 $\varphi(x_{1},\dots,x_{n})$ に対し、一方は \ref{set:relative-interpretation} の相対化 $\varphi^{M,E}(x_{1},\dots,x_{n})$ で、論理を $\ZF$ の中で形式化する必要はない。他方は $\varphi$ の符号 $\ulcorner\varphi\urcorner$（$\omega$ の元を表す項）を作って $\langle M,E\rangle\models\ulcorner\varphi\urcorner[\langle x_{1},\dots,x_{n}\rangle]$ と書くものである。
+
+::: lemma 二つの真理概念の一致 {#set:relativization-vs-satisfaction}
+各論理式 $\varphi(x_{1},\dots,x_{n})$ について
+$$
+\begin{aligned}
+\ZF\vdash{}&\forall\langle M,E\rangle\;\forall x_{1},\dots,x_{n}\in M\\
+&\Bigl[\varphi^{M,E}(x_{1},\dots,x_{n})\leftrightarrow\langle M,E\rangle\models\ulcorner\varphi\urcorner[\langle x_{1},\dots,x_{n}\rangle]\Bigr].
+\end{aligned}
+$$
+（ここでの $M,E$ は集合で、$\varphi^{M,E}$ は $M(x,v)\defeq x\in M$, $E(x,y,v)\defeq\langle x,y\rangle\in E$ とした相対化である。）
+:::
+
+::: proof
+メタの理論で $\varphi$ の構成に関する帰納法を行う（各段階は一つの $\ZF$ の定理である）。形式化された充足関係 $\models$ の再帰的な定義の各節（素論理式、$\lnot$、$\land$、$\exists$）が、相対化の定義の各節とちょうど対応する。$\exists x\,\psi$ の段では、$\models$ の定義の「ある $a\in M$ で $s$ を $a$ で延長した割り当てについて $\psi$ が真」と、$\exists x\,(x\in M\land\psi^{M,E})$ が帰納法の仮定により同値になる。（$\models$ の形式的な定義の細部は本サイトではまだ述べていないので、ここでは証明の方針だけを示す。）
+:::
+
+メタの理論で再帰的な文の集合 $S$ に対しては、それを表現する論理式 $\chi_{S}$ を使って $S$ を表す定数 $\ulcorner S\urcorner\defeq\{x:\chi_{S}(x)\}$ を加えることができる（厳密には $\ulcorner S\urcorner$ は $\chi_{S}$ の選び方に依存する）。こうして各 $S$ について、「$S$ は無矛盾」を主張する集合論の文 $\mathrm{CON}(\ulcorner S\urcorner)$ が得られる。
+
+::: fact ZF を含む理論の第二不完全性定理 {#set:second-incompleteness-zf keywords="second incompleteness theorem for extensions of ZF"}
+$S$ が再帰的で無矛盾で、$\ZF$（実は $\ZF^{-}-\mathrm{P}-\mathrm{Inf}$ で足りる）を含むならば、$S\nvdash\mathrm{CON}(\ulcorner S\urcorner)$（Kunen 第 I 章 14.3 と演習 23 による。$\chi_{S}$ は「妥当な」ものを選ぶ必要がある：Kunen 第 IV 章の演習 36）。
+:::
+
+証明論の部では、この定理を $\PA$ について証明している（\ref{pt:godel-second}）。上の事実はその集合論版であり、本サイトではまだ証明していない。
+
+一方、$S$ からより弱い理論の無矛盾性を証明できることはある。
+
+::: fact 弱い理論の無矛盾性の証明 {#set:con-weaker-theories keywords="ZFC proves CON(ZFC - P), ZFC + inaccessible proves CON(ZFC)"}
+1. $\ZFC\vdash\mathrm{CON}(\ulcorner\ZFC-\mathrm{P}\urcorner)$。
+2. $I$ を文 $\exists\kappa\,(\kappa\text{ は強到達不能})$ とすると、$\ZFC+I\vdash\mathrm{CON}(\ulcorner\ZFC\urcorner)$。
+:::
+
+::: proof
+Kunen による証明の方針を述べる。1 は \ref{set:h-kappa-zfc-minus-p} の証明を $\ZFC$ の中で形式化し、「$\langle H(\omega_{1}),\in\rangle\models\ulcorner\ZFC-\mathrm{P}\urcorner$」という**一つの文**を証明することによる。これは、公理 $\varphi$ ごとに $\ZFC\vdash\varphi^{H(\omega_{1})}$ を示した \ref{set:h-kappa-zfc-minus-p} より強い主張である（公理図式のすべての例を、形式化された充足関係を使って一度に扱う）。そこから形式化された健全性定理（\ref{set:formalized-semantics} の完全性定理の易しい方向）で $\mathrm{CON}(\ulcorner\ZFC-\mathrm{P}\urcorner)$ を得る。2 は同様に \ref{set:inaccessible-model} を形式化し、強到達不能な $\kappa$ について $\langle H(\kappa),\in\rangle\models\ulcorner\ZFC\urcorner$ を示すことによる。
+:::
+
+これらの事実は、ありうる有限的な相対無矛盾性証明の種類に制限を与える。$\mathrm{Con}(\ZFC)\to\mathrm{Con}(\ZFC+\lnot I)$ には有限的な証明がある（\ref{set:con-no-inaccessible}。その証明は \ref{set:relative-consistency-formal} の形で有限的に書ける）。しかし逆向きについては次が成り立つ。
+
+::: theorem 到達不能基数の無矛盾性は有限的には証明できない {#set:no-finitistic-con-inaccessible keywords="no finitistic proof of Con(ZFC) implies Con(ZFC + inaccessible)" index="到達不能基数の無矛盾性|とうたつふのうきすうのむむじゅんせい"}
+$\ZFC$ が無矛盾ならば、
+$$
+\mathrm{Con}(\ZFC)\to\mathrm{Con}(\ZFC+I)
+\label{set:eq-con-inaccessible}
+$$
+の有限的な証明は存在しない。
+:::
+
+::: proof
+\eqref{set:eq-con-inaccessible} の有限的な証明があったとする。有限的な議論は $\ZFC$ の中で形式化できる（これは有限的な議論についての作業仮説であり、Kunen もこれを前提にしている）ので、
+$$
+\ZFC\vdash\mathrm{CON}(\ulcorner\ZFC\urcorner)\to\mathrm{CON}(\ulcorner\ZFC+I\urcorner).
+$$
+$\ZFC+I$ は $\ZFC$ を含むので、この文は $\ZFC+I$ でも証明できる。\ref{set:con-weaker-theories} の 2 より $\ZFC+I\vdash\mathrm{CON}(\ulcorner\ZFC\urcorner)$ なので、
+$$
+\ZFC+I\vdash\mathrm{CON}(\ulcorner\ZFC+I\urcorner).
+$$
+$\ZFC+I$ は再帰的で $\ZF$ を含むので、\ref{set:second-incompleteness-zf} より $\ZFC+I$ は矛盾する。仮定した \eqref{set:eq-con-inaccessible}（メタの理論で正しい主張として得られている）の対偶より、$\ZFC$ は矛盾する。これは仮定に反する。
+:::
+
+::: hypcheck
+- \ref{set:second-incompleteness-zf} と \ref{set:con-weaker-theories} は本サイトで証明していない事実である。この定理はそれらに依存する。
+- 「有限的な証明は $\ZFC$ の中で形式化できる」は数学的な定理ではなく、「有限的」という非形式的な概念についての前提である。この前提のもとで、主張は厳密な意味をもつ。
+- 同様の議論で、$\ZFC$ が無矛盾なら $\ZFC$ の中で $\ZFC+I$ のモデルを作ることはできない（\ref{set:page-h-kappa} の最後の問いに対する否定的な答え）。実際、$\ZFC\vdash\exists\mathfrak{M}\,(\mathfrak{M}\models\ulcorner\ZFC+I\urcorner)$ なら、形式化された健全性より $\ZFC\vdash\mathrm{CON}(\ulcorner\ZFC+I\urcorner)$、したがって $\ZFC+I\vdash\mathrm{CON}(\ulcorner\ZFC+I\urcorner)$ で、\ref{set:second-incompleteness-zf} より $\ZFC+I$ は矛盾する。すると $\ZFC+I$ からの矛盾の導出が実際に存在し、それが導出であることは $\ZFC$ で証明できる（再帰的な関係の表現可能性。Kunen 第 I 章 §14 による事実）ので $\ZFC\vdash\lnot\mathrm{CON}(\ulcorner\ZFC+I\urcorner)$ となり、$\ZFC$ は矛盾する。
+:::
+
+## ω モデルと超準的な自然数 {#set:sec-omega-models}
+
+再びメタの理論で無限的な方法を認め、\ref{set:sec-metatheory-model-theory} の見方で上の議論を眺める。
+
+::: definition ω モデル {#set:omega-model keywords="omega-model, nonstandard natural number" index="ω モデル|おめがもでる, 超準的な自然数|ちょうじゅんてきなしぜんすう"}
+$\mathfrak{A}=\langle A,E\rangle\models\ZF$ とする。メタの理論の各自然数 $n$ について、$n$ を表す項 $\ulcorner n\urcorner$（$0,1=S(0),\dots$）の $\mathfrak{A}$ での解釈を $n^{\mathfrak{A}}\in A$ とする。$\mathfrak{A}$ が **ω モデル**であるとは、$\mathfrak{A}$ の自然数がこれらだけであること、すなわち $\mathfrak{A}\models$「$a\in\omega$」であって、どの $n$ についても $a\neq n^{\mathfrak{A}}$ となる $a\in A$ が存在しないことをいう。そのような $a$ が存在するとき、$a$ を**超準的な**（無限に大きい）自然数という。
+:::
+
+::: fact ω モデルの基本事項 {#set:omega-model-facts}
+1. 整礎なモデルは ω モデルである。
+2. 任意の $\mathfrak{A}\models\ZF$ は、ω モデルでない初等拡大をもつ（コンパクト性定理による）。
+3. 任意の可算な ω モデルは、ω モデルであるが整礎でない初等拡大をもつ（省略型定理による）。
+:::
+
+::: proof
+1 だけを示す（2, 3 は Kunen による事実として引用する。初等拡大と省略型定理はモデル理論の部で扱う予定）。$\mathfrak{A}$ が整礎とし、超準的な自然数 $a$ があったとする。$\mathfrak{A}$ で $a\in\omega$ かつ $a\neq0$ なので、$\mathfrak{A}\models$「$a$ は後続順序数」であり、$\mathfrak{A}\models a=S(a_{1})$ となる $a_{1}$ がある。$a_{1}$ も超準的である（$a_{1}=n^{\mathfrak{A}}$ なら $a=(n+1)^{\mathfrak{A}}$）。これを繰り返すと、$\cdots\mathrel{E}a_{2}\mathrel{E}a_{1}\mathrel{E}a$ という $E$-下降列が得られ（$\mathfrak{A}\models a_{k+1}\in a_{k}$）、集合 $\{a,a_{1},a_{2},\dots\}$ は $E$-極小元をもたない（選択は各段で一意な $a_{k+1}$ をとるので不要：$\mathfrak{A}$ で $a_{k}=S(a_{k+1})$ となる $a_{k+1}$ は $\mathfrak{A}$ の外延性より一意）。これは整礎性に反する。
+:::
+
+$\ZF$ はおそらく無矛盾で整礎なモデルをもつ（\ref{set:sec-metatheory-model-theory}）が、ω モデルをもたない無矛盾な $S\supseteq\ZF$ を作るのはやさしい。
+
+::: proposition ω モデルをもたない無矛盾な理論 {#set:no-omega-model keywords="ZF + not CON(ZF) has no omega-model"}
+$\ZF$ が無矛盾であるとし、$S\defeq\ZF+\lnot\mathrm{CON}(\ulcorner\ZF\urcorner)$ とおく。このとき $S$ は無矛盾だが、ω モデルをもたない。
+:::
+
+::: proof
+**無矛盾性.** \ref{set:second-incompleteness-zf} より $\ZF\nvdash\mathrm{CON}(\ulcorner\ZF\urcorner)$ なので、$\ZF+\lnot\mathrm{CON}(\ulcorner\ZF\urcorner)$ は無矛盾である（矛盾するなら $\ZF\vdash\mathrm{CON}(\ulcorner\ZF\urcorner)$）。
+
+**ω モデルをもたないこと.** $\mathfrak{A}\models S$ とすると、$\mathfrak{A}$ の中には「$\ZF$ からの矛盾の導出」の符号 $p$ が存在する。ここで、メタの理論の各自然数 $m$ について、「$m$ は $\ZF$ からの矛盾の導出の符号である」かどうかは再帰的に決まる性質で、その正否は $\ZF$ で正しく証明される（再帰的な関係の表現可能性。Kunen 第 I 章 §14 による事実）。$\ZF$ は本当に無矛盾なので、各 $m$ について $\ZF\vdash$「$\ulcorner m\urcorner$ は $\ZF$ からの矛盾の導出の符号でない」であり、$\mathfrak{A}\models\ZF$ よりこれは $\mathfrak{A}$ で真である。したがって $p$ はどの $m^{\mathfrak{A}}$ とも異なり、超準的な自然数である。よって $\mathfrak{A}$ は ω モデルでない。
+:::
+
+::: remark 自分自身の「集合モデル」を定義する理論
+Kunen は上の $S$ についてさらに次のような例を挙げている（以下は Kunen の説明の要約で、細部の形式化は本サイトでは確かめていない）。メタの理論で $S$ の公理を再帰的に $\varphi_{n}$（$n\in\omega$）と枚挙し、この枚挙を $S$ の中で形式化する。$S$ の中で
+$$
+c\defeq\max\{x\in\omega:\exists\beta\,(\langle R(\beta),\in\rangle\models\{\varphi_{n}:n<x\})\}
+$$
+と定める。$S\vdash\lnot\mathrm{CON}(\ulcorner S\urcorner)$（$\ulcorner\ZF\urcorner\subseteq\ulcorner S\urcorner$ なので）であり、すべての有限部分がモデルをもてば形式化された健全性とコンパクト性から $\mathrm{CON}(\ulcorner S\urcorner)$ となるので、この最大値は存在する。反映定理（\ref{set:reflection-axioms}）と \ref{set:relativization-vs-satisfaction} より、標準的な各 $n$ について $S\vdash c>\ulcorner n\urcorner$ となる。したがって $\mathfrak{A}\models S$ なら $c^{\mathfrak{A}}$ は超準的な自然数である。さらに $S$ の中で $b$ を $\langle R(\beta),\in\rangle\models\{\varphi_{n}:n<c\}$ となる最小の $\beta$ とすると、各公理 $\varphi$ について $S\vdash(\langle R(b),\in\rangle\models\ulcorner\varphi\urcorner)$ となる。つまり $S$ は、弱い意味で自分自身の集合モデル $R(b)$ を定義する。一方で $S$ は $\exists\mathfrak{M}\,(\mathfrak{M}\models\ulcorner S\urcorner)$ を証明できない（実際は反証する）。$\mathfrak{A}$ の中で $R(b)$ は標準的な公理 $\varphi_{n}$ をすべて満たすが、ある超準的な「公理」を満たさない。
+:::
+
+上の $S$ は、ω 無矛盾でない（\ref{pt:omega-consistent} の集合論版）任意の再帰的な $\ZF$ の拡大に取り替えられる（Kunen 第 IV 章の演習 32）。集合論のモデル論についてさらに詳しくは Keisler–Morley (1968)、Keisler–Silver (1971) を参照（Kunen の文献表による）。
+
+## 問題 {#set:sec-appendices-problems}
+
+::: problem {#set:prob-interpretation-composition}
+$M_{1},E_{1}$ と $M_{2},E_{2}$ を（パラメータのない）相対解釈とする。$M_{2},E_{2}$ の中で $M_{1},E_{1}$ を解釈した相対解釈 $M_{3},E_{3}$ を適切に定義し、任意の論理式 $\varphi$ について $(\varphi^{M_{1},E_{1}})^{M_{2},E_{2}}$ が $\varphi^{M_{3},E_{3}}$ と（同じ論理式として）一致することを確かめよ。
+:::
+
+::: solution
+$M_{3}(x)\defeq M_{2}(x)\land M_{1}^{M_{2},E_{2}}(x)$、$E_{3}(x,y)\defeq E_{1}^{M_{2},E_{2}}(x,y)$ とおく。$\varphi$ の構成に関する帰納法で示す。$(x\in y)^{M_{1},E_{1}}=E_{1}(x,y)$ で、その $M_{2},E_{2}$ への解釈は $E_{1}^{M_{2},E_{2}}(x,y)=E_{3}(x,y)$。$=$, $\lnot$, $\land$ は明らか。$(\exists x\,\psi)^{M_{1},E_{1}}=\exists x\,(M_{1}(x)\land\psi^{M_{1},E_{1}})$ で、これを $M_{2},E_{2}$ で解釈すると $\exists x\,(M_{2}(x)\land M_{1}^{M_{2},E_{2}}(x)\land(\psi^{M_{1},E_{1}})^{M_{2},E_{2}})$、帰納法の仮定より $\exists x\,(M_{3}(x)\land\psi^{M_{3},E_{3}})=(\exists x\,\psi)^{M_{3},E_{3}}$。（\ref{set:not-finitely-axiomatizable} の証明の「二重の相対化」はこの特別な場合である。）
+:::
+
+::: problem {#set:prob-omega-model-con}
+$\mathfrak{A}$ を $\ZF$ の ω モデルとする。$\ZF$ が無矛盾なら $\mathfrak{A}\models\mathrm{CON}(\ulcorner\ZF\urcorner)$ であることを、\ref{set:no-omega-model} の証明にならって説明せよ。
+:::
+
+::: solution
+$\mathfrak{A}\models\lnot\mathrm{CON}(\ulcorner\ZF\urcorner)$ とすると、\ref{set:no-omega-model} の証明と同じ議論で、$\mathfrak{A}$ の中の矛盾の導出の符号は超準的な自然数でなければならない。ω モデルには超準的な自然数がないので矛盾する。
+:::
+
+::: supplement
+**前提の検討.**
+- \ref{set:relative-consistency-formal} の有限性は、\ref{set:interpretation-proof} を導出の書き換えとして示すことに依存する。本ページではその補題を完全性定理（有限的でない）を使って示したので、本ページの証明そのものは有限的ではない。有限的な証明の存在は Kunen の記述に基づく。
+- \ref{set:no-finitistic-con-inaccessible} は「有限的な証明は $\ZFC$ で形式化できる」という前提に依存する。有限主義の範囲をどう定めるかは哲学的な問題であり、この前提は一般に受け入れられているが数学的に証明されたものではない（一般にはこう言われている）。
+- \ref{set:omega-model-facts} の 1 は、$\mathfrak{A}$ で後続順序数の前者が外延性により一意に決まることを使ったので、選択公理を使っていない。
+
+**関連する結果.** 到達不能基数の存在のように、それを加えると元の理論の無矛盾性が証明できるようになる公理を**無矛盾性の強さ**が真に大きいという（一般にはこう言われている）。大きな基数の公理は無矛盾性の強さによってほぼ線形に並ぶことが観察されているが、これは定理ではなく経験的な観察である（一般にはこう言われている。本サイトでは扱っていない）。算術の側では、\ref{set:no-omega-model} の類似が $\PA+\lnot\mathrm{Con}$ について成り立つ（\ref{pt:godel-second} の 2 と ω 無矛盾性の関係）。
+
+**高い視点から：三つの階の往復.** 本ページの三つの見方は、「どこで論理を行うか」の三つの階にあたる。§8 はメタの理論で記号操作（翻訳）だけを行う有限的な階、§9 はメタの理論で無限集合を自由に使う階、§10 は対象の理論の中に論理全体を写し込む階である。第三の階では、$\ZF$ の中に「$\ZF$ の小さな模型」が作られ、その模型の自然数がメタの自然数と一致するか（ω モデルか）が問題になる。これは鏡の中に鏡を置いたときの像の列に似ている：鏡の中の像は元の世界の正確な写しに見えるが、鏡の中の「無限に遠い像」（超準的な自然数）はメタの世界に対応物をもたないことがある。第二不完全性定理は、鏡が自分自身の完全な写しを映すことはできない、という制約である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

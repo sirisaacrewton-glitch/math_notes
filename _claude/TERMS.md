@@ -329,3 +329,6 @@
 | judgmental (definitional) equality | 判断上の等しさ | 定義的等しさ | 仮。logic:page-dependent-types |
 | type family / induction principle | 型の族 / 帰納原理 | | 仮。logic:page-dependent-types |
 | universe (type theory) | 宇宙 | | 集合論・圏論の「宇宙」と同じ語。logic:page-dependent-types |
+| identity type / path / path induction | 恒等型 / 道 / 道帰納法 | 同一性型 | 仮。日本語の本に用例なし。logic:page-identity-types |
+| transport / homotopy / function extensionality | 輸送 / ホモトピー / 関数外延性 | | 仮。logic:page-identity-types |
+| contractible / uniqueness of identity proofs | 可縮 / 恒等の証明の一意性（UIP） | | 可縮は位相の用語と同じ。logic:page-identity-types |

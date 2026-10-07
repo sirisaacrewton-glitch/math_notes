@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>恒等型と道帰納法 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/09-type-theory/07-identity-types.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 恒等型と道帰納法 {#logic:page-identity-types keywords="identity type, path induction, J eliminator, propositional equality, groupoid laws, transport, ap, dependent ap, homotopy, function extensionality, contractible type, based path space, uniqueness of identity proofs, groupoid model"}
+
+前ページ（\ref{logic:page-dependent-types}）の体系では、等しさは判断上の等しさ $\equiv$ しかなく、「$n+0$ と $n$ が等しい」のように帰納法で示すべき等しさを、型の中で命題として述べることができなかった。**恒等型** $a=_{A}b$（\ref{logic:identity-type}）は、等しさを命題（型）にする。その除去規則が**道帰納法**（$J$）で、「$a=b$ の証明 $p$ についての主張は、$p$ が $\mathrm{refl}$ のときに示せば十分」と言う。本ページでは、道帰納法だけから、等しさの対称性・推移性・代入原理（輸送）が導けることと、それらがさらに一段上の等しさのもとで群の法則を満たすこと（\ref{logic:groupoid-laws}）を示す。最後に、基点付きの道の空間が可縮であること（\ref{logic:based-path-space-contractible}）を示す。これは、恒等型を「点の間の道の空間」とみるホモトピー的な解釈（\ref[HoTT の系列]{logic:page-hott}）の基本の事実である。
+
+> 資料フォルダに参考書がない。マルティン＝レーフの内包的恒等型の標準的な扱いを、本サイトで組み立てた。
+
+## 記法と定義の確認 {#logic:sec-it-notation}
+
+::: notation
+- 判断・構造規則・Π 型・Σ 型・帰納原理・$\mathbb{N}$ は \ref{logic:page-dependent-types} のとおり（\ref{logic:dt-judgments}, \ref{logic:dt-structural-rules}, \ref{logic:pi-type}, \ref{logic:sigma-type}, \ref{logic:dt-inductive-types}）。
+- $\equiv$ は判断上の等しさ、$=$（$=_{A}$）は本ページで定める恒等型。項の定義には $\defeq$ を使う。
+- 関数の合成 $g\circ f\defeq\lambda x.\,g(f\,x)$、恒等関数 $\mathrm{id}_{A}\defeq\lambda x.\,x$。
+:::
+
+## 恒等型 {#logic:sec-it-identity}
+
+::: definition 恒等型と道帰納法 {#logic:identity-type keywords="identity type, propositional equality, reflexivity, path induction, J rule" index="恒等型|こうとうがた, 同一性型|どういつせいがた, 道帰納法|みちきのうほう, 道（型理論）|みちかたりろん"}
+$\Gamma\vdash A\ \mathsf{type}$, $\Gamma\vdash a:A$, $\Gamma\vdash b:A$ から型 $\Gamma\vdash a=_{A}b\ \mathsf{type}$ を作る（**恒等型**。$\mathrm{Id}_{A}(a,b)$ とも書く）。元 $p:a=_{A}b$ を $a$ から $b$ への**道**という。
+1. （導入）$\Gamma\vdash a:A$ から $\Gamma\vdash\mathrm{refl}_{a}:a=_{A}a$。
+2. （**道帰納法**）型の族 $\Gamma,x{:}A,y{:}A,p{:}x=_{A}y\vdash C(x,y,p)\ \mathsf{type}$ と、$\Gamma,x{:}A\vdash c:C(x,x,\mathrm{refl}_{x})$ から
+$$
+\Gamma\vdash J(c):\prod_{x,y:A}\ \prod_{p:x=_{A}y}C(x,y,p).
+$$
+3. （計算）$J(c)\,x\,x\,\mathrm{refl}_{x}\equiv c$。
+:::
+
+::: intuition
+道帰納法は、「$x,y$ と道 $p$ を三つ同時に動かす」主張について、$y$ が $x$ と同じで $p$ が $\mathrm{refl}_{x}$ の場合に示せばよい、と言う。$y$ と $p$ を一緒に動かすことが本質で、$x,y$ を固定したまま「$p=\mathrm{refl}$」と仮定してよいわけではない（$a=_{A}a$ の元がすべて $\mathrm{refl}_{a}$ に等しいとは言えない。\ref{logic:uip-not-provable}）。ホモトピーの言葉では、「端点の一方を自由に動かせる道は、定数の道まで縮められる」ことに当たる（\ref{logic:based-path-space-contractible}）。
+:::
+
+::: proposition 対称性・推移性・関数の作用・輸送 {#logic:path-operations keywords="inverse path, concatenation, ap, action on paths, transport" index="逆の道|ぎゃくのみち, 道の合成|みちのごうせい, 輸送|ゆそう"}
+次の項が定義できる（$x,y,z:A$, $p:x=y$, $q:y=z$）。
+1. **逆** $p^{-1}:y=x$ で、$\mathrm{refl}_{x}^{-1}\equiv\mathrm{refl}_{x}$。
+2. **合成** $p\cdot q:x=z$ で、$\mathrm{refl}_{x}\cdot q\equiv q$。
+3. $f:A\to B$ の**作用** $\mathrm{ap}_{f}(p):f\,x=f\,y$ で、$\mathrm{ap}_{f}(\mathrm{refl}_{x})\equiv\mathrm{refl}_{f\,x}$。
+4. 族 $B$ に沿った**輸送** $\mathrm{tr}^{B}(p,-):B(x)\to B(y)$ で、$\mathrm{tr}^{B}(\mathrm{refl}_{x},-)\equiv\mathrm{id}_{B(x)}$。
+:::
+
+::: proof
+各項を道帰納法で定める。族 $C$ を書き、$\mathrm{refl}$ の場合の値 $c$ を与えれば、計算規則から主張の判断上の等しさが出る。
+
+**1.** $C(x,y,p)\defeq(y=x)$、$c\defeq\mathrm{refl}_{x}$。$p^{-1}\defeq J(c)\,x\,y\,p$。
+
+**2.** 合成は $q$ を後から受け取る関数として定める：$C(x,y,p)\defeq\prod_{z:A}(y=z)\to(x=z)$、$c\defeq\lambda z.\,\lambda q.\,q$（$C(x,x,\mathrm{refl}_{x})\equiv\prod_{z}(x=z)\to(x=z)$ の元）。$p\cdot q\defeq J(c)\,x\,y\,p\,z\,q$。計算規則と β から $\mathrm{refl}_{x}\cdot q\equiv q$。
+
+**3.** $C(x,y,p)\defeq(f\,x=f\,y)$、$c\defeq\mathrm{refl}_{f\,x}$。
+
+**4.** $C(x,y,p)\defeq B(x)\to B(y)$、$c\defeq\mathrm{id}_{B(x)}$。
+
+::: hypcheck
+- **族を一般化すること**：2 では、$q$ を固定した族ではなく、$z$ と $q$ を Π で受け取る族にした。道帰納法の族は $x,y,p$ のすべてについて意味をもつ必要があり、$y$ に依存する $q:y=z$ を文脈に固定しておくことはできないからである。この「一般化してから帰納法」は、以下の証明で繰り返し使う。
+- 合成の定義で $p$ について帰納法を使ったので、$\mathrm{refl}\cdot q\equiv q$ は判断上成り立つが、$p\cdot\mathrm{refl}\equiv p$ は判断上は成り立たない（次の命題で道として示す）。
+:::
+:::
+
+::: theorem 群の法則（亜群の構造） {#logic:groupoid-laws keywords="groupoid laws for identity types, unit laws, inverse laws, associativity up to paths" index="亜群の法則（恒等型）|あぐんのほうそくこうとうがた"}
+$p:x=y$, $q:y=z$, $r:z=w$ について、次の型の元がある。
+$$
+\begin{aligned}
+&p\cdot\mathrm{refl}_{y}=p,\qquad p\cdot p^{-1}=\mathrm{refl}_{x},\qquad p^{-1}\cdot p=\mathrm{refl}_{y},\\
+&(p^{-1})^{-1}=p,\qquad(p\cdot q)\cdot r=p\cdot(q\cdot r).
+\end{aligned}
+$$
+:::
+
+::: proof
+どれも $p$ に関する道帰納法で示す。$p\equiv\mathrm{refl}_{x}$（$y\equiv x$）の場合に、両辺を \ref{logic:path-operations} の判断上の等しさで計算し、両辺が判断上等しくなれば $\mathrm{refl}$ で示せる。
+
+**Step 1（右単位律）.** 族 $C(x,y,p)\defeq(p\cdot\mathrm{refl}_{y}=p)$。$p\equiv\mathrm{refl}_{x}$ のとき、左辺は $\mathrm{refl}_{x}\cdot\mathrm{refl}_{x}\equiv\mathrm{refl}_{x}$（合成の計算）で右辺と一致するので、$c\defeq\mathrm{refl}_{\mathrm{refl}_{x}}$。
+
+**Step 2（逆元律）.** $C(x,y,p)\defeq(p\cdot p^{-1}=\mathrm{refl}_{x})$。$\mathrm{refl}_{x}\cdot\mathrm{refl}_{x}^{-1}\equiv\mathrm{refl}_{x}\cdot\mathrm{refl}_{x}\equiv\mathrm{refl}_{x}$。$p^{-1}\cdot p$ も同様。
+
+**Step 3（二重の逆）.** $(\mathrm{refl}_{x}^{-1})^{-1}\equiv\mathrm{refl}_{x}$。
+
+**Step 4（結合律）.** 族を一般化する：
+$$
+C(x,y,p)\defeq\prod_{z,w:A}\ \prod_{q:y=z}\ \prod_{r:z=w}(p\cdot q)\cdot r=p\cdot(q\cdot r).
+$$
+$p\equiv\mathrm{refl}_{x}$ のとき、左辺 $(\mathrm{refl}_{x}\cdot q)\cdot r\equiv q\cdot r$、右辺 $\mathrm{refl}_{x}\cdot(q\cdot r)\equiv q\cdot r$ なので、$c\defeq\lambda z\,w\,q\,r.\,\mathrm{refl}_{q\cdot r}$。
+
+::: hypcheck
+- **道帰納法の族**：Step 4 で $q,r$ を Π で受け取る族にした（\ref{logic:path-operations} の hypcheck と同じ理由）。
+- **判断上の等しさ**：各 Step で、$\mathrm{refl}$ の場合に両辺が判断上等しくなることを確かめた。合成を $q$ に関する帰納法で定義していたら、右単位律が判断上成り立ち、代わりに左単位律を道帰納法で示すことになる。
+- **一意性**：これらの「等しさ」は、それ自身が道（$p\cdot\mathrm{refl}=p$ の元）であり、その道の間にもさらに等しさがある。等式が判断上でなく道として成り立つことが、型が単なる集合ではなく**亜群**（さらには高次の亜群）の構造をもつことを意味する。
+:::
+:::
+
+::: proposition 関数の作用の関手性 {#logic:ap-functorial keywords="functoriality of ap, ap of composition, ap of identity" index="ap の関手性|えーぴーのかんしゅせい"}
+$f:A\to B$, $g:B\to C$, $p:x=y$, $q:y=z$ について、
+$$
+\begin{aligned}
+&\mathrm{ap}_{f}(p\cdot q)=\mathrm{ap}_{f}(p)\cdot\mathrm{ap}_{f}(q),\qquad\mathrm{ap}_{f}(p^{-1})=\mathrm{ap}_{f}(p)^{-1},\\
+&\mathrm{ap}_{g\circ f}(p)=\mathrm{ap}_{g}(\mathrm{ap}_{f}(p)),\qquad\mathrm{ap}_{\mathrm{id}_{A}}(p)=p.
+\end{aligned}
+$$
+:::
+
+::: proof
+すべて $p$ に関する道帰納法（第一式は $z,q$ を Π で受け取る族）。$p\equiv\mathrm{refl}_{x}$ のとき：第一式は両辺とも $\mathrm{ap}_{f}(q)$（左辺は $\mathrm{ap}_{f}(\mathrm{refl}\cdot q)\equiv\mathrm{ap}_{f}(q)$、右辺は $\mathrm{refl}\cdot\mathrm{ap}_{f}(q)\equiv\mathrm{ap}_{f}(q)$）。第二式は両辺とも $\mathrm{refl}_{f\,x}$。第三式は両辺とも $\mathrm{refl}_{g(f\,x)}$（$(g\circ f)\,x\equiv g(f\,x)$ は β）。第四式は両辺とも $\mathrm{refl}_{x}$。いずれも $\mathrm{refl}$ で示せる。
+:::
+
+::: proposition 依存関数の作用 {#logic:apd keywords="dependent ap, apd, dependent paths over a path" index="依存関数の作用|いぞんかんすうのさよう"}
+族 $B$ と $f:\prod_{x:A}B(x)$、$p:x=y$ について、$\mathrm{apd}_{f}(p):\mathrm{tr}^{B}(p,f\,x)=_{B(y)}f\,y$ が定義でき、$\mathrm{apd}_{f}(\mathrm{refl}_{x})\equiv\mathrm{refl}_{f\,x}$。
+:::
+
+::: proof
+族 $C(x,y,p)\defeq\bigl(\mathrm{tr}^{B}(p,f\,x)=_{B(y)}f\,y\bigr)$ の道帰納法。$p\equiv\mathrm{refl}_{x}$ のとき $\mathrm{tr}^{B}(\mathrm{refl}_{x},f\,x)\equiv f\,x$ なので、$c\defeq\mathrm{refl}_{f\,x}$。
+:::
+
+::: intuition
+$f\,x:B(x)$ と $f\,y:B(y)$ は**違う型**の元なので、そのままでは等しいかどうかを問えない。$p$ に沿って $f\,x$ を $B(y)$ へ運んでから比べる、というのが $\mathrm{apd}$ である。ホモトピーの言葉では、$B$ は $A$ 上のファイバー空間、$\mathrm{tr}$ は道の持ち上げ、$f$ は切断で、$\mathrm{apd}_{f}(p)$ は「$p$ の上にある $f$ の道」である。
+:::
+
+## 帰納原理の応用 {#logic:sec-it-applications}
+
+::: proposition Σ 型の η {#logic:sigma-eta keywords="propositional eta rule for Sigma types, uniqueness principle" index="Σ 型の一意性原理|しぐまがたのいちいせいげんり"}
+$\prod_{s:\sum_{x:A}B}(\mathrm{pr}_{1}s,\mathrm{pr}_{2}s)=s$ の元がある。
+:::
+
+::: proof
+Σ の帰納原理（\ref{logic:sigma-type}）を族 $C(s)\defeq\bigl((\mathrm{pr}_{1}s,\mathrm{pr}_{2}s)=s\bigr)$ に使う。$s\equiv(x,y)$ のとき、\ref{logic:sigma-projections} から $(\mathrm{pr}_{1}(x,y),\mathrm{pr}_{2}(x,y))\equiv(x,y)$ なので、$c\defeq\mathrm{refl}_{(x,y)}$。
+:::
+
+::: definition ホモトピーと関数外延性 {#logic:homotopy-funext keywords="homotopy between functions, happly, function extensionality axiom" index="ホモトピー（型理論）|ほもとぴーかたりろん, 関数外延性|かんすうがいえんせい"}
+$f,g:\prod_{x:A}B(x)$ の**ホモトピー**の型を $f\sim g\defeq\prod_{x:A}f\,x=g\,x$ とする。道帰納法（族 $C(f,g,p)\defeq f\sim g$、$c\defeq\lambda x.\,\mathrm{refl}_{f\,x}$）で
+$$
+\mathrm{happly}:(f=g)\to(f\sim g)
+$$
+が定まる。逆向きの関数 $(f\sim g)\to(f=g)$ の存在を**関数外延性**という。
+:::
+
+::: fact 関数外延性は証明できない {#logic:funext-independent keywords="function extensionality is not provable in intensional Martin-Lof type theory" index="関数外延性の独立性|かんすうがいえんせいのどくりつせい"}
+本ページの規則（Π・Σ・帰納的な型・恒等型）だけからは、関数外延性は証明できないことが知られている（関数の等しさを内包的に解釈するモデルによる）。そのため、必要なときは公理として加える。ホモトピー型理論では、一価性公理（\ref[HoTT の系列]{logic:page-hott}）から関数外延性が導かれる（V. Voevodsky による。詳細は範囲外）。
+:::
+
+## 可縮な型と基点付きの道の空間 {#logic:sec-it-contractible}
+
+::: definition 可縮な型 {#logic:contractible keywords="contractible type, center of contraction" index="可縮（型）|かしゅくかた, 縮約の中心|しゅくやくのちゅうしん"}
+$A$ が**可縮**であることを、型 $\mathrm{isContr}(A)\defeq\sum_{a:A}\prod_{x:A}a=x$ の元があることで表す。$a$ を**縮約の中心**という。
+:::
+
+::: theorem 基点付きの道の空間は可縮 {#logic:based-path-space-contractible keywords="based path space is contractible, singletons are contractible" index="基点付きの道の空間|きてんつきのみちのくうかん"}
+$a:A$ について、$\sum_{y:A}a=y$ は可縮である。中心は $(a,\mathrm{refl}_{a})$。
+:::
+
+::: proof
+$P_{x}\defeq\sum_{y:A}x=y$ とおく。示すことは $\prod_{(y,p):P_{a}}(a,\mathrm{refl}_{a})=_{P_{a}}(y,p)$。
+
+**Step 1（族を作る）.** $x,y{:}A,p{:}x=y\vdash C(x,y,p)\defeq\bigl((x,\mathrm{refl}_{x})=_{P_{x}}(y,p)\bigr)\ \mathsf{type}$。右辺の $(y,p)$ は $P_{x}$ の元（Σ の導入）。
+
+**Step 2（$\mathrm{refl}$ の場合）.** $C(x,x,\mathrm{refl}_{x})\equiv\bigl((x,\mathrm{refl}_{x})=(x,\mathrm{refl}_{x})\bigr)$ なので $c\defeq\mathrm{refl}_{(x,\mathrm{refl}_{x})}$。
+
+**Step 3（道帰納法）.** $J(c):\prod_{x,y}\prod_{p:x=y}C(x,y,p)$。$x$ に $a$ を代入すると、各 $y,p$ について $(a,\mathrm{refl}_{a})=(y,p)$。
+
+**Step 4（Σ の元全体へ）.** Σ の帰納原理（族 $s\mapsto(a,\mathrm{refl}_{a})=s$）で、$s\equiv(y,p)$ の場合が Step 3 なので、$\prod_{s:P_{a}}(a,\mathrm{refl}_{a})=s$。中心と合わせて $\mathrm{isContr}(P_{a})$ の元ができる。
+
+::: hypcheck
+- **端点を動かすこと**：Step 1 の族は、$x$ を基点として $y$ と $p$ を両方動かしている。$y$ を $a$ に固定した $\sum$ のない型 $a=_{A}a$ について同じことは言えない（次の事実）。
+- **Σ の帰納原理**：Step 4 で、組の形の元についての主張を Σ 型全体に広げるのに使った。
+:::
+:::
+
+::: remark 基点付き道帰納法
+\ref{logic:based-path-space-contractible} を使うと、基点 $a$ を固定した**基点付き道帰納法**（族 $y{:}A,p{:}a=y\vdash C(y,p)$ について $C(a,\mathrm{refl}_{a})$ から $\prod_{y}\prod_{p}C(y,p)$）が導ける：$(y,p)$ と $(a,\mathrm{refl}_{a})$ をつなぐ道に沿って $C$ を（Σ 型上の族として）輸送すればよい。逆に基点付き道帰納法から道帰納法も導けるので、二つは同値である。
+:::
+
+::: fact 恒等の証明の一意性は証明できない {#logic:uip-not-provable keywords="uniqueness of identity proofs, axiom K, Hofmann-Streicher groupoid model" index="恒等の証明の一意性|こうとうのしょうめいのいちいせい, 公理 K|こうりけい"}
+「$a=_{A}a$ の元はすべて $\mathrm{refl}_{a}$ に等しい」（**恒等の証明の一意性**、UIP。同値な形として公理 K）は、本ページの規則からは証明できない。型を亜群（対象を点、同型射を道）と解釈するモデルで UIP が偽になることによる：M. Hofmann and T. Streicher, The groupoid interpretation of type theory（*Twenty-Five Years of Constructive Type Theory*, Oxford University Press, 1998）。
+:::
+
+::: supplement
+**前提を変えると.** 恒等型に**反映規則**（$p:a=b$ から $a\equiv b$ を導く）を加えた**外延的型理論**では、UIP と関数外延性が成り立つが、型の検査（$a:A$ かどうかの判定）が決定不能になることが知られている。本ページの**内包的**な恒等型は、型検査の決定可能性を保つ代わりに、等しさが豊かな構造（高次の亜群）をもつ。
+
+**類似の定理.** 一階述語論理の等号の規則（反射律と代入原理。\ref{logic:page-natural-deduction}）では、対称性・推移性は代入原理から導かれた。道帰納法は代入原理（輸送）を、述語だけでなく「証明に依存する述語」にまで強めたものである。
+
+**高い視点から：型は空間、等しさは道.** \ref{logic:groupoid-laws} は、型 $A$ の元を対象、道を射とすると、群の法則が「一段上の道を除いて」成り立つこと、つまり $A$ が亜群（さらに高次の亜群、$\infty$-亜群）をなすことを言う。位相空間の基本亜群（点と、道のホモトピー類）と同じ構造である。\ref{logic:based-path-space-contractible} は、位相空間で「一端を固定した道の空間は可縮」（道を始点に向かって縮める）という事実に当たり、道帰納法の正当性の幾何的な理由になっている。比喩で言えば、恒等型は「等しいかどうか」ではなく「どのように等しいか（どの道で移れるか）」を記録する型であり、群の法則は「道を一周して戻ることと、動かないことは、連続的に変形すれば同じ」ということである。
+:::
+
+## 問題 {#logic:sec-it-problems}
+
+::: problem {#logic:prob-it-add-zero}
+前ページの加法（\ref{logic:dt-inductive-types} の例）について、$\prod_{n:\mathbb{N}}n+0=n$ の元を作れ。
+:::
+
+::: solution
+$\mathbb{N}$ の帰納原理を族 $C(n)\defeq(n+0=n)$ に使う。$n\equiv0$：$0+0\equiv0$ なので $\mathrm{refl}_{0}$。帰納段階：$h:n+0=n$ から $\mathrm{succ}\,n+0=\mathrm{succ}\,n$ を作る。左辺は $\mathrm{succ}(n+0)$ に判断上等しいので、$\mathrm{ap}_{\mathrm{succ}}(h):\mathrm{succ}(n+0)=\mathrm{succ}\,n$ が求めるもの（変換規則）。
+:::
+
+::: problem {#logic:prob-it-transport-const}
+$B$ が定数の族（$B(x)\equiv B_{0}$）のとき、$\prod_{p:x=y}\prod_{b:B_{0}}\mathrm{tr}^{B}(p,b)=b$ の元を作れ。
+:::
+
+::: solution
+$p$ に関する道帰納法（族は $C(x,y,p)\defeq\prod_{b}\mathrm{tr}^{B}(p,b)=b$）。$p\equiv\mathrm{refl}_{x}$ のとき $\mathrm{tr}^{B}(\mathrm{refl}_{x},b)\equiv b$ なので $\lambda b.\,\mathrm{refl}_{b}$。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

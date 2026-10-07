@@ -5454,6 +5454,20 @@
       "num": "8.5",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/08-completeness-alternative.html"
     },
+    "logic:ap-functorial": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "関数の作用の関手性",
+      "num": "7.4",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/07-identity-types.html"
+    },
+    "logic:apd": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "依存関数の作用",
+      "num": "7.5",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/07-identity-types.html"
+    },
     "logic:assignment": {
       "status": "defined",
       "type": "definition",
@@ -5474,6 +5488,13 @@
       "title": "未解消の仮定の有限性",
       "num": "4.4",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/04-natural-deduction.html"
+    },
+    "logic:based-path-space-contractible": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "基点付きの道の空間は可縮",
+      "num": "7.10",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/07-identity-types.html"
     },
     "logic:berk-theorem": {
       "status": "defined",
@@ -5803,6 +5824,13 @@
       "title": "連続性定理",
       "num": "3.8",
       "page": "03-mathematical-logic/03B-general-logic/03-modal-logic/03-kripke-semantics.html"
+    },
+    "logic:contractible": {
+      "status": "defined",
+      "type": "definition",
+      "title": "可縮な型",
+      "num": "7.9",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/07-identity-types.html"
     },
     "logic:craig-interpolation": {
       "status": "defined",
@@ -6140,6 +6168,13 @@
       "num": "1.11",
       "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/01-syntax-semantics.html"
     },
+    "logic:funext-independent": {
+      "status": "defined",
+      "type": "fact",
+      "title": "関数外延性は証明できない",
+      "num": "7.8",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/07-identity-types.html"
+    },
     "logic:geach-canonical": {
       "status": "defined",
       "type": "theorem",
@@ -6287,6 +6322,13 @@
       "num": "8.9",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/08-completeness-alternative.html"
     },
+    "logic:groupoid-laws": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "群の法則（亜群の構造）",
+      "num": "7.3",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/07-identity-types.html"
+    },
     "logic:h-between": {
       "status": "defined",
       "type": "proposition",
@@ -6328,6 +6370,20 @@
       "title": "ヘンキン的な理論",
       "num": "7.4",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/07-completeness.html"
+    },
+    "logic:homotopy-funext": {
+      "status": "defined",
+      "type": "definition",
+      "title": "ホモトピーと関数外延性",
+      "num": "7.7",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/07-identity-types.html"
+    },
+    "logic:identity-type": {
+      "status": "defined",
+      "type": "definition",
+      "title": "恒等型と道帰納法",
+      "num": "7.1",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/07-identity-types.html"
     },
     "logic:ijmn-convergent": {
       "status": "defined",
@@ -6903,6 +6959,13 @@
       "num": "",
       "page": "03-mathematical-logic/03B-general-logic/03-modal-logic/02-gl-axioms.html"
     },
+    "logic:page-identity-types": {
+      "status": "defined",
+      "type": "page",
+      "title": "恒等型と道帰納法",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/07-identity-types.html"
+    },
     "logic:page-incomplete-modal-logic": {
       "status": "defined",
       "type": "page",
@@ -7077,6 +7140,13 @@
       "title": "並行簡約と代入",
       "num": "1.7",
       "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/01-untyped-lambda.html"
+    },
+    "logic:path-operations": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "対称性・推移性・関数の作用・輸送",
+      "num": "7.2",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/07-identity-types.html"
     },
     "logic:peirce-no-term": {
       "status": "defined",
@@ -7385,6 +7455,20 @@
       "title": "",
       "num": "9.10",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/09-craig-robinson.html"
+    },
+    "logic:prob-it-add-zero": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "7.13",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/07-identity-types.html"
+    },
+    "logic:prob-it-transport-const": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "7.14",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/07-identity-types.html"
     },
     "logic:prob-kalmar-example": {
       "status": "defined",
@@ -8450,6 +8534,41 @@
       "num": "",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/09-craig-robinson.html"
     },
+    "logic:sec-it-applications": {
+      "status": "defined",
+      "type": "section",
+      "title": "帰納原理の応用",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/07-identity-types.html"
+    },
+    "logic:sec-it-contractible": {
+      "status": "defined",
+      "type": "section",
+      "title": "可縮な型と基点付きの道の空間",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/07-identity-types.html"
+    },
+    "logic:sec-it-identity": {
+      "status": "defined",
+      "type": "section",
+      "title": "恒等型",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/07-identity-types.html"
+    },
+    "logic:sec-it-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/07-identity-types.html"
+    },
+    "logic:sec-it-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/07-identity-types.html"
+    },
     "logic:sec-k-lob-rule": {
       "status": "defined",
       "type": "section",
@@ -9311,6 +9430,13 @@
       "num": "9.3",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/09-craig-robinson.html"
     },
+    "logic:sigma-eta": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "Σ 型の η",
+      "num": "7.6",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/07-identity-types.html"
+    },
     "logic:sigma-projections": {
       "status": "defined",
       "type": "proposition",
@@ -9744,6 +9870,13 @@
       "title": "弱化と代入",
       "num": "4.4",
       "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/04-ccc-semantics.html"
+    },
+    "logic:uip-not-provable": {
+      "status": "defined",
+      "type": "fact",
+      "title": "恒等の証明の一意性は証明できない",
+      "num": "7.12",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/07-identity-types.html"
     },
     "logic:uniform-substitution": {
       "status": "defined",
@@ -28119,21 +28252,8 @@
       "referencedFrom": [
         "03-mathematical-logic/03F-proof-theory/09-type-theory/01-simply-typed.html",
         "03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html",
-        "03-mathematical-logic/03F-proof-theory/09-type-theory/06-dependent-types.html"
-      ]
-    },
-    "logic:page-identity-types": {
-      "status": "planned",
-      "title": "恒等型と道帰納法",
-      "referencedFrom": [
-        "03-mathematical-logic/03F-proof-theory/09-type-theory/06-dependent-types.html"
-      ]
-    },
-    "logic:prob-it-add-zero": {
-      "status": "planned",
-      "title": "次ページの問題",
-      "referencedFrom": [
-        "03-mathematical-logic/03F-proof-theory/09-type-theory/06-dependent-types.html"
+        "03-mathematical-logic/03F-proof-theory/09-type-theory/06-dependent-types.html",
+        "03-mathematical-logic/03F-proof-theory/09-type-theory/07-identity-types.html"
       ]
     },
     "meas:lebesgue-measure": {

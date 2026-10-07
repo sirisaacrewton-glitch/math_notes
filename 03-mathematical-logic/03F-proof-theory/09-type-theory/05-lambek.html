@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>構文圏とランベック対応 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 構文圏とランベック対応 {#logic:page-lambek keywords="Lambek correspondence, Curry-Howard-Lambek correspondence, syntactic category, classifying category, term model, generic model, completeness of beta eta equality for cartesian closed categories, free cartesian closed category, internal language of a cartesian closed category"}
+
+前ページ（\ref{logic:page-ccc-semantics}）では、λ 理論 $T$ の項をデカルト閉圏の射として解釈し、導ける等式がどのモデルでも成り立つこと（健全性、\ref{logic:ccc-soundness}）を示した。本ページでは逆向きを扱う。$T$ の型を対象、変数一つの文脈の項を射とし、導ける等式で割って**構文圏** $\mathbf{Cl}(T)$ を作る（\ref{logic:syntactic-category}）。$\mathbf{Cl}(T)$ はデカルト閉圏で（\ref{logic:cl-ccc}）、その中の**標準モデル**では各項がそれ自身を表す（\ref{logic:generic-model}）。ここから**完全性定理**（\ref{logic:ccc-completeness}）「すべてのデカルト閉圏で成り立つ等式は導ける」が得られる。さらに $\mathbf{Cl}(T)$ は「$T$ のモデル」の普遍的なもので、$T$ のモデルは $\mathbf{Cl}(T)$ からの構造を保つ関手と一対一に対応する（\ref{logic:syntactic-category-universal}）。最後に、任意の小さいデカルト閉圏 $\mathbf{C}$ はある λ 理論（**内部言語**）の構文圏と圏同値であることを示す（\ref{logic:lambek-internal-language}）。こうして「論理（直観主義命題論理）」「計算（型付きラムダ計算）」「圏（デカルト閉圏）」の三つが同じものの三つの顔であることが分かる。これを**カリー＝ハワード＝ランベック対応**という。
+
+> 資料フォルダに参考書がなく、標準的な構成（J. Lambek and P. J. Scott, *Introduction to Higher Order Categorical Logic*, Cambridge University Press, 1986 の第 I 部の内容に当たるもの）を、前ページの記法に合わせて本サイトで組み立てた。
+
+## 記法と定義の確認 {#logic:sec-lb-notation}
+
+::: notation
+- 署名・型・項・文脈・代入射・λ 理論・導ける等式 $\Gamma\vdash_{T}M=N:A$ は \ref{logic:lambda-signature}, \ref{logic:typing-rules-product}, \ref{logic:typing-weakening-substitution}, \ref{logic:lambda-theory} のとおり。構造・モデル・解釈 $\llbracket-\rrbracket$、文脈の射影 $q^{\Gamma}_{i}$ と $\langle g_{1},\dots,g_{n}\rangle_{\Gamma}$ は \ref{logic:ccc-structure}, \ref{logic:context-tuple}, \ref{logic:ccc-interpretation} のとおり。デカルト閉圏の構造は選んで固定する（前ページと同じ）。
+- 圏同値と、その「充満忠実かつ本質的全射」による特徴づけは \ref{cat:equivalence-of-categories}, \ref{cat:equivalence-characterization}、充満・忠実は \ref{cat:full-faithful} のとおり。
+- 文脈 $\Gamma=x_{1}{:}A_{1},\dots,x_{n}{:}A_{n}$ に対し、型 $\Gamma^{\times}$ を $(\cdot)^{\times}\defeq1$, $(\Gamma,x{:}A)^{\times}\defeq\Gamma^{\times}\times A$ で、項 $t_{\Gamma}$ を $t_{\cdot}\defeq\ast$, $t_{\Gamma,x:A}\defeq\langle t_{\Gamma},x\rangle$ で定める（$\Gamma\vdash t_{\Gamma}:\Gamma^{\times}$）。項 $P$ に対する**射影項** $\varpi^{\Gamma}_{i}(P)$ を
+$$
+\varpi^{\Gamma,x:A}_{n+1}(P)\defeq\pi_{2}P,\qquad\varpi^{\Gamma,x:A}_{i}(P)\defeq\varpi^{\Gamma}_{i}(\pi_{1}P)\ (i\le n)
+$$
+で定める（$P:\Gamma^{\times}$ なら $\varpi^{\Gamma}_{i}(P):A_{i}$）。$\varpi^{\Gamma}_{i}(P)=\varpi^{\Gamma}_{i}(z)[P/z]$ である。$M[\vec{\varpi}(P)]$ は $M[\varpi^{\Gamma}_{1}(P)/x_{1},\dots,\varpi^{\Gamma}_{n}(P)/x_{n}]$ の略。
+- 体系は $\ZFC$。
+:::
+
+::: lemma 射影項と組 {#logic:projection-terms keywords="projection terms, tupling of a context" index="射影項|しゃえいこう"}
+$\Gamma\vdash_{T}\varpi^{\Gamma}_{i}(t_{\Gamma})=x_{i}:A_{i}$（すべての $i$。どの λ 理論 $T$ でも）。
+:::
+
+::: proof
+$\Gamma$ の長さに関する帰納法。$\Gamma,x{:}A$ で、$\varpi_{n+1}(t_{\Gamma,x:A})=\pi_{2}\langle t_{\Gamma},x\rangle=x$（積の β）。$i\le n$ なら $\varpi^{\Gamma,x:A}_{i}(t_{\Gamma,x:A})=\varpi^{\Gamma}_{i}(z)[\pi_{1}\langle t_{\Gamma},x\rangle/z]$ で、代入の規則（\ref{logic:lambda-theory} の 4）を積の β 等式 $\pi_{1}\langle t_{\Gamma},x\rangle=t_{\Gamma}$ に使うと、これは $\varpi^{\Gamma}_{i}(z)[t_{\Gamma}/z]=\varpi^{\Gamma}_{i}(t_{\Gamma})$ に等しい。弱化（代入の規則で $N_{i}$ を変数にとる）と帰納法の仮定から、それは $x_{i}$ に等しい。
+:::
+
+## 構文圏 {#logic:sec-lb-syntactic}
+
+::: definition 構文圏 {#logic:syntactic-category keywords="syntactic category, classifying category, category of types and terms modulo provable equality" index="構文圏|こうぶんけん, 分類圏|ぶんるいけん"}
+λ 理論 $T$ の**構文圏** $\mathbf{Cl}(T)$ を次で定める。
+1. 対象は型。
+2. 射 $A\to B$ は、$x{:}A\vdash M:B$ となる組 $(x,M)$ の同値類 $[x{:}A\vdash M]$。ここで $(x,M)\sim(x',M')$ を $x{:}A\vdash_{T}M=M'[x/x']:B$ で定める（変数の名前の違いも同一視する）。
+3. 合成は代入：$[y{:}B\vdash N]\circ[x{:}A\vdash M]\defeq[x{:}A\vdash N[M/y]]$。恒等射は $[x{:}A\vdash x]$。
+:::
+
+::: intuition
+「型 $A$ の値を一つ受け取って型 $B$ の値を返すプログラム」を射とし、導ける等式で同じとみなせるプログラムを同一視する。合成は「プログラムの出力を次のプログラムの入力に差し込むこと」、つまり代入である。カリー＝ハワード対応で読めば、射 $A\to B$ は「仮定 $A$ から $B$ を導く証明を、正規化で移り合うものを同一視したもの」で、合成は証明をつなぐこと（カット）である。一階述語論理の完全性定理で、項を等号で割って項モデルを作ったこと（\ref{logic:term-model}）の類似である。
+:::
+
+::: lemma 構文圏は圏である {#logic:cl-category keywords="syntactic category is a category, composition well defined" index="構文圏の合成|こうぶんけんのごうせい"}
+$\sim$ は同値関係で、合成は代表の選び方によらず、$\mathbf{Cl}(T)$ は（小さい）圏をなす。
+:::
+
+::: proof
+**Step 1（同値関係）.** 反射律・対称律・推移律は、導ける等式の同値関係の規則と、変数の付け替えが代入の規則（代入射 $(x)\colon(x{:}A)\to(x'{:}A)$）で等式を保つことから。
+
+**Step 2（合成の代表によらないこと）.** $x{:}A\vdash M=M':B$ と $y{:}B\vdash N=N':C$ が導けるとする。代入射 $(M),(M')\colon(x{:}A)\to(y{:}B)$ に代入の規則を使えば $x{:}A\vdash N[M/y]=N'[M'/y]:C$。型が付くことは \ref{logic:typing-weakening-substitution} の 2。
+
+**Step 3（結合律）.** $x{:}A\vdash M:B$, $y{:}B\vdash N:C$, $z{:}C\vdash P:D$ について、$P[N/z][M/y]=P[N[M/y]/z]$ を示す。$P$ の自由変数は高々 $z$ なので $y\notin\mathrm{FV}(P)$（$y\ne z$ に選ぶ）。代入の補題（\ref{logic:lambda-substitution-lemma}。新しい構成子についても同じ帰納法で成り立つ）を $z\neq y$, $z\notin\mathrm{FV}(M)$ で使うと
+$$
+P[N/z][M/y]=P[M/y][N[M/y]/z]=P[N[M/y]/z].
+$$
+
+**Step 4（恒等射）.** $N[x/x]=N$ と $x[M/x]=M$ は代入の定義から。
+
+$\mathbf{Cl}(T)$ が小さいのは、型も項も（署名の基本型・定数を記号にもつ）有限列だからである。
+:::
+
+::: theorem 構文圏はデカルト閉である {#logic:cl-ccc keywords="syntactic category of a lambda theory is cartesian closed" index="構文圏のデカルト閉性|こうぶんけんのでかるとへいせい"}
+$\mathbf{Cl}(T)$ は、次の構造でデカルト閉圏である。
+1. 終対象 $1$、$!_{A}\defeq[x{:}A\vdash\ast]$。
+2. 積 $A\times B$、$p_{i}\defeq[z{:}A\times B\vdash\pi_{i}z]$、$\langle[x\vdash M],[x\vdash N]\rangle\defeq[x\vdash\langle M,N\rangle]$。
+3. 冪 $B^{A}\defeq(A\to B)$、$\mathrm{ev}\defeq[w{:}(A\to B)\times A\vdash(\pi_{1}w)(\pi_{2}w)]$、$f=[u{:}C\times A\vdash P]$ の転置
+$$
+\lambda f\defeq[y{:}C\vdash\lambda x{:}A.\,P[\langle y,x\rangle/u]].
+$$
+:::
+
+::: proof
+**Step 1（終対象）.** $[x{:}A\vdash M]\colon A\to1$ なら、単位型の η 等式から $x{:}A\vdash M=\ast:1$。よって $A\to1$ の射は $!_{A}$ だけ。
+
+**Step 2（積）.** $p_{i}\circ\langle[M],[N]\rangle=[x\vdash\pi_{i}\langle M,N\rangle]$ で、積の β 等式から $[M]$, $[N]$ に等しい。一意性：$[x\vdash Q]$ が $\pi_{1}Q=M$, $\pi_{2}Q=N$ を満たせば、積の η 等式と両立性から $Q=\langle\pi_{1}Q,\pi_{2}Q\rangle=\langle M,N\rangle$。
+
+**Step 3（転置が条件を満たす）.** $L\defeq\lambda x{:}A.\,P[\langle y,x\rangle/u]$ とおく（$x$ は $P$ に自由に現れない変数に選ぶ）。射の積の定義 $\lambda f\times1=\langle\lambda f\circ p_{1},p_{2}\rangle$ から
+$$
+\lambda f\times1=[w{:}C\times A\vdash\langle L[\pi_{1}w/y],\pi_{2}w\rangle].
+$$
+$\mathrm{ev}$ と合成し、積の β、関数の β、積の η を（両立性と代入の規則の中で）順に使うと
+$$
+\begin{aligned}
+\mathrm{ev}\circ(\lambda f\times1)&=[w\vdash L[\pi_{1}w/y]\,(\pi_{2}w)]\\
+&=[w\vdash P[\langle\pi_{1}w,\pi_{2}w\rangle/u]]=[w\vdash P[w/u]]=f.
+\end{aligned}
+$$
+
+**Step 4（転置の一意性）.** $g=[y{:}C\vdash G]\colon C\to(A\to B)$ が $\mathrm{ev}\circ(g\times1)=f$ を満たすとする。Step 3 と同じ計算で、$w{:}C\times A\vdash G[\pi_{1}w/y]\,(\pi_{2}w)=P[w/u]:B$。両辺に代入射 $(\langle y,x\rangle)\colon(y{:}C,x{:}A)\to(w{:}C\times A)$ で代入の規則を使い、積の β 等式で整理すると（$x$ は $G$ に現れない変数に選ぶ）
+$$
+y{:}C,x{:}A\vdash G\,x=P[\langle y,x\rangle/u]:B.
+$$
+両立性（$\lambda$）と関数の η 等式から $y{:}C\vdash G=\lambda x{:}A.\,Gx=L$、すなわち $g=\lambda f$。
+
+\ref{cat:exponential-universal} により、Step 3, 4 は $(A\to B,\mathrm{ev})$ が冪であることを示している。
+
+::: hypcheck
+- **積の η**：Step 2 の一意性と Step 3 の最後の等号に使った。外すと $\mathbf{Cl}(T)$ の $A\times B$ は積にならない（$\langle\pi_{1}z,\pi_{2}z\rangle$ と $z$ という二つの射が同じ条件を満たしてしまう）。
+- **関数の η**：Step 4 に使った。外すと転置が一意でなくなる。実際、$\to$ だけの純粋な理論で β 等式だけを使う場合、$f{:}A\to B\vdash\lambda x{:}A.fx$ と $f$ は、型を消すと異なる β 正規形なので、β 等式で等しくならない（\ref{logic:normal-form-unique}。型付きの β 等式の導出は、型を消すと型なしの β 等式の導出になる）。
+- **代入の規則**：Step 4 で、文脈 $w{:}C\times A$ の等式を文脈 $y{:}C,x{:}A$ に移すのに使った。
+- **単位型の η**：Step 1 に使った。
+:::
+:::
+
+## 標準モデルと完全性 {#logic:sec-lb-completeness}
+
+::: definition 標準モデル {#logic:generic-model-def keywords="generic model, canonical interpretation in the syntactic category" index="標準モデル（構文圏の）|ひょうじゅんもでるこうぶんけんの, 総称モデル|そうしょうもでる"}
+$\mathbf{Cl}(T)$ での $\Sigma$ の構造 $\mathcal{G}$ を、$\llbracket\beta\rrbracket_{\mathcal{G}}\defeq\beta$、$\llbracket c\rrbracket_{\mathcal{G}}\defeq[u{:}1\vdash c]$ で定め、**標準モデル**と呼ぶ。\ref{logic:cl-ccc} の構造のもとで、型の解釈は $\llbracket A\rrbracket_{\mathcal{G}}=A$、文脈の解釈は $\llbracket\Gamma\rrbracket_{\mathcal{G}}=\Gamma^{\times}$ になる（型と文脈の長さに関する帰納法）。
+:::
+
+::: lemma 標準モデルでの解釈 {#logic:generic-model keywords="interpretation in the generic model is the term itself" index="標準モデルでの解釈|ひょうじゅんもでるでのかいしゃく"}
+$\Gamma\vdash M:A$ なら
+$$
+\llbracket\Gamma\vdash M:A\rrbracket_{\mathcal{G}}=[z{:}\Gamma^{\times}\vdash M[\vec{\varpi}(z)]].
+$$
+とくに $\mathcal{G}$ は $T$ のモデルである。
+:::
+
+::: proof
+$M$ に関する帰納法。右辺を $\overline{M}$ と略す。
+
+**Step 1（変数）.** $q^{\Gamma}_{i}=[z\vdash\varpi^{\Gamma}_{i}(z)]$ を $\Gamma$ の長さに関する帰納法で示す。$q^{\Gamma,x:A}_{n+1}=p_{2}=[w\vdash\pi_{2}w]$。$i\le n$ なら $q^{\Gamma,x:A}_{i}=q^{\Gamma}_{i}\circ p_{1}=[w\vdash\varpi^{\Gamma}_{i}(z)[\pi_{1}w/z]]=[w\vdash\varpi^{\Gamma,x:A}_{i}(w)]$。
+
+**Step 2（定数と $\ast$）.** $\llbracket c\rrbracket_{\mathcal{G}}\circ!=[u\vdash c]\circ[z\vdash\ast]=[z\vdash c]$。$\llbracket\ast\rrbracket=!=[z\vdash\ast]$。
+
+**Step 3（組・射影・適用）.** 組と射影は \ref{logic:cl-ccc} の構造の定義そのもの（$\langle[\overline{M}],[\overline{N}]\rangle=[\langle\overline{M},\overline{N}\rangle]$、$p_{i}\circ[\overline{M}]=[\pi_{i}\overline{M}]$）。適用は
+$$
+\mathrm{ev}\circ\langle[\overline{M}],[\overline{N}]\rangle=[z\vdash(\pi_{1}\langle\overline{M},\overline{N}\rangle)(\pi_{2}\langle\overline{M},\overline{N}\rangle)]=[z\vdash\overline{M}\,\overline{N}]
+$$
+（積の β）。
+
+**Step 4（抽象）.** $M=\lambda x{:}A.M'$。帰納法の仮定から $\llbracket\Gamma,x{:}A\vdash M'\rrbracket=[w\vdash M'[\vec{\varpi}^{\Gamma,x:A}(w)]]$ で、$\varpi^{\Gamma,x:A}_{i}(w)=\varpi^{\Gamma}_{i}(\pi_{1}w)$, $\varpi^{\Gamma,x:A}_{n+1}(w)=\pi_{2}w$。\ref{logic:cl-ccc} の転置の式で $w$ に $\langle z,x\rangle$ を代入すると、積の β 等式（代入の規則の中で）から
+$$
+\llbracket\lambda x{:}A.M'\rrbracket=[z\vdash\lambda x{:}A.\,M'[\vec{\varpi}^{\Gamma}(z),x/\vec{x},x]]=[z\vdash(\lambda x{:}A.M')[\vec{\varpi}(z)]].
+$$
+最後の等号は $x\notin\mathrm{FV}(\varpi^{\Gamma}_{i}(z))$ による。
+
+**Step 5（モデルであること）.** 公理 $\Gamma\vdash M=N:A$ について、代入の規則（代入射 $\vec{\varpi}(z)\colon(z{:}\Gamma^{\times})\to\Gamma$）から $z\vdash\overline{M}=\overline{N}$。よって $\llbracket M\rrbracket_{\mathcal{G}}=\llbracket N\rrbracket_{\mathcal{G}}$。
+:::
+
+::: theorem 完全性定理 {#logic:ccc-completeness keywords="completeness of lambda theories for cartesian closed categories, soundness and completeness" index="完全性定理（デカルト閉圏）|かんぜんせいていりでかるとへいけん"}
+λ 理論 $T$ と $\Gamma\vdash M:A$, $\Gamma\vdash N:A$ について、次は同値である。
+1. $\Gamma\vdash_{T}M=N:A$。
+2. すべてのデカルト閉圏での $T$ のすべてのモデルで、$\llbracket\Gamma\vdash M\rrbracket=\llbracket\Gamma\vdash N\rrbracket$。
+3. 標準モデル $\mathcal{G}$ で $\llbracket\Gamma\vdash M\rrbracket_{\mathcal{G}}=\llbracket\Gamma\vdash N\rrbracket_{\mathcal{G}}$。
+:::
+
+::: proof
+**1 ⇒ 2.** 健全性定理（\ref{logic:ccc-soundness}）。
+
+**2 ⇒ 3.** $\mathcal{G}$ は $T$ のモデルである（\ref{logic:generic-model}）。
+
+**3 ⇒ 1.** \ref{logic:generic-model} から $z{:}\Gamma^{\times}\vdash_{T}M[\vec{\varpi}(z)]=N[\vec{\varpi}(z)]:A$。代入射 $(t_{\Gamma})\colon\Gamma\to(z{:}\Gamma^{\times})$ で代入の規則を使うと
+$$
+\Gamma\vdash_{T}M[\vec{\varpi}(z)][t_{\Gamma}/z]=N[\vec{\varpi}(z)][t_{\Gamma}/z]:A.
+$$
+$z$ は $M$ に現れないので、左辺は $M[\vec{\varpi}(t_{\Gamma})]$ に等しい（代入を続けて行うことと、合成した代入を一度に行うことは同じ。代入の補題と同様の帰納法）。\ref{logic:projection-terms} の $\varpi_{i}(t_{\Gamma})=x_{i}$ に代入の規則を使うと $M[\vec{\varpi}(t_{\Gamma})]=M[\vec{x}/\vec{x}]=M$。右辺も同様。推移律から $\Gamma\vdash_{T}M=N:A$。
+
+::: hypcheck
+- **文脈を一つの型にまとめること**：$\mathbf{Cl}(T)$ の射は変数一つの文脈の項なので、一般の文脈 $\Gamma$ を $\Gamma^{\times}$ にまとめ、$t_{\Gamma}$ でほどいた。ほどいて元に戻ることに積の β 等式（\ref{logic:projection-terms}）を使った。
+- **公理**：標準モデルが $T$ のモデルであること（\ref{logic:generic-model} の Step 5）だけに使った。
+- 一階述語論理の完全性定理（\ref{logic:completeness}）と違い、選択公理もヘンキン拡大も要らない：構文そのものがモデルになる。等式の理論では、「導けない」ことを示すモデルを、導ける等式で割った構文から直接作れるからである。
+:::
+:::
+
+::: corollary βη 等式の完全性 {#logic:beta-eta-completeness keywords="beta eta equality is complete for cartesian closed categories" index="βη 等式の完全性|べーたいーたとうしきのかんぜんせい"}
+純粋な理論について、$\Gamma\vdash M=N:A$ が β 等式と η 等式から導けることと、すべてのデカルト閉圏のすべての構造で $\llbracket M\rrbracket=\llbracket N\rrbracket$ となることは同値である。
+:::
+
+::: proof
+純粋な理論では公理がないので、すべての構造がモデルである。\ref{logic:ccc-completeness} の 1 ⇔ 2。
+:::
+
+::: fact フリードマンの完全性定理 {#logic:friedman-completeness keywords="Friedman's completeness theorem, full type hierarchy over an infinite set" index="フリードマンの完全性定理|ふりーどまんのかんぜんせいていり"}
+$\to$ だけの純粋な単純型付きラムダ計算（基本型一つ）について、βη 等式は、基本型を無限集合と解釈した $\mathbf{Set}$ での解釈（集合論的な関数の全体の階層）一つだけに対しても完全である。H. Friedman, Equality between functionals（*Logic Colloquium*, Lecture Notes in Mathematics 453, Springer, 1975）による。証明は本サイトの範囲外。
+:::
+
+::: example
+1. **$\pi_{1}\neq\pi_{2}$.** 純粋な理論で、$\mathbf{Cl}(T)$ の射 $p_{1},p_{2}\colon A\times A\to A$ は異なる。$\mathbf{Set}$ で $\llbracket A\rrbracket=\{0,1\}$ とすれば、二つの解釈は $(0,1)$ で $0$ と $1$ になる。健全性の対偶から $z\vdash\pi_{1}z=\pi_{2}z$ は導けない。論理の側で読めば、$A\wedge A\to A$ には本質的に異なる二つの証明（左の仮定を使うか、右を使うか）がある。
+2. **前順序への潰し.** $\mathbf{Cl}(T)$ で「$A$ から $B$ への射があるか」だけを見ると、$\wedge,\to,\top$ だけの直観主義命題論理（基本型を命題変数とみる）の導出可能性の前順序になる。これを同値な論理式で割ったものは、デカルト閉な前順序、すなわち $\wedge$, $\Rightarrow$, $\top$ をもつ半順序である（例：論理式の圏、\ref{cat:cartesian-closed} の例 4）。構文圏は、この「導けるかどうか」の情報に「どう導くか（証明）」の情報を加えたものである。
+:::
+
+## 構文圏の普遍性と内部言語 {#logic:sec-lb-universal}
+
+::: definition 厳密なデカルト閉関手 {#logic:strict-ccc-functor keywords="strict cartesian closed functor" index="厳密なデカルト閉関手|げんみつなでかるとへいかんしゅ"}
+構造を選んだデカルト閉圏の間の関手 $F$ が**厳密なデカルト閉関手**であるとは、選んだ構造をそのまま移すことをいう：$F1=1$、$F(a\times b)=Fa\times Fb$、$F(p_{i})=p_{i}$、$F(b^{a})=(Fb)^{Fa}$、$F(\mathrm{ev})=\mathrm{ev}$。このとき、積と終対象と転置の一意性から、$F(!)=!$、$F\langle f,g\rangle=\langle Ff,Fg\rangle$、$F(\lambda f)=\lambda(Ff)$ も成り立つ（たとえば $\mathrm{ev}\circ(F(\lambda f)\times1)=F(\mathrm{ev}\circ(\lambda f\times1))=Ff$）。
+:::
+
+::: theorem 構文圏の普遍性 {#logic:syntactic-category-universal keywords="universal property of the syntactic category, models correspond to structure preserving functors, free cartesian closed category" index="構文圏の普遍性|こうぶんけんのふへんせい, 自由デカルト閉圏|じゆうでかるとへいけん"}
+$T$ を λ 理論、$\mathbf{C}$ を構造を選んだデカルト閉圏とする。
+1. $T$ のモデル $\mathcal{M}$ に対し、$F_{\mathcal{M}}(A)\defeq\llbracket A\rrbracket_{\mathcal{M}}$、$F_{\mathcal{M}}[x{:}A\vdash M]\defeq\llbracket x{:}A\vdash M\rrbracket_{\mathcal{M}}\circ\langle!,1\rangle$ は、厳密なデカルト閉関手 $\mathbf{Cl}(T)\to\mathbf{C}$ である。
+2. 厳密なデカルト閉関手 $F\colon\mathbf{Cl}(T)\to\mathbf{C}$ に対し、$\llbracket\beta\rrbracket\defeq F\beta$、$\llbracket c\rrbracket\defeq F[u{:}1\vdash c]$ で定まる構造 $\mathcal{M}_{F}$ は $T$ のモデルである。
+3. $\mathcal{M}\mapsto F_{\mathcal{M}}$ と $F\mapsto\mathcal{M}_{F}$ は互いに逆で、$T$ のモデル全体と、厳密なデカルト閉関手 $\mathbf{Cl}(T)\to\mathbf{C}$ 全体の一対一対応を与える。
+
+とくに純粋な理論の構文圏は、基本型の集合 $\mathcal{B}$ 上の**自由なデカルト閉圏**である：$\mathcal{B}$ から $\mathbf{C}$ の対象への写像は、厳密なデカルト閉関手 $\mathbf{Cl}(T)\to\mathbf{C}$ に一意に延びる。
+:::
+
+::: proof
+**Step 1（鍵となる等式）.** 厳密なデカルト閉関手 $F$ について、$F\llbracket\Gamma\vdash M\rrbracket_{\mathcal{G}}=\llbracket\Gamma\vdash M\rrbracket_{\mathcal{M}_{F}}$（$\mathcal{G}$ は標準モデル）を示す。まず型と文脈の長さに関する帰納法で $F\llbracket A\rrbracket_{\mathcal{G}}=\llbracket A\rrbracket_{\mathcal{M}_{F}}$、$F\llbracket\Gamma\rrbracket_{\mathcal{G}}=\llbracket\Gamma\rrbracket_{\mathcal{M}_{F}}$、$F(q^{\Gamma}_{i})=q^{\Gamma}_{i}$（$F$ は選んだ積・終対象・冪を保つ）。次に $M$ に関する帰納法：解釈の各節（\ref{logic:ccc-interpretation}）は $q_{i}$, $!$, $\langle-,-\rangle$, $p_{i}$, $\lambda$, $\mathrm{ev}$ と定数の解釈の合成で書かれていて、$F$ はそのすべてを保つ（定数は $F(\llbracket c\rrbracket_{\mathcal{G}})=F[u\vdash c]=\llbracket c\rrbracket_{\mathcal{M}_{F}}$）。
+
+**Step 2（2 の証明）.** 公理 $\Gamma\vdash M=N:A$ について、$\mathcal{G}$ はモデルなので（\ref{logic:generic-model}）$\llbracket M\rrbracket_{\mathcal{G}}=\llbracket N\rrbracket_{\mathcal{G}}$。$F$ を施して Step 1 を使えば $\llbracket M\rrbracket_{\mathcal{M}_{F}}=\llbracket N\rrbracket_{\mathcal{M}_{F}}$。
+
+**Step 3（1 の証明）.** 以下 $\llbracket-\rrbracket=\llbracket-\rrbracket_{\mathcal{M}}$、$e_{a}\defeq\langle!,1_{a}\rangle\colon a\to1\times a$ とおく。$e_{a}$ は同型射で逆は $p_{2}$（$p_{2}\circ e_{a}=1$、$e_{a}\circ p_{2}=\langle!,p_{2}\rangle=\langle p_{1},p_{2}\rangle=1$）。
+- *代表によらない*：$x{:}A\vdash M=M'[x/x']$ なら健全性（\ref{logic:ccc-soundness}）と付け替えの補題（\ref{logic:renaming-semantics}）から $\llbracket x\vdash M\rrbracket=\llbracket x'\vdash M'\rrbracket$。
+- *恒等射*：$\llbracket x\vdash x\rrbracket\circ e=p_{2}\circ e=1$。
+- *合成*：代入の補題（\ref{logic:substitution-semantics}）で、代入射 $(M)\colon(x{:}A)\to(y{:}B)$ の解釈は $\langle!,\llbracket M\rrbracket\rangle=e\circ\llbracket M\rrbracket$ と書けるので
+$$
+\llbracket N[M/y]\rrbracket\circ e=\llbracket N\rrbracket\circ e\circ\llbracket M\rrbracket\circ e.
+$$
+（$e\circ\llbracket M\rrbracket=\langle!\circ\llbracket M\rrbracket,\llbracket M\rrbracket\rangle=\langle!,\llbracket M\rrbracket\rangle$ は積の一意性から。）
+- *厳密さ*：$F_{\mathcal{M}}(A\times B)=\llbracket A\rrbracket\times\llbracket B\rrbracket$ などは型の解釈の定義から。$F_{\mathcal{M}}(p_{1})=p_{1}\circ p_{2}\circ e=p_{1}$、$F_{\mathcal{M}}(\mathrm{ev})=\mathrm{ev}\circ\langle p_{1}\circ p_{2},p_{2}\circ p_{2}\rangle\circ e=\mathrm{ev}\circ\langle p_{1},p_{2}\rangle=\mathrm{ev}$。$F_{\mathcal{M}}(1)=1$ も定義から。
+
+**Step 4（3 の証明）.** $\mathcal{M}_{F_{\mathcal{M}}}=\mathcal{M}$：基本型は定義から、定数は $F_{\mathcal{M}}[u\vdash c]=\llbracket c\rrbracket\circ!\circ e=\llbracket c\rrbracket$（$!\circ e\colon1\to1$ は恒等射）。$F_{\mathcal{M}_{F}}=F$：対象については型に関する帰納法。射については、\ref{logic:generic-model} から $\llbracket x{:}A\vdash M\rrbracket_{\mathcal{G}}=[z{:}1\times A\vdash M[\pi_{2}z/x]]$ で、これに $\mathbf{Cl}(T)$ の $e_{A}=[x\vdash\langle\ast,x\rangle]$ を合成すると、積の β から $[x\vdash M]$ に戻る。$F$ を施し Step 1 を使うと
+$$
+F[x\vdash M]=\llbracket x\vdash M\rrbracket_{\mathcal{M}_{F}}\circ F(e_{A})=\llbracket x\vdash M\rrbracket_{\mathcal{M}_{F}}\circ e=F_{\mathcal{M}_{F}}[x\vdash M].
+$$
+（$F(e_{A})=\langle F!,F1\rangle=e$ は厳密さから。）最後の主張は、純粋な理論ではすべての構造がモデルで、構造は基本型の行き先だけで決まることから。
+
+::: hypcheck
+- **厳密さ**：構造を「選んで固定」し、関手がそれを「そのまま」移すことを要求したので、対応が一対一（同型を除いてでなく）になった。積や冪を同型を除いて保つ関手を考えると、対応は「圏同値」の意味のものになる（範囲外）。
+- **標準モデルがモデルであること**（Step 2, 4）と、**健全性・代入の補題**（Step 3）を使った。
+:::
+:::
+
+::: definition 内部言語 {#logic:internal-language keywords="internal language of a cartesian closed category" index="内部言語|ないぶげんご"}
+構造を選んだ小さいデカルト閉圏 $\mathbf{C}$ の**内部言語** $\mathrm{L}(\mathbf{C})$ を次の λ 理論とする。
+1. 基本型は $\mathbf{C}$ の対象 $a$（を記号とみたもの $\ulcorner a\urcorner$）。$\mathbf{C}$ での構造 $\mathcal{M}_{\mathbf{C}}$ を $\llbracket\ulcorner a\urcorner\rrbracket\defeq a$ で始める。
+2. 定数は、型 $A,B$ と射 $g\colon\llbracket A\rrbracket\to\llbracket B\rrbracket$ の組ごとに一つの $\hat{g}_{A,B}\colon A\to B$ で、$\llbracket\hat{g}_{A,B}\rrbracket\defeq\lambda(g\circ p_{2})\colon1\to\llbracket B\rrbracket^{\llbracket A\rrbracket}$（$g$ の**名前**）と解釈する。
+3. 公理は、$\mathcal{M}_{\mathbf{C}}$ で成り立つ文脈つき等式のすべて。
+:::
+
+::: intuition
+$\mathbf{C}$ の対象を型の名前に、射を関数記号に使い、$\mathbf{C}$ で正しい等式をすべて公理として認めた言語である。$\mathbf{C}$ の中の推論を、元を使った「集合のような」書き方（$x{:}a\vdash g(f x)$ など）で行えるようにする。型 $\ulcorner a\urcorner\times\ulcorner b\urcorner$ と基本型 $\ulcorner a\times b\urcorner$ は別の型だが、解釈は同じ対象 $a\times b$ になる。
+:::
+
+::: theorem ランベックの定理 {#logic:lambek-internal-language keywords="Lambek's theorem, every cartesian closed category is equivalent to the syntactic category of its internal language" index="ランベックの定理|らんべっくのていり, カリー＝ハワード＝ランベック対応|かりーはわーどらんべっくたいおう"}
+小さいデカルト閉圏 $\mathbf{C}$ について、$\mathcal{M}_{\mathbf{C}}$ は $\mathrm{L}(\mathbf{C})$ のモデルで、それに対応する厳密なデカルト閉関手（\ref{logic:syntactic-category-universal}）
+$$
+F\colon\mathbf{Cl}(\mathrm{L}(\mathbf{C}))\to\mathbf{C}
+$$
+は圏同値である。
+:::
+
+::: proof
+$\mathcal{M}_{\mathbf{C}}$ がモデルであることは、公理の選び方そのもの。$e=\langle!,1\rangle$ は同型射である（\ref{logic:syntactic-category-universal} の証明の Step 3）。\ref{cat:equivalence-characterization} の 3 ⇒ 1 により、$F$ が充満・忠実・本質的全射であることを示せばよい。
+
+**Step 1（本質的全射）.** 対象 $a$ について $F\ulcorner a\urcorner=a$。
+
+**Step 2（充満）.** 型 $A,B$ と射 $g\colon FA\to FB$（$FA=\llbracket A\rrbracket$）をとる。射 $[x{:}A\vdash\hat{g}x]$ の像を計算する。$\llbracket x{:}A\vdash\hat{g}\rrbracket=\lambda(g\circ p_{2})\circ!$ と $\llbracket x\rrbracket=p_{2}$ から
+$$
+\begin{aligned}
+F[x\vdash\hat{g}x]&=\mathrm{ev}\circ\langle\lambda(g\circ p_{2})\circ!,p_{2}\rangle\circ e\\
+&=\mathrm{ev}\circ\bigl(\lambda(g\circ p_{2})\times1\bigr)\circ e=g\circ p_{2}\circ e=g.
+\end{aligned}
+$$
+2 行目の最初の等号は、$\langle\lambda(g p_{2})\circ!,p_{2}\rangle\circ e=\langle\lambda(g p_{2})\circ!_{\llbracket A\rrbracket},1\rangle=(\lambda(g p_{2})\times1)\circ e$（$p_{1},p_{2}$ 成分を比べる）による。
+
+**Step 3（忠実）.** $F[x\vdash M]=F[x\vdash N]$ なら $\llbracket x\vdash M\rrbracket\circ e=\llbracket x\vdash N\rrbracket\circ e$ で、$e$ は同型射なので $\llbracket x{:}A\vdash M\rrbracket=\llbracket x{:}A\vdash N\rrbracket$。すなわち $x{:}A\vdash M=N:B$ は $\mathcal{M}_{\mathbf{C}}$ で成り立つ等式なので、$\mathrm{L}(\mathbf{C})$ の公理であり、$[x\vdash M]=[x\vdash N]$。
+
+::: hypcheck
+- **小ささ**：定数の全体（型と射の組）と公理の全体が集合になるために使った。
+- **すべての型の組の射を定数にしたこと**：Step 2 で、基本型の間だけでなく任意の型 $A,B$ の間の射を項で表すために必要だった。基本型の間の射だけを定数にすると、たとえば型 $\ulcorner a\urcorner\times\ulcorner b\urcorner$ から基本型 $\ulcorner a\times b\urcorner$ への射を作る項がなく、充満性の証明がそのままでは通らない。
+- **成り立つ等式をすべて公理にしたこと**：Step 3 の忠実性に使った。
+- **選択公理**：\ref{cat:equivalence-characterization} の 3 ⇒ 1（擬逆関手を作る）で使う。
+- $F$ は同型ではない：型 $\ulcorner a\urcorner\times\ulcorner b\urcorner$ と $\ulcorner a\times b\urcorner$ は $\mathbf{Cl}(\mathrm{L}(\mathbf{C}))$ の異なる（同型な）対象で、同じ $a\times b$ に移る。
+:::
+:::
+
+::: fact λ 理論の圏とデカルト閉圏の圏の同値 {#logic:lambek-scott-equivalence keywords="equivalence between the category of typed lambda calculi and the category of cartesian closed categories" index="ランベック–スコットの同値|らんべっくすこっとのどうち"}
+λ 理論の間の「翻訳」（型と定数の行き先を決め、公理を導ける等式に移すもの）を射とする圏と、小さいデカルト閉圏と（適切な意味で構造を保つ）関手の圏の間に、$\mathbf{Cl}$ と $\mathrm{L}$ を使って圏同値が作れる。J. Lambek and P. J. Scott, *Introduction to Higher Order Categorical Logic* の第 I 部による（細部の定式化は本ページと異なる）。
+:::
+
+::: table カリー＝ハワード＝ランベック対応 {#logic:table-chl}
+| 論理（直観主義） | 計算（型付きラムダ計算） | 圏（デカルト閉圏） |
+|---|---|---|
+| 命題 | 型 | 対象 |
+| 仮定 $A$ からの $B$ の証明 | 項 $x{:}A\vdash M:B$ | 射 $A\to B$ |
+| 証明をつなぐ（カット） | 代入 $N[M/y]$ | 合成 |
+| $\top$ | 単位型 $1$ | 終対象 |
+| $\wedge$ の導入・除去 | $\langle M,N\rangle$, $\pi_{i}$ | 積の射 $\langle f,g\rangle$, 射影 |
+| $\to$ の導入（仮定の解消） | $\lambda x{:}A.M$ | 転置 $\lambda f$ |
+| $\to$ の除去（モーダス・ポネンス） | 適用 $MN$ | 評価 $\mathrm{ev}\circ\langle f,g\rangle$ |
+| 証明の正規化 | β 簡約 | 普遍性の存在の部分 |
+| 証明の外延的な同一視 | η 等式 | 普遍性の一意性の部分 |
+:::
+
+::: supplement
+**前提を変えると.** η 等式を外した理論の構文圏は、積や冪の「存在」はもつが「一意性」をもたない（弱い積・弱い冪）。古典論理（二重否定除去）を加えた場合、デカルト閉圏で $\neg A\defeq(A\to0)$ と始対象 $0$ を使って二重否定除去 $(\neg\neg A)\to A$ を自然に実現すると、圏は前順序（ブール代数）に潰れてしまうことが知られている（ジョワイヤルの補題とされる。詳細は範囲外）。このため、古典論理の証明の「圏論的意味論」には別の工夫が要る。
+
+**類似の定理.** 一階述語論理の完全性定理の項モデル（\ref{logic:term-model}）、命題論理のリンデンバウム代数（\ref{logic:page-prop-completeness}）と同じく、「構文を導ける同値で割ったもの」が普遍的なモデルになる。普遍代数では、等式の理論の自由代数（項代数を導ける等式で割ったもの）がこれに当たる。
+
+**高い視点から：理論は圏、モデルは関手.** \ref{logic:syntactic-category-universal} は、「理論 $T$ の $\mathbf{C}$ でのモデル」を「$\mathbf{Cl}(T)$ から $\mathbf{C}$ への構造を保つ関手」と同一視してよいことを言う。これはローヴェアの**関手的意味論**の考え方で、理論そのものを圏として扱えば、モデルの理論は関手の理論になる。また \ref{logic:lambek-internal-language} は逆に、どのデカルト閉圏も「ある言語の構文」とみなせることを言う。比喩で言えば、デカルト閉圏は「文法と辞書」、λ 理論は「その言語で書かれた文の集まり」で、構文圏は「文の集まりから文法と辞書を復元したもの」、内部言語は「文法と辞書から書ける文をすべて書き出したもの」であり、二つの操作は（圏同値を除いて）互いに逆になっている。さらに、型の構成子を増やすと対応する圏も豊かになり（前ページの補足）、依存型とその恒等型を考えると、型を空間、恒等型を道とみるホモトピー型理論（\ref[HoTT の系列]{logic:page-hott}、予定）に至る。
+:::
+
+## 問題 {#logic:sec-lb-problems}
+
+::: problem {#logic:prob-lb-points}
+$\mathbf{Cl}(T)$ で、点 $1\to(A\to B)$ と射 $A\to B$ が一対一に対応することを、項の言葉（$[u{:}1\vdash L]\mapsto[x{:}A\vdash L[\ast/u]\,x]$ と $[x{:}A\vdash M]\mapsto[u{:}1\vdash\lambda x{:}A.M]$）で確かめよ。
+:::
+
+::: solution
+$[x\vdash M]\mapsto[u\vdash\lambda x.M]\mapsto[x\vdash(\lambda x.M)[\ast/u]\,x]=[x\vdash(\lambda x.M)x]=[x\vdash M]$（$u$ は $M$ に現れない。関数の β）。逆に $[u\vdash L]\mapsto[x\vdash L[\ast/u]x]\mapsto[u\vdash\lambda x.L[\ast/u]x]$ で、関数の η から $\lambda x.L[\ast/u]x=L[\ast/u]$。単位型の η $u{:}1\vdash u=\ast$ に代入の規則を使うと $L=L[u/u]=L[\ast/u]$。よって元の $[u\vdash L]$ に戻る。圏論的には、$\mathbf{C}(1,b^{a})\cong\mathbf{C}(1\times a,b)\cong\mathbf{C}(a,b)$ に当たる。
+:::
+
+::: problem {#logic:prob-lb-not-preorder}
+純粋な理論（基本型 $o$ 一つ）の構文圏で、射 $o\to o$ は恒等射しかないが、射 $(o\to o)\to(o\to o)$ は無限個あることを示せ（後半はチャーチ数と \ref{logic:prob-ccs-church} を使ってよい）。前半には、型の付く項の正規形（\ref{logic:normalization-corollary}）を、積を含む体系に拡張した事実を使ってよい。
+:::
+
+::: solution
+**後半.** $[f{:}o\to o\vdash\lambda x{:}o.f^{n}x]$（$n\in\mathbb{N}$）は、\ref{logic:prob-ccs-church} と同じ $\mathbf{Set}$ での解釈で区別されるので、相異なる。
+
+**前半.** $x{:}o\vdash M:o$ で、$M$ が βη 等式で正規形（基も η で縮められる形もない形）にできるとする（積を含む体系での正規化は事実として使う）。正規形で型 $o$ の項は、変数か定数を先頭にして射影と適用を並べた形をしている。純粋な理論で定数はなく、自由変数は $x$ だけで、$x$ の型 $o$ は関数型でも積型でもないので、$M=x$ しかない。よって射 $o\to o$ は $[x\vdash x]$ だけである。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

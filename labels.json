@@ -5482,6 +5482,13 @@
       "num": "7.5",
       "page": "03-mathematical-logic/03B-general-logic/03-modal-logic/07-incomplete-modal-logic.html"
     },
+    "logic:beta-eta-completeness": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "βη 等式の完全性",
+      "num": "5.8",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html"
+    },
     "logic:beta-reduction": {
       "status": "defined",
       "type": "definition",
@@ -5559,6 +5566,34 @@
       "num": "5.5",
       "page": "03-mathematical-logic/03B-general-logic/03-modal-logic/05-canonical-models.html"
     },
+    "logic:ccc-completeness": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "完全性定理",
+      "num": "5.7",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html"
+    },
+    "logic:ccc-interpretation": {
+      "status": "defined",
+      "type": "definition",
+      "title": "項の解釈",
+      "num": "4.8",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/04-ccc-semantics.html"
+    },
+    "logic:ccc-soundness": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "健全性定理",
+      "num": "4.12",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/04-ccc-semantics.html"
+    },
+    "logic:ccc-structure": {
+      "status": "defined",
+      "type": "definition",
+      "title": "構造とモデル",
+      "num": "4.6",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/04-ccc-semantics.html"
+    },
     "logic:church-numeral": {
       "status": "defined",
       "type": "definition",
@@ -5572,6 +5607,27 @@
       "title": "チャーチ–ロッサーの定理",
       "num": "1.10",
       "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/01-untyped-lambda.html"
+    },
+    "logic:church-style-unique": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "型と導出の一意性",
+      "num": "4.3",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/04-ccc-semantics.html"
+    },
+    "logic:cl-category": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "構文圏は圏である",
+      "num": "5.3",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html"
+    },
+    "logic:cl-ccc": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "構文圏はデカルト閉である",
+      "num": "5.4",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html"
     },
     "logic:coincidence": {
       "status": "defined",
@@ -5734,6 +5790,13 @@
       "num": "3.12",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/03-semantics.html"
     },
+    "logic:context-tuple": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "文脈の普遍性",
+      "num": "4.7",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/04-ccc-semantics.html"
+    },
     "logic:continuity-theorem": {
       "status": "defined",
       "type": "theorem",
@@ -5852,6 +5915,13 @@
       "title": "量化子の派生規則",
       "num": "6.3",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/06-derived-rules.html"
+    },
+    "logic:eq-transpose-natural": {
+      "status": "defined",
+      "type": "equation",
+      "title": "",
+      "num": "4.10",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/04-ccc-semantics.html"
     },
     "logic:erdos-rado-properties": {
       "status": "defined",
@@ -6028,6 +6098,13 @@
       "num": "1.16",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/01-syntax.html"
     },
+    "logic:friedman-completeness": {
+      "status": "defined",
+      "type": "fact",
+      "title": "フリードマンの完全性定理",
+      "num": "5.9",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html"
+    },
     "logic:functional-completeness": {
       "status": "defined",
       "type": "theorem",
@@ -6076,6 +6153,20 @@
       "title": "生成部分モデル",
       "num": "3.9",
       "page": "03-mathematical-logic/03B-general-logic/03-modal-logic/03-kripke-semantics.html"
+    },
+    "logic:generic-model": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "標準モデルでの解釈",
+      "num": "5.6",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html"
+    },
+    "logic:generic-model-def": {
+      "status": "defined",
+      "type": "definition",
+      "title": "標準モデル",
+      "num": "5.5",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html"
     },
     "logic:gl": {
       "status": "defined",
@@ -6238,6 +6329,13 @@
       "num": "9.5",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/09-craig-robinson.html"
     },
+    "logic:internal-language": {
+      "status": "defined",
+      "type": "definition",
+      "title": "内部言語",
+      "num": "5.12",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html"
+    },
     "logic:interpretation-properties": {
       "status": "defined",
       "type": "lemma",
@@ -6357,6 +6455,13 @@
       "num": "2.4",
       "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/02-lambda-definability.html"
     },
+    "logic:lambda-signature": {
+      "status": "defined",
+      "type": "definition",
+      "title": "署名・型・項",
+      "num": "4.1",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/04-ccc-semantics.html"
+    },
     "logic:lambda-substitution": {
       "status": "defined",
       "type": "definition",
@@ -6378,12 +6483,33 @@
       "num": "1.1",
       "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/01-untyped-lambda.html"
     },
+    "logic:lambda-theory": {
+      "status": "defined",
+      "type": "definition",
+      "title": "λ 理論",
+      "num": "4.5",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/04-ccc-semantics.html"
+    },
     "logic:lambda-turing-complete": {
       "status": "defined",
       "type": "corollary",
       "title": "ラムダ計算のチューリング完全性",
       "num": "2.7",
       "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/02-lambda-definability.html"
+    },
+    "logic:lambek-internal-language": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "ランベックの定理",
+      "num": "5.13",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html"
+    },
+    "logic:lambek-scott-equivalence": {
+      "status": "defined",
+      "type": "fact",
+      "title": "λ 理論の圏とデカルト閉圏の圏の同値",
+      "num": "5.14",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html"
     },
     "logic:language": {
       "status": "defined",
@@ -6693,6 +6819,13 @@
       "num": "",
       "page": "03-mathematical-logic/03B-general-logic/03-modal-logic/05-canonical-models.html"
     },
+    "logic:page-ccc-semantics": {
+      "status": "defined",
+      "type": "page",
+      "title": "デカルト閉圏による型付きラムダ計算の解釈",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/04-ccc-semantics.html"
+    },
     "logic:page-completeness": {
       "status": "defined",
       "type": "page",
@@ -6762,6 +6895,13 @@
       "title": "チャーチ数とラムダ定義可能性",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/02-lambda-definability.html"
+    },
+    "logic:page-lambek": {
+      "status": "defined",
+      "type": "page",
+      "title": "構文圏とランベック対応",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html"
     },
     "logic:page-modal-completeness": {
       "status": "defined",
@@ -6903,6 +7043,13 @@
       "num": "1.7",
       "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/01-untyped-lambda.html"
     },
+    "logic:peirce-no-term": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "パースの法則の型をもつ閉項はない",
+      "num": "4.13",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/04-ccc-semantics.html"
+    },
     "logic:prime-sentence": {
       "status": "defined",
       "type": "definition",
@@ -6979,6 +7126,20 @@
       "title": "",
       "num": "3.11",
       "page": "03-mathematical-logic/03F-proof-theory/07-reverse-mathematics/03-aca0.html"
+    },
+    "logic:prob-ccs-church": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "4.15",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/04-ccc-semantics.html"
+    },
+    "logic:prob-ccs-swap": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "4.14",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/04-ccc-semantics.html"
     },
     "logic:prob-ch-omega-untypable": {
       "status": "defined",
@@ -7211,6 +7372,20 @@
       "num": "3.20",
       "page": "03-mathematical-logic/03B-general-logic/03-modal-logic/03-kripke-semantics.html"
     },
+    "logic:prob-lb-not-preorder": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "5.17",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html"
+    },
+    "logic:prob-lb-points": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "5.16",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html"
+    },
     "logic:prob-mcomp-gl-box-bot": {
       "status": "defined",
       "type": "problem",
@@ -7407,6 +7582,13 @@
       "num": "2.11",
       "page": "03-mathematical-logic/03F-proof-theory/07-reverse-mathematics/02-wkl0.html"
     },
+    "logic:projection-terms": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "射影項と組",
+      "num": "5.1",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html"
+    },
     "logic:prop-abbreviation-semantics": {
       "status": "defined",
       "type": "proposition",
@@ -7595,6 +7777,13 @@
       "title": "関係の性質",
       "num": "3.1",
       "page": "03-mathematical-logic/03B-general-logic/03-modal-logic/03-kripke-semantics.html"
+    },
+    "logic:renaming-semantics": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "変数の付け替えの解釈",
+      "num": "4.9",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/04-ccc-semantics.html"
     },
     "logic:replacement-theorem": {
       "status": "defined",
@@ -7819,6 +8008,41 @@
       "title": "カノニカルモデル",
       "num": "",
       "page": "03-mathematical-logic/03B-general-logic/03-modal-logic/05-canonical-models.html"
+    },
+    "logic:sec-ccs-calculus": {
+      "status": "defined",
+      "type": "section",
+      "title": "積をもつ単純型付きラムダ計算",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/04-ccc-semantics.html"
+    },
+    "logic:sec-ccs-interpretation": {
+      "status": "defined",
+      "type": "section",
+      "title": "デカルト閉圏での解釈",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/04-ccc-semantics.html"
+    },
+    "logic:sec-ccs-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/04-ccc-semantics.html"
+    },
+    "logic:sec-ccs-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/04-ccc-semantics.html"
+    },
+    "logic:sec-ccs-soundness": {
+      "status": "defined",
+      "type": "section",
+      "title": "代入の補題と健全性",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/04-ccc-semantics.html"
     },
     "logic:sec-ch-notation": {
       "status": "defined",
@@ -8190,6 +8414,41 @@
       "title": "ラムダ項",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/01-untyped-lambda.html"
+    },
+    "logic:sec-lb-completeness": {
+      "status": "defined",
+      "type": "section",
+      "title": "標準モデルと完全性",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html"
+    },
+    "logic:sec-lb-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html"
+    },
+    "logic:sec-lb-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html"
+    },
+    "logic:sec-lb-syntactic": {
+      "status": "defined",
+      "type": "section",
+      "title": "構文圏",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html"
+    },
+    "logic:sec-lb-universal": {
+      "status": "defined",
+      "type": "section",
+      "title": "構文圏の普遍性と内部言語",
+      "num": "",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html"
     },
     "logic:sec-ld-definability": {
       "status": "defined",
@@ -8975,6 +9234,13 @@
       "num": "5.1",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/05-soundness.html"
     },
+    "logic:strict-ccc-functor": {
+      "status": "defined",
+      "type": "definition",
+      "title": "厳密なデカルト閉関手",
+      "num": "5.10",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html"
+    },
     "logic:strong-normalization": {
       "status": "defined",
       "type": "theorem",
@@ -9051,6 +9317,27 @@
       "title": "代入と自由変数",
       "num": "2.5",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/02-substitution.html"
+    },
+    "logic:substitution-semantics": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "代入の解釈",
+      "num": "4.11",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/04-ccc-semantics.html"
+    },
+    "logic:syntactic-category": {
+      "status": "defined",
+      "type": "definition",
+      "title": "構文圏",
+      "num": "5.2",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html"
+    },
+    "logic:syntactic-category-universal": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "構文圏の普遍性",
+      "num": "5.11",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html"
     },
     "logic:system-f": {
       "status": "defined",
@@ -9156,6 +9443,13 @@
       "title": "T の強正規化定理",
       "num": "2.8",
       "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/02-system-t.html"
+    },
+    "logic:table-chl": {
+      "status": "defined",
+      "type": "table",
+      "title": "カリー＝ハワード＝ランベック対応",
+      "num": "5.15",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html"
     },
     "logic:tableau-closed": {
       "status": "defined",
@@ -9303,6 +9597,20 @@
       "title": "型付け規則",
       "num": "1.2",
       "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/01-simply-typed.html"
+    },
+    "logic:typing-rules-product": {
+      "status": "defined",
+      "type": "definition",
+      "title": "型付け規則",
+      "num": "4.2",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/04-ccc-semantics.html"
+    },
+    "logic:typing-weakening-substitution": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "弱化と代入",
+      "num": "4.4",
+      "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/04-ccc-semantics.html"
     },
     "logic:uniform-substitution": {
       "status": "defined",
@@ -27676,7 +27984,8 @@
       "status": "planned",
       "title": "HoTT の系列",
       "referencedFrom": [
-        "03-mathematical-logic/03F-proof-theory/09-type-theory/01-simply-typed.html"
+        "03-mathematical-logic/03F-proof-theory/09-type-theory/01-simply-typed.html",
+        "03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html"
       ]
     },
     "meas:lebesgue-measure": {

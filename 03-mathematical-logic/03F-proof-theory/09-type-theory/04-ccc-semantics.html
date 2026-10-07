@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>デカルト閉圏による型付きラムダ計算の解釈 | 数学ノート</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/09-type-theory/04-ccc-semantics.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# デカルト閉圏による型付きラムダ計算の解釈 {#logic:page-ccc-semantics keywords="categorical semantics of simply typed lambda calculus, lambda theory, products and unit type, beta eta equality, equations in context, interpretation in a cartesian closed category, substitution lemma, soundness, Heyting algebra semantics, Peirce's law"}
+
+単純型付きラムダ計算（\ref{logic:page-curry-howard}）の型 $A\to B$ は「$A$ から $B$ への関数の集まり」、項 $\lambda x.M$ は「$x$ について $M$ をカリー化した関数」と読める。デカルト閉圏（\ref{cat:cartesian-closed}）は、この読み方を集合以外にも通用させるための枠組みである。本ページでは、型に積 $A\times B$ と単位型 $1$ を加えた計算体系と、その上の**等式の理論**（\ref{logic:lambda-theory}）を定め、任意のデカルト閉圏の中で型を対象、文脈 $\Gamma$ の中の項を射 $\llbracket\Gamma\rrbracket\to\llbracket A\rrbracket$ として**解釈**する（\ref{logic:ccc-interpretation}）。主定理は**健全性定理**（\ref{logic:ccc-soundness}）で、β 等式・η 等式で導ける等式はどのデカルト閉圏でも成り立つ。応用として、ハイティング代数での解釈から、パースの法則の型をもつ閉項が存在しないことを示す（\ref{logic:peirce-no-term}）。逆向きの「等式がすべてのデカルト閉圏で成り立つなら導ける」（完全性）と、デカルト閉圏そのものが計算体系として表せること（ランベック対応）は、次ページ \ref{logic:page-lambek} で扱う。
+
+> 資料フォルダに参考書がなく、標準的な定義と証明を本サイトで組み立てた。この分野の標準的な教科書として J. Lambek and P. J. Scott, *Introduction to Higher Order Categorical Logic* (Cambridge University Press, 1986) がある（本ページの記法はそれと同じではない）。
+
+## 記法と定義の確認 {#logic:sec-ccs-notation}
+
+::: notation
+- ラムダ項の α 同値と代入、代入の補題は \ref{logic:lambda-substitution}, \ref{logic:lambda-substitution-lemma} のとおり。型と型付けの考え方は \ref{logic:page-curry-howard}（\ref{logic:typing-rules}）のとおりだが、本ページでは束縛変数に型を書き込む**チャーチ流**をとる（理由は \ref{logic:church-style-unique} の後の注意）。
+- 圏の積・終対象・随伴は \ref{cat:product}, \ref{cat:initial-terminal}, \ref{cat:adjunction}、デカルト閉圏・評価射・転置は \ref{cat:cartesian-closed}, \ref{cat:exponential-universal} のとおり。積の射を $\langle f,g\rangle$、射影を $p_{1},p_{2}$、射の積を $f\times g\defeq\langle f\circ p_{1},g\circ p_{2}\rangle$、終対象を $1$、終対象への唯一の射を $!_{a}\colon a\to1$ と書く。冪対象を $c^{b}$、評価射を $\mathrm{ev}\colon c^{b}\times b\to c$、$f\colon a\times b\to c$ の転置を $\lambda f\colon a\to c^{b}$ と書く。
+- **デカルト閉圏は構造を選んで固定する**：各 $a,b$ に積 $(a\times b,p_{1},p_{2})$、冪 $(b^{a},\mathrm{ev})$ を一つずつ選び、終対象 $1$ も一つ選ぶ（選択公理を使う。$\mathbf{Set}$ などでは具体的に選べる）。
+- 体系は $\ZFC$。項・型は記号列であり、集合論の中の有限の対象として扱う。
+:::
+
+## 積をもつ単純型付きラムダ計算 {#logic:sec-ccs-calculus}
+
+::: definition 署名・型・項 {#logic:lambda-signature keywords="signature, base types, typed constants, product type, unit type, Church-style terms" index="署名（型理論）|しょめいかたりろん, 単位型|たんいがた, 積型|せきがた, 定数（型理論）|ていすうかたりろん"}
+**署名** $\Sigma$ は、**基本型**の集合 $\mathcal{B}$ と、**定数**の集合 $\mathcal{K}$、および各定数 $c$ に型 $\tau(c)$ を割り当てる写像からなる（型は次で定める）。
+1. **型**：基本型 $\beta\in\mathcal{B}$、**単位型** $1$、型 $A,B$ から作る**積型** $A\times B$ と**関数型** $A\to B$。
+2. **項**：変数 $x$、定数 $c$、$\ast$、$\langle M,N\rangle$、$\pi_{1}M$、$\pi_{2}M$、$\lambda x{:}A.\,M$、$MN$。$\lambda x{:}A$ は $x$ を束縛する。
+3. α 同値・自由変数 $\mathrm{FV}(M)$・代入 $M[N/x]$ は \ref{logic:lambda-substitution} と同じく定める（新しい構成子については成分ごとに代入する）。**同時代入** $M[N_{1}/x_{1},\dots,N_{n}/x_{n}]$ も同様で、束縛変数を $x_{i}$ と $\mathrm{FV}(N_{i})$ のどれとも異なるように選んでから、各 $x_{i}$ の出現を一斉に $N_{i}$ に置き換える。
+:::
+
+::: definition 型付け規則 {#logic:typing-rules-product keywords="typing rules with products, ordered context, Church-style typing" index="型付け規則（積型）|かたづけきそくせきがた, 文脈（型理論）|ぶんみゃくかたりろん"}
+**文脈**は、相異なる変数と型の組の**列** $\Gamma=x_{1}{:}A_{1},\dots,x_{n}{:}A_{n}$ である（集合でなく列にするのは、解釈で積の順序を決めるため）。$\Gamma,x{:}A$ は末尾に付け加えた列（$x$ は $\Gamma$ に現れないとする）。**型判断** $\Gamma\vdash M:A$ を次の規則で帰納的に定める。
+$$
+\frac{}{\Gamma\vdash x_{i}:A_{i}}\ (\mathrm{var})\qquad\frac{}{\Gamma\vdash c:\tau(c)}\ (\mathrm{const})\qquad\frac{}{\Gamma\vdash\ast:1}\ (1\mathrm{I})
+$$
+$$
+\frac{\Gamma\vdash M:A\quad\Gamma\vdash N:B}{\Gamma\vdash\langle M,N\rangle:A\times B}\ (\times\mathrm{I})\qquad\frac{\Gamma\vdash M:A_{1}\times A_{2}}{\Gamma\vdash\pi_{i}M:A_{i}}\ (\times\mathrm{E})
+$$
+$$
+\frac{\Gamma,x{:}A\vdash M:B}{\Gamma\vdash\lambda x{:}A.\,M:A\to B}\ (\to\mathrm{I})\qquad\frac{\Gamma\vdash M:A\to B\quad\Gamma\vdash N:A}{\Gamma\vdash MN:B}\ (\to\mathrm{E})
+$$
+$(\to\mathrm{I})$ では、束縛変数 $x$ を（α 同値の範囲で）$\Gamma$ に現れない変数に選ぶ。
+:::
+
+::: lemma 型と導出の一意性 {#logic:church-style-unique keywords="uniqueness of types, uniqueness of typing derivations, Church style" index="型の一意性|かたのいちいせい"}
+$\Gamma\vdash M:A$ かつ $\Gamma\vdash M:A'$ なら $A=A'$ で、$\Gamma\vdash M:A$ の導出はただ一つである。
+:::
+
+::: proof
+$M$ の構成に関する帰納法。項の形から最後の規則が決まる（変数なら var、定数なら const、$\ast$ なら $1\mathrm{I}$、$\langle M_{1},M_{2}\rangle$ なら $\times\mathrm{I}$、$\pi_{i}M'$ なら $\times\mathrm{E}$、$\lambda x{:}B.M'$ なら $\to\mathrm{I}$、$M_{1}M_{2}$ なら $\to\mathrm{E}$）。
+- var・const・$1\mathrm{I}$：型は $A_{i}$（文脈の変数は相異なるので $i$ は一つ）、$\tau(c)$、$1$ に決まる。
+- $\times\mathrm{I}$：帰納法の仮定で $M_{1},M_{2}$ の型と導出が一つに決まり、$A=A_{1}\times A_{2}$。
+- $\times\mathrm{E}$：帰納法の仮定で $M'$ の型が一つに決まる。それは積型 $A_{1}\times A_{2}$ でなければならず、$A=A_{i}$ も決まる。
+- $\to\mathrm{I}$：束縛変数の型 $B$ が項に書かれているので、帰納法の仮定を $\Gamma,x{:}B\vdash M':C$ に使い、$A=B\to C$ に決まる。
+- $\to\mathrm{E}$：帰納法の仮定で $M_{1}$ の型 $B\to C$ が一つに決まり、$A=C$。$M_{2}$ の導出も一つに決まる。
+:::
+
+カリー流（\ref{logic:typing-rules}）では $\lambda x.x$ が $A\to A$ のすべての $A$ について型をもち、上の一意性が成り立たない。解釈を導出についての再帰で定めるので（\ref{logic:ccc-interpretation}）、導出が一つに決まるチャーチ流が便利である。
+
+::: lemma 弱化と代入 {#logic:typing-weakening-substitution keywords="weakening, exchange, simultaneous substitution, context morphism" index="代入射（文脈の）|だいにゅうしゃぶんみゃくの"}
+文脈 $\Gamma=x_{1}{:}A_{1},\dots,x_{n}{:}A_{n}$ と $\Delta$ について、項の組 $\sigma=(N_{1},\dots,N_{n})$ で $\Delta\vdash N_{i}:A_{i}$（すべての $i$）となるものを**代入射** $\sigma\colon\Delta\to\Gamma$ と呼び、$M[\sigma]\defeq M[N_{1}/x_{1},\dots,N_{n}/x_{n}]$ と書く。
+1. （弱化）$\Gamma\vdash M:B$ で、$\Gamma$ の宣言 $x_{i}{:}A_{i}$ がすべて $\Delta$ に現れるなら $\Delta\vdash M:B$。
+2. （代入）$\Gamma\vdash M:B$ で $\sigma\colon\Delta\to\Gamma$ なら $\Delta\vdash M[\sigma]:B$。
+:::
+
+::: proof
+**1.** $M$ に関する帰納法。var・const・$1\mathrm{I}$ はそのまま。$\times\mathrm{I}$・$\times\mathrm{E}$・$\to\mathrm{E}$ は帰納法の仮定と同じ規則。$\to\mathrm{I}$ では束縛変数 $x$ を $\Delta$ に現れないように選び直し（α 同値）、$\Gamma,x{:}A$ の宣言がすべて $\Delta,x{:}A$ に現れることから帰納法の仮定を使う。
+
+**2.** $M$ に関する帰納法。$M=x_{i}$ なら $M[\sigma]=N_{i}$ で、仮定 $\Delta\vdash N_{i}:A_{i}$。定数・$\ast$ は代入で変わらない。$\times\mathrm{I}$・$\times\mathrm{E}$・$\to\mathrm{E}$ は帰納法の仮定と同じ規則。$M=\lambda x{:}A.M'$ では、$x$ を $\Delta$ にも $\mathrm{FV}(N_{i})$ にも現れないように選ぶ。1 により $\Delta,x{:}A\vdash N_{i}:A_{i}$ なので、$\sigma^{+}\defeq(N_{1},\dots,N_{n},x)\colon(\Delta,x{:}A)\to(\Gamma,x{:}A)$ は代入射である。帰納法の仮定から $\Delta,x{:}A\vdash M'[\sigma^{+}]:C$。$x\notin\mathrm{FV}(N_{i})$ なので $(\lambda x{:}A.M')[\sigma]=\lambda x{:}A.\,M'[\sigma^{+}]$ で、$\to\mathrm{I}$ から主張が出る。
+:::
+
+::: definition λ 理論 {#logic:lambda-theory keywords="lambda theory, equations in context, beta eta equality, equational theory of simply typed lambda calculus" index="λ 理論|らむだりろん, 文脈つき等式|ぶんみゃくつきとうしき, η 等式|いーたとうしき"}
+**文脈つき等式**とは、$\Gamma\vdash M:A$ かつ $\Gamma\vdash N:A$ となる組 $(\Gamma,M,N,A)$ のことで、$\Gamma\vdash M=N:A$ と書く。署名 $\Sigma$ と文脈つき等式の集合 $\mathrm{Ax}$（**公理**）の組 $T=(\Sigma,\mathrm{Ax})$ を **λ 理論**という。$T$ で**導ける**等式 $\Gamma\vdash_{T}M=N:A$ を、次の規則で帰納的に定める（どの規則でも、両辺は記された文脈と型で型付け可能とする）。
+1. （公理）$\mathrm{Ax}$ の元。
+2. （同値関係）反射律・対称律・推移律。
+3. （両立性）各構成子と両立する：$M=M'$, $N=N'$ から $\langle M,N\rangle=\langle M',N'\rangle$, $\pi_{i}M=\pi_{i}M'$, $MN=M'N'$。$\Gamma,x{:}A\vdash M=M':B$ から $\Gamma\vdash\lambda x{:}A.M=\lambda x{:}A.M':A\to B$。
+4. （代入）$\Gamma\vdash M=M':B$ と代入射 $\sigma=(N_{i})_{i},\ \sigma'=(N'_{i})_{i}\colon\Delta\to\Gamma$ で $\Delta\vdash N_{i}=N'_{i}:A_{i}$（すべての $i$）となるものから、$\Delta\vdash M[\sigma]=M'[\sigma']:B$。
+5. （β と η）
+$$
+\begin{aligned}
+&\pi_{1}\langle M,N\rangle=M,\qquad\pi_{2}\langle M,N\rangle=N,\qquad(\lambda x{:}A.\,M)N=M[N/x],\\
+&\langle\pi_{1}M,\pi_{2}M\rangle=M,\qquad M=\ast\ (M\text{ の型が }1),\\
+&\lambda x{:}A.\,(Mx)=M\quad(x\notin\mathrm{FV}(M)).
+\end{aligned}
+$$
+上の行を **β 等式**、下の二行を **η 等式**という。$\mathrm{Ax}=\varnothing$ の理論を署名 $\Sigma$ 上の**純粋な理論**と呼ぶ。
+:::
+
+::: intuition
+β 等式は「組を作ってから取り出す」「関数を作ってから適用する」という回り道を消す規則で、証明の正規化（\ref{logic:page-curry-howard}）に当たる。η 等式は「組はその成分で決まる」「関数はその値で決まる」という**外延性**で、圏論の側では普遍性の「一意性」の部分に当たる（\ref{logic:ccc-soundness} の証明で、η 等式の健全性は一意性からだけ出てくる）。代入の規則 4 は、弱化（$N_{i}$ を変数にとる）と、等しいものに等しいものを代入してよいことを一度に表す。
+:::
+
+::: example
+1. 純粋な理論で $z{:}A\times B\vdash\langle\pi_{2}z,\pi_{1}z\rangle$ を二回施すと元に戻る：$\langle\pi_{2}\langle\pi_{2}z,\pi_{1}z\rangle,\pi_{1}\langle\pi_{2}z,\pi_{1}z\rangle\rangle=\langle\pi_{1}z,\pi_{2}z\rangle=z$（β 等式を両立性の中で二回、続いて η 等式）。
+2. カリー化 $\mathrm{cur}\defeq\lambda f{:}A\times B\to C.\,\lambda x{:}A.\,\lambda y{:}B.\,f\langle x,y\rangle$ と逆向き $\mathrm{unc}\defeq\lambda g{:}A\to B\to C.\,\lambda z{:}A\times B.\,g(\pi_{1}z)(\pi_{2}z)$ について、$f{:}A\times B\to C\vdash\mathrm{unc}(\mathrm{cur}f)=f$ は β で $\lambda z.\,f\langle\pi_{1}z,\pi_{2}z\rangle$ に直し、両立性の中で積の η、続いて関数の η を使って導ける。
+:::
+
+## デカルト閉圏での解釈 {#logic:sec-ccs-interpretation}
+
+::: definition 構造とモデル {#logic:ccc-structure keywords="structure for a signature in a cartesian closed category, model of a lambda theory" index="構造（デカルト閉圏での）|こうぞうでかるとへいけんでの, モデル（λ 理論の）|もでるらむだりろんの"}
+デカルト閉圏 $\mathbf{C}$（構造は選んで固定）での署名 $\Sigma$ の**構造** $\mathcal{M}$ とは、各基本型 $\beta$ への対象 $\llbracket\beta\rrbracket$ と、各定数 $c$ への点 $\llbracket c\rrbracket\colon1\to\llbracket\tau(c)\rrbracket$ の割り当てである。ここで型の解釈を
+$$
+\llbracket1\rrbracket\defeq1,\quad\llbracket A\times B\rrbracket\defeq\llbracket A\rrbracket\times\llbracket B\rrbracket,\quad\llbracket A\to B\rrbracket\defeq\llbracket B\rrbracket^{\llbracket A\rrbracket}
+$$
+で延長する。文脈は $\llbracket\cdot\rrbracket\defeq1$（空の文脈）、$\llbracket\Gamma,x{:}A\rrbracket\defeq\llbracket\Gamma\rrbracket\times\llbracket A\rrbracket$ と解釈する。\ref{logic:ccc-interpretation} の解釈で $T$ の公理がすべて成り立つ（両辺の射が等しい）構造を $T$ の**モデル**という。
+:::
+
+::: lemma 文脈の普遍性 {#logic:context-tuple keywords="universal property of interpreted contexts, projections q_i" index="文脈の射影|ぶんみゃくのしゃえい"}
+$\Gamma=x_{1}{:}A_{1},\dots,x_{n}{:}A_{n}$ について、射 $q^{\Gamma}_{i}\colon\llbracket\Gamma\rrbracket\to\llbracket A_{i}\rrbracket$ を $q^{\Gamma,x:A}_{n+1}\defeq p_{2}$、$q^{\Gamma,x:A}_{i}\defeq q^{\Gamma}_{i}\circ p_{1}$（$i\le n$）で定める。任意の対象 $X$ と射 $g_{i}\colon X\to\llbracket A_{i}\rrbracket$（$i=1,\dots,n$）に対し、$q^{\Gamma}_{i}\circ h=g_{i}$（すべての $i$）となる $h\colon X\to\llbracket\Gamma\rrbracket$ がちょうど一つある。これを $\langle g_{1},\dots,g_{n}\rangle_{\Gamma}$ と書く。とくに
+$$
+\langle q^{\Gamma}_{1},\dots,q^{\Gamma}_{n}\rangle_{\Gamma}=1_{\llbracket\Gamma\rrbracket},\qquad\langle g_{1},\dots,g_{n}\rangle_{\Gamma}\circ k=\langle g_{1}\circ k,\dots,g_{n}\circ k\rangle_{\Gamma}.
+$$
+:::
+
+::: proof
+$n$ に関する帰納法。$n=0$：$\llbracket\cdot\rrbracket=1$ は終対象なので $h=!_{X}$ がただ一つ。$n\to n+1$：$h\colon X\to\llbracket\Gamma\rrbracket\times\llbracket A\rrbracket$ は $p_{1}\circ h$ と $p_{2}\circ h$ で一意に決まる（積の普遍性）。条件は $p_{2}\circ h=g_{n+1}$ と、$i\le n$ について $q^{\Gamma}_{i}\circ(p_{1}\circ h)=g_{i}$ で、後者を満たす $p_{1}\circ h$ は帰納法の仮定でただ一つ。よって $h=\langle\langle g_{1},\dots,g_{n}\rangle_{\Gamma},g_{n+1}\rangle$ がただ一つ。二つの等式は、両辺が同じ条件（$q_{i}\circ h=q_{i}$、$q_{i}\circ h=g_{i}\circ k$）を満たすことと一意性から従う。
+:::
+
+::: definition 項の解釈 {#logic:ccc-interpretation keywords="interpretation of terms as morphisms, categorical semantics" index="項の解釈|こうのかいしゃく, 圏論的意味論|けんろんてきいみろん"}
+構造 $\mathcal{M}$ のもとで、$\Gamma\vdash M:A$ に射 $\llbracket\Gamma\vdash M:A\rrbracket\colon\llbracket\Gamma\rrbracket\to\llbracket A\rrbracket$ を、（一つに決まる。\ref{logic:church-style-unique}）導出に関する再帰で次のように対応させる（文脈と型が明らかなら $\llbracket M\rrbracket$ と略す）。
+$$
+\begin{aligned}
+\llbracket x_{i}\rrbracket&\defeq q^{\Gamma}_{i},\qquad\llbracket c\rrbracket_{\Gamma}\defeq\llbracket c\rrbracket\circ!_{\llbracket\Gamma\rrbracket},\qquad\llbracket\ast\rrbracket\defeq\,!_{\llbracket\Gamma\rrbracket},\\
+\llbracket\langle M,N\rangle\rrbracket&\defeq\langle\llbracket M\rrbracket,\llbracket N\rrbracket\rangle,\qquad\llbracket\pi_{i}M\rrbracket\defeq p_{i}\circ\llbracket M\rrbracket,\\
+\llbracket\lambda x{:}A.\,M\rrbracket&\defeq\lambda\bigl(\llbracket\Gamma,x{:}A\vdash M:B\rrbracket\bigr),\\
+\llbracket MN\rrbracket&\defeq\mathrm{ev}\circ\langle\llbracket M\rrbracket,\llbracket N\rrbracket\rangle.
+\end{aligned}
+$$
+$\lambda$ の行は、$\llbracket\Gamma,x{:}A\rrbracket=\llbracket\Gamma\rrbracket\times\llbracket A\rrbracket$ なので転置が意味をもつ。束縛変数は $\Gamma$ に現れないものを選んで計算する。この値が代表の選び方によらないことは、\ref{logic:renaming-semantics} で確かめる。
+:::
+
+::: intuition
+変数 $x_{i}$ は「$i$ 番目の成分を取り出す射影」、定数は「どの環境でも同じ値をとる定数関数」、組は積の射、$\lambda$ はカリー化、適用は評価である。$\mathbf{Set}$ では $\llbracket\Gamma\rrbracket$ は変数への値の割り当て（環境）の集合で、$\llbracket M\rrbracket$ は環境 $\vec{a}$ に $M$ の値を対応させる写像になる。一階述語論理の充足関係（\ref{logic:page-semantics}）で割り当てごとに項の値を決めたのと同じことを、元を使わず射だけで書いたものである。
+:::
+
+::: example
+$\mathbf{Set}$ で基本型 $o$ を集合 $X$ と解釈する。閉項 $\vdash\lambda f{:}o\to o.\,\lambda x{:}o.\,f(fx):(o\to o)\to o\to o$ の解釈は点 $1\to(X^{X})^{X^{X}}$ で、それは $f\mapsto f\circ f$ という写像である。実際、定義に沿って計算すると、環境 $(\ast,f,x)\in(1\times X^{X})\times X$ での $f(fx)$ の値は $f(f(x))$ で、それを二回カリー化している。
+:::
+
+## 代入の補題と健全性 {#logic:sec-ccs-soundness}
+
+::: lemma 変数の付け替えの解釈 {#logic:renaming-semantics keywords="renaming lemma, weakening lemma for the interpretation" index="変数の付け替えの補題|へんすうのつけかえのほだい"}
+$\Gamma=x_{1}{:}A_{1},\dots,x_{n}{:}A_{n}$、$\Delta=y_{1}{:}B_{1},\dots,y_{m}{:}B_{m}$ とし、写像 $\rho\colon\{1,\dots,n\}\to\{1,\dots,m\}$ が $B_{\rho(i)}=A_{i}$ を満たすとする（**付け替え**）。$M\{\rho\}\defeq M[y_{\rho(1)}/x_{1},\dots,y_{\rho(n)}/x_{n}]$ とおくと、$\Gamma\vdash M:B$ なら
+$$
+\llbracket\Delta\vdash M\{\rho\}:B\rrbracket=\llbracket\Gamma\vdash M:B\rrbracket\circ\langle q^{\Delta}_{\rho(1)},\dots,q^{\Delta}_{\rho(n)}\rangle_{\Gamma}.
+$$
+とくに、（弱化）$\Gamma$ の宣言がすべて $\Delta$ に現れるときの包含について、また（α 不変性）束縛変数の付け替えについて、解釈は変わらない。
+:::
+
+::: proof
+$\llbracket\rho\rrbracket\defeq\langle q^{\Delta}_{\rho(1)},\dots,q^{\Delta}_{\rho(n)}\rangle_{\Gamma}$ とおく。$M$ に関する帰納法で、すべての $\Delta,\rho$ について同時に示す（$M$ の束縛変数は $\Gamma$ にも $\Delta$ にも現れないように選ぶ）。
+
+**Step 1（変数）.** $M=x_{i}$：左辺は $q^{\Delta}_{\rho(i)}$、右辺は $q^{\Gamma}_{i}\circ\llbracket\rho\rrbracket=q^{\Delta}_{\rho(i)}$（\ref{logic:context-tuple}）。
+
+**Step 2（定数と $\ast$）.** 左辺は $\llbracket c\rrbracket\circ!_{\llbracket\Delta\rrbracket}$、右辺は $\llbracket c\rrbracket\circ!_{\llbracket\Gamma\rrbracket}\circ\llbracket\rho\rrbracket$ で、終対象への射の一意性から $!_{\llbracket\Gamma\rrbracket}\circ\llbracket\rho\rrbracket=!_{\llbracket\Delta\rrbracket}$。$\ast$ も同じ。
+
+**Step 3（組・射影・適用）.** 帰納法の仮定と、$\langle f,g\rangle\circ k=\langle f\circ k,g\circ k\rangle$（積の一意性）から。たとえば適用は $\mathrm{ev}\circ\langle\llbracket P\rrbracket\circ\llbracket\rho\rrbracket,\llbracket Q\rrbracket\circ\llbracket\rho\rrbracket\rangle=\mathrm{ev}\circ\langle\llbracket P\rrbracket,\llbracket Q\rrbracket\rangle\circ\llbracket\rho\rrbracket$。
+
+**Step 4（抽象）.** $M=\lambda x{:}A.M'$。付け替え $\rho^{+}\colon\{1,\dots,n+1\}\to\{1,\dots,m+1\}$ を $\rho^{+}(i)=\rho(i)$（$i\le n$）、$\rho^{+}(n+1)=m+1$ で定めると、$M\{\rho\}=\lambda x{:}A.\,M'\{\rho^{+}\}$（$\Delta,x{:}A$ の最後の変数は $x$）。$q^{\Delta,x:A}_{\rho(i)}=q^{\Delta}_{\rho(i)}\circ p_{1}$ なので、\ref{logic:context-tuple} の一意性から
+$$
+\llbracket\rho^{+}\rrbracket=\langle\llbracket\rho\rrbracket\circ p_{1},p_{2}\rangle=\llbracket\rho\rrbracket\times1_{\llbracket A\rrbracket}.
+$$
+帰納法の仮定から $\llbracket M'\{\rho^{+}\}\rrbracket=\llbracket M'\rrbracket\circ(\llbracket\rho\rrbracket\times1)$。ここで、一般に $f\colon a\times b\to c$, $g\colon a'\to a$ について
+$$
+\lambda\bigl(f\circ(g\times1_{b})\bigr)=\lambda(f)\circ g
+\label{logic:eq-transpose-natural}
+$$
+が成り立つ：右辺 $k\defeq\lambda(f)\circ g$ は $\mathrm{ev}\circ(k\times1)=\mathrm{ev}\circ(\lambda f\times1)\circ(g\times1)=f\circ(g\times1)$ を満たし、転置の一意性（\ref{cat:exponential-universal}）から左辺と等しい。これを $f=\llbracket M'\rrbracket$, $g=\llbracket\rho\rrbracket$ に使えば $\llbracket M\{\rho\}\rrbracket=\llbracket M\rrbracket\circ\llbracket\rho\rrbracket$。
+
+**Step 5（特別な場合）.** 弱化は、$\rho(i)$ を $x_{i}$ の $\Delta$ での位置とし、$M\{\rho\}=M$ となる場合。α 不変性：$\lambda x{:}A.M$ と $\lambda y{:}A.M\{y/x\}$（$y$ は $M$ にも $\Gamma$ にも現れない）について、$\Gamma,x{:}A$ から $\Gamma,y{:}A$ への位置を保つ付け替えでは $\llbracket\rho\rrbracket=\langle q_{1},\dots,q_{n+1}\rangle=1$（\ref{logic:context-tuple}）なので、二つの本体の解釈は等しい。α 同値な二つの代表は、束縛変数を新しい変数に一つずつ付け替える操作で結べるので、解釈は代表によらない。
+
+::: hypcheck
+- **積の一意性**（Step 2, 3）と**転置の一意性**（Step 4 の \eqref{logic:eq-transpose-natural}）を使った。転置の存在だけでは \eqref{logic:eq-transpose-natural} は出ない。
+- **帰納法の形**：$\Delta,\rho$ を固定せず、すべてについて同時に示した（Step 4 で $\rho^{+}$ に帰納法の仮定を使うため）。
+:::
+:::
+
+::: lemma 代入の解釈 {#logic:substitution-semantics keywords="semantic substitution lemma, substitution is composition" index="代入の補題（圏論的意味論）|だいにゅうのほだいけんろんてきいみろん"}
+代入射 $\sigma=(N_{1},\dots,N_{n})\colon\Delta\to\Gamma$ に $\llbracket\sigma\rrbracket\defeq\langle\llbracket N_{1}\rrbracket,\dots,\llbracket N_{n}\rrbracket\rangle_{\Gamma}\colon\llbracket\Delta\rrbracket\to\llbracket\Gamma\rrbracket$ を対応させる。$\Gamma\vdash M:B$ なら
+$$
+\llbracket\Delta\vdash M[\sigma]:B\rrbracket=\llbracket\Gamma\vdash M:B\rrbracket\circ\llbracket\sigma\rrbracket.
+$$
+とくに、$\Gamma,x{:}A\vdash M:B$ と $\Gamma\vdash N:A$ について $\llbracket M[N/x]\rrbracket=\llbracket M\rrbracket\circ\langle1_{\llbracket\Gamma\rrbracket},\llbracket N\rrbracket\rangle$。
+:::
+
+::: proof
+$M$ に関する帰納法で、すべての $\Delta,\sigma$ について同時に示す。変数・定数・$\ast$・組・射影・適用の場合は \ref{logic:renaming-semantics} の Step 1〜3 と同じ（変数の場合は $q^{\Gamma}_{i}\circ\llbracket\sigma\rrbracket=\llbracket N_{i}\rrbracket$）。
+
+抽象 $M=\lambda x{:}A.M'$ の場合：$x$ を $\Delta$ にも $\mathrm{FV}(N_{i})$ にも現れないように選び、$\sigma^{+}\defeq(N_{1},\dots,N_{n},x)\colon(\Delta,x{:}A)\to(\Gamma,x{:}A)$ とする（\ref{logic:typing-weakening-substitution} の証明と同じ）。弱化（\ref{logic:renaming-semantics}）から $\llbracket\Delta,x{:}A\vdash N_{i}\rrbracket=\llbracket\Delta\vdash N_{i}\rrbracket\circ p_{1}$ なので、\ref{logic:context-tuple} から $\llbracket\sigma^{+}\rrbracket=\langle\llbracket\sigma\rrbracket\circ p_{1},p_{2}\rangle=\llbracket\sigma\rrbracket\times1$。帰納法の仮定と \eqref{logic:eq-transpose-natural} から
+$$
+\llbracket M[\sigma]\rrbracket=\lambda\bigl(\llbracket M'\rrbracket\circ(\llbracket\sigma\rrbracket\times1)\bigr)=\llbracket M\rrbracket\circ\llbracket\sigma\rrbracket.
+$$
+後半は $\sigma=(x_{1},\dots,x_{n},N)\colon\Gamma\to(\Gamma,x{:}A)$ の場合で、$\llbracket\sigma\rrbracket=\langle\langle q_{1},\dots,q_{n}\rangle_{\Gamma},\llbracket N\rrbracket\rangle=\langle1,\llbracket N\rrbracket\rangle$。
+
+::: hypcheck
+- **付け替えの補題を先に示した理由**：抽象の場合に $N_{i}$ の弱化が要るが、$N_{i}$ は $M$ の部分項ではないので、同じ帰納法の中では使えない。付け替え（変数だけの代入）は別の帰納法で先に示してあるので、循環しない。
+:::
+:::
+
+::: theorem 健全性定理 {#logic:ccc-soundness keywords="soundness of beta eta equality for cartesian closed categories" index="健全性定理（デカルト閉圏）|けんぜんせいていりでかるとへいけん"}
+$\mathcal{M}$ をデカルト閉圏 $\mathbf{C}$ での λ 理論 $T$ のモデルとする。$\Gamma\vdash_{T}M=N:A$ なら $\llbracket\Gamma\vdash M:A\rrbracket=\llbracket\Gamma\vdash N:A\rrbracket$。
+:::
+
+::: proof
+導ける等式の導出に関する帰納法。規則ごとに確かめる。
+
+**Step 1（公理・同値関係・両立性）.** 公理はモデルの定義から成り立つ。射の等しさは同値関係である。両立性は、解釈が部分項の解釈から合成で決まること（\ref{logic:ccc-interpretation}）から。
+
+**Step 2（代入）.** 帰納法の仮定から $\llbracket M\rrbracket=\llbracket M'\rrbracket$、$\llbracket N_{i}\rrbracket=\llbracket N'_{i}\rrbracket$。後者から $\llbracket\sigma\rrbracket=\llbracket\sigma'\rrbracket$（\ref{logic:context-tuple} の一意性）。\ref{logic:substitution-semantics} から $\llbracket M[\sigma]\rrbracket=\llbracket M\rrbracket\circ\llbracket\sigma\rrbracket=\llbracket M'\rrbracket\circ\llbracket\sigma'\rrbracket=\llbracket M'[\sigma']\rrbracket$。
+
+**Step 3（積の β・η、単位型の η）.** $p_{1}\circ\langle f,g\rangle=f$, $p_{2}\circ\langle f,g\rangle=g$ は積の定義。$\langle p_{1}\circ h,p_{2}\circ h\rangle=h$ は積の一意性。$M$ の型が $1$ なら、$\llbracket M\rrbracket$ と $!_{\llbracket\Gamma\rrbracket}$ はどちらも終対象への射なので等しい。
+
+**Step 4（関数の β）.** $f\defeq\llbracket\Gamma,x{:}A\vdash M\rrbracket$, $g\defeq\llbracket N\rrbracket$ とおく。$\langle\lambda f,g\rangle=(\lambda f\times1)\circ\langle1,g\rangle$（両辺の $p_{1},p_{2}$ 成分を比べる）なので
+$$
+\begin{aligned}
+\llbracket(\lambda x{:}A.M)N\rrbracket&=\mathrm{ev}\circ(\lambda f\times1)\circ\langle1,g\rangle\\
+&=f\circ\langle1,g\rangle=\llbracket M[N/x]\rrbracket.
+\end{aligned}
+$$
+2 行目の最初の等号は転置の定義 $\mathrm{ev}\circ(\lambda f\times1)=f$、最後の等号は \ref{logic:substitution-semantics} の後半。
+
+**Step 5（関数の η）.** $x\notin\mathrm{FV}(M)$ なので、弱化（\ref{logic:renaming-semantics}）から $\llbracket\Gamma,x{:}A\vdash M\rrbracket=\llbracket\Gamma\vdash M\rrbracket\circ p_{1}$。よって
+$$
+\llbracket\Gamma,x{:}A\vdash Mx\rrbracket=\mathrm{ev}\circ\langle\llbracket M\rrbracket\circ p_{1},p_{2}\rangle=\mathrm{ev}\circ(\llbracket M\rrbracket\times1).
+$$
+$k\defeq\llbracket M\rrbracket$ は $\mathrm{ev}\circ(k\times1)=\mathrm{ev}\circ(\llbracket M\rrbracket\times1)$ を満たすので、転置の一意性から $\lambda\bigl(\mathrm{ev}\circ(\llbracket M\rrbracket\times1)\bigr)=\llbracket M\rrbracket$、すなわち $\llbracket\lambda x{:}A.Mx\rrbracket=\llbracket M\rrbracket$。
+
+::: hypcheck
+- **積の存在と一意性**：存在は解釈の定義に、一意性は Step 2（$\llbracket\sigma\rrbracket=\llbracket\sigma'\rrbracket$）と Step 3（積の η）に使った。
+- **終対象**：空の文脈の解釈、定数の解釈、Step 3（単位型の η）に使った。
+- **冪の存在と転置の一意性**：存在は $\lambda$ と $\mathrm{ev}$ の定義に、等式 $\mathrm{ev}\circ(\lambda f\times1)=f$ は Step 4（β）に、一意性は Step 5（η）と代入の補題に使った。一意性のない「弱い冪」しかない圏では、β は成り立つが η は一般に成り立たない。
+- **公理の成立**：Step 1 でだけ使った。純粋な理論なら、どの構造もモデルである。
+- **文脈つきであること**：等式を文脈ごとに扱ったことは本質的である。$\mathbf{Set}$ で基本型 $\beta$ を空集合と解釈すると、$\llbracket x{:}\beta\rrbracket=1\times\varnothing=\varnothing$ なので、$x{:}\beta\vdash M=N:A$ の形の等式は（両辺が $\varnothing$ からの射なので）すべて成り立つ。文脈を落として「$M=N$ が成り立つ」とすると、空の型があるときに誤った結論が出る。
+- **選択公理**：デカルト閉圏の構造を選ぶときにだけ使った（構造が与えられていれば不要）。
+:::
+:::
+
+::: example
+**ハイティング代数での解釈.** ハイティング代数 $H$ は、$\top$ を終対象、$\wedge$ を積、$\Rightarrow$ を冪とするデカルト閉圏である（\ref{cat:cartesian-closed} の例 3）。$H$ は前順序なので、二つの対象の間の射は高々一つで、$\Gamma\vdash M:A$ の解釈が存在することは
+$$
+\top\wedge\llbracket A_{1}\rrbracket\wedge\cdots\wedge\llbracket A_{n}\rrbracket\le\llbracket A\rrbracket
+$$
+と同じである。とくに閉項 $\vdash M:A$ があれば $\llbracket A\rrbracket=\top$。カリー＝ハワード対応（\ref{logic:curry-howard}）で型を論理式と読めば、これは $\wedge,\to,\top$ だけの直観主義命題論理がハイティング代数で健全であることを言っている。
+:::
+
+::: corollary パースの法則の型をもつ閉項はない {#logic:peirce-no-term keywords="Peirce's law is not inhabited, no closed term of type ((p->q)->p)->p" index="パースの法則|ぱーすのほうそく"}
+基本型 $p,q$（定数なし）について、型 $((p\to q)\to p)\to p$ の閉項は存在しない。
+:::
+
+::: proof
+$\mathbb{R}$ の開集合全体 $\mathcal{O}(\mathbb{R})$ は、$U\Rightarrow V\defeq(U^{c}\cup V)^{\circ}$（$^{\circ}$ は内部）とするハイティング代数である（\ref{cat:cartesian-closed} の例 3）。$\llbracket p\rrbracket\defeq\mathbb{R}\setminus\{0\}$、$\llbracket q\rrbracket\defeq\varnothing$ と解釈する。
+
+**Step 1.** $\llbracket p\to q\rrbracket=(\{0\}\cup\varnothing)^{\circ}=\{0\}^{\circ}=\varnothing$。
+
+**Step 2.** $\llbracket(p\to q)\to p\rrbracket=(\varnothing^{c}\cup\llbracket p\rrbracket)^{\circ}=\mathbb{R}$。
+
+**Step 3.** $\llbracket((p\to q)\to p)\to p\rrbracket=(\mathbb{R}^{c}\cup\llbracket p\rrbracket)^{\circ}=\mathbb{R}\setminus\{0\}\neq\mathbb{R}=\top$。
+
+閉項があれば、健全性（というより解釈の存在。\ref{logic:ccc-interpretation}）から $\top\le\llbracket((p\to q)\to p)\to p\rrbracket$ となるはずなので、矛盾。
+
+::: hypcheck
+- 使ったのは解釈が存在すること（射 $\top\to\llbracket A\rrbracket$ が得られること）だけで、等式の健全性は使っていない。
+- $\mathbf{Set}$ や二値のブール代数では反例にならない：パースの法則は古典的にはトートロジーである（\ref{logic:page-prop-completeness}）。ブール代数でないハイティング代数を使うことが本質的である。
+:::
+:::
+
+::: supplement
+**一般化：型の構成と圏の構造.** 型の構成子を足すと、対応して要求される圏の構造が増える。和型 $A+B$（場合分け）を加えると余積をもつデカルト閉圏（双デカルト閉圏）、空型を加えると始対象が要る。依存型理論は局所デカルト閉圏に、線形型（変数をちょうど一回使う）は対称モノイダル閉圏に対応することが知られている（依存型については、R. A. G. Seely の 1984 年の論文に始まり、代入と引き戻しの一致の問題がその後の研究で整理されたとされる。詳細は本サイトの範囲外）。
+
+**前提を変えると.** 積と単位型を除いた純粋な $\to$ だけの計算でも、文脈の解釈に積が要るので、解釈する圏には有限の積が必要である。冪の一意性を外すと、η 等式が健全でなくなる（\ref{logic:ccc-soundness} の hypcheck）。
+
+**類似の定理.** 一階述語論理の健全性定理（\ref{logic:page-soundness}）と同じく、導出に関する帰納法で各規則が真を保つことを確かめる。違いは「真であること」が「二つの射が等しいこと」に置き換わる点で、代入の補題（\ref{logic:substitution-semantics}）が意味論的代入補題（\ref{logic:page-semantics}）に当たる。
+
+**高い視点から：代入は合成である.** \ref{logic:substitution-semantics} の主張「$\llbracket M[\sigma]\rrbracket=\llbracket M\rrbracket\circ\llbracket\sigma\rrbracket$」は、構文の操作（代入）が圏の操作（合成）に移ることを言う。文脈を対象、代入射を射とみると、文脈と代入の全体が一つの圏をなし、解釈はそこからの関手になる。この見方を一つの型の文脈に絞ったものが、次ページの**構文圏**（\ref{logic:page-lambek}）であり、そこでは「モデル＝構文圏からの構造を保つ関手」となる（ローヴェアの関手的意味論の考え方）。比喩で言えば、構文は「楽譜」、デカルト閉圏は「楽器」、解釈は「演奏」で、健全性定理は「楽譜の上で同じとみなした二つの書き方は、どの楽器で演奏しても同じ音になる」ことを保証する。
+:::
+
+## 問題 {#logic:sec-ccs-problems}
+
+::: problem {#logic:prob-ccs-swap}
+任意のデカルト閉圏で、$\llbracket z{:}A\times B\vdash\langle\pi_{2}z,\pi_{1}z\rangle:B\times A\rrbracket$ を $p_{1},p_{2}$ と $\langle-,-\rangle$ で表せ。また、この項に自分自身を代入した項（例 1 で二回施したもの）の解釈が $\llbracket z{:}A\times B\vdash z\rrbracket$ に等しいことを、代入の補題を使って確かめよ。
+:::
+
+::: solution
+$\llbracket z\rrbracket=q_{1}=p_{2}$（文脈 $z{:}A\times B$ の解釈は $1\times(\llbracket A\rrbracket\times\llbracket B\rrbracket)$）なので、解釈は $s\defeq\langle p_{2}\circ p_{2},p_{1}\circ p_{2}\rangle$。二回施した項は $\langle\pi_{2}z,\pi_{1}z\rangle[\langle\pi_{2}z,\pi_{1}z\rangle/z]$ で、代入の補題から解釈は $s\circ\langle!,s\rangle$。$p_{2}\circ\langle!,s\rangle=s$ なので、$s\circ\langle!,s\rangle=\langle p_{2}\circ s,p_{1}\circ s\rangle=\langle p_{1}\circ p_{2},p_{2}\circ p_{2}\rangle=p_{2}$（積の一意性）。これは $\llbracket z\rrbracket$ と一致し、例 1 の等式の健全性と合う。
+:::
+
+::: problem {#logic:prob-ccs-church}
+純粋な理論（基本型 $o$ 一つ）で、$n$ 番目のチャーチ数 $\bar{n}\defeq\lambda f{:}o\to o.\,\lambda x{:}o.\,f^{n}x$（\ref{logic:church-numeral} の型付き版）を考える。$m\neq n$ なら $\vdash\bar{m}=\bar{n}:(o\to o)\to o\to o$ は導けないことを示せ。
+:::
+
+::: solution
+$\mathbf{Set}$ で $\llbracket o\rrbracket\defeq\mathbb{N}$ とする。$\llbracket\bar{n}\rrbracket$ は点 $1\to(\mathbb{N}^{\mathbb{N}})^{\mathbb{N}^{\mathbb{N}}}$ で、本文の例と同じ計算で $f\mapsto f^{n}$（$n$ 回合成）である。$f$ を後者関数にとって $0$ に施すと $n$ になるので、$m\neq n$ なら $\llbracket\bar{m}\rrbracket\neq\llbracket\bar{n}\rrbracket$。健全性定理（\ref{logic:ccc-soundness}）の対偶から、等式は導けない。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

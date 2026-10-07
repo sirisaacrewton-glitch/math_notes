@@ -10,7 +10,15 @@
       "en": "Foundations",
       "codes": [
         "03",
-        "18"
+        {
+          "title": "圏論",
+          "en": "Category Theory",
+          "codes": [
+            "18A",
+            "18B"
+          ],
+          "description": "圏・関手・自然変換、極限と随伴、構造をもつ圏、トポス。"
+        }
       ]
     },
     {
@@ -21,7 +29,14 @@
         "13",
         "15",
         "16",
-        "18",
+        {
+          "title": "ホモロジー代数",
+          "en": "Homological Algebra",
+          "codes": [
+            "18G"
+          ],
+          "description": "鎖複体と長完全列、射影・入射分解、導来関手 Ext と Tor、スペクトル系列、導来圏。"
+        },
         "20"
       ]
     },

@@ -1,4 +1,4 @@
-# 数学ノート 執筆ガイド
+# Summa Mathematica（数学大全） 執筆ガイド
 
 このサイトは **1 ページ = 1 つの HTML ファイル** で、各ページの中身は HTML 内の
 `<script type="text/markdown" id="source"> … </script>` に書かれた **Markdown + LaTeX 原稿** です。

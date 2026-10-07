@@ -10,7 +10,7 @@ args = sys.argv[1:]; ctx = 0
 if args[:1] == ['-c']: ctx = int(args[1]); args = args[2:]
 root = os.environ.get('MN_WASHO')
 if not root:
-    here = os.path.dirname(os.path.abspath(__file__))           # <math_notes>/_claude/bin
+    here = os.path.dirname(os.path.abspath(__file__))           # <summa-mathematica>/_claude/bin
     root = os.path.join(here, '..', '..', '..', 'math_books', 'ja')
 pat = os.path.join(root, '_text', '*.txt')
 files = sorted(f for f in glob.glob(pat) if not f.endswith('.index.txt'))

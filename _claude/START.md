@@ -1,15 +1,15 @@
-# 数学ノート：Claude 用の作業指示書（新しいトークで最初に読む）
+# Summa Mathematica（数学大全）：Claude 用の作業指示書（新しいトークで最初に読む）
 
 > **このファイルと `PROGRESS.md`・`template.html` の 3 つを読めば、過去のトークを読まなくても作業を続けられる**ように作ってある。
-> 正本は GitHub の公開リポジトリ `sirisaacrewton-glitch/math_notes` の `_claude/` にある（2026-10-07 から）。プロジェクト資料の `claude/START.md` は、ここへ案内するだけの短いもの。
-> **作業環境は Claude Code のクラウドセッション**（2026-10-07 から。スマホからも指示できるように）。セッションには 2 つのリポジトリを選ぶ：`math_notes`（公開。このサイト）と `math_books`（**非公開**。本のテキスト）。
-> **公開リポジトリなので、コンピュータ上のパス・個人情報・本の PDF の場所・本のテキストは `math_notes` に入れない。**
+> 正本は GitHub の公開リポジトリ `sirisaacrewton-glitch/summa-mathematica`（2026-10-07 に `math_notes` から改名）の `_claude/` にある（2026-10-07 から）。プロジェクト資料の `claude/START.md` は、ここへ案内するだけの短いもの。
+> **作業環境は Claude Code のクラウドセッション**（2026-10-07 から。スマホからも指示できるように）。セッションには 2 つのリポジトリを選ぶ：`summa-mathematica`（公開。このサイト）と `math_books`（**非公開**。本のテキスト）。
+> **公開リポジトリなので、コンピュータ上のパス・個人情報・本の PDF の場所・本のテキストは `summa-mathematica` に入れない。**
 
 ---
 
 ## 0. 全体像
 
-* **何をしているか**：数学を体系化した静的サイト「数学ノート」を作っている。
+* **何をしているか**：数学を体系化した静的サイト「Summa Mathematica」（日本語の副題「数学大全」。2026-10-07 に「数学ノート」から改名）を作っている。
   * 1 ページ ＝ 1 つの HTML ファイル（専門書の 1 節弱）。
   * 原稿は Markdown + LaTeX で書き、番号・目次・相互参照・検索索引はビルドと表示時に自動で付く。
 * **作業は Claude だけで完結させる**。
@@ -29,9 +29,9 @@
 
 ## 1. 起動手順（トークの最初に 1 回。数分で終わる）
 
-1. **リポジトリの確認**（Bash）：このセッションに `math_notes` と `math_books` が clone されているか確かめる。
+1. **リポジトリの確認**（Bash）：このセッションに `summa-mathematica` と `math_books` が clone されているか確かめる。
    ```
-   git rev-parse --show-toplevel; ls ..                 # math_notes の場所と、隣に math_books があるか
+   git rev-parse --show-toplevel; ls ..                 # summa-mathematica の場所と、隣に math_books があるか
    git config user.name "sirisaacrewton"
    git config user.email "236957717+sirisaacrewton-glitch@users.noreply.github.com"
    ```
@@ -387,10 +387,10 @@
 
 ## 11. GitHub での運用（2026-10-07 開始）
 
-- `sirisaacrewton-glitch/math_notes`（**公開**）：このサイト。GitHub Pages で閲覧する（Settings → Pages、main ブランチのルート）。
-- `sirisaacrewton-glitch/math_books`（**非公開**。ユーザーの私的な学習用）：本のテキストと索引だけ。`en/_text/`・`ja/_text/`。PDF は入れない。**中身を `math_notes` や他の公開の場所に写さない。**
+- `sirisaacrewton-glitch/summa-mathematica`（**公開**）：このサイト。GitHub Pages で閲覧する（Settings → Pages、main ブランチのルート）。
+- `sirisaacrewton-glitch/math_books`（**非公開**。ユーザーの私的な学習用）：本のテキストと索引だけ。`en/_text/`・`ja/_text/`。PDF は入れない。**中身を `summa-mathematica` や他の公開の場所に写さない。**
 - 作業場所：Claude Code のクラウドセッション（スマホのアプリからも指示できる）。両方のリポジトリを選んで始める。
 - `.gitignore`：`.DS_Store`, `_to_delete/`, `_upload/`, `Claude outputs/`, `*.pdf`, `_text/`, `_claude/_archive/`。`.nojekyll` は `_meta.json` など `_` で始まるファイルを Pages が無視しないため。
-- **`math_notes` に入れないもの**：本の PDF とテキスト（著作物）、コンピュータ上のパス、大学のメールアドレス。資料表の PDF の場所は「（非公開）」と書く。
+- **`summa-mathematica` に入れないもの**：本の PDF とテキスト（著作物）、コンピュータ上のパス、大学のメールアドレス。資料表の PDF の場所は「（非公開）」と書く。
 - 生成物（index.html, labels.json, site-index.js, search-index.js など）も commit する（Pages はビルドしないため）。
 - 初回 push の経緯：Cowork ではコンピュータ側で git が使えず（接続フォルダでは削除が禁止）、クラウド側にもリポジトリを接続できなかったため、bundle を作ってユーザーの Mac から push した。

@@ -150,8 +150,8 @@
 
   return {
     ADS: ADS,
-    SITE_TITLE: '数学ノート',
-    SITE_SUBTITLE: '定義・定理・証明を体系的に',
+    SITE_TITLE: 'Summa Mathematica',
+    SITE_SUBTITLE: '数学大全',
     ENVIRONMENTS: ENVIRONMENTS,
     TYPE_ALIASES: TYPE_ALIASES,
     KATEX_MACROS: KATEX_MACROS,

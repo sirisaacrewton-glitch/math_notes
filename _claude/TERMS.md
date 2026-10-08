@@ -376,3 +376,4 @@
 | prime model over a set / constructible / atomic over A / (κ,λ)-model | （A 上の）素モデル / 構成可能 / A 上原子的 / (κ,λ) モデル（二基数モデル） | | 構成可能・二基数モデルは仮。model:page-omega-stable |
 | Vaughtian pair / two-cardinal theorem / homogeneous model / relativization | ヴォート対 / 二基数定理 / 均質モデル / 相対化 | ヴォート的対 | 仮。model:page-vaught-pairs |
 | algebraic closure / minimal formula / strongly minimal / elimination of ∃^∞ | 代数的閉包 / 極小な論理式 / 強極小 / ∃^∞ の消去（一様有限性） | | 強極小は標準的。model:page-strongly-minimal |
+| exchange / independent / basis / dimension / pregeometry | 交換法則 / 独立 / 基底 / 次元 / 前幾何（マトロイド） | | 前幾何は仮。model:page-dimension |

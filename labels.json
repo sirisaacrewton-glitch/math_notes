@@ -12545,6 +12545,13 @@
       "num": "2.4",
       "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/02-countable-models.html"
     },
+    "model:basis-exists": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "基底の存在",
+      "num": "6.3",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/06-dimension.html"
+    },
     "model:cantor-dlo": {
       "status": "defined",
       "type": "corollary",
@@ -12656,6 +12663,13 @@
       "title": "図式のモデルは埋め込みを与える",
       "num": "2.4",
       "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/02-elementary-chains.html"
+    },
+    "model:dimension-well-defined": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "次元の一意性",
+      "num": "6.5",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/06-dimension.html"
     },
     "model:dlo": {
       "status": "defined",
@@ -12811,6 +12825,20 @@
       "num": "",
       "page": "03-mathematical-logic/03C-model-theory/03-ultraproducts/01-ultraproducts.html"
     },
+    "model:exchange": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "交換法則",
+      "num": "6.1",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/06-dimension.html"
+    },
+    "model:extend-to-acl": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "代数的閉包への延長",
+      "num": "6.7",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/06-dimension.html"
+    },
     "model:forall-exists-chain": {
       "status": "defined",
       "type": "proposition",
@@ -12838,6 +12866,20 @@
       "title": "可算均質モデルの同型",
       "num": "3.2",
       "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/03-vaught-pairs.html"
+    },
+    "model:independent-basis": {
+      "status": "defined",
+      "type": "definition",
+      "title": "独立・基底",
+      "num": "6.2",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/06-dimension.html"
+    },
+    "model:independent-same-type": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "独立な組の型の一意性",
+      "num": "6.6",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/06-dimension.html"
     },
     "model:indiscernible": {
       "status": "defined",
@@ -13028,6 +13070,13 @@
       "num": "",
       "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/02-countable-models.html"
     },
+    "model:page-dimension": {
+      "status": "defined",
+      "type": "page",
+      "title": "強極小集合の次元",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/06-dimension.html"
+    },
     "model:page-elementary-chains": {
       "status": "defined",
       "type": "page",
@@ -13174,6 +13223,20 @@
       "title": "",
       "num": "3.12",
       "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/03-quantifier-elimination.html"
+    },
+    "model:prob-dm-acf-transcendence": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "6.8",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/06-dimension.html"
+    },
+    "model:prob-dm-vector-space": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "6.9",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/06-dimension.html"
     },
     "model:prob-elementary-chain": {
       "status": "defined",
@@ -13601,6 +13664,41 @@
       "title": "稠密線形順序",
       "num": "",
       "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/03-quantifier-elimination.html"
+    },
+    "model:sec-dm-dimension": {
+      "status": "defined",
+      "type": "section",
+      "title": "独立性と次元",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/06-dimension.html"
+    },
+    "model:sec-dm-exchange": {
+      "status": "defined",
+      "type": "section",
+      "title": "交換法則",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/06-dimension.html"
+    },
+    "model:sec-dm-generic": {
+      "status": "defined",
+      "type": "section",
+      "title": "独立な組の型",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/06-dimension.html"
+    },
+    "model:sec-dm-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/06-dimension.html"
+    },
+    "model:sec-dm-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/06-dimension.html"
     },
     "model:sec-downward-ls": {
       "status": "defined",
@@ -14056,6 +14154,13 @@
       "title": "1 変数で十分",
       "num": "1.2",
       "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/01-stability.html"
+    },
+    "model:steinitz": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "シュタイニッツの交換",
+      "num": "6.4",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/06-dimension.html"
     },
     "model:strongly-minimal-uniform": {
       "status": "defined",

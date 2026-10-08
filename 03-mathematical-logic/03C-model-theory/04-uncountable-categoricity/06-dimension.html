@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>強極小集合の次元 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/06-dimension.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 強極小集合の次元 {#model:page-dimension keywords="exchange principle, pregeometry, independence, basis, dimension of a strongly minimal set, Steinitz exchange, generic type, independent tuples have the same type, extending elementary maps to algebraic closures"}
+
+強極小集合 $D=\varphi(\mathcal{M})$（\ref{model:minimal-formula}）の中では、代数的閉包が**交換法則**（\ref{model:exchange}）を満たす。これはベクトル空間の一次従属や体の代数的従属と同じ性質で、そこから**独立性**・**基底**・**次元**の理論が線形代数と同じように展開できる（\ref{model:dimension-well-defined}）。さらに、独立な組の型は一つに決まり（\ref{model:independent-same-type}）、基底の間の任意の全単射が初等的な写像になる。これが次ページのボールドウィン–ラクランの定理の核心である。
+
+> 資料：新井敏康『数学基礎論』§5.6.3（強極小集合の独立性と次元）を参考にした（本文は写していない）。交換法則の証明では強極小性ではなく $\mathcal{M}$ での極小性だけを使うことを明示し、独立な組の型の一意性では、強極小性の一様な上界（\ref{model:strongly-minimal-uniform}）がモデルをまたいだ比較に必要であることを明示した。
+
+## 記法と定義の確認 {#model:sec-dm-notation}
+
+::: notation
+- $T$ は可算言語の完全な理論で無限モデルをもつ。代数的閉包 $\mathrm{acl}$ とその性質、極小・強極小、強極小性の一様性は \ref{model:algebraic-closure}, \ref{model:acl-properties}, \ref{model:minimal-formula}, \ref{model:strongly-minimal-uniform} のとおり。
+- 以下、$\mathcal{M}\models T$, $A_{0}\subseteq M$, $\varphi(x)$ を $\mathcal{L}_{A_{0}}$ 論理式とし、$D\defeq\varphi(\mathcal{M})$ とする。$C\supseteq A_{0}$ と $X\subseteq M$ について $\mathrm{acl}(CX)\defeq\mathrm{acl}(C\cup X)$ と略記する。
+- 初等的な部分写像は \ref{model:prime-over-set-def} の前の記法のとおり（\ref{model:page-omega-stable}）。
+:::
+
+## 交換法則 {#model:sec-dm-exchange}
+
+::: theorem 交換法則 {#model:exchange keywords="exchange principle for algebraic closure in minimal sets" index="交換法則（代数的閉包）|こうかんほうそくだいすうてきへいほう"}
+$\varphi$ が $\mathcal{M}$ で極小、$A_{0}\subseteq C\subseteq M$, $a,b\in D$ とする。$a\in\mathrm{acl}(Cb)\setminus\mathrm{acl}(C)$ なら $b\in\mathrm{acl}(Ca)$。
+:::
+
+::: proof
+$b\notin\mathrm{acl}(Ca)$ と仮定して矛盾を導く。$a\in\mathrm{acl}(Cb)$ から、$\mathcal{L}_{C}$ 論理式 $\psi(x,y)$ で $\mathcal{M}\models\psi(a,b)$ かつ $\lvert\psi(\mathcal{M},b)\rvert=n$ となるものがある。
+
+**Step 1.** $\mathcal{L}_{Ca}$ 論理式 $\chi(y)\defeq\varphi(y)\wedge\psi(a,y)\wedge\exists^{\le n}x\,\psi(x,y)$ は $b$ を満たす。$b\notin\mathrm{acl}(Ca)$ なので $\chi(\mathcal{M})$ は無限で、$\chi(\mathcal{M})\subseteq D$ と $D$ の極小性から $D\setminus\chi(\mathcal{M})$ は有限。その個数を $k$ とする。
+
+**Step 2.** $\mathcal{L}_{C}$ 論理式
+$$
+\theta(x)\defeq\varphi(x)\wedge\exists^{\le k}y\,\Bigl(\varphi(y)\wedge\neg\bigl(\psi(x,y)\wedge\exists^{\le n}x'\,\psi(x',y)\bigr)\Bigr)
+$$
+は $a$ を満たす（Step 1）。$a\notin\mathrm{acl}(C)$ なので $\theta(\mathcal{M})$ は無限で、相異なる $a_{0},\dots,a_{n}\in\theta(\mathcal{M})$ をとれる。
+
+**Step 3.** 各 $i$ について $Y_{i}\defeq\{y\in D:\mathcal{M}\models\psi(a_{i},y)\wedge\exists^{\le n}x'\,\psi(x',y)\}$ は、$\theta(a_{i})$ から $\lvert D\setminus Y_{i}\rvert\le k$。$D$ は無限なので $\bigcap_{i\le n}Y_{i}\neq\varnothing$ で、その元 $y$ について $\psi(a_{i},y)$（$i=0,\dots,n$）は $n+1$ 個の相異なる解をもつが、$\exists^{\le n}x'\,\psi(x',y)$ に反する。
+:::
+
+::: hypcheck
+- **$D$ の極小性（$\mathcal{M}$ での）**：Step 1 で $\chi(\mathcal{M})$ が $D$ の中で補有限になることにだけ使った。強極小性は使っていない。
+- **$a,b\in D$**：Step 1 で $\chi\subseteq\varphi$、Step 2 で $\theta$ に $\varphi(x)$ を含めて有限個の元を $D$ からとるのに使った。
+:::
+
+## 独立性と次元 {#model:sec-dm-dimension}
+
+以下、$\varphi$ は $\mathcal{M}$ で極小とし、$C\supseteq A_{0}$ を固定する。
+
+::: definition 独立・基底 {#model:independent-basis keywords="independent set, basis of a minimal set over a parameter set" index="独立（代数的閉包）|どくりつだいすうてきへいほう, 基底（強極小集合）|きていきょうきょくしょうしゅうごう"}
+$X\subseteq D$ が **$C$ 上独立**であるとは、すべての $a\in X$ について $a\notin\mathrm{acl}(C\cup(X\setminus\{a\}))$ となることをいう。$Y\subseteq D$ について、$C$ 上独立な $B\subseteq Y$ で $Y\subseteq\mathrm{acl}(CB)$ となるものを、$Y$ の **$C$ 上の基底**という。
+:::
+
+::: lemma 基底の存在 {#model:basis-exists keywords="maximal independent subsets are bases" index="基底の存在（強極小集合）|きていのそんざいきょうきょくしょうしゅうごう"}
+（AC）$Y\subseteq D$ の $C$ 上独立な部分集合で極大なものは、$Y$ の $C$ 上の基底であり、極大なものは存在する。
+:::
+
+::: proof
+**存在.** $C$ 上独立な部分集合の鎖の和は独立である：$a\notin\mathrm{acl}(C\cup(X\setminus\{a\}))$ が破れれば、\ref{model:acl-properties} の 3 から、有限個の元しか使わないので、鎖のある段で破れる。ツォルンの補題から極大なものがある。
+
+**基底.** $B$ を極大とし、$y\in Y\setminus\mathrm{acl}(CB)$ があるとする。$B\cup\{y\}$ が独立であることを示せば極大性に反する。$y\notin\mathrm{acl}(CB)$ は $y$ について成り立つ。$b\in B$ について $b\in\mathrm{acl}(C\cup(B\setminus\{b\})\cup\{y\})$ とすると、$C'\defeq C\cup(B\setminus\{b\})$ について $b\in\mathrm{acl}(C'y)\setminus\mathrm{acl}(C')$（$B$ の独立性）なので、交換法則から $y\in\mathrm{acl}(C'b)=\mathrm{acl}(CB)$ となり矛盾。
+:::
+
+::: lemma シュタイニッツの交換 {#model:steinitz keywords="Steinitz exchange: an independent set inside the closure of a finite set has at most that many elements" index="シュタイニッツの交換|しゅたいにっつのこうかん"}
+$X\subseteq D$ が $C$ 上独立、$Y\subseteq D$ が有限で $X\subseteq\mathrm{acl}(CY)$ なら、$\lvert X\rvert\le\lvert Y\rvert$。
+:::
+
+::: proof
+$m\defeq\lvert Y\rvert$ に関する帰納法で、「どの $C\supseteq A_{0}$ についても、$C$ 上独立な $m+1$ 個の元が $\mathrm{acl}(CY)$（$\lvert Y\rvert=m$）に含まれることはない」を示す。$m=0$：$\{x\}$ が独立なら $x\notin\mathrm{acl}(C)$。
+
+$m\ge1$：$C$ 上独立な $x_{0},\dots,x_{m}\in\mathrm{acl}(CY)$, $Y=\{y_{1},\dots,y_{m}\}$ とする。$x_{m}\notin\mathrm{acl}(C)$ なので、$x_{m}\in\mathrm{acl}(Cy_{1}\cdots y_{i})$ となる最小の $i\ge1$ があり、$x_{m}\in\mathrm{acl}(C'y_{i})\setminus\mathrm{acl}(C')$（$C'\defeq C\cup\{y_{1},\dots,y_{i-1}\}$）。交換法則から $y_{i}\in\mathrm{acl}(C'x_{m})$。$Y''\defeq Y\setminus\{y_{i}\}$ とすると $Y\subseteq\mathrm{acl}(C\cup Y''\cup\{x_{m}\})$、したがって（\ref{model:acl-properties} の 2）$x_{0},\dots,x_{m-1}\in\mathrm{acl}(C^{\ast}Y'')$, $C^{\ast}\defeq C\cup\{x_{m}\}$。$x_{0},\dots,x_{m-1}$ は $C^{\ast}$ 上独立（$C$ 上の独立性の定義そのもの）で、$\lvert Y''\rvert=m-1$ なので帰納法の仮定に反する。
+:::
+
+::: theorem 次元の一意性 {#model:dimension-well-defined keywords="all bases of a subset of a minimal set have the same cardinality, dimension" index="次元（強極小集合）|じげんきょうきょくしょうしゅうごう"}
+$Y\subseteq D$ の $C$ 上の基底はすべて同じ濃度をもつ。これを $\dim(Y/C)$ と書く。また $\lvert\mathrm{acl}(CB)\rvert\le\lvert C\rvert+\lvert B\rvert+\aleph_{0}$ なので、$D$ が非可算で $C$ が可算なら $\dim(D/C)=\lvert D\rvert$。
+:::
+
+::: proof
+$B,B'$ を基底とする。$B$ が有限なら、$B'$ の有限部分集合は $\mathrm{acl}(CB)$ に含まれ独立なので、シュタイニッツの交換から $\lvert B'\rvert\le\lvert B\rvert$（$B'$ も有限）。対称に $\lvert B\rvert\le\lvert B'\rvert$。$B,B'$ がともに無限なら、各 $b'\in B'$ は有限な $B_{0}\subseteq B$ で $b'\in\mathrm{acl}(CB_{0})$ となる（\ref{model:acl-properties} の 3）。$B_{0}$ ごとに $B'\cap\mathrm{acl}(CB_{0})$ は独立なので $\lvert B_{0}\rvert$ 個以下。有限部分集合 $B_{0}$ は $\lvert B\rvert$ 個なので $\lvert B'\rvert\le\lvert B\rvert\cdot\aleph_{0}=\lvert B\rvert$。対称に逆も。
+
+濃度の評価：$\mathrm{acl}(CB)$ の元は、$\mathcal{L}_{C\cup B}$ 論理式（$\lvert C\rvert+\lvert B\rvert+\aleph_{0}$ 個）の有限な解集合の元。$D\subseteq\mathrm{acl}(CB)$（$B$ は $D$ の基底）なので $\lvert D\rvert\le\lvert C\rvert+\lvert B\rvert+\aleph_{0}$ で、$D$ 非可算・$C$ 可算なら $\lvert B\rvert\ge\lvert D\rvert$。$B\subseteq D$ なので等号。
+:::
+
+## 独立な組の型 {#model:sec-dm-generic}
+
+::: theorem 独立な組の型の一意性 {#model:independent-same-type keywords="independent tuples in a strongly minimal set have the same type; bijections between bases are elementary" index="独立な組の型の一意性|どくりつなくみのかたのいちいせい, 生成的な型|せいせいてきなかた"}
+$\varphi$ を強極小な $\mathcal{L}_{A_{0}}$ 論理式とし、$\mathcal{N}\models T$ と初等的な部分写像 $f\colon A_{0}\to N$ をとる。$\varphi^{f}$ を $\varphi$ のパラメータを $f$ で移した論理式とする。$b_{1},\dots,b_{n}\in\varphi(\mathcal{M})$ が $A_{0}$ 上独立、$b'_{1},\dots,b'_{n}\in\varphi^{f}(\mathcal{N})$ が $f(A_{0})$ 上独立なら、$f\cup\{(b_{i},b'_{i}):i\le n\}$ は初等的である。
+:::
+
+::: proof
+**Step 0（一様な上界の移送）.** \ref{model:strongly-minimal-uniform} の上界 $n_{\psi}$ を与える $\mathcal{L}_{A_{0}}$ の文と、「$\varphi$ の解が $k$ 個以上ある」は $\mathcal{M}$ で真なので、$f$ の初等性から $\varphi^{f}$ についても $\mathcal{N}$ で真。よって $\varphi^{f}$ も同じ上界をもち、$\varphi^{f}(\mathcal{N})$ は無限で $\mathcal{N}$ で極小。
+
+**Step 1（非代数的な元の型）.** $\mathcal{M}$ で、$e\in\varphi(\mathcal{M})\setminus\mathrm{acl}(E)$（$A_{0}\subseteq E$）と $\mathcal{L}$ 論理式 $\psi(x,\vec{y})$, $\vec{c}\in E$ について
+$$
+\mathcal{M}\models\psi(e,\vec{c})\iff\mathcal{M}\models\exists^{>n_{\psi}}x\,(\varphi(x)\wedge\psi(x,\vec{c})).
+$$
+（⇒）$\varphi\wedge\psi(x,\vec{c})$ は $e$ を含む $\mathcal{L}_{E}$ 論理式で、$e$ は代数的でないので無限、とくに $n_{\psi}$ 個より多い。（⇐）$\varphi\wedge\psi(x,\vec{c})$ が $n_{\psi}$ 個より多ければ、上界の性質から $\varphi\wedge\neg\psi(x,\vec{c})$ は $n_{\psi}$ 個以下で有限なので、$e$ はそれを満たさない（満たせば代数的）。よって $\psi(e,\vec{c})$。$\mathcal{N}$ でも Step 0 から同じことが成り立つ。
+
+**Step 2（帰納法）.** $g_{k}\defeq f\cup\{(b_{i},b'_{i}):i\le k\}$ が初等的であることを $k$ に関する帰納法で示す。$k=0$ は仮定。$g_{k}$ が初等的とし、$E\defeq A_{0}\cup\{b_{1},\dots,b_{k}\}$ とする。独立性から $b_{k+1}\notin\mathrm{acl}(E)$、同様に $b'_{k+1}\notin\mathrm{acl}(g_{k}(E))$。$\vec{c}\in E$ について、Step 1 から
+$$
+\begin{aligned}
+\mathcal{M}\models\psi(b_{k+1},\vec{c})&\iff\mathcal{M}\models\exists^{>n_{\psi}}x\,(\varphi\wedge\psi(x,\vec{c}))\\
+&\iff\mathcal{N}\models\exists^{>n_{\psi}}x\,(\varphi^{f}\wedge\psi(x,g_{k}\vec{c}))\\
+&\iff\mathcal{N}\models\psi(b'_{k+1},g_{k}\vec{c})
+\end{aligned}
+$$
+（中央は $g_{k}$ の初等性）。よって $g_{k+1}$ は初等的。
+:::
+
+::: hypcheck
+- **強極小性（一様な上界）**：Step 1 で「$\psi(e,\vec{c})$ が成り立つこと」を、$e$ を含まない一階の論理式 $\exists^{>n_{\psi}}$ で表すのに使った。$\mathcal{M}$ での極小性だけでは、「無限であること」は一階の論理式で書けず、$\mathcal{N}$ へ移せない。
+- **独立性**：各段で $b_{k+1}$ が前の元とパラメータの上で代数的でないことに使った。
+:::
+
+::: lemma 代数的閉包への延長 {#model:extend-to-acl keywords="elementary maps extend to algebraic closures, onto" index="代数的閉包への延長|だいすうてきへいほうへのえんちょう"}
+（AC）$X\subseteq M$ と初等的な $g\colon X\to N$ について、$g$ は初等的な全単射 $\bar{g}\colon\mathrm{acl}(X)\to\mathrm{acl}(g(X))$ に延びる。
+:::
+
+::: proof
+$\mathrm{acl}(X)$ の元を超限的に並べ、初等的な延長を一つずつ作る（極限では和）。延長 $g'$（定義域 $X'$, $X\subseteq X'\subseteq\mathrm{acl}(X)$）と $c\in\mathrm{acl}(X)\setminus X'$ について、$\mathrm{tp}(c/X')$ は代数的な論理式 $\theta(x)$（解の個数が最小のものをとる）で孤立する（\ref{model:acl-properties} の 5 の証明）。$\theta^{g'}$ の解の個数は $\mathcal{N}$ でも同じで、その解 $c'$ はすべて $g'(\mathrm{tp}(c/X'))$ を実現するので、$g'\cup\{(c,c')\}$ は初等的（\ref{model:prime-over-set} の素であることの証明と同じ）。こうして得た $\bar{g}$ の像は $\mathrm{acl}(g(X))$ に含まれる（$c'$ は $g(X)$ 上の有限な定義可能集合に属する。\ref{model:acl-properties} の 2）。全射：$\mathcal{L}_{g(X)}$ 論理式 $\theta^{g}$ が $k$ 個の解をもつなら、$\theta$ も $\mathcal{M}$ で $k$ 個の解をもち、$\bar{g}$ はそれらを $\theta^{g}$ の解に単射で移すので、$\theta^{g}$ の解はすべて像に入る。
+:::
+
+## 問題 {#model:sec-dm-problems}
+
+::: problem {#model:prob-dm-acf-transcendence}
+$\mathrm{ACF}_{0}$ のモデル $K$ で、$\varphi$ を $x=x$, $A_{0}=\varnothing$ とすると、$\dim(K/\varnothing)$ は $K$ の $\mathbb{Q}$ 上の超越次数であることを示せ。
+:::
+
+::: solution
+\ref{model:algebraic-closure} の例から $\mathrm{acl}(B)$ は $\mathbb{Q}(B)$ の $K$ の中の代数閉包。よって $B$ が $\varnothing$ 上独立 $\iff$ どの $b\in B$ も $\mathbb{Q}(B\setminus\{b\})$ 上代数的でない $\iff$ $B$ は代数的に独立。$K\subseteq\mathrm{acl}(B)$ $\iff$ $K$ は $\mathbb{Q}(B)$ 上代数的。よって基底は超越基底で、次元は超越次数。
+:::
+
+::: problem {#model:prob-dm-vector-space}
+$\mathbb{Q}$ 上のベクトル空間の理論（言語は $+,0$ とスカラー倍 $\lambda_{q}$, $q\in\mathbb{Q}$）で、$\mathrm{acl}(A)$ が $A$ の張る部分空間であることを認めると、$\dim(V/\varnothing)$ は通常の次元であることを確かめよ。
+:::
+
+::: solution
+独立性は「どの元も他の元の張る部分空間に入らない」すなわち一次独立、基底は通常の基底で、\ref{model:dimension-well-defined} は線形代数の次元の一意性そのものになる。
+:::
+
+::: supplement
+**前提を変えると.** 交換法則は一般の定義可能集合では成り立たない。たとえば $\mathrm{DLO}$ では $\mathrm{acl}(A)=A$ で、交換法則は自明に成り立つが、$x=x$ は極小でないので、独立な組の型は一つに決まらない（$a<b$ と $a>b$）。強極小性が、独立な組の型の一意性に効いている。
+
+**似た定理.** 交換法則を満たす閉包作用素（単調・冪等・有限性・交換）を**前幾何**（マトロイド）といい、線形代数（一次従属）、体論（代数的従属）、グラフ理論（閉路）に共通の構造である。ザイルバーの三分法予想（強極小集合の前幾何は自明・ベクトル空間的・体的のいずれか）は、一般には否定された（フルショフスキーの構成）が、ザリスキー幾何などの条件のもとでは成り立つことが知られている（ここでは扱わない）。
+
+**高い視点から：次元は「自由に選べる座標の数」.** 強極小集合の基底は、互いに代数的な関係をもたない「自由な座標」の集まりで、残りの元はすべて基底から有限個の可能性として決まる。比喩で言えば、基底は地図の緯度・経度のような独立な座標軸で、次元はその本数である。独立な組の型の一意性は「どの座標軸を選んでも区別がつかない」ことで、これにより、次元が同じ二つの強極小集合は、基底を対応させるだけで同一視できる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

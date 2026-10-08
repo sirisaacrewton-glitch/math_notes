@@ -412,3 +412,4 @@
 | age / amalgamation property / joint embedding property / ultrahomogeneous / Fraisse limit | 年齢 / 融合性 / 合同埋め込み性 / 超均質 / フライッセ極限 | 融合性＝アマルガム性 | 仮。model:page-fraisse-limits |
 | index set / Rice-Shapiro theorem | 指数集合 / ライス–シャピロの定理 | | 標準的。comp:page-rice-shapiro |
 | Sorgenfrey line / Sorgenfrey plane / lower limit topology | ゾルゲンフライ直線 / ゾルゲンフライ平面 / 下限位相 | | 標準的。top:page-sorgenfrey |
+| Tychonoff plank / deleted Tychonoff plank | チコノフの板 / 欠けたチコノフの板 | チコノフ板 | 仮。top:page-tychonoff-plank |

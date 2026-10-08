@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>チコノフの板 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54G-peculiar-spaces/01-counterexamples/03-tychonoff-plank.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# チコノフの板 {#top:page-tychonoff-plank keywords="Tychonoff plank, deleted Tychonoff plank, ordinal spaces are compact, omega_1, normality is not hereditary, completely regular not normal, open subspace of a compact Hausdorff space"}
+
+コンパクトハウスドルフ空間は正規である（\ref{top:compact-hausdorff-normal}）が、その部分空間はチコノフ空間（完全正則）にはなっても正規とは限らない。**チコノフの板**（\ref{top:tychonoff-plank}）は、順序数の空間の直積 $[0,\omega_{1}]\times[0,\omega]$ から角の一点を除いた空間で、これが正規でないこと（\ref{top:tychonoff-plank-not-normal}）を示す。準備として、最大元をもつ順序数の空間がコンパクトであること（\ref{top:ordinal-compact}）を示す。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。順序数の空間の基本事項は本サイトの順序位相のページ（\ref{top:page-order-topology}）による。
+
+## 記法と定義の確認 {#top:sec-tpl-notation}
+
+::: notation
+- 順序数 $\alpha$ について $[0,\alpha]\defeq\alpha+1=\{\beta:\beta\le\alpha\}$、$[0,\alpha)\defeq\alpha$ に順序位相を入れる（\ref{top:order-topology}）。$\gamma>0$ の基本近傍は $(\delta,\gamma]$（$\delta<\gamma$）の形で、後続順序数と $0$ は孤立点である（\ref{top:order-topology-base}）。
+- $\omega_{1}$ は最小の非可算順序数で、可算個の $\beta_{n}<\omega_{1}$ の上限は $\omega_{1}$ 未満である（可算選択公理を使う。\ref{top:omega-one-space} の証明）。
+- コンパクト・直積・正規・完全正則は \ref{top:compact}, \ref{top:heine-borel}, \ref{top:separation-axioms}, \ref{top:completely-regular} のとおり。
+:::
+
+## 順序数の空間のコンパクト性 {#top:sec-tpl-compact}
+
+::: lemma 順序数の空間はコンパクト {#top:ordinal-compact keywords="[0, alpha] with the order topology is compact" index="順序数の空間のコンパクト性|じゅんじょすうのくうかんのこんぱくとせい"}
+任意の順序数 $\alpha$ について、$[0,\alpha]$ はコンパクトハウスドルフ空間である。
+:::
+
+::: proof
+ハウスドルフ性は \ref{top:order-hausdorff}。開被覆 $\mathcal{U}$ をとり、$S\defeq\{\beta\le\alpha:[0,\beta]\text{ は }\mathcal{U}\text{ の有限個で覆える}\}$ とする。$0\in S$ で、$S$ は下に閉じている。$S\ne[0,\alpha]$ とし、$S$ に属さない最小の $\gamma$ をとる（$\gamma>0$）。$\gamma$ を含む $U\in\mathcal{U}$ は基本近傍 $(\delta,\gamma]$（$\delta<\gamma$）を含む。$\delta\in S$（$\gamma$ の最小性）なので、$[0,\delta]$ を覆う有限個に $U$ を加えれば $[0,\gamma]$ が覆え、$\gamma\in S$ となって矛盾。よって $\alpha\in S$。
+:::
+
+::: hypcheck
+- **整列性**：$S$ に属さない最小の $\gamma$ をとるのに使った。一般の全順序（たとえば $\mathbb{Q}\cap[0,1]$）ではこの議論は通らない。
+- **最大元 $\alpha$**：被覆すべき全体が $[0,\alpha]$ であることに使った。$[0,\omega_{1})$ はコンパクトでない（\ref{top:prob-tpl-omega1}）。
+:::
+
+## チコノフの板 {#top:sec-tpl-plank}
+
+::: definition チコノフの板 {#top:tychonoff-plank keywords="Tychonoff plank and deleted Tychonoff plank" index="チコノフの板|ちこのふのいた"}
+$P\defeq[0,\omega_{1}]\times[0,\omega]$（直積位相）を**チコノフの板**といい、角の点を除いた $T\defeq P\setminus\{(\omega_{1},\omega)\}$ を**欠けたチコノフの板**という。
+:::
+
+::: theorem 欠けたチコノフの板は正規でない {#top:tychonoff-plank-not-normal keywords="the deleted Tychonoff plank is completely regular but not normal" index="欠けたチコノフの板|かけたちこのふのいた"}
+$P$ はコンパクトハウスドルフ（したがって正規）で、$T$ は $P$ の開部分空間として完全正則だが、正規でない。
+:::
+
+::: proof
+**Step 1（$P$ と $T$）.** \ref{top:ordinal-compact} と、有限個のコンパクト空間の直積がコンパクト（\ref{top:heine-borel}）であることから $P$ はコンパクトハウスドルフで正規（\ref{top:compact-hausdorff-normal}）。一点は閉なので $T$ は開部分空間。コンパクトハウスドルフ空間は完全正則で、完全正則性は部分空間に遺伝する（\ref{top:completely-regular-basic}）ので $T$ も完全正則。
+
+**Step 2（二つの閉集合）.** $A\defeq\{\omega_{1}\}\times[0,\omega)$, $B\defeq[0,\omega_{1})\times\{\omega\}$ とする。$A=T\cap(\{\omega_{1}\}\times[0,\omega])$, $B=T\cap([0,\omega_{1}]\times\{\omega\})$ は $T$ の閉集合で、交わらない。
+
+**Step 3（分離できない）.** $U\supseteq A$, $V\supseteq B$ を $T$ の開集合とする。各 $n<\omega$ について、$(\omega_{1},n)\in U$ で $n$ は $[0,\omega]$ の孤立点なので、$\alpha_{n}<\omega_{1}$ で $(\alpha_{n},\omega_{1}]\times\{n\}\subseteq U$ となるものがある。$\alpha\defeq\sup_{n}\alpha_{n}<\omega_{1}$ とし、$\beta\defeq\alpha+1<\omega_{1}$ とすると、すべての $n$ で $(\beta,n)\in U$。一方 $(\beta,\omega)\in B\subseteq V$ で、$\beta$ は孤立点なので、ある $m<\omega$ で $\{\beta\}\times(m,\omega]\subseteq V$。よって $(\beta,m+1)\in U\cap V$ で、$U$ と $V$ は交わる。したがって $A,B$ は開集合で分離できず、$T$ は正規でない。
+:::
+
+::: hypcheck
+- **$\mathrm{cf}(\omega_{1})>\omega$**（可算個の $\alpha_{n}$ の上限が $\omega_{1}$ 未満）：Step 3 の核心である。$\omega_{1}$ の代わりに $\omega$ を使った $[0,\omega]\times[0,\omega]$ から角を除いた空間は距離化可能で、正規である。
+- **角を除くこと**：$A$ と $B$ の閉包は $P$ では角 $(\omega_{1},\omega)$ で交わる。角を除くことで二つは交わらない閉集合になるが、「角の近くで」くっついたまま離れられない。
+:::
+
+::: corollary 正規性は遺伝しない {#top:normality-not-hereditary keywords="normality is not hereditary, even to open subspaces; Tychonoff spaces need not be normal" index="正規性の遺伝|せいきせいのいでん"}
+正規空間の開部分空間は正規とは限らない。完全正則（チコノフ）空間は正規とは限らない。
+:::
+
+## 問題 {#top:sec-tpl-problems}
+
+::: problem {#top:prob-tpl-omega1}
+$[0,\omega_{1})$ はコンパクトでないが、その任意の点列は収束する部分列をもつことを確かめよ（後半は \ref{top:omega-one-space} の 3）。
+:::
+
+::: solution
+$\{[0,\beta):\beta<\omega_{1}\}$ は $[0,\omega_{1})$ の開被覆（各 $[0,\beta)$ は順序位相の基本開集合）で、有限個 $[0,\beta_{1}),\dots,[0,\beta_{k})$ の和は $[0,\max\beta_{i})$ で、$\max\beta_{i}<\omega_{1}$ なので全体を覆わない。後半は \ref{top:omega-one-space} の 3 のとおり。
+:::
+
+::: problem {#top:prob-tpl-normal-subspace}
+$T$ の閉部分空間 $[0,\omega_{1})\times[0,\omega)$ は正規であることを示せ（ヒント：$[0,\omega_{1})$ は正規で、$[0,\omega)$ は可算な離散空間）。
+:::
+
+::: solution
+$[0,\omega_{1})\times[0,\omega)$ は $\omega$ 個の互いに交わらない開集合 $[0,\omega_{1})\times\{n\}$ の和（各成分は $[0,\omega_{1})$ と同相）。$[0,\omega_{1})$ は全順序集合の順序位相なので正規であることが知られている（ここでは引用）。交わらない閉集合 $F,G$ について、各成分で開集合 $U_{n},V_{n}$ で分離し、$U\defeq\bigcup_{n}U_{n}$, $V\defeq\bigcup_{n}V_{n}$ とすれば、成分どうしは交わらないので $U\cap V=\emptyset$。
+:::
+
+::: supplement
+**前提を変えると.** 正規性は閉部分空間には遺伝する（閉集合の閉集合は閉）。すべての部分空間が正規である空間を**遺伝的正規**（$T_{5}$）といい、距離空間やゾルゲンフライ直線（\ref{top:page-sorgenfrey}）はそうであることが知られている。全順序集合の順序位相はつねに遺伝的正規であることが知られている。
+
+**似た定理.** 完全正則で正規でない空間の例として、ニェミツキ平面（\ref{top:page-niemytzki}）、ゾルゲンフライ平面（\ref{top:sorgenfrey-plane}）、欠けたチコノフの板がある。前二者は可分性とジョーンズの補題を使うのに対し、チコノフの板は $\omega_{1}$ の共終数を使う。どの完全正則空間もコンパクトハウスドルフ空間（ストーン–チェックのコンパクト化、\ref{top:page-stone-cech}）の部分空間であるから、この例は「正規空間の部分空間は正規とは限らない」ことの典型でもある。
+
+**高い視点から：「数えきれない列」が隙間を埋める.** 二つの閉集合 $A$（右端の縦の列）と $B$（上端の横の行）は、角の一点でしか近づかないように見えるが、$A$ を包む開集合は、各段で横に少しずつはみ出し、その「はみ出し」が可算回で $\omega_{1}$ に届かないため、どこかで上の行と重なってしまう。比喩で言えば、可算回の歩みでは非可算の長さの廊下を渡りきれないので、角を取り払っても、右の壁と上の壁の間に壁を立てる場所が見つからない。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

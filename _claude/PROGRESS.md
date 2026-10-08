@@ -251,6 +251,15 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | CK-02 | 04-kan-extensions/02-ends | エンドとコエンド | IX.4–8 | 10314–11026 | 完了 |
 | CK-03 | 04-kan-extensions/03-kan | カン拡張 | X.1–3 | 11027–11364 | 完了 |
 | CK-04 | 04-kan-extensions/04-pointwise-kan | コエンドによるカン拡張・各点カン拡張・稠密性 | X.4–7 | 11365–11856 | 完了 |
+
+圏の中の構造と 2 圏（18A/05-higher-structures, id cat-higher。2026-10-08 自律判断）
+| ID | ファイル | 題 | CWM | 本文の行 | 状態 |
+|---|---|---|---|---|---|
+| C2-01 | 05-higher-structures/01-internal-categories | 内部圏・内部の図式・神経 | XII.1–2 | 12540–12989 | 完了 |
+| C2-02 | 05-higher-structures/02-2-categories | 2 圏・2 圏の中の随伴とカン拡張・2 関手と変形・単一集合の圏 | XII.3–5 | 12990–13233 | 未 |
+| C2-03 | 05-higher-structures/03-bicategories | 双圏（モノイダル圏・両側加群・スパン） | XII.6–7 | 13234–13459 | 未 |
+| C2-04 | 05-higher-structures/04-crossed-modules | 交差加群と群の中の圏 | XII.8 | 13460–13560 | 未 |
+
 | CM-01 | 03-monads/01-monads-algebras | モナドとアイレンバーグ–ムーア代数、比較関手 | VI.1–3 | 6675–6984 | 完了 |
 | CM-02 | 03-monads/02-kleisli | クライスリ圏と比較の要約、語と自由半群 | VI.4–5 | 6985–7196 | 完了 |
 | CM-03 | 03-monads/03-beck | 分裂余等化子とベックのモナド性定理 | VI.6–7 | 7197–7540 | 完了 |
@@ -289,6 +298,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 圏論 C2-01（18A/05-higher-structures 新設、id cat-higher。01-internal-categories, cat:page-internal-categories：内部圏・内部関手、群の中の圏＝圏の中の群（Mac Lane が略した対応を証明）、内部の図式と集合値関手の同値、神経関手の充満忠実性（補った）、Grp の内部圏の合成の公式と亜群性）。Mac Lane XII.1–2。メニュー・パンくず・検索の分野選択・フォルダ索引を確認。
 - 2026-10-08 圏論 CS-08（08-braids, cat:page-braids：組紐群（表示で定義、次数準同型で無限性）、組紐圏の厳密モノイダル構造と組紐（Mac Lane が図で済ませた自然性・六角形を関係式から代数的に証明）、組紐圏の自由性（ジョイヤル–ストリート、厳密版）、組紐のコヒーレンス（Mac Lane が証明を書いていない定理 2 を CS-07 の議論で証明）、Z 次数つき空間の ζ 組紐。Mac Lane の配置空間の記述（順序つき→純組紐群）を注記）。Mac Lane XI.4–6。第 XI 章完了。
 - 2026-10-08 圏論 CS-07（07-symmetric-coherence, cat:page-symmetric-coherence：組紐モノイダル圏、対称なら六角形一つ、符号つき対称、組紐モノイダル関手、ヤン–バクスター方程式、厳密化への組紐の移送、単位の公理が六角形から従うこと、対称群の生成元と関係（剰余類の数え上げで証明）、厳密・一般の対称コヒーレンス。Mac Lane が引用・略した対称群の表示、α を恒等とみなす還元、単位の場合を補った。CS-05 の fact から参照）。Mac Lane XI.1。
 - 2026-10-08 圏論 CS-06（06-monoidal-functors, cat:page-monoidal-functors：モノイダル関手・合成・モノイダル自然変換、モノイドの保存、多変数のコヒーレンス、厳密化定理（Mac Lane が略した積の結合律・G の公理・GF≅1 のモノイダル性を確かめた）、ケイリー埋め込みの問題）。Mac Lane XI.2–3。

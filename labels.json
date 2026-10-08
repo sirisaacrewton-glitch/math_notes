@@ -211,6 +211,13 @@
       "num": "1.1",
       "page": "18-category-theory/18A-general-theory/01-basics/01-categories.html"
     },
+    "cat:category-objects-in-grp": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "群の中の圏は圏の中の群",
+      "num": "1.2",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/01-internal-categories.html"
+    },
     "cat:ccc-isomorphisms": {
       "status": "defined",
       "type": "proposition",
@@ -771,6 +778,27 @@
       "num": "3.13",
       "page": "18-category-theory/18A-general-theory/01-basics/03-constructions.html"
     },
+    "cat:internal-category": {
+      "status": "defined",
+      "type": "definition",
+      "title": "内部圏",
+      "num": "1.1",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/01-internal-categories.html"
+    },
+    "cat:internal-diagram": {
+      "status": "defined",
+      "type": "definition",
+      "title": "内部の図式",
+      "num": "1.4",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/01-internal-categories.html"
+    },
+    "cat:internal-diagrams-set": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "集合の場合",
+      "num": "1.5",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/01-internal-categories.html"
+    },
     "cat:isomorphism": {
       "status": "defined",
       "type": "definition",
@@ -1044,6 +1072,13 @@
       "num": "3.11",
       "page": "18-category-theory/18A-general-theory/01-basics/03-constructions.html"
     },
+    "cat:nerve-fully-faithful": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "神経関手は充満忠実",
+      "num": "1.6",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/01-internal-categories.html"
+    },
     "cat:not-cartesian-closed": {
       "status": "defined",
       "type": "proposition",
@@ -1162,6 +1197,13 @@
       "title": "関手と自然変換",
       "num": "",
       "page": "18-category-theory/18A-general-theory/01-basics/02-functors.html"
+    },
+    "cat:page-internal-categories": {
+      "status": "defined",
+      "type": "page",
+      "title": "内部圏と神経",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/01-internal-categories.html"
     },
     "cat:page-kan": {
       "status": "defined",
@@ -1449,6 +1491,20 @@
       "title": "",
       "num": "1.10",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/01-cartesian-closed.html"
+    },
+    "cat:prob-ic-groupoid": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "1.8",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/01-internal-categories.html"
+    },
+    "cat:prob-ic-grp-composition": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "1.7",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/01-internal-categories.html"
     },
     "cat:prob-kl-em-free": {
       "status": "defined",
@@ -2247,6 +2303,41 @@
       "title": "問題",
       "num": "",
       "page": "18-category-theory/18A-general-theory/01-basics/02-functors.html"
+    },
+    "cat:sec-ic-diagrams": {
+      "status": "defined",
+      "type": "section",
+      "title": "内部の図式",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/01-internal-categories.html"
+    },
+    "cat:sec-ic-internal": {
+      "status": "defined",
+      "type": "section",
+      "title": "内部圏",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/01-internal-categories.html"
+    },
+    "cat:sec-ic-nerve": {
+      "status": "defined",
+      "type": "section",
+      "title": "神経",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/01-internal-categories.html"
+    },
+    "cat:sec-ic-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/01-internal-categories.html"
+    },
+    "cat:sec-ic-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/01-internal-categories.html"
     },
     "cat:sec-kl-comparison": {
       "status": "defined",
@@ -30527,6 +30618,13 @@
       "title": "実数全体の濃度",
       "referencedFrom": [
         "03-mathematical-logic/03E-set-theory/01-basics/11-cardinal-exponentiation.html"
+      ]
+    },
+    "cat:page-crossed-modules": {
+      "status": "planned",
+      "title": "交差加群と群の中の圏",
+      "referencedFrom": [
+        "18-category-theory/18A-general-theory/05-higher-structures/01-internal-categories.html"
       ]
     },
     "cat:page-elementary-topos": {

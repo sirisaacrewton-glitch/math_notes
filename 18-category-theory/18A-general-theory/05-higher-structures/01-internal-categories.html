@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>内部圏と神経 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/05-higher-structures/01-internal-categories.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 内部圏と神経 {#cat:page-internal-categories keywords="internal category, category object, internal functor, internal diagram, left C-object, category objects in groups are group objects in Cat, nerve of a category, nerve functor is fully faithful"}
+
+小さい圏は「対象の集合 $C_{0}$ と射の集合 $C_{1}$ と、いくつかの写像」からなる。この写像たちの満たす条件は可換図式で書けるので、集合の圏を一般の圏 $\mathbf{E}$ に取り替えれば、$\mathbf{E}$ の中の圏、すなわち**内部圏**（\ref{cat:internal-category}）が定義できる。$\mathbf{E}=\mathbf{Set}$ ならふつうの小さい圏、$\mathbf{E}=\mathbf{Grp}$ なら「群の構造をもつ圏」で、これは $\mathbf{Cat}$ の中の群と同じものである（\ref{cat:category-objects-in-grp}）。内部圏から $\mathbf{E}$ への「関手」は**内部の図式**（\ref{cat:internal-diagram}）として表される。後半では、圏の合成可能な射の列が単体的集合（**神経**）をなし、神経をとる関手が充満忠実であること（\ref{cat:nerve-fully-faithful}）を示す。
+
+> 資料：Mac Lane, *Categories for the Working Mathematician* 第 XII 章 §1–§2。Mac Lane が「同様に」「読者に委ねる」とした、内部の図式と集合値関手の対応（\ref{cat:internal-diagrams-set}）と、$\mathbf{Grp}$ の中の圏と $\mathbf{Cat}$ の中の群の対応（\ref{cat:category-objects-in-grp}）を証明した。神経関手の充満忠実性（\ref{cat:nerve-fully-faithful}）は Mac Lane にはない標準的な事実で、補った。
+
+## 記法と定義の確認 {#cat:sec-ic-notation}
+
+::: notation
+- 圏、小さい圏、関手、自然変換、極限・積は \ref{cat:category}, \ref{cat:small-category}, \ref{cat:functor}, \ref{cat:natural-transformation}, \ref{cat:limit}, \ref{cat:product} のとおり。$\mathbf{Cat}$ は小さい圏と関手の圏。
+- 圏 $\mathbf{E}$ の**引き戻し** $X\times_{Z}Y$ は、射 $f\colon X\to Z$, $g\colon Y\to Z$ の図式の極限で、射影 $\pi_{1},\pi_{2}$ をもち $f\pi_{1}=g\pi_{2}$ を満たす。射 $u\colon W\to X$, $v\colon W\to Y$ が $fu=gv$ を満たすとき、$\pi_{1}w=u$, $\pi_{2}w=v$ となる唯一の $w$ を $\langle u,v\rangle$ と書く。**有限完備**な圏（有限の図式の極限をすべてもつ圏）は引き戻しと終対象をもつ。$\mathbf{Set}$ では $X\times_{Z}Y=\{(x,y):f(x)=g(y)\}$。
+- 単体的対象、単体的集合、面作用素 $d_{i}$・退化作用素 $s_{j}$、神経の定義（$N_{n}\mathbf{C}$ は関手 $n+1\to\mathbf{C}$ 全体、$d_{i}$ は $c_{i}$ を取り除く）は \ref{cat:simplicial-object} とその例のとおり。
+:::
+
+## 内部圏 {#cat:sec-ic-internal}
+
+以下、$\mathbf{E}$ は有限完備な圏とする。
+
+::: definition 内部圏 {#cat:internal-category keywords="internal category, category object, object of objects, object of arrows" index="内部圏|ないぶけん, 圏対象|けんたいしょう"}
+$\mathbf{E}$ の**内部圏** $\mathbf{C}=(C_{0},C_{1},s,t,i,m)$ は、$\mathbf{E}$ の対象 $C_{0}$（**対象の対象**）、$C_{1}$（**射の対象**）と、$\mathbf{E}$ の射
+$$
+s,t\colon C_{1}\to C_{0},\qquad i\colon C_{0}\to C_{1},\qquad m\colon C_{2}\to C_{1}
+$$
+（順に始域・終域、恒等射、合成）からなる。ここで $C_{2}\defeq C_{1}\times_{C_{0}}C_{1}$ は $s\colon C_{1}\to C_{0}$（第 1 因子）と $t\colon C_{1}\to C_{0}$（第 2 因子）の引き戻しで（$\mathbf{Set}$ では $s(g)=t(f)$ となる組 $(g,f)$、すなわち $g\circ f$ が定義される組）、$C_{3}\defeq C_{1}\times_{C_{0}}C_{1}\times_{C_{0}}C_{1}$ も同様とする。これらが次を満たす。
+1. $s\circ i=1_{C_{0}}=t\circ i$。
+2. $s\circ m=s\circ\pi_{2}$, $t\circ m=t\circ\pi_{1}$。
+3. $m\circ\langle i\circ t,1_{C_{1}}\rangle=1_{C_{1}}=m\circ\langle1_{C_{1}},i\circ s\rangle$。
+4. $m\circ(m\times1)=m\circ(1\times m)\colon C_{3}\to C_{1}$。ここで $m\times1\defeq\langle m\circ\langle\pi_{1},\pi_{2}\rangle,\pi_{3}\rangle$, $1\times m\defeq\langle\pi_{1},m\circ\langle\pi_{2},\pi_{3}\rangle\rangle$。
+
+（3 の $\langle i\circ t,1\rangle\colon C_{1}\to C_{2}$ は $s\circ i\circ t=t$ から定義され、4 の $m\times1$ などは 2 から定義される。）二つの内部圏の間の**内部関手** $f\colon\mathbf{C}\to\mathbf{D}$ は、$\mathbf{E}$ の射 $f_{0}\colon C_{0}\to D_{0}$, $f_{1}\colon C_{1}\to D_{1}$ の組で
+$$
+s f_{1}=f_{0}s,\qquad t f_{1}=f_{0}t,\qquad f_{1}i=if_{0},\qquad f_{1}m=m\circ(f_{1}\times f_{1})
+$$
+を満たすもの（$f_{1}\times f_{1}\colon C_{2}\to D_{2}$ は最初の二式から定義される）。
+:::
+
+::: example
+1. $\mathbf{E}=\mathbf{Set}$ では、1–4 はちょうど圏の公理（恒等射の始域・終域、合成の始域・終域、単位律、結合律）で、内部圏は小さい圏、内部関手は関手である。
+2. $C_{0}$ が終対象 $1$ の内部圏は、$C_{2}=C_{1}\times C_{1}$ で、$\mathbf{E}$ の**モノイド**（$m\colon C_{1}\times C_{1}\to C_{1}$, 単位 $i\colon1\to C_{1}$）である（\ref{cat:monoid-object} を積によるモノイダル構造で読んだもの）。
+3. $\mathbf{E}=\mathbf{Top}$ の内部圏は**位相圏**（対象と射が位相空間で、構造写像が連続）。たとえば位相群は $C_{0}=1$ の位相圏で逆元が連続なもの。
+4. $\mathbf{E}$ の対象 $X$ について、$C_{0}=C_{1}=X$, $s=t=i=m=1$（$C_{2}\cong X$）は**離散**な内部圏。$C_{0}=X$, $C_{1}=X\times X$, $s=\pi_{2}$, $t=\pi_{1}$, $m(z,y,y,x)=(z,x)$ は**余離散**な内部圏（各対象の間にちょうど一つの射）。
+:::
+
+::: theorem 群の中の圏は圏の中の群 {#cat:category-objects-in-grp keywords="category objects in groups are group objects in Cat, internal categories in Grp, strict 2-groups" index="群の中の圏|ぐんのなかのけん, 圏の中の群|けんのなかのぐん"}
+次の二つは同じものである。
+1. $\mathbf{Grp}$ の内部圏：群 $C_{0},C_{1}$ と、準同型 $s,t,i,m$（$C_{2}$ は $C_{1}\times C_{1}$ の部分群）で内部圏の公理を満たすもの。
+2. $\mathbf{Cat}$ の群：小さい圏 $\mathbf{C}$ と、関手 $\mu\colon\mathbf{C}\times\mathbf{C}\to\mathbf{C}$, $\eta\colon\mathbf{1}\to\mathbf{C}$, $\nu\colon\mathbf{C}\to\mathbf{C}$ で、群の公理（結合律・単位律・逆元の律）を関手の等式として満たすもの。
+
+ここで「同じ」とは、1 の下部集合の圏に $C_{0},C_{1}$ の群の積を対象と射の上の $\mu$ とすれば 2 が得られ、逆も同様で、二つの構成が互いに逆であることを言う。
+:::
+
+::: proof
+**1 ⇒ 2.** $\mathbf{Grp}$ の引き戻しは下部集合の引き戻しに群の構造を入れたものなので、下部集合 $(C_{0},C_{1},s,t,i,m)$ は小さい圏 $\mathbf{C}$ である（例 1）。$\mu$ を、対象 $(a,b)$ に $ab\in C_{0}$、射 $(g,f)$ に $gf\in C_{1}$（群の積）を対応させるものとする。$\mu$ が関手であることを確かめる。
+- 始域・終域：$s(gf)=s(g)s(f)$, $t(gf)=t(g)t(f)$（$s,t$ は準同型）。
+- 恒等射：$i(ab)=i(a)i(b)$（$i$ は準同型）。
+- 合成：$\mathbf{C}\times\mathbf{C}$ で $(g',f')\circ(g,f)=(g'\circ g,f'\circ f)$。$m$ が準同型 $C_{2}\to C_{1}$ であることを、$C_{2}$ の二元 $(g',g)$, $(f',f)$ の積 $(g'f',gf)$ に使うと $(g'f')\circ(gf)=(g'\circ g)(f'\circ f)$、すなわち $\mu((g',f')\circ(g,f))=\mu(g',f')\circ\mu(g,f)$。
+
+$\eta$ は唯一の対象を単位元 $1\in C_{0}$ に、唯一の射を $1\in C_{1}$（$=i(1)$）に送る関手、$\nu$ は対象と射の逆元をとる写像で、同様に準同型性から関手（合成の保存は $m(g^{-1},f^{-1})=m(g,f)^{-1}$、これも $m$ の準同型性）。群の公理は $C_{0}$, $C_{1}$ でそれぞれ成り立つので、関手の等式として成り立つ（関手の等式は対象と射の上の等式）。
+
+**2 ⇒ 1.** $\mu,\eta,\nu$ の対象部分・射部分は、群の公理から $C_{0}$, $C_{1}$ を群にする。$\mu$ が関手であることは、上の計算を逆に読めば $s,t,i,m$ が準同型であることそのものである（たとえば $\mu$ が合成を保つことは $m((g',f')(g,f))=m(g',g)m(f',f)$、ただし $C_{2}$ の積は成分ごと）。内部圏の公理は下部集合で成り立つ（$\mathbf{C}$ は圏）ので、$\mathbf{Grp}$ でも成り立つ（$\mathbf{Grp}$ の射の等式は下部写像の等式）。
+
+二つの構成が互いに逆であることは、どちらも同じ集合と同じ写像を使っていることから明らか。
+:::
+
+::: hypcheck
+- **$\mathbf{Grp}$ の引き戻しが集合の引き戻しの上に作られること**：内部圏の下部が小さい圏になること（1 ⇒ 2）と、公理を集合の等式で確かめること（2 ⇒ 1）に使った。
+- **$m$ の準同型性**：$\mu$ が合成を保つことと同値である。これがこの対応の核心で、自然変換の交換法則（\ref{cat:interchange-law}）と同じ形の等式 $(g'f')\circ(gf)=(g'\circ g)(f'\circ f)$ である。
+:::
+
+::: remark
+Mac Lane はこれを「$X$ の対象の中の $Y$ の対象は、$Y$ の対象の中の $X$ の対象」という一般原理の例として述べている。$\mathbf{Grp}$ の内部圏は**厳密 2 群**とも呼ばれ、交差加群と同値である（\ref[交差加群と群の中の圏]{cat:page-crossed-modules}）。
+:::
+
+## 内部の図式 {#cat:sec-ic-diagrams}
+
+内部関手は内部圏から内部圏への射なので、$\mathbf{C}\to\mathbf{Set}$ のような「$\mathbf{E}$ そのものへの関手」は表せない（$\mathbf{E}$ は一般に $\mathbf{E}$ の内部圏ではない）。そこで、集合値関手 $H$ を「ファイバーの族 $\coprod_{c}H(c)\to C_{0}$ と、射の作用」として書き直す。
+
+::: definition 内部の図式 {#cat:internal-diagram keywords="internal diagram, left C-object, internal presheaf, internal base-valued functor" index="内部の図式|ないぶのずしき, 左 C 対象|ひだりしーたいしょう"}
+$\mathbf{E}$ の内部圏 $\mathbf{C}$ の**内部の図式**（左 $\mathbf{C}$ 対象）は、$\mathbf{E}$ の対象 $H$ と射 $\pi\colon H\to C_{0}$、**作用** $\rho\colon C_{1}\times_{C_{0}}H\to H$（$s\colon C_{1}\to C_{0}$ と $\pi$ の引き戻しから）の組で、
+$$
+\pi\circ\rho=t\circ\pi_{1},\qquad\rho\circ\langle i\circ\pi,1_{H}\rangle=1_{H},\qquad\rho\circ(m\times1_{H})=\rho\circ(1_{C_{1}}\times\rho)
+$$
+（最後の両辺は $C_{1}\times_{C_{0}}C_{1}\times_{C_{0}}H\to H$）を満たすものである。内部の図式の**射** $\phi\colon(H,\pi,\rho)\to(K,\pi',\rho')$ は、$\pi'\phi=\pi$ かつ $\phi\rho=\rho'\circ(1\times\phi)$ を満たす $\mathbf{E}$ の射である。
+:::
+
+::: proposition 集合の場合 {#cat:internal-diagrams-set keywords="internal diagrams in Set are set-valued functors, Grothendieck construction for discrete fibrations" index="内部の図式と集合値関手|ないぶのずしきとしゅうごうちかんしゅ"}
+$\mathbf{E}=\mathbf{Set}$, $\mathbf{C}$ を小さい圏とする。内部の図式とその射の圏は、関手圏 $\mathbf{Set}^{\mathbf{C}}$ と圏同値である。
+:::
+
+::: proof
+**関手から図式へ.** $H\colon\mathbf{C}\to\mathbf{Set}$ について $\tilde{H}\defeq\{(c,x):c\in C_{0},\ x\in H(c)\}$, $\pi(c,x)\defeq c$, $\rho(f,(c,x))\defeq(t(f),H(f)(x))$（$s(f)=c$）とする。第一式は $\pi\rho(f,(c,x))=t(f)$。第二式は $H(1_{c})=1$。第三式は $H(g\circ f)=H(g)\circ H(f)$。自然変換 $\theta\colon H\Rightarrow K$ には $\tilde{\theta}(c,x)\defeq(c,\theta_{c}(x))$ を対応させる：$\pi\tilde{\theta}=\pi$ は明らかで、$\tilde{\theta}\rho=\rho(1\times\tilde{\theta})$ は $\theta_{t(f)}H(f)=K(f)\theta_{s(f)}$（自然性）そのもの。これは関手 $\Phi$ を与える。
+
+**図式から関手へ.** $(H,\pi,\rho)$ について、$\bar{H}(c)\defeq\pi^{-1}(c)$, $\bar{H}(f)(x)\defeq\rho(f,x)$（$f\colon c\to c'$, $x\in\pi^{-1}(c)$）とする。第一式から $\rho(f,x)\in\pi^{-1}(c')$、第二式から $\bar{H}(1_{c})=1$、第三式から $\bar{H}(g\circ f)=\bar{H}(g)\bar{H}(f)$。射 $\phi$ について、$\pi'\phi=\pi$ から $\phi$ は $\pi^{-1}(c)\to\pi'^{-1}(c)$ を与え、$\phi\rho=\rho'(1\times\phi)$ から自然。これは関手 $\Psi$ を与える。
+
+**同値.** $\Psi\Phi(H)(c)=\{c\}\times H(c)$ で、$x\mapsto(c,x)$ は自然同型 $H\cong\Psi\Phi(H)$ を与える。$\Phi\Psi(H,\pi,\rho)=\{(c,x):\pi(x)=c\}$ で、$(c,x)\mapsto x$ は $\pi$ と作用を保つ全単射、すなわち内部の図式の同型である。これらは $H$ について自然なので、$\Phi,\Psi$ は圏同値を与える。
+:::
+
+## 神経 {#cat:sec-ic-nerve}
+
+小さい圏 $\mathbf{C}$ の神経 $N\mathbf{C}$（\ref{cat:simplicial-object} の例）は、$N_{0}\mathbf{C}=C_{0}$, $N_{1}\mathbf{C}=C_{1}$, $N_{2}\mathbf{C}=C_{2}$, $N_{n}\mathbf{C}$ は $n$ 個の合成可能な射の列で、内部圏の記号では反復引き戻し $C_{1}\times_{C_{0}}\cdots\times_{C_{0}}C_{1}$ である。関手 $F\colon\mathbf{C}\to\mathbf{D}$ は列を列に移し（$(NF)_{n}(c_{0}\to\cdots\to c_{n})\defeq(Fc_{0}\to\cdots\to Fc_{n})$）、面作用素（合成または端の射の削除）と退化作用素（恒等射の挿入）と可換なので、単体的集合の射 $NF$ を与える。$N(GF)=NG\circ NF$ なので、$N$ は関手 $\mathbf{Cat}\to\mathbf{sSet}$（$\mathbf{sSet}$ は単体的集合と自然変換の圏）である。同じ定義で、有限完備な $\mathbf{E}$ の内部圏の神経は $\mathbf{E}$ の単体的対象になる。
+
+::: theorem 神経関手は充満忠実 {#cat:nerve-fully-faithful keywords="the nerve functor is fully faithful" index="神経関手|しんけいかんしゅ"}
+小さい圏 $\mathbf{C},\mathbf{D}$ について、$F\mapsto NF$ は全単射 $\mathbf{Cat}(\mathbf{C},\mathbf{D})\to\mathbf{sSet}(N\mathbf{C},N\mathbf{D})$ である。
+:::
+
+::: proof
+**準備.** $0\le k<n$ について、単調写像 $e_{k}\colon2\to n+1$, $0\mapsto k$, $1\mapsto k+1$ が誘導する写像 $N_{n}\to N_{1}$ を $E_{k}$ とする（単体的集合は関手 $\Delta_{+}^{\mathrm{op}}\to\mathbf{Set}$ なので、単調写像は写像を誘導する）。神経では $E_{k}$ は列 $c_{0}\xrightarrow{f_{1}}\cdots\xrightarrow{f_{n}}c_{n}$ に $k+1$ 番目の射 $f_{k+1}$ を対応させる。$n$ 単体は射の列 $(f_{1},\dots,f_{n})$ そのものなので、**$N_{n}\mathbf{D}$ の元は $E_{0},\dots,E_{n-1}$ の値で決まる**。
+
+**忠実.** $NF=NG$ なら、$N_{0}$ で $F$ と $G$ は対象の上で一致し、$N_{1}$ で射の上で一致する。
+
+**充満.** 単体的集合の射 $\phi\colon N\mathbf{C}\to N\mathbf{D}$ をとる。$F$ を対象の上で $\phi_{0}$、射の上で $\phi_{1}$ とする。
+- 始域・終域：$N_{1}\to N_{0}$ の面作用素 $d_{1}$, $d_{0}$ は射の始域・終域を与え、$\phi$ はこれらと可換。
+- 恒等射：退化作用素 $s_{0}\colon N_{0}\to N_{1}$ は $c\mapsto1_{c}$ で、$\phi_{1}(1_{c})=\phi_{1}s_{0}(c)=s_{0}\phi_{0}(c)=1_{Fc}$。
+- 合成：$(f,g)\in N_{2}\mathbf{C}$（$c_{0}\xrightarrow{f}c_{1}\xrightarrow{g}c_{2}$）について、$N_{2}$ の元 $\phi_{2}(f,g)$ を $(f',g')$ とすると、$f'=d_{2}\phi_{2}(f,g)=\phi_{1}d_{2}(f,g)=\phi_{1}(f)$、$g'=d_{0}\phi_{2}(f,g)=\phi_{1}(g)$、$g'\circ f'=d_{1}\phi_{2}(f,g)=\phi_{1}(d_{1}(f,g))=\phi_{1}(g\circ f)$。よって $F(g\circ f)=F(g)\circ F(f)$。
+
+したがって $F$ は関手。最後に $NF=\phi$：$n$ 単体 $x$ について、$E_{k}(NF)_{n}(x)=F(E_{k}x)=\phi_{1}(E_{k}x)=E_{k}\phi_{n}(x)$（$\phi$ は $E_{k}$ と可換）なので、準備から $(NF)_{n}(x)=\phi_{n}(x)$。
+:::
+
+::: hypcheck
+- **単体的集合の射が面・退化作用素と可換であること**：$F$ の関手性（始域・終域、恒等射、合成）のそれぞれで、$d_{0},d_{1},s_{0}$ と $N_{2}\to N_{1}$ の $d_{0},d_{1},d_{2}$ を使った。
+- **神経の単体が辺で決まること**：$NF=\phi$ の確認に使った。一般の単体的集合ではこれは成り立たない（ある単体的集合が神経と同型になるための条件は補足で述べる）。
+:::
+
+## 問題 {#cat:sec-ic-problems}
+
+::: problem {#cat:prob-ic-grp-composition}
+$\mathbf{Grp}$ の内部圏 $\mathbf{C}$ で、$f\colon a\to b$, $g\colon b\to c$ について、群 $C_{1}$ の積で
+$$
+g\circ f=f\,i(b)^{-1}\,g=g\,i(b)^{-1}\,f
+$$
+が成り立つことを示せ。とくに合成 $m$ は群の構造から決まる。
+:::
+
+::: solution
+$m$ が準同型 $C_{2}\to C_{1}$ であること（$C_{2}$ の積は成分ごと）を三つの組に使うと、$g_{k}\circ f_{k}$ がすべて定義されるとき $(g_{1}g_{2}g_{3})\circ(f_{1}f_{2}f_{3})=(g_{1}\circ f_{1})(g_{2}\circ f_{2})(g_{3}\circ f_{3})$。$i$ は準同型なので $i(b)^{-1}=i(b^{-1})$ は $b^{-1}$ の恒等射。
+- $g=i(b)\,i(b)^{-1}\,g$, $f=f\,i(b)^{-1}\,i(b)$ と書くと、組 $(i(b),f)$, $(i(b)^{-1},i(b)^{-1})$, $(g,i(b))$ はそれぞれ合成可能（$s(i(b))=b=t(f)$ など）なので、$g\circ f=(i(b)\circ f)(i(b)^{-1}\circ i(b)^{-1})(g\circ i(b))=f\,i(b)^{-1}\,g$。
+- $g=g\,i(b)^{-1}\,i(b)$, $f=i(b)\,i(b)^{-1}\,f$ と書くと、同様に $g\circ f=(g\circ i(b))(i(b)^{-1}\circ i(b)^{-1})(i(b)\circ f)=g\,i(b)^{-1}\,f$。
+:::
+
+::: problem {#cat:prob-ic-groupoid}
+$\mathbf{Grp}$ の内部圏では、すべての射が同型であることを示せ。
+:::
+
+::: solution
+$f\colon a\to b$ について $\bar{f}\defeq i(a)\,f^{-1}\,i(b)$ とおく。$s,t$ は準同型なので $s(\bar{f})=a\,a^{-1}\,b=b$, $t(\bar{f})=a\,b^{-1}\,b=a$、すなわち $\bar{f}\colon b\to a$。問題 \ref{cat:prob-ic-grp-composition} の二つの式から
+$$
+\begin{aligned}
+\bar{f}\circ f&=\bar{f}\,i(b)^{-1}\,f=i(a)\,f^{-1}\,f=i(a),\\
+f\circ\bar{f}&=f\,i(a)^{-1}\,\bar{f}=f\,f^{-1}\,i(b)=i(b).
+\end{aligned}
+$$
+よって $\bar{f}$ は $f$ の逆射。
+:::
+
+::: supplement
+**前提について.** 内部圏の定義には引き戻し $C_{2}$, $C_{3}$ があれば十分で、有限完備性は内部の図式や神経（反復引き戻し）を作るために仮定した。$\mathbf{Grp}$ の内部圏がすべて亜群になる（問題 \ref{cat:prob-ic-groupoid}）のは、群の逆元が射の逆射を作るためで、モノイドの圏 $\mathbf{Mon}$ の内部圏では一般に成り立たない（たとえば $C_{0}=1$ の内部圏は可換モノイドになり（\ref{cat:category-objects-in-grp} と同じ交換の議論による。エックマン–ヒルトンの議論）、$(\mathbb{N},+)$ は逆元をもたない）。
+
+**似た定理.** 単体的集合 $X$ が、ある小さい圏の神経と同型であるための必要十分条件は、各 $n\ge2$ で写像 $X_{n}\to X_{1}\times_{X_{0}}\cdots\times_{X_{0}}X_{1}$（\ref{cat:nerve-fully-faithful} の $E_{k}$ を並べたもの）が全単射であることが知られている（セガール条件。ここでは証明しない）。この条件を「全単射」から「ホモトピー同値」に弱めたものが、高次圏論の一つのモデル（セガール空間）の出発点になっている（ここでは扱わない）。
+
+**高い視点から：内部化は「素材の取り替え」.** 圏の定義は、集合と写像だけで書かれた「設計図」である。内部圏は、その設計図を別の素材（群、位相空間、多様体など）で組み立てたものと言える。比喩で言えば、木で作っていた椅子（小さい圏）を、同じ設計図のまま鉄（位相空間）で作れば「位相圏」、ゴム（群）で作れば「厳密 2 群」になる。設計図の各部品（写像）が素材の構造を保つことが要求されるので、素材によっては設計図が自動的に強い性質をもつ（群で作ると亜群になる）。圏論的には、内部圏の概念は「有限極限で書ける理論（本質的に代数的な理論）のモデルを任意の有限完備圏で考える」という一般的な枠組みの一例である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

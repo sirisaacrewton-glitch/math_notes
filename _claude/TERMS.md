@@ -363,3 +363,4 @@
 | braided monoidal category / braiding / hexagon / Yang–Baxter equation | 組紐モノイダル圏 / 組紐 / 六角形の等式 / ヤン–バクスター方程式 | 組みひも、ブレイド | 「組紐」で統一（既存ページの「組みひも」は補足中の表現）。cat:page-symmetric-coherence |
 | Coxeter presentation / adjacent transposition / labelled word | 対称群の生成元と関係 / 隣接互換 / 番号つき語 | | 番号つき語は仮。cat:page-symmetric-coherence |
 | braid group / pure braid group / braid category / underlying braid | 組紐群 / 純組紐群 / 組紐圏 / 道の組紐 | ブレイド群 | 組紐群・純組紐群は標準的。道の組紐は仮。cat:page-braids |
+| internal category / internal functor / internal diagram (left C-object) / nerve | 内部圏 / 内部関手 / 内部の図式（左 C 対象） / 神経 | 圏対象 | 内部圏・神経は標準的。内部の図式は仮。cat:page-internal-categories |

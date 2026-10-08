@@ -314,6 +314,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 計算可能性 AC-07（03D/03/07-post-theorem, comp:page-post-theorem：集合の神託についての使用の原理（有限表 D の形）、Σ_n・Π_n の有界量化子での閉性、ポストの定理（Σ_{n+1} ⇔ ∅^(n) で認識可能、∅^(n+1) は Σ_{n+1} 完全、Δ_{n+1} ⇔ ≤_T ∅^(n)）、∅^(n) は Σ_n だが Π_n でない、FIN と TOT の問題）。新井 §6.3。02-turing-reducibility の補足から参照。
 - 2026-10-08 CM-05（余モナドとホモロジー）の hypcheck から比較定理と Ext のページへ参照を追加。
 - 2026-10-08 ホモロジー代数 HD-03（18G/02/03-tor-ext, ha:page-tor-ext：Ext の定義と基本性質（Ext⁰=Hom、射影対象で消える）、両変数の長完全列（第二変数は入射分解なしで）、Ext_Z(Z/n,B)、Ext¹ と射影性、群のコホモロジー = Ext_{ZΠ}(Z,A)、Tor は補足で紹介）。資料なし。導来関手の系列 HD-01〜03 完了。
 - 2026-10-08 ホモロジー代数 HD-02（18G/02/02-derived-functors, ha:page-derived-functors：左導来関手の定義と well-definedness（選び方によらない・加法関手・射影対象で消える）、右完全なら L_0F ≅ F、馬蹄補題（一段を蛇の補題で）、導来関手の長完全列、完全関手と L_1 の問題）。資料なし。
@@ -493,6 +494,8 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | CC-11 | 04-complexity/11-parallel | 一様な回路族、NC、P 完全性（Sipser 10.5） | 完了 |
 | CC-12 | 04-complexity/12-approximation-cryptography | 近似アルゴリズムと暗号（一方向関数・落とし戸関数）（Sipser 10.1, 10.6） | 完了 |
 | CC-13 | 04-complexity/13-primality-branching | 素数判定と一回読み分岐プログラム（Sipser 10.2） | 完了 |
+| AC-07 | 03-advanced-computability/07-post-theorem | ポストの定理（使用の原理・有界量化子・Σ_{n+1}=∅^(n) で認識可能・Δ_{n+1}=≤_T ∅^(n)）（新井 §6.3） | 完了 |
+| AC-08 | 03-advanced-computability/08-friedberg-muchnik | ポストの問題とフリードバーグ–ムチニクの定理（優先論法）（新井 §6.4） | 未 |
 | KR-01 | 06-algorithmic-randomness/01-prefix-free-complexity | 接頭辞なし複雑性とクラフトの不等式 | 完了 |
 | KR-02 | 06-algorithmic-randomness/02-martin-lof | マルチン＝レーフのランダムネスとレヴィン–シュノアの定理 | 完了 |
 

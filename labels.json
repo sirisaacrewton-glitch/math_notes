@@ -4054,6 +4054,13 @@
       "num": "8.1",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/08-circuits.html"
     },
+    "comp:bounded-quantifiers": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "有界量化子",
+      "num": "7.2",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/07-post-theorem.html"
+    },
     "comp:boundedness-sigma11-trees": {
       "status": "defined",
       "type": "corollary",
@@ -4746,6 +4753,13 @@
       "title": "ジャンプ",
       "num": "2.3",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/02-turing-reducibility.html"
+    },
+    "comp:jump-hierarchy": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "ジャンプの列と階層",
+      "num": "7.4",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/07-post-theorem.html"
     },
     "comp:jump-properties": {
       "status": "defined",
@@ -5447,6 +5461,13 @@
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/05-pi11-prewellordering.html"
     },
+    "comp:page-post-theorem": {
+      "status": "defined",
+      "type": "page",
+      "title": "ポストの定理",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/07-post-theorem.html"
+    },
     "comp:page-prefix-free-complexity": {
       "status": "defined",
       "type": "page",
@@ -5733,6 +5754,13 @@
       "title": "多項式階層",
       "num": "9.8",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/09-alternation.html"
+    },
+    "comp:post-theorem": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "ポストの定理",
+      "num": "7.3",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/07-post-theorem.html"
     },
     "comp:pr-closure": {
       "status": "defined",
@@ -6321,6 +6349,20 @@
       "title": "",
       "num": "1.6",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/01-logical-theories.html"
+    },
+    "comp:prob-pt-fin": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "7.5",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/07-post-theorem.html"
+    },
+    "comp:prob-pt-tot": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "7.6",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/07-post-theorem.html"
     },
     "comp:prob-pumping-not-sufficient": {
       "status": "defined",
@@ -7764,6 +7806,34 @@
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/07-probabilistic-quantum.html"
     },
+    "comp:sec-pt-lemmas": {
+      "status": "defined",
+      "type": "section",
+      "title": "使用の原理と有界量化子",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/07-post-theorem.html"
+    },
+    "comp:sec-pt-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/07-post-theorem.html"
+    },
+    "comp:sec-pt-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/07-post-theorem.html"
+    },
+    "comp:sec-pt-theorem": {
+      "status": "defined",
+      "type": "section",
+      "title": "ポストの定理",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/07-post-theorem.html"
+    },
     "comp:sec-pumping": {
       "status": "defined",
       "type": "section",
@@ -8540,6 +8610,13 @@
       "title": "使用の原理",
       "num": "3.2",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/03-analytical-hierarchy.html"
+    },
+    "comp:use-principle-sets": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "使用の原理",
+      "num": "7.1",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/07-post-theorem.html"
     },
     "comp:vc-2-approx": {
       "status": "defined",
@@ -33971,6 +34048,13 @@
       "title": "トポス",
       "referencedFrom": [
         "18-category-theory/18A-general-theory/01-basics/01-categories.html"
+      ]
+    },
+    "comp:page-friedberg-muchnik": {
+      "status": "planned",
+      "title": "フリードバーグ–ムチニクの定理",
+      "referencedFrom": [
+        "03-mathematical-logic/03D-computability-theory/03-advanced-computability/07-post-theorem.html"
       ]
     },
     "fld:algebraic-closure-in-acf": {

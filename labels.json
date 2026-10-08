@@ -5398,6 +5398,20 @@
       "num": "7.4",
       "page": "03-mathematical-logic/03D-computability-theory/01-automata/07-deterministic-cfl.html"
     },
+    "comp:low-basis": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "低基底定理",
+      "num": "13.3",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/13-low-basis.html"
+    },
+    "comp:low-basis-corollary": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "低い道と完全でない次数",
+      "num": "13.4",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/13-low-basis.html"
+    },
     "comp:low-degree": {
       "status": "defined",
       "type": "lemma",
@@ -5901,6 +5915,13 @@
       "title": "L と NL",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/05-logspace.html"
+    },
+    "comp:page-low-basis": {
+      "status": "defined",
+      "type": "page",
+      "title": "低基底定理",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/13-low-basis.html"
     },
     "comp:page-low-simple": {
       "status": "defined",
@@ -6776,6 +6797,20 @@
       "title": "",
       "num": "5.9",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/05-logspace.html"
+    },
+    "comp:prob-lb-computable-path": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "13.5",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/13-low-basis.html"
+    },
+    "comp:prob-lb-pa": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "13.6",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/13-low-basis.html"
     },
     "comp:prob-ls-low-not-complete": {
       "status": "defined",
@@ -8240,6 +8275,34 @@
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/02-prefix-free-complexity.html"
     },
+    "comp:sec-lb-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/13-low-basis.html"
+    },
+    "comp:sec-lb-prelim": {
+      "status": "defined",
+      "type": "section",
+      "title": "準備",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/13-low-basis.html"
+    },
+    "comp:sec-lb-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/13-low-basis.html"
+    },
+    "comp:sec-lb-theorem": {
+      "status": "defined",
+      "type": "section",
+      "title": "低基底定理",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/13-low-basis.html"
+    },
     "comp:sec-levin-schnorr": {
       "status": "defined",
       "type": "section",
@@ -9422,6 +9485,20 @@
       "title": "埋め込み可能性は Σ¹₁",
       "num": "4.6",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/04-boundedness.html"
+    },
+    "comp:tree-infinite-pi1": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "無限性は Π₁",
+      "num": "13.1",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/13-low-basis.html"
+    },
+    "comp:tree-no-computable-path": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "計算可能な道をもたない木",
+      "num": "13.2",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/13-low-basis.html"
     },
     "comp:tree-rank": {
       "status": "defined",

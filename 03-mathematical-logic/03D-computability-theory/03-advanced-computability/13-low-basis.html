@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>低基底定理 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/03-advanced-computability/13-low-basis.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 低基底定理 {#comp:page-low-basis keywords="low basis theorem, Jockusch-Soare, computable binary trees, Pi^0_1 classes, forcing the jump, computable tree without computable paths, recursively inseparable sets, weak Konig lemma"}
+
+計算可能な無限二分木は道（無限の枝）をもつ（弱ケーニッヒの補題）が、計算可能な道をもつとは限らない（\ref{comp:tree-no-computable-path}）。では道はどれほど複雑でなければならないか。**低基底定理**（ヨックシュ–ソーア、\ref{comp:low-basis}）は、道として**低い**もの（ジャンプが $\varnothing'$ で計算できるもの、\ref{comp:low-set}）がとれることを示す。証明は、神託機械の停止・非停止を一つずつ $\varnothing'$ の助けで「強制」しながら部分木を絞っていく方法である。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。逆数学のページ（\ref{logic:page-rm-wkl0}）と二階算術のページで引用していた定理を、ここで証明する。
+
+## 記法と定義の確認 {#comp:sec-lb-notation}
+
+::: notation
+- $2^{<\omega}$ は有限の $0,1$ 列（文字列）全体、$\sigma\preceq\tau$ は接頭辞、$\lvert\sigma\rvert$ は長さ。**二分木**は接頭辞で閉じた $T\subseteq2^{<\omega}$、その**道**は $X\in2^{\omega}$ ですべての $X\restr n$ が $T$ に属するもの。道全体を $[T]$ と書く。$T$ が**計算可能**とは、$\sigma\in T$ が決定可能であること。
+- 神託機械、ジャンプ $B'=\{\langle M,w\rangle:M^{B}\text{ は }w\text{ を受理}\}$、使用の原理は \ref{comp:oracle-tm}, \ref{comp:jump}, \ref{comp:use-principle-sets} のとおり。低集合は \ref{comp:low-set}。
+- 文字列 $\sigma$ を神託とする計算 $M^{\sigma}$：$y<\lvert\sigma\rvert$ への問い合わせには $\sigma(y)$ で答え、$y\ge\lvert\sigma\rvert$ を問い合わせたら止まらないとする。「$M^{\sigma}$ は $w$ を $s$ 段以内に受理する」は $(M,w,\sigma,s)$ について決定可能で、$\sigma\preceq\tau$, $s\le t$ なら $M^{\tau}$ も $t$ 段以内に受理する（**単調性**）。使用の原理から、$M^{X}$ が $w$ を受理する $\iff$ ある $n$ で $M^{X\restr n}$ が $w$ を $n$ 段以内に受理する。
+- $\Pi_{1}$ の問いは $\varnothing'$ で決定できる（$\Sigma_{1}$ の集合は認識可能で $\varnothing'$ に写像還元される：\ref{comp:sigma1-recognizable}, \ref{comp:jump-properties} の 3）。
+:::
+
+## 準備 {#comp:sec-lb-prelim}
+
+::: lemma 無限性は Π₁ {#comp:tree-infinite-pi1 keywords="for a computable binary tree, being infinite is a Pi_1 property decidable from 0'" index="木の無限性|きのむげんせい"}
+計算可能な二分木 $T$（の計算する機械の符号）について、「$T$ は無限」は $\Pi_{1}$ で、$\varnothing'$ で決定できる。さらに、無限な二分木は道をもつ。
+:::
+
+::: proof
+$T$ が無限 $\iff$ すべての $n$ で長さ $n$ の元をもつ（接頭辞で閉じているので、長い元があれば各長さの元がある；各長さの元は有限個）。「長さ $n$ の元がある」は有限個の $\sigma$ の検査で決定可能なので、全体は $\forall n\,(\text{決定可能})$ で $\Pi_{1}$。道の存在：長さ $n$ の元のうち無限個の拡張をもつものを、$n$ に関する帰納法で一つずつ延ばしていく（ケーニッヒの補題。どの段でも、二つの延長のどちらかは無限個の拡張をもつ）。
+:::
+
+::: theorem 計算可能な道をもたない木 {#comp:tree-no-computable-path keywords="there is an infinite computable binary tree with no computable path (Kleene)" index="計算可能な道をもたない木|けいさんかのうなみちをもたないき"}
+計算可能な無限二分木で、計算可能な道をもたないものがある。
+:::
+
+::: proof
+$A\defeq\{e:\varphi_{e}(e)\simeq0\}$, $B\defeq\{e:\varphi_{e}(e)\simeq1\}$ は交わらない認識可能な集合で、段階 $s$ までに列挙される部分を $A_{s}$, $B_{s}$ とする。
+$$
+T\defeq\{\sigma:\forall y<\lvert\sigma\rvert\ \bigl[(y\in A_{\lvert\sigma\rvert}\to\sigma(y)=1)\wedge(y\in B_{\lvert\sigma\rvert}\to\sigma(y)=0)\bigr]\}
+$$
+は計算可能な二分木（接頭辞で閉じることは、短い $\sigma$ ほど検査が少ないことから）。$A$ の特性関数は道なので $T$ は無限。道 $X$ は $A\subseteq X$, $X\cap B=\emptyset$ を満たす（$y\in A$ なら十分長い $\sigma=X\restr n$ で $y\in A_{n}$）。$X$ が計算可能なら、特性関数 $\chi_{X}=\varphi_{e}$（全域）となる $e$ がある。$\varphi_{e}(e)\in\{0,1\}$ で、$=0$ なら $e\in A\subseteq X$ から $\chi_{X}(e)=1$、$=1$ なら $e\in B$ から $\chi_{X}(e)=0$。いずれも矛盾。
+:::
+
+## 低基底定理 {#comp:sec-lb-theorem}
+
+::: theorem 低基底定理 {#comp:low-basis keywords="Jockusch-Soare low basis theorem: every infinite computable binary tree has a low path" index="低基底定理|ていきていていり"}
+計算可能な無限二分木 $T$ は低い道をもつ：$X\in[T]$ で $X'\le_{\mathrm{T}}\varnothing'$ となるものがある。
+:::
+
+::: proof
+組 $\langle M,w\rangle$ 全体を $q_{0},q_{1},\ldots$ と計算可能に並べる。計算可能な無限二分木の列 $T=T_{0}\supseteq T_{1}\supseteq\cdots$ を作る。$q_{e}=\langle M,w\rangle$ について
+$$
+U_{e}\defeq\{\sigma\in T_{e}:M^{\sigma}\text{ は }w\text{ を }\lvert\sigma\rvert\text{ 段以内に受理しない}\}
+$$
+とする。**単調性**から $U_{e}$ は接頭辞で閉じており、計算可能な二分木である。
+- $U_{e}$ が無限なら $T_{e+1}\defeq U_{e}$（「拒否を強制」）。
+- 有限なら $T_{e+1}\defeq T_{e}$（「受理を強制」）。
+
+**Step 1（各段の効果）.** $X\in[T_{e+1}]$ とする。拒否を強制した場合、すべての $n$ で $X\restr n\in U_{e}$ なので、使用の原理から $M^{X}$ は $w$ を受理しない。受理を強制した場合、$U_{e}$ は有限なので、ある長さ $n$ 以上の $U_{e}$ の元はない。$X\restr n\in T_{e}$ だが $\notin U_{e}$ なので、$M^{X\restr n}$ は $w$ を $n$ 段以内に受理し、単調性から $M^{X}$ は $w$ を受理する。
+
+**Step 2（道の存在）.** 各 $T_{e}$ は無限なので $[T_{e}]$ は空でない（\ref{comp:tree-infinite-pi1}）。$[T_{e}]$ はカントール空間 $2^{\omega}$ の閉集合で減少列をなし、$2^{\omega}$ はコンパクト（\ref{top:tychonoff}）なので、共通部分の元 $X$ がある。
+
+**Step 3（$\varnothing'$ による計算）.** 各段の選択は「$U_{e}$ は無限か」という $\Pi_{1}$ の問いの答えで決まり、$\varnothing'$ で決定できる（\ref{comp:tree-infinite-pi1}）。$T_{e}$ を計算する機械の符号は、それまでの答えの列から計算可能に得られるので、$\varnothing'$ は $e$ について順に選択の列を計算できる。Step 1 から、$q_{e}\in X'$ $\iff$ 第 $e$ 段で受理を強制した、なので $X'\le_{\mathrm{T}}\varnothing'$。
+:::
+
+::: hypcheck
+- **単調性（使用の原理）**：$U_{e}$ が木であること、Step 1 の両方の場合に使った。
+- **$\Pi_{1}$ の問いを $\varnothing'$ で決定できること**：Step 3 の核心で、ここで神託 $\varnothing'$ が必要になる。
+- **カントール空間のコンパクト性**：Step 2 で、無限に多くの段の後にも道が残ることに使った。各 $T_{e}$ が無限であることだけでは、共通部分の木 $\bigcap_{e}T_{e}$ が無限であることは直ちには分からない。
+:::
+
+::: corollary 低い道と完全でない次数 {#comp:low-basis-corollary keywords="the low path is not of degree 0'; computable trees without computable paths have paths of degree strictly between 0 and 0'" index="低基底定理の系|ていきていていりのけい"}
+\ref{comp:tree-no-computable-path} の木の低い道 $X$ は、$\varnothing<_{\mathrm{T}}X<_{\mathrm{T}}\varnothing'$ を満たす（$\varnothing'$ より真に低い非計算的な次数）。
+:::
+
+::: proof
+$X$ は計算可能でないので $\varnothing<_{\mathrm{T}}X$。$X'\le_{\mathrm{T}}\varnothing'$ から $X\le_{\mathrm{T}}X'\le_{\mathrm{T}}\varnothing'$（$X$ は $X$ で認識可能なので、\ref{comp:jump-properties} の 3 から $X\le_{\mathrm{m}}X'$）。$\varnothing'\le_{\mathrm{T}}X$ なら $\varnothing''\le_{\mathrm{T}}X'\le_{\mathrm{T}}\varnothing'$（ジャンプの単調性 \ref{comp:low-degree}）となり、\ref{comp:jump-properties} の 2 に反する。
+:::
+
+## 問題 {#comp:sec-lb-problems}
+
+::: problem {#comp:prob-lb-computable-path}
+計算可能な無限二分木が**孤立した道**（ある $\sigma$ について、$\sigma$ を延長する道がただ一つ）をもてば、その道は計算可能であることを示せ。
+:::
+
+::: solution
+$\sigma$ を延長する道がただ一つ $X$ だとする。$\tau\succeq\sigma$ について「$\tau$ を延長する道がある」$\iff$ $T$ の $\tau$ 以下の部分木が無限（\ref{comp:tree-infinite-pi1}）。$X\restr(n+1)$ を求めるには、$X\restr n$ の二つの延長 $\tau_{0},\tau_{1}$ のうち道をもつのはちょうど一方なので、「$\tau_{i}$ 以下の部分木が長さ $m$ の元をもたない」となる $m$ をもう一方について探せばよい（有限な部分木は、ある長さで元がなくなる）。この探索は必ず終わり、計算可能。
+:::
+
+::: problem {#comp:prob-lb-pa}
+$\PA$ の完全な無矛盾拡大全体は、ある計算可能な二分木の道全体と対応することが知られている（文を並べ、長さ $n$ 以下の証明で矛盾が出ない真理値の割り当てを木の元とする）。これを認めて、$\PA$ の低い完全な無矛盾拡大があることを示せ。
+:::
+
+::: solution
+その木は無限（$\PA$ が無矛盾なので、完全な無矛盾拡大がある：リンデンバウムの補題）で計算可能なので、\ref{comp:low-basis} から低い道があり、それが低い完全な無矛盾拡大を与える。
+:::
+
+::: supplement
+**前提を変えると.** 同じ方法を相対化すると、$B$ で計算可能な無限二分木は $X'\le_{\mathrm{T}}B'$ を満たす道をもつ。さらに、道として「**ハイパー免疫自由**」なものや、与えられた非計算的な集合 $C$ を計算しないものもとれることが知られている（ここでは扱わない）。計算可能な道は一般にとれない（\ref{comp:tree-no-computable-path}）ので、低さは「道をどこまで単純にできるか」の一つの最良の答えである。
+
+**似た定理.** 二階算術では、低基底定理から $\mathsf{WKL}_{0}$ の ω モデルで、すべての元が低いものが作れ、$\mathsf{WKL}_{0}$ が $\mathsf{ACA}_{0}$ を証明しないことが分かる（\ref{logic:page-rm-wkl0}）。単純な低集合の存在（\ref{comp:low-simple-set}）も低さを「強制」する議論で、優先論法を使う点が異なる。
+
+**高い視点から：問いに一つずつ答えを決めて道を絞る.** $X'$ を計算するには、$X$ を神託とする各計算が止まるかどうかを知る必要がある。低基底定理の証明は、各計算について「止まらないようにできるなら止まらない側の木に絞り、できないなら止まる」と決めていく。どちらにできるかの判定がちょうど $\varnothing'$ の一回の問い合わせで済むので、最後に残る道のジャンプは $\varnothing'$ で読める。比喩で言えば、迷路の分かれ道ごとに「この先にまだ出口へ通じる道があるか」を神託に一度だけ尋ね、通じる側を選び続けることで、神託の答えの記録そのものが道の性質の完全な記録になる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

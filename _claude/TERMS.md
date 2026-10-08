@@ -434,3 +434,4 @@
 | independent family / Pospisil theorem / Parovichenko theorem | 独立な族 / ポスピシルの定理 / パロヴィチェンコの定理 | | 標準的。top:page-beta-n |
 | double arrow space / complete linear order | 二重矢印空間 / 完備な全順序 | 二本矢印空間 | 仮。top:page-double-arrow |
 | nerve-realization adjunction / geometric realization | 神経と実現の随伴 / 幾何学的実現 | | 標準的。cat:page-nerve-realization |
+| low basis theorem / Pi^0_1 class / isolated path | 低基底定理 / Π⁰₁ クラス / 孤立した道 | | 標準的。comp:page-low-basis |

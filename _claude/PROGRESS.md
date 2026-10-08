@@ -339,6 +339,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 計算論 AC-13（03D/03/13-low-basis, comp:page-low-basis：木の無限性は Π₁、計算可能な道をもたない木（再帰的に分離不能な集合）、低基底定理（受理・拒否の強制とカントール空間のコンパクト性）、0 と 0' の間の次数、孤立した道と PA の低い完全拡大の問題）。WKL₀ とハリントンのページから参照。資料なし。
 - 2026-10-08 圏論 CK-06（18A/04-kan-extensions/06-nerve-realization, cat:page-nerve-realization：神経 N_K と元の圏上の余極限による実現、実現 ⊣ 神経（余錐と自然変換の一致）、実現は K の延長、K 稠密 ⇔ 神経が充満忠実 ⇔ 余単位が同型、圏の神経・幾何学的実現・米田の例、1 上の場合と余極限保存の問題）。独自構成。
 - 2026-10-08 一般位相 TG-04（54G/01-counterexamples/04-double-arrow, top:page-double-arrow：完備な全順序の順序位相のコンパクト性、二重矢印空間はコンパクトハウスドルフ・可分・第一可算、部分空間がゾルゲンフライ直線と同相で距離化可能でない、射影と部分空間の可分性の問題）。54G の説明を更新。資料なし。
 - 2026-10-08 一般位相 TD-15（54D/01/15-beta-n, top:page-beta-n：交わらない部分集合の閉包は交わらない（特性関数の延長）、自明でない収束列はない、濃度 𝔠 の独立な族、|βℕ|=2^𝔠、可分ハウスドルフ空間の濃度の上界と剰余の問題）。07-stone-cech と 14-countable-compactness から参照。独自構成。
@@ -574,6 +575,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | AC-10 | 03-advanced-computability/10-creative-sets | 生産的・創造的集合、パラメータ付き再帰定理、創造的 ⇔ m 完全、単純集合は m 完全でない、マイヒルの同型定理（新井 §6.2.2） | 完了 |
 | AC-11 | 03-advanced-computability/11-rice-shapiro | 指数集合とライス–シャピロの定理（逆を含む）、ライスの定理を系として（資料なし） | 完了 |
 | AC-12 | 03-advanced-computability/12-index-set-completeness | Σn/Πn 完全、FIN・INF・TOT・COF の完全性（動く目印）（資料なし） | 完了 |
+| AC-13 | 03-advanced-computability/13-low-basis | 低基底定理（計算可能な道をもたない木、ジャンプの強制）（資料なし） | 完了 |
 | KR-01 | 06-algorithmic-randomness/01-prefix-free-complexity | 接頭辞なし複雑性とクラフトの不等式 | 完了 |
 | KR-02 | 06-algorithmic-randomness/02-martin-lof | マルチン＝レーフのランダムネスとレヴィン–シュノアの定理 | 完了 |
 

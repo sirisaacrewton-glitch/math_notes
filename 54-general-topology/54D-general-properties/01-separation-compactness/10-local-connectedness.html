@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>局所連結性とペアノ曲線 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54D-general-properties/01-separation-compactness/10-local-connectedness.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 局所連結性とペアノ曲線 {#top:page-local-connectedness keywords="locally connected space, components of open sets, comb space, quotient maps preserve local connectedness, locally path-connected, path components, Peano curve, space-filling curve, Cantor set, Hahn-Mazurkiewicz theorem"}
+
+連結性（\ref{top:page-connectedness}）は空間全体についての性質だが、**局所連結性**（\ref{top:locally-connected}）は「どの点の近くでも、小さな連結な近傍がとれる」という局所的な性質である。両者は独立で、連結だが局所連結でない空間（櫛形空間、\ref{top:comb-space}）も、局所連結だが連結でない空間もある。本ページでは、局所連結性の開集合の連結成分による言い換え（\ref{top:locally-connected-components}）、商写像による保存（\ref{top:quotient-locally-connected}）、局所弧状連結性と弧状連結成分（\ref{top:locally-path-connected}）を扱い、最後に単位区間から正方形への連続な全射（**ペアノ曲線**、\ref{top:peano-curve}）を構成する。ペアノ曲線の存在は、「連続な曲線の像」が直観よりはるかに大きくなりうることを示している。
+
+> 資料：小山晃『位相空間論』§8.2（道連結と局所連結）と第 9 章の発展（ペアノ写像）を参考にした（本文は写していない）。同書は閉写像による局所連結性の保存を示しているが、ここでは商写像についての形で証明した（閉な連続全射は商写像なので、より一般的である）。ペアノ曲線は、カントール集合から正方形への全射を区間に線形に延長する方法で構成した。
+
+## 記法と定義の確認 {#top:sec-lcn-notation}
+
+::: notation
+- 連結・連結成分・弧状連結・連結性の保存は \ref{top:connected}, \ref{top:components}, \ref{top:components-properties}, \ref{top:path-connected}, \ref{top:connected-preservation} のとおり。道 $\gamma\colon[0,1]\to X$ の連結（つなぎ合わせ）で弧状連結性は同値関係になる。
+- 商写像と、閉な（または開な）連続全射が商写像であることは \ref{top:quotient-topology}, \ref{top:quotient-map-criteria} のとおり。コンパクトからハウスドルフへの連続写像は閉写像（\ref{top:compact-to-hausdorff}）。
+- 部分空間 $O$ の連結成分は $O$ の部分空間としての連結成分を指す。
+:::
+
+## 局所連結性 {#top:sec-lcn-locally-connected}
+
+::: definition 局所連結 {#top:locally-connected keywords="locally connected at a point, locally connected space" index="局所連結|きょくしょれんけつ"}
+位相空間 $X$ が点 $x$ で**局所連結**であるとは、$x$ の任意の近傍 $U$ に、$x\in V\subseteq U$ となる連結な開集合 $V$ があることをいう。すべての点で局所連結なとき、$X$ は**局所連結**であるという。
+:::
+
+::: proposition 局所連結性の言い換え {#top:locally-connected-components keywords="X is locally connected iff components of open subsets are open" index="局所連結性の言い換え|きょくしょれんけつせいのいいかえ"}
+$X$ が局所連結であることと、$X$ の任意の開集合 $O$ について、$O$ の連結成分がすべて $X$ の開集合であることは同値である。
+:::
+
+::: proof
+**⇒.** $C$ を $O$ の連結成分、$x\in C$ とする。$O$ は $x$ の近傍なので、$x\in V\subseteq O$ となる連結な開集合 $V$ がある。$V$ は $x$ を含む $O$ の連結部分集合なので、連結成分の極大性（\ref{top:components-properties}）から $V\subseteq C$。よって $C$ は各点の開近傍を含み、開集合。
+
+**⇐.** $x$ の近傍 $U$ に対し、開集合 $O$ で $x\in O\subseteq U$ となるものをとり、$O$ の $x$ を含む連結成分を $V$ とすると、$V$ は連結で、仮定から開。
+:::
+
+::: example
+1. $\mathbb{R}^{n}$ は局所連結（開球は凸で、弧状連結だから連結）。
+2. $\mathbb{R}\setminus\mathbb{Z}$ は局所連結だが連結でない（各点の近くに開区間がとれる）。
+3. 位相幾何学者のサイン曲線（\ref{top:topologist-sine}）は連結だが、$y$ 軸上の点で局所連結でない。
+:::
+
+::: proposition 櫛形空間 {#top:comb-space keywords="comb space is path-connected and compact but not locally connected" index="櫛形空間|くしがたくうかん"}
+$K\defeq\{0\}\cup\{1/n:n\ge1\}$ とし、$\mathbb{R}^{2}$ の部分空間
+$$
+C\defeq\bigl([0,1]\times\{0\}\bigr)\cup\bigl(K\times[0,1]\bigr)
+$$
+（**櫛形空間**）は、弧状連結なコンパクト空間だが、点 $(0,1/2)$ で局所連結でない。
+:::
+
+::: proof
+**弧状連結・コンパクト.** 各点から縦の線分を下りて底辺 $[0,1]\times\{0\}$ に行き、底辺に沿って原点に行けるので弧状連結。$C$ は有界な閉集合（$K$ は閉集合）でコンパクト。
+
+**局所連結でない.** $B$ を $(0,1/2)$ を中心とする半径 $1/4$ の開球とし、$O\defeq B\cap C$ とする。$O\subseteq K\times(1/4,3/4)$（底辺は $B$ に入らない）。第一座標への射影 $p\colon O\to K$ は連続で、$O$ の連結部分集合の像は $K$ の連結部分集合である。$K$ の連結部分集合は一点だけからなる（二点 $a<b$ を含めば、その間の $K$ に属さない数 $c$ で $K$ を分けられる）。よって $(0,1/2)$ を含む $O$ の連結成分は $\{0\}\times(1/4,3/4)$ に含まれる。これは $C$ の開集合でない：$(0,1/2)$ のどの近傍にも $(1/n,1/2)$（$n$ 大）が含まれるからである。\ref{top:locally-connected-components} より、$C$ は局所連結でない（$(0,1/2)$ の近傍 $O$ の中に連結な開近傍がない）。
+:::
+
+::: theorem 商写像と局所連結性 {#top:quotient-locally-connected keywords="quotient images of locally connected spaces are locally connected; continuous images of compact locally connected spaces in Hausdorff spaces" index="局所連結性の保存|きょくしょれんけつせいのほぞん"}
+$q\colon X\to Y$ が商写像で $X$ が局所連結なら、$Y$ も局所連結である。特に、局所連結なコンパクト空間からハウスドルフ空間への連続な全射の像は局所連結である。
+:::
+
+::: proof
+\ref{top:locally-connected-components} を使う。$O\subseteq Y$ を開集合、$C$ を $O$ の連結成分とし、$q^{-1}[C]$ が $X$ で開であることを示す（$q$ は商写像なので、これで $C$ は開）。$x\in q^{-1}[C]$ について、$q^{-1}[O]$ は $X$ の開集合で、その $x$ を含む連結成分 $D$ は開（$X$ が局所連結）。$q[D]$ は連結（\ref{top:connected-preservation}）で $O$ に含まれ、$q(x)\in C$ を含むので、$C$ の極大性から $q[D]\subseteq C$、すなわち $x\in D\subseteq q^{-1}[C]$。よって $q^{-1}[C]$ は開。後半は、コンパクトからハウスドルフへの連続な全射が閉写像（\ref{top:compact-to-hausdorff}）、したがって商写像（\ref{top:quotient-map-criteria}）であることによる。
+:::
+
+::: hypcheck
+- **商写像**：$q^{-1}[C]$ が開であることから $C$ が開であることを結論するのに使った。単なる連続な全射では成り立たない：$[0,\infty)$ から櫛形空間への連続な全射があり（\ref{top:prob-lc-comb-image}）、$[0,\infty)$ は局所連結だが櫛形空間はそうでない。
+- **ハウスドルフ性・コンパクト性**（後半）：閉写像であることを得るために使った。
+:::
+
+## 局所弧状連結性 {#top:sec-lcn-path}
+
+::: definition 局所弧状連結 {#top:locally-path-connected keywords="locally path-connected space, path components" index="局所弧状連結|きょくしょこじょうれんけつ, 弧状連結成分|こじょうれんけつせいぶん"}
+$X$ が**局所弧状連結**であるとは、各点 $x$ と $x$ の任意の近傍 $U$ に、$x\in V\subseteq U$ となる弧状連結な開集合 $V$ があることをいう。$x$ と道で結べる点全体を $x$ の**弧状連結成分**という。
+:::
+
+::: proposition 局所弧状連結空間の弧状連結成分 {#top:path-components-open keywords="in a locally path-connected space path components are open and equal components" index="弧状連結成分の開性|こじょうれんけつせいぶんのかいせい"}
+$X$ が局所弧状連結なら、弧状連結成分は開かつ閉で、連結成分と一致する。特に、連結かつ局所弧状連結な空間は弧状連結である。
+:::
+
+::: proof
+**開.** $P$ を弧状連結成分、$x\in P$ とし、$x\in V$ となる弧状連結な開集合 $V$（$U=X$ に対して）をとる。$V$ の各点は $x$ と道で結べるので $V\subseteq P$。
+
+**閉.** $P$ の補集合は他の弧状連結成分の和で、それぞれ開なので開。
+
+**連結成分と一致.** $P$ は弧状連結なので連結（\ref{top:path-connected-connected}）で、$x$ の連結成分 $C$ に含まれる。$C$ は連結で、$P$ は $C$ の中で開かつ閉で空でないので $P=C$（\ref{top:connected-equivalents}）。
+:::
+
+## ペアノ曲線 {#top:sec-lcn-peano}
+
+::: lemma カントール集合 {#top:cantor-set-maps keywords="Cantor set as ternary expansions with digits 0 and 2; Cantor function onto [0,1]; C x C homeomorphic to C" index="カントール集合|かんとーるしゅうごう, カントール関数|かんとーるかんすう"}
+$\mathcal{C}\defeq\{\sum_{i\ge1}2a_{i}3^{-i}:a_{i}\in\{0,1\}\}\subseteq[0,1]$ を**カントール集合**とする。
+1. 各 $c\in\mathcal{C}$ の表示 $(a_{i})$ はただ一つで、写像 $\Phi\colon\{0,1\}^{\N_{\ge1}}\to\mathcal{C}$, $(a_{i})\mapsto\sum2a_{i}3^{-i}$ は直積位相について同相写像である。$\mathcal{C}$ はコンパクトで、$[0,1]\setminus\mathcal{C}$ は互いに交わらない開区間の可算個の和で、各区間の端点は $\mathcal{C}$ に属する。
+2. $\varphi\colon\mathcal{C}\to[0,1]$, $\varphi(\sum2a_{i}3^{-i})\defeq\sum a_{i}2^{-i}$ は連続な全射である。
+3. $\mathcal{C}$ から $[0,1]^{2}$ への連続な全射がある。
+:::
+
+::: proof
+**1.** 表示の一意性：二つの表示が最初に第 $k$ 桁で異なり $a_{k}=0$, $a'_{k}=1$ とすると、差は $2\cdot3^{-k}-\sum_{i>k}2\cdot3^{-i}\cdot1\ge2\cdot3^{-k}-3^{-k}>0$ なので値が異なる。$\Phi$ は連続（第 $k$ 桁までで値が $3^{-k}$ 以内に決まる）な全単射で、$\{0,1\}^{\N_{\ge1}}$ はコンパクト（\ref{top:tychonoff}。可算個の直積なので選択公理は要らない形でも示せる）、$[0,1]$ はハウスドルフなので同相写像（\ref{top:compact-to-hausdorff}）で、像 $\mathcal{C}$ はコンパクト。補集合の構造：$\mathcal{C}=\bigcap_{k}\mathcal{C}_{k}$（$\mathcal{C}_{k}$ は「第 $k$ 桁までが $0$ か $2$ の数」全体で、長さ $3^{-k}$ の閉区間 $2^{k}$ 個の和）であり、各段で取り除かれるのは閉区間の真ん中の三分の一の開区間で、その端点は有限の表示（以後 $0$ または以後 $2$）をもつので $\mathcal{C}$ に属する。
+
+**2.** 連続性は 1 と同様（第 $k$ 桁で $2^{-k}$ 以内に決まる）。全射性：$t\in[0,1]$ の二進展開 $t=\sum a_{i}2^{-i}$ をとれば $\varphi(\sum2a_{i}3^{-i})=t$。
+
+**3.** 1 の同相写像により、$\mathcal{C}\cong\{0,1\}^{\N_{\ge1}}$。数列 $(a_{i})$ を奇数番目 $(a_{1},a_{3},\dots)$ と偶数番目 $(a_{2},a_{4},\dots)$ に分ける写像は同相写像 $\{0,1\}^{\N_{\ge1}}\to\{0,1\}^{\N_{\ge1}}\times\{0,1\}^{\N_{\ge1}}$ である（各成分が座標の取り出しで連続、逆も同様）。よって $\mathcal{C}\cong\mathcal{C}\times\mathcal{C}$ で、$\varphi\times\varphi\colon\mathcal{C}\times\mathcal{C}\to[0,1]^{2}$ との合成 $g\colon\mathcal{C}\to[0,1]^{2}$ は連続な全射。
+:::
+
+::: theorem ペアノ曲線 {#top:peano-curve keywords="Peano curve: a continuous surjection from [0,1] onto the square" index="ペアノ曲線|ぺあのきょくせん, 空間充填曲線|くうかんじゅうてんきょくせん"}
+連続な全射 $f\colon[0,1]\to[0,1]^{2}$ がある。
+:::
+
+::: proof
+\ref{top:cantor-set-maps} の 3 の $g\colon\mathcal{C}\to[0,1]^{2}$ を延長する。$t\in\mathcal{C}$ なら $f(t)\defeq g(t)$。$t$ が $[0,1]\setminus\mathcal{C}$ の成分の開区間 $(a,b)$（$a,b\in\mathcal{C}$）に属するなら
+$$
+f(t)\defeq\frac{b-t}{b-a}\,g(a)+\frac{t-a}{b-a}\,g(b)
+$$
+とする（$[0,1]^{2}$ は凸なので値は正方形に入る）。$f$ は全射（$g$ が全射）。
+
+**連続性.** 開区間の内部の点では、$f$ は一次式なので連続。$c\in\mathcal{C}$ での連続性を、右から近づく場合について示す（左も同様。$c=1$ なら右からは近づけない）。
+
+*場合 A：$c$ がある補集合の区間 $(c,b)$ の左端のとき.* $[c,b]$ 上で $f$ は一次式で $f(c)=g(c)$ なので、右連続。
+
+*場合 B：そうでないとき.* $c<1$ とし、任意の $\eta>0$ で $(c,c+\eta)$ は $\mathcal{C}$ の点を含む（含まなければ、$(c,c+\eta)$ は補集合の一つの区間に含まれ、$c\in\mathcal{C}$ なのでその区間の左端は $c$ となり、場合 A に反する）。$\varepsilon>0$ について、$g$ の $c$ での連続性から $\delta>0$ を、$s\in\mathcal{C}$, $\lvert s-c\rvert<\delta$ なら $\lvert g(s)-g(c)\rvert<\varepsilon$ となるようにとり、$d\in\mathcal{C}\cap(c,c+\delta)$ を一つとる。$t\in(c,d)$ とする。$t\in\mathcal{C}$ なら $\lvert f(t)-g(c)\rvert<\varepsilon$。そうでなければ $t$ を含む補集合の区間 $(a,b)$ は、$c,d\notin(a,b)$ なので $(c,d)$ に含まれ、$a,b\in[c,d]$ はどちらも $\mathcal{C}$ の点で $c$ から $\delta$ 未満の距離にある。$f(t)$ は $g(a)$, $g(b)$ の凸結合で、どちらも $g(c)$ を中心とする半径 $\varepsilon$ の開球に入り、球は凸なので $\lvert f(t)-g(c)\rvert<\varepsilon$。よって $f$ は $c$ で右連続。
+:::
+
+::: hypcheck
+- **カントール集合の自己相似性 $\mathcal{C}\cong\mathcal{C}\times\mathcal{C}$**：正方形の二つの座標を、一本のパラメータの奇数桁と偶数桁に割り振るのに使った。これがペアノ曲線の核心である。
+- **正方形の凸性**：補集合の区間上で線形に補間するのに使った。
+- **端点が $\mathcal{C}$ に属すること**：補間の両端の値 $g(a)$, $g(b)$ を定めるのに使った。
+:::
+
+## 問題 {#top:sec-lcn-problems}
+
+::: problem {#top:prob-lc-comb-image}
+$[0,\infty)$ から櫛形空間 $C$（\ref{top:comb-space}）への連続な全射を構成し、\ref{top:quotient-locally-connected} で商写像であることが必要であることを確かめよ。
+:::
+
+::: solution
+次のように区分的に一次式で定める。$[0,1]$ で歯 $\{0\}\times[0,1]$ を上って下り、$[1,2]$ で底辺を $(0,0)$ から $(1,0)$ まで進む。$n\ge1$ について、$[2n,2n+1]$ で歯 $\{1/n\}\times[0,1]$ を上って下り、$[2n+1,2n+2]$ で底辺を $(1/n,0)$ から $(1/(n+1),0)$ まで戻る。各区間の端で値がつながるので連続で、像は $C$ 全体。$[0,\infty)$ は局所連結だが $C$ はそうでないので、この写像は商写像でない（\ref{top:quotient-locally-connected} の対偶）。
+:::
+
+::: problem {#top:prob-lc-peano-continuum}
+$[0,1]$ からハウスドルフ空間 $X$ への連続な全射があれば、$X$ はコンパクト・連結・局所連結であることを示せ。
+:::
+
+::: solution
+コンパクト性は連続像（\ref{top:compact-basic}）、連結性は \ref{top:connected-preservation}、局所連結性は $[0,1]$ が局所連結（区間は連結）で \ref{top:quotient-locally-connected} の後半による。
+:::
+
+::: supplement
+**前提を変えると.** \ref{top:prob-lc-peano-continuum} の逆として、距離化可能なコンパクト・連結・局所連結な空間（**ペアノ連続体**）は $[0,1]$ の連続像であること（**ハーン–マズルキェヴィチの定理**）が知られている（ここでは示さない。小山も証明の方針のみ）。距離化可能性を外すと成り立たない（$[0,1]$ の連続像でハウスドルフなら距離化可能になることが知られている）。また、局所連結なコンパクト距離空間では、道で結べる二点は弧（$[0,1]$ と同相な部分集合）で結べること（マズルキェヴィチ–ムーアの定理）が知られている。
+
+**似た定理.** 同じ方法で $[0,1]$ から $[0,1]^{n}$ や $[0,1]^{\N}$（ヒルベルト立方体）への連続な全射も作れる（$\mathcal{C}\cong\mathcal{C}^{\N}$ を使う）。ペアノ曲線は単射にはなりえない：単射なら、$[0,1]$ から正方形への連続な全単射でコンパクトからハウスドルフなので同相写像になるが、$[0,1]$ は一点を除くと非連結になり、正方形はならない。
+
+**高い視点から：連続性は「次元」を守らない.** 連続写像は近さを保つが、次元を保つとは限らない。ペアノ曲線は、一本の糸が平面の正方形を隙間なく覆いつくす様子を示す。比喩で言えば、糸を限りなく細かく折り返して布を織るとき、織り目を無限に細かくした極限では糸そのものが布になる。カントール集合はその「織り方の設計図」で、二進展開の奇数桁と偶数桁に縦糸と横糸の情報を交互に書き込んでいる。次元が位相的に意味をもつには、連続性に加えて単射性（同相写像）が必要である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

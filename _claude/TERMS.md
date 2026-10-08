@@ -400,3 +400,4 @@
 | Turing degree / Post's problem / priority argument / finite injury / Kleene-Post theorem | チューリング次数 / ポストの問題 / 優先論法 / 有限損傷法 / クリーネ–ポストの定理 | 優先権法 | 新井に合わせ「優先論法」。comp:page-friedberg-muchnik |
 | injective module / Baer's criterion / divisible group / coinduced module | 入射加群 / ベールの判定法 / 可除群 / 余誘導加群 | 単射加群、移入加群 | 「入射」で統一。ha:page-injective-modules |
 | simple set / limit lemma / low set | 単純集合 / 極限補題 / 低集合（低い集合） | | 02-wkl0 の「低い」と同じ意味。comp:page-low-simple |
+| locally connected / locally path-connected / comb space / Peano curve / Cantor set | 局所連結 / 局所弧状連結 / 櫛形空間 / ペアノ曲線 / カントール集合 | 空間充填曲線、くし形空間 | 小山に合わせる。top:page-local-connectedness |

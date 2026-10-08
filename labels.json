@@ -31025,6 +31025,13 @@
       "num": "1.5",
       "page": "54-general-topology/54E-richer-structures/01-metric-spaces/01-completeness.html"
     },
+    "top:cantor-set-maps": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "カントール集合",
+      "num": "10.7",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/10-local-connectedness.html"
+    },
     "top:cauchy-basic": {
       "status": "defined",
       "type": "proposition",
@@ -31080,6 +31087,13 @@
       "title": "部分空間を潰す",
       "num": "2.7",
       "page": "54-general-topology/54B-basic-constructions/01-constructions/02-quotients.html"
+    },
+    "top:comb-space": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "櫛形空間",
+      "num": "10.3",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/10-local-connectedness.html"
     },
     "top:compact": {
       "status": "defined",
@@ -31648,6 +31662,20 @@
       "num": "4.1",
       "page": "54-general-topology/54D-general-properties/01-separation-compactness/04-local-compactness.html"
     },
+    "top:locally-connected": {
+      "status": "defined",
+      "type": "definition",
+      "title": "局所連結",
+      "num": "10.1",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/10-local-connectedness.html"
+    },
+    "top:locally-connected-components": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "局所連結性の言い換え",
+      "num": "10.2",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/10-local-connectedness.html"
+    },
     "top:locally-finite": {
       "status": "defined",
       "type": "definition",
@@ -31668,6 +31696,13 @@
       "title": "局所有限な和の連続性",
       "num": "8.9",
       "page": "54-general-topology/54D-general-properties/01-separation-compactness/08-paracompactness.html"
+    },
+    "top:locally-path-connected": {
+      "status": "defined",
+      "type": "definition",
+      "title": "局所弧状連結",
+      "num": "10.5",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/10-local-connectedness.html"
     },
     "top:meager-basic": {
       "status": "defined",
@@ -31984,6 +32019,13 @@
       "num": "",
       "page": "54-general-topology/54D-general-properties/01-separation-compactness/04-local-compactness.html"
     },
+    "top:page-local-connectedness": {
+      "status": "defined",
+      "type": "page",
+      "title": "局所連結性とペアノ曲線",
+      "num": "",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/10-local-connectedness.html"
+    },
     "top:page-metrization": {
       "status": "defined",
       "type": "page",
@@ -32131,6 +32173,13 @@
       "num": "4.5",
       "page": "54-general-topology/54A-generalities/01-topological-spaces/04-continuous-maps.html"
     },
+    "top:path-components-open": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "局所弧状連結空間の弧状連結成分",
+      "num": "10.6",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/10-local-connectedness.html"
+    },
     "top:path-connected": {
       "status": "defined",
       "type": "definition",
@@ -32144,6 +32193,13 @@
       "title": "弧状連結なら連結",
       "num": "5.9",
       "page": "54-general-topology/54D-general-properties/01-separation-compactness/05-connectedness.html"
+    },
+    "top:peano-curve": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "ペアノ曲線",
+      "num": "10.8",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/10-local-connectedness.html"
     },
     "top:perfect-complete-uncountable": {
       "status": "defined",
@@ -32375,6 +32431,20 @@
       "title": "",
       "num": "3.9",
       "page": "54-general-topology/54E-richer-structures/01-metric-spaces/03-compact-metric.html"
+    },
+    "top:prob-lc-comb-image": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "10.9",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/10-local-connectedness.html"
+    },
+    "top:prob-lc-peano-continuum": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "10.10",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/10-local-connectedness.html"
     },
     "top:prob-locally-finite-not-point-finite": {
       "status": "defined",
@@ -32634,6 +32704,13 @@
       "title": "商空間と同相",
       "num": "2.5",
       "page": "54-general-topology/54B-basic-constructions/01-constructions/02-quotients.html"
+    },
+    "top:quotient-locally-connected": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "商写像と局所連結性",
+      "num": "10.4",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/10-local-connectedness.html"
     },
     "top:quotient-map-criteria": {
       "status": "defined",
@@ -33173,6 +33250,41 @@
       "title": "問題",
       "num": "",
       "page": "54-general-topology/54D-general-properties/01-separation-compactness/04-local-compactness.html"
+    },
+    "top:sec-lcn-locally-connected": {
+      "status": "defined",
+      "type": "section",
+      "title": "局所連結性",
+      "num": "",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/10-local-connectedness.html"
+    },
+    "top:sec-lcn-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/10-local-connectedness.html"
+    },
+    "top:sec-lcn-path": {
+      "status": "defined",
+      "type": "section",
+      "title": "局所弧状連結性",
+      "num": "",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/10-local-connectedness.html"
+    },
+    "top:sec-lcn-peano": {
+      "status": "defined",
+      "type": "section",
+      "title": "ペアノ曲線",
+      "num": "",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/10-local-connectedness.html"
+    },
+    "top:sec-lcn-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/10-local-connectedness.html"
     },
     "top:sec-mz-normal": {
       "status": "defined",

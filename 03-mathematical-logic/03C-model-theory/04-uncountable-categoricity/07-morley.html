@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>モーリーの範疇性定理 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/07-morley.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# モーリーの範疇性定理 {#model:page-morley keywords="Baldwin-Lachlan theorem, Morley categoricity theorem, uncountably categorical theories, prime and minimal over a strongly minimal set, countable models of uncountably categorical theories"}
+
+これまでのページで、非可算濃度で範疇的な理論は $\omega$ 安定（\ref{model:categorical-omega-stable}）で、ヴォート対をもたない（\ref{model:categorical-no-vaught-pair}）ことを示した。本ページでは逆に、**$\omega$ 安定でヴォート対をもたない理論はすべての非可算濃度で範疇的である**（**ボールドウィン–ラクランの定理**、\ref{model:baldwin-lachlan}）ことを示し、二つを合わせて**モーリーの範疇性定理**（\ref{model:morley}）を得る。証明の考え方は、モデルを一つの強極小集合（\ref{model:minimal-formula}）とその次元（\ref{model:dimension-well-defined}）で記述することである：どのモデルも、強極小集合の上の素モデルで、しかも最小のモデルであり、強極小集合の次元はモデルの濃度に等しい。
+
+> 資料：新井敏康『数学基礎論』§5.6（定理 5.6.1・定理 5.6.4 とその証明）を参考にした（本文は写していない）。モデルを強極小集合の上で「素かつ極小」とみる段では、素モデルの一意性（シェラハ）を使わず、素モデルからの初等埋め込みの像がヴォート対の非存在から全体に一致することで同型を得た。
+
+## 記法と定義の確認 {#model:sec-mo-notation}
+
+::: notation
+- $T$ は可算言語の完全な理論で無限モデルをもつ。$\omega$ 安定、ヴォート対、集合上の素モデル（構成可能）、極小・強極小、次元、独立な組の型の一意性、代数的閉包への延長は \ref{model:stable}, \ref{model:vaught-pair}, \ref{model:prime-over-set}, \ref{model:minimal-formula}, \ref{model:dimension-well-defined}, \ref{model:independent-same-type}, \ref{model:extend-to-acl} のとおり。
+- ヴォート対がなければ、無限の定義可能集合はモデルと同じ濃度（\ref{model:categorical-definable-sets-large}）で、極小な論理式は強極小（\ref{model:minimal-strongly-minimal}）。$\omega$ 安定なら極小な論理式がある（\ref{model:minimal-exists}）。
+- 初等埋め込み $e\colon\mathcal{M}_{0}\to\mathcal{M}$ と $\mathcal{L}_{M_{0}}$ 論理式 $\varphi$ について、$\varphi^{e}$ は $\varphi$ のパラメータを $e$ で移した $\mathcal{L}_{M}$ 論理式。
+:::
+
+## 素かつ極小なモデル {#model:sec-mo-prime-minimal}
+
+::: lemma 強極小集合の上で素かつ極小 {#model:prime-minimal-over-strongly-minimal keywords="models are prime and minimal over a strongly minimal set when there are no Vaughtian pairs" index="素かつ極小なモデル|そかつきょくしょうなもでる"}
+（AC）$T$ を $\omega$ 安定でヴォート対をもたないとし、$\mathcal{M}\models T$, $A\subseteq M$、$\psi(x)$ を $\mathcal{L}_{A}$ 論理式で $\psi(\mathcal{M})$ が無限なものとする。このとき
+1. $A\cup\psi(\mathcal{M})$ を含む $\mathcal{M}$ の初等部分構造は $\mathcal{M}$ 自身だけである。
+2. $\mathcal{M}$ は $A\cup\psi(\mathcal{M})$ 上素である。
+:::
+
+::: proof
+**1.** $\mathcal{N}\preccurlyeq\mathcal{M}$, $A\cup\psi(\mathcal{M})\subseteq N$, $N\neq M$ とする。$\psi(\mathcal{N})=\psi(\mathcal{M})\cap N=\psi(\mathcal{M})$（初等性）は無限なので、$(\mathcal{M},\mathcal{N})$ は $\psi$ についてのヴォート対で、仮定に反する。
+
+**2.** \ref{model:prime-over-set} から、$A\cup\psi(\mathcal{M})$ 上構成可能で素な $\mathcal{N}\preccurlyeq\mathcal{M}$ がある。1 から $\mathcal{N}=\mathcal{M}$。
+:::
+
+## ボールドウィン–ラクランの定理 {#model:sec-mo-bl}
+
+::: theorem ボールドウィン–ラクランの定理 {#model:baldwin-lachlan keywords="Baldwin-Lachlan theorem: omega-stable without Vaughtian pairs implies categorical in every uncountable cardinal" index="ボールドウィン–ラクランの定理|ぼーるどうぃんらくらんのていり"}
+（AC）$T$ が $\omega$ 安定でヴォート対をもたなければ、$T$ はすべての非可算基数 $\kappa$ で範疇的である。
+:::
+
+::: proof
+**Step 1（共通の素モデルと強極小な論理式）.** \ref{model:prime-over-set}（$A=\varnothing$）から、$T$ のあるモデルの中に $\varnothing$ 上素なモデル $\mathcal{M}_{0}$ がある。$T$ は完全なので、空写像はどのモデルへも初等的で、$\mathcal{M}_{0}$ は $T$ のどのモデルにも初等的に埋め込める。\ref{model:minimal-exists} から $\mathcal{M}_{0}$ で極小な $\mathcal{L}_{M_{0}}$ 論理式 $\varphi$ があり、\ref{model:minimal-strongly-minimal} から $\varphi$ は強極小。$\varphi$ のパラメータの有限集合を $A_{0}\subseteq M_{0}$ とする。
+
+**Step 2（各モデルでの記述）.** $\mathcal{M}\models T$, $\lvert M\rvert=\kappa$ とし、初等埋め込み $e_{\mathcal{M}}\colon\mathcal{M}_{0}\to\mathcal{M}$ を一つ選ぶ。$\varphi_{\mathcal{M}}\defeq\varphi^{e_{\mathcal{M}}}$, $A_{\mathcal{M}}\defeq e_{\mathcal{M}}(A_{0})$, $D_{\mathcal{M}}\defeq\varphi_{\mathcal{M}}(\mathcal{M})$ とする。
+- $\varphi_{\mathcal{M}}$ は $\mathcal{M}$ で強極小：強極小性の一様な上界は $\mathcal{L}_{A_{0}}$ の文で書け、$e_{\mathcal{M}}$ で移る（\ref{model:strongly-minimal-uniform}、\ref{model:independent-same-type} の Step 0）。
+- \ref{model:categorical-definable-sets-large} から $\lvert D_{\mathcal{M}}\rvert=\kappa$。$A_{\mathcal{M}}$ は有限なので、\ref{model:dimension-well-defined} から $\dim(D_{\mathcal{M}}/A_{\mathcal{M}})=\kappa$。
+- \ref{model:prime-minimal-over-strongly-minimal} から、$\mathcal{M}$ は $A_{\mathcal{M}}\cup D_{\mathcal{M}}$ 上素で、それを含む初等部分構造は $\mathcal{M}$ だけ。
+
+**Step 3（強極小集合の間の初等写像）.** $\mathcal{M},\mathcal{N}$ を濃度 $\kappa$ のモデルとし、$B_{\mathcal{M}}$, $B_{\mathcal{N}}$ を $D_{\mathcal{M}}$, $D_{\mathcal{N}}$ の $A_{\mathcal{M}}$, $A_{\mathcal{N}}$ 上の基底とする（\ref{model:basis-exists}）。どちらも濃度 $\kappa$ なので全単射 $\beta\colon B_{\mathcal{M}}\to B_{\mathcal{N}}$ がある。$f\defeq e_{\mathcal{N}}\circ e_{\mathcal{M}}^{-1}\colon A_{\mathcal{M}}\to A_{\mathcal{N}}$ は初等的（二つの初等埋め込みの合成）で、$\varphi_{\mathcal{M}}^{f}=\varphi_{\mathcal{N}}$。初等性は有限組ごとの条件なので、\ref{model:independent-same-type} から $g\defeq f\cup\beta$ は初等的。\ref{model:extend-to-acl} で $g$ を初等的な全単射 $\bar{g}\colon\mathrm{acl}(A_{\mathcal{M}}B_{\mathcal{M}})\to\mathrm{acl}(A_{\mathcal{N}}B_{\mathcal{N}})$ に延ばす。$D_{\mathcal{M}}\subseteq\mathrm{acl}(A_{\mathcal{M}}B_{\mathcal{M}})$ で、$\bar{g}$ は $\varphi_{\mathcal{M}}$ を満たす元を $\varphi_{\mathcal{N}}$ を満たす元に移し、$\bar{g}^{-1}$ はその逆を行い、$D_{\mathcal{N}}\subseteq\mathrm{acl}(A_{\mathcal{N}}B_{\mathcal{N}})$ なので、$\bar{g}$ は $D_{\mathcal{M}}$ を $D_{\mathcal{N}}$ の上に移す。よって $h_{0}\defeq\bar{g}\restr(A_{\mathcal{M}}\cup D_{\mathcal{M}})$ は $A_{\mathcal{M}}\cup D_{\mathcal{M}}$ から $A_{\mathcal{N}}\cup D_{\mathcal{N}}$ への初等的な全単射。
+
+**Step 4（同型）.** $\mathcal{M}$ は $A_{\mathcal{M}}\cup D_{\mathcal{M}}$ 上素なので、$h_{0}$ は初等埋め込み $h\colon\mathcal{M}\to\mathcal{N}$ に延びる。$h(\mathcal{M})\preccurlyeq\mathcal{N}$ は $A_{\mathcal{N}}\cup D_{\mathcal{N}}$ を含むので、Step 2 の最後（$\mathcal{N}$ について）から $h(\mathcal{M})=\mathcal{N}$。よって $h$ は同型。
+:::
+
+::: hypcheck
+- **$\omega$ 安定性**：素モデル $\mathcal{M}_{0}$ と、各モデルが $A_{\mathcal{M}}\cup D_{\mathcal{M}}$ 上素であること（構成可能なモデルの存在）、極小な論理式の存在に使った。
+- **ヴォート対の非存在**：極小 ⇒ 強極小、$\lvert D_{\mathcal{M}}\rvert=\lvert M\rvert$、各モデルが $A_{\mathcal{M}}\cup D_{\mathcal{M}}$ の上で極小であること（Step 4 の全射性）に使った。
+- **$\kappa$ の非可算性**：$\dim(D_{\mathcal{M}}/A_{\mathcal{M}})=\lvert D_{\mathcal{M}}\rvert$（\ref{model:dimension-well-defined}）に使った。可算モデルでは次元は $0,1,\dots,\aleph_{0}$ のどれでもありうる（下の系）。
+- **強極小性の一様な上界**：Step 3 で、$\mathcal{M}$ の独立な組と $\mathcal{N}$ の独立な組の型が一致することに使った。
+:::
+
+## モーリーの範疇性定理 {#model:sec-mo-morley}
+
+::: theorem モーリーの範疇性定理 {#model:morley keywords="Morley categoricity theorem" index="モーリーの範疇性定理|もーりーのはんちゅうせいていり"}
+（AC）可算言語の完全な理論 $T$（無限モデルをもつ）がある非可算基数で範疇的なら、$T$ はすべての非可算基数で範疇的である。さらに次は同値である。
+1. $T$ はある非可算基数で範疇的。
+2. $T$ はすべての非可算基数で範疇的。
+3. $T$ は $\omega$ 安定でヴォート対をもたない。
+:::
+
+::: proof
+1 ⇒ 3 は \ref{model:categorical-omega-stable} と \ref{model:categorical-no-vaught-pair}。3 ⇒ 2 は \ref{model:baldwin-lachlan}。2 ⇒ 1 は自明（$T$ は無限モデルをもつので、上昇・下降レーヴェンハイム–スコーレムの定理から各非可算濃度のモデルをもつ）。
+:::
+
+::: corollary 可算モデルの個数 {#model:countable-models-of-categorical keywords="uncountably categorical theories have at most countably many countable models" index="非可算範疇的な理論の可算モデル|ひかさんはんちゅうてきなりろんのかさんもでる"}
+（AC）非可算基数で範疇的な理論は、同型を除いて可算個以下の可算モデルしかもたない。
+:::
+
+::: proof
+\ref{model:baldwin-lachlan} の証明の Step 2–4 は、$\kappa$ が可算でも、$\dim(D_{\mathcal{M}}/A_{\mathcal{M}})=\dim(D_{\mathcal{N}}/A_{\mathcal{N}})$ なら $\mathcal{M}\cong\mathcal{N}$ を示している（基底の間の全単射があればよい）。可算モデルの次元は $0,1,2,\dots,\aleph_{0}$ のいずれかなので、可算モデルは同型を除いて可算個以下。
+:::
+
+::: example
+1. **代数的閉体.** $\mathrm{ACF}_{p}$ は $\omega$ 安定（\ref{model:stable} の例）で、ヴォート対をもたない（\ref{model:prob-vp-acf}、標数 $0$ の場合。一般の $p$ でも同様）ので、すべての非可算濃度で範疇的である。これは「同じ標数で同じ超越次数の代数的閉体は同型」というシュタイニッツの定理と、「非可算な代数的閉体の超越次数は濃度に等しい」から直接にも分かる。可算モデルは超越次数 $0,1,\dots,\aleph_{0}$ の $\aleph_{0}$ 個。
+2. **範疇的でない例.** $\mathrm{DLO}$ は $\omega$ 安定でない（\ref{model:stable} の例）。$T_{E}$（\ref{model:prob-st-equivalence}）は $\omega$ 安定だが、ヴォート対をもつ（\ref{model:prob-vp-equivalence}）。どちらも非可算濃度で範疇的でない。
+:::
+
+## 問題 {#model:sec-mo-problems}
+
+::: problem {#model:prob-mo-successor}
+後者関数 $s$ だけの言語で $\mathrm{Th}(\mathbb{Z},s)$ を考える。そのモデルは、$\mathbb{Z}$ と同型な「鎖」（$s$ の軌道）の互いに交わらない和であることを認めて、$\mathrm{Th}(\mathbb{Z},s)$ がすべての非可算濃度で範疇的で、可算モデルがちょうど $\aleph_{0}$ 個あることを示せ。
+:::
+
+::: solution
+各鎖は可算なので、濃度 $\kappa>\aleph_{0}$ のモデルは鎖をちょうど $\kappa$ 本もつ。同じ本数の鎖をもつモデルは、鎖を一本ずつ対応させれば同型（各鎖は $(\mathbb{Z},s)$ と同型）。よって $\kappa$ 範疇的。可算モデルは鎖の本数 $1,2,\dots,\aleph_{0}$ で決まり、これらは互いに同型でない（同型は鎖を鎖に移す）。本数 $n$ のモデルがすべて $\mathrm{Th}(\mathbb{Z},s)$ のモデルであることは認める（量化子消去による）。よって可算モデルはちょうど $\aleph_{0}$ 個。（$x=x$ が強極小で、次元は鎖の本数にあたる。）
+:::
+
+::: supplement
+**前提を変えると.** 言語が非可算の場合のモーリーの定理の類似は、シェラハによって示されたとされる（\ref{model:page-stability} の補足）。非可算範疇的な理論の可算モデルの個数は、$1$（$\aleph_{0}$ 範疇的なとき）か $\aleph_{0}$ のどちらかであることが、ボールドウィン–ラクランによって示されている（\ref{model:countable-models-of-categorical} の精密化。ここでは証明しない）。
+
+**似た定理.** ライル–ナルジェフスキの定理（\ref{model:ryll-nardzewski}）は $\aleph_{0}$ 範疇性を型空間の有限性で特徴づける。モーリーの定理は非可算範疇性を「$\omega$ 安定性 ＋ ヴォート対の非存在」で特徴づける。両方を満たす理論（完全に範疇的な理論）には、無限集合、標数 $p$ の無限体上のベクトル空間などがあり、代数的閉体は非可算でのみ範疇的である。モーリーの定理の証明で導入された概念（ランク、強極小集合、素モデル）は、シェラハの分類理論や、ザイルバー・フルショフスキーの幾何的モデル理論の出発点になったとされる。
+
+**高い視点から：範疇性は「座標の本数だけで決まる世界」.** モーリーの定理は、範疇性が一つの濃度で成り立てば全部の非可算濃度で成り立つ、という驚くべき一様性を主張する。ボールドウィン–ラクランの証明が示すのは、その理由が「モデルが一つの強極小集合に支配され、強極小集合が次元（独立な座標の本数）だけで決まる」ことにある、という構造的な説明である。比喩で言えば、範疇的な理論の世界は、ある一本の数直線のような素材（強極小集合）を何本束ねたか（次元）だけで決まり、非可算の世界では本数が濃度そのものになってしまうので、同じ大きさの世界は一つしかない。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

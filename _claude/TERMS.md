@@ -402,3 +402,4 @@
 | simple set / limit lemma / low set | 単純集合 / 極限補題 / 低集合（低い集合） | | 02-wkl0 の「低い」と同じ意味。comp:page-low-simple |
 | locally connected / locally path-connected / comb space / Peano curve / Cantor set | 局所連結 / 局所弧状連結 / 櫛形空間 / ペアノ曲線 / カントール集合 | 空間充填曲線、くし形空間 | 小山に合わせる。top:page-local-connectedness |
 | Cantor space / quasi-component / retract / Alexandroff-Hausdorff theorem / Brouwer characterization | カントール空間 / 準成分 / レトラクト / アレクサンドロフ–ハウスドルフの定理 / ブラウワーの特徴づけ | 引き込み | 仮。top:page-cantor-set |
+| perfect map / upper semicontinuous decomposition / closed equivalence relation | 完全写像 / 上半連続分割 / 閉な同値関係 | 固有写像 | 小山に合わせる。top:page-perfect-maps |

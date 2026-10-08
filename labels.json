@@ -31081,6 +31081,13 @@
       "num": "3.2",
       "page": "54-general-topology/54E-richer-structures/02-uniform-spaces/03-uniform-completeness.html"
     },
+    "top:closed-map-fibers": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "閉写像の特徴づけ",
+      "num": "12.1",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/12-perfect-maps.html"
+    },
     "top:closed-set": {
       "status": "defined",
       "type": "definition",
@@ -31143,6 +31150,13 @@
       "title": "コンパクト集合と閉集合の距離",
       "num": "1.6",
       "page": "54-general-topology/54C-maps-function-spaces/01-function-spaces/01-function-space-topologies.html"
+    },
+    "top:compact-closed-separation-regular": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "コンパクト集合と閉集合の分離",
+      "num": "12.4",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/12-perfect-maps.html"
     },
     "top:compact-complete-totally-bounded": {
       "status": "defined",
@@ -32096,6 +32110,13 @@
       "num": "",
       "page": "54-general-topology/54D-general-properties/01-separation-compactness/08-paracompactness.html"
     },
+    "top:page-perfect-maps": {
+      "status": "defined",
+      "type": "page",
+      "title": "完全写像",
+      "num": "",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/12-perfect-maps.html"
+    },
     "top:page-quotients": {
       "status": "defined",
       "type": "page",
@@ -32236,12 +32257,40 @@
       "num": "10.8",
       "page": "54-general-topology/54D-general-properties/01-separation-compactness/10-local-connectedness.html"
     },
+    "top:perfect-compact-preimage": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "完全写像とコンパクト集合",
+      "num": "12.3",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/12-perfect-maps.html"
+    },
     "top:perfect-complete-uncountable": {
       "status": "defined",
       "type": "corollary",
       "title": "孤立点のない完備距離空間は非可算",
       "num": "2.6",
       "page": "54-general-topology/54E-richer-structures/01-metric-spaces/02-baire.html"
+    },
+    "top:perfect-image-metrizable": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "完全写像の像の距離化可能性",
+      "num": "12.6",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/12-perfect-maps.html"
+    },
+    "top:perfect-map": {
+      "status": "defined",
+      "type": "definition",
+      "title": "閉な同値関係と完全写像",
+      "num": "12.2",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/12-perfect-maps.html"
+    },
+    "top:perfect-preserves": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "完全写像が保つ性質",
+      "num": "12.5",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/12-perfect-maps.html"
     },
     "top:pointwise-is-product": {
       "status": "defined",
@@ -32571,6 +32620,20 @@
       "title": "",
       "num": "7.10",
       "page": "54-general-topology/54D-general-properties/01-separation-compactness/07-stone-cech.html"
+    },
+    "top:prob-pm-cone": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "12.7",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/12-perfect-maps.html"
+    },
+    "top:prob-pm-lc-criterion": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "12.8",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/12-perfect-maps.html"
     },
     "top:prob-product-compact-iff": {
       "status": "defined",
@@ -33551,6 +33614,34 @@
       "title": "σコンパクトな局所コンパクト空間",
       "num": "",
       "page": "54-general-topology/54D-general-properties/01-separation-compactness/08-paracompactness.html"
+    },
+    "top:sec-pm-closed": {
+      "status": "defined",
+      "type": "section",
+      "title": "閉写像と閉な同値関係",
+      "num": "",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/12-perfect-maps.html"
+    },
+    "top:sec-pm-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/12-perfect-maps.html"
+    },
+    "top:sec-pm-preserve": {
+      "status": "defined",
+      "type": "section",
+      "title": "完全写像が保つ性質",
+      "num": "",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/12-perfect-maps.html"
+    },
+    "top:sec-pm-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/12-perfect-maps.html"
     },
     "top:sec-qt-adjunction": {
       "status": "defined",

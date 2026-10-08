@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>完全写像 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54D-general-properties/01-separation-compactness/12-perfect-maps.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 完全写像 {#top:page-perfect-maps keywords="closed map characterization, upper semicontinuous decomposition, closed equivalence relation, perfect map, preimages of compact sets, perfect images preserve Hausdorff regular normal locally compact second countable, metrizability of perfect images of separable metric spaces"}
+
+閉写像は「像の位相が商位相になる」写像であり、商空間の性質を調べる道具になる（\ref{top:quotient-map-criteria}）。**完全写像**（\ref{top:perfect-map}）は、閉写像でかつ各点の逆像がコンパクトなもので、コンパクトハウスドルフ空間の商写像の典型である。本ページでは、閉写像の逆像による特徴づけ（\ref{top:closed-map-fibers}）から始めて、完全写像がハウスドルフ性・正則性・局所コンパクト性・第二可算性（**重み**）を保つこと（\ref{top:perfect-preserves}）を示し、可分距離空間の完全写像による像が距離化可能であること（\ref{top:perfect-image-metrizable}）を導く。特に、コンパクト距離空間を閉な同値関係で割った商はコンパクト距離化可能である。
+
+> 資料：小山晃『位相空間論』§6.5（商空間と商写像、完全写像）を参考にした（本文は写していない）。同書で問題とされている「完全写像はコンパクト集合の逆像をコンパクトにする」「正則性・局所コンパクト性の保存」も証明した。
+
+## 記法と定義の確認 {#top:sec-pm-notation}
+
+::: notation
+- 商写像、閉な連続全射が商写像であること、部分空間を一点に潰す商は \ref{top:quotient-topology}, \ref{top:quotient-map-criteria}, \ref{top:collapse} のとおり。
+- 分離公理（$T_{1}$, 正則, 正規, $T_{3}$）は \ref{top:separation-axioms}、ハウスドルフ空間のコンパクト集合の分離は \ref{top:compact-hausdorff-closed}、局所コンパクトは \ref{top:locally-compact}、ウリゾーンの距離化定理は \ref{top:urysohn-metrization} のとおり。
+- 写像 $f\colon X\to Y$ と $U\subseteq X$ について $f_{\ast}(U)\defeq\{y\in Y:f^{-1}(y)\subseteq U\}=Y\setminus f[X\setminus U]$ とする。
+:::
+
+## 閉写像と閉な同値関係 {#top:sec-pm-closed}
+
+::: lemma 閉写像の特徴づけ {#top:closed-map-fibers keywords="f is closed iff every open neighbourhood of a fibre contains the preimage of an open neighbourhood of the point" index="閉写像の特徴づけ|へいしゃぞうのとくちょうづけ"}
+写像 $f\colon X\to Y$ について、次は同値である。
+1. $f$ は閉写像（閉集合の像が閉）。
+2. 任意の $y\in Y$ と開集合 $U\supseteq f^{-1}(y)$ に対し、$y$ を含む開集合 $V$ で $f^{-1}(V)\subseteq U$ となるものがある。
+3. 任意の開集合 $U\subseteq X$ について $f_{\ast}(U)$ は開集合。
+:::
+
+::: proof
+**1 ⇒ 3.** $f_{\ast}(U)=Y\setminus f[X\setminus U]$ で、$f[X\setminus U]$ は閉。
+
+**3 ⇒ 2.** $V\defeq f_{\ast}(U)$ は開で $y\in V$、$x\in f^{-1}(V)$ なら $f^{-1}(f(x))\subseteq U$ なので $x\in U$。
+
+**2 ⇒ 1.** $F\subseteq X$ を閉とし、$y\notin f[F]$ とする。$f^{-1}(y)\subseteq X\setminus F$ なので、2 から $y\in V$, $f^{-1}(V)\subseteq X\setminus F$ となる開集合 $V$ があり、$V\cap f[F]=\emptyset$。よって $f[F]$ の補集合は開。
+:::
+
+::: definition 閉な同値関係と完全写像 {#top:perfect-map keywords="closed equivalence relation, upper semicontinuous decomposition, perfect map" index="完全写像|かんぜんしゃぞう, 上半連続分割|じょうはんれんぞくぶんかつ, 閉な同値関係|へいなどうちかんけい"}
+1. 空間 $X$ 上の同値関係 $R$ が**閉**であるとは、射影 $p\colon X\to X/R$ が閉写像であることをいう。このとき同値類への分割を**上半連続分割**という。
+2. 連続な全射 $f\colon X\to Y$ が**完全写像**であるとは、$f$ が閉写像で、各 $y\in Y$ について $f^{-1}(y)$ がコンパクトであることをいう。
+:::
+
+::: example
+1. コンパクト空間からハウスドルフ空間への連続な全射は完全写像である（閉写像は \ref{top:compact-to-hausdorff}、逆像はコンパクト空間の閉集合）。
+2. $X$ の閉集合 $A$ を一点に潰す射影 $X\to X/A$ は閉写像である（閉集合 $F$ の像の逆像は、$F\cap A=\emptyset$ なら $F$、そうでなければ $F\cup A$ で閉）。$A$ がコンパクトならこれは完全写像。
+3. 射影 $\mathbb{R}^{2}\to\mathbb{R}$, $(x,y)\mapsto x$ は閉写像でない（閉集合 $\{(x,1/x):x>0\}$ の像 $(0,\infty)$ は閉でない）。
+:::
+
+## 完全写像が保つ性質 {#top:sec-pm-preserve}
+
+::: proposition 完全写像とコンパクト集合 {#top:perfect-compact-preimage keywords="preimages of compact sets under perfect maps are compact" index="完全写像とコンパクト性|かんぜんしゃぞうとこんぱくとせい"}
+$f\colon X\to Y$ が完全写像なら、コンパクト集合 $K\subseteq Y$ の逆像 $f^{-1}(K)$ はコンパクトである。
+:::
+
+::: proof
+$f^{-1}(K)$ の開被覆 $\mathcal{U}$（$X$ の開集合からなるとしてよい）をとる。各 $y\in K$ について、コンパクトな $f^{-1}(y)$ は有限個の $\mathcal{U}$ の元で覆われ、その和を $U_{y}$ とする。\ref{top:closed-map-fibers} の 2 から $y\in V_{y}$, $f^{-1}(V_{y})\subseteq U_{y}$ となる開集合 $V_{y}$ がある。$K$ はコンパクトなので $K\subseteq V_{y_{1}}\cup\cdots\cup V_{y_{m}}$ となり、$f^{-1}(K)\subseteq U_{y_{1}}\cup\cdots\cup U_{y_{m}}$ は有限個の $\mathcal{U}$ の元で覆われる。
+:::
+
+::: lemma コンパクト集合と閉集合の分離 {#top:compact-closed-separation-regular keywords="in a regular space a compact set and a disjoint closed set can be separated" index="コンパクト集合と閉集合の分離|こんぱくとしゅうごうとへいしゅうごうのぶんり"}
+正則空間で、コンパクト集合 $K$ とそれと交わらない閉集合 $F$ は、交わらない開集合で分離される。
+:::
+
+::: proof
+各 $k\in K$ について、正則性から交わらない開集合 $U_{k}\ni k$, $W_{k}\supseteq F$ がある。$K\subseteq U_{k_{1}}\cup\cdots\cup U_{k_{n}}$ として、$U\defeq\bigcup U_{k_{i}}$, $W\defeq\bigcap W_{k_{i}}$ をとれば $K\subseteq U$, $F\subseteq W$, $U\cap W=\emptyset$。
+:::
+
+::: theorem 完全写像が保つ性質 {#top:perfect-preserves keywords="perfect images of Hausdorff, regular, normal, locally compact, second countable spaces" index="完全写像が保つ性質|かんぜんしゃぞうがたもつせいしつ"}
+$f\colon X\to Y$ を完全写像とする。
+1. $X$ がハウスドルフなら $Y$ もハウスドルフ。
+2. $X$ が正則なら $Y$ も正則。$X$ が正規なら $Y$ も正規（これは $f$ が閉な連続全射であれば成り立つ）。$X$ が $T_{1}$ なら $Y$ も $T_{1}$（同様）。
+3. $X$ がハウスドルフかつ局所コンパクトなら、$Y$ も局所コンパクト。
+4. $X$ が可算な開基をもてば、$Y$ も可算な開基をもつ。
+:::
+
+::: proof
+共通の手法：$X$ の交わらない開集合 $U\supseteq f^{-1}(A)$, $U'\supseteq f^{-1}(A')$ があれば、$f_{\ast}(U)\supseteq A$, $f_{\ast}(U')\supseteq A'$ は開（\ref{top:closed-map-fibers} の 3）で交わらない（$z$ が両方に属せば $\emptyset\ne f^{-1}(z)\subseteq U\cap U'$）。
+
+**1.** $y\ne y'$ なら $f^{-1}(y)$, $f^{-1}(y')$ は交わらないコンパクト集合で、\ref{top:compact-hausdorff-closed} の 2 から交わらない開集合で分離され、上の手法で $y,y'$ が分離される。
+
+**2.** $T_{1}$：$y=f(x)$ について $\{y\}=f[\{x\}]$ は閉写像による閉集合の像。正則：$y\notin F$（$F$ 閉）なら、$f^{-1}(y)$ はコンパクトで閉集合 $f^{-1}(F)$ と交わらないので、\ref{top:compact-closed-separation-regular} で分離され、上の手法で $y$ と $F$ が分離される。正規：交わらない閉集合 $A,A'$ の逆像は交わらない閉集合で、正規性で分離され、上の手法で $A,A'$ が分離される（逆像のコンパクト性は使わない）。
+
+**3.** $y\in Y$ について、$f^{-1}(y)$ の各点はコンパクトな近傍をもつ（ハウスドルフ局所コンパクトなので開近傍 $O_{x}$ で閉包がコンパクトなもの、\ref{top:lch-neighborhood-base}）。有限個 $O_{x_{1}},\dots,O_{x_{n}}$ で $f^{-1}(y)$ を覆い、$O\defeq\bigcup O_{x_{i}}$ とすると $\overline{O}$ はコンパクト。$V\defeq f_{\ast}(O)$ は $y$ を含む開集合で $V\subseteq f[O]\subseteq f[\overline{O}]$、$f[\overline{O}]$ はコンパクト（連続像）。よって $y$ はコンパクトな近傍をもつ。
+
+**4.** 可算な開基 $\mathcal{B}$ について、その元の有限和全体 $\mathcal{B}'$（可算）をとり、$\mathcal{W}\defeq\{f_{\ast}(B):B\in\mathcal{B}'\}$（可算、開集合からなる）とする。$y\in V$（$V$ 開）なら、コンパクトな $f^{-1}(y)\subseteq f^{-1}(V)$ は有限個の $\mathcal{B}$ の元で $f^{-1}(V)$ の中で覆われ、その和 $B\in\mathcal{B}'$ について $f^{-1}(y)\subseteq B\subseteq f^{-1}(V)$。よって $y\in f_{\ast}(B)$ で、$z\in f_{\ast}(B)$ なら $\emptyset\ne f^{-1}(z)\subseteq f^{-1}(V)$ から $z\in V$。したがって $\mathcal{W}$ は開基。
+:::
+
+::: hypcheck
+- **閉写像であること**：すべての項目で、\ref{top:closed-map-fibers} の $f_{\ast}$ が開集合を与えることとして使った。
+- **逆像のコンパクト性**：1, 2（正則）, 3, 4 で、逆像を有限個の開集合でまとめて扱うのに使った。正規性と $T_{1}$ だけは閉写像であれば足りる。
+- **全射**：$f^{-1}(z)\ne\emptyset$ を使って、$f_{\ast}(U)$ の交わらなさや包含を導いた。
+:::
+
+::: theorem 完全写像の像の距離化可能性 {#top:perfect-image-metrizable keywords="a perfect image of a separable metric space is metrizable; quotients of compact metric spaces by closed equivalence relations are compact metrizable" index="完全写像の像の距離化|かんぜんしゃぞうのぞうのきょりか"}
+可分距離空間 $X$ から空間 $Y$ への完全写像があれば、$Y$ は距離化可能である。特に、コンパクト距離空間 $X$ 上の閉な同値関係 $R$ について、$X/R$ はコンパクトで距離化可能である。
+:::
+
+::: proof
+可分距離空間は可算な開基をもつ（稠密な可算集合を中心とする有理数半径の開球）。距離空間は正則かつ $T_{1}$（\ref{top:metric-normal}）。\ref{top:perfect-preserves} の 2, 4 から $Y$ は第二可算な $T_{3}$ 空間で、ウリゾーンの距離化定理（\ref{top:urysohn-metrization}）から距離化可能。後半：コンパクト距離空間は可分（\ref{top:compact-metric-second-countable}）。$R$ が閉なので射影 $p$ は閉写像で、$\{p(x)\}=p[\{x\}]$ は閉写像による閉集合 $\{x\}$ の像なので閉で、その逆像である同値類はコンパクト空間の閉集合、したがってコンパクト。よって $p$ は完全写像で、$X/R$ は距離化可能かつコンパクト（連続像）。
+:::
+
+## 問題 {#top:sec-pm-problems}
+
+::: problem {#top:prob-pm-cone}
+コンパクト距離空間 $X$ の**錐** $CX\defeq(X\times[0,1])/(X\times\{1\})$ は距離化可能であることを示せ。
+:::
+
+::: solution
+$X\times[0,1]$ はコンパクト距離空間で、$X\times\{1\}$ はコンパクトな閉集合。それを一点に潰す射影は閉写像で（上の例の 2）、逆像はコンパクト（$X\times\{1\}$ と一点集合）なので完全写像。\ref{top:perfect-image-metrizable} より $CX$ は距離化可能。
+:::
+
+::: problem {#top:prob-pm-lc-criterion}
+$f\colon X\to Y$ を局所コンパクトなハウスドルフ空間 $Y$ への連続な全射とし、コンパクト集合の逆像がすべてコンパクトであるとする。$X$ がハウスドルフなら $f$ は完全写像であることを示せ。
+:::
+
+::: solution
+逆像のコンパクト性は一点集合について成り立つ。閉写像であることを示す。$F\subseteq X$ を閉、$y\in\overline{f[F]}$ とする。$y$ のコンパクトな近傍 $K$ をとる（$Y$ はハウスドルフなので $K$ は閉）。$f^{-1}(K)\cap F$ はコンパクト（コンパクト集合の閉集合）で、その像 $f[f^{-1}(K)\cap F]=K\cap f[F]$ はコンパクト、したがって $Y$ で閉。$y$ の各近傍 $N$ について $N\cap\mathrm{int}\,K$ は $y$ の近傍で $f[F]$ と交わるので、$y\in\overline{K\cap f[F]}=K\cap f[F]$。よって $y\in f[F]$ で、$f[F]$ は閉。
+:::
+
+::: supplement
+**前提を変えると.** 可分性を外しても、距離空間の完全写像による像は距離化可能であること（花井–森田–ストーンの定理の一部）が知られている（小山は長田–スミルノフの距離化定理を使って示している。ここでは扱わない）。閉写像だけでは距離化可能性は保たれない：$\mathbb{R}$ の $\mathbb{Z}$ を一点に潰した空間は閉写像の像だが、潰した点で第一可算でなく距離化可能でない（ここでは確かめていない）。
+
+**似た定理.** 完全写像はパラコンパクト性も保ち、逆にパラコンパクト空間の完全写像による逆像もパラコンパクトであることが知られている（\ref{top:page-paracompactness} の系列）。圏論的には、完全写像はコンパクトハウスドルフ空間の圏の中の「固有写像」にあたり、\ref{top:perfect-compact-preimage} の性質（固有性）と局所コンパクト空間での同値性（\ref{top:prob-pm-lc-criterion}）は、一点コンパクト化への延長可能性と言い換えられることが知られている。
+
+**高い視点から：「ほどよい商」.** 一般の商写像は空間を好き勝手に貼り合わせ、ハウスドルフ性さえ壊しうる（\ref{top:quotient-not-hausdorff}）。完全写像は、貼り合わせる部分（逆像）がコンパクトで、しかも貼り合わせ方が閉写像という「近くのものは近くに」の条件を満たす、ほどよい商である。比喩で言えば、布をたたむときに、コンパクトな（有限の大きさで端のある）部分だけを一点に丸め、しかも丸め方が連続的に変わるなら、布の手触り（分離性や可算性）は保たれる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

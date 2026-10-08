@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ラドナーの定理 | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/04-complexity/15-ladner.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ラドナーの定理 {#comp:page-ladner keywords="Ladner's theorem, NP-intermediate problems, padded SAT, delayed diagonalization, slowly growing padding function, P versus NP"}
+
+$\mathrm{P}\ne\mathrm{NP}$ なら、NP の言語は「P に属する」か「NP 完全」かのどちらかなのだろうか。**ラドナーの定理**（\ref{comp:ladner}）は、そうではないことを示す：$\mathrm{P}\ne\mathrm{NP}$ なら、NP に属し、P に属さず、NP 完全でもない言語がある。本ページでは、SAT に長さ $n^{H(n)}$ の詰め物を付けた言語 $\mathrm{SAT}_{H}$（\ref{comp:padded-sat}）を使う証明を示す。$H$ は非常にゆっくり増える関数で、「$\mathrm{SAT}_{H}$ を速く解く機械が見つかれば増加をやめる」ように定める（**遅延対角化**）。$H$ が有界なら $\mathrm{SAT}_{H}$ は SAT と本質的に同じで、$H$ が非有界なら詰め物が長すぎて SAT を還元できない。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論（詰め物を使う証明）に従って組み立てた。
+
+## 記法と定義の確認 {#comp:sec-ld-notation}
+
+::: notation
+- 時間計算量、P、NP、多項式時間還元、NP 完全、クック–レヴィンの定理（SAT は NP 完全）は \ref{comp:running-time}, \ref{comp:class-p}, \ref{comp:class-np}, \ref{comp:poly-reduction}, \ref{comp:np-complete}, \ref{comp:cook-levin} のとおり。
+- 決定性 TM を計算可能に $M_{1},M_{2},\ldots$ と並べ、各機械が無限個の番号で現れるようにする（符号に意味のない状態を付け足す）。$\log$ は底 $2$ で、$\log\log n$ などは切り捨てた整数値（$n$ が小さいときは $0$）とする。
+- 「$M_{i}$ は入力 $x$ の上で $i\lvert x\rvert^{i}$ 段以内に止まり、$x\in L$ かどうかを正しく答える」を「$M_{i}$ は $x$ で $L$ を時間内に正しく判定する」と言う。
+:::
+
+## 詰め物をした SAT {#comp:sec-ld-padding}
+
+::: definition 詰め物をした SAT {#comp:padded-sat keywords="SAT_H = {psi 0 1^{n^{H(n)}} : psi in SAT, |psi| = n} with a slowly growing H" index="詰め物をした SAT|つめものをしたさっと"}
+関数 $H\colon\N\to\N$ を、$n$ に関する帰納法で次のように定める：$H(n)$ は、$i<\log\log n$ で「$\lvert x\rvert\le\log n$ のすべての $x$ で、$M_{i}$ が $x$ で $\mathrm{SAT}_{H}$ を時間内に正しく判定する」ものの最小値、そのような $i$ がなければ $\log\log n$ とする。ここで
+$$
+\mathrm{SAT}_{H}\defeq\{\psi01^{n^{H(n)}}:\psi\in\mathrm{SAT},\ \lvert\psi\rvert=n\}.
+$$
+$\lvert x\rvert\le\log n<n$ の $x$ が $\mathrm{SAT}_{H}$ に属するかは、$\lvert x\rvert$ より小さい値での $H$ だけで決まるので、この定義は循環していない。
+:::
+
+::: lemma H は多項式時間で計算できる {#comp:padding-h-computable keywords="H is computable in time polynomial in n" index="詰め物の関数の計算|つめもののかんすうのけいさん"}
+$n$ を（二進で、または長さ $n$ の入力から）与えて $H(n)$ を $n$ の多項式時間で計算できる。したがって $\mathrm{SAT}_{H}\in\mathrm{NP}$。
+:::
+
+::: proof
+$H(n)$ の計算では、$i<\log\log n$ と $\lvert x\rvert\le\log n$ の $x$（高々 $2n$ 個）について、(a) $M_{i}$ を $x$ の上で $i\lvert x\rvert^{i}\le(\log\log n)(\log n)^{\log\log n}$ 段だけ模倣し、(b) $x\in\mathrm{SAT}_{H}$ かどうかを調べる。(a) の段数は $n$ より小さく抑えられる（十分大きい $n$ で $(\log n)^{\log\log n}\le n$）。(b) は、$x$ が $\psi01^{m^{H(m)}}$ の形かを調べ（$H(m)$ を再帰的に計算する。$m<\lvert x\rvert\le\log n$）、$\psi$ の充足可能性を総当たり（$2^{\lvert\psi\rvert}\le2^{\log n}=n$ 通り）で調べる。再帰で呼ばれる $H(m)$ は $m\le\log n$ なので、全体の時間を $T(n)$ とすると $T(n)\le\mathrm{poly}(n)+O(n)\cdot T(\log n)$ で、$T(\log n)$ は $\log n$ の多項式なので、$T(n)$ は $n$ の多項式。
+
+NP：$y$ が与えられたら、$\psi01^{k}$ の形か調べて $n=\lvert\psi\rvert$ とし、$H(n)$ を計算して $k=n^{H(n)}$ か調べ（$k\le\lvert y\rvert$ なので多項式時間）、$\psi$ の充足する割り当てを証明書として検証する。
+:::
+
+## 二つの場合 {#comp:sec-ld-cases}
+
+::: lemma H が有界なら SAT は P {#comp:padding-bounded keywords="if SAT_H is in P then H is eventually bounded and SAT is in P" index="詰め物と P|つめものとぴー"}
+1. $\mathrm{SAT}_{H}\in\mathrm{P}$ なら、ある $C$ で、十分大きいすべての $n$ で $H(n)\le C$。
+2. $\mathrm{SAT}_{H}\in\mathrm{P}$ なら $\mathrm{SAT}\in\mathrm{P}$。
+:::
+
+::: proof
+**1.** $\mathrm{SAT}_{H}$ を多項式時間で決定する機械は、ある $i$ について「すべての入力 $x$ で $\mathrm{SAT}_{H}$ を $i\lvert x\rvert^{i}$ 段以内に正しく判定する」機械 $M_{i}$ として現れる（同じ機械が無限個の番号をもつので、時間の上界に合う大きな $i$ がとれる）。$\log\log n>i$ となる $n$ では、この $i$ は $H(n)$ の定義の条件を満たすので $H(n)\le i$。
+
+**2.** 1 から、十分大きい $n$ で $H(n)\le C$。$\psi\mapsto\psi01^{n^{H(n)}}$（$n=\lvert\psi\rvert$）は、$H$ が多項式時間で計算でき（\ref{comp:padding-h-computable}）、詰め物の長さが $n^{C}$ 以下なので多項式時間の還元 $\mathrm{SAT}\le_{\mathrm{P}}\mathrm{SAT}_{H}$。$\mathrm{SAT}_{H}\in\mathrm{P}$ から $\mathrm{SAT}\in\mathrm{P}$。
+:::
+
+::: lemma P に属さなければ H は発散する {#comp:padding-unbounded keywords="if SAT_H is not in P then H(n) tends to infinity" index="詰め物の関数の発散|つめもののかんすうのはっさん"}
+$\mathrm{SAT}_{H}\notin\mathrm{P}$ なら $H(n)\to\infty$。
+:::
+
+::: proof
+各 $i$ について、$M_{i}$ は $\mathrm{SAT}_{H}$ を時間内に正しく判定しない入力 $x_{i}$ をもつ（そうでなければ $M_{i}$ が多項式時間で $\mathrm{SAT}_{H}$ を決定する）。$k$ を与え、$n_{0}$ を「$n\ge n_{0}$ なら $\log n\ge\max_{i\le k}\lvert x_{i}\rvert$ かつ $\log\log n>k$」となるようにとる。$n\ge n_{0}$ で $H(n)=i\le k$ とすると、$i<\log\log n$ なので $i$ は定義の条件を満たすはずだが、$\lvert x_{i}\rvert\le\log n$ の $x_{i}$ で失敗するので矛盾。$H(n)=\log\log n$ の場合も $>k$。よって $n\ge n_{0}$ で $H(n)>k$。
+:::
+
+## ラドナーの定理 {#comp:sec-ld-theorem}
+
+::: theorem ラドナーの定理 {#comp:ladner keywords="if P != NP then there is a language in NP that is neither in P nor NP-complete" index="ラドナーの定理|らどなーのていり, NP 中間|えぬぴーちゅうかん"}
+$\mathrm{P}\ne\mathrm{NP}$ なら、$\mathrm{SAT}_{H}$ は NP に属し、P に属さず、NP 完全でない。
+:::
+
+::: proof
+**NP に属する**ことは \ref{comp:padding-h-computable}。**P に属さない**：属すれば \ref{comp:padding-bounded} の 2 から $\mathrm{SAT}\in\mathrm{P}$ で、SAT は NP 完全なので $\mathrm{P}=\mathrm{NP}$ となり仮定に反する。
+
+**NP 完全でない.** NP 完全なら、$\mathrm{SAT}\le_{\mathrm{P}}\mathrm{SAT}_{H}$ が $\lvert f(\psi)\rvert\le\lvert\psi\rvert^{c}$（十分大きい $\psi$ で）となる多項式時間の $f$ で与えられる。$\mathrm{SAT}_{H}\notin\mathrm{P}$ なので \ref{comp:padding-unbounded} から $H(n)\to\infty$ で、$m\ge N$ なら $H(m)>2c$ となる $N$ がある。次の手続き $A$ で SAT を多項式時間で決定できることを示す。
+
+$A(\psi)$：$f(\psi)$ を計算する。$\psi01^{k}$ の形でなければ（$\mathrm{SAT}_{H}$ に属さないので）拒否。形が $\varphi01^{k}$（$m\defeq\lvert\varphi\rvert$）なら、$k\ne m^{H(m)}$ のとき拒否。$m<N$ なら $\varphi$ を総当たりで判定し、$m\ge N$ なら $A(\varphi)$ を返す。
+
+正しさ：$\psi\in\mathrm{SAT}\iff f(\psi)\in\mathrm{SAT}_{H}\iff\varphi\in\mathrm{SAT}$（形と詰め物の長さが正しいとき）。時間：$m\ge N$ なら $m^{2c}<m^{H(m)}\le\lvert f(\psi)\rvert\le\lvert\psi\rvert^{c}$ なので $m<\lvert\psi\rvert^{1/2}$。再帰のたびに長さが平方根以下になるので再帰の深さは $O(\log\log\lvert\psi\rvert)$ で、各段は $\lvert\psi\rvert$ の多項式時間。よって $A$ は多項式時間で、$\mathrm{SAT}\in\mathrm{P}$、すなわち $\mathrm{P}=\mathrm{NP}$ となり矛盾。
+:::
+
+::: hypcheck
+- **$\mathrm{P}\ne\mathrm{NP}$**：「P に属さない」と「NP 完全でない」の両方の矛盾の源である。
+- **$H$ の多項式時間計算可能性**：NP への所属と、\ref{comp:padding-bounded} の還元に使った。そのために、$H(n)$ の定義では長さ $\log n$ 以下の入力だけを調べ、時間の上界 $i\lvert x\rvert^{i}$ の $i$ を $\log\log n$ 未満に制限した。
+- **同じ機械が無限個の番号をもつこと**：\ref{comp:padding-bounded} の 1 で、多項式時間の機械に合う大きな $i$ をとるのに使った。
+:::
+
+## 問題 {#comp:sec-ld-problems}
+
+::: problem {#comp:prob-ld-many}
+$\mathrm{P}\ne\mathrm{NP}$ を仮定する。$\mathrm{SAT}_{H}$ に同じ構成を適用して、NP 中間の言語 $L'$ で、$L'\le_{\mathrm{P}}\mathrm{SAT}_{H}$ だが $\mathrm{SAT}_{H}\not\le_{\mathrm{P}}L'$ となるものを作る方法を説明せよ。
+:::
+
+::: solution
+$\mathrm{SAT}$ を $\mathrm{SAT}_{H}$ に置き換えて、詰め物の関数 $H'$ と $L'\defeq(\mathrm{SAT}_{H})_{H'}$ を同様に定める。$L'\le_{\mathrm{P}}\mathrm{SAT}_{H}$：形と詰め物の長さを調べ、正しければ詰め物を外したものを、そうでなければ $\mathrm{SAT}_{H}$ に属さない固定の文字列を出力する。$L'\notin\mathrm{P}$：属すれば \ref{comp:padding-bounded} と同じ議論で $\mathrm{SAT}_{H}\in\mathrm{P}$ となり、\ref{comp:ladner} に反する。$\mathrm{SAT}_{H}\not\le_{\mathrm{P}}L'$：還元があれば、\ref{comp:ladner} の「NP 完全でない」の証明の手続き $A$ と同じ再帰で $\mathrm{SAT}_{H}\in\mathrm{P}$ となり矛盾する（$H'\to\infty$ は \ref{comp:padding-unbounded} と同じ議論による）。$L'$ は NP 完全でもない（NP 完全なら $\mathrm{SAT}_{H}\le_{\mathrm{P}}L'$）。これを繰り返すと、NP 中間の次数の無限下降列が得られる。（細部は \ref{comp:ladner} の証明と同じなので省略した。）
+:::
+
+::: problem {#comp:prob-ld-unary}
+$H$ を定数 $C$ に置き換えた $\mathrm{SAT}_{C}\defeq\{\psi01^{n^{C}}:\psi\in\mathrm{SAT},\ \lvert\psi\rvert=n\}$ は NP 完全であることを示せ。
+:::
+
+::: solution
+$\psi\mapsto\psi01^{\lvert\psi\rvert^{C}}$ は多項式時間の還元 $\mathrm{SAT}\le_{\mathrm{P}}\mathrm{SAT}_{C}$ で、$\mathrm{SAT}_{C}\in\mathrm{NP}$（形と長さを調べて SAT の証明書を検証する）。
+:::
+
+::: supplement
+**前提を変えると.** 同じ遅延対角化は、NP 以外のクラスでも使え、たとえば「多項式時間の写像還元についての NP の次数は稠密である」ことが知られている（ラドナー）。自然な NP 中間の候補としては、グラフ同型問題や整数の素因数分解（の決定版）が挙げられるが、それらが中間であることは証明されていない（$\mathrm{P}\ne\mathrm{NP}$ を仮定しても）。
+
+**似た定理.** 計算可能性理論のフリードバーグ–ムチニクの定理（\ref{comp:page-friedberg-muchnik}）は、認識可能な集合のチューリング次数に $0$ と $0'$ 以外があることを示したもので、ラドナーの定理はその計算量版と見られる。ただし、ラドナーの定理は仮定 $\mathrm{P}\ne\mathrm{NP}$ のもとでしか成り立たない。
+
+**高い視点から：ゆっくり伸びる詰め物.** $\mathrm{SAT}_{H}$ は、SAT の問題に「解くのを楽にするための余白」を付けたものである。余白が多項式の長さなら問題の難しさは変わらず（NP 完全）、余白が長すぎれば問題は簡単になる（短い問題の総当たりで解ける）。$H$ は、「速い解法が見つかった時点で余白の伸びを止める」という規則で、ちょうど中間の難しさに調整されている。比喩で言えば、試験問題に答案用紙を余分に付けるとき、付けすぎると誰でも解けてしまい、付けなさすぎると元の難問のままになるので、受験者の能力を見ながら紙の枚数を少しずつ増やしていく試験官である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

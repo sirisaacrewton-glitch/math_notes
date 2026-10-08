@@ -5293,6 +5293,13 @@
       "num": "2.7",
       "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/02-prefix-free-complexity.html"
     },
+    "comp:ladner": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "ラドナーの定理",
+      "num": "15.5",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/15-ladner.html"
+    },
     "comp:language-metric": {
       "status": "defined",
       "type": "definition",
@@ -5762,6 +5769,34 @@
       "num": "14.3",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/14-ph-karp-lipton.html"
     },
+    "comp:padded-sat": {
+      "status": "defined",
+      "type": "definition",
+      "title": "詰め物をした SAT",
+      "num": "15.1",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/15-ladner.html"
+    },
+    "comp:padding-bounded": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "H が有界なら SAT は P",
+      "num": "15.3",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/15-ladner.html"
+    },
+    "comp:padding-h-computable": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "H は多項式時間で計算できる",
+      "num": "15.2",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/15-ladner.html"
+    },
+    "comp:padding-unbounded": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "P に属さなければ H は発散する",
+      "num": "15.4",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/15-ladner.html"
+    },
     "comp:page-ackermann": {
       "status": "defined",
       "type": "page",
@@ -5894,6 +5929,13 @@
       "title": "記述の長さと非圧縮性",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/01-kolmogorov.html"
+    },
+    "comp:page-ladner": {
+      "status": "defined",
+      "type": "page",
+      "title": "ラドナーの定理",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/15-ladner.html"
     },
     "comp:page-language-L": {
       "status": "defined",
@@ -6811,6 +6853,20 @@
       "title": "",
       "num": "13.6",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/13-low-basis.html"
+    },
+    "comp:prob-ld-many": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "15.6",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/15-ladner.html"
+    },
+    "comp:prob-ld-unary": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "15.7",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/15-ladner.html"
     },
     "comp:prob-ls-low-not-complete": {
       "status": "defined",
@@ -8302,6 +8358,41 @@
       "title": "低基底定理",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/13-low-basis.html"
+    },
+    "comp:sec-ld-cases": {
+      "status": "defined",
+      "type": "section",
+      "title": "二つの場合",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/15-ladner.html"
+    },
+    "comp:sec-ld-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/15-ladner.html"
+    },
+    "comp:sec-ld-padding": {
+      "status": "defined",
+      "type": "section",
+      "title": "詰め物をした SAT",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/15-ladner.html"
+    },
+    "comp:sec-ld-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/15-ladner.html"
+    },
+    "comp:sec-ld-theorem": {
+      "status": "defined",
+      "type": "section",
+      "title": "ラドナーの定理",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/15-ladner.html"
     },
     "comp:sec-levin-schnorr": {
       "status": "defined",

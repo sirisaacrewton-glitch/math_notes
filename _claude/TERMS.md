@@ -436,3 +436,4 @@
 | nerve-realization adjunction / geometric realization | 神経と実現の随伴 / 幾何学的実現 | | 標準的。cat:page-nerve-realization |
 | low basis theorem / Pi^0_1 class / isolated path | 低基底定理 / Π⁰₁ クラス / 孤立した道 | | 標準的。comp:page-low-basis |
 | Vaught never-two theorem / Ehrenfeucht example | ヴォートの定理（2 個にならない） / エーレンフォイヒトの例 | | 標準的。model:page-vaught-never-two |
+| Ladner theorem / NP-intermediate / delayed diagonalization / padding | ラドナーの定理 / NP 中間 / 遅延対角化 / 詰め物 | パディング | 仮（「詰め物」）。comp:page-ladner |

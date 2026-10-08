@@ -423,3 +423,4 @@
 | tensor product / balanced map / Tor / flat module | テンソル積 / 平衡写像 / Tor / 平坦加群 | 双線形写像（可換の場合） | 標準的。ha:page-tensor-tor |
 | partition relation / homogeneous set / Erdos-Rado theorem / weakly compact cardinal | 分割関係 / 等質集合 / エルデシュ–ラドーの定理 / 弱コンパクト基数 | 均質集合 | 標準的。set:page-partition-relations |
 | Sigma_n-complete / movable markers / FIN, TOT, COF | Σn 完全 / 動く目印 / FIN, TOT, COF | | 仮（「動く目印」）。comp:page-index-set-completeness |
+| sigma-locally finite / Nagata-Smirnov metrization theorem / Bing metrization theorem | σ 局所有限 / 長田–スミルノフの距離化定理 / ビングの距離化定理 | | 標準的。top:page-nagata-smirnov |

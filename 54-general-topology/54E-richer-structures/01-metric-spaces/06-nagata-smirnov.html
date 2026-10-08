@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>長田–スミルノフの距離化定理 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54E-richer-structures/01-metric-spaces/06-nagata-smirnov.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 長田–スミルノフの距離化定理 {#top:page-nagata-smirnov keywords="Nagata-Smirnov metrization theorem, sigma-locally finite base, regular spaces with sigma-locally finite bases are normal, open sets are F_sigma, explicit metric from a family of functions, Sorgenfrey line"}
+
+ウリゾーンの距離化定理（\ref{top:urysohn-metrization}）は、第二可算な正則空間が距離化可能であることを示した。第二可算性は可分でない距離空間（たとえば非可算な離散空間）では成り立たないので、距離化可能性の**特徴づけ**にはならない。**長田–スミルノフの定理**（\ref{top:nagata-smirnov}）は、可算な開基の代わりに **σ 局所有限な開基**（\ref{top:sigma-locally-finite}）を使うことで、ちょうど距離化可能な空間を特徴づける：$X$ が距離化可能 $\iff$ $X$ が $T_{3}$ で σ 局所有限な開基をもつ。証明では、そのような空間が正規であること（\ref{top:sigma-lf-normal}）を示し、開基の各元に「その上でだけ正」の関数を作って、それらから距離を直接書き下す。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。
+
+## 記法と定義の確認 {#top:sec-ns-notation}
+
+::: notation
+- 局所有限な族と、その閉包についての等式 $\overline{\bigcup A_{\lambda}}=\bigcup\overline{A_{\lambda}}$ は \ref{top:locally-finite}, \ref{top:locally-finite-closure} のとおり。パラコンパクト性とストーンの定理（距離空間はパラコンパクト）は \ref{top:paracompact}, \ref{top:stone-paracompact} のとおり。
+- 正則・正規・$T_{3}$（正則かつ $T_{1}$）は \ref{top:separation-axioms}、ウリゾーンの補題は \ref{top:urysohn-lemma}、連続関数の一様収束級数（ワイエルシュトラスの判定法の形）は \ref{top:uniform-limit} のとおり。
+:::
+
+::: definition σ 局所有限 {#top:sigma-locally-finite keywords="sigma-locally finite family, sigma-locally finite base" index="σ 局所有限|しぐまきょくしょゆうげん"}
+部分集合の族 $\mathcal{B}$ が **σ 局所有限**であるとは、局所有限な族 $\mathcal{B}_{n}$（$n\ge1$）の和 $\mathcal{B}=\bigcup_{n}\mathcal{B}_{n}$ として書けることをいう。
+:::
+
+## 準備 {#top:sec-ns-lemmas}
+
+::: lemma 開集合は可算個の閉集合の和 {#top:sigma-lf-open-fsigma keywords="in a regular space with a sigma-locally finite base every open set is F_sigma" index="開集合と F_σ|かいしゅうごうとえふしぐま"}
+$X$ を正則で σ 局所有限な開基 $\mathcal{B}=\bigcup_{n}\mathcal{B}_{n}$ をもつ空間とする。$X$ のすべての開集合 $W$ は、可算個の閉集合の和である。
+:::
+
+::: proof
+$C_{n}\defeq\bigcup\{\overline{B}:B\in\mathcal{B}_{n},\ \overline{B}\subseteq W\}$ とする。$\mathcal{B}_{n}$ は局所有限なのでその部分族も局所有限で、\ref{top:locally-finite-closure} から $C_{n}$ は閉集合（閉集合の局所有限な族の和は、その閉包に等しい）。$C_{n}\subseteq W$ は明らか。逆に $x\in W$ なら、**正則性**から $x\in U$, $\overline{U}\subseteq W$ となる開集合 $U$ があり、開基の元 $B$ で $x\in B\subseteq U$ となるものがある（$B\in\mathcal{B}_{n}$）。$\overline{B}\subseteq\overline{U}\subseteq W$ なので $x\in C_{n}$。よって $W=\bigcup_{n}C_{n}$。
+:::
+
+::: lemma 正規性 {#top:sigma-lf-normal keywords="a regular space with a sigma-locally finite base is normal" index="σ 局所有限な開基と正規性|しぐまきょくしょゆうげんなかいきとせいきせい"}
+正則で σ 局所有限な開基をもつ空間は正規である。
+:::
+
+::: proof
+交わらない閉集合 $A,D$ をとる。$U_{n}$ を、$\mathcal{B}_{n}$ の元のうち $A$ と交わり閉包が $D$ と交わらないものの和、$V_{n}$ を、$D$ と交わり閉包が $A$ と交わらないものの和とする。
+- $\overline{U_{n}}\cap D=\emptyset$：\ref{top:locally-finite-closure} から $\overline{U_{n}}$ は各元の閉包の和。同様に $\overline{V_{n}}\cap A=\emptyset$。
+- $A\subseteq\bigcup_{n}U_{n}$：$x\in A$ について、**正則性**から $x$ の近傍で閉包が $D$ と交わらないものがあり、その中に $x$ を含む開基の元をとればよい。同様に $D\subseteq\bigcup_{n}V_{n}$。
+
+$U_{n}'\defeq U_{n}\setminus\bigcup_{k\le n}\overline{V_{k}}$, $V_{n}'\defeq V_{n}\setminus\bigcup_{k\le n}\overline{U_{k}}$ は開集合で、$U\defeq\bigcup_{n}U_{n}'$, $V\defeq\bigcup_{n}V_{n}'$ とおく。$x\in A$ は、ある $U_{n}$ に属し、どの $\overline{V_{k}}$ にも属さないので $x\in U$。同様に $D\subseteq V$。$x\in U_{j}'\cap V_{k}'$ とすると、$j\le k$ なら $x\in U_{j}\subseteq\overline{U_{j}}$ だが $V_{k}'$ は $\overline{U_{j}}$ を除いている。$k<j$ も同様。よって $U\cap V=\emptyset$。
+:::
+
+::: lemma 開集合の上でだけ正の関数 {#top:positive-exactly-on-open keywords="in such a space every open set is a cozero set" index="開集合の上で正の関数|かいしゅうごうのうえでせいのかんすう"}
+正則で σ 局所有限な開基をもつ空間 $X$ の開集合 $B$ について、連続関数 $f\colon X\to[0,1]$ で $B=\{x:f(x)>0\}$ となるものがある。
+:::
+
+::: proof
+\ref{top:sigma-lf-open-fsigma} で $B=\bigcup_{k}C_{k}$（$C_{k}$ 閉）と書く。\ref{top:sigma-lf-normal} から $X$ は正規で、ウリゾーンの補題から連続関数 $f_{k}\colon X\to[0,1]$ で $C_{k}$ 上 $1$、$X\setminus B$ 上 $0$ となるものがある。$f\defeq\sum_{k}2^{-k}f_{k}$ は一様収束する級数で連続（\ref{top:uniform-limit} の 2）、値は $[0,1]$。$X\setminus B$ 上で $0$、$x\in C_{k}$ なら $f(x)\ge2^{-k}>0$。
+:::
+
+## 長田–スミルノフの定理 {#top:sec-ns-theorem}
+
+::: theorem 長田–スミルノフの距離化定理 {#top:nagata-smirnov keywords="X is metrizable iff X is T3 with a sigma-locally finite base" index="長田–スミルノフの距離化定理|ながたすみるのふのきょりかていり"}
+（AC）位相空間 $X$ について、次は同値である。
+1. $X$ は距離化可能。
+2. $X$ は $T_{3}$ で、σ 局所有限な開基をもつ。
+:::
+
+::: proof
+**1 ⇒ 2.** 距離空間は $T_{3}$（正規かつ $T_{1}$）である。各 $n\ge1$ について、半径 $1/n$ の開球全体の被覆は、**ストーンの定理**（\ref{top:stone-paracompact}）から局所有限な開細分 $\mathcal{B}_{n}$ をもつ。$\mathcal{B}\defeq\bigcup_{n}\mathcal{B}_{n}$ は開基である：$x\in W$（開）について $B(x,2/n)\subseteq W$ となる $n$ をとり、$x$ を含む $B\in\mathcal{B}_{n}$ をとると、$B$ は半径 $1/n$ の開球に含まれるので直径 $\le2/n$ で、$B\subseteq B(x,2/n)\subseteq W$。
+
+**2 ⇒ 1.** 開基 $\mathcal{B}=\bigcup_{n\ge1}\mathcal{B}_{n}$（各 $\mathcal{B}_{n}$ 局所有限）をとり、各 $B\in\mathcal{B}_{n}$ に \ref{top:positive-exactly-on-open} の関数 $f_{B}$ を選ぶ（$B$ が複数の $\mathcal{B}_{n}$ に属するときは、組 $(n,B)$ ごとに考える）。
+$$
+d(x,y)\defeq\sup_{n\ge1}\ \sup_{B\in\mathcal{B}_{n}}\frac{\lvert f_{B}(x)-f_{B}(y)\rvert}{n}
+$$
+とする（各項は $\le1$）。$d$ は対称で三角不等式を満たす（各項がそうで、上限をとっても保たれる）。
+
+*Step 1（$d(\cdot,x_{1})$ は連続）.* $x_{1}$ と $\varepsilon>0$ をとり、$1/N<\varepsilon$ となる $N$ をとる。$n>N$ の項はすべて $\le1/n\le1/(N+1)<\varepsilon$。$n\le N$ について、**局所有限性**から $x_{1}$ の近傍 $W_{n}$ で $\mathcal{B}_{n}$ の有限個の元としか交わらないものがある。$W_{n}$ と交わらない $B$ では $f_{B}$ は $W_{n}$ 上 $0$（$x_{1}$ でも $0$）なので項は $0$。交わる有限個の $B$ については、$f_{B}$ の連続性から、$\lvert f_{B}(x)-f_{B}(x_{1})\rvert<\varepsilon$ となる近傍がある。これら有限個の近傍の共通部分 $W$ の上で、項は有限個が $<\varepsilon$、残りが $\le1/(N+1)$ なので $d(x,x_{1})<\varepsilon$。$\lvert d(x,y)-d(x_{1},y)\rvert\le d(x,x_{1})$ なので、$d(\cdot,y)$ は連続で、$d$ の開球は $X$ の開集合である。
+
+*Step 2（$X$ の開集合は $d$ の開集合）.* 開集合 $U$ と $x_{0}\in U$ について、開基の元 $B\in\mathcal{B}_{n}$ で $x_{0}\in B\subseteq U$ となるものをとる。$r\defeq f_{B}(x_{0})/n>0$。$d(x,x_{0})<r$ なら $\lvert f_{B}(x)-f_{B}(x_{0})\rvert<f_{B}(x_{0})$ なので $f_{B}(x)>0$、すなわち $x\in B\subseteq U$。
+
+*Step 3（$d$ は距離）.* $x\ne y$ なら、**$T_{1}$** から $U\defeq X\setminus\{y\}$ は $x$ を含む開集合で、Step 2 から $d(y,x)\ge r>0$。
+
+Step 1, 2 から $d$ の位相は $X$ の位相と一致する。
+:::
+
+::: hypcheck
+- **局所有限性**：Step 1 で、各 $n\le N$ について有限個の関数だけを考えればよいことに使った。可算な開基なら（ウリゾーンの距離化定理）この点は自明である。
+- **係数 $1/n$**：Step 1 で $n>N$ の項を一様に小さくするのに使った。各 $\mathcal{B}_{n}$ の中では係数は共通でよい（局所有限性で有限個に減るため）。
+- **正則性**：\ref{top:sigma-lf-open-fsigma} と \ref{top:sigma-lf-normal} で使った。
+- **$T_{1}$**：Step 3 で $d(x,y)>0$ に使った。$T_{1}$ がないと $d$ は擬距離にしかならない。
+- **選択公理**：1 ⇒ 2 のストーンの定理と、2 ⇒ 1 での関数の選択に使った。
+:::
+
+## 問題 {#top:sec-ns-problems}
+
+::: problem {#top:prob-ns-separable}
+可分な空間の局所有限な開集合の族は、空でない元を高々可算個しかもたないことを示せ。これを使って、ゾルゲンフライ直線（\ref{top:sorgenfrey-not-second-countable}）は σ 局所有限な開基をもたないことを示せ。
+:::
+
+::: solution
+可算な稠密集合 $D$ をとる。空でない開集合はどれも $D$ の点を含む。各 $d\in D$ は局所有限性から有限個の元にしか含まれない（点有限）。よって空でない元の個数は $\le\lvert D\rvert\cdot\aleph_{0}=\aleph_{0}$。σ 局所有限な開基は可算個の可算族の和で可算（空集合を除く）なので、ゾルゲンフライ直線がそれをもてば第二可算になり、\ref{top:sorgenfrey-not-second-countable} に反する。
+:::
+
+::: problem {#top:prob-ns-discrete}
+任意の濃度の離散空間について、σ 局所有限な開基を具体的に与え、定理の 2 ⇒ 1 の構成で得られる距離を求めよ。
+:::
+
+::: solution
+一点集合の族 $\mathcal{B}_{1}\defeq\{\{x\}:x\in X\}$ は局所有限（近傍 $\{x\}$ は $\{x\}$ とだけ交わる）な開基。$f_{\{x\}}$ として $\{x\}$ の特性関数をとれる。$x\ne y$ なら $f_{\{x\}}(x)-f_{\{x\}}(y)=1$ なので $d(x,y)=1$：離散距離。
+:::
+
+::: supplement
+**前提を変えると.** σ 局所有限を **σ 離散**（各 $\mathcal{B}_{n}$ の元の閉包が互いに交わらない形で局所有限）に強めても同じ特徴づけが成り立つ（**ビングの距離化定理**）ことが知られている。また、パラコンパクトハウスドルフ空間で局所的に距離化可能なものは距離化可能であることが知られている（スミルノフの定理）。
+
+**似た定理.** ウリゾーンの距離化定理（\ref{top:urysohn-metrization}）は、可算な開基が自明に σ 局所有限であることから、本定理の特別な場合として読める。完備距離化可能性（\ref{top:page-complete-metrizability}）や一様空間の距離化可能性（\ref{top:page-uniform-pseudometrics}）は、位相でなく一様構造の側から距離化を論じるものである。
+
+**高い視点から：局所的に有限な情報を一つの物差しにまとめる.** 開基の各元 $B$ に「$B$ の中でどれだけ深いか」を測る関数 $f_{B}$ を一つずつ用意し、その差の最大値を距離とする。無限に多くの物差しの最大値は一般には連続にならないが、局所有限性によって各点の近くでは有限個の物差しだけが働き、残りは係数 $1/n$ で十分小さく抑えられる。比喩で言えば、国中の無数の地方の地図を、各地点では有限枚しか重ならないように選び、それらを縮尺を変えて一枚の地図帳にとじる作業である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

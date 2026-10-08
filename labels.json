@@ -33643,6 +33643,34 @@
       "num": "3.2",
       "page": "54-general-topology/54E-richer-structures/02-uniform-spaces/03-uniform-completeness.html"
     },
+    "top:cech-complete": {
+      "status": "defined",
+      "type": "definition",
+      "title": "チェック完備",
+      "num": "10.1",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/10-cech-completeness.html"
+    },
+    "top:cech-complete-any-compactification": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "チェック完備性はコンパクト化によらない",
+      "num": "10.3",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/10-cech-completeness.html"
+    },
+    "top:cech-complete-baire": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "チェック完備空間はベール空間",
+      "num": "10.5",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/10-cech-completeness.html"
+    },
+    "top:cech-complete-metric": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "距離化可能空間のチェック完備性",
+      "num": "10.7",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/10-cech-completeness.html"
+    },
     "top:clopen-infinite-partition": {
       "status": "defined",
       "type": "lemma",
@@ -33866,6 +33894,13 @@
       "title": "部分空間の完備性",
       "num": "1.4",
       "page": "54-general-topology/54E-richer-structures/01-metric-spaces/01-completeness.html"
+    },
+    "top:complete-dense-gdelta": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "完備距離空間は稠密に入る空間の中で G_δ",
+      "num": "10.6",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/10-cech-completeness.html"
     },
     "top:complete-metric": {
       "status": "defined",
@@ -34504,6 +34539,13 @@
       "num": "4.1",
       "page": "54-general-topology/54D-general-properties/01-separation-compactness/04-local-compactness.html"
     },
+    "top:locally-compact-cech-complete": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "局所コンパクト空間はチェック完備",
+      "num": "10.4",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/10-cech-completeness.html"
+    },
     "top:locally-connected": {
       "status": "defined",
       "type": "definition",
@@ -34860,6 +34902,13 @@
       "title": "カントール集合の普遍性",
       "num": "",
       "page": "54-general-topology/54D-general-properties/01-separation-compactness/11-cantor-set.html"
+    },
+    "top:page-cech-complete": {
+      "status": "defined",
+      "type": "page",
+      "title": "チェック完備性",
+      "num": "",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/10-cech-completeness.html"
     },
     "top:page-closure-interior": {
       "status": "defined",
@@ -35434,6 +35483,27 @@
       "title": "",
       "num": "5.12",
       "page": "54-general-topology/54D-general-properties/01-separation-compactness/05-connectedness.html"
+    },
+    "top:prob-ck-closed-gdelta": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "10.9",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/10-cech-completeness.html"
+    },
+    "top:prob-ck-not-lc": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "10.10",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/10-cech-completeness.html"
+    },
+    "top:prob-ck-rationals": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "10.8",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/10-cech-completeness.html"
     },
     "top:prob-closed-gdelta-zero-set": {
       "status": "defined",
@@ -36205,6 +36275,13 @@
       "num": "4.3",
       "page": "54-general-topology/54E-richer-structures/01-metric-spaces/04-metrization.html"
     },
+    "top:remainder-to-remainder": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "剰余は剰余へ写る",
+      "num": "10.2",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/10-cech-completeness.html"
+    },
     "top:restriction-embedding": {
       "status": "defined",
       "type": "lemma",
@@ -36491,6 +36568,41 @@
       "title": "問題",
       "num": "",
       "page": "54-general-topology/54A-generalities/01-topological-spaces/02-closure-interior.html"
+    },
+    "top:sec-ck-examples": {
+      "status": "defined",
+      "type": "section",
+      "title": "例とベール性",
+      "num": "",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/10-cech-completeness.html"
+    },
+    "top:sec-ck-independence": {
+      "status": "defined",
+      "type": "section",
+      "title": "コンパクト化によらないこと",
+      "num": "",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/10-cech-completeness.html"
+    },
+    "top:sec-ck-metric": {
+      "status": "defined",
+      "type": "section",
+      "title": "距離化可能空間の場合",
+      "num": "",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/10-cech-completeness.html"
+    },
+    "top:sec-ck-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/10-cech-completeness.html"
+    },
+    "top:sec-ck-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/10-cech-completeness.html"
     },
     "top:sec-cm-continuous": {
       "status": "defined",

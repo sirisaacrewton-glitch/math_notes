@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>チェック完備性 | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54E-richer-structures/01-metric-spaces/10-cech-completeness.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# チェック完備性 {#top:page-cech-complete keywords="Cech-complete space, G-delta in the Stone-Cech compactification, independence of the compactification, completely metrizable iff Cech-complete for metrizable spaces, locally compact spaces are Cech-complete, Cech-complete spaces are Baire"}
+
+完備距離化可能性（\ref{top:page-complete-metrizability}）は距離を使って定義される。距離を使わずに同じ種類の「完備性」を表すのが**チェック完備性**（E. Čech, 1937）である：チコノフ空間 $X$ が、ストーン–チェックのコンパクト化 $\beta X$ の中で $G_{\delta}$ 集合になることをいう。本ページでは、(1) この条件はどのコンパクト化を使っても同じであること、(2) 局所コンパクト空間と完備距離化可能空間はチェック完備であること、(3) チェック完備空間はベール空間であること、(4) 距離化可能空間ではチェック完備性と完備距離化可能性が一致することを示す。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。各証明は本サイトで書き下ろした。
+
+## 記法と定義の確認 {#top:sec-ck-notation}
+
+::: notation
+- チコノフ空間（完全正則 $T_{1}$）は \ref{top:completely-regular}。コンパクト化 $(K,h)$ は \ref{top:compactification}。以下 $h$ によって $X$ を $K$ の稠密な部分空間とみなす。
+- ストーン–チェックのコンパクト化 $\beta X$ とその普遍性（コンパクトハウスドルフ空間への連続写像の一意的な延長）は \ref{top:stone-cech}。任意のコンパクト化 $K$ について、恒等写像 $X\to X\subset K$ の延長 $F\colon\beta X\to K$ は全射（\ref{top:stone-cech-unique} の 2）。これらは超フィルター補題と DC を仮定する。
+- 位相空間の部分集合が **$G_{\delta}$** とは、可算個の開集合の共通部分であることをいう。
+- ベール空間・ベールのカテゴリー定理（コンパクトハウスドルフ空間はベール空間）は \ref{top:baire-space}, \ref{top:baire-category}。ベール空間とは、稠密開集合の可算個の共通部分が稠密な空間である。
+- 完備化 \ref{top:completion}、アレクサンドロフの定理（完備距離化可能空間の $G_{\delta}$ 部分空間は完備距離化可能）\ref{top:alexandroff-gdelta}。
+- ハウスドルフ空間では、点列（ネット）の極限は一意（\ref{top:hausdorff-unique-limits}）。
+:::
+
+::: definition チェック完備 {#top:cech-complete keywords="Cech-complete: a Tychonoff space that is G-delta in beta X" index="チェック完備|ちぇっくかんび"}
+チコノフ空間 $X$ が**チェック完備**であるとは、$X$ が $\beta X$ の $G_{\delta}$ 集合であることをいう。
+:::
+
+## コンパクト化によらないこと {#top:sec-ck-independence}
+
+::: lemma 剰余は剰余へ写る {#top:remainder-to-remainder keywords="the extension beta X -> K of the identity maps the remainder onto the remainder" index="剰余の対応|じょうよのたいおう"}
+$X$ をチコノフ空間、$K$ を $X$ のコンパクト化、$F\colon\beta X\to K$ を恒等写像 $X\to X$ の延長とする。このとき $F(\beta X\setminus X)=K\setminus X$。
+:::
+
+::: proof
+**Step 1（$\supset$）.** $F$ は全射（\ref{top:stone-cech-unique} の 2）で、$F(X)=X$。よって $K\setminus X$ の点は $\beta X\setminus X$ の点の像である。
+
+**Step 2（$\subset$）.** $p\in\beta X$ で $F(p)=x\in X$ とし、$p=x$ を示す。$X$ は $\beta X$ で稠密なので、$X$ のネット $(x_{\lambda})$ で $\beta X$ において $x_{\lambda}\to p$ となるものがある。$F$ の連続性から $K$ で $x_{\lambda}=F(x_{\lambda})\to F(p)=x$。$X$ は $K$ の**部分空間**なので、$X$ の中で $x_{\lambda}\to x$、したがって $\beta X$ の中でも $x_{\lambda}\to x$（$X$ は $\beta X$ の部分空間でもある）。$\beta X$ は**ハウスドルフ**なので極限は一意で、$p=x$。よって $F(\beta X\setminus X)\cap X=\varnothing$。
+:::
+
+::: theorem チェック完備性はコンパクト化によらない {#top:cech-complete-any-compactification keywords="a Tychonoff space is Cech-complete iff it is G-delta in some (every) compactification" index="チェック完備性とコンパクト化|ちぇっくかんびせいとこんぱくとか"}
+チコノフ空間 $X$ について次は同値である。
+
+1. $X$ はチェック完備。
+2. $X$ の任意のコンパクト化 $K$ において、$X$ は $G_{\delta}$ 集合である。
+3. $X$ のあるコンパクト化 $K$ において、$X$ は $G_{\delta}$ 集合である。
+:::
+
+::: proof
+**1 ⇒ 2.** $X=\bigcap_{n}G_{n}$（$G_{n}$ は $\beta X$ の開集合）とする。$\beta X\setminus X=\bigcup_{n}(\beta X\setminus G_{n})$ で、各 $\beta X\setminus G_{n}$ は**コンパクト**空間の閉集合なのでコンパクト。\ref{top:remainder-to-remainder} から
+$$
+K\setminus X=F(\beta X\setminus X)=\bigcup_{n}F(\beta X\setminus G_{n}).
+$$
+コンパクト集合の連続像はコンパクトで、$K$ は**ハウスドルフ**なのでそれは閉集合。よって $K\setminus X$ は閉集合の可算和であり、$X$ は $K$ の $G_{\delta}$ 集合。
+
+**2 ⇒ 3.** $\beta X$ 自身がコンパクト化。
+
+**3 ⇒ 1.** $X=\bigcap_{n}O_{n}$（$O_{n}$ は $K$ の開集合）とする。$F^{-1}(O_{n})$ は $\beta X$ の開集合で、\ref{top:remainder-to-remainder} から $F^{-1}(X)=X$（$X$ の点は $X$ に、剰余の点は剰余に写る）。よって
+$$
+\bigcap_{n}F^{-1}(O_{n})=F^{-1}\Bigl(\bigcap_{n}O_{n}\Bigr)=F^{-1}(X)=X
+$$
+は $\beta X$ の $G_{\delta}$ 集合。
+:::
+
+## 例とベール性 {#top:sec-ck-examples}
+
+::: proposition 局所コンパクト空間はチェック完備 {#top:locally-compact-cech-complete keywords="a locally compact Hausdorff space is open in beta X, hence Cech-complete" index="局所コンパクト空間のチェック完備性|きょくしょこんぱくとくうかんのちぇっくかんびせい"}
+局所コンパクトなハウスドルフ空間 $X$ は $\beta X$ の開集合であり、したがってチェック完備である。
+:::
+
+::: proof
+局所コンパクトなハウスドルフ空間はチコノフ空間である（\ref{top:page-local-compactness} の一点コンパクト化の部分空間）。$x\in X$ について、**局所コンパクト性**から $X$ のコンパクト集合 $C$ と $X$ の開集合 $O$ で $x\in O\subset C$ となるものがある。$O=W\cap X$ となる $\beta X$ の開集合 $W$ をとる。$X$ は $\beta X$ で**稠密**なので $W\subset\overline{W\cap X}=\overline{O}$（閉包は $\beta X$ でとる。開集合 $W$ の点の任意の近傍 $N$ について $N\cap W$ は空でない開集合なので $X$ と交わる）。$C$ は $\beta X$ でもコンパクトで、$\beta X$ は**ハウスドルフ**なので閉。よって $W\subset\overline{O}\subset C\subset X$。$x\in W$ なので、$X$ は $\beta X$ の開集合の和、すなわち開集合である。開集合は $G_{\delta}$。
+:::
+
+::: theorem チェック完備空間はベール空間 {#top:cech-complete-baire keywords="Cech-complete spaces are Baire spaces" index="チェック完備空間のベール性|ちぇっくかんびくうかんのべーるせい"}
+チェック完備空間はベール空間である。
+:::
+
+::: proof
+$X=\bigcap_{n}G_{n}$（$G_{n}$ は $\beta X$ の開集合）、$D_{1},D_{2},\dots$ を $X$ の稠密開集合とし、$\bigcap_{k}D_{k}$ が $X$ で稠密であることを示す。
+
+**Step 1（持ち上げ）.** $D_{k}=E_{k}\cap X$ となる $\beta X$ の開集合 $E_{k}$ をとる。$D_{k}$ は $X$ で稠密、$X$ は $\beta X$ で稠密なので $D_{k}$ は $\beta X$ で稠密であり、$E_{k}\supset D_{k}$ も稠密。$G_{n}\supset X$ も $\beta X$ で稠密。
+
+**Step 2（ベールの定理）.** $\beta X$ は**コンパクトハウスドルフ**なのでベール空間（\ref{top:baire-category}）であり、稠密開集合の可算族 $\{E_{k}\}\cup\{G_{n}\}$ の共通部分 $Z$ は $\beta X$ で稠密。
+
+**Step 3.** $O$ を $X$ の空でない開集合とし、$O=P\cap X$ となる $\beta X$ の開集合 $P$（空でない）をとる。$Z$ は稠密なので $P\cap Z\ni z$ がとれる。$z\in\bigcap_{n}G_{n}=X$ なので $z\in P\cap X=O$、また $z\in E_{k}\cap X=D_{k}$（すべての $k$）。よって $O\cap\bigcap_{k}D_{k}\neq\varnothing$。
+:::
+
+## 距離化可能空間の場合 {#top:sec-ck-metric}
+
+::: lemma 完備距離空間は稠密に入る空間の中で G_δ {#top:complete-dense-gdelta keywords="a completely metrizable space is G-delta in every Hausdorff space in which it is dense" index="完備距離空間と G_δ|かんびきょりくうかんとじーでるた"}
+$Y$ をハウスドルフ空間、$X\subset Y$ を稠密な部分空間とし、$X$ の位相が完備距離 $d$ で定まるとする。このとき $X$ は $Y$ の $G_{\delta}$ 集合である。
+:::
+
+::: proof
+**Step 1（開集合 $U_{n}$）.** $n\ge1$ について、$Y$ の開集合 $V$ で $\operatorname{diam}_{d}(V\cap X)<1/n$ となるもの全体の和を $U_{n}$ とする（$\operatorname{diam}_{d}$ は $d$ による直径）。$U_{n}$ は開。$x\in X$ について、開球 $B_{d}(x,1/(3n))$ は $X$ の開集合なので、$Y$ の開集合 $V$ で $V\cap X=B_{d}(x,1/(3n))$ となるものがあり（**部分空間**位相）、$\operatorname{diam}_{d}(V\cap X)\le2/(3n)<1/n$。よって $X\subset U_{n}$。
+
+**Step 2（$\bigcap U_{n}\subset X$）.** $p\in\bigcap_{n}U_{n}$ とする。各 $n$ について $p\in V_{n}$, $\operatorname{diam}_{d}(V_{n}\cap X)<1/n$ となる $Y$ の開集合 $V_{n}$ を選び、$W_{n}\defeq V_{1}\cap\dots\cap V_{n}$ とおく。$W_{n}$ は $p$ を含む開集合で、$X$ は**稠密**なので $x_{n}\in W_{n}\cap X$ がとれる。$m\ge n$ なら $x_{m},x_{n}\in V_{n}\cap X$ なので $d(x_{m},x_{n})<1/n$。$(x_{n})$ は $d$ についてコーシー列であり、$d$ は**完備**なので $X$ のある点 $x$ に収束し、$d(x_{n},x)\le1/n$。
+
+**Step 3（$p=x$）.** $y\in W_{n}\cap X$ なら $d(y,x)\le d(y,x_{n})+d(x_{n},x)<1/n+1/n=2/n$。$p\neq x$ と仮定する。$Y$ は**ハウスドルフ**なので、$x\in H$, $p\in H'$, $H\cap H'=\varnothing$ となる $Y$ の開集合がある。$H\cap X$ は $x$ の $X$ における開近傍なので、ある $r>0$ で $B_{d}(x,r)\subset H$。$2/n<r$ となる $n$ をとる。$W_{n}\cap H'$ は $p$ を含む開集合なので（稠密性から）$X$ の点 $y$ を含む。すると $d(y,x)<2/n<r$ より $y\in H$ となり、$y\in H'$ に矛盾。よって $p=x\in X$。
+
+以上から $X=\bigcap_{n}U_{n}$ は $Y$ の $G_{\delta}$ 集合。
+:::
+
+::: theorem 距離化可能空間のチェック完備性 {#top:cech-complete-metric keywords="a metrizable space is Cech-complete iff it is completely metrizable" index="距離化可能空間のチェック完備性|きょりかかのうくうかんのちぇっくかんびせい"}
+距離化可能空間 $X$ について、$X$ がチェック完備であることと、完備距離化可能であることは同値である。
+:::
+
+::: proof
+距離化可能空間はチコノフ空間である（距離空間は $T_{4}$、\ref{top:metric-normal}。$T_{4}$ ならチコノフ、\ref{top:completely-regular-basic}）。
+
+**完備距離化可能 ⇒ チェック完備.** $X$ は $\beta X$ で稠密で $\beta X$ はハウスドルフなので、\ref{top:complete-dense-gdelta} から $X$ は $\beta X$ の $G_{\delta}$ 集合。
+
+**チェック完備 ⇒ 完備距離化可能.** $X$ の位相を定める距離 $d$ をとり、$(X,d)$ の完備化 $(\hat{X},\hat{d})$ を考える（\ref{top:completion-exists}。$X\subset\hat{X}$ は稠密とみなす）。$\hat{X}$ は距離空間なのでチコノフ空間であり、$K\defeq\overline{X}$（$\beta\hat{X}$ における閉包）は $X$ のコンパクト化である（コンパクト空間の閉集合でハウスドルフ、$X$ は稠密）。$X$ は $\hat{X}$ で稠密なので $\hat{X}\subset\overline{X}=K$。
+
+$X$ は**チェック完備**なので、\ref{top:cech-complete-any-compactification} の 1 ⇒ 2 から $X=\bigcap_{n}O_{n}$（$O_{n}$ は $K$ の開集合）。$X\subset\hat{X}\subset K$ なので $X=\bigcap_{n}(O_{n}\cap\hat{X})$ で、$O_{n}\cap\hat{X}$ は $\hat{X}$ の開集合。よって $X$ は完備距離空間 $\hat{X}$ の $G_{\delta}$ 集合であり、アレクサンドロフの定理（\ref{top:alexandroff-gdelta}）から完備距離化可能である。
+:::
+
+::: hypcheck
+- **ハウスドルフ性（$\beta X$, $K$, $Y$）**：\ref{top:remainder-to-remainder} の Step 2 で極限の一意性に、\ref{top:cech-complete-any-compactification} の 1 ⇒ 2 でコンパクト集合が閉であることに、\ref{top:complete-dense-gdelta} の Step 3 で点の分離に使った。
+- **稠密性**：\ref{top:complete-dense-gdelta} の Step 2・3（$W_{n}$ や $W_{n}\cap H'$ から $X$ の点を取り出す）、\ref{top:locally-compact-cech-complete}（$W\subset\overline{W\cap X}$）、\ref{top:cech-complete-baire} の Step 1 で使った。
+- **$d$ の完備性**：\ref{top:complete-dense-gdelta} の Step 2 でコーシー列の極限 $x\in X$ を得るのにのみ使った。
+- **コンパクト性**：$\beta X\setminus G_{n}$ がコンパクトであること（1 ⇒ 2）、ベールの定理の適用（\ref{top:cech-complete-baire}）に使った。
+- **選択公理**：$\beta X$ の存在と普遍性（超フィルター補題と DC）、ベールの定理（DC）、$V_{n}$, $x_{n}$ の選択に使った。
+:::
+
+## 問題 {#top:sec-ck-problems}
+
+::: problem {#top:prob-ck-rationals}
+$\mathbb{Q}$ はチェック完備でないことを、(1) \ref{top:cech-complete-baire} を使って、(2) \ref{top:cech-complete-metric} を使って、それぞれ示せ。
+:::
+
+::: solution
+(1) $\mathbb{Q}=\bigcup_{q\in\mathbb{Q}}\{q\}$ で、各 $\{q\}$ は閉で内部が空（$\mathbb{Q}$ に孤立点はない）。よって $\mathbb{Q}$ は自分自身の中で第一類であり、空でない開集合 $\mathbb{Q}$ が第一類なのでベール空間でない（\ref{top:baire-space-equivalents}）。\ref{top:cech-complete-baire} から $\mathbb{Q}$ はチェック完備でない。
+
+(2) $\mathbb{Q}$ は距離化可能だが完備距離化可能でない（\ref{top:gdelta-characterization}：$\mathbb{R}$ の $G_{\delta}$ でない）。\ref{top:cech-complete-metric} から $\mathbb{Q}$ はチェック完備でない。
+:::
+
+::: problem {#top:prob-ck-closed-gdelta}
+チェック完備空間の閉部分空間はチェック完備であることを示せ。
+:::
+
+::: solution
+$X=\bigcap_{n}G_{n}$（$G_{n}$ は $\beta X$ の開集合）、$A\subset X$ を閉集合とし、$K\defeq\overline{A}$（$\beta X$ での閉包）とおく。$K$ はコンパクトハウスドルフで $A$ は稠密、$A$ はチコノフ空間（\ref{top:completely-regular-basic}：部分空間）なので $K$ は $A$ のコンパクト化。$A$ は $X$ で閉なので $A=\overline{A}\cap X=K\cap X$（$X$ における閉包は $\beta X$ における閉包と $X$ の共通部分）。よって $A=\bigcap_{n}(G_{n}\cap K)$ は $K$ の $G_{\delta}$ 集合であり、\ref{top:cech-complete-any-compactification} の 3 ⇒ 1 から $A$ はチェック完備。
+:::
+
+::: problem {#top:prob-ck-not-lc}
+無理数全体 $\mathbb{P}=\mathbb{R}\setminus\mathbb{Q}$ はチェック完備だが局所コンパクトでないことを示せ。
+:::
+
+::: solution
+$\mathbb{P}$ は完備距離化可能（\ref{top:gdelta-characterization}）なので \ref{top:cech-complete-metric} からチェック完備。局所コンパクトなら、ある点がコンパクトな近傍をもち、その近傍は空でない内部をもつコンパクト集合になる。しかし $\mathbb{P}$ のコンパクト集合は内部が空である（\ref{top:irrationals-nn} の証明の 3 番目）。
+:::
+
+::: supplement
+**前提を変えると.**
+- **パラコンパクトの場合.** チェック完備なパラコンパクト空間の性質や、チェック完備空間の可算直積がチェック完備であることなどが知られている（R. Engelking, *General Topology* §3.9。ここでは確かめていない）。
+- **距離化可能性を外すと.** チェック完備性は完備距離化可能性よりずっと広い。たとえばコンパクトハウスドルフ空間 $K$ は $\beta K=K$ なので自明にチェック完備だが、$[0,1]^{\mathbb{R}}$ のように距離化可能でないものがある（第一可算でない）。
+
+**似た定理.** \ref{top:complete-dense-gdelta} の距離空間版がラヴレンチェフ–クラトフスキの定理（\ref{top:completely-metrizable-is-gdelta}）である。ベールのカテゴリー定理の二つの場合（完備距離空間と局所コンパクトハウスドルフ空間、\ref{top:baire-category}）は、\ref{top:cech-complete-baire} によって「チェック完備空間はベール」という一つの主張にまとまる。
+
+**高い視点から.** $\beta X$ は $X$ に「足りない点」をすべて付け加えた空間であり、剰余 $\beta X\setminus X$ は「無限遠」あるいは「欠けた極限」の集まりである。チェック完備性は、この欠けた部分が可算個のコンパクト集合で覆える（$F_{\sigma}$ である）こと、比喩で言えば「穴が可算個の閉じた蓋で塞がれている」ことを要求する。局所コンパクト空間では穴全体が一枚の閉じた蓋（剰余がコンパクト）で、完備距離空間では「直径 $1/n$ 以上の穴」の層が $n$ ごとに一枚ずつの蓋になる（\ref{top:complete-dense-gdelta} の $U_{n}$ の補集合）。$\mathbb{Q}$ では穴（無理数）がどこにでも稠密に空いていて、可算枚の蓋では塞げない。剰余がどのコンパクト化でも同じ形で写り合う（\ref{top:remainder-to-remainder}）ことが、この性質をコンパクト化の選び方によらないものにしている。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

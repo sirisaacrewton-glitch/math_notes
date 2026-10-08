@@ -28855,6 +28855,20 @@
       "num": "1.2",
       "page": "54-general-topology/54D-general-properties/01-separation-compactness/01-separation-axioms.html"
     },
+    "top:hausdorff-metric": {
+      "status": "defined",
+      "type": "definition",
+      "title": "ハウスドルフ距離",
+      "num": "4.1",
+      "page": "54-general-topology/54B-basic-constructions/01-constructions/04-hyperspaces.html"
+    },
+    "top:hausdorff-metric-formula": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "ハウスドルフ距離の表示",
+      "num": "4.2",
+      "page": "54-general-topology/54B-basic-constructions/01-constructions/04-hyperspaces.html"
+    },
     "top:hausdorff-properties": {
       "status": "defined",
       "type": "proposition",
@@ -28896,6 +28910,20 @@
       "title": "同相写像の特徴づけ",
       "num": "4.7",
       "page": "54-general-topology/54A-generalities/01-topological-spaces/04-continuous-maps.html"
+    },
+    "top:hyperspace-compact": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "超空間のコンパクト性",
+      "num": "4.4",
+      "page": "54-general-topology/54B-basic-constructions/01-constructions/04-hyperspaces.html"
+    },
+    "top:hyperspace-complete": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "超空間の完備性",
+      "num": "4.3",
+      "page": "54-general-topology/54B-basic-constructions/01-constructions/04-hyperspaces.html"
     },
     "top:image-filter": {
       "status": "defined",
@@ -29310,6 +29338,13 @@
       "num": "",
       "page": "54-general-topology/54C-maps-function-spaces/01-function-spaces/01-function-space-topologies.html"
     },
+    "top:page-hyperspaces": {
+      "status": "defined",
+      "type": "page",
+      "title": "超空間",
+      "num": "",
+      "page": "54-general-topology/54B-basic-constructions/01-constructions/04-hyperspaces.html"
+    },
     "top:page-local-compactness": {
       "status": "defined",
       "type": "page",
@@ -29638,6 +29673,20 @@
       "title": "",
       "num": "1.11",
       "page": "54-general-topology/54D-general-properties/01-separation-compactness/01-separation-axioms.html"
+    },
+    "top:prob-hy-finite-dense": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "4.8",
+      "page": "54-general-topology/54B-basic-constructions/01-constructions/04-hyperspaces.html"
+    },
+    "top:prob-hy-singletons-closed": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "4.7",
+      "page": "54-general-topology/54B-basic-constructions/01-constructions/04-hyperspaces.html"
     },
     "top:prob-initial-transitive": {
       "status": "defined",
@@ -30317,6 +30366,41 @@
       "title": "三つの位相",
       "num": "",
       "page": "54-general-topology/54C-maps-function-spaces/01-function-spaces/01-function-space-topologies.html"
+    },
+    "top:sec-hy-completeness": {
+      "status": "defined",
+      "type": "section",
+      "title": "完備性とコンパクト性",
+      "num": "",
+      "page": "54-general-topology/54B-basic-constructions/01-constructions/04-hyperspaces.html"
+    },
+    "top:sec-hy-metric": {
+      "status": "defined",
+      "type": "section",
+      "title": "ハウスドルフ距離",
+      "num": "",
+      "page": "54-general-topology/54B-basic-constructions/01-constructions/04-hyperspaces.html"
+    },
+    "top:sec-hy-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "54-general-topology/54B-basic-constructions/01-constructions/04-hyperspaces.html"
+    },
+    "top:sec-hy-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "54-general-topology/54B-basic-constructions/01-constructions/04-hyperspaces.html"
+    },
+    "top:sec-hy-vietoris": {
+      "status": "defined",
+      "type": "section",
+      "title": "ヴィートリス位相",
+      "num": "",
+      "page": "54-general-topology/54B-basic-constructions/01-constructions/04-hyperspaces.html"
     },
     "top:sec-lc-compactification": {
       "status": "defined",
@@ -31199,6 +31283,20 @@
       "title": "ウリゾーンの距離化定理",
       "num": "4.4",
       "page": "54-general-topology/54E-richer-structures/01-metric-spaces/04-metrization.html"
+    },
+    "top:vietoris-equals-hausdorff": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "ヴィートリス位相とハウスドルフ距離",
+      "num": "4.6",
+      "page": "54-general-topology/54B-basic-constructions/01-constructions/04-hyperspaces.html"
+    },
+    "top:vietoris-topology": {
+      "status": "defined",
+      "type": "definition",
+      "title": "ヴィートリス位相",
+      "num": "4.5",
+      "page": "54-general-topology/54B-basic-constructions/01-constructions/04-hyperspaces.html"
     },
     "at:fundamental-group-circle": {
       "status": "planned",

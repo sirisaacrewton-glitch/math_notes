@@ -370,3 +370,4 @@
 | topology of pointwise convergence / compact-open topology / topology of uniform convergence / uniform convergence on compacta | 各点収束位相 / コンパクト開位相 / 一様収束位相 / コンパクト集合上の一様収束（広義一様収束） | | 標準的。top:page-function-space-topologies |
 | exponential map / evaluation map / exponential law | 指数写像 / 評価写像 / 指数法則 | カリー化 | 指数写像は小山の用語。top:page-exponential-law |
 | equicontinuous / uniformly equicontinuous / relatively compact / Ascoli–Arzelà theorem | 同等連続 / 一様同等連続 / 相対コンパクト / アスコリ–アルツェラの定理 | | 標準的。top:page-ascoli |
+| hyperspace / Hausdorff metric / Vietoris topology | 超空間 / ハウスドルフ距離 / ヴィートリス位相 | | 標準的。top:page-hyperspaces |

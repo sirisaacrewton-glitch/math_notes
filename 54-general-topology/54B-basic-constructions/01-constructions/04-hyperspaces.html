@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>超空間 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54B-basic-constructions/01-constructions/04-hyperspaces.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 超空間 {#top:page-hyperspaces keywords="hyperspace, space of nonempty compact subsets, Hausdorff metric, Hausdorff distance, Vietoris topology, completeness of the hyperspace, compactness of the hyperspace, Blaschke selection theorem"}
+
+距離空間 $X$ の空でないコンパクト部分集合の全体 $\mathcal{K}(X)$ に、「二つの集合が互いに相手の $\varepsilon$ 近傍に入る最小の $\varepsilon$」として**ハウスドルフ距離**（\ref{top:hausdorff-metric}）を入れたものを $X$ の**超空間**という。点 $x$ を一点集合 $\{x\}$ に送れば $X$ は $\mathcal{K}(X)$ に等長に埋め込まれる。本ページでは、$X$ が完備なら $\mathcal{K}(X)$ も完備（\ref{top:hyperspace-complete}）、$X$ がコンパクトなら $\mathcal{K}(X)$ もコンパクト（\ref{top:hyperspace-compact}）であることを示し、ハウスドルフ距離の位相が距離を使わない**ヴィートリス位相**（\ref{top:vietoris-equals-hausdorff}）と一致することを示す。次ページでは、完備性とバナッハの不動点定理から自己相似集合（フラクタル）の存在を導く。
+
+> 資料：小山晃『位相空間論』第 11 章 §11.1, §11.3 を参考にした（本文は写していない）。完備性の証明は、同書の「和集合の閉包のコンパクト性」を経由する方法ではなく、極限集合を直接構成して示した。
+
+## 記法と定義の確認 {#top:sec-hy-notation}
+
+::: notation
+- 距離空間、完備、全有界、コンパクト性の同値条件、カントールの共通部分定理は \ref{top:metric-topology}, \ref{top:complete-metric}, \ref{top:totally-bounded}, \ref{top:compact-metric-equivalents}, \ref{top:cantor-intersection} のとおり。
+- 点と集合の距離 $d(x,A)\defeq\inf_{a\in A}d(x,a)$ は $x$ について連続（$|d(x,A)-d(x',A)|\le d(x,x')$）。$A$ の **$\varepsilon$ 近傍**を $U(A;\varepsilon)\defeq\{x:d(x,A)<\varepsilon\}$（開集合）とする。
+- コンパクト集合と、それと交わらない空でない閉集合の距離は正（\ref{top:compact-closed-distance}）。
+:::
+
+## ハウスドルフ距離 {#top:sec-hy-metric}
+
+::: definition ハウスドルフ距離 {#top:hausdorff-metric keywords="Hausdorff metric, Hausdorff distance, hyperspace of compact sets" index="ハウスドルフ距離|はうすどるふきょり, 超空間|ちょうくうかん"}
+距離空間 $(X,d)$ の空でないコンパクト部分集合の全体を $\mathcal{K}(X)$ とする。$A,B\in\mathcal{K}(X)$ について
+$$
+d_{H}(A,B)\defeq\inf\{\varepsilon>0:A\subseteq U(B;\varepsilon)\ \text{かつ}\ B\subseteq U(A;\varepsilon)\}
+$$
+を**ハウスドルフ距離**、$(\mathcal{K}(X),d_{H})$ を $X$ の**超空間**という。
+:::
+
+::: lemma ハウスドルフ距離の表示 {#top:hausdorff-metric-formula keywords="Hausdorff distance as max of sup of point-set distances" index="ハウスドルフ距離の表示|はうすどるふきょりのひょうじ"}
+$A,B\in\mathcal{K}(X)$ について
+$$
+d_{H}(A,B)=\max\Bigl(\max_{a\in A}d(a,B),\ \max_{b\in B}d(b,A)\Bigr)
+$$
+（最大値は存在する）。$d_{H}$ は $\mathcal{K}(X)$ の距離で、$x\mapsto\{x\}$ は等長写像 $X\to\mathcal{K}(X)$ である。
+:::
+
+::: proof
+**表示.** $a\mapsto d(a,B)$ は連続で $A$ はコンパクトなので最大値 $s$ をとる（\ref{top:extreme-value}）。同様に $b\mapsto d(b,A)$ の最大値を $t$ とし、$m\defeq\max(s,t)$ とする。$\varepsilon>m$ なら $A\subseteq U(B;\varepsilon)$, $B\subseteq U(A;\varepsilon)$ なので $d_{H}\le m$。逆に $\varepsilon\le m$ なら、たとえば $m=s=d(a_{0},B)$ のとき $a_{0}\notin U(B;\varepsilon)$ なので条件を満たさず、$d_{H}\ge m$。
+
+**距離.** 有限性：$A\cup B$ はコンパクトで有界なので $m<\infty$。対称性は表示から明らか。$d_{H}(A,B)=0$ なら、各 $a\in A$ で $d(a,B)=0$、$B$ は閉（コンパクト）なので $a\in B$；同様に $B\subseteq A$。三角不等式：$a\in A$ について、$b\in B$ で $d(a,b)=d(a,B)\le d_{H}(A,B)$ となるものをとる（$B$ のコンパクト性で下限が達成される）。$d(a,C)\le d(a,b)+d(b,C)\le d_{H}(A,B)+d_{H}(B,C)$。$c\in C$ についても同様で、表示から $d_{H}(A,C)\le d_{H}(A,B)+d_{H}(B,C)$。
+
+**等長.** $d_{H}(\{x\},\{y\})=\max(d(x,y),d(y,x))=d(x,y)$。
+:::
+
+::: example
+1. $X=\R$, $A=[0,1]$, $B=[0,2]$ なら $d_{H}(A,B)=1$（点 $2$ と $A$ の距離）。$A$ と $B$ は交わるが、ハウスドルフ距離は正である（集合の間の「最短距離」$\inf_{a,b}d(a,b)=0$ とは異なる）。
+2. $X=\R^{2}$ で、正 $n$ 角形の頂点集合 $P_{n}$ は、単位円 $S^{1}$ にハウスドルフ距離で収束する：$d_{H}(P_{n},S^{1})$ は弧の中点と端点の距離で、$2\sin(\pi/(2n))\to0$。有限集合の列が連続体に収束しうる。
+:::
+
+## 完備性とコンパクト性 {#top:sec-hy-completeness}
+
+::: theorem 超空間の完備性 {#top:hyperspace-complete keywords="the hyperspace of a complete metric space is complete" index="超空間の完備性|ちょうくうかんのかんびせい"}
+$(X,d)$ が完備なら $(\mathcal{K}(X),d_{H})$ も完備である。$(A_{n})$ がコーシー列なら、その極限は
+$$
+A\defeq\bigcap_{n\ge1}\overline{\bigcup_{k\ge n}A_{k}}
+$$
+である。
+:::
+
+::: proof
+$\varepsilon>0$ をとり、$N$ を $m,n\ge N\Rightarrow d_{H}(A_{m},A_{n})<\varepsilon$ となるようにとる。
+
+**Step 1（$n\ge N$ なら $A\subseteq U(A_{n};2\varepsilon)$）.** $x\in A$, $n\ge N$ とする。$x\in\overline{\bigcup_{k\ge n}A_{k}}$ なので、$k\ge n$ と $y\in A_{k}$ で $d(x,y)<\varepsilon$ となるものがある。$d_{H}(A_{k},A_{n})<\varepsilon$ から $d(y,A_{n})<\varepsilon$、よって $d(x,A_{n})<2\varepsilon$。
+
+**Step 2（$n\ge N$ なら $A_{n}\subseteq\overline{U(A;2\varepsilon)}$、とくに $A\neq\varnothing$）.** $m_{0}\defeq n$ とし、$m_{0}<m_{1}<m_{2}<\cdots$ を、$j\ge1$ について $p,q\ge m_{j}$ なら $d_{H}(A_{p},A_{q})<\varepsilon2^{-j}$ となるようにとる（コーシー列なので可能。$m_{1}\ge N$ ともする）。$a\in A_{n}$ について、$a_{0}\defeq a$ とし、$a_{j}\in A_{m_{j}}$ から $a_{j+1}\in A_{m_{j+1}}$ を $d(a_{j},a_{j+1})<\varepsilon2^{-j}$ となるように順に選ぶ（$d_{H}(A_{m_{j}},A_{m_{j+1}})<\varepsilon2^{-j}$ なので可能。$j=0$ では $m_{0},m_{1}\ge N$ を使う。従属選択）。$(a_{j})$ はコーシー列で、$X$ の完備性から極限 $x$ をもつ。$d(a,x)\le\sum_{j}\varepsilon2^{-j}=2\varepsilon$。各 $n'$ について、$j$ が大きければ $a_{j}\in\bigcup_{k\ge n'}A_{k}$ なので $x\in\overline{\bigcup_{k\ge n'}A_{k}}$、すなわち $x\in A$。よって $d(a,A)\le2\varepsilon$。
+
+**Step 3（$A$ はコンパクト）.** $A$ は閉集合の共通部分なので閉で、$X$ は完備なので $A$ も完備（\ref{top:complete-closed}）。全有界性：$A_{N}$ の $\varepsilon$ 網 $F$ をとると、Step 1 から $A\subseteq U(A_{N};2\varepsilon)\subseteq\bigcup_{p\in F}B(p,3\varepsilon)$。$A$ と交わる球 $B(p,3\varepsilon)$ ごとに $A$ の点 $a_{p}$ を選べば、$\{a_{p}\}$ は $A$ の $6\varepsilon$ 網。よって $A$ はコンパクト（\ref{top:compact-metric-equivalents}）で、Step 2 から空でない。
+
+**Step 4.** Step 1, 2 から、$n\ge N$ で $\max_{a\in A}d(a,A_{n})\le2\varepsilon$, $\max_{b\in A_{n}}d(b,A)\le2\varepsilon$、すなわち $d_{H}(A_{n},A)\le2\varepsilon$。よって $A_{n}\to A$。
+:::
+
+::: hypcheck
+- **$X$ の完備性**：Step 2 で点列 $(a_{j})$ の極限の存在に、Step 3 で $A$ の完備性に使った。
+- **$A_{n}$ のコンパクト性**：$d_{H}$ が有限で下限が達成されること（\ref{top:hausdorff-metric-formula}）と、Step 3 の $\varepsilon$ 網に使った。
+- **従属選択公理**：Step 2 の点列の選択と、\ref{top:compact-metric-equivalents} で使う。
+:::
+
+::: theorem 超空間のコンパクト性 {#top:hyperspace-compact keywords="the hyperspace of a compact metric space is compact, Blaschke selection theorem" index="超空間のコンパクト性|ちょうくうかんのこんぱくとせい, ブラシュケの選択定理|ぶらしゅけのせんたくていり"}
+$(X,d)$ がコンパクトなら $(\mathcal{K}(X),d_{H})$ もコンパクトである。
+:::
+
+::: proof
+$X$ はコンパクトなので完備（\ref{top:compact-metric-equivalents}）で、\ref{top:hyperspace-complete} から $\mathcal{K}(X)$ は完備。全有界性を示す。$\varepsilon>0$ について $X$ の $\varepsilon$ 網 $F$ をとる。$A\in\mathcal{K}(X)$ について $S\defeq\{p\in F:d(p,A)<\varepsilon\}$ とおくと、$A$ の各点は $F$ のある点と距離 $\varepsilon$ 未満なので $S\neq\varnothing$ で、$\max_{a\in A}d(a,S)<\varepsilon$（各 $a$ で $<\varepsilon$、最大値が達成される）、$\max_{p\in S}d(p,A)<\varepsilon$。よって $d_{H}(A,S)<\varepsilon$。$F$ の空でない部分集合（有限個）は $\mathcal{K}(X)$ の $\varepsilon$ 網である。
+:::
+
+## ヴィートリス位相 {#top:sec-hy-vietoris}
+
+::: definition ヴィートリス位相 {#top:vietoris-topology keywords="Vietoris topology, upper and lower Vietoris topology" index="ヴィートリス位相|う゛ぃーとりすいそう"}
+位相空間 $X$ の開集合 $U$ について
+$$
+\langle U\rangle\defeq\{A\in\mathcal{K}(X):A\subseteq U\},\qquad[U]\defeq\{A\in\mathcal{K}(X):A\cap U\neq\varnothing\}
+$$
+とし、これらの全体を準開基とする $\mathcal{K}(X)$（空でないコンパクト集合の全体）の位相を**ヴィートリス位相**という。
+:::
+
+::: theorem ヴィートリス位相とハウスドルフ距離 {#top:vietoris-equals-hausdorff keywords="on a metric space the Vietoris topology equals the Hausdorff metric topology" index="ヴィートリス位相とハウスドルフ距離|う゛ぃーとりすいそうとはうすどるふきょり"}
+距離空間 $(X,d)$ について、$\mathcal{K}(X)$ のヴィートリス位相はハウスドルフ距離の位相に一致する。とくにハウスドルフ距離の位相は、$X$ の位相を定める距離の選び方によらない。
+:::
+
+::: proof
+**ヴィートリス ⊆ ハウスドルフ.** $\langle U\rangle$ が開であること：$A\subseteq U$ とする。$U=X$ なら全体。そうでなければ \ref{top:compact-closed-distance} から $\varepsilon>0$ で $d(a,X\setminus U)\ge\varepsilon$（$a\in A$）となるものがあり、$d_{H}(A,B)<\varepsilon$ なら $B\subseteq U(A;\varepsilon)\subseteq U$。$[U]$ が開であること：$a\in A\cap U$ と $B(a,\varepsilon)\subseteq U$ をとる。$d_{H}(A,B)<\varepsilon$ なら $d(a,B)<\varepsilon$ で、$B$ の点 $b$ で $d(a,b)<\varepsilon$ となるものがあり、$b\in U$。
+
+**ハウスドルフ ⊆ ヴィートリス.** $A$ と $\varepsilon>0$ について、$A$ の $\varepsilon/2$ 網 $a_{1},\dots,a_{n}\in A$ をとり（コンパクトなので全有界）、
+$$
+\mathcal{N}\defeq\bigl\langle U(A;\varepsilon/2)\bigr\rangle\cap[B(a_{1},\varepsilon/2)]\cap\cdots\cap[B(a_{n},\varepsilon/2)]
+$$
+とする。$\mathcal{N}$ は $A$ を含むヴィートリス位相の開集合。$B\in\mathcal{N}$ なら、$B\subseteq U(A;\varepsilon/2)$ から $\max_{b}d(b,A)<\varepsilon/2$。また $a\in A$ について $d(a,a_{i})<\varepsilon/2$ となる $i$ と、$B\cap B(a_{i},\varepsilon/2)$ の点 $b$ をとれば $d(a,b)<\varepsilon$、したがって $\max_{a}d(a,B)<\varepsilon$。よって $d_{H}(A,B)<\varepsilon$ で、$\mathcal{N}$ は $d_{H}$ の $\varepsilon$ 球に含まれる。
+:::
+
+## 問題 {#top:sec-hy-problems}
+
+::: problem {#top:prob-hy-singletons-closed}
+$\{\{x\}:x\in X\}$ は $\mathcal{K}(X)$ の閉集合であることを示せ。
+:::
+
+::: solution
+補集合が開であることを示す。$A\in\mathcal{K}(X)$ が一点集合でないなら、異なる二点 $a,a'\in A$ がある。$r\defeq d(a,a')/2$ とし、$d_{H}(A,B)<r$ なら $B$ は $B(a,r)$ と $B(a',r)$ の両方と交わり、これらは交わらないので $B$ は二点以上をもつ。
+:::
+
+::: problem {#top:prob-hy-finite-dense}
+$X$ の稠密部分集合 $D$ について、$D$ の空でない有限部分集合の全体は $\mathcal{K}(X)$ で稠密であることを示せ。とくに $X$ が可分なら $\mathcal{K}(X)$ も可分である。
+:::
+
+::: solution
+$A\in\mathcal{K}(X)$, $\varepsilon>0$ について、$A$ の $\varepsilon$ 網 $a_{1},\dots,a_{n}$ と、$d(a_{i},p_{i})<\varepsilon$ となる $p_{i}\in D$ をとる。$P\defeq\{p_{1},\dots,p_{n}\}$ について、$a\in A$ は $d(a,a_{i})<\varepsilon$ となる $a_{i}$ をもつので $d(a,P)<2\varepsilon$、また $d(p_{i},A)\le d(p_{i},a_{i})<\varepsilon$。よって $d_{H}(A,P)<2\varepsilon$。$D$ が可算なら、その有限部分集合の全体も可算。
+:::
+
+::: supplement
+**前提を変えると.** コンパクト集合の代わりに空でない有界閉集合の全体にハウスドルフ距離を入れても距離空間になり、$X$ が完備なら完備であることが知られている（証明は \ref{top:hyperspace-complete} とほぼ同じだが、極限集合のコンパクト性の代わりに閉性と有界性を確かめる）。ただしこの場合、ヴィートリス位相との一致は一般に成り立たない（ここでは確かめていない）。
+
+**似た定理.** \ref{top:hyperspace-compact} は、凸集合の幾何学ではブラシュケの選択定理（$\R^{n}$ の有界な凸体の列は、ハウスドルフ距離で収束する部分列をもつ）として知られる。超空間の位相的性質から元の空間を調べる研究（例：$X$ が一点でないペアノ連続体なら $\mathcal{K}(X)$ はヒルベルト立方体と同相、というカーティス–シャウリの定理）があるとされる（ここでは扱わない）。
+
+**高い視点から：超空間は「形の空間」.** $\mathcal{K}(X)$ の一点は $X$ の中の一つの「形」（コンパクト集合）であり、ハウスドルフ距離は「一方の形をどれだけ太らせれば他方を覆えるか」を測る。比喩で言えば、二つの図形を同じ紙に描き、互いに相手を覆うまで太いペンでなぞったときのペンの太さである。圏論的には、$X\mapsto\mathcal{K}(X)$ は連続写像を像で移す関手（次ページ）で、和集合をとる写像 $\mathcal{K}(\mathcal{K}(X))\to\mathcal{K}(X)$ と一点集合 $X\to\mathcal{K}(X)$ によってモナド（\ref{cat:monad}）をなすことが知られている（ヴィートリス・モナド。ここでは確かめていない）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

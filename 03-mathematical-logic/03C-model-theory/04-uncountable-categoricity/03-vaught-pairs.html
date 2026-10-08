@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ヴォート対と二基数定理 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/03-vaught-pairs.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ヴォート対と二基数定理 {#model:page-vaught-pairs keywords="Vaught pair, two-cardinal theorem, (aleph1,aleph0)-model, homogeneous model, pairs of models as L(U)-structures, relativization, back-and-forth"}
+
+濃度 $\kappa$ のモデルで、ある定義可能集合だけが小さい（濃度 $\lambda<\kappa$）もの、すなわち $(\kappa,\lambda)$ モデル（\ref{model:two-cardinal-model}）があると、範疇性は崩れる（\ref{model:categorical-no-two-cardinal}）。その「芽」になるのが**ヴォート対**（\ref{model:vaught-pair}）：真の初等拡大 $\mathcal{M}\prec\mathcal{N}$ で、ある無限の定義可能集合が拡大しても増えないものである。本ページでは、ヴォート対があれば $(\aleph_{1},\aleph_{0})$ モデルが存在すること（**ヴォートの二基数定理**、\ref{model:vaught-two-cardinal}）を示す。証明は、二つのモデルの組を一つの構造とみて可算化し、**均質モデル**（\ref{model:homogeneous}）の往復論法で同型なヴォート対を作り、それを $\omega_{1}$ 回積み重ねる。
+
+> 資料：新井敏康『数学基礎論』§5.6.2（命題 5.6.14 から定理 5.6.15・系 5.6.16 まで）を参考にした（本文は写していない）。$\omega_{1}$ の長さの鎖を作る段で、定義可能集合のパラメータを固定するために、同型をパラメータを固定するように選ぶこと（\ref{model:homogeneous-iso} の 2）を明示した。
+
+## 記法と定義の確認 {#model:sec-vp-notation}
+
+::: notation
+- $T$ は可算言語 $\mathcal{L}$ の完全な理論で無限モデルをもつ。$(\kappa,\lambda)$ モデルは \ref{model:two-cardinal-model}、$\varphi(\mathcal{M},\vec{a})\defeq\{b\in M:\mathcal{M}\models\varphi(b,\vec{a})\}$。
+- 組 $\vec{a}$ の（パラメータなしの）型 $\mathrm{tp}^{\mathcal{M}}(\vec{a})\in S_{n}(T)$ は \ref{model:type}。$\mathcal{M}$ が型 $p$ を実現するとは、$p$ を型にもつ組が $\mathcal{M}$ にあることをいう。
+- 初等鎖の和、下降レーヴェンハイム–スコーレムの定理、型を実現する初等拡大は \ref{model:elementary-chain}, \ref{model:downward-lowenheim-skolem}, \ref{model:realize-all-types} のとおり。最後のものの証明は $n$ 変数の型や、言語を拡大した場合にもそのまま通る。
+:::
+
+## 均質モデル {#model:sec-vp-homogeneous}
+
+::: definition 均質 {#model:homogeneous keywords="homogeneous model, aleph0-homogeneous" index="均質モデル|きんしつもでる"}
+$\mathcal{M}$ が**均質**であるとは、有限組 $\vec{a},\vec{b}\in M^{n}$ で $\mathrm{tp}(\vec{a})=\mathrm{tp}(\vec{b})$ となるものと任意の $c\in M$ について、$d\in M$ で $\mathrm{tp}(\vec{a}c)=\mathrm{tp}(\vec{b}d)$ となるものがあることをいう。
+:::
+
+::: theorem 可算均質モデルの同型 {#model:homogeneous-iso keywords="countable homogeneous models realizing the same types are isomorphic" index="可算均質モデルの同型|かさんきんしつもでるのどうけい"}
+$\mathcal{M},\mathcal{N}$ を $T$ の可算な均質モデルで、同じ型（すべての $n$ について $S_{n}(T)$ の同じ元）を実現するものとする。
+1. $\mathcal{M}\cong\mathcal{N}$。
+2. より強く、$\vec{a}\in M^{n}$, $\vec{b}\in N^{n}$ が $\mathrm{tp}^{\mathcal{M}}(\vec{a})=\mathrm{tp}^{\mathcal{N}}(\vec{b})$ を満たせば、$\vec{a}$ を $\vec{b}$ に移す同型 $\mathcal{M}\to\mathcal{N}$ がある。
+:::
+
+::: proof
+2 を示す（1 は空の組の場合）。$M=\{m_{0},m_{1},\dots\}$, $N=\{n_{0},n_{1},\dots\}$ と並べる。有限部分写像 $f_{k}$（定義域の組 $\vec{a}_{k}$、値の組 $\vec{b}_{k}$ で $\mathrm{tp}(\vec{a}_{k})=\mathrm{tp}(\vec{b}_{k})$）を、$f_{0}\colon\vec{a}\mapsto\vec{b}$ から始めて増やしていく。
+- *行き（$k$ 偶数）.* まだ定義域にない最初の $m_{i}$ をとる。$\mathrm{tp}(\vec{a}_{k}m_{i})$ は $\mathcal{N}$ で実現されるので、組 $\vec{b}'d'$ で $\mathrm{tp}(\vec{b}'d')=\mathrm{tp}(\vec{a}_{k}m_{i})$ となるものがある。とくに $\mathrm{tp}(\vec{b}')=\mathrm{tp}(\vec{a}_{k})=\mathrm{tp}(\vec{b}_{k})$ なので、$\mathcal{N}$ の均質性から $d\in N$ で $\mathrm{tp}(\vec{b}_{k}d)=\mathrm{tp}(\vec{b}'d')=\mathrm{tp}(\vec{a}_{k}m_{i})$ となるものがある。$f_{k+1}\defeq f_{k}\cup\{(m_{i},d)\}$。
+- *帰り（$k$ 奇数）.* 値にない最初の $n_{j}$ について、$\mathcal{M}$ の側で同様にする。
+
+$f\defeq\bigcup_{k}f_{k}$ は全単射で、すべての有限組の型を保つので、とくに原子論理式を保ち、同型である。
+:::
+
+::: hypcheck
+- **可算性**：元を $\N$ で並べて往復するのに使った。
+- **同じ型の実現**：行きで $\mathrm{tp}(\vec{a}_{k}m_{i})$ を $\mathcal{N}$ で実現するのに使った（帰りは逆向き）。
+- **均質性**：実現した組 $\vec{b}'d'$ を、既に選んだ $\vec{b}_{k}$ の続きに付け替えるのに使った。
+:::
+
+## ヴォート対 {#model:sec-vp-pairs}
+
+::: definition ヴォート対 {#model:vaught-pair keywords="Vaughtian pair" index="ヴォート対|う゛ぉーとつい"}
+$T$ のモデル $\mathcal{M}\prec\mathcal{N}$（$M\neq N$）と $\mathcal{L}_{M}$ 論理式 $\varphi(x,\vec{a})$（$\vec{a}\in M$）で、$\varphi(\mathcal{M},\vec{a})=\varphi(\mathcal{N},\vec{a})$ が無限集合であるものがあるとき、$(\mathcal{N},\mathcal{M})$ を（$\varphi$ についての）**ヴォート対**という。
+:::
+
+::: proposition 二基数モデルからヴォート対 {#model:two-cardinal-to-vaught-pair keywords="a (kappa,lambda)-model gives a Vaughtian pair" index="二基数モデルとヴォート対|にきすうもでるとう゛ぉーとつい"}
+$\kappa>\lambda\ge\aleph_{0}$ で、$T$ が $(\kappa,\lambda)$ モデル $\mathcal{N}$ をもてば、$T$ はヴォート対をもつ。
+:::
+
+::: proof
+$\lvert\varphi(\mathcal{N},\vec{a})\rvert=\lambda$ とする。下降レーヴェンハイム–スコーレムの定理で、$\vec{a}$ と $\varphi(\mathcal{N},\vec{a})$ を含む濃度 $\lambda$ の $\mathcal{M}\preccurlyeq\mathcal{N}$ をとる。$\lvert M\rvert=\lambda<\kappa$ なので $M\neq N$。$\varphi(\mathcal{N},\vec{a})\subseteq M$ と初等性から $\varphi(\mathcal{M},\vec{a})=\varphi(\mathcal{N},\vec{a})$ で、これは無限。
+:::
+
+組 $(\mathcal{N},\mathcal{M})$（$\mathcal{M}\preccurlyeq\mathcal{N}$）を、新しい $1$ 変数関係記号 $U$ を加えた言語 $\mathcal{L}^{\ast}\defeq\mathcal{L}\cup\{U\}$ の構造（$\mathcal{N}$ に $U\defeq M$ を加えたもの）とみる。$\mathcal{L}$ 論理式 $\psi$ の**相対化** $\psi^{U}$ を、原子論理式では $\psi^{U}\defeq\psi$、結合子とは可換、$(\exists v\,\psi)^{U}\defeq\exists v\,(U(v)\wedge\psi^{U})$ と定めると、$\vec{a}\in M$ について $\mathcal{M}\models\psi(\vec{a})\iff(\mathcal{N},\mathcal{M})\models\psi^{U}(\vec{a})$（論理式の構成に関する帰納法。原子論理式では $\mathcal{M}$ が部分構造であることを使う）。
+
+::: lemma 組の性質の初等性 {#model:pair-elementary keywords="being a Vaughtian pair is expressed by L(U)-sentences" index="組の初等性|くみのしょとうせい"}
+$\mathcal{L}^{\ast}$ 構造 $(N',U')$ が、ヴォート対 $(\mathcal{N},\mathcal{M})$（論理式 $\varphi(x,\vec{a})$）を $\vec{a}$ の名前を加えて展開したものと初等的同値なら、$U'$ は $\mathcal{N}'\defeq N'\restr{\mathcal{L}}$ の初等部分構造の台で、$(\mathcal{N}',\mathcal{U}')$ は（$\vec{a}$ の解釈 $\vec{a}'$ について）$\varphi(x,\vec{a}')$ についてのヴォート対である。とくに、ヴォート対の $\mathcal{L}^{\ast}_{\vec{a}}$ 初等部分構造・初等拡大はヴォート対である。
+:::
+
+::: proof
+次の $\mathcal{L}^{\ast}_{\vec{a}}$ の文はヴォート対 $(\mathcal{N},\mathcal{M})$ で真なので、$(N',U')$ でも真である。
+- $\exists x\,U(x)$、各関数記号 $f$ について $\forall\vec{x}\,(\bigwedge U(x_{i})\to U(f(\vec{x})))$、各定数記号 $c$ について $U(c)$：$U'$ は部分構造の台。
+- 各 $\mathcal{L}$ 論理式 $\psi(\vec{x})$ について $\forall\vec{x}\,(\bigwedge U(x_{i})\to(\psi\leftrightarrow\psi^{U}))$：$U'$ の部分構造 $\mathcal{U}'$ について、上の相対化の性質から $\mathcal{U}'\preccurlyeq\mathcal{N}'$。
+- $\exists x\,\neg U(x)$：$U'\neq N'$。$U(\vec{a})$、$\forall x\,(\varphi(x,\vec{a})\to U(x))$：$\varphi(\mathcal{N}',\vec{a}')\subseteq U'$、したがって $\varphi(\mathcal{U}',\vec{a}')=\varphi(\mathcal{N}',\vec{a}')$。
+- 各 $k$ について「$\varphi(x,\vec{a})$ を満たす相異なる $x$ が $k$ 個以上ある」：無限。
+:::
+
+::: lemma 可算な均質ヴォート対 {#model:countable-homogeneous-vaught-pair keywords="countable Vaughtian pair of homogeneous models realizing the same types" index="可算な均質ヴォート対|かさんなきんしつう゛ぉーとつい"}
+$T$ がヴォート対をもてば、可算なヴォート対 $(\mathcal{N},\mathcal{M})$ で、$\mathcal{N}$, $\mathcal{M}$ がともに均質で同じ型を実現するものがある。
+:::
+
+::: proof
+**Step 0（可算化）.** ヴォート対 $(\mathcal{N}_{0},\mathcal{M}_{0})$（論理式 $\varphi(x,\vec{a})$）の、$\vec{a}$ を含む可算な $\mathcal{L}^{\ast}_{\vec{a}}$ 初等部分構造をとれば、\ref{model:pair-elementary} から可算なヴォート対である。以下 $(\mathcal{N}_{0},\mathcal{M}_{0})$ は可算とする。
+
+**Step 1（鎖）.** 可算なヴォート対の $\mathcal{L}^{\ast}_{\vec{a}}$ 初等鎖 $(\mathcal{N}_{i},\mathcal{M}_{i})$（$i\in\N$）を、各 $i$ で次の三つが成り立つように作る。
+- (a) $\mathcal{N}_{i}$ で実現される型は $\mathcal{M}_{i+1}$ で実現される。
+- (b) $\vec{c},\vec{e},m\in M_{i}$ で $\mathrm{tp}(\vec{c})=\mathrm{tp}(\vec{e})$ なら、$d\in M_{i+1}$ で $\mathrm{tp}(\vec{c}m)=\mathrm{tp}(\vec{e}d)$ となるものがある。
+- (c) (b) と同じことを $N_{i}$, $N_{i+1}$ について。
+
+$(\mathcal{N}_{i+1},\mathcal{M}_{i+1})$ は、次の可算個の $\mathcal{L}^{\ast}$ の型（パラメータは $N_{i}$）をすべて実現する $(\mathcal{N}_{i},\mathcal{M}_{i})$ の可算な $\mathcal{L}^{\ast}$ 初等拡大とする（\ref{model:realize-all-types} を $\mathcal{L}^{\ast}_{N_{i}}$ で使い、下降定理で可算にする。\ref{model:pair-elementary} からヴォート対）。
+- (a) $\mathcal{N}_{i}$ で実現される各 $p(\vec{x})$ について $\{U(x_{k})\}_{k}\cup\{\psi^{U}:\psi\in p\}$。両立性：$\psi\in p$（有限個の連言で代表）について $\mathcal{N}_{i}\models\exists\vec{x}\,\psi$、$\mathcal{M}_{i}\preccurlyeq\mathcal{N}_{i}$ から $\mathcal{M}_{i}\models\exists\vec{x}\,\psi$、すなわち $(\mathcal{N}_{i},\mathcal{M}_{i})\models\exists\vec{x}\,(\bigwedge U(x_{k})\wedge\psi^{U})$。これを実現する組は $M_{i+1}$ にあり、$\mathcal{M}_{i+1}$ で $p$ を実現する。
+- (b) の各組について $\{U(y)\}\cup\{\psi^{U}(\vec{e},y):\psi(\vec{x},y)\in\mathrm{tp}(\vec{c}m)\}$。両立性：$\mathcal{M}_{i}\models\psi(\vec{c},m)$ から $\exists y\,\psi(\vec{x},y)\in\mathrm{tp}(\vec{c})=\mathrm{tp}(\vec{e})$ で、$\mathcal{M}_{i}\models\exists y\,\psi(\vec{e},y)$。
+- (c) の各組について $\{\psi(\vec{e},y):\psi(\vec{x},y)\in\mathrm{tp}(\vec{c}m)\}$。両立性は (b) と同様。
+
+可算なモデルの有限組は可算個、型は可算個の条件で決まるので、要求は可算個である。
+
+**Step 2.** $(\mathcal{N},\mathcal{M})\defeq\bigcup_{i}(\mathcal{N}_{i},\mathcal{M}_{i})$ は $(\mathcal{N}_{0},\mathcal{M}_{0})$ の可算な $\mathcal{L}^{\ast}_{\vec{a}}$ 初等拡大（\ref{model:elementary-chain}）で、ヴォート対。(b) から $\mathcal{M}$ は均質（有限組は $M_{i}$ に含まれ、$M_{i}$ と $M$ での型は同じ）、(c) から $\mathcal{N}$ は均質。$\mathcal{M}\preccurlyeq\mathcal{N}$ なので $\mathcal{M}$ が実現する型は $\mathcal{N}$ でも実現され、逆は (a) から。
+:::
+
+::: theorem ヴォートの二基数定理 {#model:vaught-two-cardinal keywords="Vaught two-cardinal theorem: a Vaughtian pair yields an (aleph1,aleph0)-model" index="ヴォートの二基数定理|う゛ぉーとのにきすうていり"}
+$T$ がヴォート対をもてば、$T$ は $(\aleph_{1},\aleph_{0})$ モデルをもつ。とくに、ある $\kappa>\lambda\ge\aleph_{0}$ について $(\kappa,\lambda)$ モデルをもてば、$(\aleph_{1},\aleph_{0})$ モデルをもつ。
+:::
+
+::: proof
+\ref{model:countable-homogeneous-vaught-pair} のヴォート対 $(\mathcal{N},\mathcal{M})$（論理式 $\varphi(x,\vec{a})$, $\vec{a}\in M$）をとる。$\mathrm{tp}^{\mathcal{N}}(\vec{a})=\mathrm{tp}^{\mathcal{M}}(\vec{a})$（$\mathcal{M}\preccurlyeq\mathcal{N}$）なので、\ref{model:homogeneous-iso} の 2 から、同型 $h\colon\mathcal{N}\to\mathcal{M}$ で $h(\vec{a})=\vec{a}$ となるものがある。
+
+$\alpha\le\omega_{1}$ について初等鎖 $(\mathcal{N}_{\alpha})$ と同型 $F_{\alpha}\colon\mathcal{N}_{\alpha}\to\mathcal{N}$（$F_{\alpha}(\vec{a})=\vec{a}$、ただし $\alpha<\omega_{1}$）を作る。
+- $\mathcal{N}_{0}\defeq\mathcal{N}$, $F_{0}\defeq\mathrm{id}$。
+- *後続段.* $G\defeq h\circ F_{\alpha}\colon\mathcal{N}_{\alpha}\to\mathcal{M}$ は同型で $G(\vec{a})=\vec{a}$。$N\setminus M$ の元を新しい元に名前を付け替えて、$\mathcal{N}_{\alpha}$ を部分構造に含む構造 $\mathcal{N}_{\alpha+1}$ と同型 $G'\colon\mathcal{N}_{\alpha+1}\to\mathcal{N}$ で $G'\restr{N_{\alpha}}=G$ となるものを作る（$\mathcal{N}$ の写しで、$M$ の部分を $G^{-1}$ で $N_{\alpha}$ と同一視したもの）。$G'$ は組 $(\mathcal{N}_{\alpha+1},\mathcal{N}_{\alpha})$ から $(\mathcal{N},\mathcal{M})$ への同型なので、$\mathcal{N}_{\alpha}\prec\mathcal{N}_{\alpha+1}$, $N_{\alpha}\neq N_{\alpha+1}$, $\varphi(\mathcal{N}_{\alpha+1},\vec{a})=\varphi(\mathcal{N}_{\alpha},\vec{a})$。$F_{\alpha+1}\defeq G'$。
+- *極限段 $\lambda<\omega_{1}$.* $\mathcal{N}_{\lambda}\defeq\bigcup_{\alpha<\lambda}\mathcal{N}_{\alpha}$ は可算。均質である：有限組は ある $N_{\alpha}$ に含まれ、$\mathcal{N}_{\alpha}\cong\mathcal{N}$ は均質で $\mathcal{N}_{\alpha}\preccurlyeq\mathcal{N}_{\lambda}$。実現する型は $\mathcal{N}$ と同じ：$\mathcal{N}_{\lambda}$ の組はある $\mathcal{N}_{\alpha}\cong\mathcal{N}$ にあり、逆に $\mathcal{N}=\mathcal{N}_{0}\preccurlyeq\mathcal{N}_{\lambda}$。\ref{model:homogeneous-iso} の 2 から $F_{\lambda}\colon\mathcal{N}_{\lambda}\to\mathcal{N}$ で $F_{\lambda}(\vec{a})=\vec{a}$ となるものがある。
+- $\mathcal{N}_{\omega_{1}}\defeq\bigcup_{\alpha<\omega_{1}}\mathcal{N}_{\alpha}$。
+
+各段で真に大きくなるので $\lvert N_{\omega_{1}}\rvert=\aleph_{1}$。$\varphi(\mathcal{N}_{\omega_{1}},\vec{a})$ の元はある $N_{\alpha+1}$ に現れ、$\varphi(\mathcal{N}_{\alpha+1},\vec{a})=\varphi(\mathcal{N}_{\alpha},\vec{a})$ と極限段の和から、帰納的に $\varphi(\mathcal{N}_{0},\vec{a})$ に属する。よって $\varphi(\mathcal{N}_{\omega_{1}},\vec{a})=\varphi(\mathcal{N},\vec{a})$ は可算無限で、$\mathcal{N}_{\omega_{1}}$ は $(\aleph_{1},\aleph_{0})$ モデル。後半は \ref{model:two-cardinal-to-vaught-pair}。
+:::
+
+::: hypcheck
+- **同型が $\vec{a}$ を固定すること**：各段で $\varphi(x,\vec{a})$ の同じパラメータを使い続けるのに使った。これがないと、段ごとに定義可能集合が別のものになる。
+- **均質性と同じ型の実現**：極限段で、和 $\mathcal{N}_{\lambda}$ をふたたび $\mathcal{N}$ と同型にするのに使った（ここで可算性 $\lambda<\omega_{1}$ が効く）。
+- **言語の可算性**：\ref{model:countable-homogeneous-vaught-pair} で要求が可算個であることに使った。
+:::
+
+## 問題 {#model:sec-vp-problems}
+
+::: problem {#model:prob-vp-equivalence}
+\ref{model:prob-st-equivalence} の理論 $T_{E}$ にヴォート対があることを示せ。
+:::
+
+::: solution
+$\mathcal{M}$ を可算モデル、$a\in M$ とし、$\mathcal{N}$ を、$\mathcal{M}$ に「$a$ の同値類以外の新しい同値類を一つ（可算無限個の元で）」加えた構造とする。$T_{E}$ の量化子消去（認める）から $\mathcal{M}\prec\mathcal{N}$ で、$M\neq N$、$E(x,a)$ の定義する集合は $\mathcal{M}$ と $\mathcal{N}$ で同じ無限集合。よってヴォート対。（実際、\ref{model:prob-st-equivalence} の (ii) のような二基数モデルの源になる。）
+:::
+
+::: problem {#model:prob-vp-acf}
+$\mathrm{ACF}_{0}$ はヴォート対をもたないことを示せ。
+:::
+
+::: solution
+$K\prec L$, $K\neq L$ とする。$\mathcal{L}_{K}$ 論理式 $\varphi(x,\vec{a})$ が $K$ で無限集合を定義するとき、量化子消去から $\varphi$ は $\mathbb{Q}(\vec{a})$ 係数の多項式の等式・不等式の論理結合で、$1$ 変数の定義可能集合は有限集合か補有限集合である（有限個の多項式の根の集合の論理結合）。無限なので補有限で、$\varphi(L,\vec{a})$ も補有限（同じ有限個の多項式の根を除いたもの）。$L\setminus K$ の元 $b$ は、$K$ の元である除外される根とは異なるので $\varphi(L,\vec{a})$ に属し、$\varphi(K,\vec{a})\neq\varphi(L,\vec{a})$。
+:::
+
+::: supplement
+**前提を変えると.** ヴォートの二基数定理は $(\aleph_{1},\aleph_{0})$ への移行を主張するだけで、一般の $(\kappa,\lambda)$ から $(\kappa',\lambda')$ への移行（二基数移行定理）は集合論に依存する。たとえば $(\aleph_{2},\aleph_{1})$ から $(\aleph_{1},\aleph_{0})$ への移行は ZFC で証明できるが、$(\aleph_{1},\aleph_{0})$ から $(\aleph_{2},\aleph_{1})$ への移行は GCH などの仮定のもとで成り立つ（チャンの定理）とされる（ここでは確かめていない）。$\omega$ 安定な理論では、次ページのとおり $(\aleph_{1},\aleph_{0})$ からすべての $(\kappa,\aleph_{0})$ に移行できる。
+
+**似た定理.** \ref{model:homogeneous-iso} は、可算な $\aleph_{0}$ 範疇的理論の可算モデルの一意性（\ref{model:ryll-nardzewski}）や、可算飽和モデルの一意性（\ref{model:saturated-unique}）と同じ往復論法である。均質性は飽和性を弱めたもので、「実現される型」を固定すれば一意性が回復する。
+
+**高い視点から：ヴォート対は「片側だけ伸びる構造」.** ヴォート対 $\mathcal{M}\prec\mathcal{N}$ では、モデル全体は大きくなるのに、ある定義可能集合 $\varphi$ は動かない。比喩で言えば、建物を増築しても、ある部屋（$\varphi$ の定義する集合）だけは壁に囲まれて広がらない。二基数定理は、この「増築の一段」を同型を保って $\omega_{1}$ 回繰り返せることを言い、その結果、建物は非可算だが部屋は可算のままのモデルができる。範疇的な理論では、すべての部屋が建物と一緒に大きくならなければならないので、ヴォート対は存在できない（次ページ）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ヒドラゲーム | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/08-ordinal-analysis/06-hydra.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ヒドラゲーム {#pt:page-hydra keywords="Kirby-Paris hydra game, Hercules and the hydra, natural (Hessenberg) sum, ordinal assignment to finite trees, termination below epsilon_0, independence from PA"}
+
+**ヒドラゲーム**（カービー–パリス）では、根付き有限木の形をした怪物ヒドラの首（葉）をヘラクレスが一本ずつ切り落とす。首を切ると、ヒドラは切られた首の「祖父」の位置から、切られた後の部分木の複製を何本も生やす。複製はいくらでも増えるが、それでも**どんな切り方をしても、ヒドラは有限回で死ぬ**（\ref{pt:hydra-dies}）。証明は、木に $\varepsilon_{0}$ 未満の順序数を割り当て（\ref{pt:hydra-ordinal}）、首を切るたびにそれが真に減ることを示す。そのために、通常の和と違って可換で両方の引数について狭義単調な**自然な和**（\ref{pt:natural-sum}）を使う。グッドスタインの定理（\ref{pt:goodstein-terminates}）と同様、この主張は $\PA$ で証明できないことが知られている。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。
+
+## 記法と定義の確認 {#pt:sec-hy-notation}
+
+::: notation
+- カントール標準形 $\alpha=\omega^{\alpha_{1}}+\cdots+\omega^{\alpha_{k}}$（$\alpha_{1}\ge\cdots\ge\alpha_{k}$）とその一意性、標準形の比較（指数の列の辞書式比較）、$\varepsilon_{0}$ は \ref{pt:cantor-normal-form}, \ref{pt:cnf-comparison}, \ref{pt:epsilon0} のとおり。$\gamma\mapsto\omega^{\gamma}$ は狭義単調増加。
+- 標準形の**重複度** $m_{\alpha}(\gamma)\defeq\lvert\{i:\alpha_{i}=\gamma\}\rvert$。$\alpha$ は関数 $m_{\alpha}$（有限個の $\gamma$ でだけ正）で決まる。
+- **根付き有限木** $T$ は、根と呼ばれる頂点をもつ有限の木で、根以外の各頂点に親がある。根でない葉を**首**という。頂点 $v$ を根とする部分木を $T_{v}$ と書く。
+:::
+
+## 自然な和 {#pt:sec-hy-natural-sum}
+
+::: lemma 重複度による比較 {#pt:cnf-multiplicity-comparison keywords="ordinals in Cantor normal form compare by the largest exponent where multiplicities differ" index="重複度による比較|ちょうふくどによるひかく"}
+$\alpha\ne\beta$ について、$m_{\alpha}(\gamma)\ne m_{\beta}(\gamma)$ となる最大の $\gamma$ をとると、$\alpha<\beta\iff m_{\alpha}(\gamma)<m_{\beta}(\gamma)$。
+:::
+
+::: proof
+標準形の一意性から、$\alpha\ne\beta$ なら重複度の異なる $\gamma$ があり、正の重複度をもつ指数は有限個なので最大のものがとれる。$\gamma$ より大きい指数の項は両者で同じ個数ずつあり、標準形の先頭に同じ順で並ぶ。$m_{\alpha}(\gamma)<m_{\beta}(\gamma)$ とすると、続く $m_{\alpha}(\gamma)$ 個の項 $\omega^{\gamma}$ も共通で、その次は $\beta$ では $\omega^{\gamma}$、$\alpha$ では（あれば）指数 $<\gamma$ の項である。\ref{pt:cnf-comparison} の (i) または (ii) から $\alpha<\beta$。
+:::
+
+::: definition 自然な和 {#pt:natural-sum keywords="natural sum (Hessenberg sum) of ordinals" index="自然な和|しぜんなわ, ヘッセンベルク和|へっせんべるくわ"}
+順序数 $\alpha,\beta$ の**自然な和** $\alpha\#\beta$ を、$m_{\alpha\#\beta}\defeq m_{\alpha}+m_{\beta}$ となる順序数（両者の標準形の項をすべて集めて、指数の大きい順に並べ直したもの）とする。
+:::
+
+::: proposition 自然な和の性質 {#pt:natural-sum-basic keywords="the natural sum is commutative, associative and strictly monotone in both arguments" index="自然な和の性質|しぜんなわのせいしつ"}
+1. $\#$ は可換かつ結合的で、$\alpha\#0=\alpha$、$\alpha\#1=\alpha+1$。
+2. $\beta<\beta'$ なら $\alpha\#\beta<\alpha\#\beta'$（両方の引数について狭義単調）。
+3. $\alpha,\beta<\varepsilon_{0}$ なら $\alpha\#\beta<\varepsilon_{0}$。
+:::
+
+::: proof
+**1.** 重複度の和は可換・結合的。$m_{0}=0$。$1=\omega^{0}$ で、指数 $0$ は最小なので、$\alpha\#1$ は $\alpha$ の標準形の末尾に $\omega^{0}$ を足したもの、すなわち $\alpha+1$。
+
+**2.** $m_{\alpha\#\beta}-m_{\alpha\#\beta'}=m_{\beta}-m_{\beta'}$ なので、重複度の異なる最大の $\gamma$ と、そこでの大小は $\beta,\beta'$ のものと同じ。\ref{pt:cnf-multiplicity-comparison} から結論を得る。
+
+**3.** $\alpha\#\beta$ の標準形の指数は $\alpha$ か $\beta$ の指数で、$\varepsilon_{0}$ 未満。$\omega^{\gamma}<\varepsilon_{0}$（$\gamma<\varepsilon_{0}$）で、$\varepsilon_{0}$ は加法で閉じている（\ref{pt:epsilon0-basic}）。
+:::
+
+## ヒドラゲーム {#pt:sec-hy-game}
+
+::: definition ヒドラゲーム {#pt:hydra-game keywords="Kirby-Paris hydra game rules" index="ヒドラゲーム|ひどらげーむ"}
+ヒドラは根付き有限木 $T_{0}$ である。第 $n$ 手（$n=1,2,\ldots$）でヘラクレスは $T_{n-1}$ の首 $h$ を一つ選び、次のように $T_{n}$ を作る。
+1. $h$ の親 $p$ が根なら、$h$ を取り除く。
+2. そうでなければ、$p$ の親を $g$ とする。$h$ を取り除き、その後の部分木 $P'\defeq(T_{n-1})_{p}\setminus\{h\}$ の複製を $n$ 個、$g$ の新しい子として付け加える。
+
+根だけになったらヒドラは**死ぬ**（首がないのでゲームは終わる）。
+:::
+
+::: definition ヒドラの順序数 {#pt:hydra-ordinal keywords="ordinal assigned to a finite rooted tree via natural sums of omega-powers" index="ヒドラの順序数|ひどらのじゅんじょすう"}
+根付き有限木 $T$ の順序数 $o(T)$ を、根の子を $c_{1},\dots,c_{k}$ として
+$$
+o(T)\defeq\omega^{o(T_{c_{1}})}\#\cdots\#\omega^{o(T_{c_{k}})}
+$$
+（$k=0$ なら $0$）で、木の高さに関する帰納法で定める。\ref{pt:natural-sum-basic} の 1, 3 から順序は問わず、$o(T)<\varepsilon_{0}$。
+:::
+
+::: theorem ヒドラは必ず死ぬ {#pt:hydra-dies keywords="every strategy kills every hydra in finitely many moves" index="ヒドラは必ず死ぬ|ひどらはかならずしぬ"}
+どのヒドラ $T_{0}$ についても、ヘラクレスがどのように首を選んでも、ヒドラは有限回の手で死ぬ。複製の個数 $n$ を任意の有限個に変えても同じである。
+:::
+
+::: proof
+**Step 1（局所的な減少は全体に伝わる）.** 頂点 $v$ の部分木 $T_{v}$ を、$o$ がより小さい木に取り替えると、$o(T)$ は真に減る。実際、$v$ の親 $u$ について、$o(T_{u})$ の自然な和の一つの項 $\omega^{o(T_{v})}$ が、より小さい $\omega^{(\text{新しい値})}$ に替わる（$\omega^{\gamma}$ の狭義単調性）ので、\ref{pt:natural-sum-basic} の 2 から $o(T_{u})$ は真に減る。これを根までくり返す。
+
+**Step 2（一手で減る）.** 第 $n$ 手で首 $h$ を切る。
+- 親 $p$ が根なら、$o(T_{n-1})=o(T_{n})\#\omega^{0}=o(T_{n})+1>o(T_{n})$（\ref{pt:natural-sum-basic} の 1）。
+- そうでなければ、$P\defeq(T_{n-1})_{p}$ と $P'\defeq P\setminus\{h\}$ について、$h$ は $p$ の子で葉なので $o(P)=o(P')\#\omega^{0}=o(P')+1$。$g$ の部分木では、項 $\omega^{o(P)}=\omega^{o(P')+1}$ が、$n+1$ 個の項 $\omega^{o(P')}\#\cdots\#\omega^{o(P')}$（元の位置の $P'$ と $n$ 個の複製）に替わる。標準形の比較で、先頭の指数 $o(P')+1>o(P')$ なので
+$$
+\omega^{o(P')}\#\cdots\#\omega^{o(P')}<\omega^{o(P')+1}
+$$
+で、\ref{pt:natural-sum-basic} の 2 から $o(T_{g})$ は真に減る。Step 1 から $o(T_{n})<o(T_{n-1})$。
+
+**Step 3.** ヒドラが死なずに無限に続くと、順序数の無限下降列 $o(T_{0})>o(T_{1})>\cdots$ ができ、順序数の整列性に反する。複製の個数を変えても Step 2 の不等式は（有限個の項の和なので）同じく成り立つ。
+:::
+
+::: hypcheck
+- **自然な和の狭義単調性**：Step 1, 2 で「一つの項を小さくすると全体が小さくなる」ことに使った。通常の和では成り立たない（$1+\omega=0+\omega$）ので、自然な和が必要である。
+- **複製が $g$（祖父）に付くこと**：Step 2 で、増える項と消える項が同じ自然な和 $o(T_{g})$ の中にあり、増える項の指数 $o(P')$ が消える項の指数 $o(P')+1$ より小さいことに使った。
+- **順序数の整列性**：Step 3 で使った。使う順序数は $\varepsilon_{0}$ 未満である。
+:::
+
+::: theorem カービー–パリスの定理（ヒドラ） {#pt:kirby-paris-hydra keywords="Kirby-Paris: the hydra theorem is not provable in PA" index="カービー–パリスの定理（ヒドラ）|かーびーぱりすのていりひどら"}
+「すべてのヒドラは、どの戦略でも有限回で死ぬ」を（木と戦略を符号化して）算術の文として表したものは、$\PA$ で証明できないことが知られている（カービー–パリス、1982）。
+:::
+
+::: remark
+本サイトでは証明しない。グッドスタインの定理（\ref{pt:kirby-paris-goodstein}）と同様に、ヒドラが死ぬまでの手数がハーディ関数（\ref{pt:hardy-functions}）の $\varepsilon_{0}$ 未満の段で評価され、$\PA$ で全域性が証明できる関数の限界（\ref{pt:pa-provably-recursive-bound}）を超えることによると言われている。
+:::
+
+## 問題 {#pt:sec-hy-problems}
+
+::: problem {#pt:prob-hy-small}
+根—$p$—$h$ の一直線の木（頂点 3 個）のヒドラの順序数を求め、ヒドラが 3 手で死ぬことを確かめよ。
+:::
+
+::: solution
+$o(T_{p})=\omega^{0}=1$、$o(T_{0})=\omega^{1}=\omega$。第 1 手で $h$ を切ると、$p$ は葉になり、$P'=\{p\}$ の複製が $1$ 個根に付くので、根の子は葉 2 個：$o(T_{1})=1\#1=2<\omega$。第 2, 3 手で葉を一つずつ切って $o=1,0$ となり、死ぬ。
+:::
+
+::: problem {#pt:prob-hy-natural}
+$1\#\omega=\omega+1$ だが $1+\omega=\omega$ であることを確かめ、自然な和が通常の和と異なることを確かめよ。また $\omega\#\omega^{2}=\omega^{2}+\omega$ を求めよ。
+:::
+
+::: solution
+$1=\omega^{0}$ と $\omega=\omega^{1}$ の項を大きい順に並べると $\omega^{1}+\omega^{0}=\omega+1$。通常の和では $1+\omega=\sup_{n}(1+n)=\omega$。$\omega\#\omega^{2}$ は項 $\omega^{2}$, $\omega^{1}$ を並べて $\omega^{2}+\omega$。
+:::
+
+::: supplement
+**前提を変えると.** 複製の個数を「第 $n$ 手で $n$ 個」から任意の関数に変えても、ヒドラは死ぬ（\ref{pt:hydra-dies} の最後）。一方、死ぬまでの手数は複製の規則に強く依存し、「$n$ 個」の規則でも、単純な戦略で $\PA$ の証明可能な関数を超える長さになることが知られている。ブッフホルツのヒドラ（ラベル付きの木）は、より強い体系の証明論的順序数に対応する独立命題を与えることが知られている（ここでは扱わない）。
+
+**似た定理.** グッドスタイン列（\ref{pt:page-goodstein}）は数の世界での同じ現象で、底の置き換えが「複製」の役をする。整列性による停止の証明は、プログラムの停止性の証明（順序数を「変量」とする）の典型でもある。
+
+**高い視点から：首は増えても順序数は減る.** ヒドラの首の本数は爆発的に増えるが、各首が「どれだけ深いところに付いているか」を $\omega$ の冪の指数で測ると、深い首一本が浅い首の有限個に置き換わるので、全体の大きさは確実に減る。比喩で言えば、高額の紙幣一枚を少額の紙幣の束に両替し続けるようなもので、束がどれだけ厚くなっても、総額は両替のたびに（少しだけ）減っていく。$\varepsilon_{0}$ 未満の順序数の整列性は、この「いつかは使い果たす」ことを保証するが、それは $\PA$ の中では見通せない。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

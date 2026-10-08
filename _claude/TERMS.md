@@ -386,3 +386,4 @@
 | comonad / augmented simplicial object / bar resolution / contracting homotopy / crossed homomorphism / group cohomology | 余モナド / 添加単体的対象 / 棒分解 / 可縮ホモトピー / 交叉準同型 / 群のコホモロジー | コモナド、拡大単体的対象、バー分解 | 仮。cat:page-comonads-homology |
 | initial topology as right adjoint / Hausdorff reflection / collapsing a subspace | 始位相と随伴 / ハウスドルフ化 / 部分集合のつぶし | 最大ハウスドルフ商 | 仮。cat:page-adjoints-topology |
 | smash product / wedge / reduced suspension / loop space | スマッシュ積 / ウェッジ和 / （被約）懸垂 / ループ空間 | | 標準的。cat:page-loops-suspensions |
+| subobject / well-powered / generator (separator) / cogenerator / special adjoint functor theorem | 部分対象 / よく冪をもつ / 生成集合 / 余生成集合（余生成対象） / 特殊随伴関手定理 | 整冪、分離集合 | 仮。cat:page-special-aft |

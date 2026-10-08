@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>特殊随伴関手定理 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/01-basics/12-special-aft.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 特殊随伴関手定理 {#cat:page-special-aft keywords="subobject, well-powered, generator, cogenerator, separating set, intersection of subobjects, special initial object theorem, special adjoint functor theorem, SAFT, Stone-Cech compactification via SAFT"}
+
+フレイドの随伴関手定理（\ref{cat:freyd-aft}）は解集合条件を仮定する。これを、圏の側の条件「部分対象が集合分しかない（**よく冪をもつ**）」「小さい**余生成集合**がある」で置き換えたのが**特殊随伴関手定理**（\ref{cat:saft}）である。核心は、そのような圏では「余生成対象の積のすべての部分対象の共通部分」が始対象になること（\ref{cat:special-initial-object}）にある。応用として、コンパクトハウスドルフ空間の圏が $\mathbf{Top}$ の反射部分圏であること、すなわちストーン–チェックのコンパクト化の存在（\ref{cat:chaus-reflective}）を、区間 $[0,1]$ が余生成対象であることから導く。
+
+> 資料：S. Mac Lane, *Categories for the Working Mathematician*, 2nd ed., §V.7–8 を参考にした（本文は写していない）。同書の定理 2 は「部分対象の族の引き戻しが存在し、$G$ がそれを保存する」という形だが、ここでは同書の系の形（よく冪をもつ圏）に絞って述べ、そこで必要になる「$G$ はモノ射を保存する」「コンマ圏もよく冪をもつ」を補って証明した。共通部分が始対象になる議論の「射は高々一つ」の部分も、等化子が分裂エピであることから詳しく示した。
+
+## 記法と定義の確認 {#cat:sec-saft-notation}
+
+::: notation
+- モノ射は \ref{cat:monic-epic}、極限・引き戻し・完備性の判定は \ref{cat:completeness-criterion} のとおり。等化子はモノ射である（\ref{cat:equalizer-monic}）。
+- 「局所小」は各 hom 集合が小さい集合であること。コンマ圏 $(x\downarrow G)$ と、その完備性・局所小性は \ref{cat:comma-category}, \ref{cat:comma-limits} のとおり。$x$ から $G$ への普遍射は $(x\downarrow G)$ の始対象のことであり、各 $x$ に普遍射があれば $G$ は左随伴をもつ（\ref{cat:adjunction-from-universal}）。
+- 一つの対象への射の族 $(u_{i}\colon s_{i}\to a)_{i\in J}$ の**引き戻し**とは、この族を図式とみた極限 $(p,(v_{i}\colon p\to s_{i}))$ のこと（$u_{i}v_{i}$ はすべて等しい）。
+:::
+
+## 部分対象と余生成集合 {#cat:sec-saft-subobjects}
+
+::: definition 部分対象とよく冪をもつ圏 {#cat:subobject keywords="subobject, equivalence of monics, well-powered category, intersection of subobjects" index="部分対象|ぶぶんたいしょう, よく冪をもつ|よくべきをもつ"}
+対象 $a$ へのモノ射 $u\colon s\to a$, $v\colon t\to a$ について、$u=v\circ w$ となる $w$ があるとき $u\le v$ と書く。$u\le v$ かつ $v\le u$ のとき $u\equiv v$ とし、この同値類を $a$ の**部分対象**という。$\mathbf{A}$ の各対象の部分対象の全体が小さい集合で添字付けられるとき、$\mathbf{A}$ は**よく冪をもつ**という。部分対象の族 $(u_{i})$ の引き戻しが存在するとき、それを $(u_{i})$ の**共通部分**という（次の補題でモノ射であり、$\le$ についての最大下界になる）。
+:::
+
+::: lemma モノ射の引き戻し {#cat:pullback-monic keywords="pullbacks of monics are monic; a pullback of a family of monics is monic" index="モノ射の引き戻し|ものしゃのひきもどし"}
+1. 引き戻しの四角形 $u\circ v'=v\circ u'$（$u'\colon p\to t$, $v'\colon p\to s$ は $u\colon s\to a$, $v\colon t\to a$ の引き戻し）で、$u$ がモノ射なら $u'$ もモノ射。
+2. モノ射の族 $(u_{i}\colon s_{i}\to a)_{i\in J}$（$J\ne\emptyset$）の引き戻し $(p,(v_{i}))$ について、合成 $w\defeq u_{i}v_{i}\colon p\to a$（$i$ によらない）はモノ射で、各 $u_{i}$ 以下であり、すべての $u_{i}$ 以下のモノ射 $m$ について $m\le w$。
+:::
+
+::: proof
+**1.** $u'h=u'k$ とする。$u\circ(v'h)=v\circ u'h=v\circ u'k=u\circ(v'k)$ で $u$ はモノ射なので $v'h=v'k$。$u'h=u'k$ と合わせて、引き戻しの一意性から $h=k$。
+
+**2.** $wh=wk$ とする。各 $i$ で $u_{i}(v_{i}h)=u_{i}(v_{i}k)$ なので $v_{i}h=v_{i}k$。極限の一意性から $h=k$。$w=u_{i}v_{i}$ なので $w\le u_{i}$。$m\colon c\to a$ が $m=u_{i}m_{i}$（各 $i$）を満たせば $(m_{i})$ は錐なので、$v_{i}t=m_{i}$ となる $t$ があり、$wt=u_{i}m_{i}=m$。
+:::
+
+::: definition 生成集合と余生成集合 {#cat:generator keywords="generating set, separating set, cogenerating set, cogenerator" index="生成集合|せいせいしゅうごう, 余生成集合|よせいせいしゅうごう, 余生成対象|よせいせいたいしょう"}
+圏 $\mathbf{C}$ の対象の集合 $S$ が**生成集合**であるとは、異なる射 $h\ne h'\colon c\to d$ に対し、ある $s\in S$ と $f\colon s\to c$ で $hf\ne h'f$ となるものがあることをいう（「分離する」と言う方が内容に合う）。双対に、$Q$ が**余生成集合**であるとは、$h\ne h'\colon a\to b$ に対し、ある $q\in Q$ と $g\colon b\to q$ で $gh\ne gh'$ となるものがあることをいう。$\{q\}$ が余生成集合のとき $q$ を**余生成対象**という。
+:::
+
+::: example
+1. $\mathbf{Set}$ では一点集合が生成対象（射を元で比べる）、$2$ 点集合が余生成対象（$h(c)\ne h'(c)$ なら、$h(c)$ の特性関数で区別する）。
+2. $\mathbf{Grp}$ と $\mathbf{Ab}$ では $\mathbb{Z}$ が生成対象（$\mathbb{Z}\to G$ は $G$ の元と対応する）。
+:::
+
+## 特殊始対象定理と特殊随伴関手定理 {#cat:sec-saft-main}
+
+::: theorem 特殊始対象定理 {#cat:special-initial-object keywords="special initial object theorem: complete, locally small, well-powered, small cogenerating set implies initial object" index="特殊始対象定理|とくしゅしたいしょうていり"}
+圏 $\mathbf{D}$ が完備・局所小で、よく冪をもち、小さい余生成集合 $Q$ をもつなら、$\mathbf{D}$ は始対象をもつ。
+:::
+
+::: proof
+**Step 1（候補）.** $q_{0}\defeq\prod_{q\in Q}q$（$Q$ は小さいので存在する）とする。よく冪をもつので、$q_{0}$ の部分対象の代表の小さい族 $(u_{i})_{i\in J}$ がとれる（$1_{q_{0}}$ を含むので $J\ne\emptyset$）。その共通部分 $r\colon R\to q_{0}$ を、\ref{cat:pullback-monic} の 2 の $w$ としてとる（$\mathbf{D}$ は完備）。$r$ はモノ射で、$q_{0}$ のすべての部分対象以下である。
+
+**Step 2（射は高々一つ）.** $f,g\colon R\to d$ とし、等化子 $e\colon E\to R$ をとる。$r\circ e$ はモノ射（モノ射の合成）なので $q_{0}$ の部分対象で、Step 1 より $r\le r\circ e$、すなわち $r=r\circ e\circ t$ となる $t\colon R\to E$ がある。$r$ はモノ射なので $e\circ t=1_{R}$。すると $e\circ t\circ e=e=e\circ1_{E}$ で、$e$ はモノ射なので $t\circ e=1_{E}$。よって $e$ は同型で、$fe=ge$ から $f=g$。
+
+**Step 3（射の存在）.** 対象 $d$ をとる。$H\defeq\{h:h\colon d\to q\text{ for some }q\in Q\}$ は小さい集合（$Q$ が小さく局所小）。$j\colon d\to\prod_{h\in H}q_{h}$（$q_{h}$ は $h$ の終域）を成分 $p_{h}\circ j=h$ で定める。$j$ はモノ射：$x\ne y\colon c\to d$ なら、余生成性から $hx\ne hy$ となる $h\in H$ があり、$p_{h}jx\ne p_{h}jy$。$k\colon q_{0}\to\prod_{h\in H}q_{h}$ を $p_{h}\circ k=p_{q_{h}}$ で定め、$j$ と $k$ の引き戻し $j'\colon C\to q_{0}$, $k'\colon C\to d$ をとる。\ref{cat:pullback-monic} の 1 より $j'$ はモノ射なので $q_{0}$ の部分対象で、Step 1 より $r=j'\circ s$ となる $s\colon R\to C$ がある。$k'\circ s\colon R\to d$ が求める射。
+
+Step 2, 3 より $R$ は始対象。
+:::
+
+::: hypcheck
+- **完備性**：Step 1 の積と共通部分、Step 2 の等化子、Step 3 の積と引き戻しに使った。
+- **よく冪をもつ**：Step 1 で、すべての部分対象の共通部分が**小さい**極限になるように使った。
+- **局所小**：Step 3 で $H$ が小さい集合であることに使った。
+- **$Q$ が小さい余生成集合**：$Q$ が小さいことは Step 1 の積に、余生成性は Step 3 で $j$ がモノ射であることに使った。
+:::
+
+::: lemma 連続な関手とモノ射 {#cat:continuous-preserves-monic keywords="a functor preserving pullbacks preserves monics; monics in comma categories" index="モノ射の保存|ものしゃのほぞん"}
+$\mathbf{A}$ が引き戻しをもち、$G\colon\mathbf{A}\to\mathbf{X}$ が引き戻しを保存するとする。
+1. $h$ がモノ射であることと、$h,h$ の引き戻しとして $(1,1)$ がとれることは同値。したがって $G$ はモノ射を保存する。
+2. $(x\downarrow G)$ の射 $h\colon(a,f)\to(a',f')$ について、$h$ が $(x\downarrow G)$ でモノ射であることと、$h\colon a\to a'$ が $\mathbf{A}$ でモノ射であることは同値。
+:::
+
+::: proof
+**1.** $h$ がモノ射なら、$hu=hv$ から $u=v$ で、四角形 $h\circ1=h\circ1$ の引き戻しの性質は明らか。逆に $(1,1)$ が引き戻しなら、$hu=hv$ のとき $1\circ t=u$, $1\circ t=v$ となる $t$ があるので $u=v$。$G$ は引き戻し $(1,1)$ を引き戻し $(1,1)$ に写すので、$Gh$ もモノ射。
+
+**2.** $h$ が $\mathbf{A}$ でモノ射なら、$(x\downarrow G)$ の射は $\mathbf{A}$ の射で合成も同じなので明らか。逆に $(x\downarrow G)$ でモノ射とし、$\mathbf{A}$ で $h,h$ の引き戻し $k,k'\colon P\to a$ をとる。$G$ は引き戻しを保存し、$Gh\circ f=f'=Gh\circ f$ なので、$Gk\circ\varphi=f=Gk'\circ\varphi$ となる $\varphi\colon x\to GP$ がある。$k,k'\colon(P,\varphi)\to(a,f)$ は $(x\downarrow G)$ の射で $hk=hk'$ なので $k=k'$。$hu=hv$ なら $kt=u$, $k't=v$ となる $t$ があり、$u=kt=k't=v$。
+:::
+
+::: theorem 特殊随伴関手定理 {#cat:saft keywords="special adjoint functor theorem SAFT; continuous functor on a complete well-powered category with small cogenerating set has a left adjoint" index="特殊随伴関手定理|とくしゅずいはんかんしゅていり"}
+$\mathbf{A}$ が完備・局所小で、よく冪をもち、小さい余生成集合 $Q$ をもつとし、$\mathbf{X}$ は局所小とする。このとき関手 $G\colon\mathbf{A}\to\mathbf{X}$ が左随伴をもつことと、$G$ が小さい極限を保存することは同値である。特に、そのような $\mathbf{A}$ 上の極限を保存する関手 $\mathbf{A}\to\mathbf{Set}$ は表現可能である。
+:::
+
+::: proof
+**必要性.** 右随伴は極限を保存する（\ref{cat:adjoints-preserve-limits}）。
+
+**十分性.** $x\in\mathbf{X}$ を固定し、$\mathbf{D}\defeq(x\downarrow G)$ が \ref{cat:special-initial-object} の仮定を満たすことを示す。その始対象が $x$ から $G$ への普遍射なので、\ref{cat:adjunction-from-universal} より $G$ は左随伴をもつ。
+
+**Step 1（完備・局所小）.** \ref{cat:comma-limits}。
+
+**Step 2（よく冪をもつ）.** $(a,f)$ の部分対象 $h\colon(b,g)\to(a,f)$ について、\ref{cat:continuous-preserves-monic} の 2 より $h$ は $\mathbf{A}$ でモノ射。また $Gh$ はモノ射（同 1）なので、$Gh\circ g=f$ を満たす $g$ は $h$ から一意に決まる。さらに $\mathbf{A}$ で $h'=h\theta$（$\theta$ は同型）なら、$Gh\circ G\theta\circ g'=f=Gh\circ g$ と $Gh$ のモノ性から $G\theta\circ g'=g$ で、$\theta$ は $(x\downarrow G)$ の同型（逆も同様に射）。よって $(a,f)$ の部分対象から $a$ の部分対象への写像は単射で、$\mathbf{A}$ がよく冪をもつことから $\mathbf{D}$ もよく冪をもつ。
+
+**Step 3（余生成集合）.** $Q'\defeq\{(q,k):q\in Q,\ k\colon x\to Gq\}$ は小さい集合（$\mathbf{X}$ は局所小）。$s\ne t\colon(a,f)\to(a',f')$ なら、$\mathbf{A}$ で $s\ne t$ なので、$hs\ne ht$ となる $q\in Q$, $h\colon a'\to q$ がある。$h$ は $(x\downarrow G)$ の射 $(a',f')\to(q,Gh\circ f')$ で、$(q,Gh\circ f')\in Q'$。よって $Q'$ は余生成集合。
+
+**表現可能性.** $\mathbf{X}=\mathbf{Set}$ とし、左随伴 $F$ をとると $G\cong\mathbf{Set}(1,G-)\cong\mathbf{A}(F1,-)$。
+:::
+
+::: hypcheck
+- **$G$ が極限を保存する**：Step 1（コンマ圏の完備性）と Step 2（引き戻しの保存によるモノ射の扱い）で使った。
+- **$\mathbf{X}$ が局所小**：Step 3 で $Q'$ が小さいことに使った。
+- **よく冪・余生成集合**：Step 2, 3 で、$\mathbf{A}$ の性質をコンマ圏に移した。
+- 解集合条件は仮定していない。それを圏の大域的な条件で置き換えたのがこの定理である。
+:::
+
+## 応用：コンパクトハウスドルフ空間 {#cat:sec-saft-chaus}
+
+::: theorem コンパクトハウスドルフ空間は反射的 {#cat:chaus-reflective keywords="CHaus is reflective in Top via SAFT, unit interval is a cogenerator, Stone-Cech compactification" index="ストーン–チェックのコンパクト化（随伴として）|すとーんちぇっくのこんぱくとかずいはんとして"}
+コンパクトハウスドルフ空間の充満部分圏 $\mathbf{CHaus}\subseteq\mathbf{Top}$ について、包含関手 $K\colon\mathbf{CHaus}\to\mathbf{Top}$ は左随伴 $\beta$ をもつ。すなわち、任意の空間 $X$ に、連続写像 $\eta_{X}\colon X\to\beta X$（$\beta X$ はコンパクトハウスドルフ）で、コンパクトハウスドルフ空間への連続写像がすべて $\eta_{X}$ を一意に通るものがある。
+:::
+
+::: proof
+\ref{cat:saft} の仮定を確かめる。
+
+**Step 1（完備で、$K$ は極限を保存）.** コンパクトハウスドルフ空間の直積はコンパクト（\ref{top:tychonoff}）かつハウスドルフ（\ref{cat:haus-reflective} の Step 1）。等化子 $\{x:f(x)=g(x)\}$ はハウスドルフ空間への二つの写像の一致集合なので閉集合（$(f,g)$ による対角線の逆像で、対角線はハウスドルフ性から閉）、したがってコンパクト。よって $\mathbf{Top}$ での積と等化子（\ref{cat:top-complete}）は $\mathbf{CHaus}$ に属し、$\mathbf{CHaus}$ は充満なのでそれらは $\mathbf{CHaus}$ での積と等化子でもある。\ref{cat:completeness-criterion} より $\mathbf{CHaus}$ は完備で、$K$ は小さい極限を保存する。
+
+**Step 2（局所小）.** hom 集合は写像の集合の部分集合。$\mathbf{Top}$ も局所小。
+
+**Step 3（よく冪をもつ）.** $h\colon B\to A$ を $\mathbf{CHaus}$ のモノ射とする。一点空間からの写像で点を区別できるので $h$ は単射。コンパクト空間からハウスドルフ空間への連続な単射は、像への同相写像（\ref{top:compact-to-hausdorff}）で、像は閉集合（\ref{top:compact-hausdorff-closed}）。よって $h\equiv$（像の包含）で、$A$ の部分対象は $A$ の閉集合の一部と一対一に対応し、小さい集合で添字付けられる。
+
+**Step 4（$[0,1]$ は余生成対象）.** $f\ne g\colon A\to B$ なら $f(a)\ne g(a)$ となる $a$ がある。$B$ はコンパクトハウスドルフなので正規（\ref{top:compact-hausdorff-normal}）で、一点は閉集合。ウリゾーンの補題（\ref{top:urysohn-lemma}）から、$\varphi(f(a))=0$, $\varphi(g(a))=1$ となる連続写像 $\varphi\colon B\to[0,1]$ があり、$\varphi f\ne\varphi g$。
+
+以上と \ref{cat:saft} から、$K$ は左随伴をもつ。
+:::
+
+::: hypcheck
+- **チコノフの定理**：Step 1 で直積のコンパクト性に使った。完備性の判定に積が必要なので、ここは避けられない。
+- **ウリゾーンの補題**（正規性経由）：Step 4 の余生成性に使った。
+- **コンパクトからハウスドルフへの単射が埋め込み**：Step 3 でよく冪をもつことに使った。
+- **$X$ には何も仮定していない**：完全正則でない $X$ についても $\beta X$ が存在する（ただし $\eta_{X}$ は単射とは限らない）。
+:::
+
+::: remark
+\ref{top:stone-cech} のストーン–チェックのコンパクト化と同じ普遍性をもつので、普遍性による一意性（\ref{top:stone-cech-unique}）の範囲で両者は一致する（\ref{top:stone-cech} はチコノフ空間 $X$ についての構成で、そのとき $\eta_{X}$ は埋め込みになる。ここではチコノフの定理を使うので、選択公理（少なくとも超フィルター補題）に依存している）。SAFT による構成は存在を示すだけで、$\beta X$ の具体的な姿（超フィルターや $[0,1]^{C(X,[0,1])}$ の中の閉包）は与えない。
+:::
+
+## 問題 {#cat:sec-saft-problems}
+
+::: problem {#cat:prob-saft-representable}
+関手 $K\colon\mathbf{A}\to\mathbf{Set}$ が左随伴 $F$ をもてば、$K\cong\mathbf{A}(F1,-)$（$1$ は一点集合）と表現可能であることを示せ。
+:::
+
+::: solution
+随伴の全単射 $\mathbf{A}(F1,a)\cong\mathbf{Set}(1,Ka)$ は $a$ について自然で、$\mathbf{Set}(1,S)\cong S$（写像 $1\to S$ と元の対応）も $S$ について自然。合成して $\mathbf{A}(F1,-)\cong K$。
+:::
+
+::: problem {#cat:prob-saft-set-cogenerator}
+$\mathbf{Set}$ では $2$ 点集合 $\{0,1\}$ が余生成対象であるが、空集合と一点集合はそうでないことを示せ。
+:::
+
+::: solution
+$h\ne h'\colon A\to B$ なら $h(a)\ne h'(a)$ となる $a$ があり、$g\colon B\to\{0,1\}$ を $h(a)$ の特性関数とすると $gh(a)=1\ne0=gh'(a)$。一点集合 $1$ への射は一つしかないので、$h\ne h'\colon\{0\}\to\{0,1\}$ を区別できない。空集合へは空でない $B$ から射がないので、同じ $h,h'$ を区別できない。
+:::
+
+::: supplement
+**前提を変えると.** 双対の形（余完備・余よく冪・小さい生成集合をもつ圏の上の、余極限を保存する関手は右随伴をもつ）も成り立つ。Mac Lane は、$R$ が $R$ 加群の圏の生成対象であることから、ワットの定理（$R$ 加群の圏から $\mathbf{Ab}$ への加法的で余極限を極限に写す反変関手は $\mathrm{Hom}_{R}(-,C)$ の形）をこの定理の応用として挙げている（ここでは確かめていない）。また、$\mathbf{Ab}$ では $\mathbb{Q}/\mathbb{Z}$ が単射的な余生成対象であることが知られている。
+
+**似た定理.** \ref{cat:freyd-aft} は「各 $x$ ごとの解集合」を、\ref{cat:saft} は「圏全体の余生成集合とよく冪」を仮定する。後者の方が確かめやすい場合（位相空間のように、解集合を直接書くのが面倒な場合）に有効である。古典的な形の SAFT は、解集合を構成して \ref{cat:freyd-aft} から導くこともできるとされる（Freyd, Schubert）。
+
+**高い視点から：「すべてを含む最小のもの」としての始対象.** 特殊始対象定理の構成は、集合論で「ある性質をもつ最小の部分集合を、それを含むものすべての共通部分として作る」（生成された部分群、閉包など）のと同じ発想である。始対象は、余生成対象の大きな積 $q_{0}$ の中の「最も小さい部分対象」として得られる。比喩で言えば、$q_{0}$ はあらゆる測定器（余生成対象への射）をそろえた巨大な計測台で、その中で「どの部分対象にも含まれる核」が、どの対象にもただ一通りに写る原型になる。ストーン–チェックのコンパクト化の古典的な構成（立方体 $[0,1]^{C(X,[0,1])}$ の中の閉包）は、この抽象的な構成を具体化したものとみなせる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

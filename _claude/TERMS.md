@@ -437,4 +437,4 @@
 | low basis theorem / Pi^0_1 class / isolated path | 低基底定理 / Π⁰₁ クラス / 孤立した道 | | 標準的。comp:page-low-basis |
 | Vaught never-two theorem / Ehrenfeucht example | ヴォートの定理（2 個にならない） / エーレンフォイヒトの例 | | 標準的。model:page-vaught-never-two |
 | Ladner theorem / NP-intermediate / delayed diagonalization / padding | ラドナーの定理 / NP 中間 / 遅延対角化 / 詰め物 | パディング | 仮（「詰め物」）。comp:page-ladner |
-| Schanuel lemma / syzygy / projective dimension / global dimension | シャヌエルの補題 / シジジー / 射影次元 / 大域次元 | 余接 | 標準的。ha:page-projective-dimension |
+| Schanuel lemma / syzygy / projective dimension / global dimension | シャヌエルの補題 / シジジー / 射影次元 / 大域次元 | | 標準的。ha:page-projective-dimension |

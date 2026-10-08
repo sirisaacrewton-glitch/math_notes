@@ -4257,6 +4257,13 @@
       "num": "3.6",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/03-ackermann.html"
     },
+    "comp:adleman": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "アドルマンの定理",
+      "num": "16.1",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/16-bpp-ph.html"
+    },
     "comp:alba-decidable": {
       "status": "defined",
       "type": "lemma",
@@ -5314,6 +5321,13 @@
       "num": "9.3",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/09-reducibility.html"
     },
+    "comp:lautemann-covering": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "ラウテマンの被覆補題",
+      "num": "16.2",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/16-bpp-ph.html"
+    },
     "comp:lba": {
       "status": "defined",
       "type": "definition",
@@ -5650,6 +5664,13 @@
       "num": "2.6",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/02-np.html"
     },
+    "comp:np-in-bpp-collapse": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "NP が BPP に含まれるなら",
+      "num": "16.4",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/16-bpp-ph.html"
+    },
     "comp:np-ntm": {
       "status": "defined",
       "type": "theorem",
@@ -5831,6 +5852,13 @@
       "title": "計算可能順序数とスペクターの有界性定理",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/04-boundedness.html"
+    },
+    "comp:page-bpp-ph": {
+      "status": "defined",
+      "type": "page",
+      "title": "BPP と多項式階層",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/16-bpp-ph.html"
     },
     "comp:page-cfl-pumping": {
       "status": "defined",
@@ -6608,6 +6636,20 @@
       "title": "",
       "num": "4.11",
       "page": "03-mathematical-logic/03D-computability-theory/01-automata/04-context-free.html"
+    },
+    "comp:prob-bp-p-np": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "16.5",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/16-bpp-ph.html"
+    },
+    "comp:prob-bp-rp": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "16.6",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/16-bpp-ph.html"
     },
     "comp:prob-cir-depth": {
       "status": "defined",
@@ -7763,6 +7805,34 @@
       "title": "計算可能な整列順序",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/04-boundedness.html"
+    },
+    "comp:sec-bp-adleman": {
+      "status": "defined",
+      "type": "section",
+      "title": "アドルマンの定理",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/16-bpp-ph.html"
+    },
+    "comp:sec-bp-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/16-bpp-ph.html"
+    },
+    "comp:sec-bp-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/16-bpp-ph.html"
+    },
+    "comp:sec-bp-sgl": {
+      "status": "defined",
+      "type": "section",
+      "title": "シプサー–ガーチ–ラウテマンの定理",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/16-bpp-ph.html"
     },
     "comp:sec-branching": {
       "status": "defined",
@@ -9338,6 +9408,13 @@
       "title": "自己出力機械",
       "num": "12.2",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/12-recursion-theorem.html"
+    },
+    "comp:sgl": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "シプサー–ガーチ–ラウテマンの定理",
+      "num": "16.3",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/16-bpp-ph.html"
     },
     "comp:shannon-lower-bound": {
       "status": "defined",

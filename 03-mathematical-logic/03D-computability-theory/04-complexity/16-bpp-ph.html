@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BPP と多項式階層 | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/04-complexity/16-bpp-ph.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# BPP と多項式階層 {#comp:page-bpp-ph keywords="Adleman's theorem BPP in P/poly, Sipser-Gacs-Lautemann theorem BPP in Sigma_2 cap Pi_2, Lautemann's covering argument, probabilistic method, derandomization, NP in BPP implies collapse"}
+
+確率的な多項式時間計算のクラス BPP（\ref{comp:class-bpp}）は、決定性や非決定性のクラスとどう関係するか。本ページでは二つの古典的な結果を示す。**アドルマンの定理**（\ref{comp:adleman}）：BPP の言語は多項式の大きさの回路族をもつ（$\mathrm{BPP}\subseteq\mathrm{P}/\mathrm{poly}$）。**シプサー–ガーチ–ラウテマンの定理**（\ref{comp:sgl}）：$\mathrm{BPP}\subseteq\Sigma_{2}^{\mathrm{P}}\cap\Pi_{2}^{\mathrm{P}}$。どちらも、誤り確率を十分小さくしてから（\ref{comp:amplification}）、「確率が正なら存在する」という**確率的方法**を使う。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論（ラウテマンの証明）に従って組み立てた。
+
+## 記法と定義の確認 {#comp:sec-bp-notation}
+
+::: notation
+- 確率的 TM、BPP、誤りの縮小は \ref{comp:probabilistic-tm}, \ref{comp:class-bpp}, \ref{comp:amplification} のとおり。時間 $t(n)$ の確率的 TM は、長さ $m=t(n)$ のビット列 $r$ を受け取る決定性 TM $M(w,r)$ とみなせ、受理確率は $\lvert\{r:M(w,r)\text{ が受理}\}\rvert/2^{m}$（\ref{comp:probabilistic-tm} の注意）。
+- $\mathrm{P}/\mathrm{poly}$、時間から回路の大きさへの変換、多項式階層の量化子による特徴づけ、カープ–リプトンの定理は \ref{comp:p-poly}, \ref{comp:time-to-size}, \ref{comp:ph-quantifiers}, \ref{comp:karp-lipton} のとおり。
+- 長さ $m$ のビット列の排他的論理和を $r\oplus s$ と書く。$s$ を固定すると $r\mapsto r\oplus s$ は $\{0,1\}^{m}$ の全単射である。
+:::
+
+## アドルマンの定理 {#comp:sec-bp-adleman}
+
+::: theorem アドルマンの定理 {#comp:adleman keywords="BPP is contained in P/poly" index="アドルマンの定理|あどるまんのていり"}
+$\mathrm{BPP}\subseteq\mathrm{P}/\mathrm{poly}$。
+:::
+
+::: proof
+$A\in\mathrm{BPP}$ とし、誤りの縮小（\ref{comp:amplification}）で、誤り確率 $2^{-(n+1)}$ 未満の多項式時間の機械 $M(w,r)$（$\lvert r\rvert=m(n)$）をとる。長さ $n$ を固定し、$M(w,r)$ が誤る（$w\in A$ なのに拒否、または $w\notin A$ なのに受理）組 $(w,r)$ を**悪い**組とする。各 $w$ について悪い $r$ は $2^{m}\cdot2^{-(n+1)}$ 個未満なので、悪い組は全部で
+$$
+2^{n}\cdot2^{m}\cdot2^{-(n+1)}=2^{m}/2
+$$
+個未満。よって、どの $w$（長さ $n$）とも悪い組をなさない $r_{n}$ が存在する。$w\mapsto M(w,r_{n})$ は多項式時間の決定性計算なので、\ref{comp:time-to-size} から多項式の大きさの回路 $C_{n}$（$r_{n}$ を定数として埋め込む）で計算でき、$C_{n}$ は長さ $n$ で $A$ を正しく決定する。
+:::
+
+::: hypcheck
+- **誤り確率 $<2^{-n-1}$**：長さ $n$ の入力の個数 $2^{n}$ を打ち消すのに使った。誤り確率 $1/3$ のままでは、すべての入力で正しい $r$ の存在は保証されない。
+- **助言の非一様性**：$r_{n}$ を見つける方法は与えていない（存在するだけ）。そのため結論は $\mathrm{P}/\mathrm{poly}$ で、$\mathrm{P}$ ではない。
+:::
+
+## シプサー–ガーチ–ラウテマンの定理 {#comp:sec-bp-sgl}
+
+::: lemma ラウテマンの被覆補題 {#comp:lautemann-covering keywords="a large subset of {0,1}^m can be covered by few translates; a small one cannot" index="ラウテマンの補題|らうてまんのほだい"}
+$W\subseteq\{0,1\}^{m}$, $n\ge1$, $k\defeq\lceil m/n\rceil+1$ とする。
+1. $\lvert W\rvert\ge(1-2^{-n})2^{m}$ なら、$s_{1},\dots,s_{k}\in\{0,1\}^{m}$ で $\bigcup_{i}(W\oplus s_{i})=\{0,1\}^{m}$ となるものがある。
+2. $\lvert W\rvert\le2^{-n}2^{m}$ かつ $k<2^{n}$ なら、どの $s_{1},\dots,s_{k}$ についても $\bigcup_{i}(W\oplus s_{i})\ne\{0,1\}^{m}$。
+:::
+
+::: proof
+**1.** $s_{1},\dots,s_{k}$ を独立に一様に選ぶ。$r$ を固定すると、$r\notin W\oplus s_{i}\iff r\oplus s_{i}\notin W$ で、$r\oplus s_{i}$ は一様に分布するので、その確率は $2^{-n}$ 以下。独立性から、どの $i$ でも $r\notin W\oplus s_{i}$ となる確率は $2^{-nk}$ 以下。$r$ についての和をとると、覆われない $r$ がある確率は $2^{m}\cdot2^{-nk}<1$（$nk>m$）。よって確率が正、すなわちすべてを覆う選び方が存在する。
+
+**2.** $\lvert W\oplus s_{i}\rvert=\lvert W\rvert$ なので、和集合の大きさは $k\cdot2^{-n}2^{m}<2^{m}$。
+:::
+
+::: theorem シプサー–ガーチ–ラウテマンの定理 {#comp:sgl keywords="BPP is contained in Sigma_2^P cap Pi_2^P" index="シプサー–ガーチ–ラウテマンの定理|しぷさーがーちらうてまんのていり"}
+$\mathrm{BPP}\subseteq\Sigma_{2}^{\mathrm{P}}\cap\Pi_{2}^{\mathrm{P}}$。
+:::
+
+::: proof
+$A\in\mathrm{BPP}$ とし、誤り確率 $2^{-n}$ 以下の多項式時間の機械 $M(w,r)$（$\lvert r\rvert=m(n)$）をとる。$W_{w}\defeq\{r:M(w,r)\text{ が受理}\}$ とすると、$w\in A$ なら $\lvert W_{w}\rvert\ge(1-2^{-n})2^{m}$、$w\notin A$ なら $\lvert W_{w}\rvert\le2^{-n}2^{m}$。$k\defeq\lceil m/n\rceil+1$ は $n$ の多項式で、十分大きい $n$ で $k<2^{n}$。\ref{comp:lautemann-covering} から、十分大きい $n$ について
+$$
+w\in A\iff\exists s_{1},\dots,s_{k}\in\{0,1\}^{m}\ \forall r\in\{0,1\}^{m}\ \bigvee_{i=1}^{k}M(w,r\oplus s_{i})\text{ が受理}.
+$$
+括弧の中の関係は $k$ 回の多項式時間の計算で判定でき、量化される文字列の長さは多項式なので、\ref{comp:ph-quantifiers} から $A\in\Sigma_{2}^{\mathrm{P}}$（有限個の短い $w$ は表で処理する）。BPP は補集合で閉じている（受理と拒否を入れ替える）ので $\overline{A}\in\Sigma_{2}^{\mathrm{P}}$、すなわち $A\in\Pi_{2}^{\mathrm{P}}$。
+:::
+
+::: hypcheck
+- **誤り確率 $2^{-n}$**：被覆補題の二つの場合を分けるのに使った。$1$ では覆える個数 $k$ を多項式に、$2$ では $k$ 個で覆えないことを保証するのに、誤り確率が指数的に小さいことが必要である。
+- **$\oplus$ による平行移動**：$r\mapsto r\oplus s$ が全単射で、一様分布を保つことに使った。
+:::
+
+::: corollary NP が BPP に含まれるなら {#comp:np-in-bpp-collapse keywords="if NP is in BPP then PH collapses to Sigma_2" index="NP と BPP|えぬぴーとびーぴーぴー"}
+$\mathrm{NP}\subseteq\mathrm{BPP}$ なら、$\mathrm{PH}=\Sigma_{2}^{\mathrm{P}}$。
+:::
+
+::: proof
+$\mathrm{NP}\subseteq\mathrm{BPP}\subseteq\mathrm{P}/\mathrm{poly}$（\ref{comp:adleman}）なので、カープ–リプトンの定理（\ref{comp:karp-lipton}）から。
+:::
+
+## 問題 {#comp:sec-bp-problems}
+
+::: problem {#comp:prob-bp-p-np}
+$\mathrm{P}=\mathrm{NP}$ なら $\mathrm{BPP}=\mathrm{P}$ であることを示せ。
+:::
+
+::: solution
+$\mathrm{P}=\mathrm{NP}$ なら $\Sigma_{1}^{\mathrm{P}}=\Pi_{1}^{\mathrm{P}}$ で、多項式階層は崩壊して $\Sigma_{2}^{\mathrm{P}}=\mathrm{P}$（\ref{comp:prob-alt-collapse} を $k=1$ で使い、さらに $\Sigma_{1}^{\mathrm{P}}=\mathrm{NP}=\mathrm{P}$）。\ref{comp:sgl} から $\mathrm{BPP}\subseteq\Sigma_{2}^{\mathrm{P}}=\mathrm{P}$、逆の包含は明らか。
+:::
+
+::: problem {#comp:prob-bp-rp}
+RP（\ref{comp:class-bpp}）について、$\mathrm{RP}\subseteq\mathrm{NP}$ であり、さらに $\mathrm{RP}\subseteq\mathrm{P}/\mathrm{poly}$ であることを示せ。
+:::
+
+::: solution
+$\mathrm{RP}\subseteq\mathrm{NP}$：受理する $r$ を証明書とする（$w\notin A$ ならどの $r$ でも拒否）。$\mathrm{RP}\subseteq\mathrm{BPP}$（二回動かして一度でも受理すれば受理すると、誤り確率は $1/4$ 以下）なので、\ref{comp:adleman} から $\mathrm{P}/\mathrm{poly}$ に含まれる。
+:::
+
+::: supplement
+**前提を変えると.** 十分強い回路の下界（たとえば $\mathrm{E}$ のある言語が指数の大きさの回路を必要とする）を仮定すると、$\mathrm{BPP}=\mathrm{P}$（脱乱択化）が成り立つことが知られている（インパリアッツォ–ウィグダーソン）。素数判定は BPP（実際は RP の補集合）に属し（\ref{comp:page-primality-branching}）、後に P に属することが示されたことが知られている。
+
+**似た定理.** アドルマンの定理の「すべての入力に対してよい乱数がある」議論は、ランダムネスの理論で「ほとんどの列は非圧縮」（\ref{comp:incompressible-exist}）を示す数え上げと同じ型である。ラウテマンの議論は、「大きな集合は少数の平行移動で全体を覆い、小さな集合は覆えない」という組合せ的な事実を、二つの交互の量化子で表現するものである。
+
+**高い視点から：偶然を量化子に置き換える.** BPP の機械は乱数に頼るが、誤り確率を十分小さくすると、「よい乱数の集合」が圧倒的に大きくなる。アドルマンの定理は、すべての入力に共通のよい乱数を一つ「助言」として固定し、ラウテマンの定理は「大きいこと」を「少数の平行移動で全体を覆えること」という存在と全称の言葉に言い換える。比喩で言えば、くじの当たりが十分多ければ、数枚のくじを適当にずらして重ねるだけで、どの番号も必ずどれかで当たるようにできる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

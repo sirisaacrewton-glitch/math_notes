@@ -342,6 +342,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 計算量 CC-16（03D/04-complexity/16-bpp-ph, comp:page-bpp-ph：アドルマンの定理（悪い組の数え上げ）、ラウテマンの被覆補題（確率的方法）、シプサー–ガーチ–ラウテマンの定理、NP⊆BPP なら PH=Σ₂、P=NP なら BPP=P と RP の問題）。資料なし。
 - 2026-10-08 集合論 II-15（03E/02/15-luzin-sets, set:page-luzin-sets：ルジンの集合の定義と基本性質、CH のもとでの構成（疎な閉集合を ω₁ で並べて避ける）、MA(ℵ₁) のもとでの非存在、独立性、稠密なルジンの集合と閉包の問題）。05-ma-reals の補足から参照。資料なし。
 - 2026-10-08 一般位相 TE-07（54E/01/07-nowhere-differentiable, top:page-nowhere-differentiable：E_n（一点でのリプシッツ評価）、微分可能なら E_n に属する、E_n は閉、折れ線近似と鋸歯で E_n は疎、バナッハの定理（至るところ微分不可能な関数は剰余集合）、単調関数と E_1 の問題）。02-baire の導入から参照。資料なし。
 - 2026-10-08 証明論 SQ-07（03F/01-sequent-calculus/07-herbrand, pt:page-herbrand：全称論理式と開代入例、カットのない導出からのエルブランの補題、エルブランの定理（前件が全称論理式の場合）、エルブラン選言（∃ の形）、P(x)→P(f(x)) の二つの例と後件に量化子がある例の問題）。03-cut-elimination から参照。資料なし。
@@ -583,6 +584,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | CC-13 | 04-complexity/13-primality-branching | 素数判定と一回読み分岐プログラム（Sipser 10.2） | 完了 |
 | CC-14 | 04-complexity/14-ph-karp-lipton | 多項式階層の量化子・神託による特徴づけ、P/poly とカープ–リプトンの定理（資料なし） | 完了 |
 | CC-15 | 04-complexity/15-ladner | ラドナーの定理（詰め物をした SAT と遅延対角化）（資料なし） | 完了 |
+| CC-16 | 04-complexity/16-bpp-ph | アドルマンの定理（BPP⊆P/poly）、ラウテマンの被覆補題、シプサー–ガーチ–ラウテマンの定理（資料なし） | 完了 |
 | AC-07 | 03-advanced-computability/07-post-theorem | ポストの定理（使用の原理・有界量化子・Σ_{n+1}=∅^(n) で認識可能・Δ_{n+1}=≤_T ∅^(n)）（新井 §6.3） | 完了 |
 | AC-08 | 03-advanced-computability/08-friedberg-muchnik | ポストの問題とフリードバーグ–ムチニクの定理（優先論法）（新井 §6.4） | 完了 |
 | AC-09 | 03-advanced-computability/09-low-simple | 単純集合・極限補題・低集合・単純な低集合（新井 §6.6 演習） | 完了 |

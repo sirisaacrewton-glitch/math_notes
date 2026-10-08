@@ -441,3 +441,4 @@
 | Herbrand theorem / Herbrand disjunction / open formula / mid-sequent theorem | エルブランの定理 / エルブラン選言 / 開論理式 / 中間シーケント定理 | | 標準的。pt:page-herbrand |
 | nowhere differentiable function / residual (comeager) set / sawtooth function | 至るところ微分不可能な関数 / 第一類集合の補集合（剰余集合） / 鋸歯関数 | | 標準的。top:page-nowhere-differentiable |
 | Luzin set / Sierpinski set | ルジンの集合 / シェルピンスキーの集合 | ルージン集合 | 標準的。set:page-luzin-sets |
+| Adleman theorem / Sipser-Gacs-Lautemann theorem / probabilistic method / derandomization | アドルマンの定理 / シプサー–ガーチ–ラウテマンの定理 / 確率的方法 / 脱乱択化 | | 標準的。comp:page-bpp-ph |

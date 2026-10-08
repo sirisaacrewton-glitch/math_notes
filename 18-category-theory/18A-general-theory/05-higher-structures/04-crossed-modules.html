@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>交差加群と群の中の圏 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/05-higher-structures/04-crossed-modules.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 交差加群と群の中の圏 {#cat:page-crossed-modules keywords="crossed module, Peiffer identity, cat-group, strict 2-group, internal category in groups, semidirect product, reflexive graph, Brown-Spencer, Loday"}
+
+前々ページで、群の圏 $\mathbf{Grp}$ の内部圏（群の中の圏）は $\mathbf{Cat}$ の中の群と同じもので、合成は群の演算から決まることを見た（\ref{cat:category-objects-in-grp}, \ref{cat:prob-ic-grp-composition}）。本ページでは、群の中の圏が、より小さいデータである**交差加群**（\ref{cat:crossed-module}）—群 $H$, $P$、$P$ の $H$ への作用、準同型 $\partial\colon H\to P$—と圏同値であることを示す（\ref{cat:crossed-modules-cat-groups}）。交差加群は、ホモトピー論で空間の 2 次元までのホモトピー型を記述するものとして現れる。
+
+> 資料：Mac Lane, *Categories for the Working Mathematician* 第 XII 章 §8（G. Janelidze による定式化とされている）。Mac Lane の交差加群の定義には、作用と $\partial$ の両立 $\partial({}^{p}h)=p\,\partial(h)\,p^{-1}$ しか書かれていないが、これだけでは主張が成り立たない（\ref{cat:precrossed-counterexample}）。標準的な定義（Whitehead による）に従い**パイエルの等式** ${}^{\partial h}h'=hh'h^{-1}$ を加えた。また Mac Lane が「計算で示せる」「読者に委ねる」とした、交換子の条件から合成が作れること（\ref{cat:reflexive-graph-category}）と、逆向きの構成を証明した。
+
+## 記法と定義の確認 {#cat:sec-cm-notation}
+
+::: notation
+- 内部圏、内部関手は \ref{cat:internal-category}、$\mathbf{Grp}$ の内部圏の合成の公式 $g\circ f=f\,i(b)^{-1}\,g=g\,i(b)^{-1}\,f$（$f\colon a\to b$, $g\colon b\to c$）は \ref{cat:prob-ic-grp-composition} のとおり。
+- 群 $P$ の群 $H$ への（左）**作用**は、準同型 $P\to\mathrm{Aut}(H)$ で、$p$ の像による $h$ の像を ${}^{p}h$ と書く：${}^{p}(hh')={}^{p}h\,{}^{p}h'$, ${}^{pq}h={}^{p}({}^{q}h)$, ${}^{1}h=h$。
+- **半直積** $H\rtimes P$ は、集合 $H\times P$ に積 $(h,p)(h',p')\defeq(h\,{}^{p}h',\,pp')$ を入れた群である（単位元 $(1,1)$、逆元 $(h,p)^{-1}=({}^{p^{-1}}h^{-1},p^{-1})$）。
+- 群の部分群 $A,B$ について、$[A,B]=1$ は「$A$ の元と $B$ の元はすべて可換」を意味する。
+:::
+
+## 反射的グラフと交換子の条件 {#cat:sec-cm-graphs}
+
+::: definition 群の反射的グラフ {#cat:reflexive-graph-groups keywords="reflexive graph in groups" index="反射的グラフ（群の）|はんしゃてきぐらふ"}
+群の**反射的グラフ** $(C_{0},C_{1},s,t,i)$ は、群 $C_{0},C_{1}$ と準同型 $s,t\colon C_{1}\to C_{0}$, $i\colon C_{0}\to C_{1}$ で $s\circ i=1=t\circ i$ を満たすものである。その射は、準同型の組 $(f_{0},f_{1})$ で $s,t,i$ と可換なもの。
+:::
+
+::: theorem 群の中の圏と交換子の条件 {#cat:reflexive-graph-category keywords="a reflexive graph in groups is a category iff [ker s, ker t]=1, uniqueness of composition" index="交換子の条件|こうかんしのじょうけん"}
+群の反射的グラフ $(C_{0},C_{1},s,t,i)$ について、
+1. 内部圏の構造（準同型 $m\colon C_{1}\times_{C_{0}}C_{1}\to C_{1}$ で内部圏の公理を満たすもの）はたかだか一つである。
+2. それが存在するための必要十分条件は $[\ker s,\ker t]=1$ である。
+3. 内部圏の間の内部関手は、反射的グラフの射と同じものである。
+:::
+
+::: proof
+以下、$f\colon a\to b$ は $s(f)=a$, $t(f)=b$ を意味する。
+
+**1.** 内部圏の構造があれば、合成は $g\circ f=f\,i(b)^{-1}\,g$ で与えられる（\ref{cat:prob-ic-grp-composition}）ので、群の演算と $i$ で決まる。
+
+**2. 必要性.** $f\in\ker t$, $g\in\ker s$ とすると、$f\colon s(f)\to1$, $g\colon1\to t(g)$ は合成可能で、\ref{cat:prob-ic-grp-composition} の二つの式と $i(1)=1$ から $g\circ f=fg=gf$。
+
+**2. 十分性.** $[\ker s,\ker t]=1$ を仮定し、$f\colon a\to b$, $g\colon b\to c$ について $m(g,f)\defeq f\,i(b)^{-1}\,g$ とおく。
+- 始域・終域：$s(m(g,f))=a\,b^{-1}\,b=a$, $t(m(g,f))=b\,b^{-1}\,c=c$（$s,t$ は準同型で $si=ti=1$）。
+- 単位律：$m(i(b),f)=f\,i(b)^{-1}\,i(b)=f$, $m(g,i(b))=i(b)\,i(b)^{-1}\,g=g$。
+- 結合律：$h\colon c\to d$ について、$m(h,m(g,f))=f\,i(b)^{-1}\,g\,i(c)^{-1}\,h=m(m(h,g),f)$（群の結合律）。
+- 準同型：$f'\colon a'\to b'$, $g'\colon b'\to c'$ について、$m(gg',ff')=ff'\,i(b')^{-1}i(b)^{-1}\,gg'$ と $m(g,f)\,m(g',f')=f\,i(b)^{-1}g\,f'\,i(b')^{-1}g'$ を比べる。左から $f$、右から $g'$ を消すと、示すべきは $y\,x=x\,y$、ただし
+$$
+x\defeq i(b)^{-1}g,\qquad y\defeq f'\,i(b')^{-1}.
+$$
+$s(x)=b^{-1}b=1$, $t(y)=b'b'^{-1}=1$ なので $x\in\ker s$, $y\in\ker t$ で、仮定から可換。
+
+**3.** 内部関手は反射的グラフの射で、合成を保つ。逆に反射的グラフの射 $(f_{0},f_{1})$ は、$f_{1}(g\circ f)=f_{1}(f)\,f_{1}(i(b))^{-1}\,f_{1}(g)=f_{1}(f)\,i(f_{0}b)^{-1}\,f_{1}(g)=f_{1}(g)\circ f_{1}(f)$ なので合成を保つ。
+:::
+
+::: hypcheck
+- **$i$ が準同型で $si=ti=1$**：$i(b)^{-1}=i(b^{-1})$ と、合成の始域・終域の計算、$x\in\ker s$, $y\in\ker t$ の確認に使った。
+- **交換子の条件**：$m$ が準同型であることにだけ使った。$m$ が結合的で単位的であることは条件なしで成り立つ。
+:::
+
+## 交差加群 {#cat:sec-cm-crossed}
+
+::: definition 交差加群 {#cat:crossed-module keywords="crossed module, Peiffer identity, precrossed module, morphism of crossed modules" index="交差加群|こうさかぐん, パイエルの等式|ぱいえるのとうしき"}
+**交差加群** $(H,P,\partial)$ は、群 $H,P$、$P$ の $H$ への作用、準同型 $\partial\colon H\to P$ で、すべての $h,h'\in H$, $p\in P$ について
+$$
+\text{(CM1)}\quad\partial({}^{p}h)=p\,\partial(h)\,p^{-1},\qquad\text{(CM2)}\quad{}^{\partial h}h'=hh'h^{-1}
+$$
+を満たすものである。(CM2) を**パイエルの等式**という。(CM1) だけを満たすものを**前交差加群**という。交差加群の**射** $(\phi,\psi)\colon(H,P,\partial)\to(H',P',\partial')$ は、準同型 $\phi\colon H\to H'$, $\psi\colon P\to P'$ で $\partial'\phi=\psi\partial$, $\phi({}^{p}h)={}^{\psi p}\phi(h)$ を満たすものである。
+:::
+
+::: example
+1. **正規部分群.** $N\trianglelefteq P$ と包含 $\partial$、共役作用 ${}^{p}n=pnp^{-1}$。(CM1) は $pnp^{-1}=pnp^{-1}$、(CM2) は ${}^{n}n'=nn'n^{-1}$。
+2. **加群.** $P$ 加群（作用をもつアーベル群）$M$ と自明な準同型 $\partial=1$。(CM1) は $1=p1p^{-1}$、(CM2) は ${}^{1}m'=m'=mm'm^{-1}$（$M$ はアーベル）。
+3. **自己同型.** 任意の群 $G$ と $\partial\colon G\to\mathrm{Aut}(G)$, $h\mapsto(x\mapsto hxh^{-1})$、作用 ${}^{\varphi}h=\varphi(h)$。(CM1) は $\partial(\varphi(h))=\varphi\circ\partial(h)\circ\varphi^{-1}$（両辺 $x\mapsto\varphi(h)x\varphi(h)^{-1}$）、(CM2) は定義そのもの。
+4. 位相空間の組 $(X,A)$ と基点について、相対ホモトピー群 $\pi_{2}(X,A)$ と $\pi_{1}(A)$ の間の境界準同型は交差加群になる（J. H. C. Whitehead によるとされる。ここでは扱わない）。
+:::
+
+::: proposition 前交差加群では足りない {#cat:precrossed-counterexample keywords="precrossed modules do not give categories in groups" index="前交差加群|ぜんこうさかぐん"}
+非可換な群 $H$、自明な群 $P=1$、自明な作用と $\partial$ は前交差加群だが交差加群ではない。対応する反射的グラフ（$C_{0}=1$, $C_{1}=H\rtimes1=H$, $s,t$ 自明）は群の中の圏にならない。
+:::
+
+::: proof
+(CM1) は $1=1$ で成り立ち、(CM2) は ${}^{1}h'=h'$ と $hh'h^{-1}$ の比較で、$H$ が非可換なので破れる。反射的グラフでは $\ker s=\ker t=H$ で、$[H,H]\neq1$ なので \ref{cat:reflexive-graph-category} から内部圏の構造はない（エックマン–ヒルトンの議論 \ref{cat:eckmann-hilton} の一例：対象が一つの群の中の圏の射の群は可換）。
+:::
+
+::: theorem 交差加群と群の中の圏 {#cat:crossed-modules-cat-groups keywords="crossed modules are equivalent to category objects in groups, Brown-Spencer theorem" index="交差加群と群の中の圏の同値|こうさかぐんとぐんのなかのけんのどうち"}
+交差加群の圏と、群の中の圏（$\mathbf{Grp}$ の内部圏と内部関手）の圏は圏同値である。対応は次で与えられる。
+- 群の中の圏 $\mathbf{C}$ から：$H\defeq\ker s$, $P\defeq C_{0}$, $\partial\defeq t|_{H}$, 作用 ${}^{p}h\defeq i(p)\,h\,i(p)^{-1}$。
+- 交差加群から：$C_{0}\defeq P$, $C_{1}\defeq H\rtimes P$, $s(h,p)\defeq p$, $t(h,p)\defeq\partial(h)\,p$, $i(p)\defeq(1,p)$。
+:::
+
+::: proof
+**Step 1（圏から交差加群）.** $\ker s$ は正規部分群なので ${}^{p}h\in\ker s$ で、共役は作用を与える（$i$ が準同型なので ${}^{pq}h={}^{p}({}^{q}h)$）。(CM1)：$t(i(p)hi(p)^{-1})=p\,t(h)\,p^{-1}$（$ti=1$）。(CM2)：$h\in\ker s$, $h'\in\ker s$ について、$z\defeq h^{-1}\,i(t(h))$ とおくと $t(z)=t(h)^{-1}t(h)=1$ なので $z\in\ker t$。\ref{cat:reflexive-graph-category} の 2 から $z$ と $h'$ は可換で、$zh'z^{-1}=h'$、すなわち $i(t(h))\,h'\,i(t(h))^{-1}=hh'h^{-1}$。これは ${}^{\partial h}h'=hh'h^{-1}$。
+
+**Step 2（交差加群から圏）.** $s$ は準同型（第 2 成分の射影）、$i$ は準同型。$t$ が準同型であること：(CM1) から
+$$
+t\bigl((h,p)(h',p')\bigr)=\partial(h\,{}^{p}h')\,pp'=\partial(h)\,p\,\partial(h')\,p^{-1}\,pp'=t(h,p)\,t(h',p').
+$$
+$s(1,p)=p=\partial(1)p=t(1,p)$。交換子の条件：$\ker s=\{(h,1)\}$, $\ker t=\{(k,\partial(k)^{-1})\}$ で、
+$$
+\begin{aligned}
+(h,1)(k,\partial(k)^{-1})&=(hk,\partial(k)^{-1}),\\
+(k,\partial(k)^{-1})(h,1)&=(k\,{}^{\partial(k^{-1})}h,\partial(k)^{-1}).
+\end{aligned}
+$$
+(CM2) から ${}^{\partial(k^{-1})}h=k^{-1}hk$ なので、第 1 成分はともに $hk$。よって \ref{cat:reflexive-graph-category} から群の中の圏になる。
+
+**Step 3（往復）.** 交差加群 → 圏 → 交差加群：$\ker s=\{(h,1)\}\cong H$, $\partial(h,1)=\partial(h)$, 作用は $(1,p)(h,1)(1,p)^{-1}=({}^{p}h,1)$ で、元の交差加群と同型。圏 → 交差加群 → 圏：写像 $\Theta\colon\ker s\rtimes C_{0}\to C_{1}$, $(h,p)\mapsto h\,i(p)$ は準同型（$(h,p)(h',p')=(h\,i(p)h'i(p)^{-1},pp')\mapsto h\,i(p)\,h'\,i(p')$）で、全単射（$x\in C_{1}$ は $x=(x\,i(s(x))^{-1})\,i(s(x))$ と一意に書け、第 1 因子は $\ker s$ に属する）。$s\Theta(h,p)=p$, $t\Theta(h,p)=t(h)\,p$, $\Theta(1,p)=i(p)$ なので反射的グラフの同型で、\ref{cat:reflexive-graph-category} の 3 から内部圏の同型。
+
+**Step 4（射）.** 交差加群の射 $(\phi,\psi)$ には $(f_{0},f_{1})\defeq(\psi,\phi\times\psi)$ が対応し（$\phi\times\psi$ が半直積の準同型であることは $\phi({}^{p}h)={}^{\psi p}\phi(h)$、$t$ との可換性は $\partial'\phi=\psi\partial$ から）、内部関手 $(f_{0},f_{1})$ には $(f_{1}|_{\ker s},f_{0})$ が対応する（$f_{1}$ は $\ker s$ を保ち、共役作用と $t$ を保つ）。これらは関手で、Step 3 の同型は射について自然である（定義を代入すれば確かめられる）。よって圏同値。
+:::
+
+::: hypcheck
+- **(CM1)**：$t$ が準同型であること（Step 2）に使った。
+- **(CM2)**：交換子の条件（Step 2）に使い、逆に Step 1 で交換子の条件から導いた。交差加群の二つの条件は、それぞれ「$t$ が準同型」「合成が準同型」に対応する。
+- **$i$ による分裂**：Step 3 で $C_{1}\cong\ker s\rtimes C_{0}$ を示すのに使った（短完全列 $1\to\ker s\to C_{1}\to C_{0}\to1$ が $i$ で分裂する）。
+:::
+
+## 問題 {#cat:sec-cm-problems}
+
+::: problem {#cat:prob-cm-kernel-central}
+交差加群 $(H,P,\partial)$ で、$\ker\partial$ は $H$ の中心に含まれ、$\partial(H)$ は $P$ の正規部分群であることを示せ。また、対応する群の中の圏で、対象の同型類の集合は $P/\partial(H)$、対象 $1$ の自己射の群は $\ker\partial$ であることを示せ。
+:::
+
+::: solution
+$h\in\ker\partial$ なら (CM2) から $hh'h^{-1}={}^{1}h'=h'$ なので中心に属する。(CM1) から $p\,\partial(h)\,p^{-1}=\partial({}^{p}h)\in\partial(H)$ なので正規。対応する圏 $C_{1}=H\rtimes P$ で、$(h,p)$ は $p$ から $\partial(h)p$ への射（群の中の圏は亜群なので、射があることと同型であることは同じ。\ref{cat:prob-ic-groupoid}）。よって $p$ と $p'$ が同型 $\iff$ $p'p^{-1}\in\partial(H)$、すなわち同型類は右剰余類 $\partial(H)p$ で、$\partial(H)$ は正規なので $P/\partial(H)$。対象 $1$ の自己射は $(h,1)$ で $\partial(h)=1$ のもの、すなわち $\ker\partial$（群の構造は合成 $=$ 半直積の積 $(hk,1)$ と一致する。\ref{cat:prob-ic-grp-composition} で $i(1)=1$）。
+:::
+
+::: supplement
+**前提を変えると.** パイエルの等式を外した前交差加群では、\ref{cat:precrossed-counterexample} のとおり群の中の圏にならない。逆に、群の中の圏の条件を「群の中の亜群」に弱めても何も変わらない（群の中の圏は自動的に亜群、\ref{cat:prob-ic-groupoid}）。群の圏を一般の「群らしい」代数系の圏（環、リー代数など）に取り替えても、内部圏と交差加群の類似物の対応が成り立つことが知られている（ここでは扱わない）。
+
+**似た定理.** \ref{cat:crossed-modules-cat-groups} は R. Brown と C. B. Spencer（1976）によるとされる。$\mathbf{Cat}$ の中の群（厳密 2 群）は、問題 \ref{cat:prob-cm-kernel-central} の $\pi_{0}=P/\partial H$, $\pi_{1}=\ker\partial$ と、$\pi_{0}$ の $\pi_{1}$ への作用、さらに 3 次のコホモロジー類 $k\in H^{3}(\pi_{0},\pi_{1})$ によって、適切な同値（弱同値）を除いて分類されることが知られている（マックレーン–ホワイトヘッド 1950、シン 1975 などとされる。ここでは証明しない）。これは連結な空間の 2 次元までのホモトピー型の分類にあたる。
+
+**高い視点から：交差加群は「2 次元の群」の座標表示.** 群の中の圏（厳密 2 群）は、対象・射の両方に群構造をもつ「2 次元の群」である。交差加群はその座標表示で、$P$ が対象（0 次元の部分）、$H=\ker s$ が「単位元から出る射」（1 次元の部分）、$\partial$ が射の終域、作用が対象による射の平行移動にあたる。比喩で言えば、ベクトル空間の元を基底で成分表示するように、2 群を「始点が原点の矢印の群」と「点の群」に分けて記述したもの、と言える。パイエルの等式は、2 次元の群でエックマン–ヒルトンの議論が課す可換性（\ref{cat:eckmann-hilton}）を、この座標で書いたものである。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -258,7 +258,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | C2-01 | 05-higher-structures/01-internal-categories | 内部圏・内部の図式・神経 | XII.1–2 | 12540–12989 | 完了 |
 | C2-02 | 05-higher-structures/02-2-categories | 2 圏・2 圏の中の随伴とカン拡張・2 関手と変形・単一集合の圏 | XII.3–5 | 12990–13233 | 完了 |
 | C2-03 | 05-higher-structures/03-bicategories | 双圏（モノイダル圏・両側加群・スパン） | XII.6–7 | 13234–13459 | 完了 |
-| C2-04 | 05-higher-structures/04-crossed-modules | 交差加群と群の中の圏 | XII.8 | 13460–13560 | 未 |
+| C2-04 | 05-higher-structures/04-crossed-modules | 交差加群と群の中の圏 | XII.8 | 13460–13560 | 完了 |
 
 | CM-01 | 03-monads/01-monads-algebras | モナドとアイレンバーグ–ムーア代数、比較関手 | VI.1–3 | 6675–6984 | 完了 |
 | CM-02 | 03-monads/02-kleisli | クライスリ圏と比較の要約、語と自由半群 | VI.4–5 | 6985–7196 | 完了 |
@@ -298,6 +298,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 圏論 C2-04（04-crossed-modules, cat:page-crossed-modules：群の反射的グラフが圏になる条件 [ker s, ker t]=1 と合成の一意性（Mac Lane が計算に委ねた十分性を証明）、交差加群（Mac Lane の定義にはパイエルの等式が欠けていたので補い、前交差加群の反例を付けた）、交差加群と群の中の圏の圏同値（逆向きの構成も証明）、π0・π1 の問題）。Mac Lane XII.8。第 XII 章完了。
 - 2026-10-08 圏論 C2-03（03-bicategories, cat:page-bicategories：双圏、対象一つの双圏＝モノイダル圏、両側加群の双圏、反復引き戻しはジグザグの極限、スパンの双圏（Mac Lane が読者に委ねた確かめを極限の一意性で一括）、双圏の中のモナド、スパンの中のモナド＝内部圏（ベナブー。補った）、双対と行列としてのスパンの問題）。Mac Lane XII.6–7。
 - 2026-10-08 圏論 C2-02（02-2-categories, cat:page-2-categories：2 圏（hom 圏による定義）、中央四つの交換とひげ付け、Cat・厳密モノイダル圏・Ord の例、エックマン–ヒルトンの議論（補った）、2 圏の中の随伴と随伴の一意性（2 圏で証明し直した）、2 圏の中のカン拡張、2 関手・2 自然変換・変形、単一集合による圏と n 圏、始域・終域の合成規則、随伴の合成と Ord のカン拡張の問題）。Mac Lane XII.3–5。
 - 2026-10-08 圏論 C2-01（18A/05-higher-structures 新設、id cat-higher。01-internal-categories, cat:page-internal-categories：内部圏・内部関手、群の中の圏＝圏の中の群（Mac Lane が略した対応を証明）、内部の図式と集合値関手の同値、神経関手の充満忠実性（補った）、Grp の内部圏の合成の公式と亜群性）。Mac Lane XII.1–2。メニュー・パンくず・検索の分野選択・フォルダ索引を確認。

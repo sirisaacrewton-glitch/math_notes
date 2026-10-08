@@ -442,6 +442,20 @@
       "num": "9.3",
       "page": "18-category-theory/18A-general-theory/01-basics/09-adjoints-limits.html"
     },
+    "cat:crossed-module": {
+      "status": "defined",
+      "type": "definition",
+      "title": "交差加群",
+      "num": "4.3",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/04-crossed-modules.html"
+    },
+    "cat:crossed-modules-cat-groups": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "交差加群と群の中の圏",
+      "num": "4.5",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/04-crossed-modules.html"
+    },
     "cat:delta-normal-form": {
       "status": "defined",
       "type": "lemma",
@@ -1268,6 +1282,13 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/01-basics/03-constructions.html"
     },
+    "cat:page-crossed-modules": {
+      "status": "defined",
+      "type": "page",
+      "title": "交差加群と群の中の圏",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/04-crossed-modules.html"
+    },
     "cat:page-ends": {
       "status": "defined",
       "type": "page",
@@ -1415,6 +1436,13 @@
       "num": "9.5",
       "page": "18-category-theory/18A-general-theory/01-basics/09-adjoints-limits.html"
     },
+    "cat:precrossed-counterexample": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "前交差加群では足りない",
+      "num": "4.4",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/04-crossed-modules.html"
+    },
     "cat:preserve-limits": {
       "status": "defined",
       "type": "definition",
@@ -1505,6 +1533,13 @@
       "title": "",
       "num": "5.11",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/05-closed-categories.html"
+    },
+    "cat:prob-cm-kernel-central": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "4.6",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/04-crossed-modules.html"
     },
     "cat:prob-continuous-from-products-equalizers": {
       "status": "defined",
@@ -1891,6 +1926,20 @@
       "num": "8.2",
       "page": "18-category-theory/18A-general-theory/01-basics/08-equivalence.html"
     },
+    "cat:reflexive-graph-category": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "群の中の圏と交換子の条件",
+      "num": "4.2",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/04-crossed-modules.html"
+    },
+    "cat:reflexive-graph-groups": {
+      "status": "defined",
+      "type": "definition",
+      "title": "群の反射的グラフ",
+      "num": "4.1",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/04-crossed-modules.html"
+    },
     "cat:representability-theorem": {
       "status": "defined",
       "type": "corollary",
@@ -2275,6 +2324,34 @@
       "title": "問題",
       "num": "",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/05-closed-categories.html"
+    },
+    "cat:sec-cm-crossed": {
+      "status": "defined",
+      "type": "section",
+      "title": "交差加群",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/04-crossed-modules.html"
+    },
+    "cat:sec-cm-graphs": {
+      "status": "defined",
+      "type": "section",
+      "title": "反射的グラフと交換子の条件",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/04-crossed-modules.html"
+    },
+    "cat:sec-cm-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/04-crossed-modules.html"
+    },
+    "cat:sec-cm-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/04-crossed-modules.html"
     },
     "cat:sec-con-duality": {
       "status": "defined",
@@ -30856,13 +30933,6 @@
       "title": "実数全体の濃度",
       "referencedFrom": [
         "03-mathematical-logic/03E-set-theory/01-basics/11-cardinal-exponentiation.html"
-      ]
-    },
-    "cat:page-crossed-modules": {
-      "status": "planned",
-      "title": "交差加群と群の中の圏",
-      "referencedFrom": [
-        "18-category-theory/18A-general-theory/05-higher-structures/01-internal-categories.html"
       ]
     },
     "cat:page-elementary-topos": {

@@ -12538,12 +12538,26 @@
       "num": "2.11",
       "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/02-countable-models.html"
     },
+    "model:categorical-definable-sets-large": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "定義可能集合の大きさ",
+      "num": "4.5",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/04-no-vaught-pairs.html"
+    },
     "model:categorical-no-two-cardinal": {
       "status": "defined",
       "type": "corollary",
       "title": "範疇的なら (κ,ℵ₀) モデルはない",
       "num": "2.9",
       "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/02-omega-stable.html"
+    },
+    "model:categorical-no-vaught-pair": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "範疇的ならヴォート対はない",
+      "num": "4.4",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/04-no-vaught-pairs.html"
     },
     "model:categorical-omega-stable": {
       "status": "defined",
@@ -12923,12 +12937,26 @@
       "num": "2.2",
       "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/02-omega-stable.html"
     },
+    "model:omega-stable-omitting-extension": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "可算な型を省く真の初等拡大",
+      "num": "4.2",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/04-no-vaught-pairs.html"
+    },
     "model:omega-stable-saturated": {
       "status": "defined",
       "type": "theorem",
       "title": "ω 安定な理論の ℵ₁ 飽和モデル",
       "num": "2.8",
       "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/02-omega-stable.html"
+    },
+    "model:omega-stable-two-cardinal-transfer": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "(κ,ℵ₀) モデルへの拡大",
+      "num": "4.3",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/04-no-vaught-pairs.html"
     },
     "model:omega-ultrafilter-incomplete": {
       "status": "defined",
@@ -12978,6 +13006,13 @@
       "title": "識別不能列とエーレンフォイヒト–モストフスキのモデル",
       "num": "",
       "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/04-indiscernibles.html"
+    },
+    "model:page-no-vaught-pairs": {
+      "status": "defined",
+      "type": "page",
+      "title": "範疇的ならヴォート対はない",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/04-no-vaught-pairs.html"
     },
     "model:page-omega-stable": {
       "status": "defined",
@@ -13139,6 +13174,13 @@
       "title": "",
       "num": "3.10",
       "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/03-saturated-models.html"
+    },
+    "model:prob-nv-acf-minimal-formula": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "4.6",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/04-no-vaught-pairs.html"
     },
     "model:prob-omit-nonstandard": {
       "status": "defined",
@@ -13580,6 +13622,34 @@
       "title": "モデル完全性",
       "num": "",
       "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/03-quantifier-elimination.html"
+    },
+    "model:sec-nv-categorical": {
+      "status": "defined",
+      "type": "section",
+      "title": "範疇性とヴォート対",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/04-no-vaught-pairs.html"
+    },
+    "model:sec-nv-extension": {
+      "status": "defined",
+      "type": "section",
+      "title": "可算な型を省く初等拡大",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/04-no-vaught-pairs.html"
+    },
+    "model:sec-nv-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/04-no-vaught-pairs.html"
+    },
+    "model:sec-nv-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/04-no-vaught-pairs.html"
     },
     "model:sec-omega-categorical": {
       "status": "defined",
@@ -14035,6 +14105,13 @@
       "title": "超積の解釈の well-definedness",
       "num": "1.8",
       "page": "03-mathematical-logic/03C-model-theory/03-ultraproducts/01-ultraproducts.html"
+    },
+    "model:uncountable-minimal-formula": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "大きい極小な論理式",
+      "num": "4.1",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/04-no-vaught-pairs.html"
     },
     "model:upward-lowenheim-skolem": {
       "status": "defined",

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>範疇的ならヴォート対はない | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/04-no-vaught-pairs.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 範疇的ならヴォート対はない {#model:page-no-vaught-pairs keywords="omega-stable theories, proper elementary extensions omitting countable types, (kappa,aleph0)-models, uncountably categorical theories have no Vaughtian pairs"}
+
+前ページで、ヴォート対があれば $(\aleph_{1},\aleph_{0})$ モデルがあることを示した（\ref{model:vaught-two-cardinal}）。範疇性と矛盾させるには、範疇性の濃度 $\kappa$ の $(\kappa,\aleph_{0})$ モデルが要る（\ref{model:categorical-no-two-cardinal}）。本ページでは、$\omega$ 安定な理論の非可算モデル $\mathcal{M}$ には、「$\mathcal{M}$ が省く可算な型を省いたまま」の真の初等拡大があること（\ref{model:omega-stable-omitting-extension}）を示し、これを $\kappa$ 回繰り返して、$(\aleph_{1},\aleph_{0})$ モデルから $(\kappa,\aleph_{0})$ モデルを作る。結論として、**非可算濃度で範疇的な理論はヴォート対をもたない**（\ref{model:categorical-no-vaught-pair}）。
+
+> 資料：新井敏康『数学基礎論』§5.6.2（補題 5.6.22・定理 5.6.23）を参考にした（本文は写していない）。初等拡大の濃度を元のモデルと同じにするために、素モデルの中で下降レーヴェンハイム–スコーレムの定理を使う段を補った（$\kappa$ 回の繰り返しで濃度がちょうど $\kappa$ になるため）。
+
+## 記法と定義の確認 {#model:sec-nv-notation}
+
+::: notation
+- $T$ は可算言語の完全な理論で無限モデルをもつ。$\omega$ 安定、二分木の補題、集合上の素モデル（構成可能、原子的）は \ref{model:stable}, \ref{model:no-binary-tree}, \ref{model:prime-over-set}, \ref{model:constructible-atomic} のとおり。$(\kappa,\lambda)$ モデル、ヴォート対、二基数定理は \ref{model:two-cardinal-model}, \ref{model:vaught-pair}, \ref{model:vaught-two-cardinal}。
+- $\mathcal{L}_{M}$ 論理式の集合 $\Gamma(\vec{v})$（自由変数は $\vec{v}$ の中）が**可算な型**とは、$\Gamma$ が可算集合であることをいう。$\mathcal{N}\succcurlyeq\mathcal{M}$ が $\Gamma$ を実現するとは、$\Gamma$ のすべての論理式を満たす組が $N$ にあることをいう。
+:::
+
+## 可算な型を省く初等拡大 {#model:sec-nv-extension}
+
+::: lemma 大きい極小な論理式 {#model:uncountable-minimal-formula keywords="in an uncountable model of an omega-stable theory there is a formula with uncountably many solutions that cannot be split into two uncountable parts" index="非可算な極小論理式|ひかさんなきょくしょうろんりしき"}
+（AC）$T$ を $\omega$ 安定、$\mathcal{M}\models T$ を非可算とする。$\mathcal{L}_{M}$ 論理式 $\varphi(x)$ で、$\varphi(\mathcal{M})$ は非可算で、任意の $\mathcal{L}_{M}$ 論理式 $\psi(x)$ について $\varphi(\mathcal{M})\cap\psi(\mathcal{M})$ と $\varphi(\mathcal{M})\setminus\psi(\mathcal{M})$ の一方が可算となるものがある。このとき
+$$
+p_{\varphi}\defeq\{\psi(x):\lvert\varphi(\mathcal{M})\cap\psi(\mathcal{M})\rvert\ge\aleph_{1}\}
+$$
+は $S_{1}^{\mathcal{M}}(M)$ の元で、$\mathcal{M}$ で実現されない。
+:::
+
+::: proof
+$\Phi\defeq\{\varphi:\lvert\varphi(\mathcal{M})\rvert\ge\aleph_{1}\}$ とする。$x=x\in\Phi$（$\mathcal{M}$ は非可算）で、$\Phi$ の論理式は両立する。どの $\varphi\in\Phi$ も $\varphi\wedge\psi$, $\varphi\wedge\neg\psi$ がともに $\Phi$ に属する $\psi$ をもつなら、\ref{model:no-binary-tree}（$A=M$）に反する。よって、そうでない $\varphi\in\Phi$ がある。$\varphi(\mathcal{M})=(\varphi\wedge\psi)(\mathcal{M})\cup(\varphi\wedge\neg\psi)(\mathcal{M})$ は非可算なので、各 $\psi$ について両者のちょうど一方が非可算。
+
+$p_{\varphi}$ が完全型であること：$\psi,\neg\psi$ のちょうど一方が属する。$\psi_{1},\dots,\psi_{k}\in p_{\varphi}$ なら、$\varphi(\mathcal{M})\setminus\psi_{i}(\mathcal{M})$ はそれぞれ可算で、$\varphi(\mathcal{M})\setminus\bigcap_{i}\psi_{i}(\mathcal{M})$ も可算、したがって $\varphi(\mathcal{M})\cap\bigcap_{i}\psi_{i}(\mathcal{M})$ は非可算で空でない。よって $p_{\varphi}$ は両立し完全。$a\in M$ について $\varphi\wedge x=a$ の解は高々一つなので $x\neq a\in p_{\varphi}$、よって $p_{\varphi}$ は $\mathcal{M}$ で実現されない。
+:::
+
+::: theorem 可算な型を省く真の初等拡大 {#model:omega-stable-omitting-extension keywords="an uncountable model of an omega-stable theory has a proper elementary extension of the same size realizing no new countable types" index="可算な型を省く初等拡大|かさんなかたをはぶくしょとうかくだい"}
+（AC）$T$ を $\omega$ 安定、$\mathcal{M}\models T$ を非可算とする。$\mathcal{M}$ の真の初等拡大 $\mathcal{N}$ で、$\lvert N\rvert=\lvert M\rvert$ かつ、$\mathcal{N}$ で実現される可算な型 $\Gamma(\vec{v})$（$\mathcal{L}_{M}$ 論理式）はすべて $\mathcal{M}$ で実現されるものがある。
+:::
+
+::: proof
+\ref{model:uncountable-minimal-formula} の $\varphi$, $p_{\varphi}$ をとり、$p_{\varphi}$ を実現する $c$ を $\mathcal{M}$ の初等拡大 $\mathcal{M}'$ の中にとる（\ref{model:type-basic}）。\ref{model:prime-over-set} で $M\cup\{c\}$ 上構成可能な $\mathcal{N}_{1}\preccurlyeq\mathcal{M}'$ をとり、下降レーヴェンハイム–スコーレムの定理で $M\cup\{c\}$ を含む $\mathcal{N}\preccurlyeq\mathcal{N}_{1}$ で $\lvert N\rvert=\lvert M\rvert$ のものをとる。$\mathcal{M},\mathcal{N}\preccurlyeq\mathcal{M}'$, $M\subseteq N$ なので $\mathcal{M}\preccurlyeq\mathcal{N}$ で、$c\in N\setminus M$ なので真の拡大。\ref{model:constructible-atomic} から $\mathcal{N}_{1}$ は $M\cup\{c\}$ 上原子的で、その部分集合 $N$ の組の型も孤立している。
+
+$\vec{b}\in N$ が可算な型 $\Gamma(\vec{v})$ を実現するとする。$\mathrm{tp}(\vec{b}/M\cup\{c\})$ を孤立させる論理式を $\theta(\vec{w},c)$（$\theta(\vec{w},u)$ は $\mathcal{L}_{M}$ 論理式）とし、
+$$
+\Delta(u)\defeq\{\exists\vec{w}\,\theta(\vec{w},u)\}\cup\{\forall\vec{w}\,(\theta(\vec{w},u)\to\gamma(\vec{w})):\gamma\in\Gamma\}
+$$
+とする。$\Delta$ は可算な $\mathcal{L}_{M}$ 論理式の集合で、$c$ はそのすべてを満たす：$\vec{b}$ が $\theta(\vec{w},c)$ の証拠で、$\gamma(\vec{w})\in\mathrm{tp}(\vec{b}/Mc)$ なので孤立性から $\theta(\vec{w},c)\vdash\gamma(\vec{w})$。よって $\Delta\subseteq\mathrm{tp}(c/M)=p_{\varphi}$ で、各 $\delta\in\Delta$ について $\varphi(\mathcal{M})\setminus\delta(\mathcal{M})$ は可算。その可算和も可算で、$\varphi(\mathcal{M})$ は非可算なので、$\Delta$ のすべてを満たす $c'\in M$ がある。$\mathcal{M}\models\exists\vec{w}\,\theta(\vec{w},c')$ なので $\theta(\vec{b}',c')$ となる $\vec{b}'\in M$ をとると、各 $\gamma\in\Gamma$ について $\mathcal{M}\models\gamma(\vec{b}')$。よって $\Gamma$ は $\mathcal{M}$ で実現される。
+:::
+
+::: hypcheck
+- **$\omega$ 安定性**：$\varphi$ の存在（二分木の補題）と、$M\cup\{c\}$ 上の素モデル（孤立型の稠密性）に使った。
+- **$\mathcal{M}$ の非可算性**：$\varphi(\mathcal{M})$ が非可算で、可算個の例外を除いても点が残ることに使った。
+- **$\Gamma$ の可算性**：$\Delta$ が可算で、例外の集合の可算和が可算であることに使った。
+:::
+
+::: corollary (κ,ℵ₀) モデルへの拡大 {#model:omega-stable-two-cardinal-transfer keywords="omega-stable theories with an (aleph1,aleph0)-model have (kappa,aleph0)-models for all uncountable kappa" index="二基数モデルの移行（ω 安定）|にきすうもでるのいこうおめがあんてい"}
+（AC）$T$ が $\omega$ 安定で $(\aleph_{1},\aleph_{0})$ モデルをもてば、任意の非可算基数 $\kappa$ について $(\kappa,\aleph_{0})$ モデルをもつ。
+:::
+
+::: proof
+$\mathcal{M}_{0}$ を $(\aleph_{1},\aleph_{0})$ モデル、$\varphi(x,\vec{a})$ を可算無限の定義可能集合とする。$\alpha\le\kappa$ について初等鎖を作る：$\mathcal{M}_{\alpha+1}$ は $\mathcal{M}_{\alpha}$ に \ref{model:omega-stable-omitting-extension} を使ったもの、極限段は和。可算な型 $\Gamma_{\alpha}(v)\defeq\{\varphi(v,\vec{a})\}\cup\{v\neq b:b\in\varphi(\mathcal{M}_{\alpha},\vec{a})\}$ は $\mathcal{M}_{\alpha}$ で実現されないので、$\mathcal{M}_{\alpha+1}$ でも実現されず、$\varphi(\mathcal{M}_{\alpha+1},\vec{a})=\varphi(\mathcal{M}_{\alpha},\vec{a})$。帰納的に、すべての $\alpha\le\kappa$ で $\varphi(\mathcal{M}_{\alpha},\vec{a})=\varphi(\mathcal{M}_{0},\vec{a})$（極限段は和）。濃度は帰納的に $\lvert M_{\alpha}\rvert=\aleph_{1}+\lvert\alpha\rvert$（後続段で濃度は変わらず、各段で真に大きくなる）なので、$\lvert M_{\kappa}\rvert=\kappa$。$\mathcal{M}_{\kappa}$ は $(\kappa,\aleph_{0})$ モデル。
+:::
+
+## 範疇性とヴォート対 {#model:sec-nv-categorical}
+
+::: theorem 範疇的ならヴォート対はない {#model:categorical-no-vaught-pair keywords="uncountably categorical theories have no Vaughtian pairs" index="範疇性とヴォート対|はんちゅうせいとう゛ぉーとつい"}
+（AC）$T$ がある非可算基数 $\kappa$ で範疇的なら、$T$ はヴォート対をもたない。
+:::
+
+::: proof
+\ref{model:categorical-omega-stable} から $T$ は $\omega$ 安定。ヴォート対があれば、二基数定理（\ref{model:vaught-two-cardinal}）から $(\aleph_{1},\aleph_{0})$ モデルがあり、\ref{model:omega-stable-two-cardinal-transfer} から $(\kappa,\aleph_{0})$ モデルがある。これは \ref{model:categorical-no-two-cardinal} に反する。
+:::
+
+::: corollary 定義可能集合の大きさ {#model:categorical-definable-sets-large keywords="in a model of a theory without Vaughtian pairs every infinite definable set has the size of the model" index="定義可能集合の大きさ|ていぎかのうしゅうごうのおおきさ"}
+$T$ がヴォート対をもたないなら、$T$ の任意のモデル $\mathcal{M}$ と、無限集合を定義する $\mathcal{L}_{M}$ 論理式 $\varphi(x)$ について $\lvert\varphi(\mathcal{M})\rvert=\lvert M\rvert$。
+:::
+
+::: proof
+$\lvert\varphi(\mathcal{M})\rvert<\lvert M\rvert$ なら $\mathcal{M}$ は $(\lvert M\rvert,\lvert\varphi(\mathcal{M})\rvert)$ モデルで、\ref{model:two-cardinal-to-vaught-pair} からヴォート対がある。
+:::
+
+## 問題 {#model:sec-nv-problems}
+
+::: problem {#model:prob-nv-acf-minimal-formula}
+$\mathrm{ACF}_{0}$ の非可算モデル $K$ で、\ref{model:uncountable-minimal-formula} の $\varphi$ として $x=x$ がとれること、およびそのとき $p_{\varphi}$ が「$K$ 上超越的な元の型」であることを示せ。
+:::
+
+::: solution
+$\psi(x)$ が $K$ の $\mathcal{L}_{K}$ 論理式なら、量化子消去から $\psi(K)$ は有限集合か補有限集合（\ref{model:prob-vp-acf} の解答）。よって $\psi(K)$ と $K\setminus\psi(K)$ の一方は有限で、とくに可算。$p_{x=x}$ は、有限集合を定義する論理式の否定をすべて含む型、すなわち $K$ 係数のどの非零多項式の根にもならない元の型である。
+:::
+
+::: supplement
+**前提を変えると.** \ref{model:omega-stable-omitting-extension} で $\mathcal{M}$ が可算だと、$\varphi(\mathcal{M})$ を非可算にとれず、議論は成り立たない。可算モデルについては、ヴォート対があっても $(\aleph_{1},\aleph_{0})$ への移行は前ページの往復論法で行う必要があった。$\omega$ 安定性を外すと、移行は任意の濃度にはできない。たとえば $1$ 変数関係記号 $U$ と $2$ 変数関係記号 $E$ の言語で「$\forall x\forall y\,(\forall u\,(U(u)\to(E(u,x)\leftrightarrow E(u,y)))\to x=y)$」（各元は $U$ のどの元と $E$ の関係にあるかで決まる）を公理とする理論では、モデル $\mathcal{M}$ は $x\mapsto\{u\in U(\mathcal{M}):E(u,x)\}$ により $U(\mathcal{M})$ の冪集合に単射されるので、$\lvert M\rvert\le2^{\lvert U(\mathcal{M})\rvert}$ で、$(\kappa,\aleph_{0})$ モデルは $\kappa\le2^{\aleph_{0}}$ でしか存在しない（$U$ を可算無限、他の元を $U$ の部分集合とする構造を作れば、$\aleph_{1}\le\kappa\le2^{\aleph_{0}}$ の $(\kappa,\aleph_{0})$ モデルはある）。
+
+**似た定理.** ヴォート対の非存在は、ボールドウィン–ラクランの定理（次々ページ）の仮定の一つで、「範疇性 ⇔ $\omega$ 安定かつヴォート対なし」という特徴づけの片方向が、本ページと \ref{model:categorical-omega-stable} で示されたことになる。
+
+**高い視点から：「部屋が広がらない増築」を無限に続ける.** 前ページの比喩を続けると、二基数定理は増築を $\omega_{1}$ 回、本ページの \ref{model:omega-stable-two-cardinal-transfer} は $\omega$ 安定性を使って増築を任意の回数続ける方法を与える。ただし本ページの増築は、前ページのような「同じ形の建物の写し」ではなく、「新しい元を一つ（型 $p_{\varphi}$ の元として）加えて、それから素モデルで最小限に整える」という方法で、可算な条件で記述できる部屋の中身は増えない。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

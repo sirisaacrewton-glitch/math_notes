@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ニェミツキ平面 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54G-peculiar-spaces/01-counterexamples/01-niemytzki-plane.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ニェミツキ平面 {#top:page-niemytzki keywords="Niemytzki plane, Moore plane, tangent disk topology, completely regular but not normal, Jones' lemma, separable not Lindelof, closed discrete subset"}
+
+正規空間（\ref{top:separation-axioms}）では、交わらない閉集合の対を連続関数で分けられる（ウリゾーンの補題、\ref{top:page-urysohn-tietze}）。完全正則空間（\ref{top:completely-regular}）では、点と閉集合なら分けられるが、閉集合の対では分けられないことがある。その代表例が**ニェミツキ平面**（ムーア平面とも呼ばれる）である。本ページでは、ニェミツキ平面が完全正則で可分だが正規でないことを示す。非正規性の証明には**ジョーンズの補題**（\ref{top:jones-lemma}）を使う。これは、可分な正規空間の閉離散部分集合 $D$ について $2^{|D|}\le2^{\aleph_{0}}$ が成り立つという、濃度の制約である。
+
+> 資料：小山『位相空間論』、内田『集合と位相』にはこの例の詳しい扱いがないため、標準的な構成と証明（ジョーンズの補題による非正規性）を本サイトで組み立てた。
+
+## 記法と定義の確認 {#top:sec-np-notation}
+
+::: notation
+- 分離公理（正則・正規）、ハウスドルフ、完全正則（チコノフ）は \ref{top:separation-axioms}, \ref{top:hausdorff}, \ref{top:completely-regular} のとおり。可分・稠密は \ref{top:separable-space}、第二可算・リンデレーフは \ref{top:second-countable}、開基の判定は \ref{top:base-criterion} のとおり。
+- 平面 $\mathbb{R}^{2}$ のユークリッド距離を $|p-q|$ と書く。$B(c,r)$ は中心 $c$、半径 $r$ の開円板。
+- 体系は $\ZFC$。
+:::
+
+## 定義 {#top:sec-np-definition}
+
+::: definition ニェミツキ平面 {#top:niemytzki-plane keywords="Niemytzki plane, Moore plane, tangent disk topology" index="ニェミツキ平面|にぇみつきへいめん, ムーア平面|むーあへいめん, 接円板位相|せつえんばんいそう"}
+閉上半平面 $\Gamma\defeq\{(x,y)\in\mathbb{R}^{2}:y\ge0\}$ に、次の集合族を開基とする位相を入れたものを**ニェミツキ平面**という。
+1. $y>0$ の点 $q$ については、$B(q,r)$（$0<r\le y_{q}$。$y_{q}$ は $q$ の第二座標）。
+2. $x$ 軸上の点 $p=(x,0)$ については、$\{p\}\cup B((x,r),r)$（$r>0$）。$B((x,r),r)$ は $p$ で $x$ 軸に接する円板で、これを $D_{r}(p)$ と書く。
+
+$x$ 軸 $L\defeq\{(x,0):x\in\mathbb{R}\}$ を**境界線**、$\Gamma\setminus L$ を**内部**と呼ぶ。
+:::
+
+::: intuition
+内部では普通の平面と同じ位相だが、境界線上の点の近傍は「その点で軸に接する円板＋その点」である。軸上の点どうしは、互いの近傍に軸上の他の点を含まないので、境界線は離散的にふるまう。一方、接する円板は軸の近くの内部の点を共有しやすく、これが閉集合を分けられない原因になる。
+:::
+
+::: lemma 開基であること {#top:niemytzki-base keywords="the tangent disks form a base" index="ニェミツキ平面の開基|にぇみつきへいめんのかいき"}
+上の集合族は開基の条件（\ref{top:base-criterion}）を満たす。内部 $\Gamma\setminus L$ は開集合で、その部分空間の位相はユークリッド位相と一致する。
+:::
+
+::: proof
+**Step 1（被覆）.** 各点は 1 または 2 の集合に属する。
+
+**Step 2（交わり）.** 基本集合 $W_{1},W_{2}$ と $q\in W_{1}\cap W_{2}$ について、$q\in W\subseteq W_{1}\cap W_{2}$ となる基本集合 $W$ を見つける。$q$ が内部の点なら、$W_{1}\cap W_{2}\setminus L$ はユークリッドの開集合（円板の交わり）で $q$ を含むので、$q$ を中心とする小さい円板（$x$ 軸に届かない半径）がとれる。$q=p$ が軸上の点なら、$W_{i}$ は $\{p\}\cup D_{r_{i}}(p)$ の形（軸上の点を含む基本集合はそれだけ）なので、$r\defeq\min(r_{1},r_{2})$ について $\{p\}\cup D_{r}(p)\subseteq W_{1}\cap W_{2}$（接する円板は半径について単調）。
+
+**Step 3（内部）.** 内部の各点は 1 の基本集合を近傍にもつので、内部は開。内部の点の基本近傍はユークリッドの円板なので、部分空間の位相はユークリッド位相。
+:::
+
+## 分離性 {#top:sec-np-separation}
+
+::: lemma 接円板の弦 {#top:tangent-chord keywords="chord length of a circle through the point of tangency" index="接点を通る弦|せってんをとおるげん"}
+$p$ で $x$ 軸に接する半径 $r$ の円について、$p$ から角度 $\theta\in(0,\pi)$（$x$ 軸の正の向きからの角）の方向に引いた半直線は、円と $p$ 以外にちょうど一点で交わり、その弦の長さは $2r\sin\theta$ である。
+:::
+
+::: proof
+$p=(0,0)$、中心 $(0,r)$ としてよい。半直線上の点 $t(\cos\theta,\sin\theta)$（$t>0$）が円 $X^{2}+(Y-r)^{2}=r^{2}$ 上にある条件は $t^{2}-2rt\sin\theta=0$、すなわち $t=2r\sin\theta>0$。円板の内部にあるのは $0<t<2r\sin\theta$ のとき。
+:::
+
+::: theorem ニェミツキ平面は完全正則 {#top:niemytzki-tychonoff keywords="the Niemytzki plane is completely regular (Tychonoff)" index="ニェミツキ平面の完全正則性|にぇみつきへいめんのかんぜんせいそくせい"}
+ニェミツキ平面はハウスドルフで完全正則（チコノフ空間）である。
+:::
+
+::: proof
+**Step 1（ハウスドルフ）.** 異なる二点を分ける。両方内部なら、ユークリッドの小さい円板で分かれる。$p=(x,0)$ と内部の $q$ なら、$r$ を $q$ が閉円板 $\overline{D_{r}(p)}$ の外にあるほど小さくとり、$q$ の円板をそれと交わらないようにとる。$p=(x,0)$, $p'=(x',0)$（$x\neq x'$）なら、接円板 $D_{a}(p)$, $D_{b}(p')$ の中心間の距離は $\sqrt{(x-x')^{2}+(a-b)^{2}}$ で、これが $a+b$ 以上であることは $(x-x')^{2}\ge4ab$ と同値。$a=b<|x-x'|/2$ にとれば交わらない。
+
+**Step 2（境界線上の点の分離関数）.** $p=(x,0)$ と $r>0$ について、$f\colon\Gamma\to[0,1]$ を
+$$
+f(p)\defeq0,\qquad f(q)\defeq\frac{|q-p|}{2r\sin\theta_{q}}\ (q\in D_{r}(p)),\qquad f(q)\defeq1\ (\text{それ以外})
+$$
+で定める（$\theta_{q}\in(0,\pi)$ は $q-p$ の偏角）。\ref{top:tangent-chord} から $q\in D_{r}(p)$ のとき $|q-p|<2r\sin\theta_{q}$ なので $0<f(q)<1$。
+
+**Step 3（$f$ の連続性）.** 点ごとに確かめる。
+- *$p$ で.* $s<r$ について、$q\in D_{s}(p)$ なら \ref{top:tangent-chord} を半径 $s$ の円に使って $|q-p|<2s\sin\theta_{q}$、よって $f(q)<s/r$。$f(p)=0$ の近傍 $\{p\}\cup D_{s}(p)$ で $f<s/r$ なので連続。
+- *内部の点で.* 内部で $f$ は、閉円板 $\overline{D_{r}(p)}\setminus\{p\}$ 上では $(\rho,\theta)\mapsto\rho/(2r\sin\theta)$（$p$ を原点とする極座標）でユークリッド位相について連続、円周上で値 $1$。円板の外では定数 $1$。二つの閉集合（内部での相対位相で）上で連続で、境界で一致するので、貼り合わせ補題（\ref{top:pasting-lemma}）から内部で連続。内部は開集合なので、各内部点で連続。
+- *他の境界点 $p'=(x',0)$ で.* $\overline{D_{r}(p)}$ と $p'$ のユークリッド距離 $d$ は正（閉円板が $x$ 軸と交わるのは $p$ だけ）。$b<d/2$ の接円板 $D_{b}(p')$ はユークリッドの円板 $B(p',d)$ に含まれるので、$\{p'\}\cup D_{b}(p')$ 上で $f=1$。
+
+**Step 4（完全正則性）.** 点 $q$ と、$q$ を含まない閉集合 $C$ をとる。$q=p$ が境界線上の点なら、$\{p\}\cup D_{r}(p)$ が $C$ と交わらない $r$ をとり、Step 2 の $f$ を使う：$f(p)=0$、$C$ 上で $f=1$。$q$ が内部の点なら、$B(q,r)$ が $C$ と交わらず $x$ 軸に届かない $r$ をとり、$g(z)\defeq\min(1,|z-q|/r)$（$z$ 内部）、$g\defeq1$（境界線上）とする。$g$ は内部でユークリッド位相について連続、境界点 $p'$ では $p'$ の小さい接円板が $B(q,r)$ と交わらないので近傍で $g=1$。$g(q)=0$、$C$ 上で $g=1$。
+
+::: hypcheck
+- **接円板の弦の長さ**：Step 3 の $p$ での連続性の評価 $f<s/r$ に本質的に使った（半径 $s$ の小さい円板では、どの方向でも弦の比が $s/r$ 以下）。
+- **閉円板が軸と一点でしか交わらないこと**：Step 1, 3 で、他の境界点が $f=1$ の近傍をもつことに使った。
+:::
+:::
+
+## 可分性と非正規性 {#top:sec-np-normality}
+
+::: proposition 可分で、境界線は閉離散 {#top:niemytzki-separable keywords="the Niemytzki plane is separable; the boundary line is a closed discrete subspace of size continuum" index="ニェミツキ平面の可分性|にぇみつきへいめんのかぶんせい"}
+1. 内部の有理点全体 $Q\defeq\{(a,b)\in\mathbb{Q}^{2}:b>0\}$ は稠密で、ニェミツキ平面は可分である。
+2. 境界線 $L$ は閉集合で、部分空間として離散である。とくに $L$ のすべての部分集合は閉集合である。
+:::
+
+::: proof
+**1.** 基本集合はどれも、内部のユークリッド開円板を含む（2 の形のものも $D_{r}(p)$ を含む）ので、有理点を含む。
+
+**2.** $L$ の補集合は内部で、開（\ref{top:niemytzki-base}）。$p\in L$ の基本近傍 $\{p\}\cup D_{r}(p)$ と $L$ の交わりは $\{p\}$ なので、$L$ は離散。$A\subseteq L$ は $L$ の中で閉（離散）で、$L$ は閉なので $A$ も閉。
+:::
+
+::: lemma ジョーンズの補題 {#top:jones-lemma keywords="Jones' lemma: in a separable normal space every closed discrete subset D satisfies 2^|D| <= 2^aleph0" index="ジョーンズの補題|じょーんずのほだい"}
+（$\mathrm{AC}$）$X$ が正規で、稠密な部分集合 $Q$ をもつとする。$X$ の閉離散な部分集合 $D$ について $2^{|D|}\le2^{|Q|}$。
+:::
+
+::: proof
+**Step 1（各部分集合の分離）.** $A\subseteq D$ について、$A$ と $D\setminus A$ はどちらも閉（$D$ は閉で、離散なので部分集合はすべて $D$ の中で閉）で交わらない。正規性から、開集合 $U_{A}\supseteq A$ で $\overline{U_{A}}\cap(D\setminus A)=\varnothing$ となるものがある（\ref{top:regular-normal-characterization}：閉集合 $A$ の開近傍 $X\setminus(D\setminus A)$ の中に、閉包ごと含まれる開近傍をとる）。各 $A$ について一つ選ぶ（選択公理）。
+
+**Step 2（単射）.** $\Phi(A)\defeq U_{A}\cap Q$ とおく。$A\neq B$ なら、たとえば $a\in A\setminus B$ がある。$a\in U_{A}$ で、$a\in D\setminus B$ なので $a\notin\overline{U_{B}}$。よって $U_{A}\setminus\overline{U_{B}}$ は $a$ を含む開集合で、$Q$ は稠密なのでその点 $z\in Q$ がある。$z\in\Phi(A)\setminus\Phi(B)$。
+
+**Step 3.** $\Phi\colon\mathcal{P}(D)\to\mathcal{P}(Q)$ は単射なので $2^{|D|}\le2^{|Q|}$。
+
+::: hypcheck
+- **正規性**：Step 1 で、$A$ を閉包ごと $D\setminus A$ から離すのに使った。
+- **稠密性**：Step 2 で、開集合 $U_{A}\setminus\overline{U_{B}}$ が $Q$ の点を含むことに使った。
+- **$D$ が閉かつ離散**：Step 1 で、$D$ のすべての部分集合が閉であることに使った。
+- **選択公理**：Step 1 で、$2^{|D|}$ 個の部分集合それぞれに開集合を選ぶのに使った。
+:::
+:::
+
+::: theorem ニェミツキ平面は正規でない {#top:niemytzki-not-normal keywords="the Niemytzki plane is not normal" index="ニェミツキ平面の非正規性|にぇみつきへいめんのひせいきせい"}
+ニェミツキ平面は正規でない。
+:::
+
+::: proof
+正規だとする。$Q$ は可算な稠密集合（\ref{top:niemytzki-separable}）、$L$ は濃度 $2^{\aleph_{0}}$ の閉離散集合なので、ジョーンズの補題（\ref{top:jones-lemma}）から $2^{2^{\aleph_{0}}}\le2^{\aleph_{0}}$。これはカントールの定理（$2^{\kappa}>\kappa$ を $\kappa=2^{\aleph_{0}}$ に）に反する。
+
+::: hypcheck
+- 具体的に分けられない閉集合の対は、この証明からは明示されない（ある $A\subseteq L$ について $A$ と $L\setminus A$ が分けられない、というだけ）。明示的には、$A$ を有理数の点、$L\setminus A$ を無理数の点とすれば分けられないことを、ベールのカテゴリー定理（\ref{top:baire-category}）で示せる（\ref{top:prob-np-rationals}）。
+:::
+:::
+
+::: corollary 正則・完全正則と正規の違い {#top:niemytzki-consequences keywords="completely regular not normal; separable not second countable; not Lindelof; not metrizable" index="完全正則だが正規でない空間|かんぜんせいそくだがせいきでないくうかん"}
+ニェミツキ平面は完全正則（とくに正則）で可分だが、正規でなく、リンデレーフでなく、第二可算でなく、距離化可能でない。
+:::
+
+::: proof
+完全正則と可分は \ref{top:niemytzki-tychonoff}, \ref{top:niemytzki-separable}、正規でないことは \ref{top:niemytzki-not-normal}。距離空間は正規（\ref{top:metric-normal}）なので距離化可能でない。第二可算な正則空間は正規（\ref{top:regular-second-countable-normal}）なので第二可算でない。リンデレーフな正則空間は正規であることが知られている（範囲外）ので、リンデレーフでない。直接には、開被覆 $\{\text{内部}\}\cup\{\{p\}\cup D_{1}(p):p\in L\}$ は、各 $p\in L$ を覆う元が $\{p\}\cup D_{1}(p)$ しかないので、可算な部分被覆をもたない。
+:::
+
+::: supplement
+**前提を変えると.** ジョーンズの補題の形から、「可分」を外すと非正規性の議論は通らない。実際、$x$ 軸の一部（たとえば有理数の点だけ）を残した部分空間では、境界線が可算になり、ジョーンズの補題からは矛盾が出ない。
+
+**類似の例.** ゾルゲンフライ平面（\ref{top:page-order-topology} のゾルゲンフライ直線の平方）も、反対角線 $\{(x,-x)\}$ が濃度 $2^{\aleph_{0}}$ の閉離散集合で、可分なので、同じくジョーンズの補題から正規でない。正規空間の積が正規とは限らないことの例になる。
+
+**高い視点から：正規性は「大域的」な性質.** 正則性は一点のまわりの局所的な条件だが、正規性は二つの閉集合の全体を同時に扱う大域的な条件で、濃度の制約（ジョーンズの補題）と衝突しうる。比喩で言えば、可算個の「見張り」（稠密集合）で、連続体個の点のあらゆる二分割を見分けることはできない、ということである。集合論的には、可分空間で $|L|=\aleph_{1}<2^{\aleph_{0}}$ のような部分空間について正規性が成り立つかどうかが、連続体仮説やマーティンの公理に依存する（正規ムーア空間予想。範囲外）。
+:::
+
+## 問題 {#top:sec-np-problems}
+
+::: problem {#top:prob-np-rationals}
+境界線上の有理数の点の集合 $A$ と無理数の点の集合 $B$ は、交わらない開集合で分けられないことを、ベールのカテゴリー定理を使って示せ。
+:::
+
+::: solution
+開集合 $U\supseteq B$, $V\supseteq A$ があるとする。各無理数 $x$ について $\{(x,0)\}\cup D_{r_{x}}((x,0))\subseteq U$ となる $r_{x}>0$ をとり、$K_{n}\defeq\{x\notin\mathbb{Q}:r_{x}\ge1/n\}$ とおく。$\mathbb{R}=\mathbb{Q}\cup\bigcup_{n}K_{n}$ で、$\mathbb{Q}$ は可算個の一点集合の和なので、ベールのカテゴリー定理（\ref{top:baire-category}）から、ある $K_{n}$ の（$\mathbb{R}$ での）閉包が開区間 $I$ を含む。有理数 $a\in I$ をとり、$V$ の中の接円板 $D_{t}((a,0))$ をとる。$K_{n}$ は $I$ で稠密なので、$|x-a|<2\sqrt{t/n}$ となる $x\in K_{n}$ がある。半径 $t$ と $1/n$ の接円板の中心間の距離の二乗は $(x-a)^{2}+(t-1/n)^{2}<4t/n+(t-1/n)^{2}=(t+1/n)^{2}$ なので、二つの円板は交わり、$U\cap V\neq\varnothing$。
+:::
+
+::: problem {#top:prob-np-subspace-normal}
+境界線 $L$ と内部は、それぞれ部分空間として正規であることを示せ（正規でない空間の部分空間・閉部分空間がすべて正規でありうる）。
+:::
+
+::: solution
+$L$ は離散空間（\ref{top:niemytzki-separable}）なので正規。内部はユークリッド位相の開半平面（\ref{top:niemytzki-base}）で、距離空間なので正規（\ref{top:metric-normal}）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

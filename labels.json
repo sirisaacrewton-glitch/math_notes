@@ -26888,6 +26888,13 @@
       "num": "2.8",
       "page": "54-general-topology/54D-general-properties/01-separation-compactness/02-compactness.html"
     },
+    "top:jones-lemma": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "ジョーンズの補題",
+      "num": "1.6",
+      "page": "54-general-topology/54G-peculiar-spaces/01-counterexamples/01-niemytzki-plane.html"
+    },
     "top:k-topology": {
       "status": "defined",
       "type": "example",
@@ -27042,6 +27049,48 @@
       "num": "5.8",
       "page": "54-general-topology/54A-generalities/01-topological-spaces/05-nets-filters.html"
     },
+    "top:niemytzki-base": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "開基であること",
+      "num": "1.2",
+      "page": "54-general-topology/54G-peculiar-spaces/01-counterexamples/01-niemytzki-plane.html"
+    },
+    "top:niemytzki-consequences": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "正則・完全正則と正規の違い",
+      "num": "1.8",
+      "page": "54-general-topology/54G-peculiar-spaces/01-counterexamples/01-niemytzki-plane.html"
+    },
+    "top:niemytzki-not-normal": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "ニェミツキ平面は正規でない",
+      "num": "1.7",
+      "page": "54-general-topology/54G-peculiar-spaces/01-counterexamples/01-niemytzki-plane.html"
+    },
+    "top:niemytzki-plane": {
+      "status": "defined",
+      "type": "definition",
+      "title": "ニェミツキ平面",
+      "num": "1.1",
+      "page": "54-general-topology/54G-peculiar-spaces/01-counterexamples/01-niemytzki-plane.html"
+    },
+    "top:niemytzki-separable": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "可分で、境界線は閉離散",
+      "num": "1.5",
+      "page": "54-general-topology/54G-peculiar-spaces/01-counterexamples/01-niemytzki-plane.html"
+    },
+    "top:niemytzki-tychonoff": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "ニェミツキ平面は完全正則",
+      "num": "1.4",
+      "page": "54-general-topology/54G-peculiar-spaces/01-counterexamples/01-niemytzki-plane.html"
+    },
     "top:omega-one-space": {
       "status": "defined",
       "type": "theorem",
@@ -27195,6 +27244,13 @@
       "title": "ネットとフィルターによる収束",
       "num": "",
       "page": "54-general-topology/54A-generalities/01-topological-spaces/05-nets-filters.html"
+    },
+    "top:page-niemytzki": {
+      "status": "defined",
+      "type": "page",
+      "title": "ニェミツキ平面",
+      "num": "",
+      "page": "54-general-topology/54G-peculiar-spaces/01-counterexamples/01-niemytzki-plane.html"
     },
     "top:page-order-topology": {
       "status": "defined",
@@ -27489,6 +27545,20 @@
       "title": "",
       "num": "3.10",
       "page": "54-general-topology/54E-richer-structures/01-metric-spaces/03-compact-metric.html"
+    },
+    "top:prob-np-rationals": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "1.9",
+      "page": "54-general-topology/54G-peculiar-spaces/01-counterexamples/01-niemytzki-plane.html"
+    },
+    "top:prob-np-subspace-normal": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "1.10",
+      "page": "54-general-topology/54G-peculiar-spaces/01-counterexamples/01-niemytzki-plane.html"
     },
     "top:prob-omega-plus-one-compact": {
       "status": "defined",
@@ -28113,6 +28183,41 @@
       "num": "",
       "page": "54-general-topology/54A-generalities/01-topological-spaces/05-nets-filters.html"
     },
+    "top:sec-np-definition": {
+      "status": "defined",
+      "type": "section",
+      "title": "定義",
+      "num": "",
+      "page": "54-general-topology/54G-peculiar-spaces/01-counterexamples/01-niemytzki-plane.html"
+    },
+    "top:sec-np-normality": {
+      "status": "defined",
+      "type": "section",
+      "title": "可分性と非正規性",
+      "num": "",
+      "page": "54-general-topology/54G-peculiar-spaces/01-counterexamples/01-niemytzki-plane.html"
+    },
+    "top:sec-np-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "54-general-topology/54G-peculiar-spaces/01-counterexamples/01-niemytzki-plane.html"
+    },
+    "top:sec-np-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "54-general-topology/54G-peculiar-spaces/01-counterexamples/01-niemytzki-plane.html"
+    },
+    "top:sec-np-separation": {
+      "status": "defined",
+      "type": "section",
+      "title": "分離性",
+      "num": "",
+      "page": "54-general-topology/54G-peculiar-spaces/01-counterexamples/01-niemytzki-plane.html"
+    },
     "top:sec-ot-definition": {
       "status": "defined",
       "type": "section",
@@ -28694,6 +28799,13 @@
       "num": "6.3",
       "page": "54-general-topology/54D-general-properties/01-separation-compactness/06-urysohn-tietze.html"
     },
+    "top:tangent-chord": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "接円板の弦",
+      "num": "1.3",
+      "page": "54-general-topology/54G-peculiar-spaces/01-counterexamples/01-niemytzki-plane.html"
+    },
     "top:tietze": {
       "status": "defined",
       "type": "theorem",
@@ -28918,17 +29030,6 @@
       "title": "可測基数",
       "referencedFrom": [
         "03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/11-ulam-fodor.html"
-      ]
-    },
-    "top:niemytzki-plane": {
-      "status": "planned",
-      "title": "ニェミツキ平面",
-      "referencedFrom": [
-        "03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/02-ccc-spaces.html",
-        "54-general-topology/54A-generalities/01-topological-spaces/02-closure-interior.html",
-        "54-general-topology/54D-general-properties/01-separation-compactness/01-separation-axioms.html",
-        "54-general-topology/54D-general-properties/01-separation-compactness/06-urysohn-tietze.html",
-        "54-general-topology/54D-general-properties/01-separation-compactness/07-stone-cech.html"
       ]
     }
   }

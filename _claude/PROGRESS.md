@@ -303,6 +303,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 モデル理論 MC-01（03C/04-uncountable-categoricity 新設、id model-categoricity。01-stability, model:page-stability：κ 安定・ω 安定、1 変数で十分（補った）、ACF の ω 安定性と DLO の非安定性、整列順序上の EM モデルは型を少ししか実現しない（等号も記録する同値関係で）、非可算範疇的なら ω 安定）。新井 §5.6.1。
 - 2026-10-08 一般位相 TH-02（54B/01/05-fractals, top:page-fractals：誘導される写像の連続性とリプシッツ性、和集合写像（有限・コンパクト族）、ハッチンソンの定理、アトラクターと自己相似集合、カントール集合・シェルピンスキーの三角形の例、不動点と減少列の問題）。小山 11.2, 11.4。小山第 10・11 章の系列完了。54・54B の説明を更新。
 - 2026-10-08 一般位相 TH-01（54B/01/04-hyperspaces, top:page-hyperspaces：ハウスドルフ距離とその表示、超空間の完備性（極限集合を直接構成）、コンパクト性、ヴィートリス位相との一致、一点集合の閉性と可分性の問題）。小山 11.1, 11.3。
 - 2026-10-08 一般位相 TF-03（03-ascoli, top:page-ascoli：同等連続、一様同等連続（コンパクト距離空間）、アスコリ–アルツェラの定理（X は一般のコンパクト空間、Y の完備性は不要）、古典形、x^n とリプシッツ族の問題）。小山 10.3。関数空間の系列完了。
@@ -389,6 +390,15 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | MT-08 | 02-types-and-countable-models/04-indiscernibles | 識別不能列とEMモデル | 3 | 完了 |
 | MT-09 | 03-ultraproducts/01-ultraproducts | 超積とウォシュの定理 | 4 | 完了（drafts/10 を移した） |
 | MT-10 | 03-ultraproducts/02-ultrapower-saturation | 超積と飽和 | 4, 6 | 完了 |
+
+非可算範疇性（03C/04-uncountable-categoricity, id model-categoricity。2026-10-08 自律判断。資料：新井『数学基礎論』§5.6。本文は写さない）
+| ID | ファイル | 題 | 新井 | 状態 |
+|---|---|---|---|---|
+| MC-01 | 04-uncountable-categoricity/01-stability | 安定性、EM モデルの型の少なさ、範疇的なら ω 安定 | 5.6.1–5.6.6 | 完了 |
+| MC-02 | 04-uncountable-categoricity/02-omega-stable | ω 安定な理論：大きい論理式の木、κ 安定性、孤立型の稠密性、集合上の素モデル、(κ,ℵ₀) モデルの非存在 | 5.6.7–5.6.13 | 未 |
+| MC-03 | 04-uncountable-categoricity/03-vaught-pairs | 均質モデル、ヴォート対と二基数定理、範疇的ならヴォート対なし | 5.6.14–5.6.23 | 未 |
+| MC-04 | 04-uncountable-categoricity/04-strongly-minimal | 代数的閉包、強極小集合、交換法則と次元 | 5.6.24– | 未 |
+| MC-05 | 04-uncountable-categoricity/05-morley | ボールドウィン–ラクランの定理とモーリーの範疇性定理 | 5.6.4, 5.6.1 | 未 |
 
 * 二階算術・逆数学には 田中一之『逆数学と2階算術』（`<和書>` にある）がある。
 

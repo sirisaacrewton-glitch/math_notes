@@ -372,3 +372,4 @@
 | equicontinuous / uniformly equicontinuous / relatively compact / Ascoli–Arzelà theorem | 同等連続 / 一様同等連続 / 相対コンパクト / アスコリ–アルツェラの定理 | | 標準的。top:page-ascoli |
 | hyperspace / Hausdorff metric / Vietoris topology | 超空間 / ハウスドルフ距離 / ヴィートリス位相 | | 標準的。top:page-hyperspaces |
 | iterated function system / attractor / self-similar set / Hutchinson operator | 反復関数系 / アトラクター / 自己相似集合 / ハッチンソンの定理 | | 標準的。top:page-fractals |
+| kappa-stable / omega-stable / categorical in kappa | κ 安定 / ω 安定 / κ 範疇的 | | 標準的。model:page-stability |

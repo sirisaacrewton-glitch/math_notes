@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>安定性と EM モデル | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/01-stability.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 安定性と EM モデル {#model:page-stability keywords="kappa-stable theory, omega-stable theory, counting types, Ehrenfeucht-Mostowski models realize few types, categoricity implies omega-stability, Morley categoricity theorem, ACF is omega-stable, DLO is not omega-stable"}
+
+**モーリーの範疇性定理**は、「可算言語の完全な理論が、ある非可算濃度で範疇的（その濃度のモデルが同型を除いて一つ）なら、すべての非可算濃度で範疇的である」と主張する。本ページから始まる系列でこの定理を証明する。証明の鍵は、モデルが実現する**型の個数**である。理論 $T$ が **$\omega$ 安定**（\ref{model:stable}）とは、可算なパラメータ集合の上の型が可算個しかないことをいう。本ページでは、整列順序の上に作った EM モデルが「型を少ししか実現しない」こと（\ref{model:em-few-types}）を示し、そこから**非可算濃度で範疇的な理論は $\omega$ 安定である**（\ref{model:categorical-omega-stable}）ことを導く。
+
+> 資料：新井敏康『数学基礎論』§5.6.1（定理 5.6.5・系 5.6.6）を参考にした（本文は写していない）。EM モデルの元の比較では、パラメータとの順序に加えて等号の関係も記録するように同値関係を定めた。$n$ 変数の型の可算性を $1$ 変数から導く補題（\ref{model:stable-one-variable}）は補った。
+
+## 記法と定義の確認 {#model:sec-st-notation}
+
+::: notation
+- 可算言語 $\mathcal{L}$、構造 $\mathcal{M}$、$A\subseteq M$ について、$\mathcal{L}_{A}$ は $A$ の元の名前を加えた言語、$\mathcal{M}_{A}$ はその自然な展開、$S_{n}^{\mathcal{M}}(A)$ は $A$ 上の $n$ 変数の完全型の全体である（\ref{model:saturated}）。組 $\vec{b}$ の $A$ 上の型を $\mathrm{tp}^{\mathcal{M}}(\vec{b}/A)$ と書く。$\mathcal{L}_{A}$ の論理式は $\lvert A\rvert+\aleph_{0}$ 個なので $\lvert S_{n}^{\mathcal{M}}(A)\rvert\le2^{\lvert A\rvert+\aleph_{0}}$。
+- $S_{n}^{\mathcal{M}}(A)$ は $\mathrm{Th}(\mathcal{M}_{A})$ だけで決まる。とくに $\mathcal{M}\preccurlyeq\mathcal{N}$ なら $S_{n}^{\mathcal{M}}(A)=S_{n}^{\mathcal{N}}(A)$。$A$ 上の型は、$\mathcal{M}$ のある初等拡大で実現される（\ref{model:type-basic}）。
+- 理論 $T$ が**濃度 $\kappa$ で範疇的**（$\kappa$ 範疇的）とは、$T$ が濃度 $\kappa$ のモデルをもち、それらがすべて同型であることをいう。
+- スコーレム化 $T^{\mathrm{Sk}}$、スコーレム包 $\mathrm{Hull}$、識別不能列とその存在、エーレンフォイヒト–モストフスキの定理は \ref{model:skolemization}, \ref{model:skolem-hull}, \ref{model:indiscernibles-exist}, \ref{model:em-model} のとおり。上昇・下降レーヴェンハイム–スコーレムの定理、型を実現する初等拡大は \ref{model:upward-lowenheim-skolem}, \ref{model:downward-lowenheim-skolem}, \ref{model:realize-all-types}。
+- 以下、この系列では $T$ は**可算言語の完全な理論で、無限モデルをもつ**とする（完全なので、すべてのモデルが無限）。
+:::
+
+## 安定性 {#model:sec-st-stability}
+
+::: definition κ 安定・ω 安定 {#model:stable keywords="kappa-stable, omega-stable, stable theory" index="κ 安定|かっぱあんてい, ω 安定|おめがあんてい, 安定な理論|あんていなりろん"}
+無限基数 $\kappa$ について、$T$ が **$\kappa$ 安定**であるとは、任意のモデル $\mathcal{M}\models T$、$\lvert A\rvert\le\kappa$ となる任意の $A\subseteq M$、任意の $n\ge1$ について $\lvert S_{n}^{\mathcal{M}}(A)\rvert\le\kappa$ となることをいう。$\aleph_{0}$ 安定を **$\omega$ 安定**という。
+:::
+
+::: lemma 1 変数で十分 {#model:stable-one-variable keywords="counting n-types from 1-types" index="型の個数（n 変数）|かたのこすうえぬへんすう"}
+無限基数 $\kappa$ について、$T$ のすべてのモデル $\mathcal{N}$ と $\lvert B\rvert\le\kappa$ となるすべての $B\subseteq N$ で $\lvert S_{1}^{\mathcal{N}}(B)\rvert\le\kappa$ なら、$T$ は $\kappa$ 安定である。
+:::
+
+::: proof
+$\mathcal{M}\models T$, $\lvert A\rvert\le\kappa$ とし、$n$ に関する帰納法で $\lvert S_{n}^{\mathcal{M}}(A)\rvert\le\kappa$ を示す。$n=1$ は仮定。$\mathcal{N}\succcurlyeq\mathcal{M}$ を $\lvert M\rvert^{+}$ 飽和な初等拡大とする（\ref{model:saturated-extension}）。$S_{n}^{\mathcal{M}}(A)=S_{n}^{\mathcal{N}}(A)$ の各 $q$ は $\mathcal{N}$ で実現される（\ref{model:saturated-n-types}）ので、実現する組 $\vec{a}_{q}$ を一つ選ぶ。$p(\vec{x},y)\in S_{n+1}^{\mathcal{M}}(A)$ で、$\vec{x}$ だけを含む論理式の部分 $p\restr{\vec{x}}$ が $q$ に等しいものについて、
+$$
+p(\vec{a}_{q},y)\defeq\{\varphi(\vec{a}_{q},y):\varphi(\vec{x},y)\in p\}
+$$
+は $B\defeq A\cup\{\vec{a}_{q}\text{ の成分}\}$ 上の $1$ 変数の完全型である。実際、有限個の $\varphi_{1},\dots,\varphi_{k}\in p$ の連言 $\psi$ について $\exists y\,\psi(\vec{x},y)\in p\restr{\vec{x}}=q$ なので $\mathcal{N}\models\exists y\,\psi(\vec{a}_{q},y)$（両立性）、完全性は $p$ の完全性から。$p\mapsto p(\vec{a}_{q},y)$ は単射（$\vec{a}_{q}$ を変数に戻せば $p$ が復元できる）なので、$p\restr{\vec{x}}=q$ となる $p$ は $\lvert S_{1}^{\mathcal{N}}(B)\rvert\le\kappa$ 個以下（$\lvert B\rvert\le\kappa$）。よって $\lvert S_{n+1}^{\mathcal{M}}(A)\rvert\le\kappa\cdot\kappa=\kappa$。
+:::
+
+::: example
+1. **代数的閉体.** $\mathrm{ACF}_{p}$（標数 $p$ の代数的閉体の理論、$p$ は素数または $0$）は $\omega$ 安定である。$K\models\mathrm{ACF}_{p}$, $A\subseteq K$ とし、$k$ を $A$ で生成される部分体とする。量化子消去（\ref{model:acf-qe}）から、$x$ の $A$ 上の型は、多項式の等式 $f(x)=0$（$f\in k[X]$）とその否定のうちどれが成り立つかで決まる。$I_{x}\defeq\{f\in k[X]:f(x)=0\}$ は $k[X]$ のイデアルで、$k[X]$ は単項イデアル整域なので $I_{x}=(0)$ または $I_{x}=(f)$（$f$ はモニックな既約多項式）。よって $\lvert S_{1}^{K}(A)\rvert\le\lvert k[X]\rvert+1\le\lvert A\rvert+\aleph_{0}$ で、これは任意のモデルと任意の $A$ で成り立つので、\ref{model:stable-one-variable} から $\mathrm{ACF}_{p}$ はすべての無限基数 $\kappa$ で $\kappa$ 安定。
+2. **稠密線形順序.** $\mathrm{DLO}$（\ref{model:dlo}）は $\omega$ 安定でない。$\mathbb{Q}\models\mathrm{DLO}$ で、実数 $r$ ごとに型 $p_{r}(x)\defeq\{q<x:q<r\}\cup\{x<q:q>r\}$（$q\in\mathbb{Q}$）は $\mathbb{Q}$ 上の型で、$r\neq r'$ なら $p_{r}\cup p_{r'}$ は両立しない（間に有理数がある）。よって $\lvert S_{1}(\mathbb{Q})\rvert\ge2^{\aleph_{0}}$。$\mathrm{DLO}$ は $\aleph_{0}$ 範疇的（\ref{model:cantor-dlo}）なので、「$\aleph_{0}$ 範疇的 ⇒ $\omega$ 安定」は成り立たない。
+:::
+
+## EM モデルの型の少なさ {#model:sec-st-em}
+
+::: theorem EM モデルは型を少ししか実現しない {#model:em-few-types keywords="Ehrenfeucht-Mostowski models over well-orders realize few types" index="EM モデルの型の少なさ|いーえむもでるのかたのすくなさ"}
+（AC）無限基数 $\kappa$ について、$T$ のモデル $\mathcal{M}$ で $\lvert M\rvert=\kappa$ かつ、任意の $A\subseteq M$ と $n\ge1$ について、$\mathcal{M}$ で実現される $S_{n}^{\mathcal{M}}(A)$ の型が $\lvert A\rvert+\aleph_{0}$ 個以下であるものが存在する。
+:::
+
+::: proof
+**Step 1（構成）.** $(I,<)\defeq(\kappa,\in)$（整列順序）とする。\ref{model:em-model} の証明の Step 1 のとおり、$T^{\mathrm{Sk}}$ のモデル $\mathcal{M}^{\ast}$ と、$\mathcal{L}^{\mathrm{Sk}}$ について識別不能な列 $(a_{i})_{i\in I}$ で $\mathcal{M}^{\ast}=\mathrm{Hull}(\{a_{i}:i\in I\})$ となるものをとる。$a_{i}$ は相異なるので $\lvert M^{\ast}\rvert\ge\kappa$、スコーレム包の濃度から $\lvert M^{\ast}\rvert\le\kappa$。$\mathcal{M}\defeq\mathcal{M}^{\ast}\restr{\mathcal{L}}$ とする。$\mathcal{L}$ 論理式の型は $\mathcal{L}^{\mathrm{Sk}}$ 論理式の型で決まるので、$\mathcal{L}^{\mathrm{Sk}}$ の型について示せば十分。
+
+**Step 2（台）.** $M^{\ast}$ の元は、$\mathcal{L}^{\mathrm{Sk}}$ の項 $t$ と $I$ の増加な組 $\vec{i}$ による $t(a_{\vec{i}})$ の形である。各 $a\in A$ について $a=t_{a}(a_{\vec{i}_{a}})$ となる $t_{a}$, $\vec{i}_{a}$ を一つ選び、組 $\vec{i}_{a}$（$a\in A$）の成分全体の集合を $X\subseteq I$ とする。$\lvert X\rvert\le\lvert A\rvert+\aleph_{0}$。
+
+**Step 3（同値関係）.** $I$ の長さ $m$ の増加な組 $\vec{y},\vec{z}$ について、$\vec{y}\sim_{X}\vec{z}$ を「すべての $k\le m$ と $x\in X$ で、$y_{k}<x\iff z_{k}<x$ かつ $y_{k}=x\iff z_{k}=x$」で定める。$\vec{y}\sim_{X}\vec{z}$ なら、項の組 $\vec{s}$ について $\mathrm{tp}(\vec{s}(a_{\vec{y}})/A)=\mathrm{tp}(\vec{s}(a_{\vec{z}})/A)$ である。実際、$A$ 上の論理式 $\varphi(\vec{v},a_{1},\dots,a_{l})$ について、$a_{j}=t_{a_{j}}(a_{\vec{i}_{a_{j}}})$ を代入すると、$\varphi(\vec{s}(a_{\vec{y}}),\vec{a})$ は、$\vec{y}$ と $\vec{x}\defeq\vec{i}_{a_{1}}\cdots\vec{i}_{a_{l}}$（$X$ の元）の成分を並べた組についての $\mathcal{L}^{\mathrm{Sk}}$ 論理式になる。$\vec{y}\sim_{X}\vec{z}$ なので、$\vec{y}\cup\vec{x}$ と $\vec{z}\cup\vec{x}$ の成分を増加順に並べたときの「どの位置にどの成分が来るか（等しい成分の重なりを含む）」の配置は同じで、識別不能性から真偽が一致する。
+
+**Step 4（同値類の個数）.** $I$ は整列順序なので、$y\in I\setminus X$ について $\{x\in X:x>y\}$ は空か最小元をもつ。よって $y$ の $X$ に対する位置は「$y=x$ となる $x\in X$」「$y$ より大きい $X$ の最小元 $x$」「$y$ は $X$ のすべての元より大きい」のいずれかで記述でき、その可能性は $2\lvert X\rvert+1$ 通り以下。長さ $m$ の増加な組の $\sim_{X}$ 類は各成分の位置で決まるので $(2\lvert X\rvert+1)^{m}$ 個以下。
+
+**Step 5.** $M^{\ast}$ の $n$ 組 $\vec{b}$ は、項の組 $\vec{s}$（可算個）と、共通の増加な組 $\vec{y}$ により $\vec{b}=\vec{s}(a_{\vec{y}})$ と書ける。Step 3, 4 から、実現される $A$ 上の型は、$(\vec{s},m,\vec{y}\text{ の }\sim_{X}\text{ 類})$ の個数、すなわち $\aleph_{0}\cdot\sum_{m}(2\lvert X\rvert+1)^{m}\le\lvert A\rvert+\aleph_{0}$ 個以下。
+:::
+
+::: hypcheck
+- **$I$ が整列順序であること**：Step 4 で、$I\setminus X$ の点の位置を $X$ の一点（または $\infty$）で記述するのに使った。$I=\mathbb{Q}$ などでは、可算な $X$ の切断は $2^{\aleph_{0}}$ 個ありうるので、この評価は成り立たない。
+- **$\mathcal{L}^{\mathrm{Sk}}$ についての識別不能性とスコーレム包**：Step 2 で $M^{\ast}$ の元を項で表し、Step 3 で型を比較するのに使った（$\mathcal{L}$ についての識別不能性だけでは、項で表した元の型は比較できない）。
+- **選択公理**：スコーレム化と、Step 2 の $t_{a}$, $\vec{i}_{a}$ の選択に使った。
+:::
+
+::: theorem 範疇的なら ω 安定 {#model:categorical-omega-stable keywords="uncountably categorical theories are omega-stable" index="範疇性と ω 安定性|はんちゅうせいとおめがあんていせい"}
+（AC）$T$ がある非可算基数 $\kappa$ で範疇的なら、$T$ は $\omega$ 安定である。
+:::
+
+::: proof
+$\omega$ 安定でないとする。\ref{model:stable-one-variable}（$\kappa=\aleph_{0}$）から、あるモデル $\mathcal{M}$ と可算な $A\subseteq M$ で $\lvert S_{1}^{\mathcal{M}}(A)\rvert>\aleph_{0}$ となるものがある。$S_{1}^{\mathcal{M}}(A)$ から $\aleph_{1}$ 個の型を選び、\ref{model:realize-all-types} でそれらをすべて実現する初等拡大 $\mathcal{N}_{0}\succcurlyeq\mathcal{M}$ をとる。さらに上昇レーヴェンハイム–スコーレムの定理で濃度 $\kappa$ の初等拡大 $\mathcal{N}\succcurlyeq\mathcal{N}_{0}$ をとる（下降定理で $\mathcal{N}_{0}$ の濃度を $\kappa$ 以下にしてから。$\kappa\ge\aleph_{1}$）。$\mathcal{N}$ は可算な $A$ 上の $\aleph_{1}$ 個の型を実現する。
+
+一方、\ref{model:em-few-types} の濃度 $\kappa$ のモデル $\mathcal{M}'$ は、任意の可算な $B$ 上の型を可算個しか実現しない。同型 $f\colon\mathcal{N}\to\mathcal{M}'$ があれば、$\vec{b}\mapsto f(\vec{b})$ は「$A$ 上の異なる型を実現する組」を「$f(A)$ 上の異なる型を実現する組」に移す（$\varphi(\vec{x},\vec{a})$ と $\varphi(\vec{x},f(\vec{a}))$ の真偽は一致する）ので、$\mathcal{M}'$ は可算な $f(A)$ 上の $\aleph_{1}$ 個の型を実現し、矛盾。よって $\mathcal{N}\not\cong\mathcal{M}'$ で、$T$ は $\kappa$ 範疇的でない。
+:::
+
+::: hypcheck
+- **$\kappa$ の非可算性**：$\aleph_{1}$ 個の型を実現するモデルを濃度 $\kappa$ に収めるのに使った。$\kappa=\aleph_{0}$ では結論は成り立たない（$\mathrm{DLO}$）。
+- **言語の可算性**：EM モデルの評価 $\lvert A\rvert+\aleph_{0}$（項が可算個）と、$\aleph_{1}$ 個の型を実現するモデルの濃度を $\aleph_{1}$ に抑えるのに使った。
+:::
+
+## 問題 {#model:sec-st-problems}
+
+::: problem {#model:prob-st-infinite-set}
+空の言語（等号だけ）の無限集合の理論 $T_{\infty}$ は $\omega$ 安定であることを示せ（量化子消去が成り立つことは認めてよい）。
+:::
+
+::: solution
+量化子消去のもとで、$x$ の $A$ 上の型は、各 $a\in A$ について $x=a$ か $x\neq a$ かで決まる。完全型では、ある $a$ で $x=a$ が成り立つか（$\lvert A\rvert$ 通り）、すべての $a$ で $x\neq a$（$1$ 通り）なので、$\lvert S_{1}(A)\rvert=\lvert A\rvert+1$。\ref{model:stable-one-variable} から $\omega$ 安定（実際すべての $\kappa$ で $\kappa$ 安定）。
+:::
+
+::: problem {#model:prob-st-equivalence}
+二項関係 $E$ が同値関係で、同値類が無限個あり、どれも無限集合である、という理論 $T_{E}$ は $\aleph_{1}$ 範疇的でないことを示せ（$T_{E}$ が完全であることは認めてよい）。
+:::
+
+::: solution
+濃度 $\aleph_{1}$ のモデルとして、(i) $\aleph_{1}$ 個の同値類がそれぞれ可算無限のもの、(ii) 可算無限個の同値類がそれぞれ濃度 $\aleph_{1}$ のものを作る。同型写像は同値類を同値類に、濃度を保って移すので、(i) と (ii) は同型でない（(i) には濃度 $\aleph_{1}$ の同値類がない）。（$T_{E}$ は $\omega$ 安定であることが知られているので、$\omega$ 安定性だけでは非可算範疇性に足りない。足りない条件が次々ページのヴォート対の非存在である：(ii) の一つの同値類が「大きくなるのに外が増えない」構造に対応する。）
+:::
+
+::: supplement
+**前提を変えると.** 言語が非可算（濃度 $\lambda$）のとき、モーリーの定理の類似は「$\lambda^{+}$ 以上のある濃度で範疇的なら、$\lambda^{+}$ 以上のすべての濃度で範疇的」となることが知られている（シェラハ。ここでは扱わない）。安定性の階層では、$\omega$ 安定 ⇒ 超安定 ⇒ 安定 で、安定な理論は「型の個数の関数 $\kappa\mapsto\sup\lvert S(A)\rvert$ がいくつかの典型的な形のどれかになる」ことがシェラハによって示されているとされる。
+
+**似た定理.** \ref{model:categorical-omega-stable} の証明は、「型の個数」という不変量で二つのモデルを区別するという、モデル理論で頻繁に使われる論法の典型である。同じ論法で、$\aleph_{0}$ 範疇性はライル–ナルジェフスキの定理（\ref{model:ryll-nardzewski}）により $S_{n}(T)$ の有限性と同値になる。
+
+**高い視点から：安定性は「モデルの自由度の少なさ」.** 型は「モデルに付け加えうる新しい元の振る舞い方」であり、型が少ないことは、モデルの拡大の仕方が少ないこと、すなわち構造が硬いことを意味する。比喩で言えば、$\mathrm{DLO}$ では可算な有理数の間に実数の数だけ「新しい点の置き場所」があるのに、代数的閉体では新しい点の置き場所は「どの多項式の根か、超越的か」の可算通りしかない。範疇性という強い一意性は、この硬さなしには成り立たない、というのが \ref{model:categorical-omega-stable} の内容である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

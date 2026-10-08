@@ -425,3 +425,4 @@
 | Sigma_n-complete / movable markers / FIN, TOT, COF | Σn 完全 / 動く目印 / FIN, TOT, COF | | 仮（「動く目印」）。comp:page-index-set-completeness |
 | sigma-locally finite / Nagata-Smirnov metrization theorem / Bing metrization theorem | σ 局所有限 / 長田–スミルノフの距離化定理 / ビングの距離化定理 | | 標準的。top:page-nagata-smirnov |
 | P/poly / Karp-Lipton theorem / self-reducibility | P/poly / カープ–リプトンの定理 / 自己帰着性 | | 標準的。comp:page-ph-karp-lipton |
+| k-space / Montel theorem | k 空間 / モンテルの定理 | コンパクト生成空間 | 標準的。top:page-ascoli-general |

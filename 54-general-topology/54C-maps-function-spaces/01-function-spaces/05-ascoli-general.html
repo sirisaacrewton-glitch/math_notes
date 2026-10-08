@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>一般形のアスコリの定理 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54C-maps-function-spaces/01-function-spaces/05-ascoli-general.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 一般形のアスコリの定理 {#top:page-ascoli-general keywords="Ascoli theorem for the compact-open topology, locally compact domain, restriction to compact sets, C(X,Y) as a closed subspace of a product, uniform convergence on compacta, metrizability for sigma-compact domains, diagonal subsequence"}
+
+アスコリ–アルツェラの定理（\ref{top:ascoli}）は、定義域 $X$ がコンパクトなときに、一様収束位相での相対コンパクト性を「同等連続性＋各点での相対コンパクト性」で特徴づけた。$X$ がコンパクトでないと一様収束位相では成り立たないが、**コンパクト開位相**（コンパクト集合上の一様収束）に取り替えれば、$X$ が局所コンパクトのとき同じ特徴づけが成り立つ（\ref{top:ascoli-general}）。証明の鍵は、$C_{c}(X,Y)$ が、コンパクト集合への制限の族として、積空間 $\prod_{K}C(K,Y)$ の閉部分空間に埋め込めること（\ref{top:restriction-embedding}）である。さらに $X$ が σ コンパクトなら $C_{c}(X,Y)$ は距離化可能で（\ref{top:co-metrizable}）、点列で述べた形（\ref{top:ascoli-sequences}）が得られる。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。
+
+## 記法と定義の確認 {#top:sec-ag-notation}
+
+::: notation
+- $X$ は位相空間、$(Y,\rho)$ は距離空間、$\bar{\rho}=\min(\rho,1)$。$C_{c}(X,Y)$ はコンパクト開位相（\ref{top:compact-open-topology}）、$C_{u}(K,Y)$ は一様収束位相（\ref{top:uniform-topology}）。コンパクトな $K$ については $C_{c}(K,Y)=C_{u}(K,Y)$（\ref{top:compact-domain-uniform}）。
+- コンパクト開位相の開集合は、「各 $f\in O$ について $B_{K}(f,\varepsilon)\subseteq O$ となるコンパクトな $K$ と $\varepsilon>0$ がある」集合 $O$ である（\ref{top:compact-open-uniform-on-compacta}）。
+- 同等連続・各点での相対コンパクト性は \ref{top:equicontinuous}, \ref{top:ascoli} のとおり。$\mathcal{F}(x)\defeq\{f(x):f\in\mathcal{F}\}$、$\mathcal{F}|_{K}\defeq\{f|_{K}:f\in\mathcal{F}\}$。
+- **局所コンパクト**は「各点がコンパクトな近傍をもつ」（\ref{top:locally-compact}）。チコノフの定理は \ref{top:tychonoff}。
+- $\mathcal{K}$ は $X$ のコンパクト部分集合全体。
+:::
+
+## 制限による埋め込み {#top:sec-ag-embedding}
+
+::: lemma 制限による埋め込み {#top:restriction-embedding keywords="C_c(X,Y) embeds as a closed subspace of the product of C_u(K,Y) over compact K when X is locally compact" index="制限による埋め込み|せいげんによるうめこみ"}
+$X$ を局所コンパクトとし、$\Phi\colon C_{c}(X,Y)\to\prod_{K\in\mathcal{K}}C_{u}(K,Y)$ を $\Phi(f)\defeq(f|_{K})_{K}$ で定める。$\Phi$ は像への同相写像で、像は閉集合
+$$
+E\defeq\Bigl\{(g_{K})_{K}:K'\subseteq K\text{ なら }g_{K}|_{K'}=g_{K'}\Bigr\}
+$$
+に等しい。
+:::
+
+::: proof
+**単射.** 一点集合はコンパクトなので、$f|_{\{x\}}$ から $f(x)$ が分かる。
+
+**像への同相.** $\Phi$ の各成分 $f\mapsto f|_{K}$ は、$\sup_{x\in K}\bar{\rho}(f(x),g(x))$ を変えないので、$B_{K}(f,\varepsilon)$ を $C_{u}(K,Y)$ の $\varepsilon$ 球の逆像に移す（$\varepsilon\le1$）。\ref{top:compact-open-uniform-on-compacta} から、$C_{c}(X,Y)$ の開集合はちょうど、各点のまわりにこれらの逆像を含む集合で、これは積位相から誘導される位相の開集合と一致する。よって $\Phi$ は連続で、像の上への開写像。
+
+**像は $E$.** $\Phi(f)\in E$ は明らか。逆に $(g_{K})\in E$ について $f(x)\defeq g_{\{x\}}(x)$ とおくと、$x\in K$ なら $g_{K}(x)=g_{K}|_{\{x\}}(x)=g_{\{x\}}(x)=f(x)$ なので $f|_{K}=g_{K}$。$f$ は連続：$x$ の**コンパクトな近傍** $K$ をとると $f|_{K}=g_{K}$ は連続で、$K$ は $x$ の近傍なので $f$ は $x$ で連続。よって $(g_{K})=\Phi(f)$。
+
+**$E$ は閉.** $K'\subseteq K$ ごとに、$(g)\mapsto g_{K}|_{K'}$ と $(g)\mapsto g_{K'}$ は積から $C_{u}(K',Y)$ への連続写像で、$C_{u}(K',Y)$ はハウスドルフ（距離空間）なので、両者が一致する集合は閉。$E$ はその共通部分。
+:::
+
+## 一般形のアスコリの定理 {#top:sec-ag-theorem}
+
+::: theorem 一般形のアスコリの定理 {#top:ascoli-general keywords="Ascoli: for locally compact X and metric Y, F is relatively compact in the compact-open topology iff equicontinuous and pointwise relatively compact" index="アスコリの定理（一般形）|あすこりのていりいっぱんけい"}
+$X$ を局所コンパクト、$(Y,\rho)$ を距離空間とする。$\mathcal{F}\subseteq C(X,Y)$ について次は同値である。
+1. $\mathcal{F}$ は $C_{c}(X,Y)$ で相対コンパクト。
+2. $\mathcal{F}$ は同等連続で、各 $x$ について $\mathcal{F}(x)$ は $Y$ で相対コンパクト。
+:::
+
+::: proof
+**1 ⇒ 2.** $K\in\mathcal{K}$ について、制限 $C_{c}(X,Y)\to C_{u}(K,Y)$ は連続（\ref{top:restriction-embedding} の成分）なので、$\overline{\mathcal{F}}$ の像はコンパクトで、$\mathcal{F}|_{K}$ を含む。よって $\mathcal{F}|_{K}$ は $C_{u}(K,Y)$ で相対コンパクトで、コンパクトな場合のアスコリ–アルツェラの定理（\ref{top:ascoli}）から $K$ 上で同等連続、$K\ni x$ で $\mathcal{F}(x)$ は相対コンパクト。$x\in X$ の**コンパクトな近傍** $K$ をとると、$K$ 上での $x$ における同等連続性の近傍 $V$（$K$ の中の近傍）は、$K$ が $x$ の近傍なので $X$ でも $x$ の近傍を含み、$\mathcal{F}$ は $X$ で $x$ において同等連続。
+
+**2 ⇒ 1.** 各 $K\in\mathcal{K}$ について、$\mathcal{F}|_{K}$ は $K$ 上で同等連続（$X$ での同等連続性の近傍を $K$ に制限する）で各点で相対コンパクトなので、\ref{top:ascoli} から $C_{u}(K,Y)$ で相対コンパクト。その閉包 $L_{K}$ はコンパクトで、チコノフの定理から $\prod_{K}L_{K}$ はコンパクト。$\Phi(\mathcal{F})\subseteq\prod_{K}L_{K}$ なので、$\Phi(\mathcal{F})$ の積空間での閉包は、閉集合 $E\cap\prod_{K}L_{K}$ に含まれ、コンパクト。$\Phi$ は $C_{c}(X,Y)$ から閉集合 $E$ への同相写像（\ref{top:restriction-embedding}）なので、$\mathcal{F}$ の $C_{c}(X,Y)$ での閉包は $\Phi^{-1}(\overline{\Phi(\mathcal{F})})$ でコンパクト。
+:::
+
+::: hypcheck
+- **局所コンパクト性**：\ref{top:restriction-embedding} で $E$ の元が連続関数を与えること（貼り合わせの連続性）と、1 ⇒ 2 で $K$ 上の同等連続性を $X$ 上に移すことに使った。
+- **$Y$ が距離空間**：同等連続性の定義と、コンパクトな場合の定理（\ref{top:ascoli}）、$C_{u}(K',Y)$ のハウスドルフ性に使った。
+- **チコノフの定理（選択公理）**：2 ⇒ 1 で使った。$\mathcal{K}$ は一般に非可算である。
+:::
+
+## σ コンパクトな定義域と点列 {#top:sec-ag-sequences}
+
+::: proposition コンパクト開位相の距離化 {#top:co-metrizable keywords="for sigma-compact locally compact Hausdorff X, C_c(X,Y) is metrizable by sum of 2^{-n} sup over K_n" index="コンパクト開位相の距離化|こんぱくとかいいそうのきょりか"}
+$X$ を σ コンパクトな局所コンパクトハウスドルフ空間とし、\ref{top:compact-exhaustion} のコンパクト集合の列 $K_{n}\subseteq\operatorname{int}K_{n+1}$, $X=\bigcup_{n}K_{n}$ をとる。
+$$
+d(f,g)\defeq\sum_{n\ge1}2^{-n}\sup_{x\in K_{n}}\bar{\rho}\bigl(f(x),g(x)\bigr)
+$$
+は $C(X,Y)$ の距離で、その位相はコンパクト開位相と一致する。
+:::
+
+::: proof
+距離の公理は各項から（$d(f,g)=0$ なら各 $K_{n}$ 上で $f=g$）。$d_{n}(f,g)\defeq\sup_{K_{n}}\bar{\rho}(f,g)$ とする。
+- *$d$ の球はコンパクト開位相で開*：$f$ と $\varepsilon>0$ について、$2^{-N}<\varepsilon/2$ となる $N$ をとると、$d_{N}(f,g)<\varepsilon/2$ なら $n\le N$ で $d_{n}\le d_{N}$（$K_{n}\subseteq K_{N}$）なので $d(f,g)<\varepsilon/2+2^{-N}<\varepsilon$。よって $B_{K_{N}}(f,\varepsilon/2)\subseteq\{g:d(f,g)<\varepsilon\}$（$\varepsilon/2\le1$ とする）。$d$ の球の各点のまわりでこれを使えば、\ref{top:compact-open-uniform-on-compacta} から球はコンパクト開位相で開。
+- *コンパクト開位相の開集合は $d$ で開*：コンパクトな $K$ は開集合 $\operatorname{int}K_{n}$ の族で覆われ、増加列なので $K\subseteq K_{N}$ となる $N$ がある。$d(f,g)<2^{-N}\varepsilon$（$\varepsilon\le1$）なら $\sup_{K}\bar{\rho}\le d_{N}(f,g)\le2^{N}d(f,g)<\varepsilon$ なので、$d$ の球が $B_{K}(f,\varepsilon)$ に含まれる。
+:::
+
+::: corollary 点列の形 {#top:ascoli-sequences keywords="an equicontinuous pointwise bounded sequence of real functions on R^n has a subsequence converging uniformly on compact sets" index="アスコリの定理（点列の形）|あすこりのていりてんれつのかたち"}
+$X$ を σ コンパクトな局所コンパクトハウスドルフ空間（たとえば $\R^{n}$ やその開集合）とする。同等連続で各点で有界な実数値連続関数の列 $(f_{k})$ は、$X$ の各コンパクト集合上で一様収束する部分列をもつ。
+:::
+
+::: proof
+$\R$ の有界集合は相対コンパクト（\ref{top:heine-borel}）なので、\ref{top:ascoli-general} から $\{f_{k}\}$ は $C_{c}(X,\R)$ で相対コンパクト。\ref{top:co-metrizable} から $C_{c}(X,\R)$ は距離空間で、コンパクトな距離空間は点列コンパクト（\ref{top:compact-metric-equivalents}）なので、$\overline{\{f_{k}\}}$ の中で収束する部分列がある（値が有限個しか現れない場合は定数部分列をとる）。$d$ での収束は各 $K_{n}$、したがって各コンパクト集合上での一様収束である。
+:::
+
+## 問題 {#top:sec-ag-problems}
+
+::: problem {#top:prob-ag-translates}
+$f_{n}(x)\defeq\max(0,1-\lvert x-n\rvert)$ の列は、$C_{u}(\R,\R)$ では収束する部分列をもたない（\ref{top:ascoli} の補足）が、$C_{c}(\R,\R)$ では $0$ に収束することを確かめ、\ref{top:ascoli-general} と整合することを確かめよ。
+:::
+
+::: solution
+コンパクト集合 $K\subseteq[-M,M]$ について、$n>M+1$ なら $f_{n}$ は $K$ 上で $0$ なので、$K$ 上で一様に $0$ に収束する。\ref{top:compact-open-uniform-on-compacta} から $C_{c}$ で $f_{n}\to0$。整合性：$\{f_{n}\}$ は同等連続（どれも傾き $\pm1$ のリプシッツ関数で、$\lvert f_{n}(x)-f_{n}(x')\rvert\le\lvert x-x'\rvert$）で各点で $[0,1]$ に値をとるので、定理から相対コンパクトであり、実際に $\{f_{n}\}\cup\{0\}$ はコンパクトである。
+:::
+
+::: problem {#top:prob-ag-not-equicontinuous}
+$g_{n}(x)\defeq\sin(nx)$ の列は $C_{c}(\R,\R)$ で相対コンパクトでないことを示せ。
+:::
+
+::: solution
+$x=0$ で同等連続でないことを示せばよい（\ref{top:ascoli-general} の 1 ⇒ 2）。$\varepsilon=1/2$ とすると、どの $\delta>0$ についても、$n>\pi/(2\delta)$ なら $x\defeq\pi/(2n)\in(-\delta,\delta)$ で $\lvert g_{n}(x)-g_{n}(0)\rvert=1>\varepsilon$。
+:::
+
+::: supplement
+**前提を変えると.** 局所コンパクト性の代わりに、$X$ が **$k$ 空間**（コンパクト集合との共通部分がすべて閉なら閉、という空間。第一可算空間や局所コンパクト空間を含む）であれば、\ref{top:restriction-embedding} の貼り合わせが連続になり、同じ定理が成り立つことが知られている（ここでは確かめていない）。$Y$ を一様空間に、同等連続を一様同等連続に取り替えた形もあることが知られている。
+
+**似た定理.** 複素関数論では、領域上の正則関数の族が「コンパクト集合上で一様有界」なら、コーシーの積分公式から同等連続になり、本定理から相対コンパクトになる（**モンテルの定理**）ことが知られている。微分方程式では、ペアノの存在定理の証明で近似解の列に点列の形（\ref{top:ascoli-sequences}）が使われることが知られている。
+
+**高い視点から：局所的なコンパクト性を貼り合わせる.** コンパクト開位相は「すべてのコンパクト集合の上で同時に一様に近い」という位相で、\ref{top:restriction-embedding} はそれを「各コンパクト集合の上の一様位相を、矛盾なく貼り合わせたもの」として表す。コンパクトな場合の定理を各片に使い、チコノフの定理で全体をまとめるのが証明の骨格である。比喩で言えば、無限に広い国の地図を、有限の区画ごとの地図帳に分けて、どの区画の地図も手元の有限冊に収まるなら、全区画をまとめた地図帳の棚も「コンパクト」に収まる、という主張である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

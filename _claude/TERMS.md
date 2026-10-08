@@ -428,3 +428,4 @@
 | k-space / Montel theorem | k 空間 / モンテルの定理 | コンパクト生成空間 | 標準的。top:page-ascoli-general |
 | Segal condition / spine / Segal space / quasi-category | セガール条件 / 背骨 / セガール空間 / 準圏 | | 仮（「背骨」）。cat:page-segal-condition |
 | doctrinal adjunction / transpose (of an adjunction) / mates | ドクトリン的随伴 / 転置 / メイト | | 仮。cat:page-doctrinal-adjunction |
+| injective resolution / dimension shifting / balancing of Ext / global dimension | 入射分解 / 次元ずらし / Ext の平衡性 / 大域次元 | | 標準的。ha:page-ext-injective |

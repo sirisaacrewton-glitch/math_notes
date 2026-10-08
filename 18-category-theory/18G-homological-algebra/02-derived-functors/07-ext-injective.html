@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>入射分解による Ext | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18G-homological-algebra/02-derived-functors/07-ext-injective.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 入射分解による Ext {#ha:page-ext-injective keywords="injective resolution, right derived functors of Hom(a,-), balancing Ext, dimension shifting, Ext vanishes on injectives, characterization of injective modules by Ext^1, Ext over the integers via Q and Q/Z"}
+
+$\mathrm{Ext}^{n}_{R}(a,b)$ は第一変数 $a$ の射影分解で定義した（\ref{ha:ext}）。十分な入射対象がある（\ref{ha:enough-injectives}）ので、第二変数 $b$ の**入射分解**を使って $\mathrm{Hom}_{R}(a,-)$ の右導来関手としても定義できる（\ref{ha:ext-injective-def}）。本ページでは、二つの定義が同じ群を与えること（**Ext の平衡性**、\ref{ha:ext-balance}）を、**次元ずらし**の議論で示す。系として、$b$ が入射的であることと $\mathrm{Ext}^{1}(-,b)=0$ が同値であること（\ref{ha:ext-injective-criterion}）を得る。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。
+
+## 記法と定義の確認 {#ha:sec-ei-notation}
+
+::: notation
+- $R$ は環、加群は左 $R$ 加群、$\mathrm{Hom}=\mathrm{Hom}_{R}$。射影分解による $\mathrm{Ext}^{n}(a,b)$、その基本性質と長完全列は \ref{ha:ext}, \ref{ha:ext-basic}, \ref{ha:ext-long-exact} のとおり。
+- 入射対象、ベールの判定法、可除群、十分な入射対象は \ref{ha:page-injective-modules} のとおり。$E$ が入射的であることと $\mathrm{Hom}(-,E)$ が完全であることは同値（\ref{ha:projective-basic} の 1 の双対）。
+- **双対性**：反対圏 $R\text{-}\mathbf{Mod}^{\mathrm{op}}$ はアーベル圏で、その射影対象は $R\text{-}\mathbf{Mod}$ の入射対象である。\ref{ha:enough-injectives} から $R\text{-}\mathbf{Mod}^{\mathrm{op}}$ は十分な射影対象をもつ。左完全な加法関手 $G\colon R\text{-}\mathbf{Mod}\to\mathbf{Ab}$ は、右完全な加法関手 $G^{\mathrm{op}}\colon R\text{-}\mathbf{Mod}^{\mathrm{op}}\to\mathbf{Ab}^{\mathrm{op}}$ とみなせ、その左導来関手（\ref{ha:left-derived-functor}）を $G$ の**右導来関手** $R^{n}G$ という。具体的には、$b$ の**入射分解** $0\to b\to I^{0}\to I^{1}\to\cdots$（完全、各 $I^{n}$ 入射的）をとって $R^{n}G(b)=H^{n}(G\,I)$ である。\ref{ha:derived-well-defined}, \ref{ha:l0-right-exact}, \ref{ha:derived-long-exact} の双対として、$R^{n}G$ は分解の選び方によらず、$R^{0}G\cong G$（自然同型）、$E$ 入射的なら $n\ge1$ で $R^{n}G(E)=0$、短完全列 $0\to b'\to b\to b''\to0$ について長完全列 $0\to R^{0}G(b')\to R^{0}G(b)\to R^{0}G(b'')\to R^{1}G(b')\to\cdots$ がある。
+:::
+
+::: definition 入射分解による Ext {#ha:ext-injective-def keywords="Ext computed by an injective resolution of the second variable" index="入射分解による Ext|にゅうしゃぶんかいによるえくすと"}
+$\mathrm{Ext}_{\mathrm{inj}}^{n}(a,b)\defeq R^{n}\mathrm{Hom}(a,-)(b)=H^{n}\bigl(\mathrm{Hom}(a,I)\bigr)$（$b\to I$ は入射分解）とする。
+:::
+
+## 次元ずらし {#ha:sec-ei-shifting}
+
+::: lemma 入射的な第二変数で消える {#ha:ext-vanish-injective keywords="Ext^n(a,E)=0 for injective E and n>=1 (projective-resolution Ext)" index="入射加群と Ext の消滅|にゅうしゃかぐんとえくすとのしょうめつ"}
+$E$ が入射的なら、すべての $a$ と $n\ge1$ について $\mathrm{Ext}^{n}(a,E)=0$。
+:::
+
+::: proof
+$a$ の射影分解の添加複体 $\cdots\to P_{1}\to P_{0}\to a\to0$ は完全で、$\mathrm{Hom}(-,E)$ は**完全関手**なので、$0\to\mathrm{Hom}(a,E)\to\mathrm{Hom}(P_{0},E)\to\mathrm{Hom}(P_{1},E)\to\cdots$ は完全。よって余鎖複体 $\mathrm{Hom}(P,E)$ の $n\ge1$ 次のコホモロジーは $0$。
+:::
+
+::: theorem Ext の平衡性 {#ha:ext-balance keywords="Ext via projective resolutions of the first variable equals Ext via injective resolutions of the second" index="Ext の平衡性|えくすとのへいこうせい, 次元ずらし|じげんずらし"}
+すべての加群 $a,b$ と $n\ge0$ について $\mathrm{Ext}^{n}(a,b)\cong\mathrm{Ext}^{n}_{\mathrm{inj}}(a,b)$。
+:::
+
+::: proof
+$a$ を固定し、$n$ に関する帰納法で「すべての $b$ について同型」を示す。
+
+**$n=0$.** どちらも $\mathrm{Hom}(a,b)$ と自然同型（\ref{ha:ext-basic} の 2 と、記法の $R^{0}G\cong G$）。
+
+**次元ずらしの列.** $b$ について、\ref{ha:enough-injectives} で単射 $b\to E$（$E$ 入射的）をとり、短完全列 $0\to b\to E\to C\to0$ を作る。射影分解の Ext の長完全列（\ref{ha:ext-long-exact} の 1）と \ref{ha:ext-vanish-injective} から、
+$$
+\begin{gathered}
+\mathrm{Hom}(a,E)\to\mathrm{Hom}(a,C)\to\mathrm{Ext}^{1}(a,b)\to0,\\
+0\to\mathrm{Ext}^{n}(a,C)\xrightarrow{\ \delta\ }\mathrm{Ext}^{n+1}(a,b)\to0\quad(n\ge1)
+\end{gathered}
+$$
+が完全。入射分解の Ext についても、記法の長完全列と $\mathrm{Ext}^{n}_{\mathrm{inj}}(a,E)=0$（$n\ge1$）から、同じ形の完全列が成り立つ。
+
+**$n=1$.** 二つの完全列の左の射は、どちらも $0$ 次の同型（$\mathrm{Hom}$ と自然同型）を通して $\mathrm{Hom}(a,E)\to\mathrm{Hom}(a,C)$（$E\to C$ との合成）と一致する。よって
+$$
+\mathrm{Ext}^{1}(a,b)\cong\mathrm{Coker}\bigl(\mathrm{Hom}(a,E)\to\mathrm{Hom}(a,C)\bigr)\cong\mathrm{Ext}^{1}_{\mathrm{inj}}(a,b).
+$$
+
+**$n\to n+1$（$n\ge1$）.** 帰納法の仮定を加群 $C$ に使って
+$$
+\mathrm{Ext}^{n+1}(a,b)\cong\mathrm{Ext}^{n}(a,C)\cong\mathrm{Ext}^{n}_{\mathrm{inj}}(a,C)\cong\mathrm{Ext}^{n+1}_{\mathrm{inj}}(a,b).
+$$
+:::
+
+::: hypcheck
+- **十分な入射対象**：次元ずらしの短完全列と、$\mathrm{Ext}_{\mathrm{inj}}$ の定義そのものに使った。
+- **入射的な加群での消滅**：両方の Ext で、長完全列の中の $E$ の項を消すのに使った。射影分解の側では \ref{ha:ext-vanish-injective}、入射分解の側では $E$ 自身が入射分解であることによる。
+- **$0$ 次の同型の自然性**：$n=1$ で二つの完全列の左の射を同一視するのに使った。
+- 帰納法は「すべての $b$ について」の形で行い、$b$ の代わりに $C$ に仮定を使った。
+:::
+
+::: remark
+上の同型は各 $a,b$ ごとに構成した。それが $a$ と $b$ について自然にとれること（連結射の自然性を使う）は知られているが、ここでは確かめていない。
+:::
+
+::: corollary 入射性の Ext による特徴づけ {#ha:ext-injective-criterion keywords="b is injective iff Ext^1(a,b)=0 for all a" index="入射性と Ext|にゅうしゃせいとえくすと"}
+加群 $b$ について、$b$ が入射的であることと、すべての $a$ で $\mathrm{Ext}^{1}(a,b)=0$ であることは同値である。
+:::
+
+::: proof
+⇒ は \ref{ha:ext-vanish-injective}。⇐：単射 $j\colon b\to E$（$E$ 入射的）と $C\defeq E/j(b)$ をとる。第一変数の長完全列（\ref{ha:ext-long-exact} の 2）から $\mathrm{Hom}(E,b)\xrightarrow{j^{*}}\mathrm{Hom}(b,b)\to\mathrm{Ext}^{1}(C,b)=0$ は完全なので、$rj=1_{b}$ となる $r\colon E\to b$ がある。$b$ が入射的であること：単射 $m\colon x\to y$ と $f\colon x\to b$ について、$E$ の入射性から $gm=jf$ となる $g\colon y\to E$ があり、$(rg)m=rjf=f$。
+:::
+
+## 問題 {#ha:sec-ei-problems}
+
+::: problem {#ha:prob-ei-zn-z}
+入射分解 $0\to\mathbb{Z}\to\mathbb{Q}\to\mathbb{Q}/\mathbb{Z}\to0$ を使って $\mathrm{Ext}^{1}_{\mathbb{Z}}(\mathbb{Z}/n,\mathbb{Z})\cong\mathbb{Z}/n$ を計算し、\ref{ha:ext-z} と比べよ。
+:::
+
+::: solution
+$\mathbb{Q}$, $\mathbb{Q}/\mathbb{Z}$ は可除なので入射的（\ref{ha:injective-divisible}）。$\mathrm{Hom}(\mathbb{Z}/n,\mathbb{Q})=0$（$\mathbb{Q}$ に位数有限の非零元はない）、$\mathrm{Hom}(\mathbb{Z}/n,\mathbb{Q}/\mathbb{Z})\cong\{x:nx=0\}=\langle1/n\rangle\cong\mathbb{Z}/n$。余鎖複体 $0\to\mathrm{Hom}(\mathbb{Z}/n,\mathbb{Q})\to\mathrm{Hom}(\mathbb{Z}/n,\mathbb{Q}/\mathbb{Z})\to0$ の $1$ 次のコホモロジーは $\mathbb{Z}/n$。\ref{ha:ext-z} の $B/nB$（$B=\mathbb{Z}$）と一致する。
+:::
+
+::: problem {#ha:prob-ei-dimension}
+アーベル群 $b$ について、すべての $a$ と $n\ge2$ で $\mathrm{Ext}^{n}_{\mathbb{Z}}(a,b)=0$ であることを、入射分解の長さが $1$ でとれることから示せ。
+:::
+
+::: solution
+$b$ を入射的な（可除な）群 $E$ に埋め込む（\ref{ha:embed-divisible}）。可除群の商は可除（$x+b$ と $n\ge1$ について $ny=x$ となる $y\in E$ をとれば $n(y+b)=x+b$）なので、$E/b$ も入射的で、$0\to b\to E\to E/b\to0$ は長さ $1$ の入射分解。$n\ge2$ の項は $0$ なので $\mathrm{Ext}^{n}_{\mathrm{inj}}(a,b)=0$ で、\ref{ha:ext-balance} から $\mathrm{Ext}^{n}(a,b)=0$。
+:::
+
+::: supplement
+**前提を変えると.** 同じ次元ずらしの議論は、「$0$ 次が同じで、長完全列をもち、十分多くの対象で高次が消える」二つの関手の族を比べる一般的な方法（グロタンディークの**普遍 δ 関手**の一意性）の特別な場合であることが知られている。Tor についても、第一変数の射影分解で計算しても同じ群になることが知られている（\ref{ha:page-tensor-tor} の補足）。
+
+**似た定理.** \ref{ha:ext-injective-criterion} は、射影性の特徴づけ（\ref{ha:ext-projective}）の双対である。$\mathbb{Z}$ 上で $\mathrm{Ext}^{n}=0$（$n\ge2$）となること（\ref{ha:prob-ei-dimension}）は、$\mathbb{Z}$ の**大域次元**が $1$ であることの表れで、射影分解の側では自由アーベル群の部分群が自由であることから同じ結論が得られることが知られている。
+
+**高い視点から：どちらの端から測っても同じ.** $\mathrm{Ext}(a,b)$ は「$a$ から $b$ への射の、ずれを込めた集まり」で、$a$ を射影的な部品で分解して測っても、$b$ を入射的な部品で包んで測っても同じ値になる。次元ずらしは、$b$ を入射的な $E$ に埋めて「一段ずらした問題」$C=E/b$ に移す操作で、入射的な $E$ の上ではどちらの測り方でも高次の値が消えるため、二つの測り方は一段ずつ歩調を合わせる。比喩で言えば、橋の長さを右岸から測っても左岸から測っても同じになるのは、両岸の「基準点」（射影対象と入射対象）でずれが消えているからである。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

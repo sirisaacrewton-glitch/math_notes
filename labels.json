@@ -9661,12 +9661,33 @@
       "num": "3.1",
       "page": "18-category-theory/18G-homological-algebra/02-derived-functors/03-tor-ext.html"
     },
+    "ha:ext-balance": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "Ext の平衡性",
+      "num": "7.3",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/07-ext-injective.html"
+    },
     "ha:ext-basic": {
       "status": "defined",
       "type": "proposition",
       "title": "Ext の基本性質",
       "num": "3.2",
       "page": "18-category-theory/18G-homological-algebra/02-derived-functors/03-tor-ext.html"
+    },
+    "ha:ext-injective-criterion": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "入射性の Ext による特徴づけ",
+      "num": "7.5",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/07-ext-injective.html"
+    },
+    "ha:ext-injective-def": {
+      "status": "defined",
+      "type": "definition",
+      "title": "入射分解による Ext",
+      "num": "7.1",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/07-ext-injective.html"
     },
     "ha:ext-long-exact": {
       "status": "defined",
@@ -9681,6 +9702,13 @@
       "title": "Ext と射影性",
       "num": "3.5",
       "page": "18-category-theory/18G-homological-algebra/02-derived-functors/03-tor-ext.html"
+    },
+    "ha:ext-vanish-injective": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "入射的な第二変数で消える",
+      "num": "7.2",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/07-ext-injective.html"
     },
     "ha:ext-z": {
       "status": "defined",
@@ -9913,6 +9941,13 @@
       "num": "",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/03-diagram-lemmas.html"
     },
+    "ha:page-ext-injective": {
+      "status": "defined",
+      "type": "page",
+      "title": "入射分解による Ext",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/07-ext-injective.html"
+    },
     "ha:page-extensions": {
       "status": "defined",
       "type": "page",
@@ -10031,6 +10066,20 @@
       "title": "",
       "num": "3.9",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/03-diagram-lemmas.html"
+    },
+    "ha:prob-ei-dimension": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "7.7",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/07-ext-injective.html"
+    },
+    "ha:prob-ei-zn-z": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "7.6",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/07-ext-injective.html"
     },
     "ha:prob-ex-z-z2": {
       "status": "defined",
@@ -10339,6 +10388,27 @@
       "title": "蛇の補題",
       "num": "",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/03-diagram-lemmas.html"
+    },
+    "ha:sec-ei-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/07-ext-injective.html"
+    },
+    "ha:sec-ei-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/07-ext-injective.html"
+    },
+    "ha:sec-ei-shifting": {
+      "status": "defined",
+      "type": "section",
+      "title": "次元ずらし",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/07-ext-injective.html"
     },
     "ha:sec-ex-classification": {
       "status": "defined",

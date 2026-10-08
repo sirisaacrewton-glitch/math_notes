@@ -431,3 +431,4 @@
 | injective resolution / dimension shifting / balancing of Ext / global dimension | 入射分解 / 次元ずらし / Ext の平衡性 / 大域次元 | | 標準的。ha:page-ext-injective |
 | Morley rank / Morley degree / Cantor-Bendixson rank | モーリー階数 / モーリー次数 / カントール–ベンディクソン階数 | | 標準的。model:page-morley-rank |
 | hydra game / natural sum (Hessenberg sum) | ヒドラゲーム / 自然な和（ヘッセンベルク和） | | 標準的。pt:page-hydra |
+| independent family / Pospisil theorem / Parovichenko theorem | 独立な族 / ポスピシルの定理 / パロヴィチェンコの定理 | | 標準的。top:page-beta-n |

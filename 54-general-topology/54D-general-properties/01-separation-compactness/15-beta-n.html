@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>βℕ の濃度と点列 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54D-general-properties/01-separation-compactness/15-beta-n.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# βℕ の濃度と点列 {#top:page-beta-n keywords="Stone-Cech compactification of N, cardinality 2^c, independent family of subsets, disjoint closures in beta N, no nontrivial convergent sequences in beta N, separable compact space of size 2^c"}
+
+離散空間 $\N$ のストーン–チェックのコンパクト化 $\beta\N$（\ref{top:stone-cech-def}）は、可算集合 $\N$ を稠密に含むコンパクトハウスドルフ空間でありながら、濃度が $2^{\mathfrak{c}}$（$\mathfrak{c}=2^{\aleph_{0}}$）と非常に大きい（\ref{top:beta-n-cardinality}）。証明の鍵は、$\N$ の部分集合の**独立な族**（\ref{top:independent-family}）で、その濃度は $\mathfrak{c}$ にとれる。また、$\N$ の互いに交わらない部分集合は $\beta\N$ で交わらない閉包をもつ（\ref{top:beta-n-disjoint-closures}）ことから、$\N$ の相異なる点の列は $\beta\N$ で収束しない（\ref{top:beta-n-no-sequences}）。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。超フィルターによる $\beta\N$ の記述は使わず、普遍性（\ref{top:stone-cech}）だけを使う。
+
+## 記法と定義の確認 {#top:sec-bn-notation}
+
+::: notation
+- チコノフ空間 $X$ のストーン–チェックのコンパクト化 $(\beta X,e)$ は、立方体 $[0,1]^{\Phi}$（$\Phi$ は連続関数 $X\to[0,1]$ 全体）の中の $e[X]$ の閉包で、コンパクトハウスドルフ空間への連続写像はただ一通りに延長される（\ref{top:stone-cech}。超フィルター補題と DC を使う）。以下 $e$ で $\N$ を $\beta\N$ の部分集合とみなし、$A\subseteq\N$ の $\beta\N$ での閉包を $\overline{A}$ と書く。
+- $\mathfrak{c}\defeq2^{\aleph_{0}}$。基数の算術 $\mathfrak{c}^{\aleph_{0}}=\mathfrak{c}$、$\mathfrak{c}^{\mathfrak{c}}=2^{\mathfrak{c}}$ は \ref{set:kappa-le-two-lambda} による。
+- 集合 $D$ の部分集合 $A$ について $A^{1}\defeq A$, $A^{0}\defeq D\setminus A$ と書く。
+:::
+
+## 交わらない閉包 {#top:sec-bn-closures}
+
+::: lemma 交わらない部分集合の閉包 {#top:beta-n-disjoint-closures keywords="disjoint subsets of N have disjoint closures in beta N; closures of complementary sets partition beta N" index="βN の閉包|べーたえぬのへいほう"}
+$A\subseteq\N$ について、$\overline{A}$ と $\overline{\N\setminus A}$ は交わらず、$\beta\N=\overline{A}\cup\overline{\N\setminus A}$。特に、交わらない $A,B\subseteq\N$ は交わらない閉包をもつ。
+:::
+
+::: proof
+特性関数 $\chi_{A}\colon\N\to[0,1]$ は（$\N$ が離散なので）連続で、\ref{top:stone-cech} から連続な延長 $F\colon\beta\N\to[0,1]$ がある。$F$ は $A$ 上 $1$ なので $\overline{A}$ 上 $1$、$\N\setminus A$ 上 $0$ なので $\overline{\N\setminus A}$ 上 $0$。よって二つの閉包は交わらない。$\N$ は $\beta\N$ で稠密なので $\beta\N=\overline{\N}=\overline{A}\cup\overline{\N\setminus A}$。後半は $B\subseteq\N\setminus A$ から。
+:::
+
+::: proposition 自明でない収束列はない {#top:beta-n-no-sequences keywords="no sequence of distinct natural numbers converges in beta N; beta N is not sequentially compact" index="βN の点列|べーたえぬのてんれつ"}
+$\N$ の相異なる点の列 $(a_{k})$ は $\beta\N$ で収束しない。特に $\beta\N$ はコンパクトだが点列コンパクトでない。
+:::
+
+::: proof
+$(a_{k})$ が $p$ に収束するとする。$A\defeq\{a_{2k}\}$, $B\defeq\{a_{2k+1}\}$ は（点が相異なるので）交わらない。部分列 $(a_{2k})$, $(a_{2k+1})$ も $p$ に収束するので $p\in\overline{A}\cap\overline{B}$。これは \ref{top:beta-n-disjoint-closures} に反する。後半：$\N$ の相異なる点の列 $(k)$ の部分列はまた相異なる点の列なので、収束する部分列をもたない。
+:::
+
+## 独立な族 {#top:sec-bn-independent}
+
+::: definition 独立な族 {#top:independent-family keywords="independent family of subsets" index="独立な族|どくりつなぞく"}
+集合 $D$ の部分集合の族 $(A_{\xi})_{\xi\in I}$ が**独立**であるとは、相異なる $\xi_{1},\dots,\xi_{k}\in I$ と $\epsilon_{1},\dots,\epsilon_{k}\in\{0,1\}$ について、$A_{\xi_{1}}^{\epsilon_{1}}\cap\cdots\cap A_{\xi_{k}}^{\epsilon_{k}}\ne\emptyset$ となることをいう。
+:::
+
+::: lemma 濃度 𝔠 の独立な族 {#top:independent-family-exists keywords="a countable set carries an independent family of size continuum (Fichtenholz-Kantorovich, Hausdorff)" index="独立な族の存在|どくりつなぞくのそんざい"}
+可算集合 $D\defeq\{(F,\mathcal{F}):F\subseteq\N\text{ は有限},\ \mathcal{F}\subseteq\mathcal{P}(F)\}$ の上に、$X\subseteq\N$ で添字付けられた独立な族
+$$
+A_{X}\defeq\{(F,\mathcal{F})\in D:X\cap F\in\mathcal{F}\}\qquad(X\subseteq\N)
+$$
+がある。$X\ne Y$ なら $A_{X}\ne A_{Y}$ なので、この族の濃度は $\mathfrak{c}$。
+:::
+
+::: proof
+$D$ は可算（有限集合とその部分集合族の組の全体）。相異なる $X_{1},\dots,X_{k},Y_{1},\dots,Y_{l}\subseteq\N$ をとる（$\epsilon=1$ の添字を $X$、$\epsilon=0$ の添字を $Y$ とする）。各組 $(X_{i},Y_{j})$ について対称差の元を一つ選び、それら全体を $F$（有限）とすると、$X_{i}\cap F\ne Y_{j}\cap F$。$\mathcal{F}\defeq\{X_{1}\cap F,\dots,X_{k}\cap F\}$ とすると、$(F,\mathcal{F})$ は各 $A_{X_{i}}$ に属し、どの $A_{Y_{j}}$ にも属さない。$X\ne Y$ なら $k=l=1$ の場合から $A_{X}\setminus A_{Y}\ne\emptyset$。
+:::
+
+## βℕ の濃度 {#top:sec-bn-cardinality}
+
+::: theorem βℕ の濃度 {#top:beta-n-cardinality keywords="|beta N| = 2^c" index="βN の濃度|べーたえぬののうど"}
+（AC）$\lvert\beta\N\rvert=2^{\mathfrak{c}}$。
+:::
+
+::: proof
+**上界.** $\Phi$ は連続関数 $\N\to[0,1]$ 全体、すなわち $[0,1]^{\N}$ で、濃度 $\mathfrak{c}^{\aleph_{0}}=\mathfrak{c}$。$\beta\N\subseteq[0,1]^{\Phi}$ なので $\lvert\beta\N\rvert\le\mathfrak{c}^{\mathfrak{c}}=2^{\mathfrak{c}}$。
+
+**下界.** $D$ と $\N$ はともに可算無限の離散空間なので、全単射が同相 $\beta D\cong\beta\N$ に延長される（普遍性による一意性 \ref{top:stone-cech-unique}）。よって $\lvert\beta D\rvert\ge2^{\mathfrak{c}}$ を示せばよい。\ref{top:independent-family-exists} の族を $(A_{\xi})_{\xi<\mathfrak{c}}$ と並べる。各 $g\colon\mathfrak{c}\to\{0,1\}$ について、閉集合の族 $\{\overline{A_{\xi}^{g(\xi)}}:\xi<\mathfrak{c}\}$ は有限交叉性をもつ：有限個の閉包の共通部分は、対応する有限個の $A_{\xi}^{g(\xi)}$ の共通部分を含み、それは**独立性**から空でない。したがって、$\beta D$ の**コンパクト性**から共通部分の点 $p_{g}$ がある（選択公理で選ぶ）。$g\ne g'$ なら $g(\xi)\ne g'(\xi)$ となる $\xi$ があり、$p_{g}$, $p_{g'}$ は $\overline{A_{\xi}}$ と $\overline{D\setminus A_{\xi}}$ に別々に属するので、\ref{top:beta-n-disjoint-closures}（$D$ について）から $p_{g}\ne p_{g'}$。よって $g\mapsto p_{g}$ は単射で、$\lvert\beta D\rvert\ge2^{\mathfrak{c}}$。
+:::
+
+::: hypcheck
+- **普遍性（特性関数の延長）**：\ref{top:beta-n-disjoint-closures} の核心で、下界の証明で異なる $g$ に異なる点を対応させるのに使った。
+- **独立性**：有限交叉性を保証するのに使った。単に「互いに異なる部分集合」の族では、$A\cap B=\emptyset$ のような組で共通部分が空になりうる。
+- **コンパクト性**：有限交叉性をもつ閉集合族の共通部分が空でないことに使った（\ref{top:compact-equivalents}）。
+- **選択公理**：$\beta\N$ の構成（超フィルター補題・DC）、$p_{g}$ の選択、基数の算術に使った。
+:::
+
+## 問題 {#top:sec-bn-problems}
+
+::: problem {#top:prob-bn-separable}
+$\beta\N$ は可分なコンパクトハウスドルフ空間で、濃度が $2^{\mathfrak{c}}$ であることを確かめよ。可分なハウスドルフ空間 $X$ について $\lvert X\rvert\le2^{\mathfrak{c}}$ であることを示し、$\beta\N$ がこの上界を達成することを確かめよ。
+:::
+
+::: solution
+$\N$ は稠密で可算なので $\beta\N$ は可分。上界：可算稠密集合 $Q$ をとり、$x\in X$ に $\mathcal{F}_{x}\defeq\{U\cap Q:U\text{ は }x\text{ の開近傍}\}\subseteq\mathcal{P}(Q)$ を対応させる。$x\ne y$ ならハウスドルフ性から交わらない開近傍 $U\ni x$, $V\ni y$ がある。$U\cap Q\in\mathcal{F}_{y}$、すなわち $U\cap Q=W\cap Q$（$W$ は $y$ の開近傍）とすると、$W\cap V$ は空でない開集合なので $Q$ の点 $q$ を含み、$q\in W\cap Q=U\cap Q\subseteq U$ となって $U\cap V=\emptyset$ に反する。よって $\mathcal{F}_{x}\ne\mathcal{F}_{y}$。よって対応は単射で、$\lvert X\rvert\le\lvert\mathcal{P}(\mathcal{P}(Q))\rvert=2^{\mathfrak{c}}$。
+:::
+
+::: problem {#top:prob-bn-remainder}
+$\beta\N\setminus\N$ は空でなく、$\N$ の各点は $\beta\N$ の孤立点であることを確かめよ（後半は \ref{top:prob-beta-n-isolated}）。
+:::
+
+::: solution
+$\lvert\beta\N\rvert=2^{\mathfrak{c}}>\aleph_{0}=\lvert\N\rvert$ なので $\beta\N\setminus\N$ は空でない。
+:::
+
+::: supplement
+**前提を変えると.** $\beta\N$ は $\N$ 上の超フィルター全体の空間と同一視でき（\ref{top:page-stone-cech} の例 3）、本ページの $p_{g}$ は「$A_{\xi}^{g(\xi)}$ をすべて含む超フィルター」にあたる。超フィルターの言葉では、$\N$ 上の超フィルターがちょうど $2^{\mathfrak{c}}$ 個あることになる（ポスピシルの定理の特別な場合とされる）。$\beta\N\setminus\N$ の位相は集合論の仮定に強く依存し、CH のもとでの特徴づけ（パロヴィチェンコの定理）などが知られている（ここでは扱わない）。
+
+**似た定理.** 独立な族は、集合論で強制法や基数不変量の議論にも使われる（\ref{set:page-almost-disjoint} の概素族と対をなす概念）。$\{0,1\}^{\mathcal{P}(\N)}$ が点列コンパクトでないこと（\ref{top:compactness-variants-examples} の 2）も、$\beta\N$ と同様「コンパクトだが点列では捉えられない」例である。
+
+**高い視点から：可算な種から育つ巨大なコンパクト空間.** $\beta\N$ は、可算集合 $\N$ に「すべての有界な関数が極限をもつ」ように点を付け加えた空間で、付け加える点は $\N$ の部分集合の「どちら側に行くか」の選び方の分だけある。独立な族は、そうした選び方を $\mathfrak{c}$ 個の独立な二択として同時に実現する装置である。比喩で言えば、可算個の種から、$\mathfrak{c}$ 回の独立な分かれ道を経て $2^{\mathfrak{c}}$ 本の枝が伸び、枝の先の一つ一つが $\beta\N$ の点になる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

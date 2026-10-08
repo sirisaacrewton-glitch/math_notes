@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>入射加群 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18G-homological-algebra/02-derived-functors/04-injective-modules.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 入射加群 {#ha:page-injective-modules keywords="injective module, Baer's criterion, divisible abelian group, Q/Z, enough injectives, coinduced module, injective cogenerator, right derived functors"}
+
+射影対象（\ref{ha:projective}）の双対である**入射対象**は、「部分対象からの射がいつも全体に延長できる」対象である。加群では、延長を確かめるのに左イデアルからの射だけを見ればよいという**ベールの判定法**（\ref{ha:baer-criterion}）がある。これから、アーベル群では入射的であることと**可除**であることが同値になり（\ref{ha:injective-divisible}）、さらに任意の環 $R$ 上の加群の圏が**十分な入射対象をもつ**こと（\ref{ha:enough-injectives}）が従う。最後に、$\mathbb{Q}/\mathbb{Z}$ が $\mathbf{Ab}$ の入射的余生成対象であること（\ref{ha:prob-in-cogenerator}）を示す。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。
+
+## 記法と定義の確認 {#ha:sec-in-notation}
+
+::: notation
+- 入射対象は \ref{ha:projective} の双対（反対圏での射影対象）として定義した：$E$ が**入射的**とは、任意のモノ射 $m\colon a\to b$ と射 $f\colon a\to E$ に対し、$gm=f$ となる $g\colon b\to E$ があること。\ref{ha:projective-basic} の 1 の双対から、$E$ が入射的であることと $\mathrm{Hom}(-,E)$ が完全であることは同値。
+- $R$ は環、$R\text{-}\mathbf{Mod}$ は左 $R$ 加群の圏で、そのモノ射は単射な準同型である（核が $0$ であることと同値）。部分加群 $M\subseteq N$ の包含はモノ射。$R$ の**左イデアル**は $R$ の部分左加群。ツォルンの補題は \ref{set:zorn} のとおり。
+- $\mathbf{Ab}=\mathbb{Z}\text{-}\mathbf{Mod}$。アーベル群 $D$ が**可除**であるとは、すべての $d\in D$ と $n\ge1$ に $nd'=d$ となる $d'\in D$ があることをいう。
+:::
+
+## ベールの判定法 {#ha:sec-in-baer}
+
+::: theorem ベールの判定法 {#ha:baer-criterion keywords="Baer's criterion: E is injective iff every homomorphism from a left ideal extends to R" index="ベールの判定法|べーるのはんていほう"}
+左 $R$ 加群 $E$ が入射的であることと、$R$ のすべての左イデアル $I$ とすべての準同型 $f\colon I\to E$ が $R$ 全体に延長できること（$g|_{I}=f$ となる $g\colon R\to E$ がある）は同値である（⇐ で選択公理を使う）。
+:::
+
+::: proof
+**⇒** は入射性の定義を包含 $I\hookrightarrow R$ に適用したもの。
+
+**⇐.** $M\subseteq N$ を部分加群、$f\colon M\to E$ とし、$f$ を $N$ に延長する。（モノ射 $m\colon a\to b$ の一般の場合は、$a$ をその像 $m[a]\subseteq b$ と同一視すればよい。）
+
+**Step 1（極大な延長）.** 組 $(M',f')$（$M\subseteq M'\subseteq N$ は部分加群、$f'\colon M'\to E$ は $f$ の延長）全体に、「$M'\subseteq M''$ かつ $f''|_{M'}=f'$」で順序を入れる。$(M,f)$ を含むので空でなく、鎖 $(M'_{\lambda},f'_{\lambda})$ の上界は和集合 $\bigcup M'_{\lambda}$（鎖なので部分加群）と、各 $M'_{\lambda}$ 上で $f'_{\lambda}$ に一致する写像（鎖なので矛盾なく定まり、準同型）である。ツォルンの補題（\ref{set:zorn}）から極大元 $(M',f')$ がある。
+
+**Step 2（$M'=N$）.** $M'\ne N$ とし、$x\in N\setminus M'$ をとる。$I\defeq\{r\in R:rx\in M'\}$ は左イデアルで、$h\colon I\to E$, $h(r)\defeq f'(rx)$ は準同型。仮定から $g\colon R\to E$ で $g|_{I}=h$ となるものがある。$M''\defeq M'+Rx$ 上で $f''(m+rx)\defeq f'(m)+g(r)$ と定める。これは well-defined：$m+rx=m_{1}+r_{1}x$ なら $(r-r_{1})x=m_{1}-m\in M'$ なので $r-r_{1}\in I$、$g(r-r_{1})=h(r-r_{1})=f'((r-r_{1})x)=f'(m_{1}-m)$、すなわち $f'(m)+g(r)=f'(m_{1})+g(r_{1})$。$f''$ は準同型で $f'$ を延長し、$M'\subsetneq M''$ なので極大性に反する。
+:::
+
+::: hypcheck
+- **ツォルンの補題**：Step 1 で極大な延長の存在に使った。一歩ずつの延長（Step 2）を超限回繰り返す代わりである。
+- **左イデアルについての延長の仮定**：Step 2 で、$x$ を一つ付け加えたときの延長に使った。$x$ の「$M'$ に入る係数の集合」が左イデアル $I$ になることが要点である。
+:::
+
+## 可除群と十分な入射対象 {#ha:sec-in-divisible}
+
+::: proposition アーベル群の入射性 {#ha:injective-divisible keywords="an abelian group is injective iff divisible; Q and Q/Z are injective; quotients of divisible groups are divisible" index="可除群|かじょぐん, 入射的アーベル群|にゅうしゃてきあーべるぐん"}
+1. アーベル群 $D$ が入射的であることと、可除であることは同値である。
+2. 可除群の商群は可除である。$\mathbb{Q}$ と $\mathbb{Q}/\mathbb{Z}$ は可除、したがって入射的である。
+3. 可除群の族の直積・直和は可除である。
+:::
+
+::: proof
+**1.** $\mathbb{Z}$ の（左）イデアルは $n\mathbb{Z}$（$n\ge0$）である。準同型 $f\colon n\mathbb{Z}\to D$ は $d\defeq f(n)$ で決まり、$\mathbb{Z}$ への延長 $g$ は $g(1)=d'$ で $nd'=d$ となるものと対応する（$g(n)=ng(1)$）。$n=0$ では $f=0$ で延長は $0$。よって、ベールの判定法（\ref{ha:baer-criterion}）の条件は「すべての $d$ と $n\ge1$ に $nd'=d$ となる $d'$ がある」、すなわち可除性と同値。
+
+**2.** $\pi\colon D\to D/K$ と $\pi(d)$, $n\ge1$ について、$nd'=d$ なら $n\pi(d')=\pi(d)$。$\mathbb{Q}$ は $q=n(q/n)$ で可除、$\mathbb{Q}/\mathbb{Z}$ はその商。
+
+**3.** 成分ごとに $d'$ を選べばよい（直和では、$0$ の成分には $0$ を選ぶので有限個しか $0$ でない。直積で無限個の成分の選択には選択公理を使う）。
+:::
+
+::: lemma 可除群への埋め込み {#ha:embed-divisible keywords="every abelian group embeds in a divisible group" index="可除群への埋め込み|かじょぐんへのうめこみ"}
+任意のアーベル群 $M$ は可除群の部分群と同型である。
+:::
+
+::: proof
+$S\defeq M$（集合として）を基底とする自由アーベル群 $F\defeq\mathbb{Z}^{(S)}$ から $M$ への全射 $p$ があり、$M\cong F/K$（$K\defeq\ker p$）。$F\subseteq\mathbb{Q}^{(S)}$（成分ごとの包含）で、$\mathbb{Q}^{(S)}$ は可除（\ref{ha:injective-divisible} の 3）、その商 $\mathbb{Q}^{(S)}/K$ も可除（同 2）。$F/K\to\mathbb{Q}^{(S)}/K$, $x+K\mapsto x+K$ は単射（$x\in F$ が $K$ に属するかは、どちらで見ても同じ）なので、$M\cong F/K$ は可除群の部分群と同型。
+:::
+
+::: theorem 十分な入射対象 {#ha:enough-injectives keywords="R-Mod has enough injectives via the coinduced module Hom_Z(R,D)" index="十分な入射対象|じゅうぶんなにゅうしゃたいしょう, 余誘導加群|よゆうどうかぐん"}
+任意の環 $R$ について、$R\text{-}\mathbf{Mod}$ は十分な入射対象をもつ：各左 $R$ 加群 $M$ は入射的な左 $R$ 加群へ単射準同型で埋め込める。
+:::
+
+::: proof
+**Step 1（余誘導加群）.** 可除群 $D$ について、$\mathrm{Hom}_{\mathbb{Z}}(R,D)$ に $(r\varphi)(x)\defeq\varphi(xr)$ で左 $R$ 加群の構造を入れる（$(s(r\varphi))(x)=(r\varphi)(xs)=\varphi(xsr)=((sr)\varphi)(x)$）。
+
+**Step 2（随伴の同型）.** 左 $R$ 加群 $N$ について
+$$
+\Theta\colon\mathrm{Hom}_{R}\bigl(N,\mathrm{Hom}_{\mathbb{Z}}(R,D)\bigr)\to\mathrm{Hom}_{\mathbb{Z}}(N,D),\qquad\Theta(f)(n)\defeq f(n)(1)
+$$
+は同型で $N$ について自然である。逆写像は $\Theta^{-1}(g)(n)\defeq(x\mapsto g(xn))$：これは $R$ 線形（$(r\cdot\Theta^{-1}(g)(n))(x)=g(xrn)=\Theta^{-1}(g)(rn)(x)$）で、$\Theta\Theta^{-1}(g)(n)=g(1n)=g(n)$、$\Theta^{-1}\Theta(f)(n)(x)=f(xn)(1)=(xf(n))(1)=f(n)(x)$。自然性は $N$ の射との合成が両辺で同じ形になることから。
+
+**Step 3（入射性）.** $\mathrm{Hom}_{\mathbb{Z}}(-,D)$ は、$D$ が入射的（\ref{ha:injective-divisible} の 1）なので完全。Step 2 の自然同型から $\mathrm{Hom}_{R}(-,\mathrm{Hom}_{\mathbb{Z}}(R,D))$ も（$R$ 加群の完全列を $\mathbf{Ab}$ の完全列とみて）完全で、$\mathrm{Hom}_{\mathbb{Z}}(R,D)$ は入射的 $R$ 加群（記法の双対の言い換え）。
+
+**Step 4（埋め込み）.** $M$ の加法群を可除群 $D$ に単射 $i$ で埋め込む（\ref{ha:embed-divisible}）。$\eta\defeq\Theta^{-1}(i)\colon M\to\mathrm{Hom}_{\mathbb{Z}}(R,D)$、$\eta(m)(x)=i(xm)$ は $R$ 線形で、$\eta(m)=0$ なら $i(m)=\eta(m)(1)=0$ から $m=0$。
+:::
+
+::: hypcheck
+- **可除群の入射性**：Step 3 で、$\mathbb{Z}$ 上の入射性を $R$ 上の入射性に移すのに使った。
+- **随伴（$\Theta$）**：Step 3 の移し替えと Step 4 の埋め込みの両方に使った。忘却関手 $R\text{-}\mathbf{Mod}\to\mathbf{Ab}$ の右随伴が $\mathrm{Hom}_{\mathbb{Z}}(R,-)$ であることを具体的に確かめたことになる。右随伴は入射対象を入射対象に写す（左随伴が完全なとき）、という一般的な事実の例である。
+- **選択公理**：可除群が入射的であること（ベールの判定法の証明のツォルンの補題）を通じて使った。可除群への埋め込み（\ref{ha:embed-divisible}）自体は選択公理を使わない。
+:::
+
+## 問題 {#ha:sec-in-problems}
+
+::: problem {#ha:prob-in-z-not-injective}
+$\mathbb{Z}$ は入射的アーベル群でないことを示せ。また、有限アーベル群で入射的なものは $0$ だけであることを示せ。
+:::
+
+::: solution
+$\mathbb{Z}$ は可除でない（$2d'=1$ となる整数 $d'$ はない）ので、\ref{ha:injective-divisible} の 1 より入射的でない。有限アーベル群 $D\ne0$ が可除なら、$n\defeq\lvert D\rvert$ について $nD=0$（ラグランジュの定理）なので、$d\ne0$ に $nd'=d$ となる $d'$ はない。よって可除でも入射的でもない。
+:::
+
+::: problem {#ha:prob-in-cogenerator}
+$\mathbb{Q}/\mathbb{Z}$ は $\mathbf{Ab}$ の余生成対象（\ref{cat:generator}）であることを示せ。
+:::
+
+::: solution
+$h\ne h'\colon A\to B$ なら、$a\defeq(h-h')(x)\ne0$ となる $x$ がある。$a$ の生成する巡回群 $\langle a\rangle$ から $\mathbb{Q}/\mathbb{Z}$ への準同型 $\varphi$ で $\varphi(a)\ne0$ となるものを作る：$a$ の位数が有限 $n\ge2$ なら $\varphi(ka)\defeq k/n+\mathbb{Z}$、位数が無限なら $\varphi(ka)\defeq k/2+\mathbb{Z}$（どちらも well-defined な準同型で $\varphi(a)\ne0$）。$\mathbb{Q}/\mathbb{Z}$ は入射的（\ref{ha:injective-divisible} の 2）なので、$\varphi$ は $g\colon B\to\mathbb{Q}/\mathbb{Z}$ に延長でき、$gh(x)-gh'(x)=g(a)=\varphi(a)\ne0$。
+:::
+
+::: supplement
+**前提を変えると.** 十分な入射対象があれば、左完全な加法関手 $G$ の**右導来関手** $R^{n}G(b)\defeq H^{n}(G\,I)$（$b\to I$ は入射分解）が、\ref{ha:page-derived-functors} の双対として定義され、長完全列をもつ。$G=\mathrm{Hom}_{R}(a,-)$ について $R^{n}G(b)$ は射影分解で定義した $\mathrm{Ext}^{n}_{R}(a,b)$（\ref{ha:ext}）と標準的に同型であることが知られている（Ext の「平衡性」。ここでは確かめていない）。また、ネーター環の上では入射加群の直和は入射的であり、その逆も成り立つこと（バス–パパキリアコプーロスの定理）が知られている。
+
+**似た定理.** \ref{ha:prob-in-cogenerator} と特殊随伴関手定理（\ref{cat:saft}）を組み合わせると、$\mathbf{Ab}$ 上の極限を保存する関手の表現可能性などが得られる。$\mathbb{Q}/\mathbb{Z}$ への射全体は、有限アーベル群についてはポントリャーギン双対（$A\mapsto\mathrm{Hom}(A,\mathbb{Q}/\mathbb{Z})$）を与えることが知られている。
+
+**高い視点から：入射は「穴のない受け皿」.** 入射対象は、部分からの射がどんな全体にも延長できる受け皿で、可除群では「どんな元も $n$ 等分できる」ことがその穴のなさにあたる。射影対象が「どこからでも持ち上げられる自由な部品」だったのと対をなす。比喩で言えば、射影対象は形を選ばずはめ込める鍵、入射対象はどんな鍵穴の形も受け入れる粘土で、ホモロジー代数はこの二種類の「よい対象」を使って、一般の対象を左右から近似する。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

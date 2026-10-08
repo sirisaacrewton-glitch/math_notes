@@ -250,6 +250,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | HD-01 | 18G/02-derived-functors/01-projective-resolutions | 射影対象・射影分解・比較定理（資料なし。新フォルダ 18G/02-derived-functors, id ha-derived） | — | — | 完了 |
 | HD-02 | 18G/02-derived-functors/02-derived-functors | 左導来関手、馬蹄補題と長完全列、Tor と Ext | — | — | 完了 |
 | HD-03 | 18G/02-derived-functors/03-tor-ext | Tor と Ext、Z 上の計算、群のコホモロジーとの関係 | — | — | 完了 |
+| HD-04 | 18G/02-derived-functors/04-injective-modules | 入射加群・ベールの判定法・可除群・十分な入射対象 | — | — | 完了 |
 
 特別な極限とカン拡張（18A/04-kan-extensions, id cat-kan。2026-10-08 自律判断）
 | ID | ファイル | 題 | CWM | 本文の行 | 状態 |
@@ -314,6 +315,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 ホモロジー代数 HD-04（18G/02/04-injective-modules, ha:page-injective-modules：ベールの判定法（ツォルンの補題）、アーベル群では入射 ⇔ 可除、Q・Q/Z、可除群への埋め込み、余誘導加群 Hom_Z(R,D) と随伴による R-Mod の十分な入射対象、Z は入射的でない・Q/Z は余生成対象の問題）。資料なし。
 - 2026-10-08 計算可能性 AC-08（03D/03/08-friedberg-muchnik, comp:page-friedberg-muchnik：比較不能性の要求、クリーネ–ポストの定理（∅' による有限延長法）、フリードバーグ–ムチニクの定理（注意を要する条件・証人・制限・損傷を明示した有限損傷の優先論法、各要求が有限回しか作用しないことを優先度の帰納法で）、非決定可能な認識可能集合の構成と制限の必要性の問題）。新井 §6.4。02-turing-reducibility の補足から参照。
 - 2026-10-08 計算可能性 AC-07（03D/03/07-post-theorem, comp:page-post-theorem：集合の神託についての使用の原理（有限表 D の形）、Σ_n・Π_n の有界量化子での閉性、ポストの定理（Σ_{n+1} ⇔ ∅^(n) で認識可能、∅^(n+1) は Σ_{n+1} 完全、Δ_{n+1} ⇔ ≤_T ∅^(n)）、∅^(n) は Σ_n だが Π_n でない、FIN と TOT の問題）。新井 §6.3。02-turing-reducibility の補足から参照。
 - 2026-10-08 CM-05（余モナドとホモロジー）の hypcheck から比較定理と Ext のページへ参照を追加。

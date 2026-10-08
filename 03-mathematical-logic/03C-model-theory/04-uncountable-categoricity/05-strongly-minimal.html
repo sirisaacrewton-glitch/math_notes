@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>強極小集合 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/05-strongly-minimal.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 強極小集合 {#model:page-strongly-minimal keywords="algebraic element, algebraic closure, minimal formula, strongly minimal formula, strongly minimal set, uniform finiteness, elimination of the infinity quantifier, no Vaughtian pairs implies minimal formulas are strongly minimal"}
+
+モーリーの定理の証明の後半（ボールドウィン–ラクランの定理）では、モデルを「一つの定義可能集合の大きさ」で測る。その定義可能集合として使うのが**強極小集合**（\ref{model:minimal-formula}）：定義可能な部分集合がすべて有限か補有限であり、その性質がどの初等拡大でも保たれる無限集合である。代数的閉体全体はその典型である。本ページでは、**代数的閉包**（\ref{model:algebraic-closure}）を定義し、強極小性が「有限か補有限かの判定に一様な上界があること」と同値であること（\ref{model:strongly-minimal-uniform}）、$\omega$ 安定な理論のモデルには極小な論理式があること（\ref{model:minimal-exists}）、ヴォート対がなければ極小な論理式は強極小であること（\ref{model:minimal-strongly-minimal}）を示す。
+
+> 資料：新井敏康『数学基礎論』§5.6.3（定義 5.6.24 から、強極小な論理式の存在まで）を参考にした（本文は写していない）。代数的閉包の基本性質（同書では演習）と、強極小性の一様性による特徴づけ、ヴォート対がないときの $\exists^{\infty}$ の消去（\ref{model:eliminate-infinity}）は、証明を補った。
+
+## 記法と定義の確認 {#model:sec-sm-notation}
+
+::: notation
+- $T$ は可算言語の完全な理論で無限モデルをもつ。$\varphi(\mathcal{M},\vec{a})\defeq\{b:\mathcal{M}\models\varphi(b,\vec{a})\}$。$\exists^{\le n}x\,\psi$, $\exists^{>n}x\,\psi$ は「$\psi$ を満たす $x$ が $n$ 個以下／$n$ 個より多い」を表す一階の論理式（$n$ は具体的な自然数）。
+- 補有限（$D$ の中で）：$D\setminus Y$ が有限。
+- ヴォート対、組 $(\mathcal{N},\mathcal{M})$ を $\mathcal{L}\cup\{U\}$ 構造とみること、相対化、組の初等性は \ref{model:vaught-pair}, \ref{model:pair-elementary} のとおり。二分木の補題は \ref{model:no-binary-tree}。
+:::
+
+## 代数的閉包 {#model:sec-sm-acl}
+
+::: definition 代数的な元・代数的閉包 {#model:algebraic-closure keywords="algebraic over a set, algebraic closure acl" index="代数的（集合上）|だいすうてきしゅうごうじょう, 代数的閉包（モデル理論）|だいすうてきへいほうもでるりろん"}
+$\mathcal{M}\models T$, $A\subseteq M$ とする。$b\in M$ が **$A$ 上代数的**であるとは、$\mathcal{L}_{A}$ 論理式 $\varphi(x)$ で $b\in\varphi(\mathcal{M})$ かつ $\varphi(\mathcal{M})$ が有限のものがあることをいう。$A$ 上代数的な元の全体を $\mathrm{acl}(A)$（$A$ の**代数的閉包**）と書く。
+:::
+
+::: proposition 代数的閉包の性質 {#model:acl-properties keywords="properties of algebraic closure: extensive, monotone, idempotent, finite character, invariant under elementary extension" index="代数的閉包の性質|だいすうてきへいほうのせいしつ"}
+$\mathcal{M}\models T$, $A,B\subseteq M$ について次が成り立つ。
+1. $A\subseteq\mathrm{acl}(A)$。$A\subseteq B$ なら $\mathrm{acl}(A)\subseteq\mathrm{acl}(B)$。
+2. $\mathrm{acl}(\mathrm{acl}(A))=\mathrm{acl}(A)$。
+3. $b\in\mathrm{acl}(A)$ なら、有限な $A_{0}\subseteq A$ で $b\in\mathrm{acl}(A_{0})$ となるものがある。
+4. $\mathcal{M}\preccurlyeq\mathcal{N}$ なら、$\mathcal{N}$ で計算した $\mathrm{acl}(A)$ は $\mathcal{M}$ で計算したものと等しい。
+5. $b\in\mathrm{acl}(A)$ なら $\mathrm{tp}(b/A)$ は孤立している。
+:::
+
+::: proof
+**1.** $a\in A$ は $x=a$ の唯一の解。単調性は $\mathcal{L}_{A}\subseteq\mathcal{L}_{B}$ から。
+
+**2.** $\supseteq$ は 1。$b\in\mathrm{acl}(\mathrm{acl}(A))$ とし、$b\in\varphi(\mathcal{M},\vec{c})$, $\lvert\varphi(\mathcal{M},\vec{c})\rvert=k$, $\vec{c}\in\mathrm{acl}(A)$ とする。各 $c_{i}$ について $\mathcal{L}_{A}$ 論理式 $\chi_{i}$ で $c_{i}\in\chi_{i}(\mathcal{M})$, $\lvert\chi_{i}(\mathcal{M})\rvert=m_{i}$ となるものをとる。$\mathcal{L}_{A}$ 論理式
+$$
+\theta(x)\defeq\exists\vec{y}\,\Bigl(\bigwedge_{i}\chi_{i}(y_{i})\wedge\varphi(x,\vec{y})\wedge\exists^{\le k}x'\,\varphi(x',\vec{y})\Bigr)
+$$
+は $b$ を満たし（$\vec{y}=\vec{c}$）、$\theta(\mathcal{M})$ は $\vec{y}\in\prod_{i}\chi_{i}(\mathcal{M})$ ごとの $k$ 個以下の集合の和なので、$k\prod_{i}m_{i}$ 個以下。よって $b\in\mathrm{acl}(A)$。
+
+**3.** 証拠の論理式に現れる $A$ の元は有限個。
+
+**4.** $\varphi(\mathcal{M},\vec{a})$（$\vec{a}\in A$）がちょうど $k$ 個の元 $b_{1},\dots,b_{k}$ からなるなら、文 $\forall x\,(\varphi(x,\vec{a})\leftrightarrow\bigvee_{j}x=b_{j})$ は $\mathcal{M}$ で真なので $\mathcal{N}$ でも真で、$\varphi(\mathcal{N},\vec{a})=\varphi(\mathcal{M},\vec{a})$。逆に $\varphi(\mathcal{N},\vec{a})$ が有限なら、同様に $\exists^{\le k}$ の文が $\mathcal{M}$ に移る。よって有限な定義可能集合とその元は両者で同じ。
+
+**5.** $b\in\varphi(\mathcal{M})$, $\varphi(\mathcal{M})=\{b,c_{1},\dots,c_{k}\}$（$c_{i}\ne b$）とする。$c_{i}$ のうち $\mathrm{tp}(c_{i}/A)\neq\mathrm{tp}(b/A)$ となるものについて、$\theta_{i}\in\mathrm{tp}(b/A)\setminus\mathrm{tp}(c_{i}/A)$ をとる。$\theta\defeq\varphi\wedge\bigwedge_{i}\theta_{i}$ を満たす元は、$b$ と、$b$ と同じ型をもつ $c_{i}$ だけなので、$\theta$ を満たす元はすべて $\mathrm{tp}(b/A)$ を実現する。$\mathcal{M}_{A}$ の完全な理論で、$\psi\in\mathrm{tp}(b/A)$ なら $\theta(\mathcal{M})\subseteq\psi(\mathcal{M})$、すなわち $\mathcal{M}\models\forall x\,(\theta\to\psi)$。よって $\theta$ が $\mathrm{tp}(b/A)$ を孤立させる。
+:::
+
+::: example
+代数的閉体 $K$ と $A\subseteq K$ について、$\mathrm{acl}(A)$ は $A$ で生成される部分体の、$K$ の中での（体論の意味の）代数閉包である：代数的な元は非零多項式の根なので有限集合 $f(x)=0$ に属し、逆に $\mathcal{L}_{A}$ 論理式が定義する有限集合は（量化子消去から）非零多項式の根の集合に含まれる。
+:::
+
+## 極小と強極小 {#model:sec-sm-minimal}
+
+::: definition 極小・強極小 {#model:minimal-formula keywords="minimal formula, strongly minimal formula, strongly minimal set, strongly minimal theory" index="極小な論理式|きょくしょうなろんりしき, 強極小|きょうきょくしょう, 強極小集合|きょうきょくしょうしゅうごう"}
+$\mathcal{M}\models T$, $A\subseteq M$, $\varphi(x)$ を $\mathcal{L}_{A}$ 論理式とする。
+1. $\varphi$ が **$\mathcal{M}$ で極小**であるとは、$\varphi(\mathcal{M})$ が無限で、任意の $\mathcal{L}_{M}$ 論理式 $\psi(x)$ について $\varphi(\mathcal{M})\cap\psi(\mathcal{M})$ が有限か $\varphi(\mathcal{M})$ の中で補有限であることをいう。
+2. $\varphi$ が**強極小**であるとは、$\mathcal{M}$ のすべての初等拡大 $\mathcal{N}$ で $\varphi$ が $\mathcal{N}$ で極小であることをいう。$\varphi(\mathcal{M})$ を**強極小集合**という。$x=x$ が強極小のとき、$T$ を**強極小な理論**という。
+:::
+
+::: theorem 強極小性の一様性 {#model:strongly-minimal-uniform keywords="strong minimality is equivalent to a uniform finiteness bound" index="強極小性の一様性|きょうきょくしょうせいのいちようせい"}
+$\varphi(x)$ を $\mathcal{L}_{A}$ 論理式（$A\subseteq M$）で $\varphi(\mathcal{M})$ が無限なものとする。次は同値である。
+1. $\varphi$ は強極小。
+2. 任意の $\mathcal{L}$ 論理式 $\psi(x,\vec{y})$ について自然数 $n_{\psi}$ があり、すべての $\vec{b}\in M$ で $\lvert\varphi(\mathcal{M})\cap\psi(\mathcal{M},\vec{b})\rvert\le n_{\psi}$ または $\lvert\varphi(\mathcal{M})\setminus\psi(\mathcal{M},\vec{b})\rvert\le n_{\psi}$。
+:::
+
+::: proof
+**2 ⇒ 1.** $\mathcal{L}_{A}$ の文 $\forall\vec{y}\,\bigl(\exists^{\le n_{\psi}}x\,(\varphi\wedge\psi)\vee\exists^{\le n_{\psi}}x\,(\varphi\wedge\neg\psi)\bigr)$ と「$\varphi$ を満たす元が $k$ 個以上ある」（各 $k$）は $\mathcal{M}$ で真なので、初等拡大 $\mathcal{N}$ でも真である。$\mathcal{L}_{N}$ 論理式は $\psi(x,\vec{b})$（$\vec{b}\in N$）の形なので、$\varphi$ は $\mathcal{N}$ で極小。
+
+**1 ⇒ 2.** ある $\psi$ について $n_{\psi}$ がないとする。各 $n$ について、$\mathcal{L}_{A}$ の文 $\sigma_{n}\defeq\exists\vec{y}\,\bigl(\exists^{>n}x\,(\varphi\wedge\psi)\wedge\exists^{>n}x\,(\varphi\wedge\neg\psi)\bigr)$ が $\mathcal{M}$ で真である。新しい定数 $\vec{d}$ について $\mathrm{Eldiag}(\mathcal{M})\cup\{\exists^{>n}x\,(\varphi\wedge\psi(x,\vec{d}))\wedge\exists^{>n}x\,(\varphi\wedge\neg\psi(x,\vec{d})):n\in\N\}$ の有限部分は（最大の $n$ の $\sigma_{n}$ の証拠で $\vec{d}$ を解釈すれば）$\mathcal{M}$ の展開で満たされる。コンパクト性定理から、そのモデル、すなわち $\mathcal{M}$ の初等拡大 $\mathcal{N}$ と $\vec{d}\in N$ で、$\varphi\wedge\psi(x,\vec{d})$, $\varphi\wedge\neg\psi(x,\vec{d})$ がともに無限のものがある。$\varphi$ は $\mathcal{N}$ で極小でなく、1 に反する。
+:::
+
+::: example
+1. 代数的閉体の理論 $\mathrm{ACF}_{p}$ は強極小：量化子消去から、$\mathcal{L}_{K}$ 論理式が定義する $K$ の部分集合は有限個の多項式の根の論理結合で、有限か補有限。これは $\mathrm{ACF}_{p}$ のどのモデル（初等拡大を含む）でも成り立つ。
+2. 等号だけの無限集合の理論は強極小（量化子消去を認めれば、定義可能集合はパラメータの有限集合の論理結合）。
+3. $\mathrm{DLO}$ では $x=x$ は極小でない（$x<a$ と $x>a$ はともに無限）。
+4. \ref{model:prob-st-equivalence} の $T_{E}$ では、同値類 $E(x,a)$ はモデル $\mathcal{M}$ で極小だが（量化子消去を認めれば）、$x=x$ は極小でない（$E(x,a)$ とその補集合がともに無限）。
+:::
+
+## 極小な論理式の存在と強極小性 {#model:sec-sm-existence}
+
+::: theorem 極小な論理式の存在 {#model:minimal-exists keywords="omega-stable theories: every model has a minimal formula" index="極小な論理式の存在|きょくしょうなろんりしきのそんざい"}
+（AC）$T$ が $\omega$ 安定なら、任意の $\mathcal{M}\models T$ に、$\mathcal{M}$ で極小な $\mathcal{L}_{M}$ 論理式がある。
+:::
+
+::: proof
+$\Phi\defeq\{\varphi:\varphi\text{ は }\mathcal{L}_{M}\text{ 論理式で }\varphi(\mathcal{M})\text{ は無限}\}$ とする。$x=x\in\Phi$ で、$\Phi$ の論理式は両立する。どの $\varphi\in\Phi$ も $\varphi\wedge\psi,\varphi\wedge\neg\psi\in\Phi$ となる $\psi$ をもつなら、\ref{model:no-binary-tree}（$A=M$）に反する。そうでない $\varphi\in\Phi$ は、各 $\psi$ について $\varphi\wedge\psi$ と $\varphi\wedge\neg\psi$ の一方が有限、すなわち極小である。
+:::
+
+::: lemma ∃^∞ の消去 {#model:eliminate-infinity keywords="no Vaughtian pairs implies elimination of the infinity quantifier (uniform finiteness)" index="∃∞ の消去|むげんりょうかしのしょうきょ, 一様有限性|いちようゆうげんせい"}
+（AC）$T$ がヴォート対をもたないなら、任意の $\mathcal{L}$ 論理式 $\psi(x,\vec{y})$ について自然数 $n$ があり、$T$ の任意のモデル $\mathcal{N}$ と $\vec{b}\in N$ について、$\lvert\psi(\mathcal{N},\vec{b})\rvert>n$ なら $\psi(\mathcal{N},\vec{b})$ は無限である。
+:::
+
+::: proof
+そのような $n$ がないとする。新しい定数 $\vec{c}$ を加えた言語 $\mathcal{L}^{\ast}_{\vec{c}}=\mathcal{L}\cup\{U\}\cup\{\vec{c}\}$ の理論 $\Sigma$ を、次の文の全体とする：$T$；「$U$ は部分構造の台で、$\mathcal{L}$ について初等部分構造」を表す文（\ref{model:pair-elementary} の証明の最初の二項目）；$\exists x\,\neg U(x)$；$U(\vec{c})$；$\forall x\,(\psi(x,\vec{c})\to U(x))$；各 $k$ について $\exists^{>k}x\,\psi(x,\vec{c})$。
+
+$\Sigma$ の有限部分は充足可能である：それが含む $\exists^{>k}$ の最大の $k$ をとる。仮定から、あるモデル $\mathcal{M}$ と $\vec{b}\in M$ で $k<\lvert\psi(\mathcal{M},\vec{b})\rvert<\infty$ となるものがある。上昇レーヴェンハイム–スコーレムの定理で真の初等拡大 $\mathcal{N}\succ\mathcal{M}$ をとると、\ref{model:acl-properties} の 4 の証明と同じく、有限な定義可能集合は増えないので $\psi(\mathcal{N},\vec{b})=\psi(\mathcal{M},\vec{b})\subseteq M$。組 $(\mathcal{N},\mathcal{M})$ で $\vec{c}\defeq\vec{b}$ とすれば、有限部分が満たされる。
+
+コンパクト性定理から $\Sigma$ のモデル $(N',U',\vec{c}')$ がある。$\mathcal{U}'\preccurlyeq\mathcal{N}'$, $U'\neq N'$ で、$\psi(\mathcal{N}',\vec{c}')\subseteq U'$ は無限、したがって $\psi(\mathcal{U}',\vec{c}')=\psi(\mathcal{N}',\vec{c}')$ も無限で、$(\mathcal{N}',\mathcal{U}')$ はヴォート対。矛盾。
+:::
+
+::: corollary ヴォート対がなければ極小は強極小 {#model:minimal-strongly-minimal keywords="without Vaughtian pairs every minimal formula is strongly minimal" index="極小と強極小|きょくしょうときょうきょくしょう"}
+（AC）$T$ がヴォート対をもたず、$\varphi(x)$（$\mathcal{L}_{A}$ 論理式、$A\subseteq M$）が $\mathcal{M}$ で極小なら、$\varphi$ は強極小である。
+:::
+
+::: proof
+$\varphi=\varphi_{0}(x,\vec{a})$（$\varphi_{0}$ は $\mathcal{L}$ 論理式）と書く。$\mathcal{L}$ 論理式 $\psi(x,\vec{y})$ について、\ref{model:eliminate-infinity} を $\varphi_{0}(x,\vec{z})\wedge\psi(x,\vec{y})$ と $\varphi_{0}(x,\vec{z})\wedge\neg\psi(x,\vec{y})$ に使って $n_{1},n_{2}$ をとり、$n\defeq\max(n_{1},n_{2})$ とする。$\vec{b}\in M$ について、$\varphi\wedge\psi(x,\vec{b})$ と $\varphi\wedge\neg\psi(x,\vec{b})$ の一方は極小性から有限で、それは $n$ 個以下（$n$ 個より多ければ無限になる）。\ref{model:strongly-minimal-uniform} の 2 が成り立つので、$\varphi$ は強極小。
+:::
+
+::: hypcheck
+- **ヴォート対の非存在**：\ref{model:eliminate-infinity} で、有限な定義可能集合の大きさに一様な上界を与えるのに使った。
+- **極小性**：$\mathcal{M}$ の各パラメータで一方が有限であることに使った。一様な上界と合わせて、強極小性の特徴づけ（\ref{model:strongly-minimal-uniform}）に入る。
+:::
+
+## 問題 {#model:sec-sm-problems}
+
+::: problem {#model:prob-sm-equivalence-class}
+\ref{model:prob-st-equivalence} の $T_{E}$ のモデル $\mathcal{M}$ と $a\in M$ について、$E(x,a)$ は強極小だが、$T_{E}$ は強極小な理論ではないことを示せ（$T_{E}$ の量化子消去は認めてよい）。これは \ref{model:minimal-strongly-minimal} の仮定（ヴォート対がないこと）が、結論にとって必要ではないことの例でもある。
+:::
+
+::: solution
+量化子消去から、$\mathcal{L}_{N}$ 論理式（$\mathcal{N}\succcurlyeq\mathcal{M}$）が $a$ の同値類 $E(\mathcal{N},a)$ の中に定義する集合は、パラメータとの等号と、パラメータとの $E$ 関係の論理結合で、同値類の中ではパラメータの有限集合かその補集合になる。$E(\mathcal{N},a)$ は無限なので、$E(x,a)$ は $\mathcal{N}$ で極小で、したがって強極小。一方 $x=x$ は $E(x,a)$ と $\neg E(x,a)$ に無限に分かれるので極小でない。$T_{E}$ はヴォート対をもつ（\ref{model:prob-vp-equivalence}）が、強極小な論理式 $E(x,a)$ をもつ。
+:::
+
+::: supplement
+**前提を変えると.** 強極小の代わりに「$\mathcal{M}$ で極小」だけでは、初等拡大で極小性が壊れうる。たとえば同値関係 $E$ だけの言語で、各 $n\ge1$ について大きさ $n$ の同値類をちょうど一つもつ構造 $\mathcal{M}$ を考える。$\mathcal{M}$ では、パラメータ付きの論理式が定義する集合は有限か補有限であることが知られており（同値類の大きさの「偶奇」などは一階の論理式で書けないため。ここでは認める）、$x=x$ は $\mathcal{M}$ で極小である。しかし $E(x,y)$ の解の個数は有限だが上界がないので、コンパクト性から、無限の同値類をもつ初等拡大 $\mathcal{N}$ があり、その同値類 $E(x,c)$ は $\mathcal{N}$ で無限かつ補無限になる。$\exists^{\infty}$ の消去が破れている典型例である。
+
+**似た定理.** 代数的閉包は、体論の代数閉包の一般化である。$\mathrm{acl}$ は一般に「交換法則」を満たさないが、強極小集合の中では満たし、線形代数の一次独立・次元と同じ理論が展開できる（次ページ）。o 極小構造（順序構造で定義可能な $1$ 変数集合が区間の有限和になるもの）でも同様の理論があることが知られている。
+
+**高い視点から：強極小集合は「一次元の素材」.** 強極小集合の定義可能な部分集合は「有限個の点を除いて全部か、有限個の点だけ」で、これは代数曲線（一次元の多様体）の部分集合がザリスキー位相で持つ性質と同じである。比喩で言えば、強極小集合は「それ以上分けられない一次元の素材」で、その中の点の「自由度」（超越次数のような次元）が、モデル全体の形を決める。ボールドウィン–ラクランの定理は、範疇的な理論のモデルが、この一次元の素材の次元だけで決まることを示す。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

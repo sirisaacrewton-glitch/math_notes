@@ -12482,12 +12482,26 @@
       "num": "4.6",
       "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/04-acf.html"
     },
+    "model:acl-properties": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "代数的閉包の性質",
+      "num": "5.2",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/05-strongly-minimal.html"
+    },
     "model:ae-extension": {
       "status": "defined",
       "type": "lemma",
       "title": "全称存在帰結のモデルの拡大",
       "num": "2.11",
       "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/02-elementary-chains.html"
+    },
+    "model:algebraic-closure": {
+      "status": "defined",
+      "type": "definition",
+      "title": "代数的な元・代数的閉包",
+      "num": "5.1",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/05-strongly-minimal.html"
     },
     "model:atomic-diagram": {
       "status": "defined",
@@ -12734,6 +12748,13 @@
       "num": "1.4",
       "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/01-elementary-substructures.html"
     },
+    "model:eliminate-infinity": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "∃^∞ の消去",
+      "num": "5.6",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/05-strongly-minimal.html"
+    },
     "model:em-few-types": {
       "status": "defined",
       "type": "theorem",
@@ -12895,6 +12916,27 @@
       "num": "4.7",
       "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/04-indiscernibles.html"
     },
+    "model:minimal-exists": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "極小な論理式の存在",
+      "num": "5.5",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/05-strongly-minimal.html"
+    },
+    "model:minimal-formula": {
+      "status": "defined",
+      "type": "definition",
+      "title": "極小・強極小",
+      "num": "5.3",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/05-strongly-minimal.html"
+    },
+    "model:minimal-strongly-minimal": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "ヴォート対がなければ極小は強極小",
+      "num": "5.7",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/05-strongly-minimal.html"
+    },
     "model:model-complete": {
       "status": "defined",
       "type": "definition",
@@ -13041,6 +13083,13 @@
       "title": "安定性と EM モデル",
       "num": "",
       "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/01-stability.html"
+    },
+    "model:page-strongly-minimal": {
+      "status": "defined",
+      "type": "page",
+      "title": "強極小集合",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/05-strongly-minimal.html"
     },
     "model:page-types-omitting": {
       "status": "defined",
@@ -13244,6 +13293,13 @@
       "title": "",
       "num": "4.11",
       "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/04-acf.html"
+    },
+    "model:prob-sm-equivalence-class": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "5.8",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/05-strongly-minimal.html"
     },
     "model:prob-st-equivalence": {
       "status": "defined",
@@ -13777,6 +13833,41 @@
       "num": "",
       "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/04-indiscernibles.html"
     },
+    "model:sec-sm-acl": {
+      "status": "defined",
+      "type": "section",
+      "title": "代数的閉包",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/05-strongly-minimal.html"
+    },
+    "model:sec-sm-existence": {
+      "status": "defined",
+      "type": "section",
+      "title": "極小な論理式の存在と強極小性",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/05-strongly-minimal.html"
+    },
+    "model:sec-sm-minimal": {
+      "status": "defined",
+      "type": "section",
+      "title": "極小と強極小",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/05-strongly-minimal.html"
+    },
+    "model:sec-sm-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/05-strongly-minimal.html"
+    },
+    "model:sec-sm-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/05-strongly-minimal.html"
+    },
     "model:sec-st-em": {
       "status": "defined",
       "type": "section",
@@ -13965,6 +14056,13 @@
       "title": "1 変数で十分",
       "num": "1.2",
       "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/01-stability.html"
+    },
+    "model:strongly-minimal-uniform": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "強極小性の一様性",
+      "num": "5.4",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/05-strongly-minimal.html"
     },
     "model:substructure": {
       "status": "defined",

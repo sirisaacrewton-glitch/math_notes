@@ -373,3 +373,4 @@
 | hyperspace / Hausdorff metric / Vietoris topology | 超空間 / ハウスドルフ距離 / ヴィートリス位相 | | 標準的。top:page-hyperspaces |
 | iterated function system / attractor / self-similar set / Hutchinson operator | 反復関数系 / アトラクター / 自己相似集合 / ハッチンソンの定理 | | 標準的。top:page-fractals |
 | kappa-stable / omega-stable / categorical in kappa | κ 安定 / ω 安定 / κ 範疇的 | | 標準的。model:page-stability |
+| prime model over a set / constructible / atomic over A / (κ,λ)-model | （A 上の）素モデル / 構成可能 / A 上原子的 / (κ,λ) モデル（二基数モデル） | | 構成可能・二基数モデルは仮。model:page-omega-stable |

@@ -12538,6 +12538,13 @@
       "num": "2.11",
       "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/02-countable-models.html"
     },
+    "model:categorical-no-two-cardinal": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "範疇的なら (κ,ℵ₀) モデルはない",
+      "num": "2.9",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/02-omega-stable.html"
+    },
     "model:categorical-omega-stable": {
       "status": "defined",
       "type": "theorem",
@@ -12586,6 +12593,13 @@
       "title": "新しい定数の消去",
       "num": "2.5",
       "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/02-elementary-chains.html"
+    },
+    "model:constructible-atomic": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "構成可能なら原子的",
+      "num": "2.6",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/02-omega-stable.html"
     },
     "model:countable-saturated": {
       "status": "defined",
@@ -12853,6 +12867,13 @@
       "num": "3.8",
       "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/03-quantifier-elimination.html"
     },
+    "model:no-binary-tree": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "二分木の補題",
+      "num": "2.1",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/02-omega-stable.html"
+    },
     "model:nonprincipal-ultrafilter": {
       "status": "defined",
       "type": "corollary",
@@ -12866,6 +12887,27 @@
       "title": "ω 範疇的",
       "num": "2.9",
       "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/02-countable-models.html"
+    },
+    "model:omega-stable-isolated-dense": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "孤立型の稠密性",
+      "num": "2.3",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/02-omega-stable.html"
+    },
+    "model:omega-stable-kappa-stable": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "ω 安定なら κ 安定",
+      "num": "2.2",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/02-omega-stable.html"
+    },
+    "model:omega-stable-saturated": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "ω 安定な理論の ℵ₁ 飽和モデル",
+      "num": "2.8",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/02-omega-stable.html"
     },
     "model:omega-ultrafilter-incomplete": {
       "status": "defined",
@@ -12916,6 +12958,13 @@
       "num": "",
       "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/04-indiscernibles.html"
     },
+    "model:page-omega-stable": {
+      "status": "defined",
+      "type": "page",
+      "title": "ω 安定な理論",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/02-omega-stable.html"
+    },
     "model:page-quantifier-elimination": {
       "status": "defined",
       "type": "page",
@@ -12964,6 +13013,20 @@
       "title": "可算モデルの両極",
       "num": "3.8",
       "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/03-saturated-models.html"
+    },
+    "model:prime-over-set": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "集合上の素モデルの存在",
+      "num": "2.5",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/02-omega-stable.html"
+    },
+    "model:prime-over-set-def": {
+      "status": "defined",
+      "type": "definition",
+      "title": "集合上の素モデル・構成可能",
+      "num": "2.4",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/02-omega-stable.html"
     },
     "model:prob-acf-definable-subsets": {
       "status": "defined",
@@ -13048,6 +13111,13 @@
       "title": "",
       "num": "1.7",
       "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/01-types-omitting.html"
+    },
+    "model:prob-os-acf-prime": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "2.10",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/02-omega-stable.html"
     },
     "model:prob-principal-not-saturated": {
       "status": "defined",
@@ -13476,6 +13546,41 @@
       "num": "",
       "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/01-types-omitting.html"
     },
+    "model:sec-os-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/02-omega-stable.html"
+    },
+    "model:sec-os-prime": {
+      "status": "defined",
+      "type": "section",
+      "title": "孤立型の稠密性と素モデル",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/02-omega-stable.html"
+    },
+    "model:sec-os-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/02-omega-stable.html"
+    },
+    "model:sec-os-tree": {
+      "status": "defined",
+      "type": "section",
+      "title": "二分木の不在",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/02-omega-stable.html"
+    },
+    "model:sec-os-two-cardinal": {
+      "status": "defined",
+      "type": "section",
+      "title": "二基数モデルの不在",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/02-omega-stable.html"
+    },
     "model:sec-qe": {
       "status": "defined",
       "type": "section",
@@ -13741,6 +13846,13 @@
       "title": "項は多項式である",
       "num": "4.5",
       "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/04-acf.html"
+    },
+    "model:two-cardinal-model": {
+      "status": "defined",
+      "type": "definition",
+      "title": "(κ,λ) モデル",
+      "num": "2.7",
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/02-omega-stable.html"
     },
     "model:type": {
       "status": "defined",

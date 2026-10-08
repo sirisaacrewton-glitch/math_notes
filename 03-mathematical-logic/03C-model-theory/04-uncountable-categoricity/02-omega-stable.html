@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ω 安定な理論 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/02-omega-stable.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ω 安定な理論 {#model:page-omega-stable keywords="omega-stable theory, binary tree of formulas, omega-stable implies kappa-stable, isolated types are dense, prime model over a set, constructible model, atomic over a set, aleph1-saturated models, (kappa,lambda)-model, two-cardinal model"}
+
+$\omega$ 安定な理論（\ref{model:stable}）では、論理式を二つに分ける操作を無限に続けることができない（\ref{model:no-binary-tree}）。この単純な事実から、本ページの結果がすべて導かれる：$\omega$ 安定ならすべての無限基数 $\kappa$ で $\kappa$ 安定であり（\ref{model:omega-stable-kappa-stable}）、任意のパラメータ集合の上で孤立型が稠密で（\ref{model:omega-stable-isolated-dense}）、任意の集合の上に**素モデル**が存在する（\ref{model:prime-over-set}）。最後に、非可算濃度 $\kappa$ で範疇的な理論は、ある定義可能集合が可算無限になるような濃度 $\kappa$ のモデル（**$(\kappa,\aleph_{0})$ モデル**）をもたないことを示す（\ref{model:categorical-no-two-cardinal}）。
+
+> 資料：新井敏康『数学基礎論』§5.6.1（補題 5.6.7 から命題 5.6.13 あたり）を参考にした（本文は写していない）。$\omega$ 安定から $\kappa$ 安定を導く部分（\ref{model:omega-stable-kappa-stable}）は、モーリー階数を使わず「大きい論理式」の分割で示した。素モデルの元の組の型が孤立していること（\ref{model:constructible-atomic}）は、次ページ以降で使うので詳しく示した。
+
+## 記法と定義の確認 {#model:sec-os-notation}
+
+::: notation
+- $T$ は可算言語の完全な理論で無限モデルをもつ。$S_{n}^{\mathcal{M}}(A)$、孤立した型、孤立型はすべてのモデルで実現されることは \ref{model:saturated}, \ref{model:isolated-type}, \ref{model:isolated-realized}（$A$ 上の型については完全な理論 $\mathrm{Th}(\mathcal{M}_{A})$ に適用する）。
+- $\mathcal{L}_{A}$ 論理式 $\varphi(\vec{x})$ が**両立する**とは $\mathcal{M}\models\exists\vec{x}\,\varphi$ のこと。$[\varphi]\defeq\{p\in S_{n}^{\mathcal{M}}(A):\varphi\in p\}$。$\varphi\vdash\psi$ は $\mathcal{M}\models\forall\vec{x}\,(\varphi\to\psi)$ の意味で使う。
+- 部分写像 $f\colon A\to N$（$A\subseteq M$）が**初等的**とは、$A$ の任意の有限組 $\vec{a}$ と $\mathcal{L}$ 論理式 $\varphi$ について $\mathcal{M}\models\varphi(\vec{a})\iff\mathcal{N}\models\varphi(f(\vec{a}))$ となることをいう。定義域が $M$ 全体なら初等埋め込みである。
+- タルスキ–ヴォートの判定法（\ref{model:tarski-vaught}）、初等鎖（\ref{model:elementary-chain}）、型を実現する初等拡大（\ref{model:realize-all-types}）を使う。
+:::
+
+## 二分木の不在 {#model:sec-os-tree}
+
+::: lemma 二分木の補題 {#model:no-binary-tree keywords="no binary tree of consistent formulas in an omega-stable theory" index="二分木の補題（ω 安定）|にぶんぎのほだいおめがあんてい"}
+（AC）$T$ を $\omega$ 安定、$\mathcal{M}\models T$, $A\subseteq M$ とする。$\mathcal{L}_{A}$ 論理式 $\varphi(\vec{x})$ の集合 $\Phi$ で、次を満たすものは存在しない。
+1. $\Phi\neq\varnothing$ で、$\Phi$ の論理式はすべて両立する。
+2. 各 $\varphi\in\Phi$ について、$\mathcal{L}_{A}$ 論理式 $\psi$ で $\varphi\wedge\psi\in\Phi$ かつ $\varphi\wedge\neg\psi\in\Phi$ となるものがある。
+:::
+
+::: proof
+そのような $\Phi$ があるとする。有限の $0,1$ 列 $s$ ごとに $\varphi_{s}\in\Phi$ を、$\varphi_{\varnothing}\in\Phi$ を一つ選び、$\varphi_{s}$ に対して 2 の $\psi_{s}$ を選んで $\varphi_{s0}\defeq\varphi_{s}\wedge\psi_{s}$, $\varphi_{s1}\defeq\varphi_{s}\wedge\neg\psi_{s}$ と定める（可算回の選択）。これらの論理式に現れる $A$ の元は可算個で、その集合を $A_{0}$ とする。無限の $0,1$ 列 $b$ について、$\{\varphi_{b\restr k}:k\in\N\}$ は、有限部分が最長の $\varphi_{b\restr k}$（$\in\Phi$、両立）に帰着するので両立し、$S_{n}^{\mathcal{M}}(A_{0})$ のある型 $p_{b}$ に含まれる。$b\neq b'$ なら、最初に異なる位置 $k$ で $\psi_{b\restr k}$ と $\neg\psi_{b\restr k}$ の一方ずつを含むので $p_{b}\neq p_{b'}$。よって $\lvert S_{n}^{\mathcal{M}}(A_{0})\rvert\ge2^{\aleph_{0}}$ で、$\omega$ 安定性に反する。
+:::
+
+::: theorem ω 安定なら κ 安定 {#model:omega-stable-kappa-stable keywords="omega-stable theories are kappa-stable for all infinite kappa" index="ω 安定と κ 安定|おめがあんていとかっぱあんてい"}
+（AC）$T$ が $\omega$ 安定なら、すべての無限基数 $\kappa$ で $\kappa$ 安定である。
+:::
+
+::: proof
+$\mathcal{M}\models T$, $\lvert A\rvert\le\kappa$ で $\lvert S_{n}^{\mathcal{M}}(A)\rvert>\kappa$ とする。$\mathcal{L}_{A}$ 論理式 $\varphi$ が**大きい**とは $\lvert[\varphi]\rvert>\kappa$ のこととし、大きい論理式の集合を $\Phi$ とする。$\vec{x}=\vec{x}\in\Phi$ で、大きい論理式は（型に含まれるので）両立する。$\Phi$ が \ref{model:no-binary-tree} の 2 を満たすことを示せば矛盾である。
+
+$\varphi\in\Phi$ で、どの $\psi$ についても $\varphi\wedge\psi$ と $\varphi\wedge\neg\psi$ の両方が大きくはならないとする。$[\varphi]=[\varphi\wedge\psi]\cup[\varphi\wedge\neg\psi]$ なので、少なくとも一方は大きい。よって各 $\psi$ について「$\varphi\wedge\psi$ が大きい」と「$\varphi\wedge\neg\psi$ が大きい」のちょうど一方が成り立つ。$q\defeq\{\psi:\varphi\wedge\psi\text{ は大きい}\}$ とおく。
+- *$q$ は完全型.* 上から $\psi$, $\neg\psi$ のちょうど一方が $q$ に属する。$\psi_{1},\dots,\psi_{k}\in q$ なら、$\neg\psi_{i}\notin q$ なので各 $[\varphi\wedge\neg\psi_{i}]$ は小さく、$[\varphi\wedge\neg\bigwedge_{i}\psi_{i}]=\bigcup_{i}[\varphi\wedge\neg\psi_{i}]$ も小さい（$\kappa$ 個以下の有限和）。$[\varphi]$ は大きいので $[\varphi\wedge\bigwedge_{i}\psi_{i}]$ は大きく、とくに空でない。よって $q$ は両立し、完全である。
+- *$[\varphi]$ は小さい.* $p\in[\varphi]$, $p\neq q$ なら、$\psi\in p\setminus q$ があり、$\neg\psi\in q$ すなわち $\varphi\wedge\psi$ は小さく、$p\in[\varphi\wedge\psi]$。よって $[\varphi]\subseteq\{q\}\cup\bigcup\{[\varphi\wedge\psi]:\varphi\wedge\psi\text{ は小さい}\}$。$\mathcal{L}_{A}$ 論理式は $\kappa$ 個以下なので、右辺は $1+\kappa\cdot\kappa=\kappa$ 個以下の型からなる。
+
+後者は $\varphi\in\Phi$ に反する。よって $\Phi$ は 2 を満たし、\ref{model:no-binary-tree} に矛盾する。
+:::
+
+::: hypcheck
+- **二分木の補題**：最後の矛盾に使った。そこでは $\omega$ 安定性（可算なパラメータ集合の上の型の可算性）だけを使い、木に現れる可算個のパラメータに制限した。
+- **言語の可算性**：$\mathcal{L}_{A}$ 論理式が $\lvert A\rvert+\aleph_{0}\le\kappa$ 個であることに使った。
+:::
+
+## 孤立型の稠密性と素モデル {#model:sec-os-prime}
+
+::: theorem 孤立型の稠密性 {#model:omega-stable-isolated-dense keywords="in an omega-stable theory isolated types are dense over every set" index="孤立型の稠密性|こりつがたのちゅうみつせい"}
+（AC）$T$ を $\omega$ 安定、$\mathcal{M}\models T$, $A\subseteq M$ とする。両立する $\mathcal{L}_{A}$ 論理式 $\varphi(\vec{x})$ は、孤立した型 $p\in S_{n}^{\mathcal{M}}(A)$ に含まれる。
+:::
+
+::: proof
+$\Phi$ を、両立し、どの孤立した型にも含まれない $\mathcal{L}_{A}$ 論理式の集合とする。$\varphi\in\Phi$ をとる。どの $\psi$ についても $\varphi\vdash\psi$ または $\varphi\vdash\neg\psi$ なら、$\{\psi:\varphi\vdash\psi\}$ は $\varphi$ が孤立させる完全型で $\varphi$ を含み、$\varphi\in\Phi$ に反する。よって $\varphi\wedge\psi$, $\varphi\wedge\neg\psi$ がともに両立する $\psi$ がある。それらを含む孤立型は $\varphi$ も含むので、どちらも $\Phi$ に属する。\ref{model:no-binary-tree} から $\Phi=\varnothing$。
+:::
+
+::: definition 集合上の素モデル・構成可能 {#model:prime-over-set-def keywords="prime model over a set, constructible model, atomic over a set" index="素モデル（集合上の）|そもでるしゅうごうじょうの, 構成可能なモデル|こうせいかのうなもでる, 原子的（集合上）|げんしてきしゅうごうじょう"}
+$\mathcal{M}\models T$, $A\subseteq M$ とする。
+1. $\mathcal{N}\preccurlyeq\mathcal{M}$ で $A\subseteq N$ のものが **$A$ 上素**であるとは、任意の $\mathcal{N}'\models T$ と初等的な部分写像 $f\colon A\to N'$ について、$f$ が初等埋め込み $\mathcal{N}\to\mathcal{N}'$ に延びることをいう。
+2. $\mathcal{N}$ が **$A$ 上構成可能**であるとは、$N=A\cup\{b_{\alpha}:\alpha<\gamma\}$（順序数 $\gamma$）と並べたとき、各 $\alpha$ で $\mathrm{tp}(b_{\alpha}/A\cup B_{\alpha})$ が孤立していることをいう（$B_{\alpha}\defeq\{b_{\beta}:\beta<\alpha\}$）。
+3. $\mathcal{N}$ が **$A$ 上原子的**であるとは、$N$ の任意の有限組 $\vec{c}$ について $\mathrm{tp}(\vec{c}/A)$ が孤立していることをいう。
+:::
+
+::: theorem 集合上の素モデルの存在 {#model:prime-over-set keywords="existence of constructible prime models over sets in omega-stable theories" index="素モデルの存在（集合上）|そもでるのそんざいしゅうごうじょう"}
+（AC）$T$ を $\omega$ 安定、$\mathcal{M}\models T$, $A\subseteq M$ とする。$A$ 上構成可能な $\mathcal{N}\preccurlyeq\mathcal{M}$ が存在し、$A$ 上構成可能なモデルは $A$ 上素である。
+:::
+
+::: proof
+**存在.** 超限再帰で $b_{\alpha}\in M$ を選ぶ。$B\defeq A\cup B_{\alpha}$ がタルスキ–ヴォートの条件（$\mathcal{M}\models\exists x\,\varphi(x)$ となる $\mathcal{L}_{B}$ 論理式 $\varphi$ はすべて $B$ に証拠をもつ）を満たせば止める。満たさなければ、証拠をもたない $\varphi$ を一つ選び、\ref{model:omega-stable-isolated-dense} から $\varphi$ を含む孤立型 $p\in S_{1}^{\mathcal{M}}(B)$ をとり、$p$ を実現する $b_{\alpha}\in M$ を選ぶ（孤立型は $\mathcal{M}_{B}$ で実現される）。$b_{\alpha}$ は $\varphi$ を満たすので $B$ に属さない。$b_{\alpha}$ は相異なる $M$ の元なので、再帰は $\lvert M\rvert^{+}$ より前に止まる。止まったときの $B$ は、関数記号の値についても証拠をもつ（$\exists x\,x=f(\vec{b})$）ので部分構造の台であり、タルスキ–ヴォートの判定法から $\mathcal{M}$ の初等部分構造の台で、構成から $A$ 上構成可能。
+
+**素.** $N=A\cup\{b_{\alpha}:\alpha<\gamma\}$ を構成可能な並べ方とし、初等的な $f\colon A\to N'$ をとる。$f_{\alpha}\colon A\cup B_{\alpha}\to N'$ を、$f_{0}\defeq f$ から初等的に延ばしていく。極限では和集合（有限組は途中の段に含まれるので初等的）。後続段：$\mathrm{tp}(b_{\alpha}/A\cup B_{\alpha})$ を孤立させる $\theta(x,\vec{d})$（$\vec{d}\subseteq A\cup B_{\alpha}$）をとる。$\mathcal{M}\models\exists x\,\theta(x,\vec{d})$ と $f_{\alpha}$ の初等性から、$\theta(x,f_{\alpha}(\vec{d}))$ を満たす $b'\in N'$ がある。$f_{\alpha+1}\defeq f_{\alpha}\cup\{(b_{\alpha},b')\}$ は初等的：$\mathcal{M}\models\psi(b_{\alpha},\vec{e})$（$\vec{e}\subseteq A\cup B_{\alpha}$）なら、$\psi(x,\vec{e})\in\mathrm{tp}(b_{\alpha}/A\cup B_{\alpha})$ なので $\mathcal{M}\models\forall x\,(\theta(x,\vec{d})\to\psi(x,\vec{e}))$、$f_{\alpha}$ の初等性から $\mathcal{N}'\models\forall x\,(\theta(x,f_{\alpha}\vec{d})\to\psi(x,f_{\alpha}\vec{e}))$、よって $\mathcal{N}'\models\psi(b',f_{\alpha}\vec{e})$。最後の $f_{\gamma}$ は定義域が $N$ の初等的な写像、すなわち初等埋め込みである。
+:::
+
+::: hypcheck
+- **孤立型の稠密性（$\omega$ 安定性）**：存在の証明で、タルスキ–ヴォートの条件を満たすための証拠を、孤立型を実現する元として選ぶのに使った。
+- **孤立性**：素であることの証明で、$b_{\alpha}$ の行き先を「孤立させる論理式を満たす任意の元」として選べることに使った（$\mathcal{N}'$ の飽和性は不要）。
+:::
+
+::: lemma 構成可能なら原子的 {#model:constructible-atomic keywords="constructible models are atomic over the base" index="構成可能と原子的|こうせいかのうとげんしてき"}
+$A$ 上構成可能なモデル $\mathcal{N}$ は $A$ 上原子的である。
+:::
+
+::: proof
+**Step 1（孤立の合成）.** $\mathrm{tp}(\vec{e}/A)$ が $\chi(\vec{y})$ で孤立し、$\mathrm{tp}(b/A\vec{e})$ が $\theta(x,\vec{e})$（$A$ のパラメータを含んでよい）で孤立するなら、$\mathrm{tp}(b\vec{e}/A)$ は $\chi(\vec{y})\wedge\theta(x,\vec{y})$ で孤立する。実際、$\psi(x,\vec{y})\in\mathrm{tp}(b\vec{e}/A)$ なら $\theta(x,\vec{e})\vdash\psi(x,\vec{e})$、すなわち $\forall x\,(\theta(x,\vec{y})\to\psi(x,\vec{y}))\in\mathrm{tp}(\vec{e}/A)$ なので、$\chi$ から導かれる。よって $\chi(\vec{y})\wedge\theta(x,\vec{y})\vdash\psi(x,\vec{y})$。
+
+**Step 2（部分組）.** 組の型が $\theta(\vec{x},\vec{y})$ で孤立するなら、部分組 $\vec{x}$ の型は $\exists\vec{y}\,\theta$ で孤立する（$\psi(\vec{x})$ が型に属すれば $\theta\vdash\psi$ なので $\exists\vec{y}\,\theta\vdash\psi$）。また $A$ の元の組の型は等式 $\vec{x}=\vec{a}$ で孤立する。
+
+**Step 3（帰納法）.** $\alpha$ に関する帰納法で、$A\cup B_{\alpha}$ の有限組の $A$ 上の型が孤立していることを示す。$\alpha=0$ は Step 2。極限段は、有限組がより前の段に含まれることから。$\alpha+1$ 段：$b_{\alpha}$ を含む組 $\vec{c}$ について、$\mathrm{tp}(b_{\alpha}/A\cup B_{\alpha})$ を孤立させる論理式のパラメータのうち $B_{\alpha}$ の元と、$\vec{c}$ の $B_{\alpha}$ の成分を並べた組を $\vec{e}$ とする。帰納法の仮定から $\mathrm{tp}(\vec{e}/A)$ は孤立し、$\mathrm{tp}(b_{\alpha}/A\vec{e})$ は（同じ論理式で）孤立する（$A\vec{e}\subseteq A\cup B_{\alpha}$ 上の型に制限しても、孤立させる論理式のパラメータが $A\vec{e}$ にあるので）。Step 1 から $\mathrm{tp}(b_{\alpha}\vec{e}/A)$ は孤立し、Step 2 から（$A$ の成分は等式で加えて）$\mathrm{tp}(\vec{c}/A)$ も孤立する。
+:::
+
+## 二基数モデルの不在 {#model:sec-os-two-cardinal}
+
+::: definition (κ,λ) モデル {#model:two-cardinal-model keywords="(kappa,lambda)-model, two-cardinal model" index="(κ,λ) モデル|かっぱらむだもでる, 二基数モデル|にきすうもでる"}
+無限基数 $\kappa>\lambda$ について、$\mathcal{M}\models T$ が **$(\kappa,\lambda)$ モデル**であるとは、$\lvert M\rvert=\kappa$ で、ある $\mathcal{L}_{M}$ 論理式 $\varphi(x)$ について $\lvert\varphi(\mathcal{M})\rvert=\lambda$ となることをいう（$\varphi(\mathcal{M})\defeq\{a\in M:\mathcal{M}\models\varphi(a)\}$）。
+:::
+
+::: theorem ω 安定な理論の ℵ₁ 飽和モデル {#model:omega-stable-saturated keywords="omega-stable theories have aleph1-saturated models in every uncountable cardinality" index="ℵ₁ 飽和モデル（ω 安定）|あれふいちほうわもでるおめがあんてい"}
+（AC）$T$ が $\omega$ 安定なら、任意の非可算基数 $\kappa$ について、濃度 $\kappa$ の $\aleph_{1}$ 飽和モデルが存在する。そのモデルでは、無限の定義可能集合 $\varphi(\mathcal{M})$（$\varphi$ は $\mathcal{L}_{M}$ 論理式）はすべて非可算である。
+:::
+
+::: proof
+**構成.** $\mathcal{M}_{0}$ を濃度 $\kappa$ のモデルとし（レーヴェンハイム–スコーレム）、$\alpha\le\omega_{1}$ について初等鎖を作る。$\lvert M_{\alpha}\rvert=\kappa$ なら $\kappa$ 安定性（\ref{model:omega-stable-kappa-stable}）から $\lvert S_{1}^{\mathcal{M}_{\alpha}}(M_{\alpha})\rvert\le\kappa$ なので、\ref{model:realize-all-types} で $S_{1}^{\mathcal{M}_{\alpha}}(M_{\alpha})$ のすべての型を実現する濃度 $\kappa$ の初等拡大 $\mathcal{M}_{\alpha+1}$ をとる。極限段は和（濃度は $\lvert\alpha\rvert\cdot\kappa=\kappa$）。$\mathcal{M}\defeq\mathcal{M}_{\omega_{1}}$ は濃度 $\kappa$。
+
+**$\aleph_{1}$ 飽和.** 可算な $A\subseteq M$ は、$\omega_{1}$ の正則性からある $M_{\alpha}$（$\alpha<\omega_{1}$）に含まれる。$A$ 上の $1$ 変数の型は $S_{1}^{\mathcal{M}_{\alpha}}(M_{\alpha})$ のある型に含まれ（$\mathrm{Th}(\mathcal{M}_{A})\subseteq\mathrm{Th}((\mathcal{M}_{\alpha})_{M_{\alpha}})$ と両立する型は完全化できる）、それは $\mathcal{M}_{\alpha+1}\preccurlyeq\mathcal{M}$ で実現される。
+
+**定義可能集合.** $\varphi(x,\vec{a})$ が無限集合を定義し、それが可算 $\{c_{0},c_{1},\dots\}$ だとする。$\{\varphi(x,\vec{a})\}\cup\{x\neq c_{i}:i\in\N\}$ は可算集合 $\{\vec{a}\}\cup\{c_{i}\}$ 上の型で、有限部分は $\varphi(\mathcal{M})$ が無限なので $\mathcal{M}$ で満たされる。$\aleph_{1}$ 飽和性からこの型は実現されるが、その元は $\varphi(\mathcal{M})$ に属しどの $c_{i}$ とも異なり、矛盾。
+:::
+
+::: corollary 範疇的なら (κ,ℵ₀) モデルはない {#model:categorical-no-two-cardinal keywords="kappa-categorical theories have no (kappa,aleph0)-models" index="範疇性と二基数モデル|はんちゅうせいとにきすうもでる"}
+（AC）$T$ が非可算基数 $\kappa$ で範疇的なら、$T$ は $(\kappa,\aleph_{0})$ モデルをもたない。
+:::
+
+::: proof
+\ref{model:categorical-omega-stable} から $T$ は $\omega$ 安定で、\ref{model:omega-stable-saturated} の濃度 $\kappa$ のモデル $\mathcal{M}$ では無限の定義可能集合はすべて非可算。$(\kappa,\aleph_{0})$ モデル $\mathcal{N}$ があれば、同型 $\mathcal{N}\cong\mathcal{M}$ は定義可能集合を定義可能集合に（パラメータを移して）全単射で移すので、$\mathcal{M}$ に可算無限の定義可能集合ができて矛盾。
+:::
+
+## 問題 {#model:sec-os-problems}
+
+::: problem {#model:prob-os-acf-prime}
+$\mathrm{ACF}_{0}$ のモデル $K$ と部分集合 $A$ について、$A$ で生成される部分体の代数閉包 $\overline{\mathbb{Q}(A)}$（$K$ の中の代数的な元の全体）は $A$ 上素であることを示せ（$\overline{\mathbb{Q}(A)}$ が代数的閉体であることは認めてよい）。
+:::
+
+::: solution
+$k\defeq\mathbb{Q}(A)$, $F\defeq\overline{k}\subseteq K$ とする。$F$ は代数的閉体なので、量化子消去（\ref{model:acf-qe}）から $F\preccurlyeq K$（モデル完全性）。$F$ の元 $b$ の $A$ 上の型は、$k$ 上の最小多項式 $m(x)$ について $m(x)=0$ で孤立する（\ref{model:stable} の例 1 の議論：型はイデアル $I_{b}=(m)$ で決まり、$m(x)=0$ を満たす元の型はすべて同じ）。$F$ の元を $b_{0},b_{1},\dots$（超限）と並べると、$\mathrm{tp}(b_{\alpha}/A\cup B_{\alpha})$ も $k(B_{\alpha})$ 上の最小多項式で孤立するので、$F$ は $A$ 上構成可能。\ref{model:prime-over-set} から $A$ 上素。
+:::
+
+::: supplement
+**前提を変えると.** $\omega$ 安定でない理論では、孤立型が稠密でないパラメータ集合 $A$ がありうる。そのとき、上の構成は途中で進めなくなる（$A$ 上の素モデルが存在しない例があることが知られているが、ここでは確かめていない）。$\omega$ 安定な理論では、$A$ 上の素モデルは同型を除いて一意であることがシェラハによって示されている（構成可能なモデルの一意性。ここでは証明しない。次々ページのボールドウィン–ラクランの定理の証明は、一意性を使わずに済む）。
+
+**似た定理.** \ref{model:no-binary-tree} の二分木の高さを順序数で測ったものが**モーリー階数**で、$\omega$ 安定性は「すべての論理式のモーリー階数が順序数である」ことと同値である（ここでは扱わない）。\ref{model:omega-stable-isolated-dense} は、可算な場合の原子モデルの存在（\ref{model:atomic-existence}：孤立型の稠密性と同値）の、非可算パラメータへの一般化である。
+
+**高い視点から：$\omega$ 安定性は「型空間の位相的な小ささ」.** $S_{n}^{\mathcal{M}}(A)$ はストーン空間（全不連結コンパクトハウスドルフ空間）で、$[\varphi]$ が基本開集合、孤立型は孤立点である。二分木があることは、型空間がカントール集合を部分空間として含むことに対応する。比喩で言えば、$\omega$ 安定な理論の型空間は「どこまで拡大しても孤立点が稠密な散在的な空間」で、カントール集合のような「どこにも孤立点がない部分」を含まない。このため、型空間の点を孤立点から順に一つずつ実現していくだけでモデルが組み上がり（構成可能なモデル）、それが最小のモデル（素モデル）になる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

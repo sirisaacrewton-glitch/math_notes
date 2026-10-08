@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>単純集合と低集合 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/03-advanced-computability/09-low-simple.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 単純集合と低集合 {#comp:page-low-simple keywords="simple set, Post's simple set, limit lemma, Shoenfield limit lemma, low set, low simple set, jump monotonicity, finite injury"}
+
+ポストの問題（\ref{comp:page-friedberg-muchnik}）には、フリードバーグ–ムチニクの定理とは別の解き方がある。本ページでは、まずポストの**単純集合**（\ref{comp:simple-set}）を作る。次に、$\varnothing'$ で計算できる関数が計算可能な関数の極限としてちょうど表せること（**極限補題**、\ref{comp:limit-lemma}）を示し、ジャンプが $\varnothing'$ を超えない**低集合**（\ref{comp:low-set}）を導入する。最後に、優先論法で**単純な低集合**を作る（\ref{comp:low-simple-set}）。決定可能でない低集合の次数は $\mathbf{0}$ と $\mathbf{0}'$ の真の間にあるので、これもポストの問題の解になる。
+
+> 資料：新井『数学基礎論』§6.6 の演習（単純な低集合の優先論法による構成）を参考にした（本文は写していない）。演習では構成の枠組みだけが与えられているので、要求の作用の条件、損傷の回数の評価、制限の極限の存在、極限補題による低さの証明を補って書いた。極限補題はポストの定理（\ref{comp:post-theorem}）から導いた。
+
+## 記法と定義の確認 {#comp:sec-ls-notation}
+
+::: notation
+- 神託機械 $M_{e}$、$\Phi_{e}^{X}$, $\Phi_{e,s}^{X}$、使用量、保存の原理、$\le_{\mathrm{T}}$, $\equiv_{\mathrm{T}}$、次数 $\mathbf{0},\mathbf{0}'$ は \ref{comp:page-friedberg-muchnik} の記法のとおり。$\Phi_{e}^{X}(x)\downarrow$ は $M_{e}^{X}$ が $x$ の上で止まる（受理か拒否）ことを表す。
+- $W_{e}$ は $e$ 番目の神託なしの機械の受理する集合、$W_{e,s}$ は $s$ 段以内に受理される $s$ 以下の入力の集合（$W_{e}=\bigcup_{s}W_{e,s}$、各 $W_{e,s}$ は $e,s$ から計算できる有限集合）。認識可能な集合はある $W_{e}$ である。
+- ジャンプ $X'$ とその性質、ポストの定理は \ref{comp:jump}, \ref{comp:jump-properties}, \ref{comp:post-theorem} のとおり。
+:::
+
+## 単純集合 {#comp:sec-ls-simple}
+
+::: definition 単純集合 {#comp:simple-set keywords="simple set: c.e., coinfinite, complement contains no infinite c.e. set" index="単純集合|たんじゅんしゅうごう"}
+集合 $A\subseteq\N$ が**単純**であるとは、$A$ が認識可能で、補集合 $\overline{A}$ が無限であり、$\overline{A}$ が無限な認識可能集合を部分集合として含まないこと（すなわち、無限な $W_{e}$ はどれも $A$ と交わること）をいう。
+:::
+
+::: proposition ポストの単純集合 {#comp:post-simple-set keywords="Post's construction of a simple set; simple sets are not computable" index="ポストの単純集合|ぽすとのたんじゅんしゅうごう"}
+単純集合が存在する。単純集合は決定可能でない。
+:::
+
+::: proof
+**構成.** 各 $e$ について、$W_{e}$ の元で $2e$ より大きいものが現れたら、最初に現れたもの（$s$ を増やしながら $W_{e,s}$ を調べて最初に見つかったもの）を $A$ に入れる。$A$ は認識可能（この手続きで列挙される）。
+
+**無限な $W_{e}$ と交わる.** $W_{e}$ が無限なら $2e$ より大きい元を含むので、そのどれかが $A$ に入る。
+
+**$\overline{A}$ は無限.** $W_{e}$ から入る数は $2e$ より大きく、各 $e$ から高々一つなので、$\{0,1,\dots,2n\}$ に入る $A$ の元は $e<n$ からのものに限られ、高々 $n$ 個。よって $\{0,\dots,2n\}$ には $\overline{A}$ の元が $n+1$ 個以上あり、$n$ は任意。
+
+**決定可能でない.** 決定可能なら $\overline{A}$ も認識可能で無限なので、ある $W_{e}=\overline{A}$ は無限で $A$ と交わらず、単純性に反する。
+:::
+
+## 極限補題と低集合 {#comp:sec-ls-limit}
+
+::: theorem 極限補題 {#comp:limit-lemma keywords="Shoenfield limit lemma: A is computable from 0' iff its characteristic function is the limit of a computable function" index="極限補題|きょくげんほだい"}
+集合 $A$ について、$A\le_{\mathrm{T}}\varnothing'$ であることと、決定可能な（全域で $\{0,1\}$ に値をとる計算可能な）$g(x,s)$ で、各 $x$ について $\lim_{s\to\infty}g(x,s)=\chi_{A}(x)$（ある段以降一定でその値）となるものがあることは同値である。
+:::
+
+::: proof
+**⇐.** $x\in A\iff\exists s\,\forall t\ge s\,g(x,t)=1$、$x\notin A\iff\exists s\,\forall t\ge s\,g(x,t)=0$ で、どちらも $\Sigma_{2}$。よって $A$ は $\Delta_{2}$ で、ポストの定理（\ref{comp:post-theorem} の 3、$n=1$）から $A\le_{\mathrm{T}}\varnothing'$。
+
+**⇒.** $\chi_{A}=\Phi_{e}^{\varnothing'}$（全域）とする。$\varnothing'$ は認識可能なので、決定可能な有限集合の増加列 $K_{s}$ で $\varnothing'=\bigcup_{s}K_{s}$ となるものがある（$s$ 段以内に受理されるもの）。$g(x,s)\defeq\Phi_{e,s}^{K_{s}}(x)$（$s$ 段以内に止まらなければ $0$）とすると $g$ は計算可能。$\Phi_{e}^{\varnothing'}(x)$ の計算の段数を $t$、使用量を $u$ とすると、$u$ 未満の $\varnothing'$ の元は有限個なので、十分大きい $s\ge t$ で $K_{s}$ と $\varnothing'$ は $u$ 未満で一致し、保存の原理から $g(x,s)=\Phi_{e}^{\varnothing'}(x)=\chi_{A}(x)$。
+:::
+
+::: definition 低集合 {#comp:low-set keywords="low set: A' Turing reducible to 0'" index="低集合|ていしゅうごう"}
+集合 $A$ が**低**であるとは、$A'\le_{\mathrm{T}}\varnothing'$ であることをいう。
+:::
+
+::: lemma ジャンプの単調性と低集合の次数 {#comp:low-degree keywords="jump is monotone; a noncomputable low c.e. set has degree strictly between 0 and 0'" index="ジャンプの単調性|じゃんぷのたんちょうせい"}
+1. $X\le_{\mathrm{T}}Y$ なら $X'\le_{\mathrm{m}}Y'$。
+2. $A$ が低で認識可能かつ決定可能でないなら、$\mathbf{0}<_{\mathrm{T}}\deg A<_{\mathrm{T}}\mathbf{0}'$。
+:::
+
+::: proof
+**1.** $X'$ は $X$ で認識可能（\ref{comp:jump-properties} の 1）で、$X$ への問い合わせを $Y$ による $X$ の判定機の模倣に置き換えれば $Y$ で認識可能。\ref{comp:jump-properties} の 3 より $X'\le_{\mathrm{m}}Y'$。
+
+**2.** 認識可能なので $A\le_{\mathrm{T}}\varnothing'$。$\varnothing'\le_{\mathrm{T}}A$ なら 1 から $\varnothing''\le_{\mathrm{T}}A'\le_{\mathrm{T}}\varnothing'$ となり、\ref{comp:jump-properties} の 2 に反する。決定可能でないので $\mathbf{0}<_{\mathrm{T}}\deg A$。
+:::
+
+## 単純な低集合 {#comp:sec-ls-low-simple}
+
+::: theorem 単純な低集合の存在 {#comp:low-simple-set keywords="there is a low simple set; finite injury construction" index="単純な低集合|たんじゅんなていしゅうごう"}
+単純な低集合が存在する。したがって（\ref{comp:post-simple-set} と \ref{comp:low-degree}）$\mathbf{0}<_{\mathrm{T}}\deg A<_{\mathrm{T}}\mathbf{0}'$ となる認識可能な $A$ がある。
+:::
+
+::: proof
+**要求.** 有限集合の増加列 $A_{s}$ を作り $A\defeq\bigcup_{s}A_{s}$ とする。要求は
+- $N_{e}$：$\Phi_{e,s}^{A_{s}}(e)\downarrow$ となる $s$ が無限個あれば、$\Phi_{e}^{A}(e)\downarrow$。
+- $P_{e}$：$W_{e}$ が無限なら $W_{e}\cap A\ne\emptyset$。
+
+優先度は $N_{0}>P_{0}>N_{1}>P_{1}>\cdots$ とする。段 $s$ での**制限**を、$\Phi_{e,s}^{A_{s}}(e)\downarrow$ ならその使用量、そうでなければ $0$ とし、$r(e,s)$ と書く。
+
+**構成.** $A_{0}=\emptyset$。段 $s+1$ で、$P_{i}$（$i\le s$）が**注意を要する**とは、$W_{i,s}\cap A_{s}=\emptyset$ で、$x\in W_{i,s}$ で $x>2i$ かつすべての $e\le i$ について $x>r(e,s)$ となるものがあることをいう。注意を要する $P_{i}$ があれば、番号最小の $i$ について、そのような最小の $x$ を $A$ に入れ（$A_{s+1}=A_{s}\cup\{x\}$）、$P_{i}$ が**作用した**とする。なければ $A_{s+1}=A_{s}$。構成は計算可能で、$A$ は認識可能。
+
+**Step 1（各 $P_{i}$ は高々一回作用する）.** 作用すると $W_{i}\cap A\ne\emptyset$ となり、以後 $W_{i,s}\cap A_{s}=\emptyset$ は成り立たない。
+
+**Step 2（$\overline{A}$ は無限）.** $P_{i}$ が入れる数は $2i$ より大きく、Step 1 より各 $i$ から高々一つ。\ref{comp:post-simple-set} と同じ数え上げで $\overline{A}$ は無限。
+
+**Step 3（$N_{e}$ の損傷は有限回）.** $\Phi_{e,s}^{A_{s}}(e)\downarrow$（使用量 $r(e,s)$）のとき、$P_{i}$（$i\ge e$）が段 $s+1$ に入れる数は $r(e,s)$ より大きいので、保存の原理から $\Phi_{e,s+1}^{A_{s+1}}(e)\downarrow$ で使用量も同じ。この計算を壊しうるのは $i<e$ の $P_{i}$ の作用だけで、Step 1 よりそれは高々 $e$ 回。最後のそのような作用の段を $s_{e}$ とする（なければ $0$）。
+
+**Step 4（$N_{e}$ は成り立つ）.** $\Phi_{e,s}^{A_{s}}(e)\downarrow$ となる $s$ が無限個あれば、$s\ge s_{e}$ のものがあり、Step 3 からその後のどの段でも計算は保存され、$A$ も使用量未満で $A_{s}$ と一致する。よって $\Phi_{e}^{A}(e)\downarrow$。
+
+**Step 5（制限の極限）.** 各 $e$ について $\lim_{s}r(e,s)$ が存在する：Step 4 の議論から、$s_{e}$ 以降に一度でも $\Phi_{e,s}^{A_{s}}(e)\downarrow$ となれば以後保存されて $r(e,s)$ は一定、ならなければ $s_{e}$ 以降 $r(e,s)=0$。
+
+**Step 6（$P_{i}$ は成り立つ）.** $W_{i}$ が無限とする。$R\defeq\max_{e\le i}\lim_{s}r(e,s)$ とし、段 $s'$ を、$e\le i$ の制限がすべて極限に達し、$j<i$ の $P_{j}$ で作用するものがすべて作用し終えた段とする。$W_{i}$ は無限なので、$x>\max(2i,R)$ となる $x\in W_{i}$ があり、ある $s\ge s'$ で $x\in W_{i,s}$。そのとき $W_{i,s}\cap A_{s}\ne\emptyset$ ならすでに成り立つ。そうでなければ $P_{i}$ は注意を要し、$j<i$ の $P_{j}$ は注意を要さない（要すれば番号最小のものが作用し、$s'$ の定義に反する）ので、$P_{i}$ が作用して $W_{i}\cap A\ne\emptyset$。
+
+**Step 7（単純）.** Step 2, 6 より $A$ は単純。
+
+**Step 8（低）.** $K^{A}\defeq\{e:\Phi_{e}^{A}(e)\downarrow\}$ とする。$g(e,s)\defeq1$（$\Phi_{e,s}^{A_{s}}(e)\downarrow$ のとき）、$0$（そうでないとき）は計算可能。$e\in K^{A}$ なら、その計算の段数と使用量をこえる十分大きい $s$ で $A_{s}$ と $A$ が使用量未満で一致し、$g(e,s)=1$。$e\notin K^{A}$ なら、Step 4 の対偶から $g(e,s)=1$ となる $s$ は有限個。よって $\lim_{s}g(e,s)=\chi_{K^{A}}(e)$ で、極限補題（\ref{comp:limit-lemma}）から $K^{A}\le_{\mathrm{T}}\varnothing'$。最後に $A'\le_{\mathrm{m}}K^{A}$：$\langle M,w\rangle$ に、「入力を無視し、$M$ を $w$ の上で（同じ神託で）動かし、受理すれば止まり、拒否すれば無限ループする」神託機械の番号 $e$ を対応させる写像 $h$ は計算可能で（神託によらない）、$\langle M,w\rangle\in A'\iff h(\langle M,w\rangle)\in K^{A}$。よって $A'\le_{\mathrm{T}}\varnothing'$。
+:::
+
+::: hypcheck
+- **優先度 $N_{e}>P_{e}$**：Step 3 で、$P_{i}$（$i\ge e$）が $N_{e}$ の制限を守ることに使った。逆に $P_{i}$ が $N_{e}$（$e>i$）の制限を守らなくてよいので、$P_{i}$ は有限の制限（Step 5 の $R$）だけを避ければよい。
+- **各 $P_{i}$ が高々一回作用する**：Step 2（補集合の無限性）と Step 3（損傷の有限性）に使った。
+- **$x>2i$**：Step 2 の数え上げに使った。
+- **極限補題**：Step 8 で、「最終的に止まるかどうか」の極限で $K^{A}$ を近似し、$\varnothing'$ で計算できることに使った。
+:::
+
+## 問題 {#comp:sec-ls-problems}
+
+::: problem {#comp:prob-ls-simple-not-m-complete}
+単純集合 $A$ について、$\overline{A}$ が無限な認識可能集合を含まないことから、$A$ の補集合は「無限だがどの無限な認識可能集合とも交わる」ことを確かめ、決定可能な無限集合 $C$ について $C\cap A\ne\emptyset$ であることを示せ。
+:::
+
+::: solution
+$C$ は決定可能な無限集合なので認識可能で無限、すなわちある $W_{e}=C$ は無限。$C\subseteq\overline{A}$ なら単純性に反するので $C\not\subseteq\overline{A}$、すなわち $C\cap A\ne\emptyset$。（前半は定義の言い換え：$\overline{A}$ の無限な認識可能部分集合がないことは、すべての無限な $W_{e}$ が $\overline{A}$ の外の点、すなわち $A$ の点を含むこと。）
+:::
+
+::: problem {#comp:prob-ls-low-not-complete}
+$\varnothing'$ は低でないことを確かめよ。
+:::
+
+::: solution
+$\varnothing'$ が低なら $\varnothing''\le_{\mathrm{T}}\varnothing'$ で、\ref{comp:jump-properties} の 2（$B=\varnothing'$）に反する。
+:::
+
+::: supplement
+**前提を変えると.** 低集合の双対として、$A''\equiv_{\mathrm{T}}\varnothing''$（$A\le_{\mathrm{T}}\varnothing'$）となる**高**集合や、$A^{(n)}\equiv_{\mathrm{T}}\varnothing^{(n)}$ となる $\mathrm{low}_{n}$ 集合の階層が考えられる。ポストは単純集合が $\varnothing'$ と $m$ 同値でないことを示したが、単純集合で $\varnothing'$ と $T$ 同値なものも存在することが知られている（ここでは扱わない）ので、単純性だけではポストの問題は解けない。低さを加えたことで、ここでは解けている。
+
+**似た定理.** 極限補題は、$\Delta_{2}$ の集合（\ref{comp:post-theorem}）を「計算可能な近似が有限回だけ変わる」集合として特徴づける。近似の変化の回数に上限を付けると、差の階層（$n$-c.e. 集合）が得られる（ここでは扱わない）。低集合は、算術の非標準モデルや逆数学（低基底定理：空でない $\Pi^{0}_{1}$ クラスは低な元をもつ）でも重要であることが知られている（\ref{logic:page-rm-wkl0} を参照）。
+
+**高い視点から：「低い」とは「神託として役に立たない」.** 低集合 $A$ は、それ自身は決定可能でないのに、ジャンプをとると $\varnothing'$ と同じ次数にしかならない。比喩で言えば、自分では解けない問題をいくつか知っているが、それを使って新しく「止まるかどうか」を判定しようとしても、停止問題の神託 $\varnothing'$ 以上のことは何もできない、控えめな助言者である。優先論法では、$N_{e}$ が「一度止まった計算は壊さない」と見張ることで、$A$ への問い合わせの結果が最終的に安定し、それが $\varnothing'$ の極限で追跡できるようにしている。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

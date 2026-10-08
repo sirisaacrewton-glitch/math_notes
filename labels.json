@@ -4929,6 +4929,13 @@
       "num": "3.6",
       "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/03-martin-lof.html"
     },
+    "comp:limit-lemma": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "極限補題",
+      "num": "9.3",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/09-low-simple.html"
+    },
     "comp:linear-system": {
       "status": "defined",
       "type": "definition",
@@ -4991,6 +4998,27 @@
       "title": "ループする組",
       "num": "7.4",
       "page": "03-mathematical-logic/03D-computability-theory/01-automata/07-deterministic-cfl.html"
+    },
+    "comp:low-degree": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "ジャンプの単調性と低集合の次数",
+      "num": "9.5",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/09-low-simple.html"
+    },
+    "comp:low-set": {
+      "status": "defined",
+      "type": "definition",
+      "title": "低集合",
+      "num": "9.4",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/09-low-simple.html"
+    },
+    "comp:low-simple-set": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "単純な低集合の存在",
+      "num": "9.6",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/09-low-simple.html"
     },
     "comp:mapping-basic": {
       "status": "defined",
@@ -5440,6 +5468,13 @@
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/05-logspace.html"
     },
+    "comp:page-low-simple": {
+      "status": "defined",
+      "type": "page",
+      "title": "単純集合と低集合",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/09-low-simple.html"
+    },
     "comp:page-mapping-reducibility": {
       "status": "defined",
       "type": "page",
@@ -5782,6 +5817,13 @@
       "title": "多項式階層",
       "num": "9.8",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/09-alternation.html"
+    },
+    "comp:post-simple-set": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "ポストの単純集合",
+      "num": "9.2",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/09-low-simple.html"
     },
     "comp:post-theorem": {
       "status": "defined",
@@ -6216,6 +6258,20 @@
       "title": "",
       "num": "5.9",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/05-logspace.html"
+    },
+    "comp:prob-ls-low-not-complete": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "9.8",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/09-low-simple.html"
+    },
+    "comp:prob-ls-simple-not-m-complete": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "9.7",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/09-low-simple.html"
     },
     "comp:prob-mapping-atm-complete": {
       "status": "defined",
@@ -7526,6 +7582,41 @@
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/03-ackermann.html"
     },
+    "comp:sec-ls-limit": {
+      "status": "defined",
+      "type": "section",
+      "title": "極限補題と低集合",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/09-low-simple.html"
+    },
+    "comp:sec-ls-low-simple": {
+      "status": "defined",
+      "type": "section",
+      "title": "単純な低集合",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/09-low-simple.html"
+    },
+    "comp:sec-ls-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/09-low-simple.html"
+    },
+    "comp:sec-ls-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/09-low-simple.html"
+    },
+    "comp:sec-ls-simple": {
+      "status": "defined",
+      "type": "section",
+      "title": "単純集合",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/09-low-simple.html"
+    },
     "comp:sec-lt-notation": {
       "status": "defined",
       "type": "section",
@@ -8379,6 +8470,13 @@
       "title": "Σ¹₁ の分離定理",
       "num": "5.5",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/05-pi11-prewellordering.html"
+    },
+    "comp:simple-set": {
+      "status": "defined",
+      "type": "definition",
+      "title": "単純集合",
+      "num": "9.1",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/09-low-simple.html"
     },
     "comp:simultaneous-recursion": {
       "status": "defined",

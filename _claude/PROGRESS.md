@@ -315,6 +315,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 計算可能性 AC-09（03D/03/09-low-simple, comp:page-low-simple：ポストの単純集合、極限補題（ポストの定理から）、低集合とジャンプの単調性、単純な低集合の有限損傷による構成（P_i は高々一回作用、N_e の損傷は高々 e 回、制限の極限、K^A の極限近似で低さ））。新井 §6.6 の演習を補って証明。
 - 2026-10-08 ホモロジー代数 HD-04（18G/02/04-injective-modules, ha:page-injective-modules：ベールの判定法（ツォルンの補題）、アーベル群では入射 ⇔ 可除、Q・Q/Z、可除群への埋め込み、余誘導加群 Hom_Z(R,D) と随伴による R-Mod の十分な入射対象、Z は入射的でない・Q/Z は余生成対象の問題）。資料なし。
 - 2026-10-08 計算可能性 AC-08（03D/03/08-friedberg-muchnik, comp:page-friedberg-muchnik：比較不能性の要求、クリーネ–ポストの定理（∅' による有限延長法）、フリードバーグ–ムチニクの定理（注意を要する条件・証人・制限・損傷を明示した有限損傷の優先論法、各要求が有限回しか作用しないことを優先度の帰納法で）、非決定可能な認識可能集合の構成と制限の必要性の問題）。新井 §6.4。02-turing-reducibility の補足から参照。
 - 2026-10-08 計算可能性 AC-07（03D/03/07-post-theorem, comp:page-post-theorem：集合の神託についての使用の原理（有限表 D の形）、Σ_n・Π_n の有界量化子での閉性、ポストの定理（Σ_{n+1} ⇔ ∅^(n) で認識可能、∅^(n+1) は Σ_{n+1} 完全、Δ_{n+1} ⇔ ≤_T ∅^(n)）、∅^(n) は Σ_n だが Π_n でない、FIN と TOT の問題）。新井 §6.3。02-turing-reducibility の補足から参照。
@@ -499,6 +500,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | CC-13 | 04-complexity/13-primality-branching | 素数判定と一回読み分岐プログラム（Sipser 10.2） | 完了 |
 | AC-07 | 03-advanced-computability/07-post-theorem | ポストの定理（使用の原理・有界量化子・Σ_{n+1}=∅^(n) で認識可能・Δ_{n+1}=≤_T ∅^(n)）（新井 §6.3） | 完了 |
 | AC-08 | 03-advanced-computability/08-friedberg-muchnik | ポストの問題とフリードバーグ–ムチニクの定理（優先論法）（新井 §6.4） | 完了 |
+| AC-09 | 03-advanced-computability/09-low-simple | 単純集合・極限補題・低集合・単純な低集合（新井 §6.6 演習） | 完了 |
 | KR-01 | 06-algorithmic-randomness/01-prefix-free-complexity | 接頭辞なし複雑性とクラフトの不等式 | 完了 |
 | KR-02 | 06-algorithmic-randomness/02-martin-lof | マルチン＝レーフのランダムネスとレヴィン–シュノアの定理 | 完了 |
 

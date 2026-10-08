@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>組合せ論理 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/06-lambda-calculus/03-combinatory-logic.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 組合せ論理 {#logic:page-combinatory-logic keywords="combinatory logic, combinators S and K, weak reduction, bracket abstraction, combinatory completeness, Church-Rosser for weak reduction, translation between lambda calculus and combinatory logic, failure of the xi rule, extensionality"}
+
+**組合せ論理**は、ラムダ計算（\ref{logic:page-lambda-calculus}）から束縛変数を完全に取り除いた体系である。項は変数と二つの定数 $\mathsf{S}$, $\mathsf{K}$ を適用で組み合わせたものだけで、計算は**弱簡約** $\mathsf{K}PQ\to P$, $\mathsf{S}PQR\to PR(QR)$（\ref{logic:weak-reduction}）で進む。それでも、**括弧抽象**（\ref{logic:bracket-abstraction}）によって「$x$ についての関数」をすべて表せる（**組合せ完全性**、\ref{logic:combinatory-completeness}）。弱簡約は合流的で（\ref{logic:cl-church-rosser}）、ラムダ計算と互いに翻訳できる（\ref{logic:cl-lambda-translation}）が、弱等式は抽象の下での等式（ξ 規則）を満たさず、翻訳は等式を完全には保たない（\ref{logic:cl-xi-fails}）。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な定義と議論（シェーンフィンケル、カリーに遡る）に従って組み立てた。
+
+## 記法と定義の確認 {#logic:sec-cl-notation}
+
+::: notation
+- 反射推移閉包 $R^{\ast}$、反射対称推移閉包 $R^{=}$、菱形性・合流性は \ref{logic:page-lambda-calculus} の記法のとおり。
+- ラムダ項、代入、β 簡約 $\to_{\beta}$, $\twoheadrightarrow_{\beta}$, $=_{\beta}$ は \ref{logic:lambda-term}, \ref{logic:lambda-substitution}, \ref{logic:beta-reduction} のとおり。
+- 組合せ論理の項には束縛変数がないので、代入 $M[N/x]$ は $x$ の出現をすべて $N$ に置き換えるだけでよく、α 同値は現れない。
+:::
+
+## 項と弱簡約 {#logic:sec-cl-terms}
+
+::: definition 組合せ論理の項と弱簡約 {#logic:weak-reduction keywords="CL terms, combinators S and K, weak reduction, weak equality, weak normal form" index="組合せ論理|くみあわせろんり, 弱簡約|じゃくかんやく, S 結合子|えすけつごうし, K 結合子|けーけつごうし"}
+1. **CL 項**を、変数と定数 $\mathsf{S}$, $\mathsf{K}$ から適用 $(MN)$ だけで帰納的に作る（適用は左結合）。変数を含まない項を**結合子**という。
+2. **一段の弱簡約** $\to_{w}$ を、$\mathsf{K}PQ\to_{w}P$ と $\mathsf{S}PQR\to_{w}PR(QR)$ を含み、「$M\to_{w}M'$ なら $MN\to_{w}M'N$, $NM\to_{w}NM'$」で閉じた最小の関係とする。$\twoheadrightarrow_{w}\defeq(\to_{w})^{\ast}$、$=_{w}\defeq(\to_{w})^{=}$（**弱等式**）。
+3. 形 $\mathsf{K}PQ$, $\mathsf{S}PQR$ の部分項（**基**）を含まない項を**弱正規形**という。
+:::
+
+::: example
+$\mathsf{I}\defeq\mathsf{SKK}$ とすると $\mathsf{I}P\to_{w}\mathsf{K}P(\mathsf{K}P)\to_{w}P$。$\mathsf{B}\defeq\mathsf{S}(\mathsf{KS})\mathsf{K}$ とすると、
+$$
+\mathsf{B}fgx\to_{w}\mathsf{KS}f(\mathsf{K}f)gx\to_{w}\mathsf{S}(\mathsf{K}f)gx\to_{w}\mathsf{K}fx(gx)\to_{w}f(gx)
+$$
+で、$\mathsf{B}$ は関数の合成を表す。
+:::
+
+## 括弧抽象と組合せ完全性 {#logic:sec-cl-bracket}
+
+::: definition 括弧抽象 {#logic:bracket-abstraction keywords="bracket abstraction [x]M" index="括弧抽象|かっこちゅうしょう"}
+CL 項 $M$ と変数 $x$ について、CL 項 $[x]M$ を $M$ に関する帰納法で次のように定める（上から順に最初に当てはまる規則を使う）。
+1. $[x]x\defeq\mathsf{I}$。
+2. $x$ が $M$ に現れないなら $[x]M\defeq\mathsf{K}M$。
+3. $[x](MN)\defeq\mathsf{S}([x]M)([x]N)$。
+:::
+
+::: lemma 括弧抽象の基本性質 {#logic:bracket-beta keywords="([x]M)N reduces weakly to M[N/x]" index="括弧抽象の基本性質|かっこちゅうしょうのきほんせいしつ"}
+1. $[x]M$ に $x$ は現れず、$[x]M$ に現れる変数は $M$ に現れる $x$ 以外の変数である。
+2. すべての CL 項 $N$ について $([x]M)N\twoheadrightarrow_{w}M[N/x]$。
+:::
+
+::: proof
+$M$ に関する帰納法で、定義の規則ごとに確かめる。
+- **規則 1**（$M=x$）：$\mathsf{I}$ は変数を含まない。$\mathsf{I}N\twoheadrightarrow_{w}N=x[N/x]$。
+- **規則 2**（$x$ が $M$ に現れない）：$\mathsf{K}M$ の変数は $M$ の変数。$\mathsf{K}MN\to_{w}M=M[N/x]$。
+- **規則 3**（$M=M_{1}M_{2}$ で $x$ が現れる）：1 は帰納法の仮定から。2 は
+$$
+\mathsf{S}([x]M_{1})([x]M_{2})N\to_{w}([x]M_{1})N\,(([x]M_{2})N)\twoheadrightarrow_{w}M_{1}[N/x]\,M_{2}[N/x]
+$$
+で、最後は帰納法の仮定を二つの部分項に使った（弱簡約は適用の両側で閉じている）。右辺は $(M_{1}M_{2})[N/x]$ に等しい。
+:::
+
+::: theorem 組合せ完全性 {#logic:combinatory-completeness keywords="combinatory completeness: every term in variables x1..xn is represented by a term F with F x1 ... xn ->> M" index="組合せ完全性|くみあわせかんぜんせい"}
+CL 項 $M$ と相異なる変数 $x_{1},\dots,x_{n}$ について、$x_{1},\dots,x_{n}$ を含まない CL 項 $F$ で、すべての CL 項 $N_{1},\dots,N_{n}$ について
+$$
+FN_{1}\cdots N_{n}\twoheadrightarrow_{w}M[N_{1}/x_{1},\dots,N_{n}/x_{n}]
+$$
+となるものがある（右辺は $x_{i}$ を一斉に $N_{i}$ で置き換えた**同時代入**）。特に $M$ に $x_{1},\dots,x_{n}$ 以外の変数がなければ $F$ は結合子である。
+:::
+
+::: proof
+$F\defeq[x_{1}][x_{2}]\cdots[x_{n}]M$ とする。\ref{logic:bracket-beta} の 1 を $n$ 回使うと、$F$ は $x_{1},\dots,x_{n}$ を含まない。
+
+**Step 1（変数の付け替えと括弧抽象）.** 変数 $z\ne x$ と、$x$ と異なる変数 $y$ について、$([x]A)[y/z]=[x](A[y/z])$。実際、括弧抽象の規則の適用条件（$A=x$ か、$x$ が $A$ に現れるか）は、$x$ 以外の変数を $x$ 以外の変数に付け替えても変わらないので、$A$ に関する帰納法で各規則ごとに両辺が一致する。
+
+**Step 2（新しい変数での計算）.** $x_{1},\dots,x_{n}$ とも、$M$ と $N_{1},\dots,N_{n}$ に現れる変数とも異なる新しい変数 $y_{1},\dots,y_{n}$ をとる。$G_{k}\defeq[x_{k+1}]\cdots[x_{n}]M$ とおくと、\ref{logic:bracket-beta} の 2 と Step 1 から
+$$
+Fy_{1}=([x_{1}]G_{1})y_{1}\twoheadrightarrow_{w}G_{1}[y_{1}/x_{1}]=[x_{2}]\cdots[x_{n}](M[y_{1}/x_{1}])
+$$
+で、これを $k=2,\dots,n$ と繰り返して $Fy_{1}\cdots y_{n}\twoheadrightarrow_{w}M[y_{1}/x_{1}]\cdots[y_{n}/x_{n}]$ を得る（弱簡約は適用で閉じている）。
+
+**Step 3（一般の項への代入）.** 弱簡約は代入で閉じている：基 $\mathsf{K}PQ$, $\mathsf{S}PQR$ に代入しても同じ形の基になり、規則の右辺も対応して代入される。Step 2 の簡約列の各項に $[N_{1}/y_{1}]\cdots[N_{n}/y_{n}]$ を施すと、$F$ は $y_{i}$ を含まず、$y_{i}$ は新しい変数なので
+$$
+FN_{1}\cdots N_{n}\twoheadrightarrow_{w}M[y_{1}/x_{1}]\cdots[y_{n}/x_{n}][N_{1}/y_{1}]\cdots[N_{n}/y_{n}]=M[N_{1}/x_{1},\dots,N_{n}/x_{n}].
+$$
+最後の等号は、$y_{i}$ が新しい変数なので、$x_{i}$ を経由した付け替えが同時代入と一致することによる。
+:::
+
+::: hypcheck
+- **新しい変数 $y_{i}$ を経由すること**：括弧抽象の規則 2 は「$x$ が現れるかどうか」で分岐するので、変数に一般の項を直接代入すると分岐が変わりうる。名前の付け替えでは分岐は変わらない。
+- **弱簡約が代入で閉じていること**：最後に $y_{i}$ を $N_{i}$ に置き換えるのに使った。
+:::
+
+## 合流性 {#logic:sec-cl-confluence}
+
+::: definition 弱簡約の並行簡約と完全展開 {#logic:cl-parallel keywords="parallel weak reduction, complete development for CL" index="並行簡約（組合せ論理）|へいこうかんやくくみあわせろんり"}
+1. **並行簡約** $\Rightarrow$ を次の規則で生成される最小の関係とする：(a) 変数と定数 $a$ について $a\Rightarrow a$；(b) $M\Rightarrow M'$, $N\Rightarrow N'$ なら $MN\Rightarrow M'N'$；(c) $P\Rightarrow P'$ なら $\mathsf{K}PQ\Rightarrow P'$；(d) $P\Rightarrow P'$, $Q\Rightarrow Q'$, $R\Rightarrow R'$ なら $\mathsf{S}PQR\Rightarrow P'R'(Q'R')$。
+2. **完全展開** $M^{\bullet}$ を：$a^{\bullet}=a$（変数・定数）、$(\mathsf{K}PQ)^{\bullet}=P^{\bullet}$、$(\mathsf{S}PQR)^{\bullet}=P^{\bullet}R^{\bullet}(Q^{\bullet}R^{\bullet})$、それ以外の適用では $(MN)^{\bullet}=M^{\bullet}N^{\bullet}$ と定める。
+:::
+
+::: theorem 弱簡約のチャーチ–ロッサー性 {#logic:cl-church-rosser keywords="weak reduction is confluent; uniqueness of weak normal forms" index="弱簡約の合流性|じゃくかんやくのごうりゅうせい"}
+$\to_{w}$ は合流的である。したがって、弱正規形は（あれば）一意で、異なる弱正規形どうしは弱等しくない。
+:::
+
+::: proof
+**Step 1（$\to_{w}\subseteq\Rightarrow\subseteq\twoheadrightarrow_{w}$）.** $\Rightarrow$ は反射的（項に関する帰納法で (a), (b) から）。よって基の一段の簡約は (c), (d) で、文脈の中の簡約は (b) で $\Rightarrow$ に含まれる。逆に $\Rightarrow$ の導出に関する帰納法で、各規則は $\twoheadrightarrow_{w}$ の列で実現できる（(d) では $P,Q,R$ を先に簡約してから基を簡約する）。したがって $\Rightarrow^{\ast}=\twoheadrightarrow_{w}$。
+
+**Step 2（三角形の性質：$M\Rightarrow M'$ なら $M'\Rightarrow M^{\bullet}$）.** $M\Rightarrow M'$ の導出に関する帰納法。
+- (a)：$M'=a=M^{\bullet}$。
+- (c)：$M=\mathsf{K}PQ$, $M'=P'$。帰納法の仮定から $P'\Rightarrow P^{\bullet}=M^{\bullet}$。
+- (d)：帰納法の仮定 $P'\Rightarrow P^{\bullet}$ などと (b) から $P'R'(Q'R')\Rightarrow P^{\bullet}R^{\bullet}(Q^{\bullet}R^{\bullet})=M^{\bullet}$。
+- (b) で $M=M_{1}M_{2}$, $M'=M_{1}'M_{2}'$ のとき、$M$ の形で場合分けする。
+  - $M=\mathsf{K}PQ$（$M_{1}=\mathsf{K}P$, $M_{2}=Q$）：$\mathsf{K}P$ は基でないので $M_{1}\Rightarrow M_{1}'$ は (b) により、$M_{1}'=\mathsf{K}P'$（$P\Rightarrow P'$）。帰納法の仮定から $P'\Rightarrow P^{\bullet}$ で、(c) により $M'=\mathsf{K}P'Q'\Rightarrow P^{\bullet}=M^{\bullet}$。
+  - $M=\mathsf{S}PQR$：同様に $M'=\mathsf{S}P'Q'R'$ で、帰納法の仮定と (d) から $M'\Rightarrow M^{\bullet}$。
+  - それ以外：$M^{\bullet}=M_{1}^{\bullet}M_{2}^{\bullet}$ で、帰納法の仮定と (b) から。
+
+**Step 3.** Step 2 から $\Rightarrow$ は菱形性をもち（$M\Rightarrow M_{1}$, $M\Rightarrow M_{2}$ なら両者 $\Rightarrow M^{\bullet}$）、反射推移閉包も菱形性をもつ（\ref{logic:church-rosser} の証明と同じ格子の議論）。Step 1 から $\twoheadrightarrow_{w}$ は菱形性をもつ。正規形についての主張は \ref{logic:normal-form-unique} と同じ議論による。
+:::
+
+::: hypcheck
+- **基の形が頭の定数で区別されること**：Step 2 の場合分けで、$\mathsf{K}PQ$ と $\mathsf{S}PQR$ が重ならず、$\mathsf{K}P$, $\mathsf{S}PQ$ が基でないことに使った。
+- ラムダ計算の場合（\ref{logic:triangle}）と違い、束縛変数と代入の補題が要らない。
+:::
+
+## ラムダ計算との関係 {#logic:sec-cl-lambda}
+
+::: theorem 二つの翻訳 {#logic:cl-lambda-translation keywords="translation from CL to lambda calculus and back; weak reduction maps to beta reduction; (M_CL)_lambda =_beta M" index="組合せ論理とラムダ計算の翻訳|くみあわせろんりとらむだけいさんのほんやく"}
+1. CL 項 $M$ のラムダ項への翻訳 $M_{\lambda}$ を、変数はそのまま、$\mathsf{K}_{\lambda}\defeq\lambda xy.x$, $\mathsf{S}_{\lambda}\defeq\lambda xyz.xz(yz)$, $(MN)_{\lambda}\defeq M_{\lambda}N_{\lambda}$ で定める。$M\to_{w}N$ なら $M_{\lambda}\twoheadrightarrow_{\beta}N_{\lambda}$。
+2. ラムダ項 $M$ の CL 項への翻訳 $M_{\mathrm{CL}}$ を、変数はそのまま、$(MN)_{\mathrm{CL}}\defeq M_{\mathrm{CL}}N_{\mathrm{CL}}$, $(\lambda x.M)_{\mathrm{CL}}\defeq[x]M_{\mathrm{CL}}$ で定める。すると $(M_{\mathrm{CL}})_{\lambda}=_{\beta}M$。
+:::
+
+::: proof
+**1.** 基について：$\mathsf{K}_{\lambda}P_{\lambda}Q_{\lambda}\twoheadrightarrow_{\beta}P_{\lambda}$（二段）、$\mathsf{S}_{\lambda}P_{\lambda}Q_{\lambda}R_{\lambda}\twoheadrightarrow_{\beta}P_{\lambda}R_{\lambda}(Q_{\lambda}R_{\lambda})$（三段。$x,y,z$ は $P_{\lambda},Q_{\lambda},R_{\lambda}$ の自由変数と異なるように選ぶ）。文脈は翻訳で適用のまま保たれ、$\twoheadrightarrow_{\beta}$ は適用で閉じている。
+
+**2.** まず、すべての CL 項 $A$ について $([x]A)_{\lambda}=_{\beta}\lambda x.A_{\lambda}$ を $A$ に関する帰納法で示す（括弧抽象の規則ごと）。
+- 規則 1：$(\mathsf{SKK})_{\lambda}\twoheadrightarrow_{\beta}\lambda z.\mathsf{K}_{\lambda}z(\mathsf{K}_{\lambda}z)\twoheadrightarrow_{\beta}\lambda z.z$（抽象の下での β 簡約）。
+- 規則 2：$(\mathsf{K}A)_{\lambda}\to_{\beta}\lambda y.A_{\lambda}$ で、$x\notin\mathrm{FV}(A_{\lambda})$ なので $\lambda x.A_{\lambda}$ と α 同値（$x$ は抽象しても何も束縛しない）。
+- 規則 3：$(\mathsf{S}([x]A_{1})([x]A_{2}))_{\lambda}\twoheadrightarrow_{\beta}\lambda z.([x]A_{1})_{\lambda}z(([x]A_{2})_{\lambda}z)$ で、帰納法の仮定と $(\lambda x.A_{i\lambda})z\to_{\beta}A_{i\lambda}[z/x]$ から、これは $\lambda z.(A_{1\lambda}A_{2\lambda})[z/x]\equiv\lambda x.A_{\lambda}$ と β 等しい（$z$ は新しい変数）。
+
+次に $(M_{\mathrm{CL}})_{\lambda}=_{\beta}M$ を $M$ に関する帰納法で示す。変数と適用は明らか（$=_{\beta}$ は適用で閉じている）。抽象では、上の主張と帰納法の仮定から $(([x]M_{\mathrm{CL}})_{\lambda})=_{\beta}\lambda x.(M_{\mathrm{CL}})_{\lambda}=_{\beta}\lambda x.M$（$=_{\beta}$ は抽象で閉じている）。
+:::
+
+::: proposition 弱等式は ξ 規則を満たさない {#logic:cl-xi-fails keywords="weak equality does not satisfy the xi rule; the CL translation does not preserve beta equality" index="ξ 規則と組合せ論理|くさいきそくとくみあわせろんり"}
+$\mathsf{I}x=_{w}x$ だが $[x](\mathsf{I}x)\ne_{w}[x]x$。したがって、$\lambda x.(\lambda y.y)x=_{\beta}\lambda x.x$ なのに、それらの CL への翻訳は弱等しくない。
+:::
+
+::: proof
+$[x](\mathsf{I}x)=\mathsf{S}([x]\mathsf{I})([x]x)=\mathsf{S}(\mathsf{KI})\mathsf{I}$、$[x]x=\mathsf{I}=\mathsf{SKK}$。どちらも弱正規形（$\mathsf{S}$ に引数が二つ以下、$\mathsf{K}$ に引数が一つ以下）で、異なる項なので、\ref{logic:cl-church-rosser} から弱等しくない。後半は $((\lambda y.y)x)_{\mathrm{CL}}=\mathsf{I}x$, $(\lambda y.y)_{\mathrm{CL}}=\mathsf{I}$ による。
+:::
+
+## 問題 {#logic:sec-cl-problems}
+
+::: problem {#logic:prob-cl-ski}
+$\mathsf{SKK}$ と $\mathsf{SKS}$ はどちらも任意の $P$ について $P$ に簡約されることを確かめ、それでも両者が弱等しくないことを示せ。
+:::
+
+::: solution
+$\mathsf{SKS}P\to_{w}\mathsf{K}P(\mathsf{S}P)\to_{w}P$、$\mathsf{SKK}P\twoheadrightarrow_{w}P$ は例のとおり。両者は異なる弱正規形なので \ref{logic:cl-church-rosser} から弱等しくない。弱等式は「すべての引数で同じ値を返すなら等しい」という外延性を満たさない。
+:::
+
+::: problem {#logic:prob-cl-swap}
+$T\defeq[x][y](yx)$ を計算し、$Tab\twoheadrightarrow_{w}ba$ を直接確かめよ。
+:::
+
+::: solution
+$[y](yx)=\mathsf{S}([y]y)([y]x)=\mathsf{SI}(\mathsf{K}x)$。$[x](\mathsf{SI}(\mathsf{K}x))=\mathsf{S}(\mathsf{K}(\mathsf{SI}))([x](\mathsf{K}x))$ で、$[x](\mathsf{K}x)=\mathsf{S}(\mathsf{KK})\mathsf{I}$。よって $T=\mathsf{S}(\mathsf{K}(\mathsf{SI}))(\mathsf{S}(\mathsf{KK})\mathsf{I})$。
+$$
+Ta\to_{w}\mathsf{K}(\mathsf{SI})a\,(\mathsf{S}(\mathsf{KK})\mathsf{I}a)\to_{w}\mathsf{SI}(\mathsf{S}(\mathsf{KK})\mathsf{I}a)
+$$
+で、$\mathsf{S}(\mathsf{KK})\mathsf{I}a\to_{w}\mathsf{KK}a(\mathsf{I}a)\to_{w}\mathsf{K}(\mathsf{I}a)\twoheadrightarrow_{w}\mathsf{K}a$。よって $Tab\twoheadrightarrow_{w}\mathsf{SI}(\mathsf{K}a)b\to_{w}\mathsf{I}b(\mathsf{K}ab)\twoheadrightarrow_{w}ba$。
+:::
+
+::: supplement
+**前提を変えると.** 弱等式に外延性の規則（「すべての新しい変数 $x$ で $Mx=Nx$ なら $M=N$」）を加えると、翻訳は $\beta\eta$ 等式と対応することが知られている。外延性を使わずに β 等式と正確に対応させるには、カリーの公理系 $A_{\beta}$ のような有限個の結合子の等式を追加する方法があることが知られている（ここでは扱わない）。また、括弧抽象の規則 3 の前に「$[x](Mx)\defeq M$（$x$ が $M$ に現れないとき）」を加えると、翻訳の結果が短くなり、η 簡約との相性が良くなる。
+
+**似た定理.** 不動点定理（\ref{logic:fixed-point-combinator}）は組合せ論理でも成り立つ：$W\defeq[x](f(xx))$, $Y\defeq[f](WW)$ とすれば $Yf=_{w}f(Yf)$ が \ref{logic:bracket-beta} から従う。また、全域的な計算可能関数は（チャーチ数の翻訳を通して）組合せ論理でも表せる（\ref{logic:computable-lambda} と \ref{logic:cl-lambda-translation} の 1）ことが知られている。基底を $\{\mathsf{S},\mathsf{K}\}$ から一つの結合子に減らせること（たとえば $\iota$ 結合子）も知られている。
+
+**高い視点から：変数のない関数の言語.** 括弧抽象は、変数を含む式を「部品をつなぐ配線図」に書き換える操作である。$\mathsf{K}$ は「入力を捨てる」、$\mathsf{S}$ は「入力を二つの関数に複製して配る」配線で、$\mathsf{I}$ は「そのまま通す」配線である。比喩で言えば、ラムダ計算が「名前を付けた変数で荷物を受け渡す工場」なら、組合せ論理は「名前を使わず、ベルトコンベアの分岐と廃棄だけで荷物を回す工場」である。圏論では、デカルト閉圏の射（\ref{logic:page-ccc-semantics}）が変数のない形で書かれるのと同じ発想で、$\mathsf{K}$ と $\mathsf{S}$ は射影と対角写像（複製）をカリー化したものにあたる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

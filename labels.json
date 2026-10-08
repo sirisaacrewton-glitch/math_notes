@@ -10165,6 +10165,20 @@
       "num": "1.15",
       "page": "03-mathematical-logic/03B-general-logic/03-modal-logic/01-normal-modal-logics.html"
     },
+    "logic:bracket-abstraction": {
+      "status": "defined",
+      "type": "definition",
+      "title": "括弧抽象",
+      "num": "3.2",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/03-combinatory-logic.html"
+    },
+    "logic:bracket-beta": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "括弧抽象の基本性質",
+      "num": "3.3",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/03-combinatory-logic.html"
+    },
     "logic:candidate-basic": {
       "status": "defined",
       "type": "lemma",
@@ -10284,12 +10298,47 @@
       "num": "5.4",
       "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/05-lambek.html"
     },
+    "logic:cl-church-rosser": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "弱簡約のチャーチ–ロッサー性",
+      "num": "3.6",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/03-combinatory-logic.html"
+    },
+    "logic:cl-lambda-translation": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "二つの翻訳",
+      "num": "3.7",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/03-combinatory-logic.html"
+    },
+    "logic:cl-parallel": {
+      "status": "defined",
+      "type": "definition",
+      "title": "弱簡約の並行簡約と完全展開",
+      "num": "3.5",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/03-combinatory-logic.html"
+    },
+    "logic:cl-xi-fails": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "弱等式は ξ 規則を満たさない",
+      "num": "3.8",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/03-combinatory-logic.html"
+    },
     "logic:coincidence": {
       "status": "defined",
       "type": "lemma",
       "title": "一致補題",
       "num": "3.8",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/03-semantics.html"
+    },
+    "logic:combinatory-completeness": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "組合せ完全性",
+      "num": "3.4",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/03-combinatory-logic.html"
     },
     "logic:compactness": {
       "status": "defined",
@@ -11586,6 +11635,13 @@
       "num": "",
       "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/04-ccc-semantics.html"
     },
+    "logic:page-combinatory-logic": {
+      "status": "defined",
+      "type": "page",
+      "title": "組合せ論理",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/03-combinatory-logic.html"
+    },
     "logic:page-completeness": {
       "status": "defined",
       "type": "page",
@@ -11963,6 +12019,20 @@
       "title": "",
       "num": "2.9",
       "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/02-lambda-definability.html"
+    },
+    "logic:prob-cl-ski": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "3.9",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/03-combinatory-logic.html"
+    },
+    "logic:prob-cl-swap": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "3.10",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/03-combinatory-logic.html"
     },
     "logic:prob-commas": {
       "status": "defined",
@@ -12915,6 +12985,48 @@
       "title": "チャーチ–ロッサーの定理",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/01-untyped-lambda.html"
+    },
+    "logic:sec-cl-bracket": {
+      "status": "defined",
+      "type": "section",
+      "title": "括弧抽象と組合せ完全性",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/03-combinatory-logic.html"
+    },
+    "logic:sec-cl-confluence": {
+      "status": "defined",
+      "type": "section",
+      "title": "合流性",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/03-combinatory-logic.html"
+    },
+    "logic:sec-cl-lambda": {
+      "status": "defined",
+      "type": "section",
+      "title": "ラムダ計算との関係",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/03-combinatory-logic.html"
+    },
+    "logic:sec-cl-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/03-combinatory-logic.html"
+    },
+    "logic:sec-cl-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/03-combinatory-logic.html"
+    },
+    "logic:sec-cl-terms": {
+      "status": "defined",
+      "type": "section",
+      "title": "項と弱簡約",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/03-combinatory-logic.html"
     },
     "logic:sec-compactness-ls": {
       "status": "defined",
@@ -14714,6 +14826,13 @@
       "title": "弱い完全性定理（カルマール）",
       "num": "2.6",
       "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/02-natural-deduction-completeness.html"
+    },
+    "logic:weak-reduction": {
+      "status": "defined",
+      "type": "definition",
+      "title": "組合せ論理の項と弱簡約",
+      "num": "3.1",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/03-combinatory-logic.html"
     },
     "logic:wkl-equivalents": {
       "status": "defined",

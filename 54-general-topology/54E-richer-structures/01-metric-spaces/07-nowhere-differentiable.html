@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>至るところ微分不可能な連続関数 | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54E-richer-structures/01-metric-spaces/07-nowhere-differentiable.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 至るところ微分不可能な連続関数 {#top:page-nowhere-differentiable keywords="nowhere differentiable continuous functions, Banach's category argument, Baire category theorem in C[0,1], residual sets, sawtooth functions, piecewise linear approximation, Weierstrass function"}
+
+至るところ微分不可能な連続関数を具体的に書くこと（ワイエルシュトラスの例）は計算を要するが、ベールのカテゴリー定理（\ref{top:baire-category}）を使えば、そのような関数が**存在する**だけでなく、連続関数全体の空間 $C[0,1]$ の中で「ほとんどすべて」（第一類集合の補集合）であることが示せる（**バナッハの定理**、\ref{top:nowhere-differentiable-generic}）。鍵は、ある点でリプシッツ的な増加の評価をもつ関数の集合 $E_{n}$（\ref{top:lipschitz-at-point-sets}）が閉かつ内部をもたないことで、内部をもたないことは、折れ線で近似してから急な鋸歯を加えることで示す。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論（バナッハ、1931 による）に従って組み立てた。
+
+## 記法と定義の確認 {#top:sec-nd-notation}
+
+::: notation
+- $C[0,1]$ は連続関数 $[0,1]\to\R$ の全体で、距離 $\lVert f-g\rVert\defeq\sup\lvert f-g\rvert$ により完備な距離空間（\ref{top:uniform-space-complete}）。
+- 疎集合・第一類集合・ベールのカテゴリー定理（完備距離空間はベール空間）は \ref{top:first-category}, \ref{top:baire-category}。ハイネ–カントールの定理（コンパクト集合上の連続関数は一様連続）は \ref{top:heine-cantor}。
+- $f$ が $x\in[0,1]$ で**微分可能**とは、極限 $\lim_{y\to x,\,y\in[0,1]}\frac{f(y)-f(x)}{y-x}$ が存在する（有限）ことをいう（端点では片側極限）。
+:::
+
+## 補助的な集合 {#top:sec-nd-sets}
+
+::: definition 一点でのリプシッツ評価 {#top:lipschitz-at-point-sets keywords="E_n: functions with |f(y)-f(x)| <= n|y-x| for some x and all y" index="一点でのリプシッツ評価|いってんでのりぷしっつひょうか"}
+$n\ge1$ について、$E_{n}\defeq\{f\in C[0,1]:\text{ある }x\in[0,1]\text{ で、すべての }y\in[0,1]\text{ について }\lvert f(y)-f(x)\rvert\le n\lvert y-x\rvert\}$。
+:::
+
+::: lemma 微分可能ならどれかの E_n に属する {#top:differentiable-in-en keywords="a function differentiable at some point lies in some E_n" index="微分可能性と E_n|びぶんかのうせいといーえぬ"}
+$f\in C[0,1]$ がある点 $x$ で微分可能なら、ある $n$ で $f\in E_{n}$。
+:::
+
+::: proof
+微分係数を $a$ とすると、$\delta>0$ で $0<\lvert y-x\rvert<\delta$ なら $\lvert f(y)-f(x)\rvert\le(\lvert a\rvert+1)\lvert y-x\rvert$。$\lvert y-x\rvert\ge\delta$ なら $\lvert f(y)-f(x)\rvert\le2\lVert f\rVert\le(2\lVert f\rVert/\delta)\lvert y-x\rvert$。$n\ge\max(\lvert a\rvert+1,2\lVert f\rVert/\delta)$ とすればよい。
+:::
+
+::: lemma E_n は閉 {#top:en-closed keywords="E_n is closed in C[0,1]" index="E_n の閉性|いーえぬのへいせい"}
+$E_{n}$ は $C[0,1]$ の閉集合である。
+:::
+
+::: proof
+$f_{k}\in E_{n}$, $f_{k}\to f$（一様）とし、$f_{k}$ の評価の点を $x_{k}$ とする。$[0,1]$ は**コンパクト**なので、部分列をとって $x_{k}\to x$ としてよい。$y\in[0,1]$ について
+$$
+\begin{aligned}
+\lvert f(y)-f(x)\rvert&\le\lvert f(y)-f_{k}(y)\rvert+\lvert f_{k}(y)-f_{k}(x_{k})\rvert\\
+&\qquad+\lvert f_{k}(x_{k})-f(x_{k})\rvert+\lvert f(x_{k})-f(x)\rvert\\
+&\le2\lVert f-f_{k}\rVert+n\lvert y-x_{k}\rvert+\lvert f(x_{k})-f(x)\rvert.
+\end{aligned}
+$$
+$k\to\infty$ とすると、一様収束と $f$ の連続性から右辺は $n\lvert y-x\rvert$ に収束する。よって $f\in E_{n}$。
+:::
+
+::: lemma E_n は内部をもたない {#top:en-nowhere-dense keywords="E_n has empty interior: perturb a piecewise linear approximation by a steep sawtooth" index="E_n の疎性|いーえぬのそせい"}
+$E_{n}$ は内部をもたない。したがって（閉なので）疎集合である。
+:::
+
+::: proof
+$f\in C[0,1]$ と $\varepsilon>0$ について、$\lVert f-g\rVert<\varepsilon$ で $g\notin E_{n}$ となる $g$ を作る。
+
+**Step 1（折れ線近似）.** **ハイネ–カントールの定理**から $f$ は一様連続で、$\lvert s-t\rvert\le1/m$ なら $\lvert f(s)-f(t)\rvert<\varepsilon/2$ となる $m$ がある。$p$ を、点 $k/m$（$k=0,\dots,m$）で $f$ と一致し、各区間 $[k/m,(k+1)/m]$ で一次関数である折れ線とする。区間の中の $t$ で $p(t)$ は両端の値の間にあり、両端の値は $f(t)$ と $\varepsilon/2$ 未満しか違わないので、$\lVert f-p\rVert<\varepsilon/2$。$p$ は傾きの絶対値の最大値 $M$ についてリプシッツ：$\lvert p(y)-p(x)\rvert\le M\lvert y-x\rvert$。
+
+**Step 2（鋸歯）.** $L\defeq n+M+1$, $h\defeq\varepsilon/L$ とし、$s(t)\defeq L\cdot\mathrm{dist}(t,h\mathbb{Z})$ とする。$0\le s\le Lh/2=\varepsilon/2$ で、$s$ は長さ $h/2$ の区間ごとに傾き $\pm L$ の一次関数。$g\defeq p+s$ とすると $\lVert f-g\rVert\le\lVert f-p\rVert+\lVert s\rVert<\varepsilon$。
+
+**Step 3（$g\notin E_{n}$）.** $x\in[0,1]$ をとる。$x$ を含む $s$ の一次関数の区間 $I$（長さ $h/2$）を $[0,1]$ と共通部分をとったものは正の長さをもつので、$y\in I\cap[0,1]$, $y\ne x$ がとれ、$\lvert s(y)-s(x)\rvert=L\lvert y-x\rvert$。よって
+$$
+\lvert g(y)-g(x)\rvert\ge L\lvert y-x\rvert-M\lvert y-x\rvert=(n+1)\lvert y-x\rvert>n\lvert y-x\rvert.
+$$
+$x$ は任意なので $g\notin E_{n}$。
+:::
+
+## バナッハの定理 {#top:sec-nd-theorem}
+
+::: theorem バナッハの定理 {#top:nowhere-differentiable-generic keywords="the set of continuous functions differentiable at no point is residual (comeager) and dense in C[0,1]" index="至るところ微分不可能な連続関数|いたるところびぶんふかのうなれんぞくかんすう, バナッハの定理（微分不可能）|ばなっはのていりびぶんふかのう"}
+（DC）$[0,1]$ のどの点でも微分可能でない連続関数の全体 $N$ は、$C[0,1]$ の第一類集合の補集合で、稠密である。特に、至るところ微分不可能な連続関数が存在する。
+:::
+
+::: proof
+\ref{top:differentiable-in-en} から $C[0,1]\setminus N\subseteq\bigcup_{n}E_{n}$ で、\ref{top:en-closed}, \ref{top:en-nowhere-dense} から右辺は第一類集合。$C[0,1]$ は完備距離空間なので、ベールのカテゴリー定理から第一類集合の補集合は稠密で、とくに空でない。$N\supseteq C[0,1]\setminus\bigcup_{n}E_{n}$ なので $N$ も稠密。
+:::
+
+::: hypcheck
+- **$C[0,1]$ の完備性**：ベールのカテゴリー定理を使うのに必要とした。
+- **$[0,1]$ のコンパクト性**：\ref{top:en-closed} で評価の点の部分列をとるのと、Step 1 の一様連続性に使った。
+- **鋸歯の傾きが近似の傾きより大きいこと**：Step 3 で、近似 $p$ の変化が鋸歯の変化を打ち消さないことに使った。
+:::
+
+## 問題 {#top:sec-nd-problems}
+
+::: problem {#top:prob-nd-monotone}
+$[0,1]$ 上の単調増加な連続関数全体 $\mathcal{M}$ は $C[0,1]$ の閉集合で、内部をもたないことを示せ。
+:::
+
+::: solution
+閉：単調性 $f(x)\le f(y)$（$x\le y$）は一様収束（各点収束）で保たれる。内部をもたない：$f\in\mathcal{M}$ と $\varepsilon>0$ について、\ref{top:en-nowhere-dense} の Step 1 の折れ線近似 $p$（$\lVert f-p\rVert<\varepsilon/2$、傾きの絶対値 $\le M$）と、Step 2 の鋸歯 $s$（$L\defeq M+1$、$0\le s\le\varepsilon/2$）をとり、$g\defeq p-s$ とする。$\lVert f-g\rVert<\varepsilon$ で、$s$ の傾きが $+L$ の区間では $g$ の傾きは $M-L<0$ なので、$g$ はそこで狭義減少し、$\mathcal{M}$ に属さない。（したがって単調な連続関数全体は疎集合である。単調関数がほとんど至るところ微分可能であるというルベーグの定理が知られており、それは \ref{top:nowhere-differentiable-generic} と矛盾しない。）
+:::
+
+::: problem {#top:prob-nd-en-not-open}
+$E_{1}$ は開集合でないことを示せ。
+:::
+
+::: solution
+定数関数 $0\in E_{1}$。$\varepsilon>0$ について、\ref{top:en-nowhere-dense} の構成で $f=0$（$p=0$, $M=0$）、$n=1$ とした $g$ は $\lVert g\rVert<\varepsilon$ で $g\notin E_{1}$。よって $0$ のどの近傍も $E_{1}$ に含まれない。
+:::
+
+::: supplement
+**前提を変えると.** 同じ議論で、$[0,1]$ のどの点でも右（左）微分係数が有限にならない連続関数の集合も第一類集合の補集合であることが示せる。一方、「どの点でも片側微分係数が（無限大を含めて）存在しない」関数の集合は第一類の補集合ではないことが知られている（サックスの結果とされる。ここでは扱わない）。
+
+**似た定理.** 具体例としては、ワイエルシュトラスの関数 $\sum_{k}a^{k}\cos(b^{k}\pi x)$（$0<a<1$, $b$ が奇数で $ab>1+3\pi/2$）が至るところ微分不可能であることが知られている。カテゴリー論法は、ほかにも「ほとんどすべての」対象が病的であることを示すのに使われる（たとえば、ベールの定理の応用としての一様有界性原理 \ref{top:uniform-boundedness-baire}）。ストーン–ワイエルシュトラスの定理（\ref{top:page-stone-weierstrass}）が「よい関数が稠密である」ことを述べるのと対照的に、本定理は「悪い関数が稠密で、しかも大部分を占める」ことを述べる。
+
+**高い視点から：典型的な関数は荒々しい.** 教科書に現れる関数（多項式、三角関数）は滑らかだが、連続関数全体の中では例外的である。どの連続関数も、ごく小さな振れ幅の急な鋸歯を加えるだけで、どの点でも微分不可能に近づけられ、しかもその性質は小さな変形で壊れない。比喩で言えば、紙の上に定規で引いた滑らかな線は、拡大鏡で見るとどこもギザギザしている「典型的な線」の中では稀な存在である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

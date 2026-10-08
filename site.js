@@ -243,12 +243,15 @@
     if (parsed.page.label) localLabels[parsed.page.label] = { type: 'page', num: '', title: parsed.page.title };
     renderer.resetCounters();
     var title = parsed.page.title || document.title;
+    // 題字の 2 行表示：トップページは config.js のサイト名と副題、フォルダ概要ページは「日本語名（英語名）」を分ける
+    var hero = KIND === 'home' ? [C.SITE_TITLE, C.SITE_SUBTITLE]
+      : KIND === 'dir' ? (/^(.+?)（([^（）]+)）$/.exec(title) || [null, title, '']).slice(1) : null;
     el.innerHTML = '<header class="mn-page-head">' +
       (PG ? '<div class="mn-page-sec">' + esc(PG.subj) + ' §' + PG.sec + '</div>' : '') +
-      (KIND === 'home'
-        // トップページ：サイト名と日本語の副題を 2 行に分けて飾る
-        ? '<h1 class="mn-hero"><span class="mn-hero-title">' + esc(C.SITE_TITLE) + '</span>' +
-          (C.SITE_SUBTITLE ? '<span class="mn-hero-sub">' + esc(C.SITE_SUBTITLE) + '</span>' : '') + '</h1></header>'
+      (hero
+        // トップページ・フォルダ概要ページ：題名と副題（日本語名・英語名）を 2 行に分けて飾る
+        ? '<h1 class="mn-hero"><span class="mn-hero-title">' + esc(hero[0]) + '</span>' +
+          (hero[1] ? '<span class="mn-hero-sub">' + esc(hero[1]) + '</span>' : '') + '</h1></header>'
         : '<h1' + (parsed.page.label ? ' id="' + esc(parsed.page.label) + '"' : '') + '>' + renderer.renderInline(title) + '</h1></header>') +
       '<div class="mn-page-tools"></div>' +
       '<div class="mn-toc-inline"></div>' +

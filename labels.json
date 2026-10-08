@@ -680,6 +680,27 @@
       "num": "5.5",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/05-closed-categories.html"
     },
+    "cat:kan-existence": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "カン拡張の存在",
+      "num": "3.3",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/03-kan.html"
+    },
+    "cat:kan-extension": {
+      "status": "defined",
+      "type": "definition",
+      "title": "カン拡張",
+      "num": "3.1",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/03-kan.html"
+    },
+    "cat:kan-fully-faithful": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "充満忠実な関手に沿ったカン拡張",
+      "num": "3.4",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/03-kan.html"
+    },
     "cat:kleisli-adjunction": {
       "status": "defined",
       "type": "theorem",
@@ -967,6 +988,13 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/01-basics/02-functors.html"
     },
+    "cat:page-kan": {
+      "status": "defined",
+      "type": "page",
+      "title": "カン拡張",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/03-kan.html"
+    },
     "cat:page-kleisli": {
       "status": "defined",
       "type": "page",
@@ -1205,6 +1233,20 @@
       "num": "2.7",
       "page": "18-category-theory/18A-general-theory/03-monads/02-kleisli.html"
     },
+    "cat:prob-kn-colimit-terminal": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "3.5",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/03-kan.html"
+    },
+    "cat:prob-kn-restriction-adjoints": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "3.6",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/03-kan.html"
+    },
     "cat:prob-ma-products": {
       "status": "defined",
       "type": "problem",
@@ -1372,6 +1414,13 @@
       "title": "商圏",
       "num": "4.10",
       "page": "18-category-theory/18A-general-theory/01-basics/04-comma-free-quotient.html"
+    },
+    "cat:ran-pointwise": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "右カン拡張の各点公式",
+      "num": "3.2",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/03-kan.html"
     },
     "cat:reflective-basic": {
       "status": "defined",
@@ -1918,6 +1967,34 @@
       "title": "語と自由半群",
       "num": "",
       "page": "18-category-theory/18A-general-theory/03-monads/02-kleisli.html"
+    },
+    "cat:sec-kn-definition": {
+      "status": "defined",
+      "type": "section",
+      "title": "カン拡張",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/03-kan.html"
+    },
+    "cat:sec-kn-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/03-kan.html"
+    },
+    "cat:sec-kn-pointwise": {
+      "status": "defined",
+      "type": "section",
+      "title": "各点の極限による構成",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/03-kan.html"
+    },
+    "cat:sec-kn-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/03-kan.html"
     },
     "cat:sec-lim-definition": {
       "status": "defined",

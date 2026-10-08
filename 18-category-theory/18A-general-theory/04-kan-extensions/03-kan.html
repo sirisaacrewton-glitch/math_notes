@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>カン拡張 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/04-kan-extensions/03-kan.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# カン拡張 {#cat:page-kan keywords="Kan extension, right Kan extension, left Kan extension, Ran, Lan, pointwise Kan extension as a limit over a comma category, Kan extension along a fully faithful functor, adjoints to precomposition"}
+
+部分集合上の関数を全体に拡張する方法は一般には決まらない。しかし関手 $K\colon\mathbf{M}\to\mathbf{C}$ に沿って関手 $T\colon\mathbf{M}\to\mathbf{A}$ を「拡張」する問題には、二つの標準的な（両極端の）答えがある。それが**右カン拡張** $\mathrm{Ran}_{K}T$ と**左カン拡張** $\mathrm{Lan}_{K}T$（\ref{cat:kan-extension}）で、前合成 $S\mapsto SK$ の右随伴・左随伴の値として特徴づけられる。$\mathbf{A}$ が十分な極限をもてば、右カン拡張はコンマ圏上の極限として各点で計算できる（\ref{cat:ran-pointwise}）。とくに $K$ が充満忠実なら、カン拡張は本当の意味での拡張になる（\ref{cat:kan-fully-faithful}）。カン拡張は、極限・随伴・米田の補題などを一つの形にまとめる概念で、Mac Lane は「すべての概念はカン拡張である」と述べている（次ページ）。
+
+> 資料：Mac Lane, *Categories for the Working Mathematician* 第 X 章 §1–§3。
+
+## 記法と定義の確認 {#cat:sec-kn-notation}
+
+::: notation
+- 関手圏 $\mathbf{A}^{\mathbf{C}}$、自然変換と関手の横の合成（$\sigma K$ は成分 $\sigma_{Km}$）は \ref{cat:functor-category}, \ref{cat:horizontal-composition} のとおり。
+- コンマ圏 $(c\downarrow K)$：対象は $(f,m)$（$f\colon c\to Km$）、射 $(f,m)\to(f',m')$ は $h\colon m\to m'$ で $Kh\circ f=f'$ となるもの。射影 $Q\colon(c\downarrow K)\to\mathbf{M}$, $(f,m)\mapsto m$（\ref{cat:comma-category}）。双対に $(K\downarrow c)$ と射影 $P$。
+- 普遍射と随伴は \ref{cat:universal-arrow}, \ref{cat:adjunction-from-universal} のとおり。
+:::
+
+## カン拡張 {#cat:sec-kn-definition}
+
+::: definition カン拡張 {#cat:kan-extension keywords="right Kan extension, left Kan extension" index="カン拡張|かんかくちょう, 右カン拡張|みぎかんかくちょう, 左カン拡張|ひだりかんかくちょう"}
+関手 $K\colon\mathbf{M}\to\mathbf{C}$ と $T\colon\mathbf{M}\to\mathbf{A}$ について、$T$ の $K$ に沿った**右カン拡張**は、関手 $R\colon\mathbf{C}\to\mathbf{A}$ と自然変換 $\varepsilon\colon RK\Rightarrow T$ の組で、任意の $S\colon\mathbf{C}\to\mathbf{A}$ と $\alpha\colon SK\Rightarrow T$ に対し、$\alpha=\varepsilon\cdot\sigma K$ となる $\sigma\colon S\Rightarrow R$ がただ一つあるものである。すなわち
+$$
+\mathrm{Nat}(S,R)\cong\mathrm{Nat}(SK,T),\qquad\sigma\mapsto\varepsilon\cdot\sigma K
+$$
+（$S$ について自然な全単射）。$R$ を $\mathrm{Ran}_{K}T$ と書く。双対に、$\eta\colon T\Rightarrow LK$ で $\mathrm{Nat}(L,S)\cong\mathrm{Nat}(T,SK)$ を与える $L=\mathrm{Lan}_{K}T$ を**左カン拡張**という。
+:::
+
+::: intuition
+$(R,\varepsilon)$ は、前合成の関手 $\mathbf{A}^{K}\colon\mathbf{A}^{\mathbf{C}}\to\mathbf{A}^{\mathbf{M}}$, $S\mapsto SK$ から $T$ への普遍射である。すべての $T$ について右カン拡張があれば、$T\mapsto\mathrm{Ran}_{K}T$ は $\mathbf{A}^{K}$ の右随伴になる（\ref{cat:adjunction-from-universal}）。$K$ が部分圏の包含なら、$SK$ は $S$ の $\mathbf{M}$ への制限で、右カン拡張は「$\mathbf{M}$ 上で $T$ に写像を送るような拡張のうち最も大きい（終の）もの」である。
+:::
+
+::: example
+1. **極限.** $\mathbf{C}=\mathbf{1}$（一点の圏）、$K\colon\mathbf{M}\to\mathbf{1}$ のとき、$S\colon\mathbf{1}\to\mathbf{A}$ は対象 $a$ で、$SK$ は定数関手。$\mathrm{Nat}(a,R)\cong\mathrm{Nat}(\Delta a,T)$ は「$a$ から $T$ への錐」との対応なので、$\mathrm{Ran}_{K}T=\mathrm{Lim}\,T$、$\mathrm{Lan}_{K}T=\mathrm{Colim}\,T$。
+2. **集合の像.** $\mathbf{A}=\mathbf{2}=\{0\to1\}$、$\mathbf{M},\mathbf{C}$ を集合（離散圏）とすると、$T\colon\mathbf{M}\to\mathbf{2}$ は部分集合 $T\subseteq\mathbf{M}$ で、$\mathrm{Lan}_{K}T$ は像 $K(T)$、$\mathrm{Ran}_{K}T$ は $\{c:K^{-1}(c)\subseteq T\}$（Mac Lane 第 X 章 §3 演習 1）。
+:::
+
+## 各点の極限による構成 {#cat:sec-kn-pointwise}
+
+::: theorem 右カン拡張の各点公式 {#cat:ran-pointwise keywords="right Kan extension as a pointwise limit over the comma category" index="カン拡張の各点公式|かんかくちょうのかくてんこうしき"}
+各 $c\in\mathbf{C}$ について、$TQ\colon(c\downarrow K)\to\mathbf{M}\to\mathbf{A}$ の極限が存在するとする（極限錐 $\lambda^{c}$、成分 $\lambda^{c}_{f}\colon Rc\to Tm$）。
+$$
+Rc\defeq\mathrm{Lim}\bigl((c\downarrow K)\xrightarrow{Q}\mathbf{M}\xrightarrow{T}\mathbf{A}\bigr)
+$$
+とおき、$g\colon c\to c'$ に対し $Rg$ を $\lambda^{c'}_{f'}\circ Rg=\lambda^{c}_{f'g}$（すべての $f'\colon c'\to Km$）で定め、$\varepsilon_{n}\defeq\lambda^{Kn}_{1_{Kn}}\colon RKn\to Tn$ とおくと、$R$ は関手で $(R,\varepsilon)$ は $T$ の $K$ に沿った右カン拡張である。
+:::
+
+::: proof
+**Step 1（$R$ は関手）.** $g\colon c\to c'$ について、$(\lambda^{c}_{f'g})_{f'}$ は $Rc$ から $(c'\downarrow K)$ 上の $TQ'$ への錐である（$(c'\downarrow K)$ の射 $h\colon(f',m)\to(f'',m')$ は $(c\downarrow K)$ の射 $(f'g,m)\to(f''g,m')$ でもあるので、$\lambda^{c}$ が錐であることから）。$\lambda^{c'}$ の普遍性で $Rg$ がただ一つ定まる。恒等射・合成を保つことは一意性から。
+
+**Step 2（$\varepsilon$ の自然性）.** $h\colon n\to n'$ について、$Th\circ\varepsilon_{n}=Th\circ\lambda^{Kn}_{1}=\lambda^{Kn}_{Kh}$（$h$ は $(Kn\downarrow K)$ の射 $(1,n)\to(Kh,n')$、$\lambda^{Kn}$ は錐）。一方 $\varepsilon_{n'}\circ RKh=\lambda^{Kn'}_{1}\circ R(Kh)=\lambda^{Kn}_{1\circ Kh}=\lambda^{Kn}_{Kh}$（$Rg$ の定義）。
+
+**Step 3（$\sigma$ の構成）.** $S\colon\mathbf{C}\to\mathbf{A}$ と $\alpha\colon SK\Rightarrow T$ をとる。$c$ について、$(\alpha_{m}\circ Sf)_{(f,m)}$ は $Sc$ から $TQ$ への錐（$h\colon(f,m)\to(f',m')$ について $Th\circ\alpha_{m}\circ Sf=\alpha_{m'}\circ SKh\circ Sf=\alpha_{m'}\circ Sf'$）。よって $\lambda^{c}_{f}\circ\sigma_{c}=\alpha_{m}\circ Sf$ となる $\sigma_{c}\colon Sc\to Rc$ がただ一つある。
+
+**Step 4（$\sigma$ の自然性）.** $g\colon c\to c'$ と $f'\colon c'\to Km$ について
+$$
+\lambda^{c'}_{f'}\circ Rg\circ\sigma_{c}=\lambda^{c}_{f'g}\circ\sigma_{c}=\alpha_{m}\circ S(f'g)=\lambda^{c'}_{f'}\circ\sigma_{c'}\circ Sg.
+$$
+$\lambda^{c'}$ は極限錐なので $Rg\circ\sigma_{c}=\sigma_{c'}\circ Sg$。
+
+**Step 5（$\alpha=\varepsilon\cdot\sigma K$）.** $c=Kn$, $f=1_{Kn}$ として Step 3 の式から $\varepsilon_{n}\circ\sigma_{Kn}=\lambda^{Kn}_{1}\circ\sigma_{Kn}=\alpha_{n}$。
+
+**Step 6（一意性）.** 自然変換 $\sigma'\colon S\Rightarrow R$ が $\varepsilon\cdot\sigma'K=\alpha$ を満たすとする。$f\colon c\to Km$ について、$\sigma'$ の自然性と Step 1 の定義から
+$$
+\lambda^{c}_{f}\circ\sigma'_{c}=\lambda^{Km}_{1}\circ Rf\circ\sigma'_{c}=\varepsilon_{m}\circ\sigma'_{Km}\circ Sf=\alpha_{m}\circ Sf.
+$$
+（最初の等号は $Rf$ の定義 $\lambda^{Km}_{1}\circ Rf=\lambda^{c}_{1\circ f}$。）よって $\sigma'_{c}$ は Step 3 の条件を満たし、$\sigma'_{c}=\sigma_{c}$。
+
+::: hypcheck
+- **各点の極限の存在**：$Rc$ の定義に使った。$\mathbf{A}$ が完備で $\mathbf{M}$ が小さければ（$(c\downarrow K)$ が小さいので）つねに存在する。
+- **コンマ圏の射の扱い**：Step 2, 4, 6 で、$\mathbf{C}$ の射 $g$ や $\mathbf{M}$ の射 $h$ がコンマ圏の射を誘導することを使った。
+:::
+:::
+
+::: corollary カン拡張の存在 {#cat:kan-existence keywords="existence of Kan extensions when M is small and A is complete" index="カン拡張の存在|かんかくちょうのそんざい"}
+$\mathbf{M}$ が小さく $\mathbf{A}$ が完備なら、任意の $T\colon\mathbf{M}\to\mathbf{A}$ は任意の $K$ に沿った右カン拡張をもち、$\mathbf{A}^{K}$ は右随伴をもつ。双対に、$\mathbf{A}$ が余完備なら左カン拡張
+$$
+\mathrm{Lan}_{K}T(c)=\mathrm{Colim}\bigl((K\downarrow c)\xrightarrow{P}\mathbf{M}\xrightarrow{T}\mathbf{A}\bigr)
+$$
+が存在し、$\mathbf{A}^{K}$ は左随伴をもつ。
+:::
+
+::: proof
+$(c\downarrow K)$ は小さい（対象は $\mathbf{M}$ の対象と $\mathbf{C}$ の射の組で、$\mathbf{C}$ は局所小）ので極限が存在し、\ref{cat:ran-pointwise} が使える。すべての $T$ について普遍射があるので随伴（\ref{cat:adjunction-from-universal}）。左カン拡張は $\mathbf{A}^{\mathrm{op}}$ で双対をとる。
+:::
+
+::: corollary 充満忠実な関手に沿ったカン拡張 {#cat:kan-fully-faithful keywords="Kan extension along a fully faithful functor is an extension" index="充満忠実な関手に沿ったカン拡張|じゅうまんちゅうじつなかんしゅにそったかんかくちょう"}
+\ref{cat:ran-pointwise} の状況で $K$ が充満忠実なら、$\varepsilon\colon RK\Rightarrow T$ は自然同型である。とくに $\mathbf{M}$ が $\mathbf{C}$ の充満部分圏なら、$R$ は $T$ の拡張（$RK\cong T$）にとれる。
+:::
+
+::: proof
+$c=Kn$ のとき、$(Kn\downarrow K)$ の対象 $f\colon Kn\to Km$ は、$K$ が充満忠実なので $f=Kh$（$h\colon n\to m$ はただ一つ）と書け、$h$ は $(1_{Kn},n)$ から $(f,m)$ へのただ一つの射である。よって $(1_{Kn},n)$ は $(Kn\downarrow K)$ の始対象。始対象をもつ圏上の極限は始対象での値なので（\ref{cat:prob-fc-terminal-final} の双対）、$\lambda^{Kn}_{1}=\varepsilon_{n}\colon RKn\to Tn$ は同型。
+:::
+
+::: example
+**表現可能関手の左カン拡張.** $\mathbf{A}=\mathbf{Set}$ のとき、$\mathrm{Lan}_{K}\mathbf{M}(m,-)=\mathbf{C}(Km,-)$ で、$\eta_{m'}\colon\mathbf{M}(m,m')\to\mathbf{C}(Km,Km')$ は $K$ の作用 $h\mapsto Kh$。実際、米田の補題から、$S\colon\mathbf{C}\to\mathbf{Set}$ について $\mathrm{Nat}(\mathbf{C}(Km,-),S)\cong S(Km)\cong\mathrm{Nat}(\mathbf{M}(m,-),SK)$ で、これは $S$ について自然。
+:::
+
+::: supplement
+**一般化.** 各点の極限で計算できるカン拡張を**各点カン拡張**という。すべてのカン拡張が各点的なわけではないが、各点的なものは任意の関手で「保存される」などのよい性質をもつ（次ページ）。
+
+**前提を変えると.** 極限が足りないと、カン拡張は存在しないことがある：$\mathbf{M},\mathbf{C},\mathbf{A}$ がすべて集合（離散圏）で、$\mathbf{A}$ が二元以上、$K$ が全射でないとき、$\mathbf{C}\setminus K(\mathbf{M})$ の点での値を $\mathbf{A}$ の中で普遍的に選べない（Mac Lane 第 X 章 §3 演習 3）。
+
+**類似の定理.** 随伴関手の存在定理の形式的な判定（Mac Lane 第 X 章 §1 定理 2）は、「$G$ の左随伴は $Fx=\mathrm{Lim}\bigl((x\downarrow G)\to\mathbf{A}\bigr)$」という、\ref{cat:ran-pointwise} と同じ形の公式で与えられる。実際、$G$ の左随伴は恒等関手の $G$ に沿った右カン拡張である（次ページ）。
+
+**高い視点から：最良の近似.** 右カン拡張は「$\mathbf{M}$ 上の情報 $T$ から、$\mathbf{C}$ 全体への最良の上からの近似」、左カン拡張は「下からの近似」である。各点公式は、$c$ での値を「$c$ から $\mathbf{M}$ に向かうすべての矢印 $c\to Km$ の先にある $T$ の値を、両立するように集めたもの」として計算する。比喩で言えば、地図の一部（$\mathbf{M}$）しか測量されていないとき、未測量の地点の値を、そこから見えるすべての測量点の値から一貫して推定する方法である。
+:::
+
+## 問題 {#cat:sec-kn-problems}
+
+::: problem {#cat:prob-kn-colimit-terminal}
+圏 $\mathbf{M}$ に終対象 $\infty$ を一つ付け加えた圏 $\mathbf{M}^{\infty}$ と包含 $K\colon\mathbf{M}\to\mathbf{M}^{\infty}$ について、$T\colon\mathbf{M}\to\mathbf{A}$ の $K$ に沿った左カン拡張の $\infty$ での値は $\mathrm{Colim}\,T$ であることを示せ。
+:::
+
+::: solution
+左カン拡張の各点公式で、$(K\downarrow\infty)$ の対象は $(m,Km\to\infty)$ で、$\infty$ は終対象なので射 $Km\to\infty$ はただ一つ。よって $(K\downarrow\infty)\cong\mathbf{M}$ で、$\mathrm{Lan}_{K}T(\infty)=\mathrm{Colim}\,T$。$m\in\mathbf{M}$ での値は、$K$ が充満忠実なので $Tm$（\ref{cat:kan-fully-faithful} の双対）。
+:::
+
+::: problem {#cat:prob-kn-restriction-adjoints}
+$\mathbf{M}$ が小さく、$\mathbf{A}$ が完備かつ余完備なら、前合成 $\mathbf{A}^{K}\colon\mathbf{A}^{\mathbf{C}}\to\mathbf{A}^{\mathbf{M}}$ は左随伴 $\mathrm{Lan}_{K}$ と右随伴 $\mathrm{Ran}_{K}$ をもつ（$\mathrm{Lan}_{K}\dashv\mathbf{A}^{K}\dashv\mathrm{Ran}_{K}$）ことを確かめよ。とくに $\mathbf{A}^{K}$ は極限と余極限を保存する。
+:::
+
+::: solution
+\ref{cat:kan-existence} とその双対。右随伴をもつ関手は余極限を、左随伴をもつ関手は極限を保存する（\ref{cat:adjoints-preserve-limits}）。実際、関手圏の極限・余極限は各点で計算されるので（$\mathbf{A}$ が完備・余完備のとき）、前合成がそれを保つことは直接にも分かる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

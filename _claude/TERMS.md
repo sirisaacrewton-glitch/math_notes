@@ -347,3 +347,4 @@
 | Stone space / clopen set / zero-dimensional / field of sets | ストーン空間 / 閉開集合 / 零次元 / 集合体 | 開閉集合 | 仮。top:page-stone-duality |
 | Niemytzki plane (Moore plane) / Jones' lemma | ニェミツキ平面（ムーア平面） / ジョーンズの補題 | | 既存ページの予約ラベルの表記に合わせた。top:page-niemytzki |
 | monoidal category / associator / unitor / coherence | モノイダル圏 / 結合子 / 単位子 / コヒーレンス | | 仮。cat:page-monoidal |
+| monoid (object) in a monoidal category / tensor algebra / action | （モノイダル圏の）モノイド / テンソル代数 / 作用 | モノイド対象 | 仮。cat:page-monoids-in-monoidal |

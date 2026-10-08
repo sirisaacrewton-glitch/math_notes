@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>モノイダル圏のモノイドと作用 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/02-structured-categories/03-monoids-actions.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# モノイダル圏のモノイドと作用 {#cat:page-monoids-in-monoidal keywords="monoid in a monoidal category, monoid object, general associative law, free monoid in a monoidal category, tensor algebra, action of a monoid, module over a monoid, free action"}
+
+モノイダル圏 $(\mathbf{B},\square,e)$（\ref{cat:page-monoidal}）の中で、乗法 $\mu\colon c\square c\to c$ と単位 $\eta\colon e\to c$ が結合律と単位律を満たす対象を**モノイド**という（\ref{cat:monoid-object}）。集合の圏ではふつうのモノイド、アーベル群のテンソル積では環、自己関手の合成ではモナド（\ref{cat:monad}）になる。本ページでは、コヒーレンス定理（\ref{cat:coherence}）を使って一般の結合律（\ref{cat:general-associative-law}）を示し、可算の余積が $\square$ と両立するとき**自由モノイド**が「すべての長さの積の余積」として作れること（\ref{cat:free-monoid-monoidal}）を示す。最後にモノイドの**作用**（加群の一般化）を扱う。
+
+> 資料：Mac Lane, *Categories for the Working Mathematician* 第 VII 章 §3–§4。自由モノイドの構成で Mac Lane が「大きいが型どおりの図式」として略した結合律と普遍性の確認は、コヒーレンス定理に帰着させて補った。
+
+## 記法と定義の確認 {#cat:sec-ma-notation}
+
+::: notation
+- モノイダル圏、結合子 $\alpha$、単位子 $\lambda,\varrho$、二項語、基本射、コヒーレンス定理は \ref{cat:monoidal-category}, \ref{cat:binary-words}, \ref{cat:coherence} のとおり。二項語 $v,w$（同じ長さ）の間の基本射の道の合成を、対象 $b$ を代入したものとして $\mathrm{can}_{b}(v,w)\colon v_{b}\to w_{b}$ と書く（道によらない）。$\mathrm{can}$ は基本射の合成なので、$b$ について自然である：$f\colon b\to b'$ について $w_{f}\circ\mathrm{can}_{b}=\mathrm{can}_{b'}\circ v_{f}$（$v_{f}$ は語の空欄に $f$ を、$e$ に $1_{e}$ を入れた射）。
+- 左に括弧を寄せた冪を $b^{0}\defeq e$, $b^{1}\defeq b$, $b^{n+1}\defeq b^{n}\square b$ と書く。射についても同様に $f^{n}$。
+- 余積・余極限の保存は \ref{cat:product}（の双対）, \ref{cat:preserve-limits}（の双対）のとおり。
+:::
+
+## モノイド {#cat:sec-ma-monoids}
+
+::: definition モノイダル圏のモノイド {#cat:monoid-object keywords="monoid in a monoidal category, monoid object, morphism of monoids" index="モノイド（モノイダル圏の）|ものいどものいだるけんの, モノイド対象|ものいどたいしょう"}
+モノイダル圏 $\mathbf{B}$ の**モノイド** $(c,\mu,\eta)$ は、対象 $c$ と射 $\mu\colon c\square c\to c$, $\eta\colon e\to c$ で
+$$
+\mu\circ(\mu\square1)\circ\alpha_{c,c,c}=\mu\circ(1\square\mu),\qquad\mu\circ(\eta\square1)=\lambda_{c},\qquad\mu\circ(1\square\eta)=\varrho_{c}
+$$
+を満たすものである。モノイドの**準同型** $f\colon(c,\mu,\eta)\to(c',\mu',\eta')$ は $f\mu=\mu'(f\square f)$, $f\eta=\eta'$ を満たす射。モノイドの圏を $\mathbf{Mon}(\mathbf{B})$ と書く。
+:::
+
+::: table モノイダル圏とそのモノイド {#cat:table-monoids}
+| モノイダル圏 | モノイド |
+|---|---|
+| $(\mathbf{Set},\times,1)$ | ふつうのモノイド |
+| $(\mathbf{Top},\times,\ast)$ | 位相モノイド |
+| $(\mathbf{Ab},\otimes,\mathbb{Z})$ | 環（単位元をもつ） |
+| $(K\text{-}\mathbf{Mod},\otimes_{K},K)$ | $K$ 代数 |
+| 自己関手の圏（合成） | モナド（\ref{cat:monad}） |
+| $(\mathbf{B}^{\mathrm{op}},\square,e)$ | $\mathbf{B}$ の余モノイド（余代数など） |
+| $(\mathbf{Cat},\times,\mathbf{1})$ | 厳密モノイダル圏 |
+:::
+
+::: proposition 一般の結合律 {#cat:general-associative-law keywords="general associative law for monoids in monoidal categories" index="一般結合律（モノイダル圏）|いっぱんけつごうりつものいだるけん"}
+モノイド $(c,\mu,\eta)$ と二項語 $w$ について、$\mu_{w}\colon w_{c}\to c$ を $\mu_{e}\defeq\eta$, $\mu_{\mathtt{x}}\defeq1_{c}$, $\mu_{u\square v}\defeq\mu\circ(\mu_{u}\square\mu_{v})$ で定める。同じ長さの語 $v,w$ について
+$$
+\mu_{w}\circ\mathrm{can}_{c}(v,w)=\mu_{v}.
+$$
+:::
+
+::: proof
+$\mathrm{can}$ は基本射の合成なので、各基本射 $\beta\colon v\to w$ について $\mu_{w}\circ\beta=\mu_{v}$ を示せばよい（逆向きの基本射は、両辺に $\beta^{-1}$ を合成すれば同じ等式になる）。$\beta$ の作り方に関する帰納法。
+
+**Step 1（囲まれた基本射）.** $\beta=\beta'\square1_{t}$（$\beta'\colon u\to u'$）なら、帰納法の仮定 $\mu_{u'}\beta'=\mu_{u}$ から $\mu_{u'\square t}\circ\beta=\mu\circ(\mu_{u'}\beta'\square\mu_{t})=\mu_{u\square t}$。$1\square\beta''$ も同様。
+
+**Step 2（結合子）.** $\beta=\alpha_{x,y,z}$ なら、$\alpha$ の自然性とモノイドの結合律から
+$$
+\begin{aligned}
+\mu_{(x\square y)\square z}\circ\alpha&=\mu\circ(\mu\square1)\circ((\mu_{x}\square\mu_{y})\square\mu_{z})\circ\alpha\\
+&=\mu\circ(\mu\square1)\circ\alpha_{c,c,c}\circ(\mu_{x}\square(\mu_{y}\square\mu_{z}))\\
+&=\mu\circ(1\square\mu)\circ(\mu_{x}\square(\mu_{y}\square\mu_{z}))=\mu_{x\square(y\square z)}.
+\end{aligned}
+$$
+
+**Step 3（単位子）.** $\beta=\lambda_{x}\colon e\square x\to x$ なら、$\lambda$ の自然性と単位律から $\mu_{x}\circ\lambda_{x_{c}}=\lambda_{c}\circ(1_{e}\square\mu_{x})=\mu\circ(\eta\square1)\circ(1\square\mu_{x})=\mu_{e\square x}$。$\varrho$ も同様。
+:::
+
+::: example
+$\mu^{(n)}\defeq\mu_{w^{(n)}}\colon c^{n}\to c$（左に括弧を寄せた $n$ 重積）について、命題から
+$$
+\mu^{(n)}\circ(\mu^{(k_{1})}\square\cdots\square\mu^{(k_{n})})=\mu^{(k_{1}+\cdots+k_{n})}\circ\mathrm{can}
+$$
+（$\mathrm{can}$ は括弧の付け替え）。$\mathbf{Set}$ では、「$k_{1}+\cdots+k_{n}$ 個の積は、どこで区切って先に計算しても同じ」というふつうの一般結合律である。
+:::
+
+## 自由モノイド {#cat:sec-ma-free}
+
+::: theorem モノイダル圏の自由モノイド {#cat:free-monoid-monoidal keywords="construction of free monoids in a monoidal category with countable coproducts preserved by tensoring, tensor algebra" index="自由モノイド（モノイダル圏）|じゆうものいどものいだるけん, テンソル代数|てんそるだいすう"}
+モノイダル圏 $\mathbf{B}$ が可算の余積をもち、各対象 $a$ について $a\square-$ と $-\square a$ が可算の余積を保存するとする。このとき忘却関手 $U\colon\mathbf{Mon}(\mathbf{B})\to\mathbf{B}$ は左随伴をもつ。$a$ 上の自由モノイドは $Ta\defeq\coprod_{n\ge0}a^{n}$ で、乗法は「並べる」ことで与えられる。
+:::
+
+::: proof
+余積の入射を $i_{n}\colon a^{n}\to Ta$ と書く。
+
+**Step 1（分配）.** 仮定から、$(\coprod_{m}a^{m})\square(\coprod_{n}a^{n})$ は射の族 $i_{m}\square i_{n}$ を入射とする余積 $\coprod_{m,n}a^{m}\square a^{n}$ である（$-\square\coprod_{n}a^{n}$ で $m$ について、$a^{m}\square-$ で $n$ について、二回使う）。三つの積についても同様。とくに $Ta\square Ta$ からの射は、成分 $a^{m}\square a^{n}\to$ で決まる。
+
+**Step 2（乗法と単位）.** $\mu\colon Ta\square Ta\to Ta$ を成分
+$$
+\mu\circ(i_{m}\square i_{n})\defeq i_{m+n}\circ\mathrm{can}_{m,n},\qquad\mathrm{can}_{m,n}\colon a^{m}\square a^{n}\to a^{m+n}
+$$
+（括弧の付け替え。\ref{cat:coherence} により一つに決まる）で定め、$\eta\defeq i_{0}\colon e=a^{0}\to Ta$ とする。
+
+**Step 3（結合律）.** Step 1 から、結合律の両辺を各成分 $a^{m}\square(a^{n}\square a^{k})$ で比べればよい。$\alpha$ の自然性で入射を外に出すと、両辺は $i_{m+n+k}$ に
+$$
+\mathrm{can}_{m+n,k}\circ(\mathrm{can}_{m,n}\square1)\circ\alpha\quad\text{と}\quad\mathrm{can}_{m,n+k}\circ(1\square\mathrm{can}_{n,k})
+$$
+を合成したものになる。どちらも $a^{m}\square(a^{n}\square a^{k})$ から $a^{m+n+k}$ への基本射の道の合成なので、コヒーレンス定理（\ref{cat:coherence}）から等しい。単位律も同様（$\mathrm{can}_{0,n}=\lambda$, $\mathrm{can}_{m,0}=\varrho$ と $\lambda$ の自然性）。よって $(Ta,\mu,\eta)$ はモノイド。
+
+**Step 4（普遍射）.** $i_{1}\colon a\to UTa$ が普遍射であることを示す。モノイド $(c,\mu_{c},\eta_{c})$ と射 $f\colon a\to c$ について、$f'\colon Ta\to c$ を成分 $f'\circ i_{n}\defeq\mu_{c}^{(n)}\circ f^{n}$ で定める。
+- *準同型であること.* 成分 $a^{m}\square a^{n}$ で $f'\circ\mu=\mu_{c}\circ(f'\square f')$ を示す。左辺は $\mu_{c}^{(m+n)}\circ f^{m+n}\circ\mathrm{can}_{m,n}=\mu_{c}^{(m+n)}\circ\mathrm{can}\circ(f^{m}\square f^{n})$（$\mathrm{can}$ の自然性）。右辺は $\mu_{c}\circ(\mu_{c}^{(m)}\square\mu_{c}^{(n)})\circ(f^{m}\square f^{n})=\mu_{c,w}\circ(f^{m}\square f^{n})$（$w=w^{(m)}\square w^{(n)}$）。一般の結合律（\ref{cat:general-associative-law}）$\mu_{c}^{(m+n)}\circ\mathrm{can}=\mu_{c,w}$ から等しい。単位：$f'\circ i_{0}=\mu_{c}^{(0)}=\eta_{c}$。
+- *$f'\circ i_{1}=f$*：$\mu_{c}^{(1)}=1$。
+- *一意性.* 準同型 $g$ が $g\circ i_{1}=f$ を満たせば、$i_{n+1}=\mu\circ(i_{n}\square i_{1})$（$\mathrm{can}_{n,1}=1$、$a^{n+1}=a^{n}\square a$ なので）から、帰納法で $g\circ i_{n+1}=\mu_{c}\circ(g i_{n}\square g i_{1})=\mu_{c}\circ(\mu_{c}^{(n)}f^{n}\square f)=\mu_{c}^{(n+1)}f^{n+1}$。$g\circ i_{0}=g\eta=\eta_{c}$。余積の一意性から $g=f'$。
+
+普遍射の族から左随伴が得られる（\ref{cat:adjunction-from-universal}）。
+
+::: hypcheck
+- **余積の保存**：Step 1 で、$Ta\square Ta$ や三重の積からの射を成分で決めるのに使った。保存しないと、乗法が成分から定まらない。
+- **コヒーレンス定理**：Step 2（$\mathrm{can}$ が一つに決まる）と Step 3（結合律）に使った。Mac Lane の「大きな図式」はこの一行に集約される。
+- **一般の結合律**：Step 4 で、$f'$ が乗法を保つことに使った。
+:::
+:::
+
+::: example
+1. $\mathbf{Set}$ では $Ta=\bigsqcup_{n}a^{n}$ は語のモノイド（\ref{cat:free-monoid}）。
+2. $K\text{-}\mathbf{Mod}$ では $Ta=\bigoplus_{n}a^{\otimes n}$ は**テンソル代数**で、$a$ 上の自由な $K$ 代数（結合的、単位元つき）。$a\otimes-$ は右随伴 $\mathrm{Hom}_{K}(a,-)$ をもつので余積を保存する。
+:::
+
+## 作用 {#cat:sec-ma-actions}
+
+::: definition モノイドの作用 {#cat:monoid-action keywords="left action of a monoid in a monoidal category, module over a monoid" index="作用（モノイドの）|さようものいどの, 加群（モノイド上の）|かぐんものいどじょうの"}
+モノイド $(c,\mu,\eta)$ の対象 $a$ への**左作用**は、射 $\nu\colon c\square a\to a$ で
+$$
+\nu\circ(1\square\nu)=\nu\circ(\mu\square1)\circ\alpha_{c,c,a},\qquad\nu\circ(\eta\square1)=\lambda_{a}
+$$
+を満たすものである。作用の射 $f\colon(a,\nu)\to(a',\nu')$ は $\nu'\circ(1\square f)=f\circ\nu$ を満たす射。左作用の圏を $c\text{-}\mathbf{Act}$ と書く。
+:::
+
+::: example
+$(\mathbf{Set},\times)$ ではモノイドの集合への作用、$(\mathbf{Ab},\otimes)$ では環上の左加群。$\mu$ 自身は $c$ の自分自身への作用（左正則表現）。
+:::
+
+::: proposition 自由な作用 {#cat:free-action keywords="free action c tensor b, left adjoint to the forgetful functor from actions" index="自由な作用|じゆうなさよう"}
+忘却関手 $c\text{-}\mathbf{Act}\to\mathbf{B}$ は左随伴 $b\mapsto(c\square b,\ \nu_{b})$、$\nu_{b}\defeq(\mu\square1)\circ\alpha_{c,c,b}$ をもつ。
+:::
+
+::: proof
+**Step 1（作用であること）.** 単位の等式：$\nu_{b}\circ(\eta\square1_{c\square b})=(\mu\square1)\circ\alpha\circ(\eta\square1)=(\mu\square1)\circ((\eta\square1)\square1)\circ\alpha_{e,c,b}=(\lambda_{c}\square1)\circ\alpha_{e,c,b}=\lambda_{c\square b}$（\ref{cat:monoidal-derived-triangles}）。結合の等式は、両辺に $\alpha$ の自然性で乗法を外に出すと、$((\mu\circ(\mu\square1)\circ\alpha)\square1)$ と $((\mu\circ(1\square\mu))\square1)$ に括弧の付け替え（基本射の道）を合成した形になり、モノイドの結合律とコヒーレンス定理から等しい。
+
+**Step 2（随伴）.** 射 $g\colon b\to a$（$(a,\nu)$ は作用）に $\hat{g}\defeq\nu\circ(1\square g)\colon c\square b\to a$ を、作用の射 $h\colon c\square b\to a$ に $\check{h}\defeq h\circ(\eta\square1)\circ\lambda_{b}^{-1}\colon b\to a$ を対応させる。
+- $\hat{g}$ は作用の射：$\nu\circ(1\square\hat{g})=\nu\circ(1\square\nu)\circ(1\square(1\square g))=\nu\circ(\mu\square1)\circ\alpha\circ(1\square(1\square g))=\nu\circ(1\square g)\circ(\mu\square1)\circ\alpha=\hat{g}\circ\nu_{b}$（作用の結合の等式、$\alpha$ と $\square$ の自然性）。
+- $\check{\hat{g}}=\nu\circ(1\square g)\circ(\eta\square1)\circ\lambda^{-1}=\nu\circ(\eta\square1)\circ(1\square g)\circ\lambda^{-1}=\lambda_{a}\circ(1\square g)\circ\lambda_{b}^{-1}=g$（$\lambda$ の自然性）。
+- $\hat{\check{h}}=\nu\circ(1\square h)\circ(1\square(\eta\square1))\circ(1\square\lambda^{-1})=h\circ\nu_{b}\circ(1\square(\eta\square1))\circ(1\square\lambda^{-1})$（$h$ は作用の射）$=h\circ(\mu\square1)\circ((1\square\eta)\square1)\circ\alpha_{c,e,b}\circ(1\square\lambda^{-1})=h\circ(\varrho_{c}\square1)\circ\alpha_{c,e,b}\circ(1\square\lambda_{b}^{-1})=h$（単位律と三角形の等式）。
+
+二つの対応は互いに逆で、$b$ と $(a,\nu)$ について自然である（合成の形から）。
+:::
+
+::: supplement
+**一般化.** モノイドの右作用と、両側の作用（両側加群）も同様に定義できる。余等化子があれば、右作用 $b\square c\to b$ と左作用 $c\square a\to a$ から「テンソル積」$b\square_{c}a$ を二つの射 $b\square(c\square a)\rightrightarrows b\square a$ の余等化子として作れ、環上の加群のテンソル積 $\otimes_{R}$ の一般化になる（Mac Lane 第 VII 章 §4 演習 6）。モナドの代数（\ref{cat:t-algebra}）は、自己関手の圏のモノイド $T$ の「対象への作用」に当たる。
+
+**類似の定理.** \ref{cat:free-monoid-monoidal} は、$\mathbf{Set}$ での語のモノイド、加群のテンソル代数、位相空間の自由位相モノイドなどを一度に与える。どれも「長さ $n$ の積を全部並べ、並べることで掛ける」という同じ形をしている。
+
+**高い視点から：モノイドは「代数の型」の最小単位.** 環が「アーベル群の圏の中のモノイド」であるという見方は、代数的構造を「どのモノイダル圏の中で考えるか」と「その中でどの図式を課すか」に分解する。比喩で言えば、モノイダル圏は「材料と組み立て方の規格」、モノイドは「その規格で作れる最も単純な機械」であり、同じ設計図（モノイドの公理）が規格を変えるだけで群・環・代数・モナドとして実現する。
+:::
+
+## 問題 {#cat:sec-ma-problems}
+
+::: problem {#cat:prob-ma-products}
+$\mathbf{B}=(\mathbf{Set},\times,1)$ で、モノイド $(c,\mu,\eta)$ の定義はふつうのモノイドの定義と一致することを確かめよ。
+:::
+
+::: solution
+$\mu\colon c\times c\to c$ を $\mu(x,y)=xy$、$\eta\colon1\to c$ を元 $1_{c}$ と書く。結合の等式は元 $(x,(y,z))$ で $(xy)z=x(yz)$（$\alpha(x,(y,z))=((x,y),z)$）。単位の等式は $(\ast,y)\mapsto1_{c}y=y$（$\lambda(\ast,y)=y$）と $y1_{c}=y$。準同型は積と単位元を保つ写像。
+:::
+
+::: problem {#cat:prob-ma-rings}
+$(\mathbf{Ab},\otimes,\mathbb{Z})$ のモノイドが単位元をもつ環と同じであることを確かめよ。
+:::
+
+::: solution
+$\mu\colon c\otimes c\to c$ は双線形写像 $c\times c\to c$（テンソル積の普遍性）、すなわち分配律を満たす積。$\eta\colon\mathbb{Z}\to c$ は元 $1\defeq\eta(1)$ で決まる。結合の等式は元 $x\otimes(y\otimes z)$ で $(xy)z=x(yz)$、単位の等式は $1x=x=x1$。逆に環からは $\mu(x\otimes y)=xy$、$\eta(n)=n1$。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

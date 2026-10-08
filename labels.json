@@ -309,6 +309,13 @@
       "num": "1.2",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/01-cartesian-closed.html"
     },
+    "cat:free-action": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "自由な作用",
+      "num": "3.6",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/03-monoids-actions.html"
+    },
     "cat:free-algebra-variety": {
       "status": "defined",
       "type": "lemma",
@@ -336,6 +343,13 @@
       "title": "自由モノイド",
       "num": "4.7",
       "page": "18-category-theory/18A-general-theory/01-basics/04-comma-free-quotient.html"
+    },
+    "cat:free-monoid-monoidal": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "モノイダル圏の自由モノイド",
+      "num": "3.4",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/03-monoids-actions.html"
     },
     "cat:free-monoidal-category": {
       "status": "defined",
@@ -392,6 +406,13 @@
       "title": "関手圏が局所小になる条件",
       "num": "3.10",
       "page": "18-category-theory/18A-general-theory/01-basics/03-constructions.html"
+    },
+    "cat:general-associative-law": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "一般の結合律",
+      "num": "3.3",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/03-monoids-actions.html"
     },
     "cat:generated-congruence": {
       "status": "defined",
@@ -617,6 +638,20 @@
       "num": "2.14",
       "page": "18-category-theory/18A-general-theory/01-basics/02-functors.html"
     },
+    "cat:monoid-action": {
+      "status": "defined",
+      "type": "definition",
+      "title": "モノイドの作用",
+      "num": "3.5",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/03-monoids-actions.html"
+    },
+    "cat:monoid-object": {
+      "status": "defined",
+      "type": "definition",
+      "title": "モノイダル圏のモノイド",
+      "num": "3.1",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/03-monoids-actions.html"
+    },
     "cat:monoidal-category": {
       "status": "defined",
       "type": "definition",
@@ -778,6 +813,13 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/02-monoidal.html"
     },
+    "cat:page-monoids-in-monoidal": {
+      "status": "defined",
+      "type": "page",
+      "title": "モノイダル圏のモノイドと作用",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/03-monoids-actions.html"
+    },
     "cat:page-yoneda": {
       "status": "defined",
       "type": "page",
@@ -924,6 +966,20 @@
       "title": "",
       "num": "2.7",
       "page": "18-category-theory/18A-general-theory/03-monads/02-kleisli.html"
+    },
+    "cat:prob-ma-products": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "3.7",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/03-monoids-actions.html"
+    },
+    "cat:prob-ma-rings": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "3.8",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/03-monoids-actions.html"
     },
     "cat:prob-me-abelian-groups": {
       "status": "defined",
@@ -1555,6 +1611,41 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/01-basics/06-limits.html"
     },
+    "cat:sec-ma-actions": {
+      "status": "defined",
+      "type": "section",
+      "title": "作用",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/03-monoids-actions.html"
+    },
+    "cat:sec-ma-free": {
+      "status": "defined",
+      "type": "section",
+      "title": "自由モノイド",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/03-monoids-actions.html"
+    },
+    "cat:sec-ma-monoids": {
+      "status": "defined",
+      "type": "section",
+      "title": "モノイド",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/03-monoids-actions.html"
+    },
+    "cat:sec-ma-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/03-monoids-actions.html"
+    },
+    "cat:sec-ma-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/03-monoids-actions.html"
+    },
     "cat:sec-me-chaus": {
       "status": "defined",
       "type": "section",
@@ -1757,6 +1848,13 @@
       "title": "T 代数とアイレンバーグ–ムーア圏",
       "num": "1.3",
       "page": "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html"
+    },
+    "cat:table-monoids": {
+      "status": "defined",
+      "type": "table",
+      "title": "モノイダル圏とそのモノイド",
+      "num": "3.2",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/03-monoids-actions.html"
     },
     "cat:triangle-identities": {
       "status": "defined",

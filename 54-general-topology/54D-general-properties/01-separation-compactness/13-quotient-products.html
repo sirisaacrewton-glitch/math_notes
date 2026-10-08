@@ -41,6 +41,29 @@
 - **逆像のコンパクト性**：1 で $f^{-1}(y)\times\{z\}$ を有限個の基本開集合で覆うのに使った。閉写像だけでは成り立たない（\ref{top:product-quotient-counterexample} の $q$ は閉写像だが $q\times1_{Y}$ は商写像でもない）。
 :::
 
+::: theorem クラトフスキの定理 {#top:kuratowski-perfect keywords="Kuratowski: f is perfect iff f x 1_Z is closed for every space Z" index="クラトフスキの定理（完全写像）|くらとふすきのていりかんぜんしゃぞう"}
+$Y$ を $T_{1}$ 空間、$f\colon X\to Y$ を連続な全射とする。$f$ が完全写像であることと、すべての空間 $Z$ について $f\times1_{Z}$ が閉写像であることは同値である。
+:::
+
+::: proof
+⇒ は \ref{top:perfect-times-identity} の 1。⇐ を示す。$Z$ を一点空間とすれば $f$ は閉写像。$y\in Y$ について $K\defeq f^{-1}(y)$ がコンパクトでないとして矛盾を導く。$\{y\}$ は閉（$T_{1}$）なので $K$ は閉。
+
+**Step 1（集積点のないフィルター）.** $K$ の開被覆（$X$ の開集合による）$\mathcal{U}$ で有限部分被覆をもたないものをとる。$\mathcal{U}$ の有限個 $U_{1},\dots,U_{k}$ について $F\defeq K\setminus(U_{1}\cup\cdots\cup U_{k})$ は空でなく、これらは有限個の共通部分で閉じた族 $\mathcal{F}$ をなす。$\mathcal{F}$ は $X$ に集積点をもたない：$x\in K$ なら $x\in U\in\mathcal{U}$ で $U\cap(K\setminus U)=\emptyset$、$x\notin K$ なら開集合 $X\setminus K$ が $K$ の部分集合と交わらない。
+
+**Step 2（空間 $Z$）.** $Z\defeq X\cup\{\infty\}$ とし、$X$ の点はすべて孤立点、$\infty$ の近傍の基本系を $\{\infty\}\cup F$（$F\in\mathcal{F}$）とする（$\mathcal{F}$ は有限個の共通部分で閉じているので位相が定まる）。
+
+**Step 3（閉集合の像が閉でない）.** $D\defeq\{(x,x):x\in K\}\subseteq X\times Z$ とその閉包 $C\defeq\overline{D}$ をとる。
+- $(y,\infty)$ は $(f\times1_{Z})[C]$ の閉包に属する：その近傍 $V\times(\{\infty\}\cup F)$（$V\ni y$ 開）は、$x\in F$ について $(f(x),x)=(y,x)$ を含む。
+- $(y,\infty)\notin(f\times1_{Z})[C]$：そう写る点は $(x,\infty)$（$f(x)=y$）の形で、$(x,\infty)\in C$ なら、$x$ の任意の近傍 $W$ と $F\in\mathcal{F}$ について $W\times(\{\infty\}\cup F)$ が $D$ と交わり、$W\cap F\ne\emptyset$。これは $x$ が $\mathcal{F}$ の集積点であることを意味し、Step 1 に反する。
+
+よって $f\times1_{Z}$ は閉集合 $C$ を閉でない集合に写し、仮定に反する。
+:::
+
+::: hypcheck
+- **$Y$ の $T_{1}$ 性**：$K=f^{-1}(y)$ が閉で、$K$ の外の点が $\mathcal{F}$ の集積点にならないことに使った。
+- **すべての $Z$**：証明では、$X$ と $\mathcal{F}$ から作った特別な空間 $Z$ を使った。$Z$ を一点空間に限れば、$f$ が閉写像であることしか分からない。
+:::
+
 ## ホワイトヘッドの定理 {#top:sec-pq-whitehead}
 
 ::: theorem ホワイトヘッドの定理 {#top:whitehead-product keywords="Whitehead's theorem: q x 1_Z is a quotient map when q is a quotient map and Z is locally compact Hausdorff" index="ホワイトヘッドの定理（商写像の積）|ほわいとへっどのていりしょうしゃぞうのせき"}
@@ -131,7 +154,7 @@ $[0,1]^{2}\times[0,1]$ はコンパクトで、$T\times[0,1]$ はハウスドル
 ::: supplement
 **前提を変えると.** $Z$ が局所コンパクトハウスドルフという条件は、「$-\times Z$ が右随伴（写像空間 $C_{c}(Z,-)$）をもつ」ことと深く関わる（\ref{top:exponential-law}）。左随伴は余極限、とくに余等化子（商）を保つので、$q\times1_{Z}$ が商写像になる。この観点から、商と積が常に両立するように圏を取り替えたのが、コンパクト生成空間の圏（\ref{cat:compactly-generated}）である。完全写像の任意個の積が完全写像であることも知られている（小山の問題 6.15。無限個ではチコノフの定理を使う）。
 
-**似た定理.** \ref{top:perfect-times-identity} の 1 の逆として、ハウスドルフ空間の間の連続写像 $f$ が完全写像であることと、すべての空間 $Z$ について $f\times1_{Z}$ が閉写像であることは同値である（クラトフスキの定理）ことが知られている（ここでは確かめていない）。
+**似た定理.** \ref{top:perfect-times-identity} の 1 の逆として、ハウスドルフ空間の間の連続写像 $f$ が完全写像であることと、すべての空間 $Z$ について $f\times1_{Z}$ が閉写像であることは同値である（クラトフスキの定理、\ref{top:kuratowski-perfect}。$Y$ が $T_{1}$ なら十分）。
 
 **高い視点から：商は「左」、積は「右」.** 圏論的に、商は余極限（左から作るもの）、積は極限（右から作るもの）であり、一般に左と右の構成はうまく交換しない。局所コンパクト性は、$-\times Z$ を「左随伴」にして、余極限と交換できるようにする条件である。比喩で言えば、布を貼り合わせてから引き伸ばすのと、引き伸ばしてから貼り合わせるのとが同じ結果になるには、引き伸ばす方向（$Z$）の布地が「局所的に有限の大きさ」で扱えることが必要で、無限に細かく裂け目が入った布地（\ref{top:product-quotient-counterexample} の $Y$）では、貼り合わせ目がずれてしまう。
 :::

@@ -287,6 +287,7 @@
 ├── site.js / search.js   ← レイアウト（ナビ・目次・参照プレビュー）／サイト内検索
 ├── style.css             ← デザイン（下記）
 ├── vendor/               ← KaTeX, marked（オフライン動作）
+├── assets/               ← サイトのアイコン（墨と金のメダル。favicon.svg・favicon-32.png・apple-touch-icon.png）。build.js・labels.js は分野として扱わない
 ├── tools/build.js        ← ビルド＆検査
 ├── tools/labels.js       ← ラベル管理（status / find / planned / uses / rename / activate）
 ├── index.html, search.html, glossary.html, labels.json, site-index.js, search-index.js  ← 自動生成（手で編集しない）

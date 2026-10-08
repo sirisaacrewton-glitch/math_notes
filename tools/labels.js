@@ -16,7 +16,7 @@
 var fs = require('fs');
 var path = require('path');
 var ROOT = path.resolve(__dirname, '..');
-var SKIP = { vendor: 1, tools: 1, node_modules: 1 };
+var SKIP = { vendor: 1, tools: 1, node_modules: 1, assets: 1 };
 var LABEL_CH = '[A-Za-z0-9:_.\\-]';
 
 function pages() {

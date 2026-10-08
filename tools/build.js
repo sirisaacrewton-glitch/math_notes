@@ -24,7 +24,7 @@ var CHECK_ONLY = args.indexOf('--check') >= 0;
 var QUIET = args.indexOf('--quiet') >= 0;
 var ONLY = (function () { var i = args.indexOf('--only'); return i >= 0 ? args[i + 1] : null; })();
 
-var SKIP_DIRS = { vendor: 1, tools: 1, node_modules: 1 };
+var SKIP_DIRS = { vendor: 1, tools: 1, node_modules: 1, assets: 1 };
 var SOURCE_RE = /<script type="text\/markdown" id="source">([\s\S]*?)<\/script>/;
 
 function readJSON(p) { try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch (e) { return null; } }
@@ -488,6 +488,10 @@ function pageHtml(opts) {
   return '<!DOCTYPE html>\n<html lang="ja">\n<head>\n<meta charset="utf-8">\n' +
     '<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
     '<title>' + Core.escapeHtml(opts.kind === 'home' ? homeTitle() : opts.title + ' | ' + CONFIG.SITE_TITLE) + '</title>\n' +
+    // サイトのアイコン（墨と金のメダル）：PNG は SVG を表示できないブラウザ用、apple-touch-icon はホーム画面用
+    '<link rel="icon" href="' + r + 'assets/favicon-32.png" sizes="32x32" type="image/png">\n' +
+    '<link rel="icon" href="' + r + 'assets/favicon.svg" type="image/svg+xml">\n' +
+    '<link rel="apple-touch-icon" href="' + r + 'assets/apple-touch-icon.png">\n' +
     '<link rel="stylesheet" href="' + r + 'vendor/katex/katex.min.css">\n' +
     '<link rel="stylesheet" href="' + r + 'style.css">\n' +
     '<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>\n' +

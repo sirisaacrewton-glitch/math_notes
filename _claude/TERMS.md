@@ -358,3 +358,4 @@
 | wedge / end / coend / dinatural | 楔 / エンド / コエンド / 対角自然 | 超自然変換 | 仮。cat:page-ends |
 | co-Yoneda lemma / geometric realization | 余米田の補題 / 幾何学的実現 | | 仮。cat:page-ends |
 | Kan extension (right/left) / pointwise | カン拡張（右／左） / 各点 | | 標準的。cat:page-kan |
+| copower / power / dense / absolute Kan extension | 余冪 / 冪 / 稠密 / 絶対カン拡張 | テンソル・コテンソル | 仮。cat:page-pointwise-kan |

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>各点カン拡張と稠密性 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/04-kan-extensions/04-pointwise-kan.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 各点カン拡張と稠密性 {#cat:page-pointwise-kan keywords="Kan extensions as coends, copowers, preservation of Kan extensions by right adjoints, pointwise Kan extension, dense functor, codense, every presheaf is a colimit of representables, finitely generated abelian groups are dense, adjoints as Kan extensions, absolute Kan extension"}
+
+前ページ（\ref{cat:page-kan}）で、右カン拡張をコンマ圏上の極限として各点で計算した。本ページでは、左カン拡張をコエンドで書く公式（\ref{cat:lan-coend}）を示し、右随伴がカン拡張を保存すること（\ref{cat:right-adjoint-preserves-ran}）から、**各点カン拡張**（すべての表現可能関手で保存されるもの）が各点公式で与えられるものとちょうど一致することを示す（\ref{cat:pointwise-kan-characterization}）。応用として、関手 $K$ が**稠密**（すべての対象が $K$ の像の標準的な余極限）であることの判定（\ref{cat:dense-criterion}）と、「すべての前層は表現可能関手の余極限」（\ref{cat:presheaf-colimit-representables}）を得る。最後に、随伴も極限もカン拡張として表せること（\ref{cat:adjoint-as-kan}）を示す。
+
+> 資料：Mac Lane, *Categories for the Working Mathematician* 第 X 章 §4–§7。随伴がカン拡張であることの逆向き（\ref{cat:adjoint-as-kan} の 2）で Mac Lane が「二つの表示の一致」として済ませた三角等式の確認は、転置の一意性で補った。$\mathbf{Ab}$ の稠密性の例で Mac Lane が「有限生成なので準同型」とした部分も補った。
+
+## 記法と定義の確認 {#cat:sec-pk-notation}
+
+::: notation
+- カン拡張と各点公式は \ref{cat:kan-extension}, \ref{cat:ran-pointwise}、エンド・コエンド、自然変換のエンド表示、hom 関手がエンドを保存すること、フビニの定理、米田の補題は \ref{cat:end}, \ref{cat:nat-as-end}, \ref{cat:prob-en-hom-preserves}, \ref{cat:fubini-ends}, \ref{cat:yoneda-lemma} のとおり。
+- 対象 $a$ と集合 $X$ の**余冪** $X\cdot a$ は、$\mathbf{A}(X\cdot a,b)\cong\mathbf{Set}(X,\mathbf{A}(a,b))$（$b$ について自然）を満たす対象（$X$ 個の $a$ の余積）。
+- 圏は局所小、$\mathbf{M}$ は小さいとする。
+:::
+
+## コエンドによる公式 {#cat:sec-pk-coend}
+
+::: theorem 左カン拡張のコエンド公式 {#cat:lan-coend keywords="left Kan extension as a coend of copowers" index="カン拡張のコエンド公式|かんかくちょうのこえんどこうしき"}
+$K\colon\mathbf{M}\to\mathbf{C}$, $T\colon\mathbf{M}\to\mathbf{A}$ について、余冪 $\mathbf{C}(Km',c)\cdot Tm$ がすべて存在し、各 $c$ でコエンド
+$$
+Lc\defeq\int^{m}\mathbf{C}(Km,c)\cdot Tm
+$$
+が存在すれば、$L$（パラメータの定理で $c$ の関手とみる）は $T$ の $K$ に沿った左カン拡張である。
+:::
+
+::: proof
+$S\colon\mathbf{C}\to\mathbf{A}$ について、$S$ について自然な同型を順につなぐ。
+$$
+\begin{aligned}
+\mathrm{Nat}(L,S)&\cong\int_{c}\mathbf{A}(Lc,Sc)\\
+&\cong\int_{c}\int_{m}\mathbf{A}(\mathbf{C}(Km,c)\cdot Tm,Sc)\\
+&\cong\int_{c}\int_{m}\mathbf{Set}(\mathbf{C}(Km,c),\mathbf{A}(Tm,Sc))\\
+&\cong\int_{m}\int_{c}\mathbf{Set}(\mathbf{C}(Km,c),\mathbf{A}(Tm,Sc))\\
+&\cong\int_{m}\mathrm{Nat}(\mathbf{C}(Km,-),\mathbf{A}(Tm,S-))\\
+&\cong\int_{m}\mathbf{A}(Tm,SKm)\cong\mathrm{Nat}(T,SK).
+\end{aligned}
+$$
+順に、自然変換のエンド表示（\ref{cat:nat-as-end}）、$\mathbf{A}(-,Sc)$ がコエンドをエンドに移すこと（\ref{cat:prob-en-hom-preserves} の双対）、余冪の定義、フビニの定理（\ref{cat:fubini-ends}。$\mathbf{Set}$ は完備なのですべての内側のエンドが存在する）、自然変換のエンド表示、米田の補題、自然変換のエンド表示。
+
+::: hypcheck
+- **余冪とコエンドの存在**：$L$ の定義に使った。$\mathbf{A}$ が余完備ならつねに存在する。逆（左カン拡張が存在すればこの公式で与えられる）は一般には主張しない（各点的でないカン拡張がありうる）。
+- **大きさ**：フビニの定理を $\mathbf{Set}$ で使うために、$\mathbf{M}$ が小さく、hom 集合がすべて集合であることを使った。
+:::
+:::
+
+::: remark
+双対に、冪 $a^{X}$（$\mathbf{A}(b,a^{X})\cong\mathbf{Set}(X,\mathbf{A}(b,a))$）があれば、右カン拡張は $\mathrm{Ran}_{K}T(c)=\int_{m}Tm^{\mathbf{C}(c,Km)}$。$K=1_{\mathbf{C}}$, $\mathbf{A}=\mathbf{Set}$ のとき、これは $Tc=\int_{m}\mathbf{Set}(\mathbf{C}(c,m),Tm)=\mathrm{Nat}(\mathbf{C}(c,-),T)$ となり、米田の補題そのものである。
+:::
+
+## 各点カン拡張 {#cat:sec-pk-pointwise}
+
+::: theorem 右随伴はカン拡張を保存する {#cat:right-adjoint-preserves-ran keywords="right adjoints preserve right Kan extensions" index="右随伴とカン拡張|みぎずいはんとかんかくちょう"}
+$G\colon\mathbf{A}\to\mathbf{X}$ が左随伴 $F$ をもてば、$G$ は $\mathbf{A}$ に存在する右カン拡張を保存する：$(R,\varepsilon)$ が $T$ の $K$ に沿った右カン拡張なら、$(GR,G\varepsilon)$ は $GT$ の右カン拡張である。
+:::
+
+::: proof
+随伴を各点で使うと、関手 $H\colon\mathbf{C}\to\mathbf{X}$, $L\colon\mathbf{C}\to\mathbf{A}$ について $\mathrm{Nat}(FH,L)\cong\mathrm{Nat}(H,GL)$（成分ごとの転置。自然性は転置の自然性から）。よって $H$ について自然に
+$$
+\mathrm{Nat}(H,GR)\cong\mathrm{Nat}(FH,R)\cong\mathrm{Nat}(FHK,T)\cong\mathrm{Nat}(HK,GT).
+$$
+$H=GR$ で恒等変換の像を追うと、普遍的な変換は $G\varepsilon$。
+:::
+
+::: definition 各点カン拡張 {#cat:pointwise-kan keywords="pointwise Kan extension" index="各点カン拡張|かくてんかんかくちょう"}
+右カン拡張 $(R,\varepsilon)$ が、すべての $a\in\mathbf{A}$ について表現可能関手 $\mathbf{A}(a,-)$ で保存されるとき、**各点的**という。
+:::
+
+::: lemma 錐と自然変換 {#cat:cones-as-nat keywords="cones over TQ correspond to natural transformations C(c,K-) to A(a,T-)" index="錐と自然変換の対応|すいとしぜんへんかんのたいおう"}
+$\mathrm{Cone}(a,TQ)$（$Q\colon(c\downarrow K)\to\mathbf{M}$）と $\mathrm{Nat}(\mathbf{C}(c,K-),\mathbf{A}(a,T-))$ は一対一に対応する。
+:::
+
+::: proof
+錐 $\tau$ は、各 $(f\colon c\to Km)$ に $\tau_{f}\colon a\to Tm$ を与え、$h\colon m\to m'$ について $\tau_{Kh\circ f}=Th\circ\tau_{f}$ を満たす。自然変換 $\rho$ は、各 $m$ と $f\in\mathbf{C}(c,Km)$ に $\rho_{m}(f)\colon a\to Tm$ を与え、同じ等式（自然性）を満たす。$\tau_{f}=\rho_{m}(f)$ で対応する。
+:::
+
+::: theorem 各点カン拡張の特徴づけ {#cat:pointwise-kan-characterization keywords="a right Kan extension is pointwise iff given by the limit formula" index="各点カン拡張の特徴づけ|かくてんかんかくちょうのとくちょうづけ"}
+$T\colon\mathbf{M}\to\mathbf{A}$ が $K$ に沿った各点的な右カン拡張をもつことと、すべての $c$ で $(c\downarrow K)\to\mathbf{M}\to\mathbf{A}$ の極限が存在することは同値で、そのとき右カン拡張は各点公式（\ref{cat:ran-pointwise}）で与えられる。
+:::
+
+::: proof
+**（⇐）** 各点公式の $R$ について、$\mathbf{A}(a,-)$ は極限を保存するので、$\mathbf{A}(a,R-)$ は $\mathbf{A}(a,T-)$ の各点公式による右カン拡張である（\ref{cat:ran-pointwise} を $\mathbf{Set}$ で使う）。
+
+**（⇒）** $(R,\varepsilon)$ を各点的な右カン拡張とする。$\mathbf{A}(a,R-)$ は $\mathbf{A}(a,T-)$ の右カン拡張なので、$V=\mathbf{C}(c,-)$ について
+$$
+\mathrm{Nat}(\mathbf{C}(c,-),\mathbf{A}(a,R-))\cong\mathrm{Nat}(\mathbf{C}(c,K-),\mathbf{A}(a,T-)).
+$$
+左辺は米田の補題で $\mathbf{A}(a,Rc)$、右辺は \ref{cat:cones-as-nat} で $\mathrm{Cone}(a,TQ)$。この同型は $a$ について自然なので、$\mathrm{Cone}(-,TQ)$ は $Rc$ で表現され、$Rc$ は $TQ$ の極限である（表現の普遍元が極限錐）。
+:::
+
+## 稠密性 {#cat:sec-pk-density}
+
+::: definition 稠密な関手 {#cat:dense-functor keywords="dense functor, dense subcategory, canonical colimit" index="稠密（関手）|ちゅうみつかんしゅ"}
+関手 $K\colon\mathbf{M}\to\mathbf{C}$ が**稠密**であるとは、各 $c\in\mathbf{C}$ について、$(K\downarrow c)\to\mathbf{M}\xrightarrow{K}\mathbf{C}$ の余極限が $c$ で、余極限錐が標準的な錐（$(m,f\colon Km\to c)$ に $f$ を対応させる）であることをいう。
+:::
+
+::: theorem 稠密性の判定 {#cat:dense-criterion keywords="K is dense iff c -> C(K-,c) is fully faithful" index="稠密性の判定|ちゅうみつせいのはんてい"}
+$K$ が稠密であることと、すべての $c,a$ について
+$$
+\mathbf{C}(c,a)\to\mathrm{Nat}(\mathbf{C}(K-,c),\mathbf{C}(K-,a)),\qquad g\mapsto g\circ-
+$$
+が全単射であること（関手 $c\mapsto\mathbf{C}(K-,c)\colon\mathbf{C}\to\mathbf{Set}^{\mathbf{M}^{\mathrm{op}}}$ が充満忠実であること）は同値。
+:::
+
+::: proof
+$(K\downarrow c)$ 上の関手 $KP$ から $a$ への余錐 $\lambda$ は、各 $(m,f\colon Km\to c)$ に $\lambda_{f}\colon Km\to a$ を与え、$h\colon m'\to m$ について $\lambda_{f\circ Kh}=\lambda_{f}\circ Kh$ を満たすもの、すなわち自然変換 $\mathbf{C}(K-,c)\Rightarrow\mathbf{C}(K-,a)$ と同じもの（\ref{cat:cones-as-nat} の双対）。標準的な錐 $f\mapsto f$ が余極限錐であることは、任意の余錐 $\lambda$ が $\lambda_{f}=g\circ f$ と一意に書けること、すなわち上の写像が全単射であることと同じ。
+:::
+
+::: corollary 前層は表現可能関手の余極限 {#cat:presheaf-colimit-representables keywords="every presheaf is canonically a colimit of representables; the Yoneda embedding is dense" index="前層は表現可能関手の余極限|ぜんそうはひょうげんかのうかんしゅのよきょくげん"}
+小さい圏 $\mathbf{M}$ の米田埋め込み $\mathbf{y}\colon\mathbf{M}\to\mathbf{Set}^{\mathbf{M}^{\mathrm{op}}}$ は稠密である。すなわち、すべての前層 $F$ は、$\mathbf{y}m\to F$（$F$ の元 $x\in Fm$）全体にわたる表現可能関手の標準的な余極限である。
+:::
+
+::: proof
+\ref{cat:dense-criterion} を使う。米田の補題から $\mathrm{Hom}(\mathbf{y}-,F)\cong F$（$\mathbf{M}^{\mathrm{op}}$ の関手として自然）なので、$\mathrm{Nat}(\mathrm{Hom}(\mathbf{y}-,F),\mathrm{Hom}(\mathbf{y}-,G))\cong\mathrm{Nat}(F,G)=\mathrm{Hom}(F,G)$ で、この同型は $g\mapsto g\circ-$ と一致する。
+:::
+
+::: example
+1. **一点集合は $\mathbf{Set}$ で稠密.** $(\ast\downarrow X)$ は $X$ の元の離散圏で、条件は「$X$ は元の数だけの一点集合の余積」、すなわち写像は各元での値で決まること。
+2. **有限生成アーベル群は $\mathbf{Ab}$ で稠密.** $\mathbf{M}$ を有限生成アーベル群の充満部分圏とし、\ref{cat:dense-criterion} の写像 $\Phi\colon\mathbf{Ab}(A,B)\to\mathrm{Nat}(\mathbf{Ab}(K-,A),\mathbf{Ab}(K-,B))$ を考える。
+   - *単射*：$f\circ x=g\circ x$ がすべての $x\colon\mathbb{Z}\to A$ で成り立てば $f=g$。
+   - *全射*：$\tau$ に対し $f(a)\defeq\tau_{\mathbb{Z}}(\hat{a})(1)$（$\hat{a}\colon\mathbb{Z}\to A$, $1\mapsto a$）とおく。$a,b\in A$ について $\varphi\colon\mathbb{Z}^{2}\to A$, $(m,n)\mapsto ma+nb$ をとると、$\tau$ の自然性を入射 $i_{1},i_{2}$ と対角 $\Delta(1)=(1,1)$ に使って、$f(a)=\tau_{\mathbb{Z}^{2}}(\varphi)(1,0)$, $f(b)=\tau_{\mathbb{Z}^{2}}(\varphi)(0,1)$, $f(a+b)=\tau_{\mathbb{Z}^{2}}(\varphi)(1,1)$。$\tau_{\mathbb{Z}^{2}}(\varphi)$ は準同型なので $f(a+b)=f(a)+f(b)$。また $x\colon N\to A$ と $n\in N$ について、$\tau$ の自然性を $\hat{n}\colon\mathbb{Z}\to N$ に使うと $\tau_{N}(x)(n)=\tau_{\mathbb{Z}}(x\hat{n})(1)=f(x(n))$ なので $\Phi(f)=\tau$。
+   - 証明が示すように、対象 $\mathbb{Z}\oplus\mathbb{Z}$ 一つ（と $\mathbb{Z}$）で足りる（アーベル群が二項演算で定まるため）。
+:::
+
+## すべての概念はカン拡張 {#cat:sec-pk-all}
+
+::: theorem 随伴はカン拡張 {#cat:adjoint-as-kan keywords="adjoints as Kan extensions, absolute Kan extension, formal criterion for adjoints" index="随伴とカン拡張|ずいはんとかんかくちょう, 絶対カン拡張|ぜったいかんかくちょう"}
+関手 $G\colon\mathbf{A}\to\mathbf{X}$ について次が成り立つ。
+1. $G$ が左随伴 $F$（単位 $\eta$、余単位 $\varepsilon$）をもてば、任意の $H\colon\mathbf{A}\to\mathbf{C}$ について $(HF,H\varepsilon)$ は $H$ の $G$ に沿った右カン拡張である。とくに $F=\mathrm{Ran}_{G}1_{\mathbf{A}}$ で、これはすべての関手で保存される（**絶対カン拡張**）。
+2. 逆に、$\mathrm{Ran}_{G}1_{\mathbf{A}}$ が存在して $G$ で保存されれば、それは $G$ の左随伴で、カン拡張の普遍変換は随伴の余単位である。
+:::
+
+::: proof
+**1.** $S\colon\mathbf{X}\to\mathbf{C}$ について、$\sigma\colon S\Rightarrow HF$ に $H\varepsilon\cdot\sigma G\colon SG\Rightarrow H$ を、$\tau\colon SG\Rightarrow H$ に $\tau F\cdot S\eta\colon S\Rightarrow HF$ を対応させる。一方を施してから他方を施すと、
+$$
+\begin{aligned}
+(H\varepsilon\cdot\sigma G)F\cdot S\eta&=H\varepsilon F\cdot\sigma GF\cdot S\eta=H\varepsilon F\cdot HF\eta\cdot\sigma\\
+&=H(\varepsilon F\cdot F\eta)\cdot\sigma=\sigma
+\end{aligned}
+$$
+（2 番目の等号は $\sigma$ の自然性、最後は三角等式）。逆向きも $H\varepsilon\cdot(\tau F\cdot S\eta)G=H\varepsilon\cdot\tau FG\cdot S\eta G=\tau\cdot SG\varepsilon\cdot S\eta G=\tau\cdot S(G\varepsilon\cdot\eta G)=\tau$（$\tau$ の自然性と三角等式）。よって $\mathrm{Nat}(S,HF)\cong\mathrm{Nat}(SG,H)$ は全単射で、$S$ について自然。$\sigma=1_{HF}$ の像が $H\varepsilon$。
+
+**2.** $(R,\varepsilon)$ を $\mathrm{Ran}_{G}1_{\mathbf{A}}$ とし、$(GR,G\varepsilon)$ が $\mathrm{Ran}_{G}G$ であるとする。後者の普遍性を $H=1_{\mathbf{X}}$ と $1_{G}\colon1_{\mathbf{X}}G\Rightarrow G$ に使い、$G\varepsilon\cdot\eta G=1_{G}$ となる $\eta\colon1_{\mathbf{X}}\Rightarrow GR$ をとる（一つ目の三角等式）。二つ目の三角等式 $\varepsilon R\cdot R\eta=1_{R}$ を示す。$(R,\varepsilon)$ の普遍性から、$\varepsilon\cdot(\varepsilon R\cdot R\eta)G=\varepsilon$ を示せばよい（$1_{R}$ も $\varepsilon\cdot1_{R}G=\varepsilon$ を満たすので、一意性から等しい）。$\varepsilon$ の自然性（射 $\varepsilon_{a}$ に使う）から $\varepsilon\cdot\varepsilon RG=\varepsilon\cdot RG\varepsilon$ なので
+$$
+\varepsilon\cdot\varepsilon RG\cdot R\eta G=\varepsilon\cdot RG\varepsilon\cdot R\eta G=\varepsilon\cdot R(G\varepsilon\cdot\eta G)=\varepsilon.
+$$
+三角等式を満たす $\eta,\varepsilon$ は随伴 $R\dashv G$ を与える（\ref{cat:adjunction-equivalent-forms}）。
+
+::: hypcheck
+- **$G$ による保存**：2 で $\eta$ の存在に使った。保存されない $\mathrm{Ran}_{G}1$ は左随伴とは限らない。
+- **普遍性の一意性**：2 の二つ目の三角等式で、$(R,\varepsilon)$ の普遍性の一意性の部分を使った。Mac Lane はこの部分を図式で示しているが、ここでは一意性への帰着を明示した。
+:::
+:::
+
+::: supplement
+**一般化.** 極限・余極限（\ref{cat:kan-extension} の例 1）、随伴（上の定理）、米田の補題（\ref{cat:lan-coend} の後の注意）、稠密性（\ref{cat:dense-functor}：$K$ が余稠密であることは $(1_{\mathbf{C}},1_{K})$ が $K$ の $K$ に沿った各点的な右カン拡張であること）は、どれもカン拡張として述べられる。Mac Lane はこの章を「すべての概念はカン拡張である」という節で締めくくっている。
+
+**類似の定理.** \ref{cat:presheaf-colimit-representables} は、余米田の補題（\ref{cat:co-yoneda}）の言い換えで、前層の圏 $\mathbf{Set}^{\mathbf{M}^{\mathrm{op}}}$ が「$\mathbf{M}$ に自由に余極限を付け加えた圏」であることの基礎になる：余完備な $\mathbf{A}$ への関手 $T\colon\mathbf{M}\to\mathbf{A}$ は、$\mathrm{Lan}_{\mathbf{y}}T$ によって余極限を保つ関手 $\mathbf{Set}^{\mathbf{M}^{\mathrm{op}}}\to\mathbf{A}$ に一意に延びる（範囲外）。
+
+**高い視点から：カン拡張は最も一般的な普遍構成.** 普遍射・極限・随伴は、すべて「ある関手に沿って、別の関手を最もよく延長する」問題の特別な場合である。比喩で言えば、カン拡張は圏論の「万能工具」で、どの道具（極限、随伴、米田）も、取り付ける部品（$K$ と $T$）を選べばカン拡張として出てくる。
+:::
+
+## 問題 {#cat:sec-pk-problems}
+
+::: problem {#cat:prob-pk-codense}
+$K\colon\mathbf{M}\to\mathbf{C}$ が**余稠密**（各 $c$ が $(c\downarrow K)\to\mathbf{M}\to\mathbf{C}$ の標準的な極限）であることと、$(1_{\mathbf{C}},1_{K})$ が $K$ の $K$ に沿った各点的な右カン拡張であることは同値であることを示せ。
+:::
+
+::: solution
+各点公式（\ref{cat:ran-pointwise}）で $T=K$ とすると、$\mathrm{Ran}_{K}K(c)=\mathrm{Lim}\bigl((c\downarrow K)\to\mathbf{M}\to\mathbf{C}\bigr)$ で、極限錐の成分を $\lambda_{f}$ とする。余稠密ならこの極限は $c$ で $\lambda_{f}=f$。このとき $Rg$ の定義は $g$ 自身を与え、$\varepsilon_{n}=\lambda^{Kn}_{1}=1$ なので $(1_{\mathbf{C}},1_{K})$ が各点的な右カン拡張。逆に $(1_{\mathbf{C}},1_{K})$ が各点的な右カン拡張なら、\ref{cat:pointwise-kan-characterization} の証明から $c=1_{\mathbf{C}}c$ は標準的な極限で、錐の成分は $\varepsilon$ と $1_{\mathbf{C}}$ の作用から $f$ そのもの。
+:::
+
+::: problem {#cat:prob-pk-z-not-dense}
+$\mathbb{Z}$ だけからなる $\mathbf{Ab}$ の充満部分圏は稠密でないことを示せ（Mac Lane 第 X 章 §6 演習 2）。
+:::
+
+::: solution
+\ref{cat:dense-criterion} の写像が全射でない例を作る。$A=\mathbb{Z}^{2}$, $B=\mathbb{Z}$ とし、$\tau_{\mathbb{Z}}\colon\mathbf{Ab}(\mathbb{Z},\mathbb{Z}^{2})\to\mathbf{Ab}(\mathbb{Z},\mathbb{Z})$ を、$\mathbf{Ab}(\mathbb{Z},A)\cong A$ と同一視して写像 $t\colon\mathbb{Z}^{2}\to\mathbb{Z}$ で与える。自然性（$\mathbb{Z}$ の自己準同型 $k\cdot$ との可換性）は $t(kx)=kt(x)$ だけを要求する。$t(m,n)\defeq m$（$n=0$ のとき）、$t(m,n)\defeq0$（$n\neq0$ のとき）とすると、$t(kx)=kt(x)$ は成り立つ（$k=0$ なら両辺 $0$、$k\neq0$ なら $kn\neq0\iff n\neq0$）が、$t$ は加法的でない（$t(1,0)+t(0,1)=1\neq0=t(1,1)$）。よって $\tau$ は準同型 $\mathbb{Z}^{2}\to\mathbb{Z}$ から来ない。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

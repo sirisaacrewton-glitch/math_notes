@@ -1,6 +1,13 @@
 {
   "説明": "サイト全体のラベル台帳（tools/build.js が自動更新）。defined = 定義済み、planned = 参照されているが未執筆。planned の title は未執筆のあいだリンクの代わりに表示される名前。手で planned を追加するときは \"manual\": true を付けると参照がなくても残る。",
   "labels": {
+    "cat:adjoint-as-kan": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "随伴はカン拡張",
+      "num": "4.10",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/04-pointwise-kan.html"
+    },
     "cat:adjoint-equivalence": {
       "status": "defined",
       "type": "definition",
@@ -267,6 +274,13 @@
       "num": "6.1",
       "page": "18-category-theory/18A-general-theory/01-basics/06-limits.html"
     },
+    "cat:cones-as-nat": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "錐と自然変換",
+      "num": "4.5",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/04-pointwise-kan.html"
+    },
     "cat:congruence": {
       "status": "defined",
       "type": "definition",
@@ -322,6 +336,20 @@
       "title": "普遍モノイド",
       "num": "4.3",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/04-simplicial.html"
+    },
+    "cat:dense-criterion": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "稠密性の判定",
+      "num": "4.8",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/04-pointwise-kan.html"
+    },
+    "cat:dense-functor": {
+      "status": "defined",
+      "type": "definition",
+      "title": "稠密な関手",
+      "num": "4.7",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/04-pointwise-kan.html"
     },
     "cat:dual-not-natural": {
       "status": "defined",
@@ -736,6 +764,13 @@
       "num": "2.2",
       "page": "18-category-theory/18A-general-theory/03-monads/02-kleisli.html"
     },
+    "cat:lan-coend": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "左カン拡張のコエンド公式",
+      "num": "4.1",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/04-pointwise-kan.html"
+    },
     "cat:lawvere-ccc-form": {
       "status": "defined",
       "type": "corollary",
@@ -1037,6 +1072,13 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/03-monoids-actions.html"
     },
+    "cat:page-pointwise-kan": {
+      "status": "defined",
+      "type": "page",
+      "title": "各点カン拡張と稠密性",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/04-pointwise-kan.html"
+    },
     "cat:page-simplicial": {
       "status": "defined",
       "type": "page",
@@ -1058,6 +1100,20 @@
       "num": "1.5",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/01-cartesian-closed.html"
     },
+    "cat:pointwise-kan": {
+      "status": "defined",
+      "type": "definition",
+      "title": "各点カン拡張",
+      "num": "4.4",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/04-pointwise-kan.html"
+    },
+    "cat:pointwise-kan-characterization": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "各点カン拡張の特徴づけ",
+      "num": "4.6",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/04-pointwise-kan.html"
+    },
     "cat:pointwise-limits": {
       "status": "defined",
       "type": "theorem",
@@ -1071,6 +1127,13 @@
       "title": "極限の保存",
       "num": "9.1",
       "page": "18-category-theory/18A-general-theory/01-basics/09-adjoints-limits.html"
+    },
+    "cat:presheaf-colimit-representables": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "前層は表現可能関手の余極限",
+      "num": "4.9",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/04-pointwise-kan.html"
     },
     "cat:prob-aft-ring": {
       "status": "defined",
@@ -1338,6 +1401,20 @@
       "num": "8.10",
       "page": "18-category-theory/18A-general-theory/01-basics/08-equivalence.html"
     },
+    "cat:prob-pk-codense": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "4.11",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/04-pointwise-kan.html"
+    },
+    "cat:prob-pk-z-not-dense": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "4.12",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/04-pointwise-kan.html"
+    },
     "cat:prob-quotient-group-universal": {
       "status": "defined",
       "type": "problem",
@@ -1463,6 +1540,13 @@
       "title": "右随伴の充満性・忠実性と余単位",
       "num": "8.1",
       "page": "18-category-theory/18A-general-theory/01-basics/08-equivalence.html"
+    },
+    "cat:right-adjoint-preserves-ran": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "右随伴はカン拡張を保存する",
+      "num": "4.3",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/04-pointwise-kan.html"
     },
     "cat:sec-adj-definition": {
       "status": "defined",
@@ -2163,6 +2247,48 @@
       "title": "問題",
       "num": "",
       "page": "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html"
+    },
+    "cat:sec-pk-all": {
+      "status": "defined",
+      "type": "section",
+      "title": "すべての概念はカン拡張",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/04-pointwise-kan.html"
+    },
+    "cat:sec-pk-coend": {
+      "status": "defined",
+      "type": "section",
+      "title": "コエンドによる公式",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/04-pointwise-kan.html"
+    },
+    "cat:sec-pk-density": {
+      "status": "defined",
+      "type": "section",
+      "title": "稠密性",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/04-pointwise-kan.html"
+    },
+    "cat:sec-pk-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/04-pointwise-kan.html"
+    },
+    "cat:sec-pk-pointwise": {
+      "status": "defined",
+      "type": "section",
+      "title": "各点カン拡張",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/04-pointwise-kan.html"
+    },
+    "cat:sec-pk-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/04-pointwise-kan.html"
     },
     "cat:sec-sx-delta": {
       "status": "defined",

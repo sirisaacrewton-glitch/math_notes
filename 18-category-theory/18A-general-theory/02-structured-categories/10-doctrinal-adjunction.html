@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>随伴とモノイダル構造 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/02-structured-categories/10-doctrinal-adjunction.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 随伴とモノイダル構造 {#cat:page-doctrinal-adjunction keywords="doctrinal adjunction, monoidal adjunction, right adjoint of a strong monoidal functor is lax monoidal, mates, transposes, forgetful functor from abelian groups, rings to monoids"}
+
+有限の積を保つ右随伴が強モノイダル関手になる（\ref{cat:monoidal-functor} の例 3）のと似た現象が、一般のモノイダル圏の間の随伴でも起きる：**左随伴 $F$ が強モノイダルなら、右随伴 $U$ には自然にモノイダル関手（緩いモノイダル関手）の構造が入る**（\ref{cat:doctrinal-adjunction}）。構造射は、$F$ の構造射の逆と余単位を組み合わせたものの**転置**として定まり、公理は転置をとって $F$ の公理に帰着する。例として、アーベル群から集合への忘却関手のモノイダル構造（\ref{cat:monoidal-functor} の例 1）が、自由アーベル群の強モノイダル性から自動的に得られることを見る。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論（ケリーの「ドクトリン的随伴」の最も簡単な場合）に従って組み立てた。
+
+## 記法と定義の確認 {#cat:sec-da-notation}
+
+::: notation
+- モノイダル圏 $(\mathbf{M},\square,e,\alpha,\lambda,\varrho)$, $(\mathbf{M}',\square,e',\alpha',\lambda',\varrho')$、モノイダル関手 $(F,F_{2},F_{0})$ とその三つの公理、強モノイダル関手は \ref{cat:monoidal-functor} のとおり。モノイダル関手はモノイドを保つ（\ref{cat:monoidal-functor-monoids}）。
+- 随伴 $F\dashv U$（$F\colon\mathbf{M}\to\mathbf{M}'$, $U\colon\mathbf{M}'\to\mathbf{M}$）、単位 $\eta$、余単位 $\varepsilon$ は \ref{cat:adjunction}, \ref{cat:unit-counit} のとおり。
+- **転置**：$k\colon x\to Ua$（$\mathbf{M}$ の射）について $\overline{k}\defeq\varepsilon_{a}\circ F(k)\colon Fx\to a$ とする。随伴の定義から $k\mapsto\overline{k}$ は全単射 $\mathbf{M}(x,Ua)\to\mathbf{M}'(Fx,a)$ で、次を満たす（$\varepsilon$ の自然性と $F$ の関手性）。
+$$
+\overline{U(h)\circ k}=h\circ\overline{k},\qquad\overline{k\circ\ell}=\overline{k}\circ F(\ell).
+$$
+:::
+
+## 主定理 {#cat:sec-da-theorem}
+
+::: theorem 強モノイダルな左随伴の右随伴 {#cat:doctrinal-adjunction keywords="if F is strong monoidal and F -| U then U is a (lax) monoidal functor with structure maps transposes of epsilon square epsilon composed with F_2 inverse" index="ドクトリン的随伴|どくとりんてきずいはん, モノイダル随伴|ものいだるずいはん"}
+$F\dashv U$ を随伴とし、$(F,F_{2},F_{0})\colon\mathbf{M}\to\mathbf{M}'$ を強モノイダル関手とする。$U_{2}(a,b)\colon Ua\square Ub\to U(a\square b)$ と $U_{0}\colon e\to U(e')$ を、転置が
+$$
+\overline{U_{2}(a,b)}=(\varepsilon_{a}\square\varepsilon_{b})\circ F_{2}(Ua,Ub)^{-1},\qquad\overline{U_{0}}=F_{0}^{-1}
+$$
+となる射として定める。このとき $(U,U_{2},U_{0})\colon\mathbf{M}'\to\mathbf{M}$ はモノイダル関手である。
+:::
+
+::: proof
+転置は全単射なので、等式を示すには両辺の転置が等しいことを示せばよい。以下 $F_{2}^{-1}$ の添字は文脈から決まるものとする。
+
+**Step 1（$U_{2}$ の自然性）.** $h\colon a\to a'$, $h'\colon b\to b'$ について、$\overline{U(h\square h')\circ U_{2}(a,b)}=(h\square h')\circ(\varepsilon_{a}\square\varepsilon_{b})\circ F_{2}^{-1}$。一方 $\overline{U_{2}(a',b')\circ(Uh\square Uh')}=(\varepsilon_{a'}\square\varepsilon_{b'})\circ F_{2}^{-1}\circ F(Uh\square Uh')$ で、$F_{2}^{-1}$ の自然性からこれは $(\varepsilon_{a'}FUh\square\varepsilon_{b'}FUh')\circ F_{2}^{-1}$、$\varepsilon$ の自然性から $(h\varepsilon_{a}\square h'\varepsilon_{b})\circ F_{2}^{-1}$ に等しい。
+
+**Step 2（補助等式）.** 転置の規則と $U_{2}$ の定義から、$\varepsilon_{a\square b}\circ F(U_{2}(a,b))=\overline{U_{2}(a,b)}=(\varepsilon_{a}\square\varepsilon_{b})\circ F_{2}^{-1}$。これに $F_{2}^{-1}$ の自然性を合わせると、
+$$
+(\varepsilon_{a\square b}\square\varepsilon_{c})\circ F_{2}^{-1}\circ F(U_{2}(a,b)\square1)=\bigl((\varepsilon_{a}\square\varepsilon_{b})\square\varepsilon_{c}\bigr)\circ(F_{2}^{-1}\square1)\circ F_{2}^{-1}
+$$
+で、同様に $(\varepsilon_{a}\square\varepsilon_{b\square c})\circ F_{2}^{-1}\circ F(1\square U_{2}(b,c))=\bigl(\varepsilon_{a}\square(\varepsilon_{b}\square\varepsilon_{c})\bigr)\circ(1\square F_{2}^{-1})\circ F_{2}^{-1}$。
+
+**Step 3（結合の公理）.** 示すべき式は
+$$
+\begin{aligned}
+&U_{2}(a\square b,c)\circ(U_{2}(a,b)\square1)\circ\alpha_{Ua,Ub,Uc}\\
+&=U(\alpha'_{a,b,c})\circ U_{2}(a,b\square c)\circ(1\square U_{2}(b,c)).
+\end{aligned}
+$$
+左辺の転置は、転置の規則と Step 2 から
+$$
+\begin{aligned}
+&(\varepsilon_{a\square b}\square\varepsilon_{c})\circ F_{2}^{-1}\circ F(U_{2}(a,b)\square1)\circ F(\alpha)\\
+&=\bigl((\varepsilon_{a}\square\varepsilon_{b})\square\varepsilon_{c}\bigr)\circ(F_{2}^{-1}\square1)\circ F_{2}^{-1}\circ F(\alpha).
+\end{aligned}
+$$
+右辺の転置は、同様に、さらに $\alpha'$ の自然性を使って
+$$
+\begin{aligned}
+&\alpha'\circ\bigl(\varepsilon_{a}\square(\varepsilon_{b}\square\varepsilon_{c})\bigr)\circ(1\square F_{2}^{-1})\circ F_{2}^{-1}\\
+&=\bigl((\varepsilon_{a}\square\varepsilon_{b})\square\varepsilon_{c}\bigr)\circ\alpha'\circ(1\square F_{2}^{-1})\circ F_{2}^{-1}.
+\end{aligned}
+$$
+$F$ の結合の公理（対象 $Ua,Ub,Uc$ について）$F_{2}\circ(F_{2}\square1)\circ\alpha'=F(\alpha)\circ F_{2}\circ(1\square F_{2})$ は、**$F_{2}$ が同型**なので
+$$
+(F_{2}^{-1}\square1)\circ F_{2}^{-1}\circ F(\alpha)=\alpha'\circ(1\square F_{2}^{-1})\circ F_{2}^{-1}
+$$
+と書き直せる。よって両辺の転置は等しい。
+
+**Step 4（単位の公理）.** 示すべき式は $U(\varrho'_{a})\circ U_{2}(a,e')\circ(1\square U_{0})=\varrho_{Ua}$。左辺の転置は
+$$
+\begin{aligned}
+&\varrho'_{a}\circ(\varepsilon_{a}\square\varepsilon_{e'})\circ F_{2}^{-1}\circ F(1\square U_{0})
+=\varrho'_{a}\circ(\varepsilon_{a}\square\overline{U_{0}})\circ F_{2}^{-1}\\
+&=\varrho'_{a}\circ(\varepsilon_{a}\square1)\circ(1\square F_{0}^{-1})\circ F_{2}^{-1}
+=\varepsilon_{a}\circ\varrho'_{FUa}\circ(1\square F_{0}^{-1})\circ F_{2}^{-1}
+\end{aligned}
+$$
+（$F_{2}^{-1}$ と $\varrho'$ の自然性）。$F$ の単位の公理 $F(\varrho_{x})\circ F_{2}(x,e)\circ(1\square F_{0})=\varrho'_{Fx}$ は、**$F_{2}$, $F_{0}$ が同型**なので $\varrho'_{Fx}\circ(1\square F_{0}^{-1})\circ F_{2}^{-1}=F(\varrho_{x})$ と書き直せ、$x=Ua$ とすると左辺の転置は $\varepsilon_{a}\circ F(\varrho_{Ua})=\overline{\varrho_{Ua}}$。左単位も同様。
+:::
+
+::: hypcheck
+- **$F$ が強モノイダル（$F_{2}$, $F_{0}$ が同型）**：$U_{2}$, $U_{0}$ の定義と、Step 3, 4 で $F$ の公理を逆向きに書き直すのに使った。
+- **転置の全単射性（随伴）**：等式を転置の等式に帰着するのに使った。
+- **自然性**：$F_{2}^{-1}$, $\varepsilon$, $\alpha'$, $\varrho'$ の自然性を各段で使った。
+:::
+
+
+## 例 {#cat:sec-da-examples}
+
+::: example 忘却関手のモノイダル構造 {#cat:da-forgetful-ab}
+自由アーベル群 $F=\mathbb{Z}[-]\colon(\mathbf{Set},\times,1)\to(\mathbf{Ab},\otimes,\mathbb{Z})$ は強モノイダル（\ref{cat:monoidal-functor} の例 2）で、忘却関手 $U$ の左随伴である。\ref{cat:doctrinal-adjunction} の $U_{2}(A,B)\colon UA\times UB\to U(A\otimes B)$ は、転置
+$$
+\mathbb{Z}[UA\times UB]\xrightarrow{F_{2}^{-1}}\mathbb{Z}[UA]\otimes\mathbb{Z}[UB]\xrightarrow{\varepsilon\otimes\varepsilon}A\otimes B
+$$
+が基底 $(a,b)$ を $a\otimes b$ に送るので、$(a,b)\mapsto a\otimes b$ である。$U_{0}\colon1\to\mathbb{Z}$ は $F_{0}^{-1}\colon\mathbb{Z}[1]\to\mathbb{Z}$ の転置で $\ast\mapsto1$。これは \ref{cat:monoidal-functor} の例 1 の構造と一致する。\ref{cat:monoidal-functor-monoids} と合わせると、$(\mathbf{Ab},\otimes)$ のモノイド（環）は $U$ で $(\mathbf{Set},\times)$ のモノイド（乗法モノイド）に移る。
+:::
+
+## 問題 {#cat:sec-da-problems}
+
+::: problem {#cat:prob-da-cartesian}
+$\mathbf{M},\mathbf{M}'$ が有限の積によるモノイダル構造をもち、$F\dashv U$ で $F$ が有限の積を保つ（したがって強モノイダル）とする。\ref{cat:doctrinal-adjunction} の $U_{2}$ が、$U$ が積を保つことから来る標準同型 $Ua\times Ub\cong U(a\times b)$ と一致することを示せ。
+:::
+
+::: solution
+$U(\pi_{1})\circ U_{2}(a,b)$ の転置は $\pi_{1}\circ(\varepsilon_{a}\times\varepsilon_{b})\circ F_{2}^{-1}=\varepsilon_{a}\circ\pi_{1}\circ F_{2}^{-1}$。$F_{2}^{-1}\colon F(Ua\times Ub)\to FUa\times FUb$ は $(F\pi_{1},F\pi_{2})$ なので、これは $\varepsilon_{a}\circ F(\pi_{1})=\overline{\pi_{1}}$。よって $U(\pi_{1})\circ U_{2}=\pi_{1}$、同様に $U(\pi_{2})\circ U_{2}=\pi_{2}$ で、$U_{2}$ は標準同型（$(U\pi_{1},U\pi_{2})$ の逆）である。
+:::
+
+::: problem {#cat:prob-da-not-strong}
+\ref{cat:da-forgetful-ab} の $U$ は強モノイダルでないことを確かめ、右随伴は一般に強モノイダルにならない（緩いモノイダル構造しか入らない）ことを説明せよ。
+:::
+
+::: solution
+$U_{2}(A,B)$ は単射でない（\ref{cat:monoidal-functor} の例 1：$(2a,b)$ と $(a,2b)$ が同じ元に移る）ので同型でない。一般に $U_{2}$ は「$F$ 側の構造を経由して戻る」射で、$U$ が $\square$ と $\square'$ を結びつける保証はない。$\square'$ が積でなくテンソル積のときは、$U$ が極限を保つこと（\ref{cat:adjoints-preserve-limits}）も役に立たない。
+:::
+
+::: supplement
+**前提を変えると.** より一般に、随伴 $F\dashv U$ について、$U$ のモノイダル関手の構造と $F$ の**余モノイダル関手**（\ref{cat:monoidal-functor} の注意）の構造は、転置（メイトの対応）によって一対一に対応し、$F$ の余モノイダル構造が同型である（$F$ が強）ことと、随伴がモノイダル圏の 2 圏の中の随伴になることが同値であることが知られている（ケリー 1974 の「ドクトリン的随伴」とされる。ここではその一方向の最も簡単な場合を示した）。
+
+**似た定理.** 右随伴が極限を保つこと（\ref{cat:adjoints-preserve-limits}）は、本定理の「積の場合」の背景にある。モナド論では、強モナドやモノイダル・モナドの理論で同様の転置の議論が使われることが知られている。
+
+**高い視点から：構造は随伴を渡って逆向きに伝わる.** 左随伴 $F$ が「テンソル積をきちんと保つ」（強モノイダル）なら、右随伴 $U$ は「テンソル積を緩く保つ」（緩いモノイダル）。構造射 $Ua\square Ub\to U(a\square b)$ は、「$F$ で向こうへ渡り、$F$ の構造を逆にたどってから余単位で戻る」道のりの転置である。比喩で言えば、翻訳 $F$ が文の組み立て方を忠実に保つなら、逆向きの要約 $U$ は、組み立てを完全には保たなくても、「二つの要約を並べたもの」から「並べたものの要約」への自然な対応だけはもつ。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

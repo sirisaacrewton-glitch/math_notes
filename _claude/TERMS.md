@@ -427,3 +427,4 @@
 | P/poly / Karp-Lipton theorem / self-reducibility | P/poly / カープ–リプトンの定理 / 自己帰着性 | | 標準的。comp:page-ph-karp-lipton |
 | k-space / Montel theorem | k 空間 / モンテルの定理 | コンパクト生成空間 | 標準的。top:page-ascoli-general |
 | Segal condition / spine / Segal space / quasi-category | セガール条件 / 背骨 / セガール空間 / 準圏 | | 仮（「背骨」）。cat:page-segal-condition |
+| doctrinal adjunction / transpose (of an adjunction) / mates | ドクトリン的随伴 / 転置 / メイト | | 仮。cat:page-doctrinal-adjunction |

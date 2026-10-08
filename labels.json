@@ -4082,6 +4082,13 @@
       "num": "7.11",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/07-probabilistic-quantum.html"
     },
+    "comp:branching-program": {
+      "status": "defined",
+      "type": "definition",
+      "title": "分岐プログラム",
+      "num": "13.6",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/13-primality-branching.html"
+    },
     "comp:cantor-measure": {
       "status": "defined",
       "type": "definition",
@@ -4438,6 +4445,13 @@
       "title": "ε 閉包と到達集合",
       "num": "1.6",
       "page": "03-mathematical-logic/03D-computability-theory/01-automata/01-finite-automata.html"
+    },
+    "comp:eq-robp-bpp": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "一回読み分岐プログラムの同値性",
+      "num": "13.9",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/13-primality-branching.html"
     },
     "comp:eqtm-neither": {
       "status": "defined",
@@ -4964,6 +4978,27 @@
       "num": "10.6",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/10-mapping-reducibility.html"
     },
+    "comp:mr-composite-many-witnesses": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "合成数には証人が多い",
+      "num": "13.3",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/13-primality-branching.html"
+    },
+    "comp:mr-prime-no-witness": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "素数には証人がない",
+      "num": "13.2",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/13-primality-branching.html"
+    },
+    "comp:mr-witness": {
+      "status": "defined",
+      "type": "definition",
+      "title": "合成数の証人",
+      "num": "13.1",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/13-primality-branching.html"
+    },
     "comp:multitape": {
       "status": "defined",
       "type": "theorem",
@@ -5356,6 +5391,13 @@
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/02-prefix-free-complexity.html"
     },
+    "comp:page-primality-branching": {
+      "status": "defined",
+      "type": "page",
+      "title": "素数判定と分岐プログラム",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/13-primality-branching.html"
+    },
     "comp:page-primitive-recursive": {
       "status": "defined",
       "type": "page",
@@ -5705,6 +5747,13 @@
       "title": "素因数分解による列のコード",
       "num": "11.1",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/11-universal-smn.html"
+    },
+    "comp:primes-bpp": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "PRIMES は BPP に属する",
+      "num": "13.4",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/13-primality-branching.html"
     },
     "comp:primitive-recursive": {
       "status": "defined",
@@ -6133,6 +6182,20 @@
       "num": "11.8",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/11-parallel.html"
     },
+    "comp:prob-pb-carmichael": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "13.10",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/13-primality-branching.html"
+    },
+    "comp:prob-pb-not-read-once": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "13.11",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/13-primality-branching.html"
+    },
     "comp:prob-pcp-unary": {
       "status": "defined",
       "type": "problem",
@@ -6490,6 +6553,20 @@
       "num": "5.3",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/05-register-machines.html"
     },
+    "comp:robp-multilinear": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "一回読みの多項式は多重線形な標準形をもつ",
+      "num": "13.8",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/13-primality-branching.html"
+    },
+    "comp:robp-polynomial": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "分岐プログラムの多項式",
+      "num": "13.7",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/13-primality-branching.html"
+    },
     "comp:rsa-correct": {
       "status": "defined",
       "type": "theorem",
@@ -6783,6 +6860,13 @@
       "title": "計算可能な整列順序",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/04-boundedness.html"
+    },
+    "comp:sec-branching": {
+      "status": "defined",
+      "type": "section",
+      "title": "一回読み分岐プログラム",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/13-primality-branching.html"
     },
     "comp:sec-cfg": {
       "status": "defined",
@@ -7442,6 +7526,20 @@
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/04-recursive-functions.html"
     },
+    "comp:sec-pb-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/13-primality-branching.html"
+    },
+    "comp:sec-pb-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/13-primality-branching.html"
+    },
     "comp:sec-pcp": {
       "status": "defined",
       "type": "section",
@@ -7539,6 +7637,13 @@
       "title": "加法の理論は決定可能",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/01-logical-theories.html"
+    },
+    "comp:sec-primality": {
+      "status": "defined",
+      "type": "section",
+      "title": "素数判定",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/13-primality-branching.html"
     },
     "comp:sec-probabilistic": {
       "status": "defined",

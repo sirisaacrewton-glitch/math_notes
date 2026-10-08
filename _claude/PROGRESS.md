@@ -307,6 +307,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 計算複雑性 CC-13（13-primality-branching, comp:page-primality-branching：合成数の証人、素数には証人がない、奇数の合成数では証人が半数以上（素数べきでない場合と素数べきの場合。j の最大性と t の互いに素性を補った）、PRIMES ∈ coRP（一様な選択を有限回の引き直しで厳密化）、分岐プログラムと一回読み、節点の多項式は道の積の和、一回読みなら多重線形標準形、EQ_ROBP ∈ coRP、561 と一回読みでない反例の問題）。Sipser 10.2。07 の補足から参照。
 - 2026-10-08 圏論 CB-12（01-basics/12-special-aft, cat:page-special-aft：部分対象とよく冪、モノ射の（族の）引き戻し、生成・余生成集合、特殊始対象定理（射の一意性を等化子の分裂から詳述）、引き戻しを保つ関手とコンマ圏のモノ射、SAFT（よく冪の形。コンマ圏のよく冪性を補った）、CHaus の反射性（[0,1] が余生成対象）、表現可能性と Set の余生成対象の問題）。Mac Lane V.7–8。10-adjoint-functor-theorem の補足から参照。
 - 2026-10-08 圏論 CS-09（02-structured-categories/09-loops-suspensions, cat:page-loops-suspensions：ウェッジとスマッシュ積、局所コンパクトハウスドルフな Y についての −∧Y ⊣ Map_*(Y,−)（Top_* のまま、CG を使わずに）、I/{0,1} のコンパクトハウスドルフ性、Σ ⊣ Ω と単位・余単位、Σⁿ ⊣ Ωⁿ、Ω の積保存、ΩX を道の空間のファイバーとみなす埋め込み、Set_* のスマッシュ積）。Mac Lane VII.9。
 - 2026-10-08 圏論 CB-11（01-basics/11-adjoints-topology, cat:page-adjoints-topology：D ⊣ U ⊣ D'、始位相をスライス圏の右随伴かつ右逆として、持ち上げから等化子を作る命題（一意性は随伴なしで）、Top の完備性・余完備性、X/A の左随伴性（A=∅ も込めて）、Haus の反射性（解集合条件、単位の全射性、余極限は H 経由）、D' と Haus→Top が右随伴をもたない問題）。Mac Lane V.9。
@@ -474,6 +475,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | CC-10 | 04-complexity/10-interactive-proofs | 対話証明系、グラフ非同型、IP = PSPACE（Sipser 10.4） | 完了 |
 | CC-11 | 04-complexity/11-parallel | 一様な回路族、NC、P 完全性（Sipser 10.5） | 完了 |
 | CC-12 | 04-complexity/12-approximation-cryptography | 近似アルゴリズムと暗号（一方向関数・落とし戸関数）（Sipser 10.1, 10.6） | 完了 |
+| CC-13 | 04-complexity/13-primality-branching | 素数判定と一回読み分岐プログラム（Sipser 10.2） | 完了 |
 | KR-01 | 06-algorithmic-randomness/01-prefix-free-complexity | 接頭辞なし複雑性とクラフトの不等式 | 完了 |
 | KR-02 | 06-algorithmic-randomness/02-martin-lof | マルチン＝レーフのランダムネスとレヴィン–シュノアの定理 | 完了 |
 

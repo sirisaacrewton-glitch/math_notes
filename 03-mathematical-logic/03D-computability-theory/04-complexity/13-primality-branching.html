@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>素数判定と分岐プログラム | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/04-complexity/13-primality-branching.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 素数判定と分岐プログラム {#comp:page-primality-branching keywords="primality testing, Miller-Rabin test, Fermat test, Carmichael number, compositeness witness, square roots of unity, PRIMES in BPP, COMPOSITES in RP, branching program, read-once branching program, EQ_ROBP, arithmetization of branching programs"}
+
+確率的アルゴリズム（\ref{comp:page-probabilistic-quantum}）の代表例を二つ扱う。一つは**素数判定**で、「$1$ の平方根は素数を法としては $\pm1$ しかない」ことを使う確率的な判定法により、合成数には少なくとも半数の**証人**があることを示す（\ref{comp:mr-composite-many-witnesses}）。これから PRIMES $\in$ BPP（合成数の判定は RP）が従う（\ref{comp:primes-bpp}）。もう一つは**一回読み分岐プログラム**の同値性の判定で、ブール値をとる変数に有限体の値を代入する「算術化」によって、BPP に属することを示す（\ref{comp:eq-robp-bpp}）。後者の手法は対話証明（\ref{comp:page-interactive-proofs}）の算術化の原型である。
+
+> 資料：M. Sipser, *Introduction to the Theory of Computation*, 3rd ed., §10.2 を参考にした（本文は写していない）。合成数の証人の数え上げでは、非証人の列の性質（最大の位置 $j$ の選び方から $d^{s2^{j}}\equiv\pm1$ となること）と、作った $t$ が $p$ と互いに素であることを補った。分岐プログラムについては、各節点の多項式が「そこへの道の積の和」であることを帰納法で示し、一回読みの条件がどこで効くかを明示した。
+
+## 記法と定義の確認 {#comp:sec-pb-notation}
+
+::: notation
+- 確率的 TM、BPP・RP、誤りの縮小、シュワルツ–ジッペルの補題は \ref{comp:probabilistic-tm}, \ref{comp:class-bpp}, \ref{comp:amplification}, \ref{comp:schwartz-zippel} のとおり。coRP は補集合が RP に属する言語全体。
+- 整数 $a,b$ と $n\ge2$ について $a\equiv b\pmod n$ は $n\mid a-b$。$\mathbb{Z}_{n}^{+}\defeq\{1,\dots,n-1\}$。$a^{e}\bmod n$ は繰り返し二乗により、$\log n$ と $\log e$ の多項式時間で計算できる。素数 $r$ と $r\nmid a$ について $a^{r-1}\equiv1\pmod r$（フェルマーの小定理。\ref{comp:rsa-correct} の証明の Step 1）。素数 $r$ が積 $xy$ を割れば $x$ か $y$ を割る（ユークリッドの補題）。
+- 互いに素な $q,r\ge2$ と整数 $a,b$ について、$t\equiv a\pmod q$, $t\equiv b\pmod r$ となる $t$ がある（ベズーの等式 $uq+vr=1$ から $t\defeq avr+buq$）。また $q\mid x$, $r\mid x$ なら $qr\mid x$。
+:::
+
+## 素数判定 {#comp:sec-primality}
+
+::: definition 合成数の証人 {#comp:mr-witness keywords="Miller-Rabin witness, strong probable prime test, square roots of 1" index="合成数の証人|ごうせいすうのしょうにん, ミラー–ラビン判定|みらーらびんはんてい"}
+$p\ge3$ を奇数とし、$p-1=s\cdot2^{l}$（$s$ は奇数、$l\ge1$）と書く。$a\in\mathbb{Z}_{p}^{+}$ について、列
+$$
+a^{s},\ a^{2s},\ a^{4s},\ \dots,\ a^{2^{l}s}=a^{p-1}\pmod p
+$$
+を考える（各項は前の項の二乗）。次のどちらかが成り立つとき、$a$ を $p$ の（合成数の）**証人**という。
+1. $a^{p-1}\not\equiv1\pmod p$。
+2. $a^{p-1}\equiv1$ で、列の中に $1$ でない項があり、その最後のものが $-1$（$\equiv p-1$）でない。
+
+証人でない $a$ を**非証人**という。非証人の列は、すべて $1$ であるか、ある位置に $-1$ があってその後がすべて $1$ である。
+:::
+
+::: lemma 素数には証人がない {#comp:mr-prime-no-witness keywords="primes have no Miller-Rabin witnesses" index="素数と証人|そすうとしょうにん"}
+$p$ が奇素数なら、$\mathbb{Z}_{p}^{+}$ に証人はない。
+:::
+
+::: proof
+$a\in\mathbb{Z}_{p}^{+}$ なら $p\nmid a$ なので、フェルマーの小定理から $a^{p-1}\equiv1$ で、条件 1 は起きない。条件 2 が起きたとすると、最後の $1$ でない項 $b$ は、次の項 $b^{2}$ が $1$ なので $p\mid b^{2}-1=(b-1)(b+1)$。ユークリッドの補題から $b\equiv1$ または $b\equiv-1$ で、$b\not\equiv1$ なので $b\equiv-1$。これは条件 2 に反する。
+:::
+
+::: lemma 合成数には証人が多い {#comp:mr-composite-many-witnesses keywords="an odd composite number has at least as many witnesses as nonwitnesses" index="合成数の証人の個数|ごうせいすうのしょうにんのこすう"}
+$p\ge3$ が奇数の合成数なら、$\mathbb{Z}_{p}^{+}$ の証人の個数は非証人の個数以上である。
+:::
+
+::: proof
+**Step 0（非証人は $p$ と互いに素）.** $d$ が非証人なら $d^{p-1}\equiv1$ なので、$d\cdot d^{p-2}\equiv1$ で、$d$ は $p$ と互いに素。以下、「$t$ が $p$ と互いに素なら、$d\mapsto dt\bmod p$ は $\mathbb{Z}_{p}^{+}$ の単射」を使う（$d_{1}t\equiv d_{2}t$ なら $p\mid(d_{1}-d_{2})t$ から $p\mid d_{1}-d_{2}$）。したがって、**非証人 $d$ をすべて証人に写す、$p$ と互いに素な $t$** を見つければよい。
+
+**場合 A（$p$ は素数のべきでない）.** $p=qr$（$q,r\ge3$ は互いに素、ともに奇数）と書ける。
+
+*Step A1（$h$ と $j$ の選び方）.* $p-1$ は非証人である：$(-1)^{s}=-1$（$s$ は奇数）で、列は $-1,1,1,\dots$。よって「列に $-1$ を含む非証人」がある。そのうち $-1$ の位置が最大のものを $h$、その位置を $j$（$0\le j<l$）とする：$h^{s2^{j}}\equiv-1$。
+
+*Step A2（$t$ の構成）.* $t\equiv h\pmod q$, $t\equiv1\pmod r$ となる $t\in\{0,\dots,p-1\}$ をとる。すると
+$$
+t^{s2^{j}}\equiv-1\pmod q,\qquad t^{s2^{j}}\equiv1\pmod r.
+$$
+$t^{s2^{j+1}}$ は $q$ を法としても $r$ を法としても $1$ なので、$p$ を法として $1$。$t$ は $p$ と互いに素：$t^{s2^{j+1}}\equiv1\pmod p$ から $t\cdot t^{s2^{j+1}-1}\equiv1$。
+
+*Step A3（$t^{s2^{j}}\not\equiv\pm1\pmod p$）.* $\equiv1\pmod p$ なら $q$ を法として $-1\equiv1$、すなわち $q\mid2$ で $q\ge3$ に反する。$\equiv-1\pmod p$ なら $r$ を法として $1\equiv-1$ で同様に矛盾。
+
+*Step A4（非証人 $d$ について $dt$ は証人）.* $d$ の列は、すべて $1$ か、位置 $i$ に $-1$ がありその後が $1$。Step A1 の $j$ の最大性から $i\le j$。よって $d^{s2^{j}}\equiv\pm1$ かつ $d^{s2^{j+1}}\equiv1$。すると $u\defeq dt\bmod p$ について、$u^{s2^{j}}\equiv\pm t^{s2^{j}}\not\equiv\pm1$（Step A3）、$u^{s2^{j+1}}\equiv1$ で、以後の項も $1$。$u^{p-1}\equiv1$ なら、列の最後の $1$ でない項は位置 $j$ の項で、それは $-1$ でないので条件 2 が成り立つ。いずれにせよ $u$ は証人である（$u^{p-1}=(u^{s2^{j+1}})^{2^{l-j-1}}\equiv1$ なので実際は条件 2）。
+
+**場合 B（$p=q^{e}$, $q$ は奇素数、$e\ge2$）.** $t\defeq1+q^{e-1}$ とする。
+
+*Step B1（$t^{p}\equiv1$）.* 二項展開
+$$
+t^{p}=1+p\,q^{e-1}+\sum_{k=2}^{p}\binom{p}{k}q^{k(e-1)}
+$$
+で、$p\,q^{e-1}=q^{2e-1}$ と、$k\ge2$ の項の $q^{k(e-1)}$（$k(e-1)\ge2e-2\ge e$）はどれも $q^{e}=p$ で割れる。よって $t^{p}\equiv1$ で、$t$ は $p$ と互いに素。
+
+*Step B2（$t^{p-1}\not\equiv1$）.* $t^{p-1}\equiv1$ なら $t\equiv t^{p}\equiv1$、すなわち $q^{e}\mid q^{e-1}$ で矛盾。
+
+*Step B3（非証人 $d$ について $dt$ は証人）.* $d^{p-1}\equiv1$ なので $(dt)^{p-1}\equiv t^{p-1}\not\equiv1$。条件 1 により $dt\bmod p$ は証人。
+
+どちらの場合も、Step 0 の単射により、証人の個数 $\ge$ 非証人の個数。
+:::
+
+::: hypcheck
+- **$p$ が奇数**：Step A1 で $-1\not\equiv1$（$p\ge3$）と $q,r\ge3$ に、Step A3 で使った。偶数は判定法の前に別に処理する。
+- **$q,r$ が互いに素**：Step A2 の $t$ の存在（ベズーの等式）と、「$q$ と $r$ を法として $1$ なら $p$ を法として $1$」に使った。
+- **$j$ の最大性**：Step A4 で、すべての非証人について $d^{s2^{j}}\equiv\pm1$ となることに使った。これがこの証明の要である。
+- **$e\ge2$**：Step B1 で $k(e-1)\ge e$ と $2e-1\ge e$、Step B2 で $q^{e}\nmid q^{e-1}$ に使った。
+:::
+
+::: theorem PRIMES は BPP に属する {#comp:primes-bpp keywords="PRIMES in BPP, COMPOSITES in RP, one-sided error primality test" index="PRIMES|ぷらいむず, 素数判定|そすうはんてい"}
+$\mathrm{PRIMES}\defeq\{\langle p\rangle:p\text{ は素数}\}$（$p$ は二進表記）について、$\mathrm{PRIMES}\in\mathrm{coRP}\subseteq\mathrm{BPP}$。すなわち合成数の全体は RP に属する。
+:::
+
+::: proof
+入力 $p$ について次の確率的アルゴリズムを考える。$p\le2$ または $p$ が偶数なら、$p=2$ のときだけ受理する。そうでなければ $k$ を $2^{k-1}\le p-1<2^{k}$ となる整数とし、次の**試験**を独立に $3$ 回行う：$k$ ビットを引いて数 $a$ を作り、$a\in\mathbb{Z}_{p}^{+}$ でなければもう一度だけ引き直す。二回とも $\mathbb{Z}_{p}^{+}$ に入らなければこの試験は「合格」とする。$a\in\mathbb{Z}_{p}^{+}$ が得られたら、$a$ が証人なら「不合格」、非証人なら「合格」とする。いずれかの試験が不合格なら拒否し、すべて合格なら受理する。
+
+**時間.** $p-1=s2^{l}$ の分解と列の $l+1\le\log_{2}p+1$ 項の計算は、繰り返し二乗で $\log p$ の多項式時間。
+
+**素数の場合.** \ref{comp:mr-prime-no-witness} より証人はないので、どの試験も合格し、確率 $1$ で受理。
+
+**奇数の合成数の場合.** 一回の引きで $a\in\mathbb{Z}_{p}^{+}$ となる確率は $(p-1)/2^{k}\ge1/2$ なので、二回とも外れる確率は $1/4$ 以下。$a\in\mathbb{Z}_{p}^{+}$ が得られたとき、その条件のもとで $a$ は $\mathbb{Z}_{p}^{+}$ 上一様で、\ref{comp:mr-composite-many-witnesses} より証人である確率は $1/2$ 以上。よって一つの試験が不合格になる確率は $(3/4)\cdot(1/2)=3/8$ 以上で、三つの試験がすべて合格する確率は
+$$
+\Bigl(1-\frac{3}{8}\Bigr)^{3}=\frac{125}{512}<\frac{1}{3}.
+$$
+
+合成数の全体について、「合成数なら確率 $2/3$ 以上で（上のアルゴリズムが拒否するので）受理、合成数でなければ必ず拒否」となる機械が得られるので、合成数の全体は RP、PRIMES は coRP に属する。誤り確率は $1/3$ 未満なので BPP にも属する。
+:::
+
+::: hypcheck
+- **非証人の割合 $\le1/2$**（\ref{comp:mr-composite-many-witnesses}）：合成数の場合の評価に使った。
+- **引き直しの回数を有限で打ち切る**：確率的 TM は硬貨投げしか使えないので、$\mathbb{Z}_{p}^{+}$ 上の一様分布は「範囲内に入ったときの条件付き分布」として実現した。打ち切った場合を「合格」とすることで、素数を確実に受理する性質（片側誤り）を保った。
+:::
+
+::: remark
+フェルマーの判定（条件 1 だけを見る）では足りない。$a^{p-1}\equiv1$ をすべての $p$ と互いに素な $a$ について満たす合成数（**カーマイケル数**。例：$561$, \ref{comp:prob-pb-carmichael}）が存在するからである。条件 2 は、$1$ の平方根が $\pm1$ 以外にもあること（$p$ が素数でない証拠）を捉える。なお、PRIMES が P に属すること（アグラワル–カヤル–サクセナ、2002）が知られている（ここでは扱わない）。
+:::
+
+## 一回読み分岐プログラム {#comp:sec-branching}
+
+::: definition 分岐プログラム {#comp:branching-program keywords="branching program, query node, read-once branching program, EQ_ROBP" index="分岐プログラム|ぶんきぷろぐらむ, 一回読み分岐プログラム|いっかいよみぶんきぷろぐらむ"}
+変数 $x_{1},\dots,x_{m}$ 上の**分岐プログラム** $B$ とは、有向非巡回グラフで、出次数 $0$ の二つの**出力節点**（ラベル $0$, $1$）以外の各節点（**問い合わせ節点**）に変数が付き、各問い合わせ節点からちょうど二本の辺（ラベル $0$, $1$）が出て、一つの**開始節点**が指定されたものである。すべての節点は開始節点から到達可能とする（到達できない節点は計算に関係しないので除いてよい）。割り当て $a\in\{0,1\}^{m}$ について、開始節点から、各問い合わせ節点 $x_{i}$ でラベル $a_{i}$ の辺をたどり、着いた出力節点のラベルを $B(a)$ とする。この道を $a$ の**計算路**という。開始節点から出力節点へのどの道でも各変数が高々一回しか問い合わされないとき、$B$ は**一回読み**であるという。
+$$
+\begin{aligned}
+\mathrm{EQ}_{\mathrm{ROBP}}\defeq\{\langle B_{1},B_{2}\rangle:{}&B_{1},B_{2}\text{ は一回読みで、}\\
+&\text{すべての }a\text{ で }B_{1}(a)=B_{2}(a)\}.
+\end{aligned}
+$$
+:::
+
+::: lemma 分岐プログラムの多項式 {#comp:robp-polynomial keywords="arithmetization of a branching program, node polynomials as path sums" index="分岐プログラムの算術化|ぶんきぷろぐらむのさんじゅつか"}
+$\ell_{1}(x)\defeq x$, $\ell_{0}(x)\defeq1-x$ とする。$B$ の各節点 $v$ と辺に、整数係数の多項式を次のように定める：開始節点には $1$。節点 $v$ の多項式が $P_{v}$ で $v$ の変数が $x_{i}$ なら、$v$ から出るラベル $b$ の辺に $\ell_{b}(x_{i})P_{v}$。開始節点以外の節点 $v$ には、$v$ に入る辺の多項式の和。$p_{B}\defeq P_{(\text{出力 }1)}$ とする。このとき
+1. 各節点 $v$ について、$P_{v}=\sum_{\pi}\prod_{e\in\pi}\ell_{b(e)}(x_{i(e)})$。和は開始節点から $v$ への道 $\pi$ 全体、$b(e)$, $x_{i(e)}$ は辺 $e$ のラベルと $e$ の始点の変数。
+2. $a\in\{0,1\}^{m}$ について $P_{v}(a)=1$（$v$ が $a$ の計算路上）、$0$（そうでない）。特に $p_{B}(a)=B(a)$。
+:::
+
+::: proof
+**1.** 非巡回なので、節点を、辺が前から後ろに向かうように並べられる（位相順序）。開始節点は入り辺をもたない（もつと、すべての節点が開始節点から到達可能なことと合わせて巡回ができる）ので最初に置ける。この順序に関する帰納法。開始節点では空の道だけで積は $1$。他の節点 $v$ では、$v$ への道は「$v$ への辺 $e=(u\to v)$ と、$u$ への道」の組と一対一に対応するので、帰納法の仮定から $\sum_{e}\ell_{b(e)}(x_{i(e)})P_{u}$ に等しく、これは定義の和。
+
+**2.** $a$ を代入すると $\ell_{b}(a_{i})$ は $b=a_{i}$ なら $1$、そうでなければ $0$。よって道 $\pi$ の積は、$\pi$ のすべての辺が $a$ に従う（各問い合わせ節点で $a_{i}$ のラベルの辺をとる）とき $1$、そうでなければ $0$。$a$ に従う開始節点からの道は計算路の始めの部分に限られるので、$v$ が計算路上ならちょうど一本、そうでなければ $0$ 本。
+:::
+
+::: lemma 一回読みの多項式は多重線形な標準形をもつ {#comp:robp-multilinear keywords="read-once branching program polynomial equals sum of indicator monomials of accepted assignments" index="多重線形な標準形|たじゅうせんけいなひょうじゅんけい"}
+$B$ が一回読みなら、多項式として
+$$
+p_{B}=\sum_{a\in\{0,1\}^{m},\ B(a)=1}\chi_{a},\qquad\chi_{a}\defeq\prod_{i=1}^{m}\ell_{a_{i}}(x_{i}).
+$$
+したがって、一回読みの $B_{1},B_{2}$ について、$B_{1}$ と $B_{2}$ が同値であることと、$p_{B_{1}}=p_{B_{2}}$（多項式として）は同値である。
+:::
+
+::: proof
+**Step 1（道の項の展開）.** 出力 $1$ への道 $\pi$ について、一回読みなので $\pi$ 上で問い合わされる変数の集合 $V_{\pi}$ の各変数は一回だけ現れ、$\pi$ の積は $\prod_{i\in V_{\pi}}\ell_{c_{i}}(x_{i})$（$c_{i}$ は $\pi$ で $x_{i}$ についてとったラベル）。$V_{\pi}$ にない各 $i$ について $1=\ell_{0}(x_{i})+\ell_{1}(x_{i})$ を掛けて展開すると、
+$$
+\prod_{i\in V_{\pi}}\ell_{c_{i}}(x_{i})=\sum_{a:\ a_{i}=c_{i}\ (i\in V_{\pi})}\chi_{a}.
+$$
+
+**Step 2（道と割り当ての対応）.** $a$ が $\pi$ と両立する（$i\in V_{\pi}$ で $a_{i}=c_{i}$）なら、$a$ の計算路は $\pi$ に沿って進む（$\pi$ の各問い合わせ節点で $a$ は $\pi$ の辺を選ぶ）ので、$\pi$ は $a$ の計算路で $B(a)=1$。逆に $B(a)=1$ なら $a$ の計算路は出力 $1$ への道で、$a$ はそれと両立する。$a$ の計算路は一つなので、$B(a)=1$ の各 $a$ はちょうど一つの $\pi$ と両立し、$B(a)=0$ の $a$ はどの $\pi$ とも両立しない。
+
+**Step 3.** \ref{comp:robp-polynomial} の 1 と Step 1, 2 から主張の式。
+
+**Step 4（同値性）.** 同値なら $B_{1}(a)=1$ の $a$ の集合が等しいので $p_{B_{1}}=p_{B_{2}}$。逆に多項式として等しければ、$\{0,1\}^{m}$ での値が等しく、\ref{comp:robp-polynomial} の 2 から $B_{1}=B_{2}$。
+:::
+
+::: hypcheck
+- **一回読み**：Step 1 で、道の積が各変数について一次であり（$x_{i}(1-x_{i})$ や $x_{i}^{2}$ が現れない）、展開して $\chi_{a}$ の和になることに使った。一回読みでないと、同値な二つのプログラムの多項式が異なりうる（\ref{comp:prob-pb-not-read-once}）。
+- **非巡回性**：\ref{comp:robp-polynomial} の 1 の位相順序に使った。
+:::
+
+::: theorem 一回読み分岐プログラムの同値性 {#comp:eq-robp-bpp keywords="EQ_ROBP is in BPP (in coRP) via random evaluation over a finite field" index="一回読み分岐プログラムの同値性|いっかいよみぶんきぷろぐらむのどうちせい"}
+$\mathrm{EQ}_{\mathrm{ROBP}}\in\mathrm{coRP}\subseteq\mathrm{BPP}$。
+:::
+
+::: proof
+入力 $\langle B_{1},B_{2}\rangle$（変数 $x_{1},\dots,x_{m}$、$m$ は入力の長さ以下）について：
+
+1. $3m$ 以上の素数 $q$ を一つ見つける（$3m\le q\le6m$ となる素数がベルトランの仮説により存在し、$3m,3m+1,\dots$ を試し割りで順に調べれば多項式時間）。
+2. $r_{1},\dots,r_{m}$ を $\mathbb{F}_{q}=\mathbb{Z}/q\mathbb{Z}$ から独立に一様に選ぶ。
+3. $p_{B_{1}}(\vec{r})$, $p_{B_{2}}(\vec{r})$ を $\mathbb{F}_{q}$ で計算する。これは多項式を展開せず、\ref{comp:robp-polynomial} の定義どおり、位相順序に沿って各節点・各辺の値を $\mathbb{F}_{q}$ で計算すればよく、多項式時間。
+4. 等しければ受理、異なれば拒否。
+
+**同値な場合.** \ref{comp:robp-multilinear} より $p_{B_{1}}=p_{B_{2}}$ なので、必ず受理。
+
+**同値でない場合.** $g\defeq p_{B_{1}}-p_{B_{2}}=\sum_{a}c_{a}\chi_{a}$（$c_{a}\in\{-1,0,1\}$、$B_{1}(a)\ne B_{2}(a)$ となる $a$ で $c_{a}=\pm1$）。そのような $a$ で $g(a)=c_{a}=\pm1\ne0$（$\mathbb{F}_{q}$ で）なので、$g$ を $\mathbb{F}_{q}$ 係数の多項式とみても $0$ でない。$g$ の全次数は $m$ 以下（各 $\chi_{a}$ が $m$ 次）。シュワルツ–ジッペルの補題（\ref{comp:schwartz-zippel}、$K=S=\mathbb{F}_{q}$）から
+$$
+\Pr\bigl[g(\vec{r})=0\bigr]\le\frac{m}{q}\le\frac{1}{3}.
+$$
+よって確率 $2/3$ 以上で拒否する。
+
+補集合（同値でない組）は「該当すれば確率 $2/3\ge1/2$ 以上で受理（上の拒否）、該当しなければ必ず拒否」なので RP に属し、$\mathrm{EQ}_{\mathrm{ROBP}}\in\mathrm{coRP}$。誤り確率 $1/3$ なので BPP にも属する。
+:::
+
+::: hypcheck
+- **一回読み**：\ref{comp:robp-multilinear} を通じて、同値な場合の確実な受理と、$g\ne0$ の判定の両方に使った。
+- **$q\ge3m$**：シュワルツ–ジッペルの評価を $1/3$ 以下にするのに使った。
+- **$\mathbb{F}_{q}$ が体**：シュワルツ–ジッペルの補題の仮定（体の上の多項式）として使った。$q$ が素数であることはそのために必要。
+:::
+
+## 問題 {#comp:sec-pb-problems}
+
+::: problem {#comp:prob-pb-carmichael}
+$561=3\cdot11\cdot17$ について、$561$ と互いに素なすべての $a$ で $a^{560}\equiv1\pmod{561}$ となることを示せ（したがってフェルマーの判定だけでは $561$ が合成数であることを見抜けない）。また、$a=2$ が \ref{comp:mr-witness} の意味での証人であることを確かめよ。
+:::
+
+::: solution
+**前半.** $r\in\{3,11,17\}$ について $r-1\in\{2,10,16\}$ はどれも $560=2^{4}\cdot5\cdot7$ を割る。$r\nmid a$ なので、フェルマーの小定理から $a^{560}=(a^{r-1})^{560/(r-1)}\equiv1\pmod r$。$3,11,17$ は互いに素なので $a^{560}\equiv1\pmod{561}$。
+
+**後半.** $560=35\cdot2^{4}$。$2^{35}$ を各素因数を法として計算する。$3$ を法として $2\equiv-1$ なので $2^{35}\equiv-1$。$11$ を法として $2^{10}\equiv1$ なので $2^{35}=2^{30}\cdot2^{5}\equiv32\equiv-1$。$17$ を法として $2^{4}=16\equiv-1$, $2^{8}\equiv1$ なので $2^{35}=2^{32}\cdot2^{3}\equiv8$。よって $2^{35}\not\equiv\pm1\pmod{561}$（$17$ を法として $\pm1$ でない）。二乗すると $17$ を法として $2^{70}\equiv64\equiv13$, $2^{140}\equiv169\equiv-1$, $2^{280}\equiv1$。$3$ と $11$ を法としては $2^{70}\equiv1$ 以降すべて $1$。よって $2^{70}\bmod561$ は $3,11$ を法として $1$、$17$ を法として $13$ で、$\pm1$ でない。$2^{140}$ は $3,11$ を法として $1$、$17$ を法として $-1$ なので、$561$ を法として $1$ でも $-1$ でもない。$2^{280}\equiv1$, $2^{560}\equiv1$。列 $2^{35},2^{70},2^{140},2^{280},2^{560}$ の最後の $1$ でない項は $2^{140}$ で、これは $-1$ でないので、$2$ は証人である。
+:::
+
+::: problem {#comp:prob-pb-not-read-once}
+一回読みでない分岐プログラムでは \ref{comp:robp-multilinear} が成り立たないことを、変数 $x_{1}$ だけを使う二つの同値なプログラムで多項式が異なる例で示せ。
+:::
+
+::: solution
+$B_{1}$：開始節点 $u$（変数 $x_{1}$）のラベル $1$ の辺を出力 $1$ へ、ラベル $0$ の辺を出力 $0$ へ。$p_{B_{1}}=x_{1}$。$B_{2}$：開始節点 $u$（$x_{1}$）のラベル $1$ の辺を節点 $v$（$x_{1}$）へ、ラベル $0$ の辺を出力 $0$ へ、$v$ のラベル $1$ の辺を出力 $1$ へ、ラベル $0$ の辺を出力 $0$ へ。どちらも $B(a)=a_{1}$ で同値だが、$p_{B_{2}}=x_{1}\cdot x_{1}=x_{1}^{2}\ne x_{1}$。たとえば $\mathbb{F}_{q}$ で $r_{1}\notin\{0,1\}$ を選ぶと $r_{1}^{2}\ne r_{1}$ で、アルゴリズムは同値な組を誤って拒否する。
+:::
+
+::: supplement
+**前提を変えると.** 一回読みの条件を外した一般の分岐プログラムの同値性は coNP 完全であるとされる（Sipser の問題 10.21。ここでは確かめていない）。多項式の大きさの分岐プログラムは、L に属する言語を（各入力長ごとに）計算できる（同書の問題 10.17）とされ、分岐プログラムと L の関係は、ブール回路と P の関係に似ている。素数判定については、条件 2 の証人の割合は実際には $3/4$ 以上であることが知られている（ここでは $1/2$ 以上だけを示した）。
+
+**似た定理.** \ref{comp:eq-robp-bpp} は多項式の恒等式の判定（\ref{comp:schwartz-zippel} の後の例）の特別な場合であり、ブール関数を「多重線形な多項式」に持ち上げる発想は、対話証明での #SAT の算術化（\ref{comp:page-interactive-proofs}）にそのまま引き継がれる。$\{0,1\}^{m}$ 上の関数は、多重線形な多項式としてただ一通りに表されるという事実（\ref{comp:robp-multilinear} の $\chi_{a}$ の線形独立性）が、両者に共通する基礎である。
+
+**高い視点から：ブール立方体から体全体へ.** ブール関数は $2^{m}$ 個の点 $\{0,1\}^{m}$ の上でしか定義されないので、二つの関数が一点でしか違わないと、ランダムな点を選んでも違いはほとんど見つからない。ところが多重線形な多項式に延長すると、違いは体 $\mathbb{F}_{q}^{m}$ 全体に「広がり」、$0$ でない多項式は高々 $m/q$ の割合の点でしか消えない（シュワルツ–ジッペル）。比喩で言えば、紙の上の小さな染み（一点での違い）を、紙を水に浸して全体ににじませてから、どこか一点を調べるようなものである。素数判定の証人も、群 $(\mathbb{Z}/p\mathbb{Z})^{\times}$ の中で「非証人の集合を $t$ 倍するとすべて証人になる」という形で、一つの証人を多数に増やしている。どちらも「一つ見つかれば、構造によって多数が保証される」ことが確率的アルゴリズムの成功を支えている。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

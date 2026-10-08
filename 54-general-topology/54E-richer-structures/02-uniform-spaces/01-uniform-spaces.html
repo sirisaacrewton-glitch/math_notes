@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>一様空間 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54E-richer-structures/02-uniform-spaces/01-uniform-spaces.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 一様空間 {#top:page-uniform-spaces keywords="uniform space, uniformity, entourage, base of a uniformity, uniform topology, uniformly continuous map, initial uniformity, product uniformity, Hausdorff uniform space"}
+
+距離空間では「$x$ と $y$ の近さ」と「$x'$ と $y'$ の近さ」を同じ $\varepsilon$ で比べられるので、一様連続性・コーシー列・完備性が定義できる。これらは位相だけからは決まらない（同じ位相を定める二つの距離で、一様連続な写像やコーシー列が異なりうる。\ref{top:ex-arctan-uniformity}）。**一様空間**は、距離を使わずに「一様な近さ」だけを公理化したもので、$X\times X$ の部分集合（**近縁**）の族として与えられる（\ref{top:uniformity}）。本ページでは、一様構造が定める位相（\ref{top:unif-topology}）、一様連続写像（\ref{top:unif-continuous}）、始一様構造と直積（\ref{top:initial-uniformity}）を扱い、一様空間の位相が正則で、ハウスドルフ性が近縁の共通部分で判定できること（\ref{top:unif-separation}）を示す。
+
+> 資料：本ページは特定の教科書の記述によらず、一様空間の標準的な定義（Weil, Bourbaki, Kelley 第 6 章などに見られる形）に従って組み立てた。Kelley『General Topology』は文字の取れない画像 PDF しか手元にないため、定理の番号や配置は参照していない。
+
+## 記法と定義の確認 {#top:sec-us-notation}
+
+::: notation
+- 集合 $X$ の**対角線**を $\Delta_{X}\defeq\{(x,x):x\in X\}$ とする。$U,V\subseteq X\times X$ について
+$$
+\begin{gathered}
+U^{-1}\defeq\{(y,x):(x,y)\in U\},\qquad U[x]\defeq\{y:(x,y)\in U\},\\
+V\circ U\defeq\{(x,z):\exists y\ (x,y)\in U,\ (y,z)\in V\},\qquad U[A]\defeq\textstyle\bigcup_{a\in A}U[a].
+\end{gathered}
+$$
+$U=U^{-1}$ のとき $U$ を**対称**という。$(V\circ U)[A]=V[U[A]]$ が定義から成り立つ。
+- 写像 $f\colon X\to Y$ について $f\times f\colon X\times X\to Y\times Y$, $(x,y)\mapsto(f(x),f(y))$。
+- 位相空間、近傍、閉包、始位相、正則・ハウスドルフは \ref{top:topological-space}, \ref{top:neighborhood}, \ref{top:closure-neighborhood}, \ref{top:initial-topology}, \ref{top:separation-axioms} のとおり。距離位相は \ref{top:metric-topology}、距離空間の一様連続性は \ref{top:page-completeness} の記法のとおり。
+:::
+
+## 一様構造 {#top:sec-us-uniformity}
+
+::: definition 一様構造と近縁 {#top:uniformity keywords="uniformity, uniform structure, entourage, vicinity, uniform space" index="一様構造|いちようこうぞう, 近縁|きんえん, 一様空間|いちようくうかん"}
+集合 $X$ の**一様構造**とは、$X\times X$ の部分集合の空でない族 $\mathcal{U}$ で、次を満たすものをいう。
+1. すべての $U\in\mathcal{U}$ で $\Delta_{X}\subseteq U$。
+2. $U\in\mathcal{U}$ なら $U^{-1}\in\mathcal{U}$。
+3. $U\in\mathcal{U}$ なら、$V\circ V\subseteq U$ となる $V\in\mathcal{U}$ がある。
+4. $U,V\in\mathcal{U}$ なら $U\cap V\in\mathcal{U}$。
+5. $U\in\mathcal{U}$ かつ $U\subseteq W\subseteq X\times X$ なら $W\in\mathcal{U}$。
+
+$\mathcal{U}$ の元を**近縁**、組 $(X,\mathcal{U})$ を**一様空間**という。$(x,y)\in U$ を「$x$ と $y$ は $U$ 近い」と読む。$\mathcal{U}$ の部分族 $\mathcal{B}$ が**基**であるとは、各 $U\in\mathcal{U}$ が $\mathcal{B}$ のある元を含むことをいう。
+:::
+
+::: lemma 基の条件 {#top:unif-base keywords="base of a uniformity, symmetric entourages form a base" index="一様構造の基|いちようこうぞうのき"}
+1. $X\times X$ の部分集合の空でない族 $\mathcal{B}$ が、(a) 各 $B\in\mathcal{B}$ が $\Delta_{X}$ を含む、(b) 各 $B$ に $B'\subseteq B^{-1}$ となる $B'\in\mathcal{B}$ がある、(c) 各 $B$ に $B'\circ B'\subseteq B$ となる $B'\in\mathcal{B}$ がある、(d) 各 $B_{1},B_{2}$ に $B'\subseteq B_{1}\cap B_{2}$ となる $B'\in\mathcal{B}$ がある、を満たせば、$\{W:\text{ある }B\in\mathcal{B}\text{ で }B\subseteq W\}$ は $\mathcal{B}$ を基とする一様構造である。
+2. 一様構造 $\mathcal{U}$ の対称な近縁全体は基をなす。さらに、各 $U\in\mathcal{U}$ と $n\ge1$ について、$V\circ V\circ\cdots\circ V$（$n$ 個）$\subseteq U$ となる対称な $V\in\mathcal{U}$ がある。
+:::
+
+::: proof
+**1.** 定義の 5 は構成から、1 は (a) から。2：$B\subseteq W$ なら、(b) の $B'$ について $B'\subseteq B^{-1}\subseteq W^{-1}$ なので、$W^{-1}$ は $B'$ を含む。3：$B\subseteq W$ で (c) の $B'$ をとれば $B'\circ B'\subseteq W$。4：$B_{1}\subseteq W_{1}$, $B_{2}\subseteq W_{2}$ なら (d) の $B'\subseteq W_{1}\cap W_{2}$。
+
+**2.** $U\in\mathcal{U}$ について $V\defeq U\cap U^{-1}$ は対称な近縁（定義の 2, 4）で $U$ に含まれる。次に、定義の 3 を $k$ 回使うと、$W\in\mathcal{U}$ で $2^{k}$ 個の合成が $U$ に含まれるものがある（帰納法：$W_{1}\circ W_{1}\subseteq U$, $W_{2}\circ W_{2}\subseteq W_{1}$ なら $W_{2}^{\circ4}\subseteq W_{1}\circ W_{1}\subseteq U$、以下同様）。$2^{k}\ge n$ とし、$V\defeq W\cap W^{-1}$ とすれば、$\Delta_{X}\subseteq V$ なので $V^{\circ n}\subseteq V^{\circ2^{k}}\subseteq W^{\circ2^{k}}\subseteq U$（$\Delta\subseteq V$ から $V^{\circ m}\subseteq V^{\circ m'}$, $m\le m'$）。
+:::
+
+::: example
+1. **距離の一様構造.** 距離空間 $(X,d)$ で、$U_{\varepsilon}\defeq\{(x,y):d(x,y)<\varepsilon\}$（$\varepsilon>0$）は \ref{top:unif-base} の 1 の条件を満たす（(c) は三角不等式から $U_{\varepsilon/2}\circ U_{\varepsilon/2}\subseteq U_{\varepsilon}$）。これが定める一様構造を $d$ の**距離一様構造**という。$U_{\varepsilon}[x]$ は開球 $B(x,\varepsilon)$ である。
+2. **離散一様構造と密着一様構造.** $\Delta_{X}$ を含む集合全体は一様構造（離散）、$\{X\times X\}$ も一様構造（密着）である。
+:::
+
+## 一様構造が定める位相 {#top:sec-us-topology}
+
+::: theorem 一様構造の定める位相 {#top:unif-topology keywords="uniform topology induced by a uniformity, U[x] is a neighborhood base" index="一様構造の定める位相|いちようこうぞうのさだめるいそう"}
+一様空間 $(X,\mathcal{U})$ について、$\mathcal{O}\defeq\{O\subseteq X:\text{各 }x\in O\text{ に }U[x]\subseteq O\text{ となる }U\in\mathcal{U}\text{ がある}\}$ は位相であり、各点 $x$ で $\{U[x]:U\in\mathcal{U}\}$ は $x$ の近傍の基である。距離一様構造の定める位相は距離位相である。
+:::
+
+::: proof
+**Step 1（位相）.** $\emptyset$, $X$ は条件を満たす。和集合は明らか。$O_{1},O_{2}\in\mathcal{O}$, $x\in O_{1}\cap O_{2}$ なら、$U_{i}[x]\subseteq O_{i}$ として $(U_{1}\cap U_{2})[x]\subseteq O_{1}\cap O_{2}$ で、$U_{1}\cap U_{2}\in\mathcal{U}$。
+
+**Step 2（$U[x]$ は近傍）.** $U\in\mathcal{U}$, $x\in X$ を固定し、$O\defeq\{y:\text{ある }V\in\mathcal{U}\text{ で }V[y]\subseteq U[x]\}$ とおく。$x\in O$（$V=U$）。$y\in O$ なら $y\in V[y]\subseteq U[x]$ なので $O\subseteq U[x]$。$O$ が開であること：$y\in O$, $V[y]\subseteq U[x]$ とし、$W\circ W\subseteq V$ となる $W\in\mathcal{U}$ をとる。$z\in W[y]$ なら $W[z]\subseteq W[W[y]]=(W\circ W)[y]\subseteq V[y]\subseteq U[x]$ なので $z\in O$。よって $W[y]\subseteq O$。したがって $U[x]$ は開集合 $O\ni x$ を含み、近傍である。
+
+**Step 3（基）.** $x$ の近傍 $N$ は開集合 $O\ni x$ を含み、$\mathcal{O}$ の定義から $U[x]\subseteq O\subseteq N$ となる $U$ がある。
+
+**Step 4（距離の場合）.** $U_{\varepsilon}[x]=B(x,\varepsilon)$ で、近縁は $U_{\varepsilon}$ を含むので、開集合の条件は距離位相の開集合の条件と一致する。
+:::
+
+::: proposition 閉包と近縁 {#top:unif-closure keywords="closure equals intersection of U[A], closure of a relation, open and closed entourages form bases" index="一様空間の閉包|いちようくうかんのへいほう"}
+一様空間 $(X,\mathcal{U})$ で、$X\times X$ には直積位相を入れる。
+1. $A\subseteq X$ について $\overline{A}=\bigcap_{U\in\mathcal{U}}U[A]$。
+2. $M\subseteq X\times X$ について $\overline{M}=\bigcap_{V}V\circ M\circ V$（$V$ は対称な近縁全体を動く）。
+3. 開集合である近縁全体、閉集合である対称な近縁全体は、それぞれ基をなす。
+:::
+
+::: proof
+**1.** $x\in\overline{A}\iff$ すべての $U$ で $U[x]\cap A\ne\emptyset$（\ref{top:unif-topology} の近傍基）。$U[x]\cap A\ne\emptyset\iff$ ある $a\in A$ で $(x,a)\in U\iff x\in U^{-1}[A]$。$U$ が $\mathcal{U}$ を動けば $U^{-1}$ も $\mathcal{U}$ 全体を動くので、$\overline{A}=\bigcap_{U}U[A]$。
+
+**2.** 対称な近縁 $V$ について、$\{V[x]\times V[y]\}$ は $(x,y)$ の近傍基（直積位相と \ref{top:unif-topology}、対称な近縁が基であること）。$(V[x]\times V[y])\cap M\ne\emptyset\iff$ ある $(a,b)\in M$ で $(x,a)\in V$, $(y,b)\in V\iff(x,y)\in V\circ M\circ V$（$V$ が対称なので $(b,y)\in V$）。よって 1 と同様に主張が従う。
+
+**3.** $U\in\mathcal{U}$ について、\ref{top:unif-base} の 2 から対称な $V$ で $V\circ V\circ V\subseteq U$ となるものをとる。2 より $\overline{V}\subseteq V\circ V\circ V\subseteq U$ で、$\overline{V}\supseteq V$ は近縁、対称（$V$ が対称で、$(x,y)\mapsto(y,x)$ は同相写像）、閉。また $(x,y)\in V$ なら、近傍 $V[x]\times V[y]$ は 2 の計算から $V\circ\{(x,y)\}\circ V\subseteq V\circ V\circ V\subseteq U$ に含まれるので、$V\subseteq\mathrm{int}\,U$。よって $\mathrm{int}\,U$ は近縁で開。
+:::
+
+::: theorem 一様空間の分離性 {#top:unif-separation keywords="uniform spaces are regular; Hausdorff iff intersection of entourages is the diagonal" index="一様空間の正則性|いちようくうかんのせいそくせい, 一様空間のハウスドルフ性|いちようくうかんのはうすどるふせい"}
+一様空間 $(X,\mathcal{U})$ について
+1. 各点 $x$ で、閉近傍 $U[x]$（$U$ は閉で対称な近縁）の全体が近傍基をなす。とくに $X$ は正則である。
+2. $X$ がハウスドルフであることと、$\bigcap\mathcal{U}=\Delta_{X}$ であることは同値である。
+:::
+
+::: proof
+**1.** $U$ が閉な近縁なら $U[x]$ は閉集合 $U$ の、連続写像 $y\mapsto(x,y)$ による逆像なので閉。\ref{top:unif-closure} の 3 と \ref{top:unif-topology} より、そのような $U[x]$ は近傍基をなす。閉近傍が近傍基をなすことは正則性と同値である（\ref{top:regular-normal-characterization}）。
+
+**2.** ハウスドルフで $x\ne y$ なら、$\{y\}$ は閉集合なので $X\setminus\{y\}$ は $x$ の開近傍で、$U[x]\subseteq X\setminus\{y\}$ となる $U$ がある。このとき $(x,y)\notin U$。逆に $\bigcap\mathcal{U}=\Delta_{X}$ で $x\ne y$ なら、$(x,y)\notin U$ となる $U$ をとり、対称な $V$ で $V\circ V\subseteq U$ とする。$z\in V[x]\cap V[y]$ なら $(x,z)\in V$, $(z,y)\in V$ で $(x,y)\in V\circ V\subseteq U$ となり矛盾。よって $V[x]$, $V[y]$ は交わらない近傍。
+:::
+
+::: hypcheck
+- **定義の 3**（$V\circ V\subseteq U$）：\ref{top:unif-topology} の Step 2（$U[x]$ が開集合を含むこと）、\ref{top:unif-closure} の 3、本定理の 2 の後半で使った。これが距離の三角不等式の代わりである。
+- **定義の 2**（対称性）：\ref{top:unif-closure} の 1, 2 と本定理の 2 で使った。
+:::
+
+## 一様連続写像と始一様構造 {#top:sec-us-maps}
+
+::: definition 一様連続写像 {#top:unif-continuous keywords="uniformly continuous map between uniform spaces, uniform isomorphism" index="一様連続写像|いちようれんぞくしゃぞう, 一様同型|いちようどうけい"}
+一様空間の間の写像 $f\colon(X,\mathcal{U})\to(Y,\mathcal{V})$ が**一様連続**であるとは、すべての $V\in\mathcal{V}$ で $(f\times f)^{-1}[V]\in\mathcal{U}$ となることをいう。一様連続な全単射で逆写像も一様連続なものを**一様同型**という。距離一様構造については、これは $\varepsilon$–$\delta$ による一様連続性と一致する。
+:::
+
+::: proposition 一様連続写像の基本性質 {#top:unif-continuous-basic keywords="uniformly continuous maps are continuous; composition" index="一様連続写像の連続性|いちようれんぞくしゃぞうのれんぞくせい"}
+一様連続写像は（定める位相について）連続であり、一様連続写像の合成は一様連続である。
+:::
+
+::: proof
+**連続.** $x\in X$ と $f(x)$ の近傍 $V[f(x)]$ について、$U\defeq(f\times f)^{-1}[V]$ とすると $f[U[x]]\subseteq V[f(x)]$（$(x,y)\in U\Rightarrow(f(x),f(y))\in V$）。\ref{top:unif-topology} の近傍基により $f$ は $x$ で連続。
+
+**合成.** $(g\circ f)\times(g\circ f)=(g\times g)\circ(f\times f)$ なので、逆像を二回とればよい。
+:::
+
+::: example 同じ位相で異なる一様構造 {#top:ex-arctan-uniformity}
+$\mathbb{R}$ 上の距離 $d(x,y)\defeq\lvert x-y\rvert$ と $d'(x,y)\defeq\lvert\arctan x-\arctan y\rvert$ を考える。$\arctan$ は $\mathbb{R}$ から $(-\pi/2,\pi/2)$ への同相写像なので、$d'$ の距離位相は通常の位相である。$\lvert\arctan x-\arctan y\rvert\le\lvert x-y\rvert$（平均値の定理、$\arctan'\le1$）より恒等写像 $(\mathbb{R},d)\to(\mathbb{R},d')$ は一様連続。しかし逆は一様連続でない：$d'(n,n+1)\to0$ だが $d(n,n+1)=1$。よって二つの距離一様構造は異なる。
+:::
+
+::: theorem 始一様構造 {#top:initial-uniformity keywords="initial uniformity, product uniformity, subspace uniformity; its topology is the initial topology" index="始一様構造|しいちようこうぞう, 直積一様構造|ちょくせきいちようこうぞう, 部分一様構造|ぶぶんいちようこうぞう"}
+集合 $X$ と一様空間 $(Y_{i},\mathcal{V}_{i})$ への写像 $f_{i}\colon X\to Y_{i}$（$i\in I$）について、有限個の $(f_{i}\times f_{i})^{-1}[V_{i}]$（$V_{i}\in\mathcal{V}_{i}$）の共通部分の全体を基とする一様構造 $\mathcal{U}$ がある（**始一様構造**）。
+1. 一様空間 $(Z,\mathcal{W})$ からの写像 $g\colon Z\to X$ が一様連続であることと、すべての $f_{i}\circ g$ が一様連続であることは同値。
+2. $\mathcal{U}$ の定める位相は、$Y_{i}$ の位相についての $(f_{i})$ の始位相である。
+
+特に、直積集合に射影の始一様構造（**直積一様構造**）を入れると、その位相は直積位相であり、部分集合に包含写像の始一様構造（**部分一様構造**）を入れると、その位相は部分空間の位相である。
+:::
+
+::: proof
+**一様構造であること.** $I=\emptyset$ なら空の共通部分 $X\times X$ だけが基になり、密着一様構造。一般に、\ref{top:unif-base} の 1 を確かめる。(a) $(f\times f)^{-1}[V]\supseteq\Delta_{X}$。(b) $((f\times f)^{-1}[V])^{-1}=(f\times f)^{-1}[V^{-1}]$。(c) $V'\circ V'\subseteq V$ なら $(f\times f)^{-1}[V']\circ(f\times f)^{-1}[V']\subseteq(f\times f)^{-1}[V]$（$(x,y),(y,z)$ の像が $V'$ に入れば $(f(x),f(z))\in V'\circ V'$）。有限の共通部分については成分ごとにこれを行う。(d) は有限の共通部分の共通部分。
+
+**1.** $\Rightarrow$ は合成（\ref{top:unif-continuous-basic}）と $f_{i}$ の一様連続性（定義から）。$\Leftarrow$：基の元 $\bigcap_{k}(f_{i_{k}}\times f_{i_{k}})^{-1}[V_{k}]$ の $g\times g$ による逆像は $\bigcap_{k}((f_{i_{k}}\circ g)\times(f_{i_{k}}\circ g))^{-1}[V_{k}]$ で、各項は $\mathcal{W}$ に属する。
+
+**2.** $\bigl(\bigcap_{k}(f_{i_{k}}\times f_{i_{k}})^{-1}[V_{k}]\bigr)[x]=\bigcap_{k}f_{i_{k}}^{-1}\bigl[V_{k}[f_{i_{k}}(x)]\bigr]$。右辺は、$V_{k}[f_{i_{k}}(x)]$ が $f_{i_{k}}(x)$ の近傍基を動く（\ref{top:unif-topology}）とき、始位相での $x$ の近傍基をなす（始位相は $f_{i}^{-1}[$開$]$ を準開基とする）。左辺は \ref{top:unif-topology} により $\mathcal{U}$ の位相での近傍基。近傍基が一致するので位相も一致する。
+:::
+
+## 問題 {#top:sec-us-problems}
+
+::: problem {#top:prob-us-t0}
+一様空間の位相が $T_{0}$ なら、$\bigcap\mathcal{U}=\Delta_{X}$ であり、したがってハウスドルフであることを示せ。
+:::
+
+::: solution
+$x\ne y$ とする。$T_{0}$ より、一方だけを含む開集合 $O$ がある。$x\in O\not\ni y$ なら、$U[x]\subseteq O$ となる $U$ について $y\notin U[x]$、すなわち $(x,y)\notin U$。$y\in O\not\ni x$ なら、同様に $(y,x)\notin U$ となる $U$ があり、$(x,y)\notin U^{-1}\in\mathcal{U}$。いずれにせよ $(x,y)\notin\bigcap\mathcal{U}$。\ref{top:unif-separation} の 2 よりハウスドルフ。
+:::
+
+::: problem {#top:prob-us-square}
+$f\colon\mathbb{R}\to\mathbb{R}$, $f(x)=x^{2}$ は（通常の距離一様構造について）連続だが一様連続でないことを示せ。
+:::
+
+::: solution
+連続性は明らか。$U_{1}$（距離 $1$ 未満）について $(f\times f)^{-1}[U_{1}]$ が近縁だとすると、ある $\delta>0$ で $U_{\delta}\subseteq(f\times f)^{-1}[U_{1}]$。$x=1/\delta$, $y=x+\delta/2$ とすると $\lvert x-y\rvert<\delta$ だが $\lvert y^{2}-x^{2}\rvert=\delta x+\delta^{2}/4>1$。矛盾。
+:::
+
+::: supplement
+**前提を変えると.** 一様構造の公理から対称性（定義の 2）を除いたものは**準一様構造**と呼ばれ、非対称な「距離」（準距離）に対応する。定義の 3 を除くと、$U[x]$ が近傍になる保証（\ref{top:unif-topology} の Step 2）が失われる。
+
+**似た定理.** 位相群 $G$ では、$\{(x,y):x^{-1}y\in N\}$（$N$ は単位元の近傍）を近縁とする一様構造（左一様構造）が群の位相を定めることが知られている（ここでは確かめていない）。したがって位相群の位相は正則である。一様構造の定める位相は実は完全正則であり、逆に完全正則空間の位相は一様構造から来る（\ref[擬距離と一様構造]{top:page-uniform-pseudometrics}）。
+
+**高い視点から：近さを「関係」として持つ.** 距離は二点に数を割り当てるが、一様構造は「$\varepsilon$ 近い」という関係 $U_{\varepsilon}\subseteq X\times X$ そのものを、数を忘れて集めたものである。三角不等式は関係の合成 $V\circ V\subseteq U$ に、対称性は逆関係に置き換わる。比喩で言えば、距離が「目盛りの付いた物差し」なら、一様構造は「目盛りのない物差しの束」で、二つの物差しのどちらが細かいか（包含）だけが分かる。それでも、すべての点で同じ物差しを使えることが、位相（各点ごとに近傍を選べる）との本質的な違いであり、一様連続性や完備性を語れる理由である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

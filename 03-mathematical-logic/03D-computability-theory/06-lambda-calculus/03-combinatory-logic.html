@@ -87,7 +87,10 @@ $$
 
 **Step 3（一般の項への代入）.** 弱簡約は代入で閉じている：基 $\mathsf{K}PQ$, $\mathsf{S}PQR$ に代入しても同じ形の基になり、規則の右辺も対応して代入される。Step 2 の簡約列の各項に $[N_{1}/y_{1}]\cdots[N_{n}/y_{n}]$ を施すと、$F$ は $y_{i}$ を含まず、$y_{i}$ は新しい変数なので
 $$
-FN_{1}\cdots N_{n}\twoheadrightarrow_{w}M[y_{1}/x_{1}]\cdots[y_{n}/x_{n}][N_{1}/y_{1}]\cdots[N_{n}/y_{n}]=M[N_{1}/x_{1},\dots,N_{n}/x_{n}].
+\begin{aligned}
+FN_{1}\cdots N_{n}&\twoheadrightarrow_{w}M[y_{1}/x_{1}]\cdots[y_{n}/x_{n}][N_{1}/y_{1}]\cdots[N_{n}/y_{n}]\\
+&=M[N_{1}/x_{1},\dots,N_{n}/x_{n}].
+\end{aligned}
 $$
 最後の等号は、$y_{i}$ が新しい変数なので、$x_{i}$ を経由した付け替えが同時代入と一致することによる。
 :::

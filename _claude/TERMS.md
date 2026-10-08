@@ -352,3 +352,4 @@
 | symmetric monoidal / closed category / internal hom / enriched category | 対称モノイダル圏 / 閉圏 / 内部 hom / 豊穣圏 | V 圏 | 仮。cat:page-closed-categories |
 | compactly generated / k-ification / compact-open topology | コンパクト生成 / ケリー化 / コンパクト開位相 | | 仮。cat:page-closed-categories |
 | zero arrow / kernel / cokernel / Ab-category (preadditive) / biproduct / additive category | 零射 / 核 / 余核 / 前加法圏（Ab 圏） / 双積 / 加法圏 | | 仮。ha:page-additive |
+| abelian category / image / coimage / exact sequence / short exact / left exact | アーベル圏 / 像 / 余像 / 完全列 / 短完全列 / 左完全 | | 標準的な訳語。ha:page-abelian |

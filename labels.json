@@ -6217,6 +6217,20 @@
       "num": "5.2",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/05-pi11-prewellordering.html"
     },
+    "ha:abelian-category": {
+      "status": "defined",
+      "type": "definition",
+      "title": "アーベル圏",
+      "num": "2.1",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/02-abelian.html"
+    },
+    "ha:abelian-finite-limits": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "有限の極限と余極限",
+      "num": "2.2",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/02-abelian.html"
+    },
     "ha:additive-category": {
       "status": "defined",
       "type": "definition",
@@ -6252,6 +6266,41 @@
       "num": "1.3",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/01-additive.html"
     },
+    "ha:exact-functor": {
+      "status": "defined",
+      "type": "definition",
+      "title": "完全関手",
+      "num": "2.8",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/02-abelian.html"
+    },
+    "ha:exact-sequence": {
+      "status": "defined",
+      "type": "definition",
+      "title": "完全列",
+      "num": "2.5",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/02-abelian.html"
+    },
+    "ha:exactness-criterion": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "完全性の言い換え",
+      "num": "2.6",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/02-abelian.html"
+    },
+    "ha:hom-left-exact": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "hom 関手は左完全",
+      "num": "2.10",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/02-abelian.html"
+    },
+    "ha:image-factorization": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "像の分解",
+      "num": "2.4",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/02-abelian.html"
+    },
     "ha:ker-coker-galois": {
       "status": "defined",
       "type": "proposition",
@@ -6265,6 +6314,27 @@
       "title": "零射・核・余核",
       "num": "1.1",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/01-additive.html"
+    },
+    "ha:left-exact-criterion": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "左完全性の言い換え",
+      "num": "2.9",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/02-abelian.html"
+    },
+    "ha:mono-epi-iso": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "モノかつエピなら同型",
+      "num": "2.3",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/02-abelian.html"
+    },
+    "ha:page-abelian": {
+      "status": "defined",
+      "type": "page",
+      "title": "アーベル圏と完全列",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/02-abelian.html"
     },
     "ha:page-additive": {
       "status": "defined",
@@ -6287,6 +6357,20 @@
       "num": "1.5",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/01-additive.html"
     },
+    "ha:prob-ab-product-category": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "2.12",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/02-abelian.html"
+    },
+    "ha:prob-ab-short-exact-preserved": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "2.11",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/02-abelian.html"
+    },
     "ha:prob-ad-ab-functor-category": {
       "status": "defined",
       "type": "problem",
@@ -6300,6 +6384,41 @@
       "title": "",
       "num": "1.11",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/01-additive.html"
+    },
+    "ha:sec-ab-definition": {
+      "status": "defined",
+      "type": "section",
+      "title": "アーベル圏",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/02-abelian.html"
+    },
+    "ha:sec-ab-exact": {
+      "status": "defined",
+      "type": "section",
+      "title": "完全列",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/02-abelian.html"
+    },
+    "ha:sec-ab-image": {
+      "status": "defined",
+      "type": "section",
+      "title": "像の分解",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/02-abelian.html"
+    },
+    "ha:sec-ab-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/02-abelian.html"
+    },
+    "ha:sec-ab-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/02-abelian.html"
     },
     "ha:sec-ad-additive": {
       "status": "defined",
@@ -6335,6 +6454,13 @@
       "title": "問題",
       "num": "",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/01-additive.html"
+    },
+    "ha:short-exact-characterization": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "短完全列の特徴づけ",
+      "num": "2.7",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/02-abelian.html"
     },
     "ha:sum-from-biproduct": {
       "status": "defined",
@@ -29547,13 +29673,6 @@
       "title": "代数閉包の一意性",
       "referencedFrom": [
         "03-mathematical-logic/03C-model-theory/01-elementary-extensions/04-acf.html"
-      ]
-    },
-    "ha:page-abelian": {
-      "status": "planned",
-      "title": "アーベル圏",
-      "referencedFrom": [
-        "18-category-theory/18G-homological-algebra/01-abelian-categories/01-additive.html"
       ]
     },
     "lin:basis-existence": {

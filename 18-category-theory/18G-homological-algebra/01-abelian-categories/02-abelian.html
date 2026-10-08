@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>アーベル圏と完全列 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18G-homological-algebra/01-abelian-categories/02-abelian.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# アーベル圏と完全列 {#ha:page-abelian keywords="abelian category, monic and epi implies iso, image and coimage, monic-epi factorization, exact sequence, short exact sequence, exact functor, left exact functor, hom functor is left exact"}
+
+アーベル群や加群の圏では、核と余核が十分にあり、「単射は核、全射は余核」という性質が成り立つ。これを公理にしたものが**アーベル圏**（\ref{ha:abelian-category}）である。アーベル圏ではすべての射が「エピ射のあとにモノ射」に関手的に分解し（\ref{ha:image-factorization}）、像・余像・完全列という、加群の計算で使う概念がそのまま意味をもつ。本ページでは、短完全列の特徴づけ（\ref{ha:short-exact-characterization}）と、完全関手・左完全関手、とくに hom 関手が左完全であること（\ref{ha:hom-left-exact}）を示す。
+
+> 資料：Mac Lane, *Categories for the Working Mathematician* 第 VIII 章 §3。
+
+## 記法と定義の確認 {#ha:sec-ab-notation}
+
+::: notation
+- 零射・核・余核・ガロア接続・標準的な分解、前加法圏・双積・加法圏・加法関手は \ref{ha:kernel-cokernel}, \ref{ha:ker-coker-galois}, \ref{ha:canonical-factorization}, \ref{ha:preadditive}, \ref{ha:biproduct}, \ref{ha:additive-category} のとおり。
+- **部分対象** $m\colon s\to a$（モノ射）の間の順序 $m\le m'$ は「$m=m't$ となる $t$ がある」こと、$m\equiv m'$ は両方向の $\le$（同型を除いて同じ）。
+- 有限の極限は積と等化子から作れる（\ref{cat:limits-from-products-equalizers}）。
+:::
+
+## アーベル圏 {#ha:sec-ab-definition}
+
+::: definition アーベル圏 {#ha:abelian-category keywords="abelian category" index="アーベル圏|あーべるけん"}
+前加法圏 $\mathbf{A}$ が次を満たすとき、**アーベル圏**という。
+1. 零対象をもつ。
+2. 任意の二つの対象の双積をもつ。
+3. すべての射が核と余核をもつ。
+4. すべてのモノ射は核で、すべてのエピ射は余核である。
+:::
+
+::: example
+1. $\mathbf{Ab}$、$R\text{-}\mathbf{Mod}$、有限アーベル群の圏はアーベル圏。モノ射 $m\colon A\to B$ は $B\to B/m(A)$ の核、エピ射 $e\colon B\to C$ は $\ker e\to B$ の余核。
+2. **アーベル圏でない例.** 自由アーベル群の圏は加法圏で核と余核をもつが、モノ射 $2\colon\mathbb{Z}\to\mathbb{Z}$（2 倍）は余核をもつものの（自由アーベル群の範囲では余核は $0$）核にならない：$\ker(\mathrm{coker}(2))=\ker(\mathbb{Z}\to0)=1_{\mathbb{Z}}$ で、$2\not\equiv1$。
+3. $\mathbf{A}$ がアーベル圏なら、関手圏 $\mathbf{A}^{\mathbf{J}}$ もアーベル圏（加法構造・双積・核・余核を成分ごとに定める）。
+:::
+
+::: proposition 有限の極限と余極限 {#ha:abelian-finite-limits keywords="abelian categories have all finite limits and colimits" index="アーベル圏の有限極限|あーべるけんのゆうげんきょくげん"}
+アーベル圏は有限の極限と有限の余極限をすべてもつ。
+:::
+
+::: proof
+有限の積は双積（\ref{ha:biproduct-theorem}。空の積は零対象）、$f,g$ の等化子は $\ker(f-g)$（\ref{ha:prob-ad-equalizer-kernel}）。積と等化子から有限の極限が作れる（\ref{cat:limits-from-products-equalizers}）。余極限は双対。
+:::
+
+::: proposition モノかつエピなら同型 {#ha:mono-epi-iso keywords="in an abelian category a monic epi is an isomorphism" index="モノかつエピな射|ものかつえぴなしゃ"}
+アーベル圏で、モノ射かつエピ射である射は同型射である。
+:::
+
+::: proof
+$f\colon a\to b$ をモノかつエピとする。公理 4 から $f=\ker g$（ある $g\colon b\to c$）。$gf=0=0f$ で、$f$ はエピ射なので $g=0$。$0\colon b\to c$ の核は $1_{b}$（任意の $h$ について $0h=0$ なので $h$ は $1_{b}$ を一意に経由する）。核は同型を除いて一意なので、$f$ と $1_{b}$ は同型な部分対象で、$f$ は同型射。
+:::
+
+## 像の分解 {#ha:sec-ab-image}
+
+::: theorem 像の分解 {#ha:image-factorization keywords="every arrow factors as epi followed by monic, functorially; image and coimage" index="像（圏の）|ぞうけんの, 余像|よぞう, エピ・モノ分解|えぴものぶんかい"}
+アーベル圏で、射 $f$ は $f=me$（$m$ モノ射、$e$ エピ射）と分解し、
+$$
+m=\ker(\mathrm{coker}\,f),\qquad e=\mathrm{coker}(\ker f)
+$$
+とできる。さらに、$f'=m'e'$ も同様の分解で、可換な四角形 $hf=f'g$ があれば、$e'g=ke$ かつ $m'k=hm$ となる $k$ がただ一つある。とくに分解は同型を除いて一意である。$m$ を $f$ の**像** $\mathrm{im}\,f$、$e$ を**余像** $\mathrm{coim}\,f$ という。
+:::
+
+::: proof
+**Step 1（分解）.** $m\defeq\ker(\mathrm{coker}\,f)$ とし、$f=me$ と分解する（\ref{ha:canonical-factorization}）。アーベル圏は等化子をもちモノ射はすべて核なので、同補題の 2 から $e$ はエピ射。
+
+**Step 2（$e=\mathrm{coker}(\ker f)$）.** $m$ はモノ射なので、$ft=0\iff et=0$。よって $\ker f=\ker e$。$e$ はエピ射なので公理 4 から余核で、\ref{ha:ker-coker-galois} の双対から $e\equiv\mathrm{coker}(\ker e)=\mathrm{coker}(\ker f)$。
+
+**Step 3（関手性）.** $u\defeq\ker f=\ker e$ とする。$m'e'gu=f'gu=hfu=0$ で $m'$ はモノ射なので $e'gu=0$。$e=\mathrm{coker}\,u$ なので $e'g=ke$ となる $k$ がただ一つある。$m'ke=m'e'g=f'g=hf=hme$、$e$ はエピ射なので $m'k=hm$。
+
+**Step 4（一意性）.** $f=me=m'e'$ を二つの分解とし、Step 3 を $g=h=1$ に使うと $k$ で $e'=ke$, $m'k=m$。逆向きにも $k'$ があり、$k'k$ と $1$ はどちらも $e=k'ke$ を満たすので（$e$ エピ）$k'k=1$、同様に $kk'=1$。
+:::
+
+## 完全列 {#ha:sec-ab-exact}
+
+::: definition 完全列 {#ha:exact-sequence keywords="exact at an object, exact sequence, short exact sequence" index="完全列|かんぜんれつ, 短完全列|たんかんぜんれつ, 完全（対象で）|かんぜんたいしょうで"}
+射の組 $a\xrightarrow{f}b\xrightarrow{g}c$ が $b$ で**完全**であるとは、$\mathrm{im}\,f\equiv\ker g$（部分対象として）であることをいう。各対象で完全な列を**完全列**といい、$0\to a\xrightarrow{f}b\xrightarrow{g}c\to0$ が完全列のとき**短完全列**という。
+:::
+
+::: lemma 完全性の言い換え {#ha:exactness-criterion keywords="exactness iff gf=0 and every arrow killed by g factors through the image" index="完全性の言い換え|かんぜんせいのいいかえ"}
+$f=me$（像の分解）について、$\mathrm{im}\,f\le\ker g\iff gf=0$。$\mathrm{im}\,f\ge\ker g$ は「$gk=0$ となる任意の $k$ が $m$ を経由する」ことと同値。
+:::
+
+::: proof
+$\mathrm{im}\,f=m\le\ker g\iff gm=0\iff gme=0$（$e$ エピ）$\iff gf=0$。後半：$\ker g\le m$ なら、$gk=0$ の $k$ は $\ker g$ を経由し、したがって $m$ を経由する。逆に、そのような $k$ がすべて $m$ を経由するなら、$k=\ker g$ 自身も経由する。
+:::
+
+::: proposition 短完全列の特徴づけ {#ha:short-exact-characterization keywords="0 -> a -> b -> c -> 0 is short exact iff f = ker g and g = coker f" index="短完全列の特徴づけ|たんかんぜんれつのとくちょうづけ"}
+$0\to a\xrightarrow{f}b\xrightarrow{g}c\to0$ が短完全列であることと、$f\equiv\ker g$ かつ $g\equiv\mathrm{coker}\,f$ であることは同値。
+:::
+
+::: proof
+**Step 1（端での完全性）.** $a$ での完全性は $\mathrm{im}(0\to a)=0\equiv\ker f$、すなわち $f$ がモノ射であること（$\ker f=0\iff f$ モノ：$fx=fy\iff f(x-y)=0$）。$c$ での完全性は $\mathrm{im}\,g\equiv\ker(c\to0)=1_{c}$、すなわち $g$ の像が全体、つまり $g=\mathrm{im}\,g\circ\mathrm{coim}\,g$ で $\mathrm{im}\,g$ が同型、すなわち $g$ がエピ射（像がモノかつエピなら同型。\ref{ha:mono-epi-iso}）。
+
+**Step 2.** $f$ がモノ射なら $\mathrm{im}\,f\equiv f$（$f=f\circ1$ が像の分解）なので、$b$ での完全性は $f\equiv\ker g$。$g$ がエピ射なら公理 4 から $g$ は余核で、$g\equiv\mathrm{coker}(\ker g)\equiv\mathrm{coker}\,f$（\ref{ha:ker-coker-galois} の双対）。
+
+**Step 3（逆）.** $f\equiv\ker g$ なら $f$ はモノ射で $b$ で完全。$g\equiv\mathrm{coker}\,f$ なら $g$ は余等化子としてエピ射。Step 1 から $a$ と $c$ でも完全。
+:::
+
+::: definition 完全関手 {#ha:exact-functor keywords="exact functor, left exact functor, right exact functor" index="完全関手|かんぜんかんしゅ, 左完全関手|ひだりかんぜんかんしゅ, 右完全関手|みぎかんぜんかんしゅ"}
+アーベル圏の間の関手 $T$ が有限の極限を保存するとき**左完全**、有限の余極限を保存するとき**右完全**、両方のとき**完全**という。
+:::
+
+::: proposition 左完全性の言い換え {#ha:left-exact-criterion keywords="left exact iff additive and preserves kernels iff preserves short left exact sequences" index="左完全の言い換え|ひだりかんぜんのいいかえ"}
+アーベル圏の間の関手 $T$ について、次は同値。
+1. $T$ は左完全。
+2. $T$ は加法的で、核を保存する（$T(\ker f)\equiv\ker(Tf)$）。
+3. $T$ は加法的で、$0\to a\to b\to c$ が完全なら $0\to Ta\to Tb\to Tc$ も完全。
+:::
+
+::: proof
+**1 ⇒ 2.** 有限の積を保存するので双積を保存し（双積は積、\ref{ha:biproduct-theorem}）、\ref{ha:additive-functor-biproduct} から加法的。核は $f$ と $0$ の等化子なので保存される（$T0=0$ は加法性から）。
+
+**2 ⇒ 3.** $0\to a\xrightarrow{f}b\xrightarrow{g}c$ が完全 $\iff f\equiv\ker g$（$a$ での完全性は $f$ モノ、$b$ での完全性は $\mathrm{im}\,f=f\equiv\ker g$）。$T$ で移すと $Tf\equiv\ker(Tg)$。
+
+**3 ⇒ 1.** 3 は核の保存を言う（$f=\ker g$ の完全列を移す）。加法的なので双積（有限の積）を保存し、等化子 $\ker(f-g)$ も $T(f-g)=Tf-Tg$ と核の保存から保存する。有限の極限は積と等化子で作れるので保存される。
+:::
+
+::: theorem hom 関手は左完全 {#ha:hom-left-exact keywords="the hom functor A(d,-) is left exact" index="hom 関手の左完全性|ほむかんしゅのひだりかんぜんせい"}
+アーベル圏（局所小）$\mathbf{A}$ と対象 $d$ について、$\mathbf{A}(d,-)\colon\mathbf{A}\to\mathbf{Ab}$ は左完全である。双対に $\mathbf{A}(-,d)\colon\mathbf{A}^{\mathrm{op}}\to\mathbf{Ab}$ も左完全（$\mathbf{A}$ の余極限を $\mathbf{Ab}$ の極限に移す）。
+:::
+
+::: proof
+hom 関手は極限を保存する（\ref{cat:hom-preserves-limits}）ので、とくに有限の極限を保存する。$\mathbf{Ab}$ の極限は集合としての極限に群構造を入れたものなので、$\mathbf{Set}$ での保存から $\mathbf{Ab}$ での保存が出る。具体的には、$0\to a\xrightarrow{f}b\xrightarrow{g}c$ が完全なら、$0\to\mathbf{A}(d,a)\xrightarrow{f_{\ast}}\mathbf{A}(d,b)\xrightarrow{g_{\ast}}\mathbf{A}(d,c)$ は完全：$f_{\ast}$ は $f$ モノなので単射、$g_{\ast}(x)=gx=0$ なら $f=\ker g$ から $x=fx'$。
+:::
+
+::: example
+$\mathbf{Ab}$ で $\mathrm{Hom}(\mathbb{Z}/2,-)$ は右完全でない：短完全列 $0\to\mathbb{Z}\xrightarrow{2}\mathbb{Z}\to\mathbb{Z}/2\to0$ を移すと $0\to0\to0\to\mathbb{Z}/2$ で、最後の写像は全射でない。この「完全性の欠け」を測るのが導来関手 $\mathrm{Ext}$ である（ホモロジー代数の系列で扱う予定）。
+:::
+
+::: supplement
+**一般化.** アーベル圏の公理は、加法構造を仮定せず「零対象・二つの対象の積と余積・核と余核・モノは核でエピは余核」から始めても、加法構造が一意に入る（P. Freyd の 1964 年の教科書による。Mac Lane は証明を略している）。また、小さいアーベル圏は、ある環上の加群の圏に完全かつ充満忠実に埋め込める（フレイド–ミッチェルの埋め込み定理。範囲外）。これにより、元を使った図式追跡が任意のアーベル圏で正当化される。次ページでは埋め込み定理を使わず、「元」の代わりに「メンバー」を使う Mac Lane の方法で図式の補題を示す。
+
+**前提を変えると.** 公理 4 を外した加法圏（例：自由アーベル群の圏、ヒルベルト空間の圏）では、モノかつエピな射が同型とは限らず、像の分解が一意でない。
+
+**高い視点から：「線形代数」ができる圏.** アーベル圏は、核・像・商・完全性という線形代数の基本操作が、具体的な元を使わずに射だけで実行できる圏である。比喩で言えば、アーベル圏は「どの部屋も同じ間取りの建物」で、$\mathbf{Ab}$ で覚えた家具の配置（図式の補題）をどの部屋にもそのまま持ち込める。
+:::
+
+## 問題 {#ha:sec-ab-problems}
+
+::: problem {#ha:prob-ab-short-exact-preserved}
+アーベル圏の間の加法関手 $T$ が完全であることと、$T$ が短完全列を短完全列に移すことは同値であることを示せ（Mac Lane 第 VIII 章 §3 演習 1）。
+:::
+
+::: solution
+完全なら核と余核を保存するので、\ref{ha:short-exact-characterization} から短完全列を保つ。逆に短完全列を保つとする。任意の $f\colon a\to b$ を像の分解 $f=me$ で、短完全列 $0\to\ker f\to a\xrightarrow{e}\mathrm{im}\to0$ と $0\to\mathrm{im}\xrightarrow{m}b\to\mathrm{coker}\,f\to0$ に分ける（$\ker e=\ker f$、$\mathrm{coker}\,m=\mathrm{coker}\,f$）。$T$ で移すと、$Te$ はエピ、$Tm$ はモノで、$T(\ker f)=\ker(Te)$。$Tf=Tm\circ Te$ で $Tm$ はモノなので $\ker(Tf)=\ker(Te)=T(\ker f)$。余核も同様。\ref{ha:left-exact-criterion} とその双対から完全。
+:::
+
+::: problem {#ha:prob-ab-product-category}
+アーベル圏 $\mathbf{A},\mathbf{B}$ の積圏 $\mathbf{A}\times\mathbf{B}$ がアーベル圏であることを示せ。
+:::
+
+::: solution
+hom 群は $(\mathbf{A}\times\mathbf{B})((a,b),(a',b'))=\mathbf{A}(a,a')\oplus\mathbf{B}(b,b')$ で、合成は成分ごとなので双線形。零対象は $(0,0)$、双積・核・余核は成分ごと。モノ射 $(f,g)$ は成分ごとにモノ（$\mathbf{A}$ の射 $x$ と $\mathbf{B}$ の零射の組を考えれば、$f$ がモノであることが出る）なので、成分ごとに核で、組として核。エピ射も同様。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

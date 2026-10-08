@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ライス–シャピロの定理 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/03-advanced-computability/11-rice-shapiro.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ライス–シャピロの定理 {#comp:page-rice-shapiro keywords="index set, Rice-Shapiro theorem, monotone and compact classes of c.e. sets, finite information, characterization of c.e. index sets, Rice's theorem as a corollary"}
+
+ライスの定理（\ref{comp:rice}）は、認識可能集合の性質がその指数（プログラム）から**決定**できるのは自明な性質に限ることを述べる。**ライス–シャピロの定理**（\ref{comp:rice-shapiro}）は、指数から**認識**できる性質を特徴づける：それは「有限の情報で確かめられる」性質、すなわち、ある有限部分集合がそれを満たせばその上位集合はすべて満たし、満たす集合はどれも、それを満たす有限部分集合をもつような性質に限られる。逆もまた成り立つ（\ref{comp:rice-shapiro-converse}）。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。
+
+## 記法と定義の確認 {#comp:sec-rs-notation}
+
+::: notation
+- $\varphi_{e}$, $W_{e}=\mathrm{dom}\,\varphi_{e}$, $K=\{x:x\in W_{x}\}$、smn 定理の使い方は \ref{comp:page-creative-sets} の記法のとおり。$K_{s}$ は $s$ 段以内に $K$ に入る（$\varphi_{x}(x)$ が $s$ 段以内に止まる）$x\le s$ の集合で、$s$ から計算できる有限集合。$\overline{K}$ は認識可能でない（\ref{comp:productive-basic} の 1, 2）。
+- 有限集合 $D$ の**標準符号** $\ulcorner D\urcorner\defeq\sum_{d\in D}2^{d}$。
+- 認識可能な集合からなるクラス $\mathcal{A}$ について、その**指数集合**を $I_{\mathcal{A}}\defeq\{e:W_{e}\in\mathcal{A}\}$ とする。写像還元の性質（$A\le_{\mathrm{m}}B$ で $B$ が認識可能なら $A$ も認識可能）は \ref{comp:mapping-basic} のとおり。
+:::
+
+## ライス–シャピロの定理 {#comp:sec-rs-theorem}
+
+::: theorem ライス–シャピロの定理 {#comp:rice-shapiro keywords="if the index set of a class of c.e. sets is c.e., the class is monotone and compact" index="ライス–シャピロの定理|らいすしゃぴろのていり, 指数集合|しすうしゅうごう"}
+認識可能な集合のクラス $\mathcal{A}$ について、$I_{\mathcal{A}}$ が認識可能なら、次が成り立つ。
+1. （**単調性**）$W\in\mathcal{A}$ で、$W\subseteq V$（$V$ は認識可能）なら $V\in\mathcal{A}$。
+2. （**コンパクト性**）$W\in\mathcal{A}$ なら、ある有限集合 $D\subseteq W$ で $D\in\mathcal{A}$ となるものがある。
+:::
+
+::: proof
+どちらも、否定を仮定して $\overline{K}\le_{\mathrm{m}}I_{\mathcal{A}}$ を作り、$\overline{K}$ が認識可能になる矛盾を導く。
+
+**1.** $W\in\mathcal{A}$, $W\subseteq V$, $V\notin\mathcal{A}$ とする。smn 定理により、全域計算可能な $t$ で、$\varphi_{t(x)}(y)$ が「$y\in W$ を確かめる手続きと、$x\in K$ かつ $y\in V$ を確かめる手続きを交互に動かし、どちらかが成功すれば止まる」となるものをとる。すると $W_{t(x)}=W$（$x\notin K$）、$W\cup V=V$（$x\in K$）。よって $x\in\overline{K}\iff W_{t(x)}=W\iff t(x)\in I_{\mathcal{A}}$（$x\in K$ なら $W_{t(x)}=V\notin\mathcal{A}$）。
+
+**2.** $W\in\mathcal{A}$ で、$W$ の有限部分集合はどれも $\mathcal{A}$ に属さないとする。smn 定理により、全域計算可能な $t$ で $\varphi_{t(x)}(y)$ が「$y\in W$ を確かめ、確かめられたら $x\notin K_{y}$ を調べて、成り立てば止まる」（$K_{y}$ は計算可能な有限集合）となるものをとる。$W_{t(x)}=\{y\in W:x\notin K_{y}\}$。$x\notin K$ なら、すべての $y$ で $x\notin K_{y}$ なので $W_{t(x)}=W\in\mathcal{A}$。$x\in K$ なら、$x\in K_{s}$ となる $s$ があり、$y\ge s$ では $x\in K_{y}$（$K_{y}$ は $y$ について増加）なので $W_{t(x)}\subseteq\{0,\dots,s-1\}$ は $W$ の有限部分集合で、$\mathcal{A}$ に属さない。よって $x\in\overline{K}\iff t(x)\in I_{\mathcal{A}}$。
+
+いずれの場合も、$I_{\mathcal{A}}$ が認識可能なら $\overline{K}$ も認識可能となり矛盾。
+:::
+
+::: hypcheck
+- **$\overline{K}$ が認識可能でないこと**：両方の場合の矛盾の源である。
+- **smn 定理**：$x$ をパラメータとして、$x\in K$ かどうかで振る舞いの変わる集合 $W_{t(x)}$ を一様に作るのに使った。
+- **$K_{y}$ が $y$ について増加**：2 で、$x\in K$ のとき $W_{t(x)}$ が有限になることに使った。
+:::
+
+::: theorem ライス–シャピロの定理の逆 {#comp:rice-shapiro-converse keywords="characterization: I_A is c.e. iff the codes of finite members are c.e. and membership is witnessed by finite subsets" index="ライス–シャピロの定理の逆|らいすしゃぴろのていりのぎゃく"}
+認識可能な集合のクラス $\mathcal{A}$ について、$I_{\mathcal{A}}$ が認識可能であることと、次の二つが成り立つことは同値である。
+- (i) $\{\ulcorner D\urcorner:D\text{ は有限で }D\in\mathcal{A}\}$ は認識可能。
+- (ii) 認識可能な $W$ について、$W\in\mathcal{A}\iff$ ある有限集合 $D\subseteq W$ で $D\in\mathcal{A}$。
+:::
+
+::: proof
+**⇒.** (ii)：⇒ は \ref{comp:rice-shapiro} の 2、⇐ は同 1（$D\subseteq W$ で $D\in\mathcal{A}$ なら $W\in\mathcal{A}$）。(i)：smn 定理により、全域計算可能な $e$ で $W_{e(u)}$ が $u$ を標準符号とする有限集合になるもの（$\varphi_{e(u)}(y)$ は「$u$ の第 $y$ 桁が $1$ なら止まる」）をとると、$\ulcorner D\urcorner=u$ について $D\in\mathcal{A}\iff e(u)\in I_{\mathcal{A}}$。$I_{\mathcal{A}}$ が認識可能なので、(i) の集合も認識可能。
+
+**⇐.** (ii) から $e\in I_{\mathcal{A}}\iff\exists u\,\exists s\,[\,u\text{ は (i) の集合に属し、}u\text{ の符号する集合が }W_{e,s}\text{ に含まれる}\,]$（$W_{e,s}$ は $s$ 段以内に止まる $s$ 以下の入力の集合）。(i) の集合は認識可能で、「$D_{u}\subseteq W_{e,s}$」は決定可能なので、$(u,s)$ と (i) の集合の列挙の段数を並行して探索すれば $I_{\mathcal{A}}$ を認識できる。
+:::
+
+## 応用 {#comp:sec-rs-applications}
+
+::: corollary 認識できない指数集合 {#comp:rs-applications keywords="index sets of infinite sets, of N, of finite sets are not c.e.; Rice's theorem from Rice-Shapiro" index="ライス–シャピロの応用|らいすしゃぴろのおうよう"}
+1. $\{e:W_{e}\text{ は無限}\}$, $\{e:W_{e}=\N\}$ は認識可能でない（コンパクト性に反する）。
+2. $\{e:W_{e}\text{ は有限}\}$, $\{e:W_{e}=\emptyset\}$ は認識可能でない（単調性に反する）。
+3. $\{e:W_{e}\ne\emptyset\}$, $\{e:3\in W_{e}\}$ は認識可能である（(i), (ii) を満たす）。
+4. （ライスの定理）$I_{\mathcal{A}}$ が決定可能なら、$\mathcal{A}$ は空か、認識可能な集合全体である。
+:::
+
+::: proof
+**1.** 無限集合のクラス・$\{\N\}$ は、それに属する集合の有限部分集合を含まない。**2.** 有限集合のクラスは $\emptyset$ を含むが、その上位集合 $\N$ を含まない。$\{\emptyset\}$ も同様。**3.** $\{D:D\ne\emptyset\}$ の標準符号は $\{u:u\ge1\}$、$\{D:3\in D\}$ の標準符号は第 $3$ 桁が $1$ の $u$ で、どちらも決定可能。(ii) は明らか。
+
+**4.** $I_{\mathcal{A}}$ と $\overline{I_{\mathcal{A}}}=I_{\mathcal{A}^{c}}$（$\mathcal{A}^{c}$ は補クラス）がともに認識可能。$\emptyset\in\mathcal{A}$ なら、$\mathcal{A}$ の単調性からすべての認識可能集合が $\mathcal{A}$ に属する。$\emptyset\notin\mathcal{A}$ なら $\emptyset\in\mathcal{A}^{c}$ で、同様に $\mathcal{A}^{c}$ が全体、すなわち $\mathcal{A}=\emptyset$。
+:::
+
+## 問題 {#comp:sec-rs-problems}
+
+::: problem {#comp:prob-rs-cofinite}
+$\{e:W_{e}\text{ は補有限}\}$ が認識可能でないことを、ライス–シャピロの定理で示せ。
+:::
+
+::: solution
+補有限な集合（たとえば $\N$）はクラスに属するが、その有限部分集合はどれも補有限でない（$\N$ は無限）ので、コンパクト性に反する。
+:::
+
+::: problem {#comp:prob-rs-complement}
+$\{e:W_{e}\text{ は }5\text{ を含まない}\}$ の補集合は認識可能だが、それ自身は認識可能でないことを確かめよ。
+:::
+
+::: solution
+補集合 $\{e:5\in W_{e}\}$ は「$\varphi_{e}(5)$ が止まるのを待つ」ことで認識できる。$\{e:5\notin W_{e}\}$ のクラスは $\emptyset$ を含むがその上位集合 $\{5\}$ を含まないので、単調性に反し、指数集合は認識可能でない。
+:::
+
+::: supplement
+**前提を変えると.** 部分計算可能関数のクラス $\mathcal{F}$ の指数集合 $\{e:\varphi_{e}\in\mathcal{F}\}$ についても同様の特徴づけがあり、「有限の部分関数で確かめられる」ことと同値であることが知られている（ライス–シャピロの定理の関数版）。全域関数の性質については、クライゼル–ラコンブ–ショーンフィールドの定理（計算可能な汎関数は実効的に連続）が対応することが知られている（ここでは扱わない）。
+
+**似た定理.** ライス–シャピロの定理は、「計算可能な性質は位相的に開である」という原理の一例である：認識可能集合を点、有限部分集合を基本近傍とみる（スコット位相）と、認識可能な指数集合はちょうど開集合に対応する。計算可能解析の「計算可能な関数は連続である」も同じ原理の表れである。
+
+**高い視点から：有限の観察で決まる性質.** プログラム $e$ が列挙する集合 $W_{e}$ は、時間をかけて少しずつしか見えない。指数から性質を認識するには、どこかの有限の時点で「これまでに見えた元だけで、性質が確定した」と言えなければならない。比喩で言えば、霧の中で少しずつ姿を現す建物について「窓がある」は窓が一つ見えた瞬間に分かるが、「窓が無限にある」や「窓がない」は、どれだけ待っても確定しない。単調性とコンパクト性は、この「有限の観察で確定する」ことの数学的な表現である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

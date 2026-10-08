@@ -5622,6 +5622,13 @@
       "num": "",
       "page": "03-mathematical-logic/03F-proof-theory/02-incompleteness/04-representability.html"
     },
+    "comp:page-rice-shapiro": {
+      "status": "defined",
+      "type": "page",
+      "title": "ライス–シャピロの定理",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/11-rice-shapiro.html"
+    },
     "comp:page-space-complexity": {
       "status": "defined",
       "type": "page",
@@ -6567,6 +6574,20 @@
       "num": "7.12",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/07-probabilistic-quantum.html"
     },
+    "comp:prob-rs-cofinite": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "11.4",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/11-rice-shapiro.html"
+    },
+    "comp:prob-rs-complement": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "11.5",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/11-rice-shapiro.html"
+    },
     "comp:prob-sigma11-ill-founded": {
       "status": "defined",
       "type": "problem",
@@ -6812,6 +6833,20 @@
       "num": "9.4",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/09-reducibility.html"
     },
+    "comp:rice-shapiro": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "ライス–シャピロの定理",
+      "num": "11.1",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/11-rice-shapiro.html"
+    },
+    "comp:rice-shapiro-converse": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "ライス–シャピロの定理の逆",
+      "num": "11.2",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/11-rice-shapiro.html"
+    },
     "comp:rm-code": {
       "status": "defined",
       "type": "definition",
@@ -6839,6 +6874,13 @@
       "title": "分岐プログラムの多項式",
       "num": "13.7",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/13-primality-branching.html"
+    },
+    "comp:rs-applications": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "認識できない指数集合",
+      "num": "11.3",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/11-rice-shapiro.html"
     },
     "comp:rsa-correct": {
       "status": "defined",
@@ -8302,6 +8344,34 @@
       "title": "レジスタ機械を L で模倣する",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/05-register-machines.html"
+    },
+    "comp:sec-rs-applications": {
+      "status": "defined",
+      "type": "section",
+      "title": "応用",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/11-rice-shapiro.html"
+    },
+    "comp:sec-rs-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/11-rice-shapiro.html"
+    },
+    "comp:sec-rs-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/11-rice-shapiro.html"
+    },
+    "comp:sec-rs-theorem": {
+      "status": "defined",
+      "type": "section",
+      "title": "ライス–シャピロの定理",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/11-rice-shapiro.html"
     },
     "comp:sec-running-time": {
       "status": "defined",

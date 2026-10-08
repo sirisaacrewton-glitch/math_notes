@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>アスコリ–アルツェラの定理 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54C-maps-function-spaces/01-function-spaces/03-ascoli.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# アスコリ–アルツェラの定理 {#top:page-ascoli keywords="equicontinuous family, uniformly equicontinuous, relatively compact, Ascoli-Arzela theorem, pointwise bounded, uniformly bounded, Lipschitz family"}
+
+コンパクト空間 $X$ 上の連続写像の空間 $C(X,Y)$（一様収束位相）で、どのような部分集合がコンパクトな閉包をもつか。有限次元空間なら「有界閉」が答えだが、関数空間では有界だけでは足りない（$x^{n}$ の列は $[0,1]$ 上で有界だが、一様収束する部分列をもたない）。不足しているのは「関数たちが一斉に連続であること」すなわち**同等連続性**（\ref{top:equicontinuous}）で、**アスコリ–アルツェラの定理**（\ref{top:ascoli}）は、相対コンパクト性が「同等連続性」と「各点での相対コンパクト性」の組と同値であることを主張する。
+
+> 資料：小山晃『位相空間論』第 10 章 §10.3 を参考にした（本文は写していない）。同書は $X$ をコンパクト距離空間として一様同等連続性を経由しているが、本ページでは $X$ を一般のコンパクト空間とし、近傍による同等連続性で直接示した。
+
+## 記法と定義の確認 {#top:sec-as-notation}
+
+::: notation
+- $C(X,Y)$、一様距離 $\rho^{\ast}(f,g)=\sup_{x}\bar{\rho}(f(x),g(x))$（$\bar{\rho}=\min(\rho,1)$）は \ref{top:uniform-topology} のとおり。$X$ がコンパクトなら一様収束位相はコンパクト開位相に一致する（\ref{top:compact-domain-uniform}）。
+- 全有界、距離空間のコンパクト性の同値条件（コンパクト $\iff$ 完備かつ全有界 $\iff$ 点列コンパクト。従属選択公理を使う）は \ref{top:totally-bounded}, \ref{top:compact-metric-equivalents} のとおり。
+- 部分集合 $A$ が**相対コンパクト**とは、閉包 $\overline{A}$ がコンパクトであることをいう。
+:::
+
+## 同等連続性 {#top:sec-as-equicontinuity}
+
+::: definition 同等連続 {#top:equicontinuous keywords="equicontinuous family of maps" index="同等連続|どうとうれんぞく"}
+$X$ を位相空間、$(Y,\rho)$ を距離空間とする。$\mathcal{F}\subseteq C(X,Y)$ が点 $x$ で**同等連続**であるとは、任意の $\varepsilon>0$ について、$x$ の近傍 $V$ で
+$$
+x'\in V,\ f\in\mathcal{F}\ \Longrightarrow\ \rho\bigl(f(x'),f(x)\bigr)<\varepsilon
+$$
+となるものがあることをいう。すべての点で同等連続なとき、$\mathcal{F}$ は**同等連続**であるという。
+:::
+
+::: example
+1. 有限個の連続写像の族は同等連続（各写像の近傍の共通部分をとる）。
+2. **リプシッツ族.** $X$ も距離空間で、定数 $L$ について $\rho(f(x),f(x'))\le L\,d(x,x')$ がすべての $f\in\mathcal{F}$ で成り立てば、$\mathcal{F}$ は同等連続（$V=B(x,\varepsilon/L)$）。たとえば $[a,b]$ 上の微分可能な関数で $|f'|\le L$ のものの全体（平均値の定理）。
+3. $f_{n}(x)=x^{n}$ の族は $[0,1]$ の点 $1$ で同等連続でない：$x'<1$ をどれほど $1$ に近くとっても、$n$ を大きくすれば $|f_{n}(1)-f_{n}(x')|=1-x'^{n}$ は $1$ に近づく。
+:::
+
+::: lemma 一様同等連続性 {#top:uniformly-equicontinuous keywords="equicontinuous families on compact metric spaces are uniformly equicontinuous" index="一様同等連続|いちようどうとうれんぞく"}
+$(X,d)$ がコンパクト距離空間で $\mathcal{F}$ が同等連続なら、任意の $\varepsilon>0$ に $\delta>0$ で、$d(x,x')<\delta$ ならすべての $f\in\mathcal{F}$ について $\rho(f(x),f(x'))<\varepsilon$ となるものがある。
+:::
+
+::: proof
+各 $x$ について、同等連続性から $\delta_{x}>0$ で $d(x,x')<2\delta_{x}\Rightarrow\rho(f(x),f(x'))<\varepsilon/2$（すべての $f$）となるものをとる。開球 $B(x,\delta_{x})$ の有限個 $B(x_{i},\delta_{x_{i}})$ で $X$ を覆い、$\delta\defeq\min_{i}\delta_{x_{i}}$ とする。$d(x,x')<\delta$ なら $x\in B(x_{i},\delta_{x_{i}})$ となる $i$ があり、$d(x',x_{i})<\delta+\delta_{x_{i}}\le2\delta_{x_{i}}$。よって $\rho(f(x),f(x'))\le\rho(f(x),f(x_{i}))+\rho(f(x_{i}),f(x'))<\varepsilon$。
+:::
+
+## アスコリ–アルツェラの定理 {#top:sec-as-theorem}
+
+::: theorem アスコリ–アルツェラの定理 {#top:ascoli keywords="Ascoli-Arzela theorem: a family of continuous maps on a compact space is relatively compact iff it is equicontinuous and pointwise relatively compact" index="アスコリ–アルツェラの定理|あすこりあるつぇらのていり"}
+$X$ をコンパクト空間、$(Y,\rho)$ を距離空間とし、$C(X,Y)$ に一様収束位相を入れる。$\mathcal{F}\subseteq C(X,Y)$ について次は同値である。
+1. $\mathcal{F}$ は相対コンパクト。
+2. $\mathcal{F}$ は同等連続で、各 $x\in X$ について $\mathcal{F}(x)\defeq\{f(x):f\in\mathcal{F}\}$ は $Y$ で相対コンパクト。
+:::
+
+::: proof
+評価写像 $e_{x}\colon C(X,Y)\to Y$, $f\mapsto f(x)$ は連続である（$\bar{\rho}(f(x),g(x))\le\rho^{\ast}(f,g)$）。以下 $0<\varepsilon<1$ とし、$\bar{\rho}<\varepsilon\iff\rho<\varepsilon$ を使う。
+
+**1 ⇒ 2.** *各点.* $\mathcal{F}(x)\subseteq e_{x}(\overline{\mathcal{F}})$ で、右辺はコンパクト集合の連続像なのでコンパクト、したがって閉（距離空間はハウスドルフ）。よって $\overline{\mathcal{F}(x)}$ はコンパクト集合の閉部分集合でコンパクト。
+
+*同等連続.* $\overline{\mathcal{F}}$ はコンパクト距離空間なので全有界で、$g_{1},\dots,g_{n}\in\overline{\mathcal{F}}$ で $\overline{\mathcal{F}}\subseteq\bigcup_{i}B(g_{i},\varepsilon/3)$ となるものがある。点 $x$ について $V\defeq\bigcap_{i}g_{i}^{-1}(B(g_{i}(x),\varepsilon/3))$ は $x$ の開近傍。$f\in\mathcal{F}$, $x'\in V$ なら、$\rho^{\ast}(f,g_{i})<\varepsilon/3$ となる $i$ をとって
+$$
+\rho(f(x'),f(x))\le\rho(f(x'),g_{i}(x'))+\rho(g_{i}(x'),g_{i}(x))+\rho(g_{i}(x),f(x))<\varepsilon.
+$$
+
+**2 ⇒ 1.** $K_{x}\defeq\overline{\mathcal{F}(x)}$ はコンパクト。\ref{top:compact-metric-equivalents} から、$\overline{\mathcal{F}}$ が完備かつ全有界であることを示せばよい。
+
+*Step 1（全有界）.* 同等連続性から、各 $x$ に開近傍 $V_{x}$ で $x'\in V_{x}\Rightarrow\rho(f(x'),f(x))<\varepsilon$（すべての $f\in\mathcal{F}$）となるものをとり、$X$ のコンパクト性から $X=V_{x_{1}}\cup\dots\cup V_{x_{n}}$ とする。$K\defeq K_{x_{1}}\times\dots\times K_{x_{n}}$ に距離 $\max_{i}\rho(q_{i},q'_{i})$ を入れると、有限個のコンパクト距離空間の直積としてコンパクト（点列コンパクト性は各成分から部分列を順にとれば分かる）、したがって全有界で、$\varepsilon$ 網 $q^{1},\dots,q^{m}$ がある。各 $j$ について、$\max_{i}\rho(f(x_{i}),q^{j}_{i})<\varepsilon$ となる $f\in\mathcal{F}$ があれば一つ選んで $f_{j}$ とする（有限個の選択）。任意の $f\in\mathcal{F}$ について $(f(x_{i}))_{i}\in K$ なので、ある $j$ で $\max_{i}\rho(f(x_{i}),q^{j}_{i})<\varepsilon$ となり、$f_{j}$ が定義されている。$x\in X$ について $x\in V_{x_{i}}$ となる $i$ をとると
+$$
+\begin{aligned}
+\rho(f(x),f_{j}(x))&\le\rho(f(x),f(x_{i}))+\rho(f(x_{i}),q^{j}_{i})\\
+&\qquad+\rho(q^{j}_{i},f_{j}(x_{i}))+\rho(f_{j}(x_{i}),f_{j}(x))<4\varepsilon.
+\end{aligned}
+$$
+よって $\rho^{\ast}(f,f_{j})\le4\varepsilon$ で、$\{f_{j}\}$ は $\mathcal{F}$ の $5\varepsilon$ 網。$\mathcal{F}$ の $\varepsilon$ 網は $\overline{\mathcal{F}}$ の $2\varepsilon$ 網なので、$\overline{\mathcal{F}}$ も全有界。
+
+*Step 2（完備）.* $(g_{n})$ を $\overline{\mathcal{F}}$ のコーシー列とする。$e_{x}$ の連続性から $g_{n}(x)\in e_{x}(\overline{\mathcal{F}})\subseteq\overline{\mathcal{F}(x)}=K_{x}$（連続写像は閉包を像の閉包に移す）。$(g_{n}(x))$ はコンパクト（したがって完備）な $K_{x}$ のコーシー列なので極限 $g(x)\in K_{x}$ をもつ。\ref{top:bounded-functions-complete} の 1 の証明と同じく $g_{n}\to g$ は一様収束で、2 の証明と同じく一様極限 $g$ は連続。$g$ は $\overline{\mathcal{F}}$ の点の極限なので $\overline{\mathcal{F}}$ に属する。
+:::
+
+::: hypcheck
+- **$X$ のコンパクト性**：2 ⇒ 1 の Step 1 で、有限個の点 $x_{1},\dots,x_{n}$ に帰着させるのに使った。1 ⇒ 2 では使っていない。
+- **同等連続性**：Step 1 で、有限個の点での値の近さを全体の近さに広げるのに使った。
+- **各点での相対コンパクト性**：Step 1 で $K$ の全有界性に、Step 2 で各点の極限の存在に使った。$Y$ の完備性は仮定していない（$K_{x}$ の完備性で足りる）。
+- **従属選択公理**：\ref{top:compact-metric-equivalents}（完備かつ全有界 ⇒ コンパクト）で使う。
+:::
+
+::: corollary 古典的なアスコリ–アルツェラの定理 {#top:ascoli-classical keywords="uniformly bounded equicontinuous sequence on a compact space has a uniformly convergent subsequence" index="アスコリ–アルツェラの定理（古典形）|あすこりあるつぇらのていりこてんけい"}
+$X$ をコンパクト空間とする。$C(X,\R^{n})$ の部分集合 $\mathcal{F}$ が相対コンパクトであることと、同等連続かつ各点で有界（各 $x$ で $\mathcal{F}(x)$ が有界）であることは同値である。とくに、$[a,b]$ 上の一様有界かつ同等連続な実数値関数の列は、一様収束する部分列をもつ。
+:::
+
+::: proof
+ハイネ–ボレルの定理（\ref{top:heine-borel}）から、$\R^{n}$ の部分集合が相対コンパクトであることと有界であることは同値なので、\ref{top:ascoli} から前半が従う。後半：$\overline{\mathcal{F}}$ はコンパクト距離空間なので点列コンパクト（\ref{top:compact-metric-equivalents}）で、列は $\overline{\mathcal{F}}$ の中で収束する部分列をもち、$\rho^{\ast}$ の収束は一様収束である。
+:::
+
+## 問題 {#top:sec-as-problems}
+
+::: problem {#top:prob-as-xn}
+$f_{n}(x)=x^{n}$ の列は $C([0,1],\R)$ の中で有界だが、一様収束する部分列をもたないことを、\ref{top:ascoli-classical} を使って示せ。また直接にも示せ。
+:::
+
+::: solution
+有界性は $0\le f_{n}\le1$。一様収束する部分列があれば、その部分列の集合は相対コンパクト（収束列と極限の集合はコンパクト）で、\ref{top:ascoli} から同等連続になるが、例 3 から点 $1$ で同等連続でない。直接には：部分列が一様収束すれば各点収束の極限 $g$（$g(x)=0$ ($x<1$), $g(1)=1$）に一様収束し、\ref{top:uniform-limit} から $g$ は連続でなければならないが、$g$ は $1$ で不連続。
+:::
+
+::: problem {#top:prob-as-lipschitz}
+$\mathcal{F}$ を、$[0,1]$ 上の微分可能な関数で $|f(0)|\le1$ かつ $|f'|\le1$ を満たすものの全体とする。$\mathcal{F}$ は $C([0,1],\R)$ で相対コンパクトであることを示せ。
+:::
+
+::: solution
+平均値の定理から $|f(x)-f(x')|\le|x-x'|$ なので、$\mathcal{F}$ はリプシッツ族として同等連続（例 2）。また $|f(x)|\le|f(0)|+|x|\le2$ で各点有界。\ref{top:ascoli-classical} から相対コンパクト。（閉包には微分可能でない関数、たとえば $|x-1/2|$ も入る。）
+:::
+
+::: supplement
+**前提を変えると.** $X$ がコンパクトでないとき、一様収束位相では結論が成り立たない（$\R$ 上の平行移動 $f_{n}(x)=\max(0,1-|x-n|)$ は同等連続で各点有界だが、$\rho^{\ast}(f_{m},f_{n})=1$ で一様収束する部分列をもたない）。しかし、コンパクト開位相（コンパクト集合上の一様収束、\ref{top:compact-open-uniform-on-compacta}）に取り替え、$X$ を局所コンパクトハウスドルフ（あるいは第一可算など）とすれば、同じ同値が成り立つことが知られている（一般形のアスコリの定理。ここでは証明しない）。
+
+**似た定理.** \ref{top:ascoli-classical} は、常微分方程式の解の存在定理（ペアノの定理）の証明で、近似解の列から一様収束する部分列を取り出すのに使われる。また関数解析では、コンパクト作用素（たとえば積分作用素）の例を作るのに使われる。
+
+**高い視点から：同等連続性は「無限次元の有界性の補正」.** 有限次元では「有界閉 $=$ コンパクト」だが、無限次元のノルム空間では単位球はコンパクトでない（リースの定理）。関数空間 $C(X,\R)$ は無限次元なので、有界性だけでは足りず、「関数が細かく振動しない」ことを一斉に保証する同等連続性が必要になる。比喩で言えば、有界性は「関数のグラフが箱に収まる」こと、同等連続性は「グラフの傾きが一斉に抑えられている」ことで、両方そろうと、箱を有限個の小部屋に分けたときに「どの関数もどれかの小部屋の列をたどる」という有限の記述（全有界性）が可能になる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

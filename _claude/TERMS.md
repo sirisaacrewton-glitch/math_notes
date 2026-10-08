@@ -392,3 +392,4 @@
 | uniformity / entourage / uniform space / uniformly continuous / initial uniformity | 一様構造 / 近縁 / 一様空間 / 一様連続 / 始一様構造 | 近縁＝エントラージュ、一様近傍 | 「近縁」は仮。top:page-uniform-spaces |
 | pseudometric / metrization lemma / uniformizable | 擬距離 / 距離化補題 / 一様化可能 | | 標準的。top:page-uniform-pseudometrics |
 | Cauchy filter / complete uniform space / totally bounded / completion | コーシーフィルター / 完備（一様空間） / 全有界 / 完備化 | | 標準的。top:page-uniform-completeness |
+| chain complex / chain map / homology / long exact sequence / chain homotopy | 鎖複体 / 鎖写像 / ホモロジー / 長完全列 / 鎖ホモトピー | チェイン複体 | 標準的。ha:page-chain-complexes |

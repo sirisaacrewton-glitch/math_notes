@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>鎖複体とホモロジー | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18G-homological-algebra/01-abelian-categories/04-chain-complexes.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 鎖複体とホモロジー {#ha:page-chain-complexes keywords="chain complex, chain map, cycles, boundaries, homology object, short exact sequence of complexes, long exact homology sequence, connecting morphism, generalized snake lemma, chain homotopy"}
+
+アーベル圏の**鎖複体**（\ref{ha:chain-complex}）は、$\partial\partial=0$ を満たす射の列であり、その「サイクルを境界で割ったもの」が**ホモロジー**（\ref{ha:homology}）である。本ページの主定理は、鎖複体の短完全列からホモロジーの**長完全列**が得られること（\ref{ha:long-exact-sequence}）である。証明は、蛇の補題（\ref{ha:snake-lemma}）を「行が短完全とは限らない」場合に一般化し（\ref{ha:general-snake}）、それを二回使う形で行う。最後に、**鎖ホモトピー**で結ばれた鎖写像が同じホモロジーの射を引き起こすこと（\ref{ha:homotopy-invariance}）を示す。
+
+> 資料：本ページは特定の教科書の記述によらず、本サイトのアーベル圏の系列（Mac Lane 第 VIII 章に対応）で示したメンバーによる図式追跡と蛇の補題を使って組み立てた。Mac Lane 第 VIII 章は蛇の補題までで、長完全列は扱っていない。
+
+## 記法と定義の確認 {#ha:sec-cc-notation}
+
+::: notation
+- $\mathbf{A}$ はアーベル圏。核・余核、像の分解、完全列、短完全列の特徴づけ、モノかつエピなら同型は \ref{ha:kernel-cokernel}, \ref{ha:image-factorization}, \ref{ha:exact-sequence}, \ref{ha:short-exact-characterization}, \ref{ha:mono-epi-iso} のとおり。
+- メンバー $x\in_{m}a$ と同値 $\equiv$、図式追跡の規則、エピ射の引き戻しはエピであること、蛇の補題は \ref{ha:member}, \ref{ha:chasing-rules}, \ref{ha:pullback-epi}, \ref{ha:snake-lemma} のとおり。\ref{ha:pullback-epi} を反対圏（これもアーベル圏）に適用すると「モノ射の押し出しはモノ」が得られる。
+- 次の二つを頻繁に使う：(E1) 任意の $f\colon a\to b$ について $0\to\mathrm{Ker}\,f\to a\xrightarrow{f}b$ と $a\xrightarrow{f}b\to\mathrm{Coker}\,f\to0$ は完全（$\mathrm{im}\,f=\ker(\mathrm{coker}\,f)$ と、核はモノ・余核はエピであることから）。(E2) $0\to k\xrightarrow{u}q\xrightarrow{v}z$ が完全なら $u$ は $v$ の核であり、双対に $q\xrightarrow{v}z\xrightarrow{w}h\to0$ が完全なら $w$ は $v$ の余核である（モノ射はその像と一致するので）。
+:::
+
+## 鎖複体とホモロジー {#ha:sec-cc-homology}
+
+::: definition 鎖複体と鎖写像 {#ha:chain-complex keywords="chain complex, differential, chain map, short exact sequence of chain complexes" index="鎖複体|さふくたい, 鎖写像|さしゃぞう, 境界作用素|きょうかいさようそ"}
+$\mathbf{A}$ の**鎖複体** $C$ とは、対象の族 $(C_{n})_{n\in\mathbb{Z}}$ と射 $\partial_{n}\colon C_{n}\to C_{n-1}$（**境界作用素**）で、すべての $n$ で $\partial_{n}\partial_{n+1}=0$ となるものをいう。鎖複体の間の**鎖写像** $f\colon C\to D$ とは、射の族 $f_{n}\colon C_{n}\to D_{n}$ で $\partial^{D}_{n}f_{n}=f_{n-1}\partial^{C}_{n}$ となるものをいう。鎖写像の列 $A\xrightarrow{i}B\xrightarrow{p}C$ が**短完全**であるとは、すべての $n$ で $0\to A_{n}\xrightarrow{i_{n}}B_{n}\xrightarrow{p_{n}}C_{n}\to0$ が短完全列であることをいう。
+:::
+
+::: definition サイクル・ホモロジー {#ha:homology keywords="cycles Z_n, boundary map into cycles, homology object H_n, induced map on homology" index="ホモロジー（鎖複体の）|ほもろじーさふくたいの, サイクル|さいくる"}
+鎖複体 $C$ について、$z_{n}\colon Z_{n}(C)\to C_{n}$ を $\partial_{n}$ の核（**サイクル**）とする。$\partial_{n}\partial_{n+1}=0$ なので $\partial_{n+1}=z_{n}d_{n+1}$ となる $d_{n+1}\colon C_{n+1}\to Z_{n}(C)$ がただ一つあり、その余核を $q_{n}\colon Z_{n}(C)\to H_{n}(C)$ とする。$H_{n}(C)$ を $C$ の $n$ 次**ホモロジー**という。鎖写像 $f\colon C\to D$ について、$\partial^{D}f_{n}z_{n}=f_{n-1}\partial^{C}z_{n}=0$ より $z^{D}_{n}Z_{n}(f)=f_{n}z_{n}$ となる $Z_{n}(f)$ がただ一つあり、$z^{D}_{n}Z_{n}(f)d_{n+1}=f_{n}\partial_{n+1}=\partial^{D}_{n+1}f_{n+1}=z^{D}_{n}d^{D}_{n+1}f_{n+1}$ と $z^{D}_{n}$ のモノ性から $Z_{n}(f)d_{n+1}=d^{D}_{n+1}f_{n+1}$。よって $q^{D}_{n}Z_{n}(f)d_{n+1}=0$ で、$H_{n}(f)q_{n}=q^{D}_{n}Z_{n}(f)$ となる $H_{n}(f)$ がただ一つある。一意性から $H_{n}$ は関手であり、$Z_{n}(f+g)=Z_{n}(f)+Z_{n}(g)$, $H_{n}(f+g)=H_{n}(f)+H_{n}(g)$（加法的）である。
+:::
+
+::: lemma ホモロジーの四項完全列 {#ha:homology-four-term keywords="exact sequence 0 -> H_n -> Coker d_{n+1} -> Z_{n-1} -> H_{n-1} -> 0" index="ホモロジーの四項完全列|ほもろじーのよんこうかんぜんれつ"}
+鎖複体 $C$ について、$\pi_{n}\colon C_{n}\to Q_{n}(C)$ を $\partial_{n+1}$ の余核とする。$\partial_{n}\partial_{n+1}=0$ より $\partial_{n}$ は $Q_{n}$ を経由し、さらに $Z_{n-1}$ を経由するので、$z_{n-1}\bar{\partial}_{n}\pi_{n}=\partial_{n}$ となる $\bar{\partial}_{n}\colon Q_{n}(C)\to Z_{n-1}(C)$ がただ一つある。また $\pi_{n}z_{n}d_{n+1}=\pi_{n}\partial_{n+1}=0$ より、$\alpha_{n}q_{n}=\pi_{n}z_{n}$ となる $\alpha_{n}\colon H_{n}(C)\to Q_{n}(C)$ がただ一つある。このとき
+$$
+0\to H_{n}(C)\xrightarrow{\ \alpha_{n}\ }Q_{n}(C)\xrightarrow{\ \bar{\partial}_{n}\ }Z_{n-1}(C)\xrightarrow{\ q_{n-1}\ }H_{n-1}(C)\to0
+$$
+は完全である。$\pi$, $\bar{\partial}$, $\alpha$ は鎖写像について自然である。
+:::
+
+::: proof
+メンバーで追跡する（\ref{ha:chasing-rules}）。$\bar{\partial}_{n}\pi_{n}=d_{n}$ に注意する（$z_{n-1}\bar{\partial}_{n}\pi_{n}=\partial_{n}=z_{n-1}d_{n}$ と $z_{n-1}$ のモノ性）。
+
+**$\alpha_{n}$ はモノ.** $h\in_{m}H_{n}$ が $\alpha h\equiv0$ を満たすとする。$q$ はエピなので $h\equiv qx$（$x\in_{m}Z_{n}$）。$\pi zx\equiv\alpha qx\equiv0$ なので、(E1) の $C_{n+1}\to C_{n}\to Q_{n}$ の完全性から $zx\equiv\partial_{n+1}w=zd_{n+1}w$。$z$ はモノなので $x\equiv d_{n+1}w$、したがって $h\equiv qd_{n+1}w=0$。
+
+**$Q_{n}$ で完全.** $\bar{\partial}\alpha q=\bar{\partial}\pi z=d_{n}z$ で、$z_{n-1}d_{n}z_{n}=\partial_{n}z_{n}=0$ から $d_{n}z_{n}=0$。$q$ はエピなので $\bar{\partial}\alpha=0$。逆に $y\in_{m}Q_{n}$ が $\bar{\partial}y\equiv0$ なら、$y\equiv\pi c$（$\pi$ はエピ）で $d_{n}c\equiv0$、したがって $\partial_{n}c=z_{n-1}d_{n}c\equiv0$。(E1) より $c\equiv z_{n}x$ で、$y\equiv\pi zx=\alpha qx$。
+
+**$Z_{n-1}$ で完全.** $q_{n-1}\bar{\partial}\pi=q_{n-1}d_{n}=0$ で $\pi$ はエピなので $q\bar{\partial}=0$。逆に $qx\equiv0$ なら (E1) より $x\equiv d_{n}c=\bar{\partial}\pi c$。
+
+**$q_{n-1}$ はエピ.** 余核だから。
+
+自然性は、それぞれの射が普遍性で一意に決まることによる。
+:::
+
+## 一般形の蛇の補題 {#ha:sec-cc-snake}
+
+::: lemma 一般形の蛇の補題 {#ha:general-snake keywords="snake lemma with rows a -> b -> c -> 0 and 0 -> a' -> b' -> c'" index="蛇の補題（一般形）|へびのほだいいっぱんけい"}
+アーベル圏で、可換図式
+$$
+\begin{array}{ccccccc}
+a&\xrightarrow{m}&b&\xrightarrow{e}&c&\to&0\\
+\downarrow f&&\downarrow g&&\downarrow h&&\\
+0\to a'&\xrightarrow{m'}&b'&\xrightarrow{e'}&c'&&
+\end{array}
+$$
+の上の行が $b$, $c$ で完全、下の行が $a'$, $b'$ で完全とする。このとき射 $\delta\colon\mathrm{Ker}\,h\to\mathrm{Coker}\,f$ があり、次の列は完全である（$\delta$ 以外は $m,e,m',e'$ から誘導される射）。
+$$
+\mathrm{Ker}\,f\to\mathrm{Ker}\,g\to\mathrm{Ker}\,h\xrightarrow{\ \delta\ }\mathrm{Coker}\,f\to\mathrm{Coker}\,g\to\mathrm{Coker}\,h
+$$
+:::
+
+::: proof
+**Step 1（行を短完全にする）.** 像の分解 $m=\bar{m}u$（$u\colon a\to\bar{a}$ エピ、$\bar{m}$ モノ）、$e'=j\bar{e}'$（$\bar{e}'\colon b'\to\bar{c}'$ エピ、$j$ モノ）をとる。$\mathrm{im}\,\bar{m}=\mathrm{im}\,m=\ker e$ なので $0\to\bar{a}\xrightarrow{\bar{m}}b\xrightarrow{e}c\to0$ は短完全、同様に $0\to a'\xrightarrow{m'}b'\xrightarrow{\bar{e}'}\bar{c}'\to0$ も短完全。
+
+**Step 2（縦の射の分解）.** $k\defeq\ker u$ について $m'fk=gmk=g\bar{m}uk=0$ で $m'$ はモノなので $fk=0$。$u$ はエピなので $u=\mathrm{coker}\,k$ で、$f=\bar{f}u$ となる $\bar{f}\colon\bar{a}\to a'$ がある。双対に、$j\bar{e}'g\bar{m}=e'g\bar{m}=he\bar{m}=0$ と $j$ のモノ性から $\bar{e}'g\bar{m}=0$、$e=\mathrm{coker}\,\bar{m}$（\ref{ha:short-exact-characterization}）から $\bar{e}'g=\bar{h}e$ となる $\bar{h}\colon c\to\bar{c}'$ があり、$j\bar{h}e=e'g=he$ と $e$ のエピ性から $j\bar{h}=h$。また $g\bar{m}u=gm=m'f=m'\bar{f}u$ と $u$ のエピ性から $g\bar{m}=m'\bar{f}$。
+
+**Step 3（蛇の補題）.** \ref{ha:snake-lemma} を $(\bar{f},g,\bar{h})$ に適用して、完全列
+$$
+0\to\mathrm{Ker}\,\bar{f}\to\mathrm{Ker}\,g\to\mathrm{Ker}\,\bar{h}\xrightarrow{\ \delta\ }\mathrm{Coker}\,\bar{f}\to\mathrm{Coker}\,g\to\mathrm{Coker}\,\bar{h}\to0
+$$
+を得る。$h=j\bar{h}$ で $j$ はモノなので $\mathrm{Ker}\,h=\mathrm{Ker}\,\bar{h}$（同じ部分対象）。$f=\bar{f}u$ で $u$ はエピなので $\mathrm{Coker}\,f=\mathrm{Coker}\,\bar{f}$。
+
+**Step 4（両端の取り替え）.** $\mathrm{Ker}\,f\to\mathrm{Ker}\,\bar{f}$（$u$ から誘導）はエピである：四角形 $\mathrm{Ker}\,f\to a\xrightarrow{u}\bar{a}$, $\mathrm{Ker}\,f\to\mathrm{Ker}\,\bar{f}\to\bar{a}$ は引き戻し（包含を $\iota\colon\mathrm{Ker}\,\bar{f}\to\bar{a}$ とし、$x\colon s\to a$, $y\colon s\to\mathrm{Ker}\,\bar{f}$ が $ux=\iota y$ なら $fx=\bar{f}ux=\bar{f}\iota y=0$ で、$x$ は $\mathrm{Ker}\,f$ を一意に経由する）で、エピ $u$ の引き戻しはエピ（\ref{ha:pullback-epi}）。$\mathrm{Ker}\,f\to\mathrm{Ker}\,g$ はこのエピと $\mathrm{Ker}\,\bar{f}\to\mathrm{Ker}\,g$ の合成なので、像は同じで、$\mathrm{Ker}\,g$ での完全性が保たれる。双対に（四角形 $\bar{c}'\xrightarrow{j}c'\to\mathrm{Coker}\,h$, $\bar{c}'\to\mathrm{Coker}\,\bar{h}\to\mathrm{Coker}\,h$ は押し出しである）、$\mathrm{Coker}\,\bar{h}\to\mathrm{Coker}\,h$（$j$ から誘導）はモノ（モノ $j$ の押し出し）で、$\mathrm{Coker}\,g\to\mathrm{Coker}\,h$ はこのモノとの合成なので核は同じで、$\mathrm{Coker}\,g$ での完全性が保たれる。
+:::
+
+::: hypcheck
+- **上の行の $e$ がエピ・下の行の $m'$ がモノ**：Step 2 で $\bar{h}$ と $\bar{f}$ の存在に使った。両端の行の完全性がないと、$\mathrm{Ker}\,h\to\mathrm{Coker}\,f$ は定義できない。
+- **蛇の補題（短完全版）**：Step 3。一般形は短完全版から、行の端を像で置き換えて得られる。その代わり、両端の $0\to\mathrm{Ker}$, $\mathrm{Coker}\to0$ は一般には成り立たない。
+:::
+
+## 長完全列 {#ha:sec-cc-long-exact}
+
+::: theorem ホモロジーの長完全列 {#ha:long-exact-sequence keywords="a short exact sequence of chain complexes induces a long exact sequence in homology" index="長完全列|ちょうかんぜんれつ, ホモロジーの長完全列|ほもろじーのちょうかんぜんれつ, 連結射（ホモロジー）|れんけつしゃほもろじー"}
+鎖複体の短完全列 $A\xrightarrow{i}B\xrightarrow{p}C$ について、射 $\delta_{n}\colon H_{n}(C)\to H_{n-1}(A)$（**連結射**）があり、次の列は完全である。
+$$
+\begin{gathered}
+\cdots\to H_{n}(A)\xrightarrow{H_{n}(i)}H_{n}(B)\xrightarrow{H_{n}(p)}H_{n}(C)\\
+\xrightarrow{\ \delta_{n}\ }H_{n-1}(A)\xrightarrow{H_{n-1}(i)}H_{n-1}(B)\to\cdots
+\end{gathered}
+$$
+:::
+
+::: proof
+**Step 1（サイクルと余核の完全性）.** 各 $n$ で、短完全列の射
+$$
+\begin{array}{ccccccccc}
+0&\to&A_{n}&\to&B_{n}&\to&C_{n}&\to&0\\
+&&\downarrow\partial&&\downarrow\partial&&\downarrow\partial&&\\
+0&\to&A_{n-1}&\to&B_{n-1}&\to&C_{n-1}&\to&0
+\end{array}
+$$
+に \ref{ha:snake-lemma} を適用すると、核と余核の部分から
+$$
+\begin{gathered}
+0\to Z_{n}(A)\to Z_{n}(B)\to Z_{n}(C),\\
+Q_{n-1}(A)\to Q_{n-1}(B)\to Q_{n-1}(C)\to0
+\end{gathered}
+$$
+が完全であることが分かる（$Q_{n-1}=\mathrm{Coker}\,\partial_{n}$。誘導される射は $Z(i)$, $Z(p)$ と、$i,p$ が $Q$ に引き起こす射）。
+
+**Step 2（一般形の蛇の補題）.** \ref{ha:homology-four-term} の $\bar{\partial}_{n}$ は自然なので、可換図式
+$$
+\begin{array}{ccccccc}
+Q_{n}(A)&\to&Q_{n}(B)&\to&Q_{n}(C)&\to&0\\
+\downarrow\bar{\partial}&&\downarrow\bar{\partial}&&\downarrow\bar{\partial}&&\\
+0\to Z_{n-1}(A)&\to&Z_{n-1}(B)&\to&Z_{n-1}(C)&&
+\end{array}
+$$
+が得られ、Step 1（$n$ を $n+1$ と $n-1$ にずらしたもの）より行は \ref{ha:general-snake} の仮定を満たす。よって完全列
+$$
+\mathrm{Ker}\,\bar{\partial}^{A}\to\mathrm{Ker}\,\bar{\partial}^{B}\to\mathrm{Ker}\,\bar{\partial}^{C}\xrightarrow{\ \delta\ }\mathrm{Coker}\,\bar{\partial}^{A}\to\mathrm{Coker}\,\bar{\partial}^{B}\to\mathrm{Coker}\,\bar{\partial}^{C}
+$$
+を得る。
+
+**Step 3（ホモロジーとの同一視）.** \ref{ha:homology-four-term} と (E2) より、$\alpha_{n}\colon H_{n}\to Q_{n}$ は $\bar{\partial}_{n}$ の核、$q_{n-1}\colon Z_{n-1}\to H_{n-1}$ は $\bar{\partial}_{n}$ の余核である。これらは自然なので、Step 2 の列の $\mathrm{Ker}$ の部分の射は $H_{n}(i)$, $H_{n}(p)$ に、$\mathrm{Coker}$ の部分の射は $H_{n-1}(i)$, $H_{n-1}(p)$ にこの同一視で対応する。よって
+$$
+H_{n}(A)\to H_{n}(B)\to H_{n}(C)\xrightarrow{\ \delta_{n}\ }H_{n-1}(A)\to H_{n-1}(B)\to H_{n-1}(C)
+$$
+は完全。これをすべての $n$ についてつなぐと（$H_{n-1}$ の部分は次の $n-1$ の列の前半と同じ射）、長完全列が得られる。
+:::
+
+::: hypcheck
+- **各次数の短完全性**：Step 1 で蛇の補題（短完全版）を使うのに必要とした。左端のモノ性と右端のエピ性はそれぞれ、$Z$ の列の左端の $0$ と $Q$ の列の右端の $0$ に効いている。
+- **$\partial\partial=0$**：\ref{ha:homology-four-term} で $\bar{\partial}$ を定義するのに使った。
+:::
+
+## 鎖ホモトピー {#ha:sec-cc-homotopy}
+
+::: definition 鎖ホモトピー {#ha:chain-homotopy keywords="chain homotopy, homotopic chain maps, contracting homotopy" index="鎖ホモトピー|さほもとぴー, 可縮（鎖複体）|かしゅくさふくたい"}
+鎖写像 $f,g\colon C\to D$ の間の**鎖ホモトピー**とは、射の族 $s_{n}\colon C_{n}\to D_{n+1}$ で $f_{n}-g_{n}=\partial^{D}_{n+1}s_{n}+s_{n-1}\partial^{C}_{n}$ となるものをいう。$1_{C}$ と $0$ の間の鎖ホモトピーを**可縮ホモトピー**という。
+:::
+
+::: proposition ホモトピー不変性 {#ha:homotopy-invariance keywords="chain homotopic maps induce the same map on homology; contractible complexes are acyclic" index="ホモトピー不変性（ホモロジー）|ほもとぴーふへんせいほもろじー"}
+鎖ホモトピーで結ばれた鎖写像 $f,g$ について $H_{n}(f)=H_{n}(g)$。特に、可縮ホモトピーをもつ鎖複体のホモロジーはすべて $0$ である。
+:::
+
+::: proof
+$k\defeq f-g$ は鎖写像で、$H_{n}$ は加法的（\ref{ha:homology}）なので $H_{n}(k)=0$ を示せばよい。$k_{n}z_{n}=\partial^{D}s_{n}z_{n}+s_{n-1}\partial_{n}z_{n}=\partial^{D}_{n+1}s_{n}z_{n}=z^{D}_{n}d^{D}_{n+1}s_{n}z_{n}$。$z^{D}_{n}Z_{n}(k)=k_{n}z_{n}$ と $z^{D}_{n}$ のモノ性から $Z_{n}(k)=d^{D}_{n+1}s_{n}z_{n}$。よって $H_{n}(k)q_{n}=q^{D}_{n}Z_{n}(k)=q^{D}_{n}d^{D}_{n+1}s_{n}z_{n}=0$ で、$q_{n}$ はエピなので $H_{n}(k)=0$。後半は $f=1$, $g=0$ とし、$H_{n}(1)=1$ と $H_{n}(0)=0$ から $1_{H_{n}(C)}=0$、すなわち $H_{n}(C)\cong0$。
+:::
+
+## 問題 {#ha:sec-cc-problems}
+
+::: problem {#ha:prob-cc-z-mod-2}
+アーベル群の鎖複体 $C$ を $C_{1}=C_{0}=\mathbb{Z}$, $\partial_{1}=2\cdot$（$2$ 倍写像）、他は $0$ とする。$H_{1}(C)=0$, $H_{0}(C)\cong\mathbb{Z}/2\mathbb{Z}$ を確かめ、短完全列 $0\to\mathbb{Z}\xrightarrow{2}\mathbb{Z}\to\mathbb{Z}/2\to0$ を鎖複体の短完全列とみたときの長完全列と比べよ。
+:::
+
+::: solution
+$Z_{1}=\mathrm{Ker}(2\cdot)=0$ なので $H_{1}=0$。$Z_{0}=\mathbb{Z}$（$\partial_{0}=0$）、$d_{1}=2\cdot$ なので $H_{0}=\mathbb{Z}/2\mathbb{Z}$。後半：次数 $0$ だけに対象をもつ鎖複体 $A=(\mathbb{Z})$, $B=(\mathbb{Z})$, $C'=(\mathbb{Z}/2)$（境界作用素はすべて $0$）の短完全列とみると、$H_{0}$ はそれぞれ自身、他の $H_{n}$ は $0$ で、長完全列は元の短完全列 $0\to\mathbb{Z}\to\mathbb{Z}\to\mathbb{Z}/2\to0$ そのもの（連結射は $0$ から、または $0$ への射）になる。
+:::
+
+::: problem {#ha:prob-cc-cone}
+鎖写像 $f\colon C\to D$ が鎖ホモトピー同値（$gf$ と $1_{C}$、$fg$ と $1_{D}$ がそれぞれ鎖ホモトピーで結ばれる $g$ がある）なら、すべての $n$ で $H_{n}(f)$ は同型であることを示せ。
+:::
+
+::: solution
+\ref{ha:homotopy-invariance} と関手性から $H_{n}(g)H_{n}(f)=H_{n}(gf)=H_{n}(1_{C})=1$, 同様に $H_{n}(f)H_{n}(g)=1$。
+:::
+
+::: supplement
+**前提を変えると.** 長完全列の構成は、アーベル圏の公理（核・余核・像の分解と、モノは核・エピは余核）だけを使っている。前加法圏や加法圏ではホモロジーは定義できても、蛇の補題が成り立つとは限らない。連結射 $\delta$ は鎖複体の短完全列の射について自然であることが知られている（ここでは確かめていない）。
+
+**似た定理.** \ref{ha:homotopy-invariance} の後半は、群環の棒分解の完全性の証明（\ref{cat:bar-resolution-exact}）で使った「可縮ホモトピーがあれば完全」の一般形である（そこでは $s$ はアーベル群の射で、完全性はアーベル群としての主張だった）。単体的対象の交代和の鎖複体（\ref{cat:simplicial-chain-complex}）のホモロジーが、特異ホモロジーや群のホモロジーを与える。
+
+**高い視点から：ホモロジーは「完全性からのずれ」.** 鎖複体が完全であることは、すべての $H_{n}$ が $0$ であることと同値である（$H_{n}=0$ は $d_{n+1}\colon C_{n+1}\to Z_{n}$ がエピ、すなわち $\partial_{n+1}$ の像がサイクル全体であることと同値）。ホモロジーはその「ずれ」を測る量であり、長完全列は「短完全列からはずれが一方的に増えも減りもせず、連結射を通じて次数を下げながら受け渡される」ことを表す。比喩で言えば、三本の水路 $A$, $B$, $C$ が並んで流れているとき、$C$ でせき止められた水（$H_{n}(C)$ の元）は、行き場を失った分だけ一段下の $A$ に溢れ出す（$\delta_{n}$）。圏論的には、$H_{n}$ は鎖複体の圏からの加法関手で、鎖ホモトピーで割った圏（ホモトピー圏）を経由し、長完全列はその「三角形」の構造の影である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ゾルゲンフライ直線と平面 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54G-peculiar-spaces/01-counterexamples/02-sorgenfrey.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ゾルゲンフライ直線と平面 {#top:page-sorgenfrey keywords="Sorgenfrey line, lower limit topology, Lindelof, regular Lindelof spaces are normal, zero-dimensional, compact subsets are countable, Sorgenfrey plane, antidiagonal, not normal, not Lindelof, product of normal spaces"}
+
+**ゾルゲンフライ直線** $\R_{\ell}$（下限位相、\ref{top:page-bases-countability} の例）は、実数に半開区間 $[a,b)$ を開基とする位相を入れた空間である。$\R_{\ell}$ はリンデレーフで正規（\ref{top:sorgenfrey-normal}）だが、その二乗の**ゾルゲンフライ平面** $\R_{\ell}\times\R_{\ell}$ はリンデレーフでも正規でもない（\ref{top:sorgenfrey-plane}）。したがって、正規性もリンデレーフ性も有限の直積で保たれない。ほかにも、$\R_{\ell}$ のコンパクト集合はすべて可算であること（\ref{top:sorgenfrey-compact}）など、通常の実数直線との違いを示す。
+
+> 資料：小山晃『位相空間論』例 2.4（ゾルゲンフライ直線の定義）を参考にした（本文は写していない）。性質の証明は標準的な議論に従って組み立てた。平面が正規でないことは、本サイトのジョーンズの補題（\ref{top:jones-lemma}）を使って示した。
+
+## 記法と定義の確認 {#top:sec-sg-notation}
+
+::: notation
+- $\R_{\ell}$ は $\R$ に $\{[a,b):a<b\}$ を開基とする位相を入れた空間で、第一可算かつ可分だが第二可算でない（\ref{top:sorgenfrey-not-second-countable}）。$\R_{\ell}$ の位相は通常の位相より強い（通常の開区間 $(a,b)=\bigcup_{n}[a+1/n,b)$ は $\R_{\ell}$ で開）。
+- リンデレーフ・可算公理は \ref{top:second-countable}、正則・正規は \ref{top:separation-axioms}、ジョーンズの補題は \ref{top:jones-lemma} のとおり。
+:::
+
+## ゾルゲンフライ直線 {#top:sec-sg-line}
+
+::: proposition ゾルゲンフライ直線の基本性質 {#top:sorgenfrey-basic keywords="half-open intervals are clopen; the Sorgenfrey line is zero-dimensional, regular, T1, totally disconnected" index="ゾルゲンフライ直線の性質|ぞるげんふらいちょくせんのせいしつ"}
+$\R_{\ell}$ の各 $[a,b)$ は閉開集合である。したがって $\R_{\ell}$ は閉開集合の基をもち、$T_{1}$ かつ正則で、完全不連結である。
+:::
+
+::: proof
+$\R\setminus[a,b)=(-\infty,a)\cup[b,\infty)$ で、$(-\infty,a)=\bigcup_{n}[a-n,a)$, $[b,\infty)=\bigcup_{n}[b,b+n)$ は開。$T_{1}$：$\{x\}$ の補集合 $(-\infty,x)\cup(x,\infty)$ は通常の開集合なので $\R_{\ell}$ でも開。正則：$x\in U$（開）なら $x\in[x,b)\subseteq U$ となる $b$ があり、$[x,b)$ は閉近傍。完全不連結：二点 $x<y$ を含む集合は閉開集合 $[x,y)$ とその補集合に分けられる。
+:::
+
+::: theorem ゾルゲンフライ直線はリンデレーフ {#top:sorgenfrey-lindelof keywords="the Sorgenfrey line is Lindelof" index="ゾルゲンフライ直線のリンデレーフ性|ぞるげんふらいちょくせんのりんでれーふせい"}
+$\R_{\ell}$ はリンデレーフである（可算選択公理を使う）。
+:::
+
+::: proof
+$\mathcal{U}$ を $\R_{\ell}$ の開被覆とする。
+
+**Step 1（通常の内部）.** $U\in\mathcal{U}$ の通常の位相での内部を $U^{\circ}$ とし、$V\defeq\bigcup_{U\in\mathcal{U}}U^{\circ}$（通常の開集合）とする。$\R$ の通常の位相は第二可算なので、その部分空間 $V$ も第二可算でリンデレーフ（\ref{top:second-countable-properties}）。$\{U^{\circ}\}$ は $V$ の通常の開被覆なので、可算個の $U_{1},U_{2},\dots\in\mathcal{U}$ で $V\subseteq\bigcup U_{n}^{\circ}$ となるものがある。
+
+**Step 2（残りは可算）.** $x\in\R\setminus V$ について、$x\in[x,b_{x})\subseteq U_{x}$ となる $U_{x}\in\mathcal{U}$ と $b_{x}>x$ を選ぶ。$(x,b_{x})\subseteq U_{x}^{\circ}\subseteq V$。$x<y$ がともに $\R\setminus V$ に属すれば、$y\notin V\supseteq(x,b_{x})$ なので $y\ge b_{x}$、したがって $(x,b_{x})$ と $(y,b_{y})$ は交わらない。交わらない空でない開区間の族は、各区間に有理数を一つずつ割り当てれば単射が得られるので可算。よって $\R\setminus V$ は可算。
+
+**Step 3.** $\{U_{n}\}\cup\{U_{x}:x\in\R\setminus V\}$ は $\mathcal{U}$ の可算な部分被覆。
+:::
+
+::: lemma 正則リンデレーフ空間は正規 {#top:regular-lindelof-normal keywords="regular Lindelof spaces are normal" index="正則リンデレーフ空間の正規性|せいそくりんでれーふくうかんのせいきせい"}
+正則でリンデレーフな空間は正規である（可算選択公理を使う）。
+:::
+
+::: proof
+$A,B$ を交わらない閉集合とする。正則性から、各 $a\in A$ に開集合 $U_{a}\ni a$ で $\overline{U_{a}}\cap B=\emptyset$ となるものがある。$A$ はリンデレーフ空間の閉集合なのでリンデレーフで、可算個 $U_{1},U_{2},\dots$ で $A$ を覆える（$\overline{U_{n}}\cap B=\emptyset$）。同様に $B$ を $\overline{V_{n}}\cap A=\emptyset$ となる開集合 $V_{1},V_{2},\dots$ で覆う。
+$$
+U'_{n}\defeq U_{n}\setminus\bigcup_{k\le n}\overline{V_{k}},\qquad V'_{n}\defeq V_{n}\setminus\bigcup_{k\le n}\overline{U_{k}}
+$$
+は開集合で、$U\defeq\bigcup U'_{n}\supseteq A$（$A$ は $\overline{V_{k}}$ と交わらない）、$V\defeq\bigcup V'_{n}\supseteq B$。$U'_{n}\cap V'_{m}=\emptyset$：$n\le m$ なら $V'_{m}$ は $\overline{U_{n}}$ を除いているので $U_{n}$ と交わらず、$n>m$ なら $U'_{n}$ は $\overline{V_{m}}$ を除いている。よって $U\cap V=\emptyset$。
+:::
+
+::: corollary ゾルゲンフライ直線は正規 {#top:sorgenfrey-normal keywords="the Sorgenfrey line is normal" index="ゾルゲンフライ直線の正規性|ぞるげんふらいちょくせんのせいきせい"}
+$\R_{\ell}$ は正規である（$T_{4}$）。
+:::
+
+::: proof
+\ref{top:sorgenfrey-basic}, \ref{top:sorgenfrey-lindelof}, \ref{top:regular-lindelof-normal}。
+:::
+
+::: proposition コンパクト集合は可算 {#top:sorgenfrey-compact keywords="compact subsets of the Sorgenfrey line are countable; not locally compact, not sigma-compact" index="ゾルゲンフライ直線のコンパクト集合|ぞるげんふらいちょくせんのこんぱくとしゅうごう"}
+$\R_{\ell}$ のコンパクト集合は可算である。特に $\R_{\ell}$ は局所コンパクトでなく、可算個のコンパクト集合の和でもない。
+:::
+
+::: proof
+$K$ をコンパクトとし、$x\in K$ をとる。$\{(-\infty,x-1/n):n\ge1\}\cup\{[x,\infty)\}$ は $\R_{\ell}$ の開集合からなる $K$ の被覆で、有限部分被覆から、ある $n$ で $K\subseteq(-\infty,x-1/n)\cup[x,\infty)$、すなわち $K\cap[x-1/n,x)=\emptyset$。$\varepsilon_{x}\defeq1/n$ とする。$x<y$ がともに $K$ に属すれば、$x\notin[y-\varepsilon_{y},y)$ なので $x<y-\varepsilon_{y}$ で、開区間 $(x-\varepsilon_{x},x)$ と $(y-\varepsilon_{y},y)$ は交わらない。よって $x\mapsto(x-\varepsilon_{x},x)$ は交わらない区間の族への単射で、$K$ は可算。後半：$\R_{\ell}$ の点の近傍はどれも非可算（$[x,b)$ を含む）なので、コンパクトな近傍をもたない。$\R$ は非可算なので可算個の可算集合の和ではない。
+:::
+
+## ゾルゲンフライ平面 {#top:sec-sg-plane}
+
+::: theorem ゾルゲンフライ平面 {#top:sorgenfrey-plane keywords="the Sorgenfrey plane is separable but neither Lindelof nor normal; products of normal (Lindelof) spaces need not be normal (Lindelof)" index="ゾルゲンフライ平面|ぞるげんふらいへいめん"}
+$\R_{\ell}^{2}\defeq\R_{\ell}\times\R_{\ell}$ は可分で正則だが、リンデレーフでも正規でもない。
+:::
+
+::: proof
+**Step 1（可分・正則）.** $\mathbb{Q}^{2}$ は稠密（基本開集合 $[a,b)\times[c,d)$ は有理点を含む）。正則性は直積で保たれる（基本開集合 $[a,b)\times[c,d)$ は閉開集合の積で閉開）。
+
+**Step 2（反対角線は閉離散）.** $L\defeq\{(x,-x):x\in\R\}$ は通常の位相で閉、$\R_{\ell}^{2}$ の位相は通常の位相より強いので閉。$[x,x+1)\times[-x,-x+1)\cap L=\{(x,-x)\}$：$(y,-y)$ が属すれば $y\ge x$ かつ $-y\ge-x$ なので $y=x$。よって $L$ の部分空間の位相は離散。
+
+**Step 3（リンデレーフでない）.** $\{\R_{\ell}^{2}\setminus L\}\cup\{[x,x+1)\times[-x,-x+1):x\in\R\}$ は開被覆で、Step 2 から $L$ の各点を含むのは $x$ に対応する一つの集合だけなので、どの部分被覆も非可算個の集合を含む。
+
+**Step 4（正規でない）.** 正規だとすると、ジョーンズの補題（\ref{top:jones-lemma}）で $Q=\mathbb{Q}^{2}$, $D=L$ として $2^{\lvert L\rvert}\le2^{\lvert\mathbb{Q}^{2}\rvert}$、すなわち $2^{2^{\aleph_{0}}}\le2^{\aleph_{0}}$ となり、カントールの定理（\ref{set:cantor}）に反する。
+:::
+
+::: hypcheck
+- **可分性**：Step 4 でジョーンズの補題の稠密集合として使った。
+- **非可算な閉離散集合**：Step 3, 4 の両方の核心である。$\R_{\ell}$ 自身は非可算な閉離散集合をもたない（リンデレーフ空間の閉離散集合は可算）。
+:::
+
+::: corollary 直積で保たれない性質 {#top:products-not-preserved keywords="normality and Lindelofness are not preserved by finite products" index="正規性とリンデレーフ性の直積|せいきせいとりんでれーふせいのちょくせき"}
+正規空間の直積は正規とは限らず、リンデレーフ空間の直積はリンデレーフとは限らない。
+:::
+
+## 問題 {#top:sec-sg-problems}
+
+::: problem {#top:prob-sg-not-metrizable-again}
+$\R_{\ell}$ が距離化可能でないことを、リンデレーフ性と \ref{top:metric-countability} から導け。
+:::
+
+::: solution
+距離空間ではリンデレーフと第二可算は同値（\ref{top:metric-countability}）。$\R_{\ell}$ はリンデレーフだが第二可算でない（\ref{top:sorgenfrey-not-second-countable}）ので距離化可能でない。
+:::
+
+::: problem {#top:prob-sg-hereditarily-separable}
+$\R_{\ell}$ の任意の部分空間は可分であることを示せ。
+:::
+
+::: solution
+部分空間 $A$ について、$A_{0}\defeq\{x\in A:\text{ある }\varepsilon>0\text{ で }(x,x+\varepsilon)\cap A=\emptyset\}$ とする。$x<y$ がともに $A_{0}$ に属すれば $y\notin(x,x+\varepsilon_{x})$ なので $y\ge x+\varepsilon_{x}$ で、区間 $(x,x+\varepsilon_{x})$ は交わらず、$A_{0}$ は可算。また $A$ は通常の位相で第二可算なので、可算な $C\subseteq A$ で $A$ の通常の位相で稠密なものがある（\ref{top:second-countable-properties}）。$C\cup A_{0}$ が $\R_{\ell}$ の部分空間 $A$ で稠密であることを示す。$x\in A$ と基本近傍 $[x,x+\varepsilon)$ をとる。$x\in A_{0}$ なら $x$ 自身が $C\cup A_{0}$ に属する。そうでなければ $(x,x+\varepsilon)\cap A$ は $A$ の通常の位相での空でない開集合なので $C$ と交わり、$[x,x+\varepsilon)\cap C\ne\emptyset$。
+:::
+
+::: supplement
+**前提を変えると.** 半開区間を $(a,b]$ にした上限位相も同じ性質をもつ。$\R_{\ell}$ は**完全正規**（閉集合がすべて $G_{\delta}$）でもあることが知られている。ゾルゲンフライ平面の正規でないことは、ニェミツキ平面（\ref{top:page-niemytzki}）と同じくジョーンズの補題による。正規空間とコンパクト空間の直積は正規とは限らないが、パラコンパクト空間とコンパクト空間の直積はパラコンパクト（したがって正規）であることが知られている。
+
+**似た定理.** リンデレーフ空間の閉離散集合は可算であり、可分正規空間の閉離散集合は連続体未満の濃度でしかありえない（ジョーンズの補題）。ゾルゲンフライ直線は、第一可算・可分・リンデレーフ・正規・完全正規でありながら距離化可能でない空間の標準例であり、可分距離空間の性質のうちどれが「距離化可能性」に本質的かを見分ける試金石になる。
+
+**高い視点から：「片側だけ近い」世界.** ゾルゲンフライ直線では、点 $x$ の近くとは「$x$ から右へ少し」のことで、左から近づく点は近くない。比喩で言えば、一方通行の道しかない町で、自分より少し先の家にはすぐ行けるが、少し手前の家は遠い。この非対称性のせいで、直線そのものは十分に扱いやすい（リンデレーフ・正規）のに、二方向の一方通行を組み合わせた平面では、反対角線上の点が互いに「どちらからも遠い」孤立した点の非可算な列になり、正規性やリンデレーフ性が壊れる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

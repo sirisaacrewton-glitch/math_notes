@@ -15,7 +15,7 @@
 
 導来関手（\ref{ha:page-derived-functors}）の代表例が **Ext** と **Tor** である。本ページでは、加群の圏で $\mathrm{Hom}_{R}(-,b)$ の「射影分解による右導来関手」として $\mathrm{Ext}^{n}_{R}(a,b)$ を定義し（\ref{ha:ext}）、その基本性質と、**両方の変数についての長完全列**（\ref{ha:ext-long-exact}）を示す。$\mathbb{Z}$ 上では $\mathrm{Ext}^{1}_{\mathbb{Z}}(\mathbb{Z}/n,B)\cong B/nB$ と計算でき（\ref{ha:ext-z}）、$\mathrm{Ext}^{1}$ が消えることは射影性の特徴づけを与える（\ref{ha:ext-projective}）。群のコホモロジー（\ref{cat:group-cohomology}）は $\mathrm{Ext}_{\mathbb{Z}\Pi}^{n}(\mathbb{Z},A)$ にほかならない。Tor は補足で触れる。
 
-> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。テンソル積が本サイトでまだ扱われていないため、Tor は定義と性質の紹介に留め、証明は Ext について行った。
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。Tor は本ページでは紹介に留め、テンソル積とともに \ref{ha:page-tensor-tor} で扱う。
 
 ## 記法と定義の確認 {#ha:sec-te-notation}
 
@@ -131,7 +131,7 @@ $$
 :::
 
 ::: supplement
-**前提を変えると.** 可換環 $R$ と $R$ 加群 $b$ について、テンソル積 $-\otimes_{R}b$ は右完全な加法関手であることが知られており、その左導来関手を $\mathrm{Tor}^{R}_{n}(-,b)$ と書く。\ref{ha:derived-long-exact} から Tor の長完全列が得られ、$\mathbb{Z}$ 上では $\mathrm{Tor}_{1}^{\mathbb{Z}}(\mathbb{Z}/n,B)\cong\{b\in B:nb=0\}$ となる（射影分解 $0\to\mathbb{Z}\xrightarrow{n}\mathbb{Z}$ に $-\otimes B$ を施すと $B\xrightarrow{n}B$ になるため。ここではテンソル積の性質を確かめていない）。また、$\mathrm{Ext}^{1}_{R}(a,b)$ は $b$ による $a$ の拡大（短完全列 $0\to b\to e\to a\to0$）の同値類と一対一に対応することが知られている（米田の解釈。ここでは扱わない）。$\mathbb{Z}$ 上では、自由アーベル群の部分群が自由であることから、どのアーベル群も長さ $1$ の射影分解をもち、$k\ge2$ で $\mathrm{Ext}^{k}_{\mathbb{Z}}=0$ となることが知られている。
+**前提を変えると.** 可換環 $R$ と $R$ 加群 $b$ について、テンソル積 $-\otimes_{R}b$ は右完全な加法関手であることが知られており、その左導来関手を $\mathrm{Tor}^{R}_{n}(-,b)$ と書く。\ref{ha:derived-long-exact} から Tor の長完全列が得られ、$\mathbb{Z}$ 上では $\mathrm{Tor}_{1}^{\mathbb{Z}}(\mathbb{Z}/n,B)\cong\{b\in B:nb=0\}$ となる（\ref{ha:page-tensor-tor} で、第二変数の射影分解による定義について証明する）。また、$\mathrm{Ext}^{1}_{R}(a,b)$ は $b$ による $a$ の拡大（短完全列 $0\to b\to e\to a\to0$）の同値類と一対一に対応することが知られている（米田の解釈。\ref{ha:page-extensions} で示す）。$\mathbb{Z}$ 上では、自由アーベル群の部分群が自由であることから、どのアーベル群も長さ $1$ の射影分解をもち、$k\ge2$ で $\mathrm{Ext}^{k}_{\mathbb{Z}}=0$ となることが知られている。
 
 **似た定理.** \ref{ha:ext-projective} の双対として、$b$ が入射的であることと、すべての $a$ で $\mathrm{Ext}^{1}(a,b)=0$ であることは同値である（\ref{ha:ext-long-exact} の 2 を使う同様の議論。ここでは確かめていない）。
 

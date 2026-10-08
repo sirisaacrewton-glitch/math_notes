@@ -252,6 +252,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | HD-03 | 18G/02-derived-functors/03-tor-ext | Tor と Ext、Z 上の計算、群のコホモロジーとの関係 | — | — | 完了 |
 | HD-04 | 18G/02-derived-functors/04-injective-modules | 入射加群・ベールの判定法・可除群・十分な入射対象 | — | — | 完了 |
 | HD-05 | 18G/02-derived-functors/05-extensions | Ext¹ と拡大（押し出しによる構成、分類定理、Z/p の拡大） | — | — | 完了 |
+| HD-06 | 18G/02-derived-functors/06-tensor-tor | テンソル積（普遍性・hom との随伴・右完全性）、Tor、平坦加群 | — | — | 完了 |
 
 特別な極限とカン拡張（18A/04-kan-extensions, id cat-kan。2026-10-08 自律判断）
 | ID | ファイル | 題 | CWM | 本文の行 | 状態 |
@@ -328,6 +329,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 ホモロジー代数 HD-06（18G/02-derived-functors/06-tensor-tor, ha:page-tensor-tor：平衡写像とテンソル積の普遍性、M⊗R≅M、テンソルと hom の随伴、hom による右完全性の判定、テンソル積の右完全性、Tor（第二変数の射影分解）の基本性質と Z 上の計算、平坦加群（Tor₁ による特徴づけ、Z/n は平坦でない）。03-tor-ext の補足から新ページと HD-05 へ参照を付けた）。資料なし。
 - 2026-10-08 モデル理論 MT-14（03C/03-ultraproducts/03-ax-grothendieck, model:page-ax-grothendieck：主張を文 σ_{n,d} で書く、F_p の代数閉包の有限部分集合は有限部分体に入る、正標数での証明（鳩の巣）、レフシェッツの原理と超積による標数 0 への移行、Q 上の x^3 とフロベニウスの問題）。資料なし。
 - 2026-10-08 一般位相 TF-04（54C/01/04-stone-weierstrass, top:page-stone-weierstrass：√t の多項式近似（明示的な誤差 2/n）、部分代数の閉包は束、二点での補間、ストーン–ワイエルシュトラスの定理（束による証明）、多項式・三角多項式の稠密性、偶多項式と積空間の問題）。独自構成。
 - 2026-10-08 アルゴリズム的ランダムネス AR-04（03D/05-algorithmic-randomness/04-martingales, comp:page-martingales：マルチンゲールと優マルチンゲール、カントール空間上のコルモゴロフの不等式、シュノアの定理（ML ランダム ⇔ 左 c.e. マルチンゲールで勝てない。接頭辞なしの検定からマルチンゲールを構成）、計算可能な列・1 が有限個の列の例）。資料なし。

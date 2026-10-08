@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>テンソル積と Tor | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18G-homological-algebra/02-derived-functors/06-tensor-tor.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# テンソル積と Tor {#ha:page-tensor-tor keywords="tensor product of modules, balanced map, universal property, Hom-tensor adjunction, right exactness of tensor product, Tor functors, flat module, Tor over the integers, torsion"}
+
+右 $R$ 加群 $M$ と左 $R$ 加群 $N$ の**テンソル積** $M\otimes_{R}N$（\ref{ha:tensor-product}）は、「$R$ 上で双線形な写像」を線形写像に置き換える普遍的なアーベル群である。テンソル積と hom の**随伴**（\ref{ha:tensor-hom-adjunction}）から、関手 $M\otimes_{R}-$ が右完全であること（\ref{ha:tensor-right-exact}）が従い、その左導来関手として **Tor**（\ref{ha:tor}）が定まる。Tor は「テンソル積が単射を保たない度合い」を測り、$\mathbb{Z}$ 上では捩れ（$n$ 倍で消える元）を取り出す（\ref{ha:tor-z}）。Tor が消える加群が**平坦加群**（\ref{ha:flat}）である。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。前ページまでの Tor の紹介（\ref{ha:page-tor-ext} の補足）の主張を、ここで証明する。
+
+## 記法と定義の確認 {#ha:sec-tt-notation}
+
+::: notation
+- $R$ は（単位元をもつ、可換とは限らない）環。左 $R$ 加群の圏 $R\text{-}\mathbf{Mod}$ は十分な射影対象をもつ（\ref{ha:projective-basic} の 3）。右 $R$ 加群 $M$ は $m(rs)=(mr)s$ を満たす作用 $M\times R\to M$ をもつアーベル群。
+- 反変 hom 関手 $\mathrm{Hom}_{R}(-,X)$ は左完全：$N'\to N\to N''\to0$ が完全なら $0\to\mathrm{Hom}_{R}(N'',X)\to\mathrm{Hom}_{R}(N,X)\to\mathrm{Hom}_{R}(N',X)$ は完全（\ref{ha:hom-left-exact}）。
+- 左導来関手、その一意性、$L_{0}F\cong F$（$F$ 右完全）、長完全列は \ref{ha:left-derived-functor}, \ref{ha:derived-well-defined}, \ref{ha:l0-right-exact}, \ref{ha:derived-long-exact} のとおり。
+:::
+
+## テンソル積 {#ha:sec-tt-tensor}
+
+::: definition テンソル積 {#ha:tensor-product keywords="R-balanced map, tensor product of a right and a left module, universal property" index="テンソル積（加群）|てんそるせきかぐん, 平衡写像|へいこうしゃぞう"}
+1. 右 $R$ 加群 $M$、左 $R$ 加群 $N$、アーベル群 $A$ について、写像 $\beta\colon M\times N\to A$ が **$R$ 平衡**であるとは、各変数について加法的で、$\beta(mr,n)=\beta(m,rn)$ を満たすことをいう。
+2. $M\times N$ を基底とする自由アーベル群を、次の形の元が生成する部分群で割ったものを $M\otimes_{R}N$ とし、$(m,n)$ の類を $m\otimes n$ と書く。
+$$
+\begin{gathered}
+(m+m',n)-(m,n)-(m',n),\qquad(m,n+n')-(m,n)-(m,n'),\\
+(mr,n)-(m,rn).
+\end{gathered}
+$$
+:::
+
+::: proposition テンソル積の普遍性 {#ha:tensor-universal keywords="balanced maps M x N -> A correspond to homomorphisms M (x) N -> A; functoriality; M (x) R = M" index="テンソル積の普遍性|てんそるせきのふへんせい"}
+1. $\otimes\colon M\times N\to M\otimes_{R}N$ は $R$ 平衡で、$R$ 平衡写像 $\beta\colon M\times N\to A$ に対し $\bar{\beta}(m\otimes n)=\beta(m,n)$ となる準同型 $\bar{\beta}\colon M\otimes_{R}N\to A$ がただ一つある。
+2. 左 $R$ 加群の準同型 $g\colon N\to N'$ について、$1\otimes g\colon m\otimes n\mapsto m\otimes g(n)$ が定まり、$M\otimes_{R}-$ は加法関手 $R\text{-}\mathbf{Mod}\to\mathbf{Ab}$ である。
+3. $M\otimes_{R}R\cong M$（$m\otimes r\mapsto mr$）で、これは右加群 $M$ と、$R$ の自己準同型（右からの掛け算）について自然である。
+:::
+
+::: proof
+**1.** 平衡性は割った関係式そのもの。$\beta$ は自由アーベル群からの準同型 $(m,n)\mapsto\beta(m,n)$ に延び、$\beta$ が平衡なので関係式の生成元を $0$ に移し、商を経由する。$m\otimes n$ は $M\otimes_{R}N$ を生成するので一意。
+
+**2.** $(m,n)\mapsto m\otimes g(n)$ は平衡なので 1 から定まる。$1\otimes(g'g)=(1\otimes g')(1\otimes g)$, $1\otimes(g+h)=1\otimes g+1\otimes h$ は生成元 $m\otimes n$ で確かめればよい。
+
+**3.** $(m,r)\mapsto mr$ は平衡なので $\mu\colon M\otimes_{R}R\to M$ が定まる。逆を $m\mapsto m\otimes1$ とすると、$\mu(m\otimes1)=m$、また $m\otimes r=m\otimes r\cdot1=mr\otimes1$ なので $m\otimes r\mapsto mr\mapsto mr\otimes1=m\otimes r$。自然性は生成元で確かめる。
+:::
+
+::: theorem テンソルと hom の随伴 {#ha:tensor-hom-adjunction keywords="Hom_Z(M (x)_R N, A) = Hom_R(N, Hom_Z(M, A)) naturally in N and A" index="テンソルと hom の随伴|てんそるとほむのずいはん"}
+アーベル群 $A$ について、$\mathrm{Hom}_{\mathbb{Z}}(M,A)$ は $(r\varphi)(m)\defeq\varphi(mr)$ で左 $R$ 加群になり、$N$ と $A$ について自然な同型
+$$
+\mathrm{Hom}_{\mathbb{Z}}(M\otimes_{R}N,A)\cong\mathrm{Hom}_{R}\bigl(N,\mathrm{Hom}_{\mathbb{Z}}(M,A)\bigr)
+$$
+がある。
+:::
+
+::: proof
+左加群であること：$(r(s\varphi))(m)=(s\varphi)(mr)=\varphi(mrs)=((rs)\varphi)(m)$。
+
+\ref{ha:tensor-universal} の 1 から、左辺は $R$ 平衡写像 $\beta\colon M\times N\to A$ の全体と一対一に対応する。$\beta$ に $\hat{\beta}(n)\defeq\beta(-,n)$ を対応させる。$\beta$ の第一変数の加法性は $\hat{\beta}(n)\in\mathrm{Hom}_{\mathbb{Z}}(M,A)$、第二変数の加法性は $\hat{\beta}$ の加法性、平衡性 $\beta(mr,n)=\beta(m,rn)$ は $(r\hat{\beta}(n))(m)=\hat{\beta}(rn)(m)$、すなわち $\hat{\beta}$ の $R$ 線形性とちょうど同じである。逆は $\gamma\mapsto((m,n)\mapsto\gamma(n)(m))$。自然性は定義を追えばよい。
+:::
+
+::: lemma hom による完全性の判定 {#ha:hom-detects-right-exact keywords="B' -> B -> C -> 0 is exact if Hom(-,A) makes it left exact for every A" index="hom による完全性の判定|ほむによるかんぜんせいのはんてい"}
+アーベル群の準同型 $B'\xrightarrow{f}B\xrightarrow{g}C$ について、すべてのアーベル群 $A$ で $0\to\mathrm{Hom}(C,A)\xrightarrow{g^{*}}\mathrm{Hom}(B,A)\xrightarrow{f^{*}}\mathrm{Hom}(B',A)$ が完全なら、$B'\to B\to C\to0$ は完全である。
+:::
+
+::: proof
+- *$g$ は全射*：$A\defeq C/g(B)$ と射影 $\pi$ をとると $g^{*}(\pi)=\pi g=0$。$g^{*}$ は単射なので $\pi=0$、すなわち $g(B)=C$。
+- *$gf=0$*：$A\defeq C$ とすると $f^{*}g^{*}(1_{C})=gf=0$。
+- *$\ker g\subseteq f(B')$*：$A\defeq B/f(B')$ と射影 $q$ をとると $f^{*}(q)=qf=0$ なので、$q=g^{*}(h)=hg$ となる $h$ がある。よって $\ker g\subseteq\ker q=f(B')$。
+:::
+
+::: theorem テンソル積は右完全 {#ha:tensor-right-exact keywords="M (x)_R - is right exact" index="テンソル積の右完全性|てんそるせきのみぎかんぜんせい"}
+左 $R$ 加群の完全列 $N'\to N\to N''\to0$ について、$M\otimes_{R}N'\to M\otimes_{R}N\to M\otimes_{R}N''\to0$ は完全である。
+:::
+
+::: proof
+アーベル群 $A$ をとり、$X\defeq\mathrm{Hom}_{\mathbb{Z}}(M,A)$ とする。hom の**左完全性**から $0\to\mathrm{Hom}_{R}(N'',X)\to\mathrm{Hom}_{R}(N,X)\to\mathrm{Hom}_{R}(N',X)$ は完全で、**随伴**（\ref{ha:tensor-hom-adjunction}、$N$ について自然）でこれは
+$$
+0\to\mathrm{Hom}(M\otimes N'',A)\to\mathrm{Hom}(M\otimes N,A)\to\mathrm{Hom}(M\otimes N',A)
+$$
+の完全性と同じである。$A$ は任意なので、\ref{ha:hom-detects-right-exact} から結論を得る。
+:::
+
+## Tor {#ha:sec-tt-tor}
+
+::: definition Tor {#ha:tor keywords="Tor_n^R(M,N) = L_n(M (x)_R -)(N)" index="Tor|とーる"}
+$\mathrm{Tor}^{R}_{n}(M,N)\defeq L_{n}(M\otimes_{R}-)(N)$、すなわち $N$ の射影分解 $P\to N$ をとって $H_{n}(M\otimes_{R}P)$ とする。
+:::
+
+::: theorem Tor の基本性質 {#ha:tor-basic keywords="Tor_0 = tensor, Tor vanishes on projectives, long exact sequence of Tor" index="Tor の基本性質|とーるのきほんせいしつ"}
+1. $\mathrm{Tor}^{R}_{0}(M,N)\cong M\otimes_{R}N$（$N$ について自然）。
+2. $P$ が射影的なら、$n\ge1$ で $\mathrm{Tor}^{R}_{n}(M,P)=0$。
+3. 短完全列 $0\to N'\to N\to N''\to0$ について、完全列
+$$
+\begin{gathered}
+\cdots\to\mathrm{Tor}_{1}(M,N)\to\mathrm{Tor}_{1}(M,N'')\\
+\to M\otimes N'\to M\otimes N\to M\otimes N''\to0
+\end{gathered}
+$$
+がある。
+:::
+
+::: proof
+\ref{ha:tensor-universal} の 2 から $M\otimes_{R}-$ は加法関手で、\ref{ha:tensor-right-exact} から右完全。1 は \ref{ha:l0-right-exact}、2 は \ref{ha:derived-well-defined} の 3、3 は \ref{ha:derived-long-exact} と 1 から。
+:::
+
+::: proposition 整数上の Tor {#ha:tor-z keywords="Tor_1^Z(M, Z/n) = n-torsion of M, M (x) Z/n = M/nM" index="Tor（整数上）|とーるせいすうじょう"}
+アーベル群 $M$ と $n\ge1$ について、$M\otimes_{\mathbb{Z}}\mathbb{Z}/n\cong M/nM$、$\mathrm{Tor}^{\mathbb{Z}}_{1}(M,\mathbb{Z}/n)\cong M[n]\defeq\{m\in M:nm=0\}$、$k\ge2$ で $\mathrm{Tor}^{\mathbb{Z}}_{k}(M,\mathbb{Z}/n)=0$。
+:::
+
+::: proof
+射影分解 $0\to\mathbb{Z}\xrightarrow{n}\mathbb{Z}\to\mathbb{Z}/n\to0$（$\mathbb{Z}$ は自由なので射影的）に $M\otimes-$ を施し、\ref{ha:tensor-universal} の 3（自然性から $1\otimes(n\cdot)$ は $M$ の $n$ 倍に対応）で書き換えると、複体 $0\to M\xrightarrow{n}M\to0$（次数 $1,0$）を得る。$H_{0}=M/nM$, $H_{1}=\ker(n)=M[n]$、$k\ge2$ の項は $0$。
+:::
+
+## 平坦加群 {#ha:sec-tt-flat}
+
+::: definition 平坦加群 {#ha:flat keywords="flat module: M (x)_R - is exact" index="平坦加群|へいたんかぐん"}
+右 $R$ 加群 $M$ が**平坦**であるとは、$M\otimes_{R}-$ が完全関手（単射を単射に写す）であることをいう。
+:::
+
+::: proposition 平坦性と Tor {#ha:flat-tor keywords="M is flat iff Tor_1(M,-)=0; R is flat; Z/n is not flat" index="平坦性と Tor|へいたんせいととーる"}
+1. $M$ が平坦であることと、すべての $N$ で $\mathrm{Tor}^{R}_{1}(M,N)=0$ であることは同値である。
+2. $R$（右加群として）は平坦である。
+3. $n\ge2$ なら $\mathbb{Z}/n$ は平坦な $\mathbb{Z}$ 加群でない。
+:::
+
+::: proof
+**1.** ⇐ は \ref{ha:prob-df-projective-test}（右完全で $L_{1}=0$ なら完全）。⇒：$N$ について $0\to K\to P\to N\to0$（$P$ 射影的）をとると、\ref{ha:tor-basic} の 3 と 2 から $0=\mathrm{Tor}_{1}(M,P)\to\mathrm{Tor}_{1}(M,N)\to M\otimes K\to M\otimes P$ が完全で、平坦性から最後の写像は単射なので $\mathrm{Tor}_{1}(M,N)=0$。
+
+**2.** \ref{ha:tensor-universal} の 3 から $R\otimes_{R}-$ は恒等関手と自然同型で、完全。
+
+**3.** 単射 $\mathbb{Z}\xrightarrow{n}\mathbb{Z}$ に $\mathbb{Z}/n\otimes-$ を施すと、$\mathbb{Z}/n\xrightarrow{n}\mathbb{Z}/n$ すなわち零写像になり、単射でない（\ref{ha:tor-z} の計算。$\mathrm{Tor}_{1}(\mathbb{Z}/n,\mathbb{Z}/n)\cong\mathbb{Z}/n\ne0$ とも読める）。
+:::
+
+## 問題 {#ha:sec-tt-problems}
+
+::: problem {#ha:prob-tt-zm-zn}
+$\mathbb{Z}/m\otimes_{\mathbb{Z}}\mathbb{Z}/n$ と $\mathrm{Tor}^{\mathbb{Z}}_{1}(\mathbb{Z}/m,\mathbb{Z}/n)$ がともに $\mathbb{Z}/\gcd(m,n)$ と同型であることを示せ。
+:::
+
+::: solution
+\ref{ha:tor-z} から、前者は $(\mathbb{Z}/m)/n(\mathbb{Z}/m)$、後者は $\{x\in\mathbb{Z}/m:nx=0\}$。$g\defeq\gcd(m,n)$ とする。$n\mathbb{Z}+m\mathbb{Z}=g\mathbb{Z}$ なので前者は $\mathbb{Z}/g\mathbb{Z}$。後者：$nx\equiv0\pmod m$ は $(n/g)x\equiv0\pmod{m/g}$ と同値で、$\gcd(n/g,m/g)=1$ から $x\equiv0\pmod{m/g}$。よって後者は $(m/g)\mathbb{Z}/m\mathbb{Z}$ で、位数 $g$ の巡回群。
+:::
+
+::: problem {#ha:prob-tt-free-flat}
+有限生成の自由右 $R$ 加群 $R^{k}$ は平坦であることを示せ。
+:::
+
+::: solution
+$(R\oplus R')\otimes N\cong(R\otimes N)\oplus(R'\otimes N)$ が成り立ち $N$ について自然である（直和は第一変数についてとる。$(m,m')\otimes n\mapsto(m\otimes n,m'\otimes n)$ と、逆 $(m\otimes n,m'\otimes n')\mapsto(m,0)\otimes n+(0,m')\otimes n'$ が平衡写像から定まる）。帰納法で $R^{k}\otimes_{R}N\cong N^{k}$（$N$ について自然）なので、$R^{k}\otimes-$ は完全関手 $N\mapsto N^{k}$ と同型で完全。
+:::
+
+::: supplement
+**前提を変えると.** Tor は第一変数の射影分解（または平坦分解）を使っても計算でき、同じ群になる（**Tor の平衡性**）ことが知られている。したがって $\mathrm{Tor}^{\mathbb{Z}}_{1}(\mathbb{Z}/n,M)\cong M[n]$ でもある。$R$ が可換なら $M\otimes_{R}N$ は再び $R$ 加群で、$\mathrm{Tor}^{R}_{n}(M,N)\cong\mathrm{Tor}^{R}_{n}(N,M)$ であることが知られている。射影加群は平坦で（直和因子と直和で平坦性が保たれることによる）、$\mathbb{Q}$ は射影的でない平坦な $\mathbb{Z}$ 加群であることが知られている（ここでは確かめていない）。
+
+**似た定理.** Ext（\ref{ha:page-tor-ext}）が hom の右導来関手で拡大を分類する（\ref{ha:page-extensions}）のに対し、Tor はテンソル積の左導来関手である。テンソルと hom の随伴（\ref{ha:tensor-hom-adjunction}）は圏論の随伴（\ref{cat:page-adjunctions}）の典型例で、左随伴が余極限を保つ（\ref{cat:page-adjoints-limits}）ことの特別な場合として、テンソル積の右完全性（余核の保存）が得られる。代数的位相幾何では、普遍係数定理で Tor が係数の取り替えの補正項として現れることが知られている。
+
+**高い視点から：テンソル積が「潰す」ものを Tor が拾う.** $M\otimes-$ は右完全だが、単射 $N'\to N$ を単射に写すとは限らない。その「失われた核」を測るのが $\mathrm{Tor}_{1}$ で、長完全列の左端 $\mathrm{Tor}_{1}(M,N'')\to M\otimes N'$ がちょうどその核に写る。比喩で言えば、$\mathbb{Z}/n\otimes-$ は「$n$ を法として見る」レンズで、$\mathbb{Z}\xrightarrow{n}\mathbb{Z}$ を通すと像がつぶれて $0$ になる。そのつぶれた部分の正体が $n$ 捩れ $M[n]$ である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -9388,12 +9388,33 @@
       "num": "3.5",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/03-diagram-lemmas.html"
     },
+    "ha:flat": {
+      "status": "defined",
+      "type": "definition",
+      "title": "平坦加群",
+      "num": "6.9",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/06-tensor-tor.html"
+    },
+    "ha:flat-tor": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "平坦性と Tor",
+      "num": "6.10",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/06-tensor-tor.html"
+    },
     "ha:general-snake": {
       "status": "defined",
       "type": "lemma",
       "title": "一般形の蛇の補題",
       "num": "4.4",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/04-chain-complexes.html"
+    },
+    "ha:hom-detects-right-exact": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "hom による完全性の判定",
+      "num": "6.4",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/06-tensor-tor.html"
     },
     "ha:hom-left-exact": {
       "status": "defined",
@@ -9570,6 +9591,13 @@
       "num": "",
       "page": "18-category-theory/18G-homological-algebra/02-derived-functors/01-projective-resolutions.html"
     },
+    "ha:page-tensor-tor": {
+      "status": "defined",
+      "type": "page",
+      "title": "テンソル積と Tor",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/06-tensor-tor.html"
+    },
     "ha:page-tor-ext": {
       "status": "defined",
       "type": "page",
@@ -9716,6 +9744,20 @@
       "title": "",
       "num": "3.6",
       "page": "18-category-theory/18G-homological-algebra/02-derived-functors/03-tor-ext.html"
+    },
+    "ha:prob-tt-free-flat": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "6.12",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/06-tensor-tor.html"
+    },
+    "ha:prob-tt-zm-zn": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "6.11",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/06-tensor-tor.html"
     },
     "ha:projective": {
       "status": "defined",
@@ -10081,6 +10123,41 @@
       "num": "",
       "page": "18-category-theory/18G-homological-algebra/02-derived-functors/03-tor-ext.html"
     },
+    "ha:sec-tt-flat": {
+      "status": "defined",
+      "type": "section",
+      "title": "平坦加群",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/06-tensor-tor.html"
+    },
+    "ha:sec-tt-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/06-tensor-tor.html"
+    },
+    "ha:sec-tt-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/06-tensor-tor.html"
+    },
+    "ha:sec-tt-tensor": {
+      "status": "defined",
+      "type": "section",
+      "title": "テンソル積",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/06-tensor-tor.html"
+    },
+    "ha:sec-tt-tor": {
+      "status": "defined",
+      "type": "section",
+      "title": "Tor",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/06-tensor-tor.html"
+    },
     "ha:short-exact-characterization": {
       "status": "defined",
       "type": "proposition",
@@ -10101,6 +10178,55 @@
       "title": "和は双積から決まる",
       "num": "1.9",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/01-additive.html"
+    },
+    "ha:tensor-hom-adjunction": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "テンソルと hom の随伴",
+      "num": "6.3",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/06-tensor-tor.html"
+    },
+    "ha:tensor-product": {
+      "status": "defined",
+      "type": "definition",
+      "title": "テンソル積",
+      "num": "6.1",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/06-tensor-tor.html"
+    },
+    "ha:tensor-right-exact": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "テンソル積は右完全",
+      "num": "6.5",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/06-tensor-tor.html"
+    },
+    "ha:tensor-universal": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "テンソル積の普遍性",
+      "num": "6.2",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/06-tensor-tor.html"
+    },
+    "ha:tor": {
+      "status": "defined",
+      "type": "definition",
+      "title": "Tor",
+      "num": "6.6",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/06-tensor-tor.html"
+    },
+    "ha:tor-basic": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "Tor の基本性質",
+      "num": "6.7",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/06-tensor-tor.html"
+    },
+    "ha:tor-z": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "整数上の Tor",
+      "num": "6.8",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/06-tensor-tor.html"
     },
     "logic:abbreviation-semantics": {
       "status": "defined",

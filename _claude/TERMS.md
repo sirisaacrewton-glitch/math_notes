@@ -420,3 +420,4 @@
 | martingale / supermartingale / Kolmogorov inequality / Schnorr theorem | マルチンゲール / 優マルチンゲール / コルモゴロフの不等式 / シュノアの定理 | | 標準的。comp:page-martingales |
 | Stone-Weierstrass theorem / Weierstrass approximation theorem / separates points | ストーン–ワイエルシュトラスの定理 / ワイエルシュトラスの近似定理 / 二点を分離する | | 標準的。top:page-stone-weierstrass |
 | Ax-Grothendieck theorem / Jacobian conjecture | アックス–グロタンディークの定理 / ヤコビアン予想 | | 標準的。model:page-ax-grothendieck |
+| tensor product / balanced map / Tor / flat module | テンソル積 / 平衡写像 / Tor / 平坦加群 | 双線形写像（可換の場合） | 標準的。ha:page-tensor-tor |

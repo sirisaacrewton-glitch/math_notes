@@ -120,6 +120,13 @@
       "num": "3.6",
       "page": "18-category-theory/18A-general-theory/03-monads/03-beck.html"
     },
+    "cat:bicategory": {
+      "status": "defined",
+      "type": "definition",
+      "title": "双圏",
+      "num": "3.1",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/03-bicategories.html"
+    },
     "cat:bifunctor-criterion": {
       "status": "defined",
       "type": "proposition",
@@ -855,6 +862,13 @@
       "num": "2.5",
       "page": "18-category-theory/18A-general-theory/01-basics/02-functors.html"
     },
+    "cat:iterated-pullback-limit": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "反復引き戻しはジグザグの極限",
+      "num": "3.5",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/03-bicategories.html"
+    },
     "cat:k-compact-agree": {
       "status": "defined",
       "type": "lemma",
@@ -1002,12 +1016,26 @@
       "num": "1.2",
       "page": "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html"
     },
+    "cat:monad-in-bicategory": {
+      "status": "defined",
+      "type": "definition",
+      "title": "双圏の中のモナド",
+      "num": "3.7",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/03-bicategories.html"
+    },
     "cat:monadic": {
       "status": "defined",
       "type": "definition",
       "title": "モナド的な関手",
       "num": "1.6",
       "page": "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html"
+    },
+    "cat:monads-in-spans": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "スパンの中のモナドは内部圏",
+      "num": "3.8",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/03-bicategories.html"
     },
     "cat:monic-epic": {
       "status": "defined",
@@ -1043,6 +1071,13 @@
       "title": "モノイダル圏のモノイド",
       "num": "3.1",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/03-monoids-actions.html"
+    },
+    "cat:monoidal-as-bicategory": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "対象が一つの双圏",
+      "num": "3.2",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/03-bicategories.html"
     },
     "cat:monoidal-category": {
       "status": "defined",
@@ -1183,6 +1218,13 @@
       "title": "分裂余等化子とベックのモナド性定理",
       "num": "",
       "page": "18-category-theory/18A-general-theory/03-monads/03-beck.html"
+    },
+    "cat:page-bicategories": {
+      "status": "defined",
+      "type": "page",
+      "title": "双圏",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/03-bicategories.html"
     },
     "cat:page-braids": {
       "status": "defined",
@@ -1407,6 +1449,20 @@
       "title": "",
       "num": "3.9",
       "page": "18-category-theory/18A-general-theory/03-monads/03-beck.html"
+    },
+    "cat:prob-bi-duals": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "3.9",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/03-bicategories.html"
+    },
+    "cat:prob-bi-span-identity": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "3.10",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/03-bicategories.html"
     },
     "cat:prob-br-double-braiding": {
       "status": "defined",
@@ -2016,6 +2072,41 @@
       "title": "ベックの定理",
       "num": "",
       "page": "18-category-theory/18A-general-theory/03-monads/03-beck.html"
+    },
+    "cat:sec-bi-definition": {
+      "status": "defined",
+      "type": "section",
+      "title": "双圏",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/03-bicategories.html"
+    },
+    "cat:sec-bi-monads": {
+      "status": "defined",
+      "type": "section",
+      "title": "双圏の中のモナド",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/03-bicategories.html"
+    },
+    "cat:sec-bi-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/03-bicategories.html"
+    },
+    "cat:sec-bi-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/03-bicategories.html"
+    },
+    "cat:sec-bi-spans": {
+      "status": "defined",
+      "type": "section",
+      "title": "スパンの双圏",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/03-bicategories.html"
     },
     "cat:sec-br-category": {
       "status": "defined",
@@ -2954,6 +3045,20 @@
       "title": "解集合条件",
       "num": "10.2",
       "page": "18-category-theory/18A-general-theory/01-basics/10-adjoint-functor-theorem.html"
+    },
+    "cat:span": {
+      "status": "defined",
+      "type": "definition",
+      "title": "スパン",
+      "num": "3.4",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/03-bicategories.html"
+    },
+    "cat:span-bicategory": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "スパンの双圏",
+      "num": "3.6",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/03-bicategories.html"
     },
     "cat:split-fork": {
       "status": "defined",
@@ -30751,13 +30856,6 @@
       "title": "実数全体の濃度",
       "referencedFrom": [
         "03-mathematical-logic/03E-set-theory/01-basics/11-cardinal-exponentiation.html"
-      ]
-    },
-    "cat:page-bicategories": {
-      "status": "planned",
-      "title": "双圏",
-      "referencedFrom": [
-        "18-category-theory/18A-general-theory/05-higher-structures/02-2-categories.html"
       ]
     },
     "cat:page-crossed-modules": {

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>双圏 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/05-higher-structures/03-bicategories.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 双圏 {#cat:page-bicategories keywords="bicategory, weak 2-category, associator, unitors, pentagon, monoidal category as one-object bicategory, bimodules, spans, lax functor, monad in a bicategory, monads in spans are internal categories, Benabou"}
+
+2 圏（\ref{cat:page-2-categories}）では 1 射の横の合成が厳密に結合的だった。しかし自然に現れる例の多くでは、合成は「同型を除いて」しか結合的でない。たとえば環を対象、両側加群を 1 射とし、テンソル積で合成すると、$C\otimes(B\otimes A)$ と $(C\otimes B)\otimes A$ は同型だが等しくはない。この「同型を除いた 2 圏」が**双圏**（\ref{cat:bicategory}）で、対象が一つの双圏はちょうどモノイダル圏である（\ref{cat:monoidal-as-bicategory}）。本ページでは両側加群とスパンの双圏を構成し（\ref{cat:span-bicategory}）、双圏の中の**モナド**が、スパンの双圏では**内部圏**（\ref{cat:page-internal-categories}）にほかならないこと（\ref{cat:monads-in-spans}、ベナブー）を示す。
+
+> 資料：Mac Lane, *Categories for the Working Mathematician* 第 XII 章 §6–§7。スパンの双圏で Mac Lane が「残りの確かめは読者に委ねる」とした部分は、反復引き戻しがジグザグ図式の極限であること（\ref{cat:iterated-pullback-limit}）から一括して導いた。双圏の射（緩い関手）は Mac Lane では読者・文献（Bénabou 1967）に委ねられているので、標準的な定義を採用し、スパンの中のモナドが内部圏であることを補った。
+
+## 記法と定義の確認 {#cat:sec-bi-notation}
+
+::: notation
+- 2 圏、縦の合成 $\beta\cdot\alpha$、ひげ付けは \ref{cat:2-category}, \ref{cat:middle-four-interchange} のとおり。モノイダル圏・五角形と三角形の等式・コヒーレンス定理・モノイダル関手は \ref{cat:monoidal-category}, \ref{cat:coherence}, \ref{cat:multivariable-coherence}, \ref{cat:monoidal-functor}。
+- 引き戻し $X\times_{Z}Y$、内部圏は \ref{cat:page-internal-categories} のとおり。
+- 大きさについて：双圏の対象・1 射の全体は大きくてもよい（\ref{cat:universe} の約束のもとで、宇宙に属さない集まりも扱う）。
+:::
+
+## 双圏 {#cat:sec-bi-definition}
+
+::: definition 双圏 {#cat:bicategory keywords="bicategory, weak 2-category, associator, left and right unitors" index="双圏|そうけん, 弱 2 圏|じゃくにけん"}
+**双圏** $\mathbf{B}$ は次のデータからなる。
+1. 対象（0 射）の集まり。
+2. 対象の組 $(a,b)$ ごとの圏 $\mathbf{B}(a,b)$（対象が 1 射 $f\colon a\to b$、射が 2 射 $\rho\colon f\Rightarrow f'$、合成が縦の合成 $\cdot$）。
+3. 対象の三つ組ごとの関手 $\ast\colon\mathbf{B}(b,c)\times\mathbf{B}(a,b)\to\mathbf{B}(a,c)$（横の合成）。
+4. 対象 $a$ ごとの 1 射 $1_{a}\colon a\to a$。
+5. 自然同型 $\alpha_{h,g,f}\colon h\ast(g\ast f)\Rightarrow(h\ast g)\ast f$, $\varrho_{f}\colon f\ast1_{a}\Rightarrow f$, $\lambda_{f}\colon1_{b}\ast f\Rightarrow f$（$f\colon a\to b$）。
+
+これらが、$k\colon d\to e$ を加えて**五角形の等式**と**三角形の等式**
+$$
+\begin{aligned}
+&\alpha_{k\ast h,g,f}\cdot\alpha_{k,h,g\ast f}=(\alpha_{k,h,g}\ast1_{f})\cdot\alpha_{k,h\ast g,f}\cdot(1_{k}\ast\alpha_{h,g,f}),\\
+&(\varrho_{g}\ast1_{f})\cdot\alpha_{g,1_{b},f}=1_{g}\ast\lambda_{f}
+\end{aligned}
+$$
+と $\lambda_{1_{a}}=\varrho_{1_{a}}$ を満たす（ここで $1_{f}$ などは恒等 2 射）。最後の条件は五角形・三角形の等式から従うことが知られている（モノイダル圏の場合のケリーの結果。ここでは確かめていない）が、モノイダル圏の定義 \ref{cat:monoidal-category} に合わせて課しておく。$\alpha,\lambda,\varrho$ がすべて恒等 2 射のとき、双圏は 2 圏である。
+:::
+
+::: proposition 対象が一つの双圏 {#cat:monoidal-as-bicategory keywords="a monoidal category is a one-object bicategory, delooping" index="対象が一つの双圏|たいしょうがひとつのそうけん"}
+対象が一つ $\ast$ の双圏は、$\mathbf{M}\defeq\mathbf{B}(\ast,\ast)$、$\square\defeq\ast$、$e\defeq1_{\ast}$ とすることで、モノイダル圏と一対一に対応する。
+:::
+
+::: proof
+双圏の公理の 2–5 と五角形・三角形の等式は、対象が一つのとき、モノイダル圏の定義（\ref{cat:monoidal-category}）の圏・双関手・単位対象・自然同型 $\alpha,\lambda,\varrho$・五角形・三角形の等式と、記号を除いて一字一句同じである（$\lambda_{1_{\ast}}=\varrho_{1_{\ast}}$ が $\lambda_{e}=\varrho_{e}$ にあたる）。
+:::
+
+::: remark
+上の対応から、コヒーレンス定理（\ref{cat:coherence}）は双圏にもそのまま移る：1 射の合成可能な列 $f_{1},\dots,f_{n}$ に対して、$\alpha,\lambda,\varrho$ から作った 2 射の二つの道は等しい。証明は \ref{cat:multivariable-coherence} と同じく、語の各文字に（型の合う）別々の 1 射を入れても \ref{cat:coherence} の証明が文字通り通ることによる（Mac Lane もこう述べている）。
+:::
+
+::: example
+**両側加群.** 環（単位的）を対象とし、$\mathbf{Bim}(R,S)$ を左 $S$ 右 $R$ 両側加群 ${}_{S}A_{R}$ と両側加群準同型の圏とする。${}_{T}B_{S}$ と ${}_{S}A_{R}$ の横の合成をテンソル積 $B\otimes_{S}A$（左 $T$ 右 $R$ 両側加群）、$1_{R}$ を ${}_{R}R_{R}$ とする。
+- $\alpha\colon C\otimes_{T}(B\otimes_{S}A)\to(C\otimes_{T}B)\otimes_{S}A$ は $c\otimes(b\otimes a)\mapsto(c\otimes b)\otimes a$ で定まる同型（テンソル積の結合律）。
+- $\varrho\colon A\otimes_{R}R\to A$ は $a\otimes r\mapsto ar$、$\lambda\colon S\otimes_{S}A\to A$ は $s\otimes a\mapsto sa$。
+- 五角形・三角形の等式は、両辺がテンソル積の生成元 $d\otimes(c\otimes(b\otimes a))$ を同じ元に移すことから成り立つ（テンソル積の元は生成元の和で、準同型は生成元の値で決まる）。
+
+$C\otimes_{T}(B\otimes_{S}A)$ と $(C\otimes_{T}B)\otimes_{S}A$ は（集合論的な構成として）異なる両側加群なので、これは 2 圏ではない。対象 $\mathbb{Z}$ だけに制限すると、$\mathbf{Bim}(\mathbb{Z},\mathbb{Z})=\mathbf{Ab}$ のモノイダル構造 $\otimes$ が得られる。
+:::
+
+## スパンの双圏 {#cat:sec-bi-spans}
+
+以下、$\mathbf{C}$ は引き戻しをもつ圏で、射の組 $X\xrightarrow{f}Z\xleftarrow{g}Y$ ごとに一つの引き戻し $X\times_{Z}Y$（射影 $\pi_{X},\pi_{Y}$）を選んでおく。
+
+::: definition スパン {#cat:span keywords="span, morphism of spans" index="スパン|すぱん"}
+$\mathbf{C}$ の対象 $a,b$ について、$a$ から $b$ への**スパン** $(V;l,r)$ は、対象 $V$ と射 $l\colon V\to a$, $r\colon V\to b$ の組である。スパン $(V;l,r)$ から $(V';l',r')$ への**射**は、$\mathbf{C}$ の射 $x\colon V\to V'$ で $l'x=l$, $r'x=r$ を満たすものである。
+:::
+
+::: lemma 反復引き戻しはジグザグの極限 {#cat:iterated-pullback-limit keywords="iterated pullbacks are limits of zigzag diagrams, pasting of pullbacks" index="反復引き戻し|はんぷくひきもどし"}
+スパン $(V_{k};l_{k},r_{k})\colon a_{k-1}\to a_{k}$（$k=1,\dots,n$）について、ジグザグ図式
+$$
+V_{1}\xrightarrow{r_{1}}a_{1}\xleftarrow{l_{2}}V_{2}\xrightarrow{r_{2}}a_{2}\xleftarrow{l_{3}}\cdots\xleftarrow{l_{n}}V_{n}
+$$
+を $Z$ とする。隣り合う二つずつの引き戻しを、どの括弧の付け方で繰り返しても（たとえば $(V_{1}\times_{a_{1}}V_{2})\times_{a_{2}}V_{3}$ と $V_{1}\times_{a_{1}}(V_{2}\times_{a_{2}}V_{3})$）、得られる対象と、射影を合成して得られる $V_{k}$ への射の族は、$Z$ の極限である。
+:::
+
+::: proof
+$n$ に関する帰納法。$n=1$ は自明、$n=2$ は引き戻しの定義。$n\ge3$ で、最後の引き戻しが $P\times_{a_{j}}Q$ の形（$P$ は $V_{1},\dots,V_{j}$ の、$Q$ は $V_{j+1},\dots,V_{n}$ の反復引き戻しで、$P\to a_{j}$ は $r_{j}$ と $P\to V_{j}$ の合成、$Q\to a_{j}$ は $l_{j+1}$ と $Q\to V_{j+1}$ の合成）とする。$Z$ の上の錐 $(W;w_{k}\colon W\to V_{k})$ をとる。帰納法の仮定から、$(w_{1},\dots,w_{j})$ は唯一の $p\colon W\to P$ を、$(w_{j+1},\dots,w_{n})$ は唯一の $q\colon W\to Q$ を定める。$P\to a_{j}$ と $p$ の合成は $r_{j}w_{j}$、$Q\to a_{j}$ と $q$ の合成は $l_{j+1}w_{j+1}$ で、錐の条件から等しいので、引き戻しの普遍性から唯一の $W\to P\times_{a_{j}}Q$ が得られる。この射は錐を経由させ、一意性は $p,q$ の一意性と引き戻しの一意性から。
+:::
+
+::: theorem スパンの双圏 {#cat:span-bicategory keywords="the bicategory of spans" index="スパンの双圏|すぱんのそうけん"}
+$\mathbf{C}$ の対象を対象、$\mathbf{Span}(\mathbf{C})(a,b)$ を $a$ から $b$ へのスパンとその射の圏とし、横の合成を
+$$
+(W;l',r')\ast(V;l,r)\defeq(V\times_{b}W;\ l\pi_{V},\ r'\pi_{W})
+$$
+（$V\times_{b}W$ は $r$ と $l'$ の選んだ引き戻し）
+（2 射については、引き戻しの普遍性で誘導される射）、$1_{a}\defeq(a;1_{a},1_{a})$ とする。$\alpha,\lambda,\varrho$ を、\ref{cat:iterated-pullback-limit} の極限の間の、各 $V_{k}$ への射影と可換な唯一の同型とすると、$\mathbf{Span}(\mathbf{C})$ は双圏である。
+:::
+
+::: proof
+**Step 1（横の合成は関手）.** スパンの射 $x\colon(V;l_{V},r_{V})\to(V';l_{V'},r_{V'})$（$a\to b$）、$y\colon(W;l_{W},r_{W})\to(W';l_{W'},r_{W'})$（$b\to c$）について、$r_{V'}x\pi_{V}=r_{V}\pi_{V}=l_{W}\pi_{W}=l_{W'}y\pi_{W}$ なので、引き戻しの普遍性から $y\ast x\colon V\times_{b}W\to V'\times_{b}W'$ が一意に定まり、$\pi_{V'}(y\ast x)=x\pi_{V}$, $\pi_{W'}(y\ast x)=y\pi_{W}$。これはスパンの射で、一意性から恒等射と合成を保つ。
+
+**Step 2（$\alpha$）.** 合成可能な三つのスパン $V,W,X$ について、$X\ast(W\ast V)$ と $(X\ast W)\ast V$ の頂点は、\ref{cat:iterated-pullback-limit} から同じジグザグ $V\to b\leftarrow W\to c\leftarrow X$ の極限である。極限の一意性から、$V,W,X$ への射影と可換な唯一の同型 $\alpha$ がある。端の脚は $V$ と $X$ の脚の合成なので、$\alpha$ はスパンの射。
+
+**Step 3（$\lambda,\varrho$）.** $1_{b}\ast V$ の頂点 $V\times_{b}b$（$r$ と $1_{b}$ の引き戻し）では、$\pi_{V}$ が同型（$V$ に $(1_{V},r)$ をつけたものも同じ図式の引き戻しなので）。$\lambda_{V}\defeq\pi_{V}$ とすると、脚は $l\pi_{V}$ と $1_{b}\pi_{b}=r\pi_{V}$ なのでスパンの射。$\varrho$ も同様。
+
+**Step 4（自然性と等式）.** $\alpha$ の自然性、五角形・三角形の等式の両辺は、いずれも、ある反復引き戻し（ジグザグの極限）から別の反復引き戻し（同じジグザグの極限）への射で、各 $V_{k}$ への射影との合成が両辺で等しい（$\alpha$, $\lambda$, $\varrho$, $y\ast x$ はすべて射影と可換または射影を $x,y$ に移すので、合成の射影は両辺とも同じ $V_{k}\to V'_{k}$ の射）。極限への射は射影との合成で決まるので、両辺は等しい。
+:::
+
+::: hypcheck
+- **引き戻しの存在と選択**：横の合成を定義するのに使った。選択を変えても、Step 2–4 は極限の一意性だけを使うので結論は変わらない（同値な双圏になる）。
+- **反復引き戻しがジグザグの極限であること**：$\alpha$ の存在と、すべての等式を「射影との合成で決まる」ことに帰着させるのに使った。
+:::
+
+::: example
+$\mathbf{C}$ が終対象 $1$ をもつとき、$\mathbf{Span}(\mathbf{C})(1,1)$ は $\mathbf{C}$ と同型（脚は終対象への唯一の射）で、横の合成は積 $W\times V$（$1$ の上の引き戻し）。よって \ref{cat:monoidal-as-bicategory} から、$(\mathbf{C},\times,1)$ のモノイダル構造が得られる。
+:::
+
+## 双圏の中のモナド {#cat:sec-bi-monads}
+
+::: definition 双圏の中のモナド {#cat:monad-in-bicategory keywords="monad in a bicategory" index="双圏の中のモナド|そうけんのなかのもなど"}
+双圏 $\mathbf{B}$ の**モナド**は、対象 $a$、1 射 $t\colon a\to a$、2 射 $\mu\colon t\ast t\Rightarrow t$, $\eta\colon1_{a}\Rightarrow t$ の組で
+$$
+\mu\cdot(\mu\ast1_{t})\cdot\alpha_{t,t,t}=\mu\cdot(1_{t}\ast\mu),\qquad\mu\cdot(\eta\ast1_{t})=\lambda_{t},\qquad\mu\cdot(1_{t}\ast\eta)=\varrho_{t}
+$$
+を満たすものである。すなわち、モノイダル圏 $\mathbf{B}(a,a)$（\ref{cat:monoidal-as-bicategory} の向きで）のモノイド（\ref{cat:monoid-object}）である。
+:::
+
+::: example
+1. $\mathbf{Cat}$（2 圏とみる）の中のモナドは、ふつうのモナド（\ref{cat:monad}）。
+2. $\mathbf{Bim}$ の対象 $R$ の上のモナドは、両側加群 ${}_{R}T_{R}$ と $\mu\colon T\otimes_{R}T\to T$, $\eta\colon R\to T$ で、これは環 $T$ と環準同型 $\eta\colon R\to T$ の組（$R$ 上の代数。$R$ が可換でなくてもよい）にあたる。
+:::
+
+::: theorem スパンの中のモナドは内部圏 {#cat:monads-in-spans keywords="monads in the bicategory of spans are internal categories, Benabou" index="スパンの中のモナド|すぱんのなかのもなど"}
+引き戻しをもつ圏 $\mathbf{C}$ について、$\mathbf{Span}(\mathbf{C})$ の対象 $C_{0}$ の上のモナドと、対象の対象が $C_{0}$ の $\mathbf{C}$ の内部圏（\ref{cat:internal-category}）は一対一に対応する。
+:::
+
+::: proof
+1 射 $t\colon C_{0}\to C_{0}$ はスパン $(C_{1};s,t)$ である（左脚を始域 $s$、右脚を終域 $t$ と名づける）。$t\ast t$ の頂点は $C_{1}\times_{C_{0}}C_{1}$（第 1 因子の $t$ と第 2 因子の $s$ の引き戻し、すなわち $t(f)=s(g)$ となる組 $(f,g)$：$f$ の後に $g$）で、脚は $s\pi_{1}$, $t\pi_{2}$。$1_{C_{0}}=(C_{0};1,1)$。
+- **$\mu$ が 2 射であること** $\iff$ 射 $m\colon C_{1}\times_{C_{0}}C_{1}\to C_{1}$ が $sm=s\pi_{1}$, $tm=t\pi_{2}$ を満たすこと：内部圏の公理 2（合成の始域は先の射の始域、終域は後の射の終域）。
+- **$\eta$ が 2 射であること** $\iff$ $i\colon C_{0}\to C_{1}$ が $si=1=ti$ を満たすこと：公理 1。
+- **単位律**：横の合成 $g\ast f$ は「$f$ の後に $g$」なので、$\eta\ast1_{t}\colon1_{C_{0}}\ast t\Rightarrow t\ast t$ は、$1_{C_{0}}\ast t$ の頂点 $C_{1}\times_{C_{0}}C_{0}$ の元 $(f,t(f))$ を $(f,i(t(f)))$（$f$ の後に恒等射）に移す射で、$\lambda_{t}$ は射影 $(f,t(f))\mapsto f$（同型）。よって $\mu\cdot(\eta\ast1)=\lambda_{t}$ は、組を「先の射, 後の射」の順に書いて $m\circ\langle1_{C_{1}},i\circ t\rangle=1_{C_{1}}$ と同値。同様に $\mu\cdot(1\ast\eta)=\varrho_{t}$ は $m\circ\langle i\circ s,1_{C_{1}}\rangle=1_{C_{1}}$ と同値。組の順序を内部圏の記法（後の射, 先の射）に直すと、これは公理 3 である。
+- **結合律**：$\alpha_{t,t,t}$ は二つの三重引き戻しの、射影と可換な同型なので、$\mu\cdot(\mu\ast1)\cdot\alpha=\mu\cdot(1\ast\mu)$ は、三重引き戻し $C_{3}$ を一つ固定して書いた公理 4 と同値。
+
+（この証明では、内部圏の記法 \ref{cat:internal-category} の $C_{2}$ の成分の順序 $(g,f)$ と、スパンの合成の順序 $(f,g)$ が逆であることに注意する。）逆向きの対応も同じ同値を逆に読めばよい。
+:::
+
+::: hypcheck
+- **スパンの射の条件**：$\mu,\eta$ が 2 射であることが、合成と恒等射の始域・終域の公理にちょうど対応した。
+- **$\lambda,\varrho,\alpha$ が射影と可換な同型であること**（\ref{cat:span-bicategory}）：単位律・結合律を、引き戻しの選択によらない内部圏の公理に読み替えるのに使った。
+:::
+
+## 問題 {#cat:sec-bi-problems}
+
+::: problem {#cat:prob-bi-duals}
+双圏 $\mathbf{B}$ について、1 射の向きを逆にした $\mathbf{B}^{\mathrm{op}}$（$\mathbf{B}^{\mathrm{op}}(a,b)\defeq\mathbf{B}(b,a)$）と、2 射の向きを逆にした $\mathbf{B}^{\mathrm{co}}$（$\mathbf{B}^{\mathrm{co}}(a,b)\defeq\mathbf{B}(a,b)^{\mathrm{op}}$）がふたたび双圏になるように、$\alpha,\lambda,\varrho$ を定めよ。
+:::
+
+::: solution
+$\mathbf{B}^{\mathrm{op}}$：横の合成を $g\ast^{\mathrm{op}}f\defeq f\ast g$ とする。すると $h\ast^{\mathrm{op}}(g\ast^{\mathrm{op}}f)=(f\ast g)\ast h$, $(h\ast^{\mathrm{op}}g)\ast^{\mathrm{op}}f=f\ast(g\ast h)$ なので、$\alpha^{\mathrm{op}}_{h,g,f}\defeq\alpha_{f,g,h}^{-1}$ とする。また $f\ast^{\mathrm{op}}1=1\ast f$ なので $\varrho^{\mathrm{op}}_{f}\defeq\lambda_{f}$, $\lambda^{\mathrm{op}}_{f}\defeq\varrho_{f}$。五角形は元の五角形の両辺の逆、三角形は元の三角形で $f,g$ の役割を入れ替えて逆をとったものになる。$\mathbf{B}^{\mathrm{co}}$：横の合成は同じ関手（反対圏の積への関手とみる）、$\alpha^{\mathrm{co}}\defeq\alpha^{-1}$, $\lambda^{\mathrm{co}}\defeq\lambda^{-1}$, $\varrho^{\mathrm{co}}\defeq\varrho^{-1}$。等式は元の等式の両辺の逆をとったもの。
+:::
+
+::: problem {#cat:prob-bi-span-identity}
+$\mathbf{Span}(\mathbf{Set})$ で、スパン $(V;l,r)\colon a\to b$ は、$a\times b$ で添字づけられた集合の族 $V_{(x,y)}\defeq\{v:l(v)=x,\ r(v)=y\}$ と同じものである。横の合成をこの族で書き表せ。
+:::
+
+::: solution
+$(W;l',r')\colon b\to c$ との合成の頂点は $\{(v,w):r(v)=l'(w)\}$ で、脚は $l(v)$, $r'(w)$。よって
+$$
+(W\ast V)_{(x,z)}=\coprod_{y\in b}V_{(x,y)}\times W_{(y,z)}.
+$$
+これは行列の積 $(WV)_{xz}=\sum_{y}V_{xy}W_{yz}$ の「集合版」で、恒等スパンは $(1_{a})_{(x,x')}=1$（$x=x'$）、$\varnothing$（それ以外）という単位行列にあたる。
+:::
+
+::: supplement
+**前提を変えると.** 双圏の間の射として、2 関手の関手性を 2 射 $F_{g,f}\colon Fg\ast Ff\Rightarrow F(g\ast f)$, $F_{a}\colon1_{Fa}\Rightarrow F1_{a}$ に緩めた**緩い関手**（モノイダル関手 \ref{cat:monoidal-functor} の双圏版）がある。終双圏 $\mathbf{1}$ から $\mathbf{B}$ への緩い関手は、ちょうど $\mathbf{B}$ の中のモナドであることが知られている（ベナブー。定義を書き下せば \ref{cat:monoidal-functor-monoids} と同じ計算になる）。
+
+**似た定理.** 双圏はどれも 2 圏と（適切な意味で）同値であることが知られている（双圏のコヒーレンス定理。Mac Lane–Paré 1985 とされる。ここでは証明しない）。モノイダル圏の厳密化（\ref{cat:strictification}）はその対象が一つの場合である。
+
+**高い視点から：スパンは「多値の写像」、モナドは「圏」.** 問題 \ref{cat:prob-bi-span-identity} のとおり、スパンは集合値の行列、すなわち「重複度つきの関係」であり、スパンの合成は行列の積である。この見方で、スパンの中のモナド（\ref{cat:monads-in-spans}）は「自分自身との積から自分への写像をもつ行列」で、行列成分 $C_{(x,y)}$ が $x$ から $y$ への射の集合、行列の積の写像が合成にあたる。比喩で言えば、圏とは「射の行列がモノイドになったもの」である。同様に、両側加群の双圏の中のモナドは環の拡大、関係の双圏（スパンを単射的なものに制限）の中のモナドは前順序になる、と言われる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

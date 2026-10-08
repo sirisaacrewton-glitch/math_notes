@@ -162,6 +162,13 @@
       "num": "5.3",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/05-closed-categories.html"
     },
+    "cat:co-yoneda": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "余米田の補題",
+      "num": "2.5",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/02-ends.html"
+    },
     "cat:coequalizer": {
       "status": "defined",
       "type": "definition",
@@ -344,6 +351,27 @@
       "num": "3.5",
       "page": "18-category-theory/18A-general-theory/03-monads/03-beck.html"
     },
+    "cat:end": {
+      "status": "defined",
+      "type": "definition",
+      "title": "エンドとコエンド",
+      "num": "2.2",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/02-ends.html"
+    },
+    "cat:end-as-limit": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "エンドは極限",
+      "num": "2.6",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/02-ends.html"
+    },
+    "cat:end-parameter": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "パラメータつきのエンド",
+      "num": "2.8",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/02-ends.html"
+    },
     "cat:equalizer-monic": {
       "status": "defined",
       "type": "proposition",
@@ -476,6 +504,13 @@
       "title": "フレイドの随伴関手定理",
       "num": "10.4",
       "page": "18-category-theory/18A-general-theory/01-basics/10-adjoint-functor-theorem.html"
+    },
+    "cat:fubini-ends": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "エンドのフビニの定理",
+      "num": "2.9",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/02-ends.html"
     },
     "cat:full-faithful": {
       "status": "defined",
@@ -792,6 +827,13 @@
       "num": "2.3",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/02-monoidal.html"
     },
+    "cat:nat-as-end": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "自然変換はエンド",
+      "num": "2.3",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/02-ends.html"
+    },
     "cat:natural-transformation": {
       "status": "defined",
       "type": "definition",
@@ -896,6 +938,13 @@
       "title": "双対・積・関手圏",
       "num": "",
       "page": "18-category-theory/18A-general-theory/01-basics/03-constructions.html"
+    },
+    "cat:page-ends": {
+      "status": "defined",
+      "type": "page",
+      "title": "エンドとコエンド",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/02-ends.html"
     },
     "cat:page-equivalence": {
       "status": "defined",
@@ -1064,6 +1113,20 @@
       "title": "",
       "num": "3.14",
       "page": "18-category-theory/18A-general-theory/01-basics/03-constructions.html"
+    },
+    "cat:prob-en-hom-preserves": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "2.11",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/02-ends.html"
+    },
+    "cat:prob-en-set-end": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "2.10",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/02-ends.html"
     },
     "cat:prob-faithful-reflects-monic": {
       "status": "defined",
@@ -1674,6 +1737,41 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/01-basics/03-constructions.html"
     },
+    "cat:sec-en-ends": {
+      "status": "defined",
+      "type": "section",
+      "title": "楔とエンド",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/02-ends.html"
+    },
+    "cat:sec-en-fubini": {
+      "status": "defined",
+      "type": "section",
+      "title": "パラメータとフビニの定理",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/02-ends.html"
+    },
+    "cat:sec-en-limits": {
+      "status": "defined",
+      "type": "section",
+      "title": "エンドと極限",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/02-ends.html"
+    },
+    "cat:sec-en-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/02-ends.html"
+    },
+    "cat:sec-en-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/02-ends.html"
+    },
     "cat:sec-eqv-equivalence": {
       "status": "defined",
       "type": "section",
@@ -2178,6 +2276,13 @@
       "num": "3.2",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/03-monoids-actions.html"
     },
+    "cat:tensor-as-coend": {
+      "status": "defined",
+      "type": "definition",
+      "title": "関手のテンソル積",
+      "num": "2.7",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/02-ends.html"
+    },
     "cat:triangle-identities": {
       "status": "defined",
       "type": "theorem",
@@ -2269,12 +2374,26 @@
       "num": "2.9",
       "page": "18-category-theory/18A-general-theory/01-basics/02-functors.html"
     },
+    "cat:wedge": {
+      "status": "defined",
+      "type": "definition",
+      "title": "楔",
+      "num": "2.1",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/02-ends.html"
+    },
     "cat:yoneda-embedding": {
       "status": "defined",
       "type": "corollary",
       "title": "米田埋め込み",
       "num": "5.9",
       "page": "18-category-theory/18A-general-theory/01-basics/05-yoneda.html"
+    },
+    "cat:yoneda-end": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "米田の補題のエンド形",
+      "num": "2.4",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/02-ends.html"
     },
     "cat:yoneda-lemma": {
       "status": "defined",

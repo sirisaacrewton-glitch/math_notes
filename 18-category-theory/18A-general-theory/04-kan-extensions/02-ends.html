@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>エンドとコエンド | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/04-kan-extensions/02-ends.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# エンドとコエンド {#cat:page-ends keywords="dinatural transformation, extranatural transformation, wedge, end, coend, natural transformations as an end, ends as limits, subdivision category, tensor product of modules as a coend, Yoneda lemma in end form, co-Yoneda lemma, parameter theorem, Fubini theorem for ends"}
+
+関手 $S\colon\mathbf{C}^{\mathrm{op}}\times\mathbf{C}\to\mathbf{X}$ の**エンド** $\int_{c}S(c,c)$（\ref{cat:end}）は、「対角成分 $S(c,c)$ をすべての $c$ について両立させて集めたもの」で、極限の一種である（\ref{cat:end-as-limit}）。積分の記号を使うのは、束縛変数・変数変換・フビニの定理（\ref{cat:fubini-ends}）など、積分と同じ規則に従うからである。最も重要な例は、自然変換の集合がエンドであること $\mathrm{Nat}(U,V)=\int_{c}\mathbf{X}(Uc,Vc)$（\ref{cat:nat-as-end}）で、米田の補題もエンドの等式として書ける（\ref{cat:yoneda-end}）。双対の**コエンド**は、環上の加群のテンソル積の一般化である（\ref{cat:tensor-as-coend}）。これらは次ページ以降でカン拡張の公式に使う。
+
+> 資料：Mac Lane, *Categories for the Working Mathematician* 第 IX 章 §4–§8。米田の補題のエンド形と余米田の補題（\ref{cat:yoneda-end}, \ref{cat:co-yoneda}）は Mac Lane のこの章にはないが、次章の公式で使うので本サイトで補った。
+
+## 記法と定義の確認 {#cat:sec-en-notation}
+
+::: notation
+- 関手圏、自然変換、極限、米田の補題は \ref{cat:functor-category}, \ref{cat:page-limits}, \ref{cat:yoneda-lemma} のとおり。関手 $S\colon\mathbf{C}^{\mathrm{op}}\times\mathbf{C}\to\mathbf{X}$ と射 $f\colon b\to c$ について、$S(f,1)\colon S(c,c')\to S(b,c')$, $S(1,f)\colon S(b',b)\to S(b',c)$ と書く。
+- 圏はすべて局所小、$\mathbf{C}$ は小さいとする（エンドの存在を述べるとき）。
+:::
+
+## 楔とエンド {#cat:sec-en-ends}
+
+::: definition 楔 {#cat:wedge keywords="wedge, extranatural transformation, dinatural transformation to a constant" index="楔|くさび, 対角自然変換|たいかくしぜんへんかん, 超自然変換|ちょうしぜんへんかん"}
+関手 $S\colon\mathbf{C}^{\mathrm{op}}\times\mathbf{C}\to\mathbf{X}$ と対象 $x$ について、$x$ から $S$ への**楔** $\beta\colon x\overset{\cdot\cdot}{\to}S$ は、射の族 $\beta_{c}\colon x\to S(c,c)$ で、すべての $f\colon b\to c$ について
+$$
+S(1,f)\circ\beta_{b}=S(f,1)\circ\beta_{c}\colon x\to S(b,c)
+$$
+を満たすものである。双対に $S$ から $x$ への楔（余楔）も定める。
+:::
+
+::: example
+1. **評価.** 集合 $A$ を固定し、$S(X,Y)\defeq\mathbf{Set}(X,A)\times Y$ とすると、評価 $\mathrm{ev}_{X}\colon\mathbf{Set}(X,A)\times X\to A$ は $S$ から定数 $A$ への楔：$f\colon Y\to X$ について $h(fy)=(hf)(y)$。
+2. **恒等射.** $1_{c}\in\mathbf{C}(c,c)$ は、一点集合 $\ast$ から $\mathbf{C}(-,-)\colon\mathbf{C}^{\mathrm{op}}\times\mathbf{C}\to\mathbf{Set}$ への楔：$f\circ1_{b}=1_{c}\circ f$。
+:::
+
+::: definition エンドとコエンド {#cat:end keywords="end, coend, ending wedge, integral notation" index="エンド|えんど, コエンド|こえんど"}
+$S$ の**エンド**は、普遍的な楔 $\omega\colon e\overset{\cdot\cdot}{\to}S$ である：任意の楔 $\beta\colon x\overset{\cdot\cdot}{\to}S$ に対し、$\beta_{c}=\omega_{c}\circ h$（すべての $c$）となる $h\colon x\to e$ がただ一つある。$e$ を $\int_{c}S(c,c)$ と書く。双対に、$S$ から対象への普遍的な余楔を**コエンド**といい、$\int^{c}S(c,c)$ と書く。
+:::
+
+::: theorem 自然変換はエンド {#cat:nat-as-end keywords="natural transformations form an end" index="自然変換のエンド表示|しぜんへんかんのえんどひょうじ"}
+関手 $U,V\colon\mathbf{C}\to\mathbf{X}$ について
+$$
+\mathrm{Nat}(U,V)\cong\int_{c}\mathbf{X}(Uc,Vc)
+$$
+で、エンドの楔は成分をとる写像 $\omega_{c}(\alpha)=\alpha_{c}$ である。
+:::
+
+::: proof
+$\omega$ が楔であること：$f\colon b\to c$ について、楔の条件は $Vf\circ\alpha_{b}=\alpha_{c}\circ Uf$ で、これは $\alpha$ の自然性そのもの。普遍性：集合 $Y$ からの楔 $\tau\colon Y\overset{\cdot\cdot}{\to}\mathbf{X}(U-,V-)$ について、各 $y\in Y$ に対し $(\tau_{c}(y))_{c}$ は楔の条件から自然変換 $\tau(y)\colon U\Rightarrow V$ である。$h(y)\defeq\tau(y)$ は $\omega_{c}\circ h=\tau_{c}$ を満たす唯一の写像。
+:::
+
+::: theorem 米田の補題のエンド形 {#cat:yoneda-end keywords="Yoneda lemma as an end, co-Yoneda" index="米田の補題（エンド形）|よねだのほだいえんどけい"}
+$F\colon\mathbf{C}\to\mathbf{Set}$ と $a\in\mathbf{C}$ について、$\int_{c}\mathbf{Set}(\mathbf{C}(a,c),Fc)\cong Fa$。
+:::
+
+::: proof
+\ref{cat:nat-as-end} から左辺は $\mathrm{Nat}(\mathbf{C}(a,-),F)$ で、米田の補題（\ref{cat:yoneda-lemma}）からこれは $Fa$ と同型。
+:::
+
+::: theorem 余米田の補題 {#cat:co-yoneda keywords="co-Yoneda lemma, density formula" index="余米田の補題|よよねだのほだい"}
+$F\colon\mathbf{C}\to\mathbf{Set}$ と $a\in\mathbf{C}$ について、$\int^{c}\mathbf{C}(c,a)\times Fc\cong Fa$。余楔は $\zeta_{c}(f,x)\defeq(Ff)(x)$。
+:::
+
+::: proof
+**Step 1（余楔）.** $\zeta_{c}\colon\mathbf{C}(c,a)\times Fc\to Fa$ が余楔であることは、$g\colon b\to c$ について、$(f,x)\in\mathbf{C}(c,a)\times Fb$ の行き先 $\zeta_{b}(fg,x)=F(fg)x$ と $\zeta_{c}(f,(Fg)x)=Ff\,Fg\,x$ が等しいこと（関手性）。
+
+**Step 2（普遍性）.** 余楔 $\theta_{c}\colon\mathbf{C}(c,a)\times Fc\to Y$ について、$h\colon Fa\to Y$ を $h(x)\defeq\theta_{a}(1_{a},x)$ で定める。余楔の条件（$g=f\colon c\to a$, 元 $(1_{a},x)\in\mathbf{C}(a,a)\times Fc$）から $\theta_{c}(f,x)=\theta_{a}(1_{a},(Ff)x)=h(\zeta_{c}(f,x))$。一意性：$h\zeta=\theta$ なら $h(x)=h\zeta_{a}(1,x)=\theta_{a}(1,x)$。
+:::
+
+::: intuition
+余米田の補題は「どの関手 $F$ も、表現可能関手 $\mathbf{C}(c,-)$ の重みつきの和として表せる」ことを言う：$F\cong\int^{c}Fc\times\mathbf{C}(c,-)$（$a$ について自然）。比喩で言えば、表現可能関手は「基底ベクトル」で、$Fc$ がその「係数」に当たる。
+:::
+
+## エンドと極限 {#cat:sec-en-limits}
+
+::: proposition エンドは極限 {#cat:end-as-limit keywords="ends as limits over the subdivision category; limits as ends" index="エンドと極限|えんどときょくげん, 細分圏|さいぶんけん"}
+1. 圏 $\mathbf{C}^{\S}$ を、対象を記号 $c^{\S}$（$c\in\mathbf{C}$）と $f^{\S}$（$f$ は $\mathbf{C}$ の射）、恒等射以外の射を各 $f\colon b\to c$ についての $b^{\S}\to f^{\S}\leftarrow c^{\S}$ とする圏（**細分圏**）とする。$S$ から $S^{\S}\colon\mathbf{C}^{\S}\to\mathbf{X}$ を $c^{\S}\mapsto S(c,c)$, $f^{\S}\mapsto S(b,c)$、二つの射を $S(1,f)$, $S(f,1)$ で定めると、$S^{\S}$ への錐と $S$ への楔は同じもので、$\int_{c}S(c,c)\cong\mathrm{Lim}\,S^{\S}$（一方が存在すれば他方も存在）。とくに $\mathbf{X}$ が完備なら、すべてのエンドが存在する。
+2. 逆に $T\colon\mathbf{C}\to\mathbf{X}$ について、第一変数を無視する関手 $S(c',c)\defeq Tc$ のエンドは $\mathrm{Lim}\,T$ である。
+:::
+
+::: proof
+**1.** 錐 $\lambda\colon x\to S^{\S}$ は、成分 $\lambda_{c^{\S}}\colon x\to S(c,c)$ と $\lambda_{f^{\S}}\colon x\to S(b,c)$ で、$S(1,f)\lambda_{b^{\S}}=\lambda_{f^{\S}}=S(f,1)\lambda_{c^{\S}}$ を満たすもの。$\lambda_{f^{\S}}$ は他の成分で決まるので、錐は楔の条件を満たす族 $(\lambda_{c^{\S}})$ と同じ。普遍性も一致する。$\mathbf{C}$ が小さければ $\mathbf{C}^{\S}$ も小さい。
+
+**2.** $S(1,f)=Tf$, $S(f,1)=1$ なので、楔の条件は $Tf\circ\beta_{b}=\beta_{c}$、すなわち錐の条件そのもの。
+:::
+
+::: example
+**加群のテンソル積.** 環 $R$ を対象一つの前加法圏とみる。右 $R$ 加群 $A$ は加法関手 $R^{\mathrm{op}}\to\mathbf{Ab}$、左 $R$ 加群 $B$ は加法関手 $R\to\mathbf{Ab}$ である。$(r,r')\mapsto A\otimes B$ は双関手 $R^{\mathrm{op}}\times R\to\mathbf{Ab}$ で、その（加法的な）コエンドへの余楔は、準同型 $\varrho\colon A\otimes B\to M$ で $\varrho(ar\otimes b)=\varrho(a\otimes rb)$（すべての $r$）を満たすもの。普遍的なものは $A\otimes B$ をこれらの差で割ったもの、すなわち $A\otimes_{R}B$ である。
+:::
+
+::: definition 関手のテンソル積 {#cat:tensor-as-coend keywords="tensor product of functors as a coend, geometric realization" index="関手のテンソル積|かんしゅのてんそるせき, 幾何学的実現|きかがくてきじつげん"}
+上の例を一般化して、モノイダル圏 $(\mathbf{B},\square)$ と関手 $T\colon\mathbf{P}^{\mathrm{op}}\to\mathbf{B}$, $S\colon\mathbf{P}\to\mathbf{B}$ について、コエンド $T\square_{\mathbf{P}}S\defeq\int^{p}Tp\square Sp$（存在するとき）を**関手のテンソル積**という。
+:::
+
+::: example
+単体的集合 $X\colon\Delta_{+}^{\mathrm{op}}\to\mathbf{Set}$（\ref{cat:simplicial-object}）と標準単体の関手 $n\mapsto\Delta^{n}$ について、$\int^{n}X_{n}\times\Delta^{n}$（$X_{n}\times\Delta^{n}$ は $X_{n}$ 個の $\Delta^{n}$ の直和）は、$n$ 単体ごとに標準単体を一つずつとり、面と退化の作用素に従って貼り合わせた空間で、$X$ の**幾何学的実現**と呼ばれる（Mac Lane の記述による）。
+:::
+
+## パラメータとフビニの定理 {#cat:sec-en-fubini}
+
+::: proposition パラメータつきのエンド {#cat:end-parameter keywords="parameter theorem for ends; end of a natural transformation" index="パラメータつきエンド|ぱらめーたつきえんど"}
+自然変換 $\gamma\colon S\Rightarrow S'$（エンドが両方存在）について、$\omega'_{c}\circ g=\gamma_{c,c}\circ\omega_{c}$ となる $g=\int_{c}\gamma_{c,c}$ がただ一つあり、合成を保つ。よって $T\colon\mathbf{P}\times\mathbf{C}^{\mathrm{op}}\times\mathbf{C}\to\mathbf{X}$ で各 $p$ のエンドが存在すれば、$p\mapsto\int_{c}T(p,c,c)$ は関手になり、楔の成分は $p$ について自然である。
+:::
+
+::: proof
+$\gamma_{c,c}\circ\omega_{c}$ は楔（$\gamma$ の自然性と $\omega$ の楔の条件）なので、エンドの普遍性から $g$ がただ一つ。$\int\gamma'\circ\int\gamma$ と $\int(\gamma'\gamma)$ はどちらも同じ条件を満たすので等しい。$s\colon p\to q$ に $\int_{c}T(s,c,c)$ を対応させれば関手。
+:::
+
+::: theorem エンドのフビニの定理 {#cat:fubini-ends keywords="Fubini theorem for ends, iterated ends" index="フビニの定理（エンド）|ふびにのていりえんど"}
+$S\colon\mathbf{P}^{\mathrm{op}}\times\mathbf{P}\times\mathbf{C}^{\mathrm{op}}\times\mathbf{C}\to\mathbf{X}$ について、すべての $(p,q)$ で $\int_{c}S(p,q,c,c)$ が存在するとする。このとき（$S$ を $(\mathbf{P}\times\mathbf{C})^{\mathrm{op}}\times(\mathbf{P}\times\mathbf{C})$ 上の関手とみて）
+$$
+\int_{(p,c)}S(p,p,c,c)\cong\int_{p}\int_{c}S(p,p,c,c)
+$$
+（一方が存在すれば他方も存在）。とくに、両方の順序の繰り返しエンドが存在すれば、それらは同型である。
+:::
+
+::: proof
+$\omega_{p,q}\colon\int_{c}S(p,q,c,c)\overset{\cdot\cdot}{\to}S(p,q,-,-)$ を内側のエンドとし、パラメータの定理で $(p,q)\mapsto\int_{c}S(p,q,c,c)$ を関手とみる。対象 $x$ について、族 $\varrho_{p}\colon x\to\int_{c}S(p,p,c,c)$ と族 $\xi_{p,c}\colon x\to S(p,p,c,c)$ で「$p$ を固定して $c$ について楔」のものは、$\xi_{p,c}=\omega_{p,p,c}\circ\varrho_{p}$ で一対一に対応する（内側のエンドの普遍性）。
+
+$\xi$ が $p$ についても楔であること（すなわち $(p,c)$ について楔であること。楔の条件は射の合成で保たれる——$g,h$ で成り立てば $S(1,hg)\beta=S(1,h)S(g,1)\beta=S(g,1)S(1,h)\beta=S(hg,1)\beta$——ので、$(s,f)=(s,1)(1,f)$ と分けて確かめればよい）と、$\varrho$ が $p$ について楔であることが同値なことを示せばよい。$s\colon p\to q$ について、$\varrho$ の楔の条件は $\int_{c}S(1,s,c,c)\circ\varrho_{p}=\int_{c}S(s,1,c,c)\circ\varrho_{q}$（$\int_{c}S(p,q,c,c)$ への射）。これは、内側のエンドの普遍性から、すべての $c$ で $\omega_{p,q,c}$ を合成したもの、すなわち $S(p,s,c,c)\xi_{p,c}=S(s,q,c,c)\xi_{q,c}$ と同値（パラメータの定理で $\omega$ が $(p,q)$ について自然なので）。後者は $\xi$ の $p$ についての楔の条件そのものである。よって $x$ から両辺への楔が一対一に対応し、普遍的な楔どうしも対応する。
+
+::: hypcheck
+- **内側のエンドがすべての $(p,q)$ で存在すること**：$p=q$ だけでなく $p\neq q$ のものも、$\varrho$ の楔の条件を述べるのに使った（Mac Lane が強調する点）。極限の場合は内側が $q$ に依存しないので、この注意は要らない。
+:::
+:::
+
+::: supplement
+**一般化.** 閉圏（\ref{cat:closed-category}）上の豊穣圏では、自然変換の集合は単なる集合ではなく hom 対象として $\int_{c}[Uc,Vc]$ で定義され、エンドは豊穣圏論の基本の道具である（Day–Kelly による。Mac Lane の注による）。
+
+**類似の定理.** \ref{cat:co-yoneda} は、関数 $f(a)=\int\delta(a-c)f(c)\,dc$（デルタ関数による畳み込み）と同じ形をしている：$\mathbf{C}(c,a)$ が「デルタ関数」の役割をする。
+
+**高い視点から：「積分」としての極限.** エンドとコエンドは、積分記号が示すとおり、「変数を束縛して消す」操作である。比喩で言えば、エンドは「すべての $c$ で両立する選び方の全体」（連立方程式の解の全体）、コエンドは「すべての $c$ からの寄与を、つじつまが合うように貼り合わせたもの」（重みつきの和）である。カン拡張の公式（次ページ以降）は、どちらもこの積分の形で書ける。
+:::
+
+## 問題 {#cat:sec-en-problems}
+
+::: problem {#cat:prob-en-set-end}
+$S\colon\mathbf{C}^{\mathrm{op}}\times\mathbf{C}\to\mathbf{Set}$（$\mathbf{C}$ は小さい）のエンドは、一点集合 $\ast$ から $S$ への楔の集合 $\mathrm{Wedge}(\ast,S)=\{(s_{c})\in\prod_{c}S(c,c):S(1,f)s_{b}=S(f,1)s_{c}\ (f\colon b\to c)\}$ であることを示せ。
+:::
+
+::: solution
+楔 $\omega_{c}\colon\mathrm{Wedge}(\ast,S)\to S(c,c)$ を成分をとる写像とする。楔の条件は定義から。集合 $Y$ からの楔 $\beta$ について、各 $y$ の像 $(\beta_{c}(y))_{c}$ は $\mathrm{Wedge}(\ast,S)$ の元で、$h(y)\defeq(\beta_{c}(y))_{c}$ が $\omega h=\beta$ を満たす唯一の写像。
+:::
+
+::: problem {#cat:prob-en-hom-preserves}
+hom 関手 $\mathbf{X}(x,-)$ がエンドを保存すること $\mathbf{X}(x,\int_{c}S(c,c))\cong\int_{c}\mathbf{X}(x,S(c,c))$ を示せ。
+:::
+
+::: solution
+左辺の元 $h\colon x\to\int S$ と、楔 $\beta\colon x\overset{\cdot\cdot}{\to}S$（$\beta_{c}=\omega_{c}h$）は、エンドの普遍性から一対一に対応する。右辺は前問から $\ast$ から $\mathbf{X}(x,S(-,-))$ への楔の集合で、それは $x$ から $S$ への楔と同じもの。対応が $\omega$ を保つことも定義から。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

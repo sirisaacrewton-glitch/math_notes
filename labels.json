@@ -6217,6 +6217,132 @@
       "num": "5.2",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/05-pi11-prewellordering.html"
     },
+    "ha:additive-category": {
+      "status": "defined",
+      "type": "definition",
+      "title": "加法圏",
+      "num": "1.8",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/01-additive.html"
+    },
+    "ha:additive-functor-biproduct": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "加法関手と双積",
+      "num": "1.10",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/01-additive.html"
+    },
+    "ha:biproduct": {
+      "status": "defined",
+      "type": "definition",
+      "title": "双積",
+      "num": "1.6",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/01-additive.html"
+    },
+    "ha:biproduct-theorem": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "積と余積は双積",
+      "num": "1.7",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/01-additive.html"
+    },
+    "ha:canonical-factorization": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "標準的な分解",
+      "num": "1.3",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/01-additive.html"
+    },
+    "ha:ker-coker-galois": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "核と余核のガロア接続",
+      "num": "1.2",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/01-additive.html"
+    },
+    "ha:kernel-cokernel": {
+      "status": "defined",
+      "type": "definition",
+      "title": "零射・核・余核",
+      "num": "1.1",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/01-additive.html"
+    },
+    "ha:page-additive": {
+      "status": "defined",
+      "type": "page",
+      "title": "核・余核と加法圏",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/01-additive.html"
+    },
+    "ha:preadditive": {
+      "status": "defined",
+      "type": "definition",
+      "title": "前加法圏",
+      "num": "1.4",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/01-additive.html"
+    },
+    "ha:preadditive-zero": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "前加法圏の零対象",
+      "num": "1.5",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/01-additive.html"
+    },
+    "ha:prob-ad-ab-functor-category": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "1.12",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/01-additive.html"
+    },
+    "ha:prob-ad-equalizer-kernel": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "1.11",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/01-additive.html"
+    },
+    "ha:sec-ad-additive": {
+      "status": "defined",
+      "type": "section",
+      "title": "加法圏",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/01-additive.html"
+    },
+    "ha:sec-ad-biproducts": {
+      "status": "defined",
+      "type": "section",
+      "title": "前加法圏と双積",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/01-additive.html"
+    },
+    "ha:sec-ad-kernels": {
+      "status": "defined",
+      "type": "section",
+      "title": "零射・核・余核",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/01-additive.html"
+    },
+    "ha:sec-ad-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/01-additive.html"
+    },
+    "ha:sec-ad-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/01-additive.html"
+    },
+    "ha:sum-from-biproduct": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "和は双積から決まる",
+      "num": "1.9",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/01-additive.html"
+    },
     "logic:abbreviation-semantics": {
       "status": "defined",
       "type": "proposition",
@@ -29421,6 +29547,13 @@
       "title": "代数閉包の一意性",
       "referencedFrom": [
         "03-mathematical-logic/03C-model-theory/01-elementary-extensions/04-acf.html"
+      ]
+    },
+    "ha:page-abelian": {
+      "status": "planned",
+      "title": "アーベル圏",
+      "referencedFrom": [
+        "18-category-theory/18G-homological-algebra/01-abelian-categories/01-additive.html"
       ]
     },
     "lin:basis-existence": {

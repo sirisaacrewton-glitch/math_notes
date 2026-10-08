@@ -232,6 +232,14 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | CS-03 | 02-structured-categories/03-monoids-actions | モノイダル圏のモノイドと作用、自由モノイド | VII.3–4 | 8160–8375 | 完了 |
 | CS-04 | 02-structured-categories/04-simplicial | 単体圏 Δ と普遍モノイド、単体的対象 | VII.5 | 8376–8635 | 完了 |
 | CS-05 | 02-structured-categories/05-closed-categories | 閉圏とコンパクト生成空間 | VII.7–8 | 8775–8983 | 完了 |
+
+* **（2026-10-08 自律判断）** アーベル圏（Mac Lane 第 VIII 章）は、ホモロジー代数の土台なので `18G-homological-algebra/01-abelian-categories`（id ha-abelian、接頭辞 ha:）に置いた（MSC では 18E10 だが、表示上の「ホモロジー代数」の見出しに入れるため）。ユーザー未確認。
+
+| ID | ファイル | 題 | CWM | 本文の行 | 状態 |
+|---|---|---|---|---|---|
+| HA-01 | 18G/01-abelian-categories/01-additive | 核・余核と加法圏 | VIII.1–2 | 9100–9365 | 完了 |
+| HA-02 | 18G/01-abelian-categories/02-abelian | アーベル圏・像・完全列・完全関手 | VIII.3 | 9366–9600 | 未 |
+| HA-03 | 18G/01-abelian-categories/03-diagram-lemmas | 図式の補題（元の代わり、五項補題、蛇の補題） | VIII.4 | 9600– | 未 |
 | CM-01 | 03-monads/01-monads-algebras | モナドとアイレンバーグ–ムーア代数、比較関手 | VI.1–3 | 6675–6984 | 完了 |
 | CM-02 | 03-monads/02-kleisli | クライスリ圏と比較の要約、語と自由半群 | VI.4–5 | 6985–7196 | 完了 |
 | CM-03 | 03-monads/03-beck | 分裂余等化子とベックのモナド性定理 | VI.6–7 | 7197–7540 | 完了 |
@@ -270,6 +278,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 ホモロジー代数 HA-01（18G/01-abelian-categories 新設、01-additive, ha:page-additive：零射・核・余核、ガロア接続、標準的な分解、前加法圏と零対象、双積と積・余積の一致、加法圏、和の双積による表示、加法関手の特徴づけ）。Mac Lane VIII.1–2。ホモロジー代数（代数の下）に初めてページができ、8.2 の確認 6 か所を確認。
 - 2026-10-08 圏論 CS-05（05-closed-categories, cat:page-closed-categories：対称モノイダル圏（コヒーレンスは fact）、閉圏と豊穣圏、コンパクト生成空間とケリー化、コンパクト集合上の位相の一致（Mac Lane のデカルト閉性の証明でチューブ補題の使い方に欠落があったのを補った）、余反射性と積、コンパクト開位相、CGHaus のデカルト閉性）。Mac Lane VII.7–8。
 - 2026-10-08 圏論 CS-04（04-simplicial, cat:page-simplicial：単体圏 Δ と順序数の和、射は積の和、普遍モノイド、面と退化、標準形、単体的恒等式、生成と関係による表示（挿入による並べ替えを補った）、単体的対象・特異単体・神経、∂∂=0）。Mac Lane VII.5。
 - 2026-10-08 圏論 CS-03（03-monoids-actions, cat:page-monoids-in-monoidal：モノイド対象と例の表、一般結合律、余積を保存するモノイダル圏の自由モノイド（結合律と普遍性をコヒーレンス定理で補った）、テンソル代数、作用と自由な作用の随伴）。Mac Lane VII.3–4。

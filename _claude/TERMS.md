@@ -351,3 +351,4 @@
 | simplicial category / face / degeneracy / simplicial set / nerve | 単体圏 / 面写像 / 退化写像 / 単体的集合 / 神経 | | 仮。cat:page-simplicial |
 | symmetric monoidal / closed category / internal hom / enriched category | 対称モノイダル圏 / 閉圏 / 内部 hom / 豊穣圏 | V 圏 | 仮。cat:page-closed-categories |
 | compactly generated / k-ification / compact-open topology | コンパクト生成 / ケリー化 / コンパクト開位相 | | 仮。cat:page-closed-categories |
+| zero arrow / kernel / cokernel / Ab-category (preadditive) / biproduct / additive category | 零射 / 核 / 余核 / 前加法圏（Ab 圏） / 双積 / 加法圏 | | 仮。ha:page-additive |

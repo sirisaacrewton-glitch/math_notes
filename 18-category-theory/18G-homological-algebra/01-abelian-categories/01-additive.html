@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>核・余核と加法圏 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18G-homological-algebra/01-abelian-categories/01-additive.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 核・余核と加法圏 {#ha:page-additive keywords="zero arrow, kernel, cokernel, Galois connection between kernels and cokernels, canonical factorization, Ab-category, preadditive category, biproduct, direct sum, additive category, additive functor, matrices of arrows"}
+
+アーベル群や加群の圏では、準同型の和が定義でき、直積と直和が一致し、核と余核がある。本ページでは、これらの性質を圏の言葉で取り出す。零対象をもつ圏では**零射**と**核・余核**が定義でき（\ref{ha:kernel-cokernel}）、核と余核はガロア接続をなす。hom 集合がアーベル群で合成が双線形な圏（**前加法圏**、\ref{ha:preadditive}）では、二つの対象の積と余積は同じもの（**双積**）であり、それは等式だけで特徴づけられる（\ref{ha:biproduct-theorem}）。双積をもつ前加法圏が**加法圏**で、射の和は双積から復元できる（\ref{ha:sum-from-biproduct}）。これらは次ページのアーベル圏（\ref[アーベル圏]{ha:page-abelian}）の準備である。
+
+> 資料：Mac Lane, *Categories for the Working Mathematician* 第 VIII 章 §1–§2。
+
+## 記法と定義の確認 {#ha:sec-ad-notation}
+
+::: notation
+- 始対象・終対象・零対象、モノ射・エピ射は \ref{cat:initial-terminal}, \ref{cat:monic-epic}、積・余積・等化子・余等化子と等化子がモノ射であることは \ref{cat:product}, \ref{cat:coequalizer}, \ref{cat:equalizer-monic} のとおり。
+- 射の合成 $g\circ f$ を $gf$ とも書く。
+:::
+
+## 零射・核・余核 {#ha:sec-ad-kernels}
+
+::: definition 零射・核・余核 {#ha:kernel-cokernel keywords="zero arrow, kernel, cokernel" index="零射|れいしゃ, 核（圏の）|かくけんの, 余核|よかく"}
+圏 $\mathbf{C}$ が零対象 $z$ をもつとする。$a\to z\to b$ の合成を**零射** $0=0_{a,b}\colon a\to b$ という（零対象の選び方によらない）。射 $f\colon a\to b$ の**核** $k=\ker f\colon s\to a$ は、$fk=0$ を満たし、$fh=0$ となる任意の $h$ が $h=kh'$ と一意に分解するもの（$f$ と $0$ の等化子）。双対に、**余核** $\mathrm{coker}\,f\colon b\to q$ は $f$ と $0$ の余等化子である。
+:::
+
+::: example
+1. $\mathbf{Grp}$ では自明群が零対象で、$f$ の核は通常の核 $N=f^{-1}(1)$ の包含。核になるモノ射は正規部分群の包含に限るので、モノ射がすべて核になるわけではない。
+2. 基点付き集合の圏では、一点集合が零対象で、$f$ の核は基点の逆像の包含。エピ射は核で決まらない（$\mathbf{Grp}$ とは違う）。
+3. 零射との合成は零射：$0\circ g=0$, $g\circ0=0$（$z$ を経由する）。
+:::
+
+::: proposition 核と余核のガロア接続 {#ha:ker-coker-galois keywords="Galois connection between kernels and cokernels; a kernel is the kernel of its cokernel" index="核と余核のガロア接続|かくとよかくのがろあせつぞく"}
+零対象とすべての射の核・余核をもつ圏で、$c$ を終域とする射 $f$ と $c$ を始域とする射 $u$ について
+$$
+f\le\ker u\iff uf=0\iff\mathrm{coker}\,f\le u
+$$
+（$g\le f$ は「$g$ が $f$ を経由する」、$\mathrm{coker}\,f\le u$ は「$u$ が $\mathrm{coker}\,f$ を経由する」）。とくに $\ker(\mathrm{coker}(\ker u))\equiv\ker u$ で、射 $g$ が核であることと $g\equiv\ker(\mathrm{coker}\,g)$ は同値（$\equiv$ は両方向の $\le$）。
+:::
+
+::: proof
+**Step 1（同値）.** $f$ が $\ker u$ を経由すれば $uf=u\ker u\cdot h=0$。逆は核の定義。右側も余核の定義と双対。
+
+**Step 2（三重の合成）.** $k\defeq\ker u$ とする。$\mathrm{coker}\,k\le u$（Step 1 で $f=k$, $uk=0$）。$\ker(\mathrm{coker}\,k)$ は $\mathrm{coker}\,k$ で消えるので、$u=w\circ\mathrm{coker}\,k$ より $u$ でも消え、$\ker(\mathrm{coker}\,k)\le k$。逆に $k$ 自身は $\mathrm{coker}\,k$ で消えるので $k\le\ker(\mathrm{coker}\,k)$。よって $\ker(\mathrm{coker}\,k)\equiv k$。
+
+**Step 3.** $g$ が核なら Step 2。逆に $g\equiv\ker(\mathrm{coker}\,g)$ なら、$g$ は核と同値（同型を除いて同じ）なので核である。
+:::
+
+::: lemma 標準的な分解 {#ha:canonical-factorization keywords="canonical factorization f = mq with m = ker coker f" index="核と余核による分解|かくとよかくによるぶんかい"}
+零対象とすべての射の核・余核をもつ圏で、$f\colon a\to b$ は $f=mq$、$m\defeq\ker(\mathrm{coker}\,f)$ と一意に分解する。
+1. $f=m'q'$ で $m'$ が核なら、$m=m't$, $q'=tq$ となる $t$ がただ一つある。
+2. さらに圏が等化子をもち、すべてのモノ射が核なら、$q$ はエピ射である。
+:::
+
+::: proof
+$(\mathrm{coker}\,f)f=0$ なので $f$ は $m=\ker(\mathrm{coker}\,f)$ を一意に経由する：$f=mq$。
+
+**1.** $p'\defeq\mathrm{coker}\,m'$ とすると $m'=\ker p'$（$m'$ は核、\ref{ha:ker-coker-galois}）。$p'f=p'm'q'=0$ なので、$p'$ は $p\defeq\mathrm{coker}\,f$ を経由する：$p'=wp$。すると $p'm=wpm=0$（$m=\ker p$）で、$m$ は $m'=\ker p'$ を経由する：$m=m't$。$m'q'=f=mq=m'tq$、$m'$ はモノ射（核は等化子なのでモノ射）なので $q'=tq$。$t$ の一意性は $m'$ がモノ射であることから。
+
+**2.** $rq=sq$ とし、$e$ を $r,s$ の等化子とする。$q=eq''$ と分解し、$f=meq''$。$me$ はモノ射なので仮定から核で、1 を $m'=me$ に使うと $m=me\,t$。$m$ はモノ射なので $1=et$、$e$ は右逆をもつモノ射なので同型で、$r=s$。
+:::
+
+## 前加法圏と双積 {#ha:sec-ad-biproducts}
+
+::: definition 前加法圏 {#ha:preadditive keywords="Ab-category, preadditive category, additive functor" index="前加法圏|ぜんかほうけん, Ab 圏|えーびーけん, 加法関手|かほうかんしゅ"}
+圏 $\mathbf{A}$ の各 hom 集合 $\mathbf{A}(b,c)$ にアーベル群の構造があり、合成が双線形（$g(f+f')=gf+gf'$, $(g+g')f=gf+g'f$）であるとき、$\mathbf{A}$ を**前加法圏**（Mac Lane の言葉で **Ab 圏**）という。前加法圏の間の関手 $T$ で $T(f+f')=Tf+Tf'$ を満たすものを**加法関手**という。
+:::
+
+::: proposition 前加法圏の零対象 {#ha:preadditive-zero keywords="in an Ab-category initial, terminal and zero objects coincide" index="前加法圏の零対象|ぜんかほうけんのれいたいしょう"}
+前加法圏の対象 $z$ について、(i) 始対象、(ii) 終対象、(iii) $1_{z}=0$、(iv) $\mathbf{A}(z,z)=0$ は同値。とくに始対象・終対象は零対象で、零射は hom 群の零元である。
+:::
+
+::: proof
+(i) ⇒ (iv)：$z\to z$ の射は一つしかないので $\mathbf{A}(z,z)=\{0\}$。(iv) ⇒ (iii) は明らか。(iii) ⇒ (ii)：$f\colon b\to z$ なら $f=1_{z}f=0f=0$（双線形性から零元との合成は零元）なので、$b\to z$ の射は $0$ だけ。(ii) ⇒ (iii)：$\mathbf{A}(z,z)$ は一元なので $1_{z}=0$。(iii) ⇒ (i) は (iii) ⇒ (ii) の双対。零射 $b\to z\to c$ は零元どうしの合成なので零元。
+:::
+
+::: definition 双積 {#ha:biproduct keywords="biproduct, direct sum" index="双積|そうせき, 直和（圏の）|ちょくわけんの"}
+前加法圏で、対象 $a,b$ の**双積**は、対象 $c$ と射 $i_{1}\colon a\to c$, $i_{2}\colon b\to c$, $p_{1}\colon c\to a$, $p_{2}\colon c\to b$ で
+$$
+p_{1}i_{1}=1_{a},\qquad p_{2}i_{2}=1_{b},\qquad i_{1}p_{1}+i_{2}p_{2}=1_{c}
+$$
+を満たすものである。$c$ を $a\oplus b$ と書く。
+:::
+
+::: theorem 積と余積は双積 {#ha:biproduct-theorem keywords="in an Ab-category, finite products, coproducts and biproducts coincide" index="積と余積の一致|せきとよせきのいっち"}
+前加法圏で、双積 $(c,i_{1},i_{2},p_{1},p_{2})$ について $(c,p_{1},p_{2})$ は $a,b$ の積、$(c,i_{1},i_{2})$ は余積である。逆に、積 $(c,p_{1},p_{2})$ があれば、$i_{1},i_{2}$ を補って双積にできる。とくに、二つの対象が積をもつことと余積をもつことは同値。
+:::
+
+::: proof
+**Step 1（$p_{1}i_{2}=0$）.** $p_{1}i_{2}=p_{1}(i_{1}p_{1}+i_{2}p_{2})i_{2}=p_{1}i_{2}+p_{1}i_{2}$（$p_{1}i_{1}=1$, $p_{2}i_{2}=1$ を使った）。両辺から引いて $p_{1}i_{2}=0$。同様に $p_{2}i_{1}=0$。
+
+**Step 2（積）.** $f_{1}\colon d\to a$, $f_{2}\colon d\to b$ について $h\defeq i_{1}f_{1}+i_{2}f_{2}$ とおくと、Step 1 から $p_{j}h=f_{j}$。逆に $p_{j}h'=f_{j}$ なら $h'=(i_{1}p_{1}+i_{2}p_{2})h'=i_{1}f_{1}+i_{2}f_{2}=h$。よって積。余積は双対。
+
+**Step 3（積から双積）.** 積 $(c,p_{1},p_{2})$ について、成分が $(1_{a},0)$ の射 $i_{1}\colon a\to c$、$(0,1_{b})$ の射 $i_{2}$ をとる。$p_{1}(i_{1}p_{1}+i_{2}p_{2})=p_{1}$, $p_{2}(i_{1}p_{1}+i_{2}p_{2})=p_{2}$ なので、積の一意性から $i_{1}p_{1}+i_{2}p_{2}=1_{c}$。
+:::
+
+::: intuition
+積の普遍性は「外から入ってくる射」、余積の普遍性は「外へ出ていく射」について述べる「外的な」条件だが、双積は $a,b,c$ とその間の射だけの等式という「内的な」条件である。前加法圏では、射を足せることがこの二つを結びつける：$1_{c}=i_{1}p_{1}+i_{2}p_{2}$ は「$c$ の元は $a$ 成分と $b$ 成分の和に分かれる」ことを言っている。
+:::
+
+## 加法圏 {#ha:sec-ad-additive}
+
+::: definition 加法圏 {#ha:additive-category keywords="additive category" index="加法圏|かほうけん"}
+零対象をもち、任意の二つの対象の双積をもつ前加法圏を**加法圏**という。
+:::
+
+::: proposition 和は双積から決まる {#ha:sum-from-biproduct keywords="the sum of arrows is determined by biproducts via diagonal and codiagonal" index="対角射と余対角射による和|たいかくしゃとよたいかくしゃによるわ"}
+加法圏で、$f,f'\colon a\to b$ について
+$$
+f+f'=\nabla_{b}\circ(f\oplus f')\circ\Delta_{a}.
+$$
+ここで $\Delta_{a}\colon a\to a\oplus a$ は対角射（$p_{1}\Delta=p_{2}\Delta=1$）、$\nabla_{b}\colon b\oplus b\to b$ は余対角射（$\nabla i_{1}=\nabla i_{2}=1$）、$f\oplus f'$ は成分が $fp_{1}$, $f'p_{2}$ の射。
+:::
+
+::: proof
+$f\oplus f'$ は積として $p_{j}(f\oplus f')=f_{j}p_{j}$（$f_{1}=f$, $f_{2}=f'$）で定まるが、余積としても $(f\oplus f')i_{k}=i_{k}f_{k}$ を満たす：$(f\oplus f')i_{k}=(i_{1}p_{1}+i_{2}p_{2})(f\oplus f')i_{k}=i_{1}f_{1}p_{1}i_{k}+i_{2}f_{2}p_{2}i_{k}=i_{k}f_{k}$（\ref{ha:biproduct-theorem} の Step 1）。よって
+$$
+\nabla(f\oplus f')\Delta=\nabla(f\oplus f')(i_{1}p_{1}+i_{2}p_{2})\Delta=\nabla i_{1}f+\nabla i_{2}f'=f+f'.
+$$
+:::
+
+::: proposition 加法関手と双積 {#ha:additive-functor-biproduct keywords="a functor between additive categories is additive iff it preserves biproducts" index="加法関手の特徴づけ|かほうかんしゅのとくちょうづけ"}
+前加法圏 $\mathbf{A}$ が双積をもつとき、関手 $T\colon\mathbf{A}\to\mathbf{B}$（$\mathbf{B}$ は前加法圏）が加法的であることと、$T$ が双積の図式を双積の図式に移すことは同値。
+:::
+
+::: proof
+加法的なら、双積の三つの等式は $T$ で保たれる。逆に双積を保つなら、$T(f\oplus f')=Tf\oplus Tf'$、$T\Delta=\Delta$、$T\nabla=\nabla$（対角射・余対角射は双積の射影・入射で決まる）なので、\ref{ha:sum-from-biproduct} から $T(f+f')=Tf+Tf'$。
+:::
+
+::: example
+1. $\mathbf{Ab}$、環 $R$ 上の加群の圏 $R\text{-}\mathbf{Mod}$ は加法圏で、双積は直和。
+2. 可換環 $K$ 上の行列の圏（対象は自然数、$m\to n$ の射は $n\times m$ 行列）は加法圏で、双積は $m+n$。
+3. 有限の双積 $a_{1}\oplus\cdots\oplus a_{n}$ の間の射は成分 $f_{kj}=p_{k}fi_{j}$ の行列で表され、合成は行列の積になる（$\sum_{j}i_{j}p_{j}=1$ を間に挟む）。
+4. hom 関手 $\mathbf{A}(a,-)\colon\mathbf{A}\to\mathbf{Ab}$ は加法関手。
+:::
+
+::: supplement
+**一般化.** 零対象・有限の積・有限の余積をもつ圏で、標準的な射 $a\sqcup b\to a\times b$ がつねに同型なら、$f+f'\defeq\nabla(f\times f')\Delta$ で各 hom 集合が可換モノイドになり、さらに $1_{a}$ に加法逆元があれば加法圏になる（Mac Lane 第 VIII 章 §2 演習 4）。つまり加法構造は「積と余積の一致」から復元できる。無限の積と余積は一般に一致しない（$\mathbf{Ab}$ で $\bigoplus\mathbb{Z}\to\prod\mathbb{Z}$ は同型でない）。
+
+**類似の定理.** \ref{ha:ker-coker-galois} は、随伴の特別な場合であるガロア接続（\ref{cat:prob-galois-connection}）の一例である。核をとる操作と余核をとる操作は、互いに「逆に近い」が一般には逆でない。
+
+**高い視点から：「線形」な圏.** 前加法圏は「$\mathbf{Ab}$ 上の豊穣圏」（\ref{cat:closed-category}）にほかならない。比喩で言えば、ふつうの圏では二つの射は「同じか違うか」しか言えないが、前加法圏では射を足し引きでき、「違いの大きさ」$f-g$ を一つの射として扱える。等化子が核 $\ker(f-g)$ に、余等化子が余核に置き換わるのはこのためである。
+:::
+
+## 問題 {#ha:sec-ad-problems}
+
+::: problem {#ha:prob-ad-equalizer-kernel}
+前加法圏で、$f,g\colon b\to c$ の等化子は $f-g$ の核と同じものであることを示せ。
+:::
+
+::: solution
+$h\colon a\to b$ について、$fh=gh\iff(f-g)h=0$（双線形性）。よって「$f,g$ を等しくする射の普遍的なもの」と「$f-g$ を零にする射の普遍的なもの」は同じ条件で定義される。
+:::
+
+::: problem {#ha:prob-ad-ab-functor-category}
+$\mathbf{A}$ が加法圏なら、任意の小さい圏 $\mathbf{J}$ について関手圏 $\mathbf{A}^{\mathbf{J}}$ も加法圏であることを示せ。
+:::
+
+::: solution
+自然変換 $\alpha,\beta\colon S\Rightarrow T$ の和を成分ごとに $(\alpha+\beta)_{j}\defeq\alpha_{j}+\beta_{j}$ と定めると、自然性は双線形性から保たれ、合成は双線形。零関手（すべての対象を零対象に）が零対象、双積は成分ごとに $(S\oplus T)j\defeq Sj\oplus Tj$ で、射影・入射も成分ごと。双積の等式は成分ごとに成り立つ。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

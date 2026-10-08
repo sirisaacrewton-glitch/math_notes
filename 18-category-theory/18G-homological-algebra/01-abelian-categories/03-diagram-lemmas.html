@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>図式の補題：五項補題と蛇の補題 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18G-homological-algebra/01-abelian-categories/03-diagram-lemmas.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 図式の補題：五項補題と蛇の補題 {#ha:page-diagram-lemmas keywords="diagram chasing in abelian categories, members, pullback of an epi, five lemma, short five lemma, snake lemma, ker-coker sequence, connecting morphism"}
+
+アーベル群の圏では、可換図式についての主張を「元を追いかけて」証明する（**図式追跡**）。一般のアーベル圏（\ref{ha:abelian-category}）の対象には元がないが、Mac Lane は「対象への射」を元の代わりに使う方法を与えた。射 $x\colon s\to a$ を $a$ の**メンバー**とみなし、エピ射で前から合成して一致するものを同一視する（\ref{ha:member}）。すると、単射・全射・完全性などが、元の場合とそっくり同じ規則で述べられる（\ref{ha:chasing-rules}）。これを使って、**五項補題**（\ref{ha:five-lemma}）と、ホモロジー代数の連結射の源である**蛇の補題**（\ref{ha:snake-lemma}）を示す。
+
+> 資料：Mac Lane, *Categories for the Working Mathematician* 第 VIII 章 §4。蛇の補題の完全性を Mac Lane は $\ker h$ の位置だけ示し、残りを演習としている。本ページでは 6 か所すべてを示した。
+
+## 記法と定義の確認 {#ha:sec-dl-notation}
+
+::: notation
+- アーベル圏、像の分解、完全列、短完全列の特徴づけ（$0\to a\xrightarrow{m}b\xrightarrow{e}c\to0$ が短完全 $\iff m=\ker e$, $e=\mathrm{coker}\,m$）は \ref{ha:abelian-category}, \ref{ha:image-factorization}, \ref{ha:exact-sequence}, \ref{ha:short-exact-characterization} のとおり。アーベル圏の反対圏もアーベル圏で、主張の双対をとってよい。
+- 引き戻し・押し出しは \ref{cat:product}（の 3 とその双対）のとおり。
+- アーベル圏で、エピ射は自分の核の余核、モノ射は自分の余核の核である（公理と \ref{ha:ker-coker-galois}）。
+:::
+
+## エピ射の引き戻し {#ha:sec-dl-pullback}
+
+::: proposition エピ射の引き戻しはエピ {#ha:pullback-epi keywords="in an abelian category the pullback of an epi is epi; kernels of pullbacks" index="エピ射の引き戻し|えぴしゃのひきもどし"}
+アーベル圏で、$f\colon b\to c$ と $g\colon d\to c$ の引き戻しを $s$（射 $g'\colon s\to b$, $f'\colon s\to d$、$fg'=gf'$）とする。
+1. $f$ がエピ射なら $f'$ もエピ射。
+2. $k=\ker f\colon a\to b$ は $k=g'k'$ と分解し、$k'\colon a\to s$ は $f'$ の核である。
+:::
+
+::: proof
+**Step 0（引き戻しの構成）.** $\varphi\defeq fp_{1}-gp_{2}\colon b\oplus d\to c$ とし、$\mu\defeq\ker\varphi\colon s\to b\oplus d$、$g'\defeq p_{1}\mu$、$f'\defeq p_{2}\mu$ とおくと、これは引き戻しである（$x\colon t\to b$, $y\colon t\to d$ が $fx=gy$ を満たすことと、$\langle x,y\rangle$ が $\varphi$ で消えることは同値）。
+
+**Step 1（$\varphi$ はエピ）.** $h\varphi=0$ なら、入射 $i_{1}$ を合成して $0=h\varphi i_{1}=hf$、$f$ はエピなので $h=0$。
+
+**Step 2（$f'$ はエピ）.** $vf'=0$ とする。$vp_{2}\mu=0$ で、$\varphi$ はエピなので $\varphi=\mathrm{coker}\,\mu$（エピは自分の核の余核）。よって $vp_{2}=v'\varphi$。$i_{1}$ を合成して $0=vp_{2}i_{1}=v'\varphi i_{1}=v'f$、$f$ はエピなので $v'=0$、よって $vp_{2}=0$、$v=vp_{2}i_{2}=0$。
+
+**Step 3（核）.** $k$ と $0\colon a\to d$ は $fk=0=g0$ を満たすので、$g'k'=k$, $f'k'=0$ となる $k'$ がただ一つある（$k$ がモノなので $k'$ もモノ）。$f'v=0$ なら $fg'v=gf'v=0$ なので $g'v=kv'$。すると $g'(k'v')=kv'=g'v$, $f'(k'v')=0=f'v$ で、引き戻しの一意性から $v=k'v'$。よって $k'=\ker f'$。
+:::
+
+## メンバーと図式追跡 {#ha:sec-dl-members}
+
+::: definition メンバー {#ha:member keywords="member of an object in an abelian category, equivalence of members" index="メンバー（アーベル圏の）|めんばーあーべるけんの"}
+アーベル圏の対象 $a$ を終域とする射 $x\colon s\to a$ を $a$ の**メンバー**といい $x\in_{m}a$ と書く。$x\equiv y$ を「エピ射 $u,v$ で $xu=yv$ となるものがある」で定める。
+:::
+
+::: lemma メンバーの同値関係 {#ha:member-equivalence keywords="equivalence of members is an equivalence relation" index="メンバーの同値|めんばーのどうち"}
+$\equiv$ は同値関係で、射 $f\colon a\to b$ は $x\equiv y$ を $fx\equiv fy$ に移す。また $x\equiv0$ と $x=0$ は同値。
+:::
+
+::: proof
+反射律（$u=v=1$）と対称律は明らか。推移律：$xu=yv$, $yw=zr$（$u,v,w,r$ エピ）とし、$v$ と $w$ の引き戻し（$vv'=ww'$ となる $v',w'$）をとると、\ref{ha:pullback-epi} から $v',w'$ はエピ。$x(uv')=yvv'=yww'=z(rw')$ で、$uv'$, $rw'$ はエピ。$fx\equiv fy$ は $fxu=fyv$ から。$x\equiv0$ なら $xu=0$ で $u$ エピなので $x=0$。
+:::
+
+::: theorem 図式追跡の規則 {#ha:chasing-rules keywords="elementary rules for chasing diagrams with members" index="図式追跡の規則|ずしきついせきのきそく"}
+アーベル圏で、メンバーについて次が成り立つ。
+1. $f\colon a\to b$ がモノ $\iff$ $fx\equiv0$ なら $x\equiv0$。
+2. $f$ がモノ $\iff$ $fx\equiv fx'$ なら $x\equiv x'$。
+3. $g\colon b\to c$ がエピ $\iff$ 各 $z\in_{m}c$ に $gy\equiv z$ となる $y\in_{m}b$ がある。
+4. $h=0\iff$ すべての $x$ で $hx\equiv0$。
+5. $a\xrightarrow{f}b\xrightarrow{g}c$ が $b$ で完全 $\iff$ $gf=0$ で、$gy\equiv0$ となる各 $y\in_{m}b$ に $fx\equiv y$ となる $x\in_{m}a$ がある。
+6. （引き算）$gx\equiv gy$ なら、$gz=0$ となる $z\in_{m}b$ があり、$fx=0$ となる任意の $f$ について $fy\equiv fz$、$hy=0$ となる任意の $h$ について $hx\equiv-hz$。
+:::
+
+::: proof
+**1.** モノなら $fx\equiv0\Rightarrow fx=0\Rightarrow x=0$。逆に $fx=0\Rightarrow x=0$ なら、$fx=fy$ のとき $f(x-y)=0$ で $x=y$。
+
+**2.** モノなら $fxu=fx'v\Rightarrow xu=x'v$。逆は 1（$x'=0$）。
+
+**3.** $g$ がエピで $z\colon t\to c$ なら、$g$ と $z$ の引き戻し（$gy=zv$）で $v$ はエピ（\ref{ha:pullback-epi}）、$gy\equiv z$。逆に $z=1_{c}$ に対し $1_{c}u=gyv$ なら $g(yv)=u$ はエピなので $g$ はエピ。
+
+**4.** $x=1$ をとる。
+
+**5.** $f=me$（像の分解）。（⇒）$m=\ker g$。$gy\equiv0$ なら $gy=0$ で $y=my_{1}$。$e$ と $y_{1}$ の引き戻し $y_{1}e''=ex$（$e''$ エピ）から $ye''=my_{1}e''=mex=fx$、$y\equiv fx$。（⇐）$k\defeq\ker g$ をメンバーとみると $gk=0$ なので $ku=fxv=m(exv)$（$u,v$ エピ）。$ku$ の像は $k$（$k$ モノ、$u$ エピ）で、$ku$ はモノ射 $m$（核）を経由するので、\ref{ha:canonical-factorization} の 1 から $k\le m$。$gf=0$ から $m\le\ker g=k$。よって $\mathrm{im}\,f\equiv\ker g$。
+
+**6.** $gxu=gyv$（$u,v$ エピ）とし $z\defeq yv-xu$。$gz=0$。$fx=0$ なら $fz=fyv\equiv fy$。$hy=0$ なら $hz=-hxu\equiv-hx$。
+:::
+
+## 五項補題 {#ha:sec-dl-five}
+
+::: theorem 五項補題 {#ha:five-lemma keywords="five lemma in abelian categories" index="五項補題|ごこうほだい"}
+アーベル圏で、完全な行をもつ可換図式
+$$
+\begin{array}{ccccccccc}
+a_{1}&\xrightarrow{g_{1}}&a_{2}&\xrightarrow{g_{2}}&a_{3}&\xrightarrow{g_{3}}&a_{4}&\xrightarrow{g_{4}}&a_{5}\\
+\downarrow f_{1}&&\downarrow f_{2}&&\downarrow f_{3}&&\downarrow f_{4}&&\downarrow f_{5}\\
+b_{1}&\xrightarrow{h_{1}}&b_{2}&\xrightarrow{h_{2}}&b_{3}&\xrightarrow{h_{3}}&b_{4}&\xrightarrow{h_{4}}&b_{5}
+\end{array}
+$$
+で、$f_{2},f_{4}$ がモノ、$f_{1}$ がエピなら $f_{3}$ はモノ。双対に、$f_{2},f_{4}$ がエピ、$f_{5}$ がモノなら $f_{3}$ はエピ。とくに $f_{1},f_{2},f_{4},f_{5}$ が同型なら $f_{3}$ は同型。
+:::
+
+::: proof
+**Step 1.** $x\in_{m}a_{3}$ で $f_{3}x\equiv0$ とする（規則 1 で $x\equiv0$ を示せばよい）。$f_{4}g_{3}x=h_{3}f_{3}x\equiv0$、$f_{4}$ はモノなので $g_{3}x\equiv0$。
+
+**Step 2.** $a_{3}$ での完全性（規則 5）から $g_{2}y\equiv x$ となる $y\in_{m}a_{2}$ がある。$h_{2}f_{2}y=f_{3}g_{2}y\equiv f_{3}x\equiv0$。
+
+**Step 3.** $b_{2}$ での完全性から $h_{1}y'\equiv f_{2}y$ となる $y'\in_{m}b_{1}$。$f_{1}$ はエピなので（規則 3）$f_{1}z\equiv y'$ となる $z\in_{m}a_{1}$。$f_{2}g_{1}z=h_{1}f_{1}z\equiv h_{1}y'\equiv f_{2}y$。
+
+**Step 4.** $f_{2}$ はモノなので（規則 2）$g_{1}z\equiv y$。よって $x\equiv g_{2}y\equiv g_{2}g_{1}z=0$（$a_{2}$ での完全性から $g_{2}g_{1}=0$）。
+
+後半は反対圏で前半を使う（行の向きが逆になり、$f_{5},f_{4},f_{2}$ の役割が $f_{1},f_{2},f_{4}$ に移る）。最後の主張は、モノかつエピは同型（\ref{ha:mono-epi-iso}）から。
+
+::: hypcheck
+- **$f_{1}$ のエピ性**：Step 3 だけで使った。$f_{5}$ は前半では使わない（Mac Lane の演習 1：$f_{3}$ がモノになるための最小の仮定は $f_{2},f_{4}$ モノと $f_{1}$ エピ）。
+- **行の完全性**：$a_{3}$, $b_{2}$, $a_{2}$（$g_{2}g_{1}=0$）での完全性を使った。
+:::
+:::
+
+## 蛇の補題 {#ha:sec-dl-snake}
+
+::: theorem 蛇の補題 {#ha:snake-lemma keywords="snake lemma, ker-coker sequence, connecting morphism" index="蛇の補題|へびのほだい, 連結射|れんけつしゃ, 核・余核の完全列|かくよかくのかんぜんれつ"}
+アーベル圏で、短完全列の射
+$$
+\begin{array}{ccccccccc}
+0&\to&a&\xrightarrow{m}&b&\xrightarrow{e}&c&\to&0\\
+&&\downarrow f&&\downarrow g&&\downarrow h&&\\
+0&\to&a'&\xrightarrow{m'}&b'&\xrightarrow{e'}&c'&\to&0
+\end{array}
+$$
+（可換）について、核 $i\colon\mathrm{K}f\to a$, $j\colon\mathrm{K}g\to b$, $k\colon\mathrm{K}h\to c$ と余核 $p\colon a'\to\mathrm{C}f$, $q\colon b'\to\mathrm{C}g$, $r\colon c'\to\mathrm{C}h$ をとる。射 $\delta\colon\mathrm{K}h\to\mathrm{C}f$（**連結射**）があって、次の列は完全である。
+$$
+0\to\mathrm{K}f\xrightarrow{m_{0}}\mathrm{K}g\xrightarrow{e_{0}}\mathrm{K}h\xrightarrow{\delta}\mathrm{C}f\xrightarrow{m_{1}}\mathrm{C}g\xrightarrow{e_{1}}\mathrm{C}h\to0
+$$
+ここで $m_{0},e_{0}$ は $jm_{0}=mi$, $ke_{0}=ej$ で、$m_{1},e_{1}$ は $m_{1}p=qm'$, $e_{1}q=re'$ で定まる射。
+:::
+
+::: lemma 連結射の構成とジグザグ {#ha:connecting-morphism keywords="construction of the connecting morphism by pullback and pushout; zig-zag description" index="連結射のジグザグ|れんけつしゃのじぐざぐ"}
+上の状況で、射 $\delta\colon\mathrm{K}h\to\mathrm{C}f$ があり、次を満たす：$x\in_{m}\mathrm{K}h$, $y\in_{m}b$, $z\in_{m}a'$ が $ey\equiv kx$ かつ $m'z\equiv gy$ を満たせば、$\delta x\equiv pz$。
+:::
+
+::: proof
+**Step 1（引き戻しと押し出し）.** $e$ と $k$ の引き戻しを $d$（$k'\colon d\to b$, $u\colon d\to\mathrm{K}h$、$ek'=ku$）とする。\ref{ha:pullback-epi} から $u$ はエピで、$m=\ker e$ は $m=k's$, $s=\ker u$ と分解する。双対に、$p$ と $m'$ の押し出しを $d'$（$p'\colon b'\to d'$, $u'\colon\mathrm{C}f\to d'$、$p'm'=u'p$）とすると、$u'$ はモノで、$e'=\mathrm{coker}\,m'$ は $e'=s'p'$, $s'=\mathrm{coker}\,u'$ と分解する。
+
+**Step 2（$\delta$ の定義）.** $\delta_{0}\defeq p'gk'\colon d\to d'$ とおく。$s'\delta_{0}=e'gk'=hek'=hku=0$ なので、$u'=\ker s'$（モノは自分の余核の核）から $\delta_{0}=u'\delta_{1}$。$\delta_{0}s=p'gm=p'm'f=u'pf=0$（$pf=0$）で、$u'$ はモノなので $\delta_{1}s=0$、$u=\mathrm{coker}\,s$（エピは自分の核の余核）から $\delta_{1}=\delta u$。よって $\delta_{0}=u'\delta u$。
+
+**Step 3（ジグザグ）.** $eyv=kxw$（$v,w$ エピ）とすると、引き戻しの性質から $ux_{0}=xw$, $k'x_{0}=yv$ となる $x_{0}$ がある。すると $u'\delta xw=u'\delta ux_{0}=\delta_{0}x_{0}=p'gyv$。$m'z\equiv gy$ から $p'gy\equiv p'm'z=u'pz$。よって $u'\delta x\equiv u'pz$、$u'$ はモノなので（規則 2）$\delta x\equiv pz$。
+:::
+
+::: restate {ref="ha:snake-lemma"}
+:::
+
+::: proof
+$\delta$ は \ref{ha:connecting-morphism} のもの。規則は \ref{ha:chasing-rules} の番号で引く。
+
+**(a) $\mathrm{K}f$ で（$m_{0}$ がモノ）.** $jm_{0}=mi$ はモノの合成でモノなので、$m_{0}$ はモノ。
+
+**(b) $\mathrm{K}g$ で.** $ke_{0}m_{0}=ejm_{0}=emi=0$、$k$ はモノなので $e_{0}m_{0}=0$。$e_{0}y\equiv0$（$y\in_{m}\mathrm{K}g$）なら $ejy=ke_{0}y\equiv0$、$b$ での完全性から $mx\equiv jy$ となる $x\in_{m}a$。$m'fx=gmx\equiv gjy=0$、$m'$ はモノなので $fx=0$、よって $x=ix_{0}$。$jm_{0}x_{0}=mix_{0}=mx\equiv jy$、$j$ はモノなので $m_{0}x_{0}\equiv y$。
+
+**(c) $\mathrm{K}h$ で.** $\delta e_{0}=0$：$w\in_{m}\mathrm{K}g$ について $x\defeq e_{0}w$, $y\defeq jw$, $z\defeq0$ は $ey=kx$, $m'z=0=gjw=gy$ を満たすので $\delta e_{0}w\equiv p0=0$、規則 4 から $\delta e_{0}=0$。逆に $\delta x\equiv0$ とする。$e$ はエピなので $ey\equiv kx$ となる $y$、$e'gy=hey\equiv hkx=0$ から $m'z\equiv gy$ となる $z$ がある（$b'$ での完全性）。$pz\equiv\delta x\equiv0$ なので、$a\xrightarrow{f}a'\xrightarrow{p}\mathrm{C}f$ の完全性から $fa_{0}\equiv z$ となる $a_{0}\in_{m}a$。$g(ma_{0})=m'fa_{0}\equiv m'z\equiv gy$ に規則 6 を使うと、$gy_{0}=0$ となる $y_{0}$ で、$e(ma_{0})=0$ から $ey\equiv ey_{0}$。$y_{0}=jw$（$y_{0}$ は $g$ の核を経由）とすると $ke_{0}w=ejw=ey_{0}\equiv ey\equiv kx$、$k$ はモノなので $e_{0}w\equiv x$。
+
+**(d) $\mathrm{C}f$ で.** $m_{1}\delta=0$：$x\in_{m}\mathrm{K}h$ について $y,z$ をジグザグのようにとると $m_{1}\delta x\equiv m_{1}pz=qm'z\equiv qgy=0$。逆に $m_{1}w\equiv0$（$w\in_{m}\mathrm{C}f$）とする。$p$ はエピなので $w\equiv pz$。$qm'z=m_{1}pz\equiv0$ なので、$b\xrightarrow{g}b'\xrightarrow{q}\mathrm{C}g$ の完全性から $gy\equiv m'z$ となる $y$。$hey=e'gy\equiv e'm'z=0$ なので $ey\equiv kx$ となる $x\in_{m}\mathrm{K}h$。ジグザグの条件が満たされるので $\delta x\equiv pz\equiv w$。
+
+**(e) $\mathrm{C}g$ で.** $e_{1}m_{1}p=e_{1}qm'=re'm'=0$、$p$ はエピなので $e_{1}m_{1}=0$。逆に $e_{1}w\equiv0$ とする。$w\equiv qy'$（$q$ エピ）。$re'y'=e_{1}qy'\equiv0$ なので、$c\xrightarrow{h}c'\xrightarrow{r}\mathrm{C}h$ の完全性から $hx\equiv e'y'$ となる $x\in_{m}c$、$e$ はエピなので $x\equiv ey$。$e'(gy)=hey\equiv e'y'$ に規則 6 を使うと、$e'd=0$ となる $d\in_{m}b'$ で、$q(gy)=0$ から $qy'\equiv qd$。$b'$ での完全性から $d\equiv m'z$。$w\equiv qy'\equiv qm'z=m_{1}pz$。
+
+**(f) $\mathrm{C}h$ で（$e_{1}$ がエピ）.** $e_{1}q=re'$ はエピの合成でエピなので、$e_{1}$ はエピ。
+
+::: hypcheck
+- **行の短完全性**：$e$ のエピ性（(c), (e) で規則 3）、$m'$ のモノ性（(b)）、$b,b'$ での完全性（(b), (c), (e)）、$m=\ker e$ と $e'=\mathrm{coker}\,m'$（連結射の構成）に使った。
+- **引き戻しでエピが保たれること**：メンバーの同値関係（推移律）、規則 3, 5、連結射の構成のすべてに使った。これがアーベル圏での図式追跡の要である。
+- **規則 6（引き算）**：(c), (e) で、二つのメンバーの「差」をとるのに使った。元の引き算 $y-ma_{0}$ に当たる。
+:::
+:::
+
+::: example
+$\mathbf{Ab}$ で、上の行 $0\to0\to\mathbb{Z}\xrightarrow{1}\mathbb{Z}\to0$、下の行 $0\to\mathbb{Z}\xrightarrow{1}\mathbb{Z}\to0\to0$、縦の射 $(0,1,0)$ とすると、$\mathrm{K}f=0$, $\mathrm{K}g=0$, $\mathrm{K}h=\mathbb{Z}$, $\mathrm{C}f=\mathbb{Z}$, $\mathrm{C}g=0$, $\mathrm{C}h=0$ で、$\delta\colon\mathbb{Z}\to\mathbb{Z}$ は同型。$e_{0}\colon\mathrm{K}g\to\mathrm{K}h$ はエピでない：核だけの列は右で完全とは限らず、その欠けを $\delta$ が埋めている。
+:::
+
+::: supplement
+**一般化.** 鎖複体の短完全列 $0\to A_{\bullet}\to B_{\bullet}\to C_{\bullet}\to0$ から、蛇の補題を各次数で使うと、ホモロジーの**長完全列** $\cdots\to H_{n}(A)\to H_{n}(B)\to H_{n}(C)\xrightarrow{\delta}H_{n-1}(A)\to\cdots$ が得られる。これはホモロジー代数と代数的位相幾何学（マイヤー–ヴィートリス完全列など）の基本の道具である（ホモロジー代数の系列で扱う予定）。連結射は自然である（Mac Lane 第 VIII 章 §4 演習 4）。
+
+**類似の定理.** 五項補題の特別な場合である**短五項補題**（短完全列の射で、両端が同型なら中央も同型）は、群の拡大の同値や加群の拡大 $\mathrm{Ext}$ の議論で使われる。
+
+**高い視点から：メンバーは「一般化された元」.** メンバー $x\colon s\to a$ は、米田の補題の見方では「$s$ をパラメータとする $a$ の元の族」である。エピ射による同一視は「パラメータを細かく取り替えても同じ元」とみることに当たり、代数幾何の「平坦な被覆で局所的に」という考え方と同じ形をしている。比喩で言えば、元を直接つかめない部屋でも、「懐中電灯（射）で照らした像」を、照らし方の違い（エピ射）を除いて比べれば、元があるのと同じように推論できる、ということである。
+:::
+
+## 問題 {#ha:sec-dl-problems}
+
+::: problem {#ha:prob-dl-short-five}
+短完全列の射 $(f,g,h)$（蛇の補題の図式）で、$f$ と $h$ がモノなら $g$ はモノであることを、メンバーを使わずに示せ（短五項補題の半分）。
+:::
+
+::: solution
+$k\defeq\ker g$ とする。$hek=e'gk=0$、$h$ はモノなので $ek=0$、よって $k=mk'$（$m=\ker e$）。$0=gk=gmk'=m'fk'$ で、$m'f$ はモノなので $k'=0$、$k=0$。$\ker g=0$ なので $g$ はモノ（$gx=gy\Rightarrow g(x-y)=0\Rightarrow x-y$ は $k$ を経由 $\Rightarrow x=y$）。
+:::
+
+::: problem {#ha:prob-dl-snake-iso}
+蛇の補題で、$g$ が同型なら $\delta\colon\mathrm{K}h\to\mathrm{C}f$ は同型であることを示せ。
+:::
+
+::: solution
+$g$ が同型なら $\mathrm{K}g=0$, $\mathrm{C}g=0$。完全列 $0=\mathrm{K}g\to\mathrm{K}h\xrightarrow{\delta}\mathrm{C}f\to\mathrm{C}g=0$ から、$\delta$ はモノ（$\mathrm{K}h$ での完全性：$\ker\delta\equiv\mathrm{im}\,e_{0}=0$）かつエピ（$\mathrm{C}f$ での完全性：$\mathrm{im}\,\delta\equiv\ker m_{1}=1$）。\ref{ha:mono-epi-iso} から同型。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -228,6 +228,9 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | CB-09 | 01-basics/09-adjoints-limits | 随伴の合成と極限の保存 | IV.7–8, V.3–5 | 4878–5173, 5641–5895 | 完了 |
 | CB-10 | 01-basics/10-adjoint-functor-theorem | フレイドの随伴関手定理 | V.6–8 | 5896–6449 | 完了 |
 | CS-01 | 02-structured-categories/01-cartesian-closed | デカルト閉圏とローヴェアの不動点定理（予約ラベル cat:lawvere-fixed-point, cat:cartesian-closed） | IV.6, IV.9–10 | 4816–4877, 5174–5362 | 完了 |
+| CS-02 | 02-structured-categories/02-monoidal | モノイダル圏とマックレーンのコヒーレンス定理 | VII.1–2 | 7759–8159 | 完了 |
+| CS-03 | 02-structured-categories/03-monoids-actions | モノイドと作用、自由モノイド、単体圏 Δ | VII.3–5 | 8160–8635 | 未 |
+| CS-04 | 02-structured-categories/04-closed-categories | 閉圏とコンパクト生成空間 | VII.7–8 | 8775–8983 | 未 |
 | CM-01 | 03-monads/01-monads-algebras | モナドとアイレンバーグ–ムーア代数、比較関手 | VI.1–3 | 6675–6984 | 完了 |
 | CM-02 | 03-monads/02-kleisli | クライスリ圏と比較の要約、語と自由半群 | VI.4–5 | 6985–7196 | 完了 |
 | CM-03 | 03-monads/03-beck | 分裂余等化子とベックのモナド性定理 | VI.6–7 | 7197–7540 | 完了 |
@@ -266,6 +269,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 圏論 CS-02（02-structured-categories/02-monoidal, cat:page-monoidal：モノイダル圏、例、イズベルの議論、ケリーの単位の三角形、結合だけのコヒーレンス（階数と菱形）、単位を消す標準射（Mac Lane が略した単位の場合を 8 通りの場合分けで補った）、コヒーレンス定理、自由モノイダル圏、エックマン–ヒルトン）。Mac Lane VII.1–2。
 - 2026-10-08 一般位相 TG-01（54G-peculiar-spaces/01-counterexamples 新設、01-niemytzki-plane, top:page-niemytzki：定義と開基、接円板の弦、完全正則性（明示的な分離関数）、可分性と閉離散な境界線、ジョーンズの補題、非正規性、非リンデレーフ・非距離化、有理点と無理点のベールによる非分離）。予約ラベル top:niemytzki-plane を定義。8.2 の確認リスト 6 か所を確認。
 - 2026-10-08 一般位相 TD-09（54D/01/09-stone-duality, top:page-stone-duality：ストーン空間、超フィルター空間、表現定理（予約ラベル top:stone-representation を定義）、ストーン空間の復元、ストーン双対性、有限ブール代数・有限補有限代数の例）。資料なし。
 - 2026-10-08 圏論 CM-04（04-algebras-compact, cat:page-monadic-examples：(Ω,E) 代数と自由代数、代数系の忘却関手のモナド性、CHaus のモナド性（閉包作用素による Paré の証明、持ち上げの一意性を補った）、超フィルターのモナド（fact））。Mac Lane VI.8–9。モナドの系列 CM-01〜04 完了。名前表示の参照 8 件を番号表示に（cat・model）。

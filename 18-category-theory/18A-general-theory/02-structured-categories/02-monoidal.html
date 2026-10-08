@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>モノイダル圏とマックレーンのコヒーレンス定理 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/02-structured-categories/02-monoidal.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# モノイダル圏とマックレーンのコヒーレンス定理 {#cat:page-monoidal keywords="monoidal category, tensor product, associator, unitors, pentagon axiom, triangle axiom, strict monoidal category, coherence theorem, binary words, free monoidal category, Isbell's argument"}
+
+集合の直積 $\times$、アーベル群のテンソル積 $\otimes$ は、結合律と単位律を「等式」としてではなく「標準的な同型」として満たす。たとえば $A\otimes(B\otimes C)\cong(A\otimes B)\otimes C$ である。このような「同型を除いて結合的な積」をもつ圏が**モノイダル圏**（\ref{cat:monoidal-category}）で、結合の同型 $\alpha$ は五角形の等式を、単位の同型 $\lambda,\varrho$ は三角形の等式を満たすことを要求する。マックレーンの**コヒーレンス定理**（\ref{cat:coherence}）は、この二つの等式だけから、$\alpha,\lambda,\varrho$ から組み立てた「すべての図式」が可換になることを主張する。これにより、モノイダル圏では括弧の付け方や単位の出し入れを、標準的な同型で「同一視」してよいことが正当化される。
+
+> 資料：Mac Lane, *Categories for the Working Mathematician* 第 VII 章 §1–§2。単位を含む場合のコヒーレンスを Mac Lane は「容易に組み込める」として略しているので、単位を消す標準射（\ref{cat:unit-removal}）を使って全部の場合を確かめた。補題 \ref{cat:monoidal-derived-triangles} は Mac Lane の演習 1（G. M. Kelly による）。
+
+## 記法と定義の確認 {#cat:sec-mo-notation}
+
+::: notation
+- 双関手、自然同型、積圏は \ref{cat:product-category}, \ref{cat:bifunctor-criterion}、有限の積と終対象は \ref{cat:product}, \ref{cat:initial-terminal} のとおり。双関手 $\square$ について、射 $f\square g$ は $(f\square1)\circ(1\square g)=(1\square g)\circ(f\square1)$ と書け、$(f'\square g')\circ(f\square g)=(f'f)\square(g'g)$（交換法則）。
+- 本ページでは $1$ は恒等射（$1_{a}$）を表し、単位対象は $e$ と書く。
+:::
+
+## モノイダル圏 {#cat:sec-mo-definition}
+
+::: definition モノイダル圏 {#cat:monoidal-category keywords="monoidal category, associator, left and right unitors, pentagon, triangle" index="モノイダル圏|ものいだるけん, 結合子|けつごうし, 単位子|たんいし, 五角形の等式|ごかっけいのとうしき"}
+**モノイダル圏** $(\mathbf{B},\square,e,\alpha,\lambda,\varrho)$ は、圏 $\mathbf{B}$、双関手 $\square\colon\mathbf{B}\times\mathbf{B}\to\mathbf{B}$、対象 $e$（**単位対象**）と自然同型
+$$
+\alpha_{a,b,c}\colon a\square(b\square c)\to(a\square b)\square c,\qquad\lambda_{a}\colon e\square a\to a,\qquad\varrho_{a}\colon a\square e\to a
+$$
+からなり、次の三つの等式を満たすものである。
+$$
+\begin{aligned}
+&\alpha_{a\square b,c,d}\circ\alpha_{a,b,c\square d}=(\alpha_{a,b,c}\square1_{d})\circ\alpha_{a,b\square c,d}\circ(1_{a}\square\alpha_{b,c,d}),\\
+&(\varrho_{a}\square1_{c})\circ\alpha_{a,e,c}=1_{a}\square\lambda_{c},\qquad\lambda_{e}=\varrho_{e}.
+\end{aligned}
+$$
+第一式を**五角形の等式**、第二式を**三角形の等式**という。$\alpha,\lambda,\varrho$ がすべて恒等射（結合と単位が等式で成り立つ）のとき**厳密**という。
+:::
+
+::: example
+1. **有限の積.** 有限の積をもつ圏は、選んだ積 $\times$ と終対象 $1$ でモノイダル圏になる。$\alpha$, $\lambda$, $\varrho$ は射影と可換な唯一の同型で、五角形・三角形の等式は、両辺が射影と可換な射であることから積の一意性で成り立つ。双対に、有限の余積もモノイダル構造を与える。
+2. **テンソル積.** $(\mathbf{Ab},\otimes,\mathbb{Z})$、可換環 $K$ 上の加群 $(K\text{-}\mathbf{Mod},\otimes_{K},K)$。$\alpha$ は $a\otimes(b\otimes c)\mapsto(a\otimes b)\otimes c$ で定まり、五角形の等式は元の上で確かめられる。「誤った」結合同型 $a\otimes(b\otimes c)\mapsto-(a\otimes b)\otimes c$ は自然同型だが、五角形の等式が符号 $(-1)^{2}$ 対 $(-1)^{3}$ で破れる。
+3. **自己関手の圏.** 圏 $\mathbf{X}$ の自己関手と自然変換の圏は、合成 $\circ$ を積、恒等関手を単位として厳密モノイダル圏である（横の合成、\ref{cat:horizontal-composition}）。モナド（\ref{cat:monad}）はこの中のモノイドである。
+4. 集合としてのモノイドは、離散圏とみて厳密モノイダル圏である。
+:::
+
+::: remark 同一視はできない（イズベルの議論）
+「同型な対象をすべて同一視して厳密にすればよい」とはいかない。集合の圏の骨格（各濃度に一つの集合）を考え、可算集合 $D$ について $D\times D=D$（同じ対象）とする。結合の同型 $\alpha_{D,D,D}$ が恒等射なら、その自然性から任意の $f,g,h\colon D\to D$ で $f\times(g\times h)=(f\times g)\times h$。両辺に第一射影 $p_{1}\colon D\times D=D\to D$ を合成すると $f\circ p_{1}=(f\times g)\circ p_{1}$、$p_{1}$ はエピ射（全射）なので $f=f\times g$。第二射影で同様に $f\times g=g$。よって任意の $f,g$ が等しくなり、矛盾。（Mac Lane は J. Isbell によるとしている。）
+:::
+
+## 単位についての補題 {#cat:sec-mo-lemmas}
+
+::: lemma 単位の三角形（ケリー） {#cat:monoidal-derived-triangles keywords="derived triangle identities for unitors, Kelly" index="単位子の三角形|たんいしのさんかくけい"}
+モノイダル圏で、すべての $a,b,c$ について
+$$
+(\lambda_{b}\square1_{c})\circ\alpha_{e,b,c}=\lambda_{b\square c},\qquad\varrho_{a\square b}\circ\alpha_{a,b,e}=1_{a}\square\varrho_{b}.
+$$
+:::
+
+::: proof
+**Step 0（忠実性）.** $1_{e}\square f=1_{e}\square g$ なら $f=g$：$\lambda$ の自然性から $f=\lambda_{y}\circ(1_{e}\square f)\circ\lambda_{x}^{-1}$。同様に $f\square1_{e}=g\square1_{e}$ なら $f=g$（$\varrho$ の自然性）。
+
+**Step 1（第一式）.** 五角形の等式を $(e,e,b,c)$ で書き、両辺に左から $(\varrho_{e}\square1_{b})\square1_{c}$ を合成する。左辺は
+$$
+\begin{aligned}
+&((\varrho_{e}\square1)\square1)\circ\alpha_{e\square e,b,c}\circ\alpha_{e,e,b\square c}\\
+&=\alpha_{e,b,c}\circ(\varrho_{e}\square1_{b\square c})\circ\alpha_{e,e,b\square c}=\alpha_{e,b,c}\circ(1_{e}\square\lambda_{b\square c})
+\end{aligned}
+$$
+（$\alpha$ の自然性、次に三角形の等式を $(e,b\square c)$ で）。右辺は、三角形の等式 $(\varrho_{e}\square1_{b})\circ\alpha_{e,e,b}=1_{e}\square\lambda_{b}$ と $\alpha$ の自然性から
+$$
+\begin{aligned}
+&((1_{e}\square\lambda_{b})\square1_{c})\circ\alpha_{e,e\square b,c}\circ(1_{e}\square\alpha_{e,b,c})\\
+&=\alpha_{e,b,c}\circ\bigl(1_{e}\square((\lambda_{b}\square1_{c})\circ\alpha_{e,b,c})\bigr).
+\end{aligned}
+$$
+$\alpha_{e,b,c}$ は同型なので $1_{e}\square\lambda_{b\square c}=1_{e}\square((\lambda_{b}\square1_{c})\circ\alpha_{e,b,c})$。Step 0 から第一式。
+
+**Step 2（第二式）.** 五角形の等式を $(a,b,e,e)$ で書き、$X\defeq\alpha_{a,b\square e,e}\circ(1_{a}\square\alpha_{b,e,e})$ とおく（同型）。三角形の等式 $(a\square b,e)$ と $\alpha$ の自然性から
+$$
+\begin{aligned}
+((\varrho_{a\square b}\circ\alpha_{a,b,e})\square1_{e})\circ X&=(\varrho_{a\square b}\square1)\circ\alpha_{a\square b,e,e}\circ\alpha_{a,b,e\square e}\\
+&=\alpha_{a,b,e}\circ(1_{a}\square(1_{b}\square\lambda_{e})).
+\end{aligned}
+$$
+一方、$\alpha$ の自然性と三角形の等式 $(b,e)$ から
+$$
+\begin{aligned}
+((1_{a}\square\varrho_{b})\square1_{e})\circ X&=\alpha_{a,b,e}\circ\bigl(1_{a}\square((\varrho_{b}\square1_{e})\circ\alpha_{b,e,e})\bigr)\\
+&=\alpha_{a,b,e}\circ(1_{a}\square(1_{b}\square\lambda_{e})).
+\end{aligned}
+$$
+$X$ は同型なので $(\varrho_{a\square b}\circ\alpha_{a,b,e})\square1_{e}=(1_{a}\square\varrho_{b})\square1_{e}$。Step 0 から第二式。
+
+::: hypcheck
+- **五角形と三角形の等式**：Step 1, 2 の両方で使った。$\lambda_{e}=\varrho_{e}$ は使っていない（実はこの等式も五角形と三角形から導けることが知られている。ケリーによる）。
+:::
+:::
+
+## コヒーレンス定理 {#cat:sec-mo-coherence}
+
+::: definition 二項語 {#cat:binary-words keywords="binary words, formal products, canonical arrows" index="二項語|にこうご"}
+**二項語**を、記号 $e$（長さ 0）、記号 $\mathtt{x}$（長さ 1）、二項語 $v,w$ から作る $v\square w$（長さはそれぞれの和）として帰納的に定める。対象 $b$ について、$v_{b}$ を $\mathtt{x}$ に $b$ を、$e$ に単位対象を入れた $\mathbf{B}$ の対象とする。**基本射**を、$\alpha$, $\lambda$, $\varrho$ とその逆の（二項語の間の）一つの実例を、恒等射と $\square$ で囲んだもの（例 $(1\square\alpha)\square1$）とし、二項語を頂点、基本射を辺とするグラフを $G$ とする。$e$ を含まない語と、$\alpha^{\pm1}$ だけからなる基本射の部分グラフを $G^{\circ}$ とする。
+:::
+
+::: theorem マックレーンのコヒーレンス定理 {#cat:coherence keywords="Mac Lane's coherence theorem for monoidal categories" index="コヒーレンス定理|こひーれんすていり, マックレーンのコヒーレンス定理|まっくれーんのこひーれんすていり"}
+モノイダル圏 $\mathbf{B}$ と対象 $b$ について、グラフ $G$ は（$b$ を代入して）可換である：二項語 $v,w$ の間の $G$ の任意の二つの道について、基本射を順に合成した $\mathbf{B}$ の射 $v_{b}\to w_{b}$ は等しい。
+:::
+
+証明は、単位を含まない場合（\ref{cat:coherence-associativity}）と、単位を消す操作（\ref{cat:unit-removal}）の二段階で行う。
+
+::: lemma 結合だけのコヒーレンス {#cat:coherence-associativity keywords="coherence for associativity, rank of a word, diamond lemma" index="語の階数|ごのかいすう"}
+$G^{\circ}$ は可換である。
+:::
+
+::: proof
+長さ $n$ の語で、括弧がすべて左に寄ったもの $(\cdots((\mathtt{x}\square\mathtt{x})\square\mathtt{x})\cdots)\square\mathtt{x}$ を $w^{(n)}$ とする。$\alpha$ の向きの基本射を**正の**基本射という。
+
+**Step 1（階数）.** $e$ を含まない語の**階数**を $\mathrm{rk}(\mathtt{x})\defeq0$、$\mathrm{rk}(v\square w)\defeq\mathrm{rk}(v)+\mathrm{rk}(w)+\mathrm{len}(w)-1$ で定める。$\mathrm{rk}(v)=0$ と $v=w^{(n)}$ は同値（帰納法：$\mathrm{rk}(u\square w)=0$ なら $\mathrm{len}(w)=1$, $\mathrm{rk}(u)=0$）。正の基本射は階数を真に減らす：最上段の $\alpha_{u,s,t}$ では
+$$
+\mathrm{rk}(u\square(s\square t))-\mathrm{rk}((u\square s)\square t)=\mathrm{len}(t)\ge1,
+$$
+因子の中の基本射は、その因子の階数を減らし、他の項を変えない。また $v\neq w^{(n)}$ なら正の基本射が出る（$v=u\square w$ で $w$ が $\mathtt{x}$ でなければ最上段の $\alpha$、$w=\mathtt{x}$ なら $u\neq w^{(n-1)}$ で $u$ の中に）。よって、どの語からも $w^{(n)}$ への正の道があり、正の道は必ず有限で終わる。
+
+**Step 2（菱形）.** 語 $v$ から出る二つの正の基本射 $\beta\colon v\to v'$, $\gamma\colon v\to v''$ について、正の道 $v'\to z$, $v''\to z$ で、できる四角形（菱形）が可換になるものがある。語の長さに関する帰納法。$\beta=\gamma$ なら $z=v'$。$v=u\square w$ とし、場合分けする。
+- $\beta,\gamma$ がともに $u$ の中：$u$ についての帰納法の仮定の菱形を $\square1_{w}$ で囲む。$w$ の中も同様。
+- $\beta$ が $u$ の中、$\gamma$ が $w$ の中：$z=u'\square w''$ で、菱形 $(\beta'\square1)(1\square\gamma'')=(1\square\gamma'')(\beta'\square1)$ は双関手性。
+- $\beta=\alpha_{u,s,t}$（$w=s\square t$）で、$\gamma$ が $u$, $s$, $t$ のいずれかの中：$\alpha$ の自然性の四角形。
+- $\beta=\alpha_{u,s,t}$ で、$\gamma=1_{u}\square\alpha_{s,p,q}$（$t=p\square q$）：五角形の等式が求める菱形（$z=((u\square s)\square p)\square q$）。
+
+**Step 3（正の道の一意性）.** 語 $v$ から $w^{(n)}$ への二つの正の道の合成は等しいことを、$\mathrm{rk}(v)$ に関する帰納法で示す。$\mathrm{rk}(v)=0$ なら道は空のみ。二つの道の最初の辺 $\beta,\gamma$ に Step 2 の菱形をとり、$z$ から $w^{(n)}$ への正の道を一つ固定する。$v'$ から $w^{(n)}$ への二つの道（元の道の残りと、$v'\to z\to w^{(n)}$）は、帰納法の仮定（$\mathrm{rk}(v')<\mathrm{rk}(v)$）で等しい。$v''$ も同様。菱形の可換性と合わせて、元の二つの道は等しい。
+
+**Step 4（すべての道）.** $c_{v}\colon v_{b}\to w^{(n)}_{b}$ を Step 3 の（一意な）正の道の合成とする。正の基本射 $\beta\colon v\to v'$ について $c_{v'}\circ\beta=c_{v}$（$\beta$ の後に $v'$ からの正の道を続けたものは $v$ からの正の道）。逆向きの辺 $\beta^{-1}$ では $c_{v}\circ\beta^{-1}=c_{v'}$。よって $v$ から $w$ への任意の道の合成は $c_{w}^{-1}\circ c_{v}$ で、道によらない。
+
+::: hypcheck
+- **五角形の等式**：Step 2 の最後の場合だけで使った。これが「すべての図式の可換性」の唯一の非自明な材料である。
+- **自然性と双関手性**：Step 2 の他の場合に使った。
+- **階数による帰納法**：Step 3 で、菱形を繰り返しても止まることを保証した。
+:::
+:::
+
+::: lemma 単位を消す標準射 {#cat:unit-removal keywords="unit removal, reduced words" index="単位を消す標準射|たんいをけすひょうじゅんしゃ"}
+語 $w$ から $e$ をすべて消した語を $r(w)$ とする（すべて消えたら $e$）。射 $\delta_{w}\colon w_{b}\to r(w)_{b}$ を、$\delta_{e}=1$, $\delta_{\mathtt{x}}=1$ と
+$$
+\delta_{u\square v}\defeq\begin{cases}\lambda_{r(v)}\circ(\delta_{u}\square\delta_{v})&(r(u)=e),\\\varrho_{r(u)}\circ(\delta_{u}\square\delta_{v})&(r(u)\neq e=r(v)),\\\delta_{u}\square\delta_{v}&(\text{それ以外})\end{cases}
+$$
+で定める。すると $G$ の各基本射 $\beta\colon v\to w$ について、$G^{\circ}$ の道の合成（または恒等射）$\varphi_{\beta}\colon r(v)_{b}\to r(w)_{b}$ で $\delta_{w}\circ\beta=\varphi_{\beta}\circ\delta_{v}$ となるものがある。
+:::
+
+::: proof
+基本射は長さを保つので $r(v)=e$ と $r(w)=e$ は同値。$\beta$ の作り方に関する帰納法。逆向きの基本射は、$\delta_{w}\beta=\varphi\delta_{v}$ から $\delta_{v}\beta^{-1}=\varphi^{-1}\delta_{w}$ が出るので、$\alpha,\lambda,\varrho$ の向きのものを扱えば十分である。
+
+**Step 1（囲まれた基本射）.** $\beta=\beta'\square1_{t}$（$\beta'\colon u\to u'$）とし、帰納法の仮定 $\delta_{u'}\beta'=\varphi'\delta_{u}$ をとる。$r(u)=e$ の場合、$\varphi'$ は空の語の上の恒等射で、$\delta_{u'\square t}\circ\beta=\lambda\circ(\delta_{u'}\beta'\square\delta_{t})=\lambda\circ(\delta_{u}\square\delta_{t})=\delta_{u\square t}$。$r(u)\neq e=r(t)$ の場合、$\varrho$ の自然性から $\varrho\circ(\varphi'\delta_{u}\square\delta_{t})=\varphi'\circ\varrho\circ(\delta_{u}\square\delta_{t})$ で $\varphi_{\beta}=\varphi'$。それ以外では $\varphi_{\beta}=\varphi'\square1$。$1_{t}\square\beta'$ も同様（$\lambda$ の自然性を使う）。
+
+**Step 2（単位子）.** $\beta=\lambda_{x}\colon e\square x\to x$：$\delta_{e\square x}=\lambda_{r(x)}\circ(1\square\delta_{x})=\delta_{x}\circ\lambda_{x}$（$\lambda$ の自然性）で $\varphi_{\beta}=1$。$\beta=\varrho_{x}$：$r(x)\neq e$ なら同様に $\varrho$ の自然性。$r(x)=e$ なら $\delta_{x\square e}=\lambda_{e}\circ(\delta_{x}\square1)=\varrho_{e}\circ(\delta_{x}\square1)=\delta_{x}\circ\varrho_{x}$（$\lambda_{e}=\varrho_{e}$ と $\varrho$ の自然性）。
+
+**Step 3（結合子）.** $\beta=\alpha_{x,y,z}$。$\alpha$ の自然性で $\delta$ を内側に移すと、$r(x),r(y),r(z)$ のうちどれが $e$ かで次の等式に帰着する（$a,b,c$ は $r(x),r(y),r(z)$ のうち $e$ でないもの）。
+- どれも $e$ でない：$\varphi_{\beta}=\alpha_{a,b,c}$。
+- $r(x)=e$ のみ：$(\lambda_{b}\square1)\circ\alpha_{e,b,c}=\lambda_{b\square c}$（\ref{cat:monoidal-derived-triangles}）。
+- $r(y)=e$ のみ：$(\varrho_{a}\square1)\circ\alpha_{a,e,c}=1\square\lambda_{c}$（三角形の等式）。
+- $r(z)=e$ のみ：$\varrho_{a\square b}\circ\alpha_{a,b,e}=1\square\varrho_{b}$（\ref{cat:monoidal-derived-triangles}）。
+- $r(x)=r(y)=e$：$\lambda_{c}\circ(\lambda_{e}\square1)\circ\alpha_{e,e,c}=\lambda_{c}\circ\lambda_{e\square c}=\lambda_{c}\circ(1\square\lambda_{c})$（補題の第一式と $\lambda$ の自然性）。
+- $r(x)=r(z)=e$：$\varrho_{b}\circ(\lambda_{b}\square1)\circ\alpha_{e,b,e}=\varrho_{b}\circ\lambda_{b\square e}=\lambda_{b}\circ(1\square\varrho_{b})$（補題の第一式と $\lambda$ の自然性）。
+- $r(y)=r(z)=e$：$\varrho_{a}\circ(\varrho_{a}\square1)\circ\alpha_{a,e,e}=\varrho_{a}\circ(1\square\lambda_{e})$（三角形の等式）。
+- すべて $e$：$\lambda_{e}\circ(\lambda_{e}\square1)\circ\alpha_{e,e,e}=\lambda_{e}\circ(1\square\lambda_{e})$（補題の第一式と $\lambda$ の自然性）。
+
+これらはそれぞれ、$\delta_{(x\square y)\square z}\circ\alpha=\varphi_{\beta}\circ\delta_{x\square(y\square z)}$（最初の場合以外は $\varphi_{\beta}=1$）を意味する。
+
+::: hypcheck
+- **三角形の等式と補題**：Step 3 の各場合に使った。$\lambda_{e}=\varrho_{e}$ は Step 2 の $r(x)=e$ の場合（$\delta$ の定義で $\lambda$ を選んだため）に使った。
+:::
+:::
+
+::: restate {ref="cat:coherence"}
+:::
+
+::: proof
+$v$ から $w$ への道 $\beta_{k}\cdots\beta_{1}$ の合成は、\ref{cat:unit-removal} を繰り返し使って
+$$
+\beta_{k}\circ\cdots\circ\beta_{1}=\delta_{w}^{-1}\circ(\varphi_{\beta_{k}}\circ\cdots\circ\varphi_{\beta_{1}})\circ\delta_{v}
+$$
+（$\delta$ は同型の合成なので同型）。括弧の中は $G^{\circ}$ の $r(v)$ から $r(w)$ への道（または空の語の上の恒等射）の合成なので、\ref{cat:coherence-associativity} から道によらない。
+:::
+
+::: corollary 自由モノイダル圏 {#cat:free-monoidal-category keywords="the category of binary words is the free monoidal category on one object" index="自由モノイダル圏|じゆうものいだるけん"}
+二項語を対象とし、同じ長さの語の間にちょうど一つの射をもつ圏 $\mathbf{W}$ は、$\square$ と $e$ でモノイダル圏になり、任意のモノイダル圏 $\mathbf{B}$ と対象 $b$ について、$\mathtt{x}\mapsto b$ となる厳密モノイダル関手 $\mathbf{W}\to\mathbf{B}$（$\square$, $e$, $\alpha$, $\lambda$, $\varrho$ をそのまま保つ関手）がただ一つある。
+:::
+
+::: proof
+対象は $w\mapsto w_{b}$（これは厳密性から決まる）、射 $v\to w$ は $G$ の任意の道の合成に送る（\ref{cat:coherence} から道によらず、長さが等しい語の間には必ず道がある：\ref{cat:unit-removal} と \ref{cat:coherence-associativity} の Step 1）。道の連結が合成に、恒等射が空の道に対応するので関手で、道を $\square$ で並べたものが $\square$ に対応するので $f\square g=(f\square1)(1\square g)$ から $\square$ を保つ。一意性は、厳密モノイダル関手が $\alpha,\lambda,\varrho$ とその $\square$ と合成を保つことから。
+:::
+
+::: supplement
+**一般化.** 変数が複数の場合（語の空欄に別々の対象を入れる場合）も、語を関手 $\mathbf{B}^{n}\to\mathbf{B}$ とみなし、関手と自然変換のモノイダル圏に上の定理を使えば同じ結論が得られる（Mac Lane 第 VII 章 §2 の系）。また、すべてのモノイダル圏は、ある厳密モノイダル圏とモノイダル圏同値であることが知られている（厳密化定理。範囲外）。イズベルの議論は、これが「対象を同一視する」方法では得られないことを示している。
+
+**前提を変えると.** 対称性 $a\square b\cong b\square a$ を加えた**対称モノイダル圏**では、「すべての図式が可換」はもはや正しくない（$a\square a\to a\square a$ の入れ替えは恒等射と異なりうる）。正しい主張は「図式の二つの道が同じ置換を与えるなら可換」である。組みひもモノイダル圏では置換の代わりに組みひも群が現れる。
+
+**類似の定理.** \ref{cat:coherence-associativity} の Step 2–3 は、項書き換えの「局所合流性と停止性から合流性」（ニューマンの補題）と同じ形の議論で、ラムダ計算の合流性（\ref{logic:church-rosser}）とも同じ発想である。
+
+**高い視点から：可換図式は「証明の一意性」.** コヒーレンス定理は、モノイダル圏の公理から導ける二つの「同型の証明」が常に同じ同型を与えることを言う。比喩で言えば、括弧の付け替えの手順（どの順に括弧を動かすか）がいくら違っても、たどり着く結果は一つだ、という保証であり、五角形の等式は「四つの対象の括弧の付け替えの二通りの手順が一致する」ことだけを確かめればよい、という一点に問題を還元している。高次圏論では、五角形の等式を満たす同型をさらに「同型の間の同型」に緩めた構造（シュタシェフの結合多面体）が現れる。
+:::
+
+## 問題 {#cat:sec-mo-problems}
+
+::: problem {#cat:prob-mo-op}
+モノイダル圏 $\mathbf{B}$ の反対圏 $\mathbf{B}^{\mathrm{op}}$ も、$\alpha^{-1},\lambda^{-1},\varrho^{-1}$ を（反対圏の射として読んで）使ってモノイダル圏になることを示せ。
+:::
+
+::: solution
+$\mathbf{B}^{\mathrm{op}}$ の射 $a\to b$ は $\mathbf{B}$ の射 $b\to a$ である。$\mathbf{B}^{\mathrm{op}}$ での結合子 $a\square(b\square c)\to(a\square b)\square c$ として $\mathbf{B}$ の射 $\alpha_{a,b,c}^{-1}\colon(a\square b)\square c\to a\square(b\square c)$ をとる（$\mathbf{B}$ の射として $(a\square b)\square c\to a\square(b\square c)$、すなわち $\mathbf{B}^{\mathrm{op}}$ の射として $a\square(b\square c)\to(a\square b)\square c$）。単位子も同様に $\lambda^{-1},\varrho^{-1}$。五角形の等式は、$\mathbf{B}$ の五角形の等式の両辺の逆をとり、合成の順序を反対圏で読み替えたものである。三角形の等式と $\lambda_{e}=\varrho_{e}$ も同様。
+:::
+
+::: problem {#cat:prob-mo-strict-one-object}
+対象が一つの厳密モノイダル圏は、集合（射の全体）と二つの二項演算 $\circ$, $\square$ で、交換法則 $(f'\square g')\circ(f\square g)=(f'\circ f)\square(g'\circ g)$ を満たし共通の単位元 $1_{e}$ をもつものと同じであることを確かめ、このとき $\circ=\square$ で、可換であることを示せ（エックマン–ヒルトンの議論）。
+:::
+
+::: solution
+単位元を $1$ と書く（$1\circ x=x\circ1=x$, $1\square x=x\square1=x$）。交換法則で $g=1$, $f'=1$ とおくと、左辺は $(1\square g')\circ(f\square1)=g'\circ f$、右辺は $(1\circ f)\square(g'\circ1)=f\square g'$ なので $g'\circ f=f\square g'$。$f=1$, $g'=1$ とおくと、左辺は $(f'\square1)\circ(1\square g)=f'\circ g$、右辺は $f'\square g$ なので $f'\circ g=f'\square g$。よって任意の $x,y$ で $x\circ y=x\square y$ かつ $x\circ y=y\square x$、すなわち二つの演算は一致し、可換である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>モーリー階数 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/08-morley-rank.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# モーリー階数 {#model:page-morley-rank keywords="Morley rank, rank of a formula in a model, rank 0 iff finite, strongly minimal formulas have rank 1, omega-stable iff all formulas have ordinal Morley rank, condensation points of type spaces, dense linear orders have rank infinity"}
+
+二分木の補題（\ref{model:no-binary-tree}）は、$\omega$ 安定な理論では論理式を二つに分ける操作が無限に続かないことを述べた。この「分けられ方」を順序数で測ったものが**モーリー階数**（\ref{model:morley-rank}）である：無限個の互いに交わらない階数 $\ge\alpha$ の部分に分けられる論理式の階数を $\ge\alpha+1$ とする。本ページでは、階数 $0$ の論理式は有限集合を定めるもの、強極小な論理式は階数 $1$ であることを確かめ（\ref{model:morley-rank-small}）、主定理として、$T$ が $\omega$ 安定であることと、すべての論理式のモーリー階数が順序数であることが同値であることを示す（\ref{model:omega-stable-iff-rank}）。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。標準的な文献では階数を $\omega$ 飽和なモデル（またはモンスターモデル）で定義するが、本ページでは各モデル $\mathcal{M}$ ごとに定義し、主定理を「すべてのモデルで」の形で述べる。
+
+## 記法と定義の確認 {#model:sec-mr-notation}
+
+::: notation
+- $T$ は可算言語の完全な理論で無限モデルをもつ。$\kappa$ 安定・$\omega$ 安定、二分木の補題は \ref{model:stable}, \ref{model:no-binary-tree}、強極小は \ref{model:minimal-formula}、$A$ 上の型と型の空間は \ref{model:saturated} と \ref{model:page-omega-stable} の記法のとおり。
+- $\mathcal{M}\models T$ を固定し、$\mathcal{L}_{M}$ 論理式 $\varphi(x)$（$1$ 変数）について $\varphi(\mathcal{M})\defeq\{a\in M:\mathcal{M}\models\varphi(a)\}$。$\psi\vdash\varphi$ は $\psi(\mathcal{M})\subseteq\varphi(\mathcal{M})$、$\psi$ と $\psi'$ が**交わらない**とは $\psi(\mathcal{M})\cap\psi'(\mathcal{M})=\emptyset$ のこととする。
+:::
+
+::: definition モーリー階数 {#model:morley-rank keywords="Morley rank RM(phi) defined by infinitely many disjoint subformulas" index="モーリー階数|もーりーかいすう"}
+$\mathcal{L}_{M}$ 論理式 $\varphi(x)$ と順序数 $\alpha$ について、「$\mathrm{RM}(\varphi)\ge\alpha$」を $\alpha$ に関する帰納法で定める。
+1. $\mathrm{RM}(\varphi)\ge0$ $\iff$ $\varphi(\mathcal{M})\neq\emptyset$。
+2. $\mathrm{RM}(\varphi)\ge\alpha+1$ $\iff$ 互いに交わらない $\mathcal{L}_{M}$ 論理式 $\psi_{0},\psi_{1},\ldots$（無限個）で、各 $\psi_{i}\vdash\varphi$ かつ $\mathrm{RM}(\psi_{i})\ge\alpha$ となるものがある。
+3. 極限順序数 $\lambda$ について、$\mathrm{RM}(\varphi)\ge\lambda$ $\iff$ すべての $\alpha<\lambda$ で $\mathrm{RM}(\varphi)\ge\alpha$。
+
+$\mathrm{RM}(\varphi)\ge\alpha$ となる最大の $\alpha$ があればそれを $\mathrm{RM}(\varphi)$ とし、すべての $\alpha$ で成り立てば $\mathrm{RM}(\varphi)\defeq\infty$、$\varphi(\mathcal{M})=\emptyset$ なら $\mathrm{RM}(\varphi)\defeq-1$ とする。$\mathcal{M}$ を明示するときは $\mathrm{RM}^{\mathcal{M}}$ と書く。
+:::
+
+::: lemma 階数の基本性質 {#model:morley-rank-basic keywords="monotonicity of Morley rank, rank of a disjunction is the maximum" index="モーリー階数の基本性質|もーりーかいすうのきほんせいしつ"}
+1. $\beta\le\alpha$ で $\mathrm{RM}(\varphi)\ge\alpha$ なら $\mathrm{RM}(\varphi)\ge\beta$。したがって $\mathrm{RM}(\varphi)$ は well-defined（$-1$, 順序数, $\infty$ のいずれか）。
+2. $\psi\vdash\varphi$ なら $\mathrm{RM}(\psi)\le\mathrm{RM}(\varphi)$。
+3. $\mathrm{RM}(\varphi\vee\psi)=\max(\mathrm{RM}(\varphi),\mathrm{RM}(\psi))$。
+:::
+
+::: proof
+**1.** $\alpha$ に関する帰納法で「$\mathrm{RM}(\varphi)\ge\alpha$ ならすべての $\beta\le\alpha$ で $\ge\beta$」を示す。$\alpha+1$：無限個の $\psi_{i}$ のどれかは空でない（$\mathrm{RM}\ge\alpha\ge0$ と帰納法の仮定）ので $\varphi(\mathcal{M})\ne\emptyset$ で $\ge0$。$0<\beta\le\alpha$ については、各 $\psi_{i}$ に帰納法の仮定を使って $\beta=\gamma+1$ なら $\ge\gamma$、極限なら定義から。極限 $\lambda$ は定義から。well-defined 性：$\{\alpha:\mathrm{RM}(\varphi)\ge\alpha\}$ は始切片で、極限の段では定義 3 により閉じているので、空・ある $\alpha+1$ 未満のすべて・すべての順序数のいずれかである。
+
+**2.** $\alpha$ に関する帰納法で「$\mathrm{RM}(\psi)\ge\alpha$ なら $\mathrm{RM}(\varphi)\ge\alpha$」。$\alpha+1$ の $\psi_{i}\vdash\psi$ は $\psi_{i}\vdash\varphi$。
+
+**3.** $\ge$ は 2 から。$\le$：$\alpha$ に関する帰納法で「$\mathrm{RM}(\varphi\vee\psi)\ge\alpha$ なら $\varphi$ か $\psi$ の階数が $\ge\alpha$」を示す。$\alpha=0$ は明らか。$\alpha+1$：互いに交わらない $\theta_{i}\vdash\varphi\vee\psi$, $\mathrm{RM}(\theta_{i})\ge\alpha$ をとる。$\theta_{i}=(\theta_{i}\wedge\varphi)\vee(\theta_{i}\wedge\psi)$ に帰納法の仮定を使うと、各 $i$ で $\theta_{i}\wedge\varphi$ か $\theta_{i}\wedge\psi$ の階数が $\ge\alpha$。無限個の $i$ で同じ側（たとえば $\varphi$）になり、それらの $\theta_{i}\wedge\varphi$ は互いに交わらず $\vdash\varphi$ なので $\mathrm{RM}(\varphi)\ge\alpha+1$。極限 $\lambda$：各 $\alpha<\lambda$ で $\varphi$ か $\psi$ が $\ge\alpha$ なので、どちらかは非有界に多くの $\alpha<\lambda$ で $\ge\alpha$ となり、1 から $\ge\lambda$。
+:::
+
+::: proposition 低い階数 {#model:morley-rank-small keywords="RM(phi)=0 iff phi(M) is finite and nonempty; strongly minimal formulas have rank 1" index="モーリー階数 0 と 1|もーりーかいすうぜろといち"}
+1. $\mathrm{RM}(\varphi)=0$ $\iff$ $\varphi(\mathcal{M})$ は空でない有限集合。
+2. $\varphi$ が $\mathcal{M}$ で極小（特に強極小）なら $\mathrm{RM}(\varphi)=1$。
+:::
+
+::: proof
+**1.** $\varphi(\mathcal{M})$ が無限なら、相異なる $a_{i}\in\varphi(\mathcal{M})$ について $x=a_{i}$ は互いに交わらず $\vdash\varphi$、階数 $\ge0$ なので $\mathrm{RM}(\varphi)\ge1$。$\varphi(\mathcal{M})$ が $k$ 個の元の有限集合なら、互いに交わらない空でない $\psi_{i}\vdash\varphi$ は高々 $k$ 個なので $\mathrm{RM}(\varphi)\not\ge1$。
+
+**2.** $\varphi(\mathcal{M})$ は無限なので 1 から $\ge1$。$\ge2$ なら、互いに交わらない $\psi_{0},\psi_{1}\vdash\varphi$ で階数 $\ge1$、すなわち（1 から）$\psi_{i}(\mathcal{M})$ が無限なものがある。極小性から $\psi_{i}(\mathcal{M})$ は $\varphi(\mathcal{M})$ の中で補有限で、二つの補有限部分集合は（$\varphi(\mathcal{M})$ が無限なので）交わり、矛盾。
+:::
+
+## ω 安定性との同値 {#model:sec-mr-omega-stable}
+
+::: theorem ω 安定性とモーリー階数 {#model:omega-stable-iff-rank keywords="T is omega-stable iff in every model every formula has ordinal Morley rank" index="ω 安定性とモーリー階数|おめがあんていせいともーりーかいすう"}
+（AC）次は同値である。
+1. $T$ は $\omega$ 安定。
+2. すべての $\mathcal{M}\models T$ とすべての $\mathcal{L}_{M}$ 論理式 $\varphi(x)$ について、$\mathrm{RM}^{\mathcal{M}}(\varphi)<\infty$。
+:::
+
+::: proof
+**1 ⇒ 2.** $\mathcal{M}\models T$ を固定する。$\mathcal{L}_{M}$ 論理式は集合をなすので、$\infty$ でない階数全体の上限 $\beta$ があり、$\alpha_{0}\defeq\beta+1$ とおく。階数が $\ge\alpha_{0}$ の論理式は階数 $\infty$ である。$\Phi\defeq\{\varphi:\mathrm{RM}(\varphi)=\infty\}$ が空でないとして、二分木の補題（\ref{model:no-binary-tree}、$A=M$）の条件を満たすことを示す。
+- $\Phi$ の論理式は階数 $\ge0$ なので両立する。
+- $\varphi\in\Phi$ なら $\mathrm{RM}(\varphi)\ge\alpha_{0}+1$ なので、互いに交わらない $\theta_{i}\vdash\varphi$ で $\mathrm{RM}(\theta_{i})\ge\alpha_{0}$、すなわち $\mathrm{RM}(\theta_{i})=\infty$ のものが無限個ある。$\psi\defeq\theta_{0}$ とおくと、$\varphi\wedge\psi$ は $\theta_{0}$ と同値で $\Phi$ に属し、$\varphi\wedge\neg\psi$ は $\theta_{1}$ を含む（$\theta_{1}\vdash\varphi\wedge\neg\theta_{0}$）ので、\ref{model:morley-rank-basic} の 2 から $\Phi$ に属する。
+
+これは二分木の補題に反するので $\Phi=\emptyset$。
+
+**2 ⇒ 1.** $\omega$ 安定でないとし、可算な $A\subseteq M$（$\mathcal{M}\models T$）で $S_{1}^{\mathcal{M}}(A)$ が非可算なものをとる（\ref{model:stable-one-variable} により $1$ 変数で十分）。$\mathcal{L}_{A}$ 論理式 $\varphi$ について $[\varphi]$ が非可算であることを「$\varphi$ は**大きい**」という。$x=x$ は大きいので、大きい論理式のうち $\mathrm{RM}(\varphi)$（2 から順序数）が最小のものをとり、その値を $\alpha$ とする。
+
+*分割.* 大きい $\varphi$ について、$\mathcal{L}_{A}$ 論理式 $\psi$ で $\varphi\wedge\psi$, $\varphi\wedge\neg\psi$ がともに大きいものがある。実際、$p\in[\varphi]$ が「ある $\chi\in p$ で $[\varphi\wedge\chi]$ が可算」となる型の全体は、$\mathcal{L}_{A}$ 論理式が可算個しかないので、可算個の可算集合の和で可算である。$[\varphi]$ は非可算なので、そうでない型 $p\ne q$ がとれ、$\psi\in p$, $\neg\psi\in q$ となる $\psi$ をとれば、$[\varphi\wedge\psi]\ni p$ と $[\varphi\wedge\neg\psi]\ni q$ はどちらも非可算。
+
+*無限個の部分.* $\varphi_{0}\defeq\varphi$ とし、大きい $\varphi_{k}$ を分割する $\psi_{k}$ をとって $\varphi_{k+1}\defeq\varphi_{k}\wedge\psi_{k}$, $\chi_{k}\defeq\varphi_{k}\wedge\neg\psi_{k}$ とする。$\chi_{0},\chi_{1},\ldots$ は互いに交わらず（$\chi_{k}\vdash\psi_{j}$（$j<k$）, $\chi_{j}\vdash\neg\psi_{j}$）、$\vdash\varphi$ で、すべて大きい。大きい論理式の階数は $\alpha$ の最小性から $\ge\alpha$ なので、$\mathrm{RM}(\varphi)\ge\alpha+1$。これは $\mathrm{RM}(\varphi)=\alpha$ に反する。
+:::
+
+::: hypcheck
+- **二分木の補題（$\omega$ 安定性）**：1 ⇒ 2 で $\Phi=\emptyset$ を導くのに使った。
+- **$\alpha_{0}$ の存在**：「階数が十分大きければ $\infty$」とするために、$\mathcal{L}_{M}$ 論理式が集合をなすことを使った。
+- **言語と $A$ の可算性**：2 ⇒ 1 の分割で、$\mathcal{L}_{A}$ 論理式が可算個であることに使った。
+- **最小の階数をとること**：2 ⇒ 1 で、分割した部分の階数が下がらないことに使った。
+:::
+
+## 問題 {#model:sec-mr-problems}
+
+::: problem {#model:prob-mr-acf}
+代数的閉体 $\mathcal{K}$ で $\mathrm{RM}(x=x)=1$ であることを示せ。
+:::
+
+::: solution
+量化子消去（\ref{model:acf-qe}）から、$\mathcal{L}_{K}$ 論理式 $\psi(x)$ は多項式の等式・不等式の真理関数的な組合せと同値で、一変数の零でない多項式の零点は有限個なので、$\psi(\mathcal{K})$ は有限か補有限。よって $x=x$ は $\mathcal{K}$ で極小で、\ref{model:morley-rank-small} の 2 から $\mathrm{RM}(x=x)=1$。
+:::
+
+::: problem {#model:prob-mr-dlo}
+$(\mathbb{Q},<)$ で、端点が異なる開区間 $a<x<b$ のモーリー階数は $\infty$ であることを示せ。DLO の理論は $\omega$ 安定でないことと比べよ。
+:::
+
+::: solution
+$\alpha$ に関する帰納法で、すべての開区間 $I=(a,b)$（$a<b$）について $\mathrm{RM}(I)\ge\alpha$ を示す。$\alpha=0$ は空でないことから。$\alpha+1$：$a<c_{0}<c_{1}<\cdots<b$ となる有理数の列をとると、開区間 $(c_{i},c_{i+1})$ は互いに交わらず $\vdash I$ で、帰納法の仮定から階数 $\ge\alpha$。極限は定義から。よって $\mathrm{RM}(I)=\infty$ で、\ref{model:omega-stable-iff-rank} からも DLO の理論は $\omega$ 安定でない（直接には、$\mathbb{Q}$ 上の切断に対応する $2^{\aleph_{0}}$ 個の型がある）。
+:::
+
+::: supplement
+**前提を変えると.** $\omega$ 飽和なモデルで定義した階数はモデルによらず、パラメータの型だけで決まることが知られている。さらに、階数 $\alpha$ の論理式は階数 $\alpha$ の互いに交わらない部分に高々有限個しか分けられず、その最大個数を**モーリー次数**という（ここでは扱わない）。代数的閉体では $K^{n}$ の階数は $n$（代数多様体の次元）であることが知られている。
+
+**似た定理.** 位相空間のカントール–ベンディクソン階数（孤立点を取り除く操作の回数）は、型の空間に適用すると、可算言語ではモーリー階数と一致する場合があることが知られている。2 ⇒ 1 の証明の「大きい論理式の分割」は、非可算閉集合が完全核をもつというカントール–ベンディクソンの定理の議論と同じものである。
+
+**高い視点から：分け方の深さで測る次元.** モーリー階数は、定義可能集合を「無限個の大きな部分に分けられる」ことを一段の次元の上昇とみなす次元の概念である。有限集合が $0$ 次元、強極小集合（代数的閉体の直線など）が $1$ 次元で、平面は直線を無限本並べたものなので $2$ 次元になる。比喩で言えば、どこまでも細かく分けられて終わりのない集合（稠密な順序）には次元が付かず（$\infty$）、その状況がちょうど $\omega$ 安定性の破れに対応する。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

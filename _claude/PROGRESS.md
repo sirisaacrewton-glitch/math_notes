@@ -330,6 +330,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 計算論 AC-12（03D/03/12-index-set-completeness, comp:page-index-set-completeness：Σn・Πn 完全と基本性質（階層定理から下の段に属さない）、FIN の Σ₂ 完全性と INF の一様な Π₂ 完全性、TOT の Π₂ 完全性、COF の Σ₃ 完全性（動く目印の構成）、REC は Σ₃・空集合の指数は Π₁ 完全の問題）。07-post-theorem と 02-turing-reducibility の「認めてよい」に参照を付けた。資料なし。
 - 2026-10-08 集合論 II-14（03E/02/14-partition-relations, set:page-partition-relations：矢印記号、無限ラムゼーの定理（端等質化）、実数に単調な ω₁ 列はない、シェルピンスキーの彩色 2^ℵ₀↛(ℵ₁)²₂、エルデシュ–ラドーの定理 (2^κ)⁺→(κ⁺)²_κ、可算の場合の最良性、線形順序の単調部分列と ℵ₁↛(ℵ₁)²₂ の問題）。資料なし。
 - 2026-10-08 ホモロジー代数 HD-06（18G/02-derived-functors/06-tensor-tor, ha:page-tensor-tor：平衡写像とテンソル積の普遍性、M⊗R≅M、テンソルと hom の随伴、hom による右完全性の判定、テンソル積の右完全性、Tor（第二変数の射影分解）の基本性質と Z 上の計算、平坦加群（Tor₁ による特徴づけ、Z/n は平坦でない）。03-tor-ext の補足から新ページと HD-05 へ参照を付けた）。資料なし。
 - 2026-10-08 モデル理論 MT-14（03C/03-ultraproducts/03-ax-grothendieck, model:page-ax-grothendieck：主張を文 σ_{n,d} で書く、F_p の代数閉包の有限部分集合は有限部分体に入る、正標数での証明（鳩の巣）、レフシェッツの原理と超積による標数 0 への移行、Q 上の x^3 とフロベニウスの問題）。資料なし。
@@ -547,6 +548,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | AC-09 | 03-advanced-computability/09-low-simple | 単純集合・極限補題・低集合・単純な低集合（新井 §6.6 演習） | 完了 |
 | AC-10 | 03-advanced-computability/10-creative-sets | 生産的・創造的集合、パラメータ付き再帰定理、創造的 ⇔ m 完全、単純集合は m 完全でない、マイヒルの同型定理（新井 §6.2.2） | 完了 |
 | AC-11 | 03-advanced-computability/11-rice-shapiro | 指数集合とライス–シャピロの定理（逆を含む）、ライスの定理を系として（資料なし） | 完了 |
+| AC-12 | 03-advanced-computability/12-index-set-completeness | Σn/Πn 完全、FIN・INF・TOT・COF の完全性（動く目印）（資料なし） | 完了 |
 | KR-01 | 06-algorithmic-randomness/01-prefix-free-complexity | 接頭辞なし複雑性とクラフトの不等式 | 完了 |
 | KR-02 | 06-algorithmic-randomness/02-martin-lof | マルチン＝レーフのランダムネスとレヴィン–シュノアの定理 | 完了 |
 

@@ -4383,12 +4383,26 @@
       "num": "2.8",
       "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/02-prefix-free-complexity.html"
     },
+    "comp:cof-complete": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "COF は Σ₃ 完全",
+      "num": "12.5",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/12-index-set-completeness.html"
+    },
     "comp:column-strings": {
       "status": "defined",
       "type": "definition",
       "title": "列の二進表記",
       "num": "1.1",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/01-logical-theories.html"
+    },
+    "comp:complete-basic": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "完全集合の基本性質",
+      "num": "12.2",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/12-index-set-completeness.html"
     },
     "comp:compressible": {
       "status": "defined",
@@ -4670,6 +4684,13 @@
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/01-automata/01-finite-automata.html"
     },
+    "comp:fin-complete": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "FIN は Σ₂ 完全",
+      "num": "12.3",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/12-index-set-completeness.html"
+    },
     "comp:fixed-point": {
       "status": "defined",
       "type": "theorem",
@@ -4858,6 +4879,13 @@
       "title": "指数（インデックス）",
       "num": "11.4",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/11-universal-smn.html"
+    },
+    "comp:index-sets-not-lower": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "低い段には属さない",
+      "num": "12.6",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/12-index-set-completeness.html"
     },
     "comp:interactive-proof": {
       "status": "defined",
@@ -5579,6 +5607,13 @@
       "title": "超算術的階層とクリーネの定理",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/06-hyperarithmetic.html"
+    },
+    "comp:page-index-set-completeness": {
+      "status": "defined",
+      "type": "page",
+      "title": "指数集合の完全性",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/12-index-set-completeness.html"
     },
     "comp:page-interactive-proofs": {
       "status": "defined",
@@ -6391,6 +6426,20 @@
       "title": "",
       "num": "11.17",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/11-universal-smn.html"
+    },
+    "comp:prob-ic-empty": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "12.8",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/12-index-set-completeness.html"
+    },
+    "comp:prob-ic-rec": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "12.7",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/12-index-set-completeness.html"
     },
     "comp:prob-incompressible-no-infinite-re": {
       "status": "defined",
@@ -7736,6 +7785,34 @@
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/06-hyperarithmetic.html"
     },
+    "comp:sec-ic-level2": {
+      "status": "defined",
+      "type": "section",
+      "title": "第二段：FIN, INF, TOT",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/12-index-set-completeness.html"
+    },
+    "comp:sec-ic-level3": {
+      "status": "defined",
+      "type": "section",
+      "title": "第三段：COF",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/12-index-set-completeness.html"
+    },
+    "comp:sec-ic-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/12-index-set-completeness.html"
+    },
+    "comp:sec-ic-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/12-index-set-completeness.html"
+    },
     "comp:sec-immerman": {
       "status": "defined",
       "type": "section",
@@ -8786,6 +8863,13 @@
       "num": "8.2",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/08-circuits.html"
     },
+    "comp:sigma-n-complete": {
+      "status": "defined",
+      "type": "definition",
+      "title": "完全集合",
+      "num": "12.1",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/12-index-set-completeness.html"
+    },
     "comp:sigma-normal-form": {
       "status": "defined",
       "type": "lemma",
@@ -8953,6 +9037,13 @@
       "title": "TM で計算可能な関数は L で計算可能",
       "num": "7.3",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/07-turing-completeness.html"
+    },
+    "comp:tot-complete": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "TOT は Π₂ 完全",
+      "num": "12.4",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/12-index-set-completeness.html"
     },
     "comp:tqbf": {
       "status": "defined",

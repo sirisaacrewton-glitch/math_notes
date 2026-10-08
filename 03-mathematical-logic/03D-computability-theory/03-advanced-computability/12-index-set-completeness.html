@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>指数集合の完全性 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/03-advanced-computability/12-index-set-completeness.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 指数集合の完全性 {#comp:page-index-set-completeness keywords="Sigma_n-complete, Pi_n-complete, FIN is Sigma_2-complete, INF and TOT are Pi_2-complete, COF is Sigma_3-complete, movable markers, index sets in the arithmetical hierarchy"}
+
+算術的階層（\ref{comp:arithmetical-hierarchy}）の各段には、その段で「最も難しい」集合、すなわち**完全集合**（\ref{comp:sigma-n-complete}）がある。本ページでは、プログラムの性質を表す自然な指数集合がちょうどその役を果たすことを示す：有限集合を列挙するプログラムの指数集合 $\mathit{FIN}$ は $\Sigma_{2}$ 完全（\ref{comp:fin-complete}）、全域関数の指数集合 $\mathit{TOT}$ と無限集合の指数集合 $\mathit{INF}$ は $\Pi_{2}$ 完全（\ref{comp:tot-complete}）、補有限集合の指数集合 $\mathit{COF}$ は $\Sigma_{3}$ 完全（\ref{comp:cof-complete}）である。階層定理（\ref{comp:hierarchy-theorem}）と合わせると、これらが一つ下の段や反対側の段に属さないことが従う。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。
+
+## 記法と定義の確認 {#comp:sec-ic-notation}
+
+::: notation
+- $\varphi_{e}$, $W_{e}=\mathrm{dom}\,\varphi_{e}$、smn 定理の使い方は \ref{comp:page-creative-sets} の記法のとおり。$W_{e,s}$ は、$s$ 以下の $y$ で $\varphi_{e}(y)$ が $s$ 段以内に止まるものの集合で、「$y\in W_{e,s}$」は $(e,y,s)$ の決定可能な関係、$W_{e}=\bigcup_{s}W_{e,s}$（増加和）。
+- 算術的階層 $\Sigma_{n},\Pi_{n}$ とその基本性質（補集合、同種の量化子の併合、$\wedge,\vee$ と有界量化子で閉じること）は \ref{comp:arithmetical-hierarchy}, \ref{comp:hierarchy-basic}, \ref{comp:bounded-quantifiers} のとおり。写像還元 $\le_{\mathrm{m}}$ の性質は \ref{comp:mapping-basic} のとおり。
+- 本ページの指数集合：
+$$
+\begin{aligned}
+\mathit{FIN}&\defeq\{e:W_{e}\text{ は有限}\},&\mathit{INF}&\defeq\{e:W_{e}\text{ は無限}\},\\
+\mathit{TOT}&\defeq\{e:W_{e}=\N\},&\mathit{COF}&\defeq\{e:\N\setminus W_{e}\text{ は有限}\}.
+\end{aligned}
+$$
+（\ref{comp:hierarchy-examples} では TM の符号で同様の集合を考えた。）
+:::
+
+::: definition 完全集合 {#comp:sigma-n-complete keywords="Sigma_n-complete and Pi_n-complete sets under many-one reducibility" index="Σn 完全|しぐまえぬかんぜん, Πn 完全|ぱいえぬかんぜん"}
+集合 $C\subseteq\N$ が **$\Sigma_{n}$ 完全**であるとは、$C$ が $\Sigma_{n}$ であり、すべての $\Sigma_{n}$ 集合 $B$ について $B\le_{\mathrm{m}}C$ であることをいう。$\Pi_{n}$ 完全も同様。
+:::
+
+::: lemma 完全集合の基本性質 {#comp:complete-basic keywords="Sigma_n-complete sets are not Pi_n; complements of Sigma_n-complete sets are Pi_n-complete; m-reductions preserve Sigma_n" index="完全集合の基本性質|かんぜんしゅうごうのきほんせいしつ"}
+$n\ge1$ とする。
+1. $A\le_{\mathrm{m}}B$ で $B$ が $\Sigma_{n}$ なら $A$ も $\Sigma_{n}$（$\Pi_{n}$ も同様）。
+2. $C$ が $\Sigma_{n}$ 完全なら $\overline{C}$ は $\Pi_{n}$ 完全。
+3. $\Sigma_{n}$ 完全な集合は $\Pi_{n}$ でない。$\Pi_{n}$ 完全な集合は $\Sigma_{n}$ でない。
+:::
+
+::: proof
+**1.** $x\in B\iff\exists y_{1}\cdots R(x,y_{1},\dots)$ で、$x\in A\iff f(x)\in B$ なら、$R'(x,\vec{y})\defeq R(f(x),\vec{y})$ は決定可能で、$A$ は同じ形の量化子で書ける。
+
+**2.** $\overline{C}$ は $\Pi_{n}$（\ref{comp:hierarchy-basic} の 1）。$\Pi_{n}$ 集合 $B$ について $\overline{B}$ は $\Sigma_{n}$ なので $\overline{B}\le_{\mathrm{m}}C$、したがって $B\le_{\mathrm{m}}\overline{C}$（\ref{comp:mapping-basic} の 1）。
+
+**3.** $\Sigma_{n}$ 完全な $C$ が $\Pi_{n}$ なら、任意の $\Sigma_{n}$ 集合 $B\le_{\mathrm{m}}C$ は 1 から $\Pi_{n}$。$B$ の補集合を考えると、任意の $\Pi_{n}$ 集合が $\Sigma_{n}$ となり、階層定理（\ref{comp:hierarchy-theorem}）に反する。後半は 2 と前半から。
+:::
+
+## 第二段：FIN, INF, TOT {#comp:sec-ic-level2}
+
+::: theorem FIN は Σ₂ 完全 {#comp:fin-complete keywords="FIN is Sigma_2-complete; INF is Pi_2-complete (uniformly)" index="FIN の完全性|ふぃんのかんぜんせい"}
+$\mathit{FIN}$ は $\Sigma_{2}$ 完全で、$\mathit{INF}$ は $\Pi_{2}$ 完全である。さらに一様に：$\Pi_{2}$ の関係 $P(x,y)$ について、全域計算可能な $h$ で $P(x,y)\iff W_{h(x,y)}$ は無限、となるものがある。
+:::
+
+::: proof
+**$\mathit{FIN}\in\Sigma_{2}$.** $e\in\mathit{FIN}\iff\exists N\,\forall y\,\forall s\,(y\in W_{e,s}\to y\le N)$ で、$\forall y\,\forall s$ は一つにまとめられる。
+
+**困難性.** $\Sigma_{2}$ 集合 $B$ を $x\in B\iff\exists y\,\forall z\,R(x,y,z)$（$R$ 決定可能）と書く。smn 定理により、全域計算可能な $g$ で
+$$
+W_{g(x)}=\{n:\forall y\le n\ \exists z\ \neg R(x,y,z)\}
+$$
+となるものをとる（$\varphi_{g(x)}(n)$ は「$y=0,\dots,n$ の各々について $\neg R(x,y,z)$ となる $z$ を順に探し、すべて見つかったら止まる」）。
+- $x\in B$ なら、$\forall z\,R(x,y_{0},z)$ となる $y_{0}$ があり、$n\ge y_{0}$ では条件が $y=y_{0}$ で破れるので $W_{g(x)}\subseteq\{0,\dots,y_{0}-1\}$ は有限。
+- $x\notin B$ なら、すべての $y$ で $\exists z\,\neg R(x,y,z)$ なので $W_{g(x)}=\N$ は無限。
+
+よって $x\in B\iff g(x)\in\mathit{FIN}$。$\mathit{INF}=\overline{\mathit{FIN}}$ は \ref{comp:complete-basic} の 2 から $\Pi_{2}$ 完全。
+
+**一様性.** $\Pi_{2}$ の $P(x,y)$ の補集合は $\Sigma_{2}$ で、対の符号化で一変数の集合とみて上の構成を使えば、$\langle x,y\rangle\notin P\iff W_{g(\langle x,y\rangle)}$ は有限。$h(x,y)\defeq g(\langle x,y\rangle)$。
+:::
+
+::: theorem TOT は Π₂ 完全 {#comp:tot-complete keywords="TOT is Pi_2-complete; hence not Sigma_2" index="TOT の完全性|とっとのかんぜんせい"}
+$\mathit{TOT}$ は $\Pi_{2}$ 完全である。特に $\Sigma_{2}$ でない。
+:::
+
+::: proof
+**$\mathit{TOT}\in\Pi_{2}$.** $e\in\mathit{TOT}\iff\forall y\,\exists s\,(y\in W_{e,s})$。
+
+**困難性.** $\Pi_{2}$ 集合 $B$ を $x\in B\iff\forall y\,\exists z\,R(x,y,z)$ と書く。smn 定理により、$\varphi_{f(x)}(y)$ が「$R(x,y,z)$ となる $z$ を探し、見つかれば止まる」となる全域計算可能な $f$ をとると、$W_{f(x)}=\{y:\exists z\,R(x,y,z)\}$。よって $x\in B\iff W_{f(x)}=\N\iff f(x)\in\mathit{TOT}$。後半は \ref{comp:complete-basic} の 3。
+:::
+
+## 第三段：COF {#comp:sec-ic-level3}
+
+::: theorem COF は Σ₃ 完全 {#comp:cof-complete keywords="COF is Sigma_3-complete, proof by movable markers" index="COF の完全性|こふのかんぜんせい, 動く目印|うごくめじるし"}
+$\mathit{COF}$ は $\Sigma_{3}$ 完全である。
+:::
+
+::: proof
+**$\mathit{COF}\in\Sigma_{3}$.** $e\in\mathit{COF}\iff\exists N\,\forall m\,(m>N\to\exists s\ m\in W_{e,s})$ で、括弧の中は $\Pi_{2}$。
+
+**困難性.** $\Sigma_{3}$ 集合 $B$ を $x\in B\iff\exists y\,P(x,y)$（$P$ は $\Pi_{2}$）と書き、\ref{comp:fin-complete} の $h$ をとる：$P(x,y)\iff W_{h(x,y)}$ は無限。$x$ を固定し、集合 $V=V_{x}$ を、**目印** $m_{0},m_{1},\ldots$ を動かしながら段階 $s=0,1,2,\ldots$ で列挙する。各段階で、目印 $m_{0},\dots,m_{s-1}$ はそれぞれ自然数の上に置かれていて、互いに異なり、まだ $V$ に入れていない数の上にある。段階 $s$ では次を行う。
+1. $y<s$ で $W_{h(x,y),s}\ne W_{h(x,y),s-1}$（段階 $s$ で新しい元が現れた）となる最小の $y$ があれば、目印 $m_{y},m_{y+1},\dots,m_{s-1}$ がいま置かれている数をすべて $V$ に入れ、それらの目印を、$s$ およびこれまでに目印を置いたどの数よりも大きい新しい数に（一つずつ）置き直す（$m_{y}$ を「蹴る」という）。
+2. 新しい目印 $m_{s}$ を、$s$ およびこれまでに目印を置いたどの数よりも大きい数に置く。
+3. $s$ 以下の数で、いずれの目印も置かれておらず、まだ $V$ に入っていないものを $V$ に入れる。
+
+この手続きは $x$ について一様で計算可能なので、smn 定理により $V_{x}=W_{g(x)}$ となる全域計算可能な $g$ がある。
+
+*$V$ の補集合.* 数 $n$ は、段階 $n$ 以降のある段階で目印が置かれていなければ 3 で $V$ に入り、目印が置かれていて後でその目印が動けば 1 で $V$ に入る。一度 $V$ に入った数に目印が置かれることはない。したがって $n\notin V$ であることと、ある目印がある段階から先ずっと $n$ の上にあることは同値で、$\N\setminus V$ は**最終的に動かなくなった目印の位置**の集合である。
+
+*目印 $m_{i}$ が動く回数.* $m_{i}$ は、$y\le i$ である $W_{h(x,y)}$ に新しい元が現れたときにだけ動く。
+- $x\notin B$ なら、すべての $y$ で $W_{h(x,y)}$ は有限なので、各 $m_{i}$ は有限回しか動かず、すべての目印が最終的に止まる。止まった位置は互いに異なるので、補集合は無限で、$g(x)\notin\mathit{COF}$。
+- $x\in B$ なら、$W_{h(x,y)}$ が無限となる最小の $y_{0}$ がある。$y<y_{0}$ の $W_{h(x,y)}$ は有限なので、目印 $m_{0},\dots,m_{y_{0}-1}$ は有限回しか動かず止まる。一方 $i\ge y_{0}$ の $m_{i}$ は、$W_{h(x,y_{0})}$ に新しい元が現れるたびに（無限回）動き、止まらない。よって補集合は高々 $y_{0}$ 個の数からなり、$g(x)\in\mathit{COF}$。
+
+よって $x\in B\iff g(x)\in\mathit{COF}$。
+:::
+
+::: hypcheck
+- **一様性（$h$ が $x,y$ について計算可能）**：COF の構成で、すべての $y$ の $W_{h(x,y)}$ を同時に監視するのに使った。
+- **最小の $y$ で蹴り、それより大きい目印をすべて動かすこと**：$x\in B$ のとき、$y_{0}$ 以上の目印がすべて止まらないこと（補集合が有限になること）に使った。$m_{y}$ だけを動かすと、$y_{0}$ より大きい目印が止まりうる。
+- **新しい位置をこれまでより大きくとること**：一度 $V$ に入った数に目印を置かないこと、止まった目印の位置が互いに異なることに使った。
+:::
+
+::: corollary 低い段には属さない {#comp:index-sets-not-lower}
+$\mathit{FIN}$ は $\Pi_{2}$ でなく、$\mathit{TOT}$, $\mathit{INF}$ は $\Sigma_{2}$ でなく、$\mathit{COF}$ は $\Pi_{3}$ でない。特に、いずれも決定可能でも認識可能でもない。
+:::
+
+::: proof
+\ref{comp:complete-basic} の 3。認識可能な集合は $\Sigma_{1}\subseteq\Sigma_{2}\cap\Pi_{2}$（\ref{comp:hierarchy-basic} の 2 の証明と同じく、余分な量化子を加える）なので、どれも認識可能でない。
+:::
+
+## 問題 {#comp:sec-ic-problems}
+
+::: problem {#comp:prob-ic-rec}
+$\mathit{REC}\defeq\{e:W_{e}\text{ は決定可能}\}$ は $\Sigma_{3}$ であることを示せ。
+:::
+
+::: solution
+$W_{e}$ が決定可能 $\iff$ 補集合が認識可能 $\iff\exists i\,(W_{i}=\N\setminus W_{e})$。$W_{i}=\N\setminus W_{e}$ は「$\forall n\,(n\in W_{i}\vee n\in W_{e})$」かつ「$\forall n\,\neg(n\in W_{i}\wedge n\in W_{e})$」で、前者は $\forall n\,\exists s$ の $\Pi_{2}$、後者は $\forall n\,\forall s\,\forall t$ の $\Pi_{1}$。よって $\exists i\,(\Pi_{2})$ で $\Sigma_{3}$。（$\mathit{REC}$ は $\Sigma_{3}$ 完全であることが知られている。）
+:::
+
+::: problem {#comp:prob-ic-empty}
+$\{e:W_{e}=\emptyset\}$ は $\Pi_{1}$ 完全であることを示せ。
+:::
+
+::: solution
+$\Pi_{1}$：$\forall y\,\forall s\,(y\notin W_{e,s})$。困難性：$\Pi_{1}$ 集合 $B$ を $x\in B\iff\forall z\,R(x,z)$ と書き、smn 定理で $\varphi_{f(x)}(y)$ を「$\neg R(x,z)$ となる $z$ を探し、見つかれば止まる」とすると、$W_{f(x)}$ は $x\in B$ なら空、そうでなければ $\N$。
+:::
+
+::: supplement
+**前提を変えると.** 写像還元の代わりに一対一還元 $\le_{1}$ を使っても、本ページの還元はすべて単射にとれる（smn 定理の $s^{1}_{1}$ は単射にとれることが知られている）ので、同じ完全性が成り立つ。チューリング還元で見ると、ポストの定理（\ref{comp:post-theorem}）から $\Sigma_{n}$ 完全な集合は $\varnothing^{(n)}$ とチューリング同値である（\ref{comp:prob-pt-fin}, \ref{comp:prob-pt-tot} の「認めてよい」とした部分は本ページで示された）。
+
+**似た定理.** ライス–シャピロの定理（\ref{comp:page-rice-shapiro}）は指数集合が $\Sigma_{1}$ であるための条件を与えた。本ページの結果は、指数集合が階層の高い段に現れることを示す。$\Sigma_{1}$ 完全な集合が創造的集合と一致すること（\ref{comp:creative-iff-complete}）は、第一段での類似である。
+
+**高い視点から：量化子の交替は「推測の変更」の回数.** $\Sigma_{2}$ の性質は「有限回の推測の変更で正しい答えに落ち着く」性質で、$\mathit{FIN}$ では「もう新しい元は現れない」と推測しては裏切られることが有限回で済むかどうかが問われる。$\Sigma_{3}$ ではもう一段複雑になり、COF の証明の「動く目印」は、ある $y_{0}$ で無限回の変更が起きるかどうかを、補集合の大きさに翻訳する装置である。比喩で言えば、$\mathit{COF}$ を判定するには「どこかの見張り台から先では、いつまでも警報が鳴り続けるか」を見抜かなければならない。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

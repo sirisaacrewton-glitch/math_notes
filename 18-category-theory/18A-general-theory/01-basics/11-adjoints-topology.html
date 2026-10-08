@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>位相空間の圏と随伴 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/01-basics/11-adjoints-topology.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 位相空間の圏と随伴 {#cat:page-adjoints-topology keywords="adjoints in topology, forgetful functor Top to Set, discrete and indiscrete topology, initial topology as right adjoint, final topology as left adjoint, completeness of Top, cocompleteness of Top, collapsing a subspace, Hausdorff reflection, largest Hausdorff quotient"}
+
+位相空間の基本的な構成（部分空間・直積・商空間・直和）は、どれも「台集合の上の構成に、最も弱い／最も強い位相を入れる」という形をしている。本ページでは、これが随伴の言葉で一様に説明できることを示す。忘却関手 $U\colon\mathbf{Top}\to\mathbf{Set}$ が左右の随伴をもつことから、極限・余極限の台集合は集合での極限・余極限である（\ref{cat:top-forgetful-preserves}）。始位相はスライス圏の間の関手の「右随伴かつ右逆」であり（\ref{cat:initial-topology-adjoint}）、この形の随伴があれば一般に等化子が作れる（\ref{cat:equalizers-from-lifts}）。これらから $\mathbf{Top}$ の完備性・余完備性（\ref{cat:top-complete}）が得られる。最後に、部分集合のつぶし $X/A$ が左随伴であること（\ref{cat:collapse-adjoint}）と、ハウスドルフ空間の圏が反射的であること（\ref{cat:haus-reflective}）を示す。
+
+> 資料：S. Mac Lane, *Categories for the Working Mathematician*, 2nd ed., §V.9 を参考にした（本文は写していない）。$X/A$ は、$A=\emptyset$ も含めて扱えるよう、基点を一つ足してからつぶす形で定義した。ハウスドルフ化の単位が全射であることの証明と、ハウスドルフ空間の圏の余極限の構成は、同書の記述を補って書いた。
+
+## 記法と定義の確認 {#cat:sec-adt-notation}
+
+::: notation
+- $\mathbf{Top}$ は（小さい）位相空間と連続写像の圏、$U\colon\mathbf{Top}\to\mathbf{Set}$ は台集合をとる忘却関手、$\mathbf{Haus}$ はハウスドルフ空間からなる $\mathbf{Top}$ の充満部分圏。
+- 始位相・終位相とその普遍性は \ref{top:initial-topology}, \ref{top:initial-topology-universal}, \ref{top:final-topology}, \ref{top:final-topology-universal} のとおり。部分空間・直積位相・商位相は \ref{top:subspace}, \ref{top:product-topology}, \ref{top:quotient-topology} のとおり。
+- 圏 $\mathbf{C}$ と対象 $x$ について、**スライス圏** $(\mathbf{C}\downarrow x)$ は、対象が射 $f\colon c\to x$、射 $f\to f'$ が $f'\circ h=f$ となる $h\colon c\to c'$ の圏（コンマ圏 \ref{cat:comma-category} の特別な場合）。双対に $(x\downarrow\mathbf{C})$。関手 $G\colon\mathbf{C}\to\mathbf{D}$ は $(G\downarrow x)\colon(\mathbf{C}\downarrow x)\to(\mathbf{D}\downarrow Gx)$, $f\mapsto Gf$ を導く。
+- 随伴、右随伴の極限保存、随伴関手定理と解集合条件、反射部分圏、完備性の判定は \ref{cat:adjunction}, \ref{cat:adjoints-preserve-limits}, \ref{cat:freyd-aft}, \ref{cat:solution-set-condition}, \ref{cat:reflective-subcategory}, \ref{cat:completeness-criterion} のとおり。忠実な関手は \ref{cat:full-faithful} のとおり。
+:::
+
+## 忘却関手の随伴 {#cat:sec-adt-forgetful}
+
+::: proposition 忘却関手は極限と余極限を保存する {#cat:top-forgetful-preserves keywords="forgetful functor Top to Set has left adjoint discrete and right adjoint indiscrete; preserves limits and colimits" index="離散位相と忘却関手|りさんいそうとぼうきゃくかんしゅ, 密着位相と忘却関手|みっちゃくいそうとぼうきゃくかんしゅ"}
+集合 $S$ に離散位相を入れる関手を $D$、密着位相を入れる関手を $D'$ とすると $D\dashv U\dashv D'$。したがって $U$ は $\mathbf{Top}$ に存在するすべての極限と余極限を保存する。
+:::
+
+::: proof
+**Step 1（$D\dashv U$）.** 離散空間からの写像はどれも連続（すべての部分集合が開）なので、$\mathbf{Top}(DS,X)=\mathbf{Set}(S,UX)$（同じ写像の集合）で、これは $S$, $X$ について自然。
+
+**Step 2（$U\dashv D'$）.** 密着空間への写像はどれも連続（開集合 $\emptyset$, $S$ の逆像は $\emptyset$ と全体）なので、$\mathbf{Set}(UX,S)=\mathbf{Top}(X,D'S)$。
+
+**Step 3.** 右随伴は極限を、左随伴は余極限を保存する（\ref{cat:adjoints-preserve-limits} とその双対）。$U$ は右随伴かつ左随伴である。
+:::
+
+::: remark
+これは「直積空間の台集合は直積集合」「直和空間の台集合は直和集合」がなぜ成り立つかの説明である。ただし、極限・余極限が $\mathbf{Top}$ に**存在する**ことは、この命題からは分からない。それを示すのが次節である。
+:::
+
+## 始位相と終位相 {#cat:sec-adt-initial}
+
+::: theorem 始位相は右随伴かつ右逆 {#cat:initial-topology-adjoint keywords="initial topology as right-adjoint-right-inverse to the forgetful functor on slices" index="始位相と随伴|しいそうとずいはん"}
+空間 $X$ について、関手 $(U\downarrow X)\colon(\mathbf{Top}\downarrow X)\to(\mathbf{Set}\downarrow UX)$ は、$(U\downarrow X)\circ L=1$ となる右随伴 $L$ をもつ。ここで $L$ は、写像 $t\colon S\to UX$ に、$S$ に $t$ の始位相を入れた空間 $S_{t}$ と連続写像 $t\colon S_{t}\to X$ を対応させる。双対に、$(X\downarrow U)\colon(X\downarrow\mathbf{Top})\to(UX\downarrow\mathbf{Set})$ は、写像 $t\colon UX\to S$ に終位相を入れたものを対応させる、$(X\downarrow U)\circ M=1$ となる左随伴 $M$ をもつ。
+:::
+
+::: proof
+**Step 1（$L$ は関手）.** $t\colon S\to UX$ の始位相 $\{t^{-1}[V]:V\text{ は }X\text{ で開}\}$ で $t$ は連続なので、$Lt\defeq(t\colon S_{t}\to X)$ は $(\mathbf{Top}\downarrow X)$ の対象。$(\mathbf{Set}\downarrow UX)$ の射 $k\colon(S,t)\to(S',t')$（$t'\circ k=t$）について、$t'\circ k=t$ は連続なので、\ref{top:initial-topology-universal} より $k\colon S_{t}\to S'_{t'}$ は連続。これを $Lk$ とする。$U(Lt)=t$, $U(Lk)=k$ なので $(U\downarrow X)\circ L=1$。
+
+**Step 2（随伴の全単射）.** $(\mathbf{Top}\downarrow X)$ の対象 $f\colon Y\to X$ と $t\colon S\to UX$ について、$(\mathbf{Set}\downarrow UX)$ の射 $s\colon Uf\to t$ とは $t\circ s=Uf$ となる写像 $s\colon UY\to S$ のことである。$t\circ s=f$ は連続なので、\ref{top:initial-topology-universal} より $s\colon Y\to S_{t}$ は連続で、$(\mathbf{Top}\downarrow X)$ の射 $f\to Lt$ になる。逆に $(\mathbf{Top}\downarrow X)$ の射 $f\to Lt$ の台写像は $Uf\to t$ である。この対応は同じ写像を見ているだけなので全単射で、$f$ と $t$ について自然である。
+
+**Step 3（双対）.** 終位相 $\{V\subseteq S:t^{-1}[V]\text{ が開}\}$ と \ref{top:final-topology-universal} を使って同様。
+:::
+
+::: hypcheck
+- **始位相の普遍性**：Step 1（$Lk$ の連続性）と Step 2（$s$ の連続性）で使った。「始位相の普遍性」とは、まさにこの随伴の全単射のことである。
+- **$(U\downarrow X)\circ L=1$**（右逆）：台集合と写像を変えずに位相を入れるだけなので、等式で成り立つ。次の命題でこの等式を使う。
+:::
+
+::: proposition 持ち上げから等化子を作る {#cat:equalizers-from-lifts keywords="faithful functor with right-adjoint-right-inverses on slices creates equalizers" index="等化子の構成（随伴による）|とうかしのこうせいずいはんによる"}
+$G\colon\mathbf{C}\to\mathbf{D}$ を忠実な関手とし、$\mathbf{D}$ は等化子をもち、各 $x\in\mathbf{C}$ について $(G\downarrow x)$ が $(G\downarrow x)\circ L=1$ となる右随伴 $L$ をもつとする。このとき $\mathbf{C}$ は等化子をもつ。具体的には、$f,f'\colon x\to y$ について、$Gf,Gf'$ の $\mathbf{D}$ での等化子 $e\colon s\to Gx$ に $L$ を施した $Le\colon Ls\to x$ が $f,f'$ の等化子である。
+:::
+
+::: proof
+$Le$ は $(\mathbf{C}\downarrow x)$ の対象で、右逆の条件から $G(Le)=e$（とくに $G(Ls)=s$）。
+
+**Step 1（$Le$ は $f,f'$ を等化する）.** $G(f\circ Le)=Gf\circ e=Gf'\circ e=G(f'\circ Le)$ で、$G$ は忠実なので $f\circ Le=f'\circ Le$。
+
+**Step 2（存在）.** $h\colon z\to x$ が $fh=f'h$ を満たすとする。$Gf\circ Gh=Gf'\circ Gh$ なので、等化子の性質から $Gh=e\circ k$ となる $k\colon Gz\to s$ がある。$k$ は $(\mathbf{D}\downarrow Gx)$ の射 $(G\downarrow x)(h)=Gh\to e$ である。随伴の全単射により、対応する $(\mathbf{C}\downarrow x)$ の射 $\hat{k}\colon h\to Le$、すなわち $Le\circ\hat{k}=h$ となる $\hat{k}\colon z\to Ls$ がある。
+
+**Step 3（一意性）.** $Le\circ k_{1}=h=Le\circ k_{2}$ なら、$G$ を施して $e\circ Gk_{1}=e\circ Gk_{2}$。等化子 $e$ はモノ射なので $Gk_{1}=Gk_{2}$、$G$ は忠実なので $k_{1}=k_{2}$。
+:::
+
+::: hypcheck
+- **$G$ が忠実**：Step 1 と Step 3 で使った。
+- **右逆 $(G\downarrow x)L=1$**：$G(Le)=e$ として、Step 1 と Step 3 で $G$ を施した後の射を $e$ で書くのに使った。
+- **随伴**：Step 2 の存在だけに使った。一意性は随伴を使わず、忠実性と $e$ のモノ性から出る。
+:::
+
+::: theorem Top は完備かつ余完備 {#cat:top-complete keywords="Top is complete and cocomplete; products, equalizers, coproducts, coequalizers of spaces" index="位相空間の圏の完備性|いそうくうかんのけんのかんびせい"}
+$\mathbf{Top}$ は完備かつ余完備である。極限は台集合の極限に始位相を、余極限は台集合の余極限に終位相を入れて得られる。
+:::
+
+::: proof
+**Step 1（積）.** 空間の族 $(X_{j})_{j\in J}$（$J$ は小さい集合）について、直積集合 $\prod_{j}UX_{j}$ に射影 $p_{j}$ たちの始位相（直積位相）を入れる。空間 $Z$ と連続写像 $f_{j}\colon Z\to X_{j}$ について、写像 $f=(f_{j})_{j}\colon UZ\to\prod UX_{j}$ は $p_{j}\circ f=f_{j}$ を満たすただ一つの写像で、\ref{top:initial-topology-universal} より連続。よってこれは積である。
+
+**Step 2（等化子）.** $U$ は忠実で、$\mathbf{Set}$ は等化子をもち（\ref{cat:set-complete}）、\ref{cat:initial-topology-adjoint} の $L$ は右随伴かつ右逆。\ref{cat:equalizers-from-lifts} より $\mathbf{Top}$ は等化子をもち、それは $\{x:f(x)=f'(x)\}$ に部分空間の位相（包含写像の始位相）を入れたものである。
+
+**Step 3（完備）.** Step 1, 2 と \ref{cat:completeness-criterion} より完備。
+
+**Step 4（余完備）.** 双対に、直和集合に包含写像たちの終位相を入れたものが余積、\ref{cat:equalizers-from-lifts} の双対（\ref{cat:initial-topology-adjoint} の $M$ を使う）から、余等化子は台集合の余等化子（商集合）に商位相を入れたものである。\ref{cat:completeness-criterion} の双対より余完備。
+:::
+
+::: hypcheck
+- **始位相・終位相の存在と普遍性**：Step 1, 2, 4 のすべてで使った。
+- **$J$ が小さい**：Step 1 で直積集合が集合であることに使った。
+- **$U$ の忠実性**：Step 2 で \ref{cat:equalizers-from-lifts} を適用するのに使った（連続写像は台写像で決まる）。
+:::
+
+## 部分集合のつぶしとハウスドルフ化 {#cat:sec-adt-collapse}
+
+::: proposition 部分集合のつぶしは左随伴 {#cat:collapse-adjoint keywords="X/A collapsing a subspace is left adjoint to Y maps to (Y, basepoint)" index="部分集合のつぶし|ぶぶんしゅうごうのつぶし"}
+空間と部分集合の組 $(X,A)$ と、$f(A)\subseteq A'$ となる連続写像 $f\colon X\to X'$ からなる圏を $\mathbf{Top}^{(2)}$、基点付き空間と基点を保つ連続写像の圏を $\mathbf{Top}_{*}$ とする。$X/A$ を、$X$ に一点 $*$ を直和で加えた空間 $X\sqcup\{*\}$ の、$A\cup\{*\}$ を一点につぶした商空間（基点はつぶした点）とする。このとき、$(X,A)\mapsto X/A$ は関手 $\mathbf{Top}_{*}\to\mathbf{Top}^{(2)}$, $Y\mapsto(Y,\{*_{Y}\})$ の左随伴である。
+:::
+
+::: proof
+**Step 1（対応）.** $\mathbf{Top}^{(2)}$ の射 $f\colon(X,A)\to(Y,\{*_{Y}\})$ は、$f(A)\subseteq\{*_{Y}\}$ となる連続写像 $f\colon X\to Y$ である。$\bar{f}\colon X\sqcup\{*\}\to Y$ を $\bar{f}|_{X}=f$, $\bar{f}(*)=*_{Y}$ と定めると、直和の普遍性（\ref{cat:top-complete} の余積）から連続で、$A\cup\{*\}$ を一点に写す。
+
+**Step 2（商を通る）.** 商写像 $q\colon X\sqcup\{*\}\to X/A$ について、$\bar{f}$ は $q$ の同じファイバーで一定なので、$\bar{f}=g\circ q$ となる写像 $g\colon X/A\to Y$ がただ一つあり、$g\circ q=\bar{f}$ が連続なので \ref{top:final-topology-universal}（商位相は $q$ の終位相）より $g$ は連続。$g$ は基点を保つ。
+
+**Step 3（逆）.** 逆に、基点を保つ連続写像 $g\colon X/A\to Y$ について、$g\circ q|_{X}$ は $A$ を $*_{Y}$ に写す連続写像。Step 1, 2 の対応とこれは互いに逆であり、$(X,A)$ と $Y$ について自然である（どちらも合成で定まる）。
+:::
+
+::: hypcheck
+- **$A=\emptyset$ も許した**：そのため一点を足してからつぶした。$A\ne\emptyset$ なら $X/A$ は $X$ の $A$ を一点につぶした商と同相である（ここでは確かめを略す）。
+- **商位相の普遍性**：Step 2 で $g$ の連続性に使った。
+:::
+
+::: theorem ハウスドルフ空間の圏は反射的 {#cat:haus-reflective keywords="Haus is reflective in Top, largest Hausdorff quotient, Haus is complete and cocomplete" index="ハウスドルフ化|はうすどるふか, 最大のハウスドルフ商|さいだいのはうすどるふしょう"}
+1. $\mathbf{Haus}$ は完備で、極限は $\mathbf{Top}$ での極限と一致する。
+2. 包含関手 $K\colon\mathbf{Haus}\to\mathbf{Top}$ は左随伴 $H$ をもつ（$\mathbf{Haus}$ は反射部分圏）。単位 $\eta_{X}\colon X\to KHX$ は全射で、$X$ がハウスドルフなら同型。
+3. $\mathbf{Haus}$ は余完備で、図式の余極限は、$\mathbf{Top}$ での余極限に $H$ を施したものである。
+4. 忘却関手 $\mathbf{Haus}\to\mathbf{Set}$ も左随伴をもつ。
+:::
+
+::: proof
+**Step 1（極限）.** ハウスドルフ空間の直積はハウスドルフ：異なる点 $x\ne y$ はある座標 $j$ で $x_{j}\ne y_{j}$ なので、$X_{j}$ で分離する開集合 $V,W$ をとれば $p_{j}^{-1}[V]$, $p_{j}^{-1}[W]$ が分離する。部分空間もハウスドルフ（分離する開集合と部分空間の交わり）。よって $\mathbf{Top}$ での積と等化子（\ref{cat:top-complete}）はハウスドルフで、$\mathbf{Haus}$ は充満なのでそれらは $\mathbf{Haus}$ でも積・等化子である。\ref{cat:completeness-criterion} より $\mathbf{Haus}$ は完備で、$K$ は小さい極限を保存する。
+
+**Step 2（解集合条件）.** 空間 $X$ について、$UX$ 上の同値関係 $\sim$ と、商集合 $UX/{\sim}$ 上のハウスドルフな位相 $\tau$ で、商写像 $X\to(UX/{\sim},\tau)$ が連続になるものの全体を考える。これは集合である（$UX$ の部分集合のなす集合の中から選んでいる）。ハウスドルフ空間 $Y$ と連続写像 $f\colon X\to Y$ について、$x\sim x'\iff f(x)=f(x')$ とすると $UX/{\sim}\cong f[X]$ で、$f[X]$ の部分空間の位相を移したものは上の集合に属し、$f$ はその商写像と、$f[X]\hookrightarrow Y$ の合成に分解する（$X\to f[X]$ の連続性は部分空間の普遍性による）。よって解集合条件（\ref{cat:solution-set-condition}）が成り立つ。
+
+**Step 3（左随伴）.** $\mathbf{Haus}$ は完備（Step 1）で局所小。\ref{cat:freyd-aft} より $K$ は左随伴 $H$ をもつ。
+
+**Step 4（単位は全射）.** $\eta\defeq\eta_{X}$ の像 $I\defeq\eta[X]$ に部分空間の位相を入れるとハウスドルフで、$\eta=i\circ\eta'$（$\eta'\colon X\to I$, $i\colon I\hookrightarrow HX$）と分解する。普遍性から $g\circ\eta=\eta'$ となる $g\colon HX\to I$ があり、$(i\circ g)\circ\eta=\eta=1\circ\eta$。普遍性の一意性から $i\circ g=1_{HX}$。よって $i$ は全射で、$\eta$ も全射。$X$ がハウスドルフなら $1_{X}$ が普遍射になるので、$\eta_{X}$ は同型。
+
+**Step 5（余極限）.** $\mathbf{Haus}$ の小さい図式 $F$ について、$\mathbf{Top}$ での余極限 $c\defeq\mathrm{colim}\,KF$（\ref{cat:top-complete}）をとる。ハウスドルフ空間 $Y$ について
+$$
+\mathbf{Haus}(Hc,Y)\cong\mathbf{Top}(c,KY)\cong\lim_{j}\mathbf{Top}(KF_{j},KY)=\lim_{j}\mathbf{Haus}(F_{j},Y)
+$$
+が $Y$ について自然に成り立つ（最初は随伴、次は余極限の普遍性、最後は $\mathbf{Haus}$ が充満であること）。よって $Hc$ は $F$ の余極限である。
+
+**Step 6（集合からの左随伴）.** 離散空間はハウスドルフなので、\ref{cat:top-forgetful-preserves} の $D$ がそのまま左随伴になる。
+:::
+
+::: hypcheck
+- **ハウスドルフ性が直積・部分空間で保たれる**：Step 1 で使った。商では保たれない（\ref{cat:prob-adt-haus-no-right}）ので、余極限は Step 5 のように $H$ を経由する。
+- **完備性・局所小・解集合条件**：Step 3 で \ref{cat:freyd-aft} の仮定として使った。
+- **$\mathbf{Haus}$ が充満部分圏**：Step 1 と Step 5 の最後の等号で使った。
+:::
+
+## 問題 {#cat:sec-adt-problems}
+
+::: problem {#cat:prob-adt-indiscrete}
+密着位相の関手 $D'\colon\mathbf{Set}\to\mathbf{Top}$ は右随伴をもたないことを示せ。
+:::
+
+::: solution
+左随伴は余極限を保存する（\ref{cat:adjoints-preserve-limits} の双対）ので、$D'$ が余積を保存しないことを示せばよい。$S=T=\{0\}$ とすると、$\mathbf{Top}$ での余積 $D'S\sqcup D'T$ は $2$ 点の離散空間（各点が開）である（\ref{cat:top-complete} の余積）。一方 $D'(S\sqcup T)$ は $2$ 点の密着空間で、両者は同相でない。余積が保存されるなら、標準の射 $D'S\sqcup D'T\to D'(S\sqcup T)$ が同型になるはずだが、台写像は全単射でも逆写像が連続でない（密着から離散への恒等写像は連続でない）。
+:::
+
+::: problem {#cat:prob-adt-haus-no-right}
+包含関手 $K\colon\mathbf{Haus}\to\mathbf{Top}$ が右随伴をもたないことを、原点が二つある直線を使って示せ。
+:::
+
+::: solution
+$P\defeq\mathbb{R}\setminus\{0\}$、$\mathbb{R}\sqcup\mathbb{R}$ を考え、$u,v\colon P\to\mathbb{R}\sqcup\mathbb{R}$ をそれぞれ第 $1$、第 $2$ の成分への包含とする。$\mathbf{Top}$ での余等化子 $Q$ は、$x\ne0$ について二つの成分の $x$ を同一視した商空間で、二つの原点 $0_{1}$, $0_{2}$ をもつ。$0_{1}$ の近傍は第 $1$ 成分の $0$ の近傍の像を含み、$0_{2}$ の近傍も同様なので、両者の近傍は $0$ に近い $x\ne0$ を共有し、$Q$ はハウスドルフでない。$K$ が右随伴をもてば $K$ は余等化子を保存するので、$\mathbf{Haus}$ での $u,v$ の余等化子 $Q'$ について $KQ'\cong Q$ となり、$Q$ がハウスドルフ空間と同相になって矛盾する。
+:::
+
+::: supplement
+**前提を変えると.** \ref{cat:haus-reflective} の議論は、直積と部分空間で閉じた性質であれば同じように通る。たとえば $T_{0}$, $T_{1}$, 正則（$T_{3}$）空間の圏も、それぞれ $\mathbf{Top}$ の反射部分圏になる（Mac Lane の演習。ここでは確かめていない）。正規空間は直積で閉じないので、この議論はそのままでは使えない。また、局所連結空間の圏では、離散位相の関手が連結成分の集合をとる関手を左随伴にもつ、という形の随伴もある（同書の演習）。コンパクトハウスドルフ空間の圏も反射的で、その反射子がストーン–チェックのコンパクト化である（\ref{top:page-stone-cech}）。
+
+**似た定理.** \ref{cat:equalizers-from-lifts} は、「忠実な関手で、構造を最も弱く持ち上げる操作がある」とき極限が作れる、という型の定理の一例である。このような関手は**位相的関手**と呼ばれ、$\mathbf{Top}\to\mathbf{Set}$ が典型例であることが知られている（ここでは扱わない）。群の忘却関手は極限を**創出**する（\ref{cat:grp-creates-limits}）が、$U\colon\mathbf{Top}\to\mathbf{Set}$ は極限を創出しない（同じ台集合の上に位相が複数あるため）。代わりに、始位相という「標準的な持ち上げ」を選ぶことで極限が作られる。
+
+**高い視点から：位相は「台集合の上の束」.** 一つの集合 $S$ の上の位相全体は、包含の順序で完備束をなし、最小が密着位相、最大が離散位相である。$D\dashv U\dashv D'$ は、各ファイバーの最大元と最小元を選ぶ操作が忘却関手の左右の随伴になっていることを表す。始位相・終位相は、写像で引き戻した／押し出した位相の中の最小・最大を選ぶ操作で、ファイバーの束の上の「ガロア接続」の形をしている。比喩で言えば、$\mathbf{Top}$ は集合の各点の上に「開集合の目の粗さ」を調節するつまみが付いた圏で、極限を作るときはつまみを必要最小限まで緩め、余極限を作るときは許される限り締める。ハウスドルフ化は、このつまみの調節では足りず、点そのものを貼り合わせる必要がある構成であり、そのため単位が全射になる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -227,6 +227,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | CB-08 | 01-basics/08-equivalence | 反射部分圏と圏同値（予約 cat:equivalence-characterization） | IV.3–5 | 4500–4815 | 完了 |
 | CB-09 | 01-basics/09-adjoints-limits | 随伴の合成と極限の保存 | IV.7–8, V.3–5 | 4878–5173, 5641–5895 | 完了 |
 | CB-10 | 01-basics/10-adjoint-functor-theorem | フレイドの随伴関手定理 | V.6–8 | 5896–6449 | 完了 |
+| CB-11 | 01-basics/11-adjoints-topology | 位相空間の圏と随伴 | V.9 | 6450–6620 | 完了 |
 | CS-01 | 02-structured-categories/01-cartesian-closed | デカルト閉圏とローヴェアの不動点定理（予約ラベル cat:lawvere-fixed-point, cat:cartesian-closed） | IV.6, IV.9–10 | 4816–4877, 5174–5362 | 完了 |
 | CS-02 | 02-structured-categories/02-monoidal | モノイダル圏とマックレーンのコヒーレンス定理 | VII.1–2 | 7759–8159 | 完了 |
 | CS-03 | 02-structured-categories/03-monoids-actions | モノイダル圏のモノイドと作用、自由モノイド | VII.3–4 | 8160–8375 | 完了 |
@@ -304,6 +305,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 圏論 CB-11（01-basics/11-adjoints-topology, cat:page-adjoints-topology：D ⊣ U ⊣ D'、始位相をスライス圏の右随伴かつ右逆として、持ち上げから等化子を作る命題（一意性は随伴なしで）、Top の完備性・余完備性、X/A の左随伴性（A=∅ も込めて）、Haus の反射性（解集合条件、単位の全射性、余極限は H 経由）、D' と Haus→Top が右随伴をもたない問題）。Mac Lane V.9。
 - 2026-10-08 圏論 CM-05（03-monads/05-comonads-homology, cat:page-comonads-homology：余モナド、添加単体的対象、普遍モノイドの双対による余モナドの標準構成、前加法圏での鎖複体、群環の余モナドと棒分解の面作用素（ε から計算）、可縮ホモトピーによる完全性（Mac Lane は引用のみ）、群のコホモロジーの具体形と H⁰・H¹）。Mac Lane VII.6。04-simplicial の補足から参照。
 - 2026-10-08 計算複雑性 CC-12（12-approximation-cryptography, comp:page-approx-crypto：近似比、頂点被覆の 2 倍近似（極大マッチング）、最大カットの局所探索、完全秘匿とワンタイムパッド、完全秘匿には鍵の数が平文の数以上必要、一方向関数、一方向関数があれば P≠NP（接頭辞の言語で 1 ビットずつ逆算）、落とし戸関数、RSA の正しさ（w と N が互いに素でない場合も））。Sipser 10.1, 10.6。04-complexity の説明を更新。
 - 2026-10-08 計算複雑性 CC-11（11-parallel, comp:page-parallel：一様な回路族、NC、行列積と推移閉包（繰り返し二乗）、NC¹⊆L（経路を 1 ビットずつ記録）、NL⊆NC²、NC⊆P、NC の対数領域還元についての閉性、CIRCUIT-VALUE の P 完全性）。Sipser 10.5。CC-10 の素数の選び方の記述を修正。

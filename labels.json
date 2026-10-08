@@ -351,6 +351,13 @@
       "num": "6.3",
       "page": "18-category-theory/18A-general-theory/01-basics/06-limits.html"
     },
+    "cat:collapse-adjoint": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "部分集合のつぶしは左随伴",
+      "num": "11.6",
+      "page": "18-category-theory/18A-general-theory/01-basics/11-adjoints-topology.html"
+    },
     "cat:comma-category": {
       "status": "defined",
       "type": "definition",
@@ -603,6 +610,13 @@
       "num": "6.7",
       "page": "18-category-theory/18A-general-theory/01-basics/06-limits.html"
     },
+    "cat:equalizers-from-lifts": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "持ち上げから等化子を作る",
+      "num": "11.4",
+      "page": "18-category-theory/18A-general-theory/01-basics/11-adjoints-topology.html"
+    },
     "cat:equivalence-characterization": {
       "status": "defined",
       "type": "theorem",
@@ -834,6 +848,13 @@
       "num": "1.5",
       "page": "18-category-theory/18A-general-theory/04-kan-extensions/01-filtered-colimits.html"
     },
+    "cat:haus-reflective": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "ハウスドルフ空間の圏は反射的",
+      "num": "11.7",
+      "page": "18-category-theory/18A-general-theory/01-basics/11-adjoints-topology.html"
+    },
     "cat:hom-preserves-limits": {
       "status": "defined",
       "type": "theorem",
@@ -875,6 +896,13 @@
       "title": "始対象・終対象・零対象",
       "num": "2.15",
       "page": "18-category-theory/18A-general-theory/01-basics/02-functors.html"
+    },
+    "cat:initial-topology-adjoint": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "始位相は右随伴かつ右逆",
+      "num": "11.3",
+      "page": "18-category-theory/18A-general-theory/01-basics/11-adjoints-topology.html"
     },
     "cat:initial-unique": {
       "status": "defined",
@@ -1275,6 +1303,13 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/01-basics/09-adjoints-limits.html"
     },
+    "cat:page-adjoints-topology": {
+      "status": "defined",
+      "type": "page",
+      "title": "位相空間の圏と随伴",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/01-basics/11-adjoints-topology.html"
+    },
     "cat:page-adjunctions": {
       "status": "defined",
       "type": "page",
@@ -1519,6 +1554,20 @@
       "title": "前層は表現可能関手の余極限",
       "num": "4.9",
       "page": "18-category-theory/18A-general-theory/04-kan-extensions/04-pointwise-kan.html"
+    },
+    "cat:prob-adt-haus-no-right": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "11.9",
+      "page": "18-category-theory/18A-general-theory/01-basics/11-adjoints-topology.html"
+    },
+    "cat:prob-adt-indiscrete": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "11.8",
+      "page": "18-category-theory/18A-general-theory/01-basics/11-adjoints-topology.html"
     },
     "cat:prob-aft-ring": {
       "status": "defined",
@@ -2086,6 +2135,41 @@
       "title": "単位と余単位",
       "num": "",
       "page": "18-category-theory/18A-general-theory/01-basics/07-adjunctions.html"
+    },
+    "cat:sec-adt-collapse": {
+      "status": "defined",
+      "type": "section",
+      "title": "部分集合のつぶしとハウスドルフ化",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/01-basics/11-adjoints-topology.html"
+    },
+    "cat:sec-adt-forgetful": {
+      "status": "defined",
+      "type": "section",
+      "title": "忘却関手の随伴",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/01-basics/11-adjoints-topology.html"
+    },
+    "cat:sec-adt-initial": {
+      "status": "defined",
+      "type": "section",
+      "title": "始位相と終位相",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/01-basics/11-adjoints-topology.html"
+    },
+    "cat:sec-adt-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/01-basics/11-adjoints-topology.html"
+    },
+    "cat:sec-adt-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/01-basics/11-adjoints-topology.html"
     },
     "cat:sec-aft-free": {
       "status": "defined",
@@ -3339,6 +3423,20 @@
       "title": "関手のテンソル積",
       "num": "2.7",
       "page": "18-category-theory/18A-general-theory/04-kan-extensions/02-ends.html"
+    },
+    "cat:top-complete": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "Top は完備かつ余完備",
+      "num": "11.5",
+      "page": "18-category-theory/18A-general-theory/01-basics/11-adjoints-topology.html"
+    },
+    "cat:top-forgetful-preserves": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "忘却関手は極限と余極限を保存する",
+      "num": "11.1",
+      "page": "18-category-theory/18A-general-theory/01-basics/11-adjoints-topology.html"
     },
     "cat:triangle-identities": {
       "status": "defined",

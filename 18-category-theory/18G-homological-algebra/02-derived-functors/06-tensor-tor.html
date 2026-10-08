@@ -139,6 +139,24 @@ $$
 **3.** 単射 $\mathbb{Z}\xrightarrow{n}\mathbb{Z}$ に $\mathbb{Z}/n\otimes-$ を施すと、$\mathbb{Z}/n\xrightarrow{n}\mathbb{Z}/n$ すなわち零写像になり、単射でない（\ref{ha:tor-z} の計算。$\mathrm{Tor}_{1}(\mathbb{Z}/n,\mathbb{Z}/n)\cong\mathbb{Z}/n\ne0$ とも読める）。
 :::
 
+::: proposition 射影加群は平坦 {#ha:projective-flat keywords="tensor product commutes with direct sums; free and projective modules are flat" index="射影加群の平坦性|しゃえいかぐんのへいたんせい"}
+1. 右 $R$ 加群の族 $(M_{i})_{i\in I}$ と左 $R$ 加群 $N$ について、$\bigl(\bigoplus_{i}M_{i}\bigr)\otimes_{R}N\cong\bigoplus_{i}(M_{i}\otimes_{R}N)$（$N$ について自然）。
+2. 自由右 $R$ 加群と、射影的な右 $R$ 加群は平坦である。
+:::
+
+::: proof
+**1.** アーベル群 $A$ について、随伴（\ref{ha:tensor-hom-adjunction}）と、直和からの準同型は成分ごとの準同型の族と同じであることから、
+$$
+\begin{aligned}
+\mathrm{Hom}\bigl((\textstyle\bigoplus_{i}M_{i})\otimes N,A\bigr)&\cong\mathrm{Hom}_{R}\bigl(N,\textstyle\prod_{i}\mathrm{Hom}(M_{i},A)\bigr)\\
+&\cong\textstyle\prod_{i}\mathrm{Hom}(M_{i}\otimes N,A)\cong\mathrm{Hom}\bigl(\textstyle\bigoplus_{i}(M_{i}\otimes N),A\bigr)
+\end{aligned}
+$$
+が $A$ について自然に成り立つ。米田の補題（\ref{cat:yoneda-lemma}）から、対応する準同型 $\bigoplus_{i}(M_{i}\otimes N)\to(\bigoplus_{i}M_{i})\otimes N$（成分では $m_{i}\otimes n\mapsto\iota_{i}(m_{i})\otimes n$）は同型。$N$ についての自然性は生成元で確かめる。
+
+**2.** 自由加群 $R^{(I)}=\bigoplus_{I}R$ について、1 と \ref{ha:tensor-universal} の 3 から $R^{(I)}\otimes-$ は $N\mapsto N^{(I)}$ と自然同型で、単射の直和は単射なので完全。射影的な $P$ について、自由加群からの全射 $F\to P$ は射影性から分裂し、$F\cong P\oplus P'$。単射 $N'\to N$ について、1 から $F\otimes N'\to F\otimes N$ は $(P\otimes N'\to P\otimes N)\oplus(P'\otimes N'\to P'\otimes N)$ と同一視され、これが単射なので各成分も単射。
+:::
+
 ## 問題 {#ha:sec-tt-problems}
 
 ::: problem {#ha:prob-tt-zm-zn}
@@ -158,7 +176,7 @@ $(R\oplus R')\otimes N\cong(R\otimes N)\oplus(R'\otimes N)$ が成り立ち $N$ 
 :::
 
 ::: supplement
-**前提を変えると.** Tor は第一変数の射影分解（または平坦分解）を使っても計算でき、同じ群になる（**Tor の平衡性**）ことが知られている。したがって $\mathrm{Tor}^{\mathbb{Z}}_{1}(\mathbb{Z}/n,M)\cong M[n]$ でもある。$R$ が可換なら $M\otimes_{R}N$ は再び $R$ 加群で、$\mathrm{Tor}^{R}_{n}(M,N)\cong\mathrm{Tor}^{R}_{n}(N,M)$ であることが知られている。射影加群は平坦で（直和因子と直和で平坦性が保たれることによる）、$\mathbb{Q}$ は射影的でない平坦な $\mathbb{Z}$ 加群であることが知られている（ここでは確かめていない）。
+**前提を変えると.** Tor は第一変数の射影分解（または平坦分解）を使っても計算でき、同じ群になる（**Tor の平衡性**）ことが知られている。したがって $\mathrm{Tor}^{\mathbb{Z}}_{1}(\mathbb{Z}/n,M)\cong M[n]$ でもある。$R$ が可換なら $M\otimes_{R}N$ は再び $R$ 加群で、$\mathrm{Tor}^{R}_{n}(M,N)\cong\mathrm{Tor}^{R}_{n}(N,M)$ であることが知られている。射影加群は平坦で（\ref{ha:projective-flat}）、$\mathbb{Q}$ は射影的でない平坦な $\mathbb{Z}$ 加群であることが知られている（ここでは確かめていない）。
 
 **似た定理.** Ext（\ref{ha:page-tor-ext}）が hom の右導来関手で拡大を分類する（\ref{ha:page-extensions}）のに対し、Tor はテンソル積の左導来関手である。テンソルと hom の随伴（\ref{ha:tensor-hom-adjunction}）は圏論の随伴（\ref{cat:page-adjunctions}）の典型例で、左随伴が余極限を保つ（\ref{cat:page-adjoints-limits}）ことの特別な場合として、テンソル積の右完全性（余核の保存）が得られる。代数的位相幾何では、普遍係数定理で Tor が係数の取り替えの補正項として現れることが知られている。
 

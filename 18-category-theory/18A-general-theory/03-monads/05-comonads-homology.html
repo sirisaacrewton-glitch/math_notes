@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>余モナドとホモロジー | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/03-monads/05-comonads-homology.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 余モナドとホモロジー {#cat:page-comonads-homology keywords="comonad, comonoid, augmented simplicial object, bar construction, standard resolution, bar resolution, group ring, contracting homotopy, group cohomology, crossed homomorphism"}
+
+モナドの双対である**余モナド** $(L,\varepsilon,\delta)$（\ref{cat:comonad}）は、関手の圏の中の「余モノイド」である。単体圏 $\Delta$ が普遍モノイドを含むこと（\ref{cat:delta-universal-monoid}）を双対にすると、余モナドから自動的に**添加単体的対象** $L\Leftarrow L^{2}\Leftarrow L^{3}\cdots$ が得られる（\ref{cat:comonad-simplicial}）。加法的な圏では面作用素の交代和が鎖複体を与え（\ref{cat:comonad-chain-complex}）、これがホモロジー代数の「標準分解」になる。本ページでは群 $\Pi$ の群環から作られる余モナドについてこれを計算し、自明な加群 $\mathbb{Z}$ の**棒分解**を得て、その完全性を可縮ホモトピーで示す（\ref{cat:bar-resolution-exact}）。さらに $\mathrm{Hom}$ をとって群のコホモロジーの低次の項を求める（\ref{cat:group-cohomology-low}）。
+
+> 資料：S. Mac Lane, *Categories for the Working Mathematician*, 2nd ed., §VII.6 を参考にした（本文は写していない）。同書では分解の完全性は別の文献の引用で済ませているので、ここでは可縮ホモトピーを書き下して証明した。面作用素の具体形も、余単位 $\varepsilon$ の定義から計算して確かめた。
+
+## 記法と定義の確認 {#cat:sec-cmh-notation}
+
+::: notation
+- 自然変換の縦の合成を $\cdot$、関手と自然変換の横の合成を並べて書く（$L\varepsilon$, $\varepsilon L$ など）。随伴 $(F,G,\eta,\varepsilon)$、モナドとその定める随伴は \ref{cat:adjunction}, \ref{cat:monad}, \ref{cat:monad-from-adjunction} のとおり。
+- 単体圏 $\Delta$（対象は有限順序数 $0,1,2,\dots$、モノイダル積は順序数の和 $+$）、普遍モノイド $(1,\mu\colon2\to1,\eta\colon0\to1)$、面写像 $\delta_{i}=1_{i}+\eta+1_{n-i}$ と退化写像 $\sigma_{j}=1_{j}+\mu+1_{n-j-1}$、単体的対象とその面作用素・退化作用素は \ref{cat:simplicial-category}, \ref{cat:delta-universal-monoid}, \ref{cat:face-degeneracy}, \ref{cat:simplicial-object} のとおり。
+- 前加法圏（各 $\mathrm{Hom}$ がアーベル群で合成が双線形）は \ref{ha:preadditive} のとおり。
+- 群 $\Pi$ の**群環** $\mathbb{Z}\Pi$ は、$\Pi$ の元を基底とする自由アーベル群に、$\Pi$ の積を双線形に延ばした積を入れた環である。$\Pi\text{-}\mathbf{Mod}$ は左 $\mathbb{Z}\Pi$ 加群（$\Pi$ が加法を保って作用するアーベル群）と $\Pi$ 加群準同型の圏、$\mathrm{Hom}_{\Pi}(B,A)$ はその射のアーベル群。テンソル積 $\otimes$ は $\mathbb{Z}$ 上でとる。
+:::
+
+## 余モナドと添加単体的対象 {#cat:sec-cmh-simplicial}
+
+::: definition 余モナド {#cat:comonad keywords="comonad, cotriple, counit and comultiplication, comonoid in the category of endofunctors" index="余モナド|よもなど"}
+圏 $\mathbf{X}$ の**余モナド** $\mathsf{L}=(L,\varepsilon,\delta)$ は、関手 $L\colon\mathbf{X}\to\mathbf{X}$ と自然変換 $\varepsilon\colon L\Rightarrow1_{\mathbf{X}}$（**余単位**）、$\delta\colon L\Rightarrow L^{2}$（**余乗法**）で
+$$
+\delta L\cdot\delta=L\delta\cdot\delta\colon L\Rightarrow L^{3},\qquad\varepsilon L\cdot\delta=1_{L}=L\varepsilon\cdot\delta
+$$
+を満たすものである。すなわち $\mathbf{X}^{\mathrm{op}}$ のモナド（\ref{cat:monad}）の双対であり、厳密モノイダル圏 $(\mathbf{X}^{\mathbf{X}},\circ,1_{\mathbf{X}})$ の**余モノイド**（矢印を逆にしたモノイド）である。随伴 $(F,G,\eta,\varepsilon)$ から $(FG,\varepsilon,F\eta G)$ が余モナドになる（\ref{cat:monad-from-adjunction}）。
+:::
+
+::: definition 添加単体的対象 {#cat:augmented-simplicial-object keywords="augmented simplicial object, augmentation" index="添加単体的対象|てんかたんたいてきたいしょう"}
+圏 $\mathbf{X}$ の**添加単体的対象**とは関手 $S\colon\Delta^{\mathrm{op}}\to\mathbf{X}$ のことである。$\Delta_{+}^{\mathrm{op}}$ への制限は単体的対象（\ref{cat:simplicial-object}）で、$S_{n}\defeq S(n+1)$ と書くと、追加の対象 $S_{-1}\defeq S(0)$ と**添加** $d_{0}\defeq S(\delta_{0})\colon S_{0}\to S_{-1}$ をもつ。$\delta_{0}\delta_{0}=\delta_{1}\delta_{0}\colon0\to2$（$0$ は始対象）から $d_{0}d_{0}=d_{0}d_{1}\colon S_{1}\to S_{-1}$ が成り立つ。
+:::
+
+::: theorem 余モナドが定める添加単体的対象 {#cat:comonad-simplicial keywords="comonad gives augmented simplicial object, bar construction, standard construction" index="標準構成（余モナドの）|ひょうじゅんこうせいよもなどの, 棒構成|ぼうこうせい"}
+$(L,\varepsilon,\delta)$ を圏 $\mathbf{X}$ の余モナドとする。関手 $S\colon\Delta^{\mathrm{op}}\to\mathbf{X}^{\mathbf{X}}$ で、$S(m)=L^{m}$（$L^{0}=1_{\mathbf{X}}$）であり、$n\ge0$ について
+$$
+\begin{aligned}
+d_{i}&=S(\delta_{i})=L^{i}\varepsilon L^{n-i}\colon L^{n+1}\Rightarrow L^{n}&&(0\le i\le n),\\
+s_{j}&=S(\sigma_{j})=L^{j}\delta L^{n-j-1}\colon L^{n}\Rightarrow L^{n+1}&&(0\le j\le n-1)
+\end{aligned}
+$$
+となるものがただ一つある。各 $x\in\mathbf{X}$ で値をとれば、$\mathbf{X}$ の添加単体的対象 $n\mapsto L^{n+1}x$（添加 $\varepsilon_{x}\colon Lx\to x$）が得られる。
+:::
+
+::: proof
+**Step 1（双対の圏も厳密モノイダル）.** $\mathbf{B}\defeq\mathbf{X}^{\mathbf{X}}$ は合成 $\circ$（射については横の合成）で厳密モノイダル圏である。$\mathbf{B}^{\mathrm{op}}$ に同じ対象の積と、射については横の合成の逆向きを積として入れると、結合律・単位律は等式なのでそのまま成り立ち、$(\mathbf{B}^{\mathrm{op}},\circ,1_{\mathbf{X}})$ も厳密モノイダル圏になる。
+
+**Step 2（余モノイドは双対のモノイド）.** $\varepsilon\colon L\Rightarrow1$, $\delta\colon L\Rightarrow L\circ L$ は $\mathbf{B}^{\mathrm{op}}$ の射 $\eta'\colon1\to L$, $\mu'\colon L\circ L\to L$ とみなせ、余モナドの等式は $\mathbf{B}^{\mathrm{op}}$ でのモノイドの結合律・単位律そのものである（矢印を逆にして読むと $\mu'\cdot\mu'L=\mu'\cdot L\mu'$, $\mu'\cdot\eta'L=1=\mu'\cdot L\eta'$）。
+
+**Step 3（普遍モノイド）.** \ref{cat:delta-universal-monoid} より、厳密モノイダル関手 $F\colon(\Delta,+,0)\to(\mathbf{B}^{\mathrm{op}},\circ,1)$ で $F1=L$, $F\mu=\mu'$, $F\eta=\eta'$ となるものがただ一つある。$F$ は $\Delta^{\mathrm{op}}\to\mathbf{B}$ という関手 $S$ と同じものである。
+
+**Step 4（値の計算）.** $F$ は厳密モノイダルなので $F(m)=F(1+\cdots+1)=L^{m}$。また
+$$
+F(\delta_{i})=F(1_{i}+\eta+1_{n-i})=1_{L^{i}}\circ\eta'\circ1_{L^{n-i}},
+$$
+これを $\mathbf{B}$ の射として読めば $L^{i}\varepsilon L^{n-i}\colon L^{n+1}\Rightarrow L^{n}$。同様に $F(\sigma_{j})=F(1_{j}+\mu+1_{n-j-1})$ は $L^{j}\delta L^{n-j-1}\colon L^{n}\Rightarrow L^{n+1}$。
+
+**Step 5（一意性）.** $\Delta$ の射は面写像・退化写像の合成で書ける（\ref{cat:delta-normal-form}）ので、それらの値で $S$ は決まる。
+
+**Step 6（値をとる）.** $x$ での値をとる関手 $\mathrm{ev}_{x}\colon\mathbf{X}^{\mathbf{X}}\to\mathbf{X}$ との合成 $\mathrm{ev}_{x}\circ S\colon\Delta^{\mathrm{op}}\to\mathbf{X}$ が求めるものである。
+:::
+
+::: hypcheck
+- **余モナドの等式**：Step 2 で、$\mathbf{B}^{\mathrm{op}}$ のモノイドであることに使った。
+- **$\mathbf{X}^{\mathbf{X}}$ が厳密モノイダル**（関手の合成が厳密に結合的）：Step 1, 3 で、\ref{cat:delta-universal-monoid} が厳密モノイダル圏についての定理であることに対応して使った。
+- 面作用素だけが必要な場面（次の命題）では、単体的恒等式 $d_{i}d_{j}=d_{j-1}d_{i}$（$i<j$）を、$\varepsilon$ の横の合成の交換法則から直接確かめることもできる。
+:::
+
+::: proposition 余モナドの鎖複体 {#cat:comonad-chain-complex keywords="alternating sum of faces, standard complex of a comonad, augmented chain complex" index="余モナドの標準複体|よもなどのひょうじゅんふくたい"}
+$\mathbf{X}$ が前加法圏で、$x\in\mathbf{X}$ とする。$C_{n}\defeq L^{n+1}x$（$n\ge0$）、$\partial_{n}\defeq\sum_{i=0}^{n}(-1)^{i}d_{i}\colon C_{n}\to C_{n-1}$（$n\ge1$）とおくと $\partial_{n-1}\partial_{n}=0$（$n\ge2$）かつ $\varepsilon_{x}\partial_{1}=0$。すなわち
+$$
+\cdots\xrightarrow{\ \partial_{2}\ }L^{2}x\xrightarrow{\ \partial_{1}\ }Lx\xrightarrow{\ \varepsilon_{x}\ }x
+$$
+は（添加された）鎖複体である。
+:::
+
+::: proof
+$\partial\partial=0$ は \ref{cat:simplicial-chain-complex} の証明と同じである。その証明は単体的恒等式 $d_{i}d_{j}=d_{j-1}d_{i}$（$i<j$）と、合成が和について分配的であることしか使っていないので、前加法圏でもそのまま成り立つ。$\varepsilon_{x}\partial_{1}=d_{0}d_{0}-d_{0}d_{1}=0$ は \ref{cat:augmented-simplicial-object} の $d_{0}d_{0}=d_{0}d_{1}$ による。
+:::
+
+## 群環の余モナドと棒分解 {#cat:sec-cmh-bar}
+
+::: example 群環の余モナド
+忘却関手 $U\colon\Pi\text{-}\mathbf{Mod}\to\mathbf{Ab}$ は左随伴 $\mathbb{Z}\Pi\otimes-$ をもつ（$\Pi$ は左の因子に掛けて作用する）。実際、$\Pi$ 加群準同型 $f\colon\mathbb{Z}\Pi\otimes B\to A$ に $b\mapsto f(1\otimes b)$ を対応させる写像は、逆写像 $g\mapsto(x\otimes b\mapsto x\,g(b))$ をもち、$B$, $A$ について自然である。単位と余単位は
+$$
+\eta_{B}(b)=1\otimes b,\qquad\varepsilon_{A}(x\otimes a)=xa\qquad(x\in\Pi).
+$$
+\ref{cat:monad-from-adjunction} より、$\Pi\text{-}\mathbf{Mod}$ の余モナド $L\defeq\mathbb{Z}\Pi\otimes U(-)$, $\varepsilon$, $\delta\defeq\mathbb{Z}\Pi\otimes\eta_{U}$ が得られる。具体的には $\delta_{A}(x\otimes a)=x\otimes1\otimes a$。
+:::
+
+::: proposition 棒分解の面作用素 {#cat:bar-faces keywords="bar resolution, face operators of the standard resolution, inhomogeneous notation" index="棒分解|ぼうぶんかい"}
+$\mathbb{Z}$ を自明な $\Pi$ 加群（$x\cdot m=m$）とし、$B_{n}\defeq L^{n+1}\mathbb{Z}$ とする。$B_{n}\cong(\mathbb{Z}\Pi)^{\otimes(n+1)}$ は、$x\otimes x_{1}\otimes\cdots\otimes x_{n}$（$x,x_{i}\in\Pi$）を基底とする自由アーベル群で、これを $x[x_{1}|\cdots|x_{n}]$ と書く。$\Pi$ は $y\cdot x[x_{1}|\cdots|x_{n}]=yx[x_{1}|\cdots|x_{n}]$ で作用し、$B_{n}$ は $[x_{1}|\cdots|x_{n}]\defeq1[x_{1}|\cdots|x_{n}]$ を基底とする自由 $\Pi$ 加群である。面作用素 $d_{i}=L^{i}\varepsilon L^{n-i}$ は
+$$
+d_{i}\bigl(x[x_{1}|\cdots|x_{n}]\bigr)=
+\begin{cases}
+xx_{1}[x_{2}|\cdots|x_{n}]&(i=0),\\
+x[x_{1}|\cdots|x_{i}x_{i+1}|\cdots|x_{n}]&(0<i<n),\\
+x[x_{1}|\cdots|x_{n-1}]&(i=n).
+\end{cases}
+$$
+添加は $\varepsilon_{\mathbb{Z}}(x[\ ])=1$。
+:::
+
+::: proof
+**Step 1（基底）.** $\mathbb{Z}\Pi$ は $\Pi$ を基底とする自由アーベル群で、自由アーベル群のテンソル積は基底の組を基底とする自由アーベル群であり、$\mathbb{Z}\Pi\otimes\mathbb{Z}\cong\mathbb{Z}\Pi$。帰納的に $L^{n+1}\mathbb{Z}\cong(\mathbb{Z}\Pi)^{\otimes(n+1)}$ で、基底は $\Pi^{n+1}$ の元に対応する。$\Pi$ は一番左の因子に作用するので、$x[x_{1}|\cdots|x_{n}]=x\cdot[x_{1}|\cdots|x_{n}]$ で、$\Pi$ の作用は基底 $\{x[x_{1}|\cdots|x_{n}]\}$ を置換し、$[x_{1}|\cdots|x_{n}]$ たちの軌道に分かれる。よって自由 $\Pi$ 加群。
+
+**Step 2（$\varepsilon$ の成分）.** $m\ge1$ のとき $L^{m}\mathbb{Z}$ の $\Pi$ 作用は一番左の因子への掛け算なので、$\varepsilon_{L^{m}\mathbb{Z}}(y\otimes y_{1}\otimes\cdots\otimes y_{m})=yy_{1}\otimes y_{2}\otimes\cdots\otimes y_{m}$。$m=0$ のときは作用が自明なので $\varepsilon_{\mathbb{Z}}(y\otimes k)=k$。
+
+**Step 3（$d_{i}$）.** $d_{i}=L^{i}\varepsilon_{L^{n-i}\mathbb{Z}}$ は、左の $i$ 個の因子を動かさず、残りに $\varepsilon_{L^{n-i}\mathbb{Z}}$ を施す。$y_{0}\otimes\cdots\otimes y_{n}$ について、$i<n$ なら Step 2 の前半で第 $i$ 因子と第 $i+1$ 因子が掛け合わされ、$i=n$ なら後半で最後の因子が消える。$y_{0}=x$, $y_{k}=x_{k}$ と読めば主張の式。添加は Step 2 の $m=0$ の場合。
+:::
+
+::: theorem 棒分解の完全性 {#cat:bar-resolution-exact keywords="bar resolution is a free resolution, contracting homotopy, exactness" index="棒分解の完全性|ぼうぶんかいのかんぜんせい, 可縮ホモトピー|かしゅくほもとぴー"}
+\ref{cat:comonad-chain-complex} の添加鎖複体
+$$
+\cdots\xrightarrow{\ \partial_{2}\ }B_{1}\xrightarrow{\ \partial_{1}\ }B_{0}\xrightarrow{\ \varepsilon\ }\mathbb{Z}\to0
+$$
+は完全である。したがって $(B_{n},\partial)$ は自明な加群 $\mathbb{Z}$ の自由分解（各 $B_{n}$ が自由 $\Pi$ 加群の完全列）である。
+:::
+
+::: proof
+**Step 1（可縮ホモトピー）.** アーベル群の準同型（$\Pi$ 加群準同型とは限らない）$h_{-1}\colon\mathbb{Z}\to B_{0}$, $h_{n}\colon B_{n}\to B_{n+1}$（$n\ge0$）を、基底の上で
+$$
+h_{-1}(1)\defeq1[\ ],\qquad h_{n}\bigl(x[x_{1}|\cdots|x_{n}]\bigr)\defeq1[x|x_{1}|\cdots|x_{n}]
+$$
+と定める。
+
+**Step 2（$d_{i}$ と $h$ の関係）.** $n\ge0$ と基底 $u=x[x_{1}|\cdots|x_{n}]$ について、\ref{cat:bar-faces} の式を $h_{n}u=1[x|x_{1}|\cdots|x_{n}]$（$B_{n+1}$ の元で、第 $0$ の位置が $1$、第 $1$ の位置が $x$）に適用すると
+$$
+\begin{gathered}
+d_{0}h_{n}u=1\cdot x[x_{1}|\cdots|x_{n}]=u,\\
+d_{i}h_{n}u=h_{n-1}d_{i-1}u\quad(1\le i\le n+1,\ n\ge1).
+\end{gathered}
+$$
+後者は、$i=1$ なら両辺とも $1[xx_{1}|x_{2}|\cdots|x_{n}]$、$2\le i\le n$ なら両辺とも $1[x|\cdots|x_{i-1}x_{i}|\cdots|x_{n}]$、$i=n+1$ なら両辺とも $1[x|x_{1}|\cdots|x_{n-1}]$ であることによる。
+
+**Step 3（$n\ge1$ での等式）.** Step 2 より
+$$
+\begin{aligned}
+\partial_{n+1}h_{n}u&=d_{0}h_{n}u+\sum_{i=1}^{n+1}(-1)^{i}h_{n-1}d_{i-1}u\\
+&=u-h_{n-1}\sum_{j=0}^{n}(-1)^{j}d_{j}u=u-h_{n-1}\partial_{n}u.
+\end{aligned}
+$$
+すなわち $\partial_{n+1}h_{n}+h_{n-1}\partial_{n}=1_{B_{n}}$。
+
+**Step 4（低次）.** $B_{0}=\mathbb{Z}\Pi$ で $u=x[\ ]=x$ とすると、$\partial_{1}h_{0}u=d_{0}(1[x])-d_{1}(1[x])=x-1$, $h_{-1}\varepsilon u=h_{-1}(1)=1$ なので $\partial_{1}h_{0}+h_{-1}\varepsilon=1_{B_{0}}$。また $\varepsilon h_{-1}=1_{\mathbb{Z}}$。
+
+**Step 5（完全性）.** $\varepsilon h_{-1}=1$ より $\varepsilon$ は全射。$z\in B_{0}$, $\varepsilon z=0$ なら Step 4 より $z=\partial_{1}h_{0}z$。$n\ge1$, $z\in B_{n}$, $\partial_{n}z=0$ なら Step 3 より $z=\partial_{n+1}h_{n}z$。逆の包含 $\mathrm{im}\subseteq\ker$ は \ref{cat:comonad-chain-complex}。完全性はアーベル群としての核と像の一致なので、$h$ が $\Pi$ 加群準同型でなくてもよい。自由性は \ref{cat:bar-faces}。
+:::
+
+::: hypcheck
+- **$\varepsilon$ の具体形**（作用が一番左の因子への掛け算、$\mathbb{Z}$ への作用が自明）：\ref{cat:bar-faces} の Step 2, 3 と、本定理の Step 2, 4 で使った。
+- **$\Pi$ の単位元 $1$**：$h$ の定義と、Step 2 の $d_{0}h_{n}u=1\cdot x[\cdots]=u$ で使った。
+- **逆元は使っていない**：$\Pi$ が単位元をもつモノイドでも、同じ構成と証明がそのまま通る。
+- $h$ は $\Pi$ 加群準同型ではない（$h(yu)\ne y\,h(u)$）。Step 5 で、完全性の判定には加法群としての写像で十分であることを使った。
+:::
+
+## 群のコホモロジー {#cat:sec-cmh-cohomology}
+
+::: definition 群のコホモロジー {#cat:group-cohomology keywords="group cohomology via the bar resolution, standard cochain complex, inhomogeneous cochains" index="群のコホモロジー|ぐんのこほもろじー"}
+$\Pi$ 加群 $A$ について、添加を除いた鎖複体 $(B_{n},\partial)$ に反変関手 $\mathrm{Hom}_{\Pi}(-,A)$ を施した余鎖複体
+$$
+\mathrm{Hom}_{\Pi}(B_{0},A)\xrightarrow{\ \delta^{0}\ }\mathrm{Hom}_{\Pi}(B_{1},A)\xrightarrow{\ \delta^{1}\ }\cdots,\qquad\delta^{n}\defeq\mathrm{Hom}_{\Pi}(\partial_{n+1},A)
+$$
+の $n$ 次コホモロジー $H^{n}(\Pi,A)\defeq\ker\delta^{n}/\mathrm{im}\,\delta^{n-1}$（$\delta^{-1}\defeq0$）を、$\Pi$ の $A$ に係数をもつ $n$ 次**コホモロジー群**という。$\mathrm{Hom}_{\Pi}(-,A)$ は加法的なので $\delta^{n+1}\delta^{n}=0$。
+:::
+
+::: proposition コホモロジーの具体形と低次の項 {#cat:group-cohomology-low keywords="inhomogeneous cochains, invariants, crossed homomorphisms, principal crossed homomorphisms" index="交叉準同型|こうさじゅんどうけい, 不変元|ふへんげん"}
+$\mathrm{Hom}_{\Pi}(B_{n},A)$ は、写像 $\varphi\colon\Pi^{n}\to A$ 全体のアーベル群 $C^{n}(\Pi,A)$ と、$f\mapsto\bigl((x_{1},\dots,x_{n})\mapsto f([x_{1}|\cdots|x_{n}])\bigr)$ で同型であり、この同型で
+$$
+\begin{aligned}
+(\delta\varphi)(x_{1},\dots,x_{n+1})={}&x_{1}\varphi(x_{2},\dots,x_{n+1})\\
+&+\sum_{i=1}^{n}(-1)^{i}\varphi(x_{1},\dots,x_{i}x_{i+1},\dots,x_{n+1})\\
+&+(-1)^{n+1}\varphi(x_{1},\dots,x_{n}).
+\end{aligned}
+$$
+特に
+1. $H^{0}(\Pi,A)=A^{\Pi}\defeq\{a\in A:\text{すべての }x\text{ で }xa=a\}$。
+2. $H^{1}(\Pi,A)=Z^{1}/B^{1}$。ここで $Z^{1}$ は**交叉準同型**（$\varphi(xy)=\varphi(x)+x\varphi(y)$ を満たす $\varphi\colon\Pi\to A$）全体、$B^{1}$ は**主交叉準同型**（ある $a\in A$ で $\varphi(x)=xa-a$ となるもの）全体である。
+:::
+
+::: proof
+**Step 1（同型）.** $B_{n}$ は $[x_{1}|\cdots|x_{n}]$ を基底とする自由 $\Pi$ 加群（\ref{cat:bar-faces}）なので、$\Pi$ 加群準同型は基底の上の値で自由に決まる（$f(x[\cdots])=xf([\cdots])$ で延ばす）。
+
+**Step 2（$\delta$ の式）.** $(\delta\varphi)(x_{1},\dots,x_{n+1})=f(\partial[x_{1}|\cdots|x_{n+1}])$ に \ref{cat:bar-faces} を使う。$d_{0}$ の項は $f(x_{1}[x_{2}|\cdots])=x_{1}f([x_{2}|\cdots])$ で、他の項は $x=1$ のままなので式のとおり。
+
+**Step 3（$H^{0}$）.** $C^{0}=A$（$\Pi^{0}$ は一点）で、$n=0$ の式は $(\delta a)(x)=xa-a$。$\delta^{-1}=0$ なので $H^{0}=\ker\delta^{0}=A^{\Pi}$。
+
+**Step 4（$H^{1}$）.** $n=1$ の式は $(\delta\varphi)(x,y)=x\varphi(y)-\varphi(xy)+\varphi(x)$ なので、$\ker\delta^{1}$ は交叉準同型の全体。Step 3 より $\mathrm{im}\,\delta^{0}$ は主交叉準同型の全体。
+:::
+
+::: hypcheck
+- **$B_{n}$ の自由性**：Step 1 の同型に使った。
+- **完全性（\ref{cat:bar-resolution-exact}）は本命題では使っていない**。完全性は、別の射影分解をとってもコホモロジーが変わらないこと（ホモロジー代数の比較定理。ここでは扱わない）に効いてくる。
+:::
+
+## 問題 {#cat:sec-cmh-problems}
+
+::: problem {#cat:prob-cmh-trivial-group}
+$\Pi=\{1\}$ のとき、$H^{0}(\Pi,A)=A$、$n\ge1$ で $H^{n}(\Pi,A)=0$ であることを、\ref{cat:group-cohomology-low} の式から直接確かめよ。
+:::
+
+::: solution
+$\Pi^{n}$ は一点なので $C^{n}=A$ で、作用は自明。$\delta^{n}$ は $n+2$ 個の項 $\pm\varphi$ の交代和なので
+$$
+\delta^{n}=\sum_{i=0}^{n+1}(-1)^{i}\cdot1_{A}=\begin{cases}0&(n\text{ が偶数}),\\1_{A}&(n\text{ が奇数}).\end{cases}
+$$
+$H^{0}=\ker\delta^{0}=A$。$n$ が奇数なら $\ker\delta^{n}=0$ で $H^{n}=0$。$n\ge2$ が偶数なら $\ker\delta^{n}=A=\mathrm{im}\,\delta^{n-1}$（$n-1$ は奇数）で $H^{n}=0$。
+:::
+
+::: problem {#cat:prob-cmh-trivial-action}
+$\Pi$ が $A$ に自明に作用するとき、$H^{1}(\Pi,A)$ は群準同型 $\Pi\to A$（$A$ は加法群）全体のなす群に等しいことを示せ。
+:::
+
+::: solution
+作用が自明なら交叉準同型の条件は $\varphi(xy)=\varphi(x)+\varphi(y)$ で、群準同型の条件そのものである。主交叉準同型は $\varphi(x)=a-a=0$ だけなので $B^{1}=0$。よって $H^{1}=Z^{1}=\mathrm{Hom}_{\mathbf{Grp}}(\Pi,A)$。
+:::
+
+::: supplement
+**前提を変えると.** 群環の代わりに、他の随伴から作った余モナドを使えば、同じ手順で別の「標準分解」が得られる。たとえば可換環 $k$ 上の多元環の圏と加群の圏の随伴からはホッホシルトのコホモロジーの標準複体が、群と集合の随伴（自由群）からも別の分解が得られることが知られている（ここでは確かめていない）。Mac Lane によれば、$H^{2}(\Pi,A)$ は $\Pi$ による $A$ の群の拡大（作用が与えられたもの）の同値類と対応し、高次のコホモロジーは障害理論や $K(\Pi,1)$ 空間、類体論に現れる。また、係数を右 $\Pi$ 加群 $C$ にとって $C\otimes_{\Pi}-$ を施すとホモロジー $H_{n}(\Pi,C)$ が得られ、$H_{1}(\Pi,\mathbb{Z})\cong\Pi/[\Pi,\Pi]$ となることが知られている（ここでは示さない）。
+
+**似た定理.** \ref{cat:bar-resolution-exact} の可縮ホモトピー $h_{n}$ は、式を見ると、随伴の単位 $\eta$ の成分 $\eta_{UB_{n}}\colon u\mapsto1\otimes u$ にほかならない。一般に余モナド $FG$ の標準構成に右随伴 $G$ を施すと、$\eta G$ が「余分な退化作用素」を与えて添加単体的対象が分裂し、その鎖複体が $G$ の側で可縮になる。今の例では $G=U$ が忘却関手なので、可縮性は「アーベル群としては」の意味になる。
+
+**高い視点から：自由なもので足場を組む.** 余モナド $L=FG$ は「いったん構造を忘れて、自由に作り直す」操作である。$Lx\to x$ は $x$ を自由な対象で覆う全射であり、そのずれ（核）をまた自由な対象で覆い、と繰り返したものが分解で、それを関手の合成の組合せとして一度に書いたのが単体的対象 $L^{\bullet+1}x$ である。比喩で言えば、形の不規則な建物（一般の加群）を、規格品の鉄骨（自由加群）だけで組んだ足場で何層にもわたって支えるようなもので、どの層も規格品なので $\mathrm{Hom}(-,A)$ の計算がしやすい。圏論的には、単体圏 $\Delta$ が「モノイドの普遍的な姿」であり、余モナドから単体的対象が出てくるのは、余モノイドを $\Delta^{\mathrm{op}}$ からの厳密モノイダル関手として表すという普遍性の帰結にすぎない。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

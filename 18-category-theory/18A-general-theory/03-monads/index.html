@@ -13,9 +13,9 @@
 <script type="text/markdown" id="source">
 # モナドと代数（Monads and Algebras）
 
-モナドとアイレンバーグ–ムーア代数、比較関手、クライスリ圏、分裂余等化子とベックのモナド性定理、普遍代数とコンパクトハウスドルフ空間のモナド性。（Mac Lane 第 VI 章に対応）
+モナドとアイレンバーグ–ムーア代数、比較関手、クライスリ圏、分裂余等化子とベックのモナド性定理、普遍代数とコンパクトハウスドルフ空間のモナド性、余モナドと棒分解・群のコホモロジー。（Mac Lane 第 VI 章と §VII.6 に対応）
 
-<p class="mn-msc">MSC2020: 18C15, 18C20</p>
+<p class="mn-msc">MSC2020: 18C15, 18C20, 18G30, 20J06</p>
 
 ## 前提知識
 
@@ -28,6 +28,7 @@
 <li value="2"><a href="02-kleisli.html">§2 クライスリ圏と比較関手</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 2.1</span> <span class="mn-dirtoc-title">クライスリ圏</span></li><li><span class="mn-dirtoc-kind">命題 2.2</span> <span class="mn-dirtoc-title">クライスリ圏は圏</span></li><li><span class="mn-dirtoc-kind">定理 2.3</span> <span class="mn-dirtoc-title">クライスリの随伴</span></li><li><span class="mn-dirtoc-kind">定理 2.4</span> <span class="mn-dirtoc-title">クライスリ圏からの比較関手</span></li><li><span class="mn-dirtoc-kind">系 2.5</span> <span class="mn-dirtoc-title">始と終の随伴</span></li></ul></li>
 <li value="3"><a href="03-beck.html">§3 分裂余等化子とベックのモナド性定理</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 3.1</span> <span class="mn-dirtoc-title">フォークと分裂フォーク</span></li><li><span class="mn-dirtoc-kind">補題 3.2</span> <span class="mn-dirtoc-title">分裂フォークは絶対余等化子</span></li><li><span class="mn-dirtoc-kind">補題 3.3</span> <span class="mn-dirtoc-title">代数の標準的な分裂フォーク</span></li><li><span class="mn-dirtoc-kind">定義 3.4</span> <span class="mn-dirtoc-title">余等化子の創出</span></li><li><span class="mn-dirtoc-kind">命題 3.5</span> <span class="mn-dirtoc-title">代数の忘却関手は絶対余等化子を創出する</span></li><li><span class="mn-dirtoc-kind">定理 3.6</span> <span class="mn-dirtoc-title">ベックのモナド性定理</span></li><li><span class="mn-dirtoc-kind">補題 3.7</span> <span class="mn-dirtoc-title">比較は余単位を保つ</span></li><li><span class="mn-dirtoc-kind">補題 3.8</span> <span class="mn-dirtoc-title">比較の存在と一意性</span></li></ul></li>
 <li value="4"><a href="04-algebras-compact.html">§4 代数系とコンパクトハウスドルフ空間のモナド性</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 4.1</span> <span class="mn-dirtoc-title">代数系の多様体</span></li><li><span class="mn-dirtoc-kind">補題 4.2</span> <span class="mn-dirtoc-title">自由代数</span></li><li><span class="mn-dirtoc-kind">定理 4.3</span> <span class="mn-dirtoc-title">代数系の忘却関手はモナド的</span></li><li><span class="mn-dirtoc-kind">定理 4.4</span> <span class="mn-dirtoc-title">コンパクトハウスドルフ空間のモナド性</span></li></ul></li>
+<li value="5"><a href="05-comonads-homology.html">§5 余モナドとホモロジー</a><ul class="mn-dirtoc-items"><li><span class="mn-dirtoc-kind">定義 5.1</span> <span class="mn-dirtoc-title">余モナド</span></li><li><span class="mn-dirtoc-kind">定義 5.2</span> <span class="mn-dirtoc-title">添加単体的対象</span></li><li><span class="mn-dirtoc-kind">定理 5.3</span> <span class="mn-dirtoc-title">余モナドが定める添加単体的対象</span></li><li><span class="mn-dirtoc-kind">命題 5.4</span> <span class="mn-dirtoc-title">余モナドの鎖複体</span></li><li><span class="mn-dirtoc-kind">命題 5.5</span> <span class="mn-dirtoc-title">棒分解の面作用素</span></li><li><span class="mn-dirtoc-kind">定理 5.6</span> <span class="mn-dirtoc-title">棒分解の完全性</span></li><li><span class="mn-dirtoc-kind">定義 5.7</span> <span class="mn-dirtoc-title">群のコホモロジー</span></li><li><span class="mn-dirtoc-kind">命題 5.8</span> <span class="mn-dirtoc-title">コホモロジーの具体形と低次の項</span></li></ul></li>
 </ol>
 </script>
 <noscript>このサイトの表示には JavaScript が必要です。</noscript>

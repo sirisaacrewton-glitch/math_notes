@@ -383,3 +383,4 @@
 | interactive proof / prover / verifier / arithmetization / IP = PSPACE | 対話証明系 / 証明者 / 検証者 / 算術化 / シャミアの定理 | 対話型証明 | 仮。comp:page-interactive-proofs |
 | uniform circuit family / NC / P-complete / CIRCUIT-VALUE | 一様な回路族 / NC / P 完全 / 回路値問題 | | 標準的。comp:page-parallel |
 | approximation algorithm / approximation ratio / one-time pad / perfect secrecy / one-way function / trapdoor function | 近似アルゴリズム / 近似比 / ワンタイムパッド / 完全秘匿 / 一方向関数 / 落とし戸関数 | k-optimal, 落とし扉関数 | 「落とし戸」で統一。comp:page-approx-crypto |
+| comonad / augmented simplicial object / bar resolution / contracting homotopy / crossed homomorphism / group cohomology | 余モナド / 添加単体的対象 / 棒分解 / 可縮ホモトピー / 交叉準同型 / 群のコホモロジー | コモナド、拡大単体的対象、バー分解 | 仮。cat:page-comonads-homology |

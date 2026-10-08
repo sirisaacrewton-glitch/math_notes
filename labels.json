@@ -106,6 +106,27 @@
       "num": "4.3",
       "page": "18-category-theory/18A-general-theory/03-monads/04-algebras-compact.html"
     },
+    "cat:augmented-simplicial-object": {
+      "status": "defined",
+      "type": "definition",
+      "title": "添加単体的対象",
+      "num": "5.2",
+      "page": "18-category-theory/18A-general-theory/03-monads/05-comonads-homology.html"
+    },
+    "cat:bar-faces": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "棒分解の面作用素",
+      "num": "5.5",
+      "page": "18-category-theory/18A-general-theory/03-monads/05-comonads-homology.html"
+    },
+    "cat:bar-resolution-exact": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "棒分解の完全性",
+      "num": "5.6",
+      "page": "18-category-theory/18A-general-theory/03-monads/05-comonads-homology.html"
+    },
     "cat:basic-arrows-to-moves": {
       "status": "defined",
       "type": "lemma",
@@ -350,6 +371,27 @@
       "title": "コンマ圏の極限",
       "num": "10.3",
       "page": "18-category-theory/18A-general-theory/01-basics/10-adjoint-functor-theorem.html"
+    },
+    "cat:comonad": {
+      "status": "defined",
+      "type": "definition",
+      "title": "余モナド",
+      "num": "5.1",
+      "page": "18-category-theory/18A-general-theory/03-monads/05-comonads-homology.html"
+    },
+    "cat:comonad-chain-complex": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "余モナドの鎖複体",
+      "num": "5.4",
+      "page": "18-category-theory/18A-general-theory/03-monads/05-comonads-homology.html"
+    },
+    "cat:comonad-simplicial": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "余モナドが定める添加単体的対象",
+      "num": "5.3",
+      "page": "18-category-theory/18A-general-theory/03-monads/05-comonads-homology.html"
     },
     "cat:compact-open": {
       "status": "defined",
@@ -756,6 +798,20 @@
       "title": "グラフ",
       "num": "4.5",
       "page": "18-category-theory/18A-general-theory/01-basics/04-comma-free-quotient.html"
+    },
+    "cat:group-cohomology": {
+      "status": "defined",
+      "type": "definition",
+      "title": "群のコホモロジー",
+      "num": "5.7",
+      "page": "18-category-theory/18A-general-theory/03-monads/05-comonads-homology.html"
+    },
+    "cat:group-cohomology-low": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "コホモロジーの具体形と低次の項",
+      "num": "5.8",
+      "page": "18-category-theory/18A-general-theory/03-monads/05-comonads-homology.html"
     },
     "cat:groupoid": {
       "status": "defined",
@@ -1275,6 +1331,13 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/01-basics/04-comma-free-quotient.html"
     },
+    "cat:page-comonads-homology": {
+      "status": "defined",
+      "type": "page",
+      "title": "余モナドとホモロジー",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/03-monads/05-comonads-homology.html"
+    },
     "cat:page-constructions": {
       "status": "defined",
       "type": "page",
@@ -1540,6 +1603,20 @@
       "title": "",
       "num": "4.6",
       "page": "18-category-theory/18A-general-theory/05-higher-structures/04-crossed-modules.html"
+    },
+    "cat:prob-cmh-trivial-action": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "5.10",
+      "page": "18-category-theory/18A-general-theory/03-monads/05-comonads-homology.html"
+    },
+    "cat:prob-cmh-trivial-group": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "5.9",
+      "page": "18-category-theory/18A-general-theory/03-monads/05-comonads-homology.html"
     },
     "cat:prob-continuous-from-products-equalizers": {
       "status": "defined",
@@ -2352,6 +2429,41 @@
       "title": "問題",
       "num": "",
       "page": "18-category-theory/18A-general-theory/05-higher-structures/04-crossed-modules.html"
+    },
+    "cat:sec-cmh-bar": {
+      "status": "defined",
+      "type": "section",
+      "title": "群環の余モナドと棒分解",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/03-monads/05-comonads-homology.html"
+    },
+    "cat:sec-cmh-cohomology": {
+      "status": "defined",
+      "type": "section",
+      "title": "群のコホモロジー",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/03-monads/05-comonads-homology.html"
+    },
+    "cat:sec-cmh-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/03-monads/05-comonads-homology.html"
+    },
+    "cat:sec-cmh-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/03-monads/05-comonads-homology.html"
+    },
+    "cat:sec-cmh-simplicial": {
+      "status": "defined",
+      "type": "section",
+      "title": "余モナドと添加単体的対象",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/03-monads/05-comonads-homology.html"
     },
     "cat:sec-con-duality": {
       "status": "defined",

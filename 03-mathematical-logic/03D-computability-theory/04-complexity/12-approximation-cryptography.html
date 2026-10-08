@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>近似アルゴリズムと暗号 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/04-complexity/12-approximation-cryptography.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 近似アルゴリズムと暗号 {#comp:page-approx-crypto keywords="approximation algorithm, approximation ratio, MIN-VERTEX-COVER, MAX-CUT, local search, cryptography, one-time pad, perfect secrecy, one-way function, one-way permutation, trapdoor function, RSA"}
+
+計算の難しさは、避けたいものにも使いたいものにもなる。前半では、NP 困難な最適化問題について、最適解は求めなくても「最適解の定数倍以内の解」なら多項式時間で求まる例として、頂点被覆の $2$ 倍近似（\ref{comp:vc-2-approx}）と最大カットの $1/2$ 近似（\ref{comp:maxcut-local-search}）を示す。後半では逆に、計算の難しさを暗号の安全性の根拠に使う。鍵が通信文と同じ長さなら完全な秘匿ができ（\ref{comp:one-time-pad}）、しかも完全な秘匿にはそれだけの長さの鍵が必要である（\ref{comp:perfect-secrecy-key-length}）。そこで鍵を短くするために「計算は易しいが逆算は難しい」**一方向関数**（\ref{comp:one-way-function}）を考える。その存在は $\mathrm{P}\ne\mathrm{NP}$ を導く（\ref{comp:one-way-implies-p-ne-np}）ので、現在の数学では証明できない仮定である。最後に、秘密の情報があれば逆算できる**落とし戸関数**（\ref{comp:trapdoor-function}）と、その候補である RSA の正しさ（\ref{comp:rsa-correct}）を示す。
+
+> 資料：M. Sipser, *Introduction to the Theory of Computation*, 3rd ed., §10.1, §10.6 を参考にした（本文は写していない）。同書で文章で述べられている「完全な秘匿には通信文と同じ長さの鍵が必要」と「一方向関数があれば $\mathrm{P}\ne\mathrm{NP}$」は、ここで命題として定式化して証明した。RSA の正しさは、$w$ が $N$ と互いに素でない場合も含めて示した。
+
+## 記法と定義の確認 {#comp:sec-ac-notation}
+
+::: notation
+- グラフは無向で、ループと多重辺をもたない。頂点被覆は \ref{comp:vc-complete} の前の記法のとおり。辺の集合 $M$ が**マッチング**とは、$M$ のどの二辺も端点を共有しないことをいう。
+- P・NP・NP 完全は \ref{comp:class-p}, \ref{comp:class-np}, \ref{comp:np-complete} のとおり。確率的 TM とその確率は \ref{comp:probabilistic-tm} のとおり。決定性 TM は、各段の選択肢が $1$ 個の確率的 TM とみなせる。
+- $\Sigma=\{0,1\}$ とし、$\Sigma^{n}$ は長さ $n$ の文字列全体。$\oplus$ はビットごとの排他的論理和。関数 $f:\Sigma^{*}\to\Sigma^{*}$ が**長さを保つ**とは、すべての $w$ で $\lvert f(w)\rvert=\lvert w\rvert$ となることをいい、長さを保つ単射を**置換**という。
+:::
+
+## 近似アルゴリズム {#comp:sec-approx}
+
+::: definition 近似比 {#comp:approx-ratio keywords="optimization problem, approximation ratio, k-optimal approximation algorithm" index="近似アルゴリズム|きんじあるごりずむ, 近似比|きんじひ"}
+**最適化問題**とは、各入力 $x$ に空でない有限集合 $S(x)$（**実行可能解**の集合）と、各 $s\in S(x)$ の値 $c(s)\ge0$（整数）を対応させたものである。最小化問題では $\mathrm{OPT}(x)\defeq\min_{s\in S(x)}c(s)$、最大化問題では $\mathrm{OPT}(x)\defeq\max_{s\in S(x)}c(s)$ とする。$k\ge1$ について、各入力 $x$ に $s\in S(x)$ を出力するアルゴリズムが**近似比 $k$ の近似アルゴリズム**（Sipser の用語では $k$-optimal）であるとは、すべての $x$ で、最小化問題なら $c(s)\le k\cdot\mathrm{OPT}(x)$、最大化問題なら $c(s)\ge\mathrm{OPT}(x)/k$ となることをいう。
+:::
+
+::: remark
+最小の頂点被覆の大きさを多項式時間で求められれば、VC（\ref{comp:vc-complete}）は多項式時間で決定できる（最小の大きさを $j$ とすると、被覆に頂点を足しても被覆なので、$\langle G,k\rangle\in\mathrm{VC}\iff j\le k\le\lvert V\rvert$）。よって $\mathrm{P}\ne\mathrm{NP}$ なら、近似比 $1$ の多項式時間アルゴリズムはない。以下は、近似比を $2$ まで許せば多項式時間で済む例である。
+:::
+
+::: theorem 頂点被覆の 2 倍近似 {#comp:vc-2-approx keywords="2-approximation for minimum vertex cover, maximal matching" index="頂点被覆の近似|ちょうてんひふくのきんじ"}
+グラフ $G=(V,E)$ について、次のアルゴリズムを考える：$M\defeq\emptyset$ から始め、$M$ のどの辺とも端点を共有しない辺 $e$ がある限り、$e$ を一つ選んで $M$ に加える。止まったら、$M$ の辺の端点全体 $X$ を出力する。これは多項式時間で、$X$ は頂点被覆であり、どの頂点被覆 $Y$ についても $\lvert X\rvert\le2\lvert Y\rvert$。すなわち最小頂点被覆の近似比 $2$ の近似アルゴリズムである。
+:::
+
+::: proof
+**Step 1（時間）.** 一回の追加ごとに $\lvert M\rvert$ が $1$ 増え、$\lvert M\rvert\le\lvert E\rvert$ なので追加は $\lvert E\rvert$ 回以下。各回の辺の探索は $O(\lvert E\rvert^{2})$ で済む。
+
+**Step 2（$M$ はマッチング）.** 加える辺は、その時点の $M$ のどの辺とも端点を共有しないので、$M$ は常にマッチングである。
+
+**Step 3（$X$ は被覆）.** 辺 $e\in E$ をとる。止まった時点で、$e$ は $M$ のある辺と端点 $v$ を共有する（共有しないなら、まだ止まらない）。$v\in X$ なので、$e$ は $X$ の頂点を端点にもつ。
+
+**Step 4（$\lvert X\rvert=2\lvert M\rvert$）.** Step 2 より $M$ の辺の端点はすべて異なる。
+
+**Step 5（$\lvert M\rvert\le\lvert Y\rvert$）.** $Y$ を頂点被覆とする。各 $e\in M$ について、$e$ の端点のうち $Y$ に属するものを一つ選んで $\iota(e)$ とする（$Y$ が被覆なので存在する）。$e\ne e'$ なら、Step 2 より $e,e'$ は端点を共有しないので $\iota(e)\ne\iota(e')$。よって $\iota:M\to Y$ は単射で、$\lvert M\rvert\le\lvert Y\rvert$。
+
+Step 4, 5 より $\lvert X\rvert=2\lvert M\rvert\le2\lvert Y\rvert$。
+:::
+
+::: hypcheck
+- **止まった時点の極大性**（どの辺も $M$ と端点を共有する）：Step 3 で使った。
+- **$M$ がマッチングであること**：Step 4（端点が $2\lvert M\rvert$ 個）と Step 5（$\iota$ の単射性）の両方で使った。これが「マッチングの大きさは任意の被覆の大きさの下界」という評価の核心である。
+- **ループがないこと**：Step 4 で辺の端点が $2$ 個であることに使った。
+:::
+
+::: theorem 最大カットの局所探索 {#comp:maxcut-local-search keywords="MAX-CUT, local search, 2-approximation" index="最大カット|さいだいかっと"}
+グラフ $G=(V,E)$ の頂点の分割 $V=S\sqcup T$ を**カット**といい、$S$ と $T$ にまたがる辺を**カット辺**、その個数をカットの大きさという。次のアルゴリズムを考える：$S\defeq\emptyset$, $T\defeq V$ から始め、一つの頂点を反対側に移すとカットが大きくなる限りそうし、そのような頂点がなくなったら $(S,T)$ を出力する。これは多項式時間で、出力のカット辺は $\lvert E\rvert/2$ 本以上ある。特に最大カットの近似比 $2$ の近似アルゴリズムである。
+:::
+
+::: proof
+頂点 $v$ について、$v$ を端点とするカット辺の数を $\mathrm{cut}(v)$、カット辺でない辺の数を $\mathrm{un}(v)$ とする。
+
+**Step 1（一回の移動での変化）.** $v$ を反対側に移すと、$v$ を端点とする辺はカット辺かどうかがちょうど入れ替わり（ループがないので、辺のもう一方の端点は動かない）、$v$ を端点としない辺は変わらない。よってカットの大きさは $\mathrm{un}(v)-\mathrm{cut}(v)$ だけ変わる。
+
+**Step 2（時間）.** 移動のたびにカットの大きさは整数で $1$ 以上増え、$0$ 以上 $\lvert E\rvert$ 以下なので、移動は $\lvert E\rvert$ 回以下。各回の判定は Step 1 の量を全頂点について数えればよく多項式時間。
+
+**Step 3（止まった時点の評価）.** 止まった時点では、Step 1 よりすべての $v$ で $\mathrm{un}(v)-\mathrm{cut}(v)\le0$。カット辺は両端点で一回ずつ数えられるので $\sum_{v}\mathrm{cut}(v)=2\cdot(\text{カット辺の数})$、同様に $\sum_{v}\mathrm{un}(v)=2\cdot(\text{カット辺でない辺の数})$。よって
+$$
+\text{カット辺の数}\ \ge\ \text{カット辺でない辺の数}\ =\ \lvert E\rvert-\text{カット辺の数},
+$$
+すなわちカット辺の数 $\ge\lvert E\rvert/2\ge\mathrm{OPT}/2$（どのカットの大きさも $\lvert E\rvert$ 以下）。
+:::
+
+::: hypcheck
+- **局所最適性**（止まった時点）：Step 3 で各頂点の不等式に使った。
+- **値が整数で上に有界**：Step 2 で、局所探索が多項式回で止まることに使った。値が実数の重み付きの場合はこの議論は使えない（重み付き版では局所探索が多項式回で止まるとは限らないことが知られているが、ここでは確かめていない）。
+- **ループがない**：Step 1 で使った。
+:::
+
+::: remark
+最大カット（$\{\langle G,k\rangle:G\text{ は大きさ }k\text{ 以上のカットをもつ}\}$）は NP 完全であることが知られている（ここでは示さない。Sipser では問題 7.27）。上の定理は最適値との比較を経ず、自明な上界 $\lvert E\rvert$ と比べて近似比を示している点に注意する。
+:::
+
+## 完全な秘匿とワンタイムパッド {#comp:sec-otp}
+
+::: definition 暗号系と完全な秘匿 {#comp:perfect-secrecy keywords="private-key cryptosystem, perfect secrecy, Shannon secrecy" index="完全秘匿|かんぜんひとく, 共通鍵暗号|きょうつうかぎあんごう"}
+**（共通鍵）暗号系**とは、有限集合 $\mathcal{K}$（鍵）、$\mathcal{M}$（平文）、$\mathcal{C}$（暗号文）と、写像 $\mathrm{Enc}:\mathcal{K}\times\mathcal{M}\to\mathcal{C}$, $\mathrm{Dec}:\mathcal{K}\times\mathcal{C}\to\mathcal{M}$ で、すべての $k,m$ で $\mathrm{Dec}(k,\mathrm{Enc}(k,m))=m$ となるものである。鍵 $K$ を $\mathcal{K}$ 上一様に、平文 $M$ を $K$ と独立に任意の分布でとり、$C\defeq\mathrm{Enc}(K,M)$ とする。暗号系が**完全な秘匿**をもつとは、平文のどの分布についても、$\Pr[C=c]>0$ となるすべての $c$ とすべての $m$ で $\Pr[M=m\mid C=c]=\Pr[M=m]$ となることをいう（暗号文を見ても平文についての知識が増えない）。
+:::
+
+::: theorem ワンタイムパッド {#comp:one-time-pad keywords="one-time pad, Vernam cipher, perfect secrecy" index="ワンタイムパッド|わんたいむぱっど"}
+$\mathcal{K}=\mathcal{M}=\mathcal{C}=\Sigma^{n}$, $\mathrm{Enc}(k,m)\defeq m\oplus k$, $\mathrm{Dec}(k,c)\defeq c\oplus k$ は完全な秘匿をもつ暗号系である。
+:::
+
+::: proof
+**Step 1（暗号系であること）.** $(m\oplus k)\oplus k=m\oplus(k\oplus k)=m$。
+
+**Step 2（平文を固定したときの暗号文の分布）.** $m,c\in\Sigma^{n}$ について、$m\oplus k=c\iff k=m\oplus c$ なので、そのような $k$ はちょうど一つ。$K$ は一様で $M$ と独立なので、$\Pr[M=m]>0$ のとき
+$$
+\Pr[C=c\mid M=m]=\Pr[K=m\oplus c]=2^{-n}.
+$$
+
+**Step 3（ベイズの公式）.** 全確率の公式と Step 2 から $\Pr[C=c]=\sum_{m'}\Pr[M=m']\cdot2^{-n}=2^{-n}>0$。$\Pr[M=m]>0$ なら
+$$
+\Pr[M=m\mid C=c]=\frac{\Pr[C=c\mid M=m]\Pr[M=m]}{\Pr[C=c]}=\Pr[M=m],
+$$
+$\Pr[M=m]=0$ なら両辺とも $0$。
+:::
+
+::: hypcheck
+- **鍵が一様**：Step 2 で $\Pr[K=m\oplus c]=2^{-n}$ が $m$ によらないことに使った。一様でなければ、暗号文の分布が平文に依存しうる。
+- **鍵と平文の独立性**：Step 2 で条件付き確率を $K$ だけの確率に直すのに使った。
+- **鍵を一度しか使わない**：定義では平文一つにつき鍵を一つ選んでいる。同じ鍵を二度使うと秘匿は失われる（\ref{comp:prob-ac-pad-reuse}）。
+:::
+
+::: proposition 完全な秘匿には鍵の数が平文の数以上必要 {#comp:perfect-secrecy-key-length keywords="Shannon's theorem on key length, perfect secrecy requires long keys" index="完全秘匿と鍵の長さ|かんぜんひとくとかぎのながさ"}
+完全な秘匿をもつ暗号系では $\lvert\mathcal{K}\rvert\ge\lvert\mathcal{M}\rvert$。特に平文が $\Sigma^{n}$ 全体なら、鍵は $n$ ビット以上の長さが必要である。
+:::
+
+::: proof
+平文 $M$ を $\mathcal{M}$ 上一様にとる。$\Pr[C=c]>0$ となる $c$ を一つ固定する。各 $m\in\mathcal{M}$ について、完全な秘匿から $\Pr[M=m\mid C=c]=\Pr[M=m]>0$ なので、$\mathrm{Enc}(k_{m},m)=c$ となる鍵 $k_{m}$ がある（なければこの条件付き確率は $0$）。$m\ne m'$ なら $\mathrm{Dec}(k_{m},c)=m\ne m'=\mathrm{Dec}(k_{m'},c)$ なので $k_{m}\ne k_{m'}$。よって $m\mapsto k_{m}$ は単射で、$\lvert\mathcal{K}\rvert\ge\lvert\mathcal{M}\rvert$。
+:::
+
+::: hypcheck
+- **完全な秘匿**は一様な平文に対してだけ使った。したがって結論は「一様な平文に対して秘匿が成り立つ」だけからも従う。
+- **復号の正しさ**（$\mathrm{Dec}\circ\mathrm{Enc}=$ 平文）：$k_{m}$ の単射性に使った。
+:::
+
+## 一方向関数 {#comp:sec-one-way}
+
+完全な秘匿を諦め、鍵を短くした暗号では、鍵を総当たりで探せば原理的には破れる。そこで安全性の要求を「確率的多項式時間の攻撃者には、ほとんどの場合に破れない」に弱める。その基礎になるのが次の概念である。
+
+::: definition 一方向関数 {#comp:one-way-function keywords="one-way function, one-way permutation, negligible probability" index="一方向関数|いっぽうこうかんすう, 一方向置換|いっぽうこうちかん"}
+長さを保つ関数 $f:\Sigma^{*}\to\Sigma^{*}$ が**一方向関数**であるとは、次の二条件を満たすことをいう。
+
+1. $f$ は多項式時間で計算できる。
+2. 多項式時間の確率的 TM $A$ と $k\ge1$ がどれでも、十分大きなすべての $n$ について、$w$ を $\Sigma^{n}$ から一様にとり $A$ を入力 $f(w)$ で動かすとき
+$$
+\Pr_{A,w}\bigl[\,f(A(f(w)))=f(w)\,\bigr]\le n^{-k}.
+$$
+ここで確率は $A$ の硬貨投げと $w$ の選び方の両方についてとり、$A$ が受理状態で止まらない場合は失敗とみなす。
+
+$f$ が置換でもあるとき**一方向置換**という（このとき条件 2 は $\Pr[A(f(w))=w]\le n^{-k}$ と同じ）。
+:::
+
+::: example
+$w=w_{1}w_{2}$（$\lvert w_{1}\rvert=\lvert w_{2}\rvert$ または $\lvert w_{1}\rvert=\lvert w_{2}\rvert+1$）を二つの二進数とみて、その積を先頭に $0$ を補って長さ $\lvert w\rvert$ にしたものを $\mathrm{mult}(w)$ とする。$\mathrm{mult}$ は多項式時間で計算できる。$\mathrm{mult}$ を逆算することは整数の因数分解に近く、多項式時間の確率的アルゴリズムで入力の多項式分の $1$ の割合でも逆算できる方法は知られていない。そのため一方向関数の候補とされるが、一方向関数であることは証明されていない（次の命題により、証明すれば $\mathrm{P}\ne\mathrm{NP}$ が従う）。
+:::
+
+::: proposition 一方向関数があれば P ≠ NP {#comp:one-way-implies-p-ne-np keywords="one-way functions imply P != NP" index="一方向関数と P≠NP|いっぽうこうかんすうとぴーのっとえぬぴー"}
+一方向関数が存在すれば $\mathrm{P}\ne\mathrm{NP}$ である。
+:::
+
+::: proof
+$\mathrm{P}=\mathrm{NP}$ と仮定し、長さを保ち多項式時間で計算できる任意の $f$ が条件 2 を満たさないことを示す。
+
+**Step 1（接頭辞の言語）.**
+$$
+B\defeq\bigl\{\langle y,u\rangle:\ \lvert x\rvert=\lvert y\rvert,\ u\text{ が }x\text{ の接頭辞},\ f(x)=y\ \text{となる}\ x\ \text{がある}\bigr\}
+$$
+は NP に属する。実際、$x$ を証拠とし、$\lvert x\rvert=\lvert y\rvert$ と接頭辞の条件と $f(x)=y$ を調べればよく、証拠の長さは入力の長さ以下、検査は $f$ の計算時間を含めて多項式時間である。仮定から $B\in\mathrm{P}$。
+
+**Step 2（1 ビットずつ逆算する）.** 入力 $y$（長さ $n$）について、$u\defeq$ 空列とし、$i=1,\dots,n$ の順に「$\langle y,u0\rangle\in B$ なら $u\defeq u0$、そうでなければ $u\defeq u1$」とし、最後に $u$ を出力する決定性の機械 $A$ を考える。$B\in\mathrm{P}$ なので $A$ は多項式時間。
+
+**Step 3（正しさ）.** $y=f(w)$, $\lvert w\rvert=n$ とする。各段の前で $\langle y,u\rangle\in B$ であることを帰納法で示す。最初は $x\defeq w$ が証拠になる（$f$ は長さを保つので $\lvert w\rvert=\lvert y\rvert$）。$\langle y,u\rangle\in B$ の証拠 $x$ をとり、$\lvert u\rvert<n$ とする。$\langle y,u0\rangle\in B$ ならそれを採る。そうでなければ、$x$ の第 $\lvert u\rvert+1$ 文字は $0$ ではあり得ない（そうなら $x$ が $\langle y,u0\rangle$ の証拠になる）ので $1$ で、$x$ は $\langle y,u1\rangle$ の証拠である。$n$ 段の後、$\lvert u\rvert=n$ で $\langle y,u\rangle\in B$ なので、証拠 $x$ は $u$ 自身であり $f(u)=y$。
+
+**Step 4（矛盾）.** よってすべての $w$ で $f(A(f(w)))=f(w)$ となり、確率は $1$。$k=1$, $n\ge2$ で $1>n^{-1}$ となり条件 2 に反する。
+:::
+
+::: hypcheck
+- **$f$ が多項式時間で計算できる**（条件 1）：Step 1 で $B\in\mathrm{NP}$ に使った。
+- **$f$ が長さを保つ**：Step 1 で証拠の長さを $\lvert y\rvert$ に制限でき、Step 3 で $w$ が最初の証拠になることに使った。
+- **$\mathrm{P}=\mathrm{NP}$**：Step 2 で $A$ が多項式時間であることに使った。
+- 逆算者 $A$ は決定性で、硬貨投げは使っていない。条件 2 の「すべての確率的 TM」のうちの一つとして使った。
+:::
+
+::: remark
+一方向関数があれば、それを使って（鍵が平文より短い）安全な共通鍵暗号が作れることが知られている（Sipser は構成を省略している。ここでも扱わない）。より簡単な応用は**パスワードの保管**である。パスワード $w$ そのものではなく $f(w)$ を保管し、入力されたパスワード $w'$ については $f(w')=f(w)$ かどうかを確かめる。保管された $f(w)$ が漏れても、条件 2 により、$f$ で同じ値に写る文字列を多項式時間で見つけられる確率は小さい。
+:::
+
+## 落とし戸関数と RSA {#comp:sec-trapdoor}
+
+公開鍵暗号では、暗号化の方法を公開し、復号の方法だけを秘密にする。それには、ふつうは逆算が難しいが、秘密の情報があれば逆算が易しい関数が必要になる。
+
+::: definition 落とし戸関数 {#comp:trapdoor-function keywords="trapdoor function, indexing function, public-key cryptosystem" index="落とし戸関数|おとしどかんすう, 公開鍵暗号|こうかいかぎあんごう"}
+関数の族 $(f_{i})_{i\in\Sigma^{*}}$ を一つの関数 $f(i,w)\defeq f_{i}(w)$ で表し、各 $f_{i}$ が長さを保つとする。$f$ が**落とし戸関数**であるとは、多項式時間の確率的 TM $G$（**鍵生成器**。入力 $1^{n}$ に対し組 $\langle i,t\rangle$ を出力する）と関数 $h$ があって、次を満たすことをいう。
+
+1. $f$ と $h$ は多項式時間で計算できる。
+2. 多項式時間の確率的 TM $E$ と $k\ge1$ がどれでも、十分大きなすべての $n$ について、$G(1^{n})$ の出力 $\langle i,t\rangle$ と一様な $w\in\Sigma^{n}$ をとるとき、$\Pr\bigl[f_{i}(E(i,f_{i}(w)))=f_{i}(w)\bigr]\le n^{-k}$。
+3. すべての $n$、$G(1^{n})$ が正の確率で出力するすべての $\langle i,t\rangle$、すべての $w\in\Sigma^{n}$ について、$f_{i}(h(t,f_{i}(w)))=f_{i}(w)$。
+
+$i$ が**公開鍵**、$t$ が**落とし戸**（秘密鍵）、$h$ が逆算の関数である。条件 2 は「$t$ を知らなければ逆算は難しい」、条件 3 は「$t$ を知れば逆算は易しい」を表す。
+:::
+
+::: theorem RSA の正しさ {#comp:rsa-correct keywords="RSA, correctness of RSA decryption, Euler's theorem" index="RSA|あーるえすえー"}
+$p\ne q$ を素数、$N\defeq pq$, $\varphi\defeq(p-1)(q-1)$ とし、整数 $e,d\ge1$ が $ed\equiv1\pmod{\varphi}$ を満たすとする。このとき、すべての整数 $w$ で
+$$
+w^{ed}\equiv w\pmod{N}.
+$$
+:::
+
+::: proof
+$ed=1+m\varphi$（$m\ge0$ は整数）と書く。
+
+**Step 1（フェルマーの小定理）.** 素数 $r$ と $r\nmid a$ について $a^{r-1}\equiv1\pmod{r}$ を示す。$x\mapsto ax\bmod r$ は $\{1,\dots,r-1\}$ からそれ自身への写像である（$r\nmid a$, $r\nmid x$ なので $r$ が素数であることから $r\nmid ax$）。単射でもある：$ax\equiv ax'$ なら $r\mid a(x-x')$ で、$r\nmid a$ と $r$ が素数であることから $r\mid x-x'$、$\lvert x-x'\rvert<r$ より $x=x'$。有限集合なので全単射で、積をとると $a^{r-1}(r-1)!\equiv(r-1)!\pmod{r}$。$(r-1)!$ は $r$ と互いに素なので両辺から約せて、$a^{r-1}\equiv1$。
+
+**Step 2（$p$ を法として）.** $p\nmid w$ なら、Step 1 より
+$$
+w^{ed}=w\cdot\bigl(w^{p-1}\bigr)^{m(q-1)}\equiv w\pmod{p}.
+$$
+$p\mid w$ なら両辺とも $0$ を法として合同（$ed\ge1$）。どちらでも $p\mid w^{ed}-w$。
+
+**Step 3（$q$ を法として）.** Step 2 で $p$ と $q$ の役割を入れ替えて $q\mid w^{ed}-w$。
+
+**Step 4（$N$ を法として）.** $x\defeq w^{ed}-w$ とする。$p\mid x$ なので $x=py$。$q\mid py$ で $q$ は素数かつ $q\nmid p$（$p\ne q$ はともに素数）なので $q\mid y$。よって $pq\mid x$。
+:::
+
+::: hypcheck
+- **$p,q$ が素数**：Step 1（フェルマーの小定理）と Step 4（素数が積を割れば一方を割る）で使った。
+- **$p\ne q$**：Step 4 で使った。$p=q$ だと主張は一般に崩れる（$p=q=3$, $N=9$, $\varphi=4$, $e=d=5$（$25\equiv1\pmod 4$）のとき $3^{25}\equiv0\not\equiv3\pmod 9$）。
+- **$ed\equiv1\pmod\varphi$**：$ed=1+m\varphi$ の形に使った。$e$ と $\varphi$ が互いに素なら、そのような $d$ はユークリッドの互除法で多項式時間で求まる（ベズーの等式）。
+- **$w$ と $N$ が互いに素であることは仮定していない**：Step 2 で $p\mid w$ の場合を別に扱った。
+:::
+
+::: example
+RSA の落とし戸関数の候補は次のとおり。鍵生成器 $G$ は $1^{n}$ について、$n$ ビットの数をランダムに選んで素数判定することを繰り返して異なる素数 $p,q$ を得（素数判定は多項式時間でできる。素数の密度により、多項式回の試行で高い確率で見つかる）、$N=pq$, $\varphi=(p-1)(q-1)$ を計算し、$\varphi$ と互いに素な $e$ をランダムに選び、$ed\equiv1\pmod\varphi$ となる $d$ を求め、公開鍵 $i=\langle N,e\rangle$ と落とし戸 $t=d$（と $N$）を出力する。$f_{N,e}(w)\defeq w^{e}\bmod N$, $h(\langle N,d\rangle,x)\defeq x^{d}\bmod N$ とすると、\ref{comp:rsa-correct} から $h(\langle N,d\rangle,f_{N,e}(w))=w$（$0\le w<N$）で条件 3 が成り立つ。べき乗の剰余は繰り返し二乗で多項式時間で計算できるので条件 1 も成り立つ。ただし条件 2（$d$ を知らなければ逆算が難しい）は証明されておらず、仮定である（$N$ を因数分解できれば $\varphi$ と $d$ が求まるので、少なくとも因数分解の難しさが必要である）。$w$ を長さを保つ関数の入力とみなすための符号化の細部はここでは略す。
+:::
+
+## 問題 {#comp:sec-ac-problems}
+
+::: problem {#comp:prob-ac-vc-tight}
+\ref{comp:vc-2-approx} のアルゴリズムの近似比 $2$ は改善できないこと、すなわち出力の大きさが最小頂点被覆のちょうど $2$ 倍になるグラフが、いくらでも大きなものについてあることを示せ。
+:::
+
+::: solution
+$k$ 本の互いに端点を共有しない辺からなるグラフ（頂点 $2k$ 個）を考える。アルゴリズムはすべての辺を $M$ に加え、$2k$ 個の頂点を出力する。一方、各辺から端点を一つずつ選んだ $k$ 個の頂点は被覆であり、\ref{comp:vc-2-approx} の Step 5 より $k$ 個未満の被覆はない（$\lvert M\rvert=k$）。よって比はちょうど $2$。
+:::
+
+::: problem {#comp:prob-ac-random-cut}
+各頂点を独立に確率 $1/2$ で $S$ に、残りを $T$ に入れたランダムなカットについて、カット辺の数の期待値が $\lvert E\rvert/2$ であることを示せ。
+:::
+
+::: solution
+辺 $\{u,v\}$（$u\ne v$）がカット辺になるのは、$u,v$ が異なる側に入るときで、独立性からその確率は $\tfrac12\cdot\tfrac12+\tfrac12\cdot\tfrac12=\tfrac12$。カット辺の数は各辺の指示関数の和なので、期待値の線形性から $\lvert E\rvert/2$。特に、大きさ $\lvert E\rvert/2$ 以上のカットが必ず存在する。
+:::
+
+::: problem {#comp:prob-ac-pad-reuse}
+ワンタイムパッドで同じ鍵 $k$ を二つの平文 $m_{1},m_{2}$ に使うと、暗号文から $m_{1}\oplus m_{2}$ が分かることを示し、$m_{1}$ が知られれば $m_{2}$ も分かることを確かめよ。
+:::
+
+::: solution
+$c_{1}\oplus c_{2}=(m_{1}\oplus k)\oplus(m_{2}\oplus k)=m_{1}\oplus m_{2}$（$\oplus$ は結合的・可換で $k\oplus k=0$）。$m_{1}$ を知れば $m_{2}=m_{1}\oplus(c_{1}\oplus c_{2})$。特に、二つの平文の組 $(M_{1},M_{2})$ について、$C_{1}\oplus C_{2}=M_{1}\oplus M_{2}$ は平文に依存するので、組としての完全な秘匿は成り立たない（鍵 $n$ ビットで平文 $2n$ ビットを送ることになり、\ref{comp:perfect-secrecy-key-length} とも整合する）。
+:::
+
+::: supplement
+**前提を変えると.** 近似比については次のことが知られている（ここでは証明しない）。最大カットはゴーマンス–ウィリアムソン（1995）の半正定値計画による方法で約 $0.878$ 倍まで近似できる。最小頂点被覆は $2$ より真に小さい定数の近似比の多項式時間アルゴリズムが知られておらず、ユニークゲーム予想を仮定すると $2-\varepsilon$ の近似は NP 困難であるとされる（コット–レゲフ）。PCP 定理からは、MAX-3SAT などに対し、ある定数より良い近似は $\mathrm{P}\ne\mathrm{NP}$ のもとで不可能であることが従う。暗号の側では、一方向関数の存在は擬似乱数生成器の存在と同値であること（ホースタッド–インパリアッツォ–レビン–ルビー）が知られている。一方、\ref{comp:one-way-implies-p-ne-np} の逆（$\mathrm{P}\ne\mathrm{NP}$ なら一方向関数がある）は知られていない。$\mathrm{P}\ne\mathrm{NP}$ は最悪の場合の難しさしか言わないが、一方向関数は「ほとんどすべての入力で」難しいことを要求するからである。また同じ証明で、硬貨投げを使って誤りを十分小さくすれば、$\mathrm{NP}\subseteq\mathrm{BPP}$ のもとでも逆算できることが示せる（ここでは詳細を略す）。
+
+**似た定理.** \ref{comp:perfect-secrecy-key-length} はシャノンによる完全秘匿の特徴づけの一部である。\ref{comp:vc-2-approx} の Step 5 の「マッチングの大きさ $\le$ 被覆の大きさ」は、二部グラフでは等号が成り立つ（ケーニヒの定理）。
+
+**高い視点から：非対称性を道具にする.** 本ページの二つの話題は、どちらも「二つの量・二つの方向の非対称性」を使う。近似では、求めにくい最適値 $\mathrm{OPT}$ を、求めやすい量（極大マッチングの大きさ、辺の総数）ではさんで評価する。これは線形計画法の双対性（最小化問題の値は双対な最大化問題の値で下から抑えられる）の最も簡単な例とみなせる。暗号では、「計算する」と「逆算する」の難しさの差を使う。比喩で言えば、一方向関数は卵を割ることで、割るのはたやすいが元に戻すのは難しい。落とし戸関数は南京錠で、誰でも開いた錠を閉めることはできるが、開けられるのは鍵を持つ人だけである。NP が「答えの確認は易しい」問題のクラスであることと対比すると、一方向関数の存在は「答え（逆像）の確認は易しいが、見つけるのは平均的にも難しい」問題があることを意味し、$\mathrm{P}\ne\mathrm{NP}$ の平均版の強化になっている。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

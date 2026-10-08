@@ -3557,6 +3557,13 @@
       "num": "3.4",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/03-analytical-hierarchy.html"
     },
+    "comp:approx-ratio": {
+      "status": "defined",
+      "type": "definition",
+      "title": "近似比",
+      "num": "12.1",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/12-approximation-cryptography.html"
+    },
     "comp:arden": {
       "status": "defined",
       "type": "lemma",
@@ -4502,6 +4509,13 @@
       "num": "10.1",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/10-mapping-reducibility.html"
     },
+    "comp:maxcut-local-search": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "最大カットの局所探索",
+      "num": "12.4",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/12-approximation-cryptography.html"
+    },
     "comp:measure-basic": {
       "status": "defined",
       "type": "lemma",
@@ -4705,6 +4719,27 @@
       "num": "4.8",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/04-boundedness.html"
     },
+    "comp:one-time-pad": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "ワンタイムパッド",
+      "num": "12.7",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/12-approximation-cryptography.html"
+    },
+    "comp:one-way-function": {
+      "status": "defined",
+      "type": "definition",
+      "title": "一方向関数",
+      "num": "12.9",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/12-approximation-cryptography.html"
+    },
+    "comp:one-way-implies-p-ne-np": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "一方向関数があれば P ≠ NP",
+      "num": "12.10",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/12-approximation-cryptography.html"
+    },
     "comp:one-while": {
       "status": "defined",
       "type": "corollary",
@@ -4760,6 +4795,13 @@
       "title": "解析的階層と Π¹₁ 標準形",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/03-analytical-hierarchy.html"
+    },
+    "comp:page-approx-crypto": {
+      "status": "defined",
+      "type": "page",
+      "title": "近似アルゴリズムと暗号",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/12-approximation-cryptography.html"
     },
     "comp:page-boundedness": {
       "status": "defined",
@@ -5097,6 +5139,20 @@
       "num": "4.9",
       "page": "03-mathematical-logic/03D-computability-theory/01-automata/04-context-free.html"
     },
+    "comp:perfect-secrecy": {
+      "status": "defined",
+      "type": "definition",
+      "title": "暗号系と完全な秘匿",
+      "num": "12.6",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/12-approximation-cryptography.html"
+    },
+    "comp:perfect-secrecy-key-length": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "完全な秘匿には鍵の数が平文の数以上必要",
+      "num": "12.8",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/12-approximation-cryptography.html"
+    },
     "comp:ph-basic": {
       "status": "defined",
       "type": "proposition",
@@ -5320,6 +5376,27 @@
       "title": "",
       "num": "1.15",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/01-language-L.html"
+    },
+    "comp:prob-ac-pad-reuse": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "12.16",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/12-approximation-cryptography.html"
+    },
+    "comp:prob-ac-random-cut": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "12.15",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/12-approximation-cryptography.html"
+    },
+    "comp:prob-ac-vc-tight": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "12.14",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/12-approximation-cryptography.html"
     },
     "comp:prob-ack-3": {
       "status": "defined",
@@ -6014,6 +6091,13 @@
       "num": "5.3",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/05-register-machines.html"
     },
+    "comp:rsa-correct": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "RSA の正しさ",
+      "num": "12.13",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/12-approximation-cryptography.html"
+    },
     "comp:running-time": {
       "status": "defined",
       "type": "definition",
@@ -6104,6 +6188,20 @@
       "title": "L をチューリング機械で模倣する",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/07-turing-completeness.html"
+    },
+    "comp:sec-ac-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/12-approximation-cryptography.html"
+    },
+    "comp:sec-ac-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/12-approximation-cryptography.html"
     },
     "comp:sec-ack-notation": {
       "status": "defined",
@@ -6209,6 +6307,13 @@
       "title": "交代時間と決定性領域",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/09-alternation.html"
+    },
+    "comp:sec-approx": {
+      "status": "defined",
+      "type": "section",
+      "title": "近似アルゴリズム",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/12-approximation-cryptography.html"
     },
     "comp:sec-arden": {
       "status": "defined",
@@ -6868,12 +6973,26 @@
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/03-martin-lof.html"
     },
+    "comp:sec-one-way": {
+      "status": "defined",
+      "type": "section",
+      "title": "一方向関数",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/12-approximation-cryptography.html"
+    },
     "comp:sec-oracle": {
       "status": "defined",
       "type": "section",
       "title": "神託機械とチューリング還元",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/02-turing-reducibility.html"
+    },
+    "comp:sec-otp": {
+      "status": "defined",
+      "type": "section",
+      "title": "完全な秘匿とワンタイムパッド",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/12-approximation-cryptography.html"
     },
     "comp:sec-par-inclusions": {
       "status": "defined",
@@ -7414,6 +7533,13 @@
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/02-turing-reducibility.html"
     },
+    "comp:sec-trapdoor": {
+      "status": "defined",
+      "type": "section",
+      "title": "落とし戸関数と RSA",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/12-approximation-cryptography.html"
+    },
     "comp:sec-turing-complete": {
       "status": "defined",
       "type": "section",
@@ -7645,6 +7771,13 @@
       "num": "10.7",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/10-interactive-proofs.html"
     },
+    "comp:trapdoor-function": {
+      "status": "defined",
+      "type": "definition",
+      "title": "落とし戸関数",
+      "num": "12.12",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/12-approximation-cryptography.html"
+    },
     "comp:tree-comparison": {
       "status": "defined",
       "type": "lemma",
@@ -7791,6 +7924,13 @@
       "title": "使用の原理",
       "num": "3.2",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/03-analytical-hierarchy.html"
+    },
+    "comp:vc-2-approx": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "頂点被覆の 2 倍近似",
+      "num": "12.3",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/12-approximation-cryptography.html"
     },
     "comp:vc-complete": {
       "status": "defined",

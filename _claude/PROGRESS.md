@@ -303,6 +303,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 計算複雑性 CC-12（12-approximation-cryptography, comp:page-approx-crypto：近似比、頂点被覆の 2 倍近似（極大マッチング）、最大カットの局所探索、完全秘匿とワンタイムパッド、完全秘匿には鍵の数が平文の数以上必要、一方向関数、一方向関数があれば P≠NP（接頭辞の言語で 1 ビットずつ逆算）、落とし戸関数、RSA の正しさ（w と N が互いに素でない場合も））。Sipser 10.1, 10.6。04-complexity の説明を更新。
 - 2026-10-08 計算複雑性 CC-11（11-parallel, comp:page-parallel：一様な回路族、NC、行列積と推移閉包（繰り返し二乗）、NC¹⊆L（経路を 1 ビットずつ記録）、NL⊆NC²、NC⊆P、NC の対数領域還元についての閉性、CIRCUIT-VALUE の P 完全性）。Sipser 10.5。CC-10 の素数の選び方の記述を修正。
 - 2026-10-08 計算複雑性 CC-10（10-interactive-proofs, comp:page-interactive-proofs：対話証明系と IP、グラフ非同型、IP⊆PSPACE（受理させる乱数の個数の最大値を整数で計算）、算術化、冠頭形、TQBF∈IP（素数の見つけ方・次数の上界・誤りの確率を具体的に）、シャミアの定理、#SAT と完全性 1 の問題）。Sipser 10.4。
 - 2026-10-08 計算複雑性 CC-09（09-alternation, comp:page-alternation：交代チューリング機械（停止を仮定して受理を定義）、TAUT・MIN-FORMULA、ATIME⊆SPACE（道標の記録）、SPACE⊆ATIME(f²)、ASPACE⊆TIME(2^O(f))（グラフの無閉路性を確認）、TIME(2^O(f))⊆ASPACE（局所関数による表の検証）、AL=P・AP=PSPACE・APSPACE=EXPTIME、多項式階層とその基本性質、TQBF と階層の崩壊の問題）。Sipser 10.3。
@@ -464,7 +465,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | CC-09 | 04-complexity/09-alternation | 交代チューリング機械と多項式階層（Sipser 10.3） | 完了 |
 | CC-10 | 04-complexity/10-interactive-proofs | 対話証明系、グラフ非同型、IP = PSPACE（Sipser 10.4） | 完了 |
 | CC-11 | 04-complexity/11-parallel | 一様な回路族、NC、P 完全性（Sipser 10.5） | 完了 |
-| CC-12 | 04-complexity/12-approximation-cryptography | 近似アルゴリズムと暗号（一方向関数・落とし戸関数）（Sipser 10.1, 10.6） | 未 |
+| CC-12 | 04-complexity/12-approximation-cryptography | 近似アルゴリズムと暗号（一方向関数・落とし戸関数）（Sipser 10.1, 10.6） | 完了 |
 | KR-01 | 06-algorithmic-randomness/01-prefix-free-complexity | 接頭辞なし複雑性とクラフトの不等式 | 完了 |
 | KR-02 | 06-algorithmic-randomness/02-martin-lof | マルチン＝レーフのランダムネスとレヴィン–シュノアの定理 | 完了 |
 

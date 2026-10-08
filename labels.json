@@ -30913,6 +30913,13 @@
       "num": "2.10",
       "page": "54-general-topology/54B-basic-constructions/01-constructions/02-quotients.html"
     },
+    "top:alexandroff-hausdorff": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "アレクサンドロフ–ハウスドルフの定理",
+      "num": "11.3",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/11-cantor-set.html"
+    },
     "top:ascoli": {
       "status": "defined",
       "type": "theorem",
@@ -31018,12 +31025,33 @@
       "num": "1.9",
       "page": "54-general-topology/54B-basic-constructions/01-constructions/01-subspaces-products.html"
     },
+    "top:brouwer-cantor": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "ブラウワーの特徴づけ",
+      "num": "11.4",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/11-cantor-set.html"
+    },
     "top:cantor-intersection": {
       "status": "defined",
       "type": "theorem",
       "title": "カントールの共通部分定理",
       "num": "1.5",
       "page": "54-general-topology/54E-richer-structures/01-metric-spaces/01-completeness.html"
+    },
+    "top:cantor-products": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "カントール集合の自己同相",
+      "num": "11.5",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/11-cantor-set.html"
+    },
+    "top:cantor-retract": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "カントール空間のレトラクト",
+      "num": "11.2",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/11-cantor-set.html"
     },
     "top:cantor-set-maps": {
       "status": "defined",
@@ -31942,6 +31970,13 @@
       "num": "",
       "page": "54-general-topology/54A-generalities/01-topological-spaces/03-bases-countability.html"
     },
+    "top:page-cantor-set": {
+      "status": "defined",
+      "type": "page",
+      "title": "カントール集合の普遍性",
+      "num": "",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/11-cantor-set.html"
+    },
     "top:page-closure-interior": {
       "status": "defined",
       "type": "page",
@@ -32333,6 +32368,20 @@
       "title": "",
       "num": "2.9",
       "page": "54-general-topology/54E-richer-structures/01-metric-spaces/02-baire.html"
+    },
+    "top:prob-cs-not-locally-connected": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "11.6",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/11-cantor-set.html"
+    },
+    "top:prob-cs-rationals": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "11.7",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/11-cantor-set.html"
     },
     "top:prob-ex-composition": {
       "status": "defined",
@@ -33096,6 +33145,41 @@
       "title": "問題",
       "num": "",
       "page": "54-general-topology/54D-general-properties/01-separation-compactness/02-compactness.html"
+    },
+    "top:sec-cs-ah": {
+      "status": "defined",
+      "type": "section",
+      "title": "アレクサンドロフ–ハウスドルフの定理",
+      "num": "",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/11-cantor-set.html"
+    },
+    "top:sec-cs-brouwer": {
+      "status": "defined",
+      "type": "section",
+      "title": "ブラウワーの特徴づけ",
+      "num": "",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/11-cantor-set.html"
+    },
+    "top:sec-cs-lemmas": {
+      "status": "defined",
+      "type": "section",
+      "title": "準備",
+      "num": "",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/11-cantor-set.html"
+    },
+    "top:sec-cs-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/11-cantor-set.html"
+    },
+    "top:sec-cs-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/11-cantor-set.html"
     },
     "top:sec-ex-evaluation": {
       "status": "defined",
@@ -34132,6 +34216,13 @@
       "title": "全有界性とコーシー部分列",
       "num": "3.3",
       "page": "54-general-topology/54E-richer-structures/01-metric-spaces/03-compact-metric.html"
+    },
+    "top:totally-disconnected-zero-dim": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "完全不連結なコンパクト空間は零次元",
+      "num": "11.1",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/11-cantor-set.html"
     },
     "top:tube-lemma": {
       "status": "defined",

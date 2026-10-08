@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>カントール集合の普遍性 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54D-general-properties/01-separation-compactness/11-cantor-set.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# カントール集合の普遍性 {#top:page-cantor-set keywords="Cantor space, zero-dimensional, quasi-component, retraction onto closed subsets of Cantor space, Alexandroff-Hausdorff theorem, every compact metric space is a continuous image of the Cantor set, Brouwer's characterization of the Cantor set"}
+
+カントール集合 $\mathcal{C}$（\ref{top:cantor-set-maps}）は、小さく見えて驚くほど「大きい」空間である。本ページでは、(1) 空でないコンパクト距離空間はすべて $\mathcal{C}$ の連続像であること（**アレクサンドロフ–ハウスドルフの定理**、\ref{top:alexandroff-hausdorff}）と、(2) 空でなく、孤立点をもたず、完全不連結なコンパクト距離化可能空間はすべて $\mathcal{C}$ と同相であること（**ブラウワーの特徴づけ**、\ref{top:brouwer-cantor}）を示す。準備として、完全不連結なコンパクトハウスドルフ空間は閉開集合の基をもつこと（\ref{top:totally-disconnected-zero-dim}）と、$\mathcal{C}$ の空でない閉集合は $\mathcal{C}$ の**レトラクト**であること（\ref{top:cantor-retract}）を示す。
+
+> 資料：小山晃『位相空間論』第 8 章の発展（カントール集合とその性質）を参考にした（本文は写していない）。同書で問題とされているブラウワーの特徴づけと、レトラクトによるアレクサンドロフ–ハウスドルフの定理の証明は、二進木を使う形で自分で組み立てた。
+
+## 記法と定義の確認 {#top:sec-cs-notation}
+
+::: notation
+- $2^{\N}\defeq\{0,1\}^{\N}$ に直積位相を入れた空間（**カントール空間**）は、カントール集合 $\mathcal{C}$ と同相である（\ref{top:cantor-set-maps} の 1）。有限の $0,1$ 列 $s$ について $[s]\defeq\{x\in2^{\N}:x\text{ は }s\text{ で始まる}\}$（**筒集合**）は閉開集合で、筒集合全体は基をなす。$d(x,y)\defeq2^{-\min\{i:x_{i}\ne y_{i}\}}$（$x\ne y$）は直積位相を定める距離で、$d(x,y)\le2^{-k}$ と「$x,y$ が最初の $k$ 項で一致する」は同値。
+- 連結成分・完全不連結は \ref{top:components}、ストーン空間（閉開集合の基をもつコンパクトハウスドルフ空間）は \ref{top:stone-space} のとおり。空間が**完全**（孤立点をもたない）であるとは、どの一点集合も開でないことをいう。
+- コンパクト距離空間は第二可算（\ref{top:compact-metric-second-countable}）。コンパクトからハウスドルフへの連続な単射は埋め込み、全単射は同相（\ref{top:compact-to-hausdorff}）。
+:::
+
+## 準備 {#top:sec-cs-lemmas}
+
+::: lemma 完全不連結なコンパクト空間は零次元 {#top:totally-disconnected-zero-dim keywords="a totally disconnected compact Hausdorff space has a base of clopen sets; quasi-components" index="零次元|れいじげん, 準成分|じゅんせいぶん"}
+完全不連結なコンパクトハウスドルフ空間 $X$ は閉開集合からなる基をもつ（したがってストーン空間である）。
+:::
+
+::: proof
+**Step 1（準成分は連結）.** $x\in X$ について、$x$ を含む閉開集合全体の共通部分を $Q$ とする。$Q$ は閉。$Q=A\cup B$（$A,B$ は $Q$ の互いに交わらない閉集合、したがって $X$ の閉集合）で $x\in A$ とする。$X$ は正規（\ref{top:compact-hausdorff-normal}）なので、交わらない開集合 $U\supseteq A$, $V\supseteq B$ がある。$X\setminus(U\cup V)$ はコンパクトで、$x$ を含む閉開集合の補集合たちで覆われる（共通部分が $Q\subseteq U\cup V$ なので）。有限部分被覆をとると、$x$ を含む閉開集合 $C_{1},\dots,C_{n}$ で $C\defeq\bigcap C_{i}\subseteq U\cup V$ となる。$C\cap U$ は開で、$C\cap U=C\setminus V$（$C\subseteq U\cup V$, $U\cap V=\emptyset$）なので閉でもあり、$x$ を含む。よって $Q\subseteq C\cap U\subseteq U$ で、$B\subseteq Q\cap V\subseteq U\cap V=\emptyset$。したがって $Q$ は連結。
+
+**Step 2（基）.** $X$ は完全不連結なので $Q=\{x\}$。$x\in W$（$W$ は開）とすると、コンパクト集合 $X\setminus W$ は $x$ を含む閉開集合の補集合で覆われ、有限個の閉開集合の共通部分 $C\ni x$ で $C\subseteq W$ となる。$C$ は閉開。
+:::
+
+::: lemma カントール空間のレトラクト {#top:cantor-retract keywords="every nonempty closed subset of Cantor space is a retract" index="レトラクト（カントール空間）|れとらくとかんとーるくうかん"}
+$F\subseteq2^{\N}$ が空でない閉集合なら、連続写像 $r\colon2^{\N}\to F$ で $r|_{F}=1_{F}$ となるもの（**レトラクション**）がある。
+:::
+
+::: proof
+$T\defeq\{x\restriction n:x\in F,n\ge0\}$（$F$ の元の始切片全体）とする。$F$ が閉なので、$x\in F\iff$ すべての $n$ で $x\restriction n\in T$（$x\notin F$ なら $x$ のある筒集合 $[x\restriction n]$ が $F$ と交わらない）。また $T$ の各元 $s$ は $T$ の中で延長できる（$s=y\restriction n$, $y\in F$ なら $y\restriction(n+1)\in T$）。
+
+$x\in2^{\N}$ について、$x\in F$ なら $r(x)\defeq x$。$x\notin F$ なら、$x\restriction m\in T$, $x\restriction(m+1)\notin T$ となる $m$ がある（$x\restriction0$ は空列で $T$ に属する）。$s_{m}\defeq x\restriction m$ から始めて、$s_{k+1}\defeq s_{k}0$（$s_{k}0\in T$ のとき）、$s_{k}1$（そうでないとき）と延ばすと、すべて $T$ に属し、その極限 $r(x)$ は $F$ に属する（始切片がすべて $T$ に属するので）。
+
+**連続性.** $x\in F$ のとき、$x$ と最初の $k$ 項で一致する $x'$ について、$x'\in F$ なら $r(x')=x'$、そうでなければ $x'\restriction k=x\restriction k\in T$ なので $x'$ が $T$ から外れる位置 $m'$ は $k$ 以上で、$r(x')$ は $x'\restriction m'$ を延ばしたもの。いずれも $r(x')$ は $x=r(x)$ と最初の $k$ 項で一致する。$x\notin F$ のとき、$x$ と最初の $m+1$ 項で一致する $x'$ は同じ位置 $m$ で $T$ から外れ、同じ $s_{m}$ から同じ規則で延ばすので $r(x')=r(x)$。
+:::
+
+## アレクサンドロフ–ハウスドルフの定理 {#top:sec-cs-ah}
+
+::: theorem アレクサンドロフ–ハウスドルフの定理 {#top:alexandroff-hausdorff keywords="every nonempty compact metric space is a continuous image of the Cantor set" index="アレクサンドロフ–ハウスドルフの定理|あれくさんどろふはうすどるふのていり"}
+空でないコンパクト距離空間 $X$ について、カントール集合からの連続な全射 $\mathcal{C}\to X$ がある。
+:::
+
+::: proof
+**Step 1（ヒルベルト立方体への埋め込み）.** $X$ は可分なので稠密な点列 $(p_{n})$ がある。$e\colon X\to[0,1]^{\N}$, $e(x)\defeq(\min\{1,d(x,p_{n})\})_{n}$ は連続（各成分が連続）。単射：$x\ne y$ なら $\varepsilon\defeq\min\{1,d(x,y)\}/2$ に対し $d(x,p_{n})<\varepsilon$ となる $n$ があり、$d(y,p_{n})\ge d(x,y)-\varepsilon>\varepsilon$ なので $e(x)_{n}\ne e(y)_{n}$。$X$ はコンパクトなので $e$ は埋め込みで、$X\cong e[X]$（閉集合）。
+
+**Step 2（$\mathcal{C}$ から立方体への全射）.** $\varphi\colon\mathcal{C}\to[0,1]$ を \ref{top:cantor-set-maps} の 2 の連続な全射とする。$\N\times\N$ と $\N$ の全単射により $2^{\N}\cong(2^{\N})^{\N}$（座標の並べ替えは同相写像）なので、$\mathcal{C}\cong\mathcal{C}^{\N}$。$\Psi\colon\mathcal{C}\cong\mathcal{C}^{\N}\xrightarrow{\varphi^{\N}}[0,1]^{\N}$ は連続な全射（各成分が連続な全射）。
+
+**Step 3（レトラクト）.** $F\defeq\Psi^{-1}[e[X]]$ は $\mathcal{C}$ の空でない閉集合。\ref{top:cantor-retract}（$\mathcal{C}\cong2^{\N}$ で移す）のレトラクション $r\colon\mathcal{C}\to F$ をとると、$e^{-1}\circ\Psi\circ r\colon\mathcal{C}\to X$ は連続な全射（$\Psi[F]=e[X]$ は $\Psi$ の全射性から）。
+:::
+
+::: hypcheck
+- **コンパクト性**：Step 1 で $e$ が埋め込みで像が閉であることに使った。
+- **距離化可能性（可分性）**：Step 1 で可算個の座標で埋め込むのに使った。非可算の積 $[0,1]^{I}$ を使うと、$2^{I}$ の連続像として一般のコンパクトハウスドルフ空間を扱う議論があることが知られている。
+- **レトラクト**：Step 3 で、$\Psi$ の制限ではなく $\mathcal{C}$ 全体からの全射を得るのに使った。
+:::
+
+## ブラウワーの特徴づけ {#top:sec-cs-brouwer}
+
+::: theorem ブラウワーの特徴づけ {#top:brouwer-cantor keywords="Brouwer's theorem: every nonempty perfect totally disconnected compact metrizable space is homeomorphic to the Cantor set" index="ブラウワーの特徴づけ|ぶらうわーのとくちょうづけ"}
+空でないコンパクト距離空間 $X$ が完全不連結で孤立点をもたないなら、$X$ はカントール集合と同相である。
+:::
+
+::: proof
+**Step 1（分割の補題）.** $X$ の空でない閉開集合 $U$ と $\varepsilon>0$ について、$U$ は直径 $<\varepsilon$ の空でない閉開集合 $k\ge2$ 個の和に交わりなく分割できる。実際、\ref{top:totally-disconnected-zero-dim} から $U$ の各点に直径 $<\varepsilon$ の閉開近傍があり（閉開集合と $U$ の共通部分）、$U$ はコンパクトなので有限個 $W_{1},\dots,W_{n}\subseteq U$ で覆われる。$W'_{j}\defeq W_{j}\setminus(W_{1}\cup\cdots\cup W_{j-1})$ の空でないものが分割になる。$k=1$ となった場合は、$U$ は孤立点をもたないので二点 $a\ne b$ を含み、$a$ を含み $b$ を含まない閉開集合 $W$ で $U$ を $U\cap W$, $U\setminus W$ に分ければよい。
+
+**Step 2（二進木）.** 有限の $0,1$ 列 $s$ に $X$ の空でない閉開集合 $U_{s}$ を、$U_{\emptyset}=X$, $U_{s}=U_{s0}\sqcup U_{s1}$ となるように割り当て、さらに各無限列 $x$ について $\operatorname{diam}U_{x\restriction n}\to0$ となるようにする。それには、「段階 $k$」で、すでに割り当てた葉 $U_{s}$ のそれぞれを Step 1 で直径 $<2^{-k}$ の $P_{1},\dots,P_{m}$（$m\ge2$）に分け、$U_{s0}\defeq P_{1}$, $U_{s1}\defeq P_{2}\cup\cdots\cup P_{m}$、$m\ge3$ なら $U_{s1}$ をさらに $U_{s10}\defeq P_{2}$, $U_{s11}\defeq P_{3}\cup\cdots\cup P_{m}$ と分け、…と二つずつに分けていき、新しい葉がすべて $P_{j}$ のどれかになるまで続ける。どの無限列 $x$ についても、$U_{x\restriction n}$ は各段階を有限回で通過し、段階 $k$ を通過した後は直径 $<2^{-k}$。
+
+**Step 3（同相写像）.** $x\in2^{\N}$ に、$\bigcap_{n}U_{x\restriction n}$ の唯一の点 $h(x)$ を対応させる（空でない閉集合の減少列でコンパクト性から共通部分は空でなく、直径 $\to0$ なので一点）。$h$ は連続（$x,x'$ が最初の $n$ 項で一致すれば $h(x),h(x')\in U_{x\restriction n}$）、単射（$x\ne x'$ が第 $n$ 項で初めて異なれば、$U_{x\restriction(n+1)}$ と $U_{x'\restriction(n+1)}$ は交わらない）、全射（各 $y\in X$ は各段で二つの子のちょうど一方に属し、その列 $x$ について $h(x)=y$）。$2^{\N}$ はコンパクト、$X$ はハウスドルフなので $h$ は同相写像。
+:::
+
+::: hypcheck
+- **完全不連結**：Step 1 で、\ref{top:totally-disconnected-zero-dim} を通じて閉開集合の分割を作るのに使った。
+- **孤立点がない**：Step 1 で、どの葉も二つ以上に分けられること（木が本当に二分岐し続けること）に使った。孤立点 $p$ があると、$\{p\}$ は閉開でそれ以上分けられない。
+- **コンパクト・距離化可能**：Step 1 の有限被覆と直径、Step 3 の共通部分の空でなさに使った。
+:::
+
+::: corollary カントール集合の自己同相 {#top:cantor-products keywords="C is homeomorphic to C^N, to {0,...,k}^N, and to C x C" index="カントール集合の積|かんとーるしゅうごうのせき"}
+$\mathcal{C}\cong\mathcal{C}\times\mathcal{C}\cong\mathcal{C}^{\N}\cong\{0,1,\dots,k\}^{\N}$（$k\ge1$、有限離散空間の可算直積）。
+:::
+
+::: proof
+いずれも空でないコンパクト距離化可能空間（可算直積はコンパクトかつ距離化可能、\ref{top:countable-product-metrizable}）で、完全不連結（射影の像が完全不連結で、異なる二点はある座標で分離される）、孤立点をもたない（どの基本開集合も無限個の点を含む）。\ref{top:brouwer-cantor} より $\mathcal{C}$ と同相。
+:::
+
+## 問題 {#top:sec-cs-problems}
+
+::: problem {#top:prob-cs-not-locally-connected}
+カントール集合はどの点でも局所連結でないことを示し、アレクサンドロフ–ハウスドルフの定理の連続な全射 $\mathcal{C}\to[0,1]$ が商写像であることと、\ref{top:quotient-locally-connected} が矛盾しないことを説明せよ。
+:::
+
+::: solution
+$\mathcal{C}$ の連結な部分集合は一点だけ（完全不連結）で、一点集合は開でない（孤立点がない）ので、どの点にも連結な開近傍はない。\ref{top:quotient-locally-connected} は「局所連結な空間の商は局所連結」であって、逆向き（商が局所連結なら元も局所連結）は主張しない。$\mathcal{C}\to[0,1]$ はコンパクトからハウスドルフへの連続な全射で商写像だが、元の $\mathcal{C}$ が局所連結でないので、定理の仮定を満たさず、矛盾はない。
+:::
+
+::: problem {#top:prob-cs-rationals}
+$\mathbb{Q}\cap[0,1]$ は完全不連結で孤立点をもたないが、カントール集合と同相でないことを示し、ブラウワーの特徴づけでどの仮定が欠けているかを答えよ。
+:::
+
+::: solution
+$\mathbb{Q}\cap[0,1]$ は可算で、$\mathcal{C}$ は非可算（$2^{\N}$ と全単射）なので同相でない。完全不連結（任意の二点の間に無理数 $c$ があり、$c$ の左右で分けられる）、孤立点なし（有理数は稠密）だが、コンパクトでない（$\mathbb{R}$ で閉でない、たとえば $1/\sqrt{2}$ に収束する有理数列は $\mathbb{Q}\cap[0,1]$ で収束しない）。欠けているのはコンパクト性である。
+:::
+
+::: supplement
+**前提を変えると.** コンパクト性を外すと、完全不連結で孤立点をもたない可算距離空間はすべて $\mathbb{Q}$ と同相であること（シェルピンスキの定理）や、零次元のポーランド空間でコンパクト集合が内部をもたないものは $\N^{\N}$（ベール空間）、したがって無理数全体と同相であること（アレクサンドロフ–ウリゾーン）が知られている（ここでは扱わない）。
+
+**似た定理.** アレクサンドロフ–ハウスドルフの定理とペアノ曲線（\ref{top:peano-curve}）を組み合わせると、コンパクト距離空間のうち $[0,1]$ の連続像になるものの特徴づけ（ハーン–マズルキェヴィチの定理）の証明の方針が得られる：$\mathcal{C}$ からの全射を、補集合の区間で「局所連結性を使って」つなげばよい。記述集合論では、$2^{\N}$ と $\N^{\N}$ が基本的な空間として使われ、すべてのポーランド空間は $\N^{\N}$ の連続像であることが知られている。
+
+**高い視点から：カントール集合は「すべての可能な二択の木」.** $2^{\N}$ の点は「左か右か」の選択の無限列であり、カントール集合はその選択の全体を幾何学的に描いたものである。コンパクト距離空間はどれも、有限の精度で見れば有限個の小片に分けられ、精度を上げるたびに小片をさらに分けることで「二択の木」で番地付けできる。アレクサンドロフ–ハウスドルフの定理はこの番地付けが連続な全射として実現できることを、ブラウワーの特徴づけは、分け方が常に二つ以上に分かれ続け、ばらばらな空間なら番地付けがちょうど一対一になることを言っている。比喩で言えば、カントール集合は「住所録の雛形」で、どんなコンパクト距離空間の住所録もその雛形から作れる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -271,6 +271,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | C2-02 | 05-higher-structures/02-2-categories | 2 圏・2 圏の中の随伴とカン拡張・2 関手と変形・単一集合の圏 | XII.3–5 | 12990–13233 | 完了 |
 | C2-03 | 05-higher-structures/03-bicategories | 双圏（モノイダル圏・両側加群・スパン） | XII.6–7 | 13234–13459 | 完了 |
 | C2-04 | 05-higher-structures/04-crossed-modules | 交差加群と群の中の圏 | XII.8 | 13460–13560 | 完了 |
+| C2-05 | 05-higher-structures/05-segal-condition | 神経の特徴づけ（辺の合成、セガール条件、神経関手の本質的な像）（資料なし） | — | — | 完了 |
 
 | CM-01 | 03-monads/01-monads-algebras | モナドとアイレンバーグ–ムーア代数、比較関手 | VI.1–3 | 6675–6984 | 完了 |
 | CM-02 | 03-monads/02-kleisli | クライスリ圏と比較の要約、語と自由半群 | VI.4–5 | 6985–7196 | 完了 |
@@ -332,6 +333,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 圏論 C2-05（18A/05-higher-structures/05-segal-condition, cat:page-segal-condition：単体の頂点・辺・背骨とセガール写像、辺の変換の補題、神経はセガール条件を満たす、辺の合成 x_ik=x_jk∘x_ij、神経の特徴づけ（圏の復元と自然な同型）、神経関手の本質的な像、中身のない三角形と特異単体の問題）。01-internal-categories の補足から参照。資料なし。
 - 2026-10-08 一般位相 TF-05（54C/01/05-ascoli-general, top:page-ascoli-general：コンパクト集合への制限による C_c(X,Y) の閉埋め込み（局所コンパクト）、一般形のアスコリの定理、σ コンパクトな局所コンパクトハウスドルフ空間での距離化と点列の形、平行移動と sin(nx) の問題）。03-ascoli の補足から参照。資料なし。
 - 2026-10-08 計算量 CC-14（03D/04-complexity/14-ph-karp-lipton, comp:page-ph-karp-lipton：量化子による特徴づけ（選択列を余りで読む）、神託による特徴づけ Σ_{k+1}^P=NP^{Σ_k^P}、P/poly、EXT と自己帰着、カープ–リプトンの定理）。09-alternation・08-circuits の「認めて」「ここでは証明しない」を参照に変更。資料なし。
 - 2026-10-08 一般位相：01-separation-axioms（ゾルゲンフライ平面）・03-compact-metric（アレクサンドロフ–ハウスドルフ）・08-paracompactness（ω₁）の「ここでは証明しない」を本サイトの証明への参照に変更。TD-14 に問題「可算コンパクト＋パラコンパクト ⇒ コンパクト、[0,ω₁) はパラコンパクトでない」を追加。

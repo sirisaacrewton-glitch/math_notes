@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>神経の特徴づけとセガール条件 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/05-higher-structures/05-segal-condition.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 神経の特徴づけとセガール条件 {#cat:page-segal-condition keywords="nerve of a category, Segal condition, Segal maps, spine, edges of a simplex, simplicial sets that are nerves, nerve functor is an equivalence onto Segal simplicial sets, Segal spaces"}
+
+小さい圏 $\mathbf{C}$ の神経 $N\mathbf{C}$（\ref{cat:simplicial-object} の例 2）は単体的集合で、神経関手は充満忠実である（\ref{cat:nerve-fully-faithful}）。では、どの単体的集合が圏の神経なのか。答えは**セガール条件**（\ref{cat:segal-condition}）である：各 $n\ge2$ で、$n$ 単体をその「背骨」——隣り合う頂点を結ぶ $n$ 本の辺——に送る写像が全単射であること。本ページではこれを証明する（\ref{cat:nerve-characterization}）。証明の要は、$n$ 単体 $x$ の**辺** $x_{ij}$（\ref{cat:simplex-edges}）が合成について $x_{ik}=x_{jk}\circ x_{ij}$ を満たすこと（\ref{cat:edges-compose}）で、結合律はこれを $3$ 単体に使うだけで従う。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。
+
+## 記法と定義の確認 {#cat:sec-sg-notation}
+
+::: notation
+- 単体圏 $\Delta$（有限順序数 $n=\{0,\dots,n-1\}$ と単調写像）、その充満部分圏 $\Delta_{+}$、単体的集合 $X\colon\Delta_{+}^{\mathrm{op}}\to\mathbf{Set}$、$X_{n}\defeq X(n+1)$、面作用素・退化作用素は \ref{cat:simplicial-category}, \ref{cat:face-degeneracy}, \ref{cat:simplicial-object} のとおり。$X$ は反変関手なので、単調写像 $\alpha,\beta$ について $X(\beta\alpha)=X(\alpha)X(\beta)$。
+- 小さい圏 $\mathbf{C}$ の神経 $N\mathbf{C}$ の $n$ 単体は、合成可能な射の列 $c_{0}\xrightarrow{f_{1}}\cdots\xrightarrow{f_{n}}c_{n}$、すなわち関手 $n+1\to\mathbf{C}$（順序数 $n+1$ を圏とみる）で、単調写像 $\alpha\colon m+1\to n+1$ は関手との合成で $N\mathbf{C}(\alpha)\colon N_{n}\mathbf{C}\to N_{m}\mathbf{C}$ を与える。
+- 単体的集合の射は自然変換、その同型を $\cong$ と書く。
+:::
+
+::: definition 頂点・辺・背骨 {#cat:simplex-edges keywords="vertices and edges of a simplex, spine, Segal map" index="単体の辺|たんたいのへん, 背骨（単体）|せぼねたんたい, セガール写像|せがーるしゃぞう"}
+単体的集合 $X$ と $x\in X_{n}$ について、
+1. $0\le i\le n$ について、$\varepsilon_{i}\colon1\to n+1$（$0\mapsto i$）による $x_{i}\defeq X(\varepsilon_{i})x\in X_{0}$ を $x$ の**頂点**という。
+2. $0\le i<j\le n$ について、$\varepsilon_{ij}\colon2\to n+1$（$0\mapsto i$, $1\mapsto j$）による $x_{ij}\defeq X(\varepsilon_{ij})x\in X_{1}$ を $x$ の**辺**という。
+3. $X_{1}$ の元 $e$ について $\mathrm{src}(e)\defeq e_{0}$, $\mathrm{tgt}(e)\defeq e_{1}$（$\mathrm{src}=d_{1}$, $\mathrm{tgt}=d_{0}$）、$a\in X_{0}$ について $\mathrm{id}_{a}\defeq s_{0}(a)\in X_{1}$ とする。
+4. **セガール写像**を、$n\ge2$ について
+$$
+\gamma_{n}\colon X_{n}\to X_{1}\times_{X_{0}}\cdots\times_{X_{0}}X_{1},\qquad x\mapsto(x_{01},x_{12},\dots,x_{n-1,n})
+$$
+とする（右辺は $\mathrm{tgt}(e_{k})=\mathrm{src}(e_{k+1})$ を満たす列 $(e_{1},\dots,e_{n})$ の集合で、**背骨**の集合という）。$(x_{k-1,k})_{1}=x_{k}=(x_{k,k+1})_{0}$ なので値は確かに背骨。
+:::
+
+::: lemma 辺の変換 {#cat:edges-functorial keywords="edges of X(alpha)x are edges of x or identities" index="辺の変換|へんのへんかん"}
+単調写像 $\alpha\colon m+1\to n+1$、$x\in X_{n}$、$y\defeq X(\alpha)x$ について、$y_{i}=x_{\alpha(i)}$、$i<j$ について
+$$
+y_{ij}=\begin{cases}x_{\alpha(i)\alpha(j)}&(\alpha(i)<\alpha(j)),\\\mathrm{id}_{x_{\alpha(i)}}&(\alpha(i)=\alpha(j)).\end{cases}
+$$
+:::
+
+::: proof
+$y_{ij}=X(\varepsilon_{ij})X(\alpha)x=X(\alpha\varepsilon_{ij})x$。$\alpha(i)<\alpha(j)$ なら $\alpha\varepsilon_{ij}=\varepsilon_{\alpha(i)\alpha(j)}$。$\alpha(i)=\alpha(j)=k$ なら $\alpha\varepsilon_{ij}$ は定値写像で、$2\xrightarrow{\sigma}1\xrightarrow{\varepsilon_{k}}n+1$（$\sigma$ はただ一つの射）と分解するので、$X(\alpha\varepsilon_{ij})x=X(\sigma)X(\varepsilon_{k})x=s_{0}(x_{k})=\mathrm{id}_{x_{k}}$。頂点も同様。
+:::
+
+## セガール条件 {#cat:sec-sg-condition}
+
+::: definition セガール条件 {#cat:segal-condition keywords="Segal condition: the Segal maps are bijective" index="セガール条件|せがーるじょうけん"}
+単体的集合 $X$ が**セガール条件**を満たすとは、すべての $n\ge2$ でセガール写像 $\gamma_{n}$ が全単射であることをいう。
+:::
+
+::: proposition 神経はセガール条件を満たす {#cat:nerve-segal keywords="the nerve of a category satisfies the Segal condition" index="神経とセガール条件|しんけいとせがーるじょうけん"}
+小さい圏 $\mathbf{C}$ の神経 $N\mathbf{C}$ はセガール条件を満たす。
+:::
+
+::: proof
+$N_{n}\mathbf{C}$ の元 $c_{0}\xrightarrow{f_{1}}\cdots\xrightarrow{f_{n}}c_{n}$ の辺 $x_{k-1,k}$ は、関手 $n+1\to\mathbf{C}$ を $\varepsilon_{k-1,k}$ と合成したもの、すなわち射 $f_{k}$ である。$N_{1}\mathbf{C}$ は射全体、$N_{0}\mathbf{C}$ は対象全体で、$\mathrm{src}$, $\mathrm{tgt}$ は始域・終域なので、$\gamma_{n}$ は列 $(f_{1},\dots,f_{n})$ をそれ自身に送る恒等写像である。
+:::
+
+## 圏の復元 {#cat:sec-sg-reconstruction}
+
+以下、$X$ はセガール条件を満たすとする。合成可能な $f,g\in X_{1}$（$\mathrm{tgt}(f)=\mathrm{src}(g)$）について、$\gamma_{2}$ の全単射性から $u_{01}=f$, $u_{12}=g$ となる $u\in X_{2}$ がただ一つあり、$g\circ f\defeq u_{02}$ とおく。
+
+::: lemma 辺は合成で結ばれる {#cat:edges-compose keywords="for a simplex x of a Segal simplicial set, x_ik = x_jk o x_ij" index="辺の合成|へんのごうせい"}
+$x\in X_{n}$ と $i<j<k$ について、$x_{ik}=x_{jk}\circ x_{ij}$。
+:::
+
+::: proof
+$\alpha\colon3\to n+1$ を $(0,1,2)\mapsto(i,j,k)$ とし、$y\defeq X(\alpha)x\in X_{2}$ とする。\ref{cat:edges-functorial} から $y_{01}=x_{ij}$, $y_{12}=x_{jk}$, $y_{02}=x_{ik}$。$\gamma_{2}$ の**単射性**から $y$ は合成を定める $2$ 単体そのものなので、$x_{jk}\circ x_{ij}=y_{02}=x_{ik}$。
+:::
+
+::: theorem 神経の特徴づけ {#cat:nerve-characterization keywords="a simplicial set is isomorphic to the nerve of a small category iff it satisfies the Segal condition" index="神経の特徴づけ|しんけいのとくちょうづけ"}
+単体的集合 $X$ について、ある小さい圏 $\mathbf{C}$ で $X\cong N\mathbf{C}$ となることと、$X$ がセガール条件を満たすことは同値である。このとき $\mathbf{C}$ は、対象 $X_{0}$、射 $X_{1}$（始域 $\mathrm{src}$、終域 $\mathrm{tgt}$）、恒等射 $\mathrm{id}_{a}$、上の合成 $\circ$ でとれる。
+:::
+
+::: proof
+**⇒.** \ref{cat:nerve-segal} と、セガール条件が単体的集合の同型で保たれること（同型はセガール写像と可換）から。
+
+**⇐.** **Step 1（$\mathbf{C}$ は圏）.**
+- *始域・終域*：$g\circ f$ の定義の $u$ について、$\mathrm{src}(u_{02})=u_{0}=\mathrm{src}(u_{01})$, $\mathrm{tgt}(u_{02})=u_{2}=\mathrm{tgt}(u_{12})$（\ref{cat:edges-functorial} の頂点の式）。
+- *単位律*：$f\in X_{1}$ について、$\sigma_{0}\colon3\to2$（$(0,1,2)\mapsto(0,0,1)$）による $v\defeq X(\sigma_{0})f$ は、\ref{cat:edges-functorial} から $v_{01}=\mathrm{id}_{f_{0}}$, $v_{12}=f$, $v_{02}=f$。$\gamma_{2}$ の単射性から $v$ が合成を定める $2$ 単体で、$f\circ\mathrm{id}_{\mathrm{src}(f)}=f$。$\sigma_{1}$（$(0,1,2)\mapsto(0,1,1)$）で同様に $\mathrm{id}_{\mathrm{tgt}(f)}\circ f=f$。
+- *結合律*：合成可能な $f,g,h$ について、$\gamma_{3}$ の**全射性**から $w_{01}=f$, $w_{12}=g$, $w_{23}=h$ となる $w\in X_{3}$ がある。\ref{cat:edges-compose} を繰り返し使うと、$w_{02}=g\circ f$, $w_{13}=h\circ g$ で、
+$$
+h\circ(g\circ f)=w_{23}\circ w_{02}=w_{03}=w_{13}\circ w_{01}=(h\circ g)\circ f.
+$$
+
+**Step 2（同型 $\varphi\colon X\to N\mathbf{C}$）.** $\varphi_{n}(x)\defeq(x_{01},\dots,x_{n-1,n})$（$n\ge1$）、$\varphi_{0}\defeq$ 恒等写像とする。これは $\mathbf{C}$ の合成可能な列で、$n\ge2$ ではセガール写像そのものなので全単射、$n=0,1$ でも恒等写像で全単射。
+
+**Step 3（自然性）.** 単調写像 $\alpha\colon m+1\to n+1$ と $x\in X_{n}$ について $\varphi_{m}(X(\alpha)x)=N\mathbf{C}(\alpha)(\varphi_{n}x)$ を示す。\ref{cat:edges-compose} を繰り返し使うと、$a<b$ について $x_{ab}=x_{b-1,b}\circ\cdots\circ x_{a,a+1}$。一方、列 $\varphi_{n}(x)$ を関手 $n+1\to\mathbf{C}$ とみると、射 $a\to b$ の像はちょうどこの合成で、$a=b$ なら恒等射。左辺の第 $i$ 成分は \ref{cat:edges-functorial} から $x_{\alpha(i-1)\alpha(i)}$ または $\mathrm{id}$、右辺の第 $i$ 成分は関手を $\alpha$ と合成したものの射 $i-1\to i$ の像で、同じものである。
+
+よって $\varphi$ は単体的集合の同型で、$X\cong N\mathbf{C}$。
+:::
+
+::: hypcheck
+- **$\gamma_{2}$ の全射性**：合成の定義（合成可能な組に $2$ 単体があること）に使った。
+- **$\gamma_{2}$ の単射性**：合成の一意性と、\ref{cat:edges-compose}（任意の $2$ 単体が合成を表すこと）、単位律に使った。
+- **$\gamma_{3}$ の全射性**：結合律で、三つの射を辺にもつ $3$ 単体の存在に使った。
+- **$n\ge3$ の全単射性**：Step 2 で $\varphi_{n}$ が全単射であることに使った。結合律だけなら $n=3$ の全射性で足りる。
+:::
+
+::: corollary 神経関手の本質的な像 {#cat:nerve-essential-image keywords="the nerve functor is an equivalence between Cat and the full subcategory of simplicial sets satisfying the Segal condition" index="神経関手の本質的な像|しんけいかんしゅのほんしつてきなぞう"}
+神経関手は、小さい圏の圏 $\mathbf{Cat}$ から、セガール条件を満たす単体的集合の充満部分圏への圏同値である。
+:::
+
+::: proof
+充満忠実性は \ref{cat:nerve-fully-faithful}、本質的に全射であることは \ref{cat:nerve-characterization}。充満忠実で本質的に全射な関手は圏同値である（\ref{cat:equivalence-characterization}）。
+:::
+
+## 問題 {#cat:sec-sg-problems}
+
+::: problem {#cat:prob-sg-hollow}
+順序集合 $0<1<2$ を圏 $\mathbf{P}$ とみる。神経 $N\mathbf{P}$ の $n$ 単体は単調写像 $n+1\to3$ である。像が $\{0,1,2\}$ 全体でない単体だけを集めた $X\subseteq N\mathbf{P}$（「中身のない三角形」）は単体的集合であり、セガール条件を満たさないことを示せ。
+:::
+
+::: solution
+単調写像 $\alpha$ と合成すると像は小さくなるので、$X$ は各 $X(\alpha)$ で閉じ、単体的集合である。$X_{1}$ は $N_{1}\mathbf{P}$ 全体（像は高々 $2$ 点）で、$0\to1$ と $1\to2$ は背骨をなす。それを辺 $x_{01}$, $x_{12}$ にもつ $2$ 単体は $N\mathbf{P}$ では恒等写像 $3\to3$ だけで、その像は $\{0,1,2\}$ 全体なので $X_{2}$ に属さない。よって $\gamma_{2}$ は全射でない。
+:::
+
+::: problem {#cat:prob-sg-singular}
+$\R$ の特異単体的集合 $S(\R)$（\ref{cat:simplicial-object} の例 1）は、$\gamma_{2}$ が単射でないのでセガール条件を満たさないことを示せ。
+:::
+
+::: solution
+$\sigma\equiv0$ と $\sigma'(t_{0},t_{1},t_{2})\defeq t_{0}t_{1}t_{2}$ はどちらも連続写像 $\Delta^{2}\to\R$ で、各辺（ある $t_{i}=0$ の面）の上で $0$ なので、$\gamma_{2}(\sigma)=\gamma_{2}(\sigma')$（どちらの辺も定値写像 $0$）。しかし重心で $\sigma'=1/27\ne0$ なので $\sigma\ne\sigma'$。
+:::
+
+::: supplement
+**前提を変えると.** セガール写像の全単射性を、単体的空間（各 $X_{n}$ が位相空間や単体的集合）での「弱ホモトピー同値」に弱めると**セガール空間**になり、これは $(\infty,1)$ 圏のモデルの一つの出発点であることが知られている。別の弱め方として、「内側の角」への写像の全射性（一意性を外したもの）を要求すると**準圏**（ボードマン–フォークトの弱カン複体）になり、神経はちょうど「内側の角の充填が一意」な準圏であることが知られている（ここでは扱わない）。
+
+**似た定理.** 前層と離散ファイブレーションの対応（\ref{cat:dfib-presheaf}）が「関手を総空間に広げる」構成なのと同様に、神経は「圏を単体の積み重ねに広げる」構成で、セガール条件はその像の特徴づけである。内部圏の神経（\ref{cat:page-internal-categories}）でも、反復引き戻しへの写像が同型であることで同じ特徴づけが成り立つ。
+
+**高い視点から：背骨が全体を決める.** 圏の神経の $n$ 単体は、$n$ 本の射をつないだ「背骨」だけで決まり、残りの辺（$x_{ik}$）や高次の面は合成によって自動的に埋まる。セガール条件はこの「背骨で決まる」という性質そのもので、$2$ 単体の一意性が合成を、$3$ 単体の存在が結合律を与える。比喩で言えば、鉄道網の駅（頂点）と隣駅への線路（背骨の辺）が決まれば、乗り継ぎ（合成）で行けるすべての経路が一通りに決まる、というのが「圏であること」である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

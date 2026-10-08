@@ -617,6 +617,20 @@
       "num": "2.3",
       "page": "18-category-theory/18A-general-theory/05-higher-structures/02-2-categories.html"
     },
+    "cat:edges-compose": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "辺は合成で結ばれる",
+      "num": "5.5",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/05-segal-condition.html"
+    },
+    "cat:edges-functorial": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "辺の変換",
+      "num": "5.2",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/05-segal-condition.html"
+    },
     "cat:eilenberg-moore-adjunction": {
       "status": "defined",
       "type": "theorem",
@@ -1324,12 +1338,33 @@
       "num": "3.11",
       "page": "18-category-theory/18A-general-theory/01-basics/03-constructions.html"
     },
+    "cat:nerve-characterization": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "神経の特徴づけ",
+      "num": "5.6",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/05-segal-condition.html"
+    },
+    "cat:nerve-essential-image": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "神経関手の本質的な像",
+      "num": "5.7",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/05-segal-condition.html"
+    },
     "cat:nerve-fully-faithful": {
       "status": "defined",
       "type": "theorem",
       "title": "神経関手は充満忠実",
       "num": "1.6",
       "page": "18-category-theory/18A-general-theory/05-higher-structures/01-internal-categories.html"
+    },
+    "cat:nerve-segal": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "神経はセガール条件を満たす",
+      "num": "5.4",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/05-segal-condition.html"
     },
     "cat:not-cartesian-closed": {
       "status": "defined",
@@ -1568,6 +1603,13 @@
       "title": "各点カン拡張と稠密性",
       "num": "",
       "page": "18-category-theory/18A-general-theory/04-kan-extensions/04-pointwise-kan.html"
+    },
+    "cat:page-segal-condition": {
+      "status": "defined",
+      "type": "page",
+      "title": "神経の特徴づけとセガール条件",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/05-segal-condition.html"
     },
     "cat:page-simplicial": {
       "status": "defined",
@@ -2079,6 +2121,20 @@
       "title": "",
       "num": "7.16",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/07-symmetric-coherence.html"
+    },
+    "cat:prob-sg-hollow": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "5.8",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/05-segal-condition.html"
+    },
+    "cat:prob-sg-singular": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "5.9",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/05-segal-condition.html"
     },
     "cat:prob-skeletons-isomorphic": {
       "status": "defined",
@@ -3368,6 +3424,34 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/07-symmetric-coherence.html"
     },
+    "cat:sec-sg-condition": {
+      "status": "defined",
+      "type": "section",
+      "title": "セガール条件",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/05-segal-condition.html"
+    },
+    "cat:sec-sg-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/05-segal-condition.html"
+    },
+    "cat:sec-sg-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/05-segal-condition.html"
+    },
+    "cat:sec-sg-reconstruction": {
+      "status": "defined",
+      "type": "section",
+      "title": "圏の復元",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/05-segal-condition.html"
+    },
     "cat:sec-sx-delta": {
       "status": "defined",
       "type": "section",
@@ -3480,12 +3564,26 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/01-basics/05-yoneda.html"
     },
+    "cat:segal-condition": {
+      "status": "defined",
+      "type": "definition",
+      "title": "セガール条件",
+      "num": "5.3",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/05-segal-condition.html"
+    },
     "cat:set-complete": {
       "status": "defined",
       "type": "theorem",
       "title": "Set は完備かつ余完備",
       "num": "6.8",
       "page": "18-category-theory/18A-general-theory/01-basics/06-limits.html"
+    },
+    "cat:simplex-edges": {
+      "status": "defined",
+      "type": "definition",
+      "title": "頂点・辺・背骨",
+      "num": "5.1",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/05-segal-condition.html"
     },
     "cat:simplicial-category": {
       "status": "defined",

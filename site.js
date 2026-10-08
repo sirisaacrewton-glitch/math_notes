@@ -70,7 +70,8 @@
       '<header class="mn-topbar">' +
         '<button type="button" class="mn-iconbtn mn-nav-toggle" aria-controls="mn-drawer" aria-expanded="false" title="分類メニュー">' +
           '<span class="mn-burger" aria-hidden="true"><span></span><span></span><span></span></span><span class="mn-vh">分類メニュー</span></button>' +
-        '<a class="mn-brand" href="' + ROOT + 'index.html">' + esc(C.SITE_TITLE) + '</a>' +
+        '<a class="mn-brand" href="' + ROOT + 'index.html"><img class="mn-brand-icon" src="' + ROOT + 'assets/favicon.svg" alt="" width="28" height="28">' +
+          '<span class="mn-brand-text">' + esc(C.SITE_TITLE) + '</span></a>' +
         '<button type="button" class="mn-search-trigger" aria-label="検索">' +
           '<span class="mn-search-trigger-icon"><svg class="mn-ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg></span><span class="mn-search-trigger-text">定理・用語・数式を検索</span><kbd>/</kbd></button>' +
         '<button type="button" class="mn-iconbtn mn-theme-toggle" title="ライト/ダーク切替" aria-label="ライト/ダーク切替">' +

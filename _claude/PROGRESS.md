@@ -63,6 +63,7 @@
 | I-01〜13 | 01-basics/01〜13 | 基礎事項 | 第 I 章 | 459– | 完了 |
 | II-01〜13 | 02-infinitary-combinatorics/01〜13 | 無限組合せ論 | 第 II 章 | 2508– | 完了 |
 | II-14 | 02-infinitary-combinatorics/14-partition-relations | 分割関係・無限ラムゼー・シェルピンスキーの彩色・エルデシュ–ラドー（資料なし） | — | — | 完了 |
+| II-15 | 02-infinitary-combinatorics/15-luzin-sets | ルジンの集合（CH で存在、MA(ℵ₁) で非存在、独立性）（資料なし） | — | — | 完了 |
 | III-01〜06 | 03-well-founded-sets/01〜06 | 整礎集合 | 第 III 章 | 4642– | 完了 |
 | IV-01 | 04-consistency-proofs/01-relativization.html | 素朴な無矛盾性証明と相対化 | IV §1–2 | 5359–5677 | 完了 |
 | IV-02 | 04-consistency-proofs/02-absoluteness.html | 絶対性 | IV §3 | 5678–5960 | 完了 |
@@ -341,6 +342,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 集合論 II-15（03E/02/15-luzin-sets, set:page-luzin-sets：ルジンの集合の定義と基本性質、CH のもとでの構成（疎な閉集合を ω₁ で並べて避ける）、MA(ℵ₁) のもとでの非存在、独立性、稠密なルジンの集合と閉包の問題）。05-ma-reals の補足から参照。資料なし。
 - 2026-10-08 一般位相 TE-07（54E/01/07-nowhere-differentiable, top:page-nowhere-differentiable：E_n（一点でのリプシッツ評価）、微分可能なら E_n に属する、E_n は閉、折れ線近似と鋸歯で E_n は疎、バナッハの定理（至るところ微分不可能な関数は剰余集合）、単調関数と E_1 の問題）。02-baire の導入から参照。資料なし。
 - 2026-10-08 証明論 SQ-07（03F/01-sequent-calculus/07-herbrand, pt:page-herbrand：全称論理式と開代入例、カットのない導出からのエルブランの補題、エルブランの定理（前件が全称論理式の場合）、エルブラン選言（∃ の形）、P(x)→P(f(x)) の二つの例と後件に量化子がある例の問題）。03-cut-elimination から参照。資料なし。
 - 2026-10-08 ホモロジー代数 HD-08（18G/02-derived-functors/08-projective-dimension, ha:page-projective-dimension：シャヌエルの補題（引き戻しの分裂）、第一変数の次元ずらし Ext^{n+1}(M,N)≅Ext¹(K_n,N)、射影次元の特徴づけ（任意の分解のシジジー）、Z 加群の射影次元 ≤1 と自由アーベル群の部分群の射影性、Z/4 上の Z/2 と Z/6 の表示の問題）。資料なし。

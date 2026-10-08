@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ルジンの集合 | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/15-luzin-sets.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ルジンの集合 {#set:page-luzin-sets keywords="Luzin set, uncountable set of reals meeting every meager set in a countable set, construction under CH, nonexistence under Martin's axiom, independence"}
+
+実数の非可算集合 $L$ で、どの第一類集合（疎集合の可算和）とも可算個の点でしか交わらないものを**ルジンの集合**という（\ref{set:luzin-set}）。ルジンの集合は「位相的にきわめて散らばった」非可算集合で、第一類でない（\ref{set:luzin-basic}）。本ページでは、CH のもとでルジンの集合が存在すること（\ref{set:luzin-ch}）と、$\mathrm{MA}(\aleph_{1})$ のもとでは存在しないこと（\ref{set:luzin-ma}）を示す。CH と $\mathrm{MA}+\neg\mathrm{CH}$ はどちらも ZFC と無矛盾なので、ルジンの集合の存在は ZFC から独立である。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。
+
+## 記法と定義の確認 {#set:sec-lz-notation}
+
+::: notation
+- 疎集合・第一類集合とその基本性質（第一類集合の可算和は第一類）、ベールのカテゴリー定理（$\R$ は第一類でない）は \ref{top:first-category}, \ref{top:meager-basic}, \ref{top:baire-category} のとおり。疎集合の閉包は疎な閉集合。
+- CH は \ref{set:ch}。$\mathrm{MA}(\kappa)$ のもとで $\kappa$ 個の第一類集合の和は第一類（\ref{set:ma-baire}）。$\omega_{1}$ の正則性（可算個の可算順序数の上限は可算、\ref{set:successor-regular}）。
+- $\R$ の閉集合は、補集合が有理数端点の開区間の和で決まるので、高々 $2^{\aleph_{0}}$ 個である。
+:::
+
+::: definition ルジンの集合 {#set:luzin-set keywords="Luzin set" index="ルジンの集合|るじんのしゅうごう"}
+$L\subseteq\R$ が**ルジンの集合**であるとは、$L$ が非可算で、すべての第一類集合 $M$ について $L\cap M$ が可算であることをいう。
+:::
+
+::: lemma ルジンの集合の基本性質 {#set:luzin-basic keywords="Luzin sets are not meager; uncountable subsets of Luzin sets are Luzin; it suffices to test closed nowhere dense sets" index="ルジンの集合の基本性質|るじんのしゅうごうのきほんせいしつ"}
+1. 非可算な $L$ がルジンの集合であることと、すべての疎な閉集合 $F$ について $L\cap F$ が可算であることは同値である。
+2. ルジンの集合は第一類でない。
+3. ルジンの集合の非可算部分集合はルジンの集合である。
+:::
+
+::: proof
+**1.** ⇒ は疎な閉集合が第一類なことから。⇐：第一類集合 $M\subseteq\bigcup_{n}N_{n}$（$N_{n}$ 疎）について $L\cap M\subseteq\bigcup_{n}(L\cap\overline{N_{n}})$ は可算個の可算集合の和で可算（可算選択公理）。
+
+**2.** $L$ が第一類なら $L\cap L=L$ は可算になり、非可算性に反する。
+
+**3.** $L'\subseteq L$ なら $L'\cap M\subseteq L\cap M$。
+:::
+
+## CH のもとでの存在 {#set:sec-lz-ch}
+
+::: theorem CH のもとでのルジンの集合 {#set:luzin-ch keywords="CH implies there is a Luzin set" index="ルジンの集合の存在（CH）|るじんのしゅうごうのそんざいしーえいち"}
+（CH）ルジンの集合が存在する。
+:::
+
+::: proof
+疎な閉集合は高々 $2^{\aleph_{0}}=\aleph_{1}$ 個なので、$(F_{\alpha})_{\alpha<\omega_{1}}$ と並べる（重複を許す）。$x_{\alpha}$（$\alpha<\omega_{1}$）を帰納的に、
+$$
+x_{\alpha}\notin\bigcup_{\beta<\alpha}F_{\beta}\cup\{x_{\beta}:\beta<\alpha\}
+$$
+となるように選ぶ。右辺は可算個の疎集合と可算集合（第一類）の和で第一類なので、ベールのカテゴリー定理から $\R$ 全体ではなく、$x_{\alpha}$ は選べる（選択公理）。$L\defeq\{x_{\alpha}:\alpha<\omega_{1}\}$ は相異なる点からなり非可算。疎な閉集合 $F=F_{\beta}$ について、$\alpha>\beta$ なら $x_{\alpha}\notin F_{\beta}$ なので、$L\cap F\subseteq\{x_{\alpha}:\alpha\le\beta\}$ は可算。\ref{set:luzin-basic} の 1 から $L$ はルジンの集合。
+:::
+
+::: hypcheck
+- **CH**：疎な閉集合を $\omega_{1}$ で並べ、各段で避けるべき集合を可算個にするのに使った。$2^{\aleph_{0}}>\aleph_{1}$ では、段 $\alpha$ で避ける集合が非可算個の疎集合の和になり、第一類とは限らない。
+- **ベールのカテゴリー定理**：各段で点が残ることに使った。
+:::
+
+## MA のもとでの非存在 {#set:sec-lz-ma}
+
+::: theorem MA のもとでのルジンの集合の非存在 {#set:luzin-ma keywords="MA(aleph_1) implies there is no Luzin set" index="ルジンの集合の非存在（MA）|るじんのしゅうごうのひそんざいえむえー"}
+$\mathrm{MA}(\aleph_{1})$ のもとで、ルジンの集合は存在しない。
+:::
+
+::: proof
+ルジンの集合 $L$ があるとし、濃度 $\aleph_{1}$ の部分集合 $L'\subseteq L$ をとる。$L'$ は $\aleph_{1}$ 個の一点集合（疎集合）の和なので、\ref{set:ma-baire}（$\kappa=\aleph_{1}$）から第一類。すると $L\cap L'=L'$ は可算でなければならないが、$L'$ は非可算で矛盾。
+:::
+
+::: corollary ルジンの集合の存在の独立性 {#set:luzin-independent}
+ZFC が無矛盾なら、「ルジンの集合が存在する」は ZFC で証明も反証もできない。
+:::
+
+::: proof
+ZFC が無矛盾なら、$\mathrm{ZFC}+\mathrm{CH}$（$\mathbf{L}$ で成り立つ、\ref{set:page-ac-gch-in-l}）と $\mathrm{ZFC}+\mathrm{MA}+\neg\mathrm{CH}$（\ref{set:page-ma-consistency}）はどちらも無矛盾で、前者ではルジンの集合が存在し（\ref{set:luzin-ch}）、後者では存在しない（$\neg\mathrm{CH}$ のもとで MA は $\mathrm{MA}(\aleph_{1})$ を含む。\ref{set:luzin-ma}）。
+:::
+
+## 問題 {#set:sec-lz-problems}
+
+::: problem {#set:prob-lz-dense}
+CH のもとで、すべての空でない開区間と非可算個の点で交わるルジンの集合が存在することを示せ。
+:::
+
+::: solution
+有理数端点の開区間を $(I_{k})_{k<\omega}$ と並べ、$\omega_{1}$ の各元を $\omega\cdot\gamma+k$（$\gamma<\omega_{1}$, $k<\omega$）と一意に書く。\ref{set:luzin-ch} の構成で、段 $\alpha=\omega\cdot\gamma+k$ の $x_{\alpha}$ を $I_{k}$ の中から選ぶ。$I_{k}$ は開集合なので第一類でなく（ベールの定理を $I_{k}$ に使う、または $\R$ の第一類でない開集合として）、避ける第一類集合の外に $I_{k}$ の点が残る。各 $I_{k}$ は $\omega_{1}$ 個の段で選ばれるので、$L\cap I_{k}$ は非可算。
+:::
+
+::: problem {#set:prob-lz-closure}
+ルジンの集合 $L$ の閉包 $\overline{L}$ は内部をもつ（疎でない）ことを示せ。
+:::
+
+::: solution
+$\overline{L}$ が疎なら、$L\subseteq\overline{L}$ は疎集合に含まれるので第一類で、\ref{set:luzin-basic} の 2 に反する。
+:::
+
+::: supplement
+**前提を変えると.** 「第一類」を「ルベーグ測度 $0$」に替えたものが**シェルピンスキーの集合**で、CH のもとで存在し、$\mathrm{MA}(\aleph_{1})$ のもとで存在しないことが同じ議論で示せる（\ref{set:ma-measure} を使う）。ルジンの集合は測度 $0$ であり、シェルピンスキーの集合は第一類であることが知られている（$\R$ が第一類集合と測度 $0$ の集合の和に分解できることから従う。ここでは扱わない）。
+
+**似た定理.** ルジンの集合の構成は、「各段で避けるべきものが可算個しかない」ことを CH で保証する超限帰納法の典型で、ダイヤモンド原理（\ref{set:page-diamond}）による構成やススリン木の構成と同じ型である。
+
+**高い視点から：位相的には小さく、濃度では大きい.** ルジンの集合は非可算なのに、どの「位相的に小さい集合」（第一類集合）とも可算にしか重ならない。比喩で言えば、どんな網（疎な集合の可算個の和）を投げても可算匹しかかからない魚の群れで、群れ全体は非可算いる。CH のもとでは網の種類が $\aleph_{1}$ 通りしかないので、網を一つずつ避けて魚を置いていけるが、MA のもとでは $\aleph_{1}$ 匹の魚の群れは一つの網（第一類集合）でまとめて捕まえられてしまう。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

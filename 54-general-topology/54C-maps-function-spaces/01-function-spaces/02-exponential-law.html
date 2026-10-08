@@ -119,6 +119,16 @@ $$
 Step 1 では、$C_{c}(X,Y)$ の開集合 $O$ を準開基の形に限らずに扱った。$M(C',-)$ は有限共通部分とは可換（$M(C',O_{1}\cap O_{2})=M(C',O_{1})\cap M(C',O_{2})$）だが和集合とは可換でないので、「$O$ が準開基 $M(C,U)$ の場合だけ示せばよい」と言うには、$Z$ のコンパクト集合 $C'$ を、像が一つの基本開集合に収まる有限個のコンパクト集合に分ける補題（$C'$ がハウスドルフなら Step 1 と同じ議論で成り立つ）が必要になる。ここではその補題を経由せず、直接示した。
 :::
 
+::: proposition 有理数上の評価写像 {#top:evaluation-q-discontinuous keywords="the evaluation map C_c(Q,R) x Q -> R is not continuous" index="有理数上の評価写像|ゆうりすうじょうのひょうかしゃぞう"}
+評価写像 $C_{c}(\mathbb{Q},\R)\times\mathbb{Q}\to\R$, $(f,x)\mapsto f(x)$ は、$(0,0)$（$0$ は定数関数）で連続でない。
+:::
+
+::: proof
+**Step 1（$\mathbb{Q}$ のコンパクト集合は内部をもたない）.** コンパクトな $K\subseteq\mathbb{Q}$ が、ある $a<b$ について $(a,b)\cap\mathbb{Q}$ を含むとする。無理数 $a<a'<b'<b$ をとると、$[a',b']\cap\mathbb{Q}$ は $\mathbb{Q}$ の閉集合で $K$ に含まれるのでコンパクト。しかし、$(a',b')$ の無理数 $c$ に（$\R$ で）収束する $[a',b']\cap\mathbb{Q}$ の点列は、$\mathbb{Q}$ の中に収束先をもたず、部分列も収束しないので矛盾（コンパクト距離空間は点列コンパクト、\ref{top:compact-metric-equivalents}）。
+
+**Step 2.** 連続だとすると、$0$ の近傍で $B_{K}(0,\varepsilon)$（$K$ コンパクト、\ref{top:compact-open-uniform-on-compacta}）を含むものと、$0\in\mathbb{Q}$ の近傍 $V$ で、$f\in B_{K}(0,\varepsilon)$, $x\in V$ なら $\lvert f(x)\rvert<1$ となるものがある。Step 1 から $V\not\subseteq K$ なので $x\in V\setminus K$ がとれる。$K$ は閉で $\mathbb{Q}$ は距離空間なので、連続関数 $f\colon\mathbb{Q}\to[0,1]$ で $f(x)=1$, $f|_{K}=0$ となるものがある（たとえば $f(y)\defeq\max(0,1-\lvert y-x\rvert/d(x,K))$）。$f\in B_{K}(0,\varepsilon)$, $x\in V$ だが $\lvert f(x)\rvert=1$ で矛盾。
+:::
+
 ## 問題 {#top:sec-ex-problems}
 
 ::: problem {#top:prob-ex-composition}
@@ -138,7 +148,7 @@ $[0,1]$ はコンパクトハウスドルフなので局所コンパクトハウ
 :::
 
 ::: supplement
-**前提を変えると.** $X$ が局所コンパクトでないと評価写像は一般に連続でなく（たとえば $X=\mathbb{Q}$ のとき、$C_{c}(\mathbb{Q},\R)\times\mathbb{Q}\to\R$ は連続でないことが知られている。ここでは確かめていない）、指数法則も成り立たない。この不都合を避けるため、位相空間の圏をコンパクト生成ハウスドルフ空間に制限し、積と関数空間の位相を「ケリー化」すると、局所コンパクト性の仮定なしに指数法則が成り立つ（\ref{cat:cghaus-ccc}）。
+**前提を変えると.** $X$ が局所コンパクトでないと評価写像は一般に連続でなく（たとえば $X=\mathbb{Q}$ のとき、$C_{c}(\mathbb{Q},\R)\times\mathbb{Q}\to\R$ は連続でない。\ref{top:evaluation-q-discontinuous}）、指数法則も成り立たない。この不都合を避けるため、位相空間の圏をコンパクト生成ハウスドルフ空間に制限し、積と関数空間の位相を「ケリー化」すると、局所コンパクト性の仮定なしに指数法則が成り立つ（\ref{cat:cghaus-ccc}）。
 
 **似た定理.** \ref{top:evaluation-finer-than-compact-open} の逆側として、「$\Phi(f)$ をつねに連続にする位相」はコンパクト開位相より弱い位相である（\ref{top:exponential-continuous} はコンパクト開位相がそのような位相であることを示す）。両方を満たす位相が存在するのは、ちょうど $X$ が（ハウスドルフの場合）局所コンパクトのときであることが知られている（Arens–Dugundji の理論とされる。ここでは扱わない）。
 

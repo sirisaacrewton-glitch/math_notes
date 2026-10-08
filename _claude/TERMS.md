@@ -371,3 +371,4 @@
 | exponential map / evaluation map / exponential law | 指数写像 / 評価写像 / 指数法則 | カリー化 | 指数写像は小山の用語。top:page-exponential-law |
 | equicontinuous / uniformly equicontinuous / relatively compact / Ascoli–Arzelà theorem | 同等連続 / 一様同等連続 / 相対コンパクト / アスコリ–アルツェラの定理 | | 標準的。top:page-ascoli |
 | hyperspace / Hausdorff metric / Vietoris topology | 超空間 / ハウスドルフ距離 / ヴィートリス位相 | | 標準的。top:page-hyperspaces |
+| iterated function system / attractor / self-similar set / Hutchinson operator | 反復関数系 / アトラクター / 自己相似集合 / ハッチンソンの定理 | | 標準的。top:page-fractals |

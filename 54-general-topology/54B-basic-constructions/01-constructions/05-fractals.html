@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>縮小写像とフラクタル集合 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54B-basic-constructions/01-constructions/05-fractals.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 縮小写像とフラクタル集合 {#top:page-fractals keywords="induced map on hyperspace, union map, Hutchinson operator, iterated function system, attractor, self-similar set, Cantor set, Sierpinski triangle, contraction"}
+
+前ページの超空間 $\mathcal{K}(X)$（\ref{top:page-hyperspaces}）では、連続写像 $f\colon X\to Y$ が「像をとる写像」$f_{\ast}\colon\mathcal{K}(X)\to\mathcal{K}(Y)$ を誘導し（\ref{top:induced-map}）、和集合をとる操作も連続である（\ref{top:union-map}）。これらを組み合わせると、縮小写像の有限族 $f_{1},\dots,f_{m}$ から作った $A\mapsto f_{1}(A)\cup\dots\cup f_{m}(A)$ が $\mathcal{K}(X)$ の縮小写像になり、バナッハの不動点定理（\ref{top:banach-fixed-point}）から、$A=f_{1}(A)\cup\dots\cup f_{m}(A)$ を満たす空でないコンパクト集合がただ一つ存在する（**ハッチンソンの定理**、\ref{top:hutchinson}）。カントール集合やシェルピンスキーの三角形は、こうして得られる自己相似集合（フラクタル集合）の例である。
+
+> 資料：小山晃『位相空間論』第 11 章 §11.2, §11.4 を参考にした（本文は写していない）。
+
+## 記法と定義の確認 {#top:sec-fr-notation}
+
+::: notation
+- 超空間 $(\mathcal{K}(X),d_{H})$、ハウスドルフ距離の表示 $d_{H}(A,B)=\max(\max_{a}d(a,B),\max_{b}d(b,A))$、完備性、ヴィートリス位相 $\langle U\rangle$, $[U]$ との一致は \ref{top:hausdorff-metric}, \ref{top:hausdorff-metric-formula}, \ref{top:hyperspace-complete}, \ref{top:vietoris-equals-hausdorff} のとおり。
+- 写像 $f\colon(X,d)\to(Y,e)$ が**リプシッツ定数 $c$** をもつとは、$e(f(x),f(x'))\le c\,d(x,x')$ がすべての $x,x'$ で成り立つことをいう。$X=Y$ で $c<1$ のとき**縮小写像**という（\ref{top:banach-fixed-point}）。
+:::
+
+## 像写像と和集合写像 {#top:sec-fr-maps}
+
+::: proposition 誘導される写像 {#top:induced-map keywords="map induced on hyperspaces by a continuous map" index="誘導される写像（超空間）|ゆうどうされるしゃぞうちょうくうかん"}
+連続写像 $f\colon X\to Y$ について、$f_{\ast}(A)\defeq f(A)$ は写像 $f_{\ast}\colon\mathcal{K}(X)\to\mathcal{K}(Y)$ を定め、ヴィートリス位相について連続である。$X,Y$ が距離空間で $f$ がリプシッツ定数 $c$ をもてば、$f_{\ast}$ も $d_{H}$ についてリプシッツ定数 $c$ をもつ。
+:::
+
+::: proof
+コンパクト集合の連続像は空でないコンパクト集合（\ref{top:compact-basic}）。連続性：$Y$ の開集合 $U$ について
+$$
+\begin{aligned}
+f_{\ast}^{-1}\langle U\rangle&=\{A:f(A)\subseteq U\}=\langle f^{-1}(U)\rangle,\\
+f_{\ast}^{-1}[U]&=\{A:f(A)\cap U\neq\varnothing\}=[f^{-1}(U)]
+\end{aligned}
+$$
+で、右辺はヴィートリス位相の準開基。リプシッツ性：$a\in A$ について $d(a,b)=d(a,B)$ となる $b\in B$ をとると $e(f(a),f(B))\le e(f(a),f(b))\le c\,d(a,B)\le c\,d_{H}(A,B)$。$B$ の側も同様で、表示から $d_{H}(f(A),f(B))\le c\,d_{H}(A,B)$。
+:::
+
+::: proposition 和集合写像 {#top:union-map keywords="union map on hyperspaces is continuous, Lipschitz" index="和集合写像|わしゅうごうしゃぞう"}
+距離空間 $X$ について次が成り立つ。
+1. 有限個の和 $\mathcal{K}(X)^{m}\to\mathcal{K}(X)$, $(A_{1},\dots,A_{m})\mapsto A_{1}\cup\dots\cup A_{m}$ について
+$$
+d_{H}\Bigl(\bigcup_{i}A_{i},\bigcup_{i}B_{i}\Bigr)\le\max_{i}d_{H}(A_{i},B_{i}).
+$$
+2. $\mathcal{K}(X)$ のコンパクト集合 $\mathcal{A}$（すなわち $\mathcal{A}\in\mathcal{K}(\mathcal{K}(X))$）について $\bigcup\mathcal{A}\defeq\bigcup_{A\in\mathcal{A}}A$ はコンパクトで、$\bigcup\colon\mathcal{K}(\mathcal{K}(X))\to\mathcal{K}(X)$ はリプシッツ定数 $1$ をもつ。
+:::
+
+::: proof
+**1.** $a\in A_{i}$ なら $d(a,\bigcup_{j}B_{j})\le d(a,B_{i})\le d_{H}(A_{i},B_{i})$。逆側も同様。
+
+**2.** *コンパクト性.* $\bigcup\mathcal{A}$ の開被覆 $\{O_{\lambda}\}$ をとる。各 $A\in\mathcal{A}$ は有限個の $O_{\lambda}$ で覆われ、その和を $O_{A}$ とすると $A\in\langle O_{A}\rangle$。$\langle O_{A}\rangle$ はヴィートリス位相、したがって $d_{H}$ の位相で開（\ref{top:vietoris-equals-hausdorff}）なので、$\mathcal{A}$ のコンパクト性から有限個の $\langle O_{A_{1}}\rangle,\dots,\langle O_{A_{k}}\rangle$ が $\mathcal{A}$ を覆う。すると $\bigcup\mathcal{A}\subseteq O_{A_{1}}\cup\dots\cup O_{A_{k}}$ で、これは有限個の $O_{\lambda}$ の和。
+
+*リプシッツ性.* $\mathcal{A},\mathcal{B}\in\mathcal{K}(\mathcal{K}(X))$ と $x\in A\in\mathcal{A}$ をとる。$\mathcal{K}(X)$ の点 $A$ と $\mathcal{B}$ の距離は達成されるので、$B\in\mathcal{B}$ で $d_{H}(A,B)\le(d_{H})_{H}(\mathcal{A},\mathcal{B})$ となるものがある。$d(x,\bigcup\mathcal{B})\le d(x,B)\le d_{H}(A,B)$。逆側も同様。
+:::
+
+## ハッチンソンの定理 {#top:sec-fr-hutchinson}
+
+::: theorem ハッチンソンの定理 {#top:hutchinson keywords="Hutchinson theorem: an iterated function system of contractions has a unique nonempty compact attractor" index="ハッチンソンの定理|はっちんそんのていり, 反復関数系|はんぷくかんすうけい, アトラクター|あとらくたー"}
+$(X,d)$ を空でない完備距離空間、$f_{1},\dots,f_{m}\colon X\to X$（$m\ge1$）をリプシッツ定数 $c_{i}<1$ の縮小写像とし、
+$$
+F(A)\defeq f_{1}(A)\cup\dots\cup f_{m}(A)\qquad(A\in\mathcal{K}(X))
+$$
+とする。このとき $F$ は $\mathcal{K}(X)$ のリプシッツ定数 $c\defeq\max_{i}c_{i}$ の縮小写像で、$F(A^{\ast})=A^{\ast}$ を満たす $A^{\ast}\in\mathcal{K}(X)$ がただ一つある。任意の $A_{0}\in\mathcal{K}(X)$ から $A_{n+1}\defeq F(A_{n})$ で作った列は $A^{\ast}$ に収束し、$d_{H}(A_{n},A^{\ast})\le\frac{c^{n}}{1-c}d_{H}(A_{0},A_{1})$。
+:::
+
+::: proof
+\ref{top:induced-map} と \ref{top:union-map} の 1 から
+$$
+\begin{aligned}
+d_{H}(F(A),F(B))&\le\max_{i}d_{H}(f_{i}(A),f_{i}(B))\\
+&\le\max_{i}c_{i}\,d_{H}(A,B)=c\,d_{H}(A,B).
+\end{aligned}
+$$
+$\mathcal{K}(X)$ は空でなく（一点集合）、完備（\ref{top:hyperspace-complete}）なので、バナッハの不動点定理（\ref{top:banach-fixed-point}）から結論が従う。評価式は、$d_{H}(A_{n},A_{n+p})\le\sum_{k=n}^{n+p-1}c^{k}d_{H}(A_{0},A_{1})\le\frac{c^{n}}{1-c}d_{H}(A_{0},A_{1})$ で $p\to\infty$ とすればよい（$d_{H}$ の連続性）。
+:::
+
+::: hypcheck
+- **$X$ の完備性**：$\mathcal{K}(X)$ の完備性を通じて、不動点の存在に使った。
+- **縮小性 $c_{i}<1$**：$F$ の縮小性に使った。一つでも $c_{i}\ge1$ なら結論は成り立たないことがある（$f(x)=x+1$ では $F(A)=A$ となるコンパクト集合はない）。
+- **有限個**：\ref{top:union-map} の 1 で最大値をとるのに使った。可算個の縮小写像では、リプシッツ定数の上限が $1$ 未満でも、和集合が閉でなくなりうるので、閉包をとる修正が要る（ここでは扱わない）。
+:::
+
+::: definition アトラクター {#top:attractor keywords="attractor of an iterated function system, self-similar set" index="アトラクター（反復関数系の）|あとらくたーはんぷくかんすうけいの, 自己相似集合|じこそうじしゅうごう"}
+\ref{top:hutchinson} の $A^{\ast}$ を、縮小写像の族 $(f_{1},\dots,f_{m})$（**反復関数系**）の**アトラクター**という。各 $f_{i}$ が相似写像（$d(f_{i}(x),f_{i}(y))=c_{i}d(x,y)$）のとき、$A^{\ast}$ を**自己相似集合**という。
+:::
+
+::: example
+1. **カントール集合.** $X=\R$, $f_{1}(x)=x/3$, $f_{2}(x)=x/3+2/3$ とし、$C_{0}\defeq[0,1]$, $C_{n+1}\defeq F(C_{n})$ とすると、$C_{n}$ は $[0,1]$ から中央の $1/3$ を取り除く操作を $n$ 回行ったもの（$2^{n}$ 個の長さ $3^{-n}$ の閉区間の和）で、$C_{1}\subseteq C_{0}$ から帰納的に $C_{n+1}\subseteq C_{n}$。\ref{top:hutchinson} から $C_{n}$ はアトラクターに収束し、\ref{top:hyperspace-complete} の極限の表示と減少性から、アトラクターは $\bigcap_{n}C_{n}$、すなわちカントール集合である。
+2. **シェルピンスキーの三角形.** $X=\R^{2}$、正三角形の頂点 $p_{1},p_{2},p_{3}$ について $f_{i}(x)\defeq(x+p_{i})/2$ とすると、アトラクターは、三角形から中央の（中点を結んだ）三角形の内部を取り除く操作を繰り返した極限である（1 と同じく、閉じた三角形 $T$ について $F(T)\subseteq T$ なので $\bigcap_{n}F^{n}(T)$）。
+3. **線分.** $X=\R$, $f_{1}(x)=x/2$, $f_{2}(x)=x/2+1/2$ のアトラクターは $[0,1]$（$[0,1]=[0,1/2]\cup[1/2,1]$ と一意性）。自己相似集合がいつも「フラクタル」らしいわけではない。
+:::
+
+## 問題 {#top:sec-fr-problems}
+
+::: problem {#top:prob-fr-fixed-points}
+\ref{top:hutchinson} の状況で、各 $f_{i}$ の不動点 $p_{i}$ はアトラクター $A^{\ast}$ に属することを示せ。
+:::
+
+::: solution
+$f_{i}(A^{\ast})\subseteq F(A^{\ast})=A^{\ast}$ なので、$a\in A^{\ast}$ について $f_{i}^{n}(a)\in A^{\ast}$。バナッハの不動点定理から $f_{i}^{n}(a)\to p_{i}$ で、$A^{\ast}$ は閉なので $p_{i}\in A^{\ast}$。
+:::
+
+::: problem {#top:prob-fr-decreasing}
+$K\in\mathcal{K}(X)$ が $F(K)\subseteq K$ を満たせば、$A^{\ast}=\bigcap_{n}F^{n}(K)$ であることを示せ。
+:::
+
+::: solution
+$F$ は包含を保つ（$A\subseteq B\Rightarrow F(A)\subseteq F(B)$）ので、$F(K)\subseteq K$ から帰納的に $F^{n+1}(K)\subseteq F^{n}(K)$。\ref{top:hutchinson} から $F^{n}(K)\to A^{\ast}$ で、\ref{top:hyperspace-complete} の極限の表示は減少列では $\bigcap_{n}\overline{\bigcup_{k\ge n}F^{k}(K)}=\bigcap_{n}F^{n}(K)$（$F^{n}(K)$ はコンパクトなので閉）。極限の一意性から $A^{\ast}=\bigcap_{n}F^{n}(K)$。
+:::
+
+::: supplement
+**前提を変えると.** 縮小写像の代わりに単なる連続写像の族では、$F(A)=A$ を満たすコンパクト集合は一般に一意でない（恒等写像なら任意の $A$）。$X$ がコンパクトなら、$F(X)\subseteq X$ から $\bigcap_{n}F^{n}(X)$ は $F$ の不変集合になるが、一意性はない。
+
+**似た定理.** 相似写像による自己相似集合では、相似比 $c_{i}$ について $\sum_{i}c_{i}^{s}=1$ を満たす $s$ を**相似次元**という（カントール集合では $2\cdot3^{-s}=1$ から $s=\log2/\log3$）。各 $f_{i}(A^{\ast})$ が「ほとんど重ならない」（開集合条件）とき、相似次元はアトラクターのハウスドルフ次元に等しいことが知られている（ハッチンソン 1981、モランによる。ここでは証明しない。ハウスドルフ次元は測度論の概念で、本サイトの範囲外）。
+
+**高い視点から：フラクタルは「形の空間」の不動点.** 一点の位置を決める方程式 $x=f(x)$ の解がバナッハの不動点定理で得られるように、形を決める方程式 $A=f_{1}(A)\cup\dots\cup f_{m}(A)$ の解が、超空間の中の不動点として得られる。比喩で言えば、「全体は、それ自身の縮小コピー $m$ 枚を貼り合わせたもの」という設計図だけで形がただ一つに決まる、ということで、コピー機で縮小コピーを貼り合わせる操作を繰り返すと、最初に置いた紙の絵柄によらず同じ図形に近づいていく。圏論的には、$\mathcal{K}$ は（像をとる操作と和集合で）モナド的な構造をもち、$F$ はその上の「代数の作用」として読める。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

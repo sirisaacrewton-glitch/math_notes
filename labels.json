@@ -25390,6 +25390,20 @@
       "num": "4.14",
       "page": "03-mathematical-logic/03E-set-theory/07-forcing/04-finite-partial-functions.html"
     },
+    "set:erdos-rado": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "エルデシュ–ラドーの定理",
+      "num": "14.5",
+      "page": "03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/14-partition-relations.html"
+    },
+    "set:erdos-rado-countable": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "可算の場合の最良性",
+      "num": "14.6",
+      "page": "03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/14-partition-relations.html"
+    },
     "set:eventual-domination": {
       "status": "defined",
       "type": "definition",
@@ -26082,6 +26096,13 @@
       "title": "",
       "num": "9.5",
       "page": "03-mathematical-logic/03E-set-theory/01-basics/09-cardinal-arithmetic.html"
+    },
+    "set:infinite-ramsey": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "無限ラムゼーの定理",
+      "num": "14.2",
+      "page": "03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/14-partition-relations.html"
     },
     "set:infinity-in-transitive": {
       "status": "defined",
@@ -27693,6 +27714,13 @@
       "num": "",
       "page": "03-mathematical-logic/03E-set-theory/01-basics/04-ordinals.html"
     },
+    "set:page-partition-relations": {
+      "status": "defined",
+      "type": "page",
+      "title": "分割関係とエルデシュ–ラドーの定理",
+      "num": "",
+      "page": "03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/14-partition-relations.html"
+    },
     "set:page-products": {
       "status": "defined",
       "type": "page",
@@ -27790,6 +27818,13 @@
       "title": "対と和",
       "num": "1.11",
       "page": "03-mathematical-logic/03E-set-theory/04-consistency-proofs/01-relativization.html"
+    },
+    "set:partition-relation": {
+      "status": "defined",
+      "type": "definition",
+      "title": "分割関係",
+      "num": "14.1",
+      "page": "03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/14-partition-relations.html"
     },
     "set:path-characterization": {
       "status": "defined",
@@ -28330,6 +28365,20 @@
       "num": "2.17",
       "page": "03-mathematical-logic/03E-set-theory/04-consistency-proofs/02-absoluteness.html"
     },
+    "set:prob-pr-monotone": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "14.7",
+      "page": "03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/14-partition-relations.html"
+    },
+    "set:prob-pr-omega1": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "14.8",
+      "page": "03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/14-partition-relations.html"
+    },
     "set:prob-product-not-generic": {
       "status": "defined",
       "type": "problem",
@@ -28518,6 +28567,13 @@
       "title": "順序数のランク",
       "num": "1.7",
       "page": "03-mathematical-logic/03E-set-theory/03-well-founded-sets/01-cumulative-hierarchy.html"
+    },
+    "set:reals-no-omega1-sequence": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "実数の中の整列した部分集合",
+      "num": "14.3",
+      "page": "03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/14-partition-relations.html"
     },
     "set:reals-order-characterization": {
       "status": "defined",
@@ -30479,6 +30535,41 @@
       "num": "",
       "page": "03-mathematical-logic/03E-set-theory/01-basics/02-extensionality-comprehension.html"
     },
+    "set:sec-pr-erdos-rado": {
+      "status": "defined",
+      "type": "section",
+      "title": "エルデシュ–ラドーの定理",
+      "num": "",
+      "page": "03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/14-partition-relations.html"
+    },
+    "set:sec-pr-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/14-partition-relations.html"
+    },
+    "set:sec-pr-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/14-partition-relations.html"
+    },
+    "set:sec-pr-ramsey": {
+      "status": "defined",
+      "type": "section",
+      "title": "可算の場合：ラムゼーの定理",
+      "num": "",
+      "page": "03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/14-partition-relations.html"
+    },
+    "set:sec-pr-sierpinski": {
+      "status": "defined",
+      "type": "section",
+      "title": "非可算での失敗：シェルピンスキーの彩色",
+      "num": "",
+      "page": "03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/14-partition-relations.html"
+    },
     "set:sec-preservation-above-below": {
       "status": "defined",
       "type": "section",
@@ -31101,6 +31192,13 @@
       "title": "短い列は有界",
       "num": "10.1",
       "page": "03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/10-club-filter.html"
+    },
+    "set:sierpinski-coloring": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "シェルピンスキーの彩色",
+      "num": "14.4",
+      "page": "03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/14-partition-relations.html"
     },
     "set:silver": {
       "status": "defined",

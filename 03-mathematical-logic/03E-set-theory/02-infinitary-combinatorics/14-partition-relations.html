@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>分割関係とエルデシュ–ラドーの定理 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/14-partition-relations.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 分割関係とエルデシュ–ラドーの定理 {#set:page-partition-relations keywords="partition relation, arrow notation, homogeneous set, infinite Ramsey theorem, Sierpinski coloring, Erdos-Rado theorem, end-homogeneous set, weakly compact cardinal"}
+
+集合の $n$ 元部分集合に色を塗ったとき、すべての $n$ 元部分集合が同じ色になる大きな部分集合（**等質集合**）はあるか。これを記号 $\kappa\to(\lambda)^{n}_{m}$（\ref{set:partition-relation}）で表す。本ページでは、可算の場合の**ラムゼーの定理** $\omega\to(\omega)^{n}_{k}$（\ref{set:infinite-ramsey}）、非可算では素朴な類似が成り立たないことを示す**シェルピンスキーの彩色** $2^{\aleph_{0}}\not\to(\aleph_{1})^{2}_{2}$（\ref{set:sierpinski-coloring}）、そしてその代わりに成り立つ**エルデシュ–ラドーの定理** $(2^{\kappa})^{+}\to(\kappa^{+})^{2}_{\kappa}$（\ref{set:erdos-rado}）を示す。最後の二つを合わせると、エルデシュ–ラドーの定理は $\kappa=\aleph_{0}$ で最良である。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。ZFC で考える。
+
+## 記法と定義の確認 {#set:sec-pr-notation}
+
+::: notation
+- 集合 $X$ と自然数 $n$ について $[X]^{n}\defeq\{s\subseteq X:\lvert s\rvert=n\}$。順序数の集合の元 $s\in[X]^{n}$ は小さい順に $\{x_{1}<\cdots<x_{n}\}$ と書く。
+- 基数の算術・冪・指数法則・$\kappa^{\lambda}=2^{\lambda}$（$2\le\kappa\le2^{\lambda}$）・後続基数の正則性は \ref{set:cardinal-absorption}, \ref{set:exponent-laws}, \ref{set:kappa-le-two-lambda}, \ref{set:successor-regular} のとおり。
+- 鳩の巣の形の事実：正則な基数 $\mu$ を $\mu$ より小さい個数の集合に分けると、そのどれかは濃度 $\mu$ である（\ref{set:cf-union} の言い換え）。
+:::
+
+::: definition 分割関係 {#set:partition-relation keywords="coloring, homogeneous set, arrow notation kappa -> (lambda)^n_m" index="分割関係|ぶんかつかんけい, 等質集合（彩色）|とうしつしゅうごうさいしょく, 矢印記号|やじるしきごう"}
+基数 $\kappa,\lambda$、自然数 $n\ge1$、基数 $m\ge1$ について、
+1. 写像 $f\colon[X]^{n}\to m$ を $X$ の（$n$ 元部分集合の $m$ 色による）**彩色**という。$H\subseteq X$ が $f$ について**等質**であるとは、$f$ が $[H]^{n}$ の上で定数であることをいう。
+2. $\kappa\to(\lambda)^{n}_{m}$ とは、濃度 $\kappa$ の任意の集合 $X$ と任意の彩色 $f\colon[X]^{n}\to m$ について、濃度 $\lambda$ の等質集合があることをいう。成り立たないことを $\kappa\not\to(\lambda)^{n}_{m}$ と書く。
+:::
+
+## 可算の場合：ラムゼーの定理 {#set:sec-pr-ramsey}
+
+::: theorem 無限ラムゼーの定理 {#set:infinite-ramsey keywords="omega -> (omega)^n_k" index="ラムゼーの定理（無限）|らむぜーのていりむげん"}
+すべての自然数 $n,k\ge1$ について $\omega\to(\omega)^{n}_{k}$。
+:::
+
+::: proof
+$n$ に関する帰納法で、「$\omega$ の任意の無限部分集合 $B$ と彩色 $f\colon[B]^{n}\to k$ について無限の等質集合がある」ことを示す。
+
+**$n=1$.** $B$ を $k$ 個の集合 $f^{-1}(i)$ に分けると、どれかは無限（有限個の有限集合の和は有限）。
+
+**$n\to n+1$.** $f\colon[B]^{n+1}\to k$ をとる。無限集合 $B_{0}\supseteq B_{1}\supseteq\cdots$、元 $a_{0}<a_{1}<\cdots$、色 $c_{0},c_{1},\ldots$ を帰納的に作る。$B_{0}\defeq B$ とし、$B_{i}$ が与えられたら、$a_{i}\defeq\min B_{i}$ とし、彩色
+$$
+f_{i}\colon[B_{i}\setminus\{a_{i}\}]^{n}\to k,\qquad f_{i}(s)\defeq f(\{a_{i}\}\cup s)
+$$
+に帰納法の仮定を使って、無限の等質集合 $B_{i+1}\subseteq B_{i}\setminus\{a_{i}\}$ とその色 $c_{i}$ をとる（選択には従属選択公理を使う）。
+
+*端等質性.* $i<j_{1}<\cdots<j_{n}$ なら $a_{j_{1}},\dots,a_{j_{n}}\in B_{i+1}$ なので、$f(\{a_{i},a_{j_{1}},\dots,a_{j_{n}}\})=f_{i}(\{a_{j_{1}},\dots,a_{j_{n}}\})=c_{i}$。すなわち、最小元が $a_{i}$ である $(n+1)$ 元集合の色は $c_{i}$ だけで決まる。
+
+*仕上げ.* $n=1$ の場合を $i\mapsto c_{i}$ に使って、$c_{i}=c$ となる $i$ の無限集合 $I$ をとる。$H\defeq\{a_{i}:i\in I\}$ の $(n+1)$ 元部分集合は、最小元を $a_{i}$（$i\in I$）とすると色 $c_{i}=c$ をもつ。$a_{i}$ は狭義単調増加なので $H$ は無限。
+:::
+
+## 非可算での失敗：シェルピンスキーの彩色 {#set:sec-pr-sierpinski}
+
+::: lemma 実数の中の整列した部分集合 {#set:reals-no-omega1-sequence keywords="there is no strictly increasing or decreasing omega_1-sequence of reals" index="実数の単調な ω₁ 列|じっすうのたんちょうなおめがわんれつ"}
+$\R$ の通常の順序 $<$ について、狭義単調増加な列 $(x_{\alpha})_{\alpha<\omega_{1}}$ も、狭義単調減少な列もない。
+:::
+
+::: proof
+増加列があるとする。各 $\alpha<\omega_{1}$ について有理数 $q_{\alpha}\in(x_{\alpha},x_{\alpha+1})$ を選ぶ。$\alpha<\beta$ なら $x_{\alpha+1}\le x_{\beta}$ なので区間は交わらず、$\alpha\mapsto q_{\alpha}$ は $\omega_{1}$ から $\mathbb{Q}$ への単射。$\mathbb{Q}$ は可算なので矛盾。減少列も同様。
+:::
+
+::: theorem シェルピンスキーの彩色 {#set:sierpinski-coloring keywords="2^aleph_0 does not arrow (aleph_1)^2_2" index="シェルピンスキーの彩色|しぇるぴんすきーのさいしょく"}
+$2^{\aleph_{0}}\not\to(\aleph_{1})^{2}_{2}$。
+:::
+
+::: proof
+$\lvert\R\rvert=2^{\aleph_{0}}$ なので $X=\R$ で示す。$\R$ の整列順序 $\prec$ をとる（選択公理）。$x<y$ について、$f(\{x,y\})\defeq0$（$x\prec y$）、$1$（$y\prec x$）とする（$<$ と $\prec$ が一致するか逆か）。
+
+濃度 $\aleph_{1}$ の等質集合 $H$ があるとする。$(H,\prec)$ は濃度 $\aleph_{1}$ の整列集合なので、順序型 $\omega_{1}$ の始切片をもち、その元を $\prec$ の順に $(x_{\alpha})_{\alpha<\omega_{1}}$ と並べる。色が $0$ なら、$\alpha<\beta$ で $x_{\alpha}\prec x_{\beta}$ から $x_{\alpha}<x_{\beta}$ で、狭義増加な $\omega_{1}$ 列。色が $1$ なら狭義減少な $\omega_{1}$ 列。どちらも \ref{set:reals-no-omega1-sequence} に反する。
+:::
+
+## エルデシュ–ラドーの定理 {#set:sec-pr-erdos-rado}
+
+::: theorem エルデシュ–ラドーの定理 {#set:erdos-rado keywords="Erdos-Rado theorem (2^kappa)^+ -> (kappa^+)^2_kappa" index="エルデシュ–ラドーの定理|えるでしゅらどーのていり"}
+無限基数 $\kappa$ について $(2^{\kappa})^{+}\to(\kappa^{+})^{2}_{\kappa}$。
+:::
+
+::: proof
+$\lambda\defeq(2^{\kappa})^{+}$ とし、$f\colon[\lambda]^{2}\to\kappa$ をとる。$C\subseteq\lambda$ と $g\colon C\to\kappa$ について、$y\in\lambda\setminus C$ が **$g$ を実現する**とは、すべての $c\in C$ で $f(\{y,c\})=g(c)$ となることをいう。
+
+**Step 1（閉じた集合 $A$）.** 集合 $A_{\xi}\subseteq\lambda$（$\xi<\kappa^{+}$）を、$\lvert A_{\xi}\rvert\le2^{\kappa}$ で増加するように作る。$A_{0}\defeq\emptyset$、極限では和集合。$A_{\xi+1}$ は、$A_{\xi}$ に、次のすべての組 $(C,g)$ について $g$ を実現する元を（あれば）一つずつ加えたものとする：$C\subseteq A_{\xi}$, $\lvert C\rvert\le\kappa$, $g\colon C\to\kappa$。組の個数は、$C$ の選び方が $\lvert A_{\xi}\rvert^{\kappa}\le(2^{\kappa})^{\kappa}=2^{\kappa}$ 以下（\ref{set:exponent-laws} と $\kappa\cdot\kappa=\kappa$）、$g$ の選び方が $\kappa^{\kappa}=2^{\kappa}$（\ref{set:kappa-le-two-lambda}）なので、$\lvert A_{\xi+1}\rvert\le2^{\kappa}$。$A\defeq\bigcup_{\xi<\kappa^{+}}A_{\xi}$ は $\lvert A\rvert\le\kappa^{+}\cdot2^{\kappa}=2^{\kappa}<\lambda$。
+
+**Step 2（$A$ の性質）.** $C\subseteq A$, $\lvert C\rvert\le\kappa$ なら、**$\kappa^{+}$ の正則性**から $C\subseteq A_{\xi}$ となる $\xi<\kappa^{+}$ がある。したがって、$g\colon C\to\kappa$ を実現する元が $\lambda$ のどこかにあれば、$A_{\xi+1}\subseteq A$ の中にもある。
+
+**Step 3（端等質な列）.** $\lvert A\rvert<\lambda$ なので $y\in\lambda\setminus A$ をとる。$x_{\eta}\in A$（$\eta<\kappa^{+}$）を帰納的に選ぶ：$C_{\eta}\defeq\{x_{\zeta}:\zeta<\eta\}$（$\lvert C_{\eta}\rvert\le\kappa$）と $g_{\eta}(c)\defeq f(\{y,c\})$ について、$y\notin C_{\eta}$ は $g_{\eta}$ を実現するので、Step 2 から $g_{\eta}$ を実現する $x_{\eta}\in A\setminus C_{\eta}$ がとれる。すると $\zeta<\eta$ について
+$$
+f(\{x_{\zeta},x_{\eta}\})=g_{\eta}(x_{\zeta})=f(\{y,x_{\zeta}\})\eqqcolon h(\zeta)
+$$
+で、二元集合 $\{x_{\zeta},x_{\eta}\}$（$\zeta<\eta$）の色は**添字の小さい方 $\zeta$ だけ**で決まる。$x_{\eta}$ は相異なる。
+
+**Step 4（仕上げ）.** $h\colon\kappa^{+}\to\kappa$ について、$\kappa^{+}$ は正則で $\kappa<\kappa^{+}$ なので、ある色 $c$ で $Z\defeq h^{-1}(c)$ の濃度が $\kappa^{+}$（$\kappa$ 個の濃度 $\le\kappa$ の集合の和は濃度 $\le\kappa$）。$H\defeq\{x_{\zeta}:\zeta\in Z\}$ は濃度 $\kappa^{+}$ で、$\zeta<\eta$（ともに $Z$ の元）について $f(\{x_{\zeta},x_{\eta}\})=h(\zeta)=c$。よって $H$ は等質。
+:::
+
+::: hypcheck
+- **$\lambda>2^{\kappa}$**：Step 3 で $A$ の外に $y$ をとるのに使った。$\lambda=2^{\kappa}$ では成り立たないことがある（$\kappa=\aleph_{0}$ でシェルピンスキーの彩色）。
+- **$\kappa^{+}$ の正則性**：Step 2 で濃度 $\le\kappa$ の集合が一つの $A_{\xi}$ に入ること、Step 4 で一つの色が $\kappa^{+}$ 回現れることに使った。
+- **$(2^{\kappa})^{\kappa}=2^{\kappa}$ と $\kappa^{\kappa}=2^{\kappa}$**：Step 1 で $A$ が小さいままであることに使った。
+- **選択公理**：$A_{\xi+1}$ を作るときの元の選択、$x_{\eta}$ の選択、基数の算術に使った。
+:::
+
+::: corollary 可算の場合の最良性 {#set:erdos-rado-countable}
+$(2^{\aleph_{0}})^{+}\to(\aleph_{1})^{2}_{\aleph_{0}}$ であり、$2^{\aleph_{0}}\not\to(\aleph_{1})^{2}_{2}$ なので、$(2^{\aleph_{0}})^{+}$ は $\to(\aleph_{1})^{2}_{2}$ を満たす最小の基数である。
+:::
+
+::: proof
+前半は $\kappa=\aleph_{0}$ の \ref{set:erdos-rado}。$\aleph_{0}$ 色で成り立てば $2$ 色でも成り立つ（$2$ 色の彩色は $\aleph_{0}$ 色の彩色）。$\mu\le2^{\aleph_{0}}$ なら、$\R$ の濃度 $\mu$ の部分集合にシェルピンスキーの彩色を制限すれば $\mu\not\to(\aleph_{1})^{2}_{2}$（$\mu<\aleph_{1}$ なら自明）。
+:::
+
+## 問題 {#set:sec-pr-problems}
+
+::: problem {#set:prob-pr-monotone}
+無限の線形順序 $(L,<)$ は、$\omega$ と同型な部分集合か、$\omega$ の逆順と同型な部分集合を含むことを、$\omega\to(\omega)^{2}_{2}$ から導け。
+:::
+
+::: solution
+$L$ の可算無限部分集合を $\{l_{0},l_{1},\ldots\}$（相異なる）と並べ、$i<j$ について $f(\{i,j\})\defeq0$（$l_{i}<l_{j}$）、$1$（$l_{j}<l_{i}$）とする。無限の等質集合 $H\subseteq\omega$ をとると、色 $0$ なら $\{l_{i}:i\in H\}$ は添字の順に増加して $\omega$ と同型、色 $1$ なら逆順と同型。
+:::
+
+::: problem {#set:prob-pr-omega1}
+$\aleph_{1}\not\to(\aleph_{1})^{2}_{2}$ を示せ。
+:::
+
+::: solution
+$\aleph_{1}\le2^{\aleph_{0}}$（\ref{set:cantor}）なので、$\R$ の濃度 $\aleph_{1}$ の部分集合 $X$ をとり、シェルピンスキーの彩色（\ref{set:sierpinski-coloring}）を $[X]^{2}$ に制限する。濃度 $\aleph_{1}$ の等質集合があれば、それは $\R$ でも等質で、\ref{set:sierpinski-coloring} の証明と同じ矛盾が出る。
+:::
+
+::: supplement
+**前提を変えると.** $n\ge3$ への一般化として、$\beth_{n}^{+}\to(\aleph_{1})^{n+1}_{\aleph_{0}}$（$\beth$ は \ref{set:beth}）が成り立つことが知られている（同じ「端等質化」を繰り返す）。$\kappa\to(\kappa)^{2}_{2}$ を満たす非可算基数を**弱コンパクト基数**といい、その存在は ZFC で証明できない巨大基数の仮定であることが知られている（\ref{set:prob-pr-omega1} は $\kappa=\aleph_{1}$ が弱コンパクトでないことを述べている）。等質集合の大きさを色ごとに変えた $\omega_{1}\to(\omega_{1},\omega)^{2}$（ダシュニク–ミラーの定理）も知られている。
+
+**似た定理.** 有限版のラムゼーの定理は、無限版からケーニッヒの補題またはコンパクト性で導けることが知られている。二階算術では、無限ラムゼーの定理の強さが調べられている（\ref{logic:page-rm-ramsey} を参照）。ラムゼーの定理の証明の「最小元で色が決まる」端等質性の考え方は、エルデシュ–ラドーの定理の Step 3 と同じである。
+
+**高い視点から：大きさで秩序を買う.** 分割関係は「十分大きな集合をどう塗り分けても、塗り分けに抗えない秩序だった部分が残る」という原理である。シェルピンスキーの彩色は、実数の通常の順序と整列順序のずれを色として使い、どんな非可算部分も「ずれの方向」を混ぜてしまうことを示す。比喩で言えば、$2^{\aleph_{0}}$ 人の集まりでは「全員が互いに同じ関係にある $\aleph_{1}$ 人」は見つからないかもしれないが、もう一段大きな $(2^{\aleph_{0}})^{+}$ 人いれば必ず見つかる。その差は「各人が他人との関係の型として取りうるもの」が $2^{\aleph_{0}}$ 通りしかないことから来ている（Step 1 の数え上げ）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

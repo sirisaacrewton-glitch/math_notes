@@ -62,6 +62,7 @@
 |---|---|---|---|---|---|
 | I-01〜13 | 01-basics/01〜13 | 基礎事項 | 第 I 章 | 459– | 完了 |
 | II-01〜13 | 02-infinitary-combinatorics/01〜13 | 無限組合せ論 | 第 II 章 | 2508– | 完了 |
+| II-14 | 02-infinitary-combinatorics/14-partition-relations | 分割関係・無限ラムゼー・シェルピンスキーの彩色・エルデシュ–ラドー（資料なし） | — | — | 完了 |
 | III-01〜06 | 03-well-founded-sets/01〜06 | 整礎集合 | 第 III 章 | 4642– | 完了 |
 | IV-01 | 04-consistency-proofs/01-relativization.html | 素朴な無矛盾性証明と相対化 | IV §1–2 | 5359–5677 | 完了 |
 | IV-02 | 04-consistency-proofs/02-absoluteness.html | 絶対性 | IV §3 | 5678–5960 | 完了 |
@@ -329,6 +330,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 集合論 II-14（03E/02/14-partition-relations, set:page-partition-relations：矢印記号、無限ラムゼーの定理（端等質化）、実数に単調な ω₁ 列はない、シェルピンスキーの彩色 2^ℵ₀↛(ℵ₁)²₂、エルデシュ–ラドーの定理 (2^κ)⁺→(κ⁺)²_κ、可算の場合の最良性、線形順序の単調部分列と ℵ₁↛(ℵ₁)²₂ の問題）。資料なし。
 - 2026-10-08 ホモロジー代数 HD-06（18G/02-derived-functors/06-tensor-tor, ha:page-tensor-tor：平衡写像とテンソル積の普遍性、M⊗R≅M、テンソルと hom の随伴、hom による右完全性の判定、テンソル積の右完全性、Tor（第二変数の射影分解）の基本性質と Z 上の計算、平坦加群（Tor₁ による特徴づけ、Z/n は平坦でない）。03-tor-ext の補足から新ページと HD-05 へ参照を付けた）。資料なし。
 - 2026-10-08 モデル理論 MT-14（03C/03-ultraproducts/03-ax-grothendieck, model:page-ax-grothendieck：主張を文 σ_{n,d} で書く、F_p の代数閉包の有限部分集合は有限部分体に入る、正標数での証明（鳩の巣）、レフシェッツの原理と超積による標数 0 への移行、Q 上の x^3 とフロベニウスの問題）。資料なし。
 - 2026-10-08 一般位相 TF-04（54C/01/04-stone-weierstrass, top:page-stone-weierstrass：√t の多項式近似（明示的な誤差 2/n）、部分代数の閉包は束、二点での補間、ストーン–ワイエルシュトラスの定理（束による証明）、多項式・三角多項式の稠密性、偶多項式と積空間の問題）。独自構成。

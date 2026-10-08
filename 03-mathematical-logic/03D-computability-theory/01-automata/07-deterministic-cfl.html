@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>決定性文脈自由言語 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/01-automata/07-deterministic-cfl.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 決定性文脈自由言語 {#comp:page-dcfl keywords="deterministic pushdown automaton, DPDA, deterministic context-free language, DCFL, looping configuration, closure under complement, non-closure under union and intersection"}
+
+有限オートマトンでは決定性と非決定性が同じ力をもつ（\ref{comp:nfa-dfa-equivalence}）が、プッシュダウンオートマトン（\ref{comp:pda}）では決定性の方が真に弱い。本ページでは決定性プッシュダウンオートマトン（DPDA, \ref{comp:dpda}）を定義し、それが認識する**決定性文脈自由言語**（DCFL）が補集合で閉じていること（\ref{comp:dcfl-complement}）を証明する。文脈自由言語は補集合で閉じていないので、ここから「文脈自由だが決定性でない」言語が得られる（\ref{comp:not-dcfl}）。証明の要は、入力を読まずに永遠に動き続ける**ループ**の扱い（\ref{comp:looping-pair}）である。
+
+> 資料：M. Sipser, *Introduction to the Theory of Computation*, 3rd ed., §2.4 を参考にした（本文は写していない）。ただし DPDA の定義は、スタックの一番上を一つ取り除いて文字列を積む形（Hopcroft–Ullman の流儀。初期スタック記号をもつ）にし、Sipser の定義とは形が異なる。両者が同じ言語のクラスを定めることは知られているが、ここでは確かめていない。ループの扱いは、Sipser では「ループする状況を見つけて付け替える」とだけ述べられているので、スタックの高さの最小値をとる議論（\ref{comp:looping-pair}）で証明を補った。
+
+## 記法と定義の確認 {#comp:sec-dcfl-notation}
+
+::: notation
+- 文脈自由言語、PDA とその時点表示 $(q,x,\gamma)$（状態・残りの入力・スタックの中身。左が一番上）、文脈自由言語の閉包性と正規言語との共通部分、$\{a^{n}b^{n}c^{n}\}$ が文脈自由でないことは \ref{comp:cfg}, \ref{comp:pda}, \ref{comp:cfl-closure}, \ref{comp:cfl-cap-regular}, \ref{comp:ex-anbncn} のとおり。
+- $\Sigma_{\varepsilon}\defeq\Sigma\cup\{\varepsilon\}$。命題 $\varphi$ について $[\varphi]$ は、$\varphi$ が真なら $1$、偽なら $0$。
+:::
+
+## 決定性プッシュダウンオートマトン {#comp:sec-dcfl-dpda}
+
+::: definition 決定性プッシュダウンオートマトン {#comp:dpda keywords="deterministic pushdown automaton, DPDA, initial stack symbol, run of a DPDA, deterministic context-free language" index="決定性プッシュダウンオートマトン|けっていせいぷっしゅだうんおーとまとん, 決定性文脈自由言語|けっていせいぶんみゃくじゆうげんご"}
+**決定性プッシュダウンオートマトン**（DPDA）とは、組 $P=(Q,\Sigma,\Gamma,\delta,q_{0},Z_{0},F)$ で、$Q,\Sigma,\Gamma$ は有限集合、$q_{0}\in Q$、$Z_{0}\in\Gamma$（**初期スタック記号**）、$F\subseteq Q$、
+$$
+\delta\colon Q\times\Sigma_{\varepsilon}\times\Gamma\rightharpoonup Q\times\Gamma^{\ast}
+$$
+は部分関数で、次を満たすものをいう：$\delta(q,\varepsilon,X)$ が定義されていれば、どの $a\in\Sigma$ についても $\delta(q,a,X)$ は定義されていない。
+
+時点表示は $(q,x,\gamma)\in Q\times\Sigma^{\ast}\times\Gamma^{\ast}$。$\delta(q,a,X)=(r,\beta)$（$a\in\Sigma_{\varepsilon}$）のとき $(q,ax,X\gamma)\vdash(r,x,\beta\gamma)$ とする（一番上の $X$ を $\beta$ に置き換える）。スタックが空の時点表示からは動けない。条件から、各時点表示の次の時点表示は高々一つで、時点表示 $C$ から始まる極大な列 $C=C_{0}\vdash C_{1}\vdash\cdots$（有限または無限）がただ一つ定まる。これを $C$ からの**走行**という。
+$$
+L(P)\defeq\{w\in\Sigma^{\ast}:\text{ある }f\in F,\ \gamma\text{ で }(q_{0},w,Z_{0})\vdash^{\ast}(f,\varepsilon,\gamma)\}
+$$
+を $P$ の言語といい、DPDA の言語を**決定性文脈自由言語**（DCFL）という。$w\in L(P)$ は、$(q_{0},w,Z_{0})$ からの走行が、残りの入力が空で状態が $F$ に属する時点表示を通ることと同値である。
+:::
+
+::: lemma スタックの延長 {#comp:dpda-extension keywords="computations of a DPDA extend to longer inputs and deeper stacks" index="DPDA の走行の延長|でぃーぴーでぃーえーのそうこうのえんちょう"}
+$(q,x,\gamma)\vdash^{\ast}(r,y,\gamma')$ なら、任意の $z\in\Sigma^{\ast}$, $\beta\in\Gamma^{\ast}$ について $(q,xz,\gamma\beta)\vdash^{\ast}(r,yz,\gamma'\beta)$。
+:::
+
+::: proof
+一歩の場合に示せば、歩数に関する帰納法で従う。$(q,ax,X\gamma)\vdash(r,x,\beta'\gamma)$ が $\delta(q,a,X)=(r,\beta')$ によるなら、同じ遷移により $(q,axz,X\gamma\beta)\vdash(r,xz,\beta'\gamma\beta)$。遷移が使えるかどうかは、状態・スタックの一番上・（$a\ne\varepsilon$ なら）入力の先頭だけで決まるからである。
+:::
+
+::: proposition 決定性文脈自由言語は文脈自由 {#comp:dcfl-is-cfl keywords="every DCFL is context-free" index="DCFL と文脈自由言語|でぃーしーえふえるとぶんみゃくじゆうげんご"}
+DCFL は文脈自由言語である。
+:::
+
+::: proof
+DPDA $P$ から \ref{comp:pda} の意味の PDA $P'$ を作る。新しい開始状態から、入力を読まずに $Z_{0}$ を積んで $q_{0}$ に移る遷移を置く。$\delta(q,a,X)=(r,Y_{1}\cdots Y_{k})$ の各遷移を、新しい中間状態を経由して「$a$ を読み $X$ を取り除いて $Y_{k}$ を積む（$k=0$ なら何も積まずに $r$ へ）、続けて入力を読まずに $Y_{k-1},\dots,Y_{1}$ を一つずつ積んで $r$ へ」という $k$ 歩（$k=0$ なら $1$ 歩）に分ける。中間状態は遷移ごとに別のものを用意し、受理状態にしない。$P$ の一歩は $P'$ の何歩かにちょうど対応し、中間状態からの動きは一通りしかないので、$P'$ が $F$ の状態と空の残り入力の時点表示に達することと、$P$ がそうすることは同値。よって $L(P')=L(P)$ で、PDA の言語は文脈自由である（\ref{comp:cfg-pda-equivalence}）。
+:::
+
+## ループの扱い {#comp:sec-dcfl-loops}
+
+::: definition ループする組 {#comp:looping-pair keywords="looping pair, endless sequence of epsilon moves, minimum stack height argument" index="ループする組|るーぷするくみ"}
+DPDA $P$ の状態 $q$ とスタック記号 $X$ について、$(q,\varepsilon,X)$ からの走行が無限であるとき、$(q,X)$ を**ループする組**という（入力が空なので、この走行はすべて入力を読まない動きからなる）。
+:::
+
+::: lemma ループの特徴づけ {#comp:loop-characterization keywords="an infinite run of epsilon moves passes through a looping pair" index="ループの特徴づけ|るーぷのとくちょうづけ"}
+時点表示 $C$ からの走行 $(C_{t})_{t\ge0}$ が無限で、ある $t_{0}$ 以降は入力を読まないとする。このとき、ある $t\ge t_{0}$ について、$C_{t}=(q,x,X\gamma)$ の $(q,X)$ はループする組である。逆に、$C=(q,x,X\gamma)$ で $(q,X)$ がループする組なら、$C$ からの走行は無限で入力を読まない。
+:::
+
+::: proof
+**前半.** $C_{t}$ のスタックの長さを $h_{t}$ とする。走行が無限なので $h_{t}\ge1$（空のスタックからは動けない）。$\{h_{t}:t\ge t_{0}\}$ の最小値をとる $t\ge t_{0}$ を一つ選び、$C_{t}=(q,x,X\gamma)$（$\lvert\gamma\rvert=h_{t}-1$）とする。$t'\ge t$ について「$C_{t'}=(q_{t'},x,\alpha_{t'}\gamma)$, $\lvert\alpha_{t'}\rvert\ge1$」を帰納法で示す。$t'=t$ では $\alpha_{t}=X$。$C_{t'}$ から $C_{t'+1}$ への動きは入力を読まず、$\alpha_{t'}$ の一番上だけを置き換えるので、$C_{t'+1}=(q_{t'+1},x,\alpha'\gamma)$ の形で、$h_{t'+1}\ge h_{t}$ より $\lvert\alpha'\rvert\ge1$。さらに、各動き $(q_{t'},x,\alpha_{t'}\gamma)\vdash(q_{t'+1},x,\alpha_{t'+1}\gamma)$ は入力を読まない遷移 $\delta(q_{t'},\varepsilon,\cdot)$ によるので、$(q_{t'},\varepsilon,\alpha_{t'})\vdash(q_{t'+1},\varepsilon,\alpha_{t'+1})$ も成り立つ。よって $(q,\varepsilon,X)$ からの走行は無限で、$(q,X)$ はループする組。
+
+**後半.** $(q,\varepsilon,X)$ からの無限の走行の各歩に \ref{comp:dpda-extension}（$z=x$, $\beta=\gamma$）を適用すると、$C$ からの無限の列が得られ、走行の一意性からこれが $C$ からの走行である。
+:::
+
+::: lemma 入力を最後まで読む DPDA {#comp:dpda-reads-all keywords="every DPDA is equivalent to one that never empties its stack, always reads the whole input, and has no looping pairs" index="DPDA の正規化|でぃーぴーでぃーえーのせいきか"}
+任意の DPDA $P$ に対し、$L(P_{1})=L(P)$ となる DPDA $P_{1}$ で、次を満たすものがある。
+1. $P_{1}$ にはループする組がない。
+2. 開始時点表示からの走行で、スタックは空にならず、残りの入力が空でない時点表示からは必ず動ける。
+
+特に、$P_{1}$ の走行はどの入力についても有限で、入力を最後まで読んで止まる。
+:::
+
+::: proof
+$P=(Q,\Sigma,\Gamma,\delta,q_{0},Z_{0},F)$ とし、新しい状態 $s$（開始）、$a$（受理）、$d$（死に状態）と新しいスタック記号 $\bot$ を用意する。$P_{1}\defeq(Q\cup\{s,a,d\},\Sigma,\Gamma\cup\{\bot\},\delta_{1},s,\bot,F\cup\{a\})$ とし、$\delta_{1}$ を次で定める（$b\in\Sigma$ は任意）。
+1. $\delta_{1}(s,\varepsilon,\bot)=(q_{0},Z_{0}\bot)$。
+2. $q\in Q$, $X\in\Gamma$ で $(q,X)$ がループする組でないとき：$\delta$ で定義されている $\delta(q,\cdot,X)$ はそのまま。さらに $\delta(q,\varepsilon,X)$ が未定義なら、$\delta(q,b,X)$ が未定義の各 $b$ について $\delta_{1}(q,b,X)=(d,X)$。
+3. $(q,X)$ がループする組のとき：$(q,\varepsilon,X)$ からの走行が $F$ の状態を通るなら $\delta_{1}(q,\varepsilon,X)=(a,X)$、通らないなら $\delta_{1}(q,\varepsilon,X)=(d,X)$。読む遷移は置かない。
+4. $q\in Q$ について $\delta_{1}(q,b,\bot)=(d,\bot)$。
+5. $Y\in\Gamma\cup\{\bot\}$ について $\delta_{1}(a,b,Y)=\delta_{1}(d,b,Y)=(d,Y)$。
+
+各（状態, 一番上の記号）について、読まない遷移と読む遷移の一方しかないので、$P_{1}$ は DPDA である。
+
+**Step 1（2 の性質）.** $\bot$ は 1 で一番下に置かれ、それを一番上にもつ遷移（1, 4, 5）はどれも $\bot$ を残す。他の遷移は $\Gamma$ の記号を置き換えるだけなので、スタックは空にならない。残りの入力が空でないとき、各（状態, 一番上）について遷移があることは 1〜5 から確かめられる（2 で読む遷移を補ったのはこのため）。
+
+**Step 2（ループする組がない）.** $P_{1}$ でループする組 $(p,Y)$ があったとし、$(p,\varepsilon,Y)$ からの無限の走行をとる。$a,d$ には読まない遷移がなく、$s$ には戻らないので、高々一歩の後は $Q$ の状態だけを通る。一番上が $\bot$ で状態が $Q$ なら読まない遷移はないので、そこでは止まる。よって \ref{comp:loop-characterization} を $P_{1}$ に適用して、走行の途中の $(q,\varepsilon,X)$（$q\in Q$, $X\in\Gamma$）から、3 の遷移を使わずに 2 の読まない遷移（すなわち $\delta$ の遷移）だけで無限に続く走行が得られる（3 の遷移を使うと $a$ か $d$ に入って止まる）。これは $P$ の $(q,\varepsilon,X)$ からの無限の走行なので、$(q,X)$ は $P$ でループする組である。すると $\delta_{1}(q,\varepsilon,X)$ は 3 の遷移で、2 の遷移ではない。矛盾。
+
+**Step 3（有限性）.** Step 2 と \ref{comp:loop-characterization} より、$P_{1}$ の走行は、ある時点以降ずっと入力を読まないことはない。入力は有限なので、走行は有限で、Step 1 より残りの入力が空になってから止まる。
+
+**Step 4（$L(P_{1})=L(P)$）.** 入力 $w$ について、$P$ の $(q_{0},w,Z_{0})$ からの走行 $(C_{t})$ と、$P_{1}$ の $(s,w,\bot)$ からの走行を比べる。$P_{1}$ は一歩目で $(q_{0},w,Z_{0}\bot)$ に移り、以後、$P$ がループする組に達するか止まるまでは、$C_{t}$ のスタックの下に $\bot$ を付けた時点表示を順にたどる（\ref{comp:dpda-extension} と、2 で $\delta$ の遷移を残したこと）。
+
+(a) $P$ が $C_{t}=(q,x,X\gamma)$ で初めてループする組 $(q,X)$ に達した場合。\ref{comp:loop-characterization} より $P$ はその後入力を読まない。$x\ne\varepsilon$ なら、$P$ は以後残りの入力が空にならないので、$w\in L(P)$ は「$t$ より前に、残りの入力が空で $F$ の状態の時点表示がある」ことと同値。$P_{1}$ は $a$ か $d$ に移ったあと $d$ で残りを読み、$a$ にいるときも残りの入力は空でないので、受理の条件は同じ。$x=\varepsilon$ なら、$w\in L(P)$ は「$t$ より前に条件を満たす時点表示がある、または $(q,\varepsilon,X)$ からの走行が $F$ を通る」ことと同値で、$P_{1}$ は後者のとき $a$ に入って受理し、そうでなければ $d$ に入って止まる。
+
+(b) $P$ がループする組に達しない場合。\ref{comp:loop-characterization} より $P$ の走行は入力を読まない無限の部分をもたないので有限で、ある $(q,x,\gamma)$ で止まる。$P_{1}$ は $(q,x,\gamma\bot)$ に達する。$x=\varepsilon$ なら、$\gamma$ が空でも空でなくても $P_{1}$ はそこで止まる（$\gamma=X\gamma'$ なら $\delta(q,\varepsilon,X)$ は未定義で、2 で加えたのは読む遷移だけ）。$x\ne\varepsilon$ なら $P_{1}$ は 2 または 4 の遷移で $d$ に入り、残りを読んで受理しない。どちらでも、残りの入力が空の時点表示の状態は、$P$ と $P_{1}$ で（$d$ を除いて）同じ。
+
+よって $w\in L(P)\iff w\in L(P_{1})$。
+:::
+
+::: hypcheck
+- **決定性**：走行の一意性として、\ref{comp:loop-characterization} の後半と、Step 4 で $P$ と $P_{1}$ の走行を一対一に比べることに使った。
+- **ループする組の判定**：3 では、$(q,X)$ がループする組かどうか、その走行が $F$ を通るかどうかで遷移を決めた。これは $P_{1}$ の**存在**を示すだけで、構成が計算可能かどうかは問題にしていない（言語のクラスについての主張なので、存在で十分）。
+- **スタックの高さの最小値**：\ref{comp:loop-characterization} の前半で、それより下のスタックが二度と読まれないことに使った。
+:::
+
+## 補集合についての閉性 {#comp:sec-dcfl-complement}
+
+::: theorem DCFL は補集合で閉じている {#comp:dcfl-complement keywords="DCFLs are closed under complement, reading states, flag recording accepting states since last read" index="DCFL の補集合|でぃーしーえふえるのほしゅうごう"}
+$L\subseteq\Sigma^{\ast}$ が DCFL なら、$\Sigma^{\ast}\setminus L$ も DCFL である。
+:::
+
+::: proof
+\ref{comp:dpda-reads-all} より、$L=L(P_{1})$ となる $P_{1}=(Q_{1},\Sigma,\Gamma_{1},\delta_{1},s,\bot,F_{1})$ で、走行が有限で入力を最後まで読んで止まり、スタックが空にならないものをとる。
+
+**Step 1（受理の言い換え）.** 入力 $w$ の走行で、残りの入力が空の時点表示は、最後の読む動きの直後（$w=\varepsilon$ なら開始時点）から走行の終わりまでの区間（**最終区間**）である。$w\in L(P_{1})$ は、最終区間に $F_{1}$ の状態があることと同値。走行は残りの入力が空で止まり、スタックは空でないので、終わりの時点表示 $(q,\varepsilon,X\gamma)$ では $\delta_{1}(q,\varepsilon,X)$ が未定義である。
+
+**Step 2（構成）.** $P_{2}$ の状態を、$[q,f]$（$q\in Q_{1}$, $f\in\{0,1\}$）と、$\delta_{1}(q,\varepsilon,X)$ が未定義な組 $(q,X)$ についての**読む状態** $\langle q,X,f\rangle$ とする。開始状態 $[s,[s\in F_{1}]]$、初期スタック記号 $\bot$、受理状態は $\langle q,X,0\rangle$ の全体。遷移は
+- $\delta_{1}(q,\varepsilon,X)=(r,\beta)$ なら $\delta_{2}([q,f],\varepsilon,X)=([r,\,f\vee[r\in F_{1}]],\beta)$。
+- $\delta_{1}(q,\varepsilon,X)$ が未定義なら $\delta_{2}([q,f],\varepsilon,X)=(\langle q,X,f\rangle,X)$。さらに $\delta_{1}(q,b,X)=(r,\beta)$（$b\in\Sigma$）ごとに $\delta_{2}(\langle q,X,f\rangle,b,X)=([r,[r\in F_{1}]],\beta)$。
+
+$[q,f]$ には読まない遷移しかなく、$\langle q,X,f\rangle$ には読む遷移しかないので、$P_{2}$ は DPDA である。
+
+**Step 3（模倣と旗）.** $P_{2}$ の走行は $P_{1}$ の走行をたどり、$P_{1}$ が読む直前の各時点表示 $(q,x,X\gamma)$ で一歩 $\langle q,X,f\rangle$ を挟む。$P_{1}$ の時点 $t$ に対応する $P_{2}$ の状態 $[q_{t},f_{t}]$ について、「$f_{t}=1$ と、最後の読む動きの直後（読む動きがまだなければ開始時点）から時点 $t$ までに $F_{1}$ の状態があることは同値」が、遷移の定義から帰納的に成り立つ（読む動きで旗を $[r\in F_{1}]$ に戻し、読まない動きで $f\vee[r\in F_{1}]$ に更新する）。
+
+**Step 4（受理の比較）.** $P_{1}$ が $(q,\varepsilon,X\gamma)$ で止まるとき、$P_{2}$ は $[q,f]$ から $\langle q,X,f\rangle$ に移り、残りの入力が空なのでそこで止まる。$P_{2}$ の受理状態は読む状態だけで、読む状態にいて残りの入力が空なら止まるので、残りの入力が空の受理状態の時点表示は、この最後の $\langle q,X,f\rangle$ だけが候補である。Step 3 より、$f=0$ は最終区間に $F_{1}$ の状態がないこと、すなわち（Step 1）$w\notin L(P_{1})$ と同値。よって $L(P_{2})=\Sigma^{\ast}\setminus L$。
+:::
+
+::: hypcheck
+- **入力を最後まで読み、止まる**（\ref{comp:dpda-reads-all}）：Step 1 で受理を最終区間で言い換え、Step 4 で「最後の読む状態」が必ず現れることに使った。これがないと、入力を読み残して止まる $w$ や、ループする $w$ を補集合の側で受理できない。
+- **読む状態を分けたこと**：受理の判定を「次に読もうとする瞬間」一回に限るためである。単に受理状態と非受理状態を入れ替えるだけでは、最終区間に両方の状態が現れる $w$ を両方の機械が受理してしまう。
+:::
+
+::: corollary 決定性でない文脈自由言語 {#comp:not-dcfl keywords="a context-free language that is not deterministic" index="決定性でない文脈自由言語|けっていせいでないぶんみゃくじゆうげんご"}
+$A\defeq\{a^{i}b^{j}c^{k}:i\ne j\text{ または }j\ne k\}$ は文脈自由だが DCFL でない。したがって DCFL は文脈自由言語より真に小さいクラスである。
+:::
+
+::: proof
+**文脈自由.** $A_{1}\defeq\{a^{i}b^{j}c^{k}:i\ne j\}$ は文法 $S\to TC$, $T\to aTb\mid aU\mid bV$, $U\to aU\mid\varepsilon$, $V\to bV\mid\varepsilon$, $C\to cC\mid\varepsilon$ で生成される（$T$ は $i\ne j$ の $a^{i}b^{j}$ をちょうど生成する）。$A_{2}\defeq\{a^{i}b^{j}c^{k}:j\ne k\}$ も同様。$A=A_{1}\cup A_{2}$ で、文脈自由言語は和で閉じている（\ref{comp:cfl-closure}）。
+
+**DCFL でない.** DCFL だとすると、\ref{comp:dcfl-complement} と \ref{comp:dcfl-is-cfl} から $\overline{A}\defeq\{a,b,c\}^{\ast}\setminus A$ は文脈自由で、正規言語との共通部分 $\overline{A}\cap a^{\ast}b^{\ast}c^{\ast}=\{a^{n}b^{n}c^{n}:n\ge0\}$ も文脈自由（\ref{comp:cfl-cap-regular}）。これは \ref{comp:ex-anbncn} に反する。
+:::
+
+## 問題 {#comp:sec-dcfl-problems}
+
+::: problem {#comp:prob-dcfl-0n1n}
+$\{0^{n}1^{n}:n\ge0\}$ を認識する DPDA を作れ。
+:::
+
+::: solution
+状態 $q_{0}$（開始・受理）, $q_{1}$, $q_{2}$, $q_{3}$（受理）、スタック記号 $\{Z_{0},0\}$ とし、
+$$
+\begin{gathered}
+\delta(q_{0},0,Z_{0})=(q_{1},0Z_{0}),\quad\delta(q_{1},0,0)=(q_{1},00),\quad\delta(q_{1},1,0)=(q_{2},\varepsilon),\\
+\delta(q_{2},1,0)=(q_{2},\varepsilon),\quad\delta(q_{2},\varepsilon,Z_{0})=(q_{3},Z_{0}).
+\end{gathered}
+$$
+読まない遷移は $(q_{2},Z_{0})$ にしかなく、そこには読む遷移がないので決定性。$0^{n}1^{n}$ は、$n=0$ なら開始時点で受理、$n\ge1$ なら $(q_{2},\varepsilon,Z_{0})\vdash(q_{3},\varepsilon,Z_{0})$ で受理。それ以外の入力では、$1$ の後の $0$、$0$ より多い $1$（$q_{3}$ で入力が残る）、$1$ の不足（$q_{2}$ で一番上が $0$ のまま入力が尽きる）のいずれかで、受理状態に入力を読み終えて達することがない。
+:::
+
+::: problem {#comp:prob-dcfl-intersection}
+DCFL は共通部分についても和についても閉じていないことを示せ。
+:::
+
+::: solution
+**共通部分.** $L_{1}\defeq\{a^{n}b^{n}c^{k}\}$ と $L_{2}\defeq\{a^{k}b^{n}c^{n}\}$（$n,k\ge0$）は DCFL である。$L_{1}$ は、前問と同様に $a$ を積み $b$ ごとに取り除き、$Z_{0}$ に戻ったら（または $a$ がなければ最初から）$c$ を読み続ける受理状態に移る DPDA で認識できる。$L_{2}$ は、$a$ を読み飛ばし、$b$ を積んで $c$ ごとに取り除く。$L_{1}\cap L_{2}=\{a^{n}b^{n}c^{n}\}$ は文脈自由でない（\ref{comp:ex-anbncn}）ので、\ref{comp:dcfl-is-cfl} より DCFL でない。
+
+**和.** 和で閉じていれば、\ref{comp:dcfl-complement} とド・モルガンの法則 $L_{1}\cap L_{2}=\overline{\overline{L_{1}}\cup\overline{L_{2}}}$ から共通部分でも閉じることになり、前半に反する。
+:::
+
+::: supplement
+**前提を変えると.** 入力の終わりを示す記号 $\dashv$ を付けた言語 $L\dashv$ が DCFL であることと $L$ が DCFL であることは同値であるとされる（Sipser の定理 2.43。ここでは確かめていない）。DCFL は、構文解析で使われる LR($k$) 文法（Knuth, 1965）が生成する言語のクラスと一致し、特に曖昧でない文法をもつことが知られている。$\{ww^{R}:w\in\{0,1\}^{\ast}\}$（$w^{R}$ は逆順）も文脈自由だが DCFL でないことが知られている（Sipser の問題 2.58。ここでは示さない）。
+
+**似た定理.** DFA の補集合は受理状態を入れ替えるだけで得られた（\ref{comp:dfa-boolean}）。DPDA でも基本の発想は同じだが、(1) 入力を読み残して止まる、(2) 入力を読まずに永遠に動く、(3) 入力を読み終えた後に受理状態と非受理状態を両方通る、という三つの障害があり、\ref{comp:dpda-reads-all} が (1)(2) を、読む状態の導入が (3) を取り除いた。二つの DPDA の言語が等しいかどうかは決定可能であること（セニゼルグ、1997 年発表）が知られている。これは一般の PDA では決定不能であることと対照的である。
+
+**高い視点から：決定性と「やり直しのなさ」.** 非決定性の機械では、「どこかの枝が受理する」が受理なので、補集合をとるには「すべての枝が拒否する」を判定しなければならず、これは機械の形を大きく変える。決定性の機械では枝が一本しかないので、その一本の結果を反転すればよい。ただし反転するには、その一本が必ず「結論を出して終わる」必要がある。ループの除去は、この「必ず終わる」を保証する作業であり、その鍵は「スタックの高さが最小になった時点より下は二度と使われない」という観察である。比喩で言えば、積み木の塔を崩しながら作業する職人が、ある高さより下には二度と手を付けなくなったら、その上だけを見れば今後の作業がすべて分かる、ということである。有限個の（状態, 一番上）の組だけを調べれば無限のループを見抜けるのはこのためである。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

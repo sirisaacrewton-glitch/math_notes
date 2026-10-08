@@ -4327,6 +4327,20 @@
       "num": "8.7",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/08-circuits.html"
     },
+    "comp:dcfl-complement": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "DCFL は補集合で閉じている",
+      "num": "7.7",
+      "page": "03-mathematical-logic/03D-computability-theory/01-automata/07-deterministic-cfl.html"
+    },
+    "comp:dcfl-is-cfl": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "決定性文脈自由言語は文脈自由",
+      "num": "7.3",
+      "page": "03-mathematical-logic/03D-computability-theory/01-automata/07-deterministic-cfl.html"
+    },
     "comp:decidable-representable": {
       "status": "defined",
       "type": "corollary",
@@ -4410,6 +4424,27 @@
       "title": "対角線論法との関係",
       "num": "8.5",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/08-decidability.html"
+    },
+    "comp:dpda": {
+      "status": "defined",
+      "type": "definition",
+      "title": "決定性プッシュダウンオートマトン",
+      "num": "7.1",
+      "page": "03-mathematical-logic/03D-computability-theory/01-automata/07-deterministic-cfl.html"
+    },
+    "comp:dpda-extension": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "スタックの延長",
+      "num": "7.2",
+      "page": "03-mathematical-logic/03D-computability-theory/01-automata/07-deterministic-cfl.html"
+    },
+    "comp:dpda-reads-all": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "入力を最後まで読む DPDA",
+      "num": "7.6",
+      "page": "03-mathematical-logic/03D-computability-theory/01-automata/07-deterministic-cfl.html"
     },
     "comp:elba-undecidable": {
       "status": "defined",
@@ -4908,6 +4943,20 @@
       "num": "3.5",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/03-ackermann.html"
     },
+    "comp:loop-characterization": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "ループの特徴づけ",
+      "num": "7.5",
+      "page": "03-mathematical-logic/03D-computability-theory/01-automata/07-deterministic-cfl.html"
+    },
+    "comp:looping-pair": {
+      "status": "defined",
+      "type": "definition",
+      "title": "ループする組",
+      "num": "7.4",
+      "page": "03-mathematical-logic/03D-computability-theory/01-automata/07-deterministic-cfl.html"
+    },
     "comp:mapping-basic": {
       "status": "defined",
       "type": "proposition",
@@ -5090,6 +5139,13 @@
       "num": "4.7",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/04-recursive-functions.html"
     },
+    "comp:not-dcfl": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "決定性でない文脈自由言語",
+      "num": "7.8",
+      "page": "03-mathematical-logic/03D-computability-theory/01-automata/07-deterministic-cfl.html"
+    },
     "comp:np-complete": {
       "status": "defined",
       "type": "definition",
@@ -5264,6 +5320,13 @@
       "title": "文脈自由文法とプッシュダウンオートマトン",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/01-automata/04-context-free.html"
+    },
+    "comp:page-dcfl": {
+      "status": "defined",
+      "type": "page",
+      "title": "決定性文脈自由言語",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/01-automata/07-deterministic-cfl.html"
     },
     "comp:page-decidability": {
       "status": "defined",
@@ -5936,6 +5999,20 @@
       "title": "",
       "num": "11.15",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/11-universal-smn.html"
+    },
+    "comp:prob-dcfl-0n1n": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "7.9",
+      "page": "03-mathematical-logic/03D-computability-theory/01-automata/07-deterministic-cfl.html"
+    },
+    "comp:prob-dcfl-intersection": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "7.10",
+      "page": "03-mathematical-logic/03D-computability-theory/01-automata/07-deterministic-cfl.html"
     },
     "comp:prob-decidable-complement": {
       "status": "defined",
@@ -7007,6 +7084,41 @@
       "title": "クック–レヴィンの定理",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/02-np.html"
+    },
+    "comp:sec-dcfl-complement": {
+      "status": "defined",
+      "type": "section",
+      "title": "補集合についての閉性",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/01-automata/07-deterministic-cfl.html"
+    },
+    "comp:sec-dcfl-dpda": {
+      "status": "defined",
+      "type": "section",
+      "title": "決定性プッシュダウンオートマトン",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/01-automata/07-deterministic-cfl.html"
+    },
+    "comp:sec-dcfl-loops": {
+      "status": "defined",
+      "type": "section",
+      "title": "ループの扱い",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/01-automata/07-deterministic-cfl.html"
+    },
+    "comp:sec-dcfl-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/01-automata/07-deterministic-cfl.html"
+    },
+    "comp:sec-dcfl-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/01-automata/07-deterministic-cfl.html"
     },
     "comp:sec-dec-notation": {
       "status": "defined",

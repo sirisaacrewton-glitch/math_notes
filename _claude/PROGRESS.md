@@ -307,6 +307,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 オートマトン CA-07（01-automata/07-deterministic-cfl, comp:page-dcfl：DPDA（Hopcroft–Ullman 型）、走行、DCFL ⊆ CFL、ループする組とスタックの高さの最小値による特徴づけ、入力を最後まで読む DPDA への変換（存在として）、読む状態と旗による補集合の閉性、{aⁱbʲcᵏ : i≠j または j≠k} は DCFL でない、共通部分・和で閉じない問題）。Sipser 2.4（DCFG と LR は補足で fact）。04-context-free の補足を更新。
 - 2026-10-08 計算複雑性 CC-13（13-primality-branching, comp:page-primality-branching：合成数の証人、素数には証人がない、奇数の合成数では証人が半数以上（素数べきでない場合と素数べきの場合。j の最大性と t の互いに素性を補った）、PRIMES ∈ coRP（一様な選択を有限回の引き直しで厳密化）、分岐プログラムと一回読み、節点の多項式は道の積の和、一回読みなら多重線形標準形、EQ_ROBP ∈ coRP、561 と一回読みでない反例の問題）。Sipser 10.2。07 の補足から参照。
 - 2026-10-08 圏論 CB-12（01-basics/12-special-aft, cat:page-special-aft：部分対象とよく冪、モノ射の（族の）引き戻し、生成・余生成集合、特殊始対象定理（射の一意性を等化子の分裂から詳述）、引き戻しを保つ関手とコンマ圏のモノ射、SAFT（よく冪の形。コンマ圏のよく冪性を補った）、CHaus の反射性（[0,1] が余生成対象）、表現可能性と Set の余生成対象の問題）。Mac Lane V.7–8。10-adjoint-functor-theorem の補足から参照。
 - 2026-10-08 圏論 CS-09（02-structured-categories/09-loops-suspensions, cat:page-loops-suspensions：ウェッジとスマッシュ積、局所コンパクトハウスドルフな Y についての −∧Y ⊣ Map_*(Y,−)（Top_* のまま、CG を使わずに）、I/{0,1} のコンパクトハウスドルフ性、Σ ⊣ Ω と単位・余単位、Σⁿ ⊣ Ωⁿ、Ω の積保存、ΩX を道の空間のファイバーとみなす埋め込み、Set_* のスマッシュ積）。Mac Lane VII.9。
@@ -463,6 +464,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | CL-08 | 01-programs/08-representability | 表現可能性定理 | 完了 |
 | CA-02′ | 02-automata/02-regular-expressions | クリーネの定理をアーデンの補題で示し直す | 完了 |
 | CA-06 | 02-automata/06-fixed-points | 言語方程式と不動点定理（クナスター–タルスキ、クリーネ、縮小写像、文脈自由言語） | 完了 |
+| CA-07 | 01-automata/07-deterministic-cfl | 決定性文脈自由言語（DPDA、ループの除去、補集合についての閉性）（Sipser 2.4） | 完了 |
 | CC-01 | 05-complexity/01-time-complexity | 時間計算量とクラス P | 完了 |
 | CC-02 | 05-complexity/02-np | NP とクック–レヴィンの定理 | 完了 |
 | CC-03 | 05-complexity/03-np-complete-problems | NP 完全問題 | 完了 |

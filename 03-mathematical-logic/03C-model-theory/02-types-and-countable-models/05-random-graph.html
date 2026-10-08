@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ランダムグラフと 0–1 法則 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03C-model-theory/02-types-and-countable-models/05-random-graph.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ランダムグラフと 0–1 法則 {#model:page-random-graph keywords="random graph, Rado graph, extension axioms, omega-categorical theory of the random graph, Vaught's test, zero-one law for first-order logic, Glebskii, Fagin, almost sure theory"}
+
+頂点を一つずつ加えるたびに、既存の頂点との辺を確率 $1/2$ で独立に引くと、有限の頂点数ではどんなグラフも現れうるが、頂点数を大きくすると「どの有限個の頂点についても、それらとの隣接の仕方を任意に指定した頂点がある」という**拡張公理**（\ref{model:extension-axioms}）がほぼ確実に成り立つ。本ページでは、拡張公理の理論 $T_{\mathrm{rg}}$ が $\omega$ 範疇的で完全であり（\ref{model:rg-complete}）、その可算モデル（**ランダムグラフ**、ラドのグラフ）が具体的に作れること（\ref{model:rado-graph}）を示す。これと確率の評価（\ref{model:extension-axioms-almost-sure}）を合わせて、グラフについての一階の文の成り立つ確率は、頂点数を無限大にすると $0$ か $1$ に収束するという **0–1 法則**（\ref{model:zero-one-law}）を証明する。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。
+
+## 記法と定義の確認 {#model:sec-rg-notation}
+
+::: notation
+- 言語 $L_{\mathrm{g}}\defeq\{E\}$（二項関係記号）。**グラフ**とは、$E$ が非反射的（$\neg E(x,x)$）かつ対称（$E(x,y)\to E(y,x)$）な $L_{\mathrm{g}}$ 構造をいう。
+- コンパクト性定理、完全な理論、下降レーヴェンハイム–スコーレムの定理、$\omega$ 範疇性、往復の議論は \ref{logic:compactness}, \ref{logic:complete-theory}, \ref{model:downward-lowenheim-skolem}, \ref{model:omega-categorical}, \ref{model:cantor-dlo} のとおり。理論 $T$ が完全とは、すべての文 $\sigma$ について $T\models\sigma$ か $T\models\neg\sigma$ であることとする。
+- $\mathcal{G}_{N}$ を頂点集合 $\{1,\dots,N\}$ 上のグラフ全体（$2^{\binom{N}{2}}$ 個）とし、文 $\varphi$ について $\mu_{N}(\varphi)\defeq\lvert\{G\in\mathcal{G}_{N}:G\models\varphi\}\rvert/\lvert\mathcal{G}_{N}\rvert$ とする。これは、各辺を独立に確率 $1/2$ で引いたときに $\varphi$ が成り立つ確率である。
+:::
+
+## 拡張公理とランダムグラフ {#model:sec-rg-extension}
+
+::: definition 拡張公理 {#model:extension-axioms keywords="extension axioms EA_{m,n}, theory of the random graph" index="拡張公理|かくちょうこうり, ランダムグラフの理論|らんだむぐらふのりろん"}
+$m,k\ge0$ について、**拡張公理** $\mathrm{EA}_{m,k}$ を
+$$
+\begin{aligned}
+\forall x_{1}\cdots x_{m}\,\forall y_{1}\cdots y_{k}\Bigl(&\bigwedge_{i,j}x_{i}\ne y_{j}\to\exists z\bigl(\bigwedge_{i}(z\ne x_{i}\wedge E(z,x_{i}))\\
+&\wedge\bigwedge_{j}(z\ne y_{j}\wedge\neg E(z,y_{j}))\bigr)\Bigr)
+\end{aligned}
+$$
+とする。グラフの公理（非反射性・対称性）とすべての $\mathrm{EA}_{m,k}$ からなる理論を $T_{\mathrm{rg}}$ と書く。
+:::
+
+::: proposition ラドのグラフ {#model:rado-graph keywords="Rado graph: i ~ j iff the i-th binary digit of j is 1; a countable model of the extension axioms" index="ラドのグラフ|らどのぐらふ"}
+頂点集合 $\N$ に、$i<j$ について「$j$ の二進展開の第 $i$ 桁が $1$」のとき $i$ と $j$ を辺で結ぶグラフ $R$ を考える。$R\models T_{\mathrm{rg}}$ である。特に $T_{\mathrm{rg}}$ は無矛盾で、そのモデルはすべて無限である。
+:::
+
+::: proof
+辺の定義を $i<j$ と $j<i$ について対称に読むので、$R$ はグラフ。$X=\{x_{1},\dots,x_{m}\}$, $Y=\{y_{1},\dots,y_{k}\}$ を交わらない有限集合とし、$N$ を $X\cup Y$ のどの元よりも大きい数として $z\defeq2^{N}+\sum_{x\in X}2^{x}$ とする。$z>N$ なので $z$ は $X\cup Y$ のどの元とも異なり、それらより大きい。$x\in X$ なら $z$ の第 $x$ 桁は $1$ なので $E(z,x)$。$y\in Y$ なら $y\ne N$ かつ $y\notin X$ なので $z$ の第 $y$ 桁は $0$ で $\neg E(z,y)$。後半：$\mathrm{EA}_{n,0}$ をすでにある $n$ 個の頂点に適用すると新しい頂点が得られるので、モデルは $n$ 個より多くの頂点をもつ（$n$ は任意）。
+:::
+
+::: theorem $T_{\mathrm{rg}}$ の完全性 {#model:rg-complete keywords="the theory of the random graph is omega-categorical and complete; Vaught's test" index="ランダムグラフの理論の完全性|らんだむぐらふのりろんのかんぜんせい"}
+$T_{\mathrm{rg}}$ の可算モデルはすべて同型である（$\omega$ 範疇的）。したがって $T_{\mathrm{rg}}$ は完全である。
+:::
+
+::: proof
+**Step 1（往復）.** $G,H$ を $T_{\mathrm{rg}}$ の可算モデル（無限なので $G=\{g_{0},g_{1},\dots\}$, $H=\{h_{0},h_{1},\dots\}$ と並べる）とする。有限な部分同型（辺の有無を保つ有限な単射）$p_{0}=\emptyset\subseteq p_{1}\subseteq\cdots$ を、偶数段で $g_{s}$ を定義域に、奇数段で $h_{s}$ を値域に入れながら作る。行き：$p$ と $g\notin\mathrm{dom}\,p$ について、$X\defeq\{p(a):a\in\mathrm{dom}\,p,\ E(g,a)\}$, $Y\defeq\{p(a):a\in\mathrm{dom}\,p,\ \neg E(g,a)\}$ は $H$ の交わらない有限集合なので、$H\models\mathrm{EA}_{\lvert X\rvert,\lvert Y\rvert}$ から $X$ のすべてと隣接し $Y$ のどれとも隣接しない、$X\cup Y$ にない $h$ がある。$p\cup\{(g,h)\}$ は部分同型。帰りも対称。$\bigcup p_{s}$ は同型。
+
+**Step 2（ヴォートの判定法）.** $T_{\mathrm{rg}}$ が完全でないとすると、文 $\sigma$ で $T_{\mathrm{rg}}\cup\{\sigma\}$, $T_{\mathrm{rg}}\cup\{\neg\sigma\}$ がともにモデルをもつ。それらは無限（\ref{model:rado-graph}）で、言語は可算なので、下降レーヴェンハイム–スコーレムの定理（\ref{model:downward-lowenheim-skolem}）から可算な初等部分構造 $G_{1}\models\sigma$, $G_{2}\models\neg\sigma$ がとれる。Step 1 から $G_{1}\cong G_{2}$ となり矛盾。
+:::
+
+::: hypcheck
+- **拡張公理**：Step 1 の各段で、部分同型を一点延ばすのに使った。
+- **有限モデルがないこと**：Step 2 で、下降レーヴェンハイム–スコーレムで可算**無限**のモデルを得て Step 1 を適用するのに使った。有限モデルがあると、ヴォートの判定法は使えない。
+:::
+
+## 0–1 法則 {#model:sec-rg-zero-one}
+
+::: lemma 拡張公理はほぼ確実に成り立つ {#model:extension-axioms-almost-sure keywords="each extension axiom holds with probability tending to 1 in G(N,1/2)" index="拡張公理の確率|かくちょうこうりのかくりつ"}
+各 $m,k$ について $\lim_{N\to\infty}\mu_{N}(\mathrm{EA}_{m,k})=1$。
+:::
+
+::: proof
+$r\defeq m+k$ とする。$\mathrm{EA}_{m,k}$ が偽であることは、互いに交わらない列 $\vec{x},\vec{y}$（頂点の選び方は $N^{r}$ 通り以下）で、残りの $N-r$ 個以上の頂点 $z$（$\vec{x},\vec{y}$ に現れない頂点）のどれも条件を満たさないものがあることを意味する。固定した $\vec{x},\vec{y}$（その中の頂点は $r$ 個以下）と、それらに現れない頂点 $z$ について、$z$ が条件を満たすのは $z$ と各頂点との辺（どれも別の辺で、独立に確率 $1/2$）が指定どおりのときで、確率は $2^{-r'}$（$r'\le r$ は現れる頂点の数）$\ge2^{-r}$。異なる $z$ については関係する辺が異なるので独立で、どの $z$ も条件を満たさない確率は $(1-2^{-r})^{N-r}$ 以下。よって
+$$
+1-\mu_{N}(\mathrm{EA}_{m,k})\le N^{r}(1-2^{-r})^{N-r}\xrightarrow{N\to\infty}0
+$$
+（多項式と、$1$ より小さい底の指数の積）。
+:::
+
+::: theorem 0–1 法則 {#model:zero-one-law keywords="zero-one law for first-order sentences on finite graphs (Glebskii et al., Fagin)" index="0–1 法則|ぜろいちほうそく"}
+$L_{\mathrm{g}}$ の任意の文 $\varphi$ について、$\lim_{N\to\infty}\mu_{N}(\varphi)$ は存在し、$0$ か $1$ である。さらに、極限が $1$ であることと $T_{\mathrm{rg}}\models\varphi$ は同値である。
+:::
+
+::: proof
+$T_{\mathrm{rg}}\models\varphi$ とする。コンパクト性定理（\ref{logic:compactness}）から、有限個の拡張公理 $\sigma_{1},\dots,\sigma_{l}$ とグラフの公理から $\varphi$ が従う。$\mathcal{G}_{N}$ の元はグラフなので、$\varphi$ が偽なグラフでは少なくとも一つの $\sigma_{i}$ が偽で、
+$$
+1-\mu_{N}(\varphi)\le\sum_{i=1}^{l}\bigl(1-\mu_{N}(\sigma_{i})\bigr)\xrightarrow{N\to\infty}0
+$$
+（\ref{model:extension-axioms-almost-sure}）。$T_{\mathrm{rg}}\not\models\varphi$ なら、完全性（\ref{model:rg-complete}）から $T_{\mathrm{rg}}\models\neg\varphi$ で、同様に $\mu_{N}(\neg\varphi)\to1$、すなわち $\mu_{N}(\varphi)\to0$。
+:::
+
+::: hypcheck
+- **完全性**：$T_{\mathrm{rg}}\not\models\varphi$ から $T_{\mathrm{rg}}\models\neg\varphi$ を得て、極限が $0$ であることを示すのに使った。これが「$0$ か $1$」の核心である。
+- **コンパクト性**：無限個の拡張公理の代わりに有限個だけを使い、確率の和を有限に保つのに使った。
+:::
+
+::: corollary 一階で表せない性質 {#model:zero-one-applications keywords="parity of the number of vertices is not first-order; almost all graphs have diameter 2" index="0–1 法則の応用|ぜろいちほうそくのおうよう"}
+1. 「頂点の個数が偶数」を表す $L_{\mathrm{g}}$ の文はない（有限グラフの上で）。
+2. ほとんどすべての有限グラフは連結で直径 $2$ 以下である：$\mu_{N}(\forall x\,\forall y\,(x\ne y\to E(x,y)\vee\exists z\,(E(z,x)\wedge E(z,y))))\to1$。
+:::
+
+::: proof
+**1.** そのような文 $\varphi$ があれば、$\mu_{N}(\varphi)$ は $N$ が偶数なら $1$、奇数なら $0$ で収束しない。
+
+**2.** その文は $\mathrm{EA}_{2,0}$ から従う（$x\ne y$ の両方に隣接する $z$ がある）ので、$T_{\mathrm{rg}}$ から従い、0–1 法則から確率は $1$ に収束する。
+:::
+
+## 問題 {#model:sec-rg-problems}
+
+::: problem {#model:prob-rg-triangle}
+「三角形を含む」という文の確率は $1$ に、「孤立点をもつ」という文の確率は $0$ に収束することを、$T_{\mathrm{rg}}$ から導け。
+:::
+
+::: solution
+三角形：$\mathrm{EA}_{0,0}$ で頂点 $a$、$\mathrm{EA}_{1,0}$ で $a$ に隣接する $b$、$\mathrm{EA}_{2,0}$ で $a,b$ の両方に隣接する $c$ がとれ、$a,b,c$ は三角形。よって $T_{\mathrm{rg}}\models$「三角形を含む」で、確率は $1$ に収束。孤立点：任意の $x$ について $\mathrm{EA}_{1,0}$ から $x$ に隣接する頂点があるので $T_{\mathrm{rg}}\models$「孤立点がない」で、「孤立点をもつ」の確率は $0$ に収束。
+:::
+
+::: problem {#model:prob-rg-not-finitely-axiomatizable}
+$T_{\mathrm{rg}}$ は有限個の文で公理化できないことを示せ。
+:::
+
+::: solution
+有限個の文で公理化できれば、それらの連言 $\tau$ について $\mu_{N}(\tau)\to1$（0–1 法則の前半）なので、十分大きい $N$ で $\tau$ を満たす有限グラフがある。それは $T_{\mathrm{rg}}$ のモデルになるが、$T_{\mathrm{rg}}$ のモデルは無限（\ref{model:rado-graph}）なので矛盾。
+:::
+
+::: supplement
+**前提を変えると.** 辺の確率 $1/2$ を固定の $0<p<1$ に変えても同じ議論で 0–1 法則が成り立つ。$p=p(N)$ を $N$ とともに変える場合（たとえば $N^{-\alpha}$）は、$\alpha$ が無理数なら 0–1 法則が成り立つが、有理数では成り立たないことがあることが知られている（シェラ–スペンサー。ここでは扱わない）。言語を一般の有限関係言語にしても、同様の拡張公理によって 0–1 法則が成り立つ（ファギン、グレプスキーら）。
+
+**似た定理.** 0–1 法則は、EF ゲーム（\ref{model:page-ef-games}）とともに、有限構造の上で一階論理が表現できないことを示す主要な道具である。ランダムグラフは、有限グラフ全体のフライッセ極限（有限グラフをすべて含む唯一の可算な均質グラフ）としても特徴づけられることが知られている。
+
+**高い視点から：偶然が作る普遍性.** 辺を硬貨投げで決めるという全くの偶然から、どんな有限の形も必ず現れる、ただ一つの可算グラフが生まれる。比喩で言えば、猿がタイプライターを無限に打ち続ければすべての文が現れるように、ランダムに辺を引き続ければすべての「有限の隣接の型」が現れる。一階論理は有限個の頂点についての有限の条件しか述べられないので、大きなランダムグラフの性質は、この唯一の極限の性質でほぼ確実に決まってしまう。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

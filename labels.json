@@ -14869,6 +14869,20 @@
       "num": "6.7",
       "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/06-dimension.html"
     },
+    "model:extension-axioms": {
+      "status": "defined",
+      "type": "definition",
+      "title": "拡張公理",
+      "num": "5.1",
+      "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/05-random-graph.html"
+    },
+    "model:extension-axioms-almost-sure": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "拡張公理はほぼ確実に成り立つ",
+      "num": "5.4",
+      "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/05-random-graph.html"
+    },
     "model:finitely-many-formulas": {
       "status": "defined",
       "type": "lemma",
@@ -15184,6 +15198,13 @@
       "num": "",
       "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/03-quantifier-elimination.html"
     },
+    "model:page-random-graph": {
+      "status": "defined",
+      "type": "page",
+      "title": "ランダムグラフと 0–1 法則",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/05-random-graph.html"
+    },
     "model:page-saturated-models": {
       "status": "defined",
       "type": "page",
@@ -15464,6 +15485,20 @@
       "num": "4.11",
       "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/04-acf.html"
     },
+    "model:prob-rg-not-finitely-axiomatizable": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "5.8",
+      "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/05-random-graph.html"
+    },
+    "model:prob-rg-triangle": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "5.7",
+      "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/05-random-graph.html"
+    },
     "model:prob-sm-equivalence-class": {
       "status": "defined",
       "type": "problem",
@@ -15597,6 +15632,13 @@
       "num": "5.1",
       "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/05-ef-games.html"
     },
+    "model:rado-graph": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "ラドのグラフ",
+      "num": "5.2",
+      "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/05-random-graph.html"
+    },
     "model:ramsey": {
       "status": "defined",
       "type": "theorem",
@@ -15610,6 +15652,13 @@
       "title": "型の実現と初等拡大",
       "num": "3.3",
       "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/03-saturated-models.html"
+    },
+    "model:rg-complete": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "$T_{\\mathrm{rg}}$ の完全性",
+      "num": "5.3",
+      "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/05-random-graph.html"
     },
     "model:robinson-test": {
       "status": "defined",
@@ -16073,6 +16122,34 @@
       "num": "",
       "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/04-indiscernibles.html"
     },
+    "model:sec-rg-extension": {
+      "status": "defined",
+      "type": "section",
+      "title": "拡張公理とランダムグラフ",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/05-random-graph.html"
+    },
+    "model:sec-rg-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/05-random-graph.html"
+    },
+    "model:sec-rg-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/05-random-graph.html"
+    },
+    "model:sec-rg-zero-one": {
+      "status": "defined",
+      "type": "section",
+      "title": "0–1 法則",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/05-random-graph.html"
+    },
     "model:sec-saturated-def": {
       "status": "defined",
       "type": "section",
@@ -16527,6 +16604,20 @@
       "title": "ヒルベルトの零点定理（弱形）",
       "num": "4.9",
       "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/04-acf.html"
+    },
+    "model:zero-one-applications": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "一階で表せない性質",
+      "num": "5.6",
+      "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/05-random-graph.html"
+    },
+    "model:zero-one-law": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "0–1 法則",
+      "num": "5.5",
+      "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/05-random-graph.html"
     },
     "pt:a-complete": {
       "status": "defined",

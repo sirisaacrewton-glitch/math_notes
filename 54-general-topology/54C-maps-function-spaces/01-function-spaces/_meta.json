@@ -1,0 +1,18 @@
+{
+  "id": "top-function-spaces",
+  "title": "関数空間の位相",
+  "en": "Topologies on Function Spaces",
+  "abbr": "関数空間",
+  "description": "各点収束位相・コンパクト開位相・一様収束位相とその比較、コンパクト集合上の一様収束、指数写像と評価写像、アスコリ–アルツェラの定理。（小山『位相空間論』第 10 章を参考）",
+  "msc": "54C35",
+  "prereq": [
+    {
+      "dir": "top-properties",
+      "note": "コンパクト性・局所コンパクト性・分離公理"
+    },
+    {
+      "dir": "top-metric",
+      "note": "距離空間の完備性とコンパクト性"
+    }
+  ]
+}

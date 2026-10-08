@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>関数空間の位相 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54C-maps-function-spaces/01-function-spaces/01-function-space-topologies.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 関数空間の位相 {#top:page-function-space-topologies keywords="function space, space of continuous maps, topology of pointwise convergence, compact-open topology, topology of uniform convergence, uniform convergence on compact sets, sup metric, comparison of topologies"}
+
+位相空間 $X$ から $Y$ への連続写像の全体 $C(X,Y)$ には、いくつかの自然な位相が入る。点ごとの値で近さを測る**各点収束位相**（\ref{top:pointwise-topology}）、コンパクト集合の像で測る**コンパクト開位相**（\ref{top:compact-open-topology}）、$Y$ が距離空間のときの**一様収束位相**（\ref{top:uniform-topology}）である。本ページでは、これらが弱い順に並ぶこと（\ref{top:function-topologies-compared}）、$Y$ が距離空間ならコンパクト開位相は「コンパクト集合上の一様収束」の位相であること（\ref{top:compact-open-uniform-on-compacta}）を示す。系として、$X$ がコンパクトなら一様収束位相は $Y$ の距離の選び方によらない。
+
+> 資料：小山晃『位相空間論』第 10 章 §10.1–§10.2 を参考にした（本文は写していない）。同書は一様収束位相を閉包作用素で導入しているが、本ページでは一様距離で直接定義した。コンパクト開位相とコンパクト集合上の一様収束の一致（\ref{top:compact-open-uniform-on-compacta}）は、同書の「$X$ がコンパクトなら一様収束位相と一致する」を一般化した標準的な形で示した。
+
+## 記法と定義の確認 {#top:sec-fs-notation}
+
+::: notation
+- 位相空間、距離位相、開基・準開基、位相の強弱は \ref{top:topological-space}, \ref{top:metric-topology}, \ref{top:page-bases-countability}, \ref{top:finer-coarser} のとおり。直積位相と部分空間は \ref{top:product-topology}, \ref{top:subspace}。コンパクト、局所コンパクト、ハウスドルフは \ref{top:compact}, \ref{top:locally-compact}, \ref{top:hausdorff}。
+- $C(X,Y)$ は $X$ から $Y$ への連続写像の全体。$A\subseteq X$, $B\subseteq Y$ について
+$$
+M(A,B)\defeq\{f\in C(X,Y):f(A)\subseteq B\}.
+$$
+- 距離空間 $(Y,\rho)$ の点 $y$ と集合 $F$ の距離 $\rho(y,F)\defeq\inf_{z\in F}\rho(y,z)$（$F\neq\varnothing$）は $y$ について連続で（$|\rho(y,F)-\rho(y',F)|\le\rho(y,y')$）、$F$ が閉なら $\rho(y,F)=0\iff y\in F$。
+:::
+
+## 三つの位相 {#top:sec-fs-three}
+
+::: definition 各点収束位相 {#top:pointwise-topology keywords="topology of pointwise convergence" index="各点収束位相|かくてんしゅうそくいそう"}
+$X,Y$ を位相空間とする。$M(\{x\},U)$（$x\in X$, $U\subseteq Y$ 開）の全体を準開基とする $C(X,Y)$ の位相を**各点収束位相**といい、この位相空間を $C_{p}(X,Y)$ と書く。
+:::
+
+::: proposition 各点収束位相は直積の部分空間 {#top:pointwise-is-product keywords="the pointwise topology is the subspace topology of the product Y^X" index="各点収束位相と直積|かくてんしゅうそくいそうとちょくせき"}
+$f\mapsto(f(x))_{x\in X}$ により $C(X,Y)$ を直積 $Y^{X}=\prod_{x\in X}Y$ の部分集合とみると、各点収束位相は直積位相の相対位相に一致する。とくに、$C_{p}(X,Y)$ の網 $(f_{\lambda})$ が $f$ に収束することと、各 $x$ で $f_{\lambda}(x)\to f(x)$ となることは同値である。また $Y$ がハウスドルフなら $C_{p}(X,Y)$ もハウスドルフである。
+:::
+
+::: proof
+直積位相は射影の逆像 $p_{x}^{-1}(U)$ を準開基とし（\ref{top:product-topology}）、相対位相の準開基は $C(X,Y)\cap p_{x}^{-1}(U)$ で与えられる。$C(X,Y)\cap p_{x}^{-1}(U)=M(\{x\},U)$ なので二つの準開基は一致する。網の収束は直積位相の収束の特徴づけ（各成分の収束）から。ハウスドルフ性：$f\neq g$ なら $f(x)\neq g(x)$ となる $x$ があり、それらを分ける開集合 $U,V$ について $M(\{x\},U)$, $M(\{x\},V)$ は $f,g$ を分ける。
+:::
+
+::: definition コンパクト開位相 {#top:compact-open-topology keywords="compact-open topology" index="コンパクト開位相|こんぱくとかいいそう"}
+$M(K,U)$（$K\subseteq X$ コンパクト、$U\subseteq Y$ 開）の全体を準開基とする $C(X,Y)$ の位相を**コンパクト開位相**といい、この位相空間を $C_{c}(X,Y)$ と書く。（圏論のページの \ref{cat:compact-open} と同じもの。）
+:::
+
+::: definition 一様収束位相 {#top:uniform-topology keywords="topology of uniform convergence, sup metric, bounded metric" index="一様収束位相|いちようしゅうそくいそう, 一様距離|いちようきょり"}
+$(Y,\rho)$ を距離空間とし、$\bar{\rho}\defeq\min(\rho,1)$ とする。$f,g\in C(X,Y)$ について
+$$
+\rho^{\ast}(f,g)\defeq\sup_{x\in X}\bar{\rho}\bigl(f(x),g(x)\bigr)
+$$
+とおくと、$\rho^{\ast}$ は $C(X,Y)$ の距離である（値は $1$ 以下）。その距離位相を**一様収束位相**といい、$(C(X,Y),\rho^{\ast})$ または $C_{u}(X,Y)$ と書く。
+:::
+
+::: remark
+$\bar{\rho}$ は $Y$ の距離で、$\rho$ と同じ位相を定める（半径 $1$ 未満の開球が一致するため）。$\bar{\rho}$ を使うのは、$\sup$ が有限になるようにするためである。$\rho^{\ast}(f_{n},f)\to0$ は、$f_{n}$ が $f$ に（$\rho$ について）一様収束することと同値である（$\varepsilon<1$ では $\bar{\rho}<\varepsilon\iff\rho<\varepsilon$）。$\rho^{\ast}$ が距離であることは、三角不等式を各点で使って上限をとればよい。
+:::
+
+## 位相の比較 {#top:sec-fs-comparison}
+
+::: lemma コンパクト集合と閉集合の距離 {#top:compact-closed-distance keywords="a compact set and a disjoint closed set in a metric space have positive distance" index="コンパクト集合と閉集合の距離|こんぱくとしゅうごうとへいしゅうごうのきょり"}
+距離空間 $(Y,\rho)$ のコンパクト集合 $L$ と閉集合 $F$ が交わらず $F\neq\varnothing$, $L\ne\varnothing$ なら、$\varepsilon>0$ で、すべての $y\in L$ について $\rho(y,F)\ge\varepsilon$ となるものがある。
+:::
+
+::: proof
+$y\mapsto\rho(y,F)$ は連続で、$L$ の上で正（$F$ は閉で $y\notin F$）。コンパクト集合上の連続な実数値関数は最小値をとる（\ref{top:extreme-value}）ので、その最小値を $\varepsilon$ とすればよい。
+:::
+
+::: theorem 三つの位相の比較 {#top:function-topologies-compared keywords="pointwise topology is coarser than compact-open which is coarser than uniform" index="関数空間の位相の比較|かんすうくうかんのいそうのひかく"}
+$X$ を位相空間とする。
+1. 任意の位相空間 $Y$ について、各点収束位相 $\subseteq$ コンパクト開位相。
+2. 距離空間 $(Y,\rho)$ について、コンパクト開位相 $\subseteq$ 一様収束位相。
+:::
+
+::: proof
+**1.** 一点集合はコンパクトなので、各点収束位相の準開基 $M(\{x\},U)$ はコンパクト開位相の準開基でもある。
+
+**2.** 準開基 $M(K,U)$ が一様収束位相で開であることを示す。$f\in M(K,U)$ をとる。$U=Y$ または $K=\varnothing$ なら $M(K,U)=C(X,Y)$ で開。そうでなければ、$L\defeq f(K)$ はコンパクト（連続像）で、閉集合 $F\defeq Y\setminus U\neq\varnothing$ と交わらない。\ref{top:compact-closed-distance} の $\varepsilon$ を $1$ 以下にとる。$\rho^{\ast}(f,g)<\varepsilon$ なら、各 $x\in K$ で $\rho(f(x),g(x))<\varepsilon\le\rho(f(x),F)$ なので $g(x)\notin F$、すなわち $g(x)\in U$。よって $\rho^{\ast}$ の $\varepsilon$ 球は $M(K,U)$ に含まれる。
+:::
+
+::: example 各点収束位相と一様収束位相は異なる
+$X=[0,1]$, $Y=\R$ とし、$f_{n}(x)\defeq\max(0,1-|nx-1|)$（$1/n$ で高さ $1$、$[0,2/n]$ の外で $0$ の山）とする。各 $x$ で $f_{n}(x)\to0$（$x=0$ では恒等的に $0$、$x>0$ では $n>2/x$ で $0$）なので、\ref{top:pointwise-is-product} から $C_{p}$ で $f_{n}\to0$。一方 $\rho^{\ast}(f_{n},0)=1$ なので $C_{u}$ では収束しない。よって $C_{p}([0,1],\R)\neq C_{u}([0,1],\R)$。$[0,1]$ はコンパクトなので、次の系からこれはコンパクト開位相と各点収束位相が異なる例でもある。
+:::
+
+::: theorem コンパクト開位相とコンパクト集合上の一様収束 {#top:compact-open-uniform-on-compacta keywords="for metric targets the compact-open topology is the topology of uniform convergence on compact sets" index="コンパクト集合上の一様収束|こんぱくとしゅうごうじょうのいちようしゅうそく, 広義一様収束|こうぎいちようしゅうそく"}
+$(Y,\rho)$ を距離空間とする。$f\in C(X,Y)$, コンパクト集合 $K\subseteq X$, $\varepsilon>0$ について
+$$
+B_{K}(f,\varepsilon)\defeq\Bigl\{g\in C(X,Y):\sup_{x\in K}\rho\bigl(f(x),g(x)\bigr)<\varepsilon\Bigr\}
+$$
+とする。このとき、$C(X,Y)$ の部分集合 $O$ がコンパクト開位相で開であることと、各 $f\in O$ について $B_{K}(f,\varepsilon)\subseteq O$ となる $K,\varepsilon$ があることは同値である。
+:::
+
+::: proof
+**(⇐) $B_{K}$ の側で開ならコンパクト開位相で開.** $f\in O$ と $B_{K}(f,\varepsilon)\subseteq O$ をとる。$f$ を含むコンパクト開位相の開集合で $B_{K}(f,\varepsilon)$ に含まれるものを作ればよい。$K=\varnothing$ なら $B_{K}=C(X,Y)$ なので自明。
+- 各 $x\in K$ について、$f$ の連続性から $x$ の開近傍 $W_{x}$ で $f(W_{x})\subseteq B(f(x),\varepsilon/4)$ となるものをとる（$B$ は $\rho$ の開球）。$K$ はコンパクトなので、有限個の $x_{1},\dots,x_{n}$ で $K\subseteq W_{x_{1}}\cup\dots\cup W_{x_{n}}$。
+- $K_{i}\defeq K\cap\overline{W_{x_{i}}}$ は $K$ の閉集合なのでコンパクト。$f$ の連続性から $f(\overline{W_{x_{i}}})\subseteq\overline{f(W_{x_{i}})}\subseteq\{y:\rho(y,f(x_{i}))\le\varepsilon/4\}\subseteq U_{i}\defeq B(f(x_{i}),\varepsilon/2)$。
+- $N\defeq\bigcap_{i}M(K_{i},U_{i})$ は $f$ を含むコンパクト開位相の開集合。$g\in N$, $x\in K$ について、$x\in K_{i}$ となる $i$ をとると
+$$
+\rho(f(x),g(x))\le\rho(f(x),f(x_{i}))+\rho(f(x_{i}),g(x))<\tfrac{\varepsilon}{4}+\tfrac{\varepsilon}{2}=\tfrac{3\varepsilon}{4}.
+$$
+よって $\sup_{x\in K}\rho(f(x),g(x))\le3\varepsilon/4<\varepsilon$ で、$N\subseteq B_{K}(f,\varepsilon)$。
+
+**(⇒) コンパクト開位相で開なら $B_{K}$ の側で開.** コンパクト開位相の開集合は準開基の有限個の共通部分の和集合なので、$f\in M(K_{1},U_{1})\cap\dots\cap M(K_{m},U_{m})\subseteq O$ とする。各 $j$ について、\ref{top:function-topologies-compared} の 2 の証明と同じく、$\varepsilon_{j}>0$ で $\sup_{x\in K_{j}}\rho(f(x),g(x))<\varepsilon_{j}\Rightarrow g\in M(K_{j},U_{j})$ となるものがある（そこでは $\rho^{\ast}$ を使ったが、使ったのは $K$ 上の点だけ）。$K\defeq K_{1}\cup\dots\cup K_{m}$（コンパクト）、$\varepsilon\defeq\min_{j}\varepsilon_{j}$ とすれば $B_{K}(f,\varepsilon)\subseteq O$。
+:::
+
+::: hypcheck
+- **$K$ のコンパクト性**：(⇐) で有限個の $W_{x_{i}}$ を選ぶのと、$K_{i}$ がコンパクトになることに使った。(⇒) では有限和 $K$ がコンパクトであることと、\ref{top:compact-closed-distance} に使った。
+- **$Y$ の距離**：開球と三角不等式に使った。$Y$ が距離空間でないときは、コンパクト開位相を「一様構造」で記述することになる（補足）。
+- **$f$ の連続性**：$W_{x}$ の存在と、閉包の像の評価に使った。
+:::
+
+::: corollary コンパクトな定義域 {#top:compact-domain-uniform keywords="for compact domain the uniform topology equals the compact-open topology and is independent of the metric" index="一様収束位相の距離への非依存性|いちようしゅうそくいそうのきょりへのひいぞんせい"}
+$X$ がコンパクト、$(Y,\rho)$ が距離空間なら、$C_{c}(X,Y)=C_{u}(X,Y)$。とくに一様収束位相は、$Y$ の位相を定める距離 $\rho$ の選び方によらない。
+:::
+
+::: proof
+\ref{top:compact-open-uniform-on-compacta} で $K=X$ ととれる（$B_{X}(f,\varepsilon)$ は $\varepsilon\le1$ なら $\rho^{\ast}$ の $\varepsilon$ 球）ので、一様収束位相の開集合はコンパクト開位相の開集合。逆は \ref{top:function-topologies-compared} の 2。コンパクト開位相は $Y$ の位相だけで定まる。
+:::
+
+::: example 定義域がコンパクトでないと距離に依存する
+$X=\N$（離散）、$Y=\R$ とし、通常の距離 $\rho(s,t)=|s-t|$ と、同じ位相を定める距離 $\rho'(s,t)\defeq|\arctan s-\arctan t|$ を考える。$f(k)\defeq k$, $f_{n}(k)\defeq k$（$k<n$）, $f_{n}(k)\defeq k+1$（$k\ge n$）とすると、$\rho^{\ast}(f_{n},f)=1$ で $\rho$ についての一様収束位相では収束しないが、$\rho'^{\ast}(f_{n},f)=\sup_{k\ge n}(\arctan(k+1)-\arctan k)\le\sup_{k\ge n}\frac{1}{1+k^{2}}\to0$（平均値の定理）なので $\rho'$ についての一様収束位相では収束する。よって二つの一様収束位相は異なる。
+:::
+
+::: proposition 一様収束位相の完備性 {#top:uniform-space-complete keywords="C(X,Y) with the sup metric is complete if Y is complete" index="一様収束位相の完備性|いちようしゅうそくいそうのかんびせい"}
+$(Y,\rho)$ が完備なら、$(C(X,Y),\rho^{\ast})$ は完備である。
+:::
+
+::: proof
+$\bar{\rho}$ のコーシー列は $\rho$ のコーシー列で（$\varepsilon<1$ で $\bar{\rho}<\varepsilon\iff\rho<\varepsilon$）、収束も同じなので $(Y,\bar{\rho})$ は完備かつ有界。$C(X,Y)$ は有界な写像の空間 $B(X,Y)$（$\bar{\rho}$ について）の中の連続写像の全体で、$\rho^{\ast}$ はその一様距離なので、\ref{top:bounded-functions-complete} から完備。
+:::
+
+## 問題 {#top:sec-fs-problems}
+
+::: problem {#top:prob-fs-closed-sets}
+任意の $A\subseteq X$ と閉集合 $B\subseteq Y$ について、$M(A,B)$ は $C_{p}(X,Y)$ の閉集合であることを示せ。
+:::
+
+::: solution
+$M(A,B)=\bigcap_{x\in A}M(\{x\},B)$ で、$M(\{x\},B)$ の補集合は $M(\{x\},Y\setminus B)$（$f(x)\notin B\iff f(x)\in Y\setminus B$）なので開。よって $M(\{x\},B)$ は閉で、閉集合の共通部分も閉。
+:::
+
+::: problem {#top:prob-fs-regular}
+$Y$ が正則（$T_{3}$）なら $C_{p}(X,Y)$ も正則であることを示せ。
+:::
+
+::: solution
+$f$ と準開基の有限共通部分 $N=\bigcap_{i=1}^{n}M(\{x_{i}\},U_{i})\ni f$ をとる。$Y$ の正則性から、開集合 $V_{i}$ で $f(x_{i})\in V_{i}\subseteq\overline{V_{i}}\subseteq U_{i}$ となるものがある。$N'\defeq\bigcap_{i}M(\{x_{i}\},V_{i})$ は $f$ の開近傍で、問題 \ref{top:prob-fs-closed-sets} から $\bigcap_{i}M(\{x_{i}\},\overline{V_{i}})$ は閉で $N'$ を含むので $\overline{N'}\subseteq\bigcap_{i}M(\{x_{i}\},\overline{V_{i}})\subseteq N$。$T_{1}$ 性は、$Y$ が $T_{1}$ なら一点 $\{f\}=\bigcap_{x}M(\{x\},\{f(x)\})$ が閉であることから。
+:::
+
+::: supplement
+**前提を変えると.** $Y$ が距離空間でなくても、$Y$ に一様構造（一様空間）があれば一様収束位相とコンパクト集合上の一様収束位相が定義でき、\ref{top:compact-open-uniform-on-compacta} は「コンパクト開位相 $=$ コンパクト集合上の一様収束位相」として成り立つことが知られている（ここでは扱わない）。$X$ が局所コンパクトまたは第一可算なら、コンパクト集合上の一様収束による収束は「広義一様収束」と呼ばれ、複素解析（正則関数の列の収束）で基本的である。
+
+**似た定理.** 各点収束位相の空間 $C_{p}(X,\R)$ の位相的性質から $X$ の性質を読み取る理論（$C_{p}$ 理論。アルハンゲルスキーらによるとされる）がある。たとえば $C_{p}(X,\R)$ が第一可算であることと $X$ が可算であることは同値であることが知られている（チコノフ空間 $X$ について。ここでは確かめていない）。
+
+**高い視点から：関数空間の位相は「どの集合で近さを測るか」.** 三つの位相はいずれも「$f$ と $g$ が、ある集合族の各集合の上で近い」という形をしている：各点収束位相は有限集合、コンパクト開位相はコンパクト集合、一様収束位相は全体。比喩で言えば、二つの地図（写像）の近さを、いくつかの地点だけで比べるか（各点）、任意の有限の地域ごとに比べるか（コンパクト集合）、全世界を一度に比べるか（一様）の違いである。圏論的には、コンパクト開位相は「評価写像 $C(X,Y)\times X\to Y$ を連続にする」ための位相として現れ（次ページ \ref[指数法則]{top:page-exponential-law}）、$X$ が局所コンパクトハウスドルフなら $C_{c}(X,-)$ が $-\times X$ の右随伴になる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

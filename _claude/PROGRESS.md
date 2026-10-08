@@ -248,7 +248,8 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | HA-03 | 18G/01-abelian-categories/03-diagram-lemmas | 図式の補題（メンバー、五項補題、蛇の補題） | VIII.4 | 9600–9900 | 完了 |
 | HA-04 | 18G/01-abelian-categories/04-chain-complexes | 鎖複体・ホモロジー・長完全列・鎖ホモトピー（資料なし。2026-10-08 自律判断） | — | — | 完了 |
 | HD-01 | 18G/02-derived-functors/01-projective-resolutions | 射影対象・射影分解・比較定理（資料なし。新フォルダ 18G/02-derived-functors, id ha-derived） | — | — | 完了 |
-| HD-02 | 18G/02-derived-functors/02-derived-functors | 左導来関手、馬蹄補題と長完全列、Tor と Ext | — | — | 未 |
+| HD-02 | 18G/02-derived-functors/02-derived-functors | 左導来関手、馬蹄補題と長完全列、Tor と Ext | — | — | 完了 |
+| HD-03 | 18G/02-derived-functors/03-tor-ext | Tor と Ext、Z 上の計算、群のコホモロジーとの関係 | — | — | 未 |
 
 特別な極限とカン拡張（18A/04-kan-extensions, id cat-kan。2026-10-08 自律判断）
 | ID | ファイル | 題 | CWM | 本文の行 | 状態 |
@@ -313,6 +314,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 ホモロジー代数 HD-02（18G/02/02-derived-functors, ha:page-derived-functors：左導来関手の定義と well-definedness（選び方によらない・加法関手・射影対象で消える）、右完全なら L_0F ≅ F、馬蹄補題（一段を蛇の補題で）、導来関手の長完全列、完全関手と L_1 の問題）。資料なし。
 - 2026-10-08 ホモロジー代数 HD-01（新フォルダ 18G/02-derived-functors, id ha-derived。01-projective-resolutions, ha:page-projective-resolutions：射影対象と Hom の完全性、双積・直和因子、自由加群は射影的（選択公理）、十分な射影対象、射影分解の存在、比較定理（存在とホモトピーを除く一意性）、射影分解の一意性、Z/n の分解と分裂の問題）。資料なし。§8.2：メニュー・パンくず・検索の分野選択に「導来関手」を確認。
 - 2026-10-08 ホモロジー代数 HA-04（18G/01/04-chain-complexes, ha:page-chain-complexes：鎖複体と鎖写像、サイクルと Coker(C_{n+1}→Z_n) としてのホモロジー（加法関手）、四項完全列 0→H_n→Q_n→Z_{n-1}→H_{n-1}→0、一般形の蛇の補題（短完全版から像で置き換えて導出）、長完全列、鎖ホモトピー不変性と可縮複体）。資料なし。
 - 2026-10-08 一般位相 TU-03（54E/02/03-uniform-completeness, top:page-uniform-completeness：コーシーフィルターと完備性、距離空間との整合、閉集合・直積の完備性と完備部分空間の閉性、全有界、コンパクト ⇔ 完備かつ全有界（超フィルター補題）、コンパクトハウスドルフ空間の一様構造の一意性（対角線の近傍）と連続写像の一様連続性、一様連続写像の延長、完備化の存在（擬距離ごとの完備化の直積へ）と一意性）。資料なし。一様空間の系列 TU-01〜03 完了。

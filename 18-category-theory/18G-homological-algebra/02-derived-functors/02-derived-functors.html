@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>導来関手 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18G-homological-algebra/02-derived-functors/02-derived-functors.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 導来関手 {#ha:page-derived-functors keywords="left derived functor, L_n F, independence of resolution, L_0 F = F for right exact F, horseshoe lemma, long exact sequence of derived functors"}
+
+右完全な加法関手 $F$ は短完全列を短完全列に写すとは限らず、左端のモノ性が失われる。**左導来関手** $L_{n}F$（\ref{ha:left-derived-functor}）は、その失われた情報を高次の項として回収するもので、短完全列 $0\to a'\to a\to a''\to0$ から長完全列
+$$
+\cdots\to L_{1}F(a'')\to F(a')\to F(a)\to F(a'')\to0
+$$
+を作る（\ref{ha:derived-long-exact}）。$L_{n}F(a)$ は $a$ の射影分解に $F$ を施した複体のホモロジーとして定義され、比較定理（\ref{ha:comparison-theorem}）により分解の選び方によらない（\ref{ha:derived-well-defined}）。長完全列の証明には、両端の分解から真ん中の分解を組み立てる**馬蹄補題**（\ref{ha:horseshoe}）を使う。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。鎖複体のホモロジーと長完全列は \ref{ha:page-chain-complexes}、射影分解と比較定理は \ref{ha:page-projective-resolutions} による。
+
+## 記法と定義の確認 {#ha:sec-df-notation}
+
+::: notation
+- $\mathbf{A}$ は十分な射影対象をもつアーベル圏、$\mathbf{B}$ はアーベル圏、$F\colon\mathbf{A}\to\mathbf{B}$ は加法関手。右完全・左完全は \ref{ha:exact-functor} のとおり。
+- 射影対象・射影分解・比較定理・射影分解の一意性は \ref{ha:projective}, \ref{ha:projective-resolution}, \ref{ha:comparison-theorem}, \ref{ha:projective-resolutions-unique} のとおり。分解 $P\xrightarrow{\varepsilon}a$ の $P$ は $a$ を含まない複体（$P_{n}$, $n\ge0$）を指し、$FP$ は各項に $F$ を施した複体。
+- 鎖複体のホモロジー・長完全列・ホモトピー不変性は \ref{ha:homology}, \ref{ha:long-exact-sequence}, \ref{ha:homotopy-invariance} のとおり。(E3) は \ref{ha:page-projective-resolutions} の記法のとおり。
+- 加法関手は双積を双積に写す（双積は等式 $p_{1}i_{1}=1$, $p_{2}i_{2}=1$, $i_{1}p_{1}+i_{2}p_{2}=1$ だけで特徴づけられ（\ref{ha:biproduct}）、加法関手はこれらの等式を保つ）。したがって、分裂する短完全列 $0\to a\xrightarrow{i_{1}}a\oplus b\xrightarrow{p_{2}}b\to0$ を短完全列に写す。
+:::
+
+## 左導来関手 {#ha:sec-df-definition}
+
+::: definition 左導来関手 {#ha:left-derived-functor keywords="left derived functors defined via chosen projective resolutions" index="導来関手|どうらいかんしゅ, 左導来関手|ひだりどうらいかんしゅ"}
+各対象 $a$ に射影分解 $P(a)\xrightarrow{\varepsilon_{a}}a$ を一つずつ選んでおく（\ref{ha:projective-resolution-exists}。選択には選択公理（宇宙の上のもの）を使う）。$n\in\mathbb{Z}$ について
+$$
+L_{n}F(a)\defeq H_{n}\bigl(F\,P(a)\bigr)
+$$
+とし、射 $f\colon a\to a'$ には、$f$ の持ち上げ $\varphi\colon P(a)\to P(a')$（\ref{ha:comparison-theorem}）をとって $L_{n}F(f)\defeq H_{n}(F\varphi)$ とする。$L_{n}F$ を $F$ の $n$ 次**左導来関手**という。
+:::
+
+::: theorem 導来関手の well-definedness {#ha:derived-well-defined keywords="L_n F is a well-defined additive functor, independent of choices up to canonical isomorphism" index="導来関手の一意性|どうらいかんしゅのいちいせい"}
+1. $L_{n}F(f)$ は持ち上げの選び方によらず、$L_{n}F\colon\mathbf{A}\to\mathbf{B}$ は加法関手である。
+2. 別の射影分解 $P'\to a$ を使っても、$H_{n}(FP')$ は $L_{n}F(a)$ と標準的に同型で（$1_{a}$ の持ち上げが引き起こす同型）、この同型は射 $f$ について自然である。
+3. $n<0$ なら $L_{n}F=0$。$P$ が射影的なら、$n\ge1$ で $L_{n}F(P)=0$。
+:::
+
+::: proof
+**1.** 二つの持ち上げは鎖ホモトピーで結ばれ（\ref{ha:comparison-theorem} の 2）、加法関手 $F$ は鎖ホモトピーを保つので、\ref{ha:homotopy-invariance} から $H_{n}(F\varphi)$ は一意。$\varphi$ が $f$ の、$\varphi'$ が $f'$ の持ち上げなら、$\varphi'\varphi$ は $f'f$ の持ち上げ、$\varphi+\psi$ は $f+g$ の持ち上げ、$1$ は $1_{a}$ の持ち上げなので、$H_{n}$ と $F$ の関手性・加法性から $L_{n}F$ は加法関手。
+
+**2.** \ref{ha:projective-resolutions-unique} より $1_{a}$ の持ち上げ $\theta\colon P(a)\to P'$ は $H_{n}(F\theta)$ を同型にし、選び方によらない。$f\colon a\to b$ と $b$ の別の分解 $Q'$ について、$H_{n}(F\cdot)$ を施す前の図式「$P(a)\to P(b)\to Q'$」と「$P(a)\to P'\to Q'$」は、どちらも $f$ の持ち上げ（$P(a)\to Q'$）なので鎖ホモトピーで結ばれ、自然性の四角形は可換。
+
+**3.** $n<0$ では $P(a)_{n}=0$。$P$ が射影的なら $0\to P\xrightarrow{1}P\to0$（次数 $0$ に $P$）が射影分解で、$n\ge1$ の項は $0$ なので、2 から $L_{n}F(P)\cong0$。
+:::
+
+::: proposition 右完全な関手の 0 次 {#ha:l0-right-exact keywords="L_0 F is naturally isomorphic to F when F is right exact" index="0 次導来関手|ぜろじどうらいかんしゅ"}
+$F$ が右完全なら、$L_{0}F\cong F$（自然同型）。
+:::
+
+::: proof
+射影分解 $P_{1}\xrightarrow{\partial_{1}}P_{0}\xrightarrow{\varepsilon}a\to0$ は完全なので、$\varepsilon$ は $\partial_{1}$ の余核である（\ref{ha:page-chain-complexes} の (E2)）。右完全な $F$ は余核（有限の余極限）を保存するので、$F\varepsilon$ は $F\partial_{1}$ の余核。一方 $FP$ の $0$ 次のサイクルは $FP_{0}$ 全体（$FP_{-1}=0$）で、$H_{0}(FP)=\mathrm{Coker}(F\partial_{1})$。よって $F\varepsilon$ が誘導する $H_{0}(FP)\to F(a)$ は同型。自然性：$f$ の持ち上げ $\varphi$ について $F\varepsilon'\,F\varphi_{0}=Ff\,F\varepsilon$。
+:::
+
+## 馬蹄補題 {#ha:sec-df-horseshoe}
+
+::: lemma 馬蹄補題の一段 {#ha:horseshoe-step keywords="one step of the horseshoe lemma via the snake lemma" index="馬蹄補題の一段|ばていほだいのいちだん"}
+短完全列 $0\to a'\xrightarrow{i}a\xrightarrow{p}a''\to0$ と、エピ射 $\varepsilon'\colon P'\to a'$, $\varepsilon''\colon P''\to a''$（$P''$ は射影的）が与えられたとする。$p\lambda=\varepsilon''$ となる $\lambda\colon P''\to a$ をとり、$\varepsilon\colon P'\oplus P''\to a$ を $\varepsilon\iota'=i\varepsilon'$, $\varepsilon\iota''=\lambda$ で定める（$\iota',\iota''$ は双積の入射、$\pi'$, $\pi''$ は射影）。このとき $\varepsilon$ はエピ射で、核のあいだに短完全列 $0\to\mathrm{Ker}\,\varepsilon'\to\mathrm{Ker}\,\varepsilon\to\mathrm{Ker}\,\varepsilon''\to0$（$\iota'$, $\pi''$ から誘導される射）がある。
+:::
+
+::: proof
+**Step 1（可換性）.** 図式
+$$
+\begin{array}{ccccccccc}
+0&\to&P'&\xrightarrow{\iota'}&P'\oplus P''&\xrightarrow{\pi''}&P''&\to&0\\
+&&\downarrow\varepsilon'&&\downarrow\varepsilon&&\downarrow\varepsilon''&&\\
+0&\to&a'&\xrightarrow{i}&a&\xrightarrow{p}&a''&\to&0
+\end{array}
+$$
+の上の行は短完全（双積から）。左の四角形は $\varepsilon\iota'=i\varepsilon'$。右の四角形：$p\varepsilon\iota'=pi\varepsilon'=0=\varepsilon''\pi''\iota'$、$p\varepsilon\iota''=p\lambda=\varepsilon''=\varepsilon''\pi''\iota''$ で、$\iota',\iota''$ は余積の入射なので $p\varepsilon=\varepsilon''\pi''$。
+
+**Step 2（蛇の補題）.** \ref{ha:snake-lemma} から完全列
+$$
+\begin{gathered}
+0\to\mathrm{Ker}\,\varepsilon'\to\mathrm{Ker}\,\varepsilon\to\mathrm{Ker}\,\varepsilon''\\
+\to\mathrm{Coker}\,\varepsilon'\to\mathrm{Coker}\,\varepsilon\to\mathrm{Coker}\,\varepsilon''\to0.
+\end{gathered}
+$$
+$\varepsilon',\varepsilon''$ はエピなので $\mathrm{Coker}\,\varepsilon'=\mathrm{Coker}\,\varepsilon''=0$、したがって $\mathrm{Coker}\,\varepsilon=0$（両側が $0$ の対象にはさまれて完全）で $\varepsilon$ はエピ。また $\mathrm{Ker}\,\varepsilon''\to\mathrm{Coker}\,\varepsilon'=0$ なので核の列は短完全。
+:::
+
+::: theorem 馬蹄補題 {#ha:horseshoe keywords="horseshoe lemma: projective resolutions of the ends of a short exact sequence assemble into one for the middle" index="馬蹄補題|ばていほだい"}
+短完全列 $0\to a'\xrightarrow{i}a\xrightarrow{p}a''\to0$ と射影分解 $P'\xrightarrow{\varepsilon'}a'$, $P''\xrightarrow{\varepsilon''}a''$ について、$a$ の射影分解 $P\xrightarrow{\varepsilon}a$ で、$P_{n}=P'_{n}\oplus P''_{n}$ であり、入射 $\iota'\colon P'\to P$ と射影 $\pi''\colon P\to P''$ が鎖写像で、それぞれ $i$, $p$ を持ち上げる（$\varepsilon\iota'_{0}=i\varepsilon'$, $\varepsilon''\pi''_{0}=p\varepsilon$）ものがある。特に $0\to P'\to P\to P''\to0$ は各次数で分裂する鎖複体の短完全列である。
+:::
+
+::: proof
+$K'_{-1}\defeq a'$, $K_{-1}\defeq a$, $K''_{-1}\defeq a''$ とし、$P'$ について、$n\ge0$ で $e'_{n}\colon P'_{n}\to K'_{n-1}$ を、$n=0$ では $\varepsilon'$、$n\ge1$ では $\partial'_{n}$ を $K'_{n-1}\defeq\mathrm{Ker}\,e'_{n-1}$ の包含 $k'_{n-1}$ を通して $\partial'_{n}=k'_{n-1}e'_{n}$ と書いたものとする。$P'$ の完全性と (E3) から $e'_{n}$ はエピで、$\mathrm{Ker}\,e'_{n}=\mathrm{Ker}\,\partial'_{n}$。$P''$ についても同様に $e''_{n}$, $K''_{n}$, $k''_{n}$ を定める。
+
+$n=0,1,2,\dots$ の順に、短完全列 $0\to K'_{n-1}\xrightarrow{j'_{n-1}}K_{n-1}\xrightarrow{j''_{n-1}}K''_{n-1}\to0$ が得られているとし（$n=0$ では与えられた列）、\ref{ha:horseshoe-step} を $(e'_{n},e''_{n})$ に適用して、エピ $e_{n}\colon P_{n}\defeq P'_{n}\oplus P''_{n}\to K_{n-1}$ と、核 $K_{n}\defeq\mathrm{Ker}\,e_{n}$（包含 $k_{n}$）の短完全列 $0\to K'_{n}\to K_{n}\to K''_{n}\to0$ を得る。ここで $e_{n}\iota'=j'_{n-1}e'_{n}$, $j''_{n-1}e_{n}=e''_{n}\pi''$（\ref{ha:horseshoe-step} の Step 1）、核の間の射は $k_{n}j'_{n}=\iota'k'_{n}$, $k''_{n}j''_{n}=\pi''k_{n}$ を満たす。
+
+$\varepsilon\defeq e_{0}$, $\partial_{n}\defeq k_{n-1}e_{n}$（$n\ge1$）とする。
+- **鎖複体で完全.** $\partial_{n}\partial_{n+1}=k_{n-1}e_{n}k_{n}e_{n+1}=0$。$\mathrm{im}\,\partial_{n+1}=k_{n}=\ker e_{n}=\ker\partial_{n}$（$e_{n+1}$ エピ、$k_{n-1}$ モノ）。$P_{0}$ と $a$ でも同様。$P_{n}$ は射影的（\ref{ha:projective-basic} の 2）。
+- **$\iota'$ は鎖写像.** $\partial_{n}\iota'=k_{n-1}e_{n}\iota'=k_{n-1}j'_{n-1}e'_{n}=\iota'k'_{n-1}e'_{n}=\iota'\partial'_{n}$。$n=0$ では $\varepsilon\iota'=j'_{-1}\varepsilon'=i\varepsilon'$。
+- **$\pi''$ は鎖写像.** $\pi''\partial_{n}=\pi''k_{n-1}e_{n}=k''_{n-1}j''_{n-1}e_{n}=k''_{n-1}e''_{n}\pi''=\partial''_{n}\pi''$。$n=0$ では $p\varepsilon=\varepsilon''\pi''$。
+:::
+
+::: hypcheck
+- **$P''_{n}$ の射影性**：各段の \ref{ha:horseshoe-step} で $\lambda$ を作るのに使った。$P'_{n}$ の射影性は $P_{n}$ の射影性のためだけに使う。
+- **蛇の補題**：各段で $e_{n}$ がエピであることと、核の短完全列を得るのに使った。
+:::
+
+## 長完全列 {#ha:sec-df-long-exact}
+
+::: theorem 導来関手の長完全列 {#ha:derived-long-exact keywords="long exact sequence of left derived functors" index="導来関手の長完全列|どうらいかんしゅのちょうかんぜんれつ"}
+短完全列 $0\to a'\xrightarrow{i}a\xrightarrow{p}a''\to0$ について、射 $\delta_{n}\colon L_{n}F(a'')\to L_{n-1}F(a')$ があり、次の列は完全である。
+$$
+\begin{gathered}
+\cdots\to L_{n}F(a')\xrightarrow{L_{n}F(i)}L_{n}F(a)\xrightarrow{L_{n}F(p)}L_{n}F(a'')\xrightarrow{\ \delta_{n}\ }L_{n-1}F(a')\to\cdots\\
+\cdots\to L_{0}F(a')\to L_{0}F(a)\to L_{0}F(a'')\to0
+\end{gathered}
+$$
+特に $F$ が右完全なら、右端は $F(a')\to F(a)\to F(a'')\to0$ である。
+:::
+
+::: proof
+$a'$, $a''$ の射影分解 $P'$, $P''$ をとり、馬蹄補題（\ref{ha:horseshoe}）で $a$ の射影分解 $P$ と各次数で分裂する短完全列 $0\to P'\xrightarrow{\iota'}P\xrightarrow{\pi''}P''\to0$ を作る。加法関手 $F$ は分裂する短完全列を短完全列に写すので、$0\to FP'\to FP\to FP''\to0$ は鎖複体の短完全列。\ref{ha:long-exact-sequence} から $H_{n}(FP')$, $H_{n}(FP)$, $H_{n}(FP'')$ の長完全列を得る。\ref{ha:derived-well-defined} の 2 により、これらは $L_{n}F(a')$, $L_{n}F(a)$, $L_{n}F(a'')$ と標準的に同型で、$\iota'$, $\pi''$ は $i$, $p$ の持ち上げなので、$H_{n}(F\iota')$, $H_{n}(F\pi'')$ はこの同型のもとで $L_{n}F(i)$, $L_{n}F(p)$ に対応する（自然性）。$L_{-1}F=0$ から右端は $\to0$ で終わる。後半は \ref{ha:l0-right-exact}。
+:::
+
+::: hypcheck
+- **十分な射影対象**：$L_{n}F$ の定義（射影分解の存在）に使った。
+- **$F$ の加法性**：分裂短完全列の保存と、鎖ホモトピーの保存（well-definedness）に使った。右完全性は $L_{0}F\cong F$ にだけ使う。
+- **馬蹄補題**：分解どうしの短完全列を作るのに必要。任意の三つの分解の間に短完全列があるわけではない。
+:::
+
+## 問題 {#ha:sec-df-problems}
+
+::: problem {#ha:prob-df-exact-functor}
+$F$ が完全なら、$n\ge1$ で $L_{n}F=0$ であることを示せ。
+:::
+
+::: solution
+射影分解 $P\to a$ について、$\cdots\to P_{1}\to P_{0}\to a\to0$ は完全で、完全な $F$ は完全列を完全列に写す（核と余核、したがって像を保存する）。よって $FP$ は $n\ge1$ の次数で完全であり（$FP_{1}\to FP_{0}$ の後には $Fa$ が続くが、$H_{n}$, $n\ge1$ には関係しない）、$H_{n}(FP)=0$。
+:::
+
+::: problem {#ha:prob-df-projective-test}
+$L_{1}F(a'')=0$ がすべての $a''$ で成り立ち $F$ が右完全なら、$F$ は完全であることを示せ。
+:::
+
+::: solution
+短完全列 $0\to a'\to a\to a''\to0$ について、\ref{ha:derived-long-exact} の $L_{1}F(a'')=0\to F(a')\to F(a)\to F(a'')\to0$ が完全なので、$F$ は短完全列を短完全列に写す。このとき $F$ は核を保存する：射 $f\colon b\to c$ を像 $b\to I\to c$ で分け、短完全列 $0\to\mathrm{Ker}\,f\to b\to I\to0$ と $0\to I\to c\to\mathrm{Coker}\,f\to0$ に $F$ を施すと、$F(\mathrm{Ker}\,f)\to F(b)$ は $F(b)\to F(I)$ の核で、$F(I)\to F(c)$ はモノなので、それは $Ff=F(I\to c)\circ F(b\to I)$ の核でもある。\ref{ha:left-exact-criterion} より $F$ は左完全で、右完全と合わせて完全。
+:::
+
+::: supplement
+**前提を変えると.** 左完全な関手 $G$ については、十分な入射対象があれば入射分解を使って右導来関手 $R^{n}G$ が定義され、$0\to G(a')\to G(a)\to G(a'')\to R^{1}G(a')\to\cdots$ という長完全列が得られる（双対の議論）。反変関手 $\mathrm{Hom}(-,b)$ のように、射影分解を使って右導来関手を作れる場合もある（\ref[Tor と Ext]{ha:page-tor-ext}）。
+
+**似た定理.** 導来関手は、長完全列をもつ関手の族（$\delta$ 関手）の中で「普遍的」なものとして特徴づけられることが知られている（グロタンディークの東北論文。ここでは扱わない）。
+
+**高い視点から：失われた完全性を補う塔.** 右完全な関手は短完全列の左端を壊すが、壊れ方には「規則」がある。射影対象の上では $F$ は何も壊さない（$L_{n}F(P)=0$）ので、対象を射影対象で分解してから $F$ を施せば、壊れ方の情報はすべて複体のホモロジーとして記録される。比喩で言えば、$F$ は透明でない窓ガラスで、対象をそのまま見ると一部が見えないが、透明な部品（射影対象）に分解してから窓越しに眺め、組み立て直すときの「継ぎ目」の歪み（ホモロジー）を順に記録すると、見えなかった部分が $L_{1}F, L_{2}F,\dots$ として現れる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -8660,6 +8660,20 @@
       "num": "3.7",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/03-diagram-lemmas.html"
     },
+    "ha:derived-long-exact": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "導来関手の長完全列",
+      "num": "2.6",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/02-derived-functors.html"
+    },
+    "ha:derived-well-defined": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "導来関手の well-definedness",
+      "num": "2.2",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/02-derived-functors.html"
+    },
     "ha:exact-functor": {
       "status": "defined",
       "type": "definition",
@@ -8723,6 +8737,20 @@
       "num": "4.7",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/04-chain-complexes.html"
     },
+    "ha:horseshoe": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "馬蹄補題",
+      "num": "2.5",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/02-derived-functors.html"
+    },
+    "ha:horseshoe-step": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "馬蹄補題の一段",
+      "num": "2.4",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/02-derived-functors.html"
+    },
     "ha:image-factorization": {
       "status": "defined",
       "type": "theorem",
@@ -8743,6 +8771,20 @@
       "title": "零射・核・余核",
       "num": "1.1",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/01-additive.html"
+    },
+    "ha:l0-right-exact": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "右完全な関手の 0 次",
+      "num": "2.3",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/02-derived-functors.html"
+    },
+    "ha:left-derived-functor": {
+      "status": "defined",
+      "type": "definition",
+      "title": "左導来関手",
+      "num": "2.1",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/02-derived-functors.html"
     },
     "ha:left-exact-criterion": {
       "status": "defined",
@@ -8799,6 +8841,13 @@
       "title": "鎖複体とホモロジー",
       "num": "",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/04-chain-complexes.html"
+    },
+    "ha:page-derived-functors": {
+      "status": "defined",
+      "type": "page",
+      "title": "導来関手",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/02-derived-functors.html"
     },
     "ha:page-diagram-lemmas": {
       "status": "defined",
@@ -8869,6 +8918,20 @@
       "title": "",
       "num": "4.8",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/04-chain-complexes.html"
+    },
+    "ha:prob-df-exact-functor": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "2.7",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/02-derived-functors.html"
+    },
+    "ha:prob-df-projective-test": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "2.8",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/02-derived-functors.html"
     },
     "ha:prob-dl-short-five": {
       "status": "defined",
@@ -9051,6 +9114,41 @@
       "title": "一般形の蛇の補題",
       "num": "",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/04-chain-complexes.html"
+    },
+    "ha:sec-df-definition": {
+      "status": "defined",
+      "type": "section",
+      "title": "左導来関手",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/02-derived-functors.html"
+    },
+    "ha:sec-df-horseshoe": {
+      "status": "defined",
+      "type": "section",
+      "title": "馬蹄補題",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/02-derived-functors.html"
+    },
+    "ha:sec-df-long-exact": {
+      "status": "defined",
+      "type": "section",
+      "title": "長完全列",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/02-derived-functors.html"
+    },
+    "ha:sec-df-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/02-derived-functors.html"
+    },
+    "ha:sec-df-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/02-derived-functors.html"
     },
     "ha:sec-dl-five": {
       "status": "defined",
@@ -33798,11 +33896,11 @@
         "03-mathematical-logic/03C-model-theory/01-elementary-extensions/04-acf.html"
       ]
     },
-    "ha:page-derived-functors": {
+    "ha:page-tor-ext": {
       "status": "planned",
-      "title": "導来関手",
+      "title": "Tor と Ext",
       "referencedFrom": [
-        "18-category-theory/18G-homological-algebra/02-derived-functors/01-projective-resolutions.html"
+        "18-category-theory/18G-homological-algebra/02-derived-functors/02-derived-functors.html"
       ]
     },
     "lin:basis-existence": {

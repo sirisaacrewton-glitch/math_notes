@@ -407,3 +407,4 @@
 | completely metrizable / Polish space | 完備距離化可能 / ポーランド空間 | 位相的完備 | 標準的。top:page-complete-metrizability |
 | topological group / coset space / left uniformity / Birkhoff-Kakutani theorem / left-invariant metric | 位相群 / 剰余空間 / 左一様構造 / バーコフ–角谷の定理 / 左不変距離 | 等質空間 | 標準的。top:page-topological-groups |
 | productive set / creative set / m-complete / 1-reducible / Myhill isomorphism theorem | 生産的集合 / 創造的集合 / m 完全 / 1 還元可能 / マイヒルの同型定理 | 産出的集合 | 新井に合わせる。comp:page-creative-sets |
+| Ehrenfeucht-Fraisse game / quantifier rank / partial isomorphism / Spoiler / Duplicator | エーレンフォイヒト–フライッセゲーム / 量化子の深さ / 部分同型 / 攻め手 / 受け手 | 量化子のランク、スポイラー・デュプリケーター | 仮。model:page-ef-games |

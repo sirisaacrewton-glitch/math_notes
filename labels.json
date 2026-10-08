@@ -14736,6 +14736,20 @@
       "num": "2.12",
       "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/02-elementary-chains.html"
     },
+    "model:ef-game": {
+      "status": "defined",
+      "type": "definition",
+      "title": "エーレンフォイヒト–フライッセゲーム",
+      "num": "5.4",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/05-ef-games.html"
+    },
+    "model:ef-theorem": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "エーレンフォイヒト–フライッセの定理",
+      "num": "5.5",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/05-ef-games.html"
+    },
     "model:elementary-chain": {
       "status": "defined",
       "type": "theorem",
@@ -14855,6 +14869,13 @@
       "num": "6.7",
       "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/06-dimension.html"
     },
+    "model:finitely-many-formulas": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "論理式の有限性",
+      "num": "5.3",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/05-ef-games.html"
+    },
     "model:forall-exists-chain": {
       "status": "defined",
       "type": "proposition",
@@ -14945,6 +14966,13 @@
       "title": "レフシェッツの原理",
       "num": "4.8",
       "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/04-acf.html"
+    },
+    "model:linear-order-game": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "線形順序のゲーム",
+      "num": "5.6",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/05-ef-games.html"
     },
     "model:los-any-assignment": {
       "status": "defined",
@@ -15100,6 +15128,13 @@
       "num": "",
       "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/06-dimension.html"
     },
+    "model:page-ef-games": {
+      "status": "defined",
+      "type": "page",
+      "title": "エーレンフォイヒト–フライッセゲーム",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/05-ef-games.html"
+    },
     "model:page-elementary-chains": {
       "status": "defined",
       "type": "page",
@@ -15205,6 +15240,20 @@
       "num": "3.5",
       "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/03-vaught-pairs.html"
     },
+    "model:parity-not-definable": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "偶奇は一階で定義できない",
+      "num": "5.7",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/05-ef-games.html"
+    },
+    "model:partial-isomorphism": {
+      "status": "defined",
+      "type": "definition",
+      "title": "部分同型",
+      "num": "5.2",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/05-ef-games.html"
+    },
     "model:prime-and-saturated": {
       "status": "defined",
       "type": "corollary",
@@ -15274,6 +15323,20 @@
       "title": "",
       "num": "6.9",
       "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/06-dimension.html"
+    },
+    "model:prob-ef-infinite-sets": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "5.8",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/05-ef-games.html"
+    },
+    "model:prob-ef-two-three": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "5.9",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/05-ef-games.html"
     },
     "model:prob-elementary-chain": {
       "status": "defined",
@@ -15527,6 +15590,13 @@
       "num": "3.1",
       "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/03-quantifier-elimination.html"
     },
+    "model:quantifier-rank": {
+      "status": "defined",
+      "type": "definition",
+      "title": "量化子の深さ",
+      "num": "5.1",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/05-ef-games.html"
+    },
     "model:ramsey": {
       "status": "defined",
       "type": "theorem",
@@ -15750,6 +15820,41 @@
       "title": "下降レーヴェンハイム–スコーレムの定理",
       "num": "",
       "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/01-elementary-substructures.html"
+    },
+    "model:sec-ef-game": {
+      "status": "defined",
+      "type": "section",
+      "title": "ゲームと定理",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/05-ef-games.html"
+    },
+    "model:sec-ef-linear": {
+      "status": "defined",
+      "type": "section",
+      "title": "応用：有限線形順序",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/05-ef-games.html"
+    },
+    "model:sec-ef-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/05-ef-games.html"
+    },
+    "model:sec-ef-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/05-ef-games.html"
+    },
+    "model:sec-ef-rank": {
+      "status": "defined",
+      "type": "section",
+      "title": "量化子の深さと部分同型",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/05-ef-games.html"
     },
     "model:sec-elementary-notation": {
       "status": "defined",

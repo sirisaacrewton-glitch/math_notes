@@ -322,6 +322,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 モデル理論 MT-11（03C/01/05-ef-games, model:page-ef-games：量化子の深さと ≡_n、部分同型、有限関係言語での論理式の有限性、EF ゲームと EF の定理（⇐ で論理式の有限性を使う）、有限線形順序のゲーム（距離が 2^{n-i} について合う不変条件）、偶奇は一階で定義できない、無限集合と 2・3 元の順序の問題）。資料なし。
 - 2026-10-08 AC-09 の補足から AC-10 の系（単純集合は m 完全でない）へ参照を追加。
 - 2026-10-08 計算可能性 AC-10（03D/03/10-creative-sets, comp:page-creative-sets：生産的・創造的集合、K は創造的、全域な生産関数、生産的集合は認識可能な無限部分集合を含む、パラメータ付き再帰定理（再帰定理の証明を一様化）、創造的 ⇔ m 完全、単純集合は m 完全でない、マイヒルの同型定理（往復論法））。新井 §6.2.2（マイヒルの同型定理は資料なし）。
 - 2026-10-08 TU-01・TU-02 の補足の位相群についての「確かめていない」記述を、TG-02 の定理への参照に置き換えた。
@@ -441,6 +442,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | MT-02 | 01-elementary-extensions/02-elementary-chains | 初等鎖と保存定理 | 3 | 完了 |
 | MT-03 | 01-elementary-extensions/03-quantifier-elimination | 量化子消去とモデル完全性（DLO） | 1, 3 | 完了 |
 | MT-04 | 01-elementary-extensions/04-acf | 代数的閉体の量化子消去 | 1, 3 | 完了 |
+| MT-11 | 01-elementary-extensions/05-ef-games | エーレンフォイヒト–フライッセゲーム（資料なし。2026-10-08 自律判断） | — | 完了 |
 | MT-05 | 02-types-and-countable-models/01-types-omitting | 型と型の省略定理 | 2 | 完了 |
 | MT-06 | 02-types-and-countable-models/02-countable-models | 原子モデル・素モデル・可算範疇性 | 2 | 完了 |
 | MT-07 | 02-types-and-countable-models/03-saturated-models | 飽和モデル | 5 | 完了 |

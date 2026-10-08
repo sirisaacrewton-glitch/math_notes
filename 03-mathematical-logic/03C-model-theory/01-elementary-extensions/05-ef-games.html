@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>エーレンフォイヒト–フライッセゲーム | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03C-model-theory/01-elementary-extensions/05-ef-games.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# エーレンフォイヒト–フライッセゲーム {#model:page-ef-games keywords="Ehrenfeucht-Fraisse game, quantifier rank, partial isomorphism, n-equivalence, Duplicator, Spoiler, finitely many formulas up to equivalence, finite linear orders, parity is not first-order definable"}
+
+二つの構造が同じ文を満たすかどうか（初等的同値、\ref{model:elementary-equivalence}）を、論理式を使わずに**ゲーム**で判定する方法がある。**エーレンフォイヒト–フライッセゲーム** $G_{n}(\mathcal{M},\mathcal{N})$（\ref{model:ef-game}）では、攻め手が一方の構造の点を選ぶたびに、受け手がもう一方の構造の点で応じ、$n$ 回後に選ばれた点の対応が部分同型であれば受け手の勝ちとする。主定理は、有限な関係言語では、受け手が勝つことと、二つの構造が**量化子の深さ** $n$ 以下のすべての文で一致することが同値である、というものである（\ref{model:ef-theorem}）。応用として、有限線形順序の「元の個数が偶数」が一階の文で表せないことを示す（\ref{model:parity-not-definable}）。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。
+
+## 記法と定義の確認 {#model:sec-ef-notation}
+
+::: notation
+- 構造・割り当て・充足・初等的同値・部分構造は \ref{logic:structure}, \ref{logic:satisfaction}, \ref{model:elementary-equivalence}, \ref{model:substructure} のとおり。論理式の基本記号は $\bot,=,P,\to,\forall$ で、$\neg,\wedge,\vee,\exists$ は略記（\ref{model:page-elementary-substructures} の記法）。
+- 本ページでは、言語 $L$ は**有限な関係言語**（有限個の関係記号だけをもち、関数記号・定数記号をもたない）とする。
+- $\vec{a}=(a_{1},\dots,a_{k})$ は $M$ の元の列。$\mathcal{M}\models\varphi[\vec{a}]$ は、自由変数 $x_{1},\dots,x_{k}$ に $\vec{a}$ を割り当てて $\varphi$ が成り立つことを表す。
+:::
+
+## 量化子の深さと部分同型 {#model:sec-ef-rank}
+
+::: definition 量化子の深さ {#model:quantifier-rank keywords="quantifier rank of a formula" index="量化子の深さ|りょうかしのふかさ"}
+論理式 $\varphi$ の**量化子の深さ** $\mathrm{qr}(\varphi)$ を、原子論理式で $0$、$\mathrm{qr}(\varphi\to\psi)\defeq\max\{\mathrm{qr}(\varphi),\mathrm{qr}(\psi)\}$、$\mathrm{qr}(\forall y\,\varphi)\defeq\mathrm{qr}(\varphi)+1$ で定める。$(\mathcal{M},\vec{a})\equiv_{n}(\mathcal{N},\vec{b})$ は、自由変数が $x_{1},\dots,x_{k}$ の中にある $\mathrm{qr}\le n$ のすべての論理式 $\varphi$ について $\mathcal{M}\models\varphi[\vec{a}]\iff\mathcal{N}\models\varphi[\vec{b}]$ となることをいう（$k=0$ では文について）。
+:::
+
+::: definition 部分同型 {#model:partial-isomorphism keywords="partial isomorphism between structures" index="部分同型|ぶぶんどうけい"}
+$\vec{a}\in M^{k}$, $\vec{b}\in N^{k}$ について、$a_{i}\mapsto b_{i}$ が**部分同型**であるとは、すべての $i,j$ で $a_{i}=a_{j}\iff b_{i}=b_{j}$ であり、すべての $n$ 項関係記号 $R$ と $i_{1},\dots,i_{n}$ で $R^{\mathcal{M}}(a_{i_{1}},\dots,a_{i_{n}})\iff R^{\mathcal{N}}(b_{i_{1}},\dots,b_{i_{n}})$ となることをいう。これは $(\mathcal{M},\vec{a})\equiv_{0}(\mathcal{N},\vec{b})$ と同値である（$\mathrm{qr}=0$ の論理式は原子論理式の $\to$ と $\bot$ による組み合わせ）。
+:::
+
+::: lemma 論理式の有限性 {#model:finitely-many-formulas keywords="for a finite relational language there are finitely many formulas of bounded quantifier rank up to equivalence" index="論理式の有限性|ろんりしきのゆうげんせい"}
+有限な関係言語で、$k,n\ge0$ を固定すると、自由変数が $x_{1},\dots,x_{k}$ の中にある $\mathrm{qr}\le n$ の論理式は、論理的同値を除いて有限個しかない。
+:::
+
+::: proof
+$n$ に関する帰納法（$k$ はすべての値について同時に示す）。$n=0$：$x_{1},\dots,x_{k}$ だけを使う原子論理式は有限個（$x_{i}=x_{j}$, $R(x_{i_{1}},\dots)$, $\bot$）で、それらの真理関数的な組み合わせは、真理値表で決まるので同値を除いて有限個。$n+1$：$\mathrm{qr}\le n+1$ の論理式は、原子論理式と $\forall y\,\psi$（$\mathrm{qr}(\psi)\le n$）の真理関数的な組み合わせである。束縛変数の名前を $y=x_{k+1}$ に揃えれば（同値を保つ）、$\psi$ は自由変数が $x_{1},\dots,x_{k+1}$ の中にある $\mathrm{qr}\le n$ の論理式で、帰納法の仮定から同値を除いて有限個。よって $\forall x_{k+1}\psi$ も有限個で、それらと原子論理式の組み合わせも同値を除いて有限個。
+:::
+
+## ゲームと定理 {#model:sec-ef-game}
+
+::: definition エーレンフォイヒト–フライッセゲーム {#model:ef-game keywords="Ehrenfeucht-Fraisse game G_n(M,N), Spoiler, Duplicator, winning strategy" index="エーレンフォイヒト–フライッセゲーム|えーれんふぉいひとふらいっせげーむ, EF ゲーム|いーえふげーむ"}
+構造 $\mathcal{M},\mathcal{N}$ と列 $\vec{a}\in M^{k}$, $\vec{b}\in N^{k}$ について、ゲーム $G_{n}(\mathcal{M},\vec{a};\mathcal{N},\vec{b})$ は二人（**攻め手**と**受け手**）が $n$ 回の手番を行う：第 $i$ 回に、攻め手は $\mathcal{M}$ か $\mathcal{N}$ を選んでその元を一つ選び、受け手はもう一方の構造の元を一つ選ぶ。$M$ 側で選ばれた元を $a_{k+i}$、$N$ 側を $b_{k+i}$ とする。$n$ 回後に $a_{1},\dots,a_{k+n}\mapsto b_{1},\dots,b_{k+n}$ が部分同型なら受け手の勝ち、そうでなければ攻め手の勝ちとする。受け手が攻め手のどの手にも対応して勝てる応じ方（**必勝戦略**）をもつとき、「受け手が勝つ」という。$k=0$ のゲームを $G_{n}(\mathcal{M},\mathcal{N})$ と書く。
+:::
+
+::: theorem エーレンフォイヒト–フライッセの定理 {#model:ef-theorem keywords="Duplicator wins G_n iff the structures agree on formulas of quantifier rank at most n" index="エーレンフォイヒト–フライッセの定理|えーれんふぉいひとふらいっせのていり"}
+有限な関係言語で、受け手が $G_{n}(\mathcal{M},\vec{a};\mathcal{N},\vec{b})$ に勝つことと、$(\mathcal{M},\vec{a})\equiv_{n}(\mathcal{N},\vec{b})$ であることは同値である。特に $\mathcal{M}\equiv\mathcal{N}$ は、すべての $n$ で受け手が $G_{n}(\mathcal{M},\mathcal{N})$ に勝つことと同値である。
+:::
+
+::: proof
+$n$ に関する帰納法。$n=0$ では、受け手が勝つことは $\vec{a}\mapsto\vec{b}$ が部分同型であることで、\ref{model:partial-isomorphism} により $\equiv_{0}$ と同値。$n$ で成り立つとして $n+1$ を示す。
+
+**⇐（$\equiv_{n+1}$ なら受け手が勝つ）.** 攻め手が $M$ の元 $a$ を選んだとする。\ref{model:finitely-many-formulas} より、自由変数が $x_{1},\dots,x_{k+1}$ の中にある $\mathrm{qr}\le n$ の論理式の同値類の代表 $\psi_{1},\dots,\psi_{m}$ がとれる。$\chi(\vec{x},x_{k+1})$ を、$\mathcal{M}\models\psi_{j}[\vec{a},a]$ なら $\psi_{j}$、そうでなければ $\neg\psi_{j}$ を、すべての $j$ について $\wedge$ でつないだものとする。$\mathrm{qr}(\chi)\le n$ で $\mathcal{M}\models\chi[\vec{a},a]$ なので $\mathcal{M}\models\exists x_{k+1}\chi[\vec{a}]$。$\mathrm{qr}(\exists x_{k+1}\chi)\le n+1$ なので仮定から $\mathcal{N}\models\exists x_{k+1}\chi[\vec{b}]$、すなわち $\mathcal{N}\models\chi[\vec{b},b]$ となる $b$ がある。受け手は $b$ で応じる。このとき $(\mathcal{M},\vec{a}a)\equiv_{n}(\mathcal{N},\vec{b}b)$：$\mathrm{qr}\le n$ の論理式はある $\psi_{j}$ と同値で、$\psi_{j}$ か $\neg\psi_{j}$ が $\chi$ の連言肢なので、その真偽は $(\vec{a},a)$ と $(\vec{b},b)$ で一致する。帰納法の仮定から、受け手は残り $n$ 回のゲームに勝てる。攻め手が $N$ の元を選んだ場合も対称（$\equiv_{n+1}$ は対称な関係）。
+
+**⇒（受け手が勝つなら $\equiv_{n+1}$）.** 自由変数が $x_{1},\dots,x_{k}$ の中にある $\mathrm{qr}\le n+1$ の論理式 $\varphi$ について、$\mathcal{M}\models\varphi[\vec{a}]\iff\mathcal{N}\models\varphi[\vec{b}]$ を $\varphi$ の構成に関する帰納法で示す。
+- 原子論理式：受け手の必勝戦略で終わったときの対応は部分同型で、その制限 $\vec{a}\mapsto\vec{b}$ も部分同型なので一致する。
+- $\varphi\to\psi$：両方の成分について成り立てば成り立つ。
+- $\forall y\,\psi$（$\mathrm{qr}(\psi)\le n$、$y=x_{k+1}$ とする）：$\mathcal{M}\models\forall y\,\psi[\vec{a}]$ で $\mathcal{N}\not\models\forall y\,\psi[\vec{b}]$ とすると、$\mathcal{N}\models\neg\psi[\vec{b},b]$ となる $b$ がある。攻め手が $b$ を選ぶと、受け手は戦略に従って $a$ で応じ、残り $n$ 回のゲーム $G_{n}(\mathcal{M},\vec{a}a;\mathcal{N},\vec{b}b)$ に勝つ。帰納法の仮定（$n$ について）から $(\mathcal{M},\vec{a}a)\equiv_{n}(\mathcal{N},\vec{b}b)$ で、$\mathcal{M}\models\neg\psi[\vec{a},a]$ となるが、これは $\mathcal{M}\models\forall y\,\psi[\vec{a}]$ に反する。逆向きも対称。
+
+後半：$\mathcal{M}\equiv\mathcal{N}$ はすべての $n$ で $\equiv_{n}$（文はそれぞれある $\mathrm{qr}$ をもつ）と同値。
+:::
+
+::: hypcheck
+- **有限な関係言語**：⇐ で、$\mathrm{qr}\le n$ の論理式を有限個の代表でまとめて一つの論理式 $\chi$ にするのに使った（\ref{model:finitely-many-formulas}）。言語が無限だと $\chi$ は無限の連言になり、⇐ は一般に成り立たない。関数記号があると原子論理式の個数が有限でなくなるが、関係記号に置き換えて扱えることが知られている。
+- ⇒ は言語の有限性を使っていない。
+:::
+
+## 応用：有限線形順序 {#model:sec-ef-linear}
+
+::: lemma 線形順序のゲーム {#model:linear-order-game keywords="finite linear orders of length at least 2^n - 1 are n-equivalent" index="線形順序のゲーム|せんけいじゅんじょのげーむ"}
+言語 $\{<\}$ で、元の個数がともに $2^{n}-1$ 以上の有限線形順序 $\mathcal{M},\mathcal{N}$ について、受け手は $G_{n}(\mathcal{M},\mathcal{N})$ に勝つ。
+:::
+
+::: proof
+$\mathcal{M}=\{1,\dots,p\}$, $\mathcal{N}=\{1,\dots,q\}$ とし、両端に仮想の点 $0$ と $p+1$（$\mathcal{N}$ では $0$ と $q+1$）を加えて考える。距離 $\lvert u-v\rvert$ について、$d\defeq\lvert u-v\rvert$, $d'\defeq\lvert u'-v'\rvert$ が「$\ell$ について合う」とは、$d=d'$ であるか、$d,d'\ge2^{\ell}$ であることとする。
+
+**不変条件.** $i$ 回の手番の後（$0\le i\le n$）、選ばれた点に仮想の端点を加えた列 $a_{-1}=0$, $a_{0}=p+1$, $a_{1},\dots,a_{i}$ と $b_{-1}=0$, $b_{0}=q+1$, $b_{1},\dots,b_{i}$ について、(1) $a_{s}<a_{t}\iff b_{s}<b_{t}$、(2) すべての $s,t$ で $\lvert a_{s}-a_{t}\rvert$ と $\lvert b_{s}-b_{t}\rvert$ が $n-i$ について合う。$i=0$ では、$p+1,q+1\ge2^{n}$ なので (2) が成り立つ。$i=n$ で (1) が成り立てば、$a_{s}\mapsto b_{s}$（$s\ge1$）は順序と等号を保ち、部分同型。
+
+**応じ方.** 不変条件が $i$ で成り立つとし、攻め手が $\mathcal{M}$ の点 $a$ を選んだとする（$\mathcal{N}$ の場合は対称）。$a$ がすでに選ばれた点なら同じ対応の点で応じる。そうでなければ、選ばれた点の中で $a$ の直前の $a_{s}$ と直後の $a_{t}$（$a_{s}<a<a_{t}$、仮想の端点を含む）をとり、$m\defeq n-i-1$ とする。
+- $\lvert a_{t}-a_{s}\rvert=\lvert b_{t}-b_{s}\rvert$ なら、$b\defeq b_{s}+(a-a_{s})$ とする。
+- そうでなければ両方とも $\ge2^{m+1}$ である。$a-a_{s}<2^{m}$ なら $b\defeq b_{s}+(a-a_{s})$、$a_{t}-a<2^{m}$ なら $b\defeq b_{t}-(a_{t}-a)$、両方 $\ge2^{m}$ なら、$b_{s}$ と $b_{t}$ の中点付近の $b$ で $b-b_{s},b_{t}-b\ge2^{m}$ となるもの（$b_{t}-b_{s}\ge2^{m+1}$ なので存在）をとる。
+
+いずれでも、$b$ は $b_{s},b_{t}$ の真の間にあり（$\lvert b_{t}-b_{s}\rvert\ge2^{m+1}>a-a_{s}$ などから）、(1) が保たれ、$a$ と $a_{s},a_{t}$ の距離と $b$ と $b_{s},b_{t}$ の距離は $m$ について合う。他の点 $a_{u}$ との距離は、$a_{u}\le a_{s}$ なら $\lvert a-a_{u}\rvert=\lvert a-a_{s}\rvert+\lvert a_{s}-a_{u}\rvert$ と分解し、それぞれが $m$ について合う（$\lvert a_{s}-a_{u}\rvert$ は $m+1$ について合うので $m$ についても合う）ので、和も $m$ について合う（和が等しいか、一方の項が $2^{m}$ 以上なら和も両方 $2^{m}$ 以上）。$a_{u}\ge a_{t}$ も同様。よって不変条件が $i+1$ で成り立つ。
+:::
+
+::: corollary 偶奇は一階で定義できない {#model:parity-not-definable keywords="evenness of finite linear orders is not first-order definable" index="偶奇の定義不能性|ぐうきのていぎふのうせい"}
+言語 $\{<\}$ の文 $\varphi$ で、すべての有限線形順序 $\mathcal{M}$ について「$\mathcal{M}\models\varphi\iff\lvert M\rvert$ は偶数」となるものはない。
+:::
+
+::: proof
+そのような $\varphi$ があったとし、$n\defeq\mathrm{qr}(\varphi)$ とする。元の個数 $2^{n}$ と $2^{n}+1$ の線形順序はどちらも $2^{n}-1$ 以上なので、\ref{model:linear-order-game} と \ref{model:ef-theorem} から $\equiv_{n}$ で、$\varphi$ の真偽が一致する。しかし一方は偶数、他方は奇数で矛盾する。
+:::
+
+## 問題 {#model:sec-ef-problems}
+
+::: problem {#model:prob-ef-infinite-sets}
+言語が空（等号だけ）のとき、二つの無限集合は初等的同値であることを、ゲームで示せ。
+:::
+
+::: solution
+受け手は、攻め手が選んだ点がすでに選ばれた点なら対応する点で、新しい点なら相手側のまだ選ばれていない点（無限集合なので常にある）で応じる。$n$ 回後の対応は等号を保つ単射で、空の言語では部分同型。\ref{model:ef-theorem} から、すべての $n$ で $\equiv_{n}$、すなわち初等的同値。
+:::
+
+::: problem {#model:prob-ef-two-three}
+言語 $\{<\}$ で、元の個数 $2$ と $3$ の線形順序を区別する $\mathrm{qr}=2$ の文を書き、\ref{model:linear-order-game} の評価 $2^{n}-1$ が $n=2$ では $3$ であることと比べよ。
+:::
+
+::: solution
+「真ん中の元がある」$\exists x\,(\exists y\,y<x\wedge\exists y\,x<y)$ は $\mathrm{qr}=2$（$\exists x$ の中に $\exists y$）で、元が $3$ 個の順序では真、$2$ 個では偽。$n=2$ の評価は「元が $3$ 個以上の順序どうしは区別できない」で、$2$ 個の順序は $3$ 未満なので矛盾しない。
+:::
+
+::: supplement
+**前提を変えると.** ゲームを無限回（可算回）行うと、受け手が勝つことは二つの可算構造が同型であること（往復論法、\ref{model:cantor-dlo}）につながる。手番数を順序数にすると、無限論理 $L_{\infty\omega}$ の初等的同値が特徴づけられることが知られている（カープの定理。ここでは扱わない）。
+
+**似た定理.** 有限構造の上の一階論理の表現力は有限モデル理論の主題であり、EF ゲームによって「グラフの連結性」「元の個数の偶奇」などが一階論理で定義できないことが示される。コンパクト性定理（無限構造で有効な道具）は有限構造だけを考えると使えないので、ゲームが主要な道具になる。
+
+**高い視点から：論理式は「質問」、ゲームは「尋問」.** 量化子の深さ $n$ の文は、構造に $n$ 段階の入れ子の質問（「〜となる元はあるか、それに対して〜となる元はあるか…」）をすることにあたる。EF ゲームはこれを、攻め手が実際に元を指さして「これに対応するものを見せよ」と迫る尋問に置き換える。比喩で言えば、二人の容疑者の供述が $n$ 回の追及に耐えて食い違わなければ、$n$ 段の質問では区別できない。有限線形順序では、十分長ければ $n$ 回の追及で「端からの距離」を正確に測りきれず、偶奇という大域的な性質は見えない。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ループ空間と懸垂 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/02-structured-categories/09-loops-suspensions.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ループ空間と懸垂 {#cat:page-loops-suspensions keywords="pointed spaces, wedge, smash product, pointed mapping space, reduced suspension, loop space, suspension-loop adjunction, path space"}
+
+基点付き空間の圏 $\mathbf{Top}_{*}$ では、直積 $Z\times Y$ の代わりに、二つの「軸」$Z\vee Y$ をつぶした**スマッシュ積** $Z\wedge Y$（\ref{cat:smash-product}）が、基点付き写像の空間 $\mathrm{Map}_{*}(Y,X)$ の左随伴になる（\ref{cat:smash-hom-adjunction}）。$Y$ を円周 $S^{1}$ にとると、**懸垂** $\Sigma$ が**ループ空間** $\Omega$ の左随伴であること（\ref{cat:suspension-loop-adjunction}）が得られる。随伴の一般論から、$\Omega$ は積を保ち、$\Sigma^{n}\dashv\Omega^{n}$ である。
+
+> 資料：S. Mac Lane, *Categories for the Working Mathematician*, 2nd ed., §VII.9 を参考にした（本文は写していない）。同書はコンパクト生成ハウスドルフ空間の圏で議論しているが、ここでは指数法則の相手 $Y$ を局所コンパクトハウスドルフ空間に限ることで、$\mathbf{Top}_{*}$ のまま、ハウスドルフ性を仮定せずに随伴を示した。ループ空間を道の空間の部分空間とみなせること（同書の演習）は、合成による埋め込みとして証明した。
+
+## 記法と定義の確認 {#cat:sec-ls-notation}
+
+::: notation
+- $C_{c}(Y,X)$ は連続写像の空間にコンパクト開位相を入れたもの（\ref{top:compact-open-topology}）。その準開基は $V(K,W)\defeq\{f:f[K]\subseteq W\}$（$K\subseteq Y$ コンパクト、$W\subseteq X$ 開）。指数写像 $\Phi$ は $\Phi(f)(z)(y)=f(z,y)$（\ref{top:exponential-map}）で、$Y$ が局所コンパクトハウスドルフなら全単射 $C(Z\times Y,X)\to C(Z,C_{c}(Y,X))$ を与える（\ref{top:exponential-bijective}）。
+- 部分空間・商位相の普遍性は \ref{top:initial-topology-universal}, \ref{top:final-topology-universal} のとおり。
+- $\mathbf{Top}_{*}$ は**基点付き空間** $(X,*_{X})$ と基点を保つ連続写像の圏。$\mathbf{Top}_{*}(Z,X)$ はその射の集合。随伴は \ref{cat:adjunction} のとおり。
+:::
+
+## スマッシュ積と写像空間 {#cat:sec-ls-smash}
+
+::: definition ウェッジとスマッシュ積 {#cat:smash-product keywords="wedge sum, smash product, pointed mapping space" index="スマッシュ積|すましゅせき, ウェッジ和|うぇっじわ, 基点付き写像空間|きてんつきしゃぞうくうかん"}
+基点付き空間 $Z,Y$ について、**ウェッジ** $Z\vee Y\defeq(Z\times\{*_{Y}\})\cup(\{*_{Z}\}\times Y)\subseteq Z\times Y$ とし、**スマッシュ積** $Z\wedge Y$ を、$Z\times Y$ の $Z\vee Y$ を一点につぶした商空間（基点はつぶした点）とする。商写像を $q\colon Z\times Y\to Z\wedge Y$、$q(z,y)=[z,y]$ と書く。また、基点を保つ連続写像 $Y\to X$ 全体を $C_{c}(Y,X)$ の部分空間とみたものを $\mathrm{Map}_{*}(Y,X)$ とし、定値写像 $y\mapsto*_{X}$ を基点とする。
+:::
+
+::: theorem スマッシュ積と写像空間の随伴 {#cat:smash-hom-adjunction keywords="smash product is left adjoint to pointed mapping space for locally compact Hausdorff Y" index="スマッシュ積の随伴|すましゅせきのずいはん"}
+$Y$ を局所コンパクトハウスドルフな基点付き空間とする。基点付き空間 $Z,X$ について
+$$
+\mathbf{Top}_{*}(Z\wedge Y,X)\ \cong\ \mathbf{Top}_{*}\bigl(Z,\mathrm{Map}_{*}(Y,X)\bigr),\qquad g\mapsto\bigl(z\mapsto g[z,-]\bigr)
+$$
+は全単射で、$Z$, $X$ について自然である。したがって $-\wedge Y\dashv\mathrm{Map}_{*}(Y,-)$。
+:::
+
+::: proof
+**Step 1（商を通る写像）.** 基点を保つ連続写像 $g\colon Z\wedge Y\to X$ に $f\defeq g\circ q\colon Z\times Y\to X$ を対応させる。$f$ は連続で $f[Z\vee Y]=\{*_{X}\}$。逆に、連続写像 $f\colon Z\times Y\to X$ で $f[Z\vee Y]=\{*_{X}\}$ となるものは、$q$ の各ファイバー上で一定なので $f=g\circ q$ となる写像 $g$ がただ一つあり、商位相の普遍性（\ref{top:final-topology-universal}）より $g$ は連続で、基点を保つ。よって
+$$
+\mathbf{Top}_{*}(Z\wedge Y,X)\cong\{f\in C(Z\times Y,X):f[Z\vee Y]=\{*_{X}\}\}.
+$$
+
+**Step 2（指数写像）.** $Y$ は局所コンパクトハウスドルフなので、$f\mapsto\Phi(f)$ は全単射 $C(Z\times Y,X)\to C(Z,C_{c}(Y,X))$（\ref{top:exponential-bijective}）。条件を書き換えると
+- $f(z,*_{Y})=*_{X}$（すべての $z$）$\iff$ すべての $z$ で $\Phi(f)(z)\in\mathrm{Map}_{*}(Y,X)$。このとき、部分空間の普遍性（\ref{top:initial-topology-universal}）より $\Phi(f)$ は $Z\to\mathrm{Map}_{*}(Y,X)$ として連続。
+- $f(*_{Z},y)=*_{X}$（すべての $y$）$\iff$ $\Phi(f)(*_{Z})$ が定値写像 $\iff$ $\Phi(f)$ が基点を保つ。
+
+よって Step 1 の集合は $\mathbf{Top}_{*}(Z,\mathrm{Map}_{*}(Y,X))$ と全単射に対応し、合成した対応は $g\mapsto(z\mapsto g[z,-])$ である。
+
+**Step 3（自然性）.** $a\colon Z'\to Z$, $b\colon X\to X'$（基点を保つ連続写像）について、左辺では $g\mapsto b\circ g\circ(a\wedge1)$（$a\wedge1$ は $[z',y]\mapsto[az',y]$ で、Step 1 と同様に連続）、右辺では $h\mapsto b_{*}\circ h\circ a$（$b_{*}$ は後から $b$ を合成する写像で、$b_{*}^{-1}[V(K,W)]=V(K,b^{-1}[W])$ より連続）。どちらも $z'\mapsto b\circ g[az',-]$ に写るので、対応は可換である。
+:::
+
+::: hypcheck
+- **$Y$ が局所コンパクトハウスドルフ**：Step 2 で指数写像の全単射性（特に、$\Phi(f)$ から $f$ を戻したものが連続であること）に使った。$Z$, $X$ には何も仮定していない。
+- **商位相・部分空間の普遍性**：Step 1, 2 で、写像の連続性を確かめるのに使った。
+:::
+
+## 懸垂とループ空間 {#cat:sec-ls-suspension}
+
+::: definition 懸垂とループ空間 {#cat:suspension-loop keywords="circle as I mod endpoints, reduced suspension, loop space" index="懸垂|けんすい, ループ空間|るーぷくうかん"}
+$I\defeq[0,1]$ の $\{0,1\}$ を一点につぶした商空間を $S^{1}$ とし、その点を基点とする。基点付き空間 $Z$ の（被約）**懸垂**を $\Sigma Z\defeq Z\wedge S^{1}$、基点付き空間 $X$ の**ループ空間**を $\Omega X\defeq\mathrm{Map}_{*}(S^{1},X)$ とする。$\Omega X$ の点は、$\gamma(0)=\gamma(1)=*_{X}$ となる道 $\gamma\colon I\to X$ と一対一に対応する（$\gamma\mapsto$ 商を通る写像）。$\Sigma Z$ は、$Z\times I$ の上面 $Z\times\{1\}$、底面 $Z\times\{0\}$、基点の上の線分 $\{*_{Z}\}\times I$ をまとめて一点につぶしたものである。
+:::
+
+::: lemma 円周はコンパクトハウスドルフ {#cat:circle-compact-hausdorff keywords="I mod endpoints is compact Hausdorff" index="円周（商空間として）|えんしゅうしょうくうかんとして"}
+$S^{1}=I/\{0,1\}$ はコンパクトハウスドルフ空間である。
+:::
+
+::: proof
+**コンパクト.** コンパクト空間 $I$ の連続な像。
+
+**ハウスドルフ.** 商写像を $p$ とする。$s<t$ が $(0,1)$ の点なら、$\varepsilon<(t-s)/2$ かつ $\varepsilon<\min(s,1-t)$ として、$(s-\varepsilon,s+\varepsilon)$ と $(t-\varepsilon,t+\varepsilon)$ は $\{0,1\}$ と交わらない飽和な開集合で、互いに交わらない。基点 $p(0)$ と $t\in(0,1)$ については、$\varepsilon<\min(t,1-t)/2$ として、$[0,\varepsilon)\cup(1-\varepsilon,1]$ と $(t-\varepsilon,t+\varepsilon)$ が交わらない飽和な開集合。飽和な開集合の像は商位相で開なので、分離できる。
+:::
+
+::: corollary 懸垂とループの随伴 {#cat:suspension-loop-adjunction keywords="suspension is left adjoint to loop space; Omega preserves products; iterated adjunction" index="懸垂とループの随伴|けんすいとるーぷのずいはん"}
+1. $\Sigma\dashv\Omega$。すなわち $\mathbf{Top}_{*}(\Sigma Z,X)\cong\mathbf{Top}_{*}(Z,\Omega X)$ が自然に成り立つ。
+2. 単位 $Z\to\Omega\Sigma Z$ は $z\mapsto(t\mapsto[z,t])$、余単位 $\Sigma\Omega X\to X$ は $[\gamma,t]\mapsto\gamma(t)$（評価）である。
+3. $n\ge1$ について $\Sigma^{n}\dashv\Omega^{n}$。
+4. $\Omega$ は $\mathbf{Top}_{*}$ の極限を保存する。特に $\Omega(X\times X')\cong\Omega X\times\Omega X'$（積の基点は $(*,*)$）。
+:::
+
+::: proof
+**1.** \ref{cat:circle-compact-hausdorff} より $S^{1}$ は局所コンパクトハウスドルフなので、\ref{cat:smash-hom-adjunction} で $Y=S^{1}$ とする。
+
+**2.** 単位は $1_{\Sigma Z}$ に対応する射で、\ref{cat:smash-hom-adjunction} の対応 $g\mapsto(z\mapsto g[z,-])$ に $g=1$ を入れたもの。余単位は $1_{\Omega X}$ に対応する $g\colon\Sigma\Omega X\to X$ で、$g[\gamma,-]=\gamma$、すなわち $g[\gamma,t]=\gamma(t)$。
+
+**3.** 随伴の合成は随伴（\ref{cat:adjunction-composition}）なので、帰納法で $\Sigma^{n}=\Sigma\circ\Sigma^{n-1}\dashv\Omega^{n-1}\circ\Omega=\Omega^{n}$。
+
+**4.** 右随伴は極限を保存する（\ref{cat:adjoints-preserve-limits}）。$\mathbf{Top}_{*}$ での積が、$\mathbf{Top}$ での積に基点 $(*,*)$ を与えたものであることは、写像 $(f,f')$ が基点を保つことと $f,f'$ が基点を保つことが同値であることから分かる。
+:::
+
+::: hypcheck
+- **$S^{1}$ の局所コンパクトハウスドルフ性**：1 で \ref{cat:smash-hom-adjunction} を適用するのに使った。
+- 3, 4 は位相の性質を使わず、随伴の一般論だけから従う。
+:::
+
+::: remark
+$\Sigma S^{n}$ が $S^{n+1}$ と同相であること（たとえば $\Sigma S^{1}=S^{1}\wedge S^{1}\cong I^{2}/\partial I^{2}\cong S^{2}$）が知られている。これと随伴から、$\mathbf{Top}_{*}(S^{n},\Omega X)\cong\mathbf{Top}_{*}(S^{n+1},X)$ が得られ、ホモトピー群について $\pi_{n}(\Omega X)\cong\pi_{n+1}(X)$ となることの出発点になる（ホモトピーとの両立は、随伴が $Z\times I$ の上の写像にも同様に働くことによるが、ここでは確かめていない）。
+:::
+
+## 問題 {#cat:sec-ls-problems}
+
+::: problem {#cat:prob-ls-path-space}
+基点付き空間 $X$ について、$PX\defeq\{\gamma\in C_{c}(I,X):\gamma(0)=*_{X}\}$（部分空間）とする。$q\colon I\to S^{1}$ を商写像とすると、$\gamma\mapsto\gamma\circ q$ は $\Omega X$ から $\{\gamma\in PX:\gamma(1)=*_{X}\}$ への同相写像であることを示せ（すなわち、$\Omega X$ は端点への写像 $PX\to X$, $\gamma\mapsto\gamma(1)$ の、基点の上のファイバーである）。
+:::
+
+::: solution
+$q^{*}\colon C_{c}(S^{1},X)\to C_{c}(I,X)$, $\gamma\mapsto\gamma\circ q$ を考える。
+
+**単射.** $q$ は全射なので、$\gamma\circ q=\gamma'\circ q$ なら $\gamma=\gamma'$。
+
+**像.** 連続写像 $\delta\colon I\to X$ が $\gamma\circ q$ の形に書けることは、$\delta(0)=\delta(1)$ と同値（商位相の普遍性）。基点の条件を合わせると、$\Omega X$ の像は $\{\gamma\in PX:\gamma(1)=*_{X}\}$。
+
+**連続.** コンパクトな $K\subseteq I$ について、$(q^{*})^{-1}[V(K,W)]=V(q[K],W)$ で、$q[K]$ はコンパクト。
+
+**像への開写像.** コンパクトな $L\subseteq S^{1}$ は閉（$S^{1}$ はハウスドルフ。\ref{cat:circle-compact-hausdorff}）なので $q^{-1}[L]$ は $I$ の閉集合、したがってコンパクト。$q$ が全射なので、$\gamma[L]\subseteq W\iff(\gamma\circ q)[q^{-1}[L]]\subseteq W$、すなわち $q^{*}[V(L,W)]=V(q^{-1}[L],W)\cap\mathrm{im}\,q^{*}$。準開基の像が像の上の開集合なので、$q^{*}$ は像への同相写像である。部分空間に制限しても同相のまま。
+:::
+
+::: problem {#cat:prob-ls-pointed-sets}
+基点付き集合の圏 $\mathbf{Set}_{*}$ で、固定した基点付き集合 $S$ について、関手 $\mathbf{Set}_{*}(S,-)$（基点付き写像の集合。基点は定値写像）の左随伴を構成せよ。
+:::
+
+::: solution
+$T\wedge S\defeq(T\times S)/(T\vee S)$（ウェッジを一点につぶした集合）とおく。\ref{cat:smash-hom-adjunction} の Step 1, 2 と同じ対応 $g\mapsto(t\mapsto g[t,-])$ が、位相を無視してそのまま全単射 $\mathbf{Set}_{*}(T\wedge S,X)\cong\mathbf{Set}_{*}(T,\mathbf{Set}_{*}(S,X))$ を与える（集合の場合は指数写像が無条件に全単射）。自然性も同じ計算。よって $-\wedge S\dashv\mathbf{Set}_{*}(S,-)$。
+:::
+
+::: supplement
+**前提を変えると.** $Y$ が局所コンパクトでないと、指数写像は一般に全単射にならず（\ref{top:page-exponential-law}）、$-\wedge Y$ は右随伴をもたないことがある。Mac Lane の扱うコンパクト生成ハウスドルフ空間の圏（\ref{cat:compactly-generated}）では、積と写像空間をケリー化で修正することで、すべての $Y$ について $-\wedge Y\dashv\mathrm{Map}_{*}(Y,-)$ が成り立ち、スマッシュ積は対称モノイダル構造（単位は $2$ 点空間）になるとされる。一方、$\mathbf{Top}_{*}$ ではスマッシュ積は一般には結合的でないことが知られている（ここでは確かめていない）。
+
+**似た定理.** \ref{cat:smash-hom-adjunction} は、デカルト閉圏（\ref{cat:page-cartesian-closed}）の指数法則 $-\times Y\dashv(-)^{Y}$ の基点付き版であり、基点付き集合では無条件に成り立つ（\ref{cat:prob-ls-pointed-sets}）。代数での類似は、テンソル積と $\mathrm{Hom}$ の随伴 $-\otimes B\dashv\mathrm{Hom}(B,-)$ である。
+
+**高い視点から：「丸める」と「回す」の双対性.** $\Sigma Z$ は $Z$ を円周の方向に一回「丸めて」閉じた空間、$\Omega X$ は $X$ の中で基点から出て戻る「回り道」の全体である。随伴 $\Sigma\dashv\Omega$ は、「$Z$ を丸めたものを $X$ に写すこと」と「$Z$ の各点に $X$ の中のループを連続に割り当てること」が同じ情報であることを言う。比喩で言えば、$Z$ の各点から一本ずつ糸を出して $X$ の中で輪を描かせる（右辺）ことは、$Z$ を糸ごと円筒にして両端と基点の線をまとめて縛ったもの（$\Sigma Z$）を $X$ に置く（左辺）ことと同じである。次元を一つ上げる $\Sigma$ と一つ下げる $\Omega$ が随伴で結ばれていることが、安定ホモトピー論の出発点になる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

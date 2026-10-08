@@ -236,6 +236,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | CS-06 | 02-structured-categories/06-monoidal-functors | モノイダル関手と厳密化定理（2026-10-08 追加。自律判断） | XI.2–3 | 12028–12265 | 完了 |
 | CS-07 | 02-structured-categories/07-symmetric-coherence | 組紐・対称モノイダル圏、対称群の生成元と関係、対称コヒーレンス | XI.1 | 11857–12027 | 完了 |
 | CS-08 | 02-structured-categories/08-braids | 組紐群と組紐圏、組紐のコヒーレンス | XI.4–6 | 12266–12539 | 完了 |
+| CS-09 | 02-structured-categories/09-loops-suspensions | ループ空間と懸垂 | VII.9 | 8984–9050 | 完了 |
 
 * **（2026-10-08 自律判断）** アーベル圏（Mac Lane 第 VIII 章）は、ホモロジー代数の土台なので `18G-homological-algebra/01-abelian-categories`（id ha-abelian、接頭辞 ha:）に置いた（MSC では 18E10 だが、表示上の「ホモロジー代数」の見出しに入れるため）。ユーザー未確認。
 
@@ -305,6 +306,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 圏論 CS-09（02-structured-categories/09-loops-suspensions, cat:page-loops-suspensions：ウェッジとスマッシュ積、局所コンパクトハウスドルフな Y についての −∧Y ⊣ Map_*(Y,−)（Top_* のまま、CG を使わずに）、I/{0,1} のコンパクトハウスドルフ性、Σ ⊣ Ω と単位・余単位、Σⁿ ⊣ Ωⁿ、Ω の積保存、ΩX を道の空間のファイバーとみなす埋め込み、Set_* のスマッシュ積）。Mac Lane VII.9。
 - 2026-10-08 圏論 CB-11（01-basics/11-adjoints-topology, cat:page-adjoints-topology：D ⊣ U ⊣ D'、始位相をスライス圏の右随伴かつ右逆として、持ち上げから等化子を作る命題（一意性は随伴なしで）、Top の完備性・余完備性、X/A の左随伴性（A=∅ も込めて）、Haus の反射性（解集合条件、単位の全射性、余極限は H 経由）、D' と Haus→Top が右随伴をもたない問題）。Mac Lane V.9。
 - 2026-10-08 圏論 CM-05（03-monads/05-comonads-homology, cat:page-comonads-homology：余モナド、添加単体的対象、普遍モノイドの双対による余モナドの標準構成、前加法圏での鎖複体、群環の余モナドと棒分解の面作用素（ε から計算）、可縮ホモトピーによる完全性（Mac Lane は引用のみ）、群のコホモロジーの具体形と H⁰・H¹）。Mac Lane VII.6。04-simplicial の補足から参照。
 - 2026-10-08 計算複雑性 CC-12（12-approximation-cryptography, comp:page-approx-crypto：近似比、頂点被覆の 2 倍近似（極大マッチング）、最大カットの局所探索、完全秘匿とワンタイムパッド、完全秘匿には鍵の数が平文の数以上必要、一方向関数、一方向関数があれば P≠NP（接頭辞の言語で 1 ビットずつ逆算）、落とし戸関数、RSA の正しさ（w と N が互いに素でない場合も））。Sipser 10.1, 10.6。04-complexity の説明を更新。

@@ -123,6 +123,68 @@ $A\le_{1}B$ かつ $B\le_{1}A$ なら、計算可能な全単射 $\pi\colon\N\to
 - **両向きの還元**：行きで定義域を、帰りで値域を満たすのに使った。
 :::
 
+## 1 完全性と $K$ との計算可能同型 {#comp:sec-cr-one-complete}
+
+\ref{comp:creative-iff-complete} の還元 $g$ を**単射**にできれば、マイヒルの同型定理（\ref{comp:myhill-isomorphism}）と組み合わせて、創造的集合がすべて $K$ と計算可能同型であることが従う。単射性は、smn 定理の関数と生産関数をそれぞれ単射に選ぶことで得られる。認識可能な集合 $C$ が **$1$ 完全**とは、すべての認識可能な $A$ について $A\le_{1}C$ となることをいう。
+
+::: lemma smn 関数の単射性 {#comp:smn-injective keywords="for fixed e, y -> s^1_1(e,y) is injective" index="smn 関数の単射性|えすえむえぬかんすうのたんしゃせい"}
+各 $e$ について、$y\mapsto s^{1}_{1}(e,y)$ は単射である。したがって、本ページの「smn 定理により」得られる関数 $t(x)\defeq s^{1}_{1}(p,x)$ はすべて単射である。
+:::
+
+::: proof
+\ref{comp:smn} の構成で $m=n=1$ とすると、$s^{1}_{1}(e,y)$ は長さ $N\defeq4+y+\mathrm{lh}(e)$ のレジスタ機械のコード $\prod_{q<N}p(q)^{a_{q}+1}$ である（\ref{comp:rm-code} の 2）。指数 $a_{q}+1$ はすべて $1$ 以上なので、$q<N$ なら $p(q)$ はこのコードを割り切り、$p(N)$ は割り切らない。よって $\mathrm{lh}(s^{1}_{1}(e,y))=N=4+y+\mathrm{lh}(e)$（\ref{comp:rm-code} の 3）。これは $y$ について狭義単調増加なので、$y\ne y'$ なら $\mathrm{lh}$ の値が異なり、$s^{1}_{1}(e,y)\ne s^{1}_{1}(e,y')$。
+:::
+
+::: lemma 単射なパラメータ付き再帰定理 {#comp:parametrized-recursion-injective keywords="the fixed point function in the recursion theorem with parameters can be taken injective" index="単射なパラメータ付き再帰定理|たんしゃなぱらめーたつきさいきていり"}
+\ref{comp:parametrized-recursion} の $n$ は単射に選べる。
+:::
+
+::: proof
+\ref{comp:parametrized-recursion} の証明で、$d(u)=s^{1}_{1}(c,u)$（$c$ は $(u,z)\mapsto\varphi_{\varphi_{u}(u)}(z)$ の指数）、$v(y)=s^{1}_{1}(c',y)$（$c'$ は $(y,x)\mapsto h(d(x),y)$ の指数）である。\ref{comp:smn-injective} から $d$ と $v$ は単射なので、$n=d\circ v$ も単射。
+:::
+
+::: lemma 単射な生産関数 {#comp:injective-productive keywords="every productive set has a total injective productive function" index="単射な生産関数|たんしゃなせいさんかんすう"}
+生産的集合 $P$ は、全域で単射な生産関数をもつ。
+:::
+
+::: proof
+**Step 1（準備）.** 全域な生産関数 $f$（\ref{comp:productive-basic} の 3）と、全域計算可能な $S$ で $W_{S(x)}=W_{x}\cup\{f(x)\}$ となるもの（\ref{comp:productive-basic} の 4 の証明と同じ）をとる。$x$ について $x_{0}\defeq x$, $x_{k+1}\defeq S(x_{k})$, $y_{k}\defeq f(x_{k})$ とおく。$(x,k)\mapsto y_{k}$ は全域計算可能。
+
+**Step 2（$W_{x}\subseteq P$ のときの性質）.** $W_{x}\subseteq P$ とする。$k$ についての帰納法で $W_{x_{k}}=W_{x}\cup\{y_{0},\dots,y_{k-1}\}\subseteq P$ を示す。$k=0$ は仮定。$W_{x_{k}}\subseteq P$ なら $y_{k}=f(x_{k})\in P\setminus W_{x_{k}}$（**生産関数**）なので、$W_{x_{k+1}}=W_{x_{k}}\cup\{y_{k}\}\subseteq P$。このとき $y_{k}\notin W_{x_{k}}\supseteq\{y_{0},\dots,y_{k-1}\}\cup W_{x}$ なので、$y_{0},y_{1},\dots$ は相異なり、すべて $P\setminus W_{x}$ に属する。
+
+**Step 3（$q$ の定義）.** $q(0),\dots,q(x-1)$ が定まったとして、$q(x)$ を次で定める。
+- $y_{0},\dots,y_{x}$ が相異なるとき：この $x+1$ 個のうち $\{q(0),\dots,q(x-1)\}$（高々 $x$ 個）に属さないものがあるので、そのような $y_{k}$ で $k$ が最小のものを $q(x)$ とする。
+- そうでないとき：$\{q(0),\dots,q(x-1)\}$ に属さない最小の自然数を $q(x)$ とする。
+
+$q$ は（それまでの値を使う帰納的定義として）全域計算可能で、どちらの場合も $q(x)\notin\{q(0),\dots,q(x-1)\}$ なので単射。
+
+**Step 4（生産関数であること）.** $W_{x}\subseteq P$ なら、Step 2 から $y_{0},\dots,y_{x}$ は相異なるので第一の場合にあたり、$q(x)$ はある $y_{k}\in P\setminus W_{x}$。（$W_{x}\not\subseteq P$ のときは何も要求されない。）
+:::
+
+::: theorem 創造的集合は 1 完全 {#comp:creative-one-complete keywords="Myhill: creative sets are 1-complete; for c.e. sets creative iff m-complete iff 1-complete" index="創造的集合の 1 完全性|そうぞうてきしゅうごうのいちかんぜんせい, 1 完全|いちかんぜん"}
+認識可能な集合 $C$ について、次は同値である：(a) $C$ は創造的、(b) $C$ は $m$ 完全、(c) $C$ は $1$ 完全。
+:::
+
+::: proof
+**(c) ⇒ (b)** は $\le_{1}$ が $\le_{\mathrm{m}}$ の特別な場合だから。**(b) ⇒ (a)** は \ref{comp:creative-iff-complete}。
+
+**(a) ⇒ (c).** \ref{comp:creative-iff-complete} の Step 3 を、生産関数 $f$ として \ref{comp:injective-productive} の単射なものを、$n$ として \ref{comp:parametrized-recursion-injective} の単射なものを使って繰り返す（$t$ は smn 定理による全域計算可能関数で、\ref{comp:parametrized-recursion} の $h$ として $t$ を使う）。そこで示したとおり、$g(y)\defeq f(n(y))$ は $y\in A\iff g(y)\in C$ をみたし、さらに単射の合成なので**単射**である。よって $A\le_{1}C$。
+:::
+
+::: corollary 創造的集合は K と計算可能同型 {#comp:creative-isomorphic-k keywords="every creative set is computably isomorphic to K; all creative sets are computably isomorphic" index="創造的集合の同型|そうぞうてきしゅうごうのどうけい"}
+創造的集合 $C$ について、計算可能な全単射 $\pi\colon\N\to\N$ で $\pi[K]=C$ となるものがある。とくに、二つの創造的集合は互いに計算可能同型である。
+:::
+
+::: proof
+$K$ は創造的（\ref{comp:productive-basic} の 2）なので、\ref{comp:creative-one-complete} から $K$ も $C$ も $1$ 完全。$C$ と $K$ は認識可能なので $K\le_{1}C$ かつ $C\le_{1}K$。マイヒルの同型定理（\ref{comp:myhill-isomorphism}）から計算可能な全単射 $\pi$ で $x\in K\iff\pi(x)\in C$ となるものがある。後半は、計算可能同型の逆写像・合成も計算可能同型であることから（計算可能な全単射の逆写像は、$\pi(x)=y$ となる $x$ を探索して計算できる）。
+:::
+
+::: hypcheck
+- **smn 関数の単射性**：本サイトのコード化で、機械のコードから長さ $\mathrm{lh}$ が読み取れること（指数が $1$ 以上）と、$s^{1}_{1}$ の構成で定数 $y$ を $y$ 個の $\mathtt{inc}$ 命令で書くことに使った。別のコード化では、単射性は「詰め物（不要な命令の追加）」で後から実現するのが普通である。
+- **単射な生産関数**：Step 2 で、$W_{x}\subseteq P$ のときに生産関数を繰り返し適用すると新しい元が次々に得られること（\ref{comp:productive-basic} の 4 と同じ発想）を使った。第二の場合（相異なる $x+1$ 個が得られない）は $W_{x}\not\subseteq P$ のときにしか起きないので、そこでの値は自由に選べる。
+- **$A$ が認識可能**：(a) ⇒ (c) で $t$ を smn 定理で作るのに使った。
+:::
+
 ## 問題 {#comp:sec-cr-problems}
 
 ::: problem {#comp:prob-cr-nonempty}
@@ -142,7 +204,7 @@ $x\mapsto\langle x,x\rangle$ は単射な全域計算可能関数で、$x\in K\i
 :::
 
 ::: supplement
-**前提を変えると.** 創造的集合は実は $1$ 完全（すべての認識可能集合が単射な還元で還元できる）であることが知られており（マイヒル）、マイヒルの同型定理と合わせて、創造的集合はすべて互いに計算可能な全単射で移り合う（$K$ と計算可能同型）ことが知られている（$1$ 完全性の証明はここでは扱わない。smn 定理の関数を単射に選べることを使う）。単純集合はポストが「$m$ 完全でない認識可能な非決定可能集合」として導入したものだが、チューリング還元についてはそれでは足りず、フリードバーグ–ムチニクの定理（\ref{comp:friedberg-muchnik}）が必要だった。
+**前提を変えると.** 創造的集合は実は $1$ 完全であり（マイヒル、\ref{comp:creative-one-complete}）、マイヒルの同型定理と合わせて、創造的集合はすべて $K$ と計算可能同型である（\ref{comp:creative-isomorphic-k}）。単純集合はポストが「$m$ 完全でない認識可能な非決定可能集合」として導入したものだが、チューリング還元についてはそれでは足りず、フリードバーグ–ムチニクの定理（\ref{comp:friedberg-muchnik}）が必要だった。
 
 **似た定理.** マイヒルの同型定理は、カントール–ベルンシュタインの定理（集合論で、互いに単射があれば全単射がある）の計算可能版であり、証明の往復の形もよく似ている。モデル理論の可算稠密線形順序の同型（往復論法、\ref{model:cantor-dlo}）とも同じ型の議論である。
 

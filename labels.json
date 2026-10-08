@@ -4733,6 +4733,20 @@
       "num": "10.4",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/10-creative-sets.html"
     },
+    "comp:creative-isomorphic-k": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "創造的集合は K と計算可能同型",
+      "num": "10.11",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/10-creative-sets.html"
+    },
+    "comp:creative-one-complete": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "創造的集合は 1 完全",
+      "num": "10.10",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/10-creative-sets.html"
+    },
     "comp:dcfl-complement": {
       "status": "defined",
       "type": "theorem",
@@ -5152,6 +5166,13 @@
       "title": "低い段には属さない",
       "num": "12.6",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/12-index-set-completeness.html"
+    },
+    "comp:injective-productive": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "単射な生産関数",
+      "num": "10.9",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/10-creative-sets.html"
     },
     "comp:interactive-proof": {
       "status": "defined",
@@ -6231,6 +6252,13 @@
       "num": "10.3",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/10-creative-sets.html"
     },
+    "comp:parametrized-recursion-injective": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "単射なパラメータ付き再帰定理",
+      "num": "10.8",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/10-creative-sets.html"
+    },
     "comp:parse-tree": {
       "status": "defined",
       "type": "definition",
@@ -6725,14 +6753,14 @@
       "status": "defined",
       "type": "problem",
       "title": "",
-      "num": "10.8",
+      "num": "10.13",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/10-creative-sets.html"
     },
     "comp:prob-cr-nonempty": {
       "status": "defined",
       "type": "problem",
       "title": "",
-      "num": "10.7",
+      "num": "10.12",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/10-creative-sets.html"
     },
     "comp:prob-dcfl-0n1n": {
@@ -8069,6 +8097,13 @@
       "status": "defined",
       "type": "section",
       "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/10-creative-sets.html"
+    },
+    "comp:sec-cr-one-complete": {
+      "status": "defined",
+      "type": "section",
+      "title": "1 完全性と $K$ との計算可能同型",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/10-creative-sets.html"
     },
@@ -9555,6 +9590,13 @@
       "title": "smn 定理",
       "num": "11.10",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/11-universal-smn.html"
+    },
+    "comp:smn-injective": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "smn 関数の単射性",
+      "num": "10.7",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/10-creative-sets.html"
     },
     "comp:space-class": {
       "status": "defined",

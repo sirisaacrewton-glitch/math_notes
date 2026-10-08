@@ -347,6 +347,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 計算可能性 AC-10 追記（comp:smn-injective, comp:parametrized-recursion-injective, comp:injective-productive, comp:creative-one-complete, comp:creative-isomorphic-k：smn 関数の単射性（コードの長さ）、単射な生産関数、創造的 ⇔ m 完全 ⇔ 1 完全、創造的集合は K と計算可能同型。補足の未証明の言及を参照に置換）
 - 2026-10-08 一般位相 TE-10（54E/01/10-cech-completeness, top:page-cech-complete：剰余は剰余へ写る、チェック完備性はコンパクト化によらない、局所コンパクト空間は βX で開、チェック完備空間はベール、完備距離空間は稠密に入るハウスドルフ空間の G_δ、距離化可能空間ではチェック完備 ⇔ 完備距離化可能。問題 3。完備距離化可能性のページの未証明の言及を参照に置換）
 - 2026-10-08 一般位相 TE-09（54E/01/09-baire-space-nn, top:page-baire-space-nn：閉開集合の無限分割、アレクサンドロフ–ウリゾーンの定理、無理数 ≅ ℕ^ℕ、ポーランド空間は ℕ^ℕ の連続像。問題 3。完備距離化可能性・カントール集合のページの未証明の言及を参照に置換）
 - 2026-10-08 一般位相 TD-17（54D/01/17-michael, top:page-michael：σ 局所有限な開細分 → 局所有限な細分 → （正則性）局所有限な閉細分 → 局所有限な開細分、マイケルの定理、正則リンデレーフ空間・ゾルゲンフライ直線はパラコンパクト。問題 3（R_K で正則性が必要など）。パラコンパクト性のページの未証明の言及を参照に置換）
@@ -605,7 +606,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | AC-07 | 03-advanced-computability/07-post-theorem | ポストの定理（使用の原理・有界量化子・Σ_{n+1}=∅^(n) で認識可能・Δ_{n+1}=≤_T ∅^(n)）（新井 §6.3） | 完了 |
 | AC-08 | 03-advanced-computability/08-friedberg-muchnik | ポストの問題とフリードバーグ–ムチニクの定理（優先論法）（新井 §6.4） | 完了 |
 | AC-09 | 03-advanced-computability/09-low-simple | 単純集合・極限補題・低集合・単純な低集合（新井 §6.6 演習） | 完了 |
-| AC-10 | 03-advanced-computability/10-creative-sets | 生産的・創造的集合、パラメータ付き再帰定理、創造的 ⇔ m 完全、単純集合は m 完全でない、マイヒルの同型定理（新井 §6.2.2） | 完了 |
+| AC-10 | 03-advanced-computability/10-creative-sets | 生産的・創造的集合、パラメータ付き再帰定理、創造的 ⇔ m 完全、単純集合は m 完全でない、単射な smn 関数・生産関数、創造的集合は 1 完全で K と計算可能同型、マイヒルの同型定理（新井 §6.2.2） | 完了 |
 | AC-11 | 03-advanced-computability/11-rice-shapiro | 指数集合とライス–シャピロの定理（逆を含む）、ライスの定理を系として（資料なし） | 完了 |
 | AC-12 | 03-advanced-computability/12-index-set-completeness | Σn/Πn 完全、FIN・INF・TOT・COF の完全性（動く目印）（資料なし） | 完了 |
 | AC-13 | 03-advanced-computability/13-low-basis | 低基底定理（計算可能な道をもたない木、ジャンプの強制）（資料なし） | 完了 |

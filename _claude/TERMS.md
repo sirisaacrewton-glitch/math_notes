@@ -393,3 +393,4 @@
 | pseudometric / metrization lemma / uniformizable | 擬距離 / 距離化補題 / 一様化可能 | | 標準的。top:page-uniform-pseudometrics |
 | Cauchy filter / complete uniform space / totally bounded / completion | コーシーフィルター / 完備（一様空間） / 全有界 / 完備化 | | 標準的。top:page-uniform-completeness |
 | chain complex / chain map / homology / long exact sequence / chain homotopy | 鎖複体 / 鎖写像 / ホモロジー / 長完全列 / 鎖ホモトピー | チェイン複体 | 標準的。ha:page-chain-complexes |
+| projective object / projective resolution / comparison theorem / injective object | 射影対象 / 射影分解 / 比較定理 / 入射対象 | 射影的加群 | 標準的。ha:page-projective-resolutions |

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>射影分解と比較定理 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18G-homological-algebra/02-derived-functors/01-projective-resolutions.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 射影分解と比較定理 {#ha:page-projective-resolutions keywords="projective object, enough projectives, free module, projective resolution, comparison theorem, uniqueness of resolutions up to chain homotopy, injective object"}
+
+導来関手（\ref[導来関手]{ha:page-derived-functors}）を定義するための準備として、**射影対象**（\ref{ha:projective}）と**射影分解**（\ref{ha:projective-resolution}）を扱う。主定理は**比較定理**（\ref{ha:comparison-theorem}）である：射影的な複体から完全な複体へは、与えられた射を持ち上げる鎖写像があり、それは鎖ホモトピーを除いて一意である。特に、同じ対象の二つの射影分解は鎖ホモトピー同値であり、そのホモロジーから作る量は分解の選び方によらない。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。アーベル圏の基本事項と鎖複体は本サイトのアーベル圏の系列（\ref{ha:page-chain-complexes} など）による。
+
+## 記法と定義の確認 {#ha:sec-pr-notation}
+
+::: notation
+- $\mathbf{A}$ は（局所小の）アーベル圏。核・余核・像の分解・完全列は \ref{ha:kernel-cokernel}, \ref{ha:image-factorization}, \ref{ha:exact-sequence} のとおり。鎖複体・鎖写像・ホモロジー・鎖ホモトピーは \ref{ha:chain-complex}, \ref{ha:homology}, \ref{ha:chain-homotopy}, \ref{ha:homotopy-invariance} のとおり。
+- (E3) 列 $c\xrightarrow{u}b\xrightarrow{v}a$ が $b$ で完全なら、$u$ を $v$ の核 $k\colon\mathrm{Ker}\,v\to b$ を通して $u=ku'$ と書いたとき $u'\colon c\to\mathrm{Ker}\,v$ はエピである（像の分解 $u=me$ で $m\equiv k$ なので、$u'$ は $e$ と同型を合成したもの）。
+:::
+
+## 射影対象 {#ha:sec-pr-projective}
+
+::: definition 射影対象 {#ha:projective keywords="projective object, lifting property, enough projectives, injective object" index="射影対象|しゃえいたいしょう, 射影的|しゃえいてき, 十分な射影対象|じゅうぶんなしゃえいたいしょう, 入射対象|にゅうしゃたいしょう"}
+$\mathbf{A}$ の対象 $P$ が**射影的**であるとは、任意のエピ射 $e\colon b\to c$ と射 $f\colon P\to c$ に対し、$eg=f$ となる $g\colon P\to b$（**持ち上げ**）があることをいう。各対象 $a$ に射影対象からのエピ射 $P\to a$ があるとき、$\mathbf{A}$ は**十分な射影対象をもつ**という。双対に、$\mathbf{A}^{\mathrm{op}}$ で射影的な対象を**入射的**という。
+:::
+
+::: proposition 射影対象の性質 {#ha:projective-basic keywords="P projective iff Hom(P,-) is exact; direct summands and sums of projectives; free modules are projective" index="射影対象の性質|しゃえいたいしょうのせいしつ"}
+1. $P$ が射影的であることと、$\mathbf{A}(P,-)\colon\mathbf{A}\to\mathbf{Ab}$ が完全であることは同値である。
+2. 射影対象の双積（有限の直和）は射影的で、射影対象の直和因子（$P\cong P'\oplus P''$ の $P'$）は射影的である。
+3. 環 $R$ 上の左加群の圏 $R\text{-}\mathbf{Mod}$ で、自由加群は射影的である（選択公理を使う）。したがって $R\text{-}\mathbf{Mod}$ は十分な射影対象をもつ。
+:::
+
+::: proof
+**1.** $\mathbf{A}(P,-)$ は左完全（\ref{ha:hom-left-exact}）なので、完全であることはエピ射を全射に写すことと同値である（左完全な関手が短完全列 $0\to a\to b\xrightarrow{e}c\to0$ を $0\to\cdot\to\cdot\to\cdot$ の完全列に写すので、右端の全射性だけが残る。任意のエピ $e$ は $\ker e$ と合わせて短完全列をなす）。$\mathbf{A}(P,e)$ が全射であることは持ち上げの存在そのもの。
+
+**2.** $P=P'\oplus P''$（入射 $\iota'$, $\iota''$、射影 $\pi'$, $\pi''$）とする。$P'$, $P''$ が射影的で $f\colon P\to c$, $e\colon b\to c$ エピなら、$f\iota'$, $f\iota''$ の持ち上げ $g'$, $g''$ をとり $g\defeq g'\pi'+g''\pi''$ とすると $eg=f\iota'\pi'+f\iota''\pi''=f(\iota'\pi'+\iota''\pi'')=f$。逆に $P$ が射影的で $f'\colon P'\to c$ なら、$f'\pi'$ の持ち上げ $g$ について $e(g\iota')=f'\pi'\iota'=f'$。
+
+**3.** 基底 $(x_{s})_{s\in S}$ をもつ自由加群 $F$、全射 $e\colon M\to N$、$f\colon F\to N$ について、各 $s$ で $e(m_{s})=f(x_{s})$ となる $m_{s}$ を選び（選択公理）、$g(x_{s})\defeq m_{s}$ で $R$ 線形に延ばすと $eg=f$（基底上で一致）。$R\text{-}\mathbf{Mod}$ のエピ射は全射であることが知られている（ここでは引用に留める）。任意の加群 $M$ は、$M$ の元全体を基底とする自由加群からの全射の像なので、十分な射影対象がある。
+:::
+
+## 射影分解と比較定理 {#ha:sec-pr-comparison}
+
+::: definition 射影分解 {#ha:projective-resolution keywords="projective resolution, augmented complex, resolution" index="射影分解|しゃえいぶんかい, 分解|ぶんかい"}
+対象 $a$ の**分解**とは、$n<0$ で $P_{n}=0$ となる鎖複体 $P$ と射 $\varepsilon\colon P_{0}\to a$（**添加**）で、
+$$
+\cdots\xrightarrow{\partial_{2}}P_{1}\xrightarrow{\partial_{1}}P_{0}\xrightarrow{\ \varepsilon\ }a\to0
+$$
+が完全なものをいう。各 $P_{n}$ が射影的なとき**射影分解**という。
+:::
+
+::: proposition 射影分解の存在 {#ha:projective-resolution-exists keywords="enough projectives implies every object has a projective resolution" index="射影分解の存在|しゃえいぶんかいのそんざい"}
+$\mathbf{A}$ が十分な射影対象をもてば、各対象は射影分解をもつ。
+:::
+
+::: proof
+エピ $\varepsilon\colon P_{0}\to a$（$P_{0}$ 射影的）をとり、$k_{0}\colon K_{0}\to P_{0}$ をその核とする。帰納的に、エピ $e_{n}\colon P_{n}\to K_{n-1}$（$P_{n}$ 射影的）とその核 $k_{n}\colon K_{n}\to P_{n}$ をとり、$\partial_{n}\defeq k_{n-1}e_{n}$ とする。$\partial_{n}\partial_{n+1}=k_{n-1}e_{n}k_{n}e_{n+1}=0$。$P_{n}$ での完全性：$\mathrm{im}\,\partial_{n+1}=\mathrm{im}(k_{n}e_{n+1})=k_{n}$（$e_{n+1}$ エピ、$k_{n}$ モノ）で、$\ker\partial_{n}=\ker(k_{n-1}e_{n})=\ker e_{n}=k_{n}$（$k_{n-1}$ モノ）。$P_{0}$ と $a$ での完全性も同様。
+:::
+
+::: theorem 比較定理 {#ha:comparison-theorem keywords="comparison theorem: maps between objects lift to chain maps between projective and exact resolutions, uniquely up to homotopy" index="比較定理|ひかくていり"}
+$P\xrightarrow{\varepsilon}a$ を、各 $P_{n}$ が射影的で $\varepsilon\partial_{1}=0$ を満たす添加複体（完全でなくてよい）、$Q\xrightarrow{\varepsilon'}a'$ を分解（完全、$Q_{n}$ は射影的でなくてよい）とする。任意の射 $f\colon a\to a'$ に対し、
+1. 鎖写像 $\varphi\colon P\to Q$ で $\varepsilon'\varphi_{0}=f\varepsilon$ となるもの（$f$ の**持ち上げ**）がある。
+2. $f$ の持ち上げ $\varphi,\psi$ は鎖ホモトピーで結ばれる。
+:::
+
+::: proof
+記法を揃えるため $P_{-1}\defeq a$, $Q_{-1}\defeq a'$, $\partial_{0}\defeq\varepsilon$, $\partial'_{0}\defeq\varepsilon'$, $\varphi_{-1}\defeq f$ とする。$Q$ の列は $Q_{n}$（$n\ge-1$）で完全、すなわち (E3) より、$k'_{n}\colon\mathrm{Ker}\,\partial'_{n}\to Q_{n}$ について $\partial'_{n+1}=k'_{n}d'_{n+1}$ と書いたとき $d'_{n+1}\colon Q_{n+1}\to\mathrm{Ker}\,\partial'_{n}$ はエピである（$n=-1$ では $\partial'_{-1}\defeq0$ とみて、$\varepsilon'$ 自身がエピ）。
+
+**1（存在）.** $n\ge0$ について、$\varphi_{n-1}$ まで $\partial'_{k}\varphi_{k}=\varphi_{k-1}\partial_{k}$（$0\le k\le n-1$）を満たすように作ったとする。$n=0$ では、$\varepsilon'$ はエピで $P_{0}$ は射影的なので、$f\varepsilon$ の持ち上げ $\varphi_{0}$（$\varepsilon'\varphi_{0}=f\varepsilon$）がある。$n\ge1$ では
+$$
+\partial'_{n-1}(\varphi_{n-1}\partial_{n})=\varphi_{n-2}\partial_{n-1}\partial_{n}=0
+$$
+（$n=1$ では $\varepsilon'\varphi_{0}\partial_{1}=f\varepsilon\partial_{1}=0$）なので、$\varphi_{n-1}\partial_{n}=k'_{n-1}c$ となる $c\colon P_{n}\to\mathrm{Ker}\,\partial'_{n-1}$ がある。$d'_{n}$ はエピで $P_{n}$ は射影的なので、$d'_{n}\varphi_{n}=c$ となる $\varphi_{n}$ があり、$\partial'_{n}\varphi_{n}=k'_{n-1}d'_{n}\varphi_{n}=k'_{n-1}c=\varphi_{n-1}\partial_{n}$。
+
+**2（一意性）.** $h\defeq\varphi-\psi$ は鎖写像で $\varepsilon'h_{0}=0$。$s_{n}\colon P_{n}\to Q_{n+1}$（$n\ge0$、$s_{-1}\defeq0$）で
+$$
+h_{n}=\partial'_{n+1}s_{n}+s_{n-1}\partial_{n}\qquad(n\ge0)\tag{$\ast$}
+$$
+を満たすものを帰納的に作る。$t_{n}\defeq h_{n}-s_{n-1}\partial_{n}$ とおくと $\partial'_{n}t_{n}=0$ である：$n=0$ では $\varepsilon't_{0}=\varepsilon'h_{0}=0$。$n\ge1$ では、帰納法の仮定 $h_{n-1}=\partial'_{n}s_{n-1}+s_{n-2}\partial_{n-1}$ から
+$$
+\partial'_{n}t_{n}=h_{n-1}\partial_{n}-\partial'_{n}s_{n-1}\partial_{n}=s_{n-2}\partial_{n-1}\partial_{n}=0.
+$$
+よって $t_{n}=k'_{n}c$ となる $c\colon P_{n}\to\mathrm{Ker}\,\partial'_{n}$ があり、$d'_{n+1}$ がエピで $P_{n}$ が射影的なので $d'_{n+1}s_{n}=c$ となる $s_{n}$ がある。$\partial'_{n+1}s_{n}=k'_{n}c=t_{n}$ で、($\ast$) が成り立つ。$n<0$ では $P_{n}=0$ なので、$(s_{n})$ は $\varphi$ と $\psi$ の間の鎖ホモトピーである。
+:::
+
+::: hypcheck
+- **$P_{n}$ の射影性**：1 と 2 の各段の持ち上げに使った。$P$ の完全性は使っていない。
+- **$Q$ の完全性**：(E3) により、$d'_{n}$ がエピであること（持ち上げの相手がエピであること）に使った。$Q_{n}$ の射影性は使っていない。
+- **$\varepsilon\partial_{1}=0$**：1 の $n=1$ の段で使った。
+:::
+
+::: corollary 射影分解の一意性 {#ha:projective-resolutions-unique keywords="any two projective resolutions of an object are chain homotopy equivalent" index="射影分解の一意性|しゃえいぶんかいのいちいせい"}
+$a$ の二つの射影分解 $P$, $P'$ の間には、$1_{a}$ を持ち上げる鎖写像 $\varphi\colon P\to P'$, $\psi\colon P'\to P$ があり、$\psi\varphi$, $\varphi\psi$ はそれぞれ $1_{P}$, $1_{P'}$ と鎖ホモトピーで結ばれる。特に、加法関手 $F$ について $H_{n}(F\varphi)\colon H_{n}(FP)\to H_{n}(FP')$ は同型で、$1_{a}$ の持ち上げの選び方によらない。
+:::
+
+::: proof
+比較定理の 1 で $\varphi$, $\psi$ をとる。$\psi\varphi$ と $1_{P}$ はどちらも $1_{a}$ の持ち上げ（$P\to P$）なので、比較定理の 2 により鎖ホモトピーで結ばれる。$\varphi\psi$ も同様。加法関手 $F$ は鎖ホモトピーの等式 $\psi\varphi-1=\partial s+s\partial$ を $F\psi F\varphi-1=F\partial\,Fs+Fs\,F\partial$ に写すので、$F\psi F\varphi$ と $1$ は鎖ホモトピーで結ばれ、\ref{ha:homotopy-invariance} から $H_{n}(F\psi)H_{n}(F\varphi)=1$。同様に逆向きも $1$。選び方によらないことは、二つの持ち上げが鎖ホモトピーで結ばれ、$F$ がそれを保つことによる。
+:::
+
+## 問題 {#ha:sec-pr-problems}
+
+::: problem {#ha:prob-pr-z-mod-n}
+$\mathbf{Ab}=\mathbb{Z}\text{-}\mathbf{Mod}$ で、$n\ge2$ について $0\to\mathbb{Z}\xrightarrow{n\cdot}\mathbb{Z}\to\mathbb{Z}/n\mathbb{Z}\to0$ が $\mathbb{Z}/n\mathbb{Z}$ の射影分解であることを確かめ、$\mathbb{Z}/n\mathbb{Z}$ は射影的でないことを示せ。
+:::
+
+::: solution
+$\mathbb{Z}$ は自由なので射影的（\ref{ha:projective-basic} の 3）、列は完全（$n$ 倍は単射、像 $n\mathbb{Z}$ は商写像の核）。$\mathbb{Z}/n\mathbb{Z}$ が射影的なら、全射 $\mathbb{Z}\to\mathbb{Z}/n\mathbb{Z}$ に沿って恒等写像が持ち上がり、$g\colon\mathbb{Z}/n\mathbb{Z}\to\mathbb{Z}$ で $g(\bar1)$ の像が $\bar1$ となるものがある。しかし $n\,g(\bar1)=g(\overline{n})=g(0)=0$ で $\mathbb{Z}$ はねじれをもたないので $g=0$、矛盾。
+:::
+
+::: problem {#ha:prob-pr-split}
+$P$ が射影的で $0\to a\to b\xrightarrow{e}P\to0$ が短完全なら、この列は分裂する（$es=1_{P}$ となる $s$ があり、$b\cong a\oplus P$）ことを示せ。
+:::
+
+::: solution
+$e$ はエピなので、$1_{P}$ の持ち上げ $s\colon P\to b$（$es=1_{P}$）がある。$1_{b}-se$ は $e(1-se)=e-e=0$ を満たすので、$a=\ker e$ を経由する：$1-se=mr$（$m\colon a\to b$）。$m$ はモノで $mrm=(1-se)m=m$ から $rm=1_{a}$。よって $rm=1_{a}$, $es=1_{P}$, $mr+se=1_{b}$ で、$(b,m,s,r,e)$ は $a$ と $P$ の双積（\ref{ha:biproduct}）、すなわち $b\cong a\oplus P$。
+:::
+
+::: supplement
+**前提を変えると.** 双対に、各対象が入射対象へのモノ射をもつとき**十分な入射対象をもつ**といい、入射分解についても比較定理が成り立つ。$R\text{-}\mathbf{Mod}$ は十分な入射対象をもつことが知られている（$\mathbb{Q}/\mathbb{Z}$ が $\mathbf{Ab}$ の入射的余生成対象であることなどを使う。ここでは確かめていない）。一方、有限アーベル群の圏のように、十分な射影対象をもたないアーベル圏もある（ここでは確かめていない）。
+
+**似た定理.** 群環の棒分解（\ref{cat:bar-resolution-exact}）は、自明な加群 $\mathbb{Z}$ の自由（したがって射影）分解であり、比較定理から、群のコホモロジー（\ref{cat:group-cohomology}）は他のどの射影分解を使って計算しても同じになる。
+
+**高い視点から：「十分な自由度」と「一意性」の取り引き.** 射影対象は「どんなエピ射にも沿って射を持ち上げられる」対象で、持ち上げは一意ではない。比較定理は、その不定性がちょうど鎖ホモトピーに吸収されることを言う。比喩で言えば、射影分解は対象を「自由に動ける部品」で組み直した模型で、組み方は無数にあるが、どの二つの模型も「ホモトピーという継ぎ手」で滑らかにつながっている。そのため、模型に関手を施してホモロジーをとった値（導来関手）は、模型の選び方によらずに決まる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

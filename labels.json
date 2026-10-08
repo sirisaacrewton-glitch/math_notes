@@ -8646,6 +8646,13 @@
       "num": "3.4",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/03-diagram-lemmas.html"
     },
+    "ha:comparison-theorem": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "比較定理",
+      "num": "1.5",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/01-projective-resolutions.html"
+    },
     "ha:connecting-morphism": {
       "status": "defined",
       "type": "lemma",
@@ -8800,6 +8807,13 @@
       "num": "",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/03-diagram-lemmas.html"
     },
+    "ha:page-projective-resolutions": {
+      "status": "defined",
+      "type": "page",
+      "title": "射影分解と比較定理",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/01-projective-resolutions.html"
+    },
     "ha:preadditive": {
       "status": "defined",
       "type": "definition",
@@ -8869,6 +8883,55 @@
       "title": "",
       "num": "3.9",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/03-diagram-lemmas.html"
+    },
+    "ha:prob-pr-split": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "1.8",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/01-projective-resolutions.html"
+    },
+    "ha:prob-pr-z-mod-n": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "1.7",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/01-projective-resolutions.html"
+    },
+    "ha:projective": {
+      "status": "defined",
+      "type": "definition",
+      "title": "射影対象",
+      "num": "1.1",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/01-projective-resolutions.html"
+    },
+    "ha:projective-basic": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "射影対象の性質",
+      "num": "1.2",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/01-projective-resolutions.html"
+    },
+    "ha:projective-resolution": {
+      "status": "defined",
+      "type": "definition",
+      "title": "射影分解",
+      "num": "1.3",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/01-projective-resolutions.html"
+    },
+    "ha:projective-resolution-exists": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "射影分解の存在",
+      "num": "1.4",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/01-projective-resolutions.html"
+    },
+    "ha:projective-resolutions-unique": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "射影分解の一意性",
+      "num": "1.6",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/01-projective-resolutions.html"
     },
     "ha:pullback-epi": {
       "status": "defined",
@@ -9030,6 +9093,34 @@
       "title": "蛇の補題",
       "num": "",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/03-diagram-lemmas.html"
+    },
+    "ha:sec-pr-comparison": {
+      "status": "defined",
+      "type": "section",
+      "title": "射影分解と比較定理",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/01-projective-resolutions.html"
+    },
+    "ha:sec-pr-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/01-projective-resolutions.html"
+    },
+    "ha:sec-pr-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/01-projective-resolutions.html"
+    },
+    "ha:sec-pr-projective": {
+      "status": "defined",
+      "type": "section",
+      "title": "射影対象",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/01-projective-resolutions.html"
     },
     "ha:short-exact-characterization": {
       "status": "defined",
@@ -33705,6 +33796,13 @@
       "title": "代数閉包の一意性",
       "referencedFrom": [
         "03-mathematical-logic/03C-model-theory/01-elementary-extensions/04-acf.html"
+      ]
+    },
+    "ha:page-derived-functors": {
+      "status": "planned",
+      "title": "導来関手",
+      "referencedFrom": [
+        "18-category-theory/18G-homological-algebra/02-derived-functors/01-projective-resolutions.html"
       ]
     },
     "lin:basis-existence": {

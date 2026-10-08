@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>創造的集合とマイヒルの定理 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/03-advanced-computability/10-creative-sets.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 創造的集合とマイヒルの定理 {#comp:page-creative-sets keywords="productive set, creative set, K is creative, productive functions can be total, parametrized recursion theorem, creative iff m-complete, simple sets are not m-complete, Myhill isomorphism theorem, 1-reducibility, computable isomorphism"}
+
+認識可能な集合のうち、停止問題 $K$ のように「すべての認識可能集合を写像還元できる」（$m$ 完全な）ものは、補集合が**生産的**（\ref{comp:productive}）、すなわち、補集合の中に含まれる認識可能集合を与えられると、そこから漏れている補集合の点を計算で一つ作り出せる、という著しい性質をもつ。このような集合を**創造的**という。本ページでは、$m$ 完全であることと創造的であることが同値であること（\ref{comp:creative-iff-complete}）を示し、そこから単純集合（\ref{comp:simple-set}）が $m$ 完全でないことを導く。最後に、互いに単射な還元をもつ集合は計算可能な全単射で移り合うという**マイヒルの同型定理**（\ref{comp:myhill-isomorphism}）を示す。
+
+> 資料：新井『数学基礎論』§6.2.2（創造的集合と単純集合）を参考にした（本文は写していない）。同書で使われている「パラメータ付きの再帰定理」は、本サイトの再帰定理（\ref{comp:second-recursion-theorem}）の証明を一様にした形で示した。マイヒルの同型定理は同書にない内容で、標準的な往復論法で証明した。
+
+## 記法と定義の確認 {#comp:sec-cr-notation}
+
+::: notation
+- $\varphi_{e}$ は指数 $e$ の一変数の計算可能な部分関数（\ref{comp:index}）、$W_{e}\defeq\mathrm{dom}\,\varphi_{e}$。認識可能な集合はちょうど $W_{e}$ の形の集合である（認識する機械を、受理したら $0$ を出力し、そうでなければ止まらない機械に取り替えればよい）。$K\defeq\{x:x\in W_{x}\}$。
+- smn 定理とクリーネの再帰定理は \ref{comp:smn}, \ref{comp:second-recursion-theorem} のとおり。写像還元 $\le_{\mathrm{m}}$ は \ref{comp:page-mapping-reducibility} のとおり。$A\le_{1}B$ は、単射な全域計算可能関数 $f$ で $x\in A\iff f(x)\in B$ となるものがあることをいう。
+- 単純集合は \ref{comp:simple-set} のとおり。認識可能な集合 $C$ が **$m$ 完全**とは、すべての認識可能な $A$ について $A\le_{\mathrm{m}}C$ となることをいう。
+- smn 定理の典型的な使い方：部分計算可能な $\psi(x,y)$ について、全域計算可能な $t$ で $\varphi_{t(x)}(y)\simeq\psi(x,y)$ となるものがある（$\psi$ の指数 $p$ について $t(x)\defeq s^{1}_{1}(p,x)$）。以下これを「smn 定理により」と言う。
+:::
+
+## 生産的集合と創造的集合 {#comp:sec-cr-productive}
+
+::: definition 生産的集合と創造的集合 {#comp:productive keywords="productive set, productive function, creative set" index="生産的集合|せいさんてきしゅうごう, 創造的集合|そうぞうてきしゅうごう"}
+集合 $P$ が**生産的**であるとは、計算可能な部分関数 $f$ で、すべての $x$ について「$W_{x}\subseteq P$ なら $f(x)\downarrow$ かつ $f(x)\in P\setminus W_{x}$」となるもの（**生産関数**）があることをいう。認識可能な集合 $C$ の補集合 $\overline{C}$ が生産的であるとき、$C$ は**創造的**であるという。
+:::
+
+::: proposition 生産的集合の基本性質 {#comp:productive-basic keywords="productive functions can be taken total; K is creative; productive sets are not c.e. and contain infinite c.e. subsets" index="生産関数|せいさんかんすう"}
+1. 生産的集合は認識可能でない。したがって創造的集合は決定可能でない。
+2. $K$ は創造的である（恒等写像が $\overline{K}$ の生産関数）。
+3. 生産的集合は全域的な生産関数をもつ。
+4. 生産的集合は認識可能な無限部分集合を含む。
+:::
+
+::: proof
+**1.** $P=W_{x}$ なら $W_{x}\subseteq P$ なので $f(x)\in P\setminus W_{x}=\emptyset$ となり矛盾。創造的な $C$ が決定可能なら $\overline{C}$ は認識可能で、矛盾。
+
+**2.** $W_{x}\subseteq\overline{K}$ とする。$x\in W_{x}$ なら $x\in K$ だが $x\in W_{x}\subseteq\overline{K}$ で矛盾するので、$x\notin W_{x}$、すなわち $x\in\overline{K}\setminus W_{x}$。
+
+**3.** $f$ を生産関数とする。smn 定理により、全域計算可能な $S$ で $\varphi_{S(x)}(y)\simeq$「$f(x)$ を計算し、止まれば $\varphi_{x}(y)$ を計算する」となるものがある。$W_{S(x)}$ は、$f(x)\downarrow$ なら $W_{x}$、そうでなければ $\emptyset$。$g(x)$ を「$f(x)$ と $f(S(x))$ を交互に一段ずつ計算し、先に止まった方の値」とする。
+- $g$ は全域：$f(x)\uparrow$ なら $W_{S(x)}=\emptyset\subseteq P$ なので $f(S(x))\downarrow$。
+- $g$ は生産関数：$W_{x}\subseteq P$ なら、$f(x)\downarrow\in P\setminus W_{x}$ で、$W_{S(x)}=W_{x}\subseteq P$ なので $f(S(x))\in P\setminus W_{x}$。どちらが先でも $g(x)\in P\setminus W_{x}$。
+
+**4.** 全域な生産関数 $f$（3）をとる。smn 定理により全域計算可能な $S$ で $W_{S(x)}=W_{x}\cup\{f(x)\}$ となるものと、$W_{e_{0}}=\emptyset$ となる $e_{0}$ をとる。$x_{0}\defeq e_{0}$, $x_{n+1}\defeq S(x_{n})$ とすると、帰納法で $W_{x_{n}}=\{f(x_{0}),\dots,f(x_{n-1})\}\subseteq P$ で、$f(x_{n})\in P\setminus W_{x_{n}}$ は新しい元。よって $\{f(x_{n}):n\in\N\}$ は $P$ の無限部分集合で、$n\mapsto f(x_{n})$ が計算可能なので認識可能。
+:::
+
+## 創造的集合と $m$ 完全性 {#comp:sec-cr-complete}
+
+::: lemma パラメータ付き再帰定理 {#comp:parametrized-recursion keywords="recursion theorem with parameters: uniformly computable fixed points" index="パラメータ付き再帰定理|ぱらめーたつきさいきていり"}
+$h\colon\N^{2}\to\N$ が全域計算可能なら、全域計算可能な $n\colon\N\to\N$ で、すべての $y$ について $\varphi_{n(y)}\simeq\varphi_{h(n(y),y)}$ となるものがある。
+:::
+
+::: proof
+smn 定理により、全域計算可能な $d$ で $\varphi_{d(u)}(z)\simeq\varphi_{\varphi_{u}(u)}(z)$（$\varphi_{u}(u)\uparrow$ なら至るところ未定義）となるものがある（右辺は万能関数で計算できる部分関数）。また smn 定理により、全域計算可能な $v$ で $\varphi_{v(y)}(x)\simeq h(d(x),y)$ となるものがある（右辺は全域）。$n(y)\defeq d(v(y))$ とすると、$\varphi_{v(y)}(v(y))=h(d(v(y)),y)$ は定義されているので
+$$
+\varphi_{n(y)}=\varphi_{d(v(y))}\simeq\varphi_{\varphi_{v(y)}(v(y))}=\varphi_{h(n(y),y)}.
+$$
+:::
+
+::: theorem 創造的 ⇔ m 完全 {#comp:creative-iff-complete keywords="a c.e. set is creative iff it is m-complete (Myhill)" index="創造的集合と m 完全性|そうぞうてきしゅうごうとえむかんぜんせい"}
+認識可能な集合 $C$ について、$C$ が創造的であることと $m$ 完全であることは同値である。特に $K$ は $m$ 完全である。
+:::
+
+::: proof
+**Step 1（$K$ は $m$ 完全）.** 認識可能な $A=W_{a}$ について、smn 定理により全域計算可能な $t$ で $\varphi_{t(x)}(z)\simeq\varphi_{a}(x)$（$z$ を無視する）となるものがある。$x\in A\iff\varphi_{a}(x)\downarrow\iff W_{t(x)}=\N\iff t(x)\in W_{t(x)}\iff t(x)\in K$。
+
+**Step 2（$m$ 完全 ⇒ 創造的）.** $K\le_{\mathrm{m}}C$ を $h$ で与える。smn 定理により全域計算可能な $t$ で $W_{t(x)}=h^{-1}[W_{x}]$（$\varphi_{t(x)}(z)\simeq\varphi_{x}(h(z))$）となるものをとる。$W_{x}\subseteq\overline{C}$ なら $W_{t(x)}\subseteq\overline{K}$ なので、\ref{comp:productive-basic} の 2 から $t(x)\in\overline{K}\setminus W_{t(x)}$。よって $h(t(x))\notin C$（$t(x)\notin K$）かつ $h(t(x))\notin W_{x}$（$t(x)\notin h^{-1}[W_{x}]$）。$x\mapsto h(t(x))$ は $\overline{C}$ の生産関数。
+
+**Step 3（創造的 ⇒ $m$ 完全）.** $\overline{C}$ の全域な生産関数 $f$（\ref{comp:productive-basic} の 3）と認識可能な $A$ をとる。smn 定理により全域計算可能な $t$ で
+$$
+W_{t(x,y)}=\begin{cases}\{f(x)\}&(y\in A),\\\emptyset&(y\notin A)\end{cases}
+$$
+となるものがある（「$y\in A$ を確かめ、確かめられたら入力が $f(x)$ に等しいかを調べて等しければ止まる」）。\ref{comp:parametrized-recursion} の $n$ で $W_{n(y)}=W_{t(n(y),y)}$ とし、$g(y)\defeq f(n(y))$（全域計算可能）とする。
+- $y\notin A$ なら $W_{n(y)}=\emptyset\subseteq\overline{C}$ なので $g(y)\in\overline{C}$。
+- $y\in A$ なら $W_{n(y)}=\{g(y)\}$。$g(y)\notin C$ なら $W_{n(y)}\subseteq\overline{C}$ となり、$g(y)\in\overline{C}\setminus W_{n(y)}$ のはずだが $g(y)\in W_{n(y)}$ で矛盾。よって $g(y)\in C$。
+
+したがって $A\le_{\mathrm{m}}C$ が $g$ で与えられる。
+:::
+
+::: hypcheck
+- **パラメータ付き再帰定理**：Step 3 で、自分自身の指数 $n(y)$ を知っている集合 $W_{n(y)}$ を作るのに使った。生産関数をその集合に適用したときの値を、その集合自身に入れることで矛盾を作る。
+- **全域な生産関数**：Step 3 で $g$ が全域になるように使った。
+:::
+
+::: corollary 単純集合は m 完全でない {#comp:simple-not-complete keywords="simple sets are neither creative nor m-complete" index="単純集合と m 完全性|たんじゅんしゅうごうとえむかんぜんせい"}
+単純集合は創造的でなく、$m$ 完全でない。
+:::
+
+::: proof
+単純集合の補集合は認識可能な無限部分集合を含まない（\ref{comp:simple-set}）が、生産的集合は含む（\ref{comp:productive-basic} の 4）。よって創造的でなく、\ref{comp:creative-iff-complete} から $m$ 完全でない。
+:::
+
+## マイヒルの同型定理 {#comp:sec-cr-myhill}
+
+::: theorem マイヒルの同型定理 {#comp:myhill-isomorphism keywords="Myhill isomorphism theorem: 1-equivalent sets are computably isomorphic" index="マイヒルの同型定理|まいひるのどうけいていり, 計算可能同型|けいさんかのうどうけい"}
+$A\le_{1}B$ かつ $B\le_{1}A$ なら、計算可能な全単射 $\pi\colon\N\to\N$ で $\pi[A]=B$（$x\in A\iff\pi(x)\in B$）となるものがある。
+:::
+
+::: proof
+単射な全域計算可能関数 $f$（$x\in A\iff f(x)\in B$）と $g$（$y\in B\iff g(y)\in A$）をとる。有限な部分単射 $\pi_{s}$（有限個の組 $(x,y)$ の集合で、$x$ も $y$ も重複しない）で、すべての組で「$x\in A\iff y\in B$」となるものを、$\pi_{0}=\emptyset$ から往復で延ばしていく。
+
+**行き（段 $2s+1$）.** $x\defeq s$ が $\pi_{2s}$ の定義域になければ、$y\defeq f(x)$ を考える。$y$ が値域になければ $(x,y)$ を加える。値域にあれば、$y=\pi_{2s}(x_{1})$ となる $x_{1}$ をとり、$y_{1}\defeq f(x_{1})$ を考える。これを、値域にない $y_{k}\defeq f(x_{k})$ が現れるまで続け（$y_{k-1}=\pi_{2s}(x_{k})$）、$(x,y_{k})$ を加える。
+
+**停止と正しさ.** $x,x_{1},x_{2},\dots$ は相異なる：$x$ は定義域にないので $x_{i}$ とは異なり、$x_{i}=x_{j}$（$i<j$）なら $f(x_{i-1})=y_{i-1}=\pi_{2s}(x_{i})=\pi_{2s}(x_{j})=y_{j-1}=f(x_{j-1})$ で、$f$ の単射性から $x_{i-1}=x_{j-1}$、繰り返して $x=x_{j-i}$ となり矛盾（$x_{0}\defeq x$）。$x_{i}$ はすべて有限な定義域に属するので、列は有限で止まる。また $x\in A\iff f(x)=y_{0}\in B\iff x_{1}\in A$（$\pi_{2s}$ の組の性質）$\iff y_{1}\in B\iff\cdots\iff y_{k}\in B$。よって加えた組も性質を満たす。
+
+**帰り（段 $2s+2$）.** $y\defeq s$ が値域になければ、$g$ と $\pi_{2s+1}^{-1}$ を使って同様に定義域にない $x$ を見つけ、$(x,y)$ を加える。
+
+**結論.** $\pi\defeq\bigcup_{s}\pi_{s}$ は、各段で $s$ を定義域と値域に入れるので全単射で、構成は計算可能なので $\pi$ は計算可能。各組の性質から $x\in A\iff\pi(x)\in B$。
+:::
+
+::: hypcheck
+- **還元の単射性**：行きと帰りの列が同じ点に戻らないこと（したがって止まること）に使った。単射でない $m$ 還元では、この往復は一般に止まらない。
+- **両向きの還元**：行きで定義域を、帰りで値域を満たすのに使った。
+:::
+
+## 問題 {#comp:sec-cr-problems}
+
+::: problem {#comp:prob-cr-nonempty}
+$\{e:W_{e}\ne\emptyset\}$ は創造的であることを示せ。
+:::
+
+::: solution
+認識可能である（$\exists x\,\exists t$「$\varphi_{e}(x)$ が $t$ 段で止まる」）。\ref{comp:creative-iff-complete} の Step 1 の $t$（$W_{t(x)}=\N$ か $\emptyset$）について、$x\in K\iff W_{t(x)}\ne\emptyset$ なので $K\le_{\mathrm{m}}\{e:W_{e}\ne\emptyset\}$。$K$ は $m$ 完全なので、この集合も $m$ 完全で、\ref{comp:creative-iff-complete} から創造的。
+:::
+
+::: problem {#comp:prob-cr-k0}
+$K_{0}\defeq\{\langle x,y\rangle:x\in W_{y}\}$ と $K$ について $K\le_{1}K_{0}$ を示せ。
+:::
+
+::: solution
+$x\mapsto\langle x,x\rangle$ は単射な全域計算可能関数で、$x\in K\iff x\in W_{x}\iff\langle x,x\rangle\in K_{0}$。
+:::
+
+::: supplement
+**前提を変えると.** 創造的集合は実は $1$ 完全（すべての認識可能集合が単射な還元で還元できる）であることが知られており（マイヒル）、マイヒルの同型定理と合わせて、創造的集合はすべて互いに計算可能な全単射で移り合う（$K$ と計算可能同型）ことが知られている（$1$ 完全性の証明はここでは扱わない。smn 定理の関数を単射に選べることを使う）。単純集合はポストが「$m$ 完全でない認識可能な非決定可能集合」として導入したものだが、チューリング還元についてはそれでは足りず、フリードバーグ–ムチニクの定理（\ref{comp:friedberg-muchnik}）が必要だった。
+
+**似た定理.** マイヒルの同型定理は、カントール–ベルンシュタインの定理（集合論で、互いに単射があれば全単射がある）の計算可能版であり、証明の往復の形もよく似ている。モデル理論の可算稠密線形順序の同型（往復論法、\ref{model:cantor-dlo}）とも同じ型の議論である。
+
+**高い視点から：創造的集合は「尽きない泉」.** 生産的集合は、認識可能な方法で近似しようとすると必ず取りこぼしがあり、しかもその取りこぼしの一つを計算で示せる集合である。比喩で言えば、どんな網（認識可能集合）で魚を全部すくおうとしても、網からこぼれた魚を一匹必ず指させる泉である。$K$ の補集合はその典型で、対角線論法がその「指さし」を与える。創造的であることと $m$ 完全であることの同値性は、「最も難しい認識可能集合」が、この尽きない泉という内在的な性質で特徴づけられることを意味する。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

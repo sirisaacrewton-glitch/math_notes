@@ -4334,6 +4334,13 @@
       "num": "8.7",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/08-circuits.html"
     },
+    "comp:creative-iff-complete": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "創造的 ⇔ m 完全",
+      "num": "10.4",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/10-creative-sets.html"
+    },
     "comp:dcfl-complement": {
       "status": "defined",
       "type": "theorem",
@@ -5132,6 +5139,13 @@
       "num": "6.4",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/06-turing-machines.html"
     },
+    "comp:myhill-isomorphism": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "マイヒルの同型定理",
+      "num": "10.6",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/10-creative-sets.html"
+    },
     "comp:myhill-nerode": {
       "status": "defined",
       "type": "theorem",
@@ -5383,6 +5397,13 @@
       "title": "文脈自由文法とプッシュダウンオートマトン",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/01-automata/04-context-free.html"
+    },
+    "comp:page-creative-sets": {
+      "status": "defined",
+      "type": "page",
+      "title": "創造的集合とマイヒルの定理",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/10-creative-sets.html"
     },
     "comp:page-dcfl": {
       "status": "defined",
@@ -5649,6 +5670,13 @@
       "title": "カントールの対関数",
       "num": "2.4",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/02-primitive-recursive.html"
+    },
+    "comp:parametrized-recursion": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "パラメータ付き再帰定理",
+      "num": "10.3",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/10-creative-sets.html"
     },
     "comp:parse-tree": {
       "status": "defined",
@@ -6097,6 +6125,20 @@
       "title": "",
       "num": "11.15",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/11-universal-smn.html"
+    },
+    "comp:prob-cr-k0": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "10.8",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/10-creative-sets.html"
+    },
+    "comp:prob-cr-nonempty": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "10.7",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/10-creative-sets.html"
     },
     "comp:prob-dcfl-0n1n": {
       "status": "defined",
@@ -6629,6 +6671,20 @@
       "title": "確率的チューリング機械",
       "num": "7.1",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/07-probabilistic-quantum.html"
+    },
+    "comp:productive": {
+      "status": "defined",
+      "type": "definition",
+      "title": "生産的集合と創造的集合",
+      "num": "10.1",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/10-creative-sets.html"
+    },
+    "comp:productive-basic": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "生産的集合の基本性質",
+      "num": "10.2",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/10-creative-sets.html"
     },
     "comp:pumping-cfl": {
       "status": "defined",
@@ -7224,6 +7280,41 @@
       "title": "クック–レヴィンの定理",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/02-np.html"
+    },
+    "comp:sec-cr-complete": {
+      "status": "defined",
+      "type": "section",
+      "title": "創造的集合と $m$ 完全性",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/10-creative-sets.html"
+    },
+    "comp:sec-cr-myhill": {
+      "status": "defined",
+      "type": "section",
+      "title": "マイヒルの同型定理",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/10-creative-sets.html"
+    },
+    "comp:sec-cr-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/10-creative-sets.html"
+    },
+    "comp:sec-cr-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/10-creative-sets.html"
+    },
+    "comp:sec-cr-productive": {
+      "status": "defined",
+      "type": "section",
+      "title": "生産的集合と創造的集合",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/10-creative-sets.html"
     },
     "comp:sec-dcfl-complement": {
       "status": "defined",
@@ -8470,6 +8561,13 @@
       "title": "Σ¹₁ の分離定理",
       "num": "5.5",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/05-pi11-prewellordering.html"
+    },
+    "comp:simple-not-complete": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "単純集合は m 完全でない",
+      "num": "10.5",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/10-creative-sets.html"
     },
     "comp:simple-set": {
       "status": "defined",

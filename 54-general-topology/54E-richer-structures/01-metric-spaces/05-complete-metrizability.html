@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>完備距離化可能性 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54E-richer-structures/01-metric-spaces/05-complete-metrizability.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 完備距離化可能性 {#top:page-complete-metrizability keywords="completely metrizable space, G-delta subsets, Alexandroff's theorem, Mazurkiewicz, Lavrentiev, Kuratowski, Polish space, irrational numbers, Baire space"}
+
+完備性は距離の性質であって位相の性質ではない（$(0,1)$ は通常の距離では完備でないが、$\mathbb{R}$ と同相である）。そこで、位相を変えずに完備な距離を選び直せる空間を**完備距離化可能**という（\ref{top:completely-metrizable}）。本ページの主定理は、完備距離空間の部分空間が完備距離化可能であることと、$G_{\delta}$ 集合であることが同値であることである（\ref{top:alexandroff-gdelta}, \ref{top:completely-metrizable-is-gdelta}）。これから、無理数全体は完備距離化可能で、有理数全体はそうでないことが分かる。最後に、可分で完備距離化可能な**ポーランド空間**（\ref{top:polish-space}）の基本的な閉性を示す。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた（\ref{top:page-completeness} の補足で予告していた内容である）。
+
+## 記法と定義の確認 {#top:sec-cmz-notation}
+
+::: notation
+- 距離空間・距離位相・完備性・完備な部分空間・ベールのカテゴリー定理は \ref{top:metric-topology}, \ref{top:complete-metric}, \ref{top:complete-closed}, \ref{top:baire-category} のとおり。$G_{\delta}$ 集合は \ref{top:page-baire} の記法のとおり（可算個の開集合の共通部分）。
+- 距離空間 $(X,d)$ の空でない部分集合 $F$ について $d(x,F)\defeq\inf_{y\in F}d(x,y)$ で、$\lvert d(x,F)-d(y,F)\rvert\le d(x,y)$（$1$-リプシッツ）、$d(x,F)=0\iff x\in\overline{F}$。
+- 同じ集合上の二つの距離が**同値**とは、同じ位相を定めることをいう。
+:::
+
+::: definition 完備距離化可能 {#top:completely-metrizable keywords="completely metrizable space, topologically complete" index="完備距離化可能|かんびきょりかかのう"}
+位相空間 $X$ が**完備距離化可能**であるとは、$X$ の位相を定める完備な距離があることをいう。
+:::
+
+## $G_{\delta}$ 集合は完備距離化可能 {#top:sec-cmz-alexandroff}
+
+::: lemma 開集合の完備な距離 {#top:open-subset-complete-metric keywords="an open subset of a complete metric space admits an equivalent complete metric" index="開集合の完備距離|かいしゅうごうのかんびきょり"}
+$(X,d)$ を完備距離空間、$U\subsetneq X$ を開集合とし、$f(x)\defeq1/d(x,X\setminus U)$（$x\in U$）とする。$U$ 上の距離
+$$
+d_{U}(x,y)\defeq d(x,y)+\lvert f(x)-f(y)\rvert
+$$
+は $d$ と同値で、完備である。
+:::
+
+::: proof
+**距離.** $f$ は $U$ 上で正の実数値（$x\in U$ は開なので $d(x,X\setminus U)>0$）で、$d_{U}$ が距離の公理を満たすことは明らか。
+
+**同値.** $d\le d_{U}$ なので、$d$ の開集合は $d_{U}$ でも開。逆に、$f$ は $U$ 上で $d$ について連続（$d(\cdot,X\setminus U)$ が連続で正）なので、$x\in U$ と $\varepsilon>0$ に $\delta>0$ で $d(x,y)<\delta$ なら $y\in U$ かつ $\lvert f(x)-f(y)\rvert<\varepsilon/2$ となるものがあり、$\min(\delta,\varepsilon/2)$ の $d$ 球は $\varepsilon$ の $d_{U}$ 球に含まれる。
+
+**完備.** $(x_{n})$ を $d_{U}$ のコーシー列とする。$d\le d_{U}$ から $d$ のコーシー列で、$X$ の点 $x$ に収束する。また $(f(x_{n}))$ は実数のコーシー列で有界、$f(x_{n})\le M$。$d(x_{n},X\setminus U)\ge1/M$ で、$d(\cdot,X\setminus U)$ の連続性から $d(x,X\setminus U)\ge1/M>0$、すなわち $x\in U$。同値性から $d_{U}(x_{n},x)\to0$。
+:::
+
+::: theorem $G_{\delta}$ 集合の完備距離化（アレクサンドロフ） {#top:alexandroff-gdelta keywords="Alexandroff's theorem: G-delta subsets of completely metrizable spaces are completely metrizable" index="アレクサンドロフの定理（G_δ）|あれくさんどろふのていりじーでるた"}
+完備距離化可能な空間 $X$ の $G_{\delta}$ 集合は（部分空間として）完備距離化可能である。
+:::
+
+::: proof
+$d$ を $X$ の完備な距離、$G=\bigcap_{n\ge1}U_{n}$（$U_{n}$ 開）とする。$U_{n}=X$ のものは除いてよく、すべて除かれるなら $G=X$。$f_{n}(x)\defeq1/d(x,X\setminus U_{n})$ とし、$G$ 上に
+$$
+d_{G}(x,y)\defeq d(x,y)+\sum_{n\ge1}2^{-n}\min\{1,\lvert f_{n}(x)-f_{n}(y)\rvert\}
+$$
+を定める。距離の公理は明らか（$\min\{1,\lvert\cdot\rvert\}$ は三角不等式を満たす）。
+
+**同値.** $d\le d_{G}$。逆に $x\in G$, $\varepsilon>0$ について、$2^{-N}<\varepsilon/3$ となる $N$ をとり、$f_{1},\dots,f_{N}$ の $x$ での連続性から、$d(x,y)<\delta$ なら $y\in U_{1}\cap\cdots\cap U_{N}$ かつ $\lvert f_{n}(x)-f_{n}(y)\rvert<\varepsilon/3$（$n\le N$）となる $\delta<\varepsilon/3$ をとる。$y\in G$, $d(x,y)<\delta$ なら $d_{G}(x,y)<\varepsilon/3+\varepsilon/3+2^{-N}<\varepsilon$。
+
+**完備.** $(x_{k})$ を $d_{G}$ のコーシー列とすると $d$ のコーシー列で、$x\in X$ に収束する。各 $n$ について、$\min\{1,\lvert f_{n}(x_{k})-f_{n}(x_{l})\rvert\}\le2^{n}d_{G}(x_{k},x_{l})$ なので $(f_{n}(x_{k}))_{k}$ はコーシー列で有界、\ref{top:open-subset-complete-metric} の証明と同様に $x\in U_{n}$。よって $x\in G$ で、同値性から $d_{G}(x_{k},x)\to0$。
+:::
+
+::: hypcheck
+- **$X$ の距離の完備性**：完備性の証明で、$d$ のコーシー列の極限 $x$ を $X$ の中にとるのに使った。
+- **$G_{\delta}$**：可算個の $f_{n}$ を重み $2^{-n}$ で足し合わせるのに使った。非可算個の開集合の共通部分ではこの和がとれない。
+:::
+
+## 完備距離化可能な部分空間は $G_{\delta}$ {#top:sec-cmz-converse}
+
+::: theorem 完備距離化可能な部分空間 {#top:completely-metrizable-is-gdelta keywords="a completely metrizable subspace of a metric space is a G-delta (Lavrentiev, Kuratowski)" index="完備距離化可能な部分空間|かんびきょりかかのうなぶぶんくうかん"}
+距離空間 $(X,d)$ の部分空間 $A$ が完備距離化可能なら、$A$ は $X$ の $G_{\delta}$ 集合である。
+:::
+
+::: proof
+$\rho$ を $A$ の位相を定める完備な距離とする。
+
+**Step 1（$\overline{A}$ は $G_{\delta}$）.** $\overline{A}=\bigcap_{n}\{x:d(x,A)<1/n\}$ で、各集合は開（$d(\cdot,A)$ が連続）。
+
+**Step 2（振動の小さい点）.** $n\ge1$ について、$G_{n}$ を、$x\in\overline{A}$ で、$x$ の $d$ についての開近傍 $V$ で $\operatorname{diam}_{\rho}(V\cap A)<1/n$ となるものがある点の全体とする。$x\in G_{n}$ をそのような $V$ で示せば、$V\cap\overline{A}\subseteq G_{n}$。よって $O_{n}$ を「$\operatorname{diam}_{\rho}(V\cap A)<1/n$ となる $X$ の開集合 $V$ 全体の和」とすると、$O_{n}$ は開集合で $G_{n}=O_{n}\cap\overline{A}$。
+
+**Step 3（$A\subseteq G_{n}$）.** $a\in A$ なら、$\rho$ と $d$ は $A$ 上で同じ位相を定めるので、$a$ を中心とする半径 $1/(3n)$ の $\rho$ 球は $A$ の $d$ についての開集合であり、$X$ の $d$ 開集合 $V$ で $V\cap A$ がそれに含まれるものがある。$\operatorname{diam}_{\rho}(V\cap A)\le2/(3n)<1/n$。
+
+**Step 4（$\bigcap G_{n}\subseteq A$）.** $x\in\bigcap_{n}G_{n}$ とし、$x$ の開近傍 $V_{n}$ で $\operatorname{diam}_{\rho}(V_{n}\cap A)<1/n$ となるものをとる。$W_{n}\defeq V_{1}\cap\cdots\cap V_{n}\cap B_{d}(x,1/n)$ は $x$ の開近傍で、$x\in\overline{A}$ なので $a_{n}\in W_{n}\cap A$ がとれる。$m\ge n$ なら $a_{m},a_{n}\in V_{n}\cap A$ なので $\rho(a_{m},a_{n})<1/n$、$(a_{n})$ は $\rho$ のコーシー列で、ある $a\in A$ に $\rho$ で収束する。$\rho$ と $d$ は $A$ 上で同じ位相を定めるので $a_{n}\to a$（$d$ で）。一方 $d(a_{n},x)<1/n$ なので $a_{n}\to x$。極限の一意性から $x=a\in A$。
+
+**Step 5.** Step 3, 4 から $A=\bigcap_{n}G_{n}=\overline{A}\cap\bigcap_{n}O_{n}$ で、Step 1 から $G_{\delta}$。
+:::
+
+::: hypcheck
+- **$\rho$ の完備性**：Step 4 で、$\rho$ のコーシー列 $(a_{n})$ が $A$ の中に極限をもつことに使った。
+- **$\rho$ と $d$ が $A$ 上で同値**：Step 3（$\rho$ 球を $d$ 開集合で切り出す）と Step 4（$\rho$ の収束を $d$ の収束に移す）で使った。
+- $X$ の完備性は使っていない。
+:::
+
+::: corollary $G_{\delta}$ による特徴づけ {#top:gdelta-characterization keywords="a subspace of a completely metrizable space is completely metrizable iff it is G-delta; irrationals are completely metrizable, rationals are not" index="無理数の完備距離化|むりすうのかんびきょりか"}
+完備距離空間 $X$ の部分空間 $A$ について、$A$ が完備距離化可能であることと $A$ が $G_{\delta}$ 集合であることは同値である。特に、無理数全体 $\mathbb{R}\setminus\mathbb{Q}$ は完備距離化可能で、有理数全体 $\mathbb{Q}$ はそうでない。
+:::
+
+::: proof
+前半は \ref{top:alexandroff-gdelta} と \ref{top:completely-metrizable-is-gdelta}。$\mathbb{R}\setminus\mathbb{Q}=\bigcap_{q\in\mathbb{Q}}(\mathbb{R}\setminus\{q\})$ は $G_{\delta}$。$\mathbb{Q}$ は $\mathbb{R}$ の $G_{\delta}$ 集合でない（\ref{top:page-baire} の例）。
+:::
+
+## ポーランド空間 {#top:sec-cmz-polish}
+
+::: definition ポーランド空間 {#top:polish-space keywords="Polish space: separable completely metrizable space" index="ポーランド空間|ぽーらんどくうかん"}
+可分で完備距離化可能な位相空間を**ポーランド空間**という。
+:::
+
+::: proposition ポーランド空間の閉性 {#top:polish-closure keywords="G-delta subspaces and countable products of Polish spaces are Polish; examples" index="ポーランド空間の閉性|ぽーらんどくうかんのへいせい"}
+1. ポーランド空間の $G_{\delta}$ 部分空間（特に開集合と閉集合）はポーランド空間である。
+2. ポーランド空間の可算個の直積はポーランド空間である。
+3. $\mathbb{R}^{n}$, $[0,1]^{\N}$, $\N^{\N}$, $2^{\N}$, $\mathbb{R}\setminus\mathbb{Q}$ はポーランド空間である。
+4. ポーランド空間はベール空間である。
+:::
+
+::: proof
+**1.** \ref{top:alexandroff-gdelta} と、可分距離空間の部分空間が可分であること（可算な開基が部分空間に移る）。閉集合 $F$ は $\bigcap_{n}\{d(\cdot,F)<1/n\}$ で $G_{\delta}$。
+
+**2.** $X_{n}$ の完備な距離 $d_{n}$ を $\min\{1,d_{n}\}$ に取り替えて（同値で完備）、$\prod X_{n}$ 上に $d(x,y)\defeq\sum_{n}2^{-n}d_{n}(x_{n},y_{n})$ を定める。これは直積位相を定める距離であり（\ref{top:countable-product-metrizable} と同様）、$d$ のコーシー列は各成分でコーシー列で、成分ごとの極限に $d$ で収束する（$\varepsilon$ に対し、有限個の成分を近づけ、残りの和を $2^{-N}$ で抑える）ので完備。可分性：各 $X_{n}$ の稠密な可算集合 $D_{n}$ と点 $p_{n}\in X_{n}$ について、有限個の成分だけ $D_{n}$ から選び残りを $p_{n}$ とする点全体は可算で稠密。
+
+**3.** $\mathbb{R}$ は完備で可分、$[0,1]$ は閉集合、$\N$, $\{0,1\}$ は離散距離で完備かつ可算なので、2 から。$\mathbb{R}\setminus\mathbb{Q}$ は \ref{top:gdelta-characterization} と 1。
+
+**4.** 完備な距離をとってベールのカテゴリー定理（\ref{top:baire-category}）。ベール空間であることは位相の性質。
+:::
+
+## 問題 {#top:sec-cmz-problems}
+
+::: problem {#top:prob-cmz-open-interval}
+\ref{top:open-subset-complete-metric} の距離 $d_{U}$ を、$X=\mathbb{R}$, $U=(0,1)$ について具体的に書き、コーシー列 $x_{n}=1/n$（$n\ge2$）が $d_{U}$ ではコーシー列でないことを確かめよ。
+:::
+
+::: solution
+$d(x,\mathbb{R}\setminus(0,1))=\min\{x,1-x\}$ なので $d_{U}(x,y)=\lvert x-y\rvert+\lvert1/\min\{x,1-x\}-1/\min\{y,1-y\}\rvert$。$x_{n}=1/n$（$n\ge2$）では $\min=1/n$ なので $d_{U}(x_{n},x_{m})\ge\lvert n-m\rvert\ge1$（$n\ne m$）で、コーシー列でない。端に近づく点列は $d_{U}$ では「無限遠に逃げる」ことになる。
+:::
+
+::: problem {#top:prob-cmz-compact-gdelta}
+距離空間のコンパクト部分集合は $G_{\delta}$ 集合であることを、\ref{top:completely-metrizable-is-gdelta} を使って示せ。
+:::
+
+::: solution
+コンパクト距離空間は完備（\ref{top:compact-metric-equivalents}）なので、コンパクト部分集合 $K$ は部分空間の距離で完備、したがって完備距離化可能。\ref{top:completely-metrizable-is-gdelta} より $G_{\delta}$。（直接には、$K$ は閉集合なので Step 1 の議論で $G_{\delta}$。）
+:::
+
+::: supplement
+**前提を変えると.** 完備距離化可能性は可算直積と $G_{\delta}$ 部分空間で保たれるが、商や連続像では保たれない（$\mathbb{Q}$ は $\N$ の連続像）。距離化可能という仮定を外すと、「チェック完備」（あるコンパクト化の $G_{\delta}$ 集合）という概念が対応し、距離化可能空間では完備距離化可能性と一致することが知られている（ここでは扱わない）。
+
+**似た定理.** すべての空でないポーランド空間は $\N^{\N}$ の連続像であり、無理数全体は $\N^{\N}$ と同相である（連分数展開による）ことが知られている。$2^{\N}$ はカントール集合と同相で（\ref{top:cantor-set-maps}）、コンパクト距離空間はすべてその連続像である（\ref{top:alexandroff-hausdorff}）。ポーランド空間は記述集合論の舞台であり、ボレル集合や解析集合が研究される（\ref{comp:page-analytical-hierarchy} の系列と関わる）。
+
+**高い視点から：完備性は「穴の場所を遠くに押しやる」.** $(0,1)$ の通常の距離は、端点 $0,1$ という「穴」を近くに見せる。$d_{U}$ は、穴までの距離の逆数を加えることで、穴に近づく点どうしを遠ざけ、穴を無限の彼方に押しやる。比喩で言えば、地図の縮尺を穴の近くほど大きくして、穴に向かう道がいつまでも終わらないように描き直す作業である。$G_{\delta}$ 集合は可算個の穴の集まりを取り除いたものなので、可算個の縮尺の補正を重ね合わせれば完備にできる。有理数のように「穴だらけ」の集合（補集合が稠密でかつ $G_{\delta}$ でない）は、どう描き直しても完備にはならない。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

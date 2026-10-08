@@ -404,3 +404,4 @@
 | Cantor space / quasi-component / retract / Alexandroff-Hausdorff theorem / Brouwer characterization | カントール空間 / 準成分 / レトラクト / アレクサンドロフ–ハウスドルフの定理 / ブラウワーの特徴づけ | 引き込み | 仮。top:page-cantor-set |
 | perfect map / upper semicontinuous decomposition / closed equivalence relation | 完全写像 / 上半連続分割 / 閉な同値関係 | 固有写像 | 小山に合わせる。top:page-perfect-maps |
 | Whitehead theorem (products of quotient maps) / topological cone / metric cone | ホワイトヘッドの定理（商写像の積） / 位相的錐 / 距離的錐 | | 小山に合わせる。top:page-quotient-products |
+| completely metrizable / Polish space | 完備距離化可能 / ポーランド空間 | 位相的完備 | 標準的。top:page-complete-metrizability |

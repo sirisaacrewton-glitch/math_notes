@@ -30913,6 +30913,13 @@
       "num": "2.10",
       "page": "54-general-topology/54B-basic-constructions/01-constructions/02-quotients.html"
     },
+    "top:alexandroff-gdelta": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "$G_{\\delta}$ 集合の完備距離化（アレクサンドロフ）",
+      "num": "5.3",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/05-complete-metrizability.html"
+    },
     "top:alexandroff-hausdorff": {
       "status": "defined",
       "type": "theorem",
@@ -31270,6 +31277,20 @@
       "num": "1.1",
       "page": "54-general-topology/54E-richer-structures/01-metric-spaces/01-completeness.html"
     },
+    "top:completely-metrizable": {
+      "status": "defined",
+      "type": "definition",
+      "title": "完備距離化可能",
+      "num": "5.1",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/05-complete-metrizability.html"
+    },
+    "top:completely-metrizable-is-gdelta": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "完備距離化可能な部分空間",
+      "num": "5.4",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/05-complete-metrizability.html"
+    },
     "top:completely-regular": {
       "status": "defined",
       "type": "definition",
@@ -31507,6 +31528,13 @@
       "title": "三つの位相の比較",
       "num": "1.7",
       "page": "54-general-topology/54C-maps-function-spaces/01-function-spaces/01-function-space-topologies.html"
+    },
+    "top:gdelta-characterization": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "$G_{\\delta}$ による特徴づけ",
+      "num": "5.5",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/05-complete-metrizability.html"
     },
     "top:hausdorff": {
       "status": "defined",
@@ -31942,6 +31970,13 @@
       "num": "1.8",
       "page": "54-general-topology/54A-generalities/01-topological-spaces/01-topologies.html"
     },
+    "top:open-subset-complete-metric": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "開集合の完備な距離",
+      "num": "5.2",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/05-complete-metrizability.html"
+    },
     "top:order-hausdorff": {
       "status": "defined",
       "type": "proposition",
@@ -32025,6 +32060,13 @@
       "title": "コンパクト空間",
       "num": "",
       "page": "54-general-topology/54D-general-properties/01-separation-compactness/02-compactness.html"
+    },
+    "top:page-complete-metrizability": {
+      "status": "defined",
+      "type": "page",
+      "title": "完備距離化可能性",
+      "num": "",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/05-complete-metrizability.html"
     },
     "top:page-completeness": {
       "status": "defined",
@@ -32334,6 +32376,20 @@
       "num": "1.1",
       "page": "54-general-topology/54C-maps-function-spaces/01-function-spaces/01-function-space-topologies.html"
     },
+    "top:polish-closure": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "ポーランド空間の閉性",
+      "num": "5.7",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/05-complete-metrizability.html"
+    },
+    "top:polish-space": {
+      "status": "defined",
+      "type": "definition",
+      "title": "ポーランド空間",
+      "num": "5.6",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/05-complete-metrizability.html"
+    },
     "top:prob-as-lipschitz": {
       "status": "defined",
       "type": "problem",
@@ -32396,6 +32452,20 @@
       "title": "",
       "num": "4.7",
       "page": "54-general-topology/54D-general-properties/01-separation-compactness/04-local-compactness.html"
+    },
+    "top:prob-cmz-compact-gdelta": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "5.9",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/05-complete-metrizability.html"
+    },
+    "top:prob-cmz-open-interval": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "5.8",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/05-complete-metrizability.html"
     },
     "top:prob-cocountable": {
       "status": "defined",
@@ -33145,6 +33215,41 @@
       "title": "問題",
       "num": "",
       "page": "54-general-topology/54E-richer-structures/01-metric-spaces/03-compact-metric.html"
+    },
+    "top:sec-cmz-alexandroff": {
+      "status": "defined",
+      "type": "section",
+      "title": "$G_{\\delta}$ 集合は完備距離化可能",
+      "num": "",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/05-complete-metrizability.html"
+    },
+    "top:sec-cmz-converse": {
+      "status": "defined",
+      "type": "section",
+      "title": "完備距離化可能な部分空間は $G_{\\delta}$",
+      "num": "",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/05-complete-metrizability.html"
+    },
+    "top:sec-cmz-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/05-complete-metrizability.html"
+    },
+    "top:sec-cmz-polish": {
+      "status": "defined",
+      "type": "section",
+      "title": "ポーランド空間",
+      "num": "",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/05-complete-metrizability.html"
+    },
+    "top:sec-cmz-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "54-general-topology/54E-richer-structures/01-metric-spaces/05-complete-metrizability.html"
     },
     "top:sec-con-components": {
       "status": "defined",

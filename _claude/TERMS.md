@@ -349,3 +349,5 @@
 | monoidal category / associator / unitor / coherence | モノイダル圏 / 結合子 / 単位子 / コヒーレンス | | 仮。cat:page-monoidal |
 | monoid (object) in a monoidal category / tensor algebra / action | （モノイダル圏の）モノイド / テンソル代数 / 作用 | モノイド対象 | 仮。cat:page-monoids-in-monoidal |
 | simplicial category / face / degeneracy / simplicial set / nerve | 単体圏 / 面写像 / 退化写像 / 単体的集合 / 神経 | | 仮。cat:page-simplicial |
+| symmetric monoidal / closed category / internal hom / enriched category | 対称モノイダル圏 / 閉圏 / 内部 hom / 豊穣圏 | V 圏 | 仮。cat:page-closed-categories |
+| compactly generated / k-ification / compact-open topology | コンパクト生成 / ケリー化 / コンパクト開位相 | | 仮。cat:page-closed-categories |

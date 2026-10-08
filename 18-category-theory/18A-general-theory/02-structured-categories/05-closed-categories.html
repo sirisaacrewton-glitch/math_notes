@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>閉圏とコンパクト生成空間 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/02-structured-categories/05-closed-categories.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 閉圏とコンパクト生成空間 {#cat:page-closed-categories keywords="symmetric monoidal category, symmetry, hexagon axiom, closed category, internal hom, enriched category, V-category, compactly generated spaces, Kelley spaces, k-ification, compact-open topology, CGHaus is cartesian closed"}
+
+モノイダル圏（\ref{cat:page-monoidal}）に「積の順序の入れ替え」$a\square b\cong b\square a$ を加えたものが**対称モノイダル圏**（\ref{cat:symmetric-monoidal}）で、さらに $-\square b$ が右随伴（**内部 hom**）をもつものが**閉圏**（\ref{cat:closed-category}）である。アーベル群の $\otimes$ と $\mathrm{Hom}$、デカルト閉圏（\ref{cat:cartesian-closed}）がその例である。位相空間の圏 $\mathbf{Top}$ はデカルト閉ではないが、**コンパクト生成**なハウスドルフ空間に制限した圏 $\mathbf{CGHaus}$ はデカルト閉になる（\ref{cat:cghaus-ccc}）。これは代数的位相幾何学で「都合のよい空間の圏」として使われる。
+
+> 資料：Mac Lane, *Categories for the Working Mathematician* 第 VII 章 §7–§8。§8 のデカルト閉性の証明で、Mac Lane は $h\colon Z\square Y\to X$ にチューブ補題をそのまま使っているが、$h$ が連続なのは積の位相を「ケリー化」した位相についてなので、コンパクト集合の上で二つの位相が一致すること（\ref{cat:k-compact-agree}）を補って直した。
+
+## 記法と定義の確認 {#cat:sec-cl-notation}
+
+::: notation
+- モノイダル圏・結合子・単位子は \ref{cat:monoidal-category}、随伴・普遍射からの随伴の構成・反射部分圏は \ref{cat:adjunction}, \ref{cat:adjunction-from-universal}, \ref{cat:page-equivalence}、デカルト閉圏と評価射による冪の特徴づけは \ref{cat:cartesian-closed}, \ref{cat:exponential-universal} のとおり。
+- 位相空間：コンパクト（ハウスドルフ空間のコンパクト集合は閉、コンパクト空間の閉集合と連続像はコンパクト）、チューブ補題、局所コンパクト、正規性は \ref{top:compact}, \ref{top:compact-basic}, \ref{top:hausdorff-properties}, \ref{top:tube-lemma}, \ref{top:locally-compact}, \ref{top:compact-hausdorff-normal} のとおり。
+:::
+
+## 対称モノイダル圏と閉圏 {#cat:sec-cl-closed}
+
+::: definition 対称モノイダル圏 {#cat:symmetric-monoidal keywords="symmetric monoidal category, symmetry isomorphism, hexagon axiom" index="対称モノイダル圏|たいしょうものいだるけん, 対称射|たいしょうしゃ"}
+モノイダル圏 $\mathbf{B}$ に自然同型 $\gamma_{a,b}\colon a\square b\to b\square a$ があり、
+$$
+\gamma_{b,a}\circ\gamma_{a,b}=1,\qquad\varrho_{b}=\lambda_{b}\circ\gamma_{b,e},
+$$
+$$
+\alpha_{c,a,b}\circ\gamma_{a\square b,c}\circ\alpha_{a,b,c}=(\gamma_{a,c}\square1_{b})\circ\alpha_{a,c,b}\circ(1_{a}\square\gamma_{b,c})
+$$
+（**六角形の等式**。両辺は $a\square(b\square c)\to(c\square a)\square b$）を満たすとき、**対称モノイダル圏**という。
+:::
+
+::: example
+有限の積（または余積）によるモノイダル圏は、射影と可換な標準同型 $a\times b\cong b\times a$ で対称である。$(\mathbf{Ab},\otimes)$ は $a\otimes b\mapsto b\otimes a$ で対称。
+:::
+
+::: fact 対称モノイダル圏のコヒーレンス {#cat:symmetric-coherence keywords="coherence for symmetric monoidal categories" index="対称モノイダル圏のコヒーレンス|たいしょうものいだるけんのこひーれんす"}
+対称モノイダル圏では、$\alpha,\lambda,\varrho,\gamma$ から組み立てた図式のうち、両方の道が同じ置換を与えるものはすべて可換である（S. Mac Lane, Natural associativity and commutativity, *Rice University Studies* 49, 1963）。「すべての図式」が可換になるわけではない（$\gamma_{a,a}\neq1$ でありうる）。
+:::
+
+::: definition 閉圏と豊穣圏 {#cat:closed-category keywords="closed symmetric monoidal category, internal hom, enriched category, V-category" index="閉圏|へいけん, 内部 hom|ないぶほむ, 豊穣圏|ほうじょうけん"}
+1. 対称モノイダル圏 $\mathbf{V}$ で、各 $b$ について $-\square b$ が右随伴 $[b,-]$（**内部 hom**）をもつものを**閉圏**という：$\mathbf{V}(a\square b,c)\cong\mathbf{V}(a,[b,c])$。
+2. モノイダル圏 $\mathbf{V}$ 上の**豊穣圏**（$\mathbf{V}$ 圏）$\mathbf{R}$ は、対象の集合と、対象の組ごとの $\mathbf{V}$ の対象 $\mathbf{R}(r,s)$（hom 対象）、合成の射 $\mathbf{R}(s,t)\square\mathbf{R}(r,s)\to\mathbf{R}(r,t)$、単位の射 $e\to\mathbf{R}(r,r)$ からなり、結合律と単位律（$\alpha,\lambda,\varrho$ を挟んだ図式）を満たすものである。
+:::
+
+::: example
+1. $(\mathbf{Ab},\otimes,\mathbb{Z})$ は閉圏で、$[B,C]=\mathrm{Hom}(B,C)$（準同型の群）。可換環 $K$ 上の $(K\text{-}\mathbf{Mod},\otimes_{K},K)$ も同様。
+2. デカルト閉圏（$\times$ による対称モノイダル構造）は閉圏で、$[b,c]=c^{b}$。
+3. $\mathbf{Ab}$ 上の豊穣圏は、hom 集合がアーベル群で合成が双線形な圏（前加法圏）である。$\mathbf{Set}$ 上の豊穣圏はふつうの（局所小な）圏。
+:::
+
+## コンパクト生成空間 {#cat:sec-cl-cg}
+
+::: definition コンパクト生成空間とケリー化 {#cat:compactly-generated keywords="compactly generated space, Kelley space, k-ification" index="コンパクト生成空間|こんぱくとせいせいくうかん, ケリー化|けりーか, ケリー空間|けりーくうかん"}
+ハウスドルフ空間 $X$ が**コンパクト生成**であるとは、部分集合 $A$ で、すべてのコンパクト集合 $C$ について $A\cap C$ が閉であるものは、それ自身閉であることをいう。コンパクト生成なハウスドルフ空間と連続写像の圏を $\mathbf{CGHaus}$ と書く。ハウスドルフ空間 $Y$ について、同じ点集合に「$A\cap C$ がすべてのコンパクト集合 $C$ で閉」となる $A$ を閉集合とする位相を入れたものを $KY$（**ケリー化**）と書く。
+:::
+
+::: example
+1. 局所コンパクトなハウスドルフ空間はコンパクト生成：$A\cap C$ がつねに閉とし、$x\in\overline{A}$ をとる。$x$ のコンパクトな近傍 $C$ について、$x$ は $A\cap\mathrm{int}\,C$ の閉包に入るので、$x\in\overline{A\cap C}=A\cap C\subseteq A$。
+2. 第一可算なハウスドルフ空間（とくに距離空間）はコンパクト生成：$x\in\overline{A}$ なら $A$ の点列 $a_{n}\to x$ があり（\ref{top:sequences-first-countable}）、$C\defeq\{a_{n}\}\cup\{x\}$ はコンパクト。$A\cap C$ は閉で $a_{n}$ をすべて含むので、極限 $x$ も含む。
+:::
+
+::: lemma ケリー化の性質 {#cat:k-compact-agree keywords="k-ification is finer, has the same compact sets, agrees on compact subsets, and is compactly generated" index="ケリー化の性質|けりーかのせいしつ"}
+ハウスドルフ空間 $Y$ について次が成り立つ。
+1. $KY$ の閉集合族は位相を定め、$Y$ の閉集合は $KY$ でも閉。とくに $KY$ はハウスドルフで、恒等写像 $\varepsilon_{Y}\colon KY\to Y$ は連続。
+2. $Y$ のコンパクト集合 $C$ の上で、$KY$ からの部分空間位相と $Y$ からの部分空間位相は一致する。
+3. $KY$ と $Y$ のコンパクト集合は同じで、$KY$ はコンパクト生成である。
+:::
+
+::: proof
+**1.** 条件「すべての $C$ で $A\cap C$ が閉」は、有限個の和と任意個の共通部分で保たれる（$\varnothing$ と全体も満たす）。$A$ が $Y$ で閉なら、$C$ はコンパクトなので閉で、$A\cap C$ は閉。$KY$ の位相は細かいので、ハウスドルフ性は受け継がれ、$\varepsilon_{Y}$ は連続。
+
+**2.** $KY$ の位相の方が細かいので、$Y$ で $C$ の閉集合なら $KY$ でも閉。逆に $B\subseteq C$ が $KY$ の部分空間位相で閉なら、$B=A\cap C$（$A$ は $KY$ で閉）で、定義から $A\cap C$ は $Y$ で閉。
+
+**3.** $C$ が $Y$ でコンパクトなら、2 から $KY$ でも（同じ位相なので）コンパクト。$KY$ でコンパクトなら、$\varepsilon_{Y}$ の連続像として $Y$ でコンパクト。$KY$ のコンパクト生成性：$A$ が $KY$ のすべてのコンパクト集合 $C$（＝$Y$ のコンパクト集合）と閉集合で交わるとする。$A\cap C$ は $C$ の（$KY$ からの、すなわち 2 から $Y$ からの）部分空間位相で閉で、$C$ は $Y$ で閉なので $A\cap C$ は $Y$ で閉。よって $A$ は $KY$ で閉。
+:::
+
+::: lemma コンパクト集合上の連続性 {#cat:cg-continuity-on-compacts keywords="maps out of compactly generated spaces are continuous iff continuous on compact subsets" index="コンパクト集合上の連続性|こんぱくとしゅうごうじょうのれんぞくせい"}
+$X$ がコンパクト生成なら、写像 $f\colon X\to W$（$W$ は任意の位相空間）が連続であることと、すべてのコンパクト集合 $C\subseteq X$ への制限 $f|_{C}$ が連続であることは同値。
+:::
+
+::: proof
+連続なら制限も連続。逆に、閉集合 $F\subseteq W$ について $f^{-1}(F)\cap C=(f|_{C})^{-1}(F)$ は $C$ で閉、$C$ は閉なので $X$ で閉。コンパクト生成性から $f^{-1}(F)$ は閉。
+:::
+
+::: proposition 余反射部分圏 {#cat:cghaus-coreflective keywords="CGHaus is a coreflective subcategory of Haus; products in CGHaus" index="CGHaus の余反射性|しーじーはうすのよはんしゃせい"}
+1. $X\in\mathbf{CGHaus}$, $Y$ ハウスドルフで $f\colon X\to Y$ が連続なら、同じ写像 $f\colon X\to KY$ も連続。よって $\varepsilon_{Y}\colon KY\to Y$ は包含関手 $\mathbf{CGHaus}\to\mathbf{Haus}$ から $Y$ への普遍射で、$K$ は包含の右随伴である。
+2. $X,Y\in\mathbf{CGHaus}$ の $\mathbf{CGHaus}$ での積は $X\square Y\defeq K(X\times Y)$（射影は $X\times Y$ の射影と $\varepsilon$ の合成）。
+:::
+
+::: proof
+**1.** \ref{cat:cg-continuity-on-compacts} から、コンパクト集合 $C\subseteq X$ 上で $f\colon C\to KY$ の連続性を示せばよい。$f(C)$ は $Y$ でコンパクトで、\ref{cat:k-compact-agree} の 2 から $f(C)$ 上の二つの位相は一致する。$f|_{C}\colon C\to f(C)\subseteq Y$ は連続なので、$C\to f(C)\subseteq KY$ も連続。普遍性：$\varepsilon_{Y}\circ f=f$ となる $X\to KY$ は（集合として）$f$ しかない。\ref{cat:adjunction-from-universal} の双対から右随伴。
+
+**2.** $X\times Y$ はハウスドルフ。$Z\in\mathbf{CGHaus}$ から $K(X\times Y)$ への連続写像は、1 から $X\times Y$ への連続写像、すなわち $X,Y$ への連続写像の組と一対一に対応する。
+:::
+
+::: definition コンパクト開位相 {#cat:compact-open keywords="compact-open topology" index="コンパクト開位相|こんぱくとかいいそう"}
+$\mathbf{Top}(Y,X)$（連続写像全体）に、$N(C,U)\defeq\{h:h(C)\subseteq U\}$（$C\subseteq Y$ コンパクト、$U\subseteq X$ 開）を準開基とする位相を入れたものを $\mathrm{Cop}(Y,X)$ と書く（**コンパクト開位相**）。$X$ がハウスドルフなら $\mathrm{Cop}(Y,X)$ もハウスドルフ（$f(y)\neq g(y)$ を分ける開集合 $U,V$ について $N(\{y\},U)$, $N(\{y\},V)$）。
+:::
+
+::: theorem CGHaus はデカルト閉 {#cat:cghaus-ccc keywords="the category of compactly generated Hausdorff spaces is cartesian closed" index="CGHaus のデカルト閉性|しーじーはうすのでかるとへいせい"}
+$X,Y\in\mathbf{CGHaus}$ について $X^{Y}\defeq K(\mathrm{Cop}(Y,X))$ とし、$\mathrm{ev}\colon X^{Y}\square Y\to X$ を評価 $(f,y)\mapsto f(y)$ とすると、これは冪である。よって $\mathbf{CGHaus}$ はデカルト閉圏である。
+:::
+
+::: proof
+**Step 1（評価の連続性：コンパクト集合への帰着）.** \ref{cat:cg-continuity-on-compacts} から、$X^{Y}\square Y=K(X^{Y}\times Y)$ のコンパクト集合 $L$ 上で連続であることを示せばよい。$L$ は $X^{Y}\times Y$ でコンパクト（\ref{cat:k-compact-agree} の 3）で、射影の像 $D\subseteq X^{Y}$, $C\subseteq Y$ はコンパクト、$L\subseteq D\times C$。$D$ は $\mathrm{Cop}(Y,X)$ でもコンパクトで、$D$ 上の位相は $\mathrm{Cop}$ からのものと一致する（\ref{cat:k-compact-agree} の 2）。$L$ 上の位相も、$K$ からのものと $X^{Y}\times Y$ からのものが一致するので、$\mathrm{ev}$ が $D\times C$（$\mathrm{Cop}$ と $Y$ の部分空間の積）上で連続であることを示せば十分。
+
+**Step 2（$D\times C$ 上の連続性）.** $(f,y)\in D\times C$ と $f(y)\in U$（開）をとる。$C$ はコンパクトハウスドルフなので正則で、$f|_{C}$ は連続なので、$y$ の $C$ での近傍 $M$ で、その（$C$ での）閉包 $\overline{M}$ が $f(\overline{M})\subseteq U$ を満たすものがある。$\overline{M}$ は $C$ の閉集合なのでコンパクト。$N(\overline{M},U)$ は $f$ を含む開集合で、$(N(\overline{M},U)\cap D)\times M$ は $(f,y)$ の近傍、その像は $U$ に含まれる。
+
+**Step 3（転置の連続性）.** $h\colon Z\square Y\to X$（$Z\in\mathbf{CGHaus}$）について、$k(z)\defeq h(z,-)$ とおく。
+- *$k(z)$ は連続*：$y\mapsto(z,y)$ は $Y\to Z\times Y$ で連続、\ref{cat:cghaus-coreflective} の 1 から $Y\to K(Z\times Y)$ でも連続。$h$ と合成する。
+- *$k\colon Z\to\mathrm{Cop}(Y,X)$ は連続*：\ref{cat:cg-continuity-on-compacts} から、コンパクト集合 $L\subseteq Z$ 上で示せばよい。準開基の $N(C,U)$ について、$z_{0}\in L$ で $k(z_{0})\in N(C,U)$、すなわち $h(\{z_{0}\}\times C)\subseteq U$ とする。$L\times C$ は $Z\times Y$ でコンパクトなので、その上で $K(Z\times Y)$ からの位相と積位相は一致し（\ref{cat:k-compact-agree} の 2）、$h|_{L\times C}$ は積位相で連続。$h^{-1}(U)\cap(L\times C)$ は $\{z_{0}\}\times C$ を含む開集合なので、チューブ補題（\ref{top:tube-lemma}）から $z_{0}$ の $L$ での開近傍 $V$ で $V\times C\subseteq h^{-1}(U)$ となるものがある。$k(V)\subseteq N(C,U)$。
+- *$k\colon Z\to X^{Y}$ は連続*：\ref{cat:cghaus-coreflective} の 1。
+
+**Step 4（普遍性）.** $\mathrm{ev}\circ(k\square1)=h$ は各点で $k(z)(y)=h(z,y)$。逆に $\mathrm{ev}\circ(k'\square1)=h$ なら $k'(z)(y)=h(z,y)$ で $k'=k$。\ref{cat:exponential-universal} から $(X^{Y},\mathrm{ev})$ は冪。
+
+::: hypcheck
+- **ハウスドルフ性**：コンパクト集合が閉であること（\ref{cat:k-compact-agree} の 1, \ref{cat:cg-continuity-on-compacts}）、$C$ の正則性（Step 2）、$\mathrm{Cop}(Y,X)$ のハウスドルフ性（$X^{Y}\in\mathbf{CGHaus}$）に使った。
+- **コンパクト生成性**：Step 1, 3 で連続性をコンパクト集合上に帰着させるのに使った（定義域 $X^{Y}\square Y$, $Z$ がコンパクト生成）。
+- **コンパクト集合上の位相の一致**：Step 1 と Step 3 の 2 番目で本質的に使った。Mac Lane の原文はこの点を省いているが、$h$ が連続なのは $K(Z\times Y)$ の位相についてであり、チューブ補題は積位相についての主張なので、この一致がないと議論がつながらない。
+:::
+:::
+
+::: supplement
+**前提を変えると.** $\mathbf{Top}$ 自体はデカルト閉でない：$-\times Y$ が余極限（とくに商写像）を保存しない $Y$（たとえば有理数の空間 $\mathbb{Q}$）があることが知られている。$Y$ が局所コンパクトハウスドルフなら、$\mathbf{Top}$ でも $\mathrm{Cop}(Y,-)$ が $-\times Y$ の右随伴になる（範囲外）。
+
+**一般化.** 閉圏の上では、豊穣圏について、米田の補題・随伴・極限など、ふつうの圏論の多くがそのまま展開できる（豊穣圏論。G. M. Kelly, *Basic Concepts of Enriched Category Theory*, Cambridge University Press, 1982）。
+
+**類似の定理.** \ref{cat:cghaus-coreflective} は、反射部分圏（\ref{cat:page-equivalence}）の双対である。反射では「一番よい近似を外から」、余反射では「内から」とる。ケリー化は、位相を細かくして「コンパクト集合での振る舞い」だけで決まる空間に置き換える操作である。
+
+**高い視点から：「正しい」空間の圏.** Mac Lane は「$\mathbf{Top}$ で我々は誤った対象を研究してきた。正しいのは $\mathbf{CGHaus}$ の空間である」と書いている。比喩で言えば、位相空間全体は「何でも入る倉庫」だが、写像空間や積が素直にふるまう「よく整理された書棚」が $\mathbf{CGHaus}$ である。代数的位相幾何学で扱う空間（CW 複体、距離空間、局所コンパクト空間）はほとんどがここに入るので、制限の代償は小さい。
+:::
+
+## 問題 {#cat:sec-cl-problems}
+
+::: problem {#cat:prob-cl-closed-subspace}
+$X\in\mathbf{CGHaus}$ の閉部分集合は、部分空間位相でコンパクト生成であることを示せ。
+:::
+
+::: solution
+$F\subseteq X$ を閉、$A\subseteq F$ が $F$ のすべてのコンパクト集合と（$F$ で）閉集合で交わるとする。$X$ のコンパクト集合 $C$ について、$C\cap F$ は $C$ の閉集合なのでコンパクトで $F$ に含まれ、$A\cap C=A\cap(C\cap F)$ は $C\cap F$ で閉、したがって $X$ で閉。$X$ はコンパクト生成なので $A$ は $X$ で閉、よって $F$ で閉。
+:::
+
+::: problem {#cat:prob-cl-k-idempotent}
+ハウスドルフ空間 $Y$ について、$KY=Y$（位相として）であることと $Y$ がコンパクト生成であることは同値で、$K(KY)=KY$ であることを示せ。
+:::
+
+::: solution
+$Y$ がコンパクト生成なら、「すべてのコンパクト $C$ で $A\cap C$ が閉」となる $A$ は閉なので、$KY$ の閉集合は $Y$ の閉集合で、逆は \ref{cat:k-compact-agree} の 1。よって $KY=Y$。逆に $KY=Y$ なら、\ref{cat:k-compact-agree} の 3 から $Y=KY$ はコンパクト生成。$KY$ はコンパクト生成（同じく 3）なので $K(KY)=KY$。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

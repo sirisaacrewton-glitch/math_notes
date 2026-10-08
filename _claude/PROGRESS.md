@@ -231,7 +231,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | CS-02 | 02-structured-categories/02-monoidal | モノイダル圏とマックレーンのコヒーレンス定理 | VII.1–2 | 7759–8159 | 完了 |
 | CS-03 | 02-structured-categories/03-monoids-actions | モノイダル圏のモノイドと作用、自由モノイド | VII.3–4 | 8160–8375 | 完了 |
 | CS-04 | 02-structured-categories/04-simplicial | 単体圏 Δ と普遍モノイド、単体的対象 | VII.5 | 8376–8635 | 完了 |
-| CS-05 | 02-structured-categories/05-closed-categories | 閉圏とコンパクト生成空間 | VII.7–8 | 8775–8983 | 未 |
+| CS-05 | 02-structured-categories/05-closed-categories | 閉圏とコンパクト生成空間 | VII.7–8 | 8775–8983 | 完了 |
 | CM-01 | 03-monads/01-monads-algebras | モナドとアイレンバーグ–ムーア代数、比較関手 | VI.1–3 | 6675–6984 | 完了 |
 | CM-02 | 03-monads/02-kleisli | クライスリ圏と比較の要約、語と自由半群 | VI.4–5 | 6985–7196 | 完了 |
 | CM-03 | 03-monads/03-beck | 分裂余等化子とベックのモナド性定理 | VI.6–7 | 7197–7540 | 完了 |
@@ -270,6 +270,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 圏論 CS-05（05-closed-categories, cat:page-closed-categories：対称モノイダル圏（コヒーレンスは fact）、閉圏と豊穣圏、コンパクト生成空間とケリー化、コンパクト集合上の位相の一致（Mac Lane のデカルト閉性の証明でチューブ補題の使い方に欠落があったのを補った）、余反射性と積、コンパクト開位相、CGHaus のデカルト閉性）。Mac Lane VII.7–8。
 - 2026-10-08 圏論 CS-04（04-simplicial, cat:page-simplicial：単体圏 Δ と順序数の和、射は積の和、普遍モノイド、面と退化、標準形、単体的恒等式、生成と関係による表示（挿入による並べ替えを補った）、単体的対象・特異単体・神経、∂∂=0）。Mac Lane VII.5。
 - 2026-10-08 圏論 CS-03（03-monoids-actions, cat:page-monoids-in-monoidal：モノイド対象と例の表、一般結合律、余積を保存するモノイダル圏の自由モノイド（結合律と普遍性をコヒーレンス定理で補った）、テンソル代数、作用と自由な作用の随伴）。Mac Lane VII.3–4。
 - 2026-10-08 圏論 CS-02（02-structured-categories/02-monoidal, cat:page-monoidal：モノイダル圏、例、イズベルの議論、ケリーの単位の三角形、結合だけのコヒーレンス（階数と菱形）、単位を消す標準射（Mac Lane が略した単位の場合を 8 通りの場合分けで補った）、コヒーレンス定理、自由モノイダル圏、エックマン–ヒルトン）。Mac Lane VII.1–2。

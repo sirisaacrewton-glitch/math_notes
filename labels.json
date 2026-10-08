@@ -127,12 +127,40 @@
       "num": "1.4",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/01-cartesian-closed.html"
     },
+    "cat:cg-continuity-on-compacts": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "コンパクト集合上の連続性",
+      "num": "5.6",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/05-closed-categories.html"
+    },
+    "cat:cghaus-ccc": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "CGHaus はデカルト閉",
+      "num": "5.9",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/05-closed-categories.html"
+    },
+    "cat:cghaus-coreflective": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "余反射部分圏",
+      "num": "5.7",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/05-closed-categories.html"
+    },
     "cat:chaus-monadic": {
       "status": "defined",
       "type": "theorem",
       "title": "コンパクトハウスドルフ空間のモナド性",
       "num": "4.4",
       "page": "18-category-theory/18A-general-theory/03-monads/04-algebras-compact.html"
+    },
+    "cat:closed-category": {
+      "status": "defined",
+      "type": "definition",
+      "title": "閉圏と豊穣圏",
+      "num": "5.3",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/05-closed-categories.html"
     },
     "cat:coequalizer": {
       "status": "defined",
@@ -182,6 +210,20 @@
       "title": "コンマ圏の極限",
       "num": "10.3",
       "page": "18-category-theory/18A-general-theory/01-basics/10-adjoint-functor-theorem.html"
+    },
+    "cat:compact-open": {
+      "status": "defined",
+      "type": "definition",
+      "title": "コンパクト開位相",
+      "num": "5.8",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/05-closed-categories.html"
+    },
+    "cat:compactly-generated": {
+      "status": "defined",
+      "type": "definition",
+      "title": "コンパクト生成空間とケリー化",
+      "num": "5.4",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/05-closed-categories.html"
     },
     "cat:comparison-functor": {
       "status": "defined",
@@ -554,6 +596,13 @@
       "num": "2.5",
       "page": "18-category-theory/18A-general-theory/01-basics/02-functors.html"
     },
+    "cat:k-compact-agree": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "ケリー化の性質",
+      "num": "5.5",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/05-closed-categories.html"
+    },
     "cat:kleisli-adjunction": {
       "status": "defined",
       "type": "theorem",
@@ -785,6 +834,13 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/01-basics/01-categories.html"
     },
+    "cat:page-closed-categories": {
+      "status": "defined",
+      "type": "page",
+      "title": "閉圏とコンパクト生成空間",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/05-closed-categories.html"
+    },
     "cat:page-comma-free-quotient": {
       "status": "defined",
       "type": "page",
@@ -924,6 +980,20 @@
       "title": "",
       "num": "2.17",
       "page": "18-category-theory/18A-general-theory/01-basics/02-functors.html"
+    },
+    "cat:prob-cl-closed-subspace": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "5.10",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/05-closed-categories.html"
+    },
+    "cat:prob-cl-k-idempotent": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "5.11",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/05-closed-categories.html"
     },
     "cat:prob-continuous-from-products-equalizers": {
       "status": "defined",
@@ -1471,6 +1541,34 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/01-basics/04-comma-free-quotient.html"
     },
+    "cat:sec-cl-cg": {
+      "status": "defined",
+      "type": "section",
+      "title": "コンパクト生成空間",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/05-closed-categories.html"
+    },
+    "cat:sec-cl-closed": {
+      "status": "defined",
+      "type": "section",
+      "title": "対称モノイダル圏と閉圏",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/05-closed-categories.html"
+    },
+    "cat:sec-cl-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/05-closed-categories.html"
+    },
+    "cat:sec-cl-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/05-closed-categories.html"
+    },
     "cat:sec-con-duality": {
       "status": "defined",
       "type": "section",
@@ -1960,6 +2058,20 @@
       "title": "部分圏",
       "num": "1.3",
       "page": "18-category-theory/18A-general-theory/01-basics/01-categories.html"
+    },
+    "cat:symmetric-coherence": {
+      "status": "defined",
+      "type": "fact",
+      "title": "対称モノイダル圏のコヒーレンス",
+      "num": "5.2",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/05-closed-categories.html"
+    },
+    "cat:symmetric-monoidal": {
+      "status": "defined",
+      "type": "definition",
+      "title": "対称モノイダル圏",
+      "num": "5.1",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/05-closed-categories.html"
     },
     "cat:t-algebra": {
       "status": "defined",

@@ -3515,6 +3515,27 @@
       "num": "9.6",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/09-reducibility.html"
     },
+    "comp:alternating-classes": {
+      "status": "defined",
+      "type": "definition",
+      "title": "交代計算量のクラス",
+      "num": "9.2",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/09-alternation.html"
+    },
+    "comp:alternating-tm": {
+      "status": "defined",
+      "type": "definition",
+      "title": "交代チューリング機械",
+      "num": "9.1",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/09-alternation.html"
+    },
+    "comp:alternation-theorem": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "交代計算の基本定理",
+      "num": "9.7",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/09-alternation.html"
+    },
     "comp:amplification": {
       "status": "defined",
       "type": "lemma",
@@ -3563,6 +3584,20 @@
       "title": "算術的階層",
       "num": "2.5",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/02-turing-reducibility.html"
+    },
+    "comp:aspace-in-time": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "交代領域から時間へ",
+      "num": "9.5",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/09-alternation.html"
+    },
+    "comp:atime-in-space": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "交代時間から領域へ",
+      "num": "9.3",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/09-alternation.html"
     },
     "comp:atm-to-mpcp": {
       "status": "defined",
@@ -4642,6 +4677,13 @@
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/03-ackermann.html"
     },
+    "comp:page-alternation": {
+      "status": "defined",
+      "type": "page",
+      "title": "交代計算と多項式階層",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/09-alternation.html"
+    },
     "comp:page-analytical-hierarchy": {
       "status": "defined",
       "type": "page",
@@ -4971,6 +5013,13 @@
       "num": "4.9",
       "page": "03-mathematical-logic/03D-computability-theory/01-automata/04-context-free.html"
     },
+    "comp:ph-basic": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "多項式階層の基本性質",
+      "num": "9.9",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/09-alternation.html"
+    },
     "comp:pi11-covering": {
       "status": "defined",
       "type": "corollary",
@@ -5033,6 +5082,13 @@
       "title": "多項式時間還元の性質",
       "num": "2.5",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/02-np.html"
+    },
+    "comp:polynomial-hierarchy": {
+      "status": "defined",
+      "type": "definition",
+      "title": "多項式階層",
+      "num": "9.8",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/09-alternation.html"
     },
     "comp:pr-closure": {
       "status": "defined",
@@ -5194,6 +5250,20 @@
       "title": "",
       "num": "3.10",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/03-ackermann.html"
+    },
+    "comp:prob-alt-collapse": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "9.11",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/09-alternation.html"
+    },
+    "comp:prob-alt-tqbf": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "9.10",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/09-alternation.html"
     },
     "comp:prob-arden-ends-01": {
       "status": "defined",
@@ -5978,6 +6048,48 @@
       "title": "木と Π¹₁ 標準形",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/03-analytical-hierarchy.html"
+    },
+    "comp:sec-alt-definition": {
+      "status": "defined",
+      "type": "section",
+      "title": "交代チューリング機械",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/09-alternation.html"
+    },
+    "comp:sec-alt-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/09-alternation.html"
+    },
+    "comp:sec-alt-ph": {
+      "status": "defined",
+      "type": "section",
+      "title": "多項式階層",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/09-alternation.html"
+    },
+    "comp:sec-alt-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/09-alternation.html"
+    },
+    "comp:sec-alt-space-time": {
+      "status": "defined",
+      "type": "section",
+      "title": "交代領域と決定性時間",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/09-alternation.html"
+    },
+    "comp:sec-alt-time-space": {
+      "status": "defined",
+      "type": "section",
+      "title": "交代時間と決定性領域",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/09-alternation.html"
     },
     "comp:sec-arden": {
       "status": "defined",
@@ -7232,6 +7344,13 @@
       "num": "6.2",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/06-hierarchy.html"
     },
+    "comp:space-in-atime": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "決定性領域から交代時間へ",
+      "num": "9.4",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/09-alternation.html"
+    },
     "comp:space-time": {
       "status": "defined",
       "type": "lemma",
@@ -7273,6 +7392,13 @@
       "title": "時間階層定理",
       "num": "6.4",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/06-hierarchy.html"
+    },
+    "comp:time-in-aspace": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "決定性時間から交代領域へ",
+      "num": "9.6",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/09-alternation.html"
     },
     "comp:time-to-size": {
       "status": "defined",
@@ -32158,13 +32284,6 @@
       "title": "トポス",
       "referencedFrom": [
         "18-category-theory/18A-general-theory/01-basics/01-categories.html"
-      ]
-    },
-    "comp:page-alternation": {
-      "status": "planned",
-      "title": "交代計算",
-      "referencedFrom": [
-        "03-mathematical-logic/03D-computability-theory/04-complexity/08-circuits.html"
       ]
     },
     "comp:page-parallel": {

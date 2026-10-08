@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>交代計算と多項式階層 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/04-complexity/09-alternation.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 交代計算と多項式階層 {#comp:page-alternation keywords="alternating Turing machine, universal and existential states, ATIME, ASPACE, AP = PSPACE, APSPACE = EXPTIME, AL = P, polynomial hierarchy, Sigma_k^P, Pi_k^P, TAUT, MIN-FORMULA"}
+
+非決定性の機械は「どれか一つの枝が受理すれば受理」（OR）で動く。これに「すべての枝が受理すれば受理」（AND）の状態を加えたものが**交代チューリング機械**（\ref{comp:alternating-tm}）である。交代計算は、時間と領域の驚くべき関係を明らかにする：交代多項式時間は決定性多項式領域に等しく（$\mathrm{AP}=\mathrm{PSPACE}$）、交代多項式領域は決定性指数時間に等しい（$\mathrm{APSPACE}=\mathrm{EXPTIME}$）（\ref{comp:alternation-theorem}）。交代の回数を制限すると、NP と coNP を含む**多項式階層**（\ref{comp:polynomial-hierarchy}）が得られる。
+
+> 資料：M. Sipser, *Introduction to the Theory of Computation*, 3rd ed., §10.3 を参考にした（本文は写していない）。同書が明示していない仮定（すべての枝が停止すること、$f$ が計算できること）を定理に書き、交代領域から決定性時間への模倣では、時点表示のグラフが閉路をもたないことを確かめてから印付けの正しさを示した。決定性時間から交代領域への模倣では、前ページの一段の局所関数（\ref{comp:deterministic-local-step}）を使った。
+
+## 記法と定義の確認 {#comp:sec-alt-notation}
+
+::: notation
+- 非決定性チューリング機械、時点表示、TIME・NTIME・SPACE・NSPACE、P・NP・PSPACE・EXPTIME、時点表示の個数の評価は \ref{comp:running-time}, \ref{comp:np-ntm}, \ref{comp:space-class}, \ref{comp:space-time}, \ref{comp:class-pspace} のとおり。対数領域（読み取り専用の入力テープと作業テープ）は \ref{comp:logspace-model}。サヴィッチの定理とその証明の手法は \ref{comp:savitch}。
+- 決定性の機械の表の局所関数 $g$ は \ref{comp:deterministic-local-step} のとおり。
+- 関数 $f$ が**計算できる**とは、$1^{n}$ から $f(n)$ を二進で、ここで必要な時間・領域の範囲で計算できることをいう（多項式や $\log n$ はこれを満たす）。
+:::
+
+## 交代チューリング機械 {#comp:sec-alt-definition}
+
+::: definition 交代チューリング機械 {#comp:alternating-tm keywords="alternating Turing machine, universal state, existential state, acceptance by labeling the computation tree" index="交代チューリング機械|こうたいちゅーりんぐきかい, 全称状態|ぜんしょうじょうたい, 存在状態|そんざいじょうたい"}
+**交代チューリング機械**は、受理・拒否以外の状態を**全称状態**と**存在状態**に分けた非決定性チューリング機械である。入力 $w$ の上のすべての計算の枝が停止するとき（このとき、計算の木は有限分岐ですべての枝が有限なので、ケーニッヒの補題により有限である）、木の頂点（時点表示）に次のように受理・拒否を定める：受理状態の頂点は受理、拒否状態の頂点は拒否、全称状態の頂点は子がすべて受理なら受理、存在状態の頂点は子のどれかが受理なら受理。根が受理のとき、機械は $w$ を受理する。すべての入力ですべての枝が停止するものを**交代判定機**という。時間・領域は、すべての枝についての最大値で測る。
+:::
+
+::: definition 交代計算量のクラス {#comp:alternating-classes keywords="ATIME, ASPACE, AP, APSPACE, AL" index="ATIME|えーたいむ, ASPACE|えーすぺーす"}
+$\mathrm{ATIME}(t(n))$（$\mathrm{ASPACE}(f(n))$）を、時間 $O(t(n))$（領域 $O(f(n))$）の交代判定機で決定できる言語全体とする。$\mathrm{AP}\defeq\bigcup_{k}\mathrm{ATIME}(n^{k})$, $\mathrm{APSPACE}\defeq\bigcup_{k}\mathrm{ASPACE}(n^{k})$, $\mathrm{AL}\defeq\mathrm{ASPACE}(\log n)$（領域が $n$ 未満のときは \ref{comp:logspace-model} の読み取り専用の入力テープを使う）。
+:::
+
+::: example
+1. **恒真式.** $\mathrm{TAUT}\defeq\{\langle\varphi\rangle:\varphi\text{ はすべての付値で真}\}$ は AP に属する：変数の値を一つずつ全称状態で選び（$0$ と $1$ の二つの子）、選び終えたら $\varphi$ を評価して真なら受理。すべての枝が受理すること、すなわちすべての付値で真であることと受理が同値。同様に coNP の言語は AP に属し、NP の言語（存在状態だけを使う）も AP に属する。
+2. **最小の論理式.** $\mathrm{MIN\text{-}FORMULA}\defeq\{\langle\varphi\rangle:\varphi\text{ と同値なより短い論理式はない}\}$ は AP に属する：$\varphi$ より短い論理式 $\psi$ を全称状態で選び、付値を存在状態で選び、その付値で $\varphi$ と $\psi$ の値が異なれば受理。受理 $\iff$ どの短い $\psi$ についても $\varphi$ と値の異なる付値がある。
+:::
+
+## 交代時間と決定性領域 {#comp:sec-alt-time-space}
+
+::: lemma 交代時間から領域へ {#comp:atime-in-space keywords="ATIME(f) is contained in SPACE(f)" index="交代時間と領域|こうたいじかんとりょういき"}
+$f(n)\ge n$ で $f$ が計算できるとき、$\mathrm{ATIME}(f(n))\subseteq\mathrm{SPACE}(f(n))$。
+:::
+
+::: proof
+時間 $cf(n)$ の交代判定機 $M$ を、決定性の機械 $S$ で模倣する。$S$ は $M$ の計算の木を深さ優先で調べ、各頂点が受理かを再帰的に求める。木の深さは $cf(n)$ 以下で、各頂点の子は $\delta$ の大きさで決まる定数個以下。
+
+**記録の仕方.** 再帰のスタックには時点表示そのものではなく、根から現在の頂点までの「選んだ子の番号」の列（各段で定数ビット）と、各段で「ここまでに調べた子の結果（全称なら全部受理か、存在ならどれか受理か）」を記録する。現在の頂点の時点表示は、開始時点表示から番号の列に従って $M$ を動かし直せば再現でき、そのためには時点表示一つ分（時間 $cf(n)$ 以下の計算なので $O(f(n))$ 升）の作業領域があればよい。
+
+**領域.** 番号の列と結果の記録が $O(f(n))$、再現用の時点表示が $O(f(n))$、合計 $O(f(n))$。
+:::
+
+::: lemma 決定性領域から交代時間へ {#comp:space-in-atime keywords="SPACE(f) is contained in ATIME(f^2)" index="領域と交代時間|りょういきとこうたいじかん"}
+$f(n)\ge n$ で $f$ が時間 $O(f(n)^{2})$ で計算できるとき、$\mathrm{SPACE}(f(n))\subseteq\mathrm{ATIME}(f(n)^{2})$。
+:::
+
+::: proof
+使用領域 $f(n)$ の決定性判定機 $M$ を、サヴィッチの定理の証明（\ref{comp:savitch}）と同じく、受理時点表示がただ一つ $c_{\mathrm{acc}}$ になるように変えておく。時点表示は $2^{df(n)}$ 個以下で、時点表示は長さ $O(f(n))$ の記号列で書ける。交代機械 $S$ は手続き $\mathrm{REACH}(c_{1},c_{2},t)$（「$c_{1}$ から $t$ 段以内に $c_{2}$ に行けるか」、$t$ は $2$ の冪）を次のように行う。
+- $t=1$：$c_{1}=c_{2}$ または $c_{1}\vdash c_{2}$ かを決定的に調べる（時間 $O(f(n))$）。
+- $t>1$：中間の時点表示 $c_{m}$ を一記号ずつ**存在状態**で書き（時間 $O(f(n))$）、**全称状態**で二つに分かれて $\mathrm{REACH}(c_{1},c_{m},t/2)$ と $\mathrm{REACH}(c_{m},c_{2},t/2)$ を行う。
+
+$S$ は $f(n)$ を計算し、開始時点表示 $c_{0}$ について $\mathrm{REACH}(c_{0},c_{\mathrm{acc}},2^{df(n)})$ を行う。再帰の深さは $df(n)$ で、各段の時間は $O(f(n))$ なので、どの枝も時間 $O(f(n)^{2})$。正しさは、$t$ に関する帰納法で「$\mathrm{REACH}(c_{1},c_{2},t)$ の根が受理 $\iff$ $t$ 段以内に到達できる」：存在状態の選択で正しい中間点を選べば両方の子が受理し、逆に受理するなら選ばれた $c_{m}$ が両方の半分を満たす。$M$ は決定性で停止するので、$M$ が受理する $\iff$ $c_{0}$ から $2^{df(n)}$ 段以内に $c_{\mathrm{acc}}$ に到達する。
+:::
+
+## 交代領域と決定性時間 {#comp:sec-alt-space-time}
+
+::: lemma 交代領域から時間へ {#comp:aspace-in-time keywords="ASPACE(f) is contained in TIME(2^O(f))" index="交代領域と時間|こうたいりょういきとじかん"}
+$f(n)\ge\log n$ で $f$ が計算できるとき、$\mathrm{ASPACE}(f(n))\subseteq\bigcup_{c}\mathrm{TIME}(2^{cf(n)})$。
+:::
+
+::: proof
+領域 $f(n)$ の交代判定機 $M$ と入力 $w$ について、使用領域 $df(n)$ 以下の時点表示（入力ヘッドの位置を含む）は $2^{O(f(n))}$ 個（$f(n)\ge\log n$ なので入力ヘッドの位置 $n+2$ 通りも $2^{O(f(n))}$ に含まれる）。これらを頂点とし、一段の動きを辺とするグラフ $G$ を作る（時間 $2^{O(f(n))}$）。
+
+**$G$ の開始時点表示から到達できる部分には閉路がない.** 閉路があれば、それをたどる計算の枝が無限に続き、$M$ が判定機であることに反する。
+
+**印付け.** 受理時点表示に印を付け、全称状態の頂点は「子がすべて印付き」、存在状態の頂点は「子のどれかが印付き」になったら印を付ける操作を、新しい印が付かなくなるまで繰り返す。各回の走査は $2^{O(f(n))}$ 時間で、回数は頂点の数以下なので、全体で $2^{O(f(n))}$ 時間。開始時点表示に印が付けば受理する。
+
+**正しさ.** 到達可能な部分は閉路のない有限グラフなので、各頂点に「そこから出る最長の道の長さ」を対応させられる。その長さに関する帰納法で、頂点に最終的に印が付くことと、その頂点を根とする計算の木が受理であることが同値。
+:::
+
+::: lemma 決定性時間から交代領域へ {#comp:time-in-aspace keywords="TIME(2^O(f)) is contained in ASPACE(f)" index="時間と交代領域|じかんとこうたいりょういき"}
+$f(n)\ge\log n$ で、$f$ が領域 $O(f(n))$ で計算できるとき、各 $c$ について $\mathrm{TIME}(2^{cf(n)})\subseteq\mathrm{ASPACE}(f(n))$。
+:::
+
+::: proof
+時間 $T\defeq2^{cf(n)}$ の決定性単一テープ判定機 $M$ と、その表（行 $0,\dots,T$、位置 $1,\dots,m$、$m\defeq T+2$）を考える（\ref{comp:time-to-size} の証明と同じ表。第 $i+1$ 行の位置 $j$ の記号は、局所関数 $g$ により第 $i$ 行の位置 $j-1,\dots,j+2$ の記号で決まる。\ref{comp:deterministic-local-step}）。交代機械 $S$ は手続き $\mathrm{CHECK}(i,j,s)$（「第 $i$ 行の位置 $j$ の記号は $s$ か」）を行う。
+- $i=0$：開始時点表示の位置 $j$ の記号を、入力テープの $w_{j-1}$ を読んで直接比べる。
+- $i>0$：四つの記号 $s_{-1},s_{0},s_{1},s_{2}$ を**存在状態**で選び（位置 $0$ と $m+1,m+2$ の升は固定の記号として扱う）、$g(s_{-1},s_{0},s_{1},s_{2})=s$ でなければ拒否。そうなら**全称状態**で四つに分かれ、それぞれ $\mathrm{CHECK}(i-1,j+l,s_{l})$（$l=-1,0,1,2$）を行う。
+
+$S$ は、位置 $j$ を存在状態で選んで $\mathrm{CHECK}(T,j,q_{\mathrm{acc}})$ を行う。
+
+**領域.** どの枝でも、一度に覚えるのは現在の $(i,j,s)$ と選んだ四つの記号だけ（再帰は呼び出し元に戻らないので、スタックは要らない）。$i,j\le T+2$ は $O(f(n))$ ビットで書けるので、領域 $O(f(n))$。$T$ の値は $f(n)$ を計算すれば書ける。
+
+**停止と正しさ.** 各段で $i$ が減るので、すべての枝は $T+1$ 段以内に停止する。$i$ に関する帰納法で「$\mathrm{CHECK}(i,j,s)$ の根が受理 $\iff$ 表の $(i,j)$ の記号が $s$」：正しい四つの記号を選べば四つの子がすべて受理し、誤った記号が一つでもあれば、その子は帰納法の仮定から拒否する。$M$ は $T$ 段以内に停止するので、第 $T$ 行が受理状態を含むことと $M$ が $w$ を受理することは同値。
+:::
+
+::: theorem 交代計算の基本定理 {#comp:alternation-theorem keywords="AL = P, AP = PSPACE, APSPACE = EXPTIME" index="交代計算の基本定理|こうたいけいさんのきほんていり"}
+$\mathrm{AL}=\mathrm{P}$, $\mathrm{AP}=\mathrm{PSPACE}$, $\mathrm{APSPACE}=\mathrm{EXPTIME}$。
+:::
+
+::: proof
+$\mathrm{AP}=\mathrm{PSPACE}$：\ref{comp:atime-in-space} から $\mathrm{ATIME}(n^{k})\subseteq\mathrm{SPACE}(n^{k})$、\ref{comp:space-in-atime} から $\mathrm{SPACE}(n^{k})\subseteq\mathrm{ATIME}(n^{2k})$。$\mathrm{APSPACE}=\mathrm{EXPTIME}$：$f(n)=n^{k}$ で \ref{comp:aspace-in-time} と \ref{comp:time-in-aspace}。$\mathrm{AL}=\mathrm{P}$：$f(n)=\log n$ で、$2^{c\log n}=n^{c}$ から同じ二つの補題。
+:::
+
+::: hypcheck
+- **すべての枝が停止すること（判定機）**：受理の定義（有限の木）と、\ref{comp:aspace-in-time} で時点表示のグラフに閉路がないことに使った。
+- **$f$ の計算可能性**：\ref{comp:space-in-atime} で $2^{df(n)}$ 段の到達を問うため、\ref{comp:time-in-aspace} で表の大きさ $T$ を知るために使った。
+- **$f(n)\ge n$ と $f(n)\ge\log n$**：前者は時点表示の長さを $f(n)$ で抑えるため、後者は入力ヘッドの位置を $f(n)$ ビットで書くため。
+:::
+
+## 多項式階層 {#comp:sec-alt-ph}
+
+::: definition 多項式階層 {#comp:polynomial-hierarchy keywords="polynomial hierarchy, Sigma_k^P, Pi_k^P, PH" index="多項式階層|たこうしきかいそう"}
+$k\ge1$ について、**$\Sigma_{k}$ 交代機械**とは、どの枝でも、状態が存在状態から始まり、存在・全称の切り替わりが高々 $k-1$ 回であるような交代機械のことをいう（$\Pi_{k}$ 交代機械は全称状態から始まるもの）。多項式時間の $\Sigma_{k}$（$\Pi_{k}$）交代判定機で決定できる言語全体を $\Sigma_{k}^{\mathrm{P}}$（$\Pi_{k}^{\mathrm{P}}$）と書き、$\mathrm{PH}\defeq\bigcup_{k}\Sigma_{k}^{\mathrm{P}}$ を**多項式階層**という。
+:::
+
+::: proposition 多項式階層の基本性質 {#comp:ph-basic keywords="Sigma_1^P = NP, Pi_1^P = coNP, PH is contained in PSPACE" index="多項式階層の性質|たこうしきかいそうのせいしつ"}
+1. $\Sigma_{1}^{\mathrm{P}}=\mathrm{NP}$, $\Pi_{1}^{\mathrm{P}}=\mathrm{coNP}$。
+2. $A\in\Sigma_{k}^{\mathrm{P}}\iff\overline{A}\in\Pi_{k}^{\mathrm{P}}$。$\Sigma_{k}^{\mathrm{P}}\cup\Pi_{k}^{\mathrm{P}}\subseteq\Sigma_{k+1}^{\mathrm{P}}\cap\Pi_{k+1}^{\mathrm{P}}$。
+3. $\mathrm{PH}\subseteq\mathrm{PSPACE}$。
+4. $\mathrm{MIN\text{-}FORMULA}\in\Pi_{2}^{\mathrm{P}}$。
+:::
+
+::: proof
+**1.** $\Sigma_{1}$ 交代機械は存在状態だけを使う（切り替わりがない）ので非決定性機械そのもので、\ref{comp:np-ntm} から $\Sigma_{1}^{\mathrm{P}}=\mathrm{NP}$。$\Pi_{1}$ は 2 から。
+
+**2.** 交代判定機の存在状態と全称状態を入れ替え、受理状態と拒否状態を入れ替えると、各頂点の受理・拒否が反転する（木の高さに関する帰納法：AND と OR の双対性）ので、補集合を決定する。$\Sigma_{k}$ の機械は $\Pi_{k}$ の機械になる。包含：$\Sigma_{k}$ の機械の最初に、子が一つだけの全称状態を一段加えれば $\Pi_{k+1}$ の機械になり（子が一つの全称・存在状態は値を変えない）、そのままでも $\Sigma_{k+1}$ の機械である。$\Pi_{k}$ も同様。
+
+**3.** $\Sigma_{k}^{\mathrm{P}}\subseteq\mathrm{AP}=\mathrm{PSPACE}$（\ref{comp:alternation-theorem}）。
+
+**4.** 例 2 の機械は、全称状態で $\psi$ を選び、次に存在状態で付値を選ぶので、切り替わりは 1 回で $\Pi_{2}$ 交代機械。
+:::
+
+## 問題 {#comp:sec-alt-problems}
+
+::: problem {#comp:prob-alt-tqbf}
+TQBF（\ref{comp:tqbf}）が AP に属することを、交代判定機を直接作って示せ。
+:::
+
+::: solution
+入力 $\langle\phi\rangle$, $\phi=Q_{1}x_{1}\cdots Q_{k}x_{k}\,\psi$ について、$i=1,\dots,k$ の順に、$Q_{i}=\exists$ なら存在状態で、$Q_{i}=\forall$ なら全称状態で $x_{i}$ の値を選び、最後に $\psi$ を評価して真なら受理する。時間は $\phi$ の長さの多項式。量化子の個数に関する帰納法で、各段の頂点が受理 $\iff$ そこまでの値のもとで残りの量化された論理式が真。よって受理 $\iff$ $\phi$ が真。
+:::
+
+::: problem {#comp:prob-alt-collapse}
+$\Sigma_{k}^{\mathrm{P}}=\Pi_{k}^{\mathrm{P}}$ となる $k\ge1$ があれば、すべての $j\ge k$ で $\Sigma_{j}^{\mathrm{P}}=\Sigma_{k}^{\mathrm{P}}$（多項式階層の崩壊）となることを、量化子による特徴づけ「$A\in\Sigma_{k}^{\mathrm{P}}\iff$ 多項式 $p$ と P の関係 $R$ で $x\in A\iff\exists y_{1}\forall y_{2}\cdots Q_{k}y_{k}\,R(x,y_{1},\dots,y_{k})$（各 $\lvert y_{i}\rvert\le p(\lvert x\rvert)$）となるものがある」を認めて示せ。
+:::
+
+::: solution
+$j=k+1$ を示せば帰納法で十分。$A\in\Sigma_{k+1}^{\mathrm{P}}$ を $x\in A\iff\exists y_{1}\,[\forall y_{2}\cdots R(x,y_{1},\dots)]$ と書く。括弧の中 $B\defeq\{\langle x,y_{1}\rangle:\forall y_{2}\cdots\}$ は $\Pi_{k}^{\mathrm{P}}=\Sigma_{k}^{\mathrm{P}}$ に属するので、$\langle x,y_{1}\rangle\in B\iff\exists z_{1}\forall z_{2}\cdots R'(\langle x,y_{1}\rangle,z_{1},\dots)$ と書ける。すると $x\in A\iff\exists y_{1}\exists z_{1}\forall z_{2}\cdots$ で、二つの存在量化子を一つ（組 $\langle y_{1},z_{1}\rangle$）にまとめれば $\Sigma_{k}$ の形。よって $\Sigma_{k+1}^{\mathrm{P}}\subseteq\Sigma_{k}^{\mathrm{P}}$。
+:::
+
+::: supplement
+**前提を変えると.** 交代の回数を多項式時間の中で無制限にすると PSPACE（\ref{comp:alternation-theorem}）、定数回に制限すると多項式階層になる。$\mathrm{PH}=\mathrm{PSPACE}$ かどうかは未解決で、$\mathrm{PH}=\mathrm{PSPACE}$ なら多項式階層は有限の段で崩壊することが知られている（PSPACE 完全な TQBF がある段に属するため。問題 \ref{comp:prob-alt-collapse} と同様）。多項式階層はオラクルを使って $\Sigma_{k+1}^{\mathrm{P}}=\mathrm{NP}^{\Sigma_{k}^{\mathrm{P}}}$ とも定義でき（\ref{comp:page-hierarchy} の補足）、二つの定義が一致することが知られている（ここでは証明しない）。
+
+**似た定理.** 量化子による特徴づけ（問題 \ref{comp:prob-alt-collapse} で認めたもの）は、計算可能性理論の算術的階層（\ref{comp:page-turing-reducibility}）の「多項式時間版」である：$\Sigma_{k}^{0}$ が計算可能な関係に $k$ 個の交互の量化子を付けたものなら、$\Sigma_{k}^{\mathrm{P}}$ は多項式時間の関係に長さを制限した $k$ 個の交互の量化子を付けたものである。
+
+**高い視点から：交代計算は「二人ゲーム」.** 存在状態は「自分の手番」、全称状態は「相手の手番」と読める。交代機械が受理することは、自分（存在側）に必勝戦略があることにあたる。比喩で言えば、$\mathrm{AP}=\mathrm{PSPACE}$ は「多項式手で終わるゲームの勝敗判定は、多項式の記憶で（手を全部読む深さ優先探索で）できる」ことと、「多項式の記憶で行う計算は、そうしたゲームで表せる（サヴィッチの中間点の当て合い）」ことの同値である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

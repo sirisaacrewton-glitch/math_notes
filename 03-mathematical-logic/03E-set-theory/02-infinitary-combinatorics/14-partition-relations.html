@@ -113,6 +113,29 @@ $(2^{\aleph_{0}})^{+}\to(\aleph_{1})^{2}_{\aleph_{0}}$ であり、$2^{\aleph_{0
 前半は $\kappa=\aleph_{0}$ の \ref{set:erdos-rado}。$\aleph_{0}$ 色で成り立てば $2$ 色でも成り立つ（$2$ 色の彩色は $\aleph_{0}$ 色の彩色）。$\mu\le2^{\aleph_{0}}$ なら、$\R$ の濃度 $\mu$ の部分集合にシェルピンスキーの彩色を制限すれば $\mu\not\to(\aleph_{1})^{2}_{2}$（$\mu<\aleph_{1}$ なら自明）。
 :::
 
+## 色ごとに大きさの異なる等質集合 {#set:sec-pr-dushnik-miller}
+
+二色の彩色 $f\colon[X]^{2}\to2$ について、$\kappa\to(\lambda,\mu)^{2}$ は「濃度 $\kappa$ の任意の $X$ と $f$ について、色 $0$ の等質集合で濃度 $\lambda$ のもの、または色 $1$ の等質集合で濃度 $\mu$ のものがある」ことを表す。
+
+::: theorem ダシュニク–ミラーの定理（正則な場合） {#set:dushnik-miller keywords="kappa -> (kappa, omega)^2 for regular kappa" index="ダシュニク–ミラーの定理|だしゅにくみらーのていり"}
+正則な無限基数 $\kappa$ について $\kappa\to(\kappa,\omega)^{2}$。特に $\omega_{1}\to(\omega_{1},\omega)^{2}$。
+:::
+
+::: proof
+$\lvert X\rvert=\kappa$, $f\colon[X]^{2}\to2$ とし、$x\in X$ と $A\subseteq X$ について $N_{A}(x)\defeq\{y\in A\setminus\{x\}:f(\{x,y\})=1\}$ とする。
+
+**場合 1：濃度 $\kappa$ のすべての $A\subseteq X$ に、$\lvert N_{A}(x)\rvert=\kappa$ となる $x\in A$ がある.** $A_{0}\defeq X$ から始め、$x_{n}\in A_{n}$ を $\lvert N_{A_{n}}(x_{n})\rvert=\kappa$ となるようにとり、$A_{n+1}\defeq N_{A_{n}}(x_{n})$ とする（濃度 $\kappa$ なので次の段でも仮定が使える）。$m<n$ なら $x_{n}\in A_{n}\subseteq A_{m+1}=N_{A_{m}}(x_{m})$ なので $f(\{x_{m},x_{n}\})=1$ で、$x_{n}$ は相異なる。$\{x_{n}:n<\omega\}$ は色 $1$ の無限な等質集合。
+
+**場合 2：濃度 $\kappa$ の $A$ で、すべての $x\in A$ について $\lvert N_{A}(x)\rvert<\kappa$ となるものがある.** $x_{\alpha}\in A$（$\alpha<\kappa$）を帰納的に、$\beta<\alpha$ のすべての $x_{\beta}$ と $N_{A}(x_{\beta})$ の元を避けて選ぶ。避ける集合は $\lvert\alpha\rvert<\kappa$ 個の、濃度 $<\kappa$ の集合の和なので、**$\kappa$ の正則性**から濃度 $<\kappa$（\ref{set:cf-union}）で、$\lvert A\rvert=\kappa$ なので選べる。$\beta<\alpha$ なら $x_{\alpha}\notin N_{A}(x_{\beta})$ なので $f(\{x_{\beta},x_{\alpha}\})=0$。$\{x_{\alpha}:\alpha<\kappa\}$ は色 $0$ の濃度 $\kappa$ の等質集合。
+
+二つの場合は互いに否定なので、どちらかが起こる。
+:::
+
+::: hypcheck
+- **正則性**：場合 2 で、$\kappa$ 未満の個数の小さい集合の和が $\kappa$ を覆わないことに使った。
+- **選択公理**：各段の選択に使った。
+:::
+
 ## 問題 {#set:sec-pr-problems}
 
 ::: problem {#set:prob-pr-monotone}
@@ -132,7 +155,7 @@ $\aleph_{1}\le2^{\aleph_{0}}$（\ref{set:cantor}）なので、$\R$ の濃度 $\
 :::
 
 ::: supplement
-**前提を変えると.** $n\ge3$ への一般化として、$\beth_{n}^{+}\to(\aleph_{1})^{n+1}_{\aleph_{0}}$（$\beth$ は \ref{set:beth}）が成り立つことが知られている（同じ「端等質化」を繰り返す）。$\kappa\to(\kappa)^{2}_{2}$ を満たす非可算基数を**弱コンパクト基数**といい、その存在は ZFC で証明できない巨大基数の仮定であることが知られている（\ref{set:prob-pr-omega1} は $\kappa=\aleph_{1}$ が弱コンパクトでないことを述べている）。等質集合の大きさを色ごとに変えた $\omega_{1}\to(\omega_{1},\omega)^{2}$（ダシュニク–ミラーの定理）も知られている。
+**前提を変えると.** $n\ge3$ への一般化として、$\beth_{n}^{+}\to(\aleph_{1})^{n+1}_{\aleph_{0}}$（$\beth$ は \ref{set:beth}）が成り立つことが知られている（同じ「端等質化」を繰り返す）。$\kappa\to(\kappa)^{2}_{2}$ を満たす非可算基数を**弱コンパクト基数**といい、その存在は ZFC で証明できない巨大基数の仮定であることが知られている（\ref{set:prob-pr-omega1} は $\kappa=\aleph_{1}$ が弱コンパクトでないことを述べている）。等質集合の大きさを色ごとに変えた $\omega_{1}\to(\omega_{1},\omega)^{2}$ はダシュニク–ミラーの定理（\ref{set:dushnik-miller}）で、特異基数を含むすべての無限基数 $\kappa$ で $\kappa\to(\kappa,\omega)^{2}$ が成り立つことが知られている。
 
 **似た定理.** 有限版のラムゼーの定理は、無限版からケーニッヒの補題またはコンパクト性で導けることが知られている。二階算術では、無限ラムゼーの定理の強さが調べられている（\ref{logic:page-rm-ramsey} を参照）。ラムゼーの定理の証明の「最小元で色が決まる」端等質性の考え方は、エルデシュ–ラドーの定理の Step 3 と同じである。
 

@@ -34455,6 +34455,20 @@
       "num": "",
       "page": "54-general-topology/54B-basic-constructions/01-constructions/03-order-topology.html"
     },
+    "top:lf-closed-to-lf-open": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "局所有限な閉細分から局所有限な開細分へ",
+      "num": "17.3",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/17-michael.html"
+    },
+    "top:lf-to-lf-closed": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "局所有限な細分から局所有限な閉細分へ",
+      "num": "17.2",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/17-michael.html"
+    },
     "top:lipschitz-at-point-sets": {
       "status": "defined",
       "type": "definition",
@@ -34566,6 +34580,13 @@
       "title": "距離化可能",
       "num": "4.1",
       "page": "54-general-topology/54E-richer-structures/01-metric-spaces/04-metrization.html"
+    },
+    "top:michael": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "マイケルの定理",
+      "num": "17.4",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/17-michael.html"
     },
     "top:nagata-smirnov": {
       "status": "defined",
@@ -34937,6 +34958,13 @@
       "title": "距離化定理とストーンの定理",
       "num": "",
       "page": "54-general-topology/54E-richer-structures/01-metric-spaces/04-metrization.html"
+    },
+    "top:page-michael": {
+      "status": "defined",
+      "type": "page",
+      "title": "マイケルの定理",
+      "num": "",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/17-michael.html"
     },
     "top:page-nagata-smirnov": {
       "status": "defined",
@@ -35624,6 +35652,27 @@
       "num": "2.8",
       "page": "54-general-topology/54E-richer-structures/01-metric-spaces/02-baire.html"
     },
+    "top:prob-mi-countable-union": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "17.9",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/17-michael.html"
+    },
+    "top:prob-mi-not-open": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "17.7",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/17-michael.html"
+    },
+    "top:prob-mi-regularity-needed": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "17.8",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/17-michael.html"
+    },
     "top:prob-nd-en-not-open": {
       "status": "defined",
       "type": "problem",
@@ -36078,6 +36127,13 @@
       "title": "正則リンデレーフ空間は正規",
       "num": "2.3",
       "page": "54-general-topology/54G-peculiar-spaces/01-counterexamples/02-sorgenfrey.html"
+    },
+    "top:regular-lindelof-paracompact": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "正則リンデレーフ空間はパラコンパクト",
+      "num": "17.5",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/17-michael.html"
     },
     "top:regular-normal-characterization": {
       "status": "defined",
@@ -36876,6 +36932,34 @@
       "title": "問題",
       "num": "",
       "page": "54-general-topology/54D-general-properties/01-separation-compactness/10-local-connectedness.html"
+    },
+    "top:sec-mi-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/17-michael.html"
+    },
+    "top:sec-mi-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/17-michael.html"
+    },
+    "top:sec-mi-steps": {
+      "status": "defined",
+      "type": "section",
+      "title": "三つの段階",
+      "num": "",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/17-michael.html"
+    },
+    "top:sec-mi-theorem": {
+      "status": "defined",
+      "type": "section",
+      "title": "マイケルの定理",
+      "num": "",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/17-michael.html"
     },
     "top:sec-mz-normal": {
       "status": "defined",
@@ -37829,6 +37913,13 @@
       "num": "6.2",
       "page": "54-general-topology/54E-richer-structures/01-metric-spaces/06-nagata-smirnov.html"
     },
+    "top:sigma-lf-to-lf": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "σ 局所有限な開細分から局所有限な細分へ",
+      "num": "17.1",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/17-michael.html"
+    },
     "top:sigma-locally-finite": {
       "status": "defined",
       "type": "definition",
@@ -37870,6 +37961,13 @@
       "title": "ゾルゲンフライ直線は第二可算でない",
       "num": "3.9",
       "page": "54-general-topology/54A-generalities/01-topological-spaces/03-bases-countability.html"
+    },
+    "top:sorgenfrey-paracompact": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "ゾルゲンフライ直線はパラコンパクト",
+      "num": "17.6",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/17-michael.html"
     },
     "top:sorgenfrey-plane": {
       "status": "defined",

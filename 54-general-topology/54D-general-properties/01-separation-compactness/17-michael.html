@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>マイケルの定理 | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54D-general-properties/01-separation-compactness/17-michael.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# マイケルの定理 {#top:page-michael keywords="Michael's theorem, paracompactness via sigma-locally finite open refinements, locally finite refinements, locally finite closed refinements, regular Lindelof spaces are paracompact, Sorgenfrey line is paracompact"}
+
+パラコンパクト性（\ref{top:paracompact}）は「任意の開被覆が局所有限な**開**細分をもつ」ことである。実際に細分を作るとき、開集合のまま局所有限にするのは難しいことが多い。**マイケルの定理**（E. Michael, 1953）は、正則空間では条件を大幅に弱めてよいことを示す：開細分が可算個の局所有限な族の和（σ 局所有限）であるか、局所有限だが開とは限らない細分があるか、局所有限な閉細分があれば十分である。系として、正則なリンデレーフ空間はパラコンパクトである。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論（E. Michael, "A note on paracompact spaces", *Proc. Amer. Math. Soc.* 4 (1953) の方針）に従って組み立てた。各段の証明は本サイトで書き下ろした。
+
+## 記法と定義の確認 {#top:sec-mi-notation}
+
+::: notation
+- 分離公理（$T_{1}$・正則・$T_{3}$）は \ref{top:separation-axioms}。正則性は「各点の閉近傍が基本近傍系をなす」ことと同値（\ref{top:regular-normal-characterization} の 1）。$T_{3}$ 空間はハウスドルフ（\ref{top:separation-implications}）。
+- 族の局所有限性、被覆の細分は \ref{top:locally-finite}。局所有限な族の閉包の族も局所有限で、局所有限な閉集合族の和は閉（\ref{top:locally-finite-closure}）。
+- パラコンパクト（ハウスドルフを含む）は \ref{top:paracompact}。パラコンパクトなハウスドルフ空間は正規（\ref{top:paracompact-normal}）。
+- 被覆 $\mathcal{U}$ の細分 $\mathcal{V}$ は、開集合からなるとき**開細分**、閉集合からなるとき**閉細分**という。どちらでもない一般の集合からなる細分も考える。
+- 族 $\mathcal{V}$ が**σ 局所有限**とは、局所有限な族 $\mathcal{V}_{1},\mathcal{V}_{2},\dots$ の和 $\mathcal{V}=\bigcup_{n}\mathcal{V}_{n}$ として書けることをいう。
+- リンデレーフ（任意の開被覆が可算部分被覆をもつ）は \ref{top:second-countable}。
+:::
+
+## 三つの段階 {#top:sec-mi-steps}
+
+以下 $X$ を位相空間とし、各段階で使う仮定を明記する。
+
+::: lemma σ 局所有限な開細分から局所有限な細分へ {#top:sigma-lf-to-lf keywords="a sigma-locally finite open refinement yields a locally finite refinement (not necessarily open)" index="σ 局所有限な細分|しぐまきょくしょゆうげんなさいぶん"}
+$X$ の開被覆 $\mathcal{U}$ が σ 局所有限な開細分をもつなら、$\mathcal{U}$ は局所有限な細分（開とは限らない）をもつ。
+:::
+
+::: proof
+**Step 1（設定）.** $\mathcal{V}=\bigcup_{n\ge1}\mathcal{V}_{n}$ を $\mathcal{U}$ の開細分で、各 $\mathcal{V}_{n}$ が局所有限なものとする。$W_{n}\defeq\bigcup\mathcal{V}_{n}$ とおくと $W_{n}$ は**開**（開集合の和）で、$\mathcal{V}$ が被覆なので $\bigcup_{n}W_{n}=X$。
+
+**Step 2（削る）.** $V\in\mathcal{V}_{n}$ について
+$$
+A_{V}\defeq V\setminus\bigcup_{k<n}W_{k}
+$$
+とおき（$n$ ごとに別の添字として扱う）、$\mathcal{A}\defeq\{A_{V}\}$ とする。$A_{V}\subset V$ で $V$ は $\mathcal{U}$ のある元に含まれるので、$\mathcal{A}$ の各元も $\mathcal{U}$ のある元に含まれる。
+
+**Step 3（被覆であること）.** $x\in X$ について、$x\in W_{n}$ となる最小の $n$ をとる。$x\in V$ となる $V\in\mathcal{V}_{n}$ があり、$n$ の最小性から $x\notin W_{k}$（$k<n$）。よって $x\in A_{V}$。
+
+**Step 4（局所有限性）.** $x\in X$ について $x\in W_{n}$ となる $n$ を一つとる。$m>n$ で $V\in\mathcal{V}_{m}$ なら $A_{V}\cap W_{n}=\varnothing$（$A_{V}$ は $W_{n}$ を除いてある）。$m\le n$ については、$\mathcal{V}_{m}$ が**局所有限**なので、$x$ の開近傍 $O_{m}$ で、$O_{m}$ と交わる $\mathcal{V}_{m}$ の元が有限個のものがある。$O\defeq W_{n}\cap O_{1}\cap\dots\cap O_{n}$ は $x$ の開近傍で、$O$ と交わる $A_{V}$ は $V\in\mathcal{V}_{1}\cup\dots\cup\mathcal{V}_{n}$ のうち $O_{m}$ と交わるもの（$A_{V}\subset V$）に限られ、有限個である。
+:::
+
+::: lemma 局所有限な細分から局所有限な閉細分へ {#top:lf-to-lf-closed keywords="in a regular space, if every open cover has a locally finite refinement, then every open cover has a locally finite closed refinement" index="局所有限な閉細分|きょくしょゆうげんなへいさいぶん"}
+$X$ は正則で、$X$ の任意の開被覆が局所有限な細分をもつとする。このとき $X$ の任意の開被覆は局所有限な閉細分をもつ。
+:::
+
+::: proof
+**Step 1.** 開被覆 $\mathcal{U}$ をとる。$x\in X$ について $x\in U$ となる $U\in\mathcal{U}$ を選ぶ。$X$ は**正則**なので（\ref{top:regular-normal-characterization} の 1）開集合 $G_{x}$ で $x\in G_{x}\subset\overline{G_{x}}\subset U$ となるものがある（選択公理で各 $x$ に一つ選ぶ）。
+
+**Step 2.** 開被覆 $\{G_{x}\}_{x\in X}$ の局所有限な細分 $\mathcal{A}$ を**仮定**からとる。$\{\overline{A}:A\in\mathcal{A}\}$ は局所有限（\ref{top:locally-finite-closure}）な閉集合族で、$X$ を覆う。$A\subset G_{x}$ なら $\overline{A}\subset\overline{G_{x}}\subset U$ なので、$\mathcal{U}$ の細分である。
+:::
+
+::: lemma 局所有限な閉細分から局所有限な開細分へ {#top:lf-closed-to-lf-open keywords="if every open cover has a locally finite closed refinement, then every open cover has a locally finite open refinement" index="局所有限な開細分の構成|きょくしょゆうげんなかいさいぶんのこうせい"}
+$X$ の任意の開被覆が局所有限な閉細分をもつとする。このとき $X$ の任意の開被覆は局所有限な開細分をもつ。
+:::
+
+::: proof
+**Step 1（局所有限な細分）.** 開被覆 $\mathcal{U}$ をとり、仮定から局所有限な（閉）細分 $\mathcal{A}$ をとる。各 $A\in\mathcal{A}$ について $A\subset U(A)$ となる $U(A)\in\mathcal{U}$ を選ぶ。
+
+**Step 2（$\mathcal{A}$ に関して小さい閉被覆）.** $\mathcal{A}$ が**局所有限**なので、各 $x$ は $\mathcal{A}$ の有限個の元としか交わらない開近傍 $O_{x}$ をもつ。開被覆 $\{O_{x}\}$ の局所有限な閉細分 $\mathcal{F}$ を**仮定**からとる。各 $F\in\mathcal{F}$ はある $O_{x}$ に含まれるので、$\mathcal{A}$ の有限個の元としか交わらない。
+
+**Step 3（$A$ を膨らませる）.** $A\in\mathcal{A}$ について
+$$
+A^{\ast}\defeq X\setminus\bigcup\{F\in\mathcal{F}:F\cap A=\varnothing\}
+$$
+とおく。$\mathcal{F}$ は局所有限な閉集合族なので、その部分族の和は閉（\ref{top:locally-finite-closure}）であり、$A^{\ast}$ は**開**。$A$ の点は $A$ と交わらない $F$ に属さないので $A\subset A^{\ast}$。さらに次が成り立つ：
+$$
+F\cap A^{\ast}\neq\varnothing\ \Longrightarrow\ F\cap A\neq\varnothing\quad(F\in\mathcal{F}),
+$$
+なぜなら $F\cap A=\varnothing$ なら $F\subset X\setminus A^{\ast}$ だからである。
+
+**Step 4（開細分）.** $V_{A}\defeq A^{\ast}\cap U(A)$ とおく。$V_{A}$ は開で、$A\subset V_{A}\subset U(A)$。$\mathcal{A}$ が被覆なので $\{V_{A}\}_{A\in\mathcal{A}}$ も被覆であり、$\mathcal{U}$ の開細分である。
+
+**Step 5（局所有限性）.** $x\in X$ について、$\mathcal{F}$ が局所有限なので、$\mathcal{F}$ の有限個の元 $F_{1},\dots,F_{k}$ としか交わらない開近傍 $N$ がある。$\mathcal{F}$ は被覆なので $N\subset F_{1}\cup\dots\cup F_{k}$。$N\cap V_{A}\neq\varnothing$ なら、ある $i$ で $F_{i}\cap A^{\ast}\neq\varnothing$、Step 3 より $F_{i}\cap A\neq\varnothing$。Step 2 より各 $F_{i}$ と交わる $A$ は有限個なので、$N$ と交わる $V_{A}$ は有限個である。
+:::
+
+## マイケルの定理 {#top:sec-mi-theorem}
+
+::: theorem マイケルの定理 {#top:michael keywords="Michael's theorem: for regular T1 spaces, paracompact iff every open cover has a sigma-locally finite open refinement iff a locally finite refinement iff a locally finite closed refinement" index="マイケルの定理|まいけるのていり"}
+$X$ を $T_{3}$ 空間（正則かつ $T_{1}$）とする。次は同値である。
+
+1. $X$ はパラコンパクト。
+2. $X$ の任意の開被覆は σ 局所有限な開細分をもつ。
+3. $X$ の任意の開被覆は局所有限な細分（開とは限らない）をもつ。
+4. $X$ の任意の開被覆は局所有限な閉細分をもつ。
+:::
+
+::: proof
+**1 ⇒ 2.** 局所有限な開細分 $\mathcal{V}$ は、$\mathcal{V}_{1}=\mathcal{V}$, $\mathcal{V}_{n}=\varnothing$（$n\ge2$）として σ 局所有限である。
+
+**2 ⇒ 3.** \ref{top:sigma-lf-to-lf}。
+
+**3 ⇒ 4.** $X$ は**正則**なので \ref{top:lf-to-lf-closed}。
+
+**4 ⇒ 1.** \ref{top:lf-closed-to-lf-open} により任意の開被覆は局所有限な開細分をもつ。$X$ は $T_{3}$ なのでハウスドルフ（\ref{top:separation-implications}）であり、\ref{top:paracompact} の意味でパラコンパクトである。
+:::
+
+::: corollary 正則リンデレーフ空間はパラコンパクト {#top:regular-lindelof-paracompact keywords="regular Lindelof T1 spaces are paracompact (Morita)" index="正則リンデレーフ空間のパラコンパクト性|せいそくりんでれーふくうかんのぱらこんぱくとせい"}
+$T_{3}$ でリンデレーフな空間はパラコンパクトである。
+:::
+
+::: proof
+開被覆 $\mathcal{U}$ の可算部分被覆 $\{U_{1},U_{2},\dots\}$ をとる（**リンデレーフ**）。$\mathcal{V}_{n}\defeq\{U_{n}\}$ は一つの集合からなるので局所有限であり、$\bigcup_{n}\mathcal{V}_{n}$ は $\mathcal{U}$ の σ 局所有限な開細分である。\ref{top:michael} の 2 ⇒ 1 から従う。
+:::
+
+::: corollary ゾルゲンフライ直線はパラコンパクト {#top:sorgenfrey-paracompact keywords="the Sorgenfrey line is paracompact" index="ゾルゲンフライ直線のパラコンパクト性|ぞるげんふらいちょくせんのぱらこんぱくとせい"}
+ゾルゲンフライ直線はパラコンパクトである。
+:::
+
+::: proof
+ゾルゲンフライ直線は $T_{3}$（\ref{top:sorgenfrey-basic}）でリンデレーフ（\ref{top:sorgenfrey-lindelof}）なので、\ref{top:regular-lindelof-paracompact} から従う。
+:::
+
+ゾルゲンフライ平面（その二乗）は正規でない（\ref{top:sorgenfrey-plane}）ので、デュドネの定理（\ref{top:paracompact-normal}）によりパラコンパクトでない。パラコンパクト性は有限直積でも保たれない。
+
+::: hypcheck
+- **正則性**：3 ⇒ 4（\ref{top:lf-to-lf-closed} の Step 1、$\overline{G_{x}}\subset U$ となる $G_{x}$ の選択）でのみ使った。1 ⇔ 2 ⇔ 3 の他の向きと、4 ⇒「局所有限な開細分」は正則性を使わない。
+- **$T_{1}$**：結論のパラコンパクトがハウスドルフを含むので、4 ⇒ 1 の最後で $T_{3}\Rightarrow T_{2}$ に使った。局所有限な開細分の存在だけなら不要。
+- **「任意の」開被覆**：\ref{top:lf-to-lf-closed} では $\{G_{x}\}$ という**別の**被覆に、\ref{top:lf-closed-to-lf-open} では $\{O_{x}\}$ という別の被覆に仮定を適用した。一つの被覆についての主張から同じ被覆についての主張を導いているのではない点に注意する。
+- **σ 局所有限の「可算」**：\ref{top:sigma-lf-to-lf} の Step 3 で「最小の $n$」をとるのに $\N$ の整列性を使った。添字の集合が整列集合なら同じ議論が通る（$\omega$ でなくてもよい）が、Step 4 で「$m\le n$ の有限個の $O_{m}$ の共通部分」をとるので、$n$ より前の段が有限個であることが必要である。
+- **選択公理**：$U(A)$、$G_{x}$、$O_{x}$ などの選択に使った。
+:::
+
+## 問題 {#top:sec-mi-problems}
+
+::: problem {#top:prob-mi-not-open}
+\ref{top:sigma-lf-to-lf} の構成で得られる $A_{V}$ は開とは限らない。$X=\R$, $\mathcal{V}_{1}=\{(-\infty,1)\}$, $\mathcal{V}_{2}=\{(0,\infty)\}$ として $A_{V}$ を計算し、確かめよ。
+:::
+
+::: solution
+$W_{1}=(-\infty,1)$。$V=(-\infty,1)\in\mathcal{V}_{1}$ について $A_{V}=V=(-\infty,1)$。$V=(0,\infty)\in\mathcal{V}_{2}$ について $A_{V}=(0,\infty)\setminus(-\infty,1)=[1,\infty)$ で、これは開でない（$1$ のどの近傍も $1$ より小さい点を含む）。$\{(-\infty,1),[1,\infty)\}$ は局所有限な細分（有限族）だが開細分ではない。
+:::
+
+::: problem {#top:prob-mi-regularity-needed}
+\ref{top:regular-lindelof-paracompact} で正則性は外せないことを、$K$ 位相の実数直線 $\R_{K}$（\ref{top:k-topology}）で確かめよ。すなわち、$\R_{K}$ はハウスドルフでリンデレーフだがパラコンパクトでないことを示せ。
+:::
+
+::: solution
+**ハウスドルフ.** \ref{top:k-topology} で示されている（通常の位相より強い）。
+
+**第二可算性.** 有理数 $p<q$ についての $(p,q)$ と $(p,q)\setminus K$ の全体 $\mathcal{B}$ は可算である。$\R_{K}$ の開基の元 $U$（通常の開集合）または $U\setminus K$ と、その点 $x$ をとる。$x\in(p,q)\subset U$ となる有理数 $p<q$ があり、$x\in(p,q)\subset U$ または $x\in(p,q)\setminus K\subset U\setminus K$。よって $\mathcal{B}$ は開基。
+
+**リンデレーフ.** 開被覆 $\mathcal{U}$ について、$\mathcal{U}$ のある元に含まれる $B\in\mathcal{B}$ のそれぞれに、それを含む $\mathcal{U}$ の元を一つ選ぶ。各点 $x$ は $\mathcal{U}$ のある元 $U$ に属し、$x\in B\subset U$ となる $B\in\mathcal{B}$ があるので、選んだ可算個の元が $X$ を覆う。
+
+**パラコンパクトでない.** $\R_{K}$ は正則でない（\ref{top:k-topology}）ので正規でもない（$T_{1}$ かつ正規なら正則）。パラコンパクトなハウスドルフ空間は正規（\ref{top:paracompact-normal}）なので、$\R_{K}$ はパラコンパクトでない。
+:::
+
+::: problem {#top:prob-mi-countable-union}
+$X$ を $T_{3}$ 空間とし、$X=\bigcup_{n\ge1}C_{n}$ で、各 $C_{n}$ は閉集合でコンパクトとする（σ コンパクト）。\ref{top:michael} を使って $X$ がパラコンパクトであることを示せ（\ref{top:sigma-compact-paracompact} では局所コンパクト性を仮定したが、ここでは代わりに正則性を仮定する）。
+:::
+
+::: solution
+開被覆 $\mathcal{U}$ をとる。各 $n$ について $C_{n}$ は**コンパクト**なので、有限個の $U_{n,1},\dots,U_{n,k_{n}}\in\mathcal{U}$ で覆われる。$\mathcal{V}_{n}\defeq\{U_{n,1},\dots,U_{n,k_{n}}\}$ は有限族なので局所有限。$\bigcup_{n}\mathcal{V}_{n}$ は $\bigcup C_{n}=X$ を覆う $\mathcal{U}$ の部分族で、σ 局所有限な開細分である。\ref{top:michael} の 2 ⇒ 1 から $X$ はパラコンパクト。（実際には $X$ はリンデレーフなので \ref{top:regular-lindelof-paracompact} からも従う。）
+:::
+
+::: supplement
+**前提を変えると.**
+- **正則性を外すと.** 2・3 から局所有限な開細分は一般には得られない（\ref{top:prob-mi-regularity-needed}：$\R_{K}$ はリンデレーフなので 2 をみたすが、パラコンパクトでない）。
+- **1 の分割による特徴づけ.** パラコンパクト・ハウスドルフ空間の任意の開被覆は、それに従属する局所有限な 1 の分割をもつ（\ref{top:partition-of-unity-existence}）。逆に、ハウスドルフ空間の任意の開被覆が従属する局所有限な 1 の分割 $(\varphi_{\lambda})$ をもてば、$\{\varphi_{\lambda}>0\}$ は局所有限な開細分になるのでパラコンパクトである。台の局所有限性を仮定しない 1 の分割でも同値になることが知られている（R. Engelking, *General Topology* §5.1。ここでは確かめていない）。
+
+**似た定理.** 距離空間はパラコンパクトである（ストーンの定理、\ref{top:stone-paracompact}）。長田–スミルノフの距離化定理（\ref{top:page-nagata-smirnov}）の「σ 局所有限な開基」も同じ型の条件である。正則リンデレーフ空間が正規であること（\ref{top:regular-lindelof-normal}）は、\ref{top:regular-lindelof-paracompact} とデュドネの定理からも従う。
+
+**高い視点から.** 局所有限性は「各点の周りでは有限の話になる」という局所的な有限性であり、開集合であることは「境界を少し越えてはみ出してよい」という余裕である。マイケルの定理は、この二つを別々に手に入れればよいことを言っている：まず形を気にせず局所有限に切り分け（\ref{top:sigma-lf-to-lf}：先に来た段で覆われた部分を後の段から削る、という「先着順」の切り分け）、次に閉包をとって閉集合にし（正則性）、最後に、閉集合の局所有限な被覆を「物差し」にして各片を開集合へ膨らませる（\ref{top:lf-closed-to-lf-open}）。比喩で言えば、まず土地を所有権の重なりなく区画し、次に各区画の周りに、隣の区画の数を増やさない範囲で緩衝地帯をつける作業である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

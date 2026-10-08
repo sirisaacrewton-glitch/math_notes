@@ -445,3 +445,4 @@
 | Adleman theorem / Sipser-Gacs-Lautemann theorem / probabilistic method / derandomization | アドルマンの定理 / シプサー–ガーチ–ラウテマンの定理 / 確率的方法 / 脱乱択化 | | 標準的。comp:page-bpp-ph |
 | Chaitin incompleteness theorem / Berry paradox | チャイティンの不完全性定理 / ベリーの逆理 | | 標準的。comp:page-chaitin-incompleteness |
 | clopen set / Sierpinski theorem (characterization of Q) | 閉開集合 / シェルピンスキーの定理（有理数の特徴づけ） | 開閉集合 | 標準的。top:page-rationals-characterization |
+| sigma-locally finite / Michael's theorem | σ 局所有限 / マイケルの定理 | | 標準的。top:page-michael |

@@ -397,3 +397,4 @@
 | left derived functor / horseshoe lemma | 左導来関手 / 馬蹄補題 | 導来函手 | 標準的。ha:page-derived-functors |
 | Ext / Tor / cochain complex | Ext / Tor / 余鎖複体 | コチェイン複体 | 標準的。ha:page-tor-ext |
 | use principle / Post's theorem / Sigma_n-complete | 使用の原理 / ポストの定理 / Σ_n 完全 | | 標準的。comp:page-post-theorem |
+| Turing degree / Post's problem / priority argument / finite injury / Kleene-Post theorem | チューリング次数 / ポストの問題 / 優先論法 / 有限損傷法 / クリーネ–ポストの定理 | 優先権法 | 新井に合わせ「優先論法」。comp:page-friedberg-muchnik |

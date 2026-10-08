@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>フリードバーグ–ムチニクの定理 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/03-advanced-computability/08-friedberg-muchnik.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# フリードバーグ–ムチニクの定理 {#comp:page-friedberg-muchnik keywords="Turing degrees, Post's problem, Kleene-Post theorem, finite extension method, Friedberg-Muchnik theorem, priority argument, finite injury, restraint, witness, incomparable c.e. degrees"}
+
+$\varnothing$ と $\varnothing'$ の間に、それらのどちらともチューリング同値でない集合はあるか。ポスト（1944）はこれを**認識可能な**集合について問うた（**ポストの問題**）。本ページでは、まず神託 $\varnothing'$ を使って互いに比較不能な二つの集合を作る**クリーネ–ポストの定理**（\ref{comp:kleene-post}）を有限延長法で示し、次に、神託を使わずに**認識可能な**比較不能な集合を作る**フリードバーグ–ムチニクの定理**（\ref{comp:friedberg-muchnik}）を、**優先論法**（有限損傷法）で証明する。どちらの集合もチューリング次数で $\mathbf{0}$ と $\mathbf{0}'$ の真の間にあり、ポストの問題が肯定的に解かれる。
+
+> 資料：新井『数学基礎論』§6.4（定理 6.4.1, 6.4.3）を参考にした（本文は写していない）。優先論法の証明では、要求が「注意を要する」条件、証人の選び方、制限を明示的に定め、各要求が有限回しか作用しないことを優先度に関する帰納法で示した。
+
+## 記法と定義の確認 {#comp:sec-fm-notation}
+
+::: notation
+- 神託機械、チューリング還元 $\le_{\mathrm{T}}$、ジャンプは \ref{comp:oracle-tm}, \ref{comp:turing-reduction-basic}, \ref{comp:jump} のとおり。$A\equiv_{\mathrm{T}}B$ は $A\le_{\mathrm{T}}B\le_{\mathrm{T}}A$、$A<_{\mathrm{T}}B$ は $A\le_{\mathrm{T}}B\not\le_{\mathrm{T}}A$。同値類を**チューリング次数**といい、$\varnothing$, $\varnothing'$ の次数を $\mathbf{0}$, $\mathbf{0}'$ と書く。
+- 神託機械を $M_{0},M_{1},\dots$ と並べる。集合 $X$ と入力 $x$ について、$M_{e}^{X}$ が $x$ を受理して止まれば $\Phi_{e}^{X}(x)=1$、拒否して止まれば $0$、止まらなければ $\Phi_{e}^{X}(x)\uparrow$ と書く。$\Phi_{e,s}^{X}(x)$ は $s$ 段以内に止まった場合の値。止まる計算で問い合わせた数の最大値 $+1$（問い合わせがなければ $0$）を**使用量**という。
+- 有限の $0,1$ 列 $\sigma$ について、$\Phi_{e}^{\sigma}(x)\downarrow$ は「問い合わせ $y$ に $\sigma(y)$ で答えて $M_{e}$ が $x$ の上で止まり、問い合わせはすべて $y<\lvert\sigma\rvert$」を表す。$\sigma\subseteq X$ は $\sigma$ が $\chi_{X}$ の始切片であることを表す。
+- **保存の原理**：$\Phi_{e,s}^{X}(x)=v$ で使用量が $u$ のとき、$X$ と $Y$ が $u$ 未満で一致すれば $\Phi_{e,s}^{Y}(x)=v$（計算は同じ問い合わせに同じ答えを受け取るので、同じ道筋をたどる）。$\sigma$ についても同様。
+- $\langle y,i\rangle$ は対の符号で、$\omega^{[i]}\defeq\{\langle y,i\rangle:y\in\N\}$ を第 $i$ 列という。
+:::
+
+::: lemma 比較不能性の要求 {#comp:incomparability-requirements keywords="A not Turing reducible to B iff for every e there is x with A(x) != Phi_e^B(x)" index="比較不能性の要求|ひかくふのうせいのようきゅう"}
+$A\not\le_{\mathrm{T}}B$ であることは、すべての $e$ について次の要求 $P_{e}$ が成り立つことと同値である：「ある $x$ で $\Phi_{e}^{B}(x)\uparrow$ または $\Phi_{e}^{B}(x)\ne\chi_{A}(x)$」。
+:::
+
+::: proof
+$A\le_{\mathrm{T}}B$ は、すべての入力で止まり $\chi_{A}$ を計算する神託機械 $M_{e}^{B}$ があること、すなわち、ある $e$ で $P_{e}$ が成り立たないことである。
+:::
+
+## クリーネ–ポストの定理 {#comp:sec-fm-kleene-post}
+
+::: theorem クリーネ–ポストの定理 {#comp:kleene-post keywords="Kleene-Post theorem: there are incomparable sets below 0', finite extension method" index="クリーネ–ポストの定理|くりーねぽすとのていり, 有限延長法|ゆうげんえんちょうほう"}
+$A,B\le_{\mathrm{T}}\varnothing'$ で、$A\not\le_{\mathrm{T}}B$ かつ $B\not\le_{\mathrm{T}}A$ となるものがある。特に $\mathbf{0}<_{\mathrm{T}}\deg A,\deg B<_{\mathrm{T}}\mathbf{0}'$。
+:::
+
+::: proof
+有限の $0,1$ 列 $\alpha_{s},\beta_{s}$ を、$\alpha_{s}\subseteq\alpha_{s+1}$, $\beta_{s}\subseteq\beta_{s+1}$, 長さが $s$ 以上になるように作り、$A\defeq\bigcup_{s}\alpha_{s}$, $B\defeq\bigcup_{s}\beta_{s}$（特性関数として）とする。$\alpha_{0}=\beta_{0}=$ 空列。
+
+**段 $s+1=2e+1$（$A$ の側の要求 $P_{e}$：$A\ne\Phi_{e}^{B}$）.** $n\defeq\lvert\alpha_{s}\rvert$ とする。「$\beta_{s}\subseteq\sigma$ かつ $\Phi_{e}^{\sigma}(n)\downarrow$ となる有限列 $\sigma$ がある」は $\Sigma_{1}$ の問いなので、神託 $\varnothing'$ で判定できる（\ref{comp:sigma1-recognizable} と \ref{comp:jump-properties} の 3）。
+- ある場合：そのような $\sigma$ を決まった順の探索で最初に見つかったものとし、$\beta_{s+1}\defeq\sigma0$、$\alpha_{s+1}\defeq\alpha_{s}\,i$（$i\defeq1-\Phi_{e}^{\sigma}(n)$）。
+- ない場合：$\beta_{s+1}\defeq\beta_{s}0$、$\alpha_{s+1}\defeq\alpha_{s}0$。
+
+**段 $s+1=2e+2$.** $A$ と $B$ の役割を入れ替えて同様に行う（$B\ne\Phi_{e}^{A}$）。
+
+**$A,B\le_{\mathrm{T}}\varnothing'$.** 構成の各段は $\varnothing'$ への問い合わせと有限の探索で行えるので、$s\mapsto(\alpha_{s},\beta_{s})$ は $\varnothing'$ で計算でき、$x\in A$ は $\alpha_{x+1}(x)$（長さ $\ge x+1$）で判定できる。
+
+**要求の充足.** 段 $2e+1$ で、ある場合：$\sigma\subseteq\beta_{s+1}\subseteq B$ なので保存の原理から $\Phi_{e}^{B}(n)=\Phi_{e}^{\sigma}(n)$ で、$A(n)=\alpha_{s+1}(n)=1-\Phi_{e}^{\sigma}(n)\ne\Phi_{e}^{B}(n)$（値が $0,1$ 以外になることはない）。ない場合：$\Phi_{e}^{B}(n)\downarrow$ なら、その計算の使用量 $u$ について $\sigma\defeq\chi_{B}\restriction\max(u,\lvert\beta_{s}\rvert)$ は $\beta_{s}$ を延長し $\Phi_{e}^{\sigma}(n)\downarrow$ となって仮定に反するので、$\Phi_{e}^{B}(n)\uparrow$。いずれでも $P_{e}$ が成り立つ。\ref{comp:incomparability-requirements} から $A\not\le_{\mathrm{T}}B$、対称に $B\not\le_{\mathrm{T}}A$。
+
+**次数.** $A$ が決定可能なら $A\le_{\mathrm{T}}B$ となって矛盾するので $\mathbf{0}<_{\mathrm{T}}\deg A$。$\varnothing'\le_{\mathrm{T}}A$ なら $B\le_{\mathrm{T}}\varnothing'\le_{\mathrm{T}}A$ で矛盾。$B$ も同様。
+:::
+
+::: hypcheck
+- **神託 $\varnothing'$**：各段の「延長して止まる $\sigma$ があるか」という $\Sigma_{1}$ の問いに答えるのに使った。この問いを神託なしで決めることはできないので、$A,B$ は認識可能とは限らない。
+- **保存の原理**：一度止まった計算が、その後の延長で変わらないことに使った。
+:::
+
+## フリードバーグ–ムチニクの定理 {#comp:sec-fm-theorem}
+
+::: theorem フリードバーグ–ムチニクの定理 {#comp:friedberg-muchnik keywords="Friedberg-Muchnik theorem: there are Turing incomparable c.e. sets; solution of Post's problem" index="フリードバーグ–ムチニクの定理|ふりーどばーぐむちにくのていり, ポストの問題|ぽすとのもんだい, 優先論法|ゆうせんろんぽう"}
+認識可能な集合 $A,B$ で、$A\not\le_{\mathrm{T}}B$ かつ $B\not\le_{\mathrm{T}}A$ となるものがある。特に $\mathbf{0}<_{\mathrm{T}}\deg A,\deg B<_{\mathrm{T}}\mathbf{0}'$ で、ポストの問題の答えは肯定的である。
+:::
+
+::: proof
+要求を $R_{2e}$：「$A$ と $\Phi_{e}^{B}$ は異なる」（\ref{comp:incomparability-requirements} の $P_{e}$）、$R_{2e+1}$：「$B$ と $\Phi_{e}^{A}$ は異なる」とし、番号が小さいほど**優先度が高い**とする。$R_{2e}$ は $A$ に、$R_{2e+1}$ は $B$ に数を入れ、どちらも自分の列 $\omega^{[i]}$ の数しか入れない。$R_{i}$ と対になる集合（$R_{2e}$ なら $B$、$R_{2e+1}$ なら $A$）を $R_{i}$ の**相手**、入れる先を**自分の集合**と呼ぶ。
+
+**構成.** 段 $s$ で、有限集合 $A_{s},B_{s}$、各 $R_{i}$（$i\le s$）の**証人** $x_{i,s}\in\omega^{[i]}$、**制限** $r_{i,s}\in\N$、**達成済み**かどうかの印を定める。段 $0$ では $A_{0}=B_{0}=\emptyset$、$R_{0}$ の証人を $\omega^{[0]}$ の最小元とし、制限は $0$、印はなし。
+
+段 $s+1$：$R_{i}$（$i\le s$, $i=2e$ の場合。奇数は役割を入れ替える）が**注意を要する**とは、$R_{i}$ が達成済みでなく、$\Phi_{e,s}^{B_{s}}(x_{i,s})=0$ となることをいう。
+1. 注意を要する $R_{i}$ がなければ何もしない。
+2. あれば、その中で番号最小の $R_{i}$ が**作用する**：$x_{i,s}$ を自分の集合に入れ（$A_{s+1}=A_{s}\cup\{x_{i,s}\}$）、制限 $r_{i,s+1}$ をその計算の使用量とし、$R_{i}$ を達成済みにする。さらに $j>i$ のすべての $R_{j}$ を**損傷させる**：達成済みの印と制限を外し、証人を取り消す。
+3. 証人のない $R_{j}$（$j\le s+1$。損傷したものと新しく加わった $R_{s+1}$）に、自分の列の数で、ここまでに現れたすべての数（証人・使用量・$s+1$）より大きい最小のものを新しい証人として与える。
+
+変化しなかったものは前の段の値を引き継ぐ。構成は計算可能なので、$A=\bigcup_{s}A_{s}$, $B=\bigcup_{s}B_{s}$ は認識可能（$x\in A\iff\exists s\,x\in A_{s}$）。
+
+**主張.** 各 $R_{i}$ は有限回しか作用せず、証人 $x_{i}\defeq\lim_{s}x_{i,s}$ が存在し、$R_{i}$ は成り立つ。
+
+$i$ に関する帰納法で示す。$R_{i}$（$i=2e$ とする）より優先度の高い $R_{j}$（$j<i$）はどれも有限回しか作用しないので、それらの最後の作用の段を $s_{0}$ とする（なければ $s_{0}=0$）。$R_{i}$ が損傷するのは優先度の高いものの作用のときだけなので、段 $t_{0}\defeq\max(s_{0},i)$ より後に $R_{i}$ は損傷せず、証人 $x\defeq x_{i,t_{0}}$ は以後変わらない（$x_{i}=x$。証人が変わるのは損傷したときだけ）。
+
+(a) **$R_{i}$ が段 $s+1>t_{0}$ で $x$ について作用したとき.** $x\in A$ となり、$\Phi_{e,s}^{B_{s}}(x)=0$ で使用量は $r\defeq r_{i,s+1}$。$B$ の数 $<r$ が段 $s+1$ 以降に変わらないことを示す。$B$ に数を入れるのは奇数番の要求の作用だけで、優先度の高いもの（$j<i$）は $s_{0}$ 以降作用しない。優先度の低いもの（$j>i$）は段 $s+1$ で損傷し、その後に与えられる証人はすべて $r$ より大きい（手順 3。その後 $R_{i}$ は損傷しないので、$r$ は変わらない）。したがって $B$ と $B_{s}$ は $r$ 未満で一致し、保存の原理から $\Phi_{e}^{B}(x)=0\ne1=\chi_{A}(x)$。$R_{i}$ は成り立ち、達成済みのまま損傷しないので、以後作用しない。
+
+(b) **$R_{i}$ が $t_{0}$ の後に作用しないとき.** $x$ を $A$ に入れうるのは $R_{i}$ だけである（列が別）。$x$ について $R_{i}$ が段 $t_{0}$ 以前に作用したことがあれば、その後 $R_{i}$ は損傷していない（損傷すれば証人が取り替えられる）、すなわち優先度の高いものはその後作用していないので、(a) と同じ議論が成り立ち、そのときから達成済みで、$x\in A$ かつ $\Phi_{e}^{B}(x)=0$ で $R_{i}$ は成り立つ。作用したことがなければ $x\notin A$ で、$\Phi_{e}^{B}(x)=0$ だとすると、その計算の使用量 $u$ と段数をこえる十分大きい $s$ で $B_{s}$ と $B$ が $u$ 未満で一致し（$B$ は増加列の和で、$u$ 未満の数は有限個）、$\Phi_{e,s}^{B_{s}}(x)=0$。このとき $R_{i}$ は注意を要し、優先度の高いものは注意を要さない（要すればそのうち番号最小のものが作用することになり $s_{0}$ の定義に反する）ので、$R_{i}$ が作用することになって仮定に反する。よって $\Phi_{e}^{B}(x)\ne0=\chi_{A}(x)$（止まらないか $1$）で、$R_{i}$ は成り立つ。
+
+いずれの場合も、$t_{0}$ の後の作用は高々一回で、$R_{i}$ は有限回しか作用しない。$i$ が奇数のときも対称に成り立つ。
+
+**結論.** すべての $R_{i}$ が成り立つので、\ref{comp:incomparability-requirements} から $A\not\le_{\mathrm{T}}B$, $B\not\le_{\mathrm{T}}A$。$A,B$ は認識可能なので $\le_{\mathrm{m}}\varnothing'$（\ref{comp:jump-properties} の 3）、次数の不等式はクリーネ–ポストの定理と同様。
+:::
+
+::: hypcheck
+- **優先度と損傷**：高い優先度の要求は低いものを損傷させてよいが、逆は許さない。これにより、帰納法で「高いものが有限回しか作用しない」ことから「低いものも有限回」が言える（**有限損傷**）。
+- **新しい証人を十分大きくとる（手順 3）**：(a) で、優先度の低い要求が相手の集合の使用量より下を変えないことに使った。
+- **列を分けること**：(b) で、$x$ を自分の集合に入れうるのが $R_{i}$ だけであることに使った。
+- **保存の原理**：(a) と (b) で、止まった計算が、使用量より下の神託が変わらない限り変わらないことに使った。
+:::
+
+## 問題 {#comp:sec-fm-problems}
+
+::: problem {#comp:prob-fm-noncomputable-ce}
+フリードバーグ–ムチニクの定理の構成で、要求を $R_{e}$：「$\overline{A}\ne W_{e}$」（$W_{e}$ は $e$ 番目の認識可能な集合）だけにして、認識可能だが決定可能でない集合を作る構成を考えよ（優先度も損傷も不要であることを確かめよ）。
+:::
+
+::: solution
+段 $s+1$ で、$W_{e,s}$（$s$ 段以内に受理される入力）が証人 $x_{e}\in\omega^{[e]}$ を含み $x_{e}\notin A_{s}$ となる最小の $e\le s$ について、$x_{e}$ を $A$ に入れる。$x_{e}\in W_{e}$ なら、いずれ入れられて $x_{e}\in A$ となり、$x_{e}\notin\overline{A}$ なので $\overline{A}\ne W_{e}$。$x_{e}\notin W_{e}$ なら $x_{e}\notin A$（入れるのは $R_{e}$ だけ）なので $x_{e}\in\overline{A}\setminus W_{e}$。要求どうしが同じ集合 $A$ に数を入れるだけで、互いの成立を壊さない（制限がない）ので、損傷は起こらない。よって $\overline{A}$ は認識可能でなく、$A$ は決定可能でない。（$\overline{A}$ が認識可能でないことは \ref{comp:sigma1-recognizable} と、決定可能なら補集合も認識可能であることから従う。）
+:::
+
+::: problem {#comp:prob-fm-why-injury}
+フリードバーグ–ムチニクの構成で、制限を設けない（$R_{2e+1}$ が $R_{2e}$ の使用量より下に数を入れてもよい）と、なぜ証明が破綻するかを説明せよ。
+:::
+
+::: solution
+$R_{2e}$ が $\Phi_{e}^{B_{s}}(x)=0$ を見て $x$ を $A$ に入れた後、別の要求が $B$ に使用量未満の数 $y$ を入れると、神託が変わり、$\Phi_{e}^{B}(x)$ が $1$ になったり止まらなくなったりしうる。すると $\chi_{A}(x)=1$ と $\Phi_{e}^{B}(x)$ が一致する可能性があり、$R_{2e}$ は成り立たない。しかも $x$ はもう $A$ から取り除けない（$A$ は認識可能になるよう、数を入れるだけで構成している）。制限は、この「入れた後の神託の変化」を防ぐためのもので、優先度の低い要求にだけ課すことで、全体として有限回の衝突に抑えている。
+:::
+
+::: supplement
+**前提を変えると.** クリーネ–ポストの方法（神託 $\varnothing'$ を使う有限延長）は、比較不能性以外にも多くの性質を $\varnothing'$ 以下で実現できるが、作られる集合は一般に認識可能でない。認識可能性を保つには、神託の代わりに「近似と修正」を行う優先論法が必要になる。損傷が無限回起こりうるが各要求の結果はなお極限で定まる「無限損傷法」もあり、サックスの稠密性定理（認識可能な次数は稠密）などに使われることが知られている（ここでは扱わない）。
+
+**似た定理.** \ref{comp:prob-fm-noncomputable-ce} の構成はポストの単純集合の構成に近く、ポスト自身は単純集合が $\varnothing'$ と $m$ 同値でないことを示したが、$T$ 同値でないことまでは示せなかったとされる。フリードバーグ–ムチニクの定理は、認識可能な次数の半順序が線形順序でないことも示している。
+
+**高い視点から：優先度は「譲り合いの規則」.** 要求どうしは、相手の集合を変えることで互いの成立を壊しうる。優先論法は、全員に順位を付け、「上位は下位を壊してよいが、壊すたびに下位はやり直す」という規則で、無限個の要求を同時に満たす。比喩で言えば、一車線の道を無限台の車が順に通る場面で、上位の車が来るたびに下位の車は後退するが、上位の車は有限台しかないので、どの車もいずれ最後の後退を終えて目的地に着く。帰納法で「上の者は有限回しか動かない」ことから「自分も有限回」が導けることが、この方法の核心である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

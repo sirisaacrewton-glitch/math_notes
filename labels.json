@@ -4586,6 +4586,13 @@
       "num": "1.2",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/01-logical-theories.html"
     },
+    "comp:friedberg-muchnik": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "フリードバーグ–ムチニクの定理",
+      "num": "8.3",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/08-friedberg-muchnik.html"
+    },
     "comp:fuel-adequacy": {
       "status": "defined",
       "type": "lemma",
@@ -4712,6 +4719,13 @@
       "num": "5.8",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/05-logspace.html"
     },
+    "comp:incomparability-requirements": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "比較不能性の要求",
+      "num": "8.1",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/08-friedberg-muchnik.html"
+    },
     "comp:incompressible-exist": {
       "status": "defined",
       "type": "theorem",
@@ -4823,6 +4837,13 @@
       "title": "クリーネの O による超算術的階層",
       "num": "6.11",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/06-hyperarithmetic.html"
+    },
+    "comp:kleene-post": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "クリーネ–ポストの定理",
+      "num": "8.2",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/08-friedberg-muchnik.html"
     },
     "comp:kleene-t": {
       "status": "defined",
@@ -5362,6 +5383,13 @@
       "title": "言語方程式と不動点定理",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/01-automata/06-fixed-points.html"
+    },
+    "comp:page-friedberg-muchnik": {
+      "status": "defined",
+      "type": "page",
+      "title": "フリードバーグ–ムチニクの定理",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/08-friedberg-muchnik.html"
     },
     "comp:page-hierarchy": {
       "status": "defined",
@@ -6083,6 +6111,20 @@
       "title": "",
       "num": "9.9",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/09-reducibility.html"
+    },
+    "comp:prob-fm-noncomputable-ce": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "8.4",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/08-friedberg-muchnik.html"
+    },
+    "comp:prob-fm-why-injury": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "8.5",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/08-friedberg-muchnik.html"
     },
     "comp:prob-formula-game": {
       "status": "defined",
@@ -7203,6 +7245,34 @@
       "title": "問題",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/01-automata/01-finite-automata.html"
+    },
+    "comp:sec-fm-kleene-post": {
+      "status": "defined",
+      "type": "section",
+      "title": "クリーネ–ポストの定理",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/08-friedberg-muchnik.html"
+    },
+    "comp:sec-fm-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/08-friedberg-muchnik.html"
+    },
+    "comp:sec-fm-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/08-friedberg-muchnik.html"
+    },
+    "comp:sec-fm-theorem": {
+      "status": "defined",
+      "type": "section",
+      "title": "フリードバーグ–ムチニクの定理",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/08-friedberg-muchnik.html"
     },
     "comp:sec-fp-arden": {
       "status": "defined",
@@ -34048,13 +34118,6 @@
       "title": "トポス",
       "referencedFrom": [
         "18-category-theory/18A-general-theory/01-basics/01-categories.html"
-      ]
-    },
-    "comp:page-friedberg-muchnik": {
-      "status": "planned",
-      "title": "フリードバーグ–ムチニクの定理",
-      "referencedFrom": [
-        "03-mathematical-logic/03D-computability-theory/03-advanced-computability/07-post-theorem.html"
       ]
     },
     "fld:algebraic-closure-in-acf": {

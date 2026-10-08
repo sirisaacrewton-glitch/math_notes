@@ -417,3 +417,4 @@
 | countably compact / pseudocompact / particular point topology | 可算コンパクト / 擬コンパクト / 特定点位相 | | 標準的。top:page-countable-compactness |
 | extension / split extension / Baer sum / Yoneda Ext | 拡大 / 分裂する拡大 / ベール和 / 米田 Ext | | 標準的。ha:page-extensions |
 | combinatory logic / weak reduction / bracket abstraction / combinatory completeness | 組合せ論理 / 弱簡約 / 括弧抽象 / 組合せ完全性 | コンビネータ論理 | 標準的。logic:page-combinatory-logic |
+| martingale / supermartingale / Kolmogorov inequality / Schnorr theorem | マルチンゲール / 優マルチンゲール / コルモゴロフの不等式 / シュノアの定理 | | 標準的。comp:page-martingales |

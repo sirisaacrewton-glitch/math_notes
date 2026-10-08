@@ -4992,6 +4992,13 @@
       "num": "1.1",
       "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/01-kolmogorov.html"
     },
+    "comp:kolmogorov-inequality": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "コルモゴロフの不等式",
+      "num": "4.3",
+      "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/04-martingales.html"
+    },
     "comp:kolmogorov-optimality": {
       "status": "defined",
       "type": "theorem",
@@ -5152,6 +5159,13 @@
       "title": "計算可能関数と写像還元",
       "num": "10.1",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/10-mapping-reducibility.html"
+    },
+    "comp:martingale": {
+      "status": "defined",
+      "type": "definition",
+      "title": "マルチンゲール",
+      "num": "4.1",
+      "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/04-martingales.html"
     },
     "comp:maxcut-local-search": {
       "status": "defined",
@@ -5621,6 +5635,13 @@
       "title": "マルチン＝レーフのランダムネス",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/03-martin-lof.html"
+    },
+    "comp:page-martingales": {
+      "status": "defined",
+      "type": "page",
+      "title": "マルチンゲールとシュノアの定理",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/04-martingales.html"
     },
     "comp:page-nonregular": {
       "status": "defined",
@@ -6441,6 +6462,20 @@
       "num": "10.9",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/10-mapping-reducibility.html"
     },
+    "comp:prob-mg-any": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "4.5",
+      "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/04-martingales.html"
+    },
+    "comp:prob-mg-zeros": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "4.6",
+      "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/04-martingales.html"
+    },
     "comp:prob-mu-strict": {
       "status": "defined",
       "type": "problem",
@@ -7014,6 +7049,13 @@
       "title": "サヴィッチの定理",
       "num": "4.3",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/04-space-complexity.html"
+    },
+    "comp:schnorr-martingale": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "シュノアの定理",
+      "num": "4.4",
+      "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/04-martingales.html"
     },
     "comp:schwartz-zippel": {
       "status": "defined",
@@ -7896,6 +7938,34 @@
       "title": "写像還元",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/10-mapping-reducibility.html"
+    },
+    "comp:sec-mg-martingales": {
+      "status": "defined",
+      "type": "section",
+      "title": "マルチンゲール",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/04-martingales.html"
+    },
+    "comp:sec-mg-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/04-martingales.html"
+    },
+    "comp:sec-mg-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/04-martingales.html"
+    },
+    "comp:sec-mg-schnorr": {
+      "status": "defined",
+      "type": "section",
+      "title": "シュノアの定理",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/04-martingales.html"
     },
     "comp:sec-ml-measure": {
       "status": "defined",

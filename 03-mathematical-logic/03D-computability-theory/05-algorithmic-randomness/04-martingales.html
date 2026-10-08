@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>マルチンゲールとシュノアの定理 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/04-martingales.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# マルチンゲールとシュノアの定理 {#comp:page-martingales keywords="martingale, supermartingale, betting strategy, Kolmogorov inequality, Ville, left-c.e. martingale, Schnorr's theorem, Martin-Lof randomness via martingales, unpredictability, computable randomness"}
+
+ランダムな列とは「予測できない列」である、という直観を数学にしたのが**マルチンゲール**（\ref{comp:martingale}）である。マルチンゲールは公平な賭けの戦略で、列の各項を見る前に $0$ か $1$ かに賭け金を配分し、当たった側の賭け金が $2$ 倍になる。列 $X$ の上で資産がいくらでも大きくなるとき、戦略は $X$ で**勝つ**という。本ページでは、**コルモゴロフの不等式**（\ref{comp:kolmogorov-inequality}）——資産が $c$ を超える列の測度は $d(\varepsilon)/c$ 以下——を示し、それを使って、マルチン＝レーフのランダムネス（\ref{comp:ml-test}）が「左 c.e. なマルチンゲールで勝てない」ことと同値であるという**シュノアの定理**（\ref{comp:schnorr-martingale}）を証明する。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。
+
+## 記法と定義の確認 {#comp:sec-mg-notation}
+
+::: notation
+- 文字列、接頭辞 $\preceq$（真の接頭辞は $\prec$）、$X\restr n$、$[\sigma]$, $[W]$、測度 $\lambda$、マルチン＝レーフ検定とランダムネスは \ref{comp:page-martin-lof} のとおり。$\varepsilon$ は空文字列、$\lvert\sigma\rvert$ は長さ。
+- 測度の基本性質：接頭辞なしの $W$ について $\lambda([W])=\sum_{\sigma\in W}2^{-\lvert\sigma\rvert}$、c.e. な $W$ から $[W^{\ast}]=[W]$ を満たす接頭辞なしの c.e. な $W^{\ast}$ が一様に作れること（\ref{comp:measure-basic} の 1, 3）。
+- 非負実数の族 $(r_{\sigma})$ が**一様に左 c.e.** とは、計算可能な有理数値関数 $f(\sigma,s)\ge0$ で、各 $\sigma$ について $s$ について単調非減少かつ $\lim_{s}f(\sigma,s)=r_{\sigma}$ となるものがあることをいう。
+:::
+
+## マルチンゲール {#comp:sec-mg-martingales}
+
+::: definition マルチンゲール {#comp:martingale keywords="martingale, supermartingale, success of a martingale, left-c.e. martingale" index="マルチンゲール（計算論）|まるちんげーるけいさんろん, 優マルチンゲール|ゆうまるちんげーる"}
+1. 関数 $d\colon\{0,1\}^{\ast}\to[0,\infty)$ が**マルチンゲール**であるとは、すべての $\sigma$ で
+$$
+d(\sigma)=\frac{d(\sigma0)+d(\sigma1)}{2}
+$$
+が成り立つことをいう。$=$ を $\ge$ に変えたものを**優マルチンゲール**という。
+2. $d$ が $X\in2^{\omega}$ で**勝つ**とは、$\sup_{n}d(X\restr n)=\infty$ であることをいう。
+3. 値 $(d(\sigma))_{\sigma}$ が一様に左 c.e. なマルチンゲールを**左 c.e. マルチンゲール**という。
+:::
+
+::: remark
+$d(\sigma)$ は「$\sigma$ を見た後の資産」で、$\sigma0$ と $\sigma1$ に資産を $d(\sigma0)/2$ と $d(\sigma1)/2$ ずつ賭けたと読める。等式は賭けが公平である（期待値が変わらない）ことを表す。マルチンゲールから $d(\sigma)\le2^{\lvert\sigma\rvert}d(\varepsilon)$ が従う（$d(\sigma i)\le2d(\sigma)$ を繰り返す）。
+:::
+
+::: lemma コルモゴロフの不等式 {#comp:kolmogorov-inequality keywords="Kolmogorov's inequality (Ville's inequality) for supermartingales on Cantor space" index="コルモゴロフの不等式|こるもごろふのふとうしき"}
+$d$ を優マルチンゲールとする。
+1. 接頭辞なしの有限集合 $F$ について $\sum_{\sigma\in F}2^{-\lvert\sigma\rvert}d(\sigma)\le d(\varepsilon)$。
+2. $c>0$ について、$S_{c}\defeq\{\sigma:d(\sigma)\ge c\}$ とすると $\lambda([S_{c}])\le d(\varepsilon)/c$。
+:::
+
+::: proof
+**1.** $F$ の文字列の最大の長さ $N$ に関する帰納法で、すべての優マルチンゲールについて示す。$F=\emptyset$ は明らか。$\varepsilon\in F$ なら、接頭辞なしなので $F=\{\varepsilon\}$ で等号。それ以外では、$F_{i}\defeq\{\tau:i\tau\in F\}$（$i=0,1$）は接頭辞なしで最大の長さが $N-1$ 以下、$d_{i}(\tau)\defeq d(i\tau)$ は優マルチンゲールである。帰納法の仮定から $\sum_{\tau\in F_{i}}2^{-\lvert\tau\rvert}d(i\tau)\le d(i)$ なので、
+$$
+\sum_{\sigma\in F}2^{-\lvert\sigma\rvert}d(\sigma)=\frac{1}{2}\sum_{i=0,1}\sum_{\tau\in F_{i}}2^{-\lvert\tau\rvert}d(i\tau)\le\frac{d(0)+d(1)}{2}\le d(\varepsilon).
+$$
+
+**2.** $S_{c}$ の極小元（真の接頭辞が $S_{c}$ に属さない元）の集合 $M$ は接頭辞なしで、$[M]=[S_{c}]$。$M$ の有限部分集合 $F$ について、\ref{comp:measure-basic} の 1（接頭辞なしの場合の等号）と本補題の 1 から
+$$
+\lambda([F])=\sum_{\sigma\in F}2^{-\lvert\sigma\rvert}\le\frac{1}{c}\sum_{\sigma\in F}2^{-\lvert\sigma\rvert}d(\sigma)\le\frac{d(\varepsilon)}{c}.
+$$
+$\lambda([M])$ は有限部分集合での値の上限なので、$\lambda([S_{c}])=\lambda([M])\le d(\varepsilon)/c$。
+:::
+
+## シュノアの定理 {#comp:sec-mg-schnorr}
+
+::: theorem シュノアの定理 {#comp:schnorr-martingale keywords="X is Martin-Lof random iff no left-c.e. martingale succeeds on X" index="シュノアの定理|しゅのあのていり"}
+$X\in2^{\omega}$ について、$X$ がマルチン＝レーフの意味でランダムであることと、どの左 c.e. マルチンゲールも $X$ で勝たないことは同値である。
+:::
+
+::: proof
+**（ランダム ⇒ 勝てない）** 対偶を示す。左 c.e. マルチンゲール $d$ が $X$ で勝つとし、近似 $f(\sigma,s)$ をとる。$d(\varepsilon)\le2^{m}$ となる整数 $m$ をとり、$V_{n}\defeq\{\sigma:\exists s\ f(\sigma,s)>2^{n+m}\}$ とする。
+- *一様に c.e.*：$f$ が計算可能なので、$(n,s)$ を並行に探索して列挙できる。
+- *$V_{n}=\{\sigma:d(\sigma)>2^{n+m}\}$*：$f(\sigma,s)$ は下から $d(\sigma)$ に収束するので、$d(\sigma)>2^{n+m}$ とある $s$ で $f(\sigma,s)>2^{n+m}$ は同値。
+- *測度*：コルモゴロフの不等式（\ref{comp:kolmogorov-inequality}）から $\lambda([V_{n}])\le d(\varepsilon)/2^{n+m}\le2^{-n}$。
+- *$X$ は落ちる*：$d$ は $X$ で勝つので、各 $n$ で $d(X\restr k)>2^{n+m}$ となる $k$ があり、$X\in[V_{n}]$。
+
+よって $(V_{n})$ はマルチン＝レーフ検定で、$X$ はランダムでない。
+
+**（勝てない ⇒ ランダム）** 対偶を示す。$X$ が検定 $(V_{n})$ に落ちるとする。\ref{comp:measure-basic} の 3 で、$[U_{n}]=[V_{n}]$ を満たす接頭辞なしの一様に c.e. な $U_{n}$ をとる。$n\ge1$ について、
+$$
+d_{n}(\sigma)\defeq\begin{cases}1&\sigma\text{ のある接頭辞が }U_{n}\text{ に属する},\\\sum_{\tau\in U_{n},\ \sigma\prec\tau}2^{\lvert\sigma\rvert-\lvert\tau\rvert}&\text{それ以外}\end{cases}
+$$
+とする（和は $\sum_{\tau\in U_{n}}2^{-\lvert\tau\rvert}=\lambda([U_{n}])\le1$ から有限）。
+
+*Step 1（$d_{n}$ はマルチンゲール）.* $\sigma$ のある接頭辞が $U_{n}$ に属すれば、$\sigma0,\sigma1$ も同様で $1=(1+1)/2$。そうでないとき、$\sigma$ の真の拡張 $\tau$ は $\sigma0$ か $\sigma1$ のどちらか一方の拡張なので
+$$
+d_{n}(\sigma)=\frac{1}{2}\sum_{i=0,1}\ \sum_{\tau\in U_{n},\ \sigma i\preceq\tau}2^{\lvert\sigma i\rvert-\lvert\tau\rvert}.
+$$
+$\sigma i\in U_{n}$ なら、**接頭辞なし**なので内側の和は $\tau=\sigma i$ の項 $1$ だけで、$d_{n}(\sigma i)=1$ と一致する。$\sigma i\notin U_{n}$ なら、$\sigma i$ の接頭辞も $U_{n}$ に属さないので、内側の和は $d_{n}(\sigma i)$ の第二の場合そのもの。よって $d_{n}(\sigma)=(d_{n}(\sigma0)+d_{n}(\sigma1))/2$。
+
+*Step 2（$d\defeq\sum_{n\ge1}d_{n}$）.* $\varepsilon\notin U_{n}$（$\lambda([U_{n}])\le2^{-n}<1$）なので $d_{n}(\varepsilon)=\lambda([U_{n}])\le2^{-n}$、$d(\varepsilon)\le1$。各 $d_{n}$ はマルチンゲールで $d_{n}(\sigma)\le2^{\lvert\sigma\rvert}d_{n}(\varepsilon)$ なので、$d(\sigma)\le2^{\lvert\sigma\rvert}$ は有限で、非負項の和の入れ替えから $d$ もマルチンゲール。
+
+*Step 3（左 c.e.）.* $U_{n,s}$ を $U_{n}$ の $s$ 段までに列挙された有限部分とし、$d_{n}$ の定義で $U_{n}$ を $U_{n,s}$ に置き換えたものを $d_{n,s}$、$f(\sigma,s)\defeq\sum_{1\le n\le s}d_{n,s}(\sigma)$ とする（有理数で、計算可能）。$s$ について非減少であること：第二の場合の和は項が増えるだけ増え、$\sigma$ の接頭辞 $\rho$ が段 $s$ で $U_{n}$ に入って第一の場合に移るときは、$U_{n}$ が接頭辞なしなので $\rho$ の真の拡張（したがって $\sigma$ の真の拡張）は $U_{n}$ に属さず、それまでの値は $0$ だった。$\lim_{s}f(\sigma,s)=d(\sigma)$ は非負項の和の単調収束から。
+
+*Step 4（$d$ は $X$ で勝つ）.* 各 $n$ で $X\in[U_{n}]$ なので、ある $k_{n}$ で $X\restr{k_{n}}$ の接頭辞が $U_{n}$ に属し、$k\ge k_{n}$ で $d_{n}(X\restr k)=1$。$N$ を与えると、$k\ge\max(k_{1},\dots,k_{N})$ で $d(X\restr k)\ge N$。
+:::
+
+::: hypcheck
+- **接頭辞なし**：Step 1 で $\sigma i\in U_{n}$ のとき内側の和が $1$ だけになること、Step 3 で近似が単調であることに使った。接頭辞なしでないと、第一の場合と第二の場合の値が食い違う。
+- **コルモゴロフの不等式**：前半で検定の測度の条件に使った。前半はマルチンゲールでなく優マルチンゲールでも成り立つ。
+- **左 c.e. であること**：前半で $V_{n}$ が c.e. であることに使った。計算可能でない（たとえば $X$ そのものを知っている）マルチンゲールは、どの $X$ でも勝てる（\ref{comp:prob-mg-any}）。
+:::
+
+## 問題 {#comp:sec-mg-problems}
+
+::: problem {#comp:prob-mg-any}
+任意の $X\in2^{\omega}$ について、$X$ で勝つマルチンゲールがあることを示せ。$X$ が計算可能ならそれは計算可能にとれることを確かめ、計算可能な列がランダムでないことを \ref{comp:schnorr-martingale} から導け。
+:::
+
+::: solution
+$d(\sigma)\defeq2^{\lvert\sigma\rvert}$（$\sigma\prec X$）、$0$（それ以外）とする。$\sigma\prec X$ なら $\sigma0,\sigma1$ の一方だけが $X$ の接頭辞なので $(2^{\lvert\sigma\rvert+1}+0)/2=d(\sigma)$。そうでなければ両方 $0$。$d(X\restr n)=2^{n}\to\infty$。$X$ が計算可能なら $\sigma\prec X$ は決定可能で、$d$ は計算可能（とくに左 c.e.）なので、\ref{comp:schnorr-martingale} から $X$ はランダムでない。
+:::
+
+::: problem {#comp:prob-mg-zeros}
+ランダムな列は $1$ を無限個含むことを、マルチンゲールを作って示せ。
+:::
+
+::: solution
+$1$ が有限個なら、ある文字列 $\tau$ で $X=\tau000\cdots$。この $X$ は計算可能なので（$\sigma\prec X$ は「$\sigma$ が $\tau$ の接頭辞であるか、$\tau$ に $0$ を並べたものの接頭辞である」ことで決定できる）、\ref{comp:prob-mg-any} の計算可能なマルチンゲール $d(\sigma)=2^{\lvert\sigma\rvert}$（$\sigma\prec X$）, $0$（それ以外）が $X$ で勝つ。\ref{comp:schnorr-martingale} から $X$ はランダムでない。$0$ の個数についても同様。
+:::
+
+::: supplement
+**前提を変えると.** 左 c.e. の代わりに**計算可能な**マルチンゲールだけを考えると、「どの計算可能マルチンゲールも勝てない」という**計算可能ランダムネス**が得られ、マルチン＝レーフのランダムネスより真に弱いことが知られている。さらに勝ち方の速さを制限すると**シュノアのランダムネス**が得られる（ここでは扱わない）。前半の証明は優マルチンゲールでも成り立ち、左 c.e. 優マルチンゲールの中には「最適な」もの（他のどれにも定数倍を除いて負けない）があることが知られている（\ref{comp:universal-ml-test} の賭けの版）。
+
+**似た定理.** ヴィルは、極限の頻度だけでランダムネスを定めるフォン・ミーゼスの方法では捉えられない偏り（「$0$ の割合が上から $1/2$ に近づく」など）を、マルチンゲールなら検出できることを示したことが知られている。レヴィン–シュノアの定理（\ref{comp:levin-schnorr}）と合わせると、ランダムネスには「測度（検定）」「圧縮（複雑性）」「予測（マルチンゲール）」の三つの同値な特徴づけがあることになる。
+
+**高い視点から：公平な賭けで儲からない列.** マルチンゲールは公平なカジノでの資金の推移で、コルモゴロフの不等式は「公平な賭けで元手の $c$ 倍に達する確率は $1/c$ 以下」という当たり前の事実の正確な形である。比喩で言えば、ランダムな列とは、計算できる（ただし時間をかけて少しずつ考えを改めてよい）どんなギャンブラーにとっても、カジノの公平さが崩れない列である。シュノアの定理は、「ありえない事象を検出する検定」と「儲けを狙うギャンブラー」が同じ力をもつことを述べている：検定に落ちる列には、その検定に合わせて賭け金を張るギャンブラーが勝ち、ギャンブラーが勝つ列は「資産が $2^{n}$ を超える」という検定に落ちる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

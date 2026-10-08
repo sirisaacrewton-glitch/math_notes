@@ -95,6 +95,22 @@ $(X,d)$ がコンパクトなら $(\mathcal{K}(X),d_{H})$ もコンパクトで�
 $X$ はコンパクトなので完備（\ref{top:compact-metric-equivalents}）で、\ref{top:hyperspace-complete} から $\mathcal{K}(X)$ は完備。全有界性を示す。$\varepsilon>0$ について $X$ の $\varepsilon$ 網 $F$ をとる。$A\in\mathcal{K}(X)$ について $S\defeq\{p\in F:d(p,A)<\varepsilon\}$ とおくと、$A$ の各点は $F$ のある点と距離 $\varepsilon$ 未満なので $S\neq\varnothing$ で、$\max_{a\in A}d(a,S)<\varepsilon$（各 $a$ で $<\varepsilon$、最大値が達成される）、$\max_{p\in S}d(p,A)<\varepsilon$。よって $d_{H}(A,S)<\varepsilon$。$F$ の空でない部分集合（有限個）は $\mathcal{K}(X)$ の $\varepsilon$ 網である。
 :::
 
+::: proposition 有界閉集合の超空間 {#top:hyperspace-closed-bounded keywords="the space of nonempty closed bounded subsets with the Hausdorff distance is a metric space, complete if X is complete" index="有界閉集合の超空間|ゆうかいへいしゅうごうのちょうくうかん"}
+距離空間 $(X,d)$ の空でない有界閉集合の全体を $\mathcal{CB}(X)$ とし、$A,B\in\mathcal{CB}(X)$ について $d_{H}(A,B)$ を \ref{top:hausdorff-metric} と同じ式で定める。
+
+1. $d_{H}(A,B)=\max\bigl(\sup_{a\in A}d(a,B),\ \sup_{b\in B}d(b,A)\bigr)<\infty$。
+2. $d_{H}$ は $\mathcal{CB}(X)$ の距離であり、$\mathcal{K}(X)$ 上では \ref{top:hausdorff-metric} のものと一致する。
+3. $X$ が完備なら $(\mathcal{CB}(X),d_{H})$ は完備で、コーシー列 $(A_{n})$ の極限は $A\defeq\bigcap_{n\ge1}\overline{\bigcup_{k\ge n}A_{k}}$ である。
+:::
+
+::: proof
+**1.** $s\defeq\sup_{a\in A}d(a,B)$, $t\defeq\sup_{b\in B}d(b,A)$, $m\defeq\max(s,t)$ とおく。$a_{0}\in A$, $b_{0}\in B$ を固定すると、$a\in A$ について $d(a,B)\le d(a,b_{0})\le d(a,a_{0})+d(a_{0},b_{0})\le\operatorname{diam}A+d(a_{0},b_{0})$ で、$A$ は**有界**なので $s<\infty$。同様に $t<\infty$。$\varepsilon>m$ なら $A\subseteq U(B;\varepsilon)$, $B\subseteq U(A;\varepsilon)$ なので $d_{H}\le m$。$\varepsilon<m$ なら、たとえば $m=s$ のとき $d(a,B)>\varepsilon$ となる $a\in A$ があり（上限の定義）、$a\notin U(B;\varepsilon)$ なので $\varepsilon$ は条件を満たさない。よって $d_{H}\ge m$。
+
+**2.** 対称性は 1 から明らか。$d_{H}(A,B)=0$ なら各 $a\in A$ で $d(a,B)=0$、$B$ は**閉**なので $a\in B$；同様に $B\subseteq A$。三角不等式：$a\in A$ と $\eta>0$ について $d(a,b)<d(a,B)+\eta\le d_{H}(A,B)+\eta$ となる $b\in B$ をとると、$d(a,C)\le d(a,b)+d(b,C)\le d_{H}(A,B)+d_{H}(B,C)+\eta$。$\eta\to0$ とし、$c\in C$ についても同様に評価すれば、1 から $d_{H}(A,C)\le d_{H}(A,B)+d_{H}(B,C)$。コンパクト集合は有界閉なので $\mathcal{K}(X)\subseteq\mathcal{CB}(X)$ で、定義式が同じなので距離は一致する。
+
+**3.** \ref{top:hyperspace-complete} の証明の Step 1, 2, 4 は、$d_{H}$ の定義と 1 の表示（$\max$ を $\sup$ に替えたもの）と、$X$ の**完備性**しか使っていないので、そのまま通る（Step 2 で $a_{j+1}$ を選ぶとき、$d(a_{j},A_{m_{j+1}})\le d_{H}(A_{m_{j}},A_{m_{j+1}})<\varepsilon2^{-j}$ と下限の定義から $d(a_{j},a_{j+1})<\varepsilon2^{-j}$ となる $a_{j+1}$ がとれる）。Step 3 の代わりに $A\in\mathcal{CB}(X)$ を確かめる：$A$ は閉集合の共通部分なので閉、Step 2 から空でない、Step 1 から $A\subseteq U(A_{N};2\varepsilon)$ で、$A_{N}$ は有界なので $A$ も有界。Step 4 から $d_{H}(A_{n},A)\le2\varepsilon$（$n\ge N$）。
+:::
+
 ## ヴィートリス位相 {#top:sec-hy-vietoris}
 
 ::: definition ヴィートリス位相 {#top:vietoris-topology keywords="Vietoris topology, upper and lower Vietoris topology" index="ヴィートリス位相|う゛ぃーとりすいそう"}
@@ -138,7 +154,7 @@ $A\in\mathcal{K}(X)$, $\varepsilon>0$ について、$A$ の $\varepsilon$ 網 $
 :::
 
 ::: supplement
-**前提を変えると.** コンパクト集合の代わりに空でない有界閉集合の全体にハウスドルフ距離を入れても距離空間になり、$X$ が完備なら完備であることが知られている（証明は \ref{top:hyperspace-complete} とほぼ同じだが、極限集合のコンパクト性の代わりに閉性と有界性を確かめる）。ただしこの場合、ヴィートリス位相との一致は一般に成り立たない（ここでは確かめていない）。
+**前提を変えると.** コンパクト集合の代わりに空でない有界閉集合の全体にハウスドルフ距離を入れても距離空間になり、$X$ が完備なら完備である（\ref{top:hyperspace-closed-bounded}）。ただしこの場合、ヴィートリス位相との一致は一般に成り立たない（ここでは確かめていない）。
 
 **似た定理.** \ref{top:hyperspace-compact} は、凸集合の幾何学ではブラシュケの選択定理（$\R^{n}$ の有界な凸体の列は、ハウスドルフ距離で収束する部分列をもつ）として知られる。超空間の位相的性質から元の空間を調べる研究（例：$X$ が一点でないペアノ連続体なら $\mathcal{K}(X)$ はヒルベルト立方体と同相、というカーティス–シャウリの定理）があるとされる（ここでは扱わない）。
 

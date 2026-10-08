@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>フライッセ極限 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03C-model-theory/02-types-and-countable-models/06-fraisse-limits.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# フライッセ極限 {#model:page-fraisse-limits keywords="age of a structure, hereditary property, joint embedding property, amalgamation property, ultrahomogeneous structure, extension property, Fraisse's theorem, Fraisse limit, rationals, random graph, omega-categoricity"}
+
+可算稠密線形順序 $(\mathbb{Q},<)$ やランダムグラフ（\ref{model:page-random-graph}）は、「有限部分構造の間の同型がすべて全体の自己同型に延びる」（**超均質**）という強い対称性をもつ。**フライッセの定理**（\ref{model:fraisse-theorem}）は、このような可算構造が、その有限部分構造のクラス（**年齢**、\ref{model:age}）によって一意に決まり、逆に、遺伝性・合同埋め込み性・**融合性**をもつ有限構造のクラスにはそれを年齢とする超均質構造（**フライッセ極限**）が存在することを述べる。$\mathbb{Q}$ は有限線形順序の、ランダムグラフは有限グラフのフライッセ極限である。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。
+
+## 記法と定義の確認 {#model:sec-fr-notation}
+
+::: notation
+- 本ページでは言語 $L$ は**有限な関係言語**とする。このとき部分集合は自動的に部分構造で、構造の間の**埋め込み**は、関係を保ち反映する単射である。部分構造・同型は \ref{model:substructure}, \ref{logic:isomorphism-invariance} のとおり。
+- 有限構造は同型を除いて考える。有限構造のクラス $\mathcal{K}$ が「同型で閉じている」ことを常に仮定する。
+- 往復の議論（\ref{model:cantor-dlo}）、$\omega$ 範疇性（\ref{model:omega-categorical}）、ランダムグラフの理論（\ref{model:rg-complete}）は各ページのとおり。
+:::
+
+## 年齢と三つの性質 {#model:sec-fr-age}
+
+::: definition 年齢と三つの性質 {#model:age keywords="age of a structure; hereditary property HP, joint embedding property JEP, amalgamation property AP" index="年齢（構造の）|ねんれいこうぞうの, 融合性|ゆうごうせい, 合同埋め込み性|ごうどううめこみせい"}
+構造 $\mathcal{M}$ の**年齢** $\mathrm{Age}(\mathcal{M})$ を、$\mathcal{M}$ に埋め込める有限構造全体とする。有限構造のクラス $\mathcal{K}$ について：
+- **遺伝性（HP）**：$B\in\mathcal{K}$ の部分構造は $\mathcal{K}$ に属する。
+- **合同埋め込み性（JEP）**：$A,B\in\mathcal{K}$ に対し、両方が埋め込める $C\in\mathcal{K}$ がある。
+- **融合性（AP）**：$A,B_{1},B_{2}\in\mathcal{K}$ と埋め込み $f_{i}\colon A\to B_{i}$ に対し、$C\in\mathcal{K}$ と埋め込み $g_{i}\colon B_{i}\to C$ で $g_{1}f_{1}=g_{2}f_{2}$ となるものがある。
+:::
+
+::: definition 超均質と拡張性 {#model:ultrahomogeneous keywords="ultrahomogeneous structure, extension property" index="超均質|ちょうきんしつ, 拡張性（フライッセ）|かくちょうせいふらいっせ"}
+可算構造 $\mathcal{M}$ が**超均質**であるとは、有限部分構造の間の任意の同型が $\mathcal{M}$ の自己同型に延びることをいう。$\mathcal{M}$ が $\mathcal{K}$ について**拡張性**をもつとは、$A\subseteq B$ がともに $\mathcal{K}$ に属し（$A$ は $B$ の部分構造）、埋め込み $f\colon A\to\mathcal{M}$ が与えられたとき、$f$ を延ばす埋め込み $g\colon B\to\mathcal{M}$ があることをいう。
+:::
+
+::: lemma 拡張性と往復 {#model:extension-property-backforth keywords="countable structures with the extension property for their common age are isomorphic; ultrahomogeneous iff extension property" index="拡張性と往復|かくちょうせいとおうふく"}
+1. 可算構造 $\mathcal{M},\mathcal{N}$ がともに年齢 $\mathcal{K}$ をもち、$\mathcal{K}$ について拡張性をもつなら、$\mathcal{M}$ と $\mathcal{N}$ の有限部分構造の間の任意の同型は $\mathcal{M}\cong\mathcal{N}$ に延びる。
+2. 可算構造 $\mathcal{M}$ が超均質であることと、$\mathrm{Age}(\mathcal{M})$ について拡張性をもつことは同値である。
+:::
+
+::: proof
+**1.** 往復で示す。$\mathcal{M}=\{m_{0},m_{1},\dots\}$, $\mathcal{N}=\{n_{0},n_{1},\dots\}$ と並べ、有限部分構造の間の同型 $p_{0}$ から始めて、偶数段で $m_{s}$ を定義域に、奇数段で $n_{s}$ を値域に入れる。行き：$p\colon A\to\mathcal{N}$（$A\subseteq\mathcal{M}$ 有限、像への同型）と $m\notin A$ について、$B\defeq A\cup\{m\}\subseteq\mathcal{M}$ は $\mathcal{K}$ に属する。$p$ は $A$ から $\mathcal{N}$ への埋め込みなので、$\mathcal{N}$ の拡張性から $B\to\mathcal{N}$ に延び、$m$ の行き先が決まる。帰りは $p^{-1}$ と $\mathcal{M}$ の拡張性で同様。和は同型。
+
+**2.** ⇐：1 で $\mathcal{N}=\mathcal{M}$。⇒：$A\subseteq B$ が $\mathrm{Age}(\mathcal{M})$ に属し、$f\colon A\to\mathcal{M}$ が埋め込みとする。$B$ は $\mathcal{M}$ に埋め込める：$e\colon B\to\mathcal{M}$。$f\circ(e|_{A})^{-1}\colon e[A]\to f[A]$ は有限部分構造の間の同型なので、自己同型 $\sigma$ に延びる。$g\defeq\sigma\circ e$ は $B$ の埋め込みで、$a\in A$ について $g(a)=\sigma(e(a))=f(a)$。
+:::
+
+## フライッセの定理 {#model:sec-fr-theorem}
+
+::: theorem フライッセの定理 {#model:fraisse-theorem keywords="Fraisse's theorem: a class with HP, JEP, AP has a unique countable ultrahomogeneous limit" index="フライッセの定理|ふらいっせのていり, フライッセ極限|ふらいっせきょくげん"}
+1. 可算な超均質構造の年齢は HP, JEP, AP をもつ。
+2. 空でない有限構造のクラス $\mathcal{K}$（有限な関係言語）が HP, JEP, AP をもてば、年齢がちょうど $\mathcal{K}$ である可算な超均質構造 $\mathcal{M}$（**フライッセ極限**）が同型を除いてただ一つ存在する。
+:::
+
+::: proof
+**1.** HP と JEP は年齢一般に成り立つ（部分構造は埋め込め、二つの有限部分構造はその和で合同に埋め込める）。AP：$f_{i}\colon A\to B_{i}$ について、埋め込み $e_{i}\colon B_{i}\to\mathcal{M}$ をとる。$e_{1}f_{1}[A]$ から $e_{2}f_{2}[A]$ への同型 $e_{2}f_{2}(e_{1}f_{1})^{-1}$ は自己同型 $\sigma$ に延びる。$g_{1}\defeq\sigma e_{1}$, $g_{2}\defeq e_{2}$ とし、$C$ を $g_{1}[B_{1}]\cup g_{2}[B_{2}]$（$\mathcal{M}$ の有限部分構造）とすれば、$g_{1}f_{1}=\sigma e_{1}f_{1}=e_{2}f_{2}=g_{2}f_{2}$。
+
+**2（一意性）.** 二つあれば、\ref{model:extension-property-backforth} の 2 からともに $\mathcal{K}$ について拡張性をもつ。言語に定数記号がないので空集合は部分構造で、空集合の間の同型から \ref{model:extension-property-backforth} の 1 の往復を始めれば同型が得られる。
+
+**2（存在）.** 有限な関係言語なので、各大きさの $\mathcal{K}$ の構造は同型を除いて有限個で、$\mathcal{K}$ の同型類は可算個。
+
+*Step 1（課題の列）.* 有限構造の増加列 $D_{0}\subseteq D_{1}\subseteq\cdots$（すべて $\mathcal{K}$ に属し、各 $D_{s}$ の台は自然数の有限集合）を作る。「課題」を、組 $(A,B,f)$（$A\subseteq B$ は $\mathcal{K}$ の構造で台が自然数の有限集合、$f$ は $A$ から構成中の構造への埋め込み）とし、可算個の課題の候補を、各課題が無限回現れるように並べる（$\N\times\N$ の全単射を使う）。また $\mathcal{K}$ の各構造が埋め込まれるようにするため、$\mathcal{K}$ の同型類の代表 $C_{0},C_{1},\dots$ も並べておく。
+
+*Step 2（一段）.* 段 $2s+1$ では、JEP で $D_{2s}$ と $C_{s}$ の両方を埋め込める $\mathcal{K}$ の構造をとり、$D_{2s}$ への埋め込みが包含になるように名前を付け替えて $D_{2s+1}\supseteq D_{2s}$ とする。段 $2s+2$ では、その段の課題 $(A,B,f)$ について $f$ が $D_{2s+1}$ への埋め込みならば、AP を $A\hookrightarrow B$ と $f\colon A\to D_{2s+1}$ に適用して $C$ と $g_{1}\colon B\to C$, $g_{2}\colon D_{2s+1}\to C$ を得、$g_{2}$ が包含になるように名前を付け替えて $D_{2s+2}\defeq C$。そうでなければ $D_{2s+2}\defeq D_{2s+1}$。
+
+*Step 3（極限）.* $\mathcal{M}\defeq\bigcup_{s}D_{s}$。年齢：$\mathcal{M}$ の有限部分構造はある $D_{s}$ の部分構造なので HP から $\mathcal{K}$ に属し、逆に $\mathcal{K}$ の構造は段 $2s+1$ で埋め込まれる。拡張性：$A\subseteq B$ が $\mathcal{K}$ に属し $f\colon A\to\mathcal{M}$ が埋め込みなら、$f[A]$ は有限なのである $D_{t}$ に含まれ、課題 $(A',B',f')$（$A\subseteq B$ を自然数の台に名前を付け替えたもの）は $t$ より後の段にも現れるので、その段で $f$ が延びる。\ref{model:extension-property-backforth} の 2 から超均質。
+:::
+
+::: hypcheck
+- **AP**：存在の Step 2 で課題を一つずつ解決するのに使った。AP がないと、拡張性（したがって超均質性）が得られない。
+- **JEP**：Step 2 の奇数段で、$\mathcal{K}$ のすべての構造を一つの構造に入れるのに使った（年齢がちょうど $\mathcal{K}$ になるため）。
+- **HP**：Step 3 で年齢が $\mathcal{K}$ に含まれることに使った。
+- **有限な関係言語**：同型類が可算個で、課題が可算個に並べられることに使った。
+:::
+
+::: example
+1. 有限線形順序のクラスは HP, JEP, AP をもち（二つの線形順序を共通部分に沿って合わせるには、点の大小を一つの線形順序にまとめればよい）、フライッセ極限は $(\mathbb{Q},<)$ である（\ref{model:cantor-dlo} から、端点のない稠密な可算線形順序は一意）。
+2. 有限グラフのクラスは HP, JEP, AP をもち（融合は、$B_{1}$ と $B_{2}$ を $A$ で貼り合わせ、新しい頂点の間には辺を引かない）、フライッセ極限はランダムグラフである（拡張公理（\ref{model:extension-axioms}）は拡張性の一点版で、一点ずつの拡張を繰り返せば拡張性になる）。
+:::
+
+::: corollary フライッセ極限の理論 {#model:fraisse-omega-categorical keywords="the theory of a Fraisse limit in a finite relational language is omega-categorical" index="フライッセ極限の理論|ふらいっせきょくげんのりろん"}
+有限な関係言語で、フライッセ極限 $\mathcal{M}$ の理論 $\mathrm{Th}(\mathcal{M})$ は $\omega$ 範疇的である。
+:::
+
+::: proof
+$\mathcal{N}$ を $\mathrm{Th}(\mathcal{M})$ の可算モデルとする（$\mathcal{M}$ が有限ならそれも同型、以下 $\mathcal{M}$ は無限とする）。
+- $\mathrm{Age}(\mathcal{N})=\mathrm{Age}(\mathcal{M})$：有限構造 $B$ が埋め込めることは、$B$ の元を変数で表した原子論理式とその否定の連言（**図式**）に存在量化子を付けた文で表せ、この文の真偽は $\mathcal{M}$ と $\mathcal{N}$ で同じ。
+- $\mathcal{N}$ も拡張性をもつ：$A\subseteq B$（$\mathcal{K}$ の構造）について、「$A$ の図式を満たす任意の組は、$B$ の図式を満たす組に延びる」は一つの文で表せ（$\forall\vec{x}(\text{図式}_{A}(\vec{x})\to\exists\vec{y}\,\text{図式}_{B}(\vec{x},\vec{y}))$）、$\mathcal{M}$ で真なので $\mathcal{N}$ でも真。
+よって \ref{model:extension-property-backforth} の 1 から $\mathcal{N}\cong\mathcal{M}$。
+:::
+
+## 問題 {#model:sec-fr-problems}
+
+::: problem {#model:prob-fr-equivalence}
+等号だけの言語に二項関係 $R$ を加え、$R$ が同値関係である有限構造のクラスは HP, JEP, AP をもつことを確かめ、フライッセ極限を記述せよ。
+:::
+
+::: solution
+HP は明らか。JEP は二つの構造の交わらない和（同値類はそれぞれのもの）。AP：$B_{1},B_{2}$ を $A$ で貼り合わせた集合に、「$B_{1}$ か $B_{2}$ の中で同値なもの」の生成する同値関係を入れる。$A$ を含む同値類どうしは、$A$ の元が $B_{1},B_{2}$ で同じ同値関係をもつ（埋め込み）ので矛盾なくつながり、$B_{i}$ 内の同値関係は変わらない（$B_{i}$ の二元が新しく同値になるには、$A$ の元を介して $B_{j}$ 側で同値になる必要があるが、それは $A$ 上で $B_{i}$ でも同値であることを意味する）。フライッセ極限は、可算無限個の同値類をもち、各同値類が可算無限であるような同値関係（拡張性から、新しい類も既存の類の新しい元もいつでも見つかる）。
+:::
+
+::: problem {#model:prob-fr-no-ap}
+言語 $\{E\}$ で、辺が高々一本のグラフからなる有限構造のクラスは AP をもたないことを示せ。
+:::
+
+::: solution
+$A\defeq\{a,c\}$（辺なし）、$B_{1}\defeq\{a,b,c\}$（辺は $a$–$b$ だけ）、$B_{2}\defeq\{a,c,d\}$（辺は $c$–$d$ だけ）とし、$f_{i}$ を包含とする（$A$ は $B_{1},B_{2}$ の誘導部分グラフ）。融合 $C$ と $g_{i}$ があれば、$g_{1}(a)=g_{2}(a)$, $g_{1}(c)=g_{2}(c)$ で、$C$ は辺 $\{g_{1}(a),g_{1}(b)\}$ と $\{g_{2}(c),g_{2}(d)\}$ をもつ。これらが同じ辺なら、$g_{1}(a)\ne g_{1}(c)=g_{2}(c)$ なので $g_{1}(a)=g_{2}(d)$ かつ $g_{1}(b)=g_{2}(c)=g_{1}(c)$ となるが、$g_{1}$ は単射で $b\ne c$ なので矛盾。よって $C$ は二本以上の辺をもち、クラスに属さない。
+:::
+
+::: supplement
+**前提を変えると.** 関数記号のある言語では、有限生成構造のクラスについて同じ定理が成り立つことが知られている。たとえば有限群のクラスは HP, JEP, AP をもち、そのフライッセ極限はホールの普遍局所有限群であるとされる（ここでは確かめていない）。言語が無限でも、同型類が可算個なら存在と一意性は成り立つが、$\omega$ 範疇性は一般に失われる。
+
+**似た定理.** フライッセ極限のもう一つの重要な例は**ウリゾーン空間**（有理数距離の有限距離空間のクラスの極限の完備化）で、すべての可分距離空間を含む普遍的な距離空間であることが知られている。フライッセ理論は、自己同型群の力学（ケクリス–ペシュトフ–トドルチェヴィチの対応）やラムゼー理論と深く結びついている（ここでは扱わない）。
+
+**高い視点から：局所的な貼り合わせから大域的な対称性へ.** 融合性は「有限の断片どうしが、共通部分で矛盾なく貼り合わせられる」という局所的な条件であり、フライッセ極限はそれを無限回繰り返して作られる、あらゆる断片を「あらゆる位置に」含む構造である。比喩で言えば、ジグソーパズルのピースがどの二つも共通の縁で必ずつなげられるなら、すべてのピースを無限枚使って、どこから見ても同じ景色の一枚の絵が、ただ一通りに完成する。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -409,3 +409,4 @@
 | productive set / creative set / m-complete / 1-reducible / Myhill isomorphism theorem | 生産的集合 / 創造的集合 / m 完全 / 1 還元可能 / マイヒルの同型定理 | 産出的集合 | 新井に合わせる。comp:page-creative-sets |
 | Ehrenfeucht-Fraisse game / quantifier rank / partial isomorphism / Spoiler / Duplicator | エーレンフォイヒト–フライッセゲーム / 量化子の深さ / 部分同型 / 攻め手 / 受け手 | 量化子のランク、スポイラー・デュプリケーター | 仮。model:page-ef-games |
 | random graph / Rado graph / extension axiom / zero-one law | ランダムグラフ / ラドのグラフ / 拡張公理 / 0–1 法則 | | 標準的。model:page-random-graph |
+| age / amalgamation property / joint embedding property / ultrahomogeneous / Fraisse limit | 年齢 / 融合性 / 合同埋め込み性 / 超均質 / フライッセ極限 | 融合性＝アマルガム性 | 仮。model:page-fraisse-limits |

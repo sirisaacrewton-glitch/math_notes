@@ -359,3 +359,4 @@
 | co-Yoneda lemma / geometric realization | 余米田の補題 / 幾何学的実現 | | 仮。cat:page-ends |
 | Kan extension (right/left) / pointwise | カン拡張（右／左） / 各点 | | 標準的。cat:page-kan |
 | copower / power / dense / absolute Kan extension | 余冪 / 冪 / 稠密 / 絶対カン拡張 | テンソル・コテンソル | 仮。cat:page-pointwise-kan |
+| monoidal functor (lax / strong / strict) / monoidal natural transformation / strictification | モノイダル関手（緩い／強／厳密） / モノイダル自然変換 / 厳密化 | ラックス | 強・厳密は標準的。厳密化は仮。cat:page-monoidal-functors |

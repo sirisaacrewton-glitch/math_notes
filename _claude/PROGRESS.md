@@ -232,6 +232,9 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | CS-03 | 02-structured-categories/03-monoids-actions | モノイダル圏のモノイドと作用、自由モノイド | VII.3–4 | 8160–8375 | 完了 |
 | CS-04 | 02-structured-categories/04-simplicial | 単体圏 Δ と普遍モノイド、単体的対象 | VII.5 | 8376–8635 | 完了 |
 | CS-05 | 02-structured-categories/05-closed-categories | 閉圏とコンパクト生成空間 | VII.7–8 | 8775–8983 | 完了 |
+| CS-06 | 02-structured-categories/06-monoidal-functors | モノイダル関手と厳密化定理（2026-10-08 追加。自律判断） | XI.2–3 | 12028–12265 | 完了 |
+| CS-07 | 02-structured-categories/07-symmetric-coherence | 組紐・対称モノイダル圏、対称群の生成元と関係、対称コヒーレンス | XI.1 | 11857–12027 | 未 |
+| CS-08 | 02-structured-categories/08-braids | 組紐群と組紐圏、組紐のコヒーレンス | XI.4–6 | 12266–12539 | 未 |
 
 * **（2026-10-08 自律判断）** アーベル圏（Mac Lane 第 VIII 章）は、ホモロジー代数の土台なので `18G-homological-algebra/01-abelian-categories`（id ha-abelian、接頭辞 ha:）に置いた（MSC では 18E10 だが、表示上の「ホモロジー代数」の見出しに入れるため）。ユーザー未確認。
 
@@ -286,6 +289,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 圏論 CS-06（06-monoidal-functors, cat:page-monoidal-functors：モノイダル関手・合成・モノイダル自然変換、モノイドの保存、多変数のコヒーレンス、厳密化定理（Mac Lane が略した積の結合律・G の公理・GF≅1 のモノイダル性を確かめた）、ケイリー埋め込みの問題）。Mac Lane XI.2–3。
 - 2026-10-08 圏論 CK-04（コエンドによるカン拡張・各点カン拡張・稠密性・随伴とカン拡張）。Mac Lane X.4–7。カン拡張の系列完了。
 - 2026-10-08 圏論 CK-03（03-kan, cat:page-kan：右・左カン拡張、極限・像の例、右カン拡張の各点公式（コンマ圏上の極限）、存在、充満忠実な関手に沿ったカン拡張、表現可能関手の左カン拡張）。Mac Lane X.1–3。
 - 2026-10-08 圏論 CK-02（02-ends, cat:page-ends：楔、エンドとコエンド、自然変換のエンド表示、米田の補題のエンド形と余米田の補題（本サイトで追加）、細分圏によるエンドの極限表示、加群のテンソル積、関手のテンソル積と幾何学的実現、パラメータ定理、フビニの定理）。Mac Lane IX.4–8。

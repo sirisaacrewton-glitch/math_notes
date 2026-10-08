@@ -883,6 +883,41 @@
       "num": "2.3",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/02-monoidal.html"
     },
+    "cat:monoidal-functor": {
+      "status": "defined",
+      "type": "definition",
+      "title": "モノイダル関手",
+      "num": "6.1",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/06-monoidal-functors.html"
+    },
+    "cat:monoidal-functor-composite": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "モノイダル関手の合成",
+      "num": "6.3",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/06-monoidal-functors.html"
+    },
+    "cat:monoidal-functor-monoids": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "モノイダル関手はモノイドを保つ",
+      "num": "6.5",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/06-monoidal-functors.html"
+    },
+    "cat:monoidal-natural-transformation": {
+      "status": "defined",
+      "type": "definition",
+      "title": "モノイダル自然変換",
+      "num": "6.4",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/06-monoidal-functors.html"
+    },
+    "cat:multivariable-coherence": {
+      "status": "defined",
+      "type": "remark",
+      "title": "多変数のコヒーレンス",
+      "num": "6.6",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/06-monoidal-functors.html"
+    },
     "cat:nat-as-end": {
       "status": "defined",
       "type": "theorem",
@@ -1064,6 +1099,13 @@
       "title": "モノイダル圏とマックレーンのコヒーレンス定理",
       "num": "",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/02-monoidal.html"
+    },
+    "cat:page-monoidal-functors": {
+      "status": "defined",
+      "type": "page",
+      "title": "モノイダル関手と厳密化",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/06-monoidal-functors.html"
     },
     "cat:page-monoids-in-monoidal": {
       "status": "defined",
@@ -1337,6 +1379,20 @@
       "title": "",
       "num": "4.6",
       "page": "18-category-theory/18A-general-theory/03-monads/04-algebras-compact.html"
+    },
+    "cat:prob-mf-cayley": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "6.10",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/06-monoidal-functors.html"
+    },
+    "cat:prob-mf-global-elements": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "6.9",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/06-monoidal-functors.html"
     },
     "cat:prob-mo-op": {
       "status": "defined",
@@ -2178,6 +2234,34 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/03-monads/04-algebras-compact.html"
     },
+    "cat:sec-mf-functors": {
+      "status": "defined",
+      "type": "section",
+      "title": "モノイダル関手",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/06-monoidal-functors.html"
+    },
+    "cat:sec-mf-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/06-monoidal-functors.html"
+    },
+    "cat:sec-mf-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/06-monoidal-functors.html"
+    },
+    "cat:sec-mf-strictification": {
+      "status": "defined",
+      "type": "section",
+      "title": "厳密化定理",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/06-monoidal-functors.html"
+    },
     "cat:sec-mo-coherence": {
       "status": "defined",
       "type": "section",
@@ -2443,6 +2527,13 @@
       "title": "分裂フォークは絶対余等化子",
       "num": "3.2",
       "page": "18-category-theory/18A-general-theory/03-monads/03-beck.html"
+    },
+    "cat:strictification": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "厳密化定理",
+      "num": "6.7",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/06-monoidal-functors.html"
     },
     "cat:subcategory": {
       "status": "defined",

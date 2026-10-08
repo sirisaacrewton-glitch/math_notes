@@ -378,3 +378,4 @@
 | algebraic closure / minimal formula / strongly minimal / elimination of ∃^∞ | 代数的閉包 / 極小な論理式 / 強極小 / ∃^∞ の消去（一様有限性） | | 強極小は標準的。model:page-strongly-minimal |
 | exchange / independent / basis / dimension / pregeometry | 交換法則 / 独立 / 基底 / 次元 / 前幾何（マトロイド） | | 前幾何は仮。model:page-dimension |
 | Baldwin–Lachlan theorem / Morley's categoricity theorem | ボールドウィン–ラクランの定理 / モーリーの範疇性定理 | | 標準的。model:page-morley |
+| Boolean circuit / size / depth / CIRCUIT-SAT / P/poly | ブール回路 / 大きさ / 深さ / 回路の充足可能性 / P/poly | | 標準的。comp:page-circuits |

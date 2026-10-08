@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ブール回路と回路計算量 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/04-complexity/08-circuits.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ブール回路と回路計算量 {#comp:page-circuits keywords="Boolean circuit, gates, circuit size, circuit depth, size complexity, Shannon lower bound, parity, circuits simulate Turing machines, P/poly, CIRCUIT-SAT is NP-complete, alternative proof of Cook-Levin"}
+
+チューリング機械は任意の長さの入力を一台で処理するが、**ブール回路**（\ref{comp:boolean-circuit}）は入力の長さごとに別の「配線図」を用意する計算モデルである。回路の大きさ（ゲートの個数）は計算の難しさの組合せ的な物差しになる。本ページでは、すべての関数が指数的な大きさの回路で計算でき、しかも**ほとんどすべての関数は指数的な大きさを必要とする**こと（シャノンの下界、\ref{comp:shannon-lower-bound}）、時間 $t(n)$ のチューリング機械は大きさ $O(t(n)^{2})$ の回路で模倣できること（\ref{comp:time-to-size}）を示す。応用として、回路の充足可能性問題 CIRCUIT-SAT が NP 完全であること（\ref{comp:circuit-sat-complete}）を示し、クック–レヴィンの定理（\ref{comp:cook-levin}）の別証明を得る。
+
+> 資料：M. Sipser, *Introduction to the Theory of Computation*, 3rd ed., §9.3 を参考にした（本文は写していない）。シャノンの下界は同書では演習なので、数え上げを具体的な不等式で示した。チューリング機械の模倣は、本サイトのクック–レヴィンの定理の証明で使った「一段の動きは局所的」（\ref{comp:local-step}）を決定性の機械に合わせて言い直して使った。
+
+## 記法と定義の確認 {#comp:sec-cir-notation}
+
+::: notation
+- チューリング機械、時点表示、一段の動きは \ref{comp:turing-machine}, \ref{comp:tm-configuration} のとおり。時間計算量、P、NP（検証機による定義）、多項式時間還元、NP 完全は \ref{comp:running-time}, \ref{comp:class-p}, \ref{comp:class-np}, \ref{comp:poly-reduction}, \ref{comp:np-complete}。
+- クック–レヴィンの定理の証明の記号（記号の集合 $C=Q\cup\Gamma$、左端の記号 $\triangleright$、時点表示を長さ $m$ の記号列で表すこと）と、一段の動きの局所性 $c'_{j}=g_{\tau}(c_{j-1},c_{j},c_{j+1},c_{j+2})$ は \ref{comp:cook-levin} の前の記述と \ref{comp:local-step} のとおり。ツァイティン変換は \ref{comp:tseitin}。
+:::
+
+## ブール回路 {#comp:sec-cir-definition}
+
+::: definition ブール回路 {#comp:boolean-circuit keywords="Boolean circuit, AND OR NOT gates, size, depth, circuit family, size complexity" index="ブール回路|ぶーるかいろ, ゲート|げーと, 回路の大きさ|かいろのおおきさ, 回路計算量|かいろけいさんりょう"}
+1. $n$ 入力の**ブール回路** $C$ は、ゲートの列 $g_{1},\dots,g_{s}$ で、各ゲート $g_{i}$ は種類（AND, OR, NOT）と入力（AND・OR は二つ、NOT は一つ）をもち、入力は入力変数 $x_{1},\dots,x_{n}$、定数 $0,1$、またはより前のゲート $g_{1},\dots,g_{i-1}$ のいずれかであるものとする。最後のゲート $g_{s}$ を**出力ゲート**という。$s$ を $C$ の**大きさ**、入力から出力までの最長の道のゲートの個数を**深さ**という。
+2. 入力 $x\in\{0,1\}^{n}$ について各ゲートの値を順に計算し、出力ゲートの値を $C(x)$ とする。$C$ は関数 $\{0,1\}^{n}\to\{0,1\}$ を**計算する**。
+3. **回路族** $(C_{n})_{n\ge0}$（$C_{n}$ は $n$ 入力）が言語 $A\subseteq\{0,1\}^{\ast}$ を**決定する**とは、すべての $w$ について $w\in A\iff C_{\lvert w\rvert}(w)=1$ となることをいう。$A$ を決定する回路族の $C_{n}$ の大きさの最小値を $\mathrm{SIZE}_{A}(n)$ と書き、$A$ の**大きさ計算量**という。
+:::
+
+::: example
+1. **パリティ.** $x_{1}\oplus\cdots\oplus x_{n}$（$1$ の個数の偶奇）は、$a\oplus b=(a\wedge\neg b)\vee(\neg a\wedge b)$（ゲート 5 個）を $n-1$ 回つないで、大きさ $5(n-1)$ の回路で計算できる。
+2. **任意の関数.** $f\colon\{0,1\}^{n}\to\{0,1\}$ は、$f(a)=1$ となる各 $a$ について「$x=a$」を表す連言（$x_{i}$ または $\neg x_{i}$ の AND）を作り、それらを OR でつなげば計算できる（選言標準形）。NOT ゲートは $n$ 個を共有し、連言一つにつき AND が $n-1$ 個、連言は $2^{n}$ 個以下で、OR が $2^{n}-1$ 個以下なので、大きさは $n+2^{n}(n-1)+2^{n}\le n2^{n}+n$ 以下（$f$ が恒等的に $0$ なら定数 $0$ と $0$ の AND ゲート一つ）。
+:::
+
+## シャノンの下界 {#comp:sec-cir-shannon}
+
+::: theorem シャノンの下界 {#comp:shannon-lower-bound keywords="Shannon counting lower bound: most Boolean functions require circuits of size about 2^n/n" index="シャノンの下界|しゃのんのかかい"}
+$n\ge3$ について、大きさ $2^{n}/(4n)$ 以下の回路で計算できる関数 $\{0,1\}^{n}\to\{0,1\}$ の個数は $2^{2^{n}}$ より少ない。とくに、大きさ $2^{n}/(4n)$ を超える回路を必要とする関数が存在する（$n$ が大きいとき、関数の大部分がそうである）。
+:::
+
+::: proof
+$s\defeq\lfloor2^{n}/(4n)\rfloor$ とする。$s=0$ なら大きさ $0$ の回路はない（出力ゲートが要る）ので主張は自明。以下 $s\ge1$ とする。
+
+**Step 1（大きさをちょうど $s$ にそろえる）.** 大きさ $s'<s$ の回路は、出力ゲート $g$ の後に「$g$ AND $g$」のゲートを $s-s'$ 個つないで、同じ関数を計算する大きさちょうど $s$ の回路にできる。よって、大きさ $s$ 以下の回路で計算できる関数の個数は、大きさちょうど $s$ の回路の個数以下である。
+
+**Step 2（回路の数え上げ）.** 各ゲートの種類は $3$ 通り、各入力は $n+2+s$ 通り以下（入力変数、定数、ゲート）なので、大きさ $s$ の回路は $\bigl(3(n+2+s)^{2}\bigr)^{s}$ 個以下。
+
+**Step 3（評価）.** $n\ge2$ なら $n+2\le2^{n}$、また $s\le2^{n}$ なので $n+2+s\le2^{n+1}$。よって
+$$
+\begin{aligned}
+\log_{2}\Bigl(\bigl(3(n+2+s)^{2}\bigr)^{s}\Bigr)&\le s\,(\log_{2}3+2n+2)<s\,(2n+4)\\
+&\le\frac{2^{n}}{4n}(2n+4)<2^{n}
+\end{aligned}
+$$
+（最後は $n\ge3$ で $2n+4<4n$）。関数は $2^{2^{n}}$ 個あるので、大きさ $s$ 以下の回路では計算できない関数がある。
+:::
+
+::: hypcheck
+- **数え上げの上界**：ゲートの入力の選び方を「入力変数・定数・すべてのゲート」から選ぶとして多めに数えた。前のゲートだけに制限しても上界は成り立つ。
+- **評価の細部**：$n+2+s\le2^{n+1}$ を使って対数を $n+1$ で抑えた。漸近的には $2^{n}/n$ の定数倍が正しい桁で、上の $1/4$ は改善できる。
+:::
+
+## チューリング機械の模倣 {#comp:sec-cir-simulation}
+
+::: lemma 決定性の機械の一段 {#comp:deterministic-local-step keywords="deterministic local step function for tableaux" index="一段の局所関数（決定性）|いちだんのきょくしょかんすうけっていせい"}
+$M$ を決定性の単一テープ機械とする。写像 $g\colon(C\cup\{\triangleright\})^{4}\to C$ で、時点表示 $c$（長さ $m$ の記号列。位置 $0$ に $\triangleright$、位置 $m+1,m+2$ に空白）について、$c$ が停止時点表示でなければ次の時点表示 $c'$ が、停止時点表示なら $c'\defeq c$ が、すべての $1\le j\le m$ で $c'_{j}=g(c_{j-1},c_{j},c_{j+1},c_{j+2})$ を満たすものがある。
+:::
+
+::: proof
+窓 $(s_{-1},s_{0},s_{1},s_{2})$ について、状態の記号 $q$ が位置 $l\in\{-1,0,1\}$ にあり、その次 $s_{l+1}$ がテープ記号 $a$ のとき、$q$ が停止状態なら $g\defeq s_{0}$、そうでなければ遷移 $\tau=\delta(q,a)$ の $g_{\tau}$（\ref{comp:local-step}）を使って $g\defeq g_{\tau}(s_{-1},s_{0},s_{1},s_{2})$。それ以外の窓では $g\defeq s_{0}$。正しさ：$c$ の状態の記号の位置を $p$ とする。\ref{comp:local-step} の証明から、一段の動きで変わりうるのは位置 $p-1,p,p+1$ だけで、$j\in\{p-1,p,p+1\}$ なら窓 $(c_{j-1},\dots,c_{j+2})$ は位置 $p$ と $p+1$ を両方含む（$l=p-j\in\{-1,0,1\}$）ので、$g$ は正しい遷移の $g_{\tau}$ を使う。それ以外の $j$ では $c'_{j}=c_{j}$ で、窓に状態があっても（$p=j+2$ の場合）$g$ は $s_{0}=c_{j}$ を返す（$l=2$ は場合分けに入らない）。停止時点表示では、すべての窓で $s_{0}$ を返す。
+:::
+
+::: theorem 時間から回路の大きさへ {#comp:time-to-size keywords="TIME(t) is contained in SIZE(O(t^2))" index="時間と回路の大きさ|じかんとかいろのおおきさ"}
+$t(n)\ge n$ とし、$A\subseteq\{0,1\}^{\ast}$ が時間 $t(n)$ の決定性単一テープ機械 $M$ で決定されるなら、$\mathrm{SIZE}_{A}(n)=O(t(n)^{2})$。さらに、$1^{n}$ から $C_{n}$ を $t(n)$ の多項式時間で書き出せる。
+:::
+
+::: proof
+$n$ を固定し、$T\defeq t(n)$, $m\defeq T+2$ とする。記号 $C\cup\{\triangleright\}$ を固定の長さ $k$ のビット列で符号化する。
+
+**回路の構成.** 「升」$(i,j)$（$0\le i\le T$, $1\le j\le m$）ごとに $k$ 本の線（ゲートの出力）を用意し、表の第 $i$ 行の位置 $j$ の記号の符号を運ばせる。
+- 第 $0$ 行：開始時点表示 $q_{0}w_{1}\cdots w_{n}\sqcup\cdots\sqcup$。位置 $1$ は定数 $q_{0}$ の符号、位置 $j+1$（$1\le j\le n$）は $w_{j}\in\{0,1\}$ の符号で、各ビットは定数、$x_{j}$、$\neg x_{j}$ のいずれか（$0$ と $1$ の符号のそのビットの値で決まる）、位置 $n+2,\dots,m$ は空白の符号（定数）。
+- 第 $i+1$ 行の升 $(i+1,j)$：\ref{comp:deterministic-local-step} の $g$ は $4k$ ビットから $k$ ビットへの固定の関数なので、それを計算する固定の大きさ $G$ の回路（例 2）を、第 $i$ 行の升 $(i,j-1),\dots,(i,j+2)$ の線（位置 $0$ と $m+1,m+2$ は定数の符号）につなぐ。
+- 出力：第 $T$ 行の各位置で「記号が $q_{\mathrm{acc}}$ か」を判定する固定の回路（$k$ ビットの比較）を作り、$m$ 個の結果を OR でつなぐ。
+
+**大きさ.** 升は $(T+1)m=O(T^{2})$ 個で、各升は定数個のゲートを使う。よって大きさは $O(t(n)^{2})$。構成は升ごとに同じ部品を並べるだけなので、$t(n)$ の多項式時間で書き出せる（$t(n)$ が時間構成可能でなくても、$M$ を $1^{n}$ の上で動かして $T$ を得る代わりに、$t$ の値を計算できることを仮定する。以下の応用では $t$ は多項式）。
+
+**正しさ.** $i$ に関する帰納法で、第 $i$ 行の線は、$M$ を $w$ の上で $i$ 段動かした時点表示（それより前に停止していれば停止時点表示）の符号を運ぶ（\ref{comp:deterministic-local-step}。$T$ 段以内ではヘッドは位置 $T+1=m-1$ より右へ行かないので長さ $m$ で足りる）。$M$ は $T$ 段以内に停止するので、第 $T$ 行は停止時点表示で、受理状態を含むのは $M$ が $w$ を受理するときに限る。
+:::
+
+::: hypcheck
+- **決定性**：\ref{comp:deterministic-local-step} で次の行が前の行の関数として決まることに使った。非決定性の機械では選択を表す入力が別に要る（次の CIRCUIT-SAT では証明書がその役をする）。
+- **時間 $t(n)$**：表の大きさ $(T+1)\times m$ に使った。
+:::
+
+::: remark
+\ref{comp:time-to-size} から、$\mathrm{P}$ に属する言語は多項式の大きさの回路族をもつ。逆は成り立たない：大きさの小さい回路族は、入力の長さごとに任意の情報（「助言」）を埋め込めるので、決定不能な言語、たとえば $\{1^{n}:n\text{ を符号とする機械が空テープで停止する}\}$ も、各 $n$ で定数回路（$0$ または $1$）からなる回路族で決定される。多項式の大きさの回路族をもつ言語のクラスを $\mathrm{P}/\mathrm{poly}$ という。
+:::
+
+## CIRCUIT-SAT {#comp:sec-cir-sat}
+
+::: theorem CIRCUIT-SAT は NP 完全 {#comp:circuit-sat-complete keywords="circuit satisfiability is NP-complete" index="CIRCUIT-SAT|さーきっとさっと, 回路の充足可能性|かいろのじゅうそくかのうせい"}
+$\mathrm{CIRCUIT\text{-}SAT}\defeq\{\langle C\rangle:C\text{ はある入力 }x\text{ で }C(x)=1\text{ となる回路}\}$ は NP 完全である。
+:::
+
+::: proof
+**NP に属する.** 証明書は入力 $x$ で、回路の値をゲートの順に計算すれば多項式時間で確かめられる。
+
+**NP 困難.** $A\in\mathrm{NP}$ とし、多項式時間 $n^{k}$ の検証機 $V$ をとる（\ref{comp:class-np}）。$\lvert w\rvert=n$ の $w\in A$ には長さ $n^{k}$ 以下の証明書がある。証明書を長さちょうど $L\defeq n^{k}$ の $0,1$ 列 $c$ に、$\langle w,c\rangle$ を $w$ と $c$ のビットを固定の規則で並べた長さ $N$（$n$ だけで決まる）の $0,1$ 列にそろえる（$V$ をそれに合わせて作り直す。多項式時間のまま）。\ref{comp:time-to-size} で、$V$ の長さ $N$ の入力に対する回路 $C_{N}$ を作り、$w$ のビットに対応する入力を定数 $w_{j}$ に置き換えた回路を $C_{w}$（入力は $c$ の $L$ ビット）とする。$C_{w}$ は $w$ から多項式時間で書き出せ、$C_{w}$ が充足可能 $\iff$ ある $c$ で $V$ が $\langle w,c\rangle$ を受理 $\iff$ $w\in A$。よって $A\le_{\mathrm{P}}\mathrm{CIRCUIT\text{-}SAT}$。
+:::
+
+::: corollary クック–レヴィンの定理の別証明 {#comp:cook-levin-via-circuits keywords="3SAT is NP-complete via circuits" index="クック–レヴィンの定理（回路による）|くっくれゔぃんのていりかいろによる"}
+$\mathrm{CIRCUIT\text{-}SAT}\le_{\mathrm{P}}3\mathrm{SAT}$。したがって 3SAT は NP 完全である。
+:::
+
+::: proof
+回路 $C$ のゲート $g_{i}$ ごとに変数 $z_{i}$ を用意し、ツァイティン変換（\ref{comp:tseitin}）と同じく、$z_{i}$ がゲートの値に等しいことを表す長さ $3$ 以下の節（NOT は 2 節、AND・OR は 3 節）を作る（定数 $0,1$ の入力は、節を簡約するか、真の定数を表す変数 $u$ と節 $(u)$ を加えて表す）。さらに出力の節 $(z_{s})$ を加える。節の数は回路の大きさの定数倍で、充足する付値はゲートの値の割り当てと一対一に対応するので、$C$ が充足可能 $\iff$ この 3CNF が充足可能。長さが $3$ 未満の節は、同じリテラルを重ねて 3 リテラルにする。
+:::
+
+## 問題 {#comp:sec-cir-problems}
+
+::: problem {#comp:prob-cir-majority}
+$3$ 入力の多数決関数 $\mathrm{MAJ}(a,b,c)$（$1$ が 2 個以上なら $1$）を計算する、大きさ $4$ の回路を作れ。
+:::
+
+::: solution
+$\mathrm{MAJ}(a,b,c)=(a\wedge b)\vee(c\wedge(a\vee b))$。ゲートは $g_{1}=a\wedge b$, $g_{2}=a\vee b$, $g_{3}=c\wedge g_{2}$, $g_{4}=g_{1}\vee g_{3}$ の 4 個。正しさ：$a=b=1$ なら $g_{1}=1$。$a,b$ の一方だけが $1$ なら $g_{2}=1$ で、出力は $c$ に等しく、$1$ が 2 個以上であることと一致する。$a=b=0$ なら $g_{1}=g_{2}=0$ で出力 $0$。
+:::
+
+::: problem {#comp:prob-cir-depth}
+$n$ 入力のパリティは、深さ $O(\log n)$、大きさ $O(n)$ の回路で計算できることを示せ。
+:::
+
+::: solution
+$x_{1},\dots,x_{n}$ を二つずつ組にして $\oplus$（深さ 3、大きさ 5 の回路）で結合し、これを木状に $\lceil\log_{2}n\rceil$ 段繰り返す。各段で項の数はほぼ半分になり、$\oplus$ の部品は全部で $n-1$ 個なので大きさ $5(n-1)$、深さ $3\lceil\log_{2}n\rceil$。
+:::
+
+::: supplement
+**前提を変えると.** シャノンの下界は「ほとんどの関数」について指数的な下界を与えるが、NP に属する具体的な言語について超多項式の回路の下界を示すことは未解決である。$\mathrm{NP}\not\subseteq\mathrm{P}/\mathrm{poly}$ が示されれば $\mathrm{P}\neq\mathrm{NP}$ が従う（\ref{comp:time-to-size}）。制限された回路（深さ一定の $\mathrm{AC}^{0}$、単調回路）では、パリティが $\mathrm{AC}^{0}$ に入らないこと（ファースト–サックス–シプサー、アイタイ、ハスタード）や、クリークの単調回路計算量が指数的であること（ラズボロフ）が知られている（ここでは証明しない）。
+
+**似た定理.** カープ–リプトンの定理（$\mathrm{NP}\subseteq\mathrm{P}/\mathrm{poly}$ なら多項式階層が第 2 層で崩壊する）が知られている（ここでは証明しない。多項式階層は \ref[交代計算]{comp:page-alternation} で扱う）。回路の深さは並列計算の時間に対応し、深さ $O(\log^{k}n)$ の回路族のクラス $\mathrm{NC}$ は \ref[並列計算]{comp:page-parallel} で扱う。
+
+**高い視点から：回路は「展開されたプログラム」.** チューリング機械の計算を時間方向に展開すると、時点表示の列が並んだ表になり、各升は直前の行の近くの升だけで決まる。この依存関係をそのまま配線したものが \ref{comp:time-to-size} の回路で、比喩で言えば、ループのあるプログラムを入力の長さに合わせて「ループ展開」し、分岐のない一本道の計算にしたものである。一本道になった計算では、「ある入力で $1$ を出すか」という問いが論理式の充足可能性そのものになり、これがクック–レヴィンの定理の本質である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

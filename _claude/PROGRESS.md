@@ -303,6 +303,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 計算複雑性 CC-08（04-complexity/08-circuits, comp:page-circuits：ブール回路、任意の関数の回路、シャノンの下界（数え上げを具体的な不等式で）、決定性の機械の一段の局所関数、TIME(t)⊆SIZE(O(t²))、P/poly の注意、CIRCUIT-SAT の NP 完全性とクック–レヴィンの別証明）。Sipser 9.3。
 - 2026-10-08 モデル理論 MC-07（07-morley, model:page-morley：強極小集合の上で素かつ極小、ボールドウィン–ラクランの定理（素モデルの一意性を使わない形で）、モーリーの範疇性定理と同値条件、可算モデルの個数、ACF・DLO・T_E・(Z,s) の例）。新井 §5.6。非可算範疇性の系列 MC-01〜07 完了。識別不能列のページの「扱わない」をこの系列への参照に変更。03C と基礎論のモデル理論の説明を更新。
 - 2026-10-08 モデル理論 MC-06（06-dimension, model:page-dimension：交換法則（極小性だけで）、独立・基底の存在、シュタイニッツの交換、次元の一意性と非可算集合の次元、独立な組の型の一意性（強極小性の一様な上界がモデルをまたぐ比較に要ることを明示）、代数的閉包への初等写像の延長（全射まで））。新井 §5.6.3。
 - 2026-10-08 モデル理論 MC-05（05-strongly-minimal, model:page-strongly-minimal：代数的閉包とその性質（同書の演習を証明）、極小・強極小、強極小性の一様性、ω 安定なら極小な論理式がある、ヴォート対がなければ ∃^∞ の消去と極小⇒強極小、T_E の問題）。新井 §5.6.3。
@@ -456,6 +457,11 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | CC-05 | 05-complexity/05-logspace | L と NL、NL = coNL | 完了 |
 | CC-06 | 05-complexity/06-hierarchy | 階層定理と相対化 | 完了 |
 | CC-07 | 05-complexity/07-probabilistic-quantum | 確率的計算と量子計算（BPP, BQP） | 完了 |
+| CC-08 | 04-complexity/08-circuits | ブール回路と回路計算量、シャノンの下界、TIME(t)⊆SIZE(t²)、CIRCUIT-SAT（2026-10-08 追加。Sipser 9.3） | 完了 |
+| CC-09 | 04-complexity/09-alternation | 交代チューリング機械と多項式階層（Sipser 10.3） | 未 |
+| CC-10 | 04-complexity/10-interactive-proofs | 対話証明系、グラフ非同型、IP = PSPACE（Sipser 10.4） | 未 |
+| CC-11 | 04-complexity/11-parallel | 一様な回路族、NC、P 完全性（Sipser 10.5） | 未 |
+| CC-12 | 04-complexity/12-approximation-cryptography | 近似アルゴリズムと暗号（一方向関数・落とし戸関数）（Sipser 10.1, 10.6） | 未 |
 | KR-01 | 06-algorithmic-randomness/01-prefix-free-complexity | 接頭辞なし複雑性とクラフトの不等式 | 完了 |
 | KR-02 | 06-algorithmic-randomness/02-martin-lof | マルチン＝レーフのランダムネスとレヴィン–シュノアの定理 | 完了 |
 

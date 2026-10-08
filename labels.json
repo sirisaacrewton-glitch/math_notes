@@ -3599,6 +3599,13 @@
       "num": "6.8",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/06-hierarchy.html"
     },
+    "comp:boolean-circuit": {
+      "status": "defined",
+      "type": "definition",
+      "title": "ブール回路",
+      "num": "8.1",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/08-circuits.html"
+    },
     "comp:boundedness-sigma11-trees": {
       "status": "defined",
       "type": "corollary",
@@ -3710,6 +3717,13 @@
       "title": "チャーチ–チューリングの提唱",
       "num": "6.10",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/06-turing-machines.html"
+    },
+    "comp:circuit-sat-complete": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "CIRCUIT-SAT は NP 完全",
+      "num": "8.6",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/08-circuits.html"
     },
     "comp:class-bpp": {
       "status": "defined",
@@ -3837,6 +3851,13 @@
       "num": "2.9",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/02-np.html"
     },
+    "comp:cook-levin-via-circuits": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "クック–レヴィンの定理の別証明",
+      "num": "8.7",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/08-circuits.html"
+    },
     "comp:decidable-representable": {
       "status": "defined",
       "type": "corollary",
@@ -3878,6 +3899,13 @@
       "title": "導出の分解",
       "num": "6.9",
       "page": "03-mathematical-logic/03D-computability-theory/01-automata/06-fixed-points.html"
+    },
+    "comp:deterministic-local-step": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "決定性の機械の一段",
+      "num": "8.3",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/08-circuits.html"
     },
     "comp:dfa": {
       "status": "defined",
@@ -4635,6 +4663,13 @@
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/01-automata/05-cfl-pumping.html"
     },
+    "comp:page-circuits": {
+      "status": "defined",
+      "type": "page",
+      "title": "ブール回路と回路計算量",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/08-circuits.html"
+    },
     "comp:page-context-free": {
       "status": "defined",
       "type": "page",
@@ -5187,6 +5222,20 @@
       "title": "",
       "num": "4.11",
       "page": "03-mathematical-logic/03D-computability-theory/01-automata/04-context-free.html"
+    },
+    "comp:prob-cir-depth": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "8.9",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/08-circuits.html"
+    },
+    "comp:prob-cir-majority": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "8.8",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/08-circuits.html"
     },
     "comp:prob-complement-k-not-sigma": {
       "status": "defined",
@@ -6062,6 +6111,48 @@
       "title": "チャーチ–チューリングの提唱",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/06-turing-machines.html"
+    },
+    "comp:sec-cir-definition": {
+      "status": "defined",
+      "type": "section",
+      "title": "ブール回路",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/08-circuits.html"
+    },
+    "comp:sec-cir-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/08-circuits.html"
+    },
+    "comp:sec-cir-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/08-circuits.html"
+    },
+    "comp:sec-cir-sat": {
+      "status": "defined",
+      "type": "section",
+      "title": "CIRCUIT-SAT",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/08-circuits.html"
+    },
+    "comp:sec-cir-shannon": {
+      "status": "defined",
+      "type": "section",
+      "title": "シャノンの下界",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/08-circuits.html"
+    },
+    "comp:sec-cir-simulation": {
+      "status": "defined",
+      "type": "section",
+      "title": "チューリング機械の模倣",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/08-circuits.html"
     },
     "comp:sec-class-p": {
       "status": "defined",
@@ -7071,6 +7162,13 @@
       "num": "12.2",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/12-recursion-theorem.html"
     },
+    "comp:shannon-lower-bound": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "シャノンの下界",
+      "num": "8.2",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/08-circuits.html"
+    },
     "comp:sigma-normal-form": {
       "status": "defined",
       "type": "lemma",
@@ -7175,6 +7273,13 @@
       "title": "時間階層定理",
       "num": "6.4",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/06-hierarchy.html"
+    },
+    "comp:time-to-size": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "時間から回路の大きさへ",
+      "num": "8.4",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/08-circuits.html"
     },
     "comp:tm-computes-function": {
       "status": "defined",
@@ -32053,6 +32158,20 @@
       "title": "トポス",
       "referencedFrom": [
         "18-category-theory/18A-general-theory/01-basics/01-categories.html"
+      ]
+    },
+    "comp:page-alternation": {
+      "status": "planned",
+      "title": "交代計算",
+      "referencedFrom": [
+        "03-mathematical-logic/03D-computability-theory/04-complexity/08-circuits.html"
+      ]
+    },
+    "comp:page-parallel": {
+      "status": "planned",
+      "title": "並列計算",
+      "referencedFrom": [
+        "03-mathematical-logic/03D-computability-theory/04-complexity/08-circuits.html"
       ]
     },
     "fld:algebraic-closure-in-acf": {

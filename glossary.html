@@ -13,7 +13,7 @@
 <script type="text/markdown" id="source">
 # 用語索引 {#site:glossary keywords="index, 索引, glossary"}
 
-定義・定理に付けられた索引語の一覧です（3127 語）。各項目からその用語が現れる定義・定理へ移動できます。
+定義・定理に付けられた索引語の一覧です（3139 語）。各項目からその用語が現れる定義・定理へ移動できます。
 
 <p class="mn-gloss-jump"><a href="#gl-%E3%81%82%E8%A1%8C">あ行</a> <a href="#gl-%E3%81%8B%E8%A1%8C">か行</a> <a href="#gl-%E3%81%95%E8%A1%8C">さ行</a> <a href="#gl-%E3%81%9F%E8%A1%8C">た行</a> <a href="#gl-%E3%81%AA%E8%A1%8C">な行</a> <a href="#gl-%E3%81%AF%E8%A1%8C">は行</a> <a href="#gl-%E3%81%BE%E8%A1%8C">ま行</a> <a href="#gl-%E3%82%84%E8%A1%8C">や行</a> <a href="#gl-%E3%82%89%E8%A1%8C">ら行</a> <a href="#gl-%E3%82%8F%E8%A1%8C">わ行</a> <a href="#gl-A">A</a> <a href="#gl-C">C</a> <a href="#gl-F">F</a> <a href="#gl-G">G</a> <a href="#gl-H">H</a> <a href="#gl-I">I</a> <a href="#gl-L">L</a> <a href="#gl-M">M</a> <a href="#gl-N">N</a> <a href="#gl-O">O</a> <a href="#gl-P">P</a> <a href="#gl-R">R</a> <a href="#gl-T">T</a> <a href="#gl-V">V</a> <a href="#gl-%E8%AA%AD%E3%81%BF%E6%9C%AA%E7%99%BB%E9%8C%B2">読み未登録</a></p>
 
@@ -97,6 +97,7 @@
 - **一元集合**（いちげんしゅうごう）：\fullref{set:unordered-pair}
 - **1 射**（いちしゃ）：\fullref{cat:2-category}
 - **一対一**（いちたいいち）：\fullref{set:injection-surjection}
+- **一段の局所関数（決定性）**（いちだんのきょくしょかんすうけっていせい）：\fullref{comp:deterministic-local-step}
 - **1 の分割**（いちのぶんかつ）：\fullref{top:partition-of-unity}
 - **1 の分割の存在**（いちのぶんかつのそんざい）：\fullref{top:partition-of-unity-existence}
 - **一様化（数についての）**（いちようかかずについての）：\fullref{comp:pi11-number-uniformization}
@@ -307,6 +308,9 @@
 - **開被覆（二階算術）**（かいひふくにかいさんじゅつ）：\fullref{logic:open-cover-code}
 - **外部**（がいぶ）：\fullref{top:boundary}
 - **開連結集合の弧状連結性**（かいれんけつしゅうごうのこじょうれんけつせい）：\fullref{top:open-connected-path-connected}
+- **回路計算量**（かいろけいさんりょう）：\fullref{comp:boolean-circuit}
+- **回路の大きさ**（かいろのおおきさ）：\fullref{comp:boolean-circuit}
+- **回路の充足可能性**（かいろのじゅうそくかのうせい）：\fullref{comp:circuit-sat-complete}
 - **可逆計算**（かぎゃくけいさん）：\fullref{comp:bpp-in-bqp}
 - **核（圏の）**（かくけんの）：\fullref{ha:kernel-cokernel}
 - **拡大**（かくだい）：\fullref{logic:reduct-lemma}
@@ -589,6 +593,7 @@
 - **グジェゴルチクの公理**（ぐじぇごるちくのこうり）：\fullref{pt:grz}
 - **具体的な圏のモノ射**（ぐたいてきなけんのものしゃ）：\fullref{cat:monic-epic-examples}
 - **クック–レヴィンの定理**（くっくれゔぃんのていり）：\fullref{comp:cook-levin}
+- **クック–レヴィンの定理（回路による）**（くっくれゔぃんのていりかいろによる）：\fullref{comp:cook-levin-via-circuits}
 - **グッドスタインの定理**（ぐっどすたいんのていり）：\fullref{pt:goodstein-terminates}
 - **グッドスタイン列**（ぐっどすたいんれつ）：\fullref{pt:goodstein-sequence}
 - **クナスター–タルスキの定理**（くなすたーたるすきのていり）：\fullref{comp:knaster-tarski}
@@ -677,7 +682,7 @@
 - **ゲーデルの対順序**（げーでるのついじゅんじょ）：\fullref{set:godel-order}
 - **ゲーデルの不完全性定理**（げーでるのふかんぜんせいていり）：\fullref{pt:godel-first}
 - **ゲーデル文**（げーでるぶん）：\fullref{pt:godel-sentence}
-- **ゲート**：\fullref{comp:quantum-circuit}
+- **ゲート**（げーと）：\fullref{comp:quantum-circuit}、\fullref{comp:boolean-circuit}
 - **ケーニッヒの定理**（けーにっひのていり）：\fullref{set:konig}
 - **ケーニッヒの補題**（けーにっひのほだい）：\fullref{logic:binary-konig}、\fullref{set:konig-cofinality-power}、\fullref{set:konig-tree-lemma}、\fullref{logic:konig-lemma-def}
 - **ケーニッヒの補題と ACA₀**（けーにっひのほだいとえーしーえーぜろ）：\fullref{logic:konig-aca}
@@ -842,6 +847,7 @@
 
 ## さ行 {#gl-%E3%81%95%E8%A1%8C}
 
+- **CIRCUIT-SAT**（さーきっとさっと）：\fullref{comp:circuit-sat-complete}
 - **再帰子**（さいきし）：\fullref{logic:system-t}
 - **再帰定理**（さいきていり）：\fullref{comp:recursion-theorem}
 - **再帰定理（クリーネの）**（さいきていりくりーねの）：\fullref{comp:second-recursion-theorem}
@@ -921,6 +927,7 @@
 - **時間階層定理**（じかんかいそうていり）：\fullref{comp:time-hierarchy}
 - **時間計算量**（じかんけいさんりょう）：\fullref{comp:running-time}
 - **時間構成可能**（じかんこうせいかのう）：\fullref{comp:time-constructible}
+- **時間と回路の大きさ**（じかんとかいろのおおきさ）：\fullref{comp:time-to-size}
 - **識別不能列**（しきべつふのうれつ）：\fullref{model:indiscernible}
 - **識別不能列の存在**（しきべつふのうれつのそんざい）：\fullref{model:indiscernibles-exist}
 - **ジグザグ等式**（じぐざぐとうしき）：\fullref{cat:triangle-identities}
@@ -1004,6 +1011,7 @@
 - **写像還元**（しゃぞうかんげん）：\fullref{comp:mapping-reducible}
 - **弱化**（じゃっか）：\fullref{logic:derivability-basic}
 - **弱化の許容性**（じゃっかのきょようせい）：\fullref{pt:lk-weakening}
+- **シャノンの下界**（しゃのんのかかい）：\fullref{comp:shannon-lower-bound}
 - **ジャパリゼの体系**（じゃぱりぜのたいけい）：\fullref{pt:glb}
 - **ジャパリゼの定理**（じゃぱりぜのていり）：\fullref{pt:glb-completeness}
 - **ジャンプ**：\fullref{comp:jump}
@@ -1960,6 +1968,7 @@
 - **フィルター付き余極限**（ふぃるたーつきよきょくげん）：\fullref{cat:filtered-category}
 - **フィルターの収束**（ふぃるたーのしゅうそく）：\fullref{top:filter-convergence}
 - **フィルター付き**：\fullref{cat:filtered-category}
+- **ブール回路**（ぶーるかいろ）：\fullref{comp:boolean-circuit}
 - **ブール完備化**（ぶーるかんびか）：\fullref{set:boolean-completion}
 - **ブール代数**（ぶーるだいすう）：\fullref{set:boolean-algebra}
 - **ブール値モデル**（ぶーるちもでる）：\fullref{set:truth-value}
@@ -2599,6 +2608,7 @@
 - **可縮な型**：\fullref{logic:contractible}
 - **解析学**：\fullref{pt:analysis}
 - **解析的**：\fullref{comp:analytical-hierarchy}
+- **回路族**：\fullref{comp:boolean-circuit}
 - **開**：[無限組合せ §7 記法](03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/07-suslin-problem.html#env-1)
 - **開区間**：[無限組合せ §7 記法](03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/07-suslin-problem.html#env-1)
 - **開始時点表示**：\fullref{comp:tm-configuration}
@@ -2690,14 +2700,14 @@
 - **形式的証明と無矛盾性**：\fullref{set:formal-deduction}
 - **形成**：\fullref{logic:pi-type}
 - **経路**：\fullref{logic:erdos-rado-tree}
-- **計算する**：\fullref{comp:L-computable}、\fullref{comp:register-machine}、\fullref{comp:tm-computes-function}
+- **計算する**：\fullref{comp:L-computable}、\fullref{comp:register-machine}、\fullref{comp:tm-computes-function}、\fullref{comp:boolean-circuit}
 - **計算可能**：\fullref{comp:L-computable}、\fullref{comp:mapping-reducible}、\fullref{comp:computable-functional-relation}
 - **計算可能な関係**：\fullref{comp:computable-functional-relation}
 - **計算可能な部分関数**：\fullref{comp:L-computable}
 - **計算可能関数と写像還元**：\fullref{comp:mapping-reducible}
 - **計算可能順序数とチャーチ–クリーネ順序数**：\fullref{comp:computable-ordinal}
 - **計算体系**：\fullref{comp:turing-complete}
-- **決定する**：\fullref{comp:recognizable-decidable}
+- **決定する**：\fullref{comp:recognizable-decidable}、\fullref{comp:boolean-circuit}
 - **決定できない**：[不完全性 §8 記法](03-mathematical-logic/03F-proof-theory/02-incompleteness/08-diagonal-first-incompleteness.html#env-1)
 - **結び**：\fullref{set:boolean-algebra}
 - **結合**：[二階算術 §1 記法](03-mathematical-logic/03F-proof-theory/06-second-order-arithmetic/01-language-and-subsystems.html#env-1)
@@ -2827,6 +2837,7 @@
 - **縦の合成**：\fullref{cat:2-category}
 - **縮小的**：\fullref{comp:language-metric}
 - **縮約**：\fullref{set:complete-embedding}
+- **出力ゲート**：\fullref{comp:boolean-circuit}
 - **述語記号**：\fullref{pt:qml}
 - **準同型**：\fullref{cat:monoid-object}、\fullref{cat:t-algebra}、[コンパクト性 §9 記法](54-general-topology/54D-general-properties/01-separation-compactness/09-stone-duality.html#env-1)
 - **純粋な理論**：\fullref{logic:lambda-theory}
@@ -2852,7 +2863,7 @@
 - **常に証明可能・常に真**：\fullref{pt:always-provable}
 - **状態**：\fullref{comp:dfa}、[計算可能性 §1 記法](03-mathematical-logic/03D-computability-theory/02-computability/01-language-L.html#env-1)、\fullref{comp:quantum-circuit}
 - **振幅**：\fullref{comp:quantum-circuit}
-- **深さ**：\fullref{comp:tree-rank}、\fullref{pt:omega-language}
+- **深さ**：\fullref{comp:tree-rank}、\fullref{comp:boolean-circuit}、\fullref{pt:omega-language}
 - **真の始切片**：[一階論理 §1 記法](03-mathematical-logic/03B-general-logic/02-first-order-logic/01-syntax.html#env-1)
 - **真偽値・条件・対**：\fullref{logic:lambda-booleans}
 - **真理**：\fullref{logic:kripke-truth}
@@ -2950,7 +2961,8 @@
 - **代表的な体系**：\fullref{logic:modal-systems}
 - **台**：[無限組合せ §2 記法](03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/02-ccc-spaces.html#env-1)、\fullref{set:iteration-construction}、[コンパクト性 §8 記法](54-general-topology/54D-general-properties/01-separation-compactness/08-paracompactness.html#env-1)
 - **大きい**：\fullref{cat:small-category}
-- **大きさ**：[型理論 §2 記法](03-mathematical-logic/03F-proof-theory/09-type-theory/02-system-t.html#env-1)
+- **大きさ**：\fullref{comp:boolean-circuit}、[型理論 §2 記法](03-mathematical-logic/03F-proof-theory/09-type-theory/02-system-t.html#env-1)
+- **大きさ計算量**：\fullref{comp:boolean-circuit}
 - **第 1 の側**：\fullref{pt:split-sequent}
 - **第 2 の側**：\fullref{pt:split-sequent}
 - **第一可算**：\fullref{top:second-countable}

@@ -4523,12 +4523,26 @@
       "num": "1.10",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/01-time-complexity.html"
     },
+    "comp:chaitin-k": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "チャイティンの不完全性定理",
+      "num": "5.2",
+      "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/05-chaitin-incompleteness.html"
+    },
     "comp:chaitin-omega": {
       "status": "defined",
       "type": "definition",
       "title": "停止確率",
       "num": "3.7",
       "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/03-martin-lof.html"
+    },
+    "comp:chaitin-omega-bits": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "Ω の桁は有限個しか決定できない",
+      "num": "5.3",
+      "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/05-chaitin-incompleteness.html"
     },
     "comp:chomsky-normal-form": {
       "status": "defined",
@@ -5874,6 +5888,13 @@
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/01-automata/05-cfl-pumping.html"
     },
+    "comp:page-chaitin-incompleteness": {
+      "status": "defined",
+      "type": "page",
+      "title": "チャイティンの不完全性定理",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/05-chaitin-incompleteness.html"
+    },
     "comp:page-circuits": {
       "status": "defined",
       "type": "page",
@@ -6657,6 +6678,20 @@
       "title": "",
       "num": "16.6",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/16-bpp-ph.html"
+    },
+    "comp:prob-ch-finite-omega": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "5.5",
+      "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/05-chaitin-incompleteness.html"
+    },
+    "comp:prob-ch-uncomputable": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "5.4",
+      "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/05-chaitin-incompleteness.html"
     },
     "comp:prob-cir-depth": {
       "status": "defined",
@@ -7903,6 +7938,34 @@
       "title": "問題",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/01-automata/05-cfl-pumping.html"
+    },
+    "comp:sec-ch-k": {
+      "status": "defined",
+      "type": "section",
+      "title": "複雑さの下界は少ししか証明できない",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/05-chaitin-incompleteness.html"
+    },
+    "comp:sec-ch-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/05-chaitin-incompleteness.html"
+    },
+    "comp:sec-ch-omega": {
+      "status": "defined",
+      "type": "section",
+      "title": "Ω の桁",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/05-chaitin-incompleteness.html"
+    },
+    "comp:sec-ch-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/05-chaitin-incompleteness.html"
     },
     "comp:sec-church-turing": {
       "status": "defined",

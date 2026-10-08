@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>対称モノイダル圏のコヒーレンス | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/02-structured-categories/07-symmetric-coherence.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 対称モノイダル圏のコヒーレンス {#cat:page-symmetric-coherence keywords="braided monoidal category, braiding, hexagon axioms, symmetric monoidal category, braided monoidal functor, Yang-Baxter equation, Coxeter presentation of the symmetric group, coherence for symmetric monoidal categories, super vector spaces, Koszul sign rule"}
+
+モノイダル圏に「積の入れ替え」$\gamma_{a,b}\colon a\square b\to b\square a$ を加えたものが**組紐モノイダル圏**（\ref{cat:braided-monoidal}）で、入れ替えを 2 回行うと元に戻る（$\gamma_{b,a}\gamma_{a,b}=1$）ものが**対称モノイダル圏**（\ref{cat:symmetric-monoidal}）である。本ページの主定理は、対称モノイダル圏の**コヒーレンス定理**（\ref{cat:symmetric-coherence-general}）：$\alpha,\lambda,\varrho,\gamma$ から組み立てた二つの射は、文字の並べ替えとして同じなら等しい。証明は、厳密化（\ref{cat:strictification}）で結合と単位を等式にし（\ref{cat:braiding-strictification}）、隣り合う文字の入れ替えだけに帰着させ、最後に対称群の**生成元と関係**（\ref{cat:coxeter-presentation}）を使う。副産物として、組紐の単位の公理が六角形の等式から従うこと（\ref{cat:braided-unit-redundant}）も得る。
+
+> 資料：Mac Lane, *Categories for the Working Mathematician* 第 XI 章 §1。Mac Lane は (i) 対称群の表示を「知られている」として引用し、(ii)「$\alpha$ が恒等射と仮定してよい」とし、(iii) 単位を含む場合を読者に委ねている。本ページでは (i) を剰余類の数え上げで証明し（\ref{cat:coxeter-presentation}）、(ii) を前ページの厳密化への組紐の移送（\ref{cat:braiding-strictification}）と共役の計算（\ref{cat:basic-arrows-to-moves}）で正当化し、(iii) も同じ議論に含めた。
+
+## 記法と定義の確認 {#cat:sec-sc-notation}
+
+::: notation
+- モノイダル圏、結合子 $\alpha$、単位子 $\lambda,\varrho$、二項語と基本射、多変数のコヒーレンスと標準射 $\mathrm{can}$ は \ref{cat:monoidal-category}, \ref{cat:binary-words}, \ref{cat:multivariable-coherence} のとおり。対称モノイダル圏の定義（$\gamma_{b,a}\gamma_{a,b}=1$、単位の公理、六角形の等式）は \ref{cat:symmetric-monoidal}。
+- モノイダル関手、強モノイダル関手は \ref{cat:monoidal-functor}。厳密化定理の圏 $\mathbf{S}$（対象は $\mathbf{M}$ の対象の列、$\mathbf{S}(s,t)=\mathbf{M}(F(s),F(t))$、積 $f\cdot g=\varphi\circ(f\square g)\circ\varphi^{-1}$）と標準射 $\varphi_{s,t}\colon F(s)\square F(t)\to F(s\cdot t)$ は \ref{cat:strictification} の証明のとおり。
+- 対称群 $\mathfrak{S}_{n}$ は $\{1,\dots,n\}$ の全単射のなす群で、積は写像の合成 $(\sigma\tau)(i)=\sigma(\tau(i))$。隣接互換 $(i\ i{+}1)$ を $t_{i}$ と書く（$1\le i\le n-1$）。
+:::
+
+## 組紐モノイダル圏 {#cat:sec-sc-braided}
+
+::: definition 組紐モノイダル圏 {#cat:braided-monoidal keywords="braided monoidal category, braiding, hexagon axioms" index="組紐モノイダル圏|くみひもものいだるけん, 組紐（モノイダル圏の）|くみひもものいだるけんの, 六角形の等式|ろっかっけいのとうしき"}
+モノイダル圏 $\mathbf{M}$ の**組紐**とは、$a,b$ について自然な同型 $\gamma_{a,b}\colon a\square b\to b\square a$ で、二つの**六角形の等式**
+$$
+\begin{aligned}
+&\text{(H1)}\quad\alpha_{c,a,b}\circ\gamma_{a\square b,c}\circ\alpha_{a,b,c}=(\gamma_{a,c}\square1_{b})\circ\alpha_{a,c,b}\circ(1_{a}\square\gamma_{b,c}),\\
+&\text{(H2)}\quad\alpha_{b,c,a}^{-1}\circ\gamma_{a,b\square c}\circ\alpha_{a,b,c}^{-1}=(1_{b}\square\gamma_{a,c})\circ\alpha_{b,a,c}^{-1}\circ(\gamma_{a,b}\square1_{c})
+\end{aligned}
+$$
+を満たすものである（(H1) の両辺は $a\square(b\square c)\to(c\square a)\square b$、(H2) の両辺は $(a\square b)\square c\to b\square(c\square a)$）。組紐をもつモノイダル圏を**組紐モノイダル圏**という。厳密モノイダル圏では、二つの等式は
+$$
+\gamma_{a\square b,c}=(\gamma_{a,c}\square1_{b})\circ(1_{a}\square\gamma_{b,c}),\qquad\gamma_{a,b\square c}=(1_{b}\square\gamma_{a,c})\circ(\gamma_{a,b}\square1_{c})
+$$
+となる。(H1) は「積 $a\square b$ を $c$ の向こうへ一度に動かすことは、$b$, $a$ の順に一つずつ動かすことと同じ」、(H2) は「$a$ を積 $b\square c$ の向こうへ動かすことは、$b$, $c$ の順に一つずつ越えることと同じ」と読める。
+:::
+
+::: remark
+Mac Lane は組紐の定義に単位の公理 $\lambda_{a}\circ\gamma_{a,e}=\varrho_{a}$ も含めているが、これは (H1), (H2) から従う（\ref{cat:braided-unit-redundant}）。対称モノイダル圏の定義 \ref{cat:symmetric-monoidal} は (H1) だけを課しているが、$\gamma_{b,a}\gamma_{a,b}=1$ のもとで (H2) は (H1) から従う（\ref{cat:symmetric-one-hexagon}）。したがって、対称モノイダル圏はちょうど $\gamma_{b,a}\circ\gamma_{a,b}=1$ を満たす組紐モノイダル圏である。
+:::
+
+::: proposition 対称なら六角形は一つでよい {#cat:symmetric-one-hexagon keywords="one hexagon suffices in the symmetric case, inverse braiding" index="逆組紐|ぎゃくくみひも"}
+1. 組紐 $\gamma$ について、$\bar{\gamma}_{a,b}\defeq\gamma_{b,a}^{-1}\colon a\square b\to b\square a$ も組紐である。
+2. 自然同型 $\gamma$ が $\gamma_{b,a}\circ\gamma_{a,b}=1$ と (H1) を満たせば、(H2) も満たす。
+:::
+
+::: proof
+**2.** (H1) を文字 $(b,c,a)$ について書くと
+$$
+\alpha_{a,b,c}\circ\gamma_{b\square c,a}\circ\alpha_{b,c,a}=(\gamma_{b,a}\square1_{c})\circ\alpha_{b,a,c}\circ(1_{b}\square\gamma_{c,a}).
+$$
+両辺の逆をとると $\alpha_{b,c,a}^{-1}\circ\gamma_{b\square c,a}^{-1}\circ\alpha_{a,b,c}^{-1}=(1_{b}\square\gamma_{c,a}^{-1})\circ\alpha_{b,a,c}^{-1}\circ(\gamma_{b,a}^{-1}\square1_{c})$。仮定 $\gamma_{y,x}^{-1}=\gamma_{x,y}$ を代入すると (H2) になる。
+
+**1.** 上の計算は、$\gamma_{y,x}^{-1}$ を $\bar{\gamma}_{x,y}$ と読み替えると「$\gamma$ の (H1) $\iff$ $\bar{\gamma}$ の (H2)」を示している。同様に (H2) を文字 $(c,a,b)$ について書いて逆をとると「$\gamma$ の (H2) $\iff$ $\bar{\gamma}$ の (H1)」。自然性は逆をとっても保たれる。
+:::
+
+::: example
+1. 有限の積・余積によるモノイダル圏、$(\mathbf{Ab},\otimes)$ は対称（\ref{cat:symmetric-monoidal} の例）。
+2. **符号つきの対称.** $\mathbb{Z}/2$ 次数つきアーベル群（組 $A=(A_{0},A_{1})$、射は次数を保つ準同型の組）の圏で、$(A\otimes B)_{k}\defeq\bigoplus_{i+j\equiv k}A_{i}\otimes B_{j}$, 単位 $(\mathbb{Z},0)$ とすると、モノイダル圏になる。斉次元 $a\in A_{|a|}$, $b\in B_{|b|}$ について
+$$
+\gamma_{A,B}(a\otimes b)\defeq(-1)^{|a||b|}\,b\otimes a
+$$
+とすると対称である：$\gamma\gamma=1$ は $(-1)^{2|a||b|}=1$、(H1) は斉次元 $a\otimes(b\otimes c)$ の上で両辺の符号が $(-1)^{(|a|+|b|)|c|}$ と $(-1)^{|b||c|}(-1)^{|a||c|}$ で一致することから。これは「奇数次の元どうしを入れ替えると符号が変わる」コシュルの符号規則で、超ベクトル空間や微分次数つき代数の基礎になる。同じモノイダル圏に、符号なしの $\gamma(a\otimes b)=b\otimes a$ という別の対称もある。
+3. 組紐であって対称でない例は、次ページの組紐圏（\ref[組紐群と組紐圏]{cat:page-braids}）である。
+:::
+
+::: definition 組紐モノイダル関手 {#cat:braided-monoidal-functor keywords="braided monoidal functor, symmetric monoidal functor" index="組紐モノイダル関手|くみひもものいだるかんしゅ, 対称モノイダル関手|たいしょうものいだるかんしゅ"}
+組紐モノイダル圏の間のモノイダル関手 $(F,F_{2},F_{0})$ が
+$$
+F(\gamma_{a,b})\circ F_{2}(a,b)=F_{2}(b,a)\circ\gamma'_{Fa,Fb}\colon Fa\square Fb\to F(b\square a)
+$$
+を満たすとき**組紐モノイダル関手**という。両方が対称モノイダル圏のときは**対称モノイダル関手**ともいう。
+:::
+
+::: example
+$\mathbb{Z}/2$ 次数つきアーベル群から $\mathbf{Ab}$ への関手 $A\mapsto A_{0}\oplus A_{1}$ は（$F_{2}$ を標準同型として）強モノイダル関手だが、符号つきの対称と $\mathbf{Ab}$ の対称の間で組紐モノイダル関手ではない：$A=B=(0,\mathbb{Z})$ で $a=b=1$ とすると、左辺は $1\otimes1\mapsto-1\otimes1$、右辺は $1\otimes1\mapsto1\otimes1$。
+:::
+
+厳密な場合には、六角形の等式と自然性から、組紐の基本的な関係式（ヤン–バクスター方程式）が出る。
+
+::: lemma ヤン–バクスター方程式 {#cat:yang-baxter keywords="Yang-Baxter equation, braid relation" index="ヤン–バクスター方程式|やんばくすたーほうていしき"}
+厳密モノイダル圏 $\mathbf{S}$ の自然同型 $\gamma$ が (H1) を満たせば、すべての $a,b,c$ について
+$$
+(\gamma_{b,c}\square1_{a})\circ(1_{b}\square\gamma_{a,c})\circ(\gamma_{a,b}\square1_{c})=(1_{c}\square\gamma_{a,b})\circ(\gamma_{a,c}\square1_{b})\circ(1_{a}\square\gamma_{b,c})
+$$
+（両辺は $abc\to cba$）。
+:::
+
+::: proof
+右辺の後ろ二つは (H1) により $\gamma_{a\square b,c}$。$\gamma$ の第 1 変数についての自然性を射 $\gamma_{a,b}\colon a\square b\to b\square a$ に使うと $(1_{c}\square\gamma_{a,b})\circ\gamma_{a\square b,c}=\gamma_{b\square a,c}\circ(\gamma_{a,b}\square1_{c})$。最後に (H1) を文字 $(b,a,c)$ で使うと $\gamma_{b\square a,c}=(\gamma_{b,c}\square1_{a})\circ(1_{b}\square\gamma_{a,c})$ で、左辺が得られる。
+:::
+
+## 厳密化への組紐の移送 {#cat:sec-sc-transport}
+
+::: proposition 組紐の厳密化 {#cat:braiding-strictification keywords="strictification of braided monoidal categories" index="組紐の厳密化|くみひものげんみつか"}
+$\mathbf{M}$ を組紐モノイダル圏、$\mathbf{S}$, $F$ を厳密化定理（\ref{cat:strictification}）のものとする。$\mathbf{S}$ の射 $s\cdot t\to t\cdot s$ を
+$$
+\gamma^{\mathbf{S}}_{s,t}\defeq\varphi_{t,s}\circ\gamma_{Fs,Ft}\circ\varphi_{s,t}^{-1}\colon F(s\cdot t)\to F(t\cdot s)
+$$
+で定めると、$\gamma^{\mathbf{S}}$ は厳密モノイダル圏 $\mathbf{S}$ の組紐で、$F$ は組紐モノイダル関手である。$\mathbf{M}$ が対称なら $\mathbf{S}$ も対称である。
+:::
+
+::: proof
+**自然性.** $f\colon s\to s'$, $g\colon t\to t'$ について、$f\cdot g=\varphi\circ(f\square g)\circ\varphi^{-1}$ と $\gamma$ の自然性から
+$$
+\begin{aligned}
+\gamma^{\mathbf{S}}_{s',t'}\circ(f\cdot g)&=\varphi_{t',s'}\circ\gamma\circ(f\square g)\circ\varphi_{s,t}^{-1}\\
+&=\varphi_{t',s'}\circ(g\square f)\circ\gamma\circ\varphi_{s,t}^{-1}=(g\cdot f)\circ\gamma^{\mathbf{S}}_{s,t}.
+\end{aligned}
+$$
+
+**(H1).** $a=Fs$, $b=Ft$, $c=Fu$ とおく。$\gamma$ の自然性を同型 $\varphi_{s,t}\colon a\square b\to F(s\cdot t)$ に使うと $\gamma_{F(st),c}=(1\square\varphi_{s,t})\circ\gamma_{a\square b,c}\circ(\varphi_{s,t}^{-1}\square1)$ なので
+$$
+\begin{gathered}
+\gamma^{\mathbf{S}}_{s\cdot t,u}=K_{1}\circ\gamma_{a\square b,c}\circ K_{2},\\
+ K_{1}\defeq\varphi_{u,st}\circ(1\square\varphi_{s,t}),\quad K_{2}\defeq(\varphi_{s,t}^{-1}\square1)\circ\varphi_{st,u}^{-1}.
+\end{gathered}
+$$
+一方、積の定義から
+$$
+\begin{aligned}
+1_{s}\cdot\gamma^{\mathbf{S}}_{t,u}&=\varphi_{s,ut}\circ(1\square\varphi_{u,t})\circ(1\square\gamma_{b,c})\circ(1\square\varphi_{t,u}^{-1})\circ\varphi_{s,tu}^{-1},\\
+\gamma^{\mathbf{S}}_{s,u}\cdot1_{t}&=\varphi_{us,t}\circ(\varphi_{u,s}\square1)\circ(\gamma_{a,c}\square1)\circ(\varphi_{s,u}^{-1}\square1)\circ\varphi_{su,t}^{-1}.
+\end{aligned}
+$$
+合成 $(\gamma^{\mathbf{S}}_{s,u}\cdot1_{t})\circ(1_{s}\cdot\gamma^{\mathbf{S}}_{t,u})$ の中央に現れる $(\varphi_{s,u}^{-1}\square1)\circ\varphi_{su,t}^{-1}\circ\varphi_{s,ut}\circ(1\square\varphi_{u,t})\colon a\square(c\square b)\to(a\square c)\square b$ は標準射なので $\alpha_{a,c,b}$ に等しい（\ref{cat:multivariable-coherence}）。よって
+$$
+(\gamma^{\mathbf{S}}_{s,u}\cdot1_{t})\circ(1_{s}\cdot\gamma^{\mathbf{S}}_{t,u})=K_{3}\circ(\gamma_{a,c}\square1)\circ\alpha_{a,c,b}\circ(1\square\gamma_{b,c})\circ K_{4}
+$$
+（$K_{3}\defeq\varphi_{us,t}\circ(\varphi_{u,s}\square1)$, $K_{4}\defeq(1\square\varphi_{t,u}^{-1})\circ\varphi_{s,tu}^{-1}$）。$\mathbf{M}$ の (H1) で中央を $\alpha_{c,a,b}\circ\gamma_{a\square b,c}\circ\alpha_{a,b,c}$ に置き換えると、$K_{3}\circ\alpha_{c,a,b}$ と $K_{1}$ は語 $c\square(a\square b)$ から $F(u\cdot s\cdot t)$ への標準射、$\alpha_{a,b,c}\circ K_{4}$ と $K_{2}$ は $F(s\cdot t\cdot u)$ から $(a\square b)\square c$ への標準射なので、それぞれ等しい。よって $\gamma^{\mathbf{S}}_{s\cdot t,u}=(\gamma^{\mathbf{S}}_{s,u}\cdot1_{t})\circ(1_{s}\cdot\gamma^{\mathbf{S}}_{t,u})$。
+
+**(H2).** 同様に、$\gamma$ の第 2 変数についての自然性を $\varphi_{t,u}$ に使うと
+$$
+\begin{gathered}
+\gamma^{\mathbf{S}}_{s,t\cdot u}=K'_{1}\circ\gamma_{a,b\square c}\circ K'_{2},\\
+ K'_{1}\defeq\varphi_{tu,s}\circ(\varphi_{t,u}\square1),\quad K'_{2}\defeq(1\square\varphi_{t,u}^{-1})\circ\varphi_{s,tu}^{-1}.
+\end{gathered}
+$$
+積の定義を展開すると、$(1_{t}\cdot\gamma^{\mathbf{S}}_{s,u})\circ(\gamma^{\mathbf{S}}_{s,t}\cdot1_{u})$ の中央に標準射 $(1\square\varphi_{s,u}^{-1})\circ\varphi_{t,su}^{-1}\circ\varphi_{ts,u}\circ(\varphi_{t,s}\square1)\colon(b\square a)\square c\to b\square(a\square c)$、すなわち $\alpha_{b,a,c}^{-1}$ が現れ、
+$$
+(1_{t}\cdot\gamma^{\mathbf{S}}_{s,u})\circ(\gamma^{\mathbf{S}}_{s,t}\cdot1_{u})=K'_{3}\circ(1\square\gamma_{a,c})\circ\alpha_{b,a,c}^{-1}\circ(\gamma_{a,b}\square1)\circ K'_{4}
+$$
+（$K'_{3}\defeq\varphi_{t,us}\circ(1\square\varphi_{u,s})$, $K'_{4}\defeq(\varphi_{s,t}^{-1}\square1)\circ\varphi_{st,u}^{-1}$）。$\mathbf{M}$ の (H2) で中央を $\alpha_{b,c,a}^{-1}\circ\gamma_{a,b\square c}\circ\alpha_{a,b,c}^{-1}$ に置き換えると、$K'_{3}\circ\alpha_{b,c,a}^{-1}=K'_{1}$, $\alpha_{a,b,c}^{-1}\circ K'_{4}=K'_{2}$（同じ語の間の標準射）なので、$\gamma^{\mathbf{S}}_{s,t\cdot u}=(1_{t}\cdot\gamma^{\mathbf{S}}_{s,u})\circ(\gamma^{\mathbf{S}}_{s,t}\cdot1_{u})$。
+
+**組紐モノイダル関手.** $F(\gamma^{\mathbf{S}}_{s,t})\circ F_{2}(s,t)=\gamma^{\mathbf{S}}_{s,t}\circ\varphi_{s,t}=\varphi_{t,s}\circ\gamma_{Fs,Ft}=F_{2}(t,s)\circ\gamma_{Fs,Ft}$ は定義そのもの。
+
+**対称性.** $\gamma^{\mathbf{S}}_{t,s}\circ\gamma^{\mathbf{S}}_{s,t}=\varphi_{s,t}\circ\gamma_{Ft,Fs}\circ\gamma_{Fs,Ft}\circ\varphi_{s,t}^{-1}=1$。
+:::
+
+::: hypcheck
+- **多変数のコヒーレンス**：(H1)・(H2) の移送で、両端と中央の標準射を $\alpha$ や $K_{i}$ と同一視するのに使った。
+- **$\gamma$ の自然性**：$\gamma^{\mathbf{S}}$ の自然性と、$\gamma_{F(st),c}$ を $\gamma_{a\square b,c}$ に書き直すのに使った。
+- **単位の公理**：使っていない。次の系はこれを使わずに単位の公理を導く。
+:::
+
+::: corollary 組紐の単位の公理 {#cat:braided-unit-redundant keywords="unit axiom for braidings follows from hexagons, Joyal-Street" index="組紐の単位の公理|くみひものたんいのこうり"}
+組紐モノイダル圏（(H1), (H2) を満たす自然同型 $\gamma$）では、すべての $a$ について
+$$
+\varrho_{a}\circ\gamma_{e,a}=\lambda_{a},\qquad\lambda_{a}\circ\gamma_{a,e}=\varrho_{a}.
+$$
+:::
+
+::: proof
+$\mathbf{S}$ の (H1) を $s=t=\varnothing$ に使うと、$\varnothing\cdot\varnothing=\varnothing$ と $f\cdot1_{\varnothing}=f=1_{\varnothing}\cdot f$ から $\gamma^{\mathbf{S}}_{\varnothing,u}=\gamma^{\mathbf{S}}_{\varnothing,u}\circ\gamma^{\mathbf{S}}_{\varnothing,u}$。$\gamma^{\mathbf{S}}_{\varnothing,u}$ は同型なので恒等射。同様に (H2) を $t=u=\varnothing$ に使うと $\gamma^{\mathbf{S}}_{s,\varnothing}=1$。$u=s=[a]$ とすると、$\varphi_{\varnothing,[a]}=\lambda_{a}$, $\varphi_{[a],\varnothing}=\varrho_{a}$ なので
+$$
+1=\gamma^{\mathbf{S}}_{\varnothing,[a]}=\varrho_{a}\circ\gamma_{e,a}\circ\lambda_{a}^{-1},\qquad1=\gamma^{\mathbf{S}}_{[a],\varnothing}=\lambda_{a}\circ\gamma_{a,e}\circ\varrho_{a}^{-1}.
+$$
+:::
+
+## 対称群の生成元と関係 {#cat:sec-sc-coxeter}
+
+::: theorem 対称群の生成元と関係 {#cat:coxeter-presentation keywords="Coxeter presentation of the symmetric group, adjacent transpositions, generators and relations" index="対称群の生成元と関係|たいしょうぐんのせいせいげんとかんけい, 隣接互換|りんせつごかん"}
+記号 $s_{1},\dots,s_{n-1}$ の有限列（**語**）全体に、部分語を次の左辺から右辺へ、または右辺から左辺へ置き換える操作で生成される同値関係 $\sim$ を考える。
+$$
+s_{i}s_{i}\leftrightarrow(\text{空語}),\qquad s_{i}s_{i+1}s_{i}\leftrightarrow s_{i+1}s_{i}s_{i+1},\qquad s_{i}s_{j}\leftrightarrow s_{j}s_{i}\ (|i-j|\ge2).
+$$
+語 $\omega=s_{i_{1}}\cdots s_{i_{k}}$ に置換 $\pi(\omega)\defeq t_{i_{1}}\cdots t_{i_{k}}\in\mathfrak{S}_{n}$ を対応させると、二つの語 $\omega,\omega'$ について $\omega\sim\omega'\iff\pi(\omega)=\pi(\omega')$。
+:::
+
+::: proof
+**Step 1（群 $G_{n}$）.** 語の連結は $\sim$ と両立する（部分語の置き換えは前後に語をつけても部分語の置き換え）ので、同値類の集合 $G_{n}$ は連結を積、空語を単位とするモノイドである。$s_{i}s_{i}\sim(\text{空語})$ なので各 $s_{i}$ は逆元 $s_{i}$ をもち、生成元が可逆なモノイドの元はすべて可逆なので、$G_{n}$ は群である。
+
+**Step 2（$\pi$ は全射準同型）.** 隣接互換は三つの関係を満たす：$t_{i}^{2}=1$；$|i-j|\ge2$ なら $t_{i},t_{j}$ は動かす文字が交わらないので可換；$t_{i}t_{i+1}t_{i}$ と $t_{i+1}t_{i}t_{i+1}$ はともに $i\leftrightarrow i+2$ を入れ替え $i+1$ を固定する（直接計算）。よって $\pi$ は $\sim$ と両立し、準同型 $\pi\colon G_{n}\to\mathfrak{S}_{n}$ を与える。全射性は $n$ に関する帰納法：$\sigma\in\mathfrak{S}_{n}$ で $m\defeq\sigma(n)<n$ なら、$\rho\defeq t_{n-1}\cdots t_{m+1}t_{m}$ は $m\mapsto n$ なので $\rho\sigma$ は $n$ を固定し、帰納法の仮定で $t_{1},\dots,t_{n-2}$ の積。$\sigma=\rho^{-1}(\rho\sigma)$ で $\rho^{-1}=t_{m}t_{m+1}\cdots t_{n-1}$。
+
+**Step 3（$|G_{n}|\le n!$）.** $n$ に関する帰納法。$n=1$ なら $G_{1}$ は空語だけ。$n\ge2$ とし、$H\subseteq G_{n}$ を $s_{1},\dots,s_{n-2}$ の語の類全体とする（部分群）。$G_{n-1}$ の関係は $G_{n}$ の関係でもあるので、$G_{n-1}\to H$ は well-defined な全射で、帰納法の仮定から $|H|\le(n-1)!$。
+
+$w_{k}\defeq s_{n-1}s_{n-2}\cdots s_{k}$（$1\le k\le n-1$）、$w_{n}\defeq$ 空語とし、右剰余類の集合 $X\defeq\{Hw_{1},\dots,Hw_{n}\}$ が右からの $s_{i}$ の積で閉じることを示す。$1\le i\le n-1$, $1\le k\le n$ について：
+- $i=k$：$w_{k}s_{k}=s_{n-1}\cdots s_{k+1}s_{k}s_{k}\sim w_{k+1}$。
+- $i=k-1$：$w_{k}s_{k-1}=w_{k-1}$。
+- $i\le k-2$：$s_{i}$ は $s_{k},\dots,s_{n-1}$ のどれとも添字が 2 以上離れているので $w_{k}s_{i}\sim s_{i}w_{k}$ で、$s_{i}\in H$ だから $Hw_{k}s_{i}=Hw_{k}$。
+- $i\ge k+1$：$s_{i}$ を右から左へ動かす。$s_{i}$ は $s_{i-2},\dots,s_{k}$ と可換なので
+$$
+\begin{aligned}
+w_{k}s_{i}&\sim s_{n-1}\cdots s_{i+1}\,(s_{i}s_{i-1}s_{i})\,s_{i-2}\cdots s_{k}\\
+&\sim s_{n-1}\cdots s_{i+1}\,(s_{i-1}s_{i}s_{i-1})\,s_{i-2}\cdots s_{k},
+\end{aligned}
+$$
+さらに $s_{i-1}$ は $s_{n-1},\dots,s_{i+1}$ と可換なので、これは $s_{i-1}w_{k}$ に同値。$s_{i-1}\in H$（$i-1\le n-2$）なので $Hw_{k}s_{i}=Hw_{k}$。
+
+$H=Hw_{n}\in X$ で、任意の $g=s_{i_{1}}\cdots s_{i_{m}}$ について $Hg=(\cdots(Hs_{i_{1}})\cdots)s_{i_{m}}\in X$。よって $G_{n}$ は高々 $n$ 個の右剰余類の和集合で、各剰余類の元の数は $|H|$ なので $|G_{n}|\le n\cdot(n-1)!=n!$。
+
+**Step 4.** $\pi\colon G_{n}\to\mathfrak{S}_{n}$ は全射で $|G_{n}|\le n!=|\mathfrak{S}_{n}|$ なので全単射。$\pi(\omega)=\pi(\omega')$ なら $\omega,\omega'$ の類は等しい、すなわち $\omega\sim\omega'$。逆は Step 2。
+:::
+
+::: hypcheck
+- **$G_{n}$ が群であること**（Step 1）：剰余類の議論（Step 3）に使った。関係 $s_{i}s_{i}\sim1$ がここで効く。
+- **三つの関係**：Step 3 の各場合で、$s_{i}^{2}=1$（$i=k$）、可換性（$i\le k-2$ と $i\ge k+1$）、組紐関係（$i\ge k+1$）を使った。どれか一つでも欠けると $|G_{n}|$ は有限とは限らない（組紐関係と可換性だけなら次ページの組紐群になり、無限群）。
+- **有限性**：$|H|$ が有限であることは帰納法から。全単射の結論は有限集合の数え上げによる。
+:::
+
+## 対称モノイダル圏のコヒーレンス {#cat:sec-sc-coherence}
+
+まず厳密な場合を示す。厳密な対称モノイダル圏 $\mathbf{S}$ の対象 $a_{1},\dots,a_{n}$ と、$1,\dots,n$ の並べ替え $p=(p_{1},\dots,p_{n})$ について $a_{p}\defeq a_{p_{1}}\cdots a_{p_{n}}$（積の記号を省略）とする。
+
+::: definition 移動 {#cat:symmetric-moves keywords="block moves, elementary moves" index="移動（対称モノイダル圏の）|いどう"}
+並べ替え $p$ を連続する四つの区間 $x,s,t,y$（空でもよい）に分け、$p$ の $s$ と $t$ を入れ替えた並べ替えを $p'$ とする。射
+$$
+1_{a_{x}}\cdot\gamma_{a_{s},a_{t}}\cdot1_{a_{y}}\colon a_{p}\to a_{p'}
+$$
+（$a_{x}$ は区間 $x$ の対象の積）を $p$ から $p'$ への**ブロック移動**という。$s,t$ がともに長さ 1 で、それぞれ $i$ 番目、$i+1$ 番目のとき**基本移動** $\tau_{i}^{p}\colon a_{p}\to a_{p\cdot t_{i}}$ という（$p\cdot t_{i}$ は $p$ の $i$ 番目と $i+1$ 番目を入れ替えたもの。$p$ を写像 $\{1,\dots,n\}\to\{1,\dots,n\}$ とみると $p\circ t_{i}$）。
+:::
+
+::: theorem 厳密な対称モノイダル圏のコヒーレンス {#cat:strict-symmetric-coherence keywords="coherence for strict symmetric monoidal categories" index="対称モノイダル圏のコヒーレンス（厳密）|たいしょうものいだるけんのこひーれんすげんみつ"}
+厳密な対称モノイダル圏 $\mathbf{S}$ で、ブロック移動を有限個合成した二つの射が、同じ並べ替え $p$ から出て同じ並べ替え $q$ に至るなら、それらは等しい。
+:::
+
+::: proof
+**Step 1（ブロック移動は基本移動の合成）.** まず、区間が空のブロック移動は恒等射である：(H1) を $a=b=e$ に使うと $\gamma_{e,c}=\gamma_{e,c}\circ\gamma_{e,c}$ で、同型なので $\gamma_{e,c}=1$。(H2)（\ref{cat:symmetric-one-hexagon}）から同様に $\gamma_{c,e}=1$。空でない区間では、$|s|+|t|$ に関する帰納法で示す。$|s|=|t|=1$ なら基本移動。$|s|\ge2$ なら $s=(s_{0})s'$（$s_{0}$ は先頭の 1 文字）と分けて (H1) を使うと
+$$
+\gamma_{a_{s},a_{t}}=(\gamma_{a_{s_{0}},a_{t}}\cdot1_{a_{s'}})\circ(1_{a_{s_{0}}}\cdot\gamma_{a_{s'},a_{t}}),
+$$
+両辺を $1_{a_{x}}\cdot-\cdot1_{a_{y}}$ で囲むと（$\cdot$ の関手性から合成と両立する）、ブロック移動が二つのより短いブロック移動の合成になる。$|s|=1$, $|t|\ge2$ なら (H2) で同様に分ける。
+
+**Step 2（関係式）.** すべての並べ替え $p$ で次が成り立つ。
+- $\tau_{i}^{p\cdot t_{i}}\circ\tau_{i}^{p}=1$：$\gamma_{b,a}\circ\gamma_{a,b}=1$ を $1\cdot-\cdot1$ で囲んだもの。
+- $|i-j|\ge2$ なら $\tau_{j}^{p\cdot t_{i}}\circ\tau_{i}^{p}=\tau_{i}^{p\cdot t_{j}}\circ\tau_{j}^{p}$：$i<j$ とすると、両辺は $1\cdot\gamma\cdot1\cdot\gamma\cdot1$ という形の同じ射を二通りに分解したもの（$\cdot$ の関手性 $(f\cdot1)\circ(1\cdot g)=f\cdot g=(1\cdot g)\circ(f\cdot1)$）。
+- $\tau_{i}^{p\cdot t_{i}t_{i+1}}\circ\tau_{i+1}^{p\cdot t_{i}}\circ\tau_{i}^{p}=\tau_{i+1}^{p\cdot t_{i+1}t_{i}}\circ\tau_{i}^{p\cdot t_{i+1}}\circ\tau_{i+1}^{p}$：$i,i+1,i+2$ 番目を $a,b,c$ とすると、ヤン–バクスター方程式（\ref{cat:yang-baxter}）を $1\cdot-\cdot1$ で囲んだもの。
+
+**Step 3（語から射へ）.** 語 $\omega=s_{i_{1}}\cdots s_{i_{k}}$ と並べ替え $p$ について、基本移動の合成
+$$
+E_{p}(\omega)\defeq\tau_{i_{k}}^{p\cdot t_{i_{1}}\cdots t_{i_{k-1}}}\circ\cdots\circ\tau_{i_{2}}^{p\cdot t_{i_{1}}}\circ\tau_{i_{1}}^{p}\colon a_{p}\to a_{p\cdot\pi(\omega)}
+$$
+を定める（空語なら恒等射）。連結について $E_{p}(\omega_{1}\omega_{2})=E_{p\cdot\pi(\omega_{1})}(\omega_{2})\circ E_{p}(\omega_{1})$。Step 2 は、\ref{cat:coxeter-presentation} の三つの関係の両辺 $\rho,\rho'$ について、すべての $p$ で $E_{p}(\rho)=E_{p}(\rho')$ であることを言っている。よって $\omega=\omega_{1}\rho\omega_{2}$, $\omega'=\omega_{1}\rho'\omega_{2}$ なら
+$$
+E_{p}(\omega)=E_{p\pi(\omega_{1}\rho)}(\omega_{2})\circ E_{p\pi(\omega_{1})}(\rho)\circ E_{p}(\omega_{1})=E_{p}(\omega')
+$$
+（$\pi(\rho)=\pi(\rho')$ に注意）。$\sim$ はこの置き換えの繰り返しなので、$\omega\sim\omega'$ なら $E_{p}(\omega)=E_{p}(\omega')$。
+
+**Step 4.** 二つのブロック移動の合成を Step 1 で基本移動の合成 $E_{p}(\omega)$, $E_{p}(\omega')$ に書き直す。ともに $q$ に至るので $p\circ\pi(\omega)=q=p\circ\pi(\omega')$、$p$ は全単射なので $\pi(\omega)=\pi(\omega')$。\ref{cat:coxeter-presentation} から $\omega\sim\omega'$、Step 3 から $E_{p}(\omega)=E_{p}(\omega')$。
+:::
+
+一般の対称モノイダル圏に移るため、文字に区別のつく語を考える。
+
+::: definition 番号つき語と基本射 {#cat:labelled-words keywords="labelled words, permuted words, basic arrows with symmetry" index="番号つき語|ばんごうつきご"}
+長さ $n$ の二項語（\ref{cat:binary-words}）の $n$ 個の文字 $\mathtt{x}$ に、$1,\dots,n$ を一つずつ振ったものを**番号つき語**という。左から読んだ番号の列 $p$ を語の**並び**という。対象 $b_{1},\dots,b_{n}$ について、番号 $i$ の文字に $b_{i}$ を入れた対象を $v\langle b\rangle$ と書く。番号つき語の間の**基本射**は、\ref{cat:binary-words} の基本射（番号はそのまま運ぶ）と、$\gamma_{u,v}\colon u\square v\to v\square u$ およびその逆（$u,v$ は番号つき語。番号は文字とともに動く）を恒等射と $\square$ で囲んだものとする。
+:::
+
+::: lemma 基本射を移動に写す {#cat:basic-arrows-to-moves keywords="conjugating basic arrows into the strictification" index="基本射の共役|きほんしゃのきょうやく"}
+$\mathbf{M}$ を対称モノイダル圏、$\mathbf{S}$ を厳密化（\ref{cat:braiding-strictification} で対称）とし、$a_{i}\defeq[b_{i}]$ とする。並び $p$ の番号つき語 $v$ について、標準射 $N_{v}\colon v\langle b\rangle\to F[b_{p_{1}},\dots,b_{p_{n}}]=F(a_{p})$（語 $v$ から $w^{(n)}$ への標準射。$v$ が $e$ を含めばそれも消す）をとる。基本射 $\beta\colon v\to v'$（並び $p\to p'$）について、$N_{v'}\circ\beta\circ N_{v}^{-1}$ は、$\mathbf{S}$ の射 $a_{p}\to a_{p'}$ として、$\beta$ が $\alpha,\lambda,\varrho$ 型なら恒等射（$p'=p$）、$\gamma$ 型ならブロック移動である。
+:::
+
+::: proof
+$\beta$ の作り方に関する帰納法。
+
+**$\alpha,\lambda,\varrho$ 型.** $N_{v'}\circ\beta\circ N_{v}^{-1}$ は語 $w^{(n)}$ から自分自身への標準射なので恒等射。
+
+**$\gamma_{u,z}$ そのもの.** $u,z$ の並びを $s,t$（$p=s\cdot t$）とすると、$N_{u\square z}$ と $\varphi_{s,t}\circ(N_{u}\square N_{z})$ は同じ語の間の標準射なので等しい。$\gamma$ の自然性から
+$$
+\begin{aligned}
+N_{z\square u}\circ\gamma_{u,z}\circ N_{u\square z}^{-1}&=\varphi_{t,s}\circ(N_{z}\square N_{u})\circ\gamma_{u,z}\circ(N_{u}^{-1}\square N_{z}^{-1})\circ\varphi_{s,t}^{-1}\\
+&=\varphi_{t,s}\circ\gamma_{Fs,Ft}\circ\varphi_{s,t}^{-1}=\gamma^{\mathbf{S}}_{a_{s},a_{t}}.
+\end{aligned}
+$$
+これは $x,y$ が空のブロック移動。$\gamma^{-1}$ なら逆をとり、対称性 $(\gamma^{\mathbf{S}}_{a_{s},a_{t}})^{-1}=\gamma^{\mathbf{S}}_{a_{t},a_{s}}$ からブロック移動。
+
+**囲まれた基本射.** $\beta=\beta_{0}\square1_{z}$（$\beta_{0}\colon u\to u'$、並び $r\to r'$、$z$ の並び $q$）で、帰納法の仮定から $h\defeq N_{u'}\beta_{0}N_{u}^{-1}$ が恒等射またはブロック移動とする。上と同様に $N_{u\square z}=\varphi_{r,q}\circ(N_{u}\square N_{z})$ なので
+$$
+N_{u'\square z}\circ(\beta_{0}\square1)\circ N_{u\square z}^{-1}=\varphi_{r',q}\circ(h\square1)\circ\varphi_{r,q}^{-1}=h\cdot1_{a_{q}}.
+$$
+$h=1_{a_{x}}\cdot\gamma\cdot1_{a_{y}}$ なら $h\cdot1_{a_{q}}=1_{a_{x}}\cdot\gamma\cdot1_{a_{y}\cdot a_{q}}$ もブロック移動。$1_{z}\square\beta_{0}$ も同様。
+:::
+
+::: theorem 対称モノイダル圏のコヒーレンス {#cat:symmetric-coherence-general keywords="coherence theorem for symmetric monoidal categories, Mac Lane 1963" index="対称モノイダル圏のコヒーレンス定理|たいしょうものいだるけんのこひーれんすていり"}
+対称モノイダル圏 $\mathbf{M}$ と対象 $b_{1},\dots,b_{n}$ について、二つの番号つき語 $v,w$ の間の基本射の任意の二つの道は、$\mathbf{M}$ の射 $v\langle b\rangle\to w\langle b\rangle$ として等しい。
+:::
+
+::: proof
+道 $\beta_{k}\circ\cdots\circ\beta_{1}$（番号つき語 $v=v_{0}\to v_{1}\to\cdots\to v_{k}=w$）について
+$$
+\beta_{k}\circ\cdots\circ\beta_{1}=N_{w}^{-1}\circ(N_{v_{k}}\beta_{k}N_{v_{k-1}}^{-1})\circ\cdots\circ(N_{v_{1}}\beta_{1}N_{v_{0}}^{-1})\circ N_{v}.
+$$
+\ref{cat:basic-arrows-to-moves} から、括弧の中はそれぞれ $\mathbf{S}$ の恒等射かブロック移動で、全体は $v$ の並びから $w$ の並びへのブロック移動の合成である。\ref{cat:strict-symmetric-coherence} からこれは道によらない。
+:::
+
+::: hypcheck
+- **$\gamma_{b,a}\gamma_{a,b}=1$**：基本移動の関係 $\tau_{i}\tau_{i}=1$（\ref{cat:strict-symmetric-coherence} の Step 2）と、$\gamma^{-1}$ 型の基本射をブロック移動に写すこと（\ref{cat:basic-arrows-to-moves}）に使った。これがないと結論は偽である（次ページ）。
+- **(H1)**：ヤン–バクスター方程式（組紐関係）と、ブロック移動の分解に使った。(H2) は (H1) と対称性から出る。
+- **単位の公理 $\varrho=\lambda\gamma$**：使っていない（\ref{cat:braided-unit-redundant} で六角形から従う）。
+- **対称群の表示**（\ref{cat:coxeter-presentation}）：同じ置換を与える二つの基本移動の列が関係で移り合うことに使った。証明は群の位数の数え上げだけで、圏論は使っていない（循環はない）。
+:::
+
+::: remark
+「同じ番号つき語の間の道」という仮定は本質的である。たとえば $\mathbf{Set}$ で $b_{1}=b_{2}=b$ のとき、$\gamma_{b,b}$ と $1_{b\times b}$ はどちらも $b\times b\to b\times b$ だが、番号つき語としては $\mathtt{x}_{1}\square\mathtt{x}_{2}\to\mathtt{x}_{2}\square\mathtt{x}_{1}$ と $\mathtt{x}_{1}\square\mathtt{x}_{2}\to\mathtt{x}_{1}\square\mathtt{x}_{2}$ で別の置換を与え、実際 $\gamma_{b,b}(x,y)=(y,x)\neq(x,y)$。\ref{cat:symmetric-coherence} の「同じ置換を与える図式は可換」とはこの意味である。
+:::
+
+## 問題 {#cat:sec-sc-problems}
+
+::: problem {#cat:prob-sc-strict-cartesian}
+有限の積をもつ圏 $\mathbf{C}$ の対称モノイダル構造 $(\times,1)$ で、対角射 $\delta_{a}\colon a\to a\times a$ について $\gamma_{a,a}\circ\delta_{a}=\delta_{a}$ を示せ。また、組紐モノイダル圏で $\gamma_{a,a}=1_{a\square a}$ がすべての $a$ で成り立つとは限らないことを、$\mathbf{Set}$ で示せ。
+:::
+
+::: solution
+$\gamma_{a,a}$ は射影 $p_{1},p_{2}$ について $p_{1}\gamma=p_{2}$, $p_{2}\gamma=p_{1}$ を満たす唯一の射。$p_{1}\gamma\delta=p_{2}\delta=1$, $p_{2}\gamma\delta=p_{1}\delta=1$ なので、積の一意性から $\gamma\delta=\delta$。後半：$a=\{0,1\}$ で $\gamma_{a,a}(0,1)=(1,0)\neq(0,1)$。
+:::
+
+::: problem {#cat:prob-sc-transposition-count}
+語 $\omega$ の長さの偶奇は $\sim$ で保たれることを示し、これから符号 $\mathrm{sgn}\colon\mathfrak{S}_{n}\to\{\pm1\}$ が準同型として well-defined であることを導け。
+:::
+
+::: solution
+三つの関係の置き換えで、語の長さは $2$, $0$, $0$ だけ変わる（$s_{i}s_{i}$ と空語は長さ 2 差、他は同じ長さ）ので、偶奇は保たれる。\ref{cat:coxeter-presentation} から、$\sigma\in\mathfrak{S}_{n}$ について $\pi(\omega)=\sigma$ となる語 $\omega$ は互いに $\sim$ で移り合い、長さの偶奇が等しい。そこで $\mathrm{sgn}(\sigma)\defeq(-1)^{\mathrm{len}(\omega)}$ は well-defined で、連結 $\pi(\omega\omega')=\pi(\omega)\pi(\omega')$ と長さの加法性から準同型。$\mathrm{sgn}(t_{i})=-1$。
+:::
+
+::: supplement
+**前提を変えると.** $\gamma_{b,a}\gamma_{a,b}=1$ を外した組紐モノイダル圏では、\ref{cat:strict-symmetric-coherence} の Step 2 の第一の関係が失われ、対称群の代わりに組紐群が現れる。その場合のコヒーレンスは「二つの道が同じ**組紐**を与えるなら等しい」（次ページ \ref[組紐群と組紐圏]{cat:page-braids}）。逆に、対称性を強めて $\gamma_{a,a}=1$ まで要求すると、たとえば $\mathbf{Set}$ はもはや例にならない（問題 \ref{cat:prob-sc-strict-cartesian}）。
+
+**似た定理.** \ref{cat:coxeter-presentation} は、鏡映で生成される群（コクセター群）の表示の最も簡単な例である。一般に、有限鏡映群は「$(s_{i}s_{j})^{m_{ij}}=1$」という形の関係だけで表示できることが知られている（コクセターの定理。ここでは扱わない）。対称群では $m_{ii}=1$, $m_{i,i+1}=3$, それ以外 $m_{ij}=2$。
+
+**高い視点から：コヒーレンスは「自由対称モノイダル圏」の計算.** \ref{cat:free-monoidal-category} の類似として、一つの対象で生成される自由な厳密対称モノイダル圏は、対象が自然数 $n$、射 $n\to n$ が $\mathfrak{S}_{n}$ の元、$n\neq m$ なら射なし、という置換の圏であることが、ここでの議論（$\mathfrak{S}_{n}$ の関係と $\gamma$ の関係の一致）から従う（普遍性の確認は略す）。比喩で言えば、対称モノイダル圏の構造射は「紐を自由に通り抜けられるあやとり」で、どう絡めても結局は両端の対応（置換）しか記憶されない。紐が互いに通り抜けられない（3 次元の）世界にすると、絡み方そのもの（組紐）が記憶され、それが次ページの組紐モノイダル圏である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

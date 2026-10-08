@@ -78,6 +78,13 @@
       "num": "4.3",
       "page": "18-category-theory/18A-general-theory/03-monads/04-algebras-compact.html"
     },
+    "cat:basic-arrows-to-moves": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "基本射を移動に写す",
+      "num": "7.12",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/07-symmetric-coherence.html"
+    },
     "cat:beck-monadicity": {
       "status": "defined",
       "type": "theorem",
@@ -105,6 +112,34 @@
       "title": "二項語",
       "num": "2.4",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/02-monoidal.html"
+    },
+    "cat:braided-monoidal": {
+      "status": "defined",
+      "type": "definition",
+      "title": "組紐モノイダル圏",
+      "num": "7.1",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/07-symmetric-coherence.html"
+    },
+    "cat:braided-monoidal-functor": {
+      "status": "defined",
+      "type": "definition",
+      "title": "組紐モノイダル関手",
+      "num": "7.4",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/07-symmetric-coherence.html"
+    },
+    "cat:braided-unit-redundant": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "組紐の単位の公理",
+      "num": "7.7",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/07-symmetric-coherence.html"
+    },
+    "cat:braiding-strictification": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "組紐の厳密化",
+      "num": "7.6",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/07-symmetric-coherence.html"
     },
     "cat:cantor-via-lawvere": {
       "status": "defined",
@@ -294,6 +329,13 @@
       "title": "反変関手",
       "num": "3.4",
       "page": "18-category-theory/18A-general-theory/01-basics/03-constructions.html"
+    },
+    "cat:coxeter-presentation": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "対称群の生成元と関係",
+      "num": "7.8",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/07-symmetric-coherence.html"
     },
     "cat:create-coequalizers": {
       "status": "defined",
@@ -764,6 +806,13 @@
       "num": "2.2",
       "page": "18-category-theory/18A-general-theory/03-monads/02-kleisli.html"
     },
+    "cat:labelled-words": {
+      "status": "defined",
+      "type": "definition",
+      "title": "番号つき語と基本射",
+      "num": "7.11",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/07-symmetric-coherence.html"
+    },
     "cat:lan-coend": {
       "status": "defined",
       "type": "theorem",
@@ -1128,6 +1177,13 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/04-simplicial.html"
     },
+    "cat:page-symmetric-coherence": {
+      "status": "defined",
+      "type": "page",
+      "title": "対称モノイダル圏のコヒーレンス",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/07-symmetric-coherence.html"
+    },
     "cat:page-yoneda": {
       "status": "defined",
       "type": "page",
@@ -1477,6 +1533,20 @@
       "title": "",
       "num": "5.10",
       "page": "18-category-theory/18A-general-theory/01-basics/05-yoneda.html"
+    },
+    "cat:prob-sc-strict-cartesian": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "7.15",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/07-symmetric-coherence.html"
+    },
+    "cat:prob-sc-transposition-count": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "7.16",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/07-symmetric-coherence.html"
     },
     "cat:prob-skeletons-isomorphic": {
       "status": "defined",
@@ -2374,6 +2444,48 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/04-kan-extensions/04-pointwise-kan.html"
     },
+    "cat:sec-sc-braided": {
+      "status": "defined",
+      "type": "section",
+      "title": "組紐モノイダル圏",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/07-symmetric-coherence.html"
+    },
+    "cat:sec-sc-coherence": {
+      "status": "defined",
+      "type": "section",
+      "title": "対称モノイダル圏のコヒーレンス",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/07-symmetric-coherence.html"
+    },
+    "cat:sec-sc-coxeter": {
+      "status": "defined",
+      "type": "section",
+      "title": "対称群の生成元と関係",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/07-symmetric-coherence.html"
+    },
+    "cat:sec-sc-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/07-symmetric-coherence.html"
+    },
+    "cat:sec-sc-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/07-symmetric-coherence.html"
+    },
+    "cat:sec-sc-transport": {
+      "status": "defined",
+      "type": "section",
+      "title": "厳密化への組紐の移送",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/07-symmetric-coherence.html"
+    },
     "cat:sec-sx-delta": {
       "status": "defined",
       "type": "section",
@@ -2528,6 +2640,13 @@
       "num": "3.2",
       "page": "18-category-theory/18A-general-theory/03-monads/03-beck.html"
     },
+    "cat:strict-symmetric-coherence": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "厳密な対称モノイダル圏のコヒーレンス",
+      "num": "7.10",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/07-symmetric-coherence.html"
+    },
     "cat:strictification": {
       "status": "defined",
       "type": "theorem",
@@ -2549,12 +2668,33 @@
       "num": "5.2",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/05-closed-categories.html"
     },
+    "cat:symmetric-coherence-general": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "対称モノイダル圏のコヒーレンス",
+      "num": "7.13",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/07-symmetric-coherence.html"
+    },
     "cat:symmetric-monoidal": {
       "status": "defined",
       "type": "definition",
       "title": "対称モノイダル圏",
       "num": "5.1",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/05-closed-categories.html"
+    },
+    "cat:symmetric-moves": {
+      "status": "defined",
+      "type": "definition",
+      "title": "移動",
+      "num": "7.9",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/07-symmetric-coherence.html"
+    },
+    "cat:symmetric-one-hexagon": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "対称なら六角形は一つでよい",
+      "num": "7.3",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/07-symmetric-coherence.html"
     },
     "cat:t-algebra": {
       "status": "defined",
@@ -2674,6 +2814,13 @@
       "title": "楔",
       "num": "2.1",
       "page": "18-category-theory/18A-general-theory/04-kan-extensions/02-ends.html"
+    },
+    "cat:yang-baxter": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "ヤン–バクスター方程式",
+      "num": "7.5",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/07-symmetric-coherence.html"
     },
     "cat:yoneda-embedding": {
       "status": "defined",
@@ -30268,6 +30415,13 @@
       "title": "実数全体の濃度",
       "referencedFrom": [
         "03-mathematical-logic/03E-set-theory/01-basics/11-cardinal-exponentiation.html"
+      ]
+    },
+    "cat:page-braids": {
+      "status": "planned",
+      "title": "組紐群と組紐圏",
+      "referencedFrom": [
+        "18-category-theory/18A-general-theory/02-structured-categories/07-symmetric-coherence.html"
       ]
     },
     "cat:page-elementary-topos": {

@@ -360,3 +360,5 @@
 | Kan extension (right/left) / pointwise | カン拡張（右／左） / 各点 | | 標準的。cat:page-kan |
 | copower / power / dense / absolute Kan extension | 余冪 / 冪 / 稠密 / 絶対カン拡張 | テンソル・コテンソル | 仮。cat:page-pointwise-kan |
 | monoidal functor (lax / strong / strict) / monoidal natural transformation / strictification | モノイダル関手（緩い／強／厳密） / モノイダル自然変換 / 厳密化 | ラックス | 強・厳密は標準的。厳密化は仮。cat:page-monoidal-functors |
+| braided monoidal category / braiding / hexagon / Yang–Baxter equation | 組紐モノイダル圏 / 組紐 / 六角形の等式 / ヤン–バクスター方程式 | 組みひも、ブレイド | 「組紐」で統一（既存ページの「組みひも」は補足中の表現）。cat:page-symmetric-coherence |
+| Coxeter presentation / adjacent transposition / labelled word | 対称群の生成元と関係 / 隣接互換 / 番号つき語 | | 番号つき語は仮。cat:page-symmetric-coherence |

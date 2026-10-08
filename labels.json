@@ -57,6 +57,20 @@
       "num": "10.6",
       "page": "18-category-theory/18A-general-theory/01-basics/10-adjoint-functor-theorem.html"
     },
+    "cat:algebra-split-fork": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "代数の標準的な分裂フォーク",
+      "num": "3.3",
+      "page": "18-category-theory/18A-general-theory/03-monads/03-beck.html"
+    },
+    "cat:beck-monadicity": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "ベックのモナド性定理",
+      "num": "3.6",
+      "page": "18-category-theory/18A-general-theory/03-monads/03-beck.html"
+    },
     "cat:bifunctor-criterion": {
       "status": "defined",
       "type": "proposition",
@@ -141,6 +155,20 @@
       "num": "1.5",
       "page": "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html"
     },
+    "cat:comparison-into-a": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "比較の存在と一意性",
+      "num": "3.8",
+      "page": "18-category-theory/18A-general-theory/03-monads/03-beck.html"
+    },
+    "cat:comparison-preserves-counit": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "比較は余単位を保つ",
+      "num": "3.7",
+      "page": "18-category-theory/18A-general-theory/03-monads/03-beck.html"
+    },
     "cat:completeness-criterion": {
       "status": "defined",
       "type": "corollary",
@@ -169,6 +197,13 @@
       "num": "3.4",
       "page": "18-category-theory/18A-general-theory/01-basics/03-constructions.html"
     },
+    "cat:create-coequalizers": {
+      "status": "defined",
+      "type": "definition",
+      "title": "余等化子の創出",
+      "num": "3.4",
+      "page": "18-category-theory/18A-general-theory/03-monads/03-beck.html"
+    },
     "cat:create-limits": {
       "status": "defined",
       "type": "definition",
@@ -196,6 +231,13 @@
       "title": "アイレンバーグ–ムーアの随伴",
       "num": "1.4",
       "page": "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html"
+    },
+    "cat:em-creates-absolute": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "代数の忘却関手は絶対余等化子を創出する",
+      "num": "3.5",
+      "page": "18-category-theory/18A-general-theory/03-monads/03-beck.html"
     },
     "cat:equalizer-monic": {
       "status": "defined",
@@ -589,6 +631,13 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/01-basics/07-adjunctions.html"
     },
+    "cat:page-beck": {
+      "status": "defined",
+      "type": "page",
+      "title": "分裂余等化子とベックのモナド性定理",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/03-monads/03-beck.html"
+    },
     "cat:page-cartesian-closed": {
       "status": "defined",
       "type": "page",
@@ -693,6 +742,13 @@
       "title": "",
       "num": "1.14",
       "page": "18-category-theory/18A-general-theory/01-basics/01-categories.html"
+    },
+    "cat:prob-beck-contractible": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "3.9",
+      "page": "18-category-theory/18A-general-theory/03-monads/03-beck.html"
     },
     "cat:prob-ccc-composition": {
       "status": "defined",
@@ -1057,6 +1113,41 @@
       "title": "問題",
       "num": "",
       "page": "18-category-theory/18A-general-theory/01-basics/09-adjoints-limits.html"
+    },
+    "cat:sec-beck-create": {
+      "status": "defined",
+      "type": "section",
+      "title": "余等化子の創出",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/03-monads/03-beck.html"
+    },
+    "cat:sec-beck-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/03-monads/03-beck.html"
+    },
+    "cat:sec-beck-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/03-monads/03-beck.html"
+    },
+    "cat:sec-beck-split": {
+      "status": "defined",
+      "type": "section",
+      "title": "分裂余等化子",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/03-monads/03-beck.html"
+    },
+    "cat:sec-beck-theorem": {
+      "status": "defined",
+      "type": "section",
+      "title": "ベックの定理",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/03-monads/03-beck.html"
     },
     "cat:sec-cat-definition": {
       "status": "defined",
@@ -1470,6 +1561,20 @@
       "title": "解集合条件",
       "num": "10.2",
       "page": "18-category-theory/18A-general-theory/01-basics/10-adjoint-functor-theorem.html"
+    },
+    "cat:split-fork": {
+      "status": "defined",
+      "type": "definition",
+      "title": "フォークと分裂フォーク",
+      "num": "3.1",
+      "page": "18-category-theory/18A-general-theory/03-monads/03-beck.html"
+    },
+    "cat:split-fork-absolute": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "分裂フォークは絶対余等化子",
+      "num": "3.2",
+      "page": "18-category-theory/18A-general-theory/03-monads/03-beck.html"
     },
     "cat:subcategory": {
       "status": "defined",
@@ -28572,15 +28677,15 @@
       "status": "planned",
       "title": "普遍代数の圏のモナド性",
       "referencedFrom": [
-        "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html"
+        "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html",
+        "18-category-theory/18A-general-theory/03-monads/03-beck.html"
       ]
     },
-    "cat:beck-monadicity": {
+    "cat:chaus-monadic": {
       "status": "planned",
-      "title": "ベックのモナド性定理",
+      "title": "コンパクトハウスドルフ空間のモナド性",
       "referencedFrom": [
-        "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html",
-        "18-category-theory/18A-general-theory/03-monads/02-kleisli.html"
+        "18-category-theory/18A-general-theory/03-monads/03-beck.html"
       ]
     },
     "cat:page-elementary-topos": {

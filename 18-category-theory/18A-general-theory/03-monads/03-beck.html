@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>分裂余等化子とベックのモナド性定理 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/03-monads/03-beck.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 分裂余等化子とベックのモナド性定理 {#cat:page-beck keywords="fork, split fork, split coequalizer, absolute coequalizer, creation of coequalizers, Beck's monadicity theorem, precise tripleability theorem, canonical presentation, comparison of adjunctions"}
+
+比較関手 $K\colon\mathbf{A}\to\mathbf{X}^{T}$（\ref{cat:comparison-functor}）が同型になるのはいつか。言い換えれば、随伴 $F\dashv G$ の右随伴 $G$ が「代数の忘却関手」と同じふるまいをするのはいつか。**ベックの定理**（\ref{cat:beck-monadicity}）はこれを、$G$ が「$G$ で移すと**分裂**する余等化子」を**創出する**こと、と特徴づける。鍵は、どの T 代数 $(x,h)$ も構造射 $h$ を余等化子とする分裂フォーク（\ref{cat:algebra-split-fork}）をもつこと、つまり「どの代数も自由代数の商として表示できる」ことである。
+
+> 資料：Mac Lane, *Categories for the Working Mathematician* 第 VI 章 §6–§7。Mac Lane が随伴の写像の一般論（第 IV 章 §7）で済ませた部分は、転置を使って直接示した。
+
+## 記法と定義の確認 {#cat:sec-beck-notation}
+
+::: notation
+- 余等化子は \ref{cat:coequalizer}、極限の創出は \ref{cat:create-limits} のとおり。
+- モナド・T 代数・$\mathbf{X}^{T}$・$F^{T}\dashv G^{T}$・比較関手 $K$ は \ref{cat:monad}, \ref{cat:t-algebra}, \ref{cat:eilenberg-moore-adjunction}, \ref{cat:comparison-functor} のとおり。随伴の転置 $\varphi(f)=Gf\circ\eta_{x}$ と三角等式は \ref{cat:triangle-identities} のとおり。
+- 本ページでは、$\mathbf{X}$ のモナド $\mathsf{T}=(T,\eta,\mu)$ を定める随伴 $(F,G,\eta,\varepsilon)\colon\mathbf{X}\rightharpoonup\mathbf{A}$ を固定することが多い（$GF=T$, $G\varepsilon F=\mu$）。
+:::
+
+## 分裂余等化子 {#cat:sec-beck-split}
+
+::: definition フォークと分裂フォーク {#cat:split-fork keywords="fork, split fork, split coequalizer, absolute coequalizer" index="フォーク|ふぉーく, 分裂フォーク|ぶんれつふぉーく, 分裂余等化子|ぶんれつよとうかし, 絶対余等化子|ぜったいよとうかし"}
+1. 射 $d_{0},d_{1}\colon a\to b$, $e\colon b\to c$ で $e\circ d_{0}=e\circ d_{1}$ を満たすものを**フォーク**という。
+2. フォークが**分裂する**とは、射 $s\colon c\to b$, $t\colon b\to a$ で
+$$
+e\circ s=1_{c},\qquad d_{0}\circ t=1_{b},\qquad d_{1}\circ t=s\circ e
+$$
+を満たすものがあることをいう。このとき $e$ を $d_{0},d_{1}$ の**分裂余等化子**という。
+3. $e$ が $d_{0},d_{1}$ の**絶対余等化子**であるとは、任意の関手 $R\colon\mathbf{C}\to\mathbf{D}$ について $Re$ が $Rd_{0},Rd_{1}$ の余等化子であることをいう。
+:::
+
+::: lemma 分裂フォークは絶対余等化子 {#cat:split-fork-absolute keywords="split coequalizers are absolute coequalizers" index="分裂余等化子は絶対|ぶんれつよとうかしはぜったい"}
+分裂フォークの $e$ は $d_{0},d_{1}$ の余等化子であり、絶対余等化子である。
+:::
+
+::: proof
+**Step 1（余等化子）.** $f\colon b\to w$ が $f\circ d_{0}=f\circ d_{1}$ を満たすとする。$f'\defeq f\circ s$ とおくと
+$$
+f'\circ e=f\circ s\circ e=f\circ d_{1}\circ t=f\circ d_{0}\circ t=f.
+$$
+一意性：$k\circ e=f$ なら $k=k\circ e\circ s=f\circ s=f'$。
+
+**Step 2（絶対性）.** 分裂フォークの条件は合成と恒等射の等式だけなので、任意の関手で保たれる。よって $Re$ も分裂フォークの余等化子で、Step 1 から余等化子である。
+
+::: hypcheck
+- 三つの等式のうち、$d_{0}t=1$ と $d_{1}t=se$ は存在に、$es=1$ は一意性に（$e$ が分裂エピであること）使った。
+:::
+:::
+
+::: example
+**商群.** 群 $G$ と正規部分群 $N$ について、$G\ltimes N$（元は $(x,n)$、積 $(x,n)(y,m)\defeq(xy,(y^{-1}ny)m)$）から $G$ への準同型 $d_{0}(x,n)\defeq x$, $d_{1}(x,n)\defeq xn$ と、商写像 $p\colon G\to G/N$ はフォークで、$p$ は $\mathbf{Grp}$ での余等化子である（$f\circ d_{0}=f\circ d_{1}$ は $f(n)=1$（$n\in N$）と同値）。このフォークは $\mathbf{Grp}$ では一般に分裂しないが、忘却関手で $\mathbf{Set}$ に移すと分裂する：各剰余類の代表を選ぶ写像 $s\colon G/N\to G$（選択公理）と $t(x)\defeq(x,\ x^{-1}s(px))$ について（$x^{-1}s(px)\in N$）、$d_{0}t(x)=x$、$d_{1}t(x)=s(px)$、$ps=1$。$d_{1}$ が準同型であることは $d_{1}((x,n)(y,m))=xy\,y^{-1}ny\,m=xn\,ym$ から。
+:::
+
+::: lemma 代数の標準的な分裂フォーク {#cat:algebra-split-fork keywords="every algebra is a split coequalizer of free algebras, canonical presentation" index="標準的表示|ひょうじゅんてきひょうじ"}
+T 代数 $(x,h)$ について、
+$$
+T^{2}x\ \overset{\mu_{x}}{\underset{Th}{\rightrightarrows}}\ Tx\ \overset{h}{\longrightarrow}\ x
+$$
+は、$s\defeq\eta_{x}$, $t\defeq\eta_{Tx}$ で分裂するフォークである（$d_{0}=\mu_{x}$, $d_{1}=Th$）。
+:::
+
+::: proof
+フォーク：$h\circ\mu_{x}=h\circ Th$ は T 代数の結合の等式。$h\circ\eta_{x}=1$ は単位の等式。$\mu_{x}\circ\eta_{Tx}=1$ はモナドの単位律。$Th\circ\eta_{Tx}=\eta_{x}\circ h$ は $\eta$ の自然性。
+:::
+
+::: intuition
+群 $x$ の場合、$Tx$ は $x$ の元を文字とする語の自由群、$h$ は語を $x$ の中で計算する写像、$T^{2}x$ は「語の語」で、$\mu_{x}$ は外側の括弧を外す、$Th$ は内側を先に計算する。$h$ は「この二通りの計算を同じとみなす」商として $x$ を表している（自由群による $x$ の**標準的表示**）。
+:::
+
+## 余等化子の創出 {#cat:sec-beck-create}
+
+::: definition 余等化子の創出 {#cat:create-coequalizers keywords="creation of coequalizers" index="余等化子の創出|よとうかしのそうしゅつ"}
+関手 $G\colon\mathbf{A}\to\mathbf{X}$ が平行な射 $f,g\colon a\to b$ の**余等化子を創出する**とは、$Gf,Gg$ の任意の余等化子 $u\colon Gb\to z$ について、$\mathbf{A}$ の対象 $c$ と射 $e\colon b\to c$ で $Gc=z$, $Ge=u$ となるものが**ちょうど一つ**あり、しかもその $e$ が $f,g$ の余等化子であることをいう（\ref{cat:create-limits} の双対）。
+:::
+
+::: proposition 代数の忘却関手は絶対余等化子を創出する {#cat:em-creates-absolute keywords="forgetful functor from algebras creates absolute coequalizers" index="代数の忘却関手と余等化子|だいすうのぼうきゃくかんしゅとよとうかし"}
+$G^{T}\colon\mathbf{X}^{T}\to\mathbf{X}$ は、$G^{T}$ で移すと絶対余等化子をもつ平行な射の対 $d_{0},d_{1}\colon(x,h)\to(y,k)$ の余等化子を創出する。
+:::
+
+::: proof
+$e\colon y\to z$ を $d_{0},d_{1}$ の（$\mathbf{X}$ での）余等化子とする。仮定から $d_{0},d_{1}$ は絶対余等化子をもつので、それと同型な $e$ も絶対余等化子であり、$Te$ と $T^{2}e$ はそれぞれ $Td_{i}$, $T^{2}d_{i}$ の余等化子、とくにエピ射である。
+
+**Step 1（構造射の構成）.** $d_{i}$ が準同型なので $k\circ Td_{i}=d_{i}\circ h$。よって
+$$
+e\circ k\circ Td_{0}=e\circ d_{0}\circ h=e\circ d_{1}\circ h=e\circ k\circ Td_{1}.
+$$
+$Te$ は $Td_{0},Td_{1}$ の余等化子なので、$m\circ Te=e\circ k$ となる $m\colon Tz\to z$ がただ一つある。
+
+**Step 2（$m$ は構造射）.** 結合の等式：
+$$
+\begin{aligned}
+m\circ Tm\circ T^{2}e&=m\circ T(e\circ k)=m\circ Te\circ Tk=e\circ k\circ Tk\\
+&=e\circ k\circ\mu_{y}=m\circ Te\circ\mu_{y}=m\circ\mu_{z}\circ T^{2}e.
+\end{aligned}
+$$
+（2 行目の最初は $k$ の結合の等式、最後は $\mu$ の自然性。）$T^{2}e$ はエピ射なので $m\circ Tm=m\circ\mu_{z}$。単位の等式：$m\circ\eta_{z}\circ e=m\circ Te\circ\eta_{y}=e\circ k\circ\eta_{y}=e$（$\eta$ の自然性と $k$ の単位の等式）。$e$ はエピ射なので $m\circ\eta_{z}=1$。
+
+**Step 3（持ち上げの一意性）.** $(z,m')$ が T 代数で $e$ が準同型 $(y,k)\to(z,m')$ なら $m'\circ Te=e\circ k=m\circ Te$、$Te$ がエピ射なので $m'=m$。
+
+**Step 4（$\mathbf{X}^{T}$ での余等化子）.** 準同型 $f\colon(y,k)\to(w,n)$ が $f d_{0}=f d_{1}$ を満たすとする。$\mathbf{X}$ で $f=f'\circ e$ となる $f'$ がただ一つある。$f'$ が準同型であること：
+$$
+f'\circ m\circ Te=f'\circ e\circ k=f\circ k=n\circ Tf=n\circ Tf'\circ Te,
+$$
+$Te$ はエピ射なので $f'\circ m=n\circ Tf'$。
+
+::: hypcheck
+- **絶対性**：$T$ と $T^{2}$ で移しても余等化子（とくにエピ射）であることを、Step 1（$m$ の存在）、Step 2（$T^{2}e$ の消去）、Step 3, 4（$Te$ の消去）で使った。$e$ が単に $\mathbf{X}$ での余等化子というだけでは、$Te$ が余等化子になるとは限らない。
+:::
+:::
+
+## ベックの定理 {#cat:sec-beck-theorem}
+
+::: theorem ベックのモナド性定理 {#cat:beck-monadicity keywords="Beck's monadicity theorem, precise tripleability theorem, PTT" index="ベックの定理|べっくのていり, モナド性定理|もなどせいていり"}
+随伴 $(F,G,\eta,\varepsilon)\colon\mathbf{X}\rightharpoonup\mathbf{A}$ と、それが定めるモナド $\mathsf{T}$、比較関手 $K\colon\mathbf{A}\to\mathbf{X}^{T}$ について、次は同値である。
+1. $K$ は圏の同型である（$G$ は厳密にモナド的）。
+2. $G$ は、$Gf,Gg$ が絶対余等化子をもつような対 $f,g$ の余等化子を創出する。
+3. $G$ は、$Gf,Gg$ が分裂余等化子をもつような対 $f,g$ の余等化子を創出する。
+:::
+
+証明には次の補題を使う。$\mathsf{T}$ を定める二つの随伴 $(F',G',\eta,\varepsilon')\colon\mathbf{X}\rightharpoonup\mathbf{A}'$ と $(F,G,\eta,\varepsilon)\colon\mathbf{X}\rightharpoonup\mathbf{A}$ について、関手 $M\colon\mathbf{A}'\to\mathbf{A}$ で $MF'=F$ かつ $GM=G'$ となるものを**比較**と呼ぶ（\ref{cat:kleisli-em-initial-terminal} の射）。
+
+::: lemma 比較は余単位を保つ {#cat:comparison-preserves-counit keywords="comparison of adjunctions preserves counits" index="比較と余単位|ひかくとよたんい"}
+比較 $M$ について $M\varepsilon'_{a'}=\varepsilon_{Ma'}$（すべての $a'$）。
+:::
+
+::: proof
+両辺は $FG'a'=FGMa'=MF'G'a'$ から $Ma'$ への射である。$F\dashv G$ の転置を比べる：$\varphi(\varepsilon_{Ma'})=G\varepsilon_{Ma'}\circ\eta_{GMa'}=1$（三角等式）。$\varphi(M\varepsilon'_{a'})=GM\varepsilon'_{a'}\circ\eta_{G'a'}=G'\varepsilon'_{a'}\circ\eta_{G'a'}=1$（$GM=G'$ と、$F'\dashv G'$ の三角等式。二つの随伴の単位は同じ $\eta$）。転置は全単射なので等しい。
+:::
+
+::: lemma 比較の存在と一意性 {#cat:comparison-into-a keywords="unique comparison into an adjunction whose right adjoint creates split coequalizers" index="比較の一意性|ひかくのいちいせい"}
+$G$ が条件 3 を満たすとする。$\mathsf{T}$ を定める任意の随伴 $(F',G')\colon\mathbf{X}\rightharpoonup\mathbf{A}'$ について、比較 $M\colon\mathbf{A}'\to\mathbf{A}$ がただ一つある。
+:::
+
+::: proof
+各 $a'\in\mathbf{A}'$ について、$\mathbf{A}$ の平行な射
+$$
+FG'\varepsilon'_{a'},\ \ \varepsilon_{FG'a'}\colon\ FG'F'G'a'\rightrightarrows FG'a'
+$$
+を考える（$FG'F'G'a'=FTG'a'$）。$G$ で移すと $TG'\varepsilon'_{a'}$ と $G\varepsilon_{FG'a'}=\mu_{G'a'}$ になる。$(G'a',G'\varepsilon'_{a'})$ は T 代数（\ref{cat:comparison-functor} の証明の Step 1 を随伴 $F'\dashv G'$ に使う）なので、\ref{cat:algebra-split-fork} から $G'\varepsilon'_{a'}\colon TG'a'\to G'a'$ はこの対の分裂余等化子である。条件 3 から、$c_{a'}\in\mathbf{A}$ と $k_{a'}\colon FG'a'\to c_{a'}$ で $Gc_{a'}=G'a'$, $Gk_{a'}=G'\varepsilon'_{a'}$ となるものがただ一つあり、$k_{a'}$ は余等化子である。
+
+**Step 1（一意性）.** 比較 $M$ があるとする。$Ma'$ と $\varepsilon_{Ma'}\colon FG'a'=FGMa'\to Ma'$ は $G(Ma')=G'a'$、$G\varepsilon_{Ma'}=GM\varepsilon'_{a'}=G'\varepsilon'_{a'}$（\ref{cat:comparison-preserves-counit}）を満たすので、創出の一意性から $Ma'=c_{a'}$, $\varepsilon_{Ma'}=k_{a'}$。射 $f\colon a'\to b'$ については、$\varepsilon$ の自然性と \ref{cat:comparison-preserves-counit} から $Mf\circ k_{a'}=Mf\circ M\varepsilon'_{a'}=M(\varepsilon'_{b'}\circ F'G'f)=k_{b'}\circ FG'f$。$k_{a'}$ はエピ射なので $Mf$ は決まる。
+
+**Step 2（存在：対象と射）.** $Ma'\defeq c_{a'}$ とおく。$f\colon a'\to b'$ について、$k_{b'}\circ FG'f$ は $a'$ の対を余等化する：
+$$
+\begin{aligned}
+k_{b'}\circ FG'f\circ FG'\varepsilon'_{a'}&=k_{b'}\circ FG'\varepsilon'_{b'}\circ FG'F'G'f,\\
+k_{b'}\circ FG'f\circ\varepsilon_{FG'a'}&=k_{b'}\circ\varepsilon_{FG'b'}\circ FGFG'f.
+\end{aligned}
+$$
+（1 行目は $\varepsilon'$ の自然性 $f\circ\varepsilon'_{a'}=\varepsilon'_{b'}\circ F'G'f$ に $FG'$ を施したもの、2 行目は $\varepsilon$ の自然性。）$GF=T=G'F'$ なので $FGFG'f=FG'F'G'f$、$k_{b'}$ は $b'$ の対を余等化するので、右辺どうしは等しい。よって $Mf\circ k_{a'}=k_{b'}\circ FG'f$ となる $Mf$ がただ一つある。一意性から $M$ は関手。
+
+**Step 3（$GM=G'$）.** 対象では $Gc_{a'}=G'a'$。射では、$G(Mf)\circ G'\varepsilon'_{a'}=G'\varepsilon'_{b'}\circ G'F'G'f=G'f\circ G'\varepsilon'_{a'}$（$\varepsilon'$ の自然性）で、$G'\varepsilon'_{a'}$ は分裂エピ射（右逆 $\eta_{G'a'}$）なので $G(Mf)=G'f$。
+
+**Step 4（$MF'=F$）.** $a'=F'x$ のとき、対象 $Fx$ と射 $\varepsilon_{Fx}\colon FG'F'x=FTx\to Fx$ は $G(Fx)=Tx=G'F'x$、$G\varepsilon_{Fx}=\mu_{x}=G'\varepsilon'_{F'x}$ を満たすので、創出の一意性から $MF'x=Fx$, $k_{F'x}=\varepsilon_{Fx}$。射 $u\colon x\to y$ では、$MF'u\circ\varepsilon_{Fx}=\varepsilon_{Fy}\circ FG'F'u=\varepsilon_{Fy}\circ FGFu=Fu\circ\varepsilon_{Fx}$、$\varepsilon_{Fx}=k_{F'x}$ は創出された余等化子なのでエピ射であり、$MF'u=Fu$。
+
+::: hypcheck
+- **条件 3**：対象 $c_{a'}$ の存在（Step 2）と、その一意性（Step 1, 4）に使った。創出の定義の「ちょうど一つ」が、$Ma'$ を決めるのに本質的である。
+- **二つの随伴が同じモナドを定めること**：$GF=G'F'$（Step 2）、$\mu=G\varepsilon F=G'\varepsilon'F'$（Step 4）、単位が同じこと（\ref{cat:comparison-preserves-counit}）に使った。
+:::
+:::
+
+::: restate {ref="cat:beck-monadicity"}
+:::
+
+::: proof
+**1 ⇒ 2.** $G=G^{T}K$ で $K$ は同型なので、$G$ の性質は $G^{T}$ の性質に帰着する。対 $f,g$ で $Gf,Gg$ が絶対余等化子をもつものは、$Kf,Kg$ が \ref{cat:em-creates-absolute} の仮定を満たすので、$G^{T}$ が $Kf,Kg$ の余等化子を創出する。同型 $K^{-1}$ で移せば、$G$ が $f,g$ の余等化子を創出する。
+
+**2 ⇒ 3.** 分裂余等化子は絶対余等化子（\ref{cat:split-fork-absolute}）なので、条件 2 の方が多くの対について創出を要求している。
+
+**3 ⇒ 1.** アイレンバーグ–ムーアの随伴 $(F^{T},G^{T})$ も $\mathsf{T}$ を定める（\ref{cat:eilenberg-moore-adjunction}）ので、\ref{cat:comparison-into-a} から比較 $M\colon\mathbf{X}^{T}\to\mathbf{A}$（$MF^{T}=F$, $GM=G^{T}$）がある。
+- $MK\colon\mathbf{A}\to\mathbf{A}$ は $MKF=MF^{T}=F$, $GMK=G^{T}K=G$ を満たす、$(F,G)$ から自分自身への比較である。恒等関手もそうなので、\ref{cat:comparison-into-a} の一意性から $MK=1$。
+- $KM\colon\mathbf{X}^{T}\to\mathbf{X}^{T}$ は $KMF^{T}=KF=F^{T}$, $G^{T}KM=GM=G^{T}$ を満たす。比較定理（\ref{cat:comparison-functor}）をアイレンバーグ–ムーアの随伴自身に使うと、このような関手はただ一つで、恒等関手がそれなので $KM=1$。
+
+よって $K$ は同型。
+
+::: hypcheck
+- **1 ⇒ 2** では \ref{cat:em-creates-absolute}（絶対性を本質的に使う）を、**3 ⇒ 1** では \ref{cat:comparison-into-a}（分裂性だけを使う）を使った。分裂余等化子は絶対余等化子の特別な場合なので、条件 3 は条件 2 より弱い仮定であり、それでも 1 が出ることがこの定理の強さである。
+- **同型か同値か**：創出の定義の「ちょうど一つ」が、$K$ が同型（同値でなく）になることに対応する。「同型を除いて一つ」に緩めると、$K$ が圏同値になる条件の版が得られる（Mac Lane 第 VI 章 §7 演習。範囲外）。
+:::
+:::
+
+::: example
+**モナド的でない例（再訪）.** 忘却関手 $G\colon\mathbf{Top}\to\mathbf{Set}$（\ref{cat:monadic} の例）は条件 3 を満たさない。二点集合 $\{0,1\}$ に離散位相を入れた空間を $D$、密着位相を入れた空間を $I$ とし、対 $f=g=1_{D}$ を考える。$Gf=Gg=1$ の余等化子 $1_{GD}$ は（$s=t=1$ で）分裂余等化子である。ところが $Gc=GD$, $Ge=1_{GD}$ となる $(c,e)$ は、$(D,1_{D})$ と $(I,\ \text{恒等写像}\ D\to I)$（離散空間からの写像は連続）の二つがあり、創出の「ちょうど一つ」が破れる。
+:::
+
+::: supplement
+**応用.** 群・環・加群・モノイドなど、演算と等式で定まる代数の圏の忘却関手は、条件 3 を満たし（\ref[次ページ]{cat:algebras-monadic}）、モナド的である。驚くべきことに、コンパクトハウスドルフ空間の忘却関手 $\mathbf{CHaus}\to\mathbf{Set}$ も（超フィルターのモナドについて）モナド的である（\ref[コンパクトハウスドルフ空間のモナド性]{cat:chaus-monadic}）。
+
+**前提を変えると.** $\mathbf{Top}$ の例のように、忘却関手が構造（位相）を「余等化子から復元できない」とき、モナド的でない。条件 3 は「$\mathbf{A}$ の構造は、$G$ で分裂する余等化子に沿って一意に運べる」ことを要求している。
+
+**類似の定理.** ベックの定理の双対（余モナドの余代数）は、降下理論（環の拡大に沿って加群を張り合わせる理論）の圏論的な骨組みで、可換環論・代数幾何の平坦降下（グロタンディーク）がその典型例とされる（範囲外）。
+
+**高い視点から：表示から代数を復元する.** \ref{cat:algebra-split-fork} は「どの代数も、自由代数の余等化子（生成元と関係による表示）である」ことを言い、ベックの定理は「$G$ がこの表示を正しく持ち上げられること」がモナド性の必要十分条件だと言う。比喩で言えば、モナド的な圏とは「すべての対象を、部品（自由代数）と組み立て規則（余等化子）から、設計図どおりに一通りに組み立てられる圏」である。
+:::
+
+## 問題 {#cat:sec-beck-problems}
+
+::: problem {#cat:prob-beck-contractible}
+平行な射 $d_{0},d_{1}\colon a\to b$ が**可縮**であるとは、$t\colon b\to a$ で $d_{0}t=1$ かつ $d_{1}td_{0}=d_{1}td_{1}$ となるものがあることをいう。分裂フォークの $d_{0},d_{1}$ は可縮であることと、可縮な対が余等化子 $e$ をもてば、それは分裂余等化子であることを示せ（Mac Lane 第 VI 章 §6 演習 2）。
+:::
+
+::: solution
+**前半.** 分裂フォークの $t$ について $d_{0}t=1$、$d_{1}td_{0}=sed_{0}=sed_{1}=d_{1}td_{1}$。
+
+**後半.** $e$ を余等化子とする。$d_{1}t\colon b\to b$ について $e\circ d_{1}t\circ d_{0}=e\circ d_{1}t\circ d_{1}$ なので、$s\circ e=d_{1}t$ となる $s\colon c\to b$ がただ一つある。$e\circ s\circ e=e\circ d_{1}t=e\circ d_{0}t=e$、$e$ はエピ射（余等化子）なので $e\circ s=1$。$d_{0}t=1$, $d_{1}t=se$ と合わせて、$s,t$ はフォークを分裂させる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

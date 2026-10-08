@@ -340,3 +340,5 @@
 | algebra for a monad / Eilenberg–Moore category | T 代数 / アイレンバーグ–ムーア圏 | | 仮。cat:page-monads |
 | comparison functor / monadic | 比較関手 / モナド的 | | 仮。cat:page-monads |
 | Kleisli category | クライスリ圏 | | 仮。cat:page-monads |
+| fork / split fork / split coequalizer / absolute coequalizer | フォーク / 分裂フォーク / 分裂余等化子 / 絶対余等化子 | | 仮。cat:page-beck |
+| create (co)limits | 創出する | | 既存（cat:create-limits） |

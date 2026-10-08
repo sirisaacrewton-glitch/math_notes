@@ -445,6 +445,7 @@
 | Cech-complete / remainder (of a compactification) | チェック完備 / 剰余 | | 標準的。top:page-cech-complete |
 | deficiency set (Dekker) / true stage | 不足集合（デッカー） / 真の段階 | | 標準的。comp:dekker-deficiency |
 | (homological) delta functor / effaceable / universal delta functor | （ホモロジー的）δ 関手 / 消去可能 / 普遍 δ 関手 | 消去的 | 標準的。ha:page-delta-functors |
+| almost disjoint family / MAD family / Psi-space (Mrowka) | 概素な族 / 極大概素族 / Ψ 空間（ムルフカ） | ほとんど交わらない族 | 標準的な訳語は定まっていない。top:mrowka-psi |
 | Luzin set / Sierpinski set | ルジンの集合 / シェルピンスキーの集合 | ルージン集合 | 標準的。set:page-luzin-sets |
 | Adleman theorem / Sipser-Gacs-Lautemann theorem / probabilistic method / derandomization | アドルマンの定理 / シプサー–ガーチ–ラウテマンの定理 / 確率的方法 / 脱乱択化 | | 標準的。comp:page-bpp-ph |
 | Chaitin incompleteness theorem / Berry paradox | チャイティンの不完全性定理 / ベリーの逆理 | | 標準的。comp:page-chaitin-incompleteness |

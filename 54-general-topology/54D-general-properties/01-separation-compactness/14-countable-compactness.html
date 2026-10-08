@@ -111,6 +111,50 @@
    - 正規でも $T_{1}$ でもない：閉集合 $\{1\}$, $\{2\}$ を含む開集合はどちらも $0$ を含むので分離できない。
 :::
 
+## ムルフカの Ψ 空間 {#top:sec-cc-psi}
+
+\ref{top:compactness-variants} の 6 の $T_{4}$ を完全正則（チコノフ）に弱めることはできない。その反例が S. Mrówka（1954）の **Ψ 空間**である。
+
+::: definition 概素な族と Ψ 空間 {#top:mrowka-psi keywords="almost disjoint family, maximal almost disjoint (MAD) family, Mrowka Psi-space" index="概素な族|がいそなぞく, 極大概素族|きょくだいがいそぞく, Ψ 空間|ぷさいくうかん, ムルフカの Ψ 空間|むるふかのぷさいくうかん"}
+1. $\N$ の無限部分集合の族 $\mathcal{A}$ が**概素**であるとは、相異なる $A,B\in\mathcal{A}$ について $A\cap B$ が有限であることをいう。包含について極大な概素族を**極大概素族**という。
+2. 概素族 $\mathcal{A}$ について $\Psi(\mathcal{A})\defeq\N\cup\mathcal{A}$（交わらない和とみなす）に、次の集合を開基とする位相を入れる：$\{n\}$（$n\in\N$）と、$\{A\}\cup(A\setminus F)$（$A\in\mathcal{A}$, $F\subseteq\N$ は有限）。
+:::
+
+開基の条件は、二つの基本開集合の共通部分が、空か、一点集合 $\{n\}$ の和か、$\{A\}\cup(A\setminus(F\cup F'))$ であることから確かめられる（相異なる $A,B$ については $(\{A\}\cup A\setminus F)\cap(\{B\}\cup B\setminus F')\subseteq A\cap B$ は有限集合で、一点集合の和）。
+
+::: lemma 無限の極大概素族の存在 {#top:mad-exists keywords="every almost disjoint family extends to a maximal one; there is an infinite MAD family" index="極大概素族の存在|きょくだいがいそぞくのそんざい"}
+（AC）無限の極大概素族が存在する。
+:::
+
+::: proof
+$P_{j}\defeq\{n\ge1:2^{j}\mid n,\ 2^{j+1}\nmid n\}$（$j\ge0$）は互いに交わらない無限集合なので、$\{P_{j}\}_{j}$ は無限の概素族。$\{P_{j}\}$ を含む概素族の全体を包含で順序づけると、鎖の和集合は概素族である（二つの元はある一つの族にともに属する）。ツォルンの補題から極大元 $\mathcal{A}\supseteq\{P_{j}\}$ があり、無限である。
+:::
+
+::: theorem Ψ 空間 {#top:mrowka-psi-properties keywords="Psi-space of an infinite MAD family is Tychonoff, locally compact, pseudocompact but not countably compact" index="Ψ 空間の性質|ぷさいくうかんのせいしつ"}
+$\mathcal{A}$ を無限の極大概素族とする。$\Psi\defeq\Psi(\mathcal{A})$ について次が成り立つ。
+1. 基本開集合はすべて閉開集合で、$\Psi$ はチコノフ空間（完全正則 $T_{1}$）である。
+2. $\Psi$ は可算コンパクトでない。
+3. $\Psi$ は擬コンパクトである。
+:::
+
+::: proof
+**1.** $\{n\}$ の補集合は、$\N\setminus\{n\}$ の一点集合と、$\{A\}\cup(A\setminus\{n\})$（$A\in\mathcal{A}$）の和で開。$U\defeq\{A\}\cup(A\setminus F)$ の補集合の点 $x$ について：$x=n\in\N$ なら $\{n\}$ は補集合に含まれる。$x=B\in\mathcal{A}$（$B\neq A$）なら、$\{B\}\cup(B\setminus A)$ は $U$ と交わらない（$B\setminus A$ と $A\setminus F$ は交わらない）。よって $U$ は閉。一点集合 $\{x\}$ は、$x\in\N$ なら上のとおり閉、$x=A$ なら補集合が $\N$ の一点集合と $\{B\}\cup(B\setminus A)$（$B\ne A$）の和で開なので閉。よって $T_{1}$。$x$ と $x$ を含まない閉集合 $C$ について、閉開な基本開集合 $U$ で $x\in U\subseteq\Psi\setminus C$ となるものをとれば、$U$ の特性関数 $\chi_{U}\colon\Psi\to[0,1]$ は連続で $\chi_{U}(x)=1$, $\chi_{U}|_{C}=0$。よって完全正則。
+
+**2.** $\{P'_{j}\}_{j\ge0}$ を $\mathcal{A}$ の相異なる元の列とする（$\mathcal{A}$ は**無限**）。この無限部分集合は集積点をもたない：$n\in\N$ の近傍 $\{n\}$ は $P'_{j}$ を含まず、$A\in\mathcal{A}$ の近傍 $\{A\}\cup A$ が含む $\mathcal{A}$ の元は $A$ だけである。$\Psi$ は $T_{1}$ なので、\ref{top:countably-compact-equivalents} の 4 から可算コンパクトでない。
+
+**3.** 連続な $f\colon\Psi\to\R$ が非有界だとする。$\N$ は $\Psi$ で稠密（各基本開集合は $\N$ の点を含む：$A$ は無限）なので、$\lvert f\rvert\le M$ が $\N$ 上で成り立てば $\Psi$ 上でも成り立つ（$\{x:\lvert f(x)\rvert\le M\}$ は閉）。よって $f$ は $\N$ 上で非有界であり、$n_{1},n_{2},\dots\in\N$ を $\lvert f(n_{k})\rvert>\max(k,\lvert f(n_{1})\rvert,\dots,\lvert f(n_{k-1})\rvert)$ となるように選べる（$n_{k}$ は相異なる）。$B\defeq\{n_{k}:k\ge1\}$ は無限集合。
+
+$\mathcal{A}$ は**極大**なので、$A\cap B$ が無限となる $A\in\mathcal{A}$ がある（すべての $A$ で有限なら、$B\notin\mathcal{A}$ で $\mathcal{A}\cup\{B\}$ が真に大きい概素族になる）。$f$ は $A$ で**連続**なので、有限集合 $F$ で、$n\in A\setminus F$ なら $\lvert f(n)-f(A)\rvert<1$ となるものがある。$A\cap B\setminus F$ は無限なので、$k>\lvert f(A)\rvert+1$ かつ $n_{k}\in A\setminus F$ となる $k$ があり、$\lvert f(n_{k})\rvert<\lvert f(A)\rvert+1<k$ となって $n_{k}$ の選び方に反する。よって $f$ は有界。
+:::
+
+::: hypcheck
+- **極大性**：3 で、任意の無限集合 $B\subseteq\N$ が $\mathcal{A}$ のある元と無限に交わること（$f$ の非有界性を一点 $A$ に集める）に使った。極大でない概素族 $\mathcal{A}$ では、どの元とも有限にしか交わらない無限集合 $B=\{b_{1}<b_{2}<\cdots\}$ について、$f(b_{k})\defeq k$、それ以外の点で $0$ とした $f$ は連続（各 $A$ の近傍 $\{A\}\cup(A\setminus B)$ で $0$）で非有界であり、$\Psi(\mathcal{A})$ は擬コンパクトでない。
+- **$\mathcal{A}$ が無限**：2 で集積点のない無限集合を作るのに使った。
+- **$\N$ の稠密性と各 $A$ の無限性**：3 で $\N$ 上の有界性を $\Psi$ 全体に移すのに使った。
+:::
+
+\ref{top:compactness-variants} の 6 と合わせると、$\Psi$ は正規でない（$T_{1}$ なので $T_{4}$ でない）ことも分かる。
+
 ## 問題 {#top:sec-cc-problems}
 
 ::: problem {#top:prob-cc-closed-image}
@@ -142,7 +186,7 @@
 :::
 
 ::: supplement
-**前提を変えると.** \ref{top:compactness-variants} の 6 で $T_{4}$ の代わりに完全正則（チコノフ空間）を仮定すると、擬コンパクトで可算コンパクトでない空間が存在することが知られている（例：ムルフカの $\Psi$ 空間。ここでは扱わない）。また、可算コンパクト空間の二つの直積は可算コンパクトとは限らないことが知られている（コンパクト空間・点列コンパクト空間の可算個の直積はそれぞれコンパクト・点列コンパクトである）。
+**前提を変えると.** \ref{top:compactness-variants} の 6 で $T_{4}$ の代わりに完全正則（チコノフ空間）を仮定すると、擬コンパクトで可算コンパクトでない空間が存在する（ムルフカの $\Psi$ 空間、\ref{top:mrowka-psi-properties}）。また、可算コンパクト空間の二つの直積は可算コンパクトとは限らないことが知られている（コンパクト空間・点列コンパクト空間の可算個の直積はそれぞれコンパクト・点列コンパクトである）。
 
 **似た定理.** 2 の例 $\{0,1\}^{\mathcal{P}(\N)}$ は、$\N$ のストーン–チェックのコンパクト化 $\beta\N$（\ref{top:page-stone-cech}）と同様、「コンパクトだが点列で捉えられない」空間の典型である。$\beta\N$ でも点列 $(n)$ は収束部分列をもたない（\ref{top:beta-n-no-sequences}）。距離空間での同値（\ref{top:compact-metric-equivalents}）は、距離空間が第一可算かつ（可算コンパクトなら）第二可算でリンデレーフであることから、本ページの 3, 4 を通して見直すこともできる。
 

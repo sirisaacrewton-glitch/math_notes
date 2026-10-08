@@ -438,3 +438,4 @@
 | Vaught never-two theorem / Ehrenfeucht example | ヴォートの定理（2 個にならない） / エーレンフォイヒトの例 | | 標準的。model:page-vaught-never-two |
 | Ladner theorem / NP-intermediate / delayed diagonalization / padding | ラドナーの定理 / NP 中間 / 遅延対角化 / 詰め物 | パディング | 仮（「詰め物」）。comp:page-ladner |
 | Schanuel lemma / syzygy / projective dimension / global dimension | シャヌエルの補題 / シジジー / 射影次元 / 大域次元 | | 標準的。ha:page-projective-dimension |
+| Herbrand theorem / Herbrand disjunction / open formula / mid-sequent theorem | エルブランの定理 / エルブラン選言 / 開論理式 / 中間シーケント定理 | | 標準的。pt:page-herbrand |

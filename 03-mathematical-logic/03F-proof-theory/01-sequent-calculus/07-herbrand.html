@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>エルブランの定理 | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03F-proof-theory/01-sequent-calculus/07-herbrand.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# エルブランの定理 {#pt:page-herbrand keywords="Herbrand's theorem, universal formulas, quantifier-free instances, Herbrand disjunction, cut-free LK, mid-sequent, propositional reduction of first-order provability"}
+
+一階述語論理の証明可能性は、一般には命題論理に帰着しない。しかし、全称論理式 $\forall\vec{x}\,B$（$B$ は量化子を含まない）だけからなる前件の場合には帰着する：$\forall\vec{x}\,B\Rightarrow$ がカットなしで導出できることと、有限個の**代入例** $B(\vec{t}_{1}),\dots,B(\vec{t}_{n})\Rightarrow$ が導出できることは同値である（**エルブランの定理**、\ref{pt:herbrand}）。後者は量化子を含まないシーケントで、命題論理の問題である。証明は、カット除去定理（\ref{pt:cut-elimination}）で得られるカットのない導出をたどり、全称論理式に使われた L$\forall$ の代入例を集めるだけである（\ref{pt:herbrand-lemma}）。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。$\exists$ を含む形（エルブラン選言）は、$\exists$ が $\neg\forall\neg$ の略記であることから、この形に言い換えられる（\ref{pt:herbrand-existential}）。
+
+## 記法と定義の確認 {#pt:sec-hb-notation}
+
+::: notation
+- $\mathsf{LK}$（$\to,\bot,\forall$ を基本とし、$\neg,\wedge,\vee,\exists$ は略記）、導出の高さ、$\vdash_{n}$、高さを保つ弱化・縮約、カット除去定理、健全性は \ref{pt:lk}, \ref{pt:lk-weakening}, \ref{pt:lk-contraction}, \ref{pt:cut-elimination}, \ref{pt:lk-soundness} のとおり。等号は扱わない。
+- 量化子を含まない論理式を**開論理式**という。$\forall x_{1}\cdots\forall x_{k}\,B$（$k\ge0$, $B$ は開論理式）の形の論理式を**全称論理式**という。全称論理式 $\forall x\,V$ について、L$\forall$ の前提の $C\equiv V\langle t/x\rangle$ はまた全称論理式で（\ref{pt:cas-rules}）、量化子が一つ少ない。
+- 全称論理式 $U$ の**開代入例**とは、量化子をすべて項で例化した開論理式 $B\langle t_{1}/x_{1}\rangle\cdots\langle t_{k}/x_{k}\rangle$ のことをいう。
+:::
+
+## エルブランの補題 {#pt:sec-hb-lemma}
+
+::: lemma エルブランの補題 {#pt:herbrand-lemma keywords="from a cut-free derivation of U, Gamma => Delta with U universal and Gamma, Delta open, extract finitely many open instances" index="エルブランの補題|えるぶらんのほだい"}
+$\mathcal{U}$ を全称論理式の多重集合、$\Gamma,\Delta$ を開論理式の多重集合とする。$\vdash_{n}\mathcal{U},\Gamma\Rightarrow\Delta$ なら、$\mathcal{U}$ の元の開代入例の有限多重集合 $\Theta$ で $\vdash\Theta,\Gamma\Rightarrow\Delta$ となるものがある。
+:::
+
+::: proof
+$n$ に関する帰納法（すべての $\mathcal{U},\Gamma,\Delta$ について同時に）。最後の規則で場合分けする。
+
+- **(Ax), (L$\bot$).** 主論理式は原子論理式か $\bot$ なので、$\mathcal{U}$ の量化子を含む元ではない。量化子を含まない $\mathcal{U}$ の元（$k=0$ の全称論理式）はそれ自身が開代入例なので、それらを $\Theta$ に入れると $\Theta,\Gamma\Rightarrow\Delta$ も同じ規則の初期シーケント。
+- **(L$\to$), (R$\to$).** 主論理式は開論理式で $\Gamma$ か $\Delta$ に属する（量化子をもたない $\mathcal{U}$ の元が主論理式のときは、それを $\Gamma$ の側に移して考える）。前提は $\mathcal{U},\Gamma',\Delta'$（$\Gamma',\Delta'$ は開論理式）の形で、帰納法の仮定から各前提について $\Theta_{1}$, $\Theta_{2}$ がとれる。$\Theta\defeq\Theta_{1},\Theta_{2}$ とし、高さを保つ弱化（\ref{pt:lk-weakening}）で両方の前提を $\Theta$ を含む形にして同じ規則を使う。
+- **(L$\forall$).** 主論理式が $\mathcal{U}$ の元 $\forall x\,V$ のとき、前提は $V\langle t/x\rangle,\forall x\,V,\mathcal{U}',\Gamma\Rightarrow\Delta$ で、$V\langle t/x\rangle$ は全称論理式。前提の全称論理式の多重集合 $V\langle t/x\rangle,\mathcal{U}$ に帰納法の仮定を使うと、その開代入例の $\Theta$ がとれ、$V\langle t/x\rangle$ の開代入例は $\forall x\,V$ の開代入例でもある。主論理式が $\Gamma$ の元であることはない（開論理式）。
+- **(R$\forall$).** 主論理式は後件の $\forall$ 論理式だが、$\Delta$ は開論理式だけなので起こらない。
+
+カットのない導出なので、カットの場合はない。
+:::
+
+::: hypcheck
+- **カットがないこと**：カットがあると、カット論理式に量化子が現れ、場合分けの前提（$\Gamma,\Delta$ が開論理式）が保てない。カット除去定理がこの補題の前提を与える。
+- **後件に量化子がないこと**：R$\forall$ の場合を排除するのに使った。後件に $\forall$ があると固有変数が現れ、代入例を集めるだけでは済まない。
+- **高さを保つ弱化**：L$\to$ の二つの前提の $\Theta$ をそろえるのに使った。
+:::
+
+## エルブランの定理 {#pt:sec-hb-theorem}
+
+::: theorem エルブランの定理 {#pt:herbrand keywords="Herbrand's theorem for universal antecedents" index="エルブランの定理|えるぶらんのていり"}
+全称論理式 $U_{1},\dots,U_{m}$ について、次は同値である。
+1. $\mathsf{LK}+\mathrm{Cut}$ で $U_{1},\dots,U_{m}\Rightarrow$ が導出できる。
+2. $U_{1},\dots,U_{m}$ の開代入例の有限多重集合 $\Theta$ で、$\Theta\Rightarrow$ が（カットなしで）導出できるものがある。
+:::
+
+::: proof
+**1 ⇒ 2.** カット除去定理（\ref{pt:cut-elimination}）からカットのない導出がとれ、\ref{pt:herbrand-lemma}（$\Gamma=\Delta=\emptyset$）。
+
+**2 ⇒ 1.** $\theta\in\Theta$ が $U_{i}=\forall x_{1}\cdots\forall x_{k}B$ の例化だとし、$V_{0}\defeq U_{i}$, $V_{j}\defeq$（$V_{j-1}$ の最も外側の量化子 $\forall x_{j}$ を $t_{j}$ で例化したもの）とすると $V_{k}\equiv\theta$。$\theta$ を含む導出可能なシーケントから出発し、$j=k,k-1,\dots,1$ の順に、弱化（\ref{pt:lk-weakening}）で $V_{j-1}$ を前件に加えてから L$\forall$（主論理式 $V_{j-1}$、前提の $C\equiv V_{j}$）を使うと、$V_{j}$ が前件から消え $V_{j-1}$ が残る。最後に $U_{i}$ が残る。これを $\Theta$ のすべての元について行い、重複した $U_{i}$ を縮約（\ref{pt:lk-contraction}）でまとめれば $U_{1},\dots,U_{m}\Rightarrow$ を得る。
+:::
+
+::: corollary 存在論理式の形（エルブラン選言） {#pt:herbrand-existential keywords="Herbrand disjunction: => exists x A is derivable iff => A(t1),...,A(tn) is" index="エルブラン選言|えるぶらんせんげん"}
+開論理式 $A$ について、$\Rightarrow\exists\vec{x}\,A$ が導出できることと、有限個の項の組について $\Rightarrow A\langle\vec{t}_{1}/\vec{x}\rangle,\dots,A\langle\vec{t}_{n}/\vec{x}\rangle$ が導出できることは同値である。
+:::
+
+::: proof
+$\exists\vec{x}\,A$ は $\neg\forall\vec{x}\,\neg A=(\forall\vec{x}\,(A\to\bot))\to\bot$ の略記である。次の同値を順にたどる（「導出できる」の意味で）。
+1. $\Rightarrow\exists\vec{x}\,A$ と $\forall\vec{x}\,\neg A\Rightarrow\bot$：R$\to$ とその反転（\ref{pt:lk-inversion}）。
+2. $\forall\vec{x}\,\neg A\Rightarrow\bot$ と $\forall\vec{x}\,\neg A\Rightarrow$：後件の $\bot$ はカットのない導出で主論理式にならない（$\bot$ の右規則はなく、Ax の $P$ は原子論理式）ので、導出全体から取り除ける。逆は弱化。
+3. $\forall\vec{x}\,\neg A\Rightarrow$ と $\neg A\langle\vec{t}_{1}/\vec{x}\rangle,\dots,\neg A\langle\vec{t}_{n}/\vec{x}\rangle\Rightarrow$（ある項の組について）：\ref{pt:herbrand}。
+4. 後者と $\Rightarrow A\langle\vec{t}_{1}/\vec{x}\rangle,\dots,A\langle\vec{t}_{n}/\vec{x}\rangle$：前件の $C\to\bot$ は、L$\to$ の反転で後件の $C$ に移り（もう一方の前提 $\bot,\ldots\Rightarrow$ は L$\bot$）、逆は L$\to$ と L$\bot$ による。
+:::
+
+## 問題 {#pt:sec-hb-problems}
+
+::: problem {#pt:prob-hb-drinker}
+「酒飲みの原理」$\exists x\,(P(x)\to\forall y\,P(y))$ は開論理式の形でないが、その一つの例 $\exists x\,\forall y\,(P(x)\to P(y))$ について、エルブラン選言 $\Rightarrow(P(c)\to P(y_{1})),\ldots$ を考えよ。より簡単に、開論理式 $A(x)\defeq(P(x)\to P(f(x)))$ について、$\Rightarrow\exists x\,A$ のエルブラン選言として $\Rightarrow A(c),A(f(c))$ がとれることを確かめよ（$c$ は定数、$f$ は一変数関数記号）。
+:::
+
+::: solution
+$A(c)=P(c)\to P(f(c))$、$A(f(c))=P(f(c))\to P(f(f(c)))$。命題論理として、$P(f(c))$ が偽なら $A(f(c))$ が真、真なら $A(c)$ が真なので、選言 $A(c)\vee A(f(c))$ は恒真で、$\Rightarrow A(c),A(f(c))$ は（R$\to$ と Ax で）導出できる：R$\to$ で $P(c)\Rightarrow P(f(c)),A(f(c))$、さらに R$\to$ で $P(c),P(f(c))\Rightarrow P(f(c)),P(f(f(c)))$ となり Ax。一つの例 $A(t)$ だけでは恒真でない（$P(t)$ 真、$P(f(t))$ 偽とする割り当て）ので、二つの例が必要である。
+:::
+
+::: problem {#pt:prob-hb-necessary}
+後件に量化子を許すとエルブランの補題がそのままでは成り立たない例として、$\forall x\,P(x)\Rightarrow\forall y\,P(y)$ を挙げ、その理由を説明せよ。
+:::
+
+::: solution
+これは導出できる（R$\forall$ で固有変数 $z$ をとり、$\forall x\,P(x)\Rightarrow P(z)$ を L$\forall$ と Ax で導く）。しかし後件 $\forall y\,P(y)$ は開論理式でないので補題の形 $\Theta\Rightarrow\Delta$（$\Delta$ 開）にならない。固有変数 $z$ を後件の例化に使っているため、前件の代入例 $P(z)$ だけを集めても後件の量化子を処理できない。
+:::
+
+::: supplement
+**前提を変えると.** 一般の論理式については、スコーレム化（$\exists$ を新しい関数記号で置き換える）で全称形に帰着させ、エルブランの定理を適用できることが知られている。カット除去から**中間シーケント定理**（冠頭形の論理式のカットのない導出は、量化子を含まない「中間シーケント」を境に命題的な部分と量化子の部分に分けられる）も得られることが知られている（ここでは扱わない）。
+
+**似た定理.** エルブランの定理は、完全性定理の別証明（\ref{logic:page-completeness-alternative}、命題論理への帰着）と同じ精神で、一階の証明可能性を命題論理の有限個の例に帰着させる。自動定理証明の導出原理（レゾリューション）は、この定理を出発点とする。
+
+**高い視点から：証明は有限個の例しか使わない.** 「すべての $x$ について $B(x)$」から矛盾を導く証明は、実際にはどれか有限個の具体的な $x$（項）についての $B$ しか使っていない。カットのない証明ではそのことが目に見える形で残っており、使われた例を集めれば、量化子を消した有限の命題的な矛盾が取り出せる。比喩で言えば、「全員が嘘つきだ」という主張の矛盾を示すのに、実際に尋問した数人の証言だけで十分だったことを、証明の記録から読み取るのである。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

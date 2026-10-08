@@ -1,0 +1,18 @@
+{
+  "id": "top-groups",
+  "title": "位相群",
+  "en": "Topological Groups",
+  "abbr": "位相群",
+  "description": "位相群の定義と例、単位元の近傍による記述、部分群と商空間、分離性、左一様構造と完全正則性、バーコフ–角谷の距離化定理。（資料なし。標準的な議論に従って組み立てた）",
+  "msc": "54H11, 22A05",
+  "prereq": [
+    {
+      "dir": "top-properties",
+      "note": "分離公理・商位相・コンパクト性"
+    },
+    {
+      "dir": "top-uniform",
+      "note": "一様構造と距離化補題"
+    }
+  ]
+}

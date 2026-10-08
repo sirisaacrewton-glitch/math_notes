@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>位相群の一様構造 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54H-connections/01-topological-groups/02-group-uniformities.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 位相群の一様構造 {#top:page-group-uniformities keywords="left uniformity of a topological group, right uniformity, topological groups are completely regular, uniformly continuous homomorphisms, Birkhoff-Kakutani theorem, left-invariant metric"}
+
+位相群には、単位元の近傍 $U$ から「$x^{-1}y\in U$ なら $x$ と $y$ は $U$ 近い」と定めた**左一様構造**（\ref{top:left-uniformity}）が自然に備わっている。これにより、位相群は一様空間（\ref{top:page-uniform-spaces}）の典型例となり、一様化可能性から**完全正則**であることが従う（\ref{top:tg-completely-regular}）。さらに距離化補題（\ref{top:unif-metrization-lemma}）を群の構造に合わせて使うと、第一可算なハウスドルフ位相群は**左不変な距離**で距離化できる（**バーコフ–角谷の定理**、\ref{top:birkhoff-kakutani}）。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。
+
+## 記法と定義の確認 {#top:sec-gu-notation}
+
+::: notation
+- 位相群、単位元の近傍の性質、分離性は \ref{top:topological-group}, \ref{top:tg-neighbourhoods}, \ref{top:tg-separation} のとおり。
+- 一様構造・基の条件・定める位相・一様連続・距離化補題・一様化可能性と完全正則性は \ref{top:uniformity}, \ref{top:unif-base}, \ref{top:unif-topology}, \ref{top:unif-continuous}, \ref{top:unif-metrization-lemma}, \ref{top:uniformizable-completely-regular} のとおり。
+- $e$ の近傍 $U$ について $U_{L}\defeq\{(x,y)\in G\times G:x^{-1}y\in U\}$, $U_{R}\defeq\{(x,y):yx^{-1}\in U\}$ とする。$U_{L}[x]=xU$, $U_{R}[x]=Ux$。
+:::
+
+## 左一様構造 {#top:sec-gu-left}
+
+::: proposition 左一様構造 {#top:left-uniformity keywords="the sets U_L form a base of a uniformity inducing the group topology; left translations are uniform isomorphisms" index="左一様構造|ひだりいちようこうぞう, 右一様構造|みぎいちようこうぞう"}
+位相群 $G$ について、$\{U_{L}:U\text{ は }e\text{ の近傍}\}$ は一様構造 $\mathcal{U}_{L}$（**左一様構造**）の基であり、$\mathcal{U}_{L}$ の定める位相は $G$ の位相に一致する。左平行移動はすべて $\mathcal{U}_{L}$ についての一様同型である。右一様構造 $\mathcal{U}_{R}$ についても同様（右平行移動が一様同型）。
+:::
+
+::: proof
+**基の条件**（\ref{top:unif-base} の 1）。(a) $x^{-1}x=e\in U$ なので $\Delta\subseteq U_{L}$。(b) $(U_{L})^{-1}=\{(y,x):x^{-1}y\in U\}=\{(x,y):y^{-1}x\in U\}=(U^{-1})_{L}$ で、$U^{-1}$ も $e$ の近傍。(c) $VV\subseteq U$ となる $V$（\ref{top:tg-neighbourhoods} の 2）について、$(x,y),(y,z)\in V_{L}$ なら $x^{-1}z=(x^{-1}y)(y^{-1}z)\in VV\subseteq U$ なので $V_{L}\circ V_{L}\subseteq U_{L}$。(d) $U_{L}\cap U'_{L}=(U\cap U')_{L}$。
+
+**位相.** $U_{L}[x]=\{y:x^{-1}y\in U\}=xU$ で、$\{xU\}$ は $x$ の近傍基（\ref{top:tg-neighbourhoods} の 1）。\ref{top:unif-topology} より、$\mathcal{U}_{L}$ の定める位相の近傍基 $U_{L}[x]$ は $G$ の近傍基と一致し、位相は等しい。
+
+**平行移動.** $\lambda_{g}(x)\defeq gx$ について、$(gx)^{-1}(gy)=x^{-1}y$ なので $(\lambda_{g}\times\lambda_{g})^{-1}[U_{L}]=U_{L}$。$\lambda_{g}^{-1}=\lambda_{g^{-1}}$ も同様。
+:::
+
+::: corollary 位相群は完全正則 {#top:tg-completely-regular keywords="every topological group is completely regular; a T0 topological group is Tychonoff" index="位相群の完全正則性|いそうぐんのかんぜんせいそくせい"}
+位相群は完全正則である。特に $T_{0}$ な位相群はチコノフ空間である。
+:::
+
+::: proof
+\ref{top:left-uniformity} より位相群の位相は一様構造から来るので、\ref{top:uniformizable-completely-regular} から完全正則。$T_{0}$ なら $T_{1}$（\ref{top:tg-separation}）。
+:::
+
+::: proposition 一様連続な準同型 {#top:uniform-homomorphism keywords="continuous homomorphisms are uniformly continuous for the left uniformities" index="準同型の一様連続性|じゅんどうけいのいちようれんぞくせい"}
+位相群の間の準同型 $\varphi\colon G\to H$ について、次は同値である：(a) $\varphi$ は $e$ で連続、(b) $\varphi$ は連続、(c) $\varphi$ は左一様構造について一様連続。
+:::
+
+::: proof
+(c) ⇒ (b) は \ref{top:unif-continuous-basic}、(b) ⇒ (a) は明らか。(a) ⇒ (c)：$H$ の単位元の近傍 $W$ について、$\varphi[U]\subseteq W$ となる $e$ の近傍 $U$ をとる。$(x,y)\in U_{L}$ なら $\varphi(x)^{-1}\varphi(y)=\varphi(x^{-1}y)\in W$ なので $(\varphi\times\varphi)[U_{L}]\subseteq W_{L}$、すなわち $U_{L}\subseteq(\varphi\times\varphi)^{-1}[W_{L}]$。
+:::
+
+## バーコフ–角谷の定理 {#top:sec-gu-bk}
+
+::: theorem バーコフ–角谷の定理 {#top:birkhoff-kakutani keywords="Birkhoff-Kakutani: a first countable Hausdorff topological group admits a compatible left-invariant metric" index="バーコフ–角谷の定理|ばーこふかくたにのていり, 左不変距離|ひだりふへんきょり"}
+ハウスドルフな位相群 $G$ が $e$ で可算な近傍基をもつなら、$G$ の位相を定める距離 $d$ で、**左不変**（すべての $g,x,y$ で $d(gx,gy)=d(x,y)$）なものがある。
+:::
+
+::: proof
+**Step 1（近傍の列）.** $e$ の可算な近傍基 $(W_{n})_{n\ge1}$ をとる。$V_{0}\defeq G$ とし、$n\ge0$ について、$e$ の対称な開近傍 $V_{n+1}$ で $V_{n+1}V_{n+1}V_{n+1}\subseteq V_{n}\cap W_{n+1}$ となるものを選ぶ（\ref{top:tg-neighbourhoods} の 2 を二回使う：$V'V'\subseteq V_{n}\cap W_{n+1}$, $V''V''\subseteq V'$ とし、$V_{n+1}\defeq V''$ とすれば $V_{n+1}^{3}\subseteq V''V''V''\subseteq V'V'$。ただし $e\in V''$ を使う）。
+
+**Step 2（近縁の列）.** $U_{n}\defeq(V_{n})_{L}$ とすると、各 $U_{n}$ は対称（$V_{n}$ が対称）で $\Delta$ を含み、$U_{0}=G\times G$、\ref{top:left-uniformity} の (c) と同様に $U_{n+1}\circ U_{n+1}\circ U_{n+1}\subseteq(V_{n+1}^{3})_{L}\subseteq U_{n}$。
+
+**Step 3（擬距離）.** \ref{top:unif-metrization-lemma} の構成で擬距離 $d$ をとると、$U_{n+1}\subseteq\{d<2^{-n}\}\subseteq U_{n}$。
+
+**Step 4（左不変性）.** 補題の構成で、$f(x,y)$ は「$(x,y)\in U_{m}$ となる最大の $m$」で決まり、$(gx,gy)\in U_{m}\iff(x,y)\in U_{m}$（$(gx)^{-1}gy=x^{-1}y$）なので $f(gx,gy)=f(x,y)$。$d(x,y)$ は $x$ から $y$ への有限列 $x=x_{0},\dots,x_{k}=y$ についての $\sum f(x_{i},x_{i+1})$ の下限で、列を $g$ で左から移すと $gx$ から $gy$ への列に一対一に対応し、和は等しい。よって $d(gx,gy)=d(x,y)$。
+
+**Step 5（距離で、位相を定める）.** $d(x,e)=0$ なら $x$ はすべての $V_{n}$ に属し、$V_{n+1}\subseteq W_{n+1}$ で $(W_{n})$ は近傍基なので $x\in\bigcap_{n}W_{n}=\{e\}$（ハウスドルフなので $\{e\}=\bigcap$（$e$ の近傍））。左不変性から $d(x,y)=d(e,x^{-1}y)=0$ なら $x=y$。位相：Step 3 から $\{d<2^{-n}\}$ たちと $U_{n}$ たちは互いに相手を含み合い、$(U_{n})$ は左一様構造の基（$V_{n}\subseteq W_{n}$ なので $\{V_{n}\}$ は $e$ の近傍基）。よって $d$ の距離一様構造は $\mathcal{U}_{L}$ で、その位相は $G$ の位相（\ref{top:left-uniformity}）。
+:::
+
+::: hypcheck
+- **可算な近傍基**：Step 1 で近傍の列を作るのに使った。可算でなければ、一つの擬距離では足りず、擬距離の族が必要になる（\ref{top:uniformity-from-pseudometrics}）。
+- **ハウスドルフ性**：Step 5 で $d$ が距離（$d(x,y)=0\Rightarrow x=y$）であることに使った。
+- **群の構造**：Step 4 で、近縁が左平行移動で不変であることから距離の左不変性を得た。
+:::
+
+## 問題 {#top:sec-gu-problems}
+
+::: problem {#top:prob-gu-left-right}
+$G=GL_{2}(\mathbb{R})$ で、左一様構造と右一様構造が異なることを示せ。（ヒント：$x_{n}=\begin{pmatrix}1&0\\0&n\end{pmatrix}$, $y_{n}=x_{n}\begin{pmatrix}1&0\\1/n&1\end{pmatrix}$ を考える。）
+:::
+
+::: solution
+対角行列 $x_{n}$ による共役は、行列の $(i,j)$ 成分を $n_{i}/n_{j}$ 倍する（$n_{1}=1$, $n_{2}=n$）ので
+$$
+x_{n}^{-1}y_{n}=\begin{pmatrix}1&0\\1/n&1\end{pmatrix}\to I,\qquad y_{n}x_{n}^{-1}=x_{n}\begin{pmatrix}1&0\\1/n&1\end{pmatrix}x_{n}^{-1}=\begin{pmatrix}1&0\\1&1\end{pmatrix}.
+$$
+$I$ の近傍 $U$ で $\begin{pmatrix}1&0\\1&1\end{pmatrix}\notin U$ となるものをとると、すべての $n$ で $(x_{n},y_{n})\notin U_{R}$。もし $\mathcal{U}_{L}=\mathcal{U}_{R}$ なら、$V_{L}\subseteq U_{R}$ となる $I$ の近傍 $V$ があるが、十分大きい $n$ で $x_{n}^{-1}y_{n}\in V$、すなわち $(x_{n},y_{n})\in V_{L}\subseteq U_{R}$ となって矛盾する。
+:::
+
+::: problem {#top:prob-gu-abelian}
+可換な位相群では左一様構造と右一様構造が一致することを示せ。
+:::
+
+::: solution
+可換なら $x^{-1}y=yx^{-1}$ なので $U_{L}=U_{R}$。
+:::
+
+::: supplement
+**前提を変えると.** バーコフ–角谷の定理の「左不変」を「両側不変」（$d(gxh,gyh)=d(x,y)$）に強めると、一般には成り立たない。両側不変な距離があることと、単位元の近傍基で共役で不変なものがあること（SIN 群）は同値であることが知られている（ここでは確かめていない）。また、位相群の完備化には、左右の一様構造の両方を使った両側一様構造（ライコフの完備化）が使われることが知られている。
+
+**似た定理.** \ref{top:uniform-homomorphism} は、ノルム空間の間の線形写像で「連続 $\iff$ 原点で連続 $\iff$ 一様連続（有界）」となることの一般化である。コンパクトな位相群では左右の一様構造は一致し（コンパクトハウスドルフ空間の一様構造は一意なので、\ref{top:compact-unique-uniformity}）、連続関数は自動的に両側で一様連続になる。
+
+**高い視点から：群が「物差しを運ぶ」.** 一般の空間では、点 $x$ の周りの小ささと点 $y$ の周りの小ささを比べる手段がない。位相群では、単位元の近くの小さな集合 $U$ を平行移動で $x$ のところへも $y$ のところへも運べるので、「同じ大きさの近さ」が全体で定まる。これが一様構造であり、距離化補題が刻む目盛りも平行移動で運ばれるので、距離は自動的に左不変になる。比喩で言えば、群は同じ物差しを空間のどこへでも持っていける運搬係であり、物差しの目盛りが可算個で足りれば（第一可算）、本物の距離が得られる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

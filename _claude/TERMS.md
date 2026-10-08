@@ -405,3 +405,4 @@
 | perfect map / upper semicontinuous decomposition / closed equivalence relation | 完全写像 / 上半連続分割 / 閉な同値関係 | 固有写像 | 小山に合わせる。top:page-perfect-maps |
 | Whitehead theorem (products of quotient maps) / topological cone / metric cone | ホワイトヘッドの定理（商写像の積） / 位相的錐 / 距離的錐 | | 小山に合わせる。top:page-quotient-products |
 | completely metrizable / Polish space | 完備距離化可能 / ポーランド空間 | 位相的完備 | 標準的。top:page-complete-metrizability |
+| topological group / coset space / left uniformity / Birkhoff-Kakutani theorem / left-invariant metric | 位相群 / 剰余空間 / 左一様構造 / バーコフ–角谷の定理 / 左不変距離 | 等質空間 | 標準的。top:page-topological-groups |

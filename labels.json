@@ -28729,6 +28729,48 @@
       "num": "2.8",
       "page": "54-general-topology/54A-generalities/01-topological-spaces/02-closure-interior.html"
     },
+    "top:evaluation-continuous": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "評価写像の連続性",
+      "num": "2.4",
+      "page": "54-general-topology/54C-maps-function-spaces/01-function-spaces/02-exponential-law.html"
+    },
+    "top:evaluation-finer-than-compact-open": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "評価写像を連続にする位相",
+      "num": "2.6",
+      "page": "54-general-topology/54C-maps-function-spaces/01-function-spaces/02-exponential-law.html"
+    },
+    "top:exponential-bijective": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "指数写像は全単射",
+      "num": "2.5",
+      "page": "54-general-topology/54C-maps-function-spaces/01-function-spaces/02-exponential-law.html"
+    },
+    "top:exponential-continuous": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "指数写像の連続性",
+      "num": "2.3",
+      "page": "54-general-topology/54C-maps-function-spaces/01-function-spaces/02-exponential-law.html"
+    },
+    "top:exponential-law": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "指数法則",
+      "num": "2.7",
+      "page": "54-general-topology/54C-maps-function-spaces/01-function-spaces/02-exponential-law.html"
+    },
+    "top:exponential-map": {
+      "status": "defined",
+      "type": "definition",
+      "title": "指数写像と評価写像",
+      "num": "2.2",
+      "page": "54-general-topology/54C-maps-function-spaces/01-function-spaces/02-exponential-law.html"
+    },
     "top:extreme-value": {
       "status": "defined",
       "type": "corollary",
@@ -29226,6 +29268,13 @@
       "num": "",
       "page": "54-general-topology/54A-generalities/01-topological-spaces/04-continuous-maps.html"
     },
+    "top:page-exponential-law": {
+      "status": "defined",
+      "type": "page",
+      "title": "指数法則と評価写像",
+      "num": "",
+      "page": "54-general-topology/54C-maps-function-spaces/01-function-spaces/02-exponential-law.html"
+    },
     "top:page-function-space-topologies": {
       "status": "defined",
       "type": "page",
@@ -29498,6 +29547,20 @@
       "title": "",
       "num": "2.9",
       "page": "54-general-topology/54E-richer-structures/01-metric-spaces/02-baire.html"
+    },
+    "top:prob-ex-composition": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "2.9",
+      "page": "54-general-topology/54C-maps-function-spaces/01-function-spaces/02-exponential-law.html"
+    },
+    "top:prob-ex-paths": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "2.10",
+      "page": "54-general-topology/54C-maps-function-spaces/01-function-spaces/02-exponential-law.html"
     },
     "top:prob-finite-t1-discrete": {
       "status": "defined",
@@ -30121,6 +30184,41 @@
       "title": "問題",
       "num": "",
       "page": "54-general-topology/54D-general-properties/01-separation-compactness/02-compactness.html"
+    },
+    "top:sec-ex-evaluation": {
+      "status": "defined",
+      "type": "section",
+      "title": "評価写像の連続性",
+      "num": "",
+      "page": "54-general-topology/54C-maps-function-spaces/01-function-spaces/02-exponential-law.html"
+    },
+    "top:sec-ex-exponential": {
+      "status": "defined",
+      "type": "section",
+      "title": "指数写像",
+      "num": "",
+      "page": "54-general-topology/54C-maps-function-spaces/01-function-spaces/02-exponential-law.html"
+    },
+    "top:sec-ex-law": {
+      "status": "defined",
+      "type": "section",
+      "title": "指数法則",
+      "num": "",
+      "page": "54-general-topology/54C-maps-function-spaces/01-function-spaces/02-exponential-law.html"
+    },
+    "top:sec-ex-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "54-general-topology/54C-maps-function-spaces/01-function-spaces/02-exponential-law.html"
+    },
+    "top:sec-ex-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "54-general-topology/54C-maps-function-spaces/01-function-spaces/02-exponential-law.html"
     },
     "top:sec-fs-comparison": {
       "status": "defined",
@@ -30927,6 +31025,13 @@
       "num": "2.9",
       "page": "54-general-topology/54D-general-properties/01-separation-compactness/02-compactness.html"
     },
+    "top:tube-lemma-compact-subset": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "コンパクト部分集合のチューブ補題",
+      "num": "2.1",
+      "page": "54-general-topology/54C-maps-function-spaces/01-function-spaces/02-exponential-law.html"
+    },
     "top:tychonoff": {
       "status": "defined",
       "type": "theorem",
@@ -31110,13 +31215,6 @@
       "title": "可測基数",
       "referencedFrom": [
         "03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/11-ulam-fodor.html"
-      ]
-    },
-    "top:page-exponential-law": {
-      "status": "planned",
-      "title": "指数法則",
-      "referencedFrom": [
-        "54-general-topology/54C-maps-function-spaces/01-function-spaces/01-function-space-topologies.html"
       ]
     }
   }

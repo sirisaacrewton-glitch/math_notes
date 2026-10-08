@@ -368,3 +368,4 @@
 | bicategory / span / bimodule / monad in a bicategory / lax functor | 双圏 / スパン / 両側加群 / 双圏の中のモナド / 緩い関手 | 弱 2 圏 | 双圏・スパンは標準的。緩い関手は仮。cat:page-bicategories |
 | crossed module / Peiffer identity / precrossed module / reflexive graph / cat-group | 交差加群 / パイエルの等式 / 前交差加群 / 反射的グラフ / 群の中の圏 | 厳密 2 群 | 交差加群は標準的。他は仮。cat:page-crossed-modules |
 | topology of pointwise convergence / compact-open topology / topology of uniform convergence / uniform convergence on compacta | 各点収束位相 / コンパクト開位相 / 一様収束位相 / コンパクト集合上の一様収束（広義一様収束） | | 標準的。top:page-function-space-topologies |
+| exponential map / evaluation map / exponential law | 指数写像 / 評価写像 / 指数法則 | カリー化 | 指数写像は小山の用語。top:page-exponential-law |

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>指数法則と評価写像 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54C-maps-function-spaces/01-function-spaces/02-exponential-law.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 指数法則と評価写像 {#top:page-exponential-law keywords="exponential map, exponential law, evaluation map, currying, compact-open topology, locally compact Hausdorff, splitting topology, admissible topology, separately continuous"}
+
+二変数の連続写像 $f\colon Z\times X\to Y$ は、$z$ を固定すれば $X\to Y$ の連続写像 $f(z,-)$ を与えるので、写像 $\Phi(f)\colon Z\to C(X,Y)$ が得られる（**指数写像**、\ref{top:exponential-map}）。$C(X,Y)$ にコンパクト開位相を入れれば $\Phi(f)$ はつねに連続である（\ref{top:exponential-continuous}）。逆向き、すなわち連続写像 $g\colon Z\to C(X,Y)$ から二変数の連続写像を作るには**評価写像** $C(X,Y)\times X\to Y$ の連続性が要り、これは $X$ が局所コンパクトハウスドルフなら成り立つ（\ref{top:evaluation-continuous}）。このとき $\Phi$ は全単射で、さらに $Z$ がハウスドルフなら同相写像になる（**指数法則**、\ref{top:exponential-law}）。
+
+> 資料：小山晃『位相空間論』第 10 章 §10.2 を参考にした（本文は写していない）。同書の「局所コンパクト」はハウスドルフ性を含むので、本ページではそれを明示した。チューブ補題は、本サイトの版（\ref{top:tube-lemma}）が $\{x\}\times Y$（$Y$ 全体がコンパクト）の形なので、コンパクト部分集合の形（\ref{top:tube-lemma-compact-subset}）に言い直して使った。
+
+## 記法と定義の確認 {#top:sec-ex-notation}
+
+::: notation
+- $C(X,Y)$, $M(A,B)$, 各点収束位相 $C_{p}$, コンパクト開位相 $C_{c}$, 一様収束位相 $C_{u}$ は \ref{top:page-function-space-topologies} のとおり。
+- 局所コンパクトハウスドルフ空間の点の近傍で、閉包がコンパクトなものが基本近傍系をなすこと（\ref{top:lch-neighborhood-base}）、コンパクトハウスドルフ空間は正規（\ref{top:compact-hausdorff-normal}）、正規空間の有限開被覆の縮小（\ref{top:shrinking-lemma}）、コンパクト集合の基本性質（\ref{top:compact-basic}）を使う。
+- 部分空間の直積は直積の部分空間である（\ref{top:prob-product-of-subspaces}）。
+:::
+
+::: lemma コンパクト部分集合のチューブ補題 {#top:tube-lemma-compact-subset keywords="tube lemma for a compact subset" index="チューブ補題（コンパクト部分集合）|ちゅーぶほだいこんぱくとぶぶんしゅうごう"}
+$C\subseteq X$ をコンパクト部分集合とする。$Z\times X$ の開集合 $W$ が $\{z\}\times C$ を含むなら、$z$ の開近傍 $V$ で $V\times C\subseteq W$ となるものがある。
+:::
+
+::: proof
+$Z\times C$ は $Z\times X$ の部分空間（\ref{top:prob-product-of-subspaces}）で、$W\cap(Z\times C)$ はその開集合で $\{z\}\times C$ を含む。$C$ はコンパクト空間なので、チューブ補題（\ref{top:tube-lemma}）を $Z\times C$ に使えばよい。
+:::
+
+## 指数写像 {#top:sec-ex-exponential}
+
+::: definition 指数写像と評価写像 {#top:exponential-map keywords="exponential map, currying, evaluation map" index="指数写像|しすうしゃぞう, 評価写像|ひょうかしゃぞう"}
+写像 $f\colon Z\times X\to Y$ について $\Phi(f)\colon Z\to Y^{X}$ を $\Phi(f)(z)(x)\defeq f(z,x)$ で定める（**指数写像**。$Y^{X}$ は写像の全体）。逆に $g\colon Z\to Y^{X}$ について $\Psi(g)(z,x)\defeq g(z)(x)$ とおくと、$\Phi$ と $\Psi$ は互いに逆の全単射である。$\mathrm{ev}\colon C(X,Y)\times X\to Y$, $(f,x)\mapsto f(x)$ を**評価写像**という。$\Psi(g)=\mathrm{ev}\circ(g\times1_{X})$ である。
+:::
+
+$f$ が連続なら、各 $z$ で $x\mapsto(z,x)$ は連続なので $\Phi(f)(z)\in C(X,Y)$。
+
+::: theorem 指数写像の連続性 {#top:exponential-continuous keywords="the exponential of a continuous map is continuous into the compact-open topology" index="指数写像の連続性|しすうしゃぞうのれんぞくせい"}
+任意の位相空間 $Z,X,Y$ と連続写像 $f\colon Z\times X\to Y$ について、$\Phi(f)\colon Z\to C_{c}(X,Y)$ は連続である。
+:::
+
+::: proof
+準開基 $M(C,U)$ の逆像が開であることを示す。$z\in\Phi(f)^{-1}(M(C,U))$、すなわち $f(\{z\}\times C)\subseteq U$ とする。$W\defeq f^{-1}(U)$ は開で $\{z\}\times C$ を含むので、\ref{top:tube-lemma-compact-subset} から $z$ の開近傍 $V$ で $V\times C\subseteq W$ となるものがある。$z'\in V$ なら $f(\{z'\}\times C)\subseteq U$、すなわち $\Phi(f)(V)\subseteq M(C,U)$。
+:::
+
+::: example 一様収束位相・各点収束位相では
+1. **一様収束位相では成り立たない.** $Z=X=Y=\R$, $f(z,x)\defeq zx$ とする。$z\neq z'$ なら $\sup_{x}\min(|z-z'||x|,1)=1$ なので、$C_{u}(\R,\R)$ で $\Phi(f)(z)$ と $\Phi(f)(z')$ の距離はつねに $1$ で、$\Phi(f)\colon\R\to C_{u}(\R,\R)$ は連続でない（像が離散的）。
+2. **各点収束位相では逆が成り立たない.** $h(z,x)\defeq2zx/(z^{2}+x^{2})$（$(z,x)\neq(0,0)$）、$h(0,0)\defeq0$ とすると、$h$ は各変数について連続だが、$h(t,t)=1$ なので原点で連続でない。$g(z)\defeq h(z,-)\in C(\R,\R)$ で、$z\mapsto g(z)(x)=h(z,x)$ は各 $x$ で連続なので、\ref{top:pointwise-is-product} から $g\colon\R\to C_{p}(\R,\R)$ は連続。しかし $\Psi(g)=h$ は連続でない。
+:::
+
+## 評価写像の連続性 {#top:sec-ex-evaluation}
+
+::: theorem 評価写像の連続性 {#top:evaluation-continuous keywords="evaluation map is continuous for locally compact Hausdorff domain" index="評価写像の連続性|ひょうかしゃぞうのれんぞくせい"}
+$X$ が局所コンパクトハウスドルフなら、任意の $Y$ について $\mathrm{ev}\colon C_{c}(X,Y)\times X\to Y$ は連続である。
+:::
+
+::: proof
+$(f,x)$ と $f(x)$ の開近傍 $U$ をとる。$f$ の連続性から $x$ の開近傍 $V$ で $f(V)\subseteq U$ となるものがあり、\ref{top:lch-neighborhood-base} から $x$ の開近傍 $W$ で $\overline{W}$ がコンパクトかつ $\overline{W}\subseteq V$ となるものがある。$M(\overline{W},U)\times W$ は $(f,x)$ の開近傍で、$(g,x')$ がそこに属すれば $g(x')\in g(\overline{W})\subseteq U$。
+:::
+
+::: corollary 指数写像は全単射 {#top:exponential-bijective keywords="for locally compact Hausdorff X the exponential map is a bijection" index="指数写像の全単射性|しすうしゃぞうのぜんたんしゃせい"}
+$X$ が局所コンパクトハウスドルフなら、任意の $Z,Y$ について、$\Phi$ は全単射 $C(Z\times X,Y)\to C(Z,C_{c}(X,Y))$ を与える。
+:::
+
+::: proof
+\ref{top:exponential-continuous} から $\Phi$ は $C(Z\times X,Y)$ を $C(Z,C_{c}(X,Y))$ に移す。逆に $g\in C(Z,C_{c}(X,Y))$ なら $\Psi(g)=\mathrm{ev}\circ(g\times1_{X})$ は連続写像の合成なので連続（\ref{top:evaluation-continuous}）。$\Phi,\Psi$ は互いに逆。
+:::
+
+::: proposition 評価写像を連続にする位相 {#top:evaluation-finer-than-compact-open keywords="any topology making evaluation continuous is finer than the compact-open topology" index="評価写像を連続にする位相|ひょうかしゃぞうをれんぞくにするいそう"}
+$C(X,Y)$ の位相 $\mathcal{T}$ について、$\mathrm{ev}\colon(C(X,Y),\mathcal{T})\times X\to Y$ が連続なら、$\mathcal{T}$ はコンパクト開位相より強い。したがって $X$ が局所コンパクトハウスドルフなら、コンパクト開位相は評価写像を連続にする最も弱い位相である。
+:::
+
+::: proof
+準開基 $M(C,U)$ の点 $f$ をとる。$\mathrm{ev}^{-1}(U)$ は $(C(X,Y),\mathcal{T})\times X$ の開集合で $\{f\}\times C$ を含む。\ref{top:tube-lemma-compact-subset} から、$f$ の $\mathcal{T}$ 開近傍 $O$ で $O\times C\subseteq\mathrm{ev}^{-1}(U)$、すなわち $O\subseteq M(C,U)$ となるものがある。よって $M(C,U)\in\mathcal{T}$。後半は \ref{top:evaluation-continuous} と合わせて。
+:::
+
+## 指数法則 {#top:sec-ex-law}
+
+::: theorem 指数法則 {#top:exponential-law keywords="exponential law: C(Z x X, Y) is homeomorphic to C(Z, C(X,Y)) for locally compact Hausdorff X and Hausdorff Z" index="指数法則|しすうほうそく"}
+$X$ が局所コンパクトハウスドルフ、$Z$ がハウスドルフなら、任意の $Y$ について
+$$
+\Phi\colon C_{c}(Z\times X,Y)\to C_{c}(Z,C_{c}(X,Y))
+$$
+は同相写像である。
+:::
+
+::: proof
+\ref{top:exponential-bijective} から $\Phi$ は全単射で、逆は $\Psi$。
+
+**Step 1（$\Phi$ の連続性）.** $C_{c}(Z,C_{c}(X,Y))$ の位相は $M(C',O)$（$C'\subseteq Z$ コンパクト、$O$ は $C_{c}(X,Y)$ の開集合）で生成されるが、$O$ を準開基の有限共通部分の和に分解すると $M(C',O)$ は $M(C',M(C,U))$ の形から生成されるとは限らない。そこで、$\Phi(f)\in M(C',O)$ から直接始める。$\Phi(f)(C')$ は $C_{c}(X,Y)$ のコンパクト集合で $O$ に含まれる。各 $z\in C'$ について、$\Phi(f)(z)\in\bigcap_{j}M(C_{z,j},U_{z,j})\subseteq O$ となる準開基の有限共通部分をとり、$f(\{z\}\times C_{z,j})\subseteq U_{z,j}$ と \ref{top:tube-lemma-compact-subset} から、$z$ の開近傍 $V_{z}$ で $f(V_{z}\times C_{z,j})\subseteq U_{z,j}$（すべての $j$）となるものをとる。$Z$ はハウスドルフで $C'$ はコンパクトなので、$C'$ は正則（\ref{top:compact-hausdorff-normal}）で、$z$ の $C'$ での閉近傍 $E_{z}\subseteq V_{z}$ がとれる。$C'$ のコンパクト性から有限個の $E_{z_{1}},\dots,E_{z_{r}}$ の内部が $C'$ を覆う。$E_{z_{k}}$ はコンパクトで、
+$$
+N\defeq\bigcap_{k}\bigcap_{j}M\bigl(E_{z_{k}}\times C_{z_{k},j},\,U_{z_{k},j}\bigr)
+$$
+は $f$ を含む $C_{c}(Z\times X,Y)$ の開集合（$E\times C$ はコンパクト）。$f'\in N$, $z\in C'$ なら $z\in E_{z_{k}}$ となる $k$ があり、すべての $j$ で $f'(\{z\}\times C_{z_{k},j})\subseteq U_{z_{k},j}$、すなわち $\Phi(f')(z)\in\bigcap_{j}M(C_{z_{k},j},U_{z_{k},j})\subseteq O$。よって $\Phi(N)\subseteq M(C',O)$。
+
+**Step 2（$\Psi$ の連続性）.** $g\in C(Z,C_{c}(X,Y))$ とし、$\Psi(g)\in M(C,U)$（$C\subseteq Z\times X$ コンパクト）とする。$\Psi(g)$ は連続なので $C\subseteq\Psi(g)^{-1}(U)$ は開集合に含まれ、直積の開基から、有限個の開集合 $W_{i}\subseteq Z$, $V_{i}\subseteq X$ で $C\subseteq\bigcup_{i}(W_{i}\times V_{i})\subseteq\Psi(g)^{-1}(U)$ となるものがある（$C$ のコンパクト性）。$Z\times X$ はハウスドルフ（\ref{top:hausdorff-properties}）なので $C$ はコンパクトハウスドルフ、したがって正規で、$C$ の有限開被覆 $\{C\cap(W_{i}\times V_{i})\}$ の縮小（\ref{top:shrinking-lemma}）として、$C$ の閉集合 $D_{i}\subseteq W_{i}\times V_{i}$ で $\bigcup_{i}D_{i}=C$ となるものがある。$D_{i}$ はコンパクトなので、射影 $A_{i}\defeq p_{Z}(D_{i})\subseteq W_{i}$, $B_{i}\defeq p_{X}(D_{i})\subseteq V_{i}$ はコンパクト。$A_{i}\times B_{i}\subseteq W_{i}\times V_{i}$ なので $g(A_{i})\subseteq M(B_{i},U)$。よって
+$$
+N'\defeq\bigcap_{i}M\bigl(A_{i},M(B_{i},U)\bigr)
+$$
+は $g$ の開近傍で、$g'\in N'$ なら $\Psi(g')(D_{i})\subseteq\Psi(g')(A_{i}\times B_{i})\subseteq U$、したがって $\Psi(g')(C)\subseteq U$。$\Psi(N')\subseteq M(C,U)$。
+:::
+
+::: hypcheck
+- **$X$ の局所コンパクトハウスドルフ性**：$\Psi(g)$ が連続であること（全単射性）に使った（評価写像の連続性）。
+- **$Z$ のハウスドルフ性**：Step 1 で $C'$ の正則性（閉近傍 $E_{z}$）に、Step 2 で $Z\times X$ のハウスドルフ性から $C$ が正規であること（縮小補題）に使った。
+- **チューブ補題**：Step 1 で、$f(\{z\}\times C)\subseteq U$ を $z$ の近傍に広げるのに使った。
+:::
+
+::: remark
+Step 1 では、$C_{c}(X,Y)$ の開集合 $O$ を準開基の形に限らずに扱った。$M(C',-)$ は有限共通部分と可換（$M(C',O_{1}\cap O_{2})=M(C',O_{1})\cap M(C',O_{2})$）だが和集合とは可換でないので、「$O$ が準開基 $M(C,U)$ の場合だけ示せばよい」とはいえないからである（コンパクト集合 $\Phi(f)(C')$ が一つの準開基に収まるとは限らない）。
+:::
+
+## 問題 {#top:sec-ex-problems}
+
+::: problem {#top:prob-ex-composition}
+$Y$ が局所コンパクトハウスドルフなら、合成 $C_{c}(Y,W)\times C_{c}(X,Y)\to C_{c}(X,W)$, $(g,f)\mapsto g\circ f$ は連続であることを示せ。
+:::
+
+::: solution
+$g\circ f\in M(K,U)$（$K\subseteq X$ コンパクト、$U\subseteq W$ 開）とする。$f(K)$ はコンパクトで $g^{-1}(U)$ に含まれる。$f(K)$ の各点 $y$ に、\ref{top:lch-neighborhood-base} から開近傍 $Q_{y}$ で $\overline{Q_{y}}$ がコンパクトかつ $\overline{Q_{y}}\subseteq g^{-1}(U)$ となるものをとり、有限個で $f(K)$ を覆う：$Q\defeq Q_{y_{1}}\cup\dots\cup Q_{y_{n}}$, $L\defeq\overline{Q_{y_{1}}}\cup\dots\cup\overline{Q_{y_{n}}}$（コンパクト、$\subseteq g^{-1}(U)$）。$M(L,U)\times M(K,Q)$ は $(g,f)$ の開近傍で、$(g',f')$ がそこに属すれば $g'(f'(K))\subseteq g'(Q)\subseteq g'(L)\subseteq U$。
+:::
+
+::: problem {#top:prob-ex-paths}
+$X=[0,1]$, $Z$ を任意の空間とする。ホモトピー $H\colon Z\times[0,1]\to Y$ と、連続写像 $Z\to C_{c}([0,1],Y)$（「道の空間」への写像）が一対一に対応することを示せ。
+:::
+
+::: solution
+$[0,1]$ はコンパクトハウスドルフなので局所コンパクトハウスドルフで、\ref{top:exponential-bijective} から $\Phi$ は全単射 $C(Z\times[0,1],Y)\to C(Z,C_{c}([0,1],Y))$。$Z$ がハウスドルフなら \ref{top:exponential-law} からこれは同相でもある。
+:::
+
+::: supplement
+**前提を変えると.** $X$ が局所コンパクトでないと評価写像は一般に連続でなく（たとえば $X=\mathbb{Q}$ のとき、$C_{c}(\mathbb{Q},\R)\times\mathbb{Q}\to\R$ は連続でないことが知られている。ここでは確かめていない）、指数法則も成り立たない。この不都合を避けるため、位相空間の圏をコンパクト生成ハウスドルフ空間に制限し、積と関数空間の位相を「ケリー化」すると、局所コンパクト性の仮定なしに指数法則が成り立つ（\ref{cat:cghaus-ccc}）。
+
+**似た定理.** \ref{top:evaluation-finer-than-compact-open} の逆側として、「$\Phi(f)$ をつねに連続にする位相」はコンパクト開位相より弱い位相である（\ref{top:exponential-continuous} はコンパクト開位相がそのような位相であることを示す）。両方を満たす位相が存在するのは、ちょうど $X$ が（ハウスドルフの場合）局所コンパクトのときであることが知られている（Arens–Dugundji の理論とされる。ここでは扱わない）。
+
+**高い視点から：指数法則は随伴.** \ref{top:exponential-bijective} は、$X$ が局所コンパクトハウスドルフなら、関手 $-\times X$ が $C_{c}(X,-)$ の左随伴であること（\ref{cat:adjunction}）を言っている：$\mathbf{Top}(Z\times X,Y)\cong\mathbf{Top}(Z,C_{c}(X,Y))$。評価写像はこの随伴の余単位にあたる。比喩で言えば、「二つの入力をとる機械」と「一つ目の入力を受け取ると、二つ目の入力を待つ機械を返す機械」は同じもの（カリー化）であり、位相空間の世界でこの読み替えが連続性を保つための条件が局所コンパクト性である。プログラミングのカリー化（\ref{logic:page-ccc-semantics}）と同じ構造が、ここでは位相の問題として現れている。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

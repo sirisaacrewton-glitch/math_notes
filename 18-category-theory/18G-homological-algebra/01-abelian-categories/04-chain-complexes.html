@@ -149,6 +149,18 @@ $$
 - **$\partial\partial=0$**：\ref{ha:homology-four-term} で $\bar{\partial}$ を定義するのに使った。
 :::
 
+::: proposition 連結射のジグザグと自然性 {#ha:connecting-natural keywords="zig-zag formula for the connecting homomorphism; naturality of the long exact sequence" index="連結射の自然性|れんけつしゃのしぜんせい"}
+$R$ 加群の鎖複体の短完全列 $A\xrightarrow{i}B\xrightarrow{p}C$ について、次が成り立つ。
+1. （ジグザグ）サイクル $c\in Z_{n}(C)$ について、$p(b)=c$ となる $b\in B_{n}$ をとると、$\partial b=i(a)$ となる $a\in Z_{n-1}(A)$ がただ一つあり、$\delta_{n}[c]=[a]$。
+2. （自然性）鎖複体の短完全列の射 $(\alpha,\beta,\gamma)\colon(A\to B\to C)\to(A'\to B'\to C')$（各四角が可換な鎖写像の組）について、$\delta'_{n}\circ H_{n}(\gamma)=H_{n-1}(\alpha)\circ\delta_{n}$。
+:::
+
+::: proof
+**1.** $p\partial b=\partial pb=\partial c=0$ なので $\partial b\in\ker p=\mathrm{im}\,i$、$i$ は単射なので $a$ は一意で、$i(\partial a)=\partial\partial b=0$ から $a$ はサイクル。$\delta_{n}$ は Step 2 の図式の連結射なので、\ref{ha:connecting-morphism}（加群ではメンバーは元と同じに扱える）から、$Q_{n}(C)$ の元 $\bar{c}$ を $Q_{n}(B)$ の元 $\bar{b}$ に持ち上げ、$\bar{\partial}\bar{b}=\partial b$ を $Z_{n-1}(A)$ の元 $a$ から来るとみたときの類 $[a]$ が $\delta_{n}[c]$ である。
+
+**2.** $c\in Z_{n}(C)$ と 1 の $b,a$ をとる。$p'(\beta b)=\gamma(pb)=\gamma c$ なので、$\gamma c$ の持ち上げとして $\beta b$ がとれ、$\partial\beta b=\beta\partial b=\beta i(a)=i'(\alpha a)$。1 から $\delta'_{n}[\gamma c]=[\alpha a]$、すなわち $\delta'_{n}H_{n}(\gamma)[c]=H_{n-1}(\alpha)\delta_{n}[c]$。
+:::
+
 ## 鎖ホモトピー {#ha:sec-cc-homotopy}
 
 ::: definition 鎖ホモトピー {#ha:chain-homotopy keywords="chain homotopy, homotopic chain maps, contracting homotopy" index="鎖ホモトピー|さほもとぴー, 可縮（鎖複体）|かしゅくさふくたい"}
@@ -182,7 +194,7 @@ $Z_{1}=\mathrm{Ker}(2\cdot)=0$ なので $H_{1}=0$。$Z_{0}=\mathbb{Z}$（$\part
 :::
 
 ::: supplement
-**前提を変えると.** 長完全列の構成は、アーベル圏の公理（核・余核・像の分解と、モノは核・エピは余核）だけを使っている。前加法圏や加法圏ではホモロジーは定義できても、蛇の補題が成り立つとは限らない。連結射 $\delta$ は鎖複体の短完全列の射について自然であることが知られている（ここでは確かめていない）。
+**前提を変えると.** 長完全列の構成は、アーベル圏の公理（核・余核・像の分解と、モノは核・エピは余核）だけを使っている。前加法圏や加法圏ではホモロジーは定義できても、蛇の補題が成り立つとは限らない。連結射 $\delta$ は鎖複体の短完全列の射について自然である（加群の場合は \ref{ha:connecting-natural}。一般のアーベル圏でもメンバーを使って同じ議論ができる）。
 
 **似た定理.** \ref{ha:homotopy-invariance} の後半は、群環の棒分解の完全性の証明（\ref{cat:bar-resolution-exact}）で使った「可縮ホモトピーがあれば完全」の一般形である（そこでは $s$ はアーベル群の射で、完全性はアーベル群としての主張だった）。単体的対象の交代和の鎖複体（\ref{cat:simplicial-chain-complex}）のホモロジーが、特異ホモロジーや群のホモロジーを与える。
 

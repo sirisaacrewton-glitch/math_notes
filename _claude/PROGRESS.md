@@ -335,6 +335,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 ホモロジー代数 HA-04 に命題「連結射のジグザグと自然性」（加群の場合）を追加し、補足の「確かめていない」を参照に変更。
 - 2026-10-08 ホモロジー代数 HD-07（18G/02-derived-functors/07-ext-injective, ha:page-ext-injective：双対性による右導来関手、入射的な第二変数での Ext の消滅、次元ずらしによる Ext の平衡性（各 a,b ごとの同型。自然性は未確認と明記）、入射性の Ext¹ による特徴づけ、Q と Q/Z による計算と Z 上の Ext^n=0（n≥2）の問題）。01・03・04 の「確かめていない」を参照に変更。資料なし。
 - 2026-10-08 圏論 CS-10（18A/02-structured-categories/10-doctrinal-adjunction, cat:page-doctrinal-adjunction：転置の規則、強モノイダルな左随伴の右随伴に緩いモノイダル構造（自然性・結合・単位を転置で F の公理に帰着）、Ab→Set の忘却関手の構造の再導出、積の場合と強でない例の問題）。06-monoidal-functors の補足から参照。資料なし。
 - 2026-10-08 圏論 C2-05（18A/05-higher-structures/05-segal-condition, cat:page-segal-condition：単体の頂点・辺・背骨とセガール写像、辺の変換の補題、神経はセガール条件を満たす、辺の合成 x_ik=x_jk∘x_ij、神経の特徴づけ（圏の復元と自然な同型）、神経関手の本質的な像、中身のない三角形と特異単体の問題）。01-internal-categories の補足から参照。資料なし。

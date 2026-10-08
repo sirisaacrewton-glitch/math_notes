@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>有理数の位相的特徴づけ | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54D-general-properties/01-separation-compactness/16-rationals-characterization.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 有理数の位相的特徴づけ {#top:page-rationals-characterization keywords="Sierpinski's theorem: every countable metrizable space without isolated points is homeomorphic to Q, zero-dimensional countable metric spaces, clopen partitions, lexicographic order, Cantor's back-and-forth theorem"}
+
+有理数全体 $\mathbb{Q}$ は、可算・距離化可能・孤立点がない、という三つの性質で位相的に特徴づけられる（**シェルピンスキーの定理**、\ref{top:sierpinski-q}）。たとえば $\mathbb{Q}\times\mathbb{Q}$ や $\mathbb{Q}$ の中のカントール集合の有理点なども、すべて $\mathbb{Q}$ と同相である。証明は、空間を細かい開かつ閉な集合（**閉開集合**）に入れ子に分割していき（\ref{top:clopen-partitions}）、その分割に沿った辞書式順序で空間を**端点のない可算な稠密線形順序**にし（\ref{top:partition-order}）、その順序位相がもとの位相と一致することを示して、カントールの定理（\ref{model:cantor-dlo}）で $\mathbb{Q}$ と順序同型にする、という流れで行う。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論の一つに従って組み立てた。
+
+## 記法と定義の確認 {#top:sec-sq-notation}
+
+::: notation
+- $(X,d)$ は距離空間、$\mathrm{diam}\,A\defeq\sup\{d(x,y):x,y\in A\}$。開かつ閉な集合を**閉開集合**という。
+- 順序位相とその開基は \ref{top:order-topology}, \ref{top:order-topology-base}。$(\mathbb{Q},<)$ の順序位相は通常の位相（距離位相）と一致する。順序同型は順序位相の同相を与える（開区間を開区間に移す）。
+- カントールの定理：端点のない可算な稠密線形順序は $(\mathbb{Q},<)$ と順序同型（\ref{model:cantor-dlo}）。
+:::
+
+## 閉開集合の入れ子の分割 {#top:sec-sq-partitions}
+
+::: lemma 可算距離空間の閉開基 {#top:countable-metric-clopen keywords="a countable metric space has a base of clopen balls" index="可算距離空間の閉開基|かさんきょりくうかんのへいかいき"}
+可算な距離空間 $X$ の各点 $x$ と $r>0$ について、閉開集合 $C$ で $x\in C\subseteq\{y:d(x,y)<r\}$ となるものがある。
+:::
+
+::: proof
+$\{d(x,y):y\in X\}$ は可算なので、それに属さない $r'\in(0,r)$ がある。$C\defeq\{y:d(x,y)<r'\}=\{y:d(x,y)\le r'\}$ は開かつ閉。
+:::
+
+::: lemma 閉開集合の入れ子の分割 {#top:clopen-partitions keywords="refining sequence of countable clopen partitions with mesh tending to 0, each piece split into at least three, chosen point placed in a middle piece" index="閉開集合の分割|へいかいしゅうごうのぶんかつ"}
+$X$ を孤立点のない可算な距離空間（空でない）とし、$X$ の点を $x_{0},x_{1},\ldots$ と並べる（重複可、各点が無限回現れるように）。次を満たす分割の列 $\mathcal{P}_{0}=\{X\},\mathcal{P}_{1},\ldots$ と、各分割の元の子への線形順序がある。
+1. $\mathcal{P}_{n+1}$ の元は $\mathcal{P}_{n}$ のある元（**親**）に含まれる空でない閉開集合で、各 $A\in\mathcal{P}_{n}$ は $\mathcal{P}_{n+1}$ の自分の**子**（可算個、$3$ 個以上）の和である。子には順序型が有限か $\omega$ の線形順序が与えられている。
+2. $\mathcal{P}_{n+1}$ の元の直径は $1/(n+1)$ 未満。
+3. $x_{n}$ を含む $\mathcal{P}_{n+1}$ の元は、親の子の中で**最初でも最後でもない**。
+:::
+
+::: proof
+$A\in\mathcal{P}_{n}$ を分割する。$A$ は空でない閉開集合で孤立点をもたないので無限集合。$A$ の点を $a_{0},a_{1},\ldots$ と並べ、\ref{top:countable-metric-clopen} で $a_{j}\in C_{j}\subseteq A$、直径 $<1/(n+1)$ の閉開集合 $C_{j}$ をとって（$A$ は開なので小さい球は $A$ に入る）、$D_{j}\defeq C_{j}\setminus\bigcup_{i<j}C_{i}$ のうち空でないものを並べると、$A$ の閉開集合による分割が得られる。個数が $3$ 未満なら、ある元を二つの空でない閉開集合に分ける（無限な閉開集合 $D$ の相異なる二点 $u,v$ について、\ref{top:countable-metric-clopen} で $u\in E\subseteq D$, $v\notin E$ となる閉開集合 $E$ をとり、$E$ と $D\setminus E$ に分ける）。こうして $3$ 個以上の子を得る。子を $D_{j}$ の添字の順に並べ（型は有限か $\omega$）、$x_{n}\in A$ なら、$x_{n}$ を含む子と最初の子・（有限なら）最後の子が異なるように並べ替える（$3$ 個以上あるので、$x_{n}$ の子を二番目に置き、有限なら最後の子をそれ以外にすればよい）。
+:::
+
+## 辞書式順序 {#top:sec-sq-order}
+
+各 $x\in X$ と $n$ について、$x$ を含む $\mathcal{P}_{n}$ の元を $A_{n}(x)$ と書く。$x\ne y$ なら、直径の条件から $A_{n}(x)\ne A_{n}(y)$ となる最小の $n\ge1$ があり、$A_{n}(x)$, $A_{n}(y)$ は同じ親の異なる子である。その子の順序で $A_{n}(x)$ が先のとき $x\prec y$ と定める。
+
+::: lemma 分割による順序 {#top:partition-order keywords="the lexicographic order along the partitions is a countable dense linear order without endpoints whose order topology is the metric topology" index="分割による順序|ぶんかつによるじゅんじょ"}
+$\prec$ は $X$ 上の線形順序で、端点がなく稠密で、その順序位相は $X$ の距離位相と一致する。さらに、各 $A\in\mathcal{P}_{n}$ は $\prec$ について凸（$x\prec z\prec y$, $x,y\in A$ なら $z\in A$）である。
+:::
+
+::: proof
+**線形順序.** 反射律・反対称律と全順序性は定義から。推移律：$x\prec y\prec z$ で、$x,y$ が初めて分かれる段を $n$、$y,z$ を $m$ とする。$n\le m$ なら段 $n$ で $A_{n}(y)=A_{n}(z)$ なので、$x$ と $z$ も段 $n$ で初めて分かれ $x\prec z$。$m<n$ も同様。
+
+**凸性.** $x,y\in A\in\mathcal{P}_{n}$ で $x\prec z\prec y$ なら、$z$ と $x$ が段 $n$ 以前に分かれると、その段で $z$ の元は $x$（したがって $y$）の元の後かつ前になり矛盾。
+
+**最初・最後に居続けない.** 各点 $x$ は無限個の $n$ で $x=x_{n}$ なので、無限個の段で $A_{n+1}(x)$ は親の子の最初でも最後でもない。
+
+**端点がない・稠密.** $x\prec y$ とし、初めて分かれる段を $n$ とする。$x$ が段 $m>n$ で最後の子でない（そのような $m$ がある）とすると、$A_{m}(x)$ の後の兄弟 $B$（$A_{m-1}(x)$ の子）の点 $z$ は $x\prec z$ で、$z\in A_{n}(x)$ なので $z\prec y$。端点がないことも同様（最初・最後の子に居続ける点がない）。
+
+**位相の一致.** (a) $A\in\mathcal{P}_{n}$ と $x\in A$ について、$x$ が最初の子でない段 $m>n$ をとると、前の兄弟の点 $a$ は $a\prec x$, $a\in A$ で、凸性から $(a,x]\subseteq A$。同様に $b\succ x$ で $[x,b)\subseteq A$。よって $(a,b)$ は $x$ を含み $A$ に含まれ、$A$ は順序位相で開。分割の元は直径が $0$ に近づくので距離位相の開基をなし、距離位相の開集合は順序位相で開。(b) 開区間 $(a,b)$ と $x\in(a,b)$ について、$a,x,b$ が相異なるので、ある段 $n$ で $A_{n}(x)$ は $a$ も $b$ も含まない。$A_{n}(x)$ は凸で $x$ を含むので $(a,b)$ に含まれる（含まれなければ、$A_{n}(x)$ の点で $a$ 以下または $b$ 以上のものがあり、凸性から $a$ または $b$ を含む）。$A_{n}(x)$ は距離位相で開なので、$(a,b)$ は距離位相で開。半直線も同様。
+:::
+
+## シェルピンスキーの定理 {#top:sec-sq-theorem}
+
+::: theorem シェルピンスキーの定理 {#top:sierpinski-q keywords="every nonempty countable metrizable space without isolated points is homeomorphic to Q" index="シェルピンスキーの定理（有理数）|しぇるぴんすきーのていりゆうりすう"}
+（AC）空でない可算な距離化可能空間で孤立点をもたないものは、$\mathbb{Q}$ と同相である。
+:::
+
+::: proof
+距離を一つ固定し、\ref{top:clopen-partitions} と \ref{top:partition-order} の順序 $\prec$ をとる。$(X,\prec)$ は端点のない可算な稠密線形順序なので、カントールの定理（\ref{model:cantor-dlo}）から $(\mathbb{Q},<)$ と順序同型 $h$ がある。$h$ は順序位相の同相で、$X$ の順序位相は距離位相（\ref{top:partition-order}）、$\mathbb{Q}$ の順序位相は通常の位相なので、$h$ は同相写像。
+:::
+
+::: hypcheck
+- **可算性**：\ref{top:countable-metric-clopen}（距離の値が可算）と、カントールの定理に使った。
+- **孤立点がないこと**：分割の各元が無限で、$3$ 個以上の子に分けられることに使った。孤立点があれば、その点だけからなる閉開集合はそれ以上分けられない。
+- **3 個以上の子と「最初でも最後でもない」配置**：稠密性と端点がないことに使った。$2$ 個ずつの分割では、ある点が最後の子に居続けて隣との間に隙間ができうる。
+:::
+
+## 問題 {#top:sec-sq-problems}
+
+::: problem {#top:prob-sq-qq}
+$\mathbb{Q}\times\mathbb{Q}$ と、$\mathbb{Q}$ から一点を除いた空間が $\mathbb{Q}$ と同相であることを確かめよ。
+:::
+
+::: solution
+どちらも可算で、距離化可能（$\R^{2}$, $\R$ の部分空間）で、孤立点をもたない（$\mathbb{Q}\times\mathbb{Q}$ の点の任意の近傍に他の有理点がある。$\mathbb{Q}\setminus\{q\}$ も同様）ので、\ref{top:sierpinski-q} から $\mathbb{Q}$ と同相。
+:::
+
+::: problem {#top:prob-sq-not-q}
+$\mathbb{Q}\cap[0,1]$ が $\mathbb{Q}$ と同相であることと、$\N$ や $\{0\}\cup\{1/n:n\ge1\}$ が $\mathbb{Q}$ と同相でないことを説明せよ。
+:::
+
+::: solution
+$\mathbb{Q}\cap[0,1]$ は可算・距離化可能で、端点 $0,1$ も含めて孤立点がない（$0$ の近傍に正の有理数がある）ので同相。$\N$ はすべての点が孤立点、$\{0\}\cup\{1/n\}$ は $1/n$ が孤立点なので、孤立点のない $\mathbb{Q}$ とは同相でない。
+:::
+
+::: supplement
+**前提を変えると.** 距離化可能性を外すと結論は成り立たない（可算で孤立点がないが第一可算でない空間などがある）。非可算な場合には、零次元で至るところ非可算などの条件で $\mathbb{Q}$ の代わりに無理数全体（ベール空間 $\N^{\N}$）やカントール集合が特徴づけられることが知られている（無理数全体についてはアレクサンドロフ–ウリゾーンの定理、カントール集合についてはブラウワーの定理 \ref{top:brouwer-cantor}）。
+
+**似た定理.** カントール集合の特徴づけ（ブラウワーの定理、\ref{top:brouwer-cantor}）は、コンパクト・距離化可能・完全不連結・孤立点なしという条件で、同じ「入れ子の閉開分割」の方法で示される。本ページでは、コンパクト性がない代わりに、カントールの往復論法（\ref{model:cantor-dlo}）で順序を介して同型を作った。
+
+**高い視点から：位相を順序に翻訳する.** 可算な距離空間は、閉開集合で何度でも細かく切り分けられる。切り分けた破片を左右に並べ、その並べ方を入れ子にしていくと、空間の点が一列に並ぶ。並べ方を工夫して隙間も端もないようにすれば、それは有理数の大小と同じ順序になる。比喩で言えば、粉々に砕いた有理数の粒を、元の位置を知らずに、破片の入れ子構造だけを頼りに一列に並べ直したら、元の数直線上の並びが（同型を除いて）復元できる、ということである。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

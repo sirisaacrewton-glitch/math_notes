@@ -133,6 +133,26 @@ $(2^{\aleph_{0}})^{+}\to(\aleph_{1})^{2}_{\aleph_{0}}$ であり、$2^{\aleph_{0
 前半は $\kappa=\aleph_{0}$ の \ref{set:erdos-rado}。$\aleph_{0}$ 色で成り立てば $2$ 色でも成り立つ（$2$ 色の彩色は $\aleph_{0}$ 色の彩色）。$\mu\le2^{\aleph_{0}}$ なら、$\R$ の濃度 $\mu$ の部分集合にシェルピンスキーの彩色を制限すれば $\mu\not\to(\aleph_{1})^{2}_{2}$（$\mu<\aleph_{1}$ なら自明）。
 :::
 
+同じ「端等質化」を繰り返すと、指数 $n+1$ の場合に一般化できる。無限基数 $\kappa$ について $\exp_{0}(\kappa)\defeq\kappa$, $\exp_{n+1}(\kappa)\defeq2^{\exp_{n}(\kappa)}$ とおく（$\exp_{n}(\aleph_{0})=\beth_{n}$、\ref{set:beth}）。
+
+::: theorem エルデシュ–ラドーの定理（一般の指数） {#set:erdos-rado-general keywords="Erdos-Rado theorem exp_n(kappa)^+ -> (kappa^+)^{n+1}_kappa; beth_n^+ -> (aleph_1)^{n+1}_aleph_0" index="エルデシュ–ラドーの定理（一般）|えるでしゅらどーのていりいっぱん"}
+無限基数 $\kappa$ と $n\ge0$ について $\exp_{n}(\kappa)^{+}\to(\kappa^{+})^{n+1}_{\kappa}$。特に $\beth_{n}^{+}\to(\aleph_{1})^{n+1}_{\aleph_{0}}$。
+:::
+
+::: proof
+$n$ についての帰納法。$n=0$ は $\kappa^{+}\to(\kappa^{+})^{1}_{\kappa}$ で、$\kappa^{+}$ の**正則性**から（\ref{set:erdos-rado} の Step 4 と同じ鳩の巣）。$n\ge1$ とし、$\mu\defeq\exp_{n-1}(\kappa)$ について $\mu^{+}\to(\kappa^{+})^{n}_{\kappa}$ を仮定する。$\lambda\defeq(2^{\mu})^{+}=\exp_{n}(\kappa)^{+}$ と $f\colon[\lambda]^{n+1}\to\kappa$ をとる。$C\subseteq\lambda$ と $g\colon[C]^{n}\to\kappa$ について、$y\in\lambda\setminus C$ が **$g$ を実現する**とは、すべての $s\in[C]^{n}$ で $f(s\cup\{y\})=g(s)$ となることをいう。
+
+**Step 1（閉じた集合）.** \ref{set:erdos-rado} の Step 1 と同様に、$\lvert A_{\xi}\rvert\le2^{\mu}$ の増加列 $A_{\xi}$（$\xi<\mu^{+}$）を作り、$A_{\xi+1}$ には、$C\subseteq A_{\xi}$, $\lvert C\rvert\le\mu$, $g\colon[C]^{n}\to\kappa$ となるすべての組について $g$ を実現する元を（あれば）一つずつ加える。$C$ の選び方は $(2^{\mu})^{\mu}=2^{\mu}$ 以下、$g$ の選び方は $\kappa^{\mu}\le(2^{\mu})^{\mu}=2^{\mu}$ 以下（$\lvert[C]^{n}\rvert\le\mu$）なので $\lvert A_{\xi+1}\rvert\le2^{\mu}$。$A\defeq\bigcup_{\xi<\mu^{+}}A_{\xi}$ は $\lvert A\rvert\le2^{\mu}<\lambda$。$\mu^{+}$ は**正則**なので、$C\subseteq A$, $\lvert C\rvert\le\mu$ ならある $A_{\xi}$ に入り、$\lambda$ の中で実現される $g\colon[C]^{n}\to\kappa$ は $A$ の中でも実現される。
+
+**Step 2（端等質な列）.** $y\in\lambda\setminus A$ をとり、$x_{\eta}\in A$（$\eta<\mu^{+}$）を帰納的に選ぶ：$C_{\eta}\defeq\{x_{\zeta}:\zeta<\eta\}$（$\lvert C_{\eta}\rvert\le\mu$）と $g_{\eta}(s)\defeq f(s\cup\{y\})$（$s\in[C_{\eta}]^{n}$）について、$y$ は $g_{\eta}$ を実現するので、Step 1 から $g_{\eta}$ を実現する $x_{\eta}\in A\setminus C_{\eta}$ がある。$x_{\eta}$ は相異なり、添字の集合 $S\in[\mu^{+}]^{n}$ と $\eta>\max S$ について
+$$
+f\bigl(\{x_{\zeta}:\zeta\in S\}\cup\{x_{\eta}\}\bigr)=f\bigl(\{x_{\zeta}:\zeta\in S\}\cup\{y\}\bigr)\eqqcolon h(S)
+$$
+となり、右辺は $\eta$ によらない（**端等質性**）。
+
+**Step 3（帰納法の仮定）.** $h\colon[\mu^{+}]^{n}\to\kappa$ に帰納法の仮定 $\mu^{+}\to(\kappa^{+})^{n}_{\kappa}$ を使い、濃度 $\kappa^{+}$ の $Z\subseteq\mu^{+}$ で $h$ が $[Z]^{n}$ 上で定数 $c$ となるものをとる。$H\defeq\{x_{\zeta}:\zeta\in Z\}$ の $(n+1)$ 元部分集合は、添字の集合 $T\in[Z]^{n+1}$ の最大元を $\eta$、残りを $S$ として $f=h(S)=c$。よって $H$ は濃度 $\kappa^{+}$ の等質集合。
+:::
+
 ## 色ごとに大きさの異なる等質集合 {#set:sec-pr-dushnik-miller}
 
 二色の彩色 $f\colon[X]^{2}\to2$ について、$\kappa\to(\lambda,\mu)^{2}$ は「濃度 $\kappa$ の任意の $X$ と $f$ について、色 $0$ の等質集合で濃度 $\lambda$ のもの、または色 $1$ の等質集合で濃度 $\mu$ のものがある」ことを表す。
@@ -185,7 +205,7 @@ $\aleph_{1}\le2^{\aleph_{0}}$（\ref{set:cantor}）なので、$\R$ の濃度 $\
 :::
 
 ::: supplement
-**前提を変えると.** $n\ge3$ への一般化として、$\beth_{n}^{+}\to(\aleph_{1})^{n+1}_{\aleph_{0}}$（$\beth$ は \ref{set:beth}）が成り立つことが知られている（同じ「端等質化」を繰り返す）。$\kappa\to(\kappa)^{2}_{2}$ を満たす非可算基数を**弱コンパクト基数**といい、その存在は ZFC で証明できない巨大基数の仮定であることが知られている（\ref{set:prob-pr-omega1} は $\kappa=\aleph_{1}$ が弱コンパクトでないことを述べている）。等質集合の大きさを色ごとに変えた $\omega_{1}\to(\omega_{1},\omega)^{2}$ はダシュニク–ミラーの定理（\ref{set:dushnik-miller}）で、特異基数を含むすべての無限基数 $\kappa$ で $\kappa\to(\kappa,\omega)^{2}$ が成り立つことが知られている。
+**前提を変えると.** 指数を上げた一般化 $\beth_{n}^{+}\to(\aleph_{1})^{n+1}_{\aleph_{0}}$ は \ref{set:erdos-rado-general} で示した。指数 $n+1$ で $\beth_{n}$ を $\beth_{n-1}$ に下げられないことも知られている（ここでは確かめていない）。$\kappa\to(\kappa)^{2}_{2}$ を満たす非可算基数を**弱コンパクト基数**といい、その存在は ZFC で証明できない巨大基数の仮定であることが知られている（\ref{set:prob-pr-omega1} は $\kappa=\aleph_{1}$ が弱コンパクトでないことを述べている）。等質集合の大きさを色ごとに変えた $\omega_{1}\to(\omega_{1},\omega)^{2}$ はダシュニク–ミラーの定理（\ref{set:dushnik-miller}）で、特異基数を含むすべての無限基数 $\kappa$ で $\kappa\to(\kappa,\omega)^{2}$ が成り立つことが知られている。
 
 **似た定理.** 有限版のラムゼーの定理は、無限版からコンパクト性の議論で導ける（\ref{set:finite-ramsey}）。有限ラムゼーの定理に「等質集合の大きさが最小元以上」という条件を加えた変種（パリス–ハーリントンの原理）は、同じ議論で無限版から導けるが、ペアノ算術では証明できないことが知られている（\ref{logic:page-rm-ramsey} の補足）。二階算術では、無限ラムゼーの定理の強さが調べられている（\ref{logic:page-rm-ramsey} を参照）。ラムゼーの定理の証明の「最小元で色が決まる」端等質性の考え方は、エルデシュ–ラドーの定理の Step 3 と同じである。
 

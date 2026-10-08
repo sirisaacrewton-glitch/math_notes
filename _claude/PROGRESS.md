@@ -62,7 +62,7 @@
 |---|---|---|---|---|---|
 | I-01〜13 | 01-basics/01〜13 | 基礎事項 | 第 I 章 | 459– | 完了 |
 | II-01〜13 | 02-infinitary-combinatorics/01〜13 | 無限組合せ論 | 第 II 章 | 2508– | 完了 |
-| II-14 | 02-infinitary-combinatorics/14-partition-relations | 分割関係・無限ラムゼー・シェルピンスキーの彩色・エルデシュ–ラドー・有限ラムゼー（資料なし） | — | — | 完了 |
+| II-14 | 02-infinitary-combinatorics/14-partition-relations | 分割関係・無限ラムゼー・シェルピンスキーの彩色・エルデシュ–ラドー（一般の指数を含む）・有限ラムゼー（資料なし） | — | — | 完了 |
 | II-15 | 02-infinitary-combinatorics/15-luzin-sets | ルジンの集合（CH で存在、MA(ℵ₁) で非存在、独立性）（資料なし） | — | — | 完了 |
 | III-01〜06 | 03-well-founded-sets/01〜06 | 整礎集合 | 第 III 章 | 4642– | 完了 |
 | IV-01 | 04-consistency-proofs/01-relativization.html | 素朴な無矛盾性証明と相対化 | IV §1–2 | 5359–5677 | 完了 |
@@ -348,6 +348,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 集合論 II-14 追記（set:erdos-rado-general：exp_n(κ)⁺ → (κ⁺)^{n+1}_κ、とくに ℶ_n⁺ → (ℵ₁)^{n+1}_{ℵ₀}。端等質な列と帰納法。補足の未証明の言及を参照に置換）
 - 2026-10-08 集合論 II-14 追記（set:finite-ramsey, set:prob-pr-r33：無限ラムゼーの定理からコンパクト性の議論で有限ラムゼーの定理、6→(3)²₂ と 5↛(3)²₂。補足の未証明の言及を参照に置換）
 - 2026-10-08 ホモロジー代数 HD-09（18G/02-derived-functors/09-delta-functors, ha:page-delta-functors：δ 関手と消去可能性、馬蹄補題の射への拡張、導来関手の連結射の自然性、消去可能な δ 関手の普遍性（グロタンディーク）、導来関手の特徴づけ、可換環上の Tor の平衡性。問題 3。導来関手・Ext・Tor のページの未証明の言及を参照に置換）
 - 2026-10-08 一般位相 TH-01 追記（top:hyperspace-closed-bounded：有界閉集合の超空間はハウスドルフ距離で距離空間、X が完備なら完備。補足の未証明の言及を参照に置換）

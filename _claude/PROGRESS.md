@@ -259,6 +259,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | HD-06 | 18G/02-derived-functors/06-tensor-tor | テンソル積（普遍性・hom との随伴・右完全性）、Tor、平坦加群 | — | — | 完了 |
 | HD-07 | 18G/02-derived-functors/07-ext-injective | 入射分解による Ext、次元ずらしによる平衡性、入射性の Ext¹ による特徴づけ | — | — | 完了 |
 | HD-08 | 18G/02-derived-functors/08-projective-dimension | シャヌエルの補題、第一変数の次元ずらし、射影次元の Ext による特徴づけ、Z 上の射影次元 | — | — | 完了 |
+| HD-09 | 18G/02-derived-functors/09-delta-functors | δ 関手、馬蹄補題の射への拡張、導来関手の連結射の自然性、消去可能な δ 関手の普遍性、導来関手の特徴づけ、可換環上の Tor の平衡性 | — | 完了 |
 
 特別な極限とカン拡張（18A/04-kan-extensions, id cat-kan。2026-10-08 自律判断）
 | ID | ファイル | 題 | CWM | 本文の行 | 状態 |
@@ -347,6 +348,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 ホモロジー代数 HD-09（18G/02-derived-functors/09-delta-functors, ha:page-delta-functors：δ 関手と消去可能性、馬蹄補題の射への拡張、導来関手の連結射の自然性、消去可能な δ 関手の普遍性（グロタンディーク）、導来関手の特徴づけ、可換環上の Tor の平衡性。問題 3。導来関手・Ext・Tor のページの未証明の言及を参照に置換）
 - 2026-10-08 一般位相 TH-01 追記（top:hyperspace-closed-bounded：有界閉集合の超空間はハウスドルフ距離で距離空間、X が完備なら完備。補足の未証明の言及を参照に置換）
 - 2026-10-08 計算可能性 AC-09 追記（comp:dekker-deficiency, comp:simple-t-complete：決定不能な認識可能集合は単純集合とチューリング同値、∅' と T 同値な単純集合。補足の未証明の言及を参照に置換）
 - 2026-10-08 計算可能性 AC-10 追記（comp:smn-injective, comp:parametrized-recursion-injective, comp:injective-productive, comp:creative-one-complete, comp:creative-isomorphic-k：smn 関数の単射性（コードの長さ）、単射な生産関数、創造的 ⇔ m 完全 ⇔ 1 完全、創造的集合は K と計算可能同型。補足の未証明の言及を参照に置換）

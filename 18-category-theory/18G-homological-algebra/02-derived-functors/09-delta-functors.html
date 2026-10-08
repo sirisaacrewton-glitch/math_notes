@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>δ 関手と普遍性 | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18G-homological-algebra/02-derived-functors/09-delta-functors.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# δ 関手と普遍性 {#ha:page-delta-functors keywords="homological delta functor, morphism of delta functors, effaceable delta functor, universal delta functor, Grothendieck, naturality of connecting morphisms, horseshoe lemma for morphisms, balancing Tor"}
+
+導来関手 $L_{n}F$ は射影分解を使って定義されるが、その本質は「$0$ 次が $F$ で、短完全列から自然な長完全列を作り、射影対象の上で高次が消える」ことにある。グロタンディーク（1957、いわゆる東北論文）は、このような関手の族（**δ 関手**）の中で導来関手が**普遍的**であることを示した。本ページでは、(1) 導来関手の連結射が短完全列の射について自然であること（\ref{ha:derived-delta}）、(2) 射影対象の上で高次が消える δ 関手は普遍的であること（\ref{ha:effaceable-universal}）を示し、(3) その応用として、可換環上の Tor が第一変数の分解でも計算できること（Tor の平衡性、\ref{ha:tor-balanced}）を導く。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。馬蹄補題の射への拡張と普遍性の証明は本サイトで書き下ろした。
+
+## 記法と定義の確認 {#ha:sec-dt-notation}
+
+::: notation
+- $\mathbf{A}$ は十分な射影対象をもつアーベル圏、$\mathbf{B}$ はアーベル圏。射影対象・射影分解・比較定理は \ref{ha:projective}, \ref{ha:projective-resolution}, \ref{ha:comparison-theorem}。(E3) は \ref{ha:page-projective-resolutions} の記法のとおり。
+- 左導来関手 $L_{n}F$ とその well-definedness・長完全列・馬蹄補題は \ref{ha:left-derived-functor}, \ref{ha:derived-well-defined}, \ref{ha:derived-long-exact}, \ref{ha:horseshoe}。
+- 双積 $x'\oplus x''$ の入射を $\iota',\iota''$、射影を $\pi',\pi''$ と書く。$\pi'\iota'=1$, $\pi''\iota''=1$, $\pi''\iota'=0$, $\pi'\iota''=0$, $\iota'\pi'+\iota''\pi''=1$（\ref{ha:biproduct}）。どちらの双積の入射・射影かは文脈で区別する。
+- 短完全列の**射** $(\alpha',\alpha,\alpha'')\colon(0\to a'\xrightarrow{i}a\xrightarrow{p}a''\to0)\to(0\to b'\xrightarrow{j}b\xrightarrow{q}b''\to0)$ とは、$j\alpha'=\alpha i$, $q\alpha=\alpha''p$ を満たす射の組をいう。
+- $R$ 加群の鎖複体の短完全列の射について連結射が自然であること（\ref{ha:connecting-natural}）を使う。このため、導来関手が δ 関手であることを示す \ref{ha:derived-delta} では $\mathbf{B}$ を加群の圏とする。
+:::
+
+## δ 関手 {#ha:sec-dt-definition}
+
+::: definition δ 関手 {#ha:delta-functor keywords="homological delta functor, morphism of delta functors, effaceable" index="δ 関手|でるたかんしゅ, ホモロジー的 δ 関手|ほもろじーてきでるたかんしゅ, 消去可能|しょうきょかのう"}
+1. **（ホモロジー的）δ 関手** $T=(T_{n})_{n\ge0}$ とは、加法関手 $T_{n}\colon\mathbf{A}\to\mathbf{B}$ の族と、短完全列 $0\to a'\to a\to a''\to0$ ごとの射 $\delta_{n}\colon T_{n}(a'')\to T_{n-1}(a')$（$n\ge1$）の組で、次を満たすものをいう。
+   - 列 $\cdots\to T_{n}(a')\to T_{n}(a)\to T_{n}(a'')\xrightarrow{\delta_{n}}T_{n-1}(a')\to\cdots\to T_{0}(a)\to T_{0}(a'')\to0$ は完全。
+   - $\delta_{n}$ は短完全列の射について自然：$(\alpha',\alpha,\alpha'')$ について $\delta_{n}\circ T_{n}(\alpha'')=T_{n-1}(\alpha')\circ\delta_{n}$。
+2. δ 関手の**射** $\tau\colon T\to S$ とは、自然変換 $\tau_{n}\colon T_{n}\to S_{n}$ の族で、すべての短完全列について $\delta^{S}_{n}\circ\tau_{n}(a'')=\tau_{n-1}(a')\circ\delta^{T}_{n}$ を満たすものをいう。
+3. δ 関手 $S$ が**消去可能**であるとは、射影対象 $P$ と $n\ge1$ について $S_{n}(P)=0$ となることをいう。
+4. δ 関手 $S$ が**普遍的**であるとは、任意の δ 関手 $T$ と自然変換 $\tau_{0}\colon T_{0}\to S_{0}$ について、$\tau_{0}$ を $0$ 次とする δ 関手の射 $\tau\colon T\to S$ がただ一つあることをいう。
+:::
+
+## 導来関手は δ 関手 {#ha:sec-dt-derived}
+
+::: lemma 馬蹄補題の射への拡張 {#ha:horseshoe-map keywords="a morphism of short exact sequences lifts to a morphism of horseshoe resolutions" index="馬蹄補題（射）|ばていほだいしゃ"}
+短完全列の射 $(\alpha',\alpha,\alpha'')$ を上のとおりとする。上の列に対し、$a'$, $a''$ の射影分解 $P'$, $P''$ から馬蹄補題（\ref{ha:horseshoe}）で作った $a$ の射影分解を $P$（$P_{n}=P'_{n}\oplus P''_{n}$）、下の列に対し同様に $Q'$, $Q''$ から作ったものを $Q$ とする。$\alpha'$, $\alpha''$ の持ち上げ $\Phi'\colon P'\to Q'$, $\Phi''\colon P''\to Q''$ を任意にとる。このとき $\alpha$ の持ち上げ $\Phi\colon P\to Q$ で、$\Phi\iota'=\iota'\Phi'$, $\pi''\Phi=\Phi''\pi''$ を満たすものがある。
+:::
+
+::: proof
+**Step 1（$P$ の微分の形）.** $\lambda^{P}_{n}\defeq\pi'\partial^{P}_{n}\iota''\colon P''_{n}\to P'_{n-1}$（$n\ge1$）、$\mu^{P}\defeq\varepsilon^{P}\iota''\colon P''_{0}\to a$ とおく。$\iota'$, $\pi''$ は鎖写像で $i$, $p$ を持ち上げる（\ref{ha:horseshoe}）ので、$\partial^{P}\iota'=\iota'\partial'$, $\pi''\partial^{P}=\partial''\pi''$, $\varepsilon^{P}\iota'=i\varepsilon'$, $p\varepsilon^{P}=\varepsilon''\pi''$。$1=\iota'\pi'+\iota''\pi''$ を左から掛けて
+$$
+\partial^{P}_{n}\iota''=\iota'\lambda^{P}_{n}+\iota''\pi''\partial^{P}_{n}\iota''=\iota'\lambda^{P}_{n}+\iota''\partial''_{n},
+$$
+よって $\partial^{P}_{n}=\partial^{P}_{n}(\iota'\pi'+\iota''\pi'')=\iota'\partial'_{n}\pi'+\iota'\lambda^{P}_{n}\pi''+\iota''\partial''_{n}\pi''$。同様に $\varepsilon^{P}=i\varepsilon'\pi'+\mu^{P}\pi''$ で、$p\mu^{P}=p\varepsilon^{P}\iota''=\varepsilon''$。$Q$ についても $\lambda^{Q}_{n}$, $\mu^{Q}$ を同様に定める。
+
+**Step 2（$\partial\partial=0$ から出る関係）.** $\partial^{P}_{n-1}\partial^{P}_{n}\iota''=0$（$n\ge2$）を Step 1 の式で展開して $\pi'$ を左から掛けると $\partial'_{n-1}\lambda^{P}_{n}+\lambda^{P}_{n-1}\partial''_{n}=0$。$\varepsilon^{P}\partial^{P}_{1}\iota''=0$ を展開すると $i\varepsilon'\lambda^{P}_{1}+\mu^{P}\partial''_{1}=0$。$Q$ についても同じ関係が成り立つ。
+
+**Step 3（$\Phi$ の形と条件）.** 射 $\sigma_{n}\colon P''_{n}\to Q'_{n}$ を後で選び、
+$$
+\Phi_{n}\defeq\iota'\Phi'_{n}\pi'+\iota'\sigma_{n}\pi''+\iota''\Phi''_{n}\pi''
+$$
+とおく。$\Phi\iota'=\iota'\Phi'$, $\pi''\Phi=\Phi''\pi''$ は双積の等式から直ちに従う。Step 1 の式で展開すると
+$$
+\begin{aligned}
+\partial^{Q}_{n}\Phi_{n}-\Phi_{n-1}\partial^{P}_{n}&=\iota'\bigl(\partial'_{n}\sigma_{n}-\rho_{n}\bigr)\pi''\quad(n\ge1),\\
+\rho_{n}&\defeq\Phi'_{n-1}\lambda^{P}_{n}+\sigma_{n-1}\partial''_{n}-\lambda^{Q}_{n}\Phi''_{n}
+\end{aligned}
+$$
+（$\Phi'$, $\Phi''$ が**鎖写像**であることから $\pi'$-$\pi'$ 成分と $\pi''$-$\pi''$ 成分は消える）。同様に $\varepsilon^{Q}\Phi_{0}-\alpha\varepsilon^{P}=(j\varepsilon'\sigma_{0}-\alpha\mu^{P}+\mu^{Q}\Phi''_{0})\pi''$（$\pi'$ 成分は $j\varepsilon'\Phi'_{0}=j\alpha'\varepsilon'=\alpha i\varepsilon'$ で消える）。したがって
+$$
+j\varepsilon'\sigma_{0}=\alpha\mu^{P}-\mu^{Q}\Phi''_{0},\qquad\partial'_{n}\sigma_{n}=\rho_{n}\ (n\ge1)
+$$
+となる $\sigma_{n}$ を選べばよい。
+
+**Step 4（$\sigma_{0}$）.** $q(\alpha\mu^{P}-\mu^{Q}\Phi''_{0})=\alpha''p\mu^{P}-\varepsilon''\Phi''_{0}=\alpha''\varepsilon''-\alpha''\varepsilon''=0$（$\Phi''$ は $\alpha''$ の**持ち上げ**）。$j$ は $q$ の核なので $\alpha\mu^{P}-\mu^{Q}\Phi''_{0}=j\rho_{0}$ となる $\rho_{0}\colon P''_{0}\to b'$ がある。$\varepsilon'\colon Q'_{0}\to b'$ はエピで $P''_{0}$ は**射影的**なので、$\varepsilon'\sigma_{0}=\rho_{0}$ となる $\sigma_{0}$ がある。
+
+**Step 5（$\sigma_{1}$）.** Step 2 の関係と Step 4 を使うと
+$$
+\begin{aligned}
+j\varepsilon'\rho_{1}&=j\varepsilon'\Phi'_{0}\lambda^{P}_{1}+j\varepsilon'\sigma_{0}\partial''_{1}-j\varepsilon'\lambda^{Q}_{1}\Phi''_{1}\\
+&=\alpha i\varepsilon'\lambda^{P}_{1}+(\alpha\mu^{P}-\mu^{Q}\Phi''_{0})\partial''_{1}+\mu^{Q}\partial''_{1}\Phi''_{1}\\
+&=\alpha(i\varepsilon'\lambda^{P}_{1}+\mu^{P}\partial''_{1})=0.
+\end{aligned}
+$$
+$j$ はモノなので $\varepsilon'\rho_{1}=0$。$Q'$ は $Q'_{0}$ で完全なので、(E3) から $\partial'_{1}$ は $\mathrm{Ker}\,\varepsilon'$ へのエピを経由し、$\rho_{1}$ は $\mathrm{Ker}\,\varepsilon'$ を経由する。$P''_{1}$ は射影的なので $\partial'_{1}\sigma_{1}=\rho_{1}$ となる $\sigma_{1}$ がある。
+
+**Step 6（$\sigma_{n}$, $n\ge2$）.** $\sigma_{n-1}$ まで作ったとする（$\partial'_{n-1}\sigma_{n-1}=\rho_{n-1}$）。Step 2 の関係を使うと
+$$
+\begin{aligned}
+\partial'_{n-1}\rho_{n}&=\Phi'_{n-2}\partial'_{n-1}\lambda^{P}_{n}+\rho_{n-1}\partial''_{n}-\partial'_{n-1}\lambda^{Q}_{n}\Phi''_{n}\\
+&=-\Phi'_{n-2}\lambda^{P}_{n-1}\partial''_{n}+\bigl(\Phi'_{n-2}\lambda^{P}_{n-1}+\sigma_{n-2}\partial''_{n-1}-\lambda^{Q}_{n-1}\Phi''_{n-1}\bigr)\partial''_{n}\\
+&\qquad+\lambda^{Q}_{n-1}\partial''_{n}\Phi''_{n}=0
+\end{aligned}
+$$
+（$\partial''\partial''=0$ と $\Phi''$ が鎖写像であることを使った。$n=2$ では $\sigma_{0}\partial''_{1}\partial''_{2}=0$ の項）。$Q'$ は $Q'_{n-1}$ で完全なので、Step 5 と同様に $\partial'_{n}\sigma_{n}=\rho_{n}$ となる $\sigma_{n}$ がある。
+:::
+
+::: theorem 導来関手は δ 関手 {#ha:derived-delta keywords="the connecting morphisms of derived functors are natural; L_n F is a homological delta functor" index="導来関手の連結射の自然性|どうらいかんしゅのれんけつしゃのしぜんせい"}
+$\mathbf{B}$ を加群の圏とし、$F\colon\mathbf{A}\to\mathbf{B}$ を加法関手とする。\ref{ha:derived-long-exact} の連結射 $\delta_{n}$ は馬蹄補題で使う分解の選び方によらず、短完全列の射について自然である。したがって $L_{\bullet}F\defeq(L_{n}F)_{n\ge0}$ は消去可能な δ 関手である。
+:::
+
+::: proof
+短完全列の射 $(\alpha',\alpha,\alpha'')$ と、上下の列の馬蹄分解 $P$, $Q$ をとり、\ref{ha:horseshoe-map} で $\Phi',\Phi,\Phi''$ を作る。$\Phi\iota'=\iota'\Phi'$, $\pi''\Phi=\Phi''\pi''$ なので、$(F\Phi',F\Phi,F\Phi'')$ は鎖複体の短完全列 $0\to FP'\to FP\to FP''\to0$ から $0\to FQ'\to FQ\to FQ''\to0$ への射である（$F$ は加法関手なので双積の等式を保つ）。\ref{ha:connecting-natural} の 2 から
+$$
+\delta^{Q}_{n}\circ H_{n}(F\Phi'')=H_{n-1}(F\Phi')\circ\delta^{P}_{n}.
+$$
+\ref{ha:derived-well-defined} の 2 の標準同型のもとで、$H_{n}(F\Phi'')$, $H_{n-1}(F\Phi')$ は $L_{n}F(\alpha'')$, $L_{n-1}F(\alpha')$ に対応する（持ち上げの選び方によらない）。よって連結射は自然である。$\alpha',\alpha,\alpha''$ がすべて恒等射で $P$, $Q$ が同じ列の異なる馬蹄分解のときは、この等式が「連結射は分解の選び方によらない」ことを意味する。長完全列は \ref{ha:derived-long-exact}、消去可能性は \ref{ha:derived-well-defined} の 3。
+:::
+
+## 普遍性 {#ha:sec-dt-universal}
+
+::: theorem 消去可能な δ 関手は普遍的 {#ha:effaceable-universal keywords="Grothendieck: effaceable homological delta functors are universal" index="普遍 δ 関手|ふへんでるたかんしゅ, グロタンディークの定理（δ 関手）|ぐろたんでぃーくのていりでるたかんしゅ"}
+消去可能な δ 関手 $S$ は普遍的である。
+:::
+
+::: proof
+δ 関手 $T$ と自然変換 $\tau_{0}\colon T_{0}\to S_{0}$ をとる。各対象 $a$ について、射影対象からのエピ $P_{a}\to a$（**十分な射影対象**）を一つ選び、その核とで短完全列
+$$
+E_{a}\colon\ 0\to k_{a}\xrightarrow{u_{a}}P_{a}\to a\to0
+$$
+を固定する。$n\ge1$ について、$\tau_{n-1}$ が自然変換として定まっているとして $\tau_{n}$ を作る。
+
+**Step 1（$\delta^{S}$ はモノ）.** $S$ の長完全列と**消去可能性** $S_{n}(P_{a})=0$ から、$0=S_{n}(P_{a})\to S_{n}(a)\xrightarrow{\delta^{S}}S_{n-1}(k_{a})\xrightarrow{S_{n-1}(u_{a})}S_{n-1}(P_{a})$ は完全で、$\delta^{S}\colon S_{n}(a)\to S_{n-1}(k_{a})$ は $S_{n-1}(u_{a})$ の核である。
+
+**Step 2（$\tau_{n}(a)$ の定義）.** $\tau_{n-1}$ の自然性と、$T$ の長完全列で $T_{n-1}(u_{a})\circ\delta^{T}=0$ であることから
+$$
+S_{n-1}(u_{a})\circ\tau_{n-1}(k_{a})\circ\delta^{T}=\tau_{n-1}(P_{a})\circ T_{n-1}(u_{a})\circ\delta^{T}=0.
+$$
+よって Step 1 から、$\delta^{S}\circ\tau_{n}(a)=\tau_{n-1}(k_{a})\circ\delta^{T}$ を満たす射 $\tau_{n}(a)\colon T_{n}(a)\to S_{n}(a)$ がただ一つある（$E_{a}$ についての連結射）。
+
+**Step 3（任意の短完全列との両立）.** 短完全列 $0\to a'\xrightarrow{i}a\xrightarrow{p}a''\to0$ をとる。$P_{a''}$ は**射影的**なので、$P_{a''}\to a''$ を $p$ を通して $P_{a''}\to a$ に持ち上げられ、これは核の間の射 $\gamma\colon k_{a''}\to a'$ を誘導して、短完全列の射 $(\gamma,\ast,1)\colon E_{a''}\to(0\to a'\to a\to a''\to0)$ を与える。$\delta^{T}$, $\delta^{S}$ の自然性から、それぞれの列の連結射を $\delta^{T}_{E}$, $\delta^{T}$ などと書けば $\delta^{T}=T_{n-1}(\gamma)\delta^{T}_{E}$, $\delta^{S}=S_{n-1}(\gamma)\delta^{S}_{E}$。よって
+$$
+\begin{aligned}
+\tau_{n-1}(a')\,\delta^{T}&=\tau_{n-1}(a')\,T_{n-1}(\gamma)\,\delta^{T}_{E}=S_{n-1}(\gamma)\,\tau_{n-1}(k_{a''})\,\delta^{T}_{E}\\
+&=S_{n-1}(\gamma)\,\delta^{S}_{E}\,\tau_{n}(a'')=\delta^{S}\,\tau_{n}(a'').
+\end{aligned}
+$$
+
+**Step 4（自然性）.** $f\colon a\to b$ をとる。$P_{a}\to a\to b$ を $P_{b}\to b$ を通して持ち上げ、核の間の射 $g\colon k_{a}\to k_{b}$ と短完全列の射 $(g,\ast,f)\colon E_{a}\to E_{b}$ を得る。Step 1 から $\delta^{S}_{E_{b}}$ はモノなので、$\delta^{S}_{E_{b}}S_{n}(f)\tau_{n}(a)=\delta^{S}_{E_{b}}\tau_{n}(b)T_{n}(f)$ を示せばよい。連結射の自然性と $\tau_{n-1}$ の自然性から
+$$
+\begin{aligned}
+\delta^{S}_{E_{b}}S_{n}(f)\tau_{n}(a)&=S_{n-1}(g)\,\delta^{S}_{E_{a}}\tau_{n}(a)=S_{n-1}(g)\,\tau_{n-1}(k_{a})\,\delta^{T}_{E_{a}}\\
+&=\tau_{n-1}(k_{b})\,T_{n-1}(g)\,\delta^{T}_{E_{a}}=\tau_{n-1}(k_{b})\,\delta^{T}_{E_{b}}T_{n}(f)\\
+&=\delta^{S}_{E_{b}}\tau_{n}(b)T_{n}(f).
+\end{aligned}
+$$
+
+**Step 5（一意性）.** $\tau'$ も $\tau_{0}$ を $0$ 次とする δ 関手の射とする。$n-1$ 次まで $\tau'=\tau$ なら、$E_{a}$ との両立から $\delta^{S}_{E_{a}}\tau'_{n}(a)=\tau'_{n-1}(k_{a})\delta^{T}_{E_{a}}=\tau_{n-1}(k_{a})\delta^{T}_{E_{a}}=\delta^{S}_{E_{a}}\tau_{n}(a)$ で、$\delta^{S}_{E_{a}}$ はモノなので $\tau'_{n}(a)=\tau_{n}(a)$。
+:::
+
+::: hypcheck
+- **十分な射影対象**：各 $a$ に短完全列 $E_{a}$ を選ぶのに使った。
+- **消去可能性 $S_{n}(P)=0$**：Step 1 で $\delta^{S}_{E_{a}}$ がモノであることに使った。これが存在（Step 2 の因数分解）と一意性（Step 5）の両方を支える。$T$ には消去可能性を要求しない。
+- **$P_{a''}$ の射影性**：Step 3, 4 で、任意の短完全列や射 $f$ と固定した $E$ とを結ぶ短完全列の射を作るのに使った。
+- **連結射の自然性**（δ 関手の定義）：Step 3, 4 で、選んだ列 $E$ の連結射と一般の列の連結射を結ぶのに使った。導来関手について自然性を保証するのが \ref{ha:derived-delta} である。
+- **$T$ の長完全列**：Step 2 で $T_{n-1}(u_{a})\circ\delta^{T}=0$（複体であること）だけを使った。
+:::
+
+::: corollary 導来関手の特徴づけ {#ha:derived-characterization keywords="L_n F is the unique effaceable delta functor with L_0 F in degree 0; effaceable delta functors agreeing in degree 0 are isomorphic" index="導来関手の特徴づけ|どうらいかんしゅのとくちょうづけ"}
+1. 消去可能な δ 関手 $S$, $S'$ と自然同型 $\theta_{0}\colon S_{0}\cong S'_{0}$ について、$\theta_{0}$ を $0$ 次とする δ 関手の同型 $S\cong S'$ がただ一つある。
+2. $\mathbf{B}$ が加群の圏で $F$ が右完全なら、$F$ を $0$ 次とする（$S_{0}\cong F$ となる）消去可能な δ 関手は、$L_{\bullet}F$ と標準的に同型である。
+:::
+
+::: proof
+**1.** \ref{ha:effaceable-universal} から、$\theta_{0}$ を延ばす射 $\theta\colon S\to S'$ と $\theta_{0}^{-1}$ を延ばす射 $\eta\colon S'\to S$ がある。$\eta\theta$ は恒等変換 $1_{S_{0}}$ を延ばす δ 関手の射で、恒等射 $1_{S}$ もそうなので、一意性から $\eta\theta=1_{S}$。同様に $\theta\eta=1_{S'}$。
+
+**2.** $L_{\bullet}F$ は消去可能な δ 関手（\ref{ha:derived-delta}）で $L_{0}F\cong F$（\ref{ha:l0-right-exact}）。1 を適用する。
+:::
+
+## 応用：Tor の平衡性 {#ha:sec-dt-tor}
+
+::: corollary 可換環上の Tor の平衡性 {#ha:tor-balanced keywords="Tor can be computed by a projective resolution of either variable (commutative ring)" index="Tor の平衡性|とーるのへいこうせい"}
+$R$ を可換環、$M$, $N$ を $R$ 加群、$P\to M$ を $M$ の射影分解とする。このとき $N$ について自然な同型
+$$
+\mathrm{Tor}^{R}_{n}(M,N)\cong H_{n}(P\otimes_{R}N)\quad(n\ge0)
+$$
+がある。とくに $\mathrm{Tor}^{R}_{n}(M,N)\cong\mathrm{Tor}^{R}_{n}(N,M)$。
+:::
+
+::: proof
+**Step 0（入れ替え）.** $R$ は**可換**なので、$R$ 加群は左右どちらの加群ともみなせ、$m\otimes n\mapsto n\otimes m$ は $R$ 平衡写像から定まる自然な同型 $M\otimes_{R}N\cong N\otimes_{R}M$ を与える（\ref{ha:tensor-universal} の 1。逆写像も同様に定まる）。したがって $-\otimes_{R}N\cong N\otimes_{R}-$ は右完全（\ref{ha:tensor-right-exact}）で、$N$ が射影的なら完全（\ref{ha:projective-flat}）。
+
+**Step 1（δ 関手 $T$）.** $T_{n}(N)\defeq H_{n}(P\otimes_{R}N)$ とおく（$P$ は固定）。各 $P_{k}$ は射影的なので平坦（\ref{ha:projective-flat}）で、$N$ の短完全列 $0\to N'\to N\to N''\to0$ から鎖複体の短完全列 $0\to P\otimes N'\to P\otimes N\to P\otimes N''\to0$ を得る。\ref{ha:long-exact-sequence} からその長完全列があり、短完全列の射からは鎖複体の短完全列の射が得られるので、連結射は自然（\ref{ha:connecting-natural}）。よって $T$ は δ 関手。
+
+**Step 2（$0$ 次）.** $P_{1}\to P_{0}\to M\to0$ は完全で、$-\otimes N$ は右完全（Step 0）なので $P_{1}\otimes N\to P_{0}\otimes N\to M\otimes N\to0$ は完全。よって $T_{0}(N)=\mathrm{Coker}(P_{1}\otimes N\to P_{0}\otimes N)\cong M\otimes N$（$N$ について自然）。
+
+**Step 3（消去可能性）.** $N$ が射影的なら $-\otimes N$ は完全（Step 0）なので、$n\ge1$ で $P\otimes N$ は完全（$\cdots\to P_{1}\to P_{0}\to M\to0$ の完全性が保たれる）であり、$T_{n}(N)=0$。
+
+**Step 4.** $\mathrm{Tor}_{\bullet}(M,-)=L_{\bullet}(M\otimes-)$ も $M\otimes-$ を $0$ 次とする消去可能な δ 関手（\ref{ha:derived-delta}, \ref{ha:tor-basic}）。\ref{ha:derived-characterization} の 1 から $T\cong\mathrm{Tor}_{\bullet}(M,-)$。最後の主張は、Step 0 の入れ替えで $H_{n}(P\otimes N)\cong H_{n}(N\otimes P)=\mathrm{Tor}_{n}(N,M)$ となることから。
+:::
+
+## 問題 {#ha:sec-dt-problems}
+
+::: problem {#ha:prob-dl-exact}
+加法関手 $F\colon\mathbf{A}\to\mathbf{B}$ について、$T_{0}\defeq F$, $T_{n}\defeq0$（$n\ge1$）、連結射をすべて $0$ とした族が δ 関手であることと、$F$ が完全であることは同値であることを示せ。そのとき $T$ は消去可能で、$\mathbf{B}$ が加群の圏なら $L_{\bullet}F\cong T$ である。
+:::
+
+::: solution
+δ 関手の条件で非自明なのは長完全列の右端 $0=T_{1}(a'')\to F(a')\to F(a)\to F(a'')\to0$ の完全性で、これはすべての短完全列を $F$ が短完全列に写すこと、すなわち $F$ が完全であることにほかならない（自然性は $0$ の射について自明）。$T_{n}=0$（$n\ge1$）なので消去可能。完全な関手は右完全なので、\ref{ha:derived-characterization} の 2 から $L_{\bullet}F\cong T$（\ref{ha:prob-df-exact-functor} と一致する）。
+:::
+
+::: problem {#ha:prob-dl-dimension-shift}
+消去可能な δ 関手 $S$ と短完全列 $0\to k\to P\to a\to0$（$P$ は射影的）について、$n\ge2$ で $S_{n}(a)\cong S_{n-1}(k)$、また $S_{1}(a)\cong\mathrm{Ker}\bigl(S_{0}(k)\to S_{0}(P)\bigr)$ であることを示せ。
+:::
+
+::: solution
+長完全列 $S_{n}(P)\to S_{n}(a)\xrightarrow{\delta}S_{n-1}(k)\to S_{n-1}(P)$ で、$n\ge1$ なら $S_{n}(P)=0$、$n\ge2$ なら $S_{n-1}(P)=0$。$n\ge2$ では $0\to S_{n}(a)\to S_{n-1}(k)\to0$ が完全なので $\delta$ は同型。$n=1$ では $0\to S_{1}(a)\to S_{0}(k)\to S_{0}(P)$ が完全なので、$\delta$ は $S_{1}(a)$ から核への同型。
+:::
+
+::: problem {#ha:prob-dl-tor-z}
+\ref{ha:tor-balanced} を使って、整数 $n\ge1$ と アーベル群 $M$ について $\mathrm{Tor}^{\mathbb{Z}}_{1}(\mathbb{Z}/n,M)\cong M[n]\defeq\{x\in M:nx=0\}$ を示せ。
+:::
+
+::: solution
+\ref{ha:tor-balanced} から $\mathrm{Tor}^{\mathbb{Z}}_{1}(\mathbb{Z}/n,M)\cong\mathrm{Tor}^{\mathbb{Z}}_{1}(M,\mathbb{Z}/n)$。後者は \ref{ha:tor-z} から $M$ の $n$ ねじれ部分 $M[n]$ と同型。（直接には、$\mathbb{Z}/n$ の射影分解 $0\to\mathbb{Z}\xrightarrow{n}\mathbb{Z}\to\mathbb{Z}/n\to0$ に $-\otimes M$ を施した $0\to M\xrightarrow{n}M\to0$ の $H_{1}$ が $M[n]$。）
+:::
+
+::: supplement
+**前提を変えると.**
+- **コホモロジー的 δ 関手.** 双対に、連結射が $T^{n}(a'')\to T^{n+1}(a')$ の向きの**コホモロジー的 δ 関手**を考えると、入射対象の上で高次が消えるものは（十分な入射対象があれば）普遍的であり、右導来関手 $R^{n}G$ がその例になる。Ext を第一変数の射影分解でも第二変数の入射分解でも計算できること（\ref{ha:page-ext-injective}）は、この形の一意性の特別な場合と見なせる。
+- **$\mathbf{B}$ が一般のアーベル圏の場合.** \ref{ha:effaceable-universal} の証明は $\mathbf{B}$ の射の性質（核・モノ）しか使わないので、一般のアーベル圏で成り立つ。\ref{ha:derived-delta} を一般の $\mathbf{B}$ で示すには、アーベル圏での連結射の自然性が要る（本サイトでは加群の場合に示した \ref{ha:connecting-natural}）。
+- **Tor の平衡性.** 可換性は、$-\otimes N$ の右完全性と射影加群の平坦性を左右入れ替えて使うためだけに仮定した。非可換環でも、右加群と左加群の役割を入れ替えた同じ議論で平衡性が成り立つことが知られている（ここでは確かめていない）。
+
+**似た定理.** 普遍 δ 関手の考え方は、層のコホモロジー（大域切断関手の右導来関手）を、チェックのコホモロジーなど別の方法で計算したものと比較するときの標準的な道具である、と一般に言われている。
+
+**高い視点から.** δ 関手全体は（連結射を保つ自然変換を射として）圏をなし、「$0$ 次を取り出す関手」$T\mapsto T_{0}$ がある。\ref{ha:effaceable-universal} は、消去可能な $S$ が、この関手について $S_{0}$ への**終対象的な持ち上げ**（$T_{0}\to S_{0}$ の射が δ 関手の射に一意に延びる）であることを言う。普遍性による特徴づけなので、$L_{\bullet}F$ は射影分解の選び方どころか「射影分解を使う」という構成法そのものにもよらない：別の方法で作った消去可能な δ 関手は、$0$ 次が一致すれば必ず同型である（\ref{ha:derived-characterization}）。比喩で言えば、$F$ の「壊れ方の記録」としてありうるものすべての中で、射影対象では何も壊れないという最も節約的な記録が $L_{\bullet}F$ であり、他の記録はすべてそこへ一通りに写る。次元ずらし（\ref{ha:prob-dl-dimension-shift}）は、その記録を一段ずつ下の次数から読み取る手順である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

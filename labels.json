@@ -10081,6 +10081,27 @@
       "num": "4.6",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/04-chain-complexes.html"
     },
+    "ha:delta-functor": {
+      "status": "defined",
+      "type": "definition",
+      "title": "δ 関手",
+      "num": "9.1",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/09-delta-functors.html"
+    },
+    "ha:derived-characterization": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "導来関手の特徴づけ",
+      "num": "9.5",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/09-delta-functors.html"
+    },
+    "ha:derived-delta": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "導来関手は δ 関手",
+      "num": "9.3",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/09-delta-functors.html"
+    },
     "ha:derived-long-exact": {
       "status": "defined",
       "type": "theorem",
@@ -10101,6 +10122,13 @@
       "title": "第一変数の次元ずらし",
       "num": "8.2",
       "page": "18-category-theory/18G-homological-algebra/02-derived-functors/08-projective-dimension.html"
+    },
+    "ha:effaceable-universal": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "消去可能な δ 関手は普遍的",
+      "num": "9.4",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/09-delta-functors.html"
     },
     "ha:embed-divisible": {
       "status": "defined",
@@ -10305,6 +10333,13 @@
       "num": "2.5",
       "page": "18-category-theory/18G-homological-algebra/02-derived-functors/02-derived-functors.html"
     },
+    "ha:horseshoe-map": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "馬蹄補題の射への拡張",
+      "num": "9.2",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/09-delta-functors.html"
+    },
     "ha:horseshoe-step": {
       "status": "defined",
       "type": "lemma",
@@ -10409,6 +10444,13 @@
       "title": "鎖複体とホモロジー",
       "num": "",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/04-chain-complexes.html"
+    },
+    "ha:page-delta-functors": {
+      "status": "defined",
+      "type": "page",
+      "title": "δ 関手と普遍性",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/09-delta-functors.html"
     },
     "ha:page-derived-functors": {
       "status": "defined",
@@ -10557,6 +10599,20 @@
       "num": "2.8",
       "page": "18-category-theory/18G-homological-algebra/02-derived-functors/02-derived-functors.html"
     },
+    "ha:prob-dl-dimension-shift": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "9.8",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/09-delta-functors.html"
+    },
+    "ha:prob-dl-exact": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "9.7",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/09-delta-functors.html"
+    },
     "ha:prob-dl-short-five": {
       "status": "defined",
       "type": "problem",
@@ -10570,6 +10626,13 @@
       "title": "",
       "num": "3.9",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/03-diagram-lemmas.html"
+    },
+    "ha:prob-dl-tor-z": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "9.9",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/09-delta-functors.html"
     },
     "ha:prob-ei-dimension": {
       "status": "defined",
@@ -10928,6 +10991,48 @@
       "num": "",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/03-diagram-lemmas.html"
     },
+    "ha:sec-dt-definition": {
+      "status": "defined",
+      "type": "section",
+      "title": "δ 関手",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/09-delta-functors.html"
+    },
+    "ha:sec-dt-derived": {
+      "status": "defined",
+      "type": "section",
+      "title": "導来関手は δ 関手",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/09-delta-functors.html"
+    },
+    "ha:sec-dt-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/09-delta-functors.html"
+    },
+    "ha:sec-dt-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/09-delta-functors.html"
+    },
+    "ha:sec-dt-tor": {
+      "status": "defined",
+      "type": "section",
+      "title": "応用：Tor の平衡性",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/09-delta-functors.html"
+    },
+    "ha:sec-dt-universal": {
+      "status": "defined",
+      "type": "section",
+      "title": "普遍性",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/09-delta-functors.html"
+    },
     "ha:sec-ei-notation": {
       "status": "defined",
       "type": "section",
@@ -11207,6 +11312,13 @@
       "title": "Tor",
       "num": "6.6",
       "page": "18-category-theory/18G-homological-algebra/02-derived-functors/06-tensor-tor.html"
+    },
+    "ha:tor-balanced": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "可換環上の Tor の平衡性",
+      "num": "9.6",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/09-delta-functors.html"
     },
     "ha:tor-basic": {
       "status": "defined",

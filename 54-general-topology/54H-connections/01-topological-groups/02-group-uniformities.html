@@ -79,6 +79,18 @@
 - **群の構造**：Step 4 で、近縁が左平行移動で不変であることから距離の左不変性を得た。
 :::
 
+::: proposition 両側不変な距離 {#top:two-sided-invariant-metric keywords="a first countable Hausdorff group has a compatible two-sided invariant metric iff it has a neighbourhood base at e of conjugation-invariant sets (SIN group)" index="両側不変な距離|りょうがわふへんなきょり, SIN 群|しんぐん"}
+$e$ で可算な近傍基をもつハウスドルフな位相群 $G$ について、次は同値である。
+1. $G$ の位相を定める距離 $d$ で、両側不変（$d(gxh,gyh)=d(x,y)$）なものがある。
+2. $e$ の近傍基で、各元 $V$ が共役で不変（すべての $g$ で $gVg^{-1}=V$）なものがある（**SIN 群**）。
+:::
+
+::: proof
+**1 ⇒ 2.** $B_{r}\defeq\{x:d(x,e)<r\}$ について、$d(gxg^{-1},e)=d(gx,g)=d(x,e)$（右から $g$、左から $g^{-1}$ を掛けても $d$ は不変）なので $gB_{r}g^{-1}=B_{r}$。
+
+**2 ⇒ 1.** \ref{top:birkhoff-kakutani} の証明の Step 1 で、各 $V_{n+1}$ を共役で不変にとる：Step 1 で作った $V''$ に含まれる共役で不変な近傍 $V$ をとり、その内部と逆の共通部分 $\operatorname{int}V\cap(\operatorname{int}V)^{-1}$ を新しい $V_{n+1}$ とする。共役は同相写像で、逆元と可換なので、内部・逆・共通部分をとっても共役不変性は保たれ、$V_{n+1}$ は対称な開近傍で $V_{n+1}^{3}\subseteq V''^{3}$。すると $(xg,yg)\in U_{m}\iff g^{-1}x^{-1}yg\in V_{m}\iff x^{-1}y\in V_{m}\iff(x,y)\in U_{m}$ なので、Step 4 と同じ議論で $d(xg,yg)=d(x,y)$ も成り立ち、$d$ は両側不変。
+:::
+
 ## 問題 {#top:sec-gu-problems}
 
 ::: problem {#top:prob-gu-left-right}
@@ -101,8 +113,16 @@ $I$ の近傍 $U$ で $\begin{pmatrix}1&0\\1&1\end{pmatrix}\notin U$ となる�
 可換なら $x^{-1}y=yx^{-1}$ なので $U_{L}=U_{R}$。
 :::
 
+::: problem {#top:prob-gu-compact-sin}
+コンパクトな位相群は SIN 群であることを示せ（したがって、$e$ で可算な近傍基をもつコンパクトなハウスドルフ群は両側不変な距離をもつ）。
+:::
+
+::: solution
+$e$ の開近傍 $V$ をとる。$\phi\colon G\times G\to G$, $(g,x)\mapsto gxg^{-1}$ は連続で、開集合 $\phi^{-1}(V)$ は $G\times\{e\}$ を含む。$G$ はコンパクトなので、チューブ補題（\ref{top:tube-lemma}、因子の順序を入れ替えて使う）から $e$ の開近傍 $N$ で $G\times N\subseteq\phi^{-1}(V)$ となるものがある。$W\defeq\bigcup_{g\in G}gNg^{-1}$ は共役で不変な開近傍で、$W\subseteq V$（$gNg^{-1}\subseteq V$）。よって共役で不変な近傍が近傍基をなす。
+:::
+
 ::: supplement
-**前提を変えると.** バーコフ–角谷の定理の「左不変」を「両側不変」（$d(gxh,gyh)=d(x,y)$）に強めると、一般には成り立たない。両側不変な距離があることと、単位元の近傍基で共役で不変なものがあること（SIN 群）は同値であることが知られている（ここでは確かめていない）。また、位相群の完備化には、左右の一様構造の両方を使った両側一様構造（ライコフの完備化）が使われることが知られている。
+**前提を変えると.** バーコフ–角谷の定理の「左不変」を「両側不変」（$d(gxh,gyh)=d(x,y)$）に強めると、一般には成り立たない。両側不変な距離があることと、単位元の近傍基で共役で不変なものがあること（SIN 群）は同値である（\ref{top:two-sided-invariant-metric}）。また、位相群の完備化には、左右の一様構造の両方を使った両側一様構造（ライコフの完備化）が使われることが知られている。
 
 **似た定理.** \ref{top:uniform-homomorphism} は、ノルム空間の間の線形写像で「連続 $\iff$ 原点で連続 $\iff$ 一様連続（有界）」となることの一般化である。コンパクトな位相群では左右の一様構造は一致し（コンパクトハウスドルフ空間の一様構造は一意なので、\ref{top:compact-unique-uniformity}）、連続関数は自動的に両側で一様連続になる。
 

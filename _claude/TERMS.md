@@ -342,3 +342,5 @@
 | Kleisli category | クライスリ圏 | | 仮。cat:page-monads |
 | fork / split fork / split coequalizer / absolute coequalizer | フォーク / 分裂フォーク / 分裂余等化子 / 絶対余等化子 | | 仮。cat:page-beck |
 | create (co)limits | 創出する | | 既存（cat:create-limits） |
+| variety / (Omega,E)-algebra / term algebra | 多様体 / (Ω,E) 代数 / 項代数 | 代数系 | 仮。cat:page-monadic-examples |
+| ultrafilter monad | 超フィルターのモナド | | 仮。cat:page-monadic-examples |

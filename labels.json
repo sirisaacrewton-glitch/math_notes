@@ -64,6 +64,13 @@
       "num": "3.3",
       "page": "18-category-theory/18A-general-theory/03-monads/03-beck.html"
     },
+    "cat:algebras-monadic": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "代数系の忘却関手はモナド的",
+      "num": "4.3",
+      "page": "18-category-theory/18A-general-theory/03-monads/04-algebras-compact.html"
+    },
     "cat:beck-monadicity": {
       "status": "defined",
       "type": "theorem",
@@ -112,6 +119,13 @@
       "title": "デカルト閉圏の基本的な同型",
       "num": "1.4",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/01-cartesian-closed.html"
+    },
+    "cat:chaus-monadic": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "コンパクトハウスドルフ空間のモナド性",
+      "num": "4.4",
+      "page": "18-category-theory/18A-general-theory/03-monads/04-algebras-compact.html"
     },
     "cat:coequalizer": {
       "status": "defined",
@@ -273,6 +287,13 @@
       "title": "評価射による言い換え",
       "num": "1.2",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/01-cartesian-closed.html"
+    },
+    "cat:free-algebra-variety": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "自由代数",
+      "num": "4.2",
+      "page": "18-category-theory/18A-general-theory/03-monads/04-algebras-compact.html"
     },
     "cat:free-category": {
       "status": "defined",
@@ -694,6 +715,13 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/01-basics/06-limits.html"
     },
+    "cat:page-monadic-examples": {
+      "status": "defined",
+      "type": "page",
+      "title": "代数系とコンパクトハウスドルフ空間のモナド性",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/03-monads/04-algebras-compact.html"
+    },
     "cat:page-monads": {
       "status": "defined",
       "type": "page",
@@ -847,6 +875,20 @@
       "title": "",
       "num": "2.7",
       "page": "18-category-theory/18A-general-theory/03-monads/02-kleisli.html"
+    },
+    "cat:prob-me-abelian-groups": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "4.7",
+      "page": "18-category-theory/18A-general-theory/03-monads/04-algebras-compact.html"
+    },
+    "cat:prob-me-quotient-topology": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "4.6",
+      "page": "18-category-theory/18A-general-theory/03-monads/04-algebras-compact.html"
     },
     "cat:prob-mon-monoid-algebras": {
       "status": "defined",
@@ -1450,6 +1492,34 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/01-basics/06-limits.html"
     },
+    "cat:sec-me-chaus": {
+      "status": "defined",
+      "type": "section",
+      "title": "コンパクトハウスドルフ空間",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/03-monads/04-algebras-compact.html"
+    },
+    "cat:sec-me-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/03-monads/04-algebras-compact.html"
+    },
+    "cat:sec-me-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/03-monads/04-algebras-compact.html"
+    },
+    "cat:sec-me-varieties": {
+      "status": "defined",
+      "type": "section",
+      "title": "代数系",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/03-monads/04-algebras-compact.html"
+    },
     "cat:sec-mon-algebras": {
       "status": "defined",
       "type": "section",
@@ -1597,6 +1667,13 @@
       "num": "7.4",
       "page": "18-category-theory/18A-general-theory/01-basics/07-adjunctions.html"
     },
+    "cat:ultrafilter-monad": {
+      "status": "defined",
+      "type": "fact",
+      "title": "超フィルターのモナド",
+      "num": "4.5",
+      "page": "18-category-theory/18A-general-theory/03-monads/04-algebras-compact.html"
+    },
     "cat:unit-counit": {
       "status": "defined",
       "type": "definition",
@@ -1652,6 +1729,13 @@
       "title": "宇宙の存在と到達不能基数",
       "num": "1.5",
       "page": "18-category-theory/18A-general-theory/01-basics/01-categories.html"
+    },
+    "cat:variety": {
+      "status": "defined",
+      "type": "definition",
+      "title": "代数系の多様体",
+      "num": "4.1",
+      "page": "18-category-theory/18A-general-theory/03-monads/04-algebras-compact.html"
     },
     "cat:vertical-composition": {
       "status": "defined",
@@ -28671,21 +28755,6 @@
       "title": "実数全体の濃度",
       "referencedFrom": [
         "03-mathematical-logic/03E-set-theory/01-basics/11-cardinal-exponentiation.html"
-      ]
-    },
-    "cat:algebras-monadic": {
-      "status": "planned",
-      "title": "普遍代数の圏のモナド性",
-      "referencedFrom": [
-        "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html",
-        "18-category-theory/18A-general-theory/03-monads/03-beck.html"
-      ]
-    },
-    "cat:chaus-monadic": {
-      "status": "planned",
-      "title": "コンパクトハウスドルフ空間のモナド性",
-      "referencedFrom": [
-        "18-category-theory/18A-general-theory/03-monads/03-beck.html"
       ]
     },
     "cat:page-elementary-topos": {

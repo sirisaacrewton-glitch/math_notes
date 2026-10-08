@@ -344,3 +344,4 @@
 | create (co)limits | 創出する | | 既存（cat:create-limits） |
 | variety / (Omega,E)-algebra / term algebra | 多様体 / (Ω,E) 代数 / 項代数 | 代数系 | 仮。cat:page-monadic-examples |
 | ultrafilter monad | 超フィルターのモナド | | 仮。cat:page-monadic-examples |
+| Stone space / clopen set / zero-dimensional / field of sets | ストーン空間 / 閉開集合 / 零次元 / 集合体 | 開閉集合 | 仮。top:page-stone-duality |

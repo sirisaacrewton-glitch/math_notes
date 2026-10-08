@@ -27231,6 +27231,13 @@
       "num": "",
       "page": "54-general-topology/54D-general-properties/01-separation-compactness/07-stone-cech.html"
     },
+    "top:page-stone-duality": {
+      "status": "defined",
+      "type": "page",
+      "title": "ブール代数とストーンの表現定理",
+      "num": "",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/09-stone-duality.html"
+    },
     "top:page-subspaces-products": {
       "status": "defined",
       "type": "page",
@@ -27559,6 +27566,20 @@
       "title": "",
       "num": "2.11",
       "page": "54-general-topology/54B-basic-constructions/01-constructions/02-quotients.html"
+    },
+    "top:prob-sd-cantor": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "9.9",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/09-stone-duality.html"
+    },
+    "top:prob-sd-finite": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "9.8",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/09-stone-duality.html"
     },
     "top:prob-second-countable-sigma-compact": {
       "status": "defined",
@@ -28246,6 +28267,34 @@
       "num": "",
       "page": "54-general-topology/54D-general-properties/01-separation-compactness/07-stone-cech.html"
     },
+    "top:sec-sd-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/09-stone-duality.html"
+    },
+    "top:sec-sd-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/09-stone-duality.html"
+    },
+    "top:sec-sd-representation": {
+      "status": "defined",
+      "type": "section",
+      "title": "ストーンの表現定理",
+      "num": "",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/09-stone-duality.html"
+    },
+    "top:sec-sd-stone-space": {
+      "status": "defined",
+      "type": "section",
+      "title": "ストーン空間",
+      "num": "",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/09-stone-duality.html"
+    },
     "top:sec-sep-definitions": {
       "status": "defined",
       "type": "section",
@@ -28519,6 +28568,13 @@
       "num": "3.9",
       "page": "54-general-topology/54A-generalities/01-topological-spaces/03-bases-countability.html"
     },
+    "top:stone-basic-sets": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "基本集合の演算",
+      "num": "9.3",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/09-stone-duality.html"
+    },
     "top:stone-cech": {
       "status": "defined",
       "type": "theorem",
@@ -28547,12 +28603,54 @@
       "num": "7.7",
       "page": "54-general-topology/54D-general-properties/01-separation-compactness/07-stone-cech.html"
     },
+    "top:stone-duality": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "ストーン双対性",
+      "num": "9.7",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/09-stone-duality.html"
+    },
     "top:stone-paracompact": {
       "status": "defined",
       "type": "theorem",
       "title": "ストーンの定理",
       "num": "4.7",
       "page": "54-general-topology/54E-richer-structures/01-metric-spaces/04-metrization.html"
+    },
+    "top:stone-representation": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "ストーンの表現定理",
+      "num": "9.5",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/09-stone-duality.html"
+    },
+    "top:stone-space": {
+      "status": "defined",
+      "type": "definition",
+      "title": "ストーン空間",
+      "num": "9.1",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/09-stone-duality.html"
+    },
+    "top:stone-space-of-ba": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "ストーン空間であること",
+      "num": "9.4",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/09-stone-duality.html"
+    },
+    "top:stone-space-of-ba-def": {
+      "status": "defined",
+      "type": "definition",
+      "title": "ブール代数のストーン空間",
+      "num": "9.2",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/09-stone-duality.html"
+    },
+    "top:stone-space-recovered": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "ストーン空間の復元",
+      "num": "9.6",
+      "page": "54-general-topology/54D-general-properties/01-separation-compactness/09-stone-duality.html"
     },
     "top:subbase": {
       "status": "defined",
@@ -28830,16 +28928,6 @@
         "54-general-topology/54A-generalities/01-topological-spaces/02-closure-interior.html",
         "54-general-topology/54D-general-properties/01-separation-compactness/01-separation-axioms.html",
         "54-general-topology/54D-general-properties/01-separation-compactness/06-urysohn-tietze.html",
-        "54-general-topology/54D-general-properties/01-separation-compactness/07-stone-cech.html"
-      ]
-    },
-    "top:stone-representation": {
-      "status": "planned",
-      "title": "ストーンの表現定理",
-      "referencedFrom": [
-        "03-mathematical-logic/03B-general-logic/02-first-order-logic/07-completeness.html",
-        "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/01-types-omitting.html",
-        "03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/06-ma-equivalents.html",
         "54-general-topology/54D-general-properties/01-separation-compactness/07-stone-cech.html"
       ]
     }

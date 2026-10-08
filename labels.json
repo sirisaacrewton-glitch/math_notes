@@ -4768,6 +4768,13 @@
       "num": "4.13",
       "page": "03-mathematical-logic/03F-proof-theory/02-incompleteness/04-representability.html"
     },
+    "comp:dekker-deficiency": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "デッカーの不足集合",
+      "num": "9.7",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/09-low-simple.html"
+    },
     "comp:delta-hat": {
       "status": "defined",
       "type": "lemma",
@@ -6984,14 +6991,14 @@
       "status": "defined",
       "type": "problem",
       "title": "",
-      "num": "9.8",
+      "num": "9.10",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/09-low-simple.html"
     },
     "comp:prob-ls-simple-not-m-complete": {
       "status": "defined",
       "type": "problem",
       "title": "",
-      "num": "9.7",
+      "num": "9.9",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/09-low-simple.html"
     },
     "comp:prob-mapping-atm-complete": {
@@ -8604,6 +8611,13 @@
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/03-ackermann.html"
     },
+    "comp:sec-ls-dekker": {
+      "status": "defined",
+      "type": "section",
+      "title": "$T$ 完全な単純集合（デッカーの不足集合）",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/09-low-simple.html"
+    },
     "comp:sec-ls-limit": {
       "status": "defined",
       "type": "section",
@@ -9575,6 +9589,13 @@
       "type": "definition",
       "title": "単純集合",
       "num": "9.1",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/09-low-simple.html"
+    },
+    "comp:simple-t-complete": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "T 完全な単純集合",
+      "num": "9.8",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/09-low-simple.html"
     },
     "comp:simultaneous-recursion": {

@@ -114,6 +114,52 @@
 - **極限補題**：Step 8 で、「最終的に止まるかどうか」の極限で $K^{A}$ を近似し、$\varnothing'$ で計算できることに使った。
 :::
 
+## $T$ 完全な単純集合（デッカーの不足集合） {#comp:sec-ls-dekker}
+
+単純集合は $m$ 完全でない（\ref{comp:simple-not-complete}）が、チューリング還元については $\varnothing'$ と同値になりうる。したがって、ポストの問題を解くには単純性だけでは足りず、低さのような追加の条件が必要である。そのような単純集合は J. C. E. Dekker（1954）の**不足集合**として具体的に作れる。
+
+::: theorem デッカーの不足集合 {#comp:dekker-deficiency keywords="Dekker's deficiency set: every noncomputable c.e. set is Turing equivalent to a simple set" index="デッカーの不足集合|でっかーのふそくしゅうごう, 不足集合|ふそくしゅうごう"}
+$A$ を決定可能でない無限な認識可能集合とし、$f\colon\N\to\N$ を $A$ を重複なく列挙する全域計算可能関数とする（$f$ は単射で値域が $A$）。
+$$
+D\defeq\{s\in\N:\text{ある }t>s\text{ で }f(t)<f(s)\}
+$$
+（「段階 $s$ の値より小さい値が後から現れる」段階 $s$ の集合）とおく。このとき $D$ は単純で、$D\equiv_{\mathrm{T}}A$ である。
+:::
+
+::: proof
+**Step 0（$f$ の存在）.** $A=W_{e}$ とし、$s=0,1,2,\dots$ と $W_{e,s}$ を計算して、新しく現れた元を小さい順に並べていく。$A$ は**無限**なので新しい元は無限に現れ、$n$ 番目に現れた元を $f(n)$ とすれば $f$ は全域計算可能で単射、値域は $A$。
+
+**Step 1（$D$ は認識可能）.** $s\in D\iff\exists t\,[t>s\wedge f(t)<f(s)]$ で、括弧内は決定可能なので、$t$ を順に探せば $D$ を認識できる。
+
+**Step 2（$\overline{D}$ の元の性質）.** $s\notin D$ を「真の段階」と呼ぶ。$s\notin D$ なら、$t>s$ について $f(t)>f(s)$（$f$ は**単射**なので等号はない）。したがって
+$$
+s\notin D,\ y<f(s)\ \Longrightarrow\ \bigl(y\in A\iff y\in\{f(0),\dots,f(s)\}\bigr).
+$$
+実際、$y\in A$ なら $y=f(t)$ となる $t$ があり、$t>s$ なら $f(t)>f(s)>y$ で矛盾するので $t\le s$。
+
+**Step 3（$\overline{D}$ は無限）.** $s_{0}\in\N$ をとる。$\{f(s):s\ge s_{0}\}$ は自然数の空でない集合なので最小値をもち、それを与える $s_{1}\ge s_{0}$ がある（$f$ は単射なので一つ）。$t>s_{1}$ なら $t\ge s_{0}$ かつ $t\neq s_{1}$ なので $f(t)>f(s_{1})$。よって $s_{1}\notin D$。$s_{0}$ は任意なので $\overline{D}$ は無限。
+
+**Step 4（$\overline{D}$ は無限な認識可能集合を含まない）.** $W\subseteq\overline{D}$ が無限な認識可能集合だとする。$y$ が与えられたら、$W$ を列挙して $f(s)>y$ となる $s\in W$ を探す（$W$ は無限、$f$ は単射なので $f(s)\le y$ となる $s$ は有限個で、探索は止まる）。$s\in W\subseteq\overline{D}$ なので Step 2 から $y\in A\iff y\in\{f(0),\dots,f(s)\}$ で、右辺は計算できる。よって $A$ は決定可能となり、**仮定**に反する。Step 1・3・4 から $D$ は単純。
+
+**Step 5（$D\le_{\mathrm{T}}A$）.** $s$ が与えられたら、$f(s)$ を計算し、$y<f(s)$ のそれぞれについて神託 $A$ に $y\in A$ かを問う。$y\in A$ なら $f(t)=y$ となる $t$ を探索して求める（値域にあるので止まる）。$s\in D$ であることは、こうして求めた有限個の $t$ のどれかが $t>s$ であることと同値。
+
+**Step 6（$A\le_{\mathrm{T}}D$）.** $y$ が与えられたら、神託 $D$ を使って $s=0,1,2,\dots$ を調べ、$s\notin D$ かつ $f(s)>y$ となる最初の $s$ を求める（Step 3 から $\overline{D}$ は無限で、$f(s)\le y$ となる $s$ は有限個なので止まる）。Step 2 から $y\in A\iff y\in\{f(0),\dots,f(s)\}$。
+:::
+
+::: corollary T 完全な単純集合 {#comp:simple-t-complete keywords="there is a simple set Turing equivalent to 0'" index="T 完全な単純集合|てぃーかんぜんなたんじゅんしゅうごう"}
+単純集合 $D$ で $D\equiv_{\mathrm{T}}\varnothing'$ となるものがある。
+:::
+
+::: proof
+$\varnothing'$ は認識可能で（\ref{comp:jump-properties} の 1）、決定可能でない（同 2）。有限集合は決定可能なので $\varnothing'$ は無限。\ref{comp:dekker-deficiency} を $A=\varnothing'$ に適用すればよい。
+:::
+
+::: hypcheck
+- **$f$ の単射性**：Step 2 で「真の段階の後には、より大きい値しか現れない」ことに、Step 4・6 で探索が止まることに使った。
+- **$A$ が決定可能でない**：Step 4（単純性）でのみ使った。$A$ が決定可能でも $D\equiv_{\mathrm{T}}A$ と $\overline{D}$ の無限性は成り立つが、$D$ は単純にならない。
+- **$A$ が無限**：Step 0 で $f$ を全域にするのに使った。
+:::
+
 ## 問題 {#comp:sec-ls-problems}
 
 ::: problem {#comp:prob-ls-simple-not-m-complete}
@@ -133,7 +179,7 @@ $\varnothing'$ が低なら $\varnothing''\le_{\mathrm{T}}\varnothing'$ で、\r
 :::
 
 ::: supplement
-**前提を変えると.** 低集合の双対として、$A''\equiv_{\mathrm{T}}\varnothing''$（$A\le_{\mathrm{T}}\varnothing'$）となる**高**集合や、$A^{(n)}\equiv_{\mathrm{T}}\varnothing^{(n)}$ となる $\mathrm{low}_{n}$ 集合の階層が考えられる。ポストは単純集合が $\varnothing'$ と $m$ 同値でないことを示したが（\ref{comp:simple-not-complete}）、単純集合で $\varnothing'$ と $T$ 同値なものも存在することが知られている（ここでは扱わない）ので、単純性だけではポストの問題は解けない。低さを加えたことで、ここでは解けている。
+**前提を変えると.** 低集合の双対として、$A''\equiv_{\mathrm{T}}\varnothing''$（$A\le_{\mathrm{T}}\varnothing'$）となる**高**集合や、$A^{(n)}\equiv_{\mathrm{T}}\varnothing^{(n)}$ となる $\mathrm{low}_{n}$ 集合の階層が考えられる。ポストは単純集合が $\varnothing'$ と $m$ 同値でないことを示したが（\ref{comp:simple-not-complete}）、単純集合で $\varnothing'$ と $T$ 同値なものも存在する（デッカーの不足集合、\ref{comp:simple-t-complete}）ので、単純性だけではポストの問題は解けない。低さを加えたことで、ここでは解けている。
 
 **似た定理.** 極限補題は、$\Delta_{2}$ の集合（\ref{comp:post-theorem}）を「計算可能な近似が有限回だけ変わる」集合として特徴づける。近似の変化の回数に上限を付けると、差の階層（$n$-c.e. 集合）が得られる（ここでは扱わない）。低集合は、算術の非標準モデルや逆数学（低基底定理：空でない $\Pi^{0}_{1}$ クラスは低な元をもつ）でも重要であることが知られている（\ref{logic:page-rm-wkl0} を参照）。
 

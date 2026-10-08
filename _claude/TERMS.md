@@ -443,6 +443,7 @@
 | Dugundji extension theorem / linear extension operator / absolute extensor (AE) | デュグンジの拡張定理 / 線形拡張作用素 / 絶対拡張子 | | 標準的。top:page-dugundji |
 | Baire space N^N (descriptive set theory) / Lusin scheme / zero-dimensional | ベール空間 ℕ^ℕ（カテゴリーの意味のベール空間と区別） / ルジン図式 / 零次元 | | ページ名は「ℕ^ℕ の特徴づけ」として衝突を避けた。top:page-baire-space-nn |
 | Cech-complete / remainder (of a compactification) | チェック完備 / 剰余 | | 標準的。top:page-cech-complete |
+| deficiency set (Dekker) / true stage | 不足集合（デッカー） / 真の段階 | | 標準的。comp:dekker-deficiency |
 | Luzin set / Sierpinski set | ルジンの集合 / シェルピンスキーの集合 | ルージン集合 | 標準的。set:page-luzin-sets |
 | Adleman theorem / Sipser-Gacs-Lautemann theorem / probabilistic method / derandomization | アドルマンの定理 / シプサー–ガーチ–ラウテマンの定理 / 確率的方法 / 脱乱択化 | | 標準的。comp:page-bpp-ph |
 | Chaitin incompleteness theorem / Berry paradox | チャイティンの不完全性定理 / ベリーの逆理 | | 標準的。comp:page-chaitin-incompleteness |

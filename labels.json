@@ -113,6 +113,55 @@
       "num": "2.4",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/02-monoidal.html"
     },
+    "cat:braid-category": {
+      "status": "defined",
+      "type": "definition",
+      "title": "組紐圏",
+      "num": "8.4",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/08-braids.html"
+    },
+    "cat:braid-category-braided": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "組紐圏は組紐モノイダル圏",
+      "num": "8.6",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/08-braids.html"
+    },
+    "cat:braid-category-free": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "組紐圏の自由性（ジョイヤル–ストリート）",
+      "num": "8.7",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/08-braids.html"
+    },
+    "cat:braid-category-monoidal": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "組紐圏は厳密モノイダル圏",
+      "num": "8.5",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/08-braids.html"
+    },
+    "cat:braid-group": {
+      "status": "defined",
+      "type": "definition",
+      "title": "組紐群",
+      "num": "8.1",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/08-braids.html"
+    },
+    "cat:braid-group-infinite": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "組紐群は無限群",
+      "num": "8.3",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/08-braids.html"
+    },
+    "cat:braided-coherence": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "組紐モノイダル圏のコヒーレンス",
+      "num": "8.10",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/08-braids.html"
+    },
     "cat:braided-monoidal": {
       "status": "defined",
       "type": "definition",
@@ -1044,6 +1093,13 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/03-monads/03-beck.html"
     },
+    "cat:page-braids": {
+      "status": "defined",
+      "type": "page",
+      "title": "組紐群と組紐圏",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/08-braids.html"
+    },
     "cat:page-cartesian-closed": {
       "status": "defined",
       "type": "page",
@@ -1253,6 +1309,20 @@
       "title": "",
       "num": "3.9",
       "page": "18-category-theory/18A-general-theory/03-monads/03-beck.html"
+    },
+    "cat:prob-br-double-braiding": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "8.12",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/08-braids.html"
+    },
+    "cat:prob-br-pure": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "8.11",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/08-braids.html"
     },
     "cat:prob-ccc-composition": {
       "status": "defined",
@@ -1820,6 +1890,41 @@
       "title": "ベックの定理",
       "num": "",
       "page": "18-category-theory/18A-general-theory/03-monads/03-beck.html"
+    },
+    "cat:sec-br-category": {
+      "status": "defined",
+      "type": "section",
+      "title": "組紐圏",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/08-braids.html"
+    },
+    "cat:sec-br-free": {
+      "status": "defined",
+      "type": "section",
+      "title": "自由性とコヒーレンス",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/08-braids.html"
+    },
+    "cat:sec-br-group": {
+      "status": "defined",
+      "type": "section",
+      "title": "組紐群",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/08-braids.html"
+    },
+    "cat:sec-br-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/08-braids.html"
+    },
+    "cat:sec-br-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/08-braids.html"
     },
     "cat:sec-cat-definition": {
       "status": "defined",
@@ -2730,6 +2835,13 @@
       "title": "超フィルターのモナド",
       "num": "4.5",
       "page": "18-category-theory/18A-general-theory/03-monads/04-algebras-compact.html"
+    },
+    "cat:underlying-braid": {
+      "status": "defined",
+      "type": "definition",
+      "title": "道の組紐",
+      "num": "8.9",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/08-braids.html"
     },
     "cat:unit-counit": {
       "status": "defined",
@@ -30415,13 +30527,6 @@
       "title": "実数全体の濃度",
       "referencedFrom": [
         "03-mathematical-logic/03E-set-theory/01-basics/11-cardinal-exponentiation.html"
-      ]
-    },
-    "cat:page-braids": {
-      "status": "planned",
-      "title": "組紐群と組紐圏",
-      "referencedFrom": [
-        "18-category-theory/18A-general-theory/02-structured-categories/07-symmetric-coherence.html"
       ]
     },
     "cat:page-elementary-topos": {

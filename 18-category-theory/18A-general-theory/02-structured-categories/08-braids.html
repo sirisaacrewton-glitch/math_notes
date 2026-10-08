@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>組紐群と組紐圏 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/02-structured-categories/08-braids.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 組紐群と組紐圏 {#cat:page-braids keywords="Artin braid group, braid relations, braid category, free braided monoidal category, Joyal-Street, coherence for braided monoidal categories, underlying braid, graded vector spaces with bicharacter braiding"}
+
+対称モノイダル圏では、構造射の合成は文字の**置換**だけで決まった（\ref{cat:symmetric-coherence-general}）。対称性 $\gamma_{b,a}\gamma_{a,b}=1$ を外した組紐モノイダル圏（\ref{cat:braided-monoidal}）では、置換の代わりに**組紐**が現れる。本ページでは、アルティンの**組紐群** $B_{n}$（\ref{cat:braid-group}）を生成元と関係で定義し、それらを集めた**組紐圏** $\mathbf{B}$ が組紐モノイダル圏であること（\ref{cat:braid-category-braided}）を示す。主定理は、$\mathbf{B}$ が一つの対象で生成される**自由な**厳密組紐モノイダル圏であること（\ref{cat:braid-category-free}、ジョイヤル–ストリート）と、組紐のコヒーレンス（\ref{cat:braided-coherence}）：構造射の二つの合成がすべての組紐モノイダル圏で等しいのは、それらの組紐が等しいときに限る。
+
+> 資料：Mac Lane, *Categories for the Working Mathematician* 第 XI 章 §4–§6。Mac Lane は組紐圏が組紐モノイダル圏であることを図で示すだけなので、組紐の関係式から代数的に確かめた（\ref{cat:braid-category-braided}）。また Mac Lane は $B_{n}$ を「相異なる $n$ 点の組の空間」の基本群としているが、これは順序つきの点の組なので、その基本群は純組紐群になる。$B_{n}$ は順序のない $n$ 点集合の空間の基本群である（Fox–Neuwirth, 1962 とされる）。本ページでは $B_{n}$ を生成元と関係で定義し、幾何的な解釈は直感のためだけに使う。コヒーレンス定理（Mac Lane の定理 2）は証明が書かれていないので、前ページの議論を組紐に移して証明した。
+
+## 記法と定義の確認 {#cat:sec-br-notation}
+
+::: notation
+- 組紐モノイダル圏、六角形の等式 (H1)(H2)、厳密な場合の形、ヤン–バクスター方程式、組紐モノイダル関手は \ref{cat:braided-monoidal}, \ref{cat:yang-baxter}, \ref{cat:braided-monoidal-functor} のとおり。厳密化への組紐の移送、番号つき語、基本移動、基本射の共役は \ref{cat:braiding-strictification}, \ref{cat:labelled-words}, \ref{cat:symmetric-moves}, \ref{cat:basic-arrows-to-moves} のとおり。
+- **群の表示.** 集合 $X$ と、$X$ の元とその逆の語の集合 $R$ について、$\langle X\mid R\rangle$ は $X$ 上の自由群を $R$ の正規閉包で割った群である。普遍性：群 $K$ の元 $k_{x}$（$x\in X$）が $R$ のすべての関係を満たせば、$x\mapsto k_{x}$ となる準同型 $\langle X\mid R\rangle\to K$ がただ一つある。また二つの語が $\langle X\mid R\rangle$ で等しいことは、一方から他方へ、$xx^{-1}$, $x^{-1}x$ や $R$ の元とその逆を部分語として挿入・削除する操作を有限回行って移れることと同値である（正規閉包の定義から）。
+- 対称群 $\mathfrak{S}_{n}$ と隣接互換 $t_{i}$ は \ref{cat:coxeter-presentation} のとおり。
+:::
+
+## 組紐群 {#cat:sec-br-group}
+
+::: definition 組紐群 {#cat:braid-group keywords="Artin braid group, braid relations, pure braid group" index="組紐群|くみひもぐん, アルティンの組紐群|あるてぃんのくみひもぐん, 純組紐群|じゅんくみひもぐん"}
+$n\ge1$ について、**組紐群** $B_{n}$ を
+$$
+B_{n}\defeq\bigl\langle\sigma_{1},\dots,\sigma_{n-1}\bigm|\sigma_{i}\sigma_{i+1}\sigma_{i}=\sigma_{i+1}\sigma_{i}\sigma_{i+1},\ \sigma_{i}\sigma_{j}=\sigma_{j}\sigma_{i}\ (|i-j|\ge2)\bigr\rangle
+$$
+で定める。$B_{0}=B_{1}$ は自明な群とする。$\sigma_{i}\mapsto t_{i}$ は準同型 $\pi\colon B_{n}\to\mathfrak{S}_{n}$ を定め（隣接互換は二つの関係を満たす。\ref{cat:coxeter-presentation} の Step 2）、その核を**純組紐群**という。
+:::
+
+::: remark
+直感的には、$B_{n}$ の元は、平面上の $n$ 点から出て時間とともに互いにぶつからずに動き、同じ $n$ 点の集合に戻る $n$ 本の紐（3 次元空間内の曲線）を、連続変形で同一視したものである。$\sigma_{i}$ は $i$ 番目の紐が $i+1$ 番目の紐の下（一方の側）をくぐって入れ替わる操作、$\sigma_{i}^{-1}$ は逆側をくぐる操作。組紐の関係は「三本の紐で、外側の二本を交差させる二通りの順序は同じ絡み方になる」ことを表す。これを $B_{n}$ の正式な定義にしないのは、生成元と関係で表示されることの証明（アルティンの定理）がこのページの範囲を超えるからである。$\sigma_{i}^{2}=1$ が課されていないことが、置換との違いである。
+:::
+
+::: proposition 組紐群は無限群 {#cat:braid-group-infinite keywords="abelianization of the braid group, braid group is infinite" index="組紐群の次数|くみひもぐんのじすう"}
+$n\ge2$ について、$\sigma_{i}\mapsto1$ は全射準同型 $\deg\colon B_{n}\to\mathbb{Z}$ を定める。とくに $\sigma_{1}$ の位数は無限で、$\sigma_{1}^{2}\neq1$。$B_{2}\cong\mathbb{Z}$。
+:::
+
+::: proof
+$\mathbb{Z}$ で組紐の関係の両辺はともに $1+1+1=3$、可換性の両辺は $2$ なので、表示の普遍性から準同型が定まる。$\deg(\sigma_{1}^{k})=k$ なので $\sigma_{1}^{k}\neq1$（$k\neq0$）で、全射。$B_{2}$ は一つの生成元 $\sigma_{1}$ と空の関係で表示されるので、一つの元の上の自由群すなわち $\mathbb{Z}$。
+:::
+
+## 組紐圏 {#cat:sec-br-category}
+
+::: definition 組紐圏 {#cat:braid-category keywords="braid category" index="組紐圏|くみひもけん"}
+**組紐圏** $\mathbf{B}$ は、対象を自然数 $n=0,1,2,\dots$ とし、$\mathbf{B}(n,n)\defeq B_{n}$、$n\neq m$ なら $\mathbf{B}(n,m)\defeq\varnothing$、合成を群の積 $\eta\circ\xi\defeq\eta\xi$ とする圏である（右の因子を先に施すと読む）。
+:::
+
+$\mathbf{B}$ の積を「組紐を横に並べる」ことで定める。準同型 $\iota^{m,n}_{1}\colon B_{m}\to B_{m+n}$, $\sigma_{i}\mapsto\sigma_{i}$ と $\iota^{m,n}_{2}\colon B_{n}\to B_{m+n}$, $\sigma_{j}\mapsto\sigma_{m+j}$ は、関係を関係に移すので well-defined である。$\iota_{1}$ の生成元 $\sigma_{i}$（$i\le m-1$）と $\iota_{2}$ の生成元 $\sigma_{m+j}$（$m+j\ge m+1$）は添字が 2 以上離れているので可換で、したがって $\iota_{1}(\xi)$ と $\iota_{2}(\eta)$ はつねに可換である。
+
+::: proposition 組紐圏は厳密モノイダル圏 {#cat:braid-category-monoidal keywords="braid category is strict monoidal under juxtaposition" index="組紐の並置|くみひものへいち"}
+対象について $m+n$、射について $\xi+\eta\defeq\iota_{1}(\xi)\,\iota_{2}(\eta)\in B_{m+n}$（$\xi\in B_{m}$, $\eta\in B_{n}$）とすると、$\mathbf{B}$ は $+$ と単位 $0$ で厳密モノイダル圏になる。
+:::
+
+::: proof
+**双関手性.** $\iota_{1}(\xi')$ と $\iota_{2}(\eta)$ の可換性から $(\xi'+\eta')\circ(\xi+\eta)=\iota_{1}(\xi')\iota_{2}(\eta')\iota_{1}(\xi)\iota_{2}(\eta)=\iota_{1}(\xi'\xi)\iota_{2}(\eta'\eta)=(\xi'\xi)+(\eta'\eta)$。$1+1=1$。
+
+**結合律.** $(\xi+\eta)+\zeta$ と $\xi+(\eta+\zeta)$（$\zeta\in B_{p}$）は、どちらも $B_{m+n+p}$ の中で $\xi$ の $\sigma_{i}$ を $\sigma_{i}$ に、$\eta$ の $\sigma_{j}$ を $\sigma_{m+j}$ に、$\zeta$ の $\sigma_{k}$ を $\sigma_{m+n+k}$ に移した三つの元の積である（それぞれの $\iota$ の合成が生成元の上で一致し、準同型は生成元で決まる）。$B_{0}$ は自明なので $\xi+1_{0}=\xi=1_{0}+\xi$。よって結合子・単位子を恒等射として厳密モノイダル圏。
+:::
+
+$1_{k}+\sigma_{j}+1_{l}=\sigma_{k+j}$（$B_{k+n+l}$ の中で）に注意する。次に組紐を定める：
+$$
+\begin{gathered}
+\gamma_{1,n}\defeq\sigma_{n}\sigma_{n-1}\cdots\sigma_{1}\in B_{1+n},\qquad\gamma_{0,n}\defeq1,\\
+\gamma_{m+1,n}\defeq(\gamma_{1,n}+1_{m})\circ(1_{1}+\gamma_{m,n}).
+\end{gathered}
+$$
+$\gamma_{1,n}$ は 1 本目の紐を残りの $n$ 本の向こうへ一本ずつ越えさせる組紐、$\gamma_{m,n}$ は最初の $m$ 本の束を後ろの $n$ 本の束の向こうへ越えさせる組紐である。$\gamma_{1,0}=1$（空の積）で、帰納法で $\gamma_{m,0}=1$。
+
+::: theorem 組紐圏は組紐モノイダル圏 {#cat:braid-category-braided keywords="the braid category is braided monoidal but not symmetric" index="組紐圏の組紐|くみひもけんのくみひも"}
+$\gamma_{m,n}\colon m+n\to n+m$ は厳密モノイダル圏 $\mathbf{B}$ の組紐である。$\gamma_{1,1}=\sigma_{1}$ で $\gamma_{1,1}\circ\gamma_{1,1}\neq1$ なので、$\mathbf{B}$ は対称ではない。
+:::
+
+::: proof
+**Step 1（二つの基本関係）.** $c\defeq\sigma_{n}\cdots\sigma_{1}$ と $d\defeq\sigma_{1}\sigma_{2}\cdots\sigma_{n}$（$B_{n+1}$ の元）について、$1\le j\le n-1$ で
+$$
+c\,\sigma_{j+1}=\sigma_{j}\,c,\qquad d\,\sigma_{j}=\sigma_{j+1}\,d.
+$$
+前者：$\sigma_{j+1}$ は $\sigma_{j-1},\dots,\sigma_{1}$ と可換なので $c\sigma_{j+1}=\sigma_{n}\cdots\sigma_{j+2}(\sigma_{j+1}\sigma_{j}\sigma_{j+1})\sigma_{j-1}\cdots\sigma_{1}$。組紐の関係で括弧を $\sigma_{j}\sigma_{j+1}\sigma_{j}$ に替え、$\sigma_{j}$ が $\sigma_{n},\dots,\sigma_{j+2}$ と可換なことから左端へ出すと $\sigma_{j}c$。後者も同様に、$\sigma_{j}$ を右から入れて $(\sigma_{j}\sigma_{j+1}\sigma_{j})=(\sigma_{j+1}\sigma_{j}\sigma_{j+1})$ を使い、$\sigma_{j+1}$ を左端へ出す。
+
+**Step 2（(H1)）.** $\gamma_{m+m',n}=(\gamma_{m,n}+1_{m'})\circ(1_{m}+\gamma_{m',n})$ を $m$ に関する帰納法で示す。$m=0$ は自明、$m=1$ は定義。$m+1$ について、定義と帰納法の仮定、$+$ の結合律と双関手性から
+$$
+\begin{aligned}
+\gamma_{m+1+m',n}&=(\gamma_{1,n}+1_{m+m'})\circ(1_{1}+\gamma_{m+m',n})\\
+&=(\gamma_{1,n}+1_{m+m'})\circ(1_{1}+\gamma_{m,n}+1_{m'})\circ(1_{1+m}+\gamma_{m',n})\\
+&=(\gamma_{m+1,n}+1_{m'})\circ(1_{m+1}+\gamma_{m',n}).
+\end{aligned}
+$$
+
+**Step 3（(H2)）.** $\gamma_{m,n+n'}=(1_{n}+\gamma_{m,n'})\circ(\gamma_{m,n}+1_{n'})$ を $m$ に関する帰納法で示す。$m=0$ は自明。$m=1$：$1_{n}+\sigma_{k}=\sigma_{n+k}$, $\sigma_{k}+1_{n'}=\sigma_{k}$ から
+$$
+\gamma_{1,n+n'}=(\sigma_{n+n'}\cdots\sigma_{n+1})(\sigma_{n}\cdots\sigma_{1})=(1_{n}+\gamma_{1,n'})\circ(\gamma_{1,n}+1_{n'}).
+$$
+$m+1$：定義と $m=1$, 帰納法の仮定を代入すると
+$$
+\begin{aligned}
+\gamma_{m+1,n+n'}&=(1_{n}+\gamma_{1,n'}+1_{m})\circ(\gamma_{1,n}+1_{n'+m})\\
+&\qquad\circ(1_{1+n}+\gamma_{m,n'})\circ(1_{1}+\gamma_{m,n}+1_{n'}).
+\end{aligned}
+$$
+中央の二つは別々の紐の束に作用するので交換でき（双関手性：$(f+1)\circ(1+g)=f+g=(1+g)\circ(f+1)$）、交換したものをまとめ直すと $(1_{n}+\gamma_{m+1,n'})\circ(\gamma_{m+1,n}+1_{n'})$ になる。
+
+**Step 4（第 2 変数の自然性）.** $\gamma_{m,n}\circ(1_{m}+\eta)=(\eta+1_{m})\circ\gamma_{m,n}$ を示す。この等式を満たす $\eta$ の全体は $B_{n}$ の部分群なので、$\eta=\sigma_{j}$ で示せばよい。$m=1$ では、$1_{1}+\sigma_{j}=\sigma_{j+1}$, $\sigma_{j}+1_{1}=\sigma_{j}$ なので Step 1 の前者そのもの。$m+1$ では、定義、帰納法の仮定、$m=1$ の場合を順に使って
+$$
+\begin{aligned}
+\gamma_{m+1,n}\circ(1_{m+1}+\sigma_{j})&=(\gamma_{1,n}+1_{m})\circ(1_{1}+(\sigma_{j}+1_{m})\gamma_{m,n})\\
+&=\bigl(\gamma_{1,n}(1_{1}+\sigma_{j})+1_{m}\bigr)\circ(1_{1}+\gamma_{m,n})\\
+&=(\sigma_{j}+1_{m+1})\circ\gamma_{m+1,n}.
+\end{aligned}
+$$
+
+**Step 5（第 1 変数の自然性）.** $\gamma_{m,n}\circ(\xi+1_{n})=(1_{n}+\xi)\circ\gamma_{m,n}$ を、同様に $\xi=\sigma_{i}$（$1\le i\le m-1$）で示す。まず $n=1$：定義から帰納法で $\gamma_{m,1}=\sigma_{1}\sigma_{2}\cdots\sigma_{m}$（$\gamma_{m+1,1}=(\sigma_{1}+1_{m})(1_{1}+\gamma_{m,1})=\sigma_{1}\sigma_{2}\cdots\sigma_{m+1}$）なので、Step 1 の後者から $\gamma_{m,1}\sigma_{i}=\sigma_{i+1}\gamma_{m,1}$、すなわち求める等式。$n+1$ へは Step 3 の $\gamma_{m,n+1}=(1_{n}+\gamma_{m,1})\circ(\gamma_{m,n}+1_{1})$ を使い、Step 4 と同じ形の計算をする。
+
+**Step 6.** Step 4, 5 と双関手性から $\gamma$ は自然（$\xi+\eta=(\xi+1)\circ(1+\eta)$）。Step 2, 3 は厳密な場合の (H1)(H2)。$\gamma_{1,1}=\sigma_{1}$ で、$\sigma_{1}^{2}\neq1$（\ref{cat:braid-group-infinite}）。
+:::
+
+::: hypcheck
+- **組紐の関係**：Step 1 でだけ使った（自然性の基礎）。可換性の関係は Step 1 と、$\iota_{1},\iota_{2}$ の像の可換性（双関手性）に使った。
+- **$\sigma_{i}^{2}=1$ がないこと**：非対称性の証明に \ref{cat:braid-group-infinite} として使った。
+:::
+
+## 自由性とコヒーレンス {#cat:sec-br-free}
+
+::: theorem 組紐圏の自由性（ジョイヤル–ストリート） {#cat:braid-category-free keywords="the braid category is the free strict braided monoidal category on one object, Joyal-Street" index="自由組紐モノイダル圏|じゆうくみひもものいだるけん, ジョイヤル–ストリートの定理|じょいやるすとりーとのていり"}
+$\mathbf{S}$ を厳密な組紐モノイダル圏とする。
+1. $\mathbf{S}$ の各対象 $a$ について、厳密な組紐モノイダル関手 $F\colon\mathbf{B}\to\mathbf{S}$ で $F(1)=a$ となるものがただ一つある。
+2. そのような関手 $F,G$ と射 $f\colon F(1)\to G(1)$ について、モノイダル自然変換 $\theta\colon F\Rightarrow G$ で $\theta_{1}=f$ となるものがただ一つある。
+
+したがって、厳密な組紐モノイダル関手 $\mathbf{B}\to\mathbf{S}$ とモノイダル自然変換のなす圏は、「$1$ での値」によって $\mathbf{S}$ と同型である。
+:::
+
+::: proof
+**1. 一意性.** $F$ が厳密なら $F(n)=a^{n}$（$a$ の $n$ 個の積）、$F(1_{k}+\xi+1_{l})=1\cdot F(\xi)\cdot1$。組紐モノイダル関手の条件（$F_{2}=1$）から $F(\sigma_{1})=F(\gamma_{1,1})=\gamma_{a,a}$。$\sigma_{i}=1_{i-1}+\sigma_{1}+1_{n-i-1}$ なので
+$$
+F(\sigma_{i})=1_{a^{i-1}}\cdot\gamma_{a,a}\cdot1_{a^{n-i-1}}\colon a^{n}\to a^{n}
+$$
+が決まり、$B_{n}$ は $\sigma_{i}$ で生成されるので $F$ は決まる。
+
+**1. 存在.** 上の式で $F(\sigma_{i})$ を定める。これは組紐の関係を満たす：$|i-j|\ge2$ の可換性は $\cdot$ の双関手性、$\sigma_{i}\sigma_{i+1}\sigma_{i}=\sigma_{i+1}\sigma_{i}\sigma_{i+1}$ はヤン–バクスター方程式（\ref{cat:yang-baxter}、$a=b=c$）を $1\cdot-\cdot1$ で囲んだもの（左辺・右辺の合成の順序は \ref{cat:strict-symmetric-coherence} の Step 2 の計算と同じ）。$F(\sigma_{i})$ は同型なので、表示の普遍性から準同型 $B_{n}\to\mathrm{Aut}(a^{n})$ が定まり、$F$ は関手。積の保存 $F(\xi+\eta)=F(\xi)\cdot F(\eta)$：$\xi\mapsto F(\iota_{1}\xi)$ と $\xi\mapsto F(\xi)\cdot1_{a^{n}}$ はともに準同型で生成元の上で一致し、$\iota_{2}$ も同様なので、$F(\xi+\eta)=F(\iota_{1}\xi)F(\iota_{2}\eta)=(F\xi\cdot1)\circ(1\cdot F\eta)=F\xi\cdot F\eta$。組紐の保存 $F(\gamma_{m,n})=\gamma_{a^{m},a^{n}}$：$F(\gamma_{1,n})=F(\sigma_{n})\circ\cdots\circ F(\sigma_{1})$ は、$\mathbf{S}$ の (H2) を繰り返すと $\gamma_{a,a^{n}}$ に等しく、$\gamma_{m+1,n}$ の定義と $\mathbf{S}$ の (H1) から $m$ に関する帰納法で一般の場合が出る。
+
+**2.** モノイダル自然変換は $\theta_{m+n}=\theta_{m}\cdot\theta_{n}$（$F_{2},G_{2}$ が恒等射なので）と $\theta_{0}=1$ を満たすので、$\theta_{n}=f\cdot f\cdots f=f^{n}$ と決まる。逆にこの $\theta$ は自然である：$\theta_{n}\circ F(\sigma_{i})=G(\sigma_{i})\circ\theta_{n}$ は $\gamma$ の自然性 $\gamma_{a',a'}\circ(f\cdot f)=(f\cdot f)\circ\gamma_{a,a}$ を $f^{i-1}\cdot-\cdot f^{n-i-1}$ で囲んだもので、生成元で成り立てば $B_{n}$ 全体で成り立つ。モノイダル性は定義から。最後の主張は、1 と 2 が「対象の対応」と「射の対応」がともに全単射であることを言っており、合成と恒等射は $\theta\mapsto\theta_{1}$ で保たれる。
+:::
+
+::: remark
+Mac Lane（第 XI 章 §5 定理 1）は、厳密とは限らない組紐モノイダル圏 $\mathbf{M}$ について、強い組紐モノイダル関手 $\mathbf{B}\to\mathbf{M}$ の圏が $\mathbf{M}$ と（同型ではなく）圏同値になると述べ、厳密化（\ref{cat:braiding-strictification}）で上の厳密な場合に帰着させている。この帰着の細部（関手圏の同値への持ち上げ）は Mac Lane でも略されており、ここでは確かめていない。
+:::
+
+対称な場合（\ref{cat:symmetric-coherence-general}）と同様に、組紐モノイダル圏の構造射に組紐を対応させる。
+
+::: definition 道の組紐 {#cat:underlying-braid keywords="underlying braid of a composite of structural maps" index="道の組紐|みちのくみひも"}
+番号つき語（\ref{cat:labelled-words}）の間の基本射に、$n$ をその長さとして、組紐 $\mathrm{br}(\beta)\in B_{n}$ を次のように対応させる：$\alpha,\lambda,\varrho$ 型なら $1$；$\gamma_{u,z}$ を左に長さ $k$ の語、右に長さ $l$ の語の恒等射で囲んだもの（$u,z$ の長さを $m,m'$ とする）なら $1_{k}+\gamma_{m,m'}+1_{l}$；その逆なら逆元。道 $\beta_{r}\circ\cdots\circ\beta_{1}$ の組紐を $\mathrm{br}(\beta_{r})\cdots\mathrm{br}(\beta_{1})$ とする（語の長さは $e$ を数えない文字の数）。
+:::
+
+::: theorem 組紐モノイダル圏のコヒーレンス {#cat:braided-coherence keywords="coherence theorem for braided monoidal categories, Joyal-Street" index="組紐モノイダル圏のコヒーレンス定理|くみひもものいだるけんのこひーれんすていり"}
+番号つき語 $v,w$ の間の基本射の二つの道 $P,Q$ について、次は同値である。
+1. すべての組紐モノイダル圏 $\mathbf{M}$ と対象 $b_{1},\dots,b_{n}$ で、$P$ と $Q$ の合成は $\mathbf{M}$ の射 $v\langle b\rangle\to w\langle b\rangle$ として等しい。
+2. $\mathrm{br}(P)=\mathrm{br}(Q)$。
+:::
+
+::: proof
+**1 ⇒ 2.** $\mathbf{M}=\mathbf{B}$, $b_{i}=1$ とする。$\mathbf{B}$ は厳密なので $\alpha,\lambda,\varrho$ 型の基本射は恒等射、$\gamma_{u,z}$ 型は $1_{k}+\gamma_{m,m'}+1_{l}$ で、道の合成はちょうど $\mathrm{br}$ である。よって $\mathrm{br}(P)=\mathrm{br}(Q)$。
+
+**2 ⇒ 1.** $\mathbf{M}$ を組紐モノイダル圏、$\mathbf{S}$ をその厳密化（\ref{cat:braiding-strictification} で組紐をもつ）、$a_{i}\defeq[b_{i}]$ とする。
+
+*Step 1（$\mathbf{S}$ への移動）.* \ref{cat:basic-arrows-to-moves} の証明は対称性を $\gamma^{-1}$ 型の扱いにしか使っていない。組紐の場合、$\gamma^{-1}$ 型の基本射は「ブロック移動の逆」に写る。よって $N_{w}\circ P\circ N_{v}^{-1}$ は、ブロック移動とその逆の合成である。
+
+*Step 2（基本移動とその逆へ）.* \ref{cat:strict-symmetric-coherence} の Step 1 は (H1)(H2) と $\gamma_{e,c}=\gamma_{c,e}=1$ だけを使っているので組紐の場合にも通り、ブロック移動 $1\cdot\gamma_{a_{s},a_{t}}\cdot1$ は基本移動 $\tau_{i}$ の合成になる。この分解は、組紐圏 $\mathbf{B}$ の中での $1_{k}+\gamma_{m,m'}+1_{l}$ の (H1)(H2) による $\sigma_{i}$ の積への分解と、同じ漸化式に従う。よって、$\sigma_{i}^{\pm1}$ の語 $\omega$ に対して基本移動とその逆の合成 $E_{p}(\omega)$ を \ref{cat:strict-symmetric-coherence} の Step 3 と同じく定めると（$\sigma_{i}^{-1}$ には逆向きの基本移動 $(\tau_{i}^{p\cdot t_{i}})^{-1}$ を対応させる）、$N_{w}PN_{v}^{-1}=E_{p}(\omega_{P})$, $N_{w}QN_{v}^{-1}=E_{p}(\omega_{Q})$ となる語 $\omega_{P},\omega_{Q}$ で、$B_{n}$ の元として $\omega_{P}=\mathrm{br}(P)$, $\omega_{Q}=\mathrm{br}(Q)$ となるものがとれる（$p$ は $v$ の並び）。
+
+*Step 3（関係式）.* すべての並び $p$ で、$\sigma_{i}\sigma_{i}^{-1}$, $\sigma_{i}^{-1}\sigma_{i}$ に対応する合成は恒等射（逆射の定義）、組紐の関係と可換性の両辺に対応する合成は等しい（ヤン–バクスター方程式と双関手性。\ref{cat:strict-symmetric-coherence} の Step 2 の後二つ）。したがって、関係とその逆の挿入・削除で $E_{p}$ は変わらず、$B_{n}$ で等しい語は等しい合成を与える。仮定 $\mathrm{br}(P)=\mathrm{br}(Q)$ から $E_{p}(\omega_{P})=E_{p}(\omega_{Q})$、よって $P=Q$（$N_{v},N_{w}$ は同型）。
+:::
+
+::: hypcheck
+- **$\mathbf{B}$ が組紐モノイダル圏であること**（\ref{cat:braid-category-braided}）：1 ⇒ 2 で、$\mathbf{B}$ を試験の圏として使うために必要。
+- **組紐の厳密化**：2 ⇒ 1 で、$\alpha,\lambda,\varrho$ を消すために使った。単位の公理は使っていない（\ref{cat:braided-unit-redundant}）。
+- **表示による $B_{n}$ の定義**：2 ⇒ 1 の Step 3 で、「$B_{n}$ で等しい語は関係の挿入・削除で移り合う」ことに使った。対称の場合の \ref{cat:coxeter-presentation} にあたる部分は、ここでは定義から直ちに従う（その代わり、幾何的な組紐との一致はアルティンの定理に依存し、ここでは使っていない）。
+:::
+
+::: example 組紐であって対称でない例
+複素数体上の $\mathbb{Z}$ 次数つきベクトル空間の圏（$V=(V_{k})_{k\in\mathbb{Z}}$、$(V\otimes W)_{k}=\bigoplus_{i+j=k}V_{i}\otimes W_{j}$）と $\zeta\in\mathbb{C}^{\times}$ について、斉次元 $x\in V_{i}$, $y\in W_{j}$ に対し
+$$
+\gamma_{V,W}(x\otimes y)\defeq\zeta^{ij}\,y\otimes x
+$$
+とすると組紐である：(H1) は斉次元の上で $\zeta^{(i+j)k}=\zeta^{ik}\zeta^{jk}$、(H2) は $\zeta^{i(j+k)}=\zeta^{ij}\zeta^{ik}$ から（結合子は標準的なもの）。$\gamma_{W,V}\gamma_{V,W}$ は $x\otimes y\mapsto\zeta^{2ij}x\otimes y$ なので、対称であるのは $\zeta^{2}=1$ すなわち $\zeta=\pm1$ のときに限る（$\zeta=-1$ は符号つきの対称の $\mathbb{Z}$ 版）。たとえば $\zeta=i$ のとき、\ref{cat:braid-category-free} の関手 $\mathbf{B}\to(\text{この圏})$ で $1\mapsto V=\mathbb{C}$（次数 $1$）とすると、$\sigma_{1}\mapsto\zeta=i$ 倍で、$\sigma_{1}$ の像の位数は 4 である。
+:::
+
+## 問題 {#cat:sec-br-problems}
+
+::: problem {#cat:prob-br-pure}
+$\pi\colon B_{n}\to\mathfrak{S}_{n}$ は全射であることを示せ。また $\sigma_{1}^{2}$ は純組紐群の自明でない元であることを示せ。
+:::
+
+::: solution
+$\mathfrak{S}_{n}$ は隣接互換で生成される（\ref{cat:coxeter-presentation} の Step 2）ので、$\pi(\sigma_{i})=t_{i}$ から全射。$\pi(\sigma_{1}^{2})=t_{1}^{2}=1$ なので $\sigma_{1}^{2}$ は核に属し、$\deg(\sigma_{1}^{2})=2\neq0$（\ref{cat:braid-group-infinite}）から $\sigma_{1}^{2}\neq1$。
+:::
+
+::: problem {#cat:prob-br-double-braiding}
+$\mathbf{S}$ を厳密な対称モノイダル圏とし、組紐モノイダル圏とみる。$a\in\mathbf{S}$ について \ref{cat:braid-category-free} の関手 $F\colon\mathbf{B}\to\mathbf{S}$ をとると、準同型 $B_{n}\to\mathrm{Aut}(a^{n})$, $\xi\mapsto F(\xi)$ は $\pi\colon B_{n}\to\mathfrak{S}_{n}$ を経由することを示せ。
+:::
+
+::: solution
+$F(\sigma_{i})^{2}=1\cdot\gamma_{a,a}\gamma_{a,a}\cdot1=1$。よって $s_{i}\mapsto F(\sigma_{i})$ は \ref{cat:coxeter-presentation} の三つの関係（$s_{i}^{2}$, 組紐の関係, 可換性）をすべて満たし、語の同値類の群 $G_{n}$ からの準同型 $\Phi\colon G_{n}\to\mathrm{Aut}(a^{n})$ を定める（関係の置き換えで合成が変わらないため）。\ref{cat:coxeter-presentation} から $G_{n}\cong\mathfrak{S}_{n}$（$\pi$ による）なので、$\Phi\circ\pi^{-1}\colon\mathfrak{S}_{n}\to\mathrm{Aut}(a^{n})$ が得られ、$B_{n}\to\mathfrak{S}_{n}\to\mathrm{Aut}(a^{n})$ は生成元 $\sigma_{i}$ で $F$ と一致するので、$F$ に等しい。
+:::
+
+::: supplement
+**前提を変えると.** 組紐の代わりに、さらに「ひねり」$\theta_{a}\colon a\to a$ を加えて紐をリボンに置き換えたものがリボン圏で、そのコヒーレンスにはリボン（枠つきの組紐やタングル）が現れるとされる（Mac Lane 第 XI 章 §6 の展望。Shum 1994 などとされる。ここでは確かめていない）。
+
+**似た定理.** \ref{cat:braid-category-free} は \ref{cat:free-monoidal-category}（自由モノイダル圏は語の圏）の組紐版で、対称版（自由な厳密対称モノイダル圏は置換の圏）とあわせて、「自由な構造つき圏は、その構造の『形』を記録する群（自明群・対称群・組紐群）で記述される」という系列をなす。
+
+**高い視点から：次元が上がると交換が記憶される.** 比喩で言えば、モノイダル圏の積は「一列に並んだ点」の並置、組紐モノイダル圏は「平面上の点」の並置、対称モノイダル圏は「3 次元以上の空間の点」の並置である。一列では点は互いを越えられない（積は可換でない）。平面では越えられるが、時計回りか反時計回りかの区別が残り、越え方の履歴が組紐として記憶される（$\gamma_{b,a}\gamma_{a,b}\neq1$）。3 次元以上では越え方の区別も連続変形で消え、置換だけが残る（$\gamma_{b,a}\gamma_{a,b}=1$）。これは、平面の $n$ 点の配置空間の基本群が組紐群、3 次元以上ではそれが対称群になることの圏論的な影であり、ホモトピー論では $E_{1}$, $E_{2}$, $E_{\infty}$ 代数（の 1 次元の切り落とし）という形で一般化されるとされる（ここでは扱わない）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

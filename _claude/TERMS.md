@@ -362,3 +362,4 @@
 | monoidal functor (lax / strong / strict) / monoidal natural transformation / strictification | モノイダル関手（緩い／強／厳密） / モノイダル自然変換 / 厳密化 | ラックス | 強・厳密は標準的。厳密化は仮。cat:page-monoidal-functors |
 | braided monoidal category / braiding / hexagon / Yang–Baxter equation | 組紐モノイダル圏 / 組紐 / 六角形の等式 / ヤン–バクスター方程式 | 組みひも、ブレイド | 「組紐」で統一（既存ページの「組みひも」は補足中の表現）。cat:page-symmetric-coherence |
 | Coxeter presentation / adjacent transposition / labelled word | 対称群の生成元と関係 / 隣接互換 / 番号つき語 | | 番号つき語は仮。cat:page-symmetric-coherence |
+| braid group / pure braid group / braid category / underlying braid | 組紐群 / 純組紐群 / 組紐圏 / 道の組紐 | ブレイド群 | 組紐群・純組紐群は標準的。道の組紐は仮。cat:page-braids |

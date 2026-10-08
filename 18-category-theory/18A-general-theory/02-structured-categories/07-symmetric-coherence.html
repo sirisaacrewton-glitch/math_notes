@@ -68,7 +68,7 @@ $$
 \gamma_{A,B}(a\otimes b)\defeq(-1)^{|a||b|}\,b\otimes a
 $$
 とすると対称である：$\gamma\gamma=1$ は $(-1)^{2|a||b|}=1$、(H1) は斉次元 $a\otimes(b\otimes c)$ の上で両辺の符号が $(-1)^{(|a|+|b|)|c|}$ と $(-1)^{|b||c|}(-1)^{|a||c|}$ で一致することから。これは「奇数次の元どうしを入れ替えると符号が変わる」コシュルの符号規則で、超ベクトル空間や微分次数つき代数の基礎になる。同じモノイダル圏に、符号なしの $\gamma(a\otimes b)=b\otimes a$ という別の対称もある。
-3. 組紐であって対称でない例は、次ページの組紐圏（\ref[組紐群と組紐圏]{cat:page-braids}）である。
+3. 組紐であって対称でない例は、次ページの組紐圏（\ref{cat:page-braids}）である。
 :::
 
 ::: definition 組紐モノイダル関手 {#cat:braided-monoidal-functor keywords="braided monoidal functor, symmetric monoidal functor" index="組紐モノイダル関手|くみひもものいだるかんしゅ, 対称モノイダル関手|たいしょうものいだるかんしゅ"}
@@ -329,7 +329,7 @@ $\gamma_{a,a}$ は射影 $p_{1},p_{2}$ について $p_{1}\gamma=p_{2}$, $p_{2}\
 :::
 
 ::: supplement
-**前提を変えると.** $\gamma_{b,a}\gamma_{a,b}=1$ を外した組紐モノイダル圏では、\ref{cat:strict-symmetric-coherence} の Step 2 の第一の関係が失われ、対称群の代わりに組紐群が現れる。その場合のコヒーレンスは「二つの道が同じ**組紐**を与えるなら等しい」（次ページ \ref[組紐群と組紐圏]{cat:page-braids}）。逆に、対称性を強めて $\gamma_{a,a}=1$ まで要求すると、たとえば $\mathbf{Set}$ はもはや例にならない（問題 \ref{cat:prob-sc-strict-cartesian}）。
+**前提を変えると.** $\gamma_{b,a}\gamma_{a,b}=1$ を外した組紐モノイダル圏では、\ref{cat:strict-symmetric-coherence} の Step 2 の第一の関係が失われ、対称群の代わりに組紐群が現れる。その場合のコヒーレンスは「二つの道が同じ**組紐**を与えるなら等しい」（次ページ \ref{cat:page-braids}）。逆に、対称性を強めて $\gamma_{a,a}=1$ まで要求すると、たとえば $\mathbf{Set}$ はもはや例にならない（問題 \ref{cat:prob-sc-strict-cartesian}）。
 
 **似た定理.** \ref{cat:coxeter-presentation} は、鏡映で生成される群（コクセター群）の表示の最も簡単な例である。一般に、有限鏡映群は「$(s_{i}s_{j})^{m_{ij}}=1$」という形の関係だけで表示できることが知られている（コクセターの定理。ここでは扱わない）。対称群では $m_{ii}=1$, $m_{i,i+1}=3$, それ以外 $m_{ij}=2$。
 

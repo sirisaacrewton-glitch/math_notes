@@ -70,6 +70,14 @@ $\int\mathbf{y}c$ はスライス圏 $\mathbf{C}/c$ で、$(c,1_{c})$ が終対�
 \ref{cat:realization-extends} と随伴性から、$\lvert-\rvert$ は $K$ の $\mathbf{y}$ に沿った左カン拡張 $\mathrm{Lan}_{\mathbf{y}}K$ である（\ref{cat:lan-coend} の公式と比べよ。元の圏上の余極限は、コエンド $\int^{c}P(c)\cdot Kc$ と同じものである）。ここではこの同一視の詳細は確かめていない。
 :::
 
+::: theorem 前層の圏は自由余完備化 {#cat:free-cocompletion keywords="the presheaf category is the free cocompletion: cocontinuous functors out of presheaves correspond to functors out of C" index="自由余完備化|じゆうよかんびか"}
+余極限を保存する関手 $F\colon\widehat{\mathbf{C}}\to\mathbf{E}$ は、$K\defeq F\circ\mathbf{y}$ の実現 $\lvert-\rvert_{K}$ と自然同型である。したがって、$F\mapsto F\circ\mathbf{y}$ は「余極限を保存する関手 $\widehat{\mathbf{C}}\to\mathbf{E}$」と「関手 $\mathbf{C}\to\mathbf{E}$」を（自然同型を除いて）一対一に対応させ、逆は $K\mapsto\lvert-\rvert_{K}$ である。
+:::
+
+::: proof
+前層 $P$ は、$\int P$ 上の図式 $\mathbf{y}\circ\pi_{P}$ の余極限で、入射は $\hat{x}\colon\mathbf{y}c\to P$（\ref{cat:elements-comma}）。$F$ は余極限を保存するので、$F(P)$ は図式 $F\circ\mathbf{y}\circ\pi_{P}=K\circ\pi_{P}$ の余極限で、入射は $F(\hat{x})$。一方 $\lvert P\rvert_{K}$ も同じ図式の余極限なので、余極限の一意性（\ref{cat:limit-basic} の双対）から入射と両立する同型 $\lvert P\rvert_{K}\cong F(P)$ がただ一つある。前層の射 $\theta\colon P\Rightarrow Q$ については、両辺の射が入射 $\iota_{(c,x)}$ との合成で $\iota_{(c,\theta_{c}x)}$（またはその $F$ 版 $F(\widehat{\theta_{c}x})=F(\theta)\circ F(\hat{x})$）に一致するので、余極限の一意性から同型は $P$ について自然。逆向き：$\lvert-\rvert_{K}$ は左随伴（\ref{cat:nerve-realization}）なので余極限を保存し（\ref{cat:prob-nr-preserves-colimits}）、\ref{cat:realization-extends} から $\lvert-\rvert_{K}\circ\mathbf{y}\cong K$。
+:::
+
 ## 稠密性と神経の充満忠実性 {#cat:sec-nr-dense}
 
 ::: theorem 稠密な関手と神経 {#cat:nerve-dense keywords="N_K is fully faithful iff K is dense iff the counit |N_K e| -> e is an isomorphism" index="稠密な関手と神経|ちゅうみつなかんしゅとしんけい"}
@@ -108,7 +116,7 @@ $\lvert-\rvert$ は左随伴なので、右随伴が極限を保存すること�
 :::
 
 ::: supplement
-**前提を変えると.** $\mathbf{E}$ が余完備でなくても、各 $P$ について余極限 $\lvert P\rvert$ が存在すれば同じ随伴が成り立つ。逆に、$\widehat{\mathbf{C}}$ から余完備な圏への余極限を保存する関手は、その $\mathbf{y}$ への制限 $K$ の実現と同型であることが知られている（前層の圏は「$\mathbf{C}$ 上の自由余完備圏」である）。
+**前提を変えると.** $\mathbf{E}$ が余完備でなくても、各 $P$ について余極限 $\lvert P\rvert$ が存在すれば同じ随伴が成り立つ。逆に、$\widehat{\mathbf{C}}$ から余完備な圏への余極限を保存する関手は、その $\mathbf{y}$ への制限 $K$ の実現と同型である（\ref{cat:free-cocompletion}。前層の圏は「$\mathbf{C}$ 上の自由余完備圏」である）。
 
 **似た定理.** 元の圏（\ref{cat:page-elements}）上の余極限による実現は、コエンドによる左カン拡張の公式（\ref{cat:lan-coend}）の言い換えである。$\mathbf{Cat}$ の神経の場合、実現は単体的集合から生成元と関係で圏を作る操作（基本圏）になることが知られている。ドルド–カンの対応（単体的アーベル群と鎖複体）も、同じ型の随伴から得られることが知られている。
 

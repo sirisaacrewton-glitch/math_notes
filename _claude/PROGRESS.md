@@ -322,7 +322,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | TG-01 | 54G/01-counterexamples/01-niemytzki-plane | ニェミツキ平面（top:niemytzki-plane）、ジョーンズの補題 | — | 完了 |
 | TG-02 | 54G/01-counterexamples/02-sorgenfrey | ゾルゲンフライ直線（リンデレーフ・正規・コンパクト集合は可算）と平面（非リンデレーフ・非正規） | 小山 例 2.4 | 完了 |
 | TG-03 | 54G/01-counterexamples/03-tychonoff-plank | 順序数の空間のコンパクト性、欠けたチコノフの板は完全正則だが正規でない（資料なし） | — | 完了 |
-| TG-04 | 54G/01-counterexamples/04-double-arrow | 二重矢印空間（完備な全順序のコンパクト性、可分・第一可算・非距離化可能、ゾルゲンフライ部分空間）（資料なし） | — | 完了 |
+| TG-04 | 54G/01-counterexamples/04-double-arrow | 二重矢印空間（完備な全順序のコンパクト性、可分・第一可算・非距離化可能、ゾルゲンフライ部分空間、遺伝的リンデレーフ・遺伝的可分・完全正規）（資料なし） | — | 完了 |
 | TE-01 | 54E/01-metric-spaces/01-completeness | 完備性と完備化 | §26 | 完了 |
 | TE-02 | 54E/01/02-baire | ベールのカテゴリー定理（top:baire-category, top:first-category） | §26 | 完了 |
 | TE-03 | 54E/01/03-compact-metric | 全有界性・点列コンパクト性・ハイネ＝ボレル（top:heine-borel） | §22, §27 | 完了 |
@@ -348,6 +348,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 一般位相 TG-04 追記（top:double-arrow-half-nbhd, top:double-arrow-hereditary：近傍は一点と開区間の逆像、遺伝的リンデレーフ・遺伝的可分・完全正規。問題と補足の未証明の言及を参照に置換）
 - 2026-10-08 集合論 II-14 追記（set:erdos-rado-general：exp_n(κ)⁺ → (κ⁺)^{n+1}_κ、とくに ℶ_n⁺ → (ℵ₁)^{n+1}_{ℵ₀}。端等質な列と帰納法。補足の未証明の言及を参照に置換）
 - 2026-10-08 集合論 II-14 追記（set:finite-ramsey, set:prob-pr-r33：無限ラムゼーの定理からコンパクト性の議論で有限ラムゼーの定理、6→(3)²₂ と 5↛(3)²₂。補足の未証明の言及を参照に置換）
 - 2026-10-08 ホモロジー代数 HD-09（18G/02-derived-functors/09-delta-functors, ha:page-delta-functors：δ 関手と消去可能性、馬蹄補題の射への拡張、導来関手の連結射の自然性、消去可能な δ 関手の普遍性（グロタンディーク）、導来関手の特徴づけ、可換環上の Tor の平衡性。問題 3。導来関手・Ext・Tor のページの未証明の言及を参照に置換）

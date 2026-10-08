@@ -89,6 +89,57 @@ $$
 - **完備性**：1 のコンパクト性に使った。
 :::
 
+## 遺伝的な性質 {#top:sec-dar-hereditary}
+
+二重矢印空間は距離化可能でないが、距離空間に近い「遺伝的」な可算性をもつ。位相空間 $X$ が**遺伝的リンデレーフ**（**遺伝的可分**）であるとは、$X$ のすべての部分空間がリンデレーフ（可分）であることをいう。$X$ が**完全正規**であるとは、正規で、すべての閉集合が $G_{\delta}$ 集合（可算個の開集合の共通部分）であることをいう。以下、射影を $\pi\colon A\to[0,1]$, $(s,i)\mapsto s$ と書く。
+
+::: lemma 半開区間の形の近傍 {#top:double-arrow-half-nbhd keywords="basic neighbourhoods in the double arrow space are a point plus the preimage of an open interval" index="二重矢印空間の近傍|にじゅうやじるしくうかんのきんぼう"}
+$x\in A$ について、$x$ の任意の近傍 $N$ は、次の形の集合を含む。
+- $x=(s,1)$, $s<1$ のとき：$\{x\}\cup\pi^{-1}((s,t))$（$s<t\le1$）。
+- $x=(s,0)$, $s>0$ のとき：$\pi^{-1}((r,s))\cup\{x\}$（$0\le r<s$）。
+- $x=(0,0)$ のとき：$\{(0,0),(0,1)\}\cup\pi^{-1}((0,t))$。$x=(1,1)$ のとき：$\pi^{-1}((r,1))\cup\{(1,0),(1,1)\}$。
+
+これらの集合はいずれも開集合である。
+:::
+
+::: proof
+$x=(s,1)$, $s<1$ のとき、\ref{top:double-arrow-properties} の 3 の証明から $N\supseteq[(s,1),(t,0))$ となる $t>s$ があり、$(s,1)$ と $(t,0)$ の間の点は第一成分が $(s,t)$ に属する点なので $[(s,1),(t,0))=\{(s,1)\}\cup\pi^{-1}((s,t))$。これは $((s,0),(t,0))$ に等しく（$(s,0)$ と $(s,1)$ は隣り合う）、開区間なので開。他の場合も対称に、または同様に確かめられる（$(0,0)$ の近傍 $[(0,0),(t,0))$、$(1,1)$ の近傍 $((r,1),(1,1)]$）。
+:::
+
+::: proposition 二重矢印空間の遺伝的性質 {#top:double-arrow-hereditary keywords="the double arrow space is hereditarily Lindelof, hereditarily separable and perfectly normal" index="遺伝的リンデレーフ|いでんてきりんでれーふ, 遺伝的可分|いでんてきかぶん, 完全正規|かんぜんせいき"}
+二重矢印空間 $A$ は次を満たす。
+1. $A$ の開集合の任意の族 $\mathcal{W}$ は、和集合が同じ可算部分族をもつ。とくに $A$ は遺伝的リンデレーフである。
+2. $A$ は遺伝的可分である。
+3. $A$ は完全正規である。
+:::
+
+::: proof
+**1.** $W\defeq\bigcup\mathcal{W}$ とする。各 $x\in W$ について $x\in W_{x}\in\mathcal{W}$ を選び、\ref{top:double-arrow-half-nbhd} により $W_{x}$ に含まれる近傍 $N_{x}$ と、それに現れる開区間 $I_{x}\subseteq[0,1]$（$\pi^{-1}(I_{x})\subseteq N_{x}$、$\pi(x)$ は $I_{x}$ の端点）をとる。$O\defeq\bigcup_{x\in W}I_{x}$ は $[0,1]$ の開集合。
+
+- **$\pi(x)\in O$ となる $x$.** $[0,1]$ は第二可算なので、その部分空間 $O$ も第二可算で**リンデレーフ**（\ref{top:second-countable-properties}）。開被覆 $\{I_{x}\}$ の可算部分被覆 $I_{x_{1}},I_{x_{2}},\dots$ をとると、$\pi(x)\in O$ なら $\pi(x)\in I_{x_{k}}$ となる $k$ があり、$x\in\pi^{-1}(I_{x_{k}})\subseteq W_{x_{k}}$。
+- **$\pi(x)\notin O$ となる $x$.** $s\defeq\pi(x)\in(0,1)$ なら、$I_{x}\subseteq O$ は $s$ を端点とする開区間なので、$s$ は $O$ の連結成分（開区間）の端点である。$O$ の連結成分は互いに交わらない開区間で、それぞれ有理数を含むので可算個であり、端点の集合 $E_{0}$ は可算。$E\defeq E_{0}\cup\{0,1\}$ とし、$\pi(x)\in E$ となる $x\in W$（高々 $2\lvert E\rvert$ 個）ごとに $W_{x}$ をとる。
+
+$\{W_{x_{k}}\}_{k}\cup\{W_{x}:x\in W,\ \pi(x)\in E\}$ は $\mathcal{W}$ の可算部分族で、和は $W$。部分空間 $Y\subseteq A$ の開被覆は $A$ の開集合 $W_{\alpha}$ によって $\{W_{\alpha}\cap Y\}$ と書けるので、$\{W_{\alpha}\}$ に上を適用すれば可算部分被覆を得る。
+
+**2.** $Y\subseteq A$ とする。$\pi(Y)$ は可分距離空間 $[0,1]$ の部分空間なので可分で、可算稠密部分集合 $D_{0}\subseteq\pi(Y)$ がある。各 $d\in D_{0}$ について $\pi(y)=d$ となる $y\in Y$ を一つ選び、その全体を $D_{1}$ とする。さらに
+$$
+R\defeq\{(s,1)\in Y:\text{ある }t>s\text{ で }(s,t)\cap\pi(Y)=\varnothing\},
+$$
+$L$ を左右を入れ替えた同様の集合（$(s,0)\in Y$ で、ある $r<s$ について $(r,s)\cap\pi(Y)=\varnothing$）とする。
+
+*$R$ は可算.* $(s,1)\in R$ について $t_{s}$ を上のようにとり、有理数 $q_{s}\in(s,t_{s})$ を選ぶ。$(s,1),(s',1)\in R$, $s<s'$ なら、$s'\in\pi(Y)$ なので $s'\notin(s,t_{s})$、すなわち $t_{s}\le s'$ で、$q_{s}<t_{s}\le s'<q_{s'}$。よって $s\mapsto q_{s}$ は単射で $R$ は可算。$L$ も同様。
+
+*$D\defeq D_{1}\cup R\cup L\cup(Y\cap\{(0,0),(0,1),(1,0),(1,1)\})$ は $Y$ で稠密.* $y\in Y$ と、$y$ の近傍 $N$ をとる。$y=(s,1)$, $0<s<1$ とし、\ref{top:double-arrow-half-nbhd} から $\{y\}\cup\pi^{-1}((s,t))\subseteq N$ とする。$y\in R$ なら $y\in D$。そうでなければ $(s,t)\cap\pi(Y)$ は $\pi(Y)$ の空でない開集合なので $d\in D_{0}$ を含み、$D_{1}$ の対応する点は $Y\cap\pi^{-1}((s,t))\subseteq N$ に属する。$y=(s,0)$ も対称で、$\pi(y)\in\{0,1\}$ の点は $D$ に入れてある。よって $D$ は $Y$ の可算稠密部分集合。
+
+**3.** $A$ はコンパクトハウスドルフなので正規（\ref{top:compact-hausdorff-normal}）。開集合 $W$ をとる。$A$ は正則なので、各 $x\in W$ について $x\in V_{x}\subseteq\overline{V_{x}}\subseteq W$ となる開集合 $V_{x}$ がある（\ref{top:regular-normal-characterization} の 1）。1 から $\{V_{x}\}$ の可算部分族 $V_{x_{1}},V_{x_{2}},\dots$ で和が $W$ のものがあり、$W=\bigcup_{k}\overline{V_{x_{k}}}$ は閉集合の可算和。補集合をとれば、すべての閉集合は $G_{\delta}$。
+:::
+
+::: hypcheck
+- **近傍の形**（\ref{top:double-arrow-half-nbhd}）：1 で各点の近傍を「一点 ＋ 開区間の逆像」に縮め、問題を $[0,1]$ の開集合 $O$ に移すのに、2 で稠密性を $\pi(Y)$ の稠密性に帰着させるのに使った。
+- **$[0,1]$ の第二可算性**：1 の $O$ のリンデレーフ性、2 の $\pi(Y)$ の可分性、および「連結成分」「$q_{s}$」が有理数で数えられることに使った。
+- **コンパクトハウスドルフ**：3 の正規性と正則性に使った。完全正規性の「$G_{\delta}$」部分は遺伝的リンデレーフ性と正則性だけから出る。
+:::
+
 ## 問題 {#top:sec-dar-problems}
 
 ::: problem {#top:prob-dar-projection}
@@ -100,7 +151,7 @@ $\pi^{-1}((a,b))=((a,1),(b,0))$（$a<b$）と、端点を含む区間につい�
 :::
 
 ::: problem {#top:prob-dar-hereditarily-separable}
-$A$ の部分空間 $Y=(0,1)\times\{1\}$ は可分であることを確かめよ。（$A$ の任意の部分空間が可分であることが知られている。）
+$A$ の部分空間 $Y=(0,1)\times\{1\}$ は可分であることを確かめよ。（$A$ の任意の部分空間が可分であることは \ref{top:double-arrow-hereditary} の 2 で示した。ここでは $Y$ について直接確かめよ。）
 :::
 
 ::: solution
@@ -108,7 +159,7 @@ $A$ の部分空間 $Y=(0,1)\times\{1\}$ は可分であることを確かめよ
 :::
 
 ::: supplement
-**前提を変えると.** 二重矢印空間は完全正規かつ遺伝的リンデレーフ・遺伝的可分であることが知られている。コンパクトハウスドルフ空間について、「完全正規」「遺伝的可分」などの条件が距離化可能性を導くかどうかは集合論の仮定に依存する問題と関係し、二重矢印空間はその文脈での標準的な反例であるとされる（ここでは扱わない）。
+**前提を変えると.** 二重矢印空間は完全正規かつ遺伝的リンデレーフ・遺伝的可分である（\ref{top:double-arrow-hereditary}）。コンパクトハウスドルフ空間について、「完全正規」「遺伝的可分」などの条件が距離化可能性を導くかどうかは集合論の仮定に依存する問題と関係し、二重矢印空間はその文脈での標準的な反例であるとされる（ここでは扱わない）。
 
 **似た定理.** コンパクトハウスドルフ空間が距離化可能であることは、第二可算性（\ref{top:compact-metrizable}）や、対角線 $\Delta_{A}\subseteq A\times A$ が $G_{\delta}$ であること（シュナイダーの定理）と同値であることが知られている。ゾルゲンフライ直線（\ref{top:page-sorgenfrey}）、チコノフの板（\ref{top:page-tychonoff-plank}）とともに、順序や半開区間から作られる反例の系列をなす。
 

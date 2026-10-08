@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ヴォートの定理：可算モデルはちょうど 2 個にならない | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03C-model-theory/02-types-and-countable-models/07-vaught-never-two.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ヴォートの定理：可算モデルはちょうど 2 個にならない {#model:page-vaught-never-two keywords="Vaught never two theorem, number of countable models, small theories, prime and saturated models, adding constants, Ehrenfeucht theory with three countable models"}
+
+可算言語の完全な理論 $T$ の可算モデルの個数（同型類の数）は、$1$（$\omega$ 範疇的、\ref{model:ryll-nardzewski}）にもなり、$\aleph_{0}$ にも $2^{\aleph_{0}}$ にもなる。**ヴォートの定理**（\ref{model:vaught-never-two}）は、それが**ちょうど $2$ にはならない**ことを主張する。証明は、可算モデルが少なければ素モデルと飽和モデルがあることから始め（\ref{model:few-models-small}）、孤立していない型を実現する元を定数として加えた理論の素モデルを考える。それは素モデルとは異なるので飽和モデルと同型になるが、すると加えた理論が $\omega$ 範疇的になり、元の理論も $\omega$ 範疇的になって矛盾する。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。
+
+## 記法と定義の確認 {#model:sec-vt-notation}
+
+::: notation
+- $\mathcal{L}$ は可算、$T$ は有限モデルをもたない完全な $\mathcal{L}$ 理論。$S_{n}(T)$、孤立した型、孤立型はすべてのモデルで実現される、原子モデル・素モデル、原子モデルの存在、ライル–ナルジェフスキの定理は \ref{model:type}, \ref{model:isolated-type}, \ref{model:isolated-realized}, \ref{model:atomic-model}, \ref{model:atomic-existence}, \ref{model:ryll-nardzewski} のとおり。
+- 飽和、飽和モデルは $n$ 変数の型も実現する、可算飽和モデルの存在、素モデルと飽和モデル（\ref{model:prime-and-saturated}）、飽和モデルの一意性は \ref{model:saturated}, \ref{model:saturated-n-types}, \ref{model:countable-saturated}, \ref{model:saturated-unique} のとおり。下降レーヴェンハイム–スコーレムの定理は \ref{model:downward-lowenheim-skolem}。
+- **原子モデルが実現する型は孤立している**（原子モデルの定義）。したがって、孤立していない型を実現するモデルは原子モデル（素モデル）と同型でない。
+- $\mathcal{M}\models T$ と組 $\vec{a}\in M$ について、$\vec{a}$ を新しい定数とした言語 $\mathcal{L}(\vec{c})$ での構造を $(\mathcal{M},\vec{a})$ と書く。
+:::
+
+## 準備 {#model:sec-vt-lemmas}
+
+::: lemma 可算モデルが少なければ型は可算 {#model:few-models-small keywords="if T has at most countably many countable models then all S_n(T) are countable" index="可算モデルの個数と型の数|かさんもでるのこすうとかたのかず"}
+（AC）$T$ の可算モデルが同型を除いて可算個しかなければ、すべての $n$ で $S_{n}(T)$ は可算である。特に $T$ は可算な素モデルと可算飽和モデルをもつ。
+:::
+
+::: proof
+$q\in S_{n}(T)$ は $T$ と両立するので、あるモデルの組 $\vec{b}$ で実現され、下降レーヴェンハイム–スコーレムの定理で $\vec{b}$ を含む可算な初等部分構造がとれる。よって各 $q$ はある可算モデルで実現される。可算モデルは $n$ 組を可算個しかもたないので、各可算モデルが実現する型は可算個で、可算個の可算モデルの和として $S_{n}(T)$ は可算。後半は \ref{model:prime-and-saturated}。
+:::
+
+::: lemma 定数の追加と飽和 {#model:saturation-constants keywords="adding finitely many constants preserves countable saturation" index="定数の追加と飽和|ていすうのついかとほうわ"}
+$\mathcal{M}$ が $\aleph_{0}$ 飽和で $\vec{a}\in M$ なら、$(\mathcal{M},\vec{a})$ も $\aleph_{0}$ 飽和である。
+:::
+
+::: proof
+$(\mathcal{M},\vec{a})$ の有限集合 $A$ 上の型は、$\mathcal{L}$ の型として $A\cup\{\vec{a}\}$（有限）上の型であり、$\mathcal{M}$ の飽和性から実現される。
+:::
+
+## ヴォートの定理 {#model:sec-vt-theorem}
+
+::: theorem ヴォートの定理 {#model:vaught-never-two keywords="a countable complete theory never has exactly two countable models" index="ヴォートの定理（可算モデルの個数）|ゔぉーとのていりかさんもでるのこすう"}
+（AC）$T$ の可算モデルの同型類の個数は $2$ でない。
+:::
+
+::: proof
+ちょうど $2$ 個だとする。\ref{model:few-models-small} から可算な素モデル $\mathcal{M}_{0}$ と可算飽和モデル $\mathcal{M}_{1}$ があり、$T$ は $\omega$ 範疇的でないので $\mathcal{M}_{0}\not\cong\mathcal{M}_{1}$。可算モデルはこの二つのどちらかと同型である。
+
+**Step 1（孤立していない型と定数）.** $T$ は $\omega$ 範疇的でないので、ライル–ナルジェフスキの定理から孤立していない $p\in S_{n}(T)$ がある。$\mathcal{M}_{1}$ は飽和なので $p$ を実現する組 $\vec{a}$ がある。$T'\defeq\mathrm{Th}(\mathcal{M}_{1},\vec{a})$（$\mathcal{L}(\vec{c})$ の完全な理論）とする。
+
+**Step 2（$T'$ の型は可算）.** $T'$ の $m$ 変数の型は $\mathcal{M}_{1}$ の $\{\vec{a}\}$ 上の型で、\ref{model:saturated-n-types} から $\mathcal{M}_{1}$ で実現される。$\mathcal{M}_{1}$ は可算なので $S_{m}(T')$ は可算。\ref{model:atomic-existence} の 2 から、$T'$ は可算な原子モデル $(\mathcal{N},\vec{a}')$ をもつ。
+
+**Step 3（$\mathcal{N}\cong\mathcal{M}_{1}$）.** $\vec{a}'$ は $T'$ の文 $\varphi(\vec{c})$（$\varphi\in p$）をすべて満たすので、$\mathcal{L}$ 構造 $\mathcal{N}$ は $p$ を実現する。$p$ は孤立していないので $\mathcal{N}\not\cong\mathcal{M}_{0}$（記法の注意）。$\mathcal{N}$ は $T$ の可算モデルなので $\mathcal{N}\cong\mathcal{M}_{1}$ で、$\mathcal{N}$ は飽和。\ref{model:saturation-constants} から $(\mathcal{N},\vec{a}')$ も飽和。
+
+**Step 4（$T'$ は $\omega$ 範疇的）.** $(\mathcal{N},\vec{a}')$ は飽和なので $T'$ のすべての型を実現し（\ref{model:saturated-n-types}）、原子モデルなので実現する型はすべて孤立している。よって $T'$ のすべての型は孤立し、ライル–ナルジェフスキの定理から $S_{m}(T')$ はすべて有限。
+
+**Step 5（$T$ も $\omega$ 範疇的、矛盾）.** $q\in S_{m}(T)$ は飽和モデル $\mathcal{M}_{1}$ のある組 $\vec{b}$ で実現され、$q$ は $T'$ の型 $\mathrm{tp}^{(\mathcal{M}_{1},\vec{a})}(\vec{b})$ の $\mathcal{L}$ 論理式の部分である。よって $S_{m}(T)$ は $S_{m}(T')$ の像で有限で、ライル–ナルジェフスキの定理から $T$ は $\omega$ 範疇的。これは $\mathcal{M}_{0}\not\cong\mathcal{M}_{1}$ に反する。
+:::
+
+::: hypcheck
+- **飽和モデルの存在（型の可算性）**：Step 1 で $p$ を実現する組をとり、Step 5 で $T$ の型をすべて $\mathcal{M}_{1}$ で実現するのに使った。
+- **ちょうど 2 個**：Step 3 で、素モデルと異なる可算モデルは飽和モデルと同型であることに使った。$3$ 個以上あれば、$\mathcal{N}$ は第三のモデルでありうる。
+- **ライル–ナルジェフスキの定理**：Step 1（孤立していない型の存在）、Step 4, 5（型の有限性と $\omega$ 範疇性の行き来）で使った。
+:::
+
+## 例 {#model:sec-vt-example}
+
+::: example 可算モデルがちょうど 3 個の理論 {#model:ehrenfeucht-three-models}
+$\mathcal{L}=\{<,c_{0},c_{1},\ldots\}$ とし、$T$ を、端点のない稠密線形順序の公理と $c_{0}<c_{1}<\cdots$ からなる理論とすると、$T$ は完全で、可算モデルはちょうど $3$ 個であることが知られている（エーレンフォイヒトの例）：(i) 列 $(c_{n})$ が上に有界でないもの、(ii) 上界はあるが最小の上界がないもの、(iii) 最小の上界があるもの。ここでは完全性と個数の確認は省略する。
+:::
+
+## 問題 {#model:sec-vt-problems}
+
+::: problem {#model:prob-vt-one}
+$T$ の可算モデルがちょうど $1$ 個なら、\ref{model:vaught-never-two} の Step 1 で孤立していない型がとれないことを確かめよ。
+:::
+
+::: solution
+可算モデルが $1$ 個なら $T$ は $\omega$ 範疇的で、ライル–ナルジェフスキの定理からすべての型が孤立している。Step 1 の $p$ はとれず、議論は始まらない。
+:::
+
+::: problem {#model:prob-vt-saturated-prime}
+$T$ の可算素モデルが $\aleph_{0}$ 飽和なら、$T$ は $\omega$ 範疇的であることを示せ。
+:::
+
+::: solution
+飽和な素モデル（原子モデル）は $T$ のすべての型を実現し、原子モデルが実現する型は孤立しているので、すべての型が孤立する。ライル–ナルジェフスキの定理から $\omega$ 範疇的。（これは Step 4 と同じ議論である。）
+:::
+
+::: supplement
+**前提を変えると.** 個数が $3$ 以上の有限の値 $k$ になる理論は、$k=3,4,\ldots$ のすべてについて存在することが知られている（エーレンフォイヒトの例の変形）。$\omega$ 安定な理論では、可算モデルの個数は $1$ か $\aleph_{0}$ か $2^{\aleph_{0}}$ であり、非可算範疇的なら $1$ か $\aleph_{0}$ である（\ref{model:page-morley} の補足参照）ことが知られている。
+
+**似た定理.** **ヴォート予想**（可算モデルの個数は $\aleph_{0}$ 以下か $2^{\aleph_{0}}$）は一般には未解決とされ、モーリーは個数が $\aleph_{0}$, $\aleph_{1}$, $2^{\aleph_{0}}$ のいずれか（または有限）であることを示したことが知られている（\ref{model:page-countable-models} の補足）。
+
+**高い視点から：素と飽和の間に隙間はある.** 可算モデルが少ない理論では、最も小さい素モデルと最も大きい飽和モデルが両極にある。可算モデルが二つしかなければ、その間には何もない。しかし、孤立していない型を一つ名指しする（定数を加える）と、その型を実現する「最小の」モデルが現れ、それは素モデルではないので飽和モデルでなければならない。その結果、名指しした後の理論が範疇的になり、名指しする前の理論までが範疇的になってしまう。比喩で言えば、階段に一段目と最上段しかないとすると、一段目の少し上に足を置いた途端に最上段にいることになり、もともと一段しかなかったことになる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

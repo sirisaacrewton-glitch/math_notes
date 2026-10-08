@@ -105,6 +105,32 @@ $\alpha\colon k\to a$ について、$N_{\alpha}\defeq\{(\alpha(x),-i(x)):x\in k
 **2.** $a$ が入射的なら、$i\colon k\to P$ は単射なので $i^{*}\colon\mathrm{Hom}(P,a)\to\mathrm{Hom}(k,a)$ は全射（入射性の定義）で、$\mathrm{Ext}^{1}(c,a)=0$。
 :::
 
+## ベール和 {#ha:sec-ex-baer}
+
+::: definition ベール和 {#ha:baer-sum keywords="Baer sum of extensions via pullback along the diagonal and pushout along the codiagonal" index="ベール和|べーるわ"}
+拡大 $E_{k}\colon0\to a\xrightarrow{j_{k}}e_{k}\xrightarrow{q_{k}}c\to0$（$k=1,2$）の**ベール和** $E_{1}+E_{2}$ を、
+$$
+e\defeq\{(x_{1},x_{2})\in e_{1}\oplus e_{2}:q_{1}x_{1}=q_{2}x_{2}\}/\{(j_{1}y,-j_{2}y):y\in a\}
+$$
+と $j(y)\defeq[(j_{1}y,0)]$, $q[(x_{1},x_{2})]\defeq q_{1}x_{1}$ で定める。
+:::
+
+::: theorem ベール和と Ext¹ の和 {#ha:baer-sum-ext keywords="the Baer sum is an extension and Theta(E1+E2) = Theta(E1)+Theta(E2); the classes of extensions form a group isomorphic to Ext^1" index="ベール和と Ext|べーるわとえくすと"}
+$E_{1}+E_{2}$ は拡大で、$\Theta(E_{1}+E_{2})=\Theta(E_{1})+\Theta(E_{2})$。したがって、ベール和は同値類の上で矛盾なく定まり、$\mathcal{E}(c,a)$ は群になり、$\Theta$ は群の同型 $\mathcal{E}(c,a)\cong\mathrm{Ext}^{1}(c,a)$ である。
+:::
+
+::: proof
+**拡大であること.** $q$ は well-defined（$q_{1}j_{1}y=0$）で全射（$z\in c$ に $q_{1}x_{1}=z=q_{2}x_{2}$ となる $x_{1},x_{2}$ をとる）。$j$ は単射：$(j_{1}y,0)=(j_{1}y',-j_{2}y')$ なら $j_{2}y'=0$ から $y'=0$、すると $j_{1}y=0$ から $y=0$。$\ker q\subseteq\mathrm{im}\,j$：$q_{1}x_{1}=0$ なら $q_{2}x_{2}=0$ で、$x_{k}=j_{k}y_{k}$、$[(j_{1}y_{1},j_{2}y_{2})]=[(j_{1}(y_{1}+y_{2}),0)]=j(y_{1}+y_{2})$。$qj=0$ は明らか。
+
+**$\Theta$ の加法性.** 射影的な表示 $0\to k\xrightarrow{i}P\xrightarrow{p}c\to0$ と、$E_{k}$ の持ち上げ $\beta_{k}$, $\alpha_{k}$（$j_{k}\alpha_{k}=\beta_{k}i$）をとる。$\beta(z)\defeq[(\beta_{1}z,\beta_{2}z)]$ は $q_{1}\beta_{1}z=pz=q_{2}\beta_{2}z$ なので $e$ に値をとり、$q\beta=p$。さらに
+$$
+\beta i(x)=[(j_{1}\alpha_{1}x,\,j_{2}\alpha_{2}x)]=[(j_{1}(\alpha_{1}x+\alpha_{2}x),\,0)]=j\bigl((\alpha_{1}+\alpha_{2})x\bigr)
+$$
+（$(0,j_{2}y)\equiv(j_{1}y,0)$）。よって $\Theta(E_{1}+E_{2})=[\alpha_{1}+\alpha_{2}]$。
+
+**同値類での定義.** $E_{1}\sim E_{1}'$ なら $\Theta(E_{1}+E_{2})=\Theta(E_{1}')+\Theta(E_{2})=\Theta(E_{1}'+E_{2})$ で、$\Theta$ の単射性（\ref{ha:ext1-classifies}）から $E_{1}+E_{2}\sim E_{1}'+E_{2}$。$\Theta$ は全単射で和を保つので、$\mathcal{E}(c,a)$ の和は $\mathrm{Ext}^{1}(c,a)$ の群構造を移したものとなり、群の公理を満たす（単位元は分裂する拡大の類）。
+:::
+
 ## 例 {#ha:sec-ex-examples}
 
 ::: example $\mathbb{Z}/p$ の $\mathbb{Z}/p$ による拡大 {#ha:ext-zp-zp}
@@ -140,7 +166,7 @@ $\mathbb{Z}/4$ の部分群 $2\mathbb{Z}/4\cong\mathbb{Z}/2$ による拡大 $0\
 :::
 
 ::: supplement
-**前提を変えると.** $\mathcal{E}(c,a)$ には、拡大の**ベール和**（二つの拡大の引き戻しと押し出しで作る拡大）による群構造が定まり、$\Theta$ はこの和を $\mathrm{Ext}^{1}$ の和に移す群同型であることが知られている（ここでは確かめていない）。同様に、$n$ 項の完全列 $0\to a\to e_{n}\to\cdots\to e_{1}\to c\to0$ の適切な同値類が $\mathrm{Ext}^{n}(c,a)$ と対応することが知られている（**米田 Ext**）。米田 Ext は射影対象を使わずに定義できるので、十分な射影対象をもたないアーベル圏でも意味をもつ。
+**前提を変えると.** $\mathcal{E}(c,a)$ には、拡大の**ベール和**（二つの拡大の引き戻しと押し出しで作る拡大）による群構造が定まり、$\Theta$ はこの和を $\mathrm{Ext}^{1}$ の和に移す群同型である（\ref{ha:baer-sum-ext}）。同様に、$n$ 項の完全列 $0\to a\to e_{n}\to\cdots\to e_{1}\to c\to0$ の適切な同値類が $\mathrm{Ext}^{n}(c,a)$ と対応することが知られている（**米田 Ext**）。米田 Ext は射影対象を使わずに定義できるので、十分な射影対象をもたないアーベル圏でも意味をもつ。
 
 **似た定理.** 群 $\Pi$ の $\Pi$ 加群 $A$ による（$A$ を正規部分群とする）群の拡大のうち、共役作用が与えられたものの同値類は、群のコホモロジー $H^{2}(\Pi,A)$（\ref{cat:group-cohomology}）で分類されることが知られている。加群の拡大が $\mathrm{Ext}^{1}$ で分類されるのに対し群の拡大が $H^{2}=\mathrm{Ext}^{2}_{\mathbb{Z}\Pi}(\mathbb{Z},A)$ で分類されるのは、群の拡大では中央の対象が加群でなく群であるためである。\ref{ha:ext-z} の $\mathrm{Ext}^{1}_{\mathbb{Z}}(\mathbb{Z}/n,B)\cong B/nB$ は「$\mathbb{Z}/n$ の $B$ による拡大は、生成元の持ち上げの $n$ 倍が $B$ のどこに落ちるかで決まり、$nB$ の分だけ持ち上げの取り直しで動かせる」と読める。
 

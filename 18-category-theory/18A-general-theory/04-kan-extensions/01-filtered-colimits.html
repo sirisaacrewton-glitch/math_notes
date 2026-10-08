@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>フィルター付き余極限と終関手 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/04-kan-extensions/01-filtered-colimits.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# フィルター付き余極限と終関手 {#cat:page-filtered-colimits keywords="filtered category, directed set, filtered colimit, filtered colimits in Set, interchange of finite limits and filtered colimits, final functor, cofinal, colimits of groups"}
+
+有向集合上の余極限（帰納極限）は、代数や位相で「増大する対象の和」をとる操作としてよく現れる。これを圏に一般化したものが**フィルター付き圏**（\ref{cat:filtered-category}）上の余極限である。本ページでは、$\mathbf{Set}$ でのフィルター付き余極限が「後のどこかの段階で等しくなる元を同一視したもの」として具体的に書けること（\ref{cat:filtered-colimit-set}）を示し、そこから**有限の極限とフィルター付き余極限が交換する**こと（\ref{cat:filtered-finite-interchange}）、群の忘却関手がフィルター付き余極限を創出すること（\ref{cat:grp-filtered-colimits}）を導く。最後に、余極限を部分的な図式で計算できる条件として**終関手**（\ref{cat:final-functor}）を扱う。
+
+> 資料：Mac Lane, *Categories for the Working Mathematician* 第 IX 章 §1–§3。群の余極限の構成で Mac Lane は、積が代表元の選び方によらないことの確認を省いているので、\ref{cat:filtered-colimit-set} を先に示して補った。
+
+## 記法と定義の確認 {#cat:sec-fc-notation}
+
+::: notation
+- 極限・余極限、錐、積と等化子による構成、極限の創出は \ref{cat:page-limits}, \ref{cat:limits-from-products-equalizers}, \ref{cat:create-limits} のとおり。
+- コンマ圏 $(k\downarrow L)$（対象は $k\to Lj'$ の組）は \ref{cat:comma-category} のとおり。圏が**連結**であるとは、空でなく、任意の二つの対象が射のジグザグ（向きを問わない射の列）で結べることをいう。
+:::
+
+## フィルター付き圏 {#cat:sec-fc-filtered}
+
+::: definition フィルター付き圏 {#cat:filtered-category keywords="filtered category, directed preorder, filtered colimit" index="フィルター付き圏|ふぃるたーつきけん, 有向集合|ゆうこうしゅうごう, フィルター付き余極限|ふぃるたーつきよきょくげん"}
+空でない圏 $\mathbf{J}$ が**フィルター付き**であるとは、次を満たすことをいう。
+1. 任意の二つの対象 $j,j'$ に、対象 $k$ と射 $j\to k$, $j'\to k$ がある。
+2. 任意の平行な射 $u,v\colon i\to j$ に、射 $w\colon j\to k$ で $wu=wv$ となるものがある。
+
+前順序がフィルター付きであることは、任意の二元が上界をもつこと（**有向**）と同じ。フィルター付き圏上の関手の余極限を**フィルター付き余極限**という。
+:::
+
+::: remark
+帰納法により、フィルター付き圏の任意の有限の図式は、ある対象を頂点とする錐（余錐）の底になる：有限個の対象を 1 で一つの対象 $k$ にまとめ、有限個の射の等式を 2 で一つずつ成り立たせる（等式を成り立たせた後にさらに射を合成しても等式は保たれる）。
+:::
+
+::: lemma Set のフィルター付き余極限 {#cat:filtered-colimit-set keywords="explicit description of filtered colimits of sets" index="集合のフィルター付き余極限|しゅうごうのふぃるたーつきよきょくげん"}
+$\mathbf{J}$ をフィルター付き圏、$F\colon\mathbf{J}\to\mathbf{Set}$ とする。$\bigsqcup_{j}Fj$ の元 $(j,x)$, $(k,y)$ について、$(j,x)\approx(k,y)$ を「射 $u\colon j\to l$, $v\colon k\to l$ で $(Fu)x=(Fv)y$ となるものがある」と定める。
+1. $\approx$ は同値関係で、$\mathrm{Colim}\,F=\bigsqcup_{j}Fj/{\approx}$（入射は類をとる写像）。
+2. 同じ $Fk$ の元 $x,y$ が余極限で等しいことは、ある $w\colon k\to l$ で $(Fw)x=(Fw)y$ となることと同値。
+:::
+
+::: proof
+**Step 1（推移律）.** $(j,x)\approx(k,y)$ を $u\colon j\to l$, $v\colon k\to l$ で、$(k,y)\approx(m,z)$ を $v'\colon k\to l'$, $w\colon m\to l'$ で与える。条件 1 で $a\colon l\to l''$, $b\colon l'\to l''$ をとり、平行な $av,bv'\colon k\to l''$ に条件 2 で $c$ をとって $cav=cbv'$。すると $F(cau)x=F(cav)y=F(cbv')y=F(cbw)z$。反射律・対称律は明らか。
+
+**Step 2（余極限）.** $\mathbf{Set}$ の余極限は $\bigsqcup Fj$ を「$(j,x)\sim(k,(Fu)x)$（$u\colon j\to k$）」で生成される同値関係で割ったものである（余積と余等化子による構成の双対）。$\approx$ はこの生成元を含み（$u$ と $1_{k}$ をとる）、逆に $(Fu)x=(Fv)y$ なら $(j,x)\sim(l,(Fu)x)=(l,(Fv)y)\sim(k,y)$ なので、$\approx$ は生成された関係に含まれる。$\approx$ は同値関係なので、両者は一致する。
+
+**Step 3（同じ段の元）.** $x,y\in Fk$ が余極限で等しければ、$u,v\colon k\to l$ で $(Fu)x=(Fv)y$。条件 2 で $c$ をとり $cu=cv\defeq w$ とすると $(Fw)x=F(cu)x=F(cv)y=(Fw)y$。逆は明らか。
+
+::: hypcheck
+- **条件 1, 2**：Step 1（推移律）で両方、Step 3 で条件 2 を使った。フィルター付きでない圏では、$\approx$ は推移的でなく、余極限の関係はその推移閉包になる。
+:::
+:::
+
+::: theorem 有限の極限とフィルター付き余極限の交換 {#cat:filtered-finite-interchange keywords="finite limits commute with filtered colimits in Set" index="有限極限とフィルター付き余極限の交換|ゆうげんきょくげんとふぃるたーつきよきょくげんのこうかん"}
+$\mathbf{P}$ を有限の圏（対象も射も有限個）、$\mathbf{J}$ をフィルター付きの小さい圏、$F\colon\mathbf{P}\times\mathbf{J}\to\mathbf{Set}$ とする。標準的な写像
+$$
+\kappa\colon\mathrm{Colim}_{j}\,\mathrm{Lim}_{p}\,F(p,j)\to\mathrm{Lim}_{p}\,\mathrm{Colim}_{j}\,F(p,j)
+$$
+は全単射である。
+:::
+
+::: proof
+$\mathbf{Set}$ で $\mathrm{Lim}_{p}G(p)$ は、$p$ ごとの元の族 $(g_{p})$ で $G(u)g_{p}=g_{p'}$（$u\colon p\to p'$）を満たすもの全体。$\kappa$ は、$y=(y_{p})\in\mathrm{Lim}_{p}F(p,j)$ の類 $[j,y]$ を $([j,y_{p}])_{p}$ に送る。以下 \ref{cat:filtered-colimit-set} を使う。
+
+**Step 1（全射）.** $([j_{p},x_{p}])_{p}$ を右辺の元とする。$\mathbf{P}$ の対象は有限個なので、$j_{p}\to k$ をまとめて一つの $k$ に移し、$x_{p}\in F(p,k)$ としてよい。各射 $u\colon p\to p'$ について、族の条件 $[k,F(u,k)x_{p}]=[k,x_{p'}]$ は、\ref{cat:filtered-colimit-set} の 2 から、ある $w_{u}\colon k\to l_{u}$ で $F(p',w_{u})F(u,k)x_{p}=F(p',w_{u})x_{p'}$ となることを意味する。$\mathbf{P}$ の射は有限個なので、注意の議論で $w_{u}$ を共通の $w\colon k\to k'$ にまとめられる（各 $l_{u}$ からさらに共通の対象に移し、得られた有限個の平行な射 $k\to k'$ を条件 2 で等しくする）。$y_{p}\defeq F(p,w)x_{p}$ とおくと、$(y_{p})$ は $\mathrm{Lim}_{p}F(p,k')$ の元で、$\kappa[k',y]=([k',y_{p}])=([j_{p},x_{p}])$。
+
+**Step 2（単射）.** $\kappa[k,y]=\kappa[k',y']$ とする。$k,k'$ を共通の $l$ に移し、$y,y'\in\mathrm{Lim}_{p}F(p,l)$ としてよい。各 $p$ で $[l,y_{p}]=[l,y'_{p}]$ なので、\ref{cat:filtered-colimit-set} の 2 から $w_{p}\colon l\to l_{p}$ で $F(p,w_{p})y_{p}=F(p,w_{p})y'_{p}$。対象は有限個なので、Step 1 と同様に共通の $w\colon l\to m$ にまとめられ、$F(p,w)y_{p}=F(p,w)y'_{p}$（すべての $p$）。よって $\mathrm{Lim}_{p}F(p,m)$ で $y$ と $y'$ の像は等しく、$[k,y]=[k',y']$。
+
+::: hypcheck
+- **$\mathbf{P}$ の有限性**：Step 1 で対象と射が有限個であること、Step 2 で対象が有限個であることを、フィルター付き圏の注意（有限の図式は錐の底になる）に使った。無限の積とは交換しない：$\mathbf{J}=\mathbb{N}$, $F(p,n)=\{0,\dots,n\}$（$p\in\mathbb{N}$ は離散）では、左辺は $\mathrm{Colim}_{n}\{0,\dots,n\}^{\mathbb{N}}$（有界な列）、右辺は $\mathbb{N}^{\mathbb{N}}$ で一致しない。
+- **フィルター付き**：\ref{cat:filtered-colimit-set} の 2 を使った。一般の余極限と有限の極限は交換しない（例：離散な二点圏上の余積と積、$(A_{1}\times B_{1})\sqcup(A_{2}\times B_{2})\neq(A_{1}\sqcup A_{2})\times(B_{1}\sqcup B_{2})$）。
+:::
+:::
+
+::: proposition 群の忘却関手とフィルター付き余極限 {#cat:grp-filtered-colimits keywords="the forgetful functor from groups to sets creates filtered colimits" index="群のフィルター付き余極限|ぐんのふぃるたーつきよきょくげん"}
+忘却関手 $U\colon\mathbf{Grp}\to\mathbf{Set}$ はフィルター付き余極限を創出する（\ref{cat:create-limits} の双対）。
+:::
+
+::: proof
+$G\colon\mathbf{J}\to\mathbf{Grp}$（$\mathbf{J}$ フィルター付き）とし、$S\defeq\mathrm{Colim}\,UG=\bigsqcup Gj/{\approx}$（\ref{cat:filtered-colimit-set}）、入射を $\pi_{j}$ とする。
+
+**Step 1（積の定義）.** $s,t\in S$ は、共通の段 $k$ の元で $s=\pi_{k}(a)$, $t=\pi_{k}(b)$ と書ける（代表を条件 1 で同じ段に移す）。$st\defeq\pi_{k}(ab)$ とおく。
+
+**Step 2（代表によらない）.** 別の表示 $s=\pi_{k'}(a')$, $t=\pi_{k'}(b')$ をとる。$k,k'$ を共通の $l$ に移したのち、\ref{cat:filtered-colimit-set} の 2 を $a,a'$ の像と $b,b'$ の像に使い、さらに共通の $w\colon l\to m$ にまとめると、$m$ 段で $a$ と $a'$ の像、$b$ と $b'$ の像がそれぞれ一致する。群準同型は積を保つので $ab$ と $a'b'$ の像も $m$ 段で一致し、$\pi_{k}(ab)=\pi_{k'}(a'b')$。
+
+**Step 3（群の公理）.** 結合律：三つの元を共通の段に移せば、その段の群での結合律から。単位元：各段の単位元は準同型で単位元に移るので、その共通の像 $\pi_{j}(1)$ が単位元。逆元：$\pi_{k}(a)^{-1}\defeq\pi_{k}(a^{-1})$（Step 2 と同様に代表によらない）。各 $\pi_{j}$ は準同型。
+
+**Step 4（一意性と普遍性）.** 各 $\pi_{j}$ を準同型にする $S$ の群構造は、Step 1 の式で決まるので一意。群への余錐 $\lambda_{j}\colon Gj\to T$ について、集合の写像 $f\colon S\to T$ で $f\pi_{j}=\lambda_{j}$ となるものがただ一つあり、$f(\pi_{k}(a)\pi_{k}(b))=f\pi_{k}(ab)=\lambda_{k}(ab)=\lambda_{k}(a)\lambda_{k}(b)$ なので準同型。
+
+::: hypcheck
+- **フィルター付き**：Step 1（共通の段）、Step 2（代表の一致を共通の段で確かめる）に本質的に使った。Mac Lane は Step 2 を「段の選び方によらない」としか述べていないが、代表元の選び方によらないことには \ref{cat:filtered-colimit-set} の 2 が要る。
+- 同じ議論は、演算と等式で定まる任意の代数系（\ref{cat:variety}）で通る（各演算が有限個の引数をもつことを Step 1 で使う）。
+:::
+:::
+
+## 終関手 {#cat:sec-fc-final}
+
+::: definition 終関手 {#cat:final-functor keywords="final functor, cofinal subcategory" index="終関手|しゅうかんしゅ, 共終（関手）|きょうしゅうかんしゅ"}
+関手 $L\colon\mathbf{J}'\to\mathbf{J}$ が**終**であるとは、各 $k\in\mathbf{J}$ についてコンマ圏 $(k\downarrow L)$ が空でなく連結であることをいう。
+:::
+
+::: example
+$\mathbf{J}$ が全順序、$\mathbf{J}'\subseteq\mathbf{J}$ の包含のとき、終であることは「各 $k$ に $k\le j'$ となる $j'\in\mathbf{J}'$ がある」（共終）ことと同じ（$(k\downarrow L)$ は $\{j'\ge k\}$ で、全順序なので連結）。
+:::
+
+::: theorem 終関手と余極限 {#cat:final-functor-colimit keywords="colimits can be computed along final functors" index="終関手と余極限|しゅうかんしゅとよきょくげん"}
+$L\colon\mathbf{J}'\to\mathbf{J}$ が終で、$F\colon\mathbf{J}\to\mathbf{X}$ について $\mathrm{Colim}\,FL$ が存在すれば、$\mathrm{Colim}\,F$ も存在し、標準的な射 $\mathrm{Colim}\,FL\to\mathrm{Colim}\,F$ は同型である。
+:::
+
+::: proof
+$\mu\colon FL\Rightarrow x$ を余極限錐とする。
+
+**Step 1（$\tau_{k}$ の定義）.** $k\in\mathbf{J}$ について、$(k\downarrow L)$ の対象 $(j',u\colon k\to Lj')$ をとり、$\tau_{k}\defeq\mu_{j'}\circ Fu$ とおく。$(k\downarrow L)$ の射 $t\colon(j',u)\to(j'',u')$（$Lt\circ u=u'$）について、$\mu_{j''}\circ Fu'=\mu_{j''}\circ F(Lt)\circ Fu=\mu_{j'}\circ Fu$（$\mu$ は $FL$ 上の余錐）。$(k\downarrow L)$ は連結なので、ジグザグに沿って値が変わらず、$\tau_{k}$ は選び方によらない。
+
+**Step 2（余錐）.** $g\colon k\to k'$ について、$k'$ の選択 $(j',u')$ に対し $(j',u'g)$ は $k$ の選択なので、$\tau_{k}=\mu_{j'}\circ F(u'g)=\tau_{k'}\circ Fg$。
+
+**Step 3（普遍性）.** 余錐 $\lambda\colon F\Rightarrow y$ について、$\lambda L$ は $FL$ 上の余錐なので $f\mu=\lambda L$ となる $f\colon x\to y$ がただ一つある。$f\tau_{k}=f\mu_{j'}Fu=\lambda_{Lj'}Fu=\lambda_{k}$。逆に $f'\tau=\lambda$ なら、$k=Lj'$ で $u=1$ を選ぶと $\tau_{Lj'}=\mu_{j'}$ なので $f'\mu=\lambda L$、一意性から $f'=f$。よって $\tau$ は余極限錐で、標準的な射は $\tau_{Lj'}=\mu_{j'}$ から恒等（同型）。
+
+::: hypcheck
+- **空でないこと**：Step 1 で $\tau_{k}$ を定義するのに使った。
+- **連結性**：Step 1 で $\tau_{k}$ が選び方によらないことに使った。この条件は必要でもある（Mac Lane 第 IX 章 §3 演習 5）。
+:::
+:::
+
+::: supplement
+**一般化.** \ref{cat:filtered-finite-interchange} は、$\mathbf{Set}$ に値をもつ有限的な代数系の圏（群、環、加群など）でも成り立つ（忘却関手がフィルター付き余極限と極限を創出するので）。これは、加群の圏で帰納極限が完全関手であること（核と余核を保つこと）の理由である。また、フィルター付き余極限・有限の余積・余等化子からすべての余極限が作れる（Mac Lane 第 IX 章 §1 定理 1。無限の余積を有限の余積のフィルター付き余極限として作る）。
+
+**類似の定理.** \ref{cat:final-functor-colimit} は、数列の極限を部分列で計算できること（共終な部分列）の一般化である。双対の**始関手**は極限の計算に使う。
+
+**高い視点から：フィルター付き ＝「有限が近似できる」.** フィルター付き圏の条件は「有限個のものは、いつか一つの段にまとめられ、いつか等しくなる」ことを言う。比喩で言えば、フィルター付き余極限は「十分先まで待てば、どんな有限の情報も確定する」過程の極限であり、有限個の等式で書ける構造（有限の極限、代数系の演算）と相性がよい。これが「有限表示」や「コンパクト対象」という概念の出発点になる。
+:::
+
+## 問題 {#cat:sec-fc-problems}
+
+::: problem {#cat:prob-fc-terminal-final}
+$\mathbf{J}$ の一つの対象 $j$ からなる部分圏 $\{j\}$ の包含が終であることと、$j$ が $\mathbf{J}$ の終対象であることは同値であることを示し、終対象をもつ圏上の余極限は終対象での値であることを結論せよ。
+:::
+
+::: solution
+$\{j\}$ の包含 $L$ について、$(k\downarrow L)$ の対象は射 $k\to j$、射は $\{j\}$ の恒等射しかないので、$(k\downarrow L)$ は離散圏 $\mathbf{J}(k,j)$。これが空でなく連結であることは $\mathbf{J}(k,j)$ がちょうど一元であること。よって終であることは $j$ が終対象であることと同値。このとき \ref{cat:final-functor-colimit} から $\mathrm{Colim}\,F\cong\mathrm{Colim}(F|_{\{j\}})=Fj$。
+:::
+
+::: problem {#cat:prob-fc-filtered-full-final}
+$\mathbf{J}$ がフィルター付きで、$L\colon\mathbf{J}'\to\mathbf{J}$ が充満で、各 $(k\downarrow L)$ が空でなければ、$L$ は終であることを示せ（Mac Lane 第 IX 章 §3 演習 3）。
+:::
+
+::: solution
+$(j_{1}',u_{1}\colon k\to Lj_{1}')$ と $(j_{2}',u_{2}\colon k\to Lj_{2}')$ を結ぶ。条件 1 で $a_{i}\colon Lj_{i}'\to m$ をとり、$(m\downarrow L)$ が空でないので $b\colon m\to Lj_{3}'$ をとる。平行な射 $ba_{1}u_{1},ba_{2}u_{2}\colon k\to Lj_{3}'$ に条件 2 で $c\colon Lj_{3}'\to n$（$cba_{1}u_{1}=cba_{2}u_{2}$）をとり、$(n\downarrow L)$ から $d\colon n\to Lj_{4}'$ をとる。$g_{i}\defeq dcba_{i}\colon Lj_{i}'\to Lj_{4}'$ は、$L$ が充満なので $g_{i}=Lt_{i}$ と書ける。$u_{4}\defeq Lt_{1}\circ u_{1}=dcba_{1}u_{1}=dcba_{2}u_{2}=Lt_{2}\circ u_{2}$ なので、$t_{i}\colon(j_{i}',u_{i})\to(j_{4}',u_{4})$ は $(k\downarrow L)$ の射で、二つの対象はジグザグで結ばれる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

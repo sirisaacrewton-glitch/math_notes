@@ -386,6 +386,41 @@
       "num": "4.4",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/04-simplicial.html"
     },
+    "cat:filtered-category": {
+      "status": "defined",
+      "type": "definition",
+      "title": "フィルター付き圏",
+      "num": "1.1",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/01-filtered-colimits.html"
+    },
+    "cat:filtered-colimit-set": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "Set のフィルター付き余極限",
+      "num": "1.3",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/01-filtered-colimits.html"
+    },
+    "cat:filtered-finite-interchange": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "有限の極限とフィルター付き余極限の交換",
+      "num": "1.4",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/01-filtered-colimits.html"
+    },
+    "cat:final-functor": {
+      "status": "defined",
+      "type": "definition",
+      "title": "終関手",
+      "num": "1.6",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/01-filtered-colimits.html"
+    },
+    "cat:final-functor-colimit": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "終関手と余極限",
+      "num": "1.7",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/01-filtered-colimits.html"
+    },
     "cat:free-action": {
       "status": "defined",
       "type": "proposition",
@@ -518,6 +553,13 @@
       "title": "群の忘却関手は極限を創出する",
       "num": "9.4",
       "page": "18-category-theory/18A-general-theory/01-basics/09-adjoints-limits.html"
+    },
+    "cat:grp-filtered-colimits": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "群の忘却関手とフィルター付き余極限",
+      "num": "1.5",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/01-filtered-colimits.html"
     },
     "cat:hom-preserves-limits": {
       "status": "defined",
@@ -862,6 +904,13 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/01-basics/08-equivalence.html"
     },
+    "cat:page-filtered-colimits": {
+      "status": "defined",
+      "type": "page",
+      "title": "フィルター付き余極限と終関手",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/01-filtered-colimits.html"
+    },
     "cat:page-functors": {
       "status": "defined",
       "type": "page",
@@ -1022,6 +1071,20 @@
       "title": "",
       "num": "2.19",
       "page": "18-category-theory/18A-general-theory/01-basics/02-functors.html"
+    },
+    "cat:prob-fc-filtered-full-final": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "1.9",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/01-filtered-colimits.html"
+    },
+    "cat:prob-fc-terminal-final": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "1.8",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/01-filtered-colimits.html"
     },
     "cat:prob-free-abelian-not-continuous": {
       "status": "defined",
@@ -1645,6 +1708,34 @@
       "title": "反射部分圏",
       "num": "",
       "page": "18-category-theory/18A-general-theory/01-basics/08-equivalence.html"
+    },
+    "cat:sec-fc-filtered": {
+      "status": "defined",
+      "type": "section",
+      "title": "フィルター付き圏",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/01-filtered-colimits.html"
+    },
+    "cat:sec-fc-final": {
+      "status": "defined",
+      "type": "section",
+      "title": "終関手",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/01-filtered-colimits.html"
+    },
+    "cat:sec-fc-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/01-filtered-colimits.html"
+    },
+    "cat:sec-fc-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/01-filtered-colimits.html"
     },
     "cat:sec-fun-equivalence": {
       "status": "defined",

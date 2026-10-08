@@ -240,6 +240,14 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | HA-01 | 18G/01-abelian-categories/01-additive | 核・余核と加法圏 | VIII.1–2 | 9100–9365 | 完了 |
 | HA-02 | 18G/01-abelian-categories/02-abelian | アーベル圏・像・完全列・完全関手 | VIII.3 | 9366–9600 | 完了 |
 | HA-03 | 18G/01-abelian-categories/03-diagram-lemmas | 図式の補題（メンバー、五項補題、蛇の補題） | VIII.4 | 9600–9900 | 完了 |
+
+特別な極限とカン拡張（18A/04-kan-extensions, id cat-kan。2026-10-08 自律判断）
+| ID | ファイル | 題 | CWM | 本文の行 | 状態 |
+|---|---|---|---|---|---|
+| CK-01 | 04-kan-extensions/01-filtered-colimits | フィルター付き余極限と終関手 | IX.1–3 | 9964–10313 | 完了 |
+| CK-02 | 04-kan-extensions/02-ends | 対角自然変換・エンドとコエンド | IX.4–8 | 10314–11026 | 未 |
+| CK-03 | 04-kan-extensions/03-kan | カン拡張 | X.1–3 | 11027–11364 | 未 |
+| CK-04 | 04-kan-extensions/04-pointwise-kan | コエンドによるカン拡張・各点カン拡張・稠密性 | X.4–7 | 11365–11856 | 未 |
 | CM-01 | 03-monads/01-monads-algebras | モナドとアイレンバーグ–ムーア代数、比較関手 | VI.1–3 | 6675–6984 | 完了 |
 | CM-02 | 03-monads/02-kleisli | クライスリ圏と比較の要約、語と自由半群 | VI.4–5 | 6985–7196 | 完了 |
 | CM-03 | 03-monads/03-beck | 分裂余等化子とベックのモナド性定理 | VI.6–7 | 7197–7540 | 完了 |
@@ -278,6 +286,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 圏論 CK-01（18A/04-kan-extensions 新設、01-filtered-colimits, cat:page-filtered-colimits：フィルター付き圏、Set のフィルター付き余極限の具体的記述、有限極限との交換（無限積での反例）、群の忘却関手（Mac Lane が略した代表元によらないことを補った）、終関手と余極限）。Mac Lane IX.1–3。
 - 2026-10-08 ホモロジー代数 HA-03（03-diagram-lemmas, ha:page-diagram-lemmas：エピ射の引き戻し、メンバーと同値、図式追跡の 6 規則、五項補題、連結射の構成とジグザグ、蛇の補題（Mac Lane が 1 か所だけ示した完全性を 6 か所すべて示した））。Mac Lane VIII.4。アーベル圏の系列 HA-01〜03 完了。
 - 2026-10-08 ホモロジー代数 HA-02（02-abelian, ha:page-abelian：アーベル圏、自由アーベル群の反例、有限極限、モノかつエピは同型、像の分解とその関手性、完全列、短完全列の特徴づけ、左完全の言い換え、hom 関手の左完全性）。Mac Lane VIII.3。
 - 2026-10-08 ホモロジー代数 HA-01（18G/01-abelian-categories 新設、01-additive, ha:page-additive：零射・核・余核、ガロア接続、標準的な分解、前加法圏と零対象、双積と積・余積の一致、加法圏、和の双積による表示、加法関手の特徴づけ）。Mac Lane VIII.1–2。ホモロジー代数（代数の下）に初めてページができ、8.2 の確認 6 か所を確認。

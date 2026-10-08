@@ -274,6 +274,13 @@
       "num": "1.2",
       "page": "18-category-theory/18A-general-theory/05-higher-structures/01-internal-categories.html"
     },
+    "cat:category-of-elements": {
+      "status": "defined",
+      "type": "definition",
+      "title": "元の圏",
+      "num": "5.1",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/05-category-of-elements.html"
+    },
     "cat:ccc-isomorphisms": {
       "status": "defined",
       "type": "proposition",
@@ -568,6 +575,27 @@
       "num": "4.7",
       "page": "18-category-theory/18A-general-theory/04-kan-extensions/04-pointwise-kan.html"
     },
+    "cat:dfib-fiber-discrete": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "離散ファイブレーションのファイバー",
+      "num": "5.7",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/05-category-of-elements.html"
+    },
+    "cat:dfib-presheaf": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "前層と離散ファイブレーション",
+      "num": "5.6",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/05-category-of-elements.html"
+    },
+    "cat:discrete-fibration": {
+      "status": "defined",
+      "type": "definition",
+      "title": "離散ファイブレーション",
+      "num": "5.4",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/05-category-of-elements.html"
+    },
     "cat:dual-not-natural": {
       "status": "defined",
       "type": "proposition",
@@ -595,6 +623,20 @@
       "title": "アイレンバーグ–ムーアの随伴",
       "num": "1.4",
       "page": "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html"
+    },
+    "cat:elements-comma": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "元の圏はコンマ圏",
+      "num": "5.2",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/05-category-of-elements.html"
+    },
+    "cat:elements-projection-dfib": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "元の圏の射影",
+      "num": "5.5",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/05-category-of-elements.html"
     },
     "cat:em-creates-absolute": {
       "status": "defined",
@@ -1415,6 +1457,13 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/05-higher-structures/04-crossed-modules.html"
     },
+    "cat:page-elements": {
+      "status": "defined",
+      "type": "page",
+      "title": "元の圏と離散ファイブレーション",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/05-category-of-elements.html"
+    },
     "cat:page-ends": {
       "status": "defined",
       "type": "page",
@@ -1729,6 +1778,20 @@
       "title": "",
       "num": "3.14",
       "page": "18-category-theory/18A-general-theory/01-basics/03-constructions.html"
+    },
+    "cat:prob-el-composite": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "5.10",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/05-category-of-elements.html"
+    },
+    "cat:prob-el-constant": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "5.9",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/05-category-of-elements.html"
     },
     "cat:prob-en-hom-preserves": {
       "status": "defined",
@@ -2156,6 +2219,13 @@
       "title": "表現可能関手",
       "num": "5.6",
       "page": "18-category-theory/18A-general-theory/01-basics/05-yoneda.html"
+    },
+    "cat:representable-terminal-element": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "表現可能性と終対象",
+      "num": "5.3",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/05-category-of-elements.html"
     },
     "cat:representation-universal-element": {
       "status": "defined",
@@ -2674,6 +2744,41 @@
       "title": "積圏と双関手",
       "num": "",
       "page": "18-category-theory/18A-general-theory/01-basics/03-constructions.html"
+    },
+    "cat:sec-el-elements": {
+      "status": "defined",
+      "type": "section",
+      "title": "元の圏",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/05-category-of-elements.html"
+    },
+    "cat:sec-el-fibrations": {
+      "status": "defined",
+      "type": "section",
+      "title": "離散ファイブレーション",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/05-category-of-elements.html"
+    },
+    "cat:sec-el-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/05-category-of-elements.html"
+    },
+    "cat:sec-el-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/05-category-of-elements.html"
+    },
+    "cat:sec-el-slice": {
+      "status": "defined",
+      "type": "section",
+      "title": "前層の圏のスライス",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/05-category-of-elements.html"
     },
     "cat:sec-en-ends": {
       "status": "defined",
@@ -3451,6 +3556,13 @@
       "title": "下の対象・上の対象の圏",
       "num": "4.3",
       "page": "18-category-theory/18A-general-theory/01-basics/04-comma-free-quotient.html"
+    },
+    "cat:slice-presheaf": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "前層の圏のスライス",
+      "num": "5.8",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/05-category-of-elements.html"
     },
     "cat:small-category": {
       "status": "defined",

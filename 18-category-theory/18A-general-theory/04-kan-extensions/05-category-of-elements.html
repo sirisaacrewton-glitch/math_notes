@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>元の圏と離散ファイブレーション | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/04-kan-extensions/05-category-of-elements.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 元の圏と離散ファイブレーション {#cat:page-elements keywords="category of elements, Grothendieck construction for presheaves, discrete fibration, presheaves are discrete fibrations, slice of a presheaf category, action groupoid, representable iff the category of elements has a terminal object"}
+
+前層 $P\colon\mathbf{C}^{\mathrm{op}}\to\mathbf{Set}$ は、各対象 $c$ に集合 $P(c)$ を、各射に写像を割り当てる。これを「$P$ のすべての元を対象とする一つの圏」に広げたものが**元の圏** $\int P$（\ref{cat:category-of-elements}）である。$\int P$ はコンマ圏 $(\mathbf{y}\downarrow P)$ と同型で（\ref{cat:elements-comma}）、$P$ が表現可能であることは $\int P$ が終対象をもつことと同値である（\ref{cat:representable-terminal-element}）。射影 $\int P\to\mathbf{C}$ は**離散ファイブレーション**（\ref{cat:discrete-fibration}）であり、逆にすべての離散ファイブレーションはこの形である：前層の圏と離散ファイブレーションの圏は圏同値である（\ref{cat:dfib-presheaf}）。さらに、前層の圏の $P$ 上のスライスは、$\int P$ 上の前層の圏と同値である（\ref{cat:slice-presheaf}）。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。米田の補題と稠密性は本サイトの \ref{cat:page-yoneda}, \ref{cat:page-pointwise-kan} による。
+
+## 記法と定義の確認 {#cat:sec-el-notation}
+
+::: notation
+- $\mathbf{C}$ は小さい圏、$\mathbf{y}\colon\mathbf{C}\to\widehat{\mathbf{C}}\defeq\mathbf{Set}^{\mathbf{C}^{\mathrm{op}}}$ は米田埋め込み（\ref{cat:yoneda-embedding}）。$\widehat{\mathbf{C}}$ の対象を**前層**、射（自然変換）を前層の射という。
+- 前層 $P$、射 $f\colon c\to c'$、$x'\in P(c')$ について $x'\cdot f\defeq P(f)(x')\in P(c)$ と書く。関手性は $x\cdot1_{c}=x$, $x''\cdot(g\circ f)=(x''\cdot g)\cdot f$、$\theta\colon P\Rightarrow Q$ の自然性は $\theta_{c}(x'\cdot f)=\theta_{c'}(x')\cdot f$ である。
+- コンマ圏・スライス圏 $\mathbf{C}/c=(\mathbf{C}\downarrow c)$ は \ref{cat:comma-category}, \ref{cat:slice-category}、米田の補題は \ref{cat:yoneda-lemma}、前層が表現可能関手の標準的な余極限であることは \ref{cat:presheaf-colimit-representables} のとおり。
+- $\mathbf{Cat}/\mathbf{C}$ は、小さい圏と関手 $p\colon\mathbf{E}\to\mathbf{C}$ の組を対象とし、$p'\circ F=p$ を満たす関手 $F\colon\mathbf{E}\to\mathbf{E}'$ を射とする圏である。
+:::
+
+## 元の圏 {#cat:sec-el-elements}
+
+::: definition 元の圏 {#cat:category-of-elements keywords="category of elements of a presheaf, projection functor" index="元の圏|もとのけん, 前層の元の圏|ぜんそうのもとのけん"}
+前層 $P$ の**元の圏** $\int P$ は、次で定まる圏である。
+- 対象：組 $(c,x)$（$c\in\mathbf{C}$, $x\in P(c)$）。
+- 射 $(c,x)\to(c',x')$：$x'\cdot f=x$ を満たす $\mathbf{C}$ の射 $f\colon c\to c'$。
+- 合成と恒等射は $\mathbf{C}$ のもの。
+
+**射影** $\pi_{P}\colon\int P\to\mathbf{C}$ を $(c,x)\mapsto c$, $f\mapsto f$ で定める。
+:::
+
+$\int P$ が圏であること：$1_{c}$ は $x\cdot1_{c}=x$ により $(c,x)$ の射。$f\colon(c,x)\to(c',x')$, $g\colon(c',x')\to(c'',x'')$ なら $x''\cdot(g\circ f)=(x''\cdot g)\cdot f=x'\cdot f=x$ なので $g\circ f$ も射。結合律と単位律は $\mathbf{C}$ から従う。$\pi_{P}$ は明らかに関手で、射の上で単射（忠実）である。
+
+::: proposition 元の圏はコンマ圏 {#cat:elements-comma keywords="the category of elements is isomorphic to the comma category (y over P)" index="元の圏とコンマ圏|もとのけんとこんまけん"}
+$\int P$ はコンマ圏 $(\mathbf{y}\downarrow P)$ と同型である。したがって
+$$
+P\cong\operatorname*{colim}_{(c,x)\in\int P}\mathbf{y}c
+$$
+（図式は $\mathbf{y}\circ\pi_{P}$）で、余極限錐の $(c,x)$ 成分は $x$ に米田の補題で対応する $\hat{x}\colon\mathbf{y}c\to P$ である。
+:::
+
+::: proof
+**対象.** $(\mathbf{y}\downarrow P)$ の対象は組 $(c,\alpha\colon\mathbf{y}c\to P)$ である。米田の補題（\ref{cat:yoneda-lemma}）により、$\alpha\mapsto\alpha_{c}(1_{c})$ は全単射 $\widehat{\mathbf{C}}(\mathbf{y}c,P)\to P(c)$ で、逆は $x\mapsto\hat{x}$, $\hat{x}_{d}(h)\defeq x\cdot h$ である。
+
+**射.** $(\mathbf{y}\downarrow P)$ の射 $(c,\hat{x})\to(c',\hat{x}')$ は、$\hat{x}'\circ\mathbf{y}f=\hat{x}$ を満たす $f\colon c\to c'$ である。両辺の $c$ 成分を $1_{c}$ で評価すると、左辺は $\hat{x}'_{c}(f\circ1_{c})=x'\cdot f$、右辺は $x$。米田の補題の全単射性から、この条件は $x'\cdot f=x$ と同値である。
+
+よって $(c,x)\mapsto(c,\hat{x})$, $f\mapsto f$ は射の集合を保つ全単射で、合成と恒等射は両者とも $\mathbf{C}$ のものなので、圏の同型である。余極限の主張は、この同型で \ref{cat:presheaf-colimit-representables} を書き直したものである。
+:::
+
+::: proposition 表現可能性と終対象 {#cat:representable-terminal-element keywords="P is representable iff its category of elements has a terminal object; terminal objects are universal elements" index="表現可能性と元の圏の終対象|ひょうげんかのうせいともとのけんのしゅうたいしょう"}
+$(c,x)\in\int P$ が終対象であることと、$\hat{x}\colon\mathbf{y}c\to P$ が同型であることは同値である。特に、$P$ が表現可能であることと $\int P$ が終対象をもつことは同値である。
+:::
+
+::: proof
+$(c,x)$ が終対象であるとは、各 $(d,z)$ について $x\cdot f=z$ を満たす $f\colon d\to c$ がちょうど一つあること、すなわち各 $d$ で写像 $\hat{x}_{d}\colon\mathbf{C}(d,c)\to P(d)$, $f\mapsto x\cdot f$ が全単射であることである。自然変換は各成分が全単射のとき、かつそのときに限り同型である（逆写像の族が自然になる）ので、これは $\hat{x}$ が同型であることと同値。後半：$P$ が表現可能なら同型 $\alpha\colon\mathbf{y}c\to P$ があり、米田の補題から $\alpha=\hat{x}$（$x=\alpha_{c}(1_{c})$）となるので $(c,x)$ が終対象。逆は前半から。
+:::
+
+::: example
+1. **表現可能関手.** $\int\mathbf{y}c$ の対象は $(d,h\colon d\to c)$、射 $(d,h)\to(d',h')$ は $h'\circ k=h$ を満たす $k\colon d\to d'$ である（$h'\cdot k=h'\circ k$）。これはスライス圏 $\mathbf{C}/c$（\ref{cat:slice-category}）そのもので、$(c,1_{c})$ が終対象である。
+2. **終前層.** すべての $P(c)$ が一点集合なら、$\pi_{P}\colon\int P\to\mathbf{C}$ は圏の同型である。
+3. **群作用.** 群 $G$ を対象一つの圏とみると、前層は右 $G$ 集合 $X$（$x\cdot g$）である。$\int X$ は、対象が $X$ の元、射 $x\to x'$ が $x'\cdot g=x$ を満たす $g\in G$ の圏で、**作用亜群**と呼ばれる。すべての射は同型で、その同型類は $G$ 軌道、$x$ の自己射の群は固定部分群である。
+:::
+
+## 離散ファイブレーション {#cat:sec-el-fibrations}
+
+::: definition 離散ファイブレーション {#cat:discrete-fibration keywords="discrete fibration, unique lifting of morphisms, category of discrete fibrations" index="離散ファイブレーション|りさんふぁいぶれーしょん"}
+関手 $p\colon\mathbf{E}\to\mathbf{C}$ が**離散ファイブレーション**であるとは、各 $e\in\mathbf{E}$ と各 $f\colon c\to p(e)$ について、$p(u)=f$ を満たす $\mathbf{E}$ の射 $u\colon e'\to e$（**$f$ の $e$ での持ち上げ**）が、始域 $e'$ も込めてちょうど一つあることをいう。$c\in\mathbf{C}$ の**ファイバー**を $p^{-1}(c)\defeq\{e:p(e)=c\}$ とする。離散ファイブレーションを対象とする $\mathbf{Cat}/\mathbf{C}$ の充満部分圏を $\mathbf{DFib}(\mathbf{C})$ と書く。
+:::
+
+::: proposition 元の圏の射影 {#cat:elements-projection-dfib keywords="the projection from the category of elements is a discrete fibration" index="元の圏の射影|もとのけんのしゃえい"}
+$\pi_{P}\colon\int P\to\mathbf{C}$ は離散ファイブレーションである。前層の射 $\theta\colon P\Rightarrow Q$ について、$\int\theta\colon(c,x)\mapsto(c,\theta_{c}(x))$, $f\mapsto f$ は $\mathbf{DFib}(\mathbf{C})$ の射であり、これで関手 $\int\colon\widehat{\mathbf{C}}\to\mathbf{DFib}(\mathbf{C})$ が定まる。
+:::
+
+::: proof
+**持ち上げ.** $(c',x')$ と $f\colon c\to c'$ について、$f\colon(c,x'\cdot f)\to(c',x')$ は $\int P$ の射で $f$ の上にある（存在）。$(d,z)\to(c',x')$ で $\pi_{P}$ の像が $f$ の射は、射としては $f$ そのもので、始域は $d=c$, $z=x'\cdot f$ に限られる（一意性）。
+
+**$\int\theta$.** $x'\cdot f=x$ なら、自然性から $\theta_{c'}(x')\cdot f=\theta_{c}(x'\cdot f)=\theta_{c}(x)$ なので、$f$ は $(c,\theta_{c}x)\to(c',\theta_{c'}x')$ の射。合成と恒等射は保たれ、$\pi_{Q}\circ\int\theta=\pi_{P}$。$\int(\theta'\circ\theta)=\int\theta'\circ\int\theta$ も対象ごとに明らか。
+:::
+
+::: theorem 前層と離散ファイブレーション {#cat:dfib-presheaf keywords="Grothendieck construction: presheaves on C are equivalent to discrete fibrations over C" index="前層と離散ファイブレーションの同値|ぜんそうとりさんふぁいぶれーしょんのどうち, グロタンディーク構成|ぐろたんでぃーくこうせい"}
+$\int\colon\widehat{\mathbf{C}}\to\mathbf{DFib}(\mathbf{C})$ は圏同値である。逆向きの関手は、離散ファイブレーション $p\colon\mathbf{E}\to\mathbf{C}$ を、ファイバーの前層
+$$
+P_{p}(c)\defeq p^{-1}(c),\qquad P_{p}(f)(e)\defeq(f\text{ の }e\text{ での持ち上げの始域})
+$$
+に移す。
+:::
+
+::: proof
+**Step 1（$P_{p}$ は前層）.** $f\colon c\to c'$, $e\in p^{-1}(c')$ について、持ち上げの**存在**から $P_{p}(f)(e)$ が定まり、$p$ で $c$ に移るので $p^{-1}(c)$ に属する。$1_{e}$ は $1_{c'}$ の $e$ での持ち上げなので、**一意性**から $P_{p}(1_{c'})(e)=e$。$g\colon c'\to c''$, $e''\in p^{-1}(c'')$ について、$g$ の $e''$ での持ち上げを $u\colon e'\to e''$、$f$ の $e'$ での持ち上げを $v\colon e\to e'$ とする。$u\circ v\colon e\to e''$ は $g\circ f$ の上にあるので、**一意性**から $g\circ f$ の $e''$ での持ち上げである。よって
+$$
+P_{p}(g\circ f)(e'')=e=P_{p}(f)(P_{p}(g)(e'')).
+$$
+
+**Step 2（射）.** $F\colon\mathbf{E}\to\mathbf{E}'$ が $p'\circ F=p$ を満たすとき、$\theta_{c}(e)\defeq F(e)$ は $p^{-1}(c)\to p'^{-1}(c)$ を与える。$f$ の $e''$ での持ち上げ $u\colon e\to e''$ について、$F(u)\colon F(e)\to F(e'')$ は $p'F(u)=f$ を満たすので、**一意性**から $f$ の $F(e'')$ での持ち上げであり、$\theta_{c}(P_{p}(f)(e''))=P_{p'}(f)(\theta_{c'}(e''))$。よって $\theta$ は自然で、$p\mapsto P_{p}$ は関手 $\mathbf{DFib}(\mathbf{C})\to\widehat{\mathbf{C}}$ になる。
+
+**Step 3（$P\cong P_{\pi_{P}}$）.** $P_{\pi_{P}}(c)=\{(c,x):x\in P(c)\}$ で、\ref{cat:elements-projection-dfib} の証明から $P_{\pi_{P}}(f)(c',x')=(c,x'\cdot f)$。よって $x\mapsto(c,x)$ は $P$ について自然な同型 $P\cong P_{\pi_{P}}$ である。
+
+**Step 4（$\mathbf{E}\cong\int P_{p}$）.** $\Theta\colon\mathbf{E}\to\int P_{p}$ を $e\mapsto(p(e),e)$, $u\mapsto p(u)$ で定める。$u\colon e\to e'$ は $p(u)$ の $e'$ での持ち上げなので（一意性）、$P_{p}(p(u))(e')=e$、すなわち $p(u)$ は $(p(e),e)\to(p(e'),e')$ の射である。$\Theta$ は関手で、$\pi_{P_{p}}\circ\Theta=p$。対象の上で全単射なのは明らか。射の上で：
+- 単射：$p(u)=p(u')$ で $u,u'\colon e\to e'$ なら、両者は同じ射の $e'$ での持ち上げなので、**一意性**から $u=u'$。
+- 全射：$f\colon(p(e),e)\to(p(e'),e')$ が $\int P_{p}$ の射なら、$f$ の $e'$ での持ち上げの始域は $e$ で、その持ち上げ $u\colon e\to e'$ が $\Theta(u)=f$ を満たす。
+
+よって $\Theta$ は $\mathbf{Cat}/\mathbf{C}$ の同型。$F\colon\mathbf{E}\to\mathbf{E}'$ について、$\int\theta\circ\Theta(e)=(p(e),F(e))=\Theta'(F(e))$（射でも同様）なので $\Theta$ は $p$ について自然である。Step 3, 4 から、二つの関手は互いに逆の圏同値を与える。
+:::
+
+::: hypcheck
+- **持ち上げの存在**：Step 1 で $P_{p}(f)$ を定義するのに使った。
+- **持ち上げの一意性（始域も込めて）**：Step 1 の関手性、Step 2 の自然性、Step 4 の単射性と $\Theta$ が射を射に移すことに使った。始域を込めない一意性（「始域を固定すれば一意」）では $P_{p}(f)$ が写像として定まらない。
+- **$\mathbf{E}$ が小さい**：ファイバー $p^{-1}(c)$ が集合であることに使った。
+:::
+
+::: corollary 離散ファイブレーションのファイバー {#cat:dfib-fiber-discrete keywords="fibers of a discrete fibration are discrete categories" index="離散ファイブレーションのファイバー|りさんふぁいぶれーしょんのふぁいばー"}
+離散ファイブレーション $p$ について、$p(u)$ が恒等射となる射 $u$ は恒等射に限る。すなわち、各ファイバーは（部分圏として）離散圏である。
+:::
+
+::: proof
+$u\colon e'\to e$ が $p(u)=1_{c}$ を満たせば、$1_{e}$ も $1_{c}$ の $e$ での持ち上げなので、一意性から $u=1_{e}$（特に $e'=e$）。
+:::
+
+## 前層の圏のスライス {#cat:sec-el-slice}
+
+::: theorem 前層の圏のスライス {#cat:slice-presheaf keywords="the slice of a presheaf category over P is equivalent to presheaves on the category of elements" index="前層の圏のスライス|ぜんそうのけんのすらいす"}
+前層 $P$ について、スライス圏 $\widehat{\mathbf{C}}/P$ は前層の圏 $\widehat{\int P}=\mathbf{Set}^{(\int P)^{\mathrm{op}}}$ と圏同値である。
+:::
+
+::: proof
+**Step 1（$\Phi\colon\widehat{\mathbf{C}}/P\to\widehat{\int P}$）.** $\alpha\colon Q\Rightarrow P$ について、$\Phi(\alpha)(c,x)\defeq\alpha_{c}^{-1}(x)\subseteq Q(c)$ とし、$f\colon(c,x)\to(c',x')$ には $y\mapsto Q(f)(y)$ を対応させる。これが $\alpha_{c'}^{-1}(x')\to\alpha_{c}^{-1}(x)$ を与えることは、自然性から
+$$
+\alpha_{c}(Q(f)(y))=\alpha_{c'}(y)\cdot f=x'\cdot f=x
+$$
+による。関手性は $Q$ の関手性から。スライスの射 $\varphi\colon(Q,\alpha)\to(R,\beta)$（$\beta\circ\varphi=\alpha$）には、$\varphi_{c}$ の制限 $\alpha_{c}^{-1}(x)\to\beta_{c}^{-1}(x)$ を対応させる（$\beta_{c}\varphi_{c}(y)=\alpha_{c}(y)=x$）。自然性は $\varphi$ の自然性から。
+
+**Step 2（$\Psi\colon\widehat{\int P}\to\widehat{\mathbf{C}}/P$）.** $G\in\widehat{\int P}$ について、
+$$
+\Psi(G)(c)\defeq\{(x,y):x\in P(c),\ y\in G(c,x)\}
+$$
+とし、$f\colon c\to c'$ について $\Psi(G)(f)(x',y')\defeq(x'\cdot f,\,G(f)(y'))$ とする（$f\colon(c,x'\cdot f)\to(c',x')$ は $\int P$ の射）。関手性：$g\colon c'\to c''$ について、$\int P$ で $g\circ f$ は $f\colon(c,x''\cdot g\cdot f)\to(c',x''\cdot g)$ と $g\colon(c',x''\cdot g)\to(c'',x'')$ の合成なので、$G(g\circ f)=G(f)\circ G(g)$ となり、両辺の第一成分も $x''\cdot(g\circ f)=(x''\cdot g)\cdot f$ で一致する。$\alpha_{G,c}(x,y)\defeq x$ は自然（$\alpha_{G,c}(x'\cdot f,\dots)=x'\cdot f$）で、$\Psi(G)\defeq(\Psi(G),\alpha_{G})$ は $P$ 上の対象。$\psi\colon G\Rightarrow H$ には $(x,y)\mapsto(x,\psi_{(c,x)}(y))$ を対応させる。
+
+**Step 3（同値）.** $\Phi\Psi(G)(c,x)=\{(x,y):y\in G(c,x)\}$ で、$y\mapsto(x,y)$ は $G$ について自然な同型 $G\cong\Phi\Psi(G)$。$\Psi\Phi(Q,\alpha)(c)=\{(x,y):y\in\alpha_{c}^{-1}(x)\}$ で、$(x,y)\mapsto y$ は逆 $y\mapsto(\alpha_{c}(y),y)$ をもち、$Q$ の作用と $P$ への射を保つ。これも $(Q,\alpha)$ について自然なので、$\Phi,\Psi$ は圏同値を与える。
+:::
+
+::: hypcheck
+- **$\int P$ の射の定義（$x'\cdot f=x$）**：Step 1 で $Q(f)$ がファイバーをファイバーに移すこと、Step 2 で $\Psi(G)(f)$ の定義に使った。
+- **$\alpha$ の自然性**：Step 1 の表示式に使った。自然でない写像の族では $\Phi$ が前層にならない。
+:::
+
+::: example
+1. $P=\mathbf{y}c$ なら、元の圏の節の例 1 と合わせて $\widehat{\mathbf{C}}/\mathbf{y}c\simeq\widehat{\mathbf{C}/c}$。
+2. $G$ を群、$X$ を右 $G$ 集合とすると、$X$ 上の右 $G$ 集合（$G$ 同変写像 $Y\to X$）の圏は、作用亜群 $\int X$ 上の前層の圏と同値である。$X=G$（右移動）なら $\int G$ は対象どうしがちょうど一つの射で結ばれる（自明な）亜群で、$\widehat{\int G}\simeq\mathbf{Set}$：$G$ 上の $G$ 集合は、一点上のファイバー（集合）で決まる。
+:::
+
+## 問題 {#cat:sec-el-problems}
+
+::: problem {#cat:prob-el-constant}
+集合 $S$ について、定値前層 $\Delta S$（$\Delta S(c)=S$, $\Delta S(f)=1_{S}$）の元の圏は、$S$ 個の $\mathbf{C}$ の互いに交わらない和（$\mathbf{C}\times S$, $S$ は離散圏）と同型であることを示せ。
+:::
+
+::: solution
+$\int\Delta S$ の対象は $(c,s)$、射 $(c,s)\to(c',s')$ は $s'\cdot f=s'=s$ を満たす $f\colon c\to c'$ である。よって $s\ne s'$ なら射はなく、$s=s'$ なら $\mathbf{C}(c,c')$ 全体。これは $\mathbf{C}\times S$ の射 $(f,1_{s})$ と一対一に対応し、合成も一致する。
+:::
+
+::: problem {#cat:prob-el-composite}
+離散ファイブレーション $p\colon\mathbf{E}\to\mathbf{C}$, $q\colon\mathbf{F}\to\mathbf{E}$ の合成 $p\circ q$ は離散ファイブレーションであることを示せ。これと \ref{cat:dfib-presheaf} から、$\widehat{\int P}$ の対象（$\int P$ 上の離散ファイブレーション）が $\mathbf{C}$ 上の離散ファイブレーションとみなせることを、\ref{cat:slice-presheaf} と比べよ。
+:::
+
+::: solution
+$a\in\mathbf{F}$ と $f\colon c\to pq(a)$ について、$f$ の $q(a)$ での $p$ による持ち上げ $u\colon e\to q(a)$ がただ一つあり、$u$ の $a$ での $q$ による持ち上げ $v\colon a'\to a$ がただ一つある。$pq(v)=p(u)=f$ で存在。一意性：$pq(v')=f$ を満たす $v'\colon a''\to a$ について、$q(v')$ は $f$ の $q(a)$ での持ち上げなので $q(v')=u$、すると $v'$ は $u$ の持ち上げなので $v'=v$。
+
+比較：$\int P$ 上の離散ファイブレーション $q$ を $\pi_{P}$ と合成すると $\mathbf{C}$ 上の離散ファイブレーションになり、$q$ 自身が $\mathbf{DFib}(\mathbf{C})$ の射 $\pi_{P}\circ q\to\pi_{P}$ になる。これは \ref{cat:dfib-presheaf} で $\widehat{\mathbf{C}}/P$ の対象に対応し、\ref{cat:slice-presheaf} の同値と同じ向きの対応を与える。
+:::
+
+::: supplement
+**前提を変えると.** 共変関手 $F\colon\mathbf{C}\to\mathbf{Set}$ についても、射 $(c,x)\to(c',x')$ を $F(f)(x)=x'$ を満たす $f$ として元の圏が定まり、射影は**離散オプファイブレーション**（持ち上げが始域側で一意）になる。持ち上げの一意性を外し、「デカルト射」の存在だけを要請したものが**グロタンディーク・ファイブレーション**で、擬関手 $\mathbf{C}^{\mathrm{op}}\to\mathbf{Cat}$ と（適切な 2 圏の意味で）対応することが知られている（グロタンディーク構成。ここでは扱わない）。
+
+**似た定理.** \ref{cat:slice-presheaf} は「前層の圏のスライスはまた前層の圏」という主張で、より一般にトポスのスライスはトポスであることが知られている（トポス論の基本定理）。位相空間 $X$ 上の層と、$X$ 上の局所同相写像（エタール空間）の対応、および良い空間での被覆空間と基本亜群上の離散ファイブレーションの対応も、\ref{cat:dfib-presheaf} と同じ形の「関手を総空間に広げる」構成であることが知られている（ここでは確かめていない）。
+
+**高い視点から：分類された対象を広げて並べる.** 前層 $P$ は「$c$ ごとに元の集合を返す」索引付きの族で、$\int P$ はその族のすべての元を一枚の床に広げて並べ、射 $f$ に沿った引き戻しを矢印として描き込んだものである。比喩で言えば、$P$ は棚ごとに本を数える目録、$\int P$ は全部の本を床に並べ、どの本がどの棚から来たかを示す札（射影 $\pi_{P}$）を付けた光景である。目録と並べた光景は同じ情報をもつ（\ref{cat:dfib-presheaf}）。米田の補題は「棚 $c$ そのものの目録 $\mathbf{y}c$ を並べるとスライス $\mathbf{C}/c$ になる」ことであり、表現可能性は「床の上に、すべての本が一意的に流れ込む最後の一冊がある」こと（\ref{cat:representable-terminal-element}）と言い換えられる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

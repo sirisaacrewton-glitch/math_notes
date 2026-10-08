@@ -413,3 +413,4 @@
 | index set / Rice-Shapiro theorem | 指数集合 / ライス–シャピロの定理 | | 標準的。comp:page-rice-shapiro |
 | Sorgenfrey line / Sorgenfrey plane / lower limit topology | ゾルゲンフライ直線 / ゾルゲンフライ平面 / 下限位相 | | 標準的。top:page-sorgenfrey |
 | Tychonoff plank / deleted Tychonoff plank | チコノフの板 / 欠けたチコノフの板 | チコノフ板 | 仮。top:page-tychonoff-plank |
+| category of elements / discrete fibration / action groupoid | 元の圏 / 離散ファイブレーション / 作用亜群 | 要素の圏 | 仮。cat:page-elements |

@@ -331,6 +331,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 計算量 CC-14（03D/04-complexity/14-ph-karp-lipton, comp:page-ph-karp-lipton：量化子による特徴づけ（選択列を余りで読む）、神託による特徴づけ Σ_{k+1}^P=NP^{Σ_k^P}、P/poly、EXT と自己帰着、カープ–リプトンの定理）。09-alternation・08-circuits の「認めて」「ここでは証明しない」を参照に変更。資料なし。
 - 2026-10-08 一般位相：01-separation-axioms（ゾルゲンフライ平面）・03-compact-metric（アレクサンドロフ–ハウスドルフ）・08-paracompactness（ω₁）の「ここでは証明しない」を本サイトの証明への参照に変更。TD-14 に問題「可算コンパクト＋パラコンパクト ⇒ コンパクト、[0,ω₁) はパラコンパクトでない」を追加。
 - 2026-10-08 一般位相 TE-06（54E/01/06-nagata-smirnov, top:page-nagata-smirnov：σ 局所有限、開集合は F_σ、正則＋σ 局所有限な開基 ⇒ 正規、開集合の上でだけ正の関数、長田–スミルノフの定理（⇒ はストーンの定理、⇐ は距離を直接構成）、可分な空間の局所有限族とゾルゲンフライ直線・離散空間の問題）。04-metrization の補足から参照。資料なし。
 - 2026-10-08 計算論 AC-12（03D/03/12-index-set-completeness, comp:page-index-set-completeness：Σn・Πn 完全と基本性質（階層定理から下の段に属さない）、FIN の Σ₂ 完全性と INF の一様な Π₂ 完全性、TOT の Π₂ 完全性、COF の Σ₃ 完全性（動く目印の構成）、REC は Σ₃・空集合の指数は Π₁ 完全の問題）。07-post-theorem と 02-turing-reducibility の「認めてよい」に参照を付けた。資料なし。
@@ -546,6 +547,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | CC-11 | 04-complexity/11-parallel | 一様な回路族、NC、P 完全性（Sipser 10.5） | 完了 |
 | CC-12 | 04-complexity/12-approximation-cryptography | 近似アルゴリズムと暗号（一方向関数・落とし戸関数）（Sipser 10.1, 10.6） | 完了 |
 | CC-13 | 04-complexity/13-primality-branching | 素数判定と一回読み分岐プログラム（Sipser 10.2） | 完了 |
+| CC-14 | 04-complexity/14-ph-karp-lipton | 多項式階層の量化子・神託による特徴づけ、P/poly とカープ–リプトンの定理（資料なし） | 完了 |
 | AC-07 | 03-advanced-computability/07-post-theorem | ポストの定理（使用の原理・有界量化子・Σ_{n+1}=∅^(n) で認識可能・Δ_{n+1}=≤_T ∅^(n)）（新井 §6.3） | 完了 |
 | AC-08 | 03-advanced-computability/08-friedberg-muchnik | ポストの問題とフリードバーグ–ムチニクの定理（優先論法）（新井 §6.4） | 完了 |
 | AC-09 | 03-advanced-computability/09-low-simple | 単純集合・極限補題・低集合・単純な低集合（新井 §6.6 演習） | 完了 |

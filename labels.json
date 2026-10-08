@@ -4936,6 +4936,13 @@
       "num": "1.7",
       "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/01-kolmogorov.html"
     },
+    "comp:karp-lipton": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "カープ–リプトンの定理",
+      "num": "14.5",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/14-ph-karp-lipton.html"
+    },
     "comp:kb-order": {
       "status": "defined",
       "type": "lemma",
@@ -5496,6 +5503,13 @@
       "num": "11.4",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/11-parallel.html"
     },
+    "comp:p-poly": {
+      "status": "defined",
+      "type": "definition",
+      "title": "P/poly",
+      "num": "14.3",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/14-ph-karp-lipton.html"
+    },
     "comp:page-ackermann": {
       "status": "defined",
       "type": "page",
@@ -5705,6 +5719,13 @@
       "title": "並列計算",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/11-parallel.html"
+    },
+    "comp:page-ph-karp-lipton": {
+      "status": "defined",
+      "type": "page",
+      "title": "多項式階層の特徴づけとカープ–リプトンの定理",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/14-ph-karp-lipton.html"
     },
     "comp:page-pi11-prewellordering": {
       "status": "defined",
@@ -5950,6 +5971,20 @@
       "title": "多項式階層の基本性質",
       "num": "9.9",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/09-alternation.html"
+    },
+    "comp:ph-oracle": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "神託による特徴づけ",
+      "num": "14.2",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/14-ph-karp-lipton.html"
+    },
+    "comp:ph-quantifiers": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "量化子による特徴づけ",
+      "num": "14.1",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/14-ph-karp-lipton.html"
     },
     "comp:pi11-covering": {
       "status": "defined",
@@ -6475,6 +6510,20 @@
       "title": "",
       "num": "1.9",
       "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/01-kolmogorov.html"
+    },
+    "comp:prob-kl-np-conp": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "14.7",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/14-ph-karp-lipton.html"
+    },
+    "comp:prob-kl-p-ppoly": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "14.6",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/14-ph-karp-lipton.html"
     },
     "comp:prob-kraft-plain": {
       "status": "defined",
@@ -7091,6 +7140,13 @@
       "title": "実行時間と時間計算量のクラス",
       "num": "1.1",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/01-time-complexity.html"
+    },
+    "comp:sat-extension-language": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "延長の言語",
+      "num": "14.4",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/14-ph-karp-lipton.html"
     },
     "comp:savitch": {
       "status": "defined",
@@ -7889,6 +7945,41 @@
       "title": "問題",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/01-kolmogorov.html"
+    },
+    "comp:sec-kl-karp-lipton": {
+      "status": "defined",
+      "type": "section",
+      "title": "カープ–リプトンの定理",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/14-ph-karp-lipton.html"
+    },
+    "comp:sec-kl-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/14-ph-karp-lipton.html"
+    },
+    "comp:sec-kl-oracle": {
+      "status": "defined",
+      "type": "section",
+      "title": "神託による特徴づけ",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/14-ph-karp-lipton.html"
+    },
+    "comp:sec-kl-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/14-ph-karp-lipton.html"
+    },
+    "comp:sec-kl-quantifiers": {
+      "status": "defined",
+      "type": "section",
+      "title": "量化子による特徴づけ",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/14-ph-karp-lipton.html"
     },
     "comp:sec-kleene": {
       "status": "defined",

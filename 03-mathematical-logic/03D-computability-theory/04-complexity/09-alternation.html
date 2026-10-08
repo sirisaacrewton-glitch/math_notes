@@ -146,7 +146,7 @@ TQBF（\ref{comp:tqbf}）が AP に属することを、交代判定機を直接
 :::
 
 ::: problem {#comp:prob-alt-collapse}
-$\Sigma_{k}^{\mathrm{P}}=\Pi_{k}^{\mathrm{P}}$ となる $k\ge1$ があれば、すべての $j\ge k$ で $\Sigma_{j}^{\mathrm{P}}=\Sigma_{k}^{\mathrm{P}}$（多項式階層の崩壊）となることを、量化子による特徴づけ「$A\in\Sigma_{k}^{\mathrm{P}}\iff$ 多項式 $p$ と P の関係 $R$ で $x\in A\iff\exists y_{1}\forall y_{2}\cdots Q_{k}y_{k}\,R(x,y_{1},\dots,y_{k})$（各 $\lvert y_{i}\rvert\le p(\lvert x\rvert)$）となるものがある」を認めて示せ。
+$\Sigma_{k}^{\mathrm{P}}=\Pi_{k}^{\mathrm{P}}$ となる $k\ge1$ があれば、すべての $j\ge k$ で $\Sigma_{j}^{\mathrm{P}}=\Sigma_{k}^{\mathrm{P}}$（多項式階層の崩壊）となることを、量化子による特徴づけ「$A\in\Sigma_{k}^{\mathrm{P}}\iff$ 多項式 $p$ と P の関係 $R$ で $x\in A\iff\exists y_{1}\forall y_{2}\cdots Q_{k}y_{k}\,R(x,y_{1},\dots,y_{k})$（各 $\lvert y_{i}\rvert\le p(\lvert x\rvert)$）となるものがある」（\ref{comp:ph-quantifiers} で示す）を認めて示せ。
 :::
 
 ::: solution
@@ -154,7 +154,7 @@ $j=k+1$ を示せば帰納法で十分。$A\in\Sigma_{k+1}^{\mathrm{P}}$ を $x\
 :::
 
 ::: supplement
-**前提を変えると.** 交代の回数を多項式時間の中で無制限にすると PSPACE（\ref{comp:alternation-theorem}）、定数回に制限すると多項式階層になる。$\mathrm{PH}=\mathrm{PSPACE}$ かどうかは未解決で、$\mathrm{PH}=\mathrm{PSPACE}$ なら多項式階層は有限の段で崩壊することが知られている（PSPACE 完全な TQBF がある段に属するため。問題 \ref{comp:prob-alt-collapse} と同様）。多項式階層はオラクルを使って $\Sigma_{k+1}^{\mathrm{P}}=\mathrm{NP}^{\Sigma_{k}^{\mathrm{P}}}$ とも定義でき（\ref{comp:page-hierarchy} の補足）、二つの定義が一致することが知られている（ここでは証明しない）。
+**前提を変えると.** 交代の回数を多項式時間の中で無制限にすると PSPACE（\ref{comp:alternation-theorem}）、定数回に制限すると多項式階層になる。$\mathrm{PH}=\mathrm{PSPACE}$ かどうかは未解決で、$\mathrm{PH}=\mathrm{PSPACE}$ なら多項式階層は有限の段で崩壊することが知られている（PSPACE 完全な TQBF がある段に属するため。問題 \ref{comp:prob-alt-collapse} と同様）。多項式階層はオラクルを使って $\Sigma_{k+1}^{\mathrm{P}}=\mathrm{NP}^{\Sigma_{k}^{\mathrm{P}}}$ とも定義でき（\ref{comp:page-hierarchy} の補足）、二つの定義は一致する（\ref{comp:ph-oracle}）。
 
 **似た定理.** 量化子による特徴づけ（問題 \ref{comp:prob-alt-collapse} で認めたもの）は、計算可能性理論の算術的階層（\ref{comp:page-turing-reducibility}）の「多項式時間版」である：$\Sigma_{k}^{0}$ が計算可能な関係に $k$ 個の交互の量化子を付けたものなら、$\Sigma_{k}^{\mathrm{P}}$ は多項式時間の関係に長さを制限した $k$ 個の交互の量化子を付けたものである。
 

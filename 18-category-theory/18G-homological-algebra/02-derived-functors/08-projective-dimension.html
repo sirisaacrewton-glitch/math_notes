@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>シャヌエルの補題と射影次元 | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18G-homological-algebra/02-derived-functors/08-projective-dimension.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# シャヌエルの補題と射影次元 {#ha:page-projective-dimension keywords="Schanuel's lemma, syzygy, projective dimension, dimension shifting in the first variable, Ext characterization of projective dimension, subgroups of free abelian groups are projective, global dimension, Z/4"}
+
+加群 $M$ の射影分解は一意ではないが、分解の途中の核（**シジジー**）は「射影加群を足すことを除いて」一意である（**シャヌエルの補題**、\ref{ha:schanuel}）。これと第一変数の次元ずらし（\ref{ha:dimension-shifting-first}）から、$M$ の**射影次元**（射影分解の長さの最小値、\ref{ha:projective-dimension}）が $\mathrm{Ext}$ の消滅で特徴づけられること（\ref{ha:pd-characterization}）を示す。応用として、$\mathbb{Z}$ 加群の射影次元は $1$ 以下で、自由アーベル群の部分群は射影的であることが従う（\ref{ha:pd-z}）。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。
+
+## 記法と定義の確認 {#ha:sec-pd-notation}
+
+::: notation
+- $R$ は環、加群は左 $R$ 加群。射影加群、射影分解、$\mathrm{Ext}$ の基本性質・長完全列・射影性の特徴づけ（$\mathrm{Ext}^{1}(a,-)=0\iff a$ 射影的）は \ref{ha:projective}, \ref{ha:projective-resolution}, \ref{ha:ext-basic}, \ref{ha:ext-long-exact}, \ref{ha:ext-projective} のとおり。射影加群の直和因子は射影的、有限直和は射影的（\ref{ha:projective-basic} の 2）。
+- 射影分解 $\cdots\to P_{1}\xrightarrow{\partial_{1}}P_{0}\xrightarrow{\varepsilon}M\to0$ について、$K_{0}\defeq M$, $K_{j+1}\defeq\ker(P_{j}\to K_{j})$（$P_{0}\to K_{0}$ は $\varepsilon$、$P_{j}\to K_{j}$ は $\partial_{j}$ の値域を $K_{j}=\mathrm{im}\,\partial_{j}$ に制限したもの）を第 $j$ **シジジー**という。短完全列 $0\to K_{j+1}\to P_{j}\to K_{j}\to0$ がある。
+:::
+
+## シャヌエルの補題 {#ha:sec-pd-schanuel}
+
+::: lemma シャヌエルの補題 {#ha:schanuel keywords="Schanuel's lemma: K + P' = K' + P for two projective presentations" index="シャヌエルの補題|しゃぬえるのほだい"}
+短完全列 $0\to K\to P\xrightarrow{\pi}M\to0$, $0\to K'\to P'\xrightarrow{\pi'}M\to0$（$P,P'$ 射影的）について、$K\oplus P'\cong K'\oplus P$。
+:::
+
+::: proof
+引き戻し $X\defeq\{(p,p')\in P\oplus P':\pi(p)=\pi'(p')\}$ を考える。第一射影 $X\to P$ は全射（$p$ について $\pi'$ の全射性から $\pi'(p')=\pi(p)$ となる $p'$ がある）で、核は $\{(0,p'):\pi'(p')=0\}\cong K'$。$P$ は**射影的**なので短完全列 $0\to K'\to X\to P\to0$ は分裂し、$X\cong K'\oplus P$。対称に $X\cong K\oplus P'$。
+:::
+
+## 次元ずらしと射影次元 {#ha:sec-pd-dimension}
+
+::: lemma 第一変数の次元ずらし {#ha:dimension-shifting-first keywords="Ext^{n+1}(M,N) = Ext^1(K_n,N) for the n-th syzygy of any projective resolution" index="次元ずらし（第一変数）|じげんずらしだいいちへんすう"}
+射影分解のシジジー $K_{j}$ について、すべての $N$ と $n\ge0$ で $\mathrm{Ext}^{n+1}(M,N)\cong\mathrm{Ext}^{1}(K_{n},N)$。
+:::
+
+::: proof
+短完全列 $0\to K_{j+1}\to P_{j}\to K_{j}\to0$ に第一変数の長完全列（\ref{ha:ext-long-exact} の 2）を使うと、$m\ge1$ で $\mathrm{Ext}^{m}(P_{j},N)=0=\mathrm{Ext}^{m+1}(P_{j},N)$（\ref{ha:ext-basic} の 3）なので、連結射が同型 $\mathrm{Ext}^{m}(K_{j+1},N)\cong\mathrm{Ext}^{m+1}(K_{j},N)$ を与える。これを $j=0,\dots,n-1$（$m=n-j$）について並べると $\mathrm{Ext}^{1}(K_{n},N)\cong\mathrm{Ext}^{2}(K_{n-1},N)\cong\cdots\cong\mathrm{Ext}^{n+1}(K_{0},N)$。
+:::
+
+::: definition 射影次元 {#ha:projective-dimension keywords="projective dimension pd(M), global dimension" index="射影次元|しゃえいじげん, 大域次元|たいいきじげん"}
+$M$ の射影分解で $k>n$ について $P_{k}=0$ となるもの（**長さ $n$ 以下**）があるとき、そのような $n$ の最小値を $M$ の**射影次元** $\mathrm{pd}(M)$ という。なければ $\mathrm{pd}(M)\defeq\infty$。$R$ 加群すべての射影次元の上限を $R$ の（左）**大域次元**という。
+:::
+
+::: theorem 射影次元の特徴づけ {#ha:pd-characterization keywords="pd(M) <= n iff Ext^{n+1}(M,-)=0 iff the n-th syzygy of any projective resolution is projective" index="射影次元の特徴づけ|しゃえいじげんのとくちょうづけ"}
+$n\ge0$ について、次は同値である。
+1. $\mathrm{pd}(M)\le n$。
+2. すべての $N$ と $k>n$ で $\mathrm{Ext}^{k}(M,N)=0$。
+3. すべての $N$ で $\mathrm{Ext}^{n+1}(M,N)=0$。
+4. $M$ の**任意の**射影分解について、第 $n$ シジジー $K_{n}$ は射影的。
+:::
+
+::: proof
+**1 ⇒ 2.** 長さ $n$ 以下の射影分解で $\mathrm{Ext}$ を計算すると（\ref{ha:ext-basic} の 1 で分解によらない）、余鎖複体 $\mathrm{Hom}(P,N)$ の $k>n$ 次の項は $0$。
+
+**2 ⇒ 3.** 明らか。
+
+**3 ⇒ 4.** \ref{ha:dimension-shifting-first} から、すべての $N$ で $\mathrm{Ext}^{1}(K_{n},N)\cong\mathrm{Ext}^{n+1}(M,N)=0$。\ref{ha:ext-projective} から $K_{n}$ は射影的。
+
+**4 ⇒ 1.** 射影分解を一つとると $K_{n}$ は射影的なので、$0\to K_{n}\to P_{n-1}\to\cdots\to P_{0}\to M\to0$（$n=0$ なら $0\to M\xrightarrow{1}M\to0$）は長さ $n$ 以下の射影分解。
+:::
+
+::: hypcheck
+- **4 の「任意の」**：3 ⇒ 4 は、どの射影分解をとっても \ref{ha:dimension-shifting-first} が使えることによる。したがって、一つの分解で $K_{n}$ が射影的でなければ、$\mathrm{pd}(M)>n$ が分かる（\ref{ha:prob-pd-z4}）。シャヌエルの補題からも、異なる分解の $K_{1}$ が射影的かどうかは一致することが分かる（$K\oplus P'\cong K'\oplus P$ で、射影加群の直和因子は射影的）。
+- **$\mathrm{Ext}$ が分解によらないこと**：1 ⇒ 2 で、長さの短い分解を使って計算するのに使った。
+:::
+
+## 例 {#ha:sec-pd-examples}
+
+::: corollary 整数上の射影次元 {#ha:pd-z keywords="every abelian group has projective dimension at most 1; subgroups of free abelian groups are projective" index="整数上の射影次元|せいすうじょうのしゃえいじげん"}
+すべてのアーベル群 $M$ は $\mathrm{pd}_{\mathbb{Z}}(M)\le1$。したがって、自由アーベル群の部分群は射影的な $\mathbb{Z}$ 加群である。$\mathrm{pd}_{\mathbb{Z}}(\mathbb{Z}/n)=1$（$n\ge2$）。
+:::
+
+::: proof
+$\mathrm{Ext}^{2}_{\mathbb{Z}}(M,N)=0$（\ref{ha:prob-ei-dimension}）なので、\ref{ha:pd-characterization} の 3 ⇒ 1 から $\mathrm{pd}\le1$。部分群 $K\subseteq F$（$F$ 自由）について、$0\to K\to F\to F/K\to0$ は $F/K$ の射影分解の始まりで、$K$ は第 $1$ シジジーなので、4 から射影的。$\mathbb{Z}/n$ は射影的でない（$\mathrm{Ext}^{1}(\mathbb{Z}/n,\mathbb{Z})\cong\mathbb{Z}/n\ne0$、\ref{ha:ext-z}）ので $\mathrm{pd}=1$。
+:::
+
+## 問題 {#ha:sec-pd-problems}
+
+::: problem {#ha:prob-pd-z4}
+$R=\mathbb{Z}/4$ 上で、加群 $\mathbb{Z}/2$ の射影次元は $\infty$ であることを示せ。
+:::
+
+::: solution
+$\cdots\to R\xrightarrow{2}R\xrightarrow{2}R\to\mathbb{Z}/2\to0$ は射影分解（$R$ は自由。$2$ 倍の核と像はともに $2R\cong\mathbb{Z}/2$ なので完全）で、すべてのシジジーは $2R\cong\mathbb{Z}/2$。$\mathbb{Z}/2$ は射影的な $R$ 加群でない：射影的なら全射 $R\to\mathbb{Z}/2$ は分裂して $R\cong\mathbb{Z}/2\oplus2R\cong\mathbb{Z}/2\oplus\mathbb{Z}/2$ となるが、$R$ は位数 $4$ の元 $1$ をもち、右辺はもたない。\ref{ha:pd-characterization} の 4 から、どの $n$ でも $\mathrm{pd}\le n$ でない。
+:::
+
+::: problem {#ha:prob-pd-schanuel-z}
+シャヌエルの補題を、$\mathbb{Z}/6$ の二つの表示 $0\to6\mathbb{Z}\to\mathbb{Z}\to\mathbb{Z}/6\to0$ と $0\to K'\to\mathbb{Z}^{2}\to\mathbb{Z}/6\to0$（$(a,b)\mapsto2a+3b\bmod6$）について確かめよ。
+:::
+
+::: solution
+$2a+3b\equiv0\pmod6$ は「$2a\equiv0\pmod3$ かつ $3b\equiv0\pmod2$」、すなわち $3\mid a$ かつ $2\mid b$ と同値なので、$K'=3\mathbb{Z}\times2\mathbb{Z}\cong\mathbb{Z}^{2}$。シャヌエルの補題の主張 $6\mathbb{Z}\oplus\mathbb{Z}^{2}\cong K'\oplus\mathbb{Z}$ は、両辺とも $\mathbb{Z}^{3}$ と同型で確かに成り立つ。
+:::
+
+::: supplement
+**前提を変えると.** 双対に、入射分解の長さで**入射次元**が定まり、$\mathrm{Ext}^{n+1}(-,N)=0$ で特徴づけられる。$R$ の大域次元は、すべての加群の射影次元の上限とも、入射次元の上限とも一致し、さらに巡回加群 $R/I$ の射影次元の上限とも一致することが知られている（オースランダー）。体の大域次元は $0$、$\mathbb{Z}$ や単項イデアル整域は $1$、多項式環 $k[x_{1},\dots,x_{n}]$ は $n$ であることが知られている（ヒルベルトの syzygy 定理）。
+
+**似た定理.** $\mathbb{Z}$ 上の射影加群は自由である（自由アーベル群の部分群は自由）ことが知られているので、\ref{ha:pd-z} は「自由アーベル群の部分群は自由」という古典的な事実の、射影性についての部分をホモロジー代数から導いたものになっている。シャヌエルの補題は、安定同値（射影加群を足すことを除いた同型）の概念の出発点である。
+
+**高い視点から：分解の長さは加群の「複雑さ」.** 射影加群は「素材としてそのまま使える」加群で、射影分解は、加群を素材の列とその間の関係・関係の間の関係……で書き表すことである。射影次元は、この「関係の関係」が何段で尽きるかを測る。比喩で言えば、自由アーベル群は一段（関係なし）、$\mathbb{Z}/n$ は二段（$n$ 倍が $0$ という関係）で書けるが、$\mathbb{Z}/4$ 上の $\mathbb{Z}/2$ は関係がいつまでも関係を生み、有限の段では書き切れない。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

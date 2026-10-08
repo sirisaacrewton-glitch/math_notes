@@ -9871,6 +9871,13 @@
       "num": "2.2",
       "page": "18-category-theory/18G-homological-algebra/02-derived-functors/02-derived-functors.html"
     },
+    "ha:dimension-shifting-first": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "第一変数の次元ずらし",
+      "num": "8.2",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/08-projective-dimension.html"
+    },
     "ha:embed-divisible": {
       "status": "defined",
       "type": "lemma",
@@ -10214,6 +10221,13 @@
       "num": "",
       "page": "18-category-theory/18G-homological-algebra/02-derived-functors/04-injective-modules.html"
     },
+    "ha:page-projective-dimension": {
+      "status": "defined",
+      "type": "page",
+      "title": "シャヌエルの補題と射影次元",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/08-projective-dimension.html"
+    },
     "ha:page-projective-resolutions": {
       "status": "defined",
       "type": "page",
@@ -10234,6 +10248,20 @@
       "title": "Tor と Ext",
       "num": "",
       "page": "18-category-theory/18G-homological-algebra/02-derived-functors/03-tor-ext.html"
+    },
+    "ha:pd-characterization": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "射影次元の特徴づけ",
+      "num": "8.4",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/08-projective-dimension.html"
+    },
+    "ha:pd-z": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "整数上の射影次元",
+      "num": "8.5",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/08-projective-dimension.html"
     },
     "ha:preadditive": {
       "status": "defined",
@@ -10361,6 +10389,20 @@
       "num": "4.5",
       "page": "18-category-theory/18G-homological-algebra/02-derived-functors/04-injective-modules.html"
     },
+    "ha:prob-pd-schanuel-z": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "8.7",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/08-projective-dimension.html"
+    },
+    "ha:prob-pd-z4": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "8.6",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/08-projective-dimension.html"
+    },
     "ha:prob-pr-split": {
       "status": "defined",
       "type": "problem",
@@ -10417,6 +10459,13 @@
       "num": "1.2",
       "page": "18-category-theory/18G-homological-algebra/02-derived-functors/01-projective-resolutions.html"
     },
+    "ha:projective-dimension": {
+      "status": "defined",
+      "type": "definition",
+      "title": "射影次元",
+      "num": "8.3",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/08-projective-dimension.html"
+    },
     "ha:projective-flat": {
       "status": "defined",
       "type": "proposition",
@@ -10458,6 +10507,13 @@
       "title": "押し出しによる拡大",
       "num": "5.3",
       "page": "18-category-theory/18G-homological-algebra/02-derived-functors/05-extensions.html"
+    },
+    "ha:schanuel": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "シャヌエルの補題",
+      "num": "8.1",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/08-projective-dimension.html"
     },
     "ha:sec-ab-definition": {
       "status": "defined",
@@ -10731,6 +10787,41 @@
       "title": "問題",
       "num": "",
       "page": "18-category-theory/18G-homological-algebra/02-derived-functors/04-injective-modules.html"
+    },
+    "ha:sec-pd-dimension": {
+      "status": "defined",
+      "type": "section",
+      "title": "次元ずらしと射影次元",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/08-projective-dimension.html"
+    },
+    "ha:sec-pd-examples": {
+      "status": "defined",
+      "type": "section",
+      "title": "例",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/08-projective-dimension.html"
+    },
+    "ha:sec-pd-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/08-projective-dimension.html"
+    },
+    "ha:sec-pd-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/08-projective-dimension.html"
+    },
+    "ha:sec-pd-schanuel": {
+      "status": "defined",
+      "type": "section",
+      "title": "シャヌエルの補題",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/08-projective-dimension.html"
     },
     "ha:sec-pr-comparison": {
       "status": "defined",

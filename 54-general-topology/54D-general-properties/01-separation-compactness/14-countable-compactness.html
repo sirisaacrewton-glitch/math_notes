@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>可算コンパクト性と擬コンパクト性 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54D-general-properties/01-separation-compactness/14-countable-compactness.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 可算コンパクト性と擬コンパクト性 {#top:page-countable-compactness keywords="countably compact, sequentially compact, pseudocompact, cluster point of a sequence, omega-accumulation point, Bolzano-Weierstrass property, first countable, Lindelof, normal pseudocompact spaces are countably compact, {0,1}^P(N) is not sequentially compact, particular point topology"}
+
+コンパクト性（\ref{top:compact}）を弱めた性質として、可算な開被覆についてだけ有限部分被覆を要求する**可算コンパクト性**、点列が収束部分列をもつことを要求する**点列コンパクト性**、実数値連続関数が有界であることを要求する**擬コンパクト性**がある（\ref{top:countably-compact}）。距離空間ではこれらはすべてコンパクト性と一致する（\ref{top:compact-metric-equivalents}）が、一般の位相空間では異なる。本ページでは、可算コンパクト性の言い換え（\ref{top:countably-compact-equivalents}）を示し、四つの性質の間の含意と、それを逆向きにするための追加の仮定（\ref{top:compactness-variants}）を証明する。最後に、含意が逆向きに成り立たない例（\ref{top:compactness-variants-examples}）を挙げる。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。
+
+## 記法と定義の確認 {#top:sec-cc-notation}
+
+::: notation
+- コンパクト性・有限交叉性は \ref{top:compact}, \ref{top:compact-equivalents}、第一可算・リンデレーフは \ref{top:second-countable}、正規・$T_{1}$・$T_{4}$ は \ref{top:separation-axioms} のとおり（本サイトの「正規」は $T_{1}$ を含まない）。
+- 点列 $(x_{n})$ の**集積点**とは、$x$ のどの近傍 $U$ についても $\{n:x_{n}\in U\}$ が無限集合となる点 $x$ である。部分列の極限は集積点である。
+- 部分集合 $A$ の**集積点**とは、$x$ のどの近傍も $A\setminus\{x\}$ の点を含むような点 $x$ である（\ref{top:sequentially-compact} のボルツァーノ–ワイエルシュトラス性の意味）。
+- ティーツェの拡張定理（実数値版）は \ref{top:tietze} の 3、チコノフの定理は \ref{top:tychonoff} のとおり。
+:::
+
+::: definition 可算コンパクト・点列コンパクト・擬コンパクト {#top:countably-compact keywords="countably compact, sequentially compact, pseudocompact" index="可算コンパクト|かさんこんぱくと, 擬コンパクト|ぎこんぱくと"}
+位相空間 $X$ について、
+1. 可算個の開集合からなる被覆がつねに有限部分被覆をもつとき、**可算コンパクト**という。
+2. すべての点列が収束する部分列をもつとき、**点列コンパクト**という（\ref{top:sequentially-compact}）。
+3. すべての連続関数 $f\colon X\to\R$ が有界であるとき、**擬コンパクト**という。
+:::
+
+## 可算コンパクト性の言い換え {#top:sec-cc-equivalents}
+
+::: theorem 可算コンパクト性の言い換え {#top:countably-compact-equivalents keywords="countably compact iff countable closed families with FIP have nonempty intersection iff every sequence has a cluster point; for T1 spaces iff every infinite subset has an accumulation point" index="可算コンパクト性の言い換え|かさんこんぱくとせいのいいかえ"}
+位相空間 $X$ について、次の 1–3 は同値である。
+1. $X$ は可算コンパクト。
+2. 有限交叉性をもつ可算個の閉集合の族は、共通部分が空でない。
+3. $X$ のすべての点列は集積点をもつ。
+
+さらに $X$ が $T_{1}$ なら、これらは次とも同値である。
+
+4. $X$ のすべての無限部分集合は集積点をもつ（ボルツァーノ–ワイエルシュトラス性）。
+:::
+
+::: proof
+**1 ⇔ 2.** 閉集合 $F_{n}$ の族について、$\bigcap_{n}F_{n}=\emptyset$ は開集合 $X\setminus F_{n}$ の族が $X$ を覆うことと同値であり、有限個 $F_{n_{1}},\dots,F_{n_{k}}$ の共通部分が空であることは、対応する有限個の開集合が $X$ を覆うことと同値である。よって 2 は 1 の対偶の言い換えである。
+
+**2 ⇒ 3.** 点列 $(x_{n})$ について $F_{m}\defeq\overline{\{x_{n}:n\ge m\}}$ とおく。$F_{1}\supseteq F_{2}\supseteq\cdots$ はどれも空でないので有限交叉性をもち、2 から $x\in\bigcap_{m}F_{m}$ がある。$x$ の近傍 $U$ は各 $m$ で $\{x_{n}:n\ge m\}$ と交わる（$x\in F_{m}$）ので、$x_{n}\in U$ となる $n$ は無限個ある。
+
+**3 ⇒ 2.** 閉集合の可算族 $(F_{m})$ が有限交叉性をもつとする。$G_{m}\defeq F_{1}\cap\cdots\cap F_{m}$ は空でないので、$x_{m}\in G_{m}$ を選ぶ（可算選択公理）。3 から集積点 $x$ がある。各 $m$ について、$x$ の近傍 $U$ は $n\ge m$ なる $x_{n}$ を含み、$x_{n}\in G_{n}\subseteq F_{m}$ なので、$U\cap F_{m}\ne\emptyset$。よって $x\in\overline{F_{m}}=F_{m}$。$m$ は任意なので $x\in\bigcap_{m}F_{m}$。
+
+**3 ⇒ 4.** 無限集合 $A$ から相異なる点の列 $(a_{n})$ をとる（可算選択公理）。集積点 $x$ の近傍 $U$ は無限個の $a_{n}$ を含み、それらは相異なるので、$x$ 以外の $A$ の点を含む。
+
+**4 ⇒ 3（$T_{1}$ を仮定）.** 点列 $(x_{n})$ について、ある値 $y$ が無限個の $n$ で $x_{n}=y$ となるなら、$y$ が集積点。そうでなければ値域 $A$ は無限集合で、4 から集積点 $x$ がある。$x$ の近傍 $U$ について、$U\cap A$ が無限集合であることを示す：有限なら、$E\defeq(U\cap A)\setminus\{x\}$ は有限集合で、**$T_{1}$** から閉なので、$U\setminus E$ は $x$ の近傍で $A\setminus\{x\}$ と交わらず、$x$ が集積点であることに反する。各値は有限個の $n$ でしかとられないので、$x_{n}\in U$ となる $n$ は無限個ある。
+:::
+
+::: hypcheck
+- **$T_{1}$**：4 ⇒ 3 で、有限集合が閉であることに使った。$T_{1}$ がないと 4 ⇒ 3 は成り立たない：二点 $\{a,b\}$ の密着空間と $\N$（離散）の直積で、点列 $(n,a)$ は集積点をもたないが、無限集合はどれも集積点をもつ（$(n,a)$ の近傍は $(n,b)$ を含む）。
+- **可算選択公理**：3 ⇒ 2 と 3 ⇒ 4 の点の選択に使った。
+:::
+
+## 四つの性質の関係 {#top:sec-cc-relations}
+
+::: theorem コンパクト性の変種の関係 {#top:compactness-variants keywords="compact => countably compact; sequentially compact => countably compact; countably compact + first countable => sequentially compact; countably compact + Lindelof => compact; countably compact => pseudocompact; pseudocompact + T4 => countably compact" index="コンパクト性の変種|こんぱくとせいのへんしゅ"}
+位相空間 $X$ について次が成り立つ。
+1. コンパクトなら可算コンパクト。
+2. 点列コンパクトなら可算コンパクト。
+3. 可算コンパクトかつ第一可算なら点列コンパクト。
+4. 可算コンパクトかつリンデレーフならコンパクト。
+5. 可算コンパクトなら擬コンパクト。
+6. 擬コンパクトかつ $T_{4}$ なら可算コンパクト。
+:::
+
+::: proof
+**1, 4.** 定義から明らか（4 は、任意の開被覆の可算部分被覆をとり、その有限部分被覆をとる）。
+
+**2.** 収束部分列の極限は点列の集積点なので、\ref{top:countably-compact-equivalents} の 3 が成り立つ。
+
+**3.** 点列 $(x_{n})$ の集積点 $x$ をとる（\ref{top:countably-compact-equivalents} の 3）。**第一可算性**から $x$ の可算な基本近傍系 $(V_{k})$ があり、$U_{k}\defeq V_{1}\cap\cdots\cap V_{k}$ は減少する基本近傍系である。$\{n:x_{n}\in U_{k}\}$ は無限集合なので、$n_{1}<n_{2}<\cdots$ を $x_{n_{k}}\in U_{k}$ となるように帰納的に選べる。$x$ の近傍 $W$ に $U_{K}\subseteq W$ となる $K$ をとれば、$k\ge K$ で $x_{n_{k}}\in U_{k}\subseteq U_{K}\subseteq W$。よって $x_{n_{k}}\to x$。
+
+**5.** 連続関数 $f\colon X\to\R$ について、開集合 $U_{n}\defeq f^{-1}((-n,n))$ $(n\ge1)$ は $X$ の可算な被覆で、有限部分被覆 $U_{n_{1}},\dots,U_{n_{k}}$ をもつ。$U_{n}$ は増加列なので $X=U_{N}$（$N=\max n_{i}$）、すなわち $\lvert f\rvert<N$。
+
+**6.** 対偶を示す。$X$ が $T_{4}$ で可算コンパクトでないとし、集積点をもたない点列 $(x_{n})$ をとる（\ref{top:countably-compact-equivalents}）。どの値も有限個の $n$ でしかとられない（無限個でとられる値は集積点）ので、値域 $A$ は無限集合である。
+
+*$A$ は閉かつ離散.* $y\in X$ は集積点でないので、近傍 $U$ で $\{n:x_{n}\in U\}$ が有限なものがある。すると $U\cap A$ は有限で、**$T_{1}$** から $(U\cap A)\setminus\{y\}$ は閉なので、$W_{y}\defeq U\setminus((U\cap A)\setminus\{y\})$ は $W_{y}\cap A\subseteq\{y\}$ を満たす近傍である。$y\notin A$ なら $W_{y}\cap A=\emptyset$ なので $A$ は閉。$A$ の任意の部分集合 $B$ についても $W_{y}\cap B\subseteq\{y\}$ なので、同じ議論で $B$ は閉である。
+
+*非有界な関数.* 点列の値が新しく現れる順に $a_{1},a_{2},\ldots$ と並べ（$A$ の相異なる点の列）、$D\defeq\{a_{k}:k\ge1\}$ とする。$D$ は閉で、$D$ の部分集合はすべて $D$ で閉なので $D$ は離散であり、$g\colon D\to\R$, $g(a_{k})\defeq k$ は連続である。**正規性**とティーツェの拡張定理（\ref{top:tietze} の 3）から、連続な延長 $F\colon X\to\R$ がある。$F$ は有界でないので、$X$ は擬コンパクトでない。
+:::
+
+::: hypcheck
+- **第一可算性**：3 で減少する可算基本近傍系を作るのに使った。
+- **$T_{1}$**：6 で $A$ が閉かつ離散であることに使った。
+- **正規性**：6 でティーツェの拡張定理を使うのに使った。正規性を外すと 6 は成り立たない（\ref{top:compactness-variants-examples} の 3）。
+:::
+
+## 例 {#top:sec-cc-examples}
+
+::: example 含意が逆向きに成り立たない例 {#top:compactness-variants-examples}
+1. **可算コンパクトだがコンパクトでない.** $[0,\omega_{1})$ は点列コンパクト（\ref{top:omega-one-space} の 3）なので可算コンパクト（\ref{top:compactness-variants} の 2）だが、コンパクトでない（\ref{top:prob-tpl-omega1}）。第一可算でリンデレーフでない空間の例でもある（4 の仮定のうちリンデレーフ性が欠ける）。
+2. **コンパクトだが点列コンパクトでない.** $X\defeq\{0,1\}^{\mathcal{P}(\N)}$（$\{0,1\}$ は離散、直積位相）はチコノフの定理（\ref{top:tychonoff}）からコンパクトである。点列 $x_{n}(S)\defeq1$（$n\in S$）, $0$（$n\notin S$）を考える。任意の部分列 $(x_{n_{k}})$ について、$S\defeq\{n_{k}:k\text{ は偶数}\}$ とおくと、$x_{n_{k}}(S)$ は $k$ の偶奇に応じて $1,0,1,0,\ldots$ となり収束しない。射影 $X\to\{0,1\}$, $x\mapsto x(S)$ は連続なので、$(x_{n_{k}})$ は収束しない。（3 から、$X$ は第一可算でない。）
+3. **擬コンパクトだが可算コンパクトでない.** $\N$ に、$0$ を含む集合と $\emptyset$ を開集合とする位相（**特定点位相**）を入れる。
+   - 可算コンパクトでない：開集合 $\{0,n\}$ $(n\ge1)$ は被覆だが、有限個では有限集合しか覆えない。
+   - 擬コンパクト：連続 $f\colon\N\to\R$ と $n$ について、$f(n)\ne f(0)$ なら $\R$ で $f(n)$, $f(0)$ を分離する交わらない開集合の逆像は、空でない（$n$ や $0$ を含む）交わらない開集合になるが、空でない開集合はすべて $0$ を含むので矛盾。よって $f$ は定数。
+   - 正規でも $T_{1}$ でもない：閉集合 $\{1\}$, $\{2\}$ を含む開集合はどちらも $0$ を含むので分離できない。
+:::
+
+## 問題 {#top:sec-cc-problems}
+
+::: problem {#top:prob-cc-closed-image}
+可算コンパクト空間の閉部分空間と、連続写像による像は可算コンパクトであることを示せ。
+:::
+
+::: solution
+**閉部分空間.** $F\subseteq X$ を閉、$(U_{n}\cap F)$ を $F$ の可算開被覆（$U_{n}$ は $X$ の開集合）とすると、$\{U_{n}\}\cup\{X\setminus F\}$ は $X$ の可算開被覆で、有限部分被覆から $X\setminus F$ を除けば $F$ の有限部分被覆を得る。
+
+**像.** $f\colon X\to Y$ を連続全射、$(V_{n})$ を $Y$ の可算開被覆とすると、$(f^{-1}V_{n})$ は $X$ の可算開被覆で、有限部分被覆 $f^{-1}V_{n_{1}},\dots,f^{-1}V_{n_{k}}$ をもつ。全射性から $V_{n_{1}},\dots,V_{n_{k}}$ は $Y$ を覆う。
+:::
+
+::: problem {#top:prob-cc-metric}
+可算コンパクトな距離空間はコンパクトであることを示せ。
+:::
+
+::: solution
+距離空間は第一可算（開球 $B(x,1/k)$ が基本近傍系）なので、\ref{top:compactness-variants} の 3 から点列コンパクトで、\ref{top:compact-metric-equivalents} からコンパクトである。
+:::
+
+::: supplement
+**前提を変えると.** \ref{top:compactness-variants} の 6 で $T_{4}$ の代わりに完全正則（チコノフ空間）を仮定すると、擬コンパクトで可算コンパクトでない空間が存在することが知られている（例：ムルフカの $\Psi$ 空間。ここでは扱わない）。また、可算コンパクト空間の二つの直積は可算コンパクトとは限らないことが知られている（コンパクト空間・点列コンパクト空間の可算個の直積はそれぞれコンパクト・点列コンパクトである）。
+
+**似た定理.** 2 の例 $\{0,1\}^{\mathcal{P}(\N)}$ は、$\N$ のストーン–チェックのコンパクト化 $\beta\N$（\ref{top:page-stone-cech}）と同様、「コンパクトだが点列で捉えられない」空間の典型である。$\beta\N$ でも点列 $(n)$ は収束部分列をもたないことが知られている。距離空間での同値（\ref{top:compact-metric-equivalents}）は、距離空間が第一可算かつ（可算コンパクトなら）第二可算でリンデレーフであることから、本ページの 3, 4 を通して見直すこともできる。
+
+**高い視点から：「数え方」の違いがつくる段差.** コンパクト性は任意の大きさの被覆、可算コンパクト性は可算な被覆、点列コンパクト性は可算な列だけを相手にする。位相が可算な情報で決まる（第一可算・リンデレーフ）空間では、これらの段差は消える。比喩で言えば、可算コンパクト性は「数え上げられる見張りなら有限人で済む」国、コンパクト性は「どれだけの見張りでも有限人で済む」国で、国境が可算個の関所で管理されている（リンデレーフ）なら両者は同じになる。$[0,\omega_{1})$ は、見張りが数えきれないほど必要な長い国境をもつ国である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

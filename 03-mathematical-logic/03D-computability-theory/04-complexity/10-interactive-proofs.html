@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>対話証明系 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/04-complexity/10-interactive-proofs.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 対話証明系 {#comp:page-interactive-proofs keywords="interactive proof system, prover, verifier, IP, graph nonisomorphism, IP is contained in PSPACE, arithmetization, sum-check, degree reduction, TQBF in IP, IP = PSPACE, Shamir"}
+
+NP は「計算能力の限られた検証者が、証明書を一つ受け取って確かめる」クラスだった（\ref{comp:class-np}）。証明書を一度に渡す代わりに、無制限の計算能力をもつ**証明者**と、乱数を使える多項式時間の**検証者**が、何往復かのやり取りを許されたらどうなるか。これが**対話証明系**（\ref{comp:interactive-proof}）で、そのクラス IP は、短い証明書のない問題（たとえば二つのグラフが同型でないこと、\ref{comp:gni-in-ip}）を含む。本ページの主定理は**シャミアの定理** $\mathrm{IP}=\mathrm{PSPACE}$（\ref{comp:ip-pspace}）である：多項式領域で決まる問題は、どれもやり取りによって効率よく確信させられる。証明の鍵は、論理式を有限体上の多項式に置き換える**算術化**と、乱数による多項式の一致の検査である。
+
+> 資料：M. Sipser, *Introduction to the Theory of Computation*, 3rd ed., §10.4 を参考にした（本文は写していない）。IP ⊆ PSPACE では、最良の証明者の受理確率を「受理させる乱数の個数」の最大値として整数で計算する形に言い直した。TQBF の算術化では、検証者が素数を自分で見つける方法（ベルトランの仮説と試し割り）、送られる多項式の次数の上界、誤りの確率の評価を具体的に書いた。
+
+## 記法と定義の確認 {#comp:sec-ip-notation}
+
+::: notation
+- P・NP・PSPACE、多項式時間還元、TQBF とその PSPACE 完全性、BPP と誤りの縮小は \ref{comp:class-p}, \ref{comp:class-np}, \ref{comp:class-pspace}, \ref{comp:poly-reduction}, \ref{comp:tqbf}, \ref{comp:tqbf-complete}, \ref{comp:class-bpp}, \ref{comp:amplification} のとおり。
+- 体 $K$ 上の $1$ 変数多項式で $0$ でない次数 $d$ 以下のものは、根を高々 $d$ 個しかもたない（シュワルツ–ジッペルの補題 \ref{comp:schwartz-zippel} の $m=1$ の場合）。とくに次数 $d$ 以下の異なる二つの多項式は、高々 $d$ 点でしか一致しない。$q$ が素数のとき $\mathbb{F}_{q}=\mathbb{Z}/q\mathbb{Z}$ は体。
+- 確率は、検証者の乱数 $r\in\{0,1\}^{p(n)}$ を一様に選ぶときのものとする。
+:::
+
+## 対話証明系 {#comp:sec-ip-definition}
+
+::: definition 対話証明系と IP {#comp:interactive-proof keywords="interactive proof system, verifier, prover, IP" index="対話証明系|たいわしょうめいけい, 証明者|しょうめいしゃ, 検証者（対話証明）|けんしょうしゃたいわしょうめい, IP|あいぴー"}
+1. **検証者**は、多項式時間で計算できる関数 $V(w,r,m_{1}\#\cdots\#m_{i})$ で、値は次のメッセージ $m_{i+1}$ か $\mathrm{accept}$, $\mathrm{reject}$ である（$w$ は入力、$r$ は乱数、$m_{1}\#\cdots\#m_{i}$ はそれまでのやり取り）。**証明者**は任意の関数 $P(w,m_{1}\#\cdots\#m_{i})$（値は次のメッセージ）である。多項式 $p$ があり、入力の長さ $n$ について、乱数・各メッセージの長さとメッセージの個数は $p(n)$ 以下とする。
+2. $V$ と $P$ は交互にメッセージを送る（$i$ が偶数なら $V$、奇数なら $P$ が $m_{i+1}$ を送る）。$V$ が $\mathrm{accept}$ を出せば受理。$\Pr[V\leftrightarrow P\text{ が }w\text{ を受理}]$ を、$r$ を一様に選んだときの受理の確率とする。
+3. 言語 $A$ が **IP** に属するとは、検証者 $V$ と証明者 $P$ があり、すべての $w$ について、$w\in A$ なら $\Pr[V\leftrightarrow P\text{ が受理}]\ge2/3$、$w\notin A$ なら**すべての**証明者 $\tilde{P}$ について $\Pr[V\leftrightarrow\tilde{P}\text{ が受理}]\le1/3$ となることをいう。
+:::
+
+::: remark
+NP $\subseteq$ IP（証明者が証明書を送り、検証者は乱数を使わずに検証する）、BPP $\subseteq$ IP（検証者が証明者を無視する）。誤りの確率は、独立な乱数での繰り返しと多数決で小さくできる（\ref{comp:amplification} と同じ議論。証明者は各回で別の応答をしてよいが、各回の受理確率の上界はそのまま使える）。
+:::
+
+::: theorem グラフ非同型は IP に属する {#comp:gni-in-ip keywords="graph nonisomorphism is in IP" index="グラフ非同型|ぐらふひどうけい"}
+$\mathrm{NONISO}\defeq\{\langle G_{1},G_{2}\rangle:G_{1},G_{2}\text{ は同じ頂点数の同型でないグラフ}\}$ は IP に属する。
+:::
+
+::: proof
+**手続き.** 次を独立に $2$ 回行い、両方で正解なら受理する：$V$ は $i\in\{1,2\}$ と頂点の置換 $\pi$ を一様に選び、$H\defeq\pi(G_{i})$ を送る。$P$ は $j\in\{1,2\}$ を返す。$V$ は $j=i$ なら正解とする。
+
+**完全性.** $G_{1}\not\cong G_{2}$ なら、$H$ は $G_{1}$, $G_{2}$ のちょうど一方と同型なので、証明者は（無制限の計算能力で）$H$ と同型な方を答え、つねに正解する。受理確率 $1$。
+
+**健全性.** $G_{1}\cong G_{2}$ とする。$H$ が $G_{1}$ と同型なグラフのとき、$\pi(G_{1})=H$ となる置換の個数と $\pi(G_{2})=H$ となる置換の個数はどちらも $\lvert\mathrm{Aut}(G_{1})\rvert$ に等しい（$G_{2}=\sigma(G_{1})$ なら $\pi\mapsto\pi\sigma$ が対応を与える）。よって $H$ を見たときの $i$ の条件付き分布は一様で、証明者の答え（$H$ とそれまでのやり取りの関数）が正解である確率は各回 $1/2$。二回とも正解の確率は $1/4\le1/3$。
+:::
+
+::: hypcheck
+- **証明者の計算能力**：完全性で、同型判定を行うのに使った。検証者は多項式時間（置換を選び $H$ を作り比べるだけ）。
+- **置換の一様な選択**：健全性で、$H$ から $i$ の情報が漏れないことに使った。
+:::
+
+## IP ⊆ PSPACE {#comp:sec-ip-upper}
+
+::: lemma IP は PSPACE に含まれる {#comp:ip-in-pspace keywords="IP is contained in PSPACE" index="IP と PSPACE|あいぴーとぴーすぺーす"}
+$\mathrm{IP}\subseteq\mathrm{PSPACE}$。
+:::
+
+::: proof
+$A\in\mathrm{IP}$ の検証者 $V$（多項式 $p$）と入力 $w$ を固定する。やり取りの途中経過 $M=m_{1}\#\cdots\#m_{j}$ について、$R(M)$ を、$V$ が送ったメッセージがすべて $M$ と一致する乱数 $r$ の集合とし、
+$$
+C(M)\defeq\max_{P}\#\{r\in R(M):\text{$M$ から続けると }V\leftrightarrow P\text{ が受理}\}
+$$
+とする（$P$ は $M$ の後の応答だけが問題になる）。
+
+**漸化式.** やり取りが終わっている（最後が $\mathrm{accept}$ / $\mathrm{reject}$）なら $C(M)=\lvert R(M)\rvert$ / $0$。次が $V$ の番なら、$R(M)$ は $V$ の次のメッセージ $m$ によって分割され、
+$$
+C(M)=\sum_{m}C(M\#m)
+$$
+（証明者は分割のそれぞれで別の応答を選べるので、最大値は各部分の最大値の和）。次が $P$ の番なら $C(M)=\max_{m}C(M\#m)$（長さ $p(n)$ 以下のすべての $m$ について）。
+
+**計算.** この漸化式を再帰で計算する。再帰の深さはメッセージの個数 $p(n)$ 以下で、各段で記録するのは現在のメッセージ（$p(n)$ ビット）と、和や最大値の途中の値（$2^{p(n)}$ 以下の整数で $p(n)+1$ ビット）なので、多項式領域で計算できる。$R(M)$ の判定は、$r$ を一つずつ（$p(n)$ ビットのカウンタで）試して $V$ を計算すればよい。
+
+**判定.** 最良の証明者の受理確率は $C(\varnothing)/2^{p(n)}$ で、$w\in A$ ならこれは $2/3$ 以上、$w\notin A$ なら $1/3$ 以下。よって $C(\varnothing)\ge2^{p(n)}/2$ かで判定すればよい。
+:::
+
+## 算術化と TQBF ∈ IP {#comp:sec-ip-arithmetization}
+
+::: definition 算術化 {#comp:arithmetization keywords="arithmetization of Boolean formulas" index="算術化|さんじゅつか"}
+命題論理の論理式 $\varphi$ に、整数係数の多項式 $p_{\varphi}$ を次で対応させる：変数 $x$ には $x$、$\neg\alpha$ には $1-p_{\alpha}$、$\alpha\wedge\beta$ には $p_{\alpha}p_{\beta}$、$\alpha\vee\beta$ には $p_{\alpha}\ast p_{\beta}\defeq1-(1-p_{\alpha})(1-p_{\beta})$。変数に $0,1$ を入れると $p_{\varphi}$ の値は $\varphi$ の真理値（真を $1$）に一致し、各変数についての次数は $\varphi$ の長さ以下である。
+:::
+
+::: lemma 冠頭形 {#comp:prenex-tqbf keywords="prenex form of quantified Boolean formulas" index="冠頭形（量化記号付き命題論理式）|かんとうけい"}
+量化記号付き命題論理式 $\psi$ から、多項式時間で、真理値の等しい冠頭形の論理式 $Q_{1}x_{1}\cdots Q_{m}x_{m}\,\varphi$（$\varphi$ は量化記号を含まず、$x_{i}$ は相異なる）を作れる。
+:::
+
+::: proof
+束縛変数を相異なる新しい変数に名前を付け替えた後、同値変形 $\neg\forall x\,\alpha\equiv\exists x\,\neg\alpha$, $\neg\exists x\,\alpha\equiv\forall x\,\neg\alpha$, $(Qx\,\alpha)\circ\beta\equiv Qx\,(\alpha\circ\beta)$（$\circ\in\{\wedge,\vee\}$, $x$ は $\beta$ に現れない）を、量化記号が外側に来るまで繰り返す。各量化記号は論理式の構造の中を外へ移動するだけなので、長さは増えず、操作の回数は長さの $2$ 乗程度。
+:::
+
+::: theorem TQBF は IP に属する {#comp:tqbf-in-ip keywords="TQBF is in IP via arithmetization and degree reduction" index="TQBF と IP|てぃーきゅーびーえふとあいぴー"}
+$\mathrm{TQBF}\in\mathrm{IP}$。
+:::
+
+::: proof
+\ref{comp:prenex-tqbf} から、入力は冠頭形 $\psi=Q_{1}x_{1}\cdots Q_{m}x_{m}\,\varphi$（長さ $n$、$m\le n$）としてよい。$n<6$ の入力は検証者が直接決定する。
+
+**Step 1（演算子の列）.** 線形化の演算子 $R_{x}$ を加えた列
+$$
+Q_{1}x_{1}\,R_{x_{1}}\;Q_{2}x_{2}\,R_{x_{1}}R_{x_{2}}\;\cdots\;Q_{m}x_{m}\,R_{x_{1}}\cdots R_{x_{m}}
+$$
+を $S_{1}y_{1},\dots,S_{k}y_{k}$（$S_{i}\in\{\forall,\exists,R\}$, $y_{i}$ は変数）と書く。$k=m+m(m+1)/2\le n^{2}$（$n\ge3$）。関数 $f_{k}\defeq p_{\varphi}$（変数 $x_{1},\dots,x_{m}$）とし、$i=k-1,\dots,0$ について
+$$
+f_{i}\defeq\begin{cases}f_{i+1}[y_{i+1}:=0]\cdot f_{i+1}[y_{i+1}:=1]&(S_{i+1}=\forall),\\f_{i+1}[y_{i+1}:=0]\ast f_{i+1}[y_{i+1}:=1]&(S_{i+1}=\exists),\\(1-y_{i+1})f_{i+1}[y_{i+1}:=0]+y_{i+1}f_{i+1}[y_{i+1}:=1]&(S_{i+1}=R)\end{cases}
+$$
+とする。$R$ は $\{0,1\}$ 上の値を変えず、$y_{i+1}$ について $1$ 次にする。$\forall,\exists$ は $\{0,1\}$ 上で論理積・論理和にあたる。よって $f_{0}$ は定数で、$\psi$ が真なら $1$、偽なら $0$。
+
+**Step 2（次数の上界）.** 各 $f_{i}$ を最後に束縛される前の変数 $y_{i}$ の多項式とみた次数は $n$ 以下である：$p_{\varphi}$ の各変数の次数は $n$ 以下、$R$ の列 $R_{x_{1}}\cdots R_{x_{j}}$ の後ではすべての自由変数について $1$ 次で、続く $Q_{j}x_{j}$ の積で各変数の次数は $2$ 以下になり、次の $R$ の列で $1$ 次に戻る。
+
+**Step 3（体）.** 検証者は $[n^{4},2n^{4}]$ の素数 $q$ を見つける（ベルトランの仮説から存在し、各候補を $\sqrt{2}n^{2}$ までの試し割りで判定すれば $n$ の多項式時間）。以下の計算は $\mathbb{F}_{q}$ で行う。
+
+**Step 4（手続き）.** 検証者は「現在の主張」$v$（$f_{i-1}$ の、それまでに選んだ乱数での値についての主張）を保持する。
+- 第 $0$ 段：証明者は $f_{0}$ を送る。検証者は $v\defeq f_{0}$ とし、$v\neq1$ なら拒否。
+- 第 $i$ 段（$i=1,\dots,k$）：証明者は $y_{i}$ の多項式 $g(z)$（$f_{i}$ に、それまでの乱数を代入したもの、と主張するもの）の係数を送る。次数が $n$ を超えれば拒否。検証者は、$S_{i}=\forall$ なら $v=g(0)g(1)$、$S_{i}=\exists$ なら $v=g(0)\ast g(1)$、$S_{i}=R$ なら $v=(1-a)g(0)+ag(1)$（$a$ は $y_{i}$ に現在割り当てられている乱数）を確かめ、成り立たなければ拒否。成り立てば乱数 $r\in\mathbb{F}_{q}$ を選んで送り、$y_{i}\defeq r$（$S_{i}=R$ なら古い値を置き換える）、$v\defeq g(r)$ とする。
+- 最後：検証者は $p_{\varphi}$ を現在の乱数で計算し、$v$ と等しければ受理。
+
+**完全性.** $\psi$ が真なら、正しい $f_{i}$ を送る証明者で、すべての確認が成り立ち、確率 $1$ で受理する。
+
+**健全性.** $\psi$ が偽なら $f_{0}=0$ で、第 $0$ 段で拒否されないためには $v=1$ は誤った主張である。第 $i$ 段で $v$ が誤っているとする。送られた $g$ が正しい多項式 $h$（$f_{i}$ に乱数を代入したもの）に等しければ、確認式の右辺は正しい値で $v$ と一致せず拒否される。よって受理に進むなら $g\neq h$ で、両者は次数 $n$ 以下なので、$g(r)=h(r)$ となる $r$ は $n$ 個以下、確率 $n/q\le n^{-3}$。$g(r)\neq h(r)$ なら次の段の主張 $v=g(r)$ も誤っている。最後の段で主張が誤っていれば直接の計算で拒否される。よって受理されるのは、どこかの段で「誤った多項式が乱数の点で正しい値と一致する」場合に限り、その確率は $k\cdot n^{-3}\le n^{2}\cdot n^{-3}=1/n\le1/6<1/3$。
+
+**時間.** 段数 $k=O(n^{2})$、各段の計算は $\mathbb{F}_{q}$ の $O(n)$ 回の演算、最後の $p_{\varphi}$ の計算は $O(n)$ 回の演算で、いずれも多項式時間。
+:::
+
+::: hypcheck
+- **次数の上界（$R$ による線形化）**：健全性で、異なる多項式の一致点が $n$ 個以下であることに使った。$R$ を挟まないと、量化記号ごとに次数が倍になり、係数を送るだけで指数時間かかる。
+- **体の大きさ $q\ge n^{4}$**：一致の確率 $n/q$ を段数 $k\le n^{2}$ 倍しても小さいことに使った。
+- **乱数の新しさ**：各段の乱数は、証明者が $g$ を送った後に選ばれるので、証明者は一致点に合わせて $g$ を選べない。
+:::
+
+::: theorem シャミアの定理 {#comp:ip-pspace keywords="IP = PSPACE, Shamir's theorem" index="シャミアの定理|しゃみあのていり, IP=PSPACE|あいぴーいこーるぴーすぺーす"}
+$\mathrm{IP}=\mathrm{PSPACE}$。
+:::
+
+::: proof
+$\subseteq$ は \ref{comp:ip-in-pspace}。$\supseteq$：$A\in\mathrm{PSPACE}$ なら $A\le_{\mathrm{P}}\mathrm{TQBF}$（\ref{comp:tqbf-complete}）。$A$ の検証者は、還元 $f$ を自分で計算して $f(w)$ について \ref{comp:tqbf-in-ip} の手続きを行えばよい（$f(w)$ の長さは $\lvert w\rvert$ の多項式なので、全体も多項式時間）。
+:::
+
+## 問題 {#comp:sec-ip-problems}
+
+::: problem {#comp:prob-ip-sum-check}
+$\#\mathrm{SAT}\defeq\{\langle\varphi,k\rangle:\varphi\text{ を充足する付値がちょうど }k\text{ 個}\}$ が IP に属することを、\ref{comp:tqbf-in-ip} と同じ方法（量化記号の代わりに和）で示せ。
+:::
+
+::: solution
+$\varphi$ の変数を $x_{1},\dots,x_{m}$、$p\defeq p_{\varphi}$ とし、$f_{i}(x_{1},\dots,x_{i})\defeq\sum_{a_{i+1},\dots,a_{m}\in\{0,1\}}p(x_{1},\dots,x_{i},a_{i+1},\dots,a_{m})$ とする。$f_{0}$ は充足する付値の個数、$f_{i-1}=f_{i}[x_{i}:=0]+f_{i}[x_{i}:=1]$ で、各変数の次数は $n$ 以下（和は次数を増やさないので線形化は不要）。体は $\max(k,2^{m})$ と $n^{4}$ より大きい素数 $q$ を使う（$f_{0}\le2^{m}$ なので、$\mathbb{F}_{q}$ での等式 $f_{0}=k$ は整数の等式と同値）。このような素数は二進で $O(n+\log k)$ 桁のものがあり（ベルトランの仮説）、証明者が $q$ とその素数性の短い証明書（プラットの証明書。多項式時間で検査できることが知られている）を送り、検証者が検査すればよい。第 $i$ 段で証明者は $g(z)\approx f_{i}(r_{1},\dots,r_{i-1},z)$ を送り、検証者は $v=g(0)+g(1)$ を確かめて乱数 $r_{i}$ を選ぶ。最後に $p(r_{1},\dots,r_{m})$ と比べる。健全性は \ref{comp:tqbf-in-ip} と同じで、誤りの確率は $m\cdot n/q\le n^{2}/n^{4}$ 以下。
+:::
+
+::: problem {#comp:prob-ip-perfect-completeness}
+\ref{comp:tqbf-in-ip} の手続きで、$\psi$ が真のとき正しい証明者は確率 $1$ で受理させることを確かめ、これと \ref{comp:ip-pspace} から、IP の定義の「$2/3$」を「$1$」に置き換えても同じクラスになることを示せ。
+:::
+
+::: solution
+正しい証明者は各段で正しい $h$ を送るので、確認式は恒等式として成り立ち、最後の比較も一致する。よって受理確率 $1$。$A\in\mathrm{IP}=\mathrm{PSPACE}$ なら $A\le_{\mathrm{P}}\mathrm{TQBF}$ で、還元してこの手続きを使えば、$w\in A$ のとき確率 $1$、$w\notin A$ のとき $1/3$ 以下の対話証明系が得られる。逆の包含は明らか。
+:::
+
+::: supplement
+**前提を変えると.** 検証者の乱数を証明者に見せる（公開硬貨）制限をしても IP は変わらない（ゴールドワッサー–シプサー）こと、証明者を二人にして互いに連絡させない MIP では $\mathrm{MIP}=\mathrm{NEXP}$ となること（バベイ–フォートナウ–ルンド）が知られている（ここでは扱わない）。後者は PCP 定理（NP の証明は定数個のビットを乱数で読むだけで検査できる）につながる。
+
+**似た定理.** グラフ非同型の証明系は、検証者が答えを知っている「挑戦」を出す型で、**ゼロ知識証明**（検証者は「同型でない」こと以外の何も学ばない）の典型例でもある。IP ⊆ PSPACE の証明は、交代計算の $\mathrm{AP}\subseteq\mathrm{PSPACE}$（\ref{comp:alternation-theorem}）と同じく、ゲームの木を深さ優先で評価する議論で、検証者の乱数の節点では「最大」の代わりに「和（平均）」をとる点だけが違う。
+
+**高い視点から：算術化は「論理を代数に埋め込む」.** 真理値 $\{0,1\}$ は有限体の中の二点にすぎず、論理式を多項式に置き換えると、その多項式は $\{0,1\}$ の外でも値をもつ。比喩で言えば、白黒の写真（論理式）を、色の濃淡まで連続的に記録した写真（多項式）に変換するようなもので、一か所の嘘（誤った多項式）は、ほとんどすべての点で値の違いとして現れる（異なる低次の多項式はほとんどの点で異なる）。検証者は乱数で選んだ一点を見るだけで、証明者の嘘を高い確率で見破れる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

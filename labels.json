@@ -3585,6 +3585,13 @@
       "num": "2.5",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/02-turing-reducibility.html"
     },
+    "comp:arithmetization": {
+      "status": "defined",
+      "type": "definition",
+      "title": "算術化",
+      "num": "10.5",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/10-interactive-proofs.html"
+    },
     "comp:aspace-in-time": {
       "status": "defined",
       "type": "lemma",
@@ -4124,6 +4131,13 @@
       "num": "4.4",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/04-recursive-functions.html"
     },
+    "comp:gni-in-ip": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "グラフ非同型は IP に属する",
+      "num": "10.3",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/10-interactive-proofs.html"
+    },
     "comp:h-set": {
       "status": "defined",
       "type": "definition",
@@ -4235,6 +4249,27 @@
       "title": "指数（インデックス）",
       "num": "11.4",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/11-universal-smn.html"
+    },
+    "comp:interactive-proof": {
+      "status": "defined",
+      "type": "definition",
+      "title": "対話証明系と IP",
+      "num": "10.1",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/10-interactive-proofs.html"
+    },
+    "comp:ip-in-pspace": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "IP は PSPACE に含まれる",
+      "num": "10.4",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/10-interactive-proofs.html"
+    },
+    "comp:ip-pspace": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "シャミアの定理",
+      "num": "10.8",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/10-interactive-proofs.html"
     },
     "comp:jump": {
       "status": "defined",
@@ -4754,6 +4789,13 @@
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/06-hyperarithmetic.html"
     },
+    "comp:page-interactive-proofs": {
+      "status": "defined",
+      "type": "page",
+      "title": "対話証明系",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/10-interactive-proofs.html"
+    },
     "comp:page-kolmogorov": {
       "status": "defined",
       "type": "page",
@@ -5146,6 +5188,13 @@
       "num": "2.2",
       "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/02-prefix-free-complexity.html"
     },
+    "comp:prenex-tqbf": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "冠頭形",
+      "num": "10.6",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/10-interactive-proofs.html"
+    },
     "comp:presburger": {
       "status": "defined",
       "type": "theorem",
@@ -5418,6 +5467,20 @@
       "title": "",
       "num": "8.8",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/08-decidability.html"
+    },
+    "comp:prob-ip-perfect-completeness": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "10.10",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/10-interactive-proofs.html"
+    },
+    "comp:prob-ip-sum-check": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "10.9",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/10-interactive-proofs.html"
     },
     "comp:prob-k-unbounded-below": {
       "status": "defined",
@@ -6476,6 +6539,41 @@
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/05-algorithmic-randomness/01-kolmogorov.html"
     },
+    "comp:sec-ip-arithmetization": {
+      "status": "defined",
+      "type": "section",
+      "title": "算術化と TQBF ∈ IP",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/10-interactive-proofs.html"
+    },
+    "comp:sec-ip-definition": {
+      "status": "defined",
+      "type": "section",
+      "title": "対話証明系",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/10-interactive-proofs.html"
+    },
+    "comp:sec-ip-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/10-interactive-proofs.html"
+    },
+    "comp:sec-ip-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/10-interactive-proofs.html"
+    },
+    "comp:sec-ip-upper": {
+      "status": "defined",
+      "type": "section",
+      "title": "IP ⊆ PSPACE",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/10-interactive-proofs.html"
+    },
     "comp:sec-k-uncomputable": {
       "status": "defined",
       "type": "section",
@@ -7448,6 +7546,13 @@
       "title": "TQBF は PSPACE 完全",
       "num": "4.7",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/04-space-complexity.html"
+    },
+    "comp:tqbf-in-ip": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "TQBF は IP に属する",
+      "num": "10.7",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/10-interactive-proofs.html"
     },
     "comp:tree-comparison": {
       "status": "defined",

@@ -303,6 +303,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 計算複雑性 CC-10（10-interactive-proofs, comp:page-interactive-proofs：対話証明系と IP、グラフ非同型、IP⊆PSPACE（受理させる乱数の個数の最大値を整数で計算）、算術化、冠頭形、TQBF∈IP（素数の見つけ方・次数の上界・誤りの確率を具体的に）、シャミアの定理、#SAT と完全性 1 の問題）。Sipser 10.4。
 - 2026-10-08 計算複雑性 CC-09（09-alternation, comp:page-alternation：交代チューリング機械（停止を仮定して受理を定義）、TAUT・MIN-FORMULA、ATIME⊆SPACE（道標の記録）、SPACE⊆ATIME(f²)、ASPACE⊆TIME(2^O(f))（グラフの無閉路性を確認）、TIME(2^O(f))⊆ASPACE（局所関数による表の検証）、AL=P・AP=PSPACE・APSPACE=EXPTIME、多項式階層とその基本性質、TQBF と階層の崩壊の問題）。Sipser 10.3。
 - 2026-10-08 計算複雑性 CC-08（04-complexity/08-circuits, comp:page-circuits：ブール回路、任意の関数の回路、シャノンの下界（数え上げを具体的な不等式で）、決定性の機械の一段の局所関数、TIME(t)⊆SIZE(O(t²))、P/poly の注意、CIRCUIT-SAT の NP 完全性とクック–レヴィンの別証明）。Sipser 9.3。
 - 2026-10-08 モデル理論 MC-07（07-morley, model:page-morley：強極小集合の上で素かつ極小、ボールドウィン–ラクランの定理（素モデルの一意性を使わない形で）、モーリーの範疇性定理と同値条件、可算モデルの個数、ACF・DLO・T_E・(Z,s) の例）。新井 §5.6。非可算範疇性の系列 MC-01〜07 完了。識別不能列のページの「扱わない」をこの系列への参照に変更。03C と基礎論のモデル理論の説明を更新。
@@ -460,7 +461,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | CC-07 | 05-complexity/07-probabilistic-quantum | 確率的計算と量子計算（BPP, BQP） | 完了 |
 | CC-08 | 04-complexity/08-circuits | ブール回路と回路計算量、シャノンの下界、TIME(t)⊆SIZE(t²)、CIRCUIT-SAT（2026-10-08 追加。Sipser 9.3） | 完了 |
 | CC-09 | 04-complexity/09-alternation | 交代チューリング機械と多項式階層（Sipser 10.3） | 完了 |
-| CC-10 | 04-complexity/10-interactive-proofs | 対話証明系、グラフ非同型、IP = PSPACE（Sipser 10.4） | 未 |
+| CC-10 | 04-complexity/10-interactive-proofs | 対話証明系、グラフ非同型、IP = PSPACE（Sipser 10.4） | 完了 |
 | CC-11 | 04-complexity/11-parallel | 一様な回路族、NC、P 完全性（Sipser 10.5） | 未 |
 | CC-12 | 04-complexity/12-approximation-cryptography | 近似アルゴリズムと暗号（一方向関数・落とし戸関数）（Sipser 10.1, 10.6） | 未 |
 | KR-01 | 06-algorithmic-randomness/01-prefix-free-complexity | 接頭辞なし複雑性とクラフトの不等式 | 完了 |

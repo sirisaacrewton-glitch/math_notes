@@ -380,3 +380,4 @@
 | Baldwin–Lachlan theorem / Morley's categoricity theorem | ボールドウィン–ラクランの定理 / モーリーの範疇性定理 | | 標準的。model:page-morley |
 | Boolean circuit / size / depth / CIRCUIT-SAT / P/poly | ブール回路 / 大きさ / 深さ / 回路の充足可能性 / P/poly | | 標準的。comp:page-circuits |
 | alternating Turing machine / universal state / existential state / polynomial hierarchy | 交代チューリング機械 / 全称状態 / 存在状態 / 多項式階層 | 交替 | 「交代」で統一。comp:page-alternation |
+| interactive proof / prover / verifier / arithmetization / IP = PSPACE | 対話証明系 / 証明者 / 検証者 / 算術化 / シャミアの定理 | 対話型証明 | 仮。comp:page-interactive-proofs |

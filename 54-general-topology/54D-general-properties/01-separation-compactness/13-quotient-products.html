@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>商写像と直積 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54D-general-properties/01-separation-compactness/13-quotient-products.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 商写像と直積 {#top:page-quotient-products keywords="product of quotient maps, Whitehead's theorem, locally compact factor, perfect map times identity is closed, product of perfect maps, homotopies on quotient spaces, topological cone, metric cone, counterexample"}
+
+商写像 $q\colon X\to Y$ と空間 $Z$ について、$q\times1_{Z}\colon X\times Z\to Y\times Z$ は商写像になるだろうか。これは「商空間の上のホモトピー」（$Z=[0,1]$）を扱うときに必要になる性質である。本ページでは、$Z$ が局所コンパクトハウスドルフなら商写像になること（**ホワイトヘッドの定理**、\ref{top:whitehead-product}）と、一般には閉写像の場合でさえ成り立たないこと（\ref{top:product-quotient-counterexample}）を示す。また、完全写像（\ref{top:page-perfect-maps}）は恒等写像との積をとっても閉写像のままであること（\ref{top:perfect-times-identity}）を示し、商として作った**錐**が距離化可能とは限らないこと（\ref{top:cone-not-metrizable}）を確かめる。
+
+> 資料：小山晃『位相空間論』§6.5（商空間と商写像、ホモトピーとホワイトヘッドの定理、例 6.3, 6.4、問題 6.15）を参考にした（本文は写していない）。積が商写像にならない例は、閉集合を明示した形で自分で組み立て直した。
+
+## 記法と定義の確認 {#top:sec-pq-notation}
+
+::: notation
+- 商写像・飽和集合・閉な連続全射が商写像であること・部分集合を一点に潰す商は \ref{top:quotient-topology}, \ref{top:saturated-set}, \ref{top:quotient-map-criteria}, \ref{top:collapse} のとおり。商写像 $q$ について、$q^{-1}[q[U]]=U$ となる $U$ を**飽和**といい、飽和な開集合の像は開。
+- 閉写像の特徴づけと $f_{\ast}$、完全写像は \ref{top:closed-map-fibers}, \ref{top:perfect-map} のとおり。チューブ補題（コンパクト部分集合版）は \ref{top:tube-lemma-compact-subset} のとおり。局所コンパクトハウスドルフ空間の各点は、コンパクトな閉包をもつ開近傍の基をもつ（\ref{top:lch-neighborhood-base}）。
+:::
+
+## 完全写像の積 {#top:sec-pq-perfect}
+
+::: proposition 完全写像と恒等写像の積 {#top:perfect-times-identity keywords="if f is perfect then f x 1_Z is closed; products of two perfect maps are perfect" index="完全写像の積|かんぜんしゃぞうのせき"}
+1. $f\colon X\to Y$ が完全写像なら、任意の空間 $Z$ について $f\times1_{Z}\colon X\times Z\to Y\times Z$ は閉写像（したがって完全写像）である。
+2. 完全写像 $f\colon X\to Y$, $g\colon X'\to Y'$ について、$f\times g$ は完全写像である。
+:::
+
+::: proof
+**1.** $F\subseteq X\times Z$ を閉とし、$(y,z)\notin(f\times1)[F]$ とする。$f^{-1}(y)\times\{z\}$ はコンパクトで $F$ と交わらない。各 $x\in f^{-1}(y)$ について、$(x,z)$ の基本開近傍 $U_{x}\times W_{x}$ で $F$ と交わらないものをとり、有限個 $U_{x_{1}}\times W_{x_{1}},\dots$ で $f^{-1}(y)\times\{z\}$ を覆う。$U\defeq\bigcup U_{x_{i}}\supseteq f^{-1}(y)$, $W\defeq\bigcap W_{x_{i}}\ni z$ とすると $(U\times W)\cap F=\emptyset$。$V\defeq f_{\ast}(U)$ は $y$ を含む開集合（\ref{top:closed-map-fibers}）。$(V\times W)\cap(f\times1)[F]=\emptyset$：$(x',z')\in F$ で $f(x')\in V$, $z'\in W$ なら $x'\in f^{-1}(f(x'))\subseteq U$ となり $(x',z')\in U\times W$ に反する。よって像の補集合は開。逆像 $(f\times1)^{-1}(y,z)=f^{-1}(y)\times\{z\}$ はコンパクトで、$f\times1$ は連続な全射。
+
+**2.** $f\times g=(1_{Y}\times g)\circ(f\times1_{X'})$ で、1 から両方とも閉写像なので合成も閉。逆像 $f^{-1}(y)\times g^{-1}(y')$ はコンパクト（\ref{top:heine-borel}）。
+:::
+
+::: hypcheck
+- **逆像のコンパクト性**：1 で $f^{-1}(y)\times\{z\}$ を有限個の基本開集合で覆うのに使った。閉写像だけでは成り立たない（\ref{top:product-quotient-counterexample} の $q$ は閉写像だが $q\times1_{Y}$ は商写像でもない）。
+:::
+
+## ホワイトヘッドの定理 {#top:sec-pq-whitehead}
+
+::: theorem ホワイトヘッドの定理 {#top:whitehead-product keywords="Whitehead's theorem: q x 1_Z is a quotient map when q is a quotient map and Z is locally compact Hausdorff" index="ホワイトヘッドの定理（商写像の積）|ほわいとへっどのていりしょうしゃぞうのせき"}
+$q\colon X\to Y$ が商写像で、$Z$ が局所コンパクトハウスドルフ空間なら、$q\times1_{Z}\colon X\times Z\to Y\times Z$ は商写像である。
+:::
+
+::: proof
+$W\subseteq Y\times Z$ で $O\defeq(q\times1)^{-1}[W]$ が開であるものをとり、$W$ が開であることを示す。$(y_{0},z_{0})\in W$ とし、$q(x_{0})=y_{0}$ となる $x_{0}$ をとる。
+
+**Step 1（コンパクトな近傍）.** $(x_{0},z_{0})\in O$ で $O$ は開なので、$\{x_{0}\}\times B\subseteq O$ となる $z_{0}$ の開近傍 $B$ がある。$Z$ は局所コンパクトハウスドルフなので、$z_{0}$ の開近傍 $N$ で $K\defeq\overline{N}$ がコンパクトかつ $K\subseteq B$ となるものがある。
+
+**Step 2（飽和な開集合）.** $U\defeq\{x\in X:\{x\}\times K\subseteq O\}$ とする。$x_{0}\in U$。
+- $U$ は開：$x\in U$ なら $\{x\}\times K\subseteq O$ で、チューブ補題（\ref{top:tube-lemma-compact-subset}）から $x$ の開近傍 $V$ で $V\times K\subseteq O$ となるものがあり、$V\subseteq U$。
+- $U$ は飽和：$x\in U$, $q(x')=q(x)$ なら、$k\in K$ について $(q(x'),k)=(q(x),k)\in W$（$(x,k)\in O$ だから）なので $(x',k)\in O$、すなわち $x'\in U$。
+
+**Step 3.** $q$ は商写像で $U$ は飽和な開集合なので $q[U]$ は開。$q[U]\times N$ は $(y_{0},z_{0})$ の開近傍で、$(q(x),k)\in q[U]\times N$ なら $(x,k)\in O$ なので $(q(x),k)\in W$。よって $q[U]\times N\subseteq W$。
+:::
+
+::: hypcheck
+- **局所コンパクト性**：Step 1 でコンパクトな近傍 $K$ をとり、Step 2 でチューブ補題を使うのに必要とした。
+- **ハウスドルフ性**：Step 1 で、開近傍の閉包がコンパクトで $B$ に含まれるような近傍基の存在（\ref{top:lch-neighborhood-base}）に使った。
+- **商写像**：Step 3 で飽和開集合の像が開であることに使った。
+:::
+
+::: corollary 商空間の上のホモトピー {#top:homotopy-on-quotient keywords="homotopies compatible with an equivalence relation descend to the quotient" index="商空間上のホモトピー|しょうくうかんじょうのほもとぴー"}
+$q\colon X\to X/R$ を商写像、$H\colon X\times[0,1]\to Y$ を連続写像とし、$xRx'$ ならすべての $t$ で $H(x,t)=H(x',t)$ とする。このとき $\bar{H}(q(x),t)\defeq H(x,t)$ は連続写像 $X/R\times[0,1]\to Y$ である。
+:::
+
+::: proof
+$\bar{H}$ は well-defined で $\bar{H}\circ(q\times1)=H$。$[0,1]$ は局所コンパクトハウスドルフなので、\ref{top:whitehead-product} から $q\times1$ は商写像で、商写像の普遍性（\ref{top:quotient-universal}）から $\bar{H}$ は連続。
+:::
+
+## 反例 {#top:sec-pq-counterexamples}
+
+::: proposition 積が商写像にならない例 {#top:product-quotient-counterexample keywords="the product of the quotient map R -> R/Z with the identity of a non-locally compact space need not be a quotient map" index="商写像の積の反例|しょうしゃぞうのせきのはんれい"}
+$q\colon\mathbb{R}\to\mathbb{R}/\mathbb{Z}$ を整数全体を一点に潰す射影（閉写像）とし、$Y\defeq\mathbb{R}\setminus\{1/k:k\ge2\}$ とする。このとき $q\times1_{Y}\colon\mathbb{R}\times Y\to(\mathbb{R}/\mathbb{Z})\times Y$ は商写像でない。
+:::
+
+::: proof
+$F\defeq\{(n+1/i,\ 1/n+1/(n^{2}i)):n\ge2,\ i\ge2\}\subseteq\mathbb{R}\times Y$ を考える。
+
+**$F\subseteq\mathbb{R}\times Y$.** $1/n<1/n+1/(n^{2}i)<1/n+1/(n(n-1))=1/(n-1)$ なので、第二座標は $1/n$ と $1/(n-1)$ の真の間にあり、どの $1/k$ とも異なる。
+
+**$F$ は閉.** $\mathbb{R}^{2}$ での $F$ の集積点は、$n$ を固定して $i\to\infty$ としたときの $(n,1/n)$ だけである（$n$ が動けば第一座標は発散し、各 $n$ について点は第一座標 $n+1/i$ で離れている）。$(n,1/n)\notin\mathbb{R}\times Y$ なので、$F$ は $\mathbb{R}\times Y$ で閉。
+
+**$F$ は飽和.** $F$ の第一座標 $n+1/i$ は整数でないので、$(q\times1)^{-1}[(q\times1)[F]]=F$（$q$ が同一視するのは整数どうしだけ）。
+
+**像は閉でない.** $W\defeq(q\times1)[F]$ とする。$([0],0)\notin W$（$W$ の第一座標は $q(n+1/i)\ne[0]$）。$([0],0)$ の任意の近傍は $U\times V$ を含み、$U\ni[0]$ は開なので $q^{-1}[U]\supseteq\mathbb{Z}$ は開で、各 $n$ に $\varepsilon_{n}>0$ で $(n-\varepsilon_{n},n+\varepsilon_{n})\subseteq q^{-1}[U]$ となるものがある。$V\supseteq(-\delta,\delta)\cap Y$ とする。$2/n<\delta$ となる $n\ge2$ と $1/i<\varepsilon_{n}$ となる $i\ge2$ をとれば、$(n+1/i,\ 1/n+1/(n^{2}i))\in F$ で、$q(n+1/i)\in U$、第二座標 $<2/n<\delta$。よって $U\times V$ は $W$ と交わり、$([0],0)\in\overline{W}\setminus W$。
+
+$W$ の逆像 $F$ は閉なのに $W$ は閉でないので、$q\times1_{Y}$ は商写像でない。
+:::
+
+::: hypcheck
+- **$Y$ が局所コンパクトでない**（$0$ の近くで $1/k$ が抜けている）：$F$ の集積点 $(n,1/n)$ を $\mathbb{R}\times Y$ から追い出し、$F$ を閉にするのに使った。$Y$ が局所コンパクトハウスドルフならホワイトヘッドの定理に反するので、この性質は本質的である。
+- **$q$ は閉写像**：閉写像であっても、逆像のコンパクト性（$\mathbb{Z}$ は非コンパクト）がないと \ref{top:perfect-times-identity} は使えない。
+:::
+
+::: proposition 錐の位相 {#top:cone-not-metrizable keywords="the topological cone over the discrete space N is not first countable, hence not metrizable" index="位相的錐|いそうてきすい"}
+$\N$ を離散空間とし、**位相的錐** $C\N\defeq(\N\times[0,1])/(\N\times\{1\})$（頂点 $v$）を考える。$C\N$ は頂点 $v$ で可算な近傍基をもたず、したがって距離化可能でない。
+:::
+
+::: proof
+可算な近傍基 $(V_{n})_{n\in\N}$ があるとする。射影を $p$ とし、各 $n$ について $p^{-1}[V_{n}]$ は $\{n\}\times\{1\}$ を含む開集合なので、$r_{n}<1$ で $(n,r_{n})\in p^{-1}[V_{n}]$ となるものがある。$K\defeq\{(n,r_{n}):n\in\N\}$ は各列 $\{n\}\times[0,1]$ に一点ずつで、$\N$ は離散なので閉。$\N\times\{1\}$ と交わらないので、$\N\times[0,1]\setminus K$ は $\N\times\{1\}$ を含む飽和な開集合で、$U\defeq p[\N\times[0,1]\setminus K]$ は $v$ の開近傍。各 $n$ で $p(n,r_{n})\in V_{n}\setminus U$ なので $V_{n}\not\subseteq U$ となり、近傍基であることに反する。
+:::
+
+::: remark
+コンパクト距離空間 $X$ の錐は距離化可能である（\ref{top:prob-pm-cone}）。$\N$ の場合は $X$ がコンパクトでないので、射影は完全写像にならない（$\N\times\{1\}$ がコンパクトでない）。小山は、距離 $\tilde{d}([x,s],[y,t])\defeq\min\{1-s,1-t\}d(x,y)+\lvert s-t\rvert$ で定めた**距離的錐**を考え、恒等写像が位相的錐から距離的錐への連続な全単射になるが、一般には同相でないことを注意している。
+:::
+
+## 問題 {#top:sec-pq-problems}
+
+::: problem {#top:prob-pq-square-quotient}
+$q\colon X\to Y$, $q'\colon X'\to Y'$ が商写像で、$X'$ と $Y$ が局所コンパクトハウスドルフなら、$q\times q'$ は商写像であることを示せ。
+:::
+
+::: solution
+$q\times q'=(1_{Y}\times q')\circ(q\times1_{X'})$。ホワイトヘッドの定理から、$X'$ が局所コンパクトハウスドルフなので $q\times1_{X'}$ は商写像、$Y$ が局所コンパクトハウスドルフなので $1_{Y}\times q'$（左右を入れ替えた形）も商写像。商写像の合成は商写像（\ref{top:quotient-map-criteria}）。
+:::
+
+::: problem {#top:prob-pq-torus}
+正方形 $[0,1]^{2}$ の辺を貼り合わせたトーラス $T$ への商写像 $q$ と $[0,1]$ について、$q\times1_{[0,1]}$ が商写像であることを、ホワイトヘッドの定理を使わずに示せ。
+:::
+
+::: solution
+$[0,1]^{2}\times[0,1]$ はコンパクトで、$T\times[0,1]$ はハウスドルフ（$T$ は $\mathbb{R}^{3}$ の部分空間と同相、あるいはコンパクトハウスドルフ空間の閉な同値関係による商）。コンパクトからハウスドルフへの連続な全射 $q\times1$ は閉写像（\ref{top:compact-to-hausdorff}）なので商写像。
+:::
+
+::: supplement
+**前提を変えると.** $Z$ が局所コンパクトハウスドルフという条件は、「$-\times Z$ が右随伴（写像空間 $C_{c}(Z,-)$）をもつ」ことと深く関わる（\ref{top:exponential-law}）。左随伴は余極限、とくに余等化子（商）を保つので、$q\times1_{Z}$ が商写像になる。この観点から、商と積が常に両立するように圏を取り替えたのが、コンパクト生成空間の圏（\ref{cat:compactly-generated}）である。完全写像の任意個の積が完全写像であることも知られている（小山の問題 6.15。無限個ではチコノフの定理を使う）。
+
+**似た定理.** \ref{top:perfect-times-identity} の 1 の逆として、ハウスドルフ空間の間の連続写像 $f$ が完全写像であることと、すべての空間 $Z$ について $f\times1_{Z}$ が閉写像であることは同値である（クラトフスキの定理）ことが知られている（ここでは確かめていない）。
+
+**高い視点から：商は「左」、積は「右」.** 圏論的に、商は余極限（左から作るもの）、積は極限（右から作るもの）であり、一般に左と右の構成はうまく交換しない。局所コンパクト性は、$-\times Z$ を「左随伴」にして、余極限と交換できるようにする条件である。比喩で言えば、布を貼り合わせてから引き伸ばすのと、引き伸ばしてから貼り合わせるのとが同じ結果になるには、引き伸ばす方向（$Z$）の布地が「局所的に有限の大きさ」で扱えることが必要で、無限に細かく裂け目が入った布地（\ref{top:product-quotient-counterexample} の $Y$）では、貼り合わせ目がずれてしまう。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

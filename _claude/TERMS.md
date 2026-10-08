@@ -403,3 +403,4 @@
 | locally connected / locally path-connected / comb space / Peano curve / Cantor set | 局所連結 / 局所弧状連結 / 櫛形空間 / ペアノ曲線 / カントール集合 | 空間充填曲線、くし形空間 | 小山に合わせる。top:page-local-connectedness |
 | Cantor space / quasi-component / retract / Alexandroff-Hausdorff theorem / Brouwer characterization | カントール空間 / 準成分 / レトラクト / アレクサンドロフ–ハウスドルフの定理 / ブラウワーの特徴づけ | 引き込み | 仮。top:page-cantor-set |
 | perfect map / upper semicontinuous decomposition / closed equivalence relation | 完全写像 / 上半連続分割 / 閉な同値関係 | 固有写像 | 小山に合わせる。top:page-perfect-maps |
+| Whitehead theorem (products of quotient maps) / topological cone / metric cone | ホワイトヘッドの定理（商写像の積） / 位相的錐 / 距離的錐 | | 小山に合わせる。top:page-quotient-products |

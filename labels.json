@@ -3767,6 +3767,13 @@
       "num": "8.6",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/08-circuits.html"
     },
+    "comp:circuit-value-p-complete": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "CIRCUIT-VALUE は P 完全",
+      "num": "11.6",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/11-parallel.html"
+    },
     "comp:class-bpp": {
       "status": "defined",
       "type": "definition",
@@ -3787,6 +3794,13 @@
       "title": "L と NL",
       "num": "5.2",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/05-logspace.html"
+    },
+    "comp:class-nc": {
+      "status": "defined",
+      "type": "definition",
+      "title": "NC",
+      "num": "11.2",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/11-parallel.html"
     },
     "comp:class-np": {
       "status": "defined",
@@ -4565,6 +4579,20 @@
       "num": "3.4",
       "page": "03-mathematical-logic/03D-computability-theory/01-automata/03-nonregular.html"
     },
+    "comp:nc-closed-logspace": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "NC は対数領域還元で閉じている",
+      "num": "11.5",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/11-parallel.html"
+    },
+    "comp:nc-inclusions": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "NC の位置",
+      "num": "11.3",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/11-parallel.html"
+    },
     "comp:nerode-basic": {
       "status": "defined",
       "type": "lemma",
@@ -4704,6 +4732,13 @@
       "title": "神託機械の構成の一様性",
       "num": "6.7",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/06-hyperarithmetic.html"
+    },
+    "comp:p-complete": {
+      "status": "defined",
+      "type": "definition",
+      "title": "P 完全",
+      "num": "11.4",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/11-parallel.html"
     },
     "comp:page-ackermann": {
       "status": "defined",
@@ -4858,6 +4893,13 @@
       "title": "NP 完全問題",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/04-complexity/03-np-complete-problems.html"
+    },
+    "comp:page-parallel": {
+      "status": "defined",
+      "type": "page",
+      "title": "並列計算",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/11-parallel.html"
     },
     "comp:page-pi11-prewellordering": {
       "status": "defined",
@@ -5600,6 +5642,20 @@
       "title": "",
       "num": "4.16",
       "page": "03-mathematical-logic/03F-proof-theory/02-incompleteness/04-representability.html"
+    },
+    "comp:prob-par-addition": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "11.7",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/11-parallel.html"
+    },
+    "comp:prob-par-path": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "11.8",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/11-parallel.html"
     },
     "comp:prob-pcp-unary": {
       "status": "defined",
@@ -6819,6 +6875,41 @@
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/02-turing-reducibility.html"
     },
+    "comp:sec-par-inclusions": {
+      "status": "defined",
+      "type": "section",
+      "title": "NC と他のクラス",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/11-parallel.html"
+    },
+    "comp:sec-par-nc": {
+      "status": "defined",
+      "type": "section",
+      "title": "一様な回路族と NC",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/11-parallel.html"
+    },
+    "comp:sec-par-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/11-parallel.html"
+    },
+    "comp:sec-par-p-complete": {
+      "status": "defined",
+      "type": "section",
+      "title": "P 完全性",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/11-parallel.html"
+    },
+    "comp:sec-par-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/11-parallel.html"
+    },
     "comp:sec-parse-tree": {
       "status": "defined",
       "type": "section",
@@ -7651,6 +7742,13 @@
       "title": "二本のスタックをもつ機械",
       "num": "7.9",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/07-turing-completeness.html"
+    },
+    "comp:uniform-circuits": {
+      "status": "defined",
+      "type": "definition",
+      "title": "一様な回路族",
+      "num": "11.1",
+      "page": "03-mathematical-logic/03D-computability-theory/04-complexity/11-parallel.html"
     },
     "comp:universal-function": {
       "status": "defined",
@@ -32389,13 +32487,6 @@
       "title": "トポス",
       "referencedFrom": [
         "18-category-theory/18A-general-theory/01-basics/01-categories.html"
-      ]
-    },
-    "comp:page-parallel": {
-      "status": "planned",
-      "title": "並列計算",
-      "referencedFrom": [
-        "03-mathematical-logic/03D-computability-theory/04-complexity/08-circuits.html"
       ]
     },
     "fld:algebraic-closure-in-acf": {

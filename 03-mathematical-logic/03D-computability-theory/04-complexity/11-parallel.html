@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>並列計算 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/04-complexity/11-parallel.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 並列計算 {#comp:page-parallel keywords="parallel computation, uniform circuit family, size-depth complexity, NC, NC^i, Boolean matrix multiplication, transitive closure, NC1 in L, NL in NC2, NC in P, P-complete, CIRCUIT-VALUE"}
+
+ブール回路（\ref{comp:page-circuits}）のゲートを「同時に働く小さな処理装置」とみると、回路の**深さ**は並列計算の時間、**大きさ**は処理装置の数にあたる。入力の長さごとの回路を対数領域で書き出せるという**一様性**（\ref{comp:uniform-circuits}）を課し、多項式個の処理装置で $O(\log^{k}n)$ 時間で解ける問題のクラスを **NC**（\ref{comp:class-nc}）という。本ページでは、$\mathrm{NC}^{1}\subseteq\mathrm{L}\subseteq\mathrm{NL}\subseteq\mathrm{NC}^{2}\subseteq\mathrm{NC}\subseteq\mathrm{P}$ を示し（\ref{comp:nc-inclusions}）、回路の値を求める問題 CIRCUIT-VALUE が **P 完全**（\ref{comp:circuit-value-p-complete}）であること、すなわち「本質的に逐次的な」問題の候補であることを示す。
+
+> 資料：M. Sipser, *Introduction to the Theory of Computation*, 3rd ed., §10.5 を参考にした（本文は写していない）。$\mathrm{NC}^{1}\subseteq\mathrm{L}$ では、深さ優先探索の経路を「ゲートの番号」ではなく「左右のどちらに進んだか」の $1$ ビットずつで記録しないと $O(\log^{2}n)$ の領域になってしまうので、その点を明示した。推移閉包は行列の繰り返し二乗で構成した。同書で演習とされている「NC は対数領域還元で閉じている」も示した。
+
+## 記法と定義の確認 {#comp:sec-par-notation}
+
+::: notation
+- ブール回路、大きさ、深さ、回路族、$\mathrm{SIZE}$、表による TM の模倣は \ref{comp:boolean-circuit}, \ref{comp:time-to-size} のとおり。値が文字列の関数を回路で計算するときは、出力ゲートを複数もつ回路を使う。
+- L・NL、対数領域の変換機・対数領域還元とその合成（再計算の技法）、PATH の NL 完全性は \ref{comp:class-l-nl}, \ref{comp:logspace-reduction}, \ref{comp:logspace-composition}, \ref{comp:path-nl-complete} のとおり。
+:::
+
+## 一様な回路族と NC {#comp:sec-par-nc}
+
+::: definition 一様な回路族 {#comp:uniform-circuits keywords="uniform circuit family, log-space uniformity, size-depth complexity" index="一様な回路族|いちようなかいろぞく"}
+回路族 $(C_{n})$ が**一様**であるとは、$1^{n}$ から回路の記述 $\langle C_{n}\rangle$（ゲートの一覧）を出力する対数領域の変換機があることをいう。言語が**大きさ・深さ $(f(n),g(n))$** で決定できるとは、大きさ $O(f(n))$、深さ $O(g(n))$ の一様な回路族で決定できることをいう。
+:::
+
+::: definition NC {#comp:class-nc keywords="Nick's class NC, NC^i" index="NC（計算量クラス）|えぬしーけいさんりょうくらす"}
+$i\ge1$ について、多項式の大きさ・深さ $O(\log^{i}n)$ の一様な回路族で決定できる言語全体を $\mathrm{NC}^{i}$ とし、$\mathrm{NC}\defeq\bigcup_{i}\mathrm{NC}^{i}$ とする。関数についても同様に定める。
+:::
+
+::: example
+1. **パリティ**は大きさ・深さ $(O(n),O(\log n))$（\ref{comp:prob-cir-depth} の二分木）で、$\mathrm{NC}^{1}$ に属する。
+2. **ブール行列の積.** $m\times m$ の $0,1$ 行列 $A,B$ の積 $C$, $c_{ik}=\bigvee_{j}(a_{ij}\wedge b_{jk})$ は、AND ゲート $m^{3}$ 個と、各 $(i,k)$ の OR の二分木（$m-1$ 個、深さ $\lceil\log_{2}m\rceil$）で計算でき、大きさ $O(m^{3})$、深さ $O(\log m)$。
+3. **推移閉包.** 有向グラフの隣接行列 $A$ と単位行列 $I$ について、$B\defeq I\vee A$ の（ブール積での）$2^{t}$ 乗の $(i,k)$ 成分は「$i$ から $k$ へ長さ $2^{t}$ 以下の道がある」ことを表す（$t$ に関する帰納法：$B^{2^{t+1}}=B^{2^{t}}B^{2^{t}}$ で、長さ $2^{t+1}$ 以下の道は長さ $2^{t}$ 以下の二つの道に分けられる）。$2^{t}\ge m$ となる $t=\lceil\log_{2}m\rceil$ 回の二乗で到達可能性の行列が得られ、大きさ $O(m^{3}\log m)$、深さ $O(\log^{2}m)$。
+:::
+
+## NC と他のクラス {#comp:sec-par-inclusions}
+
+::: theorem NC の位置 {#comp:nc-inclusions keywords="NC1 in L, NL in NC2, NC in P" index="NC と L・NL・P|えぬしーとえる"}
+$\mathrm{NC}^{1}\subseteq\mathrm{L}\subseteq\mathrm{NL}\subseteq\mathrm{NC}^{2}$ かつ $\mathrm{NC}\subseteq\mathrm{P}$。
+:::
+
+::: proof
+**$\mathrm{NC}^{1}\subseteq\mathrm{L}$.** $A$ を深さ $c\log n$ の一様な回路族が決定するとする。入力 $w$ の上で、出力ゲートから深さ優先で値を求める。記録するのは、出力ゲートから現在のゲートまでの経路を「各ゲートで何番目の入力に進んだか」（$1$ ビット）の列と、経路上の各ゲートで既に求めた入力の値（各段 $O(1)$ ビット）で、深さが $c\log n$ なので $O(\log n)$ ビット。現在のゲートの番号は、出力ゲートからこのビット列に従ってたどり直せば求まり、その際に必要なゲートの記述（種類と入力の番号）は、$1^{n}$ から $\langle C_{n}\rangle$ を出力する変換機を、目的のゲートの記述が出るまで動かし直して得る（\ref{comp:logspace-composition} の再計算の技法）。ゲートの番号は $O(\log n)$ ビット（回路の大きさは多項式）。よって全体で対数領域。
+
+**$\mathrm{L}\subseteq\mathrm{NL}$** は定義から。
+
+**$\mathrm{NL}\subseteq\mathrm{NC}^{2}$.** $A$ を対数領域の非決定性判定機 $M$ が決定するとし、受理時点表示はただ一つ（作業テープを消してヘッドを戻す）とする。長さ $n$ の入力の上の $M$ の時点表示（状態・作業テープの内容・二つのヘッドの位置。入力そのものは含まない）は $n$ の多項式個で、入力 $w$ に依存しない。時点表示 $c_{1}$ から $c_{2}$ への辺の有無は、$c_{1}$ の入力ヘッドの位置 $i$ の記号 $w_{i}$ にだけ依存するので、隣接行列の各成分は定数 $0$, $1$、または $w_{i}$, $\neg w_{i}$ で書ける。これを入力とし、例 3 の推移閉包の回路を付け、開始時点表示から受理時点表示への成分を出力とする。大きさは多項式、深さは $O(\log^{2}n)$。$1^{n}$ から時点表示を列挙して辺の条件を書き出すのは対数領域でできる（時点表示は $O(\log n)$ ビットで、$M$ の遷移関数は固定）。
+
+**$\mathrm{NC}\subseteq\mathrm{P}$.** $1^{n}$ から $\langle C_{n}\rangle$ を対数領域、したがって多項式時間（\ref{comp:nl-in-p}）で書き出し、ゲートの順に値を計算すればよい。
+:::
+
+::: hypcheck
+- **一様性**：$\mathrm{NC}^{1}\subseteq\mathrm{L}$ と $\mathrm{NC}\subseteq\mathrm{P}$ で、回路そのものを機械が得るために使った。一様でない回路族では決定不能な言語も決定できる（\ref{comp:page-circuits} の注意）。
+- **深さ $O(\log n)$**：$\mathrm{NC}^{1}\subseteq\mathrm{L}$ で、経路のビット列を $O(\log n)$ に収めるのに使った。
+:::
+
+## P 完全性 {#comp:sec-par-p-complete}
+
+::: definition P 完全 {#comp:p-complete keywords="P-complete under log-space reductions" index="P 完全|ぴーかんぜん"}
+言語 $B$ が **P 完全**であるとは、$B\in\mathrm{P}$ で、すべての $A\in\mathrm{P}$ について $A\le_{\mathrm{L}}B$ となることをいう。
+:::
+
+::: proposition NC は対数領域還元で閉じている {#comp:nc-closed-logspace keywords="NC is closed under log-space reductions" index="NC の還元についての閉性|えぬしーのかんげんについてのへいせい"}
+$A\le_{\mathrm{L}}B$ かつ $B\in\mathrm{NC}$ なら $A\in\mathrm{NC}$。したがって、P 完全な言語が NC に属すれば $\mathrm{P}=\mathrm{NC}$。
+:::
+
+::: proof
+還元 $f$ を計算する対数領域の変換機をとる。$\lvert f(w)\rvert\le p(\lvert w\rvert)$（多項式。出力の長さは時間で抑えられ、時間は対数領域の時点表示の個数で抑えられる）。言語 $F\defeq\{\langle w,i,b\rangle:f(w)\text{ の第 }i\text{ 文字が }b\}$ と $F'\defeq\{\langle w,\ell\rangle:\lvert f(w)\rvert=\ell\}$ は、$f$ を動かして数えれば対数領域で決定でき、L $\subseteq\mathrm{NC}^{2}$ なので、それぞれ $\mathrm{NC}^{2}$ の回路で計算できる。入力 $w$（長さ $n$）について、$i,\ell\le p(n)$ ごとにこれらの回路を並べて $f(w)$ の各文字と長さを求め、各 $\ell$ について $B$ の回路 $C_{\ell}$ に $f(w)$ の最初の $\ell$ 文字を入れたものと「長さが $\ell$」の AND をとり、それらを OR でつなぐ。大きさは多項式、深さは $O(\log^{2}n)+O(\log^{k}n)+O(\log n)$。一様性は、これらの部品の書き出しが対数領域でできることによる（部品を規則的に並べるだけなので、ここでは詳細を略す）。
+:::
+
+::: theorem CIRCUIT-VALUE は P 完全 {#comp:circuit-value-p-complete keywords="circuit value problem is P-complete" index="CIRCUIT-VALUE|さーきっとばりゅー, 回路値問題|かいろちもんだい"}
+$\mathrm{CIRCUIT\text{-}VALUE}\defeq\{\langle C,x\rangle:C\text{ は回路で }C(x)=1\}$ は P 完全である。
+:::
+
+::: proof
+**P に属する.** ゲートの順に値を計算する。
+
+**困難性.** $A\in\mathrm{P}$ を時間 $n^{k}$ の決定性単一テープ機械 $M$ が決定するとする。$w\mapsto\langle C_{n},w\rangle$（$C_{n}$ は \ref{comp:time-to-size} の回路）が対数領域で計算できることを示せばよい。$C_{n}$ は、升 $(i,j)$（$0\le i\le n^{k}$, $1\le j\le n^{k}+2$）ごとに固定の部品（局所関数 $g$ を計算する回路）を置き、隣の行の固定の升につなぎ、最後に OR の列を置いたものである。変換機は二重のカウンタ $i,j$（$O(\log n)$ ビット）で升を順に回り、各升の部品のゲートを、番号を $i,j$ と部品の中の番号から計算して書き出す。第 $0$ 行の部品は入力の位置 $j$ を参照するだけ。よって対数領域で書き出せ、$w$ そのものは入力から写せばよい。$w\in A\iff C_{n}(w)=1$。
+:::
+
+## 問題 {#comp:sec-par-problems}
+
+::: problem {#comp:prob-par-addition}
+$n$ ビットの二つの数の和の各ビットは、大きさ多項式・深さ $O(\log n)$ の回路で計算できることを示せ（桁上がりの先読み）。
+:::
+
+::: solution
+位置 $i$ への桁上がり $c_{i}$ は「ある $j<i$ で両方のビットが $1$（$g_{j}\defeq a_{j}\wedge b_{j}$）で、$j<l<i$ のすべてで少なくとも一方が $1$（$p_{l}\defeq a_{l}\vee b_{l}$）」と同値なので
+$$
+c_{i}=\bigvee_{j<i}\Bigl(g_{j}\wedge\bigwedge_{j<l<i}p_{l}\Bigr).
+$$
+各 AND・OR は $O(n)$ 個の項を二分木で深さ $O(\log n)$ で計算でき、全体の大きさは $O(n^{3})$ 以下。和のビットは $a_{i}\oplus b_{i}\oplus c_{i}$（定数の深さ）。
+:::
+
+::: problem {#comp:prob-par-path}
+PATH（有向グラフで $s$ から $t$ への道があるか）が $\mathrm{NC}^{2}$ に属することを、例 3 を使って直接示せ。
+:::
+
+::: solution
+入力の隣接行列をそのまま回路の入力とし、例 3 の推移閉包の回路を付けて $(s,t)$ 成分を出力する（$s,t$ は入力の一部なので、各 $(s,t)$ の組について成分と「入力の $s,t$ がそれである」の AND をとり OR でまとめる）。大きさは多項式、深さ $O(\log^{2}n)$。一様性は回路の規則性による。
+:::
+
+::: supplement
+**前提を変えると.** 一様性の定義を対数領域から別のもの（たとえばより弱い DLOGTIME 一様性）に変えると、$\mathrm{NC}^{1}$ のような小さなクラスの定義が変わる。Sipser の注によれば、対数領域一様性で定義した $\mathrm{NC}^{1}$ は標準的な $\mathrm{NC}^{1}$ を含む（等しいかどうかはここでは扱わない）。$\mathrm{NC}=\mathrm{P}$ かどうかは未解決である。
+
+**似た定理.** 線形計画法の実行可能性、最大フローの値、深さ優先探索の訪問順序なども P 完全であることが知られている（ここでは証明しない）。逆に、整数の割り算や行列式の計算は NC に属することが知られている（行列式はチストフ・ベルコウィッツらによる）。
+
+**高い視点から：深さは「依存の連鎖の長さ」.** 並列計算で時間を決めるのは、処理装置の数ではなく、計算の中の「前の結果を待たなければならない連鎖」の長さ、すなわち回路の深さである。比喩で言えば、作業員を何人増やしても、レンガを一段ずつ積む壁の高さの分だけは時間がかかる。P 完全な問題は、どの多項式時間の計算もそれに対数領域で帰着されるので、もしそれが浅い回路で解けるなら、すべての多項式時間の計算の連鎖を劇的に短縮できることになる。そうは考えにくいことが、P 完全な問題が「本質的に逐次的」とみなされる理由である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

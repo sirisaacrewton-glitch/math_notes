@@ -246,6 +246,34 @@
       "num": "9.3",
       "page": "18-category-theory/18A-general-theory/01-basics/09-adjoints-limits.html"
     },
+    "cat:delta-normal-form": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "標準形",
+      "num": "4.5",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/04-simplicial.html"
+    },
+    "cat:delta-presentation": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "生成と関係による表示",
+      "num": "4.7",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/04-simplicial.html"
+    },
+    "cat:delta-sum-of-products": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "射は積の和",
+      "num": "4.2",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/04-simplicial.html"
+    },
+    "cat:delta-universal-monoid": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "普遍モノイド",
+      "num": "4.3",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/04-simplicial.html"
+    },
     "cat:dual-not-natural": {
       "status": "defined",
       "type": "proposition",
@@ -308,6 +336,13 @@
       "title": "評価射による言い換え",
       "num": "1.2",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/01-cartesian-closed.html"
+    },
+    "cat:face-degeneracy": {
+      "status": "defined",
+      "type": "definition",
+      "title": "面写像と退化写像",
+      "num": "4.4",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/04-simplicial.html"
     },
     "cat:free-action": {
       "status": "defined",
@@ -820,6 +855,13 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/03-monoids-actions.html"
     },
+    "cat:page-simplicial": {
+      "status": "defined",
+      "type": "page",
+      "title": "単体圏と普遍モノイド",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/04-simplicial.html"
+    },
     "cat:page-yoneda": {
       "status": "defined",
       "type": "page",
@@ -1078,6 +1120,20 @@
       "title": "",
       "num": "4.11",
       "page": "18-category-theory/18A-general-theory/01-basics/04-comma-free-quotient.html"
+    },
+    "cat:prob-sx-mono-epi": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "4.10",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/04-simplicial.html"
+    },
+    "cat:prob-sx-nerve-identity": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "4.11",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/04-simplicial.html"
     },
     "cat:prob-weakly-initial-needed": {
       "status": "defined",
@@ -1744,6 +1800,41 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html"
     },
+    "cat:sec-sx-delta": {
+      "status": "defined",
+      "type": "section",
+      "title": "単体圏",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/04-simplicial.html"
+    },
+    "cat:sec-sx-faces": {
+      "status": "defined",
+      "type": "section",
+      "title": "面と退化",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/04-simplicial.html"
+    },
+    "cat:sec-sx-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/04-simplicial.html"
+    },
+    "cat:sec-sx-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/04-simplicial.html"
+    },
+    "cat:sec-sx-simplicial-objects": {
+      "status": "defined",
+      "type": "section",
+      "title": "単体的対象",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/04-simplicial.html"
+    },
     "cat:sec-yon-notation": {
       "status": "defined",
       "type": "section",
@@ -1785,6 +1876,34 @@
       "title": "Set は完備かつ余完備",
       "num": "6.8",
       "page": "18-category-theory/18A-general-theory/01-basics/06-limits.html"
+    },
+    "cat:simplicial-category": {
+      "status": "defined",
+      "type": "definition",
+      "title": "単体圏",
+      "num": "4.1",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/04-simplicial.html"
+    },
+    "cat:simplicial-chain-complex": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "単体的アーベル群の鎖複体",
+      "num": "4.9",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/04-simplicial.html"
+    },
+    "cat:simplicial-identities": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "単体的恒等式",
+      "num": "4.6",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/04-simplicial.html"
+    },
+    "cat:simplicial-object": {
+      "status": "defined",
+      "type": "definition",
+      "title": "単体的対象",
+      "num": "4.8",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/04-simplicial.html"
     },
     "cat:skeleton": {
       "status": "defined",
@@ -29153,6 +29272,7 @@
       "status": "planned",
       "title": "胞体ホモロジー",
       "referencedFrom": [
+        "18-category-theory/18A-general-theory/02-structured-categories/04-simplicial.html",
         "54-general-topology/54B-basic-constructions/01-constructions/02-quotients.html"
       ]
     },

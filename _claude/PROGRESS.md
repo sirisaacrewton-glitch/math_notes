@@ -230,7 +230,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | CS-01 | 02-structured-categories/01-cartesian-closed | デカルト閉圏とローヴェアの不動点定理（予約ラベル cat:lawvere-fixed-point, cat:cartesian-closed） | IV.6, IV.9–10 | 4816–4877, 5174–5362 | 完了 |
 | CS-02 | 02-structured-categories/02-monoidal | モノイダル圏とマックレーンのコヒーレンス定理 | VII.1–2 | 7759–8159 | 完了 |
 | CS-03 | 02-structured-categories/03-monoids-actions | モノイダル圏のモノイドと作用、自由モノイド | VII.3–4 | 8160–8375 | 完了 |
-| CS-04 | 02-structured-categories/04-simplicial | 単体圏 Δ と普遍モノイド、単体的対象 | VII.5 | 8376–8635 | 未 |
+| CS-04 | 02-structured-categories/04-simplicial | 単体圏 Δ と普遍モノイド、単体的対象 | VII.5 | 8376–8635 | 完了 |
 | CS-05 | 02-structured-categories/05-closed-categories | 閉圏とコンパクト生成空間 | VII.7–8 | 8775–8983 | 未 |
 | CM-01 | 03-monads/01-monads-algebras | モナドとアイレンバーグ–ムーア代数、比較関手 | VI.1–3 | 6675–6984 | 完了 |
 | CM-02 | 03-monads/02-kleisli | クライスリ圏と比較の要約、語と自由半群 | VI.4–5 | 6985–7196 | 完了 |
@@ -270,6 +270,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 圏論 CS-04（04-simplicial, cat:page-simplicial：単体圏 Δ と順序数の和、射は積の和、普遍モノイド、面と退化、標準形、単体的恒等式、生成と関係による表示（挿入による並べ替えを補った）、単体的対象・特異単体・神経、∂∂=0）。Mac Lane VII.5。
 - 2026-10-08 圏論 CS-03（03-monoids-actions, cat:page-monoids-in-monoidal：モノイド対象と例の表、一般結合律、余積を保存するモノイダル圏の自由モノイド（結合律と普遍性をコヒーレンス定理で補った）、テンソル代数、作用と自由な作用の随伴）。Mac Lane VII.3–4。
 - 2026-10-08 圏論 CS-02（02-structured-categories/02-monoidal, cat:page-monoidal：モノイダル圏、例、イズベルの議論、ケリーの単位の三角形、結合だけのコヒーレンス（階数と菱形）、単位を消す標準射（Mac Lane が略した単位の場合を 8 通りの場合分けで補った）、コヒーレンス定理、自由モノイダル圏、エックマン–ヒルトン）。Mac Lane VII.1–2。
 - 2026-10-08 一般位相 TG-01（54G-peculiar-spaces/01-counterexamples 新設、01-niemytzki-plane, top:page-niemytzki：定義と開基、接円板の弦、完全正則性（明示的な分離関数）、可分性と閉離散な境界線、ジョーンズの補題、非正規性、非リンデレーフ・非距離化、有理点と無理点のベールによる非分離）。予約ラベル top:niemytzki-plane を定義。8.2 の確認リスト 6 か所を確認。

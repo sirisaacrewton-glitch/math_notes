@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>単体圏と普遍モノイド | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/02-structured-categories/04-simplicial.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 単体圏と普遍モノイド {#cat:page-simplicial keywords="simplicial category Delta, finite ordinals and monotone maps, ordinal sum, universal monoid, face maps, degeneracy maps, simplicial identities, normal form, simplicial objects, simplicial sets, chain complex of a simplicial abelian group"}
+
+有限順序数と単調写像の圏 $\Delta$（**単体圏**、\ref{cat:simplicial-category}）は、順序数の和で厳密モノイダル圏になり、一点 $1$ は $\Delta$ の中の**普遍的なモノイド**である：厳密モノイダル圏の中の任意のモノイドは、$\Delta$ からのモノイダル関手の像としてただ一通りに得られる（\ref{cat:delta-universal-monoid}）。$\Delta$ の射は、一つの元を飛ばす**面写像** $\delta_{i}$ と、二つの元を重ねる**退化写像** $\sigma_{j}$ の合成として一意な標準形に書け（\ref{cat:delta-normal-form}）、それらの間の関係（**単体的恒等式**）で $\Delta$ は表示される。$\Delta$ の反対圏からの関手が**単体的対象**で、単体的集合は代数的位相幾何学の基本的な道具である。
+
+> 資料：Mac Lane, *Categories for the Working Mathematician* 第 VII 章 §5。生成と関係による表示（\ref{cat:delta-presentation}）で Mac Lane が「関係で標準形に直せる」とだけ述べた部分は、書き換えの手順を補った。
+
+## 記法と定義の確認 {#cat:sec-sx-notation}
+
+::: notation
+- 厳密モノイダル圏、モノイド、一般の結合律は \ref{cat:monoidal-category}, \ref{cat:monoid-object}, \ref{cat:general-associative-law} のとおり。厳密モノイダル圏では $\alpha,\lambda,\varrho$ が恒等射なので、一般の結合律は $\mu^{(n)}\circ(\mu^{(k_{1})}\square\cdots\square\mu^{(k_{n})})=\mu^{(k_{1}+\cdots+k_{n})}$ となる（$\mu^{(0)}=\eta$, $\mu^{(1)}=1$, $\mu^{(n+1)}=\mu\circ(\mu^{(n)}\square1)$）。
+- 本ページでは順序数 $n$ を集合 $\{0,1,\dots,n-1\}$ とみる（Mac Lane の記法。位相幾何では $[n]=\{0,\dots,n\}$ と書くことが多く、次元が一つずれる）。
+:::
+
+## 単体圏 {#cat:sec-sx-delta}
+
+::: definition 単体圏 {#cat:simplicial-category keywords="simplicial category Delta, finite ordinals, monotone maps, ordinal sum" index="単体圏|たんたいけん, 順序数の和|じゅんじょすうのわ"}
+**単体圏** $\Delta$ の対象は有限順序数 $n=\{0,\dots,n-1\}$（$n\ge0$）、射 $f\colon n\to n'$ は単調写像（$i\le j$ なら $f(i)\le f(j)$）である。**順序数の和** $+\colon\Delta\times\Delta\to\Delta$ を、対象では $n+m$、射 $f\colon n\to n'$, $g\colon m\to m'$ では
+$$
+(f+g)(i)\defeq\begin{cases}f(i)&(i<n),\\n'+g(i-n)&(n\le i<n+m)\end{cases}
+$$
+（$f$ と $g$ を横に並べたもの）で定める。$(\Delta,+,0)$ は厳密モノイダル圏である。$0$ は始対象、$1$ は終対象。
+:::
+
+::: example
+$1$ は終対象なので、射 $\mu\colon2\to1$ と $\eta\colon0\to1$ はただ一つずつあり、$(1,\mu,\eta)$ はモノイドである（モノイドの等式の両辺はどれも終対象 $1$ への射なので等しい）。$\mu^{(k)}\colon k\to1$ はただ一つの射である。
+:::
+
+::: lemma 射は積の和 {#cat:delta-sum-of-products keywords="every arrow of Delta is a sum of iterated products mu^(k)" index="単体圏の射の分解|たんたいけんのしゃのぶんかい"}
+$f\colon m\to n$ について、$m_{i}\defeq|f^{-1}(i)|$（$i<n$）とおくと $\sum_{i}m_{i}=m$ で
+$$
+f=\mu^{(m_{0})}+\mu^{(m_{1})}+\cdots+\mu^{(m_{n-1})}.
+$$
+:::
+
+::: proof
+$f$ は単調なので、各 $f^{-1}(i)$ は連続した区間で、$i$ の順に左から並ぶ：$f^{-1}(i)=\{m_{0}+\cdots+m_{i-1},\dots,m_{0}+\cdots+m_{i}-1\}$。右辺の和は、$i$ 番目の区間（長さ $m_{i}$、空でもよい）を $n$ の $i$ 番目の点に送る写像なので、$f$ に等しい。
+:::
+
+::: theorem 普遍モノイド {#cat:delta-universal-monoid keywords="Delta contains the universal monoid; monoids in strict monoidal categories correspond to strict monoidal functors from Delta" index="普遍モノイド|ふへんものいど"}
+厳密モノイダル圏 $(\mathbf{B},\square,e)$ の任意のモノイド $(c,\mu',\eta')$ について、厳密モノイダル関手 $F\colon(\Delta,+,0)\to(\mathbf{B},\square,e)$ で $F1=c$, $F\mu=\mu'$, $F\eta=\eta'$ となるものがただ一つある。
+:::
+
+::: proof
+**Step 1（一意性）.** 厳密モノイダル関手は $Fn=F(1+\cdots+1)=c^{\square n}$（$F0=e$）。$F\mu^{(k)}=\mu'^{(k)}$（$\mu^{(k+1)}=\mu\circ(\mu^{(k)}+1)$ と $F$ が $+$ と合成を保つことから帰納法）。\ref{cat:delta-sum-of-products} から $Ff=\mu'^{(m_{0})}\square\cdots\square\mu'^{(m_{n-1})}$ と決まる。
+
+**Step 2（存在：定義と恒等射）.** 上の式で $F$ を定める。$1_{n}=\mu^{(1)}+\cdots+\mu^{(1)}$ なので $F1_{n}=1\square\cdots\square1=1$。
+
+**Step 3（合成）.** $f\colon l\to m$, $g\colon m\to n$ とし、$l_{j}\defeq|f^{-1}(j)|$, $m_{i}\defeq|g^{-1}(i)|$ とする。$g^{-1}(i)$ は連続した区間 $J_{i}$ で、$(gf)^{-1}(i)=\bigcup_{j\in J_{i}}f^{-1}(j)$ の大きさは $\sum_{j\in J_{i}}l_{j}$。厳密性から $Ff=\square_{i}\bigl(\square_{j\in J_{i}}\mu'^{(l_{j})}\bigr)$ と区間ごとにまとめられ、交換法則から
+$$
+Fg\circ Ff=\mathop{\square}_{i<n}\Bigl(\mu'^{(m_{i})}\circ\mathop{\square}_{j\in J_{i}}\mu'^{(l_{j})}\Bigr)=\mathop{\square}_{i<n}\mu'^{(\sum_{j\in J_{i}}l_{j})}=F(gf).
+$$
+2 番目の等号は一般の結合律（記法の欄。$m_{i}=0$ の場合は $\mu'^{(0)}=\eta'$ で、両辺とも $\eta'$）。
+
+**Step 4（厳密モノイダル）.** $f+g$ の各点の逆像の大きさの列は、$f$ と $g$ の列を並べたものなので $F(f+g)=Ff\square Fg$。$F\mu=\mu'^{(2)}=\mu'$、$F\eta=\mu'^{(0)}=\eta'$。
+
+::: hypcheck
+- **厳密性**：Step 1, 3 で $c^{\square n}$ の括弧を気にせず、$\square$ の並びを自由にまとめた。一般のモノイダル圏では、括弧の付け替えの標準同型を挟む形になる。
+- **一般の結合律**：Step 3 に使った。これが「$\Delta$ の合成 ＝ 結合律」という定理の核心である。
+:::
+:::
+
+## 面と退化 {#cat:sec-sx-faces}
+
+::: definition 面写像と退化写像 {#cat:face-degeneracy keywords="face maps delta_i, degeneracy maps sigma_j" index="面写像|めんしゃぞう, 退化写像|たいかしゃぞう"}
+$0\le i\le n$ について、**面写像** $\delta_{i}=\delta_{i}^{n}\colon n\to n+1$ は、像が $i$ を除くすべてである単調な単射。$0\le j\le n-1$ について、**退化写像** $\sigma_{j}=\sigma_{j}^{n}\colon n+1\to n$ は、$\sigma_{j}(j)=\sigma_{j}(j+1)$ となる単調な全射。和で書けば
+$$
+\delta_{i}=1_{i}+\eta+1_{n-i},\qquad\sigma_{j}=1_{j}+\mu+1_{n-j-1}.
+$$
+:::
+
+::: lemma 標準形 {#cat:delta-normal-form keywords="epi-mono factorization and unique normal form in Delta" index="単体圏の標準形|たんたいけんのひょうじゅんけい"}
+$\Delta$ の射 $f\colon n\to n'$ は
+$$
+\begin{aligned}
+&f=\delta_{i_{1}}\delta_{i_{2}}\cdots\delta_{i_{k}}\,\sigma_{j_{1}}\sigma_{j_{2}}\cdots\sigma_{j_{h}},\\
+&n'>i_{1}>\cdots>i_{k}\ge0,\qquad0\le j_{1}<\cdots<j_{h}<n-1
+\end{aligned}
+$$
+の形にただ一通りに書ける（$n-h+k=n'$）。
+:::
+
+::: proof
+**Step 1（単射と全射への分解）.** $f$ の像を $I\subseteq n'$（大きさ $n''$）とし、$f=g\circ s$（$s\colon n\to n''$ は単調な全射、$g\colon n''\to n'$ は像が $I$ の単調な単射）と分ける。$g$ は像で、$s$ は「値が増えない位置」の集合 $J\defeq\{j:f(j)=f(j+1)\}$ で決まる（$s(0)=0$ から、$J$ に入らない位置で 1 ずつ増える）。
+
+**Step 2（単射の部分）.** $\delta_{i_{1}}\cdots\delta_{i_{k}}$（$i_{1}>\cdots>i_{k}$、右から先に施す）の像は $n'\setminus\{i_{1},\dots,i_{k}\}$：$\delta_{i_{k}}$ が $i_{k}$ を飛ばし、次の $\delta_{i_{k-1}}$（$i_{k-1}>i_{k}$）は $i_{k-1}$ 以上の値を一つずらすだけなので $i_{k}$ は飛ばされたまま、以下同様。$\{i_{1},\dots,i_{k}\}=n'\setminus I$ にとれば $g$ に等しい。
+
+**Step 3（全射の部分）.** $\sigma_{j_{1}}\cdots\sigma_{j_{h}}$（$j_{1}<\cdots<j_{h}$）の値が増えない位置は $\{j_{1},\dots,j_{h}\}$：$\sigma_{j_{h}}$ が $j_{h}$ と $j_{h}+1$ を重ね、次の $\sigma_{j_{h-1}}$（$j_{h-1}<j_{h}$）は $j_{h-1}$ と $j_{h-1}+1$ を重ねるが、それより左の位置の番号は変わらない、以下同様。$\{j_{1},\dots,j_{h}\}=J$ にとれば $s$ に等しい。
+
+**Step 4（一意性）.** 標準形の $i$ の集合は $f$ の像の補集合、$j$ の集合は $J$ として $f$ から決まる。
+:::
+
+::: proposition 単体的恒等式 {#cat:simplicial-identities keywords="cosimplicial identities among faces and degeneracies" index="単体的恒等式|たんたいてきこうとうしき"}
+$\Delta$ で次が成り立つ（射の始域・終域は適切にとる）。
+$$
+\begin{aligned}
+&\delta_{j}\delta_{i}=\delta_{i}\delta_{j-1}\ (i<j),\qquad\sigma_{j}\sigma_{i}=\sigma_{i}\sigma_{j+1}\ (i\le j),\\
+&\sigma_{j}\delta_{i}=\begin{cases}\delta_{i}\sigma_{j-1}&(i<j),\\1&(i=j,\ j+1),\\\delta_{i-1}\sigma_{j}&(i>j+1).\end{cases}
+\end{aligned}
+$$
+:::
+
+::: proof
+各等式の両辺は単調写像なので、像（単射の場合）と値が増えない位置（全射の場合）、または値そのものを比べればよい。たとえば $\delta_{j}\delta_{i}$ と $\delta_{i}\delta_{j-1}$（$i<j$）は、どちらも像が $i$ と $j$ を除いた集合の単調な単射なので等しい：$\delta_{i}$ で $i$ を飛ばし、$\delta_{j}$ で $j$ を飛ばす（$j>i$ なので $i$ は動かない）；逆順では $\delta_{j-1}$ が $j-1$ を飛ばし、$\delta_{i}$ が $i$ 以上を一つずらすので $j-1$ は $j$ になって飛ばされ、$i$ も飛ばされる。$\sigma$ の等式と混合の等式も、点ごとの値を比べて同様に確かめられる（$i=j$ または $j+1$ では、飛ばした点と重ねた点が隣り合い、恒等写像になる）。
+:::
+
+::: proposition 生成と関係による表示 {#cat:delta-presentation keywords="Delta is generated by faces and degeneracies subject to the simplicial identities" index="単体圏の表示|たんたいけんのひょうじ"}
+$\Delta$ は、射 $\delta_{i}$, $\sigma_{j}$ で生成され、単体的恒等式を関係とする：$\delta,\sigma$ の二つの合成（語）が $\Delta$ で等しいことと、単体的恒等式を繰り返し使って一方から他方に書き換えられることは同値である。
+:::
+
+::: proof
+単体的恒等式は $\Delta$ で成り立つので、書き換えられれば等しい。逆を示すには、任意の語を関係だけで標準形（\ref{cat:delta-normal-form}）に書き換えられることを示せばよい。標準形は射ごとに一つなので、$\Delta$ で等しい二つの語は同じ標準形に書き換えられる。
+
+**Step 1（σ を右に）.** 語の中で $\sigma_{j}$ のすぐ右に $\delta_{i}$ があれば（$\sigma_{j}\delta_{i}$ の形）、混合の等式で $\delta\sigma$ の形か恒等射に置き換える。この操作で、各 $\sigma$ について「その右にある $\delta$ の個数」の総和が真に減る（恒等射の場合は語が短くなる）ので、有限回で止まり、すべての $\delta$ がすべての $\sigma$ の左に来る。
+
+**Step 2（δ の並べ替え：挿入）.** $\delta$ だけの語 $\delta_{a_{1}}\cdots\delta_{a_{k}}$ を、$k$ に関する帰納法で添字が左ほど大きい（狭義減少）形に直す。$\delta_{a_{2}}\cdots\delta_{a_{k}}$ はすでに狭義減少とし、左端の $\delta_{a_{1}}$ を挿入する。$a_{1}>a_{2}$ なら終わり。$a_{1}\le a_{2}$ なら第一の等式（$i=a_{1}$, $j=a_{2}+1$）で $\delta_{a_{1}}\delta_{a_{2}}=\delta_{a_{2}+1}\delta_{a_{1}}$ と書き換え、$\delta_{a_{1}}$ を一つ右に送る。このとき左側 $a_{2}+1,a_{3}+1,\dots$ は狭義減少のまま（$a_{1}\le a_{2}$ なので $a_{2}+1>a_{1}$）で、次は $a_{1}$ と $a_{3}$ を比べる。高々 $k-1$ 回で $\delta_{a_{1}}$ は止まり、全体が狭義減少になる。
+
+**Step 3（σ の並べ替え）.** 同様に、$\sigma_{b_{1}}\sigma_{b_{2}}$ で $b_{1}\ge b_{2}$ なら第二の等式（$i=b_{2}$, $j=b_{1}$）で $\sigma_{b_{2}}\sigma_{b_{1}+1}$ と書き換えて挿入し、添字を左ほど小さい（狭義増加）形にする。
+
+結果は標準形の条件（$i$ は狭義減少、$j$ は狭義増加）を満たす。
+:::
+
+## 単体的対象 {#cat:sec-sx-simplicial-objects}
+
+::: definition 単体的対象 {#cat:simplicial-object keywords="simplicial object, simplicial set, face and degeneracy operators, augmented simplicial object" index="単体的対象|たんたいてきたいしょう, 単体的集合|たんたいてきしゅうごう"}
+$\Delta_{+}$ を正の順序数 $1,2,\dots$ からなる $\Delta$ の充満部分圏とする。圏 $\mathbf{X}$ の**単体的対象**は関手 $S\colon\Delta_{+}^{\mathrm{op}}\to\mathbf{X}$ で、$\mathbf{X}=\mathbf{Set}$ のとき**単体的集合**という。$S_{n}\defeq S(n+1)$（**$n$ 単体**の対象）、$d_{i}\defeq S(\delta_{i})\colon S_{n}\to S_{n-1}$（**面作用素**）、$s_{j}\defeq S(\sigma_{j})\colon S_{n}\to S_{n+1}$（**退化作用素**）と書くと、単体的恒等式の双対
+$$
+d_{i}d_{j}=d_{j-1}d_{i}\ (i<j),\qquad s_{i}s_{j}=s_{j+1}s_{i}\ (i\le j)
+$$
+などが成り立ち、逆にこれらを満たす $S_{n}$, $d_{i}$, $s_{j}$ の組は単体的対象を定める（\ref{cat:delta-presentation}）。
+:::
+
+::: example
+1. **特異単体.** 位相空間 $X$ について、$S_{n}(X)$ を標準 $n$ 単体 $\Delta^{n}=\{(t_{0},\dots,t_{n}):t_{i}\ge0,\ \sum t_{i}=1\}$ から $X$ への連続写像全体とし、$d_{i}$ を $i$ 番目の面への制限、$s_{j}$ を $j$ 番目と $j+1$ 番目の頂点を重ねる写像との合成とすると、単体的集合（**特異単体的集合**）になる。ここで $\Delta^{n}$ は、単調写像 $f$ に頂点 $i\mapsto f(i)$ のアフィン写像を対応させる関手 $\Delta_{+}\to\mathbf{Top}$ の値である。
+2. **神経.** 小さい圏 $\mathbf{C}$ について、$N_{n}\mathbf{C}$ を合成可能な射の列 $c_{0}\to c_{1}\to\cdots\to c_{n}$ の全体とし、$d_{i}$ を $c_{i}$ を取り除く（両端なら射を捨て、中なら合成する）、$s_{j}$ を恒等射を挿入する操作とすると単体的集合（**神経**）になる。これは順序数 $n+1$ を圏とみて、関手 $n+1\to\mathbf{C}$ 全体をとったものである。
+:::
+
+::: proposition 単体的アーベル群の鎖複体 {#cat:simplicial-chain-complex keywords="alternating face map complex, boundary squares to zero" index="交代和の境界作用素|こうたいわのきょうかいさようそ"}
+単体的アーベル群 $S$ について、$\partial\defeq\sum_{i=0}^{n}(-1)^{i}d_{i}\colon S_{n}\to S_{n-1}$ とおくと $\partial\circ\partial=0$。
+:::
+
+::: proof
+$\partial\partial=\sum_{i=0}^{n-1}\sum_{j=0}^{n}(-1)^{i+j}d_{i}d_{j}$（$S_{n}\to S_{n-2}$）。$i<j$ の項に単体的恒等式 $d_{i}d_{j}=d_{j-1}d_{i}$ を使い、$j'\defeq j-1$ とおくと、$i\le j'$ の項 $(-1)^{i+j'+1}d_{j'}d_{i}$ になる。これは $i\ge j$ の項 $(-1)^{i+j}d_{i}d_{j}$ を（$i$ と $j$ の名前を入れ替えて）符号を反転したものとちょうど一対一に対応する（$i<j$ の対 $(i,j)$ と $j'\ge i$ の対 $(j',i)$）。よって総和は $0$。
+:::
+
+::: supplement
+**一般化.** 特異単体的集合の鎖複体のホモロジーが特異ホモロジーである（代数的位相幾何学の系列。\ref[胞体ホモロジー]{at:page-cellular-homology} の系列で扱う予定）。モナドから「棒の構成」で単体的対象が作られ、ホモロジー代数の分解に使われる（Mac Lane 第 VII 章 §6。範囲外）。
+
+**類似の定理.** \ref{cat:delta-universal-monoid} は \ref{cat:free-monoidal-category} の類似で、どちらも「ある構造の自由な対象が、組合せ的に記述できる圏になる」ことを言う。$\mathbf{W}$ は一つの対象の自由モノイダル圏、$\Delta$ は一つのモノイドの自由厳密モノイダル圏である。
+
+**高い視点から：$\Delta$ の多面性.** $\Delta$ は、(a) 有限全順序と単調写像の圏、(b) 有限順序数を圏とみた $\mathbf{Cat}$ の充満部分圏、(c) 普遍モノイドを含む厳密モノイダル圏、(d) 標準単体とアフィン写像の圏、という四つの顔をもつ（Mac Lane のまとめ）。比喩で言えば、$\Delta$ は「積の計算の手順書」であり、同時に「図形を三角形に分けて貼る設計図」でもある。この二つが同じ圏であることが、代数（モノイド・モナド）と位相（単体複体・ホモロジー）を結ぶ。
+:::
+
+## 問題 {#cat:sec-sx-problems}
+
+::: problem {#cat:prob-sx-mono-epi}
+$\Delta$ の射 $f$ がモノ射（エピ射）であることと、写像として単射（全射）であることは同値であることを示せ。
+:::
+
+::: solution
+単射ならモノ射、全射ならエピ射なのは写像の合成から明らか。逆に $f\colon n\to n'$ がモノ射で単射でないとする。$f(i)=f(i')$（$i<i'$）なら、$1\to n$ の二つの射 $0\mapsto i$ と $0\mapsto i'$（どちらも単調）は異なるが $f$ との合成は等しく、矛盾。エピ射で全射でないとする。$k\notin f(n)$ をとり、$g,g'\colon n'\to2$ を $g(x)=[x\ge k]$, $g'(x)=[x>k]$（$[\cdot]$ は真なら $1$）とすると、どちらも単調で $g\neq g'$（$k$ で異なる）だが、$k$ 以外では一致するので $gf=g'f$。矛盾。
+:::
+
+::: problem {#cat:prob-sx-nerve-identity}
+小さい圏の神経（例 2）で、$d_{1}\colon N_{2}\mathbf{C}\to N_{1}\mathbf{C}$ が合成を表すこと、および単体的恒等式 $d_{0}d_{1}=d_{0}d_{0}\colon N_{2}\mathbf{C}\to N_{0}\mathbf{C}$ が「合成の終域は後の射の終域」という等式になることを確かめよ。
+:::
+
+::: solution
+$N_{2}\mathbf{C}$ の元は $c_{0}\xrightarrow{f}c_{1}\xrightarrow{g}c_{2}$。$d_{1}$ は中の対象 $c_{1}$ を除き $g\circ f\colon c_{0}\to c_{2}$ を与える（合成）。$d_{0}$ は $c_{0}$ と $f$ を捨てて $g$ を与える。$N_{1}\to N_{0}$ の $d_{0}$ は射の終域を与える。単体的恒等式 $d_{0}d_{1}=d_{0}d_{0}$（$i=0$, $j=1$：$d_{0}d_{1}=d_{0}d_{0}$）は、両辺が $c_{2}$ を与えること、すなわち $g\circ f$ の終域が $g$ の終域に等しいことを表す。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

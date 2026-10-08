@@ -348,3 +348,4 @@
 | Niemytzki plane (Moore plane) / Jones' lemma | ニェミツキ平面（ムーア平面） / ジョーンズの補題 | | 既存ページの予約ラベルの表記に合わせた。top:page-niemytzki |
 | monoidal category / associator / unitor / coherence | モノイダル圏 / 結合子 / 単位子 / コヒーレンス | | 仮。cat:page-monoidal |
 | monoid (object) in a monoidal category / tensor algebra / action | （モノイダル圏の）モノイド / テンソル代数 / 作用 | モノイド対象 | 仮。cat:page-monoids-in-monoidal |
+| simplicial category / face / degeneracy / simplicial set / nerve | 単体圏 / 面写像 / 退化写像 / 単体的集合 / 神経 | | 仮。cat:page-simplicial |

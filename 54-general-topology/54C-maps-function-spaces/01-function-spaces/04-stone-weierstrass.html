@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ストーン–ワイエルシュトラスの定理 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54C-maps-function-spaces/01-function-spaces/04-stone-weierstrass.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ストーン–ワイエルシュトラスの定理 {#top:page-stone-weierstrass keywords="Stone-Weierstrass theorem, Weierstrass approximation theorem, subalgebra separating points, uniform approximation, lattice of continuous functions, polynomial approximation of the square root, trigonometric polynomials, C(X) for compact Hausdorff X"}
+
+コンパクトハウスドルフ空間 $X$ 上の実数値連続関数全体 $C(X)$ に一様収束の位相（\ref{top:uniform-topology}）を入れる。**ストーン–ワイエルシュトラスの定理**（\ref{top:stone-weierstrass}）は、$C(X)$ の部分代数が定数を含み二点を分離するなら、それは $C(X)$ で稠密である、と主張する。特に、閉区間上の連続関数は多項式で一様に近似できる（**ワイエルシュトラスの近似定理**、\ref{top:weierstrass-approximation}）。証明は、$\sqrt{t}$ の多項式近似（\ref{top:sqrt-approximation}）から閉包が $\max$, $\min$ で閉じることを導き（\ref{top:closure-lattice}）、コンパクト性で局所的な近似を貼り合わせる。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。
+
+## 記法と定義の確認 {#top:sec-sw-notation}
+
+::: notation
+- $X$ はコンパクトハウスドルフ空間、$C(X)$ は連続関数 $X\to\R$ 全体。$\lVert f\rVert\defeq\sup_{x\in X}\lvert f(x)\rvert$（最大値の定理 \ref{top:extreme-value} から有限）。$C(X)$ の位相は $\lVert f-g\rVert$ による距離の位相で、一様収束位相（\ref{top:uniform-topology}）と一致する。連続関数の一様極限は連続（\ref{top:uniform-limit}）。
+- $C(X)$ の**部分代数**とは、和・スカラー倍・積で閉じた部分集合 $A$ をいう。$A$ が**定数を含む**とは定数関数 $1$ を含むこと、**二点を分離する**とは $x\ne y$ について $g(x)\ne g(y)$ となる $g\in A$ があることをいう。$\bar{A}$ は $A$ の $C(X)$ での閉包。
+- $f\vee g\defeq\max(f,g)$, $f\wedge g\defeq\min(f,g)$ は連続で、$f\vee g=\tfrac{1}{2}(f+g+\lvert f-g\rvert)$, $f\wedge g=\tfrac{1}{2}(f+g-\lvert f-g\rvert)$。
+:::
+
+## 準備 {#top:sec-sw-lemmas}
+
+::: lemma 平方根の多項式近似 {#top:sqrt-approximation keywords="polynomials p_n with p_n(t) -> sqrt t uniformly on [0,1], p_n(0)=0" index="平方根の多項式近似|へいほうこんのたこうしききんじ"}
+$p_{0}\defeq0$, $p_{n+1}(t)\defeq p_{n}(t)+\tfrac{1}{2}\bigl(t-p_{n}(t)^{2}\bigr)$ で定まる多項式は、$p_{n}(0)=0$ を満たし、$[0,1]$ 上で
+$$
+0\le\sqrt{t}-p_{n}(t)\le\frac{2}{n}\qquad(n\ge1)
+$$
+を満たす。特に $p_{n}\to\sqrt{\cdot}$ は $[0,1]$ 上で一様収束する。
+:::
+
+::: proof
+$p_{n}(0)=0$ は帰納法から明らか。$t\in[0,1]$ を固定し、$s\defeq\sqrt{t}\in[0,1]$ とする。
+
+**Step 1（$0\le p_{n}\le s$）.** $n$ に関する帰納法。$p_{0}=0$。$0\le p_{n}\le s$ なら、$t-p_{n}^{2}=s^{2}-p_{n}^{2}\ge0$ から $p_{n+1}\ge p_{n}\ge0$。また
+$$
+s-p_{n+1}=(s-p_{n})-\tfrac{1}{2}(s-p_{n})(s+p_{n})=(s-p_{n})\Bigl(1-\frac{s+p_{n}}{2}\Bigr)
+$$
+で、$s+p_{n}\le2s\le2$ なので右辺は $\ge0$。
+
+**Step 2（評価）.** Step 1 の等式と $p_{n}\ge0$ から $s-p_{n+1}\le(s-p_{n})(1-s/2)$ なので $s-p_{n}\le s(1-s/2)^{n}$。ベルヌーイの不等式 $(1+s/2)^{n}\ge1+ns/2$ と $(1-s/2)(1+s/2)\le1$ から
+$$
+s\Bigl(1-\frac{s}{2}\Bigr)^{n}\le\frac{s}{(1+s/2)^{n}}\le\frac{s}{1+ns/2}\le\frac{2}{n}.
+$$
+:::
+
+::: lemma 閉包は束をなす {#top:closure-lattice keywords="the closure of a subalgebra is a closed subalgebra closed under |f|, max and min" index="部分代数の閉包と束|ぶぶんだいすうのへいほうとそく"}
+$A$ を $C(X)$ の部分代数とする。
+1. $\bar{A}$ も部分代数である。
+2. $f\in\bar{A}$ なら $\lvert f\rvert\in\bar{A}$。したがって $f,g\in\bar{A}$ なら $f\vee g,\ f\wedge g\in\bar{A}$。
+:::
+
+::: proof
+**1.** $f_{k}\to f$, $g_{k}\to g$（$f_{k},g_{k}\in A$）なら $f_{k}+g_{k}\to f+g$, $cf_{k}\to cf$、また
+$$
+\lVert f_{k}g_{k}-fg\rVert\le\lVert f_{k}\rVert\lVert g_{k}-g\rVert+\lVert g\rVert\lVert f_{k}-f\rVert\to0
+$$
+（$\lVert f_{k}\rVert$ は有界）。
+
+**2.** $f\in\bar{A}$, $f\ne0$ とし、$M\defeq\lVert f\rVert$ とおく。$f^{2}/M^{2}$ は $[0,1]$ に値をとるので、\ref{top:sqrt-approximation} から
+$$
+\Bigl\lVert\,\lvert f\rvert-Mp_{n}\bigl(f^{2}/M^{2}\bigr)\Bigr\rVert\le\frac{2M}{n}\to0.
+$$
+$p_{n}$ は定数項をもたない多項式なので、$Mp_{n}(f^{2}/M^{2})$ は $f$ の（定数項のない）多項式で、1 から $\bar{A}$ に属する。$\bar{A}$ は閉なので $\lvert f\rvert\in\bar{A}$。$\vee$, $\wedge$ は記法の式から。
+:::
+
+::: lemma 二点での補間 {#top:two-point-interpolation keywords="a unital point-separating subalgebra interpolates any values at two points" index="二点での補間|にてんでのほかん"}
+$A$ が定数を含み二点を分離するなら、$x\ne y$ と $a,b\in\R$ について、$h(x)=a$, $h(y)=b$ となる $h\in A$ がある。
+:::
+
+::: proof
+$g(x)\ne g(y)$ となる $g\in A$ をとり、$h\defeq a+(b-a)\dfrac{g-g(x)}{g(y)-g(x)}$ とする。定数を含むので $h\in A$。
+:::
+
+## ストーン–ワイエルシュトラスの定理 {#top:sec-sw-theorem}
+
+::: theorem ストーン–ワイエルシュトラスの定理 {#top:stone-weierstrass keywords="a unital subalgebra of C(X) separating points is dense, X compact Hausdorff" index="ストーン–ワイエルシュトラスの定理|すとーんわいえるしゅとらすのていり"}
+$X$ をコンパクトハウスドルフ空間、$A$ を $C(X)$ の部分代数で、定数を含み二点を分離するものとする。このとき $\bar{A}=C(X)$。
+:::
+
+::: proof
+$X=\emptyset$ なら明らか。$f\in C(X)$ と $\varepsilon>0$ をとる。
+
+**Step 1（二点で一致する関数）.** 各 $x,y\in X$ について、$h_{xy}\in A$ で $h_{xy}(x)=f(x)$, $h_{xy}(y)=f(y)$ となるものをとる（$x\ne y$ なら \ref{top:two-point-interpolation}、$x=y$ なら定数関数 $f(x)$）。
+
+**Step 2（上から押さえる）.** $x$ を固定する。$U_{y}\defeq\{z:h_{xy}(z)<f(z)+\varepsilon\}$ は $y$ を含む開集合で、$\{U_{y}\}_{y\in X}$ は $X$ を覆う。**コンパクト性**から有限個 $U_{y_{1}},\dots,U_{y_{m}}$ で覆え、$g_{x}\defeq h_{xy_{1}}\wedge\cdots\wedge h_{xy_{m}}$ は \ref{top:closure-lattice} から $\bar{A}$ に属し、
+$$
+g_{x}<f+\varepsilon\ \ (X\text{ 全体}),\qquad g_{x}(x)=f(x).
+$$
+
+**Step 3（下から押さえる）.** $V_{x}\defeq\{z:g_{x}(z)>f(z)-\varepsilon\}$ は $x$ を含む開集合。再び**コンパクト性**から $V_{x_{1}},\dots,V_{x_{k}}$ で覆え、$g\defeq g_{x_{1}}\vee\cdots\vee g_{x_{k}}\in\bar{A}$ は $X$ 全体で $f-\varepsilon<g<f+\varepsilon$ を満たす。最大値の定理から $\lVert f-g\rVert<\varepsilon$。
+
+$\varepsilon$ は任意で $\bar{A}$ は閉なので、$f\in\bar{A}$。
+:::
+
+::: hypcheck
+- **コンパクト性**：Step 2, 3 で有限個の $\wedge$, $\vee$ にまとめるのに使った（無限個の $\min$ は連続とは限らない）。また $\lVert\cdot\rVert$ の有限性に使った。
+- **二点の分離と定数**：Step 1（\ref{top:two-point-interpolation}）で使った。
+- **ハウスドルフ性**：証明には直接使っていない。$A$ が二点を分離すれば $X$ は自動的にハウスドルフである（分離する連続関数の値の近傍の逆像）。逆に、コンパクトハウスドルフ空間では $C(X)$ 自身が二点を分離する（\ref{top:t4-functions-separate-points}、コンパクトハウスドルフ空間は $T_{4}$：\ref{top:compact-hausdorff-normal}）ので、定理は空虚でない。
+- **積で閉じていること**：\ref{top:closure-lattice} の 2 で $f^{2}$ の多項式を作るのに使った。
+:::
+
+::: corollary ワイエルシュトラスの近似定理 {#top:weierstrass-approximation keywords="polynomials are dense in C[a,b]; trigonometric polynomials are dense in continuous periodic functions" index="ワイエルシュトラスの近似定理|わいえるしゅとらすのきんじていり"}
+1. 閉区間 $[a,b]$ 上の連続関数は、多項式で一様に近似できる。
+2. 周期 $2\pi$ の連続関数 $\R\to\R$ は、三角多項式 $c_{0}+\sum_{k=1}^{N}(a_{k}\cos k\theta+b_{k}\sin k\theta)$ で一様に近似できる。
+:::
+
+::: proof
+**1.** 多項式は $C([a,b])$ の部分代数で、定数を含み、$t$ 自身が二点を分離する。$[a,b]$ はコンパクトハウスドルフ（\ref{top:heine-borel}）。
+
+**2.** 周期関数は単位円 $S^{1}\subseteq\R^{2}$ 上の連続関数 $F(\cos\theta,\sin\theta)$ と一対一に対応する（$S^{1}$ は $[0,2\pi]$ の商で、コンパクトハウスドルフ）。三角多項式は積和公式（$\cos j\theta\cos k\theta=\tfrac{1}{2}(\cos(j+k)\theta+\cos(j-k)\theta)$ など）で積について閉じた部分代数で、定数を含み、$\cos\theta$ と $\sin\theta$ で $S^{1}$ の二点を分離する。
+:::
+
+## 問題 {#top:sec-sw-problems}
+
+::: problem {#top:prob-sw-even}
+$[-1,1]$ 上で、$1$ と $t^{2}$ が生成する部分代数（偶多項式の全体）の閉包は $C([-1,1])$ でないことを示し、定理のどの仮定が欠けているか述べよ。また、その閉包が偶関数全体であることを示せ。
+:::
+
+::: solution
+偶多項式の一様極限は偶関数なので、$t$ は閉包に属さない。欠けているのは二点の分離（$-x$ と $x$ を分離できない）。後半：偶関数 $f$ は $[0,1]$ 上の連続関数 $u(s)\defeq f(\sqrt{s})$ と $f(t)=u(t^{2})$ で対応する。$u$ を多項式 $q$ で $\varepsilon$ 以内に近似すれば（\ref{top:weierstrass-approximation}）、$q(t^{2})$ は偶多項式で $\lVert f-q(t^{2})\rVert\le\varepsilon$。
+:::
+
+::: problem {#top:prob-sw-product}
+$X,Y$ をコンパクトハウスドルフ空間とする。$X\times Y$ 上の連続関数は、有限和 $\sum_{i}u_{i}(x)v_{i}(y)$（$u_{i}\in C(X)$, $v_{i}\in C(Y)$）で一様に近似できることを示せ。
+:::
+
+::: solution
+そのような有限和の全体 $A$ は $C(X\times Y)$ の部分代数で（積は $u_{i}u_{j}'\cdot v_{i}v_{j}'$ の和）、定数を含む。$(x,y)\ne(x',y')$ なら、$x\ne x'$ のとき \ref{top:t4-functions-separate-points} で $u(x)\ne u(x')$ となる $u$ をとれば $u(x)\cdot1$ が分離し、$y\ne y'$ のときも同様。$X\times Y$ はコンパクトハウスドルフ（\ref{top:tychonoff}）なので定理が使える。
+:::
+
+::: supplement
+**前提を変えると.**
+- *複素数値.* 複素数値の $C(X,\mathbb{C})$ では、部分代数が複素共役で閉じていることも仮定すれば同じ結論が成り立つ（実部と虚部に分けて実数版を使う）。共役で閉じていないと成り立たない：単位円上の多項式 $p(z)$ は $\int_{0}^{2\pi}p(e^{i\theta})e^{i\theta}\,d\theta=0$ を満たすが、$\bar{z}$ では値が $2\pi$ で、一様極限は積分を保つので $\bar{z}$ は近似できない。
+- *定数を含まない場合.* 二点を分離し、どの点でも全部は消えない部分代数は稠密であり、ある一点 $x_{0}$ で全部が消える部分代数の閉包は $\{f:f(x_{0})=0\}$ であることが知られている（同じ方法で示せる）。
+- *局所コンパクト.* 局所コンパクトハウスドルフ空間では、無限遠で消える関数の空間 $C_{0}(X)$ について同様の定理が一点コンパクト化（\ref{top:one-point-compactification}）を通して成り立つことが知られている。
+
+**似た定理.** ワイエルシュトラスの近似定理には、ベルンシュタイン多項式による構成的な証明や、たたみ込み（核関数）による証明があることが知られている。三角多項式の稠密性は、フーリエ級数のフェイエール和による証明でも得られる。アスコリ–アルツェラの定理（\ref{top:ascoli}）が $C(X)$ のコンパクト集合を特徴づけるのに対し、本定理は $C(X)$ の稠密な部分集合を与える。
+
+**高い視点から：点を区別できれば全部が作れる.** $C(X)$ の部分代数が「点を区別できる」なら、和・積・極限で $X$ 上のすべての連続関数が作れる。これは、コンパクトハウスドルフ空間 $X$ が関数環 $C(X)$ で決まる（ゲルファント双対性。$X$ は $C(X)$ の極大イデアルの空間として復元できることが知られている）という見方の一部で、ストーン双対性（\ref{top:page-stone-duality}）の連続版にあたる。比喩で言えば、$X$ の点を見分ける少数の「測定器」があれば、測定値の足し算・掛け算と極限で、どんな連続的な量も好きな精度で再現できる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ℕ^ℕ の特徴づけ | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54E-richer-structures/01-metric-spaces/09-baire-space-nn.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ℕ^ℕ の特徴づけ {#top:page-baire-space-nn keywords="Baire space N^N, Alexandrov-Urysohn theorem, zero-dimensional Polish spaces with compact sets nowhere dense, irrational numbers homeomorphic to N^N, every Polish space is a continuous image of N^N, Lusin scheme, tree of clopen sets"}
+
+自然数列の空間 $\N^{\N}$（$\N$ に離散位相を入れた直積。記述集合論では**ベール空間**と呼ばれるが、ベールのカテゴリー定理の意味のベール空間 \ref{top:baire-space} とは別の概念）は、カントール空間 $2^{\N}$（\ref{top:page-cantor-set}）や有理数 $\mathbb{Q}$（\ref{top:page-rationals-characterization}）と並んで、位相的性質だけで特徴づけられる空間である。**アレクサンドロフ–ウリゾーンの定理**は、空でない零次元ポーランド空間で、どのコンパクト集合も内部をもたないものは $\N^{\N}$ と同相であることを言う。系として、無理数全体は $\N^{\N}$ と同相であり、また、同じ「木の構成」から、空でないポーランド空間はすべて $\N^{\N}$ の連続像であることが従う。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論（閉開集合の木による構成）に従って組み立てた。各証明は本サイトで書き下ろした。
+
+## 記法と定義の確認 {#top:sec-bs-notation}
+
+::: notation
+- $\N=\{0,1,2,\dots\}$。$\N^{<\N}$ は $\N$ の元の有限列全体。有限列 $s=(s_{0},\dots,s_{k-1})$ の長さを $\lvert s\rvert=k$ と書き、$s$ の後ろに $n$ を付けた列を $s^{\frown}n$ と書く。$\alpha\in\N^{\N}$ の最初の $k$ 項を $\alpha|k$ と書く。
+- $\N^{\N}$ には直積位相（$\N$ は離散）を入れる。**柱状集合** $N_{s}\defeq\{\alpha\in\N^{\N}:\alpha|\lvert s\rvert=s\}$（$s\in\N^{<\N}$）の全体は開基をなす。各 $N_{s}$ は閉開集合である（補集合は長さ $\lvert s\rvert$ の他の列 $t$ についての $N_{t}$ の和）。
+- 位相空間が**零次元**とは、閉開集合（開かつ閉な集合）全体が開基をなすことをいう。
+- **ポーランド空間**は可分で完備距離化可能な空間（\ref{top:polish-space}）。$\N^{\N}$, $\mathbb{R}\setminus\mathbb{Q}$ はポーランド空間である（\ref{top:polish-closure}）。ポーランド空間の開集合・閉集合もポーランド空間（同）。
+- 距離空間について、可分・第二可算・リンデレーフは同値（\ref{top:metric-countability}）。
+- カントールの共通部分定理：完備距離空間で、空でない閉集合の減少列 $F_{0}\supset F_{1}\supset\cdots$ の直径が $0$ に収束すれば、共通部分はちょうど一点である（\ref{top:cantor-intersection}）。
+- 集合 $A$ の直径を $\operatorname{diam}A\defeq\sup\{d(x,y):x,y\in A\}$ と書く。
+:::
+
+## 閉開集合による分割 {#top:sec-bs-partition}
+
+::: lemma 小さい閉開集合への無限分割 {#top:clopen-infinite-partition keywords="a non-compact clopen subset of a separable zero-dimensional metric space splits into countably infinitely many nonempty clopen sets of small diameter" index="閉開集合への無限分割|へいかいしゅうごうへのむげんぶんかつ"}
+$(X,d)$ を可分で零次元の距離空間、$U\subset X$ を空でない閉開集合で**コンパクトでない**もの、$\varepsilon>0$ とする。このとき $U$ は、直径 $<\varepsilon$ の空でない閉開集合の可算**無限**個 $D_{0},D_{1},\dots$ に分割される（互いに交わらず、和が $U$）。
+:::
+
+::: proof
+**Step 1（悪い被覆）.** $U$ は**コンパクトでない**ので、$U$ を覆う $X$ の開集合の族 $\mathcal{G}$ で、有限部分族では $U$ を覆えないものがある。
+
+**Step 2（小さい閉開集合による被覆）.** $x\in U$ について $x\in G\in\mathcal{G}$ となる $G$ をとる。$U\cap G\cap B(x,\varepsilon/3)$ は $x$ の開近傍なので、**零次元性**から閉開集合 $C_{x}$ で $x\in C_{x}\subset U\cap G\cap B(x,\varepsilon/3)$ となるものがある（各 $x$ に一つ選ぶ）。$\operatorname{diam}C_{x}\le2\varepsilon/3<\varepsilon$。
+
+**Step 3（可算化）.** $U$ は可分距離空間 $X$ の部分空間なので可分距離空間であり、リンデレーフ（\ref{top:metric-countability}）。$U$ の開被覆 $\{C_{x}\}$ から可算部分被覆 $C_{0},C_{1},\dots$ をとる（有限個で覆えるなら同じものを繰り返して無限列にする）。
+
+**Step 4（互いに素にする）.** $D'_{n}\defeq C_{n}\setminus(C_{0}\cup\dots\cup C_{n-1})$ とおく。閉開集合の有限個の和・差は閉開なので $D'_{n}$ は閉開、$D'_{n}\subset C_{n}$ なので $\operatorname{diam}D'_{n}<\varepsilon$。$D'_{n}$ たちは互いに交わらず、和は $\bigcup C_{n}=U$。
+
+**Step 5（無限個であること）.** 空でない $D'_{n}$ が有限個 $D'_{n_{1}},\dots,D'_{n_{k}}$ しかないとすると、$U=C_{0}\cup\dots\cup C_{m}$（$m=\max n_{i}$）。各 $C_{j}$ は $\mathcal{G}$ のある元に含まれるので、$U$ は $\mathcal{G}$ の有限個の元で覆われ、Step 1 に矛盾。よって空でない $D'_{n}$ は無限個あり、それらを順に $D_{0},D_{1},\dots$ と番号付ければよい。
+:::
+
+## アレクサンドロフ–ウリゾーンの定理 {#top:sec-bs-theorem}
+
+::: theorem アレクサンドロフ–ウリゾーンの定理 {#top:alexandrov-urysohn-nn keywords="Alexandrov-Urysohn: a nonempty zero-dimensional Polish space in which every compact set has empty interior is homeomorphic to N^N" index="アレクサンドロフ–ウリゾーンの定理|あれくさんどろふうりぞーんのていり"}
+$X$ を空でない零次元ポーランド空間で、$X$ のどのコンパクト部分集合も内部が空であるとする。このとき $X$ は $\N^{\N}$ と同相である。
+:::
+
+::: proof
+$X$ の位相を定める完備距離 $d$ を一つ固定する（**完備距離化可能**）。
+
+**Step 1（閉開集合の木）.** $s\in\N^{<\N}$ について、空でない閉開集合 $X_{s}$ を次をみたすように $\lvert s\rvert$ についての帰納法で作る。
+
+- $X_{\varnothing}=X$。
+- $\{X_{s^{\frown}n}\}_{n\in\N}$ は $X_{s}$ の分割で、$\operatorname{diam}X_{s^{\frown}n}<2^{-\lvert s\rvert}$。
+
+$X_{s}$ が作られたとする。$X_{s}$ は空でない**開**集合なので、**仮定**（コンパクト集合は内部が空）から $X_{s}$ はコンパクトでない（コンパクトなら $X_{s}$ 自身が内部 $X_{s}\neq\varnothing$ をもつ）。$X$ は**可分**で**零次元**なので、\ref{top:clopen-infinite-partition} を $U=X_{s}$, $\varepsilon=2^{-\lvert s\rvert}$ に適用して分割 $\{X_{s^{\frown}n}\}_{n}$ を得る（選択には従属選択公理を使う）。
+
+**Step 2（写像の定義）.** $\alpha\in\N^{\N}$ について、$X_{\alpha|0}\supset X_{\alpha|1}\supset\cdots$ は空でない閉集合の減少列で、$\operatorname{diam}X_{\alpha|k}<2^{-(k-1)}\to0$（$k\ge1$）。$d$ は**完備**なので、カントールの共通部分定理（\ref{top:cantor-intersection}）から $\bigcap_{k}X_{\alpha|k}$ はちょうど一点であり、これを $h(\alpha)$ とする。
+
+**Step 3（全単射）.**
+- **単射.** $\alpha\neq\beta$ なら、$\alpha|k=\beta|k$, $\alpha(k)\neq\beta(k)$ となる $k$ がある。$X_{\alpha|k+1}$ と $X_{\beta|k+1}$ は $X_{\alpha|k}$ の分割の異なる元なので交わらず、$h(\alpha)\neq h(\beta)$。
+- **全射.** $x\in X$ について、$x\in X_{s}$ なら分割の性質から $x\in X_{s^{\frown}n}$ となる $n$ がちょうど一つある。これで $\alpha(0),\alpha(1),\dots$ を順に定めると、すべての $k$ で $x\in X_{\alpha|k}$、よって $h(\alpha)=x$。
+
+さらに、この議論から $h(N_{s})=X_{s}$（$s\in\N^{<\N}$）がわかる：$\alpha\in N_{s}$ なら $h(\alpha)\in X_{\alpha|\lvert s\rvert}=X_{s}$。逆に $x\in X_{s}$ なら、上で作った $\alpha$ は（各段の分割の元が一意なので）$\alpha|\lvert s\rvert=s$ をみたす。
+
+**Step 4（連続性）.** $\alpha\in\N^{\N}$ と $\varepsilon>0$ について、$2^{-(k-1)}<\varepsilon$ となる $k\ge1$ をとる。$\beta\in N_{\alpha|k}$ なら $h(\beta),h(\alpha)\in X_{\alpha|k}$ なので $d(h(\beta),h(\alpha))<\varepsilon$。$N_{\alpha|k}$ は $\alpha$ の開近傍なので $h$ は $\alpha$ で連続。
+
+**Step 5（開写像）.** $\N^{\N}$ の開集合 $O$ は柱状集合の和 $O=\bigcup_{i}N_{s_{i}}$ であり、$h(O)=\bigcup_{i}h(N_{s_{i}})=\bigcup_{i}X_{s_{i}}$ は開。よって $h$ は開写像で、連続な開全単射なので同相写像である。
+:::
+
+::: hypcheck
+- **完備距離化可能**：Step 2 のカントールの共通部分定理（点の存在）にのみ使った。
+- **可分**：\ref{top:clopen-infinite-partition} の Step 3（リンデレーフ性）で、分割を**可算**個にするのに使った。
+- **零次元**：分割の各片を閉開集合にするのに使った（\ref{top:clopen-infinite-partition} の Step 2）。閉開であることは、各片が開（Step 5 の開写像性）であり、かつ和集合の差をとっても開のまま（Step 4 の互いに素化）であるために必要である。
+- **コンパクト集合は内部が空**：各 $X_{s}$ がコンパクトでないこと、したがって分割が**無限**個の片をもつこと（\ref{top:clopen-infinite-partition} の Step 5）に使った。有限個の片しかない段があると、$h$ は $\N^{\N}$ 全体では定義できない。
+- **空でない**：$X_{\varnothing}=X\neq\varnothing$ から木が始まる。
+- **選択**：各段で分割を一つ選ぶのに従属選択公理（または可算選択と、可分性による選択の具体化）を使った。
+:::
+
+::: corollary 無理数全体は ℕ^ℕ と同相 {#top:irrationals-nn keywords="the irrationals are homeomorphic to N^N" index="無理数の空間|むりすうのくうかん"}
+$\mathbb{P}\defeq\mathbb{R}\setminus\mathbb{Q}$（部分空間位相）は $\N^{\N}$ と同相である。
+:::
+
+::: proof
+\ref{top:alexandrov-urysohn-nn} の仮定を確かめる。
+
+- **ポーランド.** $\mathbb{P}$ は $\mathbb{R}$ の $G_{\delta}$ 集合 $\bigcap_{q\in\mathbb{Q}}(\mathbb{R}\setminus\{q\})$ なので完備距離化可能（\ref{top:gdelta-characterization}）で、$\mathbb{R}$ の部分空間として可分。
+- **零次元.** 有理数 $p<q$ について $(p,q)\cap\mathbb{P}=[p,q]\cap\mathbb{P}$（端点は有理数）なので、これは $\mathbb{P}$ の閉開集合であり、これらは $\mathbb{P}$ の開基をなす。
+- **コンパクト集合は内部が空.** $K\subset\mathbb{P}$ がコンパクトで、$\mathbb{P}$ での内部が空でないとすると、実数 $a<b$ で $\varnothing\neq(a,b)\cap\mathbb{P}\subset K$ となるものがある。$K$ は $\mathbb{R}$ でもコンパクトなので閉であり、$(a,b)\cap\mathbb{P}$ の $\mathbb{R}$ での閉包 $[a,b]$ を含む（$\mathbb{P}$ は $\mathbb{R}$ で稠密）。すると $K$ は $(a,b)$ の中の有理数を含み、$K\subset\mathbb{P}$ に矛盾。
+- **空でない.** $\sqrt{2}\in\mathbb{P}$。
+:::
+
+## ポーランド空間は ℕ^ℕ の連続像 {#top:sec-bs-image}
+
+::: theorem ポーランド空間は ℕ^ℕ の連続像 {#top:polish-image-of-nn keywords="every nonempty Polish space is a continuous image of N^N" index="ポーランド空間の連続全射|ぽーらんどくうかんのれんぞくぜんしゃ"}
+空でないポーランド空間 $X$ に対し、連続な全射 $g\colon\N^{\N}\to X$ がある。
+:::
+
+::: proof
+完備距離 $d$ を固定する。
+
+**Step 1（閉集合の木）.** 空でない閉集合 $F\subset X$ と $\varepsilon>0$ について、$F$ は直径 $<\varepsilon$ の空でない閉集合の可算族 $F_{0},F_{1},\dots$ の和である：$F$ は**可分**距離空間 $X$ の部分空間なので可分であり、稠密な列 $(x_{k})$（有限なら繰り返す）をとって $F_{k}\defeq F\cap\overline{B}(x_{k},\varepsilon/3)$（$\overline{B}$ は閉球 $\{y:d(y,x_{k})\le\varepsilon/3\}$）とおけばよい。$F_{k}$ は閉で $x_{k}\in F_{k}$、$\operatorname{diam}F_{k}\le2\varepsilon/3$、稠密性から $\bigcup F_{k}=F$。
+
+これを使い、空でない閉集合 $Y_{s}$（$s\in\N^{<\N}$）を $Y_{\varnothing}=X$, $Y_{s}=\bigcup_{n}Y_{s^{\frown}n}$, $\operatorname{diam}Y_{s^{\frown}n}<2^{-\lvert s\rvert}$ となるように作る（従属選択公理）。
+
+**Step 2（写像）.** $\alpha\in\N^{\N}$ について $Y_{\alpha|k}$ は空でない閉集合の減少列で直径 $\to0$ なので、**完備性**とカントールの共通部分定理から共通部分は一点 $g(\alpha)$。
+
+**Step 3（全射）.** $x\in X$ について、$x\in Y_{s}$ なら $Y_{s}=\bigcup_{n}Y_{s^{\frown}n}$ から $x\in Y_{s^{\frown}n}$ となる $n$ がある（一意とは限らないので一つ選ぶ）。こうして $\alpha$ を作ると $g(\alpha)=x$。
+
+**Step 4（連続性）.** \ref{top:alexandrov-urysohn-nn} の Step 4 と同じ：$\beta\in N_{\alpha|k}$ なら $g(\beta),g(\alpha)\in Y_{\alpha|k}$。
+:::
+
+$g$ は一般に単射でも開写像でもない（$X$ がコンパクトなら $\N^{\N}$ と同相になり得ない）。単射性を得るには分割（互いに素な閉開集合）が、開写像性には各片が開であることが必要で、それが \ref{top:alexandrov-urysohn-nn} の零次元性と「コンパクト集合は内部が空」の役割である。
+
+## 問題 {#top:sec-bs-problems}
+
+::: problem {#top:prob-bs-nn-compact-interior}
+$\N^{\N}$ のどのコンパクト集合も内部が空であることを直接示せ。
+:::
+
+::: solution
+$K\subset\N^{\N}$ がコンパクトで内部が空でないとすると、ある柱状集合 $N_{s}\subset K$ がある（柱状集合は開基）。$k=\lvert s\rvert$ とし、射影 $\pi_{k}\colon\N^{\N}\to\N$, $\alpha\mapsto\alpha(k)$ を考える。$\pi_{k}$ は連続（直積位相の定義）なので $\pi_{k}(K)$ は離散空間 $\N$ のコンパクト集合、すなわち有限集合である。一方、各 $m\in\N$ について $s^{\frown}m$ を延長した列は $N_{s}\subset K$ に属し、$\pi_{k}$ の値は $m$ なので $\pi_{k}(K)=\N$。矛盾。
+:::
+
+::: problem {#top:prob-bs-square}
+$\N^{\N}\times\N^{\N}$ が $\N^{\N}$ と同相であることを、\ref{top:alexandrov-urysohn-nn} を使って示せ。
+:::
+
+::: solution
+$Z\defeq\N^{\N}\times\N^{\N}$ について仮定を確かめる。
+- **ポーランド.** ポーランド空間の可算直積（ここでは二つ）はポーランド（\ref{top:polish-closure}）。
+- **零次元.** $N_{s}\times N_{t}$ は閉開集合の直積なので閉開（補集合は $(\N^{\N}\setminus N_{s})\times\N^{\N}\cup\N^{\N}\times(\N^{\N}\setminus N_{t})$ で開）であり、これらは直積位相の開基をなす。
+- **コンパクト集合は内部が空.** $K\subset Z$ がコンパクトで内部が空でないなら、$N_{s}\times N_{t}\subset K$ となる $s,t$ がある。第一射影 $p_{1}$ は連続なので $p_{1}(K)$ はコンパクトで、$p_{1}(N_{s}\times N_{t})=N_{s}$ を含む。よって $p_{1}(K)$ は $\N^{\N}$ のコンパクト集合で内部が空でなく、\ref{top:prob-bs-nn-compact-interior} に矛盾。
+- **空でない.** 明らか。
+
+（直接には $(\alpha,\beta)\mapsto(\alpha(0),\beta(0),\alpha(1),\beta(1),\dots)$ が同相写像を与える。）
+:::
+
+::: problem {#top:prob-bs-not-nn}
+次の空間は $\N^{\N}$ と同相でないことを示し、\ref{top:alexandrov-urysohn-nn} のどの仮定が欠けているかを答えよ。(1) カントール空間 $2^{\N}$。(2) $\mathbb{Q}$。(3) $\N^{\N}\sqcup\{\ast\}$（孤立点を一つ付け加えた位相和）。
+:::
+
+::: solution
+(1) $2^{\N}$ はコンパクト（チコノフの定理）で、それ自身が内部をもつコンパクト集合。$\N^{\N}$ はコンパクトでない（\ref{top:prob-bs-nn-compact-interior}）ので同相でない。欠けている仮定は「コンパクト集合は内部が空」。
+
+(2) $\mathbb{Q}$ は可算だが、$\N^{\N}$ は非可算（カントールの対角線論法）なので同相でない。欠けている仮定は完備距離化可能性（$\mathbb{Q}$ は完備距離化可能でない、\ref{top:gdelta-characterization}）。
+
+(3) $\{\ast\}$ はコンパクトで、開集合（孤立点）なので内部をもつ。$\N^{\N}$ には孤立点がない（各 $N_{s}$ は無限集合）ので同相でない。欠けている仮定は「コンパクト集合は内部が空」。
+:::
+
+::: supplement
+**前提を変えると.**
+- **コンパクトな場合.** 「コンパクト集合は内部が空」を「$X$ はコンパクトで孤立点をもたない」に替えると、空でない零次元（完全不連結）コンパクト距離化可能空間で孤立点のないものはカントール空間 $2^{\N}$ と同相である（ブラウワーの特徴づけ、\ref{top:brouwer-cantor}）。本ページと同じく木による構成で証明できるが、各節点の分岐が有限個になる点が異なる。
+- **可算な場合.** 完備性を「可算」に替え、孤立点をもたないことを仮定すると $\mathbb{Q}$ になる（シェルピンスキーの定理、\ref{top:page-rationals-characterization}）。
+- **零次元を外すと.** \ref{top:polish-image-of-nn} の連続全射は残るが、単射性は失われる。ポーランド空間の連続像（解析集合）や連続な単射像（ボレル集合になることが知られている：ルジン–ススリンの定理。ここでは証明しない）の理論は記述集合論の出発点である。解析的階層（\ref{comp:page-analytical-hierarchy}）はその実効版にあたる、と一般に言われている。
+
+**似た定理.** 無理数と $\N^{\N}$ の具体的な同相写像は、連分数展開 $x=a_{0}+\cfrac{1}{a_{1}+\cfrac{1}{a_{2}+\cdots}}$ によって与えられることが知られている（ここでは確かめていない）。上の証明は存在だけを与える。
+
+**高い視点から.** $\N^{\N}$ は「無限に分岐する木の無限の枝」全体であり、$2^{\N}$ は「二分木の枝」全体である。どちらの特徴づけも、空間を閉開集合の木（ルジン図式）で表し、枝と点を対応させるという同じ発想に立つ。各節点での分岐の数が有限かつ $2$ 以上ならカントール空間、常に可算無限なら $\N^{\N}$ になる。分岐数を決めるのは局所的なコンパクト性の有無で、比喩で言えば、コンパクトな片は「有限個の部屋に区切れる部屋」、内部をもたないコンパクト集合しかない空間は「どう区切っても無限個の部屋が出てくる部屋」である。この意味で $\N^{\N}$ は「至るところコンパクトでない」零次元ポーランド空間の唯一のモデルであり、ポーランド空間がすべてその連続像であることは、$\N^{\N}$ が「すべての完備可分な空間の住所録」の役割を果たすことを意味する。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

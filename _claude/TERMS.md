@@ -395,3 +395,4 @@
 | chain complex / chain map / homology / long exact sequence / chain homotopy | 鎖複体 / 鎖写像 / ホモロジー / 長完全列 / 鎖ホモトピー | チェイン複体 | 標準的。ha:page-chain-complexes |
 | projective object / projective resolution / comparison theorem / injective object | 射影対象 / 射影分解 / 比較定理 / 入射対象 | 射影的加群 | 標準的。ha:page-projective-resolutions |
 | left derived functor / horseshoe lemma | 左導来関手 / 馬蹄補題 | 導来函手 | 標準的。ha:page-derived-functors |
+| Ext / Tor / cochain complex | Ext / Tor / 余鎖複体 | コチェイン複体 | 標準的。ha:page-tor-ext |

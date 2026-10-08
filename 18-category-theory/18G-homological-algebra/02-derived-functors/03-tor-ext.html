@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tor と Ext | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18G-homological-algebra/02-derived-functors/03-tor-ext.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# Tor と Ext {#ha:page-tor-ext keywords="Ext functors, cochain complex Hom(P,b), long exact sequences of Ext in both variables, Ext over the integers, Ext and projectivity, group cohomology as Ext, Tor functors"}
+
+導来関手（\ref{ha:page-derived-functors}）の代表例が **Ext** と **Tor** である。本ページでは、加群の圏で $\mathrm{Hom}_{R}(-,b)$ の「射影分解による右導来関手」として $\mathrm{Ext}^{n}_{R}(a,b)$ を定義し（\ref{ha:ext}）、その基本性質と、**両方の変数についての長完全列**（\ref{ha:ext-long-exact}）を示す。$\mathbb{Z}$ 上では $\mathrm{Ext}^{1}_{\mathbb{Z}}(\mathbb{Z}/n,B)\cong B/nB$ と計算でき（\ref{ha:ext-z}）、$\mathrm{Ext}^{1}$ が消えることは射影性の特徴づけを与える（\ref{ha:ext-projective}）。群のコホモロジー（\ref{cat:group-cohomology}）は $\mathrm{Ext}_{\mathbb{Z}\Pi}^{n}(\mathbb{Z},A)$ にほかならない。Tor は補足で触れる。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。テンソル積が本サイトでまだ扱われていないため、Tor は定義と性質の紹介に留め、証明は Ext について行った。
+
+## 記法と定義の確認 {#ha:sec-te-notation}
+
+::: notation
+- $R$ は（単位元をもつ）環、$R\text{-}\mathbf{Mod}$ は左 $R$ 加群の圏で、十分な射影対象をもつ（\ref{ha:projective-basic} の 3）。$\mathrm{Hom}_{R}(a,b)$ は $R$ 加群準同型のアーベル群。$\mathrm{Hom}_{R}(-,b)$ は左完全な反変加法関手で、$a'\to a\to a''\to0$ が完全なら $0\to\mathrm{Hom}(a'',b)\to\mathrm{Hom}(a,b)\to\mathrm{Hom}(a',b)$ は完全（\ref{ha:hom-left-exact}）。
+- **余鎖複体** $C=(C^{n},\delta^{n}\colon C^{n}\to C^{n+1})$（$\delta\delta=0$）は、$D_{-n}\defeq C^{n}$ とおけば鎖複体とみなせ、$H^{n}(C)\defeq H_{-n}(D)$ とする。鎖複体についての結果（\ref{ha:long-exact-sequence}, \ref{ha:homotopy-invariance}）はこの読み替えでそのまま使う。
+- 射影分解・比較定理・馬蹄補題は \ref{ha:projective-resolution}, \ref{ha:comparison-theorem}, \ref{ha:projective-resolutions-unique}, \ref{ha:horseshoe} のとおり。
+:::
+
+## Ext の定義と基本性質 {#ha:sec-te-ext}
+
+::: definition Ext {#ha:ext keywords="Ext^n_R(a,b) via projective resolution of the first variable" index="Ext|えくすと, 拡大関手|かくだいかんしゅ"}
+$R$ 加群 $a,b$ について、$a$ の射影分解 $P\to a$ をとり、余鎖複体 $\mathrm{Hom}_{R}(P,b)$（$n$ 次の項 $\mathrm{Hom}_{R}(P_{n},b)$、$\delta^{n}\defeq\mathrm{Hom}(\partial_{n+1},b)$）の $n$ 次コホモロジーを
+$$
+\mathrm{Ext}^{n}_{R}(a,b)\defeq H^{n}\bigl(\mathrm{Hom}_{R}(P,b)\bigr)
+$$
+とする。$a$ の射 $f\colon a\to a'$ には持ち上げ $\varphi\colon P\to P'$ をとって $\mathrm{Hom}(\varphi,b)$ が誘導する射を、$b$ の射 $g\colon b\to b'$ には $\mathrm{Hom}(P,g)$ が誘導する射を対応させる。
+:::
+
+::: proposition Ext の基本性質 {#ha:ext-basic keywords="Ext is well defined, Ext^0 = Hom, Ext of a projective vanishes" index="Ext の基本性質|えくすとのきほんせいしつ"}
+1. $\mathrm{Ext}^{n}_{R}(a,b)$ は射影分解と持ち上げの選び方によらず（標準的な同型を除いて）、第一変数について反変、第二変数について共変な加法関手である。
+2. $\mathrm{Ext}^{0}_{R}(a,b)\cong\mathrm{Hom}_{R}(a,b)$（自然同型）。$n<0$ では $\mathrm{Ext}^{n}=0$。
+3. $a$ が射影的なら、$n\ge1$ で $\mathrm{Ext}^{n}_{R}(a,b)=0$。
+:::
+
+::: proof
+**1.** \ref{ha:derived-well-defined} の証明と同じ：二つの持ち上げは鎖ホモトピーで結ばれ、加法関手 $\mathrm{Hom}(-,b)$ は鎖ホモトピー $\varphi-\psi=\partial s+s\partial$ を余鎖ホモトピー $\mathrm{Hom}(\varphi,b)-\mathrm{Hom}(\psi,b)=\mathrm{Hom}(s,b)\delta+\delta\,\mathrm{Hom}(s,b)$ に写すので、\ref{ha:homotopy-invariance} からコホモロジーの射は一意。二つの射影分解の比較も \ref{ha:projective-resolutions-unique} と同様。第二変数については、$\mathrm{Hom}(P,g)$ が余鎖写像であること（$\mathrm{Hom}(P,g)$ と $\mathrm{Hom}(\partial,b)$ は可換）による。
+
+**2.** $P_{1}\to P_{0}\to a\to0$ は完全なので、左完全性から $0\to\mathrm{Hom}(a,b)\to\mathrm{Hom}(P_{0},b)\xrightarrow{\delta^{0}}\mathrm{Hom}(P_{1},b)$ は完全。$\mathrm{Hom}(P_{-1},b)=0$ なので $H^{0}=\ker\delta^{0}\cong\mathrm{Hom}(a,b)$。自然性は持ち上げの $0$ 次の項 $\varepsilon'\varphi_{0}=f\varepsilon$ から。
+
+**3.** $0\to a\xrightarrow{1}a\to0$ が射影分解で、$n\ge1$ の項は $0$。
+:::
+
+## 長完全列 {#ha:sec-te-long-exact}
+
+::: theorem Ext の長完全列 {#ha:ext-long-exact keywords="long exact sequences of Ext in the first and second variables" index="Ext の長完全列|えくすとのちょうかんぜんれつ"}
+1. 短完全列 $0\to b'\to b\to b''\to0$ と加群 $a$ について、次の完全列がある。
+$$
+\begin{gathered}
+0\to\mathrm{Hom}(a,b')\to\mathrm{Hom}(a,b)\to\mathrm{Hom}(a,b'')\to\mathrm{Ext}^{1}(a,b')\to\cdots\\
+\cdots\to\mathrm{Ext}^{n}(a,b')\to\mathrm{Ext}^{n}(a,b)\to\mathrm{Ext}^{n}(a,b'')\to\mathrm{Ext}^{n+1}(a,b')\to\cdots
+\end{gathered}
+$$
+2. 短完全列 $0\to a'\to a\to a''\to0$ と加群 $b$ について、次の完全列がある。
+$$
+\begin{gathered}
+0\to\mathrm{Hom}(a'',b)\to\mathrm{Hom}(a,b)\to\mathrm{Hom}(a',b)\to\mathrm{Ext}^{1}(a'',b)\to\cdots\\
+\cdots\to\mathrm{Ext}^{n}(a'',b)\to\mathrm{Ext}^{n}(a,b)\to\mathrm{Ext}^{n}(a',b)\to\mathrm{Ext}^{n+1}(a'',b)\to\cdots
+\end{gathered}
+$$
+:::
+
+::: proof
+**1.** $a$ の射影分解 $P$ を一つ固定する。各 $P_{n}$ は射影的なので $\mathrm{Hom}(P_{n},-)$ は完全（\ref{ha:projective-basic} の 1）で、$0\to\mathrm{Hom}(P,b')\to\mathrm{Hom}(P,b)\to\mathrm{Hom}(P,b'')\to0$ は各次数で短完全な余鎖複体の列（余鎖写像であることは $\mathrm{Hom}(P,-)$ と $\mathrm{Hom}(\partial,-)$ の可換性から）。\ref{ha:long-exact-sequence}（余鎖複体に読み替えたもの）から長完全列を得て、$H^{0}$ を \ref{ha:ext-basic} の 2 で $\mathrm{Hom}$ に置き換え、$H^{-1}=0$ から左端は $0$。
+
+**2.** 馬蹄補題（\ref{ha:horseshoe}）で、$a'$, $a''$ の射影分解 $P'$, $P''$ から $a$ の射影分解 $P$ と、各次数で分裂する短完全列 $0\to P'\to P\to P''\to0$ を作る。加法関手 $\mathrm{Hom}(-,b)$ は分裂短完全列を（向きを逆にした）分裂短完全列に写すので、$0\to\mathrm{Hom}(P'',b)\to\mathrm{Hom}(P,b)\to\mathrm{Hom}(P',b)\to0$ は余鎖複体の短完全列。長完全列をとり、1 と同様に $H^{0}$ を $\mathrm{Hom}$ に置き換える。現れる射が $\mathrm{Ext}$ の関手性による射であることは、$P'\to P\to P''$ が与えられた射の持ち上げであることによる。
+:::
+
+::: hypcheck
+- **$P_{n}$ の射影性**：1 では $\mathrm{Hom}(P_{n},-)$ の完全性として、2 では馬蹄補題の構成として使った。1 では入射分解を使わずに第二変数の長完全列が得られている。
+- **$\mathrm{Hom}(-,b)$ の左完全性**：$\mathrm{Ext}^{0}=\mathrm{Hom}$ に使った。
+:::
+
+## 計算と特徴づけ {#ha:sec-te-computations}
+
+::: proposition Z 上の Ext {#ha:ext-z keywords="Ext^1_Z(Z/n, B) = B/nB; Ext of cyclic groups" index="Ext（整数上）|えくすとせいすうじょう"}
+$n\ge1$ とアーベル群 $B$ について、$\mathrm{Ext}^{0}_{\mathbb{Z}}(\mathbb{Z}/n,B)\cong\{b\in B:nb=0\}$, $\mathrm{Ext}^{1}_{\mathbb{Z}}(\mathbb{Z}/n,B)\cong B/nB$, $k\ge2$ で $\mathrm{Ext}^{k}_{\mathbb{Z}}(\mathbb{Z}/n,B)=0$。
+:::
+
+::: proof
+射影分解 $0\to\mathbb{Z}\xrightarrow{n\cdot}\mathbb{Z}\to\mathbb{Z}/n\to0$（\ref{ha:prob-pr-z-mod-n}）を使う。$\mathrm{Hom}(\mathbb{Z},B)\cong B$（$\varphi\mapsto\varphi(1)$）で、$\mathrm{Hom}(n\cdot,B)$ はこの同型で $B\xrightarrow{n\cdot}B$ になる。余鎖複体は $0\to B\xrightarrow{n\cdot}B\to0\to\cdots$（次数 $0$, $1$）なので、$H^{0}=\ker(n\cdot)$, $H^{1}=B/nB$, $H^{k}=0$（$k\ge2$）。
+:::
+
+::: proposition Ext と射影性 {#ha:ext-projective keywords="a is projective iff Ext^1(a,b)=0 for all b" index="Ext と射影性|えくすとしゃえいせい"}
+$R$ 加群 $a$ について、$a$ が射影的であることと、すべての $b$ で $\mathrm{Ext}^{1}_{R}(a,b)=0$ であることは同値である。
+:::
+
+::: proof
+**⇒** は \ref{ha:ext-basic} の 3。**⇐**：エピ $e\colon P\to a$（$P$ 射影的）とその核 $k\colon K\to P$ をとる。\ref{ha:ext-long-exact} の 1 を $0\to K\to P\to a\to0$ と第一変数 $a$ に適用すると、$\mathrm{Hom}(a,P)\xrightarrow{e_{*}}\mathrm{Hom}(a,a)\to\mathrm{Ext}^{1}(a,K)=0$ が完全。よって $es=1_{a}$ となる $s\colon a\to P$ があり、\ref{ha:prob-pr-split} と同様に $P\cong K\oplus a$。射影対象の直和因子は射影的（\ref{ha:projective-basic} の 2）。
+:::
+
+::: example 群のコホモロジー
+群 $\Pi$ と $\Pi$ 加群 $A$ について、群環の棒分解 $B\to\mathbb{Z}$（\ref{cat:bar-resolution-exact}）は自明な加群 $\mathbb{Z}$ の自由、したがって射影分解である。\ref{cat:group-cohomology} の定義はまさに $H^{n}(\mathrm{Hom}_{\Pi}(B,A))$ なので
+$$
+H^{n}(\Pi,A)=\mathrm{Ext}^{n}_{\mathbb{Z}\Pi}(\mathbb{Z},A)
+$$
+であり、\ref{ha:ext-basic} の 1 により、他のどの射影分解を使って計算しても同じ値になる。たとえば有限巡回群では、棒分解より短い周期的な分解が使えることが知られている（ここでは扱わない）。
+:::
+
+## 問題 {#ha:sec-te-problems}
+
+::: problem {#ha:prob-te-zn-zm}
+$n,m\ge1$ について $\mathrm{Ext}^{1}_{\mathbb{Z}}(\mathbb{Z}/n,\mathbb{Z}/m)\cong\mathbb{Z}/\gcd(n,m)$ を示せ。
+:::
+
+::: solution
+\ref{ha:ext-z} より $(\mathbb{Z}/m)/n(\mathbb{Z}/m)$ を求めればよい。$n(\mathbb{Z}/m)$ は $n\mathbb{Z}+m\mathbb{Z}=\gcd(n,m)\mathbb{Z}$（ベズーの等式）の $\mathbb{Z}/m$ での像なので、商は $\mathbb{Z}/(n\mathbb{Z}+m\mathbb{Z})=\mathbb{Z}/\gcd(n,m)$。
+:::
+
+::: problem {#ha:prob-te-ext-z-z}
+$\mathrm{Ext}^{1}_{\mathbb{Z}}(\mathbb{Z}/n,\mathbb{Z})\cong\mathbb{Z}/n$ を示し、短完全列 $0\to\mathbb{Z}\xrightarrow{n\cdot}\mathbb{Z}\to\mathbb{Z}/n\to0$ と第二変数 $\mathbb{Z}$ についての \ref{ha:ext-long-exact} の 2 の列を書き下して確かめよ。
+:::
+
+::: solution
+\ref{ha:ext-z} で $B=\mathbb{Z}$ とすれば $\mathbb{Z}/n\mathbb{Z}$。長完全列は
+$$
+\begin{gathered}
+0\to\mathrm{Hom}(\mathbb{Z}/n,\mathbb{Z})\to\mathrm{Hom}(\mathbb{Z},\mathbb{Z})\xrightarrow{(n\cdot)^{*}}\mathrm{Hom}(\mathbb{Z},\mathbb{Z})\\
+\to\mathrm{Ext}^{1}(\mathbb{Z}/n,\mathbb{Z})\to\mathrm{Ext}^{1}(\mathbb{Z},\mathbb{Z})=0
+\end{gathered}
+$$
+で、$\mathrm{Hom}(\mathbb{Z}/n,\mathbb{Z})=0$（$\mathbb{Z}$ にねじれがない）、$\mathrm{Hom}(\mathbb{Z},\mathbb{Z})\cong\mathbb{Z}$ で $(n\cdot)^{*}$ は $n$ 倍。よって $0\to0\to\mathbb{Z}\xrightarrow{n}\mathbb{Z}\to\mathrm{Ext}^{1}\to0$ が完全で、$\mathrm{Ext}^{1}\cong\mathbb{Z}/n$。
+:::
+
+::: supplement
+**前提を変えると.** 可換環 $R$ と $R$ 加群 $b$ について、テンソル積 $-\otimes_{R}b$ は右完全な加法関手であることが知られており、その左導来関手を $\mathrm{Tor}^{R}_{n}(-,b)$ と書く。\ref{ha:derived-long-exact} から Tor の長完全列が得られ、$\mathbb{Z}$ 上では $\mathrm{Tor}_{1}^{\mathbb{Z}}(\mathbb{Z}/n,B)\cong\{b\in B:nb=0\}$ となる（射影分解 $0\to\mathbb{Z}\xrightarrow{n}\mathbb{Z}$ に $-\otimes B$ を施すと $B\xrightarrow{n}B$ になるため。ここではテンソル積の性質を確かめていない）。また、$\mathrm{Ext}^{1}_{R}(a,b)$ は $b$ による $a$ の拡大（短完全列 $0\to b\to e\to a\to0$）の同値類と一対一に対応することが知られている（米田の解釈。ここでは扱わない）。$\mathbb{Z}$ 上では、自由アーベル群の部分群が自由であることから、どのアーベル群も長さ $1$ の射影分解をもち、$k\ge2$ で $\mathrm{Ext}^{k}_{\mathbb{Z}}=0$ となることが知られている。
+
+**似た定理.** \ref{ha:ext-projective} の双対として、$b$ が入射的であることと、すべての $a$ で $\mathrm{Ext}^{1}(a,b)=0$ であることは同値である（\ref{ha:ext-long-exact} の 2 を使う同様の議論。ここでは確かめていない）。
+
+**高い視点から：Ext は「射の空間の高次の部分」.** $\mathrm{Ext}^{0}=\mathrm{Hom}$ は対象どうしの射の集まりで、$\mathrm{Ext}^{1}$ は「二つの対象を一つに貼り合わせる方法（拡大）」、高次の $\mathrm{Ext}^{n}$ はさらに高次の貼り合わせの自由度を数える。比喩で言えば、$\mathrm{Hom}$ が二つの部品を直接つなぐ方法の数なら、$\mathrm{Ext}^{1}$ はその間に緩衝材を挟んで一体の部品に組み上げる方法の数である。導来圏の言葉では、$\mathrm{Ext}^{n}(a,b)$ は $a$ から $b$ を $n$ だけずらしたものへの射の集合として統一的に理解される（ここでは扱わない）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

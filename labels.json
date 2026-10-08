@@ -8695,6 +8695,41 @@
       "num": "2.6",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/02-abelian.html"
     },
+    "ha:ext": {
+      "status": "defined",
+      "type": "definition",
+      "title": "Ext",
+      "num": "3.1",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/03-tor-ext.html"
+    },
+    "ha:ext-basic": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "Ext の基本性質",
+      "num": "3.2",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/03-tor-ext.html"
+    },
+    "ha:ext-long-exact": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "Ext の長完全列",
+      "num": "3.3",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/03-tor-ext.html"
+    },
+    "ha:ext-projective": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "Ext と射影性",
+      "num": "3.5",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/03-tor-ext.html"
+    },
+    "ha:ext-z": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "Z 上の Ext",
+      "num": "3.4",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/03-tor-ext.html"
+    },
     "ha:five-lemma": {
       "status": "defined",
       "type": "theorem",
@@ -8863,6 +8898,13 @@
       "num": "",
       "page": "18-category-theory/18G-homological-algebra/02-derived-functors/01-projective-resolutions.html"
     },
+    "ha:page-tor-ext": {
+      "status": "defined",
+      "type": "page",
+      "title": "Tor と Ext",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/03-tor-ext.html"
+    },
     "ha:preadditive": {
       "status": "defined",
       "type": "definition",
@@ -8960,6 +9002,20 @@
       "title": "",
       "num": "1.7",
       "page": "18-category-theory/18G-homological-algebra/02-derived-functors/01-projective-resolutions.html"
+    },
+    "ha:prob-te-ext-z-z": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "3.7",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/03-tor-ext.html"
+    },
+    "ha:prob-te-zn-zm": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "3.6",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/03-tor-ext.html"
     },
     "ha:projective": {
       "status": "defined",
@@ -9219,6 +9275,41 @@
       "title": "射影対象",
       "num": "",
       "page": "18-category-theory/18G-homological-algebra/02-derived-functors/01-projective-resolutions.html"
+    },
+    "ha:sec-te-computations": {
+      "status": "defined",
+      "type": "section",
+      "title": "計算と特徴づけ",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/03-tor-ext.html"
+    },
+    "ha:sec-te-ext": {
+      "status": "defined",
+      "type": "section",
+      "title": "Ext の定義と基本性質",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/03-tor-ext.html"
+    },
+    "ha:sec-te-long-exact": {
+      "status": "defined",
+      "type": "section",
+      "title": "長完全列",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/03-tor-ext.html"
+    },
+    "ha:sec-te-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/03-tor-ext.html"
+    },
+    "ha:sec-te-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/03-tor-ext.html"
     },
     "ha:short-exact-characterization": {
       "status": "defined",
@@ -33894,13 +33985,6 @@
       "title": "代数閉包の一意性",
       "referencedFrom": [
         "03-mathematical-logic/03C-model-theory/01-elementary-extensions/04-acf.html"
-      ]
-    },
-    "ha:page-tor-ext": {
-      "status": "planned",
-      "title": "Tor と Ext",
-      "referencedFrom": [
-        "18-category-theory/18G-homological-algebra/02-derived-functors/02-derived-functors.html"
       ]
     },
     "lin:basis-existence": {

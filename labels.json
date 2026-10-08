@@ -1359,6 +1359,13 @@
       "num": "5.6",
       "page": "18-category-theory/18A-general-theory/05-higher-structures/05-segal-condition.html"
     },
+    "cat:nerve-dense": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "稠密な関手と神経",
+      "num": "6.5",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/06-nerve-realization.html"
+    },
     "cat:nerve-essential-image": {
       "status": "defined",
       "type": "corollary",
@@ -1372,6 +1379,20 @@
       "title": "神経関手は充満忠実",
       "num": "1.6",
       "page": "18-category-theory/18A-general-theory/05-higher-structures/01-internal-categories.html"
+    },
+    "cat:nerve-realization": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "神経と実現の随伴",
+      "num": "6.2",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/06-nerve-realization.html"
+    },
+    "cat:nerve-realization-def": {
+      "status": "defined",
+      "type": "definition",
+      "title": "神経と実現",
+      "num": "6.1",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/06-nerve-realization.html"
     },
     "cat:nerve-segal": {
       "status": "defined",
@@ -1617,6 +1638,13 @@
       "title": "モノイダル圏のモノイドと作用",
       "num": "",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/03-monoids-actions.html"
+    },
+    "cat:page-nerve-realization": {
+      "status": "defined",
+      "type": "page",
+      "title": "神経と実現の随伴",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/06-nerve-realization.html"
     },
     "cat:page-pointwise-kan": {
       "status": "defined",
@@ -2080,6 +2108,20 @@
       "num": "7.10",
       "page": "18-category-theory/18A-general-theory/01-basics/07-adjunctions.html"
     },
+    "cat:prob-nr-preserves-colimits": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "6.7",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/06-nerve-realization.html"
+    },
+    "cat:prob-nr-set": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "6.6",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/06-nerve-realization.html"
+    },
     "cat:prob-one-sided-inverse": {
       "status": "defined",
       "type": "problem",
@@ -2268,6 +2310,13 @@
       "title": "右カン拡張の各点公式",
       "num": "3.2",
       "page": "18-category-theory/18A-general-theory/04-kan-extensions/03-kan.html"
+    },
+    "cat:realization-extends": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "実現は K を延長する",
+      "num": "6.3",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/06-nerve-realization.html"
     },
     "cat:reflective-basic": {
       "status": "defined",
@@ -3367,6 +3416,34 @@
       "title": "問題",
       "num": "",
       "page": "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html"
+    },
+    "cat:sec-nr-adjunction": {
+      "status": "defined",
+      "type": "section",
+      "title": "随伴",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/06-nerve-realization.html"
+    },
+    "cat:sec-nr-dense": {
+      "status": "defined",
+      "type": "section",
+      "title": "稠密性と神経の充満忠実性",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/06-nerve-realization.html"
+    },
+    "cat:sec-nr-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/06-nerve-realization.html"
+    },
+    "cat:sec-nr-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/04-kan-extensions/06-nerve-realization.html"
     },
     "cat:sec-pk-all": {
       "status": "defined",

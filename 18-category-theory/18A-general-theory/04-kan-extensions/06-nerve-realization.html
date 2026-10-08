@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>神経と実現の随伴 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/04-kan-extensions/06-nerve-realization.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 神経と実現の随伴 {#cat:page-nerve-realization keywords="nerve and realization adjunction, left Kan extension along the Yoneda embedding, realization as a colimit over the category of elements, dense functors and fully faithful nerves, geometric realization, nerve of categories, every category is a colimit of ordinals"}
+
+小さい圏 $\mathbf{C}$ から余完備な圏 $\mathbf{E}$ への関手 $K$ が一つあると、二つの関手が自動的に得られる：$\mathbf{E}$ の対象 $e$ を前層 $\mathbf{E}(K-,e)$ に送る**神経** $N_{K}$ と、前層 $P$ を「$P$ の元の数だけ $K$ の値を貼り合わせた」余極限に送る**実現** $\lvert-\rvert_{K}$ である。両者は随伴をなし（\ref{cat:nerve-realization}）、実現は $K$ の米田埋め込みに沿った延長になる（\ref{cat:realization-extends}）。さらに、神経が充満忠実であることと $K$ が稠密であることは同値で、そのとき $\mathbf{E}$ の各対象は $K$ の値の標準的な余極限として再構成される（\ref{cat:nerve-dense}）。単体的集合の神経（\ref{cat:page-internal-categories}）や特異単体的集合はこの構成の例である。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。
+
+## 記法と定義の確認 {#cat:sec-nr-notation}
+
+::: notation
+- $\mathbf{C}$ は小さい圏、$\widehat{\mathbf{C}}=\mathbf{Set}^{\mathbf{C}^{\mathrm{op}}}$、米田埋め込み $\mathbf{y}$、前層 $P$ の元の圏 $\int P$ と射影 $\pi_{P}$、記法 $x'\cdot f=P(f)(x')$ は \ref{cat:page-elements} のとおり。$\int P$ は小さい。
+- $\mathbf{E}$ は**余完備**（小さい図式の余極限がすべて存在する）な局所小の圏、$K\colon\mathbf{C}\to\mathbf{E}$ は関手。$\mathbf{E}(-,e)$ は余極限を極限に移す（\ref{cat:hom-preserves-limits} の 2）。
+- 稠密な関手と稠密性の判定、右随伴が充満忠実なら余単位は同型、は \ref{cat:dense-functor}, \ref{cat:dense-criterion}, \ref{cat:right-adjoint-full-faithful} のとおり。
+:::
+
+::: definition 神経と実現 {#cat:nerve-realization-def keywords="nerve N_K(e) = E(K-, e), realization |P| = colim over the category of elements of K pi_P" index="神経（一般の）|しんけいいっぱんの, 実現|じつげん"}
+1. **神経** $N_{K}\colon\mathbf{E}\to\widehat{\mathbf{C}}$ を $N_{K}(e)\defeq\mathbf{E}(K-,e)$（射 $h\colon e\to e'$ には $h\circ-$）で定める。
+2. 前層 $P$ の**実現** $\lvert P\rvert\defeq\operatorname*{colim}_{(c,x)\in\int P}K(c)$（図式 $K\circ\pi_{P}$ の余極限）とし、余極限の入射を $\iota_{(c,x)}\colon Kc\to\lvert P\rvert$ と書く。前層の射 $\theta\colon P\Rightarrow Q$ には、$\iota^{Q}_{(c,\theta_{c}x)}$ たちが定める余錐から誘導される射 $\lvert\theta\rvert\colon\lvert P\rvert\to\lvert Q\rvert$ を対応させる。
+:::
+
+## 随伴 {#cat:sec-nr-adjunction}
+
+::: theorem 神経と実現の随伴 {#cat:nerve-realization keywords="realization is left adjoint to the nerve" index="神経と実現の随伴|しんけいとじつげんのずいはん"}
+$\lvert-\rvert\colon\widehat{\mathbf{C}}\to\mathbf{E}$ は関手で、$\lvert-\rvert\dashv N_{K}$。すなわち $P$ と $e$ について自然な全単射
+$$
+\mathbf{E}(\lvert P\rvert,e)\cong\widehat{\mathbf{C}}\bigl(P,N_{K}(e)\bigr)
+$$
+がある。
+:::
+
+::: proof
+**Step 1（左辺の記述）.** 余極限の普遍性から、$\mathbf{E}(\lvert P\rvert,e)$ は余錐 $(\varphi_{(c,x)}\colon Kc\to e)_{(c,x)\in\int P}$ の集合と一対一に対応する（$g\mapsto(g\circ\iota_{(c,x)})$）。余錐の条件は、$\int P$ の各射 $f\colon(c,x)\to(c',x')$（$x'\cdot f=x$）について $\varphi_{(c',x')}\circ Kf=\varphi_{(c,x)}$ である。
+
+**Step 2（右辺の記述）.** 自然変換 $\theta\colon P\Rightarrow\mathbf{E}(K-,e)$ は、各 $c$ と $x\in P(c)$ に射 $\theta_{c}(x)\colon Kc\to e$ を対応させる族で、自然性は、$f\colon c\to c'$, $x'\in P(c')$ について $\theta_{c}(x'\cdot f)=\theta_{c'}(x')\circ Kf$ である。
+
+**Step 3（一致）.** $\varphi_{(c,x)}=\theta_{c}(x)$ とおくと、Step 1 の余錐の条件と Step 2 の自然性は、$x=x'\cdot f$ と置けばまったく同じ式である。よって両者は同じデータで、全単射が得られる。
+
+**Step 4（関手性と自然性）.** $\lvert\theta\rvert$ は、余錐 $(\iota^{Q}_{(c,\theta_{c}x)})$ の条件が \ref{cat:elements-projection-dfib} の $\int\theta$ の関手性から成り立つので定まり、余極限の一意性から $\lvert\theta'\theta\rvert=\lvert\theta'\rvert\lvert\theta\rvert$。全単射は、$e$ について（$h\circ-$ を両辺で合成）、$P$ について（$\theta$ との合成が余錐の添字の付け替え $(c,x)\mapsto(c,\theta_{c}x)$ に対応）自然である。
+:::
+
+::: hypcheck
+- **$\mathbf{E}$ の余完備性**：$\lvert P\rvert$ の存在に使った（$\int P$ は小さいので、小さい余極限で足りる）。
+- **$\int P$ の射の定義**：Step 3 で余錐の条件と自然性が一致することの核心である。
+:::
+
+::: proposition 実現は K を延長する {#cat:realization-extends keywords="|y c| = K c naturally; realization is the left Kan extension of K along y" index="実現と延長|じつげんとえんちょう"}
+$\lvert\mathbf{y}c\rvert\cong Kc$（$c$ について自然）。したがって $\lvert-\rvert\circ\mathbf{y}\cong K$。
+:::
+
+::: proof
+$\int\mathbf{y}c$ はスライス圏 $\mathbf{C}/c$ で、$(c,1_{c})$ が終対象（\ref{cat:page-elements} の例 1）。終対象をもつ図式の余極限は、終対象での値そのもの（入射は終対象への唯一の射の像）なので、$\lvert\mathbf{y}c\rvert\cong K(c)$。自然性は、$f\colon c\to c'$ が $\mathbf{C}/c\to\mathbf{C}/c'$ を誘導し終対象を $(c,f)$ に移すことから。
+:::
+
+::: remark
+\ref{cat:realization-extends} と随伴性から、$\lvert-\rvert$ は $K$ の $\mathbf{y}$ に沿った左カン拡張 $\mathrm{Lan}_{\mathbf{y}}K$ である（\ref{cat:lan-coend} の公式と比べよ。元の圏上の余極限は、コエンド $\int^{c}P(c)\cdot Kc$ と同じものである）。ここではこの同一視の詳細は確かめていない。
+:::
+
+## 稠密性と神経の充満忠実性 {#cat:sec-nr-dense}
+
+::: theorem 稠密な関手と神経 {#cat:nerve-dense keywords="N_K is fully faithful iff K is dense iff the counit |N_K e| -> e is an isomorphism" index="稠密な関手と神経|ちゅうみつなかんしゅとしんけい"}
+次は同値である。
+1. $K$ は稠密。
+2. 神経 $N_{K}$ は充満忠実。
+3. 随伴の余単位 $\lvert N_{K}(e)\rvert\to e$ はすべて同型。
+:::
+
+::: proof
+1 ⇔ 2 は稠密性の判定（\ref{cat:dense-criterion}）そのもの（$N_{K}(e)=\mathbf{E}(K-,e)$）。2 ⇔ 3 は右随伴が充満忠実であることと余単位が同型であることの同値（\ref{cat:right-adjoint-full-faithful} の 3）。
+:::
+
+::: example
+1. **圏の神経.** $K\colon\Delta_{+}\to\mathbf{Cat}$ を、順序数 $n+1=\{0<\cdots<n\}$ を圏とみる埋め込みとすると、$N_{K}(\mathbf{D})_{n}=\mathbf{Cat}(n+1,\mathbf{D})$ は圏の神経（\ref{cat:simplicial-object} の例 2）である。神経は充満忠実（\ref{cat:nerve-fully-faithful}）なので、\ref{cat:nerve-dense} から $K$ は稠密で、すべての小さい圏は順序数の圏 $n+1$ の標準的な余極限である。$\mathbf{Cat}$ の余完備性は認める。
+2. **幾何学的実現.** $K\colon\Delta_{+}\to\mathbf{Top}$ を標準単体 $n+1\mapsto\Delta^{n}$ とすると、$N_{K}$ は特異単体的集合（\ref{cat:simplicial-object} の例 1）で、実現 $\lvert-\rvert$ は単体的集合の**幾何学的実現**である（$\mathbf{Top}$ の余完備性は認める）。$K$ は稠密でない（たとえば特異単体的集合から空間は一般に復元できない）ことが知られている。
+3. **恒等的な場合.** $\mathbf{E}=\widehat{\mathbf{C}}$, $K=\mathbf{y}$ なら $N_{\mathbf{y}}(Q)=\widehat{\mathbf{C}}(\mathbf{y}-,Q)\cong Q$（米田の補題）で、余単位が同型であることは「前層は表現可能関手の余極限」（\ref{cat:presheaf-colimit-representables}）である。
+:::
+
+## 問題 {#cat:sec-nr-problems}
+
+::: problem {#cat:prob-nr-set}
+$\mathbf{C}=\mathbf{1}$（対象一つ、恒等射のみ）とし、$K\colon\mathbf{1}\to\mathbf{E}$ を対象 $k$ とする。$\widehat{\mathbf{1}}\simeq\mathbf{Set}$ で、実現は $S\mapsto\coprod_{S}k$（$S$ 個の $k$ の余積）、神経は $e\mapsto\mathbf{E}(k,e)$ であることを確かめ、随伴が余積の普遍性そのものであることを確かめよ。
+:::
+
+::: solution
+$\mathbf{1}$ 上の前層は集合 $S$ で、$\int S$ は $S$ の元を対象とする離散圏。その上の定数図式 $k$ の余極限は $\coprod_{S}k$。随伴の全単射 $\mathbf{E}(\coprod_{S}k,e)\cong\mathbf{Set}(S,\mathbf{E}(k,e))$ は、余積からの射が各成分の射の族（$S$ で添字付けられた $k\to e$ の族）と一対一に対応することそのもの。
+:::
+
+::: problem {#cat:prob-nr-preserves-colimits}
+実現 $\lvert-\rvert$ は、$\widehat{\mathbf{C}}$ のすべての余極限を保存することを示せ。
+:::
+
+::: solution
+$\lvert-\rvert$ は左随伴なので、右随伴が極限を保存することの双対（\ref{cat:adjoints-preserve-limits} の双対）から余極限を保存する。
+:::
+
+::: supplement
+**前提を変えると.** $\mathbf{E}$ が余完備でなくても、各 $P$ について余極限 $\lvert P\rvert$ が存在すれば同じ随伴が成り立つ。逆に、$\widehat{\mathbf{C}}$ から余完備な圏への余極限を保存する関手は、その $\mathbf{y}$ への制限 $K$ の実現と同型であることが知られている（前層の圏は「$\mathbf{C}$ 上の自由余完備圏」である）。
+
+**似た定理.** 元の圏（\ref{cat:page-elements}）上の余極限による実現は、コエンドによる左カン拡張の公式（\ref{cat:lan-coend}）の言い換えである。$\mathbf{Cat}$ の神経の場合、実現は単体的集合から生成元と関係で圏を作る操作（基本圏）になることが知られている。ドルド–カンの対応（単体的アーベル群と鎖複体）も、同じ型の随伴から得られることが知られている。
+
+**高い視点から：型紙を貼り合わせる.** $K$ は $\mathbf{C}$ の各対象に「型紙」$Kc$ を割り当てる。前層 $P$ は「どの型紙を何枚、どう貼り合わせるか」の設計図で、実現 $\lvert P\rvert$ は設計図どおりに型紙を貼った完成品、神経 $N_{K}(e)$ は完成品 $e$ にそれぞれの型紙がどう写り込んでいるかの一覧である。随伴は「完成品から $e$ への写像は、各型紙から $e$ への写像を設計図と整合的に選ぶことと同じ」と言っている。稠密性は、どの $e$ も自分の写り込みの一覧から貼り直して復元できる、という性質である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

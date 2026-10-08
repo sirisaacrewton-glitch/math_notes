@@ -316,6 +316,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | TG-01 | 54G/01-counterexamples/01-niemytzki-plane | ニェミツキ平面（top:niemytzki-plane）、ジョーンズの補題 | — | 完了 |
 | TG-02 | 54G/01-counterexamples/02-sorgenfrey | ゾルゲンフライ直線（リンデレーフ・正規・コンパクト集合は可算）と平面（非リンデレーフ・非正規） | 小山 例 2.4 | 完了 |
 | TG-03 | 54G/01-counterexamples/03-tychonoff-plank | 順序数の空間のコンパクト性、欠けたチコノフの板は完全正則だが正規でない（資料なし） | — | 完了 |
+| TG-04 | 54G/01-counterexamples/04-double-arrow | 二重矢印空間（完備な全順序のコンパクト性、可分・第一可算・非距離化可能、ゾルゲンフライ部分空間）（資料なし） | — | 完了 |
 | TE-01 | 54E/01-metric-spaces/01-completeness | 完備性と完備化 | §26 | 完了 |
 | TE-02 | 54E/01/02-baire | ベールのカテゴリー定理（top:baire-category, top:first-category） | §26 | 完了 |
 | TE-03 | 54E/01/03-compact-metric | 全有界性・点列コンパクト性・ハイネ＝ボレル（top:heine-borel） | §22, §27 | 完了 |
@@ -337,6 +338,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 一般位相 TG-04（54G/01-counterexamples/04-double-arrow, top:page-double-arrow：完備な全順序の順序位相のコンパクト性、二重矢印空間はコンパクトハウスドルフ・可分・第一可算、部分空間がゾルゲンフライ直線と同相で距離化可能でない、射影と部分空間の可分性の問題）。54G の説明を更新。資料なし。
 - 2026-10-08 一般位相 TD-15（54D/01/15-beta-n, top:page-beta-n：交わらない部分集合の閉包は交わらない（特性関数の延長）、自明でない収束列はない、濃度 𝔠 の独立な族、|βℕ|=2^𝔠、可分ハウスドルフ空間の濃度の上界と剰余の問題）。07-stone-cech と 14-countable-compactness から参照。独自構成。
 - 2026-10-08 順序数解析 OA-06（03F/08-ordinal-analysis/06-hydra, pt:page-hydra：重複度による標準形の比較、自然な和とその性質、ヒドラゲームの規則と木の順序数、どの戦略でもヒドラは死ぬ（自然な和の狭義単調性）、カービー–パリスの独立性（引用）、小さいヒドラと自然な和の計算の問題）。資料なし。
 - 2026-10-08 モデル理論 MC-08（03C/04-uncountable-categoricity/08-morley-rank, model:page-morley-rank：モデルごとのモーリー階数、単調性と選言の階数、階数 0（有限）と 1（極小）、ω 安定 ⇔ すべてのモデルで階数が順序数（二分木の補題と、大きい論理式の分割）、ACF と DLO の問題）。02-omega-stable の補足から参照。資料なし。

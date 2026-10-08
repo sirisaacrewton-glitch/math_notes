@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>アレクサンドロフの二重矢印空間 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54G-peculiar-spaces/01-counterexamples/04-double-arrow.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# アレクサンドロフの二重矢印空間 {#top:page-double-arrow keywords="Alexandroff double arrow space, two arrows space, lexicographic order on [0,1] x {0,1}, complete linear orders are compact, compact separable first countable non-metrizable space, Sorgenfrey subspace"}
+
+コンパクトハウスドルフ空間が距離化可能であるための条件は第二可算性である（\ref{top:compact-metrizable}）。第二可算性より弱い可分性と第一可算性を両方もっても、コンパクトハウスドルフ空間は距離化可能とは限らない。その典型例が**アレクサンドロフの二重矢印空間**（\ref{top:double-arrow}）で、区間 $[0,1]$ の各点を「上の矢印」と「下の矢印」の二点に分け、辞書式順序の順序位相を入れたものである。本ページでは、完備な全順序の順序位相はコンパクトであること（\ref{top:complete-order-compact}）を示し、二重矢印空間がコンパクトハウスドルフ・可分・第一可算でありながら、ゾルゲンフライ直線を部分空間に含むために距離化可能でないこと（\ref{top:double-arrow-properties}）を示す。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。
+
+## 記法と定義の確認 {#top:sec-dar-notation}
+
+::: notation
+- 順序位相とその開基（開区間と、端点を含む半開区間）、順序位相はハウスドルフ、は \ref{top:order-topology}, \ref{top:order-topology-base}, \ref{top:order-hausdorff} のとおり。
+- 全順序集合 $L$ が**完備**であるとは、空でない部分集合がつねに上限をもつことをいう。
+- ゾルゲンフライ直線 $\R_{\ell}$（下限位相）は第二可算でない（\ref{top:sorgenfrey-not-second-countable}）。コンパクト距離空間は第二可算（\ref{top:compact-metric-second-countable}）、第二可算性は部分空間に遺伝する。
+:::
+
+## 完備な全順序のコンパクト性 {#top:sec-dar-compact}
+
+::: lemma 完備な全順序はコンパクト {#top:complete-order-compact keywords="a complete linear order with endpoints is compact in the order topology" index="完備な全順序のコンパクト性|かんびなぜんじゅんじょのこんぱくとせい"}
+最小元 $m$ と最大元 $M$ をもつ完備な全順序集合 $L$ は、順序位相でコンパクトである。
+:::
+
+::: proof
+開被覆 $\mathcal{U}$ をとり、$S\defeq\{x\in L:[m,x]\text{ は }\mathcal{U}\text{ の有限個で覆える}\}$、$s\defeq\sup S$ とする（$m\in S$ なので空でない）。$s\in U\in\mathcal{U}$ をとる。
+
+**$s\in S$.** $s=m$ なら明らか。$s>m$ なら、$U$ は $s$ の基本近傍を含むので、$a<s$ で $(a,s]\subseteq U$ となる $a$ がある。$a$ は $S$ の上界でない（$s$ が最小の上界）ので、$x>a$ となる $x\in S$ があり、$[m,s]\subseteq[m,x]\cup(a,s]$ は有限個で覆える。
+
+**$s=M$.** $s<M$ とする。$U$ は $s$ の基本近傍を含むので、$b>s$ で $[s,b)\subseteq U$ となる $b$ がある。$s<y<b$ となる $y$ があれば $[m,y]\subseteq[m,s]\cup[s,b)$ から $y\in S$、$y>s$ で矛盾。そのような $y$ がなければ、$b$ を含む $V\in\mathcal{U}$ を加えて $[m,b]=[m,s]\cup\{b\}$ が有限個で覆え、$b\in S$ で矛盾。
+
+よって $M\in S$ で、$L=[m,M]$ は有限個で覆える。
+:::
+
+::: hypcheck
+- **完備性**：$s=\sup S$ の存在に使った。$\mathbb{Q}\cap[0,1]$ は完備でなく、コンパクトでない。
+- **端点の存在**：被覆すべき全体を $[m,M]$ とするのに使った。
+:::
+
+## 二重矢印空間 {#top:sec-dar-space}
+
+::: definition 二重矢印空間 {#top:double-arrow keywords="double arrow space: [0,1] x {0,1} with the lexicographic order topology" index="二重矢印空間|にじゅうやじるしくうかん, アレクサンドロフの二重矢印|あれくさんどろふのにじゅうやじるし"}
+$A\defeq[0,1]\times\{0,1\}$ に**辞書式順序**（$(s,i)<(t,j)\iff s<t$、または $s=t$ かつ $i<j$）を入れ、順序位相を考えたものを**二重矢印空間**という。
+:::
+
+::: remark
+$(s,0)$ と $(s,1)$ の間に点はない（隣り合う）。したがって、$s\in(0,1)$ について、$(s,1)$ の基本近傍は $[(s,1),(t,0))$（$t>s$）の形の集合を含み、$(s,0)$ の基本近傍は $((r,1),(s,0)]$（$r<s$）の形の集合を含む。
+:::
+
+::: theorem 二重矢印空間の性質 {#top:double-arrow-properties keywords="the double arrow space is compact Hausdorff, separable, first countable, but not metrizable" index="二重矢印空間の性質|にじゅうやじるしくうかんのせいしつ"}
+二重矢印空間 $A$ は次を満たす。
+1. コンパクトハウスドルフ。
+2. 可分。
+3. 第一可算。
+4. 部分空間 $(0,1)\times\{1\}$ はゾルゲンフライ直線と同相。
+5. 第二可算でなく、したがって距離化可能でない。
+:::
+
+::: proof
+**1.** ハウスドルフは順序位相の一般論（\ref{top:order-hausdorff}）。最小元 $(0,0)$、最大元 $(1,1)$ をもつ。完備性：空でない $B\subseteq A$ について $t\defeq\sup\{s:(s,i)\in B\}$（$[0,1]$ で）とする。第一成分が $t$ の元が $B$ にあれば、その大きい方が $\sup B$。なければ $(t,0)$ が $\sup B$：上界であることは第一成分が $<t$ であることから、最小であることは、$(v,j)<(t,0)$ なら $v<t$ で、第一成分が $v$ より大きい元が $B$ にあることから。\ref{top:complete-order-compact} からコンパクト。
+
+**2.** $D\defeq\mathbb{Q}\times\{0,1\}$（$[0,1]$ の部分で）は可算で稠密：空でない開区間 $((r,i),(t,j))$ が空でないとき、$r<t$ なら $r<q<t$ となる有理数 $q$ で $(q,0)$ が属する。$r=t$ なら $i=0$, $j=1$ で区間は空。端点を含む半開区間も同様。
+
+**3.** $(s,1)$（$s<1$）の近傍は、$[(s,1),(s+1/n,0))$（$n$ は $s+1/n\le1$ となる範囲）を含む：任意の基本近傍 $((r,i),(t,j))\ni(s,1)$ は $t>s$ を満たし、$s+1/n<t$ ならこの集合を含む。$(s,0)$ も対称に、$(1,1)$, $(0,0)$ も同様（$(1,1)$ の近傍は $((1-1/n,1),(1,1)]$）。
+
+**4.** $Y\defeq(0,1)\times\{1\}$ とし、$f\colon(0,1)\to Y$, $f(s)\defeq(s,1)$ とする。$A$ の開区間と $Y$ の共通部分は、
+$$
+((r,i),(t,j))\cap Y=\begin{cases}\{(u,1):r\le u<t\}&(i=0),\\\{(u,1):r<u<t\}&(i=1)\end{cases}
+$$
+（$j$ によらない）なので、$Y$ の開集合は $f$ で下限位相の開集合（$[r,t)$ と $(r,t)=\bigcup_{\varepsilon}[r+\varepsilon,t)$ の和）に対応する。逆に、下限位相の基本開集合 $[s,t)$ の像は $((s,0),(t,0))\cap Y$ で $Y$ の開集合。よって $f$ は $(0,1)$ の下限位相と $Y$ の間の同相で、$(0,1)$ の下限位相は単調な全単射 $(0,1)\to\R$ を通して $\R_{\ell}$ と同相。
+
+**5.** $A$ が第二可算なら部分空間 $Y$ も第二可算で、4 から $\R_{\ell}$ が第二可算となり、\ref{top:sorgenfrey-not-second-countable} に反する。距離化可能なら、コンパクト距離空間として第二可算（\ref{top:compact-metric-second-countable}）になり矛盾。
+:::
+
+::: hypcheck
+- **点を二重にすること**：$(s,0)$ と $(s,1)$ が隣り合うために、$(s,1)$ の近傍が右半開区間になり（4）、第二可算性が失われる。$[0,1]$ そのものは第二可算である。
+- **完備性**：1 のコンパクト性に使った。
+:::
+
+## 問題 {#top:sec-dar-problems}
+
+::: problem {#top:prob-dar-projection}
+射影 $\pi\colon A\to[0,1]$, $(s,i)\mapsto s$ は連続な全射で、各点の逆像は高々 $2$ 点であることを示せ。コンパクトハウスドルフ空間の連続像として、$[0,1]$ は距離化可能だが $A$ はそうでないことと比べよ。
+:::
+
+::: solution
+$\pi^{-1}((a,b))=((a,1),(b,0))$（$a<b$）と、端点を含む区間についても同様に順序位相の開集合なので連続。全射は明らかで、逆像は $\{(s,0),(s,1)\}$。距離化可能性は連続全射の像から元へは遡らない。
+:::
+
+::: problem {#top:prob-dar-hereditarily-separable}
+$A$ の部分空間 $Y=(0,1)\times\{1\}$ は可分であることを確かめよ。（$A$ の任意の部分空間が可分であることが知られている。）
+:::
+
+::: solution
+4 から $Y\cong\R_{\ell}$ で、$\mathbb{Q}$ は $\R_{\ell}$ で稠密（$[s,t)$ は有理数を含む）なので、$\mathbb{Q}\cap(0,1)$ の像が $Y$ で稠密。
+:::
+
+::: supplement
+**前提を変えると.** 二重矢印空間は完全正規かつ遺伝的リンデレーフ・遺伝的可分であることが知られている。コンパクトハウスドルフ空間について、「完全正規」「遺伝的可分」などの条件が距離化可能性を導くかどうかは集合論の仮定に依存する問題と関係し、二重矢印空間はその文脈での標準的な反例であるとされる（ここでは扱わない）。
+
+**似た定理.** コンパクトハウスドルフ空間が距離化可能であることは、第二可算性（\ref{top:compact-metrizable}）や、対角線 $\Delta_{A}\subseteq A\times A$ が $G_{\delta}$ であること（シュナイダーの定理）と同値であることが知られている。ゾルゲンフライ直線（\ref{top:page-sorgenfrey}）、チコノフの板（\ref{top:page-tychonoff-plank}）とともに、順序や半開区間から作られる反例の系列をなす。
+
+**高い視点から：点を裂いてできる隙間.** 区間 $[0,1]$ の各点を二つの点に「裂く」と、裂け目の両側に点が一つずつ置かれ、左側の点は左からしか、右側の点は右からしか近づけなくなる。全体としてはコンパクトで、可算な点で稠密に覆えるが、どの点がどちら側の矢印かを区別するには非可算個の開集合が必要になる。比喩で言えば、一本の糸を縦に裂いて二本にしたもので、二本は全く同じ長さで並んでいながら、それぞれの糸の「向き」の情報を可算個の目印では記録しきれない。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

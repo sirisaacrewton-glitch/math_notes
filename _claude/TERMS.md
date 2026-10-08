@@ -419,3 +419,4 @@
 | combinatory logic / weak reduction / bracket abstraction / combinatory completeness | 組合せ論理 / 弱簡約 / 括弧抽象 / 組合せ完全性 | コンビネータ論理 | 標準的。logic:page-combinatory-logic |
 | martingale / supermartingale / Kolmogorov inequality / Schnorr theorem | マルチンゲール / 優マルチンゲール / コルモゴロフの不等式 / シュノアの定理 | | 標準的。comp:page-martingales |
 | Stone-Weierstrass theorem / Weierstrass approximation theorem / separates points | ストーン–ワイエルシュトラスの定理 / ワイエルシュトラスの近似定理 / 二点を分離する | | 標準的。top:page-stone-weierstrass |
+| Ax-Grothendieck theorem / Jacobian conjecture | アックス–グロタンディークの定理 / ヤコビアン予想 | | 標準的。model:page-ax-grothendieck |

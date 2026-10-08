@@ -328,6 +328,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-08 モデル理論 MT-14（03C/03-ultraproducts/03-ax-grothendieck, model:page-ax-grothendieck：主張を文 σ_{n,d} で書く、F_p の代数閉包の有限部分集合は有限部分体に入る、正標数での証明（鳩の巣）、レフシェッツの原理と超積による標数 0 への移行、Q 上の x^3 とフロベニウスの問題）。資料なし。
 - 2026-10-08 一般位相 TF-04（54C/01/04-stone-weierstrass, top:page-stone-weierstrass：√t の多項式近似（明示的な誤差 2/n）、部分代数の閉包は束、二点での補間、ストーン–ワイエルシュトラスの定理（束による証明）、多項式・三角多項式の稠密性、偶多項式と積空間の問題）。独自構成。
 - 2026-10-08 アルゴリズム的ランダムネス AR-04（03D/05-algorithmic-randomness/04-martingales, comp:page-martingales：マルチンゲールと優マルチンゲール、カントール空間上のコルモゴロフの不等式、シュノアの定理（ML ランダム ⇔ 左 c.e. マルチンゲールで勝てない。接頭辞なしの検定からマルチンゲールを構成）、計算可能な列・1 が有限個の列の例）。資料なし。
 - 2026-10-08 ラムダ計算 LC-03（03D/06-lambda-calculus/03-combinatory-logic, logic:page-combinatory-logic：S, K と弱簡約、括弧抽象と組合せ完全性（同時代入、新しい変数を経由）、並行簡約と完全展開による弱簡約の合流性、ラムダ計算との翻訳（(M_CL)_λ =β M）、ξ 規則の破れ）。資料なし。
@@ -467,6 +468,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | MT-08 | 02-types-and-countable-models/04-indiscernibles | 識別不能列とEMモデル | 3 | 完了 |
 | MT-09 | 03-ultraproducts/01-ultraproducts | 超積とウォシュの定理 | 4 | 完了（drafts/10 を移した） |
 | MT-10 | 03-ultraproducts/02-ultrapower-saturation | 超積と飽和 | 4, 6 | 完了 |
+| MT-14 | 03-ultraproducts/03-ax-grothendieck | アックス–グロタンディークの定理（レフシェッツの原理と超積による移行。資料なし） | — | 完了 |
 | MT-12 | 02-types-and-countable-models/05-random-graph | ランダムグラフ・拡張公理・ω 範疇性・0–1 法則（資料なし） | — | 完了 |
 | MT-13 | 02-types-and-countable-models/06-fraisse-limits | 年齢・HP/JEP/AP・超均質と拡張性・フライッセの定理・極限の理論の ω 範疇性（資料なし） | — | 完了 |
 

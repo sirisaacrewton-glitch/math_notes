@@ -245,7 +245,11 @@
     var title = parsed.page.title || document.title;
     el.innerHTML = '<header class="mn-page-head">' +
       (PG ? '<div class="mn-page-sec">' + esc(PG.subj) + ' §' + PG.sec + '</div>' : '') +
-      '<h1' + (parsed.page.label ? ' id="' + esc(parsed.page.label) + '"' : '') + '>' + renderer.renderInline(title) + '</h1></header>' +
+      (KIND === 'home'
+        // トップページ：サイト名と日本語の副題を 2 行に分けて飾る
+        ? '<h1 class="mn-hero"><span class="mn-hero-title">' + esc(C.SITE_TITLE) + '</span>' +
+          (C.SITE_SUBTITLE ? '<span class="mn-hero-sub">' + esc(C.SITE_SUBTITLE) + '</span>' : '') + '</h1></header>'
+        : '<h1' + (parsed.page.label ? ' id="' + esc(parsed.page.label) + '"' : '') + '>' + renderer.renderInline(title) + '</h1></header>') +
       '<div class="mn-page-tools"></div>' +
       '<div class="mn-toc-inline"></div>' +
       '<div class="mn-prose">' + renderer.renderNodes(parsed.children) + '</div>';

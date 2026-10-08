@@ -9276,6 +9276,41 @@
       "num": "3.4",
       "page": "18-category-theory/18G-homological-algebra/02-derived-functors/03-tor-ext.html"
     },
+    "ha:ext-zp-zp": {
+      "status": "defined",
+      "type": "example",
+      "title": "$\\mathbb{Z}/p$ の $\\mathbb{Z}/p$ による拡大",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/05-extensions.html"
+    },
+    "ha:ext1-classifies": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "Ext¹ は拡大を分類する",
+      "num": "5.4",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/05-extensions.html"
+    },
+    "ha:ext1-splitting": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "分裂の判定",
+      "num": "5.5",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/05-extensions.html"
+    },
+    "ha:extension": {
+      "status": "defined",
+      "type": "definition",
+      "title": "拡大",
+      "num": "5.1",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/05-extensions.html"
+    },
+    "ha:extension-morphism-iso": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "拡大の射は同型",
+      "num": "5.2",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/05-extensions.html"
+    },
     "ha:five-lemma": {
       "status": "defined",
       "type": "theorem",
@@ -9444,6 +9479,13 @@
       "num": "",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/03-diagram-lemmas.html"
     },
+    "ha:page-extensions": {
+      "status": "defined",
+      "type": "page",
+      "title": "Ext¹ と拡大",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/05-extensions.html"
+    },
     "ha:page-injective-modules": {
       "status": "defined",
       "type": "page",
@@ -9549,6 +9591,20 @@
       "num": "3.9",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/03-diagram-lemmas.html"
     },
+    "ha:prob-ex-z-z2": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "5.6",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/05-extensions.html"
+    },
+    "ha:prob-ex-z4-z2": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "5.7",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/05-extensions.html"
+    },
     "ha:prob-in-cogenerator": {
       "status": "defined",
       "type": "problem",
@@ -9632,6 +9688,13 @@
       "title": "エピ射の引き戻しはエピ",
       "num": "3.1",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/03-diagram-lemmas.html"
+    },
+    "ha:pushout-extension": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "押し出しによる拡大",
+      "num": "5.3",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/05-extensions.html"
     },
     "ha:sec-ab-definition": {
       "status": "defined",
@@ -9821,6 +9884,41 @@
       "title": "蛇の補題",
       "num": "",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/03-diagram-lemmas.html"
+    },
+    "ha:sec-ex-classification": {
+      "status": "defined",
+      "type": "section",
+      "title": "Ext¹ による分類",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/05-extensions.html"
+    },
+    "ha:sec-ex-examples": {
+      "status": "defined",
+      "type": "section",
+      "title": "例",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/05-extensions.html"
+    },
+    "ha:sec-ex-extensions": {
+      "status": "defined",
+      "type": "section",
+      "title": "拡大とその同値",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/05-extensions.html"
+    },
+    "ha:sec-ex-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/05-extensions.html"
+    },
+    "ha:sec-ex-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/02-derived-functors/05-extensions.html"
     },
     "ha:sec-in-baer": {
       "status": "defined",

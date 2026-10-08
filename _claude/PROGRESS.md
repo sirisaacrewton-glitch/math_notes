@@ -251,6 +251,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | HD-02 | 18G/02-derived-functors/02-derived-functors | 左導来関手、馬蹄補題と長完全列、Tor と Ext | — | — | 完了 |
 | HD-03 | 18G/02-derived-functors/03-tor-ext | Tor と Ext、Z 上の計算、群のコホモロジーとの関係 | — | — | 完了 |
 | HD-04 | 18G/02-derived-functors/04-injective-modules | 入射加群・ベールの判定法・可除群・十分な入射対象 | — | — | 完了 |
+| HD-05 | 18G/02-derived-functors/05-extensions | Ext¹ と拡大（押し出しによる構成、分類定理、Z/p の拡大） | — | — | 完了 |
 
 特別な極限とカン拡張（18A/04-kan-extensions, id cat-kan。2026-10-08 自律判断）
 | ID | ファイル | 題 | CWM | 本文の行 | 状態 |
@@ -326,6 +327,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- - 2026-10-08 ホモロジー代数 HD-05（18G/02-derived-functors/05-extensions, ha:page-extensions：拡大の射は同型、射影的な表示の押し出しによる拡大、Ext¹ による拡大の分類（両方向の構成）、分裂の判定、Z/p の Z/p による拡大 p 個（中央が同型でも同値でない例））。資料なし。
 - - 2026-10-08 一般位相 TD-14（54D/01/14-countable-compactness, top:page-countable-compactness：可算コンパクト性の言い換え（T1 の必要性の例つき）、コンパクト・可算コンパクト・点列コンパクト・擬コンパクトの含意（第一可算・リンデレーフ・T4 による逆）、{0,1}^P(N) と特定点位相の反例）。独自構成。
 - - 2026-10-08 圏論 CK-05（18A/04-kan-extensions/05-category-of-elements, cat:page-elements：元の圏とコンマ圏、表現可能性と終対象、離散ファイブレーションと前層の同値、前層の圏のスライス）。独自構成。
 - 2026-10-08 一般位相 TG-03（54G/01/03-tychonoff-plank, top:page-tychonoff-plank：[0,α] のコンパクト性（整列性による）、チコノフの板と欠けた板、欠けた板は完全正則だが正規でない（cf ω₁ > ω を使う）、正規性は開部分空間に遺伝しない、[0,ω₁) の非コンパクト性と閉部分空間の正規性の問題）。資料なし。54G の説明を更新。

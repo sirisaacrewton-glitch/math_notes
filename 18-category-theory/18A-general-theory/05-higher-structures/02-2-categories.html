@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2 圏 | Summa Mathematica</title>
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/05-higher-structures/02-2-categories.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 2 圏 {#cat:page-2-categories keywords="2-category, 2-cell, horizontal and vertical composition, middle four interchange, whiskering, Eckmann-Hilton argument, adjunction in a 2-category, uniqueness of adjoints, Kan extension in a 2-category, 2-functor, 2-natural transformation, modification, single-set category, n-category"}
+
+関手の間には自然変換があり、自然変換には縦の合成と横の合成があって、両者は交換法則で結ばれた（\ref{cat:interchange-law}）。この「対象・射・射の間の射（2 射）」の三層の構造を公理化したものが **2 圏**（\ref{cat:2-category}）である。2 圏の中では、随伴（\ref{cat:adjunction-in-2-category}）やカン拡張が関手を使わずに 2 射の等式だけで定義でき、随伴の一意性（\ref{cat:adjoint-unique-2-category}）や合成（問題 \ref{cat:prob-tc-compose-adjunctions}）が、$\mathbf{Cat}$ での証明をそのまま一般化した形で示せる。後半では、2 圏の間の **2 関手**・**2 自然変換**・**変形**（\ref{cat:2-functor}）と、一つの集合に複数の圏構造を入れて $n$ 圏を定義する方法（\ref{cat:single-set-n-category}）を扱う。
+
+> 資料：Mac Lane, *Categories for the Working Mathematician* 第 XII 章 §3–§5。随伴の一意性（\ref{cat:adjoint-unique-2-category}）は Mac Lane の第 IV 章 §1 系 1 を 2 圏で証明し直したもので、2 圏の章には書かれていない。単一集合の定義で Mac Lane が述べた始域・終域の合成規則（\ref{cat:single-set-st-rules}）は、式 (7) が条件 (ii) の一部であることを明示して導いた。エックマン–ヒルトンの議論（\ref{cat:eckmann-hilton}）は補った。
+
+## 記法と定義の確認 {#cat:sec-tc-notation}
+
+::: notation
+- 自然変換の縦の合成 $\tau\cdot\sigma$、横の合成 $\tau'\circ\tau$、ひげ付け $S'\tau$, $\tau'S$、交換法則は \ref{cat:vertical-composition}, \ref{cat:horizontal-composition}, \ref{cat:interchange-law} のとおり。
+- 双関手（積圏からの関手）は一変数ずつの関手の族で、交換条件を満たすものと同じである（\ref{cat:product-category}, \ref{cat:bifunctor-criterion}）。
+- 随伴（単位 $\eta$、余単位 $\varepsilon$、三角等式）は \ref{cat:adjunction} のとおり。hom 集合による圏の定義は \ref{cat:hom-set-formulation}。
+:::
+
+## 2 圏 {#cat:sec-tc-definition}
+
+::: definition 2 圏 {#cat:2-category keywords="2-category, 0-cells, 1-cells, 2-cells, hom-categories, horizontal composition, vertical composition" index="2 圏|にけん, 2 射|にしゃ, 1 射|いちしゃ"}
+**2 圏** $\mathbf{T}$ は次のデータからなる。
+1. 集合（**対象**または 0 射の集合）。
+2. 対象の組 $(a,b)$ ごとの圏 $\mathbf{T}(a,b)$。その対象 $f\colon a\to b$ を **1 射**、射 $\alpha\colon f\Rightarrow g$ を **2 射**、合成を**縦の合成** $\beta\cdot\alpha$ と呼ぶ。
+3. 対象の三つ組ごとの関手（**横の合成**）$\circ\colon\mathbf{T}(b,c)\times\mathbf{T}(a,b)\to\mathbf{T}(a,c)$。
+4. 対象 $a$ ごとの 1 射 $1_{a}\colon a\to a$。
+
+これらが、関手の等式として結合律 $\circ\circ(\circ\times1)=\circ\circ(1\times\circ)$ と単位律 $1_{b}\circ-=1=-\circ1_{a}$（$1_{b}$ に $\mathbf{T}(b,b)$ の恒等 2 射 $1_{1_{b}}$ を対応させて）を満たす。すなわち 1 射と横の合成は圏をなし（これを $\mathbf{T}$ の**下部圏**という）、2 射も横の合成について圏をなす。
+:::
+
+::: proposition 中央四つの交換 {#cat:middle-four-interchange keywords="middle four interchange law in a 2-category, whiskering" index="中央四つの交換|ちゅうおうよっつのこうかん"}
+2 圏で、$\alpha\colon f\Rightarrow g$, $\beta\colon g\Rightarrow h$（$a\to b$）、$\alpha'\colon f'\Rightarrow g'$, $\beta'\colon g'\Rightarrow h'$（$b\to c$）について
+$$
+(\beta'\cdot\alpha')\circ(\beta\cdot\alpha)=(\beta'\circ\beta)\cdot(\alpha'\circ\alpha),\qquad1_{f'}\circ1_{f}=1_{f'\circ f}.
+$$
+1 射 $k\colon b\to c$ と 2 射 $\alpha\colon f\Rightarrow g\colon a\to b$ について $k\alpha\defeq1_{k}\circ\alpha$、$\alpha k'\defeq\alpha\circ1_{k'}$（$k'\colon z\to a$）と書く（**ひげ付け**）と、$\alpha'\colon f'\Rightarrow g'\colon b\to c$ について
+$$
+\alpha'\circ\alpha=(\alpha'g)\cdot(f'\alpha)=(g'\alpha)\cdot(\alpha'f).
+$$
+:::
+
+::: proof
+第一式は、横の合成が関手 $\mathbf{T}(b,c)\times\mathbf{T}(a,b)\to\mathbf{T}(a,c)$ であって、積圏の合成が成分ごと $(\beta',\beta)\cdot(\alpha',\alpha)=(\beta'\cdot\alpha',\beta\cdot\alpha)$ であることそのもの。第二式は関手が恒等射を保つこと。第三式は、第一式を $\alpha'\circ\alpha=(\alpha'\cdot1_{f'})\circ(1_{g}\cdot\alpha)=(\alpha'\circ1_{g})\cdot(1_{f'}\circ\alpha)$ と、$=(1_{g'}\cdot\alpha')\circ(\alpha\cdot1_{f})=(1_{g'}\circ\alpha)\cdot(\alpha'\circ1_{f})$ に使えばよい。
+:::
+
+::: example
+1. **$\mathbf{Cat}$.** 小さい圏を対象、関手を 1 射、自然変換を 2 射とし、$\mathbf{Cat}(\mathbf{C},\mathbf{B})$ を関手圏 $\mathbf{B}^{\mathbf{C}}$、横の合成を自然変換の横の合成とすると 2 圏である。横の合成が関手 $\mathbf{A}^{\mathbf{B}}\times\mathbf{B}^{\mathbf{C}}\to\mathbf{A}^{\mathbf{C}}$ であることは、交換法則と恒等変換の横の合成が恒等変換であること（\ref{cat:interchange-law}）による。
+2. **厳密モノイダル圏.** 対象が一つの 2 圏は、$\mathbf{T}(\ast,\ast)$ を圏とし横の合成を積とする厳密モノイダル圏と同じものである（結合律・単位律が等式で成り立つ）。
+3. **順序集合.** 小さい半順序集合を対象、単調写像を 1 射とし、$f\le g$（各点で $f(x)\le g(x)$）のときちょうど一つの 2 射 $f\Rightarrow g$ があるとすると 2 圏 $\mathbf{Ord}$ になる。横の合成が well-defined であることは、$f\le g$, $f'\le g'$ なら $f'(f(x))\le f'(g(x))\le g'(g(x))$（$f'$ の単調性）から。
+4. **ホモトピー.** 位相空間、連続写像、ホモトピーの（端点を固定した変形による）同値類も 2 圏をなすと Mac Lane は述べている。ホモトピーそのものの縦の合成（前半と後半をつなぐ）は結合的でないので、同値類をとる必要がある（ここでは確かめていない）。
+:::
+
+::: proposition エックマン–ヒルトンの議論 {#cat:eckmann-hilton keywords="Eckmann-Hilton argument, endomorphisms of an identity 1-cell form a commutative monoid" index="エックマン–ヒルトンの議論|えっくまんひるとんのぎろん"}
+2 圏の対象 $a$ について、1 射 $1_{a}$ から自分自身への 2 射の全体 $\Omega(a)\defeq\mathbf{T}(a,a)(1_{a},1_{a})$ は、縦の合成について可換モノイドであり、縦の合成と横の合成は $\Omega(a)$ の上で一致する。
+:::
+
+::: proof
+$\alpha,\beta\in\Omega(a)$ とし、$e\defeq1_{1_{a}}$（恒等 2 射）とする。$1_{a}\circ1_{a}=1_{a}$ なので、横の合成も $\Omega(a)$ の二項演算で、単位律から $e$ は横の合成についても単位である（$e\circ\alpha=1_{1_{a}}\circ\alpha=\alpha$）。中央四つの交換（\ref{cat:middle-four-interchange}）から
+$$
+\alpha\cdot\beta=(\alpha\circ e)\cdot(e\circ\beta)=(\alpha\cdot e)\circ(e\cdot\beta)=\alpha\circ\beta,
+$$
+$$
+\alpha\cdot\beta=(e\circ\alpha)\cdot(\beta\circ e)=(e\cdot\beta)\circ(\alpha\cdot e)=\beta\circ\alpha.
+$$
+よって $\alpha\cdot\beta=\alpha\circ\beta=\beta\circ\alpha=\beta\cdot\alpha$。
+:::
+
+::: remark
+$\mathbf{T}=\mathbf{Cat}$, $a=\mathbf{C}$ なら $\Omega(\mathbf{C})$ は恒等関手の自己自然変換の全体（圏の**中心**）で、可換モノイドになる。たとえば環 $R$ 上の加群の圏では、$\Omega$ は $R$ の中心の元によるスカラー倍と対応することが知られている（ここでは確かめていない）。
+:::
+
+## 2 圏の中の随伴とカン拡張 {#cat:sec-tc-adjunctions}
+
+::: definition 2 圏の中の随伴 {#cat:adjunction-in-2-category keywords="adjunction in a 2-category, unit, counit, triangle identities" index="2 圏の中の随伴|にけんのなかのずいはん"}
+2 圏の 1 射 $f\colon a\to b$, $g\colon b\to a$ と 2 射 $\eta\colon1_{a}\Rightarrow gf$, $\varepsilon\colon fg\Rightarrow1_{b}$ が**三角等式**
+$$
+(\varepsilon f)\cdot(f\eta)=1_{f},\qquad(g\varepsilon)\cdot(\eta g)=1_{g}
+$$
+を満たすとき、$f$ は $g$ の**左随伴**、$g$ は $f$ の**右随伴**であるといい、$(f,g,\eta,\varepsilon)$ を**随伴**、$f\dashv g$ と書く。$\mathbf{T}=\mathbf{Cat}$ では、これは通常の随伴の単位・余単位による特徴づけそのものである（\ref{cat:adjunction}）。
+:::
+
+::: example
+$\mathbf{Ord}$ では 2 射は不等式なので、随伴 $f\dashv g$ は $1\le gf$ かつ $fg\le1$ となる単調写像の組で（三角等式は 2 射が一意なので自動的に成り立つ）、これはガロア接続である。
+:::
+
+::: theorem 随伴の一意性 {#cat:adjoint-unique-2-category keywords="right adjoints are unique up to unique compatible isomorphism in a 2-category" index="随伴の一意性（2 圏）|ずいはんのいちいせいにけん"}
+2 圏で $(f,g,\eta,\varepsilon)$ と $(f,g',\eta',\varepsilon')$ が随伴なら、
+$$
+\varphi\defeq(g'\varepsilon)\cdot(\eta'g)\colon g\Rightarrow g',\qquad\psi\defeq(g\varepsilon')\cdot(\eta g')\colon g'\Rightarrow g
+$$
+は互いに逆の 2 射である。
+:::
+
+::: proof
+**Step 1（ひげ付けの交換）.** 2 射 $\alpha\colon k\Rightarrow k'\colon x\to y$, $\beta\colon l\Rightarrow l'\colon y\to z$ について、\ref{cat:middle-four-interchange} の第三式から $(\beta k')\cdot(l\alpha)=(l'\alpha)\cdot(\beta k)$。以下これを「交換」と呼ぶ。
+
+**Step 2.** 定義から $\psi\cdot\varphi=(g\varepsilon')\cdot(\eta g')\cdot(g'\varepsilon)\cdot(\eta'g)$。
+- 中央の $(\eta g')\cdot(g'\varepsilon)$：交換を $\alpha=g'\varepsilon\colon g'fg\Rightarrow g'$, $\beta=\eta\colon1_{a}\Rightarrow gf$ に使うと $(\eta g')\cdot(g'\varepsilon)=(gfg'\varepsilon)\cdot(\eta g'fg)$。
+- 右側の $(\eta g'fg)\cdot(\eta'g)$：交換を $\alpha=\eta'g\colon g\Rightarrow g'fg$, $\beta=\eta$ に使うと $(\eta g'fg)\cdot(\eta'g)=(gf\eta'g)\cdot(\eta g)$。
+- 左側の $(g\varepsilon')\cdot(gfg'\varepsilon)$：交換を $\alpha=\varepsilon\colon fg\Rightarrow1_{b}$, $\beta=\varepsilon'\colon fg'\Rightarrow1_{b}$ に使うと $\varepsilon'\cdot(fg'\varepsilon)=\varepsilon\cdot(\varepsilon'fg)$ なので、$g$ でひげ付けして $(g\varepsilon)\cdot(g\varepsilon'fg)$。
+
+まとめると
+$$
+\psi\cdot\varphi=(g\varepsilon)\cdot\bigl(g\,((\varepsilon'f)\cdot(f\eta'))\,g\bigr)\cdot(\eta g)=(g\varepsilon)\cdot(\eta g)=1_{g}
+$$
+（$(f,g',\eta',\varepsilon')$ の第一の三角等式、次に $(f,g,\eta,\varepsilon)$ の第二の三角等式）。役割を入れ替えれば $\varphi\cdot\psi=1_{g'}$。
+:::
+
+::: hypcheck
+- **中央四つの交換**：Step 2 の三か所で、$\eta\circ(g'\varepsilon)$, $\eta\circ(\eta'g)$, $\varepsilon'\circ\varepsilon$ を二通りに書くのに使った。
+- **三角等式**：二つの随伴から一つずつ使った（$\varepsilon'f\cdot f\eta'=1$ と $g\varepsilon\cdot\eta g=1$）。左随伴が共通であることが、$\eta'$ と $\varepsilon$ を組み合わせられる理由である。
+:::
+
+::: definition 2 圏の中のカン拡張 {#cat:kan-extension-in-2-category keywords="right Kan extension in a 2-category" index="2 圏の中のカン拡張|にけんのなかのかんかくちょう"}
+2 圏の 1 射 $k\colon m\to c$, $t\colon m\to a$ について、$t$ の $k$ に沿った**右カン拡張**は、1 射 $r\colon c\to a$ と 2 射 $\varepsilon\colon rk\Rightarrow t$ の組で、任意の $s\colon c\to a$ と $\alpha\colon sk\Rightarrow t$ について $\alpha=\varepsilon\cdot(\sigma k)$ となる 2 射 $\sigma\colon s\Rightarrow r$ がただ一つ存在するものである。$\mathbf{T}=\mathbf{Cat}$ では \ref{cat:kan-extension} の定義そのものである。
+:::
+
+## 2 関手・2 自然変換・変形 {#cat:sec-tc-2-functors}
+
+::: definition 2 関手・2 自然変換・変形 {#cat:2-functor keywords="2-functor, 2-natural transformation, modification, 2-Cat, 3-category" index="2 関手|にかんしゅ, 2 自然変換|にしぜんへんかん, 変形（2 自然変換の間の）|へんけい"}
+1. 2 圏の間の **2 関手** $F\colon\mathbf{T}\to\mathbf{U}$ は、対象・1 射・2 射を同じ種類のものに移し、始域・終域・恒等・縦の合成・横の合成をすべて保つ写像の組である。言い換えると、対象の写像と、関手 $F_{a,b}\colon\mathbf{T}(a,b)\to\mathbf{U}(Fa,Fb)$ の族で、横の合成と $1_{a}$ を保つもの。
+2. 2 関手 $F,G\colon\mathbf{T}\to\mathbf{U}$ の間の **2 自然変換** $\theta\colon F\Rightarrow G$ は、対象 $a$ ごとの 1 射 $\theta_{a}\colon Fa\to Ga$ で、すべての 2 射 $\alpha\colon f\Rightarrow g\colon a\to b$ について
+$$
+\theta_{b}\,F\alpha=G\alpha\,\theta_{a}\quad(\text{2 射 }\theta_{b}\circ Ff\Rightarrow\theta_{b}\circ Fg\text{ として})
+$$
+を満たすものである。とくに 1 射の上では $\theta_{b}\circ Ff=Gf\circ\theta_{a}$（$\alpha=1_{f}$ の場合）。
+3. 2 自然変換 $\theta,\phi\colon F\Rightarrow G$ の間の**変形** $\mu\colon\theta\Rrightarrow\phi$ は、対象 $a$ ごとの 2 射 $\mu_{a}\colon\theta_{a}\Rightarrow\phi_{a}$ で、すべての 2 射 $\alpha\colon f\Rightarrow g\colon a\to b$ について $(\mu_{b}\circ F\alpha)=(G\alpha\circ\mu_{a})$（2 射 $\theta_{b}\circ Ff\Rightarrow\phi_{b}\circ Fg$ として）を満たすものである。
+:::
+
+::: remark
+小さい 2 圏、2 関手、2 自然変換は（2 自然変換の成分ごとの合成を縦、ひげ付けを使った合成を横として）2 圏 $2\text{-}\mathbf{Cat}$ をなし、変形を加えると 3 次元の構造（3 圏）をなす、と Mac Lane は述べている（確かめは読者に委ねられており、ここでも確かめていない）。一般に、2 圏は「hom が $\mathbf{Cat}$ の対象である圏」（$\mathbf{Cat}$ 豊穣圏、\ref{cat:closed-category}）であり、3 圏は hom が $2\text{-}\mathbf{Cat}$ の対象である圏として定義できる。
+:::
+
+## 単一集合による定義と n 圏 {#cat:sec-tc-single-set}
+
+::: definition 単一集合による圏 {#cat:single-set-category keywords="single-set definition of a category, source, target, partial composition" index="単一集合による圏|たんいつしゅうごうによるけん"}
+集合 $X$ 上の**圏構造** $(\#,s,t)$ は、写像 $s,t\colon X\to X$ と部分的な二項演算 $\#$ で、すべての $x,y,z\in X$ について次を満たすものである。
+1. $x\#y$ が定義される $\iff$ $sx=ty$。そのとき $s(x\#y)=sy$, $t(x\#y)=tx$。
+2. $x\#sx=x$, $tx\#x=x$。
+3. $(x\#y)\#z=x\#(y\#z)$（どちらかが定義されれば）。
+4. $ssx=sx=tsx$, $ttx=tx=stx$。
+
+$x=sx$（同値に $x=tx$）となる $x$ を**恒等元**という。
+:::
+
+::: remark
+圏 $\mathbf{C}$ から、$X$ を射の全体、$sx$ を $x$ の始域の恒等射、$tx$ を終域の恒等射、$\#$ を合成とすれば圏構造が得られ、逆に圏構造から、恒等元を対象とし $X$ を射とする圏が得られる。両者は互いに逆である（Mac Lane は「明らか」としている）。「同値に」の部分：$x=sx$ なら 4 から $tx=tsx=sx=x$。
+:::
+
+::: definition 単一集合による n 圏 {#cat:single-set-n-category keywords="n-category as a set with n commuting category structures, omega-category" index="n 圏|えぬけん, ω 圏|おめがけん"}
+集合 $X$ 上の $n$ 個の圏構造 $(\#_{k},s_{k},t_{k})$（$k=0,\dots,n-1$）が **$n$ 圏**をなすとは、$j<k$ のすべての組について
+- (i) 構造 $j$ の恒等元は構造 $k$ の恒等元であり、
+- (ii) 二つの構造が可換であること、すなわち $s_{j}s_{k}=s_{k}s_{j}$, $s_{j}t_{k}=t_{k}s_{j}$, $t_{j}s_{k}=s_{k}t_{j}$, $t_{j}t_{k}=t_{k}t_{j}$ と、$\{\alpha,\beta\}=\{j,k\}$ について
+$$
+\begin{gathered}
+(x\#_{\alpha}y)\#_{\beta}(u\#_{\alpha}v)=(x\#_{\beta}u)\#_{\alpha}(y\#_{\beta}v),\\
+s_{\alpha}(x\#_{\beta}y)=s_{\alpha}x\#_{\beta}s_{\alpha}y,\qquad t_{\alpha}(x\#_{\beta}y)=t_{\alpha}x\#_{\beta}t_{\alpha}y
+\end{gathered}
+$$
+（両辺が定義されるとき）が成り立つことである。$n=2$ のとき 2 圏で、構造 0 が横の合成、構造 1 が縦の合成、構造 0 の恒等元が対象、構造 1 の恒等元が 1 射にあたる。すべての $k\in\mathbb{N}$ についての構造をもつものを **$\omega$ 圏**という。
+:::
+
+::: proposition 始域・終域の合成規則 {#cat:single-set-st-rules keywords="composites of sources and targets in a 2-category" index="始域・終域の合成規則|しいきしゅういきのごうせいきそく"}
+2 圏（単一集合による）で
+$$
+s_{1}s_{0}=t_{1}s_{0}=s_{0},\quad s_{1}t_{0}=t_{1}t_{0}=t_{0},\quad s_{0}s_{1}=s_{0}t_{1}=s_{0},\quad t_{0}s_{1}=t_{0}t_{1}=t_{0}.
+$$
+:::
+
+::: proof
+$s_{0}x$ は構造 0 の恒等元なので（定義の 4：$s_{0}s_{0}x=s_{0}x$）、条件 (i) から構造 1 の恒等元、すなわち $s_{1}s_{0}x=s_{0}x=t_{1}s_{0}x$。$t_{0}x$ も同様。次に、(ii) の可換性 $s_{0}s_{1}=s_{1}s_{0}$ と今示した $s_{1}s_{0}=s_{0}$ から $s_{0}s_{1}=s_{0}$。同様に $s_{0}t_{1}=t_{1}s_{0}=s_{0}$, $t_{0}s_{1}=s_{1}t_{0}=t_{0}$, $t_{0}t_{1}=t_{1}t_{0}=t_{0}$。
+:::
+
+::: remark
+この規則は「2 射 $x\colon f\Rightarrow g\colon a\to b$ で、$s_{1}x=f$, $t_{1}x=g$ が 1 射、$s_{0}x=a$, $t_{0}x=b$ が対象（構造 0 の恒等元）であり、$f,g$ の始域・終域も $a,b$ である」という直感を式にしたものである。
+:::
+
+## 問題 {#cat:sec-tc-problems}
+
+::: problem {#cat:prob-tc-compose-adjunctions}
+2 圏で $(f,g,\eta,\varepsilon)\colon a\rightleftarrows b$ と $(f',g',\eta',\varepsilon')\colon b\rightleftarrows c$ が随伴なら、$f'f\dashv gg'$ で、単位 $\bar{\eta}\defeq(g\eta'f)\cdot\eta$、余単位 $\bar{\varepsilon}\defeq\varepsilon'\cdot(f'\varepsilon g')$ であることを示せ。
+:::
+
+::: solution
+第一の三角等式 $(\bar{\varepsilon}f'f)\cdot(f'f\bar{\eta})=1_{f'f}$ を示す。左辺は
+$$
+(\varepsilon'f'f)\cdot(f'\varepsilon g'f'f)\cdot(f'fg\eta'f)\cdot(f'f\eta).
+$$
+中央の二つは、$f'$ でひげ付けした $(\varepsilon g'f'f)\cdot(fg\eta'f)$ である。\ref{cat:adjoint-unique-2-category} の Step 1 の交換を $\alpha=\eta'f\colon f\Rightarrow g'f'f$, $\beta=\varepsilon\colon fg\Rightarrow1_{b}$ に使うと
+$$
+(\varepsilon g'f'f)\cdot(fg\eta'f)=(\eta'f)\cdot(\varepsilon f)\quad(\text{両辺は }fgf\Rightarrow g'f'f).
+$$
+よって左辺は
+$$
+\begin{aligned}
+&(\varepsilon'f'f)\cdot(f'\eta'f)\cdot(f'\varepsilon f)\cdot(f'f\eta)\\
+&=\bigl(((\varepsilon'f')\cdot(f'\eta'))f\bigr)\cdot\bigl(f'((\varepsilon f)\cdot(f\eta))\bigr)=1_{f'f}
+\end{aligned}
+$$
+（それぞれの第一の三角等式）。第二の三角等式も、同様に中央の二つを交換して $g$ と $g'$ の三角等式に帰着する。
+:::
+
+::: problem {#cat:prob-tc-ord-kan}
+$\mathbf{Ord}$ で、$k\colon M\to C$, $t\colon M\to A$ の右カン拡張 $r$ が存在するとき、$r(c)$ は $\{t(x):c\le k(x)\}$ の下限であることを示せ（$A$ はその下限をもつと仮定する）。
+:::
+
+::: solution
+2 射は不等式なので、$r$ が右カン拡張であるとは、$rk\le t$ であって、単調写像 $s\colon C\to A$ で $sk\le t$ なら $s\le r$ となることである。$T_{c}\defeq\{t(x):c\le k(x)\}$, $u(c)\defeq\inf T_{c}$ とおく。
+- $u$ は単調：$c\le c'$ なら $T_{c'}\subseteq T_{c}$ なので $\inf T_{c}\le\inf T_{c'}$。
+- $uk\le t$：$t(x)\in T_{k(x)}$ なので $u(k(x))\le t(x)$。よって普遍性から $u\le r$。
+- $r\le u$：$c\le k(x)$ なら $r(c)\le r(k(x))\le t(x)$（$r$ の単調性と $rk\le t$）なので $r(c)$ は $T_{c}$ の下界で、$r(c)\le u(c)$。
+
+よって $r=u$。
+:::
+
+::: supplement
+**前提を変えると.** 2 圏の結合律・単位律を「等式」から「coherent な同型 2 射」に弱めたものが双圏（\ref[双圏]{cat:page-bicategories}）である。2 関手の関手性を同型 2 射まで緩めたもの（擬関手）、2 自然変換の自然性の正方形を 2 射で埋めたもの（擬自然変換、緩い自然変換）もあり、2 圏の理論ではむしろこちらが基本になることが多いとされる。
+
+**似た定理.** \ref{cat:adjoint-unique-2-category} と同じ論法で、2 圏の中のモナド（1 射 $t\colon a\to a$ と 2 射 $1\Rightarrow t$, $tt\Rightarrow t$）や、随伴の合成が定義・証明できる。$\mathbf{Cat}$ の中のモナドはふつうのモナド（\ref{cat:monad}）で、対象が一つの 2 圏（厳密モノイダル圏）の中のモナドはモノイド（\ref{cat:monoid-object}）である。
+
+**高い視点から：2 圏は「形式的な圏論」の舞台.** 随伴・モナド・カン拡張など、圏論の多くの概念は、関手と自然変換の「代数」（縦・横の合成と交換法則）だけを使って述べられる。2 圏は、その代数だけを取り出した抽象的な舞台である。比喩で言えば、$\mathbf{Cat}$ で証明した定理を「関手の中身を見ずに」証明し直すことは、具体的な数で成り立つ恒等式を文字式で証明し直すことに似ている。文字式で証明すれば、$\mathbf{Ord}$（ガロア接続）、豊穣圏、内部圏の 2 圏など、別の「数の体系」にもそのまま適用できる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -364,3 +364,4 @@
 | Coxeter presentation / adjacent transposition / labelled word | 対称群の生成元と関係 / 隣接互換 / 番号つき語 | | 番号つき語は仮。cat:page-symmetric-coherence |
 | braid group / pure braid group / braid category / underlying braid | 組紐群 / 純組紐群 / 組紐圏 / 道の組紐 | ブレイド群 | 組紐群・純組紐群は標準的。道の組紐は仮。cat:page-braids |
 | internal category / internal functor / internal diagram (left C-object) / nerve | 内部圏 / 内部関手 / 内部の図式（左 C 対象） / 神経 | 圏対象 | 内部圏・神経は標準的。内部の図式は仮。cat:page-internal-categories |
+| 2-category / 2-cell / whiskering / middle four interchange / 2-functor / 2-natural transformation / modification | 2 圏 / 2 射 / ひげ付け / 中央四つの交換 / 2 関手 / 2 自然変換 / 変形 | 2 セル | 2 射・変形・中央四つの交換は仮。cat:page-2-categories |

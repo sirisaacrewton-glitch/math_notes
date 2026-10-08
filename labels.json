@@ -1,6 +1,20 @@
 {
   "説明": "サイト全体のラベル台帳（tools/build.js が自動更新）。defined = 定義済み、planned = 参照されているが未執筆。planned の title は未執筆のあいだリンクの代わりに表示される名前。手で planned を追加するときは \"manual\": true を付けると参照がなくても残る。",
   "labels": {
+    "cat:2-category": {
+      "status": "defined",
+      "type": "definition",
+      "title": "2 圏",
+      "num": "2.1",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/02-2-categories.html"
+    },
+    "cat:2-functor": {
+      "status": "defined",
+      "type": "definition",
+      "title": "2 関手・2 自然変換・変形",
+      "num": "2.8",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/02-2-categories.html"
+    },
     "cat:adjoint-as-kan": {
       "status": "defined",
       "type": "theorem",
@@ -21,6 +35,13 @@
       "title": "随伴の一意性",
       "num": "7.7",
       "page": "18-category-theory/18A-general-theory/01-basics/07-adjunctions.html"
+    },
+    "cat:adjoint-unique-2-category": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "随伴の一意性",
+      "num": "2.6",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/02-2-categories.html"
     },
     "cat:adjoints-preserve-limits": {
       "status": "defined",
@@ -56,6 +77,13 @@
       "title": "普遍射の族から左随伴を作る",
       "num": "7.6",
       "page": "18-category-theory/18A-general-theory/01-basics/07-adjunctions.html"
+    },
+    "cat:adjunction-in-2-category": {
+      "status": "defined",
+      "type": "definition",
+      "title": "2 圏の中の随伴",
+      "num": "2.5",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/02-2-categories.html"
     },
     "cat:aft-counterexample": {
       "status": "defined",
@@ -463,6 +491,13 @@
       "num": "3.3",
       "page": "18-category-theory/18A-general-theory/01-basics/03-constructions.html"
     },
+    "cat:eckmann-hilton": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "エックマン–ヒルトンの議論",
+      "num": "2.3",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/02-2-categories.html"
+    },
     "cat:eilenberg-moore-adjunction": {
       "status": "defined",
       "type": "theorem",
@@ -841,6 +876,13 @@
       "num": "3.1",
       "page": "18-category-theory/18A-general-theory/04-kan-extensions/03-kan.html"
     },
+    "cat:kan-extension-in-2-category": {
+      "status": "defined",
+      "type": "definition",
+      "title": "2 圏の中のカン拡張",
+      "num": "2.7",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/02-2-categories.html"
+    },
     "cat:kan-fully-faithful": {
       "status": "defined",
       "type": "corollary",
@@ -938,6 +980,13 @@
       "title": "積と等化子による極限の構成",
       "num": "6.9",
       "page": "18-category-theory/18A-general-theory/01-basics/06-limits.html"
+    },
+    "cat:middle-four-interchange": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "中央四つの交換",
+      "num": "2.2",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/02-2-categories.html"
     },
     "cat:monad": {
       "status": "defined",
@@ -1099,6 +1148,13 @@
       "title": "反対圏",
       "num": "3.1",
       "page": "18-category-theory/18A-general-theory/01-basics/03-constructions.html"
+    },
+    "cat:page-2-categories": {
+      "status": "defined",
+      "type": "page",
+      "title": "2 圏",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/02-2-categories.html"
     },
     "cat:page-adjoint-functor-theorem": {
       "status": "defined",
@@ -1701,6 +1757,20 @@
       "title": "",
       "num": "4.11",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/04-simplicial.html"
+    },
+    "cat:prob-tc-compose-adjunctions": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "2.15",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/02-2-categories.html"
+    },
+    "cat:prob-tc-ord-kan": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "2.16",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/02-2-categories.html"
     },
     "cat:prob-weakly-initial-needed": {
       "status": "defined",
@@ -2717,6 +2787,48 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/04-simplicial.html"
     },
+    "cat:sec-tc-2-functors": {
+      "status": "defined",
+      "type": "section",
+      "title": "2 関手・2 自然変換・変形",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/02-2-categories.html"
+    },
+    "cat:sec-tc-adjunctions": {
+      "status": "defined",
+      "type": "section",
+      "title": "2 圏の中の随伴とカン拡張",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/02-2-categories.html"
+    },
+    "cat:sec-tc-definition": {
+      "status": "defined",
+      "type": "section",
+      "title": "2 圏",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/02-2-categories.html"
+    },
+    "cat:sec-tc-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/02-2-categories.html"
+    },
+    "cat:sec-tc-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/02-2-categories.html"
+    },
+    "cat:sec-tc-single-set": {
+      "status": "defined",
+      "type": "section",
+      "title": "単一集合による定義と n 圏",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/02-2-categories.html"
+    },
     "cat:sec-yon-notation": {
       "status": "defined",
       "type": "section",
@@ -2786,6 +2898,27 @@
       "title": "単体的対象",
       "num": "4.8",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/04-simplicial.html"
+    },
+    "cat:single-set-category": {
+      "status": "defined",
+      "type": "definition",
+      "title": "単一集合による圏",
+      "num": "2.10",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/02-2-categories.html"
+    },
+    "cat:single-set-n-category": {
+      "status": "defined",
+      "type": "definition",
+      "title": "単一集合による n 圏",
+      "num": "2.12",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/02-2-categories.html"
+    },
+    "cat:single-set-st-rules": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "始域・終域の合成規則",
+      "num": "2.13",
+      "page": "18-category-theory/18A-general-theory/05-higher-structures/02-2-categories.html"
     },
     "cat:skeleton": {
       "status": "defined",
@@ -30618,6 +30751,13 @@
       "title": "実数全体の濃度",
       "referencedFrom": [
         "03-mathematical-logic/03E-set-theory/01-basics/11-cardinal-exponentiation.html"
+      ]
+    },
+    "cat:page-bicategories": {
+      "status": "planned",
+      "title": "双圏",
+      "referencedFrom": [
+        "18-category-theory/18A-general-theory/05-higher-structures/02-2-categories.html"
       ]
     },
     "cat:page-crossed-modules": {

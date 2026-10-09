@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ローヴェアの距離空間 | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18A-general-theory/02-structured-categories/11-lawvere-metric.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# ローヴェアの距離空間 {#cat:page-lawvere-metric keywords="Lawvere metric spaces as categories enriched over [0,infinity], truncated subtraction as internal hom, nonexpansive maps as enriched functors, preorders as 2-enriched categories, enriched Yoneda lemma for metric spaces, Kuratowski-Frechet embedding"}
+
+閉圏 $\mathbf{V}$ 上の豊穣圏（\ref{cat:closed-category}）は、「hom 集合」を $\mathbf{V}$ の対象に取り替えた圏である。F. W. Lawvere（1973）は、$\mathbf{V}$ として非負の拡大実数の順序 $([0,\infty],\ge)$ に加法をモノイダル構造として入れたものをとると、$\mathbf{V}$ 圏がちょうど（一般化された）距離空間になることに気づいた。本ページではこの対応を確かめ（\ref{cat:lawvere-metric-is-enriched}）、豊穣関手が非拡大写像であることを見たうえで、**豊穣米田の補題**が距離空間では等式 $F(a)=\sup_{b}\bigl(F(b)\mathbin{\dot{-}}d(a,b)\bigr)$ になること（\ref{cat:metric-yoneda}）を証明し、系としてクラトフスキ–フレシェの等長埋め込みを導く。$\mathbf{V}$ が順序集合なので、豊穣圏論の可換図式はすべて自動的に成り立ち、一般論の骨組みだけが残る。
+
+> 資料：F. W. Lawvere, "Metric spaces, generalized logic, and closed categories" (1973) の観点として知られているものに沿い、証明は本サイトで書き下ろした。
+
+## 記法と定義の確認 {#cat:sec-lw-notation}
+
+::: notation
+- 閉圏・豊穣圏は \ref{cat:closed-category}、モノイダル圏は \ref{cat:monoidal-category}。順序集合は、$x\to y$ という射が高々一つの圏とみなす。
+- $[0,\infty]$ では $r+\infty=\infty+r=\infty$ とし、**切り詰めた差** $t\mathbin{\dot{-}}s$ を、$t\le s$ なら $0$、$s<t$ なら $t-s$（$t=\infty>s$ なら $\infty$）と定める。
+- 上限 $\sup$ は $[0,\infty]$ の通常の順序 $\le$ での上限（空集合の上限は $0$）。
+:::
+
+::: definition ローヴェアの閉圏 [0,∞] {#cat:lawvere-quantale keywords="the closed symmetric monoidal poset ([0,infinity], >=, +, 0) with internal hom truncated subtraction" index="ローヴェアの閉圏|ろーう゛ぇあのへいけん"}
+$\mathbf{V}_{\infty}$ を、対象が $[0,\infty]$ の元、$r\to s$ という射が $r\ge s$ のときちょうど一つある圏とし、テンソル積を $r\otimes s\defeq r+s$、単位対象を $0$ とする。
+:::
+
+::: proposition [0,∞] は閉圏 {#cat:lawvere-closed keywords="[0,infinity] with + is a closed symmetric monoidal category with [s,t] = t - s truncated" index="切り詰めた差|きりつめたさ"}
+$\mathbf{V}_{\infty}$ は対称モノイダル圏で、内部 hom $[s,t]\defeq t\mathbin{\dot{-}}s$ について閉圏である：すべての $r,s,t$ について
+$$
+r+s\ge t\iff r\ge t\mathbin{\dot{-}}s .
+$$
+:::
+
+::: proof
+**モノイダル.** $+$ は単調（$r\ge r'$, $s\ge s'$ なら $r+s\ge r'+s'$）なので関手。結合・単位・対称の同型は等式 $(r+s)+u=r+(s+u)$, $0+r=r$, $r+s=s+r$ で、射は一意なので図式はすべて可換。
+
+**随伴.** $t\le s$ なら右辺の $t\mathbin{\dot{-}}s=0$ で両辺とも真。$s<t$ とする。$s=\infty$ はありえない。$t=\infty$ なら $t\mathbin{\dot{-}}s=\infty$ で、両辺とも「$r=\infty$」と同値（$s<\infty$ なので $r+s=\infty\iff r=\infty$）。$t<\infty$ なら $r+s\ge t\iff r\ge t-s$（$r=\infty$ でも成り立つ）。関手性・自然性は順序集合なので自動的。
+:::
+
+## 豊穣圏としての距離空間 {#cat:sec-lw-metric}
+
+::: definition ローヴェアの距離空間 {#cat:lawvere-metric-space keywords="Lawvere metric space: d(a,a)=0 and triangle inequality, possibly asymmetric, infinite or zero between distinct points" index="ローヴェアの距離空間|ろーう゛ぇあのきょりくうかん, 一般化距離空間|いっぱんかきょりくうかん"}
+集合 $X$ と関数 $d\colon X\times X\to[0,\infty]$ の組で、$d(a,a)=0$ と $d(a,c)\le d(a,b)+d(b,c)$ を満たすものを**ローヴェアの距離空間**という。対称性、$d(a,b)=0\Rightarrow a=b$、有限性は要求しない。$f\colon X\to Y$ が**非拡大**とは $d_{Y}(fa,fb)\le d_{X}(a,b)$ となることをいう。
+:::
+
+::: theorem 距離空間は豊穣圏 {#cat:lawvere-metric-is-enriched keywords="V_infinity-categories are exactly Lawvere metric spaces; V_infinity-functors are nonexpansive maps" index="距離空間と豊穣圏|きょりくうかんとほうじょうけん"}
+1. $\mathbf{V}_{\infty}$ 上の豊穣圏（対象の集合 $X$ と hom 対象 $X(a,b)\in[0,\infty]$）は、$d(a,b)\defeq X(a,b)$ によってちょうどローヴェアの距離空間に対応する。
+2. $\mathbf{V}_{\infty}$ 圏の間の $\mathbf{V}_{\infty}$ 関手（対象の写像 $f$ と、射 $X(a,b)\to Y(fa,fb)$ の族で合成と単位を保つもの）は、ちょうど非拡大写像である。
+:::
+
+::: proof
+**1.** 合成の射 $X(b,c)\otimes X(a,b)\to X(a,c)$ が存在することは $d(b,c)+d(a,b)\ge d(a,c)$（三角不等式）、単位の射 $0\to X(a,a)$ が存在することは $0\ge d(a,a)$、すなわち $d(a,a)=0$。結合律・単位律の図式は、$\mathbf{V}_{\infty}$ の射が一意なので自動的に可換。
+
+**2.** 射 $X(a,b)\to Y(fa,fb)$ の存在は $d_{X}(a,b)\ge d_{Y}(fa,fb)$。合成と単位を保つ図式は自動的に可換。
+:::
+
+::: example
+1. **距離空間.** 通常の距離空間はローヴェアの距離空間で、非拡大写像（リプシッツ定数 $\le1$ の写像）が豊穣関手。
+2. **前順序集合.** $d$ の値が $0,\infty$ だけのローヴェアの距離空間は、$a\le b\iff d(a,b)=0$ とおくと前順序集合（反射律は $d(a,a)=0$、推移律は三角不等式）で、逆も成り立つ。非拡大写像は単調写像。これは、$\mathbf{V}_{\infty}$ の部分閉圏 $\{0,\infty\}$（真偽値の閉圏 $\mathbf{2}$）上の豊穣圏が前順序集合であることの言い換えである。
+3. **非対称な例.** $\mathbb{R}$ 上の $d(x,y)\defeq y\mathbin{\dot{-}}x$ はローヴェアの距離空間で、$d(x,y)=0\iff x\ge y$。
+4. **$\mathbf{V}_{\infty}$ 自身.** $[0,\infty]$ に $d_{\mathbf{V}}(s,t)\defeq[s,t]=t\mathbin{\dot{-}}s$ を入れたものはローヴェアの距離空間である（$d_{\mathbf{V}}(s,s)=0$；三角不等式 $u\mathbin{\dot{-}}s\le(t\mathbin{\dot{-}}s)+(u\mathbin{\dot{-}}t)$ は、\ref{cat:lawvere-closed} を二回使うと $s+(t\mathbin{\dot{-}}s)\ge t$, $t+(u\mathbin{\dot{-}}t)\ge u$ から $s+(t\mathbin{\dot{-}}s)+(u\mathbin{\dot{-}}t)\ge u$ となることによる）。これは閉圏が自分自身の上の豊穣圏になることの例である。
+:::
+
+## 米田の補題 {#cat:sec-lw-yoneda}
+
+$\mathbf{V}_{\infty}$ 関手 $F\colon X\to\mathbf{V}_{\infty}$（例 4 の距離での非拡大写像）は、条件
+$$
+F(c)\mathbin{\dot{-}}F(b)\le d(b,c),\quad\text{すなわち}\quad F(c)\le F(b)+d(b,c)
+$$
+を満たす関数 $F\colon X\to[0,\infty]$ にほかならない。二つのそのような関手 $F,G$ の間の「自然変換の hom 対象」は、豊穣圏論ではエンド $\int_{b}[Fb,Gb]$ で定義され、$\mathbf{V}_{\infty}$ では（エンドは $\mathbf{V}_{\infty}$ の順序 $\ge$ での下限、すなわち数の上限なので）
+$$
+[X,\mathbf{V}_{\infty}](F,G)\defeq\sup_{b\in X}\bigl(G(b)\mathbin{\dot{-}}F(b)\bigr)
+$$
+である。以下これを定義として用いる。
+
+::: theorem 距離空間の米田の補題 {#cat:metric-yoneda keywords="enriched Yoneda lemma for Lawvere metric spaces: sup_b (F(b) - d(a,b)) = F(a)" index="米田の補題（距離空間）|よねだのほだいきょりくうかん"}
+$X$ をローヴェアの距離空間、$a\in X$ とする。
+1. 表現可能関手 $y_{a}\defeq d(a,-)\colon X\to\mathbf{V}_{\infty}$ は $\mathbf{V}_{\infty}$ 関手である。
+2. 任意の $\mathbf{V}_{\infty}$ 関手 $F\colon X\to\mathbf{V}_{\infty}$ について
+$$
+[X,\mathbf{V}_{\infty}](y_{a},F)=\sup_{b\in X}\bigl(F(b)\mathbin{\dot{-}}d(a,b)\bigr)=F(a).
+$$
+:::
+
+::: proof
+**1.** $y_{a}(c)=d(a,c)\le d(a,b)+d(b,c)=y_{a}(b)+d(b,c)$（三角不等式）。
+
+**2.** $b=a$ の項は $F(a)\mathbin{\dot{-}}d(a,a)=F(a)\mathbin{\dot{-}}0=F(a)$ なので、上限は $F(a)$ 以上。逆に各 $b$ について、$F$ が $\mathbf{V}_{\infty}$ 関手であることから $F(b)\le F(a)+d(a,b)$、すなわち（\ref{cat:lawvere-closed} の随伴で）$F(a)\ge F(b)\mathbin{\dot{-}}d(a,b)$。よって上限は $F(a)$ 以下。
+:::
+
+::: corollary 米田埋め込みは等長 {#cat:metric-yoneda-embedding keywords="the Yoneda embedding of a Lawvere metric space is isometric; Kuratowski-Frechet embedding of a metric space into ell infinity" index="米田埋め込み（距離空間）|よねだうめこみきょりくうかん, クラトフスキ–フレシェの埋め込み|くらとふすきふれしぇのうめこみ"}
+1. ローヴェアの距離空間 $X$ の $a,a'$ について $[X,\mathbf{V}_{\infty}](y_{a},y_{a'})=d(a',a)$。すなわち $a\mapsto y_{a}$ は $X$ の双対（$d^{\mathrm{op}}(a,a')\defeq d(a',a)$）から関手の空間への等長写像である。
+2. 通常の距離空間 $(X,d)$ について $d(a,a')=\sup_{b\in X}\lvert d(a,b)-d(a',b)\rvert$。とくに $X$ が有界なら、$a\mapsto(d(a,b))_{b\in X}$ は $X$ から $\ell^{\infty}(X)$（有界関数の空間、上限ノルム）への等長埋め込みである。
+:::
+
+::: proof
+**1.** \ref{cat:metric-yoneda} の 2 を $F=y_{a'}$ に使うと、$[X,\mathbf{V}_{\infty}](y_{a},y_{a'})=y_{a'}(a)=d(a',a)$。
+
+**2.** 1 から $\sup_{b}(d(a',b)\mathbin{\dot{-}}d(a,b))=d(a',a)=d(a,a')$、$a,a'$ を入れ替えて $\sup_{b}(d(a,b)\mathbin{\dot{-}}d(a',b))=d(a,a')$。$\lvert x-y\rvert=\max(x\mathbin{\dot{-}}y,\,y\mathbin{\dot{-}}x)$ なので、上限をとると $\sup_{b}\lvert d(a,b)-d(a',b)\rvert=d(a,a')$。有界なら各 $(d(a,b))_{b}$ は有界関数で、上限ノルムの距離がちょうどこの値。
+:::
+
+::: hypcheck
+- **閉圏の構造（切り詰めた差の随伴）**：\ref{cat:metric-yoneda} の 2 で「$F(b)\le F(a)+d(a,b)$」を「$F(a)\ge F(b)\mathbin{\dot{-}}d(a,b)$」に言い換えるのに使った。一般の閉圏の米田の補題でも、内部 hom の随伴が同じ役割を果たす。
+- **三角不等式**：表現可能関手が豊穣関手であること（1）に使った。これは豊穣圏の合成の射の存在そのものである。
+- **$d(a,a)=0$**：上限を $F(a)$ 以上にする $b=a$ の項に使った。豊穣圏の単位の射にあたる。
+- **対称性**：2 の絶対値の形にだけ使った。非対称なら 1 の形（双対への等長写像）になる。
+:::
+
+## 問題 {#cat:sec-lw-problems}
+
+::: problem {#cat:prob-lw-hom-metric}
+二つのローヴェアの距離空間 $X,Y$ の間の非拡大写像全体に $D(f,g)\defeq\sup_{a\in X}d_{Y}(fa,ga)$ を入れたものは、ローヴェアの距離空間であることを示せ。また、$D(f,g)=0$ がちょうど「$\mathbf{V}_{\infty}$ 自然変換 $f\Rightarrow g$ がある」ことであることを確かめよ。
+:::
+
+::: solution
+$D(f,f)=\sup_{a}d(fa,fa)=0$。三角不等式：各 $a$ で $d(fa,ha)\le d(fa,ga)+d(ga,ha)\le D(f,g)+D(g,h)$ なので、上限をとって $D(f,h)\le D(f,g)+D(g,h)$。自然変換 $f\Rightarrow g$ の成分は単位対象からの射 $0\to Y(fa,ga)$、すなわち $0\ge d(fa,ga)$ で、自然性の図式は自動的に可換。よってすべての $a$ で $d(fa,ga)=0$、すなわち $D(f,g)=0$ と同値。
+:::
+
+::: problem {#cat:prob-lw-preorder-yoneda}
+前順序集合 $(P,\le)$ を例 2 のように $\{0,\infty\}$ 値のローヴェアの距離空間とみなす。$\mathbf{V}_{\infty}$ 関手 $F\colon P\to\{0,\infty\}$ は何に対応するか。また \ref{cat:metric-yoneda} は何を言っているか。
+:::
+
+::: solution
+$\{0,\infty\}$ 値の $F$ が $\mathbf{V}_{\infty}$ 関手であることは $F(c)\le F(b)+d(b,c)$、すなわち「$b\le c$（$d(b,c)=0$）かつ $F(b)=0$ なら $F(c)=0$」。よって $U\defeq\{b:F(b)=0\}$ は上に閉じた集合（上集合）で、$F$ は上集合と対応する。$y_{a}$ は上集合 ${\uparrow}a=\{b:a\le b\}$ に対応する。米田の補題は「$F(a)=\sup_{b}(F(b)\mathbin{\dot{-}}d(a,b))$」、すなわち「$a\in U\iff$ $a\le b$ となるすべての $b$ が $U$ に属する」（$a\le b$ の項だけが効く）で、これは上集合の定義と $a\le a$ から従う。米田埋め込みは $a\mapsto{\uparrow}a$ で、$a'\le a\iff{\uparrow}a\subseteq{\uparrow}a'$（双対の順序の埋め込み）。
+:::
+
+::: supplement
+**前提を変えると.**
+- **一般の閉圏.** 一般の閉圏 $\mathbf{V}$ でも、$\mathbf{V}$ 関手 $F\colon\mathbf{X}\to\mathbf{V}$ と対象 $a$ について $\int_{b}[\mathbf{X}(a,b),Fb]\cong Fa$（豊穣米田の補題）が成り立つことが知られている（G. M. Kelly, *Basic Concepts of Enriched Category Theory* §2.4。ここでは証明しない）。順序集合でない $\mathbf{V}$ では図式の可換性を一つずつ確かめる必要があり、本ページの議論はその「骨組み」にあたる。
+- **完備化.** ローヴェアは、距離空間のコーシー完備化（\ref{top:completion-exists}）が、豊穣圏の「コーシー完備化」（すべての随伴な加群が表現可能になる拡大）と一致することを示したとされる（ここでは確かめていない）。
+
+**似た定理.** \ref{cat:metric-yoneda-embedding} の 2 は、距離空間の完備化の構成でよく使われるクラトフスキの埋め込み（\ref{top:completion-exists} の証明）と同じ形である。ハウスドルフ距離（\ref{top:hausdorff-metric}）も、部分集合を「重み」とみなしたときの豊穣圏論的な構成として理解できることが知られている。
+
+**高い視点から.** 圏では「$a$ から $b$ へ行く方法の集合」が hom 集合だったが、距離空間では「$a$ から $b$ へ行く費用」が hom 対象である。合成は「費用は足し算で、寄り道すると高くなるかもしれない」（三角不等式）、恒等射は「その場にとどまる費用は $0$」に対応する。比喩で言えば、通常の圏論は「行けるか行けないか、どう行くか」の論理であり、ローヴェアの距離空間は「どれだけかかるか」の論理である。米田の補題は、どちらの論理でも「点は、そこから他の点への行き方（費用）の全体で決まる」ことを言っている。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

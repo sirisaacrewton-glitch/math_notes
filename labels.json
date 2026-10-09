@@ -1163,12 +1163,40 @@
       "num": "1.7",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/01-cartesian-closed.html"
     },
+    "cat:lawvere-closed": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "[0,∞] は閉圏",
+      "num": "11.2",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/11-lawvere-metric.html"
+    },
     "cat:lawvere-fixed-point": {
       "status": "defined",
       "type": "theorem",
       "title": "ローヴェアの不動点定理",
       "num": "1.6",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/01-cartesian-closed.html"
+    },
+    "cat:lawvere-metric-is-enriched": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "距離空間は豊穣圏",
+      "num": "11.4",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/11-lawvere-metric.html"
+    },
+    "cat:lawvere-metric-space": {
+      "status": "defined",
+      "type": "definition",
+      "title": "ローヴェアの距離空間",
+      "num": "11.3",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/11-lawvere-metric.html"
+    },
+    "cat:lawvere-quantale": {
+      "status": "defined",
+      "type": "definition",
+      "title": "ローヴェアの閉圏 [0,∞]",
+      "num": "11.1",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/11-lawvere-metric.html"
     },
     "cat:lim-adjoint-diagonal": {
       "status": "defined",
@@ -1197,6 +1225,20 @@
       "title": "積と等化子による極限の構成",
       "num": "6.9",
       "page": "18-category-theory/18A-general-theory/01-basics/06-limits.html"
+    },
+    "cat:metric-yoneda": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "距離空間の米田の補題",
+      "num": "11.5",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/11-lawvere-metric.html"
+    },
+    "cat:metric-yoneda-embedding": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "米田埋め込みは等長",
+      "num": "11.6",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/11-lawvere-metric.html"
     },
     "cat:middle-four-interchange": {
       "status": "defined",
@@ -1596,6 +1638,13 @@
       "title": "クライスリ圏と比較関手",
       "num": "",
       "page": "18-category-theory/18A-general-theory/03-monads/02-kleisli.html"
+    },
+    "cat:page-lawvere-metric": {
+      "status": "defined",
+      "type": "page",
+      "title": "ローヴェアの距離空間",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/11-lawvere-metric.html"
     },
     "cat:page-limits": {
       "status": "defined",
@@ -2044,6 +2093,20 @@
       "title": "",
       "num": "9.8",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/09-loops-suspensions.html"
+    },
+    "cat:prob-lw-hom-metric": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "11.7",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/11-lawvere-metric.html"
+    },
+    "cat:prob-lw-preorder-yoneda": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "11.8",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/11-lawvere-metric.html"
     },
     "cat:prob-ma-products": {
       "status": "defined",
@@ -3276,6 +3339,34 @@
       "title": "懸垂とループ空間",
       "num": "",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/09-loops-suspensions.html"
+    },
+    "cat:sec-lw-metric": {
+      "status": "defined",
+      "type": "section",
+      "title": "豊穣圏としての距離空間",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/11-lawvere-metric.html"
+    },
+    "cat:sec-lw-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/11-lawvere-metric.html"
+    },
+    "cat:sec-lw-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/11-lawvere-metric.html"
+    },
+    "cat:sec-lw-yoneda": {
+      "status": "defined",
+      "type": "section",
+      "title": "米田の補題",
+      "num": "",
+      "page": "18-category-theory/18A-general-theory/02-structured-categories/11-lawvere-metric.html"
     },
     "cat:sec-ma-actions": {
       "status": "defined",

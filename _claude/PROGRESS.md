@@ -348,6 +348,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-09 圏論 随伴と位相 追記（cat:top-reflective-criterion, cat:prob-adt-kolmogorov：直積と部分空間で閉じた Top の充満部分圏は反射的（T₀・T₁・正則・T₃・チコノフ）、T₀ 反射はコルモゴロフ商。補足の未証明の言及を参照に置換）
 - 2026-10-08 一般位相 TD-14 追記（top:mrowka-psi, top:mad-exists, top:mrowka-psi-properties：極大概素族、Ψ 空間はチコノフで擬コンパクトだが可算コンパクトでない。補足の未証明の言及を参照に置換）
 - 2026-10-08 一般位相 TG-04 追記（top:double-arrow-half-nbhd, top:double-arrow-hereditary：近傍は一点と開区間の逆像、遺伝的リンデレーフ・遺伝的可分・完全正規。問題と補足の未証明の言及を参照に置換）
 - 2026-10-08 集合論 II-14 追記（set:erdos-rado-general：exp_n(κ)⁺ → (κ⁺)^{n+1}_κ、とくに ℶ_n⁺ → (ℵ₁)^{n+1}_{ℵ₀}。端等質な列と帰納法。補足の未証明の言及を参照に置換）

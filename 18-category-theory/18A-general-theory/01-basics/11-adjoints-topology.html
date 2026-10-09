@@ -156,6 +156,28 @@ $$
 - **$\mathbf{Haus}$ が充満部分圏**：Step 1 と Step 5 の最後の等号で使った。
 :::
 
+\ref{cat:haus-reflective} の証明（Step 1–4）でハウスドルフ性について使ったのは、それが直積と部分空間で保たれることだけである。したがって次の一般形が成り立つ。
+
+::: proposition 直積と部分空間で閉じた部分圏は反射的 {#cat:top-reflective-criterion keywords="a full subcategory of Top closed under products and subspaces is reflective; T0, T1, regular, Tychonoff spaces" index="反射部分圏（位相空間）|はんしゃぶぶんけんいそうくうかん"}
+$\mathcal{P}$ を、同相で閉じた位相空間のクラス（性質）とし、$\mathcal{P}$ に属する空間からなる $\mathbf{Top}$ の充満部分圏を $\mathbf{Top}_{\mathcal{P}}$ とする。$\mathcal{P}$ が任意の直積（空の直積である一点空間を含む）と部分空間で閉じていれば、$\mathbf{Top}_{\mathcal{P}}$ は $\mathbf{Top}$ の反射部分圏で、単位 $\eta_{X}\colon X\to H_{\mathcal{P}}X$ は全射である。
+
+とくに、$T_{0}$ 空間、$T_{1}$ 空間、正則空間、$T_{3}$ 空間、チコノフ空間のそれぞれの充満部分圏は $\mathbf{Top}$ の反射部分圏である。
+:::
+
+::: proof
+**Step 1（完備性）.** $\mathbf{Top}$ での積と等化子（等化子は部分空間、\ref{cat:top-complete}）は、$\mathcal{P}$ が直積と部分空間で**閉じている**ので $\mathbf{Top}_{\mathcal{P}}$ に属し、充満性からそこでも積・等化子である。\ref{cat:completeness-criterion} から $\mathbf{Top}_{\mathcal{P}}$ は完備で、包含関手 $K$ は小さい極限を保存する。
+
+**Step 2（解集合条件）.** 空間 $X$ について、$UX$ 上の同値関係 $\sim$ と、$UX/{\sim}$ 上の位相 $\tau$ で $(UX/{\sim},\tau)\in\mathcal{P}$ かつ商写像 $X\to(UX/{\sim},\tau)$ が連続なもの、の組全体は集合である。$f\colon X\to Y$（$Y\in\mathcal{P}$）について、像 $f[X]$ は $Y$ の**部分空間**なので $\mathcal{P}$ に属し、$f$ は上の集合のある元への連続写像と包含 $f[X]\hookrightarrow Y$ の合成に分解する（\ref{cat:haus-reflective} の Step 2 と同じ）。
+
+**Step 3（左随伴）.** Step 1, 2 と局所小性から、\ref{cat:freyd-aft} により $K$ は左随伴 $H_{\mathcal{P}}$ をもつ。
+
+**Step 4（単位は全射）.** \ref{cat:haus-reflective} の Step 4 と同じ：$\eta_{X}$ の像は $H_{\mathcal{P}}X$ の部分空間として $\mathcal{P}$ に属し、普遍性からそれへの包含が分裂全射になる。
+
+**例.** $T_{0}$, $T_{1}$ が直積と部分空間で保たれることは定義から直ちに確かめられる（異なる二点はある座標で異なり、その座標で分ける開集合の逆像が分ける）。正則性・$T_{3}$ は \ref{top:regular-hereditary}、チコノフ空間（完全正則 $T_{1}$）は \ref{top:completely-regular-basic}。
+:::
+
+正規空間は直積で閉じない（ゾルゲンフライ直線の二乗、\ref{top:sorgenfrey-plane}）ので、この命題は使えない。
+
 ## 問題 {#cat:sec-adt-problems}
 
 ::: problem {#cat:prob-adt-indiscrete}
@@ -164,6 +186,16 @@ $$
 
 ::: solution
 左随伴は余極限を保存する（\ref{cat:adjoints-preserve-limits} の双対）ので、$D'$ が余積を保存しないことを示せばよい。$S=T=\{0\}$ とすると、$\mathbf{Top}$ での余積 $D'S\sqcup D'T$ は $2$ 点の離散空間（各点が開）である（\ref{cat:top-complete} の余積）。一方 $D'(S\sqcup T)$ は $2$ 点の密着空間で、両者は同相でない。余積が保存されるなら、標準の射 $D'S\sqcup D'T\to D'(S\sqcup T)$ が同型になるはずだが、台写像は全単射でも逆写像が連続でない（密着から離散への恒等写像は連続でない）。
+:::
+
+::: problem {#cat:prob-adt-kolmogorov}
+空間 $X$ の $T_{0}$ 反射は、$x\approx y\iff\overline{\{x\}}=\overline{\{y\}}$ による商空間 $X/{\approx}$（**コルモゴロフ商**）であることを示せ。
+:::
+
+::: solution
+**$X/{\approx}$ は $T_{0}$.** 商写像を $q$ とする。開集合 $V\subseteq X$ は $\approx$ で飽和している：$x\in V$, $x\approx y$ なら、$y\notin V$ だと $x\notin\overline{\{y\}}$（$V$ は $x$ の近傍で $y$ を含まない）となり $\overline{\{x\}}=\overline{\{y\}}$ に反する。したがって $q[V]$ は開で、$X/{\approx}$ の開集合は $X$ の開集合の像と一対一に対応する。$q(x)\ne q(y)$ なら $\overline{\{x\}}\ne\overline{\{y\}}$ で、たとえば $x\notin\overline{\{y\}}$ なら、$x$ を含み $y$ を含まない開集合 $V$ があり、$q[V]$ が $q(x)$ と $q(y)$ を分ける。
+
+**普遍性.** $f\colon X\to Y$（$Y$ は $T_{0}$）と $x\approx y$ について、$f(x)\neq f(y)$ なら、一方（たとえば $f(x)$）を含み他方を含まない開集合 $W$ があり、$f^{-1}[W]$ は $x$ を含み $y$ を含まない開集合で、$x\approx y$ に反する（上と同じ）。よって $f$ は $q$ を通して一意に分解し、商位相の普遍性（\ref{top:final-topology-universal}）から分解は連続。
 :::
 
 ::: problem {#cat:prob-adt-haus-no-right}
@@ -175,7 +207,7 @@ $P\defeq\mathbb{R}\setminus\{0\}$、$\mathbb{R}\sqcup\mathbb{R}$ を考え、$u,
 :::
 
 ::: supplement
-**前提を変えると.** \ref{cat:haus-reflective} の議論は、直積と部分空間で閉じた性質であれば同じように通る。たとえば $T_{0}$, $T_{1}$, 正則（$T_{3}$）空間の圏も、それぞれ $\mathbf{Top}$ の反射部分圏になる（Mac Lane の演習。ここでは確かめていない）。正規空間は直積で閉じないので、この議論はそのままでは使えない。また、局所連結空間の圏では、離散位相の関手が連結成分の集合をとる関手を左随伴にもつ、という形の随伴もある（同書の演習）。コンパクトハウスドルフ空間の圏も反射的で、その反射子がストーン–チェックのコンパクト化である（\ref{top:page-stone-cech}）。
+**前提を変えると.** \ref{cat:haus-reflective} の議論は、直積と部分空間で閉じた性質であれば同じように通る。たとえば $T_{0}$, $T_{1}$, 正則（$T_{3}$）空間、チコノフ空間の圏も、それぞれ $\mathbf{Top}$ の反射部分圏になる（\ref{cat:top-reflective-criterion}。$T_{0}$ 反射はコルモゴロフ商、\ref{cat:prob-adt-kolmogorov}）。正規空間は直積で閉じないので、この議論はそのままでは使えない。また、局所連結空間の圏では、離散位相の関手が連結成分の集合をとる関手を左随伴にもつ、という形の随伴もある（同書の演習）。コンパクトハウスドルフ空間の圏も反射的で、その反射子がストーン–チェックのコンパクト化である（\ref{top:page-stone-cech}）。
 
 **似た定理.** \ref{cat:equalizers-from-lifts} は、「忠実な関手で、構造を最も弱く持ち上げる操作がある」とき極限が作れる、という型の定理の一例である。このような関手は**位相的関手**と呼ばれ、$\mathbf{Top}\to\mathbf{Set}$ が典型例であることが知られている（ここでは扱わない）。群の忘却関手は極限を**創出**する（\ref{cat:grp-creates-limits}）が、$U\colon\mathbf{Top}\to\mathbf{Set}$ は極限を創出しない（同じ台集合の上に位相が複数あるため）。代わりに、始位相という「標準的な持ち上げ」を選ぶことで極限が作られる。
 

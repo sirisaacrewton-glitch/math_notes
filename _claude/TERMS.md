@@ -464,3 +464,4 @@
 | subobject classifier / elementary topos / sieve / maximal sieve / subpresheaf | 部分対象分類子 / （初等）トポス / ふるい / 最大のふるい / 部分前層 | 篩 | 標準的（ふるいは仮名書き）。cat:page-presheaf-topos |
 | sheaf / gluing / compatible family / subsheaf / Sierpinski space | 層 / 貼り合わせ / 両立する族 / 部分層 / シェルピンスキー空間 | | 標準的。cat:page-sheaf-topos |
 | balanced category / power object / membership relation / singleton map / pullback pasting lemma | 平衡な圏 / 冪集合対象 / 所属関係 / 一点集合をとる射 / 引き戻しの貼り合わせ | | 冪集合対象・一点集合をとる射は仮。cat:page-topos-basics |
+| Heyting algebra of subobjects / quantifiers as adjoints / Beck-Chevalley condition / hyperdoctrine | 部分対象のハイティング代数 / 量化子は随伴 / ベック–シュヴァレー条件 / ハイパードクトリン | | ベック–シュヴァレー・ハイパードクトリンは仮。cat:page-presheaf-heyting |

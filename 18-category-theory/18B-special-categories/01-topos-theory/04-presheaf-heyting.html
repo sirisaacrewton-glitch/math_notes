@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>部分前層のハイティング代数と量化子 | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18B-special-categories/01-topos-theory/04-presheaf-heyting.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 部分前層のハイティング代数と量化子 {#cat:page-presheaf-heyting keywords="Heyting algebra of subpresheaves, implication of subobjects, negation, image, existential and universal quantifiers as adjoints, Lawvere, Boolean presheaf topos, groupoid"}
+
+前層 $P$ の部分前層の全体 $\mathrm{Sub}(P)$ は、共通部分と和集合で束になるだけでなく、含意 $A\Rightarrow B$ をもつ**ハイティング代数**である（\ref{cat:presheaf-sub-heyting}）。ただし含意と否定は各点ごとの集合演算ではなく、「すべての制限で」という条件が入る。また前層の射 $f\colon P\to Q$ による引き戻し $f^{\ast}\colon\mathrm{Sub}(Q)\to\mathrm{Sub}(P)$ は左右の随伴 $\exists_{f}\dashv f^{\ast}\dashv\forall_{f}$ をもつ（\ref{cat:quantifier-adjoints}）。$f$ が射影のとき、$\exists_{f}$, $\forall_{f}$ はそれぞれ存在量化子・全称量化子にあたる（ローヴェアの「量化子は随伴」という見方）。対象がすべて同型射の圏（亜群）の上では、$\mathrm{Sub}(P)$ はブール代数になる（\ref{cat:prob-hq-groupoid-boolean}）。
+
+> 資料フォルダにトポスの教科書はなく、標準的な定義と証明を本サイトで組み立てた。
+
+## 記法と定義の確認 {#cat:sec-hq-notation}
+
+::: notation
+- $\mathbf{C}$ は小さい圏、$\widehat{\mathbf{C}}$ は前層の圏、$x\cdot h\defeq P(h)(x)$ は \ref{cat:page-presheaf-topos} のとおり。部分前層と部分対象の対応は \ref{cat:presheaf-mono}。以下、$\mathrm{Sub}(P)$ は $P$ の部分前層の集合を包含 $A\le B\iff$「すべての $c$ で $A(c)\subseteq B(c)$」で順序づけたもの。
+- 前順序の間の単調写像 $f\colon\mathcal{A}\to\mathcal{B}$, $g\colon\mathcal{B}\to\mathcal{A}$ について、$f\dashv g$ は「$f(a)\le b\iff a\le g(b)$」（前順序を圏とみたときの随伴、\ref{cat:prob-galois-connection}）。
+- **ハイティング代数**は、最大元・最小元・二項の上限 $\vee$・下限 $\wedge$ をもつ束で、$c\wedge a\le b\iff c\le(a\Rightarrow b)$ を満たす二項演算 $\Rightarrow$ をもつもの（\ref{cat:page-cartesian-closed} の例 3）。$\neg a\defeq(a\Rightarrow\bot)$。
+:::
+
+## 部分前層のハイティング代数 {#cat:sec-hq-heyting}
+
+::: proposition 部分前層の束 {#cat:presheaf-sub-lattice keywords="subpresheaves form a complete lattice under pointwise intersection and union" index="部分前層の束|ぶぶんぜんそうのそく"}
+部分前層の族 $(A_{k})_{k\in K}$ について、各点ごとの共通部分 $\bigl(\bigcap_{k}A_{k}\bigr)(c)\defeq\bigcap_{k}A_{k}(c)$ と和集合 $\bigl(\bigcup_{k}A_{k}\bigr)(c)\defeq\bigcup_{k}A_{k}(c)$ は部分前層で、それぞれ $\mathrm{Sub}(P)$ での下限・上限である（$K=\emptyset$ のときは $P$ と空の部分前層 $\emptyset$）。
+:::
+
+::: proof
+$x\in\bigcap_{k}A_{k}(c)$, $h\colon d\to c$ なら、各 $k$ で $x\cdot h\in A_{k}(d)$。和集合も、$x\in A_{k}(c)$ となる $k$ で $x\cdot h\in A_{k}(d)$。下限・上限であることは、順序が各点ごとの包含であることから。
+:::
+
+::: theorem 部分前層の含意 {#cat:presheaf-sub-heyting keywords="Sub(P) is a Heyting algebra; implication of subpresheaves" index="部分前層の含意|ぶぶんぜんそうのがんい"}
+部分前層 $A,B\subseteq P$ について
+$$
+\begin{aligned}(A\Rightarrow B)(c)\defeq\{x\in P(c):\ &\text{すべての }h\colon d\to c\text{ で、}\\&x\cdot h\in A(d)\text{ なら }x\cdot h\in B(d)\}\end{aligned}
+$$
+とすると、$A\Rightarrow B$ は部分前層で、すべての部分前層 $C$ について $C\cap A\le B\iff C\le(A\Rightarrow B)$。したがって $\mathrm{Sub}(P)$ はハイティング代数で、$\neg A(c)=\{x\in P(c):\text{すべての }h\text{ で }x\cdot h\notin A(d)\}$。
+:::
+
+::: proof
+**部分前層.** $x\in(A\Rightarrow B)(c)$, $k\colon e\to c$ とする。$h\colon d\to e$ で $(x\cdot k)\cdot h=x\cdot(k\circ h)\in A(d)$ なら、$x$ の条件を $k\circ h$ に使って $x\cdot(k\circ h)\in B(d)$。よって $x\cdot k\in(A\Rightarrow B)(e)$。
+
+**$\Rightarrow$.** $C\cap A\le B$ とし、$x\in C(c)$, $h\colon d\to c$, $x\cdot h\in A(d)$ とする。$C$ は部分前層なので $x\cdot h\in C(d)$、よって $x\cdot h\in(C\cap A)(d)\subseteq B(d)$。したがって $x\in(A\Rightarrow B)(c)$。
+
+**$\Leftarrow$.** $C\le(A\Rightarrow B)$ とし、$x\in C(c)\cap A(c)$ とする。$x\in(A\Rightarrow B)(c)$ の条件を $h=1_{c}$ に使うと、$x\cdot1_{c}=x\in A(c)$ から $x\in B(c)$。
+
+最後の主張は $B=\emptyset$ とした場合で、束の構造は \ref{cat:presheaf-sub-lattice}。
+:::
+
+::: remark
+含意は各点ごとの $\bigl(P(c)\setminus A(c)\bigr)\cup B(c)$ ではない。各点ごとの集合は一般に部分前層にならない（制限で閉じない）からで、上の定義はその中で制限で閉じている最大の部分前層である。\ref{cat:omega-examples} の 1 の矢印圏で $P=\mathbf{y}1$（$P(1)=\{1_{1}\}$, $P(0)=\{a\}$）、$A(1)=\emptyset$, $A(0)=\{a\}$ とすると、$\neg A(1)=\emptyset$（$1_{1}\cdot a=a\in A(0)$）、$\neg A(0)=\emptyset$ なので $\neg A=\emptyset$、$A\cup\neg A=A\ne P$。
+:::
+
+## 量化子は随伴 {#cat:sec-hq-quantifiers}
+
+::: theorem 引き戻しの左右の随伴 {#cat:quantifier-adjoints keywords="existential and universal quantification along a morphism of presheaves are left and right adjoint to pullback" index="量化子は随伴|りょうかしはずいはん, 存在量化子（圏論）|そんざいりょうかしけんろん, 全称量化子（圏論）|ぜんしょうりょうかしけんろん"}
+前層の射 $f\colon P\to Q$ について、
+$$
+\begin{aligned}
+(f^{\ast}B)(c)&\defeq f_{c}^{-1}(B(c))\quad(B\in\mathrm{Sub}(Q)),\\
+(\exists_{f}A)(c)&\defeq f_{c}(A(c))\quad(A\in\mathrm{Sub}(P)),\\
+(\forall_{f}A)(c)&\defeq\{y\in Q(c):\text{すべての }g\colon d\to c\text{ で }f_{d}^{-1}(y\cdot g)\subseteq A(d)\}
+\end{aligned}
+$$
+はそれぞれ部分前層で、$\exists_{f}\dashv f^{\ast}\dashv\forall_{f}$：
+$$
+\exists_{f}A\le B\iff A\le f^{\ast}B,\qquad f^{\ast}B\le A\iff B\le\forall_{f}A.
+$$
+$f^{\ast}B$ は部分前層の包含 $B\subseteq Q$ の $f$ に沿った引き戻しである。
+:::
+
+::: proof
+**部分前層であること.** $f^{\ast}B$：$f_{c}(x)\in B(c)$ なら $f_{d}(x\cdot h)=f_{c}(x)\cdot h\in B(d)$。$\exists_{f}A$：$y=f_{c}(x)$, $x\in A(c)$ なら $y\cdot h=f_{d}(x\cdot h)$ で $x\cdot h\in A(d)$。$\forall_{f}A$：$y\in(\forall_{f}A)(c)$, $k\colon e\to c$ について、$g\colon d\to e$ に対し $f_{d}^{-1}((y\cdot k)\cdot g)=f_{d}^{-1}(y\cdot(k\circ g))\subseteq A(d)$。引き戻しであることは、引き戻しが各点ごと（\ref{cat:pointwise-limits}）で、$\mathbf{Set}$ での包含の引き戻しが逆像であることから。
+
+**$\exists_{f}\dashv f^{\ast}$.** 各点で $f_{c}(A(c))\subseteq B(c)\iff A(c)\subseteq f_{c}^{-1}(B(c))$。
+
+**$f^{\ast}\dashv\forall_{f}$.**
+- $(\Leftarrow)$ $B\le\forall_{f}A$ とし、$x\in(f^{\ast}B)(c)$ とする。$y\defeq f_{c}(x)\in B(c)\subseteq(\forall_{f}A)(c)$ なので、$g=1_{c}$ として $x\in f_{c}^{-1}(y)\subseteq A(c)$。
+- $(\Rightarrow)$ $f^{\ast}B\le A$ とし、$y\in B(c)$, $g\colon d\to c$, $x\in f_{d}^{-1}(y\cdot g)$ とする。$f_{d}(x)=y\cdot g\in B(d)$（$B$ は部分前層）なので $x\in(f^{\ast}B)(d)\subseteq A(d)$。よって $y\in(\forall_{f}A)(c)$。
+:::
+
+::: corollary 射影に沿った量化子 {#cat:projection-quantifiers keywords="for a projection, exists and forall along it are the quantifiers" index="射影に沿った量化子|しゃえいにそったりょうかし"}
+前層 $P,Q$ と射影 $\pi\colon Q\times P\to Q$ について、部分前層 $R\subseteq Q\times P$ に対し
+$$
+\begin{aligned}
+(\exists_{\pi}R)(c)&=\{y\in Q(c):\text{ある }x\in P(c)\text{ で }(y,x)\in R(c)\},\\
+(\forall_{\pi}R)(c)&=\{y\in Q(c):\text{すべての }g\colon d\to c\text{ と }x\in P(d)\\&\qquad\qquad\text{ で }(y\cdot g,x)\in R(d)\}.
+\end{aligned}
+$$
+:::
+
+::: proof
+$\pi_{c}$ は $(y,x)\mapsto y$ なので、$\exists_{\pi}$ は像、$\pi_{d}^{-1}(y\cdot g)=\{y\cdot g\}\times P(d)$ を \ref{cat:quantifier-adjoints} の $\forall_{\pi}$ の定義に代入する。
+:::
+
+::: remark
+存在量化子は各点ごとだが、全称量化子は「すべての制限で」という条件が入る。これは、前層のトポスでは「すべての $x$ について」が「今ある $x$ だけでなく、制限した先で新しく現れる $x$ についても」という意味になるからで、クリプキ意味論の全称量化子（すべての先の世界で）と同じ形である。
+:::
+
+::: hypcheck
+- **部分前層が制限で閉じること**：含意の $\Rightarrow$ の向き（$x\cdot h\in C(d)$）と、$f^{\ast}\dashv\forall_{f}$ の $(\Rightarrow)$（$y\cdot g\in B(d)$）に使った。
+- **恒等射での評価**：含意の $\Leftarrow$ と $f^{\ast}\dashv\forall_{f}$ の $(\Leftarrow)$ で、「すべての $h$」の条件を $h=1_{c}$ に使った。
+- **極限が各点ごと**：$f^{\ast}B$ が引き戻しであることに使った。
+- **選択公理・排中律**：使っていない（$\neg A$ の計算でも、補集合は「すべての制限で入らない」として扱った）。
+- 一般のトポスでも、$\mathrm{Sub}(X)$ はハイティング代数で $f^{\ast}$ は左右の随伴をもつことが知られているが、証明には像の存在（エピ・モノ分解）などが要る（ここでは前層の場合に限った）。
+:::
+
+## 問題 {#cat:sec-hq-problems}
+
+::: problem {#cat:prob-hq-groupoid-boolean}
+$\mathbf{C}$ のすべての射が同型射（$\mathbf{C}$ は亜群）なら、すべての前層 $P$ で $\mathrm{Sub}(P)$ がブール代数（$A\cup\neg A=P$）であり、$\neg A(c)=P(c)\setminus A(c)$ となることを示せ。とくに群 $G$ の右 $G$ 集合のトポスで、部分対象の論理は古典論理である。
+:::
+
+::: solution
+$x\in P(c)\setminus A(c)$ とし、$h\colon d\to c$ で $x\cdot h\in A(d)$ と仮定する。$h$ は同型射なので $x=x\cdot(h\circ h^{-1})=(x\cdot h)\cdot h^{-1}\in A(c)$（$A$ は部分前層）となり矛盾。よって $x\in\neg A(c)$。逆に $\neg A(c)\subseteq P(c)\setminus A(c)$ は $h=1_{c}$ から。したがって $A\cup\neg A=P$ で、ハイティング代数で排中律が成り立つのでブール代数。
+:::
+
+::: problem {#cat:prob-hq-beck-chevalley}
+\ref{cat:quantifier-adjoints} の記号で、$f\colon P\to Q$, $g\colon Q'\to Q$ と、各点ごとの引き戻し $P'\defeq\{(x,y')\}$（$P'(c)=\{(x,y')\in P(c)\times Q'(c):f_{c}(x)=g_{c}(y')\}$、射影 $f'\colon P'\to Q'$, $g'\colon P'\to P$）について、$g^{\ast}\exists_{f}A=\exists_{f'}g'^{\ast}A$ を示せ（**ベック–シュヴァレー条件**）。
+:::
+
+::: solution
+各点で、$y'\in(g^{\ast}\exists_{f}A)(c)\iff g_{c}(y')\in f_{c}(A(c))\iff$ ある $x\in A(c)$ で $f_{c}(x)=g_{c}(y')\iff$ ある $(x,y')\in P'(c)$ で $g'_{c}(x,y')=x\in A(c)\iff y'\in(\exists_{f'}g'^{\ast}A)(c)$。論理式の言葉では、「$\exists x\,\varphi$ に項を代入すること」と「代入してから $\exists x$ をとること」が一致することにあたる。
+:::
+
+::: problem {#cat:prob-hq-forall-not-pointwise}
+\ref{cat:omega-examples} の 1 の矢印圏で、$Q=1$, $P$ を $P(1)=\{p\}$, $P(0)=\{p_{0},q_{0}\}$（$p\cdot a=p_{0}$）とし、$R\subseteq1\times P\cong P$ を $R(1)=\{p\}$, $R(0)=\{p_{0}\}$ とする。$(\forall_{\pi}R)(1)$ を求め、「$P(1)$ のすべての元が $R(1)$ に入る」のに $\forall_{\pi}R$ が $1$ で成り立たないことを確かめよ。
+:::
+
+::: solution
+$R$ は部分前層（$p\cdot a=p_{0}\in R(0)$）。\ref{cat:projection-quantifiers} から、$\ast\in(\forall_{\pi}R)(1)$ は「すべての $g\colon d\to1$ と $x\in P(d)$ で $x\in R(d)$」で、$g=a$, $x=q_{0}\in P(0)\setminus R(0)$ がこれを破る。よって $(\forall_{\pi}R)(1)=\emptyset$。$P(1)=\{p\}=R(1)$ なのに成り立たないのは、時刻 $0$ で新しく現れる $q_{0}$ も「すべて」に含まれるからである。
+:::
+
+::: supplement
+**前提を変えると.**
+- **一般のトポス.** 任意のトポスで $\mathrm{Sub}(X)$ はハイティング代数、$f^{\ast}$ は左右の随伴をもち、ベック–シュヴァレー条件も成り立つことが知られている。このような「各対象にハイティング代数を、各射に左右の随伴をもつ準同型を対応させる」構造はローヴェアの**ハイパードクトリン**と呼ばれる（ここでは確かめていない）。
+- **ブール性.** 亜群ならすべての $\mathrm{Sub}(P)$ はブール代数（\ref{cat:prob-hq-groupoid-boolean}）、矢印圏ならそうでない（\ref{cat:prob-tps-excluded-middle}）。逆に、すべての $\mathrm{Sub}(P)$ がブール代数なら $\mathbf{C}$ は亜群であること（前層のトポスがブールであることと $\mathbf{C}$ が亜群であることの同値性）が知られている（ここでは確かめていない）。
+
+**似た定理.**
+- \ref{cat:page-sheaf-topos} の開集合の束 $\Omega_{X}(X)$ のハイティング代数（$V\Rightarrow W$ は $(X\setminus V)\cup W$ の内部）は、層の部分対象の束の特別な場合で、ここでの含意の定義の「すべての制限で」が「内部をとる」に対応している。
+- 集合の圏では $f^{\ast}$ は逆像、$\exists_{f}$ は像、$\forall_{f}A=\{y:f^{-1}(y)\subseteq A\}$ で、\ref{cat:quantifier-adjoints} は $\mathbf{C}=\mathbf{1}$ の場合である。
+
+**高い視点から：論理結合子は随伴.** ローヴェアは、論理結合子と量化子が随伴として特徴づけられることを指摘した。$\wedge$ は対角の右随伴、$\Rightarrow$ は $-\wedge A$ の右随伴、$\exists$ と $\forall$ は代入（引き戻し）の左右の随伴である。前層のトポスでは、これらが具体的な集合の操作として計算でき、$\Rightarrow$, $\neg$, $\forall$ には「すべての制限で」という条件が自然に入る。比喩で言えば、前層は「時間とともに増えていく知識の状態」で、「$A$ でない」は「今 $A$ でない」ではなく「今後どれだけ知識が増えても $A$ にならない」という強い主張になる。この読み方はクリプキ意味論そのもので、前層のトポスの内部論理が直観主義論理になる理由が、ここに具体的に現れている。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

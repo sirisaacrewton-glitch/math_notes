@@ -1737,6 +1737,13 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/04-kan-extensions/04-pointwise-kan.html"
     },
+    "cat:page-presheaf-heyting": {
+      "status": "defined",
+      "type": "page",
+      "title": "部分前層のハイティング代数と量化子",
+      "num": "",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/04-presheaf-heyting.html"
+    },
     "cat:page-presheaf-topos": {
       "status": "defined",
       "type": "page",
@@ -1869,6 +1876,20 @@
       "title": "前層の圏のモノ射",
       "num": "1.4",
       "page": "18-category-theory/18B-special-categories/01-topos-theory/01-presheaf-topos.html"
+    },
+    "cat:presheaf-sub-heyting": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "部分前層の含意",
+      "num": "4.2",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/04-presheaf-heyting.html"
+    },
+    "cat:presheaf-sub-lattice": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "部分前層の束",
+      "num": "4.1",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/04-presheaf-heyting.html"
     },
     "cat:presheaf-subobject-classifier": {
       "status": "defined",
@@ -2128,6 +2149,27 @@
       "title": "",
       "num": "1.10",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/01-cartesian-closed.html"
+    },
+    "cat:prob-hq-beck-chevalley": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "4.8",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/04-presheaf-heyting.html"
+    },
+    "cat:prob-hq-forall-not-pointwise": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "4.9",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/04-presheaf-heyting.html"
+    },
+    "cat:prob-hq-groupoid-boolean": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "4.7",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/04-presheaf-heyting.html"
     },
     "cat:prob-ic-groupoid": {
       "status": "defined",
@@ -2521,6 +2563,13 @@
       "num": "3.6",
       "page": "18-category-theory/18A-general-theory/01-basics/03-constructions.html"
     },
+    "cat:projection-quantifiers": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "射影に沿った量化子",
+      "num": "4.5",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/04-presheaf-heyting.html"
+    },
     "cat:pullback-monic": {
       "status": "defined",
       "type": "lemma",
@@ -2534,6 +2583,13 @@
       "title": "引き戻しの貼り合わせ",
       "num": "3.1",
       "page": "18-category-theory/18B-special-categories/01-topos-theory/03-topos-basics.html"
+    },
+    "cat:quantifier-adjoints": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "引き戻しの左右の随伴",
+      "num": "4.4",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/04-presheaf-heyting.html"
     },
     "cat:quotient-category": {
       "status": "defined",
@@ -3339,6 +3395,34 @@
       "title": "問題",
       "num": "",
       "page": "18-category-theory/18A-general-theory/01-basics/02-functors.html"
+    },
+    "cat:sec-hq-heyting": {
+      "status": "defined",
+      "type": "section",
+      "title": "部分前層のハイティング代数",
+      "num": "",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/04-presheaf-heyting.html"
+    },
+    "cat:sec-hq-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/04-presheaf-heyting.html"
+    },
+    "cat:sec-hq-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/04-presheaf-heyting.html"
+    },
+    "cat:sec-hq-quantifiers": {
+      "status": "defined",
+      "type": "section",
+      "title": "量化子は随伴",
+      "num": "",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/04-presheaf-heyting.html"
     },
     "cat:sec-ic-diagrams": {
       "status": "defined",

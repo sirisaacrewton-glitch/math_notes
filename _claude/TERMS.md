@@ -465,3 +465,4 @@
 | sheaf / gluing / compatible family / subsheaf / Sierpinski space | 層 / 貼り合わせ / 両立する族 / 部分層 / シェルピンスキー空間 | | 標準的。cat:page-sheaf-topos |
 | balanced category / power object / membership relation / singleton map / pullback pasting lemma | 平衡な圏 / 冪集合対象 / 所属関係 / 一点集合をとる射 / 引き戻しの貼り合わせ | | 冪集合対象・一点集合をとる射は仮。cat:page-topos-basics |
 | Heyting algebra of subobjects / quantifiers as adjoints / Beck-Chevalley condition / hyperdoctrine | 部分対象のハイティング代数 / 量化子は随伴 / ベック–シュヴァレー条件 / ハイパードクトリン | | ベック–シュヴァレー・ハイパードクトリンは仮。cat:page-presheaf-heyting |
+| intuitionistic propositional logic / NJ / ex falso / Heyting algebra / Lindenbaum-Tarski algebra / prime theory / disjunction property / persistence | 直観主義命題論理 / NJ / 爆発律（⊥E） / ハイティング代数 / リンデンバウム–タルスキ代数 / 素な理論 / 選言特性 / 持続性 | 選言性 | 標準的。logic:page-intuitionistic-prop, logic:page-intuitionistic-kripke |

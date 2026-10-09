@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>直観主義命題論理のクリプキ意味論 | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/01-propositional-logic/05-intuitionistic-kripke.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 直観主義命題論理のクリプキ意味論 {#logic:page-intuitionistic-kripke keywords="Kripke semantics for intuitionistic logic, persistence, upsets form a Heyting algebra, prime theory, canonical model, completeness, disjunction property"}
+
+直観主義命題論理 $\mathsf{NJ}$（\ref{logic:nj}）の**クリプキ意味論**は、半順序集合 $(W,\le)$ を「知識の状態の集まり」と見て、論理式が各状態で成り立つか（**強制**）を定める（\ref{logic:ikripke-model}）。含意 $\varphi\to\psi$ は「今後どの状態に進んでも、$\varphi$ が成り立てば $\psi$ も成り立つ」と解釈される。強制される状態の集合は上向き閉集合で、上向き閉集合の全体はハイティング代数をなすので、健全性はハイティング代数の健全性（\ref{logic:heyting-soundness}）から従う（\ref{logic:ikripke-soundness}）。完全性は、**素な理論**の全体を状態とする標準モデル（\ref{logic:ikripke-canonical}）で示す（\ref{logic:ikripke-completeness}）。応用として、$\vdash_{\mathsf{I}}\varphi\vee\psi$ なら $\vdash_{\mathsf{I}}\varphi$ か $\vdash_{\mathsf{I}}\psi$ であるという**選言特性**を、モデルの貼り合わせで示す（\ref{logic:disjunction-property}）。
+
+> 資料フォルダに直観主義論理の教科書はなく、標準的な定義と証明を本サイトで組み立てた。様相論理のクリプキ意味論（\ref{logic:page-kripke-semantics}）とは、関係が半順序で付値が上向きに閉じている点が異なる。
+
+## 記法と定義の確認 {#logic:sec-ikr-notation}
+
+::: notation
+- 論理式、$\mathsf{NJ}$、$\vdash_{\mathsf{I}}$、基本性質（弱化・有限性・演繹定理・カット）、ハイティング代数とその解釈 $\bar{v}$、健全性は \ref{logic:page-intuitionistic-prop}（\ref{logic:ipc-formula}, \ref{logic:nj}, \ref{logic:nj-basic}, \ref{logic:heyting-algebra}, \ref{logic:heyting-valuation}, \ref{logic:heyting-soundness}）のとおり。
+- 半順序集合 $(W,\le)$ の部分集合 $U$ が**上向きに閉じている**（上集合）とは、$w\in U$, $w\le w'$ なら $w'\in U$ となることをいう。上集合の全体を $\mathrm{Up}(W)$ と書く。$w\in W$ について ${\uparrow}w\defeq\{w':w\le w'\}$。
+- 論理式の集合 $\Gamma$ について、$\mathrm{PV}$ は可算とする（\ref{logic:prime-extension} の数え上げ。一般の場合の注意はそこで述べる）。
+:::
+
+## クリプキモデル {#logic:sec-ikr-models}
+
+::: definition 直観主義クリプキモデル {#logic:ikripke-model keywords="Kripke model for intuitionistic logic, forcing" index="クリプキモデル（直観主義）|くりぷきもでるちょっかんしゅぎ, 強制（クリプキ）|きょうせいくりぷき"}
+**クリプキモデル** $\mathcal{M}=(W,\le,V)$ とは、空でない半順序集合 $(W,\le)$ と写像 $V\colon\mathrm{PV}\to\mathrm{Up}(W)$ の組をいう。$w\in W$ と論理式について**強制** $w\Vdash\varphi$ を
+- $w\Vdash p\iff w\in V(p)$、$w\nVdash\bot$、
+- $w\Vdash\varphi\wedge\psi\iff w\Vdash\varphi$ かつ $w\Vdash\psi$、$w\Vdash\varphi\vee\psi\iff w\Vdash\varphi$ または $w\Vdash\psi$、
+- $w\Vdash\varphi\to\psi\iff$ すべての $w'\ge w$ で、$w'\Vdash\varphi$ なら $w'\Vdash\psi$
+
+で帰納的に定める。$\Gamma\models_{\mathsf{K}}\varphi$ とは、すべてのクリプキモデルとその状態 $w$ で、$\Gamma$ のすべての元を強制するなら $\varphi$ を強制することをいう。
+:::
+
+::: proposition 上集合のハイティング代数と持続性 {#logic:upsets-heyting keywords="upsets of a poset form a Heyting algebra; forcing is persistent and equals the Heyting valuation" index="上集合のハイティング代数|うえしゅうごうのはいてぃんぐだいすう, 持続性|じぞくせい"}
+1. $\mathrm{Up}(W)$ は、包含について $\cap$, $\cup$, $\emptyset$, $W$ と
+$$
+U\Rightarrow U'\defeq\{w:\text{すべての }w'\ge w\text{ で、}w'\in U\text{ なら }w'\in U'\}
+$$
+によりハイティング代数である。
+2. $\mathcal{M}=(W,\le,V)$ について $V$ を $\mathrm{Up}(W)$ への解釈と見ると、すべての論理式で $\bar{V}(\varphi)=\{w:w\Vdash\varphi\}$。とくに $\{w:w\Vdash\varphi\}$ は上集合である（**持続性**：$w\Vdash\varphi$, $w\le w'$ なら $w'\Vdash\varphi$）。
+:::
+
+::: proof
+**1.** 上集合の共通部分と和集合は上集合。$U\Rightarrow U'$ は上集合：$w\in U\Rightarrow U'$, $w\le w_{1}$ なら、$w'\ge w_{1}$ は $w'\ge w$ でもあるので条件を満たす。随伴の条件：上集合 $C$ について、$C\cap U\subseteq U'$ とし、$w\in C$, $w'\ge w$, $w'\in U$ なら $w'\in C$（上集合）なので $w'\in C\cap U\subseteq U'$、よって $C\subseteq U\Rightarrow U'$。逆に $C\subseteq U\Rightarrow U'$ で $w\in C\cap U$ なら、$w'=w$ として $w\in U'$。
+
+**2.** 論理式に関する帰納法。$p$, $\bot$, $\wedge$, $\vee$ は定義どおり。$\to$：帰納法の仮定から $\{w':w'\Vdash\varphi\}=\bar{V}(\varphi)$ などで、強制の定義は 1 の $\bar{V}(\varphi)\Rightarrow\bar{V}(\psi)$ の定義と同じ。
+:::
+
+::: theorem クリプキ意味論の健全性 {#logic:ikripke-soundness keywords="soundness of NJ for Kripke models" index="NJ の健全性（クリプキ）|えぬじぇいのけんぜんせいくりぷき"}
+$\Gamma\vdash_{\mathsf{I}}\varphi$ なら $\Gamma\models_{\mathsf{K}}\varphi$。
+:::
+
+::: proof
+有限性（\ref{logic:nj-basic} の 1）から有限の $\Gamma_{0}\subseteq\Gamma$ で $\Gamma_{0}\vdash_{\mathsf{I}}\varphi$。\ref{logic:heyting-soundness} をハイティング代数 $\mathrm{Up}(W)$ と解釈 $V$ に使うと $\bigcap_{\gamma\in\Gamma_{0}}\bar{V}(\gamma)\subseteq\bar{V}(\varphi)$。\ref{logic:upsets-heyting} の 2 から、$\Gamma$（とくに $\Gamma_{0}$）のすべてを強制する $w$ は $\varphi$ を強制する。
+:::
+
+::: example 反例モデル {#logic:ikripke-countermodel keywords="two-world Kripke countermodel to excluded middle" index="クリプキの反例モデル|くりぷきのはんれいもでる"}
+$W=\{w_{0}<w_{1}\}$, $V(p)=\{w_{1}\}$, $V(q)=\emptyset$ とする。$w_{0}\nVdash p$。$w_{0}\Vdash\neg p$ には「すべての $w'\ge w_{0}$ で $w'\nVdash p$」が必要だが $w_{1}\Vdash p$ なので $w_{0}\nVdash\neg p$。よって $w_{0}\nVdash p\vee\neg p$。また $w_{0}\nVdash\neg p$, $w_{1}\nVdash\neg p$ なので $w_{0}\Vdash\neg\neg p$ だが $w_{0}\nVdash p$。$w_{1}\Vdash p$, $w_{1}\nVdash q$ から $w_{0},w_{1}\nVdash p\to q$ で、$w_{0}\Vdash(p\to q)\to p$（前件がどこでも成り立たない）、$w_{0}\nVdash p$。健全性から $p\vee\neg p$, $\neg\neg p\to p$, パースの法則は導出できない（\ref{logic:excluded-middle-not-derivable} の別証）。$\mathrm{Up}(W)=\{\emptyset,\{w_{1}\},W\}$ は三元の鎖（\ref{logic:three-element-heyting}）で、$\bar{V}(p)=\{w_{1}\}$ が $\tfrac{1}{2}$ にあたる。
+:::
+
+## 標準モデルと完全性 {#logic:sec-ikr-completeness}
+
+::: definition 素な理論 {#logic:prime-theory keywords="prime theory, deductively closed, consistent, disjunction property of a theory" index="素な理論|そなりろん"}
+論理式の集合 $\Delta$ が**素な理論**であるとは、(i) $\Delta\vdash_{\mathsf{I}}\sigma$ なら $\sigma\in\Delta$（演繹的に閉じている）、(ii) $\bot\notin\Delta$、(iii) $\sigma\vee\tau\in\Delta$ なら $\sigma\in\Delta$ または $\tau\in\Delta$、を満たすことをいう。
+:::
+
+::: lemma 素な理論への拡大 {#logic:prime-extension keywords="prime extension lemma: if Gamma does not derive phi, there is a prime theory containing Gamma and not phi" index="素な理論への拡大|そなりろんへのかくだい"}
+$\Gamma\nvdash_{\mathsf{I}}\varphi$ なら、素な理論 $\Delta\supseteq\Gamma$ で $\varphi\notin\Delta$ となるものがある。
+:::
+
+::: proof
+論理式を $\sigma_{0},\sigma_{1},\dots$ と数え上げる（$\mathrm{PV}$ は可算）。$\Delta_{0}\defeq\Gamma$、$\Delta_{n}\cup\{\sigma_{n}\}\nvdash_{\mathsf{I}}\varphi$ なら $\Delta_{n+1}\defeq\Delta_{n}\cup\{\sigma_{n}\}$、そうでなければ $\Delta_{n+1}\defeq\Delta_{n}$ とし、$\Delta\defeq\bigcup_{n}\Delta_{n}$ とする。
+
+**Step 1（$\Delta\nvdash_{\mathsf{I}}\varphi$）.** 帰納法で各 $\Delta_{n}\nvdash_{\mathsf{I}}\varphi$。$\Delta\vdash_{\mathsf{I}}\varphi$ なら、有限性（\ref{logic:nj-basic} の 1）から使われる有限個の前提がある $\Delta_{n}$ に含まれ、矛盾。とくに $\varphi\notin\Delta$、$\bot\notin\Delta$（$\bot$E から $\{\bot\}\vdash_{\mathsf{I}}\varphi$）。
+
+**Step 2（鍵となる性質）.** $\sigma=\sigma_{n}\notin\Delta$ なら $\Delta\cup\{\sigma\}\vdash_{\mathsf{I}}\varphi$：$\sigma_{n}\notin\Delta_{n+1}$ なので $\Delta_{n}\cup\{\sigma_{n}\}\vdash_{\mathsf{I}}\varphi$、弱化。
+
+**Step 3（演繹的に閉じている）.** $\Delta\vdash_{\mathsf{I}}\sigma$ で $\sigma\notin\Delta$ なら、Step 2 から $\Delta,\sigma\vdash_{\mathsf{I}}\varphi$、カット（\ref{logic:nj-basic} の 2）で $\Delta\vdash_{\mathsf{I}}\varphi$ となり Step 1 に反する。
+
+**Step 4（素）.** $\sigma\vee\tau\in\Delta$ で $\sigma,\tau\notin\Delta$ なら、Step 2 から $\Delta,\sigma\vdash_{\mathsf{I}}\varphi$, $\Delta,\tau\vdash_{\mathsf{I}}\varphi$。仮定 $\sigma\vee\tau$ に $\vee$E を施して $\Delta\vdash_{\mathsf{I}}\varphi$ となり Step 1 に反する。
+:::
+
+::: remark
+$\mathrm{PV}$ が非可算なら、ツォルンの補題で「$\Gamma$ を含み $\varphi$ を導かない集合」の極大元 $\Delta$ をとる（鎖の和が条件を満たすことは有限性から）。極大性から Step 2 の性質「$\sigma\notin\Delta$ なら $\Delta\cup\{\sigma\}\vdash_{\mathsf{I}}\varphi$」が成り立ち、Step 3, 4 はそのまま通る。古典論理のリンデンバウムの補題（\ref{logic:prop-completeness}）との違いは、「$\sigma$ か $\neg\sigma$ のどちらかを入れる」のではなく「$\varphi$ を導かない限り入れる」ことにある。
+:::
+
+::: definition 標準モデル {#logic:ikripke-canonical keywords="canonical Kripke model of prime theories" index="標準モデル（直観主義）|ひょうじゅんもでるちょっかんしゅぎ"}
+素な理論の全体を $W_{\mathrm{c}}$、順序を包含 $\subseteq$、$V_{\mathrm{c}}(p)\defeq\{\Delta\in W_{\mathrm{c}}:p\in\Delta\}$ とする。$V_{\mathrm{c}}(p)$ は上集合なので、$\mathcal{M}_{\mathrm{c}}=(W_{\mathrm{c}},\subseteq,V_{\mathrm{c}})$ はクリプキモデルである（$W_{\mathrm{c}}\ne\emptyset$ は \ref{logic:prime-extension} を $\Gamma=\emptyset$, $\varphi=\bot$ に使う。$\nvdash_{\mathsf{I}}\bot$ は健全性から）。
+:::
+
+::: lemma 真理の補題（直観主義） {#logic:ikripke-truth-lemma keywords="truth lemma for the canonical model" index="真理の補題（直観主義）|しんりのほだいちょっかんしゅぎ"}
+すべての $\Delta\in W_{\mathrm{c}}$ と論理式 $\varphi$ について、$\Delta\Vdash\varphi\iff\varphi\in\Delta$。
+:::
+
+::: proof
+論理式に関する帰納法。
+- $p$：定義。$\bot$：素な理論の (ii)。
+- $\wedge$：$\varphi\wedge\psi\in\Delta\iff\varphi\in\Delta$ かつ $\psi\in\Delta$（$\wedge$E, $\wedge$I と (i)）。
+- $\vee$：$\varphi\vee\psi\in\Delta$ なら (iii) から $\varphi\in\Delta$ または $\psi\in\Delta$。逆は $\vee$I と (i)。
+- $\to$（$\Leftarrow$）：$\varphi\to\psi\in\Delta$, $\Delta'\supseteq\Delta$, $\Delta'\Vdash\varphi$ なら、帰納法の仮定で $\varphi\in\Delta'$、$\to$E と (i) で $\psi\in\Delta'$、帰納法の仮定で $\Delta'\Vdash\psi$。
+- $\to$（$\Rightarrow$）：$\varphi\to\psi\notin\Delta$ とする。(i) から $\Delta\nvdash_{\mathsf{I}}\varphi\to\psi$、演繹定理から $\Delta,\varphi\nvdash_{\mathsf{I}}\psi$。\ref{logic:prime-extension} から素な理論 $\Delta'\supseteq\Delta\cup\{\varphi\}$ で $\psi\notin\Delta'$ となるものがある。帰納法の仮定から $\Delta'\Vdash\varphi$, $\Delta'\nVdash\psi$ なので $\Delta\nVdash\varphi\to\psi$。
+:::
+
+::: theorem クリプキ意味論の完全性 {#logic:ikripke-completeness keywords="completeness of NJ for Kripke models" index="NJ の完全性（クリプキ）|えぬじぇいのかんぜんせいくりぷき"}
+$\Gamma\models_{\mathsf{K}}\varphi$ なら $\Gamma\vdash_{\mathsf{I}}\varphi$。
+:::
+
+::: proof
+$\Gamma\nvdash_{\mathsf{I}}\varphi$ とすると、\ref{logic:prime-extension} から素な理論 $\Delta\supseteq\Gamma$ で $\varphi\notin\Delta$。真理の補題（\ref{logic:ikripke-truth-lemma}）から、$\mathcal{M}_{\mathrm{c}}$ の状態 $\Delta$ は $\Gamma$ のすべてを強制し、$\varphi$ を強制しない。よって $\Gamma\not\models_{\mathsf{K}}\varphi$。
+:::
+
+## 選言特性 {#logic:sec-ikr-disjunction}
+
+::: lemma 生成部分モデル {#logic:ikripke-generated keywords="forcing at w depends only on the worlds above w" index="生成部分モデル|せいせいぶぶんもでる"}
+$(W,\le,V)$ と上集合 $W'\subseteq W$ について、$V'(p)\defeq V(p)\cap W'$ とすると $(W',\le,V')$ はクリプキモデルで、$w\in W'$ について $w\Vdash'\varphi\iff w\Vdash\varphi$。
+:::
+
+::: proof
+論理式に関する帰納法。$\to$ 以外は同じ状態での条件なので明らか。$\to$：$w\in W'$ なら $w'\ge w$ はすべて $W'$ に属する（上集合）ので、二つのモデルの「すべての $w'\ge w$」は同じ範囲を動き、帰納法の仮定から条件が一致する。
+:::
+
+::: theorem 選言特性 {#logic:disjunction-property keywords="disjunction property of intuitionistic propositional logic" index="選言特性|せんげんとくせい"}
+$\vdash_{\mathsf{I}}\varphi\vee\psi$ なら、$\vdash_{\mathsf{I}}\varphi$ または $\vdash_{\mathsf{I}}\psi$。
+:::
+
+::: proof
+$\nvdash_{\mathsf{I}}\varphi$ かつ $\nvdash_{\mathsf{I}}\psi$ と仮定する。完全性（\ref{logic:ikripke-completeness}）から、モデル $\mathcal{M}_{1}$ の状態 $r_{1}$ で $r_{1}\nVdash\varphi$、モデル $\mathcal{M}_{2}$ の状態 $r_{2}$ で $r_{2}\nVdash\psi$ となるものがある。\ref{logic:ikripke-generated} から、$W_{1}\defeq{\uparrow}r_{1}$, $W_{2}\defeq{\uparrow}r_{2}$ に制限しても強制は変わらない。$W_{1},W_{2}$ を互いに素な集合と見て（必要なら付け替える）、新しい状態 $r$ を加えた $W\defeq\{r\}\sqcup W_{1}\sqcup W_{2}$ に、$W_{i}$ の中の順序と「$r\le$ すべて」で半順序を入れ、$V(p)\defeq V_{1}(p)\sqcup V_{2}(p)$ とする（$r\notin V(p)$ なので上集合）。$W_{i}$ は $W$ の上集合なので、\ref{logic:ikripke-generated} から $r_{1}\nVdash\varphi$, $r_{2}\nVdash\psi$ は $W$ でも成り立つ。一方、健全性（\ref{logic:ikripke-soundness}）から $r\Vdash\varphi\vee\psi$、すなわち $r\Vdash\varphi$ または $r\Vdash\psi$。持続性（\ref{logic:upsets-heyting} の 2）から $r_{1}\Vdash\varphi$ または $r_{2}\Vdash\psi$ となり、矛盾。
+:::
+
+::: hypcheck
+- **素な理論の (iii)**：真理の補題の $\vee$ の場合に使った。拡大の補題の Step 4 で、$\vee$E がこれを保証している。
+- **演繹定理**：真理の補題の $\to$（$\Rightarrow$）で、$\varphi\to\psi$ が導けないことを $\Delta,\varphi$ から $\psi$ が導けないことに言い換えるのに使った。
+- **$\mathrm{PV}$ の可算性**：拡大の補題の数え上げだけで使った。非可算ならツォルンの補題（注意）。
+- **持続性**：選言特性の最後の一歩で、根 $r$ での強制を $r_{1}$, $r_{2}$ に伝えるのに使った。古典論理（状態が一つ）では、この議論は成り立たない（実際 $\vdash_{\mathsf{K}}p\vee\neg p$ だが $p$ も $\neg p$ も導けない）。
+- **健全性**：完全性の証明では使わないが、標準モデルが空でないこと（$\nvdash_{\mathsf{I}}\bot$）と選言特性で使った。
+:::
+
+## 問題 {#logic:sec-ikr-problems}
+
+::: problem {#logic:prob-ikr-dummett}
+$(p\to q)\vee(q\to p)$ が NJ で導出できないことを、三つの状態のクリプキモデルで示せ。
+:::
+
+::: solution
+$W=\{r,w_{1},w_{2}\}$、$r\le w_{1}$, $r\le w_{2}$（$w_{1},w_{2}$ は比較不能）、$V(p)=\{w_{1}\}$, $V(q)=\{w_{2}\}$ とする。$w_{1}\Vdash p$, $w_{1}\nVdash q$ なので $r\nVdash p\to q$。$w_{2}\Vdash q$, $w_{2}\nVdash p$ なので $r\nVdash q\to p$。よって $r\nVdash(p\to q)\vee(q\to p)$ で、健全性から導出できない。$W$ が全順序（鎖）のモデルではこの論理式はいつも強制されることが知られており、これを公理に加えた論理はゲーデル–ダメットの論理と呼ばれる（ここでは確かめていない）。
+:::
+
+::: problem {#logic:prob-ikr-presheaf}
+半順序集合 $W$ を、$w\le w'$ のときただ一つの射 $w'\to w$ をもつ圏 $W^{\mathrm{op}}$ と見る。前層の圏 $\widehat{W^{\mathrm{op}}}$ の終対象 $1$ の部分前層の全体 $\mathrm{Sub}(1)$ が $\mathrm{Up}(W)$ と一致し、\ref{cat:presheaf-sub-heyting} の含意が \ref{logic:upsets-heyting} の $U\Rightarrow U'$ と一致することを示せ。
+:::
+
+::: solution
+$1$ の部分前層 $A$ は、$A(w)\subseteq\{\ast\}$ で、射 $w'\to w$（$w\le w'$）について $A(w)\ne\emptyset$ なら $A(w')\ne\emptyset$ となるもの。$U\defeq\{w:A(w)\ne\emptyset\}$ は上集合で、逆に上集合から部分前層が決まる。\ref{cat:presheaf-sub-heyting} の含意は、$\ast\in(A\Rightarrow B)(w)\iff$ すべての射 $h\colon w'\to w$（すなわち $w'\ge w$）で $A(w')\ne\emptyset$ なら $B(w')\ne\emptyset$、で、これは $U\Rightarrow U'$ の定義と同じ。クリプキモデルは、前層のトポスの中の「真理値の族」と見られる。
+:::
+
+::: problem {#logic:prob-ikr-finite}
+論理式 $\varphi$ が NJ で導出できないとき、反例となるクリプキモデルとして、状態の数が $2^{n}$ 以下（$n$ は $\varphi$ の部分論理式の個数）のものがとれることを示せ。（ヒント：標準モデルの素な理論 $\Delta$ を、$\Delta$ に属する $\varphi$ の部分論理式の集合 $\Delta\cap\mathrm{Sub}(\varphi)$ で同一視する。）
+:::
+
+::: solution
+$S\defeq\mathrm{Sub}(\varphi)$（部分論理式の集合、$|S|=n$）。$W\defeq\{\Delta\cap S:\Delta\in W_{\mathrm{c}}\}$（$S$ の部分集合なので $2^{n}$ 個以下）に包含の順序、$V(p)\defeq\{X\in W:p\in X\}$（$p\in S$。それ以外の $p$ は $\emptyset$）とする。$X\in W$ と $\sigma\in S$ について $X\Vdash\sigma\iff\sigma\in X$ を $\sigma$ に関する帰納法で示す。$p,\bot,\wedge,\vee$ は、$X=\Delta\cap S$ と真理の補題・素な理論の性質から（部分論理式の部分論理式は $S$ に属する）。$\to$：$\sigma=\alpha\to\beta\in X=\Delta\cap S$ とし、$Y=\Delta'\cap S\supseteq X$, $Y\Vdash\alpha$ なら帰納法の仮定で $\alpha\in\Delta'$。$\alpha\to\beta\in X\subseteq\Delta'$ なので $\beta\in\Delta'$、$\beta\in Y$、$Y\Vdash\beta$。逆に $\alpha\to\beta\notin X$ なら $\alpha\to\beta\notin\Delta$ で、真理の補題の証明のとおり素な理論 $\Delta'\supseteq\Delta\cup\{\alpha\}$ で $\beta\notin\Delta'$ がある。$Y\defeq\Delta'\cap S\supseteq X$ で $\alpha\in Y$, $\beta\notin Y$ なので、帰納法の仮定から $X\nVdash\alpha\to\beta$。$\nvdash_{\mathsf{I}}\varphi$ なら $\varphi\notin\Delta$ となる $\Delta$ があり、$X=\Delta\cap S$ で $X\nVdash\varphi$。
+:::
+
+::: supplement
+**前提を変えると.**
+- **一階の直観主義論理.** 各状態に（増えていく）領域を与えたクリプキモデルで、一階の直観主義論理も健全かつ完全であることが知られている（ここでは確かめていない）。$\forall$ は「すべての先の状態のすべての元で」と解釈され、前層のトポスでの全称量化子（\ref{cat:projection-quantifiers}）と同じ形である。
+- **有限モデル性と決定可能性.** \ref{logic:prob-ikr-finite} から、$\varphi$ が導出できるかは、$2^{n}$ 以下の状態のモデルをすべて調べれば判定でき、NJ の導出可能性は決定可能である。
+
+**似た定理.**
+- 様相論理 $\mathsf{S4}$ のクリプキ意味論（反射的・推移的な関係）とは、ゲーデルの翻訳（\ref{pt:page-grz} の注意）で対応することが知られている。直観主義のモデルの「持続性」は、$\mathsf{S4}$ で $\Box$ を付けた論理式だけを見ることにあたる。
+- 選言特性は、カット除去や正規化を使った証明論的な方法でも示せることが知られている（構成的な証明：$\varphi\vee\psi$ の正規な導出の最後の規則は $\vee$I でなければならない）。
+
+**高い視点から：知識が増えていく世界.** クリプキモデルの状態は「その時点での知識」で、$w\le w'$ は「知識が増える」ことを表す。命題変数は一度知られたら忘れられず（持続性）、$\neg\varphi$ は「今後どれだけ知識が増えても $\varphi$ は知られない」という強い主張、$\varphi\vee\psi$ は「どちらかが既に知られている」という主張である。排中律 $p\vee\neg p$ が成り立たないのは、「今はまだ $p$ を知らないが、いずれ知るかもしれない」状態があるからである。比喩で言えば、古典論理は「答えが書かれた答案」を読む論理で、直観主義論理は「研究が進むにつれて書き込まれていくノート」を読む論理である。ノートに「$p$ か $q$」と書けるのは、どちらかの証明を既にもっているときに限られる、というのが選言特性の直観的な意味である。数学的には、クリプキモデルは半順序集合の上の前層のトポス（\ref{logic:prob-ikr-presheaf}）の真理値であり、\ref{cat:page-presheaf-topos} の矢印圏の例は二状態のクリプキモデル（\ref{logic:ikripke-countermodel}）と同じものである。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>直観主義命題論理とハイティング代数 | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03B-general-logic/01-propositional-logic/04-intuitionistic.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 直観主義命題論理とハイティング代数 {#logic:page-intuitionistic-prop keywords="intuitionistic propositional logic, NJ, natural deduction without RAA, ex falso, Heyting algebra semantics, soundness, Lindenbaum-Tarski algebra, completeness for Heyting algebras, excluded middle not derivable"}
+
+自然演繹（\ref{logic:prop-deduction}）から背理法 RAA を除き、代わりに「矛盾からは何でも導ける」規則（$\bot$E）を置いた体系が**直観主義命題論理** $\mathsf{NJ}$ である（\ref{logic:nj}）。直観主義論理では $\wedge$, $\vee$ を $\to$, $\bot$ で定義できないので、最初から記号として入れる。真理値 $\{0,1\}$ の意味論の代わりに**ハイティング代数**（\ref{logic:heyting-algebra}）に値をとる意味論を考えると、$\mathsf{NJ}$ はこれについて健全（\ref{logic:heyting-soundness}）かつ完全（\ref{logic:heyting-completeness}）である。完全性は、論理式を導出可能性で割った**リンデンバウム–タルスキ代数**（\ref{logic:lindenbaum-tarski-heyting}）がハイティング代数になることから従う。排中律 $p\vee\neg p$ が導出できないことは、三元のハイティング代数で確かめられる（\ref{logic:excluded-middle-not-derivable}）。クリプキ意味論は次のページ（\ref{logic:page-intuitionistic-kripke}）で扱う。
+
+> 資料フォルダに直観主義論理の教科書はなく、標準的な定義と証明を本サイトで組み立てた。
+
+## 記法と定義の確認 {#logic:sec-ipc-notation}
+
+::: notation
+- 古典命題論理の論理式・自然演繹・導出可能性の基本性質は \ref{logic:prop-formula}, \ref{logic:prop-deduction}, \ref{logic:prop-derivability-basic} のとおり。そこでは $\wedge,\vee$ は $\to,\bot$ の略記だった。
+- 前順序（反射的・推移的な関係）、半順序、束（二元の上限・下限をもつ半順序）の用語は標準的なものを使う。前順序の間の随伴（ガロア接続）は \ref{cat:prob-galois-connection} のとおり。
+- 論理式の有限集合 $\Gamma=\{\gamma_{1},\dots,\gamma_{n}\}$ について、束の元の下限 $\bigwedge_{i}a_{i}$ は $n=0$ のとき最大元 $1$ とする。
+:::
+
+## 直観主義命題論理の体系 {#logic:sec-ipc-system}
+
+::: definition 直観主義命題論理の論理式 {#logic:ipc-formula keywords="formulas of intuitionistic propositional logic with conjunction, disjunction, implication, falsum" index="直観主義命題論理|ちょっかんしゅぎめいだいろんり"}
+命題変数の集合 $\mathrm{PV}$ を固定する。論理式を、命題変数と $\bot$ から始めて、$\varphi,\psi$ が論理式なら $(\varphi\wedge\psi)$, $(\varphi\vee\psi)$, $(\varphi\to\psi)$ も論理式、として帰納的に定める（\ref{logic:prop-formula} と同じく記号列の集合の和として定められる）。略記 $\neg\varphi\defeq(\varphi\to\bot)$, $\top\defeq(\bot\to\bot)$, $\varphi\leftrightarrow\psi\defeq(\varphi\to\psi)\wedge(\psi\to\varphi)$。
+:::
+
+::: definition 自然演繹 NJ {#logic:nj keywords="intuitionistic natural deduction NJ, introduction and elimination rules, ex falso quodlibet" index="NJ|えぬじぇい, 爆発律|ばくはつりつ"}
+導出 $D$、その結論 $\mathrm{concl}(D)$、未解消の仮定の集合 $\mathrm{A}(D)$ を次の規則で帰納的に定める（\ref{logic:prop-deduction} と同じ形式）。
+- **(仮定)** 一点の木 $\langle\varphi\rangle$：結論 $\varphi$、$\mathrm{A}=\{\varphi\}$。
+- **($\wedge$I)** $D_{1}$（結論 $\varphi$）, $D_{2}$（結論 $\psi$）から $\varphi\wedge\psi$。$\mathrm{A}=\mathrm{A}(D_{1})\cup\mathrm{A}(D_{2})$。
+- **($\wedge$E)** $D$（結論 $\varphi\wedge\psi$）から $\varphi$、または $\psi$。$\mathrm{A}=\mathrm{A}(D)$。
+- **($\vee$I)** $D$（結論 $\varphi$）と論理式 $\psi$ から $\varphi\vee\psi$、または $\psi\vee\varphi$。$\mathrm{A}=\mathrm{A}(D)$。
+- **($\vee$E)** $D_{0}$（結論 $\varphi\vee\psi$）, $D_{1}$（結論 $\chi$）, $D_{2}$（結論 $\chi$）から $\chi$。$\mathrm{A}=\mathrm{A}(D_{0})\cup(\mathrm{A}(D_{1})\setminus\{\varphi\})\cup(\mathrm{A}(D_{2})\setminus\{\psi\})$。
+- **($\to$I)** $D$（結論 $\psi$）と $\varphi$ から $\varphi\to\psi$。$\mathrm{A}=\mathrm{A}(D)\setminus\{\varphi\}$。
+- **($\to$E)** $D_{1}$（結論 $\varphi\to\psi$）, $D_{2}$（結論 $\varphi$）から $\psi$。$\mathrm{A}=\mathrm{A}(D_{1})\cup\mathrm{A}(D_{2})$。
+- **($\bot$E)** $D$（結論 $\bot$）と論理式 $\varphi$ から $\varphi$。$\mathrm{A}=\mathrm{A}(D)$。
+
+$\mathrm{concl}(D)=\varphi$, $\mathrm{A}(D)\subseteq\Gamma$ となる導出があるとき $\Gamma\vdash_{\mathsf{I}}\varphi$ と書く。これに背理法 (RAA)（\ref{logic:prop-deduction}）を加えた体系を $\mathsf{NK}$ とし、$\vdash_{\mathsf{K}}$ と書く。
+:::
+
+::: proposition NJ の基本性質 {#logic:nj-basic keywords="weakening, finiteness, deduction theorem, cut for NJ" index="NJ の基本性質|えぬじぇいのきほんせいしつ"}
+1. **（弱化・有限性）** $\Gamma\vdash_{\mathsf{I}}\varphi$, $\Gamma\subseteq\Gamma'$ なら $\Gamma'\vdash_{\mathsf{I}}\varphi$。$\Gamma\vdash_{\mathsf{I}}\varphi$ なら有限の $\Gamma_{0}\subseteq\Gamma$ で $\Gamma_{0}\vdash_{\mathsf{I}}\varphi$。
+2. **（演繹定理・カット）** $\Gamma,\varphi\vdash_{\mathsf{I}}\psi\iff\Gamma\vdash_{\mathsf{I}}\varphi\to\psi$。$\Gamma\vdash_{\mathsf{I}}\varphi$ かつ $\Gamma,\varphi\vdash_{\mathsf{I}}\psi$ なら $\Gamma\vdash_{\mathsf{I}}\psi$。
+3. **（有限の前提）** $\Gamma=\{\gamma_{1},\dots,\gamma_{n}\}$ なら、$\Gamma\vdash_{\mathsf{I}}\varphi\iff\{\gamma_{1}\wedge\cdots\wedge\gamma_{n}\}\vdash_{\mathsf{I}}\varphi$（$n=0$ のときは左辺を $\{\top\}\vdash_{\mathsf{I}}\varphi$ と読む）。
+:::
+
+::: proof
+**1, 2.** \ref{logic:prop-derivability-basic} の 1, 2 と同じ（そこでの証明は仮定・$\to$I・$\to$E しか使わない）。$\mathrm{A}(D)$ が有限であることは、各規則で有限集合の和と差しかとらないことから導出に関する帰納法で分かる。
+
+**3.** ($\Rightarrow$) 仮定 $\gamma_{1}\wedge\cdots\wedge\gamma_{n}$ から $\wedge$E を繰り返して各 $\gamma_{i}$ を導き、$\Gamma\vdash_{\mathsf{I}}\varphi$ の導出の仮定 $\gamma_{i}$ の位置につなぐ（カットを $n$ 回）。($\Leftarrow$) 仮定 $\gamma_{1},\dots,\gamma_{n}$ から $\wedge$I で $\gamma_{1}\wedge\cdots\wedge\gamma_{n}$ を導き、カット。$n=0$ のとき、$\top=\bot\to\bot$ は仮定 $\bot$ に $\to$I を施して仮定なしで導けるので、カットで同じ。
+:::
+
+## ハイティング代数 {#logic:sec-ipc-heyting}
+
+::: definition ハイティング代数 {#logic:heyting-algebra keywords="Heyting algebra, relative pseudo-complement, implication" index="ハイティング代数|はいてぃんぐだいすう"}
+**ハイティング代数**とは、最小元 $0$・最大元 $1$ をもつ束 $(H,\le,\wedge,\vee)$ と二項演算 $\Rightarrow$ の組で、すべての $a,b,c\in H$ について
+$$
+c\wedge a\le b\iff c\le(a\Rightarrow b)
+$$
+を満たすものをいう（$-\wedge a\dashv a\Rightarrow-$）。$\neg a\defeq(a\Rightarrow0)$。ブール代数は $a\Rightarrow b\defeq\neg a\vee b$ でハイティング代数である。
+:::
+
+::: lemma ハイティング代数の基本性質 {#logic:heyting-distributive keywords="Heyting algebras are distributive; modus ponens inequality" index="ハイティング代数の分配律|はいてぃんぐだいすうのぶんぱいりつ"}
+ハイティング代数で、
+1. $a\wedge(a\Rightarrow b)\le b$。
+2. $a\wedge(b\vee c)=(a\wedge b)\vee(a\wedge c)$（分配律）。
+3. $a\le b\iff(a\Rightarrow b)=1$。
+:::
+
+::: proof
+**1.** 定義の同値で $c=a\Rightarrow b$ とすると、右辺 $c\le(a\Rightarrow b)$ が成り立つので $(a\Rightarrow b)\wedge a\le b$。
+
+**2.** $\ge$ は $a\wedge b\le a\wedge(b\vee c)$ などから。$\le$：$d\defeq(a\wedge b)\vee(a\wedge c)$ とすると、$b\wedge a\le d$ と $c\wedge a\le d$ から $b\le(a\Rightarrow d)$, $c\le(a\Rightarrow d)$、よって $b\vee c\le(a\Rightarrow d)$、定義の同値で $(b\vee c)\wedge a\le d$。
+
+**3.** $1\le(a\Rightarrow b)\iff1\wedge a\le b\iff a\le b$。
+:::
+
+::: example 三元の鎖 {#logic:three-element-heyting keywords="three element Heyting algebra 0 < 1/2 < 1" index="三元のハイティング代数|さんげんのはいてぃんぐだいすう"}
+全順序集合 $0<\tfrac{1}{2}<1$ は、$\wedge=\min$, $\vee=\max$,
+$$
+a\Rightarrow b=\begin{cases}1&(a\le b),\\ b&(a>b)\end{cases}
+$$
+でハイティング代数である：$c\wedge a\le b$ は、$a\le b$ なら常に成り立ち、$a>b$ なら $\min(c,a)\le b\iff c\le b$（$\min(c,a)=a>b$ にならないためには $c\le b$）。$\neg\tfrac{1}{2}=0$ なので $\tfrac{1}{2}\vee\neg\tfrac{1}{2}=\tfrac{1}{2}\ne1$。より一般に、位相空間の開集合の束（$U\Rightarrow V$ は $(X\setminus U)\cup V$ の内部）はハイティング代数である（\ref{cat:page-cartesian-closed} の例 3）。
+:::
+
+## 健全性 {#logic:sec-ipc-soundness}
+
+::: definition ハイティング代数による解釈 {#logic:heyting-valuation keywords="valuation in a Heyting algebra, Heyting validity" index="ハイティング代数による解釈|はいてぃんぐだいすうによるかいしゃく"}
+ハイティング代数 $H$ と写像 $v\colon\mathrm{PV}\to H$ について、$\bar{v}(\bot)\defeq0$, $\bar{v}(\varphi\wedge\psi)\defeq\bar{v}(\varphi)\wedge\bar{v}(\psi)$, $\bar{v}(\varphi\vee\psi)\defeq\bar{v}(\varphi)\vee\bar{v}(\psi)$, $\bar{v}(\varphi\to\psi)\defeq\bar{v}(\varphi)\Rightarrow\bar{v}(\psi)$ と拡張する。有限集合 $\Gamma$ について、すべての $H$ と $v$ で $\bigwedge_{\gamma\in\Gamma}\bar{v}(\gamma)\le\bar{v}(\varphi)$ となるとき $\Gamma\models_{\mathsf{H}}\varphi$ と書く。$\emptyset\models_{\mathsf{H}}\varphi$（すべての解釈で $\bar{v}(\varphi)=1$）のとき $\varphi$ は**ハイティング恒真**という。
+:::
+
+::: theorem 健全性（ハイティング代数） {#logic:heyting-soundness keywords="soundness of NJ for Heyting algebras" index="NJ の健全性|えぬじぇいのけんぜんせい"}
+任意の NJ の導出 $D$、ハイティング代数 $H$、$v$ について、$\bigwedge_{\gamma\in\mathrm{A}(D)}\bar{v}(\gamma)\le\bar{v}(\mathrm{concl}(D))$。とくに、有限集合 $\Gamma$ について $\Gamma\vdash_{\mathsf{I}}\varphi$ なら $\Gamma\models_{\mathsf{H}}\varphi$。
+:::
+
+::: proof
+導出に関する帰納法。$g(\Delta)\defeq\bigwedge_{\gamma\in\Delta}\bar{v}(\gamma)$ と書く（$\mathrm{A}(D)$ は有限）。$\Delta\subseteq\Delta'$ なら $g(\Delta')\le g(\Delta)$、$g(\Delta\cup\Delta')=g(\Delta)\wedge g(\Delta')$ に注意する。
+- **仮定**：$g(\{\varphi\})=\bar{v}(\varphi)$。
+- **$\wedge$I, $\wedge$E, $\vee$I**：$g\le x$, $g'\le y$ なら $g\wedge g'\le x\wedge y$。$x\wedge y\le x$。$x\le x\vee y$。
+- **$\to$I**：$\Delta\defeq\mathrm{A}(D)\setminus\{\varphi\}$ とすると $\mathrm{A}(D)\subseteq\Delta\cup\{\varphi\}$ なので、帰納法の仮定から $g(\Delta)\wedge\bar{v}(\varphi)\le g(\mathrm{A}(D))\le\bar{v}(\psi)$。定義の同値で $g(\Delta)\le\bar{v}(\varphi)\Rightarrow\bar{v}(\psi)$。
+- **$\to$E**：$g\le(x\Rightarrow y)$, $g\le x$ なら $g\le x\wedge(x\Rightarrow y)\le y$（\ref{logic:heyting-distributive} の 1）。
+- **$\vee$E**：$g\defeq g(\mathrm{A})$（結論の導出の未解消の仮定）とする。$g\le g(\mathrm{A}(D_{0}))\le x\vee y$（$x=\bar{v}(\varphi)$, $y=\bar{v}(\psi)$）。$\mathrm{A}(D_{1})\subseteq\mathrm{A}\cup\{\varphi\}$ から $g\wedge x\le\bar{v}(\chi)$、同様に $g\wedge y\le\bar{v}(\chi)$。分配律（\ref{logic:heyting-distributive} の 2）から $g=g\wedge(x\vee y)=(g\wedge x)\vee(g\wedge y)\le\bar{v}(\chi)$。
+- **$\bot$E**：$g\le0\le\bar{v}(\varphi)$。
+:::
+
+::: corollary 排中律は導出できない {#logic:excluded-middle-not-derivable keywords="excluded middle, double negation elimination, Peirce's law are not derivable in NJ" index="排中律|はいちゅうりつ"}
+$\nvdash_{\mathsf{I}}p\vee\neg p$、$\nvdash_{\mathsf{I}}\neg\neg p\to p$、$\nvdash_{\mathsf{I}}((p\to q)\to p)\to p$（パースの法則）。いずれも $\vdash_{\mathsf{K}}$ では導出できる。
+:::
+
+::: proof
+三元の鎖（\ref{logic:three-element-heyting}）で $v(p)=\tfrac{1}{2}$, $v(q)=0$ とする。$\bar{v}(p\vee\neg p)=\max(\tfrac{1}{2},0)=\tfrac{1}{2}$。$\bar{v}(\neg\neg p)=\neg0=1$ で $\bar{v}(\neg\neg p\to p)=(1\Rightarrow\tfrac{1}{2})=\tfrac{1}{2}$。$\bar{v}(p\to q)=(\tfrac{1}{2}\Rightarrow0)=0$, $\bar{v}((p\to q)\to p)=(0\Rightarrow\tfrac{1}{2})=1$, 全体は $(1\Rightarrow\tfrac{1}{2})=\tfrac{1}{2}$。どれも $1$ でないので、健全性（\ref{logic:heyting-soundness}）から導出できない。
+
+$\mathsf{NK}$ での導出：(i) $\vdash_{\mathsf{I}}\neg\neg(p\vee\neg p)$（\ref{logic:prob-ipc-double-negation} の (3)）の結論 $\neg\neg(p\vee\neg p)$ と仮定 $\neg(p\vee\neg p)$ に $\to$E を施して $\bot$、RAA で $p\vee\neg p$。(ii) 仮定 $\neg\neg p$ と $\neg p$ から $\bot$、RAA で $p$（$\neg p$ を解消）、$\to$I。(iii) 仮定 $(p\to q)\to p$ と $\neg p$ のもとで、仮定 $p$ と $\neg p$ から $\bot$、$\bot$E で $q$、$\to$I で $p\to q$（$p$ を解消）、$\to$E で $p$、$\neg p$ と $\to$E で $\bot$、RAA で $p$（$\neg p$ を解消）、$\to$I。
+:::
+
+## リンデンバウム–タルスキ代数と完全性 {#logic:sec-ipc-completeness}
+
+::: theorem リンデンバウム–タルスキ代数 {#logic:lindenbaum-tarski-heyting keywords="Lindenbaum-Tarski algebra of intuitionistic propositional logic is a Heyting algebra" index="リンデンバウム–タルスキ代数|りんでんばうむたるすきだいすう"}
+論理式の上の関係 $\varphi\preceq\psi\mathrel{:\Longleftrightarrow}\{\varphi\}\vdash_{\mathsf{I}}\psi$ は前順序で、$\varphi\approx\psi\mathrel{:\Longleftrightarrow}\varphi\preceq\psi$ かつ $\psi\preceq\varphi$ による同値類の集合 $\mathcal{L}$ は、$[\varphi]\le[\psi]\mathrel{:\Longleftrightarrow}\varphi\preceq\psi$ について
+$$
+\begin{aligned}&[\varphi]\wedge[\psi]=[\varphi\wedge\psi],\quad[\varphi]\vee[\psi]=[\varphi\vee\psi],\\&([\varphi]\Rightarrow[\psi])=[\varphi\to\psi],\quad0=[\bot],\quad1=[\top]\end{aligned}
+$$
+とするハイティング代数である。
+:::
+
+::: proof
+**前順序.** 反射性は仮定一つの導出、推移性はカット（\ref{logic:nj-basic} の 2）。演算が同値類の代表によらないことは、以下で各演算が上限・下限・随伴として特徴づけられることから従う（特徴づけは $\preceq$ だけで述べられ、$\approx$ な論理式で置き換えても変わらない）。
+
+**下限.** $\chi\preceq\varphi\wedge\psi\iff\chi\preceq\varphi$ かつ $\chi\preceq\psi$：($\Rightarrow$) $\wedge$E、($\Leftarrow$) $\wedge$I。
+
+**上限.** $\varphi\vee\psi\preceq\chi\iff\varphi\preceq\chi$ かつ $\psi\preceq\chi$：($\Rightarrow$) $\vee$I とカット、($\Leftarrow$) 仮定 $\varphi\vee\psi$ に $\vee$E（$\varphi$ と $\psi$ の仮定を解消）。
+
+**最小元・最大元.** $\bot\preceq\varphi$ は $\bot$E。$\varphi\preceq\top$ は、$\top$ が仮定なしで導けること（\ref{logic:nj-basic} の 3 の証明）と弱化。
+
+**含意.** $\chi\wedge\varphi\preceq\psi\iff\chi\preceq\varphi\to\psi$：\ref{logic:nj-basic} の 3 から左辺は $\{\chi,\varphi\}\vdash_{\mathsf{I}}\psi$ と同値で、演繹定理から $\{\chi\}\vdash_{\mathsf{I}}\varphi\to\psi$ と同値。
+:::
+
+::: theorem 完全性（ハイティング代数） {#logic:heyting-completeness keywords="completeness of NJ for Heyting algebras" index="NJ の完全性（ハイティング代数）|えぬじぇいのかんぜんせいはいてぃんぐだいすう"}
+有限集合 $\Gamma$ について、$\Gamma\models_{\mathsf{H}}\varphi$ なら $\Gamma\vdash_{\mathsf{I}}\varphi$。さらに、一つのハイティング代数 $\mathcal{L}$ と解釈 $v_{0}(p)\defeq[p]$ で、$\bigwedge_{\gamma\in\Gamma}\bar{v}_{0}(\gamma)\le\bar{v}_{0}(\varphi)$ ならば $\Gamma\vdash_{\mathsf{I}}\varphi$ となる。
+:::
+
+::: proof
+\ref{logic:lindenbaum-tarski-heyting} の演算の式から、論理式に関する帰納法で $\bar{v}_{0}(\varphi)=[\varphi]$。$\Gamma=\{\gamma_{1},\dots,\gamma_{n}\}$ について $\bigwedge_{i}[\gamma_{i}]=[\gamma_{1}\wedge\cdots\wedge\gamma_{n}]$（$n=0$ なら $[\top]$）なので、仮定は $\gamma_{1}\wedge\cdots\wedge\gamma_{n}\preceq\varphi$ を意味し、\ref{logic:nj-basic} の 3 から $\Gamma\vdash_{\mathsf{I}}\varphi$。
+:::
+
+::: hypcheck
+- **分配律**：健全性の $\vee$E の場合に使った。分配律は随伴 $-\wedge a\dashv a\Rightarrow-$ から従い（\ref{logic:heyting-distributive} の 2）、ハイティング代数の公理に別に入れる必要はない。分配的でない束（例えば五元の $M_{3}$）では含意が定義できない。
+- **$\bot$E と RAA**：健全性の $\bot$E の場合は $0$ が最小元であることだけを使う。RAA は「$\neg\neg a\le a$」にあたり、一般のハイティング代数では成り立たない（\ref{logic:excluded-middle-not-derivable} の証明の $\neg\neg\tfrac{1}{2}=1$）。
+- **有限性**：$\models_{\mathsf{H}}$ を有限の $\Gamma$ について定めた。無限の $\Gamma$ には \ref{logic:nj-basic} の 1 の有限性で帰着できるが、意味論の側では「有限部分集合の下限」で定める必要がある（無限の下限は一般には存在しない）。
+- **選択公理**：使っていない。リンデンバウム–タルスキ代数の構成は、古典論理の完全性（\ref{logic:prop-completeness}）のような極大無矛盾集合への拡大を必要としない。
+:::
+
+## 問題 {#logic:sec-ipc-problems}
+
+::: problem {#logic:prob-ipc-double-negation}
+NJ で次を導出せよ：(1) $\vdash_{\mathsf{I}}p\to\neg\neg p$、(2) $\vdash_{\mathsf{I}}\neg\neg\neg p\to\neg p$、(3) $\vdash_{\mathsf{I}}\neg\neg(p\vee\neg p)$。
+:::
+
+::: solution
+(1) 仮定 $p$ と $\neg p$ に $\to$E で $\bot$、$\to$I で $\neg p$ を解消して $\neg\neg p$、$\to$I で $p$ を解消。
+
+(2) 仮定 $p$ から (1) の導出で $\neg\neg p$、仮定 $\neg\neg\neg p$ と $\to$E で $\bot$、$\to$I で $p$ を解消して $\neg p$、$\to$I で $\neg\neg\neg p$ を解消。
+
+(3) 仮定 $p$ から $\vee$I で $p\vee\neg p$、仮定 $\neg(p\vee\neg p)$ と $\to$E で $\bot$、$\to$I で $p$ を解消して $\neg p$、$\vee$I で $p\vee\neg p$、再び仮定 $\neg(p\vee\neg p)$ と $\to$E で $\bot$、$\to$I で $\neg(p\vee\neg p)$ を（二か所とも）解消して $\neg\neg(p\vee\neg p)$。
+:::
+
+::: problem {#logic:prob-ipc-nk-abbrev}
+$\mathsf{NK}$（NJ に RAA を加えたもの）で、$\varphi\vee\psi\leftrightarrow(\neg\varphi\to\psi)$ と $\varphi\wedge\psi\leftrightarrow\neg(\varphi\to\neg\psi)$ が導出できることを示せ。また、NJ ではどちらの同値の一方の向きが導出できないかを、三元の鎖で確かめよ。
+:::
+
+::: solution
+**$\mathsf{NK}$.** $\vee$：$\varphi\vee\psi\to(\neg\varphi\to\psi)$ は $\vee$E で、$\varphi$ の場合は仮定 $\neg\varphi$ と $\to$E で $\bot$、$\bot$E で $\psi$。逆は、仮定 $\neg\varphi\to\psi$ と $\neg(\varphi\vee\psi)$ のもとで、仮定 $\varphi$ から $\vee$I と $\to$E で $\bot$、$\to$I で $\neg\varphi$、$\to$E で $\psi$、$\vee$I と $\to$E で $\bot$、RAA で $\varphi\vee\psi$（$\neg(\varphi\vee\psi)$ を解消）。$\wedge$：$\varphi\wedge\psi\to\neg(\varphi\to\neg\psi)$ は NJ で導ける（$\wedge$E で $\varphi,\psi$、仮定 $\varphi\to\neg\psi$ から $\neg\psi$、$\psi$ と $\to$E で $\bot$）。逆は、仮定 $\neg(\varphi\to\neg\psi)$ のもとで、RAA で $\varphi$（仮定 $\neg\varphi$ から仮定 $\varphi$ との $\to$E で $\bot$、$\bot$E で $\neg\psi$、$\to$I で $\varphi\to\neg\psi$、$\to$E で $\bot$）、同様に RAA で $\psi$（仮定 $\neg\psi$ から $\to$I で $\varphi\to\neg\psi$）、$\wedge$I。
+
+**NJ で導けない向き.** $\varphi=\psi=p$, $v(p)=\tfrac{1}{2}$ とすると、$(\neg p\to p)\to(p\vee p)$ の値は $(\neg\tfrac{1}{2}\Rightarrow\tfrac{1}{2})\Rightarrow\tfrac{1}{2}=(0\Rightarrow\tfrac{1}{2})\Rightarrow\tfrac{1}{2}=1\Rightarrow\tfrac{1}{2}=\tfrac{1}{2}$。$\neg(p\to\neg p)\to(p\wedge p)$ の値は $\neg(\tfrac{1}{2}\Rightarrow0)\Rightarrow\tfrac{1}{2}=\neg0\Rightarrow\tfrac{1}{2}=\tfrac{1}{2}$。どちらも $1$ でないので、健全性からこれらの向きは NJ で導出できない。
+:::
+
+::: problem {#logic:prob-ipc-boolean}
+ブール代数（$a\vee\neg a=1$ を満たすハイティング代数）に値をとる解釈について、$\mathsf{NK}$ が健全であることを示せ。とくに $\{0,1\}$ に値をとる解釈は古典論理の真理値割り当てと一致する。
+:::
+
+::: solution
+\ref{logic:heyting-soundness} の帰納法に RAA の場合を加える。RAA：$\mathrm{A}(D)\subseteq\Delta\cup\{\neg\varphi\}$（$\Delta$ は結論の未解消の仮定）で、帰納法の仮定から $g(\Delta)\wedge\neg x\le0$（$x=\bar{v}(\varphi)$）。よって $g(\Delta)\le\neg\neg x$。ブール代数では $\neg\neg x=x$（$\neg\neg x=\neg\neg x\wedge(x\vee\neg x)=(\neg\neg x\wedge x)\vee(\neg\neg x\wedge\neg x)=(\neg\neg x\wedge x)\vee0\le x$）なので $g(\Delta)\le x$。$\{0,1\}$ では演算が真理値表と一致する。
+:::
+
+::: supplement
+**前提を変えると.**
+- **一階の直観主義論理.** 量化子を加えると、完備なハイティング代数（任意の上限・下限をもつ）に値をとる意味論で、$\exists$ を上限、$\forall$ を下限として解釈し、健全性と完全性が成り立つことが知られている（ここでは確かめていない）。トポスの部分対象のハイティング代数と量化子（\ref{cat:page-presheaf-heyting}）はその典型例である。
+- **有限モデル性.** 論理式 $\varphi$ が NJ で導出できなければ、有限のハイティング代数で $1$ にならない解釈があることが知られており（ここでは確かめていない）、これから NJ の導出可能性は決定可能である。
+
+**似た定理.**
+- 古典論理の完全性（\ref{logic:prop-completeness}）は、ブール代数のリンデンバウム–タルスキ代数を、超フィルター（極大無矛盾集合）で $\{0,1\}$ に写すことで得られる。直観主義論理では $\{0,1\}$ に写す段階がなく、ハイティング代数そのものが意味論になる。
+- グリヴェンコの定理：命題論理では、$\vdash_{\mathsf{K}}\varphi$ なら $\vdash_{\mathsf{I}}\neg\neg\varphi$ であることが知られている（\ref{logic:prob-ipc-double-negation} の (3) はその例。ここでは一般の場合を確かめていない）。
+
+**高い視点から：論理は「部分」の代数.** ハイティング代数は、前順序をデカルト閉圏と見たものにほかならない（\ref{cat:page-cartesian-closed} の例 3）：$\wedge$ が積、$\Rightarrow$ が冪、$\vee$ が余積、$0$ が始対象。健全性定理は、「導出」がこの圏の射（$\le$）として解釈できることを言い、リンデンバウム–タルスキ代数は、論理式と導出からなる自由なデカルト閉前順序（余積つき）である。比喩で言えば、古典論理の真理値が「白か黒か」の二色刷りなら、ハイティング代数は「どの範囲で正しいか」を表す濃淡の地図で、開集合の束のように「境界」がある。排中律 $a\vee\neg a=1$ は「地図に境界がない」ことを要求するが、開集合の地図では $a$ とその外部の内部 $\neg a$ を合わせても境界が残る。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

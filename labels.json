@@ -12790,6 +12790,13 @@
       "num": "6.3",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/06-derived-rules.html"
     },
+    "logic:disjunction-property": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "選言特性",
+      "num": "5.11",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/05-intuitionistic-kripke.html"
+    },
     "logic:dt-inductive-types": {
       "status": "defined",
       "type": "definition",
@@ -12901,6 +12908,13 @@
       "title": "空虚な量化",
       "num": "",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/03-semantics.html"
+    },
+    "logic:excluded-middle-not-derivable": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "排中律は導出できない",
+      "num": "4.8",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/04-intuitionistic.html"
     },
     "logic:f-data-types": {
       "status": "defined",
@@ -13301,6 +13315,41 @@
       "num": "7.4",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/07-completeness.html"
     },
+    "logic:heyting-algebra": {
+      "status": "defined",
+      "type": "definition",
+      "title": "ハイティング代数",
+      "num": "4.4",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/04-intuitionistic.html"
+    },
+    "logic:heyting-completeness": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "完全性（ハイティング代数）",
+      "num": "4.10",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/04-intuitionistic.html"
+    },
+    "logic:heyting-distributive": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "ハイティング代数の基本性質",
+      "num": "4.5",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/04-intuitionistic.html"
+    },
+    "logic:heyting-soundness": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "健全性（ハイティング代数）",
+      "num": "4.7",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/04-intuitionistic.html"
+    },
+    "logic:heyting-valuation": {
+      "status": "defined",
+      "type": "definition",
+      "title": "ハイティング代数による解釈",
+      "num": "4.6",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/04-intuitionistic.html"
+    },
     "logic:homotopy-funext": {
       "status": "defined",
       "type": "definition",
@@ -13328,6 +13377,55 @@
       "title": "収束条件",
       "num": "5.8",
       "page": "03-mathematical-logic/03B-general-logic/03-modal-logic/05-canonical-models.html"
+    },
+    "logic:ikripke-canonical": {
+      "status": "defined",
+      "type": "definition",
+      "title": "標準モデル",
+      "num": "5.7",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/05-intuitionistic-kripke.html"
+    },
+    "logic:ikripke-completeness": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "クリプキ意味論の完全性",
+      "num": "5.9",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/05-intuitionistic-kripke.html"
+    },
+    "logic:ikripke-countermodel": {
+      "status": "defined",
+      "type": "example",
+      "title": "反例モデル",
+      "num": "",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/05-intuitionistic-kripke.html"
+    },
+    "logic:ikripke-generated": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "生成部分モデル",
+      "num": "5.10",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/05-intuitionistic-kripke.html"
+    },
+    "logic:ikripke-model": {
+      "status": "defined",
+      "type": "definition",
+      "title": "直観主義クリプキモデル",
+      "num": "5.1",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/05-intuitionistic-kripke.html"
+    },
+    "logic:ikripke-soundness": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "クリプキ意味論の健全性",
+      "num": "5.3",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/05-intuitionistic-kripke.html"
+    },
+    "logic:ikripke-truth-lemma": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "真理の補題（直観主義）",
+      "num": "5.8",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/05-intuitionistic-kripke.html"
     },
     "logic:inseparability-theorem": {
       "status": "defined",
@@ -13363,6 +13461,13 @@
       "title": "解釈の性質",
       "num": "3.5",
       "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/03-system-f.html"
+    },
+    "logic:ipc-formula": {
+      "status": "defined",
+      "type": "definition",
+      "title": "直観主義命題論理の論理式",
+      "num": "4.1",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/04-intuitionistic.html"
     },
     "logic:isomorphism-invariance": {
       "status": "defined",
@@ -13552,6 +13657,13 @@
       "title": "リンデンバウムの補題",
       "num": "7.8",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/07-completeness.html"
+    },
+    "logic:lindenbaum-tarski-heyting": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "リンデンバウム–タルスキ代数",
+      "num": "4.9",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/04-intuitionistic.html"
     },
     "logic:lob-argument-formalized": {
       "status": "defined",
@@ -13777,6 +13889,20 @@
       "num": "4.7",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/04-natural-deduction.html"
     },
+    "logic:nj": {
+      "status": "defined",
+      "type": "definition",
+      "title": "自然演繹 NJ",
+      "num": "4.2",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/04-intuitionistic.html"
+    },
+    "logic:nj-basic": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "NJ の基本性質",
+      "num": "4.3",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/04-intuitionistic.html"
+    },
     "logic:nj-implication": {
       "status": "defined",
       "type": "definition",
@@ -13944,6 +14070,20 @@
       "title": "不完全な様相論理",
       "num": "",
       "page": "03-mathematical-logic/03B-general-logic/03-modal-logic/07-incomplete-modal-logic.html"
+    },
+    "logic:page-intuitionistic-kripke": {
+      "status": "defined",
+      "type": "page",
+      "title": "直観主義命題論理のクリプキ意味論",
+      "num": "",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/05-intuitionistic-kripke.html"
+    },
+    "logic:page-intuitionistic-prop": {
+      "status": "defined",
+      "type": "page",
+      "title": "直観主義命題論理とハイティング代数",
+      "num": "",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/04-intuitionistic.html"
     },
     "logic:page-kripke-semantics": {
       "status": "defined",
@@ -14176,12 +14316,26 @@
       "num": "6.3",
       "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/06-dependent-types.html"
     },
+    "logic:prime-extension": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "素な理論への拡大",
+      "num": "5.5",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/05-intuitionistic-kripke.html"
+    },
     "logic:prime-sentence": {
       "status": "defined",
       "type": "definition",
       "title": "素文と命題的な読み",
       "num": "8.1",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/08-completeness-alternative.html"
+    },
+    "logic:prime-theory": {
+      "status": "defined",
+      "type": "definition",
+      "title": "素な理論",
+      "num": "5.4",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/05-intuitionistic-kripke.html"
     },
     "logic:prob-alt-herbrand": {
       "status": "defined",
@@ -14456,6 +14610,27 @@
       "num": "2.13",
       "page": "03-mathematical-logic/03B-general-logic/03-modal-logic/02-gl-axioms.html"
     },
+    "logic:prob-ikr-dummett": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "5.12",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/05-intuitionistic-kripke.html"
+    },
+    "logic:prob-ikr-finite": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "5.14",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/05-intuitionistic-kripke.html"
+    },
+    "logic:prob-ikr-presheaf": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "5.13",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/05-intuitionistic-kripke.html"
+    },
     "logic:prob-incomp-canonical": {
       "status": "defined",
       "type": "problem",
@@ -14483,6 +14658,27 @@
       "title": "",
       "num": "9.10",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/09-craig-robinson.html"
+    },
+    "logic:prob-ipc-boolean": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "4.13",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/04-intuitionistic.html"
+    },
+    "logic:prob-ipc-double-negation": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "4.11",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/04-intuitionistic.html"
+    },
+    "logic:prob-ipc-nk-abbrev": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "4.12",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/04-intuitionistic.html"
     },
     "logic:prob-it-add-zero": {
       "status": "defined",
@@ -15625,6 +15821,41 @@
       "num": "",
       "page": "03-mathematical-logic/03B-general-logic/03-modal-logic/04-completeness-decidability.html"
     },
+    "logic:sec-ikr-completeness": {
+      "status": "defined",
+      "type": "section",
+      "title": "標準モデルと完全性",
+      "num": "",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/05-intuitionistic-kripke.html"
+    },
+    "logic:sec-ikr-disjunction": {
+      "status": "defined",
+      "type": "section",
+      "title": "選言特性",
+      "num": "",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/05-intuitionistic-kripke.html"
+    },
+    "logic:sec-ikr-models": {
+      "status": "defined",
+      "type": "section",
+      "title": "クリプキモデル",
+      "num": "",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/05-intuitionistic-kripke.html"
+    },
+    "logic:sec-ikr-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/05-intuitionistic-kripke.html"
+    },
+    "logic:sec-ikr-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/05-intuitionistic-kripke.html"
+    },
     "logic:sec-incomp-notation": {
       "status": "defined",
       "type": "section",
@@ -15659,6 +15890,48 @@
       "title": "分離不能性を保つ拡大",
       "num": "",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/09-craig-robinson.html"
+    },
+    "logic:sec-ipc-completeness": {
+      "status": "defined",
+      "type": "section",
+      "title": "リンデンバウム–タルスキ代数と完全性",
+      "num": "",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/04-intuitionistic.html"
+    },
+    "logic:sec-ipc-heyting": {
+      "status": "defined",
+      "type": "section",
+      "title": "ハイティング代数",
+      "num": "",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/04-intuitionistic.html"
+    },
+    "logic:sec-ipc-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/04-intuitionistic.html"
+    },
+    "logic:sec-ipc-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/04-intuitionistic.html"
+    },
+    "logic:sec-ipc-soundness": {
+      "status": "defined",
+      "type": "section",
+      "title": "健全性",
+      "num": "",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/04-intuitionistic.html"
+    },
+    "logic:sec-ipc-system": {
+      "status": "defined",
+      "type": "section",
+      "title": "直観主義命題論理の体系",
+      "num": "",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/04-intuitionistic.html"
     },
     "logic:sec-it-applications": {
       "status": "defined",
@@ -17046,6 +17319,13 @@
       "num": "3.5",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/03-semantics.html"
     },
+    "logic:three-element-heyting": {
+      "status": "defined",
+      "type": "example",
+      "title": "三元の鎖",
+      "num": "",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/04-intuitionistic.html"
+    },
     "logic:transitive-tree": {
       "status": "defined",
       "type": "definition",
@@ -17178,6 +17458,13 @@
       "title": "宇宙は集合でない",
       "num": "8.7",
       "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/08-univalence.html"
+    },
+    "logic:upsets-heyting": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "上集合のハイティング代数と持続性",
+      "num": "5.2",
+      "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/05-intuitionistic-kripke.html"
     },
     "logic:valuation-term-model": {
       "status": "defined",

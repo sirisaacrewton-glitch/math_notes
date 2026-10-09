@@ -199,6 +199,36 @@ $$
 :::
 :::
 
+## 直積とパラコンパクト性 {#top:sec-pc-products}
+
+::: theorem パラコンパクト空間とコンパクト空間の直積 {#top:paracompact-times-compact keywords="the product of a paracompact space and a compact Hausdorff space is paracompact" index="パラコンパクト空間の直積|ぱらこんぱくとくうかんのちょくせき"}
+（AC）$X$ をパラコンパクト空間、$K$ をコンパクトハウスドルフ空間とすると、$X\times K$ はパラコンパクトである。とくに $X\times[0,1]$ はパラコンパクト。
+:::
+
+::: proof
+**ハウスドルフ.** ハウスドルフ空間の直積はハウスドルフ（\ref{top:hausdorff-properties}）。
+
+**Step 1（チューブ）.** $X\times K$ の開被覆 $\mathcal{W}$ をとる。$x\in X$ を固定すると、各 $k\in K$ について $(x,k)\in U\times V\subseteq W$ となる基本開集合と $W\in\mathcal{W}$ がある。$\{x\}\times K$ は**コンパクト**（$K$ と同相）なので、有限個の $U_{1}\times V_{1},\dots,U_{n}\times V_{n}$（各 $U_{i}\times V_{i}$ は $\mathcal{W}$ のある元に含まれる）で覆える。$U^{x}\defeq U_{1}\cap\dots\cap U_{n}$ は $x$ の開近傍で、$U^{x}\times K\subseteq\bigcup_{i}(U^{x}\times V_{i})$。
+
+**Step 2（局所有限な細分）.** $\{U^{x}\}_{x\in X}$ は $X$ の開被覆なので、$X$ が**パラコンパクト**であることから局所有限な開細分 $(O_{s})_{s\in S}$ がある。各 $s$ について $O_{s}\subseteq U^{x(s)}$ となる $x(s)$ を選び、$x(s)$ に対する Step 1 の $V^{s}_{1},\dots,V^{s}_{n_{s}}$ をとる。
+$$
+\mathcal{W}'\defeq\{O_{s}\times V^{s}_{i}:s\in S,\ 1\le i\le n_{s}\}
+$$
+とおく。$O_{s}\times V^{s}_{i}\subseteq U^{x(s)}\times V^{s}_{i}$ は $\mathcal{W}$ のある元に含まれる。$(x,k)\in X\times K$ について $x\in O_{s}$ となる $s$ をとると、$(x,k)\in O_{s}\times K\subseteq\bigcup_{i}O_{s}\times V^{s}_{i}$。よって $\mathcal{W}'$ は $\mathcal{W}$ の開細分。
+
+**Step 3（局所有限性）.** $(x,k)$ について、$x$ の近傍 $N$ で $N$ と交わる $O_{s}$ が有限個のものをとる。$N\times K$ は $(x,k)$ の近傍で、$N\times K$ と交わる $O_{s}\times V^{s}_{i}$ は、$O_{s}$ が $N$ と交わる有限個の $s$ と、各 $s$ の有限個の $i$ に限られる。
+:::
+
+::: example 直積は一般には保たれない
+ゾルゲンフライ直線 $\R_{\ell}$ はパラコンパクト（\ref{top:sorgenfrey-paracompact}）だが、$\R_{\ell}\times\R_{\ell}$（ゾルゲンフライ平面）は正規でない（\ref{top:sorgenfrey-plane}）ので、デュドネの定理（\ref{top:paracompact-normal}）によりパラコンパクトでない。\ref{top:paracompact-times-compact} でコンパクト性の仮定を外すことはできない。
+:::
+
+::: hypcheck
+- **$K$ のコンパクト性**：Step 1 で、各 $\{x\}\times K$ を有限個の箱で覆い、有限個の $U_{i}$ の共通部分として開集合 $U^{x}$ を得るのに使った（チューブの補題と同じ発想）。無限個だと共通部分が開でなくなる。
+- **$X$ のパラコンパクト性**：Step 2 の局所有限な細分に使った。
+- **$K$ のハウスドルフ性**：直積がハウスドルフであること（パラコンパクトの定義の一部）にだけ使った。
+:::
+
 ::: supplement
 **前提を変えると.** パラコンパクト性は次の条件と同値であることが知られている（R. Engelking, *General Topology* §5.1）：(i) ハウスドルフで、任意の開被覆に従属する 1 の分割をもつ（台の局所有限性を仮定しない形はここでは証明しない）。(ii) $T_{1}$ かつ正則で、任意の開被覆が可算個の局所有限な族の和として書ける開細分（σ局所有限な開細分）をもつ（**マイケルの定理**、\ref{top:michael}）。とくに、正則なリンデレーフ空間はパラコンパクトである（\ref{top:regular-lindelof-paracompact}）。
 

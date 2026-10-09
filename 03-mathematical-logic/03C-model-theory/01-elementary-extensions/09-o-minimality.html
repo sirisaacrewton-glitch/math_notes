@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>o 極小構造と単調性定理 | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03C-model-theory/01-elementary-extensions/09-o-minimality.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# o 極小構造と単調性定理 {#model:page-o-minimality keywords="o-minimal structure, definable sets in one variable, definable connectedness, monotonicity theorem, piecewise monotone continuous definable functions, one-sided limits, sine is not semialgebraic"}
+
+実閉体の一変数の定義可能集合は、有限個の点と区間の和だった（\ref{model:rcf-o-minimal}）。この性質だけを公理にした構造を **o 極小**という（\ref{model:o-minimal}）。o 極小性は一変数の**集合**についての条件だが、そこから一変数の定義可能な**関数**についての強い結論が出る：**単調性定理**（\ref{model:monotonicity-theorem}、Pillay–Steinhorn 1986, Knight–Pillay–Steinhorn 1986 とされる）によれば、定義可能な関数は、有限個の点を除くと、区間ごとに定数か、狭義単調で連続である。本ページではこれを、順序と定義可能性だけから証明する。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論の筋（L. van den Dries, *Tame Topology and O-minimal Structures*, Ch. 3 の流れとして知られているもの）に沿って組み立てた。「単射なら部分区間で単調」の証明（とくに極小点ばかりの場合の排除）は本サイトで書き下ろした。
+
+## 記法と定義の確認 {#model:sec-om-notation}
+
+::: notation
+- $\mathcal{L}$ は二項関係記号 $<$ を含む言語、$\mathcal{M}$ は $\mathcal{L}$ 構造で、$<^{\mathcal{M}}$ は端点のない稠密線形順序（\ref{model:dlo}）とする。
+- **定義可能**は、$M$ の元をパラメータとして使ってよい論理式で定義できることをいう。
+- **区間**は $(u,v)\defeq\{x:u<x<v\}$（$u<v$, $u,v\in M\cup\{-\infty,+\infty\}$）の形の開区間。区間は定義可能である。$M$ の位相は開区間を開基とする順序位相（\ref{top:order-topology}）。
+- 関数 $f\colon I\to M$（$I$ は区間）が定義可能とは、グラフが定義可能であることをいう。
+:::
+
+::: definition o 極小 {#model:o-minimal keywords="o-minimal structure: every definable subset of M is a finite union of points and open intervals" index="o 極小|おーきょくしょう"}
+$\mathcal{M}$ が **o 極小**であるとは、$M$ の定義可能な部分集合がすべて、有限個の点と有限個の区間の和であることをいう。
+:::
+
+::: example
+1. 実閉体（\ref{model:rcf-o-minimal}）。とくに $(\mathbb{R},0,1,+,-,\cdot,<)$。
+2. 端点のない稠密線形順序（言語 $\{<\}$）：量化子消去（\ref{model:dlo-qe}）から、パラメータ付きの定義可能集合は $x=b$, $x<b$, $b<x$ の形の条件のブール結合で定まるので、有限個の点と区間の和である。
+:::
+
+## 一変数の定義可能集合 {#model:sec-om-sets}
+
+以下、$\mathcal{M}$ は o 極小とする。
+
+::: lemma 定義可能集合の基本性質 {#model:o-minimal-basic keywords="definable subsets have sup and inf, are locally constant near each point from each side, infinite ones contain intervals; intervals are definably connected" index="o 極小構造の定義可能集合|おーきょくしょうこうぞうのていぎかのうしゅうごう"}
+$X\subseteq M$ を定義可能とする。
+1. $X$ は $M\cup\{\pm\infty\}$ の中に上限と下限をもつ。
+2. $x\in M\cup\{-\infty\}$ について、ある $t>x$ で $(x,t)\subseteq X$ または $(x,t)\cap X=\varnothing$。左側（$x\in M\cup\{+\infty\}$ と $(t,x)$）についても同様。
+3. $X$ が無限なら、$X$ は区間を含む。
+4. （**定義可能連結性**）区間 $I$ は、互いに交わらない空でない定義可能な開集合二つの和にならない。
+:::
+
+::: proof
+$X=\{c_{1},\dots,c_{k}\}\cup I_{1}\cup\dots\cup I_{l}$（点と区間）と書く。
+
+**1.** 上限は、$c_{i}$ と区間の右端の最大（空なら $-\infty$）。下限も同様。
+
+**2.** $x$ より大きい $c_{i}$ と、$x$ より大きい区間の端点のうち最小のものを $t$ とする（なければ $t$ は $x$ より大きい任意の元）。$(x,t)$ には $c_{i}$ も区間の端点もないので、各区間 $I_{j}$ は $(x,t)$ を含むか交わらない。
+
+**3.** $X$ が無限なら $l\ge1$。
+
+**4.** $I=U\cup W$（$U,W$ は互いに交わらず空でない定義可能な開集合）とし、$x\in U$, $y\in W$ をとる。$x<y$ としてよい（逆も同様）。$c\defeq\sup\{t\in[x,y]:[x,t]\subseteq U\}$（1 から存在し、$x\le c\le y$）。$c\in U$ なら、$U$ は開なので $c$ を含む区間が $U$ に含まれ、$c<y$（$y\notin U$）から上限性に反する（$c$ より少し大きい $t$ でも $[x,t]\subseteq U$）。$c\in W$ なら、$W$ が開なので $(u,c]\subseteq W$ となる $u<c$ があり、上限の定義から $[x,t]\subseteq U$ となる $t\in(u,c]$ があって矛盾（$t\in U\cap W$）。$c=x\in U$ の場合は最初の場合に含まれる。
+:::
+
+## 局所的な補題 {#model:sec-om-local}
+
+::: lemma 定数か単射 {#model:constant-or-injective keywords="a definable function on an interval is constant or injective on a subinterval" index="定数か単射|ていすうかたんしゃ"}
+定義可能な $f\colon I\to M$（$I$ は区間）について、$f$ が定数か単射であるような部分区間がある。
+:::
+
+::: proof
+ある $y$ で $f^{-1}(y)$ が無限なら、\ref{model:o-minimal-basic} の 3 からそれは区間を含み、そこで $f$ は定数。そうでなければすべてのファイバーは有限で、$I$ は無限なので $f(I)$ は無限、したがって区間 $K$ を含む。$g\colon K\to I$, $g(y)\defeq\min f^{-1}(y)$（有限で空でない集合の最小）は定義可能で、$f(g(y))=y$ なので単射、$g(K)$ は無限で区間 $I'$ を含む。$x,x'\in I'$ で $f(x)=f(x')$ なら、$x=g(f(x))=g(f(x'))=x'$。よって $f$ は $I'$ で単射。
+:::
+
+::: lemma 単射なら単調 {#model:injective-monotone keywords="a definable injective function on an interval is strictly monotone on a subinterval" index="単射なら単調|たんしゃならたんちょう"}
+定義可能で単射な $f\colon I\to M$ について、$f$ が狭義単調であるような部分区間がある。
+:::
+
+::: proof
+**Step 1（局所的な型）.** $x\in I$ について、集合 $\{y\in I:f(y)>f(x)\}$ に \ref{model:o-minimal-basic} の 2 を使うと、$x$ のすぐ右（ある $(x,t)$）で、すべての $y$ が $f(y)>f(x)$ を満たすか、すべてが満たさない。後者は単射性から $f(y)<f(x)$。前者を $R(x)=+$、後者を $R(x)=-$ とし、左側も同様に $L(x)\in\{+,-\}$ と定める。四つの集合 $T_{\sigma\tau}\defeq\{x:L(x)=\sigma,R(x)=\tau\}$ は定義可能で $I$ を分割するので、どれかが無限で区間 $J=(a,b)$ を含む（\ref{model:o-minimal-basic} の 3）。
+
+**Step 2（型 $(-,+)$ なら増加）.** $J$ のすべての点が型 $(-,+)$ とし、$x<z$（$x,z\in J$）で $f(z)<f(x)$ と仮定する。$B\defeq\{y\in(x,z]:f(y)<f(x)\}\ni z$、$c\defeq\inf B$。$R(x)=+$ から $x$ のすぐ右は $B$ に入らないので $c>x$。
+- $c\in B$ なら、$L(c)=-$ から $c$ のすぐ左で $f(y)<f(c)<f(x)$。しかしそこは $(x,c)$ に含まれ $B$ の外なので $f(y)>f(x)$（単射）。矛盾。
+- $c\notin B$ なら $c\in(x,z)$, $f(c)>f(x)$。$R(c)=+$ から $c$ のすぐ右で $f(y)>f(c)>f(x)$、すなわち $B$ の点がない。$c=\inf B$ に反する。
+
+よって $J$ で狭義増加。型 $(+,-)$ なら、不等号をすべて逆にした同じ議論で狭義減少。
+
+**Step 3（型 $(+,+)$ はない）.** $J$ のすべての点が型 $(+,+)$（**狭義の極小点**）と仮定して矛盾を導く。
+
+*(3a) 記録点は有限.* 部分区間 $K\subseteq J$ について、$x\in K$ が $K$ の**右記録点**とは「$y\in K$, $y>x$ なら $f(y)>f(x)$」のこととする。右記録点の集合（定義可能）が無限なら区間 $K'$ を含み、$K'$ で $f$ は狭義増加になるが、すると $K'$ の点のすぐ左の値は小さく、$L=+$ に反する。よって有限。同様に**左記録点**（「$y\in K$, $y<x$ なら $f(y)>f(x)$」）の集合も有限（無限なら狭義減少の区間ができ $R=+$ に反する）。
+
+*(3b) 閉区間で最小値をとる.* $p<q$（$p,q\in J$）とし、$m\defeq\inf f([p,q])$ が達成されないとする。$\delta>m$ について $C_{\delta}\defeq\{x\in[p,q]:f(x)<\delta\}$ は空でなく、$\alpha(\delta)\defeq\inf C_{\delta}\in[p,q]$ は $\delta$ について非増加。$c\defeq\sup\{\alpha(\delta):\delta>m\}\in[p,q]\subseteq J$。$c$ を含む任意の区間 $(u,v)$ と任意の $\delta>m$ について $C_{\delta}\cap(u,v)\neq\varnothing$：上限の定義から $\alpha(\delta_{0})>u$ となる $\delta_{0}>m$ があり、$m<\delta\le\delta_{0}$ なら $u<\alpha(\delta_{0})\le\alpha(\delta)\le c<v$ で、下限 $\alpha(\delta)$ のすぐ右（または $\alpha(\delta)$ 自身）に $C_{\delta}$ の点があるので $(u,v)$ と交わる。$\delta>\delta_{0}$ なら $C_{\delta}\supseteq C_{\delta_{0}}$。いま $m<f(c)$（達成されないので）で、稠密性から $m<\delta<f(c)$ となる $\delta$ がとれる。$c$ は狭義の極小点なので、$(u,v)\ni c$ を $y\in(u,v)$, $y\neq c$ なら $f(y)>f(c)$ となるようにとれるが、$C_{\delta}\cap(u,v)$ の点 $y$ は $f(y)<\delta<f(c)$（とくに $y\neq c$）で矛盾。よって最小値は達成される。
+
+*(3c) 開区間でも最小値をとる.* $J$ の部分区間 $(u,v)$ と $q\in(u,v)$ をとる。$p\in(u,q)$ について、$[p,q]$ での最小値をとる点を $\nu(p)$（単射なので一意）とする。$\nu(p)<q$ なら $\nu(p)$ は $(u,q)$ の右記録点なので、$\nu$ の値は有限集合（(3a)）$\cup\{q\}$ に属する。各値のファイバーは定義可能で有限個なので、\ref{model:o-minimal-basic} の 2（$u$ の右側）からどれかが $(u,u')$ を含む：そこで $\nu=r_{0}$。すると $f(r_{0})\le f(y)$ がすべての $y\in(u,q]$ で成り立つ。この $r_{0}$ を $\mu(q)$ とすると、$\mu(q)$ は $(u,v)$ の左記録点なので有限集合に値をとり、同様に $v$ の左側で一定値 $x_{0}$ をとる。$f(x_{0})\le f(y)$ がすべての $y\in(u,v)$ で成り立つ。
+
+*(3d) 無限降下.* (3c) で $J=(a,b)$ の最小点 $x_{0}$、$(x_{0},b)$ の最小点 $x_{1}$、$(x_{1},b)$ の最小点 $x_{2}$、… を順にとる（最小点は一意なので選択は要らない）。$x_{i}$ は $(x_{i-1},b)$ で最小なので、$y\in J$, $y>x_{i}$ なら $f(y)>f(x_{i})$、すなわち $J$ の右記録点。$x_{0}<x_{1}<\cdots$ は相異なるので右記録点が無限にあり、(3a) に反する。
+
+**Step 4（型 $(-,-)$ もない）.** 不等号を逆にして Step 3 と同じ議論（最小を最大に替える）。
+
+Step 3, 4 から $J$ の型は $(-,+)$ か $(+,-)$ で、Step 2 から $f$ は $J$ で狭義単調。
+:::
+
+::: lemma 単調なら連続 {#model:monotone-continuous keywords="a definable strictly monotone function is continuous on a subinterval" index="単調なら連続|たんちょうなられんぞく"}
+定義可能で狭義単調な $f\colon I\to M$ について、$f$ が連続であるような部分区間がある。
+:::
+
+::: proof
+狭義増加とする（減少も同様）。$f(I)$ は無限なので区間 $K$ を含む。$J\defeq f^{-1}(K)$ は凸（$x<y<z$, $f(x),f(z)\in K$ なら $f(x)<f(y)<f(z)$ で $f(y)\in K$）で無限なので区間を含み、実は区間 $J$ そのもので、$f\colon J\to K$ は順序を保つ全単射。$K$ の区間 $(k_{1},k_{2})\subseteq K$ の逆像は $(f^{-1}(k_{1}),f^{-1}(k_{2}))$ なので、$f$ は $J$ で連続（開基の逆像が開）。
+:::
+
+## 単調性定理 {#model:sec-om-theorem}
+
+::: theorem 単調性定理 {#model:monotonicity-theorem keywords="monotonicity theorem for o-minimal structures: a definable function on an interval is piecewise constant or strictly monotone and continuous" index="単調性定理|たんちょうせいていり"}
+$\mathcal{M}$ を o 極小、$f\colon(a,b)\to M$ を定義可能とする。点 $a=a_{0}<a_{1}<\dots<a_{k}=b$ があって、各 $(a_{i},a_{i+1})$ の上で $f$ は定数か、狭義単調で連続である。
+:::
+
+::: proof
+**Step 1（悪い点は有限）.** $x\in(a,b)$ が**良い**とは、$x$ を含む区間で、$f$ が定数か、狭義増加で連続か、狭義減少で連続であるものがあることとする（連続性は「すべての $y$ と $f(y)$ を含む区間に対し、$y$ を含む区間で値がそこに入るものがある」と書けるので、良い点の集合は定義可能）。悪い点の集合 $B$ が無限なら区間を含み、そこに \ref{model:constant-or-injective}, \ref{model:injective-monotone}, \ref{model:monotone-continuous} を順に使うと、$f$ が定数か狭義単調で連続な部分区間がとれ、その点は良い点で矛盾。よって $B$ は有限。$a_{1}<\dots<a_{k-1}$ を $B$ の点とする。
+
+**Step 2（各区間で型は一つ）.** $(a_{i},a_{i+1})$ の点はすべて良い。「定数の近傍をもつ」「増加で連続の近傍をもつ」「減少で連続の近傍をもつ」点の集合 $U_{c},U_{+},U_{-}$ は定義可能な開集合で（近傍の点も同じ近傍をもつ）、互いに交わらない（無限集合の上で定数かつ単射にはなれず、増加かつ減少にもなれない）。\ref{model:o-minimal-basic} の 4 から、どれか一つが $(a_{i},a_{i+1})$ 全体。
+
+**Step 3（局所から大域へ）.** たとえば全体が $U_{+}$ とし、$x<z$ を $(a_{i},a_{i+1})$ にとる。$c\defeq\sup\{t\in[x,z]:f\text{ は }[x,t]\text{ で狭義増加}\}$ とする（定義可能な集合の上限）。$c$ を含み $f$ が増加する区間 $(u,v)$ をとり、$t\in(u,c]$ で $[x,t]$ で増加するものをとると、$f$ は $[x,t]\cup(u,v)$ で増加する（重なり $(u,t]$ の点を経由して比べる）。$c<z$ なら $c$ より先の点まで増加が延びて上限性に反するので $c=z$ で、同じ議論から $[x,z]$ で増加。よって $f$ は $(a_{i},a_{i+1})$ で狭義増加で、連続性は局所的な性質なので連続。$U_{c}$, $U_{-}$ も同様。
+:::
+
+::: corollary 片側極限の存在 {#model:one-sided-limits keywords="definable functions in o-minimal structures have one-sided limits in M union plus minus infinity" index="片側極限（o 極小）|かたがわきょくげんおーきょくしょう"}
+$\mathcal{M}$ を o 極小、$f\colon(a,b)\to M$ を定義可能とすると、各 $x\in(a,b]$ で左極限 $\lim_{y\to x^{-}}f(y)\in M\cup\{\pm\infty\}$ が存在する（右極限も同様）。
+:::
+
+::: proof
+\ref{model:monotonicity-theorem} の分割で $x$ のすぐ左の区間 $(a_{i},x)$ をとる（$x=a_{i+1}$ か $x\in(a_{i},a_{i+1})$）。そこで $f$ が定数ならその値、狭義増加なら $\sup f((a_{i},x))$、減少なら $\inf$ が極限（上限・下限は \ref{model:o-minimal-basic} の 1 で存在し、単調性から極限になる）。
+:::
+
+::: hypcheck
+- **o 極小性**：\ref{model:o-minimal-basic} のすべて（上限の存在・片側での一定性・無限集合が区間を含むこと・定義可能連結性）と、それを通じて各補題の「定義可能な集合が無限なら区間を含む」の段に使った。
+- **稠密性**：(3b) で $m<\delta<f(c)$ となる $\delta$ をとるのに使った。
+- **単射性**：Step 1 の型が $\pm$ のどちらか一つに決まること（等号が起きない）と、最小点・最大点の一意性（(3c)(3d) で選択が要らないこと）に使った。
+- **選択公理**：使っていない（最小点・上限はすべて一意に定まる）。
+:::
+
+## 問題 {#model:sec-om-problems}
+
+::: problem {#model:prob-om-sine}
+$\sin\colon\mathbb{R}\to\mathbb{R}$ は $(\mathbb{R},0,1,+,-,\cdot,<)$ で定義できないことを示せ。
+:::
+
+::: solution
+定義できれば、$\{x:\sin x=0\}=\pi\mathbb{Z}$ も定義可能で、o 極小性（\ref{model:rcf-o-minimal}）から有限個の点と区間の和になる。$\pi\mathbb{Z}$ は無限で区間を含まないので矛盾。（単調性定理からも、$\sin$ は有限個の区間で単調にならないことで分かる。）
+:::
+
+::: problem {#model:prob-om-cubic}
+$f(x)=x^{3}-3x$ について、\ref{model:monotonicity-theorem} の分割を具体的に与えよ。
+:::
+
+::: solution
+$a_{1}=-1$, $a_{2}=1$。$x<y$ について $f(y)-f(x)=(y-x)(x^{2}+xy+y^{2}-3)$。$x,y\le-1$ または $x,y\ge1$ なら $x^{2}+xy+y^{2}\ge3$（$xy\ge1$, $x^{2},y^{2}\ge1$）で、$x<y$ がともに $(-\infty,-1)$ または $(1,\infty)$ にあれば等号はなく $f$ は狭義増加。$x,y\in(-1,1)$ なら $x^{2}+xy+y^{2}<3$（各項 $<1$）で狭義減少。多項式なので連続。
+:::
+
+::: supplement
+**前提を変えると.**
+- **多変数.** o 極小構造の $M^{n}$ の定義可能集合は、有限個の「細胞」（グラフと、二つのグラフにはさまれた帯を繰り返して作る集合）に分割できる（**細胞分割定理**）ことが知られている（Knight–Pillay–Steinhorn 1986。単調性定理を出発点とする帰納法による。ここでは扱わない）。実閉体ではこれは半代数的集合の細胞分割にあたる。
+- **強い o 極小性.** o 極小構造に初等同値な構造はすべて o 極小であることが知られている（同論文。ここでは確かめていない）。
+
+**似た定理.** 実閉体以外の o 極小構造として、制限された解析関数を加えた実閉体や、指数関数を加えた $(\mathbb{R},+,\cdot,<,\exp)$（ウィルキー 1996）が知られている。強極小（\ref{model:page-strongly-minimal}）は「定義可能集合が有限か補有限」という、順序のない場合の類似である。
+
+**高い視点から.** o 極小性は「一次元の定義可能集合は、点と区間というごく単純な形しかない」という**集合**についての条件で、そこから**関数**の振る舞いが単調な部品に分解できるという結論が出るのは驚くべきことである。比喩で言えば、地図の上の「領域」がどれも有限個の区間でできているなら、道（関数のグラフ）も有限個のまっすぐな上り坂・下り坂・平地に分けられる、ということである。病的な関数（至るところ微分不可能な関数 \ref{top:page-nowhere-differentiable} や $\sin$ の無限の振動）は、o 極小な世界には住めない。これが「飼い慣らされた位相（tame topology）」の考え方である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

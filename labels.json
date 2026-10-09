@@ -16626,6 +16626,13 @@
       "num": "1.13",
       "page": "03-mathematical-logic/03C-model-theory/03-ultraproducts/01-ultraproducts.html"
     },
+    "model:constant-or-injective": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "定数か単射",
+      "num": "9.3",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/09-o-minimality.html"
+    },
     "model:constants-to-variables": {
       "status": "defined",
       "type": "lemma",
@@ -16997,6 +17004,13 @@
       "num": "4.3",
       "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/04-indiscernibles.html"
     },
+    "model:injective-monotone": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "単射なら単調",
+      "num": "9.4",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/09-o-minimality.html"
+    },
     "model:isolated-complete-type": {
       "status": "defined",
       "type": "lemma",
@@ -17123,6 +17137,20 @@
       "num": "3.8",
       "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/03-quantifier-elimination.html"
     },
+    "model:monotone-continuous": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "単調なら連続",
+      "num": "9.5",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/09-o-minimality.html"
+    },
+    "model:monotonicity-theorem": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "単調性定理",
+      "num": "9.6",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/09-o-minimality.html"
+    },
     "model:morley": {
       "status": "defined",
       "type": "theorem",
@@ -17178,6 +17206,20 @@
       "title": "非単項超フィルターの存在",
       "num": "1.5",
       "page": "03-mathematical-logic/03C-model-theory/03-ultraproducts/01-ultraproducts.html"
+    },
+    "model:o-minimal": {
+      "status": "defined",
+      "type": "definition",
+      "title": "o 極小",
+      "num": "9.1",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/09-o-minimality.html"
+    },
+    "model:o-minimal-basic": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "定義可能集合の基本性質",
+      "num": "9.2",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/09-o-minimality.html"
     },
     "model:omega-categorical": {
       "status": "defined",
@@ -17248,6 +17290,13 @@
       "title": "一点拡張",
       "num": "8.3",
       "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/08-rational-urysohn.html"
+    },
+    "model:one-sided-limits": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "片側極限の存在",
+      "num": "9.7",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/09-o-minimality.html"
     },
     "model:ordered-field": {
       "status": "defined",
@@ -17346,6 +17395,13 @@
       "title": "範疇的ならヴォート対はない",
       "num": "",
       "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/04-no-vaught-pairs.html"
+    },
+    "model:page-o-minimality": {
+      "status": "defined",
+      "type": "page",
+      "title": "o 極小構造と単調性定理",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/09-o-minimality.html"
     },
     "model:page-omega-stable": {
       "status": "defined",
@@ -17696,6 +17752,20 @@
       "title": "",
       "num": "6.11",
       "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html"
+    },
+    "model:prob-om-cubic": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "9.9",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/09-o-minimality.html"
+    },
+    "model:prob-om-sine": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "9.8",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/09-o-minimality.html"
     },
     "model:prob-omit-nonstandard": {
       "status": "defined",
@@ -18620,6 +18690,41 @@
       "title": "実閉体",
       "num": "",
       "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html"
+    },
+    "model:sec-om-local": {
+      "status": "defined",
+      "type": "section",
+      "title": "局所的な補題",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/09-o-minimality.html"
+    },
+    "model:sec-om-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/09-o-minimality.html"
+    },
+    "model:sec-om-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/09-o-minimality.html"
+    },
+    "model:sec-om-sets": {
+      "status": "defined",
+      "type": "section",
+      "title": "一変数の定義可能集合",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/09-o-minimality.html"
+    },
+    "model:sec-om-theorem": {
+      "status": "defined",
+      "type": "section",
+      "title": "単調性定理",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/09-o-minimality.html"
     },
     "model:sec-omega-categorical": {
       "status": "defined",

@@ -452,6 +452,7 @@
 | Katetov function / rational Urysohn space / Urysohn space | カテトフ関数 / 有理ウリゾーン空間 / ウリゾーン空間 | | 標準的。model:page-rational-urysohn |
 | ordered field / positive cone / real closed field | 順序体 / 正の錐 / 実閉体 | | 標準的。model:page-ordered-fields |
 | signed remainder sequence / sign variations / Tarski query | 符号付き剰余列 / 符号の変化数 / タルスキの問い合わせ | | 実代数幾何の用語。model:page-sturm |
+| o-minimal / monotonicity theorem / cell decomposition | o 極小 / 単調性定理 / 細胞分割 | 順序極小 | model:page-o-minimality |
 | Luzin set / Sierpinski set | ルジンの集合 / シェルピンスキーの集合 | ルージン集合 | 標準的。set:page-luzin-sets |
 | Adleman theorem / Sipser-Gacs-Lautemann theorem / probabilistic method / derandomization | アドルマンの定理 / シプサー–ガーチ–ラウテマンの定理 / 確率的方法 / 脱乱択化 | | 標準的。comp:page-bpp-ph |
 | Chaitin incompleteness theorem / Berry paradox | チャイティンの不完全性定理 / ベリーの逆理 | | 標準的。comp:page-chaitin-incompleteness |

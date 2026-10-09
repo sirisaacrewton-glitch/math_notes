@@ -7,7 +7,7 @@
 > * 各節の「発展」は、目標を書き終えたら続けて書いてよい題材の例（これも下限ではなく例示）。標準的な教科書の同じ章にある重要な結果は、ここに無くても書いてよい。
 > * 割り当て表を作るときは、参考書の該当章の目次と突き合わせ、目標までの間で**抜けている節がないか**を確かめる。
 > ★ はユーザーが指定した参考書（START.md §10 の一覧と同じ）。☆ はそれ以外の推薦（Claude が提案。ユーザー未確認）。
-> 参考書の PDF が `<洋書>`・`<和書>` にあるかは、始めるときに `find` で確かめる（クラウドからは見えないので、無ければ Cowork 側でユーザーに確認する）。
+> **本棚にある本を優先する**（2026-10-09）。各節の「テキスト化済み」の本は `math_books` に本文と索引がある（一覧は `math_books/BOOKS.md`）。本棚にない推薦書は目次だけ `math_books/toc/recommended-books-toc.md` にある。
 > 書誌は版・年を確かめてから PROGRESS.md の資料表に写す（ここに書いた年は Claude の知識によるもので、未確認のものは「要確認」と書いた）。
 
 ---
@@ -33,6 +33,7 @@
   * ☆ W. Rudin, *Principles of Mathematical Analysis*, 3rd ed. (1976) 第 9・10 章
   * ☆ 杉浦光夫『解析入門 I・II』（東京大学出版会）：訳語と、陰関数定理まわりの日本語の標準的な扱い（ストークスまでの扱いの範囲は要確認）
 
+* **テキスト化済み（`math_books`）**：Rudin *PMA*（`<洋書>/_text/rudin1976-pma`）、杉浦『解析入門 I・II』（`<和書>/_text/sugiura-kaiseki1-ja`・`-kaiseki2-ja`）。
 * 発展：ポアンカレの補題とド・ラーム・コホモロジーの入口、サードの定理、ホイットニーの埋め込み定理（弱い形）。
 
 ## 3. 微分幾何（53A。多様体上のストークスは 58A）
@@ -44,6 +45,7 @@
   * ☆ J. M. Lee, *Introduction to Smooth Manifolds*, 2nd ed. (2013)：多様体上のストークス
   * ☆ 小林昭七『曲線と曲面の微分幾何』（裳華房）：訳語と日本語の標準的な扱い（四頂点定理を含むかは要確認）
 
+* **テキスト化済み**：Warner *Foundations of Differentiable Manifolds and Lie Groups*（`warner-manifolds-lie`）、Lee *Introduction to Riemannian Manifolds*（`lee-riemannian`）、Klingenberg *A Course in Differential Geometry*（`klingenberg-diffgeom`、曲線と曲面）、野水『現代微分幾何入門』（`nomizu-diffgeom-ja`）。do Carmo・Lee *Smooth Manifolds*・小林昭七は本棚になく、目次だけ `math_books/toc/` にある。
 * 発展：ガウスの驚異の定理、フェンチェルの定理、ファリ＝ミルナーの定理、ポアンカレ＝ホップの指数定理、リーマン多様体のガウス＝ボネ＝チャーンの定理（主張）。
 
 ## 4. 代数的位相幾何（55N・55U など）
@@ -59,6 +61,7 @@
   * ★ Mac Lane『Homology』、Weibel（ホモロジー代数の側）
   * ☆ 中岡稔『位相幾何学―ホモロジー論』（共立出版）：訳語用（書名・版は要確認）
 
+* **テキスト化済み**：Fulton *Algebraic Topology: A First Course*（`fulton-algtop`）、Massey *Singular Homology Theory*（`massey-singular-homology`）、Massey *Algebraic Topology: An Introduction*（`massey-algtop-intro`、OCR）、Bott–Tu（`bott-tu`）、小松・中岡・菅原『位相幾何学 I』（`komatsu-nakaoka-topology1-ja`）。Hatcher は著者のサイトで無料公開（本棚にはない。目次は `math_books/toc/`）。
 * 発展：基本群とファン・カンペンの定理、被覆空間の分類、普遍係数定理、キュネットの公式、ポアンカレ双対、アレクサンダー双対、ド・ラームの定理、レフシェッツの不動点定理、ボルスク＝ウラムの定理、ブラウワーの不動点定理。
 
 ## 5. 圏論（18A・18B・18G）
@@ -73,6 +76,7 @@
   * ☆ F. W. Lawvere, "Diagonal arguments and cartesian closed categories" (1969, Lecture Notes in Math. 92)、N. S. Yanofsky, "A universal approach to self-referential paradoxes, incompleteness and fixed points" (Bull. Symbolic Logic, 2003)：ローヴェアの不動点定理の原典と解説
   * T. レンスター『ベーシック圏論』（訳語。使用中）
 
+* **テキスト化済み**：Hilton–Stammbach *A Course in Homological Algebra*（`hilton-stammbach-homalg`）。
 * 発展：カン拡張、エンドとコエンド、豊穣圏、トポス（★Mac Lane–Moerdijk）、2 圏、導来関手と Ext・Tor。
 
 ## 6. 計算論（03D）
@@ -107,6 +111,7 @@
   * ★ 雪江明彦『代数学 1 群論入門』；★ Lang, *Algebra*
   * ☆ J. J. Rotman, *An Introduction to the Theory of Groups*, 4th ed. (1995)
 
+* **テキスト化済み**：Robinson *A Course in the Theory of Groups*（`robinson1996-groups`）、Kargapolov–Merzljakov *Fundamentals of the Theory of Groups*（`kargapolov1979-groups`）、雪江『代数学 1〜3』（`yukie-algebra-ja`。整数論 3 冊と合わせて 1 ファイル）。Rotman は本棚になく、目次だけ `math_books/toc/`。
 * 発展：シローの定理群、ジョルダン＝ヘルダーの定理、可解群・冪零群、自由群と群の表示、半直積と群の拡大、有限アーベル群の構造定理。
 
 ## 9. 可換環論（13）——広く深く
@@ -126,6 +131,7 @@
   * ☆ The Stacks Project（オンライン）：性質の保存についての個別の補題を確かめるのに使える
   * ☆ 堀田良之『可換環と体』（岩波）：訳語用
 
+* **テキスト化済み**：Zariski–Samuel *Commutative Algebra I・II*（`zariski-samuel-ca1`・`-ca2`）、Bourbaki *Commutative Algebra*（`bourbaki-commalg`、OCR）、Anderson–Fuller *Rings and Categories of Modules*（`anderson-fuller-rings-modules`）、松村英之『可換環論』（`matsumura-kakankan-ja`）、新妻弘『可換環論の様相』（`niitsuma-kakankan-ja`）、雪江『代数学 2』。Atiyah–Macdonald・Matsumura (英)・Kaplansky・Gilmer・Lam は本棚になく、目次だけ `math_books/toc/`。
 * 発展：ヒルベルトの零点定理、クルル次元と主イデアル定理、完備化とクルルの交叉定理、正則局所環、加群の平坦性、デデキント整域のイデアル類群。
 
 ## 10. 体論・ガロア理論（12F、高い視点は 18 にも also）
@@ -145,6 +151,7 @@
   * ☆ S. U. Chase, D. K. Harrison, A. Rosenberg, "Galois theory and Galois cohomology of commutative rings" (Mem. AMS 52, 1965)：環のガロア拡大（分解による特徴付け）の原論文
   * ☆ 藤崎源二郎『体とガロア理論』（岩波）：訳語用（書名は要確認）
 
+* **テキスト化済み**：Jacobson *Lectures in Abstract Algebra III*（`jacobson-lectures3-fields`）、雪江『代数学 2』。Lang・Artin・Szamuely・Borceux–Janelidze・藤崎は本棚になく、目次だけ `math_books/toc/`。
 * 発展：超越拡大と超越基底、ノルムとトレース、クンマー理論、アルティン＝シュライアー理論、ヒルベルトの定理 90 とガロア・コホモロジーの入口、正規基底定理。
 
 ---

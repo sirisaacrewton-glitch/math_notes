@@ -206,6 +206,49 @@ $$
 \ref{logic:ls-upward-weak} は「$\Sigma$ に濃度 $\kappa$ のモデルがある」だけだったが、ここでは「与えられた $\mathcal{M}$ の初等拡大で濃度 $\kappa$ のもの」が得られる。下降・上昇の二つを合わせると、無限構造 $\mathcal{M}$ の理論 $\mathrm{Th}(\mathcal{M})$ は、$\lvert\mathcal{L}\rvert+\aleph_{0}$ 以上のすべての濃度のモデルをもつ。したがって、無限構造を同型の違いを除いて一意に特定する一階の文の集合は存在しない（濃度の異なるモデルは同型でない）。
 :::
 
+## ウォシュ–ヴォートの判定法 {#model:sec-los-vaught}
+
+二つのレーヴェンハイム–スコーレムの定理を合わせると、すべてのモデルを決まった一つの濃度に「移す」ことができる。その濃度でモデルが一つしかなければ、理論は完全になる。
+
+::: definition κ 範疇的 {#model:kappa-categorical keywords="kappa-categorical theory: all models of cardinality kappa are isomorphic" index="κ 範疇的|かっぱはんちゅうてき, 範疇的（理論）|はんちゅうてきりろん"}
+$\kappa$ を基数とする。$\mathcal{L}$ 理論 $T$ が **$\kappa$ 範疇的**であるとは、濃度 $\kappa$ の $T$ のモデルが存在し、それらがすべて互いに同型であることをいう。
+:::
+
+::: theorem ウォシュ–ヴォートの判定法 {#model:los-vaught keywords="Łoś-Vaught test: a theory with no finite models that is kappa-categorical for some infinite kappa >= |L| is complete" index="ウォシュ–ヴォートの判定法|うぉしゅう゛ぉーとのはんていほう, ヴォートの判定法|う゛ぉーとのはんていほう"}
+（AC）$T$ を $\mathcal{L}$ 理論とし、次を仮定する。
+1. $T$ は有限モデルをもたない。
+2. ある無限基数 $\kappa\ge\lvert\mathcal{L}\rvert$ について、$T$ は $\kappa$ 範疇的である。
+
+このとき $T$ は完全である（モデルをもち、すべての $\mathcal{L}$ 文 $\sigma$ について $T\models\sigma$ か $T\models\neg\sigma$）。
+:::
+
+::: proof
+**Step 1（モデルの存在）.** 2 から $T$ は濃度 $\kappa$ のモデルをもつ。
+
+**Step 2（否定の仮定）.** $T$ が完全でないとすると、文 $\sigma$ で $T\not\models\sigma$, $T\not\models\neg\sigma$ となるものがある。すなわち $T\cup\{\neg\sigma\}$ のモデル $\mathcal{M}_{1}$ と $T\cup\{\sigma\}$ のモデル $\mathcal{M}_{2}$ がある。1 から $\mathcal{M}_{1}$, $\mathcal{M}_{2}$ は**無限**。
+
+**Step 3（濃度 $\kappa$ へ移す）.** $i=1,2$ について、濃度 $\kappa$ の $\mathcal{N}_{i}\equiv\mathcal{M}_{i}$ を作る。
+- $\lvert M_{i}\rvert\ge\kappa$ のとき：$\lvert\mathcal{L}\rvert+\aleph_{0}\le\kappa\le\lvert M_{i}\rvert$（$\kappa$ は無限で $\kappa\ge\lvert\mathcal{L}\rvert$）なので、下降レーヴェンハイム–スコーレムの定理（\ref{model:downward-ls-exact}）から $\lvert N_{i}\rvert=\kappa$ の $\mathcal{N}_{i}\preccurlyeq\mathcal{M}_{i}$ がある。
+- $\lvert M_{i}\rvert<\kappa$ のとき：$\mathcal{M}_{i}$ は無限で $\kappa\ge\lvert M_{i}\rvert+\lvert\mathcal{L}\rvert$ なので、上昇レーヴェンハイム–スコーレムの定理（\ref{model:upward-lowenheim-skolem}）から濃度 $\kappa$ の $\mathcal{N}_{i}$ と初等埋め込み $\mathcal{M}_{i}\to\mathcal{N}_{i}$ がある。
+
+どちらの場合も、初等性から $\mathcal{N}_{i}$ は $\mathcal{M}_{i}$ と同じ文を満たす：$\mathcal{N}_{1}\models T\cup\{\neg\sigma\}$, $\mathcal{N}_{2}\models T\cup\{\sigma\}$。
+
+**Step 4（矛盾）.** $\mathcal{N}_{1}$, $\mathcal{N}_{2}$ は濃度 $\kappa$ の $T$ のモデルなので、**$\kappa$ 範疇性**から同型。同型な構造は同じ文を満たす（\ref{logic:isomorphism-invariance}）ので、$\mathcal{N}_{1}\models\sigma$ となり矛盾。
+:::
+
+::: hypcheck
+- **有限モデルがないこと**：Step 2 で $\mathcal{M}_{i}$ を無限にし、上昇レーヴェンハイム–スコーレムの定理を使えるようにした。
+- **$\kappa\ge\lvert\mathcal{L}\rvert$ かつ無限**：Step 3 の二つの定理の濃度の条件に使った。
+- **選択公理**：レーヴェンハイム–スコーレムの定理に使う。
+- **$\kappa$ 範疇性**：Step 4 でのみ使った。どの濃度で範疇的かは問わない。
+:::
+
+::: example
+1. $\mathrm{DLO}$ は $\aleph_{0}$ 範疇的（カントールの定理 \ref{model:cantor-dlo}）で有限モデルをもたないので完全（\ref{model:dlo-complete} の別証明）。
+2. 標数 $p$（$p$ は素数または $0$）の代数的閉体の理論 $\mathrm{ACF}_{p}$ は、非可算な $\kappa$ について $\kappa$ 範疇的であることが知られている（超越次数が $\kappa$ に等しいため。本サイトでは量化子消去による完全性 \ref{model:acf-qe} を使う）。この範疇性を認めれば、代数的閉体は無限なので $\mathrm{ACF}_{p}$ は完全である。
+3. 有限モデルを許すと結論は成り立たない：空の言語の空の理論は、濃度 $\aleph_{0}$ のモデルがすべて同型（$\aleph_{0}$ 範疇的）だが、「元が少なくとも二つある」という文もその否定も導かない。
+:::
+
 ## 問題 {#model:sec-elementary-problems}
 
 ::: problem {#model:prob-elementary-chain}
@@ -230,6 +273,20 @@ $\mathcal{N}\subset\mathcal{K}$ は仮定。$N$ に値をとる割り当て $v$ 
 
 ::: solution
 言語は可算で $\mathbb{R}$ は無限なので、\ref{model:downward-ls-exact} より可算な $\mathcal{K}\preccurlyeq\mathbb{R}$ がある。順序体の公理は文なので、$\mathcal{K}\equiv\mathbb{R}$ より $\mathcal{K}$ は順序体である。$\mathcal{K}$ が完備なら、完備な順序体は $\mathbb{R}$ と同型である（実数の特徴づけ。解析の標準的な定理で、本ページでは証明しない）ので $\mathcal{K}$ は非可算となり、矛盾する。よって $\mathcal{K}$ は完備でない。完備性を表す文の集合 $\Sigma$ があれば、$\mathbb{R}\models\Sigma$ と $\mathcal{K}\equiv\mathbb{R}$ より $\mathcal{K}\models\Sigma$ となり矛盾する。（完備性は「すべての部分集合」についての主張で、二階の性質である。）
+:::
+
+::: problem {#model:prob-lv-divisible-groups}
+アーベル群の言語 $\{0,+,-\}$ で、ねじれのない可除アーベル群で $0$ でないものの理論 $\mathrm{DAG}$ を考える（公理：アーベル群、$\exists x\,\neg x=0$、各 $n\ge1$ について $\forall x\,\exists y\,(ny=x)$ と $\forall x\,(nx=0\to x=0)$）。$\mathrm{DAG}$ が完全であることを \ref{model:los-vaught} で示せ。
+:::
+
+::: solution
+**$\mathbb{Q}$ 線形空間とみなす.** $G\models\mathrm{DAG}$ について、$x\in G$, $n\ge1$ に対し $ny=x$ となる $y$ はただ一つ（$ny=ny'$ なら $n(y-y')=0$ でねじれがないので $y=y'$）なので、$\frac{m}{n}x\defeq my$ と定めると $G$ は $\mathbb{Q}$ 上のベクトル空間になり、群の同型は $\mathbb{Q}$ 線形同型である（加法を保つ写像は $n$ 等分も保つ）。
+
+**有限モデルがない.** $x\ne0$ なら $x,2x,3x,\dots$ は相異なる（$mx=m'x$ なら $(m-m')x=0$）。
+
+**$\aleph_{1}$ 範疇的.** 濃度 $\aleph_{1}$ の $G$ の $\mathbb{Q}$ 上の基底を $B$ とすると、$G$ は $B$ の有限部分集合と $\mathbb{Q}$ 係数の組で書けるので $\lvert G\rvert\le\max(\lvert B\rvert,\aleph_{0})$。$\lvert G\rvert=\aleph_{1}$ なので $\lvert B\rvert=\aleph_{1}$。基底の濃度が等しいベクトル空間は同型なので、濃度 $\aleph_{1}$ のモデルはすべて同型。言語は有限なので $\aleph_{1}\ge\lvert\mathcal{L}\rvert$。\ref{model:los-vaught} から $\mathrm{DAG}$ は完全。
+
+（$\aleph_{0}$ 範疇的ではない：$\mathbb{Q}$ と $\mathbb{Q}^{2}$ は濃度 $\aleph_{0}$ で、次元が異なるので同型でない。）
 :::
 
 ::: supplement

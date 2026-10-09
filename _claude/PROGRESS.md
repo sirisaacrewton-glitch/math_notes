@@ -640,6 +640,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | CL-06 | 01-programs/06-universal-smn | 万能プログラムと smn 定理、再帰定理（問題：原始再帰関数は逆関数で閉じない） | 完了 |
 | CL-07 | 01-programs/07-turing-completeness | チューリング機械との同値性、停止問題、チューリング完全性 | 完了 |
 | CL-08 | 01-programs/08-representability | 表現可能性定理 | 完了 |
+| CL-13 | 02-computability/13-models-summary | 計算模型の同値性（まとめ。各同値性の証明の所在の表、決定可能性の模型への非依存性） | 完了 |
 | CA-02′ | 02-automata/02-regular-expressions | クリーネの定理をアーデンの補題で示し直す | 完了 |
 | CA-06 | 02-automata/06-fixed-points | 言語方程式と不動点定理（クナスター–タルスキ、クリーネ、縮小写像、文脈自由言語） | 完了 |
 | CA-07 | 01-automata/07-deterministic-cfl | 決定性文脈自由言語（DPDA、ループの除去、補集合についての閉性）（Sipser 2.4） | 完了 |

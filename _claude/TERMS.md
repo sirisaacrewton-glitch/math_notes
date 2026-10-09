@@ -459,3 +459,4 @@
 | Chaitin incompleteness theorem / Berry paradox | チャイティンの不完全性定理 / ベリーの逆理 | | 標準的。comp:page-chaitin-incompleteness |
 | clopen set / Sierpinski theorem (characterization of Q) | 閉開集合 / シェルピンスキーの定理（有理数の特徴づけ） | 開閉集合 | 標準的。top:page-rationals-characterization |
 | sigma-locally finite / Michael's theorem | σ 局所有限 / マイケルの定理 | | 標準的。top:page-michael |
+| normalization theorem / leftmost reduction / head reduction / head normal form / internal parallel reduction | 正規化定理 / 最左簡約 / 頭部簡約 / 頭部正規形 / 内部並行簡約 | 頭部正規形：頭正規形 | 正規化定理・最左簡約は標準的。頭部簡約・内部並行簡約は仮。logic:page-normalization |

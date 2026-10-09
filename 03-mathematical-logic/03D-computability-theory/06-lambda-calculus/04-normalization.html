@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>正規化定理 | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/06-lambda-calculus/04-normalization.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 正規化定理 {#logic:page-normalization keywords="normalization theorem, leftmost reduction, normal order, head reduction, head normal form, internal parallel reduction, Takahashi's method, standardization"}
+
+ラムダ項が正規形をもっても、簡約の順序によっては無限に続くことがある（$KI\Omega$、\ref{logic:beta-reduction} の例 3）。**正規化定理**（\ref{logic:normalization-theorem}）は、いつも**最左の**基を簡約する戦略（**最左簡約**）が、正規形があれば必ずそこに到達することを主張する（カリー–フェイス 1958 とされる）。本ページでは、高橋正子（1995）の並行簡約による方法で、並行簡約を「頭部の簡約」と「内部の並行簡約」に分解する補題（\ref{logic:head-internal-decomposition}）から正規化定理を導く。
+
+> 資料：M. Takahashi, "Parallel reductions in λ-calculus", *Information and Computation* 118 (1995) の方法として知られているものに沿い、補題の組み立てと証明は本サイトで書き下ろした。
+
+## 記法と定義の確認 {#logic:sec-nm-notation}
+
+::: notation
+- ラムダ項・代入・代入の補題・β 簡約・正規形・並行簡約 $\Rightarrow$・$\Rightarrow$ と代入・チャーチ–ロッサーの定理は \ref{logic:page-lambda-calculus}（\ref{logic:lambda-term}, \ref{logic:lambda-substitution-lemma}, \ref{logic:beta-reduction}, \ref{logic:parallel-reduction}, \ref{logic:parallel-beta}, \ref{logic:parallel-substitution}, \ref{logic:church-rosser}）。$\twoheadrightarrow_{\beta}=\Rightarrow^{\ast}$。
+- $\Rightarrow^{n}$ は $\Rightarrow$ を $n$ 回つないだ関係。$\vec{x}=x_{1}\cdots x_{n}$ について $\lambda\vec{x}.M\defeq\lambda x_{1}.\cdots\lambda x_{n}.M$、$H\vec{M}\defeq(\cdots(HM_{1})\cdots)M_{k}$（$n,k\ge0$）。
+:::
+
+::: lemma 項の頭部の形 {#logic:head-form keywords="every lambda term is uniquely lambda x1..xn. H M1..Mk with H a variable or a redex" index="頭部の形|とうぶのかたち, 頭部正規形|とうぶせいきけい"}
+すべての項 $M$ は、$M=\lambda\vec{x}.H\,M_{1}\cdots M_{k}$（$n,k\ge0$）で、$H$ が変数か基 $(\lambda y.P)Q$ であるような形にただ一通りに書ける。$H$ が変数のとき $M$ を**頭部正規形**、基のとき $H$ を $M$ の**頭部の基**という。正規形は頭部正規形である。
+:::
+
+::: proof
+抽象を外側から剥がすと $\lambda\vec{x}.M_{0}$（$M_{0}$ は抽象でない）が一意に得られる。$M_{0}$ が適用なら $M_{0}=AB$ と一意に分かれ、$A$ が抽象でない適用ならさらに分ける。この繰り返しは項の大きさで止まり、最後に残る $A$ は変数か抽象で、抽象 $\lambda y.P$ なら直後の引数 $Q$ と合わせて基 $(\lambda y.P)Q$ を $H$ とする。正規形には基がないので $H$ は変数。
+:::
+
+::: definition 頭部簡約・最左簡約・内部並行簡約 {#logic:head-reduction keywords="head reduction, leftmost reduction, internal parallel reduction" index="頭部簡約|とうぶかんやく, 最左簡約|さいさかんやく, 内部並行簡約|ないぶへいこうかんやく"}
+1. **頭部簡約** $\to_{h}$：$\lambda\vec{x}.(\lambda y.P)Q\,\vec{M}\to_{h}\lambda\vec{x}.P[Q/y]\,\vec{M}$。頭部の基をもつ項はちょうど一つの $\to_{h}$ の行き先をもつ。
+2. **最左簡約** $\to_{l}$：$M$ が頭部の基をもてば $M\to_{l}M'$ は $M\to_{h}M'$ のこと。$M=\lambda\vec{x}.y\,M_{1}\cdots M_{k}$ が頭部正規形なら、正規形でない最初の $M_{j}$ について $M_{j}\to_{l}M_{j}'$ のとき $M\to_{l}\lambda\vec{x}.y\,M_{1}\cdots M_{j}'\cdots M_{k}$。$\to_{l}$ は $\to_{\beta}$ の一部で、各項について行き先は高々一つ、正規形でない項には必ずある。
+3. **内部並行簡約** $\Rightarrow_{i}$：
+   - (I1) $M_{j}\Rightarrow N_{j}$ なら $\lambda\vec{x}.y\,M_{1}\cdots M_{k}\Rightarrow_{i}\lambda\vec{x}.y\,N_{1}\cdots N_{k}$。
+   - (I2) $P\Rightarrow P'$, $Q\Rightarrow Q'$, $M_{j}\Rightarrow N_{j}$ なら $\lambda\vec{x}.(\lambda y.P)Q\,M_{1}\cdots M_{k}\Rightarrow_{i}\lambda\vec{x}.(\lambda y.P')Q'\,N_{1}\cdots N_{k}$。
+
+   $\Rightarrow_{i}$ は「頭部の基を簡約しない並行簡約」で、$\Rightarrow_{i}\subseteq\Rightarrow$。
+:::
+
+## 基本的な補題 {#logic:sec-nm-basic}
+
+::: lemma 頭部簡約と内部並行簡約の性質 {#logic:head-basic keywords="basic properties of head reduction and internal parallel reduction" index="頭部簡約の性質|とうぶかんやくのせいしつ"}
+1. $\lambda x.U\Rightarrow X$ なら $X=\lambda x.U'$, $U\Rightarrow U'$。
+2. $T$ が抽象でなく $T\to_{h}T'$ なら、$T\vec{M}\to_{h}T'\vec{M}$。また $\lambda\vec{x}.T\to_{h}\lambda\vec{x}.T'$。
+3. $T$ が抽象でなく $T\Rightarrow_{i}X$、$M_{j}\Rightarrow N_{j}$ なら、$\lambda\vec{x}.T\vec{M}\Rightarrow_{i}\lambda\vec{x}.X\vec{N}$。
+4. $T\to_{h}T'$ なら $T[Q/y]\to_{h}T'[Q/y]$。
+5. $T\Rightarrow_{i}X$ で $T$ の頭部が $y$ 以外の変数か基なら、$Q\Rightarrow Q'$ のとき $T[Q/y]\Rightarrow_{i}X[Q'/y]$。
+:::
+
+::: proof
+**1.** $\Rightarrow$ の規則のうち抽象を左辺にもつのは規則 2 だけ。
+
+**2.** $T$ は抽象でないので、頭部の形（\ref{logic:head-form}）で抽象の列は空で、$T\vec{M}$ の頭部の基は $T$ のそれと同じ。抽象を付けても頭部の基は変わらない。
+
+**3.** $T=H\vec{T}$ で、(I1)(I2) の規則に引数 $\vec{M}\Rightarrow\vec{N}$ と抽象の列を加えても同じ規則が使える。
+
+**4.** $T=\lambda\vec{x}.(\lambda z.A)B\,\vec{M}$（束縛変数は $y$ と $\mathrm{FV}(Q)$ に属さないように選ぶ）。$T[Q/y]=\lambda\vec{x}.(\lambda z.A^{\ast})B^{\ast}\vec{M}^{\ast}$（$^{\ast}$ は $[Q/y]$）で、$\to_{h}\lambda\vec{x}.A^{\ast}[B^{\ast}/z]\vec{M}^{\ast}$。代入の補題（\ref{logic:lambda-substitution-lemma}）から $A^{\ast}[B^{\ast}/z]=(A[B/z])^{\ast}$。
+
+**5.** (I1)(I2) の各成分に \ref{logic:parallel-substitution} を使う。頭部は $y$ でないので形は変わらない。
+:::
+
+## 分解補題 {#logic:sec-nm-decomposition}
+
+以下、項 $T$ と $X$ について、**$X$ への良い列**とは、頭部簡約の列 $T=T_{0}\to_{h}T_{1}\to_{h}\cdots\to_{h}T_{r}$（$r\ge0$）で、すべての $i$ で $T_{i}\Rightarrow X$、かつ $T_{r}\Rightarrow_{i}X$ となるものをいう。
+
+::: lemma 良い列の延長 {#logic:good-sequence-append keywords="a good head reduction sequence can be extended by abstractions and arguments" index="良い列の延長|よいれつのえんちょう"}
+$T$ から $X$ への良い列があり、$M_{j}\Rightarrow N_{j}$（$1\le j\le k$）とすると、$\lambda\vec{x}.T\vec{M}$ から $\lambda\vec{x}.X\vec{N}$ への良い列がある。
+:::
+
+::: proof
+$T=T_{0}\to_{h}\cdots\to_{h}T_{r}$ を良い列とする。どの $i$ でも $\lambda\vec{x}.T_{i}\vec{M}\Rightarrow\lambda\vec{x}.X\vec{N}$（規則 2, 3）。
+- $k=0$ のとき、\ref{logic:head-basic} の 2（抽象を付ける）から $\lambda\vec{x}.T_{i}\to_{h}\lambda\vec{x}.T_{i+1}$、最後は $\lambda\vec{x}.T_{r}\Rightarrow_{i}\lambda\vec{x}.X$（$\Rightarrow_{i}$ の規則は抽象の列を許す）。
+- $k\ge1$ で、どの $T_{i}$ も抽象でないとき、\ref{logic:head-basic} の 2 で $\lambda\vec{x}.T_{i}\vec{M}\to_{h}\lambda\vec{x}.T_{i+1}\vec{M}$、最後は \ref{logic:head-basic} の 3。
+- $k\ge1$ で、ある $T_{j}$ が抽象 $\lambda w.U$ のとき、最初のそのような $j$ までは前の場合と同じく進み、$\lambda\vec{x}.T_{j}\vec{M}=\lambda\vec{x}.(\lambda w.U)M_{1}\cdots M_{k}$ で止める。$T_{j}\Rightarrow X$ と \ref{logic:head-basic} の 1 から $X=\lambda w.U'$, $U\Rightarrow U'$ なので、(I2) により $\lambda\vec{x}.T_{j}\vec{M}\Rightarrow_{i}\lambda\vec{x}.(\lambda w.U')N_{1}\cdots N_{k}=\lambda\vec{x}.X\vec{N}$。
+:::
+
+::: theorem 頭部と内部への分解 {#logic:head-internal-decomposition keywords="Takahashi: if M parallel reduces to N then there is a head reduction M ->h* L with L internally parallel reducing to N" index="頭部と内部への分解|とうぶとないぶへのぶんかい"}
+$M\Rightarrow N$ なら、$M$ から $N$ への良い列がある。とくに $M\to_{h}^{\ast}L\Rightarrow_{i}N$ となる $L$ がある。
+:::
+
+::: proof
+$M$ の大きさに関する帰納法。$M=\lambda\vec{x}.H\,M_{1}\cdots M_{k}$（\ref{logic:head-form}）とする。$\Rightarrow$ の規則を見ると、抽象には規則 2 だけが、$H\,M_{1}\cdots M_{j}$（$j\ge2$、または $j=1$ で $H$ が適用）には関数部分が抽象でないので規則 3 だけが使えるので、$N=\lambda\vec{x}.H'N_{1}\cdots N_{k}$, $H\Rightarrow H'$, $M_{j}\Rightarrow N_{j}$。
+- $H$ が変数なら $H'=H$ で (I1)。$r=0$ の良い列。
+- $H=(\lambda y.P)Q$ で $H\Rightarrow H'$ が規則 3 なら、$H'=(\lambda y.P')Q'$（\ref{logic:head-basic} の 1）で (I2)。$r=0$。
+- $H\Rightarrow H'$ が規則 4 なら、$H'=P'[Q'/y]$, $P\Rightarrow P'$, $Q\Rightarrow Q'$。$X\defeq P'[Q'/y]$ とする。
+
+最後の場合を扱う。$P$, $Q$ は $M$ より小さいので、帰納法の仮定から $P$ から $P'$ への良い列 $P_{0}\to_{h}\cdots\to_{h}P_{s}$ と、$Q$ から $Q'$ への良い列がある。
+
+**Step 1（$P[Q/y]$ から $X$ への良い列）.** \ref{logic:head-basic} の 4 から $P_{i}[Q/y]\to_{h}P_{i+1}[Q/y]$、\ref{logic:parallel-substitution} から $P_{i}[Q/y]\Rightarrow X$。最後の $P_{s}\Rightarrow_{i}P'$ について、$P_{s}=\lambda\vec{z}.H_{s}\vec{S}$ と書く。
+- $H_{s}$ が $y$ 以外の変数か基なら、\ref{logic:head-basic} の 5 から $P_{s}[Q/y]\Rightarrow_{i}X$ で、列はここで終わる。
+- $H_{s}=y$ なら、$P'=\lambda\vec{z}.y\vec{S'}$（$S_{j}\Rightarrow S_{j}'$）で、$P_{s}[Q/y]=\lambda\vec{z}.Q\,\vec{S}^{\ast}$, $X=\lambda\vec{z}.Q'\,\vec{S'}^{\ast}$（$^{\ast}$ は $[Q/y]$, $[Q'/y]$。$S_{j}^{\ast}\Rightarrow S_{j}'^{\ast}$）。$Q$ から $Q'$ への良い列に \ref{logic:good-sequence-append} を使い、$P_{s}[Q/y]$ から $X$ への良い列を得てつなぐ。
+
+**Step 2（$M$ から $N$ への良い列）.** $M\to_{h}\lambda\vec{x}.P[Q/y]\vec{M}$ で、$M\Rightarrow N$。Step 1 の良い列に \ref{logic:good-sequence-append}（抽象の列 $\vec{x}$、引数 $\vec{M}\Rightarrow\vec{N}$）を使うと、$\lambda\vec{x}.P[Q/y]\vec{M}$ から $\lambda\vec{x}.X\vec{N}=N$ への良い列がある。先頭に $M$ を付け加える。
+:::
+
+## 正規化定理 {#logic:sec-nm-theorem}
+
+::: lemma 頭部簡約の前出し {#logic:head-postponement keywords="if M parallel reduces to A and A head reduces to A', then M head reduces to some M' parallel reducing to A'" index="頭部簡約の前出し|とうぶかんやくのまえだし"}
+1. $M\Rightarrow A$, $A\to_{h}A_{2}$ なら、$M\to_{h}^{+}M_{2}$, $M_{2}\Rightarrow A_{2}$ となる $M_{2}$ がある。
+2. $M\Rightarrow A$, $A\to_{h}^{\ast}A'$ なら、$M\to_{h}^{\ast}M'$, $M'\Rightarrow A'$ となる $M'$ がある。
+:::
+
+::: proof
+**1.** \ref{logic:head-internal-decomposition} から $M\to_{h}^{\ast}L\Rightarrow_{i}A$。$A$ は頭部の基をもつので $L\Rightarrow_{i}A$ は (I2)：$L=\lambda\vec{x}.(\lambda y.P)Q\vec{L}$, $A=\lambda\vec{x}.(\lambda y.P')Q'\vec{A}$。$A_{2}=\lambda\vec{x}.P'[Q'/y]\vec{A}$。$L\to_{h}M_{2}\defeq\lambda\vec{x}.P[Q/y]\vec{L}$ で、\ref{logic:parallel-substitution} と規則 2, 3 から $M_{2}\Rightarrow A_{2}$。
+
+**2.** $A\to_{h}^{\ast}A'$ の長さに関する帰納法で 1 を繰り返す。
+:::
+
+::: lemma 頭部正規形への到達 {#logic:reach-head-normal-form keywords="if M reduces in n parallel steps to a head normal form, then M head reduces to a head normal form with the same head whose arguments reduce in n steps" index="頭部正規形への到達|とうぶせいきけいへのとうたつ"}
+$M\Rightarrow^{n}N$ で $N=\lambda\vec{x}.y\,N_{1}\cdots N_{k}$ が頭部正規形なら、$M\to_{h}^{\ast}\lambda\vec{x}.y\,M_{1}'\cdots M_{k}'$ で、各 $j$ で $M_{j}'\Rightarrow^{n}N_{j}$ となるものがある。
+:::
+
+::: proof
+$n$ に関する帰納法。$n=0$ なら $M=N$。$M\Rightarrow A\Rightarrow^{n}N$ とすると、帰納法の仮定から $A\to_{h}^{\ast}A'=\lambda\vec{x}.y\vec{A'}$, $A_{j}'\Rightarrow^{n}N_{j}$。\ref{logic:head-postponement} の 2 から $M\to_{h}^{\ast}M''\Rightarrow A'$。\ref{logic:head-internal-decomposition} から $M''\to_{h}^{\ast}L\Rightarrow_{i}A'$ で、$A'$ の頭部は変数なので (I1)：$L=\lambda\vec{x}.y\vec{L}$, $L_{j}\Rightarrow A_{j}'$。よって $M\to_{h}^{\ast}L$, $L_{j}\Rightarrow^{n+1}N_{j}$。
+:::
+
+::: theorem 正規化定理 {#logic:normalization-theorem keywords="normalization theorem: if M has a normal form, leftmost reduction reaches it" index="正規化定理|せいきかていり"}
+$M\twoheadrightarrow_{\beta}N$ で $N$ が正規形なら、$M\to_{l}^{\ast}N$。したがって、$M$ が正規形をもつなら、$M$ から始まる最左簡約の列は有限で、$M$ の正規形で終わる。
+:::
+
+::: proof
+$\twoheadrightarrow_{\beta}=\Rightarrow^{\ast}$（\ref{logic:parallel-beta}）なので $M\Rightarrow^{n}N$。$N$ の大きさに関する帰納法。$N$ は正規形なので頭部正規形 $\lambda\vec{x}.y\,N_{1}\cdots N_{k}$（\ref{logic:head-form}）で、各 $N_{j}$ も正規形。\ref{logic:reach-head-normal-form} から $M\to_{h}^{\ast}\lambda\vec{x}.y\,M_{1}'\cdots M_{k}'$, $M_{j}'\twoheadrightarrow_{\beta}N_{j}$。頭部簡約の各段は最左簡約の段である（\ref{logic:head-reduction} の 2）。帰納法の仮定から $M_{j}'\to_{l}^{\ast}N_{j}$。$\lambda\vec{x}.y\vec{M'}$ の最左簡約は、正規形でない最初の引数の最左簡約なので、$M_{1}'$ を $N_{1}$ まで、次に $M_{2}'$ を $N_{2}$ まで、…と進み、$N$ に至る。
+
+後半：$M$ の正規形 $N$ について前半から $M\to_{l}^{\ast}N$。$\to_{l}$ の行き先は一意で、正規形には行き先がないので、$M$ からの最左簡約の列はこの列そのもので、$N$ で終わる。
+:::
+
+::: corollary 頭部正規形の存在 {#logic:normal-form-has-head-reduction keywords="if M has a normal form, head reduction from M terminates" index="頭部簡約の停止|とうぶかんやくのていし"}
+$M$ が正規形をもつなら、$M$ からの頭部簡約の列は有限で、頭部正規形で終わる。対偶として、頭部簡約が無限に続く項は正規形をもたない。
+:::
+
+::: proof
+$M\twoheadrightarrow_{\beta}N$（正規形）で、\ref{logic:reach-head-normal-form} から $M\to_{h}^{\ast}$ 頭部正規形。$\to_{h}$ の行き先は一意で、頭部正規形には行き先がない。
+:::
+
+::: hypcheck
+- **並行簡約の代入性**（\ref{logic:parallel-substitution}）：分解補題の Step 1 と、前出しの補題 1 で使った。
+- **項の大きさに関する帰納法**：分解補題で、頭部の基 $(\lambda y.P)Q$ を簡約する場合に $P$, $Q$ に帰納法の仮定を使った。簡約後の $P[Q/y]$ は大きくなりうるので、それには帰納法を使わず、$P$ と $Q$ の良い列を代入とつなぎ合わせで組み立てた。
+- **良い列の「途中もすべて $\Rightarrow X$」という条件**：\ref{logic:good-sequence-append} で、途中で抽象が現れたとき (I2) を使うのに、その抽象から $X$ への**一段の**並行簡約が必要だった。この条件がないと、頭部簡約の後の並行簡約の合成が一段の並行簡約にならず、議論が閉じない。
+- **チャーチ–ロッサーの定理**：正規化定理そのものには使っていない（後半の一意性は $\to_{l}$ の決定性から）。「$M=_{\beta}N$（正規形）なら $M\twoheadrightarrow_{\beta}N$」と組み合わせると、「$M$ が $\beta$ 等しい正規形をもつなら最左簡約はそこに着く」となる。
+:::
+
+## 問題 {#logic:sec-nm-problems}
+
+::: problem {#logic:prob-nm-omega}
+$\Omega=(\lambda x.xx)(\lambda x.xx)$ と $(\lambda x.xxx)(\lambda x.xxx)$ が正規形をもたないことを、\ref{logic:normalization-theorem} を使って示せ。
+:::
+
+::: solution
+$\Omega$ の最左簡約は $\Omega\to_{l}\Omega\to_{l}\cdots$ と無限に続く（$\Omega$ の唯一の基が頭部の基）。正規形があれば最左簡約は有限で終わるので、正規形はない。$W\defeq\lambda x.xxx$ について、$WW\to_{l}WWW\to_{l}WWWW\to_{l}\cdots$（頭部の基は左端の $WW$ で、簡約すると $WWW$ が先頭に来る）で、最左簡約は終わらない。
+:::
+
+::: problem {#logic:prob-nm-kiomega}
+$KI\Omega$ の最左簡約の列を書き、\ref{logic:normalization-theorem} と比べよ。また、「最も内側の基から簡約する」戦略では正規形に着かないことを確かめよ。
+:::
+
+::: solution
+$KI\Omega=(\lambda xy.x)I\Omega\to_{l}(\lambda y.I)\Omega\to_{l}I$（頭部の基を二回）。$I$ は正規形で、定理のとおり。
+
+「他の基を含まない基のうち最左のものを簡約する」戦略（最内簡約）を考える。$KI\Omega$ の基は $(\lambda xy.x)I$ と $\Omega$ で、どちらも他の基を含まないので、最左の $(\lambda xy.x)I$ を簡約して $(\lambda y.I)\Omega$ を得る。この項の基は $(\lambda y.I)\Omega$ 自身と $\Omega$ で、前者は後者を含むので、簡約されるのは $\Omega$ である。$\Omega\to\Omega$ なので項は $(\lambda y.I)\Omega$ のまま変わらず、この戦略は終わらない。
+:::
+
+::: supplement
+**前提を変えると.**
+- **標準化定理.** より一般に、$M\twoheadrightarrow_{\beta}N$ なら、基を左から右へ順に簡約する「標準的な」列で $M$ から $N$ に行ける（**標準化定理**、カリー–フェイス）。高橋の方法では、分解補題を繰り返して同じ技法で示せることが知られている（ここでは扱わない）。
+- **部分関数のラムダ定義可能性.** 正規化定理は、部分計算可能関数をラムダ定義するときに「定義されないとき正規形をもたない」ことを確かめる道具になる（\ref{logic:page-lambda-definability} の注意）。ただし部分関数の場合の証明には、正規化定理に加えて「定義されないときの項が正規形をもたない」ことを示す別の議論が要り、本サイトではまだ扱っていない。
+
+**似た定理.** 型付きラムダ計算（単純型・体系 T・体系 F）では、どんな簡約順序でも停止する（**強正規化**、\ref{logic:page-system-t} など）。型なしラムダ計算では強正規化は成り立たないが、最左簡約という一つの戦略が「正規形が存在するなら必ず見つける」という意味で最良である。
+
+**高い視点から.** 最左簡約は「関数を先に呼び、引数は必要になるまで評価しない」戦略（遅延評価・名前呼び）にあたる。$KI\Omega$ では、引数 $\Omega$ は捨てられるので評価する必要がなく、名前呼びは無駄な無限ループを避ける。比喩で言えば、「頼まれた仕事の手順書を先に読み、本当に必要な資料だけを取りに行く」人は、「渡された資料を全部先に読み込もうとする」人よりも、仕事を終えられる場合が多い。正規化定理は、前者がいつでも終えられる仕事は必ず終えられることを保証する。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

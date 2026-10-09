@@ -12748,6 +12748,13 @@
       "num": "8.9",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/08-completeness-alternative.html"
     },
+    "logic:good-sequence-append": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "良い列の延長",
+      "num": "4.4",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/04-normalization.html"
+    },
     "logic:groupoid-laws": {
       "status": "defined",
       "type": "theorem",
@@ -12775,6 +12782,41 @@
       "title": "H はレーブ規則で閉じていない",
       "num": "7.11",
       "page": "03-mathematical-logic/03B-general-logic/03-modal-logic/07-incomplete-modal-logic.html"
+    },
+    "logic:head-basic": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "頭部簡約と内部並行簡約の性質",
+      "num": "4.3",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/04-normalization.html"
+    },
+    "logic:head-form": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "項の頭部の形",
+      "num": "4.1",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/04-normalization.html"
+    },
+    "logic:head-internal-decomposition": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "頭部と内部への分解",
+      "num": "4.5",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/04-normalization.html"
+    },
+    "logic:head-postponement": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "頭部簡約の前出し",
+      "num": "4.6",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/04-normalization.html"
+    },
+    "logic:head-reduction": {
+      "status": "defined",
+      "type": "definition",
+      "title": "頭部簡約・最左簡約・内部並行簡約",
+      "num": "4.2",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/04-normalization.html"
     },
     "logic:hedberg": {
       "status": "defined",
@@ -13308,6 +13350,13 @@
       "num": "3.2",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/03-semantics.html"
     },
+    "logic:normal-form-has-head-reduction": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "頭部正規形の存在",
+      "num": "4.9",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/04-normalization.html"
+    },
     "logic:normal-form-unique": {
       "status": "defined",
       "type": "corollary",
@@ -13342,6 +13391,13 @@
       "title": "正規化",
       "num": "1.12",
       "page": "03-mathematical-logic/03F-proof-theory/09-type-theory/01-simply-typed.html"
+    },
+    "logic:normalization-theorem": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "正規化定理",
+      "num": "4.8",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/04-normalization.html"
     },
     "logic:open-cover-code": {
       "status": "defined",
@@ -13489,6 +13545,13 @@
       "title": "正規様相論理の体系",
       "num": "",
       "page": "03-mathematical-logic/03B-general-logic/03-modal-logic/01-normal-modal-logics.html"
+    },
+    "logic:page-normalization": {
+      "status": "defined",
+      "type": "page",
+      "title": "正規化定理",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/04-normalization.html"
     },
     "logic:page-prop-compactness": {
       "status": "defined",
@@ -14043,6 +14106,20 @@
       "num": "4.8",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/04-natural-deduction.html"
     },
+    "logic:prob-nm-kiomega": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "4.11",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/04-normalization.html"
+    },
+    "logic:prob-nm-omega": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "4.10",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/04-normalization.html"
+    },
     "logic:prob-omega-k": {
       "status": "defined",
       "type": "problem",
@@ -14364,6 +14441,13 @@
       "title": "単射の値域と Σ⁰₁ 内包公理",
       "num": "3.2",
       "page": "03-mathematical-logic/03F-proof-theory/07-reverse-mathematics/03-aca0.html"
+    },
+    "logic:reach-head-normal-form": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "頭部正規形への到達",
+      "num": "4.7",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/04-normalization.html"
     },
     "logic:recursively-inseparable": {
       "status": "defined",
@@ -15358,6 +15442,41 @@
       "title": "問題",
       "num": "",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/04-natural-deduction.html"
+    },
+    "logic:sec-nm-basic": {
+      "status": "defined",
+      "type": "section",
+      "title": "基本的な補題",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/04-normalization.html"
+    },
+    "logic:sec-nm-decomposition": {
+      "status": "defined",
+      "type": "section",
+      "title": "分解補題",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/04-normalization.html"
+    },
+    "logic:sec-nm-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/04-normalization.html"
+    },
+    "logic:sec-nm-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/04-normalization.html"
+    },
+    "logic:sec-nm-theorem": {
+      "status": "defined",
+      "type": "section",
+      "title": "正規化定理",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/04-normalization.html"
     },
     "logic:sec-normal-modal-logics": {
       "status": "defined",

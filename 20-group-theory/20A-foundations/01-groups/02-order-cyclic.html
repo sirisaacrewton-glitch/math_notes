@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>元の位数と巡回群 | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="20-group-theory/20A-foundations/01-groups/02-order-cyclic.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 元の位数と巡回群 {#grp:page-order-cyclic keywords="order of an element, subgroups of the integers, greatest common divisor, Bezout's identity, Euclid's lemma, order of a power, subgroups of a cyclic group"}
+
+群の元 $a$ の**位数**は、$a$ を何回掛けると単位元に戻るかを表す数である（\ref{grp:element-order}）。このページでは、まず整数の加法群 $\Z$ の部分群がすべて $d\Z$ の形であること（\ref{grp:subgroups-of-z}）を示し、そこから最大公約数・ベズーの等式・ユークリッドの補題を導く（\ref{grp:bezout-euclid}）。この結果を、$a^{n}=e$ となる整数 $n$ 全体が $\Z$ の部分群をなすことに使うと、位数の基本性質（\ref{grp:order-divides}, \ref{grp:order-cyclic-subgroup}）と冪の位数の公式（\ref{grp:order-of-power}）が得られる。最後に、巡回群の部分群がすべて巡回群で、有限巡回群では位数の約数ごとにちょうど一つずつあること（\ref{grp:subgroups-cyclic}）を証明する。
+
+> 雪江明彦『代数学 1 群論入門』第 2 章 §2.3, §2.4 の流れを参考にした。最大公約数は、素因数分解を使わず部分群の生成元として定義した。
+
+## 記法と定義の確認 {#grp:sec-oc-notation}
+
+::: notation
+- 群・可換群・冪と指数法則は \ref{grp:group}, \ref{grp:abelian-group}, \ref{grp:power}, \ref{grp:power-laws}, \ref{grp:power-commuting} のとおり。部分群とその判定は \ref{grp:subgroup}, \ref{grp:subgroup-criterion}、生成された部分群・巡回群は \ref{grp:generated-subgroup}, \ref{grp:cyclic-group}, \ref{grp:cyclic-subgroup-powers}。
+- 整数 $n\ge 1$ で割った余り $r_{n}(x)$ と除法の原理は \ref{grp:division}。$a\mid b$ は「$a$ が $b$ を割り切る」、$a\Z=\{ac : c\in\Z\}$。
+- $\ZFC$ の中で議論し、選択公理は使わない。$\N$ の空でない部分集合は最小元をもつ（整列性）。
+:::
+
+## 整数の部分群と最大公約数 {#grp:sec-oc-integers}
+
+::: theorem 整数の加法群の部分群 {#grp:subgroups-of-z keywords="subgroups of the integers, subgroups of Z are dZ" index="整数の部分群|せいすうのぶぶんぐん"}
+$H$ が $(\Z,+)$ の部分群なら、$H=d\Z$ をみたす $d\in\N$ がただ一つある。$H\neq\{0\}$ なら $d$ は $H$ の最小の正の元である。
+:::
+
+::: proof
+**Step 1（$H=\{0\}$ の場合）.** $d=0$ とすればよい。
+
+**Step 2（$H\neq\{0\}$ の場合の存在）.** $x\in H$, $x\neq 0$ をとる。$-x\in H$ なので、$H$ は正の元を含む。整列性により $H$ の最小の正の元 $d$ がある。$d\in H$ から、$d\Z\subseteq H$（$k\ge 0$ について $kd=d+\cdots+d\in H$、さらに $-kd\in H$）。逆に $n\in H$ とし、\ref{grp:division} で $n=qd+r$, $0\le r<d$ と書く。$qd\in H$ なので $r=n-qd\in H$。$0<r<d$ なら $d$ の最小性に反するので $r=0$、$n=qd\in d\Z$。
+
+**Step 3（一意性）.** $d\Z=d'\Z$（$d,d'\ge 0$）とする。$d\in d'\Z$, $d'\in d\Z$ なので $d=d'u$, $d'=dv$（$u,v\in\Z$）。$d=0$ なら $d'=0$。$d>0$ なら $d=duv$ より $uv=1$、$d,d'\ge 0$ から $u=v=1$、$d=d'$。
+
+::: hypcheck
+- **除法の原理**（\ref{grp:division}）：Step 2 で使った。これがこの定理の核心で、同じ議論は除法のできる環（ユークリッド整域）のイデアルについて成り立つ（\ref[ユークリッド整域は単項イデアル整域]{ring:euclidean-pid}）。
+- **部分群であること**：Step 2 で $-x\in H$、$qd\in H$、$n-qd\in H$ に使った。和で閉じるだけの部分集合では偽：$\{0\}\cup\{2,3,4,\dots\}$ は和で閉じるが $d\Z$ の形でない。
+:::
+:::
+
+::: definition 最大公約数 {#grp:gcd keywords="greatest common divisor, gcd, coprime, relatively prime" index="最大公約数|さいだいこうやくすう, 互いに素|たがいにそ"}
+$a,b\in\Z$ について $a\Z+b\Z\defeq\{ax+by : x,y\in\Z\}$ は $\Z$ の部分群である（$0=a0+b0$、$(ax+by)-(ax'+by')=a(x-x')+b(y-y')$）。\ref{grp:subgroups-of-z} により $a\Z+b\Z=g\Z$ となる $g\in\N$ がただ一つあり、これを $a$ と $b$ の**最大公約数**といい $\gcd(a,b)$ と書く。$\gcd(a,b)=1$ のとき $a$ と $b$ は**互いに素**であるという。
+:::
+
+::: proposition 最大公約数の性質とユークリッドの補題 {#grp:bezout-euclid keywords="Bezout's identity, Euclid's lemma" index="ベズーの等式|べずーのとうしき, ユークリッドの補題|ゆーくりっどのほだい"}
+$a,b\in\Z$, $g=\gcd(a,b)$ とする。
+1. （**ベズーの等式**）$g=ax+by$ となる $x,y\in\Z$ がある。
+2. $g\mid a$, $g\mid b$ であり、$c\mid a$ かつ $c\mid b$ なら $c\mid g$。$(a,b)\neq(0,0)$ なら $g$ は $a,b$ の正の公約数のうち最大のものである。
+3. $(a,b)\neq(0,0)$ なら $\gcd(a/g,b/g)=1$。
+4. （**ユークリッドの補題**）$\gcd(a,b)=1$ かつ $a\mid bm$ なら $a\mid m$。
+:::
+
+::: proof
+**Step 1（1）.** $g\in g\Z=a\Z+b\Z$。
+
+**Step 2（2）.** $a=a\cdot 1+b\cdot 0\in g\Z$ なので $g\mid a$。同様に $g\mid b$。$c\mid a$, $c\mid b$ なら、1 の $g=ax+by$ の右辺は $c$ で割り切れる。$(a,b)\neq(0,0)$ なら $a\Z+b\Z\neq\{0\}$ なので $g>0$。正の公約数 $c$ は $c\mid g$ をみたすので $c\le g$。
+
+**Step 3（3）.** $g=ax+by$ を $g>0$ で割ると $1=(a/g)x+(b/g)y\in(a/g)\Z+(b/g)\Z$。この部分群は $1$ を含むので $\Z$ に等しく、$\gcd(a/g,b/g)=1$（\ref{grp:subgroups-of-z} の一意性）。
+
+**Step 4（4）.** $1=ax+by$ とすると $m=amx+bmy$。$a\mid amx$ で、仮定から $a\mid bm$ なので $a\mid m$。
+:::
+
+> $\Z$ の元の分解（素因数分解の一意性）は使っていない。ベズーの等式は、自然数の範囲では不完全性定理の系列でも別の方法で証明している（\ref{pt:bezout}）。
+
+## 元の位数 {#grp:sec-oc-order}
+
+::: definition 元の位数 {#grp:element-order keywords="order of an element, element of finite order, torsion" index="元の位数|げんのいすう"}
+群 $G$ の元 $a$ について、$a^{n}=e$ となる正の整数 $n$ があれば、その最小値を $a$ の**位数**といい $\ord(a)$ と書く。そのような $n$ がなければ $\ord(a)\defeq\infty$ とし、$a$ は**無限位数**であるという。
+:::
+
+::: example
+単位元の位数は $1$ で、位数 $1$ の元は単位元だけである（$a^{1}=a$）。$\Z$ の $0$ でない元は無限位数（$n\ge 1$, $x\neq 0$ なら $nx\neq 0$）。$S_{3}$ で $\ord((1\ 2\ 3))=3$, $\ord((1\ 2))=2$。$Q_{8}$ で $\ord(-1)=2$、$\ord(\pm\mathbf{i})=\ord(\pm\mathbf{j})=\ord(\pm\mathbf{k})=4$（$\mathbf{i}^{2}=-1\neq 1$, $\mathbf{i}^{4}=(-1)^{2}=1$）。
+:::
+
+::: proposition 位数と冪が単位元になる指数 {#grp:order-divides keywords="a^n = e iff order divides n" index="位数の性質|いすうのせいしつ"}
+群 $G$ の元 $a$ について、$N_{a}\defeq\{n\in\Z : a^{n}=e\}$ は $\Z$ の部分群で、$N_{a}=d\Z$（$d\in\N$）と書くとき
+- $d>0$ なら $\ord(a)=d$、$d=0$ なら $\ord(a)=\infty$。
+- したがって $\ord(a)<\infty$ のとき、$n\in\Z$ について $a^{n}=e\iff\ord(a)\mid n$。$\ord(a)=\infty$ のとき、$a^{n}=e\iff n=0$。
+:::
+
+::: proof
+**Step 1（部分群）.** $a^{0}=e$ なので $0\in N_{a}$。$m,n\in N_{a}$ なら指数法則（\ref{grp:power-laws}）から $a^{m-n}=a^{m}(a^{n})^{-1}=ee^{-1}=e$。よって $m-n\in N_{a}$（\ref{grp:subgroup-criterion} の 2）。
+
+**Step 2.** \ref{grp:subgroups-of-z} より $N_{a}=d\Z$。$d>0$ なら $d$ は $N_{a}$ の最小の正の元で、これは位数の定義そのもの。$d=0$ なら $N_{a}=\{0\}$ は正の元を含まないので $\ord(a)=\infty$。残りの主張は $N_{a}=d\Z$ の言い換えである。
+:::
+
+::: proposition 位数と巡回部分群の位数 {#grp:order-cyclic-subgroup keywords="order of element equals order of cyclic subgroup"}
+群 $G$ の元 $a$ について $\abs{\ang{a}}=\ord(a)$（両辺 $\infty$ を含む）。$\ord(a)=d<\infty$ なら $\ang{a}=\{e,a,\dots,a^{d-1}\}$ で、これらは互いに異なる。
+:::
+
+::: proof
+**Step 1.** \ref{grp:cyclic-subgroup-powers} より $\ang{a}=\{a^{n} : n\in\Z\}$。指数法則から $a^{m}=a^{n}\iff a^{m-n}=e\iff m-n\in N_{a}$。
+
+**Step 2（$d<\infty$）.** \ref{grp:order-divides} より $a^{m}=a^{n}\iff d\mid m-n\iff r_{d}(m)=r_{d}(n)$（\ref{grp:division}）。よって $a^{n}=a^{r_{d}(n)}$ で、$\ang{a}=\{a^{0},\dots,a^{d-1}\}$。$0\le m<n<d$ なら $r_{d}(m)=m\neq n=r_{d}(n)$ なので $a^{m}\neq a^{n}$。
+
+**Step 3（$d=\infty$）.** $N_{a}=\{0\}$ なので $m\neq n\Rightarrow a^{m}\neq a^{n}$。写像 $n\mapsto a^{n}$ は $\Z$ から $\ang{a}$ への単射で、$\ang{a}$ は無限集合。
+:::
+
+::: corollary 有限群の元の位数は有限 {#grp:finite-group-finite-order}
+有限群の元の位数は有限で、$\ord(a)\le\abs{G}$。
+:::
+
+::: proof
+$\ang{a}\subseteq G$ なので $\abs{\ang{a}}\le\abs{G}<\infty$。\ref{grp:order-cyclic-subgroup} より $\ord(a)=\abs{\ang{a}}\le\abs{G}$。
+:::
+
+> 実は $\ord(a)$ は $\abs{G}$ を割り切る。これはラグランジュの定理（\ref[ラグランジュの定理]{grp:lagrange}）の系である。
+
+::: proposition 冪の位数 {#grp:order-of-power keywords="order of a power, ord(a^k) = d / gcd(d,k)" index="冪の位数|べきのいすう"}
+群 $G$ の元 $a$ と $k\in\Z$ について：
+1. $\ord(a)=d<\infty$ なら $\ord(a^{k})=\dfrac{d}{\gcd(d,k)}$。
+2. $\ord(a)=\infty$ かつ $k\neq 0$ なら $\ord(a^{k})=\infty$。
+:::
+
+::: proof
+**Step 1（1）.** $g\defeq\gcd(d,k)$ とおく。$d>0$ なので $g>0$（\ref{grp:bezout-euclid} の 2）で、$g\mid d$, $g\mid k$。$m\in\Z$ について、\ref{grp:power-laws} の 3 と \ref{grp:order-divides} から
+$$
+(a^{k})^{m}=e\iff a^{km}=e\iff d\mid km.
+$$
+$d=gd'$, $k=gk'$ と書くと、$g\neq 0$ で割って $d\mid km\iff d'\mid k'm$。\ref{grp:bezout-euclid} の 3 から $\gcd(d',k')=1$ なので、ユークリッドの補題（同 4）により $d'\mid k'm\iff d'\mid m$（$\Leftarrow$ は明らか）。よって $N_{a^{k}}=d'\Z$ で、$d'>0$ だから \ref{grp:order-divides} より $\ord(a^{k})=d'=d/g$。
+
+**Step 2（2）.** $(a^{k})^{m}=a^{km}=e$ なら、\ref{grp:order-divides}（$\ord(a)=\infty$）より $km=0$、$k\neq 0$ から $m=0$。よって $a^{k}$ の冪が単位元になる正の指数はない。
+
+::: hypcheck
+- **ユークリッドの補題**：Step 1 の $\Rightarrow$ で本質的に使った。
+- **$k\neq 0$**（2）：$k=0$ なら $a^{0}=e$ で位数 $1$。なお 1 は $k=0$ でも正しい（$\gcd(d,0)=d$ なので $d/d=1$）。
+:::
+:::
+
+::: example
+1. 位数 $28$ の元 $a$ について $\ord(a^{6})=28/\gcd(28,6)=28/2=14$。
+2. （積の位数は個々の位数で決まらない）$S_{3}$ の位数 $2$ の元 $(1\ 2)$, $(1\ 3)$ について、$(1\ 3)$ を先に施すと $1\mapsto 3\mapsto 3$, $3\mapsto 1\mapsto 2$, $2\mapsto 2\mapsto 1$ なので $(1\ 2)(1\ 3)=(1\ 3\ 2)$ で位数 $3$。さらに $\Sym(\Z)$ の位数 $2$ の元 $\alpha(x)=-x$, $\beta(x)=1-x$ について $\beta\alpha(x)=1+x$ は無限位数である。積の位数が決まるのは、可換で位数が互いに素なときなどに限られる（\ref{grp:prob-order-product-coprime}）。
+:::
+
+## 巡回群の部分群 {#grp:sec-oc-cyclic}
+
+::: theorem 巡回群の部分群 {#grp:subgroups-cyclic keywords="subgroups of cyclic groups are cyclic, unique subgroup of each order dividing n" index="巡回群の部分群|じゅんかいぐんのぶぶんぐん"}
+$G=\ang{a}$ を巡回群とする。
+1. $G$ の部分群はすべて巡回群である。より詳しく、$H\le G$ に対し $\{n\in\Z : a^{n}\in H\}=d\Z$（$d\in\N$）とすると $H=\ang{a^{d}}$。
+2. $\abs{G}=n<\infty$ のとき、$G$ の部分群の位数は $n$ の約数であり、$n$ の正の約数 $m$ のそれぞれについて、位数 $m$ の部分群はちょうど一つ、$\ang{a^{n/m}}$ である。
+:::
+
+::: intuition
+巡回群は「一つの元を何回施したか」だけで元が決まる群で、本質的に整数の加法群（を $n$ で割ったもの）である。だから部分群の分類は \ref{grp:subgroups-of-z} に帰着し、部分群は「何回おきに施すか」という一つの数 $d$ で決まる。
+:::
+
+::: proof
+**Step 1（1：指数の集合は部分群）.** $I\defeq\{n\in\Z : a^{n}\in H\}$ とおく。$a^{0}=e\in H$ なので $0\in I$。$m,n\in I$ なら $a^{m-n}=a^{m}(a^{n})^{-1}\in H$ なので $m-n\in I$。\ref{grp:subgroup-criterion} と \ref{grp:subgroups-of-z} より $I=d\Z$ となる $d\in\N$ がある。
+
+**Step 2（1：$H=\ang{a^{d}}$）.** $d\in I$ なので $a^{d}\in H$、よって $\ang{a^{d}}\subseteq H$。逆に $h\in H$ は $G=\{a^{n}\}$（\ref{grp:cyclic-subgroup-powers}）の元なので $h=a^{n}$ と書け、$n\in I=d\Z$、$n=dt$。指数法則から $h=(a^{d})^{t}\in\ang{a^{d}}$。
+
+**Step 3（2：部分群の位数）.** $\abs{G}=n$ とすると \ref{grp:order-cyclic-subgroup} より $\ord(a)=n$。$H\le G$ に対し Step 1 の $d$ をとる。$a^{n}=e\in H$ なので $n\in I=d\Z$、よって $d\mid n$ で、$n>0$ から $d>0$。\ref{grp:order-cyclic-subgroup} と \ref{grp:order-of-power} から
+$$
+\abs{H}=\abs{\ang{a^{d}}}=\ord(a^{d})=\frac{n}{\gcd(n,d)}=\frac{n}{d}.
+$$
+（$d\mid n$ かつ $d>0$ なので $\gcd(n,d)=d$。）よって $\abs{H}$ は $n$ の約数。
+
+**Step 4（2：存在）.** $m\mid n$, $m>0$ とする。$n/m$ は $n$ の正の約数なので、Step 3 と同じ計算で $\abs{\ang{a^{n/m}}}=n/(n/m)=m$。
+
+**Step 5（2：一意性）.** $\abs{H}=m$ なら Step 3 より $n/d=m$、$d=n/m$。Step 2 より $H=\ang{a^{n/m}}$。
+
+::: hypcheck
+- **$G$ が巡回群**：Step 2 で $h=a^{n}$ と書くのに本質的に使った。外すと偽：クラインの四元群 $V$（巡回群でない）には位数 $2$ の部分群 $\{e,a\}$, $\{e,b\}$, $\{e,c\}$ が三つある。
+- **$G$ が有限**（2）：Step 3 で $n\in I$ に使った。無限巡回群 $\Z$ でも 1 は成り立ち、部分群は $d\Z$（$d\in\N$）で、$d\ge 1$ のものはすべて無限群である。
+- **公理**：選択公理は使っていない。
+:::
+:::
+
+::: supplement
+**ラグランジュの定理との関係.** 2 の前半「部分群の位数は群の位数を割り切る」は、一般の有限群でラグランジュの定理（\ref[ラグランジュの定理]{grp:lagrange}）として成り立つ。しかし後半の「各約数に対して部分群がある」の逆は一般には成り立たない：交代群 $A_{4}$（位数 $12$）は位数 $6$ の部分群をもたないことが知られている（\ref[置換の符号と交代群]{grp:page-sign-alternating} で扱う予定）。各約数ごとに部分群がちょうど一つある有限群は巡回群に限る（逆の主張。ここでは証明しない）。
+
+**$\Z$ の部分群の束.** \ref{grp:subgroups-of-z} を合わせると、$\Z$ の部分群は $d\Z$ と一対一に対応し、包含 $d\Z\subseteq d'\Z$ は $d'\mid d$ にあたる。共通部分 $d\Z\cap d'\Z$ は最小公倍数、和 $d\Z+d'\Z$ は最大公約数（\ref{grp:gcd}）に対応する。最大公約数を「部分群の和の生成元」として定義したのは、この対応を最初から使うためである。
+
+**高い視点.** $\Z$ は「一つの元で自由に生成された群」で、巡回群 $\ang{a}$ は $\Z$ を $n\mapsto a^{n}$ で写した像である。\ref{grp:order-divides} の $N_{a}$ はこの写像で単位元に行く整数全体（核）で、\ref{grp:order-cyclic-subgroup} は「像は $\Z/N_{a}$ と一対一に対応する」という主張にあたる。これは \ref[準同型定理]{grp:page-homomorphism-theorems} で、$\ang{a}$ が $\Z$ または $\Z/d\Z$ と同型であることとして述べ直す。
+:::
+
+## 問題 {#grp:sec-oc-problems}
+
+::: problem {#grp:prob-even-order-involution}
+位数が偶数の有限群は位数 $2$ の元をもつことを示せ。
+:::
+
+::: solution
+$G$ の元を $x\mapsto x^{-1}$ で組にする。$A\defeq\{x\in G : x\neq x^{-1}\}$ は、$x\in A$ なら $x^{-1}\in A$ で、$\{x,x^{-1}\}$ が二元の組として $A$ を分割するので $\abs{A}$ は偶数。よって $B\defeq G\setminus A=\{x : x^{2}=e\}$ の元の個数 $\abs{G}-\abs{A}$ も偶数。$e\in B$ なので $B$ は $e$ 以外の元 $y$ を含み、$y\neq e$, $y^{2}=e$ から $\ord(y)=2$。
+:::
+
+::: problem {#grp:prob-order-product-coprime}
+群 $G$ の元 $a,b$ が可換で、$\ord(a)=m$, $\ord(b)=n$ が有限かつ $\gcd(m,n)=1$ なら、$\ord(ab)=mn$ であることを示せ。可換性を外すと成り立たない例も挙げよ。
+:::
+
+::: solution
+**Step 1.** \ref{grp:power-commuting} より $(ab)^{mn}=a^{mn}b^{mn}=(a^{m})^{n}(b^{n})^{m}=e$。
+
+**Step 2.** $(ab)^{k}=e$ とする。$a^{k}b^{k}=e$ より $c\defeq a^{k}=b^{-k}$。$c^{m}=(a^{m})^{k}=e$, $c^{n}=(b^{n})^{-k}=e$ なので \ref{grp:order-divides} から $\ord(c)\mid m$ かつ $\ord(c)\mid n$。\ref{grp:bezout-euclid} の 2 より $\ord(c)\mid\gcd(m,n)=1$、よって $c=e$。すると $a^{k}=e$, $b^{k}=e$ で $m\mid k$, $n\mid k$。$k=mt$ と書くと $n\mid mt$、ユークリッドの補題から $n\mid t$、よって $mn\mid k$。
+
+**Step 3.** Step 1・2 と \ref{grp:order-divides} から $\ord(ab)=mn$。
+
+**反例.** $S_{3}$ で $a=(1\ 2)$（位数 $2$）、$b=(1\ 2\ 3)$（位数 $3$）とすると、$b$ を先に施して $ab\colon 1\mapsto 2\mapsto 1$, $2\mapsto 3\mapsto 3$, $3\mapsto 1\mapsto 2$ なので $ab=(2\ 3)$ で位数 $2\neq 6$。
+:::
+
+::: problem {#grp:prob-order-conjugate}
+群 $G$ の元 $a,g$ について $\ord(gag^{-1})=\ord(a)$、および $\ord(ab)=\ord(ba)$ を示せ。
+:::
+
+::: solution
+$n\ge 0$ について帰納法で $(gag^{-1})^{n}=ga^{n}g^{-1}$：$(gag^{-1})^{n+1}=ga^{n}g^{-1}gag^{-1}=ga^{n+1}g^{-1}$。よって $(gag^{-1})^{n}=e\iff ga^{n}g^{-1}=e\iff a^{n}=e$（左右から $g^{-1}$, $g$ を掛ける）。正の $n$ で冪が $e$ になる指数の集合が一致するので位数は等しい。後半は $ba=a^{-1}(ab)a$ に前半を $g=a^{-1}$ で使えばよい。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

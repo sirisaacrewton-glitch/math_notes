@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>群と部分群 | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 群と部分群 {#grp:page-groups-subgroups keywords="group, subgroup, generalized associativity, powers, symmetric group, general linear group, integers modulo n, dihedral group, quaternion group, Klein four-group, generated subgroup, cyclic group"}
+
+**群**は、結合法則をみたし、単位元と逆元をもつ演算が一つ入った集合である（\ref{grp:group}）。このページでは群の定義から出発して、括弧の付け方によらず積が決まること（\ref{grp:general-associativity}）と指数法則（\ref{grp:power-laws}）を証明し、対称群・行列群・剰余の加法の群などの例を調べる。次に**部分群**（\ref{grp:subgroup}）とその判定法を述べ、クラインの四元群・四元数群を部分群として作る。最後に部分集合で**生成された部分群**が語の値全体であること（\ref{grp:generated-subgroup-words}）を示し、巡回群と二面体群（\ref{grp:dihedral-order}）を調べる。元の位数と巡回群の部分群は次のページ（\ref{grp:page-order-cyclic}）で扱う。
+
+> 雪江明彦『代数学 1 群論入門』第 2 章 §2.1, §2.3 の流れを参考にした。一般結合法則・指数法則など、本が証明を省いた主張はすべて証明した。
+
+## 記法と定義の確認 {#grp:sec-gs-notation}
+
+::: notation
+- $\ZFC$ の中で議論する（選択公理はこのページでは使わない）。$\N=\{0,1,2,\dots\}$ は自然数全体、$\Z$ は整数全体である。整数の和・積・大小の基本的な性質（可換環であること、順序と和・積の両立）は既知とする。$\N$ の空でない部分集合は最小元をもつ（整列性）。
+- 整数 $a,b$ について、$b=ac$ となる整数 $c$ があるとき $a\mid b$（$a$ は $b$ を**割り切る**、$a$ は $b$ の**約数**）と書く。$a\Z\defeq\{ac : c\in\Z\}$ と書く。$a\mid b\iff b\in a\Z\iff b\Z\subseteq a\Z$ である。
+- 写像の合成は $(\sigma\circ\tau)(x)=\sigma(\tau(x))$（右から順に施す）。集合 $X$ の要素の個数（濃度）を $\abs{X}$ と書く。
+- 有限集合 $\{1,\dots,n\}$ の相異なる元 $a_{1},\dots,a_{m}$（$m\ge 2$）について、$a_{1}\mapsto a_{2}\mapsto\cdots\mapsto a_{m}\mapsto a_{1}$ と動かし、ほかの元を動かさない全単射を $(a_{1}\ a_{2}\ \cdots\ a_{m})$ と書く（**巡回置換**。詳しくは \ref[対称群と巡回置換]{grp:page-symmetric-groups} で扱う）。
+- 行列の積の結合法則、正則行列の積と逆行列が正則であること、$\det(AB)=\det A\det B$ は線形代数の既知の事実として使う（例にだけ使う）。
+:::
+
+## 群の定義 {#grp:sec-gs-groups}
+
+::: definition 二項演算 {#grp:binary-operation keywords="binary operation, law of composition" index="二項演算|にこうえんざん, 演算|えんざん"}
+集合 $X$ 上の**二項演算**（単に**演算**）とは写像 $\mu\colon X\times X\to X$ のことである。$\mu(a,b)$ を $ab$ や $a\cdot b$ と書き、$a$ と $b$ の**積**とよぶ。
+:::
+
+::: definition 群 {#grp:group keywords="group, identity element, inverse element, associative law" index="群|ぐん, 単位元|たんいげん, 逆元|ぎゃくげん, 結合法則|けつごうほうそく"}
+集合 $G$ と $G$ 上の演算の組が**群**であるとは、次の三条件をみたすことをいう。
+1. （**結合法則**）すべての $a,b,c\in G$ について $(ab)c=a(bc)$。
+2. （**単位元**の存在）ある $e\in G$ があって、すべての $a\in G$ について $ea=ae=a$。
+3. （**逆元**の存在）条件 2 の $e$ について、各 $a\in G$ に対し $ab=ba=e$ となる $b\in G$ がある。
+
+条件 2 の $e$ と条件 3 の $b$ はそれぞれ一つに定まる（\ref{grp:group-basic}）。$e$ を $G$ の単位元とよび、$1$ や $1_{G}$, $e_{G}$ とも書く。$b$ を $a$ の逆元とよび $a^{-1}$ と書く。演算を明示するときは $(G,\cdot)$ と書く。$G\neq\emptyset$ は条件 2 から従う。
+:::
+
+::: intuition
+群は「元に戻せる操作の集まり」を抽象化したものである。操作を続けて行うことが積、何もしない操作が単位元、操作を取り消す操作が逆元にあたる（対称群 \ref{grp:symmetric-group} がその典型）。条件 1 は、三つの操作を続けて行うとき、どの二つを先にひとまとめにしても結果が同じことを要求する。
+:::
+
+::: definition 可換群・位数 {#grp:abelian-group keywords="abelian group, commutative group, order of a group, finite group" index="可換群|かかんぐん, アーベル群|あーべるぐん, 群の位数|ぐんのいすう, 有限群|ゆうげんぐん, 無限群|むげんぐん"}
+群 $G$ の元 $a,b$ が $ab=ba$ をみたすとき $a$ と $b$ は**可換**であるという。$G$ のどの二元も可換なとき $G$ を**可換群**（**アーベル群**）という。可換群の演算を $+$ で書くことがあり（**加法的記法**）、そのとき単位元を $0$、$a$ の逆元を $-a$ と書く。$\abs{G}$ を $G$ の**位数**といい、位数が有限な群を**有限群**、そうでない群を**無限群**という。
+:::
+
+::: proposition 単位元と逆元の基本性質 {#grp:group-basic keywords="uniqueness of identity, uniqueness of inverse, inverse of a product, cancellation law" index="簡約法則|かんやくほうそく"}
+$G$ を群とする。
+1. 単位元はただ一つである。各 $a\in G$ の逆元もただ一つである。
+2. $(a^{-1})^{-1}=a$, $(ab)^{-1}=b^{-1}a^{-1}$。
+3. （**簡約法則**）$ab=ac$ なら $b=c$。$ba=ca$ なら $b=c$。
+4. $a,c\in G$ に対し、$ax=c$ をみたす $x\in G$ は $x=a^{-1}c$ だけであり、$ya=c$ をみたす $y\in G$ は $y=ca^{-1}$ だけである。
+:::
+
+::: proof
+**Step 1（単位元の一意性）.** $e,e'$ がともに単位元の性質をもつとする。$e'$ が単位元なので $ee'=e$、$e$ が単位元なので $ee'=e'$。よって $e=e'$。
+
+**Step 2（逆元の一意性）.** $b,b'$ がともに $a$ の逆元の性質（$ab=ba=e$, $ab'=b'a=e$）をもつとする。結合法則を使って
+$$
+b=be=b(ab')=(ba)b'=eb'=b'.
+$$
+
+**Step 3（2 の前半）.** $a^{-1}a=aa^{-1}=e$ は、「$a$ が $a^{-1}$ の逆元の性質をもつ」と読める。Step 2 の一意性から $(a^{-1})^{-1}=a$。
+
+**Step 4（2 の後半）.** 結合法則を繰り返し使うと
+$$
+(ab)(b^{-1}a^{-1})=a\bigl(b(b^{-1}a^{-1})\bigr)=a\bigl((bb^{-1})a^{-1}\bigr)=a(ea^{-1})=aa^{-1}=e
+$$
+であり、同様に $(b^{-1}a^{-1})(ab)=b^{-1}\bigl(a^{-1}(ab)\bigr)=b^{-1}\bigl((a^{-1}a)b\bigr)=b^{-1}b=e$。Step 2 の一意性から $(ab)^{-1}=b^{-1}a^{-1}$。
+
+**Step 5（3）.** $ab=ac$ の両辺に左から $a^{-1}$ を掛けると $a^{-1}(ab)=a^{-1}(ac)$。結合法則で $(a^{-1}a)b=(a^{-1}a)c$、すなわち $eb=ec$、$b=c$。右側の簡約も右から $a^{-1}$ を掛けて同様。
+
+**Step 6（4）.** $x=a^{-1}c$ とおくと $ax=(aa^{-1})c=c$ なので解である。$ax=c=a(a^{-1}c)$ なら Step 5 より $x=a^{-1}c$。$y$ についても同様。
+
+::: hypcheck
+- **結合法則**：Step 2・4・5 で使った。結合法則がないと逆元は一意とは限らない（\ref{grp:prob-one-sided-axioms} の反例を参照）。
+- **単位元**：Step 1 は単位元の性質（両側）だけを使い、逆元の存在は使っていない。したがって 1 の前半は、結合法則すら仮定しない「両側単位元をもつ演算」で成り立つ。
+- **逆元の存在**：Step 3〜6 で使う。逆元の存在を仮定しないモノイド（後述）でも、逆元をもつ元についての 1 の後半・2 は同じ証明で成り立つ。
+:::
+:::
+
+::: remark 半群とモノイド {#grp:semigroup-monoid keywords="semigroup, monoid" index="半群|はんぐん, モノイド|ものいど"}
+結合法則だけをみたす演算をもつ集合を**半群**、さらに単位元をもつものを**モノイド**という。例えば $(\N,+)$ はモノイドだが、$1$ に逆元がないので群ではない。次の節の一般結合法則は半群で成り立ち、冪の指数法則は指数を $\N$ に限ればモノイドで成り立つ。
+:::
+
+## 一般結合法則と冪 {#grp:sec-gs-assoc}
+
+結合法則は三つの元の積についての主張だが、これから四つ以上の元の積も括弧の付け方によらないことが導ける。括弧の付け方を正確に扱うため、次のように定める。
+
+::: definition 標準的な積と括弧付けの値 {#grp:bracketing keywords="bracketing, left-normed product" index="括弧付け|かっこづけ"}
+$S$ を半群とし、$n\ge 1$ と $a_{1},\dots,a_{n}\in S$ をとる。
+- **標準的な積** $\pi(a_{1},\dots,a_{n})\in S$ を、$n$ についての再帰で $\pi(a_{1})\defeq a_{1}$, $\pi(a_{1},\dots,a_{n})\defeq\pi(a_{1},\dots,a_{n-1})\,a_{n}$（$n\ge 2$）と定める。つまり左から順に掛けた積 $(\cdots((a_{1}a_{2})a_{3})\cdots)a_{n}$ である。
+- **括弧付けの値**の集合 $B(a_{1},\dots,a_{n})\subseteq S$ を、$n$ についての再帰で $B(a_{1})\defeq\{a_{1}\}$ とし、$n\ge 2$ のとき
+$$
+B(a_{1},\dots,a_{n})\defeq\bigcup_{k=1}^{n-1}\bigl\{xy : x\in B(a_{1},\dots,a_{k}),\ y\in B(a_{k+1},\dots,a_{n})\bigr\}
+$$
+と定める。$B(a_{1},\dots,a_{n})$ は、並び $a_{1},\dots,a_{n}$ の順序を変えずに括弧を付けて得られる積の値の全体である（最も外側の括弧で $a_{1}\cdots a_{k}$ と $a_{k+1}\cdots a_{n}$ に分かれる）。
+- モノイドでは $n=0$ の空の積を $\pi()\defeq e$ と定める。
+:::
+
+::: lemma 標準的な積の分割 {#grp:standard-product-split}
+半群 $S$ の元 $a_{1},\dots,a_{n}$（$n\ge 2$）と $1\le k<n$ について
+$$
+\pi(a_{1},\dots,a_{k})\,\pi(a_{k+1},\dots,a_{n})=\pi(a_{1},\dots,a_{n}).
+$$
+モノイドでは $k=0$ や $k=n$（一方が空の積 $e$）でも成り立つ。
+:::
+
+::: proof
+$n\ge 2$ についての帰納法で、すべての $1\le k<n$ について示す。
+
+**Step 1（$k=n-1$ の場合）.** $\pi(a_{n})=a_{n}$ なので、左辺は $\pi(a_{1},\dots,a_{n-1})a_{n}$ で、これは定義により $\pi(a_{1},\dots,a_{n})$ である。$n=2$ では $k=1=n-1$ しかないので、帰納法の出発点はこれで済む。
+
+**Step 2（$k<n-1$ の場合）.** このとき $a_{k+1},\dots,a_{n}$ は 2 個以上なので、定義により $\pi(a_{k+1},\dots,a_{n})=\pi(a_{k+1},\dots,a_{n-1})\,a_{n}$。結合法則を使って
+$$
+\begin{aligned}
+\pi(a_{1},\dots,a_{k})\,\pi(a_{k+1},\dots,a_{n})
+&=\pi(a_{1},\dots,a_{k})\bigl(\pi(a_{k+1},\dots,a_{n-1})\,a_{n}\bigr)\\
+&=\bigl(\pi(a_{1},\dots,a_{k})\,\pi(a_{k+1},\dots,a_{n-1})\bigr)a_{n}.
+\end{aligned}
+$$
+並び $a_{1},\dots,a_{n-1}$（長さ $n-1\ge 2$）と $1\le k<n-1$ に帰納法の仮定を使うと、括弧の中は $\pi(a_{1},\dots,a_{n-1})$ である。よって全体は $\pi(a_{1},\dots,a_{n-1})a_{n}=\pi(a_{1},\dots,a_{n})$。
+
+**Step 3（モノイドで $k=0,n$）.** $\pi()=e$ なので両辺は $e\,\pi(a_{1},\dots,a_{n})$ または $\pi(a_{1},\dots,a_{n})\,e$ で、単位元の性質から $\pi(a_{1},\dots,a_{n})$ に等しい。
+:::
+
+::: theorem 一般結合法則 {#grp:general-associativity keywords="generalized associative law, general associativity" index="一般結合法則|いっぱんけつごうほうそく"}
+半群 $S$（特に群）の元 $a_{1},\dots,a_{n}$（$n\ge 1$）について
+$$
+B(a_{1},\dots,a_{n})=\{\pi(a_{1},\dots,a_{n})\}.
+$$
+すなわち、並びの順序を変えなければ、括弧の付け方によらず積の値は一つに決まる。
+:::
+
+::: intuition
+結合法則は「隣り合う括弧の付け替え」が値を変えないことしか言っていない。どの括弧付けも、付け替えを繰り返せば左から順に掛けた形に直せる、というのが定理の中身である。証明ではこの「直し方」を帰納法で組み立てる。
+:::
+
+::: proof
+$n$ についての累積帰納法で示す。
+
+**Step 1（$n=1$）.** 定義により $B(a_{1})=\{a_{1}\}=\{\pi(a_{1})\}$。
+
+**Step 2（$\subseteq$）.** $n\ge 2$ とし、$n$ 未満の長さの並びについて主張が成り立つとする。$z\in B(a_{1},\dots,a_{n})$ をとると、定義から、ある $1\le k<n$ と $x\in B(a_{1},\dots,a_{k})$, $y\in B(a_{k+1},\dots,a_{n})$ によって $z=xy$ と書ける。二つの並びの長さ $k$, $n-k$ はどちらも $n$ 未満なので、帰納法の仮定から $x=\pi(a_{1},\dots,a_{k})$, $y=\pi(a_{k+1},\dots,a_{n})$。\ref{grp:standard-product-split} より $z=\pi(a_{1},\dots,a_{n})$。
+
+**Step 3（$\supseteq$）.** $k=n-1$ として、$x=\pi(a_{1},\dots,a_{n-1})\in B(a_{1},\dots,a_{n-1})$（帰納法の仮定）と $y=a_{n}\in B(a_{n})$ をとれば、$xy=\pi(a_{1},\dots,a_{n})\in B(a_{1},\dots,a_{n})$。
+
+::: hypcheck
+- **結合法則**：\ref{grp:standard-product-split} の Step 2 でだけ使った。単位元・逆元は使わないので、主張は半群で成り立つ。
+- **結合法則を外すと**：$\Z$ 上の減法 $a\ast b\defeq a-b$ では $(1\ast 1)\ast 1=-1$, $1\ast(1\ast 1)=1$ で、$B(1,1,1)=\{-1,1\}$ は一元集合でない。
+- **順序を変えないこと**：本質的である。非可換群では $ab\neq ba$ となる元がある（\ref{grp:dihedral-group} の $rs\neq sr$）。並びの順序まで入れ替えてよいのは可換群のときである（問題にしない。可換群では隣り合う二元の交換を繰り返せばよい）。
+:::
+:::
+
+::: supplement
+**高い視点（圏論）.** 群は、対象が一つですべての射が同型射である圏（一対象の亜群、\ref{cat:groupoid}）と同じものである：射が群の元、合成が積、恒等射が単位元にあたる。一般結合法則は、圏で任意個の射の合成が括弧の付け方によらないことの特別な場合で、証明も同じ（合成の結合性だけを使う帰納法）である。
+:::
+
+以後、群の元の積 $a_{1}a_{2}\cdots a_{n}$ を括弧なしで書き、その値は $\pi(a_{1},\dots,a_{n})$ とする。
+
+::: definition 冪 {#grp:power keywords="power of an element, integer exponent, multiple" index="冪|べき, 累乗|るいじょう"}
+群 $G$ の元 $a$ と $n\in\Z$ について、**冪** $a^{n}$ を次のように定める。
+- $n\ge 0$ のとき、$n$ についての再帰で $a^{0}\defeq e$, $a^{n+1}\defeq a^{n}a$。
+- $n<0$ のとき、$a^{n}\defeq(a^{-1})^{-n}$（右辺は $-n>0$ についての前項の冪）。
+
+$n=-1$ では右辺は $(a^{-1})^{1}=a^{-1}$ で、記号 $a^{-1}$ の二つの意味は一致する。加法的記法では $a^{n}$ を $na$ と書く（$0a=0$, $(n+1)a=na+a$, $(-n)a=n(-a)$）。$n\ge 1$ のとき $a^{n}=\pi(a,\dots,a)$（$a$ が $n$ 個）である。
+:::
+
+::: proposition 指数法則 {#grp:power-laws keywords="laws of exponents, power laws" index="指数法則|しすうほうそく"}
+群 $G$ の元 $a$ と $m,n\in\Z$ について
+1. $a^{m+n}=a^{m}a^{n}$、
+2. $(a^{m})^{-1}=a^{-m}$、
+3. $(a^{m})^{n}=a^{mn}$。
+:::
+
+::: proof
+**Step 1（すべての $m\in\Z$ で $a^{m+1}=a^{m}a$）.** $m\ge 0$ なら定義そのもの。$m=-k$（$k\ge 1$）のとき、$b\defeq a^{-1}$ とおくと定義から $a^{-k}=b^{k}=b^{k-1}b$ なので
+$$
+a^{-k}a=b^{k-1}(ba)=b^{k-1}(a^{-1}a)=b^{k-1}=a^{-(k-1)}=a^{m+1}.
+$$
+最後から二つ目の等号は、$k-1\ge 1$ なら $a^{n}$ の定義（$n<0$）、$k-1=0$ なら $b^{0}=e=a^{0}$ による。
+
+**Step 2（すべての $m\in\Z$ で $a^{m-1}=a^{m}a^{-1}$）.** Step 1 を $m-1$ に使うと $a^{m}=a^{m-1}a$。右から $a^{-1}$ を掛けて $a^{m}a^{-1}=a^{m-1}$。
+
+**Step 3（1）.** $m$ を固定し、$n\ge 0$ について帰納法で示す。$n=0$ では $a^{m}a^{0}=a^{m}e=a^{m}$。$n$ で成り立てば、Step 1 を $m+n$ に使って $a^{m+n+1}=a^{m+n}a=(a^{m}a^{n})a=a^{m}(a^{n}a)=a^{m}a^{n+1}$。負の $n$ については $n\le 0$ について下向きの帰納法で示す：$n$ で成り立てば、Step 2 を $m+n$ と $n$ に使って
+$$
+a^{m+n-1}=a^{m+n}a^{-1}=a^{m}a^{n}a^{-1}=a^{m}a^{n-1}.
+$$
+
+**Step 4（2）.** 1 より $a^{m}a^{-m}=a^{0}=e$, $a^{-m}a^{m}=e$。逆元の一意性（\ref{grp:group-basic}）から $(a^{m})^{-1}=a^{-m}$。
+
+**Step 5（3、$n\ge 0$）.** $n$ についての帰納法。$n=0$ では両辺 $e$。$n$ で成り立てば、1 を使って $(a^{m})^{n+1}=(a^{m})^{n}a^{m}=a^{mn}a^{m}=a^{mn+m}=a^{m(n+1)}$。
+
+**Step 6（3、$n=-k<0$）.** 冪の定義と 2 から $(a^{m})^{-k}=\bigl((a^{m})^{-1}\bigr)^{k}=(a^{-m})^{k}$。Step 5 を $-m$ と $k$ に使えば、これは $a^{-mk}=a^{mn}$。
+
+::: hypcheck
+- **逆元の存在**：負の指数の定義と Step 1・2・4 で使った。モノイドでは $m,n\in\N$ に限って 1 と 3 が同じ証明（Step 3 の前半と Step 5）で成り立つ。
+- **結合法則**：Step 1・3 で使った。
+- **可換性**：使っていない。ただし異なる元の積の冪 $(ab)^{n}$ と $a^{n}b^{n}$ は一般に異なり、等しくなるのは $a,b$ が可換なときである（\ref{grp:power-commuting}）。
+:::
+:::
+
+::: proposition 可換な元の冪 {#grp:power-commuting}
+群 $G$ の元 $a,b$ が $ab=ba$ をみたすとき、すべての $m,n\in\Z$ について $a^{m}b^{n}=b^{n}a^{m}$ かつ $(ab)^{n}=a^{n}b^{n}$。
+:::
+
+::: proof
+**Step 1（$ab^{n}=b^{n}a$）.** $n\ge 0$ では $n$ についての帰納法：$n=0$ は自明で、$ab^{n+1}=(ab^{n})b=(b^{n}a)b=b^{n}(ab)=b^{n}(ba)=b^{n+1}a$。次に $ab=ba$ の両辺に左右から $b^{-1}$ を掛けると $b^{-1}(ab)b^{-1}=b^{-1}(ba)b^{-1}$、すなわち $b^{-1}a=ab^{-1}$。よって $a$ と $b^{-1}$ も可換で、今示したことを $b^{-1}$ に使うと $a(b^{-1})^{k}=(b^{-1})^{k}a$（$k\ge 0$）。これは $n=-k\le 0$ の場合である。
+
+**Step 2（$a^{m}b^{n}=b^{n}a^{m}$）.** Step 1 により $b^{n}$ と $a$ は可換。Step 1 を元の組 $(b^{n},a)$ に使えば $b^{n}a^{m}=a^{m}b^{n}$。
+
+**Step 3（$(ab)^{n}=a^{n}b^{n}$）.** $n\ge 0$ では帰納法：$(ab)^{n+1}=(ab)^{n}(ab)=a^{n}b^{n}ab=a^{n}(b^{n}a)b=a^{n}(ab^{n})b=a^{n+1}b^{n+1}$（Step 1 を使った）。$n=-k<0$ では、$ab=ba$ の両辺の逆元をとって $b^{-1}a^{-1}=a^{-1}b^{-1}$ なので、
+$$
+(ab)^{-k}=\bigl((ab)^{-1}\bigr)^{k}=(b^{-1}a^{-1})^{k}=(a^{-1}b^{-1})^{k}=(a^{-1})^{k}(b^{-1})^{k}=a^{-k}b^{-k}.
+$$
+四つ目の等号は、可換な組 $(a^{-1},b^{-1})$ に $n\ge 0$ の場合を使った。
+
+::: hypcheck
+- **前提 $ab=ba$**：Step 1 と Step 3 で使った。外すと偽：\ref{grp:dihedral-group} の $r,s$ では $(rs)^{2}=e$ だが $r^{2}s^{2}=r^{2}\neq e$（$n\ge 3$）。
+:::
+:::
+
+## 群の例 {#grp:sec-gs-examples}
+
+::: example
+1. $(\Z,+)$, $(\Q,+)$, $(\R,+)$, $(\C,+)$ は可換な無限群で、単位元は $0$、$x$ の逆元は $-x$。
+2. $\Q^{\times}\defeq\Q\setminus\{0\}$, $\R^{\times}$, $\C^{\times}$ は乗法について可換な無限群で、単位元は $1$、$x$ の逆元は $1/x$。一方 $\Z\setminus\{0\}$ は乗法で群にならない：$2x=1$ となる整数 $x$ がないので $2$ に逆元がない。
+3. （群でない例）$(\N,+)$ はモノイドだが群でない（\ref{grp:semigroup-monoid}）。$\Z$ 上の減法は結合法則をみたさない（\ref{grp:general-associativity} の hypcheck）。
+4. 一元集合 $\{e\}$ は $ee=e$ によって群になる（**自明な群**）。
+:::
+
+整数の剰余による例を作るため、除法の原理を確認しておく。
+
+::: lemma 除法の原理 {#grp:division keywords="division algorithm, Euclidean division, quotient and remainder" index="除法の原理|じょほうのげんり, 余り|あまり"}
+$n\ge 1$ と $x\in\Z$ に対し、$x=qn+r$ かつ $0\le r<n$ をみたす整数の組 $(q,r)$ がただ一つある。$r$ を $x$ を $n$ で割った**余り**といい $r_{n}(x)$ と書く。さらに $x,y\in\Z$ について $r_{n}(x)=r_{n}(y)\iff n\mid x-y$。特に $n\mid x-r_{n}(x)$。
+:::
+
+::: proof
+**Step 1（存在）.** $T\defeq\{x-qn : q\in\Z\}\cap\N$ とおく。$q=-\abs{x}$ とすると $x-qn=x+\abs{x}n\ge x+\abs{x}\ge 0$ なので $T\neq\emptyset$。整列性により $T$ の最小元 $r=x-qn$ がある。もし $r\ge n$ なら $r-n=x-(q+1)n\in T$ で $r-n<r$ となり最小性に反する。よって $0\le r<n$。
+
+**Step 2（一意性）.** $qn+r=q'n+r'$（$0\le r,r'<n$）なら $r-r'=(q'-q)n$。$-n<r-r'<n$ なので $\abs{q'-q}<1$、$q=q'$、$r=r'$。
+
+**Step 3（余りの一致）.** $x=qn+r_{n}(x)$, $y=q'n+r_{n}(y)$ とする。$r_{n}(x)=r_{n}(y)$ なら $x-y=(q-q')n$ で $n\mid x-y$。逆に $x-y=tn$ なら $r_{n}(x)-r_{n}(y)=(x-y)-(q-q')n=(t-q+q')n$ で、左辺の絶対値は $n$ 未満なので Step 2 と同じ理由で $0$。最後の主張は $x=qn+r_{n}(x)$ そのものである。
+
+::: hypcheck
+- **整列性**（$\N$ の空でない部分集合の最小元）：Step 1 で使った。$n\ge 1$ も Step 1（$x+\abs{x}n\ge x+\abs{x}$）と Step 2 で使った。
+:::
+:::
+
+::: proposition 剰余の加法の群 {#grp:integers-mod-n keywords="integers modulo n, additive group of residues" index="剰余の加法の群|じょうよのかほうのぐん"}
+$n\ge 1$ とする。集合 $\Z/n\Z\defeq\{0,1,\dots,n-1\}$ に演算 $a\oplus b\defeq r_{n}(a+b)$ を入れると、位数 $n$ の可換群になる。単位元は $0$、$a$ の逆元は $a=0$ なら $0$、$a\neq 0$ なら $n-a$ である。
+:::
+
+::: proof
+$r\defeq r_{n}$ と書く。
+
+**Step 1（結合法則）.** \ref{grp:division} より $n\mid(a+b)-r(a+b)$ なので $n\mid\bigl(r(a+b)+c\bigr)-(a+b+c)$。再び \ref{grp:division} の後半から $(a\oplus b)\oplus c=r\bigl(r(a+b)+c\bigr)=r(a+b+c)$。同様に $a\oplus(b\oplus c)=r\bigl(a+r(b+c)\bigr)=r(a+b+c)$。
+
+**Step 2（単位元）.** $0\le a<n$ なので $a\oplus 0=r(a)=a$、同様に $0\oplus a=a$。
+
+**Step 3（逆元）.** $1\le a\le n-1$ なら $1\le n-a\le n-1$ なので $n-a\in\Z/n\Z$ で、$a\oplus(n-a)=r(n)=0$。$a=0$ なら $0\oplus 0=0$。
+
+**Step 4（可換性と位数）.** $a+b=b+a$ から $a\oplus b=b\oplus a$。元の個数は $n$。
+:::
+
+> $\Z/n\Z$ は、正規部分群による剰余群（\ref[正規部分群と剰余群]{grp:page-normal-quotient}）として $\Z$ を $n\Z$ で割ったものと同一視される。記号はそれに合わせた。
+
+::: definition 対称群 {#grp:symmetric-group keywords="symmetric group, permutation group, permutation" index="対称群|たいしょうぐん, 置換|ちかん"}
+集合 $X$ から $X$ への全単射を $X$ の**置換**という。$X$ の置換全体 $\Sym(X)$ は写像の合成 $\sigma\tau\defeq\sigma\circ\tau$ を演算として群になり、これを $X$ 上の**対称群**という。$X=\{1,\dots,n\}$ のとき $S_{n}\defeq\Sym(\{1,\dots,n\})$ と書き、**$n$ 次対称群**という。
+:::
+
+群になることの確認：全単射の合成は全単射。写像の合成は結合的：$\bigl((\sigma\circ\tau)\circ\rho\bigr)(x)=\sigma(\tau(\rho(x)))=\bigl(\sigma\circ(\tau\circ\rho)\bigr)(x)$。恒等写像 $\id_{X}$ が単位元。全単射 $\sigma$ の逆写像 $\sigma^{-1}$ は全単射で $\sigma\circ\sigma^{-1}=\sigma^{-1}\circ\sigma=\id_{X}$。
+
+::: example
+$\abs{S_{n}}=n!$（$\sigma(1)$ の選び方が $n$ 通り、それを決めると $\sigma(2)$ は $n-1$ 通り、…）。$S_{3}$ で $\sigma=(1\ 2\ 3)$, $\tau=(1\ 2)$ とすると、$\tau$ を先に施して
+$$
+\sigma\tau\colon 1\mapsto 3,\ 2\mapsto 2,\ 3\mapsto 1,\qquad \tau\sigma\colon 1\mapsto 1,\ 2\mapsto 3,\ 3\mapsto 2
+$$
+なので $\sigma\tau=(1\ 3)\neq(2\ 3)=\tau\sigma$。よって $S_{3}$ は非可換群で、$n\ge 3$ の $S_{n}$ も（同じ二元を考えて）非可換である。$S_{1}$, $S_{2}$ は可換。
+:::
+
+::: example 行列群
+$n\ge 1$ とする。実数を成分とする $n$ 次正則行列全体 $\GL_{n}(\R)$ は行列の積で群になる（**一般線形群**）。単位元は単位行列 $I$、逆元は逆行列。$n\ge 2$ では非可換である：$A=\begin{pmatrix}1&1\\0&1\end{pmatrix}$, $B=\begin{pmatrix}1&0\\1&1\end{pmatrix}$（$n>2$ なら右下に単位行列を付け足す）について $AB=\begin{pmatrix}2&1\\1&1\end{pmatrix}\neq\begin{pmatrix}1&1\\1&2\end{pmatrix}=BA$。$\GL_{n}(\C)$ も同様である。
+:::
+
+## 部分群 {#grp:sec-gs-subgroups}
+
+::: definition 部分群 {#grp:subgroup keywords="subgroup, trivial subgroup, proper subgroup" index="部分群|ぶぶんぐん, 自明な部分群|じめいなぶぶんぐん, 真部分群|しんぶぶんぐん"}
+群 $G$ の部分集合 $H$ が次の三条件をみたすとき、$H$ を $G$ の**部分群**といい $H\le G$ と書く。
+1. $e\in H$。
+2. $a,b\in H$ なら $ab\in H$。
+3. $a\in H$ なら $a^{-1}\in H$。
+
+$\{e\}$ と $G$ は部分群である。$\{e\}$ を**自明な部分群**、$H\neq G$ である部分群を**真部分群**という。
+:::
+
+::: proposition 部分群の判定 {#grp:subgroup-criterion keywords="subgroup criterion, one-step subgroup test" index="部分群の判定|ぶぶんぐんのはんてい"}
+群 $G$ の部分集合 $H$ について、次は同値である。
+1. $H\le G$。
+2. $H\neq\emptyset$ で、$a,b\in H$ なら $ab^{-1}\in H$。
+3. $H\neq\emptyset$ で、$G$ の演算を $H\times H$ に制限したものが $H$ 上の演算になり（すなわち $a,b\in H\Rightarrow ab\in H$）、それによって $H$ が群になる。
+
+3 のとき、$H$ の単位元は $e$ で、$H$ での $a$ の逆元は $G$ での逆元 $a^{-1}$ に一致する。
+:::
+
+::: proof
+**Step 1（1 ⇒ 2）.** $e\in H$ なので $H\neq\emptyset$。$a,b\in H$ なら条件 3 から $b^{-1}\in H$、条件 2 から $ab^{-1}\in H$。
+
+**Step 2（2 ⇒ 1）.** $c\in H$ をとる。$e=cc^{-1}\in H$。$b\in H$ なら $b^{-1}=eb^{-1}\in H$。$a,b\in H$ なら $b^{-1}\in H$ なので $ab=a(b^{-1})^{-1}\in H$（\ref{grp:group-basic} の 2）。
+
+**Step 3（1 ⇒ 3）.** 条件 2 から制限は $H$ 上の演算。結合法則は $G$ で成り立つので $H$ でも成り立つ。$e\in H$ は $H$ の単位元で、$a\in H$ に対し $a^{-1}\in H$ は $aa^{-1}=a^{-1}a=e$ をみたす。
+
+**Step 4（3 ⇒ 1、および最後の主張）.** $H$ の単位元を $e_{H}$ とする。$H$ の中で $e_{H}e_{H}=e_{H}=e_{H}e$ なので、$G$ での簡約法則（\ref{grp:group-basic} の 3）から $e_{H}=e$。よって $e\in H$。$a\in H$ の $H$ での逆元 $a'$ は $aa'=a'a=e_{H}=e$ をみたすので、$G$ での逆元の一意性から $a'=a^{-1}$。よって $a^{-1}\in H$。積で閉じることは仮定である。
+
+::: hypcheck
+- **$H\neq\emptyset$**（2 と 3）：Step 2 で $c$ をとるのに使った。外すと偽：$\emptyset$ は 2 の後半を（空虚に）みたすが部分群ではない。
+- **3 の「$G$ の演算の制限」**：Step 4 で $G$ の簡約法則を使うのに本質的。$H$ 上に別の演算を入れて群にしても、$G$ の部分群とは限らない。
+:::
+:::
+
+::: proposition 有限な部分集合の判定 {#grp:subgroup-finite-criterion}
+群 $G$ の空でない**有限**部分集合 $H$ が積で閉じていれば（$a,b\in H\Rightarrow ab\in H$）、$H\le G$。
+:::
+
+::: proof
+**Step 1.** $a\in H$ とする。$n\ge 1$ についての帰納法で $a^{n}\in H$（$a^{1}=a$、$a^{n+1}=a^{n}a$ で積で閉じる）。
+
+**Step 2.** $H$ は有限なので、写像 $\{1,2,\dots\}\to H$, $n\mapsto a^{n}$ は単射でない（鳩の巣原理）。よって $1\le i<j$ で $a^{i}=a^{j}$ となるものがある。指数法則（\ref{grp:power-laws}）から $a^{j-i}=a^{j}a^{-i}=a^{i}a^{-i}=e$。$j-i\ge 1$ なので Step 1 より $e=a^{j-i}\in H$。
+
+**Step 3.** $a^{-1}=a^{-1}a^{j-i}=a^{j-i-1}$。$j-i-1\ge 1$ なら Step 1 より $a^{-1}\in H$、$j-i-1=0$ なら $a^{-1}=e\in H$（Step 2）。$a\in H$ は任意だったので条件 1〜3 がそろう。
+
+::: hypcheck
+- **有限性**：Step 2 でだけ使った。外すと偽：$\N\subseteq\Z$ は空でなく和で閉じるが、$1$ の逆元 $-1$ を含まない。
+:::
+:::
+
+::: proposition 部分群の共通部分 {#grp:subgroup-intersection keywords="intersection of subgroups" index="部分群の共通部分|ぶぶんぐんのきょうつうぶぶん"}
+群 $G$ の部分群の空でない族 $(H_{i})_{i\in I}$ について、$\bigcap_{i\in I}H_{i}$ は $G$ の部分群である。
+:::
+
+::: proof
+条件 1〜3 を確かめる。各 $i$ で $e\in H_{i}$ なので $e\in\bigcap H_{i}$。$a,b\in\bigcap H_{i}$ なら各 $i$ で $a,b\in H_{i}$、よって $ab,a^{-1}\in H_{i}$。したがって $ab,a^{-1}\in\bigcap H_{i}$。族が空でないことは、$\bigcap_{i\in I}H_{i}$ を $G$ の部分集合として定めるのに使った（空の族の共通部分は $G$ と約束してもよく、それも部分群である）。
+:::
+
+::: example
+1. $n\in\Z$ について $n\Z\le\Z$：$0=n\cdot 0\in n\Z$、$nx-ny=n(x-y)\in n\Z$（\ref{grp:subgroup-criterion} の 2）。$\Z$ の部分群はこの形に限ることを次のページで示す（\ref{grp:subgroups-of-z}）。
+2. $\SL_{n}(\R)\defeq\{A\in\GL_{n}(\R) : \det A=1\}$ は $\GL_{n}(\R)$ の部分群（**特殊線形群**）：$\det I=1$、$\det(AB^{-1})=\det A/\det B=1$。
+3. $n\ge 1$ について $\mu_{n}\defeq\{z\in\C : z^{n}=1\}$ は $\C^{\times}$ の部分群：$1\in\mu_{n}$、$z,w\in\mu_{n}$ なら $(zw^{-1})^{n}=z^{n}(w^{n})^{-1}=1$（$\C^{\times}$ は可換なので \ref{grp:power-commuting} が使える）。
+4. （**クラインの四元群**）$S_{4}$ の部分集合 $V\defeq\{e,\ (1\ 2)(3\ 4),\ (1\ 3)(2\ 4),\ (1\ 4)(2\ 3)\}$ は部分群である。実際、$a=(1\ 2)(3\ 4)$, $b=(1\ 3)(2\ 4)$, $c=(1\ 4)(2\ 3)$ について $a^{2}=b^{2}=c^{2}=e$ であり、$b$ を先に施すと $ab\colon 1\mapsto 3\mapsto 4$, $2\mapsto 4\mapsto 3$, $3\mapsto 1\mapsto 2$, $4\mapsto 2\mapsto 1$ なので $ab=c$。同様に $ba=c$, $bc=cb=a$, $ca=ac=b$。よって $V$ は積で閉じ、有限なので \ref{grp:subgroup-finite-criterion} から部分群。$V$ は可換で、単位元以外の元はすべて $x^{2}=e$ をみたす。
+:::
+
+::: proposition 四元数群 {#grp:quaternion-group keywords="quaternion group Q8" index="四元数群|しげんすうぐん"}
+$\GL_{2}(\C)$ の元
+$$
+\mathbf{i}=\begin{pmatrix}i&0\\0&-i\end{pmatrix},\quad \mathbf{j}=\begin{pmatrix}0&1\\-1&0\end{pmatrix},\quad \mathbf{k}=\begin{pmatrix}0&i\\i&0\end{pmatrix}
+$$
+と単位行列 $1$ について、$Q_{8}\defeq\{\pm 1,\pm\mathbf{i},\pm\mathbf{j},\pm\mathbf{k}\}$ は位数 $8$ の非可換な部分群である（**四元数群**）。次の関係がある：
+$$
+\mathbf{i}^{2}=\mathbf{j}^{2}=\mathbf{k}^{2}=-1,\quad \mathbf{i}\mathbf{j}=\mathbf{k}=-\mathbf{j}\mathbf{i},\quad \mathbf{j}\mathbf{k}=\mathbf{i}=-\mathbf{k}\mathbf{j},\quad \mathbf{k}\mathbf{i}=\mathbf{j}=-\mathbf{i}\mathbf{k}.
+$$
+:::
+
+::: proof
+**Step 1（関係式）.** 行列の積を計算する。$\mathbf{i}^{2}=\mathrm{diag}(i^{2},(-i)^{2})=-1$。$\mathbf{j}^{2}=\begin{pmatrix}0\cdot 0+1\cdot(-1)&0\\0&(-1)\cdot 1\end{pmatrix}=-1$。$\mathbf{k}^{2}=\begin{pmatrix}i\cdot i&0\\0&i\cdot i\end{pmatrix}=-1$。
+$$
+\mathbf{i}\mathbf{j}=\begin{pmatrix}0&i\\i&0\end{pmatrix}=\mathbf{k},\quad \mathbf{j}\mathbf{i}=\begin{pmatrix}0&-i\\-i&0\end{pmatrix}=-\mathbf{k},
+$$
+$$
+\mathbf{j}\mathbf{k}=\begin{pmatrix}i&0\\0&-i\end{pmatrix}=\mathbf{i},\quad \mathbf{k}\mathbf{j}=\begin{pmatrix}-i&0\\0&i\end{pmatrix}=-\mathbf{i},
+$$
+$$
+\mathbf{k}\mathbf{i}=\begin{pmatrix}0&1\\-1&0\end{pmatrix}=\mathbf{j},\quad \mathbf{i}\mathbf{k}=\begin{pmatrix}0&-1\\1&0\end{pmatrix}=-\mathbf{j}.
+$$
+
+**Step 2（積で閉じる）.** $-1$ はすべての行列と可換で $(-1)^{2}=1$ なので、$(\pm x)(\pm y)=\pm xy$（符号は積）。$x,y\in\{1,\mathbf{i},\mathbf{j},\mathbf{k}\}$ の積は Step 1 と $1x=x1=x$ によりすべて $\pm\{1,\mathbf{i},\mathbf{j},\mathbf{k}\}$ に入る。
+
+**Step 3.** 8 個の行列は互いに異なる（成分を比べる）ので $\abs{Q_{8}}=8$。$Q_{8}$ は空でない有限集合で積で閉じるので、\ref{grp:subgroup-finite-criterion} により部分群。$\mathbf{i}\mathbf{j}=\mathbf{k}\neq-\mathbf{k}=\mathbf{j}\mathbf{i}$ なので非可換。
+:::
+
+## 生成された部分群と巡回群 {#grp:sec-gs-generated}
+
+::: definition 生成された部分群 {#grp:generated-subgroup keywords="subgroup generated by a subset, generators, finitely generated" index="生成された部分群|せいせいされたぶぶんぐん, 生成元|せいせいげん, 有限生成|ゆうげんせいせい"}
+群 $G$ の部分集合 $S$ について、$S$ を含む $G$ の部分群全体の共通部分を $\ang{S}$ と書き、$S$ で**生成された部分群**という（$G$ 自身が $S$ を含むので族は空でなく、\ref{grp:subgroup-intersection} により部分群）。$\ang{S}$ は $S$ を含む最小の部分群である。$G=\ang{S}$ のとき $S$ を $G$ の**生成元**の集合といい、有限な生成元の集合をもつ群を**有限生成**という。$S=\{a_{1},\dots,a_{n}\}$ のとき $\ang{a_{1},\dots,a_{n}}$ とも書く。
+:::
+
+::: theorem 生成された部分群の元 {#grp:generated-subgroup-words keywords="words in generators, description of generated subgroup" index="語|ご"}
+群 $G$ の部分集合 $S$ について、$S$ の元とその逆元の有限個の積全体
+$$
+W(S)\defeq\bigl\{x_{1}x_{2}\cdots x_{k} : k\ge 0,\ x_{i}\in S\cup S^{-1}\bigr\}
+$$
+は $\ang{S}$ に等しい。ここで $S^{-1}\defeq\{s^{-1} : s\in S\}$、$k=0$ の積は $e$ とする。特に $\ang{\emptyset}=\{e\}$。
+:::
+
+::: proof
+**Step 1（$W(S)$ は部分群）.** $k=0$ として $e\in W(S)$。二つの積 $x_{1}\cdots x_{k}$, $y_{1}\cdots y_{l}$ の積は、\ref{grp:standard-product-split}（モノイド版。$k$ や $l$ が $0$ の場合を含む）により $x_{1}\cdots x_{k}y_{1}\cdots y_{l}\in W(S)$。逆元については、$k$ についての帰納法で
+$$
+(x_{1}\cdots x_{k})^{-1}=x_{k}^{-1}x_{k-1}^{-1}\cdots x_{1}^{-1}
+$$
+を示す。$k=0$ では $e^{-1}=e$。$k\ge 1$ では \ref{grp:group-basic} の 2 と帰納法の仮定、\ref{grp:standard-product-split} から $(x_{1}\cdots x_{k-1}x_{k})^{-1}=x_{k}^{-1}(x_{1}\cdots x_{k-1})^{-1}=x_{k}^{-1}x_{k-1}^{-1}\cdots x_{1}^{-1}$。各 $x_{i}^{-1}$ は再び $S\cup S^{-1}$ の元（$(s^{-1})^{-1}=s$）なので、逆元も $W(S)$ に入る。
+
+**Step 2（$S\subseteq W(S)$）.** $k=1$, $x_{1}=s$ とすればよい。Step 1 と合わせて $\ang{S}\subseteq W(S)$（$\ang{S}$ の最小性）。
+
+**Step 3（$W(S)\subseteq\ang{S}$）.** $H$ を $S$ を含む任意の部分群とする。$S\cup S^{-1}\subseteq H$（逆元で閉じる）。$k$ についての帰納法で $x_{1}\cdots x_{k}\in H$：$k=0$ では $e\in H$、$k\ge 1$ では $x_{1}\cdots x_{k}=(x_{1}\cdots x_{k-1})x_{k}$ で、積で閉じる。よって $W(S)\subseteq H$。$H$ は任意なので $W(S)\subseteq\ang{S}$。
+:::
+
+::: supplement
+**高い視点（普遍代数）.** 群を、二項演算・単項演算 $a\mapsto a^{-1}$・定数 $e$ をもつ代数系とみると、部分群は「すべての演算で閉じた部分集合」（部分代数）にほかならない。このとき条件 $H\neq\emptyset$ は定数 $e$ で閉じることに吸収される。部分代数の共通部分は部分代数なので、生成された部分代数 $\ang{S}$ が「最小の閉じた集合」として定まり、それが項（ここでは語 $x_{1}\cdots x_{k}$）の値全体と一致する、という \ref{grp:generated-subgroup-words} の形は、どんな代数系でも成り立つ一般的な構造である。
+:::
+
+::: definition 巡回群 {#grp:cyclic-group keywords="cyclic group, cyclic subgroup, generator" index="巡回群|じゅんかいぐん, 巡回部分群|じゅんかいぶぶんぐん"}
+一つの元 $a$ で生成される部分群 $\ang{a}$ を**巡回部分群**という。$G=\ang{a}$ となる $a\in G$ があるとき、$G$ を**巡回群**、$a$ をその生成元という。
+:::
+
+::: proposition 一元で生成された部分群 {#grp:cyclic-subgroup-powers}
+群 $G$ の元 $a$ について $\ang{a}=\{a^{n} : n\in\Z\}$。特に巡回群は可換群である。
+:::
+
+::: proof
+**Step 1.** \ref{grp:generated-subgroup-words} より、$\ang{a}$ の元は $x_{i}\in\{a,a^{-1}\}$ の積 $x_{1}\cdots x_{k}$ である。$x_{i}=a^{\varepsilon_{i}}$（$\varepsilon_{i}=\pm 1$）と書くと、指数法則（\ref{grp:power-laws} の 1）を $k$ 回使って $x_{1}\cdots x_{k}=a^{\varepsilon_{1}+\cdots+\varepsilon_{k}}$。よって $\ang{a}\subseteq\{a^{n}\}$。
+
+**Step 2.** 逆に $n\ge 0$ なら $a^{n}=a\cdots a$（$n$ 個）、$n<0$ なら $a^{n}=a^{-1}\cdots a^{-1}$（$-n$ 個）で、どちらも $W(\{a\})$ の元。
+
+**Step 3（可換性）.** $a^{m}a^{n}=a^{m+n}=a^{n+m}=a^{n}a^{m}$。
+:::
+
+::: example
+$\Z=\ang{1}$ は無限巡回群、$\Z/n\Z=\ang{1}$ は位数 $n$ の巡回群（$1\oplus\cdots\oplus 1$（$k$ 個）$=r_{n}(k)$ なので、$0\le k<n$ で $k$ が得られる）。$\mu_{n}=\ang{e^{2\pi i/n}}$ も位数 $n$ の巡回群（$\mu_{n}$ の元は $e^{2\pi ik/n}$（$0\le k<n$）の $n$ 個であることは複素数の極形式から従う）。$\Q$ は巡回群でない：$\ang{p/q}=(p/q)\Z$ は $p/(2q)$ を含まない（$p\neq 0$ のとき）。また $\ang{0}=\{0\}\neq\Q$。
+:::
+
+::: definition 二面体群 {#grp:dihedral-group keywords="dihedral group, symmetries of a regular polygon" index="二面体群|にめんたいぐん"}
+$n\ge 3$ とし、正 $n$ 角形の頂点に $\Z/n\Z=\{0,1,\dots,n-1\}$ の番号を順に付ける。$\Sym(\Z/n\Z)$ の元
+$$
+r(i)\defeq r_{n}(i+1),\qquad s(i)\defeq r_{n}(-i)
+$$
+（回転と、頂点 $0$ を通る対称軸での折り返し）で生成される部分群 $D_{n}\defeq\ang{r,s}$ を**二面体群**という。
+:::
+
+::: proposition 二面体群の元 {#grp:dihedral-order}
+$n\ge 3$ のとき、$r^{n}=s^{2}=e$, $srs=r^{-1}$ であり、
+$$
+D_{n}=\{e,r,\dots,r^{n-1},\ s,rs,\dots,r^{n-1}s\}
+$$
+の $2n$ 個の元は互いに異なる。特に $\abs{D_{n}}=2n$ で、$D_{n}$ は非可換である。
+:::
+
+::: proof
+**Step 1（$r^{k}$ と $r^{k}s$ の形）.** $k\ge 0$ について帰納法で $r^{k}(i)=r_{n}(i+k)$：$r^{k+1}(i)=r^{k}(r(i))=r_{n}(r_{n}(i+1)+k)=r_{n}(i+k+1)$（\ref{grp:integers-mod-n} の Step 1 と同じく \ref{grp:division} の後半による）。よって $r^{k}s(i)=r_{n}(k-i)$。
+
+**Step 2（関係式）.** Step 1 で $k=n$ とすると $r^{n}(i)=r_{n}(i+n)=i$、よって $r^{n}=e$。$s^{2}(i)=r_{n}(-r_{n}(-i))=r_{n}(i)=i$。$srs(i)=s\bigl(r_{n}(r_{n}(-i)+1)\bigr)=r_{n}\bigl(-r_{n}(1-i)\bigr)=r_{n}(i-1)$（\ref{grp:division} の後半） で、これは $r^{n-1}(i)$ に等しい。$r^{n-1}r=r^{n}=e$ なので $r^{n-1}=r^{-1}$、よって $srs=r^{-1}$。
+
+**Step 3（積で閉じる）.** $T\defeq\{r^{k},\ r^{k}s : 0\le k<n\}$ とおく。$srs=r^{-1}$ から、$s=s^{-1}$ を使って $sr=r^{-1}s$。これを繰り返し（$k$ についての帰納法）$sr^{k}=r^{-k}s$。よって
+$$
+r^{j}\cdot r^{k}s=r^{j+k}s,\quad r^{j}s\cdot r^{k}=r^{j-k}s,\quad r^{j}s\cdot r^{k}s=r^{j-k}.
+$$
+$r^{n}=e$ より、指数は $n$ で割った余りに取り替えてよい（$m=qn+r_{n}(m)$ なら $r^{m}=(r^{n})^{q}r^{r_{n}(m)}=r^{r_{n}(m)}$）。したがって $T$ は積で閉じる。
+
+**Step 4（相異なること）.** Step 1 から $r^{k}(0)=k$, $r^{k}s(0)=k$, $r^{k}(1)=r_{n}(k+1)$, $r^{k}s(1)=r_{n}(k-1)$。$0$ での値を比べると $r^{j}=r^{k}$ や $r^{j}s=r^{k}s$ なら $j=k$。$r^{j}=r^{k}s$ なら $0$ での値から $j=k$、$1$ での値から $r_{n}(k+1)=r_{n}(k-1)$、すなわち $n\mid 2$（\ref{grp:division}）。$n\ge 3$ なのでこれは起こらない。よって $\abs{T}=2n$。
+
+**Step 5.** $T$ は空でない有限集合で積で閉じるので部分群（\ref{grp:subgroup-finite-criterion}）。$r,s\in T$ なので $D_{n}\subseteq T$、逆に $T$ の元は $r,s$ の積なので $T\subseteq D_{n}$。非可換性：$sr=r^{-1}s=r^{n-1}s$ と $rs$ は、Step 4 で $k=n-1$ と $k=1$ の元で、$n-1\neq 1$（$n\ge 3$）なので異なる。
+
+::: hypcheck
+- **$n\ge 3$**：Step 4 で $n\nmid 2$ に使った。$n=2$ では $s(i)=r_{n}(-i)=i$ で $s=e$ となり、$\ang{r,s}$ は位数 $2$ になる（$D_{2}$ をクラインの四元群と定める流儀もあるが、ここでは $n\ge 3$ に限る）。
+:::
+:::
+
+## 問題 {#grp:sec-gs-problems}
+
+::: problem {#grp:prob-one-sided-axioms}
+半群 $S$ に、すべての $x\in S$ について $ex=x$ をみたす元 $e$（左単位元）があり、各 $x\in S$ に $x'x=e$ をみたす $x'\in S$（左逆元）があるとする。$S$ は群であることを示せ。また、「左単位元と右逆元（$xx'=e$）」では群にならない例を挙げよ。
+:::
+
+::: solution
+**群であること.** $x\in S$ とその左逆元 $x'$、$x'$ の左逆元 $x''$ をとる。
+$$
+xx'=e(xx')=(x''x')(xx')=x''\bigl((x'x)x'\bigr)=x''(ex')=x''x'=e.
+$$
+よって $x'$ は右逆元でもある。次に $xe=x(x'x)=(xx')x=ex=x$ なので $e$ は右単位元でもある。したがって $e$ は（両側）単位元、$x'$ は（両側）逆元で、$S$ は群である（結合法則は仮定）。
+
+**反例.** 二元以上の集合 $S$ に演算 $xy\defeq y$ を入れる。$(xy)z=z=x(yz)$ なので半群。どの $e\in S$ も $ex=x$ をみたし、$xe=e$ なので $e$ は $x$ の右逆元である。しかし $x\neq e$ なら $xe=e\neq x$ なので両側単位元はなく、群でない。
+:::
+
+::: problem {#grp:prob-union-subgroups}
+群 $G$ の部分群 $H,K$ について、$H\cup K$ が部分群であることと、$H\subseteq K$ または $K\subseteq H$ であることは同値であることを示せ。
+:::
+
+::: solution
+$H\subseteq K$ なら $H\cup K=K$ で部分群（逆も同様）。逆に、どちらの包含も成り立たないとして $h\in H\setminus K$, $k\in K\setminus H$ をとる。$H\cup K$ が部分群なら $hk\in H\cup K$。$hk\in H$ なら $k=h^{-1}(hk)\in H$ で矛盾。$hk\in K$ なら $h=(hk)k^{-1}\in K$ で矛盾。よって $H\cup K$ は部分群でない。
+:::
+
+::: problem {#grp:prob-exponent-two-abelian}
+群 $G$ のすべての元 $x$ が $x^{2}=e$ をみたすなら、$G$ は可換群であることを示せ。
+:::
+
+::: solution
+$x^{2}=e$ は $x^{-1}=x$ を意味する。$a,b\in G$ について、\ref{grp:group-basic} の 2 から $ab=(ab)^{-1}=b^{-1}a^{-1}=ba$。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

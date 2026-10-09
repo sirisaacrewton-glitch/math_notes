@@ -10718,6 +10718,384 @@
       "num": "5.2",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/05-pi11-prewellordering.html"
     },
+    "grp:abelian-group": {
+      "status": "defined",
+      "type": "definition",
+      "title": "可換群・位数",
+      "num": "1.3",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:bezout-euclid": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "最大公約数の性質とユークリッドの補題",
+      "num": "2.3",
+      "page": "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html"
+    },
+    "grp:binary-operation": {
+      "status": "defined",
+      "type": "definition",
+      "title": "二項演算",
+      "num": "1.1",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:bracketing": {
+      "status": "defined",
+      "type": "definition",
+      "title": "標準的な積と括弧付けの値",
+      "num": "1.6",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:cyclic-group": {
+      "status": "defined",
+      "type": "definition",
+      "title": "巡回群",
+      "num": "1.22",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:cyclic-subgroup-powers": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "一元で生成された部分群",
+      "num": "1.23",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:dihedral-group": {
+      "status": "defined",
+      "type": "definition",
+      "title": "二面体群",
+      "num": "1.24",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:dihedral-order": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "二面体群の元",
+      "num": "1.25",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:division": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "除法の原理",
+      "num": "1.12",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:element-order": {
+      "status": "defined",
+      "type": "definition",
+      "title": "元の位数",
+      "num": "2.4",
+      "page": "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html"
+    },
+    "grp:finite-group-finite-order": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "有限群の元の位数は有限",
+      "num": "2.7",
+      "page": "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html"
+    },
+    "grp:gcd": {
+      "status": "defined",
+      "type": "definition",
+      "title": "最大公約数",
+      "num": "2.2",
+      "page": "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html"
+    },
+    "grp:general-associativity": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "一般結合法則",
+      "num": "1.8",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:generated-subgroup": {
+      "status": "defined",
+      "type": "definition",
+      "title": "生成された部分群",
+      "num": "1.20",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:generated-subgroup-words": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "生成された部分群の元",
+      "num": "1.21",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:group": {
+      "status": "defined",
+      "type": "definition",
+      "title": "群",
+      "num": "1.2",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:group-basic": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "単位元と逆元の基本性質",
+      "num": "1.4",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:integers-mod-n": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "剰余の加法の群",
+      "num": "1.13",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:order-cyclic-subgroup": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "位数と巡回部分群の位数",
+      "num": "2.6",
+      "page": "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html"
+    },
+    "grp:order-divides": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "位数と冪が単位元になる指数",
+      "num": "2.5",
+      "page": "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html"
+    },
+    "grp:order-of-power": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "冪の位数",
+      "num": "2.8",
+      "page": "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html"
+    },
+    "grp:page-groups-subgroups": {
+      "status": "defined",
+      "type": "page",
+      "title": "群と部分群",
+      "num": "",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:page-order-cyclic": {
+      "status": "defined",
+      "type": "page",
+      "title": "元の位数と巡回群",
+      "num": "",
+      "page": "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html"
+    },
+    "grp:power": {
+      "status": "defined",
+      "type": "definition",
+      "title": "冪",
+      "num": "1.9",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:power-commuting": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "可換な元の冪",
+      "num": "1.11",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:power-laws": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "指数法則",
+      "num": "1.10",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:prob-even-order-involution": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "2.10",
+      "page": "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html"
+    },
+    "grp:prob-exponent-two-abelian": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "1.28",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:prob-one-sided-axioms": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "1.26",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:prob-order-conjugate": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "2.12",
+      "page": "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html"
+    },
+    "grp:prob-order-product-coprime": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "2.11",
+      "page": "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html"
+    },
+    "grp:prob-union-subgroups": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "1.27",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:quaternion-group": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "四元数群",
+      "num": "1.19",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:sec-gs-assoc": {
+      "status": "defined",
+      "type": "section",
+      "title": "一般結合法則と冪",
+      "num": "",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:sec-gs-examples": {
+      "status": "defined",
+      "type": "section",
+      "title": "群の例",
+      "num": "",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:sec-gs-generated": {
+      "status": "defined",
+      "type": "section",
+      "title": "生成された部分群と巡回群",
+      "num": "",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:sec-gs-groups": {
+      "status": "defined",
+      "type": "section",
+      "title": "群の定義",
+      "num": "",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:sec-gs-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:sec-gs-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:sec-gs-subgroups": {
+      "status": "defined",
+      "type": "section",
+      "title": "部分群",
+      "num": "",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:sec-oc-cyclic": {
+      "status": "defined",
+      "type": "section",
+      "title": "巡回群の部分群",
+      "num": "",
+      "page": "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html"
+    },
+    "grp:sec-oc-integers": {
+      "status": "defined",
+      "type": "section",
+      "title": "整数の部分群と最大公約数",
+      "num": "",
+      "page": "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html"
+    },
+    "grp:sec-oc-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html"
+    },
+    "grp:sec-oc-order": {
+      "status": "defined",
+      "type": "section",
+      "title": "元の位数",
+      "num": "",
+      "page": "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html"
+    },
+    "grp:sec-oc-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html"
+    },
+    "grp:semigroup-monoid": {
+      "status": "defined",
+      "type": "remark",
+      "title": "半群とモノイド",
+      "num": "1.5",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:standard-product-split": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "標準的な積の分割",
+      "num": "1.7",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:subgroup": {
+      "status": "defined",
+      "type": "definition",
+      "title": "部分群",
+      "num": "1.15",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:subgroup-criterion": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "部分群の判定",
+      "num": "1.16",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:subgroup-finite-criterion": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "有限な部分集合の判定",
+      "num": "1.17",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:subgroup-intersection": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "部分群の共通部分",
+      "num": "1.18",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:subgroups-cyclic": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "巡回群の部分群",
+      "num": "2.9",
+      "page": "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html"
+    },
+    "grp:subgroups-of-z": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "整数の加法群の部分群",
+      "num": "2.1",
+      "page": "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html"
+    },
+    "grp:symmetric-group": {
+      "status": "defined",
+      "type": "definition",
+      "title": "対称群",
+      "num": "1.14",
+      "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
     "ha:abelian-category": {
       "status": "defined",
       "type": "definition",
@@ -41211,6 +41589,41 @@
         "03-mathematical-logic/03C-model-theory/01-elementary-extensions/04-acf.html"
       ]
     },
+    "grp:lagrange": {
+      "status": "planned",
+      "title": "ラグランジュの定理",
+      "referencedFrom": [
+        "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html"
+      ]
+    },
+    "grp:page-homomorphism-theorems": {
+      "status": "planned",
+      "title": "準同型定理",
+      "referencedFrom": [
+        "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html"
+      ]
+    },
+    "grp:page-normal-quotient": {
+      "status": "planned",
+      "title": "正規部分群と剰余群",
+      "referencedFrom": [
+        "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+      ]
+    },
+    "grp:page-sign-alternating": {
+      "status": "planned",
+      "title": "置換の符号と交代群",
+      "referencedFrom": [
+        "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html"
+      ]
+    },
+    "grp:page-symmetric-groups": {
+      "status": "planned",
+      "title": "対称群と巡回置換",
+      "referencedFrom": [
+        "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+      ]
+    },
     "lin:basis-existence": {
       "status": "planned",
       "title": "ベクトル空間の基底の存在",
@@ -41224,6 +41637,13 @@
       "referencedFrom": [
         "03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/05-ma-reals.html",
         "03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/10-club-filter.html"
+      ]
+    },
+    "ring:euclidean-pid": {
+      "status": "planned",
+      "title": "ユークリッド整域は単項イデアル整域",
+      "referencedFrom": [
+        "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html"
       ]
     },
     "ring:fraction-field": {

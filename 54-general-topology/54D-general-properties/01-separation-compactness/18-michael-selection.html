@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>マイケルの選択定理 | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="54-general-topology/54D-general-properties/01-separation-compactness/18-michael-selection.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# マイケルの選択定理 {#top:page-michael-selection keywords="Michael selection theorem, lower semicontinuous set-valued map, carrier, continuous selection, approximate selections, partition of unity, Banach space, convex closed values, extension of Banach-space-valued maps from closed subsets of paracompact spaces"}
+
+各点 $x$ に空でない集合 $\varphi(x)\subseteq E$ を対応させる写像（**多価写像**）について、$f(x)\in\varphi(x)$ となる連続写像 $f$（**連続選択**）を見つける問題を考える。**マイケルの選択定理**（E. Michael, 1956）は、定義域がパラコンパクトで、値域がバナッハ空間、$\varphi$ が下半連続で値が閉凸集合なら、連続選択が存在することを主張する（\ref{top:michael-selection}）。証明は、1 の分割で近似的な選択を作り（\ref{top:approximate-selection}）、誤差を $2^{-n}$ ずつ縮めて一様収束させる。系として、パラコンパクト空間の閉集合からバナッハ空間への連続写像は全体に延長できる（\ref{top:paracompact-banach-extension}）。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論（Michael, "Continuous selections. I", *Ann. of Math.* 63 (1956) の方針として知られているもの）に従って組み立てた。証明は本サイトで書き下ろした。
+
+## 記法と定義の確認 {#top:sec-msel-notation}
+
+::: notation
+- パラコンパクト（ハウスドルフを含む）と 1 の分割の存在は \ref{top:paracompact}, \ref{top:partition-of-unity-existence}。台が局所有限な連続関数の和は連続（\ref{top:locally-finite-sum}）。
+- $E$ は実バナッハ空間（ノルム $\lVert\cdot\rVert$ について完備な実ノルム空間）。$B(y,\varepsilon)\defeq\{z:\lVert z-y\rVert<\varepsilon\}$。点と集合の距離 $d(y,C)\defeq\inf_{z\in C}\lVert y-z\rVert$。凸集合・凸包は \ref{top:page-dugundji} の記法のとおり。
+- 位相空間 $X$ から $E$ の空でない部分集合への対応 $\varphi$ を**多価写像**と呼び、$\varphi\colon X\multimap E$ と書く。連続写像 $f\colon X\to E$ で各 $x$ について $f(x)\in\varphi(x)$ となるものを $\varphi$ の**連続選択**という。
+:::
+
+::: definition 下半連続 {#top:lower-semicontinuous-carrier keywords="lower semicontinuous set-valued map: {x : phi(x) meets U} is open for every open U" index="下半連続（多価写像）|かはんれんぞくたかしゃぞう"}
+多価写像 $\varphi\colon X\multimap E$ が**下半連続**であるとは、$E$ の任意の開集合 $U$ について
+$$
+\varphi^{-}(U)\defeq\{x\in X:\varphi(x)\cap U\neq\varnothing\}
+$$
+が $X$ の開集合であることをいう。
+:::
+
+単価の写像（$\varphi(x)=\{f(x)\}$）では、下半連続性は $f$ の連続性と同じである（$\varphi^{-}(U)=f^{-1}(U)$）。
+
+## 近似的な選択 {#top:sec-msel-approx}
+
+::: lemma 近似的な選択 {#top:approximate-selection keywords="for a lower semicontinuous convex-valued map on a paracompact space and epsilon > 0 there is a continuous f with d(f(x), phi(x)) < epsilon" index="近似的な選択|きんじてきなせんたく"}
+$X$ をパラコンパクト空間、$\varphi\colon X\multimap E$ を値が凸集合の下半連続な多価写像、$\varepsilon>0$ とする。このとき連続写像 $f\colon X\to E$ で、すべての $x$ について $d(f(x),\varphi(x))<\varepsilon$ となるものがある。
+:::
+
+::: proof
+**Step 1（開被覆）.** $y\in E$ について $U_{y}\defeq\varphi^{-}(B(y,\varepsilon))$ は開（**下半連続性**）。各 $x$ について $\varphi(x)\neq\varnothing$ なので $z\in\varphi(x)$ をとると $x\in U_{z}$。よって $\{U_{y}\}_{y\in E}$ は $X$ の開被覆。
+
+**Step 2（1 の分割）.** $X$ は**パラコンパクト**なので、この被覆に従属する 1 の分割 $(p_{s})_{s\in S}$ がある（\ref{top:partition-of-unity-existence}）。各 $s$ について $\operatorname{supp}p_{s}\subseteq U_{y_{s}}$ となる $y_{s}$ を選び、
+$$
+f(x)\defeq\sum_{s\in S}p_{s}(x)\,y_{s}
+$$
+とおく。台は局所有限なので、各点の近傍で有限和になり、$f$ は連続（\ref{top:locally-finite-sum} と同じ議論。有限和の連続性は $E$ の加法とスカラー倍の連続性による）。
+
+**Step 3（誤差）.** $x\in X$ について、$p_{s}(x)>0$ となる $s$（有限個）では $x\in U_{y_{s}}$ なので、$z_{s}\in\varphi(x)$ で $\lVert z_{s}-y_{s}\rVert<\varepsilon$ となるものがある。$z\defeq\sum_{s}p_{s}(x)z_{s}$ は $\varphi(x)$ の元の凸結合なので、$\varphi(x)$ が**凸**であることから $z\in\varphi(x)$。三角不等式から
+$$
+\lVert f(x)-z\rVert\le\sum_{s}p_{s}(x)\lVert y_{s}-z_{s}\rVert<\varepsilon .
+$$
+よって $d(f(x),\varphi(x))<\varepsilon$。
+:::
+
+::: lemma 近似の改良 {#top:selection-refinement keywords="phi intersected with a moving ball around a continuous map is again lower semicontinuous" index="選択の改良|せんたくのかいりょう"}
+$\varphi\colon X\multimap E$ を下半連続、$f\colon X\to E$ を連続、$\varepsilon>0$ とし、すべての $x$ で $\psi(x)\defeq\varphi(x)\cap B(f(x),\varepsilon)\neq\varnothing$ とする。このとき $\psi$ は下半連続で、$\varphi$ の値が凸なら $\psi$ の値も凸である。
+:::
+
+::: proof
+**凸性.** 凸集合と球（凸）の共通部分は凸。
+
+**下半連続性.** $E$ の開集合 $U$ と $x_{0}\in\psi^{-}(U)$ をとる。$y\in\varphi(x_{0})\cap U$ で $\lVert y-f(x_{0})\rVert<\varepsilon$ となるものがあるので、$\delta>0$ を $\lVert y-f(x_{0})\rVert<\varepsilon-2\delta$ かつ $B(y,\delta)\subseteq U$ となるようにとる。
+$$
+V\defeq\varphi^{-}(B(y,\delta))\cap f^{-1}\bigl(B(f(x_{0}),\delta)\bigr)
+$$
+は $x_{0}$ を含む開集合（$\varphi$ の**下半連続性**と $f$ の**連続性**）。$x\in V$ について $z\in\varphi(x)\cap B(y,\delta)$ をとると、
+$$
+\begin{aligned}
+\lVert z-f(x)\rVert&\le\lVert z-y\rVert+\lVert y-f(x_{0})\rVert+\lVert f(x_{0})-f(x)\rVert\\
+&<\delta+(\varepsilon-2\delta)+\delta=\varepsilon
+\end{aligned}
+$$
+なので $z\in\psi(x)\cap U$。よって $V\subseteq\psi^{-}(U)$ で、$\psi^{-}(U)$ は開。
+:::
+
+## マイケルの選択定理 {#top:sec-msel-theorem}
+
+::: theorem マイケルの選択定理 {#top:michael-selection keywords="Michael selection theorem: a lower semicontinuous map from a paracompact space into nonempty closed convex subsets of a Banach space has a continuous selection" index="マイケルの選択定理|まいけるのせんたくていり"}
+（AC）$X$ をパラコンパクト空間、$E$ をバナッハ空間、$\varphi\colon X\multimap E$ を、値が空でない閉凸集合の下半連続な多価写像とする。このとき $\varphi$ は連続選択をもつ。
+:::
+
+::: proof
+**Step 1（近似の列）.** 連続写像 $f_{n}\colon X\to E$（$n\ge1$）で、すべての $x$ について
+$$
+d(f_{n}(x),\varphi(x))<2^{-n},\qquad\lVert f_{n+1}(x)-f_{n}(x)\rVert<2^{-n+1}
+$$
+となるものを帰納的に作る。$f_{1}$ は \ref{top:approximate-selection}（$\varepsilon=1/2$）で得る。$f_{n}$ まで作ったとき、$\psi_{n}(x)\defeq\varphi(x)\cap B(f_{n}(x),2^{-n})$ は $d(f_{n}(x),\varphi(x))<2^{-n}$ から空でなく、\ref{top:selection-refinement} から値が凸の下半連続な多価写像。\ref{top:approximate-selection} を $\psi_{n}$ と $\varepsilon=2^{-n-1}$ に使って $f_{n+1}$ をとると、$d(f_{n+1}(x),\psi_{n}(x))<2^{-n-1}$。$\psi_{n}(x)\subseteq\varphi(x)$ なので $d(f_{n+1}(x),\varphi(x))<2^{-(n+1)}$、また $\psi_{n}(x)\subseteq B(f_{n}(x),2^{-n})$ なので
+$$
+\lVert f_{n+1}(x)-f_{n}(x)\rVert<2^{-n-1}+2^{-n}<2^{-n+1}.
+$$
+
+**Step 2（一様収束）.** $m>n$ なら $\lVert f_{m}(x)-f_{n}(x)\rVert<\sum_{k\ge n}2^{-k+1}=2^{-n+2}$ で、$x$ によらない。各点で $(f_{n}(x))$ はコーシー列で、$E$ は**完備**なので極限 $f(x)$ がある。$m\to\infty$ として $\lVert f(x)-f_{n}(x)\rVert\le2^{-n+2}$。
+
+**Step 3（$f$ の連続性）.** $x_{0}\in X$, $\eta>0$ をとり、$2^{-n+2}<\eta/3$ となる $n$ を固定する。$f_{n}$ の連続性から、$x_{0}$ の近傍 $W$ で $x\in W$ なら $\lVert f_{n}(x)-f_{n}(x_{0})\rVert<\eta/3$ となるものがある。$x\in W$ なら
+$$
+\begin{aligned}
+\lVert f(x)-f(x_{0})\rVert&\le\lVert f(x)-f_{n}(x)\rVert+\lVert f_{n}(x)-f_{n}(x_{0})\rVert\\
+&\qquad+\lVert f_{n}(x_{0})-f(x_{0})\rVert<\eta .
+\end{aligned}
+$$
+
+**Step 4（選択であること）.** $d(f(x),\varphi(x))\le\lVert f(x)-f_{n}(x)\rVert+d(f_{n}(x),\varphi(x))<2^{-n+2}+2^{-n}\to0$ なので $d(f(x),\varphi(x))=0$。$\varphi(x)$ は**閉**なので $f(x)\in\varphi(x)$。
+:::
+
+::: hypcheck
+- **パラコンパクト性**：\ref{top:approximate-selection} の 1 の分割に使った。
+- **下半連続性**：\ref{top:approximate-selection} で $U_{y}$ が開であることと、\ref{top:selection-refinement} に使った。
+- **凸性**：\ref{top:approximate-selection} の Step 3 で、近くの点の凸結合が $\varphi(x)$ に入ることに使った。
+- **完備性**：Step 2 の極限の存在にのみ使った。
+- **閉性**：Step 4 で、極限が $\varphi(x)$ に入ることにのみ使った。
+- **選択公理**：1 の分割の存在と $y_{s}$ の選択に使った。
+:::
+
+## 系と例 {#top:sec-msel-corollaries}
+
+::: corollary パラコンパクト空間の閉集合からの延長 {#top:paracompact-banach-extension keywords="a continuous map from a closed subset of a paracompact space into a Banach space extends, with values in the closed convex hull" index="バナッハ空間値写像の延長|ばなっはくうかんちしゃぞうのえんちょう"}
+$X$ をパラコンパクト空間、$A\subseteq X$ を閉集合、$E$ をバナッハ空間、$g\colon A\to E$ を連続とする。$C$ を $g(A)$ を含む $E$ の空でない閉凸集合とする（たとえば $E$ 自身、または $\operatorname{conv}g(A)$ の閉包）。このとき連続写像 $G\colon X\to C$ で $G|_{A}=g$ となるものがある。
+:::
+
+::: proof
+$\varphi(x)\defeq\{g(x)\}$（$x\in A$）、$\varphi(x)\defeq C$（$x\notin A$）とおく。値は空でない閉凸集合（一点集合は閉凸）。下半連続性：開集合 $U$ について、$C\cap U\neq\varnothing$ なら $\varphi^{-}(U)=g^{-1}(U)\cup(X\setminus A)$、そうでなければ $\varphi^{-}(U)=g^{-1}(U)$（$g(A)\subseteq C$ なのでこのとき $g^{-1}(U)=\varnothing$）。$g^{-1}(U)=W\cap A$（$W$ は $X$ の開集合）と書けるので、$g^{-1}(U)\cup(X\setminus A)=W\cup(X\setminus A)$ は開（$A$ は**閉**）。\ref{top:michael-selection} の連続選択 $G$ は $A$ 上で $g$ に一致し、値は $C$ に属する。
+:::
+
+距離空間はパラコンパクト（\ref{top:stone-paracompact}）なので、これはデュグンジの拡張定理（\ref{top:dugundji}）の、値域をバナッハ空間に限った形の定義域についての一般化である（デュグンジの定理は値を凸包そのものに収め、ノルム空間でよく、さらに線形な拡張作用素を与える）。
+
+::: example 下半連続性は外せない
+$X=[-1,1]$, $\varphi(x)=\{-1\}$（$x<0$）、$\{1\}$（$x>0$）、$\varphi(0)=[-1,1]$ とする。値は空でない閉凸集合だが、$U=(-2,0)$ について $\varphi^{-}(U)=[-1,0]$ は開でないので下半連続でない。連続選択 $f$ があれば $f=-1$（$x<0$）、$f=1$（$x>0$）で、$0$ で連続にならない。
+:::
+
+## 問題 {#top:sec-msel-problems}
+
+::: problem {#top:prob-msel-single-valued}
+$\varphi(x)=\{f(x)\}$ の形の多価写像について、$\varphi$ が下半連続であることと $f$ が連続であることは同値であることを確かめよ。
+:::
+
+::: solution
+$\varphi^{-}(U)=\{x:f(x)\in U\}=f^{-1}(U)$。下半連続性は「すべての開集合 $U$ で $f^{-1}(U)$ が開」、すなわち $f$ の連続性である。
+:::
+
+::: problem {#top:prob-msel-convexity}
+値が凸でない場合、\ref{top:approximate-selection} の Step 3 のどこが破れるかを、$X=[0,1]$ 上の定数多価写像 $\varphi(x)=\{-1,1\}\subseteq\mathbb{R}$ で確かめよ（この $\varphi$ 自身は定数選択 $f=1$ をもつので、結論は破れない）。
+:::
+
+::: solution
+1 の分割の各項の $y_{s}$ が $-1$ の近くと $1$ の近くに分かれると、$f(x)=\sum p_{s}(x)y_{s}$ は $-1$ と $1$ の凸結合（たとえば $0$）になりうる。Step 3 の $z=\sum p_{s}(x)z_{s}$ も $0$ になり、$\varphi(x)=\{-1,1\}$ に属さない。凸性は、近い点を平均しても値の集合から外れないことを保証していた。
+:::
+
+::: supplement
+**前提を変えると.**
+- **逆.** $T_{1}$ 空間 $X$ について、「任意のバナッハ空間への、値が空でない閉凸集合の下半連続な多価写像が連続選択をもつ」ことは、$X$ がパラコンパクトであることと同値であることが知られている（Michael 1956。ここでは確かめていない）。
+- **他の版.** 定義域を完全正規・正規などに弱める代わりに、値域を可分バナッハ空間や $\mathbb{R}^{n}$ に、値を閉集合以外にする、などの変種（マイケルの他の選択定理）が知られている（ここでは扱わない）。
+- **凸性を外すと.** 値が凸でないと連続選択は一般には存在しない。たとえば単位円周上で $z\mapsto\{w:w^{2}=z\}$（二点）は下半連続だが、連続な平方根が円周上にないため連続選択をもたないことが知られている（基本群を使う。ここでは証明しない）。
+
+**似た定理.** ティーツェの拡張定理（\ref{top:tietze}）・デュグンジの拡張定理（\ref{top:dugundji}）は、\ref{top:paracompact-banach-extension} のように選択定理の特別な場合として見ることができる。関数解析では、バナッハ空間の間の全射有界線形写像が連続な（線形とは限らない）右逆写像をもつこと（バートル–グレイヴスの定理）が、この定理から導かれることが知られている（開写像定理を使う。ここでは扱わない）。
+
+**高い視点から.** 多価写像の各値 $\varphi(x)$ は「$x$ で許される答えの範囲」であり、選択とは、その範囲の中から点を連続に選び続けることである。比喩で言えば、霧の中の道（各地点で歩いてよい幅）をたどる歩き方で、下半連続性は「今いる場所の近くには、少し先でも歩ける場所がある」こと、凸性は「歩ける場所どうしの間も歩ける」こと、完備性は「無限に細かく修正しても行き先がある」ことにあたる。1 の分割で「みんなの意見の平均」をとり、誤差を半分ずつ減らしていく証明は、まさにそのように歩き方を磨いていく手順である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

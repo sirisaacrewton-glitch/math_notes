@@ -424,6 +424,7 @@
 | partition relation / homogeneous set / Erdos-Rado theorem / weakly compact cardinal | 分割関係 / 等質集合 / エルデシュ–ラドーの定理 / 弱コンパクト基数 | 均質集合 | 標準的。set:page-partition-relations |
 | Sigma_n-complete / movable markers / FIN, TOT, COF | Σn 完全 / 動く目印 / FIN, TOT, COF | | 仮（「動く目印」）。comp:page-index-set-completeness |
 | sigma-locally finite / Nagata-Smirnov metrization theorem / Bing metrization theorem | σ 局所有限 / 長田–スミルノフの距離化定理 / ビングの距離化定理 | | 標準的。top:page-nagata-smirnov |
+| lower semicontinuous (set-valued map) / continuous selection / Michael selection theorem | 下半連続（多価写像） / 連続選択 / マイケルの選択定理 | | 標準的。top:page-michael-selection |
 | P/poly / Karp-Lipton theorem / self-reducibility | P/poly / カープ–リプトンの定理 / 自己帰着性 | | 標準的。comp:page-ph-karp-lipton |
 | k-space / Montel theorem | k 空間 / モンテルの定理 | コンパクト生成空間 | 標準的。top:page-ascoli-general |
 | Segal condition / spine / Segal space / quasi-category | セガール条件 / 背骨 / セガール空間 / 準圏 | | 仮（「背骨」）。cat:page-segal-condition |

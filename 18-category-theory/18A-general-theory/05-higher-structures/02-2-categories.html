@@ -78,7 +78,7 @@ $$
 :::
 
 ::: remark
-$\mathbf{T}=\mathbf{Cat}$, $a=\mathbf{C}$ なら $\Omega(\mathbf{C})$ は恒等関手の自己自然変換の全体（圏の**中心**）で、可換モノイドになる。たとえば環 $R$ 上の加群の圏では、$\Omega$ は $R$ の中心の元によるスカラー倍と対応することが知られている（ここでは確かめていない）。
+$\mathbf{T}=\mathbf{Cat}$, $a=\mathbf{C}$ なら $\Omega(\mathbf{C})$ は恒等関手の自己自然変換の全体（圏の**中心**）で、可換モノイドになる。たとえば環 $R$ 上の加群の圏では、$\Omega$ は $R$ の中心の元によるスカラー倍と対応する（\ref{cat:prob-tc-center-modules}）。
 :::
 
 ## 2 圏の中の随伴とカン拡張 {#cat:sec-tc-adjunctions}
@@ -223,6 +223,18 @@ $\mathbf{Ord}$ で、$k\colon M\to C$, $t\colon M\to A$ の右カン拡張 $r$ �
 - $r\le u$：$c\le k(x)$ なら $r(c)\le r(k(x))\le t(x)$（$r$ の単調性と $rk\le t$）なので $r(c)$ は $T_{c}$ の下界で、$r(c)\le u(c)$。
 
 よって $r=u$。
+:::
+
+::: problem {#cat:prob-tc-center-modules}
+環 $R$ 上の左加群の圏 $R\text{-}\mathbf{Mod}$ について、恒等関手の自己自然変換 $\eta$ と $R$ の中心 $Z(R)\defeq\{c:\text{すべての }r\text{ で }cr=rc\}$ の元 $c$ が、$\eta_{M}(m)=cm$ によって一対一に対応し、自然変換の合成が積に対応することを示せ（したがって $\Omega(R\text{-}\mathbf{Mod})\cong Z(R)$（積についてのモノイド））。
+:::
+
+::: solution
+**中心の元から.** $c\in Z(R)$ について $\eta_{M}(m)\defeq cm$ は $R$ 線形（$\eta_{M}(rm)=crm=rcm=r\eta_{M}(m)$）で、$R$ 線形写像 $f\colon M\to N$ について $f(cm)=cf(m)$ なので自然。
+
+**自然変換から.** $\eta$ をとり、$c\defeq\eta_{R}(1)$（$R$ を左加群とみる）とおく。$m\in M$ について $R$ 線形写像 $f_{m}\colon R\to M$, $x\mapsto xm$ をとると、自然性 $\eta_{M}\circ f_{m}=f_{m}\circ\eta_{R}$ を $1$ で評価して $\eta_{M}(m)=f_{m}(c)=cm$。とくに $M=R$, $m=r$ として $\eta_{R}(r)=cr$。一方 $\eta_{R}$ は $R$ 線形なので $\eta_{R}(r)=\eta_{R}(r\cdot1)=r\eta_{R}(1)=rc$。よって $cr=rc$ がすべての $r$ で成り立ち、$c\in Z(R)$。
+
+**一対一と合成.** 二つの構成は互いに逆（$\eta\mapsto\eta_{R}(1)\mapsto(m\mapsto\eta_{R}(1)m)=\eta$、$c\mapsto(m\mapsto cm)\mapsto c\cdot1=c$）。$c,c'$ に対応する自然変換の（縦の）合成は $m\mapsto c(c'm)=(cc')m$ で、$cc'$ に対応する。
 :::
 
 ::: supplement

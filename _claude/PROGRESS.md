@@ -342,6 +342,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-09 圏論・ホモロジー代数 問題追加（cat:prob-tc-center-modules：R 加群の圏の中心は Z(R)、ha:prob-pr-finite-abelian：有限アーベル群の圏の射影対象は 0 だけ。それぞれ未証明の言及を参照に置換）
 - 2026-10-09 計算可能性 AC-11 追記（comp:rice-shapiro-functions, comp:totality-not-ce：部分計算可能関数のクラスの指数集合が認識可能なら単調かつコンパクト、全域性の指数集合は認識不能。補足の未証明の言及を参照に置換）
 - 2026-10-09 モデル理論 MT-16（03C/02/08-rational-urysohn, model:page-rational-urysohn：カテトフ関数、一点拡張、拡張性をもつ可算有理距離空間の存在・一意性・超均質性・普遍性。問題 3。フライッセ極限のページのウリゾーン空間の言及に参照を追加）
 - 2026-10-09 モデル理論 MC-08 追記（model:morley-degree, model:morley-degree-exists, model:prob-mr-degree：階数が順序数ならモーリー次数は有限、次数 1 の部分への分解、次数 2 の例。補足の未証明の言及を参照に置換）

@@ -101,7 +101,41 @@ $S^{1}=I/\{0,1\}$ はコンパクトハウスドルフ空間である。
 :::
 
 ::: remark
-$\Sigma S^{n}$ が $S^{n+1}$ と同相であること（たとえば $\Sigma S^{1}=S^{1}\wedge S^{1}\cong I^{2}/\partial I^{2}\cong S^{2}$）が知られている。これと随伴から、$\mathbf{Top}_{*}(S^{n},\Omega X)\cong\mathbf{Top}_{*}(S^{n+1},X)$ が得られ、ホモトピー群について $\pi_{n}(\Omega X)\cong\pi_{n+1}(X)$ となることの出発点になる（ホモトピーとの両立は、随伴が $Z\times I$ の上の写像にも同様に働くことによるが、ここでは確かめていない）。
+$\Sigma S^{n}$ は $S^{n+1}$ と同相である（\ref{cat:suspension-sphere}）。これと随伴から、$\mathbf{Top}_{*}(S^{n},\Omega X)\cong\mathbf{Top}_{*}(S^{n+1},X)$ が得られ、ホモトピー群について $\pi_{n}(\Omega X)\cong\pi_{n+1}(X)$ となることの出発点になる（ホモトピーとの両立は、随伴が $Z\times I$ の上の写像にも同様に働くことによるが、ここでは確かめていない）。
+:::
+
+## 球面の懸垂 {#cat:sec-ls-spheres}
+
+$n\ge2$ について、$S^{n}\defeq\{x\in\R^{n+1}:\lvert x\rvert=1\}$ に北極 $N=(0,\dots,0,1)$ を基点として与える。$S^{1}$ は \ref{cat:suspension-loop} のとおり $I/\{0,1\}$ とする。
+
+::: lemma 一点コンパクト化のスマッシュ積 {#cat:smash-one-point keywords="smash product of one-point compactifications is the one-point compactification of the product" index="一点コンパクト化のスマッシュ積|いってんこんぱくとかのすましゅせき"}
+$X,Y$ を局所コンパクトなハウスドルフ空間とし、一点コンパクト化 $X^{*},Y^{*}$（\ref{top:one-point-compactification}）に $\infty$ を基点として与える。このとき $X^{*}\wedge Y^{*}$ と $(X\times Y)^{*}$ は、基点を保つ同相写像で写り合う。
+:::
+
+::: proof
+**Step 1.** $X^{*},Y^{*}$ はコンパクトハウスドルフ（\ref{top:one-point-properties} の 2, 3）なので、$P\defeq X^{*}\times Y^{*}$ もコンパクトハウスドルフ（\ref{top:tychonoff}, \ref{top:hausdorff-properties}）。ウェッジ $A\defeq X^{*}\vee Y^{*}=(X^{*}\times\{\infty\})\cup(\{\infty\}\times Y^{*})$ は閉集合の和で閉、$P\setminus A=X\times Y$ は開（\ref{top:one-point-properties} の 1）。
+
+**Step 2（商は $X\times Y$ を開部分空間として含む）.** $Q\defeq X^{*}\wedge Y^{*}=P/A$、$q\colon P\to Q$ を商写像とする。$P\setminus A$ の開集合 $W$ は $A$ と交わらないので $q$ について飽和しており、$q(W)$ は $Q$ の開集合。よって $q$ は $X\times Y$ から $Q\setminus\{*\}$ への同相写像（連続な全単射で開写像）であり、$Q\setminus\{*\}=q(X\times Y)$ は $Q$ の開集合。
+
+**Step 3（$Q$ はコンパクトハウスドルフ）.** $Q=q(P)$ はコンパクト。ハウスドルフ性：$Q\setminus\{*\}$ の二点は、ハウスドルフ空間 $X\times Y$ の中で分離する開集合の像（Step 2 から開）で分離される。$Q\setminus\{*\}$ の点 $q(p)$ と $*$ は、$P$ が正規（\ref{top:compact-hausdorff-normal}）なので、閉集合 $\{p\}$ と $A$ を分離する交わらない開集合 $U\ni p$, $V\supseteq A$ がとれ、$U\subseteq P\setminus A$, $V$ はどちらも飽和なので、$q(U)$, $q(V)$ が分離する。
+
+**Step 4.** $Q$ はコンパクトハウスドルフで、$Q\setminus\{*\}$ は $X\times Y$ と同相（Step 2）、$X\times Y$ はコンパクトハウスドルフ空間の開集合と同相なので局所コンパクトなハウスドルフ空間（\ref{top:prob-open-in-compact-lc}）。一点コンパクト化の一意性（\ref{top:one-point-unique}）から、$(X\times Y)^{*}\to Q$（$\infty\mapsto*$）は同相写像。
+:::
+
+::: proposition 球面の懸垂は球面 {#cat:suspension-sphere keywords="the reduced suspension of S^n is homeomorphic to S^{n+1}" index="球面の懸垂|きゅうめんのけんすい"}
+$n\ge1$ について、$\Sigma S^{n}=S^{n}\wedge S^{1}$ は $S^{n+1}$ と基点を保つ同相写像で写り合う。
+:::
+
+::: proof
+**Step 1（$S^{1}\approx\R^{*}$）.** $S^{1}=I/\{0,1\}$ はコンパクトハウスドルフ（\ref{cat:circle-compact-hausdorff}）で、\ref{cat:smash-one-point} の Step 2 と同じ理由で、商写像は $(0,1)$ から $S^{1}\setminus\{*\}$ への同相写像。$(0,1)\approx\R$（$t\mapsto(2t-1)/(t(1-t))$ は連続な狭義増加の全単射で、逆も連続）なので、\ref{top:one-point-unique} から $S^{1}$ は $\R^{*}$ と基点（$*\leftrightarrow\infty$）を保って同相。
+
+**Step 2（$S^{n}\approx(\R^{n})^{*}$）.** $n\ge2$ では立体射影（\ref{top:rn-one-point}）で $N\leftrightarrow\infty$。$n=1$ は Step 1。
+
+**Step 3.** スマッシュ積は基点を保つ同相写像で同相な空間に写る（$f\times g$ はウェッジをウェッジに写し、商の普遍性から同相写像を引き起こす）。よって
+$$
+S^{n}\wedge S^{1}\approx(\R^{n})^{*}\wedge\R^{*}\approx(\R^{n}\times\R)^{*}=(\R^{n+1})^{*}\approx S^{n+1}
+$$
+で、二つ目は \ref{cat:smash-one-point}、最後は \ref{top:rn-one-point}。すべて基点を保つ。
 :::
 
 ## 問題 {#cat:sec-ls-problems}

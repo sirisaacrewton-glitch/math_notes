@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>部分対象分類子と前層のトポス | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18B-special-categories/01-topos-theory/01-presheaf-topos.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 部分対象分類子と前層のトポス {#cat:page-presheaf-topos keywords="subobject classifier, elementary topos, presheaf topos, sieve, exponential of presheaves, truth values, Omega"}
+
+集合 $X$ の部分集合 $S$ は、特性関数 $\chi_{S}\colon X\to\{0,1\}$ と一対一に対応する。この対応を圏の言葉で述べたものが**部分対象分類子**（\ref{cat:subobject-classifier}）で、有限極限・冪対象・部分対象分類子をもつ圏を**トポス**（\ref{cat:elementary-topos}）という。本ページでは、小さい圏 $\mathbf{C}$ 上の前層の圏 $\widehat{\mathbf{C}}$ がトポスであることを示す（\ref{cat:presheaf-topos}）。冪対象は米田の補題から形が決まり（\ref{cat:presheaf-exponential}）、部分対象分類子は**ふるい**（\ref{cat:sieve}）の前層 $\Omega$ である（\ref{cat:presheaf-subobject-classifier}）。真理値が $\{0,1\}$ の二つではなく、ふるいの全体になることが、トポスの論理が直観主義的になる理由の一つである（補足）。
+
+> 資料：T. レンスター『ベーシック圏論』定理 6.3.20・演習問題 6.3.26・6.3.27、S. Mac Lane, *Categories for the Working Mathematician*, 2nd ed., §IV.10 を参考にした（本文は写していない）。冪対象については、同書の「前層は表現可能関手の余極限」による証明ではなく、成分を直接書いて自然性と普遍性を確かめた。
+
+## 記法と定義の確認 {#cat:sec-tps-notation}
+
+::: notation
+- $\mathbf{C}$ は小さい圏、$\widehat{\mathbf{C}}\defeq\mathbf{Set}^{\mathbf{C}^{\mathrm{op}}}$ は前層の圏、$\mathbf{y}\colon\mathbf{C}\to\widehat{\mathbf{C}}$ は米田埋め込み（\ref{cat:yoneda-embedding}）で、$\mathbf{y}c=\mathbf{C}(-,c)$、$\mathbf{y}f=f\circ-$。$\mathbf{C}$ が小さいので $\widehat{\mathbf{C}}$ の hom は集合である（\ref{cat:functor-category-size}）。
+- 前層 $P$、$x\in P(c)$、$h\colon d\to c$ について $x\cdot h\defeq P(h)(x)\in P(d)$ と書く。関手性は $x\cdot1_{c}=x$, $(x\cdot h)\cdot k=x\cdot(h\circ k)$、前層の射 $\theta$ の自然性は $\theta_{d}(x\cdot h)=\theta_{c}(x)\cdot h$ である。
+- 米田の補題（\ref{cat:yoneda-lemma}）：$\widehat{\mathbf{C}}(\mathbf{y}c,P)\to P(c)$, $\alpha\mapsto\alpha_{c}(1_{c})$ は全単射で、逆は $x\mapsto\hat{x}$, $\hat{x}_{d}(h)\defeq x\cdot h$。
+- 極限は各点ごとに計算される（\ref{cat:pointwise-limits}）。とくに $\widehat{\mathbf{C}}$ は完備で、積は $(P\times Q)(c)=P(c)\times Q(c)$、終対象 $1$ はすべての $c$ で一点集合 $\{\ast\}$、引き戻しも各点ごとの引き戻しである。
+- モノ射（\ref{cat:monic-epic}）、部分対象（\ref{cat:subobject}）、引き戻し（\ref{cat:product}）、デカルト閉圏と冪対象（\ref{cat:cartesian-closed}, \ref{cat:exponential-universal}）は該当ページのとおり。
+:::
+
+## 部分対象分類子とトポス {#cat:sec-tps-definition}
+
+::: definition 部分対象分類子 {#cat:subobject-classifier keywords="subobject classifier, truth arrow, characteristic morphism" index="部分対象分類子|ぶぶんたいしょうぶんるいし, 特性射|とくせいしゃ"}
+終対象 $1$ をもつ圏 $\mathbf{E}$ の**部分対象分類子**とは、対象 $\Omega$ と射 $\mathrm{true}\colon1\to\Omega$ の組で、次を満たすものをいう：任意のモノ射 $m\colon S\to X$ について、射 $\chi\colon X\to\Omega$ で、四角形
+$$
+\begin{array}{ccc}
+S & \longrightarrow & 1\\
+{\scriptstyle m}\downarrow & & \downarrow{\scriptstyle\mathrm{true}}\\
+X & \xrightarrow{\ \chi\ } & \Omega
+\end{array}
+$$
+が引き戻しになるものがただ一つある。$\chi$ を $m$ の**特性射**という。$\mathrm{true}$ は終対象からの射なのでモノ射である（$1$ への射は一つしかない）。
+:::
+
+::: definition トポス {#cat:elementary-topos keywords="elementary topos" index="トポス|とぽす, 初等トポス|しょとうとぽす"}
+圏 $\mathbf{E}$ が（初等）**トポス**であるとは、$\mathbf{E}$ が有限極限をもち、デカルト閉で（\ref{cat:cartesian-closed}）、部分対象分類子をもつことをいう。
+:::
+
+::: example 集合の圏 {#cat:set-topos keywords="Set is a topos, characteristic function" index="集合の圏はトポス|しゅうごうのけんはとぽす"}
+$\mathbf{Set}$ はトポスである。有限極限をもち（\ref{cat:set-complete}）、デカルト閉（冪対象は写像の集合 $c^{b}$）。部分対象分類子は $\Omega=\{0,1\}$, $\mathrm{true}(\ast)=1$：単射 $m\colon S\to X$ について、$\chi(x)\defeq1$（$x\in m(S)$）、$\defeq0$（それ以外）とすると、$\mathbf{Set}$ の引き戻し $\{x\in X:\chi(x)=1\}=m(S)$ は $m$ と同型な部分対象である。逆に引き戻しが $m$ になる $\chi'$ は $\chi'^{-1}(1)=m(S)$ を満たし、値が $0,1$ だけなので $\chi'=\chi$。これは下の \ref{cat:presheaf-subobject-classifier} の $\mathbf{C}=\mathbf{1}$（対象一つ・射は恒等射だけ）の場合でもある。
+:::
+
+## 前層の冪対象 {#cat:sec-tps-exponential}
+
+$\widehat{\mathbf{C}}$ に冪対象 $Q^{P}$ があるなら、米田の補題と随伴から
+$$
+Q^{P}(c)\cong\widehat{\mathbf{C}}(\mathbf{y}c,Q^{P})\cong\widehat{\mathbf{C}}(\mathbf{y}c\times P,Q)
+$$
+でなければならない。これを定義として採用する。$Q^{P}(c)$ は一般に写像の集合 $Q(c)^{P(c)}$ ではないことに注意する（\ref{cat:prob-tps-not-pointwise}）。
+
+::: theorem 前層の圏はデカルト閉 {#cat:presheaf-exponential keywords="presheaf categories are cartesian closed, exponential of presheaves" index="前層の圏のデカルト閉性|ぜんそうのけんのでかるとへいせい"}
+前層 $P,Q$ について、
+$$
+Q^{P}(c)\defeq\widehat{\mathbf{C}}(\mathbf{y}c\times P,\,Q),\qquad Q^{P}(f)(\theta)\defeq\theta\circ(\mathbf{y}f\times1_{P})\quad(f\colon d\to c)
+$$
+は前層で、$\mathrm{ev}_{c}(\theta,x)\defeq\theta_{c}(1_{c},x)$ で定まる $\mathrm{ev}\colon Q^{P}\times P\to Q$ は前層の射である。さらに、任意の前層の射 $\varphi\colon R\times P\to Q$ について、$\mathrm{ev}\circ(\psi\times1_{P})=\varphi$ となる $\psi\colon R\to Q^{P}$ がただ一つある。したがって $\widehat{\mathbf{C}}$ はデカルト閉である。
+:::
+
+::: proof
+**Step 1（$Q^{P}$ は前層）.** $Q^{P}(c)$ は集合（記法）。$\mathbf{y}$ が関手なので $\mathbf{y}(1_{c})=1$, $\mathbf{y}(f\circ g)=\mathbf{y}f\circ\mathbf{y}g$ で、
+$$
+Q^{P}(f\circ g)(\theta)=\theta\circ(\mathbf{y}f\times1)\circ(\mathbf{y}g\times1)=Q^{P}(g)\bigl(Q^{P}(f)(\theta)\bigr).
+$$
+成分で書くと、$\theta\in Q^{P}(c)$, $f\colon d\to c$, $h\colon e\to d$, $x\in P(e)$ について $(\theta\cdot f)_{e}(h,x)=\theta_{e}(f\circ h,x)$。
+
+**Step 2（$\mathrm{ev}$ の自然性）.** $g\colon d\to c$ について、Step 1 の成分の式と $\theta$ の自然性から
+$$
+\begin{aligned}
+\mathrm{ev}_{d}(\theta\cdot g,\,x\cdot g)&=(\theta\cdot g)_{d}(1_{d},x\cdot g)=\theta_{d}(g,\,x\cdot g),\\
+\mathrm{ev}_{c}(\theta,x)\cdot g&=\theta_{c}(1_{c},x)\cdot g=\theta_{d}\bigl((1_{c},x)\cdot g\bigr)=\theta_{d}(g,\,x\cdot g).
+\end{aligned}
+$$
+ここで $\mathbf{y}c\times P$ での作用は $(h,x)\cdot g=(h\circ g,\,x\cdot g)$ である。
+
+**Step 3（転置の構成）.** $\varphi\colon R\times P\to Q$ について、$r\in R(c)$ に対し
+$$
+\psi_{c}(r)_{e}(h,x)\defeq\varphi_{e}(r\cdot h,\,x)\qquad(h\colon e\to c,\ x\in P(e))
+$$
+とする。
+- $\psi_{c}(r)$ は前層の射：$k\colon e'\to e$ について、$\psi_{c}(r)_{e'}\bigl((h,x)\cdot k\bigr)=\varphi_{e'}(r\cdot(h\circ k),\,x\cdot k)=\varphi_{e'}\bigl((r\cdot h,x)\cdot k\bigr)=\varphi_{e}(r\cdot h,x)\cdot k$（$\varphi$ の自然性）。
+- $\psi$ は前層の射：$f\colon d\to c$ について、Step 1 から $(\psi_{c}(r)\cdot f)_{e}(h,x)=\psi_{c}(r)_{e}(f\circ h,x)=\varphi_{e}(r\cdot(f\circ h),x)=\varphi_{e}((r\cdot f)\cdot h,x)=\psi_{d}(r\cdot f)_{e}(h,x)$。
+- $\mathrm{ev}\circ(\psi\times1)=\varphi$：$\mathrm{ev}_{c}(\psi_{c}(r),x)=\psi_{c}(r)_{c}(1_{c},x)=\varphi_{c}(r,x)$。
+
+**Step 4（一意性）.** $\psi'\colon R\to Q^{P}$ が $\mathrm{ev}\circ(\psi'\times1)=\varphi$ を満たすとする。$h\colon e\to c$, $x\in P(e)$ について $(h,x)=(\mathbf{y}h\times1)_{e}(1_{e},x)$ なので、$\psi'_{c}(r)$ が前層の射であることと $\psi'$ の自然性から
+$$
+\begin{aligned}\psi'_{c}(r)_{e}(h,x)&=\bigl(\psi'_{c}(r)\cdot h\bigr)_{e}(1_{e},x)=\psi'_{e}(r\cdot h)_{e}(1_{e},x)\\&=\mathrm{ev}_{e}(\psi'_{e}(r\cdot h),x)=\varphi_{e}(r\cdot h,x).\end{aligned}
+$$
+よって $\psi'=\psi$。
+
+**Step 5.** 有限積は各点ごとに存在する（記法）。Step 3, 4 は、$(Q^{P},\mathrm{ev})$ が \ref{cat:exponential-universal} の普遍性をもつことを言っているので、$-\times P$ は右随伴 $(-)^{P}$ をもつ。
+:::
+
+## 部分前層とふるい {#cat:sec-tps-sieves}
+
+::: lemma 前層の圏のモノ射 {#cat:presheaf-mono keywords="a morphism of presheaves is monic iff each component is injective; subobjects are subpresheaves" index="部分前層|ぶぶんぜんそう"}
+1. 前層の射 $\theta\colon A\to P$ がモノ射であることと、すべての成分 $\theta_{c}$ が単射であることは同値である。
+2. 前層 $P$ の**部分前層**とは、部分集合 $A(c)\subseteq P(c)$ の族で、$x\in A(c)$, $h\colon d\to c$ なら $x\cdot h\in A(d)$ となるものをいう（これは前層で、包含は前層の射）。$P$ の部分対象と部分前層は一対一に対応する：モノ射 $\theta\colon A'\to P$ には像 $A(c)\defeq\theta_{c}(A'(c))$ が対応する。
+:::
+
+::: proof
+**1.** 成分が単射なら、$\theta\circ\alpha=\theta\circ\beta$ から各点で $\alpha_{c}=\beta_{c}$。逆に $\theta$ がモノ射で $\theta_{c}(x)=\theta_{c}(x')$ とする。米田の補題の $\hat{x},\hat{x}'\colon\mathbf{y}c\to A$ について、$(\theta\circ\hat{x})_{d}(h)=\theta_{d}(x\cdot h)=\theta_{c}(x)\cdot h$ なので $\theta\circ\hat{x}=\theta\circ\hat{x}'$。モノ射なので $\hat{x}=\hat{x}'$ で、$1_{c}$ で評価して $x=x'$。
+
+**2.** 像は自然性 $\theta_{d}(y\cdot h)=\theta_{c}(y)\cdot h$ から部分前層。$\theta$ は $A'$ から像への前層の射で、各成分は（1 から）全単射。成分ごとの逆写像も自然性を満たす（$\theta_{d}(\theta_{c}^{-1}(x)\cdot h)=x\cdot h$ から $\theta_{c}^{-1}(x)\cdot h=\theta_{d}^{-1}(x\cdot h)$）ので、$\theta$ は像の包含と同値な部分対象を与える。二つの部分前層 $A,B$ について、包含が $\le$（\ref{cat:subobject}）の関係にあれば各点で $A(c)\subseteq B(c)$ なので、同値な部分前層は等しい。
+:::
+
+::: definition ふるい {#cat:sieve keywords="sieve, maximal sieve, pullback of a sieve" index="ふるい|ふるい, 最大のふるい|さいだいのふるい"}
+対象 $c$ 上の**ふるい**とは、余域が $c$ の射の集合 $S$ で、$f\in S$ と $g\colon e\to\operatorname{dom}f$ について $f\circ g\in S$ となるものをいう（$S$ は $\mathbf{y}c$ の部分前層 $S(d)=\{f\colon d\to c\}\cap S$ と同じもの）。余域が $c$ のすべての射の集合 $t_{c}$ を**最大のふるい**という。$f\colon d\to c$ とふるい $S$ について
+$$
+f^{\ast}S\defeq\{g:\operatorname{cod}g=d,\ f\circ g\in S\}
+$$
+は $d$ 上のふるいである（$g\in f^{\ast}S$ なら $f\circ g\circ k\in S$）。
+:::
+
+::: lemma ふるいの基本性質 {#cat:sieve-basic keywords="f in S iff f^*S is maximal; Omega is a presheaf" index="ふるいの基本性質|ふるいのきほんせいしつ"}
+1. $1_{c}^{\ast}S=S$, $(f\circ g)^{\ast}S=g^{\ast}(f^{\ast}S)$。したがって、$\Omega(c)\defeq\{c\text{ 上のふるい}\}$, $\Omega(f)\defeq f^{\ast}$ は前層であり、$\mathrm{true}_{c}(\ast)\defeq t_{c}$ は前層の射 $\mathrm{true}\colon1\to\Omega$ を定める。
+2. $d$ 上のふるい $T$ について、$1_{d}\in T$ なら $T=t_{d}$。
+3. $f\colon d\to c$ と $c$ 上のふるい $S$ について、$f\in S\iff f^{\ast}S=t_{d}$。
+:::
+
+::: proof
+**1.** $h\in(f\circ g)^{\ast}S\iff f\circ g\circ h\in S\iff g\circ h\in f^{\ast}S\iff h\in g^{\ast}f^{\ast}S$。$\Omega(c)$ は $\mathbf{C}$ の射の集合の部分集合の集合なので集合（$\mathbf{C}$ が小さいことを使う）。$f^{\ast}t_{c}=t_{d}$ なので $\mathrm{true}$ は自然。
+
+**2.** 任意の $g\colon e\to d$ について $g=1_{d}\circ g\in T$。
+
+**3.** $f\in S\iff f\circ1_{d}\in S\iff1_{d}\in f^{\ast}S$ で、2 からこれは $f^{\ast}S=t_{d}$ と同値（$t_{d}$ は $1_{d}$ を含む）。
+:::
+
+::: theorem 前層の部分対象分類子 {#cat:presheaf-subobject-classifier keywords="the presheaf of sieves is a subobject classifier for presheaves" index="前層の部分対象分類子|ぜんそうのぶぶんたいしょうぶんるいし"}
+$(\Omega,\mathrm{true})$ は $\widehat{\mathbf{C}}$ の部分対象分類子である。部分前層 $A\subseteq P$ の特性射は
+$$
+\chi_{c}(x)\defeq\{f\colon d\to c\ :\ x\cdot f\in A(d)\}\qquad(x\in P(c))
+$$
+である。
+:::
+
+::: proof
+\ref{cat:presheaf-mono} の 2 から、モノ射 $m\colon S\to P$ は像の部分前層 $A$ の包含と同型な部分対象を与え、引き戻しの四角形は同型で写り合うので、部分前層の包含 $A\subseteq P$ について示せばよい。
+
+**Step 1（$\chi$ は前層の射）.** $\chi_{c}(x)$ はふるい：$f\in\chi_{c}(x)$, $g\colon e\to d$ なら $x\cdot(f\circ g)=(x\cdot f)\cdot g\in A(e)$（$A$ は部分前層）。自然性：$f\colon d\to c$ について
+$$
+\begin{aligned}\chi_{d}(x\cdot f)&=\{g:(x\cdot f)\cdot g\in A\}=\{g:x\cdot(f\circ g)\in A\}\\&=\{g:f\circ g\in\chi_{c}(x)\}=f^{\ast}\chi_{c}(x).\end{aligned}
+$$
+
+**Step 2（引き戻し）.** 引き戻しは各点ごとなので（\ref{cat:pointwise-limits}）、各 $c$ で $\mathbf{Set}$ の四角形が引き戻しであることを示せばよい（各点ごとの引き戻しから作った前層と $A$ の間の比較の射は成分が全単射で、\ref{cat:presheaf-mono} の 2 の証明と同じく同型になる）。$\mathrm{true}_{c}$ に沿った $\chi_{c}$ の引き戻しは $\{x\in P(c):\chi_{c}(x)=t_{c}\}$ で、\ref{cat:sieve-basic} の 2 と $\chi$ の定義から
+$$
+\chi_{c}(x)=t_{c}\iff1_{c}\in\chi_{c}(x)\iff x=x\cdot1_{c}\in A(c).
+$$
+よって引き戻しは $A(c)$ である。
+
+**Step 3（一意性）.** $\chi'\colon P\to\Omega$ についても $A\subseteq P$ が $\mathrm{true}$ の引き戻しだとする。各点で引き戻しを計算すると $\{x:\chi'_{c}(x)=t_{c}\}=A(c)$。$x\in P(c)$, $f\colon d\to c$ について、\ref{cat:sieve-basic} の 3 と $\chi'$ の自然性から
+$$
+\begin{aligned}f\in\chi'_{c}(x)&\iff f^{\ast}\chi'_{c}(x)=t_{d}\iff\chi'_{d}(x\cdot f)=t_{d}\\&\iff x\cdot f\in A(d)\iff f\in\chi_{c}(x).\end{aligned}
+$$
+よって $\chi'=\chi$。
+:::
+
+::: corollary 前層の圏はトポス {#cat:presheaf-topos keywords="presheaf categories are toposes" index="前層のトポス|ぜんそうのとぽす"}
+小さい圏 $\mathbf{C}$ について、$\widehat{\mathbf{C}}$ はトポスである。
+:::
+
+::: proof
+有限極限は \ref{cat:pointwise-limits}（$\mathbf{Set}$ は完備、\ref{cat:set-complete}）、デカルト閉は \ref{cat:presheaf-exponential}、部分対象分類子は \ref{cat:presheaf-subobject-classifier}。
+:::
+
+::: example 真理値の例 {#cat:omega-examples keywords="truth values of presheaves on the arrow category and on a monoid" index="真理値の前層|しんりちのぜんそう"}
+1. **矢印圏.** $\mathbf{C}$ を対象 $0,1$ と恒等射以外の射 $a\colon0\to1$ だけをもつ圏とする。前層 $P$ は写像 $P(a)\colon P(1)\to P(0)$ と同じもの。ふるいは $\Omega(0)=\{\emptyset,\{1_{0}\}\}$、$\Omega(1)=\{\emptyset,\{a\},\{a,1_{1}\}\}$ で、$a^{\ast}\emptyset=\emptyset$, $a^{\ast}\{a\}=\{1_{0}\}$, $a^{\ast}\{a,1_{1}\}=\{1_{0}\}$。部分前層 $A\subseteq P$ の特性射は、$x\in P(1)$ について、$x\in A(1)$ なら $t_{1}$、$x\notin A(1)$ だが $x\cdot a\in A(0)$ なら $\{a\}$、$x\cdot a\notin A(0)$ なら $\emptyset$。$1$ での真理値は三つある。
+2. **モノイド.** モノイド $M$ を対象一つの圏と見ると、前層は右 $M$ 集合（$x\cdot(mn)=(x\cdot m)\cdot n$, $x\cdot1=x$）で、ふるいは右イデアル（$I\subseteq M$, $IM\subseteq I$）。$\Omega$ は右イデアルの集合に作用 $I\cdot m\defeq\{n:mn\in I\}$ を入れたもの。$M=G$ が群なら右イデアルは $\emptyset$ と $G$ だけで、$\Omega=\{\emptyset,G\}$ に $G$ が自明に作用する。
+:::
+
+::: hypcheck
+- **$\mathbf{C}$ が小さいこと**：$Q^{P}(c)=\widehat{\mathbf{C}}(\mathbf{y}c\times P,Q)$ と $\Omega(c)$ が集合であることに使った（\ref{cat:functor-category-size}, \ref{cat:sieve-basic} の 1）。大きい圏上の前層では、これらが集合にならず、$\widehat{\mathbf{C}}$ が局所小でもないことがある。
+- **米田の補題**：冪対象の形を決める動機と、モノ射が成分ごとに単射であること（\ref{cat:presheaf-mono} の 1）に使った。冪対象の普遍性の証明（Step 3, 4）そのものは成分の計算で、米田の補題を引用せず、同じ計算（$(h,x)=(\mathbf{y}h\times1)(1_{e},x)$）を直接行った。
+- **極限が各点ごと**：有限極限の存在と、特性射の四角形が引き戻しであることの確認を各点に帰着させるのに使った。
+- **選択公理**：使っていない。
+- **余極限による議論**：レンスターの本の証明（前層を表現可能関手の余極限に書き、$-\times P$ が余極限を保つことを使う）は使わず、転置を直接書いた。
+:::
+
+## 問題 {#cat:sec-tps-problems}
+
+::: problem {#cat:prob-tps-not-pointwise}
+\ref{cat:omega-examples} の 1 の矢印圏で、$P=Q=\Omega$ とする。$Q^{P}(1)$ と $Q(1)^{P(1)}=\Omega(1)^{\Omega(1)}$ の元の個数を比べ、冪対象が各点ごとの写像の集合でないことを確かめよ。
+:::
+
+::: solution
+$\mathbf{y}1(0)=\{a\}$, $\mathbf{y}1(1)=\{1_{1}\}$ はどちらも一点集合なので $\mathbf{y}1$ は終対象で、$\mathbf{y}1\times\Omega\cong\Omega$。よって $Q^{P}(1)\cong\widehat{\mathbf{C}}(\Omega,\Omega)$。前層の射 $\Omega\to\Omega$ は、成分 $u\colon\Omega(1)\to\Omega(1)$, $v\colon\Omega(0)\to\Omega(0)$ で、すべての $s\in\Omega(1)$ について $a^{\ast}(u(s))=v(a^{\ast}s)$ を満たす組である。$\Omega(0)=\{\emptyset,\{1_{0}\}\}$ で、$a^{\ast}$ による逆像は $\emptyset$ の逆像が $\{\emptyset\}$（1 点）、$\{1_{0}\}$ の逆像が $\{\{a\},t_{1}\}$（2 点）。$v$ を決めると、$u(\emptyset)$ は $v(\emptyset)$ の逆像から、$u(\{a\})$ と $u(t_{1})$ は $v(\{1_{0}\})$ の逆像から自由に選べる。$v$ の 4 通りについて数えると
+$$
+1\cdot1^{2}+1\cdot2^{2}+2\cdot1^{2}+2\cdot2^{2}=1+4+2+8=15.
+$$
+一方 $\Omega(1)^{\Omega(1)}$ は $3^{3}=27$ 個で、一致しない。
+:::
+
+::: problem {#cat:prob-tps-grp}
+群の圏 $\mathbf{Grp}$ が部分対象分類子をもたないことを示せ。ただし、$\mathbf{Grp}$ の引き戻しは集合として計算できること（\ref{cat:grp-creates-limits}）を使ってよい。
+:::
+
+::: solution
+終対象は自明な群 $1$ で、$\mathrm{true}\colon1\to\Omega$ の像は単位元 $\{e\}$。単射な準同型はモノ射である（$m\circ\alpha=m\circ\beta$ から各元で $\alpha=\beta$）。部分対象分類子があれば、単射な準同型 $m\colon S\to X$ は $\chi\colon X\to\Omega$ に沿った $\mathrm{true}$ の引き戻しで、それは集合として $\{x:\chi(x)=e\}=\ker\chi$ なので、$m(S)=\ker\chi$ は正規部分群。ところが対称群 $S_{3}$ の部分群 $\{e,(1\,2)\}$ は正規でない（$(1\,3)(1\,2)(1\,3)^{-1}=(2\,3)$）ので、その包含は分類されない。
+:::
+
+::: problem {#cat:prob-tps-excluded-middle}
+\ref{cat:omega-examples} の 1 の矢印圏で、$1$ 上のふるいの集合 $\Omega(1)$ を包含で順序づける。ふるい $S=\{a\}$ について、$S\cap T=\emptyset$ となるふるい $T$ のうち最大のもの $\neg S$ を求め、$S\cup\neg S\ne t_{1}$ を確かめよ。
+:::
+
+::: solution
+$\Omega(1)=\{\emptyset,\{a\},\{a,1_{1}\}\}$ のうち $\{a\}$ と交わらないのは $\emptyset$ だけなので $\neg S=\emptyset$。$S\cup\neg S=\{a\}\ne t_{1}$。ふるいの和集合と共通部分はふるいで、$\Omega(c)$ は包含について束になるが、補元をもたない元がある（排中律が成り立たない）。
+:::
+
+::: supplement
+**前提を変えると.**
+- **層.** 位相空間 $X$ の開集合の圏上の前層のうち、貼り合わせの条件を満たす**層**の圏もトポスで、部分対象分類子は「開集合の上で閉じたふるい」の層になることが知られている（ここでは確かめていない。Mac Lane–Moerdijk, *Sheaves in Geometry and Logic* 第 II 章とされる）。より一般にグロタンディーク位相についての層の圏（グロタンディーク・トポス）もトポスである。
+- **トポスの余極限.** Mac Lane §IV.10 は、トポスの公理から有限余極限の存在が従うことを述べている。証明には冪対象 $\Omega^{X}$ を使うモナド的な議論（パレの定理）が要ると言われている（ここでは扱わない）。
+
+**似た定理.**
+- 部分対象分類子は、関手 $\mathrm{Sub}\colon\mathbf{E}^{\mathrm{op}}\to\mathbf{Set}$（引き戻しで部分対象を写す）を表現する対象 $\Omega$ と言い換えられる（レンスター 演習問題 6.3.26）。$\mathrm{true}$ は普遍元（\ref{cat:universal-element}）にあたる。
+- デカルト閉性の証明は、\ref{cat:page-cartesian-closed} で事実として述べた前層の冪対象の式を、ここで証明したものである。
+
+**高い視点から：真理値は「いつ・どこで成り立つか」.** $\mathbf{Set}$ では「$x\in A$ か」は 0 か 1 で答えられる。前層の世界では、$x\in P(c)$ を射 $f\colon d\to c$ で引き戻すと $x\cdot f$ になり、「$x$ 自身は $A$ に入らないが、$f$ で引き戻すと入る」ことが起こる。$\chi_{c}(x)$ は「どの引き戻しで $A$ に入るか」の全体（ふるい）で、真理値は「成り立つ」「成り立たない」の二つではなく、「どの段階から先で成り立つか」という情報をもつ。矢印圏を「時刻 $1$（現在）から時刻 $0$（未来）への遷移」と見れば、$\{a\}$ は「今はまだだが、いずれ成り立つ」を表し、これは「成り立つ」でも「成り立たない」でもない（\ref{cat:prob-tps-excluded-middle}）。比喩で言えば、$\mathbf{Set}$ の真理値は「合格・不合格」の判定で、前層の真理値は「どの追試から合格になるか」の記録である。この豊かさが、トポスの内部論理が直観主義論理になる理由の一つで、強制法による独立性の証明もトポスの構成として整理できることが知られている（Mac Lane §IV.10 の述べるところ）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

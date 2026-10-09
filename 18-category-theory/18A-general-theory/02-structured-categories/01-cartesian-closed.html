@@ -56,7 +56,7 @@ r\wedge p\le q\iff r\le(p\Rightarrow q).
 $$
 これを満たす束を**ハイティング代数**という。ブール代数は $p\Rightarrow q\defeq\neg p\vee q$ でハイティング代数になる。集合 $U$ の冪集合 $\mathcal{P}(U)$ はブール代数。位相空間の開集合の束は、$(U\Rightarrow V)\defeq(U^{c}\cup V)$ の内部とするハイティング代数で、一般にはブール代数でない。
 4. **論理式の圏.** 直観主義命題論理の論理式を「$p$ から $q$ が導ける」で前順序にしたもの（を同値な論理式で割ったもの）は、$\wedge$ を積、$\to$ を冪とするハイティング代数である。デカルト閉圏の射の合成と型付きラムダ計算の項の代入が対応することは、カリー＝ハワード対応の圏論的な形である（\ref{logic:page-curry-howard}）。型付きラムダ計算の項をデカルト閉圏の射として解釈すること、デカルト閉圏が型付きラムダ計算の構文圏と同値であること（ランベック対応）は \ref{logic:page-ccc-semantics}, \ref{logic:page-lambek} で扱う。
-5. **前層の圏（事実）.** 小さい圏 $\mathbf{C}$ 上の前層の圏 $[\mathbf{C}^{\mathrm{op}},\mathbf{Set}]$ はデカルト閉で、$G^{F}(c)\defeq\operatorname{Nat}(\mathbf{y}c\times F,G)$（$\mathbf{y}$ は米田埋め込み）。米田の補題から、この形でなければならないことが分かる（Mac Lane 第 IV 章 §10 は、前層の圏がトポスであることを述べている。詳細は S. Mac Lane–I. Moerdijk, *Sheaves in Geometry and Logic* 第 I 章）。
+5. **前層の圏.** 小さい圏 $\mathbf{C}$ 上の前層の圏 $[\mathbf{C}^{\mathrm{op}},\mathbf{Set}]$ はデカルト閉で、$G^{F}(c)\defeq\operatorname{Nat}(\mathbf{y}c\times F,G)$（$\mathbf{y}$ は米田埋め込み。証明は \ref{cat:presheaf-exponential}、トポスであることは \ref{cat:presheaf-topos}）。米田の補題から、この形でなければならないことが分かる（Mac Lane 第 IV 章 §10 は、前層の圏がトポスであることを述べている。詳細は S. Mac Lane–I. Moerdijk, *Sheaves in Geometry and Logic* 第 I 章）。
 :::
 
 ::: proposition デカルト閉でない圏 {#cat:not-cartesian-closed keywords="Grp and Ab are not cartesian closed" index="デカルト閉でない圏|でかるとへいでないけん"}

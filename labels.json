@@ -652,6 +652,13 @@
       "num": "1.4",
       "page": "18-category-theory/18A-general-theory/03-monads/01-monads-algebras.html"
     },
+    "cat:elementary-topos": {
+      "status": "defined",
+      "type": "definition",
+      "title": "トポス",
+      "num": "1.2",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/01-presheaf-topos.html"
+    },
     "cat:elements-comma": {
       "status": "defined",
       "type": "proposition",
@@ -1457,6 +1464,13 @@
       "num": "1.3",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/01-cartesian-closed.html"
     },
+    "cat:omega-examples": {
+      "status": "defined",
+      "type": "example",
+      "title": "真理値の例",
+      "num": "",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/01-presheaf-topos.html"
+    },
     "cat:opposite-basic": {
       "status": "defined",
       "type": "proposition",
@@ -1709,6 +1723,13 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/04-kan-extensions/04-pointwise-kan.html"
     },
+    "cat:page-presheaf-topos": {
+      "status": "defined",
+      "type": "page",
+      "title": "部分対象分類子と前層のトポス",
+      "num": "",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/01-presheaf-topos.html"
+    },
     "cat:page-segal-condition": {
       "status": "defined",
       "type": "page",
@@ -1792,6 +1813,34 @@
       "title": "前層は表現可能関手の余極限",
       "num": "4.9",
       "page": "18-category-theory/18A-general-theory/04-kan-extensions/04-pointwise-kan.html"
+    },
+    "cat:presheaf-exponential": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "前層の圏はデカルト閉",
+      "num": "1.3",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/01-presheaf-topos.html"
+    },
+    "cat:presheaf-mono": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "前層の圏のモノ射",
+      "num": "1.4",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/01-presheaf-topos.html"
+    },
+    "cat:presheaf-subobject-classifier": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "前層の部分対象分類子",
+      "num": "1.7",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/01-presheaf-topos.html"
+    },
+    "cat:presheaf-topos": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "前層の圏はトポス",
+      "num": "1.8",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/01-presheaf-topos.html"
     },
     "cat:prob-adt-haus-no-right": {
       "status": "defined",
@@ -2338,6 +2387,27 @@
       "title": "",
       "num": "2.16",
       "page": "18-category-theory/18A-general-theory/05-higher-structures/02-2-categories.html"
+    },
+    "cat:prob-tps-excluded-middle": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "1.11",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/01-presheaf-topos.html"
+    },
+    "cat:prob-tps-grp": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "1.10",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/01-presheaf-topos.html"
+    },
+    "cat:prob-tps-not-pointwise": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "1.9",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/01-presheaf-topos.html"
     },
     "cat:prob-weakly-initial-needed": {
       "status": "defined",
@@ -3788,6 +3858,41 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/05-higher-structures/02-2-categories.html"
     },
+    "cat:sec-tps-definition": {
+      "status": "defined",
+      "type": "section",
+      "title": "部分対象分類子とトポス",
+      "num": "",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/01-presheaf-topos.html"
+    },
+    "cat:sec-tps-exponential": {
+      "status": "defined",
+      "type": "section",
+      "title": "前層の冪対象",
+      "num": "",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/01-presheaf-topos.html"
+    },
+    "cat:sec-tps-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/01-presheaf-topos.html"
+    },
+    "cat:sec-tps-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/01-presheaf-topos.html"
+    },
+    "cat:sec-tps-sieves": {
+      "status": "defined",
+      "type": "section",
+      "title": "部分前層とふるい",
+      "num": "",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/01-presheaf-topos.html"
+    },
     "cat:sec-yon-notation": {
       "status": "defined",
       "type": "section",
@@ -3836,6 +3941,27 @@
       "title": "Set は完備かつ余完備",
       "num": "6.8",
       "page": "18-category-theory/18A-general-theory/01-basics/06-limits.html"
+    },
+    "cat:set-topos": {
+      "status": "defined",
+      "type": "example",
+      "title": "集合の圏",
+      "num": "",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/01-presheaf-topos.html"
+    },
+    "cat:sieve": {
+      "status": "defined",
+      "type": "definition",
+      "title": "ふるい",
+      "num": "1.5",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/01-presheaf-topos.html"
+    },
+    "cat:sieve-basic": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "ふるいの基本性質",
+      "num": "1.6",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/01-presheaf-topos.html"
     },
     "cat:simplex-edges": {
       "status": "defined",
@@ -4018,6 +4144,13 @@
       "title": "部分対象とよく冪をもつ圏",
       "num": "12.1",
       "page": "18-category-theory/18A-general-theory/01-basics/12-special-aft.html"
+    },
+    "cat:subobject-classifier": {
+      "status": "defined",
+      "type": "definition",
+      "title": "部分対象分類子",
+      "num": "1.1",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/01-presheaf-topos.html"
     },
     "cat:suspension-loop": {
       "status": "defined",

@@ -16,7 +16,7 @@
 <script type="text/markdown" id="source">
 # 順序体と実閉体 {#model:page-ordered-fields keywords="ordered field, ordered domain, positive cone, order on the field of fractions, real closed field, intermediate value property for polynomials, Cauchy bound for roots, Rolle's theorem for polynomials, mean value theorem, relative algebraic closure, real algebraic numbers"}
 
-実数の体 $\mathbb{R}$ の一階の性質を調べるために、順序体の言語で**実閉体**の理論 $\mathrm{RCF}$ を考える。本ページでは $\mathrm{RCF}$ を「多項式について中間値の定理が成り立つ順序体」として公理化し（\ref{model:rcf}）、後のスツルムの定理（\ref{model:page-sturm}）とタルスキの量化子消去（\ref[実閉体の量化子消去]{model:page-rcf-qe}）で使う多項式の性質（根の上界、根のない区間での符号の一定性、ロルの定理と平均値の定理）を、公理だけから導く。また、実閉体の中で部分体の上に代数的な元全体がまた実閉体になること（\ref{model:relative-algebraic-closure-rcf}）を示し、実代数的数の体が実閉体であることを確かめる。
+実数の体 $\mathbb{R}$ の一階の性質を調べるために、順序体の言語で**実閉体**の理論 $\mathrm{RCF}$ を考える。本ページでは $\mathrm{RCF}$ を「多項式について中間値の定理が成り立つ順序体」として公理化し（\ref{model:rcf}）、後のスツルムの定理（\ref{model:page-sturm}）とタルスキの量化子消去（\ref{model:page-rcf-qe}）で使う多項式の性質（根の上界、根のない区間での符号の一定性、ロルの定理と平均値の定理）を、公理だけから導く。また、実閉体の中で部分体の上に代数的な元全体がまた実閉体になること（\ref{model:relative-algebraic-closure-rcf}）を示し、実代数的数の体が実閉体であることを確かめる。
 
 > 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。公理化として「多項式の中間値の定理」を採るのはタルスキの扱いに沿ったもので、他の公理化との同値性は補足で述べる。
 
@@ -235,12 +235,12 @@ $p(y)=y(y-1)(y+1)$ なので $p(0)=p(1)=0$。$p'(y)=3y^{2}-1$ の根は $y^{2}=1
 
 ::: supplement
 **前提を変えると.**
-- **他の公理化.** 順序体について、「中間値の公理」は「正の元は平方で、奇数次の多項式は根をもつ」（\ref{model:rcf-basic} の逆）とも、「順序体で、真の代数拡大で順序が延びるものがない」とも同値であることが知られている（アルティン–シュライアーの理論。$R(\sqrt{-1})$ が代数的閉体になることを使う。ここでは証明しない。体論の系列で扱う予定）。本サイトのタルスキの量化子消去（\ref[実閉体の量化子消去]{model:page-rcf-qe}）は、中間値の公理による公理化だけを使う。
+- **他の公理化.** 順序体について、「中間値の公理」は「正の元は平方で、奇数次の多項式は根をもつ」（\ref{model:rcf-basic} の逆）とも、「順序体で、真の代数拡大で順序が延びるものがない」とも同値であることが知られている（アルティン–シュライアーの理論。$R(\sqrt{-1})$ が代数的閉体になることを使う。ここでは証明しない。体論の系列で扱う予定）。本サイトのタルスキの量化子消去（\ref{model:page-rcf-qe}）は、中間値の公理による公理化だけを使う。
 - **順序が体から決まる.** \ref{model:rcf-basic} の 1 から、実閉体の順序は「平方であること」で定義できる（$x\ge0\iff\exists z\,(z^{2}=x)$）。したがって実閉体の間の体の同型は自動的に順序を保つ。$\mathbb{Q}(\sqrt{2})$ のように実閉体でない順序体では、この限りでない（\ref{model:prob-of-unique-order-q}）。
 
 **似た定理.** 代数的閉体（\ref{model:page-acf}）は「すべての多項式が根をもつ」体だった。実閉体は、その「順序つきの類似」であり、$\mathbb{R}$ と $\mathbb{C}=\mathbb{R}(\sqrt{-1})$ の関係は、一般の実閉体 $R$ と代数的閉体 $R(\sqrt{-1})$ の関係として成り立つことが知られている。
 
-**高い視点から.** 実閉体の公理は、$\mathbb{R}$ の完備性（上限の存在）という二階の性質を、「多項式のグラフは途切れない」という一階の性質に弱めたものである。比喩で言えば、$\mathbb{R}$ は「どんな連続曲線も途中で消えない」直線であるのに対し、実閉体は「多項式で描ける曲線だけは途中で消えない」直線である。多項式しか見ない一階の言語にとっては、この違いは見えない（\ref[実閉体の量化子消去]{model:page-rcf-qe} で示す完全性により、$\mathbb{R}$ と $\mathbb{R}_{\mathrm{alg}}$ は同じ一階の文を満たす）。
+**高い視点から.** 実閉体の公理は、$\mathbb{R}$ の完備性（上限の存在）という二階の性質を、「多項式のグラフは途切れない」という一階の性質に弱めたものである。比喩で言えば、$\mathbb{R}$ は「どんな連続曲線も途中で消えない」直線であるのに対し、実閉体は「多項式で描ける曲線だけは途中で消えない」直線である。多項式しか見ない一階の言語にとっては、この違いは見えない（\ref{model:page-rcf-qe} で示す完全性により、$\mathbb{R}$ と $\mathbb{R}_{\mathrm{alg}}$ は同じ一階の文を満たす）。
 :::
 </script>
 <noscript>このサイトの表示には JavaScript が必要です。</noscript>

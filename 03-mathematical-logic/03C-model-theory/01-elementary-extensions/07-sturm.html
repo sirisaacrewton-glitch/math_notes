@@ -16,11 +16,11 @@
 <script type="text/markdown" id="source">
 # スツルムの定理 {#model:page-sturm keywords="Sturm's theorem, signed remainder sequence, Sturm sequence, sign variations, Tarski query, Sturm-Sylvester theorem, counting roots with sign conditions, transfer of root counts between real closed fields"}
 
-実閉体 $R$ の多項式 $P$ の根の個数を、根を求めずに、係数の計算（割り算の繰り返し）と符号だけで求めるのが**スツルムの定理**である。本ページでは、より一般に、$P$ の根 $c$ にわたる $\operatorname{sign}Q(c)$ の和（**タルスキの問い合わせ**）を求めるスツルム–シルヴェスターの定理（\ref{model:sturm-sylvester}）を示す。この計算は $P,Q$ の係数の属する順序体の中で完結するので、「$P$ の根で、$Q_{1},\dots,Q_{l}$ がすべて正となるものの個数」は、係数体の順序だけで決まり、どの実閉体で数えても同じになる（\ref{model:root-count-transfer}）。これがタルスキの量化子消去（\ref[実閉体の量化子消去]{model:page-rcf-qe}）の代数的な核心である。
+実閉体 $R$ の多項式 $P$ の根の個数を、根を求めずに、係数の計算（割り算の繰り返し）と符号だけで求めるのが**スツルムの定理**である。本ページでは、より一般に、$P$ の根 $c$ にわたる $\operatorname{sign}Q(c)$ の和（**タルスキの問い合わせ**）を求めるスツルム–シルヴェスターの定理（\ref{model:sturm-sylvester}）を示す。この計算は $P,Q$ の係数の属する順序体の中で完結するので、「$P$ の根で、$Q_{1},\dots,Q_{l}$ がすべて正となるものの個数」は、係数体の順序だけで決まり、どの実閉体で数えても同じになる（\ref{model:root-count-transfer}）。これがタルスキの量化子消去（\ref{model:page-rcf-qe}）の代数的な核心である。
 
 > 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。符号付き剰余列による定式化は、実代数幾何の標準的な扱い（S. Basu, R. Pollack, M.-F. Roy, *Algorithms in Real Algebraic Geometry* の第 2 章の形として知られているもの）に沿う。
 
-## 記法と定義の確認 {#model:sec-st-notation}
+## 記法と定義の確認 {#model:sec-sm-notation}
 
 ::: notation
 - 実閉体・根の上界・根のない区間での符号の一定性・ロルの定理・多項式の代数 (D1)–(D3) は \ref{model:page-ordered-fields}（\ref{model:rcf}, \ref{model:cauchy-bound}, \ref{model:sign-constant}, \ref{model:rcf-rolle}）のとおり。
@@ -45,7 +45,7 @@ $$
 $\mathrm{TaQ}(1,P)$ は $P$ の根の個数である。
 :::
 
-## スツルム–シルヴェスターの定理 {#model:sec-st-theorem}
+## スツルム–シルヴェスターの定理 {#model:sec-sm-theorem}
 
 ::: lemma 根の近くでの PP′ の符号 {#model:sign-near-root keywords="near a root c, P P' has the sign of y - c" index="根の近くの符号|ねのちかくのふごう"}
 $P\neq0$, $P(c)=0$ とする。$c$ を含むある開区間 $J$ があって、$y\in J$, $y\neq c$ なら $\operatorname{sign}\bigl(P(y)P'(y)\bigr)=\operatorname{sign}(y-c)$。
@@ -101,7 +101,7 @@ $P\neq0$ と $a<b$, $P(a)P(b)\neq0$ について、$P$ の $(a,b)$ の中の根�
 \ref{model:sturm-sylvester} で $Q=1$ とする。
 :::
 
-## 係数体だけで決まること {#model:sec-st-transfer}
+## 係数体だけで決まること {#model:sec-sm-transfer}
 
 ::: lemma 符号条件つきの根の個数 {#model:count-with-signs keywords="number of roots of P where Q_1,...,Q_l are positive, as a combination of Tarski queries" index="符号条件つきの根の個数|ふごうじょうけんつきのねのこすう"}
 $P\neq0$, $Q_{1},\dots,Q_{l}\in R[y]$ について
@@ -149,7 +149,7 @@ $$
 - **係数が $K$ に属すること**：移行定理では、剰余列の計算と、変化数を決める符号がすべて $K$ の中で済むことだけを使った。$R$ と $R'$ がどう違っていても（大きさも、$K$ 上の超越元の有無も）、結果は同じになる。
 :::
 
-## 問題 {#model:sec-st-problems}
+## 問題 {#model:sec-sm-problems}
 
 ::: problem {#model:prob-st-cubic}
 $P=y^{3}-3y+1$ の実閉体の中の根の個数を、スツルムの定理で求めよ。

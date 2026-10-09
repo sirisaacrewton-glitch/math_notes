@@ -16416,6 +16416,13 @@
       "num": "2.13",
       "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/02-elementary-chains.html"
     },
+    "model:common-fraction-field": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "部分構造の商体",
+      "num": "8.1",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/08-rcf-qe.html"
+    },
     "model:compactness-via-los": {
       "status": "defined",
       "type": "theorem",
@@ -17179,6 +17186,13 @@
       "num": "",
       "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/08-rational-urysohn.html"
     },
+    "model:page-rcf-qe": {
+      "status": "defined",
+      "type": "page",
+      "title": "実閉体の量化子消去",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/08-rcf-qe.html"
+    },
     "model:page-saturated-models": {
       "status": "defined",
       "type": "page",
@@ -17564,6 +17578,27 @@
       "num": "5.7",
       "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/05-random-graph.html"
     },
+    "model:prob-rq-algebraic-solutions": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "8.8",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/08-rcf-qe.html"
+    },
+    "model:prob-rq-ring-language": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "8.7",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/08-rcf-qe.html"
+    },
+    "model:prob-rq-z-not-definable": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "8.6",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/08-rcf-qe.html"
+    },
     "model:prob-sm-equivalence-class": {
       "status": "defined",
       "type": "problem",
@@ -17801,6 +17836,34 @@
       "title": "実閉体の基本性質",
       "num": "6.5",
       "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html"
+    },
+    "model:rcf-complete": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "実閉体の理論の完全性",
+      "num": "8.4",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/08-rcf-qe.html"
+    },
+    "model:rcf-literal-normal-form": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "連言の整理",
+      "num": "8.2",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/08-rcf-qe.html"
+    },
+    "model:rcf-o-minimal": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "o 極小性",
+      "num": "8.5",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/08-rcf-qe.html"
+    },
+    "model:rcf-qe": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "実閉体の量化子消去",
+      "num": "8.3",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/08-rcf-qe.html"
     },
     "model:rcf-rolle": {
       "status": "defined",
@@ -18474,6 +18537,41 @@
       "num": "",
       "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/05-random-graph.html"
     },
+    "model:sec-rq-consequences": {
+      "status": "defined",
+      "type": "section",
+      "title": "帰結",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/08-rcf-qe.html"
+    },
+    "model:sec-rq-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/08-rcf-qe.html"
+    },
+    "model:sec-rq-preparation": {
+      "status": "defined",
+      "type": "section",
+      "title": "準備",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/08-rcf-qe.html"
+    },
+    "model:sec-rq-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/08-rcf-qe.html"
+    },
+    "model:sec-rq-theorem": {
+      "status": "defined",
+      "type": "section",
+      "title": "タルスキの定理",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/08-rcf-qe.html"
+    },
     "model:sec-saturated-def": {
       "status": "defined",
       "type": "section",
@@ -18542,14 +18640,28 @@
       "type": "section",
       "title": "記法と定義の確認",
       "num": "",
-      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/05-strongly-minimal.html"
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/07-sturm.html"
     },
     "model:sec-sm-problems": {
       "status": "defined",
       "type": "section",
       "title": "問題",
       "num": "",
-      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/05-strongly-minimal.html"
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/07-sturm.html"
+    },
+    "model:sec-sm-theorem": {
+      "status": "defined",
+      "type": "section",
+      "title": "スツルム–シルヴェスターの定理",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/07-sturm.html"
+    },
+    "model:sec-sm-transfer": {
+      "status": "defined",
+      "type": "section",
+      "title": "係数体だけで決まること",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/07-sturm.html"
     },
     "model:sec-st-em": {
       "status": "defined",
@@ -18563,14 +18675,14 @@
       "type": "section",
       "title": "記法と定義の確認",
       "num": "",
-      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/07-sturm.html"
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/01-stability.html"
     },
     "model:sec-st-problems": {
       "status": "defined",
       "type": "section",
       "title": "問題",
       "num": "",
-      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/07-sturm.html"
+      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/01-stability.html"
     },
     "model:sec-st-stability": {
       "status": "defined",
@@ -18578,20 +18690,6 @@
       "title": "安定性",
       "num": "",
       "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/01-stability.html"
-    },
-    "model:sec-st-theorem": {
-      "status": "defined",
-      "type": "section",
-      "title": "スツルム–シルヴェスターの定理",
-      "num": "",
-      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/07-sturm.html"
-    },
-    "model:sec-st-transfer": {
-      "status": "defined",
-      "type": "section",
-      "title": "係数体だけで決まること",
-      "num": "",
-      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/07-sturm.html"
     },
     "model:sec-substructures": {
       "status": "defined",
@@ -39474,14 +39572,6 @@
       "referencedFrom": [
         "03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/05-ma-reals.html",
         "03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/10-club-filter.html"
-      ]
-    },
-    "model:page-rcf-qe": {
-      "status": "planned",
-      "title": "実閉体の量化子消去",
-      "referencedFrom": [
-        "03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html",
-        "03-mathematical-logic/03C-model-theory/01-elementary-extensions/07-sturm.html"
       ]
     },
     "ring:fraction-field": {

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>実閉体の量化子消去 | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03C-model-theory/01-elementary-extensions/08-rcf-qe.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 実閉体の量化子消去 {#model:page-rcf-qe keywords="Tarski's theorem, quantifier elimination for real closed fields, completeness of RCF, decidability of the theory of the reals, model completeness, real algebraic numbers elementary substructure of the reals, o-minimality, Tarski-Seidenberg"}
+
+**タルスキの定理**：実閉体の理論 $\mathrm{RCF}$（\ref{model:rcf}）は順序環の言語 $\mathcal{L}_{\mathrm{or}}$ で量化子消去をもつ（\ref{model:rcf-qe}）。証明は、量化子消去の判定法（\ref{model:qe-test}）の条件を、スツルムの定理から得た「根の個数の移行」（\ref{model:root-count-transfer}）で確かめる。帰結として、$\mathrm{RCF}$ は完全で $\mathrm{Th}(\mathbb{R},+,\cdot,<)$ に等しく（\ref{model:rcf-complete}）、決定可能であり、$\mathbb{R}_{\mathrm{alg}}\preccurlyeq\mathbb{R}$ で、実閉体の一変数の定義可能集合は有限個の点と区間の和である（**o 極小性**、\ref{model:rcf-o-minimal}）。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。量化子消去の判定法を使う形は D. Marker, *Model Theory: An Introduction* §3.3 の構成として知られているものに近いが、そこで使われる実閉包の一意性の代わりに、本サイトではスツルムの定理による根の個数の計算（\ref{model:page-sturm}）を使う。
+
+## 記法と定義の確認 {#model:sec-rq-notation}
+
+::: notation
+- 量化子消去と判定法 \ref{model:quantifier-elimination}, \ref{model:qe-test}、部分構造は量化子のない論理式を保つこと \ref{model:substructure-qf}、項は多項式であること \ref{model:terms-polynomials}。
+- 順序体・商体の順序・実閉体・根の上界・符号の一定性・ロルの定理は \ref{model:page-ordered-fields}。符号付き剰余列と根の個数の移行は \ref{model:page-sturm}。
+- **リテラル**は原子論理式かその否定。$\mathcal{L}_{\mathrm{or}}$ の原子論理式は $\bot$, $t=s$, $t<s$ の形。
+:::
+
+## 準備 {#model:sec-rq-preparation}
+
+::: lemma 部分構造の商体 {#model:common-fraction-field keywords="a common substructure A of two ordered fields has order-isomorphic fraction fields in them" index="共通の部分構造の商体|きょうつうのぶぶんこうぞうのしょうたい"}
+順序体 $M$, $N$ が共通の $\mathcal{L}_{\mathrm{or}}$ 部分構造 $A$ をもつとする。$A$ は順序環であり、$F_{M}\defeq\{a/b:a,b\in A,\ b\neq0\}\subseteq M$、同様に $F_{N}\subseteq N$ とすると、$\sigma(a/b)\defeq a/b$ は $F_{M}$ から $F_{N}$ への順序を保つ体の同型で、$A$ の上で恒等写像である。
+:::
+
+::: proof
+$A$ は $0,1$ を含み $+,-,\cdot$ で閉じ、順序は $M$ の制限なので順序環。$F_{M}$ は $M$ の部分体（$a/b\pm c/d=(ad\pm bc)/(bd)$ など）。$a/b=a'/b'$ が $M$ で成り立つことと $ab'=a'b$（$A$ の中の等式）は同値で、これは $N$ でも同じなので、$\sigma$ は well-defined な単射で、全射は明らか。和・積を保つのは上の式から。順序：$a/b>0\iff ab>0$（\ref{model:fraction-field-order}）で、$ab>0$ は $A$ の中の条件なので $M$ と $N$ で同じ。
+:::
+
+::: lemma 連言の整理 {#model:rcf-literal-normal-form keywords="a conjunction of literals in one variable over A reduces to equations and strict inequalities of polynomials" index="リテラルの連言の整理（実閉体）|りてらるのれんげんのせいりじつへいたい"}
+順序体 $M$ とその部分構造 $A$、リテラルの連言 $\chi(\vec{x},y)$、$\vec{a}\in A^{n}$、$c_{0}\in M$ で $M\models\chi(\vec{a},c_{0})$ とする。このとき多項式 $f_{1},\dots,f_{r},g_{1},\dots,g_{l}\in A[y]$ で、次を満たすものがある：$A$ を部分構造にもつ任意の順序体 $N$ と $c\in N$ について
+$$
+\bigl(f_{1}(c)=\dots=f_{r}(c)=0,\ g_{1}(c)>0,\dots,g_{l}(c)>0\bigr)\ \Longrightarrow\ N\models\chi(\vec{a},c),
+$$
+かつ $c_{0}$ は左辺の条件を $M$ で満たす。
+:::
+
+::: proof
+\ref{model:terms-polynomials} から、項 $t(\vec{a},y)$ の値は $A$ 係数の $y$ の多項式 $P_{t}$ の値で、その係数は $A$ の中で計算されるので $M$ でも $N$ でも同じ（\ref{model:substructure-qf} の 1）。各リテラルを $c_{0}$ での真偽に合わせて置き換える（$\chi$ に $\bot$ は現れない：$c_{0}$ で真なので）。
+- $t=s$：$f\defeq P_{t}-P_{s}$ について $f=0$。
+- $\neg\,t=s$：$f\defeq P_{t}-P_{s}$ について $f^{2}>0$。
+- $t<s$：$P_{s}-P_{t}>0$。
+- $\neg\,t<s$：$s\le t$ のことで、$c_{0}$ で $P_{t}-P_{s}$ が $0$ か正かに応じて、$P_{t}-P_{s}=0$ または $P_{t}-P_{s}>0$。
+- $\neg\bot$：何も課さない。
+
+置き換えた各条件は元のリテラルを導き、$c_{0}$ で成り立つ。
+:::
+
+## タルスキの定理 {#model:sec-rq-theorem}
+
+::: theorem 実閉体の量化子消去 {#model:rcf-qe keywords="Tarski: RCF admits quantifier elimination in the language of ordered rings" index="実閉体の量化子消去|じつへいたいのりょうかしじょうきょ, タルスキの定理（実閉体）|たるすきのていりじつへいたい"}
+（AC）$\mathrm{RCF}$ は $\mathcal{L}_{\mathrm{or}}$ で量化子消去をもつ。
+:::
+
+::: proof
+$\mathcal{L}_{\mathrm{or}}$ は定数 $0,1$ をもつので、\ref{model:qe-test} の条件 $(\ast)$ を確かめればよい。実閉体 $M$, $N$、共通の部分構造 $A$、リテラルの連言 $\chi(\vec{x},y)$、$\vec{a}\in A^{n}$ をとり、$M\models\chi(\vec{a},c_{0})$ とする。\ref{model:rcf-literal-normal-form} の $f_{i},g_{j}\in A[y]$ をとり、条件
+$$
+(\dagger)\qquad f_{1}(c)=\dots=f_{r}(c)=0,\ g_{1}(c)>0,\dots,g_{l}(c)>0
+$$
+を満たす $c\in N$ を見つければよい。\ref{model:common-fraction-field} の $F_{M}$, $F_{N}$, $\sigma$ をとる。$\sigma$ は $A$ の上で恒等なので、$A$ 係数の多項式 $h$ について $\sigma h=h$。
+
+**場合 1：$0$ でない $f_{i}$ がある.** $0$ でない $f_{i}$ たちの最大公約数 $G$ を $F_{M}[y]$ の中でユークリッドの互除法で求める（$0$ の $f_{i}$ は条件を課さないので除く）。$G$ は各 $f_{i}$ を割り切り、互除法の各段を逆にたどると $G=\sum_{i}u_{i}f_{i}$（$u_{i}\in F_{M}[y]$）と書ける。したがって、どの実閉体 $R\supseteq F_{M}$ の中でも、$G$ の根はちょうど $f_{i}$ たちの共通根である。$c_{0}$ は $M$ の中で $G(c_{0})=0$, $g_{j}(c_{0})>0$ を満たす。根の個数の移行（\ref{model:root-count-transfer}、$K=F_{M}$, $K'=F_{N}$）から、$N$ の中に $\sigma G(c)=0$, $g_{j}(c)>0$ となる $c$ がある。互除法の各段は $\sigma$ と可換なので $\sigma G$ は $\sigma f_{i}=f_{i}$ たちの最大公約数で、$c$ は $f_{i}$ たちの共通根。よって $c$ は $(\dagger)$ を満たす。
+
+**場合 2：$f_{i}$ がすべて $0$ 多項式（または $r=0$）.** 条件は $g_{j}>0$ だけである。$l=0$ なら $c=0$ でよい。$l\ge1$ とし、$H\defeq g_{1}\cdots g_{l}\in A[y]$ とおく。$g_{j}(c_{0})>0$ なので $H\neq0$, $H(c_{0})\neq0$。$H$ の $M$ の中の根を $r_{1}<\dots<r_{k}$ とする（$k=0$ もある）。$g_{j}$ の根は $H$ の根なので、各 $g_{j}$ は $H$ の根を含まない区間で一定の符号をもつ（\ref{model:sign-constant}）。
+
+- **(2a) $r_{i}<c_{0}<r_{i+1}$ となる $i$ がある場合.** ロルの定理（\ref{model:rcf-rolle} の 1）から、$H'$ は $(r_{i},r_{i+1})$ に根 $d$ をもつ。この区間で $g_{j}$ の符号は一定で、$c_{0}$ での値が正なので $g_{j}(d)>0$。$H'\in A[y]$ は $0$ でない（$H$ は二つの根をもち次数 $\ge2$）。よって $M$ の中に $H'(d)=0$, $g_{j}(d)>0$ となる $d$ があり、場合 1 と同じ議論（$G=H'$）で、$N$ の中に $H'(c)=0$, $g_{j}(c)>0$ となる $c$ があり、$(\dagger)$ を満たす。
+- **(2b) $c_{0}$ がすべての根より大きい（または根がない）場合.** \ref{model:cauchy-bound} の $H$ の根の上界 $B$ は係数の有理式なので $B\in F_{M}$（$H$ が定数なら $B\defeq0$ とする）。$H$ の根はすべて $B$ より小さく、$c_{0}$ と $B$ はともに $H$ の最大の根より大きいので、同じ区間にあり、$g_{j}(B)>0$（$M$ の中で）。$g_{j}(B)\in F_{M}$ で $\sigma$ は順序を保つので、$N$ の中で $g_{j}(\sigma B)=\sigma(g_{j}(B))>0$。$c\defeq\sigma B$ が $(\dagger)$ を満たす。
+- **(2c) $c_{0}$ がすべての根より小さい場合.** (2b) で $B$ の代わりに $-B$ を使う。
+
+いずれの場合も $N\models\exists y\,\chi(\vec{a},y)$ となり、$(\ast)$ が成り立つ。
+:::
+
+::: hypcheck
+- **$M$, $N$ の実閉性**：場合 1 では根の個数の移行（スツルムの定理）に、場合 2 では符号の一定性とロルの定理に使った。どちらも中間値の公理に帰着する。
+- **共通の部分構造が順序も共有すること**：\ref{model:common-fraction-field} で商体の同型が順序を保つことに使った。環の言語だけで共通の部分環をとると、二つの順序が食い違いうる（$\mathbb{Q}(\sqrt{2})$ の二つの順序、\ref{model:prob-of-unique-order-q}）。
+- **リテラルの連言への帰着**：\ref{model:qe-test} の中で \ref{model:qe-reduction} を使っている。$\neg\,t<s$ を一つの条件に直すのに、証拠 $c_{0}$ での真偽を使った（\ref{model:rcf-literal-normal-form}）。
+- **根の上界が係数の有理式であること**：場合 (2b) で、$N$ の中の証拠を $F_{N}$ から直接とるのに使った。
+:::
+
+## 帰結 {#model:sec-rq-consequences}
+
+::: corollary 実閉体の理論の完全性 {#model:rcf-complete keywords="RCF is complete, equals the theory of the real field, and is decidable; R_alg is an elementary substructure of R" index="実閉体の理論の完全性|じつへいたいのりろんのかんぜんせい"}
+1. $\mathrm{RCF}$ は完全であり、$\mathrm{RCF}$ の帰結全体は $\mathrm{Th}(\mathbb{R},0,1,+,-,\cdot,<)$ に等しい。
+2. $\mathrm{RCF}$ はモデル完全で、実閉体 $R\subseteq R'$ なら $R\preccurlyeq R'$。とくに $\mathbb{R}_{\mathrm{alg}}\preccurlyeq\mathbb{R}$。
+3. $\mathrm{Th}(\mathbb{R},0,1,+,-,\cdot,<)$ は決定可能である。
+:::
+
+::: proof
+**1.** 実閉体 $R$ の中で、$0,1$ から生成される部分構造は $\{n\cdot1:n\in\mathbb{Z}\}$ で、$n\cdot1<m\cdot1\iff n<m$（\ref{model:ordered-field-basic} の 3）なので、どの実閉体でも順序環 $\mathbb{Z}$ と同型である。文 $\varphi$ を量化子消去で量化子のない文 $\theta$ にする。$\theta$ の真偽は、定数から生成される部分構造の中で決まり（\ref{model:substructure-qf}）、これはすべての実閉体で同型なので、$\theta$ の真偽、したがって $\varphi$ の真偽はすべての実閉体で同じ。$\mathbb{R}$ は実閉体なので $\mathrm{RCF}$ はモデルをもち、$\mathrm{RCF}\models\varphi$ か $\mathrm{RCF}\models\neg\varphi$。よって完全で、帰結は $\mathbb{R}$ で真な文と一致する。
+
+**2.** 量化子消去ならモデル完全（\ref{model:qe-model-complete}）。実閉体の部分構造の包含は初等的である。$\mathbb{R}_{\mathrm{alg}}$ は実閉体（\ref{model:relative-algebraic-closure-rcf}）。
+
+**3.** $\mathrm{RCF}$ の公理は機械的に列挙でき、完全性定理（\ref{logic:completeness}）から、$\mathrm{RCF}\models\varphi$ であることと $\varphi$ が $\mathrm{RCF}$ から証明できることは同値。証明は機械的に列挙できるので、文 $\varphi$ が与えられたら、$\varphi$ または $\neg\varphi$ の証明を探す。1 からどちらかは必ず見つかり、見つかった方で真偽が決まる。
+:::
+
+::: corollary o 極小性 {#model:rcf-o-minimal keywords="every definable subset of a real closed field (with parameters) is a finite union of points and open intervals" index="o 極小性|おーきょくしょうせい"}
+実閉体 $R$ の部分集合で、$\mathcal{L}_{\mathrm{or}}$ 論理式 $\varphi(y,\vec{b})$（$\vec{b}\in R$ はパラメータ）で定義されるものは、有限個の点と、端点が $R\cup\{\pm\infty\}$ の開区間との和である。
+:::
+
+::: proof
+量化子消去から、$\varphi(y,\vec{b})$ は量化子のない論理式、すなわち $f(y)=0$, $f(y)>0$（$f\in R[y]$）の形の条件のブール結合と $R$ の中で同値（項は多項式：\ref{model:terms-polynomials}）。$f\neq0$ について、$\{f=0\}$ は有限集合、$\{f>0\}$ は $f$ の根で区切った開区間のいくつかの和（\ref{model:sign-constant}）。$f=0$ なら空集合か全体。「有限個の点と開区間の和」の全体は、補集合・有限和・有限共通部分で閉じている（端点を全部合わせて $R$ を有限個の点と開区間に分けると、そのような集合はそれらのいくつかの和として書けるものと一致する）。
+:::
+
+## 問題 {#model:sec-rq-problems}
+
+::: problem {#model:prob-rq-z-not-definable}
+$\mathbb{Z}$ と $\mathbb{Q}$ は $(\mathbb{R},0,1,+,-,\cdot,<)$ でパラメータを使っても定義できないことを示せ。
+:::
+
+::: solution
+\ref{model:rcf-o-minimal} から、定義可能集合は有限個の点と開区間の和である。$\mathbb{Z}$ は無限集合で区間を含まないので、点の有限和にも区間を含む集合にもならない。$\mathbb{Q}$ は無限で、区間を含まない（区間は無理数を含む）ので同様。
+:::
+
+::: problem {#model:prob-rq-ring-language}
+$\mathrm{RCF}$ を環の言語 $\mathcal{L}_{\mathrm{ring}}$ の理論（$<$ を忘れたもの）とみると、量化子消去をもたないことを示せ。
+:::
+
+::: solution
+$\mathbb{R}$ で論理式 $\exists z\,(z\cdot z=y)$ は $[0,\infty)$ を定義する（\ref{model:rcf-basic} の 1）。$\mathcal{L}_{\mathrm{ring}}$ の量化子のない論理式 $\theta(y)$（パラメータなし）は、$\mathbb{Z}$ 係数の多項式の等式とその否定のブール結合なので、$\theta$ が定義する集合は有限か補有限である（$0$ でない多項式の根は有限個）。$[0,\infty)$ は有限でも補有限でもないので、$\exists z\,(z\cdot z=y)$ と同値な量化子のない論理式はない。
+:::
+
+::: problem {#model:prob-rq-algebraic-solutions}
+係数が $\mathbb{R}_{\mathrm{alg}}$ に属する多項式の等式と不等式の有限個の連立系が $\mathbb{R}^{m}$ に解をもてば、$\mathbb{R}_{\mathrm{alg}}^{m}$ にも解をもつことを示せ。
+:::
+
+::: solution
+連立系の解の存在は、係数をパラメータとする $\mathcal{L}_{\mathrm{or}}$ の文 $\exists y_{1}\cdots\exists y_{m}\,\psi(\vec{b},\vec{y})$（$\vec{b}\in\mathbb{R}_{\mathrm{alg}}$）で表せる。$\mathbb{R}_{\mathrm{alg}}\preccurlyeq\mathbb{R}$（\ref{model:rcf-complete} の 2）なので、$\mathbb{R}$ で真なら $\mathbb{R}_{\mathrm{alg}}$ でも真。
+:::
+
+::: supplement
+**前提を変えると.**
+- **多変数の定義可能集合.** $R^{n}$ の定義可能集合（**半代数的集合**）は、射影で半代数的集合に写る（**タルスキ–ザイデンベルクの定理**）。これは量化子消去を幾何の言葉で言い直したものである。さらに、半代数的集合は有限個の「細胞」に分割できることが知られている（細胞分割定理。ここでは扱わない）。
+- **ヒルベルトの第 17 問題.** 実閉体 $R$ 上で至るところ $\ge0$ の多項式は、有理関数の平方和であることが知られている（アルティン、1927）。モデル完全性（\ref{model:rcf-complete} の 2）を使う証明が知られている（ロビンソン。ここでは扱わない）。
+- **計算量.** 決定手続き（\ref{model:rcf-complete} の 3）は完全性定理による証明の探索で、効率は考えていない。タルスキの元の手続きや、それを改良した円柱代数分解（コリンズ）などの具体的なアルゴリズムが知られている。
+
+**似た定理.** 代数的閉体の量化子消去（\ref{model:acf-qe}）では、根が「あるかないか」が代数閉包の一意性で決まった。実閉体では、根の「個数」が係数の符号の計算で決まる（\ref{model:root-count-transfer}）。どちらの場合も、「共通の部分構造の上で、一変数の存在命題の真偽が部分構造だけで決まる」ことが量化子消去の核心である。指数関数を加えた $(\mathbb{R},+,\cdot,<,\exp)$ は量化子消去をもたないが、モデル完全で o 極小であることが知られている（ウィルキー、1996）。
+
+**高い視点から.** 量化子消去は、「存在する」という問いを、係数についての有限個の符号条件に翻訳する手続きである。幾何的には、高次元の図形を射影した影が、元の言葉（多項式の等式・不等式）でまた書けることを意味する。比喩で言えば、実閉体の世界では、どんな複雑な問い（量化子のついた文）も、最終的には「この係数の組の符号はどうか」という簡単な問いに言い換えられる。それに対して自然数の世界（算術）では、この言い換えは不可能で（不完全性定理）、その違いの源は、多項式のグラフが途切れない（実閉性）か、整数という離散的な点しかないか、にある。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

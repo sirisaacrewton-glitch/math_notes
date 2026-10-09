@@ -342,6 +342,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-09 モデル理論 RC-01（03C/01/06-ordered-fields, model:page-ordered-fields：順序体の基本性質、商体の順序、中間値の公理による実閉体、根の上界、符号の一定性、ロルと平均値の定理、代数的な元の部分体、相対的代数閉包は実閉体（実代数的数）。問題 3。実閉体の系列の第 1 回）
 - 2026-10-09 モデル理論 MT-01 追記（model:kappa-categorical, model:los-vaught, model:prob-lv-divisible-groups：κ 範疇的で有限モデルのない理論は完全、DLO・ACF の例、有限モデルを許す反例、ねじれのない可除アーベル群の理論の完全性。SCOPE.md の抜けを一つ解消）
 - 2026-10-09 圏論・ホモロジー代数 問題追加（cat:prob-tc-center-modules：R 加群の圏の中心は Z(R)、ha:prob-pr-finite-abelian：有限アーベル群の圏の射影対象は 0 だけ。それぞれ未証明の言及を参照に置換）
 - 2026-10-09 計算可能性 AC-11 追記（comp:rice-shapiro-functions, comp:totality-not-ce：部分計算可能関数のクラスの指数集合が認識可能なら単調かつコンパクト、全域性の指数集合は認識不能。補足の未証明の言及を参照に置換）
@@ -539,6 +540,9 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | MT-14 | 03-ultraproducts/03-ax-grothendieck | アックス–グロタンディークの定理（レフシェッツの原理と超積による移行。資料なし） | — | 完了 |
 | MT-15 | 02-types-and-countable-models/07-vaught-never-two | ヴォートの定理（可算モデルはちょうど 2 個にならない）（資料なし） | — | 完了 |
 | MT-16 | 03C/02/08-rational-urysohn | 有理ウリゾーン空間（カテトフ関数、一点拡張、存在・一意性・超均質性・普遍性） | — | 完了 |
+| RC-01 | 03C/01/06-ordered-fields | 順序体と実閉体（商体の順序、中間値の公理による RCF、根の上界、ロル・平均値、相対的代数閉包） | — | 完了 |
+| RC-02 | 03C/01/07-sturm | スツルムの定理とタルスキの問い合わせ（符号条件つきの根の個数は順序体だけで決まる） | — | 予定 |
+| RC-03 | 03C/01/08-rcf-qe | 実閉体の量化子消去と帰結（完全性・決定可能性・o 極小性） | — | 予定 |
 | MT-12 | 02-types-and-countable-models/05-random-graph | ランダムグラフ・拡張公理・ω 範疇性・0–1 法則（資料なし） | — | 完了 |
 | MT-13 | 02-types-and-countable-models/06-fraisse-limits | 年齢・HP/JEP/AP・超均質と拡張性・フライッセの定理・極限の理論の ω 範疇性（資料なし） | — | 完了 |
 

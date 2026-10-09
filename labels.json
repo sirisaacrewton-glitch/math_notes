@@ -16269,6 +16269,13 @@
       "num": "5.1",
       "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/05-strongly-minimal.html"
     },
+    "model:algebraic-elements-subfield": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "代数的な元は部分体をなす",
+      "num": "6.9",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html"
+    },
     "model:atomic-diagram": {
       "status": "defined",
       "type": "definition",
@@ -16373,6 +16380,13 @@
       "title": "範疇的なら ω 安定",
       "num": "1.4",
       "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/01-stability.html"
+    },
+    "model:cauchy-bound": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "根の上界",
+      "num": "6.6",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html"
     },
     "model:ch-ultrapowers-isomorphic": {
       "status": "defined",
@@ -16703,6 +16717,13 @@
       "num": "3.3",
       "page": "03-mathematical-logic/03C-model-theory/03-ultraproducts/03-ax-grothendieck.html"
     },
+    "model:fraction-field-order": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "商体の順序",
+      "num": "6.3",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html"
+    },
     "model:fraisse-omega-categorical": {
       "status": "defined",
       "type": "corollary",
@@ -17018,6 +17039,20 @@
       "num": "8.3",
       "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/08-rational-urysohn.html"
     },
+    "model:ordered-field": {
+      "status": "defined",
+      "type": "definition",
+      "title": "順序環・順序体",
+      "num": "6.1",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html"
+    },
+    "model:ordered-field-basic": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "順序体の基本性質",
+      "num": "6.2",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html"
+    },
     "model:page-acf": {
       "status": "defined",
       "type": "page",
@@ -17108,6 +17143,13 @@
       "title": "ω 安定な理論",
       "num": "",
       "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/02-omega-stable.html"
+    },
+    "model:page-ordered-fields": {
+      "status": "defined",
+      "type": "page",
+      "title": "順序体と実閉体",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html"
     },
     "model:page-quantifier-elimination": {
       "status": "defined",
@@ -17410,6 +17452,27 @@
       "num": "4.6",
       "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/04-no-vaught-pairs.html"
     },
+    "model:prob-of-not-rcf": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "6.12",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html"
+    },
+    "model:prob-of-rolle-fails": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "6.13",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html"
+    },
+    "model:prob-of-unique-order-q": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "6.11",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html"
+    },
     "model:prob-omit-nonstandard": {
       "status": "defined",
       "type": "problem",
@@ -17690,12 +17753,40 @@
       "num": "8.6",
       "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/08-rational-urysohn.html"
     },
+    "model:rcf": {
+      "status": "defined",
+      "type": "definition",
+      "title": "実閉体",
+      "num": "6.4",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html"
+    },
+    "model:rcf-basic": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "実閉体の基本性質",
+      "num": "6.5",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html"
+    },
+    "model:rcf-rolle": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "ロルの定理と平均値の定理",
+      "num": "6.8",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html"
+    },
     "model:realize-all-types": {
       "status": "defined",
       "type": "lemma",
       "title": "型の実現と初等拡大",
       "num": "3.3",
       "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/03-saturated-models.html"
+    },
+    "model:relative-algebraic-closure-rcf": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "実閉体の中の代数閉包",
+      "num": "6.10",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html"
     },
     "model:rg-complete": {
       "status": "defined",
@@ -18187,6 +18278,48 @@
       "num": "",
       "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/04-no-vaught-pairs.html"
     },
+    "model:sec-of-algebraic": {
+      "status": "defined",
+      "type": "section",
+      "title": "相対的な代数閉包",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html"
+    },
+    "model:sec-of-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html"
+    },
+    "model:sec-of-ordered": {
+      "status": "defined",
+      "type": "section",
+      "title": "順序体",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html"
+    },
+    "model:sec-of-polynomials": {
+      "status": "defined",
+      "type": "section",
+      "title": "多項式の性質",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html"
+    },
+    "model:sec-of-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html"
+    },
+    "model:sec-of-rcf": {
+      "status": "defined",
+      "type": "section",
+      "title": "実閉体",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html"
+    },
     "model:sec-omega-categorical": {
       "status": "defined",
       "type": "section",
@@ -18592,6 +18725,13 @@
       "title": "ヴォートの定理",
       "num": "",
       "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/07-vaught-never-two.html"
+    },
+    "model:sign-constant": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "根のない区間での符号",
+      "num": "6.7",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html"
     },
     "model:skolem-hull": {
       "status": "defined",
@@ -39243,6 +39383,20 @@
       "referencedFrom": [
         "03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/05-ma-reals.html",
         "03-mathematical-logic/03E-set-theory/02-infinitary-combinatorics/10-club-filter.html"
+      ]
+    },
+    "model:page-rcf-qe": {
+      "status": "planned",
+      "title": "実閉体の量化子消去",
+      "referencedFrom": [
+        "03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html"
+      ]
+    },
+    "model:page-sturm": {
+      "status": "planned",
+      "title": "スツルムの定理",
+      "referencedFrom": [
+        "03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html"
       ]
     },
     "ring:fraction-field": {

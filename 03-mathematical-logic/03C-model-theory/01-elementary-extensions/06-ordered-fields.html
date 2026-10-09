@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>順序体と実閉体 | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 順序体と実閉体 {#model:page-ordered-fields keywords="ordered field, ordered domain, positive cone, order on the field of fractions, real closed field, intermediate value property for polynomials, Cauchy bound for roots, Rolle's theorem for polynomials, mean value theorem, relative algebraic closure, real algebraic numbers"}
+
+実数の体 $\mathbb{R}$ の一階の性質を調べるために、順序体の言語で**実閉体**の理論 $\mathrm{RCF}$ を考える。本ページでは $\mathrm{RCF}$ を「多項式について中間値の定理が成り立つ順序体」として公理化し（\ref{model:rcf}）、後のスツルムの定理（\ref[スツルムの定理]{model:page-sturm}）とタルスキの量化子消去（\ref[実閉体の量化子消去]{model:page-rcf-qe}）で使う多項式の性質（根の上界、根のない区間での符号の一定性、ロルの定理と平均値の定理）を、公理だけから導く。また、実閉体の中で部分体の上に代数的な元全体がまた実閉体になること（\ref{model:relative-algebraic-closure-rcf}）を示し、実代数的数の体が実閉体であることを確かめる。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。公理化として「多項式の中間値の定理」を採るのはタルスキの扱いに沿ったもので、他の公理化との同値性は補足で述べる。
+
+## 記法と定義の確認 {#model:sec-of-notation}
+
+::: notation
+- **順序環の言語** $\mathcal{L}_{\mathrm{or}}\defeq\{0,1,+,-,\cdot,<\}$。環の言語 $\mathcal{L}_{\mathrm{ring}}$（\ref{model:page-acf}）に二項関係 $<$ を加えたもの。
+- 環はすべて単位元をもつ可換環とする。体 $K$ 上の $1$ 変数多項式環 $K[y]$ について、次の初等的な事実を使う（体論・可換環論の系列で扱う予定で、本ページでは証明しない）：
+  - (D1) **除法の原理**：$f,g\in K[y]$, $g\neq0$ なら、$f=qg+r$, $\deg r<\deg g$（$r=0$ を含む）となる $q,r\in K[y]$ がただ一つある。
+  - (D2) **因数定理**：$f(c)=0$（$c\in K$）なら $f=(y-c)q$ となる $q\in K[y]$ がある。したがって $0$ でない $d$ 次多項式の根は高々 $d$ 個で、$f\neq0$ は $f=(y-c)^{m}q$, $q(c)\neq0$ と書ける（$m\ge0$ を $c$ における $f$ の**重複度**という）。
+  - (D3) **形式微分** $f'$ は $(\sum c_{k}y^{k})'\defeq\sum kc_{k}y^{k-1}$ で、$(f+g)'=f'+g'$, $(fg)'=f'g+fg'$ を満たす。
+- 多項式 $p(y)=\sum_{k\le n}c_{k}y^{k}$ を $\mathcal{L}_{\mathrm{or}}$ の項として書くとき、$y^{k}$ は $y\cdot\cdots\cdot y$、係数は変数 $u_{k}$ とする（\ref{model:terms-polynomials}）。
+- 順序体の中で $\lvert a\rvert\defeq a$（$a\ge0$）、$-a$（$a<0$）。$\operatorname{sign}a\in\{-1,0,1\}$ は $a$ の符号。
+:::
+
+## 順序体 {#model:sec-of-ordered}
+
+::: definition 順序環・順序体 {#model:ordered-field keywords="ordered ring, ordered domain, ordered field" index="順序体|じゅんじょたい, 順序環|じゅんじょかん"}
+環 $A$ と $A$ 上の狭義の全順序 $<$ の組が**順序環**であるとは、次を満たすことをいう。
+- (O1) $a<b$ なら $a+c<b+c$。
+- (O2) $0<a$ かつ $0<b$ なら $0<ab$。
+
+$A$ が体のとき**順序体**という。$0\neq1$ とする。$\{a:0<a\}$ を**正の錐**という。
+:::
+
+::: lemma 順序体の基本性質 {#model:ordered-field-basic keywords="squares are nonnegative, 1 > 0, characteristic 0, absolute value, triangle inequality" index="順序体の基本性質|じゅんじょたいのきほんせいしつ"}
+順序環 $A$ について次が成り立つ。
+1. $a<b\iff0<b-a$。$a<0\iff0<-a$。
+2. $a\neq0$ なら $0<a^{2}$。とくに $0<1$。
+3. $A$ は整域で、$n\ge1$ について $0<n\cdot1$。したがって順序体の標数は $0$。
+4. $a<b$, $0<c$ なら $ac<bc$。
+5. $\lvert ab\rvert=\lvert a\rvert\lvert b\rvert$、$\lvert a+b\rvert\le\lvert a\rvert+\lvert b\rvert$。$\lvert a\rvert\le1+a^{2}$。
+6. （順序体）$0<a<b$ なら $0<b^{-1}<a^{-1}$。
+:::
+
+::: proof
+**1.** (O1) で $c=-a$ とする。
+
+**2.** $0<a$ なら (O2)。$a<0$ なら 1 から $0<-a$ で、$a^{2}=(-a)^{2}>0$。$1=1^{2}$, $1\neq0$。
+
+**3.** $a,b\neq0$ なら、符号に応じて $ab$ または $-ab$ が (O2) で正なので $ab\neq0$。$n\cdot1=1+\dots+1$ は (O1) と $0<1$ から正。
+
+**4.** $0<b-a$ と $0<c$ から $0<(b-a)c=bc-ac$。
+
+**5.** $\lvert ab\rvert$ は符号の場合分け。三角不等式：$-\lvert a\rvert\le a\le\lvert a\rvert$ を足して $-(\lvert a\rvert+\lvert b\rvert)\le a+b\le\lvert a\rvert+\lvert b\rvert$。最後：$\lvert a\rvert\le1$ なら明らか、$\lvert a\rvert>1$ なら 4 から $\lvert a\rvert<\lvert a\rvert^{2}=a^{2}$。
+
+**6.** $a^{-1}=a\cdot(a^{-1})^{2}>0$（2 と (O2)）。$b^{-1}<a^{-1}$ は $a<b$ の両辺に正の $a^{-1}b^{-1}$ を掛ける（4）。
+:::
+
+::: proposition 商体の順序 {#model:fraction-field-order keywords="the order of an ordered domain extends uniquely to its field of fractions: a/b > 0 iff ab > 0" index="商体の順序|しょうたいのじゅんじょ"}
+順序環 $A$（\ref{model:ordered-field-basic} の 3 から整域）の商体 $K=\mathrm{Frac}(A)$ 上に、$A$ の順序を延長する順序体の順序がただ一つあり、それは
+$$
+\frac{a}{b}>0\iff ab>0
+$$
+で与えられる。
+:::
+
+::: proof
+**Well-defined.** $a/b=a'/b'$ なら $ab'=a'b$。両辺に $bb'$ を掛けると $(ab)b'^{2}=(a'b')b^{2}$ で、$b^{2},b'^{2}>0$（\ref{model:ordered-field-basic} の 2）なので $ab$ と $a'b'$ の符号は等しい（4）。
+
+**順序体になる.** $P\defeq\{a/b:ab>0\}$ とおく。$a/b+c/d=(ad+bc)/(bd)$ で $(ad+bc)bd=(ab)d^{2}+(cd)b^{2}>0$。積 $(ac)/(bd)$ は $(ab)(cd)>0$。$x=a/b\neq0$ なら $ab\neq0$ で、$ab>0$ か $-ab=(-a)b>0$ のちょうど一方、すなわち $x\in P$ か $-x\in P$ のちょうど一方。$x<y\iff y-x\in P$ と定めれば、(O1)(O2) と全順序性が従う。
+
+**延長.** $a\in A$ は $a/1$ で、$a\cdot1=a$ なので $a>0$ の意味は一致する。
+
+**一意性.** 延長する順序体の順序 $<'$ について、$a/b=(ab)/b^{2}$ で $b^{2}>'0$ なので、$a/b>'0\iff ab>'0\iff ab>0$。
+:::
+
+## 実閉体 {#model:sec-of-rcf}
+
+::: definition 実閉体 {#model:rcf keywords="real closed field axiomatized by the intermediate value property for polynomials; the theory RCF" index="実閉体|じつへいたい, RCF|あーるしーえふ"}
+$\mathcal{L}_{\mathrm{or}}$ の理論 $\mathrm{RCF}$ を、順序体の公理と、各 $n\ge1$ についての**多項式の中間値の公理**
+$$
+\begin{gathered}
+\forall u_{0}\cdots\forall u_{n}\,\forall a\,\forall b\,\Bigl(a<b\wedge p(a)<0\wedge0<p(b)\\
+\to\exists y\,\bigl(a<y\wedge y<b\wedge p(y)=0\bigr)\Bigr),\qquad p(y)\defeq u_{n}y^{n}+\dots+u_{1}y+u_{0}
+\end{gathered}
+$$
+からなるものとする。$\mathrm{RCF}$ のモデルを**実閉体**という。
+:::
+
+$p(a)>0>p(b)$ の場合も、$-p$ に公理を使えば $a$ と $b$ の間に根がある。
+
+::: example
+$\mathbb{R}$ は実閉体である：多項式関数は連続で、$[a,b]$ は連結なので、中間値の定理（\ref{top:intermediate-value}）から $p(a)<0<p(b)$ なら $(a,b)$ に根がある（端点では $p\neq0$）。$\mathbb{Q}$ は実閉体でない：$y^{2}-2$ は $y=1$ で負、$y=2$ で正だが、$\mathbb{Q}$ に根はない。
+:::
+
+::: proposition 実閉体の基本性質 {#model:rcf-basic keywords="in a real closed field positive elements are squares and odd degree polynomials have roots" index="実閉体の基本性質|じつへいたいのきほんせいしつ"}
+実閉体 $R$ について次が成り立つ。
+1. $c>0$ なら $c=d^{2}$ となる $d>0$ がある。とくに、正の元とはちょうど $0$ でない平方元であり、$R$ の順序は体の構造から決まる。
+2. 奇数次の多項式は $R$ に根をもつ。
+:::
+
+::: proof
+**1.** $p(y)=y^{2}-c$ について $p(0)=-c<0$、$p(1+c)=1+c+c^{2}>0$。公理から $0<d<1+c$, $d^{2}=c$ となる $d$ がある。逆に $0$ でない平方は正（\ref{model:ordered-field-basic} の 2）。
+
+**2.** 最高次の係数で割って $p$ はモニックとしてよい。\ref{model:cauchy-bound} の $B$ について、$p(B)$ の符号は $B^{n}$ の符号（正）、$p(-B)$ の符号は $(-B)^{n}$ の符号（$n$ が奇数なので負）。公理から $(-B,B)$ に根がある。
+:::
+
+## 多項式の性質 {#model:sec-of-polynomials}
+
+以下、$R$ は実閉体、$p\in R[y]$ は $0$ でない多項式とする。
+
+::: lemma 根の上界 {#model:cauchy-bound keywords="Cauchy bound: beyond B = n + 1 + sum (c_k/c_n)^2 a polynomial has the sign of its leading term" index="根の上界|ねのじょうかい, コーシーの評価|こーしーのひょうか"}
+$p=\sum_{k\le n}c_{k}y^{k}$, $c_{n}\neq0$, $n\ge1$ とし、
+$$
+B\defeq n+1+\sum_{k<n}\Bigl(\frac{c_{k}}{c_{n}}\Bigr)^{2}
+$$
+とおく。$\lvert y\rvert\ge B$ なら $p(y)\neq0$ で、$\operatorname{sign}p(y)=\operatorname{sign}(c_{n}y^{n})$。この主張は順序体ならどれでも成り立つ。
+:::
+
+::: proof
+$\lvert y\rvert\ge B\ge1$ とする。\ref{model:ordered-field-basic} の 5 から $\lvert c_{k}/c_{n}\rvert\le1+(c_{k}/c_{n})^{2}$ なので、$s\defeq\sum_{k<n}\lvert c_{k}/c_{n}\rvert\le n+\sum_{k<n}(c_{k}/c_{n})^{2}<B\le\lvert y\rvert$。$k<n$ では $\lvert y\rvert^{k}\le\lvert y\rvert^{n-1}$（$\lvert y\rvert\ge1$）なので
+$$
+\Bigl\lvert\sum_{k<n}c_{k}y^{k}\Bigr\rvert\le\lvert c_{n}\rvert\,s\,\lvert y\rvert^{n-1}<\lvert c_{n}\rvert\,\lvert y\rvert^{n}=\lvert c_{n}y^{n}\rvert .
+$$
+よって $p(y)=c_{n}y^{n}+\sum_{k<n}c_{k}y^{k}$ は $c_{n}y^{n}$ と同じ符号で、$0$ でない。
+:::
+
+$B$ は係数の有理式で書けているので、係数が部分体 $K$ に属すれば $B\in K$ である（後でこれを使う）。
+
+::: lemma 根のない区間での符号 {#model:sign-constant keywords="a polynomial without roots on an interval has constant sign there" index="多項式の符号の一定性|たこうしきのふごうのいっていせい"}
+$I\subseteq R$ が区間（$a,b\in I$, $a<c<b$ なら $c\in I$ となる集合）で、$p$ が $I$ に根をもたなければ、$p$ は $I$ 上で一定の符号をもつ。
+:::
+
+::: proof
+$a<b$ で $p(a)$, $p(b)$ の符号が異なれば、中間値の公理（$p$ または $-p$ に）から $(a,b)\subseteq I$ に根がある。
+:::
+
+$p$ の根は有限個（(D2)）なので、それらを $r_{1}<\dots<r_{k}$ とすると、$p$ は各区間 $(-\infty,r_{1})$, $(r_{i},r_{i+1})$, $(r_{k},\infty)$ の上で一定の符号をもつ。
+
+::: theorem ロルの定理と平均値の定理 {#model:rcf-rolle keywords="Rolle's theorem and the mean value theorem for polynomials over a real closed field" index="ロルの定理（実閉体）|ろるのていりじつへいたい, 平均値の定理（実閉体）|へいきんちのていりじつへいたい"}
+$a<b$ とする。
+1. （ロル）$p(a)=p(b)=0$ なら、$p'$ は $(a,b)$ に根をもつ。
+2. （平均値）$p(b)-p(a)=p'(c)(b-a)$ となる $c\in(a,b)$ がある。
+3. $p'$ が $(a,b)$ で正なら、$p$ は $[a,b]$ で狭義単調増加。
+:::
+
+::: proof
+**1.** $(a,b)$ に $p$ の根があれば、$a$ と最小のそれ（根は有限個）に置き換えてよいので、$p$ は $(a,b)$ に根をもたないとする。(D2) から $p=(y-a)^{m}(y-b)^{k}q$, $m,k\ge1$, $q(a)\neq0\neq q(b)$ と書ける。$q$ は $[a,b]$ に根をもたない（$(a,b)$ の根は $p$ の根）ので、\ref{model:sign-constant} から $q(a)$ と $q(b)$ は同じ符号。(D3) で微分すると
+$$
+\begin{gathered}
+p'=(y-a)^{m-1}(y-b)^{k-1}h,\\
+h\defeq m(y-b)q+k(y-a)q+(y-a)(y-b)q'.
+\end{gathered}
+$$
+$h(a)=m(a-b)q(a)$, $h(b)=k(b-a)q(b)$ で、$a-b<0<b-a$, $m,k\ge1$（$m\cdot1,k\cdot1>0$）なので、$h(a)$ と $h(b)$ の符号は異なる。中間値の公理から $h$ は $(a,b)$ に根 $c$ をもち、$p'(c)=0$。
+
+**2.** $\lambda\defeq(p(b)-p(a))/(b-a)$ とし、$g(y)\defeq p(y)-p(a)-\lambda(y-a)$ に 1 を使う（$g(a)=g(b)=0$、$g'=p'-\lambda$）。$g$ が $0$ 多項式なら $p'=\lambda$ でどの $c$ でもよい。
+
+**3.** $a\le x<x'\le b$ について 2 を $[x,x']$ に使うと $p(x')-p(x)=p'(c)(x'-x)>0$。
+:::
+
+## 相対的な代数閉包 {#model:sec-of-algebraic}
+
+::: lemma 代数的な元は部分体をなす {#model:algebraic-elements-subfield keywords="elements algebraic over a subfield form a subfield" index="代数的な元|だいすうてきなげん"}
+体の拡大 $K\subseteq L$ について、$K$ 上代数的な（$K[y]$ の $0$ でない多項式の根である）$L$ の元全体 $\tilde{K}$ は、$K$ を含む $L$ の部分体である。
+:::
+
+::: proof
+**Step 1（有限次元の部分環の元は代数的）.** $L$ の部分環 $S\supseteq K$ が $K$ 上の線形空間として有限次元 $d$ なら、$\gamma\in S$ について $1,\gamma,\dots,\gamma^{d}$ は $S$ の $d+1$ 個の元なので一次従属で、$\gamma$ は $K$ 上代数的。
+
+**Step 2（和と積）.** $\alpha,\beta\in\tilde{K}$ が次数 $\le m$, $\le l$ の $0$ でない多項式の根なら、その多項式を最高次の係数で割って (D1) を使うと、$\alpha^{i}$（$i\ge m$）は $1,\dots,\alpha^{m-1}$ の $K$ 係数の一次結合で書ける（$i$ についての帰納法）。$\beta$ も同様。よって $K[\alpha,\beta]$（$\alpha,\beta$ の $K$ 係数多項式の値全体）は $\alpha^{i}\beta^{j}$（$i<m$, $j<l$）で張られ、有限次元。Step 1 から $\alpha\pm\beta,\alpha\beta\in K[\alpha,\beta]$ は代数的。
+
+**Step 3（逆元）.** $\alpha\in\tilde{K}$, $\alpha\neq0$ とし、$\alpha$ を根にもつ $0$ でない多項式のうち次数が最小の $f=\sum_{k\le m}c_{k}y^{k}$ をとる。$c_{0}=0$ なら $f=y\,g$ で $\alpha g(\alpha)=0$, $\alpha\ne0$ から $g(\alpha)=0$ となり最小性に反する。よって $c_{0}\neq0$ で、$\alpha\cdot\bigl(-c_{0}^{-1}\sum_{1\le k\le m}c_{k}\alpha^{k-1}\bigr)=1$。逆元は $K[\alpha]$ に属し、Step 1 から代数的。
+:::
+
+::: proposition 実閉体の中の代数閉包 {#model:relative-algebraic-closure-rcf keywords="the relative algebraic closure of a subfield in a real closed field is real closed; real algebraic numbers" index="相対的代数閉包（実閉体）|そうたいてきだいすうへいほうじつへいたい, 実代数的数|じつだいすうてきすう"}
+実閉体 $R$ とその部分体 $K$ について、$K$ 上代数的な $R$ の元全体 $\tilde{K}$ は（$R$ の順序を制限して）実閉体である。とくに、$\mathbb{Q}$ 上代数的な実数全体 $\mathbb{R}_{\mathrm{alg}}$ は実閉体である。
+:::
+
+::: proof
+$\tilde{K}$ は部分体（\ref{model:algebraic-elements-subfield}）で、$R$ の順序の制限で順序体になる（(O1)(O2) は部分集合でも成り立つ）。中間値の公理を確かめる。$p\in\tilde{K}[y]$, $\deg p=n\ge1$, $a<b$（$a,b\in\tilde{K}$）, $p(a)<0<p(b)$ とする。$R$ は実閉体なので、$a<c<b$, $p(c)=0$ となる $c\in R$ がある。$c\in\tilde{K}$ を示せばよい。
+
+$p$ の係数を $\alpha_{0},\dots,\alpha_{n}\in\tilde{K}$（$\alpha_{n}\neq0$）とし、$D\defeq K[\alpha_{0},\dots,\alpha_{n},\alpha_{n}^{-1}]$ とおく。\ref{model:algebraic-elements-subfield} の Step 2 と同じ議論（代数的な元のべきは有限個のべきの一次結合）から、$D$ は $K$ 上有限次元である（$\alpha_{n}^{-1}\in\tilde{K}$ は Step 3）。$p(c)=0$ から
+$$
+c^{n}=-\sum_{k<n}\frac{\alpha_{k}}{\alpha_{n}}c^{k},\qquad\frac{\alpha_{k}}{\alpha_{n}}\in D,
+$$
+なので、$i$ についての帰納法で $c^{i}\in Dc^{0}+\dots+Dc^{n-1}$。よって $D[c]=\sum_{j<n}Dc^{j}$ は $K$ 上有限次元（次元は $n\dim_{K}D$ 以下）の部分環で、Step 1 から $c$ は $K$ 上代数的、$c\in\tilde{K}$。後半は $R=\mathbb{R}$（例から実閉体）, $K=\mathbb{Q}$ とする。
+:::
+
+::: hypcheck
+- **中間値の公理**：\ref{model:sign-constant}、ロルの定理（$h$ の根）、\ref{model:rcf-basic}、\ref{model:relative-algebraic-closure-rcf}（$R$ での根の存在）に使った。根の上界（\ref{model:cauchy-bound}）は順序体の公理だけから出る。
+- **順序体の公理**：\ref{model:ordered-field-basic} のすべてと、商体の順序、根の上界での不等式の計算。とくに標数 $0$（$m\cdot1>0$）をロルの定理で $h(a)\neq0$ に使った。
+- **多項式の代数 (D1)–(D3)**：因数分解（重複度）、代数的な元の計算、形式微分。
+:::
+
+## 問題 {#model:sec-of-problems}
+
+::: problem {#model:prob-of-unique-order-q}
+$\mathbb{Q}$ の上の順序体の順序はただ一つであることを示せ。また $\mathbb{Q}(\sqrt{2})$（$\{a+b\sqrt{2}:a,b\in\mathbb{Q}\}$）には二つの順序があることを示せ。
+:::
+
+::: solution
+**$\mathbb{Q}$.** 順序体では $0<1$ で $0<n\cdot1$（\ref{model:ordered-field-basic} の 3）なので、正の整数は正。$\mathbb{Z}$ の順序は通常のものに決まり、\ref{model:fraction-field-order} から $\mathbb{Q}=\mathrm{Frac}(\mathbb{Z})$ の順序は一意。
+
+**$\mathbb{Q}(\sqrt{2})$.** $\sigma(a+b\sqrt{2})\defeq a-b\sqrt{2}$ は体の自己同型（$\sqrt{2}^{2}=(-\sqrt{2})^{2}$）。$\mathbb{R}$ の順序の制限 $<$ と、$x<'y\iff\sigma(x)<\sigma(y)$ はどちらも順序体の順序で、$\sqrt{2}>0$ だが $\sigma(\sqrt{2})=-\sqrt{2}<0$ なので $\sqrt{2}<'0$。よって異なる。（$\sqrt{2}$ は $\pm$ どちらかの符号をもち、その他の元の符号は $\mathbb{Q}$ の順序から決まるので、順序はこの二つだけである。）
+:::
+
+::: problem {#model:prob-of-not-rcf}
+$\mathbb{R}(t)$（$\mathbb{R}$ 係数の有理関数体）に、「$t$ はどの実数より大きい」という順序（$0$ でない多項式は最高次の係数が正のとき正、$f/g>0\iff fg>0$）を入れたものは、順序体だが実閉体でないことを示せ。
+:::
+
+::: solution
+**順序体.** 多項式環 $\mathbb{R}[t]$ で「最高次の係数が正なら正」とすると、和・積で正が保たれ（積の最高次の係数は積、和は次数の大きい方か、同じ次数なら係数の和が正）、$0$ でない $f$ は $f$ か $-f$ のちょうど一方が正なので順序環になる。\ref{model:fraction-field-order} から商体 $\mathbb{R}(t)$ に延びる。$t-r$（$r\in\mathbb{R}$）は最高次の係数 $1$ で正なので、$t$ はどの実数よりも大きい。
+
+**実閉体でない.** 正の元 $t$ は平方でない：$t=(f/g)^{2}$ なら $tg^{2}=f^{2}$ で、左辺の次数は奇数、右辺は偶数。\ref{model:rcf-basic} の 1 に反する。
+:::
+
+::: problem {#model:prob-of-rolle-fails}
+ロルの定理（\ref{model:rcf-rolle} の 1）は $\mathbb{Q}$ では成り立たないことを、$p(y)=y^{3}-y$ で確かめよ。
+:::
+
+::: solution
+$p(y)=y(y-1)(y+1)$ なので $p(0)=p(1)=0$。$p'(y)=3y^{2}-1$ の根は $y^{2}=1/3$ を満たすが、$y=m/n$（既約）なら $3m^{2}=n^{2}$ で、$3\mid n$ から $9\mid n^{2}$, $3\mid m^{2}$, $3\mid m$ となり既約性に反する。よって $p'$ は $\mathbb{Q}$ に根をもたず、とくに $(0,1)$ に根をもたない。
+:::
+
+::: supplement
+**前提を変えると.**
+- **他の公理化.** 順序体について、「中間値の公理」は「正の元は平方で、奇数次の多項式は根をもつ」（\ref{model:rcf-basic} の逆）とも、「順序体で、真の代数拡大で順序が延びるものがない」とも同値であることが知られている（アルティン–シュライアーの理論。$R(\sqrt{-1})$ が代数的閉体になることを使う。ここでは証明しない。体論の系列で扱う予定）。本サイトのタルスキの量化子消去（\ref[実閉体の量化子消去]{model:page-rcf-qe}）は、中間値の公理による公理化だけを使う。
+- **順序が体から決まる.** \ref{model:rcf-basic} の 1 から、実閉体の順序は「平方であること」で定義できる（$x\ge0\iff\exists z\,(z^{2}=x)$）。したがって実閉体の間の体の同型は自動的に順序を保つ。$\mathbb{Q}(\sqrt{2})$ のように実閉体でない順序体では、この限りでない（\ref{model:prob-of-unique-order-q}）。
+
+**似た定理.** 代数的閉体（\ref{model:page-acf}）は「すべての多項式が根をもつ」体だった。実閉体は、その「順序つきの類似」であり、$\mathbb{R}$ と $\mathbb{C}=\mathbb{R}(\sqrt{-1})$ の関係は、一般の実閉体 $R$ と代数的閉体 $R(\sqrt{-1})$ の関係として成り立つことが知られている。
+
+**高い視点から.** 実閉体の公理は、$\mathbb{R}$ の完備性（上限の存在）という二階の性質を、「多項式のグラフは途切れない」という一階の性質に弱めたものである。比喩で言えば、$\mathbb{R}$ は「どんな連続曲線も途中で消えない」直線であるのに対し、実閉体は「多項式で描ける曲線だけは途中で消えない」直線である。多項式しか見ない一階の言語にとっては、この違いは見えない（\ref[実閉体の量化子消去]{model:page-rcf-qe} で示す完全性により、$\mathbb{R}$ と $\mathbb{R}_{\mathrm{alg}}$ は同じ一階の文を満たす）。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

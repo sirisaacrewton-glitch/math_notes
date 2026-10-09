@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>部分関数のラムダ定義可能性 | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/06-lambda-calculus/05-partial-definability.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 部分関数のラムダ定義可能性 {#logic:page-partial-lambda-definability keywords="partial lambda definability, partial computable functions are lambda definable, Kleene, head reduction diverges, no normal form, Turing fixed point combinator, normal form problem undecidable"}
+
+\ref{logic:page-lambda-definability} では全域的な計算可能関数とラムダ定義可能な関数が一致することを示した。本ページでは部分関数に広げ、「値が定義されないときは項が正規形をもたない」ことまで含めて、計算可能な部分関数とラムダ定義可能な部分関数が一致することを示す（\ref{logic:partial-lambda-equivalence}、クリーネによるとされる）。値が定義されないときに項が正規形をもたないことは、正規化定理の系（\ref{logic:normal-form-has-head-reduction}）を使い、頭部簡約が無限に続くことで示す。
+
+> 資料フォルダにラムダ計算の教科書はなく、定義と証明は標準的な方針（探索の続きを探索の中に入れる方法）に沿って本サイトで組み立てた。
+
+## 記法と定義の確認 {#logic:sec-pd-notation}
+
+::: notation
+- ラムダ項、代入、$\to_{\beta}$, $\twoheadrightarrow_{\beta}$, $=_{\beta}$、正規形、チャーチ–ロッサーの定理とその系（\ref{logic:normal-form-unique}）、チューリングの不動点結合子 $\Theta$（\ref{logic:fixed-point-combinator}）は \ref{logic:page-lambda-calculus} のとおり。
+- チャーチ数 $\underline{n}$、$\mathsf{succ}$（\ref{logic:lambda-arith}）、全域的な関数のラムダ定義可能性（\ref{logic:lambda-definable}, \ref{logic:computable-lambda}, \ref{logic:lambda-computable}）は \ref{logic:page-lambda-definability} のとおり。
+- 頭部簡約 $\to_{h}$、頭部の形、頭部正規形、並行簡約 $\Rightarrow$ と $\Rightarrow^{n}$、頭部正規形への到達（\ref{logic:reach-head-normal-form}）、頭部簡約の停止（\ref{logic:normal-form-has-head-reduction}）は \ref{logic:page-normalization} のとおり。$\to_{h}^{+}$ は $\to_{h}$ を 1 回以上つないだ関係。
+- 部分関数、$\downarrow$, $\uparrow$, $\simeq$、計算可能な部分関数、各プログラムの標準形（\ref{comp:normal-form-program}）は \ref{comp:page-recursive-functions} のとおり。
+- $\mathsf{s}_{j}\defeq\mathsf{succ}^{j}\,\underline{0}$（$\mathsf{succ}$ を $j$ 回適用した項）。\ref{logic:lambda-arith} の 1 から $\mathsf{s}_{j}=_{\beta}\underline{j}$。
+:::
+
+::: definition 部分関数のラムダ定義可能性 {#logic:partial-lambda-definable keywords="lambda definable partial function" index="ラムダ定義可能（部分関数の）|らむだていぎかのうぶぶんかんすうの"}
+部分関数 $f\colon\N^{k}\rightharpoonup\N$ が**ラムダ定義可能**であるとは、ある閉項 $F$ で、すべての $\vec{m}\in\N^{k}$ について
+1. $f(\vec{m})\downarrow$ なら $F\underline{m_{1}}\cdots\underline{m_{k}}=_{\beta}\underline{f(\vec{m})}$、
+2. $f(\vec{m})\uparrow$ なら $F\underline{m_{1}}\cdots\underline{m_{k}}$ は正規形をもたない、
+
+となるものがあることをいう。$f$ が全域的なら \ref{logic:lambda-definable} と一致する。
+:::
+
+::: remark
+条件 2 がないと、どの部分関数も「定義されるところで値を正しく返す」項をもつかどうかだけの問題になり、定義域の情報が失われる。文献によっては、条件 2 の代わりに「頭部正規形をもたない（可解でない）」ことを要求する定義もあると言われている（ここでは確かめていない）。本ページの構成は、そのより強い条件も満たす（\ref{logic:partial-computable-lambda} の 2）。
+:::
+
+## 頭部簡約の補題 {#logic:sec-pd-head}
+
+::: lemma 頭部簡約と引数 {#logic:head-apply keywords="if M head reduces to lambda x1..xn.N then M A1..An head reduces to N[A/x]" index="頭部簡約と引数|とうぶかんやくとひきすう"}
+$M\to_{h}^{\ast}\lambda x_{1}\cdots x_{n}.N$（$n\ge0$、$N$ は任意の項）で、束縛変数 $x_{1},\dots,x_{n}$ は項 $A_{1},\dots,A_{n}$ に自由に現れないとする。このとき
+$$
+M A_{1}\cdots A_{n}\to_{h}^{\ast}N[A_{1}/x_{1}]\cdots[A_{n}/x_{n}].
+$$
+:::
+
+::: proof
+**準備（頭部簡約は抽象の列を保つ）.** $\to_{h}$ の定義（\ref{logic:head-reduction} の 1）は $\lambda\vec{x}.(\lambda y.P)Q\,\vec{M}\to_{h}\lambda\vec{x}.P[Q/y]\,\vec{M}$ で、左辺の抽象の列 $\lambda\vec{x}$ は右辺にそのまま残る。したがって、$M=\lambda x.M'$ が抽象なら、$M\to_{h}S$ はちょうど $S=\lambda x.S'$, $M'\to_{h}S'$ の形で、$M$ からの頭部簡約の列は $M'$ からの頭部簡約の列に $\lambda x$ を付けたものである。
+
+$M\to_{h}^{\ast}\lambda\vec{x}.N$ の長さ $r$ と $n$ の組 $(r,n)$ に関する辞書式順序の帰納法で示す。$n=0$ なら主張は仮定そのもの。$n\ge1$ とする。
+
+- **$M$ が抽象でない場合.** $r=0$ なら $M=\lambda\vec{x}.N$ は抽象になり（$n\ge1$）、矛盾。よって $r\ge1$ で、$M\to_{h}M_{1}\to_{h}^{\ast}\lambda\vec{x}.N$（後半の長さ $r-1$）。$M$ は抽象でないので \ref{logic:head-basic} の 2 から $M\vec{A}\to_{h}M_{1}\vec{A}$。帰納法の仮定（$(r-1,n)$）から $M_{1}\vec{A}\to_{h}^{\ast}N[A_{1}/x_{1}]\cdots[A_{n}/x_{n}]$。
+- **$M=\lambda x'.M'$ が抽象の場合.** 準備から、$\lambda\vec{x}.N$ も $\lambda x'$ で始まり、α 同値により $x'=x_{1}$ としてよく、$M'\to_{h}^{\ast}\lambda x_{2}\cdots x_{n}.N$（長さ $r$）。$MA_{1}=(\lambda x_{1}.M')A_{1}$ は頭部の基なので
+$$
+M A_{1}A_{2}\cdots A_{n}\to_{h}M'[A_{1}/x_{1}]\,A_{2}\cdots A_{n}.
+$$
+\ref{logic:head-basic} の 4 を $r$ 回使うと、$M'[A_{1}/x_{1}]\to_{h}^{\ast}(\lambda x_{2}\cdots x_{n}.N)[A_{1}/x_{1}]=\lambda x_{2}\cdots x_{n}.N[A_{1}/x_{1}]$（長さ $r$。$x_{2},\dots,x_{n}$ は $A_{1}$ に自由に現れないので代入は抽象の内側に入る）。帰納法の仮定（$(r,n-1)$、項 $M'[A_{1}/x_{1}]$ と $A_{2},\dots,A_{n}$ について）から
+$$
+M'[A_{1}/x_{1}]\,A_{2}\cdots A_{n}\to_{h}^{\ast}N[A_{1}/x_{1}][A_{2}/x_{2}]\cdots[A_{n}/x_{n}].
+$$
+:::
+
+::: corollary チャーチ数による場合分け {#logic:numeral-head-test keywords="if P reduces to the Church numeral k then P A B head reduces to B (k=0) or to A applied to something (k>0)" index="チャーチ数による場合分け|ちゃーちすうによるばあいわけ"}
+$P\twoheadrightarrow_{\beta}\underline{k}$ とし、$A$, $B$ を項とする。
+1. $k=0$ なら $PAB\to_{h}^{\ast}B$。
+2. $k\ge1$ なら、ある項 $C$ で $PAB\to_{h}^{\ast}A\,C$。
+:::
+
+::: proof
+$\twoheadrightarrow_{\beta}=\Rightarrow^{\ast}$（\ref{logic:parallel-beta}）なので、ある $n$ で $P\Rightarrow^{n}\underline{k}$。チャーチ数の束縛変数 $f,x$ は $A,B$ に自由に現れないように選ぶ。
+
+**1.** $\underline{0}=\lambda fx.x$ は頭部正規形（頭部は $x$、引数なし）。\ref{logic:reach-head-normal-form} から $P\to_{h}^{\ast}\lambda fx.x$。\ref{logic:head-apply}（$n=2$, $N=x$）から $PAB\to_{h}^{\ast}x[A/f][B/x]=B$。
+
+**2.** $\underline{k}=\lambda fx.f(f^{k-1}x)$ は頭部正規形（頭部は $f$、引数は $f^{k-1}x$ の一つ）。\ref{logic:reach-head-normal-form} から、ある $C_{0}$ で $P\to_{h}^{\ast}\lambda fx.f\,C_{0}$。\ref{logic:head-apply}（$n=2$, $N=f\,C_{0}$）から $PAB\to_{h}^{\ast}(f\,C_{0})[A/f][B/x]=A\,C$（$C\defeq C_{0}[A/f][B/x]$。$x$ は $A$ に自由に現れないので $f$ に入れた $A$ は $[B/x]$ で変わらない）。
+:::
+
+::: lemma チューリングの不動点結合子の頭部簡約 {#logic:turing-theta-head keywords="Theta F head reduces to F(Theta F) in two steps" index="チューリングの不動点結合子|ちゅーりんぐのふどうてんけつごうし"}
+$\Theta=AA$, $A\defeq\lambda xy.y(xxy)$ とすると、すべての項 $F$ と $B_{1},\dots,B_{l}$ について
+$$
+\Theta F B_{1}\cdots B_{l}\to_{h}(\lambda y.y(AAy))F B_{1}\cdots B_{l}\to_{h}F(\Theta F)B_{1}\cdots B_{l}.
+$$
+:::
+
+::: proof
+$\Theta FB_{1}\cdots B_{l}=(\lambda x.\lambda y.y(xxy))A\,F\,\vec{B}$ の頭部の基は $(\lambda x.\cdots)A$ で、簡約すると $(\lambda y.y(AAy))F\vec{B}$。この項の頭部の基は $(\lambda y.y(AAy))F$ で、簡約すると $F(AAF)\vec{B}=F(\Theta F)\vec{B}$。
+:::
+
+## 定理 {#logic:sec-pd-theorems}
+
+::: theorem 計算可能な部分関数はラムダ定義可能 {#logic:partial-computable-lambda keywords="every partial computable function is lambda definable, head reduction diverges when undefined" index="ラムダ定義可能性定理（部分関数の）|らむだていぎかのうせいていりぶぶんかんすうの"}
+計算可能な部分関数 $f\colon\N^{k}\rightharpoonup\N$ について、閉項 $F$ で次を満たすものがある。
+1. $f(\vec{m})\downarrow$ なら $F\underline{\vec{m}}=_{\beta}\underline{f(\vec{m})}$。
+2. $f(\vec{m})\uparrow$ なら $F\underline{\vec{m}}$ からの頭部簡約の列は無限に続く。したがって $F\underline{\vec{m}}$ は正規形をもたず、頭部正規形にも β 等しくない。
+
+とくに $f$ はラムダ定義可能である。
+:::
+
+::: proof
+**Step 1（標準形）.** 各プログラムの標準形（\ref{comp:normal-form-program}）から、原始再帰関数 $T,U\colon\N^{k+1}\to\N$ で
+$$
+f(\vec{m})\simeq U\bigl(\vec{m},\mu t\,[T(\vec{m},t)=0]\bigr)
+$$
+となるものがある。$T,U$ は全域的な計算可能関数なので、\ref{logic:computable-lambda} から、それらを定義する閉項 $G$, $V$ がある：$G\underline{\vec{m}}\,\underline{t}=_{\beta}\underline{T(\vec{m},t)}$, $V\underline{\vec{m}}\,\underline{t}=_{\beta}\underline{U(\vec{m},t)}$。
+
+**Step 2（項の定義）.** 探索の続き（見つかったときの出力 $V\vec{x}\,t$）を探索の中に入れて、
+$$
+\begin{aligned}
+S&\defeq\lambda\vec{x}.\lambda h.\lambda t.\ G\vec{x}t\,\bigl(\lambda z.h(\mathsf{succ}\,t)\bigr)\,(V\vec{x}t),\\
+F&\defeq\lambda\vec{x}.\ \Theta(S\vec{x})\,\underline{0}
+\end{aligned}
+$$
+とする（$z$ は新しい変数）。$\vec{m}$ を固め、$F\underline{\vec{m}}$ からの頭部簡約の列を最初から追う。
+
+**Step 3（一周の頭部簡約）.** まず $F\underline{\vec{m}}=(\lambda\vec{x}.\Theta(S\vec{x})\underline{0})\underline{\vec{m}}\to_{h}^{k}\Theta(S\underline{\vec{m}})\underline{0}$（$k$ 個の頭部の基を順に簡約）。\ref{logic:turing-theta-head}（$l=1$）から
+$$
+\Theta(S\underline{\vec{m}})\underline{0}\to_{h}^{2}S\underline{\vec{m}}\,(\Theta(S\underline{\vec{m}}))\,\underline{0}\to_{h}^{k+2}G\underline{\vec{m}}\,\mathsf{s}_{0}\,(\lambda z.H'\mathsf{s}_{1})\,(V\underline{\vec{m}}\,\mathsf{s}_{0}),
+$$
+ここで $H'\defeq\Theta(S\underline{\vec{m}})$、$\mathsf{s}_{0}=\underline{0}$, $\mathsf{s}_{1}=\mathsf{succ}\,\mathsf{s}_{0}$。後半の $k+2$ 段は、$S\underline{\vec{m}}\,H'\,\mathsf{s}_{0}$ の先頭の $k+2$ 個の抽象 $\lambda\vec{x}$, $\lambda h$, $\lambda t$ の基を順に簡約したものである。
+
+同じ計算を $\mathsf{s}_{j}$ から始めると、すべての $j$ について
+$$
+H'\mathsf{s}_{j}\to_{h}^{+}E_{j}\defeq G\underline{\vec{m}}\,\mathsf{s}_{j}\,(\lambda z.H'\mathsf{s}_{j+1})\,(V\underline{\vec{m}}\,\mathsf{s}_{j})
+$$
+（\ref{logic:turing-theta-head} の 2 段と、$\lambda\vec{x}$, $\lambda h$, $\lambda t$ の $k+2$ 段）。
+
+**Step 4（場合分け）.** $G\underline{\vec{m}}\,\mathsf{s}_{j}=_{\beta}G\underline{\vec{m}}\,\underline{j}=_{\beta}\underline{T(\vec{m},j)}$（$=_{\beta}$ は適用と両立し、$\mathsf{s}_{j}=_{\beta}\underline{j}$）。チャーチ数は正規形なので、\ref{logic:normal-form-unique} から $G\underline{\vec{m}}\,\mathsf{s}_{j}\twoheadrightarrow_{\beta}\underline{T(\vec{m},j)}$。\ref{logic:numeral-head-test} を $P=G\underline{\vec{m}}\,\mathsf{s}_{j}$, $A=\lambda z.H'\mathsf{s}_{j+1}$, $B=V\underline{\vec{m}}\,\mathsf{s}_{j}$ に使うと：
+- $T(\vec{m},j)=0$ なら $E_{j}\to_{h}^{\ast}V\underline{\vec{m}}\,\mathsf{s}_{j}$。
+- $T(\vec{m},j)\neq0$ なら $E_{j}\to_{h}^{\ast}(\lambda z.H'\mathsf{s}_{j+1})C\to_{h}H'\mathsf{s}_{j+1}$（$z$ は $H'\mathsf{s}_{j+1}$ に自由に現れない）。
+
+**Step 5（結論）.** 頭部簡約は決定的（各項の $\to_{h}$ の行き先は高々一つ、\ref{logic:head-reduction} の 1）なので、$F\underline{\vec{m}}$ から始まる頭部簡約の列はただ一つで、Step 3, 4 で書いた項をこの順に通る。
+
+1. $f(\vec{m})\downarrow$ とし、$t_{0}\defeq\mu t\,[T(\vec{m},t)=0]$ とする。$j<t_{0}$ では $T(\vec{m},j)\neq0$ なので、列は $H'\mathsf{s}_{0},H'\mathsf{s}_{1},\dots,H'\mathsf{s}_{t_{0}}$ を通り、$E_{t_{0}}$ から $V\underline{\vec{m}}\,\mathsf{s}_{t_{0}}$ に至る。頭部簡約は β 簡約なので
+$$
+F\underline{\vec{m}}\twoheadrightarrow_{\beta}V\underline{\vec{m}}\,\mathsf{s}_{t_{0}}=_{\beta}V\underline{\vec{m}}\,\underline{t_{0}}=_{\beta}\underline{U(\vec{m},t_{0})}=\underline{f(\vec{m})}.
+$$
+2. $f(\vec{m})\uparrow$ なら、標準形から $T(\vec{m},t)=0$ となる $t$ はない。よってすべての $j$ で Step 4 の第二の場合が起こり、列は $H'\mathsf{s}_{0},H'\mathsf{s}_{1},H'\mathsf{s}_{2},\dots$ をすべて通る。各 $j$ で $H'\mathsf{s}_{j}\to_{h}^{+}H'\mathsf{s}_{j+1}$（1 段以上）なので、列は無限に続く。\ref{logic:normal-form-has-head-reduction} の対偶から $F\underline{\vec{m}}$ は正規形をもたない。また、$F\underline{\vec{m}}=_{\beta}N$ で $N$ が頭部正規形とすると、チャーチ–ロッサーの定理（\ref{logic:church-rosser}）から共通の簡約先 $N'$ があり、$N\twoheadrightarrow_{\beta}N'$ なので $N'$ も頭部正規形（頭部の変数と抽象の列は、引数の中の簡約でしか変わらない形 $\lambda\vec{x}.y\vec{N}$ が保たれる）。\ref{logic:reach-head-normal-form} から $F\underline{\vec{m}}$ の頭部簡約は頭部正規形に至って止まるが、これは無限に続くことに反する。
+:::
+
+::: theorem ラムダ定義可能な部分関数は計算可能 {#logic:partial-lambda-computable keywords="lambda definable partial functions are computable" index="ラムダ定義可能な部分関数の計算可能性|らむだていぎかのうなぶぶんかんすうのけいさんかのうせい"}
+ラムダ定義可能な部分関数は計算可能である。
+:::
+
+::: proof
+$F$ が $f$ を定義するとする。\ref{logic:lambda-computable} の証明と同じく、入力 $\vec{m}$ について $F\underline{\vec{m}}$ から $0,1,2,\dots$ 段で得られる項を幅優先で列挙し、チャーチ数 $\underline{n}$ が現れたら $n$ を出力する手続きを考える。
+- $f(\vec{m})\downarrow$ なら、\ref{logic:lambda-computable} の証明のとおり、$F\underline{\vec{m}}\twoheadrightarrow_{\beta}\underline{f(\vec{m})}$ で探索は停止し、現れるチャーチ数は $\underline{f(\vec{m})}$ だけ（二つのチャーチ数が現れればそれらは β 等しい正規形で、\ref{logic:normal-form-unique} から等しい）。
+- $f(\vec{m})\uparrow$ なら、$F\underline{\vec{m}}$ は正規形をもたない。チャーチ数は正規形なので、$F\underline{\vec{m}}$ の簡約先にチャーチ数は現れず、手続きは停止しない。
+
+よって手続きは $f$ を計算する（チャーチ–チューリングの提唱は使わず、手続きを L のプログラムに書くことは \ref{logic:lambda-computable} の証明と同じ）。
+:::
+
+::: corollary 部分関数のラムダ定義可能性と計算可能性 {#logic:partial-lambda-equivalence keywords="partial lambda definable iff partial computable" index="ラムダ定義可能性と計算可能性（部分関数）|らむだていぎかのうせいとけいさんかのうせいぶぶんかんすう"}
+部分関数 $f\colon\N^{k}\rightharpoonup\N$ について、$f$ が計算可能であることと、\ref{logic:partial-lambda-definable} の意味でラムダ定義可能であることは同値である。
+:::
+
+::: proof
+\ref{logic:partial-computable-lambda} と \ref{logic:partial-lambda-computable}。
+:::
+
+::: hypcheck
+- **探索の続きを探索の中に入れること**：Step 2 で $V\vec{x}t$ を探索の項 $S$ の中に置いた。これを「探索の結果 $R$ を外から $V$ に渡す」形 $\lambda\vec{x}.V\vec{x}(R\vec{x}\underline{0})$ にすると、$V$ が引数を使わない（$U$ が第二引数によらない）場合に、探索が終わらなくても全体が正規形をもちうる（\ref{logic:prob-pd-naive}）。
+- **頭部簡約の決定性**：Step 5 で、列 $H'\mathsf{s}_{0},H'\mathsf{s}_{1},\dots$ がただ一つの頭部簡約の列の上にあることに使った。
+- **頭部正規形への到達**（\ref{logic:reach-head-normal-form}）：\ref{logic:numeral-head-test} で $G\underline{\vec{m}}\mathsf{s}_{j}$ の頭部簡約がチャーチ数の頭部正規形に至ることに、また Step 5 の 2 の後半に使った。
+- **正規化定理の系**（\ref{logic:normal-form-has-head-reduction}）：Step 5 の 2 で、頭部簡約が無限に続くことから正規形がないことを導くのに使った。逆向きの \ref{logic:partial-lambda-computable} では使っていない。
+- **チューリングの $\Theta$**：$\Theta F$ が頭部簡約で $F(\Theta F)$ に至ること（\ref{logic:turing-theta-head}）を使った。$Y$ では $YF$ が $F(YF)$ に簡約されないので（\ref{logic:fixed-point-combinator} の後の注意）、Step 3 の列を同じ形で書けない。
+- **全域的な場合の定理**（\ref{logic:computable-lambda}）：$T,U$ を定義する項を得るのに使った。$T,U$ が全域的であることが必要で、標準形が原始再帰関数 $T,U$ を与えることがここで効いている。
+:::
+
+## 問題 {#logic:sec-pd-problems}
+
+::: problem {#logic:prob-pd-naive}
+$f$ をどこでも定義されない部分関数 $f\colon\N\rightharpoonup\N$ とし、$U(m,t)\defeq0$ とすると $f(m)\simeq U(m,\mu t\,[1=0])$ である。$V\defeq\lambda xt.\underline{0}$ として、「探索の結果を外から渡す」項 $F'\defeq\lambda x.V\,x\,(R\,x)$（$R$ は任意の閉項）が、$f$ を \ref{logic:partial-lambda-definable} の意味で定義しないことを示せ。
+:::
+
+::: solution
+$F'\underline{m}\to_{\beta}V\underline{m}(R\underline{m})\twoheadrightarrow_{\beta}\underline{0}$ で、$\underline{0}$ は正規形。$f(m)\uparrow$ なのに $F'\underline{m}$ が正規形をもつので、条件 2 に反する。\ref{logic:partial-computable-lambda} の構成では、出力 $V\vec{x}t$ は探索が成功したときにだけ頭部の位置に現れるので、この問題は起こらない。
+:::
+
+::: problem {#logic:prob-pd-normal-form-undecidable}
+閉項（のコード）の集合 $\{M:M\text{ は正規形をもつ}\}$ が決定可能でないことを、\ref{logic:partial-computable-lambda} と $K=\{e:\varphi_{e}(e)\downarrow\}$ の決定不能性（\ref{comp:halting-L}）から示せ。項のコード化は \ref{logic:lambda-computable} の証明のとおりとする。
+:::
+
+::: solution
+$f(e)\simeq\varphi_{e}(e)$ は計算可能な部分関数（\ref{comp:universal-function}）。\ref{logic:partial-computable-lambda} の $F$ をとると、$e\in K\iff f(e)\downarrow\iff F\underline{e}$ は正規形をもつ（$\Rightarrow$ は $F\underline{e}\twoheadrightarrow_{\beta}\underline{f(e)}$、$\Leftarrow$ は条件 2 の対偶）。$e\mapsto(F\underline{e}\text{ のコード})$ は計算可能（$F$ は固定、$\underline{e}$ のコードは $e$ から計算できる）。正規形をもつ閉項の集合が決定可能なら、合成により $K$ が決定可能となり、\ref{comp:halting-L} に反する。
+:::
+
+::: supplement
+**前提を変えると.**
+- **定義域の判定.** \ref{logic:partial-lambda-computable} の証明から、$\{\vec{m}:F\underline{\vec{m}}\text{ が正規形をもつ}\}$ は計算可能な部分関数の定義域（c.e. 集合）である。\ref{logic:prob-pd-normal-form-undecidable} はこれが一般には決定可能でないことを示している。
+- **値の表し方.** 条件 1 を「$F\underline{\vec{m}}\twoheadrightarrow_{\beta}\underline{f(\vec{m})}$」としても、チャーチ–ロッサーの定理により同じ概念になる。
+
+**似た定理.**
+- 組合せ論理（\ref{logic:page-combinatory-logic}）でも、弱簡約について同様の結果が成り立つことが知られている（ここでは確かめていない）。
+- 「頭部正規形をもたない項」（可解でない項）をすべて同一視しても無矛盾であることなど、可解性の理論は Barendregt の教科書で扱われていることが知られている（ここでは扱わない）。
+
+**高い視点から：「失敗」を項の中で表す.** 全域的な場合には「値が β 等しい」ことだけを見ればよかったが、部分関数では「値がない」ことも項で表さなければならない。ラムダ計算には「エラー」という特別な値がないので、「いつまでも頭部が決まらない」ことが未定義を表す。表示的意味論では、頭部正規形をもたない項は最小元 $\bot$ に解釈されることが知られており、本ページの構成は「探索が失敗する入力では、出力の項がどの段階でも $\bot$ から離れない」ように作ったものと見られる。比喩で言えば、「答えが見つかったら、その場で清書して提出する」受験生は、見つからない限り何も提出しない。これに対して「答えを探しながら、解答欄に先に定数を書いてしまう」受験生（\ref{logic:prob-pd-naive}）は、答えがないのに何かを提出してしまう。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

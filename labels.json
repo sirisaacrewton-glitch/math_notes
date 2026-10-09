@@ -12783,6 +12783,13 @@
       "num": "7.11",
       "page": "03-mathematical-logic/03B-general-logic/03-modal-logic/07-incomplete-modal-logic.html"
     },
+    "logic:head-apply": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "頭部簡約と引数",
+      "num": "5.3",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/05-partial-definability.html"
+    },
     "logic:head-basic": {
       "status": "defined",
       "type": "lemma",
@@ -13399,6 +13406,13 @@
       "num": "4.8",
       "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/04-normalization.html"
     },
+    "logic:numeral-head-test": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "チャーチ数による場合分け",
+      "num": "5.4",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/05-partial-definability.html"
+    },
     "logic:open-cover-code": {
       "status": "defined",
       "type": "definition",
@@ -13553,6 +13567,13 @@
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/04-normalization.html"
     },
+    "logic:page-partial-lambda-definability": {
+      "status": "defined",
+      "type": "page",
+      "title": "部分関数のラムダ定義可能性",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/05-partial-definability.html"
+    },
     "logic:page-prop-compactness": {
       "status": "defined",
       "type": "page",
@@ -13671,6 +13692,34 @@
       "title": "並行簡約と代入",
       "num": "1.7",
       "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/01-untyped-lambda.html"
+    },
+    "logic:partial-computable-lambda": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "計算可能な部分関数はラムダ定義可能",
+      "num": "5.6",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/05-partial-definability.html"
+    },
+    "logic:partial-lambda-computable": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "ラムダ定義可能な部分関数は計算可能",
+      "num": "5.7",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/05-partial-definability.html"
+    },
+    "logic:partial-lambda-definable": {
+      "status": "defined",
+      "type": "definition",
+      "title": "部分関数のラムダ定義可能性",
+      "num": "5.1",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/05-partial-definability.html"
+    },
+    "logic:partial-lambda-equivalence": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "部分関数のラムダ定義可能性と計算可能性",
+      "num": "5.8",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/05-partial-definability.html"
     },
     "logic:path-operations": {
       "status": "defined",
@@ -14140,6 +14189,20 @@
       "title": "",
       "num": "3.17",
       "page": "03-mathematical-logic/03B-general-logic/02-first-order-logic/03-semantics.html"
+    },
+    "logic:prob-pd-naive": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "5.9",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/05-partial-definability.html"
+    },
+    "logic:prob-pd-normal-form-undecidable": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "5.10",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/05-partial-definability.html"
     },
     "logic:prob-polish": {
       "status": "defined",
@@ -15499,6 +15562,34 @@
       "num": "",
       "page": "03-mathematical-logic/03B-general-logic/03-modal-logic/01-normal-modal-logics.html"
     },
+    "logic:sec-pd-head": {
+      "status": "defined",
+      "type": "section",
+      "title": "頭部簡約の補題",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/05-partial-definability.html"
+    },
+    "logic:sec-pd-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/05-partial-definability.html"
+    },
+    "logic:sec-pd-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/05-partial-definability.html"
+    },
+    "logic:sec-pd-theorems": {
+      "status": "defined",
+      "type": "section",
+      "title": "定理",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/05-partial-definability.html"
+    },
     "logic:sec-prop-compactness-applications": {
       "status": "defined",
       "type": "section",
@@ -16541,6 +16632,13 @@
       "title": "真理値割り当てと真理値",
       "num": "1.5",
       "page": "03-mathematical-logic/03B-general-logic/01-propositional-logic/01-syntax-semantics.html"
+    },
+    "logic:turing-theta-head": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "チューリングの不動点結合子の頭部簡約",
+      "num": "5.5",
+      "page": "03-mathematical-logic/03D-computability-theory/06-lambda-calculus/05-partial-definability.html"
     },
     "logic:two-distinct": {
       "status": "defined",

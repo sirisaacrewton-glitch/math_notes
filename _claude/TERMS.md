@@ -460,3 +460,4 @@
 | clopen set / Sierpinski theorem (characterization of Q) | 閉開集合 / シェルピンスキーの定理（有理数の特徴づけ） | 開閉集合 | 標準的。top:page-rationals-characterization |
 | sigma-locally finite / Michael's theorem | σ 局所有限 / マイケルの定理 | | 標準的。top:page-michael |
 | normalization theorem / leftmost reduction / head reduction / head normal form / internal parallel reduction | 正規化定理 / 最左簡約 / 頭部簡約 / 頭部正規形 / 内部並行簡約 | 頭部正規形：頭正規形 | 正規化定理・最左簡約は標準的。頭部簡約・内部並行簡約は仮。logic:page-normalization |
+| partial lambda definability / Turing fixed point combinator | 部分関数のラムダ定義可能性 / チューリングの不動点結合子 | | 標準的。logic:page-partial-lambda-definability |

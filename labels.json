@@ -34938,6 +34938,34 @@
       "num": "2.8",
       "page": "54-general-topology/54A-generalities/01-topological-spaces/02-closure-interior.html"
     },
+    "top:dieudonne-complete": {
+      "status": "defined",
+      "type": "definition",
+      "title": "デュドネ完備",
+      "num": "4.3",
+      "page": "54-general-topology/54E-richer-structures/02-uniform-spaces/04-dieudonne-completion.html"
+    },
+    "top:dieudonne-completion": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "デュドネの完備化",
+      "num": "4.5",
+      "page": "54-general-topology/54E-richer-structures/02-uniform-spaces/04-dieudonne-completion.html"
+    },
+    "top:dieudonne-examples": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "デュドネ完備な空間の例",
+      "num": "4.8",
+      "page": "54-general-topology/54E-richer-structures/02-uniform-spaces/04-dieudonne-completion.html"
+    },
+    "top:dieudonne-via-universal": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "普遍一様構造による判定",
+      "num": "4.4",
+      "page": "54-general-topology/54E-richer-structures/02-uniform-spaces/04-dieudonne-completion.html"
+    },
     "top:differentiable-in-en": {
       "status": "defined",
       "type": "lemma",
@@ -35659,6 +35687,13 @@
       "num": "1.4",
       "page": "54-general-topology/54G-peculiar-spaces/01-counterexamples/01-niemytzki-plane.html"
     },
+    "top:normal-cover-pseudometric": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "一様な大きさの近傍をもつ擬距離",
+      "num": "4.6",
+      "page": "54-general-topology/54E-richer-structures/02-uniform-spaces/04-dieudonne-completion.html"
+    },
     "top:normality-not-hereditary": {
       "status": "defined",
       "type": "corollary",
@@ -35875,6 +35910,13 @@
       "title": "可算コンパクト性と擬コンパクト性",
       "num": "",
       "page": "54-general-topology/54D-general-properties/01-separation-compactness/14-countable-compactness.html"
+    },
+    "top:page-dieudonne-completion": {
+      "status": "defined",
+      "type": "page",
+      "title": "デュドネの完備化",
+      "num": "",
+      "page": "54-general-topology/54E-richer-structures/02-uniform-spaces/04-dieudonne-completion.html"
     },
     "top:page-double-arrow": {
       "status": "defined",
@@ -36141,6 +36183,13 @@
       "title": "パラコンパクト空間の閉集合からの延長",
       "num": "18.5",
       "page": "54-general-topology/54D-general-properties/01-separation-compactness/18-michael-selection.html"
+    },
+    "top:paracompact-dieudonne": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "デュドネの定理",
+      "num": "4.7",
+      "page": "54-general-topology/54E-richer-structures/02-uniform-spaces/04-dieudonne-completion.html"
     },
     "top:paracompact-normal": {
       "status": "defined",
@@ -36533,6 +36582,20 @@
       "title": "",
       "num": "4.7",
       "page": "54-general-topology/54G-peculiar-spaces/01-counterexamples/04-double-arrow.html"
+    },
+    "top:prob-dc-closed-subspace": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "4.10",
+      "page": "54-general-topology/54E-richer-structures/02-uniform-spaces/04-dieudonne-completion.html"
+    },
+    "top:prob-dc-compact": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "4.9",
+      "page": "54-general-topology/54E-richer-structures/02-uniform-spaces/04-dieudonne-completion.html"
     },
     "top:prob-dg-not-convex": {
       "status": "defined",
@@ -37835,6 +37898,41 @@
       "title": "二重矢印空間",
       "num": "",
       "page": "54-general-topology/54G-peculiar-spaces/01-counterexamples/04-double-arrow.html"
+    },
+    "top:sec-dc-complete": {
+      "status": "defined",
+      "type": "section",
+      "title": "デュドネ完備性",
+      "num": "",
+      "page": "54-general-topology/54E-richer-structures/02-uniform-spaces/04-dieudonne-completion.html"
+    },
+    "top:sec-dc-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "54-general-topology/54E-richer-structures/02-uniform-spaces/04-dieudonne-completion.html"
+    },
+    "top:sec-dc-paracompact": {
+      "status": "defined",
+      "type": "section",
+      "title": "パラコンパクト空間はデュドネ完備",
+      "num": "",
+      "page": "54-general-topology/54E-richer-structures/02-uniform-spaces/04-dieudonne-completion.html"
+    },
+    "top:sec-dc-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "54-general-topology/54E-richer-structures/02-uniform-spaces/04-dieudonne-completion.html"
+    },
+    "top:sec-dc-universal": {
+      "status": "defined",
+      "type": "section",
+      "title": "普遍一様構造",
+      "num": "",
+      "page": "54-general-topology/54E-richer-structures/02-uniform-spaces/04-dieudonne-completion.html"
     },
     "top:sec-dg-corollaries": {
       "status": "defined",
@@ -39669,6 +39767,20 @@
       "title": "和集合写像",
       "num": "5.2",
       "page": "54-general-topology/54B-basic-constructions/01-constructions/05-fractals.html"
+    },
+    "top:universal-uniformity": {
+      "status": "defined",
+      "type": "definition",
+      "title": "普遍一様構造",
+      "num": "4.1",
+      "page": "54-general-topology/54E-richer-structures/02-uniform-spaces/04-dieudonne-completion.html"
+    },
+    "top:universal-uniformity-properties": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "普遍一様構造の性質",
+      "num": "4.2",
+      "page": "54-general-topology/54E-richer-structures/02-uniform-spaces/04-dieudonne-completion.html"
     },
     "top:urysohn-lemma": {
       "status": "defined",

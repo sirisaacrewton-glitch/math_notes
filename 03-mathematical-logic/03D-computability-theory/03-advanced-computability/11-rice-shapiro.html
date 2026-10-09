@@ -79,6 +79,36 @@
 **4.** $I_{\mathcal{A}}$ と $\overline{I_{\mathcal{A}}}=I_{\mathcal{A}^{c}}$（$\mathcal{A}^{c}$ は補クラス）がともに認識可能。$\emptyset\in\mathcal{A}$ なら、$\mathcal{A}$ の単調性からすべての認識可能集合が $\mathcal{A}$ に属する。$\emptyset\notin\mathcal{A}$ なら $\emptyset\in\mathcal{A}^{c}$ で、同様に $\mathcal{A}^{c}$ が全体、すなわち $\mathcal{A}=\emptyset$。
 :::
 
+## 関数版 {#comp:sec-rs-functions}
+
+部分計算可能関数を、そのグラフ（順序対の集合）で比べる。部分関数 $\psi,\theta$ について $\psi\subseteq\theta$ とは、$\psi(y)\downarrow$ なら $\theta(y)\downarrow=\psi(y)$ となることをいう。**有限関数**とは定義域が有限の部分関数である。部分計算可能関数のクラス $\mathcal{F}$ の指数集合を $J_{\mathcal{F}}\defeq\{e:\varphi_{e}\in\mathcal{F}\}$ とする。
+
+::: theorem ライス–シャピロの定理（関数版） {#comp:rice-shapiro-functions keywords="Rice-Shapiro for classes of partial computable functions: c.e. index sets are monotone and compact with respect to finite subfunctions" index="ライス–シャピロの定理（関数版）|らいすしゃぴろのていりかんすうばん"}
+部分計算可能関数のクラス $\mathcal{F}$ について、$J_{\mathcal{F}}$ が認識可能なら、次が成り立つ。
+1. （単調性）$\psi\in\mathcal{F}$ で、部分計算可能な $\theta$ が $\psi\subseteq\theta$ を満たせば $\theta\in\mathcal{F}$。
+2. （コンパクト性）$\psi\in\mathcal{F}$ なら、ある有限関数 $\sigma\subseteq\psi$ で $\sigma\in\mathcal{F}$ となるものがある。
+:::
+
+::: proof
+\ref{comp:rice-shapiro} と同じく、否定から $\overline{K}\le_{\mathrm{m}}J_{\mathcal{F}}$ を作る。
+
+**1.** $\psi\in\mathcal{F}$, $\psi\subseteq\theta$, $\theta\notin\mathcal{F}$ とする。smn 定理により、全域計算可能な $t$ で、$\varphi_{t(x)}(y)$ が「$\psi(y)$ の計算と、『$x\in K$ を確かめてから $\theta(y)$ を計算する』手続きを交互に一段ずつ動かし、先に止まった方の値を出力する」となるものをとる。両方が止まる場合は、$\psi\subseteq\theta$ から値は等しいので、出力は矛盾しない。$x\notin K$ なら第二の手続きは止まらず $\varphi_{t(x)}=\psi$。$x\in K$ なら、$\theta(y)\downarrow$ のとき出力は $\theta(y)$（$\psi(y)$ が先に止まっても同じ値）、$\theta(y)\uparrow$ なら $\psi(y)\uparrow$ でもあるので未定義、すなわち $\varphi_{t(x)}=\theta$。よって $x\in\overline{K}\iff t(x)\in J_{\mathcal{F}}$。
+
+**2.** $\psi\in\mathcal{F}$ で、$\psi$ の有限部分関数はどれも $\mathcal{F}$ に属さないとする。smn 定理により、$\varphi_{t(x)}(y)\simeq$「$x\notin K_{y}$ なら $\psi(y)$、そうでなければ未定義」となる全域計算可能な $t$ をとる（$K_{y}$ は計算可能な有限集合）。$x\notin K$ なら $\varphi_{t(x)}=\psi$。$x\in K$ なら、$x\in K_{s}$ となる $s$ について $y\ge s$ では未定義なので、$\varphi_{t(x)}$ は定義域が $\{0,\dots,s-1\}$ に含まれる $\psi$ の有限部分関数で、$\mathcal{F}$ に属さない。よって $x\in\overline{K}\iff t(x)\in J_{\mathcal{F}}$。
+
+いずれの場合も $\overline{K}$ が認識可能になり矛盾。
+:::
+
+$\mathcal{F}$ を「定義域が $\mathcal{A}$ に属する部分関数のクラス」とすれば、$J_{\mathcal{F}}=I_{\mathcal{A}}$ で、関数版から集合版（\ref{comp:rice-shapiro}）が得られる（$W\subseteq V$ なら、定義域 $W$, $V$ の部分関数で前者が後者に含まれるもの、たとえば値をすべて $0$ としたものがとれる）。
+
+::: corollary 全域性は認識できない {#comp:totality-not-ce keywords="the set of indices of total functions is not c.e.; neither is the set of indices of a fixed total function" index="全域関数の指数集合|ぜんいきかんすうのしすうしゅうごう"}
+$\{e:\varphi_{e}\text{ は全域}\}$ や、固定した全域計算可能関数 $g$ についての $\{e:\varphi_{e}=g\}$ は認識可能でない。
+:::
+
+::: proof
+全域関数の有限部分関数は全域でなく、$g$ の有限部分関数は $g$ と異なるので、どちらのクラスもコンパクト性に反する。
+:::
+
 ## 問題 {#comp:sec-rs-problems}
 
 ::: problem {#comp:prob-rs-cofinite}
@@ -98,7 +128,7 @@ $\{e:W_{e}\text{ は }5\text{ を含まない}\}$ の補集合は認識可能だ
 :::
 
 ::: supplement
-**前提を変えると.** 部分計算可能関数のクラス $\mathcal{F}$ の指数集合 $\{e:\varphi_{e}\in\mathcal{F}\}$ についても同様の特徴づけがあり、「有限の部分関数で確かめられる」ことと同値であることが知られている（ライス–シャピロの定理の関数版）。全域関数の性質については、クライゼル–ラコンブ–ショーンフィールドの定理（計算可能な汎関数は実効的に連続）が対応することが知られている（ここでは扱わない）。
+**前提を変えると.** 部分計算可能関数のクラス $\mathcal{F}$ の指数集合 $\{e:\varphi_{e}\in\mathcal{F}\}$ についても、認識可能なら単調性とコンパクト性が成り立つ（\ref{comp:rice-shapiro-functions}）。逆向き（\ref{comp:rice-shapiro-converse} の関数版）も、有限関数の標準符号を使えば同じ議論で成り立つことが知られている（ここでは確かめていない）。全域関数の性質については、クライゼル–ラコンブ–ショーンフィールドの定理（計算可能な汎関数は実効的に連続）が対応することが知られている（ここでは扱わない）。
 
 **似た定理.** ライス–シャピロの定理は、「計算可能な性質は位相的に開である」という原理の一例である：認識可能集合を点、有限部分集合を基本近傍とみる（スコット位相）と、認識可能な指数集合はちょうど開集合に対応する。計算可能解析の「計算可能な関数は連続である」も同じ原理の表れである。
 

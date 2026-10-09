@@ -342,6 +342,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-09 計算可能性 AC-11 追記（comp:rice-shapiro-functions, comp:totality-not-ce：部分計算可能関数のクラスの指数集合が認識可能なら単調かつコンパクト、全域性の指数集合は認識不能。補足の未証明の言及を参照に置換）
 - 2026-10-09 モデル理論 MT-16（03C/02/08-rational-urysohn, model:page-rational-urysohn：カテトフ関数、一点拡張、拡張性をもつ可算有理距離空間の存在・一意性・超均質性・普遍性。問題 3。フライッセ極限のページのウリゾーン空間の言及に参照を追加）
 - 2026-10-09 モデル理論 MC-08 追記（model:morley-degree, model:morley-degree-exists, model:prob-mr-degree：階数が順序数ならモーリー次数は有限、次数 1 の部分への分解、次数 2 の例。補足の未証明の言及を参照に置換）
 - 2026-10-09 圏論 随伴と位相 追記（cat:top-reflective-criterion, cat:prob-adt-kolmogorov：直積と部分空間で閉じた Top の充満部分圏は反射的（T₀・T₁・正則・T₃・チコノフ）、T₀ 反射はコルモゴロフ商。補足の未証明の言及を参照に置換）
@@ -613,7 +614,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | AC-08 | 03-advanced-computability/08-friedberg-muchnik | ポストの問題とフリードバーグ–ムチニクの定理（優先論法）（新井 §6.4） | 完了 |
 | AC-09 | 03-advanced-computability/09-low-simple | 単純集合・極限補題・低集合・単純な低集合（新井 §6.6 演習）、デッカーの不足集合（T 完全な単純集合） | 完了 |
 | AC-10 | 03-advanced-computability/10-creative-sets | 生産的・創造的集合、パラメータ付き再帰定理、創造的 ⇔ m 完全、単純集合は m 完全でない、単射な smn 関数・生産関数、創造的集合は 1 完全で K と計算可能同型、マイヒルの同型定理（新井 §6.2.2） | 完了 |
-| AC-11 | 03-advanced-computability/11-rice-shapiro | 指数集合とライス–シャピロの定理（逆を含む）、ライスの定理を系として（資料なし） | 完了 |
+| AC-11 | 03-advanced-computability/11-rice-shapiro | 指数集合とライス–シャピロの定理（逆を含む）、ライスの定理を系として、関数版（資料なし） | 完了 |
 | AC-12 | 03-advanced-computability/12-index-set-completeness | Σn/Πn 完全、FIN・INF・TOT・COF の完全性（動く目印）（資料なし） | 完了 |
 | AC-13 | 03-advanced-computability/13-low-basis | 低基底定理（計算可能な道をもたない木、ジャンプの強制）（資料なし） | 完了 |
 | KR-01 | 06-algorithmic-randomness/01-prefix-free-complexity | 接頭辞なし複雑性とクラフトの不等式 | 完了 |

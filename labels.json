@@ -1310,6 +1310,13 @@
       "num": "2.14",
       "page": "18-category-theory/18A-general-theory/01-basics/02-functors.html"
     },
+    "cat:mono-equalizer-topos": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "モノ射は等化子",
+      "num": "3.3",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/03-topos-basics.html"
+    },
     "cat:monoid-action": {
       "status": "defined",
       "type": "definition",
@@ -1772,6 +1779,13 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/07-symmetric-coherence.html"
     },
+    "cat:page-topos-basics": {
+      "status": "defined",
+      "type": "page",
+      "title": "トポスの基本性質",
+      "num": "",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/03-topos-basics.html"
+    },
     "cat:page-yoneda": {
       "status": "defined",
       "type": "page",
@@ -1806,6 +1820,13 @@
       "title": "関手圏の極限は各点ごと",
       "num": "9.5",
       "page": "18-category-theory/18A-general-theory/01-basics/09-adjoints-limits.html"
+    },
+    "cat:power-object": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "冪集合対象",
+      "num": "3.6",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/03-topos-basics.html"
     },
     "cat:precrossed-counterexample": {
       "status": "defined",
@@ -2409,6 +2430,20 @@
       "num": "4.11",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/04-simplicial.html"
     },
+    "cat:prob-tb-global": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "3.9",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/03-topos-basics.html"
+    },
+    "cat:prob-tb-ring": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "3.8",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/03-topos-basics.html"
+    },
     "cat:prob-tc-center-modules": {
       "status": "defined",
       "type": "problem",
@@ -2492,6 +2527,13 @@
       "title": "モノ射の引き戻し",
       "num": "12.2",
       "page": "18-category-theory/18A-general-theory/01-basics/12-special-aft.html"
+    },
+    "cat:pullback-pasting": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "引き戻しの貼り合わせ",
+      "num": "3.1",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/03-topos-basics.html"
     },
     "cat:quotient-category": {
       "status": "defined",
@@ -3893,6 +3935,41 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/04-simplicial.html"
     },
+    "cat:sec-tb-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/03-topos-basics.html"
+    },
+    "cat:sec-tb-pasting": {
+      "status": "defined",
+      "type": "section",
+      "title": "引き戻しの貼り合わせ",
+      "num": "",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/03-topos-basics.html"
+    },
+    "cat:sec-tb-power": {
+      "status": "defined",
+      "type": "section",
+      "title": "冪集合対象",
+      "num": "",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/03-topos-basics.html"
+    },
+    "cat:sec-tb-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/03-topos-basics.html"
+    },
+    "cat:sec-tb-sub": {
+      "status": "defined",
+      "type": "section",
+      "title": "部分対象と $\\Omega$",
+      "num": "",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/03-topos-basics.html"
+    },
     "cat:sec-tc-2-functors": {
       "status": "defined",
       "type": "section",
@@ -4131,6 +4208,13 @@
       "num": "2.13",
       "page": "18-category-theory/18A-general-theory/05-higher-structures/02-2-categories.html"
     },
+    "cat:singleton-mono": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "一点集合をとる射はモノ射",
+      "num": "3.7",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/03-topos-basics.html"
+    },
     "cat:skeleton": {
       "status": "defined",
       "type": "definition",
@@ -4242,6 +4326,13 @@
       "title": "厳密化定理",
       "num": "6.7",
       "page": "18-category-theory/18A-general-theory/02-structured-categories/06-monoidal-functors.html"
+    },
+    "cat:sub-representable": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "部分対象の表現",
+      "num": "3.2",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/03-topos-basics.html"
     },
     "cat:subcategory": {
       "status": "defined",
@@ -4361,6 +4452,20 @@
       "title": "直積と部分空間で閉じた部分圏は反射的",
       "num": "11.8",
       "page": "18-category-theory/18A-general-theory/01-basics/11-adjoints-topology.html"
+    },
+    "cat:topos-balanced": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "トポスは平衡",
+      "num": "3.4",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/03-topos-basics.html"
+    },
+    "cat:transpose-natural": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "転置の自然性",
+      "num": "3.5",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/03-topos-basics.html"
     },
     "cat:triangle-identities": {
       "status": "defined",

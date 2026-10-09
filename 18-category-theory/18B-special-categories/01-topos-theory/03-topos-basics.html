@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>トポスの基本性質 | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18B-special-categories/01-topos-theory/03-topos-basics.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# トポスの基本性質 {#cat:page-topos-basics keywords="properties of a topos, subobjects represented by Omega, every mono is an equalizer, topos is balanced, power object, membership relation, singleton map, pullback pasting lemma"}
+
+トポス（\ref{cat:elementary-topos}）の公理から直接導ける基本的な性質をまとめる。部分対象の全体が $\Omega$ への射の全体と自然に一対一に対応し（\ref{cat:sub-representable}）、すべてのモノ射が等化子になる（\ref{cat:mono-equalizer-topos}）ので、モノ射かつエピ射は同型射である（\ref{cat:topos-balanced}）。また、冪対象 $\Omega^{X}$ が「$X$ の冪集合」の役割を果たし（\ref{cat:power-object}）、一点集合をとる射 $X\to\Omega^{X}$ はモノ射である（\ref{cat:singleton-mono}）。証明はどれも引き戻しの普遍性の組み合わせで、一般化された元（$T\to X$ の形の射）で議論する。
+
+> 資料フォルダにトポスの教科書はなく、標準的な定義と証明を本サイトで組み立てた。引き戻しの貼り合わせの補題（\ref{cat:pullback-pasting}）は本サイトにまだなかったので、ここで示す。
+
+## 記法と定義の確認 {#cat:sec-tb-notation}
+
+::: notation
+- $\mathbf{E}$ はトポス：有限極限をもち、デカルト閉（\ref{cat:cartesian-closed}）で、部分対象分類子 $\mathrm{true}\colon1\to\Omega$ をもつ（\ref{cat:subobject-classifier}）。モノ射 $m$ の特性射を $\chi_{m}$ と書く。
+- $!_{X}\colon X\to1$ は終対象へのただ一つの射。$\mathrm{true}_{X}\defeq\mathrm{true}\circ!_{X}\colon X\to\Omega$。
+- 積への射を $\langle f,g\rangle$、射の積を $f\times g$、射影を $\pi_{1},\pi_{2}$ と書く。$f\colon a\times b\to c$ の転置を $\lambda f\colon a\to c^{b}$、評価射を $\mathrm{ev}$ と書き、$\lambda f$ は $\mathrm{ev}\circ(\lambda f\times1_{b})=f$ を満たすただ一つの射（\ref{cat:exponential-universal}）。
+- 部分対象、$\le$、$\equiv$ は \ref{cat:subobject}、モノ射の引き戻しはモノ射（\ref{cat:pullback-monic}）、引き戻しは \ref{cat:product}。$\mathrm{Sub}(X)$ は $X$ の部分対象の全体。
+:::
+
+## 引き戻しの貼り合わせ {#cat:sec-tb-pasting}
+
+::: lemma 引き戻しの貼り合わせ {#cat:pullback-pasting keywords="pullback pasting lemma, two pullbacks lemma" index="引き戻しの貼り合わせ|ひきもどしのはりあわせ"}
+可換図式
+$$
+\begin{array}{ccccc}
+A & \xrightarrow{\ a\ } & B & \xrightarrow{\ b\ } & C\\
+{\scriptstyle u}\downarrow & & {\scriptstyle v}\downarrow & & \downarrow{\scriptstyle w}\\
+D & \xrightarrow{\ d\ } & E & \xrightarrow{\ e\ } & F
+\end{array}
+$$
+で、右の四角形が引き戻しとする。このとき、左の四角形が引き戻しであることと、外側の長方形（$b\circ a$, $e\circ d$）が引き戻しであることは同値である。
+:::
+
+::: proof
+**左が引き戻し ⇒ 外側が引き戻し.** $x\colon Z\to D$, $y\colon Z\to C$ が $e\circ d\circ x=w\circ y$ を満たすとする。右の四角形の普遍性から、$v\circ z=d\circ x$, $b\circ z=y$ となる $z\colon Z\to B$ がただ一つある。左の普遍性から、$u\circ k=x$, $a\circ k=z$ となる $k\colon Z\to A$ がただ一つある。$b\circ a\circ k=y$。一意性：$k'$ が $u\circ k'=x$, $b\circ a\circ k'=y$ を満たせば、$z'\defeq a\circ k'$ は $v\circ z'=d\circ u\circ k'=d\circ x$, $b\circ z'=y$ を満たすので $z'=z$、左の一意性から $k'=k$。
+
+**外側が引き戻し ⇒ 左が引き戻し.** $x\colon Z\to D$, $z\colon Z\to B$ が $d\circ x=v\circ z$ を満たすとする。$e\circ d\circ x=e\circ v\circ z=w\circ b\circ z$ なので、外側の普遍性から $u\circ k=x$, $b\circ a\circ k=b\circ z$ となる $k$ がただ一つある。$a\circ k$ と $z$ は、どちらも $v$ との合成が $d\circ x$（$v\circ a\circ k=d\circ u\circ k=d\circ x$）、$b$ との合成が $b\circ z$ なので、右の一意性から $a\circ k=z$。一意性：$u\circ k'=x$, $a\circ k'=z$ なら $b\circ a\circ k'=b\circ z$ なので、外側の一意性から $k'=k$。
+:::
+
+## 部分対象と $\Omega$ {#cat:sec-tb-sub}
+
+::: theorem 部分対象の表現 {#cat:sub-representable keywords="Sub(X) is naturally isomorphic to E(X, Omega)" index="部分対象の表現|ぶぶんたいしょうのひょうげん"}
+1. $f\colon Y\to X$ とモノ射 $m\colon S\to X$ について、引き戻し $f^{\ast}m\colon f^{\ast}S\to Y$ はモノ射で、その部分対象は $m$ の部分対象だけで決まる。$\chi_{f^{\ast}m}=\chi_{m}\circ f$。
+2. $m\mapsto\chi_{m}$ は全単射 $\mathrm{Sub}(X)\to\mathbf{E}(X,\Omega)$ で、1 から $X$ について自然である（$f^{\ast}$ と $-\circ f$ が対応する）。
+:::
+
+::: proof
+**1.** モノ射であることは \ref{cat:pullback-monic}。$m\equiv m'$（$m'=m\circ\iota$, $\iota$ は同型射）なら、$m$ の引き戻しの四角形に $\iota$ を合成したものは $m'$ の引き戻しになるので、引き戻しは同値な部分対象を与える。$f^{\ast}m$ の四角形と $m$ の特性射の四角形
+$$
+\begin{array}{ccccc}
+f^{\ast}S & \longrightarrow & S & \longrightarrow & 1\\
+{\scriptstyle f^{\ast}m}\downarrow & & {\scriptstyle m}\downarrow & & \downarrow{\scriptstyle\mathrm{true}}\\
+Y & \xrightarrow{\ f\ } & X & \xrightarrow{\ \chi_{m}\ } & \Omega
+\end{array}
+$$
+を並べると、\ref{cat:pullback-pasting} から外側は引き戻しで、上の合成は $f^{\ast}S\to1$ のただ一つの射である。特性射の一意性から $\chi_{f^{\ast}m}=\chi_{m}\circ f$。
+
+**2.** 同値なモノ射は同じ特性射をもつ（1 で $f=1_{X}$）ので写像は定まる。**単射**：$\chi_{m}=\chi_{m'}$ なら、$m$ と $m'$ はどちらも同じ射 $\chi_{m}$ に沿った $\mathrm{true}$ の引き戻しで、引き戻しは同型を除いて一意なので $m\equiv m'$。**全射**：$\varphi\colon X\to\Omega$ について、$\mathrm{true}$ の $\varphi$ に沿った引き戻し $m\colon S\to X$（有限極限の存在から）はモノ射（\ref{cat:pullback-monic}。$\mathrm{true}$ はモノ射）で、$S\to1$ は $!_{S}$。特性射の一意性から $\chi_{m}=\varphi$。
+:::
+
+::: proposition モノ射は等化子 {#cat:mono-equalizer-topos keywords="in a topos every mono is an equalizer of its characteristic map and true" index="モノ射は等化子（トポス）|ものしゃはとうかしとぽす"}
+トポスのモノ射 $m\colon S\to X$ は、$\chi_{m}$ と $\mathrm{true}_{X}$ の等化子である。
+:::
+
+::: proof
+特性射の四角形の可換性から $\chi_{m}\circ m=\mathrm{true}\circ!_{S}=\mathrm{true}\circ!_{X}\circ m=\mathrm{true}_{X}\circ m$。$h\colon Z\to X$ が $\chi_{m}\circ h=\mathrm{true}_{X}\circ h=\mathrm{true}\circ!_{Z}$ を満たすとすると、引き戻しの普遍性（$h$ と $!_{Z}$）から $m\circ k=h$ となる $k\colon Z\to S$ がある。$m$ はモノ射なので $k$ は一意。
+:::
+
+::: corollary トポスは平衡 {#cat:topos-balanced keywords="a topos is balanced: monic and epic implies iso" index="平衡な圏|へいこうなけん"}
+トポスで、モノ射かつエピ射である射は同型射である（このような圏を**平衡**という）。
+:::
+
+::: proof
+$m\colon S\to X$ をモノ射かつエピ射とする。\ref{cat:mono-equalizer-topos} から $m$ は $\chi_{m}$ と $\mathrm{true}_{X}$ の等化子で、$\chi_{m}\circ m=\mathrm{true}_{X}\circ m$ と $m$ がエピ射であることから $\chi_{m}=\mathrm{true}_{X}$。すると $1_{X}$ も $\chi_{m}\circ1_{X}=\mathrm{true}_{X}\circ1_{X}$ を満たすので、等化子の普遍性から $m\circ k=1_{X}$ となる $k$ がある。$m\circ k\circ m=m=m\circ1_{S}$ と $m$ がモノ射であることから $k\circ m=1_{S}$。よって $m$ は同型射。
+:::
+
+## 冪集合対象 {#cat:sec-tb-power}
+
+::: lemma 転置の自然性 {#cat:transpose-natural keywords="lambda(h o (u x 1)) = lambda(h) o u" index="転置の自然性|てんちのしぜんせい"}
+$h\colon a\times b\to c$, $u\colon a'\to a$ について、$\lambda(h\circ(u\times1_{b}))=\lambda h\circ u$。
+:::
+
+::: proof
+$\mathrm{ev}\circ((\lambda h\circ u)\times1_{b})=\mathrm{ev}\circ(\lambda h\times1_{b})\circ(u\times1_{b})=h\circ(u\times1_{b})$ で、転置の一意性から。
+:::
+
+::: theorem 冪集合対象 {#cat:power-object keywords="power object Omega^X, membership relation, relations are classified by maps into the power object" index="冪集合対象|べきしゅうごうたいしょう, 所属関係|しょぞくかんけい"}
+$X$ について $PX\defeq\Omega^{X}$ とし、$\mathrm{ev}\colon PX\times X\to\Omega$ が分類する部分対象を $\in_{X}\ \rightarrowtail PX\times X$（**所属関係**）とする。任意の $Y$ と部分対象 $R\rightarrowtail Y\times X$（$Y$ と $X$ の**関係**）について、$R$ が $r\times1_{X}\colon Y\times X\to PX\times X$ に沿った $\in_{X}$ の引き戻しになる $r\colon Y\to PX$ がただ一つある。すなわち、$Y$ について自然な全単射
+$$
+\mathrm{Sub}(Y\times X)\cong\mathbf{E}(Y\times X,\Omega)\cong\mathbf{E}(Y,PX)
+$$
+がある。
+:::
+
+::: proof
+$r\defeq\lambda\chi_{R}$ とすると $\mathrm{ev}\circ(r\times1_{X})=\chi_{R}$。\ref{cat:sub-representable} の 1 から、$(r\times1_{X})^{\ast}(\in_{X})$ の特性射は $\chi_{\in_{X}}\circ(r\times1_{X})=\mathrm{ev}\circ(r\times1_{X})=\chi_{R}$ なので、\ref{cat:sub-representable} の 2 から $(r\times1_{X})^{\ast}(\in_{X})\equiv R$。一意性：$r'$ も同じ性質をもてば、同じく $\mathrm{ev}\circ(r'\times1_{X})=\chi_{R}$ で、転置の一意性から $r'=\lambda\chi_{R}=r$。自然性は \ref{cat:sub-representable} の 2 と \ref{cat:transpose-natural} から。
+:::
+
+::: theorem 一点集合をとる射はモノ射 {#cat:singleton-mono keywords="the singleton map X -> Omega^X is monic" index="一点集合をとる射|いってんしゅうごうをとるしゃ"}
+対角射 $\Delta_{X}=\langle1_{X},1_{X}\rangle\colon X\to X\times X$ の特性射を $\delta_{X}$ とし、$\{\cdot\}_{X}\defeq\lambda\delta_{X}\colon X\to PX$ とする。$\{\cdot\}_{X}$ はモノ射である。
+:::
+
+::: proof
+**Step 1（$\Delta_{X}$ はモノ射）.** $\pi_{1}\circ\Delta_{X}=1_{X}$ なので分裂モノ射。
+
+**Step 2（グラフ）.** $f\colon T\to X$ について、$\langle1_{T},f\rangle\colon T\to T\times X$ は（$\pi_{1}$ との合成が $1_{T}$ なので）モノ射で、四角形
+$$
+\begin{array}{ccc}
+T & \xrightarrow{\ f\ } & X\\
+{\scriptstyle\langle1_{T},f\rangle}\downarrow & & \downarrow{\scriptstyle\Delta_{X}}\\
+T\times X & \xrightarrow{\ f\times1_{X}\ } & X\times X
+\end{array}
+$$
+は引き戻しである。実際、可換性は $(f\times1)\circ\langle1,f\rangle=\langle f,f\rangle=\Delta_{X}\circ f$。$a=\langle a_{1},a_{2}\rangle\colon Z\to T\times X$, $b\colon Z\to X$ が $(f\times1)\circ a=\Delta_{X}\circ b$ を満たすなら、成分を比べて $f\circ a_{1}=b=a_{2}$ なので、$a=\langle1,f\rangle\circ a_{1}$、$f\circ a_{1}=b$。$k=a_{1}$ が求める射で、$\langle1,f\rangle$ がモノ射なので一意。
+
+**Step 3.** $f,g\colon T\to X$ が $\{\cdot\}_{X}\circ f=\{\cdot\}_{X}\circ g$ を満たすとする。\ref{cat:transpose-natural} から $\lambda(\delta_{X}\circ(f\times1_{X}))=\lambda(\delta_{X}\circ(g\times1_{X}))$ で、転置の一意性から $\delta_{X}\circ(f\times1_{X})=\delta_{X}\circ(g\times1_{X})$。Step 2 と \ref{cat:sub-representable} の 1 から、左辺は $\langle1_{T},f\rangle$ の特性射、右辺は $\langle1_{T},g\rangle$ の特性射なので、\ref{cat:sub-representable} の 2 から $\langle1_{T},f\rangle\equiv\langle1_{T},g\rangle$：同型射 $\iota$ で $\langle1_{T},f\rangle=\langle1_{T},g\rangle\circ\iota$。$\pi_{1}$ と合成して $1_{T}=\iota$、$\pi_{2}$ と合成して $f=g\circ\iota=g$。
+:::
+
+::: hypcheck
+- **有限極限**：引き戻しの存在（\ref{cat:sub-representable} の全射性、$f^{\ast}m$）と積（グラフ、冪集合対象）に使った。
+- **部分対象分類子**：すべての結果で使った。とくに特性射の**一意性**が、\ref{cat:sub-representable} の 1 の自然性と単射性を与えている。
+- **デカルト閉性**：冪集合対象と一点集合をとる射だけで使った。\ref{cat:sub-representable}・\ref{cat:mono-equalizer-topos}・\ref{cat:topos-balanced} は、有限極限と部分対象分類子だけから従う。
+- **選択公理・元の存在**：使っていない。「元」の代わりに一般化された元 $T\to X$ で議論した。トポスでは終対象からの射（大域的な元）だけでは射が区別できないことがある（\ref{cat:prob-tb-global}）ので、一般化された元で議論することが必要である。
+:::
+
+## 問題 {#cat:sec-tb-problems}
+
+::: problem {#cat:prob-tb-ring}
+\ref{cat:topos-balanced} を使って、可換とは限らない環の圏 $\mathbf{Ring}$ がトポスでないことを示せ。
+:::
+
+::: solution
+\ref{cat:monic-epic-examples} の 3 から、$\mathbf{Ring}$ の包含 $\mathbb{Z}\to\mathbb{Q}$ はモノ射かつエピ射だが同型射でない。トポスは平衡なので、$\mathbf{Ring}$ はトポスでない。
+:::
+
+::: problem {#cat:prob-tb-global}
+\ref{cat:omega-examples} の 1 の矢印圏の上の前層のトポスで、$\mathrm{Sub}(1)$ と $\widehat{\mathbf{C}}(1,\Omega)$ がどちらも三元集合であることを確かめよ。また、前層 $P$ で $P(1)=\emptyset$, $P(0)=\{p,q\}$（$p\ne q$）とすると、$1$ から $P$ への射は存在しないが、$P$ から $\Omega$ への異なる二つの射が、$1$ からのどの射とも合成で区別できない（合成する射がない）ことを確かめよ。
+:::
+
+::: solution
+$1$ の部分前層は、$A(1)\subseteq\{\ast\}$, $A(0)\subseteq\{\ast\}$ で、$A(1)\ne\emptyset$ なら $A(0)\ne\emptyset$（制限で写る）を満たすもの：$(\emptyset,\emptyset)$, $(\emptyset,\{\ast\})$, $(\{\ast\},\{\ast\})$ の三つ（順に $(A(1),A(0))$）。$1\to\Omega$ は $s_{1}\in\Omega(1)$, $s_{0}\in\Omega(0)$ で $a^{\ast}s_{1}=s_{0}$ を満たす組で、$s_{1}$ を決めれば $s_{0}$ は決まるので三つ。\ref{cat:sub-representable} のとおり一致する。$P(1)=\emptyset$ なので、$1\to P$ の $1$ での成分 $\{\ast\}\to\emptyset$ がなく、射は存在しない。部分前層 $\{p\}$ と $\{q\}$（$A(1)=\emptyset$）は異なり、その特性射は異なる二つの射 $P\to\Omega$ だが、大域的な元 $1\to P$ がないので、それとの合成では区別できない。
+:::
+
+::: supplement
+**前提を変えると.**
+- **部分対象分類子だけをもつ圏.** \ref{cat:sub-representable}・\ref{cat:mono-equalizer-topos}・\ref{cat:topos-balanced} は、有限極限と部分対象分類子だけで成り立つ（hypcheck）。デカルト閉性は冪集合対象のために使った。逆に、有限極限と冪集合対象（\ref{cat:power-object} の性質をもつ $PX$ と $\in_{X}$）をもつ圏はデカルト閉になることが知られている（トポスの別の公理化。ここでは確かめていない）。
+- **余極限.** トポスは有限余極限ももつことが知られている（パレの定理。Mac Lane §IV.10 も言及している）。証明には $P$ を反変関手 $\mathbf{E}^{\mathrm{op}}\to\mathbf{E}$ と見てモナド性を使う方法があるとされる（ここでは扱わない）。
+
+**似た定理.**
+- \ref{cat:singleton-mono} は、カントールの定理の前半「$x\mapsto\{x\}$ は単射」のトポス版である。後半「$X\to PX$ は全射でない」の圏論的な形は、ローヴェアの不動点定理（\ref{cat:page-cartesian-closed}）で、$\Omega$ が不動点のない自己射をもつときに従う。
+- 平衡性（\ref{cat:topos-balanced}）は、アーベル圏でも成り立つ（モノ射は核、エピ射は余核）。どちらも「モノ射が正則（等化子）」であることから従う点で同じ形をしている。
+
+**高い視点から：$\Omega$ は「部分」の表現対象.** \ref{cat:sub-representable} は、関手 $\mathrm{Sub}\colon\mathbf{E}^{\mathrm{op}}\to\mathbf{Set}$ が $\Omega$ で表現されること（\ref{cat:representable-functor}）を言っており、$\mathrm{true}$ はその普遍元（\ref{cat:universal-element}）である。米田の補題の言葉では、「部分対象を与えること」と「$\Omega$ への射を与えること」は同じで、「部分の全体」が一つの対象 $\Omega$ に集約されている。比喩で言えば、$\Omega$ は「判定の書式」で、どんな部分対象も「この書式に記入した判定」として一通りに書け、書式から判定を作り直すことができる。冪集合対象 $\Omega^{X}$ は「$X$ の各元についての判定の一覧表」で、集合論の冪集合の公理にあたる。トポスが「集合の宇宙の代わり」になるのは、この二つ（部分の表現と冪集合）が圏の言葉で書けるからである。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

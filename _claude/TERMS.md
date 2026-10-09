@@ -463,3 +463,4 @@
 | partial lambda definability / Turing fixed point combinator | 部分関数のラムダ定義可能性 / チューリングの不動点結合子 | | 標準的。logic:page-partial-lambda-definability |
 | subobject classifier / elementary topos / sieve / maximal sieve / subpresheaf | 部分対象分類子 / （初等）トポス / ふるい / 最大のふるい / 部分前層 | 篩 | 標準的（ふるいは仮名書き）。cat:page-presheaf-topos |
 | sheaf / gluing / compatible family / subsheaf / Sierpinski space | 層 / 貼り合わせ / 両立する族 / 部分層 / シェルピンスキー空間 | | 標準的。cat:page-sheaf-topos |
+| balanced category / power object / membership relation / singleton map / pullback pasting lemma | 平衡な圏 / 冪集合対象 / 所属関係 / 一点集合をとる射 / 引き戻しの貼り合わせ | | 冪集合対象・一点集合をとる射は仮。cat:page-topos-basics |

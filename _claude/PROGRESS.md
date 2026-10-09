@@ -342,6 +342,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-09 モデル理論 MT-16（03C/02/08-rational-urysohn, model:page-rational-urysohn：カテトフ関数、一点拡張、拡張性をもつ可算有理距離空間の存在・一意性・超均質性・普遍性。問題 3。フライッセ極限のページのウリゾーン空間の言及に参照を追加）
 - 2026-10-09 モデル理論 MC-08 追記（model:morley-degree, model:morley-degree-exists, model:prob-mr-degree：階数が順序数ならモーリー次数は有限、次数 1 の部分への分解、次数 2 の例。補足の未証明の言及を参照に置換）
 - 2026-10-09 圏論 随伴と位相 追記（cat:top-reflective-criterion, cat:prob-adt-kolmogorov：直積と部分空間で閉じた Top の充満部分圏は反射的（T₀・T₁・正則・T₃・チコノフ）、T₀ 反射はコルモゴロフ商。補足の未証明の言及を参照に置換）
 - 2026-10-08 一般位相 TD-14 追記（top:mrowka-psi, top:mad-exists, top:mrowka-psi-properties：極大概素族、Ψ 空間はチコノフで擬コンパクトだが可算コンパクトでない。補足の未証明の言及を参照に置換）
@@ -534,6 +535,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | MT-10 | 03-ultraproducts/02-ultrapower-saturation | 超積と飽和 | 4, 6 | 完了 |
 | MT-14 | 03-ultraproducts/03-ax-grothendieck | アックス–グロタンディークの定理（レフシェッツの原理と超積による移行。資料なし） | — | 完了 |
 | MT-15 | 02-types-and-countable-models/07-vaught-never-two | ヴォートの定理（可算モデルはちょうど 2 個にならない）（資料なし） | — | 完了 |
+| MT-16 | 03C/02/08-rational-urysohn | 有理ウリゾーン空間（カテトフ関数、一点拡張、存在・一意性・超均質性・普遍性） | — | 完了 |
 | MT-12 | 02-types-and-countable-models/05-random-graph | ランダムグラフ・拡張公理・ω 範疇性・0–1 法則（資料なし） | — | 完了 |
 | MT-13 | 02-types-and-countable-models/06-fraisse-limits | 年齢・HP/JEP/AP・超均質と拡張性・フライッセの定理・極限の理論の ω 範疇性（資料なし） | — | 完了 |
 

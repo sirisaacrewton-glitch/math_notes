@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>有理ウリゾーン空間 | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03C-model-theory/02-types-and-countable-models/08-rational-urysohn.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 有理ウリゾーン空間 {#model:page-rational-urysohn keywords="rational Urysohn space, Katetov functions, one-point metric extensions, extension property, back-and-forth for metric spaces, universal countable rational metric space, ultrahomogeneity, Urysohn universal space"}
+
+フライッセ極限（\ref{model:page-fraisse-limits}）の考え方は、有限言語の構造に限らず使える。距離が有理数である有限距離空間のクラスについて同じ構成を行うと、**有理ウリゾーン空間** $\mathbb{QU}$ が得られる。$\mathbb{QU}$ は、(1) 有理距離の可算距離空間をすべて等長に含み（普遍性）、(2) 有限部分集合の間の等長写像がすべて全体の等長写像に延び（超均質性）、(3) この二つの性質（実は「拡張性」一つ）で等長を除いて一意に決まる。本ページでは、一点拡張を与える**カテトフ関数**を道具として、これらを往復論法で示す。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論（P. S. Urysohn 1927 の構成と、M. Katětov 1988 による一点拡張の方法）に従って組み立てた。証明は本サイトで書き下ろした。
+
+## 記法と定義の確認 {#model:sec-ur-notation}
+
+::: notation
+- **有理距離空間**とは、距離 $d$ の値がすべて有理数である距離空間をいう。$\mathbb{Q}_{>0}$ は正の有理数全体。
+- 距離空間の間の写像 $h$ が**等長**とは $d(h(x),h(y))=d(x,y)$ となることをいう（等長写像は単射）。**部分等長写像**は部分集合上で定義された等長写像。
+- 往復論法の型の議論は \ref{model:cantor-dlo}, \ref{model:extension-property-backforth} と同じである。
+:::
+
+::: definition カテトフ関数と拡張性 {#model:katetov-function keywords="Katetov function: admissible distances for a one-point extension; extension property of a rational metric space" index="カテトフ関数|かてとふかんすう, 拡張性（距離空間）|かくちょうせいきょりくうかん"}
+1. 有理距離空間 $A$ 上の関数 $f\colon A\to\mathbb{Q}_{>0}$ が**カテトフ関数**であるとは、すべての $a,b\in A$ について
+$$
+\lvert f(a)-f(b)\rvert\le d(a,b)\le f(a)+f(b)
+$$
+となることをいう。
+2. 有理距離空間 $U$ が**拡張性**をもつとは、$U$ の任意の有限部分集合 $A$ と $A$ 上の任意のカテトフ関数 $f$ について、$u\in U\setminus A$ で $d(u,a)=f(a)$（すべての $a\in A$）となるものがあることをいう（このとき $u$ は $f$ を**実現する**という）。
+:::
+
+カテトフ関数は、ちょうど「$A$ に一点 $x$ を付け加えて $d(x,a)\defeq f(a)$ としたものが距離空間になる」ための条件である：新しい点を含む三角不等式は $d(x,a)\le d(x,b)+d(b,a)$ と $d(a,b)\le d(a,x)+d(x,b)$ の形しかなく、それぞれ上の左右の不等式にあたる。また、$U$ の点 $u$ について $a\mapsto d(u,a)$ は、$u\notin A$ なら $A$ 上のカテトフ関数である（三角不等式）。
+
+## 一点拡張 {#model:sec-ur-katetov}
+
+::: lemma カテトフ関数の延長 {#model:katetov-extension keywords="a Katetov function on a finite subset extends to the whole space by f(y) = min_a (f(a) + d(a,y))" index="カテトフ関数の延長|かてとふかんすうのえんちょう"}
+有理距離空間 $X$ の空でない有限部分集合 $A$ と、$A$ 上のカテトフ関数 $f$ について、
+$$
+\hat{f}(y)\defeq\min_{a\in A}\bigl(f(a)+d(a,y)\bigr)\quad(y\in X)
+$$
+は $X$ 上のカテトフ関数で、$\hat{f}|_{A}=f$ である。
+:::
+
+::: proof
+**値.** $A$ は有限なので最小値は存在し、正の有理数。
+
+**$\hat{f}|_{A}=f$.** $a'\in A$ について、$a=a'$ の項から $\hat{f}(a')\le f(a')$。逆に、各 $a$ について $f(a')\le f(a)+d(a,a')$（$f$ がカテトフ関数であることの左の不等式）なので $\hat{f}(a')\ge f(a')$。
+
+**左の不等式.** $y,z\in X$ と $a\in A$ について $\hat{f}(y)\le f(a)+d(a,y)\le f(a)+d(a,z)+d(z,y)$。$a$ について最小をとると $\hat{f}(y)\le\hat{f}(z)+d(y,z)$。対称に $\hat{f}(z)\le\hat{f}(y)+d(y,z)$。
+
+**右の不等式.** $\hat{f}(y)=f(a)+d(a,y)$, $\hat{f}(z)=f(b)+d(b,z)$ となる $a,b\in A$ をとると、
+$$
+\begin{aligned}
+d(y,z)&\le d(y,a)+d(a,b)+d(b,z)\\
+&\le d(y,a)+f(a)+f(b)+d(b,z)=\hat{f}(y)+\hat{f}(z).
+\end{aligned}
+$$
+ここで $d(a,b)\le f(a)+f(b)$ を使った。
+:::
+
+::: lemma 一点拡張 {#model:one-point-extension keywords="adjoining a point realizing a Katetov function" index="一点拡張（距離空間）|いってんかくちょうきょりくうかん"}
+有理距離空間 $X$ と $X$ 上のカテトフ関数 $g$ について、$X\cup\{x\}$（$x$ は新しい点）に $d(x,y)\defeq g(y)$ と定めたものは、$X$ を部分空間として含む有理距離空間である。
+:::
+
+::: proof
+新しい点と $X$ の点の距離は正の有理数。三角不等式で新しい点を含むものは、$d(x,y)\le d(x,z)+d(z,y)$（$g(y)\le g(z)+d(y,z)$）と $d(y,z)\le d(y,x)+d(x,z)$（$d(y,z)\le g(y)+g(z)$）の形だけで、どちらもカテトフ関数の条件そのものである。
+:::
+
+## 存在・一意性・普遍性 {#model:sec-ur-main}
+
+::: theorem 有理ウリゾーン空間の存在 {#model:rational-urysohn-exists keywords="there is a countable rational metric space with the extension property" index="有理ウリゾーン空間の存在|ゆうりうりぞーんくうかんのそんざい"}
+拡張性をもつ可算な有理距離空間 $\mathbb{QU}$ が存在する。
+:::
+
+::: proof
+**Step 1（作業の列挙）.** 有理距離空間の増加列 $U_{0}\subseteq U_{1}\subseteq\cdots$ を作る。各 $U_{n}$ は有限で、点は自然数で名前を付けておく（$U_{n}=\{0,1,\dots,n\}$ とし、$U_{0}=\{0\}$）。「作業」とは、自然数の有限集合 $A$ と、$A$ から $\mathbb{Q}_{>0}$ への関数 $f$ の組 $(A,f)$ のことで、作業全体は可算なので $(A_{k},f_{k})_{k\in\N}$ と、各作業が**無限回**現れるように並べておく（たとえば $\N\times\N$ の数え上げの第一成分で作業を指定する）。
+
+**Step 2（一段の構成）.** $U_{n}$ が作られたとする。作業 $(A_{n},f_{n})$ について、$A_{n}\subseteq U_{n}$, $A_{n}\neq\varnothing$ かつ $f_{n}$ が（$U_{n}$ の距離に関して）$A_{n}$ 上のカテトフ関数なら、\ref{model:katetov-extension} の $\hat{f}_{n}$ を $U_{n}$ 上に作り、\ref{model:one-point-extension} で新しい点 $n+1$ を $d(n+1,y)\defeq\hat{f}_{n}(y)$ として加えたものを $U_{n+1}$ とする（点 $n+1$ は $f_{n}$ を実現する）。そうでなければ、$U_{n+1}$ は $U_{n}$ に、$U_{n}$ のすべての点から距離 $1+\max\{d(y,z):y,z\in U_{n}\}$（$U_{n}$ が一点なら $1$）にある新しい点 $n+1$ を加えたものとする（定数関数はこの値ならカテトフ関数）。
+
+**Step 3（拡張性）.** $\mathbb{QU}\defeq\bigcup_{n}U_{n}$ は可算な有理距離空間である（距離は増加列で両立する）。有限集合 $A\subseteq\mathbb{QU}$ とカテトフ関数 $f$ をとる。$A\subseteq U_{m}$ となる $m$ があり、作業 $(A,f)$ は無限回現れるので、$n\ge m$ で $(A_{n},f_{n})=(A,f)$ となるものがある。$A\subseteq U_{n}$ で $f$ はカテトフ関数（距離は $\mathbb{QU}$ と同じ）なので、点 $n+1$ が $f$ を実現する。$A=\varnothing$ の場合は、実現すべき条件がないので $\mathbb{QU}\setminus A\neq\varnothing$ ならよい。
+:::
+
+::: theorem 一意性と超均質性 {#model:rational-urysohn-unique keywords="countable rational metric spaces with the extension property are isometric; every finite partial isometry extends to an isometry" index="有理ウリゾーン空間の一意性|ゆうりうりぞーんくうかんのいちいせい"}
+$U$, $V$ を拡張性をもつ可算な有理距離空間とする。
+1. 有限部分集合の間の部分等長写像 $p\colon A\to B$（$A\subseteq U$, $B\subseteq V$）は、全単射な等長写像 $U\to V$ に延長できる。
+2. 特に $U$ と $V$ は等長であり（$p=\varnothing$）、$U=V$ のとき $U$ は**超均質**（有限部分集合の間の等長写像は $U$ の等長変換に延びる）である。
+:::
+
+::: proof
+$U=\{u_{0},u_{1},\dots\}$, $V=\{v_{0},v_{1},\dots\}$ と並べる（有限の場合も同様だが、拡張性をもつ空でない空間は無限である：任意の有限集合 $A$ に対し、$A$ の直径より大きい定数関数を実現する点は $A$ の外にある）。
+
+**行き.** 有限な部分等長写像 $p\colon A\to B$ と、$A$ に属さない最初の $u\defeq u_{i}$ をとる。$B$ 上の関数 $f(b)\defeq d(u,p^{-1}(b))$ は、$a\mapsto d(u,a)$ が $A$ 上のカテトフ関数（$u\notin A$）で $p$ が等長なので、$B$ 上のカテトフ関数である（$B=\varnothing$ のときは条件なし）。$V$ の**拡張性**から、$f$ を実現する $v\in V\setminus B$ がある。$p\cup\{(u,v)\}$ は部分等長写像：$d(v,p(a))=f(p(a))=d(u,a)$。
+
+**帰り.** $B$ に属さない最初の $v_{j}$ について、$p^{-1}$ に同じ議論を $U$ の拡張性で行う。
+
+**結論.** 行きと帰りを交互に繰り返した和 $\pi$ は、各段で $u_{i}$ を定義域に、$v_{j}$ を値域に入れるので全単射で、等長。$p\subseteq\pi$。
+:::
+
+::: theorem 普遍性 {#model:rational-urysohn-universal keywords="every countable rational metric space embeds isometrically into the rational Urysohn space" index="有理ウリゾーン空間の普遍性|ゆうりうりぞーんくうかんのふへんせい"}
+可算な有理距離空間 $X$ は $\mathbb{QU}$ に等長に埋め込める。
+:::
+
+::: proof
+$X=\{x_{0},x_{1},\dots\}$ と並べ、等長写像 $h_{n}\colon\{x_{0},\dots,x_{n-1}\}\to\mathbb{QU}$ を帰納的に延ばす（$h_{0}=\varnothing$）。$x_{n}$ について、$B\defeq h_{n}[\{x_{0},\dots,x_{n-1}\}]$ 上の関数 $f(h_{n}(x_{k}))\defeq d(x_{n},x_{k})$ はカテトフ関数（$x_{n}$ は $x_{k}$ と異なり、$X$ の三角不等式と $h_{n}$ の等長性から）。$\mathbb{QU}$ の拡張性から $f$ を実現する点 $u\notin B$ をとり $h_{n+1}(x_{n})\defeq u$ とする。$h\defeq\bigcup_{n}h_{n}$ は等長な埋め込み。これは \ref{model:rational-urysohn-unique} の証明の「行き」だけを使ったものである。
+:::
+
+::: hypcheck
+- **カテトフ関数の右の不等式 $d(a,b)\le f(a)+f(b)$**：\ref{model:katetov-extension} で延長がまたカテトフ関数であること（右の不等式）に使った。これがないと新しい点を加えた空間で三角不等式が壊れる。
+- **左の不等式**：延長が $A$ 上で $f$ に一致すること、延長の左の不等式に使った。
+- **$A$ の有限性**：$\hat{f}$ の最小値の存在と、値が有理数であることに使った。可算無限集合上のカテトフ関数では、下限が有理数にならず、また達成されないことがある。
+- **作業を無限回並べること**：作業を出したときにはまだ $A\not\subseteq U_{n}$ であった場合でも、後で必ず処理されるようにするために使った。
+- **可算性**：往復論法（\ref{model:rational-urysohn-unique}）で全単射を作るのに使った。
+:::
+
+## 問題 {#model:sec-ur-problems}
+
+::: problem {#model:prob-ur-katetov-check}
+$A=\{a,b\}$, $d(a,b)=2$ とする。$f(a)=1$, $f(b)=1$ はカテトフ関数か。$f(a)=1$, $f(b)=4$ はどうか。それぞれ、一点拡張が距離空間になるかを確かめよ。
+:::
+
+::: solution
+$f(a)=f(b)=1$：$\lvert1-1\rvert=0\le2\le1+1=2$ なのでカテトフ関数（新しい点は $a$ と $b$ の「中点」）。$f(a)=1$, $f(b)=4$：$\lvert1-4\rvert=3>2$ なのでカテトフ関数でない。実際、新しい点 $x$ について $d(x,b)=4>d(x,a)+d(a,b)=3$ で三角不等式が壊れる。
+:::
+
+::: problem {#model:prob-ur-no-isolated}
+$\mathbb{QU}$ には孤立点がなく、任意の二点 $u\neq v$ と有理数 $0<r<d(u,v)$ について、$d(u,w)=r$, $d(w,v)=d(u,v)-r$ となる点 $w$（「$u$ と $v$ を結ぶ線分上の点」）があることを示せ。
+:::
+
+::: solution
+**線分上の点.** $A=\{u,v\}$ 上の $f(u)\defeq r$, $f(v)\defeq d(u,v)-r$ は、$\lvert f(u)-f(v)\rvert=\lvert2r-d(u,v)\rvert\le d(u,v)$（$0<r<d(u,v)$ から）、$f(u)+f(v)=d(u,v)$ なのでカテトフ関数。拡張性から実現する $w$ がある。
+
+**孤立点がない.** $u$ と $\varepsilon\in\mathbb{Q}_{>0}$ について、$A=\{u\}$ 上の $f(u)\defeq\varepsilon$ はカテトフ関数（一点集合では条件は $0\le0\le2\varepsilon$）なので、$d(u,w)=\varepsilon$ となる $w$ がある。
+:::
+
+::: problem {#model:prob-ur-not-complete}
+$\mathbb{QU}$ は完備でないことを示せ。
+:::
+
+::: solution
+$X\defeq\mathbb{Q}\cap[0,2]$（通常の距離）は可算な有理距離空間なので、\ref{model:rational-urysohn-universal} から等長な埋め込み $h\colon X\to\mathbb{QU}$ がある。$\sqrt{2}$ に収束する有理数列 $r_{n}\in X$ をとると、$d(h(r_{n}),h(r_{m}))=\lvert r_{n}-r_{m}\rvert$ なので $(h(r_{n}))$ はコーシー列。極限 $w\in\mathbb{QU}$ があれば、距離の連続性から $d(h(0),w)=\lim_{n}d(h(0),h(r_{n}))=\lim_{n}r_{n}=\sqrt{2}$ となり、$\mathbb{QU}$ の距離が有理数であることに反する。
+:::
+
+::: supplement
+**前提を変えると.**
+- **距離の値の集合.** 距離の値を $\{1,2\}$ に制限すると、どの有限集合上でも $\{1,2\}$ 値の関数はすべてカテトフ関数になり（$\lvert f(a)-f(b)\rvert\le1\le d(a,b)\le2\le f(a)+f(b)$）、距離 $1$ を辺とみなせば拡張性はランダムグラフの拡張公理（\ref{model:page-random-graph}）そのものになる。したがって同じ構成からランダムグラフが得られる。
+- **完備化.** $\mathbb{QU}$ の完備化 $\mathbb{U}$ は**ウリゾーン空間**と呼ばれ、すべての可分距離空間を等長に含み、コンパクトな部分集合の間の等長写像が全体の等長写像に延びる、という性質で特徴づけられることが知られている（P. S. Urysohn 1927。ここでは証明しない）。
+
+**似た定理.** フライッセの定理（\ref{model:fraisse-theorem}）と同じく、ここでも (i) 有限部分空間のクラスが部分空間で閉じ（HP）、(ii) 二つの空間を共通に埋め込め（JEP）、(iii) 融合できる（AP：二つの一点拡張は、\ref{model:katetov-extension} と同じ「最短経路の距離」で融合できる）ことが、拡張性をもつ極限の存在を支えている。ランダムグラフ（\ref{model:page-random-graph}）や有理数の順序（\ref{model:cantor-dlo}）と同じ型の「最も一般的な」可算構造である。
+
+**高い視点から.** カテトフ関数は「まだ存在しない点がどこにあるか」の記述、すなわち一点拡張の**型**である。拡張性は「$A$ 上で無矛盾な型はすべて実現される」ことを言い、モデル理論の飽和性（\ref{model:page-saturated-models}）の距離空間版にあたる。比喩で言えば、$\mathbb{QU}$ は「どんな有限の配置を指定しても、その配置どおりの位置に必ず誰かが立っている」広場である。往復論法は、その広場どうしを一人ずつ対応させながら同一視していく手順であり、拡張性がある限り、次の一人の相手はいつでも見つかる。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

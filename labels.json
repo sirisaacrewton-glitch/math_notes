@@ -16759,6 +16759,20 @@
       "num": "1.3",
       "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/01-types-omitting.html"
     },
+    "model:katetov-extension": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "カテトフ関数の延長",
+      "num": "8.2",
+      "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/08-rational-urysohn.html"
+    },
+    "model:katetov-function": {
+      "status": "defined",
+      "type": "definition",
+      "title": "カテトフ関数と拡張性",
+      "num": "8.1",
+      "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/08-rational-urysohn.html"
+    },
     "model:lefschetz-principle": {
       "status": "defined",
       "type": "corollary",
@@ -16948,6 +16962,13 @@
       "num": "1.5",
       "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/01-types-omitting.html"
     },
+    "model:one-point-extension": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "一点拡張",
+      "num": "8.3",
+      "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/08-rational-urysohn.html"
+    },
     "model:page-acf": {
       "status": "defined",
       "type": "page",
@@ -17052,6 +17073,13 @@
       "title": "ランダムグラフと 0–1 法則",
       "num": "",
       "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/05-random-graph.html"
+    },
+    "model:page-rational-urysohn": {
+      "status": "defined",
+      "type": "page",
+      "title": "有理ウリゾーン空間",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/08-rational-urysohn.html"
     },
     "model:page-saturated-models": {
       "status": "defined",
@@ -17452,6 +17480,27 @@
       "num": "2.16",
       "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/02-elementary-chains.html"
     },
+    "model:prob-ur-katetov-check": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "8.7",
+      "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/08-rational-urysohn.html"
+    },
+    "model:prob-ur-no-isolated": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "8.8",
+      "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/08-rational-urysohn.html"
+    },
+    "model:prob-ur-not-complete": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "8.9",
+      "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/08-rational-urysohn.html"
+    },
     "model:prob-vp-acf": {
       "status": "defined",
       "type": "problem",
@@ -17563,6 +17612,27 @@
       "title": "無限ラムゼーの定理",
       "num": "4.1",
       "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/04-indiscernibles.html"
+    },
+    "model:rational-urysohn-exists": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "有理ウリゾーン空間の存在",
+      "num": "8.4",
+      "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/08-rational-urysohn.html"
+    },
+    "model:rational-urysohn-unique": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "一意性と超均質性",
+      "num": "8.5",
+      "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/08-rational-urysohn.html"
+    },
+    "model:rational-urysohn-universal": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "普遍性",
+      "num": "8.6",
+      "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/08-rational-urysohn.html"
     },
     "model:realize-all-types": {
       "status": "defined",
@@ -18368,6 +18438,34 @@
       "title": "上昇レーヴェンハイム–スコーレムの定理",
       "num": "",
       "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/01-elementary-substructures.html"
+    },
+    "model:sec-ur-katetov": {
+      "status": "defined",
+      "type": "section",
+      "title": "一点拡張",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/08-rational-urysohn.html"
+    },
+    "model:sec-ur-main": {
+      "status": "defined",
+      "type": "section",
+      "title": "存在・一意性・普遍性",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/08-rational-urysohn.html"
+    },
+    "model:sec-ur-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/08-rational-urysohn.html"
+    },
+    "model:sec-ur-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/02-types-and-countable-models/08-rational-urysohn.html"
     },
     "model:sec-vp-homogeneous": {
       "status": "defined",

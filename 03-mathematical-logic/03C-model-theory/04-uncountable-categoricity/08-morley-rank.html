@@ -90,6 +90,30 @@ $\mathrm{RM}(\varphi)\ge\alpha$ となる最大の $\alpha$ があればそれ�
 - **最小の階数をとること**：2 ⇒ 1 で、分割した部分の階数が下がらないことに使った。
 :::
 
+## モーリー次数 {#model:sec-mr-degree}
+
+階数 $\alpha$ の論理式は、階数 $\alpha$ の部分に無限個には分けられない。実は、分けられる個数には有限の上限がある。
+
+::: definition モーリー次数 {#model:morley-degree keywords="Morley degree: the maximal number of disjoint pieces of full rank" index="モーリー次数|もーりーじすう"}
+$\mathrm{RM}(\varphi)=\alpha$（順序数）とする。互いに交わらない $\mathcal{L}_{M}$ 論理式 $\psi_{1},\dots,\psi_{d}$ で、各 $\psi_{i}\vdash\varphi$ かつ $\mathrm{RM}(\psi_{i})=\alpha$ となるものを $\varphi$ の **$d$ 分割**という。$d$ 分割が存在する $d$ に最大値があれば、それを $\varphi$ の**モーリー次数** $\mathrm{dM}(\varphi)$ という。$d=1$ の分割（$\psi_{1}=\varphi$）はつねに存在する。
+:::
+
+::: theorem モーリー次数の存在 {#model:morley-degree-exists keywords="every formula of ordinal Morley rank has a finite Morley degree; decomposition into pieces of degree one" index="モーリー次数の存在|もーりーじすうのそんざい"}
+（DC）$\mathrm{RM}(\varphi)=\alpha$ が順序数なら、$\mathrm{dM}(\varphi)$ は存在する（有限）。さらに、$d=\mathrm{dM}(\varphi)$ について、$\varphi$ は互いに交わらない $d$ 個の論理式 $\psi_{1}\vee\dots\vee\psi_{d}$（$\varphi$ と同値）に分けられ、各 $\psi_{i}$ は $\mathrm{RM}(\psi_{i})=\alpha$, $\mathrm{dM}(\psi_{i})=1$ を満たす。
+:::
+
+::: proof
+階数 $\alpha$ の論理式 $\psi\vdash\varphi$ が**有界**であるとは、$\psi$ の $d$ 分割が存在する $d$ に上限があることをいう。
+
+**Step 1（非有界な論理式は、階数 $\alpha$ の部分と非有界な部分に分かれる）.** $\psi$ が非有界とする。$2$ 分割 $\psi\supseteq A,B$（$A,B$ は交わらず、ともに階数 $\alpha$）がある。$\theta\defeq A$, $\theta'\defeq\psi\wedge\neg A$ とおく。$\theta'\supseteq B$ なので $\mathrm{RM}(\theta')\ge\alpha$、$\theta'\vdash\psi$ なので $\le\alpha$（\ref{model:morley-rank-basic} の 2）。$\theta'$ が非有界なら終わり。有界なら、$\theta$ も有界かどうかで場合を分ける。$\theta$ が非有界なら $\theta$ と $\theta'$ の役割を入れ替えればよい。両方有界とし、その分割数の上限を $a$, $b$ とする。$\psi$ は非有界なので $k>a+b$ 個の分割 $\chi_{1},\dots,\chi_{k}$ がある。$\chi_{j}$ は $(\chi_{j}\wedge\theta)\vee(\chi_{j}\wedge\theta')$ と同値なので、\ref{model:morley-rank-basic} の 3 から、各 $j$ で $\chi_{j}\wedge\theta$ か $\chi_{j}\wedge\theta'$ の階数が $\alpha$。前者となる $j$ の $\chi_{j}\wedge\theta$ は $\theta$ の分割をなすので $a$ 個以下、後者は $b$ 個以下で、$k\le a+b$ となり矛盾。
+
+**Step 2（有界性）.** $\varphi$ が非有界だとする。Step 1 を繰り返し（DC）、$\varphi_{0}\defeq\varphi$ から、非有界な $\varphi_{n}$ を、交わらない階数 $\alpha$ の $\theta_{n}$ と非有界な $\varphi_{n+1}$ に分ける（$\varphi_{n}$ は $\theta_{n}\vee\varphi_{n+1}$ と同値）。$\theta_{0},\theta_{1},\dots$ は互いに交わらず（$m>n$ なら $\theta_{m}\vdash\varphi_{n+1}$ で、$\theta_{n}$ と $\varphi_{n+1}$ は交わらない）、$\vdash\varphi$ で階数 $\alpha$ なので、定義から $\mathrm{RM}(\varphi)\ge\alpha+1$ となり矛盾。よって $\varphi$ は有界で、$\mathrm{dM}(\varphi)$ が存在する。
+
+**Step 3（次数 $1$ の部分への分解）.** $d=\mathrm{dM}(\varphi)$ の分割 $\psi_{1},\dots,\psi_{d}$ をとる。残り $\rho\defeq\varphi\wedge\neg(\psi_{1}\vee\dots\vee\psi_{d})$ は階数 $<\alpha$（階数 $\alpha$ なら $d+1$ 分割ができる）。$\psi_{1}$ を $\psi_{1}\vee\rho$ に替えても、階数は $\max(\alpha,\mathrm{RM}(\rho))=\alpha$（\ref{model:morley-rank-basic} の 3）で、分割のまま $\varphi$ と同値な和になる。各 $\psi_{i}$ が $2$ 分割をもてば、全体で $d+1$ 分割ができて最大性に反するので、$\mathrm{dM}(\psi_{i})=1$。
+:::
+
+たとえば強極小な論理式は $\mathrm{RM}=1$, $\mathrm{dM}=1$ である（二つの交わらない無限部分集合に分けられない）。次数が $2$ 以上になる例は \ref{model:prob-mr-degree}。
+
 ## 問題 {#model:sec-mr-problems}
 
 ::: problem {#model:prob-mr-acf}
@@ -108,8 +132,20 @@ $(\mathbb{Q},<)$ で、端点が異なる開区間 $a<x<b$ のモーリー階数
 $\alpha$ に関する帰納法で、すべての開区間 $I=(a,b)$（$a<b$）について $\mathrm{RM}(I)\ge\alpha$ を示す。$\alpha=0$ は空でないことから。$\alpha+1$：$a<c_{0}<c_{1}<\cdots<b$ となる有理数の列をとると、開区間 $(c_{i},c_{i+1})$ は互いに交わらず $\vdash I$ で、帰納法の仮定から階数 $\ge\alpha$。極限は定義から。よって $\mathrm{RM}(I)=\infty$ で、\ref{model:omega-stable-iff-rank} からも DLO の理論は $\omega$ 安定でない（直接には、$\mathbb{Q}$ 上の切断に対応する $2^{\aleph_{0}}$ 個の型がある）。
 :::
 
+::: problem {#model:prob-mr-degree}
+$\mathcal{M}$ を、無限集合 $M$ と、$M$ を二つの無限集合に分ける一項関係 $P$ からなる構造とする。$\mathrm{RM}(x=x)=1$, $\mathrm{dM}(x=x)=2$ を示せ。
+:::
+
+::: solution
+量化子消去を使わずに示す。$M$ の置換で $P$ を保つもの全体を $G$ とする。$\mathcal{L}_{M}$ 論理式 $\psi(x)$ のパラメータの有限集合を $F$ とすると、$F$ を固定する $G$ の元は $\psi(\mathcal{M})$ を保つ（同型は論理式の真偽を保つ）。$G$ のうち $F$ を固定する元は、$P\setminus F$ と $\neg P\setminus F$ のそれぞれの上で推移的に働くので、$\psi(\mathcal{M})\setminus F$ は、$P\setminus F$, $\neg P\setminus F$ のそれぞれを丸ごと含むか、交わらない。よって $\psi(\mathcal{M})$ は、$P$ の有限・補有限部分集合と、$\neg P$ の有限・補有限部分集合の和である。
+
+**階数.** $P(x)$, $\neg P(x)$ はそれぞれ無限で、その部分集合で定義可能なものは上のとおり有限か補有限なので、どちらも $\mathcal{M}$ で極小、\ref{model:morley-rank-small} の 2 から階数 $1$。$\mathrm{RM}(x=x)=\max=1$（\ref{model:morley-rank-basic} の 3）。
+
+**次数.** $P$, $\neg P$ は $2$ 分割。$3$ 分割 $\psi_{1},\psi_{2},\psi_{3}$（どれも無限）があれば、各 $\psi_{i}(\mathcal{M})$ は $P$ か $\neg P$ の補有限部分集合を含む。三つのうち二つは同じ側の補有限部分集合を含み、無限集合の二つの補有限部分集合は交わるので矛盾。よって $\mathrm{dM}(x=x)=2$。
+:::
+
 ::: supplement
-**前提を変えると.** $\omega$ 飽和なモデルで定義した階数はモデルによらず、パラメータの型だけで決まることが知られている。さらに、階数 $\alpha$ の論理式は階数 $\alpha$ の互いに交わらない部分に高々有限個しか分けられず、その最大個数を**モーリー次数**という（ここでは扱わない）。代数的閉体では $K^{n}$ の階数は $n$（代数多様体の次元）であることが知られている。
+**前提を変えると.** $\omega$ 飽和なモデルで定義した階数はモデルによらず、パラメータの型だけで決まることが知られている。さらに、階数 $\alpha$ の論理式は階数 $\alpha$ の互いに交わらない部分に高々有限個しか分けられず、その最大個数を**モーリー次数**という（本ページでは各モデルごとの階数について \ref{model:morley-degree-exists} で示した）。代数的閉体では $K^{n}$ の階数は $n$（代数多様体の次元）であることが知られている。
 
 **似た定理.** 位相空間のカントール–ベンディクソン階数（孤立点を取り除く操作の回数）は、型の空間に適用すると、可算言語ではモーリー階数と一致する場合があることが知られている。2 ⇒ 1 の証明の「大きい論理式の分割」は、非可算閉集合が完全核をもつというカントール–ベンディクソンの定理の議論と同じものである。
 

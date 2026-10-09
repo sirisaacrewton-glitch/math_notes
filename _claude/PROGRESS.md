@@ -342,6 +342,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-09 モデル理論 MC-08 追記（model:morley-degree, model:morley-degree-exists, model:prob-mr-degree：階数が順序数ならモーリー次数は有限、次数 1 の部分への分解、次数 2 の例。補足の未証明の言及を参照に置換）
 - 2026-10-09 圏論 随伴と位相 追記（cat:top-reflective-criterion, cat:prob-adt-kolmogorov：直積と部分空間で閉じた Top の充満部分圏は反射的（T₀・T₁・正則・T₃・チコノフ）、T₀ 反射はコルモゴロフ商。補足の未証明の言及を参照に置換）
 - 2026-10-08 一般位相 TD-14 追記（top:mrowka-psi, top:mad-exists, top:mrowka-psi-properties：極大概素族、Ψ 空間はチコノフで擬コンパクトだが可算コンパクトでない。補足の未証明の言及を参照に置換）
 - 2026-10-08 一般位相 TG-04 追記（top:double-arrow-half-nbhd, top:double-arrow-hereditary：近傍は一点と開区間の逆像、遺伝的リンデレーフ・遺伝的可分・完全正規。問題と補足の未証明の言及を参照に置換）
@@ -546,7 +547,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | MC-05 | 04-uncountable-categoricity/05-strongly-minimal | 代数的閉包、極小・強極小な論理式、∃^∞ の消去、極小論理式の存在 | 5.6.24– | 完了 |
 | MC-06 | 04-uncountable-categoricity/06-dimension | 交換法則、独立性と次元、独立な組の型の一意性 | 5.6.24– | 完了 |
 | MC-07 | 04-uncountable-categoricity/07-morley | ボールドウィン–ラクランの定理とモーリーの範疇性定理 | 5.6.4, 5.6.1 | 完了 |
-| MC-08 | 04-uncountable-categoricity/08-morley-rank | モーリー階数（基本性質、階数 0 と 1、ω 安定性との同値）（資料なし） | — | 完了 |
+| MC-08 | 04-uncountable-categoricity/08-morley-rank | モーリー階数（基本性質、階数 0 と 1、ω 安定性との同値、モーリー次数）（資料なし） | — | 完了 |
 
 * 二階算術・逆数学には 田中一之『逆数学と2階算術』（`<和書>` にある）がある。
 

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>スツルムの定理 | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03C-model-theory/01-elementary-extensions/07-sturm.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# スツルムの定理 {#model:page-sturm keywords="Sturm's theorem, signed remainder sequence, Sturm sequence, sign variations, Tarski query, Sturm-Sylvester theorem, counting roots with sign conditions, transfer of root counts between real closed fields"}
+
+実閉体 $R$ の多項式 $P$ の根の個数を、根を求めずに、係数の計算（割り算の繰り返し）と符号だけで求めるのが**スツルムの定理**である。本ページでは、より一般に、$P$ の根 $c$ にわたる $\operatorname{sign}Q(c)$ の和（**タルスキの問い合わせ**）を求めるスツルム–シルヴェスターの定理（\ref{model:sturm-sylvester}）を示す。この計算は $P,Q$ の係数の属する順序体の中で完結するので、「$P$ の根で、$Q_{1},\dots,Q_{l}$ がすべて正となるものの個数」は、係数体の順序だけで決まり、どの実閉体で数えても同じになる（\ref{model:root-count-transfer}）。これがタルスキの量化子消去（\ref[実閉体の量化子消去]{model:page-rcf-qe}）の代数的な核心である。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な議論に従って組み立てた。符号付き剰余列による定式化は、実代数幾何の標準的な扱い（S. Basu, R. Pollack, M.-F. Roy, *Algorithms in Real Algebraic Geometry* の第 2 章の形として知られているもの）に沿う。
+
+## 記法と定義の確認 {#model:sec-st-notation}
+
+::: notation
+- 実閉体・根の上界・根のない区間での符号の一定性・ロルの定理・多項式の代数 (D1)–(D3) は \ref{model:page-ordered-fields}（\ref{model:rcf}, \ref{model:cauchy-bound}, \ref{model:sign-constant}, \ref{model:rcf-rolle}）のとおり。
+- $R$ は実閉体。$P\in R[y]$ の**根**は $R$ の中の根を指し、重複度にかかわらず一つと数える。
+- 多項式 $S$ の最高次の係数を $\mathrm{lc}(S)$ と書く。
+- 二つの多項式の**最大公約数**は、ユークリッドの互除法（(D1) の繰り返し）の最後の $0$ でない剰余として、定数倍を除いて定まる。
+:::
+
+::: definition 符号付き剰余列と符号の変化数 {#model:signed-remainder-sequence keywords="signed remainder sequence, number of sign variations, Var at a point and at plus/minus infinity" index="符号付き剰余列|ふごうつきじょうよれつ, 符号の変化数|ふごうのへんかすう"}
+1. $P\neq0$, $Q$ について、**符号付き剰余列** $\mathrm{SRS}(P,Q)=(S_{0},S_{1},\dots,S_{k})$ を、$S_{0}\defeq P$, $S_{1}\defeq Q$ とし、$S_{i}\neq0$ の間は $S_{i+1}\defeq-\mathrm{rem}(S_{i-1},S_{i})$（$\mathrm{rem}$ は (D1) の剰余）とし、初めて $S_{k+1}=0$ となる $k$ で止めたものとする（$Q=0$ なら $k=0$）。
+2. $R$ の元の列 $(s_{0},\dots,s_{k})$ の**符号の変化数** $\mathrm{Var}$ は、$0$ を取り除いた列で、隣り合う二つの符号が異なる箇所の数とする。
+3. $a\in R$ について $\mathrm{Var}(a)\defeq\mathrm{Var}(S_{0}(a),\dots,S_{k}(a))$。また $\mathrm{Var}(+\infty)\defeq\mathrm{Var}(\mathrm{lc}(S_{0}),\dots,\mathrm{lc}(S_{k}))$、$\mathrm{Var}(-\infty)\defeq\mathrm{Var}\bigl((-1)^{\deg S_{0}}\mathrm{lc}(S_{0}),\dots,(-1)^{\deg S_{k}}\mathrm{lc}(S_{k})\bigr)$。
+:::
+
+各 $i$ で $S_{i-1}=q_{i}S_{i}-S_{i+1}$（$q_{i}$ は商）が成り立つ。$S_{k}$ は $P$ と $Q$ の最大公約数（定数倍を除く）である：$S_{i-1}$ と $S_{i}$ の公約数は $S_{i}$ と $S_{i+1}$ の公約数で、逆も成り立つ（上の等式）ので、$\gcd(S_{i-1},S_{i})$ は $i$ によらず、最後は $\gcd(S_{k},0)=S_{k}$。
+
+::: definition タルスキの問い合わせ {#model:tarski-query keywords="Tarski query TaQ(Q,P): sum of signs of Q at the roots of P" index="タルスキの問い合わせ|たるすきのといあわせ"}
+$P\neq0$, $Q\in R[y]$ と区間 $I$ について
+$$
+\mathrm{TaQ}_{I}(Q,P)\defeq\sum_{c\in I,\ P(c)=0}\operatorname{sign}Q(c),\qquad\mathrm{TaQ}(Q,P)\defeq\mathrm{TaQ}_{R}(Q,P).
+$$
+$\mathrm{TaQ}(1,P)$ は $P$ の根の個数である。
+:::
+
+## スツルム–シルヴェスターの定理 {#model:sec-st-theorem}
+
+::: lemma 根の近くでの PP′ の符号 {#model:sign-near-root keywords="near a root c, P P' has the sign of y - c" index="根の近くの符号|ねのちかくのふごう"}
+$P\neq0$, $P(c)=0$ とする。$c$ を含むある開区間 $J$ があって、$y\in J$, $y\neq c$ なら $\operatorname{sign}\bigl(P(y)P'(y)\bigr)=\operatorname{sign}(y-c)$。
+:::
+
+::: proof
+$P=(y-c)^{m}q$, $m\ge1$, $q(c)\neq0$ と書く（(D2)）。$P'=(y-c)^{m-1}\bigl(mq+(y-c)q'\bigr)$ なので
+$$
+PP'=(y-c)^{2m-1}\,q\,\bigl(mq+(y-c)q'\bigr).
+$$
+$h\defeq q\,(mq+(y-c)q')$ は $h(c)=mq(c)^{2}>0$（$m\cdot1>0$）。$h$ の根は有限個なので、$c$ を含み $h$ の根を含まない開区間 $J$ をとると、\ref{model:sign-constant} から $J$ 上 $h>0$。$(y-c)^{2m-1}$ の符号は $y-c$ の符号（奇数乗）。
+:::
+
+::: theorem スツルム–シルヴェスターの定理 {#model:sturm-sylvester keywords="Sturm-Sylvester: TaQ(Q,P) on (a,b) equals Var(a) - Var(b) for the signed remainder sequence of P and P'Q" index="スツルム–シルヴェスターの定理|すつるむしるう゛ぇすたーのていり"}
+$P\in R[y]$ は $0$ でなく、$Q\in R[y]$ とする。$\mathrm{SRS}(P,P'Q)$ の符号の変化数を $\mathrm{Var}$ とすると、
+1. $a<b$ で $P(a)\neq0\neq P(b)$ なら、$\mathrm{TaQ}_{(a,b)}(Q,P)=\mathrm{Var}(a)-\mathrm{Var}(b)$。
+2. $\mathrm{TaQ}(Q,P)=\mathrm{Var}(-\infty)-\mathrm{Var}(+\infty)$。
+:::
+
+::: proof
+$P$ が定数か $Q=0$ なら、$P'Q=0$ で列は $(P)$ だけ、$\mathrm{Var}=0$。$P$ が定数なら根はなく、$Q=0$ なら符号はすべて $0$ で、両辺とも $0$。以下 $\deg P\ge1$, $Q\neq0$ とする（$P'\neq0$ は (D3) と標数 $0$ から）。
+
+**Step 1（最大公約数で割る）.** $\mathrm{SRS}(P,P'Q)=(S_{0},\dots,S_{k})$、$G\defeq S_{k}$ とする。各 $S_{i}$ は $G$ で割り切れるので $T_{i}\defeq S_{i}/G$ とおく。$T_{i-1}=q_{i}T_{i}-T_{i+1}$、$T_{k}=1$ で、$\gcd(T_{i},T_{i+1})=1$（$\gcd(S_{i},S_{i+1})=G$ から）。したがって**隣り合う $T_{i}$, $T_{i+1}$ は共通の根をもたない**。$G(x)\neq0$ なら、$S_{i}(x)=G(x)T_{i}(x)$ で全体に同じ $0$ でない数を掛けているので $\mathrm{Var}(S;x)=\mathrm{Var}(T;x)$。$G$ は $P=S_{0}$ を割り切るので、$P(x)\neq0$ なら $G(x)\neq0$。
+
+**Step 2（$T_{0}$ の根）.** $c$ を $P$ の根とし、$P=(y-c)^{m}p_{1}$, $p_{1}(c)\neq0$ とする。$P'$ の $c$ での重複度は $m-1$（\ref{model:sign-near-root} の証明の式で $mq(c)\neq0$）。
+- $Q(c)=0$ なら、$P'Q$ の $c$ での重複度は $\ge m$ で、$(y-c)^{m}$ は $P$ と $P'Q$ の公約数である。公約数は剰余列のすべての項を割り切る（$S_{i+1}=q_{i}S_{i}-S_{i-1}$ による帰納法）ので $G=S_{k}$ を割り切る。よって $T_{0}=P/G$ は $c$ を根にもたない。
+- $Q(c)\neq0$ なら、$P'Q$ の重複度はちょうど $m-1$。$(y-c)^{m-1}$ は公約数なので $G$ を割り切り、$G$ は $P'Q$ を割り切るので $G$ の重複度はちょうど $m-1$。よって $T_{0}(c)=0$、$T_{1}(c)\neq0$（共通根がない）。
+
+逆に $T_{0}$ の根は $P$ の根である。まとめると、**$T_{0}$ の根は、ちょうど $P(c)=0$ かつ $Q(c)\neq0$ となる $c$** である。
+
+**Step 3（途中の根は変化数を変えない）.** 点 $c$ と、$c$ を含み、$c$ 以外に $G,T_{0},\dots,T_{k}$ の根を含まない開区間 $J$ をとる。$0<i<k$ で $T_{i}(c)=0$ なら、$T_{i-1}(c)=-T_{i+1}(c)$ で、共通根がないのでこれは $0$ でない。したがって $J$ 上で $T_{i-1}$ と $T_{i+1}$ は互いに逆の一定の符号をもち（\ref{model:sign-constant}）、$T_{i}(x)$ の値が正・負・$0$ のどれでも、三つ組 $(T_{i-1},T_{i},T_{i+1})$ が $\mathrm{Var}$ に寄与する変化はちょうど一つである。また $T_{i}(c)=0$ となる $0<i<k$ は隣り合わない。その中央の項 $T_{i}$ を列から取り除くと、残った $T_{i-1}$, $T_{i+1}$ の間の変化もちょうど一つなので、変化数は変わらない。また $T_{i}(c)=0$ となる $0<i<k$ は隣り合わない。よって $x\in J$ について、$\mathrm{Var}(T;x)$ は「$c$ で $0$ になる途中の項をすべて取り除いた列」の変化数に等しい。$T_{0}(c)\neq0$ なら、残った項はすべて $c$ で $0$ でなく、$J$ 上で一定の符号をもつ（$T_{k}=1$ も）ので、$\mathrm{Var}(T;x)$ は $J$ 上で一定である。
+
+**Step 4（$T_{0}$ の根での変化）.** $T_{0}(c)=0$ とすると、Step 2 から $P(c)=0$, $Q(c)\neq0$, $T_{1}(c)\neq0$。$J$ を \ref{model:sign-near-root} の区間と、$Q$ の根を含まない区間との共通部分に縮めると、$x\in J$, $x\neq c$ で
+$$
+\operatorname{sign}\bigl(T_{0}(x)T_{1}(x)\bigr)=\operatorname{sign}\frac{P(x)P'(x)Q(x)}{G(x)^{2}}=\operatorname{sign}(x-c)\cdot\operatorname{sign}Q(c).
+$$
+$T_{1}$ は $J$ で $0$ にならないので、$\mathrm{Var}(T;x)=[\,T_{0}(x)T_{1}(x)<0\,]+\mathrm{Var}(T_{1}(x),\dots,T_{k}(x))$（$[\cdot]$ は真なら $1$）で、第二項は Step 3 から $J$ 上一定。$Q(c)>0$ なら、$c$ の左で $T_{0}T_{1}<0$、右で $>0$ なので、$\mathrm{Var}$ は左から右へ $1$ 減る。$Q(c)<0$ なら $1$ 増える。いずれも「左の値 − 右の値 $=\operatorname{sign}Q(c)$」。
+
+**Step 5（1 の結論）.** $a<b$, $P(a),P(b)\neq0$ とする。$(a,b)$ の中の $G,T_{0},\dots,T_{k}$ の根を $c_{1}<\dots<c_{r}$ とする。$\mathrm{Var}(T;\cdot)$ は、各開区間 $(c_{j},c_{j+1})$ の上で一定（どの $T_{i}$ も $0$ にならず符号一定）で、Step 3 から $a$ と $(a,c_{1})$、$(c_{r},b)$ と $b$ でも等しい（$T_{0}(a),T_{0}(b)\neq0$）。各 $c_{j}$ での左右の差は、$T_{0}(c_{j})\neq0$ なら $0$（Step 3）、$T_{0}(c_{j})=0$ なら $\operatorname{sign}Q(c_{j})$（Step 4）。Step 2 から、$P(c)=0$, $Q(c)=0$ の根は $\operatorname{sign}Q(c)=0$ で和に寄与しないので、
+$$
+\mathrm{Var}(T;a)-\mathrm{Var}(T;b)=\sum_{c\in(a,b),\ P(c)=0}\operatorname{sign}Q(c).
+$$
+Step 1 から左辺は $\mathrm{Var}(a)-\mathrm{Var}(b)$。
+
+**Step 6（2 の結論）.** 各 $S_{i}$ に根の上界（\ref{model:cauchy-bound}。$S_{i}$ が定数なら上界は不要）をとり、その最大を $B$ とする。$\lvert y\rvert\ge B$ ではどの $S_{i}$ も $0$ でなく $\operatorname{sign}S_{i}(y)=\operatorname{sign}(\mathrm{lc}(S_{i})y^{\deg S_{i}})$ なので、$\mathrm{Var}(B)=\mathrm{Var}(+\infty)$, $\mathrm{Var}(-B)=\mathrm{Var}(-\infty)$。$P=S_{0}$ の根はすべて $(-B,B)$ にあり、$P(\pm B)\neq0$。1 を $a=-B$, $b=B$ に使う。
+:::
+
+::: corollary スツルムの定理 {#model:sturm-theorem keywords="Sturm's theorem: the number of roots in (a,b) is Var(a) - Var(b) for the Sturm sequence of P and P'" index="スツルムの定理|すつるむのていり"}
+$P\neq0$ と $a<b$, $P(a)P(b)\neq0$ について、$P$ の $(a,b)$ の中の根の個数は、$\mathrm{SRS}(P,P')$ についての $\mathrm{Var}(a)-\mathrm{Var}(b)$ に等しい。$R$ の中の根の個数は $\mathrm{Var}(-\infty)-\mathrm{Var}(+\infty)$。
+:::
+
+::: proof
+\ref{model:sturm-sylvester} で $Q=1$ とする。
+:::
+
+## 係数体だけで決まること {#model:sec-st-transfer}
+
+::: lemma 符号条件つきの根の個数 {#model:count-with-signs keywords="number of roots of P where Q_1,...,Q_l are positive, as a combination of Tarski queries" index="符号条件つきの根の個数|ふごうじょうけんつきのねのこすう"}
+$P\neq0$, $Q_{1},\dots,Q_{l}\in R[y]$ について
+$$
+\begin{aligned}
+&\#\{c:P(c)=0,\ Q_{1}(c)>0,\dots,Q_{l}(c)>0\}\\
+&\qquad=\frac{1}{2^{l}}\sum_{I\subseteq\{1,\dots,l\}}\mathrm{TaQ}\Bigl(\prod_{j\in I}Q_{j}\prod_{j\notin I}Q_{j}^{2},\ P\Bigr).
+\end{aligned}
+$$
+:::
+
+::: proof
+$s\in\{-1,0,1\}$ について $(s+s^{2})/2$ は $s=1$ なら $1$、それ以外は $0$。$P$ の根 $c$ について $s_{j}\defeq\operatorname{sign}Q_{j}(c)$ とすると
+$$
+\prod_{j}\frac{s_{j}+s_{j}^{2}}{2}=\frac{1}{2^{l}}\sum_{I}\prod_{j\in I}s_{j}\prod_{j\notin I}s_{j}^{2}
+$$
+は、すべての $Q_{j}(c)>0$ なら $1$、そうでなければ $0$。符号は積に関して乗法的（$\operatorname{sign}(xy)=\operatorname{sign}x\operatorname{sign}y$）なので、右辺の各項は $\operatorname{sign}\bigl(\prod_{I}Q_{j}\prod_{I^{c}}Q_{j}^{2}\bigr)(c)$。$c$ について和をとる。
+:::
+
+::: theorem 根の個数の移行 {#model:root-count-transfer keywords="the number of roots of P in a real closed field with prescribed signs of Q_j depends only on the ordered field of coefficients" index="根の個数の移行|ねのこすうのいこう"}
+$R$, $R'$ を実閉体、$K\subseteq R$, $K'\subseteq R'$ を部分体（それぞれ順序を制限する）とし、$\sigma\colon K\to K'$ を順序を保つ体の同型とする。$P,Q_{1},\dots,Q_{l}\in K[y]$, $P\neq0$ について、係数に $\sigma$ を施した多項式を $\sigma P$ などと書くと、
+$$
+\begin{aligned}
+&\#\{c\in R:P(c)=0,\ Q_{j}(c)>0\ (\forall j)\}\\
+&\qquad=\#\{c'\in R':\sigma P(c')=0,\ \sigma Q_{j}(c')>0\ (\forall j)\}.
+\end{aligned}
+$$
+とくに、一方に根があれば他方にもある。
+:::
+
+::: proof
+\ref{model:count-with-signs} から、$\mathrm{TaQ}^{R}(Q,P)=\mathrm{TaQ}^{R'}(\sigma Q,\sigma P)$（$P,Q\in K[y]$）を示せばよい（$\sigma$ は積を保つので $\sigma(\prod Q_{j}\cdots)=\prod\sigma Q_{j}\cdots$）。
+
+**Step 1（剰余列は $K$ の中で計算される）.** (D1) の商と剰余は、$K[y]$ の中で計算しても $R[y]$ の中で計算しても同じ（$K[y]$ での表示が $R[y]$ での表示でもあり、一意性から）。形式微分も同じ。よって $\mathrm{SRS}(P,P'Q)$ は $K[y]$ の列で、$\sigma$ は体の同型なので、$\sigma$ を施した列は $\mathrm{SRS}(\sigma P,(\sigma P)'\sigma Q)$ である（割り算の各段を $\sigma$ で写せばよい）。
+
+**Step 2（変化数は $K$ の順序で決まる）.** $\mathrm{Var}(\pm\infty)$ は、$K$ の元 $\pm\mathrm{lc}(S_{i})$ の符号だけで決まり、$R$ の中での符号は $K$ の中での符号に等しい（順序は制限）。$\sigma$ は順序を保つので、$R'$ での $\mathrm{Var}(\pm\infty)$ と一致する。
+
+**Step 3.** \ref{model:sturm-sylvester} の 2 を $R$ と $R'$ で使う。
+:::
+
+::: hypcheck
+- **中間値の公理（実閉性）**：\ref{model:sturm-sylvester} の各段で使った符号の一定性（\ref{model:sign-constant}）と根の近くの符号（\ref{model:sign-near-root}）。実閉でない順序体では、根が足りないので個数の公式が成り立たない（\ref{model:prob-st-q}）。
+- **標数 $0$**：Step 2 で $P'$ の重複度が $m-1$ であること（$m\cdot1\neq0$）に使った。順序体なので自動的に成り立つ。
+- **隣り合う項が共通根をもたないこと**：Step 3 で、途中の項が $0$ になっても変化数が変わらないことの根拠。$G$ で割ったのはこのためである。
+- **係数が $K$ に属すること**：移行定理では、剰余列の計算と、変化数を決める符号がすべて $K$ の中で済むことだけを使った。$R$ と $R'$ がどう違っていても（大きさも、$K$ 上の超越元の有無も）、結果は同じになる。
+:::
+
+## 問題 {#model:sec-st-problems}
+
+::: problem {#model:prob-st-cubic}
+$P=y^{3}-3y+1$ の実閉体の中の根の個数を、スツルムの定理で求めよ。
+:::
+
+::: solution
+$S_{0}=y^{3}-3y+1$, $S_{1}=P'=3y^{2}-3$。$S_{0}=\frac{y}{3}S_{1}+(-2y+1)$ なので $S_{2}=2y-1$。$S_{1}=\bigl(\frac{3}{2}y+\frac{3}{4}\bigr)S_{2}-\frac{9}{4}$ なので $S_{3}=\frac{9}{4}$、次の剰余は $0$。最高次の係数はすべて正なので $\mathrm{Var}(+\infty)=0$。$-\infty$ での符号は $(-,+,-,+)$ で $\mathrm{Var}(-\infty)=3$。よって根は $3$ 個。
+:::
+
+::: problem {#model:prob-st-taq}
+$P=y^{2}-1$, $Q=y$ について $\mathrm{TaQ}(Q,P)$ を、定義と \ref{model:sturm-sylvester} の両方で計算せよ。
+:::
+
+::: solution
+**定義.** 根は $\pm1$ で、$\operatorname{sign}Q(1)+\operatorname{sign}Q(-1)=1-1=0$。
+
+**定理.** $P'Q=2y^{2}$。$S_{0}=y^{2}-1$, $S_{1}=2y^{2}$、$S_{0}=\frac{1}{2}S_{1}-1$ なので $S_{2}=1$。最高次の係数はすべて正で、次数は $2,2,0$（偶数）なので、$\pm\infty$ での符号はどちらも $(+,+,+)$、変化数は $0$。$0-0=0$ で一致する。
+:::
+
+::: problem {#model:prob-st-q}
+実閉でない順序体 $\mathbb{Q}$ で、\ref{model:sturm-theorem} の「根の個数 $=\mathrm{Var}(-\infty)-\mathrm{Var}(+\infty)$」が成り立たない例を挙げよ。
+:::
+
+::: solution
+$P=y^{2}-2$。$S_{0}=y^{2}-2$, $S_{1}=2y$, $S_{2}=-\mathrm{rem}(y^{2}-2,2y)=2$。$+\infty$ での符号 $(+,+,+)$、$-\infty$ では $(+,-,+)$ で、$\mathrm{Var}(-\infty)-\mathrm{Var}(+\infty)=2$。しかし $\mathbb{Q}$ に根はない。右辺は「$\mathbb{Q}$ を含む任意の実閉体（たとえば $\mathbb{R}$）での根の個数」を数えている（\ref{model:root-count-transfer}）。
+:::
+
+::: supplement
+**前提を変えると.**
+- **重複度つきの個数.** スツルムの定理は重複度を数えない。重複度を数えるには、$P$ を無平方部分 $P/\gcd(P,P')$ と残りに分けて繰り返せばよい。
+- **複素根.** 代数的閉体 $R(\sqrt{-1})$ での根の個数（$\deg P$ を重複度つきで）から実根の個数を引くと、非実根の個数が得られる。エルミートの方法（二次形式の符号数）も同じ量を与えることが知られている（ここでは扱わない）。
+- **符号の組の個数を一度に求める.** $Q_{1},\dots,Q_{l}$ の符号のすべての組（$3^{l}$ 通り）について根の個数を求めるには、タルスキの問い合わせの行列（$3\times3$ 行列のテンソル積）を逆に解く方法があることが知られている（ベン＝オア–コーゼン–ライフの方法。ここでは扱わない）。本サイトでは「すべて正」の場合だけを \ref{model:count-with-signs} で求めた。
+
+**似た定理.** 根の個数の移行（\ref{model:root-count-transfer}）は、代数的閉体での「代数閉包の一意性」（\ref{model:acf-qe} の Step 2）の役割を実閉体で果たす。代数的閉体では根が「あるかないか」が体の拡大の一意性で決まったが、実閉体では、根の個数が係数の符号の計算で決まる。実閉包の一意性（アルティン–シュライアー）からも同じ結論が出ることが知られているが、本サイトはこの計算的な道を採る。
+
+**高い視点から.** スツルムの定理は、「根の数」という幾何的な量を、「剰余列の符号の変化」という代数的・組合せ的な量に置き換える。比喩で言えば、山の数を数えるのに山を一つずつ訪ねるのではなく、遠く左（$-\infty$）と遠く右（$+\infty$）で観測した「信号の並び」の違いから読み取る方法である。この観測は係数の計算だけで済むので、係数がどの体に住んでいても同じ答えを返す。これが、実閉体の一階の理論が「係数の順序体の情報だけで決まる」理由、すなわち量化子消去の理由である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

@@ -448,6 +448,7 @@
 | almost disjoint family / MAD family / Psi-space (Mrowka) | 概素な族 / 極大概素族 / Ψ 空間（ムルフカ） | ほとんど交わらない族 | 標準的な訳語は定まっていない。top:mrowka-psi |
 | Katetov function / rational Urysohn space / Urysohn space | カテトフ関数 / 有理ウリゾーン空間 / ウリゾーン空間 | | 標準的。model:page-rational-urysohn |
 | ordered field / positive cone / real closed field | 順序体 / 正の錐 / 実閉体 | | 標準的。model:page-ordered-fields |
+| signed remainder sequence / sign variations / Tarski query | 符号付き剰余列 / 符号の変化数 / タルスキの問い合わせ | | 実代数幾何の用語。model:page-sturm |
 | Luzin set / Sierpinski set | ルジンの集合 / シェルピンスキーの集合 | ルージン集合 | 標準的。set:page-luzin-sets |
 | Adleman theorem / Sipser-Gacs-Lautemann theorem / probabilistic method / derandomization | アドルマンの定理 / シプサー–ガーチ–ラウテマンの定理 / 確率的方法 / 脱乱択化 | | 標準的。comp:page-bpp-ph |
 | Chaitin incompleteness theorem / Berry paradox | チャイティンの不完全性定理 / ベリーの逆理 | | 標準的。comp:page-chaitin-incompleteness |

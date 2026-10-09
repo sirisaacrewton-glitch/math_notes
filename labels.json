@@ -16437,6 +16437,13 @@
       "num": "2.6",
       "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/02-omega-stable.html"
     },
+    "model:count-with-signs": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "符号条件つきの根の個数",
+      "num": "7.6",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/07-sturm.html"
+    },
     "model:countable-homogeneous-vaught-pair": {
       "status": "defined",
       "type": "lemma",
@@ -17193,6 +17200,13 @@
       "num": "",
       "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/05-strongly-minimal.html"
     },
+    "model:page-sturm": {
+      "status": "defined",
+      "type": "page",
+      "title": "スツルムの定理",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/07-sturm.html"
+    },
     "model:page-types-omitting": {
       "status": "defined",
       "type": "page",
@@ -17557,6 +17571,13 @@
       "num": "5.8",
       "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/05-strongly-minimal.html"
     },
+    "model:prob-st-cubic": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "7.8",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/07-sturm.html"
+    },
     "model:prob-st-equivalence": {
       "status": "defined",
       "type": "problem",
@@ -17570,6 +17591,20 @@
       "title": "",
       "num": "1.5",
       "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/01-stability.html"
+    },
+    "model:prob-st-q": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "7.10",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/07-sturm.html"
+    },
+    "model:prob-st-taq": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "7.9",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/07-sturm.html"
     },
     "model:prob-ultrapower-finite": {
       "status": "defined",
@@ -17801,6 +17836,13 @@
       "title": "ロビンソンの判定法",
       "num": "3.10",
       "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/03-quantifier-elimination.html"
+    },
+    "model:root-count-transfer": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "根の個数の移行",
+      "num": "7.7",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/07-sturm.html"
     },
     "model:ryll-nardzewski": {
       "status": "defined",
@@ -18521,14 +18563,14 @@
       "type": "section",
       "title": "記法と定義の確認",
       "num": "",
-      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/01-stability.html"
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/07-sturm.html"
     },
     "model:sec-st-problems": {
       "status": "defined",
       "type": "section",
       "title": "問題",
       "num": "",
-      "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/01-stability.html"
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/07-sturm.html"
     },
     "model:sec-st-stability": {
       "status": "defined",
@@ -18536,6 +18578,20 @@
       "title": "安定性",
       "num": "",
       "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/01-stability.html"
+    },
+    "model:sec-st-theorem": {
+      "status": "defined",
+      "type": "section",
+      "title": "スツルム–シルヴェスターの定理",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/07-sturm.html"
+    },
+    "model:sec-st-transfer": {
+      "status": "defined",
+      "type": "section",
+      "title": "係数体だけで決まること",
+      "num": "",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/07-sturm.html"
     },
     "model:sec-substructures": {
       "status": "defined",
@@ -18733,6 +18789,20 @@
       "num": "6.7",
       "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html"
     },
+    "model:sign-near-root": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "根の近くでの PP′ の符号",
+      "num": "7.3",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/07-sturm.html"
+    },
+    "model:signed-remainder-sequence": {
+      "status": "defined",
+      "type": "definition",
+      "title": "符号付き剰余列と符号の変化数",
+      "num": "7.1",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/07-sturm.html"
+    },
     "model:skolem-hull": {
       "status": "defined",
       "type": "definition",
@@ -18782,6 +18852,20 @@
       "num": "5.4",
       "page": "03-mathematical-logic/03C-model-theory/04-uncountable-categoricity/05-strongly-minimal.html"
     },
+    "model:sturm-sylvester": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "スツルム–シルヴェスターの定理",
+      "num": "7.4",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/07-sturm.html"
+    },
+    "model:sturm-theorem": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "スツルムの定理",
+      "num": "7.5",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/07-sturm.html"
+    },
     "model:substructure": {
       "status": "defined",
       "type": "definition",
@@ -18795,6 +18879,13 @@
       "title": "部分構造は量化子のない論理式を保つ",
       "num": "1.5",
       "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/01-elementary-substructures.html"
+    },
+    "model:tarski-query": {
+      "status": "defined",
+      "type": "definition",
+      "title": "タルスキの問い合わせ",
+      "num": "7.2",
+      "page": "03-mathematical-logic/03C-model-theory/01-elementary-extensions/07-sturm.html"
     },
     "model:tarski-vaught": {
       "status": "defined",
@@ -39389,14 +39480,8 @@
       "status": "planned",
       "title": "実閉体の量化子消去",
       "referencedFrom": [
-        "03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html"
-      ]
-    },
-    "model:page-sturm": {
-      "status": "planned",
-      "title": "スツルムの定理",
-      "referencedFrom": [
-        "03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html"
+        "03-mathematical-logic/03C-model-theory/01-elementary-extensions/06-ordered-fields.html",
+        "03-mathematical-logic/03C-model-theory/01-elementary-extensions/07-sturm.html"
       ]
     },
     "ring:fraction-field": {

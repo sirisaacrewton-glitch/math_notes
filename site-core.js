@@ -313,7 +313,17 @@
     return s.toLowerCase().replace(/\s+/g, ' ');
   }
 
-  var _synRe = null;
+  // 同義語の正規表現は作るのに時間がかかるので、同義語の表ごとに 1 回だけ作って使い回す
+  var _synFor = null, _synRe = null;
+  function synonymRegexes(synonyms) {
+    if (_synFor !== synonyms) {
+      _synFor = synonyms;
+      _synRe = synonyms.map(function (p) {
+        return [new RegExp(p[0].replace(/[\\{}|]/g, '\\$&') + '(?![A-Za-z])', 'g'), p[1]];
+      });
+    }
+    return _synRe;
+  }
   function normalizeTex(tex, synonyms, macros) {
     var s = String(tex || '');
     if (s.normalize) s = s.normalize('NFKC');
@@ -332,10 +342,7 @@
     s = s.replace(/\\(operatorname\*?|mathrm|text|textrm|textup|mbox|mathit|textit)\s*\{([^{}]*)\}/g, '$2');
     // 同義語
     if (synonyms) {
-      synonyms.forEach(function (p) {
-        var re = new RegExp(p[0].replace(/[\\{}|]/g, '\\$&') + '(?![A-Za-z])', 'g');
-        s = s.replace(re, p[1]);
-      });
+      synonymRegexes(synonyms).forEach(function (p) { s = s.replace(p[0], p[1]); });
     }
     s = s.replace(/\s+/g, '');
     // 1 文字・1 コマンドだけを囲む波括弧を外す: a_{n} -> a_n

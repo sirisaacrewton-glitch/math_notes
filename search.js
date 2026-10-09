@@ -52,24 +52,34 @@
   }
   function isKanaOnly(w) { return /^[\u3041-\u309f\u30fcー]+$/.test(w); }
 
+  // 検索用に正規化した索引（索引の読み込み時に 1 回だけ作り、以後の検索では使い回す）
   function prepare() {
     if (prepared) return prepared;
+    var t0 = window.performance ? performance.now() : 0;
+    var whereOf = {};   // 所在の文字列はページごとに同じなので、ページごとに 1 回だけ正規化する
+    function pageWhere(p, pg) {
+      if (!(p in whereOf)) {
+        var crumbs = (pg.crumbs || []).map(function (c) { return c.title; }).join(' ');
+        whereOf[p] = Core.normalizeText(crumbs + ' ' + (pg.subj || '') + ' ' + (pg.path || '') + ' ' + (pg.title || ''));
+      }
+      return whereOf[p];
+    }
     prepared = IDX.entries.map(function (e, i) {
       var pg = IDX.pages[e.p] || {};
       var sb = Core.splitForSearch(e.x || '');
       var st = Core.splitForSearch(e.ti || '');
-      var crumbs = (pg.crumbs || []).map(function (c) { return c.title; }).join(' ');
+      var ni = (e.ix || []).map(function (x) { return fold(x.term + (x.reading ? ' ' + x.reading : '')); });
       return {
         i: i, e: e, pg: pg,
         rawT: st.text + ' ' + (e.k || ''), rawB: sb.text,
         rawI: (e.ix || []).map(function (x) { return x.term + (x.reading ? ' ' + x.reading : ''); }),
         nt: fold(st.text + ' ' + (e.k || '')),
-        ni: (e.ix || []).map(function (x) { return fold(x.term + (x.reading ? ' ' + x.reading : '')); }),
+        ni: ni, nis: splitIx(ni),
         nl: (e.l || '').toLowerCase(),
         nb: fold(sb.text),
         ntm: st.maths.map(norm).join('\u0001'),
         nm: sb.maths.map(norm).join('\u0001'),
-        where: Core.normalizeText(crumbs + ' ' + (pg.subj || '') + ' ' + (pg.path || '') + ' ' + (pg.title || '')),
+        where: pageWhere(e.p, pg),
         pt: fold(pg.title || ''), rawP: pg.title || ''
       };
     });
@@ -80,14 +90,26 @@
       var pg = IDX.pages[L.p] || {};
       prepared.push({
         i: -1, e: { p: L.p, t: 'equation', n: L.n, l: l, ti: '', k: '', x: '$$' + L.tex + '$$', a: l }, pg: pg,
-        nt: '', ni: [], rawT: '', rawB: '', rawI: [], rawP: pg.title || '', nl: l.toLowerCase(), nb: '', ntm: '', nm: norm(L.tex),
-        where: Core.normalizeText(((pg.crumbs || []).map(function (c) { return c.title; }).join(' ')) + ' ' + (pg.subj || '') + ' ' + pg.path),
+        nt: '', ni: [], nis: [], rawT: '', rawB: '', rawI: [], rawP: pg.title || '', nl: l.toLowerCase(), nb: '', ntm: '', nm: norm(L.tex),
+        where: pageWhere(L.p, pg),
         pt: fold(pg.title || '')
       });
     });
+    if (window.performance && window.console) console.debug('[search] 索引の準備 ' + Math.round(performance.now() - t0) + ' ms（' + prepared.length + ' 項目）');
     return prepared;
   }
-  function norm(t) { return Core.normalizeTex(t, C.TEX_SYNONYMS, C.KATEX_MACROS); }
+  // 索引語「用語 よみ」を、用語の部分とよみの部分に分けておく（scoreWord で検索のたびに split しないため）
+  function splitIx(ni) {
+    return ni.map(function (x) { var sp = x.split(' '); return [sp[0], sp.slice(1).join(' ')]; });
+  }
+  // TeX の正規化は同じ式に何度もかかる（結果の抜粋など）ので、結果を覚えておく
+  var NORM_MEMO = Object.create(null);
+  function norm(t) {
+    t = String(t || '');
+    var v = NORM_MEMO[t];
+    if (v === undefined) v = NORM_MEMO[t] = Core.normalizeTex(t, C.TEX_SYNONYMS, C.KATEX_MACROS);
+    return v;
+  }
 
   /* ---------- クエリ解析 ---------- */
   // ひらがな（またはカタカナ）だけの語は、読みが一致する索引語でも探す（例：べきしゅうごう → 冪集合）
@@ -132,7 +154,10 @@
   }
 
   function fieldsCS(r) {
-    if (!r._cs) r._cs = { nt: fold(r.rawT, true), nb: fold(r.rawB, true), ni: r.rawI.map(function (x) { return fold(x, true); }), pt: fold(r.rawP, true) };
+    if (!r._cs) {
+      var ni = r.rawI.map(function (x) { return fold(x, true); });
+      r._cs = { nt: fold(r.rawT, true), nb: fold(r.rawB, true), ni: ni, nis: splitIx(ni), pt: fold(r.rawP, true) };
+    }
     return r._cs;
   }
   function countOcc(hay, needle) {
@@ -156,7 +181,10 @@
     }
     var cs = !!(t.cs);
     var best = scoreWord(r, cs ? t.txtC : t.txt, cs);
-    (t.alts || []).forEach(function (a) { best = Math.max(best, 0.95 * scoreWord(r, fold(a, cs), cs)); });
+    // 読みから得た別表記は、項目ごとに正規化し直さないよう、語ごとに 1 回だけ正規化しておく
+    var af = cs ? (t._altsC || (t._altsC = (t.alts || []).map(function (a) { return fold(a, true); })))
+                : (t._alts || (t._alts = (t.alts || []).map(function (a) { return fold(a); })));
+    for (var k = 0; k < af.length; k++) best = Math.max(best, 0.95 * scoreWord(r, af[k], cs));
     return best;
   }
   function scoreWord(r, w, cs) {
@@ -164,7 +192,7 @@
     var s = 0, F = cs ? fieldsCS(r) : r;
     // 索引語（用語索引に載っている語）との一致を重く見る
     for (var k = 0; k < F.ni.length; k++) {
-      if (F.ni[k] === w || F.ni[k].split(' ')[0] === w || F.ni[k].split(' ').slice(1).join(' ') === w) { s += 14; break; }
+      if (F.ni[k] === w || F.nis[k][0] === w || F.nis[k][1] === w) { s += 14; break; }
       if (F.ni[k].indexOf(w) >= 0) { s += 7; break; }
     }
     if (F.nt.indexOf(w) >= 0) { s += 10; if (F.nt.trim() === w) s += 6; else if (F.nt.indexOf(w) === 0) s += 2; }
@@ -401,7 +429,8 @@
   function root() { return document.body.getAttribute('data-root') || ''; }
 
   /* ---------- 検索用の本文（search-index.js）の遅延読み込み ---------- */
-  // site-index.js には本文を入れず、検索を開いたとき（またはページ表示の少し後）に読み込む。
+  // site-index.js には本文を入れず、検索を開いたとき（参照のプレビューで本文が要るときも）に初めて読み込む。
+  // 読み込んだら、検索用の正規化（prepare）をその場で 1 回だけ行う。
   var entriesState = (IDX.entries && IDX.entries.length) ? 2 : 0, entriesWaiters = [];
   function loadEntries(cb) {
     if (entriesState === 2) { if (cb) cb(); return; }
@@ -414,6 +443,7 @@
       var M = window.MATH_INDEX || {};
       IDX.entries = M.entries || [];
       entriesState = 2; prepared = null; READINGS = null;
+      try { prepare(); } catch (e) {}
       entriesWaiters.splice(0).forEach(function (f) { try { f(); } catch (e) {} });
     };
     sc.onerror = function () { entriesState = 0; };
@@ -421,12 +451,6 @@
   }
   function entriesReady() { return entriesState === 2; }
   window.MathEntries = { load: loadEntries, ready: entriesReady };
-  // ページの表示が落ち着いてから先読みしておく
-  (function prefetch() {
-    var go = function () { loadEntries(); };
-    if (window.requestIdleCallback) window.addEventListener('load', function () { requestIdleCallback(go, { timeout: 4000 }); });
-    else window.addEventListener('load', function () { setTimeout(go, 1500); });
-  })();
   var LOADING_HTML = '<div class="mn-search-empty">検索用の索引を読み込んでいます…</div>';
   // 日本語入力（IME）で変換を確定するための Enter かどうか。
   // isComposing（多くのブラウザ）、keyCode 229（Safari など）、変換確定の直後（compositionend から少しの間）を見る。
@@ -625,7 +649,13 @@
       if (!menu.querySelector('.mn-tree-filter')) {
         menu.innerHTML = '<div class="mn-tree-panel is-new"><input type="search" class="mn-tree-filter" placeholder="分野名で絞り込む" aria-label="分野名で絞り込む">' +
           '<div class="mn-tree-list"></div></div>';
-        menu.querySelector('.mn-tree-filter').addEventListener('input', function (e) { filterText = e.target.value; renderTree(true); });
+        // 入力のたびに描き直すと重いので、入力が少し途切れてから描く
+        var filterTimer = null;
+        menu.querySelector('.mn-tree-filter').addEventListener('input', function (e) {
+          var v = e.target.value;
+          clearTimeout(filterTimer);
+          filterTimer = setTimeout(function () { filterText = v; if (!menu.hidden) renderTree(true); }, 180);
+        });
       }
       var list = menu.querySelector('.mn-tree-list');
       list.innerHTML = filterText.trim() ? filterRows() :
@@ -739,7 +769,7 @@
         '<input class="mn-sform-q" type="search" name="q" placeholder="キーワード（例：コンパクト、べきしゅうごう、Tychonoff）" aria-label="キーワード" spellcheck="false">' +
         '<button type="button" class="mn-sform-go" title="検索結果のページを開く">検索</button>' +
       '</div>' +
-      '<div class="mn-sform-hint"><kbd>Enter</kbd> か「検索」で結果のページへ。↑↓ で結果を選び <kbd>Shift</kbd>+<kbd>Enter</kbd> でその項目を開く</div>' +
+      '<div class="mn-sform-hint"><kbd>Enter</kbd> か「検索」で検索。↑↓ で結果を選び <kbd>Shift</kbd>+<kbd>Enter</kbd> でその項目を開く</div>' +
       '<details class="mn-sform-more" data-kind="' + id + '"' + (moreOpen(id) ? ' open' : '') + '>' +
         '<summary>条件を指定</summary>' +
         '<div class="mn-sform-grid">' +
@@ -761,22 +791,21 @@
     '</form>';
   }
 
-  // フォームを初期化し、読み取り関数などを返す
-  function bindForm(form, onChange) {
+  // フォームを初期化し、読み取り関数などを返す。
+  // 検索は Enter か「検索」ボタンのときだけ行う（入力・種類・分野などを変えただけでは検索しない。次の検索に反映される）。
+  function bindForm(form) {
     var q = form.querySelector('[name=q]'), tex = form.querySelector('[name=tex]'),
       ex = form.querySelector('[name=exclude]'), exact = form.querySelector('[name=exact]'), csBox = form.querySelector('[name=cs]'),
       pv = form.querySelector('.mn-tex-preview'),
       more = form.querySelector('.mn-sform-more');
     var chips = [].slice.call(form.querySelectorAll('.mn-chip'));
-    var dir = createDirPicker(form.querySelector('.mn-dirpick'), onChange);
+    var dir = createDirPicker(form.querySelector('.mn-dirpick'), function () {});
     var segs = [].slice.call(form.querySelectorAll('.mn-seg-btn')), mode = 'all';
     function setMode(m) {
       mode = m === 'any' ? 'any' : 'all';
       segs.forEach(function (b) { var on = b.getAttribute('data-mode') === mode; b.classList.toggle('is-on', on); b.setAttribute('aria-checked', on); });
     }
-    segs.forEach(function (b) { b.addEventListener('click', function () { setMode(b.getAttribute('data-mode')); onChange(); }); });
-    var timer;
-    function fire() { clearTimeout(timer); timer = setTimeout(onChange, 100); }
+    segs.forEach(function (b) { b.addEventListener('click', function () { setMode(b.getAttribute('data-mode')); }); });
     function preview() {
       var t = tex.value.trim().replace(/^\$+|\$+$/g, '');
       pv.innerHTML = t ? '<span class="mn-tex-preview-label">プレビュー</span> ' + renderTexSafe(t) : '';
@@ -790,13 +819,11 @@
           var any = chips.some(function (x) { return x.getAttribute('data-type') && x.classList.contains('is-on'); });
           chips[0].classList.toggle('is-on', !any);
         }
-        onChange();
       });
     });
-    [q, tex, ex].forEach(function (i) { i.addEventListener('input', fire); });
-    tex.addEventListener('input', preview);
-    exact.addEventListener('change', onChange);
-    csBox.addEventListener('change', onChange);
+    // 数式のプレビューは入力が少し途切れてから描く（検索はしない）
+    var pvTimer = null;
+    tex.addEventListener('input', function () { clearTimeout(pvTimer); pvTimer = setTimeout(preview, 200); });
     more.addEventListener('toggle', function () { store(moreKey(more.getAttribute('data-kind')), more.open ? '1' : '0'); });
     return {
       q: q, go: form.querySelector('.mn-sform-go'),
@@ -843,7 +870,8 @@
     '<p><b>数式を含む</b>には LaTeX で数式を書きます（例：<code>\\pi_1(S^1)</code>）。空白や括弧の付け方、<code>\\le</code> と <code>\\leq</code> などの違いは気にしなくて大丈夫です。</p>' +
     '<p><b>種類</b>のボタンで「定理だけ」「定義だけ」のように絞り込めます（複数選択可）。</p>' +
     '<p>日本語は<b>ふりがな</b>でも探せます（例：「べきしゅうごう」で「冪集合」）。いま開いているページの結果は一番上に出ます。</p>' +
-    '<p class="mn-search-kbd"><kbd>/</kbd> でどこからでも検索、<kbd>↑</kbd><kbd>↓</kbd> で選んで <kbd>Shift</kbd>+<kbd>Enter</kbd> で開きます。<kbd>Enter</kbd> か「検索」ボタンで検索結果のページに移ります（漢字変換の確定の <kbd>Enter</kbd> には反応しません）。</p></div>';
+    '<p>条件を入力・選択してから <kbd>Enter</kbd> か「検索」ボタンを押すと検索します（漢字変換の確定の <kbd>Enter</kbd> では検索しません）。</p>' +
+    '<p class="mn-search-kbd"><kbd>/</kbd> でどこからでも検索、<kbd>↑</kbd><kbd>↓</kbd> で選んで <kbd>Shift</kbd>+<kbd>Enter</kbd> で開きます。</p></div>';
 
   /* ---------- 移動先で検索語を目立たせるための受け渡し ---------- */
   var lastPQ = null;
@@ -892,7 +920,7 @@
       '</div>';
     document.body.appendChild(modal);
     list = modal.querySelector('.mn-search-results');
-    form = bindForm(modal.querySelector('form'), update);
+    form = bindForm(modal.querySelector('form'));
     modal.querySelector('.mn-search-backdrop').addEventListener('click', close);
     modal.querySelector('.mn-search-close').addEventListener('click', close);
     modal.addEventListener('keydown', function (ev) {
@@ -905,15 +933,16 @@
       }
       else if (ev.key === 'Enter' && ev.target.tagName === 'INPUT') {
         if (isImeEnter(ev)) return;   // 漢字変換の確定には反応しない
-        // Enter：検索結果のページへ。Shift+Enter：選択中の結果を開く
+        // Enter：検索する。Shift+Enter：選択中の結果を開く
         ev.preventDefault();
         if (ev.shiftKey) { go(list.querySelectorAll('.mn-result')[sel]); close(); }
-        else form.go.click();
+        else update();
       }
     });
-    // 「検索」ボタン：入力中の条件で検索結果のページ（search.html）に移る
-    form.go.addEventListener('click', function () { var p = toParams(form.read()); location.href = root() + 'search.html' + (p ? '?' + p : ''); });
+    // 「検索」ボタン：入力中の条件で検索する（全件は結果の下の「検索ページで見る」から）
+    form.go.addEventListener('click', update);
     list.addEventListener('click', function (ev) { if (ev.target.closest('a')) close(); });
+    bindMore(list);
   }
   function move(d) {
     var items = list.querySelectorAll('.mn-result');
@@ -923,20 +952,43 @@
     items[sel].classList.add('is-active');
     items[sel].scrollIntoView({ block: 'nearest' });
   }
-  function resultsHtml(out, limitNote, moreHref) {
-    if (!out.results.length) return '<div class="mn-search-empty">該当する項目が見つかりませんでした。語を減らすか、条件を外してみてください。</div>';
-    return '<div class="mn-search-count">' + out.total + ' 件' + (out.fuzzy ? '（完全に一致するものがないため、近い候補を表示）' : '') + '</div>' +
-      out.results.map(function (it, i) { return renderResult(it, out.pq, root(), i === 0 && limitNote); }).join('') +
+  /* 結果は最初の PAGE_SIZE 件だけ描き、「さらに表示」で PAGE_SIZE 件ずつ足す（KaTeX も描いた分だけ） */
+  var PAGE_SIZE = 50;
+  function moreButtonHtml(box) {
+    var rest = box._out.results.length - box._shown;
+    return rest > 0 ? '<button type="button" class="mn-search-more mn-search-showmore">さらに表示（残り ' + rest + ' 件）</button>' : '';
+  }
+  function showResults(box, out, limitNote, moreHref) {
+    box._out = out; box._note = limitNote;
+    if (!out.results.length) { box._shown = 0; box.innerHTML = '<div class="mn-search-empty">該当する項目が見つかりませんでした。語を減らすか、条件を外してみてください。</div>'; return; }
+    box._shown = Math.min(PAGE_SIZE, out.results.length);
+    box.innerHTML = '<div class="mn-search-count">' + out.total + ' 件' + (out.fuzzy ? '（完全に一致するものがないため、近い候補を表示）' : '') + '</div>' +
+      out.results.slice(0, box._shown).map(function (it, i) { return renderResult(it, out.pq, root(), i === 0 && limitNote); }).join('') +
+      moreButtonHtml(box) +
       (moreHref && out.total > out.results.length ? '<a class="mn-search-more" href="' + moreHref + '">検索ページで全 ' + out.total + ' 件を見る</a>' : '');
+  }
+  function showMore(box) {
+    var out = box._out, btn = box.querySelector('.mn-search-showmore');
+    if (!out || !btn) return;
+    var from = box._shown, to = Math.min(from + PAGE_SIZE, out.results.length);
+    box._shown = to;
+    btn.insertAdjacentHTML('beforebegin', out.results.slice(from, to).map(function (it) { return renderResult(it, out.pq, root(), false); }).join(''));
+    var next = moreButtonHtml(box);
+    if (next) btn.outerHTML = next; else btn.remove();
+  }
+  function bindMore(box) {
+    box.addEventListener('click', function (ev) {
+      if (ev.target.closest && ev.target.closest('.mn-search-showmore')) { ev.preventDefault(); showMore(box); }
+    });
   }
   function update() {
     var v = form.read();
     sel = 0;
     if (form.isEmpty(v)) { list.innerHTML = EMPTY_HELP; return; }
     if (!entriesReady()) { list.innerHTML = LOADING_HTML; loadEntries(update); return; }
-    var out = search(v, { limit: 30 });
+    var out = search(v, { limit: 300 });
     lastPQ = out.pq;
-    list.innerHTML = resultsHtml(out, true, root() + 'search.html?' + toParams(v));
+    showResults(list, out, true, root() + 'search.html?' + toParams(v));
   }
   var lastFocus = null;
   function open(v) {
@@ -944,8 +996,9 @@
     lastFocus = document.activeElement;
     modal.removeAttribute('hidden');
     document.documentElement.classList.add('mn-lock');
-    if (v) form.write(typeof v === 'string' ? { q: v } : v);
-    update();
+    loadEntries();   // 検索用の索引は、検索を開いたときに初めて読み込む
+    if (v) { form.write(typeof v === 'string' ? { q: v } : v); update(); }
+    else if (!list.innerHTML) list.innerHTML = EMPTY_HELP;
     setTimeout(function () { form.q.focus(); form.q.select(); }, 10);
   }
   function close() {
@@ -964,13 +1017,19 @@
   function renderSearchPage(container) {
     container.innerHTML = formHtml('page') + '<div class="mn-search-results mn-search-results--page"></div>';
     var res = container.querySelector('.mn-search-results');
-    var f = bindForm(container.querySelector('form'), run);
+    var f = bindForm(container.querySelector('form'));
+    bindMore(res);
     f.write(fromParams(new URLSearchParams(location.search)));
+    loadEntries();   // 検索ページを開いたら索引を読み込んでおく
     function run() {
       var v = f.read();
       if (!f.isEmpty(v) && !entriesReady()) { res.innerHTML = LOADING_HTML; loadEntries(run); return; }
       if (f.isEmpty(v)) res.innerHTML = EMPTY_HELP;
-      else { var out = search(v, { limit: 300 }); lastPQ = out.pq; res.innerHTML = resultsHtml(out, false, null); }
+      else {
+        var t0 = window.performance ? performance.now() : 0;
+        var out = search(v, { limit: 1e9 }); lastPQ = out.pq; showResults(res, out, false, null);
+        if (window.performance && window.console) console.debug('[search] 検索と描画 ' + Math.round(performance.now() - t0) + ' ms（' + out.total + ' 件）');
+      }
       if (typeof psel !== 'undefined') { psel = 0; pmark(); }
       try { history.replaceState(null, '', location.pathname + (toParams(v) ? '?' + toParams(v) : '')); } catch (e) {}
     }
@@ -1005,7 +1064,7 @@
       if (ev.shiftKey) { ev.preventDefault(); go(pitems()[psel] || pitems()[0]); return; }
       if (ev.target.tagName === 'INPUT') { ev.preventDefault(); f.go.click(); }
     });
-    // 検索ページの「検索」ボタン：結果は入力に合わせて更新済みなので、検索し直して結果の先頭へ移る
+    // 検索ページの「検索」ボタン：検索して結果の先頭へ移る
     f.go.addEventListener('click', function () {
       run();
       // 検索したことが分かるように、件数の表示を一瞬強調して結果の先頭へ移る

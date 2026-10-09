@@ -530,6 +530,8 @@ mark.mn-hl.is-fading, .katex.mn-hl-math.is-fading { background: transparent; box
 .mn-search-help p { margin: .45em 0; }
 .mn-search-help code { font-family: var(--mn-mono); background: var(--mn-bg-soft); padding: 0 .3em; border-radius: 3px; }
 .mn-search-more { display: block; text-align: center; padding: 10px; font-size: 13px; }
+button.mn-search-showmore { width: 100%; margin: 6px 0 2px; background: none; border: 1px solid var(--mn-line); border-radius: 8px; color: var(--mn-accent); font: inherit; font-size: 13px; cursor: pointer; }
+button.mn-search-showmore:hover { background: var(--mn-accent-soft); }
 .mn-result { display: block; padding: 9px 12px; border: 1px solid transparent; border-radius: 8px; color: var(--mn-fg) !important; }
 .mn-result:hover, .mn-result.is-active { background: var(--mn-accent-soft); text-decoration: none !important; }
 .mn-result.is-active { border-color: color-mix(in srgb, var(--mn-accent) 40%, transparent); }

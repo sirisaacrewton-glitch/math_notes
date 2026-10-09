@@ -93,6 +93,26 @@ $a$ は計算可能。$a(e,0)=0$ としてよい（段 $0$ では何も止まら
 - **凍結**：候補でない $e$（全域でない、値が不正、変化が多すぎる）で $a(e,\cdot)$ の変化が増えすぎないようにするのに使った。候補かどうかは決定可能でないが、「いま見えている範囲で候補をやめた」ことは有限の段で分かる。
 :::
 
+## 真理表還元との関係 {#comp:sec-dh-tt}
+
+::: definition 真理表還元 {#comp:tt-reducibility keywords="truth-table reducibility: x in A iff a computable Boolean combination of finitely many computable queries to B holds" index="真理表還元|しんりひょうかんげん"}
+集合 $A,B$ について、$A$ が $B$ に**真理表還元可能**（$A\le_{\mathrm{tt}}B$）であるとは、計算可能な関数があって、各 $x$ に有限個の数 $q_{1},\dots,q_{m}$（問い合わせ）とブール関数 $\beta\colon\{0,1\}^{m}\to\{0,1\}$（真理表）を与え、
+$$
+A(x)=\beta\bigl(B(q_{1}),\dots,B(q_{m})\bigr)
+$$
+となることをいう（$m,q_{i},\beta$ は $x$ から計算され、$B$ の答えに依存しない）。$A\le_{\mathrm{tt}}B$ なら $A\le_{\mathrm{T}}B$。
+:::
+
+::: theorem ω-c.e. と真理表還元 {#comp:omega-ce-tt keywords="a set is omega-c.e. iff it is truth-table reducible to the halting set" index="ω-c.e. と真理表還元|おめがしーいーとしんりひょうかんげん"}
+集合 $A$ について、$A$ が $\omega$-c.e. であることと $A\le_{\mathrm{tt}}\varnothing'$ であることは同値である。
+:::
+
+::: proof
+**⇒.** 近似 $g$ と変化の回数の上限 $h$ をとる。$k\ge1$ について「$g(x,\cdot)$ は少なくとも $k$ 回変化する」は、$\exists s_{1}<\dots<s_{k}$ で各 $s_{j}$ で値が変わる、という $\Sigma_{1}$ の条件なので、$\varnothing'$ への計算可能な写像還元 $r$（\ref{comp:jump-properties} の 3）で $r(x,k)\in\varnothing'\iff$「少なくとも $k$ 回変化」と書ける。問い合わせを $q_{k}\defeq r(x,k)$（$k=1,\dots,h(x)$）とし、真理表を「答えが $1$ の個数が奇数なら $1$」とする。$g(x,0)=0$ で、値は変化のたびに $0,1$ を入れ替えるので、$A(x)$ は変化の回数の偶奇で、変化の回数は $\le h(x)$ なので「答えが $1$ の $k$ の個数」に等しい。
+
+**⇐.** $A\le_{\mathrm{tt}}\varnothing'$ を与える $x\mapsto(q_{1},\dots,q_{m},\beta)$ をとる。$\varnothing'_{s}$ を、$s$ 段以内に $\varnothing'$ に入ることが確かめられる $s$ 以下の数の集合とする（$\varnothing'$ は認識可能、\ref{comp:jump-properties} の 1）。$g(x,0)\defeq0$、$s\ge1$ で $g(x,s)\defeq\beta(\varnothing'_{s}(q_{1}),\dots,\varnothing'_{s}(q_{m}))$ とおく。各 $\varnothing'_{s}(q_{i})$ は $s$ について $0\to1$ に高々一回変わり、極限は $\varnothing'(q_{i})$。よって $g(x,s)$ は極限 $A(x)$ をもち、$g(x,\cdot)$ の変化は、段 $0\to1$ の一回と、いずれかの $q_{i}$ の答えが変わる段（高々 $m$ 回）でしか起きないので、$h(x)\defeq m+1$（$x$ から計算できる）で抑えられる。
+:::
+
 ## 問題 {#comp:sec-dh-problems}
 
 ::: problem {#comp:prob-dh-union}
@@ -106,11 +126,11 @@ $A,B$ が認識可能なら、$A\cup\overline{B}$ は 3-c.e. で、その補集�
 :::
 
 ::: problem {#comp:prob-dh-truth-table}
-$\omega$-c.e. 集合はちょうど $\varnothing'$ から真理表還元可能な集合であることが知られている（ここでは証明しない）。この事実を認めて、\ref{comp:difference-hierarchy-proper} の 2 から、$\varnothing'$ でチューリング計算できるが真理表還元できない集合があることを結論せよ。
+\ref{comp:omega-ce-tt} と \ref{comp:difference-hierarchy-proper} の 2 から、$\varnothing'$ でチューリング計算できるが $\varnothing'$ から真理表還元できない集合があることを結論せよ。また、$K\oplus\overline{K}$ が $\varnothing'$ から真理表還元できることを直接確かめよ。
 :::
 
 ::: solution
-\ref{comp:difference-hierarchy-proper} の 2 の $A$ は $A\le_{\mathrm{T}}\varnothing'$ で $\omega$-c.e. でない。認めた事実から、$A$ は $\varnothing'$ から真理表還元できない。
+\ref{comp:difference-hierarchy-proper} の 2 の $A$ は $A\le_{\mathrm{T}}\varnothing'$ で $\omega$-c.e. でないので、\ref{comp:omega-ce-tt} から $A\not\le_{\mathrm{tt}}\varnothing'$。後半：$K\le_{\mathrm{m}}\varnothing'$（\ref{comp:jump-properties} の 3）を与える $r$ について、$2x$ には問い合わせ $r(x)$ と真理表「答えそのもの」、$2x+1$ には同じ問い合わせと真理表「答えの否定」を対応させればよい。
 :::
 
 ::: supplement

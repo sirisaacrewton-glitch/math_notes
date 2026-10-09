@@ -371,6 +371,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-09 計算可能性 AC-14 追記（comp:tt-reducibility, comp:omega-ce-tt：真理表還元の定義、ω-c.e. ⇔ ∅′ から真理表還元可能。問題の「知られている」を定理の参照に置換）
 - 2026-10-09 圏論 CS-09 追記（cat:smash-one-point, cat:suspension-sphere：一点コンパクト化のスマッシュ積は積の一点コンパクト化、ΣSⁿ ≅ Sⁿ⁺¹。注意書きの未証明の言及を参照に置換）
 - 2026-10-09 計算可能性 AC-14（03D/03/14-difference-hierarchy, comp:page-difference-hierarchy：近似と変化の回数、n-c.e.・ω-c.e.、1-c.e.=認識可能、d.c.e.=認識可能集合の差、K⊕K̄、階層が真に増えること（対角線論法）、Δ₂ だが ω-c.e. でない集合。問題 2。低集合のページの未証明の言及を参照に置換）
 - 2026-10-09 一般位相 TD-08 追記（top:paracompact-times-compact：パラコンパクト × コンパクトハウスドルフはパラコンパクト（X × [0,1] を含む）、ゾルゲンフライ平面で一般の直積は保たれないこと）
@@ -663,7 +664,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | AC-11 | 03-advanced-computability/11-rice-shapiro | 指数集合とライス–シャピロの定理（逆を含む）、ライスの定理を系として、関数版（資料なし） | 完了 |
 | AC-12 | 03-advanced-computability/12-index-set-completeness | Σn/Πn 完全、FIN・INF・TOT・COF の完全性（動く目印）（資料なし） | 完了 |
 | AC-13 | 03-advanced-computability/13-low-basis | 低基底定理（計算可能な道をもたない木、ジャンプの強制）（資料なし） | 完了 |
-| AC-14 | 03-advanced-computability/14-difference-hierarchy | 差の階層（n-c.e.・d.c.e.・ω-c.e.、階層の真性、Δ₂ だが ω-c.e. でない集合） | 完了 |
+| AC-14 | 03-advanced-computability/14-difference-hierarchy | 差の階層（n-c.e.・d.c.e.・ω-c.e.、階層の真性、Δ₂ だが ω-c.e. でない集合、ω-c.e. ⇔ ∅′ から真理表還元可能） | 完了 |
 | KR-01 | 06-algorithmic-randomness/01-prefix-free-complexity | 接頭辞なし複雑性とクラフトの不等式 | 完了 |
 | KR-02 | 06-algorithmic-randomness/02-martin-lof | マルチン＝レーフのランダムネスとレヴィン–シュノアの定理 | 完了 |
 

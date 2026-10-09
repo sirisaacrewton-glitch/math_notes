@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>計算模型の同値性（まとめ） | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/02-computability/13-models-summary.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 計算模型の同値性（まとめ） {#comp:page-models-summary keywords="summary of the equivalence of models of computation: language L, partial recursive functions, register machines, Turing machines, lambda calculus; primitive recursion and for-programs; Church-Turing thesis"}
+
+「計算可能」の定義として、本サイトではプログラミング言語 L から出発し、部分再帰関数・レジスタ機械・チューリング機械・ラムダ計算を順に導入して、それらが同じ関数のクラスを定めることを示してきた。本ページはその**まとめ**で、同値性の主張を一つの定理（\ref{comp:models-equivalence}）にまとめ、各矢印がどのページのどの定理で証明されているかを表にする。新しい証明は含まない（各段はすでに証明済みの結果の組み合わせである）。
+
+> 資料：本ページは本サイトの既存のページの索引である。
+
+## 記法と定義の確認 {#comp:sec-ms-notation}
+
+::: notation
+- $f\colon\N^{k}\rightharpoonup\N$ は部分関数。$f(\vec{m})\downarrow$ は定義されていること。
+- 各模型の定義：プログラミング言語 L（\ref{comp:page-language-L}）、原始再帰関数（\ref{comp:primitive-recursive}）と部分再帰関数（\ref{comp:page-recursive-functions}）、レジスタ機械（\ref{comp:page-register-machines}）、チューリング機械（\ref{comp:page-turing-machines}）、ラムダ計算（\ref{logic:page-lambda-calculus}）とラムダ定義可能性（\ref{logic:page-lambda-definability}）。
+- チューリング完全（\ref{comp:turing-complete}）とチャーチ–チューリングの提唱（\ref{comp:church-turing}）。
+:::
+
+## 同値性の定理 {#comp:sec-ms-theorem}
+
+::: theorem 計算模型の同値性 {#comp:models-equivalence keywords="all standard models of computation define the same partial functions; total functions also coincide with lambda-definable functions" index="計算模型の同値性（まとめ）|けいさんもけいのどうちせいまとめ"}
+1. 部分関数 $f\colon\N^{k}\rightharpoonup\N$ について、次は同値である。
+   - (a) L で計算可能。
+   - (b) 部分再帰関数。
+   - (c) レジスタ機械で計算可能。
+   - (d) （一本テープの決定性）チューリング機械で計算可能。
+2. 言語（文字列の集合）について、一本テープのチューリング機械で認識（決定）可能であることは、多テープの機械で認識（決定）可能であること、非決定性の機械で認識（決定）可能であることと同値である。
+3. 全域関数 $f\colon\N^{k}\to\N$ について、1 の条件と次は同値である。
+   - (e) ラムダ定義可能。
+4. 全域関数について、「原始再帰的」と「for 計算可能」は同値で、これは 1 の条件より真に狭い。
+:::
+
+::: proof
+各矢印は次の表の結果による。
+
+| 主張 | 結果 | ページ |
+|---|---|---|
+| (a) ⇔ (b) | \ref{comp:L-equals-recursive} | 一般再帰関数 |
+| (a) ⇔ (c) | \ref{comp:L-equals-rm} | レジスタ機械 |
+| (a) ⇔ (d) | \ref{comp:L-equals-tm}（\ref{comp:tm-to-L}, \ref{comp:L-to-tm}） | チューリング完全性 |
+| 2（多テープ） | \ref{comp:multitape} | チューリング機械 |
+| 2（非決定性） | \ref{comp:ntm} | チューリング機械 |
+| 全域の (a) ⇔ (e) | \ref{logic:lambda-turing-complete}（\ref{logic:computable-lambda}, \ref{logic:lambda-computable}） | ラムダ定義可能性 |
+| 原始再帰 ⇔ for | \ref{comp:pr-equals-for} | 原始再帰関数 |
+| 真に狭い | \ref{comp:for-proper}（アッカーマン関数 \ref{comp:ackermann-not-pr}, \ref{comp:ackermann-computable}） | アッカーマン関数 |
+:::
+
+::: hypcheck
+- **ラムダ定義可能性は全域関数についてだけ**：本サイトのラムダ定義可能性の定理（\ref{logic:lambda-turing-complete}）は全域関数について述べたもので、部分関数版（定義されないとき正規形をもたないこと）は証明していない（\ref{logic:page-lambda-definability} の注意）。そのため 3 は全域関数に限った。
+- **言語と関数**：多テープ・非決定性の機械の模倣（\ref{comp:multitape}, \ref{comp:ntm}）は言語の認識・決定について示したので、2 は言語について述べた。
+- **符号化**：各模型の入出力（文字列、レジスタの値、チャーチ数）と自然数の間の符号化は計算可能で、どの同値性もこの符号化を通して述べている（\ref{comp:turing-complete}）。
+:::
+
+## 帰結 {#comp:sec-ms-consequences}
+
+::: corollary 決定不能性の模型への非依存性 {#comp:undecidability-model-independent keywords="decidability, recognizability and undecidability of the halting problem do not depend on the model of computation" index="決定可能性の模型への非依存性|けっていかのうせいのもけいへのひいぞんせい"}
+集合 $A\subseteq\N$ について、「$A$ が決定可能（特性関数が計算可能）」「$A$ が認識可能（ある部分計算可能関数の定義域）」は、\ref{comp:models-equivalence} の 1 のどの模型で定義しても同じ意味である。とくに停止問題が決定不能であること（\ref{comp:halting-problem}）は模型によらない。
+:::
+
+::: proof
+決定可能性は全域関数（特性関数）の計算可能性、認識可能性は部分関数の定義域で表されるので、\ref{comp:models-equivalence} の 1 から。停止問題の各模型での形（L のプログラム、レジスタ機械、チューリング機械の停止）は、計算可能な符号化で互いに写像還元できる。
+:::
+
+## 問題 {#comp:sec-ms-problems}
+
+::: problem {#comp:prob-ms-closure}
+計算可能な部分関数のクラスが合成で閉じていることを、(1) L のプログラムをつなぐ方法、(2) 部分再帰関数の定義、のそれぞれで確かめ、\ref{comp:models-equivalence} がどちらの確認でもよいことを保証していることを説明せよ。
+:::
+
+::: solution
+(1) $g$ と $h_{1},\dots,h_{l}$ を計算するプログラムがあれば、入力を保存してから各 $h_{j}$ のプログラムを（変数名を付け替えて）順に実行し、結果を $g$ のプログラムに渡すプログラムが $g(h_{1}(\vec{x}),\dots,h_{l}(\vec{x}))$ を計算する。どれかが止まらなければ全体も止まらない。(2) 部分再帰関数のクラスは定義により合成で閉じている。\ref{comp:models-equivalence} の (a) ⇔ (b) から、二つのクラスは同じなので、どちらで確かめても同じ主張になる。
+:::
+
+::: supplement
+**前提を変えると.**
+- **部分関数のラムダ定義可能性.** 部分関数についても、「定義されないとき正規形をもたない」ことを加えた定義でラムダ定義可能性と計算可能性は一致することが知られている（クリーネ）。その証明には、最左簡約が正規形を見つけるという正規化定理などが要る（ここでは扱わない）。
+- **他の模型.** セル・オートマトン、ポストの対応問題の体系、型なしの組合せ論理（\ref{logic:cl-lambda-translation}）、多くのプログラミング言語なども同じクラスを定めることが知られている（\ref{comp:turing-complete-examples}）。
+
+**似た定理.** 計算量の世界では、多テープ機械の一本テープでの模倣は時間を二乗にし（\ref{comp:multitape-time}）、非決定性の除去は指数時間を要する（\ref{comp:ntm-time}）。計算可能性の意味では同値な模型も、効率の意味では区別される。
+
+**高い視点から.** 異なる発想（命令の列、関数の帰納的な定義、機械の配置の遷移、項の書き換え）から出発した定義が、すべて同じクラスに行き着くことが、チャーチ–チューリングの提唱（\ref{comp:church-turing}）の最も強い根拠である。比喩で言えば、別々の登山口から登った人がみな同じ山頂に着いたので、その山頂が「計算可能性」という一つの実在の場所であると信じるに足りる、ということである。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

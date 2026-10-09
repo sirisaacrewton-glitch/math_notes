@@ -371,6 +371,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 
 ## 完了ログ（新しいものを上に。1 行ずつ）
 
+- 2026-10-09 計算可能性 AC-14（03D/03/14-difference-hierarchy, comp:page-difference-hierarchy：近似と変化の回数、n-c.e.・ω-c.e.、1-c.e.=認識可能、d.c.e.=認識可能集合の差、K⊕K̄、階層が真に増えること（対角線論法）、Δ₂ だが ω-c.e. でない集合。問題 2。低集合のページの未証明の言及を参照に置換）
 - 2026-10-09 一般位相 TD-08 追記（top:paracompact-times-compact：パラコンパクト × コンパクトハウスドルフはパラコンパクト（X × [0,1] を含む）、ゾルゲンフライ平面で一般の直積は保たれないこと）
 - 2026-10-09 モデル理論 RC-04（03C/01/09-o-minimality, model:page-o-minimality：o 極小の定義と例、定義可能集合の基本性質（上限・片側での一定性・定義可能連結性）、定数か単射、単射なら単調（極小点ばかりの場合を記録点の有限性・最小値の存在・無限降下で排除）、単調なら連続、単調性定理、片側極限。問題 2）
 - 2026-10-09 圏論 CS-11（18A/02/11-lawvere-metric, cat:page-lawvere-metric：[0,∞] は閉圏（内部 hom は切り詰めた差）、豊穣圏としての距離空間・前順序集合、非拡大写像は豊穣関手、距離空間の米田の補題 F(a)=sup_b(F(b)∸d(a,b))、米田埋め込みは等長（クラトフスキ–フレシェ）。問題 2。SCOPE.md 圏論の発展「豊穣圏」の入口）
@@ -661,6 +662,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | AC-11 | 03-advanced-computability/11-rice-shapiro | 指数集合とライス–シャピロの定理（逆を含む）、ライスの定理を系として、関数版（資料なし） | 完了 |
 | AC-12 | 03-advanced-computability/12-index-set-completeness | Σn/Πn 完全、FIN・INF・TOT・COF の完全性（動く目印）（資料なし） | 完了 |
 | AC-13 | 03-advanced-computability/13-low-basis | 低基底定理（計算可能な道をもたない木、ジャンプの強制）（資料なし） | 完了 |
+| AC-14 | 03-advanced-computability/14-difference-hierarchy | 差の階層（n-c.e.・d.c.e.・ω-c.e.、階層の真性、Δ₂ だが ω-c.e. でない集合） | 完了 |
 | KR-01 | 06-algorithmic-randomness/01-prefix-free-complexity | 接頭辞なし複雑性とクラフトの不等式 | 完了 |
 | KR-02 | 06-algorithmic-randomness/02-martin-lof | マルチン＝レーフのランダムネスとレヴィン–シュノアの定理 | 完了 |
 

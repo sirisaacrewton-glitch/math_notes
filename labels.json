@@ -4859,6 +4859,13 @@
       "num": "10.10",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/10-creative-sets.html"
     },
+    "comp:dce-difference": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "d.c.e. 集合は差",
+      "num": "14.3",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/14-difference-hierarchy.html"
+    },
     "comp:dcfl-complement": {
       "status": "defined",
       "type": "theorem",
@@ -4963,6 +4970,20 @@
       "title": "対角線論法との関係",
       "num": "8.5",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/08-decidability.html"
+    },
+    "comp:difference-hierarchy-basic": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "差の階層の基本性質",
+      "num": "14.2",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/14-difference-hierarchy.html"
+    },
+    "comp:difference-hierarchy-proper": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "差の階層は真の階層",
+      "num": "14.4",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/14-difference-hierarchy.html"
     },
     "comp:dpda": {
       "status": "defined",
@@ -5748,6 +5769,13 @@
       "num": "3.4",
       "page": "03-mathematical-logic/03D-computability-theory/01-automata/03-nonregular.html"
     },
+    "comp:n-ce": {
+      "status": "defined",
+      "type": "definition",
+      "title": "n-c.e. 集合と ω-c.e. 集合",
+      "num": "14.1",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/14-difference-hierarchy.html"
+    },
     "comp:nc-closed-logspace": {
       "status": "defined",
       "type": "proposition",
@@ -6069,6 +6097,13 @@
       "title": "決定可能性と停止問題",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/02-computability/08-decidability.html"
+    },
+    "comp:page-difference-hierarchy": {
+      "status": "defined",
+      "type": "page",
+      "title": "差の階層",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/14-difference-hierarchy.html"
     },
     "comp:page-finite-automata": {
       "status": "defined",
@@ -6909,6 +6944,20 @@
       "title": "",
       "num": "6.13",
       "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/06-hyperarithmetic.html"
+    },
+    "comp:prob-dh-truth-table": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "14.6",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/14-difference-hierarchy.html"
+    },
+    "comp:prob-dh-union": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "14.5",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/14-difference-hierarchy.html"
     },
     "comp:prob-etm-co-recognizable": {
       "status": "defined",
@@ -8309,6 +8358,34 @@
       "title": "決定性有限オートマトン",
       "num": "",
       "page": "03-mathematical-logic/03D-computability-theory/01-automata/01-finite-automata.html"
+    },
+    "comp:sec-dh-basic": {
+      "status": "defined",
+      "type": "section",
+      "title": "基本性質",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/14-difference-hierarchy.html"
+    },
+    "comp:sec-dh-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/14-difference-hierarchy.html"
+    },
+    "comp:sec-dh-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/14-difference-hierarchy.html"
+    },
+    "comp:sec-dh-proper": {
+      "status": "defined",
+      "type": "section",
+      "title": "階層が真に増えること",
+      "num": "",
+      "page": "03-mathematical-logic/03D-computability-theory/03-advanced-computability/14-difference-hierarchy.html"
     },
     "comp:sec-fa-notation": {
       "status": "defined",

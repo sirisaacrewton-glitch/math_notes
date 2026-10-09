@@ -447,6 +447,7 @@
 | Baire space N^N (descriptive set theory) / Lusin scheme / zero-dimensional | ベール空間 ℕ^ℕ（カテゴリーの意味のベール空間と区別） / ルジン図式 / 零次元 | | ページ名は「ℕ^ℕ の特徴づけ」として衝突を避けた。top:page-baire-space-nn |
 | Cech-complete / remainder (of a compactification) | チェック完備 / 剰余 | | 標準的。top:page-cech-complete |
 | deficiency set (Dekker) / true stage | 不足集合（デッカー） / 真の段階 | | 標準的。comp:dekker-deficiency |
+| difference hierarchy / n-c.e. / d.c.e. / omega-c.e. | 差の階層 / n-c.e. / d.c.e. / ω-c.e. | エルショフの階層 | comp:page-difference-hierarchy |
 | (homological) delta functor / effaceable / universal delta functor | （ホモロジー的）δ 関手 / 消去可能 / 普遍 δ 関手 | 消去的 | 標準的。ha:page-delta-functors |
 | almost disjoint family / MAD family / Psi-space (Mrowka) | 概素な族 / 極大概素族 / Ψ 空間（ムルフカ） | ほとんど交わらない族 | 標準的な訳語は定まっていない。top:mrowka-psi |
 | Katetov function / rational Urysohn space / Urysohn space | カテトフ関数 / 有理ウリゾーン空間 / ウリゾーン空間 | | 標準的。model:page-rational-urysohn |

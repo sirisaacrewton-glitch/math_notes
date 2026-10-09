@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>差の階層 | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="03-mathematical-logic/03D-computability-theory/03-advanced-computability/14-difference-hierarchy.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 差の階層 {#comp:page-difference-hierarchy keywords="Ershov difference hierarchy, n-c.e. sets, d.c.e. sets, omega-c.e. sets, number of mind changes, limit computable sets, properness of the hierarchy, Delta_2 sets that are not omega-c.e."}
+
+極限補題（\ref{comp:limit-lemma}）は、$\varnothing'$ で計算できる集合を「計算可能な近似 $g(x,s)$ が有限回だけ値を変えて正しい値に落ち着く」集合として特徴づけた。近似が値を変える回数（**心変わりの回数**）に上限を付けると、認識可能な集合（$1$ 回）から $\Delta_{2}$ の集合（有限回）までの間に**差の階層**（エルショフ、1968）が並ぶ。本ページでは $n$ 回（$n$-c.e.）と、計算可能な上限で抑えられる回数（$\omega$-c.e.）を定義し、2-c.e. 集合が認識可能集合の差であること（\ref{comp:dce-difference}）を確かめたうえで、階層が真に増えていくこと（\ref{comp:difference-hierarchy-proper}）を対角線論法で示す。
+
+> 資料：本ページは特定の教科書の記述によらず、標準的な定義と議論に従って組み立てた。
+
+## 記法と定義の確認 {#comp:sec-dh-notation}
+
+::: notation
+- $\varphi^{(2)}_{e}$ は指数 $e$ の二変数の計算可能な部分関数（\ref{comp:index}）。$\varphi^{(2)}_{e,s}(x,t)\downarrow$ は「$s$ 段以内に止まる」ことで、$(e,x,t,s)$ について決定可能。
+- 認識可能（c.e.）・補認識可能・$\varnothing'$・極限補題は \ref{comp:page-low-simple}, \ref{comp:limit-lemma}。$K\defeq\{x:x\in W_{x}\}$ は認識可能だが補集合は認識可能でない（\ref{comp:productive-basic}）。
+- 集合を特性関数と同一視し、$A(x)\in\{0,1\}$ と書く。
+:::
+
+::: definition n-c.e. 集合と ω-c.e. 集合 {#comp:n-ce keywords="n-c.e. set: limit of a computable approximation starting at 0 with at most n changes; omega-c.e. with a computable bound on the number of changes" index="n-c.e. 集合|えぬしーいーしゅうごう, 差の階層|さのかいそう, ω-c.e. 集合|おめがしーいーしゅうごう"}
+集合 $A$ の**近似**とは、全域で計算可能な $g\colon\N^{2}\to\{0,1\}$ で、$g(x,0)=0$ かつ各 $x$ について $\lim_{s}g(x,s)=A(x)$（ある段以降一定でその値）となるものをいう。$x$ における**変化の回数**を $\#\{s:g(x,s+1)\neq g(x,s)\}$ とする。
+1. $n\ge1$ について、すべての $x$ で変化の回数が $\le n$ となる近似をもつ $A$ を **$n$-c.e.** という。2-c.e. を **d.c.e.** ともいう。
+2. 計算可能な $h$ で、すべての $x$ で変化の回数が $\le h(x)$ となる近似をもつ $A$ を **$\omega$-c.e.** という。
+:::
+
+## 基本性質 {#comp:sec-dh-basic}
+
+::: proposition 差の階層の基本性質 {#comp:difference-hierarchy-basic keywords="1-c.e. = c.e.; co-c.e. sets are 2-c.e.; n-c.e. contained in (n+1)-c.e. contained in omega-c.e. contained in Delta_2; complements" index="差の階層の基本性質|さのかいそうのきほんせいしつ"}
+1. 1-c.e. 集合はちょうど認識可能な集合である。
+2. $A$ が $n$-c.e. なら、補集合 $\overline{A}$ は $(n+1)$-c.e. である。とくに補認識可能な集合は 2-c.e.。
+3. $n$-c.e. $\subseteq$ $(n+1)$-c.e. $\subseteq$ $\omega$-c.e. $\subseteq$ $\{A:A\le_{\mathrm{T}}\varnothing'\}$。
+:::
+
+::: proof
+**1.** 1-c.e. の近似 $g$ では、$x\in A$ なら $g(x,\cdot)$ は $0$ から $1$ に一度変わるだけ、$x\notin A$ なら常に $0$。よって $x\in A\iff\exists s\,g(x,s)=1$ で、$A$ は認識可能。逆に $A=W_{e}$ なら、$g(x,s)\defeq1$（$x\in W_{e,s}$）、$0$（それ以外）は変化 $\le1$ の近似（$W_{e,0}=\varnothing$ とする）。
+
+**2.** $g$ を $A$ の近似とし、$g'(x,0)\defeq0$, $g'(x,s+1)\defeq1-g(x,s)$ とおく。$g'$ は $\overline{A}$ の近似で、変化は $s=0\to1$ の高々一回と、$g$ の変化の回数の和。
+
+**3.** 最初の二つの包含は定義から（$h\equiv n$）。最後は極限補題（\ref{comp:limit-lemma}）。
+:::
+
+::: proposition d.c.e. 集合は差 {#comp:dce-difference keywords="a set is 2-c.e. iff it is a difference of two c.e. sets" index="d.c.e. 集合|でぃーしーいーしゅうごう"}
+$A$ が 2-c.e. であることと、認識可能な集合 $B\supseteq C$ で $A=B\setminus C$ となるものがあることは同値である。
+:::
+
+::: proof
+**⇒.** 2-c.e. の近似 $g$ について、$B\defeq\{x:\exists s\,g(x,s)=1\}$、$C\defeq\{x:\exists s<t\,(g(x,s)=1\wedge g(x,t)=0)\}$ はどちらも認識可能で $C\subseteq B$。変化が $\le2$ 回なので、$x$ の値の列は $0^{\ast}$、$0^{\ast}1^{\infty}$、$0^{\ast}1^{+}0^{\infty}$ のいずれかで、$x\in A$ はちょうど二番目、すなわち $x\in B\setminus C$。
+
+**⇐.** $B=W_{b}$, $C=W_{c}$ について、$g(x,s)\defeq1$（$x\in W_{b,s}$ かつ $x\notin W_{c,s}$）、$0$（それ以外）とおく。$C\subseteq B$ なので、$x$ の値は $B$ に入った時点で $1$ になり、$C$ に入った時点で $0$ に戻るだけで、変化は $\le2$。極限は $B\setminus C$ での特性関数。
+:::
+
+::: example
+$K\oplus\overline{K}\defeq\{2x:x\in K\}\cup\{2x+1:x\notin K\}$ は 2-c.e. だが、認識可能でも補認識可能でもない。2-c.e.：$\{2x:x\in K\}\cup\{2x+1:x\in\N\}$ から認識可能な $\{2x+1:x\in K\}$ を除いたもの（\ref{comp:dce-difference}）。認識可能なら $\overline{K}=\{x:2x+1\in K\oplus\overline{K}\}$ が認識可能になり、補認識可能なら補集合の偶数部分から $\overline{K}$ が認識可能になって、いずれも矛盾。
+:::
+
+## 階層が真に増えること {#comp:sec-dh-proper}
+
+::: theorem 差の階層は真の階層 {#comp:difference-hierarchy-proper keywords="for each n there is an (n+1)-c.e. set that is not n-c.e.; there is a Delta_2 set that is not omega-c.e." index="差の階層の真性|さのかいそうのしんせい"}
+1. 各 $n\ge1$ について、$(n+1)$-c.e. だが $n$-c.e. でない集合がある。
+2. $A\le_{\mathrm{T}}\varnothing'$ だが $\omega$-c.e. でない集合がある。
+:::
+
+::: proof
+**1.** $\varphi^{(2)}_{e}$ が $n$-c.e. の近似の候補であるとは、全域で $\{0,1\}$ 値、$\varphi^{(2)}_{e}(x,0)=0$、変化 $\le n$ であることとする。すべての $n$-c.e. 集合は、ある候補の近似の極限である。点 $e$ を、$e$ 番目の候補と食い違わせるための**証拠**として使う。
+
+$a(e,s)$ を次で定める。段 $s$ で、$t=0,1,\dots$ の順に $\varphi^{(2)}_{e,s}(e,t)\downarrow$ を調べ、連続して止まった最後の $t$ を $t_{s}$ とする（$t=0$ で止まらなければ「まだ何もない」）。
+- まだ何もない、または $\varphi_{e}(e,0),\dots,\varphi_{e}(e,t_{s})$ の中に $\{0,1\}$ 以外の値があるか、$\varphi_{e}(e,0)\neq0$ であるか、変化が $n$ 回を超えている場合：その状態に初めてなった段以降、$a(e,s)$ は直前の値のままにする（**凍結**。ただし最初の「まだ何もない」間は $0$）。
+- そうでなければ、$a(e,s)\defeq1-\varphi_{e}(e,t_{s})$。
+
+$a$ は計算可能。$a(e,0)=0$ としてよい（段 $0$ では何も止まらないとする）。
+
+*変化の回数.* $a(e,\cdot)$ は、最初に $\varphi_{e}(e,0)=0$ を見たとき $0\to1$ に一回変わり、以後は $\varphi_{e}(e,t_{s})$ が変わるたびに一回変わり、凍結後は変わらない。凍結されない限り $\varphi_{e}(e,\cdot)$ の変化は $\le n$ 回なので、$a(e,\cdot)$ の変化は $\le n+1$。よって $A(e)\defeq\lim_{s}a(e,s)$ の集合 $A$ は $(n+1)$-c.e.。
+
+*食い違い.* $B$ を $n$-c.e. とし、$e$ をその近似の指数（候補）とする。$e$ では凍結は起きず、$t_{s}\to\infty$ で、$\lim_{s}a(e,s)=1-\lim_{t}\varphi_{e}(e,t)=1-B(e)$。よって $A(e)\neq B(e)$、$A\neq B$。
+
+**2.** 候補を、二つの指数の組 $\langle i,j\rangle$（$\varphi^{(2)}_{i}$ が近似、$\varphi_{j}$ が変化の回数の上限）とし、点 $x=\langle i,j\rangle$ を証拠にする。段 $s$ で $\varphi_{j}(x)$ がまだ止まっていなければ $a(x,s)=0$。止まって値 $m$ を得たら、以後は 1 と同じ規則で、$\varphi_{i}(x,\cdot)$ が $\{0,1\}$ 値・初期値 $0$・変化 $\le m$ である限り $a(x,s)=1-\varphi_{i}(x,t_{s})$ とし、そうでなくなったら凍結する。変化の回数は $\le m+1$ で有限なので極限 $A(x)$ が存在し、$a$ は計算可能なので極限補題から $A\le_{\mathrm{T}}\varnothing'$。$\omega$-c.e. な $B$ の近似の指数 $i$ と上限の指数 $j$ について、$x=\langle i,j\rangle$ で凍結は起きず $A(x)=1-B(x)$。
+:::
+
+::: hypcheck
+- **近似の初期値 $g(x,0)=0$**：1-c.e. が認識可能と一致すること（\ref{comp:difference-hierarchy-basic} の 1）と、変化の回数の数え方の基準に使った。初期値を自由にすると、補認識可能な集合が 1 回の変化で書けてしまう。
+- **候補の一様な枚挙**：\ref{comp:difference-hierarchy-proper} で、すべての $n$-c.e. 集合の近似が $\varphi^{(2)}_{e}$ のどれかとして現れること（万能関数の存在）に使った。
+- **凍結**：候補でない $e$（全域でない、値が不正、変化が多すぎる）で $a(e,\cdot)$ の変化が増えすぎないようにするのに使った。候補かどうかは決定可能でないが、「いま見えている範囲で候補をやめた」ことは有限の段で分かる。
+:::
+
+## 問題 {#comp:sec-dh-problems}
+
+::: problem {#comp:prob-dh-union}
+$A,B$ が認識可能なら、$A\cup\overline{B}$ は 3-c.e. で、その補集合は 2-c.e. であることを示せ。
+:::
+
+::: solution
+**補集合.** $\overline{A\cup\overline{B}}=\overline{A}\cap B=B\setminus(A\cap B)$ で、$A\cap B\subseteq B$ はどちらも認識可能なので、\ref{comp:dce-difference} から 2-c.e.。
+
+**3-c.e.** 2-c.e. 集合の補集合なので \ref{comp:difference-hierarchy-basic} の 2 から。直接には、$g(x,0)\defeq0$、$s\ge1$ で $g(x,s)\defeq1$（$x\in A_{s}$ または $x\notin B_{s}$）、$0$（それ以外）とおくと、値の列は $0$ から始まり、$x\notin B_{s}$ の間は $1$、$B$ に入って $A$ にまだ入っていなければ $0$、$A$ に入れば $1$ で、変化は高々 $0\to1\to0\to1$ の 3 回。
+:::
+
+::: problem {#comp:prob-dh-truth-table}
+$\omega$-c.e. 集合はちょうど $\varnothing'$ から真理表還元可能な集合であることが知られている（ここでは証明しない）。この事実を認めて、\ref{comp:difference-hierarchy-proper} の 2 から、$\varnothing'$ でチューリング計算できるが真理表還元できない集合があることを結論せよ。
+:::
+
+::: solution
+\ref{comp:difference-hierarchy-proper} の 2 の $A$ は $A\le_{\mathrm{T}}\varnothing'$ で $\omega$-c.e. でない。認めた事実から、$A$ は $\varnothing'$ から真理表還元できない。
+:::
+
+::: supplement
+**前提を変えると.**
+- **超限の階層.** 変化の回数を順序数 $\alpha$ で数える（変化のたびに順序数を減らす）と、$\alpha$-c.e. 集合の階層が $\Delta_{2}$ の中に超限に続くことが知られている（エルショフの階層。計算可能な順序数の記法を使う。ここでは扱わない）。$\Delta_{2}$ の集合はすべてある計算可能な順序数 $\alpha$ について $\alpha$-c.e. であることが知られている。
+- **次数.** 差の階層の各段は、チューリング次数の意味でも真に増えることが知られている（2-c.e. な次数で認識可能な次数でないものがある：クーパーの定理。ここでは扱わない）。
+
+**似た定理.** 算術的階層（\ref{comp:post-theorem}）は「量化子の交代の回数」で集合を分類し、差の階層は「心変わりの回数」で $\Delta_{2}$ の内側を分類する。極限補題は、この二つをつなぐ（$\Delta_{2}$ は極限で計算できる）。
+
+**高い視点から.** 近似 $g(x,s)$ は、「$x$ は $A$ に入るか」という問いに対して、時間とともに意見を述べ続ける観測者である。認識可能な集合では、観測者は「はい」と一度言ったら撤回しない。差の階層は、撤回を何回まで許すかの段階であり、比喩で言えば、判決を何回まで覆せるかの規則の違いである。対角線論法は、相手が使える撤回の回数より一回多く撤回できる者が、必ず相手と違う結論に到達できることを示している。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

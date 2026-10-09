@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>空間上の層のトポス | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18B-special-categories/01-topos-theory/02-sheaf-topos.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 空間上の層のトポス {#cat:page-sheaf-topos keywords="sheaf on a topological space, category of sheaves is a topos, gluing, subobject classifier of open sets, Heyting algebra of open sets, Sierpinski space"}
+
+位相空間 $X$ の開集合の上で定義された「局所的なデータ」で、重なりで一致するものを貼り合わせられるものを**層**（\ref{cat:sheaf-space}）という。本ページでは、$X$ 上の層の圏 $\mathbf{Sh}(X)$ がトポスであることを示す（\ref{cat:sheaf-topos}）。前層の圏のトポスの構造（\ref{cat:page-presheaf-topos}）のうち、極限と冪対象は層の圏の中にそのまま残り（\ref{cat:sheaves-limits}, \ref{cat:sheaf-exponential}）、部分対象分類子は「開集合の前層」$\Omega_{X}(U)=\{V\subseteq U:V\text{ は開}\}$ に置き換わる（\ref{cat:open-subobject-classifier}）。層化（前層から層を作る操作）は使わない。
+
+> 資料フォルダに層やトポスの教科書はなく、標準的な定義と証明（S. Mac Lane–I. Moerdijk, *Sheaves in Geometry and Logic* 第 II 章で扱われているとされる内容）を本サイトで組み立てた。
+
+## 記法と定義の確認 {#cat:sec-sht-notation}
+
+::: notation
+- $X$ は位相空間、$\mathcal{O}(X)$ は $X$ の開集合の全体を包含で順序づけた前順序集合を圏と見たもの（$V\to U$ は $V\subseteq U$ のときただ一つ）。$\mathcal{O}(X)$ は小さい圏。
+- $\mathcal{O}(X)$ 上の前層 $F$ について、$V\subseteq U$ と $s\in F(U)$ に対し $s|_{V}\defeq F(V\subseteq U)(s)$（**制限**）と書く。$s|_{U}=s$, $(s|_{V})|_{W}=s|_{W}$。前層の射 $\theta$ の自然性は $\theta_{V}(s|_{V})=\theta_{U}(s)|_{V}$。
+- 前層の圏 $\widehat{\mathcal{O}(X)}$ の極限は各点ごと（\ref{cat:pointwise-limits}）、冪対象は \ref{cat:presheaf-exponential}、部分対象分類子とトポスの定義は \ref{cat:subobject-classifier}, \ref{cat:elementary-topos}、モノ射と部分前層は \ref{cat:presheaf-mono} のとおり。
+- 開集合 $U$ の**開被覆** $U=\bigcup_{i\in I}U_{i}$（$U_{i}$ は開）。$I=\emptyset$ も許す（そのとき $U=\emptyset$）。$U_{ij}\defeq U_{i}\cap U_{j}$。
+:::
+
+::: definition 層 {#cat:sheaf-space keywords="sheaf on a topological space, gluing condition, compatible family" index="層|そう, 貼り合わせ条件|はりあわせじょうけん"}
+$\mathcal{O}(X)$ 上の前層 $F$ が**層**であるとは、任意の開集合 $U$、その開被覆 $U=\bigcup_{i}U_{i}$、族 $s_{i}\in F(U_{i})$ で**両立する**（すべての $i,j$ で $s_{i}|_{U_{ij}}=s_{j}|_{U_{ij}}$）ものについて、$s|_{U_{i}}=s_{i}$（すべての $i$）となる $s\in F(U)$ がただ一つあることをいう。層の間の射は前層の射とし、層の圏を $\mathbf{Sh}(X)$（$\widehat{\mathcal{O}(X)}$ の充満部分圏）と書く。
+:::
+
+::: remark
+空の被覆（$I=\emptyset$, $U=\emptyset$）に条件を使うと、空の族は両立するので、$F(\emptyset)$ はちょうど一点である。例：$X$ 上の実数値連続関数 $F(U)=C(U,\mathbb{R})$ は層（連続性は局所的な性質で、関数は貼り合わせられる）。有界な連続関数の前層は一般に層でない（局所的に有界でも全体で有界とは限らない）。
+:::
+
+## 極限と冪対象 {#cat:sec-sht-limits}
+
+::: proposition 層の極限 {#cat:sheaves-limits keywords="a limit of sheaves computed in presheaves is a sheaf" index="層の極限|そうのきょくげん"}
+層の図式 $D\colon\mathbf{J}\to\mathbf{Sh}(X)$（$\mathbf{J}$ は小さい圏）について、前層の圏での極限 $L$（各点ごと：$L(U)=\lim_{j}D_{j}(U)$）は層である。したがって $L$ は $\mathbf{Sh}(X)$ での $D$ の極限で、$\mathbf{Sh}(X)$ は完備、とくに有限極限をもつ。
+:::
+
+::: proof
+$\mathbf{Set}$ の極限として $L(U)=\{(s^{j})_{j}\in\prod_{j}D_{j}(U):D_{\alpha}(s^{j})=s^{j'}\ (\alpha\colon j\to j')\}$ ととる（\ref{cat:set-complete}）。開被覆 $U=\bigcup_{i}U_{i}$ と両立する $\sigma_{i}=(s_{i}^{j})_{j}\in L(U_{i})$ をとる。
+
+**存在.** 各 $j$ で $(s_{i}^{j})_{i}$ は $D_{j}$ で両立するので、$D_{j}$ が層であることから $s^{j}|_{U_{i}}=s_{i}^{j}$ となる $s^{j}\in D_{j}(U)$ がある。$\alpha\colon j\to j'$ について、$D_{\alpha}(s^{j})$ と $s^{j'}$ はどちらも $U_{i}$ への制限が $D_{\alpha}(s_{i}^{j})=s_{i}^{j'}$（$D_{\alpha}$ の自然性）なので、$D_{j'}$ の貼り合わせの一意性から $D_{\alpha}(s^{j})=s^{j'}$。よって $(s^{j})_{j}\in L(U)$ で、各 $U_{i}$ への制限は $\sigma_{i}$。
+
+**一意性.** $L(U)$ の二元が各 $U_{i}$ で同じ制限をもてば、各成分 $j$ が $D_{j}$ の一意性で一致する。
+
+$\mathbf{Sh}(X)$ は充満部分圏なので、$\widehat{\mathcal{O}(X)}$ での極限錐で頂点が層のものは $\mathbf{Sh}(X)$ でも極限錐である。
+:::
+
+::: lemma 表現可能前層は層 {#cat:representable-sheaf keywords="representable presheaves on O(X) are sheaves" index="表現可能前層は層|ひょうげんかのうぜんそうはそう"}
+開集合 $W$ について、$\mathbf{y}W(V)=\{\ast\}$（$V\subseteq W$）、$=\emptyset$（それ以外）は層である。
+:::
+
+::: proof
+開被覆 $V=\bigcup_{i}V_{i}$ と両立する族 $s_{i}\in\mathbf{y}W(V_{i})$ があるとき、各 $V_{i}\subseteq W$ なので $V\subseteq W$ で、$\mathbf{y}W(V)$ はちょうど一点。一意性も一点なので明らか。
+:::
+
+::: lemma 冪対象の言い換え {#cat:presheaf-exp-restriction keywords="Q^P(U) is natural transformations between restrictions to U" index="冪対象の言い換え（層）|べきたいしょうのいいかえそう"}
+前層 $P,Q$ と開集合 $U$ について、$Q^{P}(U)=\widehat{\mathcal{O}(X)}(\mathbf{y}U\times P,Q)$ は、「$V\subseteq U$ となる開集合 $V$ ごとの写像 $\theta_{V}\colon P(V)\to Q(V)$ の族で、$W\subseteq V\subseteq U$ について $\theta_{W}(x|_{W})=\theta_{V}(x)|_{W}$ を満たすもの」（$U$ への制限の間の自然変換）の集合と自然に一対一に対応する。この対応で、$Q^{P}$ の制限 $Q^{P}(U'\subseteq U)$ は族を $U'$ 以下の開集合に制限すること $(\theta_{V})_{V\subseteq U}\mapsto(\theta_{V})_{V\subseteq U'}$ にあたる。
+:::
+
+::: proof
+$(\mathbf{y}U\times P)(V)$ は $V\subseteq U$ なら $\{\ast\}\times P(V)$、それ以外は空なので、前層の射 $\mathbf{y}U\times P\to Q$ は $V\subseteq U$ での成分 $P(V)\to Q(V)$ の自然な族と同じものである（空集合からの写像は一つで、自然性の条件は $V\subseteq U$ の部分だけが残る）。制限の式 $Q^{P}(f)(\theta)=\theta\circ(\mathbf{y}f\times1)$（\ref{cat:presheaf-exponential}）で $f$ を包含 $U'\subseteq U$ とすると、$\mathbf{y}f\times1$ は $V\subseteq U'$ で恒等写像なので、成分を $V\subseteq U'$ に限ることにあたる。
+:::
+
+::: theorem 層の冪対象 {#cat:sheaf-exponential keywords="if Q is a sheaf then Q^P is a sheaf; Sh(X) is cartesian closed" index="層の冪対象|そうのべきたいしょう"}
+$Q$ が層なら、任意の前層 $P$ について $Q^{P}$ は層である。したがって $\mathbf{Sh}(X)$ はデカルト閉で、層 $P,Q$ の冪対象は前層としての $Q^{P}$ である。
+:::
+
+::: proof
+\ref{cat:presheaf-exp-restriction} の言い換えを使う。開被覆 $U=\bigcup_{i}U_{i}$ と、両立する族 $\theta^{i}\in Q^{P}(U_{i})$（$U_{ij}$ 以下の開集合で $\theta^{i}$ と $\theta^{j}$ の成分が一致する）をとる。
+
+**Step 1（成分の定義）.** $V\subseteq U$ と $x\in P(V)$ をとる。$V=\bigcup_{i}(V\cap U_{i})$ は開被覆で、$q_{i}\defeq\theta^{i}_{V\cap U_{i}}(x|_{V\cap U_{i}})\in Q(V\cap U_{i})$ とする。$V_{ij}\defeq V\cap U_{ij}$ への制限は、$\theta^{i}$ の自然性と両立性から
+$$
+q_{i}|_{V_{ij}}=\theta^{i}_{V_{ij}}(x|_{V_{ij}})=\theta^{j}_{V_{ij}}(x|_{V_{ij}})=q_{j}|_{V_{ij}}.
+$$
+$Q$ は層なので、$q|_{V\cap U_{i}}=q_{i}$ となる $q\in Q(V)$ がただ一つある。$\theta_{V}(x)\defeq q$ とする。
+
+**Step 2（自然性）.** $W\subseteq V$ について、$\theta_{W}(x|_{W})$ と $\theta_{V}(x)|_{W}$ は、どちらも $W\cap U_{i}$ への制限が $\theta^{i}_{W\cap U_{i}}(x|_{W\cap U_{i}})$ になる（前者は定義、後者は $q_{i}$ の制限と $\theta^{i}$ の自然性）。$Q$ の一意性から一致する。
+
+**Step 3（制限が $\theta^{i}$）.** $V\subseteq U_{i}$ なら $V\cap U_{i}=V$ で、定義から $\theta_{V}(x)=q_{i}=\theta^{i}_{V}(x)$。
+
+**Step 4（一意性）.** $\theta'\in Q^{P}(U)$ の $U_{i}$ への制限がすべて $\theta^{i}$ なら、$V\subseteq U$, $x\in P(V)$ について $\theta'_{V}(x)|_{V\cap U_{i}}=\theta'_{V\cap U_{i}}(x|_{V\cap U_{i}})=q_{i}$ なので、$Q$ の一意性から $\theta'_{V}(x)=\theta_{V}(x)$。
+
+**デカルト閉性.** 層 $P,Q,R$ について、$R\times P$ は層の積（\ref{cat:sheaves-limits}）で、$Q^{P}$ は層。$\mathbf{Sh}(X)$ は充満部分圏なので、\ref{cat:presheaf-exponential} の全単射 $\widehat{\mathcal{O}(X)}(R\times P,Q)\cong\widehat{\mathcal{O}(X)}(R,Q^{P})$ はそのまま $\mathbf{Sh}(X)$ の hom の間の全単射で、評価射 $\mathrm{ev}$ も層の間の射。よって \ref{cat:exponential-universal} から $\mathbf{Sh}(X)$ はデカルト閉。
+:::
+
+## 開集合による部分対象分類子 {#cat:sec-sht-classifier}
+
+::: lemma 層の部分対象 {#cat:sheaf-mono keywords="monos of sheaves are componentwise injective; subobjects are subsheaves; largest open where a section lies in a subsheaf" index="部分層|ぶぶんそう"}
+1. 層の射 $\theta\colon A\to P$ が $\mathbf{Sh}(X)$ でモノ射であることと、すべての成分が単射であることは同値である。層 $P$ の部分対象は、層である部分前層（**部分層**）と一対一に対応する。
+2. $A\subseteq P$ を部分層、$x\in P(U)$ とし、$\chi_{U}(x)\defeq\bigcup\{V\subseteq U:V\text{ は開},\ x|_{V}\in A(V)\}$ とする。このとき $x|_{\chi_{U}(x)}\in A(\chi_{U}(x))$ で、開集合 $V\subseteq U$ について $x|_{V}\in A(V)\iff V\subseteq\chi_{U}(x)$。
+:::
+
+::: proof
+**1.** \ref{cat:presheaf-mono} の 1 の証明は、表現可能前層 $\mathbf{y}U$ からの射を試すだけなので、$\mathbf{y}U$ が層であること（\ref{cat:representable-sheaf}）から $\mathbf{Sh}(X)$ でもそのまま通る（成分が単射ならモノ射なのは明らか）。モノ射の像は部分前層で、\ref{cat:presheaf-mono} の 2 のとおり $A$ と前層として同型なので、層である。
+
+**2.** $\mathcal{V}\defeq\{V\subseteq U:x|_{V}\in A(V)\}$ は $W\defeq\chi_{U}(x)$ の開被覆で、族 $(x|_{V})_{V\in\mathcal{V}}$ は $A$ の中で両立する（$P$ で $x$ の制限なので）。$A$ は層なので、$a|_{V}=x|_{V}$ となる $a\in A(W)$ がある。$P$ の中で $a$ と $x|_{W}$ はどちらも $V$ への制限が $x|_{V}$ なので、$P$ の一意性から $a=x|_{W}$。よって $x|_{W}\in A(W)$。後半：$\Rightarrow$ は定義、$\Leftarrow$ は $x|_{V}=(x|_{W})|_{V}$ と $A$ が部分前層であることから。
+:::
+
+::: theorem 開集合の部分対象分類子 {#cat:open-subobject-classifier keywords="Omega(U) = open subsets of U is the subobject classifier of Sh(X)" index="層の部分対象分類子|そうのぶぶんたいしょうぶんるいし"}
+$\Omega_{X}(U)\defeq\{V\subseteq U:V\text{ は開}\}$、制限 $V|_{W}\defeq V\cap W$ とし、$\mathrm{true}_{U}(\ast)\defeq U$ とする。$\Omega_{X}$ は層で、$(\Omega_{X},\mathrm{true})$ は $\mathbf{Sh}(X)$ の部分対象分類子である。部分層 $A\subseteq P$ の特性射は \ref{cat:sheaf-mono} の 2 の $\chi$ である。
+:::
+
+::: proof
+**Step 1（$\Omega_{X}$ は層）.** 前層であることは $(V\cap W)\cap W'=V\cap W'$（$W'\subseteq W$）から。開被覆 $U=\bigcup_{i}U_{i}$ と、両立する $V_{i}\subseteq U_{i}$（$V_{i}\cap U_{j}=V_{j}\cap U_{i}$）をとり、$V\defeq\bigcup_{j}V_{j}$ とすると
+$$
+V\cap U_{i}=\bigcup_{j}(V_{j}\cap U_{i})=\bigcup_{j}(V_{i}\cap U_{j})=V_{i}\cap U=V_{i}.
+$$
+一意性：$V\subseteq U$ なら $V=\bigcup_{i}(V\cap U_{i})$ で、$V$ は制限で決まる。終対象 $1$（各点で一点）も層で、$\mathrm{true}$ は自然（$U\cap W=W$）。
+
+**Step 2（$\chi$ は層の射）.** $\chi_{U}(x)\in\Omega_{X}(U)$。$W\subseteq U$ について、開集合 $V\subseteq W$ に対し \ref{cat:sheaf-mono} の 2 を二回使うと
+$$
+\begin{aligned}V\subseteq\chi_{W}(x|_{W})&\iff x|_{V}\in A(V)\\&\iff V\subseteq\chi_{U}(x)\iff V\subseteq\chi_{U}(x)\cap W.\end{aligned}
+$$
+$V$ を両辺の開集合にとれば $\chi_{W}(x|_{W})=\chi_{U}(x)\cap W=\chi_{U}(x)|_{W}$。
+
+**Step 3（引き戻し）.** 極限は前層として各点ごとに計算でき、層になる（\ref{cat:sheaves-limits}）ので、各 $U$ で $\{x\in P(U):\chi_{U}(x)=U\}=A(U)$ を示せばよい。これは \ref{cat:sheaf-mono} の 2 で $V=U$ とした場合である。
+
+**Step 4（一意性）.** $\chi'\colon P\to\Omega_{X}$ についても $A$ が $\mathrm{true}$ の引き戻しなら、各点で $\{x:\chi'_{U}(x)=U\}=A(U)$。開集合 $V\subseteq U$ について、$\chi'$ の自然性と \ref{cat:sheaf-mono} の 2 から
+$$
+\begin{aligned}
+V\subseteq\chi'_{U}(x)&\iff\chi'_{U}(x)\cap V=V\iff\chi'_{V}(x|_{V})=V\\
+&\iff x|_{V}\in A(V)\iff V\subseteq\chi_{U}(x).
+\end{aligned}
+$$
+$V=\chi'_{U}(x)$ と $V=\chi_{U}(x)$ をとれば $\chi'_{U}(x)=\chi_{U}(x)$。
+:::
+
+::: corollary 層の圏はトポス {#cat:sheaf-topos keywords="the category of sheaves on a space is a topos" index="層のトポス|そうのとぽす"}
+位相空間 $X$ について、$\mathbf{Sh}(X)$ はトポスである。
+:::
+
+::: proof
+有限極限は \ref{cat:sheaves-limits}、デカルト閉は \ref{cat:sheaf-exponential}、部分対象分類子は \ref{cat:open-subobject-classifier}。
+:::
+
+::: remark
+$\Omega_{X}(U)$ は前層のトポスの $\Omega(U)$（$U$ 上のふるい、\ref{cat:sieve}）とは異なる。$U$ 上のふるいは「$U$ に含まれる開集合の、部分集合で閉じた族」で、開集合 $V\subseteq U$ には「$V$ に含まれる開集合の全体」というふるいが対応する。$\Omega_{X}(U)$ は、ふるいのうち「和集合で閉じたもの」（**閉じたふるい**）だけを残したものと見られる。
+:::
+
+::: hypcheck
+- **貼り合わせの存在**：極限（各成分の貼り合わせ）、冪対象（Step 1 で $Q$ の貼り合わせ）、部分対象分類子（\ref{cat:sheaf-mono} の 2 で $A$ の貼り合わせ）に使った。
+- **貼り合わせの一意性**：極限の成分が図式と両立すること、冪対象の自然性と一意性（Step 2, 4）、\ref{cat:sheaf-mono} の 2 で $a=x|_{W}$ を示すのに使った。
+- **$P$ が層であること**：\ref{cat:sheaf-mono} の 2 で、$P$ の一意性を使った。冪対象では $P$ は任意の前層でよく、$Q$ だけが層であればよい。
+- **位相の公理**：$\Omega_{X}$ が層であること（開集合の和集合が開）、$\chi_{U}(x)$ が開であること（和集合）、制限 $V\cap W$ が開であること（有限共通部分）に使った。
+- **層化**：使っていない。層化があると $\mathbf{Sh}(X)$ が余極限ももつことなどが言えるが、トポスの定義には要らない。
+:::
+
+## 問題 {#cat:sec-sht-problems}
+
+::: problem {#cat:prob-sht-sierpinski}
+シェルピンスキー空間 $X=\{0,1\}$（開集合は $\emptyset,\{1\},X$）について、$\mathbf{Sh}(X)$ が \ref{cat:omega-examples} の 1 の矢印圏の上の前層の圏と圏同値であることを示し、$\Omega_{X}(X)$ が三元集合であることを確かめよ。
+:::
+
+::: solution
+層 $F$ について $F(\emptyset)$ は一点（空の被覆）。$X$ と $\{1\}$ の開被覆は、その集合自身を必ず含む（$\{1\}\cup\emptyset\ne X$）。被覆が $U_{k}=U$ を含むと、両立性から $s_{i}=s_{k}|_{U_{i}}$ で、$s\defeq s_{k}$ が貼り合わせになり、$s|_{U_{k}}=s$ から一意。よって貼り合わせ条件は $F(\emptyset)$ が一点であることのほかは自動的に成り立つ。よって層は写像 $F(X\supseteq\{1\})\colon F(X)\to F(\{1\})$ と同じもので、層の射は可換な四角形。矢印圏の前層 $P(1)\to P(0)$ と、$X\leftrightarrow1$, $\{1\}\leftrightarrow0$ で対応する。$\Omega_{X}(X)=\{\emptyset,\{1\},X\}$ で、$\{1\}$ への制限は $\emptyset\mapsto\emptyset$, $\{1\}\mapsto\{1\}$, $X\mapsto\{1\}$。これは \ref{cat:omega-examples} の 1 の $\Omega(1)\to\Omega(0)$ と同じ形である。
+:::
+
+::: problem {#cat:prob-sht-excluded-middle}
+$X=\mathbb{R}$（通常の位相）で、$\Omega_{X}(\mathbb{R})$ を包含で順序づける。$V\in\Omega_{X}(\mathbb{R})$ について、$V\cap W=\emptyset$ となる開集合 $W$ のうち最大のものを $\neg V$ とする。$\neg V$ が $V$ の補集合の内部であることを示し、$V=\mathbb{R}\setminus\{0\}$ で $V\cup\neg V\ne\mathbb{R}$ と、$\neg\neg V\ne V$ となる例を挙げよ。
+:::
+
+::: solution
+$V\cap W=\emptyset\iff W\subseteq\mathbb{R}\setminus V$ で、補集合に含まれる最大の開集合は内部（\ref{top:interior-closure}）。$V=\mathbb{R}\setminus\{0\}$ なら補集合 $\{0\}$ の内部は空なので $\neg V=\emptyset$、$V\cup\neg V=V\ne\mathbb{R}$。また $\neg\neg V=\neg\emptyset=\mathbb{R}\ne V$。開集合の束では排中律と二重否定の除去が成り立たない（内部と閉包の言葉では $\neg\neg V$ は $V$ の閉包の内部）。
+:::
+
+::: problem {#cat:prob-sht-discrete}
+$X$ が離散空間のとき、$\mathbf{Sh}(X)$ が $\mathbf{Set}^{X}$（$X$ で添字付けられた集合の族と、成分ごとの写像の圏）と圏同値であることを示し、$\Omega_{X}$ が族 $(\{0,1\})_{x\in X}$ に対応することを確かめよ。
+:::
+
+::: solution
+すべての部分集合が開で、$U=\bigcup_{x\in U}\{x\}$ は開被覆、$\{x\}\cap\{y\}=\emptyset$（$x\ne y$）。層の条件から、制限の積 $F(U)\to\prod_{x\in U}F(\{x\})$ は全単射（$F(\emptyset)$ は一点なので両立の条件は自明）。よって $F\mapsto(F(\{x\}))_{x}$ は圏同値（逆は $(S_{x})_{x}\mapsto(U\mapsto\prod_{x\in U}S_{x})$）。$\Omega_{X}(\{x\})=\{\emptyset,\{x\}\}$ は二元集合で、$\mathbf{Set}^{X}$ の部分対象分類子は各成分の $\{0,1\}$ である。
+:::
+
+::: supplement
+**前提を変えると.**
+- **グロタンディーク位相.** 開被覆の代わりに、小さい圏 $\mathbf{C}$ の各対象に「被覆するふるい」を指定したもの（グロタンディーク位相）について層を定義すると、層の圏（グロタンディーク・トポス）もトポスで、部分対象分類子は閉じたふるいの層になることが知られている（ここでは確かめていない）。$\mathbf{C}=\mathcal{O}(X)$ で被覆を開被覆とすると本ページの場合になり、どのふるいも被覆としない（最大のふるいだけを被覆とする）と前層の圏になる。
+- **層化.** 包含 $\mathbf{Sh}(X)\to\widehat{\mathcal{O}(X)}$ は左随伴（層化）をもち、それは有限極限を保つことが知られている（ここでは扱わない）。これを使うと、$\mathbf{Sh}(X)$ の余極限は前層としての余極限を層化したものになる。
+
+**似た定理.**
+- 冪対象の証明で $P$ が任意の前層でよかった（$Q$ が層なら $Q^{P}$ は層）ことは、層の圏が前層の圏の中で「冪のイデアル」（exponential ideal）になっている、と言い表されることが知られている。
+- $\Omega_{X}(X)$ は開集合の束で、ハイティング代数をなす（$V\Rightarrow W$ は $(X\setminus V)\cup W$ の内部）。これは直観主義命題論理の位相的意味論（タルスキ）と同じ構造であることが知られている。
+
+**高い視点から：空間をトポスで置き換える.** 層のトポス $\mathbf{Sh}(X)$ は、空間 $X$ を「$X$ 上で変化する集合の宇宙」に置き換えたものである。真理値 $\Omega_{X}(X)$ は「どこで成り立つか」を表す開集合で、「$x$ は部分層 $A$ に入る」という命題の真理値は「$x$ が $A$ に入る最大の開集合」$\chi(x)$ である。比喩で言えば、$\mathbf{Set}$ の真理値が「全国で一斉に出る判定」なら、層の真理値は「地域ごとの天気予報の晴れの地域」で、晴れの地域は開集合（境界の点は自信をもって晴れとは言えない）なので、「晴れ」と「晴れでない地域の内部」を合わせても境界が残り、排中律は成り立たない（\ref{cat:prob-sht-excluded-middle}）。グロタンディークは、空間そのものよりもその上の層の圏が本質的であると考え、トポスを「一般化された空間」と見たと一般に言われている。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

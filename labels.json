@@ -1471,6 +1471,13 @@
       "num": "",
       "page": "18-category-theory/18B-special-categories/01-topos-theory/01-presheaf-topos.html"
     },
+    "cat:open-subobject-classifier": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "開集合の部分対象分類子",
+      "num": "2.8",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/02-sheaf-topos.html"
+    },
     "cat:opposite-basic": {
       "status": "defined",
       "type": "proposition",
@@ -1737,6 +1744,13 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/05-higher-structures/05-segal-condition.html"
     },
+    "cat:page-sheaf-topos": {
+      "status": "defined",
+      "type": "page",
+      "title": "空間上の層のトポス",
+      "num": "",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/02-sheaf-topos.html"
+    },
     "cat:page-simplicial": {
       "status": "defined",
       "type": "page",
@@ -1813,6 +1827,13 @@
       "title": "前層は表現可能関手の余極限",
       "num": "4.9",
       "page": "18-category-theory/18A-general-theory/04-kan-extensions/04-pointwise-kan.html"
+    },
+    "cat:presheaf-exp-restriction": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "冪対象の言い換え",
+      "num": "2.5",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/02-sheaf-topos.html"
     },
     "cat:presheaf-exponential": {
       "status": "defined",
@@ -2339,6 +2360,27 @@
       "num": "5.9",
       "page": "18-category-theory/18A-general-theory/05-higher-structures/05-segal-condition.html"
     },
+    "cat:prob-sht-discrete": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "2.13",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/02-sheaf-topos.html"
+    },
+    "cat:prob-sht-excluded-middle": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "2.12",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/02-sheaf-topos.html"
+    },
+    "cat:prob-sht-sierpinski": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "2.11",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/02-sheaf-topos.html"
+    },
     "cat:prob-skeletons-isomorphic": {
       "status": "defined",
       "type": "problem",
@@ -2513,6 +2555,13 @@
       "title": "表現可能関手",
       "num": "5.6",
       "page": "18-category-theory/18A-general-theory/01-basics/05-yoneda.html"
+    },
+    "cat:representable-sheaf": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "表現可能前層は層",
+      "num": "2.4",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/02-sheaf-topos.html"
     },
     "cat:representable-terminal-element": {
       "status": "defined",
@@ -3781,6 +3830,34 @@
       "num": "",
       "page": "18-category-theory/18A-general-theory/05-higher-structures/05-segal-condition.html"
     },
+    "cat:sec-sht-classifier": {
+      "status": "defined",
+      "type": "section",
+      "title": "開集合による部分対象分類子",
+      "num": "",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/02-sheaf-topos.html"
+    },
+    "cat:sec-sht-limits": {
+      "status": "defined",
+      "type": "section",
+      "title": "極限と冪対象",
+      "num": "",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/02-sheaf-topos.html"
+    },
+    "cat:sec-sht-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/02-sheaf-topos.html"
+    },
+    "cat:sec-sht-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/02-sheaf-topos.html"
+    },
     "cat:sec-sx-delta": {
       "status": "defined",
       "type": "section",
@@ -3948,6 +4025,41 @@
       "title": "集合の圏",
       "num": "",
       "page": "18-category-theory/18B-special-categories/01-topos-theory/01-presheaf-topos.html"
+    },
+    "cat:sheaf-exponential": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "層の冪対象",
+      "num": "2.6",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/02-sheaf-topos.html"
+    },
+    "cat:sheaf-mono": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "層の部分対象",
+      "num": "2.7",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/02-sheaf-topos.html"
+    },
+    "cat:sheaf-space": {
+      "status": "defined",
+      "type": "definition",
+      "title": "層",
+      "num": "2.1",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/02-sheaf-topos.html"
+    },
+    "cat:sheaf-topos": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "層の圏はトポス",
+      "num": "2.9",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/02-sheaf-topos.html"
+    },
+    "cat:sheaves-limits": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "層の極限",
+      "num": "2.3",
+      "page": "18-category-theory/18B-special-categories/01-topos-theory/02-sheaf-topos.html"
     },
     "cat:sieve": {
       "status": "defined",

@@ -245,6 +245,7 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | HA-02 | 18G/01-abelian-categories/02-abelian | アーベル圏・像・完全列・完全関手 | VIII.3 | 9366–9600 | 完了 |
 | HA-03 | 18G/01-abelian-categories/03-diagram-lemmas | 図式の補題（メンバー、五項補題、蛇の補題） | VIII.4 | 9600–9900 | 完了 |
 | HA-04 | 18G/01-abelian-categories/04-chain-complexes | 鎖複体・ホモロジー・長完全列・鎖ホモトピー（資料なし。2026-10-08 自律判断） | — | — | 完了 |
+| HA-05 | 18G/01-abelian-categories/05-freyd-mitchell | フレイド＝ミッチェルの埋め込み定理（主張、小さいアーベル部分圏、忠実な完全関手の反映、移行原理、米田埋め込みは左完全だが完全でない） | — | 完了 |
 | HD-01 | 18G/02-derived-functors/01-projective-resolutions | 射影対象・射影分解・比較定理（資料なし。新フォルダ 18G/02-derived-functors, id ha-derived） | — | — | 完了 |
 | HD-02 | 18G/02-derived-functors/02-derived-functors | 左導来関手、馬蹄補題と長完全列、Tor と Ext | — | — | 完了 |
 | HD-03 | 18G/02-derived-functors/03-tor-ext | Tor と Ext、Z 上の計算、群のコホモロジーとの関係 | — | — | 完了 |
@@ -254,7 +255,6 @@ Boolos の章末には演習がない。IN 系列は Boolos の方針（再帰�
 | HD-07 | 18G/02-derived-functors/07-ext-injective | 入射分解による Ext、次元ずらしによる平衡性、入射性の Ext¹ による特徴づけ | — | — | 完了 |
 | HD-08 | 18G/02-derived-functors/08-projective-dimension | シャヌエルの補題、第一変数の次元ずらし、射影次元の Ext による特徴づけ、Z 上の射影次元 | — | — | 完了 |
 | HD-09 | 18G/02-derived-functors/09-delta-functors | δ 関手、馬蹄補題の射への拡張、導来関手の連結射の自然性、消去可能な δ 関手の普遍性、導来関手の特徴づけ、可換環上の Tor の平衡性 | — | 完了 |
-| HA-05 | 18G/01-abelian-categories/05-freyd-mitchell | フレイド＝ミッチェルの埋め込み定理（主張、小さいアーベル部分圏、忠実な完全関手の反映、移行原理、米田埋め込みは左完全だが完全でない） | — | 完了 |
 
 特別な極限とカン拡張（18A/04-kan-extensions, id cat-kan。2026-10-08 自律判断）
 | ID | ファイル | 題 | CWM | 本文の行 | 状態 |

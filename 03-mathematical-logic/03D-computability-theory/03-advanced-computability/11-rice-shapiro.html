@@ -101,6 +101,18 @@
 
 $\mathcal{F}$ を「定義域が $\mathcal{A}$ に属する部分関数のクラス」とすれば、$J_{\mathcal{F}}=I_{\mathcal{A}}$ で、関数版から集合版（\ref{comp:rice-shapiro}）が得られる（$W\subseteq V$ なら、定義域 $W$, $V$ の部分関数で前者が後者に含まれるもの、たとえば値をすべて $0$ としたものがとれる）。
 
+::: theorem 関数版の逆 {#comp:rice-shapiro-functions-converse keywords="converse of Rice-Shapiro for partial functions: J_F is c.e. iff finite members are c.e. by canonical codes and membership is witnessed by finite subfunctions" index="ライス–シャピロの定理の逆（関数版）|らいすしゃぴろのていりのぎゃくかんすうばん"}
+有限関数 $\sigma$（定義域が有限の部分関数）を、そのグラフ $\{\langle x,\sigma(x)\rangle:x\in\mathrm{dom}\,\sigma\}$ の標準符号で表し、符号 $u$ の有限関数を $\sigma_{u}$ と書く（$u$ がグラフでない集合を符号するときは、そのような $u$ は以下で使わない）。部分計算可能関数のクラス $\mathcal{F}$ について、$J_{\mathcal{F}}$ が認識可能であることと、次の二つが成り立つことは同値である。
+- (i) $\{u:\sigma_{u}\in\mathcal{F}\}$ は認識可能。
+- (ii) 部分計算可能な $\psi$ について、$\psi\in\mathcal{F}\iff$ ある有限関数 $\sigma\subseteq\psi$ で $\sigma\in\mathcal{F}$。
+:::
+
+::: proof
+**⇒.** (ii) の ⇒ は \ref{comp:rice-shapiro-functions} の 2、⇐ は同 1（$\sigma\subseteq\psi$ で $\sigma\in\mathcal{F}$ なら $\psi\in\mathcal{F}$）。(i)：smn 定理により、全域計算可能な $e$ で $\varphi_{e(u)}=\sigma_{u}$（「入力 $x$ について、$u$ の符号する集合の中に $\langle x,y\rangle$ があれば $y$ を出力し、なければ止まらない」）となるものをとると、$\sigma_{u}\in\mathcal{F}\iff e(u)\in J_{\mathcal{F}}$。
+
+**⇐.** (ii) から、$e\in J_{\mathcal{F}}\iff\exists u\,\exists s\,[\,u$ は (i) の集合に属し、$\sigma_{u}$ のすべての $x$ について $\varphi_{e}(x)$ が $s$ 段以内に止まって値 $\sigma_{u}(x)$ をとる$\,]$。括弧の後半は決定可能、前半は認識可能なので、$(u,s)$ と (i) の集合の列挙の段数を並行して探索すれば $J_{\mathcal{F}}$ を認識できる。
+:::
+
 ::: corollary 全域性は認識できない {#comp:totality-not-ce keywords="the set of indices of total functions is not c.e.; neither is the set of indices of a fixed total function" index="全域関数の指数集合|ぜんいきかんすうのしすうしゅうごう"}
 $\{e:\varphi_{e}\text{ は全域}\}$ や、固定した全域計算可能関数 $g$ についての $\{e:\varphi_{e}=g\}$ は認識可能でない。
 :::
@@ -128,7 +140,7 @@ $\{e:W_{e}\text{ は }5\text{ を含まない}\}$ の補集合は認識可能だ
 :::
 
 ::: supplement
-**前提を変えると.** 部分計算可能関数のクラス $\mathcal{F}$ の指数集合 $\{e:\varphi_{e}\in\mathcal{F}\}$ についても、認識可能なら単調性とコンパクト性が成り立つ（\ref{comp:rice-shapiro-functions}）。逆向き（\ref{comp:rice-shapiro-converse} の関数版）も、有限関数の標準符号を使えば同じ議論で成り立つことが知られている（ここでは確かめていない）。全域関数の性質については、クライゼル–ラコンブ–ショーンフィールドの定理（計算可能な汎関数は実効的に連続）が対応することが知られている（ここでは扱わない）。
+**前提を変えると.** 部分計算可能関数のクラス $\mathcal{F}$ の指数集合 $\{e:\varphi_{e}\in\mathcal{F}\}$ についても、認識可能なら単調性とコンパクト性が成り立つ（\ref{comp:rice-shapiro-functions}）。逆向き（\ref{comp:rice-shapiro-converse} の関数版）も、有限関数の標準符号を使えば同じ議論で成り立つ（\ref{comp:rice-shapiro-functions-converse}）。全域関数の性質については、クライゼル–ラコンブ–ショーンフィールドの定理（計算可能な汎関数は実効的に連続）が対応することが知られている（ここでは扱わない）。
 
 **似た定理.** ライス–シャピロの定理は、「計算可能な性質は位相的に開である」という原理の一例である：認識可能集合を点、有限部分集合を基本近傍とみる（スコット位相）と、認識可能な指数集合はちょうど開集合に対応する。計算可能解析の「計算可能な関数は連続である」も同じ原理の表れである。
 

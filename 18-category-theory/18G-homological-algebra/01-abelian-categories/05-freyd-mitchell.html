@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>フレイド＝ミッチェルの埋め込み定理 | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css">
+<link rel="stylesheet" href="../../../style.css">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="18-category-theory/18G-homological-algebra/01-abelian-categories/05-freyd-mitchell.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# フレイド＝ミッチェルの埋め込み定理 {#ha:page-freyd-mitchell keywords="Freyd-Mitchell embedding theorem, full exact embedding of a small abelian category into a module category, faithful exact functors reflect exactness, small abelian subcategories, transfer of diagram lemmas, Yoneda embedding is left exact but not exact"}
+
+アーベル圏での図式の補題（五項補題・蛇の補題、\ref{ha:page-diagram-lemmas}）は、本サイトでは「メンバー」を使って直接示した。**フレイド＝ミッチェルの埋め込み定理**（\ref{ha:freyd-mitchell}）は、より強く、「小さいアーベル圏はある環上の加群の圏に、充満忠実かつ完全に埋め込める」ことを主張し、加群の元を使った図式追跡がそのままアーベル圏で正しいことを保証する。本ページでは定理を正確に述べ（証明はしない）、それを使える形にする二つの補題――任意の図式は小さいアーベル部分圏に入ること（\ref{ha:small-abelian-subcategory}）と、忠実な完全関手は完全性を反映すること（\ref{ha:faithful-exact-reflects}）――を証明し、それらを組み合わせた**移行原理**（\ref{ha:freyd-mitchell-transfer}）を導く。最後に、米田埋め込みでは代わりにならない理由（左完全だが完全でない、\ref{ha:yoneda-not-exact}）を確かめる。
+
+> 資料：定理は P. Freyd, *Abelian Categories* (1964) と B. Mitchell, "The full imbedding theorem", *Amer. J. Math.* 86 (1964) によるとされる。主張の形は C. Weibel, *An Introduction to Homological Algebra* §1.6 の述べ方として知られているものに沿う。補題の証明は本サイトで書き下ろした。
+
+## 記法と定義の確認 {#ha:sec-fm-notation}
+
+::: notation
+- アーベル圏・モノかつエピなら同型・像の分解・完全列・完全関手は \ref{ha:abelian-category}, \ref{ha:mono-epi-iso}, \ref{ha:image-factorization}, \ref{ha:exact-sequence}, \ref{ha:exact-functor}。左完全なら加法的で核を保存する（\ref{ha:left-exact-criterion}）。双対に、右完全なら余核を保存する。
+- 圏は局所小（射の全体が集合）とする。**小さい**圏とは、対象の全体も集合である圏。
+- 関手 $F$ が**忠実**とは各 $\mathrm{Hom}(a,b)\to\mathrm{Hom}(Fa,Fb)$ が単射、**充満**とは全射であることをいう（\ref{cat:full-faithful}）。
+- $\mathbf{A}$ の**充満部分圏** $\mathbf{B}$ は、対象の部分クラスと、その間の $\mathbf{A}$ の射すべてからなる部分圏。
+:::
+
+## 定理の主張 {#ha:sec-fm-statement}
+
+::: theorem フレイド＝ミッチェルの埋め込み定理 {#ha:freyd-mitchell keywords="Freyd-Mitchell: every small abelian category admits a fully faithful exact functor into R-Mod" index="フレイド＝ミッチェルの埋め込み定理|ふれいどみっちぇるのうめこみていり"}
+$\mathbf{A}$ を小さいアーベル圏とする。このとき環 $R$ と、充満忠実で完全な関手 $F\colon\mathbf{A}\to R\text{-}\mathbf{Mod}$ が存在する。
+:::
+
+この定理は本サイトでは証明しない（Freyd, Mitchell 1964 とされる。証明の概略は補足）。「小さい」の仮定は外せないが、次の補題により、具体的な図式について使うときには問題にならない。
+
+## 小さいアーベル部分圏 {#ha:sec-fm-small}
+
+::: lemma 小さいアーベル部分圏 {#ha:small-abelian-subcategory keywords="any set of objects of an abelian category lies in a small full abelian subcategory with exact inclusion" index="小さいアーベル部分圏|ちいさいあーべるぶぶんけん"}
+（AC）$\mathbf{A}$ をアーベル圏、$S$ を $\mathbf{A}$ の対象の集合とする。$S$ を含む $\mathbf{A}$ の小さい充満部分圏 $\mathbf{B}$ で、$\mathbf{B}$ がアーベル圏で、包含関手 $\mathbf{B}\to\mathbf{A}$ が完全なものがある。
+:::
+
+::: proof
+**Step 1（選択）.** 零対象 $0$ を一つ選ぶ。$\mathbf{A}$ の各射 $f$ について核 $\ker f\colon k_{f}\to\mathrm{dom}\,f$ と余核 $\mathrm{coker}\,f\colon\mathrm{cod}\,f\to c_{f}$ を一つずつ、各対象の対 $(a,b)$ について双積 $a\oplus b$（と入射・射影）を一つずつ選ぶ（選択公理。クラスについての選択だが、以下で使うのは集合の上だけなので、各段で集合の上の選択関数を使えばよい）。
+
+**Step 2（閉包）.** 対象の集合 $S_{0}\defeq S\cup\{0\}$ とし、$S_{n+1}$ を $S_{n}$ に、$S_{n}$ の対象の間の射 $f$ すべての $k_{f}$, $c_{f}$ と、$a,b\in S_{n}$ のすべての $a\oplus b$ を加えたものとする。$\mathbf{A}$ は局所小なので $S_{n}$ の対象の間の射は集合をなし、$S_{n+1}$ も集合。$S_{\omega}\defeq\bigcup_{n}S_{n}$ を対象とする充満部分圏を $\mathbf{B}$ とする。
+
+**Step 3（$\mathbf{B}$ はアーベル圏で、包含は完全）.** $\mathbf{B}$ の射 $f$ は、ある $S_{n}$ の対象の間の射なので、$k_{f},c_{f}\in S_{n+1}$。$\mathbf{B}$ は**充満**なので、$\mathbf{A}$ での核 $\ker f$ は $\mathbf{B}$ でも核である（普遍性に現れる射はすべて $\mathbf{B}$ の射）。余核・双積・零対象も同様。$\mathbf{A}$ の加法構造を制限すれば $\mathbf{B}$ は前加法圏。アーベル圏の公理 4：$\mathbf{B}$ のモノ射 $m$ は $\mathbf{A}$ でもモノ（$\mathbf{B}$ の核 $=\mathbf{A}$ の核が $0$ なので）、したがって $\mathbf{A}$ で余核の核であり、その余核・核は $\mathbf{B}$ の中で選ばれたものと同型なので、$\mathbf{B}$ でも核である。エピ射も同様。包含は核・余核・双積を保つので、加法的で有限の極限・余極限を保つ（有限の極限は双積と核から作れる：\ref{ha:abelian-finite-limits}）。
+:::
+
+## 忠実な完全関手は完全性を反映する {#ha:sec-fm-reflect}
+
+::: lemma 忠実な完全関手の反映 {#ha:faithful-exact-reflects keywords="a faithful exact functor between abelian categories reflects zero objects, exactness, monos, epis and isomorphisms" index="忠実な完全関手|ちゅうじつなかんぜんかんしゅ"}
+$F\colon\mathbf{A}\to\mathbf{C}$ をアーベル圏の間の忠実な完全関手とする。
+1. $F(a)\cong0$ なら $a\cong0$。$F(f)=0$ なら $f=0$。
+2. $a\xrightarrow{f}b\xrightarrow{g}c$ について、$F(a)\to F(b)\to F(c)$ が完全なら、元の列も完全。
+3. $F(f)$ がモノ（エピ、同型）なら $f$ もそうである。
+:::
+
+::: proof
+**1.** $F$ は加法的なので $F(0_{a})=0$。$F(f)=0=F(0)$ と**忠実性**から $f=0$。$F(a)\cong0$ なら $F(1_{a})=1_{F(a)}=0$ なので $1_{a}=0$、すなわち $a\cong0$。
+
+**2.** $F(g)F(f)=F(gf)=0$ と 1 から $gf=0$。$f$ の像を $m\colon I\to b$（\ref{ha:image-factorization}）、$g$ の核を $k\colon K\to b$ とする。$gf=0$ から $gm=0$（$f=me$, $e$ はエピ）なので $m=ku$ となる $u\colon I\to K$ があり、$u$ はモノ（$m$ がモノ）。列が $b$ で完全であることは $u$ が同型であることと同値（\ref{ha:exact-sequence}）。$F$ は**完全**なので核と余核を保存し、したがって像（余核の核、\ref{ha:image-factorization}）も保存する：$F(m)$ は $F(f)$ の像、$F(k)$ は $F(g)$ の核。仮定から $F(m)$ と $F(k)$ は同じ部分対象を表すので、$F(u)$ は同型。$u$ の余核を $q$ とすると $F(q)$ は $F(u)$ の余核で $0$ への射、すなわち $\mathrm{cod}\,F(q)=F(\mathrm{cod}\,q)\cong0$。1 から $\mathrm{cod}\,q\cong0$ で、$u$ はエピ。モノかつエピなので同型（\ref{ha:mono-epi-iso}）。
+
+**3.** $f$ がモノであることは $0\to a\xrightarrow{f}b$ が完全であることなので、2 から。エピも同様。同型はモノかつエピ。
+:::
+
+## 移行原理 {#ha:sec-fm-transfer}
+
+::: theorem 図式の補題の移行 {#ha:freyd-mitchell-transfer keywords="metatheorem: diagram lemmas about exactness that hold in all module categories hold in all abelian categories" index="図式の補題の移行|ずしきのほだいのいこう, 移行原理（アーベル圏）|いこうげんりあーべるけん"}
+（\ref{ha:freyd-mitchell} を認める。）有限の図式についての主張で、次の形のものを考える：「図式のいくつかの四角が可換で、いくつかの列が完全で、いくつかの射がモノ・エピ・同型・零射であるならば、(i) ある列が完全である、(ii) ある射がモノ・エピ・同型・零射である、(iii) 図式を可換にするある射が存在する、のいずれか」。この主張がすべての環 $R$ について $R\text{-}\mathbf{Mod}$ で成り立てば、すべてのアーベル圏で成り立つ。
+:::
+
+::: proof
+アーベル圏 $\mathbf{A}$ の中の図式をとる。\ref{ha:small-abelian-subcategory} から、図式の対象を含む小さいアーベル部分圏 $\mathbf{B}$（包含は完全な充満埋め込み）がある。図式の仮定（可換性・完全性・モノ等）は $\mathbf{B}$ の中でも成り立つ（包含は完全で充満忠実なので、核・像は $\mathbf{A}$ と $\mathbf{B}$ で同じ）。\ref{ha:freyd-mitchell} の $F\colon\mathbf{B}\to R\text{-}\mathbf{Mod}$ を施すと、$F$ は完全なので仮定は $R\text{-}\mathbf{Mod}$ の中で成り立ち（可換性は関手性、完全性・モノ・エピ・零射は完全関手が保つ）、主張から結論が $R\text{-}\mathbf{Mod}$ で成り立つ。(i)(ii) は \ref{ha:faithful-exact-reflects} で $\mathbf{B}$ に戻り、包含が完全なので $\mathbf{A}$ でも成り立つ。(iii) は $F$ が**充満**なので、$R\text{-}\mathbf{Mod}$ の射 $F(x)\to F(y)$ は $\mathbf{B}$ の射 $x\to y$ の像で、忠実性から可換性も $\mathbf{B}$ に戻る。
+:::
+
+::: hypcheck
+- **小ささ**：\ref{ha:freyd-mitchell} の仮定。\ref{ha:small-abelian-subcategory} で、図式ごとに小さい部分圏に移って回避した。
+- **忠実性と完全性**：\ref{ha:faithful-exact-reflects} で、結論を $R\text{-}\mathbf{Mod}$ から引き戻すのに使った。完全性だけでは結論を引き戻せない（零関手は完全だが何も反映しない）。
+- **充満性**：(iii) の「射の存在」の引き戻しにだけ使った。(i)(ii) の形の主張なら、忠実な完全関手（ミッチェル以前のルブキン・フレイドの定理として、アーベル群の圏への忠実な完全関手の存在が知られている）で足りる。
+:::
+
+## 米田埋め込みでは足りないこと {#ha:sec-fm-yoneda}
+
+::: proposition 米田埋め込みは左完全だが完全でない {#ha:yoneda-not-exact keywords="the Yoneda embedding of an abelian category into additive presheaves is fully faithful and left exact but not right exact in general" index="米田埋め込みと完全性|よねだうめこみとかんぜんせい"}
+アーベル圏 $\mathbf{A}$ について、$y(a)\defeq\mathbf{A}(-,a)$ で定まる関手 $y\colon\mathbf{A}\to\mathrm{Fun}(\mathbf{A}^{\mathrm{op}},\mathbf{Ab})$ は充満忠実で左完全だが、一般には右完全でない。
+:::
+
+::: proof
+**充満忠実.** 米田埋め込み（\ref{cat:yoneda-embedding}）。ここで $\mathbf{A}(-,a)$ は加法構造によって $\mathbf{Ab}$ 値の関手であり、米田の補題の全単射は加法的な自然変換についても同じ形で成り立つ。
+
+**左完全.** 関手圏の核は成分ごとに計算される（\ref{ha:abelian-category} の例 3）。各 $d$ について $\mathbf{A}(d,-)$ は核を保存する（\ref{ha:hom-left-exact}）ので、$y$ は核を保存し、加法的なので左完全（\ref{ha:left-exact-criterion}）。
+
+**右完全でない例.** $\mathbf{A}=\mathbf{Ab}$, エピ射 $p\colon\mathbb{Z}\to\mathbb{Z}/2$ をとる。関手圏の余核も成分ごとなので、$y(p)$ がエピであることは各 $d$ で $\mathbf{A}(d,\mathbb{Z})\to\mathbf{A}(d,\mathbb{Z}/2)$ が全射であることと同値。$d=\mathbb{Z}/2$ では左辺は $0$（$\mathbb{Z}/2$ から $\mathbb{Z}$ への準同型は $0$ だけ：$2x=0$ の元の像は $\mathbb{Z}$ で $2y=0$ を満たし $0$）、右辺は $\{0,1_{\mathbb{Z}/2}\}$ で全射でない。よって $y(p)$ はエピでなく、$y$ は余核を保存しない。（$\mathbf{Ab}$ は小さくないが、$\mathbb{Z},\mathbb{Z}/2$ を含む小さいアーベル部分圏 \ref{ha:small-abelian-subcategory} で同じ議論ができる。）
+:::
+
+## 問題 {#ha:sec-fm-problems}
+
+::: problem {#ha:prob-fm-forgetful}
+忘却関手 $R\text{-}\mathbf{Mod}\to\mathbf{Ab}$ は忠実で完全であることを確かめ、\ref{ha:faithful-exact-reflects} から、$R$ 加群の列の完全性はアーベル群として調べればよいことを確かめよ。充満でないことも示せ。
+:::
+
+::: solution
+核・余核・双積は台のアーベル群で計算される（$R$ 加群の準同型の核は部分加群、余核は商加群）ので、忘却関手は完全。準同型は写像として決まるので忠実。よって完全性は反映される。充満でない：$R=\mathbb{C}$ のとき、複素共役 $\mathbb{C}\to\mathbb{C}$ はアーベル群の準同型だが $\mathbb{C}$ 線形でない。
+:::
+
+::: problem {#ha:prob-fm-not-faithful}
+完全だが忠実でない関手の例を挙げ、\ref{ha:faithful-exact-reflects} の 2 が成り立たないことを確かめよ。
+:::
+
+::: solution
+零関手 $Z\colon\mathbf{Ab}\to\mathbf{Ab}$（すべてを $0$ に送る）は核・余核を保存するので完全。列 $\mathbb{Z}\xrightarrow{1}\mathbb{Z}\xrightarrow{1}\mathbb{Z}$ は真ん中で完全でない（$1\circ1\neq0$）が、$Z$ による像 $0\to0\to0$ は完全。
+:::
+
+::: supplement
+**前提を変えると.**
+- **小ささの仮定.** 定理の証明は対象の集合の上の構成（余生成対象など）を使うので、小ささを仮定している。図式ごとに \ref{ha:small-abelian-subcategory} に移れば、実用上はこれで十分である。
+- **証明の概略（参考）.** 標準的な証明は、$\mathbf{A}$ から左完全関手の圏 $\mathrm{Lex}(\mathbf{A},\mathbf{Ab})^{\mathrm{op}}$ への米田型の埋め込み（左完全関手の圏は十分な入射対象をもつグロタンディーク圏になる）をとり、そこで入射的な余生成対象 $I$ を見つけて、$\mathrm{Hom}(-,I)$ を使って $\mathrm{End}(I)$ 上の加群の圏に写す、という段階を踏むとされる（Weibel §1.6 の概略。ここでは確かめていない）。\ref{ha:yoneda-not-exact} が示すように、素朴な米田埋め込みは右完全性を欠くので、この「左完全関手への置き換え」が要る。
+
+**似た定理.** 「抽象的な構造を具体的な構造に埋め込み、具体的な世界での推論を正当化する」という型の定理には、ケイリーの定理（群は置換群に埋め込める）、ストーンの表現定理（ブール代数は集合代数に埋め込める、\ref{top:page-stone-duality}）、米田埋め込み（\ref{cat:yoneda-embedding}）がある。フレイド＝ミッチェルの定理はそのアーベル圏版である。
+
+**高い視点から.** アーベル圏の公理は、加群の圏から「元」という概念を抜き取り、射と普遍性だけで書き直したものである。フレイド＝ミッチェルの定理は、その抜き取りが「情報を失っていない」こと――有限の図式についての完全性の問題に関する限り、元を使って考えてよいこと――を保証する。比喩で言えば、地図（アーベル圏）だけを渡された旅行者に、「必要なら、この地図はどれも実在のある町（加群の圏）を正確に写したものだと思ってよい」と保証する証明書である。本サイトがメンバーによる図式追跡（\ref{ha:chasing-rules}）を別に用意したのは、この証明書を使わずに済ませる道である。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js"></script>
+<script src="../../../vendor/marked.min.js"></script>
+<script src="../../../config.js"></script>
+<script src="../../../site-core.js"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js"></script>
+<script src="../../../site.js"></script>
+</body>
+</html>

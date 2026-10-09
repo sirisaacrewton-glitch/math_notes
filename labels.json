@@ -10305,6 +10305,13 @@
       "num": "5.2",
       "page": "18-category-theory/18G-homological-algebra/02-derived-functors/05-extensions.html"
     },
+    "ha:faithful-exact-reflects": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "忠実な完全関手の反映",
+      "num": "5.3",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/05-freyd-mitchell.html"
+    },
     "ha:five-lemma": {
       "status": "defined",
       "type": "theorem",
@@ -10325,6 +10332,20 @@
       "title": "平坦性と Tor",
       "num": "6.10",
       "page": "18-category-theory/18G-homological-algebra/02-derived-functors/06-tensor-tor.html"
+    },
+    "ha:freyd-mitchell": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "フレイド＝ミッチェルの埋め込み定理",
+      "num": "5.1",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/05-freyd-mitchell.html"
+    },
+    "ha:freyd-mitchell-transfer": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "図式の補題の移行",
+      "num": "5.4",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/05-freyd-mitchell.html"
     },
     "ha:general-snake": {
       "status": "defined",
@@ -10522,6 +10543,13 @@
       "num": "",
       "page": "18-category-theory/18G-homological-algebra/02-derived-functors/05-extensions.html"
     },
+    "ha:page-freyd-mitchell": {
+      "status": "defined",
+      "type": "page",
+      "title": "フレイド＝ミッチェルの埋め込み定理",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/05-freyd-mitchell.html"
+    },
     "ha:page-injective-modules": {
       "status": "defined",
       "type": "page",
@@ -10703,6 +10731,20 @@
       "title": "",
       "num": "5.9",
       "page": "18-category-theory/18G-homological-algebra/02-derived-functors/05-extensions.html"
+    },
+    "ha:prob-fm-forgetful": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "5.6",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/05-freyd-mitchell.html"
+    },
+    "ha:prob-fm-not-faithful": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "5.7",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/05-freyd-mitchell.html"
     },
     "ha:prob-in-cogenerator": {
       "status": "defined",
@@ -11145,6 +11187,55 @@
       "num": "",
       "page": "18-category-theory/18G-homological-algebra/02-derived-functors/05-extensions.html"
     },
+    "ha:sec-fm-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/05-freyd-mitchell.html"
+    },
+    "ha:sec-fm-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/05-freyd-mitchell.html"
+    },
+    "ha:sec-fm-reflect": {
+      "status": "defined",
+      "type": "section",
+      "title": "忠実な完全関手は完全性を反映する",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/05-freyd-mitchell.html"
+    },
+    "ha:sec-fm-small": {
+      "status": "defined",
+      "type": "section",
+      "title": "小さいアーベル部分圏",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/05-freyd-mitchell.html"
+    },
+    "ha:sec-fm-statement": {
+      "status": "defined",
+      "type": "section",
+      "title": "定理の主張",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/05-freyd-mitchell.html"
+    },
+    "ha:sec-fm-transfer": {
+      "status": "defined",
+      "type": "section",
+      "title": "移行原理",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/05-freyd-mitchell.html"
+    },
+    "ha:sec-fm-yoneda": {
+      "status": "defined",
+      "type": "section",
+      "title": "米田埋め込みでは足りないこと",
+      "num": "",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/05-freyd-mitchell.html"
+    },
     "ha:sec-in-baer": {
       "status": "defined",
       "type": "section",
@@ -11313,6 +11404,13 @@
       "num": "2.7",
       "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/02-abelian.html"
     },
+    "ha:small-abelian-subcategory": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "小さいアーベル部分圏",
+      "num": "5.2",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/05-freyd-mitchell.html"
+    },
     "ha:snake-lemma": {
       "status": "defined",
       "type": "theorem",
@@ -11382,6 +11480,13 @@
       "title": "整数上の Tor",
       "num": "6.8",
       "page": "18-category-theory/18G-homological-algebra/02-derived-functors/06-tensor-tor.html"
+    },
+    "ha:yoneda-not-exact": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "米田埋め込みは左完全だが完全でない",
+      "num": "5.5",
+      "page": "18-category-theory/18G-homological-algebra/01-abelian-categories/05-freyd-mitchell.html"
     },
     "logic:abbreviation-semantics": {
       "status": "defined",

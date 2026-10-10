@@ -483,6 +483,18 @@ function homeTitle() {
   return CONFIG.SITE_TITLE + (CONFIG.SITE_SUBTITLE ? '（' + CONFIG.SITE_SUBTITLE + '）' : '');
 }
 
+// CSS・JS の URL に中身から作った版番号（?v=…）を付ける。中身が変わると URL が変わるので、
+// ブラウザや GitHub Pages のキャッシュに古いファイルが残っていても、更新がすぐ反映される。
+// site-index.js は毎回のビルドで中身（built の時刻）が変わるので付けない（付けると全ページが毎回変わる）。
+var VER_CACHE = {};
+function asset(r, rel) {
+  if (!(rel in VER_CACHE)) {
+    try { VER_CACHE[rel] = require('crypto').createHash('md5').update(fs.readFileSync(path.join(ROOT, rel))).digest('hex').slice(0, 8); }
+    catch (e) { VER_CACHE[rel] = ''; }
+  }
+  return r + rel + (VER_CACHE[rel] ? '?v=' + VER_CACHE[rel] : '');
+}
+
 function pageHtml(opts) {
   var r = opts.root;
   return '<!DOCTYPE html>\n<html lang="ja">\n<head>\n<meta charset="utf-8">\n' +
@@ -492,20 +504,20 @@ function pageHtml(opts) {
     '<link rel="icon" href="' + r + 'assets/favicon-32.png" sizes="32x32" type="image/png">\n' +
     '<link rel="icon" href="' + r + 'assets/favicon.svg" type="image/svg+xml">\n' +
     '<link rel="apple-touch-icon" href="' + r + 'assets/apple-touch-icon.png">\n' +
-    '<link rel="stylesheet" href="' + r + 'vendor/katex/katex.min.css">\n' +
-    '<link rel="stylesheet" href="' + r + 'style.css">\n' +
+    '<link rel="stylesheet" href="' + asset(r, 'vendor/katex/katex.min.css') + '">\n' +
+    '<link rel="stylesheet" href="' + asset(r, 'style.css') + '">\n' +
     '<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>\n' +
     '</head>\n<body data-root="' + r + '" data-page="' + Core.escapeHtml(opts.path) + '" data-kind="' + opts.kind + '">\n' +
     '<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->\n' +
     '<script type="text/markdown" id="source">\n' + opts.src.replace(/\s+$/, '') + '\n</script>\n' +
     '<noscript>このサイトの表示には JavaScript が必要です。</noscript>\n' +
-    '<script src="' + r + 'vendor/katex/katex.min.js"></script>\n' +
-    '<script src="' + r + 'vendor/marked.min.js"></script>\n' +
-    '<script src="' + r + 'config.js"></script>\n' +
-    '<script src="' + r + 'site-core.js"></script>\n' +
+    '<script src="' + asset(r, 'vendor/katex/katex.min.js') + '"></script>\n' +
+    '<script src="' + asset(r, 'vendor/marked.min.js') + '"></script>\n' +
+    '<script src="' + asset(r, 'config.js') + '"></script>\n' +
+    '<script src="' + asset(r, 'site-core.js') + '"></script>\n' +
     '<script src="' + r + 'site-index.js"></script>\n' +
-    '<script src="' + r + 'search.js"></script>\n' +
-    '<script src="' + r + 'site.js"></script>\n' +
+    '<script src="' + asset(r, 'search.js') + '"></script>\n' +
+    '<script src="' + asset(r, 'site.js') + '"></script>\n' +
     '</body>\n</html>\n';
 }
 

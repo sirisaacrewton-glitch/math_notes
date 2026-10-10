@@ -415,4 +415,5 @@
 - `.gitignore`：`.DS_Store`, `_to_delete/`, `_upload/`, `Claude outputs/`, `*.pdf`, `_text/`, `_claude/_archive/`。`.nojekyll` は `_meta.json` など `_` で始まるファイルを Pages が無視しないため。
 - **`summa-mathematica` に入れないもの**：本の PDF とテキスト（著作物）、コンピュータ上のパス、大学のメールアドレス。資料表の PDF の場所は「（非公開）」と書く。
 - 生成物（index.html, labels.json, site-index.js, search-index.js など）も commit する（Pages はビルドしないため）。
+- **style.css や *.js を直したら、必ず `node tools/build.js` をしてから commit する**。各ページの `<link>`・`<script>` の URL に中身のハッシュ（`?v=…`）が付くので、ビルドしないと古いハッシュのままになり、閲覧者のブラウザに古いファイルが残る（2026-10-10 に影の変更が反映されないように見えた原因）。
 - 初回 push の経緯：Cowork ではコンピュータ側で git が使えず（接続フォルダでは削除が禁止）、クラウド側にもリポジトリを接続できなかったため、bundle を作ってユーザーの Mac から push した。

@@ -438,7 +438,7 @@
     if (entriesState === 1) return;
     entriesState = 1;
     var sc = document.createElement('script');
-    sc.src = root() + 'search-index.js';
+    sc.src = root() + 'search-index.js' + (IDX.built ? '?v=' + encodeURIComponent(IDX.built) : '');   // 索引を作り直したら URL が変わる（古いキャッシュを使わない）
     sc.onload = function () {
       var M = window.MATH_INDEX || {};
       IDX.entries = M.entries || [];

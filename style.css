@@ -415,12 +415,23 @@ mark.mn-hl.is-fading, .katex.mn-hl-math.is-fading { background: transparent; box
 .mn-footer { max-width: var(--mn-measure); margin: 48px auto 0; padding-top: 16px; border-top: 1px solid var(--mn-line); font-size: 12px; color: var(--mn-fg-faint); }
 
 /* ============ 分野の概要ページ ============ */
-.mn-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); gap: 12px; margin: 12px 0 24px; }
-.mn-card { display: flex; flex-direction: column; gap: 2px; padding: 14px 16px; border: 1px solid var(--mn-line); border-radius: 10px; background: var(--mn-bg-elev); color: var(--mn-fg) !important; }
-.mn-card:hover { border-color: var(--mn-accent); text-decoration: none !important; }
+/* 分野のカード：枠線の代わりに柔らかい影。マウスを乗せると少し浮く */
+.mn-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); gap: 16px; margin: 14px 0 28px; }
+.mn-card { display: flex; flex-direction: column; gap: 2px; padding: 16px 18px 14px; border: 1px solid transparent; border-radius: 14px; background: var(--mn-bg-elev); color: var(--mn-fg) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .05), 0 6px 20px rgba(0, 0, 0, .06); transition: transform .25s var(--mn-ease), box-shadow .25s var(--mn-ease); }
+.mn-card:hover { transform: translateY(-3px); box-shadow: 0 2px 4px rgba(0, 0, 0, .06), 0 14px 34px rgba(0, 0, 0, .10); text-decoration: none !important; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .mn-card { box-shadow: 0 0 0 1px rgba(255, 255, 255, .06), 0 8px 24px rgba(0, 0, 0, .35); }
+  :root:not([data-theme="light"]) .mn-card:hover { box-shadow: 0 0 0 1px rgba(255, 255, 255, .10), 0 14px 34px rgba(0, 0, 0, .5); }
+}
+:root[data-theme="dark"] .mn-card { box-shadow: 0 0 0 1px rgba(255, 255, 255, .06), 0 8px 24px rgba(0, 0, 0, .35); }
+:root[data-theme="dark"] .mn-card:hover { box-shadow: 0 0 0 1px rgba(255, 255, 255, .10), 0 14px 34px rgba(0, 0, 0, .5); }
+@media (prefers-reduced-motion: reduce) { .mn-card, .mn-card:hover { transition: none; transform: none; } }
 .mn-card-title { font-weight: 700; font-size: 1.02em; }
 .mn-card-en { font-size: 12px; color: var(--mn-fg-faint); }
 .mn-card-desc { font-size: 13px; color: var(--mn-fg-soft); line-height: 1.6; margin-top: 4px; }
+/* 説明は、広い画面では全文、狭い画面（スマホ）では 4 行で切る */
+@media (max-width: 640px) { .mn-card-desc { display: -webkit-box; -webkit-line-clamp: 4; line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; } }
 .mn-card-count { font-size: 12px; color: var(--mn-accent); margin-top: auto; padding-top: 6px; }
 .mn-msc, .mn-empty { font-size: 13px; color: var(--mn-fg-faint); }
 .mn-prose .mn-dirtoc { list-style: none; padding-left: 0; }
@@ -604,4 +615,4 @@ button.mn-search-showmore:hover { background: var(--mn-accent-soft); }
 .mn-tok-kw { color: var(--mn-accent); font-weight: 600; }
 .mn-tok-com { color: var(--mn-fg-faint); font-style: italic; }
 .mn-tok-num { color: var(--mn-c-thm); }
-.mn-card-also { border-style: dashed; }
+.mn-card-also { border-style: dashed; border-color: var(--mn-line); }

@@ -10746,6 +10746,34 @@
       "num": "1.6",
       "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
     },
+    "grp:coprime-orders-trivial-intersection": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "",
+      "num": "3.9",
+      "page": "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
+    },
+    "grp:coset": {
+      "status": "defined",
+      "type": "definition",
+      "title": "剰余類",
+      "num": "3.1",
+      "page": "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
+    },
+    "grp:coset-partition": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "剰余類による分割",
+      "num": "3.2",
+      "page": "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
+    },
+    "grp:coset-size": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "剰余類の大きさ",
+      "num": "3.3",
+      "page": "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
+    },
     "grp:cyclic-group": {
       "status": "defined",
       "type": "definition",
@@ -10788,6 +10816,13 @@
       "num": "2.4",
       "page": "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html"
     },
+    "grp:euler-fermat": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "オイラーの定理とフェルマーの小定理",
+      "num": "3.12",
+      "page": "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
+    },
     "grp:finite-group-finite-order": {
       "status": "defined",
       "type": "corollary",
@@ -10801,6 +10836,13 @@
       "title": "最大公約数",
       "num": "2.2",
       "page": "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html"
+    },
+    "grp:gcd-residue": {
+      "status": "defined",
+      "type": "lemma",
+      "title": "余りと最大公約数",
+      "num": "3.10",
+      "page": "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
     },
     "grp:general-associativity": {
       "status": "defined",
@@ -10837,12 +10879,40 @@
       "num": "1.4",
       "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
     },
+    "grp:index": {
+      "status": "defined",
+      "type": "definition",
+      "title": "指数",
+      "num": "3.4",
+      "page": "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
+    },
+    "grp:index-tower": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "指数の積公式",
+      "num": "3.7",
+      "page": "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
+    },
     "grp:integers-mod-n": {
       "status": "defined",
       "type": "proposition",
       "title": "剰余の加法の群",
       "num": "1.13",
       "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:lagrange": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "ラグランジュの定理",
+      "num": "3.5",
+      "page": "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
+    },
+    "grp:lagrange-corollaries": {
+      "status": "defined",
+      "type": "corollary",
+      "title": "ラグランジュの定理の系",
+      "num": "3.6",
+      "page": "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
     },
     "grp:order-cyclic-subgroup": {
       "status": "defined",
@@ -10864,6 +10934,13 @@
       "title": "冪の位数",
       "num": "2.8",
       "page": "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html"
+    },
+    "grp:page-cosets-lagrange": {
+      "status": "defined",
+      "type": "page",
+      "title": "剰余類とラグランジュの定理",
+      "num": "",
+      "page": "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
     },
     "grp:page-groups-subgroups": {
       "status": "defined",
@@ -10914,6 +10991,20 @@
       "num": "1.28",
       "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
     },
+    "grp:prob-index-two": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "3.13",
+      "page": "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
+    },
+    "grp:prob-n-divides-phi": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "3.15",
+      "page": "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
+    },
     "grp:prob-one-sided-axioms": {
       "status": "defined",
       "type": "problem",
@@ -10935,6 +11026,13 @@
       "num": "2.11",
       "page": "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html"
     },
+    "grp:prob-poincare-index": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "3.14",
+      "page": "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
+    },
     "grp:prob-union-subgroups": {
       "status": "defined",
       "type": "problem",
@@ -10942,12 +11040,54 @@
       "num": "1.27",
       "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
     },
+    "grp:product-formula": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "積集合の位数",
+      "num": "3.8",
+      "page": "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
+    },
     "grp:quaternion-group": {
       "status": "defined",
       "type": "proposition",
       "title": "四元数群",
       "num": "1.19",
       "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:sec-cl-cosets": {
+      "status": "defined",
+      "type": "section",
+      "title": "剰余類",
+      "num": "",
+      "page": "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
+    },
+    "grp:sec-cl-euler": {
+      "status": "defined",
+      "type": "section",
+      "title": "オイラーの定理とフェルマーの小定理",
+      "num": "",
+      "page": "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
+    },
+    "grp:sec-cl-index": {
+      "status": "defined",
+      "type": "section",
+      "title": "指数とラグランジュの定理",
+      "num": "",
+      "page": "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
+    },
+    "grp:sec-cl-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
+    },
+    "grp:sec-cl-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
     },
     "grp:sec-gs-assoc": {
       "status": "defined",
@@ -11095,6 +11235,13 @@
       "title": "対称群",
       "num": "1.14",
       "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:units-mod-n": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "既約剰余類の群",
+      "num": "3.11",
+      "page": "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
     },
     "ha:abelian-category": {
       "status": "defined",
@@ -41589,11 +41736,11 @@
         "03-mathematical-logic/03C-model-theory/01-elementary-extensions/04-acf.html"
       ]
     },
-    "grp:lagrange": {
+    "grp:page-group-actions": {
       "status": "planned",
-      "title": "ラグランジュの定理",
+      "title": "群の作用",
       "referencedFrom": [
-        "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html"
+        "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
       ]
     },
     "grp:page-homomorphism-theorems": {
@@ -41607,14 +41754,23 @@
       "status": "planned",
       "title": "正規部分群と剰余群",
       "referencedFrom": [
-        "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+        "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html",
+        "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
       ]
     },
     "grp:page-sign-alternating": {
       "status": "planned",
       "title": "置換の符号と交代群",
       "referencedFrom": [
-        "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html"
+        "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html",
+        "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
+      ]
+    },
+    "grp:page-sylow": {
+      "status": "planned",
+      "title": "シローの定理",
+      "referencedFrom": [
+        "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
       ]
     },
     "grp:page-symmetric-groups": {

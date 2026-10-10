@@ -469,3 +469,5 @@
 | group / identity element / inverse / associative law / abelian group / order of a group / semigroup / monoid / generalized associativity | 群 / 単位元 / 逆元 / 結合法則 / 可換群（アーベル群） / 位数 / 半群 / モノイド / 一般結合法則 | 可換群＝アーベル群・加群 | 標準的（雪江）。一般結合法則は仮。grp:page-groups-subgroups |
 | subgroup / generated subgroup / cyclic group / symmetric group / permutation / dihedral group / quaternion group / Klein four-group / general linear group / special linear group | 部分群 / 生成された部分群 / 巡回群 / 対称群 / 置換 / 二面体群 / 四元数群 / クラインの四元群 / 一般線形群 / 特殊線形群 | 四元群 | 標準的（雪江）。grp:page-groups-subgroups |
 | order of an element / greatest common divisor / coprime / Bezout's identity / Euclid's lemma / division algorithm | 元の位数 / 最大公約数 / 互いに素 / ベズーの等式 / ユークリッドの補題 / 除法の原理 | | 標準的。grp:page-order-cyclic |
+| coset (left / right) / index / complete system of representatives / Lagrange's theorem | 剰余類（左剰余類・右剰余類）/ 指数 / 完全代表系 / ラグランジュの定理 | 傍系（古い訳） | 雪江。記号は (G:H)（[G:H] も併記）。grp:page-cosets-lagrange |
+| group of units mod n / Euler's totient function / Fermat's little theorem | 既約剰余類群 (ℤ/nℤ)^× / オイラー関数 φ / フェルマーの小定理 | | 雪江（オイラー関数 11 回）。grp:units-mod-n |

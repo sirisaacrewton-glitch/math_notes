@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>剰余類とラグランジュの定理 | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css?v=a4b0d354">
+<link rel="stylesheet" href="../../../style.css?v=68bc478e">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 剰余類とラグランジュの定理 {#grp:page-cosets-lagrange keywords="cosets, left coset, right coset, index of a subgroup, Lagrange's theorem, product formula, Euler's theorem, Fermat's little theorem, group of units modulo n"}
+
+群 $G$ の部分群 $H$ を一つ決めると、$G$ は $H$ を「平行移動」した集合 $gH$（**剰余類**）に重なりなく分割される（\ref{grp:coset-partition}）。剰余類はどれも $H$ と同じ個数の元をもつので、有限群では $\abs{G}$ が $\abs{H}$ と剰余類の個数（**指数**）の積になる。これが**ラグランジュの定理**（\ref{grp:lagrange}）で、部分群の位数や元の位数が群の位数を割り切ることを導く。このページではさらに、指数の積公式（\ref{grp:index-tower}）と二つの部分群の積集合の位数（\ref{grp:product-formula}）を示し、応用として $n$ と互いに素な余りのなす群 $(\Z/n\Z)^{\times}$ を作って、オイラーの定理とフェルマーの小定理（\ref{grp:euler-fermat}）を証明する。
+
+> 雪江明彦『代数学 1 群論入門』第 2 章 §2.6 の流れを参考にした。$(\Z/n\Z)^{\times}$ は環の言葉を使わず、余りの乗法で直接作った。
+
+## 記法と定義の確認 {#grp:sec-cl-notation}
+
+::: notation
+- 群・可換群・位数は \ref{grp:group}, \ref{grp:abelian-group}、簡約法則などの基本性質は \ref{grp:group-basic}、冪と指数法則は \ref{grp:power}, \ref{grp:power-laws}。部分群 $H\le G$ とその判定は \ref{grp:subgroup}, \ref{grp:subgroup-criterion}、巡回部分群 $\ang{a}$ は \ref{grp:cyclic-group}、元の位数 $\ord(a)$ は \ref{grp:element-order}、$\abs{\ang{a}}=\ord(a)$ は \ref{grp:order-cyclic-subgroup}。
+- 余り $r_{n}(x)$ と除法の原理は \ref{grp:division}、$\Z/n\Z=\{0,\dots,n-1\}$ は \ref{grp:integers-mod-n}、最大公約数とベズーの等式は \ref{grp:gcd}, \ref{grp:bezout-euclid}。二面体群 $D_{n}$ は \ref{grp:dihedral-group}, \ref{grp:dihedral-order}。
+- $x,y\in\Z$, $n\ge 1$ について、$n\mid x-y$ のとき $x\equiv y\pmod{n}$ と書き、$x$ と $y$ は $n$ を**法として合同**であるという。\ref{grp:division} より、これは $r_{n}(x)=r_{n}(y)$ と同値である。
+- 整数 $p\ge 2$ で、正の約数が $1$ と $p$ だけのものを**素数**という。
+- $\abs{X}$ は集合 $X$ の元の個数（無限集合ならその濃度）。$\ZFC$ の中で議論し、選択公理を使うのは無限群の場合を扱う補足（\ref{grp:sec-cl-index}）だけである。
+:::
+
+## 剰余類 {#grp:sec-cl-cosets}
+
+::: definition 剰余類 {#grp:coset keywords="left coset, right coset, coset space" index="剰余類|じょうよるい, 左剰余類|ひだりじょうよるい, 右剰余類|みぎじょうよるい"}
+$G$ を群、$H\le G$、$g\in G$ とする。
+$$
+gH\defeq\{gh : h\in H\},\qquad Hg\defeq\{hg : h\in H\}
+$$
+をそれぞれ $g$ の $H$ による**左剰余類**、**右剰余類**という。左剰余類全体の集合を $G/H$、右剰余類全体の集合を $H\backslash G$ と書く。加法的記法では左剰余類を $g+H$ と書く。
+:::
+
+::: intuition
+$gH$ は $H$ を左から $g$ で「平行移動」した集合である。$H$ 自身も $H=eH$ という剰余類の一つで、$H$ 以外の剰余類は部分群ではない（単位元を含まない。\ref{grp:coset-partition} の 2 と 3 による）。「左」は $g$ が左に付くことを指す。
+:::
+
+::: example
+1. $G=\Z$, $H=n\Z$（$n\ge 1$）。$a+n\Z=\{a+nk : k\in\Z\}$ は $n$ で割った余りが $a$ と同じ整数全体で、$\Z/n\Z$ の元 $0,1,\dots,n-1$ と一対一に対応する（\ref{grp:integers-mod-n} の記号の由来）。
+2. $G=D_{3}=\{e,r,r^{2},s,rs,r^{2}s\}$, $H=\{e,s\}$。$srs=r^{-1}$ の両辺に右から $s$ を掛けると $sr=r^{-1}s=r^{2}s$（$s^{2}=e$, $r^{3}=e$ による）。よって
+$$
+rH=\{r,\ rs\},\qquad Hr=\{r,\ sr\}=\{r,\ r^{2}s\}.
+$$
+\ref{grp:dihedral-order} より $rs\neq r^{2}s$ なので $rH\neq Hr$：左剰余類と右剰余類は一般には異なる。$G$ が可換群なら $gH=Hg$ である。
+:::
+
+::: proposition 剰余類による分割 {#grp:coset-partition keywords="cosets partition the group, equivalence relation of cosets" index="剰余類による分割|じょうよるいによるぶんかつ"}
+$G$ を群、$H\le G$ とする。$G$ 上の関係 $x\sim y$ を $x^{-1}y\in H$ で定める。
+1. $\sim$ は同値関係で、$x$ の同値類は $xH$ である。
+2. $x,y\in G$ について、次は同値：(a) $xH=yH$、(b) $x^{-1}y\in H$、(c) $y\in xH$、(d) $xH\cap yH\neq\emptyset$。
+3. $G$ は左剰余類の和集合であり、相異なる左剰余類は交わらない。
+4. 右剰余類についても、$x^{-1}y$ を $yx^{-1}$ に、$xH$ を $Hx$ に替えて同じことが成り立つ。
+:::
+
+::: proof
+**Step 1（同値関係）.** 反射律：$x^{-1}x=e\in H$。対称律：$x^{-1}y\in H$ なら、部分群は逆元で閉じるので $(x^{-1}y)^{-1}=y^{-1}x\in H$（\ref{grp:group-basic} の 2）。推移律：$x^{-1}y\in H$, $y^{-1}z\in H$ なら、積で閉じるので $x^{-1}z=(x^{-1}y)(y^{-1}z)\in H$。
+
+**Step 2（同値類は $xH$）.** $y\sim x$ の同値類 $[x]\defeq\{y : x\sim y\}$ を考える。$x\sim y$ なら $h\defeq x^{-1}y\in H$ で $y=xh\in xH$。逆に $y=xh$（$h\in H$）なら $x^{-1}y=h\in H$。よって $[x]=xH$。
+
+**Step 3（2 の同値性）.** (a)⇒(d)：$x=xe\in xH=yH$ なので交わりは空でない。(d)⇒(b)：$z\in xH\cap yH$ なら Step 2 より $x\sim z$, $y\sim z$、対称律・推移律から $x\sim y$、すなわち $x^{-1}y\in H$。(b)⇒(c)：Step 2。(c)⇒(a)：$y\in xH=[x]$ なら $x\sim y$。同値関係の同値類について、$x\sim y$ なら $[x]=[y]$（推移律と対称律による）なので $xH=yH$。
+
+**Step 4（3）.** $x\in xH$ なので $G=\bigcup_{x\in G}xH$。2 の (d)⇒(a) より、交わる左剰余類は等しい。
+
+**Step 5（4）.** $x\sim' y\iff yx^{-1}\in H$ について、Step 1〜4 の左右を入れ替えた議論がそのまま通る（例えば推移律は $zx^{-1}=(zy^{-1})(yx^{-1})$）。
+
+::: hypcheck
+- **$H$ が部分群**：Step 1 の反射律に $e\in H$、対称律に逆元で閉じること、推移律に積で閉じることを使った。$H$ が部分群でない部分集合だと、$\{gH\}$ は一般に分割にならない：$G=\Z$, $H=\{0,1\}$ なら $0+H=\{0,1\}$ と $1+H=\{1,2\}$ は交わるが等しくない。
+- **公理**：選択公理は使っていない。
+:::
+:::
+
+## 指数とラグランジュの定理 {#grp:sec-cl-index}
+
+::: proposition 剰余類の大きさ {#grp:coset-size keywords="all cosets have the same cardinality, left and right cosets are equinumerous"}
+$G$ を群、$H\le G$ とする。
+1. 任意の $g\in G$ について、$h\mapsto gh$ は $H$ から $gH$ への全単射、$h\mapsto hg$ は $H$ から $Hg$ への全単射である。特に $\abs{gH}=\abs{Hg}=\abs{H}$。
+2. $\alpha(gH)\defeq Hg^{-1}$ は $G/H$ から $H\backslash G$ への全単射として矛盾なく定まる。特に $\abs{G/H}=\abs{H\backslash G}$。
+:::
+
+::: proof
+**Step 1（1）.** $\lambda(h)\defeq gh$ の像は定義から $gH$ 全体なので全射。$gh=gh'$ なら簡約法則（\ref{grp:group-basic} の 3）で $h=h'$ なので単射。右剰余類も同様。
+
+**Step 2（2：矛盾なく定まる）.** $gH=g'H$ とすると、\ref{grp:coset-partition} の 2 より $g^{-1}g'\in H$。すると $g^{-1}(g'^{-1})^{-1}=g^{-1}g'\in H$ なので、右剰余類についての \ref{grp:coset-partition} の 4（$Hx=Hy\iff yx^{-1}\in H$ を $x=g^{-1}$, $y=g'^{-1}$ に使う）から $Hg^{-1}=Hg'^{-1}$。よって $\alpha$ は代表元の取り方によらない。
+
+**Step 3（2：全単射）.** 同じ議論で $\beta(Hg)\defeq g^{-1}H$ も $H\backslash G$ から $G/H$ への写像として矛盾なく定まり、$\beta(\alpha(gH))=\beta(Hg^{-1})=gH$, $\alpha(\beta(Hg))=Hg$。互いに逆写像なので全単射。
+
+::: hypcheck
+- **$g\mapsto g^{-1}$ を使う理由**：$gH\mapsto Hg$ は一般には矛盾なく定まらない。上の例の $D_{3}$, $H=\{e,s\}$ では $rH=rsH$ だが $Hr=\{r,r^{2}s\}$ と $H(rs)=\{rs,\ srs\}=\{rs,\ r^{2}\}$ は異なる。
+:::
+:::
+
+::: definition 指数 {#grp:index keywords="index of a subgroup, finite index" index="指数|しすう, 部分群の指数|ぶぶんぐんのしすう"}
+$H\le G$ のとき、$G/H$ の元の個数（\ref{grp:coset-size} より $H\backslash G$ の元の個数と等しい）を $H$ の $G$ における**指数**といい $(G:H)$ と書く（$[G:H]$ と書く本も多い）。$G/H$ が無限集合のときは $(G:H)=\infty$ と書く。
+:::
+
+::: example
+$(\Z:n\Z)=n$（$n\ge 1$）：$a+n\Z$（$0\le a\le n-1$）が相異なる剰余類のすべてである（\ref{grp:division}）。$(\Z:\{0\})=\infty$。$(D_{3}:\{e,s\})=3$。
+:::
+
+::: theorem ラグランジュの定理 {#grp:lagrange keywords="Lagrange's theorem, order of subgroup divides order of group" index="ラグランジュの定理|らぐらんじゅのていり"}
+$G$ を有限群、$H\le G$ とすると
+$$
+\abs{G}=(G:H)\,\abs{H}.
+$$
+特に、部分群の位数と指数はどちらも $\abs{G}$ の約数である。
+:::
+
+::: intuition
+$G$ を大きさ $\abs{H}$ の箱（剰余類）に重なりなく詰めると、箱の数は $(G:H)$ で、元の総数は（箱の数）×（箱の大きさ）になる。箱の大きさがすべて等しいこと（\ref{grp:coset-size}）が要点である。
+:::
+
+::: proof
+**Step 1（剰余類は有限個）.** $G$ は有限なので、その部分集合の集合 $G/H$ も有限である。$k\defeq(G:H)$ とし、$G/H=\{C_{1},\dots,C_{k}\}$（$C_{i}$ は相異なる）と番号を付ける。
+
+**Step 2（分割）.** \ref{grp:coset-partition} の 3 より $G=C_{1}\cup\cdots\cup C_{k}$ で、$i\neq j$ なら $C_{i}\cap C_{j}=\emptyset$。互いに交わらない有限集合の和集合の元の個数は個数の和なので $\abs{G}=\abs{C_{1}}+\cdots+\abs{C_{k}}$。
+
+**Step 3（大きさは等しい）.** 各 $C_{i}$ は左剰余類なので、\ref{grp:coset-size} の 1 より $\abs{C_{i}}=\abs{H}$。よって $\abs{G}=k\abs{H}=(G:H)\abs{H}$。
+
+::: hypcheck
+- **$G$ が有限**：Step 1 と Step 2 の個数の計算に使った。無限群でも、選択公理を使えば濃度の等式として成り立つ（下の補足）。
+- **$H$ が部分群**：Step 2 の分割（\ref{grp:coset-partition}）と Step 3 の $\abs{C_{i}}=\abs{H}$ に使った。
+- **公理**：Step 1 の番号付けは有限集合の列挙で、選択公理は要らない（各 $C_{i}$ から元を選ぶ必要もない）。
+:::
+:::
+
+::: corollary ラグランジュの定理の系 {#grp:lagrange-corollaries keywords="order of an element divides the order of the group, a^|G| = e, groups of prime order are cyclic" index="素数位数の群|そすういすうのぐん"}
+$G$ を有限群とする。
+1. 任意の $g\in G$ について $\ord(g)$ は $\abs{G}$ の約数であり、$g^{\abs{G}}=e$。
+2. $\abs{G}=p$ が素数なら、$G$ は巡回群で、単位元以外のどの元も $G$ を生成する。
+:::
+
+::: proof
+**Step 1（1）.** \ref{grp:order-cyclic-subgroup} より $\ord(g)=\abs{\ang{g}}$ で、\ref{grp:lagrange} より $\abs{G}=(G:\ang{g})\ord(g)$。$m\defeq(G:\ang{g})$ とおくと、指数法則（\ref{grp:power-laws}）から $g^{\abs{G}}=(g^{\ord(g)})^{m}=e^{m}=e$。
+
+**Step 2（2）.** $g\neq e$ とする。$\abs{\ang{g}}$ は $p$ の正の約数なので $1$ か $p$ で、$g\in\ang{g}$ かつ $g\neq e$ から $\abs{\ang{g}}\ge 2$、よって $\abs{\ang{g}}=p=\abs{G}$。$\ang{g}\subseteq G$ で元の個数が等しい有限集合なので $\ang{g}=G$。$p\ge 2$ なので $g\neq e$ となる $g$ は存在し、$G$ は巡回群である。
+:::
+
+::: supplement
+**無限群の場合.** $G$ が無限群でも、選択公理を使うと濃度の等式 $\abs{G}=(G:H)\cdot\abs{H}$（右辺は基数の積。\ref{set:cardinal-sum-product}）が成り立つ。各左剰余類から元を一つずつ選んだ集合 $T$（**完全代表系**）をとると、$(t,h)\mapsto th$ が $T\times H$ から $G$ への全単射になるからである（単射性は \ref{grp:coset-partition} の 2、全射性は 3 による）。選ぶ操作に選択公理を使う。ただし $\Z$ と $n\Z$ のように、具体的な代表系（$0,\dots,n-1$）が書ける場合には要らない。
+
+**逆は成り立たない.** $\abs{G}$ の約数 $d$ に対して位数 $d$ の部分群があるとは限らない。交代群 $A_{4}$（位数 $12$）は位数 $6$ の部分群をもたない（\ref[置換の符号と交代群]{grp:page-sign-alternating} で扱う予定）。巡回群では各約数ごとにちょうど一つある（\ref{grp:subgroups-cyclic}）。素数冪の約数についてはシローの定理が存在を保証する（\ref[シローの定理]{grp:page-sylow}）。
+
+**高い視点.** $G$ は $G/H$ に左から $g\cdot xH\defeq gxH$ で作用し、$H$ はこの作用で点 $eH$ を動かさない元全体である。ラグランジュの定理は、作用の「軌道の大きさ × 固定部分群の位数 ＝ 群の位数」という軌道–固定部分群定理（\ref[群の作用]{grp:page-group-actions}）の、軌道が一つしかない場合にあたる。
+:::
+
+::: proposition 指数の積公式 {#grp:index-tower keywords="tower law for indices, multiplicativity of index" index="指数の積公式|しすうのせきこうしき"}
+$K\le H\le G$ で $(G:H)$, $(H:K)$ がともに有限なら、$(G:K)$ も有限で
+$$
+(G:K)=(G:H)\,(H:K).
+$$
+$G$ は無限群でもよい。
+:::
+
+::: proof
+$m\defeq(G:H)$, $n\defeq(H:K)$ とおく。
+
+**Step 1（代表元をとる）.** $G/H$ の $m$ 個の元それぞれから元を一つずつ選び $g_{1},\dots,g_{m}$ とする：$G/H=\{g_{1}H,\dots,g_{m}H\}$ で、これらは相異なる。同様に $H/K=\{h_{1}K,\dots,h_{n}K\}$（$h_{j}\in H$、相異なる）。有限個の空でない集合から一つずつ選ぶだけなので、選択公理は要らない。
+
+**Step 2（覆う）.** $x\in G$ とする。\ref{grp:coset-partition} の 3 より $x\in g_{i}H$ となる $i$ があり、$x=g_{i}h$（$h\in H$）。同様に $h\in h_{j}K$ となる $j$ があり $h=h_{j}k$（$k\in K$）。よって $x=g_{i}h_{j}k\in g_{i}h_{j}K$。
+
+**Step 3（相異なる）.** $g_{i}h_{j}K=g_{i'}h_{j'}K$ とする。$K\subseteq H$ なので $g_{i}h_{j}K\subseteq g_{i}H$（$h_{j}k\in H$）、同様に $g_{i'}h_{j'}K\subseteq g_{i'}H$。等しい集合を含むので $g_{i}H\cap g_{i'}H\neq\emptyset$、\ref{grp:coset-partition} の 2 より $g_{i}H=g_{i'}H$、番号の付け方から $i=i'$。すると $g_{i}h_{j}K=g_{i}h_{j'}K$ の各元に左から $g_{i}^{-1}$ を掛けて $h_{j}K=h_{j'}K$、よって $j=j'$。
+
+**Step 4（結論）.** Step 2・3 より $G/K=\{g_{i}h_{j}K : 1\le i\le m,\ 1\le j\le n\}$ で、これらは相異なる。したがって $(G:K)=mn$。
+
+::: hypcheck
+- **指数が有限**：Step 1 で代表元を有限個選ぶのに使った。無限の場合も選択公理のもとで基数の積として成り立つが、ここでは扱わない。
+- **$K\le H$**：Step 3 の $g_{i}h_{j}K\subseteq g_{i}H$ に使った。
+- $G$ の有限性は使っていない。$G$ が有限なら \ref{grp:lagrange} を三回使っても示せる：$\abs{G}/\abs{K}=(\abs{G}/\abs{H})(\abs{H}/\abs{K})$。
+:::
+:::
+
+::: proposition 積集合の位数 {#grp:product-formula keywords="product formula |HK| = |H||K|/|H ∩ K|, product of subgroups" index="積集合の位数|せきしゅうごうのいすう"}
+$G$ を群、$H,K$ を $G$ の有限部分群とし、$HK\defeq\{hk : h\in H,\ k\in K\}$ とおく。このとき
+$$
+\abs{HK}\cdot\abs{H\cap K}=\abs{H}\cdot\abs{K}.
+$$
+:::
+
+::: proof
+**Step 1（$HK$ は左剰余類の和）.** $HK=\bigcup_{h\in H}hK$ である（定義どおり）。各 $hK$ は $K$ の $G$ における左剰余類なので、\ref{grp:coset-partition} の 3 より、二つは等しいか交わらないかのどちらかで、\ref{grp:coset-size} より $\abs{hK}=\abs{K}$。よって $c$ を $\{hK : h\in H\}$ の元の個数とすると $\abs{HK}=c\abs{K}$。
+
+**Step 2（$c$ を数える）.** $L\defeq H\cap K$ とおくと $L\le H$（\ref{grp:subgroup-intersection}）。$h,h'\in H$ について
+$$
+hK=h'K\iff h^{-1}h'\in K\iff h^{-1}h'\in L\iff hL=h'L.
+$$
+一つめと三つめの同値は \ref{grp:coset-partition} の 2（三つめは群 $H$ とその部分群 $L$ に適用）、二つめは $h^{-1}h'\in H$ が常に成り立つことによる。よって $hK\mapsto hL$ は $\{hK : h\in H\}$ から $H/L$ への全単射として矛盾なく定まり、$c=(H:L)$。
+
+**Step 3（結論）.** $H$ は有限なので \ref{grp:lagrange} より $(H:L)\abs{L}=\abs{H}$。Step 1, 2 と合わせて $\abs{HK}\abs{L}=c\abs{K}\abs{L}=(H:L)\abs{L}\abs{K}=\abs{H}\abs{K}$。
+
+::: hypcheck
+- **$H,K$ が有限**：Step 1 の個数の計算と Step 3 のラグランジュの定理に使った。$G$ の有限性は要らない。
+- **$HK$ は部分群とは限らない**：証明では $HK$ が部分群であることを使っていない。実際、$D_{3}$ で $H=\{e,s\}$, $K=\{e,rs\}$ とすると $HK=\{e,\ rs,\ s,\ srs\}=\{e,rs,s,r^{2}\}$ は $4$ 元で、$4\nmid 6$ なので（ラグランジュの定理により）部分群でない。公式は $4\cdot 1=2\cdot 2$ と合っている。
+:::
+:::
+
+::: corollary {#grp:coprime-orders-trivial-intersection}
+$H,K$ が有限部分群で $\gcd(\abs{H},\abs{K})=1$ なら $H\cap K=\{e\}$ で、$\abs{HK}=\abs{H}\abs{K}$。
+:::
+
+::: proof
+$H\cap K$ は $H$ と $K$ の部分群（\ref{grp:subgroup-intersection}）なので、\ref{grp:lagrange} より $\abs{H\cap K}$ は $\abs{H}$ と $\abs{K}$ の公約数で、\ref{grp:bezout-euclid} の 2 より $\gcd(\abs{H},\abs{K})=1$ を割り切る。よって $\abs{H\cap K}=1$。後半は \ref{grp:product-formula}。
+:::
+
+## オイラーの定理とフェルマーの小定理 {#grp:sec-cl-euler}
+
+::: lemma 余りと最大公約数 {#grp:gcd-residue}
+$n\ge 1$, $x,a,b\in\Z$ とする。
+1. $\gcd(r_{n}(x),n)=\gcd(x,n)$。
+2. $\gcd(a,n)=\gcd(b,n)=1$ なら $\gcd(ab,n)=1$。
+:::
+
+::: proof
+**Step 1（1）.** $x=qn+r_{n}(x)$（\ref{grp:division}）なので、$xs+nt=r_{n}(x)s+n(qs+t)$、$r_{n}(x)s+nt=xs+n(t-qs)$。よって $x\Z+n\Z=r_{n}(x)\Z+n\Z$ で、\ref{grp:gcd} の定義（この部分群の非負の生成元）から最大公約数は等しい。
+
+**Step 2（2）.** ベズーの等式（\ref{grp:bezout-euclid} の 1）で $1=ax+ny$, $1=bu+nv$ と書くと
+$$
+1=(ax+ny)(bu+nv)=ab\,(xu)+n\,(axv+ybu+ynv).
+$$
+よって $1\in ab\Z+n\Z=\gcd(ab,n)\Z$、$\gcd(ab,n)\ge 0$ は $1$ を割り切るので $1$。
+:::
+
+::: proposition 既約剰余類の群 {#grp:units-mod-n keywords="group of units modulo n, multiplicative group of integers modulo n, reduced residue system, Euler's totient function" index="既約剰余類群|きやくじょうよるいぐん, オイラー関数|おいらーかんすう"}
+$n\ge 1$ とし、
+$$
+(\Z/n\Z)^{\times}\defeq\{a\in\{0,1,\dots,n-1\} : \gcd(a,n)=1\}
+$$
+に演算 $a\odot b\defeq r_{n}(ab)$ を入れると、単位元 $r_{n}(1)$ をもつ可換群になる。その位数を $\varphi(n)$ と書き、**オイラー関数**という。
+:::
+
+::: proof
+$r\defeq r_{n}$ と書く。
+
+**Step 1（演算が閉じている）.** $a,b\in(\Z/n\Z)^{\times}$ なら \ref{grp:gcd-residue} の 2 で $\gcd(ab,n)=1$、1 で $\gcd(r(ab),n)=1$。$0\le r(ab)\le n-1$ なので $a\odot b\in(\Z/n\Z)^{\times}$。
+
+**Step 2（結合法則）.** \ref{grp:division} より $n\mid ab-r(ab)$、よって $n\mid r(ab)c-abc$ なので $(a\odot b)\odot c=r(r(ab)c)=r(abc)$。同様に $a\odot(b\odot c)=r(a\,r(bc))=r(abc)$。
+
+**Step 3（単位元）.** $\gcd(r(1),n)=\gcd(1,n)=1$（\ref{grp:gcd-residue} の 1）なので $r(1)\in(\Z/n\Z)^{\times}$。$a\odot r(1)=r(a\,r(1))=r(a)=a$（Step 2 と同じく $n\mid a\,r(1)-a$、および $0\le a<n$）。可換性（Step 5）から $r(1)\odot a=a$。（$n\ge 2$ なら $r(1)=1$。$n=1$ なら $(\Z/1\Z)^{\times}=\{0\}$ は自明な群である。）
+
+**Step 4（逆元）.** $a\in(\Z/n\Z)^{\times}$ とする。ベズーの等式で $1=ax+ny$ と書き、$b\defeq r(x)$ とおく。$1\in x\Z+n\Z$ なので $\gcd(x,n)=1$、\ref{grp:gcd-residue} の 1 で $\gcd(b,n)=1$、よって $b\in(\Z/n\Z)^{\times}$。$n\mid ab-ax$ かつ $ax=1-ny$ なので $n\mid ab-1$、すなわち $a\odot b=r(ab)=r(1)$。
+
+**Step 5（可換性）.** $ab=ba$ から $a\odot b=b\odot a$。
+
+::: hypcheck
+- **$\gcd(a,n)=1$ に制限すること**：Step 1 と Step 4 に使った。$\{0,\dots,n-1\}$ 全体では、$n\ge 2$ のとき $0$ に逆元がない（$0\odot b=0\neq 1$）ので群にならない。$n$ が合成数なら $n=uv$（$1<u,v<n$）として $u\odot v=0$ で、$u$ にも逆元がない。
+- **公理**：選択公理は使っていない。
+:::
+:::
+
+::: example
+$(\Z/8\Z)^{\times}=\{1,3,5,7\}$, $\varphi(8)=4$。$3\odot 3=r_{8}(9)=1$, $5\odot 5=r_{8}(25)=1$, $7\odot 7=r_{8}(49)=1$ なので、単位元以外の元の位数はすべて $2$ で、この群は巡回群でない（クラインの四元群と同じ形）。$(\Z/5\Z)^{\times}=\{1,2,3,4\}$ では $2^{1},2^{2},2^{3},2^{4}$ の余りが $2,4,3,1$ なので、$2$ が生成する巡回群である。
+:::
+
+::: theorem オイラーの定理とフェルマーの小定理 {#grp:euler-fermat keywords="Euler's theorem, Fermat's little theorem, Euler-Fermat theorem" index="オイラーの定理|おいらーのていり, フェルマーの小定理|ふぇるまーのしょうていり"}
+1. （**オイラーの定理**）$n\ge 1$, $x\in\Z$, $\gcd(x,n)=1$ なら $x^{\varphi(n)}\equiv 1\pmod{n}$。
+2. （**フェルマーの小定理**）$p$ が素数で $p\nmid x$ なら $x^{p-1}\equiv 1\pmod{p}$。
+3. $p$ が素数なら、すべての $x\in\Z$ について $x^{p}\equiv x\pmod{p}$。
+:::
+
+::: proof
+**Step 1（群の中の冪）.** $G\defeq(\Z/n\Z)^{\times}$ とし、$a\in G$ の $G$ における $k$ 乗（$k\ge 0$）を $a^{\odot k}$ と書く。$a^{\odot k}=r_{n}(a^{k})$ を $k$ についての帰納法で示す。$k=0$ では両辺とも単位元 $r_{n}(1)$。$a^{\odot(k+1)}=a^{\odot k}\odot a=r_{n}\bigl(r_{n}(a^{k})\,a\bigr)=r_{n}(a^{k+1})$（\ref{grp:units-mod-n} の Step 2 と同じく \ref{grp:division} の後半による）。
+
+**Step 2（1）.** $a\defeq r_{n}(x)$ とおくと、\ref{grp:gcd-residue} の 1 より $\gcd(a,n)=1$ なので $a\in G$。\ref{grp:lagrange-corollaries} の 1 を $\abs{G}=\varphi(n)$ に使うと $a^{\odot\varphi(n)}=r_{n}(1)$、Step 1 から $r_{n}(a^{\varphi(n)})=r_{n}(1)$、すなわち $a^{\varphi(n)}\equiv 1\pmod{n}$。一方 $k\ge 1$ について
+$$
+x^{k}-a^{k}=(x-a)(x^{k-1}+x^{k-2}a+\cdots+a^{k-1})
+$$
+で $n\mid x-a$ なので $x^{k}\equiv a^{k}\pmod{n}$（$k=0$ でも両辺 $1$）。合わせて $x^{\varphi(n)}\equiv 1\pmod{n}$。
+
+**Step 3（2：$\varphi(p)=p-1$）.** $1\le a\le p-1$ とする。$g\defeq\gcd(a,p)$ は $p$ の正の約数なので $1$ か $p$。$g=p$ なら $p\mid a$ だが $0<a<p$ なので不可能。よって $g=1$。また $\gcd(0,p)=p\neq 1$。したがって $(\Z/p\Z)^{\times}=\{1,\dots,p-1\}$、$\varphi(p)=p-1$。
+
+**Step 4（2）.** $p\nmid x$ なら、$g=\gcd(x,p)$ は $1$ か $p$ で、$g=p$ なら $p\mid x$ となるので $g=1$。1 と Step 3 より $x^{p-1}\equiv 1\pmod{p}$。
+
+**Step 5（3）.** $p\mid x$ なら $x^{p}$ と $x$ はどちらも $p$ で割り切れるので合同。$p\nmid x$ なら 2 より $p\mid x^{p-1}-1$、よって $p\mid x(x^{p-1}-1)=x^{p}-x$。
+
+::: hypcheck
+- **$\gcd(x,n)=1$**（1）：Step 2 で $a\in G$ とするのに使った。外すと偽：$n=4$, $x=2$ では $\varphi(4)=2$ で $2^{2}=4\equiv 0\not\equiv 1\pmod 4$。
+- **$p$ が素数**（2, 3）：Step 3 で $\varphi(p)=p-1$ に使った。合成数では偽：$x^{n-1}\equiv 1\pmod n$ は $n=4$, $x=3$ で $3^{3}=27\equiv 3\pmod 4$。（ただし $561=3\cdot 11\cdot 17$ のように、$n$ と互いに素なすべての $x$ で $x^{n-1}\equiv 1\pmod n$ となる合成数（カーマイケル数）があることが知られている。）
+- **ラグランジュの定理**：Step 2 で、$G$ の元の位数が $\abs{G}$ を割り切ることとして使った。$G$ が巡回群であるかどうかは使っていない（上の例の $(\Z/8\Z)^{\times}$ は巡回群でない）。
+:::
+:::
+
+::: supplement
+**環の言葉で.** $(\Z/n\Z)^{\times}$ は、剰余環 $\Z/n\Z$ の乗法について可逆な元（単元）全体のなす群である。剰余環は環論の系列で扱う。
+
+**高い視点.** オイラーの定理は「有限群の元を群の位数乗すると単位元」（\ref{grp:lagrange-corollaries}）を、群 $(\Z/n\Z)^{\times}$ に当てはめたものにすぎない。整数論の主張が、群の大きさだけから従う。$(\Z/p\Z)^{\times}$ が巡回群であること（原始根の存在）は、より深い事実で、体論の系列で扱う。
+:::
+
+## 問題 {#grp:sec-cl-problems}
+
+::: problem {#grp:prob-index-two}
+$H\le G$ で $(G:H)=2$ なら、すべての $g\in G$ について $gH=Hg$ であることを示せ。
+:::
+
+::: solution
+$g\in H$ なら $gH=H=Hg$（$gh\in H$ かつ $h=g(g^{-1}h)$ から $gH=H$、右も同様）。$g\notin H$ とする。左剰余類は $H$ と $gH$ の二つで（$gH\neq H$ は \ref{grp:coset-partition} の 2 で $g\notin H$ から）、交わらず和が $G$ なので $gH=G\setminus H$。右剰余類も同様に $H$ と $Hg$ の二つで、$Hg=G\setminus H$。よって $gH=Hg$。（これは $H$ が正規部分群であることを意味する。\ref[正規部分群と剰余群]{grp:page-normal-quotient}）
+:::
+
+::: problem {#grp:prob-poincare-index}
+$H,K\le G$ で $(G:H)$, $(G:K)$ が有限なら、$(G:H\cap K)\le(G:H)(G:K)$ であることを示せ。
+:::
+
+::: solution
+$L\defeq H\cap K$ とし、$\Phi(gL)\defeq(gH,gK)$ と定める。$gL=g'L$ なら $g^{-1}g'\in L\subseteq H$ なので $gH=g'H$、同様に $gK=g'K$：$\Phi$ は $G/L$ から $G/H\times G/K$ への写像として矛盾なく定まる。$\Phi(gL)=\Phi(g'L)$ なら $g^{-1}g'\in H$ かつ $g^{-1}g'\in K$、すなわち $g^{-1}g'\in L$ で $gL=g'L$：$\Phi$ は単射。よって $(G:L)=\abs{G/L}\le\abs{G/H}\abs{G/K}=(G:H)(G:K)$。（すべて \ref{grp:coset-partition} の 2 による。）
+:::
+
+::: problem {#grp:prob-n-divides-phi}
+$a\ge 2$, $n\ge 1$ を整数とする。$n\mid\varphi(a^{n}-1)$ を示せ。
+:::
+
+::: solution
+$n=1$ なら $1\mid\varphi(a-1)$ で自明。$n\ge 2$ とし、$N\defeq a^{n}-1$ とおく。
+
+**Step 1（$a\in(\Z/N\Z)^{\times}$）.** $a\cdot a^{n-1}+N\cdot(-1)=1$ なので $1\in a\Z+N\Z$、$\gcd(a,N)=1$。また $N-a=a(a^{n-1}-1)-1\ge 2\cdot 1-1>0$ なので $0\le a\le N-1$。よって $a\in(\Z/N\Z)^{\times}$。
+
+**Step 2（$a$ の位数は $n$）.** \ref{grp:euler-fermat} の証明の Step 1 と同様に、$(\Z/N\Z)^{\times}$ での $k$ 乗は $r_{N}(a^{k})$ である。$1\le k\le n-1$ なら $2\le a^{k}\le a^{n-1}$ で、$N-a^{n-1}=a^{n-1}(a-1)-1\ge 1$ なので $a^{k}<N$。よって $r_{N}(a^{k})=a^{k}\neq 1$。一方 $a^{n}=N+1$ なので $r_{N}(a^{n})=1$。したがって $a$ の位数は $n$。
+
+**Step 3.** \ref{grp:lagrange-corollaries} の 1 より $n\mid\abs{(\Z/N\Z)^{\times}}=\varphi(N)$。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js?v=03dce885"></script>
+<script src="../../../vendor/marked.min.js?v=e04ae0bf"></script>
+<script src="../../../config.js?v=0cfb52e7"></script>
+<script src="../../../site-core.js?v=461c7786"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js?v=35df239d"></script>
+<script src="../../../site.js?v=bf1e7588"></script>
+</body>
+</html>

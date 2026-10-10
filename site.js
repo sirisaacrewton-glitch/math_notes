@@ -248,6 +248,8 @@
     var hero = KIND === 'home' ? [C.SITE_TITLE, C.SITE_SUBTITLE]
       : KIND === 'dir' ? (/^(.+?)（([^（）]+)）$/.exec(title) || [null, title, '']).slice(1) : null;
     el.innerHTML = '<header class="mn-page-head">' +
+      // トップページ：題名の上に完全版のメダル（assets/medal.svg）を大きく出す
+      (KIND === 'home' ? '<img class="mn-hero-medal" src="' + ROOT + 'assets/medal.svg" width="512" height="512" alt="Summa Mathematica のメダル" decoding="async">' : '') +
       (PG ? '<div class="mn-page-sec">' + esc(PG.subj) + ' §' + PG.sec + '</div>' : '') +
       (hero
         // トップページ・フォルダ概要ページ：題名と副題（日本語名・英語名）を 2 行に分けて飾る

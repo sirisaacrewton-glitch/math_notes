@@ -287,7 +287,7 @@
 ├── site.js / search.js   ← レイアウト（ナビ・目次・参照プレビュー）／サイト内検索
 ├── style.css             ← デザイン（下記）
 ├── vendor/               ← KaTeX, marked（オフライン動作）
-├── assets/               ← サイトのアイコン（墨と金のメダル。favicon.svg・favicon-32.png・apple-touch-icon.png）。build.js・labels.js は分野として扱わない
+├── assets/               ← サイトのアイコン（墨と金のメダル）。完全版 medal.svg（銘 SUMMA / MATHEMATICA・点線・内側の輪。トップページに表示）と保存用の medal-1024.png、簡約版 favicon.svg（金の縁と ∞ だけ。小さいと銘が潰れるため）・favicon-32.png、ホーム画面用 apple-touch-icon.png（完全版）。medal.svg は tools/medal.py で作る（文字は Cinzel〔SIL OFL〕の字形を輪郭にしたもの。フォントは @fontsource/cinzel の woff を引数で渡す）。build.js・labels.js は分野として扱わない
 ├── tools/build.js        ← ビルド＆検査
 ├── tools/labels.js       ← ラベル管理（status / find / planned / uses / rename / activate）
 ├── index.html, search.html, glossary.html, labels.json, site-index.js, search-index.js  ← 自動生成（手で編集しない）

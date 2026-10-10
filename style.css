@@ -86,17 +86,16 @@ html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-padding-to
 body { margin: 0; background: var(--mn-bg); color: var(--mn-fg); font-family: var(--mn-font); font-size: var(--mn-fs); line-height: var(--mn-lh); -webkit-font-smoothing: antialiased; }
 html.mn-lock, html.mn-lock body { overflow: hidden; }
 #source { display: none !important; }
-.mn-app, .mn-app *, .mn-app *::before, .mn-app *::after,
-.mn-search-modal, .mn-search-modal * { box-sizing: border-box; }
+.mn-app, .mn-app *, .mn-app *::before, .mn-app *::after { box-sizing: border-box; }
 .mn-app { min-height: 100vh; overflow-x: clip; padding-top: var(--mn-topbar-h); }
-.mn-app [hidden], .mn-search-modal[hidden], .mn-popover[hidden] { display: none !important; }
+.mn-app [hidden], .mn-popover[hidden] { display: none !important; }
 .mn-vh { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .mn-skip { position: absolute; left: -999px; top: 8px; z-index: calc(var(--mn-z-modal) + 1); background: var(--mn-bg-elev); padding: 6px 10px; border-radius: 6px; }
 .mn-skip:focus { left: 8px; }
-.mn-app a, .mn-search-modal a, .mn-popover a { color: var(--mn-accent); text-decoration: none; }
+.mn-app a, .mn-popover a { color: var(--mn-accent); text-decoration: none; }
 .mn-app a:hover { text-decoration: underline; }
-.mn-app :focus-visible, .mn-search-modal :focus-visible { outline: 2px solid var(--mn-accent); outline-offset: 2px; }
-.mn-app kbd, .mn-search-modal kbd { font-family: var(--mn-mono); font-size: .75em; border: 1px solid var(--mn-line); border-bottom-width: 2px; border-radius: 4px; padding: 0 .4em; background: var(--mn-bg-elev); color: var(--mn-fg-soft); }
+.mn-app :focus-visible { outline: 2px solid var(--mn-accent); outline-offset: 2px; }
+.mn-app kbd { font-family: var(--mn-mono); font-size: .75em; border: 1px solid var(--mn-line); border-bottom-width: 2px; border-radius: 4px; padding: 0 .4em; background: var(--mn-bg-elev); color: var(--mn-fg-soft); }
 .mn-iconbtn { flex: none; display: inline-grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 1px solid var(--mn-line); border-radius: 10px; background: var(--mn-bg-elev); color: var(--mn-fg-soft); font: inherit; font-size: 16px; line-height: 1; cursor: pointer; }
 .mn-iconbtn:hover { border-color: var(--mn-accent); color: var(--mn-fg); }
 
@@ -425,16 +424,17 @@ mark.mn-hl.is-fading, .katex.mn-hl-math.is-fading { background: transparent; box
 .mn-ad-body > *, .mn-ad-body iframe, .mn-ad-body img, .mn-ad-body ins { max-width: 100% !important; }
 
 /* ============ 検索 ============ */
-.mn-search-modal { position: fixed; inset: 0; z-index: var(--mn-z-modal); font-family: var(--mn-font); color: var(--mn-fg); }
-.mn-search-backdrop { position: absolute; inset: 0; background: rgba(10, 12, 16, .45); }
-.mn-search-panel { position: relative; display: flex; flex-direction: column; width: min(780px, calc(100vw - 24px)); max-height: 86vh; margin: 6vh auto 0;
-  background: var(--mn-bg-elev); border: 1px solid var(--mn-line); border-radius: 14px; box-shadow: var(--mn-shadow); overflow: hidden; font-size: 15px; line-height: 1.6; }
-@media (max-width: 640px) {
-  .mn-search-panel { width: 100%; max-height: none; height: 100%; margin: 0; border-radius: 0; border: none; padding-top: env(safe-area-inset-top); }
-}
-.mn-search-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px 0 16px; }
-.mn-search-title { font-size: 13px; font-weight: 700; color: var(--mn-fg-soft); }
-.mn-search-close { width: 34px; height: 34px; }
+/* 検索ページ（search.html）：ヘッダーには検索窓・「検索」ボタン・「上に戻る」ボタンだけを置く（PC・スマホとも）。
+   条件の指定と結果の一覧はページと一緒にスクロールする。分類メニューは検索ページでは出さない。 */
+.mn-topbar--search > :not(.mn-topbar-search) { display: none !important; }
+.mn-topbar-search { flex: 1; min-width: 0; max-width: 860px; margin: 0 auto; display: flex; align-items: center; gap: 8px; }
+.mn-topbar-search .mn-sform-main { flex: 1; min-width: 0; }
+.mn-topbar-search .mn-sform-q { width: 100%; min-width: 0; height: 40px; padding: 0 10px 0 38px; border: 1px solid var(--mn-line); border-radius: 20px;
+  background: var(--mn-bg-elev); color: var(--mn-fg); font: inherit; font-size: 16px; outline: none; }
+.mn-topbar-search .mn-sform-q:focus { border-color: var(--mn-accent); }
+.mn-topbar-search .mn-sform-go { height: 40px; border-radius: 20px; padding: 0 16px; }
+.mn-app.mn-searchmode .mn-drawer, .mn-app.mn-searchmode .mn-scrim { display: none !important; }
+.mn-app.mn-searchmode .mn-layout { grid-template-columns: minmax(0, 1fr) !important; }
 .mn-sform { padding: 8px 12px 10px; border-bottom: 1px solid var(--mn-line); }
 .mn-sform-main { position: relative; }
 .mn-sform-icon { z-index: 1; position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--mn-fg-faint); pointer-events: none; }

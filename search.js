@@ -753,23 +753,20 @@
     return { get: function () { return value; }, set: function (v) { value = DIRS[v] ? v : ''; labelEl.textContent = dirLabel(value); btn.classList.toggle('is-set', !!value); } };
   }
 
-  // 「条件を指定」の開閉。モーダル（結果の表示部分が狭い）は既定で閉じ、検索ページは広い画面で既定で開く。
-  // 開閉はそれぞれ別に覚える。
-  function moreKey(id) { return id === 'modal' ? 'mn-sform-open-modal' : 'mn-sform-open'; }
-  function moreOpen(id) {
-    var s = store(moreKey(id));
-    if (s != null) return s === '1';
-    if (id === 'modal') return false;
-    return !(window.matchMedia && matchMedia('(max-width: 640px)').matches);
+  // 「条件を指定」の開閉。PC・スマホとも既定で開き、開閉はブラウザに覚える。
+  function moreKey() { return 'mn-sform-open'; }
+  function moreOpen() {
+    var s = store(moreKey());
+    return s != null ? s === '1' : true;
   }
   function formHtml(id) {
     return '<form class="mn-sform" role="search" autocomplete="off" onsubmit="return false">' +
       '<div class="mn-sform-main">' +
         '<span class="mn-sform-icon"><svg class="mn-ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg></span>' +
         '<input class="mn-sform-q" type="search" name="q" placeholder="キーワード（例：コンパクト、べきしゅうごう、Tychonoff）" aria-label="キーワード" spellcheck="false">' +
-        '<button type="button" class="mn-sform-go" title="検索結果のページを開く">検索</button>' +
+        '<button type="button" class="mn-sform-go" title="検索する（Enter）">検索</button>' +
       '</div>' +
-      '<div class="mn-sform-hint"><kbd>Enter</kbd> か「検索」で検索結果のページへ。↑↓ で結果を選び <kbd>Shift</kbd>+<kbd>Enter</kbd> でその項目を開く</div>' +
+      '<div class="mn-sform-hint"><kbd>Enter</kbd> か「検索」で検索。↑↓ で結果を選び <kbd>Shift</kbd>+<kbd>Enter</kbd> でその項目を開く</div>' +
       '<details class="mn-sform-more" data-kind="' + id + '"' + (moreOpen(id) ? ' open' : '') + '>' +
         '<summary>条件を指定</summary>' +
         '<div class="mn-sform-grid">' +
@@ -904,68 +901,19 @@
     }
   }, true);
 
-  /* ---------- モーダル ---------- */
-  var modal, form, list, sel = 0;
-  function ensureModal() {
-    if (modal) return;
-    modal = document.createElement('div');
-    modal.className = 'mn-search-modal';
-    modal.setAttribute('hidden', '');
-    modal.innerHTML = '<div class="mn-search-backdrop"></div>' +
-      '<div class="mn-search-panel" role="dialog" aria-modal="true" aria-label="サイト内検索">' +
-        '<div class="mn-search-head"><span class="mn-search-title">サイト内検索</span>' +
-        '<button type="button" class="mn-iconbtn mn-search-close" aria-label="閉じる">✕</button></div>' +
-        formHtml('modal') +
-        '<div class="mn-search-results" role="listbox"></div>' +
-      '</div>';
-    document.body.appendChild(modal);
-    list = modal.querySelector('.mn-search-results');
-    form = bindForm(modal.querySelector('form'));
-    modal.querySelector('.mn-search-backdrop').addEventListener('click', close);
-    modal.querySelector('.mn-search-close').addEventListener('click', close);
-    modal.addEventListener('keydown', function (ev) {
-      if (ev.key === 'Escape') { ev.preventDefault(); close(); }
-      else if ((ev.key === 'ArrowDown' || ev.key === 'ArrowUp') && modal.querySelector('form').contains(ev.target) &&
-               !(ev.target.closest && ev.target.closest('.mn-dirpick'))) { ev.preventDefault(); move(ev.key === 'ArrowDown' ? 1 : -1); }
-      else if (ev.key === 'Enter' && ev.shiftKey && !isImeEnter(ev) && modal.querySelector('form').contains(ev.target)) {
-        // フォームのどこにフォーカスがあっても Shift+Enter で選んだ結果を開く
-        ev.preventDefault(); go(list.querySelectorAll('.mn-result')[sel]); close();
-      }
-      else if (ev.key === 'Enter' && ev.target.tagName === 'INPUT') {
-        if (isImeEnter(ev)) return;   // 漢字変換の確定には反応しない
-        // Enter：検索結果のページへ。Shift+Enter：選択中の結果を開く
-        ev.preventDefault();
-        if (ev.shiftKey) { go(list.querySelectorAll('.mn-result')[sel]); close(); }
-        else submit();
-      }
-    });
-    // 「検索」ボタン：小窓は結果の表示が狭いので、入力中の条件で検索結果のページ（search.html）に移る（PC・スマホとも）
-    form.go.addEventListener('click', submit);
-    list.addEventListener('click', function (ev) { if (ev.target.closest('a')) close(); });
-    bindMore(list);
-  }
-  function move(d) {
-    var items = list.querySelectorAll('.mn-result');
-    if (!items.length) return;
-    if (items[sel]) items[sel].classList.remove('is-active');
-    sel = (sel + d + items.length) % items.length;
-    items[sel].classList.add('is-active');
-    items[sel].scrollIntoView({ block: 'nearest' });
-  }
   /* 結果は最初の PAGE_SIZE 件だけ描き、「さらに表示」で PAGE_SIZE 件ずつ足す（KaTeX も描いた分だけ） */
   var PAGE_SIZE = 50;
   function moreButtonHtml(box) {
     var rest = box._out.results.length - box._shown;
     return rest > 0 ? '<button type="button" class="mn-search-more mn-search-showmore">さらに表示（残り ' + rest + ' 件）</button>' : '';
   }
-  function showResults(box, out, limitNote, moreHref) {
-    box._out = out; box._note = limitNote;
+  function showResults(box, out) {
+    box._out = out;
     if (!out.results.length) { box._shown = 0; box.innerHTML = '<div class="mn-search-empty">該当する項目が見つかりませんでした。語を減らすか、条件を外してみてください。</div>'; return; }
     box._shown = Math.min(PAGE_SIZE, out.results.length);
     box.innerHTML = '<div class="mn-search-count">' + out.total + ' 件' + (out.fuzzy ? '（完全に一致するものがないため、近い候補を表示）' : '') + '</div>' +
-      out.results.slice(0, box._shown).map(function (it, i) { return renderResult(it, out.pq, root(), i === 0 && limitNote); }).join('') +
-      moreButtonHtml(box) +
-      (moreHref && out.total > out.results.length ? '<a class="mn-search-more" href="' + moreHref + '">検索ページで全 ' + out.total + ' 件を見る</a>' : '');
+      out.results.slice(0, box._shown).map(function (it) { return renderResult(it, out.pq, root(), false); }).join('') +
+      moreButtonHtml(box);
   }
   function showMore(box) {
     var out = box._out, btn = box.querySelector('.mn-search-showmore');
@@ -981,38 +929,21 @@
       if (ev.target.closest && ev.target.closest('.mn-search-showmore')) { ev.preventDefault(); showMore(box); }
     });
   }
-  function submit() {
-    var v = form.read();
-    if (form.isEmpty(v)) { list.innerHTML = EMPTY_HELP; return; }
-    location.href = root() + 'search.html?' + toParams(v);
-  }
-  function update() {
-    var v = form.read();
-    sel = 0;
-    if (form.isEmpty(v)) { list.innerHTML = EMPTY_HELP; return; }
-    if (!entriesReady()) { list.innerHTML = LOADING_HTML; loadEntries(update); return; }
-    var out = search(v, { limit: 300 });
-    lastPQ = out.pq;
-    showResults(list, out, true, root() + 'search.html?' + toParams(v));
-  }
-  var lastFocus = null;
+  /* ---------- 検索の入口 ----------
+   * 検索は PC・スマホとも検索ページ（search.html）で行う（小窓は使わない）。
+   * ヘッダーの検索ボタン・/・Ctrl+K で検索ページへ移る。検索ページにいるときは検索窓に移る。 */
+  var pageQ = null;   // 検索ページの検索窓（検索ページでだけ設定される）
   function open(v) {
-    ensureModal();
-    lastFocus = document.activeElement;
-    modal.removeAttribute('hidden');
-    document.documentElement.classList.add('mn-lock');
-    if (v) { form.write(typeof v === 'string' ? { q: v } : v); update(); }
-    else if (!list.innerHTML) list.innerHTML = EMPTY_HELP;
-    setTimeout(function () { form.q.focus(); form.q.select(); }, 10);
+    if (pageQ) {
+      if (v) pageQ.value = typeof v === 'string' ? v : (v.q || '');
+      pageQ.focus(); pageQ.select();
+      return;
+    }
+    var p = v ? toParams(Object.assign({ q: '', tex: '', exclude: '', types: [], dirs: [] }, typeof v === 'string' ? { q: v } : v)) : '';
+    location.href = root() + 'search.html' + (p ? '?' + p : '');
   }
-  function close() {
-    if (!modal || modal.hasAttribute('hidden')) return;
-    modal.setAttribute('hidden', '');
-    document.documentElement.classList.remove('mn-lock');
-    if (lastFocus && lastFocus.focus) lastFocus.focus();
-  }
+  function close() {}
   document.addEventListener('keydown', function (ev) {
-    if (ev.key === 'Escape' && modal && !modal.hasAttribute('hidden') && !modal.contains(ev.target)) { close(); return; }
     var t = ev.target, typing = t && (/INPUT|TEXTAREA|SELECT/.test(t.tagName) || t.isContentEditable);
     if ((ev.key === 'k' && (ev.metaKey || ev.ctrlKey)) || (ev.key === '/' && !typing)) { ev.preventDefault(); open(); }
   });
@@ -1022,6 +953,24 @@
     container.innerHTML = formHtml('page') + '<div class="mn-search-results mn-search-results--page"></div>';
     var res = container.querySelector('.mn-search-results');
     var f = bindForm(container.querySelector('form'));
+    // 検索窓と「検索」ボタンはヘッダーに置く（PC・スマホとも）。ヘッダーには、ほかに「上に戻る」ボタンだけを置く。
+    // 条件の指定と結果の一覧は、ページと一緒にスクロールする。
+    var bar = document.querySelector('.mn-topbar'), qbox = container.querySelector('.mn-sform-main');
+    if (bar && qbox) {
+      var slot = document.createElement('div');
+      slot.className = 'mn-topbar-search';
+      slot.appendChild(qbox);
+      slot.insertAdjacentHTML('beforeend', '<button type="button" class="mn-iconbtn mn-totop" title="上に戻る" aria-label="上に戻る">' +
+        '<svg class="mn-ico" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/></svg></button>');
+      bar.appendChild(slot);
+      bar.classList.add('mn-topbar--search');
+      var app0 = bar.closest('.mn-app'); if (app0) app0.classList.add('mn-searchmode');
+      slot.querySelector('.mn-totop').addEventListener('click', function () {
+        var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+        window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+      });
+    }
+    pageQ = f.q;
     bindMore(res);
     f.write(fromParams(new URLSearchParams(location.search)));
     loadEntries();   // 検索ページを開いたら索引を読み込んでおく
@@ -1031,7 +980,7 @@
       if (f.isEmpty(v)) res.innerHTML = EMPTY_HELP;
       else {
         var t0 = window.performance ? performance.now() : 0;
-        var out = search(v, { limit: 1e9 }); lastPQ = out.pq; showResults(res, out, false, null);
+        var out = search(v, { limit: 1e9 }); lastPQ = out.pq; showResults(res, out);
         if (window.performance && window.console) console.debug('[search] 検索と描画 ' + Math.round(performance.now() - t0) + ' ms（' + out.total + ' 件）');
       }
       if (typeof psel !== 'undefined') { psel = 0; pmark(); }
@@ -1039,7 +988,7 @@
     }
     run();
     f.q.focus();
-    // キー操作（小窓と同じ）：フォームのどこにフォーカスがあっても
+    // キー操作：検索窓（ヘッダー）と条件のフォームのどこにフォーカスがあっても
     //   ↑↓ で結果を選び、Shift+Enter で選んだ結果を開く。入力欄の Enter は検索し直す。
     var psel = 0;
     function pitems() { return res.querySelectorAll('.mn-result'); }
@@ -1057,8 +1006,8 @@
     }
     pmark();
     var form0 = container.querySelector('form');
-    container.addEventListener('keydown', function (ev) {
-      var inForm = form0.contains(ev.target);
+    function onKey(ev) {
+      var inForm = form0.contains(ev.target) || (qbox && qbox.contains(ev.target));
       if (!inForm) return;
       if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp') {
         if (ev.target.closest && ev.target.closest('.mn-dirpick')) return;   // 分野の選択メニューは自分で↑↓を使う
@@ -1067,7 +1016,9 @@
       if (ev.key !== 'Enter' || isImeEnter(ev)) return;   // 漢字変換の確定には反応しない
       if (ev.shiftKey) { ev.preventDefault(); go(pitems()[psel] || pitems()[0]); return; }
       if (ev.target.tagName === 'INPUT') { ev.preventDefault(); f.go.click(); }
-    });
+    }
+    container.addEventListener('keydown', onKey);
+    if (qbox && !container.contains(qbox)) qbox.addEventListener('keydown', onKey);
     // 検索ページの「検索」ボタン：検索して結果の先頭へ移る
     f.go.addEventListener('click', function () {
       run();

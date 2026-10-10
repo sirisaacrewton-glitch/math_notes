@@ -769,7 +769,7 @@
         '<input class="mn-sform-q" type="search" name="q" placeholder="キーワード（例：コンパクト、べきしゅうごう、Tychonoff）" aria-label="キーワード" spellcheck="false">' +
         '<button type="button" class="mn-sform-go" title="検索結果のページを開く">検索</button>' +
       '</div>' +
-      '<div class="mn-sform-hint"><kbd>Enter</kbd> か「検索」で検索（広い画面では結果のページへ）。↑↓ で結果を選び <kbd>Shift</kbd>+<kbd>Enter</kbd> でその項目を開く</div>' +
+      '<div class="mn-sform-hint"><kbd>Enter</kbd> か「検索」で検索結果のページへ。↑↓ で結果を選び <kbd>Shift</kbd>+<kbd>Enter</kbd> でその項目を開く</div>' +
       '<details class="mn-sform-more" data-kind="' + id + '"' + (moreOpen(id) ? ' open' : '') + '>' +
         '<summary>条件を指定</summary>' +
         '<div class="mn-sform-grid">' +
@@ -824,11 +824,7 @@
     // 数式のプレビューは入力が少し途切れてから描く（検索はしない）
     var pvTimer = null;
     tex.addEventListener('input', function () { clearTimeout(pvTimer); pvTimer = setTimeout(preview, 200); });
-    var autoFold = false;
-    more.addEventListener('toggle', function () {
-      if (autoFold) { autoFold = false; return; }   // 検索後の自動の折り畳みは、開閉の記憶に残さない
-      store(moreKey(more.getAttribute('data-kind')), more.open ? '1' : '0');
-    });
+    more.addEventListener('toggle', function () { store(moreKey(more.getAttribute('data-kind')), more.open ? '1' : '0'); });
     return {
       q: q, go: form.querySelector('.mn-sform-go'),
       read: function () {
@@ -847,8 +843,6 @@
         chips.forEach(function (x) { var t = x.getAttribute('data-type'); x.classList.toggle('is-on', t ? ts.indexOf(t) >= 0 : !ts.length); });
         preview();
       },
-      // 検索したら「条件を指定」を折り畳み、結果を広く見せる（次に開いたときの開閉の記憶は変えない）
-      fold: function () { if (more.open) { autoFold = true; more.open = false; } },
       isEmpty: function (v) { return !(v.q.trim() || v.tex.trim() || v.types.length || v.dirs.length); }
     };
   }
@@ -939,14 +933,13 @@
       }
       else if (ev.key === 'Enter' && ev.target.tagName === 'INPUT') {
         if (isImeEnter(ev)) return;   // 漢字変換の確定には反応しない
-        // Enter：検索する（広い画面では検索結果のページへ）。Shift+Enter：選択中の結果を開く
+        // Enter：検索結果のページへ。Shift+Enter：選択中の結果を開く
         ev.preventDefault();
         if (ev.shiftKey) { go(list.querySelectorAll('.mn-result')[sel]); close(); }
         else submit();
       }
     });
-    // 「検索」ボタン：広い画面（PC）では小窓が狭いので、入力中の条件で検索結果のページ（search.html）に移る。
-    // 狭い画面では小窓が全画面なので、その場で検索する（全件は結果の下の「検索ページで見る」から）。
+    // 「検索」ボタン：小窓は結果の表示が狭いので、入力中の条件で検索結果のページ（search.html）に移る（PC・スマホとも）
     form.go.addEventListener('click', submit);
     list.addEventListener('click', function (ev) { if (ev.target.closest('a')) close(); });
     bindMore(list);
@@ -989,7 +982,6 @@
     });
   }
   function submit() {
-    if (NARROW.matches) { update(); return; }
     var v = form.read();
     if (form.isEmpty(v)) { list.innerHTML = EMPTY_HELP; return; }
     location.href = root() + 'search.html?' + toParams(v);
@@ -1002,7 +994,6 @@
     var out = search(v, { limit: 300 });
     lastPQ = out.pq;
     showResults(list, out, true, root() + 'search.html?' + toParams(v));
-    form.fold();
   }
   var lastFocus = null;
   function open(v) {
@@ -1010,7 +1001,6 @@
     lastFocus = document.activeElement;
     modal.removeAttribute('hidden');
     document.documentElement.classList.add('mn-lock');
-    if (NARROW.matches) loadEntries();   // 検索用の索引は、検索を開いたときに初めて読み込む（広い画面では検索ページで読み込む）
     if (v) { form.write(typeof v === 'string' ? { q: v } : v); update(); }
     else if (!list.innerHTML) list.innerHTML = EMPTY_HELP;
     setTimeout(function () { form.q.focus(); form.q.select(); }, 10);

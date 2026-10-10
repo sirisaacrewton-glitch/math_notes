@@ -10746,6 +10746,41 @@
       "num": "1.6",
       "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
     },
+    "grp:center": {
+      "status": "defined",
+      "type": "definition",
+      "title": "中心",
+      "num": "4.7",
+      "page": "20-group-theory/20A-foundations/01-groups/04-normal-quotient.html"
+    },
+    "grp:center-normal": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "中心は正規部分群",
+      "num": "4.8",
+      "page": "20-group-theory/20A-foundations/01-groups/04-normal-quotient.html"
+    },
+    "grp:center-quotient-cyclic": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "中心による剰余群が巡回群なら可換",
+      "num": "4.9",
+      "page": "20-group-theory/20A-foundations/01-groups/04-normal-quotient.html"
+    },
+    "grp:commutator-properties": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "交換子部分群の性質",
+      "num": "4.11",
+      "page": "20-group-theory/20A-foundations/01-groups/04-normal-quotient.html"
+    },
+    "grp:commutator-subgroup": {
+      "status": "defined",
+      "type": "definition",
+      "title": "交換子部分群",
+      "num": "4.10",
+      "page": "20-group-theory/20A-foundations/01-groups/04-normal-quotient.html"
+    },
     "grp:coprime-orders-trivial-intersection": {
       "status": "defined",
       "type": "corollary",
@@ -10787,6 +10822,13 @@
       "title": "一元で生成された部分群",
       "num": "1.23",
       "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:dihedral-commutator": {
+      "status": "defined",
+      "type": "example",
+      "title": "二面体群の交換子部分群",
+      "num": "",
+      "page": "20-group-theory/20A-foundations/01-groups/04-normal-quotient.html"
     },
     "grp:dihedral-group": {
       "status": "defined",
@@ -10914,6 +10956,34 @@
       "num": "3.6",
       "page": "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
     },
+    "grp:normal-closure": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "正規閉包",
+      "num": "4.4",
+      "page": "20-group-theory/20A-foundations/01-groups/04-normal-quotient.html"
+    },
+    "grp:normal-equivalent": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "正規性の言い換え",
+      "num": "4.2",
+      "page": "20-group-theory/20A-foundations/01-groups/04-normal-quotient.html"
+    },
+    "grp:normal-generators": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "生成元による正規性の判定",
+      "num": "4.3",
+      "page": "20-group-theory/20A-foundations/01-groups/04-normal-quotient.html"
+    },
+    "grp:normal-subgroup": {
+      "status": "defined",
+      "type": "definition",
+      "title": "正規部分群",
+      "num": "4.1",
+      "page": "20-group-theory/20A-foundations/01-groups/04-normal-quotient.html"
+    },
     "grp:order-cyclic-subgroup": {
       "status": "defined",
       "type": "proposition",
@@ -10948,6 +11018,13 @@
       "title": "群と部分群",
       "num": "",
       "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:page-normal-quotient": {
+      "status": "defined",
+      "type": "page",
+      "title": "正規部分群と剰余群",
+      "num": "",
+      "page": "20-group-theory/20A-foundations/01-groups/04-normal-quotient.html"
     },
     "grp:page-order-cyclic": {
       "status": "defined",
@@ -11005,6 +11082,20 @@
       "num": "3.15",
       "page": "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
     },
+    "grp:prob-normal-not-transitive": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "4.13",
+      "page": "20-group-theory/20A-foundations/01-groups/04-normal-quotient.html"
+    },
+    "grp:prob-normal-order-two-central": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "4.14",
+      "page": "20-group-theory/20A-foundations/01-groups/04-normal-quotient.html"
+    },
     "grp:prob-one-sided-axioms": {
       "status": "defined",
       "type": "problem",
@@ -11033,6 +11124,13 @@
       "num": "3.14",
       "page": "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
     },
+    "grp:prob-q8-hamiltonian": {
+      "status": "defined",
+      "type": "problem",
+      "title": "",
+      "num": "4.12",
+      "page": "20-group-theory/20A-foundations/01-groups/04-normal-quotient.html"
+    },
     "grp:prob-union-subgroups": {
       "status": "defined",
       "type": "problem",
@@ -11047,12 +11145,26 @@
       "num": "3.8",
       "page": "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
     },
+    "grp:product-with-normal": {
+      "status": "defined",
+      "type": "proposition",
+      "title": "正規部分群と部分群の積",
+      "num": "4.6",
+      "page": "20-group-theory/20A-foundations/01-groups/04-normal-quotient.html"
+    },
     "grp:quaternion-group": {
       "status": "defined",
       "type": "proposition",
       "title": "四元数群",
       "num": "1.19",
       "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:quotient-group": {
+      "status": "defined",
+      "type": "theorem",
+      "title": "剰余群",
+      "num": "4.5",
+      "page": "20-group-theory/20A-foundations/01-groups/04-normal-quotient.html"
     },
     "grp:sec-cl-cosets": {
       "status": "defined",
@@ -11137,6 +11249,48 @@
       "title": "部分群",
       "num": "",
       "page": "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html"
+    },
+    "grp:sec-nq-center": {
+      "status": "defined",
+      "type": "section",
+      "title": "中心",
+      "num": "",
+      "page": "20-group-theory/20A-foundations/01-groups/04-normal-quotient.html"
+    },
+    "grp:sec-nq-commutator": {
+      "status": "defined",
+      "type": "section",
+      "title": "交換子部分群",
+      "num": "",
+      "page": "20-group-theory/20A-foundations/01-groups/04-normal-quotient.html"
+    },
+    "grp:sec-nq-normal": {
+      "status": "defined",
+      "type": "section",
+      "title": "正規部分群",
+      "num": "",
+      "page": "20-group-theory/20A-foundations/01-groups/04-normal-quotient.html"
+    },
+    "grp:sec-nq-notation": {
+      "status": "defined",
+      "type": "section",
+      "title": "記法と定義の確認",
+      "num": "",
+      "page": "20-group-theory/20A-foundations/01-groups/04-normal-quotient.html"
+    },
+    "grp:sec-nq-problems": {
+      "status": "defined",
+      "type": "section",
+      "title": "問題",
+      "num": "",
+      "page": "20-group-theory/20A-foundations/01-groups/04-normal-quotient.html"
+    },
+    "grp:sec-nq-quotient": {
+      "status": "defined",
+      "type": "section",
+      "title": "剰余群",
+      "num": "",
+      "page": "20-group-theory/20A-foundations/01-groups/04-normal-quotient.html"
     },
     "grp:sec-oc-cyclic": {
       "status": "defined",
@@ -11242,6 +11396,13 @@
       "title": "既約剰余類の群",
       "num": "3.11",
       "page": "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
+    },
+    "grp:z-mod-nz-quotient": {
+      "status": "defined",
+      "type": "example",
+      "title": "整数の剰余群",
+      "num": "",
+      "page": "20-group-theory/20A-foundations/01-groups/04-normal-quotient.html"
     },
     "ha:abelian-category": {
       "status": "defined",
@@ -41736,6 +41897,13 @@
         "03-mathematical-logic/03C-model-theory/01-elementary-extensions/04-acf.html"
       ]
     },
+    "grp:page-class-equation": {
+      "status": "planned",
+      "title": "類等式と p 群",
+      "referencedFrom": [
+        "20-group-theory/20A-foundations/01-groups/04-normal-quotient.html"
+      ]
+    },
     "grp:page-group-actions": {
       "status": "planned",
       "title": "群の作用",
@@ -41747,15 +41915,8 @@
       "status": "planned",
       "title": "準同型定理",
       "referencedFrom": [
-        "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html"
-      ]
-    },
-    "grp:page-normal-quotient": {
-      "status": "planned",
-      "title": "正規部分群と剰余群",
-      "referencedFrom": [
-        "20-group-theory/20A-foundations/01-groups/01-groups-subgroups.html",
-        "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
+        "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html",
+        "20-group-theory/20A-foundations/01-groups/04-normal-quotient.html"
       ]
     },
     "grp:page-sign-alternating": {
@@ -41764,6 +41925,13 @@
       "referencedFrom": [
         "20-group-theory/20A-foundations/01-groups/02-order-cyclic.html",
         "20-group-theory/20A-foundations/01-groups/03-cosets-lagrange.html"
+      ]
+    },
+    "grp:page-solvable-nilpotent": {
+      "status": "planned",
+      "title": "可解群と冪零群",
+      "referencedFrom": [
+        "20-group-theory/20A-foundations/01-groups/04-normal-quotient.html"
       ]
     },
     "grp:page-sylow": {

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>正規部分群と剰余群 | Summa Mathematica</title>
+<link rel="icon" href="../../../assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../../vendor/katex/katex.min.css?v=a4b0d354">
+<link rel="stylesheet" href="../../../style.css?v=68bc478e">
+<script>try{var t=localStorage.getItem("mn-theme");if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+</head>
+<body data-root="../../../" data-page="20-group-theory/20A-foundations/01-groups/04-normal-quotient.html" data-kind="page">
+<!-- ページ原稿（Markdown）。この script 要素の中だけを編集してください。外側は tools/build.js が自動生成します。 -->
+<script type="text/markdown" id="source">
+# 正規部分群と剰余群 {#grp:page-normal-quotient keywords="normal subgroup, quotient group, factor group, center of a group, commutator subgroup, derived subgroup, normal closure"}
+
+部分群 $H$ による左剰余類の集合 $G/H$（\ref{grp:coset}）に、代表元の積 $(gH)(g'H)\defeq gg'H$ で演算を入れようとすると、一般には代表元の取り方によって答えが変わってしまう。これが矛盾なく定まるのは、$H$ が共役で閉じている——**正規部分群**である——ときであり、そのとき $G/H$ は群（**剰余群**）になる（\ref{grp:quotient-group}）。このページでは正規部分群の言い換えと、生成元だけで正規性を判定する方法（\ref{grp:normal-generators}）を示し、剰余群を作る。$\Z/n\Z$ が $\Z$ を $n\Z$ で割った剰余群と同一視できることもここで確かめる。最後に、正規部分群の代表例として**中心**（\ref{grp:center}）と**交換子部分群**（\ref{grp:commutator-subgroup}）を調べ、二面体群の場合を計算する。
+
+> 雪江明彦『代数学 1 群論入門』第 2 章 §2.8 を参考にした。雪江は準同型を先に導入し、核として正規部分群を例示しているが、ここでは準同型を次のページ（\ref[準同型定理]{grp:page-homomorphism-theorems}）に回し、正規部分群と剰余群を群の言葉だけで扱った。
+
+## 記法と定義の確認 {#grp:sec-nq-notation}
+
+::: notation
+- 群・部分群・生成された部分群とその元の形は \ref{grp:group}, \ref{grp:subgroup}, \ref{grp:generated-subgroup}, \ref{grp:generated-subgroup-words}、部分群の共通部分は \ref{grp:subgroup-intersection}。元の位数と冪の位数は \ref{grp:element-order}, \ref{grp:order-of-power}。
+- 剰余類・剰余類による分割・指数は \ref{grp:coset}, \ref{grp:coset-partition}, \ref{grp:index}、ラグランジュの定理は \ref{grp:lagrange}。
+- 二面体群 $D_{n}=\ang{r,s}$ と関係式 $r^{n}=s^{2}=e$, $srs=r^{-1}$ は \ref{grp:dihedral-group}, \ref{grp:dihedral-order}。四元数群 $Q_{8}$ は \ref{grp:quaternion-group}、$\GL_{n}(\R)$, $\SL_{n}(\R)$ は \ref{grp:page-groups-subgroups} の例。$\Z/n\Z$ と余り $r_{n}$ は \ref{grp:integers-mod-n}, \ref{grp:division}。
+- 部分集合 $A,B\subseteq G$ と $g\in G$ について $AB\defeq\{ab : a\in A,\ b\in B\}$、$gAg^{-1}\defeq\{gag^{-1} : a\in A\}$ と書く。$gag^{-1}$ を $a$ の $g$ による**共役**という。
+- $\ZFC$ の中で議論し、選択公理は使わない。
+:::
+
+## 正規部分群 {#grp:sec-nq-normal}
+
+::: definition 正規部分群 {#grp:normal-subgroup keywords="normal subgroup, invariant subgroup" index="正規部分群|せいきぶぶんぐん"}
+群 $G$ の部分群 $N$ が、すべての $g\in G$ と $n\in N$ について $gng^{-1}\in N$ をみたすとき、$N$ を $G$ の**正規部分群**といい $N\trianglelefteq G$ と書く。
+:::
+
+::: intuition
+正規部分群は「どの元で共役をとっても（＝見る向きを変えても）外に出ない」部分群である。可換群では $gng^{-1}=n$ なので、すべての部分群が正規である。非可換群では、正規でない部分群のほうが多いことも珍しくない。
+:::
+
+::: proposition 正規性の言い換え {#grp:normal-equivalent keywords="gN = Ng, conjugation invariant, left cosets equal right cosets" index="正規部分群の言い換え|せいきぶぶんぐんのいいかえ"}
+$N\le G$ について、次は同値である。
+1. $N\trianglelefteq G$。
+2. すべての $g\in G$ について $gNg^{-1}=N$。
+3. すべての $g\in G$ について $gN=Ng$。
+4. すべての左剰余類は右剰余類である（各 $g\in G$ に対し $gN=Ng'$ となる $g'\in G$ がある）。
+:::
+
+::: proof
+**Step 1（1⇒2）.** 1 より、どの $g$ についても $gNg^{-1}\subseteq N$。これを $g^{-1}$ に使うと $g^{-1}Ng\subseteq N$。$n\in N$ について $n=g(g^{-1}ng)g^{-1}$ で $g^{-1}ng\in N$ なので $n\in gNg^{-1}$。よって $N\subseteq gNg^{-1}$ で、$gNg^{-1}=N$。
+
+**Step 2（2⇒3）.** $n\in N$ について $gn=(gng^{-1})g$ で、$gng^{-1}\in gNg^{-1}=N$ なので $gn\in Ng$。よって $gN\subseteq Ng$。また $ng=g(g^{-1}ng)$ で、2 を $g^{-1}$ に使うと $g^{-1}ng\in N$ なので $ng\in gN$。よって $Ng\subseteq gN$。
+
+**Step 3（3⇒4）.** $g'=g$ とすればよい。
+
+**Step 4（4⇒1）.** $g\in G$ とし、$gN=Ng'$ とする。$g=ge\in gN=Ng'$ であり、$g\in Ng$ でもあるので、右剰余類 $Ng'$ と $Ng$ は交わる。\ref{grp:coset-partition} の 4（右剰余類版の 2）より $Ng'=Ng$、よって $gN=Ng$。$n\in N$ について $gn\in gN=Ng$ なので $gn=n'g$（$n'\in N$）と書け、$gng^{-1}=n'\in N$。
+
+::: hypcheck
+- **$N$ が部分群**：Step 4 で右剰余類による分割（\ref{grp:coset-partition}）を使うのに必要。
+- 2 の「$=$」を「$\subseteq$」に弱めても（すべての $g$ について課せば）同値（Step 1）。ただし一つの $g$ についてだけなら、$gNg^{-1}\subsetneq N$ となることがある：\ref{grp:normal-generators} の hypcheck の例で $tNt^{-1}=\ang{u^{2}}\subsetneq N$。
+:::
+:::
+
+::: example
+1. $\{e\}$ と $G$ 自身は常に $G$ の正規部分群。可換群の部分群はすべて正規。
+2. 指数 $2$ の部分群は正規である（\ref{grp:prob-index-two} と 3⇒1）。例えば $D_{n}$ の回転全体 $\ang{r}$ は位数 $n$、指数 $2$ なので $\ang{r}\trianglelefteq D_{n}$。
+3. $\SL_{n}(\R)\trianglelefteq\GL_{n}(\R)$：$A\in\GL_{n}(\R)$, $B\in\SL_{n}(\R)$ なら、行列式の乗法性から $\det(ABA^{-1})=\det A\cdot\det B\cdot(\det A)^{-1}=1$。
+4. 正規でない例：$D_{3}$ の $H=\{e,s\}$。$rH\neq Hr$（\ref{grp:coset} の例）なので 3 が成り立たない。実際 $rsr^{-1}=r\cdot r s=r^{2}s\notin H$（$sr^{-1}=rs$ を使った）。
+:::
+
+::: proposition 生成元による正規性の判定 {#grp:normal-generators keywords="normality test on generators" index="正規性の判定|せいきせいのはんてい"}
+$G=\ang{S}$, $N=\ang{T}$（$N\le G$, $S\subseteq G$, $T\subseteq N$）とする。
+1. すべての $x\in S$, $y\in T$ について $xyx^{-1}\in N$ かつ $x^{-1}yx\in N$ なら、$N\trianglelefteq G$。
+2. $G$ が有限群なら、すべての $x\in S$, $y\in T$ について $xyx^{-1}\in N$ であれば $N\trianglelefteq G$。
+:::
+
+::: proof
+**Step 1（一つの生成元による共役）.** $x\in G$ が「すべての $y\in T$ について $xyx^{-1}\in N$」をみたすとき、$xNx^{-1}\subseteq N$ を示す。$N$ の元は \ref{grp:generated-subgroup-words} より $y_{1}^{\varepsilon_{1}}\cdots y_{m}^{\varepsilon_{m}}$（$y_{i}\in T$, $\varepsilon_{i}=\pm 1$, $m\ge 0$）と書ける。
+$$
+x\,y_{1}^{\varepsilon_{1}}\cdots y_{m}^{\varepsilon_{m}}\,x^{-1}=(xy_{1}^{\varepsilon_{1}}x^{-1})(xy_{2}^{\varepsilon_{2}}x^{-1})\cdots(xy_{m}^{\varepsilon_{m}}x^{-1})
+$$
+（間の $x^{-1}x=e$ を挟んだ）で、$xy^{-1}x^{-1}=(xyx^{-1})^{-1}$ なので各因子は $N$ に属する。$N$ は積で閉じるので左辺も $N$ に属する（$m=0$ なら $xex^{-1}=e\in N$）。
+
+**Step 2（1）.** 仮定と Step 1 より、$x\in S$ について $xNx^{-1}\subseteq N$ かつ $x^{-1}Nx\subseteq N$（後者は Step 1 を $x^{-1}$ に使う）。$U\defeq\{g\in G : gNg^{-1}\subseteq N\}$ とおくと、$S\cup S^{-1}\subseteq U$ で、$g,g'\in U$ なら $(gg')N(gg')^{-1}=g(g'Ng'^{-1})g^{-1}\subseteq gNg^{-1}\subseteq N$ なので $gg'\in U$、また $e\in U$。\ref{grp:generated-subgroup-words} より $G$ の元は $S\cup S^{-1}$ の元の有限個の積なので、$G=U$。これは $N\trianglelefteq G$ を意味する。
+
+**Step 3（2）.** $G$ が有限なら、$x\in S$ の位数 $d\defeq\ord(x)$ は有限で（\ref{grp:finite-group-finite-order}）、$x^{-1}=x^{d-1}$。Step 1 より $x\in U$ で、Step 2 と同じく $U$ は積で閉じるので $x^{-1}=x^{d-1}\in U$（$d=1$ なら $x^{-1}=e\in U$）。よって $S\cup S^{-1}\subseteq U$ となり、Step 2 の後半から $N\trianglelefteq G$。
+
+::: hypcheck
+- **1 の条件 $x^{-1}yx\in N$**：Step 2 で $S^{-1}\subseteq U$ に使った。無限群では外せない。有理数の集合 $\Q$ の置換 $t(x)\defeq 2x$, $u(x)\defeq x+1$ で生成される $G\defeq\ang{t,u}\le\Sym(\Q)$ と $N\defeq\ang{u}=\{x\mapsto x+m : m\in\Z\}$ を考える。$S=\{t,u\}$, $T=\{u\}$ について $tut^{-1}(x)=2(x/2+1)=x+2$ なので $tut^{-1}=u^{2}\in N$、$uuu^{-1}=u\in N$ と条件 $xyx^{-1}\in N$ はみたされる。しかし $t^{-1}ut(x)=(2x+1)/2=x+\tfrac{1}{2}$ なので $t^{-1}ut\notin N$ で、$N$ は正規でない。
+- **$G$ が有限**（2）：Step 3 で $x^{-1}$ を $x$ の正の冪で書くのに使った。
+:::
+:::
+
+::: example
+$D_{n}$ の部分群 $\ang{r^{2}}$ は正規：$D_{n}=\ang{r,s}$ は有限群で、$r\,r^{2}\,r^{-1}=r^{2}$, $s\,r^{2}\,s^{-1}=(srs)(srs)=r^{-2}$（$s^{-1}=s$）はどちらも $\ang{r^{2}}$ に属するので、\ref{grp:normal-generators} の 2 が使える。
+:::
+
+::: proposition 正規閉包 {#grp:normal-closure keywords="normal closure, smallest normal subgroup containing a set, conjugates generate" index="正規閉包|せいきへいほう"}
+$G$ を群、$S\subseteq G$ とする。
+1. 正規部分群の空でない族の共通部分は正規部分群である。
+2. $\overline{S}\defeq\ang{\{gsg^{-1} : g\in G,\ s\in S\}}$ は $S$ を含む $G$ の正規部分群のうち最小のものである（$S$ の**正規閉包**）。
+:::
+
+::: proof
+**Step 1（1）.** $N_{i}\trianglelefteq G$（$i\in I\neq\emptyset$）なら $\bigcap N_{i}\le G$（\ref{grp:subgroup-intersection}）で、$n\in\bigcap N_{i}$ なら各 $i$ で $gng^{-1}\in N_{i}$。
+
+**Step 2（2：正規）.** $T\defeq\{gsg^{-1} : g\in G,\ s\in S\}$ とおく。$x\in G$, $y=gsg^{-1}\in T$ なら $xyx^{-1}=(xg)s(xg)^{-1}\in T$、$x^{-1}yx=(x^{-1}g)s(x^{-1}g)^{-1}\in T$。$G=\ang{G}$ なので、\ref{grp:normal-generators} の 1（$S$ として $G$、$T$ として $T$）より $\overline{S}=\ang{T}\trianglelefteq G$。
+
+**Step 3（2：最小）.** $s=ese^{-1}\in T$ なので $S\subseteq\overline{S}$。$S\subseteq N\trianglelefteq G$ なら $T\subseteq N$ なので $\overline{S}=\ang{T}\subseteq N$。
+:::
+
+## 剰余群 {#grp:sec-nq-quotient}
+
+::: theorem 剰余群 {#grp:quotient-group keywords="quotient group, factor group, coset multiplication" index="剰余群|じょうよぐん, 商群|しょうぐん"}
+$N\trianglelefteq G$ とする。
+1. $G/N$ 上の演算 $(gN)(hN)\defeq ghN$ が、代表元 $g,h$ の取り方によらず矛盾なく定まる。
+2. この演算で $G/N$ は群になる。単位元は $N=eN$、$gN$ の逆元は $g^{-1}N$。位数は $\abs{G/N}=(G:N)$ で、$G$ が有限なら $\abs{G}/\abs{N}$。
+3. $\pi(g)\defeq gN$ で定まる全射 $\pi:G\to G/N$ は $\pi(gh)=\pi(g)\pi(h)$ をみたし、$\pi(g)=N\iff g\in N$。
+
+この群 $G/N$ を $G$ の $N$ による**剰余群**（**商群**）、$\pi$ を**自然な射影**という。
+:::
+
+::: proof
+**Step 1（1）.** $gN=g'N$, $hN=h'N$ とする。\ref{grp:coset-partition} の 2 より $n_{1}\defeq g^{-1}g'\in N$, $n_{2}\defeq h^{-1}h'\in N$、すなわち $g'=gn_{1}$, $h'=hn_{2}$。すると
+$$
+g'h'=gn_{1}hn_{2}=gh\,(h^{-1}n_{1}h)\,n_{2}.
+$$
+$N\trianglelefteq G$ なので $h^{-1}n_{1}h\in N$（定義を $h^{-1}$ に使う）、よって $(gh)^{-1}(g'h')=(h^{-1}n_{1}h)n_{2}\in N$ で、再び \ref{grp:coset-partition} の 2 より $g'h'N=ghN$。
+
+**Step 2（2：群の公理）.** 結合法則：$((gN)(hN))(kN)=(gh)kN=g(hk)N=(gN)((hN)(kN))$（$G$ の結合法則）。単位元：$(eN)(gN)=gN=(gN)(eN)$。逆元：$(gN)(g^{-1}N)=eN=(g^{-1}N)(gN)$。位数は $G/N$ の元の個数そのもので、指数の定義（\ref{grp:index}）から $(G:N)$、有限なら \ref{grp:lagrange} より $\abs{G}/\abs{N}$。
+
+**Step 3（3）.** 全射は $G/N$ の定義から。$\pi(gh)=ghN=(gN)(hN)$ は演算の定義そのもの。$\pi(g)=N=eN\iff e^{-1}g\in N$（\ref{grp:coset-partition} の 2）$\iff g\in N$。
+
+::: hypcheck
+- **$N$ が正規**：Step 1 の $h^{-1}n_{1}h\in N$ だけに使った。正規でないと 1 は偽：$D_{3}$, $H=\{e,s\}$ では $H=eH=sH$ なので、積 $(H)(rH)$ を代表元 $e,r$ で計算すると $rH=\{r,rs\}$、代表元 $s,r$ で計算すると $srH=r^{2}sH=\{r^{2}s,\ r^{2}\}$ となり、一致しない（$sr=r^{2}s$ は \ref{grp:coset} の例）。
+- 逆に、1 が成り立てば $N$ は正規である：$n\in N$, $g\in G$ について $(gN)(g^{-1}N)$ を代表元 $gn$ と $g^{-1}$ で計算すると $gng^{-1}N$、$g$ と $g^{-1}$ で計算すると $N$ なので、$gng^{-1}N=N$、$gng^{-1}\in N$。
+:::
+:::
+
+::: intuition
+剰余群 $G/N$ は「$N$ の元を単位元とみなして（同一視して）$G$ を見る」群である。$\pi$ によって、$G$ の等式 $gh=k$ は $G/N$ の等式 $\pi(g)\pi(h)=\pi(k)$ に移る。$\pi$ のような写像（準同型）は次のページで一般に扱う。
+:::
+
+::: example 整数の剰余群 {#grp:z-mod-nz-quotient}
+$n\ge 1$ とする。$n\Z$ は可換群 $\Z$ の部分群なので正規で、剰余群 $\Z/n\Z$（剰余類 $a+n\Z$ の群、演算は $(a+n\Z)+(b+n\Z)=(a+b)+n\Z$）ができる。これと \ref{grp:integers-mod-n} の群 $(\{0,\dots,n-1\},\oplus)$ は、$\psi(a+n\Z)\defeq r_{n}(a)$ で一対一に対応し、演算も対応する：
+
+- **矛盾なく定まる**：$a+n\Z=b+n\Z\iff n\mid a-b\iff r_{n}(a)=r_{n}(b)$（\ref{grp:coset-partition} の 2 と \ref{grp:division}）。この同値の右向きから $\psi$ は矛盾なく定まり、左向きから単射。
+- **全射**：$0\le c\le n-1$ について $\psi(c+n\Z)=c$。
+- **演算**：$\psi((a+n\Z)+(b+n\Z))=r_{n}(a+b)=r_{n}(r_{n}(a)+r_{n}(b))=\psi(a+n\Z)\oplus\psi(b+n\Z)$（中央の等号は $n\mid(a+b)-(r_{n}(a)+r_{n}(b))$ と \ref{grp:division} による）。
+
+このように、全単射で演算も対応する二つの群は「同じ群」とみなせる（**同型**。\ref[準同型定理]{grp:page-homomorphism-theorems} で定義する）。以下、$\Z/n\Z$ をどちらの意味でも使う。
+:::
+
+::: proposition 正規部分群と部分群の積 {#grp:product-with-normal keywords="HN is a subgroup when N is normal" index="部分群の積|ぶぶんぐんのせき"}
+$H\le G$, $N\trianglelefteq G$ とする。
+1. $HN=NH$ で、これは $G$ の部分群である。
+2. $N\trianglelefteq HN$、$H\cap N\trianglelefteq H$。
+:::
+
+::: proof
+**Step 1（$HN=NH$）.** $h\in H$, $n\in N$ について $hn=(hnh^{-1})h\in NH$、$nh=h(h^{-1}nh)\in HN$（$N$ の正規性）。
+
+**Step 2（部分群）.** $e=ee\in HN$。$h_{1}n_{1},h_{2}n_{2}\in HN$ について
+$$
+(h_{1}n_{1})(h_{2}n_{2})^{-1}=h_{1}n_{1}n_{2}^{-1}h_{2}^{-1}=(h_{1}h_{2}^{-1})\bigl(h_{2}n_{1}n_{2}^{-1}h_{2}^{-1}\bigr)\in HN
+$$
+（$h_{2}(n_{1}n_{2}^{-1})h_{2}^{-1}\in N$）。\ref{grp:subgroup-criterion} より $HN\le G$。
+
+**Step 3（2）.** $N\subseteq HN$（$n=en$）で、$HN$ の元による共役でも $N$ は閉じている（$G$ の元による共役で閉じているから）。$x\in H\cap N$, $h\in H$ なら $hxh^{-1}\in H$（$H$ は積で閉じる）かつ $hxh^{-1}\in N$（$N$ の正規性）。
+
+::: hypcheck
+- **$N$ が正規**：Step 1, 2 に使った。どちらも正規でないと $HN$ は部分群とは限らない（\ref{grp:product-formula} の hypcheck の $D_{3}$ の例）。
+:::
+:::
+
+## 中心 {#grp:sec-nq-center}
+
+::: definition 中心 {#grp:center keywords="center of a group, central element" index="中心|ちゅうしん"}
+群 $G$ のすべての元と可換な元全体 $Z(G)\defeq\{z\in G : \text{すべての } g\in G \text{ について } zg=gz\}$ を $G$ の**中心**という。
+:::
+
+::: proposition 中心は正規部分群 {#grp:center-normal}
+$Z(G)\trianglelefteq G$。また $Z(G)=G\iff G$ は可換群。
+:::
+
+::: proof
+$e\in Z(G)$。$z,w\in Z(G)$ なら $(zw^{-1})g=z(w^{-1}g)$ で、$wg=gw$ の両辺に左右から $w^{-1}$ を掛けると $gw^{-1}=w^{-1}g$ なので $z(w^{-1}g)=z(gw^{-1})=(zg)w^{-1}=(gz)w^{-1}=g(zw^{-1})$。よって $zw^{-1}\in Z(G)$（\ref{grp:subgroup-criterion}）。$z\in Z(G)$ なら $gzg^{-1}=zgg^{-1}=z\in Z(G)$ で正規。後半は定義そのもの。
+:::
+
+::: example
+1. $D_{n}$（$n\ge 3$）の中心は、$n$ が奇数なら $\{e\}$、偶数なら $\{e,r^{n/2}\}$。
+   - $srs=r^{-1}$ を $k$ 回掛けて（間の $s^{2}=e$ を消して）$sr^{k}s=r^{-k}$、よって $sr^{k}=r^{-k}s$（$k\in\Z$）。
+   - $r^{k}$ と $s$ が可換 $\iff r^{k}s=r^{-k}s\iff r^{2k}=e\iff n\mid 2k$（\ref{grp:order-divides}）。$r^{k}$ と $r$ は常に可換で、$D_{n}=\ang{r,s}$ なので、$r^{k}\in Z(D_{n})\iff n\mid 2k$。$0\le k\le n-1$ でこれをみたすのは、$n$ が奇数なら $k=0$（$n\mid 2k$ と \ref{grp:bezout-euclid} の 4 から $n\mid k$）、偶数なら $k=0,n/2$。
+   - $r^{k}s$ は中心に入らない：$(r^{k}s)r=r^{k}r^{-1}s=r^{k-1}s$、$r(r^{k}s)=r^{k+1}s$ で、等しければ $r^{2}=e$ となり $n\ge 3$ に反する。
+2. $Z(Q_{8})=\{\pm 1\}$：$\pm 1$ はスカラー行列なのですべての元と可換。$\mathbf{i}\mathbf{j}=-\mathbf{j}\mathbf{i}\neq\mathbf{j}\mathbf{i}$ なので $\pm\mathbf{i}$ は $\mathbf{j}$ と可換でなく、同様に $\pm\mathbf{j}$, $\pm\mathbf{k}$ も中心に入らない。
+:::
+
+::: theorem 中心による剰余群が巡回群なら可換 {#grp:center-quotient-cyclic keywords="G/Z(G) cyclic implies G abelian" index="中心による剰余群|ちゅうしんによるじょうよぐん"}
+$G/Z(G)$ が巡回群なら、$G$ は可換群である（したがって $G/Z(G)$ は自明な群）。
+:::
+
+::: proof
+**Step 1（元の形）.** $Z\defeq Z(G)$ とし、$G/Z=\ang{aZ}$ とする。\ref{grp:cyclic-subgroup-powers} より $G/Z$ の元は $(aZ)^{m}=a^{m}Z$（$m\in\Z$。剰余群の演算の定義を繰り返し使う）。$g\in G$ について $gZ=a^{m}Z$ となる $m$ があり、$g=a^{m}z$（$z\in Z$）と書ける。
+
+**Step 2（可換性）.** $g=a^{m}z$, $h=a^{k}w$（$z,w\in Z$）とすると、$z,w$ はすべての元と可換なので
+$$
+gh=a^{m}za^{k}w=a^{m}a^{k}zw=a^{m+k}zw=a^{k}a^{m}wz=a^{k}wa^{m}z=hg.
+$$
+
+**Step 3（括弧の主張）.** $G$ が可換なら $Z=G$ なので $G/Z=\{Z\}$ は自明な群。
+
+::: hypcheck
+- **$Z(G)$ で割ること**：Step 2 で $z,w$ が $a^{k}$ と可換であることに使った。中心でない正規部分群では偽：$G=D_{3}$, $N=\ang{r}$ で $G/N$ は位数 $2$（素数）なので巡回群（\ref{grp:lagrange-corollaries}）だが、$D_{3}$ は非可換。
+:::
+:::
+
+::: supplement
+**使い道.** この定理から「$G/Z(G)$ の位数は素数でない」がわかる（位数が素数なら巡回群なので $G$ は可換、すると $G/Z(G)$ は位数 $1$）。類等式と組み合わせると、素数 $p$ について位数 $p^{2}$ の群は可換であることが示せる（\ref[類等式と p 群]{grp:page-class-equation}）。
+:::
+
+## 交換子部分群 {#grp:sec-nq-commutator}
+
+::: definition 交換子部分群 {#grp:commutator-subgroup keywords="commutator, commutator subgroup, derived subgroup, abelianization" index="交換子|こうかんし, 交換子部分群|こうかんしぶぶんぐん, 導来部分群|どうらいぶぶんぐん"}
+群 $G$ の元 $x,y$ について $[x,y]\defeq xyx^{-1}y^{-1}$ を $x$ と $y$ の**交換子**という。交換子全体で生成された部分群 $[G,G]\defeq\ang{\{[x,y] : x,y\in G\}}$ を $G$ の**交換子部分群**（**導来部分群**）という。$D(G)$, $G'$ とも書く。
+:::
+
+::: intuition
+$xy=[x,y]\,yx$ なので、交換子は「$x$ と $y$ を入れ替えたときのずれ」である。$[x,y]=e\iff xy=yx$。交換子部分群は、群がどれだけ非可換かを測る部分群で、$[G,G]=\{e\}\iff G$ は可換群。
+:::
+
+::: theorem 交換子部分群の性質 {#grp:commutator-properties keywords="G/[G,G] is abelian, smallest normal subgroup with abelian quotient" index="可換化|かかんか"}
+$G$ を群とする。
+1. $[G,G]\trianglelefteq G$。
+2. $N\trianglelefteq G$ について、$G/N$ が可換群 $\iff[G,G]\subseteq N$。
+3. 特に $G/[G,G]$ は可換群で、$[G,G]$ は可換な剰余群を与える正規部分群のうち最小のものである。
+:::
+
+::: proof
+**Step 1（1）.** $g[x,y]g^{-1}=gxyx^{-1}y^{-1}g^{-1}=(gxg^{-1})(gyg^{-1})(gxg^{-1})^{-1}(gyg^{-1})^{-1}=[gxg^{-1},gyg^{-1}]$（間に $g^{-1}g$ を挟んだ）。よって交換子全体の集合 $T$ は $G$ のどの元による共役でも閉じている。\ref{grp:normal-generators} の 1（$S=G$）より $[G,G]=\ang{T}\trianglelefteq G$。
+
+**Step 2（2）.** $x,y\in G$ について
+$$
+(xN)(yN)=(yN)(xN)\iff xyN=yxN\iff(yx)^{-1}xy\in N\iff x^{-1}y^{-1}xy\in N
+$$
+（二つめは \ref{grp:coset-partition} の 2）。$x^{-1}y^{-1}xy=[x^{-1},y^{-1}]$ で、$x,y$ が $G$ 全体を動くと $x^{-1},y^{-1}$ も $G$ 全体を動く。よって「$G/N$ が可換」$\iff$「すべての交換子が $N$ に属する」。$N$ は部分群なので、後者は $[G,G]\subseteq N$ と同値。
+
+**Step 3（3）.** 1 より $N=[G,G]$ を 2 に使える。$[G,G]\subseteq[G,G]$ なので $G/[G,G]$ は可換。最小性は 2 の右向き。
+:::
+
+::: example 二面体群の交換子部分群 {#grp:dihedral-commutator}
+$n\ge 3$ について $[D_{n},D_{n}]=\ang{r^{2}}$。これは $n$ が奇数なら $\ang{r}$（位数 $n$）、偶数なら位数 $n/2$ の部分群である。
+
+- **$\ang{r^{2}}\subseteq[D_{n},D_{n}]$**：$sr^{-1}s=(srs)^{-1}=r$（$s^{-1}=s$）なので $[r,s]=rsr^{-1}s^{-1}=r\,(sr^{-1}s)=r^{2}$。
+- **$[D_{n},D_{n}]\subseteq\ang{r^{2}}$**：$N\defeq\ang{r^{2}}$ は正規（\ref{grp:normal-generators} の後の例）。$\bar r\defeq rN$, $\bar s\defeq sN$ とおくと、$D_{n}$ の元は $r,s$ の語なので $D_{n}/N$ の元は $\bar r,\bar s$ の語（\ref{grp:quotient-group} の 3）。$\bar r^{2}=r^{2}N=N$ なので $\bar r^{-1}=\bar r$、また $\bar s\bar r\bar s=(srs)N=r^{-1}N=\bar r^{-1}=\bar r$、右から $\bar s$ を掛けて（$\bar s^{2}=s^{2}N=N$）$\bar s\bar r=\bar r\bar s$。生成元が可換なので語どうしも可換で、$D_{n}/N$ は可換群。\ref{grp:commutator-properties} の 2 より $[D_{n},D_{n}]\subseteq N$。
+- **位数**：\ref{grp:order-of-power} より $\ord(r^{2})=n/\gcd(n,2)$。奇数なら $n$ で $\ang{r^{2}}=\ang{r}$、偶数なら $n/2$。
+:::
+
+::: supplement
+**可換化.** $G/[G,G]$ を $G$ の**可換化**（abelianization）という。「$G$ から可換群への準同型は $G/[G,G]$ を経由する」という普遍性をもつ（\ref[準同型定理]{grp:page-homomorphism-theorems} の後なら証明できる）。圏論の言葉では、可換化は可換群の圏から群の圏への包含関手の左随伴である。
+
+**交換子の積.** $[G,G]$ の元は交換子の積だが、交換子そのものとは限らない（交換子全体の集合が部分群にならない有限群がある）。ここでは扱わない。
+
+**可解群へ.** $G\supseteq[G,G]\supseteq[[G,G],[G,G]]\supseteq\cdots$ が有限回で $\{e\}$ に達する群を可解群という（\ref[可解群と冪零群]{grp:page-solvable-nilpotent}）。上の例から $D_{n}$ は可解である（$\ang{r^{2}}$ は可換）。
+:::
+
+## 問題 {#grp:sec-nq-problems}
+
+::: problem {#grp:prob-q8-hamiltonian}
+$Q_{8}$ は非可換だが、その部分群はすべて正規であることを示せ。
+:::
+
+::: solution
+$H\le Q_{8}$ とする。\ref{grp:lagrange} より $\abs{H}\in\{1,2,4,8\}$。$\abs{H}=1,8$ なら $H=\{1\}$ か $Q_{8}$ で正規。$\abs{H}=4$ なら指数 $2$ なので正規（\ref{grp:prob-index-two}, \ref{grp:normal-equivalent}）。$\abs{H}=2$ なら $H=\{1,x\}$ で $x^{2}=1$、$x\neq 1$。$Q_{8}$ の元で $x^{2}=1$ となるのは $\pm 1$ だけ（$(\pm\mathbf{i})^{2}=\mathbf{i}^{2}=-1$ など）なので $x=-1$、$H=\{\pm 1\}=Z(Q_{8})$ で正規（\ref{grp:center-normal}）。
+:::
+
+::: problem {#grp:prob-normal-not-transitive}
+$D_{4}$ において $K\defeq\{e,s\}$, $H\defeq\{e,s,r^{2},r^{2}s\}$ とする。$K\trianglelefteq H$ かつ $H\trianglelefteq D_{4}$ だが、$K$ は $D_{4}$ の正規部分群でないことを示せ（正規性は推移的でない）。
+:::
+
+::: solution
+$r^{2}$ は $Z(D_{4})$ の元（上の例で $n=4$）なので、$r^{2}s=sr^{2}$。$H$ が部分群であることは、$H$ が積で閉じていること（$s\cdot r^{2}=r^{2}s$, $r^{2}s\cdot s=r^{2}$, $r^{2}s\cdot r^{2}s=r^{4}s^{2}=e$ など）と \ref{grp:subgroup-finite-criterion} からわかる。$\abs{H}=4$ で $(D_{4}:H)=2$ なので $H\trianglelefteq D_{4}$。$(H:K)=2$ なので $K\trianglelefteq H$。一方 $sr^{-1}=rs$ から $rsr^{-1}=r^{2}s\notin K$ なので $K$ は $D_{4}$ で正規でない。
+:::
+
+::: problem {#grp:prob-normal-order-two-central}
+$N\trianglelefteq G$ で $\abs{N}=2$ なら $N\subseteq Z(G)$ であることを示せ。
+:::
+
+::: solution
+$N=\{e,n\}$ とする。$g\in G$ について $gng^{-1}\in N$ で、$gng^{-1}=e$ なら $n=e$ となり矛盾するので $gng^{-1}=n$、すなわち $gn=ng$。よって $n\in Z(G)$。
+:::
+</script>
+<noscript>このサイトの表示には JavaScript が必要です。</noscript>
+<script src="../../../vendor/katex/katex.min.js?v=03dce885"></script>
+<script src="../../../vendor/marked.min.js?v=e04ae0bf"></script>
+<script src="../../../config.js?v=0cfb52e7"></script>
+<script src="../../../site-core.js?v=461c7786"></script>
+<script src="../../../site-index.js"></script>
+<script src="../../../search.js?v=35df239d"></script>
+<script src="../../../site.js?v=bf1e7588"></script>
+</body>
+</html>

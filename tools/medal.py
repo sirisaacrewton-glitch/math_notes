@@ -4,6 +4,8 @@ from fontTools.ttLib import TTFont
 from fontTools.pens.svgPathPen import SVGPathPen
 from fontTools.pens.transformPen import TransformPen
 
+# 使い方：python3 tools/medal.py <cinzel-latin-600-normal.woff> assets/favicon.svg assets/medal.svg
+# （∞ の帯は favicon.svg の描画をそのまま拡大して使う。fontTools が要る）
 FONT, FAV, OUT = sys.argv[1], sys.argv[2], sys.argv[3]
 font = TTFont(FONT); gs = font.getGlyphSet(); cmap = font.getBestCmap(); upm = font['head'].unitsPerEm
 C = 256.0
@@ -77,7 +79,7 @@ svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
 <g fill="url(#goldText)"><path d="{top}"/><path d="{bot}"/>{diamond(C - r_mid, C)}{diamond(C + r_mid, C)}</g>
 <circle cx="256" cy="256" r="{R_INNER}" fill="none" stroke="url(#gold)" stroke-width="6"/>
 <circle cx="256" cy="256" r="{R_INNER - 5}" fill="none" stroke="#5a431f" stroke-width="1.2" opacity=".8"/>
-<g transform="translate(256 256) scale({s}) translate(-32 -32.5)">{inf[inf.index('>') + 1:inf.rindex('</g>')].join(['<g stroke-linecap="round" stroke-linejoin="round">', '</g>']) if False else inf}</g>
+<g transform="translate(256 256) scale({s}) translate(-32 -32.5)">{inf}</g>
 </svg>
 '''
 open(OUT, 'w', encoding='utf-8').write(svg)
